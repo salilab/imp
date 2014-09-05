@@ -166,9 +166,8 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   void set_maximum_score(double s);
 /** @} */
 
-/** Create a scoring function with only this restarint.
-
-      \note This method cannot be implemented in python due to memory
+//! Create a scoring function with only this restraint.
+/** \note This method cannot be implemented in Python due to memory
       management issues (and the question of why you would ever
       want to).
    */

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/algebra/python_only.h
- *  \brief functionality only available in python.
+ *  \brief Functionality only available in Python.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -17,7 +17,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     The following functions are only available in Python as the
     equivalent C++ functionality is provided via template
     functions or in other ways that don't directly map to
-    python.
+    Python.
     @{
 */
 #ifdef IMP_DOXYGEN

@@ -69,7 +69,7 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   }
 
  public:
-  /** Will accept a list of floats from python. */
+  /** Will accept a list of floats from Python. */
   template <class Range>
   explicit VectorBaseD(const Range &r) {
     if (D != -1 && static_cast<int>(boost::distance(r)) != D) {

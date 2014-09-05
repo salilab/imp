@@ -23,8 +23,8 @@ IMPBASE_BEGIN_NAMESPACE
 /** Only the constructor with the correct number of arguments for the
         dimensionality can be used.
 
-        \note These are mapped to/from python tuples, so there is
-        no need to use types that are typedefs of this on the python
+        \note These are mapped to/from Python tuples, so there is
+        no need to use types that are typedefs of this on the Python
         side.
 
         \see ConstVector

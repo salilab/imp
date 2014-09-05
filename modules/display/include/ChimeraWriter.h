@@ -1,6 +1,6 @@
 /**
  *  \file IMP/display/ChimeraWriter.h
- *  \brief A writer for Chimera python files.
+ *  \brief A writer for Chimera Python files.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
@@ -15,8 +15,8 @@
 IMPDISPLAY_DEPRECATED_HEADER(2.1, "Use IMP.rmf")
 
 IMPDISPLAY_BEGIN_NAMESPACE
-//! Write geometry to a python file for Chimera to read
-/** The writer writes a python file which can handle markers, edges
+//! Write geometry to a Python file for Chimera to read
+/** The writer writes a Python file which can handle markers, edges
     and surfaces.  Since these are native chimera objects, they are
     handled a bit better than VRML ones.
 
@@ -40,7 +40,7 @@ class IMPDISPLAYEXPORT ChimeraWriter : public TextWriter {
   IMPDISPLAY_DEPRECATED_OBJECT_DECL(2.1)
   IMP_TEXT_WRITER(ChimeraWriter);
 
-  //! Add some arbitrary python code to the chimera file
+  //! Add some arbitrary Python code to the chimera file
   /** You should import the bits of Chimera that you need.
       At the moment, you should not name a variable surf_sets
       or marker_sets.

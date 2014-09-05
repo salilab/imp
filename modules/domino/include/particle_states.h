@@ -66,7 +66,7 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
 /** Store the association between particles and the classes
     which manage their states. I'm not a huge fan of having
     this class, but I haven't thought of a better way to store
-    the information that is easily exposed to python
+    the information that is easily exposed to Python
     and gets to all the right places. It is initialized internally
     in the DominoSampler.
  */

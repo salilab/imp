@@ -16,7 +16,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 #ifdef IMP_DOXYGEN
 /** \name Python Only
-    The following functions are only available in python.
+    The following functions are only available in Python.
     @{
 */
 /** The boost graphs used on the C++ side in \imp cannot easily be
@@ -40,14 +40,14 @@ class PythonDirectedGraph {
   void add_edge(VertexDescriptor, VertexDescriptor);
   VertexDescriptor add_vertex(VertexName);
   void remove_vertex(VertexDescriptor);
-  /** Show the graph in the graphviz format.
-      \note The vertices are not output in order, but have
+  //! Show the graph in the graphviz format.
+  /** \note The vertices are not output in order, but have
       their indices shown.
   */
   void show(std::ostream &out = std::cout) const;
 };
 
-/** Use the python
+/** Use the Python
     \external{http://packages.python.org/altgraph/core.html,altgraph}
     package to graphically display a graph.
     Note that is requires X11 to be running (you can find it in
@@ -65,11 +65,11 @@ class PythonDirectedGraph {
 void show_altgraph(Graph g);
 /** Export an IMP graph to a \external{http://networkx.lanl.gov/,networkx}
 graph.
-    The resulting graph can be analyzed and displaye, although the graph
+    The resulting graph can be analyzed and displayed, although the graph
     layout algorithms in networkx seem to be quite poor compared to
     graphviz.
 
-    One a mac, such graphs can be displayed by
+    On a Mac, such graphs can be displayed by
 \code
 import matplotlib
 # the engine to be used must be selected before pyplot is imported

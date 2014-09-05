@@ -12,17 +12,12 @@
 #include "utility_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
-/** A value in \imp should support output to streams in
-                            C++, conversion to
-                            string in python, being put in a hash
-                            table/dictionary and comparison
-                            with other values of the same type. In
-       addition, its
-                            default constructor
-                            should put it into a known good initial
-       state.
-
-                        */
+//! Base for a simple primitive-like type.
+/** A value in \imp should support output to streams in C++, conversion to
+    string in Python, being put in a hash table/dictionary and comparison
+    with other values of the same type. In addition, its default constructor
+    should put it into a known good initial state.
+ */
 class Value {
  protected:
   Value() {}

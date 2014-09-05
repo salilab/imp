@@ -28,7 +28,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     a constant list (in this case of particles). The list
     is stored in sorted order. Their interface is more or
     less that of a constant vector in C++ or
-    a constant list in python.
+    a constant list in Python.
  */
 class IMPDOMINOEXPORT Subset
     : public base::ConstVector<base::WeakPointer<kernel::Particle>,

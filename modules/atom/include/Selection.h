@@ -26,7 +26,7 @@ IMPATOM_BEGIN_NAMESPACE
     by the biological name.
 
 
-    For example (in python)
+    For example (in Python)
     \code
     Selection(hierarchy=h, molecule="myprotein", terminus=Selection.C)
     Selection(hierarchy=h, molecule="myprotein", residue_index=133)
@@ -69,7 +69,7 @@ class IMPATOMEXPORT Selection :
 
  public:
 #ifdef IMP_DOXYGEN
-  /** When using python, you have much more control over
+  /** When using Python, you have much more control over
       construction due to the use of keyword arguments. You
       can provide any subset of the arguments (although one
       of hierarchy or hierarchies must be provided).

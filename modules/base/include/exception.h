@@ -184,9 +184,8 @@ class IMPBASEEXPORT ModelException : public Exception {
   ~ModelException() IMP_NOEXCEPT;
 };
 
-/** \brief An exception that signifies some event occurred.
-
-    It is difficult to add exceptions to the python wrappers,
+//! An exception that signifies some event occurred.
+/** It is difficult to add exceptions to the Python wrappers,
     so use this type if want to raise an exception when something
     happens.
 

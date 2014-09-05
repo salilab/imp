@@ -53,8 +53,8 @@ result.
 - it has a local logging level which can override the global one
 allowing fine grained logging control.
 
-- in python, there is a method Class::get_from(Object *o) that
-attempts to case o to an object of type Class and throws and
+- in Python, there is a method Class::get_from(Object *o) that
+attempts to cast o to an object of type Class and throws an
 exception if it fails.
 
 - the object keeps track of whether it has been been used. See the
@@ -145,7 +145,7 @@ class IMPBASEEXPORT Object : public NonCopyable {
 
  public:
   virtual ~Object();
-  // needed for python to make sure all wrapper objects are equivalent
+  // needed for Python to make sure all wrapper objects are equivalent
   IMP_HASHABLE_INLINE(Object, return boost::hash_value(this););
 
   //! Set the logging level used in this object

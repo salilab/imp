@@ -24,7 +24,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
     The geometry is assembled into objects in pymol based on the passed
     names. For example, all geometry named "box" becomes one pymol object.
-    If many files are loaded into python defining the same objects, they
+    If many files are loaded into Python defining the same objects, they
     become sequential frames in a movie. The frame numbers are determined
     sequentially from the file load order (so they can form a subset of
     the generated files).

@@ -24,7 +24,7 @@ class PivyWriter : public Writer {
  public:
   PivyWriter();
   /** Show the window and start the interactive event loop.
-      Normal python execution will resume when the window
+      Normal Python execution will resume when the window
       is closed.
   */
   void show();

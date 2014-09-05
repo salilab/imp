@@ -61,25 +61,25 @@
               template <int D>                                                \
               inline const Name##D<D> &get_##name##_d_geometry(               \
                   const Name##D<D> &g) { return g; })                         \
-      /** Typedef for python. */                                              \
+      /** \brief Typedef for Python. */                                       \
       typedef Name##D<1> Name##1D;                                            \
   IMP_VALUES(Name##1D, Name##1Ds);                                            \
-  /** Typedef for python. */                                                  \
+  /** \brief Typedef for Python. */                                           \
   typedef Name##D<2> Name##2D;                                                \
   IMP_VALUES(Name##2D, Name##2Ds);                                            \
-  /** Typedef for python.  */                                                 \
+  /** \brief Typedef for Python. */                                           \
   typedef Name##D<3> Name##3D;                                                \
   IMP_VALUES(Name##3D, Name##3Ds);                                            \
-  /** Typedef for python. */                                                  \
+  /** \brief Typedef for Python. */                                           \
   typedef Name##D<4> Name##4D;                                                \
   IMP_VALUES(Name##4D, Name##4Ds);                                            \
-  /** Typedef for python. */                                                  \
+  /** \brief Typedef for Python. */                                           \
   typedef Name##D<5> Name##5D;                                                \
   IMP_VALUES(Name##5D, Name##5Ds);                                            \
-  /** Typedef for python. */                                                  \
+  /** \brief Typedef for Python. */                                           \
   typedef Name##D<6> Name##6D;                                                \
   IMP_VALUES(Name##6D, Name##6Ds);                                            \
-  /** Typedef for python. */                                                  \
+  /** \brief Typedef for Python. */                                           \
   typedef Name##D<-1> Name##KD;                                               \
   IMP_VALUES(Name##KD, Name##KDs)
 
@@ -151,25 +151,25 @@
   /** See Name */                                                   \
   IMP_NO_SWIG(template <int D> inline void set_##name##_d_geometry( \
       Name &g, const Name##D<D> &v) { g = v; })                     \
-      /** Typedef for python. */                                    \
+      /** \brief Typedef for Python. */                             \
       typedef Name##D<1> Name##1D;                                  \
   IMP_VALUES(Name##1D, Name##1Ds);                                  \
-  /** Typedef for python. */                                        \
+  /** \brief Typedef for Python. */                                 \
   typedef Name##D<2> Name##2D;                                      \
   IMP_VALUES(Name##2D, Name##2Ds);                                  \
-  /** Typedef for python. */                                        \
+  /** \brief Typedef for Python. */                                 \
   typedef Name##D<3> Name##3D;                                      \
   IMP_VALUES(Name##3D, Name##3Ds);                                  \
-  /** Typedef for python. */                                        \
+  /** \brief Typedef for Python. */                                 \
   typedef Name##D<4> Name##4D;                                      \
   IMP_VALUES(Name##4D, Name##4Ds);                                  \
-  /** Typedef for python. */                                        \
+  /** \brief Typedef for Python. */                                 \
   typedef Name##D<5> Name##5D;                                      \
   IMP_VALUES(Name##5D, Name##5Ds);                                  \
-  /** Typedef for python.*/                                         \
+  /** \brief Typedef for Python. */                                 \
   typedef Name##D<6> Name##6D;                                      \
   IMP_VALUES(Name##6D, Name##6Ds);                                  \
-  /** Typedef for python. */                                        \
+  /** \brief Typedef for Python. */                                 \
   typedef Name##D<-1> Name##KD;                                     \
   IMP_VALUES(Name##KD, Name##KDs)
 

@@ -60,13 +60,11 @@ IMPBASEEXPORT void add_to_log(std::string to_write);
 #endif
 #endif
 
-//! Write a string to the log, for python
+//! Write a string to the log, for Python
 IMPBASEEXPORT void add_to_log(LogLevel level, std::string to_write);
 
 //! Set the current global log level
-/** Set the current global log level
-
-    @note may be overridden by set_log_level of specific objects that inherit
+/** @note may be overridden by set_log_level of specific objects that inherit
           from IMP::base::Object
     @note this global method should not, currently, be used directly during
     kernel::Model::evaluate() calls.

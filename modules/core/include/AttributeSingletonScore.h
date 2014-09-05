@@ -59,7 +59,7 @@ inline Float GenericAttributeSingletonScore<UF>::evaluate_index(
 }
 #endif
 
-/** For python users. C++ users should use create_attribute_singleton_score().*/
+/** For Python users. C++ users should use create_attribute_singleton_score().*/
 typedef GenericAttributeSingletonScore<UnaryFunction> AttributeSingletonScore;
 
 /** Provide a compile time binding version of AttributeSingletonScore,

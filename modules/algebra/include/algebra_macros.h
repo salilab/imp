@@ -27,7 +27,7 @@
   typedef VectorBaseD<D> P;                                                   \
                                                                               \
  public:                                                                      \
-  /** Will accept a list of floats from python. */                            \
+  /** \brief Will accept a list of floats from Python. */                     \
   template <class Range>                                                      \
   explicit VectorD(const Range &r)                                            \
       : P(r) {}                                                               \

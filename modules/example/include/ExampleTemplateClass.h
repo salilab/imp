@@ -1,6 +1,6 @@
 /**
  *  \file IMP/example/ExampleTemplateClass.h
- *  \brief Show how to manage a template class with python.
+ *  \brief Show how to manage a template class with Python.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
