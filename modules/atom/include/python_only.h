@@ -28,7 +28,7 @@ IMPATOM_BEGIN_NAMESPACE
 IMP::core::show(h);
 \endcode
 */
-void show_molecular_hiearchy(Hierarchy h);
+void show_molecular_hierarchy(Hierarchy h);
 #endif
 /** @} */
 
