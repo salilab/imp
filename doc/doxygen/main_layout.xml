@@ -91,6 +91,7 @@
   <!-- Layout definition for a namespace page -->
   <namespace>
     <briefdescription visible="yes"/>
+    <detaileddescription title=""/>
     <memberdecl>
       <nestednamespaces visible="yes" title=""/>
       <constantgroups visible="yes" title=""/>
@@ -101,7 +102,6 @@
       <variables title=""/>
       <membergroups visible="yes"/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <inlineclasses title=""/>
       <typedefs title=""/>
