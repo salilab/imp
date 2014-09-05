@@ -15,9 +15,8 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Represent a plane in 3D.
-   \geometry
-*/
+//! Represent a plane in 3D.
+/** \geometry */
 class Plane3D : public GeometricPrimitiveD<3> {
  public:
   Plane3D() {}
@@ -68,7 +67,7 @@ inline double get_distance(const Plane3D &pln, const Vector3D &p) {
   return (pln.get_projection(p) - p).get_magnitude();
 }
 
-//! return the point reflected about the plane
+//! Return the point reflected about the plane
 inline Vector3D get_reflected(const Plane3D &pln, const Vector3D &p) {
   Vector3D proj = pln.get_projected(p);
   return p + 2 * (proj - p);

@@ -18,8 +18,8 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Represent a sphere in D-dimensions.
-    \geometry
+//! Represent a sphere in D-dimensions.
+/** \geometry
   */
 template <int D>
 class SphereD : public GeometricPrimitiveD<D> {

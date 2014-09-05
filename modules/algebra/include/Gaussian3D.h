@@ -18,9 +18,8 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** A Gaussian distribution in 3D.
-
-   The variances are along the axis of the reference frame.
+//! A Gaussian distribution in 3D.
+/** The variances are along the axis of the reference frame.
 */
 class Gaussian3D : public GeometricPrimitiveD<3> {
   ReferenceFrame3D tr_;
@@ -47,12 +46,12 @@ IMP_VALUES(Gaussian3D, Gaussian3Ds);
     the passed reference frame. */
 IMPALGEBRAEXPORT IMP_Eigen::Matrix3d get_covariance(const Gaussian3D &g);
 
-/** Return a Gaussian centered at the origin from a covariance matrix. */
+//! Return a Gaussian centered at the origin from a covariance matrix.
 IMPALGEBRAEXPORT Gaussian3D
     get_gaussian_from_covariance(const IMP_Eigen::Matrix3d &covariance,
                                  const Vector3D &center);
 
-/** Rasterize the Gaussians to a grid.*/
+//! Rasterize the Gaussians to a grid.
 IMPALGEBRAEXPORT DenseGrid3D<float> get_rasterized(const Gaussian3Ds &gmm,
                                                    const Floats &weights,
                                                    double cell_width,
