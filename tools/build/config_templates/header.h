@@ -156,12 +156,6 @@ IMP_COMPILER_DISABLE_WARNINGS
 
 #include <IMP/base/compiler_macros.h>
 
-#ifdef IMP_DOXYGEN
-/** \namespace IMP::%(name)s
-    \brief See [IMP.%(name)s](\ref imp%(name)s) for more information.
-    */
-#endif
-
 #endif /* %(cppprefix)s_CONFIG_H */
 
 // Here so it is always parsed

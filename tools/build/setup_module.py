@@ -331,12 +331,12 @@ def make_overview(options):
     )
     tools.rewrite(
         os.path.join("doxygen", "generated", "IMP_%s.dox" % options.name),
-                  """/** \\page imp%s IMP.%s
+                  """/** \\namespace IMP::%s
 \\tableofcontents
 
 %s
 */
-""" % (options.name, options.name, rmd))
+""" % (options.name, rmd))
 
 
 def main():

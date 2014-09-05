@@ -114,7 +114,7 @@ def generate_overview_pages(source):
     contents.append("<table><tr>")
     contents.append("<th>Modules</th><th>Applications</th></tr><tr><td>")
     for bs, g in tools.get_modules(source):
-        contents.append("- \\subpage imp%s \"IMP.%s\"" % (bs, bs))
+        contents.append("- [IMP.%s](\\ref IMP::%s)" % (bs, bs))
     contents.append("</td><td style=\"vertical-align:top;\">")
     for bs, g in tools.get_applications(source):
         contents.append("- \subpage imp%s \"IMP.%s\"" % (bs, bs))
