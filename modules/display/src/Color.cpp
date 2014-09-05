@@ -74,7 +74,7 @@ Color get_hot_color(double f) {
   return get_color_map_color(f, colors, sizeof(colors) / sizeof(Color));
 }
 
-Color get_grey_color(double f) {
+Color get_gray_color(double f) {
   static Color colors[] = {Color(0, 0, 0), Color(1, 1, 1)};
   return get_color_map_color(f, colors, sizeof(colors) / sizeof(Color));
 }

@@ -174,10 +174,10 @@ IMPDISPLAYEXPORT Color get_hot_color(double f);
  */
 IMPDISPLAYEXPORT Color get_rgb_color(double f);
 
-//! Return the a greyscale value for f
+//! Return the a grayscale value for f
 /** \see Color
  */
-IMPDISPLAYEXPORT Color get_grey_color(double f);
+IMPDISPLAYEXPORT Color get_gray_color(double f);
 
 //! Return colors using the gnuplot default color map
 /** \see Color

@@ -132,12 +132,12 @@ IMPEM2DEXPORT void do_histogram_stretching(cv::Mat &m, int boxes, int offset);
 //! (U. Adiga, 2005)
 /*!
   \param[in] m binary matrix to dilate and shrink
-  \param[in] greyscale greyscale matrix that controls the shrinking
+  \param[in] grayscale grayscale matrix that controls the shrinking
   \param[in] kernel dilation kernel
   \note Only tested with binary matrices m with background =0 and foreground = 1
 */
 void IMPEM2DEXPORT do_dilate_and_shrink_warp(cv::Mat &m,
-                                             const cv::Mat &greyscale,
+                                             const cv::Mat &grayscale,
                                              cv::Mat &kernel);
 
 //! morphologic grayscale reconstruction (L Vincent, 1993)
