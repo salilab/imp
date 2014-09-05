@@ -118,8 +118,8 @@ class NearestNeighborD : public IMP::base::Object {
     data_.fill_nearest_neighbors(data_.get_point(i), 2U, eps_, ret);
     return ret[1];
   }
-  /** Search using the ith point in the input set. Return the k
-      nearest neighbors.*/
+  //! Search using the ith point in the input set.
+  /** \return the k nearest neighbors. */
   Ints get_nearest_neighbors(unsigned int i, unsigned int k) const {
     IMP_OBJECT_LOG;
     set_was_used(true);

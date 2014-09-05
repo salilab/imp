@@ -347,17 +347,17 @@ class Residue;
     \throw ValueException if no residue is found, unless
     nothrow is true.
 
-    See Atom
-    See Residue
-    See Hierarchy
+    \see Atom
+    \see Residue
+    \see Hierarchy
  */
 IMPATOMEXPORT Residue get_residue(Atom d, bool nothrow = false);
 
 //! Return a particle atom from the residue
 /** The residue must be part of a molecular hierarchy.
-    See Atom
-    See Residue
-    See Hierarchy
+    \see Atom
+    \see Residue
+    \see Hierarchy
  */
 IMPATOMEXPORT Atom get_atom(Residue rd, AtomType at);
 
@@ -366,7 +366,7 @@ IMPATOMEXPORT Atom get_atom(Residue rd, AtomType at);
     between the AtomType and the proper element.
     \note This method has not been tested. If you use it, please
     write a test and remove this comment.
-    See AtomType
+    \see AtomType
     \see atom_type_exists()
 */
 IMPATOMEXPORT AtomType add_atom_type(std::string name, Element e);

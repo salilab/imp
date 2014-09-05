@@ -216,7 +216,7 @@ inline double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
     \code
     get_basis_vector_d<3>(2)== Vector3D(0,0,1);
     \endcode
-    See VectorD
+    \see VectorD
  */
 template <int D>
 inline VectorD<D> get_basis_vector_d(unsigned int coordinate) {
@@ -425,9 +425,8 @@ inline void set_vector_geometry(C &g, const E &v) {
 }
 #endif
 
-/** See VectorD
-    Return the vector that is the elementwise product of the two.
-*/
+//! Return the vector that is the elementwise product of the two.
+/** \see VectorD */
 template <int D>
 inline VectorD<D> get_elementwise_product(const algebra::VectorD<D> &a,
                                           const algebra::VectorD<D> &b) {
@@ -438,9 +437,8 @@ inline VectorD<D> get_elementwise_product(const algebra::VectorD<D> &a,
   return ret;
 }
 
-/** See VectorD
-    Return the vector that is the elementwise product of the two.
-*/
+//! Return the vector that is the elementwise product of the two.
+/** See VectorD */
 template <int D>
 inline VectorD<D> get_elementwise_product(const Ints &a,
                                           const algebra::VectorD<D> &b) {

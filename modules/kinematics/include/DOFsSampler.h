@@ -57,12 +57,10 @@ class DOFsSampler : public IMP::base::Object {
    */
   void sample_and_apply() { apply(get_sample()); }
 
-  /** Returns the dofs over which this sampler works
-   */
+  //! Returns the dofs over which this sampler works
   DOFs const& get_dofs() const { return dofs_; }
 
-  /** Returns the i'th dof over which this sampler works
-   */
+  //! Returns the i'th dof over which this sampler works
   DOF const* get_dof(unsigned int i) const {
     IMP_USAGE_CHECK(i < dofs_.size(),
                     "Accessing out-of-range dof in DOFsSampler");

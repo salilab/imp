@@ -500,22 +500,22 @@ IMP_OBJECTS(DensityMap, DensityMaps);
 
 /** Return the value for the density map, m, at point v, interpolating linearly
     from the sample values. The resulting function is C0 over R3.
-    See DensityMap
+    \see DensityMap
 */
 IMPEMEXPORT double get_density(const DensityMap *m, const algebra::Vector3D &v);
 
-/** Return a new density map containing a rotated version of the old
-    one. Only voxels whose value is above threshold are considered when
+//! Return a new density map containing a rotated version of the old one.
+/** Only voxels whose value is above threshold are considered when
     computing the bounding box of the new map (set IMP::em::get_bounding_box()).
-    See DensityMap
+    \see DensityMap
 */
 IMPEMEXPORT DensityMap *get_transformed(const DensityMap *input,
                                         const algebra::Transformation3D &tr,
                                         double threshold);
 
-/** Return a new density map containing a rotated version of the old
-    one. The dimension of the new map is the same as the old one.
-    See DensityMap
+//! Return a new density map containing a rotated version of the old one.
+/** The dimension of the new map is the same as the old one.
+    \see DensityMap
 */
 IMPEMEXPORT DensityMap *get_transformed(DensityMap *input,
                                         const algebra::Transformation3D &tr);

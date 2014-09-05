@@ -88,7 +88,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       passed in had better be properly weighted.
       @{
   */
-  /** Return the unweighted score for the restraint.*/
+  //! Return the unweighted score for the restraint.
   virtual double unprotected_evaluate(DerivativeAccumulator *da) const;
   /** The function calling this will treat any score >= get_maximum_score
       as bad and so can return early as soon as such a situation is found.*/
@@ -98,7 +98,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
     return unprotected_evaluate(da);
   }
 
-  /** The function calling this will treat any score >= max as bad.*/
+  //! The function calling this will treat any score >= max as bad.
   virtual double unprotected_evaluate_if_below(DerivativeAccumulator *da,
                                                double max) const {
     IMP_UNUSED(max);
@@ -107,16 +107,16 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
 /** @} */
 #endif
 
-  /** This methid is called in order to perform the actual restraint
-      scoring. The restraints should assume that all appropriate ScoreState
+  //! Perform the actual restraint scoring.
+  /** The restraints should assume that all appropriate ScoreState
       objects have been updated and so that the input particles and containers
       are up to date. The returned score should be the unweighted score.
   */
   void add_score_and_derivatives(ScoreAccumulator sa) const;
 
   //! Decompose this restraint into constituent terms
-  /** Given the set of input particles, decompose the restraint into as
-      simple parts as possible. For many restraints, the simplest
+  /** Given the set of input particles, decompose the restraint into parts
+      that are as simple as possible. For many restraints, the simplest
       part is simply the restraint itself.
 
       If a restraint can be decomposed, it should return a
@@ -129,7 +129,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   Restraint *create_decomposition() const;
 
   //! Decompose this restraint into constituent terms for the current conf
-  /** Return a decomposition that is value for the current conformation,
+  /** \return a decomposition that is value for the current conformation,
       but will not necessarily be valid if any of the particles are
       changed. This is the same as create_decomposition() for
       non-conditional restraints.
@@ -188,7 +188,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       was the last call, the score, if larger than the max, is not accurate.
    */
   virtual double get_last_score() const { return last_score_; }
-  /** Return whether this restraint violated it maximum last time it was
+  /** Return whether this restraint violated its maximum last time it was
       evaluated.
    */
   bool get_was_good() const { return get_last_score() < max_; }
@@ -263,7 +263,7 @@ class IMPKERNELEXPORT RestraintsAdaptor :
 #endif
 };
 
-/** Return the decomposition of a list of restraints. */
+//! Return the decomposition of a list of restraints.
 IMPKERNELEXPORT Restraints create_decomposition(const RestraintsTemp &rs);
 
 IMPKERNEL_END_NAMESPACE

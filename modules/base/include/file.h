@@ -158,16 +158,16 @@ IMP_VALUES(TextOutput, TextOutputs);
 IMPBASEEXPORT TextOutput create_temporary_file(std::string prefix = "imp_temp",
                                                std::string suffix = "");
 
-/** Create a temporary file.
-
-    If suffix is non-empty, there is some small chance of a collision on
+//! Create a temporary file.
+/** If suffix is non-empty, there is some small chance of a collision on
     non-BSD systems as a unique temporary file is first created, and then
-    a file with that suffix appended is created.*/
+    a file with that suffix appended is created. */
 IMPBASEEXPORT std::string create_temporary_file_name(std::string prefix =
                                                          "imp_temp",
                                                      std::string suffix = "");
 
-/** Return a path to a file relative to another file. For example
+//! Return a path to a file relative to another file.
+/** For example
     if base is path/to/config.file and relative is data/image0.jpg
     then the return value would be path/to/data/image0.jpg. This
     function should be used when processing configuration files so

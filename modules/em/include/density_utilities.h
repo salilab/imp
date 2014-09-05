@@ -15,8 +15,7 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-//! Return a masked density , and
-//! normalize the output map within the masked region
+//! Return a masked density, and normalize the output map within the mask region
 /**
 \param[in] dmap the density map to mask
 \param[in] mask the mask

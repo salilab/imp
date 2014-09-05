@@ -1,4 +1,4 @@
-/*!
+/**
  *  \file IMP/em2d/FFToperations.h
  *  \brief Operations involving FFT
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
@@ -20,29 +20,22 @@ IMPEM2D_BEGIN_NAMESPACE
 IMPEM2DEXPORT void do_matrix_to_image_flip(cv::Mat &m);
 
 //! Autocorrelation without preprocessing
-/*!
+/**
   \param[in]  M matrix containing the dft
    \param[out] corr the matrix to store the autocorrelation. Must have the
     proper dimensions when passed
 */
-/**
- * Autocorrelation without preprocessing.
- * @param  M matrix containing the dft
- * @param corr The matrix to store the autocorrelation. Must have the
- * proper dimensions when passed.
- */
 IMPEM2DEXPORT void get_autocorrelation2d_no_preprocessing(const cv::Mat &M,
                                                           cv::Mat &corr);
 
-/**
- * Computes the autocorrelation matrix
- * @param m The input matrix
- * @param corr The result matrix containing the autocorrelation
+//! Computes the autocorrelation matrix
+/** @param m The input matrix
+    @param corr The result matrix containing the autocorrelation
  */
 IMPEM2DEXPORT void get_autocorrelation2d(const cv::Mat &m, cv::Mat &corr);
 
 //! Correlation matrix between two 2D matrices using FFT
-/*!
+/**
   \param[in] A first matrix
   \param[in] B second matrix
   \param[out] corr matrix of results
@@ -51,11 +44,10 @@ IMPEM2DEXPORT void get_correlation2d(const cv::Mat &A, const cv::Mat &B,
                                      cv::Mat &corr);
 
 //! Correlation without preprocessing
-//! Returns the correlation matrix between two 2D matrices using FFT
-/*!
-  \param[in]  M1 matrix containing the dft of the first matrix
-  \param[in]  M2 matrix containing the dft of the second matrix
-   \param[out] corr matrix of results (It MUST have the right size in advance)
+/** \returns the correlation matrix between two 2D matrices using FFT
+    \param[in]  M1 matrix containing the dft of the first matrix
+    \param[in]  M2 matrix containing the dft of the second matrix
+    \param[out] corr matrix of results (It MUST have the right size in advance)
 */
 IMPEM2DEXPORT void get_correlation2d_no_preprocessing(const cv::Mat &M1,
                                                       const cv::Mat &M2,
@@ -72,11 +64,10 @@ IMPEM2DEXPORT void get_correlation2d_no_preprocessing(const cv::Mat &M1,
  */
 IMPEM2DEXPORT void get_fft_using_optimal_size(const cv::Mat &m, cv::Mat &M);
 
-/**
- * Computes the fft of a matrix and returns the real and imaginary matrices
- * @param m The input matrix
- * @param real The matrix with the real part of the FFT matrix
- * @param imag The imaginary part of the FFT matrix
+//! Computes the fft of a matrix and returns the real and imaginary matrices
+/** @param m The input matrix
+    @param real The matrix with the real part of the FFT matrix
+    @param imag The imaginary part of the FFT matrix
  */
 IMPEM2DEXPORT void get_spectrum(const cv::Mat &m, cv::Mat &real, cv::Mat &imag);
 

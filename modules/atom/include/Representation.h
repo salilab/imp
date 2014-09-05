@@ -62,10 +62,11 @@ class IMPATOMEXPORT Representation : public Hierarchy {
   Hierarchy get_representation(double resolution,
                                RepresentationType type = BALLS);
 
-  /** Return all children at all resolutions. */
+  //! Return all children at all resolutions.
   Hierarchies get_representations(RepresentationType type = BALLS);
 
-  /** Add the representation for the given resolution. If the resolution is
+  //! Add the representation for the given resolution.
+  /** If the resolution is
       not given it is computed using get_resolution().
       Currently only a type of 'BALLS' is supported; eventually, other types
       of representation may be supported, eg Gaussians or density maps.

@@ -73,8 +73,7 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   double evaluate_if_good(bool derivatives);
 
   //! Evaluate and return the score
-  /**
-      Evaluate the score function and return the resulting score
+  /** \return the resulting score
 
       @param derivatives if true, updates the derivatives of the
                          scoring function
@@ -87,11 +86,9 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
       thresholds.*/
   bool get_had_good_score() const { return es_.good; }
 
-  //! returns the score that was calculated in the last call
-  //! evaluate
+  //! returns the score that was calculated in the last evaluate call
   double get_last_score() const { return es_.score; }
-  /** Return a set of restraints equivalent to this scoring function.
-   */
+  //! Return a set of restraints equivalent to this scoring function.
   virtual Restraints create_restraints() const = 0;
 };
 

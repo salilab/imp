@@ -26,13 +26,12 @@ IMPBASE_BEGIN_NAMESPACE
     In C++, you can also use the AddFloatFlag, AddStringFlag,
     AddBoolFlag and AddIntFlag classes to add flags statically.  @{
 */
-/** Return the name of the current executable.*/
+//! Return the name of the current executable.
 IMPBASEEXPORT std::string get_executable_name();
 
 #ifndef SWIG
-/** Parse the command line flags and return the
-    positional arguments.
-
+//! Parse the command line flags and return the positional arguments.
+/**
     \param[in] argc argc
     \param[in] argv argv
     \param[in] description A message describing what the program does.

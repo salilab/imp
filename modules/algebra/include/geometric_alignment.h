@@ -23,7 +23,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Compute the rigid transform bringing the first point set to the second
 /** The points are assumed to be corresponding (that is, from[0] is aligned
     to to[0] etc.). The alignment computed is that which minimized the
-    sum of squared distances between corresponding points. Return the
+    sum of squared distances between corresponding points.
+
+    \return the
     \f[ \textit{argmin}_T
     \sum \left|T\left(f\left[i\right]\right)-t[i]\right|^2 \f]
 
@@ -34,7 +36,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
     \genericgeometry
 
-    See Transformation3D
+    \see Transformation3D
     \see Vector3D
  */
 template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>

@@ -211,11 +211,10 @@ class IMPATOMEXPORT Residue : public Hierarchy {
 
 IMP_DECORATORS(Residue, Residues, Hierarchies);
 
-/** See Residue
+//! Return the residue from the same chain with one higher index.
+/** If no such residue exists, return Hierarchy().
 
-    Return the residue from the same chain with one
-    higher index, or Hierarchy().
-
+    \see Residue
     \note Currently, this function only works if
     the parent of rd is the chain. This should be fixed
     later. Ask if you need it.
@@ -226,27 +225,22 @@ IMP_DECORATORS(Residue, Residues, Hierarchies);
  */
 IMPATOMEXPORT Hierarchy get_next_residue(Residue rd);
 
-/** See Residue
-
-    Return the residue from the same chain with one
-    lower index, or Hierarchy().
+//! Return the residue from the same chain with one lower index.
+/** If no such residue exists, return Hierarchy().
     \see get_next_residue
  */
 IMPATOMEXPORT Hierarchy get_previous_residue(Residue rd);
 
-/** Get the residue type from the 1-letter amino acid
-    code.
-    \throw ValueException if an invalid character is passed.
-*/
+//! Get the residue type from the 1-letter amino acid code.
+/** \throw ValueException if an invalid character is passed.
+ */
 IMPATOMEXPORT ResidueType get_residue_type(char c);
 
-/** Get the 1-letter amino acid code from the residue type.
-*/
+//! Get the 1-letter amino acid code from the residue type.
 IMPATOMEXPORT char get_one_letter_code(ResidueType c);
 
 
-/** Get the mass from the residue type.
-*/
+//! Get the mass from the residue type.
 IMPATOMEXPORT double get_mass(ResidueType c);
 
 

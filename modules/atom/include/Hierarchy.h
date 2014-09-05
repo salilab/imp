@@ -422,7 +422,7 @@ IMPATOMEXPORT Hierarchy create_fragment(const Hierarchies &ps);
 IMPATOMEXPORT Bonds get_internal_bonds(Hierarchy mhd);
 
 //! Return the root of the hierarchy
-/** See Hierarchy */
+/** \see Hierarchy */
 inline Hierarchy get_root(Hierarchy h) {
   while (h.get_parent()) {
     h = h.get_parent();

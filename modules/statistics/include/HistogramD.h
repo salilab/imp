@@ -17,8 +17,10 @@
 #include <IMP/base_types.h>
 #include <limits>
 #include <vector>
+
 IMPSTATISTICS_BEGIN_NAMESPACE
-/** Dynamically build a histogram embedded in D-dimensional space. */
+
+//! Dynamically build a histogram embedded in D-dimensional space.
 template <int D, class Grid = algebra::GridD<
                      D, typename algebra::DenseGridStorageD<D, double>, double,
                      typename algebra::DefaultEmbeddingD<D> > >

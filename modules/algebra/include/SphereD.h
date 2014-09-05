@@ -46,8 +46,6 @@ class SphereD : public GeometricPrimitiveD<D> {
   }
 
   //! Return true if the point is in or on the surface of the sphere
-  /**
-   */
   bool get_contains(const VectorD<D> &p) const {
     return ((p - center_).get_squared_magnitude() <= get_squared(radius_));
   }
@@ -99,7 +97,7 @@ inline SphereD<-1> get_unit_sphere_kd(unsigned int d) {
 
 //! Return the distance between the two spheres if they are disjoint
 /** If they intersect, the distances are not meaningful.
-    See SphereD
+    \see SphereD
 */
 template <int D>
 inline double get_distance(const SphereD<D> &a, const SphereD<D> &b) {
@@ -110,7 +108,7 @@ inline double get_distance(const SphereD<D> &a, const SphereD<D> &b) {
 //! Return the power distance between the two spheres
 /** The power distance is the square of the distance between the centers
     minus the sum of the square of the radii.
-    See SphereD
+    \see SphereD
 */
 template <int D>
 inline double get_power_distance(const SphereD<D> &a, const SphereD<D> &b) {
@@ -119,7 +117,7 @@ inline double get_power_distance(const SphereD<D> &a, const SphereD<D> &b) {
 }
 
 //! Return true if the two balls bounded by the two spheres intersect
-/** See SphereD
+/** \see SphereD
  */
 template <int D>
 inline bool get_interiors_intersect(const SphereD<D> &a, const SphereD<D> &b) {

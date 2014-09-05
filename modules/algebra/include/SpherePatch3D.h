@@ -14,9 +14,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/**
-A patch of a sphere is defined as all points above the plane and on the sphere.
- */
+//! A sphere patch is defined as all points above the plane and on the sphere.
 class IMPALGEBRAEXPORT SpherePatch3D : public GeometricPrimitiveD<3> {
  public:
   SpherePatch3D() {}

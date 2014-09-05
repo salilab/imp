@@ -81,9 +81,7 @@ class IMPCOREEXPORT ClosePairsFinder : public kernel::ParticleInputs,
   IMP_LIST(public, PairFilter, pair_filter, PairPredicate *, PairPredicates);
 /**@}*/
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  /** \brief Return a container which lists all particles which moved more
-      than threshold
-  */
+  //! Return a container of all particles which moved more than threshold
   virtual internal::MovedSingletonContainer *get_moved_singleton_container(
       SingletonContainer *in, double threshold) const;
 #endif

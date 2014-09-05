@@ -232,7 +232,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
 IMP_VALUES(Rotation3D, Rotation3Ds);
 
 //! Return a rotation that does not do anything
-/** See Rotation3D */
+/** \see Rotation3D */
 inline Rotation3D get_identity_rotation_3d() { return Rotation3D(1, 0, 0, 0); }
 
 //! Return a distance between the two rotations
@@ -459,20 +459,18 @@ inline Rotation3D get_interpolated(const Rotation3D &a, const Rotation3D &b,
 
 /** Return the rotation which takes the native x and y axes to the
     given x and y axes.
-    The two axis must be perpendicular unit vectors.
+    The two axes must be perpendicular unit vectors.
 */
 IMPALGEBRAEXPORT Rotation3D
     get_rotation_from_x_y_axes(const Vector3D &x, const Vector3D &y);
 
 //! Decompose a Rotation3D object into a rotation around an axis
-/**
-   Decompose a Rotation3D object into a rotation around an axis. For all identity
-   rotations, returns the axis [1,0,0] and the angle 0.0.
+/** For all identity rotations, returns the axis [1,0,0] and the angle 0.0.
 
    \note http://en.wikipedia.org/wiki/Rotation_matrix
    \note www.euclideanspace.com/maths/geometry/rotations/conversions/
    angleToQuaternion/index.htm
-   See Rotation3D
+   \see Rotation3D
 
    @return axis direction and rotation about the axis in Radians
 */

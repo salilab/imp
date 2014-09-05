@@ -83,7 +83,7 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   IMP_REF_COUNTED_DESTRUCTOR(ScoreState);
 };
 
-/** Return an appropriate (topoligically sorted) order to update
+/** Return an appropriate (topologically sorted) order to update
     the score states in. */
 IMPKERNELEXPORT ScoreStatesTemp get_update_order(ScoreStatesTemp input);
 

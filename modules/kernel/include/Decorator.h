@@ -165,7 +165,7 @@ class IMPKERNELEXPORT Decorator : public base::Value {
 #endif
 #endif
 
-  /** Returns the particle decorated by this decorator.*/
+  //! Returns the particle decorated by this decorator.
   Particle* get_particle() const {
     if (!model_)
       return nullptr;
@@ -182,10 +182,10 @@ class IMPKERNELEXPORT Decorator : public base::Value {
   operator ParticleIndex() const { return get_particle_index(); }
 #endif
 
-  /** Returns the particle index decorated by this decorator.*/
+  //! Returns the particle index decorated by this decorator.
   ParticleIndex get_particle_index() const { return pi_; }
 
-  /** \brief Returns the Model containing the particle. */
+  //! Returns the Model containing the particle.
   Model* get_model() const { return model_; }
 
   /** Returns true if the decorator was constructued with a non-default

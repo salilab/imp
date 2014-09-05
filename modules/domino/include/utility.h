@@ -52,7 +52,7 @@ IMPDOMINOEXPORT void load_particle_states(const Subset &s, const Assignment &ss,
                                           const ParticleStatesTable *pst);
 
 /** Return a list of all restraints from rs that
-    - do not depend on any particle in pst->get_particles() that is not in s
+    do not depend on any particle in pst->get_particles() that is not in s
     The dependency graph is passed for efficiency.
 */
 IMPDOMINOEXPORT kernel::RestraintsTemp get_restraints(

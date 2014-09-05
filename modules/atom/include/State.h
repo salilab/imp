@@ -47,8 +47,8 @@ class IMPATOMEXPORT State : public Hierarchy {
 
 IMP_DECORATORS(State, States, Hierarchies);
 
-/** Walk up the hierarchy to find the current state. Return -1 if there is none.
- */
+//! Walk up the hierarchy to find the current state.
+/** \return the state index, or -1 if there is none. */
 IMPATOMEXPORT int get_state_index(Hierarchy h);
 
 IMPATOM_END_NAMESPACE

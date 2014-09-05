@@ -21,7 +21,7 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 //! Store a persistent ordering for a subset based on the list.
-/**  Return a list of indexes into s, representing a permutation of the
+/** \return a list of indexes into s, representing a permutation of the
     particles in s, so that they are ordered according to all_particles.
     This order can be used to write s to disk, as the order in s can
     change between domino runs.

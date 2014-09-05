@@ -50,7 +50,8 @@ class IMPATOMEXPORT Copy : public Molecule {
 
 IMP_DECORATORS(Copy, Copies, kernel::ParticlesTemp);
 
-/** Walk up the hierarchy to find the current state. Return -1 if there is none.
+//! Walk up the hierarchy to find the current copy index.
+/** \return the copy index, or -1 if there is none.
  */
 IMPATOMEXPORT int get_copy_index(Hierarchy h);
 

@@ -14,7 +14,7 @@
 #include "XYZ.h"
 
 IMPCORE_BEGIN_NAMESPACE
-/** Return 1 if the XYZ is in the bounding box, 0 otherwise.*/
+//! Return 1 if the XYZ is in the bounding box, 0 otherwise.
 class InBoundingBox3DSingletonPredicate : public SingletonPredicate {
   algebra::BoundingBox3D bb_;
 
@@ -36,7 +36,8 @@ class InBoundingBox3DSingletonPredicate : public SingletonPredicate {
   IMP_SINGLETON_PREDICATE_METHODS(InBoundingBox3DSingletonPredicate);
   IMP_OBJECT_METHODS(InBoundingBox3DSingletonPredicate);
 };
-/** Return the value of an int attribute as the predicate value.*/
+
+//! Return the value of an int attribute as the predicate value.
 class AttributeSingletonPredicate : public SingletonPredicate {
   IntKey bb_;
 
@@ -58,7 +59,7 @@ class AttributeSingletonPredicate : public SingletonPredicate {
   IMP_OBJECT_METHODS(AttributeSingletonPredicate);
 };
 
-/** Return 1 if two XYZRs collide.*/
+//! Return 1 if two XYZRs collide.
 class IsCollisionPairPredicate : public PairPredicate {
  public:
   IsCollisionPairPredicate(std::string name = "CollisionPairPredicate%1%")

@@ -51,17 +51,16 @@ class IMPKERNELEXPORT ModelObject : public base::Object {
   //! Return whether this object has dependencies computed
   bool get_has_dependencies() const;
 
-  /** Either invalidate the dependncies or ensure they are correct.*/
+  //! Either invalidate the dependncies or ensure they are correct.
   void set_has_dependencies(bool tf);
 
-  /** Compute the required score states. */
+  //! Compute the required score states.
   void set_has_required_score_states(bool tf);
 
-  /** Return whether score states are computed.*/
+  //! Return whether score states are computed.
   bool get_has_required_score_states() const;
 
-  /** Get the score states that are ancestors of this in the dependency graph.
-   */
+  //! Get the score states that are ancestors of this in the dependency graph.
   const ScoreStatesTemp &get_required_score_states() const;
 
  protected:

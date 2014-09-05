@@ -21,8 +21,8 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-// Comparison function for the keys of the mapping between quaternion of
-// rotation and their corresponding cached mask
+//! Comparison function for the keys of the mapping between quaternion of
+//! rotation and their corresponding cached mask
 class IntsOrder {
  public:
   // The vector with lower values goes first
@@ -61,7 +61,8 @@ class IMPEM2DEXPORT RigidBodiesImageFitRestraint : public kernel::Restraint {
   unsigned int get_rigid_body_index(const core::RigidBody &rb) const;
 
  public:
-  /*! Initialize the class
+  //! Initialize the class
+  /**
     \param[in] scf Score function used to compute the value of the restraint
     \param[in] rbs Rigid bodies that are restrained
     \param[in] img Image used to compute the restraint
@@ -71,21 +72,21 @@ class IMPEM2DEXPORT RigidBodiesImageFitRestraint : public kernel::Restraint {
 
   void set_projecting_parameters(const ProjectingParameters &p);
 
-  /*! Set the possible rotations that a rigid body can have. A projection of
-      the rigid body in all possible orientations is stored
+  //! Set the possible rotations that a rigid body can have.
+  /** A projection of the rigid body in all possible orientations is stored
   */
   void set_orientations(const core::RigidBody &rb,
                         const algebra::Rotation3Ds &rots);
 
-  /*! Return the number of precomputed masks associated with the rigid body
-      Throws an exception if the rigid body is not in the set used to construct
+  //! Return the number of precomputed masks associated with the rigid body.
+  /** Throws an exception if the rigid body is not in the set used to construct
       the restraint
   */
   unsigned int get_number_of_masks(const core::RigidBody &rb) const;
 };
 IMP_OBJECTS(RigidBodiesImageFitRestraint, RigidBodiesImageFitRestraints);
 
-// For a unique 4 ints ( 2 first decimal positions) for a rotation
+//! For a unique 4 ints ( 2 first decimal positions) for a rotation
 IMPEM2DEXPORT Ints get_unique_index(const algebra::Rotation3D &rot);
 
 IMPEM2D_END_NAMESPACE

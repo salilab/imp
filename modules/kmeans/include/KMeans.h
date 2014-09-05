@@ -120,35 +120,32 @@ class IMPKMEANSEXPORT KMeans : public IMP::base::Object {
   */
   void add_data_pt(const IMP::Floats& p);
 
-  /**
-     Clears all data in object.
-  */
+  //! Clears all data in object.
   void clear_data();
 
-  /** Returns the i'th point in the dataset
-
+  //! Returns the i'th point in the dataset
+  /**
       @param[in] i Center number in range (0,...,nPts-1)
    */
   const IMP::Floats& get_data_point(unsigned int i) const;
 
-  /** @return The number of data points */
+  //! @return The number of data points
   unsigned int get_number_of_data_points() const { return STLDataPts_.size(); }
 
+  //! Print the centers (assuming exectute() was applied) to log
   /**
-      Print the centers (assuming exectute() was applied) to log
-
       @param ll the log level for printout
    */
   void print_centers(base::LogLevel ll = base::PROGRESS) const;
 
-  /** Returns the i'th center
-      Must be called only following a succesful execute() invokation
+  //! Returns the i'th center
+  /** Must be called only following a succesful execute() invokation
 
       @param[in] i Center number in range (0,...,k-1)
    */
   IMP::Floats get_center(unsigned int i) const;
 
-  /** Returns the cluster assignment of each data point */
+  //! Returns the cluster assignment of each data point
   IMP::Ints get_assignments() const {
     // TODO: exception instead of assertion?
     assert(is_executed_);

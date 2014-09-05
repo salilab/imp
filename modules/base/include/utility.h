@@ -54,16 +54,15 @@ inline int compare(const T &a, const T &b) {
   return a.compare(b);
 }
 
-/** Convert between different types of lists.
- */
+//! Convert between different types of lists.
 template <class Out, class In>
 inline Out get_as(const In &in) {
   return Out(in.begin(), in.end());
 }
 #endif
 
-/** Return a unique name produced from the string by replacing
-    %1% with a sequential number.*/
+//! Return a unique name produced from the string.
+/** This is done by replacing %1% with a sequential number.*/
 IMPBASEEXPORT std::string get_unique_name(std::string templ);
 
 IMPBASE_END_NAMESPACE

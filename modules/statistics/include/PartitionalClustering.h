@@ -26,17 +26,15 @@ class IMPSTATISTICSEXPORT PartitionalClustering : public IMP::base::Object {
  public:
   PartitionalClustering(std::string name) : Object(name) {}
   virtual unsigned int get_number_of_clusters() const = 0;
-  /** Return the list of indexes in the ith cluster.
-   */
+  //! Return the list of indexes in the ith cluster.
   virtual const Ints& get_cluster(unsigned int cluster_index) const = 0;
-  /** Return the index of an item that "typifies" the ith cluster.
-   */
+  //! Return the index of an item that "typifies" the ith cluster.
   virtual int get_cluster_representative(unsigned int cluster_index) const = 0;
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(PartitionalClustering);
 };
 
-/** Check that the clustering is a valid clustering of n elements. An
- exception is thrown if it is not, if the build is not a fast build.*/
+//! Check that the clustering is a valid clustering of n elements.
+/** An exception is thrown if it is not, if the build is not a fast build. */
 IMPSTATISTICSEXPORT void validate_partitional_clustering(
     PartitionalClustering* pc, unsigned int n);
 

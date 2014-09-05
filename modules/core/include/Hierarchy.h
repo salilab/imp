@@ -210,7 +210,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
     get_model()->add_attribute(get_decorator_traits().get_parent_key(),
                                h.get_particle_index(), get_particle_index());
   }
-  /** Return i such that `get_parent().get_child(i) == this` */
+  //! Return i such that `get_parent().get_child(i) == this`
   int get_child_index() const;
   //! Get the default hierarchy traits
   static const HierarchyTraits &get_default_traits();
@@ -528,7 +528,7 @@ IMPCOREEXPORT GenericHierarchies get_internal(Hierarchy mhd);
 IMPCOREEXPORT GenericHierarchies get_all_descendants(Hierarchy mhd);
 
 //! Return the root of the hierarchy
-/** See Hierarchy */
+/** \see Hierarchy */
 inline Hierarchy get_root(Hierarchy h) {
   while (h.get_parent()) {
     h = h.get_parent();

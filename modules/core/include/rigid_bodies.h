@@ -179,7 +179,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(RigidBody);
   ~RigidBody();
 
-  /** Return true if the particle is a rigid body */
+  //! Return true if the particle is a rigid body
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return internal::get_has_required_attributes_for_body(m, pi);
   }
@@ -371,8 +371,8 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
   RigidBody get_rigid_body() const;
 
   //! Return the internal (local) coordinates of this member
-  /** Return the internal (local) coordinates of this member
-   relative to the reference frame of the rigid body that owns it
+  /** These coordinates are relative to the reference frame of the
+      rigid body that owns it
   */
   const algebra::Vector3D &get_internal_coordinates() const {
     return get_model()->get_internal_coordinates(get_particle_index());
@@ -576,10 +576,8 @@ IMPCOREEXPORT void show_rigid_body_hierarchy(RigidBody rb,
                                              base::TextOutput out =
                                                  base::TextOutput(std::cout));
 
-/** Return the particle index of the outer-most rigid body containing the
-   member.
-
-    Use this to, for example, group particles into rigid bodies. */
+//! Return the index of the outer-most rigid body containing the member.
+/** Use this to, for example, group particles into rigid bodies. */
 IMPCOREEXPORT kernel::ParticleIndex get_root_rigid_body(RigidMember m);
 
 IMPCORE_END_NAMESPACE

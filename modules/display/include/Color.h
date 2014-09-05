@@ -138,7 +138,7 @@ inline Color operator*(Color c, double d) { return d * c; }
 
 //! Return a color interpolated between a and b in RGB space
 /** If f is 0, then a is returned, if f is 1, b is returned.
-    See Color
+    \see Color
  */
 inline Color get_interpolated_rgb(const Color &a, const Color &b, double f) {
   return Color((1 - f) * a.get_red() + f * b.get_red(),
@@ -160,27 +160,27 @@ IMPDISPLAYEXPORT double get_linear_color_map_value(double min, double max,
 @{
  */
 //! Return the color for f from the jet color map
-/** See Color
+/** \see Color
  */
 IMPDISPLAYEXPORT Color get_jet_color(double f);
 
 //! Return the color for f from the hot color map
-/** See Color
+/** \see Color
  */
 IMPDISPLAYEXPORT Color get_hot_color(double f);
 
 //! Return the color for f from the RGB color map
-/** See Color
+/** \see Color
  */
 IMPDISPLAYEXPORT Color get_rgb_color(double f);
 
 //! Return the a greyscale value for f
-/** See Color
+/** \see Color
  */
 IMPDISPLAYEXPORT Color get_grey_color(double f);
 
 //! Return colors using the gnuplot default color map
-/** See Color
+/** \see Color
  */
 IMPDISPLAYEXPORT Color get_gnuplot_color(double f);
 /** @} */

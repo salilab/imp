@@ -68,12 +68,10 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   }
   Float get_kt() const { return temp_; }
   /** @} */
-  /** Return the energy of the last accepted state.
-   */
+  //! Return the energy of the last accepted state.
   double get_last_accepted_energy() const { return last_energy_; }
 
-  /** If return best is on, you can get the best energy
-      found so far.*/
+  //! If return best is on, returns the best energy found so far.
   double get_best_accepted_energy() const {
     IMP_USAGE_CHECK(return_best_, "Getting the best energy"
                                       << " requires return best being on.");

@@ -99,15 +99,15 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
     }
     data_.set_coordinates(boost::begin(r), boost::end(r));
   }
-  /** Return the ith Cartesian coordinate. In 3D use [0] to get
-      the x coordinate etc.*/
+  //! Return the ith Cartesian coordinate.
+  /** In 3D use [0] to get the x coordinate etc. */
   inline double operator[](unsigned int i) const {
     IMP_ALGEBRA_VECTOR_CHECK_INDEX(i);
     IMP_ALGEBRA_VECTOR_CHECK;
     return data_.get_data()[i];
   }
-  /** Return the ith Cartesian coordinate. In 3D use [0] to get
-      the x coordinate etc. */
+  //! Return the ith Cartesian coordinate.
+  /** In 3D use [0] to get the x coordinate etc. */
   inline double &operator[](unsigned int i) {
     IMP_ALGEBRA_VECTOR_CHECK_INDEX(i);
     return data_.get_data()[i];
@@ -209,9 +209,8 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
     return Floats(begin(), end());
   }
 
-  /** Return a pointer to the data stored.
-
-      Useful for conversion to other types. */
+  //! Return a pointer to the data stored.
+  /** Useful for conversion to other types. */
   const double *get_data() const { return data_.get_data(); }
 #endif
   unsigned int get_dimension() const { return data_.get_dimension(); }
@@ -220,12 +219,11 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   internal::VectorData<double, D, false> data_;
 };
 
+//! Returns a unit vector pointing at the same direction as this vector.
 /**
-   Returns a unit vector pointing at the same direction as this vector.
-
    @note If the magnitude of this vector is smaller than 1e-12
          (an arbitrarily selected small number), returns a unit
-         vector pointing at a random direction
+         vector pointing at a random direction.
  */
 template <class VT>
 inline VT get_unit_vector(VT vt) {
