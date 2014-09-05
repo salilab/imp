@@ -52,13 +52,13 @@ class IMPCOREEXPORT RigidBodyUmbrella : public kernel::Restraint {
 
   //! Create the restraint by specifying \f$x_0\f$ as a linear interpolation.
   /**
-   * The restraint input is the triplet \f$\lambda,x_1,x_2\f$ with \f$\lambda\in
-   * \f$[0,1]\f$ such that the restraint center is at
+   * The restraint input is the triplet \f$\lambda,x_1,x_2\f$ with
+   * \f$\lambda\in [0,1]\f$ such that the restraint center is at
    * \f[ x_0 = (1-\lambda) x_1 + \lambda x_2 \f]
    *
    * \param[in] pi rigid body particle index to restrain
    * \param[in] ref rigid body particle index of reference
-   * \param[in] lambda \f$ \lambda \f$ the restraint center
+   * \param[in] lambda \f$\lambda\f$ the restraint center
    * \param[in] x1 \f$x_1\f$ the restraint center when \f$\lambda=0\f$
    * \param[in] x2 \f$x_2\f$ the restraint center when \f$\lambda=1\f$
    * \param[in] alpha \f$\alpha\f$ restraint stiffness
