@@ -12,9 +12,10 @@ function_name_exceptions=['transform',
                           'BerendsenThermostatOptimizerState.rescale_velocities',
                           'LangevinThermostatOptimizerState.rescale_velocities',
                           'get_all_atom_CHARMM_parameters',
-                          'get_heavy_atom_CHARMM_parameters']
+                          'get_heavy_atom_CHARMM_parameters', "get_kd"]
 spelling_exceptions=['lennard', 'charmm', "jones",
                      "impropers", "ez",
                      "rmsd", "pdb", "multimodel", "conect",
                      'rescale',
-                     'berendsen', 'langevin', 'runge', 'kutta']
+                     'berendsen', 'langevin', 'runge', 'kutta', "drms", "drmsd",
+                     "psipred", "femto"]

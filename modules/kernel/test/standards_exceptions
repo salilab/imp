@@ -8,4 +8,4 @@ value_object_exceptions=['Decorator', 'DerivativeAccumulator',
                                            # imported
                                            'Object', 'SetLogState',
                                            'SetLogTarget', 'RestraintBase', 'ScoreStateBase']
-spelling_exceptions=["undecorator", "undecorate"]
+spelling_exceptions=["undecorator", "undecorate", "altgraph", "networkx"]

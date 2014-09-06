@@ -1,6 +1,5 @@
-spelling_exceptions=['cn', 'symm', 'proteomics', 'pdb',
-                                       'pca', 'rmsd', 'patchdock', 'ev',
-                                       'params', 'xlink']
+spelling_exceptions=['cn', 'symm', 'proteomics', 'pdb', 'pca', 'rmsd',
+                     'patchdock', 'ev', 'params', 'xlink', 'cmm', 'connolly']
 function_name_exceptions=[
                     'Ensemble.score_by_restraints',
                     'Ensemble.unload_combination',

@@ -142,7 +142,7 @@ function_name_exceptions = [
 spelling_exceptions=['xplor', 'yorigin', 'timessig', 'yz',
                        'rnormfac', 'rsigsq', 'kdist', 'vsigsq', 'normfac',
                        'nx', 'rsig', 'nz', 'xy', 'params', 'sigsq', 'xorigin',
-                       'rkdist', 'vsig', 'xz', 'zorigin']
+                       'rkdist', 'vsig', 'xz', 'zorigin', 'pca', 'binarized']
 function_name_exceptions=function_name_exceptions
 value_object_exceptions=['DensityHeader',
                                            'CoarseConvolution',

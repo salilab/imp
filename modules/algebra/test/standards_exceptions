@@ -24,4 +24,4 @@ value_object_exceptions=['DenseDoubleGrid3D',
                          'SparseUnboundedIntGridKD',
                          'Matrix2D', 'Matrix3D',
                          'LinearFit', 'ParabolicFit']
-spelling_exceptions=["xyz", "zyz", "zxz", "kd", "connolly"]
+spelling_exceptions=["xyz", "zyz", "zxz", "kd", "connolly", "rasterized", "rmsd"]
