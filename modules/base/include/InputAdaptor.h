@@ -12,23 +12,19 @@
 #include "utility_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
-/** An input adaptor is a convenience class that allows
-                            functions to accept a
-                            wider variety of inputs than they would
-       otherwise.
-                            The InputAdaptor class
-                            itself should not be used directly, it is
-       just
-                            provided for purposes of
-                            documentation.
 
-                            Input adaptor classes do not support output,
-                            comparisons or hashing.
-                        */
+/** An input adaptor is a convenience class that allows functions to accept a
+    wider variety of inputs than they would otherwise. The InputAdaptor class
+    itself should not be used directly, it is just provided for purposes of
+    documentation.
+
+    Input adaptor classes do not support output, comparisons or hashing.
+ */
 class InputAdaptor {
  protected:
   InputAdaptor() {}
 };
+
 IMPBASE_END_NAMESPACE
 
 #endif /* IMPBASE_INPUT_ADAPTOR_H */
