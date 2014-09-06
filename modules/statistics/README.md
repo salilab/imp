@@ -1,5 +1,6 @@
-This module provides code to compute statistical measures. Data to be clustered
-is represented one of two ways, either with an
+\brief Code to compute statistical measures.
+
+Data to be clustered is represented one of two ways, either with an
 IMP::statistics::Embedding or a IMP::statistics::Metric. The
 representation is then passed to an algorithm that returns a
 clustering object such as an IMP::statistics::PartitionalClustering.

@@ -1,6 +1,4 @@
-This module supports integration of Modeller with IMP. See
-[the Modeller website](http://www.salilab.org/modeller/) for more
-information about Modeller.
+\brief Interface to the [Modeller](http://salilab.org/modeller/) comparative modeling package.
 
 Functionality includes:
 

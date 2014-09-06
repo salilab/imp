@@ -1,4 +1,4 @@
-The module provides low level functionality (logging, error
+\brief Low level functionality (logging, error
 handling, profiling, command line flags etc) that is used by all of IMP.
 
 # Graphs # {#graphs}

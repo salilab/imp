@@ -1,4 +1,4 @@
-Make CGAL functionality available to IMP.
+\brief Make CGAL functionality available to IMP.
 
 # CGAL # {#CGAL}
 

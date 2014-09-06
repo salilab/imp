@@ -1,5 +1,4 @@
-This module provides support for basic symmetry, such as periodic boundary
-conditions (PBC).
+\brief Support for basic symmetry, such as periodic boundary conditions (PBC).
 
 See also IMP::core::TransformationSymmetry,
 IMP::core::TransformedDistancePairScore.

@@ -1,3 +1,5 @@
+\brief Fitting atomic structures into a cryo-electron microscopy density map.
+
 MultiFit is a computational method for simultaneously fitting atomic
 structures of components into their assembly density map at
 resolutions as low as 25A. The component positions and orientations
@@ -9,7 +11,7 @@ inference optimizer DOMINO that efficiently finds the global minimum
 in a discrete sampling space.
 
 For more information please see the
-[Multifit](http://www.salilab.org/multifit/) website.
+[MultiFit](http://www.salilab.org/multifit/) website.
 
 See the IMP::cnmultifit module for a similar protocol for handling symmetric
 complexes.

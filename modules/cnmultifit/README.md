@@ -1,3 +1,5 @@
+\brief Generate cyclic atomic structures using cryo-electron microscopy data.
+
 This module implements a protocol for generating atomic structures of complexes
 with cyclic symmetry (such as rings), using only the atomic structure of a
 single subunit and a cryo-electron microscopy density map of the complex.

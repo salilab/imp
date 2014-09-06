@@ -1,4 +1,4 @@
-This module adds small angle X-ray scattering support to IMP.
+\brief Support for small angle X-ray scattering (SAXS) data.
 
 # Info
 

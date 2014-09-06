@@ -1,5 +1,6 @@
-This module provides support for RMF file format for storing
-hierarchical molecular data (such as atomic or coarse grained
+\brief Support for the [RMF file format](http://integrativemodeling.org/rmf/nightly/doc/) for storing hierarchical molecular data and markup.
+
+RMF can store hierarchical molecular data (such as atomic or coarse grained
 representations of proteins), along with markup, including geometry
 and score data.
 

@@ -1,3 +1,5 @@
+\brief Sampling of sidechain rotamers.
+
 # Info
 
 _Author(s)_: Elina Tjioe

@@ -1,4 +1,6 @@
-This module provides a variety of functionality for loading, creating, manipulating and scoring atomic structures. Molecules and collections of molecules are represented using Hierarchy particles. Whenever possible, one should prefer to use IMP::atom::Selection and related helper functions to manipulate molecules as that provides a simple and biologically relevant way of describing parts of molecules of interest.
+\brief Functionality for loading, creating, manipulating and scoring atomic structures.
+
+Molecules and collections of molecules are represented using Hierarchy particles. Whenever possible, one should prefer to use IMP::atom::Selection and related helper functions to manipulate molecules as that provides a simple and biologically relevant way of describing parts of molecules of interest.
 
 The name "residue index" is used to refer to the index of the residue in the conventional description of the protein, as opposed to its index among the set of residues which are found in the current molecule. The same concept is known as the "residue number" in PDB files. This index is not necessarily unique within a Chain; however, the combination of the residue index and insertion code should be.
 

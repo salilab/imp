@@ -1,4 +1,6 @@
-Initial peptide docking. Given a protein of solved structure and a peptide sequence, use molecular dynamics and physical and statistical force-field restraints to dock the peptide to the protein. Method is still under heavy development.
+\brief Initial peptide docking.
+
+Given a protein of solved structure and a peptide sequence, use molecular dynamics and physical and statistical force-field restraints to dock the peptide to the protein. Method is still under heavy development.
 
 # Info
 

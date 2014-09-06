@@ -1,4 +1,6 @@
-Support for running tests of IMP functionality. Most of this is centered around the python `unittest` module.
+\brief Support for running tests of IMP functionality.
+
+Most of this is centered around the Python `unittest` module.
 
 # Info
 

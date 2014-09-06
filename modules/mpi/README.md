@@ -1,4 +1,4 @@
-The MPI module is a place for code that requires MPI.
+\brief Code that uses the MPI parallel library.
 
 Note that the default build of OpenMPI on many Linux systems doesn't play nicely
 with Python (you may see errors like `mca: base: component_find: unable to

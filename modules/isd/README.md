@@ -1,5 +1,4 @@
-This module implements inferential scoring in IMP, building on methods
-developed as part of the [Inferential Structure Determination](http://www.isd.bio.cam.ac.uk/) software (ISD).
+\brief Inferential scoring building on methods developed as part of the [Inferential Structure Determination](http://www.isd.bio.cam.ac.uk/) software (ISD).
 
 # Info
 

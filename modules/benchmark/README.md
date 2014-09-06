@@ -1,4 +1,6 @@
-The benchmarks modules provides support for developing and analyzing benchmarks of IMP code. All benchmarks are automatically linked against it.
+\brief Support for developing and analyzing benchmarks of IMP code.
+
+All benchmarks are automatically linked against this module.
 
 # Info
 

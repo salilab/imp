@@ -1,5 +1,6 @@
-This module allows for IMP tasks to be distributed to multiple processors
-or machines. It employs a master-slave model; the main (master) IMP process
+\brief Distribute IMP tasks to multiple processors or machines.
+
+This module employs a master-slave model; the main (master) IMP process
 sends the tasks out to one or more slaves. Tasks cannot communicate with each
 other, but return results to the master. The master can then start new tasks,
 possibly using results returned from completed tasks. The system is fault

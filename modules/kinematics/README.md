@@ -1,4 +1,9 @@
-This module contains functionality for dealing with kinematic mechanical structures and their associated internal coordinates system. Please note that it is still at an experimental testing phase and should be used with caution.
+\brief Functionality for dealing with kinematic mechanical structures.
+
+Tools for handling the associated internal coordinates system are also
+provided.
+
+Please note that this module is still at an experimental testing phase and should be used with caution.
 
 # Overview
 

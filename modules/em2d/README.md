@@ -1,4 +1,4 @@
-This module allows to introduce restraints using EM 2D class averages.
+\brief Restraints using electron microscopy 2D images (class averages).
 
 The main functionalities are:
 1. Raading and writing EM images
