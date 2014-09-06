@@ -1,6 +1,6 @@
 /**
  *  \file IMP/atom/Selection.h
- *  \brief A set of useful functionality on IMP::atom::Hierarchy decorators
+ *  \brief Select a subset of a hierarchy.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */

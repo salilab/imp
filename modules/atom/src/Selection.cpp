@@ -1,6 +1,6 @@
 /**
- *  \file atom/hierarchy_tools.cpp
- *  \brief A decorator for a point particle that has an electrostatic charge.
+ *  \file IMP/atom/Selection.cpp
+ *  \brief Select a subset of a hierarchy.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
