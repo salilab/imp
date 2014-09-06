@@ -131,7 +131,7 @@ class Tests(IMP.test.TestCase):
         s1 = IMP.atom.Selection(r, molecule="mini1")
         self.assertEqual(len(s0.get_selected_particle_indexes()), 68)
         self.assertEqual(len(s1.get_selected_particle_indexes()), 68)
-        self.assert_(
+        self.assertEqual(
             len(set(s0.get_selected_particle_indexes()
                 + s1.get_selected_particle_indexes())),
             2 * 68)
