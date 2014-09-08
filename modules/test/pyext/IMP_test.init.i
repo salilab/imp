@@ -378,7 +378,6 @@ class TestCase(unittest.TestCase):
         self.assertEquals(len(bad), 0,
                           message)
 
-
     def _check_function_name(self, prefix, name, verbs, all, exceptions, words,
                              misspelled):
         if prefix:
@@ -411,30 +410,30 @@ class TestCase(unittest.TestCase):
                 print "misspelled", t, "in", name
                 return [fullname]
         return []
-    def _check_function_names(self, module, prefix, names, verbs, all, exceptions, words, misspelled):
+
+    def _check_function_names(self, module, prefix, names, verbs, all,
+                              exceptions, words, misspelled):
         bad=[]
-        #print "names", module, prefix
         for name in names:
+            typ = self._get_type(module, name)
             if name.startswith("_") or name =="weakref_proxy":
                 continue
-            if self._get_type(module, name) in (types.BuiltinMethodType,
-                                                types.FunctionType,
-                                                types.MethodType):
-                bad.extend(self._check_function_name(prefix, name, verbs, all, exceptions, words, misspelled))
-            if self._get_type(module, name)==types.TypeType and name.find("SwigPyIterator")==-1:
-                #print "sub", module+"."+name
+            if typ in (types.BuiltinMethodType, types.MethodType,
+                       types.FunctionType):
+                bad.extend(self._check_function_name(prefix, name, verbs, all,
+                                                     exceptions, words,
+                                                     misspelled))
+            if typ == types.TypeType and "SwigPyIterator" not in name:
                 members=eval("dir("+module+"."+name+")")
-                #print members
                 bad.extend(self._check_function_names(module+"."+name,
-                                                      name,
-                                                      members,
-                                                      verbs, [], exceptions, words, misspelled))
+                                                      name, members, verbs, [],
+                                                      exceptions, words,
+                                                      misspelled))
         return bad
 
-
-
     def assertFunctionNames(self, module, exceptions, words):
-        """Check that all the functions in the module follow the imp naming conventions."""
+        """Check that all the functions in the module follow the IMP
+           naming conventions."""
         all= dir(module)
         verbs=set(["add", "remove", "get", "set", "evaluate", "compute", "show", "create", "destroy",
                "push", "pop", "write", "read", "do", "show", "load", "save", "reset",
