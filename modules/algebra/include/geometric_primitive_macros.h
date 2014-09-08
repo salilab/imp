@@ -45,19 +45,19 @@
     the expected value.
 */
 #define IMP_VOLUME_GEOMETRY_METHODS_D(Name, name, area, volume, bounding_box) \
-  /** \see Name */                                                            \
+  /** \see NameD */                                                           \
   inline double get_surface_area(const Name##D<3> &g) { area; }               \
-  /** \see Name */                                                            \
+  /** \see NameD */                                                           \
   inline double get_volume(const Name##D<3> &g) { volume; }                   \
-  /** \see Name */                                                            \
+  /** \see NameD */                                                           \
   template <int D>                                                            \
   inline BoundingBoxD<D> get_bounding_box(const Name##D<D> &g) {              \
     bounding_box;                                                             \
   }                                                                           \
-  /** \see Name */                                                            \
+  /** \see NameD */                                                           \
   IMP_NO_SWIG(template <int D> inline void set_##name##_d_geometry(           \
       Name##D<D> &g, const Name##D<D> &v) { g = v; }                          \
-              /** \see Name */                                                \
+              /** \see NameD */                                               \
               template <int D>                                                \
               inline const Name##D<D> &get_##name##_d_geometry(               \
                   const Name##D<D> &g) { return g; })                         \
