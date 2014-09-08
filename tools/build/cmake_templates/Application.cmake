@@ -6,7 +6,8 @@ imp_get_process_exit_code("setup_application %(name)s" status ${CMAKE_BINARY_DIR
                           COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_application.py
                           --name=%(name)s
                           --datapath=${IMP_DATAPATH}
-                           --source=${CMAKE_SOURCE_DIR})
+                          --source=${CMAKE_SOURCE_DIR}
+                          %(bin_names)s)
 if(${status} EQUAL 0)
 include_directories(%(includepath)s)
 link_directories(%(libpath)s)

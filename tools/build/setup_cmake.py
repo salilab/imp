@@ -152,9 +152,8 @@ def get_sources(module, path, subdir, pattern):
 
 def get_app_sources(path, patterns, filt=lambda x:True):
     matching = tools.get_glob([os.path.join(path, x) for x in patterns])
-    return "\n".join(["${CMAKE_SOURCE_DIR}/%s"
-                     % tools.to_cmake_path(x) for x in matching if filt(x)])
-
+    return ["${CMAKE_SOURCE_DIR}/%s" % tools.to_cmake_path(x) \
+            for x in matching if filt(x)]
 
 def get_dep_merged(modules, name, ordered):
     ret = []
@@ -305,10 +304,15 @@ def setup_application(options, name, ordered):
         ordered) + " " + localincludes
     values["libpath"] = get_dep_merged(all_modules, "link_path", ordered)
     values["swigpath"] = get_dep_merged(all_modules, "swig_path", ordered)
-    values["pybins"] = get_app_sources(path, ["*"], tools.filter_pyapps)
-    values["pytests"] = get_app_sources(os.path.join(path, "test"),
+    pybins = get_app_sources(path, ["*"], tools.filter_pyapps)
+    values["pybins"] = "\n".join(pybins)
+    cppbins = [e[0][0] for e in exes]
+    values["bin_names"] = "\n".join(
+                   [repr(os.path.splitext(os.path.basename(x))[0]) \
+                   for x in pybins + cppbins])
+    values["pytests"] = "\n".join(get_app_sources(os.path.join(path, "test"),
                                         ["test_*.py",
-                                         "expensive_test_*.py"])
+                                         "expensive_test_*.py"]))
     contents.append(application_template % values)
     out = os.path.join(path, "CMakeLists.txt")
     tools.rewrite(out, "\n".join(contents))
