@@ -124,7 +124,7 @@ def make_doxygen(name, source, modules):
     tools.rewrite(file, template)
 
 
-def make_overview(app, source):
+def make_overview(app, source, cmdline_tools):
     rmd = open(
         os.path.join(
             source,
@@ -133,6 +133,10 @@ def make_overview(app, source):
             "README.md"),
         "r").read(
     )
+    for c in cmdline_tools:
+        sectitle = '# ' + c + ' #'
+        if sectitle not in rmd:
+            print "Could not find section title %s for command line tool in doc" % sectitle
     tools.rewrite(os.path.join("doxygen", "generated", "IMP_%s.dox" % app),
                   """/** \\page imp%s IMP.%s
 \\tableofcontents
@@ -142,7 +146,7 @@ def make_overview(app, source):
 """ % (app, app, rmd))
 
 
-def setup_application(application, source, datapath):
+def setup_application(application, source, datapath, apps):
     print "Configuring application", application, "...",
     data = tools.get_application_description(source, application, datapath)
     for d in data["required_dependencies"]:
@@ -170,7 +174,7 @@ def setup_application(application, source, datapath):
     all_modules = tools.get_dependent_modules(modules, datapath)
     link_py_apps(os.path.join(source, "applications", application))
     make_doxygen(application, source, all_modules)
-    make_overview(application, source)
+    make_overview(application, source, apps)
     write_ok(application, all_modules,
              unfound_modules,
              tools.get_dependent_dependencies(
@@ -190,8 +194,8 @@ parser.add_option("-n", "--name",
 
 
 def main():
-    (options, args) = parser.parse_args()
-    setup_application(options.name, options.source, options.datapath)
+    (options, apps) = parser.parse_args()
+    setup_application(options.name, options.source, options.datapath, apps)
 
 if __name__ == '__main__':
     main()

@@ -308,7 +308,7 @@ def setup_application(options, name, ordered):
     values["pybins"] = "\n".join(pybins)
     cppbins = [e[0][0] for e in exes]
     values["bin_names"] = "\n".join(
-                   [repr(os.path.splitext(os.path.basename(x))[0]) \
+                   [os.path.splitext(os.path.basename(x))[0] \
                    for x in pybins + cppbins])
     values["pytests"] = "\n".join(get_app_sources(os.path.join(path, "test"),
                                         ["test_*.py",
