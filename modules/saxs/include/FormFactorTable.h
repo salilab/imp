@@ -277,7 +277,7 @@ class IMPSAXSEXPORT FormFactorTable {
 };
 
 /** Get the default table.*/
-IMPSAXSEXPORT FormFactorTable* default_form_factor_table();
+IMPSAXSEXPORT FormFactorTable* get_default_form_factor_table();
 
 IMPSAXS_END_NAMESPACE
 

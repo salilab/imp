@@ -45,7 +45,7 @@ Profile::Profile(Float qmin, Float qmax, Float delta)
       id_(0),
       beam_profile_(IMP_NULLPTR) {
   set_was_used(true);
-  ff_table_ = default_form_factor_table();
+  ff_table_ = get_default_form_factor_table();
 }
 
 Profile::Profile(const String& file_name, bool fit_file)

@@ -870,7 +870,7 @@ const Floats& FormFactorTable::get_dummy_form_factors(
   return dummy_form_factors_[ff_atom_type];
 }
 
-FormFactorTable* default_form_factor_table() {
+FormFactorTable* get_default_form_factor_table() {
   static FormFactorTable ff;
   return &ff;
 }
