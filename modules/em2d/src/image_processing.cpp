@@ -547,24 +547,11 @@ void do_resample_polar(const cv::Mat &input, cv::Mat &resampled,
 
 void do_normalize(cv::Mat &m) {
   cv::Scalar mean, stddev;
-  my_meanStdDev(m, mean, stddev);  // cv::meanStdDev(m,mean,stddev);
+  internal::my_meanStdDev(m, mean, stddev);
   IMP_LOG_VERBOSE("Matrix of mean: " << mean[0] << " stddev " << stddev[0]
                                      << " normalized. " << std::endl);
   m = m - mean[0];
   m = m / stddev[0];
-}
-
-void my_meanStdDev(const cv::Mat &m, cv::Scalar &mean, cv::Scalar &stddev) {
-  //#if CV_MAJOR_VERSION == 2 && CV_MINOR_VERSION < 4
-  //  cv::meanStdDev(m,mean,stddev);
-  //#endif
-  //#if CV_MAJOR_VERSION == 2 && CV_MINOR_VERSION > 3
-  mean = cv::mean(m);
-  cv::Mat square;
-  cv::pow(m - mean[0], 2, square);
-  cv::Scalar sum = cv::sum(square);
-  stddev[0] = std::sqrt(sum[0] / (m.rows * m.cols));
-  // #endif
 }
 
 //! Transform a matrix (the translation is interpreted as cols,rows)
