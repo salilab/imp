@@ -23,7 +23,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPMEMBRANEEXPORT PbcBoxedMover : public symmetry:BallMover
+class IMPMEMBRANEEXPORT PbcBoxedMover: public symmetry::BallMover
 {
 public:
   /** The particle is moved withing a (hexagonal or cubic) box
@@ -39,7 +39,8 @@ protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
-  IMP_OBJECT_METHODS(BallMover);
+  IMP_OBJECT_METHODS(PbcBoxedMover);
+  IMP_SHOWABLE(PbcBoxedMover);
 
 private:
   /* All these are already in the base class

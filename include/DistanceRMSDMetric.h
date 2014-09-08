@@ -22,9 +22,9 @@ class IMPMEMBRANEEXPORT DistanceRMSDMetric: public statistics::Metric {
 
   Particles ps_;
   algebra::Transformation3Ds tr_;
-  Pointer<Particle> px_;
-  Pointer<Particle> py_;
-  Pointer<Particle> pz_;
+  IMP::base::PointerMember<kernel::Particle> px_;
+  IMP::base::PointerMember<kernel::Particle> py_;
+  IMP::base::PointerMember<kernel::Particle> pz_;
   Floats weight_;
   std::vector<Floats> matrices_;
   std::vector< std::vector<unsigned> > matrixmap_;

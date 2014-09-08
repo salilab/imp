@@ -18,14 +18,14 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-std::map< std::string, Pointer<RestraintSet> > spb_assemble_restraints
+std::map< std::string, base::Pointer<RestraintSet> > spb_assemble_restraints
 (Model *m, SPBParameters& mydata, atom::Hierarchies& all_mol,
  container::ListSingletonContainer *CP_ps,
  container::ListSingletonContainer *IL2_ps,
- std::map<std::string, Pointer<Particle> > ISD_ps)
+ std::map<std::string, base::Pointer<Particle> > ISD_ps)
 {
 // prepare the map of RestraintSet
-std::map< std::string, Pointer<RestraintSet> > rst_map;
+std::map< std::string, base::Pointer<RestraintSet> > rst_map;
 //
 // Excluded volume
 //
@@ -75,7 +75,7 @@ if(mydata.protein_list["Spc42p"]){
 //
 if(mydata.add_fret){
 // prepare the restraint set
- IMP_NEW(RestraintSet,fret,("FRET_R"));
+ IMP_NEW(RestraintSet,fret,(m,"FRET_R"));
 // temporary variables
  std::string name_d, ter_d, name_a, ter_a;
  double fexp, sexp;
@@ -138,7 +138,7 @@ if(mydata.add_fret){
 //
 if(mydata.add_y2h){
  // prepare the restraint set
- IMP_NEW(RestraintSet,y2h,("Y2H"));
+ IMP_NEW(RestraintSet,y2h,(m,"Y2H"));
 // CP
  y2h->add_restraint(y2h_restraint(m,
                      all_mol[0],  "Spc42p", IntRange(1,141),

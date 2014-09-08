@@ -10,10 +10,11 @@
 #include <IMP/membrane.h>
 #include <IMP/statistics.h>
 #include <IMP/rmf.h>
-#include <IMP/isd2.h>
+#include <IMP/isd.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <IMP/base/Pointer.h>
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -38,16 +39,16 @@ IMP_NEW(Model,m,());
 IMP_NEW(container::ListSingletonContainer,CP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,IL2_ps,(m));
 // List of Movers for MC, not used here
-core::Movers mvs;
+core::MonteCarloMovers mvs;
 
 //
 // ISD PARTICLES
 //
-std::map<std::string, Pointer<Particle> > ISD_ps=
+std::map<std::string, base::Pointer<Particle> > ISD_ps=
  add_ISD_particles(m,mydata,mvs);
 // create list of particles from map
 Particles ISD_ps_list;
-std::map<std::string, Pointer<Particle> >::iterator itr;
+std::map<std::string, base::Pointer<Particle> >::iterator itr;
 for(itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr){
  ISD_ps_list.push_back((*itr).second);
 }
@@ -180,7 +181,7 @@ for(int iter=0;iter<mydata.Cluster.niter;++iter){
   scores.push_back(score);
 
   // get cell and add to list
-  cells.push_back(isd2::Scale(ISD_ps["SideXY"]).get_scale()*mydata.sideMin);
+  cells.push_back(isd::Scale(ISD_ps["SideXY"]).get_scale()*mydata.sideMin);
 
   // get weight
   double weight = 1.0;
@@ -202,7 +203,7 @@ for(int iter=0;iter<mydata.Cluster.niter;++iter){
 if(mydata.Cluster.weight && weights.size()!=counter){exit(1);}
 
 // NOW do the clustering
-Pointer<statistics::PartitionalClustering> pc=
+base::Pointer<statistics::PartitionalClustering> pc=
  create_gromos_clustering(drmsd,mydata.Cluster.cutoff);
 
 // calculate total population

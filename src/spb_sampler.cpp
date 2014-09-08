@@ -15,10 +15,10 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-Pointer<core::MonteCarlo> setup_SPBMonteCarlo
- (Model *m, core::Movers& mvs, double temp, SPBParameters myparam)
+base::Pointer<core::MonteCarlo> setup_SPBMonteCarlo
+ (Model *m, core::MonteCarloMovers& mvs, double temp, SPBParameters myparam)
 {
- Pointer<core::MonteCarlo> mc;
+ base::Pointer<core::MonteCarlo> mc;
  if (myparam.MC.do_wte){
   double w0=myparam.MC.wte_w0*temp/myparam.MC.tmin;
   mc= new membrane::MonteCarloWithWte(m,myparam.MC.wte_emin,
@@ -30,11 +30,11 @@ Pointer<core::MonteCarlo> setup_SPBMonteCarlo
  }
  mc->set_return_best(false);
  mc->set_kt(temp);
- mc->add_mover(new core::SerialMover(get_as<core::MoversTemp>(mvs)));
+ mc->add_mover(new core::SerialMover(get_as<core::MonteCarloMoversTemp>(mvs)));
  return mc.release();
 }
 
-void add_BallMover(Particles ps, double dx, core::Movers& mvs)
+void add_BallMover(Particles ps, double dx, core::MonteCarloMovers& mvs)
 {
  for(unsigned int k=0;k<ps.size();++k){
   Particles pps;
@@ -46,7 +46,7 @@ void add_BallMover(Particles ps, double dx, core::Movers& mvs)
 
 void add_PbcBoxedMover
 (Particles ps, double dx, algebra::Vector3Ds centers,
- algebra::Transformation3Ds trs, core::Movers& mvs,
+ algebra::Transformation3Ds trs, core::MonteCarloMovers& mvs,
  Particle *SideXY, Particle *SideZ)
 {
  IMP_NEW(membrane::PbcBoxedMover,mv,
@@ -62,7 +62,7 @@ void add_PbcBoxedMover
 
 void add_PbcBoxedRigidBodyMover
 (Particles ps,double dx,double dang,algebra::Vector3Ds centers,
- algebra::Transformation3Ds trs, core::Movers& mvs,
+ algebra::Transformation3Ds trs, core::MonteCarloMovers& mvs,
  Particle *SideXY, Particle *SideZ)
 {
  Particles fake;
@@ -72,7 +72,7 @@ void add_PbcBoxedRigidBodyMover
  mvs.push_back(rbmv);
 }
 
-void add_NuisanceMover(Particle *p, double dp, core::Movers& mvs)
+void add_NuisanceMover(Particle *p, double dp, core::MonteCarloMovers& mvs)
 {
  // put particle in a list
  Particles ps;

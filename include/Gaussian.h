@@ -22,7 +22,7 @@ class Gaussian : public UnaryFunction
 public:
   /** Create with the given mean and the spring constant k */
   Gaussian(Float Emin, Float Zmin, Float sigma) :
-   Emin_(Emin), Zmin_(Zmin), sigma_(sigma) {}
+   Emin_(Emin), Zmin_(Zmin), sigma_(sigma) {};
 
   /*IMP_UNARY_FUNCTION_INLINE(Gaussian,
                             Emin_ * exp( - (feature - Zmin_) * (feature - Zmin_)
@@ -38,7 +38,7 @@ public:
   IMP_OVERRIDE {
   return DerivativePair(evaluate(feature), -Emin_*exp(-(feature - Zmin_)
        *(feature - Zmin_)/sigma_/sigma_/ 2.0) * (feature - Zmin_)
-        / sigma_ / sigma_ }
+        / sigma_ / sigma_) ; }
 
   virtual double evaluate(double feature) const IMP_OVERRIDE {
     return  Emin_*exp(-(feature - Zmin_)*(feature - Zmin_)

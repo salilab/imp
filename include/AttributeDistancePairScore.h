@@ -36,11 +36,12 @@ public:
    virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
    const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
 
-   void show(std::ostream &out) const ;
+   //void show(std::ostream &out) const ;
 
 
    IMP_PAIR_SCORE_METHODS(AttributeDistancePairScore);
    IMP_OBJECT_METHODS(AttributeDistancePairScore);
+   IMP_SHOWABLE(AttributeDistancePairScore);
 
 /** deprecated code
   IMP_SIMPLE_PAIR_SCORE(AttributeDistancePairScore);

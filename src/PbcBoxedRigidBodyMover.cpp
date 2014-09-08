@@ -20,7 +20,7 @@ PbcBoxedRigidBodyMover::PbcBoxedRigidBodyMover(core::RigidBody d,
                           algebra::Transformation3Ds transformations,
                           Particle *px, Particle *py, Particle *pz):
 
-  symmetry:RigidBodyMover(d,ps,max_translation,max_angle,
+  symmetry::RigidBodyMover(d,ps,max_translation,max_angle,
    centers,transformations)
 {
 // store Scale particles
@@ -77,7 +77,7 @@ core::MonteCarloMoverResult PbcBoxedRigidBodyMover::do_propose() {
   return symmetry::RigidBodyMover::do_propose();
 }
 
-void PbcBoxedRigidBodyMover::reset_move() {
+void PbcBoxedRigidBodyMover::do_reject() {
 /*// reset reference frame of master rigid body
  d_.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
  last_transformation_ = algebra::Transformation3D();
@@ -90,20 +90,22 @@ void PbcBoxedRigidBodyMover::reset_move() {
   rbs_[i].set_reference_frame(algebra::ReferenceFrame3D(oldtrs_[i]));
  }
 */
-  return symmetry::RigidBodyMover::reset_move();
+  return symmetry::RigidBodyMover::do_reject();
 
 }
 
-ParticlesTemp PbcBoxedRigidBodyMover::do_get_inputs() const {
- ParticlesTemp ret=symmetry::RigidBodyMover::do_get_inputs();
+kernel::ModelObjectsTemp PbcBoxedRigidBodyMover::do_get_inputs() const {
+
+kernel::ModelObjectsTemp ret = symmetry::RigidBodyMover::do_get_inputs();
  ret.push_back(px_);
  ret.push_back(py_);
  ret.push_back(pz_);
  return ret;
 }
-
+/*
 void PbcBoxedRigidBodyMover::show(std::ostream &out) const {
   out << "max translation: " << max_translation_ << "\n";
   out << "max angle: " << max_angle_ << "\n";
 }
+*/
 IMPMEMBRANE_END_NAMESPACE

@@ -12,26 +12,31 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 SameParticlePairFilter
-::SameParticlePairFilter(){
+::SameParticlePairFilter():PairPredicate("PairPredicate %1%"){
 }
 
-int SameParticlePairFilter::get_value(const ParticlePair &pp)
+int SameParticlePairFilter::get_value_index(kernel::Model *m,const
+    kernel::ParticleIndexPair &pip)
  const {
-      return pp[0] == pp[1];
+      return m->get_particle(pip[0]) == m->get_particle(pip[1]);
 }
 
+/*
 ParticlesTemp SameParticlePairFilter::get_input_particles( Particle* t) const {
   ParticlesTemp ret;
   ret.push_back(t);
   return ret;
 }
+*/
 
-ContainersTemp
-SameParticlePairFilter::get_input_containers(Particle*p) const {
-  return ContainersTemp();
+kernel::ModelObjectsTemp SameParticlePairFilter::do_get_inputs(
+ kernel::Model *m,const kernel::ParticleIndexes &pis) const
+{
+   // In the API instead of passing a particle *t, wrap it in a single element
+   // array and pass to this!
+    return(kernel::get_particles(m,pis));
+
 }
 
-void SameParticlePairFilter::do_show(std::ostream &) const {
-}
 
 IMPMEMBRANE_END_NAMESPACE

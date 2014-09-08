@@ -24,8 +24,19 @@ class IMPMEMBRANEEXPORT KinkPairScore : public PairScore
 public:
   KinkPairScore(UnaryFunction *f);
 
+ virtual double evaluate_index(kernel::Model *m,
+   const kernel::ParticleIndexPair &p,
+    DerivativeAccumulator *da) const IMP_OVERRIDE;
+
+ virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
+   const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+
+ // void show(std::ostream &out) const ;
+
   IMP_PAIR_SCORE_METHODS(KinkPairScore);
   IMP_OBJECT_METHODS(KinkPairScore);
+  IMP_SHOWABLE(KinkPairScore);
+
 };
 
 IMP_OBJECTS(KinkPairScore, KinkPairScores);

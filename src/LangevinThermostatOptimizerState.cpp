@@ -13,22 +13,24 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 LangevinThermostatOptimizerState
-::LangevinThermostatOptimizerState(
-                                   const ParticlesTemp &pis,
-                                   Float temperature, double gamma) :
-  pis_(pis.begin(), pis.end()), temperature_(temperature), gamma_(gamma)
+::LangevinThermostatOptimizerState(const ParticlesTemp &pis,
+                         Float temperature, double gamma):
+  OptimizerState(pis[0]->get_model(),"LTOptimizer")
 {
+  pis_ = pis;
+  temperature_=temperature;
+  gamma_=gamma;
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
   vs_[2] = FloatKey("vz");
 }
 
-void LangevinThermostatOptimizerState::do_update()
+void LangevinThermostatOptimizerState::update()
 {
     rescale_velocities();
 }
 
-IMP_GCC_DISABLE_WARNING("-Wuninitialized")
+//IMP_GCC_DISABLE_WARNING("-Wuninitialized")
 void LangevinThermostatOptimizerState::rescale_velocities() const
 {
   static const double gas_constant = 8.31441e-7;

@@ -27,7 +27,7 @@ atom::Hierarchies create_representation
 (Model *m, SPBParameters mydata,
  container::ListSingletonContainer *CP_ps,
  container::ListSingletonContainer *IL2_ps,
- core::Movers& mvs,
+ core::MonteCarloMovers& mvs,
  Particle *SideXY, Particle *SideZ, int iseed)
 {
 
@@ -584,7 +584,7 @@ atom::Molecules create_coiled_coil (Model *m,
 
 atom::Molecule create_GFP(Model *m, std::string name, int copy,
  container::ListSingletonContainer *lsc, algebra::Vector3D x0,
- core::Movers& mvs, SPBParameters mydata,
+ core::MonteCarloMovers& mvs, SPBParameters mydata,
  Particle *SideXY, Particle *SideZ)
 {
  if(!mydata.use_GFP_structure){
@@ -656,7 +656,7 @@ void load_restart(atom::Hierarchies& all_mol,SPBParameters mydata)
  file_list.unique();
 // now cycle on file list
  for (iit = file_list.begin(); iit != file_list.end(); iit++){
-  RMF::FileHandle rh = RMF::open_rmf_file(*iit);
+  RMF::FileConstHandle rh = RMF::open_rmf_file_read_only(*iit);
   atom::Hierarchies hs;
   for(unsigned i=0;i<all_mol.size();++i){
    atom::Hierarchies hhs=all_mol[i].get_children();
@@ -669,7 +669,7 @@ void load_restart(atom::Hierarchies& all_mol,SPBParameters mydata)
   rmf::link_hierarchies(rh, hs);
 // reload last frame
   unsigned iframe=rh.get_number_of_frames();
-  rmf::load_frame(rh,iframe-1);
+  rmf::load_frame(rh,RMF::FrameID(iframe-1));
  }
 }
 

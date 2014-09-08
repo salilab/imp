@@ -25,7 +25,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPMEMBRANEEXPORT RigidBodyNewMover : public core:MonteCarloMover
+class IMPMEMBRANEEXPORT RigidBodyNewMover : public core::MonteCarloMover
 {
 public:
   /** The rigid body is rotated and translated to move
@@ -45,6 +45,7 @@ protected:
 
 
   IMP_OBJECT_METHODS(RigidBodyNewMover);
+  IMP_SHOWABLE(RigidBodyNewMover);
 
 private:
   algebra::Transformation3D last_transformation_;

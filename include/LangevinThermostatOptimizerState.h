@@ -51,10 +51,14 @@ class IMPMEMBRANEEXPORT LangevinThermostatOptimizerState : public OptimizerState
       gamma_ = gamma;
   }
 
+  virtual void update() IMP_OVERRIDE;
+
   //! Rescale the velocities now
   void rescale_velocities() const;
 
   IMP_OBJECT_METHODS(LangevinThermostatOptimizerState);
+
+  IMP_SHOWABLE(LangevinThermostatOptimizerState);
 
 private:
   Particles pis_;

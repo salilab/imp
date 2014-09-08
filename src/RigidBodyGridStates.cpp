@@ -80,7 +80,7 @@ void RigidBodyGridStates::load_particle_state(unsigned int i, Particle *p)
   (RigidBodyGridStates::get_reference_frame(i));
 }
 
-void RigidBodyGridStates::do_show(std::ostream &out) const {
+void RigidBodyGridStates::show(std::ostream &out) const {
   out << "size: " << nstates_ << std::endl;
 }
 

@@ -27,7 +27,7 @@ Float TiltSingletonScore::evaluate_index(kernel::Model *m,const
   IMP_USAGE_CHECK(!da, "Derivatives not available");
 
   // check if rigid body
-  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(m->get_particle(pi)),
+  IMP_USAGE_CHECK(core::RigidBody::get_is_setup(m->get_particle(pi)),
                   "Particle is not a rigid body");
 
   algebra::ReferenceFrame3D rf = core::RigidBody(m->get_particle(pi))
@@ -60,7 +60,7 @@ void TiltSingletonScore::show(std::ostream &out) const
   out << "function " << *f_;
 }
 
-ParticlesTemp TiltSingletonScore::do_get_inputs(kernel::Model *m,
+kernel::ModelObjectsTemp TiltSingletonScore::do_get_inputs(kernel::Model *m,
   const kernel::ParticleIndexes &pis) const
 {
    return IMP::kernel::get_particles(m, pis);

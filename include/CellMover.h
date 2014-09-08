@@ -15,6 +15,7 @@
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/rigid_bodies.h>
+
 //#include <IMP/core/mover_macros.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -30,9 +31,8 @@ protected:
   virtual void do_reject() IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
-  void show(std::ostream &out) const;
-
   IMP_OBJECT_METHODS(CellMover);
+  IMP_SHOWABLE(CellMover);
 
 private:
   Float old_scale_;

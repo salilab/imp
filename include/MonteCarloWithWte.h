@@ -28,13 +28,13 @@ class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
   boost::scoped_array<double> bias_;
   int     nbin_;
   bool    full_;
-  Pointer<RestraintSet> rset_;
+  IMP::base::PointerMember<RestraintSet> rset_;
 
   void do_initialize(double emin,  double emax, double sigma,
                      double gamma, double w0);
 
   void    update_bias(double score);
-  double  do_evaluate(const ParticlesTemp &moved) const;
+  virtual double  do_evaluate(const ParticleIndexes &moved) const IMP_OVERRIDE;
   double  get_spline(double score) const;
 
 public:
@@ -70,7 +70,11 @@ public:
    std::copy(bias.begin(), bias.end(), bias_.get());
   }
 
-  IMP_MONTE_CARLO(MonteCarloWithWte);
+  //IMP_MONTE_CARLO(MonteCarloWithWte);
+  virtual void do_step();
+
+  IMP_OBJECT_METHODS(MonteCarloWithWte);
+
 };
 
 IMPMEMBRANE_END_NAMESPACE

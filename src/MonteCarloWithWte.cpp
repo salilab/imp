@@ -93,22 +93,24 @@ void MonteCarloWithWte::update_bias(double score)
 }
 
 void MonteCarloWithWte::do_step() {
-  ParticlesTemp moved=do_move(get_move_probability());
+  //ParticlesTemp moved=do_move(get_move_probability());
+  core::MonteCarloMoverResult moved=do_move();
+
+
   double totenergy=get_scoring_function()->evaluate(false);
   double energy=totenergy;
   if(full_==false){energy=rset_->evaluate(false);}
-  bool do_accept=do_accept_or_reject_move(totenergy+get_bias(energy));
+  bool do_accept=do_accept_or_reject_move(totenergy+get_bias(energy)
+             ,moved.get_proposal_ratio());
   if(do_accept) update_bias(energy);
 }
 
-double MonteCarloWithWte::do_evaluate(const ParticlesTemp &moved) const {
+double MonteCarloWithWte::do_evaluate(const ParticleIndexes &moved) const {
   double totenergy=get_scoring_function()->evaluate(false);
   double energy=totenergy;
   if(full_==false){energy=rset_->evaluate(false);}
   return totenergy+get_bias(energy);
 }
 
-void MonteCarloWithWte::do_show(std::ostream &) const {
-}
 
 IMPMEMBRANE_END_NAMESPACE

@@ -19,7 +19,7 @@ IMPMEMBRANEEXPORT atom::Hierarchies create_representation
 (Model *m, membrane::SPBParameters mydata,
 container::ListSingletonContainer *CP_ps,
 container::ListSingletonContainer *IL2_ps,
-core::Movers& mvs,
+core::MonteCarloMovers& mvs,
 Particle *SideXY, Particle *SideZ, int iseed);
 
 IMPMEMBRANEEXPORT atom::Molecule create_protein
@@ -50,7 +50,7 @@ IMPMEMBRANEEXPORT void load_restart
 IMPMEMBRANEEXPORT atom::Molecule create_GFP
  (Model *m, std::string name, int copy,
  container::ListSingletonContainer *lsc, algebra::Vector3D x0,
- core::Movers& mvs, membrane::SPBParameters mydata,
+ core::MonteCarloMovers& mvs, membrane::SPBParameters mydata,
  Particle *SideXY, Particle *SideZ);
 
 IMPMEMBRANE_END_NAMESPACE

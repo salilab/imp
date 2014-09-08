@@ -38,17 +38,16 @@ protected:
   virtual void do_reject() IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
-  void show(std::ostream &out) const;
-
   // IMP_MOVER(BoxedMover);
 
   IMP_OBJECT_METHODS(BoxedMover);
+  IMP_SHOWABLE(BoxedMover);
 
 private:
   Float max_tr_;
   algebra::Vector3Ds centers_;
   algebra::Vector3D oldcoord_;
-  IMP::base::PointerMember<kernel::Particle> p_;
+  Particle *p_;
 };
 
 IMPMEMBRANE_END_NAMESPACE

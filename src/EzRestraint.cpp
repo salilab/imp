@@ -87,7 +87,7 @@ EzRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
  return score;
 }
 
-ParticlesTemp EzRestraint::do_get_inputs() const {
+kernel::ModelObjectsTemp EzRestraint::do_get_inputs() const {
   ParticlesTemp ret;
   ret.insert(ret.end(), ps_.begin(), ps_.end());
   return ret;

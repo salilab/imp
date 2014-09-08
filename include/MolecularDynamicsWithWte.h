@@ -59,7 +59,9 @@ public:
   void set_w0(double w0) {w0_=w0;}
 
   void set_bias(const Floats& bias) {
-   IMP_USAGE_CHECK(bias.size() == 2*nbin_, "Don't match");
+   IMP_USAGE_CHECK(static_cast<int>(bias.size()) == 2*nbin_, "Don't match");
+   // Getting over a warning about comparing unsigned to signed int.
+   // It wont work if x >= INT_MIN (max integer size)
    std::copy(bias.begin(), bias.end(), bias_.get());
   }
 
@@ -89,7 +91,10 @@ public:
   //! Rescale velocities
   void rescale_velocities(Float rescale);
 
-  IMP_SIMULATOR(MolecularDynamicsWithWte);
+  //IMP_SIMULATOR(MolecularDynamicsWithWte);
+  virtual void setup(const ParticleIndexes &ps);
+  virtual double do_step(const ParticleIndexes &sc, double dt);
+  virtual bool get_is_simulation_particle(ParticleIndex p) const;
 
 protected:
   void initialize();

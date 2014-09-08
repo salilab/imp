@@ -42,9 +42,9 @@ public:
   TwoStateGoModelRestraint(Particles ps, Particles psA, Particles psB,
    Float Beta, Float Delta, Float Cutoff);
 
- virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+ virtual double unprotected_evaluate(kernel::DerivativeAccumulator *accum)
   const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   //IMP_RESTRAINT(TwoStateGoModelRestraint);
   IMP_OBJECT_METHODS(TwoStateGoModelRestraint);

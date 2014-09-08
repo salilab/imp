@@ -13,16 +13,17 @@
 #include <IMP/atom.h>
 #include <IMP/core.h>
 #include <IMP/isd.h>
+#include <IMP/em2d.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-IMPMEMBRANEEXPORT Pointer<core::DistancePairScore>
+IMPMEMBRANEEXPORT base::Pointer<core::DistancePairScore>
  get_pair_score(FloatRange dist, double kappa);
 
-IMPMEMBRANEEXPORT Pointer<core::SphereDistancePairScore>
+IMPMEMBRANEEXPORT base::Pointer<core::SphereDistancePairScore>
  get_sphere_pair_score(FloatRange dist, double kappa);
 
-IMPMEMBRANEEXPORT Pointer<core::SphereDistancePairScore>
+IMPMEMBRANEEXPORT base::Pointer<core::SphereDistancePairScore>
  get_sphere_pair_score(double dist, double kappa);
 
 IMPMEMBRANEEXPORT void add_SPBexcluded_volume
@@ -34,13 +35,15 @@ atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist);
 IMPMEMBRANEEXPORT void add_my_connectivity
 (Model *m,std::string name,atom::Molecule protein, double kappa);
 
-IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> do_bipartite_mindist
+IMPMEMBRANEEXPORT base::Pointer<container::MinimumPairRestraint>
+do_bipartite_mindist
 (Model *m,Particles p1,Particles p2,
- Pointer<core::SphereDistancePairScore> sps,bool filter=true);
+ base::Pointer<core::SphereDistancePairScore> sps,bool filter=true);
 
-IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> do_bipartite_mindist
+IMPMEMBRANEEXPORT base::Pointer<container::MinimumPairRestraint>
+do_bipartite_mindist
 (Model *m,Particles p1,Particles p2,
- Pointer<core::DistancePairScore> sps,bool filter=true);
+ base::Pointer<core::DistancePairScore> sps,bool filter=true);
 
 IMPMEMBRANEEXPORT void add_layer_restraint(Model *m,
 container::ListSingletonContainer *lsc, FloatRange range, double kappa);
@@ -48,46 +51,46 @@ container::ListSingletonContainer *lsc, FloatRange range, double kappa);
 IMPMEMBRANEEXPORT void add_bayesian_layer_restraint
 (Model *m, container::ListSingletonContainer *lsc, Particle *a, Particle *b);
 
-IMPMEMBRANEEXPORT Pointer<isd::FretRestraint> fret_restraint
+IMPMEMBRANEEXPORT base::Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, std::string residues_a,
  std::string protein_b, std::string residues_b, double fexp,
  FretParameters Fret, std::string cell_type, bool use_GFP,
  Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl);
 
-IMPMEMBRANEEXPORT Pointer<isd::FretRestraint> fret_restraint
+IMPMEMBRANEEXPORT base::Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, std::string residues_a,
  std::string protein_b, int residues_b, double fexp,
  FretParameters Fret, std::string cell_type, bool use_GFP,
  Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl);
 
-IMPMEMBRANEEXPORT Pointer<isd::FretRestraint> fret_restraint
+IMPMEMBRANEEXPORT base::Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, int residues_a,
  std::string protein_b, std::string residues_b, double fexp,
  FretParameters Fret, std::string cell_type, bool use_GFP,
  Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl);
 
-IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> y2h_restraint
+IMPMEMBRANEEXPORT base::Pointer<container::MinimumPairRestraint> y2h_restraint
 (Model *m,
  const atom::Hierarchy& ha,std::string protein_a,IntRange residues_a,
  atom::Hierarchies& hb,std::string protein_b,IntRange residues_b,
  double kappa);
 
-IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> y2h_restraint
+IMPMEMBRANEEXPORT base::Pointer<container::MinimumPairRestraint> y2h_restraint
 (Model *m,
  const atom::Hierarchy& ha,std::string protein_a,std::string residues_a,
  atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double kappa);
 
-IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> y2h_restraint
+IMPMEMBRANEEXPORT base::Pointer<container::MinimumPairRestraint> y2h_restraint
 (Model *m,
  const atom::Hierarchy& ha,std::string protein_a,IntRange residues_a,
  atom::Hierarchies& hb,std::string protein_b,std::string residues_b,
  double kappa);
 
-IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> y2h_restraint
+IMPMEMBRANEEXPORT base::Pointer<container::MinimumPairRestraint> y2h_restraint
 (Model *m,
  const atom::Hierarchy& ha,std::string protein_a,std::string residues_a,
  atom::Hierarchies& hb,std::string protein_b,IntRange residues_b,
@@ -131,11 +134,11 @@ IMPMEMBRANEEXPORT void add_diameter_rgyr_restraint(Model *m,
  const atom::Hierarchy& h, std::string protein,
  double diameter, double rgyr, double kappa);
 
-IMPMEMBRANEEXPORT Pointer<isd::EM2DRestraint> em2d_restraint
+IMPMEMBRANEEXPORT base::Pointer<em2d::Em2DRestraint> em2d_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein, EM2DParameters EM2D, Particle *Sigma);
 
-IMPMEMBRANEEXPORT Pointer<isd::EM2DRestraint> em2d_restraint
+IMPMEMBRANEEXPORT base::Pointer<em2d::Em2DRestraint> em2d_restraint
 (Model *m, atom::Hierarchies& hs, std::string protein,
  EM2DParameters EM2D, Floats sigma_grid, Floats fmod_grid);
 

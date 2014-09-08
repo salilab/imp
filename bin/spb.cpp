@@ -8,7 +8,8 @@
 #include <IMP/core.h>
 #include <IMP/atom.h>
 #include <IMP/membrane.h>
-#include <IMP/isd2.h>
+#include <IMP/base/Pointer.h>
+#include <IMP/isd.h>
 #include <IMP/rmf.h>
 #include "mpi.h"
 #include <boost/scoped_array.hpp>
@@ -58,17 +59,17 @@ IMP_NEW(Model,m,());
 // List of particles for layer restraint
 IMP_NEW(container::ListSingletonContainer,CP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,IL2_ps,(m));
-// List of Movers for MC
-core::Movers mvs;
+// List of MonteCarloMovers for MC
+core::MonteCarloMovers mvs;
 
 //
 // ISD PARTICLES
 //
-std::map<std::string, Pointer<Particle> > ISD_ps=
+std::map<std::string, base::Pointer<Particle> > ISD_ps=
  add_ISD_particles(m,mydata,mvs);
 // create list of particles from map
 Particles ISD_ps_list;
-std::map<std::string, Pointer<Particle> >::iterator itr;
+std::map<std::string, base::Pointer<Particle> >::iterator itr;
 for(itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr){
  ISD_ps_list.push_back((*itr).second);
 }
@@ -135,12 +136,12 @@ rmf::add_particles(rh_isd, ISD_ps_list);
 // CREATING RESTRAINTS
 //
 if(myrank==0) {std::cout << "Creating restraints" << std::endl;}
-std::map< std::string, Pointer<RestraintSet> > rst_map=
+std::map< std::string, base::Pointer<RestraintSet> > rst_map=
  spb_assemble_restraints(m,mydata,all_mol,CP_ps,IL2_ps,ISD_ps);
 
 //
 if(myrank==0) {std::cout << "Setup sampler" << std::endl;}
-Pointer<core::MonteCarlo> mc=
+base::Pointer<core::MonteCarlo> mc=
  setup_SPBMonteCarlo(m,mvs,temp[index[myrank]],mydata);
 
 // wte restart
@@ -152,7 +153,7 @@ if(mydata.MC.do_wte && mydata.MC.wte_restart){
  biasfile.open(names.c_str());
  if(biasfile.is_open()){
   while (biasfile >> bias){val.push_back(bias);}
-  Pointer<membrane::MonteCarloWithWte> ptr=
+  base::Pointer<membrane::MonteCarloWithWte> ptr=
      dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
   ptr->set_bias(val);
   biasfile.close();
@@ -182,7 +183,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // and bias
  double mybias = 0.;
  if(mydata.MC.do_wte){
-   Pointer<membrane::MonteCarloWithWte> ptr=
+   base::Pointer<membrane::MonteCarloWithWte> ptr=
      dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
    mybias=ptr->get_bias(myscore);
  }
@@ -211,31 +212,31 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   if(mydata.add_fret){
    fprintf(logfile,"TimeStep %10d Kda %12.6f Ida %12.6f Sigma0 %12.6f\n",
            imc,
-           isd2::Scale(ISD_ps["Kda"]).get_scale(),
-           isd2::Scale(ISD_ps["Ida"]).get_scale(),
-           isd2::Scale(ISD_ps["Sigma0"]).get_scale());
+           isd::Scale(ISD_ps["Kda"]).get_scale(),
+           isd::Scale(ISD_ps["Ida"]).get_scale(),
+           isd::Scale(ISD_ps["Sigma0"]).get_scale());
    fprintf(logfile,"TimeStep %10d R0 %12.6f pBl %12.6f\n",
            imc,
-           isd2::Scale(ISD_ps["R0"]).get_scale(),
-           isd2::Scale(ISD_ps["pBl"]).get_scale());
+           isd::Scale(ISD_ps["R0"]).get_scale(),
+           isd::Scale(ISD_ps["pBl"]).get_scale());
   }
   //if(mydata.add_new_fret){
   // fprintf(logfile,"TimeStep %10d Kda_new %12.6f Ida_new %12.6f\n",
   //        imc,
-  //        isd2::Scale(ISD_ps["Kda_new"]).get_scale(),
-  //        isd2::Scale(ISD_ps["Ida_new"]).get_scale());
+  //        isd::Scale(ISD_ps["Kda_new"]).get_scale(),
+  //        isd::Scale(ISD_ps["Ida_new"]).get_scale());
   //}
   fprintf(logfile,"TimeStep %10d CP %12.6f GAP %12.6f Cell %12.6f\n",
           imc,
-          isd2::Scale(ISD_ps["CP_B"]).get_scale()-
-          isd2::Scale(ISD_ps["CP_A"]).get_scale(),
-          isd2::Scale(ISD_ps["GAP_A"]).get_scale(),
-          mydata.sideMin*isd2::Scale(ISD_ps["SideXY"]).get_scale());
+          isd::Scale(ISD_ps["CP_B"]).get_scale()-
+          isd::Scale(ISD_ps["CP_A"]).get_scale(),
+          isd::Scale(ISD_ps["GAP_A"]).get_scale(),
+          mydata.sideMin*isd::Scale(ISD_ps["SideXY"]).get_scale());
   // print fmod, fmod_err, ferr, for every data point
   if(mydata.add_fret){
    for(unsigned i=0;i<rst_map["FRET_R"]->get_number_of_restraints();++i){
-    Pointer<isd2::FretRestraint> rst=
-     dynamic_cast<isd2::FretRestraint*>(rst_map["FRET_R"]->get_restraint(i));
+    base::Pointer<isd::FretRestraint> rst=
+     dynamic_cast<isd::FretRestraint*>(rst_map["FRET_R"]->get_restraint(i));
     std::string name = rst->get_name();
     Float fmod       = rst->get_model_fretr();
     Float fmod_err   = rst->get_standard_error();
@@ -263,7 +264,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    std::ofstream biasfile;
    std::string names="BIAS"+out.str();
    biasfile.open(names.c_str());
-   Pointer<membrane::MonteCarloWithWte> ptr=
+   base::Pointer<membrane::MonteCarloWithWte> ptr=
      dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
    double* mybias=ptr->get_bias_buffer();
    for(int i=0;i<ptr->get_nbin();++i){
@@ -287,7 +288,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  double delta_wte=0.0;
 
  if(mydata.MC.do_wte){
-  Pointer<membrane::MonteCarloWithWte> ptr=
+  base::Pointer<membrane::MonteCarloWithWte> ptr=
    dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
   double U_mybias[2]={ptr->get_bias(myscore),ptr->get_bias(fscore)};
   double U_fbias[2];
@@ -308,7 +309,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   mc->set_kt(temp[myindex]);
 // if WTE, rescale W0 and exchange bias
   if(mydata.MC.do_wte){
-   Pointer<membrane::MonteCarloWithWte> ptr=
+   base::Pointer<membrane::MonteCarloWithWte> ptr=
     dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
    ptr->set_w0(mydata.MC.wte_w0*temp[myindex]/mydata.MC.tmin);
    int     nbins=ptr->get_nbin();

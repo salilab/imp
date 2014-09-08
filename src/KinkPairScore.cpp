@@ -21,9 +21,9 @@ Float KinkPairScore::evaluate(const ParticlePair &p,
   IMP_USAGE_CHECK(!da, "Derivatives not available");
 
   // check if rigid body
-  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(p[0]),
+  IMP_USAGE_CHECK(core::RigidBody::get_is_setup(p[0]),
                   "Particle is not a rigid body");
-  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(p[1]),
+  IMP_USAGE_CHECK(core::RigidBody::get_is_setup(p[1]),
                   "Particle is not a rigid body");
 
   // principal axis of inertia is aligned to x axis when creating rigid body
@@ -61,9 +61,9 @@ DerivativeAccumulator *da) const
   IMP_USAGE_CHECK(!da, "Derivatives not available");
 
   // check if rigid body
-  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(
+  IMP_USAGE_CHECK(core::RigidBody::get_is_setup(
      m->get_particle(pip[0])),"Particle is not a rigid body");
-  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(
+  IMP_USAGE_CHECK(core::RigidBody::get_is_setup(
      m->get_particle(pip[1])),"Particle is not a rigid body");
 
   // principal axis of inertia is aligned to x axis when creating rigid body
@@ -72,9 +72,9 @@ DerivativeAccumulator *da) const
 
   // get the two references frames
   algebra::ReferenceFrame3D rf0 = core::RigidBody(
-            m->get_particle(pip[0]).get_reference_frame();
+            m->get_particle(pip[0])).get_reference_frame();
   algebra::ReferenceFrame3D rf1 = core::RigidBody(
-            m->get_particle(pip[1]).get_reference_frame();
+            m->get_particle(pip[1])).get_reference_frame();
 
   //rigid body 0
   algebra::Vector3D i0 = rf0.get_global_coordinates(inertia);
@@ -97,12 +97,14 @@ DerivativeAccumulator *da) const
 }
 
 
-ParticlesTemp KinkPairScore::(kernel::Model *m,ParticleIndex pi)
-    do_get_inputs const {
+kernel::ModelObjectsTemp KinkPairScore::do_get_inputs(kernel::Model *m,
+   const kernel::ParticleIndexes &pis)
+    const {
   // return any particles that would be read if p is one of the particles
   // being scored. Don't worry about returning duplicates.
-  return ParticlesTemp(1,m->get_particle(pi));
+  return kernel::get_particles(m, pis);
 }
+
 /*
 ContainersTemp KinkPairScore::get_input_containers(Particle *p) const {
   // return any containers that would be read if p is one of the particles

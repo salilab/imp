@@ -75,7 +75,7 @@ void RigidBodyNewMover::do_reject() {
   last_transformation_= algebra::Transformation3D();
 }
 
-ParticlesTemp RigidBodyNewMover::do_get_inputs() const {
+kernel::ModelObjectsTemp RigidBodyNewMover::do_get_inputs() const {
   return ParticlesTemp(1, d_);
 }
 

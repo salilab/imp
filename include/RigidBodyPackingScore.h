@@ -35,10 +35,11 @@ public:
    virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
    const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
 
-   void show(std::ostream &out) const ;
+ //  void show(std::ostream &out) const ;
 
   IMP_PAIR_SCORE_METHODS(RigidBodyPackingScore);
-  IMP_OBJECT_METHODS(RigidBodyPackingScore);
+  IMP_SHOWABLE(RigidBodyPackingScore);
+
 
 
 };

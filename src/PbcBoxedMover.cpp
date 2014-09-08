@@ -67,7 +67,9 @@ ParticlesTemp PbcBoxedMover::get_output_particles() const {
 */
 
 ModelObjectsTemp PbcBoxedMover::do_get_inputs() const {
-  kernel::ParticlesTemp ret=symmetry::BallMover::do_get_inputs();
+
+  kernel::ModelObjectsTemp ret = symmetry::BallMover::do_get_inputs();
+
   ret.push_back(px_);
   ret.push_back(py_);
   ret.push_back(pz_);
@@ -82,8 +84,10 @@ void PbcBoxedMover::do_reject() {
   symmetry::BallMover::do_reject();
 }
 
+/*
 void PbcBoxedMover::show(std::ostream &out) const {
-  out << "max translation: " << max_tr_ << "\n";
-}
 
+  out << "max translation: " << symmetry::BallMover::max_tr_ << "\n";
+}
+*/
 IMPMEMBRANE_END_NAMESPACE

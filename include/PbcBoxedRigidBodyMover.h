@@ -25,7 +25,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPMEMBRANEEXPORT PbcBoxedRigidBodyMover: public symmetry:RigidBodyMover
+class IMPMEMBRANEEXPORT PbcBoxedRigidBodyMover:public symmetry::RigidBodyMover
 {
 public:
   /** The rigid body is rotated and translated to move
@@ -45,6 +45,7 @@ protected:
   virtual void do_reject() IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(PbcBoxedRigidBodyMover);
+  IMP_SHOWABLE(PbcBoxedRigidBodyMover);
 
 private:
   // particles for scaling

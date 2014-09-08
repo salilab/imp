@@ -10,7 +10,9 @@
 #include <IMP/algebra.h>
 #include <IMP/container.h>
 #include <IMP/membrane.h>
+#include <IMP/base/nullptr.h>
 #include <IMP/isd.h>
+#include <IMP/em2d.h>
 #include <boost/algorithm/string.hpp>
 #include <string>
 #include <sstream>
@@ -21,7 +23,7 @@ using namespace IMP;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-Pointer<core::DistancePairScore>
+base::Pointer<core::DistancePairScore>
  get_pair_score(FloatRange dist, double kappa)
 {
  IMP_NEW(core::HarmonicWell,hw,(dist,kappa));
@@ -29,7 +31,7 @@ Pointer<core::DistancePairScore>
  return ps.release();
 }
 
-Pointer<core::SphereDistancePairScore>
+base::Pointer<core::SphereDistancePairScore>
  get_sphere_pair_score(FloatRange dist, double kappa)
 {
  IMP_NEW(core::HarmonicWell,hw,(dist,kappa));
@@ -37,7 +39,7 @@ Pointer<core::SphereDistancePairScore>
  return ps.release();
 }
 
-Pointer<core::SphereDistancePairScore>
+base::Pointer<core::SphereDistancePairScore>
  get_sphere_pair_score(double dist, double kappa)
 {
  IMP_NEW(core::Harmonic,hu,(dist,kappa));
@@ -98,7 +100,8 @@ void add_SPBexcluded_volume
 void add_internal_restraint(Model *m,std::string name,
 atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist)
 {
- Pointer<core::SphereDistancePairScore> ps=get_sphere_pair_score(dist,kappa);
+ base::Pointer<core::SphereDistancePairScore> ps=get_sphere_pair_score
+(dist,kappa);
  atom::Selection sa=atom::Selection(protein_a);
  atom::Selection sb=atom::Selection(protein_b);
  sa.set_terminus(atom::Selection::C);
@@ -113,7 +116,8 @@ atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist)
 void add_my_connectivity(Model *m,std::string name,
 atom::Molecule protein, double kappa)
 {
- Pointer<core::SphereDistancePairScore> sdps=get_sphere_pair_score(0.0,kappa);
+ base::Pointer<core::SphereDistancePairScore> sdps=
+get_sphere_pair_score(0.0,kappa);
  Particles ps=atom::get_leaves(protein);
  for(unsigned int i=0;i<ps.size()-1;++i){
   IMP_NEW(core::PairRestraint,r,(sdps,ParticlePair(ps[i],ps[i+1])));
@@ -122,9 +126,9 @@ atom::Molecule protein, double kappa)
  }
 }
 
-Pointer<container::MinimumPairRestraint> do_bipartite_mindist
+base::Pointer<container::MinimumPairRestraint> do_bipartite_mindist
  (Model *m,Particles p1,Particles p2,
- Pointer<core::SphereDistancePairScore> dps,bool filter)
+ base::Pointer<core::SphereDistancePairScore> dps,bool filter)
 {
  IMP_NEW(container::ListPairContainer,lpc,(m));
  for(unsigned int i=0;i<p1.size();++i){
@@ -135,14 +139,17 @@ Pointer<container::MinimumPairRestraint> do_bipartite_mindist
    else{lpc->add_particle_pair(ParticlePair(p1[i],p2[j]));}
   }
  }
- if(lpc->get_number_of_particle_pairs()==0) {return NULL;}
+
+ //if(lpc->get_number_of_particle_pairs()==0) {return NULL;}
+ if((lpc->get_particle_pairs()).size()==0) {return nullptr;}
+
  IMP_NEW(container::MinimumPairRestraint,mpr,(dps,lpc,1));
  return mpr.release();
 }
 
-Pointer<container::MinimumPairRestraint> do_bipartite_mindist
+base::Pointer<container::MinimumPairRestraint> do_bipartite_mindist
  (Model *m,Particles p1,Particles p2,
- Pointer<core::DistancePairScore> dps,bool filter)
+ base::Pointer<core::DistancePairScore> dps,bool filter)
 {
  IMP_NEW(container::ListPairContainer,lpc,(m));
  for(unsigned int i=0;i<p1.size();++i){
@@ -153,12 +160,15 @@ Pointer<container::MinimumPairRestraint> do_bipartite_mindist
    else{lpc->add_particle_pair(ParticlePair(p1[i],p2[j]));}
   }
  }
- if(lpc->get_number_of_particle_pairs()==0) {return NULL;}
+ //if(lpc->get_number_of_particle_pairs()==0) {return NULL;}
+ if((lpc->get_particle_pairs()).size()==0) {return nullptr;}
+
+
  IMP_NEW(container::MinimumPairRestraint,mpr,(dps,lpc,1));
  return mpr.release();
 }
 
-Pointer<isd::FretRestraint> fret_restraint
+base::Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, std::string residues_a,
  std::string protein_b, std::string residues_b, double fexp,
@@ -193,13 +203,13 @@ Pointer<isd::FretRestraint> fret_restraint
  // get particles
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
- if(p1.size()==0 || p2.size()==0) {return NULL;}
+ if(p1.size()==0 || p2.size()==0) {return nullptr;}
  IMP_NEW(isd::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
  fr->set_name(name);
  return fr.release();
 }
 
-Pointer<isd::FretRestraint> fret_restraint
+base::Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, std::string residues_a,
  std::string protein_b, int residues_b, double fexp,
@@ -234,13 +244,13 @@ Pointer<isd::FretRestraint> fret_restraint
  // get particles
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
- if(p1.size()==0 || p2.size()==0) {return NULL;}
+ if(p1.size()==0 || p2.size()==0) {return nullptr;}
  IMP_NEW(isd::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
  fr->set_name(name);
  return fr.release();
 }
 
-Pointer<isd::FretRestraint> fret_restraint
+base::Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, int residues_a,
  std::string protein_b, std::string residues_b, double fexp,
@@ -275,13 +285,13 @@ Pointer<isd::FretRestraint> fret_restraint
  // get particles
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
- if(p1.size()==0 || p2.size()==0) {return NULL;}
+ if(p1.size()==0 || p2.size()==0) {return nullptr;}
  IMP_NEW(isd::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
  fr->set_name(name);
  return fr.release();
 }
 
-Pointer<container::MinimumPairRestraint> y2h_restraint
+base::Pointer<container::MinimumPairRestraint> y2h_restraint
  (Model *m,
  const atom::Hierarchy&   ha, std::string protein_a, IntRange residues_a,
        atom::Hierarchies& hb, std::string protein_b, IntRange residues_b,
@@ -299,12 +309,13 @@ Pointer<container::MinimumPairRestraint> y2h_restraint
  sb.set_residue_indexes(r_b);
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
- if(p1.size()==0 || p2.size()==0) {return NULL;}
- Pointer<core::SphereDistancePairScore> sps=get_sphere_pair_score(0.0,kappa);
+ if(p1.size()==0 || p2.size()==0) {return nullptr;}
+ base::Pointer<core::SphereDistancePairScore> sps=
+get_sphere_pair_score(0.0,kappa);
  return do_bipartite_mindist(m,p1,p2,sps);
 }
 
-Pointer<container::MinimumPairRestraint> y2h_restraint
+base::Pointer<container::MinimumPairRestraint> y2h_restraint
  (Model *m,
  const atom::Hierarchy&   ha, std::string protein_a, std::string residues_a,
        atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
@@ -320,12 +331,13 @@ Pointer<container::MinimumPairRestraint> y2h_restraint
  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
- if(p1.size()==0 || p2.size()==0) {return NULL;}
- Pointer<core::SphereDistancePairScore> sps=get_sphere_pair_score(0.0,kappa);
+ if(p1.size()==0 || p2.size()==0) {return nullptr;}
+ base::Pointer<core::SphereDistancePairScore> sps=
+get_sphere_pair_score(0.0,kappa);
  return do_bipartite_mindist(m,p1,p2,sps);
 }
 
-Pointer<container::MinimumPairRestraint> y2h_restraint
+base::Pointer<container::MinimumPairRestraint> y2h_restraint
  (Model *m,
  const atom::Hierarchy&   ha, std::string protein_a,    IntRange residues_a,
        atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
@@ -342,12 +354,13 @@ Pointer<container::MinimumPairRestraint> y2h_restraint
  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
- if(p1.size()==0 || p2.size()==0) {return NULL;}
- Pointer<core::SphereDistancePairScore> sps=get_sphere_pair_score(0.0,kappa);
+ if(p1.size()==0 || p2.size()==0) {return nullptr;}
+ base::Pointer<core::SphereDistancePairScore> sps=
+get_sphere_pair_score(0.0,kappa);
  return do_bipartite_mindist(m,p1,p2,sps);
 }
 
-Pointer<container::MinimumPairRestraint> y2h_restraint
+base::Pointer<container::MinimumPairRestraint> y2h_restraint
  (Model *m,
  const atom::Hierarchy&   ha, std::string protein_a, std::string residues_a,
        atom::Hierarchies& hb, std::string protein_b,    IntRange residues_b,
@@ -364,8 +377,9 @@ Pointer<container::MinimumPairRestraint> y2h_restraint
  sb.set_residue_indexes(r_b);
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
- if(p1.size()==0 || p2.size()==0) {return NULL;}
- Pointer<core::SphereDistancePairScore> sps=get_sphere_pair_score(0.0,kappa);
+ if(p1.size()==0 || p2.size()==0) {return nullptr;}
+ base::Pointer<core::SphereDistancePairScore> sps=
+get_sphere_pair_score(0.0,kappa);
  return do_bipartite_mindist(m,p1,p2,sps);
 }
 
@@ -386,10 +400,10 @@ void add_link (Model *m,
   for(unsigned int j=0;j<hb.size();++j){
    hhb.push_back(hb[j].get_children()[index_b[i]]);
   }
-  Pointer<container::MinimumPairRestraint> y2h=
+  base::Pointer<container::MinimumPairRestraint> y2h=
    y2h_restraint(m,hs[index_a[i]],protein_a,residues_a,
                    hhb,protein_b,residues_b,kappa);
-  if(y2h!=NULL){m->add_restraint(y2h);}
+  if(y2h!=nullptr){m->add_restraint(y2h);}
  }
 }
 
@@ -410,10 +424,11 @@ void add_link (Model *m,
   for(unsigned int j=0;j<hb.size();++j){
    hhb.push_back(hb[j].get_children()[index_b[i]]);
   }
-  Pointer<container::MinimumPairRestraint> y2h=
+  base::Pointer<container::MinimumPairRestraint> y2h=
    y2h_restraint(m,hs[index_a[i]],protein_a,residues_a,
                    hhb,protein_b,residues_b,kappa);
-  if(y2h!=NULL){m->add_restraint(y2h);}
+  //if(y2h!=NULL){m->add_restraint(y2h);}
+  if(y2h!=nullptr) {m->add_restraint(y2h);}
  }
 }
 
@@ -424,7 +439,7 @@ void add_symmetry_restraint
  Particles ps0=atom::get_leaves(hs[0]);
  std::vector<core::RigidBody> rbs0=get_rigid_bodies(ps0);
  for(unsigned int i=1;i<transformations.size();++i){
-  IMP_NEW(isd::TransformationSymmetry,sm,
+  IMP_NEW(membrane::TransformationSymmetry,sm,
           (transformations[i],SideXY,SideXY,SideZ));
   Particles ps1=atom::get_leaves(hs[i]);
   IMP_NEW(container::ListSingletonContainer,lc,(m));
@@ -463,7 +478,7 @@ void add_bayesian_layer_restraint
 {
  Particles ps=lsc->get_particles();
  for(unsigned i=0; i<ps.size(); ++i){
-  IMP_NEW(isd::UniformBoundedRestraint,ubr,(ps[i], FloatKey("z"), a, b));
+  IMP_NEW(membrane::UniformBoundedRestraint,ubr,(ps[i], FloatKey("z"), a, b));
   m->add_restraint(ubr);
  }
 }
@@ -535,7 +550,8 @@ void add_stay_close_restraint(Model *m,
  const atom::Hierarchy& h, std::string protein, double kappa)
 {
 // Sphere pair score
-  Pointer<core::SphereDistancePairScore> sps=get_sphere_pair_score(0.0,kappa);
+  base::Pointer<core::SphereDistancePairScore> sps=
+get_sphere_pair_score(0.0,kappa);
 // selection
   atom::Selection s=atom::Selection(h);
   s.set_molecule(protein);
@@ -551,7 +567,8 @@ void add_stay_close_restraint(Model *m,
     if(!samep){lpc->add_particle_pair(ParticlePair(ps[i],ps[j]));}
    }
   }
-  if(lpc->get_number_of_particle_pairs()==0) {return;}
+  //if(lpc->get_number_of_particle_pairs()==0) {return;}
+  if((lpc->get_indexes()).size()==0) {return;}
   IMP_NEW(container::MinimumPairRestraint,mpr,(sps,lpc,1));
   mpr->set_name("Stay close restraint");
   m->add_restraint(mpr);
@@ -561,7 +578,8 @@ void add_stay_close_restraint(Model *m,
  const atom::Hierarchy& h, std::string protein, int residue, double kappa)
 {
 // Sphere pair score
-  Pointer<core::SphereDistancePairScore> sps=get_sphere_pair_score(0.0,kappa);
+  base::Pointer<core::SphereDistancePairScore> sps=
+get_sphere_pair_score(0.0,kappa);
 // selection
   atom::Selection s=atom::Selection(h);
   s.set_molecule(protein);
@@ -578,7 +596,9 @@ void add_stay_close_restraint(Model *m,
     if(!samep){lpc->add_particle_pair(ParticlePair(ps[i],ps[j]));}
    }
   }
-  if(lpc->get_number_of_particle_pairs()==0) {return;}
+  //if(lpc->get_number_of_particle_pairs()==0) {return;}
+  if((lpc->get_indexes()).size()==0) {return;}
+
   IMP_NEW(container::MinimumPairRestraint,mpr,(sps,lpc,1));
   mpr->set_name("Stay close restraint");
   m->add_restraint(mpr);
@@ -618,30 +638,37 @@ void add_diameter_rgyr_restraint(Model *m,
  }
 }
 
-Pointer<isd::EM2DRestraint> em2d_restraint
+base::Pointer<em2d::Em2DRestraint> em2d_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein, EM2DParameters EM2D, Particle *Sigma)
 {
  atom::Selection s=atom::Selection(hs);
  s.set_molecule(protein);
  Particles ps=s.get_selected_particles();
- if(ps.size()==0) {return NULL;}
- IMP_NEW(isd::EM2DRestraint,er,(ps, Sigma, EM2D.filename,
-                                 EM2D.pixel_size, EM2D.resolution));
+ if(ps.size()==0) {return nullptr;}
+ //IMP_NEW(em2d::Em2DRestraint,er,(ps, Sigma, EM2D.filename,
+ //                                 EM2D.pixel_size, EM2D.resolution));
+ //
+ //IMP_NEW(em2d::EM2DScore,es,()); // create a score function
+ //IMP_NEW(em2d::Em2DRestraint, er, (ps[0]->get_model()));
+ //er->setup(es,);
+ IMP_NEW(em2d::Em2DRestraint, er,(ps[0]->get_model()));
  er->set_name("EM2D restraint");
  return er.release();
 }
 
-Pointer<isd::EM2DRestraint> em2d_restraint
+base::Pointer<em2d::Em2DRestraint> em2d_restraint
 (Model *m, atom::Hierarchies& hs, std::string protein,
  EM2DParameters EM2D, Floats sigma_grid, Floats fmod_grid)
 {
  atom::Selection s=atom::Selection(hs);
  s.set_molecule(protein);
  Particles ps=s.get_selected_particles();
- if(ps.size()==0) {return NULL;}
- IMP_NEW(isd::EM2DRestraint,er,(ps, sigma_grid, fmod_grid, EM2D.filename,
-                                 EM2D.pixel_size, EM2D.resolution));
+ if(ps.size()==0) {return nullptr;}
+ //IMP_NEW(em2d::Em2DRestraint,er,(ps, sigma_grid, fmod_grid, EM2D.filename,
+ //                                EM2D.pixel_size, EM2D.resolution));
+
+ IMP_NEW(em2d::Em2DRestraint, er,(ps[0]->get_model()));
  er->set_name("EM2D restraint");
  return er.release();
 }

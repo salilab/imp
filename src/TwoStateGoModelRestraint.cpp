@@ -103,7 +103,7 @@ TwoStateGoModelRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
  return VMB;
 }
 
-ParticlesTemp TwoStateGoModelRestraint::do_get_inputs() const {
+kernel::ModelObjectsTemp TwoStateGoModelRestraint::do_get_inputs() const {
   ParticlesTemp ret;
   ret.insert(ret.end(), ps_.begin(), ps_.end());
   return ret;
@@ -113,8 +113,5 @@ ContainersTemp TwoStateGoModelRestraint::get_input_containers() const {
   return ContainersTemp();
 }
 */
-void TwoStateGoModelRestraint::show(std::ostream &) const
-{
-}
 
 IMPMEMBRANE_END_NAMESPACE

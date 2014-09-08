@@ -43,7 +43,8 @@ public:
   const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
 
   IMP_SINGLETON_SCORE_METHODS(TiltSingletonScore);
-  IMP_OBJECT_METHODS(TiltSingletonScore)
+  IMP_OBJECT_METHODS(TiltSingletonScore);
+  IMP_SHOWABLE(TiltSingletonScore);
   //IMP_SIMPLE_SINGLETON_SCORE(TiltSingletonScore);
 };
 

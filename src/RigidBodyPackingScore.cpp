@@ -37,9 +37,9 @@ Float RigidBodyPackingScore::evaluate_index(kernel::Model *m,
   IMP_USAGE_CHECK(!da, "Derivatives not available");
 
   // check if rigid body
-  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(
+  IMP_USAGE_CHECK(core::RigidBody::get_is_setup(
      m->get_particle(pip[0])), "Particle is not a rigid body");
-  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(
+  IMP_USAGE_CHECK(core::RigidBody::get_is_setup(
      m->get_particle(pip[1])), "Particle is not a rigid body");
 
   // check if rigid bodies are close enough
@@ -134,7 +134,7 @@ Float RigidBodyPackingScore::evaluate_index(kernel::Model *m,
 }
 
 
-ParticlesTemp RigidBodyPackingScore::do_get_inputs(
+kernel::ModelObjectsTemp RigidBodyPackingScore::do_get_inputs(
  kernel::Model *m, const kernel::ParticleIndexes &pis) const  {
   return IMP::kernel::get_particles(m, pis);
 }
