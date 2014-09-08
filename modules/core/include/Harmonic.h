@@ -37,10 +37,10 @@ class Harmonic : public UnaryFunction {
 
   IMP_OBJECT_METHODS(Harmonic);
 
-  //! \return the mean of this function
+  //! Return the mean of this function
   Float get_mean() const { return mean_; }
 
-  //! \return the spring constant
+  //! Return the spring constant
   Float get_k() const { return k_; }
 
   //! Set the mean of this function

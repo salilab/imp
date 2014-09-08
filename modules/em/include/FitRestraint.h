@@ -56,7 +56,7 @@ class IMPEMEXPORT FitRestraint : public kernel::Restraint {
                FloatKey weight_key = atom::Mass::get_mass_key(),
                float scale = 1, bool use_rigid_bodies = true,
                KernelType kt = GAUSSIAN);
-  //! \return the predicted density map of the model
+  //! Return the predicted density map of the model
   SampledDensityMap *get_model_dens_map() const { return model_dens_map_; }
   void set_scale_factor(float scale) { scalefac_ = scale; }
   float get_scale_factor() const { return scalefac_; }

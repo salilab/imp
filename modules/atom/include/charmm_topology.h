@@ -114,7 +114,7 @@ class CHARMMConnection {
     return endpoints_[i];
   }
 
-  //! \return true if the bond contains the named atom.
+  //! Return true if the bond contains the named atom.
   bool get_contains_atom(std::string name) const {
     for (base::Vector<CHARMMBondEndpoint>::const_iterator it =
              endpoints_.begin();
