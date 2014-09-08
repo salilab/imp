@@ -3,4 +3,11 @@ spelling_exceptions=['cn', 'symm', 'proteomics', 'pdb', 'pca', 'rmsd',
 function_name_exceptions=[
                     'Ensemble.score_by_restraints',
                     'Ensemble.unload_combination',
-                    'ProteomicsEMAlignmentAtomic.align']
+                    'ProteomicsEMAlignmentAtomic.align',
+                    'convert_em_to_multifit_format',
+                    'convert_multifit_format_to_transformations',
+                    'convert_multifit_to_em_format',
+                    'convert_transformations_to_multifit_format',
+                    'fft_based_rigid_fitting',
+                    'molecule2anchors',
+                    'pca_based_rigid_fitting']
