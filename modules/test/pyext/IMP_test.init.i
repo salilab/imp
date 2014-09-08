@@ -411,6 +411,18 @@ class TestCase(unittest.TestCase):
                 return [fullname]
         return []
 
+    def _static_method(self, module, prefix, name):
+        """For static methods of the form Foo.bar SWIG creates free functions
+           named Foo_bar. Exclude these from spelling checks since the method
+           Foo.bar has already been checked."""
+        if prefix is None and '_' in name:
+            modobj = eval(module)
+            cls, meth = name.split('_', 1)
+            if hasattr(modobj, cls):
+                clsobj = eval(module + '.' + cls)
+                if hasattr(clsobj, meth):
+                    return True
+
     def _check_function_names(self, module, prefix, names, verbs, all,
                               exceptions, words, misspelled):
         bad=[]
@@ -418,8 +430,9 @@ class TestCase(unittest.TestCase):
             typ = self._get_type(module, name)
             if name.startswith("_") or name =="weakref_proxy":
                 continue
-            if typ in (types.BuiltinMethodType, types.MethodType,
-                       types.FunctionType):
+            if typ in (types.BuiltinMethodType, types.MethodType) \
+               or (typ == types.FunctionType and \
+                   not self._static_method(module, prefix, name)):
                 bad.extend(self._check_function_name(prefix, name, verbs, all,
                                                      exceptions, words,
                                                      misspelled))
