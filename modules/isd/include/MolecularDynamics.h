@@ -20,7 +20,7 @@ IMPISD_BEGIN_NAMESPACE
 //! Molecular dynamics optimizer on 1-D and 3-D particles
 /** The particles to be optimized must be XYZs or Nuisances, and should have a
  * non-optimizable mass.
- * \see MolecularDynamics in the atom module for more details
+ * \see atom::MolecularDynamics for more details
  */
 class IMPISDEXPORT MolecularDynamics : public atom::MolecularDynamics {
  public:
