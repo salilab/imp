@@ -1,9 +1,10 @@
 show_exceptions=['Decorator', "ParticlePair", "ParticleTriplet", "ParticleQuad"]
 function_name_exceptions=['Particle.has_attribute', 'Model.restore_particle',
-                                            'RandomNumberGenerator.seed',
-                                            'CommandDispatcher.import_module',
-                                            'CommandDispatcher.main',
-                                            'CommandDispatcher.unknown_command']
+                          'RandomNumberGenerator.seed',
+                          'CommandDispatcher.import_module',
+                          'CommandDispatcher.main',
+                          'CommandDispatcher.unknown_command',
+                          'check_particle']
 value_object_exceptions=['Decorator', 'DerivativeAccumulator',
                                            # imported
                                            'Object', 'SetLogState',
