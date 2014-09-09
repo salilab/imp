@@ -16,6 +16,7 @@ import sys
 import copy
 import tools
 import re
+import pickle
 from optparse import OptionParser
 
 applist = os.path.join("data", "build_info", "applications")
@@ -126,9 +127,10 @@ def make_doxygen(name, source, modules):
 
 def find_cmdline_links(docdir, cmdline_tools):
     """Look for (sub)sections in the .dox or .md docs for each cmdline tool,
-       and return a mapping from tool name to (doxygen link, brief desc)"""
+       and return a mapping from tool name to (doxygen link, brief desc, num)"""
     links = dict.fromkeys(cmdline_tools)
-    docre = re.compile(r'\\(sub)?section\s+(\S+)\s+(\S+):\s*(.*)$')
+    num = 0
+    docre = re.compile(r'\\(subsection|section|page)\s+(\S+)\s+(\S+):\s*(.*)$')
     mdre = re.compile('#*\s*(\S+):\s*([^#]+)#*\s*{#(\S+)}')
     for g in [os.path.join(docdir, "README.md")] \
              + glob.glob(os.path.join(docdir, "doc", "*.dox")) \
@@ -136,18 +138,23 @@ def find_cmdline_links(docdir, cmdline_tools):
         for line in open(g):
             m = docre.search(line)
             if m and m.group(3) in links:
-                links[m.group(3)] = (m.group(2), m.group(4))
+                links[m.group(3)] = (m.group(2), m.group(4), num)
+                num += 1
             m = mdre.search(line)
             if m and m.group(1) in links:
-                links[m.group(1)] = (m.group(3), m.group(2))
-    for tool, link in links.iteritems():
-        if link is None:
-            print "Could not find section title for command line tool %s in doc" % tool
+                links[m.group(1)] = (m.group(3), m.group(2), num)
+                num += 1
+    missing_links = [tool for tool, link in links.iteritems() if link is None]
+    if missing_links:
+        print "Could not find section title for command line tools %s in doc" % ", ".join(missing_links)
     return links
 
 def make_overview(app, source, cmdline_tools):
     docdir = os.path.join(source, "applications", app)
     cmdline_links = find_cmdline_links(docdir, cmdline_tools)
+    pickle.dump(cmdline_links,
+                open(os.path.join("data", "build_info",
+                                  "IMP_%s.pck" % app), 'w'), -1)
     rmd = open(os.path.join(docdir, "README.md"), "r").read()
     tools.rewrite(os.path.join("doxygen", "generated", "IMP_%s.dox" % app),
                   """/** \\page imp%s IMP.%s

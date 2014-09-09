@@ -14,6 +14,7 @@ import os.path
 import shutil
 import platform
 import tools
+import pickle
 from optparse import OptionParser
 
 
@@ -115,6 +116,13 @@ def generate_overview_pages(source):
     contents.append("<th>Modules</th><th>Applications</th></tr><tr><td>")
     for bs, g in tools.get_modules(source):
         contents.append("- [IMP.%s](\\ref IMP::%s)" % (bs, bs))
+        p = pickle.load(open(os.path.join("data", "build_info",
+                                          "IMP_%s.pck" % bs)))
+        apps = sorted([[k]+list(v) for k,v in p.iteritems() if v],
+                      key=lambda x:x[3])
+        for app in apps:
+            contents.append("  - [%s](\\ref %s): %s" % app[:3])
+
     contents.append("</td><td style=\"vertical-align:top;\">")
     for bs, g in tools.get_applications(source):
         contents.append("- \subpage imp%s \"IMP.%s\"" % (bs, bs))
