@@ -1,6 +1,7 @@
 # imp_example_app {#imp_example_app_bin}
 
 An example application.
+See also the IMP::example module.
 
 # Info
 

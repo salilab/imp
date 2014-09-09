@@ -1,4 +1,15 @@
-The overview section of the module page can contain any MarkDown markup as well as references to IMP classes such as IMP::Model.
+\brief Example module.
+
+This module contains simple classes that span many parts of IMP functionality,
+so it can be used to see how to write a new class, export it to Python,
+document it, and provide tests and examples.
+
+The overview section of the module page can contain any
+[MarkDown](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html) or
+[doxygen](http://www.stack.nl/~dimitri/doxygen/manual/docblocks.html)
+markup as well as references to IMP classes such as IMP::Model.
+
+See also the [example application](@ref impexample_app).
 
 # Info
 
