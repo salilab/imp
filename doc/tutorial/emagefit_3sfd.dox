@@ -16,10 +16,10 @@ the \ref emagefit_protocol page.
 using 3D EM maps instead of 2D class averages.)
 
 All steps in the procedure use a command line tool called
-<tt>emagefit.py</tt>. For full help on this tool, run from a command line:
+<tt>emagefit</tt>. For full help on this tool, run from a command line:
 
 \code{.sh}
-emagefit.py --help
+emagefit --help
 \endcode
 
 \section emagefit_3sfd_setup Setup
@@ -52,7 +52,7 @@ subunits, SA-MC optimization, SA-MC model gathering, and DOMINO sampling.
 To do the dockings, run from the command line:
 
 \code{.sh}
-emagefit.py --exp config_step_1.py --dock --log dock.log
+emagefit --exp config_step_1.py --dock --log dock.log
 \endcode
 
 Open the file dock.log and search for the line:
@@ -99,7 +99,7 @@ A value of 1 ignores all the relative positions, and a random move is always
 chosen (i.e. all docking solutions are ignored). To run the optimization:
 
 \code{.sh}
-emagefit.py --exp config_step_2.py --monte_carlo -1 --log monte_carlo.log --o mc_solution1.db
+emagefit --exp config_step_2.py --monte_carlo -1 --log monte_carlo.log --o mc_solution1.db
 \endcode
 
 Note that <tt>config_step_2.py</tt> sets Monte Carlo parameters to get a very
@@ -117,7 +117,7 @@ After generating a set of solutions, they must be gathered together into a
 single database, using a command such as:
 
 \code{.sh}
-emagefit.py --o monte_carlo_solutions.db --gather mc_solution*.db
+emagefit --o monte_carlo_solutions.db --gather mc_solution*.db
 \endcode
 
 For this example, a pre-built database is included in the <tt>outputs</tt>
@@ -154,7 +154,7 @@ respect to <tt>config_step_2.py</tt> in the classes
 The command to run is:
 
 \code{.sh}
-emagefit.py --exp config_step_3.py --log domino.log --o domino.db
+emagefit --exp config_step_3.py --log domino.log --o domino.db
 \endcode
 
 The output <tt>domino.db</tt> is a database of solutions. For the actual
@@ -168,7 +168,7 @@ The solutions can be written out as PDB files. To write out the 10 best models
 according to the value of the em2d restraint, run:
 
 \code{.sh}
-emagefit.py --exp config_step_3.py --w 10 --o domino.db --orderby em2d
+emagefit --exp config_step_3.py --w 10 --o domino.db --orderby em2d
 \endcode
 
 The best solution, shown fitted in the density map of the complex, is shown
