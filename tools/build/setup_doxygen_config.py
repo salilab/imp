@@ -112,12 +112,13 @@ def generate_overview_pages(source):
     contents = []
     contents.append("/** ")
     contents.append("\\page allmod All IMP Modules and Applications")
-    contents.append("<table><tr>")
-    contents.append("<th>Modules</th><th>Applications</th></tr><tr><td>")
-    for bs, g in tools.get_modules(source):
-        contents.append("- [IMP.%s](\\ref IMP::%s)" % (bs, bs))
+    contents.append("""
+IMP is divided up into a set of modules. Each of these corresponds to a
+C++ <i>namespace</i>, and so they can be found on the
+[namespaces page](namespaces.html).
 
-    contents.append("</td><td style=\"vertical-align:top;\">")
+IMP also provides a number of applications (command line tools).
+These are listed below:""")
     for bs, g in tools.get_applications(source):
         contents.append("- \subpage imp%s \"IMP.%s\"" % (bs, bs))
         p = pickle.load(open(os.path.join("data", "build_info",
@@ -126,7 +127,6 @@ def generate_overview_pages(source):
                       key=lambda x:x[3])
         for app in apps:
             contents.append("  - [%s](\\ref %s): %s" % (app[0], app[1], app[2]))
-    contents.append("</td></tr></table>")
     contents.append("*/")
     tools.rewrite(name, "\n".join(contents))
 
