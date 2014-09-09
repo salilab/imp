@@ -130,20 +130,36 @@ def find_cmdline_links(app, docdir, cmdline_tools):
        and return a mapping from tool name to (doxygen link, brief desc, num)"""
     links = dict.fromkeys(cmdline_tools)
     num = 0
+    todo = {}
     docre = re.compile(r'\\(subsection|section|page)\s+(\S+)\s+(\S+):\s*(.*)$')
+    docre_sep = re.compile(r'\\(subsection|section|page)\s+(\S+)\s+(\S+)\s*$')
     mdre = re.compile('#*\s*(\S+):\s*([^#]+)#*\s*{#(\S+)}')
+    mdre_sep = re.compile('#*\s*(\S+)\s*#*\s*{#(\S+)}')
     for g in [os.path.join(docdir, "README.md")] \
              + glob.glob(os.path.join(docdir, "doc", "*.dox")) \
              + glob.glob(os.path.join(docdir, "doc", "*.md")):
         for line in open(g):
+            if todo and len(line.rstrip('\r\n ')) > 0 \
+               and line[0] not in " =-\\":
+                k = todo.keys()[0]
+                v = todo.values()[0]
+                links[k] = (v, line.rstrip('\r\n '), num)
+                num += 1
+                todo = {}
             m = docre.search(line)
             if m and m.group(3) in links:
                 links[m.group(3)] = (m.group(2), m.group(4), num)
                 num += 1
+            m = docre_sep.search(line)
+            if m and m.group(3) in links:
+                todo = {m.group(3): m.group(2)}
             m = mdre.search(line)
             if m and m.group(1) in links:
                 links[m.group(1)] = (m.group(3), m.group(2), num)
                 num += 1
+            m = mdre_sep.search(line)
+            if m and m.group(1) in links:
+                todo = {m.group(1): m.group(2)}
     missing_links = [tool for tool, link in links.iteritems() if link is None]
     if missing_links:
         print """
@@ -155,18 +171,29 @@ Each command line tool should have a section or page in the documentation
 %s/doc/*.{dox,md})
 that describes it. The section title should contain the tool's name and a
 brief description (separated by a colon), followed by a unique doxygen ID.
-For example, the tool do_foo.py could be documented with
+Alternatively, the brief description can be given in the body immediately
+following the title. For example, the tool do_foo.py could be documented with
 
 \section do_foo_bin do_foo.py: Do something with foo
+
+or
+
+\section do_foo_bin do_foo.py
+Do something with foo
 
 in doxygen (\subsection or \page can also be used) or
 
 doo_foo.py: Do something with foo {#do_foo_bin}
 =================================
 
-or 
+or
 
-# doo_foo.py: Do something with foo # {#do_foo_bin}
+# doo_foo.py: Do something with foo {#do_foo_bin}
+
+or
+
+# doo_foo.py {#do_foo_bin}
+Do something with foo
 
 in Markdown.
 """ % (", ".join(missing_links), app, docdir, docdir)
