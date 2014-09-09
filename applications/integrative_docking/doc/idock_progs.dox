@@ -2,7 +2,8 @@
 
 The integrative docking protocol includes a number of tools:
 
-\section saxs_score_bin saxs_score: Scoring with SAXS profile
+\section saxs_score_bin saxs_score
+Scoring with SAXS profile.
 <pre>
 Usage: \<pdb1\> \<pdb2\> \<trans_file\> \<exp_profile_file\>
 saxs_score program scores results of docking of two molecules against the SAXS profile file.
@@ -22,7 +23,8 @@ saxs_score program scores results of docking of two molecules against the SAXS p
 </pre>
 
 
-\section em2d_score_bin em2d_score: Scoring with EM 2D class averages
+\section em2d_score_bin em2d_score
+Scoring with EM 2D class averages.
 <pre>
 Usage: \<pdb1\> \<pdb2\> \<trans_file\> \<image1\> \<image2\>...
 em2d_score program scores results of docking of two molecules against 2D class averages from EM.
@@ -31,7 +33,8 @@ em2d_score program scores results of docking of two molecules against 2D class a
 \<image1\> \<image2\>... - complex 2D class averages in PGM format (P2)
 </pre>
 
-\section em3d_score_bin em3d_score: Scoring with EM 3D density map
+\section em3d_score_bin em3d_score
+Scoring with EM 3D density map.
 <pre>
 Usage: \<pdb1\> \<pdb2\> \<trans_file\> \<em_map\>
 em3d_score program scores results of docking of two molecules against 3D density map.
@@ -41,7 +44,8 @@ em3d_score program scores results of docking of two molecules against 3D density
 </pre>
 
 
-\section nmr_rtc_score_bin nmr_rtc_score: Scoring with NMR residue type content term (NMR-RTC)
+\section nmr_rtc_score_bin nmr_rtc_score
+Scoring with NMR residue type content term (NMR-RTC).
 <pre>
 Usage: \<pdb1\> \<pdb2\> \<trans_file\> \<residue_content_file1\> \<residue_content_file2\>
 nmr_rtc_score program scores results of docking of two molecules against NMR residue type content.
@@ -60,7 +64,8 @@ HIS 2
   This would correspond to having 0 methionine, 0 arginine and two histidine residues in the interface.
 </pre>
 
-\section cross_links_score_bin cross_links_score: Scoring with cross links detected by mass spectrometry
+\section cross_links_score_bin cross_links_score
+Scoring with cross links detected by mass spectrometry.
 <pre>
 Usage: \<pdb1\> \<pdb2\> \<trans_file\> \<cross_links_file\>
 cross_links_score program scores results of docking of two molecules against cross linking dataset.
@@ -79,7 +84,8 @@ Each line corresponds to one cross link. Each cross link is defined by residue n
 '145 - 1 A 3 27' corresponds to a cross link between residue 145 in a chain with blank chain id and residue 1 in chain A. The minimal distance is 3A and the maximal is 27A.
 </pre>
 
-\section combine_scores_bin combine_scores: Combine scores for different data types
+\section combine_scores_bin combine_scores
+Combine scores for different data types.
 <pre>
 Usage: combine_scores \<file1\> \<weight1\> \<file2\> \<weight2\> \<file3\> \<weight3\>...
 combines files with same docking transformations in the following format:
@@ -90,18 +96,25 @@ The programs for scoring of docking transformations (saxs_score, em2d_score, em3
 </pre>
 Only filtered values of + are combined. The output score is the weighted sum of Z-Scores.
 
-\section recompute_zscore_bin recompute_zscore: Recompute z-scores for combined scores
+\section recompute_zscore_bin recompute_zscore
+Recompute z-scores for combined scores.
 
-\section em3d_single_score_bin em3d_single_score: Score a single model with EM3D
+\section em3d_single_score_bin em3d_single_score
+Score a single model with EM3D.
 
-\section em2d_single_score_bin em2d_single_score: Score a single model with EM2D
+\section em2d_single_score_bin em2d_single_score
+Score a single model with EM2D.
 
-\section soap_score_bin soap_score: Score models with SOAP
+\section soap_score_bin soap_score
+Score models with SOAP.
 
-\section cross_links_single_score_bin cross_links_single_score: Score a single model with cross links
+\section cross_links_single_score_bin cross_links_single_score
+Score a single model with cross links.
 
-\section interface_cross_links_bin interface_cross_links: Generate cross links for an interface
+\section interface_cross_links_bin interface_cross_links
+Generate cross links for an interface.
 
-\section interface_rtc_bin interface_rtc: Generate residue content for an interface
+\section interface_rtc_bin interface_rtc
+Generate residue content for an interface.
 
 */

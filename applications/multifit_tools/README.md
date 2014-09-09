@@ -1,5 +1,6 @@
-multifit: fit atomic structures into EM density maps {#multifit_bin}
-====================================================
+multifit {#multifit_bin}
+========
+Fit atomic structures into EM density maps.
 
 MultiFit is a protocol for simultaneously fitting atomic structures
 of components into the cryo-electron microscopy (cryo-EM) density map of
@@ -23,7 +24,10 @@ A [webserver](http://www.salilab.org/multifit) is also available.
 _Examples_:
  - [Modeling of 3sfd](../tutorial/multifit_3sfd.html)
 
-## complex_to_anchor_graph.py: build an anchor graph from a PDB file. ## {#complex_anchor_bin}
+complex_to_anchor_graph.py {#complex_anchor_bin}
+==========================
+
+Build an anchor graph from a PDB file.
 
 # Info
 

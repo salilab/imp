@@ -1,4 +1,6 @@
-# idock: Pairwise docking incorporating additional data # {#idock_bin}
+# idock {#idock_bin}
+
+Pairwise docking incorporating additional data.
 
 This is a protocol for pairwise protein docking, in which additional
 experimental information about the protein-protein complex is incorporated

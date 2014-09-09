@@ -1,5 +1,6 @@
-# foxs: determine small angle X-ray (SAXS) profiles. # {#foxs_bin}
+# foxs {#foxs_bin}
 
+Determine small angle X-ray (SAXS) profiles.
 The IMP.saxs module contains functions that, given an atomic protein structure,
 can calculate its SAXS profile using the Debye formula, and then fit this
 profile against the experimentally determined one. FoXS is a simple command
