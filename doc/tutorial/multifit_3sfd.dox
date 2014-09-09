@@ -70,7 +70,7 @@ the density threshold (335), and the origin of the map in angstroms
 in the map header. To view the map header, run:
 
 \code{.sh}
-view_density_header.py 3sfd_15.mrc
+view_density_header 3sfd_15.mrc
 \endcode
 
 The resolution is typically not stored in the map header; it is usually

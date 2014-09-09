@@ -73,7 +73,7 @@ The spacing (or pixel size) and the origin of the map are often stored in the
 map header. This can be viewed by running:
 
 \code{.sh}
-view_density_header.py 1oel_10.mrc
+view_density_header 1oel_10.mrc
 \endcode
 
 The resolution is typically not stored in the map header; it is usually

@@ -3,27 +3,27 @@
 We provide a number of command line tools to handle electron microscopy
 density maps and associated files: 
 
-# estimate_threshold_from_molecular_mass.py {#est_from_molec_mass_bin}
+# estimate_threshold_from_molecular_mass {#est_from_molec_mass_bin}
 
 Estimate EM density threshold.
 
-# map2pca.py {#map2pca_bin}
+# map2pca {#map2pca_bin}
 
 Write out density map principal components in cmm format.
 
-# mol2pca.py {#mol2pca_bin}
+# mol2pca {#mol2pca_bin}
 
 Write out protein principal components in cmm format.
 
-# resample_density.py {#resample_density_bin}
+# resample_density {#resample_density_bin}
 
 Resample a density map.
 
-# simulate_density_from_pdb.py {#simulate_density_from_pdb_bin}
+# simulate_density_from_pdb {#simulate_density_from_pdb_bin}
 
 Samples a protein into a simulated 3D density map.
 
-# view_density_header.py {#view_density_header_bin}
+# view_density_header {#view_density_header_bin}
 
 Display the header information for a density map.
 
