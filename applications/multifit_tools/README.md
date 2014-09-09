@@ -1,4 +1,5 @@
-# Multifit Tools
+multifit: fit atomic structures into EM density maps {#multifit_bin}
+====================================================
 
 MultiFit is a protocol for simultaneously fitting atomic structures
 of components into the cryo-electron microscopy (cryo-EM) density map of

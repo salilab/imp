@@ -1,4 +1,5 @@
-# CNMultifit Tools
+cnmultifit: fit atomic structures into cyclic symmetric EM density maps {#cnmultifit_bin}
+=======================================================================
 
 A protocol for generating atomic structures of complexes with cyclic symmetry
 (such as rings), using only the atomic structure of a single subunit and
