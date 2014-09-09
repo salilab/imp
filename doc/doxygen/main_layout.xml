@@ -21,7 +21,7 @@
       <tab type="globals" visible="yes" title="" intro=""/>
     </tab>
     <tab type="examples" visible="yes" title="" intro=""/>
-    <tab type="user" visible="yes" title="Indexes" url="argument_index.html">
+    <tab type="usergroup" visible="yes" title="Indexes" url="argument_index.html">
       <tab type="user" visible="yes" title="Class Usage" url="argument_index.html"/>
       <tab type="user" visible="yes" title="Class Examples" url="class_example_index.html"/>
       <tab type="user" visible="yes" title="Class Factories" url="factory_index.html"/>
