@@ -3,6 +3,8 @@
 Several helper programs are provided. They all take the name of the pdb file as
 the first argument.
 
+## pdb_check: Check a PDB file for problems. ## {#pdb_check_bin}
+
 # Info
 
 _Author(s)_: Daniel Russel

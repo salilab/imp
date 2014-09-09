@@ -90,4 +90,18 @@ The programs for scoring of docking transformations (saxs_score, em2d_score, em3
 </pre>
 Only filtered values of + are combined. The output score is the weighted sum of Z-Scores.
 
+\section recompute_zscore_bin recompute_zscore: Recompute z-scores for combined scores
+
+\section em3d_single_score_bin em3d_single_score: Score a single model with EM3D
+
+\section em2d_single_score_bin em2d_single_score: Score a single model with EM2D
+
+\section soap_score_bin soap_score: Score models with SOAP
+
+\section cross_links_single_score_bin cross_links_single_score: Score a single model with cross links
+
+\section interface_cross_links_bin interface_cross_links: Generate cross links for an interface
+
+\section interface_rtc_bin interface_rtc: Generate residue content for an interface
+
 */

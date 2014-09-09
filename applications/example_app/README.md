@@ -1,4 +1,4 @@
-# Exampe Application
+# imp_example_app: Example Application # {#imp_example_app_bin}
 
 An example application.
 

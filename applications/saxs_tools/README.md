@@ -1,5 +1,13 @@
 # SAXS tools
 
+## cluster_profiles: Cluster SAXS profiles ## {#cluster_profiles_bin}
+
+## compute_chi: Calculate chi value for SAXS profiles ## {#compute_chi_bin}
+
+## rg: Compute radius of gyration from SAXS profiles ## {#rg_bin}
+
+## validate_profile: Validate SAXS profiles ## {#validate_profile_bin}
+
 # Info
 
 _Author(s)_: Dina Schneidman

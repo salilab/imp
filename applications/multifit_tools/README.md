@@ -23,6 +23,8 @@ A [webserver](http://www.salilab.org/multifit) is also available.
 _Examples_:
  - [Modeling of 3sfd](../tutorial/multifit_3sfd.html)
 
+## complex_to_anchor_graph.py: build an anchor graph from a PDB file. ## {#complex_anchor_bin}
+
 # Info
 
 _Author(s)_: Keren Lasker
