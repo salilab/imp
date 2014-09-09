@@ -15,6 +15,7 @@ import glob
 import sys
 import copy
 import tools
+import re
 from optparse import OptionParser
 
 applist = os.path.join("data", "build_info", "applications")
@@ -123,20 +124,31 @@ def make_doxygen(name, source, modules):
         " \\\n                         ".join(tags))
     tools.rewrite(file, template)
 
+def find_cmdline_links(docdir, cmdline_tools):
+    """Look for (sub)sections in the .dox or .md docs for each cmdline tool,
+       and return a mapping from tool name to (doxygen link, brief desc)"""
+    links = dict.fromkeys(cmdline_tools)
+    docre = re.compile(r'\\(sub)?section\s+(\S+)\s+(\S+):\s*(.*)$')
+    mdre = re.compile('#*\s*(\S+):\s*([^#]+)#*\s*{#(\S+)}')
+    for g in [os.path.join(docdir, "README.md")] \
+             + glob.glob(os.path.join(docdir, "doc", "*.dox")) \
+             + glob.glob(os.path.join(docdir, "doc", "*.md")):
+        for line in open(g):
+            m = docre.search(line)
+            if m and m.group(3) in links:
+                links[m.group(3)] = (m.group(2), m.group(4))
+            m = mdre.search(line)
+            if m and m.group(1) in links:
+                links[m.group(1)] = (m.group(3), m.group(2))
+    for tool, link in links.iteritems():
+        if link is None:
+            print "Could not find section title for command line tool %s in doc" % tool
+    return links
 
 def make_overview(app, source, cmdline_tools):
-    rmd = open(
-        os.path.join(
-            source,
-            "applications",
-            app,
-            "README.md"),
-        "r").read(
-    )
-    for c in cmdline_tools:
-        sectitle = '# ' + c + ' #'
-        if sectitle not in rmd:
-            print "Could not find section title %s for command line tool in doc" % sectitle
+    docdir = os.path.join(source, "applications", app)
+    cmdline_links = find_cmdline_links(docdir, cmdline_tools)
+    rmd = open(os.path.join(docdir, "README.md"), "r").read()
     tools.rewrite(os.path.join("doxygen", "generated", "IMP_%s.dox" % app),
                   """/** \\page imp%s IMP.%s
 \\tableofcontents

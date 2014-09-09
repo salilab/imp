@@ -306,10 +306,9 @@ def setup_application(options, name, ordered):
     values["swigpath"] = get_dep_merged(all_modules, "swig_path", ordered)
     pybins = get_app_sources(path, ["*"], tools.filter_pyapps)
     values["pybins"] = "\n".join(pybins)
-    cppbins = [e[0][0] for e in exes]
-    values["bin_names"] = "\n".join(
-                   [os.path.splitext(os.path.basename(x))[0] \
-                   for x in pybins + cppbins])
+    cppbins = [os.path.splitext(e[0][0])[0] for e in exes]
+    values["bin_names"] = "\n".join([os.path.basename(x) \
+                                     for x in pybins + cppbins])
     values["pytests"] = "\n".join(get_app_sources(os.path.join(path, "test"),
                                         ["test_*.py",
                                          "expensive_test_*.py"]))
