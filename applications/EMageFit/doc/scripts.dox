@@ -67,6 +67,11 @@ An example:
 emagefit_score.py structure.pdb myimages.sel 3.6 20 5 100
 \endcode
 
+\subsection convert_spider_to_jpg_bin convert_spider_to_jpg.py: Image conversion utility for EMageFit.
+
+This utility can be used to convert one or more EM images from Spider format
+to JPG.
+
 \section em2d_pkg IMP.em2d Python package utilities
 
 The IMP.em2d Python package contains a number of utility modules:

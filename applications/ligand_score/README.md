@@ -1,4 +1,4 @@
-# Ligand Score
+# ligand_score: score ligand poses # {#ligand_score_bin}
 
 To score ligand poses, use the `ligand_score` command line tool.
 
