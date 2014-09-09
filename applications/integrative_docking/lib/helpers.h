@@ -149,7 +149,7 @@ IMP::algebra::Vector3D get_ca_coordinate(const IMP::kernel::Particles& ca_atoms,
 void get_residue_solvent_accessibility(
     const IMP::kernel::Particles& residue_particles,
     IMP::Floats& residue_solvent_accessibility) {
-  IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
+  IMP::saxs::FormFactorTable* ft = IMP::saxs::get_default_form_factor_table();
   IMP::saxs::FormFactorType ff_type = IMP::saxs::CA_ATOMS;
   for (unsigned int p_index = 0; p_index < residue_particles.size();
        p_index++) {

@@ -314,7 +314,7 @@ constant form factor (default = false)")(
     ft = new FormFactorTable(form_factor_table_file, 0.0, max_q, delta_q);
     reciprocal = true;
   } else {
-    ft = default_form_factor_table();
+    ft = get_default_form_factor_table();
   }
 
   // determine form factor type

@@ -80,7 +80,7 @@ EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
 }
 
 float EMFit::compute_volume(const IMP::kernel::Particles& particles) {
-  IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
+  IMP::saxs::FormFactorTable* ft = IMP::saxs::get_default_form_factor_table();
   float volume = 0.0;
   float c = (4.0 / 3.0) * IMP::algebra::PI;
   for (unsigned int pindex = 0; pindex < particles.size(); pindex++) {
