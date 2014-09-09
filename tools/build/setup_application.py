@@ -170,6 +170,7 @@ or
 
 in Markdown.
 """ % (", ".join(missing_links), app, docdir, docdir)
+        sys.exit(1)
     return links
 
 def make_overview(app, source, cmdline_tools):
