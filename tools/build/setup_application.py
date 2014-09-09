@@ -125,7 +125,7 @@ def make_doxygen(name, source, modules):
         " \\\n                         ".join(tags))
     tools.rewrite(file, template)
 
-def find_cmdline_links(docdir, cmdline_tools):
+def find_cmdline_links(app, docdir, cmdline_tools):
     """Look for (sub)sections in the .dox or .md docs for each cmdline tool,
        and return a mapping from tool name to (doxygen link, brief desc, num)"""
     links = dict.fromkeys(cmdline_tools)
@@ -146,12 +146,35 @@ def find_cmdline_links(docdir, cmdline_tools):
                 num += 1
     missing_links = [tool for tool, link in links.iteritems() if link is None]
     if missing_links:
-        print "Could not find section title for command line tools %s in doc" % ", ".join(missing_links)
+        print """
+Could not find section title for command line tools %s
+in %s docs.
+
+Each command line tool should have a section or page in the documentation
+(in %s/README.md or
+%s/doc/*.{dox,md})
+that describes it. The section title should contain the tool's name and a
+brief description (separated by a colon), followed by a unique doxygen ID.
+For example, the tool do_foo.py could be documented with
+
+\section do_foo_bin do_foo.py: Do something with foo
+
+in doxygen (\subsection or \page can also be used) or
+
+doo_foo.py: Do something with foo {#do_foo_bin}
+=================================
+
+or 
+
+# doo_foo.py: Do something with foo # {#do_foo_bin}
+
+in Markdown.
+""" % (", ".join(missing_links), app, docdir, docdir)
     return links
 
 def make_overview(app, source, cmdline_tools):
     docdir = os.path.join(source, "applications", app)
-    cmdline_links = find_cmdline_links(docdir, cmdline_tools)
+    cmdline_links = find_cmdline_links(app, docdir, cmdline_tools)
     pickle.dump(cmdline_links,
                 open(os.path.join("data", "build_info",
                                   "IMP_%s.pck" % app), 'w'), -1)
