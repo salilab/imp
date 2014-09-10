@@ -40,8 +40,8 @@ class IMPMockTests(unittest.TestCase):
 
     def test_applications_installed(self):
         """Check install of a fairly comprehensive list of applications"""
-        emagefit_apps = ['convert_spider_to_jpg.py', 'emagefit_cluster.py',
-                         'emagefit_dock.py', 'emagefit.py', 'emagefit_score.py']
+        emagefit_apps = ['convert_spider_to_jpg', 'emagefit_cluster',
+                         'emagefit_dock', 'emagefit', 'emagefit_score']
         idock_apps = ['idock', 'combine_scores', 'recompute_zscore',
                       'cross_links_score', 'cross_links_single_score',
                       'em2d_score', 'em2d_single_score',
@@ -50,16 +50,16 @@ class IMPMockTests(unittest.TestCase):
                       'nmr_rtc_score', 'soap_score']
         apps = ['cluster_profiles', 'cnmultifit',
                 'complex_to_anchor_graph.py', 'compute_chi',
-                'estimate_threshold_from_molecular_mass.py', 'foxs',
-                'imp_example_app', 'ligand_score', 'map2pca.py', 'mol2pca.py',
-                'multifit', 'pdb_check', 'pdb_rmf', 'resample_density.py',
+                'estimate_threshold_from_molecular_mass', 'foxs',
+                'imp_example_app', 'ligand_score', 'map2pca', 'mol2pca',
+                'multifit', 'pdb_check', 'pdb_rmf', 'resample_density',
                 'rg', 'rmf3_dump', 'rmf_cat', 'rmf_display',
                 'rmf_frames', 'rmf_info', 'rmf_interpolate', 'rmf_pdb',
                 'rmf_show', 'rmf_signature', 'rmf_simplify', 'rmf_slice',
                 'rmf_transform', 'rmf_update',
                 'rmf_validate', 'rmf_xml', 'saxs_merge.py',
-                'simulate_density_from_pdb.py',
-                'validate_profile', 'view_density_header.py']
+                'simulate_density_from_pdb',
+                'validate_profile', 'view_density_header']
         # RHEL systems don't include EMageFit and idock; Fedora and Ubuntu do
         if mock_config.startswith('fedora') or mock_config.startswith('ubuntu'):
             apps.extend(emagefit_apps)

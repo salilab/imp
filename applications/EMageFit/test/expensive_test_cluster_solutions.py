@@ -19,7 +19,7 @@ class TestClusterSolutions(IMP.test.ApplicationTestCase):
             as those obtainedduring the benchmark for the paper
         """
         emagefit_cluster = \
-            self.import_python_application('emagefit_cluster.py')
+            self.import_python_application('emagefit_cluster')
         fn_config = self.get_input_file_name("config.py")
         fn_database = self.get_input_file_name("domino_solutions.db")
         fn_db_clusters = "clusters.db"

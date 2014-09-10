@@ -23,7 +23,7 @@ class TestDominoModeling(IMP.test.ApplicationTestCase):
             import subprocess
         except ImportError as detail:
             self.skipTest(str(detail))
-        domino_model = self.import_python_application('emagefit.py')
+        domino_model = self.import_python_application('emagefit')
         IMP.base.set_log_level(IMP.base.SILENT)
         fn = self.get_input_file_name("config.py")
         exp = utility.get_experiment_params(fn)
