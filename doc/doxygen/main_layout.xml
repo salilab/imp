@@ -3,7 +3,7 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title="IMP Mainpage"/>
-    <tab type="user" visible="yes" title="All IMP Modules" url="allmod.html"/>
+    <tab type="user" visible="yes" title="Modules and Applications" url="allmod.html"/>
     <tab type="pages" visible="yes" title="" intro=""/>
     <tab type="modules" visible="yes" title="Groups" intro="Here is a list of all documentation groups:"/>
     <tab type="namespaces" visible="yes" title="">
