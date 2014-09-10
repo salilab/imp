@@ -98,8 +98,8 @@ IMP_COMPILER_DISABLE_WARNINGS
     //  functions are defined explicitly for SWIG
     namespace IMP {
   namespace %(name)s {
-/** \name Standard module methods
-  All \imp modules have a set of standard methods to help get information
+/** \name Standard module functions
+  All \imp modules have a set of standard functions to help get information
   about the module and about files associated with the module.
   @{
   */
