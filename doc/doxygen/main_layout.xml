@@ -5,7 +5,7 @@
     <tab type="mainpage" visible="yes" title="IMP Mainpage"/>
     <tab type="user" visible="yes" title="All IMP Modules" url="allmod.html"/>
     <tab type="pages" visible="yes" title="" intro=""/>
-    <tab type="modules" visible="yes" title="" intro=""/>
+    <tab type="modules" visible="yes" title="Groups" intro="Here is a list of all documentation groups:"/>
     <tab type="namespaces" visible="yes" title="">
       <tab type="namespacelist" visible="yes" title="" intro=""/>
       <tab type="namespacemembers" visible="yes" title="" intro=""/>
@@ -146,6 +146,7 @@
   <group>
     <briefdescription visible="yes"/>
     <groupgraph visible="$GROUP_GRAPHS"/>
+    <detaileddescription title=""/>
     <memberdecl>
       <nestedgroups visible="yes" title=""/>
       <dirs visible="yes" title=""/>
@@ -167,7 +168,6 @@
       <friends title=""/>
       <membergroups visible="yes"/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <pagedocs/>
       <inlineclasses title=""/>

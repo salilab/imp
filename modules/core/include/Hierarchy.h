@@ -29,8 +29,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 /** \defgroup hierarchy Hierarchies of particles
-    These functions and classes aid in manipulating particles representing
-    molecules at multiple levels.
+    \brief Manipulate particles representing molecules at multiple levels.
  */
 #ifndef SWIG
 class Hierarchy;

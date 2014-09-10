@@ -25,7 +25,7 @@ class Bond;
 class Bonded;
 
 /** \defgroup bond Creating and restraining bonds
-    A set of classes and functions for manipulating bonds.
+    \brief A set of classes and functions for manipulating bonds.
  */
 
 //! A decorator for wrapping a particle representing a molecular bond
