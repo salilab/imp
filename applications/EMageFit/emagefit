@@ -5,6 +5,7 @@ import sys
 import os
 import time
 import logging
+import imp
 log = logging.getLogger("domino_model")
 
 import IMP
@@ -303,6 +304,9 @@ def create_dockings_from_xlinks(params):
         @param params Class with the parameters for the experiment
     """
     log.info("Creating initial assembly from xlinks and docking")
+    dock = imp.load_source("emagefit_dock",
+                           os.path.join(os.path.dirname(sys.argv[0]),
+                                        "emagefit_dock"))
     import emagefit_dock as dock
     import IMP.em2d.buildxlinks as bx
     m = DominoModel.DominoModel()
