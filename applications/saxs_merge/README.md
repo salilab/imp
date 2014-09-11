@@ -1,5 +1,5 @@
-saxs_merge.py {#saxs_merge_bin}
-=============
+saxs_merge {#saxs_merge_bin}
+==========
 
 A method for merging SAXS profiles using Gaussian processes.
 Small-Angle X-ray Scattering (SAXS) is an experimental technique that allows

@@ -44,7 +44,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             import scipy
         except ImportError:
             self.skipTest("could not import scipy")
-        merge = self.import_python_application('saxs_merge.py')
+        merge = self.import_python_application('saxs_merge')
         self.SAXSProfile = merge.SAXSProfile
         self.tempdir = None
 

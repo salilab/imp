@@ -62,7 +62,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
             import numpy
         except ImportError:
             self.skipTest("could not import scipy and numpy")
-        merge = self.import_python_application('saxs_merge.py')
+        merge = self.import_python_application('saxs_merge')
         self.SAXSProfile = merge.SAXSProfile
         self.merge = merge
 

@@ -3,6 +3,7 @@ ChangeLog {#changelog}
 
 # For IMP 2.3.0 # {#changelog_2_3_0}
 - Binary installers for 64-bit Windows are now available.
+- The `.py` extension has been removed from all Python applications, so that they are consistent with the C++ extensions.
 - The integrative docking (idock) application now employs SOAP to improve the scoring.
 - CHARMMParameters::create_topology() now works with a wider range of hierarchies (previously it would only accept Residues that were direct children of Chains). For example, it should do the right thing when given a Hierarchy that contains no Chain particles, or one where Residues are grouped under Fragments.
 - Only Python 2.6 or later is now supported. We still provide IMP for RedHat Enterprise 5 (which ships with Python 2.4) but you will need to use the `python26` binary (part of EPEL) rather than the system default Python.

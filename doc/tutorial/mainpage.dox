@@ -41,5 +41,5 @@ available.)
       using a 3D cryo-EM density map of the complex.
 
    8. [Merging SAXS profiles](saxs_merge.html).
-      Merging multiple small angle X-ray (SAXS) profiles using `saxs_merge.py`.
+      Merging multiple small angle X-ray (SAXS) profiles using `saxs_merge`.
 */

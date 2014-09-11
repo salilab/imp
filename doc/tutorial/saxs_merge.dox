@@ -8,10 +8,10 @@ In this example, [saxs_merge](@ref impsaxs_merge) is used to join multiple
 profiles from small angle X-ray (SAXS) experiments.
 
 All steps in the procedure use a command line tool called
-<tt>saxs_merge.py</tt>. For full help on this tool, run from a command line:
+<tt>saxs_merge</tt>. For full help on this tool, run from a command line:
 
 \code{.sh}
-saxs_merge.py --help
+saxs_merge --help
 \endcode
 
 \section saxs_merge_setup Setup
@@ -37,7 +37,7 @@ SAXS data in three columns, corresponding to q, l and err respectively.
 To do the merge, run from the command line:
 
 \code{.sh}
-saxs_merge.py 25043_01C_S059_0_01.sub=10 25043_01D_S061_0_01.sub=10 --auto --header --remove_noisy --remove_redundant --allfiles --outlevel=normal --stop=merging --aalpha=0.05 --bmean=Generalized --cmodel=normal --dalpha=0.05 --emean=Generalized --npoints=200 --acutoff=0.1 --creference=last --cnpoints=200 --eextrapolate=0 --blimit_fitting=240 --elimit_fitting=240 --blimit_hessian=80 --elimit_hessian=80 -v -v -v
+saxs_merge 25043_01C_S059_0_01.sub=10 25043_01D_S061_0_01.sub=10 --auto --header --remove_noisy --remove_redundant --allfiles --outlevel=normal --stop=merging --aalpha=0.05 --bmean=Generalized --cmodel=normal --dalpha=0.05 --emean=Generalized --npoints=200 --acutoff=0.1 --creference=last --cnpoints=200 --eextrapolate=0 --blimit_fitting=240 --elimit_fitting=240 --blimit_hessian=80 --elimit_hessian=80 -v -v -v
 \endcode
 
 A number of output files are produced. For example, <tt>data_merged.txt</tt>
