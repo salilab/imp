@@ -349,7 +349,7 @@ constant form factor (default = false)")(
         fp = pf->fit_profile(profile, min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
         if (chi_free > 0) {
-          double dmax = compute_max_distance(particles_vec[i]);
+          double dmax = ::compute_max_distance(particles_vec[i]);
           unsigned int ns = IMP::algebra::get_rounded(
               exp_saxs_profile->get_max_q() * dmax / IMP::PI);
           int K = chi_free;
