@@ -3,13 +3,13 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title="IMP Mainpage"/>
-    <tab type="user" visible="yes" title="Modules and Applications" url="allmod.html"/>
+    <tab type="namespaces" visible="yes" title="Modules">
+      <tab type="namespacelist" visible="yes" title="Module/Namespace List" intro="Here is a list of all IMP modules - each is also a C++ namespace and a Python package:"/>
+      <tab type="namespacemembers" visible="yes" title="Module/Namespace Members" intro=""/>
+    </tab>
+    <tab type="user" visible="yes" title="Applications" url="applications.html"/>
     <tab type="pages" visible="yes" title="" intro=""/>
     <tab type="modules" visible="yes" title="Groups" intro="Here is a list of all documentation groups:"/>
-    <tab type="namespaces" visible="yes" title="">
-      <tab type="namespacelist" visible="yes" title="" intro=""/>
-      <tab type="namespacemembers" visible="yes" title="" intro=""/>
-    </tab>
     <tab type="classes" visible="yes" title="">
       <tab type="classlist" visible="yes" title="" intro=""/>
       <tab type="classindex" visible="$ALPHABETICAL_INDEX" title=""/>

@@ -108,16 +108,12 @@ def generate_doxyfile(
 
 
 def generate_overview_pages(source):
-    name = os.path.join("doxygen", "generated", "all.dox")
+    name = os.path.join("doxygen", "generated", "applications.dox")
     contents = []
     contents.append("/** ")
-    contents.append("\\page allmod All IMP Modules and Applications")
+    contents.append("\\page applications All IMP Applications")
     contents.append("""
-IMP is divided up into a set of modules. Each of these corresponds to a
-C++ <i>namespace</i>, and so they can be found on the
-[namespaces page](namespaces.html).
-
-IMP also provides a number of applications (command line tools).
+IMP provides a number of applications (command line tools).
 These are listed below:""")
     for bs, g in tools.get_applications(source):
         contents.append("- \subpage imp%s \"IMP.%s\"" % (bs, bs))
