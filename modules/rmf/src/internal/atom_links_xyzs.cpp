@@ -19,9 +19,17 @@ void HierarchyLoadXYZs::setup_particle(
     const kernel::ParticleIndexes &rigid_bodies) {
   if (!ip_factory_.get_is(n)) return;
   if (!core::XYZ::get_is_setup(m, p)) core::XYZ::setup_particle(m, p);
+  /* If there is a rigid body parent set up, add this particle as a child */
   if (!rigid_bodies.empty()) {
     core::RigidBody rb(m, rigid_bodies.back());
-    if (!core::XYZ::get_is_setup(m, p)) core::XYZ::setup_particle(m, p);
+    /* For nested rigid bodies, this XYZ particle is *also* the rigid body.
+       So don't make ourselves our own child - add to the parent rigid body
+       instead. */
+    if (rigid_bodies.back() == p) {
+      IMP_INTERNAL_CHECK(rigid_bodies.size() >= 2,
+                     "Nested rigid body but could not find parent rigid body");
+      rb = core::RigidBody(m, rigid_bodies[rigid_bodies.size() - 2]);
+    }
     rb.add_member(p);
     if (!ip_factory_.get_is_static(n)) {
       IMP_LOG_VERBOSE("Member particle " << m->get_particle_name(p)
