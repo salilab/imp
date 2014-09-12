@@ -49,7 +49,7 @@ class IMPMockTests(unittest.TestCase):
                       'em3d_single_score', 'saxs_score', 'interface_rtc',
                       'nmr_rtc_score', 'soap_score']
         apps = ['cluster_profiles', 'cnmultifit',
-                'complex_to_anchor_graph.py', 'compute_chi',
+                'complex_to_anchor_graph', 'compute_chi',
                 'estimate_threshold_from_molecular_mass', 'foxs',
                 'imp_example_app', 'ligand_score', 'map2pca', 'mol2pca',
                 'multifit', 'pdb_check', 'pdb_rmf', 'resample_density',
@@ -57,7 +57,7 @@ class IMPMockTests(unittest.TestCase):
                 'rmf_frames', 'rmf_info', 'rmf_interpolate', 'rmf_pdb',
                 'rmf_show', 'rmf_signature', 'rmf_simplify', 'rmf_slice',
                 'rmf_transform', 'rmf_update',
-                'rmf_validate', 'rmf_xml', 'saxs_merge.py',
+                'rmf_validate', 'rmf_xml', 'saxs_merge',
                 'simulate_density_from_pdb',
                 'validate_profile', 'view_density_header']
         # RHEL systems don't include EMageFit and idock; Fedora and Ubuntu do

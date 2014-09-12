@@ -36,7 +36,7 @@ class IMPInstallTests(unittest.TestCase):
         """Check install of basic applications"""
         apps = ['cnmultifit', 'foxs', 'ligand_score',
                 'multifit', 'pdb_check', 'pdb_rmf', 'rmf_cat',
-                'saxs_merge.py']
+                'saxs_merge']
         for app in apps:
             try:
                 p = subprocess.Popen([app, '--help'], stdout=subprocess.PIPE,
