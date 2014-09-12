@@ -123,6 +123,8 @@ These are listed below:""")
                       key=lambda x:x[3])
         for app in apps:
             contents.append("  - [%s](\\ref %s): %s" % (app[0], app[1], app[2]))
+    contents.append("""
+See also the [command line tools provided by RMF](http://integrativemodeling.org/rmf/nightly/doc/executables.html).""")
     contents.append("*/")
     tools.rewrite(name, "\n".join(contents))
 
