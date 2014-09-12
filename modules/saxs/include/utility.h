@@ -87,6 +87,7 @@ inline Float radius_of_gyration(const kernel::Particles& particles) {
 }
 
 //! profile calculation for particles and a given set of options
+IMPSAXSEXPORT
 Profile* compute_profile(IMP::kernel::Particles particles,
                          float min_q = 0.0, float max_q = 0.5,
                          float delta_q = 0.001,
