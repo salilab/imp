@@ -13,5 +13,5 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - See main IMP papers list.
+ - See [main IMP papers list](@ref publications).
  - Inferential structure determination. Rieping W, Habeck M, Nilges M. (2005) Science. 8;309(5732):303-6.

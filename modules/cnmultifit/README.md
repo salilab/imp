@@ -22,4 +22,5 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - Keren Lasker, Maya Topf, Andrej Sali, Haim J. Wolfson, \quote{Inferential optimization for simultaneous fitting of multiple components into a cryoEM map of their assembly}, <em>Journal of Molecular Biology</em>, 2009.
+ - See [main IMP papers list](@ref publications).
+ - K. Lasker, M. Topf, A. Sali, H. J. Wolfson, ["Inferential optimization for simultaneous fitting of multiple components into a cryoEM map of their assembly", J Mol Biol **388**, 2009](http://www.ncbi.nlm.nih.gov/pubmed/19233204)

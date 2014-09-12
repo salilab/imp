@@ -16,4 +16,4 @@ version 2 of the License, or (at your option) any later version.
 
 
 _Publications_:
- - See main \imp papers list.
+ - See [main IMP papers list](@ref publications).

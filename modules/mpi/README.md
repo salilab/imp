@@ -17,4 +17,4 @@ _Maintainer_: `benmwebb`
 _License_: LGPL
 
 _Publications_:
-- None
+ - See [main IMP papers list](@ref publications).
