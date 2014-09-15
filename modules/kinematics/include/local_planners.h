@@ -30,7 +30,7 @@ class IMPKINEMATICSEXPORT LocalPlanner : public IMP::base::Object {
 
   // plan a path of valid intermediate nodes
   // from existing node q_from until the valid node that is
-  // somewhay close to q_rand
+  // somewhat close to q_rand
   virtual std::vector<DOFValues> plan(DOFValues q_near, DOFValues q_rand) = 0;
 
   bool is_valid(const DOFValues& values) {

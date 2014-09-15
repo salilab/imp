@@ -23,7 +23,7 @@ TransformationJoint::TransformationJoint(IMP::core::RigidBody parent,
                                          IMP::core::RigidBody child)
     : Joint(parent, child) {}
 
-// Sets the transfromation from parent to child
+// Sets the transformation from parent to child
 void TransformationJoint::set_transformation_child_to_parent(
     IMP::algebra::Transformation3D transformation) {
   if (get_owner_kf()) {

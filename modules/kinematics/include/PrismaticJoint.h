@@ -39,7 +39,7 @@ class IMPKINEMATICSEXPORT PrismaticJoint : public Joint {
 
   /**
      Create a prismatic joint whose axis of translation is between
-     the reference framess of parent and child, who also
+     the reference frames of parent and child, who also
      serve as witnesses for the joint transformation
   */
   PrismaticJoint(IMP::core::RigidBody parent, IMP::core::RigidBody child);

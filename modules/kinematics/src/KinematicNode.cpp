@@ -26,7 +26,7 @@ void KinematicNode::do_setup_particle(kernel::Model* m,
   }
   if (IMP::core::RigidMember::get_is_setup(m, pi)) {
     // see also RigidBody::add_member
-    IMP_THROW("RigidMemer cannot be set as KinematicNode at this point,"
+    IMP_THROW("RigidMember cannot be set as KinematicNode at this point,"
                   << " in order to guarantee coherent coordinates update",
               IMP::base::ValueException);
   }

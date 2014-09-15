@@ -35,7 +35,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
    structure over a model. The kinematic structure is defined as a
    forest over model particles at a certain hierarchy, such that a
    directed edge indicates the propagation of changes in internal
-   coordinates (joint values) to values of external (cartesian)
+   coordinates (joint values) to values of external (Cartesian)
    coordinates.
 
    \see Joint
@@ -179,7 +179,7 @@ class IMPKINEMATICSEXPORT KinematicForest
   }
 
   /**
-     sets the corodinates of a particle, and makes sure that particles
+     sets the coordinates of a particle, and makes sure that particles
      and joints in the tree will return correct external and internal
      coordinates
 
@@ -189,7 +189,7 @@ class IMPKINEMATICSEXPORT KinematicForest
   void set_coordinates_safe(IMP::core::RigidBody rb, IMP::algebra::Vector3D c) {
     IMP_USAGE_CHECK(get_is_member(rb),
                     "A KinematicForest can only handle particles "
-                        << " that were perviously added to it");
+                        << " that were previously added to it");
     rb.set_coordinates(c);
     mark_external_coordinates_changed();
   }
@@ -199,7 +199,7 @@ class IMPKINEMATICSEXPORT KinematicForest
   IMP::algebra::Vector3D get_coordinates_safe(IMP::core::RigidBody rb) const {
     IMP_USAGE_CHECK(get_is_member(rb),
                     "A KinematicForest can only handle particles "
-                        << " that were perviously added to it");
+                        << " that were previously added to it");
     const_cast<KinematicForest*>(this)->update_all_external_coordinates();
     return rb.get_coordinates();
   }
@@ -220,7 +220,7 @@ class IMPKINEMATICSEXPORT KinematicForest
       IMP::core::RigidBody rb) const {
     IMP_USAGE_CHECK(get_is_member(rb),
                     "A KinematicForest can only handle particles "
-                        << " that were perviously added to it");
+                        << " that were previously added to it");
     const_cast<KinematicForest*>(this)->update_all_external_coordinates();
     return rb.get_reference_frame();
   }
@@ -237,7 +237,7 @@ class IMPKINEMATICSEXPORT KinematicForest
                                 IMP::algebra::ReferenceFrame3D r) {
     IMP_USAGE_CHECK(get_is_member(rb),
                     "A KinematicForest can only handle particles "
-                        << " that were perviously added to it");
+                        << " that were previously added to it");
     rb.set_reference_frame(r);
     mark_external_coordinates_changed();
   }

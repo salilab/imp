@@ -92,7 +92,7 @@ class IMPKINEMATICSEXPORT Joint : public IMP::base::Object {
   }
 
   /**
-     Sets the transfromation from parent to child reference frame
+     Sets the transformation from parent to child reference frame
      (without any checks that internal coords are updated, and without
       marking the owner internal coords as changed)
   */
