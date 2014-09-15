@@ -63,11 +63,11 @@ class CHARMMAngleNames {
 class CHARMMDihedralNames {
   std::string a_, b_, c_, d_;
 
-  static inline int match(std::string ref, std::string cmp,
+  static inline int match(const std::string &ref, const std::string &cmp,
                           bool allow_wildcards) {
     if (ref == cmp) {
       return 0;
-    } else if (ref == "X" && allow_wildcards) {
+    } else if (allow_wildcards && ref == "X") {
       return 1;
     } else {
       return MISMATCH;
