@@ -1,6 +1,6 @@
 /**
- *  \file IMP/rmf/Category.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \file IMP/rmf/associations.cpp
+ *  \brief Track associations between an RMF file and native objects.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

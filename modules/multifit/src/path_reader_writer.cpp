@@ -27,7 +27,7 @@ Ints parse_path_line(const std::string &line) {
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   for (int i = 0; i < (int)line_split.size(); i++) {
     ret.push_back(boost::lexical_cast<int>(line_split[i]));
   }

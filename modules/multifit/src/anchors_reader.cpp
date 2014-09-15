@@ -23,7 +23,7 @@ bool is_edges_line(const std::string &line) {
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());
@@ -37,7 +37,7 @@ algebra::Vector3D parse_point_line(const std::string &line) {
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());
@@ -55,7 +55,7 @@ IntPair parse_edge_line(const std::string &line) {
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());

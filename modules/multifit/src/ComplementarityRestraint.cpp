@@ -134,7 +134,7 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
       << ps.boundary_score
       << std::endl;*/
   if (!score_acceptable(ps)) {
-    //    std::cout<<"scores are not accetable"<<std::endl;
+    //    std::cout<<"scores are not acceptable"<<std::endl;
     return std::numeric_limits<double>::max();
   }
   double score = penetration_coef_ * ps.penetration_score +

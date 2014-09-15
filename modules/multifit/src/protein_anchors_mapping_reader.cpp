@@ -30,7 +30,7 @@ bool is_anchors_line(const std::string &line) {
   IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero length entires as well
+  //split returns zero length entries as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
                                    internal::EmptyString() ),line_split.end() );
   if (boost::lexical_cast<std::string>(line_split[0]) != "anchors") {
@@ -44,7 +44,7 @@ bool is_protein_line(const std::string &line) {
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());
@@ -59,7 +59,7 @@ std::string parse_anchors_line(const std::string &line) {
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());
@@ -73,7 +73,7 @@ boost::tuple<std::string, std::string, IntsList> parse_protein_line(
   IMP_LOG_VERBOSE("going to parse:" << line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  // split returns zero length entires as well
+  // split returns zero length entries as well
   line_split.erase(std::remove_if(line_split.begin(), line_split.end(),
                                   internal::EmptyString()),
                    line_split.end());

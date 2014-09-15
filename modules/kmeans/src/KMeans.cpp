@@ -200,7 +200,7 @@ const IMP::Floats& KMeans::get_data_point(unsigned int i) const {
 }
 
 /** Returns the i'th center
-      Must be called only following a succesful execute() invokation
+      Must be called only following a successful execute() invocation
 
       @param[in] i center number in range (0,...,k-1)
    */

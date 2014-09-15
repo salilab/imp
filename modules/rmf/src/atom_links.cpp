@@ -1,5 +1,5 @@
 /**
- *  \file IMP/rmf/Category.h
+ *  \file IMP/rmf/atom_links.cpp
  *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
@@ -91,7 +91,7 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
       } else {
         gresols.push_back(-1);
       }
-      IMP_LOG_TERSE("Found gaussian alternative " << alt << std::endl);
+      IMP_LOG_TERSE("Found Gaussian alternative " << alt << std::endl);
     }
     // for each of them, add particle
     // recurse

@@ -19,12 +19,12 @@ IMPRMF_BEGIN_NAMESPACE
 /** \name kernel::Restraint I/O
     kernel::Restraints are written as am RMF::FEATURE node with subnodes for
     the decomposed restraints
-    (kernel::Restraint::create_current_decompositon()).
+    (kernel::Restraint::create_current_decomposition()).
     The kernel::Restraints::get_last_score() value is what is saved to the file,
     so make sure that the restraints have been evaluated before saving
     a frame.
 
-    Any particles returnd by kernel::Restraint::get_input_particles() that are
+    Any particles returned by kernel::Restraint::get_input_particles() that are
     also linked in the RMF file will be included in the RMF file as
     inputs for the kernel::Restraint. This allows external software like e.g.,
     Chimera to associate these restrains with a certain set of particles.

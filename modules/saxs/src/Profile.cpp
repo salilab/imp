@@ -1017,7 +1017,7 @@ void Profile::profile_2_distribution(RadialDistributionFunction& rd,
 void Profile::calculate_profile_reciprocal(const kernel::Particles& particles,
                                            FormFactorType ff_type) {
   if (ff_type == CA_ATOMS) {
-    IMP_WARN("Reciprocal space profile calculation is not suported for"
+    IMP_WARN("Reciprocal space profile calculation is not supported for"
              << "residue level" << std::endl);
     return;
   }
@@ -1057,7 +1057,7 @@ void Profile::calculate_profile_reciprocal_partial(
     const kernel::Particles& particles, const Floats& surface,
     FormFactorType ff_type) {
   if (ff_type == CA_ATOMS) {
-    IMP_WARN("Reciprocal space profile calculation is not suported for"
+    IMP_WARN("Reciprocal space profile calculation is not supported for"
              << "residue level" << std::endl);
     return;
   }

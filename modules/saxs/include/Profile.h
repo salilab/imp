@@ -73,7 +73,7 @@ class IMPSAXSEXPORT Profile : public base::Object {
                                             FormFactorType ff_type =
                                                 HEAVY_ATOMS);
 
-  //! computes theoretical profile contribution from iter-molecular
+  //! computes theoretical profile contribution from inter-molecular
   //! interactions between the particles
   void calculate_profile(const kernel::Particles& particles1,
                          const kernel::Particles& particles2,

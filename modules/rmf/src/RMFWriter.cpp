@@ -1,5 +1,5 @@
 /**
- *  \file IMP/rmf/Category.h
+ *  \file IMP/rmf/RMFWriter.cpp
  *  \brief Handle read/write of kernel::Model data from/to files.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.

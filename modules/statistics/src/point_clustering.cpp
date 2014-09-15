@@ -48,7 +48,7 @@ PartitionalClusteringWithCenter *create_lloyds_kmeans(const Ints &names,
   // use the initial centers if provided
   boost::scoped_ptr<internal::KMPointArray> kmc;
   IMP_LOG_VERBOSE("KMLProxy::run load initial guess \n");
-  // load the initail guess
+  // load the initial guess
   internal::KMData data(metric->get_point(names[0]).get_dimension(),
                         names.size());
   for (unsigned int i = 0; i < names.size(); ++i) {
@@ -61,7 +61,7 @@ PartitionalClusteringWithCenter *create_lloyds_kmeans(const Ints &names,
   IMP_LOG_VERBOSE("KMLProxy::run load lloyd \n");
   internal::KMTerminationCondition term;
   internal::KMLocalSearchLloyd la(&ctrs, &term);
-  IMP_LOG_VERBOSE("KMLProxy::run excute lloyd \n");
+  IMP_LOG_VERBOSE("KMLProxy::run execute lloyd \n");
   la.execute();
   internal::KMFilterCentersResults best_clusters = la.get_best();
   IMP_INTERNAL_CHECK(

@@ -1,7 +1,7 @@
 /**
  * \file IMP/score_functor/SingletonStatistical.h
  * \brief statistical score for a single particle based on one parameter,
- * such as solvent accessability
+ * such as solvent accessibility
  *
  * \authors Dina Schneidman
  * Copyright 2007-2014 IMP Inventors. All rights reserved.

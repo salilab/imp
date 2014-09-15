@@ -20,7 +20,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 /** Point-based clustering needs a way of embedding the data being clustered
     in space. Classes which implement Embedding provide a
     mapping between each item being clustered (named by an integer index)
-    and a point in space, as a fixed-lenth array of floating point numbers.
+    and a point in space, as a fixed-length array of floating point numbers.
  */
 class IMPSTATISTICSEXPORT Embedding : public IMP::base::Object {
  protected:

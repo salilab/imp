@@ -57,7 +57,7 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
       algebra::Vector3D(boost::lexical_cast<float>(fit_translation_split[0]),
                         boost::lexical_cast<float>(fit_translation_split[1]),
                         boost::lexical_cast<float>(fit_translation_split[2]))));
-  IMP_LOG_VERBOSE("tranformation is set:" << fit_sol.get_fit_transformation()
+  IMP_LOG_VERBOSE("transformation is set:" << fit_sol.get_fit_transformation()
                                           << std::endl);
   fit_sol.set_match_size(boost::lexical_cast<int>(line_split[4]));
   fit_sol.set_match_average_distance(boost::lexical_cast<float>(line_split[5]));

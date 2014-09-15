@@ -132,14 +132,14 @@ class IMPKMEANSEXPORT KMeans : public IMP::base::Object {
   //! @return The number of data points
   unsigned int get_number_of_data_points() const { return STLDataPts_.size(); }
 
-  //! Print the centers (assuming exectute() was applied) to log
+  //! Print the centers (assuming execute() was applied) to log
   /**
       @param ll the log level for printout
    */
   void print_centers(base::LogLevel ll = base::PROGRESS) const;
 
   //! Returns the i'th center
-  /** Must be called only following a succesful execute() invokation
+  /** Must be called only following a successful execute() invocation
 
       @param[in] i Center number in range (0,...,k-1)
    */
@@ -160,7 +160,7 @@ class IMPKMEANSEXPORT KMeans : public IMP::base::Object {
     return ptsSqrDistToCenters_;
   }
 
-  /** @return The number of centers after a succeful execution */
+  /** @return The number of centers after a successful execution */
   unsigned int get_number_of_centers() const {
     assert(is_executed_);  // TODO: exception?
     return pCenters_->getK();
@@ -215,13 +215,13 @@ class IMPKMEANSEXPORT KMeans : public IMP::base::Object {
 
   /*********************** Private Variables **************************/
  private:
-  // was k-means executed succesfully
+  // was k-means executed successfully
   bool is_executed_;
 
   // The data points in STL format
   IMP::FloatsList STLDataPts_;
 
-  // data points in wrapped internal::KMdata strcture
+  // data points in wrapped internal::KMdata structure
   // (should be synced from STLDataPts_ before usage)
   base::Pointer<internal::KMdata> pKMDataPts_;
 

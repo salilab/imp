@@ -45,7 +45,7 @@ IMPRMF_BEGIN_NAMESPACE
     atom::Hierarchies against an RMF file, the linked hierarchies are
     assumed to be identical in all of their static attributes to the
     hierarchies in the RMF file (within
-    RMF::REPRESENTATION nodes). In particular, these hierachies must
+    RMF::REPRESENTATION nodes). In particular, these hierarchies must
     have the same tree topology (number of children for each node).
 
     @{
