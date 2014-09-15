@@ -321,7 +321,7 @@ void HierarchySaveRigidBodies::save(kernel::Model *m, RMF::FileHandle fh) {
   }
   IMP_FOREACH(Pair pp, local_) {
     copy_to_frame_reference_frame(
-        core::RigidMember(m, pp.second).get_internal_transformation(),
+        core::RigidBodyMember(m, pp.second).get_internal_transformation(),
         fh.get_node(pp.first), reference_frame_factory_);
   }
 }

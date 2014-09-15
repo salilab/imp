@@ -592,7 +592,8 @@ void RigidBody::update_members() {
     for (unsigned int i = 0; i < members.size(); ++i) {
       RigidBody rb(get_model(), members[i]);
       algebra::Transformation3D itr =
-          RigidMember(get_model(), members[i]).get_internal_transformation();
+          RigidBodyMember(get_model(),
+                          members[i]).get_internal_transformation();
       rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(tr * itr));
     }
   }
