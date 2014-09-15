@@ -23,4 +23,4 @@ version 2 of the License, or (at your option) any later version.
 
 _Publications_:
  - See [main IMP papers list](@ref publications).
- - K. Lasker, M. Topf, A. Sali, H. J. Wolfson, ["Inferential optimization for simultaneous fitting of multiple components into a cryoEM map of their assembly", J Mol Biol **388**, 2009](http://www.ncbi.nlm.nih.gov/pubmed/19233204)
+ - K. Lasker, M. Topf, A. Sali, H. J. Wolfson, ["Inferential optimization for simultaneous fitting of multiple components into a cryoEM map of their assembly", J Mol Biol 388, 2009](http://www.ncbi.nlm.nih.gov/pubmed/19233204)

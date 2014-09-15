@@ -46,5 +46,5 @@ version 2 of the License, or (at your option) any later version.
 
 _Publications_:
  - See [main IMP papers list](@ref publications).
- - J. A. Velazquez-Muriel, K. Lasker, D. Russel, J. Phillips, B. M. Webb, D. Schneidman-Duhovny, A. Sali, ["Assembly of macromolecular complexes by satisfaction of spatial restraints from electron microscopy images", Proc Natl Acad Sci USA **109**(46), 18821-18826, 2012](http://www.ncbi.nlm.nih.gov/pubmed/23112201).
- - D. Schneidman-Duhovny *et al.* ["A method for integrative structure determination of protein-protein complexes", Bioinformatics **28**(24), 282-9, 2012](http://www.ncbi.nlm.nih.gov/pubmed/23093611).
+ - J. A. Velazquez-Muriel, K. Lasker, D. Russel, J. Phillips, B. M. Webb, D. Schneidman-Duhovny, A. Sali, ["Assembly of macromolecular complexes by satisfaction of spatial restraints from electron microscopy images", Proc Natl Acad Sci USA 109(46), 18821-18826, 2012](http://www.ncbi.nlm.nih.gov/pubmed/23112201).
+ - D. Schneidman-Duhovny *et al.* ["A method for integrative structure determination of protein-protein complexes", Bioinformatics 28(24), 282-9, 2012](http://www.ncbi.nlm.nih.gov/pubmed/23093611).
