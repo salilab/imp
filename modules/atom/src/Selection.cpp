@@ -323,7 +323,7 @@ Selection::SearchResult Selection::search(
     if (curr.get_match()) {
       if (curr.get_indexes().empty()) {
         children_covered = false;
-      } else if (curr.get_match()) {
+      } else {
         children += curr.get_indexes();
       }
     }
