@@ -35,6 +35,10 @@ IMPATOM_BEGIN_NAMESPACE
     each get the C-terminus of the protein "myprotein" (assuming the last
     residue index is 133).
 
+    Selection objects can be combined using basic set operations (union,
+    intersection, difference, symmetric difference). In Python the equivalent
+    operators (|, &, -, ^ respectively) can be used.
+
     \note Only representational particles are selected. That is, ones
     with x,y,z coordinates. And the highest resolution representation
     that fits is returned. If you want lower resolution, use the
