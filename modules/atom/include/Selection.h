@@ -37,7 +37,8 @@ IMPATOM_BEGIN_NAMESPACE
 
     Selection objects can be combined using basic set operations (union,
     intersection, difference, symmetric difference). In Python the equivalent
-    operators (|, &, -, ^ respectively) can be used.
+    operators (|, &, -, ^ respectively) can be used. This requires that all
+    of the objects being combined use the same hierarchy or hierarchies.
 
     \note Only representational particles are selected. That is, ones
     with x,y,z coordinates. And the highest resolution representation
