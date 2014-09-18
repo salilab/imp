@@ -62,6 +62,19 @@ class Tests(IMP.test.TestCase):
             rind = r.get_index()
             self.assert_(rind in [436, 437])
 
+    def test_residue_type(self):
+        """Test selection of residue type"""
+        IMP.base.set_log_level(IMP.base.SILENT)
+        m = IMP.kernel.Model()
+        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        v = IMP.atom.Selection(h, residue_type=IMP.atom.VAL)
+        ps = v.get_selected_particle_indexes()
+        self.assertEqual(len(ps), 7)
+        for p in ps:
+            r = IMP.atom.Residue(IMP.atom.Atom(m, p).get_parent())
+            rind = r.get_index()
+            self.assertEqual(rind, 434)
+
     def test_two(self):
         """Test simple selection of N and C termini"""
         IMP.base.set_log_level(IMP.base.SILENT)
