@@ -58,7 +58,7 @@ class IMPATOMEXPORT Selection :
  private:
   kernel::Model *m_;
   double resolution_;
-  base::Pointer<internal::ListSelectionPredicate> predicate_;
+  base::Pointer<internal::ListSelectionPredicate> predicate_, and_predicate_;
 
   kernel::ParticleIndexes h_;
   IMP_NAMED_TUPLE_2(SearchResult, SearchResults, bool, match,
@@ -67,6 +67,7 @@ class IMPATOMEXPORT Selection :
                       boost::dynamic_bitset<> parent) const;
   void set_hierarchies(kernel::Model *m, const kernel::ParticleIndexes &pis);
   void add_predicate(internal::SelectionPredicate *p);
+  void init_predicate();
 
  public:
 #ifdef IMP_DOXYGEN
@@ -89,6 +90,7 @@ class IMPATOMEXPORT Selection :
             Ints state_indexes = []);
 #endif
   Selection();
+  Selection(const Selection &s);
   Selection(Hierarchy h);
   Selection(kernel::Particle *h);
   Selection(kernel::Model *m, const kernel::ParticleIndexes &pis);
@@ -161,6 +163,12 @@ class IMPATOMEXPORT Selection :
       Molecule, Fragment, Residue etc. See GetByType for how to
       specify the types. Ints are used to make swig happy.*/
   void set_hierarchy_types(Ints types);
+  //! Select elements that are in both this Selection and the passed one.
+  /** \note both Selections must be on the same Hierarchy or Hierarchies */
+  void set_intersection(const Selection &s);
+  //! Select elements that are in either this Selection or the passed one.
+  /** \note both Selections must be on the same Hierarchy or Hierarchies */
+  void set_union(const Selection &s);
   //! Get the selected particles
   kernel::ParticlesTemp get_selected_particles() const;
   //! Get the indexes of the selected particles

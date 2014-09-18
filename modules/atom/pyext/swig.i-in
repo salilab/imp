@@ -128,6 +128,25 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
         except: self.this = this
       for k in params.keys():
         eval("self.set_%s(params[k])"%k)
+
+  def union(self, s):
+      news = Selection(self)
+      news.union_update(s)
+      return news
+  def intersection(self, s):
+      news = Selection(self)
+      news.intersection_update(s)
+      return news
+  def union_update(self, s):
+      self.set_union(s)
+      return self
+  def intersection_update(self, s):
+      self.set_intersection(s)
+      return self
+  __or__ = union
+  __and__ = intersection
+  __ior__ = union_update
+  __iand__ = intersection_update
 %}
 }
 

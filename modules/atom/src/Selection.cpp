@@ -114,25 +114,40 @@ namespace {
   };
 }
 
-Selection::Selection() : resolution_(0),
-                         predicate_(new AndSelectionPredicate()) {
+void Selection::init_predicate() {
+  and_predicate_ = new AndSelectionPredicate();
+  predicate_ = and_predicate_;
+}
+
+Selection::Selection() : resolution_(0) {
+  init_predicate();
   m_ = nullptr;
 }
-Selection::Selection(kernel::Particle *h) : resolution_(0),
-                         predicate_(new AndSelectionPredicate()) {
+
+Selection::Selection(const Selection &s) {
+  m_ = s.m_;
+  h_ = s.h_;
+  resolution_ = s.resolution_;
+  predicate_ = s.predicate_;
+  and_predicate_ = s.and_predicate_;
+}
+
+Selection::Selection(kernel::Particle *h) : resolution_(0) {
+  init_predicate();
   set_hierarchies(h->get_model(), kernel::ParticleIndexes(1, h->get_index()));
 }
-Selection::Selection(Hierarchy h) : resolution_(0),
-                         predicate_(new AndSelectionPredicate()) {
+Selection::Selection(Hierarchy h) : resolution_(0) {
+  init_predicate();
   set_hierarchies(h.get_model(),
                   kernel::ParticleIndexes(1, h.get_particle_index()));
 }
 Selection::Selection(kernel::Model *m, const kernel::ParticleIndexes &pis)
-    : resolution_(0), predicate_(new AndSelectionPredicate()) {
+    : resolution_(0) {
+  init_predicate();
   set_hierarchies(m, pis);
 }
-Selection::Selection(const Hierarchies &h) : resolution_(0),
-                 predicate_(new AndSelectionPredicate()) {
+Selection::Selection(const Hierarchies &h) : resolution_(0) {
+  init_predicate();
   if (h.empty()) {
     m_ = nullptr;
     return;
@@ -140,8 +155,8 @@ Selection::Selection(const Hierarchies &h) : resolution_(0),
     set_hierarchies(h[0].get_model(), IMP::internal::get_index(h));
   }
 }
-Selection::Selection(const kernel::ParticlesTemp &h) : resolution_(0),
-                 predicate_(new AndSelectionPredicate()) {
+Selection::Selection(const kernel::ParticlesTemp &h) : resolution_(0) {
+  init_predicate();
   if (h.empty()) {
     m_ = nullptr;
     return;
@@ -151,7 +166,8 @@ Selection::Selection(const kernel::ParticlesTemp &h) : resolution_(0),
 }
 // for C++
 Selection::Selection(Hierarchy h, std::string molname, int residue_index)
-    : resolution_(0), predicate_(new AndSelectionPredicate()) {
+    : resolution_(0) {
+  init_predicate();
   set_hierarchies(h.get_model(),
                   kernel::ParticleIndexes(1, h.get_particle_index()));
   set_molecules(Strings(1, molname));
@@ -498,9 +514,35 @@ void Selection::set_hierarchy_types(Ints types) {
   add_predicate(new HierarchyTypeSelectionPredicate(types));
 }
 
+void Selection::set_intersection(const Selection &s) {
+  IMP_USAGE_CHECK(h_ == s.h_,
+              "Both Selections must be on the same Hierarchy or Hierarchies");
+  // Replace top-level predicate with a new AndSelectionPredicate, and make
+  // both the existing top-level predicate and the other selection's predicate
+  // children of it
+  base::Pointer<internal::ListSelectionPredicate> p
+              = new AndSelectionPredicate();
+  p->add_predicate(predicate_);
+  p->add_predicate(s.predicate_);
+  predicate_ = p;
+}
+
+void Selection::set_union(const Selection &s) {
+  IMP_USAGE_CHECK(h_ == s.h_,
+              "Both Selections must be on the same Hierarchy or Hierarchies");
+  // Replace top-level predicate with a new OrSelectionPredicate, and make
+  // both the existing top-level predicate and the other selection's predicate
+  // children of it
+  base::Pointer<internal::ListSelectionPredicate> p
+              = new OrSelectionPredicate();
+  p->add_predicate(predicate_);
+  p->add_predicate(s.predicate_);
+  predicate_ = p;
+}
+
 void Selection::add_predicate(internal::SelectionPredicate *p)
 {
-  predicate_->add_predicate(p);
+  and_predicate_->add_predicate(p);
 }
 
 void Selection::show(std::ostream &out) const { out << "Selection on " << h_; }
