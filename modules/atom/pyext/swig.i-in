@@ -141,6 +141,10 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
       news = Selection(self)
       news.symmetric_difference_update(s)
       return news
+  def difference(self, s):
+      news = Selection(self)
+      news.difference_update(s)
+      return news
   def union_update(self, s):
       self.set_union(s)
       return self
@@ -150,12 +154,17 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
   def symmetric_difference_update(self, s):
       self.set_symmetric_difference(s)
       return self
+  def difference_update(self, s):
+      self.set_difference(s)
+      return self
   __or__ = union
   __and__ = intersection
   __xor__ = symmetric_difference
+  __sub__ = difference
   __ior__ = union_update
   __iand__ = intersection_update
   __ixor__ = symmetric_difference_update
+  __isub__ = difference_update
 %}
 }
 

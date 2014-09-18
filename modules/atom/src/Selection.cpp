@@ -47,6 +47,37 @@ namespace {
     else return -1;
   }
 
+  //! Reverse a match
+  class NotSelectionPredicate : public internal::SelectionPredicate {
+    base::Pointer<SelectionPredicate> predicate_;
+  public:
+    NotSelectionPredicate(SelectionPredicate *predicate,
+                          std::string name = "NotSelectionPredicate%1%")
+          : internal::SelectionPredicate(name), predicate_(predicate) {}
+
+    virtual int setup_bitset(int index) IMP_OVERRIDE {
+      index = internal::SelectionPredicate::setup_bitset(index);
+      /* Set index for subpredicate */
+      index = predicate_->setup_bitset(index);
+      return index;
+    }
+
+    virtual kernel::ModelObjectsTemp do_get_inputs(
+          kernel::Model *m, const kernel::ParticleIndexes &pis) const
+          IMP_OVERRIDE {
+      return IMP::get_particles(m, pis);
+    }
+
+    virtual int do_get_value_index(kernel::Model *m,
+                                   kernel::ParticleIndex pi,
+                                   boost::dynamic_bitset<> &bs)
+                                       const IMP_OVERRIDE {
+      return -predicate_->get_value_index(m, pi, bs);
+    }
+
+    IMP_OBJECT_METHODS(NotSelectionPredicate);
+  };
+
   //! Match only if every subpredicate matches (or there are no subpredicates)
   class AndSelectionPredicate : public internal::ListSelectionPredicate {
   public:
@@ -588,6 +619,19 @@ void Selection::set_symmetric_difference(const Selection &s) {
               = new XorSelectionPredicate();
   p->add_predicate(predicate_);
   p->add_predicate(s.predicate_);
+  predicate_ = p;
+}
+
+void Selection::set_difference(const Selection &s) {
+  IMP_USAGE_CHECK(h_ == s.h_,
+              "Both Selections must be on the same Hierarchy or Hierarchies");
+  // Replace top-level predicate with a new AndSelectionPredicate, and make
+  // both the existing top-level predicate and the other selection's predicate
+  // (wrapped with a NotSelectionPredicate) children of it
+  base::Pointer<internal::ListSelectionPredicate> p
+              = new AndSelectionPredicate();
+  p->add_predicate(predicate_);
+  p->add_predicate(new NotSelectionPredicate(s.predicate_));
   predicate_ = p;
 }
 

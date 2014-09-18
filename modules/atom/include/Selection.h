@@ -172,6 +172,9 @@ class IMPATOMEXPORT Selection :
   //! Select elements that are in this Selection or the passed one but not both.
   /** \note both Selections must be on the same Hierarchy or Hierarchies */
   void set_symmetric_difference(const Selection &s);
+  //! Select elements that are in this Selection but not the passed one.
+  /** \note both Selections must be on the same Hierarchy or Hierarchies */
+  void set_difference(const Selection &s);
   //! Get the selected particles
   kernel::ParticlesTemp get_selected_particles() const;
   //! Get the indexes of the selected particles
