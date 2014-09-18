@@ -112,6 +112,44 @@ namespace {
   
     IMP_OBJECT_METHODS(OrSelectionPredicate);
   };
+
+  //! Match if an odd number of subpredicates match (or there are none)
+  class XorSelectionPredicate : public internal::ListSelectionPredicate {
+  public:
+    /* Note that we *don't* want to cache matches from this predicate,
+       since a child might match another subpredicate and so flip this
+       predicate's match bit */
+    XorSelectionPredicate(std::string name = "XorSelectionPredicate%1%")
+          : internal::ListSelectionPredicate(name, false) {}
+
+    virtual int do_get_value_index(kernel::Model *m,
+                                   kernel::ParticleIndex pi,
+                                   boost::dynamic_bitset<> &bs)
+                                       const IMP_OVERRIDE {
+      // Empty list matches everything
+      if (predicates_.size() == 0) {
+        return 1;
+      }
+      bool no_match = false, match = false;
+      IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
+        int v = p->get_value_index(m, pi, bs);
+        if (v == 1) {
+          match = !match;
+        } else if (v == 0) {
+          no_match = true;
+        }
+      }
+      if (match) {
+        return 1;
+      } else if (no_match) {
+        return 0;
+      } else {
+        return -1;
+      }
+    }
+
+    IMP_OBJECT_METHODS(XorSelectionPredicate);
+  };
 }
 
 void Selection::init_predicate() {
@@ -535,6 +573,19 @@ void Selection::set_union(const Selection &s) {
   // children of it
   base::Pointer<internal::ListSelectionPredicate> p
               = new OrSelectionPredicate();
+  p->add_predicate(predicate_);
+  p->add_predicate(s.predicate_);
+  predicate_ = p;
+}
+
+void Selection::set_symmetric_difference(const Selection &s) {
+  IMP_USAGE_CHECK(h_ == s.h_,
+              "Both Selections must be on the same Hierarchy or Hierarchies");
+  // Replace top-level predicate with a new XorSelectionPredicate, and make
+  // both the existing top-level predicate and the other selection's predicate
+  // children of it
+  base::Pointer<internal::ListSelectionPredicate> p
+              = new XorSelectionPredicate();
   p->add_predicate(predicate_);
   p->add_predicate(s.predicate_);
   predicate_ = p;

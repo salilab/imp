@@ -18,12 +18,13 @@ IMPATOM_BEGIN_INTERNAL_NAMESPACE
 /** \see Selection */
 class SelectionPredicate : public ParticleInputs, public base::Object {
   int bitset_index_;
+  bool use_cache_;
  public:
 
   IMP_REF_COUNTED_DESTRUCTOR(SelectionPredicate);
 
-  SelectionPredicate(std::string name)
-         : base::Object(name), bitset_index_(-1) {};
+  SelectionPredicate(std::string name, bool use_cache=true)
+         : base::Object(name), bitset_index_(-1), use_cache_(use_cache) {};
 
   //! Set up unique index(es) into Selection's bitset.
   /** Each predicate needs a unique index so that matches can be cached using
@@ -59,7 +60,7 @@ class SelectionPredicate : public ParticleInputs, public base::Object {
     } else {
       int v = do_get_value_index(m, vt, bs);
       /* Cache a successful match */
-      if (v == 1) {
+      if (v == 1 && use_cache_) {
         bs.reset(bitset_index_);
       }
       return v;
@@ -82,8 +83,8 @@ class ListSelectionPredicate : public SelectionPredicate {
 protected:
   SelectionPredicates predicates_;
 public:
-  ListSelectionPredicate(std::string name)
-          : SelectionPredicate(name) {}
+  ListSelectionPredicate(std::string name, bool use_cache=true)
+          : SelectionPredicate(name, use_cache) {}
 
   //! Add a predicate to the list of subpredicates
   void add_predicate(SelectionPredicate *p) {
