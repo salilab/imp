@@ -8,7 +8,6 @@
 
 #include "IMP/atom/hierarchy_tools.h"
 #include <IMP/SingletonContainer.h>
-#include <IMP/SingletonPredicate.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Chain.h>
@@ -47,21 +46,93 @@ namespace {
     if (v) return 1;
     else return -1;
   }
+
+  //! Match only if every subpredicate matches (or there are no subpredicates)
+  class AndSelectionPredicate : public internal::ListSelectionPredicate {
+  public:
+    AndSelectionPredicate(std::string name = "AndSelectionPredicate%1%")
+          : internal::ListSelectionPredicate(name) {}
+  
+    virtual int do_get_value_index(kernel::Model *m,
+                                   kernel::ParticleIndex pi,
+                                   boost::dynamic_bitset<> &bs)
+                                       const IMP_OVERRIDE {
+      // Empty list matches everything
+      if (predicates_.size() == 0) {
+        return 1;
+      }
+      bool no_match = false;
+      IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
+        int v = p->get_value_index(m, pi, bs);
+        if (v == -1) {
+          return -1;
+        } else if (v == 0) {
+          no_match = true;
+        }
+      }
+      if (no_match) {
+        return 0;
+      } else {
+        return 1;
+      }
+    }
+  
+    IMP_OBJECT_METHODS(AndSelectionPredicate);
+  };
+  
+  //! Match if any subpredicate matches (or there are no subpredicates)
+  class OrSelectionPredicate : public internal::ListSelectionPredicate {
+  public:
+    OrSelectionPredicate(std::string name = "OrSelectionPredicate%1%")
+          : internal::ListSelectionPredicate(name) {}
+  
+    virtual int do_get_value_index(kernel::Model *m,
+                                   kernel::ParticleIndex pi,
+                                   boost::dynamic_bitset<> &bs)
+                                       const IMP_OVERRIDE {
+      // Empty list matches everything
+      if (predicates_.size() == 0) {
+        return 1;
+      }
+      bool no_match = false;
+      IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
+        int v = p->get_value_index(m, pi, bs);
+        if (v == 1) {
+          return 1;
+        } else if (v == 0) {
+          no_match = true;
+        }
+      }
+      if (no_match) {
+        return 0;
+      } else {
+        return -1;
+      }
+    }
+  
+    IMP_OBJECT_METHODS(OrSelectionPredicate);
+  };
 }
 
-Selection::Selection() : resolution_(0) { m_ = nullptr; }
-Selection::Selection(kernel::Particle *h) : resolution_(0) {
+Selection::Selection() : resolution_(0),
+                         predicate_(new AndSelectionPredicate()) {
+  m_ = nullptr;
+}
+Selection::Selection(kernel::Particle *h) : resolution_(0),
+                         predicate_(new AndSelectionPredicate()) {
   set_hierarchies(h->get_model(), kernel::ParticleIndexes(1, h->get_index()));
 }
-Selection::Selection(Hierarchy h) : resolution_(0) {
+Selection::Selection(Hierarchy h) : resolution_(0),
+                         predicate_(new AndSelectionPredicate()) {
   set_hierarchies(h.get_model(),
                   kernel::ParticleIndexes(1, h.get_particle_index()));
 }
 Selection::Selection(kernel::Model *m, const kernel::ParticleIndexes &pis)
-    : resolution_(0) {
+    : resolution_(0), predicate_(new AndSelectionPredicate()) {
   set_hierarchies(m, pis);
 }
-Selection::Selection(const Hierarchies &h) : resolution_(0) {
+Selection::Selection(const Hierarchies &h) : resolution_(0),
+                 predicate_(new AndSelectionPredicate()) {
   if (h.empty()) {
     m_ = nullptr;
     return;
@@ -69,7 +140,8 @@ Selection::Selection(const Hierarchies &h) : resolution_(0) {
     set_hierarchies(h[0].get_model(), IMP::internal::get_index(h));
   }
 }
-Selection::Selection(const kernel::ParticlesTemp &h) : resolution_(0) {
+Selection::Selection(const kernel::ParticlesTemp &h) : resolution_(0),
+                 predicate_(new AndSelectionPredicate()) {
   if (h.empty()) {
     m_ = nullptr;
     return;
@@ -79,7 +151,7 @@ Selection::Selection(const kernel::ParticlesTemp &h) : resolution_(0) {
 }
 // for C++
 Selection::Selection(Hierarchy h, std::string molname, int residue_index)
-    : resolution_(0) {
+    : resolution_(0), predicate_(new AndSelectionPredicate()) {
   set_hierarchies(h.get_model(),
                   kernel::ParticleIndexes(1, h.get_particle_index()));
   set_molecules(Strings(1, molname));
@@ -99,15 +171,17 @@ void Selection::set_hierarchies(kernel::Model *m,
 
 namespace {
 #define IMP_ATOM_SELECTION_PRED(Name, DataType, check)                         \
-  class Name##SingletonPredicate : public SingletonPredicate {                 \
+  class Name##SelectionPredicate : public internal::SelectionPredicate {       \
     DataType data_;                                                            \
                                                                                \
    public:                                                                     \
-    Name##SingletonPredicate(const DataType &data,                             \
-                             std::string name = #Name "SingletonPredicate%1%") \
-        : SingletonPredicate(name), data_(data) {}                             \
-    virtual int get_value_index(kernel::Model *m,                              \
-                                kernel::ParticleIndex pi) const IMP_OVERRIDE { \
+    Name##SelectionPredicate(const DataType &data,                             \
+                             std::string name = #Name "SelectionPredicate%1%") \
+        : internal::SelectionPredicate(name), data_(data) {}                   \
+    virtual int do_get_value_index(kernel::Model *m,                           \
+                                   kernel::ParticleIndex pi,                   \
+                                   boost::dynamic_bitset<> &)                  \
+                                            const IMP_OVERRIDE {               \
       check;                                                                   \
     }                                                                          \
     virtual kernel::ModelObjectsTemp do_get_inputs(                            \
@@ -115,8 +189,7 @@ namespace {
         IMP_OVERRIDE {                                                         \
       return IMP::get_particles(m, pis);                                       \
     }                                                                          \
-    IMP_SINGLETON_PREDICATE_METHODS(Name##SingletonPredicate);                 \
-    IMP_OBJECT_METHODS(Name##SingletonPredicate);                              \
+    IMP_OBJECT_METHODS(Name##SelectionPredicate);                              \
   };
 
 bool get_is_residue_index_match(const Ints &data, kernel::Model *m,
@@ -298,25 +371,18 @@ Selection::SearchResult Selection::search(
     kernel::Model *m, kernel::ParticleIndex pi,
     boost::dynamic_bitset<> parent) const {
   IMP_FUNCTION_LOG;
-  IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << " missing "
-                               << parent.count() << std::endl);
-  for (unsigned int i = 0; i < predicates_.size(); ++i) {
-    if (parent[i]) {
-      int val = predicates_[i]->get_value_index(m, pi);
-      if (val == 1) {
-        parent.reset(i);
-      } else if (val == -1) {
-        // nothing can match in this subtree
-        return SearchResult(false, kernel::ParticleIndexes());
-      }
-    }
+  IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << std::endl);
+  int val = predicate_->get_value_index(m, pi, parent);
+  if (val == -1) {
+    // nothing can match in this subtree
+    return SearchResult(false, kernel::ParticleIndexes());
   }
   Hierarchy cur(m, pi);
   kernel::ParticleIndexes children;
   kernel::ParticleIndexes cur_children =
       expand_children_search(m, pi, resolution_);
   bool children_covered = true;
-  bool matched = parent.none();
+  bool matched = (val == 1);
   IMP_FOREACH(kernel::ParticleIndex ch, cur_children) {
     SearchResult curr = search(m, ch, parent);
     matched |= curr.get_match();
@@ -347,19 +413,13 @@ ParticlesTemp Selection::get_selected_particles() const {
 
 ParticleIndexes Selection::get_selected_particle_indexes() const {
   if (h_.empty()) return kernel::ParticleIndexes();
-  for (unsigned int i = 0; i < predicates_.size(); ++i) {
-    predicates_[i]->set_was_used(true);
-  }
   kernel::ParticleIndexes ret;
   // Dynamic bitsets support .none(), but not .all(), so start with all
-  // true.
-  int sz = predicates_.size();
+  // true
+  int sz = predicate_->setup_bitset(0);
   boost::dynamic_bitset<> base(sz);
   base.set();
-  if (!predicates_.empty()) {
-    IMP_LOG_TERSE("Processing selection on " << h_ << " with predicates "
-                                             << predicates_ << std::endl);
-  }
+  IMP_LOG_TERSE("Processing selection on " << h_ << std::endl);
   IMP_FOREACH(kernel::ParticleIndex pi, h_) {
     IMP_FOREACH(kernel::ParticleIndex rpi, expand_search(m_, pi, resolution_)) {
       ret += search(m_, rpi, base).get_indexes();
@@ -378,30 +438,30 @@ Hierarchies Selection::get_hierarchies() const {
 
 void Selection::set_molecules(Strings mols) {
   std::sort(mols.begin(), mols.end());
-  predicates_.push_back(new MoleculeNameSingletonPredicate(mols));
+  add_predicate(new MoleculeNameSelectionPredicate(mols));
 }
 void Selection::set_terminus(Terminus t) {
-  predicates_.push_back(new TerminusSingletonPredicate(t));
+  add_predicate(new TerminusSelectionPredicate(t));
 }
 void Selection::set_chain_ids(Strings chains) {
   std::sort(chains.begin(), chains.end());
-  predicates_.push_back(new ChainIDSingletonPredicate(chains));
+  add_predicate(new ChainIDSelectionPredicate(chains));
 }
 void Selection::set_residue_indexes(Ints indexes) {
   std::sort(indexes.begin(), indexes.end());
-  predicates_.push_back(new ResidueIndexSingletonPredicate(indexes));
+  add_predicate(new ResidueIndexSelectionPredicate(indexes));
 }
 void Selection::set_atom_types(AtomTypes types) {
   std::sort(types.begin(), types.end());
-  predicates_.push_back(new AtomTypeSingletonPredicate(types));
+  add_predicate(new AtomTypeSelectionPredicate(types));
 }
 void Selection::set_residue_types(ResidueTypes types) {
   std::sort(types.begin(), types.end());
-  predicates_.push_back(new ResidueTypeSingletonPredicate(types));
+  add_predicate(new ResidueTypeSelectionPredicate(types));
 }
 void Selection::set_domains(Strings names) {
   std::sort(names.begin(), names.end());
-  predicates_.push_back(new DomainNameSingletonPredicate(names));
+  add_predicate(new DomainNameSelectionPredicate(names));
 }
 void Selection::set_molecule(std::string mol) {
   set_molecules(Strings(1, mol));
@@ -420,22 +480,27 @@ void Selection::set_copy_index(unsigned int copy) {
 }
 void Selection::set_copy_indexes(Ints copies) {
   std::sort(copies.begin(), copies.end());
-  predicates_.push_back(new CopyIndexSingletonPredicate(copies));
+  add_predicate(new CopyIndexSelectionPredicate(copies));
 }
 void Selection::set_state_indexes(Ints copies) {
   std::sort(copies.begin(), copies.end());
-  predicates_.push_back(new StateIndexSingletonPredicate(copies));
+  add_predicate(new StateIndexSelectionPredicate(copies));
 }
 void Selection::set_particle_type(core::ParticleType t) {
   set_particle_types(core::ParticleTypes(1, t));
 }
 void Selection::set_particle_types(core::ParticleTypes t) {
   std::sort(t.begin(), t.end());
-  predicates_.push_back(new TypeSingletonPredicate(t));
+  add_predicate(new TypeSelectionPredicate(t));
 }
 void Selection::set_hierarchy_types(Ints types) {
   std::sort(types.begin(), types.end());
-  predicates_.push_back(new HierarchyTypeSingletonPredicate(types));
+  add_predicate(new HierarchyTypeSelectionPredicate(types));
+}
+
+void Selection::add_predicate(internal::SelectionPredicate *p)
+{
+  predicate_->add_predicate(p);
 }
 
 void Selection::show(std::ostream &out) const { out << "Selection on " << h_; }

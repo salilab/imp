@@ -9,10 +9,10 @@
 #define IMPATOM_SELECTION_H
 
 #include <IMP/atom/atom_config.h>
+#include <IMP/atom/internal/SelectionPredicate.h>
 #include "Atom.h"
 #include "Hierarchy.h"
 #include "Residue.h"
-#include <IMP/SingletonPredicate.h>
 #include <IMP/algebra/algebra_config.h>
 #include <IMP/base/InputAdaptor.h>
 #include <IMP/core/Typed.h>
@@ -56,9 +56,9 @@ class IMPATOMEXPORT Selection :
   };
 
  private:
-  SingletonPredicates predicates_;
   kernel::Model *m_;
   double resolution_;
+  base::Pointer<internal::ListSelectionPredicate> predicate_;
 
   kernel::ParticleIndexes h_;
   IMP_NAMED_TUPLE_2(SearchResult, SearchResults, bool, match,
@@ -66,6 +66,7 @@ class IMPATOMEXPORT Selection :
   SearchResult search(kernel::Model *m, kernel::ParticleIndex pi,
                       boost::dynamic_bitset<> parent) const;
   void set_hierarchies(kernel::Model *m, const kernel::ParticleIndexes &pis);
+  void add_predicate(internal::SelectionPredicate *p);
 
  public:
 #ifdef IMP_DOXYGEN
