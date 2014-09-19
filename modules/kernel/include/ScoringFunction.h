@@ -23,10 +23,10 @@
 IMPKERNEL_BEGIN_NAMESPACE
 class Model;
 
-/** A ScoringFunction represents a scoring function on the model.
-    The Model has a default scoring function
+//! Represents a scoring function on the model.
+/** The Model has a default scoring function
     (kernel::Model::get_model_scoring_function()), but it can be useful to use
-    others in different contexts during a samping process.
+    others in different contexts during a sampling process.
 
 A call to the evaluate() method prompts the following events:
 1. determine set of ScoreState objects needed by the Restraint objects
