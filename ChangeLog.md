@@ -4,9 +4,9 @@ ChangeLog {#changelog}
 # For IMP 2.3.0 # {#changelog_2_3_0}
 - Binary installers for 64-bit Windows are now available.
 - The `.py` extension has been removed from all Python applications, so that they are consistent with the C++ extensions.
-- Selection objects can now be combined using basic set operations (union, intersection, difference, symmetric difference). In Python the equivalent operators (|, &, -, ^ respectively) can be used.
+- IMP::atom::Selection objects can now be combined using basic set operations (union, intersection, difference, symmetric difference). In Python the equivalent operators (|, &, -, ^ respectively) can be used.
 - The integrative docking (idock) application now employs SOAP to improve the scoring.
-- CHARMMParameters::create_topology() now works with a wider range of hierarchies (previously it would only accept Residues that were direct children of Chains). For example, it should do the right thing when given a Hierarchy that contains no Chain particles, or one where Residues are grouped under Fragments.
+- IMP::atom::CHARMMParameters::create_topology() now works with a wider range of hierarchies (previously it would only accept Residues that were direct children of Chains). For example, it should do the right thing when given a Hierarchy that contains no Chain particles, or one where Residues are grouped under Fragments.
 - Only Python 2.6 or later is now supported. We still provide IMP for RedHat Enterprise 5 (which ships with Python 2.4) but you will need to use the `python26` binary (part of EPEL) rather than the system default Python.
 
 # For IMP 2.2.1 # {#changelog_2_2_1}
@@ -20,7 +20,7 @@ ChangeLog {#changelog}
 - The `--log_level` and `--check_level` command line argument now take strings (eg VERBOSE) to specify their values, rather than cryptic (and a bit unstable) numbers.
 - Command line options are now divided into normal and advanced ones. You do `--help_advanced` to show the advanced ones.
 - Support for computing Connolly surfaces was added with IMP::algebra::get_connolly_surface(). In addition, there is now IMP::algebra::get_uniform_surface_cover(const IMP::algebra::Sphere3Ds&,double) to sample the surface of a collection of balls.
-- IMP::atom:: create_simplified_from_volume() was added to create a simplified representation of a hierarchy that preserves the surface are and occupied volume. It uses IMP::algebra::get_simplified_from_volume(). If you want to play with such representations, you can use the rmf_simply application.
+- IMP::atom::reate_simplified_from_volume() was added to create a simplified representation of a hierarchy that preserves the surface are and occupied volume. It uses IMP::algebra::get_simplified_from_volume(). If you want to play with such representations, you can use the rmf_simply application.
 - IMP::atom::get_rmsd(IMP::atom::Selection, IMP::atom::Selection, const IMP::algebra::Transformation3D&) was deprecated. Use IMP::atom::get_rmsd_transforming_first() instead.
 - IMP::algebra::get_rmsd() and IMP::algebra::get_rmsd_transforming_first() were added.
 - The family of macros IMP_BASE_[SMALL,LARGE]_[UNORDERED,ORDERED]_[MAP,SET] have been added (eg IMP_BASE_SMALL_ORDERED_SET ()). They provide platform and boost-version independent ways to take advantage of the best set/map for an application. In particular, they use boost::container::flat_set and kin when available.
