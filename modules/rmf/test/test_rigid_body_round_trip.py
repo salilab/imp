@@ -120,6 +120,40 @@ class Tests(IMP.test.TestCase):
                         delta=.1)
                 print "ok"
 
+    def test_gaussian_round_trip(self):
+        """Make sure that Gaussians can be written to and read from RMFs"""
+        for suffix in IMP.rmf.suffixes:
+            m = IMP.kernel.Model()
+            r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            r.set_name("rt")
+            p = IMP.Particle(m)
+            v = IMP.algebra.Vector3D(1, 2, 3)
+            d = IMP.core.XYZR.setup_particle(p)
+            d.set_coordinates(v)
+            d.set_radius(.5)
+            IMP.atom.Mass.setup_particle(p, .1)
+            t = IMP.algebra.Transformation3D(
+                                     IMP.algebra.get_identity_rotation_3d(),
+                                     IMP.algebra.Vector3D(1,2,3))
+            IMP.core.Gaussian.setup_particle(p,IMP.algebra.Gaussian3D(
+                                     IMP.algebra.ReferenceFrame3D(t),[4,5,6]))
+            r.add_child(IMP.atom.Hierarchy.setup_particle(p))
+            fn = self.get_tmp_file_name("gaussian." + suffix)
+            f = RMF.create_rmf_file(fn)
+            IMP.rmf.add_hierarchies(f, [r])
+            IMP.rmf.save_frame(f, 0)
+            del f
+            f = RMF.open_rmf_file_read_only(fn)
+            prots = IMP.rmf.create_hierarchies(f, m)
+            g = IMP.core.Gaussian(prots[0].get_child(0))
+            self.assertEqual([v for v in g.get_variances()], [4,5,6])
+            self.assertAlmostEqual(IMP.core.XYZR(g).get_radius(), .5,
+                                   delta=1e-6)
+            self.assertAlmostEqual(IMP.atom.Mass(g).get_mass(), .1, delta=1e-6)
+            v = g.get_reference_frame().get_transformation_to()
+            v = v.get_translation()
+            self.assertEqual([i for i in v], [1,2,3])
+
     def test_nested_rigid_body(self):
         """Test loading and saving of rigid bodies that contain
         non-rigid members that are also Gaussians (and thus Rigid Bodies)"""
