@@ -27,7 +27,8 @@ void HierarchyLoadXYZs::setup_particle(
        instead. */
     if (rigid_bodies.back() == p) {
       IMP_INTERNAL_CHECK(rigid_bodies.size() >= 2,
-                     "Nested rigid body but could not find parent rigid body");
+                     "Nested rigid body " << m->get_particle_name(p)
+                     << " but could not find parent rigid body");
       rb = core::RigidBody(m, rigid_bodies[rigid_bodies.size() - 2]);
     }
     rb.add_member(p);
