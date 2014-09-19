@@ -20,7 +20,7 @@
 #include <iostream>
 
 IMPKERNEL_BEGIN_NAMESPACE
-//! ScoreStates maintian invariants in the Model.
+//! ScoreStates maintain invariants in the Model.
 /** ScoreStates allow actions to be taken before and after the restraint
     evaluation process. Such code can be used to, for example:
     - log the optimization process
