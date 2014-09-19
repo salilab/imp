@@ -20,7 +20,7 @@ void HierarchyLoadXYZs::setup_particle(
   if (!ip_factory_.get_is(n)) return;
   if (!core::XYZ::get_is_setup(m, p)) core::XYZ::setup_particle(m, p);
   /* If there is a rigid body parent set up, add this particle as a child */
-  if (!rigid_bodies.empty()) {
+  if (!rigid_bodies.empty() && !(rigid_bodies.size()==1 && rigid_bodies.back() == p)) {
     core::RigidBody rb(m, rigid_bodies.back());
     /* For nested rigid bodies, this XYZ particle is *also* the rigid body.
        So don't make ourselves our own child - add to the parent rigid body
