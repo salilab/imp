@@ -14,7 +14,7 @@ ChangeLog {#changelog}
 
 # For IMP 2.2.0 # {#changelog_2_2_0}
 - A module IMP.template was added to act as a template for creating new external modules. It includes setting up git hooks for format checks and things like that.
-- The python support for grids was cleaned up. Hopefully this makes it more robust. If you were using a grid in python that no longer exists, ping us, we can add it back.
+- The Python support for grids was cleaned up. Hopefully this makes it more robust. If you were using a grid in Python that no longer exists, ping us, we can add it back.
 - The generic geometry functions were simplified slightly and renamed to IMP::algebra::get_vector_geometry().
 - The IMP::base::Flag class was added to simplify adding flags in C++.
 - The `--log_level` and `--check_level` command line argument now take strings (eg VERBOSE) to specify their values, rather than cryptic (and a bit unstable) numbers.
@@ -48,7 +48,7 @@ ChangeLog {#changelog}
 - Support and rules for deprecating code in IMP have been updated. There are new macros and instructions on how to use them that should result in much better visibility about changes. See the C++ wiki for IMP for more information. And there is now an encoded policy of keeping deprecated things around for 1 release after deprecation.
 - IMP is now much more selective about when it invalidates the dependency graph. See [Dependencies](http://github.com/salilab/imp/wiki/Dependencies) for more information. This change should make evaluation of isolated restraints much faster in certain situations where they were unexpectedly slow before.
 - IMP::atom::Selection has been completely rewritten as it was very brittle. The set of particles returned may change in some cases, in some cases because it was buggy before, in some cases because of new bugs.
-- Reminder: the IMP_PROTECTED macros didn't work out well, and are now deprecated. If you had python implementations on top of IMP base classes that implement protected virtual methods, you may need to remove a leading `_` on the method name, if you get `Swig director pure virtual method called IMP::kernel::PairScore::do_get_inputs` messages.
+- Reminder: the IMP_PROTECTED macros didn't work out well, and are now deprecated. If you had Python implementations on top of IMP base classes that implement protected virtual methods, you may need to remove a leading `_` on the method name, if you get `Swig director pure virtual method called IMP::kernel::PairScore::do_get_inputs` messages.
 - The generated `cmake` files are no longer stored in the repository. Instead `tools/build/setup_cmake.py` is run after checkouts and other git events that change the repository tree (assuming you have run `setup_git.py`).
 - Generation of documentation using `doxygen` has been refactored. It is now done on a per-module basis, via targets like `IMP.core-doc`. The main advantage is that changes to the doc for a module can be tested comparatively quickly, just by building that module's docs. On the down side, docs are no longer quite so heavily interconnected, so dependencies only work to things that the module actually depends on.
 - The restraint and score state statistics functions were removed from IMP::Model. They had been broken for quite a while, with no one complaining. Statistics can be added back easily if requested.
@@ -73,23 +73,23 @@ ChangeLog {#changelog}
 - You can now (probably) build IMP with [CMake on IMP wiki](https://github.com/salilab/imp/wiki/Cmake).
 - The maximum logging level and check level can now be controlled independently of the build mode. To, for example, enable progress level logging in a fast build, add maxlog="PROGRESS" to your config. The maximum check level for `release` has been reduced to IMP::USAGE as that speeds things up a bit.
 - The way applications are structured and specified has been regularized and simplified. Python files are automatically copied/installed and binary executables are compiled from each found `.cpp` file linked with any `.cpp` files contained in a subdirectory called `lib`. Nothing needs to be put into the SConscript file.
-- The python constants like IMP.algebra.has_cgal went away as swig autogenerates ones like IMP.algebra.IMP_ALGEBRA_HAS_IMP_CGAL. While the latter are a bit uglier, the constants aren't used much and having them be auto generated is nice.
+- The Python constants like IMP.algebra.has_cgal went away as swig autogenerates ones like IMP.algebra.IMP_ALGEBRA_HAS_IMP_CGAL. While the latter are a bit uglier, the constants aren't used much and having them be auto generated is nice.
 - There have been some major changes to the build system. The main one is that the SConscripts in the directories below the module directory aren't really used. They are being removed from the repository. Now everything really is off of file locations (eg all test_* in test is a test, each *.cpp in bin becomes a program etc). This greatly simplifies the build system, which has, historically been a disaster. You can now define dependencies by dropping files into a dependency subdirectory in your module, no need to mess with the SConscript.
 - Building IMP now always requires specifying a `repository` argument. This was always required for out of source builds, which is what one should be doing, but is now required for in source builds to, so as to make accidentally polluting your source with an in-source build harder. Use `repository="."` in that case.
-- The HDF5 functionality in RMF was reorganized. Specifically, the headers were moved into `RMF/HDF5`, the python functionality into `RMF_HDF5` and the code into namespace `RMF::HDF5` and all mentions of `HDF5` or `hdf5` in the class and function names were removed.
-- Support for IMP-wide command line flags have been added to IMP::base in the base/flags.h file. They provide a simple command line parsing interface that can be used from C++ and python. In addition, various functionality in IMP is automatically exposed on the command line when those functions are used. For example, one can control logging, checks or profiling. See IMP/base/flags.h for (some) more info.
+- The HDF5 functionality in RMF was reorganized. Specifically, the headers were moved into `RMF/HDF5`, the Python functionality into `RMF_HDF5` and the code into namespace `RMF::HDF5` and all mentions of `HDF5` or `hdf5` in the class and function names were removed.
+- Support for IMP-wide command line flags have been added to IMP::base in the base/flags.h file. They provide a simple command line parsing interface that can be used from C++ and Python. In addition, various functionality in IMP is automatically exposed on the command line when those functions are used. For example, one can control logging, checks or profiling. See IMP/base/flags.h for (some) more info.
 - OpenMP support in IMP is officially released. All tests pass. But there has been little specific testing so far.
 - Access to attributes using IMP::ParticleIndex and the IMP::Model now works from Python. See IMP::Model::add_attribute() and kin.
 - IMP::ParticleKey and IMP::ParticlesKey were renamed to IMP::ParticleIndexKey and IMP::ParticleIndexesKey respectively as that is what they store. Typedefs were provided to support old code.
 - Indexes have been added to the docs connecting classes with all the methods that return them, examples that use them and methods that take them. And all methods that are used in examples with the examples they are used in. Please check them out and report issues and ways to improve things. You can find links on the main page.
-- The docs for a modules/biological systems/applications should now be found in an `overview.dox` in the module `doc` folder. Modules in IMP svn have been updated. For external modules, you can just move a `overview.dox` from that was previously generated into your `doc` folder and (eventually) remove the lines from your `doc/SConscript`. This makes it easier to use the full range of doxygen markup, as well as removes the need to escape doxygen markup for python.
+- The docs for a modules/biological systems/applications should now be found in an `overview.dox` in the module `doc` folder. Modules in IMP svn have been updated. For external modules, you can just move a `overview.dox` from that was previously generated into your `doc` folder and (eventually) remove the lines from your `doc/SConscript`. This makes it easier to use the full range of doxygen markup, as well as removes the need to escape doxygen markup for Python.
 - Examples have now been simplified into full blown doxygen examples. This involves merging the `.py` and `.readme` files (putting `\#\#` in front of each line of the `.readme`) and adding a `## \\example module/examplename.py` line at the begginning. You can use `./tools/updaters/update_examples.py modules/mymodule` to update a module that was not already updated.
 - IMP::base::FailureHandler has been removed as it wasn't used.
 - Handling of data and includes has been simplified. All appropriate files in the corresponding directories are linked into build/installed. This is only likely to be a problem if you had broken headers sitting around `include`. If so, just comment them out, or move them some place nicer.
 - Modules now must be in a folder called `modules`, which must have an `description.py` file.
 - The build system should now be a little better about cleaning up after itself.
 - How headers/doc files/data/examples
-- The IMP_PROTECTED macros didn't work out well, and are now deprecated. Sorry. If you had python implementations on top of IMP base classes that implement protected virtual methods, you may need to remove a leading "_" on the method name.
+- The IMP_PROTECTED macros didn't work out well, and are now deprecated. Sorry. If you had Python implementations on top of IMP base classes that implement protected virtual methods, you may need to remove a leading "_" on the method name.
 - Nice version numbers will now be generated if you use git. You need to rerun
 tools/git/developer_tools/init_git if you have an existings clone.
 
@@ -100,13 +100,13 @@ tools/git/developer_tools/init_git if you have an existings clone.
 - 11/8: IMP::SingletonModifier::apply_indexes() and IMP::SingletonScore::evaluate_indexes() now require an upper and lower bound index (you can just pass 0 and the size of the array). We can make them option if there is a good reason.
 - 11/8: IMP::SingletonDerivativeModifier and kin were merged into IMP::SingletonModifier and kin as the only difference, the presence of the IMP::DerivativeAccumulator (whose weight was always 1) wasn't very interested and the split added lots of complexity. If this has an impact on your code, let us know.
 - 11/8; Evaluation with containers was greatly simplified, moving many methods on containers. We can add backwards compatibility versions if that is interesting.
-- 11/7: Predicates, scores and modifiers written in python need to update their methods for returning inputs and outputs. They should now have a method \c _do_get_outputs(self, m, particle_indexes) which should probably just return \c [m.get_particle(i) for in in particle_indexes] to return all the passed particles.
+- 11/7: Predicates, scores and modifiers written in Python need to update their methods for returning inputs and outputs. They should now have a method \c _do_get_outputs(self, m, particle_indexes) which should probably just return \c [m.get_particle(i) for in in particle_indexes] to return all the passed particles.
 - 11/7: It is now preferred that IMP::Restraint and IMP::ScoreState descendents report dependencies directly using IMP::ModelObject::do_get_inputs() and IMP::ModelObject::do_get_outputs(). To do this, you should use the IMP_RESTRAINT_2() and IMP_CONSTRAINT_2() macros instead. Methods like IMP::Restraint::get_input_particles() are now deprectated. This change was made as the old mechanism introduced a lot of extra complication and made it so that there was no way to directly depend on something that was not a Particle or a Container.
 - 11/3: IMP::container::InContainerPairFilter and friends now treat pairs as unordered. A flag was added to control this.
 - 9/5: IMP::base::Object classes now have a method IMP::base::Object::clear_caches() that clears all cache data in the object. This is not universally implemented, but now provides a correct path for doing that. The IMP_LIST() type macros call that method when their contents changes.
 ## Summer 2012
 - 7/3: IMP_PERIODIC_OPTIMIZER_STATE() was superceeded by the class IMP::core::PeriodicOptimizerState as it is rather cleaner than the macro.
-- 7/2: in order to make various base classes in IMP more python friendly, macros IMP_PROTECTED_METHOD(), IMP_PROTECTED_CONSTRUCTOR() were added that properly expose such methods to python. The standards checks now complain if \c protected is used an a class in the API.
+- 7/2: in order to make various base classes in IMP more Python friendly, macros IMP_PROTECTED_METHOD(), IMP_PROTECTED_CONSTRUCTOR() were added that properly expose such methods to Python. The standards checks now complain if \c protected is used an a class in the API.
 - 6/24: Executables from \c module/bin are now put in \b build/module_bin/module. This removes a recurring source of errors in the build script due to the origin and destination directory have the same name in scons.
 - 6/24: Benchmarks are now put int \c module/benchmark and build to \c build/benchmark/module to remove a recurring source of errors.
 - 6/18: The IMP::benchmark module supports the GPerfTools profilers when available. Benchmark executables (things in \c bin whose name starts with \c benchmark_) that use the IMP_BENCHMARK() macro have command line flags to turn on and cpu and memory profiling.
@@ -153,7 +153,7 @@ tools/git/developer_tools/init_git if you have an existings clone.
 - the source for the kernel has been moved from \c kernel to \c modules/kernel. This is unlikely to effect anyone.
 - IMP::core::ExcludedVolumeRestraint now supports filters
 - IMP::domino::HDF5AssignmentTable now caches internally, which makes it several times faster than before.
-- you can now pick which python to use with the \c python argument to scons.
+- you can now pick which Python to use with the \c python argument to scons.
 - the units for BD diffusion coefficients changed to be consistent with other IMP units.
 - IMP::domino::get_interaction_graph() now takes an IMP::RestraintsTemp, like other functions
 - The assert failure handling function was documented and renamed to IMP::handle_error() so it is easier to find when  you want to use gdb.
@@ -185,12 +185,12 @@ tools/git/developer_tools/init_git if you have an existings clone.
 - Functions IMP::domino::set_assignments() and IMP::domino::get_assignments() were added which support
   writing subset assignments to data fields in hdf5 files. These can be used to helping to distribute
   domino on a cluster as well as debugging the sampling process.
-- a python function IMP.show_graphviz() has been added that attempts to render a graph with \c dot and then open the pdf.
-- The python functions IMP.show_altgraph() and IMP.get_networkx_graph() have been added to provide alternatives for quick viewing of IMP graphs. Unfortunately, they still pale compared to graphviz.
+- a Python function IMP.show_graphviz() has been added that attempts to render a graph with \c dot and then open the pdf.
+- The Python functions IMP.show_altgraph() and IMP.get_networkx_graph() have been added to provide alternatives for quick viewing of IMP graphs. Unfortunately, they still pale compared to graphviz.
 - IMP.atom.create_cover() was added to facilitate creating a summary particle for part of a hierarchy in order to accelerate restraints.
 - IMP.hdf5 was renamed to IMP.rmf, the proposed name of the file format that it supports. That also better separates the hdf5 support from the file format support.
 - The old I/O functions have been marked as deprecated in favor of IMP.hdf5. You may need to compile with deprecated="yes" if you use them.
-- The python graph interface now has a remove_vertex method.
+- The Python graph interface now has a remove_vertex method.
 - One can now access the model restraint evaluation statistics programmatically using IMP::Model::get_restaint_statistics(). Restraint statistics can be logged to a file during optimization using IMP::core::WriteRestraintScoreStatisticsOptimizerState.
 - IMP::domino::DominoSampler now allows you to specify the tree on which merges occur directly. Also, you now need to specify the merge tree rather than the JunctionTree if you want to do non-loopy inference and specify something about how it is done. Sorry, it makes the code a lot easier.
 - Preliminary symmetry support has been added via the IMP::core::TransformationSymmetry and IMP::core::TransformationAndReflectionSymmetry classes.
@@ -231,8 +231,8 @@ read from a PDB file match the CHARMM topology.
 - rename IMP::restrainer::Restraint::print_all_restraints() to IMP::restrainer::Restraint::show_all_restraints() to be consistent with the rest of IMP.
 - renamed IMP::atom::get_conect_record_string() to IMP::atom::get_pdb_conect_record_string() to make clearer what it is.
 - class and method names are now spell checked. Add missing words to spelling_exceptions in the module test call.
-- the plural names (eg IMP.Particles()) have been removed from the python side as they are just python lists.
-- biological systems can now include internal modules. These provide a conventient place to put application specific C++ and python code. See the example system for more info.
+- the plural names (eg IMP.Particles()) have been removed from the Python side as they are just Python lists.
+- biological systems can now include internal modules. These provide a conventient place to put application specific C++ and Python code. See the example system for more info.
 - IMP_VALUES() now includes IMP_OUTPUT_OPERATOR() so you no longer need two namespace macros for each value.
 - the function IMP::core::Harmonic::k_from_standard_deviation was renamed to IMP::core::Harmonic::get_k_from_standard_deviation() to conform to the standards.
 - the IMP::atom::PDBSelector and IMP::atom::Mol2Selector became IMP::Object classes. All this
@@ -286,11 +286,11 @@ benifit from better checking.
 
 ## Week of April 1, 2010
 
-- All plural objects in python are now simply python lists rather than C++ recreations of python lists. This makes compilation of the wrappers much, much, much faster. The visible changes are
+- All plural objects in Python are now simply Python lists rather than C++ recreations of Python lists. This makes compilation of the wrappers much, much, much faster. The visible changes are
    - types are not checked until the lists are passed to C++
-   - passing std::vector types by pointer and storing passed std::vector types by pointer will not work (but should never have been done anyway from code exposed to python)
+   - passing std::vector types by pointer and storing passed std::vector types by pointer will not work (but should never have been done anyway from code exposed to Python)
    - swig has issues with some overloads (not always for obvious reasons). These are being sorted out. None are commonly used.
-   - get_particles() on a plural object doesn't work in python (and is not needed in C++). Implicit conversions will always work.
+   - get_particles() on a plural object doesn't work in Python (and is not needed in C++). Implicit conversions will always work.
 
 - All containers need to know the model at time of construction. If, after updating, you get an error on a container constructor, just add the model as the first argument. This also means that emtpy lists of particles in the constructors cause check failures. We can figure out a work around if this is too annoying.
 
