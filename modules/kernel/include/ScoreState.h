@@ -47,6 +47,8 @@ IMPKERNEL_BEGIN_NAMESPACE
     functions. As a result, the ScoreStates are applied in opposite order
     after evaluate. If you have a ScoreState for which this is not true,
     consider splitting it into two parts.
+
+    \see Model::add_score_state().
  */
 class IMPKERNELEXPORT ScoreState : public ModelObject {
   int update_order_;
