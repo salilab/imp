@@ -42,16 +42,16 @@ class IMPKERNELEXPORT ModelObject : public base::Object {
   ModelObjectsTemp get_inputs() const;
   /** get_has_dependencies() must be true. */
   ModelObjectsTemp get_outputs() const;
-  /** Get the interacting sets induce by this ModelObject. That is,
-      the particles in each ModelObjectsTemp in the list have some
+  //! Get the interacting sets induced by this ModelObject.
+  /** That is, the particles in each ModelObjectsTemp in the list have some
       sort of computed relation with one another and none with
-      disjoint other sets in the list.*/
+      disjoint other sets in the list. */
   ModelObjectsTemps get_interactions() const;
 
   //! Return whether this object has dependencies computed
   bool get_has_dependencies() const;
 
-  //! Either invalidate the dependncies or ensure they are correct.
+  //! Either invalidate the dependencies or ensure they are correct.
   void set_has_dependencies(bool tf);
 
   //! Compute the required score states.
