@@ -275,6 +275,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/MCCGSampler.h"
 %include "IMP/core/MinimumRestraint.h"
 %include "IMP/core/Gaussian.h"
+%include "IMP/core/GaussianScoreState.h"
 
 %include "IMP/core/PairRestraint.h"
 %include "IMP/core/SingletonRestraint.h"
