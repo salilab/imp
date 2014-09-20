@@ -114,5 +114,17 @@ class TestGaussian(IMP.test.TestCase):
             not_chosen -= set([min_nf])
         self.assertLessEqual(max_min_dist, 3.0)
 
+    def test_gaussian_consistency(self):
+        """ test if gaussian stays a gaussian!"""
+        m = IMP.Model()
+        rbd = IMP.core.RigidBody.setup_particle(IMP.Particle(m, "rb"),
+                                                IMP.algebra.ReferenceFrame3D())
+        p = IMP.Particle(m)
+        IMP.core.Gaussian.setup_particle(p,IMP.algebra.Gaussian3D(
+            IMP.algebra.ReferenceFrame3D(),[1,1,1]))
+        self.assertEqual(IMP.core.Gaussian.get_is_setup(p),True)
+        rbd.add_non_rigid_member(p.get_index())
+        self.assertEqual(IMP.core.Gaussian.get_is_setup(p),True)
+
 if __name__ == '__main__':
     IMP.test.main()
