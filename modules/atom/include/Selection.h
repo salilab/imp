@@ -34,7 +34,7 @@ IMPATOM_BEGIN_NAMESPACE
     Selection(hierarchy=h, molecule="myprotein", residue_indexes=range(133,138))
     \endcode
     each get the C-terminus of the protein "myprotein" (assuming the last
-    residue index is 133).
+    residue index is 133, and the residues are leaves, containing no atoms).
 
     Selection objects can be combined using basic set operations (union,
     intersection, difference, symmetric difference). In Python the equivalent
@@ -117,38 +117,39 @@ class IMPATOMEXPORT Selection :
 #endif
   //! Return the hierarchies that the Selection was constructed with
   Hierarchies get_hierarchies() const;
-  /** Select based on the molecule name.*/
+  //! Select based on the molecule name.
   void set_molecules(Strings mols);
 
-  /** Select at a Representation node with a resolution close to r.*/
+  //! Select at a Representation node with a resolution close to r.
   void set_resolution(double r) { resolution_ = r; }
-  /** Select State with the passed index.*/
+  //! Select State with the passed index.
   void set_state_index(int state) { set_state_indexes(Ints(1, state)); }
-  /** Select State with the passed index.*/
+  //! Select State with the passed indexes.
   void set_state_indexes(Ints states);
-  /** Select the n or c terminus.*/
+  //! Select the leaf particles at the N or C terminus.
+  /** If the leaf particles are atoms, a terminus is simply an N or C atom
+      where its parent is also a terminus particle. Otherwise, a terminus
+      particle is the first (for N) or last (for C) child of its parent. */
   void set_terminus(Terminus t);
-  /** Select particles in chains whose id is
-      in the passed string.*/
+  //! Select particles in chains with the given ids.
   void set_chain_ids(Strings chains);
 #ifndef IMP_DOXYGEN
   void set_chains(Strings chains) { set_chain_ids(chains); }
 #endif
-  /** Select residues whose indexes are in the passed list.*/
+  //! Select residues whose indexes are in the passed list.
   void set_residue_indexes(Ints indexes);
-  /** Select atoms whose types are in the list, eg AT_CA.*/
+  //! Select atoms whose types are in the list, eg AT_CA.
   void set_atom_types(AtomTypes types);
-  /** Select residues whose types are in the list. Not sure
-      why you would do this.*/
+  //! Select residues whose types are in the list.
   void set_residue_types(ResidueTypes types);
-  /** Select domains with the specified names. */
+  //! Select domains with the specified names.
   void set_domains(Strings names);
-  /** Select a molecule with the passed name. */
+  //! Select a molecule with the passed name.
   void set_molecule(std::string mol);
-  /** Select with the passed chain id. */
+  //! Select with the passed chain id.
   void set_chain_id(std::string c);
 #ifndef IMP_DOXYGEN
-  /** Select a chain with the passed id*/
+  //! Select a chain with the passed id.
   void set_chain(std::string c) { set_chain_id(c); }
 #endif
 #ifndef SWIG
@@ -156,21 +157,21 @@ class IMPATOMEXPORT Selection :
   IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
   void set_chain(char c) { set_chain(std::string(1, c)); }
 #endif
-  /** Select only residues with the passed index.*/
+  //! Select only residues with the passed index.
   void set_residue_index(int i);
-  /** Select atoms with only the passed type. */
+  //! Select atoms with only the passed type.
   void set_atom_type(AtomType types);
-  /** Select only residues with the passed type.*/
+  //! Select only residues with the passed type.
   void set_residue_type(ResidueType type);
-  /** Select only the single domain with that name*/
+  //! Select only the single domain with that name.
   void set_domain(std::string name);
-  /** Select elements with Copy::get_copy_index() that match.*/
+  //! Select elements with Copy::get_copy_index() that match.
   void set_copy_index(unsigned int copy);
-  /** Select elements with Copy::get_copy_index() that are in the list.*/
+  //! Select elements with Copy::get_copy_index() that are in the list.
   void set_copy_indexes(Ints copies);
-  /** Select elements that match the core::ParticleType.*/
+  //! Select elements that match the core::ParticleType.
   void set_particle_type(core::ParticleType t);
-  /** Select elements that match the core::ParticleType.*/
+  //! Select elements that match the core::ParticleType.
   void set_particle_types(core::ParticleTypes t);
   /** Select only particles whose type matches the passed type, eg
       Molecule, Fragment, Residue etc. See GetByType for how to
