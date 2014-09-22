@@ -30,7 +30,11 @@ ModelObjectsTemp GaussianScoreState::do_get_inputs() const {
 }
 
 ModelObjectsTemp GaussianScoreState::do_get_outputs() const {
-  return kernel::ModelObjectsTemp();
+  ModelObjectsTemp ret;
+  for (size_t i=0;i<ps_.size();i++){
+    ret.push_back(get_model()->get_particle(ps_[i]));
+  }
+  return ret;
 }
 
 IMPCORE_END_NAMESPACE
