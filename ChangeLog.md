@@ -91,12 +91,12 @@ ChangeLog {#changelog}
 - How headers/doc files/data/examples
 - The IMP_PROTECTED macros didn't work out well, and are now deprecated. Sorry. If you had Python implementations on top of IMP base classes that implement protected virtual methods, you may need to remove a leading "_" on the method name.
 - Nice version numbers will now be generated if you use git. You need to rerun
-tools/git/developer_tools/init_git if you have an existings clone.
+tools/git/developer_tools/init_git if you have an existing clone.
 
 ## Fall 2012
 - 11/9: RMF is now an external library shipped with IMP. IMP will build it and install it automatically if you have cmake version 2.8 or higher installed.
 - 11/9: Updated support macros for IMP::Restraint and IMP::ScoreState classes have been added (IMP_RESTRAINT_2() and IMP_SCORE_STATE_2()) that make it easier to return dependencies on things other than IMP::Particle and IMP::ScoreState objects. In addition, the dependency functions on scores and modifiers have been updated similarly and standardized. In general this should not cause backward compatibility problems unless you were overriding the IMP::ModelObject::do_get_inputs() in IMP::Restraint and using the IMP_RESTRAINT() macro. In that case update to the IMP_RESTRAINT_2() macro.
-- 11/8: Supported has been added for the C++11 keywords override (IMP_OVERRIDE) and final (IMP_FINAL). They allow you to tell the compiler to produce an error if the marked method does not override/implement a parent's method and if anything overrides a given method, respectively.
+- 11/8: Support has been added for the C++11 keywords override (IMP_OVERRIDE) and final (IMP_FINAL). They allow you to tell the compiler to produce an error if the marked method does not override/implement a parent's method and if anything overrides a given method, respectively.
 - 11/8: IMP::SingletonModifier::apply_indexes() and IMP::SingletonScore::evaluate_indexes() now require an upper and lower bound index (you can just pass 0 and the size of the array). We can make them option if there is a good reason.
 - 11/8: IMP::SingletonDerivativeModifier and kin were merged into IMP::SingletonModifier and kin as the only difference, the presence of the IMP::DerivativeAccumulator (whose weight was always 1) wasn't very interested and the split added lots of complexity. If this has an impact on your code, let us know.
 - 11/8; Evaluation with containers was greatly simplified, moving many methods on containers. We can add backwards compatibility versions if that is interesting.
