@@ -22,11 +22,7 @@ void GaussianScoreState::do_before_evaluate() {
 void GaussianScoreState::do_after_evaluate(DerivativeAccumulator *) {}
 
 ModelObjectsTemp GaussianScoreState::do_get_inputs() const {
-  ModelObjectsTemp ret;
-  for (size_t i=0;i<ps_.size();i++){
-    ret.push_back(get_model()->get_particle(ps_[i]));
-  }
-  return ret;
+  return ModelObjectsTemp();
 }
 
 ModelObjectsTemp GaussianScoreState::do_get_outputs() const {
