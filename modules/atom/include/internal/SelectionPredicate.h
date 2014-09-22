@@ -18,13 +18,12 @@ IMPATOM_BEGIN_INTERNAL_NAMESPACE
 /** \see Selection */
 class SelectionPredicate : public ParticleInputs, public base::Object {
   int bitset_index_;
-  bool use_cache_;
  public:
 
   IMP_REF_COUNTED_DESTRUCTOR(SelectionPredicate);
 
-  SelectionPredicate(std::string name, bool use_cache=true)
-         : base::Object(name), bitset_index_(-1), use_cache_(use_cache) {};
+  SelectionPredicate(std::string name)
+         : base::Object(name), bitset_index_(-1) {}
 
   //! Set up unique index(es) into Selection's bitset.
   /** Each predicate needs a unique index so that matches can be cached using
@@ -43,12 +42,18 @@ class SelectionPredicate : public ParticleInputs, public base::Object {
   }
 
   //! Get match value for the given particle index.
-  /** Values returned should be
-      - 1:  particle matches (e.g. it is a Residue of the given type)
-      - -1: particle mismatches (e.g. it is a Residue but is of the wrong type)
+  /** Calls do_get_value_index() or uses a cached result.
+      Should return:
+      - 1:  particle matches (e.g. it is a Residue of the given type); all
+            child particles will also automatically match (the result will be
+            cached)
+      - 2:  particle matches (e.g. it is a Residue of the given type) but
+            child particles should still be examined, since they might not
+            match (the result will not be cached)
+      - -1: particle mismatches (e.g. it is a Residue but is of the wrong type);
+            the search will be terminated here
       - 0:  no match (e.g. the particle is not a Residue, so a match
-            cannot be attempted)
-
+            cannot be attempted); the search will continue to child particles
      \see do_get_value_index
    */
   int get_value_index(kernel::Model *m, kernel::ParticleIndex vt,
@@ -60,7 +65,7 @@ class SelectionPredicate : public ParticleInputs, public base::Object {
     } else {
       int v = do_get_value_index(m, vt, bs);
       /* Cache a successful match */
-      if (v == 1 && use_cache_) {
+      if (v == 1) {
         bs.reset(bitset_index_);
       }
       return v;
@@ -83,8 +88,7 @@ class ListSelectionPredicate : public SelectionPredicate {
 protected:
   SelectionPredicates predicates_;
 public:
-  ListSelectionPredicate(std::string name, bool use_cache=true)
-          : SelectionPredicate(name, use_cache) {}
+  ListSelectionPredicate(std::string name) : SelectionPredicate(name) {}
 
   //! Add a predicate to the list of subpredicates
   void add_predicate(SelectionPredicate *p) {

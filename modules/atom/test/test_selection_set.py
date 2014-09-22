@@ -97,8 +97,24 @@ class Tests(IMP.test.TestCase):
         ps = s1.get_selected_particle_indexes()
         assert_ok(ps)
 
-if __name__ == '__main__':
-    IMP.test.main()
+    def test_multiple(self):
+        """Test combination of multiple selections"""
+        IMP.base.set_log_level(IMP.base.SILENT)
+        m = IMP.kernel.Model()
+        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        s = IMP.atom.Selection(h, residue_type=IMP.atom.PHE) \
+              - (IMP.atom.Selection(h, atom_type=IMP.atom.AT_CG) \
+                 | IMP.atom.Selection(h, terminus=IMP.atom.Selection.C))
+        ps = s.get_selected_particle_indexes()
+        self.assertEqual(len(ps), 19)
+        for p in ps:
+            a = IMP.atom.Atom(m, p)
+            r = IMP.atom.Residue(a.get_parent())
+            rind = r.get_index()
+            at = a.get_atom_type()
+            self.assert_(at != IMP.atom.AT_CG
+                         and (rind == 437 or rind == 440)
+                         and not (rind == 440 and at == IMP.atom.AT_C))
 
 if __name__ == '__main__':
     IMP.test.main()

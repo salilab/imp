@@ -72,7 +72,20 @@ namespace {
                                    kernel::ParticleIndex pi,
                                    boost::dynamic_bitset<> &bs)
                                        const IMP_OVERRIDE {
-      return -predicate_->get_value_index(m, pi, bs);
+      int v = predicate_->get_value_index(m, pi, bs);
+      switch(v) {
+      case 0:
+        /* If the subpredicate doesn't match, we do... but we don't want to
+           cache this result, since child particles may match */
+        return 2;
+      case 1:
+        return -1;
+      case -1:
+        return 1;
+      default:
+        /* The opposite of a non-cached match (2) is a "no match" */
+        return 0;
+      }
     }
 
     IMP_OBJECT_METHODS(NotSelectionPredicate);
@@ -92,19 +105,23 @@ namespace {
       if (predicates_.size() == 0) {
         return 1;
       }
-      bool no_match = false;
+      bool no_match = false, cached_match = true;
       IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
         int v = p->get_value_index(m, pi, bs);
         if (v == -1) {
           return -1;
         } else if (v == 0) {
           no_match = true;
+        } else if (v == 2) {
+          cached_match = false;
         }
       }
       if (no_match) {
         return 0;
-      } else {
+      } else if (cached_match) {
         return 1;
+      } else {
+        return 2;
       }
     }
   
@@ -125,16 +142,20 @@ namespace {
       if (predicates_.size() == 0) {
         return 1;
       }
-      bool no_match = false;
+      bool no_match = false, no_cached_match = false;
       IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
         int v = p->get_value_index(m, pi, bs);
         if (v == 1) {
           return 1;
         } else if (v == 0) {
           no_match = true;
+        } else if (v == 2) {
+          no_cached_match = true;
         }
       }
-      if (no_match) {
+      if (no_cached_match) {
+        return 2;
+      } else if (no_match) {
         return 0;
       } else {
         return -1;
@@ -147,11 +168,8 @@ namespace {
   //! Match if an odd number of subpredicates match (or there are none)
   class XorSelectionPredicate : public internal::ListSelectionPredicate {
   public:
-    /* Note that we *don't* want to cache matches from this predicate,
-       since a child might match another subpredicate and so flip this
-       predicate's match bit */
     XorSelectionPredicate(std::string name = "XorSelectionPredicate%1%")
-          : internal::ListSelectionPredicate(name, false) {}
+          : internal::ListSelectionPredicate(name) {}
 
     virtual int do_get_value_index(kernel::Model *m,
                                    kernel::ParticleIndex pi,
@@ -164,14 +182,18 @@ namespace {
       bool no_match = false, match = false;
       IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
         int v = p->get_value_index(m, pi, bs);
-        if (v == 1) {
+        if (v >= 1) {
           match = !match;
-        } else if (v == 0) {
+        }
+        if (v == 0 || v == 2) {
           no_match = true;
         }
       }
       if (match) {
-        return 1;
+        /* Note that we *don't* want to cache matches from this predicate,
+           since a child might match another subpredicate and so flip this
+           predicate's match bit */
+        return 2;
       } else if (no_match) {
         return 0;
       } else {
@@ -467,7 +489,7 @@ Selection::SearchResult Selection::search(
   kernel::ParticleIndexes cur_children =
       expand_children_search(m, pi, resolution_);
   bool children_covered = true;
-  bool matched = (val == 1);
+  bool matched = (val > 0);
   IMP_FOREACH(kernel::ParticleIndex ch, cur_children) {
     SearchResult curr = search(m, ch, parent);
     matched |= curr.get_match();
