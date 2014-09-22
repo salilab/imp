@@ -22,8 +22,9 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-/** Select a part of an atom.Hierarchy or atom.Hierarchies that is identified
-    by the biological name.
+//! Select hierarchy particles identified by the biological name.
+/** Given an atom.Hierarchy (or atom.Hierarchies) this will select a subset
+    of the child particles by the biological name.
 
 
     For example (in Python)
@@ -38,7 +39,14 @@ IMPATOM_BEGIN_NAMESPACE
     Selection objects can be combined using basic set operations (union,
     intersection, difference, symmetric difference). In Python the equivalent
     operators (|, &, -, ^ respectively) can be used. This requires that all
-    of the objects being combined use the same hierarchy or hierarchies.
+    of the objects being combined use the same hierarchy or hierarchies. For
+    example (in Python)
+    \code
+    Selection(hierarchy=h, residue_type=IMP.atom.ASP) \
+         - (Selection(hierarchy=h, atom_type=IMP.atom.AT_CG)
+            | Selection(hierarchy=h, terminus=Selection.C))
+    \endcode
+    selects all atoms in ASP residues except for CG or at the C-terminus.
 
     \note Only representational particles are selected. That is, ones
     with x,y,z coordinates. And the highest resolution representation
