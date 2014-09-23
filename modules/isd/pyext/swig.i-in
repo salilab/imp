@@ -8,6 +8,7 @@
   */
 IMP_SWIG_OBJECT(IMP::isd, CrossLinkMSRestraint, CrossLinkMSRestraints);
 IMP_SWIG_OBJECT(IMP::isd, LogWrapper, LogWrappers);
+IMP_SWIG_OBJECT(IMP::isd, UniformPrior, UniformPriors);
 IMP_SWIG_OBJECT(IMP::isd, JeffreysRestraint, JeffreysRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaJeffreysRestraint, vonMisesKappaJeffreysRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaConjugateRestraint, vonMisesKappaConjugateRestraints);
@@ -65,6 +66,7 @@ def create_model_and_particles():
    %include line.*/
 %include "IMP/isd/CrossLinkMSRestraint.h"
 %include "IMP/isd/LogWrapper.h"
+%include "IMP/isd/UniformPrior.h"
 %include "IMP/isd/Nuisance.h"
 %include "IMP/isd/Scale.h"
 %include "IMP/isd/Switching.h"
