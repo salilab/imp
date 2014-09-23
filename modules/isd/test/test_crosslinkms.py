@@ -98,7 +98,7 @@ dr.add_contribution((p3.get_index(), p2.get_index()),
                     (sigma3.get_particle_index(), sigma2.get_particle_index()),
                     psi.get_particle_index())
 
-lw = IMP.isd.LogWrapper([dr])
+lw = IMP.isd.LogWrapper([dr], 1.0)
 
 maxdist = 40.0
 npoints = 100
