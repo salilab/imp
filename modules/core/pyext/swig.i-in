@@ -89,6 +89,7 @@ IMP_SWIG_OBJECT( IMP::core, VolumeRestraint, VolumeRestraints);
 #endif
 IMP_SWIG_OBJECT( IMP::core, WeightedSphereDistancePairScore, WeightedSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, MoveStatisticsScoreState, MoveStatisticsScoreStates);
+IMP_SWIG_OBJECT( IMP::core, GaussianScoreState, GaussianScoreStates);
 IMP_SWIG_OBJECT( IMP::core, MinimumRestraint, MinimumRestraints);
 IMP_SWIG_OBJECT( IMP::core, WriteRestraintScoresOptimizerState, WriteRestraintScoresOptimizerStates);
 
