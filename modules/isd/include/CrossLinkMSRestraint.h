@@ -11,6 +11,7 @@
 #define IMPISD_CROSS_LINK_MSRESTRAINT_H
 #include "isd_config.h"
 #include <IMP/kernel/Restraint.h>
+#include <IMP/kernel/particle_index.h>
 
 IMPISD_BEGIN_NAMESPACE
 /** A restraint for ambiguous cross-linking MS data and multiple state approach.

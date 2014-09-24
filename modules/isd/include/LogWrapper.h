@@ -11,7 +11,7 @@
 
 #include "isd_config.h"
 #include <IMP/kernel/container_macros.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -27,7 +27,8 @@ class IMPISDEXPORT LogWrapper : public kernel::Restraint {
     //! Create an empty set that is registered with the model
     LogWrapper(kernel::Model *m, const std::string &name = "LogWrapper %1%");
     //! Create a set that is registered with the model
-    LogWrapper(const RestraintsTemp &rs, double weight, const std::string &name = "LogWrapper %1%");
+    LogWrapper(const RestraintsTemp &rs, double weight,
+               const std::string &name = "LogWrapper %1%");
 
     virtual double unprotected_evaluate(
         IMP::kernel::DerivativeAccumulator* accum) const IMP_OVERRIDE;
