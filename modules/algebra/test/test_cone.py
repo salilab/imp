@@ -6,16 +6,38 @@ import math
 
 class Tests(IMP.test.TestCase):
 
+    def test_trivial_constructor(self):
+        """Check trivial cone constructor"""
+        c = IMP.algebra.Cone3D()
+
+    def test_volume_methods(self):
+        """Test namespace methods for Cone3D"""
+        s = IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0, 0.0, 0.0),
+                                  IMP.algebra.Vector3D(0.0, 0.0, 5.0))
+        c = IMP.algebra.Cone3D(s, 4.0)
+        # Not implemented
+        self.assertRaises(Exception, IMP.algebra.get_surface_area, c)
+        self.assertRaises(Exception, IMP.algebra.get_volume, c)
+        self.assertRaises(Exception, IMP.algebra.get_bounding_box, c)
+
     def test_cone_construction(self):
         """Check that cones on Z are constructed correctly"""
         s = IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0, 0.0, 0.0),
                                   IMP.algebra.Vector3D(0.0, 0.0, 5.0))
         cone = IMP.algebra.Cone3D(s, 4.0)
+        self.assertAlmostEqual(cone.get_angle(), 1.3495, delta=1e-4)
+        self.assertAlmostEqual(cone.get_radius(), 4.0, delta=1e-4)
+        self.assertAlmostEqual(cone.get_height(), 5.0, delta=1e-4)
+        p = cone.get_base_plane()
+        self.assertAlmostEqual(p.get_height(cone.get_tip()), 5.0, delta=1e-5)
+        self.assertLess((cone.get_direction() - IMP.algebra.Vector3D(0,0,1)).get_magnitude(), 0.01)
         self.assertLess((cone.get_tip() - s.get_point(0)).get_magnitude(), 0.01)
         self.assertTrue(cone.get_contains(IMP.algebra.Vector3D(0.0, 0.0, 3.0)))
         self.assertTrue(cone.get_contains(IMP.algebra.Vector3D(0.5, 0.5, 3.0)))
+        self.assertFalse(cone.get_contains(IMP.algebra.Vector3D(0.5, 0.5, 0.0)))
         self.assertFalse(
                   cone.get_contains(IMP.algebra.Vector3D(1.0, 1.0, -3.0)))
+        print cone
 
     def test_sphere_patch2(self):
         """Testing sampling a patch"""
