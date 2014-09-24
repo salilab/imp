@@ -31,7 +31,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 class IMPALGEBRAEXPORT Cone3D : public GeometricPrimitiveD<3> {
  public:
   Cone3D() {}
-  //! A cone with a top at s.get_point(0) and the given base radius
+  //! Make with top at s.get_point(0), base at s.get_point(1) with given radius
   Cone3D(const Segment3D &s, double radius);
   //! Get the vertex of the cone
   Vector3D get_tip() const { return seg_.get_point(0); }
@@ -45,6 +45,7 @@ class IMPALGEBRAEXPORT Cone3D : public GeometricPrimitiveD<3> {
   double get_angle() const { return 2. * std::atan(radius_ / get_height()); }
   //! Get the radius of the base circle
   double get_radius() const { return radius_; }
+  //! Return True iff the given point is inside the volume.
   bool get_contains(const Vector3D &v) const;
   //! Get the plane supporting the base of the cone
   /** The cone is on the positive side of the plane.
