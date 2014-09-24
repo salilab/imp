@@ -15,6 +15,12 @@ class Tests(IMP.test.TestCase):
                                   IMP.algebra.Vector3D(
                                       0.0, 0.0, 4.0)),
             5.0)
+        self.assertLess((cyl.get_surface_point_at(0.7, 0.)
+                        - IMP.algebra.Vector3D(0., 5., 1.6)).get_magnitude(),
+                        0.01)
+        self.assertLess((cyl.get_inner_point_at(0.7, .5, 0.)
+                        - IMP.algebra.Vector3D(0., 2.5, 1.6)).get_magnitude(),
+                        0.01)
         self.assertLess((cyl.get_segment().get_middle_point()
                          - center).get_magnitude(), 0.01)
         self.assertLess((cyl.get_segment().get_direction()
