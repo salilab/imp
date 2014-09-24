@@ -13,6 +13,8 @@
 #include <IMP/base/utility_macros.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
+
+//! Base class for geometric types.
 /** Geometric primitives in \imp behave a bit differently than most values.
 
     Most classes in \imp are initialized to a defined state (sometimes a null
@@ -22,8 +24,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
     In addition, they are not comparable, or hashable.
 
-    See the \ref geometricprimitives :Geometric Primitives" entry for more
-    information.
+    See the \ref geometricprimitives entry for more information.
 */
 template <int D>
 class GeometricPrimitiveD {
