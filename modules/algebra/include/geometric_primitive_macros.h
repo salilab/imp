@@ -1,7 +1,6 @@
 /**
  *  \file IMP/algebra/geometric_primitive_macros.h
- *  \brief Various important macros
- *                           for implementing geometry.
+ *  \brief Various important macros for implementing geometry.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -10,7 +9,7 @@
 #ifndef IMPALGEBRA_GEOMETRIC_PRIMITIVE_MACROS_H
 #define IMPALGEBRA_GEOMETRIC_PRIMITIVE_MACROS_H
 
-//! implement the needed namespace methods for a geometry type
+//! Implement the needed namespace methods for a geometry type
 /** These are
     - IMP::algebra::get_surface_area()
     - IMP::algebra::get_volume()
@@ -34,7 +33,7 @@
   IMP_NO_SWIG(                                                              \
       inline void set_##name##_geometry(Name &g, const Name &v) { g = v; })
 
-//! implement the needed namespace methods for a geometry type
+//! Implement the needed namespace methods for a geometry type
 /** These are
     - IMP::algebra::get_surface_area()
     - IMP::algebra::get_volume()
@@ -83,7 +82,7 @@
   typedef Name##D<-1> Name##KD;                                               \
   IMP_VALUES(Name##KD, Name##KDs)
 
-//! implement the needed namespace methods for a geometry type
+//! Implement the needed namespace methods for a geometry type
 /** These are
     - IMP::algebra::get_bounding_box()
     - output to a stream
@@ -102,7 +101,7 @@
   IMP_NO_SWIG(                                                             \
       inline void set_##name##_geometry(Name &g, const Name &gi) { g = gi; })
 
-//! implement the needed namespace methods for a geometry type
+//! Implement the needed namespace methods for a geometry type
 /** These are
     - IMP::algebra::get_surface_area()
     - IMP::algebra::get_bounding_box()
@@ -123,7 +122,7 @@
   IMP_NO_SWIG(                                                             \
       inline void set_##name##_geometry(Name &g, const Name &v) { g = v; })
 
-//! implement the needed namespace methods for a geometry type
+//! Implement the needed namespace methods for a geometry type
 /** These are
     - IMP::algebra::get_surface_area()
     - IMP::algebra::get_bounding_box()
