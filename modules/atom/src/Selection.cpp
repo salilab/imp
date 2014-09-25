@@ -69,9 +69,9 @@ namespace {
       return predicate_;
     }
 
-    virtual SelectionPredicate *clone() IMP_OVERRIDE {
+    virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
       set_was_used(true);
-      return new NotSelectionPredicate(predicate_->clone());
+      return new NotSelectionPredicate(predicate_->clone(false));
     }
 
     virtual int setup_bitset(int index) IMP_OVERRIDE {
@@ -116,11 +116,17 @@ namespace {
     AndSelectionPredicate(std::string name = "AndSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
 
-    virtual SelectionPredicate *clone() IMP_OVERRIDE {
+    virtual SelectionPredicate *clone(bool toplevel) IMP_OVERRIDE {
       set_was_used(true);
-      base::Pointer<ListSelectionPredicate> a = new AndSelectionPredicate();
-      clone_predicates(a);
-      return a.release();
+      // If only one predicate and we're not the top level,
+      // no need to keep ourself around
+      if (!toplevel && predicates_.size() == 1) {
+        return predicates_[0]->clone(false);
+      } else {
+        base::Pointer<ListSelectionPredicate> a = new AndSelectionPredicate();
+        clone_predicates(a);
+        return a.release();
+      }
     }
   
     virtual int do_get_value_index(kernel::Model *m,
@@ -160,7 +166,7 @@ namespace {
     OrSelectionPredicate(std::string name = "OrSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
   
-    virtual SelectionPredicate *clone() IMP_OVERRIDE {
+    virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
       set_was_used(true);
       base::Pointer<ListSelectionPredicate> a = new OrSelectionPredicate();
       clone_predicates(a);
@@ -204,7 +210,7 @@ namespace {
     XorSelectionPredicate(std::string name = "XorSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
 
-    virtual SelectionPredicate *clone() IMP_OVERRIDE {
+    virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
       set_was_used(true);
       base::Pointer<ListSelectionPredicate> a = new XorSelectionPredicate();
       clone_predicates(a);
@@ -261,7 +267,7 @@ Selection Selection::clone() {
   s.h_ = h_;
   s.resolution_ = resolution_;
   s.predicate_ = dynamic_cast<internal::ListSelectionPredicate*>
-                         (predicate_->clone());
+                         (predicate_->clone(true));
   IMP_INTERNAL_CHECK(s.predicate_, "Clone failed");
   s.and_predicate_ = nullptr;
   return s;
@@ -663,7 +669,7 @@ void Selection::set_intersection(const Selection &s) {
     p->add_predicate(predicate_);
     predicate_ = p;
   }
-  predicate_->add_predicate(s.predicate_->clone());
+  predicate_->add_predicate(s.predicate_->clone(false));
 }
 
 void Selection::set_union(const Selection &s) {
@@ -678,7 +684,7 @@ void Selection::set_union(const Selection &s) {
     p->add_predicate(predicate_);
     predicate_ = p;
   }
-  predicate_->add_predicate(s.predicate_->clone());
+  predicate_->add_predicate(s.predicate_->clone(false));
 }
 
 void Selection::set_symmetric_difference(const Selection &s) {
@@ -693,7 +699,7 @@ void Selection::set_symmetric_difference(const Selection &s) {
     p->add_predicate(predicate_);
     predicate_ = p;
   }
-  predicate_->add_predicate(s.predicate_->clone());
+  predicate_->add_predicate(s.predicate_->clone(false));
 }
 
 void Selection::set_difference(const Selection &s) {
@@ -708,7 +714,8 @@ void Selection::set_difference(const Selection &s) {
     p->add_predicate(predicate_);
     predicate_ = p;
   }
-  predicate_->add_predicate(new NotSelectionPredicate(s.predicate_->clone()));
+  predicate_->add_predicate(new NotSelectionPredicate
+                                   (s.predicate_->clone(false)));
 }
 
 void Selection::add_predicate(internal::SelectionPredicate *p)

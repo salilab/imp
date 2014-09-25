@@ -34,7 +34,7 @@ class SelectionPredicate : public ParticleInputs, public base::Object {
 
   //! Return a clone of this predicate
   /** By default, this returns the same object, since no state is kept */
-  virtual SelectionPredicate *clone() {
+  virtual SelectionPredicate *clone(bool) {
     set_was_used(true);
     return this;
   };
@@ -104,7 +104,7 @@ protected:
   void clone_predicates(ListSelectionPredicate *s) {
     s->predicates_.reserve(predicates_.size());
     IMP_FOREACH(SelectionPredicate *p, predicates_) {
-      s->predicates_.push_back(p->clone());
+      s->predicates_.push_back(p->clone(false));
     }
   }
 public:
