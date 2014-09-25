@@ -388,9 +388,8 @@ inline F visit_depth_first_with_data(HD d, F f, typename F::result_type i) {
   return f;
 }
 
-//! Print the hierarchy using a given decorator as to display each node
-/** The last argument limits how deep will be printed out.
-    \ingroup hierarchy
+//! Print the hierarchy using a given decorator to display each node
+/** \ingroup hierarchy
     \see Hierarchy
  */
 template <class ND>
