@@ -126,6 +126,7 @@ class Tests(IMP.test.TestCase):
         s3 = s1 & s2
         s2.set_residue_type(IMP.atom.PHE)
         ps = s3.get_selected_particle_indexes()
+        self.assertEqual(len(ps), 2)
         for p in ps:
             a = IMP.atom.Atom(m, p)
             r = IMP.atom.Residue(a.get_parent())
