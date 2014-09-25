@@ -528,9 +528,7 @@ Selection::SearchResult Selection::search(
     kernel::Model *m, kernel::ParticleIndex pi,
     boost::dynamic_bitset<> parent) const {
   IMP_FUNCTION_LOG;
-  IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi)
-                  << " using " << std::endl);
-  IMP_LOG_WRITE(VERBOSE, show_predicate(predicate_, IMP_STREAM));
+  IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << std::endl);
   int val = predicate_->get_value_index(m, pi, parent);
   if (val == -1) {
     // nothing can match in this subtree
@@ -578,7 +576,9 @@ ParticleIndexes Selection::get_selected_particle_indexes() const {
   int sz = predicate_->setup_bitset(0);
   boost::dynamic_bitset<> base(sz);
   base.set();
-  IMP_LOG_TERSE("Processing selection on " << h_ << std::endl);
+  IMP_LOG_TERSE("Processing selection on " << h_ << " with predicates "
+                << std::endl);
+  IMP_LOG_WRITE(VERBOSE, show_predicate(predicate_, IMP_STREAM));
   IMP_FOREACH(kernel::ParticleIndex pi, h_) {
     IMP_FOREACH(kernel::ParticleIndex rpi, expand_search(m_, pi, resolution_)) {
       ret += search(m_, rpi, base).get_indexes();
