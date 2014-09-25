@@ -70,6 +70,7 @@ namespace {
     }
 
     virtual SelectionPredicate *clone() IMP_OVERRIDE {
+      set_was_used(true);
       return new NotSelectionPredicate(predicate_->clone());
     }
 
@@ -116,6 +117,7 @@ namespace {
           : internal::ListSelectionPredicate(name) {}
 
     virtual SelectionPredicate *clone() IMP_OVERRIDE {
+      set_was_used(true);
       base::Pointer<ListSelectionPredicate> a = new AndSelectionPredicate();
       clone_predicates(a);
       return a.release();
@@ -159,6 +161,7 @@ namespace {
           : internal::ListSelectionPredicate(name) {}
   
     virtual SelectionPredicate *clone() IMP_OVERRIDE {
+      set_was_used(true);
       base::Pointer<ListSelectionPredicate> a = new OrSelectionPredicate();
       clone_predicates(a);
       return a.release();
@@ -202,6 +205,7 @@ namespace {
           : internal::ListSelectionPredicate(name) {}
 
     virtual SelectionPredicate *clone() IMP_OVERRIDE {
+      set_was_used(true);
       base::Pointer<ListSelectionPredicate> a = new XorSelectionPredicate();
       clone_predicates(a);
       return a.release();

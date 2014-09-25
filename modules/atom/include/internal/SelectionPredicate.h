@@ -35,6 +35,7 @@ class SelectionPredicate : public ParticleInputs, public base::Object {
   //! Return a clone of this predicate
   /** By default, this returns the same object, since no state is kept */
   virtual SelectionPredicate *clone() {
+    set_was_used(true);
     return this;
   };
 
