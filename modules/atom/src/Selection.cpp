@@ -634,53 +634,61 @@ void Selection::set_hierarchy_types(Ints types) {
 void Selection::set_intersection(const Selection &s) {
   IMP_USAGE_CHECK(h_ == s.h_,
               "Both Selections must be on the same Hierarchy or Hierarchies");
-  // Replace top-level predicate with a new AndSelectionPredicate, and make
-  // both the existing top-level predicate and the other selection's predicate
-  // children of it
-  base::Pointer<internal::ListSelectionPredicate> p
-              = new AndSelectionPredicate();
-  p->add_predicate(predicate_);
-  p->add_predicate(s.predicate_->clone());
-  predicate_ = p;
+  if (!dynamic_cast<AndSelectionPredicate*>(predicate_.get())) {
+    // Replace top-level predicate with a new AndSelectionPredicate, and make
+    // both the existing top-level predicate and the other selection's predicate
+    // children of it
+    base::Pointer<internal::ListSelectionPredicate> p
+                = new AndSelectionPredicate();
+    p->add_predicate(predicate_);
+    predicate_ = p;
+  }
+  predicate_->add_predicate(s.predicate_->clone());
 }
 
 void Selection::set_union(const Selection &s) {
   IMP_USAGE_CHECK(h_ == s.h_,
               "Both Selections must be on the same Hierarchy or Hierarchies");
-  // Replace top-level predicate with a new OrSelectionPredicate, and make
-  // both the existing top-level predicate and the other selection's predicate
-  // children of it
-  base::Pointer<internal::ListSelectionPredicate> p
-              = new OrSelectionPredicate();
-  p->add_predicate(predicate_);
-  p->add_predicate(s.predicate_->clone());
-  predicate_ = p;
+  if (!dynamic_cast<OrSelectionPredicate*>(predicate_.get())) {
+    // Replace top-level predicate with a new OrSelectionPredicate, and make
+    // both the existing top-level predicate and the other selection's predicate
+    // children of it
+    base::Pointer<internal::ListSelectionPredicate> p
+                = new OrSelectionPredicate();
+    p->add_predicate(predicate_);
+    predicate_ = p;
+  }
+  predicate_->add_predicate(s.predicate_->clone());
 }
 
 void Selection::set_symmetric_difference(const Selection &s) {
   IMP_USAGE_CHECK(h_ == s.h_,
               "Both Selections must be on the same Hierarchy or Hierarchies");
-  // Replace top-level predicate with a new XorSelectionPredicate, and make
-  // both the existing top-level predicate and the other selection's predicate
-  // children of it
-  base::Pointer<internal::ListSelectionPredicate> p
-              = new XorSelectionPredicate();
-  p->add_predicate(predicate_);
-  p->add_predicate(s.predicate_->clone());
-  predicate_ = p;
+  if (!dynamic_cast<XorSelectionPredicate*>(predicate_.get())) {
+    // Replace top-level predicate with a new XorSelectionPredicate, and make
+    // both the existing top-level predicate and the other selection's predicate
+    // children of it
+    base::Pointer<internal::ListSelectionPredicate> p
+                = new XorSelectionPredicate();
+    p->add_predicate(predicate_);
+    predicate_ = p;
+  }
+  predicate_->add_predicate(s.predicate_->clone());
 }
 
 void Selection::set_difference(const Selection &s) {
   IMP_USAGE_CHECK(h_ == s.h_,
               "Both Selections must be on the same Hierarchy or Hierarchies");
-  // Replace top-level predicate with a new AndSelectionPredicate, and make
-  // both the existing top-level predicate and the other selection's predicate
-  // (wrapped with a NotSelectionPredicate) children of it
-  base::Pointer<internal::ListSelectionPredicate> p
-              = new AndSelectionPredicate();
-  p->add_predicate(predicate_);
-  p->add_predicate(new NotSelectionPredicate(s.predicate_->clone()));
-  predicate_ = p;
+  if (!dynamic_cast<AndSelectionPredicate*>(predicate_.get())) {
+    // Replace top-level predicate with a new AndSelectionPredicate, and make
+    // both the existing top-level predicate and the other selection's predicate
+    // (wrapped with a NotSelectionPredicate) children of it
+    base::Pointer<internal::ListSelectionPredicate> p
+                = new AndSelectionPredicate();
+    p->add_predicate(predicate_);
+    predicate_ = p;
+  }
+  predicate_->add_predicate(new NotSelectionPredicate(s.predicate_->clone()));
 }
 
 void Selection::add_predicate(internal::SelectionPredicate *p)
