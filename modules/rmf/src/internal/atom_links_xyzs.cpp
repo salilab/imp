@@ -12,15 +12,23 @@
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
-HierarchyLoadXYZs::HierarchyLoadXYZs(RMF::FileConstHandle f) : ip_factory_(f) {}
+HierarchyLoadXYZs::HierarchyLoadXYZs(RMF::FileConstHandle f) : ip_factory_(f) {
+  // backwards compat
+  RMF::Category cat = f.get_category("IMP");
+  rb_index_key_ = f.get_key(cat, "rigid body", RMF::IntTraits());
+}
 
 void HierarchyLoadXYZs::setup_particle(
     RMF::NodeConstHandle n, kernel::Model *m, kernel::ParticleIndex p,
     const kernel::ParticleIndexes &rigid_bodies) {
   if (!ip_factory_.get_is(n)) return;
   if (!core::XYZ::get_is_setup(m, p)) core::XYZ::setup_particle(m, p);
-  /* If there is a rigid body parent set up, add this particle as a child */
-  if (!rigid_bodies.empty() && !(rigid_bodies.size()==1 && rigid_bodies.back() == p)) {
+  /* If there is a rigid body parent set up, add this particle as a child
+     (unless it's an old-style rigid body, in which case this has been
+     done already) */
+  if (!rigid_bodies.empty()
+      && !(rigid_bodies.size()==1 && rigid_bodies.back() == p)
+      && !n.get_has_value(rb_index_key_)) {
     core::RigidBody rb(m, rigid_bodies.back());
     /* For nested rigid bodies, this XYZ particle is *also* the rigid body.
        So don't make ourselves our own child - add to the parent rigid body

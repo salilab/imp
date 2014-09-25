@@ -23,6 +23,9 @@ class IMPRMFEXPORT HierarchyLoadXYZs {
 
   NodeParticlePairs global_, local_;
 
+  // backwards compat
+  RMF::IntKey rb_index_key_;
+
  public:
   HierarchyLoadXYZs(RMF::FileConstHandle f);
   void setup_particle(RMF::NodeConstHandle n, kernel::Model *m,

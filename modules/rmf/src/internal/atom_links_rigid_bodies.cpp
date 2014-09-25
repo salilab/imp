@@ -68,6 +68,8 @@ void HierarchyLoadRigidBodies::setup_particle(
       core::RigidBody::setup_particle(m, pi, algebra::ReferenceFrame3D());
     }
     core::RigidBody arb(m, rigid_body_compositions_.find(rb)->second.rb);
+    // set dummy coordinates (add_member() will try to use them)
+    core::XYZ(m, p).set_coordinates(algebra::Vector3D(0., 0., 0.));
     if (!ip_factory_.get_is_static(n)) {
       arb.add_non_rigid_member(p);
     } else {
@@ -161,8 +163,11 @@ void HierarchyLoadRigidBodies::fix_rigid_body(Model *m, const RB &in) const {
       rigid_bits.push_back(pi);
     }
   }
-  IMP_USAGE_CHECK(!rigid_bits.empty(), "No rigid particles to align rigid"
-                                           << " body with");
+  if (rigid_bits.empty()) {
+    // all members are non-rigid, so nothing to do
+    return;
+  }
+
   rb.set_reference_frame_from_members(rigid_bits);
   algebra::ReferenceFrame3D rf = rb.get_reference_frame();
   // fix rigid bodies that aren't rigid
