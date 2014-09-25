@@ -55,6 +55,10 @@ namespace {
                           std::string name = "NotSelectionPredicate%1%")
           : internal::SelectionPredicate(name), predicate_(predicate) {}
 
+    virtual SelectionPredicate *clone() IMP_OVERRIDE {
+      return new NotSelectionPredicate(predicate_->clone());
+    }
+
     virtual int setup_bitset(int index) IMP_OVERRIDE {
       index = internal::SelectionPredicate::setup_bitset(index);
       /* Set index for subpredicate */
@@ -96,6 +100,12 @@ namespace {
   public:
     AndSelectionPredicate(std::string name = "AndSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
+
+    virtual SelectionPredicate *clone() IMP_OVERRIDE {
+      base::Pointer<ListSelectionPredicate> a = new AndSelectionPredicate();
+      clone_predicates(a);
+      return a.release();
+    }
   
     virtual int do_get_value_index(kernel::Model *m,
                                    kernel::ParticleIndex pi,
@@ -134,6 +144,12 @@ namespace {
     OrSelectionPredicate(std::string name = "OrSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
   
+    virtual SelectionPredicate *clone() IMP_OVERRIDE {
+      base::Pointer<ListSelectionPredicate> a = new OrSelectionPredicate();
+      clone_predicates(a);
+      return a.release();
+    }
+
     virtual int do_get_value_index(kernel::Model *m,
                                    kernel::ParticleIndex pi,
                                    boost::dynamic_bitset<> &bs)
@@ -170,6 +186,12 @@ namespace {
   public:
     XorSelectionPredicate(std::string name = "XorSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
+
+    virtual SelectionPredicate *clone() IMP_OVERRIDE {
+      base::Pointer<ListSelectionPredicate> a = new XorSelectionPredicate();
+      clone_predicates(a);
+      return a.release();
+    }
 
     virtual int do_get_value_index(kernel::Model *m,
                                    kernel::ParticleIndex pi,
@@ -215,12 +237,15 @@ Selection::Selection() : resolution_(0) {
   m_ = nullptr;
 }
 
-Selection::Selection(const Selection &s) {
-  m_ = s.m_;
-  h_ = s.h_;
-  resolution_ = s.resolution_;
-  predicate_ = s.predicate_;
-  and_predicate_ = s.and_predicate_;
+Selection Selection::clone() {
+  Selection s;
+  s.m_ = m_;
+  s.h_ = h_;
+  s.resolution_ = resolution_;
+  s.predicate_ = dynamic_cast<internal::ListSelectionPredicate*>
+                         (predicate_->clone());
+  s.and_predicate_ = nullptr;
+  return s;
 }
 
 Selection::Selection(kernel::Particle *h) : resolution_(0) {
@@ -614,7 +639,7 @@ void Selection::set_intersection(const Selection &s) {
   base::Pointer<internal::ListSelectionPredicate> p
               = new AndSelectionPredicate();
   p->add_predicate(predicate_);
-  p->add_predicate(s.predicate_);
+  p->add_predicate(s.predicate_->clone());
   predicate_ = p;
 }
 
@@ -627,7 +652,7 @@ void Selection::set_union(const Selection &s) {
   base::Pointer<internal::ListSelectionPredicate> p
               = new OrSelectionPredicate();
   p->add_predicate(predicate_);
-  p->add_predicate(s.predicate_);
+  p->add_predicate(s.predicate_->clone());
   predicate_ = p;
 }
 
@@ -640,7 +665,7 @@ void Selection::set_symmetric_difference(const Selection &s) {
   base::Pointer<internal::ListSelectionPredicate> p
               = new XorSelectionPredicate();
   p->add_predicate(predicate_);
-  p->add_predicate(s.predicate_);
+  p->add_predicate(s.predicate_->clone());
   predicate_ = p;
 }
 
@@ -653,12 +678,15 @@ void Selection::set_difference(const Selection &s) {
   base::Pointer<internal::ListSelectionPredicate> p
               = new AndSelectionPredicate();
   p->add_predicate(predicate_);
-  p->add_predicate(new NotSelectionPredicate(s.predicate_));
+  p->add_predicate(new NotSelectionPredicate(s.predicate_->clone()));
   predicate_ = p;
 }
 
 void Selection::add_predicate(internal::SelectionPredicate *p)
 {
+  // Take a reference to p so it gets freed if the usage check fails
+  base::Pointer<internal::SelectionPredicate> pp(p);
+  IMP_USAGE_CHECK(and_predicate_, "Cannot add predicates to Selection copies");
   and_predicate_->add_predicate(p);
 }
 

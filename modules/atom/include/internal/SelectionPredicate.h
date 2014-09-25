@@ -25,6 +25,12 @@ class SelectionPredicate : public ParticleInputs, public base::Object {
   SelectionPredicate(std::string name)
          : base::Object(name), bitset_index_(-1) {}
 
+  //! Return a clone of this predicate
+  /** By default, this returns the same object, since no state is kept */
+  virtual SelectionPredicate *clone() {
+    return this;
+  };
+
   //! Set up unique index(es) into Selection's bitset.
   /** Each predicate needs a unique index so that matches can be cached using
       a bitset maintained by Selection. Should be called before using the
@@ -87,6 +93,12 @@ IMP_OBJECTS(SelectionPredicate, SelectionPredicates);
 class ListSelectionPredicate : public SelectionPredicate {
 protected:
   SelectionPredicates predicates_;
+  void clone_predicates(ListSelectionPredicate *s) {
+    s->predicates_.reserve(predicates_.size());
+    IMP_FOREACH(SelectionPredicate *p, predicates_) {
+      s->predicates_.push_back(p->clone());
+    }
+  }
 public:
   ListSelectionPredicate(std::string name) : SelectionPredicate(name) {}
 

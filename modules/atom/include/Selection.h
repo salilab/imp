@@ -47,6 +47,8 @@ IMPATOM_BEGIN_NAMESPACE
             | Selection(hierarchy=h, terminus=Selection.C))
     \endcode
     selects all atoms in ASP residues except for CG or at the C-terminus.
+    The resulting Selection makes a copy of the Selections it was combined from,
+    so changing the original Selections does not change that Selection.
 
     \note Only representational particles are selected. That is, ones
     with x,y,z coordinates. And the highest resolution representation
@@ -103,7 +105,7 @@ class IMPATOMEXPORT Selection :
             Ints state_indexes = []);
 #endif
   Selection();
-  Selection(const Selection &s);
+  Selection clone();
   Selection(Hierarchy h);
   Selection(kernel::Particle *h);
   Selection(kernel::Model *m, const kernel::ParticleIndexes &pis);

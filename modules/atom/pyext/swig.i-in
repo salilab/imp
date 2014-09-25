@@ -130,19 +130,19 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
         eval("self.set_%s(params[k])"%k)
 
   def union(self, s):
-      news = Selection(self)
+      news = self.clone()
       news.union_update(s)
       return news
   def intersection(self, s):
-      news = Selection(self)
+      news = self.clone()
       news.intersection_update(s)
       return news
   def symmetric_difference(self, s):
-      news = Selection(self)
+      news = self.clone()
       news.symmetric_difference_update(s)
       return news
   def difference(self, s):
-      news = Selection(self)
+      news = self.clone()
       news.difference_update(s)
       return news
   def union_update(self, s):
