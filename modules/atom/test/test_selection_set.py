@@ -116,5 +116,22 @@ class Tests(IMP.test.TestCase):
                          and (rind == 437 or rind == 440)
                          and not (rind == 440 and at == IMP.atom.AT_C))
 
+    def test_add_predicate(self):
+        """Test addition of a new predicate after selection combination"""
+        IMP.base.set_log_level(IMP.base.SILENT)
+        m = IMP.kernel.Model()
+        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        s1 = IMP.atom.Selection(h, atom_type=IMP.atom.AT_CG)
+        s2 = IMP.atom.Selection(h)
+        s3 = s1 & s2
+        s2.set_residue_type(IMP.atom.PHE)
+        ps = s3.get_selected_particle_indexes()
+        for p in ps:
+            a = IMP.atom.Atom(m, p)
+            r = IMP.atom.Residue(a.get_parent())
+            rind = r.get_index()
+            at = a.get_atom_type()
+            self.assert_(at == IMP.atom.AT_CG and (rind == 437 or rind == 440))
+
 if __name__ == '__main__':
     IMP.test.main()
