@@ -244,6 +244,7 @@ Selection Selection::clone() {
   s.resolution_ = resolution_;
   s.predicate_ = dynamic_cast<internal::ListSelectionPredicate*>
                          (predicate_->clone());
+  IMP_INTERNAL_CHECK(s.predicate_, "Clone failed");
   s.and_predicate_ = nullptr;
   return s;
 }
