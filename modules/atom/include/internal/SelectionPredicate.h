@@ -25,6 +25,13 @@ class SelectionPredicate : public ParticleInputs, public base::Object {
   SelectionPredicate(std::string name)
          : base::Object(name), bitset_index_(-1) {}
 
+  virtual unsigned get_number_of_children() const {
+    return 0;
+  }
+  virtual SelectionPredicate *get_child(unsigned) const {
+    return nullptr;
+  }
+
   //! Return a clone of this predicate
   /** By default, this returns the same object, since no state is kept */
   virtual SelectionPredicate *clone() {
@@ -101,6 +108,13 @@ protected:
   }
 public:
   ListSelectionPredicate(std::string name) : SelectionPredicate(name) {}
+
+  virtual unsigned get_number_of_children() const IMP_OVERRIDE {
+    return predicates_.size();
+  }
+  virtual SelectionPredicate *get_child(unsigned i) const IMP_OVERRIDE {
+    return predicates_[i];
+  }
 
   //! Add a predicate to the list of subpredicates
   void add_predicate(SelectionPredicate *p) {

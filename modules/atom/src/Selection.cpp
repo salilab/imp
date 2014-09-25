@@ -42,6 +42,13 @@
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
+  inline std::ostream &show_predicate(internal::SelectionPredicate *p,
+                                      std::ostream &out = std::cout) {
+    IMP_PRINT_TREE(out, internal::SelectionPredicate*, p,
+                   n->get_number_of_children(), n->get_child, n->show(out));
+    return out;
+  }
+
   int get_match_return(bool v) {
     if (v) return 1;
     else return -1;
@@ -54,6 +61,13 @@ namespace {
     NotSelectionPredicate(SelectionPredicate *predicate,
                           std::string name = "NotSelectionPredicate%1%")
           : internal::SelectionPredicate(name), predicate_(predicate) {}
+
+    virtual unsigned get_number_of_children() const IMP_OVERRIDE {
+      return 1;
+    }
+    virtual SelectionPredicate *get_child(unsigned) const IMP_OVERRIDE {
+      return predicate_;
+    }
 
     virtual SelectionPredicate *clone() IMP_OVERRIDE {
       return new NotSelectionPredicate(predicate_->clone());
@@ -504,7 +518,9 @@ Selection::SearchResult Selection::search(
     kernel::Model *m, kernel::ParticleIndex pi,
     boost::dynamic_bitset<> parent) const {
   IMP_FUNCTION_LOG;
-  IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << std::endl);
+  IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi)
+                  << " using " << std::endl);
+  IMP_LOG_WRITE(VERBOSE, show_predicate(predicate_, IMP_STREAM));
   int val = predicate_->get_value_index(m, pi, parent);
   if (val == -1) {
     // nothing can match in this subtree
