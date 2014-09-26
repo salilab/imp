@@ -261,7 +261,7 @@ Selection::Selection() : resolution_(0) {
   m_ = nullptr;
 }
 
-Selection Selection::clone() {
+Selection Selection::create_clone() {
   Selection s;
   s.m_ = m_;
   s.h_ = h_;

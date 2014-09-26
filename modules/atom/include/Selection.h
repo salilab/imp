@@ -105,7 +105,6 @@ class IMPATOMEXPORT Selection :
             Ints state_indexes = []);
 #endif
   Selection();
-  Selection clone();
   Selection(Hierarchy h);
   Selection(kernel::Particle *h);
   Selection(kernel::Model *m, const kernel::ParticleIndexes &pis);
@@ -117,6 +116,14 @@ class IMPATOMEXPORT Selection :
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   Selection(Hierarchy h, std::string molname, int residue_index);
 #endif
+
+  //! Make a clone of this Selection.
+  /** The clone will initially contain the same predicates as the original,
+      but adding new predicates to either Selection will not affect the
+      other (as opposed to simply copy the Selection object, where both copies
+      share the same list of predicates). */
+  Selection create_clone();
+
   //! Return the hierarchies that the Selection was constructed with
   Hierarchies get_hierarchies() const;
   //! Select based on the molecule name.
