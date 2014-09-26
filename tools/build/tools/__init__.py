@@ -132,7 +132,7 @@ def has_python_hashbang(fname):
     return line.startswith('#!') and 'python' in line
 
 def filter_pyapps(fname):
-    """A Python application ends in .py, or starts with #!/usr/bin/python;
+    """A Python application ends in .py, or starts with #!(something)python;
        exclude dependencies.py."""
     return os.path.isfile(fname) and not fname.endswith('dependencies.py') \
            and (fname.endswith('.py') or has_python_hashbang(fname))
