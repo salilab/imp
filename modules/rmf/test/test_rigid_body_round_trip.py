@@ -62,7 +62,7 @@ class Tests(IMP.test.TestCase):
                 rbd.add_non_rigid_member(p.get_index())
                 ps.append(p)
                 nrbps.append(p)
-            fn = self.get_tmp_file_name("rigid_implicit." + suffix)
+            fn = self.get_tmp_file_name("rigid_implicit" + suffix)
             f = RMF.create_rmf_file(fn)
             IMP.rmf.add_hierarchies(f, [r])
             coords = []
@@ -138,7 +138,7 @@ class Tests(IMP.test.TestCase):
             IMP.core.Gaussian.setup_particle(p,IMP.algebra.Gaussian3D(
                                      IMP.algebra.ReferenceFrame3D(t),[4,5,6]))
             r.add_child(IMP.atom.Hierarchy.setup_particle(p))
-            fn = self.get_tmp_file_name("gaussian." + suffix)
+            fn = self.get_tmp_file_name("gaussian" + suffix)
             f = RMF.create_rmf_file(fn)
             IMP.rmf.add_hierarchies(f, [r])
             IMP.rmf.save_frame(f, 0)
@@ -210,7 +210,7 @@ class Tests(IMP.test.TestCase):
                 rbd.add_non_rigid_member(p.get_index())
                 ps.append(p)
                 nrbps.append(p)
-            fn = self.get_tmp_file_name("rigid_implicit." + suffix)
+            fn = self.get_tmp_file_name("rigid_implicit" + suffix)
             f = RMF.create_rmf_file(fn)
             IMP.rmf.add_hierarchies(f, [r])
             coords = []

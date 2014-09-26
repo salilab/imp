@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
             d.set_y(0)
             d.set_z(0)
             nf = 10
-            path = self.get_tmp_file_name("test_mf." + suffix)
+            path = self.get_tmp_file_name("test_mf" + suffix)
             print path
             f = RMF.create_rmf_file(path)
             IMP.rmf.add_hierarchy(f, h)

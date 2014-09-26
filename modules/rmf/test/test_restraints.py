@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
         """Test writing restraints rmf"""
         RMF.set_log_level("Off")
         for suffix in IMP.rmf.suffixes:
-            name = self.get_tmp_file_name("restr." + suffix)
+            name = self.get_tmp_file_name("restr" + suffix)
             print "#### write"
             self._write_restraint(name)
             print "#### read"
@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
     def test_1(self):
         for suffix in IMP.rmf.suffixes:
             """Test writing restraints to rmf with no particles"""
-            nm = self.get_tmp_file_name("restrnp." + suffix)
+            nm = self.get_tmp_file_name("restrnp" + suffix)
             print nm
             f = RMF.create_rmf_file(nm)
             m = IMP.kernel.Model()
@@ -64,7 +64,7 @@ class Tests(IMP.test.TestCase):
         RMF.set_log_level("Off")
         for suffix in IMP.rmf.suffixes:
             RMF.HDF5.set_show_errors(True)
-            path = self.get_tmp_file_name("dynamic_restraints." + suffix)
+            path = self.get_tmp_file_name("dynamic_restraints" + suffix)
             print path
             f = RMF.create_rmf_file(path)
             IMP.base.set_log_level(IMP.base.SILENT)

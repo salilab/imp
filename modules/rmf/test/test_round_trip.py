@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         for suffix in [".rmfz", ".rmf3"]:
             m = IMP.kernel.Model()
             print "reading pdb"
-            name = self.get_tmp_file_name("test_round_trip." + suffix)
+            name = self.get_tmp_file_name("test_round_trip" + suffix)
             h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                   IMP.atom.NonAlternativePDBSelector())
             h.get_is_valid(True)
@@ -69,7 +69,7 @@ class Tests(IMP.test.TestCase):
             print "done"
             IMP.base.set_log_level(IMP.base.VERBOSE)
             print "writing hierarchy"
-            name = self.get_tmp_file_name("test_rt_parts." + suffix)
+            name = self.get_tmp_file_name("test_rt_parts" + suffix)
             f = RMF.create_rmf_file(name)
             print f, type(f)
             IMP.rmf.add_hierarchy(f, h)
@@ -101,7 +101,7 @@ class Tests(IMP.test.TestCase):
             IMP.base.set_log_level(IMP.base.SILENT)
             IMP.atom.add_bonds(h)
             IMP.base.set_log_level(IMP.base.VERBOSE)
-            name = self.get_tmp_file_name("test_rt_parts." + suffix)
+            name = self.get_tmp_file_name("test_rt_parts" + suffix)
             f = RMF.create_rmf_file(name)
             IMP.rmf.add_hierarchy(f, h)
             IMP.rmf.save_frame(f, str(0))
