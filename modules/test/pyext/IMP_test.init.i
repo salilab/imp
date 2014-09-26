@@ -76,6 +76,16 @@ class RunInTempDir(object):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
 
+class TempDir(object):
+    """Simple RAII-style class to make a temporary directory. When the object
+       is created, the temporary directory is created. When the object goes
+       out of scope, the temporary directory is deleted."""
+    def __init__(self, dir):
+        self.tmpdir = tempfile.mkdtemp(dir=dir)
+    def __del__(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
+
 def numerical_derivative(func, val, step):
     """Calculate the derivative of the single-value function `func` at
        point `val`. The derivative is calculated using simple finite
@@ -167,11 +177,11 @@ class TestCase(unittest.TestCase):
         return open(self.get_input_file_name(filename), mode)
 
     def get_tmp_file_name(self, filename):
-        """Get the full name of an output file in the build/tmp directory."""
-        dirpath=os.environ['IMP_TMP_DIR']
-        if not os.path.exists(dirpath):
-            os.mkdir(dirpath)
-        return os.path.join(dirpath, filename)
+        """Get the full name of an output file in the tmp directory."""
+        if not hasattr(self, '_tmpdir'):
+            self._tmpdir = TempDir(os.environ['IMP_TMP_DIR'])
+        tmpdir = self._tmpdir.tmpdir
+        return os.path.join(tmpdir, filename)
 
     def get_magnitude(self, vector):
         return sum([x*x for x in vector], 0)**.5
