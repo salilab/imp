@@ -35,10 +35,13 @@ IMPATOM_BEGIN_NAMESPACE
     \endcode
     each get the C-terminus of the protein "myprotein" (assuming the last
     residue index is 133, and the residues are leaves, containing no atoms).
+    (In C++, use one of the other constructors, then call one or more of the
+    `set_*` methods.)
 
     Selection objects can be combined using basic set operations (union,
     intersection, difference, symmetric difference). In Python the equivalent
-    operators (|, &, -, ^ respectively) can be used. This requires that all
+    operators (|, &, -, ^ respectively) can be used (the similar in-place
+    |=, &=, -= and ^= operators also work). This requires that all
     of the objects being combined use the same hierarchy or hierarchies. For
     example (in Python)
     \code
@@ -50,8 +53,8 @@ IMPATOM_BEGIN_NAMESPACE
     The resulting Selection makes a copy of the Selections it was combined from,
     so changing the original Selections does not change that Selection.
 
-    \note Only representational particles are selected. That is, ones
-    with x,y,z coordinates. And the highest resolution representation
+    \note Only representational particles are selected - that is, those
+    with x,y,z coordinates. The highest resolution representation
     that fits is returned. If you want lower resolution, use the
     resolution parameter to select the desired resolution (pass a very large
     number to get the coarsest representation).
