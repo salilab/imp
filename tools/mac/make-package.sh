@@ -156,7 +156,7 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/libjpeg.8.dylib \
                 /usr/local/lib/libtiff.5.dylib \
                 /usr/local/lib/liblzma.5.dylib \
-                /usr/local/lib/libprotobuf.8.dylib \
+                /usr/local/lib/libprotobuf.9.dylib \
                 /usr/local/lib/libTAU.1.dylib \
                 /usr/local/lib/libCGAL.10.0.3.dylib \
                 /usr/local/lib/libCGAL.10.dylib \
