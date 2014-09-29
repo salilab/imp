@@ -176,7 +176,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
       
    
         maxdist = 40.0
-        npoints = 100
+        npoints = 30
         
         sigmas1=sample([0.01,0.1,0.5,1.0,5.0,10.0,50.0,100.0],5)
         sigmas2=sample([0.01,0.1,0.5,1.0,5.0,10.0,50.0,100.0],5)
