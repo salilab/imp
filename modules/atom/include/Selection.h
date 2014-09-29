@@ -279,8 +279,8 @@ IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
     it uses an IMP::core::Cover to maintain the cover property.
 
     Doing this can be a useful way to accelerate computations
-    when it is OK to replace a potential complicated set of
-    geometry represented by the selection with a much simpler
+    when it is OK to replace a potentially complicated set of
+    geometries represented by the selection with a much simpler
     one.
 
     \see Selection
