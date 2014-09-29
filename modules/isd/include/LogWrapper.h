@@ -15,6 +15,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
+//! Calculate the -Log of a list of restraints.
 class IMPISDEXPORT LogWrapper : public kernel::Restraint {
   void on_add(Restraint *r);
   void on_change();
