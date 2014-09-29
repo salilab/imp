@@ -198,7 +198,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                             scoretest = - \
                                 log(self.testdr.get_probability())
                             score = self.lw.unprotected_evaluate(None)
-                            self.assertAlmostEqual(score,scoretest,places=5)
+                            self.assertAlmostEqual(score,scoretest,delta=1.e-5)
 
 
 if __name__ == '__main__':
