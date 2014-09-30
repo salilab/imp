@@ -22,7 +22,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Compute the rigid transform bringing the first point set to the second
 /** The points are assumed to be corresponding (that is, from[0] is aligned
-    to to[0] etc.). The alignment computed is that which minimized the
+    to to[0] etc.). The alignment computed is that which minimizes the
     sum of squared distances between corresponding points.
 
     \return the
