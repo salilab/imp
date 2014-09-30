@@ -69,6 +69,7 @@ void HierarchyLoadRigidBodies::setup_particle(
     }
     core::RigidBody arb(m, rigid_body_compositions_.find(rb)->second.rb);
     // set dummy coordinates (add_member() will try to use them)
+    if (!core::XYZ::get_is_setup(m, p)) core::XYZ::setup_particle(m, p);
     core::XYZ(m, p).set_coordinates(algebra::Vector3D(0., 0., 0.));
     if (!ip_factory_.get_is_static(n)) {
       arb.add_non_rigid_member(p);
