@@ -126,8 +126,8 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
     IMP_LOG_VERBOSE("Flipping matrix" << std::endl);
     IMP_Eigen::Matrix3d S = IMP_Eigen::Matrix3d::Zero();
     S(0, 0) = S(1, 1) = 1;
-    S(2, 2) = (U * V.transpose()).determinant();
-    rot = U * S * V.transpose();
+    S(2, 2) = -1;
+    rot = V * S * U.transpose();
   }
 
   IMP_LOG_VERBOSE("Rotation matrix is " << rot << std::endl);
