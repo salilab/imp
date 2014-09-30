@@ -569,7 +569,8 @@ void RigidBody::set_reference_frame_from_members(
       IMP_INTERNAL_CHECK(get_distance(back, global) < 1,
                          "Coordinates don't match: read "
                              << global << " had local " << local << " but got "
-                             << back << " with transform " << t3);
+                             << back << " with transform " << t3 << " for "
+                             << m->get_particle_name(pi));
     }
   }
   // later patch members to make coordinates exact.
