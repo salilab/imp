@@ -65,6 +65,11 @@ void HierarchyLoadXYZs::link_particle(
     if (rigid_bodies.back() == p) return;
     if (core::NonRigidMember::get_is_setup(m, p)) {
       local_.push_back(std::make_pair(n.get_id(), p));
+    } else if (n.get_has_value(rb_index_key_)
+               && core::RigidMember::get_is_setup(m, p)) {
+      // backwards compat: need to read coordinates of rigid members in order
+      // to set the reference frame of the rigid body later
+      global_.push_back(std::make_pair(n.get_id(), p));
     }
   }
 }
