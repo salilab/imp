@@ -457,20 +457,20 @@ are free to borrow.
 
 Below are a suggestions prompted by bugs found in code submitted to IMP.
 
-- Never use '`using` `namespace'` outside of a function; instead
-      explicitly provide the namespace. (This avoids namespace pollution, and
-      removes any ambiguity.)
+- Never use '`using namespace`' outside of a function; instead
+  explicitly provide the namespace. (This avoids namespace pollution, and
+  removes any ambiguity.)
 
 - Never use the preprocessor to define constants. Use `const`
   variables instead. Preprocessor symbols don't have scope or type
   and so can have unexpected effects.
 
-- Don't expect IMP::base::Object::get_name() names to be unique, they
+- Don't expect IMP::base::Object::get_name() names to be unique; they
   are there for human viewing. If you need a unique identifier
   associated with an object or non-geometric value, just use the
   object or value itself.
 
-- Pass other objects by value or by `const` & (if the object is
+- Pass other objects by value or by `const &` (if the object is
       large) and store copies of them.
 
 - Never expose member variables in an object which has
@@ -484,7 +484,7 @@ Below are a suggestions prompted by bugs found in code submitted to IMP.
 - Clearly mark any file that is created by a script so that other
       people know to edit the original file.
 
-- Always return a `const` value or `const` ref if you are not
+- Always return a `const` value or `const` reference if you are not
       providing write access. Returning a `const` copy means the
       compiler will report an error if the caller tries to modify the
       return value without creating a copy of it.
