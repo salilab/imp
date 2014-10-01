@@ -161,9 +161,9 @@ class IMPCOREEXPORT RigidBody : public XYZ {
      The coordinates of pi are set to the center of mass of ps and the rotation
      of its reference frame is based on the diagonalized inertia tensor of ps.
 
-     @note If size(ps)=1, then its reference frame is copied if it is a rigid body, \
-     or its rotation is set to identity if it is not a rigid body.
-
+     @note If size(ps)=1, then its reference frame is copied if it is a
+           rigid body, or its rotation is set to identity if it is not
+           a rigid body.
    */
   IMP_DECORATOR_SETUP_1(RigidBody, kernel::ParticleIndexesAdaptor, ps);
 
