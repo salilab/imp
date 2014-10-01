@@ -260,15 +260,10 @@ class Tests(IMP.test.TestCase):
                         skipped += 1
                         continue
                     if expected != 0:
-                        self.assertAlmostEqual(
-                            observed /
-                            expected,
-                            1.0,
-                            delta=0.001)
+                        self.assertAlmostEqual( observed / expected,
+                            1.0, delta=0.005)
                     else:
-                        self.assertAlmostEqual(
-                            observed,
-                            expected,
+                        self.assertAlmostEqual(observed, expected,
                             delta=0.001)
                     self.tau.add_to_nuisance_derivative(
                         -self.tau.get_nuisance_derivative(),
