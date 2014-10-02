@@ -103,7 +103,7 @@
 
 //! Implement the needed namespace methods for a geometry type
 /** These are
-    - IMP::algebra::get_surface_area()
+    - IMP::algebra::get_area()
     - IMP::algebra::get_bounding_box()
     - output to a stream
 
@@ -124,7 +124,7 @@
 
 //! Implement the needed namespace methods for a geometry type
 /** These are
-    - IMP::algebra::get_surface_area()
+    - IMP::algebra::get_area()
     - IMP::algebra::get_bounding_box()
     - output to a stream
 
