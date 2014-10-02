@@ -148,14 +148,6 @@
 #define IMP_VC_PRAGMA(x)
 #endif
 
-#ifndef IMP_DOXYGEN
-#if defined(BOOST_LITTLE_ENDIAN)
-#define IMP_LITTLE_ENDIAN
-#else
-#define IMP_BIG_ENDIAN
-#endif
-#endif
-
 #ifdef __clang__
 
 #define IMP_GCC_PUSH_POP(x)
