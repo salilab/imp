@@ -58,14 +58,14 @@ ChangeLog {#changelog}
 
 # For IMP 2.0 # {#changelog_2_0}
 ## Spring 2013
-- Modules and applications now have a _Maintainer_ in their `README.md`, giving the github id of the person to whome issue should be assigned.
+- Modules and applications now have a _Maintainer_ in their `README.md`, giving the github id of the person to whom issues should be assigned.
 - `setup_git.py` supports the `--module` flag which will set up git hooks and things for a git repository that contains a module.
 - To clean up for the release, the module dependencies are now described in a file called `dependencies.py` and the module docs in a `README.md`, both in the main module directory.
 - IMP-wide support for progress bars was added with the IMP::base::set_progress_display() function and helpers. These are only displayed when the IMP::base::get_log_level() is IMP::base::PROGRESS.
 
 ## Winter 2012-2013
 - Scons support was removed. Use cmake to build IMP, it is way better.
-- Examples are run with an "--test" argument when IMP is built with internal checks. Expensive examples should check this flag and shorten what they do in order to try to test all their code without taking too long.
+- Examples are run with a `--test` argument when IMP is built with internal checks. Expensive examples should check this flag and shorten what they do in order to try to test all their code without taking too long.
 - The class IMP::core::NonRigidMember was added to allow particles that are not rigid but whose coordinates are specified via internal coordinates in some IMP::algebra::Reference3D that is part of an IMP::core::RigidBody.
 - The IMP_BIG_ENDIAN and IMP_LITTLE_ENDIAN preprocessor symbols are deprecated in favor of the BOOST_BIG_ENDIAN and BOOST_LITTLE_ENDIAN symbols.
 - Support for asymmetric moves was added to IMP::core::MonteCarlo. To do this, IMP::core::MonteCarloMover was added and IMP::core::Mover and IMP::core::MoverBase were deprecated and implemented in terms of the new class. This should require few or no changes in code that uses Monte Carlo support or implements movers (although movers should move to IMP::core::MonteCarlo). All IMP::core::MonteCarloMover objects keep track of statistics (number of moves and number of accepted moves), rather than that being done in the IMP::core::SerialMover. In addition, the poorly defined move probability was removed from IMP::core::MonteCarlo.
