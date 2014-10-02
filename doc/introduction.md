@@ -16,7 +16,7 @@ Hybrid structures based on our integrative approach:
  - The actin/scruin complex
  - Ryr1 voltage gated channel
  - The baker’s yeast [nuclear pore complex](http://salilab.org/npc) (NPC)
- - The Nup84 complex
+ - The [Nup84 complex](http://salilab.org/nup84/)
  - Transport through the NPC
  - Microtubule nucleation
  - The 26S proteasome
