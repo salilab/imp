@@ -14,7 +14,6 @@
 #include <IMP/kinematics/revolute_joints.h>
 #include <IMP/core/internal/angle_helpers.h>
 #include <IMP/base/Object.h>
-//#include <IMP/compatibility/nullptr.h>
 #include <IMP/base/exception.h>
 #include <IMP/algebra/Transformation3D.h>
 

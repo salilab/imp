@@ -7,7 +7,7 @@
 
 #include <IMP/statistics/ChiSquareMetric.h>
 #include <IMP/algebra.h>
-#include <IMP/compatibility/vector_property_map.h>
+#include <IMP/base/vector_property_map.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
