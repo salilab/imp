@@ -166,10 +166,6 @@ include(${PROJECT_SOURCE_DIR}/tools/build/cmake_files/MakeContainers.cmake)
 imp_execute_process("making containers" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_containers.py)
 
-imp_execute_process("setup_module_alias for compatibility" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py
-                    --source=${CMAKE_SOURCE_DIR} --module=base --alias=compatibility --deprecate=2.1)
-
 imp_execute_process("setup_module_alias for kernel" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py
                     --source=${CMAKE_SOURCE_DIR} --module=kernel "--alias=")

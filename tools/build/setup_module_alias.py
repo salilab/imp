@@ -2,8 +2,8 @@
 
 """
 Create stub headers and __init__.py that creates a module that aliases an
-existing one. This is used to create the IMP/foo.h headers from IMP.kernel
-and IMP.compatibility from IMP.base, both for backwards compatibility.
+existing one. This is used to create the IMP/foo.h headers from IMP.kernel,
+for backwards compatibility.
 """
 
 import tools
