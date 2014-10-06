@@ -89,7 +89,6 @@ IMP_SWIG_OBJECT( IMP::core, VolumeRestraint, VolumeRestraints);
 #endif
 IMP_SWIG_OBJECT( IMP::core, WeightedSphereDistancePairScore, WeightedSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, MoveStatisticsScoreState, MoveStatisticsScoreStates);
-IMP_SWIG_OBJECT( IMP::core, GaussianScoreState, GaussianScoreStates);
 IMP_SWIG_OBJECT( IMP::core, MinimumRestraint, MinimumRestraints);
 IMP_SWIG_OBJECT( IMP::core, WriteRestraintScoresOptimizerState, WriteRestraintScoresOptimizerStates);
 
@@ -276,7 +275,6 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/MCCGSampler.h"
 %include "IMP/core/MinimumRestraint.h"
 %include "IMP/core/Gaussian.h"
-%include "IMP/core/GaussianScoreState.h"
 
 %include "IMP/core/PairRestraint.h"
 %include "IMP/core/SingletonRestraint.h"

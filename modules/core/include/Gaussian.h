@@ -51,8 +51,7 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   static ObjectKey get_local_covariance_key();
   static ObjectKey get_global_covariance_key();
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
-    return m->get_has_attribute(get_local_covariance_key(), pi) &&
-      m->get_has_attribute(get_global_covariance_key(),pi);
+    return m->get_has_attribute(get_local_covariance_key(), pi);
   }
 
 
@@ -72,10 +71,14 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   }
 
   //! retrieve global covariance
-  IMP_Eigen::Matrix3d get_global_covariance() const {
+  IMP_Eigen::Matrix3d get_global_covariance() {
+    ObjectKey k = get_global_covariance_key();
+    ParticleIndex pi = get_particle_index();
+    if (!get_model()->get_has_attribute(k, pi)) {
+      update_global_covariance();
+    }
     base::Pointer<Matrix3D> global(dynamic_cast<Matrix3D *>(get_model()->
-                                            get_attribute(get_global_covariance_key(),
-                                                          get_particle_index())));
+                                            get_attribute(k, pi)));
     return global->get_mat();
   };
 
@@ -103,9 +106,13 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   //! set the global-frame covariance. does NOT update local frame!
   void set_global_covariance(IMP_Eigen::Matrix3d covar){
     IMP_NEW(Matrix3D,global,(covar));
-    get_model()->set_attribute(get_global_covariance_key(),
-                               get_particle_index(),
-                               global);
+    ObjectKey k = get_global_covariance_key();
+    ParticleIndex pi = get_particle_index();
+    if (!get_model()->get_has_attribute(k, pi)) {
+      get_model()->add_cache_attribute(k, pi, global);
+    } else {
+      get_model()->set_attribute(k, pi, global);
+    }
   }
 
   //! update the global covariance
