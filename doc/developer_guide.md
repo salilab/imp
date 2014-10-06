@@ -165,7 +165,7 @@ want to provide output that can be read back in.
 
 Classes and methods should use IMP exceptions to report errors. See
 IMP::base::Exception for a list of existing exceptions. See
-[checks](base_2exception_8h.html) for more information.
+[checks](exception_8h.html) for more information.
 
 ### Namespaces ### {#devguide_namespace}
 
@@ -234,14 +234,14 @@ The first set are assert-style macros:
 - IMP_INTERNAL_CHECK() which should be used to verify internal state
   and return values to make sure they satisfy pre and post-conditions.
 
-See [checks](base_2exception_8h.html) page for more details. As a
+See [checks](exception_8h.html) page for more details. As a
 general guideline, any improper usage to produce at least a warning
 all return values should be checked by such code.
 
 The second is logging macros such as:
 
 - IMP_LOG() which allows controlled display of messages about what the
-  code is doing. See [logging](base_2log_8h.html) for more information.
+  code is doing. See [logging](log_8h.html) for more information.
 
 Finally, each module has a set of unit tests. The
 tests are located in the `modules/modulename/test` directory.
