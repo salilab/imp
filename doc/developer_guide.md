@@ -24,8 +24,9 @@ The input files in the IMP directory are structured as follows:
    - `bin` contains C++ source files each of which is built into an executable
    - `pyext` contains files defining the Python interface to the module as well
       as Python source files (in `pyext/src`)
-   - `test` contains test files, that can be run with `ctest`.
-   - `doc` contains additional documentation that is provided via `.dox` files
+   - `test` contains test files, that can be run with `ctest`
+   - `doc` contains additional documentation that is provided via `.dox`
+     or `.md` files
    - `examples` contains examples in Python and C++, as well as any data needed
       for examples
    - `data` contains any data files needed by the module
