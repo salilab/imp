@@ -14,11 +14,10 @@ The input files in the IMP directory are structured as follows:
   are [documented below](#devguide_scripts).
 - `doc` contains inputs for general IMP overview documentation (such as this
   page), as well as configuration scripts for `doxygen`.
-- `applications` contains various applications implementing using a variety of
-  IMP modules.
-- each subdirectory of `module/` defines a module; they all have the same
-  structure. The directory for module `name` has
-   the following structure
+- `applications` contains various applications implementing easier-to-use
+  command line functionality, using a variety of IMP modules.
+- each subdirectory of `modules/` defines a module; they all have the same
+  structure. The directory for module `name` has the following structure:
    - `README.md` contains a module overview
    - `include` contains the C++ header files
    - `src` contains the C++ source files
@@ -37,12 +36,12 @@ When IMP is built, a number of directories are created in the build directory. T
  - `lib` where the C++ and Python libraries are placed. Module `name` is built
     into a C++ library `lib/libimp_name.so` (or `.dylib` on a Mac) and a Python
     library with Python files located in `lib/IMP/name` and the binary part in
-    `lib/_IMP_name.so.`
+    `lib/_IMP_name.so`
  - `doc` where the html documentation is placed in `doc/html` and the examples
     in `doc/examples` with a subdirectory for each module
  - `data` where each module gets a subdirectory for its data.
 
-When IMP is installed, the structure from the `build` directory is
+When IMP is installed, the structure from the build directory is
 moved over more or less intact except that the C++ and Python
 libraries are put in the (different) appropriate locations.
 
@@ -51,15 +50,15 @@ libraries are put in the (different) appropriate locations.
 
 The easiest way to start writing new functions and classes is to
 create a new module using [make-module.py](\ref dev_tools_make_module).
-This creates a new module in the `modules` directory or simply use the
-`scratch` module.
+This creates a new module in the `modules` directory. Alternatively, you can
+simply use the `scratch` module.
 
 We highly recommend using a revision control system such as
 [git](http://git-scm.com/) or [svn](http://subversion.tigris.org/) to
 keep track of changes to your module.
 
-If, instead, you choose to add code to an existing module you need to
-consult with the person who people who control that module. Their names
+If, instead, you choose to add code to an existing module, you need to
+consult with the person or people who control that module. Their names
 can be found on the module main page.
 
 When designing the interface for your new code, you should
@@ -84,7 +83,7 @@ When designing the interface for your new code, you should
 - look for easy ways of splitting the functionality into pieces. It
   generally makes sense, for %example, to split selection of the
   particles from the action taken on them, either by accepting a
-  IMP::kernel::Refiner, or a IMP::kernel::SingletonContainer or just an arbitrary
+  IMP::kernel::Refiner, a IMP::kernel::SingletonContainer or just an arbitrary
   IMP::kernel::ParticleIndexes object.
 
 
@@ -101,7 +100,7 @@ To ensure code consistency and readability, certain conventions
 must be adhered to when writing code for IMP. Some of these
 conventions are automatically checked for by source control before
 allowing a new commit, and can also be checked yourself in new
-code by running [check_standards.py](#devguide_check_standards) files_to_check`.
+code by running [check_standards.py](#devguide_check_standards).
 
 ### Indentation ### {#devguide_indentation}
 
@@ -113,8 +112,8 @@ All Python code should conform to the [Python style
 guide](http://www.python.org/dev/peps/pep-0008/).  In essence this
 translates to 4-space indents, no tabs, and similar class, method and
 variable naming to the C++ code. You can ensure that your Python code
-is correctly indented by using the `tools/reindent.py` script,
-available as part of the IMP distribution.
+is correctly indented by using the
+[cleanup_code.py script](\ref dev_tools_clang_format).
 
 ### Names ### {#devguide_names}
 
