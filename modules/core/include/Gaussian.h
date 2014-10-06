@@ -87,12 +87,14 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
     return algebra::Gaussian3D(get_reference_frame(),get_variances());
 }
 
-  //! set the local-frame covariance. does NOT update global frame!
+  //! set the local-frame covariance.
   void set_local_covariance(const IMP_Eigen::Vector3d covar) {
     IMP_NEW(Matrix3D,local,(covar.asDiagonal()));
     get_model()->set_attribute(get_local_covariance_key(),
                                get_particle_index(),
                                local);
+    // Force recalculation of global covariance on next access
+    get_model()->clear_particle_caches(get_particle_index());
   }
 
   //! equivalent to set_local_covariance, used for backwards compatibility
