@@ -577,7 +577,7 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
       unknown.push_back(bin);
     }
   }
-  const int unknown_bin = std::numeric_limits<double>::max();
+  const int unknown_bin = std::numeric_limits<int>::max();
   if (scores_.find(unknown_bin) != scores_.end()) {
     IMP_FOREACH(int i, unknown) {
       lists_[unknown_bin] += lists_.find(i)->second;
