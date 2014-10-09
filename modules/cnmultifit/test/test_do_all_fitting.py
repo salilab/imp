@@ -39,7 +39,10 @@ prot_lib = %s
             out = IMP.atom.read_pdb('asmb.model.%d.pdb' % i, m)
             out_atoms = IMP.core.XYZs(IMP.atom.get_by_type(out,
                                                            IMP.atom.ATOM_TYPE))
-            rmsds.append(IMP.atom.get_rmsd(ref_atoms, out_atoms))
+            trans = IMP.core.get_transformation_aligning_first_to_second(
+                                             out_atoms, ref_atoms)
+            rmsds.append(IMP.atom.get_rmsd_transforming_first(
+                                        trans, out_atoms, ref_atoms))
             os.unlink('asmb.model.%d.pdb' % i)
         # First model should be close to reference
         self.assertLess(rmsds[0], 4.2)
