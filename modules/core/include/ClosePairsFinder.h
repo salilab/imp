@@ -40,11 +40,11 @@ class IMPCOREEXPORT ClosePairsFinder : public kernel::ParticleInputs,
   ClosePairsFinder(std::string name);
   ~ClosePairsFinder();
 
-  /** \deprecated_at{2.1} use the index-based on instead. */
+  /** \deprecated_at{2.1} use the index-based one instead. */
   IMPCORE_DEPRECATED_METHOD_DECL(2.1)
   kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pc)
       const;
-  /** \deprecated_at{2.1} use the index-based on instead. */
+  /** \deprecated_at{2.1} use the index-based one instead. */
   IMPCORE_DEPRECATED_METHOD_DECL(2.1)
   kernel::ParticlePairsTemp get_close_pairs(
       const kernel::ParticlesTemp &pca, const kernel::ParticlesTemp &pcb) const;
