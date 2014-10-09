@@ -231,6 +231,17 @@ double get_rmsd(const IMP::algebra::Vector3Ds &v0,
                                    const IMP::algebra::Vector3Ds &v1) {
   return IMP::algebra::get_rmsd(v0, v1);
 }
+double get_weighted_rmsd_transforming_first(IMP::algebra::Transformation3D tr,
+                                   const IMP::algebra::Vector3Ds &v0,
+                                   const IMP::algebra::Vector3Ds &v1,
+                                   const IMP::Floats &weights) {
+  return IMP::algebra::get_weighted_rmsd_transforming_first(tr, v0, v1, weights);
+}
+double get_weighted_rmsd(const IMP::algebra::Vector3Ds &v0,
+                                   const IMP::algebra::Vector3Ds &v1,
+                                   const IMP::Floats &weights) {
+  return IMP::algebra::get_weighted_rmsd(v0, v1, weights);
+}
 %}
 
 %pythoncode %{
