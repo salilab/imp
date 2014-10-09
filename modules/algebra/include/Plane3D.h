@@ -38,7 +38,12 @@ class Plane3D : public GeometricPrimitiveD<3> {
     return p - normal_ * (normal_ * p - distance_);
   }
 #ifndef IMP_DOXYGEN
-  Vector3D get_projection(const Vector3D &p) const { return get_projected(p); }
+  /** \deprecated_at{2.3} Use get_projected() instead. */
+  IMPALGEBRA_DEPRECATED_METHOD_DECL(2.3)
+  Vector3D get_projection(const Vector3D &p) const {
+    IMPALGEBRA_DEPRECATED_METHOD_DEF(2.3, "Use get_projected() instead.");
+    return get_projected(p);
+  }
 #endif
   /** @name Orientation
        Up is the direction of the normal. You really shouldn't use
