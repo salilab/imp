@@ -39,6 +39,8 @@ Profile::Profile(Float qmin, Float qmax, Float delta)
       min_q_(qmin),
       max_q_(qmax),
       delta_q_(delta),
+      c1_(10),
+      c2_(10),
       experimental_(false),
       average_radius_(1.58),
       average_volume_(17.5),
@@ -91,7 +93,12 @@ void Profile::read_SAXS_file(const String& file_name, bool fit_file) {
     boost::split(split_results, line, boost::is_any_of("\t "),
                  boost::token_compress_on);
     if (split_results.size() < 2 || split_results.size() > 5) continue;
+
+    if (split_results[0].find_first_not_of("1234567890.-") != std::string::npos)
+      continue; // not a number
+
     q = atof(split_results[0].c_str());
+
     if (fit_file) {
       if (split_results.size() != 3) continue;
       intensity = atof(split_results[2].c_str());
@@ -273,7 +280,7 @@ void Profile::read_partial_profiles(const String& file_name) {
   }
   in_file.close();
 
-  sum_partial_profiles(1.0, 0.0);
+  sum_partial_profiles(1.0, 0.0, false);
 
   // determine qmin, qmax and delta
   if (size() > 1) {
@@ -455,7 +462,7 @@ void Profile::calculate_profile_partial(const kernel::Particles& particles,
   squared_distributions_2_partial_profiles(r_dist);
 
   // compute default profile c1 = 1, c2 = 0
-  sum_partial_profiles(1.0, 0.0);
+  sum_partial_profiles(1.0, 0.0, false);
 }
 
 void Profile::calculate_profile_partial(const kernel::Particles& particles1,
@@ -531,14 +538,19 @@ void Profile::calculate_profile_partial(const kernel::Particles& particles1,
   squared_distributions_2_partial_profiles(r_dist);
 
   // compute default profile c1 = 1, c2 = 0
-  sum_partial_profiles(1.0, 0.0);
+  sum_partial_profiles(1.0, 0.0, false);
 }
 
-void Profile::sum_partial_profiles(Float c1, Float c2) {
+void Profile::sum_partial_profiles(Float c1, Float c2, bool check_cashed) {
   // precomputed exp function
   static internal::ExpFunction ef(square(get_max_q()) * 0.3, 0.00001);
 
   if (partial_profiles_.size() == 0) return;
+
+  // check if the profiles are already summed by this c1/c2 combination
+  if (check_cashed && fabs(c1_ - c1) <= 0.000001 && fabs(c2_ - c2) <= 0.000001)
+    return;
+
   // implements volume fitting function G(s) as described
   // in crysol paper eq. 13
   Float rm = average_radius_;
@@ -571,6 +583,9 @@ void Profile::sum_partial_profiles(Float c1, Float c2) {
     }
     set_intensity(k, intensity);
   }
+  // cache new c1/c2 values
+  c1_ = c1;
+  c2_ = c2;
 }
 
 void Profile::resample(const Profile* exp_profile, Profile* resampled_profile,
@@ -1131,7 +1146,7 @@ void Profile::calculate_profile_reciprocal_partial(
   }  // end of loop1
 
   // compute default profile c1 = 1, c2 = 0
-  sum_partial_profiles(1.0, 0.0);
+  sum_partial_profiles(1.0, 0.0, false);
 }
 
 IMPSAXS_END_NAMESPACE

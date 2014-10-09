@@ -25,6 +25,8 @@ class IMPSAXSEXPORT WeightedFitParameters : public FitParameters {
 
   const Floats& get_weights() const { return weights_; }
 
+  void set_weights(const Floats& weights) { weights_ = weights; }
+
   void show(std::ostream& s) const {
     s << "Chi = " << chi_ << " c1 = " << c1_ << " c2 = " << c2_
       << " default chi = " << default_chi_ << std::endl;

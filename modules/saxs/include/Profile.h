@@ -202,7 +202,7 @@ class IMPSAXSEXPORT Profile : public base::Object {
   void add_noise(Float percentage = 0.03);
 
   //! computes full profile for given fitting parameters
-  void sum_partial_profiles(Float c1, Float c2);
+  void sum_partial_profiles(Float c1, Float c2, bool check_cashed = true);
 
   //! add another profile - useful for rigid bodies
   void add(const Profile* other_profile, Float weight = 1.0);
@@ -272,6 +272,7 @@ class IMPSAXSEXPORT Profile : public base::Object {
 
   // stores the intensity split into 6 for c1/c2 enumeration
   std::vector<std::vector<double> > partial_profiles_;
+  Float c1_, c2_;
 
   bool experimental_;     // experimental profile read from file
   Float average_radius_;  // average radius of the particles
