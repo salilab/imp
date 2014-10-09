@@ -216,7 +216,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   /** All members of the rigid body will have their coordinates updated
       immediately.
       \see IMP::core::transform(RigidBody,const algebra::Transformation3D&)
-      \see lazy_set_reference_frame()
+      \see set_reference_frame_lazy()
    */
   void set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr);
 
