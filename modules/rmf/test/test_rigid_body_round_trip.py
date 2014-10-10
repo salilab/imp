@@ -269,16 +269,20 @@ class Tests(IMP.test.TestCase):
                 print "ok"
 
     def test_nested_rigid_body_all_nonrigid(self):
-        """Slight twist: create a rigid body that ONLY consists of nonrigid members
+        """Create a rigid body that ONLY consists of nonrigid members
         that themselves are rigid bodies"""
         for suffix in IMP.rmf.suffixes:
             m = IMP.kernel.Model()
             m.set_log_level(IMP.base.SILENT)
+
+            # create rigid body
             r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
             r.set_name("rt")
             rbd = IMP.core.RigidBody.setup_particle(
                 IMP.kernel.Particle(m, "rb"),
                 IMP.algebra.ReferenceFrame3D())
+
+            # add non-rigid members
             ps = []
             nrbps = []
             for i in range(0, 4):
@@ -298,9 +302,14 @@ class Tests(IMP.test.TestCase):
                 rbd.add_non_rigid_member(p.get_index())
                 ps.append(p)
                 nrbps.append(p)
+
+
+            # setup output
             fn = self.get_tmp_file_name("rigid_implicit" + suffix)
             f = RMF.create_rmf_file(fn)
             IMP.rmf.add_hierarchies(f, [r])
+
+            # randomly move the RB and then the non-rigid members
             coords = []
             coords.append([IMP.core.XYZ(p).get_coordinates() for p in ps])
             IMP.rmf.save_frame(f, str(0))
@@ -321,6 +330,7 @@ class Tests(IMP.test.TestCase):
                 coords.append([IMP.core.XYZ(p).get_coordinates() for p in ps])
             del f
 
+            # re-read RMF file
             f = RMF.open_rmf_file_read_only(fn)
             IMP.base.set_log_level(IMP.base.VERBOSE)
             r2 = IMP.rmf.create_hierarchies(f, m)[0]
@@ -329,10 +339,12 @@ class Tests(IMP.test.TestCase):
                         not IMP.core.RigidBodyMember.get_is_setup(m, pi):
                     IMP.core.show_rigid_body_hierarchy(
                         IMP.core.RigidBody(m, pi), sys.stdout)
+
+            # check that coordinates are read correctly
             ps = IMP.atom.get_leaves(r2)
             rb = IMP.core.RigidMember(ps[0]).get_rigid_body()
             frame0 = rb.get_reference_frame()
-            self.assert_(IMP.core.RigidMember.get_is_setup(r2.get_child(0)))
+            self.assert_(IMP.core.RigidBodyMember.get_is_setup(r2.get_child(0)))
             for i in range(0, 11):
                 print "loading", i
                 # if i != 0:
