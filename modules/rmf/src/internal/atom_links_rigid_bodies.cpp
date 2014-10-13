@@ -216,7 +216,7 @@ void HierarchyLoadRigidBodies::load(RMF::FileConstHandle fh, Model *m) {
                     << m->get_particle_name(pp.second) << std::endl);
     algebra::ReferenceFrame3D rf(
         get_transformation(fh.get_node(pp.first), reference_frame_factory_));
-    core::RigidBody(m, pp.second).set_reference_frame(rf);
+    core::RigidBody(m, pp.second).set_reference_frame_lazy(rf);
   }
   IMP_FOREACH(Pair pp, local_) {
     IMP_LOG_VERBOSE("Loading local rigid body "
@@ -225,6 +225,11 @@ void HierarchyLoadRigidBodies::load(RMF::FileConstHandle fh, Model *m) {
         get_transformation(fh.get_node(pp.first), reference_frame_factory_));
     core::RigidBodyMember(m, pp.second)
         .set_internal_transformation(rf.get_transformation_to());
+  }
+  /* Make sure that the global coordinates of any nested rigid bodies are
+     set from their parents */
+  IMP_FOREACH(Pair pp, global_) {
+    core::RigidBody(m, pp.second).update_members();
   }
 }
 
