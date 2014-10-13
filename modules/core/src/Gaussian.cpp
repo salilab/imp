@@ -20,6 +20,7 @@ void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
   }
   IMP_NEW(Matrix3D,local,(IMP_Eigen::Vector3d(g.get_variances().get_data()).asDiagonal()));
   m->add_attribute(get_local_covariance_key(), pi,local);
+  local->set_was_used(true);
   core::Gaussian(m,pi).update_global_covariance();
 }
 

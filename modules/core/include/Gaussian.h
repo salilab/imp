@@ -93,6 +93,7 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
     get_model()->set_attribute(get_local_covariance_key(),
                                get_particle_index(),
                                local);
+    local->set_was_used(true);
     // Force recalculation of global covariance on next access
     get_model()->clear_particle_caches(get_particle_index());
   }
@@ -103,6 +104,7 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
     get_model()->set_attribute(get_local_covariance_key(),
                                get_particle_index(),
                                local);
+    local->set_was_used(true);
   }
 
   //! set the global-frame covariance. does NOT update local frame!
@@ -115,6 +117,7 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
     } else {
       get_model()->set_attribute(k, pi, global);
     }
+    global->set_was_used(true);
   }
 
   //! update the global covariance
