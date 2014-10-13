@@ -364,7 +364,7 @@ bool get_is_residue_index_match(const Ints &data, kernel::Model *m,
   } else if (Domain::get_is_setup(m, pi)) {
     IntRange ir = Domain(m, pi).get_index_range();
     return std::lower_bound(data.begin(), data.end(), ir.first) !=
-           std::upper_bound(data.begin(), data.end(), ir.second);
+           std::lower_bound(data.begin(), data.end(), ir.second);
   }
   return false;
 }

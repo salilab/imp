@@ -6,6 +6,32 @@ import IMP.atom
 
 class Tests(IMP.test.TestCase):
 
+    def test_residues_in_domains(self):
+        """Test selection of residue indices in Domain particles"""
+        def assert_no_match(rh, index):
+            s = IMP.atom.Selection(rh, residue_indexes=[index])
+            self.assertEqual(len(s.get_selected_particle_indexes()), 0)
+        def assert_match(rh, index, ai):
+            s = IMP.atom.Selection(rh, residue_indexes=[index])
+            i = s.get_selected_particle_indexes()
+            self.assertEqual(len(i), 1)
+            self.assertEqual(i[0], ai) # should match the atom particle
+        m = IMP.kernel.Model()
+        ri = m.add_particle("domain")
+        rh = IMP.atom.Hierarchy.setup_particle(m, ri)
+        d = IMP.atom.Domain.setup_particle(m, ri, [100, 200])
+        ai = m.add_particle("atom")
+        ah = IMP.atom.Hierarchy.setup_particle(m, ai)
+        rh.add_child(ah)
+        a = IMP.core.XYZR.setup_particle(m, ai,
+                     IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1,2,3), 4))
+        IMP.atom.Mass.setup_particle(m, ai, 1.0)
+        assert_no_match(rh, 99)
+        assert_no_match(rh, 200) # Last residue in range should *not* match
+        assert_no_match(rh, 201)
+        assert_match(rh, 100, ai)
+        assert_match(rh, 199, ai)
+
     def _get_index(self, l):
         h = IMP.atom.Hierarchy(l[0])
         p = IMP.atom.Residue(h.get_parent())
