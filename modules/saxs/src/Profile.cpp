@@ -94,7 +94,7 @@ void Profile::read_SAXS_file(const String& file_name, bool fit_file) {
                  boost::token_compress_on);
     if (split_results.size() < 2 || split_results.size() > 5) continue;
 
-    if (split_results[0].find_first_not_of("1234567890.-Ee") != std::string::npos)
+    if (split_results[0].find_first_not_of("1234567890.-+Ee") != std::string::npos)
       continue; // not a number
 
     q = atof(split_results[0].c_str());
