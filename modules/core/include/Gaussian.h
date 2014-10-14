@@ -57,9 +57,11 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
 
   //! retrieve local covariance (as diagonal matrix)
   IMP_Eigen::Matrix3d get_local_covariance() const {
-    base::Pointer<Matrix3D> local(dynamic_cast<Matrix3D *>(get_model()->
-                                            get_attribute(get_local_covariance_key(),
-                                                          get_particle_index())));
+    /* Kind of evil, but dynamic_cast fails randomly here
+       on our RHEL 5 systems */
+    Matrix3D* local
+         = (Matrix3D*)get_model()->get_attribute(get_local_covariance_key(),
+                                                 get_particle_index());
     return local->get_mat();
   }
 
@@ -77,8 +79,7 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
     if (!get_model()->get_has_attribute(k, pi)) {
       update_global_covariance();
     }
-    base::Pointer<Matrix3D> global(dynamic_cast<Matrix3D *>(get_model()->
-                                            get_attribute(k, pi)));
+    Matrix3D* global = (Matrix3D*)get_model()->get_attribute(k, pi);
     return global->get_mat();
   };
 
