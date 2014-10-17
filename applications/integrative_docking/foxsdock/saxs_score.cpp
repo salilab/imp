@@ -48,8 +48,7 @@ int main(int argc, char **argv) {
   bool accurate_water_layer = false;
 
   po::options_description desc(
-      "Usage: <pdb1> <pdb2> \
-<trans file> <exp profile file> ");
+      "Usage: <pdb1> <pdb2> <trans file> <exp profile file> ");
   desc.add_options()(
       "help", "Program for scoring of docking models with SAXS profile.")(
       "input-files", po::value<std::vector<std::string> >(),
@@ -79,6 +78,7 @@ recommended q value is 0.2")("offset,f",
       "fit monomers in addition to complex model (default = false)")(
       "accurate_slow,a",
       "accurate water layer, slower run time (default = false)")(
+      "no_filtering_by_rg", "do not filter by rg, compute chi score for all (default = false)")(
       "output_file,o",
       po::value<std::string>(&out_file_name)->default_value("saxs_score.res"),
       "output file name, default name saxs_score.res");
