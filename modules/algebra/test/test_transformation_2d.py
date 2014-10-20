@@ -3,8 +3,88 @@ import IMP.test
 import IMP.algebra
 import math
 
-
 class Tests(IMP.test.TestCase):
+
+    def test_trivial_constructor(self):
+        """Test trivial Transformation2D constructor"""
+        t = IMP.algebra.Transformation2D()
+
+    def test_identity(self):
+        """Test Transformation2D identity"""
+        t = IMP.algebra.get_identity_transformation_2d()
+        self.assertAlmostEqual(t.get_rotation().get_angle(), 0., delta=1e-4)
+        self.assertLess(IMP.algebra.get_distance(t.get_translation(),
+                                            IMP.algebra.Vector2D(0,0)), 1e-4)
+
+    def test_rotate_about_point(self):
+        """Test rotation about a 2D point"""
+        p = IMP.algebra.Vector2D(1., 2.)
+        r = IMP.algebra.Rotation2D(math.pi / 2.)
+        t = IMP.algebra.get_rotation_about_point(p, r)
+        n = t * IMP.algebra.Vector2D(2., 3.)
+        self.assertLess(IMP.algebra.get_distance(n,
+                                    IMP.algebra.Vector2D(0,3)), 1e-4)
+
+    def test_inverse(self):
+        """Test inverse of Transformation2D"""
+        t = IMP.algebra.Transformation2D(IMP.algebra.Rotation2D(math.pi / 2.),
+                                          IMP.algebra.Vector2D(1,2))
+        t2 = t.get_inverse()
+        self.assertAlmostEqual(t2.get_rotation().get_angle(), -math.pi / 2.,
+                               delta=1e-4)
+        self.assertLess(IMP.algebra.get_distance(t2.get_translation(),
+                                            IMP.algebra.Vector2D(-2,1)), 1e-4)
+        t2 = t * t.get_inverse()
+        self.assertAlmostEqual(t2.get_rotation().get_angle(), 0., delta=1e-4)
+        self.assertLess(IMP.algebra.get_distance(t2.get_translation(),
+                                            IMP.algebra.Vector2D(0,0)), 1e-4)
+
+    def test_compose(self):
+        """Test compose of Transformation2Ds"""
+        t = IMP.algebra.Transformation2D(IMP.algebra.Rotation2D(math.pi / 2.),
+                                          IMP.algebra.Vector2D(1,2))
+        t2 = IMP.algebra.Transformation2D(IMP.algebra.Rotation2D(math.pi / 2.),
+                                          IMP.algebra.Vector2D(4,3))
+        t3 = IMP.algebra.compose(t, t2)
+        self.assertAlmostEqual(t3.get_rotation().get_angle(), math.pi,
+                               delta=1e-4)
+        self.assertLess(IMP.algebra.get_distance(t3.get_translation(),
+                                            IMP.algebra.Vector2D(-2,6)), 1e-4)
+
+    def test_operations(self):
+        """Test operations on a Transformation2D"""
+        v = IMP.algebra.Vector2D(1, 2)
+        r = IMP.algebra.Rotation2D(math.pi / 2.)
+        t = IMP.algebra.Transformation2D(r, v)
+        t.show()
+        t2 = IMP.algebra.Transformation2D(IMP.algebra.Rotation2D(math.pi / 2.),
+                                          IMP.algebra.Vector2D(4,3))
+        o = t.get_transformed(IMP.algebra.Vector2D(3,4))
+        self.assertLess(IMP.algebra.get_distance(o,
+                                    IMP.algebra.Vector2D(-3,5)), 1e-4)
+        o = t * IMP.algebra.Vector2D(3,4)
+        self.assertLess(IMP.algebra.get_distance(o,
+                                    IMP.algebra.Vector2D(-3,5)), 1e-4)
+        tt2 = t * t2
+        self.assertAlmostEqual(tt2.get_rotation().get_angle(), math.pi,
+                               delta=1e-4)
+        self.assertLess(IMP.algebra.get_distance(tt2.get_translation(),
+                                            IMP.algebra.Vector2D(-2,6)), 1e-4)
+        t *= t2
+        self.assertAlmostEqual(t.get_rotation().get_angle(), math.pi,
+                               delta=1e-4)
+        self.assertLess(IMP.algebra.get_distance(t.get_translation(),
+                                            IMP.algebra.Vector2D(-2,6)), 1e-4)
+        t = IMP.algebra.Transformation2D(r, v)
+        tt2 = t/t2
+        self.assertAlmostEqual(tt2.get_rotation().get_angle(), 0., delta=1e-4)
+        self.assertLess(IMP.algebra.get_distance(tt2.get_translation(),
+                                            IMP.algebra.Vector2D(-3,-1)), 1e-4)
+        t /= t2
+        self.assertAlmostEqual(t.get_rotation().get_angle(), 0., delta=1e-4)
+        self.assertLess(IMP.algebra.get_distance(t.get_translation(),
+                                            IMP.algebra.Vector2D(-3,-1)), 1e-4)
+
 
     def test_transformation_from_point_sets(self):
         """Check building a Transformation2D from point sets"""
