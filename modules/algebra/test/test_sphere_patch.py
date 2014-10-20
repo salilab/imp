@@ -14,19 +14,11 @@ class Tests(IMP.test.TestCase):
         xy_plane = IMP.algebra.Plane3D(
             IMP.algebra.Vector3D(0., 0., 0.), IMP.algebra.Vector3D(0., 0., 1.))
         patch = IMP.algebra.SpherePatch3D(sph, xy_plane)
-        self.assertEqual(
-            patch.get_plane(
-            ).get_is_above(
-                IMP.algebra.Vector3D(
-                    1.,
-                    0.,
-                    1.)),
-            True)
-        self.assertEqual(
-            patch.get_contains(IMP.algebra.Vector3D(0.0, 1.0, 0.4)), True)
-        # self.assertEqual(patch.get_contains(IMP.algebra.Vector3D(3.0,3.0,8.0)),False)
-        self.assertEqual(
-            patch.get_contains(IMP.algebra.Vector3D(0.0, 1.0, -0.4)), False)
+        self.assertTrue(patch.get_plane().get_is_above(
+                                 IMP.algebra.Vector3D(1., 0., 1.)))
+        self.assertTrue(patch.get_contains(IMP.algebra.Vector3D(0.0, 1.0, 0.4)))
+        self.assertFalse(patch.get_contains(
+                                         IMP.algebra.Vector3D(0.0, 1.0, -0.4)))
 
     def test_get_uniform_surface_cover(self):
         """Check uniform cover on a patch of a sphere"""
