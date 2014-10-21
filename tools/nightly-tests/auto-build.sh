@@ -95,11 +95,6 @@ mkdir -p ${IMPINSTALL}/build/sources ${IMPINSTALL}/build/logs
 rm -f ${IMPTOP}/.SVN-new
 ln -s ${IMPINSTALL} ${IMPTOP}/.SVN-new
 
-# PMI is only in develop for now; todo: remove once release-2.3 branch is made
-if [ ${BRANCH} != "develop" ]; then
-  rm -rf imp/modules/pmi
-fi
-
 # Add build date to nightly docs
 if [ ${BRANCH} = "develop" ]; then
   IMPVER="develop.${shortrev}"
