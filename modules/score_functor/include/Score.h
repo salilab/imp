@@ -12,17 +12,17 @@
 #include <IMP/base_types.h>
 #include <IMP/particle_index.h>
 #include <IMP/base/warning_macros.h>
+#include <IMP/Particle.h>
 #include <limits>
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
-/** A functor for computing a distance based score for two particles.
- */
+//! A functor for computing a distance based score for two particles.
 struct Score {
   // swig gets confused otherwise
   Score() {}
 #ifdef IMP_DOXYGEN
-  /** Return the score at the passed feature size (eg distance). The involved
-      particle indexes are passed along.
+  //! Return the score at the passed feature size (eg distance).
+  /** The involved particle indexes are passed along.
 
       \pre get_is_trivially_zero() or get_maximum_range() has been called
       and get_is_trivially_zero() is false.
@@ -31,8 +31,8 @@ struct Score {
   double get_score(kernel::Model *m,
                    const base::Array<D, kernel::ParticleIndex> &p,
                    double distance) const;
-  /** Return the score and derivative at the passed feature size (eg distance).
-      The derivative is for the feature decreasing.
+  //! Return the score and derivative at the passed feature size (eg distance).
+  /** The derivative is for the feature decreasing.
 
       \pre get_is_trivially_zero() or get_maximum_range() has been called
       and get_is_trivially_zero() is false.

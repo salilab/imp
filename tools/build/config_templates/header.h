@@ -95,11 +95,11 @@ IMP_COMPILER_DISABLE_WARNINGS
 
 %(cppdefines)s
 
-    //  functions are defined explicitly for SWIG
-    namespace IMP {
+// functions are defined explicitly for SWIG
+namespace IMP {
   namespace %(name)s {
-/** \name Standard module methods
-  All \imp modules have a set of standard methods to help get information
+/** \name Standard module functions
+  All \imp modules have a set of standard functions to help get information
   about the module and about files associated with the module.
   @{
   */
@@ -112,15 +112,6 @@ IMP_COMPILER_DISABLE_WARNINGS
     inline std::string get_module_name() { return "IMP::%(name)s"; }
 #endif
 
-  }
-}  //namespace
-
-%(showable)s
-
-#if !defined(SWIG)
-    namespace IMP {
-  namespace %(name)s {
-
     //! Return the full path to installed data
     /** Each module has its own data directory, so be sure to use
         the version of this function in the correct module. To read
@@ -132,7 +123,9 @@ IMP_COMPILER_DISABLE_WARNINGS
         This will ensure that the code works when \imp is installed or
         used via the \c setup_environment.sh script.
     */
+#if !defined(SWIG)
     %(cppprefix)sEXPORT std::string get_data_path(std::string file_name);
+#endif
 
     //! Return the path to installed example data for this module
     /** Each module has its own example directory, so be sure to use
@@ -146,21 +139,18 @@ IMP_COMPILER_DISABLE_WARNINGS
         This will ensure that the code works when \imp is installed or
         used via the \c setup_environment.sh script.
     */
+#if !defined(SWIG)
     %(cppprefix)sEXPORT std::string get_example_path(std::string file_name);
+#endif
     /** @} */
 
-  }
-}  // namespace
 
-#endif  // SWIG
+  }
+}  //namespace
+
+%(showable)s
 
 #include <IMP/base/compiler_macros.h>
-
-#ifdef IMP_DOXYGEN
-/** \namespace IMP::%(name)s
-    \brief See [IMP.%(name)s](\ref imp%(name)s) for more information.
-    */
-#endif
 
 #endif /* %(cppprefix)s_CONFIG_H */
 

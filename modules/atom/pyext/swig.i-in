@@ -16,6 +16,7 @@ IMP_SWIG_DECORATOR(IMP::atom, Bond, Bonds);
 IMP_SWIG_DECORATOR(IMP::atom, Bonded, Bondeds);
 IMP_SWIG_DECORATOR(IMP::atom, CHARMMAtom, CHARMMAtomList);
 IMP_SWIG_DECORATOR(IMP::atom, Chain, Chains);
+IMP_SWIG_DECORATOR(IMP::atom, CenterOfMass, CenterOfMasses);
 IMP_SWIG_DECORATOR(IMP::atom, Charged, Chargeds);
 IMP_SWIG_DECORATOR(IMP::atom, Diffusion, Diffusions);
 IMP_SWIG_DECORATOR(IMP::atom, RigidBodyDiffusion, RigidBodyDiffusions);
@@ -127,6 +128,43 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
         except: self.this = this
       for k in params.keys():
         eval("self.set_%s(params[k])"%k)
+
+  def union(self, s):
+      news = self.create_clone()
+      news.union_update(s)
+      return news
+  def intersection(self, s):
+      news = self.create_clone()
+      news.intersection_update(s)
+      return news
+  def symmetric_difference(self, s):
+      news = self.create_clone()
+      news.symmetric_difference_update(s)
+      return news
+  def difference(self, s):
+      news = self.create_clone()
+      news.difference_update(s)
+      return news
+  def union_update(self, s):
+      self.set_union(s)
+      return self
+  def intersection_update(self, s):
+      self.set_intersection(s)
+      return self
+  def symmetric_difference_update(self, s):
+      self.set_symmetric_difference(s)
+      return self
+  def difference_update(self, s):
+      self.set_difference(s)
+      return self
+  __or__ = union
+  __and__ = intersection
+  __xor__ = symmetric_difference
+  __sub__ = difference
+  __ior__ = union_update
+  __iand__ = intersection_update
+  __ixor__ = symmetric_difference_update
+  __isub__ = difference_update
 %}
 }
 
@@ -148,6 +186,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 %include "IMP/atom/BondSingletonScore.h"
 %include "IMP/atom/DihedralSingletonScore.h"
 %include "IMP/atom/ImproperSingletonScore.h"
+%include "IMP/atom/CenterOfMass.h"
 %include "IMP/atom/CoverBond.h"
 %include "IMP/atom/Simulator.h"
 %include "IMP/atom/BrownianDynamics.h"
@@ -224,6 +263,7 @@ namespace IMP {
    %template(CHARMMAngle) CHARMMConnection<3>;
    %template(_get_native_overlap_cpp) get_native_overlap<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
    %template(_get_drmsd_cpp) get_drmsd<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
+   %template(_get_drmsd_Q_cpp) get_drmsd_Q<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
    %template(_get_drms_cpp) get_drms<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
    %template(_get_rigid_bodies_drms_cpp) get_rigid_bodies_drms<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
 
@@ -245,6 +285,11 @@ def get_drms(a, b):
    va= [IMP.algebra.get_vector(x) for x in a]
    vb= [IMP.algebra.get_vector(x) for x in b]
    return _get_drms_cpp(va, vb)
+
+def get_drmsd_Q(a, b, t):
+   va= [IMP.algebra.get_vector(x) for x in a]
+   vb= [IMP.algebra.get_vector(x) for x in b]
+   return _get_drmsd_Q_cpp(va, vb, t)
 
 def get_rigid_bodies_drms(a, b, ranges):
     va= [IMP.algebra.get_vector(x) for x in a]

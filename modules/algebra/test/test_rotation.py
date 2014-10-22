@@ -34,6 +34,12 @@ class Tests(IMP.test.TestCase):
 
     """Test rotations"""
 
+    def test_get_random(self):
+        """Check get_random_rotation_3d()"""
+        center = IMP.algebra.get_identity_rotation_3d()
+        r = IMP.algebra.get_random_rotation_3d(center, 0.1)
+        self.assertLess(IMP.algebra.get_distance(center, r), 0.1)
+
     def test_axis_rotation(self):
         """Check random rotations about axis"""
         for ii in xrange(1, 10):
@@ -165,9 +171,8 @@ class Tests(IMP.test.TestCase):
         axis = aa[0]
         angle = aa[1]
         self.assertAlmostEqual(0.0, angle, delta=.0001)
-        self.assertAlmostEqual((axis - [1,0,0]).get_magnitude(),
+        self.assertAlmostEqual((axis - [1, 0, 0]).get_magnitude(),
                                0.0, delta=.0001)
-
 
     def test_is_equal_between_rotations(self):
         """Check that two rotations are equal"""

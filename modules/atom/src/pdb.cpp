@@ -47,7 +47,7 @@ bool HydrogenPDBSelector::is_hydrogen(std::string pdb_line) const {
   // 1. if the record has element field (columns 76-77),
   // check that it is indeed H. Note that it may be missing
   // in some files.
-  // some programms do not output element, so the ATOM
+  // some programs do not output element, so the ATOM
   // line can be shorter.
   if (elem.length() == 1 && elem[0] == 'H') return true;
   // 2. support elements that starts with H: He, Ho, Hf, Hg
@@ -358,7 +358,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
 
         // check if new residue
         if (rp == nullptr ||
-            residue_index != Residue::decorate_particle(rp).get_index() ||
+            residue_index != Residue(rp).get_index() ||
             residue_icode != curr_residue_icode) {
           curr_residue_icode = residue_icode;
           // create new residue particle

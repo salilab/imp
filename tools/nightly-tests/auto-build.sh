@@ -41,9 +41,7 @@ rm -f /tmp/$$.out
 
 # Update any submodules, etc. if necessary
 git submodule update --recursive
-if [ ${BRANCH} = "develop" ]; then
-  ./setup_git.py > /dev/null || exit 1
-fi
+./setup_git.py > /dev/null || exit 1
 
 # Get top-most revision
 rev=`git rev-parse HEAD`
@@ -78,12 +76,16 @@ SORTDATE=`date -u "+%Y%m%d"`
 DATE=`date -u +'%Y/%m/%d'`
 IMPINSTALL=${IMPTOP}/${SORTDATE}-${shortrev}
 # Make sure VERSION file is reasonable
-(cd imp && rm -f VERSION && tools/build/make_version.py --source=.)
+export -n GIT_DIR
+(cd imp && rm -f VERSION && tools/build/make_version.py --source=${GIT_TOP}/imp)
+export GIT_DIR
 if [ ${BRANCH} = "develop" ]; then
   # For nightly builds, prepend the date so the packages are upgradeable
   IMPVERSION="${SORTDATE}.develop.${shortrev}"
 else
   IMPVERSION="`cat imp/VERSION | sed -e 's/[ /-]/./g'`"
+  # For stable releases, assign submodules the same version as IMP itself
+  rm -f imp/modules/*/VERSION
 fi
 IMPSRCTGZ=${IMPINSTALL}/build/sources/imp-${IMPVERSION}.tar.gz
 rm -rf ${IMPINSTALL}

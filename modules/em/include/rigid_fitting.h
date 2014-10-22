@@ -105,12 +105,12 @@ IMP_VALUES(FittingSolutions, FittingSolutionsList);
 //! Local rigid fitting of a rigid body around a center point
 /**
 \brief Fit a set of particles to a density map around an anchor point.
-       The fitting is assessed using the cross-correaltion score.
+       The fitting is assessed using the cross-correlation score.
        The optimization is a standard MC/CG procedure.
-       The function returns a list of solutions sortedo the cross-correlation
+       The function returns a list of solutions sorted by the cross-correlation
        score.
 \note The returned cross-correlation score is 1-cc, as we usually want to
-      minimize a scroing function. Thus a score of 1 means no-correlation
+      minimize a scoring function. Thus a score of 1 means no-correlation
       and a score of 0. is perfect correlation.
 \note The input rigid body should be also IMP::atom::Hierarchy
 \param[in] p           The rigid body to fit
@@ -144,7 +144,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
     The function returns a list of solutions sorted by the cross-correlation
     score.
 \note The returned cross-correlation score is 1-cc, as we usually want to
-      minimize a scroing function. Thus a score of 1 means no correlation
+      minimize a scoring function. Thus a score of 1 means no correlation
       and a score of 0 is perfect correlation.
 \note The input rigid body should be also IMP::atom::Hierarchy
 \param[in] p           The root of the hierarchy to fit
@@ -211,11 +211,11 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
 //! Local grid search rigid fitting
 /**
 \brief Fit a set of particles to a density map around their centroid.
-       The fitting is assessed using the cross-correaltion score.
+       The fitting is assessed using the cross-correlation score.
        The optimization is a grid search
 \note The transformations are not clustered.
 \note The returned cross-correlation score is 1-cc, as we usually want to
-      minimize a scroing function. Thus a score of 1 means no-correlation
+      minimize a scoring function. Thus a score of 1 means no-correlation
       and a score of 0. is perfect correlation.
 \param[in] ps       The particles to be fitted (treated rigid)
 \param[in] wei_key  The weight key of the particles in the rigid body

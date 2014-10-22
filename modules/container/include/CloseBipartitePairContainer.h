@@ -26,11 +26,11 @@ IMPCONTAINER_BEGIN_NAMESPACE
 /** \brief Return all close ordered pairs of particles taken from the
     two SingletonContainers.
 
-    See ClosePairContainer for a more detailed description. This
+    \see ClosePairContainer for a more detailed description. This
     container lists all close pairs of particles where one particle is
     taken from each of the input sets.
 
-    See also AllPairContainer, ClosePairContainer,
+    \see also AllPairContainer, ClosePairContainer,
     AllBipartitePairContainer for variants on the functionality provided.
  */
 class IMPCONTAINEREXPORT CloseBipartitePairContainer :

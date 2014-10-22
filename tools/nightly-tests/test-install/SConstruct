@@ -6,7 +6,7 @@ vars.Add(PathVariable('cpppath',
 vars.Add('cxxflags', 'C++ compile flags', '')
 vars.Add('linkflags', 'Link flags', '')
 vars.Add('mock_config', 'Name of the mock config used to build IMP RPMs. '
-         'Specifying this adds extra RPM and OS-specific tests.', None)
+         'Specifying this adds extra RPM/.deb and OS-specific tests.', None)
 vars.Add(PathVariable('pypath',
                       'Directory/ies where IMP Python wrappers are installed',
                       None, PathVariable.PathAccept))

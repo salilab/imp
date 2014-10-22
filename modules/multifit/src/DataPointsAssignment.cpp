@@ -253,7 +253,7 @@ void write_max_cmm(const std::string &cmm_filename,
 
 void write_pdb(const std::string &pdb_filename,
                const DataPointsAssignment &dpa) {
-  IMP_LOG_VERBOSE("going to write pdb " << pdb_filename << " with : "
+  IMP_LOG_VERBOSE("going to write PDB " << pdb_filename << " with : "
                                         << dpa.get_number_of_clusters()
                                         << " clusters " << std::endl);
   std::ofstream out;

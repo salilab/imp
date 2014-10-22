@@ -6,6 +6,7 @@
 */
 
 #include "IMP/em2d/scores2D.h"
+#include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Rotation2D.h"
 #include "IMP/algebra/Transformation2D.h"
@@ -14,8 +15,8 @@ IMPEM2D_BEGIN_NAMESPACE
 
 double get_cross_correlation_coefficient(const cv::Mat &m1, const cv::Mat &m2) {
   cv::Scalar mean1, stddev1, mean2, stddev2;
-  my_meanStdDev(m1, mean1, stddev1);  // cv::meanStdDev(m1,mean1,stddev1);
-  my_meanStdDev(m2, mean2, stddev2);  // cv::meanStdDev(m2,mean2,stddev2);
+  internal::my_meanStdDev(m1, mean1, stddev1);
+  internal::my_meanStdDev(m2, mean2, stddev2);
   cv::Mat cc;
   cv::multiply(m1 - mean1[0], m2 - mean2[0], cc);
   cv::Scalar c = cv::sum(cc);

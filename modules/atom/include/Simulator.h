@@ -34,8 +34,8 @@ class SimulationParameters;
 class IMPATOMEXPORT Simulator : public Optimizer {
  public:
   /**
-     @param m model associated with simulater
-     @param name simulater name where %1% is a joker
+     @param m model associated with simulator
+     @param name simulator name where %1% is a joker
      @param wave_factor if >=1.001, use wave time step size with larger maximal
                         time step, using simulate_wave() when calling optimize()
 
@@ -108,12 +108,11 @@ class IMPATOMEXPORT Simulator : public Optimizer {
    */
   double get_current_time() const { return current_time_; }
 
-  /**
-     Sets the current simulation time in femtoseconds to ct.
-  */
+  //! Sets the current simulation time in femtoseconds to ct.
   void set_current_time(double ct) { current_time_ = ct; }
 
-  /** Returns the set of particles used in the simulation.  If a non-empty
+  //! Returns the set of particles used in the simulation.
+  /** If a non-empty
       set of particles was provided explicitly by earlier calls to the
       particles list accessor methods, eg, add_particles(), this set
       it returned. Otherwise, the associated kernel::Model object is
@@ -157,14 +156,13 @@ class IMPATOMEXPORT Simulator : public Optimizer {
       of simulation steps is taken. */
   virtual void setup(const kernel::ParticleIndexes &) {};
 
-  /** Perform a single time step and return the amount that time
-      should be advanced. A maximum time step value is passed.
+  //! Perform a single time step
+  /** \param[in] dt maximum time step value
+      \return the amount that time should be advanced.
   */
   virtual double do_step(const kernel::ParticleIndexes &sc, double dt) = 0;
 
-  /** Return true if the passed particle is appropriate for
-      the simulation.
-  */
+  //! Return true if the passed particle is appropriate for the simulation.
   virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const = 0;
 
  private:

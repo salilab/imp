@@ -27,7 +27,7 @@ if hasattr(Queue, 'task_done'):
                 func, args, kargs = self.tasks.get()
                 try:
                     func(*args, **kargs)
-                except Exception, e:
+                except Exception as e:
                     print e
                     error = str(e)
                 self.tasks.task_done()

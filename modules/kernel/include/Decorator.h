@@ -13,6 +13,7 @@
 #include <IMP/base/Object.h>
 #include <IMP/base/WeakPointer.h>
 #include "Model.h"
+#include "Particle.h"
 #include "utility.h"
 #include "Constraint.h"
 #include "internal/utility.h"
@@ -116,6 +117,7 @@ class IMPKERNELEXPORT Decorator : public base::Value {
  private:
   base::WeakPointer<Model> model_;
   ParticleIndex pi_;
+  bool is_valid_; // false if constructed with default constructor
   int compare(base::Object* o) const {
     if (o < get_particle())
       return -1;
@@ -126,8 +128,9 @@ class IMPKERNELEXPORT Decorator : public base::Value {
   }
 
  protected:
-  Decorator(Model* m, ParticleIndex pi) : model_(m), pi_(pi) {}
-  Decorator() {}
+ Decorator(Model* m, ParticleIndex pi)
+   : model_(m), pi_(pi), is_valid_(true) {}
+ Decorator() : is_valid_(false) {}
 
 #ifndef IMP_DOXYGEN
  public:
@@ -162,7 +165,7 @@ class IMPKERNELEXPORT Decorator : public base::Value {
 #endif
 #endif
 
-  /** Returns the particle decorated by this decorator.*/
+  //! Returns the particle decorated by this decorator.
   Particle* get_particle() const {
     if (!model_)
       return nullptr;
@@ -179,11 +182,21 @@ class IMPKERNELEXPORT Decorator : public base::Value {
   operator ParticleIndex() const { return get_particle_index(); }
 #endif
 
-  /** Returns the particle index decorated by this decorator.*/
+  //! Returns the particle index decorated by this decorator.
   ParticleIndex get_particle_index() const { return pi_; }
 
-  /** \brief Returns the Model containing the particle. */
+  //! Returns the Model containing the particle.
   Model* get_model() const { return model_; }
+
+  /** Returns true if the decorator was constructued with a non-default
+      constructor.
+
+      @note It is guaranteed that this is a very fast method.
+            However, this method might return false if the particle itself
+            was invalidated after construction - use check_particle()
+            in that case.
+  */
+  bool get_is_valid() const { return is_valid_; }
 
   IMP_HASHABLE_INLINE(Decorator, return boost::hash_value(get_particle()););
 

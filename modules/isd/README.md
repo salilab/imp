@@ -1,5 +1,4 @@
-This module implements inferential scoring in IMP, building on methods
-developed as part of the [Inferential Structure Determination](http://www.isd.bio.cam.ac.uk/) software (ISD).
+\brief Inferential scoring building on methods developed as part of the [Inferential Structure Determination](http://www.isd.bio.cam.ac.uk/) software (ISD).
 
 # Info
 
@@ -14,5 +13,5 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - See main IMP papers list.
- - Inferential structure determination. Rieping W, Habeck M, Nilges M. (2005) Science. 8;309(5732):303-6.
+ - See [main IMP papers list](@ref publications).
+ - W. Rieping, M. Habeck, M. Nilges. ["Inferential structure determination", Science 8;309(5732):303-6, 2005](http://www.ncbi.nlm.nih.gov/pubmed/16002620).

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/em/KernelParameters.h
- *  \brief Calculates and stores gaussian kernel parameters.
+ *  \brief Calculates and stores Gaussian kernel parameters.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -110,7 +110,7 @@ class IMPEMEXPORT KernelParameters {
   //! Get squared sigma as a function of the resolution according to the
   //! full width at half maximum criterion
   inline float get_rsigsq() const { return rsigsq_; }
-  //! Get the inverse of sigma sqaured
+  //! Get the inverse of sigma squared
   inline float get_inv_rsigsq() const { return inv_rsigsq_; }
   //! Gets the number of sigma used.
   /**

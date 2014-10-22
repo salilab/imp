@@ -51,10 +51,10 @@ def link_headers(source):
                 root, module, "internal"),
             match=["*.h"])
         # ick
-        tools.link_dir(
-            os.path.join(g, "include", "eigen3"), os.path.join(
-                root, module, "eigen3"),
-            match=["*"])
+        if os.path.exists(os.path.join(g, "include", "eigen3")):
+            tools.link_dir(os.path.join(g, "include", "eigen3"),
+                           os.path.join(root, module, "eigen3"),
+                           match=["*"])
 
 # link example scripts and data from the source dirs into the build tree
 

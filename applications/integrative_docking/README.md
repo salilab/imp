@@ -1,4 +1,6 @@
-# Integrative Docking
+# idock {#idock_bin}
+
+Pairwise docking incorporating additional data.
 
 This is a protocol for pairwise protein docking, in which additional
 experimental information about the protein-protein complex is incorporated
@@ -16,17 +18,14 @@ The protocol can currently incorporate data from the following sources:
    (NMR-RTC)
  - chemical cross-linking detected by mass spectrometry (CXMS).
 
-Additionally the protocol can calculate SOAP score based on an atomic statistical potential.
+Additionally the protocol calculates SOAP score based on an atomic statistical potential.
  - a SOAP score (SOAP)
 
 The protocol proceeds by first sampling complex models using
-[PatchDock](http://bioinfo3d.cs.tau.ac.il/) for pairwise protein
+[PatchDock](http://bioinfo3d.cs.tau.ac.il/PatchDock/) for pairwise protein
 docking, followed by
-[filtering based on fit to the experimental data](@ref idock_progs),
-conformational refinement using
-[FiberDock](http://bioinfo3d.cs.tau.ac.il/) and composite scoring.
-Third, good-scoring representatives of clusters of models are picked as
-final models.
+\subpage idock_progs "filtering based on fit to the experimental data",
+clustering and composite scoring.
 
 _Examples_:
  - [Docking of PCSK9](../tutorial/idock_pcsk9.html)
@@ -46,4 +45,4 @@ version 2 of the License, or (at your option) any later version.
 _Publications_:
  - Schneidman-Duhovny D, Hammel M, Sali A. Macromolecular docking restrained by a small angle X-ray scattering profile. J Struct Biol. 2011 Mar;173(3):461-71.
  - Schneidman-Duhovny et al. A method for integrative structure determination of protein-protein complexes. Bioinformatics. 2012;28(24):3282-9.
- - Dong GQ, Fan H, Schneidman-Duhovny D, Webb B, Sali A. Optimized atomic statistical potentials: Assessment of protein interfaces and loops. submitted.
+ - Dong GQ, Fan H, Schneidman-Duhovny D, Webb B, Sali A. Optimized atomic statistical potentials: Assessment of protein interfaces and loops. Bioinformatics. 2013;29(24):3158-66

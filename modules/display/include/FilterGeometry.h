@@ -1,6 +1,6 @@
 /**
  *  \file IMP/display/FilterGeometry.h
- *  \brief Implement FilterGeometry
+ *  \brief Remove geometry which is not above a plane.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
@@ -21,7 +21,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Remove geometry which is not above a plane.
 /** Any geometry which is not above the plane is not passed on to the writer
-    or log or whatever this CompoundGoemetry is passed to.
+    or log or whatever this CompoundGeometry is passed to.
  */
 class IMPDISPLAYEXPORT FilterGeometry : public GeometryProcessor,
                                         public Geometry {

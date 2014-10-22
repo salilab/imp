@@ -10,7 +10,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 ConstantRestraint::ConstantRestraint(Model *m, Float v)
-    : Restraint(m, "ConstRestraint%1%"), v_(v) {}
+    : Restraint(m, "ConstantRestraint%1%"), v_(v) {}
 
 double ConstantRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
   return v_;

@@ -34,7 +34,14 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
       kernel::ClassnameContainer> P;
 
  public:
-  DynamicListClassnameContainer(Container *m, std::string name =
+  /** Constructs the dynamic list
+
+      @param scope a container with a list of all possible particles that
+                   are allowed to be dynamically added or removed in this
+                   container
+      @param name  the name of this container
+  */
+  DynamicListClassnameContainer(Container *scope, std::string name =
                                                   "ListClassnameContainer %1%");
 
   /** @name Methods to control the contained objects

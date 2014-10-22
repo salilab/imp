@@ -79,9 +79,7 @@
     throw IMP::base::InternalException(imp_failure_oss.str().c_str()); \
   } while (true)
 
-//! Use this to make that the method is not implemented yet
-/**
- */
+//! Use this to mark that the method is not implemented yet
 #define IMP_NOT_IMPLEMENTED                                     \
   do {                                                          \
     IMP::base::handle_error("This method is not implemented."); \

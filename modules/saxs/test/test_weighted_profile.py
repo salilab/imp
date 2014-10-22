@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
         particles2 = IMP.atom.get_by_type(mp2, IMP.atom.ATOM_TYPE)
 
         #! add radius for water layer computation
-        ft = IMP.saxs.default_form_factor_table()
+        ft = IMP.saxs.get_default_form_factor_table()
         for i in range(0, len(particles1)):
             radius = ft.get_radius(particles1[i])
             IMP.core.XYZR.setup_particle(particles1[i], radius)

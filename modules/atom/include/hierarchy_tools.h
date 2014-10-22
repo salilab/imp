@@ -39,7 +39,7 @@ IMPATOM_BEGIN_NAMESPACE
     by default, and have garbage coordinate values.
     \untested{create_protein}
     \unstable{create_protein}
-    See Hierarchy
+    \see Hierarchy
  */
 IMPATOMEXPORT Hierarchy
     create_protein(kernel::Model *m, std::string name, double target_radius,
@@ -135,7 +135,7 @@ IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
 
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
-    See Hierarchy
+    \see Hierarchy
  */
 IMPATOMEXPORT kernel::Restraint *create_excluded_volume_restraint(
     const Hierarchies &hs, double resolution = -1);
@@ -153,7 +153,7 @@ IMPATOMEXPORT void setup_as_approximation(kernel::Particle *h,
 
 /** Set the mass, radius, residues, and coordinates to approximate the passed
     particle based on the leaves of h.
-    See Hierarchy
+    \see Hierarchy
  */
 IMPATOMEXPORT void setup_as_approximation(Hierarchy h
 #ifndef IMP_DOXYGEN
@@ -162,18 +162,17 @@ IMPATOMEXPORT void setup_as_approximation(Hierarchy h
 #endif
                                           );
 
-/** Transform a hierarchy. This is aware of rigid bodies.
- */
+//! Transform a hierarchy. This is aware of rigid bodies.
 IMPATOMEXPORT void transform(Hierarchy h, const algebra::Transformation3D &tr);
 
-/** A graph for representing a Hierarchy so you can view it
-    nicely.
-*/
+//! A graph for representing a Hierarchy so you can view it nicely.
 IMP_GRAPH(HierarchyTree, bidirectional, Hierarchy, int,
           vertex.show(out, "\\n"));
-/** Get a graph for the passed Hierarchy. This can be used,
+
+//! Get a graph for the passed Hierarchy.
+/** This can be used,
     for example, to graphically display the hierarchy in 2D.
-    See Hierarchy
+    \see Hierarchy
 */
 IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
 

@@ -1,5 +1,6 @@
 /**
- *  \file IMP/atom/Copy.h     \brief A particle with a user-defined type.
+ *  \file IMP/atom/Copy.h
+ *  \brief A decorator for keeping track of copies of a molecule.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -20,7 +21,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 //! A decorator for keeping track of copies of a molecule.
 /** This decorator is for differentiating and keeping track
-    of identity when there are multiple copies of the a
+    of identity when there are multiple copies of
     molecule in the system. It should only be applied to
     Molecule particles.
  */
@@ -49,7 +50,8 @@ class IMPATOMEXPORT Copy : public Molecule {
 
 IMP_DECORATORS(Copy, Copies, kernel::ParticlesTemp);
 
-/** Walk up the hierarchy to find the current state. Return -1 if there is none.
+//! Walk up the hierarchy to find the current copy index.
+/** \return the copy index, or -1 if there is none.
  */
 IMPATOMEXPORT int get_copy_index(Hierarchy h);
 

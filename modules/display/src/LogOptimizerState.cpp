@@ -1,6 +1,6 @@
 /**
  *  \file Writer.cpp
- *  \brief XXXX.
+ *  \brief Base class for writing geometry to a file.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

@@ -11,8 +11,8 @@
 #include <IMP/atom/atom_config.h>
 
 IMPATOM_BEGIN_NAMESPACE
-/** Return kT for a given temperature.
-    Value taken from
+//! Return kT for a given temperature.
+/** Value taken from
     \external{http://en.wikipedia.org/wiki/Boltzmann_constant,Wikipedia}.
 */
 inline double get_kt(double T) { return 0.0019872041 * T; }

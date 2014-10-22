@@ -14,8 +14,8 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 class ParticleStatesTable;
-/** Return subset of the passed states which are representative.
-    The states for each particle is clustered and then the
+//! Return subset of the passed states which are representative.
+/** The states for each particle is clustered and then the
     passed states are reduced to only be on the centers
     of that clustering.
 

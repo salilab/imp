@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/assignment_tables.h
- *  \brief A beyesian infererence-based sampler.
+ *  \brief A Bayesian inference-based sampler.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -35,7 +35,7 @@ class DominoSampler;
 */
 class IMPDOMINOEXPORT AssignmentsTable : public IMP::base::Object {
  public:
-  AssignmentsTable(std::string name = "SubsetStatesTable %1%") : Object(name) {}
+  AssignmentsTable(std::string name = "AssignmentsTable %1%") : Object(name) {}
   virtual void load_assignments(const Subset &s,
                                 AssignmentContainer *ac) const = 0;
   ~AssignmentsTable();
@@ -125,7 +125,7 @@ class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
       states_;
 
  public:
-  ListAssignmentsTable(std::string name = "ListSubsetStatesTable %1%");
+  ListAssignmentsTable(std::string name = "ListAssignmentsTable %1%");
   /** There must not be any duplicates in the list */
   void set_assignments(const Subset &s, AssignmentContainer *lsc) {
     states_[s] = lsc;

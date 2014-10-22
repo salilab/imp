@@ -16,7 +16,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Find all nearby pairs by testing all pairs
 /**
-   \see CloserPairsScoreState
+   \see ClosePairsScoreState
  */
 class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder {
  public:

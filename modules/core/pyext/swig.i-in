@@ -28,6 +28,7 @@ IMP_SWIG_OBJECT( IMP::core, Cosine, Cosines);
 IMP_SWIG_OBJECT( IMP::core, CoverRefined, CoverRefineds);
 IMP_SWIG_OBJECT( IMP::core, DerivativesFromRefined, DerivativesFromRefineds);
 IMP_SWIG_OBJECT( IMP::core, DerivativesToRefined, DerivativesToRefineds);
+IMP_SWIG_OBJECT( IMP::core, WeightedDerivativesToRefined, WeightedDerivativesToRefineds);
 IMP_SWIG_OBJECT( IMP::core, DiameterRestraint, DiameterRestraints);
 IMP_SWIG_OBJECT( IMP::core, DihedralRestraint, DihedralRestraints);
 IMP_SWIG_OBJECT( IMP::core, DistanceRestraint, DistanceRestraints);
@@ -66,6 +67,7 @@ IMP_SWIG_OBJECT(IMP::core, RestraintsScoringFunction, RestraintsScoringFunctions
 IMP_SWIG_OBJECT( IMP::core, RigidBodyDistancePairScore, RigidBodyDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyMover, RigidBodyMovers);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyTunneler, RigidBodyTunnelers);
+IMP_SWIG_OBJECT( IMP::core, RigidBodyUmbrella, RigidBodyUmbrellas);
 IMP_SWIG_OBJECT( IMP::core, RigidClosePairsFinder, RigidClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, RigidMembersRefiner, RigidMembersRefiners);
 IMP_SWIG_OBJECT( IMP::core, SingletonConstraint, SingletonConstraints);
@@ -117,7 +119,6 @@ IMP_SWIG_OBJECT( IMP::core, AllSameQuadPredicate, AllSameQuadPredicates);
 
 IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
 IMP_SWIG_DECORATOR( IMP::core, XYZR, XYZRs);
-IMP_SWIG_DECORATOR( IMP::core, Gaussian, Gaussians)
 IMP_SWIG_DECORATOR( IMP::core, RigidBody, RigidBodies);
 IMP_SWIG_DECORATOR( IMP::core, RigidBodyMember, RigidBodyMembers);
 IMP_SWIG_DECORATOR( IMP::core, RigidMember, RigidMembers);
@@ -128,6 +129,7 @@ IMP_SWIG_DECORATOR( IMP::core, Reference, References);
 IMP_SWIG_VALUE_INSTANCE(IMP::core, ParticleType, ParticleType, ParticleTypes);
 IMP_SWIG_DECORATOR( IMP::core, Typed, Typeds);
 IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, Hierarchy, GenericHierarchies);
+IMP_SWIG_DECORATOR( IMP::core, Gaussian, Gaussians)
 
 IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
 IMP_SWIG_VALUE( IMP::core, HierarchyTraits, HierarchyTraitsList);
@@ -167,7 +169,6 @@ IMP_SWIG_OBJECT(IMP::core, IsCollisionPairPredicate, IsCollisionPairPredicates);
 %include "IMP/core/XYZ.h"
 
 %include "IMP/core/XYZR.h"
-%include "IMP/core/Gaussian.h"
 
 /* Wrap the final classes */
 %include "IMP/core/AngleTripletScore.h"
@@ -273,6 +274,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/TruncatedHarmonic.h"
 %include "IMP/core/MCCGSampler.h"
 %include "IMP/core/MinimumRestraint.h"
+%include "IMP/core/Gaussian.h"
 
 %include "IMP/core/PairRestraint.h"
 %include "IMP/core/SingletonRestraint.h"
@@ -293,6 +295,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/AngleRestraint.h"
 %include "IMP/core/RigidBodyMover.h"
 %include "IMP/core/RigidBodyTunneler.h"
+%include "IMP/core/RigidBodyUmbrella.h"
 %include "IMP/core/VolumeRestraint.h"
 %include "IMP/core/utility.h"
 %include "IMP/core/StatisticalPairScore.h"

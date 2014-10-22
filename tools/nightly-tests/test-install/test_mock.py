@@ -8,9 +8,9 @@ mock_config = os.environ['MOCK_CONFIG']
 class IMPMockTests(unittest.TestCase):
 
     def test_modules_installed(self):
-        """Check modules included in the RPM"""
-        # RHEL systems don't include cgal, em2d; Fedora does
-        if mock_config.startswith('fedora'):
+        """Check modules included in the RPM or .deb"""
+        # RHEL systems don't include cgal, em2d; Fedora and Ubuntu do
+        if mock_config.startswith('fedora') or mock_config.startswith('ubuntu'):
             import IMP.cgal
             import IMP.em2d
         else:
@@ -40,30 +40,32 @@ class IMPMockTests(unittest.TestCase):
 
     def test_applications_installed(self):
         """Check install of a fairly comprehensive list of applications"""
-        emagefit_apps = ['convert_spider_to_jpg.py', 'emagefit_cluster.py',
-                         'emagefit_dock.py', 'emagefit.py', 'emagefit_score.py']
-        apps = ['cluster_profiles', 'cnmultifit.py', 'combine_scores',
-                'complex_to_anchor_graph.py', 'compute_chi',
-                'cross_links_score',
-                'cross_links_single_score', 'em2d_score', 'em2d_single_score',
-                'em3d_score', 'em3d_single_score',
-                'estimate_threshold_from_molecular_mass.py', 'foxs',
-                'idock.py', 'imp_example_app', 'interface_cross_links',
-                'interface_rtc', 'ligand_score', 'map2pca.py', 'mol2pca.py',
-                'multifit.py', 'nmr_rtc_score', 'pdb_check', 'pdb_rmf',
-                'recompute_zscore', 'resample_density.py', 'rg',
-                'rmf3_dump', 'rmf_cat', 'rmf_display',
+        emagefit_apps = ['convert_spider_to_jpg', 'emagefit_cluster',
+                         'emagefit_dock', 'emagefit', 'emagefit_score']
+        idock_apps = ['idock', 'combine_scores', 'recompute_zscore',
+                      'cross_links_score', 'cross_links_single_score',
+                      'em2d_score', 'em2d_single_score',
+                      'interface_cross_links', 'em3d_score',
+                      'em3d_single_score', 'saxs_score', 'interface_rtc',
+                      'nmr_rtc_score', 'soap_score']
+        apps = ['cluster_profiles', 'cnmultifit',
+                'complex_to_anchor_graph', 'compute_chi',
+                'estimate_threshold_from_molecular_mass', 'foxs',
+                'imp_example_app', 'ligand_score', 'map2pca', 'mol2pca',
+                'multifit', 'pdb_check', 'pdb_rmf', 'resample_density',
+                'rg', 'rmf3_dump', 'rmf_cat', 'rmf_display',
                 'rmf_frames', 'rmf_info', 'rmf_interpolate', 'rmf_pdb',
                 'rmf_show', 'rmf_signature', 'rmf_simplify', 'rmf_slice',
                 'rmf_transform', 'rmf_update',
-                'rmf_validate', 'rmf_xml', 'saxs_merge.py', 'saxs_score',
-                'simulate_density_from_pdb.py', 'soap_score',
-                'validate_profile', 'view_density_header.py']
-        # RHEL systems don't include EMageFit; Fedora does
-        if mock_config.startswith('fedora'):
+                'rmf_validate', 'rmf_xml', 'saxs_merge',
+                'simulate_density_from_pdb',
+                'validate_profile', 'view_density_header']
+        # RHEL systems don't include EMageFit and idock; Fedora and Ubuntu do
+        if mock_config.startswith('fedora') or mock_config.startswith('ubuntu'):
             apps.extend(emagefit_apps)
+            apps.extend(idock_apps)
         else:
-            for app in emagefit_apps:
+            for app in emagefit_apps + idock_apps:
                 self.assertRaises(OSError, subprocess.call, app)
         for app in apps:
             try:

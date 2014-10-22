@@ -21,7 +21,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 /** \todo change so that the att will not be encoded but loaded from
-    a conf file (Keren) */
+    a configuration file (Keren) */
 class IMPEMEXPORT DensityHeader {
 
  public:
@@ -48,17 +48,17 @@ class IMPEMEXPORT DensityHeader {
   }
   //! Compute the farthest point of the grid.
   /**
-    /param[in] force if true then the top point is calculated
-               even if it has already been calcualted.
+      \param[in] force if true then the top point is calculated
+                 even if it has already been calculated.
    */
   void compute_xyz_top(bool force = false);
 
   //! Update the dimensions of the map to be (nnx,nny,nnz)
-  //!The origin of the map does not change
+  //! The origin of the map does not change
   /**
-     /param[in] nnx the new number of voxels on the X axis
-     /param[in] nny the new number of voxels on the Y axis
-     /param[in] nnz the new number of voxels on the Z axis
+      \param[in] nnx the new number of voxels on the X axis
+      \param[in] nny the new number of voxels on the Y axis
+      \param[in] nnz the new number of voxels on the Z axis
    */
   void update_map_dimensions(int nnx, int nny, int nnz);
 
@@ -185,7 +185,7 @@ class IMPEMEXPORT DensityHeader {
     zorigin_ = z;
     top_calculated_ = false;
   }
-  //! True if the top coodinates (bounding-box) are calculated
+  //! True if the top coordinates (bounding-box) are calculated
   inline bool is_top_calculated() const { return top_calculated_; }
   float Objectpixelsize_;  // this is the actual pixelsize
 
@@ -213,9 +213,8 @@ class IMPEMEXPORT DensityHeader {
   int data_type_;
 };
 
-//! Create a header from a bounding box 3D
-/**
- See DensityHeader
+//! Create a header from a bounding box in 3D
+/** \see DensityHeader
 */
 IMPEMEXPORT DensityHeader
     create_density_header(const algebra::BoundingBoxD<3>& bb, float spacing);

@@ -97,7 +97,7 @@ MonteCarloMoverResult MonteCarlo::do_move() {
 
 namespace {
 // accept the moves if not reset
-// to make things excpetion safe
+// to make things exception safe
 struct MoverCleanup {
   MonteCarlo *mc_;
   MoverCleanup(MonteCarlo *mc) : mc_(mc) {}

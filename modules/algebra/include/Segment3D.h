@@ -1,6 +1,6 @@
 /**
  *  \file IMP/algebra/Segment3D.h
- *  \brief simple implementation of segments in 3D
+ *  \brief Simple implementation of segments in 3D
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
@@ -17,7 +17,8 @@
 #include "constants.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
-/** It does what is says.
+//! Simple implementation of segments in 3D
+/** A line segment is defined by a start and end point (as Vector3D).
     \geometry
  */
 class IMPALGEBRAEXPORT Segment3D : public GeometricPrimitiveD<3> {
@@ -64,11 +65,11 @@ IMPALGEBRAEXPORT double get_relative_projection_on_segment(
     const Segment3D &s, const algebra::Vector3D &p);
 
 //! Get the distance between a segment and a point
-/** See Segment3D */
+/** \see Segment3D */
 IMPALGEBRAEXPORT double get_distance(const Segment3D &s, const Vector3D &p);
 
 //! Get the distance between two segments
-/** See Segment3D */
+/** \see Segment3D */
 IMPALGEBRAEXPORT double get_distance(const Segment3D &a, const Segment3D &b);
 
 IMPALGEBRA_END_NAMESPACE

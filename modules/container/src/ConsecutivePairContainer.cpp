@@ -24,7 +24,7 @@ ConsecutivePairContainer::ConsecutivePairContainer(
 }
 
 // add key of this container as attribute to all particles
-// if there might be ovrlaps - create a different keys for each instance
+// if there might be overlaps - create a different keys for each instance
 void ConsecutivePairContainer::init() {
   std::ostringstream oss;
   oss << "CPC cache " << key_count;
@@ -70,16 +70,34 @@ ExclusiveConsecutivePairContainer::ExclusiveConsecutivePairContainer(
 }
 
 // add key of this container as attribute to all particles
-// if there might be ovrlaps - create a different keys for each instance
+// if there might be overlaps - create a different keys for each instance
 void ExclusiveConsecutivePairContainer::init() {
   for (unsigned int i = 0; i < ps_.size(); ++i) {
     IMP_USAGE_CHECK(
         !get_model()->get_has_attribute(get_exclusive_key(), ps_[i]),
-        "You must create containers before reading in the "
-            << "saved model: "
-            << get_model()->get_particle(ps_[i])->get_name());
+        "Particle already added to some ExclusiveConsecutivePairContainer"
+        << " and cannot be added to another: "
+            << get_model()->get_particle(ps_[i])->get_name() );
     get_model()->add_attribute(get_exclusive_key(), ps_[i], i);
     get_model()->add_attribute(get_exclusive_object_key(), ps_[i], this);
+  }
+}
+
+void ExclusiveConsecutivePairContainer::do_destroy() {
+  if(get_model() == nullptr){ return; }
+  if(!get_model()->get_is_valid()) { return ; }
+  IMP_LOG_PROGRESS("Destroying exclusive pair container with "
+                   << ps_.size() << " particles" << std::endl);
+  for (unsigned int i = 0; i < ps_.size(); ++i) {
+    if(!get_model()->get_has_particle(ps_[i])) {
+        continue;
+    }
+    if( get_model()->get_has_attribute(get_exclusive_key(), ps_[i]) ) {
+        get_model()->remove_attribute(get_exclusive_key(), ps_[i]);
+    }
+    if( get_model()->get_has_attribute(get_exclusive_object_key(), ps_[i]) ){
+      get_model()->remove_attribute(get_exclusive_object_key(), ps_[i]);
+    }
   }
 }
 

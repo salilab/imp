@@ -325,7 +325,7 @@ using IMP::kernel::write_particles_to_buffer;
 
 /** \namespace IMP
 
-    \brief All IMP::kernel code is brought into the IMP namespace.
+    \brief Synonym for IMP::kernel
 
     All \imp code is in the \imp namespace. For convenience and backwards
     compatibility, the contents of IMP::kernel are hoisted into the \imp

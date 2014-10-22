@@ -95,7 +95,7 @@ IMPBASEEXPORT void handle_error(const char *msg);
 
 #ifndef SWIG
 
-//! A general exception for an intenal error in IMP.
+//! A general exception for an internal error in IMP.
 /** This exception is thrown by the IMP_INTERNAL_CHECK() and
     IMP_FAILURE() macros. It should never be caught.
  */
@@ -184,9 +184,8 @@ class IMPBASEEXPORT ModelException : public Exception {
   ~ModelException() IMP_NOEXCEPT;
 };
 
-/** \brief An exception that signifies some event occurred.
-
-    It is difficult to add exceptions to the python wrappers,
+//! An exception that signifies some event occurred.
+/** It is difficult to add exceptions to the Python wrappers,
     so use this type if want to raise an exception when something
     happens.
 

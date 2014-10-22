@@ -160,7 +160,7 @@ algebra::VectorKD get_embedding(const Subset &s, const Assignment &a,
   Floats embed;
   for (unsigned int i = 0; i < s.size(); ++i) {
     algebra::VectorKD cur = pst->get_particle_states(s[i])->get_embedding(a[i]);
-    embed.insert(embed.end(), cur.coordinates_begin(), cur.coordinates_end());
+    embed.insert(embed.end(), cur.begin(), cur.end());
   }
   return algebra::VectorKD(embed);
 }
@@ -175,8 +175,8 @@ Assignment get_nearest_assignment(const Subset &s,
   for (unsigned int i = 0; i < s.size(); ++i) {
     unsigned int sz =
         pst->get_particle_states(s[i])->get_embedding(0).get_dimension();
-    algebra::VectorKD cpt(embedding.coordinates_begin() + cur,
-                          embedding.coordinates_begin() + cur + sz);
+    algebra::VectorKD cpt(embedding.begin() + cur,
+                          embedding.begin() + cur + sz);
     cur += sz;
     ret[i] = pst->get_particle_states(s[i])->get_nearest_state(cpt);
   }

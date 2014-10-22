@@ -29,8 +29,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 /** \defgroup hierarchy Hierarchies of particles
-    These functions and classes aid in manipulating particles representing
-    molecules at multiple levels.
+    \brief Manipulate particles representing molecules at multiple levels.
  */
 #ifndef SWIG
 class Hierarchy;
@@ -210,7 +209,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
     get_model()->add_attribute(get_decorator_traits().get_parent_key(),
                                h.get_particle_index(), get_particle_index());
   }
-  /** Return i such that `get_parent().get_child(i) == this` */
+  //! Return i such that `get_parent().get_child(i) == this`
   int get_child_index() const;
   //! Get the default hierarchy traits
   static const HierarchyTraits &get_default_traits();
@@ -280,7 +279,7 @@ struct Gather {
     \param[in] f The visitor to be applied. This is passed by reference.
     A branch of the traversal stops when f returns false.
     \ingroup hierarchy
-    See Hierarchy
+    \see Hierarchy
  */
 template <class HD, class F>
 inline F visit_breadth_first(HD d, F f) {
@@ -301,12 +300,12 @@ inline F visit_breadth_first(HD d, F f) {
 }
 
 //! Apply functor F to each particle, traversing the hierarchy depth first.
-/** See breadth_first_traversal() for documentation.
+/** See visit_breadth_first() for documentation.
     \ingroup hierarchy
-    See Hierarchy
+    \see Hierarchy
  */
 template <class HD, class F>
-inline F visit_depth_first(HD d, F f) {
+inline F visit_depth_first(HD d, F &f) {
   base::Vector<HD> stack;
   stack.push_back(d);
   // d.show(std::cerr);
@@ -346,7 +345,7 @@ inline F visit_depth_first(HD d, F f) {
            the functor state.
 
     \ingroup hierarchy
-    See Hierarchy
+    \see Hierarchy
  */
 template <class HD, class F>
 inline F visit_breadth_first_with_data(HD d, F f, typename F::result_type i) {
@@ -367,9 +366,9 @@ inline F visit_breadth_first_with_data(HD d, F f, typename F::result_type i) {
 }
 
 //! Apply functor F to each particle, traversing the hierarchy depth first.
-/** See breadth_first_traversal for documentation.
+/** See visit_breadth_first() for documentation.
     \ingroup hierarchy
-    See Hierarchy
+    \see Hierarchy
  */
 template <class HD, class F>
 inline F visit_depth_first_with_data(HD d, F f, typename F::result_type i) {
@@ -389,10 +388,9 @@ inline F visit_depth_first_with_data(HD d, F f, typename F::result_type i) {
   return f;
 }
 
-//! Print the hierarchy using a given decorator as to display each node
-/** The last argument limits how deep will be printed out.
-    \ingroup hierarchy
-    See Hierarchy
+//! Print the hierarchy using a given decorator to display each node
+/** \ingroup hierarchy
+    \see Hierarchy
  */
 template <class ND>
 inline std::ostream &show(Hierarchy h, std::ostream &out = std::cout) {
@@ -424,9 +422,19 @@ struct HierarchyCounter : public HierarchyVisitor {
 
 IMP_VALUES(HierarchyCounter, HierarchyCounters);
 
-//! Gather all the particles in the hierarchy which meet some criteria
-/** \ingroup hierarchy
-    See Hierarchy
+//! Gather all the particles in the hierarchy that meet some criteria
+/** Gather all the particles in the hierarchy for which f() returns true
+    and appends them to out
+
+    @param h hierarchy root
+    @param f boolean function / functor that returns true
+                     on desired particles
+    @param out a output iterator for appending the result
+
+    @return the output iterator
+
+    \ingroup hierarchy
+    \see Hierarchy
  */
 template <class H, class Out, class F>
 inline Out gather(H h, F f, Out out) {
@@ -435,12 +443,12 @@ inline Out gather(H h, F f, Out out) {
   return gather.get_out();
 }
 
-//! Gather all the particles in the hierarchy which meet some criteria
+//! Gather all the uppermost particles in the hierarchy that meet some criteria
 /** Descent in the tree terminates when a node is gathered so that
     none of its children are explored.
 
     \ingroup hierarchy
-    See Hierarchy
+    \see Hierarchy
  */
 template <class H, class Out, class F>
 inline Out gather_slice(H h, F f, Out out) {
@@ -451,7 +459,7 @@ inline Out gather_slice(H h, F f, Out out) {
 
 //! Gather all the particles in the hierarchy which match on an attribute
 /** \ingroup hierarchy
-    See Hierarchy
+    \see Hierarchy
  */
 template <class H, class Out, class K, class V>
 inline Out gather_by_attribute(H h, K k, V v, Out out) {
@@ -463,7 +471,7 @@ inline Out gather_by_attribute(H h, K k, V v, Out out) {
 
 //! Gather all the particles in the hierarchy which match on two attributes
 /** \ingroup hierarchy
-    See Hierarchy
+    \see Hierarchy
  */
 template <class H, class Out, class K0, class V0, class K1, class V1>
 inline Out gather_by_attributes(H h, K0 k0, V0 v0, K1 k1, V1 v1, Out out) {
@@ -475,7 +483,7 @@ inline Out gather_by_attributes(H h, K0 k0, V0 v0, K1 k1, V1 v1, Out out) {
 
 //! Find the first node which matches some criteria
 /** \ingroup hierarchy
-    See Hierarchy
+    \see Hierarchy
  */
 template <class HD, class F>
 inline HD find_breadth_first(HD h, F f) {
@@ -503,22 +511,22 @@ inline HD find_breadth_first(HD h, F f) {
 /** The leaves are returned in the obvious order
     (first child before second child).
 
-    See Hierarchy
+    \see Hierarchy
  */
 IMPCOREEXPORT GenericHierarchies get_leaves(Hierarchy mhd);
 
 //! Get all the non-leaves of the bit of hierarchy
-/**     See Hierarchy
+/** \see Hierarchy
  */
 IMPCOREEXPORT GenericHierarchies get_internal(Hierarchy mhd);
 
 //! Get all the particles in the subtree
-/**     See Hierarchy
+/** \see Hierarchy
  */
 IMPCOREEXPORT GenericHierarchies get_all_descendants(Hierarchy mhd);
 
 //! Return the root of the hierarchy
-/** See Hierarchy */
+/** \see Hierarchy */
 inline Hierarchy get_root(Hierarchy h) {
   while (h.get_parent()) {
     h = h.get_parent();

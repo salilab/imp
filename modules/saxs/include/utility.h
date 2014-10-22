@@ -8,8 +8,10 @@
 #define IMPSAXS_UTILITY_H
 
 #include <IMP/saxs/saxs_config.h>
-#include <IMP/algebra/Vector3D.h>
 #include "FormFactorTable.h"
+#include "Profile.h"
+
+#include <IMP/algebra/Vector3D.h>
 #include <IMP/base/exception.h>
 #include <IMP/core/XYZ.h>
 
@@ -83,6 +85,20 @@ inline Float radius_of_gyration(const kernel::Particles& particles) {
   rg /= particles.size();
   return std::sqrt(rg);
 }
+
+//! profile calculation for particles and a given set of options
+IMPSAXSEXPORT
+Profile* compute_profile(IMP::kernel::Particles particles,
+                         float min_q = 0.0, float max_q = 0.5,
+                         float delta_q = 0.001,
+                         FormFactorTable* ft = get_default_form_factor_table(),
+                         FormFactorType ff_type = HEAVY_ATOMS,
+                         float water_layer_c2 = 4.0,
+                         bool fit = true,
+                         bool reciprocal = false,
+                         bool ab_initio = false,
+                         bool vacuum = false,
+                         std::string beam_profile_file = "");
 
 IMPSAXS_END_NAMESPACE
 

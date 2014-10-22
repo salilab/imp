@@ -289,12 +289,12 @@ struct RandomVectorOnBB {
     Floats ret(bb.get_dimension());
     // std::cout << "Side is " << side << std::endl;
     if (side >= bb.get_dimension()) {
-      std::copy(ub.coordinates_begin(), ub.coordinates_end(), ret.begin());
+      std::copy(ub.begin(), ub.end(), ret.begin());
       for (unsigned int i = 1; i < bb.get_dimension(); ++i) {
         ret[(coord + i) % bb.get_dimension()] -= sv[i - 1];
       }
     } else {
-      std::copy(lb.coordinates_begin(), lb.coordinates_end(), ret.begin());
+      std::copy(lb.begin(), lb.end(), ret.begin());
       for (unsigned int i = 1; i < bb.get_dimension(); ++i) {
         ret[(coord + i) % bb.get_dimension()] += sv[i - 1];
       }

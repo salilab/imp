@@ -7,6 +7,18 @@ class Tests(IMP.test.TestCase):
 
     """Test rigid transformations"""
 
+    def test_flip(self):
+        """Test alignment that requires flipping the rotation matrix"""
+        f = [IMP.algebra.Vector3D(-5,0,0),
+             IMP.algebra.Vector3D(0,0,0),
+             IMP.algebra.Vector3D(5,0,0)]
+        t = [IMP.algebra.Vector3D(70.9405, 5.8230, 89.6219),
+             IMP.algebra.Vector3D(68.6298, 9.8629, 91.4493),
+             IMP.algebra.Vector3D(66.3191, 13.9028, 93.2769)]
+        tr = IMP.algebra.get_transformation_aligning_first_to_second(f, t)
+        for fi,ti in zip(f, t):
+            self.assertLess(IMP.algebra.get_distance(tr*fi, ti), 0.1)
+
     def _produce_point_sets(self, tr):
         vs = []
         vsr = []

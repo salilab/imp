@@ -1,4 +1,6 @@
-The module exposes several general purpose optimizers from GSL to IMP. The most useful is probably the IMP::gsl::Simplex optimizer. Note that GSL is licensed under the GPLv3, which requires that all other software linked with it also be licensed under a GPL-compatible license.
+\brief Several general purpose optimizers from the GNU Scientific Library (GSL).
+
+The most useful is probably the IMP::gsl::Simplex optimizer. Note that GSL is licensed under the GPLv3, which requires that all other software linked with it also be licensed under a GPL-compatible license.
 
 # GSL # {#GSL}
 The IMP.gsl module requires [GSL](http://www.gnu.org/software/gsl/). It
@@ -20,4 +22,4 @@ License as published by the Free Software Foundation; either
 version 3 of the License, or (at your option) any later version.
 
 _Publications_:
- - See main IMP papers list.
+ - See [main IMP papers list](@ref publications).

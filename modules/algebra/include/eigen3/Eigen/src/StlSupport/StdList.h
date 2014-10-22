@@ -10,7 +10,7 @@
 #ifndef IMP_EIGEN_STDLIST_H
 #define IMP_EIGEN_STDLIST_H
 
-#include "Eigen/src/StlSupport/details.h"
+#include "details.h"
 
 // Define the explicit instantiation (e.g. necessary for the Intel compiler)
 #if defined(__INTEL_COMPILER) || defined(__GNUC__)
@@ -78,11 +78,11 @@ namespace std
 
   template<typename T>
   class list<T,IMP_EIGEN_ALIGNED_ALLOCATOR<T> >
-    : public list<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
-                  IMP_Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> >
+    : public list<IMP_EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
+                  IMP_Eigen::aligned_allocator_indirection<IMP_EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> >
   {
-    typedef list<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
-                 IMP_Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> > list_base;
+    typedef list<IMP_EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
+                 IMP_Eigen::aligned_allocator_indirection<IMP_EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> > list_base;
     IMP_EIGEN_STD_LIST_SPECIALIZATION_BODY
 
     void resize(size_type new_size)

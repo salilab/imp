@@ -17,16 +17,36 @@ IMPCORE_BEGIN_NAMESPACE
 CentroidOfRefined::CentroidOfRefined(Refiner *r, FloatKey weight, FloatKeys ks)
     : refiner_(r), ks_(ks), w_(weight) {}
 
+// compute centroid from refined particles
 void CentroidOfRefined::apply_index(kernel::Model *m,
                                     kernel::ParticleIndex pi) const {
-  kernel::Particle *p = m->get_particle(pi);
-  kernel::ParticlesTemp ps = refiner_->get_refined(p);
-  unsigned int n = ps.size();
+  IMP_LOG_PROGRESS("BEGIN - updating centroid pi" << pi << " coords " <<
+                   IMP::core::XYZ(m, pi).get_coordinates());
+  // retrieving pis by ref if possible is cumbersome but is required for speed
+  kernel::ParticleIndexes pis_if_not_byref;
+  kernel::ParticleIndexes const* pPis;
+  if(refiner_->get_is_by_ref_supported()){
+    kernel::ParticleIndexes const& pis =
+      refiner_->get_refined_indexes_by_ref(m, pi);
+    pPis = &pis;
+  } else{
+    pis_if_not_byref = refiner_->get_refined_indexes(m, pi);
+    pPis = &pis_if_not_byref;
+  }
+  kernel::ParticleIndexes const& pis = *pPis;
+  unsigned int n = pis.size();
   double tw = 0;
   if (w_ != FloatKey()) {
+    IMP_USAGE_CHECK( m->get_has_attribute(w_, pi),
+                     "Centroid particle lacks non-trivial weight key" << w_ );
     for (unsigned int i = 0; i < n; ++i) {
-      tw += ps[i]->get_value(w_);
+      ParticleIndex cur_pi = pis[i];
+      IMP_USAGE_CHECK( m->get_has_attribute(w_, cur_pi),
+                       "CentroidOfRefined - Fine particle #" << i
+                       << " lacks non-trivial weight key" << w_);
+      tw += m->get_attribute(w_, cur_pi);
     }
+    m->set_attribute(w_, pi, tw);
   } else {
     tw = 1;
   }
@@ -34,15 +54,18 @@ void CentroidOfRefined::apply_index(kernel::Model *m,
     double v = 0;
     for (unsigned int i = 0; i < n; ++i) {
       double w;
+      ParticleIndex cur_pi = pis[i];
       if (w_ != FloatKey()) {
-        w = ps[i]->get_value(w_) / tw;
+        w = m->get_attribute(w_, cur_pi) / tw;
       } else {
         w = Float(1.0) / n;
       }
-      v += ps[i]->get_value(ks_[j]) * w;
+      v += m->get_attribute(ks_[j], cur_pi) * w;
     }
-    p->set_value(ks_[j], v);
+    m->set_attribute(ks_[j], pi, v);
   }
+  IMP_LOG_PROGRESS("DONE - updated centroid pi" << pi << " coords " <<
+                   IMP::core::XYZ(m, pi).get_coordinates());
 }
 
 ModelObjectsTemp CentroidOfRefined::do_get_inputs(

@@ -19,8 +19,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! A decorator for a node that marks this hierarchy as being a particular
-// state.
+//! Associate an integer "state" index with a hierarchy node.
 /**
  * \note Only one State node is allowed in any path up the tree as nesting
  * them does not have a clear meaning.
@@ -48,8 +47,8 @@ class IMPATOMEXPORT State : public Hierarchy {
 
 IMP_DECORATORS(State, States, Hierarchies);
 
-/** Walk up the hierarchy to find the current state. Return -1 if there is none.
- */
+//! Walk up the hierarchy to find the current state.
+/** \return the state index, or -1 if there is none. */
 IMPATOMEXPORT int get_state_index(Hierarchy h);
 
 IMPATOM_END_NAMESPACE

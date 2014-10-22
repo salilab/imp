@@ -88,9 +88,9 @@ class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
 IMP_DECORATORS(SecondaryStructureResidue, SecondaryStructureResidues,
                kernel::ParticlesTemp);
 
-/** Coarsen some SecondaryStructureResidues. Returns a
-    SecondaryStructureResidue whose probabilities reflect those of the
-    underlying residues. Useful if you want to represent the secondary
+//! Coarsen some SecondaryStructureResidues.
+/** \returns a SecondaryStructureResidue whose probabilities reflect those
+    of the underlying residues. Useful if you want to represent the secondary
     structure contents at a coarser level.
     \param[in] ssr_ps The SSR-decorated particles to be combined
     \param[in] mdl The IMP kernel::Model
@@ -117,9 +117,8 @@ IMPATOMEXPORT SecondaryStructureResidues
         const kernel::Particles &ssr_ps, kernel::Model *mdl, int coarse_factor,
         int start_res_num, bool winner_takes_all_per_res = false);
 
-/** Compares the secondary structure probabilities of two
-    SecondaryStructureResidues. Returns the RMSD of the three probabilities
-    (lower is better match).
+//! Compares the secondary structure probabilities of two residues.
+/** \returns the RMSD of the three probabilities (lower is better match).
  */
 IMPATOMEXPORT Float
     get_secondary_structure_match_score(SecondaryStructureResidue ssr1,

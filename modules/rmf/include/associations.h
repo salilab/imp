@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/associations.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Track associations between an RMF file and native objects.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -33,9 +33,9 @@ inline T *get_association(RMF::NodeConstHandle nh) {
 }
 
 /** \name Associations
-    RMF supports tracking associations between an RMF file an native objects.
+    RMF supports tracking associations between an RMF file and native objects.
     In the \imp case these are IMP::base::Object and we provide some special
-    methods aid in this process.
+    methods to aid in this process.
     @{
 */
 IMPRMFEXPORT RMF::NodeConstHandle get_node_from_association(

@@ -20,7 +20,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 /** Point-based clustering needs a way of embedding the data being clustered
     in space. Classes which implement Embedding provide a
     mapping between each item being clustered (named by an integer index)
-    and a point in space, as a fixed-lenth array of floating point numbers.
+    and a point in space, as a fixed-length array of floating point numbers.
  */
 class IMPSTATISTICSEXPORT Embedding : public IMP::base::Object {
  protected:
@@ -34,7 +34,7 @@ class IMPSTATISTICSEXPORT Embedding : public IMP::base::Object {
  public:
   virtual algebra::VectorKD get_point(unsigned int i) const = 0;
   virtual unsigned int get_number_of_items() const = 0;
-  /** Return a weight for the point. */
+  //! Return a weight for the point.
   double get_weight(unsigned int i) const { return do_get_weight(i); }
   virtual algebra::VectorKDs get_points() const {
     algebra::VectorKDs ret(get_number_of_items());

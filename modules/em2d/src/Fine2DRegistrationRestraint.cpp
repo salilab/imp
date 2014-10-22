@@ -1,6 +1,6 @@
 /**
  *  \file Fine2DRegistrationRestraint.cpp
- *  \brief Finely refine the angles and translations of a set of subjet images
+ *  \brief Finely refine the angles and translations of a set of subject images
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
@@ -49,7 +49,6 @@ void Fine2DRegistrationRestraint::setup(
   // Create a particle for the projection parameters to be optimized
   subj_params_particle_ = new kernel::Particle(scoring_model);
   PP_ = ProjectionParameters::setup_particle(subj_params_particle_);
-  PP_.decorate_particle(subj_params_particle_);
   PP_.set_parameters_optimized(true);
   // add the restraint to the model
   scoring_model->add_restraint(this);
@@ -92,6 +91,7 @@ void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
 
 double Fine2DRegistrationRestraint::unprotected_evaluate(
     DerivativeAccumulator *accum) const {
+  IMP_UNUSED(accum);
   calls_++;
   IMP_USAGE_CHECK(accum == nullptr,
                   "Fine2DRegistrationRestraint: This restraint does not "
@@ -125,7 +125,7 @@ ModelObjectsTemp Fine2DRegistrationRestraint::do_get_inputs() const {
 }
 
 RegistrationResult Fine2DRegistrationRestraint::get_final_registration() const {
-  IMP_LOG_VERBOSE("Retuning the final values for Fine2DRegistrationRestraint "
+  IMP_LOG_VERBOSE("Returning the final values for Fine2DRegistrationRestraint "
                   << std::endl);
   algebra::Vector3D translation = PP_.get_translation();
   double s = params_.pixel_size;

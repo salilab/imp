@@ -68,7 +68,6 @@ class Tests(IMP.test.TestCase):
                 IMP.algebra.get_identity_rotation_3d(),
                 rand_translation)
             IMP.core.transform(rb, rt)
-        IMP.atom.write_pdb(self.mhs, "aa0.pdb")
         # see that the derivatives pull it back in place
         opt = IMP.core.ConjugateGradients(self.imp_model)
         # opt.add_optimizer_state(self.pdb_opt_state)

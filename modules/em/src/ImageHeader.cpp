@@ -148,7 +148,7 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
     }
   }
 
-  // Extra checkings
+  // Extra checking
   if (!skip_extra_checkings) {
     switch ((int)spider_header_.fIform) {
       case IMG_BYTE:
@@ -230,7 +230,7 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
   spider_header_.fLabrec = (float)ceil((float)256 / spider_header_.fNcol);
   // Size of whole header
   tmpSize = (int)(spider_header_.fNcol * spider_header_.fLabrec * 4);
-  // Subtrat the real header
+  // Subtract the real header
   tmpSize -= sizeof(SpiderHeader);
   // read empty filling space
   for (unsigned i = 0; i < tmpSize / 4; i++) {
@@ -273,7 +273,7 @@ void ImageHeader::write(std::ofstream& f, bool force_reversed) {
     IMP::algebra::reversed_write(&spider_header_, sizeof(float), 36, f, true);
     IMP::algebra::reversed_write(&spider_header_.fGeo_matrix, sizeof(double), 9,
                                  f, true);
-    // 14 is the number of float fields after fGeo_matrix in the eader_ struct
+    // 14 is the number of float fields after fGeo_matrix in the header__ struct
     IMP::algebra::reversed_write(&spider_header_.fAngle1, sizeof(float), 14, f,
                                  true);
     // 752 is the number of chars to the end of the file

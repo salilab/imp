@@ -68,6 +68,9 @@ void HierarchyLoadRigidBodies::setup_particle(
       core::RigidBody::setup_particle(m, pi, algebra::ReferenceFrame3D());
     }
     core::RigidBody arb(m, rigid_body_compositions_.find(rb)->second.rb);
+    // set dummy coordinates (add_member() will try to use them)
+    if (!core::XYZ::get_is_setup(m, p)) core::XYZ::setup_particle(m, p);
+    core::XYZ(m, p).set_coordinates(algebra::Vector3D(0., 0., 0.));
     if (!ip_factory_.get_is_static(n)) {
       arb.add_non_rigid_member(p);
     } else {
@@ -136,7 +139,7 @@ void HierarchyLoadRigidBodies::fix_internal_coordinates(
     core::RigidBody, algebra::ReferenceFrame3D rf,
     core::RigidBodyMember rm) const {
   // Make sure the internal coordinates of the particles match
-  // This is needed to handle scripts that change them during optimation
+  // This is needed to handle scripts that change them during optimization
   // and save the result out to RMF.
   if (core::RigidBody::get_is_setup(rm)) {
     core::RigidBody crb(rm);
@@ -161,8 +164,11 @@ void HierarchyLoadRigidBodies::fix_rigid_body(Model *m, const RB &in) const {
       rigid_bits.push_back(pi);
     }
   }
-  IMP_USAGE_CHECK(!rigid_bits.empty(), "No rigid particles to align rigid"
-                                           << " body with");
+  if (rigid_bits.empty()) {
+    // all members are non-rigid, so nothing to do
+    return;
+  }
+
   rb.set_reference_frame_from_members(rigid_bits);
   algebra::ReferenceFrame3D rf = rb.get_reference_frame();
   // fix rigid bodies that aren't rigid
@@ -210,7 +216,7 @@ void HierarchyLoadRigidBodies::load(RMF::FileConstHandle fh, Model *m) {
                     << m->get_particle_name(pp.second) << std::endl);
     algebra::ReferenceFrame3D rf(
         get_transformation(fh.get_node(pp.first), reference_frame_factory_));
-    core::RigidBody(m, pp.second).set_reference_frame(rf);
+    core::RigidBody(m, pp.second).set_reference_frame_lazy(rf);
   }
   IMP_FOREACH(Pair pp, local_) {
     IMP_LOG_VERBOSE("Loading local rigid body "
@@ -219,6 +225,11 @@ void HierarchyLoadRigidBodies::load(RMF::FileConstHandle fh, Model *m) {
         get_transformation(fh.get_node(pp.first), reference_frame_factory_));
     core::RigidBodyMember(m, pp.second)
         .set_internal_transformation(rf.get_transformation_to());
+  }
+  /* Make sure that the global coordinates of any nested rigid bodies are
+     set from their parents */
+  IMP_FOREACH(Pair pp, global_) {
+    core::RigidBody(m, pp.second).update_members();
   }
 }
 
@@ -321,7 +332,7 @@ void HierarchySaveRigidBodies::save(kernel::Model *m, RMF::FileHandle fh) {
   }
   IMP_FOREACH(Pair pp, local_) {
     copy_to_frame_reference_frame(
-        core::RigidMember(m, pp.second).get_internal_transformation(),
+        core::RigidBodyMember(m, pp.second).get_internal_transformation(),
         fh.get_node(pp.first), reference_frame_factory_);
   }
 }

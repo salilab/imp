@@ -1,6 +1,6 @@
 /**
  *  \file Colored.cpp
- *  \brief XXXX.
+ *  \brief A decorator for a particle with a color.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

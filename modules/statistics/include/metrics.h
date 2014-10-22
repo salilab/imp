@@ -42,7 +42,7 @@ class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric : public Metric {
   /**
      Constructor for creating a metric that computes RMSD between
      pairs of configurations in a configuration set, using joint particles
-     specified in a singleton continer
+     specified in a singleton container
 
      @param cs the set of configurations
      @param sc the particles used for RMSD calculation between each pair of

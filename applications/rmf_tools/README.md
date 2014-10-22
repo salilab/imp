@@ -1,14 +1,18 @@
 # RMF Tools
 
-# RMF Tools
-
 Several helper programs are provided.
 
-- `rmf_display` outputs an arbitrary
-   hdf5 file to pymol or chimera as appropriate (based on the file name of the
-   second argument). It supports hierarchies, restraints and geometry.
+# rmf_display {#rmf_display_bin}
+Export an RMF file to a viewer.
+`rmf_display` outputs an arbitrary
+RMF file to pymol or chimera as appropriate (based on the file name of the
+second argument). It supports hierarchies, restraints and geometry.
 
-- `pdb_rmf` makes an RMF file from a PDB.
+# pdb_rmf {#pdb_rmf_bin}
+Make an RMF file from a PDB.
+
+# rmf_simplify {#rmf_simplify_bin}
+Create a simplified representation of a PDB.
 
 # Info
 

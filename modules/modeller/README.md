@@ -1,6 +1,4 @@
-This module supports integration of Modeller with IMP. See
-[the Modeller website](http://www.salilab.org/modeller/) for more
-information about Modeller.
+\brief Interface to the [Modeller](http://salilab.org/modeller/) comparative modeling package.
 
 Functionality includes:
 
@@ -28,4 +26,4 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - See main IMP papers list.
+ - See [main IMP papers list](@ref publications).

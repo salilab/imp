@@ -1,9 +1,11 @@
-# CNMultifit Tools
+cnmultifit {#cnmultifit_bin}
+==========
 
-A protocol for generating atomic structures of complexes with cyclic symmetry
-(such as rings), using only the atomic structure of a single subunit and
-a cryo-electron microscopy density map of the complex. This employs the
-IMP::cnmultifit module.
+Fit atomic structures into cyclic symmetric EM density maps.
+This follows a protocol for generating atomic structures of complexes with
+cyclic symmetry (such as rings), using only the atomic structure of a single
+subunit and a cryo-electron microscopy density map of the complex.
+This employs the IMP::cnmultifit module.
 
 See also [multifit](@ref impmultifit_tools) for a similar protocol
 operating on non-symmetric complexes.

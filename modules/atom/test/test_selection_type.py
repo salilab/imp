@@ -6,6 +6,32 @@ import IMP.atom
 
 class Tests(IMP.test.TestCase):
 
+    def test_residues_in_domains(self):
+        """Test selection of residue indices in Domain particles"""
+        def assert_no_match(rh, index):
+            s = IMP.atom.Selection(rh, residue_indexes=[index])
+            self.assertEqual(len(s.get_selected_particle_indexes()), 0)
+        def assert_match(rh, index, ai):
+            s = IMP.atom.Selection(rh, residue_indexes=[index])
+            i = s.get_selected_particle_indexes()
+            self.assertEqual(len(i), 1)
+            self.assertEqual(i[0], ai) # should match the atom particle
+        m = IMP.kernel.Model()
+        ri = m.add_particle("domain")
+        rh = IMP.atom.Hierarchy.setup_particle(m, ri)
+        d = IMP.atom.Domain.setup_particle(m, ri, [100, 200])
+        ai = m.add_particle("atom")
+        ah = IMP.atom.Hierarchy.setup_particle(m, ai)
+        rh.add_child(ah)
+        a = IMP.core.XYZR.setup_particle(m, ai,
+                     IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1,2,3), 4))
+        IMP.atom.Mass.setup_particle(m, ai, 1.0)
+        assert_no_match(rh, 99)
+        assert_no_match(rh, 200) # Last residue in range should *not* match
+        assert_no_match(rh, 201)
+        assert_match(rh, 100, ai)
+        assert_match(rh, 199, ai)
+
     def _get_index(self, l):
         h = IMP.atom.Hierarchy(l[0])
         p = IMP.atom.Residue(h.get_parent())
@@ -61,6 +87,19 @@ class Tests(IMP.test.TestCase):
             r = IMP.atom.Residue(IMP.atom.Atom(m, c).get_parent())
             rind = r.get_index()
             self.assert_(rind in [436, 437])
+
+    def test_residue_type(self):
+        """Test selection of residue type"""
+        IMP.base.set_log_level(IMP.base.SILENT)
+        m = IMP.kernel.Model()
+        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        v = IMP.atom.Selection(h, residue_type=IMP.atom.VAL)
+        ps = v.get_selected_particle_indexes()
+        self.assertEqual(len(ps), 7)
+        for p in ps:
+            r = IMP.atom.Residue(IMP.atom.Atom(m, p).get_parent())
+            rind = r.get_index()
+            self.assertEqual(rind, 434)
 
     def test_two(self):
         """Test simple selection of N and C termini"""
@@ -131,8 +170,9 @@ class Tests(IMP.test.TestCase):
         s1 = IMP.atom.Selection(r, molecule="mini1")
         self.assertEqual(len(s0.get_selected_particle_indexes()), 68)
         self.assertEqual(len(s1.get_selected_particle_indexes()), 68)
-        self.assert_(
-            len(set(s0.get_selected_particle_indexes() + s1.get_selected_particle_indexes())),
+        self.assertEqual(
+            len(set(s0.get_selected_particle_indexes()
+                + s1.get_selected_particle_indexes())),
             2 * 68)
 
     def test_residues_rb(self):

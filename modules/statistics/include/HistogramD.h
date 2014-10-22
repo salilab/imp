@@ -17,8 +17,10 @@
 #include <IMP/base_types.h>
 #include <limits>
 #include <vector>
+
 IMPSTATISTICS_BEGIN_NAMESPACE
-/** Dynamically build a histogram embedded in D-dimensional space. */
+
+//! Dynamically build a histogram embedded in D-dimensional space.
 template <int D, class Grid = algebra::GridD<
                      D, typename algebra::DenseGridStorageD<D, double>, double,
                      typename algebra::DefaultEmbeddingD<D> > >
@@ -59,14 +61,14 @@ class HistogramD : public algebra::GeometricPrimitiveD<D> {
   const CountGrid &get_counts() const { return grid_; }
   algebra::VectorD<D> get_mean() const {
     algebra::VectorD<D> zeros(grid_.get_bounding_box().get_corner(0));
-    std::fill(zeros.coordinates_begin(), zeros.coordinates_end(), 0.0);
+    std::fill(zeros.begin(), zeros.end(), 0.0);
     return grid_.apply(internal::Mean<D>(zeros)).mn / count_;
   }
   unsigned int get_dimension() const { return grid_.get_dimension(); }
   algebra::VectorD<D> get_standard_deviation(
       const algebra::VectorD<D> &mean) const {
     algebra::VectorD<D> zeros(grid_.get_bounding_box().get_corner(0));
-    std::fill(zeros.coordinates_begin(), zeros.coordinates_end(), 0.0);
+    std::fill(zeros.begin(), zeros.end(), 0.0);
     algebra::VectorD<D> s2 =
         grid_.apply(internal::Sigma2<D>(mean, zeros)).sigma2;
     s2 /= count_;

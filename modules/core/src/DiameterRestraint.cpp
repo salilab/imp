@@ -1,6 +1,6 @@
 /**
  *  \file DiameterRestraint.cpp
- *  \brief XXXX.
+ *  \brief A restraint to maintain the diameter of a set of points.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

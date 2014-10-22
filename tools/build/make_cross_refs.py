@@ -180,7 +180,6 @@ def get_namespace_name(et):
 
 
 def traverse_namespace(name, et, module):
-    print module
     if et.tag == 'memberdef' and et.attrib["kind"] == "function":
         membername = get_function_link(name, et, module)
         if membername:
@@ -202,8 +201,8 @@ def create_index(
     key_name,
         target_name):
     out = open(target, "w")
-    out.write("# %s\n" % title)
-    out.write("# Overview # {#%s}\n" % ref)
+    out.write("%s {#%s}\n%s\n\n" % (title, ref, "=" * len(title)))
+    out.write("# Overview #\n")
     out.write("[TOC]\n")
     out.write(description + "\n\n")
     out.write(

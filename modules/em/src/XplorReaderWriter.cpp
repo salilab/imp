@@ -125,7 +125,7 @@ int XplorReaderWriter::read_map(std::ifstream &XPLORstream, float *data,
       status = true;
     } else {
       // each line have strlen/12 density values.
-      // We iterater through the line
+      // We iterate through the line
 
       counter = 0;
       keep = true;

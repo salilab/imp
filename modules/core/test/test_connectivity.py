@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model()
 
         ps = self.create_particles_in_box(m, 4)
-        ds = map(lambda p: IMP.core.XYZ.decorate_particle(p), ps)
+        ds = [IMP.core.XYZ(p) for p in ps]
         o = IMP.core.ConjugateGradients(m)
         o.set_threshold(1e-4)
         self.randomize_particles(m.get_particles(), 50.0)

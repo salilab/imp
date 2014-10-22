@@ -1,6 +1,6 @@
 /**
  *  \file density_analysis.cpp
- *  \brief tools for analysing density maps
+ *  \brief tools for analyzing density maps
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -138,7 +138,7 @@ void DensitySegmentationByCommunities::build_density_graph(
     }
   }
 
-  // add edges(nodes corresponding to nieghboring voxels)
+  // add edges(nodes corresponding to neighboring voxels)
   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
   int v_index;
   //  node_index_ = boost::get(boost::vertex_index, g_);

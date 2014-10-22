@@ -27,7 +27,7 @@ def filter(xxx_todo_changeme,
     return infile\
         .replace("BLURB", """WARNING This file was generated from %s
  *  in %s
- *  by tools/maintenance/setup_containers.py.""" % (os.path.split(file_name)[1], os.path.split(file_name)[0]))\
+ *  by tools/build/make_containers.py.""" % (os.path.split(file_name)[1], os.path.split(file_name)[0]))\
         .replace("HELPERNAME", helpername)\
         .replace("CLASSFUNCTIONNAME", helpername)\
         .replace("FUNCTIONNAME", function_name)\

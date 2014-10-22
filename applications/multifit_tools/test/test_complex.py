@@ -7,7 +7,7 @@ class ComplexApplicationTest(IMP.test.ApplicationTestCase):
 
     def test_simple(self):
         """Simple test of complex_to_anchor_graph application"""
-        p = self.run_python_application('complex_to_anchor_graph.py',
+        p = self.run_python_application('complex_to_anchor_graph',
                                         [self.get_input_file_name('mini.pdb'), 'mini.cmm'])
         out, err = p.communicate()
         sys.stderr.write(err)

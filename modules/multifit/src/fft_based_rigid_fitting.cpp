@@ -258,7 +258,7 @@ FFTFittingOutput *FFTFitting::do_local_fitting(
         internal::get_uniformly_sampled_rotations(angle_sampling_interval_rad);
   }
   std::cout << "all rots size:" << rots_all.size() << std::endl;
-  // now remove rotations if reqruied
+  // now remove rotations if required
   multifit::internal::EulerAnglesList rots;
   for (unsigned int i = 0; i < rots_all.size(); i++) {
     if (((rots_all[i].psi <= max_angle_sampling_rad) ||
@@ -421,8 +421,8 @@ FFTFittingOutput *FFTFitting::do_local_fitting(
       temp_ps[i].set_coordinates(origs[i]);
     }
   }
-  // move back protein to originl position
-  //(with repsect to prepare_probe function)
+  // move back protein to original position
+  //(with respect to prepare_probe function)
   core::transform(orig_rb_, cen_trans_.get_inverse());
 
   IMP_NEW(FFTFittingOutput, ret, ());
@@ -759,7 +759,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
     double filter_sig = sqrt(curr_msd / ((float)inside_num_flipped_));
     //  std::cout<<" Peak filter contrast: maximum "
     //           <<filter_max<<" sigma "<<filter_sig<<std::endl;
-    // Elimenate redundent based on filter contrast distribution.
+    // Eliminate redundant based on filter contrast distribution.
     // Limit the search to above the noise level
     //(2*filter_sig capped at 0.25 max)
     double search_cut = 2.0f * filter_sig;

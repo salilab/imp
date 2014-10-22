@@ -56,7 +56,9 @@ exceptions.extend([
    'set.symmetric_difference',
    'set.symmetric_difference_update',
    'set.union',
-   'set.union_update'])
+   'set.union_update',
+   'expectedFailure', 'main', 'numerical_derivative', 'skip', 'skipIf',
+   'skipUnless', 'xyz_numerical_derivatives'])
 
 
 value_object_exceptions=[]

@@ -1,0 +1,46 @@
+Source: imp
+Priority: optional
+Maintainer: Ben Webb <ben@salilab.org>
+Build-Depends: debhelper (>= 8.0.0), cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python-dev, coreutils, unzip, wget
+Standards-Version: 3.9.4
+Section: libs
+Homepage: http://integrativemodeling.org/
+#Vcs-Git: git://git.debian.org/collab-maint/imp.git
+Vcs-Browser: https://github.com/salilab/imp/
+
+Package: imp-dev
+Section: libdevel
+Architecture: any
+Depends: imp (= ${binary:Version}), ${misc:Depends}, cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python-dev
+Description: The Integrative Modeling Platform
+ Headers to compile against IMP.
+
+Package: imp
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-numpy
+Description: The Integrative Modeling Platform
+  IMP's broad goal is to contribute to a comprehensive structural
+  characterization of biomolecules ranging in size and complexity from small
+  peptides to large macromolecular assemblies. Detailed structural
+  characterization of assemblies is generally impossible by any single existing
+  experimental or computational method. This barrier can be overcome by hybrid
+  approaches that integrate data from diverse biochemical and biophysical
+  experiments (eg, x-ray crystallography, NMR spectroscopy, electron microscopy,
+  immuno-electron microscopy, footprinting, chemical cross-linking, FRET
+  spectroscopy, small angle X-ray scattering, immunoprecipitation, genetic
+  interactions, etc...).
+  .
+  We formulate the hybrid approach to structure determination as an optimization
+  problem, the solution of which requires three main components:
+    * the representation of the assembly,
+    * the scoring function and
+    * the optimization method.
+  .
+  The ensemble of solutions to the optimization problem embodies the most
+  accurate structural characterization given the available information.
+  .
+  We created IMP, the Integrative Modeling Platform, to make it easier to
+  implement such an integrative approach to structural and dynamics problems.
+  IMP is designed to allow mixing and matching of existing modeling components
+  as well as easy addition of new functionality.

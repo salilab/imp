@@ -85,8 +85,7 @@ class IMPSTATISTICSEXPORT VectorDEmbedding : public Embedding {
       : Embedding("VectorDs") {
     vectors_.resize(vs.size());
     for (unsigned int i = 0; i < vs.size(); ++i) {
-      vectors_[i] =
-          algebra::VectorKD(vs[i].coordinates_begin(), vs[i].coordinates_end());
+      vectors_[i] = algebra::VectorKD(vs[i].begin(), vs[i].end());
     }
   }
 #ifdef SWIG

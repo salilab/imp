@@ -211,7 +211,7 @@
 
 #endif
 
-/** Compare one value and return -1 or 1 as appriate. If they are
+/** Compare one value and return -1 or 1 as appropriate. If they are
     equal, control returns to the current scope.
 */
 #define IMP_COMPARE_ONE(vara, varb) \

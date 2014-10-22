@@ -21,17 +21,17 @@ IMPKERNEL_BEGIN_NAMESPACE
     If you don't want recursive, use the non input/output variants.
     @{
 */
-/** Return all the input particles for a given ModelObject.*/
+//! Return all the input particles for a given ModelObject.
 IMPKERNELEXPORT ParticlesTemp get_input_particles(const ModelObjectsTemp &mos);
 
-/** Return all the input particles for a given ModelObject.*/
+//! Return all the input particles for a given ModelObject.
 IMPKERNELEXPORT ContainersTemp
     get_input_containers(const ModelObjectsTemp &mos);
 
-/** Return all the output particles for a given ModelObject.*/
+//! Return all the output particles for a given ModelObject.
 IMPKERNELEXPORT ParticlesTemp get_output_particles(const ModelObjectsTemp &mos);
 
-/** Return all the output particles for a given ModelObject.*/
+//! Return all the output particles for a given ModelObject.
 IMPKERNELEXPORT ContainersTemp
     get_output_containers(const ModelObjectsTemp &mos);
 /** @} */

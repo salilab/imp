@@ -1,4 +1,6 @@
-The benchmarks modules provides support for developing and analyzing benchmarks of IMP code. All benchmarks are automatically linked against it.
+\brief Support for developing and analyzing benchmarks of IMP code.
+
+All benchmarks are automatically linked against this module.
 
 # Info
 
@@ -13,4 +15,4 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - See main IMP papers list.
+ - See [main IMP papers list](@ref publications).

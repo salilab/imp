@@ -27,7 +27,7 @@ class IMPEMEXPORT PCAAligner : public IMP::base::Object {
  public:
   /** init the distance transform
       \param map input density map
-      \param density_threshold a threshold that detemines
+      \param density_threshold a threshold that determines
                               which voxels belong to the object
   */
   PCAAligner(IMP::em::DensityMap* map, float density_threshold)

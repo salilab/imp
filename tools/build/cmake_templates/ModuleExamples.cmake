@@ -10,4 +10,4 @@ set(IMP_LINK_LIBRARIES IMP.%(name)s-lib
     %(modules)s
     %(dependencies)s)
 
-imp_add_tests("IMP.%(name)s" ${PROJECT_BINARY_DIR}/doc/examples/%(name)s IMP_%(name)s_EXAMPLES examples ${pyfiles} ${cppfiles})
+imp_add_tests("IMP.%(name)s" ${PROJECT_BINARY_DIR}/doc/examples/%(name)s IMP_%(name)s_EXAMPLES example ${pyfiles} ${cppfiles})

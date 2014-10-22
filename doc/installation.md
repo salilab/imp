@@ -1,6 +1,7 @@
-# Installation #
+Installation {#installation}
+============
 
-# Building and installing basics # {#installation}
+# Building and installing basics #
 
 [TOC]
 
@@ -31,15 +32,13 @@ for more information.
 # Prerequisites # {#installation_prereqs}
 In order to obtain and compile IMP, you will need:
 
-- cmake (2.8 or later)
-- Boost (1.40 or later)
-- HDF5 (1.8 or later)
-- Developers will also need a git client to access the repository
-
-If you wish to build the Python interfaces, you will also need:
-
-- Python (2.4 or later)
-- SWIG (1.3.40 or later)
+- [cmake](http://www.cmake.org) (2.8 or later)
+- [Boost](http://www.boost.org) (1.40 or later)
+- [HDF5](http://www.hdfgroup.org/HDF5/) (1.8 or later)
+- [Python](http://www.python.org) (2.6 or later)
+- [SWIG](http://www.swig.org) (1.3.40 or later)
+- Developers will also need a [git](http://git-scm.com/) client
+  to access the repository
 
 ## Getting prerequisites on a Mac ## {#installation_prereqs_mac}
 
@@ -54,11 +53,11 @@ either
 - [Homebrew](https://github.com/mxcl/homebrew) (_recommended_) Once you installed `homebrew`
   do
 
-    `brew tap homebrew/science`
+    brew tap homebrew/science
+    brew tap salilab/salilab
+    brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr libtau
 
-    `brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig eigen fftw mpfr`
-
-  to install everything IMP finds useful (or that you will want for installing various useful python libs that IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
+  to install everything IMP finds useful (or that you will want for installing various useful Python libs that IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
 - [Macports](http://www.macports.org/) If you use MacPorts, you must add `/opt/local/bin` to your path (either by modifying your shell's
   config file or by making an `environment.plist` file) and then do
 
@@ -69,7 +68,7 @@ either
 - or [Fink](http://www.finkproject.org/)
 
 ### Mac OS X 10.5 and 10.6
-These versions of mac os include a 'swig' binary, but it is too old to use
+These versions of Mac OS X include a 'swig' binary, but it is too old to use
 with IMP. You need to make sure that the newer version of `swig` is found first
 in your `PATH`.
 
@@ -79,7 +78,8 @@ in your `PATH`.
 We recommend Linux or Mac for developing with IMP, as obtaining the
 prerequisites on Windows is much more involved. However, we do test IMP on
 Windows, built with the Microsoft Visual Studio compilers (we use Visual Studio
-Express 2010 SP1). One complication is that different packages are compiled
+Express 2010 SP1 for 32-bit Windows, and VS Express 2012 for 64-bit).
+One complication is that different packages are compiled
 with different versions of Visual Studio, and mixing the different runtimes
 (msvc*.dll) can cause odd behavior; therefore, we recommend building most
 of the dependencies from source code using the same version of Visual Studio
@@ -111,27 +111,12 @@ that you're going to use to build IMP. The basic procedure is as follows:
      - Run `bjam link=shared runtime-link=shared -sNO_ZLIB=0 -sZLIB_SOURCE=C:\zlib\1.2.3\zlib-1.2.3`
   - Get and install [SWIG for Windows](http://www.swig.org)
   - Get the [HDF5 source code](http://www.hdfgroup.org)
-     - Edit the H5pubconf.h file in the `windows\src` subdirectory to
-       disable szip (or first install szip if you want to include szip support).
-       Copy this file into the top-level src directory.
-     - Open the h5libsettings project (in `windows\misc\typegen\h5libsettings`)
-       in Visual Studio, and build it in Release configuration. (Note that if
-       you don't have the x64 SDK installed, you'll first need to edit the
-       project file in a text editor and remove any mention of the x64 platform,
-       since otherwise the upgrade of this solution to 2010 format will fail.)
-     - Build the 'h5tinit' project (in `windows\misc\typegen\h5tinit`) in
-       Release configuration.
-     - Build the 'hdf5dll' project (in `windows\proj\hdf5dll`) in
-       Release configuration.
-        - In order for Visual Studio to find zlib, we first opened the project
-          settings, and under C/C++, Additional Include Directories, added
-          `C:\Program Files\GnuWin32\include`, and under Linker, Input,
-          Additional Dependencies, added
-          `C:\Program Files\GnuWin32\lib\zlib.lib`.
-     - Copy proj\hdf5dll\Release\hdf5dll.lib to hdf5.lib to help cmake
-       find it.
+     - Make a 'build' subdirectory, then run from a command prompt in
+       that subdirectory something similar to
+       `cmake.exe -G "Visual Studio 10" -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=OFF -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DHDF5_BUILD_HL_LIB:BOOL=ON -DZLIB_INCLUDE_DIR="C:\Program Files\GnuWin32\include" -DZLIB_LIBRARY="C:\Program Files\GnuWin32\lib\zlib.lib" -DBUILD_SHARED_LIBS:BOOL=ON ..`
+     - Open the resulting HDF5 solution file in Visual Studio, change to
+       Release configuration, then build the hdf5 project.
   - (Optional) [Build CGAL from source code](http://www.cgal.org/windows_installation.html).
-  - (Optional) [Get and install Eigen](http://eigen.tuxfamily.org).
   - (Optional) Download the
     [FFTW DLLs](http://www.fftw.org/install/windows.html) and follow the
     instructions at that website to make .lib import libraries needed for
@@ -154,8 +139,8 @@ that you're going to use to build IMP. The basic procedure is as follows:
   - (Optional) Get and install
     [libTAU](http://integrativemodeling.org/libTAU.html)
      - Copy `libTAU.lib` to `TAU.lib` to help cmake find it.
-  - (Optional) Get the [OpenCV source code](http://opencv.willowgarage.com/wiki/InstallGuide)
-    and build it by following the instructions at that website.
+  - (Optional) Get the [OpenCV source code](http://opencv.org/)
+    and build it by [following these instructions](http://docs.opencv.org/doc/tutorials/introduction/windows_install/windows_install.html)
      - Copy each `opencv_*.lib` to a similar file without the version extension
        (e.g. copy `opencv_ml244.lib` to `opencv_ml.lib`) to help cmake find it
   - Set PATH, INCLUDE, and/or LIB environment variables so that the compiler
@@ -164,6 +149,7 @@ that you're going to use to build IMP. The basic procedure is as follows:
 
      `cmake <imp_source_directory> -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DWIN32 /DGSL_DLL" -G "NMake Makefiles"`
 
+  - Note: if building for 64-bit Windows, you may need to add `/bigobj` to `CMAKE_CXX_CFLAGS`.
   - Then use simply 'nmake' (instead of 'make', as on Linux or Mac) to
     build IMP. (cmake can also generate Visual Studio project files, but
     we recommend nmake.)
@@ -187,7 +173,8 @@ part of most Unix tool sets (HomeBrew, all Linux distributions etc.).
 - [Google perf tools](\ref perf)
 - [ANN](\ref ANN)
 - [GSL](\ref GSL)
-- [OpenCV](\ref OpenCV)
+- [OpenCV](\ref OpenCV) is needed for IMP.em2d
+- [libTAU](http://integrativemodeling.org/libTAU.html) is needed for IMP.cnmultifit
 - [MPI](\ref impmpi)
 
 # Where to go next # {#installation_next}

@@ -21,10 +21,6 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-const RigidBodyData &rigid_body_data() {
-  static const RigidBodyData rbd;
-  return rbd;
-}
 IMPCORE_END_INTERNAL_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
 void RigidBody::normalize_rotation() {
@@ -415,7 +411,7 @@ bool is_rotation_valid(IMP_Eigen::Matrix3d rm) {
 }
 
 void RigidBody::on_change() {
-  // Compeute maximal $l_inf$ sphere distance from reference frame
+  // Compute maximal $l_inf$ sphere distance from reference frame
   double md = 0;
   {
     // point members
@@ -430,7 +426,7 @@ void RigidBody::on_change() {
     }
   }
   {
-    // rigid body memebers
+    // rigid body members
     const kernel::ParticleIndexes &members = get_body_member_particle_indexes();
     for (unsigned int i = 0; i < members.size(); ++i) {
       double cd = (get_coordinates() - XYZ(get_model(), members[i])
@@ -504,7 +500,7 @@ void RigidBody::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
   RigidBody d(p);
   d.set_reference_frame(rf);
   // Include particle in model list of rigid bodies, over which
-  // a container optimizer state normalizez the rotation before score calc.
+  // a container optimizer state normalizes the rotation before score calc.
   kernel::ModelKey mk = get_rb_list_key();
   if (d.get_model()->get_has_data(mk)) {
     // IMP_LOG_TERSE( "Adding particle to list of rigid bodies" << std::endl);
@@ -573,7 +569,8 @@ void RigidBody::set_reference_frame_from_members(
       IMP_INTERNAL_CHECK(get_distance(back, global) < 1,
                          "Coordinates don't match: read "
                              << global << " had local " << local << " but got "
-                             << back << " with transform " << t3);
+                             << back << " with transform " << t3 << " for "
+                             << m->get_particle_name(pi));
     }
   }
   // later patch members to make coordinates exact.
@@ -596,7 +593,8 @@ void RigidBody::update_members() {
     for (unsigned int i = 0; i < members.size(); ++i) {
       RigidBody rb(get_model(), members[i]);
       algebra::Transformation3D itr =
-          RigidMember(get_model(), members[i]).get_internal_transformation();
+          RigidBodyMember(get_model(),
+                          members[i]).get_internal_transformation();
       rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(tr * itr));
     }
   }
@@ -650,7 +648,7 @@ void RigidBody::add_rigid_body_member(kernel::ParticleIndex pi) {
   internal::add_required_attributes_for_body_member(get_model(), d,
                                                     get_particle_index());
   RigidMember rm(d);
-  // add / set in list of rigid body memebers
+  // add / set in list of rigid body members
   if (get_model()->get_has_attribute(internal::rigid_body_data().body_members_,
                                      get_particle_index())) {
     kernel::ParticleIndexes members = get_model()->get_attribute(
@@ -778,51 +776,26 @@ void RigidBody::set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr) {
   update_members();
 }
 
-void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
-                                   const algebra::Vector3D &deriv_global,
-                                   const algebra::Vector3D &local,
-                                   const algebra::Rotation3D &rot,
-                                   DerivativeAccumulator &da) {
-  // const algebra::Vector3D deriv_global= rot*deriv_local;
-  // IMP_LOG_TERSE( "Accumulating rigid body derivatives" << std::endl);
-  algebra::VectorD<4> q(0, 0, 0, 0);
-  for (unsigned int j = 0; j < 4; ++j) {
-    algebra::Vector3D v = rot.get_derivative(local, j);
-    q[j] = deriv_global * v;
-  }
-  XYZ::add_to_derivatives(deriv_global, da);
-  for (unsigned int j = 0; j < 4; ++j) {
-    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[j],
-                                   get_particle_index(), q[j], da);
-  }
-  algebra::Vector3D torque = algebra::get_vector_product(local, deriv_local);
-  for (unsigned int i = 0; i < 3; ++i) {
-    get_model()->add_to_derivative(internal::rigid_body_data().torque_[i],
-                                   get_particle_index(), torque[i], da);
-  }
-}
-
-void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
-                                   const algebra::Vector3D &local,
-                                   DerivativeAccumulator &da) {
-  algebra::Rotation3D rot =
-      get_reference_frame().get_transformation_to().get_rotation();
-  const algebra::Vector3D deriv_global = rot * deriv_local;
-  add_to_derivatives(deriv_local, deriv_global, local, rot, da);
-}
-
 RigidBody::~RigidBody() {}
 RigidBodyMember::~RigidBodyMember() {}
 RigidMember::~RigidMember() {}
 NonRigidMember::~NonRigidMember() {}
 
 void RigidBody::show(std::ostream &out) const {
-  out << "Rigid body " << get_reference_frame();
+  if(Decorator::get_is_valid()){
+    out << "Rigid body " << get_reference_frame();
+  } else {
+    out << "Invalid rigid body" ;
+  }
 }
 
 void RigidBodyMember::show(std::ostream &out) const {
-  out << "Member of " << get_rigid_body()->get_name() << " at "
-      << get_internal_coordinates();
+  if(Decorator::get_is_valid()){
+    out << "Member of " << get_rigid_body()->get_name() << " at "
+        << get_internal_coordinates();
+  } else {
+    out << "Invalid rigid body member";
+  }
 }
 
 void RigidMember::show(std::ostream &out) const {
@@ -878,7 +851,7 @@ bool check_rigid_body(kernel::Model *m, kernel::ParticleIndex pi) {
 IMP_CHECK_DECORATOR(RigidBody, check_rigid_body);
 
 // returns reference frame with center of mass of ps and the
-// diagonalized intertia tensor of ps
+// diagonalized inertia tensor of ps
 algebra::ReferenceFrame3D get_initial_reference_frame(
     kernel::Model *m, const kernel::ParticleIndexes &ps) {
   if (ps.size() == 1) {
@@ -907,7 +880,7 @@ algebra::ReferenceFrame3D get_initial_reference_frame(
   IMP_USAGE_CHECK(mass > 0, "Zero mass when computing axis.");
   v /= mass;
   // IMP_LOG_VERBOSE( "Center of mass is " << v << std::endl);
-  // for a sphere 2/5 m r^2 (diagopnal)
+  // for a sphere 2/5 m r^2 (diagonal)
   // parallel axis theorem
   // I'ij= Iij+M(v^2delta_ij-vi*vj)
   // compute I

@@ -21,7 +21,7 @@ IMPMISC_BEGIN_NAMESPACE
 
 /** A close pairs finder that only depends on metrics on the underlying
     particles. As a result, it should be usable with weird metrics (eg ones
-    that incude symmetry).
+    that include symmetry).
 
     The LowerBound template should be a functors that bounds the
     distance between two particles. For example the LowerBound

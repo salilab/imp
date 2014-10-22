@@ -30,17 +30,17 @@ class Index : public Value {
   explicit Index(int i) : i_(i) {}
   Index() : i_(-2) {}
   int get_index() const {
-    IMP_USAGE_CHECK(i_ != -2, "Uninitialized index");
-    IMP_USAGE_CHECK(i_ >= 0, "Invalid index");
+    IMP_INTERNAL_CHECK(i_ != -2, "Uninitialized index");
+    IMP_INTERNAL_CHECK(i_ >= 0, "Invalid index");
     return i_;
   }
   IMP_COMPARISONS_1(Index, i_);
   IMP_SHOWABLE_INLINE(Index, {
-    IMP_USAGE_CHECK(i_ != -2, "Uninitialized index");
+    IMP_INTERNAL_CHECK(i_ != -2, "Uninitialized index");
     out << i_;
   });
   IMP_HASHABLE_INLINE(Index, {
-    IMP_USAGE_CHECK(i_ != -2, "Uninitialized index");
+    IMP_INTERNAL_CHECK(i_ != -2, "Uninitialized index");
     return i_;
   });
 };

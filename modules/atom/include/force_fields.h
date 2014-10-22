@@ -23,8 +23,8 @@ IMPATOM_BEGIN_NAMESPACE
    that, at the moment, all added bonds are reported as
    IMP::Bond::SINGLE, whether or not they actually are.
 
-   See Hierarchy
-   See ForceFieldParameters
+   \see Hierarchy
+   \see ForceFieldParameters
 */
 IMPATOMEXPORT void add_bonds(Hierarchy d, const ForceFieldParameters* ffp =
                                               get_all_atom_CHARMM_parameters());
@@ -32,8 +32,8 @@ IMPATOMEXPORT void add_bonds(Hierarchy d, const ForceFieldParameters* ffp =
 /**
    Add vdW radius from given force field.
 
-   See Hierarchy
-   See ForceFieldParameters
+   \see Hierarchy
+   \see ForceFieldParameters
 */
 IMPATOMEXPORT void add_radii(Hierarchy d, const ForceFieldParameters* ffp =
                                               get_all_atom_CHARMM_parameters(),

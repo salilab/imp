@@ -130,6 +130,12 @@ ParticleIndex Model::add_particle(std::string name) {
   return p->get_index();
 }
 
+//! Get the name of a particle
+std::string Model::get_particle_name(ParticleIndex pi) {
+  return get_particle(pi)->get_name();
+}
+
+
 void Model::add_undecorator(ParticleIndex pi, Undecorator *d) {
   undecorators_index_.resize(
       std::max<size_t>(pi.get_index() + 1, undecorators_index_.size()));

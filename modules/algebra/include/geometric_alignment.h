@@ -22,8 +22,11 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Compute the rigid transform bringing the first point set to the second
 /** The points are assumed to be corresponding (that is, from[0] is aligned
-    to to[0] etc.). The alignment computed is that which minimized the
-    sum of squared distances between corresponding points. Return the
+    to to[0] etc.). The alignment computed is that which minimizes the
+    sum of squared distances between corresponding points. This uses the
+    Kabsch algorithm.
+
+    \return the
     \f[ \textit{argmin}_T
     \sum \left|T\left(f\left[i\right]\right)-t[i]\right|^2 \f]
 
@@ -34,7 +37,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
     \genericgeometry
 
-    See Transformation3D
+    \see Transformation3D
     \see Vector3D
  */
 template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
@@ -45,7 +48,7 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
   IMP_INTERNAL_CHECK(source.size() == target.size(), "sizes don't match");
   IMP_INTERNAL_CHECK(source.size() > 0, "Points are needed");
   // compute the centroid of the points and transform
-  // pointsets so that their centroids coinside
+  // point sets so that their centroids coincide
 
   Vector3D center_source(0, 0, 0), center_target(0, 0, 0);
   for (unsigned int i = 0; i < source.size(); ++i) {
@@ -124,8 +127,8 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
     IMP_LOG_VERBOSE("Flipping matrix" << std::endl);
     IMP_Eigen::Matrix3d S = IMP_Eigen::Matrix3d::Zero();
     S(0, 0) = S(1, 1) = 1;
-    S(2, 2) = (U * V.transpose()).determinant();
-    rot = U * S * V.transpose();
+    S(2, 2) = -1;
+    rot = V * S * U.transpose();
   }
 
   IMP_LOG_VERBOSE("Rotation matrix is " << rot << std::endl);

@@ -40,87 +40,88 @@ IMP_VALUES(ResidueType, ResidueTypes);
     \see Residue
 */
 
-/** Unknown residue */
+//! Unknown residue
 IMPATOMEXPORT extern const ResidueType UNK;
-/** See ResidueType
+/** \see ResidueType
     glycine G*/
 IMPATOMEXPORT extern const ResidueType GLY;
 #ifndef IMP_DOXYGEN
 /* Code currently assumes that all indices between GLY.get_index()
    and TRP.get_index() being amino acids */
-/** alanine A*/
+//! alanine A
 IMPATOMEXPORT extern const ResidueType ALA;
-/** valine V*/
+//! valine V
 IMPATOMEXPORT extern const ResidueType VAL;
-/** leucine L*/
+//! leucine L
 IMPATOMEXPORT extern const ResidueType LEU;
-/** isoleucine I*/
+//! isoleucine I
 IMPATOMEXPORT extern const ResidueType ILE;
-/** serine S*/
+//! serine S
 IMPATOMEXPORT extern const ResidueType SER;
-/** threonine T*/
+//! threonine T
 IMPATOMEXPORT extern const ResidueType THR;
-/** cystein C*/
+//! cysteine C
 IMPATOMEXPORT extern const ResidueType CYS;
-/** metthionine M*/
+//! methionine M
 IMPATOMEXPORT extern const ResidueType MET;
-/** proline P*/
+//! proline P
 IMPATOMEXPORT extern const ResidueType PRO;
-/** aspartic acid D*/
+//! aspartic acid D
 IMPATOMEXPORT extern const ResidueType ASP;
-/** asparagine N*/
+//! asparagine N
 IMPATOMEXPORT extern const ResidueType ASN;
-/** glutamine Q*/
+//! glutamine Q
 IMPATOMEXPORT extern const ResidueType GLU;
-/** glutamic acid E*/
+//! glutamic acid E
 IMPATOMEXPORT extern const ResidueType GLN;
-/** lysine K*/
+//! lysine K
 IMPATOMEXPORT extern const ResidueType LYS;
-/** arginine N*/
+//! arginine N
 IMPATOMEXPORT extern const ResidueType ARG;
-/** histidine H*/
+//! histidine H
 IMPATOMEXPORT extern const ResidueType HIS;
-/** phynylaline F*/
+//! phenylalanine F
 IMPATOMEXPORT extern const ResidueType PHE;
-/** tyrosine Y */
+//! tyrosine Y
 IMPATOMEXPORT extern const ResidueType TYR;
-/** tryptophan W */
+//! tryptophan W
 IMPATOMEXPORT extern const ResidueType TRP;
-/** ACE */
+//! ACE
 IMPATOMEXPORT extern const ResidueType ACE;
-/** end group */
+//! end group
 IMPATOMEXPORT extern const ResidueType NH2;
 /* Code currently assumes that all indices between ADE.get_index()
    and DTHY.get_index() being nucleic acid */
-/** adenine (RNA) */
+//! adenine (RNA)
 IMPATOMEXPORT extern const ResidueType ADE;
-/** uracil (RNA) */
+//! uracil (RNA)
 IMPATOMEXPORT extern const ResidueType URA;
-/** cytosine (RNA) */
+//! cytosine (RNA)
 IMPATOMEXPORT extern const ResidueType CYT;
-/** guanine (RNA) */
+//! guanine (RNA)
 IMPATOMEXPORT extern const ResidueType GUA;
-/** thymine (RNA) */
+//! thymine (RNA)
 IMPATOMEXPORT extern const ResidueType THY;
-/** adenine (DNA) */
+//! adenine (DNA)
 IMPATOMEXPORT extern const ResidueType DADE;
-/** uracil (DNA) */
+//! uracil (DNA)
 IMPATOMEXPORT extern const ResidueType DURA;
-/** cytosine (DNA) */
+//! cytosine (DNA)
 IMPATOMEXPORT extern const ResidueType DCYT;
-/** guanine (DNA) */
+//! guanine (DNA)
 IMPATOMEXPORT extern const ResidueType DGUA;
-/** thymine (DNA) */
+//! thymine (DNA)
 IMPATOMEXPORT extern const ResidueType DTHY;
 
 // All further residues (including user-added residues) are ligands
 
-/** water molecule */
+//! water molecule
 IMPATOMEXPORT extern const ResidueType HOH;
-/** heme */
+//! heme
 IMPATOMEXPORT extern const ResidueType HEME;
 #endif
 /*@}*/
+
 
 //! A decorator for a residue.
 /**
@@ -210,11 +211,10 @@ class IMPATOMEXPORT Residue : public Hierarchy {
 
 IMP_DECORATORS(Residue, Residues, Hierarchies);
 
-/** See Residue
+//! Return the residue from the same chain with one higher index.
+/** If no such residue exists, return Hierarchy().
 
-    Return the residue from the same chain with one
-    higher index, or Hierarchy().
-
+    \see Residue
     \note Currently, this function only works if
     the parent of rd is the chain. This should be fixed
     later. Ask if you need it.
@@ -225,23 +225,24 @@ IMP_DECORATORS(Residue, Residues, Hierarchies);
  */
 IMPATOMEXPORT Hierarchy get_next_residue(Residue rd);
 
-/** See Residue
-
-    Return the residue from the same chain with one
-    lower index, or Hierarchy().
+//! Return the residue from the same chain with one lower index.
+/** If no such residue exists, return Hierarchy().
     \see get_next_residue
  */
 IMPATOMEXPORT Hierarchy get_previous_residue(Residue rd);
 
-/** Get the residue type from the 1-letter amino acid
-    code.
-    \throw ValueException if an invalid character is passed.
-*/
+//! Get the residue type from the 1-letter amino acid code.
+/** \throw ValueException if an invalid character is passed.
+ */
 IMPATOMEXPORT ResidueType get_residue_type(char c);
 
-/** Get the 1-letter amino acid code from the residue type.
-*/
+//! Get the 1-letter amino acid code from the residue type.
 IMPATOMEXPORT char get_one_letter_code(ResidueType c);
+
+
+//! Get the mass from the residue type.
+IMPATOMEXPORT double get_mass(ResidueType c);
+
 
 IMPATOM_END_NAMESPACE
 

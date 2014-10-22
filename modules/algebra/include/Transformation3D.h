@@ -68,7 +68,11 @@ class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
     *this = *this / o;
     return *this;
   }
+
+  //! returns the rotation associated with this transformation
   const Rotation3D &get_rotation() const { return rot_; }
+
+  //! returns the translation vector associated with this transformation
   const Vector3D &get_translation() const { return trans_; }
 
   IMP_SHOWABLE_INLINE(Transformation3D, {
@@ -76,6 +80,14 @@ class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
     out << " || " << trans_;
   });
   Transformation3D get_inverse() const;
+
+  /** @return true if the 3D transformation is valid; false if the
+        transformation was initialized only with the empty constructor,
+        or it was initialized with an invalid rotation.
+  */
+  bool get_is_valid() const {
+    return rot_.get_is_valid();
+  }
 
  private:
   Vector3D trans_;  // translation
@@ -85,7 +97,7 @@ class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
 IMP_VALUES(Transformation3D, Transformation3Ds);
 
 //! Return a transformation that does not do anything
-/** See Transformation3D */
+/** \see Transformation3D */
 inline Transformation3D get_identity_transformation_3d() {
   return Transformation3D(get_identity_rotation_3d(), Vector3D(0.0, 0.0, 0.0));
 }
@@ -95,19 +107,21 @@ inline Transformation3D get_identity_transformation_3d() {
   \param[in] point Center to rotate about
   \param[in] rotation The rotation to perform
 
-  See Transformation3D
+  \see Transformation3D
 */
 inline Transformation3D get_rotation_about_point(const Vector3D &point,
                                                  const Rotation3D &rotation) {
   return Transformation3D(rotation, (rotation * (-point) + point));
 }
 
-//! compose two transformations
+//! Compose two transformations
 /** For any vector v (a*b)*v = a*(b*v).
-    See Transformation3D
+    \see Transformation3D
  */
 inline Transformation3D compose(const Transformation3D &a,
                                 const Transformation3D &b) {
+  IMP_USAGE_CHECK(a.get_is_valid() && b.get_is_valid(),
+                  "composing an invalid transformation");
   return Transformation3D(compose(a.get_rotation(), b.get_rotation()),
                           a.get_transformed(b.get_translation()));
 }
@@ -127,7 +141,7 @@ IMPALGEBRAEXPORT Transformation3D
   \note randomly select an axis that passes to the input point
   and rotate around it
   \param[in] origin the origin of the rotation
-  \param[in] max_translation detault value is 5
+  \param[in] max_translation default value is 5
   \param[in] max_angle_in_rad default value is 15 degree in radians
   **/
 IMPALGEBRAEXPORT Transformation3D

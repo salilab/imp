@@ -14,7 +14,7 @@
 /** \name Swap helpers
 
     Use the swap_with member function to swap two objects. The two
-    objects mustbe of the same type (Name) and define
+    objects must be of the same type (Name) and define
     the method \c swap_with(). The number suffix is the number of template
     arguments, all of which must be of class type.
     @{

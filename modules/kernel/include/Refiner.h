@@ -13,6 +13,7 @@
 #include "Particle.h"
 #include "internal/IndexingIterator.h"
 #include <IMP/base/deprecation_macros.h>
+#include <IMP/base/check_macros.h>
 #include "model_object_helpers.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -26,12 +27,24 @@ class DerivativeAccumulator;
     reflect existing relationships, such as the
     IMP::core::LeavesRefiner or arbitrary relationships set up
     for a particular purpose, such as IMP::core::TableRefiner.
+
+    @note it is assumed that refined particles belong to the same model
+          as the coarse particle
 */
 class IMPKERNELEXPORT Refiner : public ParticleInputs, public base::Object {
   struct Accessor;
+  bool is_by_ref_;
 
  public:
-  Refiner(std::string name = "Refiner %1%");
+  /** Constructs the refiner
+
+      @param name object name for refiner
+      @param is_by_ref if true, this refiner is expected to support
+                       the get_refined_indexes_by_ref method,
+                       for refiners that support faster cached
+                       list of particles, etc.
+  */
+  Refiner(std::string name = "Refiner %1%", bool is_by_ref = false);
   //! Return true if this refiner can refine that particle
   /** This should not throw, so be careful what fields are touched.
    */
@@ -39,10 +52,45 @@ class IMPKERNELEXPORT Refiner : public ParticleInputs, public base::Object {
 
   //! Refine the passed particle into a set of particles.
   /** As a precondition can_refine_particle(a) should be true.
+
+      @param a coarse particle to be refined
    */
   virtual const ParticlesTemp get_refined(Particle *a) const = 0;
 
-  virtual ParticleIndexes get_refined_indexes(Model *m, ParticleIndex pi) const;
+  //! Return the indexes of the particles returned by get_refined()
+  /** Return the indexes of the particles returned by get_refined()
+      for particle pi in model m.
+
+      @param m,pi model and particle index of coarse particle to be refined
+
+      @note assumes that the refined particles are also in model m
+   */
+  virtual ParticleIndexes get_refined_indexes
+    (Model *m, ParticleIndex pi) const;
+
+  //! Return the indexes of the particles returned by get_refined()
+  /** Return the indexes of the particles returned by get_refined()
+      for particle pi in model m by reference (possible faster).
+
+      @param m,pi model and particle index of coarse particle to be refined
+
+      @note assumes that get_is_by_ref() is true.
+      @note assumes that the refined particles are also in model m
+   */
+  virtual ParticleIndexes const& get_refined_indexes_by_ref
+    (Model *m, ParticleIndex pi) const
+  {
+    IMP_ALWAYS_CHECK(false,
+                    "This refiner does not support"
+                     " get_refined_indexes_by_ref()",
+                     base::ValueException);
+    IMP_UNUSED(m);
+    IMP_UNUSED(pi);
+  }
+
+  //! returns true if this refiner supports
+  //! get_refined_indexes_by_ref() (e.g. FixedRefiner)
+  bool get_is_by_ref_supported() { return is_by_ref_; };
 
   //! Get the ith refined particle.
   /** As a precondition can_refine_particle(a) should be true.

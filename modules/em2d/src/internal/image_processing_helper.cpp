@@ -331,4 +331,12 @@ algebra::Vector2D get_weighted_centroid(const cv::Mat &m) {
   return center;
 }
 
+void my_meanStdDev(const cv::Mat &m, cv::Scalar &mean, cv::Scalar &stddev) {
+  mean = cv::mean(m);
+  cv::Mat square;
+  cv::pow(m - mean[0], 2, square);
+  cv::Scalar sum = cv::sum(square);
+  stddev[0] = std::sqrt(sum[0] / (m.rows * m.cols));
+}
+
 IMPEM2D_END_INTERNAL_NAMESPACE

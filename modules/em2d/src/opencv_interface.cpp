@@ -1,6 +1,6 @@
 /**
  *  \file opencv_interface.h
- *  \brief inteface with OpenCV
+ *  \brief Interface with OpenCV
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 

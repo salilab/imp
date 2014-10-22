@@ -50,7 +50,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   virtual Float do_optimize(unsigned int max_steps);
   IMP_OBJECT_METHODS(MonteCarlo)
  public:
-  /** By default, the optimizer returns the lowest score state
+  /** By default, the optimizer returns the lowest scoring state
       found so far. If, instead, you wish to return the last accepted
       state, set return best to false.
   */
@@ -68,12 +68,10 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   }
   Float get_kt() const { return temp_; }
   /** @} */
-  /** Return the energy of last accepted state.
-   */
+  //! Return the energy of the last accepted state.
   double get_last_accepted_energy() const { return last_energy_; }
 
-  /** If return best is on, you can get the best energy
-      found so far.*/
+  //! If return best is on, returns the best energy found so far.
   double get_best_accepted_energy() const {
     IMP_USAGE_CHECK(return_best_, "Getting the best energy"
                                       << " requires return best being on.");
@@ -126,7 +124,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
 
   /** Computations can be accelerated by throwing out
       the tails of the distribution of accepted moves. To
-      do this, specific a maximum acceptable difference
+      do this, specify a maximum acceptable difference
       between the before and after scores.
   */
   void set_maximum_difference(double d) { max_difference_ = d; }

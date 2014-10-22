@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
             r = IMP.container.PairsRestraint(
                 IMP.core.HarmonicDistancePairScore(10, 10), cpc)
             rmf = RMF.create_rmf_file(
-                self.get_tmp_file_name("zillion." + suffix))
+                self.get_tmp_file_name("zillion" + suffix))
             IMP.rmf.add_hierarchies(rmf, [l0, l1])
             IMP.rmf.add_restraints(rmf, [r])
             IMP.rmf.set_maximum_number_of_terms(rmf, 10)

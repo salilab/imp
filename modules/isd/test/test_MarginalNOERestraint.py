@@ -262,8 +262,8 @@ class Tests(IMP.test.TestCase):
         c0 = IMP.container.ListPairContainer([(self.p0, self.p2)])
         self.noe.add_contribution(c0, v2)
         self.assertEqual([x.get_name() for x in self.noe.get_inputs()],
-                         [y.get_name() for y in \
-                            [self.p0, self.p2, c0]])
+                         [y.get_name() for y in
+                          [self.p0, self.p2, c0]])
 
     def testSanityEP(self):
         "Test if MarginalNOE score is -log(prob)"

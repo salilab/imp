@@ -34,9 +34,6 @@ def link_dox(source):
     tools.link_dir(
         os.path.join(source, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
         clean=False)
-    tools.link_dir(
-        os.path.join(source, "doc"), os.path.join("doxygen", "generated"), match=["*.md"],
-        clean=False)
     tools.link_dir(os.path.join(source, "doc", "tutorial"),
                    os.path.join("doc", "tutorial"), match=["*.png", "*.pdf"],
                    clean=False)

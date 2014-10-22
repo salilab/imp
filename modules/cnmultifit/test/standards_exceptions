@@ -1,6 +1,16 @@
 show_exceptions=[]
 value_object_exceptions=[]
 function_name_exceptions=['AlignSymmetric.score_alignment',
-                                      'CnSymmAxisDetector.calc_symm_score',
-                                      'MolCnSymmAxisDetector.calc_symm_score']
-spelling_exceptions=['pca', 'cn', 'symm', 'symmetrics']
+                          'CnSymmAxisDetector.calc_symm_score',
+                          'MolCnSymmAxisDetector.calc_symm_score',
+                          'build_cn_dens_assembly',
+                          'calc_transformation_around_axis',
+                          'cn_symm_score',
+                          'fit_cn_assembly',
+                          'generate_cn_transformations',
+                          'generate_translations_along_symm_axis',
+                          'pca_matching',
+                          'prune_by_pca',
+                          'symmetry_local_fitting',
+                          'transform_cn_assembly']
+spelling_exceptions=['pca', 'cn', 'symm', 'symmetrics', 'rmsd']

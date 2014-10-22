@@ -21,7 +21,7 @@ IMPSAXS_BEGIN_NAMESPACE
 */
 class IMPSAXSEXPORT SolventAccessibleSurface {
  public:
-  //! estimate surface accessability of each atom.
+  //! estimate surface accessibility of each atom.
   /**
      \param[in] points A set of points for which surface accessibility is
      computed. Each point should have an XYZ coordinate and  a radius.

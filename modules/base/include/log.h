@@ -60,13 +60,11 @@ IMPBASEEXPORT void add_to_log(std::string to_write);
 #endif
 #endif
 
-//! Write a string to the log, for python
+//! Write a string to the log, for Python
 IMPBASEEXPORT void add_to_log(LogLevel level, std::string to_write);
 
 //! Set the current global log level
-/** Set the current global log level
-
-    @note may be overriden by set_log_level of specific objects that inherit
+/** @note may be overridden by set_log_level of specific objects that inherit
           from IMP::base::Object
     @note this global method should not, currently, be used directly during
     kernel::Model::evaluate() calls.
@@ -112,14 +110,14 @@ inline bool get_is_log_output(LogLevel l) { return l <= get_log_level(); }
 
     @{
  */
-/** Set up the progress bar with the passed description.
-
-    See IMP_PROGRESS_DISPLAY().
+//! Set up the progress bar with the passed description.
+/** \see IMP_PROGRESS_DISPLAY().
 */
 IMPBASEEXPORT void set_progress_display(std::string description,
                                         unsigned int steps);
-/** Set the current progress. When it equals the number of steps,
-    the bar is done.*/
+
+//! Set the current progress.
+/** When it equals the number of steps, the bar is done. */
 IMPBASEEXPORT void add_to_progress_display(unsigned int step = 1);
 
 /** @} */

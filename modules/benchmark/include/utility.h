@@ -19,7 +19,7 @@ IMPBENCHMARK_BEGIN_NAMESPACE
     \param[in] algorithm the name of the particular algorithm
     used to solve the problem
     \param[in] time the time it took (perhaps normalized)
-    \param[in] check a check value to print out to see if the calc was ok
+    \param[in] check a check value to print out to see if the calculation was OK
 */
 IMPBENCHMARKEXPORT void report(std::string benchmark, std::string algorithm,
                                double time, double check);

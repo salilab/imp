@@ -70,7 +70,7 @@ void add_residue_bonds(
       Bonded b[2];
       for (unsigned int i = 0; i < 2; ++i) {
         if (Bonded::get_is_setup(as[i])) {
-          b[i] = Bonded::decorate_particle(as[i]);
+          b[i] = Bonded(as[i]);
         } else {
           b[i] = Bonded::setup_particle(as[i]);
         }
@@ -503,25 +503,36 @@ void CHARMMTopology::add_sequence(std::string sequence) {
   add_segment(seg);
 }
 
+namespace {
+  class MapTopologyInserter {
+    const CHARMMTopology *topology_;
+    CHARMMTopology::ResMap &resmap_;
+    unsigned int nseg_;
+  public:
+    MapTopologyInserter(const CHARMMTopology *topology,
+                        CHARMMTopology::ResMap &resmap)
+              : topology_(topology), resmap_(resmap), nseg_(0) {}
+
+    void operator()(Hierarchies residues) {
+      IMP_USAGE_CHECK(nseg_ < topology_->get_number_of_segments(),
+                      "Hierarchy does not match topology");
+      CHARMMSegmentTopology *topseg = topology_->get_segment(nseg_);
+      ++nseg_;
+      IMP_USAGE_CHECK(residues.size() == topseg->get_number_of_residues(),
+                      "Hierarchy does not match topology");
+      unsigned int nres = 0;
+      for (Hierarchies::iterator resit = residues.begin();
+           resit != residues.end(); ++resit, ++nres) {
+        resmap_[topseg->get_residue(nres)] = *resit;
+      }
+    }
+  };
+}
+
 void CHARMMTopology::map_residue_topology_to_hierarchy(Hierarchy hierarchy,
                                                        ResMap &resmap) const {
-  Hierarchies chains = get_by_type(hierarchy, CHAIN_TYPE);
-  IMP_USAGE_CHECK(chains.size() == get_number_of_segments(),
-                  "Hierarchy does not match topology");
-
-  unsigned int nseg = 0;
-  for (Hierarchies::iterator chainit = chains.begin(); chainit != chains.end();
-       ++chainit, ++nseg) {
-    CHARMMSegmentTopology *topseg = get_segment(nseg);
-    Hierarchies residues = get_by_type(*chainit, RESIDUE_TYPE);
-    IMP_USAGE_CHECK(residues.size() == topseg->get_number_of_residues(),
-                    "Hierarchy does not match topology");
-    unsigned int nres = 0;
-    for (Hierarchies::iterator resit = residues.begin();
-         resit != residues.end(); ++resit, ++nres) {
-      resmap[topseg->get_residue(nres)] = *resit;
-    }
-  }
+  MapTopologyInserter ins(this, resmap);
+  internal::visit_connected_chains(hierarchy, ins);
 }
 
 void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const {

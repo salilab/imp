@@ -84,7 +84,6 @@ void Nuisance::set_lower(Float d) {
   enforce_bounds();
 }
 void Nuisance::set_lower(kernel::Particle *d) {
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(d); }
   base::Pointer<kernel::Particle> p = get_particle();
   kernel::ParticleKey k(get_lower_particle_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
@@ -147,7 +146,6 @@ void Nuisance::set_upper(Float d) {
   enforce_bounds();
 }
 void Nuisance::set_upper(kernel::Particle *d) {
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(d); }
   base::Pointer<kernel::Particle> p = get_particle();
   kernel::ParticleKey k(get_upper_particle_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
@@ -191,7 +189,7 @@ void Nuisance::remove_bounds() {
 
 void NuisanceScoreState::do_before_evaluate() {
   IMP_LOG_TERSE("NSS: do_before_evaluate()" << std::endl);
-  Nuisance nuis(Nuisance::decorate_particle(p_));
+  Nuisance nuis(p_);
   nuis.set_nuisance(nuis.get_nuisance());
 }
 void NuisanceScoreState::do_after_evaluate(DerivativeAccumulator *) {}

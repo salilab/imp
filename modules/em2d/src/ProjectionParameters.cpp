@@ -28,7 +28,7 @@ void ProjectionParameters::do_setup_particle(kernel::Model *m,
 
 void ProjectionParameters::show(std::ostream &os) const {
   os << "ProjectionParameters: Rotation " << get_rotation()
-     << " | Tranlation (x,y,z) = " << get_translation();
+     << " | Translation (x,y,z) = " << get_translation();
 }
 
 const FloatKeys &ProjectionParameters::get_keys() {

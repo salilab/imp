@@ -17,7 +17,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 /** Assign blame to the passed particles by dividing up the scores of the
-    passed restraints over the particles they add on. The restraints will
+    passed restraints over the particles they act on. The restraints will
     be decomposed first in order to make sure that the assignment is as
     fine grained as possible.
 

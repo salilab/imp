@@ -45,8 +45,8 @@ class IMPEM2DEXPORT ProjectionMask {
 
   //! Generates the mask
   /*!
-    \param[in] KP Kernel parameteres to employ. See the EM module
-    \param[in] params Kernel parameteres associated with radius to employ
+    \param[in] KP Kernel parameters to employ. See the EM module
+    \param[in] params Kernel parameters associated with radius to employ
     \param[in] mass Mass to give to the mask
   */
   void create(const em::KernelParameters &KP,
@@ -113,7 +113,7 @@ inline void do_place(cv::Mat &mask, cv::Mat &m, const algebra::Vector2D &v) {
   mend[0] = mask.rows - 1 - mcenter[0];
   mend[1] = mask.cols - 1 - mcenter[1];
 
-  // Get the admisible range for the mask
+  // Get the admissible range for the mask
   int start_i = std::max(start[0] - vi, mstart[0]);
   int start_j = std::max(start[1] - vj, mstart[1]);
   int end_i = std::min(end[0] - vi, mend[0]);
@@ -131,7 +131,7 @@ inline void do_place(cv::Mat &mask, cv::Mat &m, const algebra::Vector2D &v) {
   }
 }
 
-//! Manage of projection masks
+//! Management of projection masks
 class IMPEM2DEXPORT MasksManager {
  public:
   MasksManager() {

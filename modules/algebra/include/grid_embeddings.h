@@ -221,7 +221,7 @@ class LogEmbeddingD {
       @param bb the bounding box in which the grid is embedded
       @param bases bases[i] is a positive log base used for the grid
                    spacing in dimension i. Set base[i] to 1 in order
-                   to create aa standard evenly spaced grid along
+                   to create a standard evenly spaced grid along
                    dimension i.
       @param counts counts[i] is the number of discrete points in dimension i
       @param bound_centers if true, then the bounding box tightly bounds

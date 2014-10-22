@@ -25,7 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     The diameter scored includes the radius of the involved particles.
 
-    \note, Currently, decomposing this restraint results in pieces which
+    \note Currently, decomposing this restraint results in pieces which
     score deviations from the diameter with a harmonic upper bound of strength
     1.
  */
@@ -39,7 +39,7 @@ class IMPCOREEXPORT DiameterRestraint : public kernel::Restraint {
   void init();
 
  public:
-  //! Use f to restraint sc to be withing diameter of one another
+  //! Use f to restrain sc to be within diameter of one another
   /** f should have a minimum at 0 and be an upper bound-style function.
    */
   DiameterRestraint(UnaryFunction *f, SingletonContainer *sc, Float diameter);

@@ -1,0 +1,5 @@
+usr/lib/*/lib*.so*
+usr/lib/python*/dist-packages/*
+usr/bin/*
+usr/share/IMP/*
+usr/share/doc/imp/*

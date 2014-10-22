@@ -264,7 +264,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps) {
 
   int n = float_indices.size();
   if (n == 0) {
-    IMP_THROW("There are no optimizeable degrees of freedom.", ModelException);
+    IMP_THROW("There are no optimizable degrees of freedom.", ModelException);
   }
 
   x.resize(n);

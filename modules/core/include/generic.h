@@ -13,8 +13,8 @@
 #include <IMP/kernel/generic.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
-/**     A python version of this is provided, but it produces a slightly less
-        efficient restraint. */
+/** A Python version of this is provided, but it produces a slightly less
+    efficient restraint. */
 using IMP::kernel::create_restraint;
 using IMP::kernel::create_constraint;
 

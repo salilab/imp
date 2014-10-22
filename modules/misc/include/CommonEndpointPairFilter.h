@@ -1,6 +1,6 @@
 /**
  *  \file IMP/misc/CommonEndpointPairFilter.h
- *  \brief A fake filter that returns true for any pair of bonds with
+ *  \brief Return true for any pair of bonds sharing an endpoint
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
@@ -15,8 +15,6 @@
 IMPMISC_BEGIN_NAMESPACE
 
 //! Return true for any pair of bonds sharing an endpoint
-/** XXXXXX.
- */
 class IMPMISCEXPORT CommonEndpointPairFilter : public PairPredicate {
  public:
   CommonEndpointPairFilter();

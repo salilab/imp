@@ -25,13 +25,13 @@ class Bond;
 class Bonded;
 
 /** \defgroup bond Creating and restraining bonds
-    A set of classes and functions for manipulating bonds.
+    \brief A set of classes and functions for manipulating bonds.
  */
 
 //! A decorator for wrapping a particle representing a molecular bond
 /**
    As with Atom, the types of bonds will eventually be run-time
-   expandible.
+   expandable.
 
    \ingroup bond
    \see Bonded
@@ -218,8 +218,8 @@ inline Bonded Bonded::GetBonded::operator()(unsigned int i) const {
     \return Bond of the bond kernel::Particle.
 
     \ingroup bond
-    See Bond
-    See Bonded
+    \see Bond
+    \see Bonded
  */
 IMPATOMEXPORT Bond create_bond(Bonded a, Bonded b, Int t);
 
@@ -231,8 +231,8 @@ IMPATOMEXPORT Bond create_bond(Bonded a, Bonded b, Int t);
     \return Bond of the bond kernel::Particle.
 
     \ingroup bond
-    See Bond
-    See Bonded
+    \see Bond
+    \see Bonded
  */
 IMPATOMEXPORT inline Bond create_custom_bond(Bonded a, Bonded b, Float length,
                                              Float stiffness = -1) {
@@ -247,11 +247,11 @@ IMPATOMEXPORT inline Bond create_custom_bond(Bonded a, Bonded b, Float length,
 }
 
 //! Connect the two wrapped particles by a custom bond.
-/** Create a bond by copying the information from the othr bond
+/** Create a bond by copying the information from the other bond
 
     \ingroup bond
-    See Bond
-    See Bonded
+    \see Bond
+    \see Bonded
  */
 IMPATOMEXPORT inline Bond create_bond(Bonded a, Bonded b, Bond o) {
   Bond bd = create_bond(a, b, o.get_type());
@@ -263,24 +263,24 @@ IMPATOMEXPORT inline Bond create_bond(Bonded a, Bonded b, Bond o) {
   return bd;
 }
 
-//! Destroy the bond connecting to particles.
+//! Destroy the bond connecting two particles.
 /** \param[in] b The bond.
     \ingroup bond
-    See Bond
-    See Bonded
+    \see Bond
+    \see Bonded
  */
 IMPATOMEXPORT void destroy_bond(Bond b);
 
 //! Get the bond between two particles.
 /** Bond() is returned if the particles are not bonded.
     \ingroup bond
-    See Bond
-    See Bonded
+    \see Bond
+    \see Bonded
  */
 IMPATOMEXPORT Bond get_bond(Bonded a, Bonded b);
 
 /** \class BondGeometry
-    \brief Display an Bond particle as a segment.
+    \brief Display a Bond particle as a segment.
 
     \class BondsGeometry
     \brief Display an IMP::SingletonContainer of Bond particles

@@ -135,7 +135,7 @@ class PeptideDocker:
 
     # Helper method to quickly get the chain identifier for a particle
     def getChain(self, particle):
-        atomDecorator = IMP.atom.Atom.decorate_particle(particle)
+        atomDecorator = IMP.atom.Atom(particle)
         residue = IMP.atom.get_residue(atomDecorator)
         chain = IMP.atom.get_chain(residue)
         chainId = chain.get_id()
@@ -143,7 +143,7 @@ class PeptideDocker:
 
     # Helper method to quickly get the residue index for a particle
     def getResidue(self, particle):
-        atomDecorator = IMP.atom.Atom.decorate_particle(particle)
+        atomDecorator = IMP.atom.Atom(particle)
         residue = IMP.atom.get_residue(atomDecorator)
         residueNumber = residue.get_index()
         return residueNumber
@@ -231,12 +231,11 @@ class PeptideDocker:
             randomPname = random.choice(particlesToVary)
             randomP = self.namesToParticles[randomPname]
             print "setting coordinates for particle %s to the ones currently set for particle %s" % (pName, randomPname)
-            atomToCoordinates[pName] = IMP.core.XYZ.decorate_particle(
-                randomP).get_coordinates()
+            atomToCoordinates[pName] = IMP.core.XYZ(randomP).get_coordinates()
 
         for pName in particlesToVary:
             particle = self.namesToParticles[pName]
-            xyz = IMP.core.XYZ.decorate_particle(particle)
+            xyz = IMP.core.XYZ(particle)
             xyz.set_coordinates(atomToCoordinates[pName])
             xyzs.append(xyz)
         return xyzs
@@ -256,7 +255,7 @@ class PeptideDocker:
                 self.getParam("initial_atom_offset")) + myRandom
             for particleName in self.flexibleAtoms.keys():
                 p = self.namesToParticles[particleName]
-                xyzDecorator = IMP.core.XYZ.decorate_particle(p)
+                xyzDecorator = IMP.core.XYZ(p)
                 coordinates = xyzDecorator.get_coordinates()
                 bb = IMP.algebra.BoundingBox3D(coordinates)
                 bb += initialOffset
@@ -298,8 +297,7 @@ class PeptideDocker:
                     if ((secondPname in self.flexibleAtoms) == 0):
                         fixedAtom = self.namesToParticles[firstPname]
 
-                        bsParticles.append(
-                            IMP.core.XYZ.decorate_particle(fixedAtom))
+                        bsParticles.append(IMP.core.XYZ(fixedAtom))
                         print "added next close atom %s to bounding box particles" % firstPname
             # bsBoundingBox = IMP.core.get_bounding_box(bsParticles)  -- revert
             # if I can figure out how
@@ -307,8 +305,7 @@ class PeptideDocker:
             leaves = IMP.atom.get_leaves(self.protein)
             for leaf in leaves:
                 if (self.getChain(leaf) == self.getParam("peptide_chain")):
-                    peptideParticles.append(
-                        IMP.core.XYZ.decorate_particle(leaf))
+                    peptideParticles.append(IMP.core.XYZ(leaf))
             bsBoundingBox = IMP.core.get_bounding_box(peptideParticles)
             # set initial position for each flexible atoms, and adjust it if it
             # is too close to a fixed residue
@@ -316,7 +313,7 @@ class PeptideDocker:
             for flexPname in self.flexibleAtoms.keys():
                 goodPosition = 0
                 flexParticle = self.namesToParticles[flexPname]
-                flexXyzDecorator = IMP.core.XYZ.decorate_particle(flexParticle)
+                flexXyzDecorator = IMP.core.XYZ(flexParticle)
                 print "processing position for pname %s" % flexPname
                 while(goodPosition == 0):
                     goodPosition = 1
@@ -325,10 +322,8 @@ class PeptideDocker:
                     for fixedPname in fixedAtoms.keys():
                         fixedParticle = self.namesToParticles[fixedPname]
                         distance = IMP.algebra.get_distance(
-                            IMP.core.XYZ.decorate_particle(
-                                fixedParticle).get_coordinates(
-                            ),
-                            IMP.core.XYZ.decorate_particle(flexParticle).get_coordinates())
+                            IMP.core.XYZ(fixedParticle).get_coordinates(),
+                            IMP.core.XYZ(flexParticle).get_coordinates())
                         if (distance < 2):
                             print "finding new position for %s" % flexPname
                             goodPosition = 0
@@ -343,7 +338,7 @@ class PeptideDocker:
             for particleName in self.flexibleAtoms.keys():
                 print "creating random position for particle %s" % particleName
                 p = self.namesToParticles[particleName]
-                xyzDecorator = IMP.core.XYZ.decorate_particle(p)
+                xyzDecorator = IMP.core.XYZ(p)
                 randomXyz = IMP.algebra.get_random_vector_in(bb)
                 myRandom = random.random()
                 bb += myRandom
@@ -365,10 +360,8 @@ class PeptideDocker:
                 name = self.quickParticleName(initialLeaf)
                 if ((name in self.namesToParticles) == 1):
                     existingLeaf = self.namesToParticles[name]
-                    existingLeafXyz = IMP.core.XYZ.decorate_particle(
-                        existingLeaf)
-                    initialLeafXyz = IMP.core.XYZ.decorate_particle(
-                        initialLeaf)
+                    existingLeafXyz = IMP.core.XYZ(existingLeaf)
+                    initialLeafXyz = IMP.core.XYZ(initialLeaf)
                     existingLeafXyz.set_coordinates(
                         initialLeafXyz.get_coordinates())
                 else:
@@ -406,8 +399,8 @@ class PeptideDocker:
 
     # Get 3D distance between the particles in the pair
     def getXyzDistance(self, pair):
-        d0 = IMP.core.XYZ.decorate_particle(pair[0])
-        d1 = IMP.core.XYZ.decorate_particle(pair[1])
+        d0 = IMP.core.XYZ(pair[0])
+        d1 = IMP.core.XYZ(pair[1])
         distance = IMP.core.get_distance(d0, d1)
         return distance
 
@@ -594,7 +587,7 @@ class PeptideDocker:
         self.ff.add_radii(self.protein)
         for pName in self.flexibleAtoms.keys():
             particle = self.namesToParticles[pName]
-            xyzr = IMP.core.XYZR.decorate_particle(particle)
+            xyzr = IMP.core.XYZR(particle)
             radius = xyzr.get_radius()
             radius *= scalingFactor
             xyzr.set_radius(radius)
@@ -854,13 +847,9 @@ class PeptideDocker:
             otherParticle = otherNamesToParticles[pName]
             modelParticle = self.namesToParticles[pName]
             otherVector.append(
-                IMP.core.XYZ.decorate_particle(
-                    otherParticle).get_coordinates(
-                ))
+                IMP.core.XYZ(otherParticle).get_coordinates())
             modelVector.append(
-                IMP.core.XYZ.decorate_particle(
-                    modelParticle).get_coordinates(
-                ))
+                IMP.core.XYZ(modelParticle).get_coordinates())
         rmsd = IMP.atom.get_rmsd(otherVector, modelVector)
         return rmsd
 
@@ -974,7 +963,7 @@ class PeptideDocker:
         leaves = IMP.atom.get_leaves(self.protein)
         for leaf in leaves:
             if ((self.quickParticleName(leaf) in self.flexibleAtoms) == 0):
-                xyzDecorator = IMP.core.XYZ.decorate_particle(leaf)
+                xyzDecorator = IMP.core.XYZ(leaf)
                 xyzDecorator.set_coordinates_are_optimized(0)
 
     def writeOutput(self):

@@ -8,13 +8,14 @@ import IMP.algebra
 
 
 class Tests(IMP.test.TestCase):
+
     """Class for testing Map header data"""
 
     def make_map(self, voxel_size):
         m = IMP.kernel.Model()
         ps = [IMP.Particle(m)]
         IMP.core.XYZR.setup_particle(ps[0],
-                        IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1,2,3), 4))
+                                     IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
         IMP.atom.Mass.setup_particle(ps[0], 1.0)
         dmap = IMP.em.SampledDensityMap(ps, 10.0, voxel_size)
         return m, dmap

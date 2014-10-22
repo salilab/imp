@@ -20,7 +20,7 @@ class TestMonteCarloModeling(IMP.test.ApplicationTestCase):
             import subprocess
         except ImportError as detail:
             self.skipTest(str(detail))
-        domino_model = self.import_python_application('emagefit.py')
+        domino_model = self.import_python_application('emagefit')
         fn_config = self.get_input_file_name("config.py")
         exp = utility.get_experiment_params(fn_config)
         fn_database = "monte_carlo_output_database.db"

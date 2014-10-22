@@ -1,6 +1,6 @@
 /**
  *  \file KernelParameters.cpp
- *  \brief Calculates and stores gaussian kernel parameters.
+ *  \brief Calculates and stores Gaussian kernel parameters.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -32,7 +32,7 @@ RadiusDependentKernelParameters::RadiusDependentKernelParameters(
   IMP_USAGE_CHECK(std::abs(rnormfac) < std::numeric_limits<float>::max(),
                   "rnormfac out of range");
   IMP_USAGE_CHECK(std::abs(timessig) < std::numeric_limits<float>::max(),
-                  "rkdist outx of range");
+                  "rkdist out of range");
   if (radii > EPS) {
     // to prevent calculation for particles with the same radius ( atoms)
     //    vsig = 1./(sqrt(2.*log(2.))) * radii_; // volume sigma
@@ -66,7 +66,7 @@ void KernelParameters::init(float resolution) {
   rsig_ = resolution / (2 * sqrt(2. * log(2.)));  // sigma
   rsigsq_ = rsig_ * rsig_;                        // sigma squared
   inv_rsigsq_ = 1. / (2. * rsigsq_);              // term for the exponential
-  // normalization factor for the gaussian
+  // normalization factor for the Gaussian
   sq2pi3_ = 1. / sqrt(8. * PI * PI * PI);
   rnormfac_ = sq2pi3_ * 1. / (rsig_ * rsig_ * rsig_);
   rkdist_ = timessig_ * rsig_;
@@ -138,13 +138,13 @@ const RadiusDependentKernelParameters &KernelParameters::get_params(
 //! Create a truncated 3D Gaussian
 Kernel3D create_3d_gaussian(double sigma, double sigma_factor) {
 
-  // determine gaussian extent
+  // determine Gaussian extent
   int half_ext = (int)ceil(sigma_factor * sigma);
   int ext = 2 * half_ext - 1;
   int size = ext * ext * ext;
   Kernel3D ret(size, ext);
   double *data = ret.get_data();
-  // calculate gaussian
+  // calculate Gaussian
   double bvalue = -1.0 / (2.0 * sigma * sigma);
   double cvalue = sigma_factor * sigma_factor * sigma * sigma;
   double mscale = 0.0;

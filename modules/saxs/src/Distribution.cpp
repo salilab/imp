@@ -173,7 +173,7 @@ DeltaDistributionFunction::DeltaDistributionFunction(
     const kernel::Particles& particles, Float max_distance, Float bin_size)
     : Distribution<algebra::Vector3D>(bin_size) {
   get_coordinates(particles, coordinates_);
-  get_form_factors(particles, default_form_factor_table(), form_factors_,
+  get_form_factors(particles, get_default_form_factor_table(), form_factors_,
                    HEAVY_ATOMS);
   // compute max distance if not given
   max_distance_ = max_distance;
@@ -186,7 +186,7 @@ void DeltaDistributionFunction::calculate_derivative_distribution(
 
   algebra::Vector3D particle_coordinate = core::XYZ(particle).get_coordinates();
   Float particle_form_factor =
-      default_form_factor_table()->get_form_factor(particle);
+      get_default_form_factor_table()->get_form_factor(particle);
   for (unsigned int i = 0; i < coordinates_.size(); i++) {
     Float dist = get_distance(coordinates_[i], particle_coordinate);
     algebra::Vector3D diff_vector = particle_coordinate - coordinates_[i];

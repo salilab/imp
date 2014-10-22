@@ -1,6 +1,6 @@
 /**
  *  \file IMP/atom/Fragment.h
- *  \brief A decorator for associating a Hierachy piece
+ *  \brief A decorator for associating a Hierarchy piece
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
@@ -15,7 +15,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! A decorator to associate a particle with a part of a protein/DNA/RNA
-/** The decorator stores an optional list of resdiue indexes.
+/** The decorator stores an optional list of residue indexes.
  */
 class IMPATOMEXPORT Fragment : public Hierarchy {
   static IntsKey get_begins_key();

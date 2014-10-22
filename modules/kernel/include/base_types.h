@@ -145,7 +145,7 @@ typedef base::Array<4, base::WeakPointer<Particle>, Particle*> ParticleQuad;
 IMP_VALUES(ParticleQuad, ParticleQuadsTemp);
 
 class ParticleIndexTag {};
-/** A unique identifier for a particle within a Model. Use it to identifying
+/** A unique identifier for a particle within a Model. Use it to identify
     particles when getting and setting attributes and constructing decorators.
 
     See for example, \ref model_attributes "Model attributes", Decorator, and

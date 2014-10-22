@@ -14,8 +14,6 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-Rotation3D::~Rotation3D() {}
-
 Rotation3D get_rotation_from_matrix(IMP_Eigen::Matrix3d m) {
   return get_rotation_from_matrix(m(0, 0), m(0, 1), m(0, 2), m(1, 0), m(1, 1),
                                   m(1, 2), m(2, 0), m(2, 1), m(2, 2));
@@ -262,7 +260,7 @@ Rotation3D get_rotation_from_fixed_zyz(double Rot, double Tilt, double Psi) {
   double s2 = std::sin(Tilt);
   double s3 = std::sin(Psi);
 
-  /*IMP_LOG_VERBOSE( "Intermedites front: "
+  /*IMP_LOG_VERBOSE( "Intermediates front: "
           << c1 << " " << c2 << " " << c3 << "\n"
           << s1 << " " << s2 << " " << s3 << std::endl);*/
   double d00 = c1 * c2 * c3 - s1 * s3;

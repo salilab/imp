@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/Subset.h
- *  \brief A beyesian infererence-based sampler.
+ *  \brief A Bayesian inference-based sampler.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -28,7 +28,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     a constant list (in this case of particles). The list
     is stored in sorted order. Their interface is more or
     less that of a constant vector in C++ or
-    a constant list in python.
+    a constant list in Python.
  */
 class IMPDOMINOEXPORT Subset
     : public base::ConstVector<base::WeakPointer<kernel::Particle>,

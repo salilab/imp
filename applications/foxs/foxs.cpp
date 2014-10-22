@@ -8,6 +8,7 @@
 #include <IMP/saxs/ChiFreeScore.h>
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
+#include <IMP/saxs/utility.h>
 
 #include <IMP/atom/pdb.h>
 
@@ -111,48 +112,6 @@ void read_files(const std::vector<std::string>& files,
   }
 }
 
-Profile* compute_profile(IMP::kernel::Particles particles, float min_q,
-                         float max_q, float delta_q, FormFactorTable* ft,
-                         FormFactorType ff_type, float water_layer_c2, bool fit,
-                         bool reciprocal, bool ab_initio, bool vacuum) {
-  IMP_NEW(Profile, profile, (min_q, max_q, delta_q));
-  if (reciprocal) profile->set_ff_table(ft);
-
-  // compute surface accessibility and average radius
-  IMP::Floats surface_area;
-  SolventAccessibleSurface s;
-  float average_radius = 0.0;
-  if (water_layer_c2 != 0.0) {
-    // add radius
-    for (unsigned int i = 0; i < particles.size(); i++) {
-      float radius = ft->get_radius(particles[i], ff_type);
-      IMP::core::XYZR::setup_particle(particles[i], radius);
-      average_radius += radius;
-    }
-    surface_area = s.get_solvent_accessibility(IMP::core::XYZRs(particles));
-    average_radius /= particles.size();
-    profile->set_average_radius(average_radius);
-  }
-
-  // pick profile calculation based on input parameters
-  if (!fit) {         // regular profile, no c1/c2 fitting
-    if (ab_initio) {  // bead model, constant form factor
-      profile->calculate_profile_constant_form_factor(particles);
-    } else if (vacuum) {
-      profile->calculate_profile_partial(particles, surface_area, ff_type);
-      profile->sum_partial_profiles(0.0, 0.0);  // c1 = 0;
-    } else {
-      profile->calculate_profile(particles, ff_type, reciprocal);
-    }
-  } else {  // c1/c2 fitting
-    if (reciprocal)
-      profile->calculate_profile_reciprocal_partial(particles, surface_area,
-                                                    ff_type);
-    else
-      profile->calculate_profile_partial(particles, surface_area, ff_type);
-  }
-  return profile.release();
-}
 }
 
 int main(int argc, char** argv) {
@@ -218,6 +177,7 @@ recommended q value is 0.2")("offset,o",
 (default = false)");
 
   std::string form_factor_table_file;
+  std::string beam_profile_file;
   bool ab_initio = false;
   bool vacuum = false;
   bool javascript = false;
@@ -227,7 +187,9 @@ recommended q value is 0.2")("offset,o",
   hidden.add_options()("input-files", po::value<std::vector<std::string> >(),
                        "input PDB and profile files")(
       "form_factor_table,f", po::value<std::string>(&form_factor_table_file),
-      "ff table name")("ab_initio,a",
+      "ff table name")(
+      "beam_profile", po::value<std::string>(&beam_profile_file),
+      "beam profile file name for desmearing")("ab_initio,a",
                        "compute profile for a bead model with \
 constant form factor (default = false)")(
       "vacuum,v", "compute profile in vacuum (default = false)")(
@@ -310,7 +272,7 @@ constant form factor (default = false)")(
     ft = new FormFactorTable(form_factor_table_file, 0.0, max_q, delta_q);
     reciprocal = true;
   } else {
-    ft = default_form_factor_table();
+    ft = get_default_form_factor_table();
   }
 
   // determine form factor type
@@ -318,7 +280,6 @@ constant form factor (default = false)")(
   if (!heavy_atoms_only) ff_type = ALL_ATOMS;
   if (residue_level) ff_type = CA_ATOMS;
 
-  if (excluded_volume_c1 == 1.0 && water_layer_c2 == 0.0) fit = false;
 
   // 1. read pdbs and profiles, prepare particles
   std::vector<IMP::kernel::Particles> particles_vec;
@@ -331,8 +292,8 @@ constant form factor (default = false)")(
     for (unsigned int i = 0; i < exp_profiles.size(); i++)
       exp_profiles[i]->background_adjust(background_adjustment_q);
   }
-  if (dat_files.size() == 0) fit = false;
-  if (write_partial_profile) fit = true;
+
+  if (excluded_volume_c1 == 1.0 && water_layer_c2 == 0.0 && !write_partial_profile) fit = false;
 
   // 2. compute profiles for input pdbs
   Profiles profiles;
@@ -342,7 +303,8 @@ constant form factor (default = false)")(
               << particles_vec[i].size() << " atoms " << std::endl;
     IMP::base::Pointer<Profile> profile =
         compute_profile(particles_vec[i], 0.0, max_q, delta_q, ft, ff_type,
-                        water_layer_c2, fit, reciprocal, ab_initio, vacuum);
+                        water_layer_c2, fit, reciprocal, ab_initio, vacuum,
+                        beam_profile_file);
 
     // save the profile
     profiles.push_back(profile);
@@ -351,6 +313,9 @@ constant form factor (default = false)")(
     if (write_partial_profile)
       profile->write_partial_profiles(profile_file_name);
     else {  // write normal profile
+      if (excluded_volume_c1 != 1.0 || water_layer_c2 != 0.0) {
+        profile->sum_partial_profiles(excluded_volume_c1, water_layer_c2);
+      }
       profile->add_errors();
       profile->write_SAXS_file(profile_file_name);
       Gnuplot::print_profile_script(pdb_files[i]);
@@ -359,7 +324,6 @@ constant form factor (default = false)")(
     // 3. fit experimental profiles
     for (unsigned int j = 0; j < dat_files.size(); j++) {
       Profile* exp_saxs_profile = exp_profiles[j];
-
       std::string fit_file_name2 =
           trim_extension(pdb_files[i]) + "_" +
           trim_extension(basename(const_cast<char*>(dat_files[j].c_str()))) +
@@ -385,7 +349,7 @@ constant form factor (default = false)")(
         fp = pf->fit_profile(profile, min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
         if (chi_free > 0) {
-          double dmax = compute_max_distance(particles_vec[i]);
+          double dmax = ::compute_max_distance(particles_vec[i]);
           unsigned int ns = IMP::algebra::get_rounded(
               exp_saxs_profile->get_max_q() * dmax / IMP::PI);
           int K = chi_free;

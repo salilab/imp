@@ -17,6 +17,8 @@
 
 #include <IMP/algebra/standard_grids.h>
 
+#include <IMP/atom/StereochemistryPairFilter.h>
+
 namespace {
 
 double soap_score(const IMP::score_functor::Soap* soap_score,
@@ -118,6 +120,40 @@ double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
   }
   return score;
 }
+
+
+double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
+                           IMP::kernel::Model* model,
+                           IMP::kernel::ParticleIndexes& pis,
+                           IMP::atom::StereochemistryPairFilter* filter) {
+
+  IMP::algebra::Vector3Ds coordinates;
+  for (unsigned int i = 0; i < pis.size(); i++) {
+    coordinates.push_back(IMP::core::XYZ(model, pis[i]).get_coordinates());
+  }
+
+  float distance_threshold = soap_score->get_distance_threshold();
+  float distance_threshold2 = distance_threshold * distance_threshold;
+
+  double score = 0.0;
+  for (unsigned int i = 0; i < coordinates.size(); i++) {
+    for (unsigned int j = i+1; j < coordinates.size(); j++) {
+      if (!filter->get_value_index(model, IMP::kernel::ParticleIndexPair(pis[i], pis[j]))) {
+        float dist2 =
+          IMP::algebra::get_squared_distance(coordinates[i], coordinates[j]);
+        if (dist2 < distance_threshold2) {
+          score += soap_score->get_score(
+              model,
+              IMP::kernel::ParticleIndexPair(pis[i], pis[j]),
+              sqrt(dist2));
+        }
+      }
+    }
+  }
+  return score;
+}
+
+
 }
 
 #endif /* IMP_SOAP_SCORE_H */

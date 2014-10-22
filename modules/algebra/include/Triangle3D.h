@@ -1,6 +1,6 @@
 /**
  *  \file IMP/algebra/Triangle3D.h
- *  \brief simple implementation of a triangle in 3D
+ *  \brief Represent a triangle in 3D
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
@@ -17,9 +17,9 @@
 #include "constants.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
-/**
-    \geometry
- */
+
+//! Represent a triangle in 3D
+/** \geometry */
 class IMPALGEBRAEXPORT Triangle3D : public GeometricPrimitiveD<3> {
  public:
   Triangle3D() {}
@@ -41,7 +41,7 @@ class IMPALGEBRAEXPORT Triangle3D : public GeometricPrimitiveD<3> {
 IMP_VALUES(Triangle3D, Triangle3Ds);
 
 //! Return the largest triangle defined by 3 points from the input
-/** See Triangle3D */
+/** \see Triangle3D */
 IMPALGEBRAEXPORT Triangle3D get_largest_triangle(const Vector3Ds &points);
 
 //! Return a transformation between two triangles

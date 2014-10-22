@@ -173,7 +173,7 @@ inline std::istream &operator>>(std::istream &in, VectorD<D> &v) {
 
 //! lexicographic comparison of two vectors
 /** Note that this is not very reliable and probably should not be used.
-    See VectorD
+    \see VectorD
  */
 template <int D>
 inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
@@ -188,22 +188,22 @@ inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
   return 0;
 }
 
-/** See VectorD */
+/** \see VectorD */
 template <int D>
 inline VectorD<D> operator*(double s, VectorD<D> o) {
   return o *= s;
 }
 
-//! compute the squared distance between two vectors
-/** See VectorD
+//! Compute the squared distance between two vectors
+/** \see VectorD
  */
 template <int D>
 inline double get_squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
   return (v1 - v2).get_squared_magnitude();
 }
 
-//! compute the distance between two vectors
-/** See VectorD
+//! Compute the distance between two vectors
+/** \see VectorD
  */
 template <int D>
 inline double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
@@ -216,7 +216,7 @@ inline double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
     \code
     get_basis_vector_d<3>(2)== Vector3D(0,0,1);
     \endcode
-    See VectorD
+    \see VectorD
  */
 template <int D>
 inline VectorD<D> get_basis_vector_d(unsigned int coordinate) {
@@ -361,20 +361,20 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s) {
   return out;
 }
 
-//! Use this before outputing to delimited vector entries with a space
+//! Use this before outputting to delimited vector entries with a space
 /** std::cout << spaces_io(v);
     produces "1.0 2.0 3.0"
-    See VectorD
+    \see VectorD
  */
 template <int D>
 inline SpacesIO<D> spaces_io(const VectorD<D> &v) {
   return SpacesIO<D>(v);
 }
 
-//! Use this before outputing to delimited vector entries with a comma
+//! Use this before outputting to delimited vector entries with a comma
 /** std::cout << commas_io(v);
     produces "1.0, 2.0, 3.0"
-    See VectorD
+    \see VectorD
  */
 template <int D>
 inline CommasIO<D> commas_io(const VectorD<D> &v) {
@@ -413,21 +413,20 @@ typedef VectorD<-1> VectorKD;
 typedef base::Vector<VectorD<-1> > VectorKDs;
 
 #ifndef SWIG
-/** See VectorD \genericgeometry */
+/** \see VectorD \genericgeometry */
 template <class C>
 inline const VectorD<C::DIMENSION> &get_vector_geometry(const C &g) {
   return g;
 }
-/** See VectorD \genericgeometry */
+/** \see VectorD \genericgeometry */
 template <class C, class E>
 inline void set_vector_geometry(C &g, const E &v) {
   g = v;
 }
 #endif
 
-/** See VectorD
-    Return the vector that is the elementwise product of the two.
-*/
+//! Return the vector that is the elementwise product of the two.
+/** \see VectorD */
 template <int D>
 inline VectorD<D> get_elementwise_product(const algebra::VectorD<D> &a,
                                           const algebra::VectorD<D> &b) {
@@ -438,9 +437,8 @@ inline VectorD<D> get_elementwise_product(const algebra::VectorD<D> &a,
   return ret;
 }
 
-/** See VectorD
-    Return the vector that is the elementwise product of the two.
-*/
+//! Return the vector that is the elementwise product of the two.
+/** \see VectorD */
 template <int D>
 inline VectorD<D> get_elementwise_product(const Ints &a,
                                           const algebra::VectorD<D> &b) {

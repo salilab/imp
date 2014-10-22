@@ -24,8 +24,25 @@ def create_test_points(mu, radii):
 
 class TestGaussian(IMP.test.TestCase):
 
-    def setUp(self):
-        IMP.test.TestCase.setUp(self)
+    def test_gauss_rigid_body(self):
+        """Test decorating an existing rigid body as a Gaussian"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        t0 = IMP.algebra.Transformation3D(
+                           IMP.algebra.get_identity_rotation_3d(),
+                           IMP.algebra.Vector3D(0,0,1))
+        r0 = IMP.algebra.ReferenceFrame3D(t0)
+        t1 = IMP.algebra.Transformation3D(
+                           IMP.algebra.get_identity_rotation_3d(),
+                           IMP.algebra.Vector3D(1,0,0))
+        r1 = IMP.algebra.ReferenceFrame3D(t1)
+        r = IMP.core.RigidBody.setup_particle(p, r0)
+        g = IMP.core.Gaussian.setup_particle(p,
+                           IMP.algebra.Gaussian3D(r1, [1,20,30]))
+        t = g.get_reference_frame().get_transformation_to().get_translation()
+        self.assertEqual([x for x in t], [1,0,0])
+
+    def gauss_setup(self):
 
         # setup problem
         self.m = IMP.Model()
@@ -59,6 +76,7 @@ class TestGaussian(IMP.test.TestCase):
         '''check gaussian setup correctly defines the rotation'''
 
         # create test points along axes
+        self.gauss_setup()
         init_test_pts = create_test_points([0, 0, 0], self.std)
 
         # use transform on the points
@@ -95,6 +113,18 @@ class TestGaussian(IMP.test.TestCase):
                 max_min_dist = min_dist
             not_chosen -= set([min_nf])
         self.assertLessEqual(max_min_dist, 3.0)
+
+    def test_gaussian_consistency(self):
+        """ test if gaussian stays a gaussian!"""
+        m = IMP.Model()
+        rbd = IMP.core.RigidBody.setup_particle(IMP.Particle(m, "rb"),
+                                                IMP.algebra.ReferenceFrame3D())
+        p = IMP.Particle(m)
+        IMP.core.Gaussian.setup_particle(p,IMP.algebra.Gaussian3D(
+            IMP.algebra.ReferenceFrame3D(),[1,1,1]))
+        self.assertEqual(IMP.core.Gaussian.get_is_setup(p),True)
+        rbd.add_non_rigid_member(p.get_index())
+        self.assertEqual(IMP.core.Gaussian.get_is_setup(p),True)
 
 if __name__ == '__main__':
     IMP.test.main()

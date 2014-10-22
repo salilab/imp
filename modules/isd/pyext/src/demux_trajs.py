@@ -19,12 +19,12 @@ class LogStep:
         if ftype == 'dump':
             self.dumps[category] = data[0]
         elif ftype == 'traj':
-            self.trajs[category] = {'ftype':data[0],
-                                    'fullpath':data[1],
-                                    'stepno':data[2],
-                                    'tail':data[3]}
+            self.trajs[category] = {'ftype': data[0],
+                                    'fullpath': data[1],
+                                    'stepno': data[2],
+                                    'tail': data[3]}
         else:
-            raise ValueError, "unknown file type"
+            raise ValueError("unknown file type")
 
     def get_stats_header(self):
         return self.header
@@ -54,7 +54,7 @@ class LogHolder:
         # verify that stats file exists
         self.stats_file = os.path.join(folder, prefix + 'stats.txt')
         if not os.path.isfile(self.stats_file):
-            raise ValueError, 'cannot find stats file %s' % self.stats_file
+            raise ValueError('cannot find stats file %s' % self.stats_file)
         # scan for other files
         files = {}
         for fl in os.listdir(folder):
@@ -87,9 +87,8 @@ class LogHolder:
                 # make sure there are no duplicate index numbers
                 if len(self.dumpfiles[cat]) != \
                         len(set(self.dumpfiles[cat].keys())):
-                            raise ValueError, \
-                                "found duplicates in %s %s %s" \
-                                % (folder, prefix, fname)
+                            raise ValueError("found duplicates in %s %s %s"
+                                             % (folder, prefix, fname))
             else:
                 # this is a trajectory, need to be able to parse it
                 fname = fnames[0]
@@ -97,8 +96,8 @@ class LogHolder:
                 if ext.startswith('.rmf'):
                     self.trajfiles[cat] = (ext[1:], fname)
                 else:
-                    raise ValueError, "Unknown extension: %s in file %s" \
-                            % (ext, fname)
+                    raise ValueError("Unknown extension: %s in file %s"
+                                     % (ext, fname))
 
     def get_stats_header(self):
         if not hasattr(self, 'stats_handle'):
@@ -108,7 +107,7 @@ class LogHolder:
             self.stats_handle.readline()
             self.stats_first_line = self.stats_handle.readline()
             if self.stats_first_line.startswith('#'):
-                raise ValueError, 'stats file must be 1-line only'
+                raise ValueError('stats file must be 1-line only')
             self.stats_handle = open(self.stats_file)
             self.stats_header = self.stats_handle.readline()
         return self.stats_header
@@ -178,11 +177,11 @@ class Demuxer:
         # get column number from header
         tokens = [idx for idx, i in enumerate(h0.split()) if self.column in i]
         if len(tokens) == 0:
-            raise ValueError, "column %d not found in this header\n%s" \
-                % (column, h0)
+            raise ValueError("column %d not found in this header\n%s"
+                             % (column, h0))
         elif len(tokens) > 1:
-            raise ValueError, "column %d found multiple times!\n%s" \
-                % (column, h0)
+            raise ValueError("column %d found multiple times!\n%s"
+                             % (column, h0))
         self.colno = tokens[0]
 
     def get_param(self, statline):
@@ -201,16 +200,16 @@ class Demuxer:
     def _write_step_dump(self, stateno, lstep):
         for cat, fname in lstep.get_dumps().iteritems():
             shutil.copyfile(fname, os.path.join(self.folders[stateno],
-                        str(stateno) + '_' + cat + fname.split(cat)[1]))
+                                                str(stateno) + '_' + cat + fname.split(cat)[1]))
 
     def _write_traj_rmf(self, infile, instep, outfile, stateno, cat):
         import RMF
-        #make sure infile is open
+        # make sure infile is open
         if infile not in self.traj_handles_in:
             src = RMF.open_rmf_file_read_only(infile)
             self.traj_handles_in[infile] = src
         src = self.traj_handles_in[infile]
-        #make sure outfile is open
+        # make sure outfile is open
         if outfile not in self.traj_handles_out:
             dest = RMF.create_rmf_file(outfile)
             self.traj_handles_out[outfile] = dest
@@ -218,22 +217,22 @@ class Demuxer:
             RMF.clone_hierarchy(src, dest)
             RMF.clone_static_frame(src, dest)
         dest = self.traj_handles_out[outfile]
-        #clone frame
-        frameid = src.get_frames()[instep-1]
+        # clone frame
+        frameid = src.get_frames()[instep - 1]
         src.set_current_frame(frameid)
         dest.add_frame(src.get_name(frameid), src.get_type(frameid))
         RMF.clone_loaded_frame(src, dest)
 
     def _write_step_traj(self, stateno, lstep):
-        #loop over categories
+        # loop over categories
         for cat, data in lstep.get_trajs().iteritems():
-            destfile = os.path.join(self.outfolder, 'p'+str(stateno),
-                        str(stateno) + '_' + data['tail'])
+            destfile = os.path.join(self.outfolder, 'p' + str(stateno),
+                                    str(stateno) + '_' + data['tail'])
             if data['ftype'].startswith('rmf'):
                 self._write_traj_rmf(data['fullpath'], data['stepno'],
                                      destfile, stateno, cat)
             else:
-                raise ValueError, "unknown trajectory file type"
+                raise ValueError("unknown trajectory file type")
 
     def _write_step(self, stateno, lstep):
         self._write_step_stats(stateno, lstep)
@@ -243,10 +242,10 @@ class Demuxer:
     def write(self):
         # loop over time steps
         log_iterators = [l.items() for l in self.logs]
-        print "Demuxing",len(log_iterators),"replicas"
-        for idx,steps in enumerate(zip(*log_iterators)):
-            if idx % 10 == 0 and idx>0:
-                print "step",idx,'\r',
+        print "Demuxing", len(log_iterators), "replicas"
+        for idx, steps in enumerate(zip(*log_iterators)):
+            if idx % 10 == 0 and idx > 0:
+                print "step", idx, '\r',
                 sys.stdout.flush()
             # assign state numbers to these logs
             params = [(self.get_param(i.get_stats()), i) for i in steps]
@@ -261,7 +260,7 @@ def get_prefix(folder):
     rval = [re.match(r'(.*_)stats.txt', f) for f in os.listdir(folder)]
     rval = [i for i in rval if i]
     if len(rval) != 1:
-        raise ValueError, "stats file not unique, found %d" % len(rval)
+        raise ValueError("stats file not unique, found %d" % len(rval))
     return rval[0].group(1)
 
 if __name__ == '__main__':
@@ -285,9 +284,9 @@ if __name__ == '__main__':
         infolder = './'
         outfolder = './'
     # loop over infolder and read stats files
-    folders = [os.path.join(infolder,f)
+    folders = [os.path.join(infolder, f)
                for f in os.listdir(infolder) if re.match(r'r\d+', f)]
     replica_logs = [LogHolder(f, prefix)
-                    for f,prefix in zip(folders,map(get_prefix,folders))]
+                    for f, prefix in zip(folders, map(get_prefix, folders))]
     demux = Demuxer(replica_logs, outfolder, column, reverse=True)
     demux.write()

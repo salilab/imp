@@ -73,7 +73,7 @@ The chi value is computed relative to the first profile using its error column")
   for (unsigned int i = 1; i < exp_profiles.size(); i++) {
     std::string fit_file =
         "fit" + std::string(boost::lexical_cast<std::string>(i)) + ".dat";
-    float chi = saxs_score->compute_score(exp_profiles[i], use_offset, "fit");
+    float chi = saxs_score->compute_score(exp_profiles[i], use_offset, fit_file);
     std::cout << "File " << files[i] << " chi=" << chi << std::endl;
   }
   return 0;

@@ -22,7 +22,7 @@ class CenteredMat {
 
  public:
   /**
-   * Creates and CenteredMat for the matrx
+   * Creates and CenteredMat for the matrix
    * @param m The matrix
    * @note The center pixel is not provided. It is assumed
    * to be the center of the matrix
@@ -39,7 +39,7 @@ class CenteredMat {
   }
 
   /**
-   * Creates a CenteredMat for the matrx
+   * Creates a CenteredMat for the matrix
    * @param m The matrix
    * @param center_row - The row for the point used as center of CenteredMat
    * @param center_col - The column for the point used as center of CenteredMat
@@ -74,12 +74,12 @@ class CenteredMat {
    */
   int get_end(int i) const { return end_[i]; }
 
-  /**
-   * Returns true if the indices are in the matrix. Remember that the indices
-   * are those respect to the center of CenteredMat
-   * @param i Row
-   * @param j Column
-   * @return True of False
+  //! Returns true if the indices are in the matrix.
+  /** Remember that the indices
+     are those respect to the center of CenteredMat
+     @param i Row
+     @param j Column
+     @return whether all the indices are in the matrix.
    */
   bool get_is_in_range(int i, int j) const {
     if (i < get_start(0) || i > get_end(0)) return false;
@@ -87,8 +87,8 @@ class CenteredMat {
     return true;
   }
 
-  /**
-   * Returns the element (i,j) RELATIVE to the center. Remember then that
+  //! Returns the element (i,j) RELATIVE to the center.
+  /** Remember then that
    * the indices can be negative. For performance the indices out of range
    * are NOT checked
    * @param i row
@@ -102,9 +102,8 @@ class CenteredMat {
     return centered_.at<double>(center_row_ + i, center_col_ + j);
   }
 
-  /**
-   * Shows information about the class
-   * @param out Stream used to show the information
+  //! Shows information about the class
+  /** @param out Stream used to show the information
    */
   void do_show(std::ostream &out) const {
     out << "Matrix of size: (" << centered_.rows << "," << centered_.cols
@@ -116,9 +115,8 @@ class CenteredMat {
   IMP_SHOWABLE_INLINE(CenteredMat, do_show(out));
 
  protected:
-  /**
-   * Sets the starting and ending points for the object. See get_start() and
-   * get_end() for more help
+  //! Sets the starting and ending points for the object.
+  /** See get_start() and get_end() for more help
    */
   void set_starts_and_ends() {
     start_[0] = -center_row_;

@@ -40,14 +40,14 @@ class IMPEMEXPORT CoarseCC : public IMP::base::Object {
              simulated EM map for the model.
       \param[in] scalefactor scale factor to apply to the value of the cross
              correlation term
-      \param[in] recalc_rms determines wheather the RMS of both maps
-                 should be recalcualted prior to the correlation calculation.
-                 False is faster, but potentially innacurate
+      \param[in] recalc_rms determines whether the RMS of both maps
+                 should be recalculated prior to the correlation calculation.
+                 False is faster, but potentially inaccurate
       \param[in] resample if true, the model density map is resampled
-      \param[in] norm_factors if set these precalcualted terms are used
+      \param[in] norm_factors if set these precalculated terms are used
                             for normalization
       \return the value of the cross correlation term: scalefac*(1-ccc)
-      See cross_correlation_coefficient
+      \see cross_correlation_coefficient
    */
   static float calc_score(DensityMap *data, SampledDensityMap *model_map,
                           float scalefactor, bool recalc_rms = true,
@@ -92,11 +92,11 @@ class IMPEMEXPORT CoarseCC : public IMP::base::Object {
                  than threshold
                  in grid2 are not summed (avoid calculating correlation on
                  voxels below the threshold
-      \param[in] allow_padding determines wheather the two maps should be padded
-                 to have the same size before the calcualtion is performed.
+      \param[in] allow_padding determines whether the two maps should be padded
+                 to have the same size before the calculation is performed.
                  If set to false  and the grids are not of the same size,
                  the function will throw an exception.
-      \param[in] norm_factors if set these precacluated terms are used
+      \param[in] norm_factors if set these precalculated terms are used
                               for normalization
       \return the cross correlation coefficient value between two density maps
       \note This is not the local CC function

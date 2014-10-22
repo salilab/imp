@@ -173,13 +173,13 @@
                        ::IMP::base::internal::list_contains(ds)),              \
         lcname##_vector_.end());                                               \
   }                                                                            \
-  /** \brief Set the contents of the container to ps removing all its current  \
-      contents.                                                                \
+  /** \brief Set the contents of the container to ps removing all its current
+      contents.
   */                                                                           \
   template <class List>                                                        \
   void set_##lcnames(List ps) {                                                \
     IMP_OBJECT_LOG;                                                            \
-    /* Bad things can happen if we use a Temp, as things get unreffed          \
+    /* Bad things can happen if we use a Temp, as things get unreffed
        before being reffed if they are in both lists */                        \
     clear_##lcnames();                                                         \
     add_##lcnames(ps);                                                         \
@@ -192,8 +192,8 @@
                     "Reordered elements don't match.");                        \
     lcname##_vector_.clear();                                                  \
     lcname##_vector_.insert(lcname##_vector_.end(), ps.begin(), ps.end());     \
-  } /** \brief add obj to the container                                        \
-        \return index of object within the object                              \
+  } /** \brief add obj to the container
+        \return index of object within the object
      */                                                                        \
   unsigned int add_##lcname(Data obj) {                                        \
     IMP_OBJECT_LOG;                                                            \
@@ -230,8 +230,8 @@
   } /** \brief return true if there are any objects in the container*/         \
   bool get_has_##lcnames() const {                                             \
     return !lcname##_vector_.empty();                                          \
-  } /** Get the object refered to by the index                                 \
-        \throws IndexException in Python if the index is out of range          \
+  } /** Get the object refered to by the index
+        \throws IndexException in Python if the index is out of range
     */                                                                         \
   Data get_##lcname(unsigned int i) const { return lcname##_vector_[i]; }      \
   PluralData get_##lcnames() const {                                           \
@@ -241,8 +241,8 @@
   IMP_EXPOSE_ITERATORS(PluralData, lcname##_vector_, Ucname, Ucnames, lcname,  \
                        lcnames);                                               \
                                                                                \
- protected: /** This method allows one to modify the contents of the container \
-               without                                                         \
+ protected: /** This method allows one to modify the contents of the container
+               without
                 any callbacks being made.*/                                    \
   PluralData& mutable_access_##lcnames() { return lcname##_vector_; }          \
   IMP_NO_DOXYGEN(const PluralData& access_##lcnames() const {                  \
@@ -261,10 +261,10 @@
       IMP_UNUSED(obj);                                                         \
       OnRemoved;                                                               \
     }                                                                          \
-    /* Older GCC (e.g. on Mac OS X 10.4) does not correctly export the         \
-       symbol for this destructor even when the surrounding class is itself    \
-       exported, causing lookup failures in DSOs that use the class.           \
-       Work around this by forcing the symbol to be exported. Ideally, we      \
+    /* Older GCC (e.g. on Mac OS X 10.4) does not correctly export the
+       symbol for this destructor even when the surrounding class is itself
+       exported, causing lookup failures in DSOs that use the class.
+       Work around this by forcing the symbol to be exported. Ideally, we
        should have a configure check for this problem... */                    \
     IMP_FORCE_EXPORT(~Ucname##DataWrapper());                                  \
   };                                                                           \
@@ -356,7 +356,7 @@
     }                                                                          \
   } while (false)
 
-/** See IMP_CONTAINER_FOREACH().
+/** \see IMP_CONTAINER_FOREACH().
 
     This version is for use in a template function. See
     IMP_FOREACH_INDEX() for another version.

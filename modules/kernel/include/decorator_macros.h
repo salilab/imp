@@ -26,8 +26,8 @@
 */
 #define IMP_DECORATOR_METHODS(Name, Parent)                                               \
  public:                                                                                  \
-  /* Should be private but SWIG accesses it through the                 \
-     comparison                                                         \
+  /* Should be private but SWIG accesses it through the
+     comparison
      macros*/ IMP_NO_DOXYGEN( \
       typedef Parent ParentDecorator);                                                    \
   Name() : Parent() {}                                                                    \
@@ -47,18 +47,12 @@
                     << " missing required attributes for decorator "                      \
                     << #Name);                                                            \
   }                                                                                       \
-  /** \deprecated_at{2.1} Check explicitly instead. */                                    \
-  static Name decorate_particle(::IMP::kernel::Particle *p) {                             \
-    IMP_CHECK_OBJECT(p);                                                                  \
-    if (!get_is_setup(p->get_model(), p->get_index())) {                                  \
-      return Name();                                                                      \
-    }                                                                                     \
-    return Name(p);                                                                       \
-  }                                                                                       \
   static bool get_is_setup(const IMP::kernel::ParticleAdaptor &p) {                       \
     return get_is_setup(p.get_model(), p.get_particle_index());                           \
   }                                                                                       \
   IMP_SHOWABLE(Name)
+
+
 
 /** Implement the needed methods for a decorator based on
     - setup_particle()
@@ -77,8 +71,8 @@
     static TraitsType dt = default_traits;                                                 \
     return dt;                                                                             \
   }                                                                                        \
-  /* Should be private but SWIG accesses it through the                  \
-    comparison                                                          \
+  /* Should be private but SWIG accesses it through the
+    comparison
     macros*/ IMP_NO_DOXYGEN( \
       typedef Parent ParentDecorator);                                                     \
   IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits);                             \
@@ -102,15 +96,6 @@
                     << " missing required attributes for decorator "                       \
                     << #Name);                                                             \
   }                                                                                        \
-  /** \deprecated_at{2.1} Check explicitly instead. */                                     \
-  static Name decorate_particle(::IMP::kernel::Particle *p,                                \
-                                const TraitsType &tr = default_traits) {                   \
-    IMP_CHECK_OBJECT(p);                                                                   \
-    if (!get_is_setup(p->get_model(), p->get_index(), tr)) {                               \
-      return Name();                                                                       \
-    }                                                                                      \
-    return Name(p);                                                                        \
-  }                                                                                        \
   static bool get_is_setup(const IMP::kernel::ParticleAdaptor &p,                          \
                            const TraitsType &tr = default_traits) {                        \
     return get_is_setup(p.get_model(), p.get_particle_index(), tr);                        \
@@ -121,7 +106,7 @@
     and other Decorators. To help keep things uniform, we provide macros
     to declare the setup functions. These macros expect that an appropriate
     `do_setup_particle(kernel::Model *, ParticleIndex, args...)` function is
-    defined. But any docs needed before the macro invocation.
+    defined.
 */
 #define IMP_DECORATOR_SETUP_0(Name)                                    \
   /** Setup the particle so it can be used with this decorator. */     \
@@ -387,6 +372,7 @@
 
 //! Define the types for storing sets of decorators
 /** The macro defines the types PluralName and PluralNameTemp.
+    Parent is unused and remains for backward compatability
  */
 #define IMP_DECORATORS(Name, PluralName, Parent) \
   IMP_DECORATORS_DECL(Name, PluralName);         \
@@ -411,10 +397,10 @@
 #define IMP_CONSTRAINT_DECORATOR_DECL(Name)                                \
  private:                                                                  \
   static ObjectKey get_constraint_key();                                   \
- /** set a constraint associated with this decorator that applies 'before' \
-     and 'after' before and after evaluation. The constraint is added as \
-     a model ScoreState. If before and after are Null, the constraint is \
-     reset and removed from the model list of score states.             \
+ /** set a constraint associated with this decorator that applies 'before'
+     and 'after' before and after evaluation. The constraint is added as
+     a model ScoreState. If before and after are Null, the constraint is
+     reset and removed from the model list of score states.
  */                                                                     \
  static void set_constraint(SingletonModifier* before,                  \
                               SingletonDerivativeModifier* after, Model* m, \
@@ -446,7 +432,7 @@
             m->get_attribute(get_constraint_key(), pi)));                 \
         m->remove_attribute(get_constraint_key(), pi);                    \
       }                                                                   \
-    } else {                                                              \
+    } else {                                                            \
       Constraint* ss = new core::SingletonConstraint(                     \
           before, after, m, pi,                                           \
           std::string(#Name "updater for ") + m->get_particle_name(pi));  \
@@ -483,25 +469,25 @@
     /** Sets up Name over particles in pis */                         \
     static void do_setup_particle(kernel::Model *m, ParticleIndex pi, \
                                   const ParticleIndexes &pis);        \
-    /** Sets up Name over particles passed by applying the refiner      \
-        over the particle pi                                            \
+    /** Sets up Name over particles passed by applying the refiner
+        over the particle pi
     */                                                                  \
     static void do_setup_particle(kernel::Model *m, ParticleIndex pi,   \
                                   Refiner *ref);                      \
                                                                       \
    public:                                                            \
     IMP_DECORATOR_METHODS(Name, Parent);                              \
-    /** Sets up Name over members, and constrains Name to be          \
-        computed before model evaluation and to propogate derivatives \
-        folllowing model evaulation.                                  \
-        SetupDoc                                                      \
+    /** Sets up Name over members, and constrains Name to be
+        computed before model evaluation and to propogate derivatives
+        folllowing model evaulation.
+        SetupDoc
     */                                                                \
     IMP_DECORATOR_SETUP_1(Name, ParticleIndexesAdaptor, members);     \
-    /** Sets up Name over particles passed by applying the refiner      \
-        over the particle pi, and constrains Name to be computed before \
-        model evaluation and to propogate derivatives following model   \
-        evaluation.                                                      \
-        SetupDoc                                                        \
+    /** Sets up Name over particles passed by applying the refiner
+        over the particle pi, and constrains Name to be computed before
+        model evaluation and to propogate derivatives following model
+        evaluation.
+        SetupDoc
     */                                                                  \
     IMP_DECORATOR_SETUP_1(Name, Refiner *, refiner);                  \
     static bool get_is_setup(kernel::Model *m, ParticleIndex pi) {    \
@@ -519,7 +505,7 @@
   IMP_DECORATORS(Name, Name##s, Parent##s)
 
 
-/** See IMP_SUMMARIZE_DECORATOR_DECL()
+/** \see IMP_SUMMARIZE_DECORATOR_DECL()
     \param[in] Name The name for the decorator
     \param[in] Parent the parent decorator type
     \param[in] Members the way to pass a set of particles in
@@ -566,7 +552,7 @@
    IMP_SUMMARIZE_DECORATOR_DECL(Name, Parent, Member, )
 
 // for backward compatability
-/** See IMP_SUMMARY_DECORATOR_DECL()
+/** \see IMP_SUMMARY_DECORATOR_DECL()
     \param[in] Name The name for the decorator
     \param[in] Parent the parent decorator type
     \param[in] Members the way to pass a set of particles in

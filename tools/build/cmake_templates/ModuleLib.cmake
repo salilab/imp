@@ -39,6 +39,22 @@ else()
 endif()
 set_target_properties(IMP.%(name)s-lib PROPERTIES
                       OUTPUT_NAME imp_%(name)s)
+
+# Note that soversion is only set if a version is set in the *source* directory.
+# This is because we have to set soversion at cmake, not build, time. All stable
+# releases have a VERSION file in the source directory, so this should be OK.
+IF (EXISTS ${CMAKE_SOURCE_DIR}/modules/%(name)s/VERSION)
+  file(STRINGS ${CMAKE_SOURCE_DIR}/modules/%(name)s/VERSION sover
+       REGEX "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$")
+ELSEIF(EXISTS ${CMAKE_SOURCE_DIR}/VERSION)
+  file(STRINGS ${CMAKE_SOURCE_DIR}/VERSION sover
+       REGEX "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$")
+ENDIF()
+IF (NOT "${sover}" STREQUAL "")
+  set_target_properties(IMP.%(name)s-lib PROPERTIES
+                        VERSION ${sover} SOVERSION ${sover})
+ENDIF()
+
 set_property(TARGET "IMP.%(name)s-lib" PROPERTY FOLDER "IMP.%(name)s")
 
 INSTALL(TARGETS IMP.%(name)s-lib DESTINATION ${CMAKE_INSTALL_LIBDIR})

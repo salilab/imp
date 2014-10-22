@@ -1,6 +1,6 @@
 /**
  *  \file Geometry.cpp
- *  \brief XXXX.
+ *  \brief Implement geometry for the basic shapes from IMP.algebra.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

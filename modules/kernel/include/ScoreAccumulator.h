@@ -89,7 +89,7 @@ class IMPKERNELEXPORT ScoreAccumulator : public base::Value {
   }
 
   //! Return if the score already exceeds the maximum
-  /** Expensive restraints can check this during evaluation to determin
+  /** Expensive restraints can check this during evaluation to determine
       if another restraint has aborted evaluation.
   */
   bool get_abort_evaluation() const {
@@ -108,7 +108,7 @@ class IMPKERNELEXPORT ScoreAccumulator : public base::Value {
   }
 
   /** Return true if the current evaluation being done is one where
-      scores are only consider if they are below some threshold
+      scores are only considered if they are below some threshold
       (get_maximum()). */
   bool get_is_evaluate_if_below() const { return global_max_ != NO_MAX; }
   /** Return true if the current evaluation should abort if any restraint

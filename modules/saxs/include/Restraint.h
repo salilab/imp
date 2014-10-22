@@ -28,7 +28,7 @@ IMPSAXS_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
     The restraint takes rigid bodies into account, in order
-    to speed up the calculations. Rigid body should be gived as single
+    to speed up the calculations. Rigid body should be given as single
     RigidBody Particle. Other, non-rigid body Particles can also be given.
 
     The shape of a rigid body is assumed to be defined by the set of

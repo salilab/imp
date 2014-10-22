@@ -51,8 +51,8 @@ class IMPDISPLAYEXPORT SingletonsGeometry : public Geometry {
   IMP::base::PointerMember<SingletonContainer> sc_;
 
  public:
-  SingletonsGeometry(SingletonContainer *pc, Color c);
-  SingletonsGeometry(SingletonContainer *pc);
+  SingletonsGeometry(SingletonContainerAdaptor pc, Color c);
+  SingletonsGeometry(SingletonContainerAdaptor pc);
 
   SingletonContainer *get_container() const { return sc_; }
 

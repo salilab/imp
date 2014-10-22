@@ -1,6 +1,7 @@
-# Ligand Score
+# ligand_score {#ligand_score_bin}
 
-To score ligand poses, use the `ligand_score` command line tool.
+Score ligand poses.
+To score the poses, use the `ligand_score` command line tool.
 
 Two different scoring files are provided:
     - protein_ligand_pose_score.lib for use when one wants to find the

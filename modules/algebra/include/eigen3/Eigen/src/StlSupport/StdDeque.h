@@ -11,7 +11,7 @@
 #ifndef IMP_EIGEN_STDDEQUE_H
 #define IMP_EIGEN_STDDEQUE_H
 
-#include "Eigen/src/StlSupport/details.h"
+#include "details.h"
 
 // Define the explicit instantiation (e.g. necessary for the Intel compiler)
 #if defined(__INTEL_COMPILER) || defined(__GNUC__)
@@ -78,11 +78,11 @@ namespace std {
 
   template<typename T>
   class deque<T,IMP_EIGEN_ALIGNED_ALLOCATOR<T> >
-    : public deque<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
-                   IMP_Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> >
+    : public deque<IMP_EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
+                   IMP_Eigen::aligned_allocator_indirection<IMP_EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> >
 {
-  typedef deque<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
-                IMP_Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> > deque_base;
+  typedef deque<IMP_EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
+                IMP_Eigen::aligned_allocator_indirection<IMP_EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> > deque_base;
   IMP_EIGEN_STD_DEQUE_SPECIALIZATION_BODY
 
   void resize(size_type new_size)

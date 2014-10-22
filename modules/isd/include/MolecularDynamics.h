@@ -20,14 +20,14 @@ IMPISD_BEGIN_NAMESPACE
 //! Molecular dynamics optimizer on 1-D and 3-D particles
 /** The particles to be optimized must be XYZs or Nuisances, and should have a
  * non-optimizable mass.
- * \see MolecularDynamics in the atom module for more details
+ * \see atom::MolecularDynamics for more details
  */
 class IMPISDEXPORT MolecularDynamics : public atom::MolecularDynamics {
  public:
   /** Score based on the provided model */
   MolecularDynamics(kernel::Model *m = nullptr);
 
-  //! \return the current kinetic energy of the system, in kcal/mol
+  //! Return the current kinetic energy of the system, in kcal/mol
   Float get_kinetic_energy() const;
 
   //! Assign velocities representative of the given temperature

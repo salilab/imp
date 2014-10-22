@@ -69,7 +69,7 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   }
 
  public:
-  /** Will accept a list of floats from python. */
+  /** Will accept a list of floats from Python. */
   template <class Range>
   explicit VectorBaseD(const Range &r) {
     if (D != -1 && static_cast<int>(boost::distance(r)) != D) {
@@ -99,15 +99,15 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
     }
     data_.set_coordinates(boost::begin(r), boost::end(r));
   }
-  /** Return the ith Cartesian coordinate. In 3D use [0] to get
-      the x coordinate etc.*/
+  //! Return the ith Cartesian coordinate.
+  /** In 3D use [0] to get the x coordinate etc. */
   inline double operator[](unsigned int i) const {
     IMP_ALGEBRA_VECTOR_CHECK_INDEX(i);
     IMP_ALGEBRA_VECTOR_CHECK;
     return data_.get_data()[i];
   }
-  /** Return the ith Cartesian coordinate. In 3D use [0] to get
-      the x coordinate etc. */
+  //! Return the ith Cartesian coordinate.
+  /** In 3D use [0] to get the x coordinate etc. */
   inline double &operator[](unsigned int i) {
     IMP_ALGEBRA_VECTOR_CHECK_INDEX(i);
     return data_.get_data()[i];
@@ -133,7 +133,6 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
 
 #ifndef IMP_DOXYGEN
   double operator*(const VectorBaseD<D> &o) const {
-    IMP_ALGEBRA_VECTOR_CHECK_COMPATIBLE(o);
     return get_scalar_product(o);
   }
 
@@ -188,16 +187,6 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
 #ifndef SWIG
   typedef double *iterator;
   typedef const double *const_iterator;
-  /** \deprecated_at{2.2} Use begin(). */
-  IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.2)
-  iterator coordinates_begin() { return data_.get_data(); }
-  iterator coordinates_end() { return data_.get_data() + get_dimension(); }
-  /** \deprecated_at{2.2} Use begin(). */
-  IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.2)
-  const_iterator coordinates_begin() const { return data_.get_data(); }
-  const_iterator coordinates_end() const {
-    return data_.get_data() + get_dimension();
-  }
   iterator begin() { return data_.get_data(); }
   iterator end() { return data_.get_data() + get_dimension(); }
   const_iterator begin() const { return data_.get_data(); }
@@ -217,12 +206,11 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   // For some reason, this method breaks IMP::atom::get_rmsd() in Python, so
   // hide it from SWIG
   Floats get_coordinates() const {
-    return Floats(coordinates_begin(), coordinates_end());
+    return Floats(begin(), end());
   }
 
-  /** Return a pointer to the data stored.
-
-      Useful for conversion to other types. */
+  //! Return a pointer to the data stored.
+  /** Useful for conversion to other types. */
   const double *get_data() const { return data_.get_data(); }
 #endif
   unsigned int get_dimension() const { return data_.get_dimension(); }
@@ -231,12 +219,11 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   internal::VectorData<double, D, false> data_;
 };
 
+//! Returns a unit vector pointing at the same direction as this vector.
 /**
-   Returns a unit vector pointing at the same direction as this vector.
-
    @note If the magnitude of this vector is smaller than 1e-12
          (an arbitrarily selected small number), returns a unit
-         vector pointing at a random direction
+         vector pointing at a random direction.
  */
 template <class VT>
 inline VT get_unit_vector(VT vt) {

@@ -26,7 +26,7 @@ class GenericAttributeSingletonScore : public SingletonScore {
   FloatKey k_;
 
  public:
-  //! Apply function f to attribete k
+  //! Apply function f to attribute k
   GenericAttributeSingletonScore(UnaryFunction *f, FloatKey k);
   virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
@@ -59,7 +59,7 @@ inline Float GenericAttributeSingletonScore<UF>::evaluate_index(
 }
 #endif
 
-/** For python users. C++ users should use create_attribute_singleton_score().*/
+/** For Python users. C++ users should use create_attribute_singleton_score().*/
 typedef GenericAttributeSingletonScore<UnaryFunction> AttributeSingletonScore;
 
 /** Provide a compile time binding version of AttributeSingletonScore,

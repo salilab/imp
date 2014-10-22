@@ -21,7 +21,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Return all unordered pairs of particles taken from the SingletonContainer
-/*  See also AllBipartitePairContainer, ClosePairContainer,
+/*  \see AllBipartitePairContainer, ClosePairContainer,
     CloseBipartitePairContainer for variants on the functionality provided.
  */
 class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {

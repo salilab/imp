@@ -45,7 +45,7 @@
 
 #elif defined(IMP_DOXYGEN)
 /* The destructor is unprotected for SWIG since if it is protected
-   SWIG does not wrap the Python proxy distruction and so does not
+   SWIG does not wrap the Python proxy destruction and so does not
    dereference the ref counted pointer. SWIG also gets confused
    on template friends.
 */

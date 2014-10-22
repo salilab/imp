@@ -23,7 +23,7 @@ class IMPEMEXPORT MRCReaderWriter : public MapReaderWriter {
   MRCReaderWriter() {}
   //! Constructor
   /**
-   * param[in] fn name of the file to open or write
+   * \param[in] fn name of the file to open or write
    */
   MRCReaderWriter(std::string fn) { filename = fn; }
 #if !defined(DOXYGEN) && !defined(SWIG)
@@ -51,25 +51,25 @@ class IMPEMEXPORT MRCReaderWriter : public MapReaderWriter {
   void seek_to_data();
   //! Write function
   /**
-   * param[in] fn name of the file to write
+   * \param[in] fn name of the file to write
    */
   void write(const char *fn) { return write(fn, grid); }
 
   //! Write function
   /**
-   * param[in] fn name of the file to write
-   * param[in] pt pointer to the data to write
+   * \param[in] fn name of the file to write
+   * \param[in] pt pointer to the data to write
    */
   void write(const char *fn, const float *pt);
   //! Writes the header
   /**
-   * param[in] s stream to write the header
+   * \param[in] s stream to write the header
    */
   void write_header(std::ofstream &s);
   //! Writes data
   /**
-   * param[in] s stream to write the data
-   * param[in] pt pointer to the data
+   * \param[in] s stream to write the data
+   * \param[in] pt pointer to the data
    */
   void write_data(std::ofstream &s, const float *pt);
 

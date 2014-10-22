@@ -27,7 +27,7 @@ class Tests(IMP.test.TestCase):
             mh_simp = IMP.atom.create_simplified_along_backbone(
                 IMP.atom.Chain(chains[0].get_particle()),
                 res_segment)
-            #IMP.atom.show_molecular_hierarchy(mh_simp)
+            # IMP.atom.show_molecular_hierarchy(mh_simp)
             o = self._residual_cond(num_residues % res_segment)
             lvs = IMP.core.get_leaves(mh_simp)
             self.assertEqual(num_residues / res_segment + o, len(lvs))

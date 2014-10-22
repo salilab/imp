@@ -36,13 +36,8 @@
 
 #ifndef IMP_DOXYGEN
 #ifdef __GNUC__
-//! Use this to label a function with no side effects
-/** \advanced */
 #define IMP_NO_SIDEEFFECTS __attribute__((pure))
-//! Use this to make the compiler (possibly) warn if the result is not used
-/** \advanced */
 #define IMP_WARN_UNUSED_RESULT __attribute__((warn_unused_result))
-//! restrict means that a variable is not aliased with this function
 #define IMP_RESTRICT __restrict__
 
 #else
@@ -51,6 +46,15 @@
 #define IMP_RESTRICT
 #endif
 
+#else
+//! Use this to label a function with no side effects
+/** \advanced */
+#define IMP_NO_SIDEEFFECTS
+//! Use this to make the compiler (possibly) warn if the result is not used
+/** \advanced */
+#define IMP_WARN_UNUSED_RESULT
+//! restrict means that a variable is not aliased with this function
+#define IMP_RESTRICT
 #endif
 
 #ifdef __clang__
@@ -62,10 +66,19 @@
 #define IMP_COMPILER_HAS_OVERRIDE 0
 #endif
 
+#ifdef IMP_DOXYGEN
+//! Cause a compile error if this method does not override a parent method
+/** This is helpful to catch accidental mismatches of call signatures between
+    the method and the parent method, which would cause the method to be
+    overloaded rather than overridden. Usually this macro should be used
+    whenever implementing a method that is declared virtual in the parent. */
+#define IMP_OVERRIDE
+#else
 #if IMP_COMPILER_HAS_OVERRIDE
 #define IMP_OVERRIDE override
 #else
 #define IMP_OVERRIDE
+#endif
 #endif
 
 #if defined(IMP_SWIG_WRAPPER)
@@ -79,10 +92,15 @@
 #define IMP_COMPILER_HAS_FINAL 0
 #endif
 
+#ifdef IMP_DOXYGEN
+//! Have the compiler report an error if anything overrides this method
+#define IMP_FINAL
+#else
 #if IMP_COMPILER_HAS_FINAL
 #define IMP_FINAL final
 #else
 #define IMP_FINAL
+#endif
 #endif
 
 #if defined(__GNUC__) && __cplusplus >= 201103L
@@ -128,14 +146,6 @@
 #define IMP_CLANG_PRAGMA(x)
 #define IMP_GCC_PRAGMA(x)
 #define IMP_VC_PRAGMA(x)
-#endif
-
-#ifndef IMP_DOXYGEN
-#if defined(BOOST_LITTLE_ENDIAN)
-#define IMP_LITTLE_ENDIAN
-#else
-#define IMP_BIG_ENDIAN
-#endif
 #endif
 
 #ifdef __clang__

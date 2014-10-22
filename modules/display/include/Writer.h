@@ -95,7 +95,7 @@ class IMPDISPLAYEXPORT TextWriter : public Writer {
 
  protected:
   void open();
-  //! Get the stream for inhereting classes to write to
+  //! Get the stream for inheriting classes to write to
   std::ostream& get_stream() { return out_; }
 
   virtual void do_set_frame() IMP_OVERRIDE;
@@ -115,7 +115,7 @@ class IMPDISPLAYEXPORT TextWriter : public Writer {
   */
   TextWriter(std::string name);
 
-  //! get the name of the current file being writter
+  //! get the name of the current file being written
   std::string get_current_file_name() const {
     if (file_name_.find("%1%") != std::string::npos) {
       IMP_USAGE_CHECK(get_frame() >= 0, "No frame set");

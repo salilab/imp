@@ -87,7 +87,7 @@ def try_point(i, j, k):
     print "after", d.get_coordinates()
     mag = to_move.get_coordinates().get_magnitude()
 
-    converge_color = IMP.display.get_grey_color(1.0 / (1.0 + mag))
+    converge_color = IMP.display.get_gray_color(1.0 / (1.0 + mag))
     # display the distance after optimization at this position
     sg = IMP.display.SphereGeometry(IMP.algebra.Sphere3D(vc, 1))
     sg.set_color(converge_color)

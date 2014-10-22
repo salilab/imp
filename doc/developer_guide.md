@@ -1,6 +1,7 @@
-# Developer Guide #
+Developer Guide {#devguide}
+===============
 
-# Developing with IMP # {#devguide}
+# Developing with IMP #
 [TOC]
 
 This page presents instructions on how to develop code using
@@ -13,19 +14,19 @@ The input files in the IMP directory are structured as follows:
   are [documented below](#devguide_scripts).
 - `doc` contains inputs for general IMP overview documentation (such as this
   page), as well as configuration scripts for `doxygen`.
-- `applications` contains various applications implementing using a variety of
-  IMP modules.
-- each subdirectory of `module/` defines a module; they all have the same
-  structure. The directory for module `name` has
-   the following structure
+- `applications` contains various applications implementing easier-to-use
+  command line functionality, using a variety of IMP modules.
+- each subdirectory of `modules/` defines a module; they all have the same
+  structure. The directory for module `name` has the following structure:
    - `README.md` contains a module overview
    - `include` contains the C++ header files
    - `src` contains the C++ source files
    - `bin` contains C++ source files each of which is built into an executable
    - `pyext` contains files defining the Python interface to the module as well
       as Python source files (in `pyext/src`)
-   - `test` contains test files, that can be run with `ctest`.
-   - `doc` contains additional documentation that is provided via `.dox` files
+   - `test` contains test files, that can be run with `ctest`
+   - `doc` contains additional documentation that is provided via `.dox`
+     or `.md` files
    - `examples` contains examples in Python and C++, as well as any data needed
       for examples
    - `data` contains any data files needed by the module
@@ -36,12 +37,12 @@ When IMP is built, a number of directories are created in the build directory. T
  - `lib` where the C++ and Python libraries are placed. Module `name` is built
     into a C++ library `lib/libimp_name.so` (or `.dylib` on a Mac) and a Python
     library with Python files located in `lib/IMP/name` and the binary part in
-    `lib/_IMP_name.so.`
+    `lib/_IMP_name.so`
  - `doc` where the html documentation is placed in `doc/html` and the examples
     in `doc/examples` with a subdirectory for each module
  - `data` where each module gets a subdirectory for its data.
 
-When IMP is installed, the structure from the `build` directory is
+When IMP is installed, the structure from the build directory is
 moved over more or less intact except that the C++ and Python
 libraries are put in the (different) appropriate locations.
 
@@ -50,15 +51,15 @@ libraries are put in the (different) appropriate locations.
 
 The easiest way to start writing new functions and classes is to
 create a new module using [make-module.py](\ref dev_tools_make_module).
-This creates a new module in the `modules` directory or simply use the
-`scratch` module.
+This creates a new module in the `modules` directory. Alternatively, you can
+simply use the `scratch` module.
 
 We highly recommend using a revision control system such as
 [git](http://git-scm.com/) or [svn](http://subversion.tigris.org/) to
 keep track of changes to your module.
 
-If, instead, you choose to add code to an existing module you need to
-consult with the person who people who control that module. Their names
+If, instead, you choose to add code to an existing module, you need to
+consult with the person or people who control that module. Their names
 can be found on the module main page.
 
 When designing the interface for your new code, you should
@@ -83,7 +84,7 @@ When designing the interface for your new code, you should
 - look for easy ways of splitting the functionality into pieces. It
   generally makes sense, for %example, to split selection of the
   particles from the action taken on them, either by accepting a
-  IMP::kernel::Refiner, or a IMP::kernel::SingletonContainer or just an arbitrary
+  IMP::kernel::Refiner, a IMP::kernel::SingletonContainer or just an arbitrary
   IMP::kernel::ParticleIndexes object.
 
 
@@ -100,7 +101,7 @@ To ensure code consistency and readability, certain conventions
 must be adhered to when writing code for IMP. Some of these
 conventions are automatically checked for by source control before
 allowing a new commit, and can also be checked yourself in new
-code by running [check_standards.py](#devguide_check_standards) files_to_check`.
+code by running [check_standards.py](#devguide_check_standards).
 
 ### Indentation ### {#devguide_indentation}
 
@@ -112,8 +113,8 @@ All Python code should conform to the [Python style
 guide](http://www.python.org/dev/peps/pep-0008/).  In essence this
 translates to 4-space indents, no tabs, and similar class, method and
 variable naming to the C++ code. You can ensure that your Python code
-is correctly indented by using the `tools/reindent.py` script,
-available as part of the IMP distribution.
+is correctly indented by using the
+[cleanup_code.py script](\ref dev_tools_clang_format).
 
 ### Names ### {#devguide_names}
 
@@ -164,7 +165,7 @@ want to provide output that can be read back in.
 
 Classes and methods should use IMP exceptions to report errors. See
 IMP::base::Exception for a list of existing exceptions. See
-[checks](base_2exception_8h.html) for more information.
+[checks](exception_8h.html) for more information.
 
 ### Namespaces ### {#devguide_namespace}
 
@@ -233,14 +234,14 @@ The first set are assert-style macros:
 - IMP_INTERNAL_CHECK() which should be used to verify internal state
   and return values to make sure they satisfy pre and post-conditions.
 
-See [checks](base_2exception_8h.html) page for more details. As a
+See [checks](exception_8h.html) page for more details. As a
 general guideline, any improper usage to produce at least a warning
 all return values should be checked by such code.
 
 The second is logging macros such as:
 
 - IMP_LOG() which allows controlled display of messages about what the
-  code is doing. See [logging](base_2log_8h.html) for more information.
+  code is doing. See [logging](log_8h.html) for more information.
 
 Finally, each module has a set of unit tests. The
 tests are located in the `modules/modulename/test` directory.
@@ -456,20 +457,20 @@ are free to borrow.
 
 Below are a suggestions prompted by bugs found in code submitted to IMP.
 
-- Never use '`using` `namespace'` outside of a function; instead
-      explicitly provide the namespace. (This avoids namespace pollution, and
-      removes any ambiguity.)
+- Never use '`using namespace`' outside of a function; instead
+  explicitly provide the namespace. (This avoids namespace pollution, and
+  removes any ambiguity.)
 
 - Never use the preprocessor to define constants. Use `const`
   variables instead. Preprocessor symbols don't have scope or type
   and so can have unexpected effects.
 
-- Don't expect IMP::base::Object::get_name() names to be unique, they
+- Don't expect IMP::base::Object::get_name() names to be unique; they
   are there for human viewing. If you need a unique identifier
   associated with an object or non-geometric value, just use the
   object or value itself.
 
-- Pass other objects by value or by `const` & (if the object is
+- Pass other objects by value or by `const &` (if the object is
       large) and store copies of them.
 
 - Never expose member variables in an object which has
@@ -483,7 +484,7 @@ Below are a suggestions prompted by bugs found in code submitted to IMP.
 - Clearly mark any file that is created by a script so that other
       people know to edit the original file.
 
-- Always return a `const` value or `const` ref if you are not
+- Always return a `const` value or `const` reference if you are not
       providing write access. Returning a `const` copy means the
       compiler will report an error if the caller tries to modify the
       return value without creating a copy of it.

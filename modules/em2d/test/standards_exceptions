@@ -1,5 +1,6 @@
 spelling_exceptions=['pdb', 'matlab', 'ccs']
 show_exceptions=["ResultAlign2D", "IntsOrder"]
+function_name_exceptions=['crop']
 value_object_exceptions=["Pixel",
                                           "ResultAlign2D",
                                           "pair_cluster_id_distance",

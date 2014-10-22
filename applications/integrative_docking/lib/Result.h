@@ -38,6 +38,7 @@ class Result {
     return transformation_;
   }
 
+  void set_score(float score) { score_ = score; }
   void set_z_score(float z_score) { z_score_ = z_score; }
 
   friend std::ostream& operator<<(std::ostream& s, const Result& p) {

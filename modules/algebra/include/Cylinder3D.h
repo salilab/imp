@@ -18,8 +18,9 @@
 #include "constants.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
-/** It does what is says.
 
+//! Represent a cylinder in 3D.
+/**
     \geometry
 */
 class IMPALGEBRAEXPORT Cylinder3D : public GeometricPrimitiveD<3> {

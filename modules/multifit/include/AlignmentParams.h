@@ -174,7 +174,7 @@ struct EVParams {
       << " k=" << hlb_k_
       << " maximum_ev_score_for_pair:" << maximum_ev_score_for_pair_
       << " allowed_percentage_of_bad_pairs:" << allowed_percentage_of_bad_pairs_
-      << " scoing_mode:" << scoring_mode_ << std::endl;
+      << " scoring_mode:" << scoring_mode_ << std::endl;
   }
   float pair_distance_, pair_slack_, hlb_mean_, hlb_k_,
       maximum_ev_score_for_pair_;
@@ -256,7 +256,7 @@ struct ComplementarityParams {
     s << "complementarity params: max_score=" << max_score_
       << " max penetration:" << max_penetration_
       << " interior layer thickness:" << interior_layer_thickness_
-      << " boundary coeffiecent:" << boundary_coef_
+      << " boundary coefficient:" << boundary_coef_
       << " complementarity coefficient: " << comp_coef_
       << " penetration coefficient: " << penetration_coef_ << std::endl;
   }

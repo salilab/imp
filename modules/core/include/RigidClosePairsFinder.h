@@ -14,7 +14,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Peform more efficient close pair finding when rigid bodies are involved.
+//! Perform more efficient close pair finding when rigid bodies are involved.
 /** The class finds all close pairs consisting of particles taken from the
     passed list(s) (if they are not rigid bodies) or members of rigid
     bodies passed as input. That is, given an input list \c l, for each
@@ -41,11 +41,11 @@ IMPCORE_BEGIN_NAMESPACE
 
     \note The bounding spheres are kept in internal coordinates for
     the rigid body and transformed on the fly. It would probably be
-    faster to cache the tranformed results.
+    faster to cache the transformed results.
 
     \note The particles are divided up using a grid. The number of
     grid cells to use should be explored. In addition, with highly
-    excentric sets of points, there will be too many cells.
+    eccentric sets of points, there will be too many cells.
 
     \note Do not reuse RigidClosePairsFinders for different sets of
     particles from the same rigid body.

@@ -17,7 +17,6 @@
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/base/Object.h>
-//#include <IMP/compatibility/nullptr.h>
 #include <IMP/base/exception.h>
 #include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/algebra/Vector3D.h>
@@ -56,7 +55,7 @@ class IMPKINEMATICSEXPORT RevoluteJoint : public Joint {
   **/
   RevoluteJoint(IMP::core::RigidBody parent, IMP::core::RigidBody child);
 
-  // pure virtual dtr to declare as abstrat class for SWIG
+  // pure virtual dtr to declare as abstract class for SWIG
   virtual ~RevoluteJoint() = 0;
 
   /******* getter / setter methods *********/
@@ -99,16 +98,16 @@ class IMPKINEMATICSEXPORT RevoluteJoint : public Joint {
 
   /**
       this protected method updates the rot_axis_unit_vector_
-      and rot_axis_origin_ variables based on the cartesian witnesses
+      and rot_axis_origin_ variables based on the Cartesian witnesses
       appropriate for a specific implementation of this abstract class,
-      using parent coordinates, assuming all caresian witnesses are updated
+      using parent coordinates, assuming all Cartesian witnesses are updated
   */
   virtual void update_axis_of_rotation_from_cartesian_witnesses() = 0;
 
   /**
-      this protected method uses the cartesian witnesses to compute
+      this protected method uses the Cartesian witnesses to compute
       the actual current angle of this joint (assuming external coordinates
-      of required cartesian witnesses are up to date).
+      of required Cartesian witnesses are up to date).
       @note this method does not update the angle stored in this joint,
             which may be strictly different (if external or internal coords
             are outdated)
@@ -129,7 +128,7 @@ class IMPKINEMATICSEXPORT RevoluteJoint : public Joint {
   /**
      Returns the transformation matrix for rotating a vector in
      parent coordinates about the axis of the joint, in a way that
-     would bring the cartesian witnesses to the correct joint angle
+     would bring the Cartesian witnesses to the correct joint angle
      (as measured by get_angle_from_cartesian_witnesses() ).
    */
   IMP::algebra::Transformation3D
@@ -170,7 +169,7 @@ class IMPKINEMATICSEXPORT RevoluteJoint : public Joint {
 /********************** DihedralAngleRevoluteJoint ***************/
 //     @TODO handle derivatives
 
-/** A revolute joint that is parametrized as a dihedral angle between
+/** A revolute joint that is parameterized as a dihedral angle between
     two planes */
 class IMPKINEMATICSEXPORT DihedralAngleRevoluteJoint : public RevoluteJoint {
  public:
@@ -197,13 +196,13 @@ class IMPKINEMATICSEXPORT DihedralAngleRevoluteJoint : public RevoluteJoint {
       updates the rot_axis_unit_vector_ and rot_axis_origin_ variables
       in parent coordinates based on the witnesses b_ and c_,
       using b_-c_ as the axis of rotation
-      @note it is assumed b_ and c_ have update cartesian coordinates
+      @note it is assumed b_ and c_ have update Cartesian coordinates
   */
   virtual void update_axis_of_rotation_from_cartesian_witnesses() {
     using namespace IMP::algebra;
     IMP_USAGE_CHECK(
         get_distance(b_.get_coordinates(), c_.get_coordinates()) > 1e-12,
-        "witnesses b and c must be non identical beyone numerical error");
+        "witnesses b and c must be non identical beyond numerical error");
     ReferenceFrame3D rf_parent = get_parent_node().get_reference_frame();
     // nice_print_trans(rf_parent.get_transformation_to(), "Parent trans: ");
     rot_axis_origin_ = rf_parent.get_local_coordinates(b_.get_coordinates());
@@ -220,9 +219,9 @@ class IMPKINEMATICSEXPORT DihedralAngleRevoluteJoint : public RevoluteJoint {
   };
 
   /**
-      this protected method uses the cartesian witnesses to compute
+      this protected method uses the Cartesian witnesses to compute
       the actual current dihedral angle of this joint (assuming
-      external coordinates of required cartesian witnesses are up to
+      external coordinates of required Cartesian witnesses are up to
       date)
   */
   virtual double get_current_angle_from_cartesian_witnesses() const;
@@ -237,7 +236,7 @@ class IMPKINEMATICSEXPORT DihedralAngleRevoluteJoint : public RevoluteJoint {
 /********************** BondAngleRevoluteJoint ***************/
 // TODO: do we want to handle derivatives?
 
-/** A revolute joint that is parametrized as a bond angle between three
+/** A revolute joint that is parameterized as a bond angle between three
     particles
  */
 class IMPKINEMATICSEXPORT BondAngleRevoluteJoint : public RevoluteJoint {
@@ -262,9 +261,9 @@ class IMPKINEMATICSEXPORT BondAngleRevoluteJoint : public RevoluteJoint {
 
  protected:
   /**
-     this protected method uses the cartesian witnesses to compute the
+     this protected method uses the Cartesian witnesses to compute the
      actual current bond angle of this joint (assuming external
-     coordinates of required cartesian witnesses are up to date)
+     coordinates of required Cartesian witnesses are up to date)
   */
   virtual double get_current_angle_from_cartesian_witnesses() const;
 

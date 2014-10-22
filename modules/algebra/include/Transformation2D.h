@@ -110,15 +110,14 @@ class IMPALGEBRAEXPORT Transformation2D : public GeometricPrimitiveD<2> {
   Transformation2D get_inverse() const;
 
  private:
-  Vector2D trans_;  // tranlation
+  Vector2D trans_;  // translation
   Rotation2D rot_;  // rotation
 };
 
 IMP_VALUES(Transformation2D, Transformation2Ds);
 
 //! Returns a transformation that does not do anything
-/**
-  See Transformation2D
+/** \see Transformation2D
 **/
 inline Transformation2D get_identity_transformation_2d() {
   return Transformation2D(get_identity_rotation_2d(), Vector2D(0.0, 0.0));
@@ -130,16 +129,16 @@ inline Transformation2D get_identity_transformation_2d() {
   \param[in] point Center to rotate about
   \param[in] rotation The rotation to perform (defined taking the origin as
   reference, not the new point).
-  See Transformation2D
+  \see Transformation2D
 */
 inline Transformation2D get_rotation_about_point(const Vector2D &point,
                                                  const Rotation2D &rotation) {
   return Transformation2D(rotation, (rotation.get_rotated(-point) + point));
 }
 
-//! compose two transformations
+//! Compose two transformations
 /** For any vector v (a*b)*v = a*(b*v).
-    See Transformation2D
+    \see Transformation2D
  */
 inline Transformation2D compose(const Transformation2D &a,
                                 const Transformation2D &b) {

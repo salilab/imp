@@ -4,40 +4,44 @@
 
 \section tools Command line tools
 
-<b>emagefit.py</b>. This script can be used for all the stages of modeling:
+\subsection emagefit_bin emagefit: Run all steps of modeling
+This script performs
 Docking, Monte Carlo optimization, gathering of solutions from the Monte Carlo
 runs, DOMINO sampling, and finally writing the resulting models.
 
-<b>emagefit_dock.py</b>. A wrapper for the program HEXDOCK. It uses HEXDOCK
+\subsection emagefit_dock_bin emagefit_dock: Docking using the HEXDOCK program
+This uses HEXDOCK
 in text mode to perform a docking of a subunit (the ligand) into another
 subunit (the receptor). The script can be used as a standalone program to
 perform a docking or write the solutions. The script can be modified to use
 any docking program, by making a couple of changes:
 
-  - The class <tt>HexDocking</tt> is used only from emagefit.py and uses
+  - The class <tt>HexDocking</tt> is used only from emagefit and uses
     the <tt>dock()</tt> method. This class can be replaced with another class
     that provides a <tt>dock()</tt> method that saves the results to a file.
-  - emagefit.py also calls the functions <tt>read_hex_transforms()</tt>
+  - emagefit also calls the functions <tt>read_hex_transforms()</tt>
     and <tt>filter_docking_results()</tt>. The only function that needs to be
     adapated for a different docking program is <tt>parse_hex_transform()</tt>,
     which both of them use.
 
-<b>emagefit_cluster.py</b>. Performs clustering of the solutions stored in a
-database file. It can be run as a standalone program. The help of the script
+\subsection emagefit_cluster_bin emagefit_cluster: Performs clustering of the solutions stored in a database file.
+This can be run as a standalone program. The help of the script
 gives the parameters required, and a typical command is:
 
 \code{.sh}
-emagefit_cluster.py --exp config_step_3.py --db domino_solutions.db --o clusters.db --n 100 --orderby em2d --log clusters.log --rmsd 10
+emagefit_cluster --exp config_step_3.py --db domino_solutions.db --o clusters.db --n 100 --orderby em2d --log clusters.log --rmsd 10
 \endcode
 
 To write the elements of the first cluster:
 
 \code{.sh}
-emagefit.py --exp config_step_3.py --o domino_solutions.db --wcl clusters.db 1
+emagefit --exp config_step_3.py --o domino_solutions.db --wcl clusters.db 1
 \endcode
 
-<b>emagefit_score.py</b>. This script returns the em2d score for a model using
-the EM images. It is useful for comparing models obtained by other sampling
+\subsection emagefit_score_bin emagefit_score: Scores a model using EM images.
+
+This script returns the em2d score. It is useful for comparing models
+obtained by other sampling
 algorithms apart from the one described in the EMageFit paper.
 To score a model the parameters required are:
 
@@ -60,8 +64,13 @@ To score a model the parameters required are:
 An example:
 
 \code{.sh}
-emagefit_score.py structure.pdb myimages.sel 3.6 20 5 100
+emagefit_score structure.pdb myimages.sel 3.6 20 5 100
 \endcode
+
+\subsection convert_spider_to_jpg_bin convert_spider_to_jpg: Image conversion utility for EMageFit.
+
+This utility can be used to convert one or more EM images from Spider format
+to JPG.
 
 \section em2d_pkg IMP.em2d Python package utilities
 

@@ -127,15 +127,21 @@ def link(source, target, verbose=False):
     else:
         shutil.copy(spath, tpath)
 
+def has_python_hashbang(fname):
+    line = open(fname).readline()
+    return line.startswith('#!') and 'python' in line
+
+def filter_pyapps(fname):
+    """A Python application ends in .py, or starts with #!(something)python;
+       exclude dependencies.py."""
+    return os.path.isfile(fname) and not fname.endswith('dependencies.py') \
+           and (fname.endswith('.py') or has_python_hashbang(fname))
 
 def link_dir(source_dir, target_dir, match=["*"], exclude=[],
-             clean=True, verbose=False):
+             clean=True, verbose=False, filt=None):
     if not isinstance(match, list):
-        adkfjads
-        lkfjd
-        laskjfdl
-        k
-    exclude = exclude + ["SConscript", "CMakeLists.txt", ".svn"]
+        raise TypeError("Expecting a list object for match")
+    exclude = exclude + ["SConscript", "CMakeLists.txt", "Files.cmake", ".svn"]
     # print "linking", source_dir, target_dir
     mkdir(target_dir, clean=False)
     if clean:
@@ -147,6 +153,8 @@ def link_dir(source_dir, target_dir, match=["*"], exclude=[],
     targets = {}
     for m in match:
         files.extend(get_glob([os.path.join(source_dir, m)]))
+    if filt:
+        files = [x for x in files if filt(x)]
     for g in files:
         name = os.path.split(g)[1]
         if name not in exclude:
@@ -506,11 +514,14 @@ def get_dependent_dependencies(modules, dependencies, extra_data_path,
 
 
 def get_module_version(module, source_dir):
-    in_module = os.path.join(source_dir, "modules", module, "VERSION")
+    in_module_source = os.path.join(source_dir, "modules", module, "VERSION")
+    in_module_build = os.path.join("modules", module, "VERSION")
     in_source = os.path.join(source_dir, "VERSION")
     in_build = "VERSION"
-    if os.path.exists(in_module):
-        return open(in_module, "r").read().strip()
+    if os.path.exists(in_module_source):
+        return open(in_module_source, "r").read().strip()
+    elif os.path.exists(in_module_build):
+        return open(in_module_build, "r").read().strip()
     elif os.path.exists(in_source):
         return open(in_source, "r").read().strip()
     else:

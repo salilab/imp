@@ -1,12 +1,16 @@
 /**
- *  \file Image2D.h   \brief A basic image class
+ *  \file IMP/em2d/internal/Image2D.h
+ *  \brief A basic image class
  *
+ *  \authors Dina Schneidman
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMP_IMAGE_2D_H
-#define IMP_IMAGE_2D_H
+#ifndef IMPEM2D_INTERNAL_IMAGE_2D_H
+#define IMPEM2D_INTERNAL_IMAGE_2D_H
+
+#include <IMP/em2d/em2d_config.h>
 
 #include "ImageTransform.h"
 
@@ -24,6 +28,8 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+
+IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
 int symm_round(double r) {
@@ -161,12 +167,13 @@ void Image2D<T>::read_PGM(const std::string& filename) {
         break;
       case 'P':  // format magick number
         infile.get(ftype);
+        infile.getline(line, MAX_LENGTH);
         break;
       default:  // return the first character
         infile.putback(c);
         break;
     }
-    if (ftype != ' ') break;  // magick number read
+    if (ftype != ' ' && isdigit(c)) break;  // magick number read and the next line is numbers
   }
 
   int width, height, maxval;
@@ -940,4 +947,6 @@ ImageTransform Image2D<T>::pca_align(const Image2D<T>& image) const {
                         0.0);  // 0 for area_score
 }
 
-#endif /* IMP_IMAGE_2D_H */
+IMPEM2D_END_INTERNAL_NAMESPACE
+
+#endif /* IMPEM2D_INTERNAL_IMAGE_2D_H */

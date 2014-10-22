@@ -66,9 +66,9 @@ class Tests(IMP.test.TestCase):
         rb1 = IMP.core.RigidBody.setup_particle(p1, [ps[2], ps[3]])
         rb01 = IMP.core.RigidBody.setup_particle(p01, [rb0, rb1])
         #dg = IMP.get_dependency_graph(m)
-        #dg.show()
+        # dg.show()
         #ordered = IMP.get_update_order(m.get_score_states())
-        #print [o.get_name() for o in ordered]
+        # print [o.get_name() for o in ordered]
         self._perturb_all(ds + [rb0, rb1, rb01])
         self._try_separate_particles(rb0, rb1)
         self._check_distance(ps[0], ps[1], 1)

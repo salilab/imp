@@ -1,16 +1,17 @@
 Welcome to the IMP library documentation.
  Throughout the documentation we refer to two, overlapping sets of people.
-- _users_ write python scripts to use existing IMP functionality
+- _users_ write Python scripts to use existing IMP functionality
 - _developers_ develop new methods for scoring, sampling or representation,
-   and hopefully contribute them back to IMP central
+   and hopefully contribute them back to IMP central.
  Various pieces of documentation are marked as being intended for developers.
 
 In addition to the tabs above that take you to individual module, class and function documentation, we have the following pages to help users get started:
 - [Installing IMP](@ref installation)
 - [Introduction](@ref introduction)
 - [Tutorial](../tutorial/index.html)
-- [Change history](@ref ChangeLog)
-- [Modules and Applications](@ref allmod)
+- [Change history](@ref changelog)
+- [Modules](namespaces.html)
+- [Applications](@ref applications)
 - [Biological systems modeled in IMP](http://integrativemodeling.org/systems/)
 - [Wiki](https://github.com/salilab/imp/wiki)
 - [Mailing lists](http://integrativemodeling.org/contact.html)

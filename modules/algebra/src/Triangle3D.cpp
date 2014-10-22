@@ -10,7 +10,7 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 namespace {
-//! Return true if the vectors are paralel
+//! Return true if the vectors are parallel
 bool get_are_parallel(const Vector3D &v1, const Vector3D &v2) {
   double dot_p = v1 * v2;
   double det1 = v1.get_magnitude();
@@ -66,7 +66,7 @@ Triangle3D get_largest_triangle(const Vector3Ds &points) {
   return Triangle3D(triple[0], triple[1], triple[2]);
 }
 namespace {
-ReferenceFrame3D get_reference_frame_of_triagle(Triangle3D t) {
+ReferenceFrame3D get_reference_frame_of_triangle(Triangle3D t) {
   Vector3D p0 = t.get_point(0);
   Vector3D p1 = t.get_point(1);
   Vector3D p2 = t.get_point(2);
@@ -84,8 +84,8 @@ ReferenceFrame3D get_reference_frame_of_triagle(Triangle3D t) {
 
 Transformation3D get_transformation_from_first_triangle_to_second(
     Triangle3D first_tri, Triangle3D second_tri) {
-  ReferenceFrame3D first_ref = get_reference_frame_of_triagle(first_tri);
-  ReferenceFrame3D second_ref = get_reference_frame_of_triagle(second_tri);
+  ReferenceFrame3D first_ref = get_reference_frame_of_triangle(first_tri);
+  ReferenceFrame3D second_ref = get_reference_frame_of_triangle(second_tri);
   return get_transformation_from_first_to_second(first_ref, second_ref);
 }
 

@@ -80,7 +80,7 @@ class IMPMISCEXPORT CustomXYZR : public core::XYZ {
 IMP_DECORATORS(CustomXYZR, CustomXYZRs, core::XYZs);
 
 //! Compute the distance between a pair of particles
-/** See XYZR
+/** \see XYZR
  */
 inline double get_distance(CustomXYZR a, CustomXYZR b) {
   return IMP::algebra::get_distance(a.get_sphere(), b.get_sphere());

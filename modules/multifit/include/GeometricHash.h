@@ -132,7 +132,7 @@ class GeometricHash {
     return neighbors(center, radii_);
   }
 
-  /* Return the hash map */
+  //! Return the hash map
   GeomMap const &Map() const { return gmap_; }
 
   iterator begin() { return gmap_.begin(); }
@@ -143,7 +143,7 @@ class GeometricHash {
 
   const_iterator end() const { return gmap_.end(); }
 
-  /* Return vector of buckets */
+  //! Return vector of buckets
   BucketList get_buckets() const {
     BucketList result;
     for (typename GeomMap::const_iterator p = gmap_.begin(); p != gmap_.end();
@@ -152,7 +152,7 @@ class GeometricHash {
     return result;
   }
 
-  /* Remove all data from the hash map */
+  //! Remove all data from the hash map
   void clear() { gmap_.clear(); }
 
   PointList const *bucket(const Point &pt) const {

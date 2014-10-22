@@ -83,7 +83,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object {
   // c++ only
   IMP_Eigen::MatrixXd get_posterior_covariance_matrix(FloatsList x) const;
 #endif
-  // for python
+  // for Python
   FloatsList get_posterior_covariance_matrix(FloatsList x, bool) const;
 
 #ifndef SWIG
@@ -95,7 +95,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object {
   // derivative: d(cov(q,q))/(dparticle_i)
   IMP_Eigen::VectorXd get_posterior_covariance_derivative(Floats x) const;
 #endif
-  // for python
+  // for Python
   Floats get_posterior_covariance_derivative(Floats x, bool) const;
 
 #ifndef SWIG
@@ -107,7 +107,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object {
   // hessian: d(cov(q,q))/(dparticle_i dparticle_j)
   IMP_Eigen::MatrixXd get_posterior_covariance_hessian(Floats x) const;
 #endif
-  // for python
+  // for Python
   FloatsList get_posterior_covariance_hessian(Floats x, bool) const;
 
   // needed for restraints using gpi

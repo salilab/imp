@@ -18,7 +18,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Decorator for particles representing the parameters
-//! Rotation and tranlation. In this cases, the translation is the translation
+//! Rotation and translation. In this cases, the translation is the translation
 //! to apply to the model in 3D, in order to perform the registration
 class IMPEM2DEXPORT ProjectionParameters : public Decorator {
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi);
@@ -39,11 +39,11 @@ class IMPEM2DEXPORT ProjectionParameters : public Decorator {
       kernel::Model *m, const algebra::Vector3D &min_translation_values,
       const algebra::Vector3D &max_translation_values);
 
-  //!Return true of the particle is a set of projection parameters
+  //! Return true if the particle is a set of projection parameters
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi);
 
   //! Get whether the parameters are optimized
-  /*! \return true only if all of them are optimized.
+  /** \return true only if all of them are optimized.
     */
   bool get_parameters_optimized() const {
     for (int i = 0; i < 6; ++i) {

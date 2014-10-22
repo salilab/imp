@@ -26,7 +26,7 @@ MapDistanceTransform::MapDistanceTransform(IMP::em::DensityMap *map,
   normalized_ = false;
   rms_calculated_ = false;
 
-  // init neighbour voxels offsets
+  // init neighbor voxels offsets
   for (int x = -1; x <= 1; x++) {
     for (int y = -1; y <= 1; y++) {
       for (int z = -1; z <= 1; z++) {
@@ -65,10 +65,10 @@ void MapDistanceTransform::compute_distance_transform() {
 
   // Find envelope voxels and mark zero in the grid. Envelope voxel is a
   // voxel belonging to map object with one or more background voxel
-  // neighbours
+  // neighbors
   for (long l = 0; l < get_number_of_voxels(); l++) {
     if (data_[l] > 0.0) {  // l belongs to object
-      // iterate neighbours
+      // iterate neighbors
       for (unsigned int j = 0; j < neighbors_.size(); j++) {
         long nindex = l + neighbors_[j];
         if (nindex >= 0 && nindex < get_number_of_voxels() &&

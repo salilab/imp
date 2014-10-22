@@ -20,7 +20,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 /**
    A DOFs sampler that acts on a set of backbone dihedral joints
-   and samples uniformaly over each of them
+   and samples uniformly over each of them
  */
 class IMPKINEMATICSEXPORT UniformBackboneSampler : public DOFsSampler {
  public:

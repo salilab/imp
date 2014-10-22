@@ -20,7 +20,7 @@
 #include <iostream>
 
 IMPKERNEL_BEGIN_NAMESPACE
-//! ScoreStates maintian invariants in the Model.
+//! ScoreStates maintain invariants in the Model.
 /** ScoreStates allow actions to be taken before and after the restraint
     evaluation process. Such code can be used to, for example:
     - log the optimization process
@@ -47,6 +47,8 @@ IMPKERNEL_BEGIN_NAMESPACE
     functions. As a result, the ScoreStates are applied in opposite order
     after evaluate. If you have a ScoreState for which this is not true,
     consider splitting it into two parts.
+
+    \see Model::add_score_state().
  */
 class IMPKERNELEXPORT ScoreState : public ModelObject {
   int update_order_;
@@ -83,7 +85,7 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   IMP_REF_COUNTED_DESTRUCTOR(ScoreState);
 };
 
-/** Return an appropriate (topoligically sorted) order to update
+/** Return an appropriate (topologically sorted) order to update
     the score states in. */
 IMPKERNELEXPORT ScoreStatesTemp get_update_order(ScoreStatesTemp input);
 

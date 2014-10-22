@@ -19,8 +19,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! A container which contains all consecutive pairs from an input  list
-//  of particles
+//! A container which contains all consecutive particle pairs from an input list
 /** If it is assumed that each particle is in at most one such container,
     then ExclusiveConsecutivePairContainer should be used instead,
     since it is faster when doing certain computations.
@@ -33,7 +32,7 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
   IntKey key_;
   /**
      add the key of this container as an attribute to all particles
-     if there might be ovrlaps - create a different keys for each instance
+     if there might be overlaps - create a different key for each instance
   */
   void init();
 
@@ -76,6 +75,9 @@ class IMPCONTAINEREXPORT ConsecutivePairFilter : public PairPredicate {
   base::PointerMember<ConsecutivePairContainer> cpc_;
 
  public:
+  /** @param cpc the consecutive pair container that stores
+                 filtered pairs
+  */
   ConsecutivePairFilter(ConsecutivePairContainer *cpc);
 
   virtual int get_value_index(kernel::Model *,
@@ -114,7 +116,9 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
                            const kernel::ParticleIndexPair &pp) {
     ObjectKey ok =
         ExclusiveConsecutivePairContainer::get_exclusive_object_key();
-    if (!m->get_has_attribute(ok, pp[0]) || !m->get_has_attribute(ok, pp[1]))
+    bool has_eok_0 = m->get_has_attribute(ok, pp[0]);
+    bool has_eok_1= m->get_has_attribute(ok, pp[1]);
+    if ( !has_eok_0 || !has_eok_1 )
       return false;
     if (m->get_attribute(ok, pp[0]) != m->get_attribute(ok, pp[1])) {
       return false;
@@ -128,6 +132,14 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
 
  protected:
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE { return 0; }
+
+  /**
+      Called by Object destructor - removes all keys associated with
+      the exclusive consecutive pair container, so it can be now added to
+      another exclusive consecutive pair container
+  */
+  virtual void do_destroy();
+
 
  public:
   //! apply to each item in container

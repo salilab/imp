@@ -110,6 +110,9 @@ algebra::Vector2D get_peak(cv::Mat &m, double *value);
 //! computes the weighted centroid of a matrix, with the values of the matrix
 algebra::Vector2D get_weighted_centroid(const cv::Mat &m);
 
+void my_meanStdDev(const cv::Mat &m, cv::Scalar &mean,
+                   cv::Scalar &stddev);
+
 IMPEM2D_END_INTERNAL_NAMESPACE
 
 #endif /* IMPEM2D_INTERNAL_IMAGE_PROCESSING_HELPER_H */

@@ -1,8 +1,6 @@
-# FoXS
+# foxs {#foxs_bin}
 
-FoXS is a simple command line tool for determining small angle X-ray (SAXS)
-profiles.
-
+Determine small angle X-ray (SAXS) profiles.
 The IMP.saxs module contains functions that, given an atomic protein structure,
 can calculate its SAXS profile using the Debye formula, and then fit this
 profile against the experimentally determined one. FoXS is a simple command

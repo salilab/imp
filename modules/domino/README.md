@@ -1,3 +1,5 @@
+\brief Divide-and-conquer inferential optimization in discrete space.
+
 Traditional optimizers require the data be encoded as a single (or a small number of) scoring function and then move the particles with a variety of random and downhill steps to try to find configurations of the particles which minimize the scoring function used. These sampling processes, in practice, provide no guarantees about whether the true minimal solutions. Since they depend on a scoring function, the set of solutions they do find are sensitive to the relative weights of the terms coming from different types of data, which can be difficult to choose correctly. Finally, the choice of which type of moves to take an when can make a large difference.
 
 # How Domino is different
@@ -39,4 +41,4 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - See main IMP papers list.
+ - See [main IMP papers list](@ref publications).

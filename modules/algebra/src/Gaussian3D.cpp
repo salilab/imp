@@ -1,6 +1,6 @@
 /**
  *  \file  Gaussian3D.cpp
- *  \brief gaussian shape
+ *  \brief Gaussian shape
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */

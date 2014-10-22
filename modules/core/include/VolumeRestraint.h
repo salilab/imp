@@ -1,6 +1,6 @@
 /**
  *  \file IMP/core/VolumeRestraint.h
- *  \brief A prevent spheres from inter-penetrating
+ *  \brief A restraint that prevents spheres from inter-penetrating
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
@@ -15,7 +15,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 #if defined(IMP_CORE_USE_IMP_CGAL) || defined(IMP_DOXYGEN)
-//! kernel::Restraint the volume of a set of spheres
+//! A restraint that prevents spheres from inter-penetrating
 /** \note This restraint does not support derivatives.
     \note This restraint requires CGAL.*/
 class IMPCOREEXPORT VolumeRestraint : public kernel::Restraint {

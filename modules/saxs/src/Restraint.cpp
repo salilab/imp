@@ -50,7 +50,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator* acc) const {
   IMP_NEW(Profile, resampled_profile, ());
   profile_fitter_->resample(model_profile, resampled_profile);
 
-  std::vector<double> effect_size;  // gaussian model-specific derivative
+  std::vector<double> effect_size;  // Gaussian model-specific derivative
                                     // weights
   Float offset = 0.0;
   Float c = profile_fitter_->compute_scale_factor(model_profile);

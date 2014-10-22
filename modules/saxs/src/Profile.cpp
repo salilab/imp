@@ -18,6 +18,7 @@
 #include <IMP/algebra/LinearFit.h>
 #include <IMP/constants.h>
 #include <IMP/base/random.h>
+#include <IMP/base/nullptr_macros.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/random.hpp>
@@ -38,19 +39,23 @@ Profile::Profile(Float qmin, Float qmax, Float delta)
       min_q_(qmin),
       max_q_(qmax),
       delta_q_(delta),
+      c1_(10),
+      c2_(10),
       experimental_(false),
       average_radius_(1.58),
       average_volume_(17.5),
-      id_(0) {
+      id_(0),
+      beam_profile_(IMP_NULLPTR) {
   set_was_used(true);
-  ff_table_ = default_form_factor_table();
+  ff_table_ = get_default_form_factor_table();
 }
 
 Profile::Profile(const String& file_name, bool fit_file)
     : base::Object("profile%1%"),
       experimental_(true),
       name_(file_name),
-      id_(0) {
+      id_(0),
+      beam_profile_(IMP_NULLPTR) {
   set_was_used(true);
   if (fit_file) experimental_ = false;
   read_SAXS_file(file_name, fit_file);
@@ -88,7 +93,12 @@ void Profile::read_SAXS_file(const String& file_name, bool fit_file) {
     boost::split(split_results, line, boost::is_any_of("\t "),
                  boost::token_compress_on);
     if (split_results.size() < 2 || split_results.size() > 5) continue;
+
+    if (split_results[0].find_first_not_of("1234567890.-+Ee") != std::string::npos)
+      continue; // not a number
+
     q = atof(split_results[0].c_str());
+
     if (fit_file) {
       if (split_results.size() != 3) continue;
       intensity = atof(split_results[2].c_str());
@@ -270,7 +280,7 @@ void Profile::read_partial_profiles(const String& file_name) {
   }
   in_file.close();
 
-  sum_partial_profiles(1.0, 0.0);
+  sum_partial_profiles(1.0, 0.0, false);
 
   // determine qmin, qmax and delta
   if (size() > 1) {
@@ -452,7 +462,7 @@ void Profile::calculate_profile_partial(const kernel::Particles& particles,
   squared_distributions_2_partial_profiles(r_dist);
 
   // compute default profile c1 = 1, c2 = 0
-  sum_partial_profiles(1.0, 0.0);
+  sum_partial_profiles(1.0, 0.0, false);
 }
 
 void Profile::calculate_profile_partial(const kernel::Particles& particles1,
@@ -528,14 +538,19 @@ void Profile::calculate_profile_partial(const kernel::Particles& particles1,
   squared_distributions_2_partial_profiles(r_dist);
 
   // compute default profile c1 = 1, c2 = 0
-  sum_partial_profiles(1.0, 0.0);
+  sum_partial_profiles(1.0, 0.0, false);
 }
 
-void Profile::sum_partial_profiles(Float c1, Float c2) {
+void Profile::sum_partial_profiles(Float c1, Float c2, bool check_cashed) {
   // precomputed exp function
   static internal::ExpFunction ef(square(get_max_q()) * 0.3, 0.00001);
 
   if (partial_profiles_.size() == 0) return;
+
+  // check if the profiles are already summed by this c1/c2 combination
+  if (check_cashed && fabs(c1_ - c1) <= 0.000001 && fabs(c2_ - c2) <= 0.000001)
+    return;
+
   // implements volume fitting function G(s) as described
   // in crysol paper eq. 13
   Float rm = average_radius_;
@@ -568,6 +583,9 @@ void Profile::sum_partial_profiles(Float c1, Float c2) {
     }
     set_intensity(k, intensity);
   }
+  // cache new c1/c2 values
+  c1_ = c1;
+  c2_ = c2;
 }
 
 void Profile::resample(const Profile* exp_profile, Profile* resampled_profile,
@@ -740,7 +758,7 @@ void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist) {
 }
 
 void Profile::squared_distribution_2_profile(
-    const RadialDistributionFunction& r_dist) {
+                                    const RadialDistributionFunction& r_dist) {
   init();
   // precomputed sin(x)/x function
   static internal::SincFunction sf(
@@ -748,20 +766,35 @@ void Profile::squared_distribution_2_profile(
 
   // precompute square roots of distances
   std::vector<float> distances(r_dist.size(), 0.0);
-  for (unsigned int r = 0; r < r_dist.size(); r++)
+  for (unsigned int r = 0; r < r_dist.size(); r++) {
     if (r_dist[r] != 0.0) {
       distances[r] = sqrt(r_dist.get_distance_from_index(r));
     }
+  }
+
+  bool use_beam_profile = false;
+  if (beam_profile_ != IMP_NULLPTR && beam_profile_->size() > 0)
+    use_beam_profile = true;
 
   // iterate over intensity profile
   for (unsigned int k = 0; k < size(); k++) {
     // iterate over radial distribution
     for (unsigned int r = 0; r < r_dist.size(); r++) {
       if (r_dist[r] != 0.0) {
-        // x = sin(dq)/dq
-        float dist = distances[r];
-        float x = dist * q_[k];
-        x = sf.sinc(x);
+        Float dist = distances[r];
+        Float x = 0.0;
+        if(use_beam_profile) {
+          // iterate over beam profile
+          for (unsigned int t = 0; t < beam_profile_->size(); t++) {
+            // x = 2*I(t)*sinc(sqrt(q^2+t^2)) multiply by 2 because of the symmetry of the beam
+            float x1 = dist * sqrt((q_[k]*q_[k] + beam_profile_->q_[t]*beam_profile_->q_[t]));
+            x += 2 * beam_profile_->intensity_[t] * sf.sinc(x1);
+          }
+        } else {
+          // x = sin(dq)/dq
+          x = dist * q_[k];
+          x = sf.sinc(x);
+        }
         // multiply by the value from distribution
         intensity_[k] += r_dist[r] * x;
       }
@@ -793,16 +826,30 @@ void Profile::squared_distributions_2_partial_profiles(
     }
   }
 
+  bool use_beam_profile = false;
+  if (beam_profile_ != IMP_NULLPTR && beam_profile_->size() > 0)
+    use_beam_profile = true;
+
   // iterate over intensity profile
   for (unsigned int k = 0; k < q_.size(); k++) {
     // iterate over radial distribution
     for (unsigned int r = 0; r < r_dist[0].size(); r++) {
-      // x = sin(dq)/dq
-      Float dist = distances[r];
-      Float x = dist * q_[k];
-      x = sf.sinc(x);
-      // iterate over partial profiles
       if (r_dist[0][r] > 0.0) {
+        Float dist = distances[r];
+        Float x = 0.0;
+        if(use_beam_profile) {
+          // iterate over beam profile
+          for (unsigned int t = 0; t < beam_profile_->size(); t++) {
+            // x = 2*I(t)*sinc(sqrt(q^2+t^2)) multiply by 2 because of the symmetry of the beam
+            float x1 = dist * sqrt((q_[k]*q_[k] + beam_profile_->q_[t]*beam_profile_->q_[t]));
+            x += 2 * beam_profile_->intensity_[t] * sf.sinc(x1);
+          }
+        } else {
+          // x = sin(dq)/dq
+          x = dist * q_[k];
+          x = sf.sinc(x);
+        }
+        // iterate over partial profiles
         for (int i = 0; i < r_size; i++) {
           // multiply by the value from distribution
           partial_profiles_[i][k] += r_dist[i][r] * x;
@@ -946,7 +993,8 @@ void Profile::offset(Float c) {
 void Profile::copy_errors(const Profile* exp_profile) {
   if (size() != exp_profile->size()) {
     IMP_THROW("Profile::copy_errors is supported "
-                  << "only for profiles with the same q values!",
+              << "only for profiles with the same q values!"
+              << size() << " vs. " <<  exp_profile->size(),
               ValueException);
   }
   // assumes same q values!!!
@@ -984,7 +1032,7 @@ void Profile::profile_2_distribution(RadialDistributionFunction& rd,
 void Profile::calculate_profile_reciprocal(const kernel::Particles& particles,
                                            FormFactorType ff_type) {
   if (ff_type == CA_ATOMS) {
-    IMP_WARN("Reciprocal space profile calculation is not suported for"
+    IMP_WARN("Reciprocal space profile calculation is not supported for"
              << "residue level" << std::endl);
     return;
   }
@@ -1024,7 +1072,7 @@ void Profile::calculate_profile_reciprocal_partial(
     const kernel::Particles& particles, const Floats& surface,
     FormFactorType ff_type) {
   if (ff_type == CA_ATOMS) {
-    IMP_WARN("Reciprocal space profile calculation is not suported for"
+    IMP_WARN("Reciprocal space profile calculation is not supported for"
              << "residue level" << std::endl);
     return;
   }
@@ -1098,7 +1146,7 @@ void Profile::calculate_profile_reciprocal_partial(
   }  // end of loop1
 
   // compute default profile c1 = 1, c2 = 0
-  sum_partial_profiles(1.0, 0.0);
+  sum_partial_profiles(1.0, 0.0, false);
 }
 
 IMPSAXS_END_NAMESPACE

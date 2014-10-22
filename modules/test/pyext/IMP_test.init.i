@@ -76,6 +76,16 @@ class RunInTempDir(object):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
 
+class TempDir(object):
+    """Simple RAII-style class to make a temporary directory. When the object
+       is created, the temporary directory is created. When the object goes
+       out of scope, the temporary directory is deleted."""
+    def __init__(self, dir):
+        self.tmpdir = tempfile.mkdtemp(dir=dir)
+    def __del__(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
+
 def numerical_derivative(func, val, step):
     """Calculate the derivative of the single-value function `func` at
        point `val`. The derivative is calculated using simple finite
@@ -167,11 +177,11 @@ class TestCase(unittest.TestCase):
         return open(self.get_input_file_name(filename), mode)
 
     def get_tmp_file_name(self, filename):
-        """Get the full name of an output file in the build/tmp directory."""
-        dirpath=os.environ['IMP_TMP_DIR']
-        if not os.path.exists(dirpath):
-            os.mkdir(dirpath)
-        return os.path.join(dirpath, filename)
+        """Get the full name of an output file in the tmp directory."""
+        if not hasattr(self, '_tmpdir'):
+            self._tmpdir = TempDir(os.environ['IMP_TMP_DIR'])
+        tmpdir = self._tmpdir.tmpdir
+        return os.path.join(tmpdir, filename)
 
     def get_magnitude(self, vector):
         return sum([x*x for x in vector], 0)**.5
@@ -307,7 +317,7 @@ class TestCase(unittest.TestCase):
                 if name in ok:
                     continue
                 bad.append(name)
-        message="All IMP classes should be labeled values or as objects to get memory management correct in python. The following are not:\n%s\nPlease add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the python wrapper, or if the class has a good reason to be neither, add the name to the value_object_exceptions list in the IMPModuleTest call." \
+        message="All IMP classes should be labeled as values or objects to get memory management correct in Python. The following are not:\n%s\nPlease add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the Python wrapper, or if the class has a good reason to be neither, add the name to the value_object_exceptions list in the IMPModuleTest call." \
                           % (str(bad))
         self.assertEquals(len(bad), 0,
                           message)
@@ -326,7 +336,10 @@ class TestCase(unittest.TestCase):
             custom_words=["info", "prechange", "int", "ints", "optimizeds", "graphviz",
                           "voxel", "voxels", "endian", 'rna', 'dna',
                           "xyzr", "pdbs", "fft", "ccc", "gaussian"]
-            self.words=set(wordlist+custom_words)
+            # Exclude some common alternative spellings - we want to
+            # be consistent
+            exclude_words = set(["adapter", "grey"])
+            self.words=set(wordlist+custom_words) - exclude_words
         if self.words:
             for i in "0123456789":
                 if i in word:
@@ -375,7 +388,6 @@ class TestCase(unittest.TestCase):
         self.assertEquals(len(bad), 0,
                           message)
 
-
     def _check_function_name(self, prefix, name, verbs, all, exceptions, words,
                              misspelled):
         if prefix:
@@ -408,29 +420,43 @@ class TestCase(unittest.TestCase):
                 print "misspelled", t, "in", name
                 return [fullname]
         return []
-    def _check_function_names(self, module, prefix, names, verbs, all, exceptions, words, misspelled):
+
+    def _static_method(self, module, prefix, name):
+        """For static methods of the form Foo.bar SWIG creates free functions
+           named Foo_bar. Exclude these from spelling checks since the method
+           Foo.bar has already been checked."""
+        if prefix is None and '_' in name:
+            modobj = eval(module)
+            cls, meth = name.split('_', 1)
+            if hasattr(modobj, cls):
+                clsobj = eval(module + '.' + cls)
+                if hasattr(clsobj, meth):
+                    return True
+
+    def _check_function_names(self, module, prefix, names, verbs, all,
+                              exceptions, words, misspelled):
         bad=[]
-        #print "names", module, prefix
         for name in names:
+            typ = self._get_type(module, name)
             if name.startswith("_") or name =="weakref_proxy":
                 continue
-            if self._get_type(module, name)==types.BuiltinMethodType\
-                   or self._get_type(module, name)==types.MethodType:
-                bad.extend(self._check_function_name(prefix, name, verbs, all, exceptions, words, misspelled))
-            if self._get_type(module, name)==types.TypeType and name.find("SwigPyIterator")==-1:
-                #print "sub", module+"."+name
+            if typ in (types.BuiltinMethodType, types.MethodType) \
+               or (typ == types.FunctionType and \
+                   not self._static_method(module, prefix, name)):
+                bad.extend(self._check_function_name(prefix, name, verbs, all,
+                                                     exceptions, words,
+                                                     misspelled))
+            if typ == types.TypeType and "SwigPyIterator" not in name:
                 members=eval("dir("+module+"."+name+")")
-                #print members
                 bad.extend(self._check_function_names(module+"."+name,
-                                                      name,
-                                                      members,
-                                                      verbs, [], exceptions, words, misspelled))
+                                                      name, members, verbs, [],
+                                                      exceptions, words,
+                                                      misspelled))
         return bad
 
-
-
     def assertFunctionNames(self, module, exceptions, words):
-        """Check that all the functions in the module follow the imp naming conventions."""
+        """Check that all the functions in the module follow the IMP
+           naming conventions."""
         all= dir(module)
         verbs=set(["add", "remove", "get", "set", "evaluate", "compute", "show", "create", "destroy",
                "push", "pop", "write", "read", "do", "show", "load", "save", "reset",
@@ -440,7 +466,7 @@ class TestCase(unittest.TestCase):
                      "validate"])
         misspelled = []
         bad=self._check_function_names(module.__name__, None, all, verbs, all, exceptions, words, misspelled)
-        message="All IMP methods should have lower case names separated by underscores and beginning with a verb, preferably one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. Each of the words should be a properly spelled english word. The following do not (given our limited list of verbs that we check for):\n%(bad)s\nIf there is a good reason for them not to (eg it does start with a verb, just one with a meaning that is not covered by the normal list), add them to the function_name_exceptions variable in the standards_exceptions file. Otherwise, please fix. The current verb list is %(verbs)s" \
+        message="All IMP methods and functions should have lower case names separated by underscores and beginning with a verb, preferably one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. Each of the words should be a properly spelled English word. The following do not (given our limited list of verbs that we check for):\n%(bad)s\nIf there is a good reason for them not to (eg it does start with a verb, just one with a meaning that is not covered by the normal list), add them to the function_name_exceptions variable in the standards_exceptions file. Otherwise, please fix. The current verb list is %(verbs)s" \
                           % {"bad":"\n".join(bad), "verbs":verbs}
         if len(misspelled) > 0:
             message += "\nMisspelled words: " + ", ".join(set(misspelled)) \
@@ -781,12 +807,16 @@ class ApplicationTestCase(TestCase):
            This is used to make sure the commands shown in an application
            example actually work (the testcase can also check the resulting
            files for correctness)."""
+        def win32_normpath(p):
+            # Sometimes Windows can read Unix-style paths, but sometimes it
+            # gets confused... so normalize all paths to be sure
+            return " ".join([os.path.normpath(x) for x in p.split()])
         def fix_win32_command(cmd):
             # Make substitutions so a Unix shell command works on Windows
             if cmd.startswith('cp -r '):
-                return 'xcopy /E ' + cmd[6:]
+                return 'xcopy /E ' + win32_normpath(cmd[6:])
             elif cmd.startswith('cp '):
-                return 'copy ' + cmd[3:]
+                return 'copy ' + win32_normpath(cmd[3:])
             else:
                 return cmd
         d = os.path.dirname(sys.argv[0])

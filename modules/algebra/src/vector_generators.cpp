@@ -17,7 +17,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
     @param s a 2D sphere (circle)
 
-    \relatealso VectorD
+    \relatesalso VectorD
     \relatesalso SphereD
 */
 VectorD<2> get_random_vector_in(const SphereD<2> &s) {
@@ -70,7 +70,7 @@ namespace {
 // from 0,0,0 to 0,0,1 with radius 1
 // nc = number of points on each cycle
 // nh = number of cycles along the cylinder edge
-// scaling - in each coordinate - (X,Y) = cirlcle (Z) = cylinder length
+// scaling - in each coordinate - (X,Y) = circle (Z) = cylinder length
 Vector3Ds grid_unit_cylinder(unsigned int nc, unsigned int nh,
                              const Vector3D &scaling,
                              const Transformation3D &transform) {

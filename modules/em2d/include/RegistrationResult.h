@@ -25,7 +25,7 @@ IMPEM2D_BEGIN_NAMESPACE
   \note  Stores the rotation and in-plane translation needed to register a
   model with an EM image. The values can come from a coarse registration, or
   from a fine registration (optimized with simplex).
-  I the second case, the function get_is_optimized_result() will return true
+  In the second case, the function get_is_optimized_result() will return true
   Contains:
   - Rotation in 3D of the model to register its projection with an image
   - The rotation is understood as ZYZ
@@ -172,7 +172,7 @@ IMPEM2DEXPORT RegistrationResults
     get_random_registration_results(unsigned int n, double maximum_shift = 5.0);
 
 //! Provides a set of registration results with directions of projection
-//!      evenly distributed in the semisphere
+//!      evenly distributed in the hemisphere
 /*!
   \param[in] n_projections the number of requested projections
 */

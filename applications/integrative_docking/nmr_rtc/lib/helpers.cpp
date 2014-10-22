@@ -62,7 +62,7 @@ void get_atom_2_residue_map(const IMP::kernel::Particles& atom_particles,
 void get_residue_solvent_accessibility(
     const IMP::kernel::Particles& residue_particles,
     IMP::Floats& residue_solvent_accessibility) {
-  IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
+  IMP::saxs::FormFactorTable* ft = IMP::saxs::get_default_form_factor_table();
   IMP::saxs::FormFactorType ff_type = IMP::saxs::CA_ATOMS;
   for (unsigned int p_index = 0; p_index < residue_particles.size();
        p_index++) {
@@ -80,7 +80,7 @@ void get_residue_solvent_accessibility(
     const std::vector<int>& atom_2_residue_map,
     std::vector<float>& residue_solvent_accessibility) {
 
-  IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
+  IMP::saxs::FormFactorTable* ft = IMP::saxs::get_default_form_factor_table();
   IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
   for (unsigned int i = 0; i < atom_particles.size(); i++) {
     float radius = ft->get_radius(atom_particles[i], ff_type);

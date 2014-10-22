@@ -39,10 +39,10 @@ DihedralRestraint::DihedralRestraint(kernel::UnaryFunction* score_func,
 double DihedralRestraint::unprotected_evaluate(DerivativeAccumulator* accum)
     const {
   IMP_CHECK_OBJECT(score_func_);
-  XYZ d0 = XYZ::decorate_particle(p_[0]);
-  XYZ d1 = XYZ::decorate_particle(p_[1]);
-  XYZ d2 = XYZ::decorate_particle(p_[2]);
-  XYZ d3 = XYZ::decorate_particle(p_[3]);
+  XYZ d0(p_[0]);
+  XYZ d1(p_[1]);
+  XYZ d2(p_[2]);
+  XYZ d3(p_[3]);
 
   Float score;
 

@@ -18,7 +18,7 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
         except ImportError as e:
             self.skipTest(str(e))
 
-        dock = self.import_python_application('emagefit_dock.py')
+        dock = self.import_python_application('emagefit_dock')
         sel = atom.NonWaterNonHydrogenPDBSelector()
         ligand = IMP.kernel.Model()
         fn_ligand = self.get_input_file_name("3sfdB-3sfdA_initial_docking.pdb")
@@ -64,7 +64,7 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
             import subprocess
         except ImportError as e:
             self.skipTest(str(e))
-        self.import_python_application('emagefit_dock.py')
+        self.import_python_application('emagefit_dock')
 
 if __name__ == '__main__':
     IMP.test.main()

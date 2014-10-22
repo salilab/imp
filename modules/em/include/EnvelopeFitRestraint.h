@@ -45,7 +45,7 @@ class IMPEMEXPORT EnvelopeFitRestraint : public IMP::Restraint {
 
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
 
-  // compute and return best scoring transofrmation
+  // compute and return best scoring transformation
   algebra::Transformation3D get_transformation() const {
     unprotected_evaluate(nullptr);
     return transformation_;

@@ -324,7 +324,7 @@ class AtomicDomino:
     # Get the grid index for the given particle. Returns an integer that can be used to get the center
     # of the grid space for discretizing the particle
     def getParticleGridIndex(self, leaf):
-        xyzDecorator = IMP.core.XYZ.decorate_particle(leaf)
+        xyzDecorator = IMP.core.XYZ(leaf)
         coordinates = xyzDecorator.get_coordinates()
         extendedIndex = 0
         extendedIndex = self.grid.get_extended_index(coordinates)
@@ -344,7 +344,7 @@ class AtomicDomino:
 
         index = self.getParticleGridIndex(particle)
         center = self.grid.get_center(index)
-        xyzDecorator = IMP.core.XYZ.decorate_particle(particle)
+        xyzDecorator = IMP.core.XYZ(particle)
         xyzDecorator.set_coordinates(center)
 
         return index
@@ -406,7 +406,7 @@ class AtomicDomino:
         g = 0
         if (self.getParam("grid_type") == "sparse"):
             ca = self.getPeptideCa()
-            xyzCa = IMP.core.XYZ.decorate_particle(ca)
+            xyzCa = IMP.core.XYZ(ca)
             g = IMP.algebra.SparseUnboundedIntGrid3D(
                 gridSpacing, xyzCa.get_coordinates())
         else:
@@ -424,7 +424,7 @@ class AtomicDomino:
 
         for p in restrainedParticles:
 
-            xyzD = IMP.core.XYZ.decorate_particle(p)
+            xyzD = IMP.core.XYZ(p)
             xyz = IMP.core.XYZ(p).get_coordinates()
             xyzStates = IMP.domino.XYZStates([xyz])
             dominoPst.set_particle_states(p, xyzStates)
@@ -622,14 +622,8 @@ class AtomicDomino:
                 continue
             otherParticle = otherNamesToParticles[pName]
             modelParticle = self.namesToParticles[pName]
-            otherVector.append(
-                IMP.core.XYZ.decorate_particle(
-                    otherParticle).get_coordinates(
-                ))
-            modelVector.append(
-                IMP.core.XYZ.decorate_particle(
-                    modelParticle).get_coordinates(
-                ))
+            otherVector.append(IMP.core.XYZ(otherParticle).get_coordinates())
+            modelVector.append(IMP.core.XYZ(modelParticle).get_coordinates())
         rmsd = IMP.atom.get_rmsd(otherVector, modelVector)
         return rmsd
 

@@ -133,7 +133,7 @@ double CoarseCC::cross_correlation_coefficient(const DensityMap *grid1,
                   << "grid2_voxel_data_threshold:" << grid2_voxel_data_threshold
                   << " allow_padding:" << allow_padding << " norm factors:"
                   << norm_factors.first << "," << norm_factors.second << "\n");
-  // run vaildation checks
+  // run validation checks
   const DensityHeader *grid2_header = grid2->get_header();
   const DensityHeader *grid1_header = grid1->get_header();
 

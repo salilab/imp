@@ -19,7 +19,7 @@ void State::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
   m->add_attribute(get_index_key(), pi, state);
 }
 
-void State::show(std::ostream &out) const { out << get_state_index(); }
+void State::show(std::ostream &out) const { out << "State: " << get_state_index(); }
 
 int get_state_index(Hierarchy h) {
   while (h) {

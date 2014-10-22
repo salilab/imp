@@ -38,8 +38,8 @@ class DynamicListContainer : public ListLikeContainer<Base> {
   }
 
  public:
-  DynamicListContainer(Container *m, std::string name)
-      : P(m->get_model(), name), scope_(m) {}
+  DynamicListContainer(Container *scope, std::string name)
+      : P(scope->get_model(), name), scope_(scope) {}
   void add(typename Base::PassContainedIndexType vt) {
     typename Base::ContainedIndexTypes cur;
     P::swap(cur);

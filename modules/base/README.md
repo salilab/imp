@@ -1,4 +1,4 @@
-The module provides low level functionality (logging, error
+\brief Low level functionality (logging, error
 handling, profiling, command line flags etc) that is used by all of IMP.
 
 # Graphs # {#graphs}
@@ -46,4 +46,4 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - See main IMP papers list.
+ - See [main IMP papers list](@ref publications).

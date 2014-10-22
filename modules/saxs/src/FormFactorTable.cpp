@@ -662,7 +662,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_sulfur_atom_type(
 
 FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
     kernel::Particle* p, FormFactorType ff_type) const {
-  atom::Atom ad = atom::Atom::decorate_particle(p);
+  atom::Atom ad = atom::Atom(p);
   atom::ResidueType residue_type = atom::get_residue(ad).get_residue_type();
   atom::AtomType atom_type = ad.get_atom_type();
 
@@ -870,7 +870,7 @@ const Floats& FormFactorTable::get_dummy_form_factors(
   return dummy_form_factors_[ff_atom_type];
 }
 
-FormFactorTable* default_form_factor_table() {
+FormFactorTable* get_default_form_factor_table() {
   static FormFactorTable ff;
   return &ff;
 }

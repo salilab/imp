@@ -67,7 +67,7 @@ IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
     for (unsigned int s_index = 0; s_index < spoints.size(); s_index++) {
       IMP::algebra::Vector3D probe_center =
           coordinates[i] + ratio * spoints[s_index];
-      // check for intersection with neighbours1
+      // check for intersection with neighbors1
       bool collides = false;
       for (unsigned int n_index = 0; n_index < neighbours1.size(); n_index++) {
         if (is_intersecting(probe_center, coordinates[neighbours1[n_index]],
@@ -76,7 +76,7 @@ IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
           break;
         }
       }
-      if (!collides) {  // check for intersection with neighbours2
+      if (!collides) {  // check for intersection with neighbors2
         for (unsigned int n_index = 0; n_index < neighbours2.size();
              n_index++) {
           if (is_intersecting(probe_center, coordinates[neighbours2[n_index]],

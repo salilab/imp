@@ -12,16 +12,33 @@
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
-HierarchyLoadXYZs::HierarchyLoadXYZs(RMF::FileConstHandle f) : ip_factory_(f) {}
+HierarchyLoadXYZs::HierarchyLoadXYZs(RMF::FileConstHandle f) : ip_factory_(f) {
+  // backwards compat
+  RMF::Category cat = f.get_category("IMP");
+  rb_index_key_ = f.get_key(cat, "rigid body", RMF::IntTraits());
+}
 
 void HierarchyLoadXYZs::setup_particle(
     RMF::NodeConstHandle n, kernel::Model *m, kernel::ParticleIndex p,
     const kernel::ParticleIndexes &rigid_bodies) {
   if (!ip_factory_.get_is(n)) return;
   if (!core::XYZ::get_is_setup(m, p)) core::XYZ::setup_particle(m, p);
-  if (!rigid_bodies.empty()) {
+  /* If there is a rigid body parent set up, add this particle as a child
+     (unless it's an old-style rigid body, in which case this has been
+     done already) */
+  if (!rigid_bodies.empty()
+      && !(rigid_bodies.size()==1 && rigid_bodies.back() == p)
+      && !n.get_has_value(rb_index_key_)) {
     core::RigidBody rb(m, rigid_bodies.back());
-    if (!core::XYZ::get_is_setup(m, p)) core::XYZ::setup_particle(m, p);
+    /* For nested rigid bodies, this XYZ particle is *also* the rigid body.
+       So don't make ourselves our own child - add to the parent rigid body
+       instead. */
+    if (rigid_bodies.back() == p) {
+      IMP_INTERNAL_CHECK(rigid_bodies.size() >= 2,
+                     "Nested rigid body " << m->get_particle_name(p)
+                     << " but could not find parent rigid body");
+      rb = core::RigidBody(m, rigid_bodies[rigid_bodies.size() - 2]);
+    }
     rb.add_member(p);
     if (!ip_factory_.get_is_static(n)) {
       IMP_LOG_VERBOSE("Member particle " << m->get_particle_name(p)
@@ -48,6 +65,11 @@ void HierarchyLoadXYZs::link_particle(
     if (rigid_bodies.back() == p) return;
     if (core::NonRigidMember::get_is_setup(m, p)) {
       local_.push_back(std::make_pair(n.get_id(), p));
+    } else if (n.get_has_value(rb_index_key_)
+               && core::RigidMember::get_is_setup(m, p)) {
+      // backwards compat: need to read coordinates of rigid members in order
+      // to set the reference frame of the rigid body later
+      global_.push_back(std::make_pair(n.get_id(), p));
     }
   }
 }

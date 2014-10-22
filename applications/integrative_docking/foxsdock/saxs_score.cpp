@@ -137,7 +137,7 @@ recommended q value is 0.2")("offset,f",
   IMP::saxs::SolventAccessibleSurface s;
   if (water_layer) {
     // add radius first
-    IMP::saxs::FormFactorTable *ft = IMP::saxs::default_form_factor_table();
+    IMP::saxs::FormFactorTable *ft = IMP::saxs::get_default_form_factor_table();
     for (unsigned int p_index = 0; p_index < particles1.size(); p_index++) {
       float radius = ft->get_radius(particles1[p_index], ff_type);
       IMP::core::XYZR::setup_particle(particles1[p_index], radius);

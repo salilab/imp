@@ -1,5 +1,6 @@
 /**
- *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
+ *  \file DominoSampler.cpp
+ *  \brief Sample best solutions using Domino.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -68,14 +69,14 @@ Assignments DominoSampler::do_get_sample_assignments(
   if (true) {
     MergeTree mt;
     if (has_mt_) {
-      IMP_LOG_TERSE("DOMINOO has merge tree" << std::endl);
+      IMP_LOG_TERSE("DOMINO has merge tree" << std::endl);
       mt = mt_;
       check_graph(mt_, known_particles);
       IMP_USAGE_CHECK(get_is_merge_tree(mt, known_particles, true),
                       "Not a merge tree");
-      IMP_LOG_TERSE("DOMINOO END merge tree" << std::endl);
+      IMP_LOG_TERSE("DOMINO END merge tree" << std::endl);
     } else {
-      IMP_LOG_TERSE("DOMINOO has junction tree" << std::endl);
+      IMP_LOG_TERSE("DOMINO has junction tree" << std::endl);
       SubsetGraph jt = get_junction_tree(get_interaction_graph(
           kernel::RestraintsTemp(1, rs), get_particle_states_table()));
       mt = get_merge_tree(jt);
@@ -105,7 +106,7 @@ Assignments DominoSampler::do_get_sample_assignments(
           lsft->get_ok_rate() << " were ok with the cross set filtering"
                               << std::endl);
     }
-    IMP_LOG_TERSE("DOMINOO FINISH junction tree" << std::endl);
+    IMP_LOG_TERSE("DOMINO FINISH junction tree" << std::endl);
   }
   return final_solutions;
 }

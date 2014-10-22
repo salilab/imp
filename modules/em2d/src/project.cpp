@@ -39,7 +39,7 @@ em2d::Images get_projections(const kernel::ParticlesTemp &ps,
                              const RegistrationResults &registration_values,
                              int rows, int cols,
                              const ProjectingOptions &options, Strings names) {
-  IMP_LOG_VERBOSE("Generating projections from registraion results"
+  IMP_LOG_VERBOSE("Generating projections from registration results"
                   << std::endl);
 
   if (options.save_images && (names.size() < registration_values.size())) {
@@ -128,7 +128,7 @@ void do_project_particles(const kernel::ParticlesTemp &ps, cv::Mat &m2,
   for (unsigned long i = 0; i < n_particles; i++) {
     // Coordinates respect to the centroid
     algebra::Vector3D p = xyzrs[i].get_coordinates() - centroid;
-    // Pixel after trasformation to project in Z axis
+    // Pixel after transformation to project in Z axis
     // Not necessary to compute pz, is going to be ignored
     double pix_x = invp * (R.get_rotated_one_coordinate(p, 0) + translation[0]);
     double pix_y = invp * (R.get_rotated_one_coordinate(p, 1) + translation[1]);
@@ -166,7 +166,7 @@ algebra::Vector2Ds do_project_vectors(const algebra::Vector3Ds &ps,
     p[0] = ps[i][0] - center[0];
     p[1] = ps[i][1] - center[1];
     p[2] = ps[i][2] - center[2];
-    // Point after trasformation to project in Z axis
+    // Point after transformation to project in Z axis
     // Not necessary to compute pz, is going to be ignored
     double px = R.get_rotated_one_coordinate(p, 0) + translation[0];
     double py = R.get_rotated_one_coordinate(p, 1) + translation[1];

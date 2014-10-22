@@ -68,7 +68,7 @@ float MolCnSymmAxisDetector::calc_symm_score(int symm_axis_ind) const {
     ind2 = 1;
   }
   // symm axis is in the PCA reference frame.
-  // we want to move it to the native resference frame
+  // we want to move it to the native reference frame
 
   float angle = 2 * PI / symm_deg_;
   algebra::Transformation3D from_native_xy_to_pca_xy =

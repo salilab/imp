@@ -23,8 +23,7 @@ distributions.
  */
 extern IMPBASEEXPORT RandomNumberGenerator random_number_generator;
 
-/** Return the initial random seed.
-  */
+//! Return the initial random seed.
 IMPBASEEXPORT boost::uint64_t get_random_seed();
 
 IMPBASE_END_NAMESPACE

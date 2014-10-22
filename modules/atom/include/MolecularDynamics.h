@@ -36,10 +36,10 @@ class IMPATOMEXPORT MolecularDynamics : public Simulator {
   /** Score based on the provided model */
   MolecularDynamics(kernel::Model *m);
 
-  //! \return the current kinetic energy of the system, in kcal/mol
+  //! Return the current kinetic energy of the system, in kcal/mol
   virtual Float get_kinetic_energy() const;
 
-  //! \return the current kinetic temperature of the system
+  //! Return the current kinetic temperature of the system
   /** \param[in] ekinetic kinetic energy, e.g. from get_kinetic_energy()
    */
   Float get_kinetic_temperature(Float ekinetic) const;

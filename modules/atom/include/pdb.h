@@ -1,6 +1,6 @@
 /**
  *  \file IMP/atom/pdb.h
- *  \brief Functions to read pdbs
+ *  \brief Functions to read PDBs
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -30,7 +30,7 @@ IMPATOM_BEGIN_NAMESPACE
     file. Using descendants of this class one may implement arbitrary
     selection functions with operator() and pass them to PDB reading functions
     for object selection. Simple selectors can be used to build more complicated
-    ones. Inheritence means "AND" unless otherwise noted (that is, the
+    ones. Inheritance means "AND" unless otherwise noted (that is, the
     CAlphaPDBSelector takes all non-alternate C-alphas since it inherits from
     NonAlternativePDBSelector).
 
@@ -139,7 +139,7 @@ class AllPDBSelector : public PDBSelector {
   IMP_OBJECT_METHODS(AllPDBSelector);
 };
 
-//! Select all ATOM and HETATMrecords with the given chain ids
+//! Select all ATOM and HETATM records with the given chain ids
 class ChainPDBSelector : public NonAlternativePDBSelector {
  public:
   bool get_is_selected(const std::string &pdb_line) const {
@@ -161,7 +161,7 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
   std::string chains_;
 };
 
-//! Select all non-water ATOM and HETATMrecords
+//! Select all non-water ATOM and HETATM records
 class WaterPDBSelector : public NonAlternativePDBSelector {
  public:
   WaterPDBSelector(std::string name = "WaterPDBSelector%1%")
@@ -266,7 +266,6 @@ class PPDBSelector : public NonAlternativePDBSelector {
   IMP_OBJECT_METHODS(PPDBSelector)
 };
 
-// these do not work in python as the wrapped selectors get cleaned up
 //! Select atoms which are selected by both selectors
 /** To use do something like
     \code
@@ -303,7 +302,7 @@ class OrPDBSelector : public PDBSelector {
       : PDBSelector("OrPDBSelector%1%"), a_(a), b_(b) {}
 };
 
-//! Select atoms which not selected by a given selector
+//! Select atoms which are not selected by a given selector
 /** To use do something like
     \code
     read_pdb(name, m, NotPDBSelector(PPDBSelector()));
@@ -329,7 +328,7 @@ class NotPDBSelector : public PDBSelector {
 
     Waters are currently dropped if they are ATOM records. This can be fixed.
 
-    The read_pdb() functions should successfully parse all valid pdb files. It
+    The read_pdb() functions should successfully parse all valid PDB files. It
     can produce warnings on files which are not valid. It will attempt to read
     such files, but all bets are off.
 
@@ -347,7 +346,7 @@ inline PDBSelector *get_default_pdb_selector() {
 }
 
 /** Read a all the molecules in the first model of the
-    pdb file.
+    PDB file.
  */
 IMPATOMEXPORT Hierarchy
     read_pdb(base::TextInput input, kernel::Model *model,
@@ -360,9 +359,9 @@ IMPATOMEXPORT Hierarchy
              );
 
 /** Rewrite the coordinates of the passed hierarchy based
-    on the contents of the first model in the pdb file.
+    on the contents of the first model in the PDB file.
 
-    The hierarchy must have been created by reading from a pdb
+    The hierarchy must have been created by reading from a PDB
     file and the atom numbers must correspond between the files.
     These are not really checked.
 
@@ -376,7 +375,7 @@ IMPATOMEXPORT Hierarchy
  */
 IMPATOMEXPORT void read_pdb(base::TextInput input, int model, Hierarchy h);
 
-/** Read all models from the pdb file.
+/** Read all models from the PDB file.
  */
 IMPATOMEXPORT Hierarchies
     read_multimodel_pdb(base::TextInput input, kernel::Model *model,
@@ -389,7 +388,7 @@ IMPATOMEXPORT Hierarchies
 
 /** @name PDB Writing
     \anchor pdb_out
-    The methods to write a PDBs expects a Hierarchy that looks as follows:
+    The methods to write a PDB expects a Hierarchy that looks as follows:
     - all leaves are Atom particles
     - all Atom particles have Residue particles as parents
 
@@ -409,9 +408,9 @@ IMPATOMEXPORT Hierarchies
 IMPATOMEXPORT void write_pdb(const Selection &mhd, base::TextOutput out,
                              unsigned int model = 1);
 
-/** \brief Write a hierarchy to a pdb as C_alpha atoms.
+/** \brief Write a hierarchy to a PDB as C_alpha atoms.
 
-    This method is used to write a non-atomic hierarchy into a pdb in a way
+    This method is used to write a non-atomic hierarchy into a PDB in a way
     that can be read by most programs. If the leaves are Residue particles
     then the index and residue type will be read from them. Otherwise default
     values will be used so that each leaf ends up in a separate residue.

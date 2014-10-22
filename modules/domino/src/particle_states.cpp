@@ -1,6 +1,6 @@
 /**
  *  \file domino/DominoSampler.h
- *  \brief A beyesian infererence-based sampler.
+ *  \brief A Bayesian inference-based sampler.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -84,7 +84,7 @@ RigidBodyStates::RigidBodyStates(const algebra::ReferenceFrame3Ds &states,
 
 algebra::VectorKD RigidBodyStates::get_embedding(unsigned int i) const {
   algebra::Vector6D v = get_as_vector(states_[i], scale_);
-  return algebra::VectorKD(v.coordinates_begin(), v.coordinates_end());
+  return algebra::VectorKD(v.begin(), v.end());
 }
 unsigned int RigidBodyStates::get_nearest_state(const algebra::VectorKD &v)
     const {
@@ -106,7 +106,7 @@ void NestedRigidBodyStates::load_particle_state(unsigned int i,
 }
 algebra::VectorKD NestedRigidBodyStates::get_embedding(unsigned int i) const {
   algebra::Vector6D v = get_as_vector(states_[i], scale_);
-  return algebra::VectorKD(v.coordinates_begin(), v.coordinates_end());
+  return algebra::VectorKD(v.begin(), v.end());
 }
 unsigned int NestedRigidBodyStates::get_nearest_state(
     const algebra::VectorKD &v) const {

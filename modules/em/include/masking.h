@@ -60,7 +60,7 @@ class IMPEMEXPORT DistanceMask
     \param[in] radius searching for parameters of this radius
     \param[in] eps used for numerical stability
     \note The parameters are indexes by the radius. To maintain
-    numeratical stability, look for a radius within +-eps from the
+    numerical stability, look for a radius within +-eps from the
     queried radius.
    \note the function return nullptr and writes a warning if parameters
    for this radius were not found.

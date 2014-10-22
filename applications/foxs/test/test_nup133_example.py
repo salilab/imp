@@ -12,7 +12,8 @@ class Tests(IMP.test.ApplicationTestCase):
             '../../../doc/tutorial/foxs_nup133.dox')
         d = IMP.test.RunInTempDir()
         # Skip running gnuplot on machines that don't have it
-        have_gnuplot = os.path.exists('/usr/bin/gnuplot')
+        have_gnuplot = os.path.exists('/usr/bin/gnuplot') \
+                       and sys.platform != 'win32'
         for c in cmds:
             if have_gnuplot or 'gnuplot' not in c:
                 self.run_shell_command(c)

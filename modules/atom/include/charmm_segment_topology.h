@@ -72,9 +72,11 @@ IMP_OBJECTS(CHARMMSegmentTopology, CHARMMSegmentTopologies);
     add_bonds(), add_charges()).
  */
 class IMPATOMEXPORT CHARMMTopology : public IMP::base::Object {
+public:
+  typedef std::map<const CHARMMResidueTopology *, Hierarchy> ResMap;
+private:
   base::Pointer<const CHARMMParameters> force_field_;
   base::WarningContext warn_context_;
-  typedef std::map<const CHARMMResidueTopology *, Hierarchy> ResMap;
 
   void map_residue_topology_to_hierarchy(Hierarchy hierarchy,
                                          ResMap &resmap) const;
@@ -132,7 +134,7 @@ class IMPATOMEXPORT CHARMMTopology : public IMP::base::Object {
         to particles that do have XYZ coordinates.
 
       - For each segment (chain), if no atoms have coordinates but a triplet
-        of atoms can be found where theit internal distances and angle can be
+        of atoms can be found where their internal distances and angle can be
         determined from internal coordinates, these three atoms will be
         placed to seed the generation procedure. For the first segment, the
         atoms will be placed on the xy plane with the first atom at the origin.

@@ -29,7 +29,7 @@ solves.
 the most commonly used, since it is specific for EM. The free program
 \external{http://www.imagescience.de/em2em.html,em2em} can be used to convert
 other EM image formats to Spider. JPG and TIFF are more useful for
-visualization; EMageFit includes a script (convert_spider_to_jpg.py) to convert
+visualization; EMageFit includes a script (convert_spider_to_jpg) to convert
 Spider files to JPG.
 
 Each EM image has to be a separate file. The images to be used need to be
@@ -102,7 +102,7 @@ This is what EMageFit does:
     previous step, a different docking program or server could be employed to do
     these dockings, as long as it generates a file listing the relative
     transformation of the ligand with respect to the receptor for each
-    solution. See the explanation for the emagefit_dock.py script to see how
+    solution. See the explanation for the emagefit_dock script to see how
     to integrate a different docking program.)
 
   - Filters the docking solutions that are compatible with the cross-linking
@@ -112,7 +112,7 @@ This is what EMageFit does:
     calculated during the first step is also kept.
 
 This procedure is run with the <tt>--dock</tt> argument to the
-<tt>emagefit.py</tt> command line tool. (See the
+<tt>emagefit</tt> command line tool. (See the
 [EMageFit tutorial](../tutorial/emagefit_3sfd.html)
 for an example command line.)
 
@@ -135,7 +135,7 @@ satisfies the restraints. It is advisable then to set
 <tt>self.non_relative_move_prob</tt> to a low number (say 0.2, meaning that
 a move from a docking solution will be chosen only 20% of the time).
 
-emagefit.py also takes an option <tt>--log</tt>. If it is
+emagefit also takes an option <tt>--log</tt>. If it is
 used (recommended), a log file is generated (otherwise, the log is output to
 the screen). This logging information comes only from EMageFit itself,
 and is different from the \imp logging system. The granularity of the logging
@@ -147,7 +147,7 @@ e.g. DEBUG, INFO, etc.
 
 Once the relative docking transformations are set, models can be generated
 using Monte Carlo optimizations. This uses the <tt>--monte_carlo</tt> argument
-to emagefit.py, which takes a single numeric argument, which is the random seed
+to emagefit, which takes a single numeric argument, which is the random seed
 to use for the optimization. Repeated runs using the same random seed should
 generate the same outputs. If running on a single machine, the special value -1
 can be used, which uses the current time to set the random seed (this is not
@@ -161,7 +161,7 @@ files.
 \subsection gather Gather the results of all Monte Carlo optimizations
 
 In this step, all of the independent Monte Carlo solutions are gathered into
-a single database file. This uses the <tt>--gather</tt> option to emagefit.py.
+a single database file. This uses the <tt>--gather</tt> option to emagefit.
 
 \subsection domino Combine the models from Monte Carlo with DOMINO
 

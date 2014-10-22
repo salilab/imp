@@ -3,13 +3,13 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title="IMP Mainpage"/>
-    <tab type="user" visible="yes" title="All IMP Modules" url="allmod.html"/>
-    <tab type="pages" visible="yes" title="" intro=""/>
-    <tab type="modules" visible="yes" title="" intro=""/>
-    <tab type="namespaces" visible="yes" title="">
-      <tab type="namespacelist" visible="yes" title="" intro=""/>
-      <tab type="namespacemembers" visible="yes" title="" intro=""/>
+    <tab type="namespaces" visible="yes" title="Modules">
+      <tab type="namespacelist" visible="yes" title="Module/Namespace List" intro="Here is a list of all IMP modules - each is also a C++ namespace and a Python package:"/>
+      <tab type="namespacemembers" visible="yes" title="Module/Namespace Members" intro=""/>
     </tab>
+    <tab type="user" visible="yes" title="Applications" url="applications.html"/>
+    <tab type="pages" visible="yes" title="" intro=""/>
+    <tab type="modules" visible="yes" title="Groups" intro="Here is a list of all documentation groups:"/>
     <tab type="classes" visible="yes" title="">
       <tab type="classlist" visible="yes" title="" intro=""/>
       <tab type="classindex" visible="$ALPHABETICAL_INDEX" title=""/>
@@ -21,11 +21,11 @@
       <tab type="globals" visible="yes" title="" intro=""/>
     </tab>
     <tab type="examples" visible="yes" title="" intro=""/>
-    <tab type="user" visible="yes" title="Indexes" url="md_doxygen_generated_argument_index.html">
-      <tab type="user" visible="yes" title="Class Usage" url="md_doxygen_generated_argument_index.html"/>
-      <tab type="user" visible="yes" title="Class Examples" url="md_doxygen_generated_class_example_index.html"/>
-      <tab type="user" visible="yes" title="Class Factories" url="md_doxygen_generated_factory_index.html"/>
-      <tab type="user" visible="yes" title="Function Examples" url="md_doxygen_generated_function_example_index.html"/>
+    <tab type="usergroup" visible="yes" title="Indexes" url="argument_index.html">
+      <tab type="user" visible="yes" title="Class Usage" url="argument_index.html"/>
+      <tab type="user" visible="yes" title="Class Examples" url="class_example_index.html"/>
+      <tab type="user" visible="yes" title="Class Factories" url="factory_index.html"/>
+      <tab type="user" visible="yes" title="Function Examples" url="function_example_index.html"/>
     </tab>
   </navindex>
 
@@ -35,6 +35,7 @@
     <includes visible="$SHOW_INCLUDE_FILES"/>
     <inheritancegraph visible="$CLASS_GRAPH"/>
     <collaborationgraph visible="$COLLABORATION_GRAPH"/>
+    <detaileddescription title=""/>
     <memberdecl>
       <nestedclasses visible="yes" title=""/>
       <publictypes title=""/>
@@ -69,7 +70,6 @@
       <related title="" subtitle=""/>
       <membergroups visible="yes"/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <inlineclasses title=""/>
       <typedefs title=""/>
@@ -91,6 +91,7 @@
   <!-- Layout definition for a namespace page -->
   <namespace>
     <briefdescription visible="yes"/>
+    <detaileddescription title=""/>
     <memberdecl>
       <nestednamespaces visible="yes" title=""/>
       <constantgroups visible="yes" title=""/>
@@ -101,7 +102,6 @@
       <variables title=""/>
       <membergroups visible="yes"/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <inlineclasses title=""/>
       <typedefs title=""/>
@@ -146,6 +146,7 @@
   <group>
     <briefdescription visible="yes"/>
     <groupgraph visible="$GROUP_GRAPHS"/>
+    <detaileddescription title=""/>
     <memberdecl>
       <nestedgroups visible="yes" title=""/>
       <dirs visible="yes" title=""/>
@@ -167,7 +168,6 @@
       <friends title=""/>
       <membergroups visible="yes"/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <pagedocs/>
       <inlineclasses title=""/>

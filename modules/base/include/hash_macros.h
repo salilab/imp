@@ -13,7 +13,7 @@
 
 #ifdef IMP_DOXYGEN
 /** Add the methods necessary to support insertion in
-    python dictionaries and base::map
+    Python dictionaries and base::map
     and base::set tables.*/
 #define IMP_HASHABLE_INLINE(name, hashret)
 

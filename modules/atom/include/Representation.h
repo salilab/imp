@@ -21,7 +21,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 IMPATOMEXPORT extern const double ALL_RESOLUTIONS;
 
-/** Eventually, other types of representation will be supported, eg gaussians or
+/** Eventually, other types of representation will be supported, eg Gaussians or
  * density maps. */
 enum RepresentationType {
   BALLS = 0,
@@ -30,7 +30,7 @@ enum RepresentationType {
 
 //! A decorator for a representation.
 /** It stores a number of copies of its sub hierarchy each with an associated
- * resolution. You can used it to get the representation at a given resolution.
+ * resolution. You can use it to get the representation at a given resolution.
  * \note The particle returned for a given representation should be thought of
  * as replacing this particle (not as a child of it).
  *
@@ -62,12 +62,15 @@ class IMPATOMEXPORT Representation : public Hierarchy {
   Hierarchy get_representation(double resolution,
                                RepresentationType type = BALLS);
 
-  /** Return all children at all resolutions. */
+  //! Return all children at all resolutions.
   Hierarchies get_representations(RepresentationType type = BALLS);
 
-  /** Representation for given resolution. The resolution is computed using
-   * get_resolution().
-   * \note The resolution parameter will go away, as, most likely will the type.
+  //! Add the representation for the given resolution.
+  /** If the resolution is
+      not given it is computed using get_resolution().
+      Currently only a type of 'BALLS' is supported; eventually, other types
+      of representation may be supported, eg Gaussians or density maps.
+     \note The resolution parameter will go away, as, most likely will the type.
    */
   void add_representation(kernel::ParticleIndexAdaptor rep,
                           RepresentationType type = BALLS,
@@ -87,7 +90,7 @@ IMP_DECORATORS(Representation, Representations, Hierarchies);
 
 IMPATOMEXPORT double get_resolution(kernel::Model *m, kernel::ParticleIndex pi);
 
-/** \copydoc get_resolution(kernel::Model, kernel::particleIndex) */
+/** \copydoc get_resolution(kernel::Model, kernel::ParticleIndex) */
 inline double get_resolution(Hierarchy h) {
   return get_resolution(h.get_model(), h.get_particle_index());
 }

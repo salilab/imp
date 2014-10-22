@@ -33,8 +33,8 @@ class Tests(IMP.test.TestCase):
         for [p0, p1] in nbl.get_particle_pairs():
 
             # filter explicitly particles greater than closePairDistance
-            if (IMP.algebra.get_distance(IMP.core.XYZ.decorate_particle(p0).get_coordinates(),
-                                         IMP.core.XYZ.decorate_particle(p1).get_coordinates()) < closePairDistance):
+            if (IMP.algebra.get_distance(IMP.core.XYZ(p0).get_coordinates(),
+                                         IMP.core.XYZ(p1).get_coordinates()) < closePairDistance):
                 finalPairs.append([p0, p1])
             namesToParticles[p0.get_name()] = p0
             namesToParticles[p1.get_name()] = p1

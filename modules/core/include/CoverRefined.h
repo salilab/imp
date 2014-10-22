@@ -48,7 +48,7 @@ class IMPCOREEXPORT CoverRefined : public SingletonModifier {
   /** Slack is the amount added to the radius.*/
   CoverRefined(Refiner *ref, Float slack = 0);
 
-  //! Set how nmuch extra to add to the radius.
+  //! Set how much extra to add to the radius.
   void set_slack(Float slack) { slack_ = slack; }
 
   virtual void apply_index(kernel::Model *m, kernel::ParticleIndex a) const

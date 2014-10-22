@@ -53,13 +53,13 @@ a call to kernel::Model::update().
 \note The ClosePairContainer is strongly associated with the
       SingletonContainerAdaptor provided to it in the constructor.
       For instance, if the list of particles in the adaptor changes dynamically
-      (by e.g., changing them in the SingltonContainer), the close pair
+      (by e.g., changing them in the SingletonContainer), the close pair
       container will also change dynamically.
 
     Here is a simple example of using this for a nonbonded list
     \include nonbonded_interactions.py
 
-    See also AllPairContainer, CloseBipartitePairContainer,
+    \see AllPairContainer, CloseBipartitePairContainer,
     AllBipartitePairContainer for variants on the functionality provided.
 
  */

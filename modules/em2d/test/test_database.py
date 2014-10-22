@@ -118,6 +118,7 @@ class Tests(IMP.test.TestCase):
         os.remove(fn_output)
 
     def tearDown(self):
+        IMP.test.TestCase.tearDown(self)
         self.db.close()
         os.remove(self.fn)
 

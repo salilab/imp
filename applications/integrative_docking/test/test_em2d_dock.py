@@ -20,7 +20,26 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
 
         m = re.search('Total\s+score\s+=\s+([\d\.]+)\r?', err)
         self.assertIsNotNone(m, msg="Score output not found in " + str(err))
-        self.assertAlmostEqual(float(m.group(1)), 2.84, delta=0.01)
+        self.assertAlmostEqual(float(m.group(1)), 0.168, delta=0.01)
+
+        os.unlink('images.pgm')
+        os.unlink('best_projections.pgm')
+
+    def test_coarse_grain(self):
+        """Simple test of coarse grained EM2D single PDB score application"""
+        p = self.run_application('em2d_single_score',
+                                 [self.get_input_file_name('complex-2d.pdb'),
+                                  self.get_input_file_name('image_1.pgm'),
+                                  self.get_input_file_name('image_2.pgm'),
+                                  self.get_input_file_name('image_3.pgm'),
+                                  '-s', '2.2', '-n', '200', '-c'])  # pixel size, projections number
+        out, err = p.communicate()
+        sys.stderr.write(err)
+        self.assertApplicationExitedCleanly(p.returncode, err)
+
+        m = re.search('Total\s+score\s+=\s+([\d\.]+)\r?', err)
+        self.assertIsNotNone(m, msg="Score output not found in " + str(err))
+        self.assertAlmostEqual(float(m.group(1)), 0.178, delta=0.01)
 
         os.unlink('images.pgm')
         os.unlink('best_projections.pgm')

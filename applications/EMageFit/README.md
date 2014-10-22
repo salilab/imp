@@ -32,8 +32,8 @@ work with any other docking program, or simply using the cross-linking
 restraints and no docking at all.
 
 More detail on the functioning of EMageFit can be found on the
-[protocol page](@ref emagefit_protocol), and many of the scripts and utilities
-are documented on the [scripts page](@ref emagefit_scripts).
+\subpage emagefit_protocol "protocol page", and many of the scripts and
+utilities are documented on the \subpage emagefit_scripts "scripts page".
 
 _Examples_:
  - [Modeling of 3sfd](../tutorial/emagefit_3sfd.html)

@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         # Setup for example 1
         self.m = IMP.kernel.Model()
         self.ps = self.create_particles_in_box(self.m, 6)
-        self.ds = map(lambda p: IMP.core.XYZ.decorate_particle(p), self.ps)
+        self.ds = [IMP.core.XYZ(p) for p in self.ps]
         ub = IMP.core.HarmonicUpperBound(1.0, 0.1)
         self.ss = IMP.core.DistancePairScore(ub)
         self.r = IMP.core.MSConnectivityRestraint(self.m, self.ss)
@@ -44,7 +44,7 @@ class Tests(IMP.test.TestCase):
         # Setup for example 2
         self.m2 = IMP.kernel.Model()
         self.ps2 = self.create_particles_in_box(self.m2, 8)
-        self.ds2 = map(lambda p: IMP.core.XYZ.decorate_particle(p), self.ps2)
+        self.ds2 = [IMP.core.XYZ(p) for p in self.ps2]
         self.r2 = IMP.core.MSConnectivityRestraint(self.m2, self.ss)
         ppa = self.r2.add_type([self.ds2[0], self.ds2[1], self.ds2[2]])
         ppb = self.r2.add_type([self.ds2[3], self.ds2[4]])

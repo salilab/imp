@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/subset_scores.h
- *  \brief A beyesian infererence-based sampler.
+ *  \brief A Bayesian inference-based sampler.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -212,16 +212,16 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
   void load_cache(const kernel::ParticlesTemp &ps, RMF::HDF5::ConstGroup group);
 #endif
 
-  /** Return the slice for that restraint given the subset. */
+  //! Return the slice for that restraint given the subset.
   Slice get_slice(kernel::Restraint *r, const Subset &s) const;
 
-  /** Return the number of entries currently in the cache.*/
+  //! Return the number of entries currently in the cache.
   unsigned int get_number_of_entries() const { return cache_.size(); }
 
-  /** Check the entries in the cache.*/
+  //! Check the entries in the cache.
   void validate() const;
 
-  /** Print out information about the known restraints and restraint sets.*/
+  //! Print out information about the known restraints and restraint sets.
   void show_restraint_information(std::ostream &out = std::cout) const;
   double get_hit_rate() const { return cache_.get_hit_rate(); }
   IMP_OBJECT_METHODS(RestraintCache);

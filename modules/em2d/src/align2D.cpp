@@ -1,5 +1,5 @@
 /**
- *  \file align2D.copp
+ *  \file align2D.cpp
  *  \brief Align operations for EM images
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
@@ -104,7 +104,7 @@ ResultAlign2D get_rotational_alignment(const cv::Mat &input,
     get_transformed(m_to_align, result, RA.first);
     result.copyTo(m_to_align);
   }
-  IMP_LOG_VERBOSE("Rotational alingment: Transformation= "
+  IMP_LOG_VERBOSE("Rotational alignment: Transformation= "
                   << RA.first << " cross_correlation = " << RA.second
                   << std::endl);
   return RA;

@@ -35,7 +35,7 @@ IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
     All changed attributes should be optimizable, it is undefined behavior to
     try to optimize an attribute which is not.
 
-    The output particles (kernel::ModelObject::do_get_outputs()) are assummed
+    The output particles (kernel::ModelObject::do_get_outputs()) are assumed
     to be equal to the inputs (kernel::ModelObject::do_get_inputs()).
  */
 class IMPCOREEXPORT MonteCarloMover : public kernel::ModelObject {
@@ -97,7 +97,7 @@ class IMPCOREEXPORT MonteCarloMover : public kernel::ModelObject {
   virtual MonteCarloMoverResult do_propose() = 0;
   //! Implement reset_proposed_move()
   virtual void do_reject() = 0;
-  //! Implement accept_proposed_move(), default impl is empty
+  //! Implement accept_proposed_move(), default implementation is empty
   virtual void do_accept() {}
 
   virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {

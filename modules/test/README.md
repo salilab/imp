@@ -1,4 +1,6 @@
-Support for running tests of IMP functionality. Most of this is centered around the python `unittest` module.
+\brief Support for running tests of IMP functionality.
+
+Most of this is centered around the Python `unittest` module.
 
 # Info
 
@@ -14,4 +16,4 @@ version 2 of the License, or (at your option) any later version.
 
 
 _Publications_:
- - See main \imp papers list.
+ - See [main IMP papers list](@ref publications).

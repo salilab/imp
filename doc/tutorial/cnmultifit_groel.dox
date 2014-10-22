@@ -18,11 +18,11 @@ using a tool such as [MODELLER](http://salilab.org/modeller/). See the
 for a fully worked example.)
 
 All steps in the procedure use a command line tool called
-<tt>cnmultifit.py</tt>. (There is also a \salilab{multifit/,web interface}
+<tt>cnmultifit</tt>. (There is also a \salilab{multifit/,web interface}
 available.) For full help on this tool, run from a command line:
 
 \code{.sh}
-cnmultifit.py help
+cnmultifit help
 \endcode
 
 \section cnmultifit_groel_setup Setup
@@ -44,7 +44,7 @@ The first step is to generate a map of the surface of the subunit,
 to place copies of the subunit together without interpenetrating:
 
 \code{.sh}
-cnmultifit.py surface 1oel_A.pdb
+cnmultifit surface 1oel_A.pdb
 \endcode
 
 This generates a surface file, <tt>1oel_A.pdb.ms</tt>.
@@ -52,7 +52,7 @@ This generates a surface file, <tt>1oel_A.pdb.ms</tt>.
 Next, create a parameters file to control the operation of cnmultifit:
 
 \code{.sh}
-cnmultifit.py param -n 5 -- 7 1oel_A.pdb 1oel_10.mrc 10 1.5 20  -130.5  -84 -87
+cnmultifit param -n 5 -- 7 1oel_A.pdb 1oel_10.mrc 10 1.5 20  -130.5  -84 -87
 \endcode
 
 This generates a parameter file <tt>multifit.param</tt> in .ini format. It
@@ -73,7 +73,7 @@ The spacing (or pixel size) and the origin of the map are often stored in the
 map header. This can be viewed by running:
 
 \code{.sh}
-view_density_header.py 1oel_10.mrc
+view_density_header 1oel_10.mrc
 \endcode
 
 The resolution is typically not stored in the map header; it is usually
@@ -88,7 +88,7 @@ Now that all input files are prepared, the modeling procedure itself can
 be run with:
 
 \code{.sh}
-cnmultifit.py build --chimera multifit.chimera.output multifit.param
+cnmultifit build --chimera multifit.chimera.output multifit.param
 \endcode
 
 This generates models as PDB files named <tt>asmb.model.*.pdb</tt>, ranked
@@ -101,7 +101,7 @@ output in a \external{http://www.cgl.ucsf.edu/chimera/,Chimera}-compatible
 format. To generate PDB files from the Chimera output file, use:
 
 \code{.sh}
-cnmultifit.py chimera_models 1oel_A.pdb 7 multifit.chimera.output 5 test
+cnmultifit chimera_models 1oel_A.pdb 7 multifit.chimera.output 5 test
 \endcode
 
 This generates models named <tt>test.*.pdb</tt>.
@@ -112,7 +112,7 @@ If a single 'reference' PDB file is available of the entire complex,
 the cnmultifit output can be compared against this reference with:
 
 \code{.sh}
-cnmultifit.py rmsd multifit.param multifit.output ref.pdb
+cnmultifit rmsd multifit.param multifit.output ref.pdb
 \endcode
 
 This generates a file <tt>rmsd.output</tt> which shows, for each model, the

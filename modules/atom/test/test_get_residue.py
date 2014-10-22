@@ -20,6 +20,19 @@ class Tests(IMP.test.TestCase):
         rr = IMP.atom.Residue(r.get_particle())
         self.assertEqual(rr.get_index(), 10)
 
+    def test_residue_mass(self):
+        """Check getting a mass for a residue"""
+        m = IMP.kernel.Model()
+
+        #! read PDB
+        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
+                               m, IMP.atom.NonWaterPDBSelector())
+        chain = mp.get_child(0)
+        r = IMP.atom.get_residue(chain, 10)
+        rr = IMP.atom.Residue(r.get_particle())
+        mass = IMP.atom.get_mass(rr.get_residue_type())
+        self.assertEqual(mass, 71.079)
+
     def test_chain(self):
         """Check getting a residue from a cg protein"""
         IMP.base.set_log_level(IMP.base.VERBOSE)

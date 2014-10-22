@@ -4,8 +4,8 @@ project(IMP)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-if(${CMAKE_BINARY_DIR} MATCHES "${CMAKE_SOURCE_DIR}/.*" OR ${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
-   message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} includes ${CMAKE_BINARY_DIR}. If this message seems wrong, make sure to delete the CMakeFiles directory and the CMakeCache.txt file if they exist in the source dir (${CMAKE_SOURCE_DIR}).")
+if(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+   message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} is ${CMAKE_BINARY_DIR}. If this message seems wrong, make sure to delete the CMakeFiles directory and the CMakeCache.txt file if they exist in the source dir (${CMAKE_SOURCE_DIR}).")
 endif()
 
 if(IS_DIRECTORY "${PROJECT_SOURCE_DIR}/.git")
@@ -96,13 +96,17 @@ set(IMP_${m}_IS_PER_CPP 1)
 endforeach(m)
 
 if(NOT DEFINED PYTHON_INCLUDE_DIRS AND NOT IMP_STATIC)
+  execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print sys.executable"
+                  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                  OUTPUT_VARIABLE python_full_path
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
   execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print '%d.%d.%d' % sys.version_info[:3]"
                 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                 OUTPUT_VARIABLE python_full_version
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
   string(REGEX REPLACE "^([0-9]+\\.[0-9]+).*" "\\1" python_version
          ${python_full_version})
-  message(STATUS "Python version is " ${python_version})
+  message(STATUS "Python binary is " ${python_full_path} " (version " ${python_full_version} ")")
 
   FIND_PACKAGE(PythonLibs ${python_full_version} EXACT REQUIRED)
 endif()
@@ -161,10 +165,6 @@ include(${PROJECT_SOURCE_DIR}/tools/build/cmake_files/MakeContainers.cmake)
 
 imp_execute_process("making containers" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_containers.py)
-
-imp_execute_process("setup_module_alias for compatibility" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py
-                    --source=${CMAKE_SOURCE_DIR} --module=base --alias=compatibility --deprecate=2.1)
 
 imp_execute_process("setup_module_alias for kernel" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py

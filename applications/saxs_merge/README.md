@@ -1,7 +1,7 @@
-# SAXS Merge
+saxs_merge {#saxs_merge_bin}
+==========
 
 A method for merging SAXS profiles using Gaussian processes.
-
 Small-Angle X-ray Scattering (SAXS) is an experimental technique that allows
 gathering structural information on biomolecules in solution. High-quality
 SAXS profiles are usually obtained by manual merging of scattering profiles

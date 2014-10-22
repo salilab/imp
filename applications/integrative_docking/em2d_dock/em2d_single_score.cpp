@@ -5,12 +5,16 @@
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include "Image2D.h"
-#include "Projection.h"
+
+#include "../lib/helpers.h"
+
+#include <IMP/em2d/PCAFitRestraint.h>
+#include <IMP/saxs/FormFactorTable.h>
 
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/kernel/Model.h>
 #include <IMP/atom/pdb.h>
+#include <IMP/atom/Mass.h>
 #include <IMP/core/XYZ.h>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
@@ -20,29 +24,6 @@ namespace po = boost::program_options;
 #include <vector>
 #include <string>
 
-namespace {
-std::vector<IMP::algebra::Vector3D> read_points_from_pdb(
-    std::string pdb_file_name) {
-  // check if file exists
-  std::ifstream in_file(pdb_file_name.c_str());
-  if (!in_file) {
-    std::cerr << "Can't open file " << pdb_file_name << std::endl;
-    exit(1);
-  }
-  std::vector<IMP::algebra::Vector3D> points;
-  IMP::kernel::Model *model = new IMP::kernel::Model();
-  IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
-      pdb_file_name, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
-      true, true);
-  IMP::kernel::ParticlesTemp particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
-  for (unsigned int i = 0; i < particles.size(); i++)
-    points.push_back(IMP::core::XYZ(particles[i]).get_coordinates());
-  std::cerr << points.size() << " atoms were read from file " << pdb_file_name
-            << std::endl;
-  return points;
-}
-}
-
 int main(int argc, char **argv) {
   for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
   std::cerr << std::endl;
@@ -51,6 +32,7 @@ int main(int argc, char **argv) {
   int projection_number = 40;
   float pixel_size = 2.2;
   float area_threshold = 0.4;  // used 0.4 for benchmark and PCSK9
+  bool residue_level = false;
   std::vector<std::string> image_files;
   std::string pdb;
   po::options_description desc("Usage: <pdb> <image1> <image2>...");
@@ -66,7 +48,10 @@ int main(int argc, char **argv) {
       "number of projections for PDBs")(
       "area-threshold,a", po::value<float>(&area_threshold)->default_value(0.4),
       "maximal percentage of area difference for \
-aligned images (default = 0.4)");
+aligned images (default = 0.4)")(
+      "ca-only,c", "perform fast coarse grained profile calculation using \
+CA atoms only (default = false)")
+    ;
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
@@ -78,6 +63,7 @@ aligned images (default = 0.4)");
     std::cout << desc << "\n";
     return 0;
   }
+  if (vm.count("ca-only")) residue_level = true;
   if (vm.count("input-files")) {
     std::vector<std::string> files =
         vm["input-files"].as<std::vector<std::string> >();
@@ -93,74 +79,37 @@ aligned images (default = 0.4)");
     return 0;
   }
 
-  // read images
-  std::vector<Image2D<> > images;
-  for (unsigned int i = 0; i < image_files.size(); i++) {
-    Image2D<> image(image_files[i]);
-    image.get_largest_connected_component();
-    image.pad((int)(image.get_width() * 1.4), (int)(image.get_height() * 1.4));
-    image.center();
-    image.average();
-    image.stddev();
-    image.compute_PCA();
-    images.push_back(image);
+  IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
+  if (residue_level) ff_type = IMP::saxs::CA_ATOMS;
+  IMP::saxs::FormFactorTable ft;
+  IMP::kernel::Particles particles;
+  if (residue_level) {
+    read_pdb_ca_atoms(pdb, particles);
+  } else { // atoms
+    read_pdb_atoms(pdb, particles);
   }
 
-  std::vector<Image2D<> > images2;
-  for (unsigned int i = 0; i < image_files.size(); i++) {
-    Image2D<> image(image_files[i]);
-    images2.push_back(image);
-  }
-  Image2D<>::write_PGM(images2, "images.pgm");
-  // Image2D<>::write_PGM(images, "images_cc.pgm");
-
-  // read pdbs and generate projections
-  std::vector<IMP::algebra::Vector3D> points = read_points_from_pdb(pdb);
-  boost::ptr_vector<Projection> projections;
-  create_projections(points, projection_number, pixel_size, resolution,
-                     projections, images[0].get_height());
-  std::cerr << projections.size() << " projections were created" << std::endl;
-
-  // process projections
-  for (unsigned int i = 0; i < projections.size(); i++) {
-    projections[i].get_largest_connected_component();
-    projections[i].center();
-    projections[i].average();
-    projections[i].stddev();
-    projections[i].compute_PCA();
+  // add radius
+  for (unsigned int i=0; i<particles.size(); i++) {
+    double r = ft.get_radius(particles[i], ff_type);
+    IMP::core::XYZR::setup_particle(particles[i]->get_model(),
+                                    particles[i]->get_index(), r);
   }
 
-  float total_score = 0;
-  std::vector<Image2D<> > best_projections;
-  for (unsigned int i = 0; i < images.size(); i++) {
-    ImageTransform best_transform;
-    best_transform.set_score(0.0);
-    int best_projection_id = 0;
-    for (unsigned int j = 0; j < projections.size(); j++) {
-      // do not align images with more than X% area difference
-      double area_score = std::abs(images[i].segmented_pixels() -
-                                   projections[j].segmented_pixels()) /
-                          (double)std::max(images[i].segmented_pixels(),
-                                           projections[j].segmented_pixels());
-      if (area_score > area_threshold) continue;
-
-      ImageTransform curr_transform = images[i].pca_align(projections[j]);
-      curr_transform.set_area_score(area_score);
-      if (curr_transform.get_score() > best_transform.get_score()) {
-        best_transform = curr_transform;
-        best_projection_id = projections[j].get_id();
-      }
+  // add mass
+  if (residue_level) {
+    for (unsigned int i=0; i<particles.size(); i++) {
+      IMP::atom::Residue r =
+        IMP::atom::get_residue(IMP::atom::Atom(particles[i]));
+      double m = IMP::atom::get_mass(r.get_residue_type());
+      IMP::atom::Mass(particles[i]).set_mass(m);
     }
-    std::cerr << "Image " << i << " Best projection " << best_projection_id
-              << " " << best_transform << std::endl;
-    total_score += best_transform.get_score();
-
-    Image2D<> transformed_image;
-    projections[best_projection_id]
-        .rotate_circular(transformed_image, best_transform.get_angle());
-    transformed_image.translate(best_transform.get_x(), best_transform.get_y());
-    best_projections.push_back(transformed_image);
   }
-  std::cerr << "Total score = " << total_score << std::endl;
-  Image2D<>::write_PGM(best_projections, "best_projections.pgm");
+
+  IMP::em2d::PCAFitRestraint *r =
+    new IMP::em2d::PCAFitRestraint(particles, image_files,
+                                   pixel_size, resolution, projection_number);
+  double score  = r->unprotected_evaluate(NULL);
+  std::cerr << "Total score = " << score << std::endl;
+  r->write_best_projections("best_projections.pgm");
 }

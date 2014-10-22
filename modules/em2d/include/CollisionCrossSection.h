@@ -38,16 +38,15 @@ class IMPEM2DEXPORT CollisionCrossSection : public IMP::base::Object {
    */
   void set_model_particles(const kernel::ParticlesTemp &ps);
 
-  /**
-   * Returns the collision cross section. Before using this function you need
-   * to set the particles with set_model_particles()
-   * @return The value of the collision cross section
+  //! Returns the collision cross section.
+  /** Before using this function you need
+      to set the particles with set_model_particles()
+      @return The collision cross section
    */
   double get_ccs() const;
 
-  /**
-   * Shows information about the class
-   * @param out Stream used to show the information
+  //! Shows information about the class
+  /** @param out Stream used to show the information
    */
   void show(std::ostream &out) const {
     out << "Collision Cross section." << std::endl;
@@ -55,9 +54,9 @@ class IMPEM2DEXPORT CollisionCrossSection : public IMP::base::Object {
   IMP_OBJECT_METHODS(CollisionCrossSection);
 
  protected:
-  /*! Gets the sum of the values in the pixels with value > 0
-    \param[in] m The projected area is computed for this matrix
-    \return Values of the area
+  //! Gets the sum of the values in the pixels with value > 0
+  /** \param[in] m The projected area is computed for this matrix
+      \return Values of the area
   */
   double get_projected_area(const cv::Mat &m) const;
 

@@ -31,49 +31,49 @@ class DensityMap;
 //! create a copy of another map
 IMPEMEXPORT DensityMap *create_density_map(const DensityMap *other);
 
-//! Create an empty density map from a boudning box
+//! Create an empty density map from a bounding box
 IMPEMEXPORT DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
                                            double spacing);
 //! Create an empty density map
 IMPEMEXPORT DensityMap *create_density_map(int nx, int ny, int nz,
                                            double spacing);
 
-/** Read a density map from a file and return it.
-    See DensityMap
+//! Read a density map from a file and return it.
+/** \see DensityMap
 */
 IMPEMEXPORT DensityMap *read_map(std::string filename, MapReaderWriter *reader);
 
-/** Read a density map from a file and return it. Guess the file type from the
-    file name. The file formats supported are:
+//! Read a density map from a file and return it.
+/** Guess the file type from the file name. The file formats supported are:
     - .mrc
     - .em
     - .vol
     - .xplor
-    See DensityMap
+    \see DensityMap
 */
 IMPEMEXPORT DensityMap *read_map(std::string filename);
 
-/** Write a density map to a file.
-    See DensityMap
+//! Write a density map to a file.
+/** \see DensityMap
 */
 IMPEMEXPORT void write_map(DensityMap *m, std::string filename,
                            MapReaderWriter *writer);
 
-/** Write a density map to a file.
-    Guess the file type from the
+//! Write a density map to a file.
+/** Guess the file type from the
     file name. The file formats supported are:
     - .mrc
     - .em
     - .vol
     - .xplor
-    See DensityMap
+    \see DensityMap
 */
 IMPEMEXPORT void write_map(DensityMap *m, std::string filename);
 
 //!
 /**
 \param[in] m a density map
-\param[in] threshold find the boudning box for voxels
+\param[in] threshold find the bounding box for voxels
            with value above the threshold
  */
 IMPEMEXPORT algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m,
@@ -82,7 +82,7 @@ IMPEMEXPORT algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m,
 /**
 \param[in] m a density map
 \param[in] threshold consider volume of only voxels above this threshold
-\note The method assumes 1.21 cubic A per dalton (Harpaz 1994).
+\note The method assumes 1.21 cubic A per Dalton (Harpaz 1994).
  */
 IMPEMEXPORT Float approximate_molecular_mass(DensityMap *m, Float threshold);
 
@@ -101,7 +101,7 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
 
  public:
   DensityMap(std::string name = "DensityMap%1%");
-  //! Construct a density map as intructed in the input header
+  //! Construct a density map as instructed in the input header
   DensityMap(const DensityHeader &header, std::string name = "DensityMap%1%");
 
   //!  Set the density voxels to some value and reset the management flags.
@@ -115,7 +115,7 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
    */
   emreal calcRMS();
 
-  //! Normalize the density voxles according to standard deviation (stdv).
+  //! Normalize the density voxels according to standard deviation (stdv).
   /** The mean is subtracted from the map, which is then divided by the stdv.
       The normalization flag is set to avoid repeated computation */
   void std_normalize();
@@ -311,7 +311,7 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
   //! Sums two grids.
   //! The result is kept in the map.
   /** \param[in] other the other map
-      \note The shared extend is sumed
+      \note The shared extend is summed
       \note The two maps should have the same voxelsize and other
             should be contained within this map
    */
@@ -496,35 +496,26 @@ inline void calc_local_bounding_box(const em::DensityMap *d_map, double x,
 }
 #endif
 
-//! rotate a grid
-/**
-/param[in] orig_dens the density map to rotate
-/param[in] trans the transformation
-\note this is a low resolution operation.
-IMPEMEXPORT DensityMap* rotate_grid(const DensityMap *orig_dens,
-                        const algebra::Transformation3D &trans);
-*/
-
 IMP_OBJECTS(DensityMap, DensityMaps);
 
 /** Return the value for the density map, m, at point v, interpolating linearly
     from the sample values. The resulting function is C0 over R3.
-    See DensityMap
+    \see DensityMap
 */
 IMPEMEXPORT double get_density(const DensityMap *m, const algebra::Vector3D &v);
 
-/** Return a new density map containing a rotated version of the old
-    one. Only voxels whose value is above threshold are considered when
+//! Return a new density map containing a rotated version of the old one.
+/** Only voxels whose value is above threshold are considered when
     computing the bounding box of the new map (set IMP::em::get_bounding_box()).
-    See DensityMap
+    \see DensityMap
 */
 IMPEMEXPORT DensityMap *get_transformed(const DensityMap *input,
                                         const algebra::Transformation3D &tr,
                                         double threshold);
 
-/** Return a new density map containing a rotated version of the old
-    one. The dimension of the new map is the same as the old one.
-    See DensityMap
+//! Return a new density map containing a rotated version of the old one.
+/** The dimension of the new map is the same as the old one.
+    \see DensityMap
 */
 IMPEMEXPORT DensityMap *get_transformed(DensityMap *input,
                                         const algebra::Transformation3D &tr);
@@ -532,7 +523,7 @@ IMPEMEXPORT DensityMap *get_transformed(DensityMap *input,
 //! Get a resampled version of the map.
 /** The spacing is multiplied by scaling.
     That means, scaling values greater than 1 increase the voxel size.
-    See DensityMap
+    \see DensityMap
 */
 IMPEMEXPORT DensityMap *get_resampled(DensityMap *input, double scaling);
 
@@ -540,9 +531,9 @@ IMPEMEXPORT DensityMap *get_resampled(DensityMap *input, double scaling);
 /**
 \param[in] source the map to transform
 \param[in] tr transform the from density map by this transformation
-\param[out] into the map to tranform into
+\param[out] into the map to transform into
 \param[in] calc_rms if true RMS is calculated on the transformed map
- See DensityMap
+ \see DensityMap
 */
 IMPEMEXPORT void get_transformed_into(const DensityMap *source,
                                       const algebra::Transformation3D &tr,
@@ -556,13 +547,13 @@ inline bool get_interiors_intersect(const DensityMap *d1,
   return get_interiors_intersect(get_bounding_box(d1), get_bounding_box(d2));
 }
 #if 0
-//! Get a histrogram of density values
+//! Get a histogram of density values
 /**
-\param[in] dmap the density map to analyse
+\param[in] dmap the density map to analyze
 \param[in] threshold only add voxels with value above this threshold
                      to the histogram
 \param[in] num_bins the number of bins to have in the histogram
- See DensityMap
+ \see DensityMap
 */
 // IMPEMEXPORT statistics::Histogram
 // get_density_histogram(const DensityMap *dmap, float threshold,int num_bins);
@@ -586,7 +577,7 @@ IMPEMEXPORT DensityMap *get_segment_by_masking(DensityMap *map_to_segment,
                                                float mas_threshold);
 
 //! Return a map with 0 for all voxels below the
-//! threshold and 1 for thoes above
+//! threshold and 1 for those above
 /**
 \param[in] orig_map the map to binarize
 \param[in] threshold values below the threshold are set to 0 and 1 otherwise
@@ -621,7 +612,7 @@ IMPEMEXPORT double get_sum(const DensityMap *m1);
 IMPEMEXPORT DensityMap *get_max_map(DensityMaps maps);
 
 //! Return a new map with an updated spacing and interpolate input
-//! data accordinly
+//! data accordingly
 IMPEMEXPORT
 DensityMap *interpolate_map(DensityMap *in_map, double new_spacing);
 

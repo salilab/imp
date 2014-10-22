@@ -28,7 +28,7 @@ RRT::RRT(kernel::Model* m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
   // define q_init and check if it is a valid configuration
   DOFValues q_init(cspace_dofs_);
   if (!local_planner_->is_valid(q_init)) {  // TODO throw IMP exception
-    std::cerr << "Initial configuration in the forbiden space!!!" << std::endl;
+    std::cerr << "Initial configuration in the forbidden space!!!" << std::endl;
     std::cerr << "Try to decrease radii scaling parameter" << std::endl;
     exit(1);
   }

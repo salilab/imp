@@ -1,6 +1,6 @@
 /**
  *  \file IMP/misc/DecayPairContainerOptimizerState.h
- *  \brief Track the particles pairs passed to the pair score.
+ *  \brief A pair container with a decaying list of pairs.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
@@ -23,7 +23,7 @@ IMPMISC_BEGIN_NAMESPACE
 //! Maintain a pair container with a decaying list of pairs.
 /** The pair container passed to the constructor provides an initial
     list of pairs. Periodically (see the set_period() method), the
-    pedicate is applied to all the remaining pairs and ones for which
+    predicate is applied to all the remaining pairs and ones for which
     it evaluates to 0 are removed.
  */
 class IMPMISCEXPORT DecayPairContainerOptimizerState

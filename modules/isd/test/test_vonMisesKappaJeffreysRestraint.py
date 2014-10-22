@@ -54,7 +54,8 @@ class Tests(IMP.test.TestCase):
             ratio = i1(no) / i0(no)
             self.assertAlmostEqual(self.J.unprotected_evaluate(None),
                                    -0.5 *
-                                   log(ratio * (no - ratio - no * ratio * ratio)),
+                                   log(ratio *
+                                       (no - ratio - no * ratio * ratio)),
                                    delta=0.001)
 
     def testDerivative(self):

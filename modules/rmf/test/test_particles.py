@@ -18,7 +18,7 @@ class Tests(IMP.test.TestCase):
             p0.add_attribute(ik, 1)
             p1.add_attribute(fk, 2.0)
             p1.add_attribute(ik, 3)
-            name = self.get_tmp_file_name("particles." + suffix)
+            name = self.get_tmp_file_name("particles" + suffix)
             print name
             rmf = RMF.create_rmf_file(name)
             IMP.base.set_log_level(IMP.base.SILENT)
@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
             p0.add_attribute(ik, 1)
             p1.add_attribute(fk, 2.0)
             p1.add_attribute(ik, 3)
-            name = self.get_tmp_file_name("particles." + suffix)
+            name = self.get_tmp_file_name("particles" + suffix)
             print name
             rmf = RMF.create_rmf_file(name)
             IMP.base.set_log_level(IMP.base.SILENT)

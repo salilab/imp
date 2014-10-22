@@ -12,20 +12,20 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 
 #ifdef IMP_DOXYGEN
 /** \name Python only
-    This functionality is only available in python.
+    This functionality is only available in Python.
     @{
 */
-/** In python, you can use matplot lib, if installed,
+/** In Python, you can use matplot lib, if installed,
     to show the contents of a histogram. At the moment,
     only 1D and 2D histograms are supported.
 
-    \param[in] h The histogram to show, the plot is sized to the histograms
+    \param[in] h The histogram to show; the plot is sized to the histogram's
                  bounding box.
     \param[in] xscale Whether the xscale is "linear" or "log"
     \param[in] yscale Whether the yscale is "linear" or "log"
-    \param[in] curves A list of python functions to plot on the histogram as
+    \param[in] curves A list of Python functions to plot on the histogram as
     curves. The functions should take one float and return a float.
-    See HistogramD
+    \see HistogramD
 */
 void show_histogram(HistogramD h, std::string xscale = "linear",
                     std::string yscale = "linear",

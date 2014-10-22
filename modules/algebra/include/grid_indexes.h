@@ -58,7 +58,7 @@ class ExtendedGridIndexD : public base::Value {
   internal::VectorData<int, D, true>& access_data() { return data_; }
 #endif
 //! Create a grid cell from three arbitrary indexes
-/** \note Only use this from python. */
+/** \note Only use this from Python. */
 #ifndef SWIG
   IMP_DEPRECATED_ATTRIBUTE
 #endif
@@ -240,7 +240,7 @@ class GridIndexD : public base::Value {
   typedef const int* iterator;
   iterator begin() const { return data_.get_data(); }
   iterator end() const { return data_.get_data() + get_dimension(); }
-/** \note Only use this from python. */
+/** \note Only use this from Python. */
 #ifndef SWIG
   IMP_DEPRECATED_ATTRIBUTE
 #endif

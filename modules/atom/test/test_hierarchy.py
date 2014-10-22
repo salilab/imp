@@ -35,13 +35,28 @@ class Tests(IMP.test.TestCase):
     def test_get_by_type(self):
         """Check hierarchy get_by_type"""
         m = IMP.kernel.Model()
-        r1, r2, a1, a2 = _make_hierarchy_decorators(
-            m, (IMP.atom.Residue, IMP.atom.VAL), (
-                IMP.atom.Residue, IMP.atom.VAL),
+        s1, s2, r1, r2, a1, a2 = _make_hierarchy_decorators(
+            m, (IMP.atom.State, 1), (IMP.atom.State, 2),
+            (IMP.atom.Residue, IMP.atom.VAL), (IMP.atom.Residue, IMP.atom.VAL),
             (IMP.atom.Atom, IMP.atom.AT_C), (IMP.atom.Atom, IMP.atom.AT_C))
+        s1.add_child(r1)
+        s2.add_child(r2)
         r1.add_child(a1)
         r1.add_child(a2)
-        self.assertEqual(r1, IMP.atom.get_root(a1))
+        self.assertEqual(s1, IMP.atom.get_root(a1))
+
+        # r1 should be found in state 1, r2 in state 2
+        self.assertEqual(list(IMP.atom.get_by_type(s1, IMP.atom.RESIDUE_TYPE)),
+                         [r1.get_particle()])
+        self.assertEqual(list(IMP.atom.get_by_type(s2, IMP.atom.RESIDUE_TYPE)),
+                         [r2.get_particle()])
+
+        # each state should be found under itself
+        self.assertEqual(list(IMP.atom.get_by_type(s1, IMP.atom.STATE_TYPE)),
+                         [s1.get_particle()])
+        self.assertEqual(list(IMP.atom.get_by_type(s2, IMP.atom.STATE_TYPE)),
+                         [s2.get_particle()])
+
         # Both atoms should be found under r1 (none under r2)
         self.assertEqual(list(IMP.atom.get_by_type(r1, IMP.atom.ATOM_TYPE)),
                          [a1.get_particle(), a2.get_particle()])

@@ -59,7 +59,7 @@ class SoapPairFilter : public PairPredicate {
       // We touch the two parents (residue and chain) of each atom to
       // determine chain separation; for bond separation we potentially touch
       // other residues and atoms in the same chain as the inputs
-      // (to detect dissulfides) but this isn't currently handled here.
+      // (to detect disulfides) but this isn't currently handled here.
       for (unsigned int i = 0; i < pis.size(); ++i) {
         if (Atom::get_is_setup(m, pis[i])) {
           Residue r = get_residue(Atom(m, pis[i]));

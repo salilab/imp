@@ -1,6 +1,6 @@
 /**
  *  \file NormalMover.cpp
- *  \brief A modifier which perturbs a point with a gaussian.
+ *  \brief A modifier which perturbs a point with a Gaussian.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

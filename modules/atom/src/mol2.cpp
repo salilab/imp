@@ -315,7 +315,7 @@ void read_bond_mol2(
   } while (!mol2_file.eof());
 }
 
-// input molecule decorator, output compound informations to mol2 file
+// input molecule decorator, output compound information to mol2 file
 void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
   // check if current mhd is molecule
   if (!Residue::get_is_setup(chd)) {
@@ -333,8 +333,8 @@ void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
     mol2_file << mol2_string(molecule_d);
   }
 
-  // get AtomDecorator of the atom particles, output atom section
-  // get_mol2atom_line should be in AtomDecorator.h, .cpp - to be improved
+  // get Atom decorator of the atom particles, output atom section
+  // get_mol2atom_line should be in Atom.h, .cpp - to be improved
   kernel::ParticlesTemp atoms = get_leaves(chd);
   mol2_file << "@<TRIPOS>ATOM" << std::endl;
   for (unsigned int i = 0; i < atoms.size(); i++) {
@@ -344,7 +344,7 @@ void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
     }
   }
 
-  // get BondDecorator of the bond particles, output bond section
+  // get Bond decorator of the bond particles, output bond section
   // get_mol2bond_line should be in bond_decorators.h, .cpp - to be improved
   Bonds bonds(get_internal_bonds(chd));
   base::Vector<Bond> bds(bonds.begin(), bonds.end());

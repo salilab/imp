@@ -1,6 +1,7 @@
 /**
  *  \file IMP/kernel/Particle.h
  *  \brief Classes to handle individual model particles.
+ *         (Note that implementation of inline functions in in internal)
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -11,19 +12,21 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/utility.h>
-#include "Key.h"
-#include "internal/AttributeTable.h"
 #include "DerivativeAccumulator.h"
-#include <IMP/base/Pointer.h>
+#include "Model.h"
 #include "ModelObject.h"
 #include "particle_index.h"
+#include "Key.h"
+#include "internal/AttributeTable.h"
+#include <IMP/base/Object.h>
+#include <IMP/base/utility.h>
+#include <IMP/base/Pointer.h>
+#include <IMP/base/check_macros.h>
 #include <utility>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-class Model;
+//class Model;
 class Changed;
 class SaveOptimizeds;
 
@@ -50,13 +53,13 @@ class IMPKERNELEXPORT Particle : public ModelObject {
 #ifndef IMP_DOXYGEN
 
 #define IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(UCName, lcname, Value) \
-  void add_attribute(UCName##Key name, Value initial_value);           \
-  void remove_attribute(UCName##Key name);                             \
-  bool has_attribute(UCName##Key name) const;                          \
-  Value get_value(UCName##Key name) const;                             \
-  void set_value(UCName##Key name, Value value);                       \
-  void add_cache_attribute(UCName##Key name, Value value);             \
-  UCName##Keys get_##lcname##_keys() const
+  inline void add_attribute(UCName##Key name, Value initial_value);           \
+  inline void remove_attribute(UCName##Key name);                             \
+  inline bool has_attribute(UCName##Key name) const;                          \
+  inline Value get_value(UCName##Key name) const;                             \
+  inline void set_value(UCName##Key name, Value value);                       \
+  inline void add_cache_attribute(UCName##Key name, Value value);             \
+  inline UCName##Keys get_##lcname##_keys() const
 
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Float, float, Float);
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Int, int, Int);
@@ -74,16 +77,30 @@ class IMPKERNELEXPORT Particle : public ModelObject {
        and derivatives in kcal/mol angstrom. This is not enforced.
    */
   /*@{*/
+  /** add attribute name to the attributes table of this particle
+
+      @param name attribute key
+      @param inital_value initial value for the attribute
+      @param optimized whether to flag this attribute as optimized
+  */
   void add_attribute(FloatKey name, const Float initial_value, bool optimized);
 
+  /** adds a derivative value to the derivatives table of this particle
+
+      @param key the attribute key whose derivative is updates
+      @param value the derivative value to be added
+      @param da a derivative accumulator for reweighting derivatives
+  */
   void add_to_derivative(FloatKey key, Float value,
                          const DerivativeAccumulator &da);
 
   void set_is_optimized(FloatKey k, bool tf);
 
-  bool get_is_optimized(FloatKey k) const;
+  //! returns true if key k is marked by model as optimized
+  inline bool get_is_optimized(FloatKey k) const;
 
-  Float get_derivative(FloatKey name) const;
+  //! get the particle derivative
+  inline Float get_derivative(FloatKey name) const;
   /** @} */
 
   /** \name Particle attributes
@@ -92,7 +109,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   void add_attribute(ParticleIndexKey k, Particle *v);
   bool has_attribute(ParticleIndexKey k);
   void set_value(ParticleIndexKey k, Particle *v);
-  Particle *get_value(ParticleIndexKey k) const;
+  inline Particle *get_value(ParticleIndexKey k) const;
   void remove_attribute(ParticleIndexKey k);
   ParticleIndexKeys get_particle_keys() const;
   /** @} */
@@ -108,6 +125,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   bool get_is_active() const;
 #endif
 
+  //! returns the particle index of this particle in its model
   ParticleIndex get_index() const;
 
 #if !defined(IMP_DOXYGEN)
@@ -146,6 +164,64 @@ class IMPKERNELEXPORT ParticleAdaptor : public base::InputAdaptor {
   ParticleIndex get_particle_index() const { return pi_; }
 };
 
-IMPKERNEL_END_NAMESPACE
 
+/****************** Inline methods ***************/
+
+#ifndef IMP_DOXYGEN
+
+bool Particle::get_is_optimized(FloatKey k) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_is_optimized(k, id_);
+}
+
+Float Particle::get_derivative(FloatKey name) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_derivative(name, id_);
+}
+
+Particle *Particle::get_value(ParticleIndexKey k) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_particle(get_model()->get_attribute(k, id_));
+}
+
+#define IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(UCName, lcname, Value)                \
+  void Particle::add_attribute(UCName##Key name, Value initial_value) {       \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");              \
+    get_model()->add_attribute(name, id_, initial_value);                     \
+  }                                                                           \
+  void Particle::remove_attribute(UCName##Key name) {                         \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");              \
+    get_model()->remove_attribute(name, id_);                                 \
+  }                                                                           \
+  bool Particle::has_attribute(UCName##Key name) const {                      \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");              \
+    return get_model()->get_has_attribute(name, id_);                         \
+  }                                                                           \
+  Value Particle::get_value(UCName##Key name) const {                         \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");              \
+    return get_model()->get_attribute(name, id_);                             \
+  }                                                                           \
+  void Particle::set_value(UCName##Key name, Value value) {                   \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");              \
+    get_model()->set_attribute(name, id_, value);                             \
+  }                                                                           \
+  UCName##Keys Particle::get_##lcname##_keys() const {                        \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");              \
+    return get_model()->internal::UCName##AttributeTable::get_attribute_keys( \
+        id_);                                                                 \
+  }                                                                           \
+  void Particle::add_cache_attribute(UCName##Key name, Value value) {         \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");              \
+    return get_model()->add_cache_attribute(name, id_, value);                \
+  }
+
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Float, float, Float);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Int, int, Int);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(String, string, String);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Object, object, base::Object *);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(WeakObject, weak_object, base::Object *);
+
+#endif // DOXYGEN
+
+IMPKERNEL_END_NAMESPACE
 #endif /* IMPKERNEL_PARTICLE_H */

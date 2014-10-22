@@ -15,7 +15,6 @@
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/base/Object.h>
-//#include <IMP/compatibility/nullptr.h>
 #include <IMP/base/exception.h>
 #include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/algebra/Vector3D.h>
@@ -33,8 +32,8 @@ class IMPKINEMATICSEXPORT TransformationJoint : public Joint {
   TransformationJoint(IMP::core::RigidBody parent, IMP::core::RigidBody child);
 
   /**
-     Sets the transfromation from parent to child reference frame,
-     in a safe way - that is, after updating all intrnal coordinates
+     Sets the transformation from parent to child reference frame,
+     in a safe way - that is, after updating all internal coordinates
      from external if needed, and marking the owner internal coordinates
      as changed.
   */

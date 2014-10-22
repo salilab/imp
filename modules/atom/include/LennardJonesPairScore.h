@@ -24,7 +24,7 @@ IMPATOM_BEGIN_NAMESPACE
                        - 2 w_{att} \left(\frac{r_{min}}{r}\right)^{6}\right]
     \f] where \f$\epsilon\f$ is the depth of the well between the
     two particles, \f$r_{min}\f$ the sum of the particles' radii, \f$r\f$
-    the interparticle distance, and \f$w_{rep}\f$ and \f$w_{att}\f$ the
+    the inter-particle distance, and \f$w_{rep}\f$ and \f$w_{att}\f$ the
     weights on the repulsive and attractive parts of the potential respectively;
     both weights are 1.0 by default.
 
@@ -35,7 +35,7 @@ IMPATOM_BEGIN_NAMESPACE
     themselves, the strength of the interaction cannot be changed for a
     particular pair of atoms (as is done in the CHARMM forcefield with the
     rarely-used NBFIX directive, for example). If the well depth or radius of
-    a single particle is modifed, that will affect its interaction with all
+    a single particle is modified, that will affect its interaction with all
     particles.
  */
 class IMPATOMEXPORT LennardJonesPairScore : public PairScore {

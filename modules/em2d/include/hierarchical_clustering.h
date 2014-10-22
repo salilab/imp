@@ -34,52 +34,47 @@ void print_vector(const std::vector<T> &v) {
   std::cout << std::endl;
 }
 
-// A class to store the clusters generated during hierarchical clustering;
+//! A class to store the clusters generated during hierarchical clustering
 class IMPEM2DEXPORT ClusterSet {
  public:
-  /*!
+  /**
     \param[in] N Number of elements to be clustered
   */
   ClusterSet(unsigned int N);
 
-  // join operation
-  /*!
-    \param[in] cluster_id1 id of the 1st cluster joined
-    \param[in] cluster_id2 id of the 2nd cluster merged
-    \param[in] distance_between_clusters distance between the merged clusters
+  //! join operation
+  /** \param[in] cluster_id1 id of the 1st cluster joined
+      \param[in] cluster_id2 id of the 2nd cluster merged
+      \param[in] distance_between_clusters distance between the merged clusters
   */
   void do_join_clusters(unsigned int cluster_id1, unsigned int cluster_id2,
                         double distance_between_clusters);
 
-  // Returns a vector with the ids of the elements that are in a cluster
-  // Does not contain any hierarchical information, just the members
-  /*!
-    \param[in] id of the cluster
+  //! Returns a vector with the ids of the elements that are in a cluster
+  /** Does not contain any hierarchical information, just the members
+      \param[in] id of the cluster
   */
   Ints get_cluster_elements(unsigned int id) const;
 
-  // Get the biggest clusters that have distances below a given cutoff
-  /*!
-    \param[in] cutoff distance
-    \return A vector of Ints: Each Ints has the ids of all elements of the
-            cluster
+  //! Get the biggest clusters that have distances below a given cutoff
+  /** \param[in] cutoff distance
+      \return A vector of Ints: Each Ints has the ids of all elements of the
+              cluster
   */
   Ints get_clusters_below_cutoff(double cutoff) const;
 
-  // Return the elements of the cluster formed at a given step
-  /*!
-  */
+  //! Return the elements of the cluster formed at a given step
   Ints get_cluster_formed_at_step(unsigned int step) const;
 
-  // Distance in the linkage matrix at a given step
+  //! Distance in the linkage matrix at a given step
   double get_distance_at_step(unsigned int step) const;
 
   unsigned int get_id_for_cluster_at_step(unsigned int step) const {
     return step + n_elements_;
   }
 
-  // Returns the linkage matrix
-  /*!
+  //! Returns the linkage matrix
+  /**
     \note Linkage matrix is a matrix A[N-1][3].
     A[i][0] - id of the first cluster merged at step i
     A[i][1] - id of the second cluster merged at step i
@@ -87,15 +82,15 @@ class IMPEM2DEXPORT ClusterSet {
   */
   FloatsList get_linkage_matrix() const;
 
-  // Returns the linkage matrix compatible with Matlab format
-  /*!
+  //! Returns the linkage matrix compatible with Matlab format
+  /**
     \note This function merely adds 1 to the cluster ids, for compatibility
      with Matlab.
     Matlab format: http://www.mathworks.com/help/toolbox/stats/linkage.html
   */
   FloatsList get_linkage_matrix_in_matlab_format() const;
 
-  // Returns the number of steps of clustering recorded
+  //! Returns the number of steps of clustering recorded
   unsigned int get_number_of_steps() const { return steps_; }
 
   void show(std::ostream &out) const;
@@ -116,11 +111,11 @@ class IMPEM2DEXPORT ClusterSet {
 };
 IMP_VALUES(ClusterSet, ClusterSets);
 
-// Functor for hierarchical clustering based on single linkage
+//! Functor for hierarchical clustering based on single linkage
 class IMPEM2DEXPORT SingleLinkage {
  public:
   SingleLinkage() {}
-  /*!
+  /**
     \param[in] id1 identity of cluster 1 to merge
     \param[in] id2 identity of cluster 2 to merge
     \param[in] cluster_set linkage matrix describing the contents of
@@ -141,12 +136,12 @@ class IMPEM2DEXPORT SingleLinkage {
 };
 IMP_VALUES(SingleLinkage, SingleLinkages);
 
-// Functor for hierarchical clustering based on complete linkage
+//! Functor for hierarchical clustering based on complete linkage
 class IMPEM2DEXPORT CompleteLinkage {
  public:
   CompleteLinkage() {}
-  // Distance between the clusters
-  /*!
+  //! Distance between the clusters
+  /**
     \note See SingleLinkage class for the meaning of the arguments
     \return Maximal distance between 2 members in the merged cluster
 
@@ -160,12 +155,12 @@ class IMPEM2DEXPORT CompleteLinkage {
 };
 IMP_VALUES(CompleteLinkage, CompleteLinkages);
 
-// Functor for hierarchical clustering based on average-linkage
+//! Functor for hierarchical clustering based on average-linkage
 class IMPEM2DEXPORT AverageDistanceLinkage {
  public:
   AverageDistanceLinkage() {}
-  // Distance between the clusters
-  /*!
+  //! Distance between the clusters
+  /**
     \note See SingleLinkage class for the meaning of the arguments
     \return Average between all members of the merged cluster
   */
@@ -178,8 +173,8 @@ class IMPEM2DEXPORT AverageDistanceLinkage {
 };
 IMP_VALUES(AverageDistanceLinkage, AverageDistanceLinkages);
 
-// Function to perform agglomerative clustering
-/*!
+//! Function to perform agglomerative clustering
+/**
   \param[in] distances Vector of Floats containing all the
   possible distances(i,j) between elements to cluster. Given N elements to
   cluster, there are N vectors of size N

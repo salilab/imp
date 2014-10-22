@@ -106,7 +106,7 @@ Each docked complex will be compared against cross links in cross_links_file.")(
       std::cout << i << " - " << curr_score << " d= " << dist << std::endl;
     } else {
       score += curr_score;
-      std::cout << i << " + " << curr_score << " d= " << dist << std::endl;
+      std::cout << i << " + " << curr_score << " d= " << dist << " delta= " << dist - distance_restraints_[i].max_distance_ << std::endl;
     }
   }
   std::cerr << "Score = " << score << " unsatisfied_num " << unsatisfied_num

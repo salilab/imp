@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
         def empty_task():
             pass
         m = _util.Manager(python="/path/does/not/exist",
-                         output='heartbeat%d.out')
+                          output='heartbeat%d.out')
         m.heartbeat_timeout = 0.1
         m.add_slave(IMP.parallel.LocalSlave())
         c = m.get_context()

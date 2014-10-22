@@ -19,7 +19,7 @@
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 //! Orientation-dependent SOAP score.
-/** Orientation-dependent SOAP scores include those that score loops
+/** Such scores include those that score loops
     (SOAP-Loop), protein-peptide interfaces (SOAP-Peptide) and proteins
     (SOAP-Protein). The library files themselves, such as soap_loop.hdf5 or
     soap_protein_od.hdf5, are rather large (~1.5GB) and so are not included
@@ -41,7 +41,7 @@ class OrientedSoap : public Score {
     maxrange_ = potential_.get_max_range();
   }
 
-  // Return the score for the interaction between a pair of doublets
+  //! Return the score for the interaction between a pair of doublets
   double score_doublets(atom::Atom a1, atom::Atom a2, int distbin,
                         const internal::SoapModelDoublet &d1,
                         const internal::SoapModelDoublet &d2) const {

@@ -42,34 +42,34 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
   void create_score_state();
 
  public:
-  // this is a restraint on other restraints. It first constructs the
-  // necessary vectors from GaussianProcessInterpolation, then creates a
-  // multivariate normal distribution around it. Upon evaluation, it
-  // checks if parameters have changed, reconstructs the matrix if
-  // necessary, changes the DA weight and passes it to the functions.
+  /** This is a restraint on other restraints. It first constructs the
+     necessary vectors from GaussianProcessInterpolation, then creates a
+     multivariate normal distribution around it. Upon evaluation, it
+     checks if parameters have changed, reconstructs the matrix if
+     necessary, changes the DA weight and passes it to the functions. */
   GaussianProcessInterpolationRestraint(kernel::Model *m,
                                         GaussianProcessInterpolation *gpi);
 
-  // to call this, you need to update the scorestate before.
-  // calling model.evaluate(False) is enough.
+  /** To call this, you need to update the scorestate before.
+      calling model.evaluate(False) is enough. */
   double get_probability() const { return mvn_->density(); }
 
   void stats() const { return mvn_->stats(); }
 
-  // use conjugate gradients when possible (default false)
+  //! Use conjugate gradients when possible (default false)
   void set_use_cg(bool use, double tol) { mvn_->set_use_cg(use, tol); }
 
-  // get minus log normalization and minus exponent separately
+  //! Get minus log normalization and minus exponent separately
   double get_minus_log_normalization() const;
   double get_minus_exponent() const;
 
-  // get hessian of the minus log likelihood
+  //! Get hessian of the minus log likelihood
   IMP_Eigen::MatrixXd get_hessian() const;
 
-  // get log determinant of hessian
+  //! Get log determinant of hessian
   double get_logdet_hessian() const;
 
-  // call this one from python
+  //! call this one from Python
   FloatsList get_hessian(bool unused) const;
 
  public:
@@ -77,7 +77,6 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
       IMP_OVERRIDE;
   IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(GaussianProcessInterpolationRestraint);
-  ;
 
   // to allow the scorestate to get the restraint's objects
   friend class GaussianProcessInterpolationScoreState;

@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         for suffix in [".rmfz", ".rmf3"]:
             m = IMP.kernel.Model()
             print "reading pdb"
-            name = self.get_tmp_file_name("test_round_trip." + suffix)
+            name = self.get_tmp_file_name("test_round_trip" + suffix)
             h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                   IMP.atom.NonAlternativePDBSelector())
             h.get_is_valid(True)
@@ -45,6 +45,10 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(len(h2), 1)
             self.assertEqual(len(IMP.atom.get_leaves(h)),
                              len(IMP.atom.get_leaves(h2[0])))
+            self.assertEqual(
+                len([a for a in IMP.atom.get_leaves(h2)
+                     if not IMP.atom.Atom.get_is_setup(a)]),
+                0)
             self.assertAlmostEqual(IMP.atom.get_mass(IMP.atom.Selection(h)),
                                    IMP.atom.get_mass(IMP.atom.Selection(h2[0])), delta=1e-4)
             if hasattr(IMP.atom, 'get_surface_area'):
@@ -65,7 +69,7 @@ class Tests(IMP.test.TestCase):
             print "done"
             IMP.base.set_log_level(IMP.base.VERBOSE)
             print "writing hierarchy"
-            name = self.get_tmp_file_name("test_rt_parts." + suffix)
+            name = self.get_tmp_file_name("test_rt_parts" + suffix)
             f = RMF.create_rmf_file(name)
             print f, type(f)
             IMP.rmf.add_hierarchy(f, h)
@@ -83,6 +87,30 @@ class Tests(IMP.test.TestCase):
             f = RMF.open_rmf_file_read_only(name)
             print "reading"
             h2 = IMP.rmf.create_hierarchies(f, m)
+
+    def test_names(self):
+        """Test if RMF can recall the molecule name and chain ID"""
+        for suffix in [".rmfz", ".rmf3"]:
+            m = IMP.kernel.Model()
+            h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
+                                  IMP.atom.NonAlternativePDBSelector())
+            chs = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
+            chs[0].set_name('simple')
+            self.assertEqual(chs[0].get_name(), 'simple')
+
+            IMP.base.set_log_level(IMP.base.SILENT)
+            IMP.atom.add_bonds(h)
+            IMP.base.set_log_level(IMP.base.VERBOSE)
+            name = self.get_tmp_file_name("test_rt_parts" + suffix)
+            f = RMF.create_rmf_file(name)
+            IMP.rmf.add_hierarchy(f, h)
+            IMP.rmf.save_frame(f, str(0))
+            del f
+            f = RMF.open_rmf_file_read_only(name)
+            h2 = IMP.rmf.create_hierarchies(f, m)
+            chs2 = IMP.atom.get_by_type(h2[0], IMP.atom.CHAIN_TYPE)
+            self.assertEqual(IMP.atom.Chain(chs2[0]).get_id(), 'A')
+            self.assertEqual(chs2[0].get_name(), 'simple')
 
 if __name__ == '__main__':
     IMP.test.main()

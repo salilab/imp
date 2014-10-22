@@ -43,10 +43,7 @@ class Tests(IMP.test.TestCase):
             IMP.atom.add_bonds(h)
             IMP.base.set_log_level(IMP.base.VERBOSE)
             self._test_round_trip(
-                h,
-                self.get_tmp_file_name(
-                    "test_small_pdb." +
-                    suffix))
+                h, self.get_tmp_file_name("test_small_pdb" + suffix))
 
     # disable as it clobbers machines without much memory
     def _test_huge(self):
@@ -64,9 +61,7 @@ class Tests(IMP.test.TestCase):
             print "writing hierarchy"
             IMP.base.set_log_level(IMP.PROGRESS)
             self._test_round_trip(
-                h,
-                self.get_tmp_file_name(
-                    "test_huge." + suffix))
+                h, self.get_tmp_file_name("test_huge" + suffix))
             print "done"
 
     def test_large(self):
@@ -83,9 +78,7 @@ class Tests(IMP.test.TestCase):
             print "writing hierarchy"
             IMP.base.set_log_level(IMP.PROGRESS)
             self._test_round_trip(
-                h,
-                self.get_tmp_file_name(
-                    "test_large." + suffix))
+                h, self.get_tmp_file_name("test_large" + suffix))
             print "done"
 
     def test_navigation(self):
@@ -97,7 +90,7 @@ class Tests(IMP.test.TestCase):
                                   IMP.atom.NonAlternativePDBSelector())
             IMP.base.set_log_level(IMP.base.SILENT)
             IMP.atom.add_bonds(h)
-            name = self.get_tmp_file_name("test_large_nav." + suffix)
+            name = self.get_tmp_file_name("test_large_nav" + suffix)
             f = RMF.create_rmf_file(name)
             IMP.rmf.add_hierarchy(f, h)
             IMP.rmf.save_frame(f, "zero")
@@ -117,7 +110,7 @@ class Tests(IMP.test.TestCase):
                                   IMP.atom.NonAlternativePDBSelector())
             IMP.base.set_log_level(IMP.base.SILENT)
             IMP.atom.add_bonds(h)
-            name = self.get_tmp_file_name("test_link." + suffix)
+            name = self.get_tmp_file_name("test_link" + suffix)
             f = RMF.create_rmf_file(name)
             IMP.rmf.add_hierarchy(f, h)
             IMP.rmf.save_frame(f, "zero")
@@ -137,7 +130,7 @@ class Tests(IMP.test.TestCase):
             fr = IMP.atom.Fragment.setup_particle(m, p, idxs)
             d = IMP.core.XYZR.setup_particle(m, p)
             IMP.atom.Mass.setup_particle(m, p, 1)
-            name = self.get_tmp_file_name("test_frag." + suffix)
+            name = self.get_tmp_file_name("test_frag" + suffix)
             f = RMF.create_rmf_file(name)
             IMP.rmf.add_hierarchy(f, fr)
             IMP.rmf.save_frame(f, "zero")

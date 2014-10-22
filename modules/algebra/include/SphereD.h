@@ -18,8 +18,8 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Represent a sphere in D-dimensions.
-    \geometry
+//! Represent a sphere in D-dimensions.
+/** \geometry
   */
 template <int D>
 class SphereD : public GeometricPrimitiveD<D> {
@@ -34,8 +34,8 @@ class SphereD : public GeometricPrimitiveD<D> {
     IMP_USAGE_CHECK(radius >= 0, "Radius can't be negative");
   }
   double get_radius() const {
-    IMP_USAGE_CHECK(!base::isnan(radius_),
-                    "Attempt to use uninitialized sphere.");
+    IMP_INTERNAL_CHECK(!base::isnan(radius_),
+                       "Attempt to use uninitialized sphere.");
     return radius_;
   }
   const VectorD<D> &get_center() const { return center_; }
@@ -46,8 +46,6 @@ class SphereD : public GeometricPrimitiveD<D> {
   }
 
   //! Return true if the point is in or on the surface of the sphere
-  /**
-   */
   bool get_contains(const VectorD<D> &p) const {
     return ((p - center_).get_squared_magnitude() <= get_squared(radius_));
   }
@@ -99,7 +97,7 @@ inline SphereD<-1> get_unit_sphere_kd(unsigned int d) {
 
 //! Return the distance between the two spheres if they are disjoint
 /** If they intersect, the distances are not meaningful.
-    See SphereD
+    \see SphereD
 */
 template <int D>
 inline double get_distance(const SphereD<D> &a, const SphereD<D> &b) {
@@ -110,7 +108,7 @@ inline double get_distance(const SphereD<D> &a, const SphereD<D> &b) {
 //! Return the power distance between the two spheres
 /** The power distance is the square of the distance between the centers
     minus the sum of the square of the radii.
-    See SphereD
+    \see SphereD
 */
 template <int D>
 inline double get_power_distance(const SphereD<D> &a, const SphereD<D> &b) {
@@ -118,8 +116,8 @@ inline double get_power_distance(const SphereD<D> &a, const SphereD<D> &b) {
   return d - square(a.get_radius()) - square(b.get_radius());
 }
 
-//! Return true if the two balls bounded by the two spheres interesect
-/** See SphereD
+//! Return true if the two balls bounded by the two spheres intersect
+/** \see SphereD
  */
 template <int D>
 inline bool get_interiors_intersect(const SphereD<D> &a, const SphereD<D> &b) {
@@ -149,10 +147,10 @@ inline std::ostream &operator<<(std::ostream &out, const SphereSpacesIO<D> &s) {
 }
 }
 
-//! Use this before outputing to a stream with spaces delimiting
+//! Use this before outputting to a stream with spaces delimiting
 /** std::cout << spaces_io(s);
     produces "1.0 2.0 3.0 4.0" where the radius is 4.0
-    See SphereD
+    \see SphereD
  */
 template <int D>
 inline internal::SphereSpacesIO<D> spaces_io(const SphereD<D> &v) {

@@ -1,5 +1,5 @@
 /**
- *  \file coase_molecule.cpp
+ *  \file coarse_molecule.cpp
  *  \brief coarsen molecule by clustering
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.

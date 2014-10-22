@@ -24,5 +24,5 @@ int get_copy_index(Hierarchy h) {
   return -1;
 }
 
-void Copy::show(std::ostream &out) const { out << get_copy_index(); }
+void Copy::show(std::ostream &out) const { out << "Copy: "<<get_copy_index(); }
 IMPATOM_END_NAMESPACE

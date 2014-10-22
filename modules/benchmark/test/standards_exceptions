@@ -1,0 +1,4 @@
+show_exceptions=[]
+function_name_exceptions=['report']
+value_object_exceptions=[]
+spelling_exceptions=[]

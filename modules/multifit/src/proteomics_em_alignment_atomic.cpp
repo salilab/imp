@@ -228,7 +228,7 @@ void ProteomicsEMAlignmentAtomic::load_atomic_molecules() {
     mh->set_name(asmb_data_->get_component_header(i)->get_name());
     mh->set_was_used(true);
     mhs_.push_back(mh);
-    std::cout << "create pdb" << std::endl;
+    std::cout << "create PDB" << std::endl;
     std::cout << "are subunits rigid?"
               << params_.get_fragments_params().subunit_rigid_ << std::endl;
     if (params_.get_fragments_params().subunit_rigid_) {
@@ -366,7 +366,7 @@ void ProteomicsEMAlignmentAtomic::align() {
   std::cout << "merge tree" << std::endl;
   domino::MergeTree mt = domino::get_balanced_merge_tree(jt);
   show_as_graphviz(mt, std::cout);
-  ds->set_merge_tree(mt);  // remove for non interative
+  ds->set_merge_tree(mt);  // remove for non interactive
   ds->set_subset_filter_tables(filters_);
   std::cout << "Number of filters:" << filters_.size() << std::endl;
   domino::Subset s(pst_->get_particles());
@@ -657,7 +657,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
       s2.set_atom_types(atom_types);
       pairx[0] = s1.get_selected_particles()[0];
       pairx[1] = s2.get_selected_particles()[0];
-      std::cout << "creaeting restraint between: " << pairx[0]->get_name()
+      std::cout << "creating restraint between: " << pairx[0]->get_name()
                 << " and " << pairx[1]->get_name() << std::endl;
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hub_updated,
               //(params_.get_xlink_params().upper_bound_+extra_len,
@@ -774,7 +774,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
       all_ca.insert(all_ca.end(), pt.begin(), pt.end());
     }
     std::cout << "after adding leaves" << std::endl;
-    // calculcate normalization factors
+    // calculate normalization factors
     if (fast_scoring_) {
       std::cout << "going to use fast scoring" << std::endl;
       // create a decomposition version of the fit restraint

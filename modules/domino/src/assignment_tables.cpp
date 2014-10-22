@@ -1,5 +1,5 @@
 /**
- *  \file domino/DominoSampler.h \brief A beyesian infererence-based
+ *  \file domino/DominoSampler.h \brief A Bayesian inference-based
  *  sampler.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.

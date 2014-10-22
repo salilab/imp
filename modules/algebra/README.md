@@ -1,8 +1,8 @@
-This module contains general purpose algebraic and geometric methods that are expected to be used by a wide variety of IMP modules.
+\brief General purpose algebraic and geometric methods that are expected to be used by a wide variety of IMP modules.
 
 # Geometric primitives # {#geometricprimitives}
 
-IMP has a number of geometry primitives. They support the following namespace
+IMP has a number of geometric primitives. They support the following namespace
 functions as appropriate
   - IMP::algebra::get_bounding_box()
   - IMP::algebra::get_surface_area()
@@ -74,4 +74,4 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - See main IMP papers list.
+ - See [main IMP papers list](@ref publications).

@@ -1,5 +1,5 @@
 /**
- *  \file domino/DominoSampler.h \brief A beyesian infererence-based
+ *  \file domino/DominoSampler.h \brief A Bayesian inference-based
  *  sampler.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
@@ -696,7 +696,7 @@ MergeTree get_balanced_merge_tree(const SubsetGraph &jti) {
       }*/
   }
   IMP_INTERNAL_CHECK(boost::num_vertices(junction_tree) == 1,
-                     "There is not one vertext left");
+                     "There is not one vertex left");
   IMP_INTERNAL_CHECK(
       get_is_merge_tree(ret, jt_sets[*boost::vertices(junction_tree).first],
                         true),

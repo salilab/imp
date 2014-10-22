@@ -134,5 +134,49 @@ class Tests(IMP.test.TestCase):
         drmsd2 = atom.get_drmsd(xyzs1, xyzs2)
         self.assertAlmostEqual(drmsd1, drmsd2)
 
+    def test__rigid_bodies_drmsd_Q(self):
+        """ Test drmsd_Q measure"""
+        m = IMP.kernel.Model()
+        sel = atom.CAlphaPDBSelector()
+        prot1 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
+        prot2 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
+
+        xyzs1 = core.XYZs(atom.get_leaves(prot1))
+        xyzs2 = core.XYZs(atom.get_leaves(prot2))
+
+        R = IMP.algebra.get_random_rotation_3d()
+        v = IMP.algebra.get_random_vector_in(
+            IMP.algebra.get_unit_bounding_box_3d())
+        T = IMP.algebra.Transformation3D(R, v)
+        for x in xyzs2:
+            core.transform(x, T)
+
+        thresholds = [10, 20, 30, 40, 60]
+        for threshold in thresholds:
+
+            #
+            for x in xyzs2:
+                R = IMP.algebra.get_random_rotation_3d()
+                T = IMP.algebra.Transformation3D(R, v)
+                core.transform(x, T)
+            # test that the function is correctly implemented
+            drmsd = 0.
+            npairs = 0.
+            for i in range(0, len(xyzs1) - 1):
+                for j in range(i + 1, len(xyzs2)):
+                    dist0 = IMP.core.get_distance(xyzs1[i], xyzs1[j])
+                    dist1 = IMP.core.get_distance(xyzs2[i], xyzs2[j])
+                    if dist0 <= threshold or dist1 <= threshold:
+                        drmsd += (dist0 - dist1) ** 2
+                        npairs += 1.
+            drmsd = math.sqrt(drmsd / npairs)
+            drmsd_target = atom.get_drmsd_Q(xyzs1, xyzs2, threshold)
+            self.assertAlmostEqual(drmsd, drmsd_target)
+
+        drmsd_Q = atom.get_drmsd_Q(xyzs1, xyzs2, 1000000.0)
+        drmsd = atom.get_drmsd(xyzs1, xyzs2)
+        self.assertAlmostEqual(drmsd, drmsd_Q)
+
+
 if __name__ == '__main__':
     IMP.test.main()

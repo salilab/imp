@@ -14,8 +14,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-/** Return a functor that returns true when the predicate has a certain
-    value.*/
+//! Return a functor that returns true when the predicate has a certain value.
 template <class Pred>
 inline internal::PredicateEquals<Pred, true> make_predicate_equal(const Pred *p,
                                                                   Model *m,
@@ -23,8 +22,8 @@ inline internal::PredicateEquals<Pred, true> make_predicate_equal(const Pred *p,
   return internal::PredicateEquals<Pred, true>(p, m, value);
 }
 
-/** Return a functor that returns true when the predicate doesn't have a certain
-    value.*/
+//! Return a functor that returns true when the predicate doesn't have
+//! a certain value.
 template <class Pred>
 inline internal::PredicateEquals<Pred, false> make_predicate_not_equal(
     const Pred *p, Model *m, int value) {

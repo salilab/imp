@@ -44,7 +44,8 @@
       macro(Domain, domain, DOMAIN_TYPE),                                  \
       macro(Fragment, fragment, FRAGMENT_TYPE),                            \
       macro(core::XYZ, xyz, XYZ_TYPE), macro(core::XYZR, xyzr, XYZR_TYPE), \
-      macro(Mass, mass, MASS_TYPE)
+      macro(Mass, mass, MASS_TYPE),                                        \
+      macro(State, state, STATE_TYPE)
 
 // DOMAIN is defined to be 1 by a fedora math header
 #define IMP_ATOM_FOREACH_HIERARCHY_TYPE_STATEMENTS(macro) \
@@ -56,7 +57,8 @@
   macro(Fragment, fragment, FRAGMENT_TYPE);               \
   macro(core::XYZ, xyz, XYZ_TYPE);                        \
   macro(core::XYZR, xyzr, XYZR_TYPE);                     \
-  macro(Mass, mass, MASS_TYPE)
+  macro(Mass, mass, MASS_TYPE);                           \
+  macro(State, state, STATE_TYPE)
 
 // DOMAIN is defined to be 1 by a fedora math header
 #define IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(macro)                       \
@@ -65,6 +67,7 @@
       macro(Domain, domain, DOMAIN_TYPE)                                       \
       macro(Fragment, fragment, FRAGMENT_TYPE) macro(core::XYZ, xyz, XYZ_TYPE) \
       macro(core::XYZR, xyzr, XYZR_TYPE) macro(Mass, mass, MASS_TYPE)          \
+      macro(State, state, STATE_TYPE)
       IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #define IMP_ATOM_CAPS_NAME(UCName, lcname, CAPSNAME) CAPSNAME
@@ -77,11 +80,12 @@ class Fragment;
 class Chain;
 class Molecule;
 class Mass;
+class State;
 
 IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
 
 //! The standard decorator for manipulating molecular structures.
-/** \imp represents molecular structures using the Hierachy decorator.
+/** \imp represents molecular structures using the Hierarchy decorator.
     Molecules and collections of molecules each are stored as a
     hierarchy (or tree) where the resolution of the representation increases
     as you move further from the root. That is, if a parent has
@@ -194,6 +198,7 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     \see Domain
     \see Fragment
     \see Mass
+    \see State
  */
 class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   typedef core::Hierarchy H;
@@ -202,8 +207,10 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 #ifndef IMP_DOXYGEN
   typedef boost::false_type DecoratorHasTraits;
 
-  //! cast a particle which has the needed attributes
+  //! \deprecated_at{2.3} Check explicitly instead. */
+  IMPATOM_DEPRECATED_METHOD_DECL(2.3)
   static Hierarchy decorate_particle(kernel::Particle *p) {
+    IMPATOM_DEPRECATED_METHOD_DEF(2.3, "Check explicitly instead");
     if (get_is_setup(p))
       return Hierarchy(p);
     else
@@ -345,7 +352,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_ATOM_GET_AS_DECL);
   /** @} */
 
-  //! Get the molecular hierarchy HierararchyTraits.
+  //! Get the molecular hierarchy HierarchyTraits.
   static const IMP::core::HierarchyTraits &get_traits();
 
   // swig overwrites __repr__ if it is inherited
@@ -366,7 +373,8 @@ enum GetByType {
   FRAGMENT_TYPE,
   XYZ_TYPE,
   XYZR_TYPE,
-  MASS_TYPE
+  MASS_TYPE,
+  STATE_TYPE
 };
 #else
 enum GetByType {
@@ -391,7 +399,7 @@ IMPATOMEXPORT Hierarchies get_by_type(Hierarchy mhd, GetByType t);
     \throw ValueException if mhd's type is not one of CHAIN, PROTEIN, NUCLEOTIDE
     \return Hierarchy() if that residue is not found.
 
-    See Hierarchy
+    \see Hierarchy
  */
 IMPATOMEXPORT Hierarchy get_residue(Hierarchy mhd, unsigned int index);
 
@@ -402,19 +410,18 @@ IMPATOMEXPORT Hierarchy get_residue(Hierarchy mhd, unsigned int index);
     removed). The particles become children of the fragment.
 
     \throw ValueException If all the particles do not have the same parent.
-    See Hierarchy
+    \see Hierarchy
  */
 IMPATOMEXPORT Hierarchy create_fragment(const Hierarchies &ps);
 
 //! Get the bonds internal to this tree
-/**     See Hierarchy
-        \see Bond
-        See Bond
+/** \see Hierarchy
+    \see Bond
  */
 IMPATOMEXPORT Bonds get_internal_bonds(Hierarchy mhd);
 
 //! Return the root of the hierarchy
-/** See Hierarchy */
+/** \see Hierarchy */
 inline Hierarchy get_root(Hierarchy h) {
   while (h.get_parent()) {
     h = h.get_parent();
@@ -422,12 +429,12 @@ inline Hierarchy get_root(Hierarchy h) {
   return h;
 }
 
-/** See Hierarchy */
+/** \see Hierarchy */
 inline Hierarchies get_leaves(Hierarchy h) {
   return Hierarchies(IMP::core::get_leaves(h));
 }
 
-/** See Hierarchy */
+/** \see Hierarchy */
 inline Hierarchies get_leaves(const Hierarchies &h) {
   kernel::ParticlesTemp ret;
   for (unsigned int i = 0; i < h.size(); ++i) {
@@ -438,7 +445,7 @@ inline Hierarchies get_leaves(const Hierarchies &h) {
 }
 
 //! Print out a molecular hierarchy
-/** See Hierarchy
+/** \see Hierarchy
  */
 inline void show(Hierarchy h, std::ostream &out = std::cout) {
   IMP::core::show<Hierarchy>(h, out);
@@ -452,8 +459,8 @@ inline void show(Hierarchy h, std::ostream &out = std::cout) {
     A name can be passed as it is not easy to automatically pick
     a decent name.
     \see create_aligned_rigid_body()
-    See Hierarchy
-    See IMP::core::RigidBody
+    \see Hierarchy
+    \see IMP::core::RigidBody
 */
 IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(
     const Hierarchies &h, std::string name = std::string("created rigid body"));
@@ -469,8 +476,8 @@ IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(Hierarchy h);
     one to make sure the rigid body is equivalent when you have several
     copies of the same molecule.
 
-    See Hierarchy
-    See IMP::core::RigidBody
+    \see Hierarchy
+    \see IMP::core::RigidBody
 */
 IMPATOMEXPORT IMP::core::RigidBody create_compatible_rigid_body(
     Hierarchy h, Hierarchy reference);
@@ -494,7 +501,7 @@ IMPATOMEXPORT bool get_is_heterogen(Hierarchy h);
     Residue, and Domain data and the particle name to the
     new copies in addition to the Hierarchy relationships.
 
-    See Hierarchy
+    \see Hierarchy
 */
 IMPATOMEXPORT Hierarchy create_clone(Hierarchy d);
 
@@ -502,7 +509,7 @@ IMPATOMEXPORT Hierarchy create_clone(Hierarchy d);
 /** This method copies the  Atom,
     Residue, Chain and Domain data and the particle name.
 
-    See Hierarchy
+    \see Hierarchy
 */
 IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
 
@@ -511,7 +518,7 @@ IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
     hierarchy links in the Hierarchy and the particles are
     removed from the kernel::Model. If this particle has a parent, it is
     removed from the parent.
-    See Hierarchy
+    \see Hierarchy
 */
 IMPATOMEXPORT void destroy(Hierarchy d);
 
@@ -522,13 +529,13 @@ IMPATOMEXPORT void destroy(Hierarchy d);
     That is, if the root has x,y,z,r then it is the bounding box
     of that sphere. If only the leaves have radii, it is the bounding
     box of the leaves. If no such cut exists, the behavior is undefined.
-    See Hierarchy
-    See IMP::algebra::BoundingBoxD
+    \see Hierarchy
+    \see IMP::algebra::BoundingBoxD
  */
 IMPATOMEXPORT algebra::BoundingBoxD<3> get_bounding_box(const Hierarchy &h);
 
 /** See get_bounding_box() for more details.
-    See Hierarchy
+    \see Hierarchy
  */
 IMPATOMEXPORT algebra::Sphere3D get_bounding_sphere(const Hierarchy &h);
 

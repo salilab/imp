@@ -46,7 +46,6 @@ GaussianProcessInterpolation::GaussianProcessInterpolation(
                       << N_ << " input dimensions for second vector");
   IMP_USAGE_CHECK(covariance_function->get_ndims_y() == 1,
                   "covariance_function should have 1 output dimension");
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(sigma); }
   // set all flags to false = need update.
   force_mean_update();
   force_covariance_update();

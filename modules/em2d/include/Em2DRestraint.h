@@ -53,7 +53,7 @@ class IMPEM2DEXPORT Em2DRestraint : public kernel::Restraint {
 
   /**
    * Initializes the restraint
-   * @param score_function Scoring function to use to evalute the similarity
+   * @param score_function Scoring function to use to evaluate the similarity
    * between particles and projections
    * @param params All the parameters required for the restraint
    */

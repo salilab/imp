@@ -1,0 +1,5 @@
+imp (@VERSION@-1) unstable; urgency=low
+
+  * Initial release
+
+ -- IMP Developers <imp@salilab.org>  @DATE@

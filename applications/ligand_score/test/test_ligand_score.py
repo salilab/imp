@@ -3,23 +3,35 @@ import IMP.atom
 import sys
 import re
 
+rank_score = IMP.atom.get_data_path('protein_ligand_rank_score.lib')
+pose_score = IMP.atom.get_data_path('protein_ligand_pose_score.lib')
 
 class Tests(IMP.test.ApplicationTestCase):
 
+    def get_inputs(self):
+        return [self.get_input_file_name('1d3d-protein.pdb'),
+                self.get_input_file_name('1d3d-ligands.mol2')]
+
     def test_rank_score(self):
         """Simple test of ligand score application with RankScore (default)"""
-        p = self.run_application('ligand_score',
-                   [self.get_input_file_name('1d3d-protein.pdb'),
-                    self.get_input_file_name('1d3d-ligands.mol2')])
-        self.check_output(p, 8.39, 6.54)
+        for inputs in (self.get_inputs(), ['--rank'] + self.get_inputs(),
+                       self.get_inputs() + [rank_score]):
+            p = self.run_application('ligand_score', inputs)
+            self.check_output(p, 8.39, 6.54)
 
     def test_pose_score(self):
         """Simple test of ligand score application with PoseScore"""
-        p = self.run_application('ligand_score',
-               [self.get_input_file_name('1d3d-protein.pdb'),
-                self.get_input_file_name('1d3d-ligands.mol2'),
-                IMP.atom.get_data_path('protein_ligand_pose_score.lib')])
-        self.check_output(p, -27.78, -31.58)
+        for inputs in (['--pose'] + self.get_inputs(),
+                       self.get_inputs() + [pose_score]):
+            p = self.run_application('ligand_score', inputs)
+            self.check_output(p, -27.78, -31.58)
+
+    def test_bad_args(self):
+        """Test bad argument combinations"""
+        for inputs in (['--pose', '--rank'], ['--rank', rank_score]):
+            p = self.run_application('ligand_score', inputs)
+            out, err = p.communicate()
+            self.assertNotEqual(p.wait(), 0)
 
     def check_output(self, p, val1, val2):
         out, err = p.communicate()

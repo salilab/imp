@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
         hub = IMP.core.HarmonicUpperBound(0, 1)
         sdps = IMP.core.SphereDistancePairScore(hub)
         rdps = IMP.core.RigidBodyDistancePairScore(sdps,
-                    IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
+                                                   IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
         self.c_r = IMP.core.ConnectivityRestraint(self.mdl, rdps)
         for r in self.rbs:
             self.c_r.add_particle(r.get_particle())

@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
         """Test that writing restraints doesn't reset model dependencies"""
         for suffix in IMP.rmf.suffixes:
             f = RMF.create_rmf_file(
-                self.get_tmp_file_name("restrnp2." + suffix))
+                self.get_tmp_file_name("restrnp2" + suffix))
             m = IMP.kernel.Model()
             ps = [IMP.kernel.Particle(m) for i in range(0, 3)]
             ds = [IMP.core.XYZR.setup_particle(p) for p in ps]

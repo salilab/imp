@@ -232,7 +232,7 @@ class IMPMULTIFITEXPORT ProteomicsData : public base::Object {
   Floats xlink_len_;
   int num_allowed_violated_xlinks_;
   //=========
-  IntPairs ev_;  // pairs of proteins to calcualte EV between
+  IntPairs ev_;  // pairs of proteins to calculate EV between
   int num_allowed_violated_ev_;
 };
 

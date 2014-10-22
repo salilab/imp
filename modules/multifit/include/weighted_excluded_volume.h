@@ -18,21 +18,21 @@
 #include <IMP/multifit/multifit_config.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-//! add shell index to leaves
+//! Add shell index to leaves
 /**
-/param[in] apix sets the resolution of the surface
-/note we assume that the leaves are xyz particles
+    \param[in] apix sets the resolution of the surface
+    \note we assume that the leaves are xyz particles
  */
 IMPMULTIFITEXPORT void add_surface_index(
     core::Hierarchy mhd, Float apix, FloatKey shell_key = FloatKey("surf_ind"),
     FloatKey radius_key = core::XYZR::get_radius_key(),
     FloatKey weight_key = atom::Mass::get_mass_key());
 
-//! create a  weighted excluded volume restraint between two rigid bodies
+//! Create a weighted excluded volume restraint between two rigid bodies
 /**
-/param[in] rb1 the first rigid body
-/param[in] rb2 the second rigid body
-/param[in] shell_key the attribute that stored the particles
+    \param[in] rb1 the first rigid body
+    \param[in] rb2 the second rigid body
+    \param[in] shell_key the attribute that stored the particles
                      surface level with respect to its molecule
  */
 IMPMULTIFITEXPORT IMP::Restraint* create_weighted_excluded_volume_restraint(

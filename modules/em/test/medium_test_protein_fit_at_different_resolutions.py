@@ -26,8 +26,6 @@ class Tests(IMP.test.TestCase):
 
     def test_compare_fit_score_to_imp_generated_maps(self):
         data = [["1z5s_5.imp.mrc", 5],
-                ["1z5s_10.imp.mrc", 10],
-                ["1z5s_15.imp.mrc", 15],
                 ["1z5s_20.imp.mrc", 20]]
         self.correaltion_test(data)
 

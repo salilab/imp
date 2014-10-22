@@ -1,6 +1,6 @@
-This module provides an interface to the GPL k-means clustering open source library in http://www.cs.umd.edu/~mount/Projects/KMeans/
+\brief Interface to the GPL [k-means clustering library](http://www.cs.umd.edu/~mount/Projects/KMeans/)
 
-This module allows clustering of multi-dimensional data points using the k-menas algorithms, based on the GPL [kmeans library](http://www.cs.umd.edu/~mount/Projects/KMeans/).
+This module allows clustering of multi-dimensional data points using the k-means algorithms, based on the GPL [kmeans library](http://www.cs.umd.edu/~mount/Projects/KMeans/).
 
 # Info
 
@@ -15,4 +15,4 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - See main IMP papers list.
+ - See [main IMP papers list](@ref publications).

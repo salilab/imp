@@ -44,8 +44,7 @@ class AddScores : public Score {
     return p0_.get_is_trivially_zero(m, p, squared_distance) &&
            p1_.get_is_trivially_zero(m, p, squared_distance);
   }
-  /** Return an upper bound on the distance at which the score can be
-      non-zero.*/
+  //! Return an upper bound on the distance at which the score can be non-zero.
   template <unsigned int D>
   double get_maximum_range(
       kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &p) const {

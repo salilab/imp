@@ -15,9 +15,8 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Represent a plane in 3D.
-   \geometry
-*/
+//! Represent a plane in 3D.
+/** \geometry */
 class Plane3D : public GeometricPrimitiveD<3> {
  public:
   Plane3D() {}
@@ -39,7 +38,12 @@ class Plane3D : public GeometricPrimitiveD<3> {
     return p - normal_ * (normal_ * p - distance_);
   }
 #ifndef IMP_DOXYGEN
-  Vector3D get_projection(const Vector3D &p) const { return get_projected(p); }
+  /** \deprecated_at{2.3} Use get_projected() instead. */
+  IMPALGEBRA_DEPRECATED_METHOD_DECL(2.3)
+  Vector3D get_projection(const Vector3D &p) const {
+    IMPALGEBRA_DEPRECATED_METHOD_DEF(2.3, "Use get_projected() instead.");
+    return get_projected(p);
+  }
 #endif
   /** @name Orientation
        Up is the direction of the normal. You really shouldn't use
@@ -63,12 +67,12 @@ class Plane3D : public GeometricPrimitiveD<3> {
 };
 
 //! Return the distance between a plane and a point in 3D
-/** See Plane3D */
+/** \see Plane3D */
 inline double get_distance(const Plane3D &pln, const Vector3D &p) {
   return (pln.get_projection(p) - p).get_magnitude();
 }
 
-//! return the point reflected about the plane
+//! Return the point reflected about the plane
 inline Vector3D get_reflected(const Plane3D &pln, const Vector3D &p) {
   Vector3D proj = pln.get_projected(p);
   return p + 2 * (proj - p);

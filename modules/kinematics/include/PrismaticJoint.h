@@ -13,7 +13,6 @@
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/base/Object.h>
-//#include <IMP/compatibility/nullptr.h>
 #include <IMP/base/exception.h>
 #include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/algebra/Vector3D.h>
@@ -39,7 +38,7 @@ class IMPKINEMATICSEXPORT PrismaticJoint : public Joint {
 
   /**
      Create a prismatic joint whose axis of translation is between
-     the reference framess of parent and child, who also
+     the reference frames of parent and child, who also
      serve as witnesses for the joint transformation
   */
   PrismaticJoint(IMP::core::RigidBody parent, IMP::core::RigidBody child);

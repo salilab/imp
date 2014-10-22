@@ -1,6 +1,6 @@
 /**
- *  \file atom/hierarchy_tools.cpp
- *  \brief A decorator for a point particle that has an electrostatic charge.
+ *  \file IMP/atom/Selection.cpp
+ *  \brief Select a subset of a hierarchy.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,6 @@
 
 #include "IMP/atom/hierarchy_tools.h"
 #include <IMP/SingletonContainer.h>
-#include <IMP/SingletonPredicate.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Chain.h>
@@ -43,25 +42,253 @@
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
+  inline std::ostream &show_predicate(internal::SelectionPredicate *p,
+                                      std::ostream &out = std::cout) {
+    IMP_PRINT_TREE(out, internal::SelectionPredicate*, p,
+                   n->get_number_of_children(), n->get_child, n->show(out));
+    return out;
+  }
+
   int get_match_return(bool v) {
     if (v) return 1;
     else return -1;
   }
+
+  //! Reverse a match
+  class NotSelectionPredicate : public internal::SelectionPredicate {
+    base::Pointer<SelectionPredicate> predicate_;
+  public:
+    NotSelectionPredicate(SelectionPredicate *predicate,
+                          std::string name = "NotSelectionPredicate%1%")
+          : internal::SelectionPredicate(name), predicate_(predicate) {}
+
+    virtual unsigned get_number_of_children() const IMP_OVERRIDE {
+      return 1;
+    }
+    virtual SelectionPredicate *get_child(unsigned) const IMP_OVERRIDE {
+      return predicate_;
+    }
+
+    virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
+      set_was_used(true);
+      return new NotSelectionPredicate(predicate_->clone(false));
+    }
+
+    virtual int setup_bitset(int index) IMP_OVERRIDE {
+      index = internal::SelectionPredicate::setup_bitset(index);
+      /* Set index for subpredicate */
+      index = predicate_->setup_bitset(index);
+      return index;
+    }
+
+    virtual kernel::ModelObjectsTemp do_get_inputs(
+          kernel::Model *m, const kernel::ParticleIndexes &pis) const
+          IMP_OVERRIDE {
+      return IMP::get_particles(m, pis);
+    }
+
+    virtual int do_get_value_index(kernel::Model *m,
+                                   kernel::ParticleIndex pi,
+                                   boost::dynamic_bitset<> &bs)
+                                       const IMP_OVERRIDE {
+      int v = predicate_->get_value_index(m, pi, bs);
+      switch(v) {
+      case 0:
+        /* If the subpredicate doesn't match, we do... but we don't want to
+           cache this result, since child particles may match */
+        return 2;
+      case 1:
+        return -1;
+      case -1:
+        return 1;
+      default:
+        /* The opposite of a non-cached match (2) is a "no match" */
+        return 0;
+      }
+    }
+
+    IMP_OBJECT_METHODS(NotSelectionPredicate);
+  };
+
+  //! Match only if every subpredicate matches (or there are no subpredicates)
+  class AndSelectionPredicate : public internal::ListSelectionPredicate {
+  public:
+    AndSelectionPredicate(std::string name = "AndSelectionPredicate%1%")
+          : internal::ListSelectionPredicate(name) {}
+
+    virtual SelectionPredicate *clone(bool toplevel) IMP_OVERRIDE {
+      set_was_used(true);
+      // If only one predicate and we're not the top level,
+      // no need to keep ourself around
+      if (!toplevel && predicates_.size() == 1) {
+        return predicates_[0]->clone(false);
+      } else {
+        base::Pointer<ListSelectionPredicate> a = new AndSelectionPredicate();
+        clone_predicates(a);
+        return a.release();
+      }
+    }
+  
+    virtual int do_get_value_index(kernel::Model *m,
+                                   kernel::ParticleIndex pi,
+                                   boost::dynamic_bitset<> &bs)
+                                       const IMP_OVERRIDE {
+      // Empty list matches everything
+      if (predicates_.size() == 0) {
+        return 1;
+      }
+      bool no_match = false, cached_match = true;
+      IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
+        int v = p->get_value_index(m, pi, bs);
+        if (v == -1) {
+          return -1;
+        } else if (v == 0) {
+          no_match = true;
+        } else if (v == 2) {
+          cached_match = false;
+        }
+      }
+      if (no_match) {
+        return 0;
+      } else if (cached_match) {
+        return 1;
+      } else {
+        return 2;
+      }
+    }
+  
+    IMP_OBJECT_METHODS(AndSelectionPredicate);
+  };
+  
+  //! Match if any subpredicate matches (or there are no subpredicates)
+  class OrSelectionPredicate : public internal::ListSelectionPredicate {
+  public:
+    OrSelectionPredicate(std::string name = "OrSelectionPredicate%1%")
+          : internal::ListSelectionPredicate(name) {}
+  
+    virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
+      set_was_used(true);
+      base::Pointer<ListSelectionPredicate> a = new OrSelectionPredicate();
+      clone_predicates(a);
+      return a.release();
+    }
+
+    virtual int do_get_value_index(kernel::Model *m,
+                                   kernel::ParticleIndex pi,
+                                   boost::dynamic_bitset<> &bs)
+                                       const IMP_OVERRIDE {
+      // Empty list matches everything
+      if (predicates_.size() == 0) {
+        return 1;
+      }
+      bool no_match = false, no_cached_match = false;
+      IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
+        int v = p->get_value_index(m, pi, bs);
+        if (v == 1) {
+          return 1;
+        } else if (v == 0) {
+          no_match = true;
+        } else if (v == 2) {
+          no_cached_match = true;
+        }
+      }
+      if (no_cached_match) {
+        return 2;
+      } else if (no_match) {
+        return 0;
+      } else {
+        return -1;
+      }
+    }
+  
+    IMP_OBJECT_METHODS(OrSelectionPredicate);
+  };
+
+  //! Match if an odd number of subpredicates match (or there are none)
+  class XorSelectionPredicate : public internal::ListSelectionPredicate {
+  public:
+    XorSelectionPredicate(std::string name = "XorSelectionPredicate%1%")
+          : internal::ListSelectionPredicate(name) {}
+
+    virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
+      set_was_used(true);
+      base::Pointer<ListSelectionPredicate> a = new XorSelectionPredicate();
+      clone_predicates(a);
+      return a.release();
+    }
+
+    virtual int do_get_value_index(kernel::Model *m,
+                                   kernel::ParticleIndex pi,
+                                   boost::dynamic_bitset<> &bs)
+                                       const IMP_OVERRIDE {
+      // Empty list matches everything
+      if (predicates_.size() == 0) {
+        return 1;
+      }
+      bool no_match = false, match = false;
+      IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
+        int v = p->get_value_index(m, pi, bs);
+        if (v >= 1) {
+          match = !match;
+        }
+        if (v == 0 || v == 2) {
+          no_match = true;
+        }
+      }
+      if (match) {
+        /* Note that we *don't* want to cache matches from this predicate,
+           since a child might match another subpredicate and so flip this
+           predicate's match bit */
+        return 2;
+      } else if (no_match) {
+        return 0;
+      } else {
+        return -1;
+      }
+    }
+
+    IMP_OBJECT_METHODS(XorSelectionPredicate);
+  };
 }
 
-Selection::Selection() : resolution_(0) { m_ = nullptr; }
+void Selection::init_predicate() {
+  and_predicate_ = new AndSelectionPredicate();
+  predicate_ = and_predicate_;
+}
+
+Selection::Selection() : resolution_(0) {
+  init_predicate();
+  m_ = nullptr;
+}
+
+Selection Selection::create_clone() {
+  Selection s;
+  s.m_ = m_;
+  s.h_ = h_;
+  s.resolution_ = resolution_;
+  s.predicate_ = dynamic_cast<internal::ListSelectionPredicate*>
+                         (predicate_->clone(true));
+  IMP_INTERNAL_CHECK(s.predicate_, "Clone failed");
+  s.and_predicate_ = nullptr;
+  return s;
+}
+
 Selection::Selection(kernel::Particle *h) : resolution_(0) {
+  init_predicate();
   set_hierarchies(h->get_model(), kernel::ParticleIndexes(1, h->get_index()));
 }
 Selection::Selection(Hierarchy h) : resolution_(0) {
+  init_predicate();
   set_hierarchies(h.get_model(),
                   kernel::ParticleIndexes(1, h.get_particle_index()));
 }
 Selection::Selection(kernel::Model *m, const kernel::ParticleIndexes &pis)
     : resolution_(0) {
+  init_predicate();
   set_hierarchies(m, pis);
 }
 Selection::Selection(const Hierarchies &h) : resolution_(0) {
+  init_predicate();
   if (h.empty()) {
     m_ = nullptr;
     return;
@@ -70,6 +297,7 @@ Selection::Selection(const Hierarchies &h) : resolution_(0) {
   }
 }
 Selection::Selection(const kernel::ParticlesTemp &h) : resolution_(0) {
+  init_predicate();
   if (h.empty()) {
     m_ = nullptr;
     return;
@@ -80,6 +308,7 @@ Selection::Selection(const kernel::ParticlesTemp &h) : resolution_(0) {
 // for C++
 Selection::Selection(Hierarchy h, std::string molname, int residue_index)
     : resolution_(0) {
+  init_predicate();
   set_hierarchies(h.get_model(),
                   kernel::ParticleIndexes(1, h.get_particle_index()));
   set_molecules(Strings(1, molname));
@@ -99,15 +328,17 @@ void Selection::set_hierarchies(kernel::Model *m,
 
 namespace {
 #define IMP_ATOM_SELECTION_PRED(Name, DataType, check)                         \
-  class Name##SingletonPredicate : public SingletonPredicate {                 \
+  class Name##SelectionPredicate : public internal::SelectionPredicate {       \
     DataType data_;                                                            \
                                                                                \
    public:                                                                     \
-    Name##SingletonPredicate(const DataType &data,                             \
-                             std::string name = #Name "SingletonPredicate%1%") \
-        : SingletonPredicate(name), data_(data) {}                             \
-    virtual int get_value_index(kernel::Model *m,                              \
-                                kernel::ParticleIndex pi) const IMP_OVERRIDE { \
+    Name##SelectionPredicate(const DataType &data,                             \
+                             std::string name = #Name "SelectionPredicate%1%") \
+        : internal::SelectionPredicate(name), data_(data) {}                   \
+    virtual int do_get_value_index(kernel::Model *m,                           \
+                                   kernel::ParticleIndex pi,                   \
+                                   boost::dynamic_bitset<> &)                  \
+                                            const IMP_OVERRIDE {               \
       check;                                                                   \
     }                                                                          \
     virtual kernel::ModelObjectsTemp do_get_inputs(                            \
@@ -115,8 +346,7 @@ namespace {
         IMP_OVERRIDE {                                                         \
       return IMP::get_particles(m, pis);                                       \
     }                                                                          \
-    IMP_SINGLETON_PREDICATE_METHODS(Name##SingletonPredicate);                 \
-    IMP_OBJECT_METHODS(Name##SingletonPredicate);                              \
+    IMP_OBJECT_METHODS(Name##SelectionPredicate);                              \
   };
 
 bool get_is_residue_index_match(const Ints &data, kernel::Model *m,
@@ -134,7 +364,7 @@ bool get_is_residue_index_match(const Ints &data, kernel::Model *m,
   } else if (Domain::get_is_setup(m, pi)) {
     IntRange ir = Domain(m, pi).get_index_range();
     return std::lower_bound(data.begin(), data.end(), ir.first) !=
-           std::upper_bound(data.begin(), data.end(), ir.second);
+           std::lower_bound(data.begin(), data.end(), ir.second);
   }
   return false;
 }
@@ -298,32 +528,25 @@ Selection::SearchResult Selection::search(
     kernel::Model *m, kernel::ParticleIndex pi,
     boost::dynamic_bitset<> parent) const {
   IMP_FUNCTION_LOG;
-  IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << " missing "
-                               << parent.count() << std::endl);
-  for (unsigned int i = 0; i < predicates_.size(); ++i) {
-    if (parent[i]) {
-      int val = predicates_[i]->get_value_index(m, pi);
-      if (val == 1) {
-        parent.reset(i);
-      } else if (val == -1) {
-        // nothing can match in this subtree
-        return SearchResult(false, kernel::ParticleIndexes());
-      }
-    }
+  IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << std::endl);
+  int val = predicate_->get_value_index(m, pi, parent);
+  if (val == -1) {
+    // nothing can match in this subtree
+    return SearchResult(false, kernel::ParticleIndexes());
   }
   Hierarchy cur(m, pi);
   kernel::ParticleIndexes children;
   kernel::ParticleIndexes cur_children =
       expand_children_search(m, pi, resolution_);
   bool children_covered = true;
-  bool matched = parent.none();
+  bool matched = (val > 0);
   IMP_FOREACH(kernel::ParticleIndex ch, cur_children) {
     SearchResult curr = search(m, ch, parent);
     matched |= curr.get_match();
     if (curr.get_match()) {
       if (curr.get_indexes().empty()) {
         children_covered = false;
-      } else if (curr.get_match()) {
+      } else {
         children += curr.get_indexes();
       }
     }
@@ -347,19 +570,15 @@ ParticlesTemp Selection::get_selected_particles() const {
 
 ParticleIndexes Selection::get_selected_particle_indexes() const {
   if (h_.empty()) return kernel::ParticleIndexes();
-  for (unsigned int i = 0; i < predicates_.size(); ++i) {
-    predicates_[i]->set_was_used(true);
-  }
   kernel::ParticleIndexes ret;
   // Dynamic bitsets support .none(), but not .all(), so start with all
-  // true.
-  int sz = predicates_.size();
+  // true
+  int sz = predicate_->setup_bitset(0);
   boost::dynamic_bitset<> base(sz);
   base.set();
-  if (!predicates_.empty()) {
-    IMP_LOG_TERSE("Processing selection on " << h_ << " with predicates "
-                                             << predicates_ << std::endl);
-  }
+  IMP_LOG_TERSE("Processing selection on " << h_ << " with predicates "
+                << std::endl);
+  IMP_LOG_WRITE(VERBOSE, show_predicate(predicate_, IMP_STREAM));
   IMP_FOREACH(kernel::ParticleIndex pi, h_) {
     IMP_FOREACH(kernel::ParticleIndex rpi, expand_search(m_, pi, resolution_)) {
       ret += search(m_, rpi, base).get_indexes();
@@ -378,30 +597,30 @@ Hierarchies Selection::get_hierarchies() const {
 
 void Selection::set_molecules(Strings mols) {
   std::sort(mols.begin(), mols.end());
-  predicates_.push_back(new MoleculeNameSingletonPredicate(mols));
+  add_predicate(new MoleculeNameSelectionPredicate(mols));
 }
 void Selection::set_terminus(Terminus t) {
-  predicates_.push_back(new TerminusSingletonPredicate(t));
+  add_predicate(new TerminusSelectionPredicate(t));
 }
 void Selection::set_chain_ids(Strings chains) {
   std::sort(chains.begin(), chains.end());
-  predicates_.push_back(new ChainIDSingletonPredicate(chains));
+  add_predicate(new ChainIDSelectionPredicate(chains));
 }
 void Selection::set_residue_indexes(Ints indexes) {
   std::sort(indexes.begin(), indexes.end());
-  predicates_.push_back(new ResidueIndexSingletonPredicate(indexes));
+  add_predicate(new ResidueIndexSelectionPredicate(indexes));
 }
 void Selection::set_atom_types(AtomTypes types) {
   std::sort(types.begin(), types.end());
-  predicates_.push_back(new AtomTypeSingletonPredicate(types));
+  add_predicate(new AtomTypeSelectionPredicate(types));
 }
 void Selection::set_residue_types(ResidueTypes types) {
   std::sort(types.begin(), types.end());
-  predicates_.push_back(new ResidueTypeSingletonPredicate(types));
+  add_predicate(new ResidueTypeSelectionPredicate(types));
 }
 void Selection::set_domains(Strings names) {
   std::sort(names.begin(), names.end());
-  predicates_.push_back(new DomainNameSingletonPredicate(names));
+  add_predicate(new DomainNameSelectionPredicate(names));
 }
 void Selection::set_molecule(std::string mol) {
   set_molecules(Strings(1, mol));
@@ -420,22 +639,91 @@ void Selection::set_copy_index(unsigned int copy) {
 }
 void Selection::set_copy_indexes(Ints copies) {
   std::sort(copies.begin(), copies.end());
-  predicates_.push_back(new CopyIndexSingletonPredicate(copies));
+  add_predicate(new CopyIndexSelectionPredicate(copies));
 }
 void Selection::set_state_indexes(Ints copies) {
   std::sort(copies.begin(), copies.end());
-  predicates_.push_back(new StateIndexSingletonPredicate(copies));
+  add_predicate(new StateIndexSelectionPredicate(copies));
 }
 void Selection::set_particle_type(core::ParticleType t) {
   set_particle_types(core::ParticleTypes(1, t));
 }
 void Selection::set_particle_types(core::ParticleTypes t) {
   std::sort(t.begin(), t.end());
-  predicates_.push_back(new TypeSingletonPredicate(t));
+  add_predicate(new TypeSelectionPredicate(t));
 }
 void Selection::set_hierarchy_types(Ints types) {
   std::sort(types.begin(), types.end());
-  predicates_.push_back(new HierarchyTypeSingletonPredicate(types));
+  add_predicate(new HierarchyTypeSelectionPredicate(types));
+}
+
+void Selection::set_intersection(const Selection &s) {
+  IMP_USAGE_CHECK(h_ == s.h_,
+              "Both Selections must be on the same Hierarchy or Hierarchies");
+  if (!dynamic_cast<AndSelectionPredicate*>(predicate_.get())) {
+    // Replace top-level predicate with a new AndSelectionPredicate, and make
+    // both the existing top-level predicate and the other selection's predicate
+    // children of it
+    base::Pointer<internal::ListSelectionPredicate> p
+                = new AndSelectionPredicate();
+    p->add_predicate(predicate_);
+    predicate_ = p;
+  }
+  predicate_->add_predicate(s.predicate_->clone(false));
+}
+
+void Selection::set_union(const Selection &s) {
+  IMP_USAGE_CHECK(h_ == s.h_,
+              "Both Selections must be on the same Hierarchy or Hierarchies");
+  if (!dynamic_cast<OrSelectionPredicate*>(predicate_.get())) {
+    // Replace top-level predicate with a new OrSelectionPredicate, and make
+    // both the existing top-level predicate and the other selection's predicate
+    // children of it
+    base::Pointer<internal::ListSelectionPredicate> p
+                = new OrSelectionPredicate();
+    p->add_predicate(predicate_);
+    predicate_ = p;
+  }
+  predicate_->add_predicate(s.predicate_->clone(false));
+}
+
+void Selection::set_symmetric_difference(const Selection &s) {
+  IMP_USAGE_CHECK(h_ == s.h_,
+              "Both Selections must be on the same Hierarchy or Hierarchies");
+  if (!dynamic_cast<XorSelectionPredicate*>(predicate_.get())) {
+    // Replace top-level predicate with a new XorSelectionPredicate, and make
+    // both the existing top-level predicate and the other selection's predicate
+    // children of it
+    base::Pointer<internal::ListSelectionPredicate> p
+                = new XorSelectionPredicate();
+    p->add_predicate(predicate_);
+    predicate_ = p;
+  }
+  predicate_->add_predicate(s.predicate_->clone(false));
+}
+
+void Selection::set_difference(const Selection &s) {
+  IMP_USAGE_CHECK(h_ == s.h_,
+              "Both Selections must be on the same Hierarchy or Hierarchies");
+  if (!dynamic_cast<AndSelectionPredicate*>(predicate_.get())) {
+    // Replace top-level predicate with a new AndSelectionPredicate, and make
+    // both the existing top-level predicate and the other selection's predicate
+    // (wrapped with a NotSelectionPredicate) children of it
+    base::Pointer<internal::ListSelectionPredicate> p
+                = new AndSelectionPredicate();
+    p->add_predicate(predicate_);
+    predicate_ = p;
+  }
+  predicate_->add_predicate(new NotSelectionPredicate
+                                   (s.predicate_->clone(false)));
+}
+
+void Selection::add_predicate(internal::SelectionPredicate *p)
+{
+  // Take a reference to p so it gets freed if the usage check fails
+  base::Pointer<internal::SelectionPredicate> pp(p);
+  IMP_USAGE_CHECK(and_predicate_, "Cannot add predicates to Selection copies");
+  and_predicate_->add_predicate(p);
 }
 
 void Selection::show(std::ostream &out) const { out << "Selection on " << h_; }

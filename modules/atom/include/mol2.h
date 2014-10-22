@@ -59,7 +59,7 @@ IMPATOMEXPORT Hierarchy read_mol2(base::TextInput mol2_file,
                                   kernel::Model* model,
                                   Mol2Selector* mol2sel = nullptr);
 
-//! Write a lignand hierarchy as a mol2 file
+//! Write a ligand hierarchy as a mol2 file
 /** For now, this has to be a hierarchy created by read_mol2()
  */
 IMPATOMEXPORT void write_mol2(Hierarchy rhd, base::TextOutput file_name);

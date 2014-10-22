@@ -6,6 +6,11 @@ import math
 
 class Tests(IMP.test.TestCase):
 
+    def test_empty_constructor(self):
+        """Test creation of empty KD-bounding box"""
+        b3 = IMP.algebra.BoundingBoxKD(3)
+        b4 = IMP.algebra.BoundingBoxKD(4)
+
     def test_bounding_box_construction(self):
         """Check that the bounding box is constructed correctly"""
         points = []
@@ -15,6 +20,8 @@ class Tests(IMP.test.TestCase):
         points.append(bound2)
         small_box = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1, 1, 1),
                                               IMP.algebra.Vector3D(9, 9, 9))
+        self.assertAlmostEqual(IMP.algebra.get_volume(small_box), 512.,
+                               delta=.1)
         for i in range(0, 20):
             v = IMP.algebra.get_random_vector_in(small_box)
             points.append(v)

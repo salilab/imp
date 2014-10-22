@@ -21,7 +21,7 @@ IMPEM_BEGIN_NAMESPACE
 #define IMP_DEFAULT_NUM_SHELLS 5
 #define IMP_SIG_CUTOFF 3
 
-//! The class repersents a molecule as shells of distance from the surface
+//! The class represents a molecule as shells of distance from the surface
 /**
  */
 class IMPEMEXPORT SurfaceShellDensityMap : public SampledDensityMap {
@@ -37,11 +37,11 @@ class IMPEMEXPORT SurfaceShellDensityMap : public SampledDensityMap {
   //! The size of the map is determined by the header and the data is allocated.
   SurfaceShellDensityMap(const DensityHeader &header);
 
-  //! Generatea a surface shell density map from the input particles.
-  /** /param[in] ps    particles with XYZ, radius and weight attributes
-      /param[in] voxel_size   the voxel size.
-      /note the voxel size and the number of shells determines
-            the resolution/accuracy of the surface rasterization._
+  //! Generate a surface shell density map from the input particles.
+  /** \param[in] ps    particles with XYZ, radius and weight attributes
+      \param[in] voxel_size   the voxel size.
+      \note the voxel size and the number of shells determines
+            the resolution/accuracy of the surface rasterization.
    */
   SurfaceShellDensityMap(const kernel::ParticlesTemp &ps, float voxel_size,
                          IMP::FloatKey mass_key =
@@ -55,20 +55,20 @@ class IMPEMEXPORT SurfaceShellDensityMap : public SampledDensityMap {
   Voxels on the surface between the model and the background
   will be set of 1.
   The interior voxels will be assign value according to their
-  corresponding shell ( the value increases as the voxel is farthrer away
+  corresponding shell ( the value increases as the voxel is further away
   from the surface).
   */
   void resample();
   //! Set the value of the map voxels as either scene or background
   /**
-    /param[in] scene_val      all voxels corredponsing to particles will
+    \param[in] scene_val      all voxels corresponding to particles will
                               be set to this value
    */
   void binaries(float scene_val);
-  //! Checks if the one of the nieghbors of the voxel is a background voxel
+  //! Checks if the one of the neighbors of the voxel is a background voxel
   /**
-    /param[in] voxel_ind      the index of the voxel
-    /return true is the at least of the nieghbors of the voxel is
+    \param[in] voxel_ind      the index of the voxel
+    \return true if at least one of the neighbors of the voxel is
                  in the background
   */
   bool has_background_neighbor(long voxel_ind) const;
@@ -76,9 +76,9 @@ class IMPEMEXPORT SurfaceShellDensityMap : public SampledDensityMap {
 
  protected:
   //! Finds all of the voxels that are part of the surface
-  //! (i.e, seperate background from scene)
+  //! (i.e, separate background from scene)
   /**
-     /param[in] shell indexes of all of the surface particles
+     \param[in] shell indexes of all of the surface particles
                       will be stored here.
   */
   void set_surface_shell(std::vector<long> *shell);

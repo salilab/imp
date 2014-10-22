@@ -91,7 +91,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   static ObjectKey get_constraint_key_1();
 
-  // setup rigid body atrributes with particles in ps, using their
+  // setup rigid body attributes with particles in ps, using their
   // center of mass, inertia tensor  to initialize the reference frame
   static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
                                 kernel::ParticleIndexesAdaptor ps);
@@ -122,7 +122,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   RigidMembers get_rigid_members() const;
 
-  //! Returns a list of all members that are not themselves decoared as
+  //! Returns a list of all members that are not themselves decorated as
   //! rigid bodies, in the form of particle indexes.
   const kernel::ParticleIndexes &get_member_particle_indexes() const {
     static kernel::ParticleIndexes empty;
@@ -135,7 +135,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     }
   }
 
-  //! Get all members that are themselved decorated as rigid bodies,
+  //! Get all members that are themselves decorated as rigid bodies,
   //! as model particle indexes
   const kernel::ParticleIndexes &get_body_member_particle_indexes() const {
     static kernel::ParticleIndexes empty;
@@ -159,11 +159,11 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   /**
      Create a rigid body for pi with the particle indexes ps as its members.
      The coordinates of pi are set to the center of mass of ps and the rotation
-     of its reference frame is based on the diagnolized intertia tensor of ps.
+     of its reference frame is based on the diagonalized inertia tensor of ps.
 
-     @note If size(ps)=1, then its reference frame is copied if it is a rigid body, \
-     or its rotation is set to identity if it is not a rigid body.
-
+     @note If size(ps)=1, then its reference frame is copied if it is a
+           rigid body, or its rotation is set to identity if it is not
+           a rigid body.
    */
   IMP_DECORATOR_SETUP_1(RigidBody, kernel::ParticleIndexesAdaptor, ps);
 
@@ -179,7 +179,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(RigidBody);
   ~RigidBody();
 
-  /** Return true if the particle is a rigid body */
+  //! Return true if the particle is a rigid body
   static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
     return internal::get_has_required_attributes_for_body(m, pi);
   }
@@ -216,12 +216,12 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   /** All members of the rigid body will have their coordinates updated
       immediately.
       \see IMP::core::transform(RigidBody,const algebra::Transformation3D&)
-      \see lazy_set_reference_frame()
+      \see set_reference_frame_lazy()
    */
   void set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr);
 
   //! Change the reference, delay updating the members until evaluate
-  /** See set_reference_frame()
+  /** \see set_reference_frame()
    */
   void set_reference_frame_lazy(const IMP::algebra::ReferenceFrame3D &tr);
 
@@ -231,24 +231,26 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
       This method is useful for updating the rigid body after new
       global coordinates were loaded for the members. The members are
-      passed explictily since, typically, some are desired to just
+      passed explicitly since, typically, some are desired to just
       move along with the newly loaded rigid body.
 
-      \note This requires at least three members that are not collinear
+      \note This requires at least three members that are not colinear
       to work.
   */
   void set_reference_frame_from_members(const kernel::ParticleIndexes &members);
 
 #ifndef IMP_DOXYGEN
-  /** This takes a cartesian derivative, and a location in internal coordinates.
+  /** This takes a Cartesian derivative in global coordinates,
+      and a location in internal coordinates.
 
       It is currently hidden since the function signature is highly ambiguous.
    */
-  void add_to_derivatives(const algebra::Vector3D &derivative,
+  inline void add_to_derivatives(const algebra::Vector3D &derivative,
                           const algebra::Vector3D &local_location,
                           DerivativeAccumulator &da);
 
-  void add_to_derivatives(const algebra::Vector3D &derivative,
+  // faster if all is cached
+  inline void add_to_derivatives(const algebra::Vector3D &derivative,
                           const algebra::Vector3D &global_derivative,
                           const algebra::Vector3D &local_location,
                           const algebra::Rotation3D &rot,
@@ -298,7 +300,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
      as a rigid body member, otherwise it is added as a point member
      (for which the rotation is not tracked). By default, p is considered
      a strictly rigid member, in that its local coordinates are not expected
-     to change independetly.
+     to change independently.
 
      \see add_non_rigid_member
    */
@@ -318,6 +320,44 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   void set_is_rigid_member(kernel::ParticleIndex pi, bool tf);
 };
 
+
+// inline implementation
+void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
+                                   const algebra::Vector3D &deriv_global,
+                                   const algebra::Vector3D &local,
+                                   const algebra::Rotation3D &rot,
+                                   DerivativeAccumulator &da) {
+  // const algebra::Vector3D deriv_global= rot*deriv_local;
+  // IMP_LOG_TERSE( "Accumulating rigid body derivatives" << std::endl);
+  algebra::VectorD<4> q(0, 0, 0, 0);
+  for (unsigned int j = 0; j < 4; ++j) {
+    algebra::Vector3D v = rot.get_derivative(local, j);
+    q[j] = deriv_global * v;
+  }
+  XYZ::add_to_derivatives(deriv_global, da);
+  for (unsigned int j = 0; j < 4; ++j) {
+    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[j],
+                                   get_particle_index(), q[j], da);
+  }
+  algebra::Vector3D torque = algebra::get_vector_product(local, deriv_local);
+  for (unsigned int i = 0; i < 3; ++i) {
+    get_model()->add_to_derivative(internal::rigid_body_data().torque_[i],
+                                   get_particle_index(), torque[i], da);
+  }
+}
+
+// inline implementation
+void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
+                                   const algebra::Vector3D &local,
+                                   DerivativeAccumulator &da) {
+  algebra::Rotation3D rot =
+      get_reference_frame().get_transformation_to().get_rotation();
+  const algebra::Vector3D deriv_global = rot * deriv_local;
+  add_to_derivatives(deriv_local, deriv_global, local, rot, da);
+}
+
+
+
 /** It is often useful to store precalculated properties of the rigid body
     for later use. These need to be cleared out when the rigid body changes.
     To make sure this happens, register the key here.
@@ -331,8 +371,8 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
   RigidBody get_rigid_body() const;
 
   //! Return the internal (local) coordinates of this member
-  /** Return the internal (local) coordinates of this member
-   relative to the reference frame of the rigid body that owns it
+  /** These coordinates are relative to the reference frame of the
+      rigid body that owns it
   */
   const algebra::Vector3D &get_internal_coordinates() const {
     return get_model()->get_internal_coordinates(get_particle_index());
@@ -398,7 +438,7 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
   }
 
   ~RigidBodyMember();
-  //! sets the global coordinates of this member using XYZ::set_coordiantes()
+  //! sets the global coordinates of this member using XYZ::set_coordinates()
   // this is here since swig does like using statements
   void set_coordinates(const algebra::Vector3D &center) {
     XYZ::set_coordinates(center);
@@ -429,7 +469,7 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
    RigidMember particles, as opposed to NonRigidMember particles, are
    not expected to change their internal (local) coordinates or
    reference frames, and their global coordinates are expected to
-   change only through setting the cooridnates (or reference frame) of
+   change only through setting the coordinates (or reference frame) of
    the rigid body that owns them.
 
    \see RigidBody
@@ -494,8 +534,8 @@ IMPCOREEXPORT RigidMembersRefiner *get_rigid_members_refiner();
     body, as opposed to replacing the current conformation, as in
     RigidBody::set_reference_frame().
 
-    See RigidBody
-     algebra::Transformation3D
+    \see RigidBody
+    \see algebra::Transformation3D
 */
 inline void transform(RigidBody a, const algebra::Transformation3D &tr) {
   a.set_reference_frame(get_transformed(a.get_reference_frame(), tr));
@@ -536,10 +576,8 @@ IMPCOREEXPORT void show_rigid_body_hierarchy(RigidBody rb,
                                              base::TextOutput out =
                                                  base::TextOutput(std::cout));
 
-/** Return the particle index of the outer-most rigid body containing the
-   member.
-
-    Use this to, for example, group particles into rigid bodies. */
+//! Return the index of the outer-most rigid body containing the member.
+/** Use this to, for example, group particles into rigid bodies. */
 IMPCOREEXPORT kernel::ParticleIndex get_root_rigid_body(RigidMember m);
 
 IMPCORE_END_NAMESPACE

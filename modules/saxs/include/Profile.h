@@ -73,7 +73,7 @@ class IMPSAXSEXPORT Profile : public base::Object {
                                             FormFactorType ff_type =
                                                 HEAVY_ATOMS);
 
-  //! computes theoretical profile contribution from iter-molecular
+  //! computes theoretical profile contribution from inter-molecular
   //! interactions between the particles
   void calculate_profile(const kernel::Particles& particles1,
                          const kernel::Particles& particles2,
@@ -184,6 +184,10 @@ class IMPSAXSEXPORT Profile : public base::Object {
 
   void set_id(unsigned int id) { id_ = id; }
 
+  void set_beam_profile(std::string beam_profile_file) {
+    beam_profile_ = new Profile(beam_profile_file);
+  }
+
   //! add intensity entry to profile
   void add_entry(Float q, Float intensity, Float error = 1.0) {
     q_.push_back(q);
@@ -198,7 +202,7 @@ class IMPSAXSEXPORT Profile : public base::Object {
   void add_noise(Float percentage = 0.03);
 
   //! computes full profile for given fitting parameters
-  void sum_partial_profiles(Float c1, Float c2);
+  void sum_partial_profiles(Float c1, Float c2, bool check_cashed = true);
 
   //! add another profile - useful for rigid bodies
   void add(const Profile* other_profile, Float weight = 1.0);
@@ -268,6 +272,7 @@ class IMPSAXSEXPORT Profile : public base::Object {
 
   // stores the intensity split into 6 for c1/c2 enumeration
   std::vector<std::vector<double> > partial_profiles_;
+  Float c1_, c2_;
 
   bool experimental_;     // experimental profile read from file
   Float average_radius_;  // average radius of the particles
@@ -278,6 +283,8 @@ class IMPSAXSEXPORT Profile : public base::Object {
 
   std::string name_;  // file name
   unsigned int id_;   // identifier
+
+  Profile* beam_profile_;
 };
 
 IMP_OBJECTS(Profile, Profiles);

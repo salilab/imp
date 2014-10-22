@@ -1,5 +1,6 @@
 /**
- *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
+ *  \file DependencyScoreState.cpp
+ *  \brief Add a dependency to the dependency graph.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *

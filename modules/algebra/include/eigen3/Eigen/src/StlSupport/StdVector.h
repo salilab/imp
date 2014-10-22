@@ -11,7 +11,7 @@
 #ifndef IMP_EIGEN_STDVECTOR_H
 #define IMP_EIGEN_STDVECTOR_H
 
-#include "Eigen/src/StlSupport/details.h"
+#include "details.h"
 
 /**
  * This section contains a convenience MACRO which allows an easy specialization of
@@ -67,11 +67,11 @@ namespace std {
 
   template<typename T>
   class vector<T,IMP_EIGEN_ALIGNED_ALLOCATOR<T> >
-    : public vector<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
-                    IMP_Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> >
+    : public vector<IMP_EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
+                    IMP_Eigen::aligned_allocator_indirection<IMP_EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> >
 {
-  typedef vector<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
-                 IMP_Eigen::aligned_allocator_indirection<EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> > vector_base;
+  typedef vector<IMP_EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T),
+                 IMP_Eigen::aligned_allocator_indirection<IMP_EIGEN_WORKAROUND_MSVC_STL_SUPPORT(T)> > vector_base;
   IMP_EIGEN_STD_VECTOR_SPECIALIZATION_BODY
 
   void resize(size_type new_size)

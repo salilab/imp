@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
     def test_round_trip(self):
         """Test reading and writing geometry"""
         for suffix in IMP.rmf.suffixes:
-            nm = self.get_tmp_file_name("geometry." + suffix)
+            nm = self.get_tmp_file_name("geometry" + suffix)
             print nm
             f = RMF.create_rmf_file(nm)
             bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
@@ -34,7 +34,7 @@ class Tests(IMP.test.TestCase):
 
     def _do_test_round_trip(self, g, suffix):
         gg = IMP.display.create_geometry(g)
-        nm = self.get_tmp_file_name("round_trip_g." + suffix)
+        nm = self.get_tmp_file_name("round_trip_g" + suffix)
         print nm
         rmf = RMF.create_rmf_file(nm)
         IMP.rmf.add_geometries(rmf.get_root_node(), [gg])
@@ -73,10 +73,10 @@ class Tests(IMP.test.TestCase):
         #    print i, g.get_center(i), g[i]
             gg = IMP.display.IsosurfaceGeometry(g, 95.0)
             gg.set_name("isosurface")
-            rmf = RMF.create_rmf_file(self.get_tmp_file_name("iso." + suffix))
+            rmf = RMF.create_rmf_file(self.get_tmp_file_name("iso" + suffix))
             IMP.rmf.add_geometry(rmf, gg)
             del rmf
-            rmf = RMF.open_rmf_file(self.get_tmp_file_name("iso." + suffix))
+            rmf = RMF.open_rmf_file(self.get_tmp_file_name("iso" + suffix))
             gs = IMP.rmf.create_geometries(rmf)
             w = IMP.display.PymolWriter(self.get_tmp_file_name("iso.pym"))
             w.add_geometry(gg)

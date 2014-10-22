@@ -3,6 +3,7 @@ import IMP.test
 import IMP.em
 import IMP.multifit
 
+
 class Tests(IMP.test.TestCase):
 
     """Tests for sampled density maps"""

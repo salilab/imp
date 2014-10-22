@@ -71,6 +71,14 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
 
   DihedralAngleRevoluteJoints get_joints() { return joints_; }
 
+  DihedralAngleRevoluteJoints get_ordered_joints() {
+    DihedralAngleRevoluteJoints ret;
+    IMP_FOREACH(Joint *j, kf_->get_ordered_joints() ){
+      ret.push_back(dynamic_cast<DihedralAngleRevoluteJoint*>(j));
+    }
+    return ret;
+  }
+
   KinematicForest* get_kinematic_forest() { return kf_; }
   // TODO: not sure if we have to return Pointer or just raw pointer
 

@@ -16,7 +16,7 @@ bool Cone3D::get_contains(const Vector3D &v) const {
 }
 
 Plane3D Cone3D::get_base_plane() const {
-  return Plane3D(seg_.get_point(1), seg_.get_point(0) - seg_.get_point(1));
+  return Plane3D(seg_.get_point(1), -seg_.get_direction());
 }
 
 IMPALGEBRA_END_NAMESPACE

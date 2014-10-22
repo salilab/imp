@@ -1,6 +1,6 @@
 /**
  *  \file IMP/em2d/PolarResamplingParameters.h
- *  \brief Funtions related with rotations in em2d
+ *  \brief Functions related with rotations in em2d
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
 */
 
@@ -41,9 +41,9 @@ class IMPEM2DEXPORT PolarResamplingParameters {
 
   ~PolarResamplingParameters() {};
 
-  //! Initalize the internal parameters to generate all the values
+  //! Initialize the internal parameters to generate all the values
   //! The class uses a number of radius values for resampling that is
-  //! optimal to perform  FFT during the rotational alignment. The first gess
+  //! optimal to perform  FFT during the rotational alignment. The first guess
   //! is  half the rows and columns
   void setup(unsigned int rows, unsigned int cols) {
     starting_radius_ = 5.0;
@@ -121,9 +121,9 @@ class IMPEM2DEXPORT PolarResamplingParameters {
       IMP_THROW("Number of sampling points for the angle is zero",
                 IMP::base::ValueException);
     }
-    // create the appropiate map
+    // create the appropriate map
     polar_map_.create(n_rings_, n_angles_, CV_32FC2);  // 2 channels, floats
-    // Build a map to use withthe OpenCV the cv::remap
+    // Build a map to use with the OpenCV the cv::remap
     //  function for polar resampling
     cv::Vec2d v;
     for (unsigned int i = 0; i < n_rings_; ++i) {
@@ -143,7 +143,7 @@ class IMPEM2DEXPORT PolarResamplingParameters {
   }
 
   //! Get the samplings maps of type CV_16SC2 and CV_16UC1
-  //! (this map combination is faster for remapping. See OpenCV hel for remap()
+  //! (this map combination is faster for remapping. See OpenCV help for remap()
   void get_resampling_maps(cv::Mat &m1, cv::Mat &m2) const {
     m1 = map_16SC2_;
     m2 = map_16UC1_;
@@ -178,7 +178,7 @@ class IMPEM2DEXPORT PolarResamplingParameters {
                             // remap)
   double starting_radius_;  // starting radius for the polar resampling
   double ending_radius_;    // ending radius for the polar resampling
-  // Number of rampling points for radius and angles
+  // Number of sampling points for radius and angles
   unsigned int n_rings_, n_angles_, matrix_rows_, matrix_cols_;
   bool parameters_set_;
   double radius_step_, angle_step_;

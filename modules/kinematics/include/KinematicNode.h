@@ -43,7 +43,7 @@ class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody {
                         in_joint, Joints, out_joints);
 
   /**
-     @brief Return true if the particle is a kinematic nodea (has the
+     @brief Return true if the particle is a kinematic node (has the
      appropriate properties).
   */
   inline static bool get_is_setup(kernel::Model* m, kernel::ParticleIndex pi);

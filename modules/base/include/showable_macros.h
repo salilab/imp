@@ -19,7 +19,7 @@
     IMP_SHOWABLE() call internal to it and an IMP_OUTPUT_OPERATOR()
     call external to it.
 
-    The suffixs are the number of template arguments that the
+    The suffixes are the number of template arguments that the
     object has (eg _1 means one template argument). _D means
     one integer template argument.
     @{
@@ -32,7 +32,7 @@
 
     The \c ostream and \c sstream headers must be included.
 
-    See also IMP_SHOWABLE_INLINE().
+    \see IMP_SHOWABLE_INLINE().
 
     Do not use with IMP::Object objects as they have their
     own show mechanism.
@@ -46,8 +46,6 @@
     in Python.
 
     The \c ostream and \c sstream headers must be included.
-
-    See also IMP_SHOWABLE_INLINE()
 */
 #define IMP_SHOWABLE_INLINE(Name, how_to_show) \
   void show(std::ostream &out = std::cout) const

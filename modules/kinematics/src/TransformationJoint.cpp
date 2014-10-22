@@ -11,7 +11,6 @@
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/TransformationJoint.h>
 #include <IMP/base/Object.h>
-//#include <IMP/compatibility/nullptr.h>
 #include <IMP/base/exception.h>
 #include <IMP/algebra/Transformation3D.h>
 
@@ -23,7 +22,7 @@ TransformationJoint::TransformationJoint(IMP::core::RigidBody parent,
                                          IMP::core::RigidBody child)
     : Joint(parent, child) {}
 
-// Sets the transfromation from parent to child
+// Sets the transformation from parent to child
 void TransformationJoint::set_transformation_child_to_parent(
     IMP::algebra::Transformation3D transformation) {
   if (get_owner_kf()) {

@@ -50,7 +50,7 @@ ComponentHeader *parse_component_line(const std::string &config,
     catch (boost::bad_lexical_cast &) {
       comp->set_num_fine_ap(0);
       IMP_WARN("Can not cast num_fine_ap field for protein: "
-               << comp->get_name() << " seeting to 0" << std::endl);
+               << comp->get_name() << " setting to 0" << std::endl);
     }
     comp->set_transformations_fn(
         base::get_relative_path(config, line_split[7]));

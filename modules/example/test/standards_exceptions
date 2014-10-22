@@ -1,5 +1,5 @@
 # list various exceptions to IMP standards in this file
 value_object_exceptions=["ExampleRefCounted"]
-function_name_exceptions=[]
+function_name_exceptions=['randomize_particle']
 show_exceptions=[]
 spelling_exceptions=[]

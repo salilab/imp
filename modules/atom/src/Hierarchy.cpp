@@ -13,6 +13,8 @@
 #include <IMP/atom/Fragment.h>
 #include <IMP/atom/Domain.h>
 #include <IMP/atom/Mass.h>
+#include <IMP/atom/State.h>
+#include <IMP/atom/Copy.h>
 #include <IMP/core/LeavesRefiner.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/atom/estimates.h>
@@ -60,6 +62,12 @@ void Hierarchy::show(std::ostream &out, std::string delimiter) const {
   if (get_as_domain()) {
     out << get_as_domain() << delimiter;
   }
+  if (get_as_state()) {
+    out << get_as_state() << delimiter;
+  }
+  if (Copy::get_is_setup(get_particle())) {
+    out << Copy(get_particle());
+  }
   if (core::RigidBody::get_is_setup(get_particle())) {
     out << core::RigidBody(get_particle());
   }
@@ -83,7 +91,7 @@ struct MHDMatchingType {
   MHDMatchingType(GetByType t) : t_(t) {}
 
   bool operator()(kernel::Particle *p) const {
-    Hierarchy h = Hierarchy::decorate_particle(p);
+    Hierarchy h(p);
     switch (t_) {
       IMP_ATOM_FOREACH_HIERARCHY_TYPE_STATEMENTS(IMP_ATOM_IMPL_MATCH_TYPE);
     }
@@ -546,9 +554,8 @@ algebra::BoundingBox3D get_bounding_box(const Hierarchy &h) {
   kernel::ParticlesTemp rep = get_leaves(h);
   algebra::BoundingBox3D bb;
   for (unsigned int i = 0; i < rep.size(); ++i) {
-    core::XYZR xyzr = core::XYZR::decorate_particle(rep[i]);
-    if (xyzr) {
-      bb += algebra::get_bounding_box(xyzr.get_sphere());
+    if (core::XYZR::get_is_setup(rep[i])) {
+      bb += algebra::get_bounding_box(core::XYZR(rep[i]).get_sphere());
     } else if (core::XYZ::get_is_setup(rep[i])) {
       bb += algebra::BoundingBox3D(core::XYZ(rep[i]).get_coordinates());
     }
@@ -561,9 +568,8 @@ algebra::Sphere3D get_bounding_sphere(const Hierarchy &h) {
   kernel::ParticlesTemp rep = get_leaves(h);
   algebra::Sphere3Ds ss;
   for (unsigned int i = 0; i < rep.size(); ++i) {
-    core::XYZR xyzr = core::XYZR::decorate_particle(rep[i]);
-    if (xyzr) {
-      ss.push_back(xyzr.get_sphere());
+    if (core::XYZR::get_is_setup(rep[i])) {
+      ss.push_back(core::XYZR(rep[i]).get_sphere());
     } else if (core::XYZ::get_is_setup(rep[i])) {
       ss.push_back(algebra::Sphere3D(core::XYZ(rep[i]).get_coordinates(), 0));
     }

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/display/PymolWriter.h
- *  \brief Implement PymolWriter
+ *  \brief Write a CGO file with the geometry.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
@@ -18,13 +18,13 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Write a CGO file with the geometry
-/** The cgo file format is a simple format for displaying geometry in Pymol.
-    The cgo writer supports points, spheres, cyliners, and segments.
+/** The CGO file format is a simple format for displaying geometry in Pymol.
+    The CGO writer supports points, spheres, cylinders, and segments.
     The file name should end in ".pym".
 
     The geometry is assembled into objects in pymol based on the passed
     names. For example, all geometry named "box" becomes one pymol object.
-    If many files are loaded into python defining the same objects, they
+    If many files are loaded into Python defining the same objects, they
     become sequential frames in a movie. The frame numbers are determined
     sequentially from the file load order (so they can form a subset of
     the generated files).

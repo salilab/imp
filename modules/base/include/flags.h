@@ -21,18 +21,17 @@ IMPBASE_BEGIN_NAMESPACE
     line flags to \imp.  Programs that use this have access to flags
     declared in modules which allow users to do things like control
     log level and turn on and off profiling to see what is going on.
-    These functions are python accessible.
+    These functions are Python accessible.
 
     In C++, you can also use the AddFloatFlag, AddStringFlag,
     AddBoolFlag and AddIntFlag classes to add flags statically.  @{
 */
-/** Return the name of the current executable.*/
+//! Return the name of the current executable.
 IMPBASEEXPORT std::string get_executable_name();
 
 #ifndef SWIG
-/** Parse the command line flags and return the
-    positional arguments.
-
+//! Parse the command line flags and return the positional arguments.
+/**
     \param[in] argc argc
     \param[in] argv argv
     \param[in] description A message describing what the program does.
@@ -69,7 +68,7 @@ IMPBASEEXPORT Strings
 #endif
 
 /** Parse the command line flags and return the
-    positional arguments. For python.
+    positional arguments. For Python.
 
     \param[in] argv sys.argv
     \param[in] description A message describing what the program does.
@@ -78,7 +77,7 @@ IMPBASEEXPORT void setup_from_argv(const Strings &argv,
                                    std::string description);
 
 /** Parse the command line flags and return the
-    positional arguments. For python.
+    positional arguments. For Python.
 
     \param[in] argv sys.argv
     \param[in] description A message describing what the program does.
@@ -104,10 +103,10 @@ struct IMPBASEEXPORT AddStringFlag {
 };
 #endif
 
-/** For python use.*/
+/** For Python use.*/
 IMPBASEEXPORT void add_string_flag(std::string name, std::string default_value,
                                    std::string description);
-/** For python use.*/
+/** For Python use.*/
 IMPBASEEXPORT std::string get_string_flag(std::string name);
 
 #ifndef SWIG
@@ -122,10 +121,10 @@ struct IMPBASEEXPORT AddIntFlag {
 };
 #endif
 
-/** For python use.*/
+/** For Python use.*/
 IMPBASEEXPORT void add_int_flag(std::string name, size_t default_value,
                                 std::string description);
-/** For python use.*/
+/** For Python use.*/
 IMPBASEEXPORT size_t get_int_flag(std::string name);
 
 #ifndef SWIG
@@ -139,9 +138,9 @@ struct IMPBASEEXPORT AddBoolFlag {
 };
 #endif
 
-/** For python use. Default is always false.*/
+/** For Python use. Default is always false.*/
 IMPBASEEXPORT void add_bool_flag(std::string name, std::string description);
-/** For python use.*/
+/** For Python use.*/
 IMPBASEEXPORT bool get_bool_flag(std::string name);
 
 #ifndef SWIG
@@ -155,10 +154,10 @@ struct IMPBASEEXPORT AddFloatFlag {
 };
 #endif
 
-/** For python use.*/
+/** For Python use.*/
 IMPBASEEXPORT void add_float_flag(std::string name, double default_value,
                                   std::string description);
-/** For python use.*/
+/** For Python use.*/
 IMPBASEEXPORT double get_float_flag(std::string name);
 /** @} */
 

@@ -207,11 +207,11 @@ void DensityMap::update_header() {
   IMP_INTERNAL_CHECK(
       is_initialize(header_.get_top(0)) && is_initialize(header_.get_top(1)) &&
           is_initialize(header_.get_top(2)),
-      "The top value of the header is not initalized" << std::endl);
+      "The top value of the header is not initialized" << std::endl);
   IMP_INTERNAL_CHECK(is_initialize(header_.get_xorigin()) &&
                          is_initialize(header_.get_xorigin()) &&
                          is_initialize(header_.get_xorigin()),
-                     "The origin value of the header is not initalized"
+                     "The origin value of the header is not initialized"
                          << std::endl);
   IMP_INTERNAL_CHECK(is_initialize(header_.get_resolution()),
                      "The resolution was not initialized" << std::endl);
@@ -426,7 +426,7 @@ emreal DensityMap::calcRMS() {
   return stdval;
 }
 
-//!  Set the density voxels to zero and reset the managment flags.
+//!  Set the density voxels to zero and reset the management flags.
 void DensityMap::reset_data(float val) {
   for (long i = 0; i < get_number_of_voxels(); i++) {
     data_[i] = val;
@@ -663,7 +663,7 @@ void DensityMap::update_voxel_size(float new_apix) {
 }
 
 Float approximate_molecular_mass(DensityMap *d, Float threshold) {
-  long counter = 0;  // number of voxles above the threshold
+  long counter = 0;  // number of voxels above the threshold
   for (long l = 0; l < d->get_number_of_voxels(); l++) {
     if (d->get_value(l) > threshold) {
       ++counter;
@@ -769,7 +769,7 @@ double get_density(const DensityMap *m, const algebra::Vector3D &v) {
   compute_voxel(m, v, ivox, r);
   double is[4];
   for (unsigned int i = 0; i < 4; ++i) {
-    // operator >> has high precidence compared. Go fig.
+    // operator >> has high precedence compared. Go fig.
     unsigned int bx = ((i & 2) >> 1);
     unsigned int by = (i & 1);
     assert((bx == 0 || bx == 1) && (by == 0 || by == 1));
@@ -1271,7 +1271,7 @@ DensityMap *get_max_map(DensityMaps maps) {
 DensityMap *get_segment_by_masking(DensityMap *map_to_segment, DensityMap *mask,
                                    float mask_threshold) {
   base::Pointer<DensityMap> bin_map(binarize(mask, mask_threshold));
-  // clean isotlated zeros - to that with conn_comp
+  // clean isolated zeros - to that with conn_comp
   base::Pointer<DensityMap> ret(multiply(map_to_segment, bin_map));
   std::cout << "ret:" << ret->get_min_value() << "," << ret->get_max_value()
             << std::endl;
@@ -1296,7 +1296,7 @@ DensityMap *get_segment(DensityMap *map_to_segment, algebra::Vector3Ds vecs,
     for (ivoxz = iminz; ivoxz <= imaxz; ivoxz++) {
       znxny = ivoxz * nxny;
       for (ivoxy = iminy; ivoxy <= imaxy; ivoxy++) {
-        // we increment ivox this way to avoid unneceessary multiplication
+        // we increment ivox this way to avoid unnecessary multiplication
         // operations.
         ivox = znxny + ivoxy * header->get_nx() + iminx;
         for (ivoxx = iminx; ivoxx <= imaxx; ivoxx++) {
@@ -1315,9 +1315,9 @@ void DensityMap::convolute_kernel(DensityMap *other, double *kernel,
                                   int dim_len) {
   reset_data(0.);
   emreal *other_data = other->get_data();
-  // todo - add a test that lenght is even
+  // todo - add a test that length is even
   IMP_USAGE_CHECK((dim_len * dim_len * dim_len) >= 1,
-                  "The input lenght is wrong\n");
+                  "The input length is wrong\n");
   unsigned int margin = (dim_len - 1) / 2;
   // smooth the density using the kernel
   float val;
@@ -1361,7 +1361,7 @@ DensityMap *interpolate_map(DensityMap *in_map, double new_spacing) {
   int round_ret_orig_y = ceil(in_orig[1] / new_spacing);
   int round_ret_orig_z = ceil(in_orig[2] / new_spacing);
 
-  // rount top voxel index for ret
+  // round top voxel index for ret
   int round_ret_top_x =
       floor((in_orig[0] + in_spacing * (in_nx - 1)) / new_spacing);
   int round_ret_top_y =

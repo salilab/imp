@@ -1,7 +1,6 @@
 /**
- *  \file LowestRefinedPairScore.cpp
- *  \brief Lowest particles at most refined with a kernel::ParticleLowestr.
- *
+ *  \file DecayPairContainerOptimizerState.cpp
+ *  \brief A pair container with a decaying list of pairs.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */

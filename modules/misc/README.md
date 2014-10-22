@@ -1,6 +1,8 @@
-This module contains miscellaneous functionality that is _not_ expected to be used by many IMP users. As a result, the code contained in it may be poorly tested, liable to change or experimental in nature.
+\brief Miscellaneous functionality that is _not_ expected to be used by many IMP users.
 
-In particular, other modules should _not_ depend on IMP.misc (e.g. don't create a class in another module that derives from one in IMP.misc. If you find yourself relying on such functionality, discuss moving it to a specialized module or something like IMP.core or IMP.atom.
+As a result, the code contained in this module may be poorly tested, liable to change or experimental in nature.
+
+In particular, other modules should _not_ depend on IMP.misc (e.g. don't create a class in another module that derives from one in IMP.misc. If you find yourself relying on such functionality, discuss moving it to a specialized module or something like IMP.core or IMP.atom).
 
 # Info
 
@@ -15,4 +17,4 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - See main IMP papers list.
+ - See [main IMP papers list](@ref publications).

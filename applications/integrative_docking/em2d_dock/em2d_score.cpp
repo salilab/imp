@@ -5,19 +5,19 @@
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include "Image2D.h"
-#include "Projection.h"
-#include "FitResult.h"
 
+#include "lib/FitResult.h"
 #include "../lib/helpers.h"
 
+#include <IMP/em2d/internal/Image2D.h>
+#include <IMP/em2d/internal/Projection.h>
+
+#include <IMP/saxs/FormFactorTable.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/kernel/Model.h>
 #include <IMP/atom/pdb.h>
-#include <IMP/core/XYZ.h>
-#include <IMP/utility.h>
+#include <IMP/atom/Mass.h>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
@@ -25,29 +25,6 @@ namespace po = boost::program_options;
 #include <vector>
 #include <string>
 #include <fstream>
-
-namespace {
-std::vector<IMP::algebra::Vector3D> read_points_from_pdb(
-    std::string pdb_file_name) {
-  // check if file exists
-  std::ifstream in_file(pdb_file_name.c_str());
-  if (!in_file) {
-    std::cerr << "Can't open file " << pdb_file_name << std::endl;
-    exit(1);
-  }
-  std::vector<IMP::algebra::Vector3D> points;
-  IMP::kernel::Model* model = new IMP::kernel::Model();
-  IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
-      pdb_file_name, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
-      true, true);
-  IMP::kernel::ParticlesTemp particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
-  for (unsigned int i = 0; i < particles.size(); i++)
-    points.push_back(IMP::core::XYZ(particles[i]).get_coordinates());
-  std::cerr << points.size() << " atoms were read from file " << pdb_file_name
-            << std::endl;
-  return points;
-}
-}
 
 int main(int argc, char** argv) {
   for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
@@ -57,8 +34,7 @@ int main(int argc, char** argv) {
   int projection_number = 40;
   float pixel_size = 2.2;
   float area_threshold = 0.4;  // used 0.4 for benchmark and PCSK9
-  float min_diameter = 0.0;
-  IMP_UNUSED(min_diameter);
+  bool residue_level = false;
   std::vector<std::string> image_files;
   std::string rpdb, lpdb, trans_file, out_file_name;
   po::options_description desc(
@@ -74,14 +50,15 @@ int main(int argc, char** argv) {
       "projection-number,n",
       po::value<int>(&projection_number)->default_value(40),
       "number of projections for PDBs")
-      // ("min-diameter,d", po::value<float>(&min_diameter)->default_value(0.0),
-      //  "minimal diameter of the complex from the images (default = 0.0)")
       ("area-threshold,a",
        po::value<float>(&area_threshold)->default_value(0.4),
        "maximal percentage of area difference for aligned images (default = "
-       "0.4)")("output_file,o", po::value<std::string>(&out_file_name)
-                                    ->default_value("em2d_score.res"),
-               "output file name, default name em2d_score.res");
+       "0.4)")(
+      "ca-only,c", "perform fast coarse grained profile calculation using \
+CA atoms only (default = false)")(
+      "output_file,o",
+      po::value<std::string>(&out_file_name)->default_value("em2d_score.res"),
+      "output file name, default name em2d_score.res");
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
@@ -93,6 +70,7 @@ int main(int argc, char** argv) {
     std::cout << desc << "\n";
     return 0;
   }
+  if (vm.count("ca-only")) residue_level = true;
   if (vm.count("input-files")) {
     std::vector<std::string> files =
         vm["input-files"].as<std::vector<std::string> >();
@@ -113,18 +91,48 @@ int main(int argc, char** argv) {
             << trans_file << std::endl;
 
   // read pdbs
-  std::vector<IMP::algebra::Vector3D> rpoints = read_points_from_pdb(rpdb);
-  std::vector<IMP::algebra::Vector3D> lpoints = read_points_from_pdb(lpdb);
+  IMP::kernel::Particles particles, rparticles, lparticles;
+  IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
+  if (residue_level) ff_type = IMP::saxs::CA_ATOMS;
+  IMP::saxs::FormFactorTable ft;
+  if (residue_level) {
+    read_pdb_ca_atoms(rpdb, rparticles);
+    read_pdb_ca_atoms(lpdb, lparticles);
+  } else { // atoms
+    read_pdb_atoms(rpdb, rparticles);
+    read_pdb_atoms(lpdb, lparticles);
+  }
+  particles = rparticles;
+  particles.insert(particles.end(), lparticles.begin(), lparticles.end());
+  // save lparticles coordinates (they are going to move)
+  std::vector<IMP::algebra::Vector3D> lcoordinates;
+  for (unsigned int i = 0; i < lparticles.size(); i++) {
+    lcoordinates.push_back(IMP::core::XYZ(lparticles[i]).get_coordinates());
+  }
+
+  // add radius
+  for (unsigned int i=0; i<particles.size(); i++) {
+    double r = ft.get_radius(particles[i], ff_type);
+    IMP::core::XYZR::setup_particle(particles[i]->get_model(),
+                                    particles[i]->get_index(), r);
+  }
+
+  // add mass
+  if (residue_level) {
+    for (unsigned int i=0; i<particles.size(); i++) {
+      IMP::atom::Residue r =
+        IMP::atom::get_residue(IMP::atom::Atom(particles[i]));
+      double m = IMP::atom::get_mass(r.get_residue_type());
+      IMP::atom::Mass(particles[i]).set_mass(m);
+    }
+  }
 
   // read tranformations
   std::vector<IMP::algebra::Transformation3D> transforms;
   read_trans_file(trans_file, transforms);
-  std::vector<IMP::algebra::Vector3D> points(rpoints),
-      transformed_lpoints(lpoints);
-  points.resize(rpoints.size() + lpoints.size());
 
   // read images
-  std::vector<Image2D<> > images(image_files.size());
+  std::vector<IMP::em2d::internal::Image2D<> > images(image_files.size());
   double max_distance = 0.0;
   for (unsigned int i = 0; i < image_files.size(); i++) {
     images[i].read_PGM(image_files[i]);
@@ -145,9 +153,9 @@ int main(int argc, char** argv) {
   max_distance *= 0.9;
 
   // create receptor projections
-  boost::ptr_vector<Projection> rprojections;
-  create_projections(rpoints, projection_number, pixel_size, resolution,
-                     rprojections, images[0].get_height());
+  boost::ptr_vector<IMP::em2d::internal::Projection> rprojections;
+  compute_projections(rparticles, projection_number, pixel_size, resolution,
+                      rprojections, images[0].get_height());
   //  write_PGM(rprojections, "rprojections.pgm");
 
   // iterate transformations
@@ -156,28 +164,13 @@ int main(int argc, char** argv) {
     // std::cerr << "Screening transformation " << t << std::endl;
 
     // apply transformation
-    for (unsigned int p_index = 0; p_index < lpoints.size(); p_index++) {
-      IMP::algebra::Vector3D p = transforms[t] * lpoints[p_index];
-      points[rpoints.size() + p_index] = p;
-      transformed_lpoints[p_index] = p;
-    }
+    transform(lparticles, transforms[t]);
 
-    // double diameter = 0.0;
-    // if(min_diameter > 0.0) {
-    //   // check diameter first
-    //   diameter = compute_max_distance(points);
-    //   if(diameter < max_distance) {
-    //     FitResult fr(t+1, 0.0, true, transforms[t]);
-    //     fit_results.push_back(fr);
-    //     continue;
-    //   }
-    // }
-
-    boost::ptr_vector<Projection> projections;
+    boost::ptr_vector<IMP::em2d::internal::Projection> projections;
     // create ligand projections
-    create_projections(points, transformed_lpoints, projection_number,
-                       pixel_size, resolution, projections,
-                       images[0].get_height());
+    compute_projections(particles, lparticles, projection_number,
+                        pixel_size, resolution, projections,
+                        images[0].get_height());
     // add receptor projections
     for (unsigned int i = 0; i < projections.size(); i++)
       projections[i].add(rprojections[i]);
@@ -194,7 +187,7 @@ int main(int argc, char** argv) {
 
     float total_score = 0.0;
     for (unsigned int i = 0; i < images.size(); i++) {
-      ImageTransform best_transform;
+      IMP::em2d::internal::ImageTransform best_transform;
       best_transform.set_score(0.0);
       int best_projection_id = 0;
       for (unsigned int j = 0; j < projections.size(); j++) {
@@ -206,7 +199,8 @@ int main(int argc, char** argv) {
                                              projections[j].segmented_pixels());
         if (area_score > area_threshold) continue;
 
-        ImageTransform curr_transform = images[i].pca_align(projections[j]);
+        IMP::em2d::internal::ImageTransform curr_transform =
+          images[i].pca_align(projections[j]);
         if (curr_transform.get_score() > best_transform.get_score()) {
           best_transform = curr_transform;
           best_projection_id = projections[j].get_id();
@@ -221,6 +215,11 @@ int main(int argc, char** argv) {
     fit_results.push_back(fr);
     std::cerr << "Transform: " << t << " | " << total_score << " | "
               << transforms[t] << std::endl;
+    // return back
+    for (unsigned int ip = 0; ip < lparticles.size(); ip++) {
+      IMP::core::XYZ(lparticles[ip]).set_coordinates(lcoordinates[ip]);
+    }
+
     // out_file << t+1 << " | " << total_score << " | " << diameter
     //<< " | "  << transformation3d_to_rigidtrans3(transforms[t]) << std::endl;
   }

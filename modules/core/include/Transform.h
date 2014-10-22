@@ -23,8 +23,8 @@ class IMPCOREEXPORT Transform : public SingletonModifier {
  public:
   //! Initialize
   /**
-  /param[in] t a 3d transformation to be applied on a particle
-  /param[in] ignore_non_xyz if false then appling the tranformation
+  \param[in] t a 3d transformation to be applied on a particle
+  \param[in] ignore_non_xyz if false then applying the transformation
                             on a non XYZ particle will result in an exception.
   */
   Transform(const algebra::Transformation3D &t, bool ignore_non_xyz = false);

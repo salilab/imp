@@ -1,6 +1,6 @@
 /**
  *  \file ExcludedVolumeRestraint.cpp
- *  \brief XXXX.
+ *  \brief Prevent spheres from inter-penetrating.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
