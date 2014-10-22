@@ -87,8 +87,8 @@ class LogHolder:
                 # make sure there are no duplicate index numbers
                 if len(self.dumpfiles[cat]) != \
                         len(set(self.dumpfiles[cat].keys())):
-                            raise ValueError("found duplicates in %s %s %s"
-                                             % (folder, prefix, fname))
+                    raise ValueError("found duplicates in %s %s %s"
+                                     % (folder, prefix, fname))
             else:
                 # this is a trajectory, need to be able to parse it
                 fname = fnames[0]
