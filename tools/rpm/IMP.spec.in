@@ -176,9 +176,9 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 %doc /usr/share/doc/%{name}-%{version}
 /usr/share/IMP
 /usr/bin/*
-%{_libdir}/libimp*.so
+%{_libdir}/libimp*.so*
 %{_libdir}/libTAU.so.*
-%{_libdir}/libRMF*.so
+%{_libdir}/libRMF*.so*
 %{_libdir}/python*/site-packages/IMP
 %{_libdir}/python*/site-packages/_IMP*so
 %{_libdir}/python*/site-packages/RMF*
@@ -191,6 +191,12 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 /usr/include/RMF
 
 %changelog
+* Fri Oct 24 2014 Ben Webb <ben@salilab.org>   2.3.0-1
+- 2.3.0 release.
+
+* Mon Aug 11 2014 Ben Webb <ben@salilab.org>   2.2.1-1
+- 2.2.1 release.
+
 * Wed Apr 09 2014 Ben Webb <ben@salilab.org>   2.2.0-1
 - 2.2.0 release.
 
