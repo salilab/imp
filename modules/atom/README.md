@@ -4,6 +4,12 @@ Molecules and collections of molecules are represented using Hierarchy particles
 
 The name "residue index" is used to refer to the index of the residue in the conventional description of the protein, as opposed to its index among the set of residues which are found in the current molecule. The same concept is known as the "residue number" in PDB files. This index is not necessarily unique within a Chain; however, the combination of the residue index and insertion code should be.
 
+Several helper programs are also provided. They all take the name of the PDB
+file as the first argument:
+
+# pdb_check {#pdb_check_bin}
+Check a PDB file for problems.
+
 # Info
 
 _Author(s)_: Daniel Russel, Ben Webb, Dina Schneidman, Javier Velazquez-Muriel
