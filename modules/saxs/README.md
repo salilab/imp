@@ -1,5 +1,19 @@
 \brief Support for small angle X-ray scattering (SAXS) data.
 
+We provide a number of command line tools to handle SAXS profiles:
+
+# cluster_profiles {#cluster_profiles_bin}
+Cluster SAXS profiles.
+
+# compute_chi {#compute_chi_bin}
+Calculate chi value for SAXS profiles.
+
+# rg {#rg_bin}
+Compute radius of gyration from SAXS profiles.
+
+# validate_profile {#validate_profile_bin}
+Validate SAXS profiles.
+
 # Info
 
 _Author(s)_: Dina Schneidman, Seung Joong Kim, Yannick Spill
