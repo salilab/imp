@@ -69,7 +69,7 @@ class Plane3D : public GeometricPrimitiveD<3> {
 //! Return the distance between a plane and a point in 3D
 /** \see Plane3D */
 inline double get_distance(const Plane3D &pln, const Vector3D &p) {
-  return (pln.get_projection(p) - p).get_magnitude();
+  return (pln.get_projected(p) - p).get_magnitude();
 }
 
 //! Return the point reflected about the plane
