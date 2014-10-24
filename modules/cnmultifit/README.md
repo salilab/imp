@@ -6,8 +6,18 @@ single subunit and a cryo-electron microscopy density map of the complex.
 See the IMP::multifit module for a similar protocol for handling non-symmetric
 complexes.
 
+Command line usage {#cnmultifit_bin}
+==================
+
 Generally, this module is not used directly; instead, the
-[cnmmultifit application](\ref impcnmultifit_tools) is used.
+`cnmultifit` command line tool is used. For an example, see
+[Modeling of GroEL](../tutorial/cnmultifit_groel.html).
+
+Web server
+==========
+
+A [webserver](http://salilab.org/multifit/) that uses both this module
+and the IMP::multifit module is also available.
 
 # Info
 
