@@ -8,7 +8,7 @@ class EMToolsApplicationTest(IMP.test.ApplicationTestCase):
     def test_mol2pca(self):
         """Simple test of mol2pca application"""
         p = self.run_python_application('mol2pca',
-                                        [self.get_input_file_name('mini.pdb'), 'mini.cmm'])
+                                        [self.get_input_file_name('miniapp.pdb'), 'mini.cmm'])
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
@@ -39,7 +39,7 @@ class EMToolsApplicationTest(IMP.test.ApplicationTestCase):
         """Simple test of simulate_density_from_pdb application"""
         p = self.run_python_application('simulate_density_from_pdb',
                                         [self.get_input_file_name(
-                                            'mini.pdb'), 'mini.mrc',
+                                            'miniapp.pdb'), 'mini.mrc',
                                          '1.0', '4.0'])
         out, err = p.communicate()
         sys.stderr.write(err)
