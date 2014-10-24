@@ -64,6 +64,13 @@ util_template = open(
                  "ModuleUtil.cmake"),
     "r").read()
 
+bin_template = open(
+    os.path.join("tools",
+                 "build",
+                 "cmake_templates",
+                 "ModuleBin.cmake"),
+    "r").read()
+
 module_template = open(
     os.path.join("tools",
                  "build",
@@ -218,17 +225,22 @@ def setup_module(module, path, ordered):
     values["libpath"] = get_dep_merged([module], "link_path", ordered)
     values["swigpath"] = get_dep_merged([module], "swig_path", ordered)
     values["defines"] = ":".join(defines)
+    pybins = get_app_sources(os.path.join(path, "bin"), ["*"],
+                             tools.filter_pyapps)
+    values["pybins"] = "\n".join(pybins)
 
     main = os.path.join(path, "src", "CMakeLists.txt")
     tests = os.path.join(path, "test", "CMakeLists.txt")
     swig = os.path.join(path, "pyext", "CMakeLists.txt")
     util = os.path.join(path, "utility", "CMakeLists.txt")
+    bin = os.path.join(path, "bin", "CMakeLists.txt")
     benchmark = os.path.join(path, "benchmark", "CMakeLists.txt")
     examples = os.path.join(path, "examples", "CMakeLists.txt")
     tools.rewrite(main, lib_template % values)
     tools.rewrite(tests, test_template % values)
     tools.rewrite(swig, swig_template % values)
     tools.rewrite(util, util_template % values)
+    tools.rewrite(bin, bin_template % values)
     tools.rewrite(benchmark, benchmark_template % values)
     tools.rewrite(examples, examples_template % values)
     values["tests"] = "\n".join(contents)
@@ -236,7 +248,8 @@ def setup_module(module, path, ordered):
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/test)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/examples)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/benchmark)
-add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/utility)""" % ((module,) * 5)
+add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/bin)
+add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/utility)""" % ((module,) * 6)
 
     out = os.path.join(path, "CMakeLists.txt")
     tools.rewrite(out, module_template % values)

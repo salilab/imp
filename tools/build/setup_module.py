@@ -5,6 +5,7 @@ Set up a module by
 - checking that all required modules and dependencies are found
 - creating the config header and .cpp and version check .py
 - linking .py files from the bin and benchmarks directories into the build dir
+- Linking Python apps into the build dir.
 
 If the module cannot be configured, the script exits with an error.
 """
@@ -290,6 +291,12 @@ def setup_module(module, source, datapath):
     return True, all_modules
 
 
+def link_py_apps(options):
+    path = os.path.join(options.source, "modules", options.name, "bin")
+    tools.mkdir("bin", clean=False)
+    tools.link_dir(path, "bin", clean=False, match=["*"],
+                   filt=tools.filter_pyapps)
+
 def link_bin(options):
     path = os.path.join("module_bin", options.name)
     tools.mkdir(path, clean=False)
@@ -355,6 +362,7 @@ def main():
         make_doxygen(options, modules)
         make_overview(options)
         link_bin(options)
+        link_py_apps(options)
         link_benchmark(options)
         sys.exit(0)
     else:
