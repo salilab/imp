@@ -7,7 +7,7 @@
 .*.sw?
 modules/*/CMakeLists.txt
 modules/*/CMakeModules
-modules/*/bin/CMakeLists.txt
+modules/*/utility/CMakeLists.txt
 modules/*/include/CMakeLists.txt
 modules/*/pyext/CMakeLists.txt
 modules/*/src/CMakeLists.txt

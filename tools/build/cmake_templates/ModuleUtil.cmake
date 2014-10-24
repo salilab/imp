@@ -21,4 +21,4 @@ foreach (bin ${cppfiles})
    set(executables ${executables} IMP.%(name)s-${name})
 endforeach(bin)
 
-set(IMP_%(name)s_BINS ${executables} CACHE INTERNAL "" FORCE)
+set(IMP_%(name)s_UTILS ${executables} CACHE INTERNAL "" FORCE)
