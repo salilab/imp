@@ -16,8 +16,23 @@ For more information please see the
 See the IMP::cnmultifit module for a similar protocol for handling symmetric
 complexes.
 
+Command line usage {#multifit_bin}
+==================
+
 Generally, this module is not used directly; instead, the
-[multifit application](@ref impmultifit_tools) is used.
+`multifit` command line tool is used. For an example, see
+[Modeling of 3sfd](../tutorial/multifit_3sfd.html).
+
+Web server
+==========
+
+A [webserver](http://salilab.org/multifit/) that uses both this module
+and the IMP::cnmultifit module is also available.
+
+complex_to_anchor_graph {#complex_anchor_bin}
+=======================
+
+Build an anchor graph from a PDB file.
 
 # Info
 
