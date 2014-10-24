@@ -16,8 +16,8 @@ For more information please see the
 See the IMP::cnmultifit module for a similar protocol for handling symmetric
 complexes.
 
-Command line usage {#multifit_bin}
-==================
+multifit: command line tool {#multifit_bin}
+===========================
 
 Generally, this module is not used directly; instead, the
 `multifit` command line tool is used. For an example, see

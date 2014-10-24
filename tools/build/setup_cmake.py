@@ -225,10 +225,13 @@ def setup_module(module, path, ordered):
     values["libpath"] = get_dep_merged([module], "link_path", ordered)
     values["swigpath"] = get_dep_merged([module], "swig_path", ordered)
     values["defines"] = ":".join(defines)
+    cppbins = tools.get_glob([os.path.join(path, "bin", "*.cpp")])
+    cppbins = [os.path.splitext(e)[0] for e in cppbins]
     pybins = get_app_sources(os.path.join(path, "bin"), ["*"],
                              tools.filter_pyapps)
     values["pybins"] = "\n".join(pybins)
-
+    values["bin_names"] = "\n".join([os.path.basename(x) \
+                                     for x in pybins + cppbins])
     main = os.path.join(path, "src", "CMakeLists.txt")
     tests = os.path.join(path, "test", "CMakeLists.txt")
     swig = os.path.join(path, "pyext", "CMakeLists.txt")

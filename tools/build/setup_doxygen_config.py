@@ -118,7 +118,16 @@ These are listed below:""")
     for bs, g in tools.get_applications(source):
         contents.append("- \subpage imp%s \"IMP.%s\"" % (bs, bs))
         p = pickle.load(open(os.path.join("data", "build_info",
+                                          "IMP_app_%s.pck" % bs)))
+        apps = sorted([[k]+list(v) for k,v in p.iteritems() if v],
+                      key=lambda x:x[3])
+        for app in apps:
+            contents.append("  - [%s](\\ref %s): %s" % (app[0], app[1], app[2]))
+    for bs, g in tools.get_modules(source):
+        p = pickle.load(open(os.path.join("data", "build_info",
                                           "IMP_%s.pck" % bs)))
+        if len(p) > 0:
+            contents.append("- IMP::%s" % bs)
         apps = sorted([[k]+list(v) for k,v in p.iteritems() if v],
                       key=lambda x:x[3])
         for app in apps:

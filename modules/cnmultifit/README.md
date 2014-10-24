@@ -6,8 +6,8 @@ single subunit and a cryo-electron microscopy density map of the complex.
 See the IMP::multifit module for a similar protocol for handling non-symmetric
 complexes.
 
-Command line usage {#cnmultifit_bin}
-==================
+cnmultifit: command line tool {#cnmultifit_bin}
+=============================
 
 Generally, this module is not used directly; instead, the
 `cnmultifit` command line tool is used. For an example, see

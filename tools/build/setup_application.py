@@ -205,7 +205,7 @@ def make_overview(app, source, cmdline_tools):
     cmdline_links = find_cmdline_links(app, docdir, cmdline_tools)
     pickle.dump(cmdline_links,
                 open(os.path.join("data", "build_info",
-                                  "IMP_%s.pck" % app), 'w'), -1)
+                                  "IMP_app_%s.pck" % app), 'w'), -1)
     rmd = open(os.path.join(docdir, "README.md"), "r").read()
     tools.rewrite(os.path.join("doxygen", "generated", "IMP_%s.dox" % app),
                   """/** \\page imp%s IMP.%s
