@@ -2,6 +2,9 @@ ChangeLog {#changelog}
 =========
 
 # For IMP 2.4.0 # {#changelog_2_4_0}
+- Command line tools are now placed in the `bin` directory of modules (the
+  old `bin` directory, used for utility programs that are not installed, is
+  now called `utility`). The `applications` directory is deprecated.
 
 # For IMP 2.3.0 # {#changelog_2_3_0}
 - A new IMP::pmi module was added, containing high-level Python classes to simplify the representation, scoring, sampling and analyzing of models in IMP. This module is still under heavy development, and should be considered experimental.
