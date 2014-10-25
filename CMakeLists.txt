@@ -41,6 +41,10 @@ if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
 endif(POLICY CMP0017)
 
+# Don't set MACOSX_RPATH by default
+if(POLICY CMP0042)
+cmake_policy(SET CMP0042 OLD)
+endif(POLICY CMP0042)
 
 set(IMP_TEST_SETUP ${PROJECT_BINARY_DIR}/setup_imp.py)
 
