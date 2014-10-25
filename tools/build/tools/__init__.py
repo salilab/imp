@@ -366,14 +366,6 @@ def get_application_info(module, extra_data_path, root="."):
             "unfound_dependencies": split(unfound_dependencies)}
 
 
-def get_applications(source):
-    path = os.path.join(source, "applications", "*")
-    globs = get_glob([path])
-    return (
-        [(os.path.split(g)[1], g)
-         for g in globs if (os.path.split(g)[1].find("SConscript") == -1)]
-    )
-
 # a version of split that doesn't return empty strings when there are no items
 
 

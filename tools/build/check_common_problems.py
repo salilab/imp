@@ -14,20 +14,6 @@ import platform
 import tools
 
 
-def check_dependencies():
-    for module, g in tools.get_modules("."):
-        if not os.path.exists(os.path.join(g, "dependencies.py")):
-            print >> sys.stderr, "Each module must have a file 'dependencies.py' describing what other modules and external dependencies it needs."
-            print >> sys.stderr, module, "does not."
-            exit(1)
-    for app, g in tools.get_applications("."):
-        if not os.path.exists(os.path.join(g, "dependencies.py")):
-            print >> sys.stderr, "Each application must have a file 'dependencies.py' describing what other modules and external dependencies it needs."
-            print >> sys.stderr, app, "does not."
-            print >> sys.stderr, "If the applications/%s directory is empty (e.g. left over from a previous git version) then you can delete it to fix this error." % app
-            exit(1)
-
-
 def check_readme():
     for module, g in tools.get_modules("."):
         if not os.path.exists(os.path.join(g, "README.md")):
@@ -55,7 +41,6 @@ def check_submodules():
 
 
 def main():
-    check_dependencies()
     check_readme()
     check_submodules()
 
