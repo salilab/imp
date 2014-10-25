@@ -24,6 +24,7 @@ def check_dependencies():
         if not os.path.exists(os.path.join(g, "dependencies.py")):
             print >> sys.stderr, "Each application must have a file 'dependencies.py' describing what other modules and external dependencies it needs."
             print >> sys.stderr, app, "does not."
+            print >> sys.stderr, "If the applications/%s directory is empty (e.g. left over from a previous git version) then you can delete it to fix this error." % app
             exit(1)
 
 
