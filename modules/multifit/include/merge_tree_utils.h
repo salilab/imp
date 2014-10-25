@@ -7,6 +7,7 @@
 #ifndef IMPMULTIFIT_MERGE_TREE_UTILS_H
 #define IMPMULTIFIT_MERGE_TREE_UTILS_H
 
+#include <boost/functional/hash.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/pending/disjoint_sets.hpp>
