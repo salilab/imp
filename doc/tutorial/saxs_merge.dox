@@ -20,14 +20,14 @@ First, obtain the input files used in this example and put them in the
 current directory, by typing:
 
 \code{.sh}
-cp -r <imp_example_path>/saxs/merge/* .
+cp -r <imp_example_path>/saxs_merge/* .
 \endcode
 
 (On a Windows machine, use 'xcopy /E' rather than 'cp -r'.) Here,
 \<imp_example_path\>
 is the directory containing the IMP example files. The full path to the files
-can be determined by running in a Python interpreter '<tt>import IMP.saxs;
-print IMP.saxs.get_example_path('merge')</tt>'.
+can be determined by running in a Python interpreter '<tt>import IMP.saxs_merge;
+print IMP.saxs_merge.get_example_path('')</tt>'.
 
 These input files are two SAXS profiles. Each is a text file containing the
 SAXS data in three columns, corresponding to q, l and err respectively.
