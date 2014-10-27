@@ -1,0 +1,6 @@
+%import "RMF.i"
+%{
+#include "RMF.h"
+%}
+
+# Nothing to wrap
