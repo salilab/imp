@@ -347,8 +347,8 @@ def main():
         p = os.path.join("modules", m)
         main.append(setup_module(m, p, ordered))
 
-    for a in [x for x in tools.get_glob([os.path.join("applications", "*")]) if os.path.isdir(x)]:
-        main.append(setup_application(options, os.path.split(a)[1], ordered))
+    for appname, appdir in tools.get_applications("."):
+        main.append(setup_application(options, appname, ordered))
     # contents=["include(${CMAKE_SOURCE_DIR}/%s)"%x for x in main]
     # tools.rewrite(os.path.join("cmake", "CMakeLists.txt"), "\n".join(contents))
 
