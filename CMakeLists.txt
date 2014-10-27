@@ -287,12 +287,6 @@ foreach(mod ${enabled_modules})
   ${IMP_${mod}_DOC})
 endforeach(mod)
 
-
-file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/applications" applications)
-foreach(app ${applications})
-  add_subdirectory("${CMAKE_SOURCE_DIR}/applications/${app}")
-endforeach(app)
-
 list(INSERT IMP_PYTHONPATH 0 "${CMAKE_BINARY_DIR}/lib")
 list(INSERT IMP_LDPATH 0 "${CMAKE_BINARY_DIR}/lib")
 list(INSERT IMP_PATH 0 "${CMAKE_BINARY_DIR}/bin")

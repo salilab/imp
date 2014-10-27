@@ -96,15 +96,9 @@ def generate_doxyfile(
         inputsh.append(os.path.join("lib", "IMP", m))
         if os.path.exists(doc):
             inputsh.append(doc + "/")
-    for m, p in tools.get_applications(source):
-        doc = os.path.join(p, "doc")
-        if os.path.exists(doc):
-            inputsh.append(doc + "/")
     if not tutorial:
         doxygen = doxygen.replace("@INPUT_PATH@", " ".join(inputsh))
     open(target, "w").write(doxygen)
-
-# generate the pages that list biological systems and applications
 
 
 def generate_overview_pages(source):
@@ -113,16 +107,8 @@ def generate_overview_pages(source):
     contents.append("/** ")
     contents.append("\\page applications All IMP Applications")
     contents.append("""
-IMP provides a number of applications (command line tools).
-These are listed below:""")
-    for bs, g in tools.get_applications(source):
-        contents.append("- \subpage imp%s \"IMP.%s\"" % (bs, bs))
-        p = pickle.load(open(os.path.join("data", "build_info",
-                                          "IMP_app_%s.pck" % bs)))
-        apps = sorted([[k]+list(v) for k,v in p.iteritems() if v],
-                      key=lambda x:x[3])
-        for app in apps:
-            contents.append("  - [%s](\\ref %s): %s" % (app[0], app[1], app[2]))
+IMP modules provide a number of applications (command line tools).
+These are listed below under their parent module:""")
     for bs, g in tools.get_modules(source):
         p = pickle.load(open(os.path.join("data", "build_info",
                                           "IMP_%s.pck" % bs)))

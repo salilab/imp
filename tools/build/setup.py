@@ -13,7 +13,6 @@ Set up the build environment:
 - create pages that list things in the documentation
 - setup the doxygen config files
 - generate standards tests
-- create a list of applications
 
 No repository directories are changed.
 """
@@ -246,8 +245,6 @@ if __name__ == '__main__':
                 os.path.join(targetdir,
                              "cpp_examples_test.py"),
                 cppexamples)
-    for app, g in tools.get_applications(source):
-        tools.mkdir(os.path.join(target, app))
 
 
 def clean_pyc(dir):
@@ -255,17 +252,6 @@ def clean_pyc(dir):
         for d in dirnames:
             for f in tools.get_glob([os.path.join(d, "*.pyc")]):
                 os.unlink(f)
-
-
-def generate_applications_list(source):
-    apps = tools.get_glob([os.path.join(source, "applications", "*")])
-    names = []
-    for a in apps:
-        if os.path.isdir(a):
-            name = os.path.split(a)[1]
-            names.append(name)
-    path = os.path.join("data", "build_info", "applications")
-    tools.rewrite(path, "\n".join(names))
 
 
 def generate_src_dirs(source):
@@ -301,7 +287,6 @@ def main():
     link_data(options.source)
     generate_tests(options.source, options.scons)
     generate_src_dirs(options.source)
-    generate_applications_list(options.source)
 
 if __name__ == '__main__':
     main()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Set up the cmake build scripts for modules and applications. These are written
+Set up the cmake build scripts for modules. These are written
 into the repository directories.
 """
 
@@ -84,14 +84,6 @@ benchmark_template = open(
                  "cmake_templates",
                  "ModuleBenchmark.cmake"),
     "r").read()
-
-application_template = open(
-    os.path.join("tools",
-                 "build",
-                 "cmake_templates",
-                 "Application.cmake"),
-    "r").read()
-
 
 def make_check(path, module, module_path):
     name = os.path.splitext(os.path.split(path)[1])[0]
@@ -271,68 +263,6 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/utility)""" % ((module,) * 6)
     return out
 
 
-def setup_application(options, name, ordered):
-    contents = []
-    path = os.path.join("applications", name)
-    local = os.path.join(path, "Setup.cmake")
-    if os.path.exists(local):
-        contents.append("include(%s)" % tools.to_cmake_path(local))
-
-    values = {"name": name}
-    values["NAME"] = name.upper()
-    data = tools.get_application_description(".", name, "")
-    all_modules = data["required_modules"] + tools.get_all_modules(
-        ".", data["required_modules"], "", ordered)
-    all_dependencies = tools.get_all_dependencies(
-        ".", all_modules, "", ordered) + data["required_dependencies"]
-    modules = ["${IMP_%s_LIBRARY}" % s for s in all_modules]
-    dependencies = ["${%s_LIBRARIES}" % s.upper() for s in all_dependencies]
-    values["modules"] = "\n".join(modules)
-    values["tags"] = "\n".join(["${IMP_%s_DOC}" % m for m in all_modules])
-    values["dependencies"] = "\n".join(dependencies)
-    values["module_deps"] = "\n".join("${IMP_%s}" % m for m in all_modules)
-    exes = tools.get_application_executables(path)
-    exedirs = sorted(set(sum([x[1] for x in exes], [])))
-    localincludes = "\n     ".join(
-        ["${CMAKE_SOURCE_DIR}/" + tools.to_cmake_path(x) for x in exedirs])
-    bintmpl = """
-   add_executable("IMP.%(name)s-%(cname)s" %(cpps)s)
-   target_link_libraries(IMP.%(name)s-%(cname)s
-    %(modules)s
-    %(dependencies)s)
-   set_target_properties(IMP.%(name)s-%(cname)s PROPERTIES OUTPUT_NAME %(cname)s RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-   set_property(TARGET "IMP.%(name)s-%(cname)s" PROPERTY FOLDER "IMP.%(name)s")
-   install(TARGETS IMP.%(name)s-%(cname)s DESTINATION ${CMAKE_INSTALL_BINDIR})
-   set(bins ${bins} IMP.%(name)s-%(cname)s)
-"""
-    bins = []
-    for e in exes:
-        cpps = e[0]
-        cname = os.path.splitext(os.path.split(cpps[0])[1])[0]
-        values["cname"] = cname
-        values["cpps"] = "\n".join(["${CMAKE_SOURCE_DIR}/%s"
-                                    % tools.to_cmake_path(c) for c in cpps])
-        bins.append(bintmpl % values)
-    values["bins"] = "\n".join(bins)
-    values["includepath"] = get_dep_merged(
-        all_modules,
-        "include_path",
-        ordered) + " " + localincludes
-    values["libpath"] = get_dep_merged(all_modules, "link_path", ordered)
-    values["swigpath"] = get_dep_merged(all_modules, "swig_path", ordered)
-    pybins = get_app_sources(path, ["*"], tools.filter_pyapps)
-    values["pybins"] = "\n".join(pybins)
-    cppbins = [os.path.splitext(e[0][0])[0] for e in exes]
-    values["bin_names"] = "\n".join([os.path.basename(x) \
-                                     for x in pybins + cppbins])
-    values["pytests"] = "\n".join(get_app_sources(os.path.join(path, "test"),
-                                        ["test_*.py",
-                                         "expensive_test_*.py"]))
-    contents.append(application_template % values)
-    out = os.path.join(path, "CMakeLists.txt")
-    tools.rewrite(out, "\n".join(contents))
-    return out
-
 parser = OptionParser()
 
 
@@ -346,11 +276,6 @@ def main():
             continue"""
         p = os.path.join("modules", m)
         main.append(setup_module(m, p, ordered))
-
-    for appname, appdir in tools.get_applications("."):
-        main.append(setup_application(options, appname, ordered))
-    # contents=["include(${CMAKE_SOURCE_DIR}/%s)"%x for x in main]
-    # tools.rewrite(os.path.join("cmake", "CMakeLists.txt"), "\n".join(contents))
 
 if __name__ == '__main__':
     main()
