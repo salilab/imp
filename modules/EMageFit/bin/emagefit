@@ -395,8 +395,7 @@ if __name__ == "__main__":
     import ConfigParser
     cparser = ConfigParser.SafeConfigParser()
 
-    parser = IMP.OptionParser(description="Domino grid sampling",
-                              imp_module=em2d)
+    parser = IMP.OptionParser(description="Domino grid sampling")
     parser.add_option("--o",
                       dest="fn_database",
                       default=False,

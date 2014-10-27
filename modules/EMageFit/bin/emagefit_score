@@ -111,8 +111,7 @@ res:     Resolution to generate the projections
 nimg:    Images per batch used when scoring a lot of images (to avoid memory
          problems)
 """,
-                              description="EMageFit scoring",
-                              imp_module=em2d)
+                              description="EMageFit scoring")
     opts, args = parser.parse_args()
     if len(args) != 6:
         parser.error("wrong number of arguments")

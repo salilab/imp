@@ -239,8 +239,7 @@ if __name__ == "__main__":
 
 fn_receptor and fn_ligand are the filenames of the PDB files for the
 receptor and ligand, respectively.""",
-        description="Functions related to docking with HEX",
-        imp_module=IMP.em2d)
+        description="Functions related to docking with HEX")
     parser.add_option("--dock",
                       action="store_true", dest="dock", default=False,
                       help="Dock the ligand into the receptor")

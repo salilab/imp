@@ -122,8 +122,7 @@ class AlignmentClustering:
 
 if __name__ == "__main__":
 
-    parser = IMP.OptionParser(imp_module=em2d,
-                              description=
+    parser = IMP.OptionParser(description=
                               "Clusters the best solutions contained in the database, and writes a "
                               " new table in the database containing the clusters ids and members")
     parser.add_option("--exp",
