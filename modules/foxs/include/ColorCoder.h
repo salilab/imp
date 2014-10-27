@@ -1,15 +1,18 @@
 /**
- * \file ColorCoder.h \brief
+ * \file IMP/foxs/ColorCoder.h \brief
  *
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMP_COLOR_CODER_H
-#define IMP_COLOR_CODER_H
+#ifndef IMPFOXS_COLOR_CODER_H
+#define IMPFOXS_COLOR_CODER_H
 
+#include <IMP/foxs/foxs_config.h>
 #include <cstdio>
 #include <stdio.h>
+
+IMPFOXS_BEGIN_NAMESPACE
 
 class ColorCoder {
  public:
@@ -38,4 +41,6 @@ class ColorCoder {
   static int diff_;
 };
 
-#endif /* IMP_COLOR_CODER_H */
+IMPFOXS_END_NAMESPACE
+
+#endif /* IMPFOXS_COLOR_CODER_H */

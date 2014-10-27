@@ -1,19 +1,22 @@
 /**
- * \file JmolWriter.h \brief outputs javascript for jmol display
+ * \file IMP/foxs/JmolWriter.h \brief outputs javascript for jmol display
  *
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMP_JMOL_WRITER_H
-#define IMP_JMOL_WRITER_H
+#ifndef IMPFOXS_JMOL_WRITER_H
+#define IMPFOXS_JMOL_WRITER_H
 
+#include <IMP/foxs/foxs_config.h>
 #include <IMP/saxs/FitParameters.h>
 
 #include <IMP/kernel/Particle.h>
 
 #include <string>
 #include <vector>
+
+IMPFOXS_BEGIN_NAMESPACE
 
 class JmolWriter {
  public:
@@ -54,6 +57,6 @@ class JmolWriter {
   static unsigned int MAX_DISPLAY_NUM_;
 };
 
-IMP::Float compute_max_distance(const IMP::kernel::Particles& particles);
+IMPFOXS_END_NAMESPACE
 
-#endif /* IMP_JMOL_WRITER_H */
+#endif /* IMPFOXS_JMOL_WRITER_H */

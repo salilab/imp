@@ -1,14 +1,17 @@
 /**
- *  \file Gnuplot.h   \brief A class for printing gnuplot scripts
+ *  \file IMP/foxs/Gnuplot.h   \brief A class for printing gnuplot scripts
  *   for profile viewing
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include "Gnuplot.h"
-#include "ColorCoder.h"
+
+#include <IMP/foxs/Gnuplot.h>
+#include <IMP/foxs/ColorCoder.h>
 
 #include <fstream>
+
+IMPFOXS_BEGIN_NAMESPACE
 
 void Gnuplot::print_profile_script(const std::string pdb) {
   // file names
@@ -259,3 +262,5 @@ std::string trim_extension(const std::string file_name) {
     return file_name.substr(0, file_name.size() - 4);
   return file_name;
 }
+
+IMPFOXS_END_NAMESPACE

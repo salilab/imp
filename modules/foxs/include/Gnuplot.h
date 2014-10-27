@@ -1,18 +1,21 @@
 /**
- *  \file Gnuplot.h   \brief A class for printing gnuplot scripts
+ *  \file IMP/foxs/Gnuplot.h   \brief A class for printing gnuplot scripts
  *   for profile viewing
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMP_GNUPLOT_H
-#define IMP_GNUPLOT_H
+#ifndef IMPFOXS_GNUPLOT_H
+#define IMPFOXS_GNUPLOT_H
 
+#include <IMP/foxs/foxs_config.h>
 #include <IMP/saxs/FitParameters.h>
 
 #include <string>
 #include <vector>
+
+IMPFOXS_BEGIN_NAMESPACE
 
 #if defined(_WIN32) || defined(_WIN64)
 // Simple basename implementation on platforms that don't have libgen.h
@@ -57,4 +60,6 @@ class Gnuplot {
 
 std::string trim_extension(const std::string file_name);
 
-#endif /* IMP_GNUPLOT_H */
+IMPFOXS_END_NAMESPACE
+
+#endif /* IMPFOXS_GNUPLOT_H */

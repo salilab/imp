@@ -1,20 +1,21 @@
 /**
- * \file JmolWriter.cpp \brief outputs javascript for jmol display
+ * \file IMP/foxs/JmolWriter.cpp \brief outputs javascript for jmol display
  *
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
-#include "JmolWriter.h"
-
-#include "ColorCoder.h"
-#include "Gnuplot.h"
+#include <IMP/foxs/JmolWriter.h>
+#include <IMP/foxs/ColorCoder.h>
+#include <IMP/foxs/Gnuplot.h>
 
 #include <IMP/atom/pdb.h>
 #include <IMP/saxs/utility.h>
 
 #include <fstream>
 #include <boost/lexical_cast.hpp>
+
+IMPFOXS_BEGIN_NAMESPACE
 
 std::string JmolWriter::display_selection_ =
     "frame 0#;restrict selection;\
@@ -341,11 +342,4 @@ std::string JmolWriter::group_checkbox(unsigned int model_num) {
   return ret;
 }
 
-// This is here (rather than just calling the function in IMP::saxs directly)
-// since MSVC fails to link foxs.exe otherwise (complains about duplicate
-// definitions of std::vector<algebra::Vector3D>:~vector). This seems to be
-// caused by creating instances of such vectors in multiple foxs
-// compilation units.
-IMP::Float compute_max_distance(const IMP::kernel::Particles& particles) {
-  return IMP::saxs::compute_max_distance(particles);
-}
+IMPFOXS_END_NAMESPACE

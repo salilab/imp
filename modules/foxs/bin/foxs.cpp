@@ -2,6 +2,10 @@
    This is the program for SAXS profile computation and fitting.
    see FOXS for webserver (salilab.org/foxs)
  */
+
+#include <IMP/foxs/Gnuplot.h>
+#include <IMP/foxs/JmolWriter.h>
+
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/ProfileFitter.h>
 #include <IMP/saxs/ChiScoreLog.h>
@@ -15,9 +19,6 @@
 #include <IMP/constants.h>
 #include <IMP/kernel/Model.h>
 
-#include "Gnuplot.h"
-#include "JmolWriter.h"
-
 #include <fstream>
 #include <vector>
 #include <string>
@@ -26,6 +27,7 @@
 namespace po = boost::program_options;
 
 using namespace IMP::saxs;
+using namespace IMP::foxs;
 
 namespace {
 
@@ -349,7 +351,7 @@ constant form factor (default = false)")(
         fp = pf->fit_profile(profile, min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
         if (chi_free > 0) {
-          double dmax = ::compute_max_distance(particles_vec[i]);
+          double dmax = compute_max_distance(particles_vec[i]);
           unsigned int ns = IMP::algebra::get_rounded(
               exp_saxs_profile->get_max_q() * dmax / IMP::PI);
           int K = chi_free;

@@ -1,11 +1,13 @@
 /**
- * \file ColorCoder.cpp \brief
+ * \file IMP/foxs/ColorCoder.cpp \brief
  *
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
 
-#include "ColorCoder.h"
+#include <IMP/foxs/ColorCoder.h>
+
+IMPFOXS_BEGIN_NAMESPACE
 
 int ColorCoder::diff_ = 30;
 
@@ -19,3 +21,5 @@ void ColorCoder::get_color_for_id(int &r, int &g, int &b, int id) {
   g = (int)(color_modules[mod][1] * mult);
   b = (int)(color_modules[mod][2] * mult);
 }
+
+IMPFOXS_END_NAMESPACE
