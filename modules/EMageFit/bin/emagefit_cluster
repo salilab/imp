@@ -2,11 +2,11 @@
 
 import IMP
 import IMP.em2d as em2d
-import IMP.em2d.utility as utility
+import IMP.EMageFit.utility as utility
 import IMP.em2d.imp_general.io as io
 import IMP.em2d.imp_general.representation as representation
-import IMP.em2d.solutions_io as solutions_io
-import IMP.em2d.Database as Database
+import IMP.EMageFit.solutions_io as solutions_io
+import IMP.EMageFit.Database as Database
 
 import IMP.statistics as stats
 import IMP.container as container

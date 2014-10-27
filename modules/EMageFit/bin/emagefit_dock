@@ -6,7 +6,7 @@ import IMP.atom as atom
 import IMP.em2d
 import IMP.em2d.imp_general.representation as representation
 import IMP.em2d.imp_general.io as io
-import IMP.em2d.csv_related as csv_related
+import IMP.EMageFit.csv_related as csv_related
 import csv
 import sys
 import logging

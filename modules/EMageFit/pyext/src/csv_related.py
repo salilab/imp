@@ -1,4 +1,4 @@
-"""@namespace IMP.em2d.csv_related
+"""@namespace IMP.EMageFit.csv_related
    Utility functions to handle CSV files.
 """
 

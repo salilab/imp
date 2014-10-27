@@ -1,4 +1,4 @@
-"""@namespace IMP.em2d.argminmax
+"""@namespace IMP.EMageFit.argminmax
    Utility functions to extract min/max from the inputs.
 """
 

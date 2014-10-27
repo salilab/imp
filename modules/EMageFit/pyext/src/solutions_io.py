@@ -1,9 +1,9 @@
-"""@namespace IMP.em2d.solutions_io
+"""@namespace IMP.EMageFit.solutions_io
    Utility functions to store and retrieve solution information.
 """
 
 import IMP.em2d.imp_general.io as io
-import IMP.em2d.Database as Database
+import IMP.EMageFit.Database as Database
 
 import sys
 import heapq

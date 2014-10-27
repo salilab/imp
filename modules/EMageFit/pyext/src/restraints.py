@@ -1,4 +1,4 @@
-"""@namespace IMP.em2d.restraints
+"""@namespace IMP.EMageFit.restraints
    Utility functions to handle restraints.
 """
 

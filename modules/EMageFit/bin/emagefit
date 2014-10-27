@@ -14,15 +14,15 @@ import IMP.algebra as alg
 import IMP.em2d as em2d
 
 
-import IMP.em2d.Database as Database
+import IMP.EMageFit.Database as Database
 import IMP.em2d.imp_general.io as io
 import IMP.em2d.imp_general.alignments as alignments
 import IMP.em2d.imp_general.representation as representation
-import IMP.em2d.DominoModel as DominoModel
-import IMP.em2d.MonteCarloRelativeMoves as MonteCarloRelativeMoves
-import IMP.em2d.sampling as sampling
-import IMP.em2d.solutions_io as solutions_io
-import IMP.em2d.utility as utility
+import IMP.EMageFit.DominoModel as DominoModel
+import IMP.EMageFit.MonteCarloRelativeMoves as MonteCarloRelativeMoves
+import IMP.EMageFit.sampling as sampling
+import IMP.EMageFit.solutions_io as solutions_io
+import IMP.EMageFit.utility as utility
 
 
 def setup_sampling_schema(model, params):

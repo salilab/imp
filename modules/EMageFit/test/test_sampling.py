@@ -4,7 +4,7 @@ import IMP.algebra as alg
 import sys
 import os
 
-import IMP.em2d.sampling as sampling
+import IMP.EMageFit.sampling as sampling
 import IMP.em2d.Database as Database
 import IMP.em2d.imp_general.io as io
 

@@ -1,4 +1,4 @@
-"""@namespace IMP.em2d.buildxlinks
+"""@namespace IMP.EMageFit.buildxlinks
    Utility functions to handle cross links.
 """
 
@@ -8,7 +8,7 @@ import IMP.algebra as alg
 import IMP.core as core
 import sys
 import logging
-from IMP.em2d.argminmax import keymax
+from IMP.EMageFit.argminmax import keymax
 log = logging.getLogger("buildxlinks")
 
 import networkx as nx

@@ -1,9 +1,9 @@
 
 import IMP
 import IMP.algebra as alg
-import IMP.em2d.solutions_io as solutions_io
+import IMP.EMageFit.solutions_io as solutions_io
 import IMP.em2d.imp_general.io as io
-import IMP.em2d.Database as Database
+import IMP.EMageFit.Database as Database
 import itertools
 import logging
 import os

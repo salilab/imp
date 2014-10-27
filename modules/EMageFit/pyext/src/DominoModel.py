@@ -20,10 +20,10 @@ import IMP.em2d.imp_general.alignments as alignments
 import IMP.em2d.imp_general.io as io
 import IMP.em2d.imp_general.representation as representation
 
-import IMP.em2d.restraints as restraints
-import IMP.em2d.buildxlinks as buildxlinks
-import IMP.em2d.solutions_io as solutions_io
-import IMP.em2d.csv_related as csv_related
+import IMP.EMageFit.restraints as restraints
+import IMP.EMageFit.buildxlinks as buildxlinks
+import IMP.EMageFit.solutions_io as solutions_io
+import IMP.EMageFit.csv_related as csv_related
 
 
 field_delim = ","  # separate fields in the output text file
