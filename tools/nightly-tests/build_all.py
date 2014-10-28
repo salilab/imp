@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Build as many IMP components (modules, applications) as possible, even
+"""Build as many IMP components (modules, dependencies) as possible, even
    if some of them fail."""
 
 import sys
@@ -120,7 +120,7 @@ def copy_xml(src, dest, detail_dir):
 
 class Component(object):
 
-    """Represent an IMP application or module"""
+    """Represent an IMP module"""
 
     def __init__(self, name):
         self.name = name
@@ -185,17 +185,6 @@ class Component(object):
             if hasattr(self, typ + '_time'):
                 ret[typ + '_time'] = getattr(self, typ + '_time')
         return ret
-
-
-class Application(Component):
-
-    """Represent an IMP application"""
-
-    def __init__(self, name):
-        Component.__init__(self, name)
-        # No special targets to build tests
-        self.target['build'] = 'IMP.' + name
-        self.test_regex = '^IMP\\.' + name + '\\-'
 
 
 class Module(Component):
@@ -329,25 +318,16 @@ def get_all_components():
             comps[dep].set_dep_modules(comps, [], [], special_dep_targets)
 
     modules = tools.get_sorted_order()
-    apps = tools.get_all_configured_applications()
     for m in modules:
         comps[m] = Module(m)
-    for a in apps:
-        comps[a] = Application(a)
 
     for m in modules:
         i = tools.get_module_info(m, "")
         comps[m].set_dep_modules(comps, i['modules'], i['dependencies'],
                                  special_dep_targets)
-    for a in apps:
-        i = tools.get_application_info(a, "")
-        comps[a].set_dep_modules(comps, i['modules'], i['dependencies'],
-                                 special_dep_targets)
     source_dir = os.path.join(os.path.dirname(sys.argv[0]), '..', '..')
     all_modules = [x[0] for x in tools.get_modules(source_dir)]
-    all_apps = [x[0] for x in tools.get_applications(source_dir)]
     add_disabled_components(modules, all_modules, comps, "module")
-    add_disabled_components(apps, all_apps, comps, "application")
     return comps
 
 
@@ -446,7 +426,7 @@ def parse_args():
     from optparse import OptionParser
     usage = """%prog [options] makecmd
 
-Build (and optionally test) all components (modules, applications) using the
+Build (and optionally test) all components (modules, dependencies) using the
 given makecmd (e.g. "make", "ninja", "make -j8").
 
 This is similar to just running the makecmd itself, but will build as many
