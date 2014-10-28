@@ -53,6 +53,9 @@ ENDIF()
 IF (NOT "${sover}" STREQUAL "")
   set_target_properties(IMP.%(name)s-lib PROPERTIES
                         VERSION ${sover} SOVERSION ${sover})
+ELSE()
+  set_target_properties(IMP.%(name)s-lib PROPERTIES
+                        VERSION 0 SOVERSION 0)
 ENDIF()
 
 set_property(TARGET "IMP.%(name)s-lib" PROPERTY FOLDER "IMP.%(name)s")
