@@ -1,14 +1,14 @@
 ChangeLog {#changelog}
 =========
 
-# For IMP 2.4.0 # {#changelog_2_4_0}
+# For next stable IMP release #
 - Command line tools are now placed in the `bin` directory of modules (the
   old `bin` directory, used for utility programs that are not installed, is
   now called `utility`). The `applications` directory is removed.
 - Several Python modules that were only used by EMageFit have been moved from
   IMP::em2d to IMP::EMageFit.
 
-# For IMP 2.3.0 # {#changelog_2_3_0}
+# 2.3.0 - 2014-10-24 # {#changelog_2_3_0}
 - A new IMP::pmi module was added, containing high-level Python classes to simplify the representation, scoring, sampling and analyzing of models in IMP. This module is still under heavy development, and should be considered experimental.
 - Binary installers for 64-bit Windows are now available.
 - The `.py` extension has been removed from all Python applications, so that they are consistent with the C++ extensions.
@@ -17,10 +17,10 @@ ChangeLog {#changelog}
 - IMP::atom::CHARMMParameters::create_topology() now works with a wider range of hierarchies (previously it would only accept Residues that were direct children of Chains). For example, it should do the right thing when given a Hierarchy that contains no Chain particles, or one where Residues are grouped under Fragments.
 - Only Python 2.6 or later is now supported. We still provide IMP for RedHat Enterprise 5 (which ships with Python 2.4) but you will need to use the `python26` binary (part of EPEL) rather than the system default Python.
 
-# For IMP 2.2.1 # {#changelog_2_2_1}
+# 2.2.1 - 2014-08-11 # {#changelog_2_2_1}
 - Bugfix: PoseScore (see the ligand_score application) should now match that used by the Pose&Rank web server (http://salilab.org/poseandrank/)
 
-# For IMP 2.2.0 # {#changelog_2_2_0}
+# 2.2.0 - 2014-04-09 # {#changelog_2_2_0}
 - A module IMP.template was added to act as a template for creating new external modules. It includes setting up git hooks for format checks and things like that.
 - The Python support for grids was cleaned up. Hopefully this makes it more robust. If you were using a grid in Python that no longer exists, ping us, we can add it back.
 - The generic geometry functions were simplified slightly and renamed to IMP::algebra::get_vector_geometry().
@@ -43,10 +43,10 @@ ChangeLog {#changelog}
 - IMP::atom::Chain now uses strings for the chain ids, to be consistent with changes in the PDB. PDB files are written using the first character of the chain string.
 - Added orientation-dependent SOAP scoring (IMP::score_functor::OrientedSoap and IMP::atom::OrientedSoapPairScore). Orientation-dependent SOAP scores include those that score loops (SOAP-Loop), protein-peptide interfaces (SOAP-Peptide) and proteins (SOAP-Protein). The library files themselves are rather large (~1.5GB) and so are not included with IMP. They can be downloaded separately from http://salilab.org/SOAP/.
 
-# For IMP 2.1.1 # {#changelog_2_1_1}
+# 2.1.1 - 2013-11-04 # {#changelog_2_1_1}
 - Added support for Mac OS 10.9
 
-# For IMP 2.1 # {#changelog_2_1}
+# 2.1.0 - 2013-10-24 # {#changelog_2_1_0}
 - There is now some limited IMP-wide gathering of timing statistics. You can add `--statistics=filename` to the command line or use the IMP::base::show_timings() function to view a summary of where IMP has spent time.
 - Slack was being used inconsistently (and not always correctly) among the various containers and restraints. If you had heavily optimized the slack value for speed, you may want to revisit it.
 - Class name OwnerPointer was switched to PointerMember, to denote more clearly a ref-counting pointer that is a class member.
@@ -64,7 +64,7 @@ ChangeLog {#changelog}
 - [RMF](http://salilab.github.com/rmf) is now included as a git submodule rather than copied into the IMP repository. You should rerun `setup_git.py` to make sure submodule stuff is initialized.
 
 
-# For IMP 2.0 # {#changelog_2_0}
+# For IMP 2.0 and earlier # {#changelog_2_0}
 ## Spring 2013
 - Modules and applications now have a _Maintainer_ in their `README.md`, giving the github id of the person to whom issues should be assigned.
 - `setup_git.py` supports the `--module` flag which will set up git hooks and things for a git repository that contains a module.
