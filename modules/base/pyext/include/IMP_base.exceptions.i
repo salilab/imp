@@ -3,7 +3,8 @@
 #include <IMP/base/exception.h>
 %}
 
-/* IMP exception handling */
+/* Get/set check level from Python */
+#ifdef IMP_SWIG_BASE
 namespace IMP
 {
   namespace base {
@@ -13,6 +14,7 @@ namespace IMP
     CheckLevel get_check_level();
   }
 }
+#endif
 
 /* Create Python exception classes at startup to mirror C++ classes, if we're
    building the base. If we're building a module, import these classes from
