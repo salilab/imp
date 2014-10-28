@@ -1,6 +1,3 @@
-# Set to 1 for nightly builds
-%define nightly_build 0
-
 Name:          IMP
 Version:       @IMP_VERSION@
 Release:       1%{?dist}
@@ -181,11 +178,7 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 /usr/share/IMP
 /usr/bin/*
 %{_libdir}/libTAU.so.*
-%if %{nightly_build}
-%{_libdir}/libimp*.so
-%else
 %{_libdir}/libimp*.so.*
-%endif
 %{_libdir}/libRMF*.so
 %{_libdir}/python*/site-packages/IMP
 %{_libdir}/python*/site-packages/_IMP*so
@@ -198,9 +191,7 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 /usr/include/IMP.h
 /usr/include/RMF
 %{_libdir}/libTAU.so
-%if ! %{nightly_build}
 %{_libdir}/libimp*.so
-%endif
 
 %changelog
 * Fri Oct 24 2014 Ben Webb <ben@salilab.org>   2.3.0-1
