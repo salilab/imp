@@ -34,7 +34,7 @@ const char* basename(const char* path) {
 #include <libgen.h>
 #endif
 
-class Gnuplot {
+class IMPFOXSEXPORT Gnuplot {
  public:
   // output profile
   static void print_profile_script(const std::string pdb);
@@ -58,6 +58,7 @@ class Gnuplot {
       const std::vector<IMP::saxs::FitParameters>& fps, int max_num);
 };
 
+IMPFOXSEXPORT
 std::string trim_extension(const std::string file_name);
 
 IMPFOXS_END_NAMESPACE

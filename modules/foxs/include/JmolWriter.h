@@ -18,7 +18,7 @@
 
 IMPFOXS_BEGIN_NAMESPACE
 
-class JmolWriter {
+class IMPFOXSEXPORT JmolWriter {
  public:
   static void prepare_jmol_script(
       const std::vector<IMP::saxs::FitParameters>& fps,
