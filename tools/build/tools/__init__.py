@@ -176,14 +176,6 @@ def get_modules(source):
     return mods
 
 
-def get_applications(source):
-    path = os.path.join(source, "applications", "*")
-    globs = get_glob([path])
-    mods = [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1] != "SConscript")
-            and os.path.exists(os.path.join(g, "dependencies.py"))]
-    return mods
-
-
 def get_dependency_description(path):
     name = os.path.splitext(os.path.split(path)[1])[0]
     pkg_config_name = None
@@ -270,18 +262,6 @@ def get_all_dependencies(source, modules, extra_data_path, ordered, root="."):
     return ret
 
 
-def get_application_description(source, module, extra_data_path, root="."):
-    df = os.path.join(root, source, "applications", module, "dependencies.py")
-    required_modules = ""
-    optional_modules = ""
-    required_dependencies = ""
-    optional_dependencies = ""
-    exec open(df, "r").read()
-    return {"required_modules": split(required_modules),
-            "optional_modules": split(optional_modules),
-            "required_dependencies": split(required_dependencies),
-            "optional_dependencies": split(optional_dependencies)}
-
 dependency_info_cache = {}
 
 
@@ -349,23 +329,6 @@ def get_module_info(module, extra_data_path, root="."):
     return ret
 
 
-def get_application_info(module, extra_data_path, root="."):
-    df = os.path.join(root, "data", "build_info", "IMP." + module)
-    if not os.path.exists(df) and extra_data_path != "":
-        df = os.path.join(extra_data_path, "build_info", "IMP." + module)
-    ok = False
-    modules = ""
-    unfound_modules = ""
-    dependencies = ""
-    unfound_dependencies = ""
-    exec open(df, "r").read()
-    return {"ok": ok,
-            "modules": split(modules),
-            "unfound_modules": split(unfound_modules),
-            "dependencies": split(dependencies),
-            "unfound_dependencies": split(unfound_dependencies)}
-
-
 # a version of split that doesn't return empty strings when there are no items
 
 
@@ -391,20 +354,6 @@ def toposort2(data):
     return ret
 
 order_cache = None
-
-
-def get_all_configured_applications(root="."):
-    apps = split(
-        open(
-            os.path.join(
-                root,
-                "data",
-                "build_info",
-                "applications"),
-            "r").read(
-        ),
-        "\n")
-    return apps
 
 
 def get_sorted_order(root="."):
@@ -520,18 +469,6 @@ def get_module_version(module, source_dir):
         return open(in_build, "r").read().strip()
 
 
-def get_application_version(module, source_dir):
-    in_module = os.path.join(source_dir, "applications", module, "VERSION")
-    in_source = os.path.join(source_dir, "VERSION")
-    in_build = "VERSION"
-    if os.path.exists(in_module):
-        return open(in_module, "r").read().strip()
-    elif os.path.exists(in_source):
-        return open(in_source, "r").read().strip()
-    else:
-        return open(in_build, "r").read().strip()
-
-
 def get_disabled_modules(extra_data_path, root="."):
     all = get_glob([os.path.join(root, "data", "build_info", "IMP.*")])
     modules = [os.path.splitext(a)[1][1:] for a in all]
@@ -540,28 +477,6 @@ def get_disabled_modules(extra_data_path, root="."):
             x, extra_data_path, root)["ok"]]
     )
 
-
-def get_application_executables(path):
-    """Return a list of tuples of ([.cpps], [includepath])"""
-    def _handle_cpp_dir(path):
-        cpps = get_glob([os.path.join(path, "*.cpp")])
-        libcpps = get_glob([os.path.join(path, "lib", "*.cpp")])
-        if len(libcpps) > 0:
-            includes = [os.path.join(path, "lib")]
-        else:
-            includes = []
-        return [([c] + libcpps, includes) for c in cpps]
-
-    ret = _handle_cpp_dir(path)
-    for d in get_glob([os.path.join(path, "*")]):
-        if not os.path.isdir(d):
-            continue
-        if os.path.split(d)[1] == "test":
-            continue
-        if os.path.split(d)[1] == "lib":
-            continue
-        ret += _handle_cpp_dir(d)
-    return ret
 
 _subprocesses = []
 
