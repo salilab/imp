@@ -190,7 +190,7 @@ inline void initialize_particles(
       IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
         kernel::ParticleIndexes cur = constituents_[pi];
         IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), pi) == cur.end(),
-                        "A rigid body cann't be its own constituent.");
+                        "A rigid body can't be its own constituent.");
         boost::unordered_set<kernel::ParticleIndex> scur(cur.begin(),
                                                          cur.end());
         IMP_USAGE_CHECK(cur.size() == scur.size(),
