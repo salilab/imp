@@ -20,7 +20,7 @@
 
 IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
 
-class EMFit {
+class IMPINTEGRATIVEDOCKINGEXPORT EMFit {
  public:
   // Constructors
   // for fitting of docking solutions

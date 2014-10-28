@@ -63,9 +63,11 @@ class CrossLink {
   float actual_cb_distance_;  // from PDB - for testing purposes
 };
 
+IMPINTEGRATIVEDOCKINGEXPORT
 int read_cross_link_file(const std::string& file_name,
                          std::vector<CrossLink>& cross_links);
 
+IMPINTEGRATIVEDOCKINGEXPORT
 void write_cross_link_file(const std::string& file_name,
                            const std::vector<CrossLink>& cross_links,
                            bool include_actual_distance = false);

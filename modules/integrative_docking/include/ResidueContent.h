@@ -16,7 +16,7 @@
 
 IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
 
-class ResidueContent {
+class IMPINTEGRATIVEDOCKINGEXPORT ResidueContent {
  public:
   /* read residue content file in the following format:
   ALA 3
@@ -48,6 +48,7 @@ class ResidueContent {
   // get sum of squares of residue numbers
   int get_total_counter2() const;
 
+  IMPINTEGRATIVEDOCKINGEXPORT
   friend std::ostream& operator<<(std::ostream& q, const ResidueContent& rc);
 
  private:

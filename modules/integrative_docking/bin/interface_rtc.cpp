@@ -5,6 +5,7 @@
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
+#include <IMP/integrative_docking/helpers.h>
 #include <IMP/integrative_docking/nmr_helpers.h>
 #include <IMP/integrative_docking/ResidueContent.h>
 

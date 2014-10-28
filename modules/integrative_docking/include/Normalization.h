@@ -18,7 +18,7 @@
 
 IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
 
-class Normalization {
+class IMPINTEGRATIVEDOCKINGEXPORT Normalization {
 public:
   Normalization(const std::string& file_name) { read_table_file(file_name); }
 

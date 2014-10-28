@@ -7,6 +7,7 @@
  */
 #include <IMP/kernel/Model.h>
 
+#include <IMP/integrative_docking/helpers.h>
 #include <IMP/integrative_docking/nmr_helpers.h>
 #include <IMP/integrative_docking/ResidueContent.h>
 #include <IMP/integrative_docking/NMR_RTCResult.h>
