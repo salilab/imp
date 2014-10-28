@@ -1,3 +1,6 @@
+# Set to 1 for nightly builds
+%define nightly_build 0
+
 Name:          IMP
 Version:       @IMP_VERSION@
 Release:       1%{?dist}
@@ -159,6 +162,7 @@ else
 fi
 # Bundle libTAU from build machine so users don't have to get it separately
 cp %{_libdir}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}
+ln -sf libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/libTAU.so
 # Don't distribute example application, dependency, or system
 pydir=${RPM_BUILD_ROOT}%{_libdir}/python*/site-packages
 rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
@@ -176,9 +180,13 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 %doc /usr/share/doc/%{name}-%{version}
 /usr/share/IMP
 /usr/bin/*
-%{_libdir}/libimp*.so*
 %{_libdir}/libTAU.so.*
-%{_libdir}/libRMF*.so*
+%if %{nightly_build}
+%{_libdir}/libimp*.so
+%else
+%{_libdir}/libimp*.so.*
+%endif
+%{_libdir}/libRMF*.so
 %{_libdir}/python*/site-packages/IMP
 %{_libdir}/python*/site-packages/_IMP*so
 %{_libdir}/python*/site-packages/RMF*
@@ -189,6 +197,10 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 /usr/include/IMP
 /usr/include/IMP.h
 /usr/include/RMF
+%{_libdir}/libTAU.so
+%if ! %{nightly_build}
+%{_libdir}/libimp*.so
+%endif
 
 %changelog
 * Fri Oct 24 2014 Ben Webb <ben@salilab.org>   2.3.0-1
