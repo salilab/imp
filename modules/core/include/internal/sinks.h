@@ -263,7 +263,7 @@ struct RigidBodyRigidBodyParticleIndexPairSink : public ParticleIndexPairSink {
     return get_rigid_body_hierarchy(rb, map_.find(p)->second, key_);
   }
   bool operator()(kernel::ParticleIndex a, kernel::ParticleIndex b) {
-    IMP_LOG_VERBOSE("Processing interesction between " << a << " and " << b
+    IMP_LOG_VERBOSE("Processing intersection between " << a << " and " << b
                                                        << std::endl);
     fill_close_pairs(m_, get_hierarchy(a), get_hierarchy(b), dist_,
                      static_cast<ParticleIndexPairSink>(*this));
@@ -293,7 +293,7 @@ struct RigidBodyParticleParticleIndexPairSink : public ParticleIndexPairSink {
     return get_rigid_body_hierarchy(rb, map_.find(p)->second, key_);
   }
   bool operator()(kernel::ParticleIndex a, kernel::ParticleIndex b) {
-    IMP_LOG_VERBOSE("Processing rb-p interesction between " << a << " and " << b
+    IMP_LOG_VERBOSE("Processing rb-p intersection between " << a << " and " << b
                                                             << std::endl);
     SwappedHalfParticleIndexPairSink hps(m_, filters_, out_, b);
     fill_close_particles(m_, get_hierarchy(a), b, dist_, hps);
@@ -323,7 +323,7 @@ struct ParticleRigidBodyParticleIndexPairSink : public ParticleIndexPairSink {
     return get_rigid_body_hierarchy(rb, map_.find(p)->second, key_);
   }
   bool operator()(kernel::ParticleIndex a, kernel::ParticleIndex b) {
-    IMP_LOG_VERBOSE("Processing p-rb interesction between " << a << " and " << b
+    IMP_LOG_VERBOSE("Processing p-rb intersection between " << a << " and " << b
                                                             << std::endl);
     HalfParticleIndexPairSink hps(m_, filters_, out_, a);
     fill_close_particles(m_, get_hierarchy(b), a, dist_, hps);
