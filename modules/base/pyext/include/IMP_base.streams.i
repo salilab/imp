@@ -243,7 +243,7 @@
 public:
  PyOutFileAdapter():IMP::base::Object("PyOutFileAdapter") {
   }
-  std::string get_type_name() const {return "Pyton output file";}
+  std::string get_type_name() const {return "Python output file";}
   IMP::base::VersionInfo get_version_info() const {
     return IMP::base::VersionInfo("IMP", IMP::base::get_module_version());
   }
@@ -442,7 +442,7 @@ protected:
   std::auto_ptr<std::istream> istr_;
 public:
  PyInFileAdapter(): IMP::base::Object("PyInFileAdapter") {}
-  std::string get_type_name() const {return "Pyton input file";}
+  std::string get_type_name() const {return "Python input file";}
   IMP::base::VersionInfo get_version_info() const {
     return IMP::base::VersionInfo("IMP.base", IMP::base::get_module_version());
   }
