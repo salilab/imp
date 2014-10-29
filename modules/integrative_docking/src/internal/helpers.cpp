@@ -4,7 +4,7 @@
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/integrative_docking/nmr_helpers.h>
+#include <IMP/integrative_docking/internal/nmr_helpers.h>
 
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 void get_residue_solvent_accessibility(
     const IMP::kernel::Particles& atom_particles,
@@ -77,4 +77,4 @@ void get_residue_solvent_accessibility(
   }
 }
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE

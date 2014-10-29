@@ -24,7 +24,7 @@
 #include <vector>
 #include <string>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 IMP::atom::Hierarchy read_pdb(const std::string pdb_file_name,
                               IMP::kernel::Model* model,
@@ -174,6 +174,6 @@ IMP::atom::Residue find_residue(const IMP::ParticlesTemp& residues,
   exit(0);
 }
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE
 
 #endif /* IMPINTEGRATIVE_DOCKING_HELPERS_H */

@@ -5,11 +5,11 @@
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/integrative_docking/MapScorer.h>
+#include <IMP/integrative_docking/internal/MapScorer.h>
 
 #include <IMP/em/converters.h>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 MapScorer::MapScorer(IMP::kernel::Particles& rec_particles,
                      IMP::kernel::Particles& lig_particles,
@@ -98,4 +98,4 @@ IMP::em::DensityMap* MapScorer::get_transformed(
   return docked_complex_map_;
 }
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE

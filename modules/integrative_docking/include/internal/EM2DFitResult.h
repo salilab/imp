@@ -12,7 +12,7 @@
 #include <IMP/integrative_docking/integrative_docking_config.h>
 #include "Result.h"
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 class EM2DFitResult : public Result {
  public:
@@ -56,6 +56,6 @@ class EM2DFitResult : public Result {
   float cc_;  // cross correlation score
 };
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE
 
 #endif /* IMPINTEGRATIVE_DOCKING_EM2DFIT_RESULT_H */

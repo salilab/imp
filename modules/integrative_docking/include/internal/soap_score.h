@@ -20,7 +20,7 @@
 
 #include <IMP/atom/StereochemistryPairFilter.h>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 double soap_score(const IMP::score_functor::Soap* soap_score,
                   IMP::kernel::Model* model, IMP::kernel::ParticleIndexes& pis1,
@@ -154,6 +154,6 @@ double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
   return score;
 }
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE
 
 #endif /* IMPINTEGRATIVE_DOCKING_SOAP_SCORE_H */

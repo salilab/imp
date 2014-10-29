@@ -5,9 +5,9 @@
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/integrative_docking/helpers.h>
-#include <IMP/integrative_docking/nmr_helpers.h>
-#include <IMP/integrative_docking/ResidueContent.h>
+#include <IMP/integrative_docking/internal/helpers.h>
+#include <IMP/integrative_docking/internal/nmr_helpers.h>
+#include <IMP/integrative_docking/internal/ResidueContent.h>
 
 #include <IMP/kernel/Model.h>
 #include <IMP/algebra/standard_grids.h>
@@ -22,7 +22,7 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
-using namespace IMP::integrative_docking;
+using namespace IMP::integrative_docking::internal;
 
 namespace {
 void select_rare_residue_content(const ResidueContent& surface_rc,

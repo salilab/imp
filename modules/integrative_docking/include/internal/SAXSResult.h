@@ -12,7 +12,7 @@
 #include <IMP/integrative_docking/integrative_docking_config.h>
 #include "Result.h"
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 class SAXSResult : public Result {
  public:
@@ -72,6 +72,6 @@ class SAXSResult : public Result {
   float c1_, c2_;  // foxs fitting parameters
 };
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE
 
 #endif /* IMPINTEGRATIVE_DOCKING_SAXS_RESULT_H */

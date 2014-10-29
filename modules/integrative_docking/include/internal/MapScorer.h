@@ -15,7 +15,7 @@
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/em/CoarseCC.h>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 class MapScorer {
  public:
@@ -43,6 +43,6 @@ class MapScorer {
   IMP::em::SampledDensityMap* receptor_map_, *ligand_map_, *docked_complex_map_;
 };
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE
 
 #endif /* IMPINTEGRATIVE_DOCKING_MAP_SCORER_H */

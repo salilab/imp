@@ -5,7 +5,7 @@
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/integrative_docking/EMFit.h>
+#include <IMP/integrative_docking/internal/EMFit.h>
 
 #include <boost/program_options.hpp>
 
@@ -16,7 +16,7 @@
 
 namespace po = boost::program_options;
 
-using namespace IMP::integrative_docking;
+using namespace IMP::integrative_docking::internal;
 
 #if defined(_WIN32) || defined(_WIN64)
 // Simple basename implementation on platforms that don't have libgen.h

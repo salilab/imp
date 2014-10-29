@@ -12,7 +12,7 @@
 #include <IMP/integrative_docking/integrative_docking_config.h>
 #include <IMP/algebra/Transformation3D.h>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 class EM3DFitResult {
  public:
@@ -106,6 +106,6 @@ struct CompareFitResults {
   }
 };
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE
 
 #endif /* IMPINTEGRATIVE_DOCKING_EM3DFIT_RESULT_H */

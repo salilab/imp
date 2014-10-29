@@ -13,7 +13,7 @@
 #include <IMP/integrative_docking/integrative_docking_config.h>
 #include "Result.h"
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 class SOAPResult : public Result {
  public:
@@ -69,6 +69,6 @@ class SOAPResult : public Result {
   float normalization_score_;
 };
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE
 
 #endif /* IMPINTEGRATIVE_DOCKING_SOAP_RESULT_H */

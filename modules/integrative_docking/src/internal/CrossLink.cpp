@@ -4,12 +4,12 @@
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/integrative_docking/CrossLink.h>
+#include <IMP/integrative_docking/internal/CrossLink.h>
 
 #include <IMP/base/exception.h>
 #include <IMP/base/check_macros.h>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 int read_cross_link_file(const std::string& file_name,
                          std::vector<CrossLink>& cross_links) {
@@ -60,4 +60,4 @@ std::istream& operator>>(std::istream& s, CrossLink& cl) {
   return s;
 }
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE

@@ -7,10 +7,10 @@
  */
 #include <IMP/kernel/Model.h>
 
-#include <IMP/integrative_docking/helpers.h>
-#include <IMP/integrative_docking/CrossLink.h>
-#include <IMP/integrative_docking/CrossLinkingResult.h>
-#include <IMP/integrative_docking/DockingDistanceRestraint.h>
+#include <IMP/integrative_docking/internal/helpers.h>
+#include <IMP/integrative_docking/internal/CrossLink.h>
+#include <IMP/integrative_docking/internal/CrossLinkingResult.h>
+#include <IMP/integrative_docking/internal/DockingDistanceRestraint.h>
 
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/atom/Atom.h>
@@ -23,7 +23,7 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
-using namespace IMP::integrative_docking;
+using namespace IMP::integrative_docking::internal;
 
 int main(int argc, char **argv) {
   // print command

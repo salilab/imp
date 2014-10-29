@@ -16,7 +16,7 @@
 #include <vector>
 #include <string>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 IMPINTEGRATIVEDOCKINGEXPORT
 void get_residue_solvent_accessibility(
@@ -25,6 +25,6 @@ void get_residue_solvent_accessibility(
     const std::vector<int>& atom_2_residue_map,
     std::vector<float>& residue_solvent_accessibility);
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE
 
 #endif /* IMPINTEGRATIVE_DOCKING_NMR_HELPERS_H */

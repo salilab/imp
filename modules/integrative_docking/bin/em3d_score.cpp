@@ -5,7 +5,7 @@
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/integrative_docking/EMFit.h>
+#include <IMP/integrative_docking/internal/EMFit.h>
 
 #include <boost/program_options.hpp>
 
@@ -18,7 +18,7 @@ using std::vector;
 
 namespace po = boost::program_options;
 
-using namespace IMP::integrative_docking;
+using namespace IMP::integrative_docking::internal;
 
 int main(int argc, char **argv) {
   // print program call

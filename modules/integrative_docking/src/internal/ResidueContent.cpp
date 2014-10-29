@@ -5,7 +5,7 @@
  *
  */
 
-#include <IMP/integrative_docking/ResidueContent.h>
+#include <IMP/integrative_docking/internal/ResidueContent.h>
 
 #include <IMP/base/exception.h>
 #include <IMP/base/check_macros.h>
@@ -14,7 +14,7 @@
 
 #include <boost/algorithm/string.hpp>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 void ResidueContent::read_content_file(const std::string& file_name) {
   std::ifstream in_file(file_name.c_str());
@@ -102,4 +102,4 @@ std::ostream& operator<<(std::ostream& s, const ResidueContent& rc) {
   return s;
 }
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE

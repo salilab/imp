@@ -12,7 +12,7 @@
 
 #include <IMP/integrative_docking/integrative_docking_config.h>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 class NMR_RTCResult {
  public:
@@ -69,6 +69,6 @@ class NMR_RTCResult {
   IMP::algebra::Transformation3D transformation_;
 };
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE
 
 #endif /* IMPINTEGRATIVE_DOCKING_NMR_RTC_RESULT_H */

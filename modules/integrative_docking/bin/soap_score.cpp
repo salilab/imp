@@ -6,10 +6,10 @@
  *
  */
 
-#include <IMP/integrative_docking/SOAPResult.h>
-#include <IMP/integrative_docking/soap_score.h>
-#include <IMP/integrative_docking/Normalization.h>
-#include <IMP/integrative_docking/helpers.h>
+#include <IMP/integrative_docking/internal/SOAPResult.h>
+#include <IMP/integrative_docking/internal/soap_score.h>
+#include <IMP/integrative_docking/internal/Normalization.h>
+#include <IMP/integrative_docking/internal/helpers.h>
 
 #include <IMP/kernel/Model.h>
 #include <IMP/base/nullptr_macros.h>
@@ -31,7 +31,7 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
-using namespace IMP::integrative_docking;
+using namespace IMP::integrative_docking::internal;
 
 namespace {
 

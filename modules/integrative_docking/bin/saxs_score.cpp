@@ -4,8 +4,8 @@
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/integrative_docking/helpers.h>
-#include <IMP/integrative_docking/SAXSResult.h>
+#include <IMP/integrative_docking/internal/helpers.h>
+#include <IMP/integrative_docking/internal/SAXSResult.h>
 
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/saxs/Profile.h>
@@ -23,7 +23,7 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
-using namespace IMP::integrative_docking;
+using namespace IMP::integrative_docking::internal;
 
 int main(int argc, char **argv) {
   // print command

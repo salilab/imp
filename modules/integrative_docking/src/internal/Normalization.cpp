@@ -7,12 +7,12 @@
  *
  */
 
-#include <IMP/integrative_docking/Normalization.h>
+#include <IMP/integrative_docking/internal/Normalization.h>
 
 #include <IMP/base/exception.h>
 #include <boost/algorithm/string.hpp>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 void Normalization::read_table_file(const std::string& file_name) {
   std::ifstream in_file(file_name.c_str());
@@ -47,4 +47,4 @@ double Normalization::get_normalization_score(const std::map<IMP::atom::ResidueT
   return score;
 }
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE

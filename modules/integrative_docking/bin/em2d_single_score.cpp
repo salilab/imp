@@ -6,7 +6,7 @@
  *
  */
 
-#include <IMP/integrative_docking/helpers.h>
+#include <IMP/integrative_docking/internal/helpers.h>
 
 #include <IMP/em2d/PCAFitRestraint.h>
 #include <IMP/saxs/FormFactorTable.h>
@@ -20,7 +20,7 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
-using namespace IMP::integrative_docking;
+using namespace IMP::integrative_docking::internal;
 
 #include <math.h>
 #include <vector>

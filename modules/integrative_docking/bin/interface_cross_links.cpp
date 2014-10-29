@@ -5,8 +5,8 @@
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/integrative_docking/helpers.h>
-#include <IMP/integrative_docking/CrossLink.h>
+#include <IMP/integrative_docking/internal/helpers.h>
+#include <IMP/integrative_docking/internal/CrossLink.h>
 
 #include <IMP/kernel/Model.h>
 #include <IMP/algebra/standard_grids.h>
@@ -25,7 +25,7 @@ namespace po = boost::program_options;
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
 
-using namespace IMP::integrative_docking;
+using namespace IMP::integrative_docking::internal;
 
 namespace {
 void select_cross_links(const std::vector<CrossLink>& cross_links,

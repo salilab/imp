@@ -14,7 +14,7 @@
 #include <iostream>
 #include <vector>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 class CrossLink {
  public:
@@ -72,6 +72,6 @@ void write_cross_link_file(const std::string& file_name,
                            const std::vector<CrossLink>& cross_links,
                            bool include_actual_distance = false);
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE
 
 #endif /* IMPINTEGRATIVE_DOCKING_CROSS_LINK_H */

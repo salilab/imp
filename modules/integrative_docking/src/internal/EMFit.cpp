@@ -4,7 +4,7 @@
  * Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/integrative_docking/EMFit.h>
+#include <IMP/integrative_docking/internal/EMFit.h>
 
 #include <IMP/em/PCAAligner.h>
 #include <IMP/em/MRCReaderWriter.h>
@@ -19,7 +19,7 @@
 #include <IMP/algebra/constants.h>
 #include <IMP/base/nullptr.h>
 
-IMPINTEGRATIVEDOCKING_BEGIN_NAMESPACE
+IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
              std::string map_file_name, float resolution, float dist_thr,
@@ -313,4 +313,4 @@ void EMFit::read_pdb_atoms(IMP::kernel::Model* model,
   std::cout << "Number of atom particles " << particles.size() << std::endl;
 }
 
-IMPINTEGRATIVEDOCKING_END_NAMESPACE
+IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE

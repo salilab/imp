@@ -6,8 +6,8 @@
  *
  */
 
-#include <IMP/integrative_docking/helpers.h>
-#include <IMP/integrative_docking/EM2DFitResult.h>
+#include <IMP/integrative_docking/internal/helpers.h>
+#include <IMP/integrative_docking/internal/EM2DFitResult.h>
 
 #include <IMP/em2d/internal/Image2D.h>
 #include <IMP/em2d/internal/Projection.h>
@@ -21,7 +21,7 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
-using namespace IMP::integrative_docking;
+using namespace IMP::integrative_docking::internal;
 
 #include <math.h>
 #include <vector>

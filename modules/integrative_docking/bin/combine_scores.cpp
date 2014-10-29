@@ -5,7 +5,7 @@
  *
  */
 
-#include <IMP/integrative_docking/Result.h>
+#include <IMP/integrative_docking/internal/Result.h>
 
 #include <math.h>
 #include <iostream>
@@ -14,7 +14,7 @@
 #include <IMP/base/exception.h>
 #include <IMP/base/check_macros.h>
 
-using namespace IMP::integrative_docking;
+using namespace IMP::integrative_docking::internal;
 
 int main(int argc, char** argv) {
   try {

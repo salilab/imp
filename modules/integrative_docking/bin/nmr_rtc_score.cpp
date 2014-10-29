@@ -7,10 +7,10 @@
  */
 #include <IMP/kernel/Model.h>
 
-#include <IMP/integrative_docking/helpers.h>
-#include <IMP/integrative_docking/nmr_helpers.h>
-#include <IMP/integrative_docking/ResidueContent.h>
-#include <IMP/integrative_docking/NMR_RTCResult.h>
+#include <IMP/integrative_docking/internal/helpers.h>
+#include <IMP/integrative_docking/internal/nmr_helpers.h>
+#include <IMP/integrative_docking/internal/ResidueContent.h>
+#include <IMP/integrative_docking/internal/NMR_RTCResult.h>
 
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/Transformation3D.h>
@@ -24,7 +24,7 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
-using namespace IMP::integrative_docking;
+using namespace IMP::integrative_docking::internal;
 
 int main(int argc, char **argv) {
   // print command
