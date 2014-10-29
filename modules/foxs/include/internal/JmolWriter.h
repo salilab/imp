@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 
-IMPFOXS_BEGIN_NAMESPACE
+IMPFOXS_BEGIN_INTERNAL_NAMESPACE
 
 class IMPFOXSEXPORT JmolWriter {
  public:
@@ -57,6 +57,6 @@ class IMPFOXSEXPORT JmolWriter {
   static unsigned int MAX_DISPLAY_NUM_;
 };
 
-IMPFOXS_END_NAMESPACE
+IMPFOXS_END_INTERNAL_NAMESPACE
 
 #endif /* IMPFOXS_JMOL_WRITER_H */

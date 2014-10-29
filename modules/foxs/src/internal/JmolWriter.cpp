@@ -5,9 +5,9 @@
  *
  */
 
-#include <IMP/foxs/JmolWriter.h>
-#include <IMP/foxs/ColorCoder.h>
-#include <IMP/foxs/Gnuplot.h>
+#include <IMP/foxs/internal/JmolWriter.h>
+#include <IMP/foxs/internal/ColorCoder.h>
+#include <IMP/foxs/internal/Gnuplot.h>
 
 #include <IMP/atom/pdb.h>
 #include <IMP/saxs/utility.h>
@@ -15,7 +15,7 @@
 #include <fstream>
 #include <boost/lexical_cast.hpp>
 
-IMPFOXS_BEGIN_NAMESPACE
+IMPFOXS_BEGIN_INTERNAL_NAMESPACE
 
 std::string JmolWriter::display_selection_ =
     "frame 0#;restrict selection;\
@@ -342,4 +342,4 @@ std::string JmolWriter::group_checkbox(unsigned int model_num) {
   return ret;
 }
 
-IMPFOXS_END_NAMESPACE
+IMPFOXS_END_INTERNAL_NAMESPACE

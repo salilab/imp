@@ -5,9 +5,9 @@
  *
  */
 
-#include <IMP/foxs/ColorCoder.h>
+#include <IMP/foxs/internal/ColorCoder.h>
 
-IMPFOXS_BEGIN_NAMESPACE
+IMPFOXS_BEGIN_INTERNAL_NAMESPACE
 
 int ColorCoder::diff_ = 30;
 
@@ -22,4 +22,4 @@ void ColorCoder::get_color_for_id(int &r, int &g, int &b, int id) {
   b = (int)(color_modules[mod][2] * mult);
 }
 
-IMPFOXS_END_NAMESPACE
+IMPFOXS_END_INTERNAL_NAMESPACE

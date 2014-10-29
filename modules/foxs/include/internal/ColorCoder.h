@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <stdio.h>
 
-IMPFOXS_BEGIN_NAMESPACE
+IMPFOXS_BEGIN_INTERNAL_NAMESPACE
 
 class ColorCoder {
  public:
@@ -41,6 +41,6 @@ class ColorCoder {
   static int diff_;
 };
 
-IMPFOXS_END_NAMESPACE
+IMPFOXS_END_INTERNAL_NAMESPACE
 
 #endif /* IMPFOXS_COLOR_CODER_H */

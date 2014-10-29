@@ -6,12 +6,12 @@
  *
  */
 
-#include <IMP/foxs/Gnuplot.h>
-#include <IMP/foxs/ColorCoder.h>
+#include <IMP/foxs/internal/Gnuplot.h>
+#include <IMP/foxs/internal/ColorCoder.h>
 
 #include <fstream>
 
-IMPFOXS_BEGIN_NAMESPACE
+IMPFOXS_BEGIN_INTERNAL_NAMESPACE
 
 void Gnuplot::print_profile_script(const std::string pdb) {
   // file names
@@ -263,4 +263,4 @@ std::string trim_extension(const std::string file_name) {
   return file_name;
 }
 
-IMPFOXS_END_NAMESPACE
+IMPFOXS_END_INTERNAL_NAMESPACE

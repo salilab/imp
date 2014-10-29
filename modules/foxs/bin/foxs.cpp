@@ -3,8 +3,8 @@
    see FOXS for webserver (salilab.org/foxs)
  */
 
-#include <IMP/foxs/Gnuplot.h>
-#include <IMP/foxs/JmolWriter.h>
+#include <IMP/foxs/internal/Gnuplot.h>
+#include <IMP/foxs/internal/JmolWriter.h>
 
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/ProfileFitter.h>
@@ -27,7 +27,7 @@
 namespace po = boost::program_options;
 
 using namespace IMP::saxs;
-using namespace IMP::foxs;
+using namespace IMP::foxs::internal;
 
 namespace {
 

@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-IMPFOXS_BEGIN_NAMESPACE
+IMPFOXS_BEGIN_INTERNAL_NAMESPACE
 
 #if defined(_WIN32) || defined(_WIN64)
 // Simple basename implementation on platforms that don't have libgen.h
@@ -61,6 +61,6 @@ class IMPFOXSEXPORT Gnuplot {
 IMPFOXSEXPORT
 std::string trim_extension(const std::string file_name);
 
-IMPFOXS_END_NAMESPACE
+IMPFOXS_END_INTERNAL_NAMESPACE
 
 #endif /* IMPFOXS_GNUPLOT_H */
