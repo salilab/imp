@@ -3,12 +3,12 @@ import IMP.test
 import IMP.algebra as alg
 import IMP.em2d
 import IMP.em2d.imp_general.io as io
-import IMP.em2d.utility as utility
-import IMP.em2d.solutions_io as solutions_io
+import IMP.EMageFit.utility as utility
+import IMP.EMageFit.solutions_io as solutions_io
 import sys
 import os
 import itertools
-import IMP.em2d.sampling
+import IMP.EMageFit.sampling
 
 
 class TestClusterSolutions(IMP.test.ApplicationTestCase):

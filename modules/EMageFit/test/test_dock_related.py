@@ -14,7 +14,7 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
         """
         try:
             import subprocess
-            import IMP.em2d.buildxlinks as bx
+            import IMP.EMageFit.buildxlinks as bx
         except ImportError as e:
             self.skipTest(str(e))
 

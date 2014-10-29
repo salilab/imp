@@ -5,7 +5,7 @@ import sys
 import os
 
 import IMP.EMageFit.sampling as sampling
-import IMP.em2d.Database as Database
+import IMP.EMageFit.Database as Database
 import IMP.em2d.imp_general.io as io
 
 

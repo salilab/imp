@@ -2,8 +2,8 @@ import IMP
 import os
 import IMP.test
 import IMP.em2d
-import IMP.em2d.solutions_io
-import IMP.em2d.Database as Database
+import IMP.EMageFit.solutions_io
+import IMP.EMageFit.Database as Database
 
 
 class Tests(IMP.test.TestCase):
@@ -29,11 +29,11 @@ class Tests(IMP.test.TestCase):
         self.make_db_with_data("test1.db", tbl,
                                [("native", 500.0), ("nonnative", 10.0),
                                 ("nonnative", 20.0), ("nonnative", 30.0)])
-        IMP.em2d.solutions_io.gather_best_solution_results(
+        IMP.EMageFit.solutions_io.gather_best_solution_results(
             ["test1.db", "dummy.db"], "out.db",
             max_number=2, raisef=1.0)
         # Make sure output db contains best 2 results, plus native
-        data = IMP.em2d.Database.read_data('out.db',
+        data = IMP.EMageFit.Database.read_data('out.db',
                                            'SELECT assignment,em2d from results')
         self.assertEqual(len(data), 3)
         self.assertEqual(data[0][0], 'native')
@@ -43,8 +43,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(data[2][0], 'nonnative')
         self.assertAlmostEqual(data[2][1], 20.0, delta=1e-6)
         self.assertRaises(IOError,
-                          IMP.em2d.solutions_io.gather_best_solution_results,
-                          ["test1.db", "dummy.db"], "out.db", raisef=0.0)
+                        IMP.EMageFit.solutions_io.gather_best_solution_results,
+                        ["test1.db", "dummy.db"], "out.db", raisef=0.0)
         os.unlink('out.db')
         os.unlink('test1.db')
 

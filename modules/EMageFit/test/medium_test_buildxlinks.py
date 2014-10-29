@@ -3,11 +3,11 @@ import IMP.test
 import IMP.core as core
 import IMP.atom as atom
 import IMP.em2d as em2d
-import IMP.em2d.utility as utility
+import IMP.EMageFit.utility as utility
 import IMP.em2d.imp_general.io as io
 import IMP.em2d.imp_general.representation as representation
-import IMP.em2d.solutions_io as solutions_io
-import IMP.em2d.Database as Database
+import IMP.EMageFit.solutions_io as solutions_io
+import IMP.EMageFit.Database as Database
 import IMP.algebra as alg
 
 import sys
@@ -16,7 +16,7 @@ import itertools
 import unittest
 
 try:
-    import IMP.em2d.buildxlinks as bx
+    import IMP.EMageFit.buildxlinks as bx
 except ImportError as detail:
     bx = None
     bxerr = str(detail)

@@ -9,9 +9,9 @@ logging.basicConfig()
 logging.root.setLevel(logging.DEBUG)
 
 import IMP.em2d
-import IMP.em2d.utility as utility
+import IMP.EMageFit.utility as utility
 
-import IMP.em2d.solutions_io as solutions_io
+import IMP.EMageFit.solutions_io as solutions_io
 
 
 class TestDominoModeling(IMP.test.ApplicationTestCase):

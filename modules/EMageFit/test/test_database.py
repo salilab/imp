@@ -7,7 +7,7 @@ import IMP.em2d as em2d
 import sys
 import os
 from math import *
-import IMP.em2d.Database as Database
+import IMP.EMageFit.Database as Database
 
 
 class Tests(IMP.test.TestCase):

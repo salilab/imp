@@ -1,6 +1,6 @@
 import IMP
 import IMP.em2d as em2d
-import IMP.em2d.argminmax as argminmax
+import IMP.EMageFit.argminmax as argminmax
 import IMP.test
 import sys
 import os

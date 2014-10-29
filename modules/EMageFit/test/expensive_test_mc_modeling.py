@@ -7,8 +7,8 @@ import logging
 log = logging.getLogger("test_mc_modeling")
 logging.basicConfig()
 logging.root.setLevel(logging.WARNING)
-import IMP.em2d.utility as utility
-import IMP.em2d.solutions_io as solutions_io
+import IMP.EMageFit.utility as utility
+import IMP.EMageFit.solutions_io as solutions_io
 
 
 class TestMonteCarloModeling(IMP.test.ApplicationTestCase):

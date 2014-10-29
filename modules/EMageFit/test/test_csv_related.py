@@ -1,7 +1,7 @@
 import IMP
 import IMP.test
 import IMP.em2d
-import IMP.em2d.csv_related as csv_related
+import IMP.EMageFit.csv_related as csv_related
 import sys
 import os
 import random
