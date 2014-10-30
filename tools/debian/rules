@@ -34,7 +34,7 @@ override_dh_install:
 	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install
 	# Bundle libTAU so users don't have to get it separately
 	cp build/libTAU-1.0.0/lib/Fedora17.x86_64/libTAU.so.1 debian/tmp/usr/lib/*/
-	ln -s libTAU.so.1 debian/tmp/usr/lib/*/libTAU.so
+	(cd debian/tmp/usr/lib/*/ && ln -sf libTAU.so.1 libTAU.so)
 	mkdir debian/tmp/usr/lib/python2.7
 	mv debian/tmp/usr/lib/*/python2.7/site-packages debian/tmp/usr/lib/python2.7/dist-packages
 	rmdir debian/tmp/usr/lib/*/python2.7
