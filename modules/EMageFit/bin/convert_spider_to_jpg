@@ -8,8 +8,7 @@ import re
 
 parser = IMP.OptionParser(usage="""%prog [options] selfile
 
-selfile is the selection file with the names of the the EM images""",
-                          imp_module=em2d)
+selfile is the selection file with the names of the the EM images""")
 opts, args = parser.parse_args()
 if len(args) != 1:
     parser.error("wrong number of arguments")
