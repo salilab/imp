@@ -7,7 +7,7 @@ import IMP.core as core
 import IMP.domino as domino
 import IMP.container as container
 import IMP.em2d as em2d
-import IMP.em2d.imp_general.representation as representation
+import IMP.EMageFit.imp_general.representation as representation
 import IMP.atom as atom
 import IMP.base as base
 import os

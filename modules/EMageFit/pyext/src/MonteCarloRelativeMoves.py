@@ -5,8 +5,8 @@ import IMP.em2d as em2d
 import IMP.em as em
 import IMP.algebra as alg
 import IMP.container as container
-import IMP.em2d.imp_general.representation as representation
-import IMP.em2d.imp_general.io as io
+import IMP.EMageFit.imp_general.representation as representation
+import IMP.EMageFit.imp_general.io as io
 import sys
 import os
 import time

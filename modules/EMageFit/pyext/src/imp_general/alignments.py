@@ -8,8 +8,8 @@ import IMP.atom as atom
 import IMP.algebra as alg
 import IMP.em2d as em2d
 
-import IMP.em2d.imp_general.io as io
-import IMP.em2d.imp_general.representation as representation
+import IMP.EMageFit.imp_general.io as io
+import IMP.EMageFit.imp_general.representation as representation
 
 import sys
 import logging

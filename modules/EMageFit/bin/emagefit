@@ -15,9 +15,9 @@ import IMP.em2d as em2d
 
 
 import IMP.EMageFit.Database as Database
-import IMP.em2d.imp_general.io as io
-import IMP.em2d.imp_general.alignments as alignments
-import IMP.em2d.imp_general.representation as representation
+import IMP.EMageFit.imp_general.io as io
+import IMP.EMageFit.imp_general.alignments as alignments
+import IMP.EMageFit.imp_general.representation as representation
 import IMP.EMageFit.DominoModel as DominoModel
 import IMP.EMageFit.MonteCarloRelativeMoves as MonteCarloRelativeMoves
 import IMP.EMageFit.sampling as sampling
@@ -308,7 +308,7 @@ def create_dockings_from_xlinks(params):
                            os.path.join(os.path.dirname(sys.argv[0]),
                                         "emagefit_dock"))
     import emagefit_dock as dock
-    import IMP.em2d.buildxlinks as bx
+    import IMP.EMageFit.buildxlinks as bx
     m = DominoModel.DominoModel()
     m.set_assembly_components(params.fn_pdbs, params.names)
     set_xlink_restraints(params, m)

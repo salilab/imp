@@ -15,10 +15,10 @@ import IMP.em2d as em2d
 import IMP.base
 import IMP.multifit as multifit
 
-import IMP.em2d.imp_general.comparisons as comparisons
-import IMP.em2d.imp_general.alignments as alignments
-import IMP.em2d.imp_general.io as io
-import IMP.em2d.imp_general.representation as representation
+import IMP.EMageFit.imp_general.comparisons as comparisons
+import IMP.EMageFit.imp_general.alignments as alignments
+import IMP.EMageFit.imp_general.io as io
+import IMP.EMageFit.imp_general.representation as representation
 
 import IMP.EMageFit.restraints as restraints
 import IMP.EMageFit.buildxlinks as buildxlinks

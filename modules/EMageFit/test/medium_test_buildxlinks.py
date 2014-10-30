@@ -4,8 +4,8 @@ import IMP.core as core
 import IMP.atom as atom
 import IMP.em2d as em2d
 import IMP.EMageFit.utility as utility
-import IMP.em2d.imp_general.io as io
-import IMP.em2d.imp_general.representation as representation
+import IMP.EMageFit.imp_general.io as io
+import IMP.EMageFit.imp_general.representation as representation
 import IMP.EMageFit.solutions_io as solutions_io
 import IMP.EMageFit.Database as Database
 import IMP.algebra as alg

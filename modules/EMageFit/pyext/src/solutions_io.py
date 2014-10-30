@@ -2,7 +2,7 @@
    Utility functions to store and retrieve solution information.
 """
 
-import IMP.em2d.imp_general.io as io
+import IMP.EMageFit.imp_general.io as io
 import IMP.EMageFit.Database as Database
 
 import sys

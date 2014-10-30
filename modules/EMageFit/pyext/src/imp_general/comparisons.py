@@ -5,8 +5,8 @@ import IMP.algebra as alg
 import IMP.core as core
 import IMP.em as em
 import IMP.atom as atom
-import IMP.em2d.imp_general.alignments as alignments
-import IMP.em2d.imp_general.representation as representation
+import IMP.EMageFit.imp_general.alignments as alignments
+import IMP.EMageFit.imp_general.representation as representation
 
 import random
 import itertools

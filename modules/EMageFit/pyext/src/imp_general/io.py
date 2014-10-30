@@ -7,8 +7,8 @@ import IMP.atom as atom
 import IMP.core as core
 import IMP.algebra as alg
 import IMP.em2d as em2d
-import IMP.em2d.imp_general.representation as representation
-import IMP.em2d.csv_related as csv_related
+import IMP.EMageFit.imp_general.representation as representation
+import IMP.EMageFit.csv_related as csv_related
 import time
 import logging
 log = logging.getLogger("io")

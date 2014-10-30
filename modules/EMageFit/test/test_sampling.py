@@ -6,7 +6,7 @@ import os
 
 import IMP.EMageFit.sampling as sampling
 import IMP.EMageFit.Database as Database
-import IMP.em2d.imp_general.io as io
+import IMP.EMageFit.imp_general.io as io
 
 
 class Tests(IMP.test.TestCase):

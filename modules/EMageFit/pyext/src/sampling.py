@@ -2,7 +2,7 @@
 import IMP
 import IMP.algebra as alg
 import IMP.EMageFit.solutions_io as solutions_io
-import IMP.em2d.imp_general.io as io
+import IMP.EMageFit.imp_general.io as io
 import IMP.EMageFit.Database as Database
 import itertools
 import logging
