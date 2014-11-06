@@ -81,8 +81,8 @@ void Projection::init(const IMP::algebra::Vector3Ds& points,
   if (axis_size > 0 && size <= axis_size)
     size = axis_size;
   else {
-    std::cerr << "wrong size estimate " << size << " vs. estimate " << axis_size
-              << std::endl;
+    IMP_WARN("wrong size estimate " << size << " vs. estimate " << axis_size
+              << std::endl);
   }
   this->resize(boost::extents[size][size]);
 

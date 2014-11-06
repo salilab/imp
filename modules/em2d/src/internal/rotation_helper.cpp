@@ -89,8 +89,8 @@ void semispherical_even_distribution(const unsigned long N,
   }
   // Check
   if (vs.size() < N) {
-    std::cerr << "semispherical_even_distribution: less than N points "
-                 "created." << std::endl;
+    IMP_WARN("semispherical_even_distribution: less than N points "
+             "created." << std::endl);
   }
 }
 

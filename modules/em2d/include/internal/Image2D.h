@@ -152,7 +152,7 @@ template <class T>
 void Image2D<T>::read_PGM(const std::string& filename) {
   std::ifstream infile(filename.c_str());
   if (!infile) {
-    std::cerr << "Unable to open file " << filename << std::endl;
+    IMP_WARN("Unable to open file " << filename << std::endl);
     return;
   }
 
@@ -178,8 +178,8 @@ void Image2D<T>::read_PGM(const std::string& filename) {
 
   int width, height, maxval;
   infile >> width >> height >> maxval;
-  std::cerr << "Image width = " << width << " height = " << height
-            << " max color val = " << maxval << std::endl;
+  IMP_LOG_VERBOSE("Image width = " << width << " height = " << height
+                  << " max color val = " << maxval << std::endl);
 
   this->resize(boost::extents[height][width]);
   int gray_level;
@@ -245,8 +245,8 @@ void Image2D<T>::write_PGM(const std::vector<Image2D<> >& images,
   }
   unsigned int rows_number = images.size() / 10;
   if (images.size() % 10 > 0) rows_number++;
-  std::cerr << "height = " << rows_number << " all images " << images.size()
-            << std::endl;
+  IMP_LOG_VERBOSE("height = " << rows_number << " all images " << images.size()
+                  << std::endl);
   height = rows_number * images[0].get_height() + rows_number - 1;
   outfile << width << " " << height << std::endl;
   outfile << "255" << std::endl;
@@ -351,9 +351,9 @@ template <class T>
 double Image2D<T>::cc_score(const Image2D<T>& other_image) const {
   if (get_height() != other_image.get_height() &&
       get_width() != other_image.get_width()) {
-    std::cerr << "Can't compute correlation for different size images"
-              << get_height() << " vs. " << other_image.get_height()
-              << get_width() << " vs. " << other_image.get_width() << std::endl;
+    IMP_WARN("Can't compute correlation for different size images"
+             << get_height() << " vs. " << other_image.get_height()
+             << get_width() << " vs. " << other_image.get_width() << std::endl);
     exit(1);
   }
   double cc = 0.0;
@@ -367,9 +367,9 @@ template <class T>
 double Image2D<T>::cc_score(const Image2D<T>& other_image, T thr) const {
   if (get_height() != other_image.get_height() &&
       get_width() != other_image.get_width()) {
-    std::cerr << "Can't compute correlation for different size images"
-              << get_height() << " vs. " << other_image.get_height()
-              << get_width() << " vs. " << other_image.get_width() << std::endl;
+    IMP_WARN("Can't compute correlation for different size images"
+             << get_height() << " vs. " << other_image.get_height()
+             << get_width() << " vs. " << other_image.get_width() << std::endl);
     exit(1);
   }
   double cc = 0;
@@ -834,8 +834,8 @@ void Image2D<T>::get_largest_connected_component(Image2D<int>& out_image)
       largest_color = it->first;
     }
   }
-  std::cerr << " largest_size = " << largest_size << " color " << largest_color
-            << std::endl;
+  IMP_LOG_VERBOSE(" largest_size = " << largest_size << " color "
+                  << largest_color << std::endl);
 
   for (unsigned int i = 0; i < out_image.num_elements(); i++)
     if (*(out_image.data() + i) != largest_color)
@@ -940,9 +940,6 @@ ImageTransform Image2D<T>::pca_align(const Image2D<T>& image) const {
   double score2 = ncc_score(transformed_image2);
   double score = (score1 > score2) ? score1 : score2;
   if (score1 <= score2) angle = angle + IMP::PI;
-  // std::cerr << "angle = " << RAD_2_DEG(angle) << " score " << score
-  //           << " p1-p2 " << points1.size() << " - " << points2.size()
-  //           << " % " << area_score << std::endl;
   return ImageTransform(angle, (int)translation[0], (int)translation[1], score,
                         0.0);  // 0 for area_score
 }
