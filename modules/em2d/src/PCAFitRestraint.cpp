@@ -60,7 +60,8 @@ double PCAFitRestraint::unprotected_evaluate(
   } else {
     projector_.compute_projections(projections, images_[0].get_height());
   }
-  std::cerr << projections.size() << " projections were created" << std::endl;
+  IMP_LOG_VERBOSE(projections.size() << " projections were created"
+                  << std::endl);
 
   // process projections
   for (unsigned int i = 0; i < projections.size(); i++) {
@@ -97,8 +98,8 @@ double PCAFitRestraint::unprotected_evaluate(
         best_projection_id = projections[j].get_id();
       }
     }
-    std::cerr << "Image " << i << " Best projection " << best_projection_id
-              << " " << best_transform << std::endl;
+    IMP_LOG_VERBOSE("Image " << i << " Best projection " << best_projection_id
+                    << " " << best_transform << std::endl);
     total_score += -log(best_transform.get_score());
 
     // save best projections and their projection axis
