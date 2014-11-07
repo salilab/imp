@@ -50,7 +50,7 @@ Downloads, then Components, and select "Command Line Tools").
 
 Then Mac users should use one of the available collections of Unix tools,
 either
-- [Homebrew](https://github.com/mxcl/homebrew) (_recommended_) Once you installed `homebrew`
+- [Homebrew](http://brew.sh) (_recommended_) Once you installed `homebrew`
   do
 
     `brew tap homebrew/science`
