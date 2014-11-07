@@ -140,6 +140,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(self.noe.evaluate(False),
                                    expected, delta=0.002)
 
+    @IMP.test.expectedFailure
     def testValueGammaHat(self):
         """Test MarginalNOERestraint gamma hat on n particles"""
         pairs = []
@@ -166,8 +167,8 @@ class Tests(IMP.test.TestCase):
             self.noe.evaluate(False)
             self.assertAlmostEqual(self.noe.get_gammahat(),
                                    expected, delta=0.001)
-    testValueGammaHat = IMP.test.expectedFailure(testValueGammaHat)
 
+    @IMP.test.expectedFailure
     def testValueSS(self):
         """Test MarginalNOERestraint sum of squares on n particles"""
         pairs = []
@@ -197,7 +198,6 @@ class Tests(IMP.test.TestCase):
             self.noe.evaluate(False)
             self.assertAlmostEqual(self.noe.get_SS(),
                                    expected, delta=0.001)
-    testValueSS = IMP.test.expectedFailure(testValueSS)
 
     def testValueN(self):
         """Test MarginalNOERestraint n on n particles"""

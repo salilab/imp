@@ -76,6 +76,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         profile.set_interpolant(gp, {'sigma': s}, functions, 'test', m, None)
         return gp
 
+    @IMP.test.expectedFailure
     def test_rescaling_normal(self):
         """Test rescaling of three perfectly agreeing normal functions"""
         # data just used to set the q-range
@@ -114,7 +115,6 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         self.assertAlmostEqual(p1.get_gamma(), 30)
         self.assertAlmostEqual(p2.get_gamma(), 3)
         self.assertAlmostEqual(p3.get_gamma(), 1)
-    test_rescaling_normal = IMP.test.expectedFailure(test_rescaling_normal)
 
     def test_rescaling_lognormal(self):
         """Test rescaling of three perfectly agreeing lognormal functions"""

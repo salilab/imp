@@ -118,6 +118,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         test = p.get_data(colwise=True)
         self.assertEqual(test['agood'], [False, True, False, False])
 
+    @IMP.test.expectedFailure
     def test_rescaling_normal(self):
         """Test rescaling of two perfectly agreeing normal functions"""
         # data just used to set the q-range
@@ -151,8 +152,8 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         self.assertAlmostEqual(p2.get_gamma(), 1)
         self.assertAlmostEqual(p1.get_offset(), 0)
         self.assertAlmostEqual(p2.get_offset(), 0)
-    test_rescaling_normal = IMP.test.expectedFailure(test_rescaling_normal)
 
+    @IMP.test.expectedFailure
     def test_rescaling_normal_offset(self):
         """Test rescaling with offset of two perfectly agreeing functions"""
         # data just used to set the q-range
@@ -186,8 +187,6 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         for i1, i2, oi1, oi2 in zip(p1.get_mean(), p2.get_mean(), d1, d2):
             self.assertAlmostEqual(i1[1], i2[1])  # I
             self.assertAlmostEqual(i1[2], i2[2])  # err
-    test_rescaling_normal_offset =\
-        IMP.test.expectedFailure(test_rescaling_normal_offset)
 
     def test_rescaling_lognormal(self):
         """Test rescaling of two perfectly agreeing lognormal functions"""
