@@ -45,6 +45,7 @@ IMP_SWIG_OBJECT(IMP::isd, CysteineCrossLinkData, CysteineCrossLinkDatas);
 IMP_SWIG_OBJECT(IMP::isd, CysteineCrossLinkRestraint, CysteineCrossLinkRestraints);
 IMP_SWIG_OBJECT(IMP::isd, WeightMover, WeightMovers);
 IMP_SWIG_OBJECT(IMP::isd, WeightRestraint, WeightRestraints);
+IMP_SWIG_OBJECT(IMP::isd, AtomicCrossLinkMSRestraint, AtomicCrossLinkMSRestraints);
 IMP_SWIG_OBJECT(IMP::isd, GaussianEMRestraint, GaussianEMRestraints);
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
@@ -101,6 +102,7 @@ def create_model_and_particles():
 %include "IMP/isd/CysteineCrossLinkRestraint.h"
 %include "IMP/isd/WeightMover.h"
 %include "IMP/isd/WeightRestraint.h"
+%include "IMP/isd/AtomicCrossLinkMSRestraint.h"
 %include "IMP/isd/GaussianEMRestraint.h"
 
 namespace IMP {
