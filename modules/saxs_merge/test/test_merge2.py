@@ -62,6 +62,10 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
             import numpy
         except ImportError:
             self.skipTest("could not import scipy and numpy")
+        # Calling scipy.linalg.cho_solve() causes python/wineserver
+        # to deadlock so that python.exe never exits, on our Wine setup
+        if sys.platform == 'win32' and sys.maxsize == sys.maxint:
+            self.skipTest("does not work on 32-bit Windows")
         merge = self.import_python_application('saxs_merge')
         self.SAXSProfile = merge.SAXSProfile
         self.merge = merge
