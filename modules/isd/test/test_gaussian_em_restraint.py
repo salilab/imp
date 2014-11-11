@@ -6,12 +6,8 @@ import IMP.isd
 import IMP.isd.gmm_tools
 import IMP.algebra
 import IMP.test
-import numpy as np
-import numpy.random
-import sklearn.mixture
 from math import cos, sin, pi, sqrt, exp, log
 from copy import deepcopy
-import numpy.linalg
 import itertools
 
 
