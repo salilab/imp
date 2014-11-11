@@ -106,9 +106,11 @@ def create_model_and_particles():
 %include "IMP/isd/GaussianEMRestraint.h"
 
 namespace IMP {
-  namespace atom {
-  /* Python doesn't natively support C++ templates, so you have to manually
-     choose which template parameters you want to intantiate a template with.
-   */
+  namespace isd {
+    %extend AtomicCrossLinkMSRestraint {
+      static AtomicCrossLinkMSRestraint* cast(Restraint *r) {
+        return dynamic_cast<IMP::isd::AtomicCrossLinkMSRestraint *>(r);
+      }
+    }
   }
 }
