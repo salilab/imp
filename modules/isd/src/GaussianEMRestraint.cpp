@@ -83,7 +83,7 @@ void GaussianEMRestraint::compute_initial_scores() {
     for (int i2=0;i2<dsize_;i2++){
       Float score = score_gaussian_overlap(get_model(),
                     kernel::ParticleIndexPair(density_ps_[i1],density_ps_[i2]),
-                    deriv);
+                    &deriv);
       dd_score_+=score;
     }
   }
@@ -92,7 +92,7 @@ void GaussianEMRestraint::compute_initial_scores() {
   for (int i=0;i<msize_;i++){
     Float score = score_gaussian_overlap(get_model(),
                     kernel::ParticleIndexPair(model_ps_[i],model_ps_[i]),
-                    deriv);
+                    &deriv);
     self_mm_score_+=score;
   }
   //std::cout<<"init dd: "<<dd_score_<<" init mm "<<self_mm_score_<<std::endl;
@@ -130,7 +130,7 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 
   IMP_CONTAINER_FOREACH(container::ClosePairContainer,
                           mm_container_,{
-      Float score = score_gaussian_overlap(get_model(),_1,deriv);
+      Float score = score_gaussian_overlap(get_model(),_1,&deriv);
       mm_score = KahanSum(mm_score,2*score);
       if (accum) {
         //multiply by 2 because...
@@ -142,7 +142,7 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   //std::cout<<"calculating MD score"<<std::endl;
   IMP_CONTAINER_FOREACH(container::CloseBipartitePairContainer,
                         md_container_,{
-    Float score = score_gaussian_overlap(get_model(),_1,deriv);
+    Float score = score_gaussian_overlap(get_model(),_1,&deriv);
     md_score = KahanSum(md_score,score);
     if (accum) {
       derivs_md[_1[0]] = KahanVectorSum(derivs_md[_1[0]],-deriv);

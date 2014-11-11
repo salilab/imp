@@ -156,7 +156,7 @@ def create_gmm_for_bead(mdl,
     dmap=IMP.em.SampledDensityMap([particle],1.0,1.0,
                                   IMP.atom.Mass.get_mass_key(),3,IMP.em.SPHERE)
     IMP.em.write_map(dmap,'test_intermed.mrc')
-    pts=IMP.em.sample_points_from_density(dmap,sampled_points)
+    pts=IMP.isd.sample_points_from_density(dmap,sampled_points)
     draw_points(pts,'pts.bild')
     density_particles=[]
     IMP.em.gmm_tools.fit_gmm_to_points(pts,n_components,mdl,
@@ -188,7 +188,7 @@ def sample_and_fit_to_particles(model,
     dmap.calcRMS()
     #if not intermediate_map_fn is None:
     #   IMP.em.write_map(dmap,intermediate_map_fn)
-    pts=IMP.em.sample_points_from_density(dmap,sampled_points)
+    pts=IMP.isd.sample_points_from_density(dmap,sampled_points)
 
     # fit GMM
     print 'add_component_density: fitting GMM to',len(pts),'points'
