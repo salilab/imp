@@ -39,7 +39,7 @@ class TestAtomicXL_1State(IMP.test.TestCase):
 
         self.m.add_restraint(self.xl)
 
-    def test_atomic_xl_derivatives(self):
+    def test_atomic_xl_derivatives1(self):
         for i in range(100):
             self.randomize_particles([self.d0, self.d1], 2)
             self.m.evaluate(IMP.DerivativeAccumulator(1))
@@ -93,7 +93,7 @@ class TestAtomicXL_ManyState(IMP.test.TestCase):
                  ), psigs[pp[1]].get_index()],
                 psip.get_index())
 
-    def test_atomic_xl_derivatives(self):
+    def test_atomic_xl_derivatives_many(self):
         ''' test the atomix XL restraint derivatives'''
         self.m.add_restraint(self.xl)
         for i in range(100):
