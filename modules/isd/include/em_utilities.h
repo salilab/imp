@@ -12,12 +12,18 @@
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/Gaussian3D.h>
 #include <IMP/core/Gaussian.h>
+#include <IMP/em/DensityMap.h>
+#include <IMP/em/DensityHeader.h>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+IMPISDEXPORT
 Float score_gaussian_overlap(kernel::Model *m,
                              kernel::ParticleIndexPair pp,
-                             IMP_Eigen::Vector3d &deriv){
+                             IMP_Eigen::Vector3d * deriv){
   double determinant;
   bool invertible;
   IMP_Eigen::Matrix3d inverse = IMP_Eigen::Matrix3d::Zero();
@@ -33,8 +39,42 @@ Float score_gaussian_overlap(kernel::Model *m,
   IMP_Eigen::Vector3d tmp = inverse*v;
   Float score = mass12 * 0.06349363593424097 / (std::sqrt(determinant)) *
     std::exp(-0.5*v.transpose()*tmp);
-  deriv = -score*tmp;
+  *deriv = -score*tmp;
   return score;
+}
+#endif
+
+IMPISDEXPORT
+FloatsList sample_points_from_density(const em::DensityMap * dmap_orig,
+                                      int npoints,
+                                      Float threshold=0.0){
+    // get sample region
+    em::DensityMap * dmap = em::get_threshold_map(dmap_orig,threshold);
+    dmap->calcRMS();
+    const em::DensityHeader * dhead = dmap->get_header();
+    Float dmin=dhead->dmin;
+    Float dmax=dhead->dmax;
+    //Float drange=dhead->dmax-dmin;
+    algebra::BoundingBox3D bbox=em::get_bounding_box(dmap,0.00001);
+
+    // setup random number generator
+    FloatsList ret;
+    boost::mt19937 generator(std::time(0));
+    boost::uniform_real<> uni_dist(0,1);
+    boost::variate_generator<boost::mt19937&, boost::uniform_real<> > uni(generator, uni_dist);
+    for (int i=0;i<npoints;i++){
+      algebra::Vector3D vs = algebra::get_random_vector_in(bbox);
+      Float den=(dmap->get_value(vs))/dmax;
+      Float t=uni();
+      if (t<den) {
+        Floats r;
+        r.push_back(vs[0]);
+        r.push_back(vs[1]);
+        r.push_back(vs[2]);
+        ret.push_back(r);
+      }
+    }
+    return ret;
 }
 
 IMPISD_END_NAMESPACE
