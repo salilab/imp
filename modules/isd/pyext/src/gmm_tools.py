@@ -159,10 +159,10 @@ def create_gmm_for_bead(mdl,
     pts=IMP.isd.sample_points_from_density(dmap,sampled_points)
     draw_points(pts,'pts.bild')
     density_particles=[]
-    IMP.em.gmm_tools.fit_gmm_to_points(pts,n_components,mdl,
-                                             density_particles,
-                                             num_iter,'full',
-                                             mass_multiplier=IMP.atom.Mass(particle).get_mass())
+    fit_gmm_to_points(pts,n_components,mdl,
+                      density_particles,
+                      num_iter,'full',
+                      mass_multiplier=IMP.atom.Mass(particle).get_mass())
     return density_particles,dmap
 
 def sample_and_fit_to_particles(model,
@@ -192,13 +192,13 @@ def sample_and_fit_to_particles(model,
 
     # fit GMM
     print 'add_component_density: fitting GMM to',len(pts),'points'
-    IMP.em.gmm_tools.fit_gmm_to_points(points=pts,
-                                             n_components=num_components,
-                                             mdl=model,
-                                             ps=density_particles,
-                                             num_iter=num_iter,
-                                             covariance_type=covariance_type,
-                                             mass_multiplier=mass_multiplier)
+    fit_gmm_to_points(points=pts,
+                      n_components=num_components,
+                      mdl=model,
+                      ps=density_particles,
+                      num_iter=num_iter,
+                      covariance_type=covariance_type,
+                      mass_multiplier=mass_multiplier)
 
     if not output_txt is None:
        write_gmm_to_text(density_particles,output_txt)
