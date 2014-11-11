@@ -3,9 +3,6 @@ import IMP.core
 import IMP.isd
 import IMP.algebra
 import IMP.test
-import numpy as np
-import numpy.random
-import numpy.linalg
 
 
 def score_1state(p0, p1):
