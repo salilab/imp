@@ -507,6 +507,9 @@ ligandPdb (str) antibody_cut.pdb
 
     def test_cxms_scorer(self):
         """Test CXMSScorer class"""
+        # Don't get confused by other tests that make *_score.res files at
+        # the same time as us when running with -j
+        tmpdir = IMP.test.RunInTempDir()
         app, idock = self.get_dummy_idock_for_scorer()
         idock.opts.cross_links_file = None
         self.assertIsNone(app.CXMSScorer.check_options(idock, None))
@@ -653,6 +656,9 @@ ligandPdb (str) antibody_cut.pdb
 
     def test_main(self):
         """Test IDock.main()"""
+        # Don't get confused by other tests that make *_score.res files at
+        # the same time as us when running with -j
+        tmpdir = IMP.test.RunInTempDir()
         app = self.import_python_application('idock')
 
         class MockDock(app.IDock):
