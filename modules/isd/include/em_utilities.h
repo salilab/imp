@@ -1,5 +1,5 @@
 /**
- *  \file isd/em_utilities.h
+ *  \file IMP/isd/em_utilities.h
  *  \brief Common scoring functions
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
