@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
       if (results[i - 1].size() != results[i].size()) {
         IMP_THROW("different number of transformations in input files: "
                       << argv[i] << " " << results[i - 1].size() << " vs. "
-                      << argv[i + 1] << " " << results[i].size(),
+                      << argv[i + 2] << " " << results[i].size(),
                   IMP::base::ValueException);
       }
     }
