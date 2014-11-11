@@ -105,13 +105,3 @@ def create_model_and_particles():
 %include "IMP/isd/AtomicCrossLinkMSRestraint.h"
 %include "IMP/isd/GaussianEMRestraint.h"
 %include "IMP/isd/em_utilities.h"
-
-namespace IMP {
-  namespace isd {
-    %extend AtomicCrossLinkMSRestraint {
-      static AtomicCrossLinkMSRestraint* cast(Restraint *r) {
-        return dynamic_cast<IMP::isd::AtomicCrossLinkMSRestraint *>(r);
-      }
-    }
-  }
-}
