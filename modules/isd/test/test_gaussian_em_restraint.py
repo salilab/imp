@@ -6,6 +6,7 @@ import IMP.isd
 import IMP.isd.gmm_tools
 import IMP.algebra
 import IMP.test
+import numpy as np
 from math import cos, sin, pi, sqrt, exp, log
 from copy import deepcopy
 import itertools
