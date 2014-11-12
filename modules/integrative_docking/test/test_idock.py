@@ -444,6 +444,9 @@ ligandPdb (str) antibody_cut.pdb
 
     def test_saxs_scorer(self):
         """Test SAXSScorer class"""
+        # Don't get confused by other tests that make *_score.res files at
+        # the same time as us when running with -j
+        tmpdir = IMP.test.RunInTempDir()
         app, idock = self.get_dummy_idock_for_scorer()
         idock.opts.saxs_file = None
         self.assertIsNone(app.SAXSScorer.check_options(idock, None))
