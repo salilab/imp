@@ -42,7 +42,7 @@ class TestAtomicXL_1State(IMP.test.TestCase):
     def test_atomic_xl_derivatives1(self):
         for i in range(100):
             self.randomize_particles([self.d0, self.d1], 2)
-            self.m.evaluate(IMP.DerivativeAccumulator(1))
+            self.m.evaluate(True)
             self.assertXYZDerivativesInTolerance(
                 self.m,
                 self.d0,
@@ -98,7 +98,7 @@ class TestAtomicXL_ManyState(IMP.test.TestCase):
         self.m.add_restraint(self.xl)
         for i in range(100):
             self.randomize_particles(self.xyzs, 6)
-            self.m.evaluate(IMP.DerivativeAccumulator(1))
+            self.m.evaluate(True)
             for d in self.xyzs:
                 # print 'n',IMP.test.xyz_numerical_derivatives(self.m, d,
                 # 0.01),'a',d.get_derivatives()
@@ -115,7 +115,7 @@ class TestAtomicXL_ManyState(IMP.test.TestCase):
         self.m.add_restraint(log_wrapper)
         for i in range(100):
             self.randomize_particles(self.xyzs, 6)
-            self.m.evaluate(IMP.DerivativeAccumulator(1))
+            self.m.evaluate(True)
             for d in self.xyzs:
                 # print 'n',IMP.test.xyz_numerical_derivatives(self.m, d,
                 # 0.01),'a',d.get_derivatives()
