@@ -29,6 +29,20 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+namespace {
+  class HasHigherCCCPointer
+  : public std::binary_function<RegistrationResult*, RegistrationResult*, bool>
+  {
+    HasHigherCCC<RegistrationResult> hhccc_;
+  public:
+    bool operator()(const RegistrationResult *a,
+                    const RegistrationResult *b) const {
+      return hhccc_(*a, *b);
+    }
+    void show(std::ostream &) const {}
+  };
+}
+
 void ProjectionFinder::set_subjects(const em2d::Images &subjects) {
   IMP_LOG_TERSE("ProjectionFinder: Setting subject images" << std::endl);
   if (subjects.size() == 0) {
@@ -357,8 +371,16 @@ void ProjectionFinder::get_complete_registration() {
     get_coarse_registrations_for_subject(i, coarse_RRs);
     coarse_registration_time_ += timer_coarse_subject.elapsed();
     // The coarse registration scoring is done by cross-correlation
-    std::sort(coarse_RRs.begin(), coarse_RRs.end(),
-              HasHigherCCC<RegistrationResult>());
+
+    // Sort pointers to the original list; this should be slightly faster
+    // (no need to copy things around) but also works around a segfault
+    // (possible clang bug?) on OS X 10.10
+    std::vector<RegistrationResult*> sorted_coarse_RRs(coarse_RRs.size());
+    for (unsigned int k = 0; k < coarse_RRs.size(); ++k) {
+      sorted_coarse_RRs[k] = &coarse_RRs[k];
+    }
+    HasHigherCCCPointer hhccc;
+    std::sort(sorted_coarse_RRs.begin(), sorted_coarse_RRs.end(), hhccc);
 
     unsigned int n_optimized = projections_.size();
     if (fast_optimization_mode_) {
@@ -371,7 +393,7 @@ void ProjectionFinder::get_complete_registration() {
     boost::timer timer_fine_subject;
     for (unsigned int k = 0; k < n_optimized; ++k) {
       // Fine registration of the subject using simplex
-      coarse_RRs[k].set_in_image(subjects_[i]->get_header());
+      sorted_coarse_RRs[k]->set_in_image(subjects_[i]->get_header());
       IMP_LOG_TERSE(
           "Setting subject image to "
           "Fine2DRegistrationRestraint "
