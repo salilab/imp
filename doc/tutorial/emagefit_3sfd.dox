@@ -75,7 +75,7 @@ optimization.
 If HEXDOCK is not present, the relative positions files need to be generated
 using some docking algorithm. They have a simple format; each line is simply
 the transformation needed to dock the ligand to the receptor, given as the
-components of the rotation quaternion followed by the vector vector.
+components of the rotation quaternion followed by the translation vector.
 
 Next, the anchor component and the docking transforms need to be placed
 into the configuration file for the next step, by setting <tt>self.anchor</tt>
