@@ -153,7 +153,7 @@ class TestGaussianEM(IMP.test.TestCase):
         reset_coords(self.model_ps,self.orig_coords)
         for i in range(10):
             shuffle_particles(self.model_ps)
-            self.gem.evaluate(IMP.DerivativeAccumulator(1))
+            self.gem.evaluate(True)
             for np, p in enumerate(self.model_ps):
                 d = IMP.core.XYZ(p)
                 #print 'n', IMP.test.xyz_numerical_derivatives(self.m, d, 0.01), 'a', d.get_derivatives()
@@ -164,7 +164,7 @@ class TestGaussianEM(IMP.test.TestCase):
         reset_coords(self.model_ps,self.orig_coords)
         for i in range(10):
             shuffle_particles(self.model_ps)
-            self.gem.evaluate(IMP.DerivativeAccumulator(1))
+            self.gem.evaluate(True)
             for np, p in enumerate(self.model_ps):
                 d = IMP.core.XYZ(p)
                 #print 'n', IMP.test.xyz_numerical_derivatives(self.m, d, 0.01), 'a', d.get_derivatives()
