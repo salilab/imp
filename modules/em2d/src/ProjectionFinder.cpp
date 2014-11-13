@@ -292,10 +292,11 @@ void ProjectionFinder::get_coarse_registration() {
     get_coarse_registrations_for_subject(i, coarse_RRs);
     coarse_registration_time_ += timer_coarse_subject.elapsed();
 
-    std::sort(coarse_RRs.begin(), coarse_RRs.end(),
+    RegistrationResults::iterator best_cc = std::min_element(
+              coarse_RRs.begin(), coarse_RRs.end(),
               HasHigherCCC<RegistrationResult>());
     // Best result after coarse registration is based on the ccc
-    registration_results_[i] = coarse_RRs[0];
+    registration_results_[i] = *best_cc;
     registration_results_[i].set_in_image(subjects_[i]->get_header());
     IMP_LOG_TERSE("Best coarse registration: " << registration_results_[i]
                                                << std::endl);
