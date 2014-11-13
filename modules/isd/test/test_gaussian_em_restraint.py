@@ -133,7 +133,7 @@ class TestGaussianEM(IMP.test.TestCase):
             shuffle_particles(self.model_ps)
             score = self.m.evaluate(False)
             pyscore = gem_score(self.model_ps, self.density_ps)
-            self.assertAlmostEqual(score, pyscore,places=2)
+            self.assertAlmostEqual(score, pyscore, delta=0.02)
 
     def test_gem_score_with_slope(self):
         """test accuracy of GMM score using slope"""
@@ -144,7 +144,7 @@ class TestGaussianEM(IMP.test.TestCase):
             shuffle_particles(self.model_ps)
             score = self.m.evaluate(False)
             pyscore = gem_score(self.model_ps, self.density_ps,slope=slope)
-            self.assertAlmostEqual(score, pyscore,places=2)
+            self.assertAlmostEqual(score, pyscore, delta=0.02)
         self.gem.set_slope(0.0)
 
 
