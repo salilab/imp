@@ -26,6 +26,7 @@ IMP_SWIG_DECORATOR(IMP::atom, Fragment, Fragments);
 IMP_SWIG_DECORATOR(IMP::atom, Hierarchy, Hierarchies);
 IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
 IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
+IMP_SWIG_DECORATOR(IMP::atom, LinearVelocity, LinearVelocities);
 IMP_SWIG_DECORATOR(IMP::atom, Molecule, Molecules);
 IMP_SWIG_DECORATOR(IMP::atom, Residue, Residues);
 IMP_SWIG_DECORATOR(IMP::atom, Representation, Representations);

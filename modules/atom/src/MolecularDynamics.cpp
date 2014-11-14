@@ -25,6 +25,10 @@ namespace {
 static const double deriv_to_acceleration = -4.1868e-4;
 }
 
+void LinearVelocity::show(std::ostream &out) const {
+  out << "Linear velocity " << get_velocity() << std::endl;
+}
+
 MolecularDynamics::MolecularDynamics(kernel::Model *m)
     : Simulator(m, "MD %1%") {
   initialize();
