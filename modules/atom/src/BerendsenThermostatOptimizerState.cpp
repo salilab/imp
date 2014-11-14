@@ -20,9 +20,6 @@ BerendsenThermostatOptimizerState::BerendsenThermostatOptimizerState(
       pis_(pis),
       temperature_(temperature),
       tau_(tau) {
-  vs_[0] = FloatKey("vx");
-  vs_[1] = FloatKey("vy");
-  vs_[2] = FloatKey("vz");
 }
 
 void BerendsenThermostatOptimizerState::do_update(unsigned int) {
@@ -43,11 +40,8 @@ void BerendsenThermostatOptimizerState::rescale_velocities() const {
 
   for (unsigned int i = 0; i < pis_.size(); ++i) {
     kernel::Particle *p = pis_[i];
-    for (int i = 0; i < 3; ++i) {
-      double velocity = p->get_value(vs_[i]);
-      velocity *= rescale;
-      p->set_value(vs_[i], velocity);
-    }
+    LinearVelocity v(p);
+    v.set_velocity(v.get_velocity() * rescale);
   }
 }
 

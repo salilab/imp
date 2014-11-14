@@ -37,9 +37,6 @@ class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState {
   void remove_linear() const;
   void remove_angular() const;
   kernel::Particles pis_;
-
-  //! Keys of the xyz velocities
-  FloatKey vs_[3];
 };
 
 IMP_OBJECTS(RemoveRigidMotionOptimizerState, RemoveRigidMotionOptimizerStates);

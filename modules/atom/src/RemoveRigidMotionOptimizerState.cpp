@@ -19,9 +19,6 @@ RemoveRigidMotionOptimizerState::RemoveRigidMotionOptimizerState(
   IMP_FOREACH(kernel::ParticleIndex pi, pis) {
     pis_.push_back(m->get_particle(pi));
   }
-  vs_[0] = FloatKey("vx");
-  vs_[1] = FloatKey("vy");
-  vs_[2] = FloatKey("vz");
 }
 
 void RemoveRigidMotionOptimizerState::do_update(unsigned int) {
@@ -36,7 +33,7 @@ void RemoveRigidMotionOptimizerState::remove_rigid_motion() const {
 
 void RemoveRigidMotionOptimizerState::remove_linear() const {
 
-  Float cm[3] = {0., 0., 0.};
+  algebra::Vector3D cm(0., 0., 0.);
   Float cm_mass = 0.;
 
   for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
@@ -45,33 +42,24 @@ void RemoveRigidMotionOptimizerState::remove_linear() const {
 
     Float mass = Mass(p).get_mass();
     cm_mass += mass;
-
-    for (unsigned i = 0; i < 3; ++i) {
-      Float velocity = p->get_value(vs_[i]);
-      cm[i] += mass * velocity;
-    }
+    cm += mass * LinearVelocity(p).get_velocity();
   }
 
   for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
        ++pi) {
     kernel::Particle *p = *pi;
 
-    for (unsigned i = 0; i < 3; ++i) {
-      Float velocity = p->get_value(vs_[i]);
-
-      velocity -= cm[i] / cm_mass;
-      p->set_value(vs_[i], velocity);
-    }
+    LinearVelocity v(p);
+    v.set_velocity(v.get_velocity() - cm / cm_mass);
   }
 }
 
 void RemoveRigidMotionOptimizerState::remove_angular() const {
 
-  Float x[3], vx[3], v[3], vl[3], oo[3];
+  algebra::Vector3D vl(0,0,0);
   Float inertia[3][3];
 
   for (unsigned i = 0; i < 3; ++i) {
-    vl[i] = 0.;
     for (unsigned j = 0; j < 3; ++j) {
       inertia[i][j] = 0.;
     }
@@ -82,17 +70,12 @@ void RemoveRigidMotionOptimizerState::remove_angular() const {
     kernel::Particle *p = *pi;
 
     Float mass = Mass(p).get_mass();
+    LinearVelocity lv(p);
 
-    for (unsigned i = 0; i < 3; ++i) {
-      x[i] = core::XYZ(p).get_coordinate(i);
-      vx[i] = p->get_value(vs_[i]);
-    }
+    algebra::Vector3D x = core::XYZ(p).get_coordinates();
+    algebra::Vector3D vx = lv.get_velocity();
 
-    v[0] = x[1] * vx[2] - x[2] * vx[1];
-    v[1] = x[2] * vx[0] - x[0] * vx[2];
-    v[2] = x[0] * vx[1] - x[1] * vx[0];
-
-    for (unsigned i = 0; i < 3; ++i) vl[i] += v[i] * mass;
+    vl += algebra::get_vector_product(x, vx) * mass;
 
     for (unsigned i = 0; i < 3; ++i)
       for (unsigned j = 0; j < 3; ++j) inertia[i][j] -= mass * x[i] * x[j];
@@ -121,6 +104,7 @@ void RemoveRigidMotionOptimizerState::remove_angular() const {
     return;
   }
 
+  algebra::Vector3D oo;
   oo[2] = (af_de * (a * r - d * o) - ab_dd * aq_eo) /
           (af_de * af_de - ab_dd * ac_ee);
   oo[1] = (aq_eo - oo[2] * ac_ee) / af_de;
@@ -130,19 +114,11 @@ void RemoveRigidMotionOptimizerState::remove_angular() const {
        ++pi) {
     kernel::Particle *p = *pi;
 
-    for (unsigned i = 0; i < 3; ++i) {
-      x[i] = core::XYZ(p).get_coordinate(i);
-      vx[i] = p->get_value(vs_[i]);
-    }
+    LinearVelocity lv(p);
+    algebra::Vector3D x = core::XYZ(p).get_coordinates();
 
-    v[0] = oo[1] * x[2] - oo[2] * x[1];
-    v[1] = oo[2] * x[0] - oo[0] * x[2];
-    v[2] = oo[0] * x[1] - oo[1] * x[0];
-
-    for (int i = 0; i < 3; ++i) {
-      vx[i] -= v[i];
-      p->set_value(vs_[i], vx[i]);
-    }
+    algebra::Vector3D v = algebra::get_vector_product(oo, x);
+    lv.set_velocity(lv.get_velocity() - v);
   }
 }
 

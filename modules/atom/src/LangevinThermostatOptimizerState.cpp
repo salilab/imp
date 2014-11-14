@@ -18,9 +18,6 @@ LangevinThermostatOptimizerState::LangevinThermostatOptimizerState(
       pis_(kernel::get_particles(m, pis)),
       temperature_(temperature),
       gamma_(gamma) {
-  vs_[0] = FloatKey("vx");
-  vs_[1] = FloatKey("vy");
-  vs_[2] = FloatKey("vz");
   IMP_LOG_VERBOSE("Thermostat on " << pis_ << std::endl);
 }
 
@@ -44,11 +41,10 @@ void LangevinThermostatOptimizerState::rescale_velocities() const {
   for (unsigned int i = 0; i < pis_.size(); ++i) {
     kernel::Particle *p = pis_[i];
     double mass = Mass(p).get_mass();
-    for (int i = 0; i < 3; ++i) {
-      double velocity = p->get_value(vs_[i]);
-      velocity = c1 * velocity + c2 * sqrt((c1 + 1.0) / mass) * sampler();
-      p->set_value(vs_[i], velocity);
-    }
+    LinearVelocity lv(p);
+    lv.set_velocity(c1 * lv.get_velocity()
+                    + c2 * sqrt((c1 + 1.0) / mass)
+                      * algebra::Vector3D(sampler(), sampler(), sampler()));
   }
 }
 

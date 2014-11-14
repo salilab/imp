@@ -61,9 +61,6 @@ class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState {
   kernel::Particles pis_;
   double temperature_;
   double tau_;
-
-  //! Keys of the xyz velocities
-  FloatKey vs_[3];
 };
 
 IMP_OBJECTS(BerendsenThermostatOptimizerState,

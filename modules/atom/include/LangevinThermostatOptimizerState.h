@@ -50,9 +50,6 @@ class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState {
   kernel::Particles pis_;
   double temperature_;
   double gamma_;
-
-  //! Keys of the xyz velocities
-  FloatKey vs_[3];
 };
 
 IMP_OBJECTS(LangevinThermostatOptimizerState,

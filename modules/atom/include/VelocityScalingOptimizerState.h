@@ -47,9 +47,6 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
   Float temperature_;
   unsigned skip_steps_;
   unsigned call_number_;
-
-  //! Keys of the xyz velocities
-  FloatKey vs_[3];
 };
 
 IMP_OBJECTS(VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
