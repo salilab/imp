@@ -38,9 +38,6 @@ void MolecularDynamics::initialize() {
   set_maximum_time_step(4.0);
   degrees_of_freedom_ = 0;
   velocity_cap_ = std::numeric_limits<Float>::max();
-  vs_[0] = FloatKey("vx");
-  vs_[1] = FloatKey("vy");
-  vs_[2] = FloatKey("vz");
 }
 
 bool MolecularDynamics::get_is_simulation_particle(kernel::ParticleIndex pi)
@@ -51,10 +48,8 @@ bool MolecularDynamics::get_is_simulation_particle(kernel::ParticleIndex pi)
              Mass::get_is_setup(p);
   if (ret) {
     IMP_LOG_VERBOSE(p->get_name() << " is md particle" << std::endl);
-    for (unsigned int i = 0; i < 3; ++i) {
-      if (!p->has_attribute(vs_[i])) {
-        p->add_attribute(vs_[i], 0.0, false);
-      }
+    if (!LinearVelocity::get_is_setup(p)) {
+      LinearVelocity::setup_particle(p);
     }
   }
   return ret;
@@ -103,23 +98,19 @@ void MolecularDynamics::propagate_coordinates(const kernel::ParticleIndexes &ps,
                                               double ts) {
   for (unsigned int i = 0; i < ps.size(); ++i) {
     Float invmass = 1.0 / Mass(get_model(), ps[i]).get_mass();
-    for (unsigned j = 0; j < 3; ++j) {
-      core::XYZ d(get_model(), ps[i]);
+    core::XYZ d(get_model(), ps[i]);
+    LinearVelocity v(get_model(), ps[i]);
+    algebra::Vector3D coord = d.get_coordinates();
+    algebra::Vector3D dcoord = d.get_derivatives();
+    // calculate velocity at t+(delta t/2) from that at t
+    algebra::Vector3D velocity = v.get_velocity();
+    velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
+    cap_velocity(velocity);
+    v.set_velocity(velocity);
 
-      Float coord = d.get_coordinate(j);
-      Float dcoord = d.get_derivative(j);
-
-      // calculate velocity at t+(delta t/2) from that at t
-      Float velocity = get_model()->get_attribute(vs_[j], ps[i]);
-      velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
-
-      cap_velocity_component(velocity);
-      get_model()->set_attribute(vs_[j], ps[i], velocity);
-
-      // calculate position at t+(delta t) from that at t
-      coord += velocity * ts;
-      d.set_coordinate(j, coord);
-    }
+    // calculate position at t+(delta t) from that at t
+    coord += velocity * ts;
+    d.set_coordinates(coord);
   }
 }
 
@@ -127,16 +118,13 @@ void MolecularDynamics::propagate_velocities(const kernel::ParticleIndexes &ps,
                                              double ts) {
   for (unsigned int i = 0; i < ps.size(); ++i) {
     Float invmass = 1.0 / Mass(get_model(), ps[i]).get_mass();
-    for (unsigned j = 0; j < 3; ++j) {
-      core::XYZ d(get_model(), ps[i]);
-      Float dcoord = d.get_derivative(j);
-
-      // calculate velocity at t+(delta t) from that at t+(delta t/2)
-      Float velocity = get_model()->get_attribute(vs_[j], ps[i]);
-      velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
-
-      get_model()->set_attribute(vs_[j], ps[i], velocity);
-    }
+    core::XYZ d(get_model(), ps[i]);
+    algebra::Vector3D dcoord = d.get_derivatives();
+    LinearVelocity v(get_model(), ps[i]);
+    // calculate velocity at t+(delta t) from that at t+(delta t/2)
+    algebra::Vector3D velocity = v.get_velocity();
+    velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
+    v.set_velocity(velocity);
   }
 }
 
@@ -150,12 +138,10 @@ Float MolecularDynamics::get_kinetic_energy() const {
   for (kernel::ParticlesTemp::iterator iter = ps.begin(); iter != ps.end();
        ++iter) {
     kernel::Particle *p = *iter;
-    Float vx = p->get_value(vs_[0]);
-    Float vy = p->get_value(vs_[1]);
-    Float vz = p->get_value(vs_[2]);
+    algebra::Vector3D v = LinearVelocity(p).get_velocity();
     Float mass = Mass(p).get_mass();
 
-    ekinetic += mass * (vx * vx + vy * vy + vz * vz);
+    ekinetic += mass * (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
   }
   return 0.5 * ekinetic * conversion;
 }
@@ -184,10 +170,8 @@ void MolecularDynamics::assign_velocities(Float temperature) {
   for (kernel::ParticlesTemp::iterator iter = ps.begin(); iter != ps.end();
        ++iter) {
     kernel::Particle *p = *iter;
-
-    for (int i = 0; i < 3; ++i) {
-      p->set_value(vs_[i], sampler());
-    }
+    LinearVelocity(p).set_velocity(algebra::Vector3D(sampler(), sampler(),
+                                                     sampler()));
   }
 
   Float rescale =
@@ -196,12 +180,11 @@ void MolecularDynamics::assign_velocities(Float temperature) {
   for (kernel::ParticlesTemp::iterator iter = ps.begin(); iter != ps.end();
        ++iter) {
     kernel::Particle *p = *iter;
+    LinearVelocity v(p);
 
-    for (int i = 0; i < 3; ++i) {
-      Float velocity = p->get_value(vs_[i]);
-      velocity *= rescale;
-      p->set_value(vs_[i], velocity);
-    }
+    algebra::Vector3D velocity = v.get_velocity();
+    velocity *= rescale;
+    v.set_velocity(velocity);
   }
 }
 
