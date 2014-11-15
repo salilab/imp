@@ -177,14 +177,12 @@ class IMPATOMEXPORT MolecularDynamics : public Simulator {
   virtual void propagate_velocities(const kernel::ParticleIndexes &ps,
                                     double step_size);
 
-  //! Cap velocity components to the maximum value.
-  inline void cap_velocity(algebra::Vector3D &v) const {
-    for (unsigned i = 0; i < 3; ++i) {
-      if (v[i] >= 0.0) {
-        v[i] = std::min(v[i], velocity_cap_);
-      } else {
-        v[i] = std::max(v[i], -velocity_cap_);
-      }
+  //! Cap a velocity component to the maximum value.
+  inline void cap_velocity_component(Float &vel) {
+    if (vel >= 0.0) {
+      vel = std::min(vel, velocity_cap_);
+    } else {
+      vel = std::max(vel, -velocity_cap_);
     }
   }
 

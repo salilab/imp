@@ -82,8 +82,7 @@ void MolecularDynamics::propagate_coordinates(const kernel::ParticleIndexes &ps,
       Float velocity = get_model()->get_attribute(vnuis_, ps[i]);
       velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
 
-      // doesn't make much sense to use the same cap here
-      // cap_velocity(velocity); 
+      cap_velocity_component(velocity);
       get_model()->set_attribute(vnuis_, ps[i], velocity);
 
       // calculate position at t+(delta t) from that at t
@@ -99,7 +98,9 @@ void MolecularDynamics::propagate_coordinates(const kernel::ParticleIndexes &ps,
       // calculate velocity at t+(delta t/2) from that at t
       algebra::Vector3D velocity = v.get_velocity();
       velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
-      cap_velocity(velocity);
+      for (unsigned j = 0; j < 3; ++j) {
+        cap_velocity_component(velocity[j]);
+      }
       v.set_velocity(velocity);
 
       // calculate position at t+(delta t) from that at t

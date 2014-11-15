@@ -109,7 +109,9 @@ void MolecularDynamics::propagate_coordinates(const kernel::ParticleIndexes &ps,
     // calculate velocity at t+(delta t/2) from that at t
     algebra::Vector3D velocity = v.get_velocity();
     velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
-    cap_velocity(velocity);
+    for (unsigned int j = 0; j < 3; ++j) {
+      cap_velocity_component(velocity[j]);
+    }
     v.set_velocity(velocity);
 
     // calculate position at t+(delta t) from that at t
