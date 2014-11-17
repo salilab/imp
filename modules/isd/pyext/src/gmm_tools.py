@@ -9,10 +9,10 @@ import numpy.linalg
 import sys,os
 
 try:
-   import sklearn.mixture
-   nosklearn=False
+    import sklearn.mixture
+    nosklearn=False
 except:
-   nosklearn=True
+    nosklearn=True
 from math import exp,sqrt,copysign
 
 def decorate_gmm_from_text(in_fn,ps,mdl,transform=None,radius_scale=1.0,mass_scale=1.0):
@@ -34,7 +34,7 @@ def decorate_gmm_from_text(in_fn,ps,mdl,transform=None,radius_scale=1.0,mass_sca
             rmax=sqrt(max(g.get_variances()))*radius_scale
             IMP.core.XYZR.setup_particle(ps[ncomp],rmax)
             if not transform is None:
-               IMP.core.transform(IMP.core.RigidBody(ps[ncomp]),transform)
+                IMP.core.transform(IMP.core.RigidBody(ps[ncomp]),transform)
             ncomp+=1
 
 def write_gmm_to_text(ps,out_fn):
@@ -49,11 +49,11 @@ def write_gmm_to_text(ps,out_fn):
         mean=list(shape.get_center())
         fm=[ng,weight]+mean+covar
         try:
-           #python 2.7 format
-           outf.write('|{}|{}|{} {} {}|{} {} {} {} {} {} {} {} {}|\n'.format(*fm))
+            #python 2.7 format
+            outf.write('|{}|{}|{} {} {}|{} {} {} {} {} {} {} {} {}|\n'.format(*fm))
         except ValueError:
-           #python 2.6 and below
-           outf.write('|{0}|{1}|{2} {3} {4}|{5} {6} {7} {8} {9} {10} {11} {12} {13}|\n'.format(*fm))
+            #python 2.6 and below
+            outf.write('|{0}|{1}|{2} {3} {4}|{5} {6} {7} {8} {9} {10} {11} {12} {13}|\n'.format(*fm))
     outf.close()
 
 def write_gmm_to_anchors(ps,out_txt,out_cmm=''):
@@ -66,39 +66,39 @@ def write_gmm_to_anchors(ps,out_txt,out_cmm=''):
     ad=IMP.multifit.AnchorsData(points,[])
     IMP.multifit.write_txt(out_txt,ad)
     if out_cmm!='':
-       print 'will write GMM as anchors-CMM to',out_txt
-       IMP.multifit.write_cmm(out_cmm,os.path.basename(out_cmm).strip('.cmm'),ad)
+        print 'will write GMM as anchors-CMM to',out_txt
+        IMP.multifit.write_cmm(out_cmm,os.path.basename(out_cmm).strip('.cmm'),ad)
 
 def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None):
-	'''write density map from GMM. input can be either particles or gaussians'''
-	if type(to_draw[0]) in (IMP.Particle,IMP.atom.Hierarchy,IMP.core.Hierarchy):
-		ps=to_draw
-	elif type(to_draw[0])==IMP.core.Gaussian:
-		ps=[g.get_particle() for g in to_draw]
-	else:
-		print 'ps must be Particles or Gaussians'
-		return
-	print 'will write GMM map to',out_fn
-	if bounding_box is None:
-		if len(ps)>1:
-			s=IMP.algebra.get_enclosing_sphere([IMP.core.XYZ(p).get_coordinates() for p in ps])
-			s2=IMP.algebra.Sphere3D(s.get_center(),s.get_radius()*3)
-		else:
-			g=IMP.core.Gaussian(ps[0]).get_gaussian()
-			s2=IMP.algebra.Sphere3D(g.get_center(),max(g.get_variances())*3)
-		bounding_box=IMP.algebra.get_bounding_box(s2)
-	shapes=[]
-	weights=[]
-	for p in ps:
-		shapes.append(IMP.core.Gaussian(p).get_gaussian())
-		weights.append(IMP.atom.Mass(p).get_mass())
-	print 'rasterizing'
-	grid=IMP.algebra.get_rasterized(shapes,weights,voxel_size,bounding_box)
-	print 'creating map'
-	d1=IMP.em.create_density_map(grid)
-	print 'writing'
-	IMP.em.write_map(d1,out_fn,IMP.em.MRCReaderWriter())
-	del d1
+    '''write density map from GMM. input can be either particles or gaussians'''
+    if type(to_draw[0]) in (IMP.Particle,IMP.atom.Hierarchy,IMP.core.Hierarchy):
+        ps=to_draw
+    elif type(to_draw[0])==IMP.core.Gaussian:
+        ps=[g.get_particle() for g in to_draw]
+    else:
+        print 'ps must be Particles or Gaussians'
+        return
+    print 'will write GMM map to',out_fn
+    if bounding_box is None:
+        if len(ps)>1:
+            s=IMP.algebra.get_enclosing_sphere([IMP.core.XYZ(p).get_coordinates() for p in ps])
+            s2=IMP.algebra.Sphere3D(s.get_center(),s.get_radius()*3)
+        else:
+            g=IMP.core.Gaussian(ps[0]).get_gaussian()
+            s2=IMP.algebra.Sphere3D(g.get_center(),max(g.get_variances())*3)
+        bounding_box=IMP.algebra.get_bounding_box(s2)
+    shapes=[]
+    weights=[]
+    for p in ps:
+        shapes.append(IMP.core.Gaussian(p).get_gaussian())
+        weights.append(IMP.atom.Mass(p).get_mass())
+    print 'rasterizing'
+    grid=IMP.algebra.get_rasterized(shapes,weights,voxel_size,bounding_box)
+    print 'creating map'
+    d1=IMP.em.create_density_map(grid)
+    print 'writing'
+    IMP.em.write_map(d1,out_fn,IMP.em.MRCReaderWriter())
+    del d1
 
 def write_sklearn_gmm_to_map(gmm,out_fn,apix=0,bbox=None,dmap_model=None):
     '''write density map directly from sklearn GMM (kinda slow) '''
@@ -122,7 +122,7 @@ def write_sklearn_gmm_to_map(gmm,out_fn,apix=0,bbox=None,dmap_model=None):
     IMP.em.write_map(d1,out_fn,IMP.em.MRCReaderWriter())
 
 def draw_points(pts,out_fn,trans=IMP.algebra.get_identity_transformation_3d(),
-				use_colors=False):
+                                use_colors=False):
     ''' given some points (and optional transform), write them to chimera 'bild' format
     colors flag only applies to ellipses, otherwise it'll be weird'''
     outf=open(out_fn,'w')
@@ -178,8 +178,8 @@ def sample_and_fit_to_particles(model,
                                 output_txt=None):
     density_particles=[]
     if multiply_by_total_mass:
-       mass_multiplier=sum((IMP.atom.Mass(p).get_mass() for p in set(fragment_particles)))
-       print 'add_component_density: will multiply by mass',mass_multiplier
+        mass_multiplier=sum((IMP.atom.Mass(p).get_mass() for p in set(fragment_particles)))
+        print 'add_component_density: will multiply by mass',mass_multiplier
 
     # simulate density from ps, then calculate points to fit
     print 'add_component_density: sampling points'
@@ -201,12 +201,12 @@ def sample_and_fit_to_particles(model,
                       mass_multiplier=mass_multiplier)
 
     if not output_txt is None:
-       write_gmm_to_text(density_particles,output_txt)
+        write_gmm_to_text(density_particles,output_txt)
     if not output_map is None:
-       write_gmm_to_map(to_draw=density_particles,
-                        out_fn=output_map,
-                        voxel_size=voxel_size,
-                        bounding_box=IMP.em.get_bounding_box(dmap))
+        write_gmm_to_map(to_draw=density_particles,
+                         out_fn=output_map,
+                         voxel_size=voxel_size,
+                         bounding_box=IMP.em.get_bounding_box(dmap))
 
     return density_particles
 
