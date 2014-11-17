@@ -1,5 +1,5 @@
 /**
- *  \file isd/AtomicCrossLinkMSRestraint.h
+ *  \file IMP/isd/AtomicCrossLinkMSRestraint.h
  *  \brief A pmf based likelihood function
  *  with prior knowledge on the flase positive rate.
  *
