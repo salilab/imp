@@ -45,6 +45,8 @@ class Tests(IMP.test.TestCase):
                                   IMP.algebra.Vector3D(
                                       0.0, 0.0, 4.0)),
             5.0)
+        points = IMP.algebra.get_grid_surface_cover(cyl, 0, 8)
+        self.assertEqual(len(points), 0)
         points = IMP.algebra.get_grid_surface_cover(cyl, 8, 8)
         # check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0, 0.0, 0.0)
@@ -100,6 +102,8 @@ class Tests(IMP.test.TestCase):
                                   IMP.algebra.Vector3D(
                                       15.0, 7.0, 10.0)),
             5.0)
+        points = IMP.algebra.get_uniform_surface_cover(cyl, 0)
+        self.assertEqual(len(points), 0)
         points = IMP.algebra.get_uniform_surface_cover(cyl, 1000)
         # check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0, 0.0, 0.0)
