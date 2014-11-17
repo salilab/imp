@@ -121,7 +121,7 @@ def report_cpp_component(name, typ, matches, excludes, prefix, outdir):
 
 def report_cpp_module(module, srcdir, outdir):
     report_cpp_component(module, "module", ['/modules/%s/' % module],
-                         ['/dependency/'], srcdir, outdir)
+                         ['/dependency/', '/test/'], srcdir, outdir)
 
 
 def report_cpp_dependency(dep, srcdir, outdir):
