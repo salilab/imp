@@ -22,6 +22,12 @@ class Tests(IMP.test.TestCase):
             IMP.algebra.get_volume(sph), math.pi * 125.0 * (4.0 / 3),
             places=1)
 
+    def test_random_vector_2d(self):
+        """Test random vectors on a 2D sphere (circle)"""
+        s = IMP.algebra.Sphere2D(IMP.algebra.Vector2D(1,2), 3)
+        v = IMP.algebra.get_random_vector_in(s)
+        self.assertLess(IMP.algebra.get_distance(v, s.get_center()), 3. + 1e-6)
+
     def test_enclosing(self):
         """Check enclosing sphere"""
         ss = []
