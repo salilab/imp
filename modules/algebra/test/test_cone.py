@@ -54,5 +54,15 @@ class Tests(IMP.test.TestCase):
         for v in IMP.algebra.get_uniform_surface_cover(sp, 3):
             self.assertTrue(bs.get_contains(v))
 
+    def test_surface_cover(self):
+        """Check surface cover of cone"""
+        s = IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0, 0.0, 0.0),
+                                  IMP.algebra.Vector3D(0.0, 0.0, 5.0))
+        cone = IMP.algebra.Cone3D(s, 4.0)
+        pts = IMP.algebra.get_uniform_surface_cover(cone, 10)
+        self.assertEqual(len(pts), 10)
+        for p in pts:
+            self.assertTrue(cone.get_contains(p))
+
 if __name__ == '__main__':
     IMP.test.main()
