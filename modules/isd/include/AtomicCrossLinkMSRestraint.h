@@ -17,6 +17,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
+//! Restrain atom pairs based on a set of crosslinks.
 class IMPISDEXPORT AtomicCrossLinkMSRestraint : public Restraint {
 public:
   //! Constructor
