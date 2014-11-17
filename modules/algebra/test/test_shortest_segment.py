@@ -16,15 +16,19 @@ class Tests(IMP.test.TestCase):
         ssab = ss(sa, sb)
         print ssab
         self.assertAlmostEqual(ssab.get_length(), 1, delta=.1)
+        self.assertAlmostEqual(IMP.algebra.get_distance(sa, sb), 1, delta=.1)
         sa = S(V(0, 0, 10), V(0, 0, 0))
         sb = S(V(1, 0, 0), V(1, 0, 10))
         ssab = ss(sa, sb)
         print ssab
         self.assertAlmostEqual(ssab.get_length(), 1, delta=.1)
+        self.assertAlmostEqual(IMP.algebra.get_distance(sa, sb), 1, delta=.1)
         sa = S(V(0, 0, -10), V(0, 0, 0))
         sb = S(V(1, 0, 0), V(1, 0, 10))
         ssab = ss(sa, sb)
         print ssab
         self.assertAlmostEqual(ssab.get_length(), 1, delta=.1)
+        self.assertAlmostEqual(IMP.algebra.get_distance(sa, sb), 1, delta=.1)
+
 if __name__ == '__main__':
     IMP.test.main()
