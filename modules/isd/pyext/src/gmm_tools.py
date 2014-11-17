@@ -1,3 +1,7 @@
+"""@namespace IMP.isd.gmm_tools
+   Tools for handling Gaussian Mixture Models.
+"""
+
 import IMP
 import IMP.core
 import IMP.algebra
