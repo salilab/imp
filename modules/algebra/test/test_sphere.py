@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
-
+import StringIO
 
 class Tests(IMP.test.TestCase):
 
@@ -63,6 +63,26 @@ class Tests(IMP.test.TestCase):
         print expected_p, observed_p
         self.assertAlmostEqual(observed_p, expected_p, places=1)
 
+    def test_io(self):
+        """Check I/O of Sphere3Ds"""
+        V = IMP.algebra.Vector3D
+        S = IMP.algebra.Sphere3D
+        vs1 = [S(V(1,2,3), 4),
+               S(V(4,5,6), 7)]
+
+        sio = StringIO.StringIO()
+        IMP.algebra.write_spheres(vs1, sio)
+        sio.seek(0)
+        rpts = IMP.algebra.read_spheres(sio)
+        self.assertEqual(len(rpts), len(vs1))
+        for i in range(0, len(rpts)):
+            self.assertAlmostEqual(rpts[i].get_radius(), vs1[i].get_radius(),
+                                   delta=0.01)
+            dist = IMP.algebra.get_distance(rpts[i].get_center(),
+                                            vs1[i].get_center())
+            self.assertLess(dist, 0.01)
+        sio = StringIO.StringIO("garbage")
+        self.assertRaises(ValueError, IMP.algebra.read_spheres, sio)
 
 if __name__ == '__main__':
     IMP.test.main()
