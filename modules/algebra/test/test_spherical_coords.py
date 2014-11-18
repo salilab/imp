@@ -8,6 +8,12 @@ class Tests(IMP.test.TestCase):
 
     def test_spherical_coords_conversions(self):
         """Check that spherical coords work"""
+        self.assertRaises(ValueError, IMP.algebra.SphericalVector3D,
+                          -1., pi / 2, 0.0)
+        self.assertRaises(ValueError, IMP.algebra.SphericalVector3D,
+                          1., -2. * pi, 0.0)
+        self.assertRaises(ValueError, IMP.algebra.SphericalVector3D,
+                          1., 0.0, 3. * pi)
         r = IMP.algebra.SphericalVector3D(1., pi / 2, 0.0)
         p = r.get_cartesian_coordinates()
         self.assertAlmostEqual(p[0], 1.0, places=3)
