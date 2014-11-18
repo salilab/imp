@@ -104,5 +104,32 @@ class Tests(IMP.test.TestCase):
         sio = StringIO.StringIO("garbage")
         self.assertRaises(ValueError, IMP.algebra.read_spheres, sio)
 
+    def test_sphere_nd(self):
+        """Test SphereD<N> operations for unusual N"""
+        for N in (-1,1,2,4,5,6):
+            if N == -1:
+                clsdim = 'K'
+                dim = 5
+            else:
+                clsdim = '%d' % N
+                dim = N
+            V = getattr(IMP.algebra, "Vector%sD" % clsdim)
+            S = getattr(IMP.algebra, "Sphere%sD" % clsdim)
+            v = V([0] * dim)
+            s = S(v, 1.0)
+            self.assertLess(IMP.algebra.get_distance(s, s), 1e-4)
+            bb = IMP.algebra.get_bounding_box(s)
+            if N == -1:
+                us = IMP.algebra.get_unit_sphere_kd(5)
+            else:
+                us = getattr(IMP.algebra, "get_unit_sphere_%sd" % clsdim)()
+            self.assertTrue(IMP.algebra.get_interiors_intersect(s, s))
+            self.assertTrue(s.get_contains(v))
+            self.assertEqual(s.get_dimension(), dim)
+            self.assertAlmostEqual(s.get_radius(), 1.0, delta=1e-4)
+            self.assertLess(IMP.algebra.get_distance(s.get_center(), v), 1e-4)
+            sio = StringIO.StringIO()
+            s.show(sio)
+
 if __name__ == '__main__':
     IMP.test.main()
