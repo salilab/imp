@@ -8,6 +8,13 @@ import os
 
 class Tests(IMP.test.TestCase):
 
+    def test_duplicate_atom(self):
+        """Test Connolly surface with colocated atoms"""
+        center = IMP.algebra.Vector3D(10., 10., 10.)
+        sphere1 = IMP.algebra.Sphere3D(center, 2.265)
+        sphere2 = IMP.algebra.Sphere3D(center, 2.265)
+        pts = IMP.algebra.get_connolly_surface([sphere1, sphere2], 5.0, 1.8)
+
     def test_single_atom(self):
         """Test generation of Connolly surface around a single atom"""
         m = IMP.kernel.Model()
