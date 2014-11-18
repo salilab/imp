@@ -28,8 +28,8 @@ class Tests(IMP.test.TestCase):
         v = IMP.algebra.get_random_vector_in(s)
         self.assertLess(IMP.algebra.get_distance(v, s.get_center()), 3. + 1e-6)
 
-    def test_enclosing(self):
-        """Check enclosing sphere"""
+    def test_enclosing_sphere(self):
+        """Check enclosing sphere of spheres"""
         ss = []
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(10, 10, 10))
@@ -49,6 +49,20 @@ class Tests(IMP.test.TestCase):
                 cs.show()
                 print
                 self.assertLess(d + cs.get_radius() - es.get_radius(), .5)
+
+    def test_enclosing_vector(self):
+        """Check enclosing sphere of vectors"""
+        vs = []
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(10, 10, 10))
+        for i in range(20):
+            vs.append(IMP.algebra.get_random_vector_in(bb))
+        for i in range(1, 20):
+            vss = vs[:i]
+            es = IMP.algebra.get_enclosing_sphere(vss)
+            for v in vss:
+                d = (v - es.get_center()).get_magnitude()
+                self.assertLess(d - es.get_radius(), .5)
 
     def test_sampling_in_sphere(self):
         """Verify uniform sampling within a sphere"""
