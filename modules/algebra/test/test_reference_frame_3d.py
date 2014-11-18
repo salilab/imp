@@ -4,6 +4,7 @@ import IMP.algebra
 
 class Tests(IMP.test.TestCase):
     def test_get_global_ref(self):
+        """Test get_global_reference_frame()"""
         T = IMP.algebra.Transformation3D
         V = IMP.algebra.Vector3D
         idrot = IMP.algebra.get_identity_rotation_3d()
