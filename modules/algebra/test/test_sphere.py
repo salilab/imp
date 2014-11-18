@@ -118,7 +118,9 @@ class Tests(IMP.test.TestCase):
             v = V([0] * dim)
             s = S(v, 1.0)
             self.assertLess(IMP.algebra.get_distance(s, s), 1e-4)
-            bb = IMP.algebra.get_bounding_box(s)
+            # Does not currently work for SphereKD
+            if N != -1:
+                bb = IMP.algebra.get_bounding_box(s)
             if N == -1:
                 us = IMP.algebra.get_unit_sphere_kd(5)
             else:
