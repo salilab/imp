@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
-
+import StringIO
 
 class Tests(IMP.test.TestCase):
 
@@ -48,5 +48,42 @@ class Tests(IMP.test.TestCase):
                                                         IMP.algebra.Vector3D(-5, -5, -5)), 0.001, places=1)
         self.assertAlmostEqual(IMP.algebra.get_distance(bu.get_corner(1),
                                                         IMP.algebra.Vector3D(9, 9, 9)), 0.001, places=1)
+
+    def test_bounding_box_nd(self):
+        """Test BoundingBox<N> operations for unusual N"""
+        for N in (-1,1,2,4,5,6):
+            if N == -1:
+                clsdim = 'K'
+                dim = 5
+            else:
+                clsdim = '%d' % N
+                dim = N
+            V = getattr(IMP.algebra, "Vector%sD" % clsdim)
+            B = getattr(IMP.algebra, "BoundingBox%sD" % clsdim)
+            v1 = V([0] * dim)
+            v2 = V([2] * dim)
+            b = B(v1, v2)
+            if N == -1:
+                #c = IMP.algebra.get_cube_kd(5) # issue 843
+                #inters = IMP.algebra.get_intersection(b, b) # issue 843
+                #uni = IMP.algebra.get_union(b, b) # issue 843
+                #ub = IMP.algebra.get_unit_bounding_box_kd()
+                self.assertRaises(IMP.base.InternalException,
+                                  IMP.algebra.get_vertices, b)
+            else:
+                c = getattr(IMP.algebra, "get_cube_%sd" % clsdim)(1.0)
+                vertices = IMP.algebra.get_vertices(b)
+                self.assertEqual(len(vertices), 2 ** N)
+                inters = IMP.algebra.get_intersection(b, b)
+                uni = IMP.algebra.get_union(b, b)
+                ub = getattr(IMP.algebra,
+                             "get_unit_bounding_box_%sd" % clsdim)()
+            self.assertTrue(IMP.algebra.get_interiors_intersect(b, b))
+            self.assertTrue(b.get_contains(v1))
+            self.assertEqual(b.get_dimension(), dim)
+            self.assertLess(IMP.algebra.get_distance(b.get_corner(0), v1), 1e-4)
+            sio = StringIO.StringIO()
+            b.show(sio)
+
 if __name__ == '__main__':
     IMP.test.main()
