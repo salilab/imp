@@ -28,13 +28,21 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(cyl.get_radius(), 5.0)
         self.assertEqual(cyl.get_segment().get_length(), 8.0)
 
-        self.assertAlmostEqual(
-            IMP.algebra.get_surface_area(
-                cyl), 2 * math.pi * 5.0 * 8.0 + 2 * math.pi * 25.0,
-            delta=0.1)
-        self.assertAlmostEqual(
-            IMP.algebra.get_volume(cyl), math.pi * 8.0 * 25.0,
-            delta=0.1)
+    def test_namespace_methods(self):
+        """Check Cylinder3D namespace methods"""
+        cyl = IMP.algebra.Cylinder3D(
+            IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0, 0.0, -4.0),
+                                  IMP.algebra.Vector3D(0.0, 0.0, 4.0)), 5.0)
+        self.assertAlmostEqual(IMP.algebra.get_surface_area(cyl),
+                               2 * math.pi * 5.0 * 8.0 + 2 * math.pi * 25.0,
+                               delta=0.1)
+        self.assertAlmostEqual(IMP.algebra.get_volume(cyl),
+                               math.pi * 8.0 * 25.0, delta=0.1)
+        self.assertRaises(IMP.base.InternalException,
+                          IMP.algebra.get_bounding_box, cyl)
+        g = IMP.algebra.get_cylinder_3d_geometry(cyl)
+        self.assertLess(IMP.algebra.get_distance(g.get_segment(),
+                                                 cyl.get_segment()), 1e-4)
 
     def test_get_grid_surface_cover(self):
         "Check grid cover with cylinder at origin in Z direction"

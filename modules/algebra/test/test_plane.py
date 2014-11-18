@@ -15,6 +15,9 @@ class Tests(IMP.test.TestCase):
         p = IMP.algebra.Plane3D(5.0, IMP.algebra.Vector3D(0.0, 1.0, 0.0))
         self.assertGreater(IMP.algebra.get_area(p), 1e20) # infinite area
         bb = IMP.algebra.get_bounding_box(p)
+        g = IMP.algebra.get_plane_3d_geometry(p)
+        self.assertLess(IMP.algebra.get_distance(p.get_normal(),
+                                                 g.get_normal()), 1e-4)
 
     def test_plane(self):
         """Test Plane3D methods"""

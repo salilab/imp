@@ -19,6 +19,8 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(Exception, IMP.algebra.get_surface_area, c)
         self.assertRaises(Exception, IMP.algebra.get_volume, c)
         self.assertRaises(Exception, IMP.algebra.get_bounding_box, c)
+        g = IMP.algebra.get_cone_3d_geometry(c)
+        self.assertLess((g.get_tip() - c.get_tip()).get_magnitude(), 1e-4)
 
     def test_cone_construction(self):
         """Check that cones on Z are constructed correctly"""
