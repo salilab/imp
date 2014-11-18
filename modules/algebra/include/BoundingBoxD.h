@@ -250,7 +250,7 @@ inline double get_maximum_length(const BoundingBoxD<D> &a) {
   return e;
 }
 
-//! Return a list of the 8 bounding points for the bounding box
+//! Return a list of the 2^D bounding points for the bounding box
 /** \see BoundingBoxD */
 template <int D>
 inline base::Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
