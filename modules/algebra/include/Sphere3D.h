@@ -20,7 +20,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
  */
 IMPALGEBRAEXPORT Sphere3D get_enclosing_sphere(const Sphere3Ds &ss);
 
-//! Return a sphere containing the listed spheres
+//! Return a sphere containing the listed vectors
 /** \see Sphere3D
     \see Vector3D
     \note This method produces tighter bounding spheres if CGAL
