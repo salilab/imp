@@ -179,5 +179,15 @@ class Tests(IMP.test.TestCase):
         v = IMP.algebra.get_random_vector_in(
             IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 1))
 
+    def test_orth_vector(self):
+        """Check get_orthogonal_vector()"""
+        v1 = IMP.algebra.Vector3D(3.0, 6.0, 9.0)
+        v2 = IMP.algebra.get_orthogonal_vector(v1)
+        self.assertLess(IMP.algebra.get_distance(v2,
+                                       IMP.algebra.Vector3D(1,1,-1)), 1e-4)
+        v1 = IMP.algebra.Vector3D(0, 0, 0)
+        v2 = IMP.algebra.get_orthogonal_vector(v1)
+        self.assertLess(IMP.algebra.get_distance(v2, v1), 1e-4)
+
 if __name__ == '__main__':
     IMP.test.main()
