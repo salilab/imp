@@ -222,26 +222,28 @@ inline bool get_interiors_intersect(const BoundingBoxD<D> &a,
 template <int D>
 inline BoundingBoxD<D> get_intersection(const BoundingBoxD<D> &a,
                                         const BoundingBoxD<D> &b) {
-  VectorD<D> ic[2];
+  /* Make sure that for D=-1 the vectors ic[01] get the correct dimension */
+  VectorD<D> ic0 = a.get_corner(0);
+  VectorD<D> ic1 = a.get_corner(1);
   // set low
   int j = 0;
   for (unsigned int i = 0; i < a.get_dimension(); ++i) {
     if (a.get_corner(j)[i] > b.get_corner(j)[i]) {
-      ic[j][i] = a.get_corner(j)[i];
+      ic0[i] = a.get_corner(j)[i];
     } else {
-      ic[j][i] = b.get_corner(j)[i];
+      ic0[i] = b.get_corner(j)[i];
     }
   }
   // set top
   j = 1;
   for (unsigned int i = 0; i < a.get_dimension(); ++i) {
     if (a.get_corner(j)[i] < b.get_corner(j)[i]) {
-      ic[j][i] = a.get_corner(j)[i];
+      ic1[i] = a.get_corner(j)[i];
     } else {
-      ic[j][i] = b.get_corner(j)[i];
+      ic1[i] = b.get_corner(j)[i];
     }
   }
-  return BoundingBoxD<D>(ic[0], ic[1]);
+  return BoundingBoxD<D>(ic0, ic1);
 }
 
 //! Return the union bounding box
