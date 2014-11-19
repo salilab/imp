@@ -20,6 +20,13 @@ class Tests(IMP.test.TestCase):
         patch = IMP.algebra.SpherePatch3D(sph, xy_plane)
         # Not implemented
         self.assertRaises(Exception, IMP.algebra.get_area, patch)
+        g = IMP.algebra.get_sphere_patch_3d_geometry(patch)
+        self.assertLess(IMP.algebra.get_distance(patch.get_plane().get_normal(),
+                                                 g.get_plane().get_normal()),
+                                                 1e-4)
+        self.assertLess(IMP.algebra.get_distance(
+                          patch.get_sphere().get_center(),
+                          g.get_sphere().get_center()), 1e-4)
         bb = IMP.algebra.get_bounding_box(patch)
         self.assertLess(IMP.algebra.get_distance(bb.get_corner(0),
                                      IMP.algebra.Vector3D(-5,-5,-5)), 1e-4)
