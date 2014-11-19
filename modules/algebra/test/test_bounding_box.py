@@ -49,6 +49,63 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(IMP.algebra.get_distance(bu.get_corner(1),
                                                         IMP.algebra.Vector3D(9, 9, 9)), 0.001, places=1)
 
+    def test_addition_bb(self):
+        """Check BoundingBox3D addition of BoundingBox3D"""
+        V = IMP.algebra.Vector3D
+        b1 = IMP.algebra.BoundingBox3D(V(1, 1, 1), V(9, 9, 9))
+        b2 = IMP.algebra.BoundingBox3D(V(-5, -5, -5), V(3, 3, 3))
+        idb1 = id(b1)
+        cppobj = str(b1.this)
+        bsum = b1 + b2
+        b1 += b2
+        # Inplace addition should not change the Python object identity:
+        self.assertEqual(id(b1), idb1)
+        # The underlying C++ object pointer should be unchanged too:
+        self.assertEqual(str(b1.this), cppobj)
+        for obj in b1, bsum:
+            self.assertLess(IMP.algebra.get_distance(b1.get_corner(0),
+                                                     V(-5, -5, -5)), 1e-4)
+            self.assertLess(IMP.algebra.get_distance(b1.get_corner(1),
+                                                     V(9, 9, 9)), 1e-4)
+
+    def test_addition_vector(self):
+        """Check BoundingBox3D addition of Vector3D"""
+        V = IMP.algebra.Vector3D
+        b1 = IMP.algebra.BoundingBox3D(V(1, 1, 1), V(9, 9, 9))
+        v2 = V(-5, -5, -5)
+        idb1 = id(b1)
+        cppobj = str(b1.this)
+        bsum = b1 + v2
+        b1 += v2
+        # Inplace addition should not change the Python object identity:
+        self.assertEqual(id(b1), idb1)
+        # The underlying C++ object pointer should be unchanged too:
+        self.assertEqual(str(b1.this), cppobj)
+        for obj in b1, bsum:
+            self.assertLess(IMP.algebra.get_distance(b1.get_corner(0),
+                                                     V(-5, -5, -5)), 1e-4)
+            self.assertLess(IMP.algebra.get_distance(b1.get_corner(1),
+                                                     V(9, 9, 9)), 1e-4)
+
+    def test_addition_float(self):
+        """Check BoundingBox3D addition of a float"""
+        V = IMP.algebra.Vector3D
+        b1 = IMP.algebra.BoundingBox3D(V(1, 1, 1), V(9, 9, 9))
+        v2 = 4.
+        idb1 = id(b1)
+        cppobj = str(b1.this)
+        bsum = b1 + v2
+        b1 += v2
+        # Inplace addition should not change the Python object identity:
+        self.assertEqual(id(b1), idb1)
+        # The underlying C++ object pointer should be unchanged too:
+        self.assertEqual(str(b1.this), cppobj)
+        for obj in b1, bsum:
+            self.assertLess(IMP.algebra.get_distance(b1.get_corner(0),
+                                                     V(-3, -3, -3)), 1e-4)
+            self.assertLess(IMP.algebra.get_distance(b1.get_corner(1),
+                                                     V(13, 13, 13)), 1e-4)
+
     def test_default_kd(self):
         """Test default KD constructor"""
         if IMP.base.get_check_level() >= IMP.base.USAGE:

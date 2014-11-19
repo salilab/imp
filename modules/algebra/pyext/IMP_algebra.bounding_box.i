@@ -1,6 +1,5 @@
 
 /* Provide our own implementations for some operators */
-//%ignore IMP::algebra::BoundingBoxD::operator[];
 %ignore IMP::algebra::BoundingBoxD::operator+=;
 
 /* Make sure that we return the original Python object from C++ inplace
@@ -8,6 +7,11 @@
 namespace IMP {
  namespace algebra {
   %feature("shadow") BoundingBoxD::__iadd__(const IMP::algebra::BoundingBoxD<D> &) %{
+    def __iadd__(self, *args):
+        $action(self, *args)
+        return self
+  %}
+  %feature("shadow") BoundingBoxD::__iadd__(const IMP::algebra::VectorD<D> &) %{
     def __iadd__(self, *args):
         $action(self, *args)
         return self
@@ -41,7 +45,10 @@ namespace IMP {
   void __iadd__(const IMP::algebra::BoundingBoxD<D> &o) { self->operator+=(o); }
   void __iadd__(const IMP::algebra::VectorD<D> &o) { self->operator+=(o); }
   void __iadd__(double o) { self->operator+=(o); }
-  void __add__(const IMP::algebra::BoundingBoxD<D> &o) { self->operator+(o); }
-    unsigned int __len__() {return 2;}
+  unsigned int __len__() {return 2;}
+  /* Provide support for operator+ */
+  const IMP::algebra::BoundingBoxD<D> & __add__(const IMP::algebra::BoundingBoxD<D> &o) { return self->operator+(o); }
+  const IMP::algebra::BoundingBoxD<D> & __add__(const IMP::algebra::VectorD<D> &o) { return self->operator+(o); }
+  const IMP::algebra::BoundingBoxD<D> & __add__(double o) { return self->operator+(o); }
 };
 %ignore IMP::algebra::BoundingBoxD::BoundingBoxD();
