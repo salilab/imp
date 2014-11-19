@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
-
+import StringIO
 
 class Tests(IMP.test.TestCase):
 
@@ -19,6 +19,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual([x for x in s.get_point(0)], [0, 0, 0])
         self.assertEqual([x for x in s.get_point(1)], [0, 0, 5])
         self.assertEqual([x for x in s.get_point(2)], [0, 5, 0])
+        sio = StringIO.StringIO()
+        s.show(sio)
 
     def test_get_are_colinear(self):
         """Check get_are_colinear()"""
