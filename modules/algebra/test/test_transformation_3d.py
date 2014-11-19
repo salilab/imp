@@ -99,6 +99,17 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(q2d[1], q3d[1], delta=.05)
         self.assertAlmostEqual(0.0, q3d[2], delta=.05)
 
+    def test_get_transformed_bb(self):
+        """Check get_transformed() for a BoundingBox3D"""
+        V = IMP.algebra.Vector3D
+        bb = IMP.algebra.BoundingBox3D(V(1,2,3), V(4,5,6))
+        r = IMP.algebra.get_rotation_about_axis(V(0,1,0), math.pi / 2.)
+        t = IMP.algebra.Transformation3D(r, V(10,20,30))
+        nbb = IMP.algebra.get_transformed(bb, t)
+        self.assertLess(IMP.algebra.get_distance(nbb.get_corner(0),
+                          V(13, 22, 26)), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(nbb.get_corner(1),
+                          V(16, 25, 29)), 1e-4)
 
 if __name__ == '__main__':
     IMP.test.main()
