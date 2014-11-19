@@ -27,11 +27,7 @@ class IMPALGEBRAEXPORT Segment3D : public GeometricPrimitiveD<3> {
   Segment3D(const Vector3D &start, const Vector3D &end);
   //! Get the start=0/end=1 point of the segment
   const Vector3D &get_point(unsigned int i) const {
-#if defined(IMP_SWIG_WRAPPER)
-    IMP_USAGE_CHECK(i < 2, "invalid point index");
-#else
     IMP_INTERNAL_CHECK(i < 2, "Invalid point index");
-#endif
     return p_[i];
   }
   Vector3D get_middle_point() const { return .5 * p_[0] + .5 * p_[1]; }
