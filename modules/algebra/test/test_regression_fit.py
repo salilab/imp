@@ -66,6 +66,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(pf.get_a(), 1.0, delta=0.01)
         self.assertAlmostEqual(pf.get_b(), 3.0, delta=0.01)
         self.assertAlmostEqual(pf.get_c(), 5.0, delta=0.01)
+        self.assertAlmostEqual(pf.get_fit_error(), 0.0, delta=0.01)
 
 if __name__ == '__main__':
     IMP.test.main()
