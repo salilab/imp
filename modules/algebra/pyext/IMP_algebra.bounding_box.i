@@ -21,6 +21,14 @@ namespace IMP {
 }
 
 %extend IMP::algebra::BoundingBoxD {
+  /* Make sure that default-constructed BoundingBoxKD objects cannot
+     be made in Python */
+  BoundingBoxD() {
+    IMP_USAGE_CHECK(D > 0, "The constructor can not be used "
+                           << "with a variable dim bounding box.");
+    return new IMP::algebra::BoundingBoxD<D>();
+  }
+
   IMP::algebra::VectorD<D> __getitem__(unsigned int index) const {
     if (index >= 2) throw IMP::base::IndexException("");
     return self->get_corner(index);
@@ -36,3 +44,4 @@ namespace IMP {
   void __add__(const IMP::algebra::BoundingBoxD<D> &o) { self->operator+(o); }
     unsigned int __len__() {return 2;}
 };
+%ignore IMP::algebra::BoundingBoxD::BoundingBoxD();

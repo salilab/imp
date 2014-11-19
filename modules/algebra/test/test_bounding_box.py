@@ -49,6 +49,12 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(IMP.algebra.get_distance(bu.get_corner(1),
                                                         IMP.algebra.Vector3D(9, 9, 9)), 0.001, places=1)
 
+    def test_default_kd(self):
+        """Test default KD constructor"""
+        if IMP.base.get_check_level() >= IMP.base.USAGE:
+            self.assertRaises(IMP.base.UsageException,
+                              IMP.algebra.BoundingBoxKD)
+
     def test_bounding_box_nd(self):
         """Test BoundingBox<N> operations for unusual N"""
         for N in (-1,1,2,4,5,6):
@@ -64,20 +70,18 @@ class Tests(IMP.test.TestCase):
             v2 = V([2] * dim)
             b = B(v1, v2)
             if N == -1:
-                #c = IMP.algebra.get_cube_kd(5) # issue 843
-                #inters = IMP.algebra.get_intersection(b, b) # issue 843
-                #uni = IMP.algebra.get_union(b, b) # issue 843
-                #ub = IMP.algebra.get_unit_bounding_box_kd()
+                c = IMP.algebra.get_cube_kd(5, 1.0)
+                ub = IMP.algebra.get_unit_bounding_box_kd(5)
                 self.assertRaises(IMP.base.InternalException,
                                   IMP.algebra.get_vertices, b)
             else:
                 c = getattr(IMP.algebra, "get_cube_%sd" % clsdim)(1.0)
                 vertices = IMP.algebra.get_vertices(b)
                 self.assertEqual(len(vertices), 2 ** N)
-                inters = IMP.algebra.get_intersection(b, b)
-                uni = IMP.algebra.get_union(b, b)
                 ub = getattr(IMP.algebra,
                              "get_unit_bounding_box_%sd" % clsdim)()
+            inters = IMP.algebra.get_intersection(b, b)
+            uni = IMP.algebra.get_union(b, b)
             self.assertTrue(IMP.algebra.get_interiors_intersect(b, b))
             self.assertTrue(b.get_contains(v1))
             self.assertEqual(b.get_dimension(), dim)

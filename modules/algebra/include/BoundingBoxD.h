@@ -35,10 +35,26 @@ class BoundingBoxD {
  public:
   //! Create an empty bounding box
   BoundingBoxD() {
+    /* Let SWIG make uninitialized BoundingBoxKD objects (see issue #843).
+       Otherwise, any function that returns a BoundingBoxKD will fail, since
+       SWIG generates code that looks like:
+         BoundingBoxKD result;
+         ...
+         result = call_imp_function()
+       The usage check for BoundingBoxKD is moved from here to the SWIG wrapper
+       itself, so a user still can't make a default-constructed BoundingBoxKD
+       in Python.
+     */
+#if defined(IMP_SWIG_WRAPPER)
+    if (D > 0) {
+      make_empty();
+    }
+#else
     IMP_USAGE_CHECK(D > 0, "The constructor can not be used "
-                               << "with a variable dim bounding box.");
+                           << "with a variable dim bounding box.");
 
     make_empty();
+#endif
   }
   //! Create an empty bounding box
   explicit BoundingBoxD(unsigned int d) {
