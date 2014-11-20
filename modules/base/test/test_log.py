@@ -68,5 +68,14 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.VERBOSE)
         IMP.base._test_log()
         print "done"
+
+    def test_log_state(self):
+        """Test SetLogState"""
+        s = IMP.base.SetLogState()
+        s.set(IMP.base.DEFAULT)
+        s.set(IMP.base.VERBOSE)
+        sio = StringIO()
+        s.show(sio)
+
 if __name__ == '__main__':
     IMP.test.main()
