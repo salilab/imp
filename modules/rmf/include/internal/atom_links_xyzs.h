@@ -17,6 +17,7 @@
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
 class IMPRMFEXPORT HierarchyLoadXYZs {
+  RMF::decorator::ReferenceFrameFactory reference_frame_factory_;
   RMF::decorator::IntermediateParticleFactory ip_factory_;
   typedef std::pair<RMF::NodeID, kernel::ParticleIndex> Pair;
   typedef base::Vector<Pair> NodeParticlePairs;

@@ -12,7 +12,8 @@
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
-HierarchyLoadXYZs::HierarchyLoadXYZs(RMF::FileConstHandle f) : ip_factory_(f) {
+HierarchyLoadXYZs::HierarchyLoadXYZs(RMF::FileConstHandle f)
+  : reference_frame_factory_(f), ip_factory_(f) {
   // backwards compat
   RMF::Category cat = f.get_category("IMP");
   rb_index_key_ = f.get_key(cat, "rigid body", RMF::IntTraits());
@@ -40,7 +41,13 @@ void HierarchyLoadXYZs::setup_particle(
       rb = core::RigidBody(m, rigid_bodies[rigid_bodies.size() - 2]);
     }
     rb.add_member(p);
-    if (!ip_factory_.get_is_static(n)) {
+    if (reference_frame_factory_.get_is(n)
+        && !reference_frame_factory_.get_is_static(n)) {
+      IMP_LOG_VERBOSE("Member particle " << m->get_particle_name(p)
+                      << " is not static and is also a rigid body"
+                      << std::endl);
+      rb.set_is_rigid_member(p, false);
+    } else if (!ip_factory_.get_is_static(n)) {
       IMP_LOG_VERBOSE("Member particle " << m->get_particle_name(p)
                                          << " is not static" << std::endl);
       rb.set_is_rigid_member(p, false);
