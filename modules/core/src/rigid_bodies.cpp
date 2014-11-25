@@ -705,7 +705,7 @@ void RigidBody::add_member(kernel::ParticleIndexAdaptor pi) {
   on_change();
 }
 
-void RigidBody::add_non_rigid_member(kernel::ParticleIndex pi) {
+void RigidBody::add_non_rigid_member(kernel::ParticleIndexAdaptor pi) {
   IMP_FUNCTION_LOG;
   add_member(pi);
   set_is_rigid_member(pi, false);
