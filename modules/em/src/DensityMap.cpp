@@ -534,6 +534,7 @@ std::string DensityMap::get_locations_string(float t) {
       out << x << " " << y << " " << z << std::endl;
     }
   }
+
   return out.str();
 }
 
@@ -542,6 +543,7 @@ void DensityMap::multiply(float factor) {
   for (long i = 0; i < size; i++) {
     data_[i] = factor * data_[i];
   }
+  rms_calculated_=false; // because RMS is no longer accurate!
 }
 double get_sum(const DensityMap *m1) {
   long size = m1->get_header()->get_number_of_voxels();
