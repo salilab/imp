@@ -122,7 +122,7 @@ void HierarchyLoadRigidBodies::link_particle(
     kernel::ParticleIndex rb = find_rigid_body(m, p);
     link_rigid_body(n, m, rb, rigid_bodies);
   } else {
-    if (core::RigidBodyMember::get_is_setup(m, p)
+    if (core::RigidBody::get_is_setup(m, p)
         || reference_frame_factory_.get_is(n)) {
       link_rigid_body(n, m, p, rigid_bodies);
     }
