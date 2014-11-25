@@ -483,7 +483,7 @@ class Tests(IMP.test.TestCase):
 
             # check that coordinates are read correctly
             ps = IMP.atom.get_leaves(r2)
-            rb = IMP.core.RigidMember(ps[0]).get_rigid_body()
+            rb = IMP.core.RigidBodyMember(ps[0]).get_rigid_body()
             frame0 = rb.get_reference_frame()
             self.assert_(IMP.core.RigidBodyMember.get_is_setup(r2.get_child(0)))
             for i in range(0, 11):
