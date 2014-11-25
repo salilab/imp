@@ -35,7 +35,7 @@ The class keeps track
 internally of how far the particles have moved using a score state,
 and is also updated via a score state. A too small a `slack`
 value can slow things down because the non-bonded list will be updated
-frequently. Also, a too large a slack value generates many particle pairs
+frequently. Also, too large a slack value generates many particle pairs
 whose score is zero, thereby unnecessarily slowing down the score
 calculation. As a result,
 it may be useful to experiment with the parameter. You may wish to use
