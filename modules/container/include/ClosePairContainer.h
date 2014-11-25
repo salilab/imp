@@ -47,7 +47,7 @@ list of pairs, make sure the IMP::PairScore is 0 for distances beyond
 the `distance_cutoff`.
 
 \note As with any invariant in \imp, the contents of the container will
-only be value during restraint evaluation, or immediately following
+only be valid during restraint evaluation, or immediately following
 a call to kernel::Model::update().
 
 \note The ClosePairContainer is strongly associated with the
