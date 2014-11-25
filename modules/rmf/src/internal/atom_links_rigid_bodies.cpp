@@ -102,7 +102,9 @@ kernel::ParticleIndex HierarchyLoadRigidBodies::find_rigid_body(
 void HierarchyLoadRigidBodies::link_rigid_body(
     RMF::NodeConstHandle n, kernel::Model *m, kernel::ParticleIndex p,
     kernel::ParticleIndexes &rigid_bodies) {
-  if (reference_frame_factory_.get_is_static(n)) {
+  // Cannot use reference_frame_factory_ here because for nonrigid nested
+  // rigid body members no static values are set in RMF
+  if (core::RigidMember::get_is_setup(m, p)) {
     IMP_LOG_VERBOSE("Rigid body " << m->get_particle_name(p) << " is static"
                                   << std::endl);
   } else if (rigid_bodies.empty()) {
@@ -120,7 +122,8 @@ void HierarchyLoadRigidBodies::link_particle(
     kernel::ParticleIndex rb = find_rigid_body(m, p);
     link_rigid_body(n, m, rb, rigid_bodies);
   } else {
-    if (reference_frame_factory_.get_is(n)) {
+    if (core::RigidBodyMember::get_is_setup(m, p)
+        || reference_frame_factory_.get_is(n)) {
       link_rigid_body(n, m, p, rigid_bodies);
     }
 
