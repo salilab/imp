@@ -13,7 +13,9 @@ BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 %if 0%{?rhel} == 5
 BuildRequires: python26-devel
 Requires: python26
+%define apppython /usr/bin/python26
 %else
+%define apppython /usr/bin/python
 BuildRequires: python-devel >= 2.6
 %endif
 # Note that RHEL 5 doesn't have a new enough swig to build IMP. If you must
@@ -21,7 +23,7 @@ BuildRequires: python-devel >= 2.6
 # before building IMP.
 BuildRequires: swig >= 1.3.40
 BuildRequires: gsl-devel, fftw-devel, hdf5-devel >= 1.8
-BuildRequires: zlib-devel
+BuildRequires: zlib-devel, perl
 # Needed to build the cnmultifit module; obtain
 # from http://salilab.org/imp/libTAU.html
 # (Or, if you don't need cnmultifit, you can comment out this line)
@@ -168,6 +170,9 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
        ${RPM_BUILD_ROOT}/usr/include/example* \
        ${pydir}/IMP/example_system_local \
        ${pydir}/_IMP_example_system_local.so
+
+# Make sure all Python applications use the same Python we built with
+perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}/usr/bin/*
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
