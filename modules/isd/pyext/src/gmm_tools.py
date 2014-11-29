@@ -7,7 +7,6 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.em
-import IMP.multifit
 import numpy as np
 import numpy.linalg
 import sys,os
@@ -40,38 +39,6 @@ def decorate_gmm_from_text(in_fn,ps,mdl,transform=None,radius_scale=1.0,mass_sca
             if not transform is None:
                 IMP.core.transform(IMP.core.RigidBody(ps[ncomp]),transform)
             ncomp+=1
-
-def write_gmm_to_text(ps,out_fn):
-    '''write a list of gaussians to text. must be decorated as Gaussian and Mass'''
-    print 'will write GMM text to',out_fn
-    outf=open(out_fn,'w')
-    outf.write('#|num|weight|mean|covariance matrix|\n')
-    for ng,g in enumerate(ps):
-        shape=IMP.core.Gaussian(g).get_gaussian()
-        weight=IMP.atom.Mass(g).get_mass()
-        covar=[c for row in IMP.algebra.get_covariance(shape) for c in row]
-        mean=list(shape.get_center())
-        fm=[ng,weight]+mean+covar
-        try:
-            #python 2.7 format
-            outf.write('|{}|{}|{} {} {}|{} {} {} {} {} {} {} {} {}|\n'.format(*fm))
-        except ValueError:
-            #python 2.6 and below
-            outf.write('|{0}|{1}|{2} {3} {4}|{5} {6} {7} {8} {9} {10} {11} {12} {13}|\n'.format(*fm))
-    outf.close()
-
-def write_gmm_to_anchors(ps,out_txt,out_cmm=''):
-    '''write a list of gaussians to text. must be decorated as Gaussian and Mass'''
-    print 'will write GMM as anchors to',out_txt
-    points=[]
-    for ng,g in enumerate(ps):
-        shape=IMP.core.Gaussian(g).get_gaussian()
-        points.append(IMP.algebra.Vector3D(list(shape.get_center())))
-    ad=IMP.multifit.AnchorsData(points,[])
-    IMP.multifit.write_txt(out_txt,ad)
-    if out_cmm!='':
-        print 'will write GMM as anchors-CMM to',out_txt
-        IMP.multifit.write_cmm(out_cmm,os.path.basename(out_cmm).strip('.cmm'),ad)
 
 def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None):
     '''write density map from GMM. input can be either particles or gaussians'''
