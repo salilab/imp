@@ -613,7 +613,9 @@ RigidMembers RigidBody::get_rigid_members() const {
   {
     kernel::ParticleIndexes pis = get_body_member_particle_indexes();
     for (unsigned int i = 0; i < pis.size(); ++i) {
-      ret.push_back(RigidMember(get_model(), pis[i]));
+      if (RigidMember::get_is_setup(get_model()->get_particle(pis[i]))) {
+        ret.push_back(RigidMember(get_model(), pis[i]));
+      }
     }
   }
   return ret;
@@ -703,7 +705,7 @@ void RigidBody::add_member(kernel::ParticleIndexAdaptor pi) {
   on_change();
 }
 
-void RigidBody::add_non_rigid_member(kernel::ParticleIndex pi) {
+void RigidBody::add_non_rigid_member(kernel::ParticleIndexAdaptor pi) {
   IMP_FUNCTION_LOG;
   add_member(pi);
   set_is_rigid_member(pi, false);

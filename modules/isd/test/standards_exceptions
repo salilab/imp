@@ -3,6 +3,7 @@ spelling_exceptions=['guinier', 'jeffreys', 'gaussian',
                      'ndims', 'gammahat', 'chiexp', 'logdet', 'fretr',
                      'nstates']
 function_name_exceptions=[
+        'sample_points_from_density',
         'CysteineCrossLinkRestraint.get_CB_coordinates',
         'FretRestraint.get_sumFi',
         'MolecularDynamics.simulate_wave',

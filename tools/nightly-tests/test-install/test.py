@@ -34,10 +34,12 @@ class IMPInstallTests(unittest.TestCase):
 
     def test_applications_installed(self):
         """Check install of basic applications"""
-        apps = ['cnmultifit', 'foxs', 'ligand_score',
-                'multifit', 'pdb_check', 'pdb_rmf', 'rmf_cat',
-                'saxs_merge']
-        for app in apps:
+        # These apps should *always* exit with code 0
+        zero_apps = ['cnmultifit', 'foxs', 'ligand_score',
+                     'multifit', 'pdb_check', 'pdb_rmf']
+        # These apps may also exit with 1 (missing Python modules)
+        one_apps = ['rmf_cat', 'saxs_merge']
+        def test_app(app):
             try:
                 p = subprocess.Popen([app, '--help'], stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT)
@@ -45,6 +47,14 @@ class IMPInstallTests(unittest.TestCase):
                 raise OSError("Could not run %s" % app)
             out = p.stdout.read()
             ret = p.wait()
+            return ret, out
+        for app in zero_apps:
+            ret, out = test_app(app)
+            self.assert_(ret == 0,
+                         "Return code for %s app is %d, not 0; "
+                         "output is %s" % (app, ret, out))
+        for app in one_apps:
+            ret, out = test_app(app)
             self.assert_(ret == 1 or ret == 0,
                          "Return code for %s app is %d, not 0 or 1; "
                          "output is %s" % (app, ret, out))

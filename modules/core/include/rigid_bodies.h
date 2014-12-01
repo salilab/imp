@@ -311,7 +311,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
       @note Currently RigidBody non-rigid members are not handled properly.
   */
-  void add_non_rigid_member(kernel::ParticleIndex pi);
+  void add_non_rigid_member(kernel::ParticleIndexAdaptor p);
 
   /** Set whether a particular member is flagged as a rigid member
       or as a non-rigid member. This affects the way the rigid body

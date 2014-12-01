@@ -267,6 +267,147 @@ class Tests(IMP.test.TestCase):
                         0,
                         delta=.1)
                 print "ok"
+    def test_nested_rigid_body_linking(self):
+        """Test create, save, load, link, and save with nested rigid bodies"""
+        for suffix in IMP.rmf.suffixes:
+            m = IMP.kernel.Model()
+            m.set_log_level(IMP.base.SILENT)
+            r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            r.set_name("rt")
+            rbd = IMP.core.RigidBody.setup_particle(
+                IMP.kernel.Particle(m, "rb"),
+                IMP.algebra.ReferenceFrame3D())
+            ps = []
+            for i in range(0, 4):
+                p = IMP.kernel.Particle(m)
+                v = IMP.algebra.Vector3D(0, 0, 0)
+                v[0] = i % 2
+                if i >= 2:
+                    v[1] = 1
+                else:
+                    v[1] = 0
+                d = IMP.core.XYZR.setup_particle(p)
+                d.set_coordinates(v)
+                d.set_radius(.5)
+                IMP.atom.Mass.setup_particle(p, .1)
+                r.add_child(IMP.atom.Hierarchy.setup_particle(p))
+                rbd.add_member(p)
+                ps.append(p)
+
+            p = IMP.kernel.Particle(m)
+            v = IMP.algebra.Vector3D(.5, .5, .5)
+            d = IMP.core.XYZR.setup_particle(p)
+            d.set_coordinates(v)
+            d.set_radius(.5)
+            IMP.atom.Mass.setup_particle(p, .1)
+            r.add_child(IMP.atom.Hierarchy.setup_particle(p))
+            rbd.add_member(p)
+            ps.append(p)
+
+            nrbps = []
+            for i in range(0, 4):
+                p = IMP.kernel.Particle(m)
+                v = IMP.algebra.Vector3D(0, 0, 1)
+                v[0] = i % 2
+                if i >= 2:
+                    v[1] = 1
+                else:
+                    v[1] = 0
+                d = IMP.core.XYZR.setup_particle(p)
+                d.set_coordinates(v)
+                d.set_radius(.5)
+                IMP.atom.Mass.setup_particle(p, .1)
+                IMP.core.Gaussian.setup_particle(p,IMP.algebra.Gaussian3D(IMP.algebra.ReferenceFrame3D(),[1,1,1]))
+                r.add_child(IMP.atom.Hierarchy.setup_particle(p))
+                rbd.add_non_rigid_member(p.get_index())
+                ps.append(p)
+                nrbps.append(p)
+            fn = self.get_tmp_file_name("rigid_implicit" + suffix)
+            f = RMF.create_rmf_file(fn)
+            IMP.rmf.add_hierarchies(f, [r])
+            coords = []
+            coords.append([IMP.core.XYZ(p).get_coordinates() for p in ps])
+            IMP.rmf.save_frame(f, str(0))
+            frames = [rbd.get_reference_frame()]
+            for i in range(0, 10):
+                bb = IMP.algebra.get_unit_bounding_box_3d()
+                tr = IMP.algebra.Transformation3D(
+                    IMP.algebra.get_random_rotation_3d(),
+                    IMP.algebra.get_random_vector_in(bb))
+                rf = IMP.algebra.ReferenceFrame3D(tr)
+                rbd.set_reference_frame(rf)
+                frames.append(rf)
+                for p in nrbps:
+                    IMP.core.NonRigidMember(p)\
+                        .set_internal_coordinates(IMP.algebra.get_random_vector_in(bb))
+                m.update()
+                IMP.rmf.save_frame(f, str(i + 1))
+                coords.append([IMP.core.XYZ(p).get_coordinates() for p in ps])
+            del f
+
+
+            ######## this is the new code ########
+            # copy the just-written RMF file to a new RMF file
+            #  the copy is performed by creating a new RMF, linking the hier,
+            #  and loading/saving frames one by one
+
+            # read the just-written RMF file once to get the hierarchy info
+            f0 = RMF.open_rmf_file_read_only(fn)
+            h0 = IMP.rmf.create_hierarchies(f0, m)
+            del f0
+
+            # prepare an output RMF file and add the hierarchy
+            out_fn = self.get_tmp_file_name("rigid_implicit2" + suffix)
+            outf = RMF.create_rmf_file(out_fn)
+            IMP.rmf.add_hierarchies(outf,h0)
+
+            # re-read the original RMF, link it, and save the frames
+            f1 = RMF.open_rmf_file_read_only(fn)
+            IMP.rmf.link_hierarchies(f1,h0)
+            for i in range(11):
+                IMP.rmf.load_frame(f1,i)
+                IMP.rmf.save_frame(outf)
+            del f1
+            del outf
+
+            # finally read the RMF file copy nd check if coordinates match...
+            f = RMF.open_rmf_file_read_only(out_fn)
+            r2 = IMP.rmf.create_hierarchies(f,m)[0]
+            #####################################
+
+
+            IMP.base.set_log_level(IMP.base.VERBOSE)
+            for pi in m.get_particle_indexes():
+                if IMP.core.RigidBody.get_is_setup(m, pi) and\
+                        not IMP.core.RigidBodyMember.get_is_setup(m, pi):
+                    IMP.core.show_rigid_body_hierarchy(
+                        IMP.core.RigidBody(m, pi), sys.stdout)
+            ps = IMP.atom.get_leaves(r2)
+            rb = IMP.core.RigidMember(ps[0]).get_rigid_body()
+            frame0 = rb.get_reference_frame()
+            self.assert_(IMP.core.RigidMember.get_is_setup(r2.get_child(0)))
+            for i in range(0, 11):
+                print "loading", i
+                # if i != 0:
+                IMP.rmf.load_frame(f, RMF.FrameID(i))
+                print i, frames[i], frame0.get_local_reference_frame(rb.get_reference_frame())
+                for j, c in enumerate(ps):
+                    oc = IMP.core.XYZ(c).get_coordinates()
+                    print "before update", j, c, oc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates()
+                    m.update()
+                    nc = IMP.core.XYZ(c).get_coordinates()
+                    print "after update", i, j, c, nc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates()
+                    self.assertAlmostEqual((oc - nc).get_magnitude(), 0,
+                                           delta=.1)
+                    self.assertAlmostEqual(
+                        (coords[i][j] - nc).get_magnitude(),
+                        0,
+                        delta=.1)
+                    self.assertAlmostEqual(
+                        (coords[i][j] - oc).get_magnitude(),
+                        0,
+                        delta=.1)
+                print "ok"
 
     def test_nested_rigid_body_all_nonrigid(self):
         """Create a rigid body that ONLY consists of nonrigid members
@@ -342,7 +483,7 @@ class Tests(IMP.test.TestCase):
 
             # check that coordinates are read correctly
             ps = IMP.atom.get_leaves(r2)
-            rb = IMP.core.RigidMember(ps[0]).get_rigid_body()
+            rb = IMP.core.RigidBodyMember(ps[0]).get_rigid_body()
             frame0 = rb.get_reference_frame()
             self.assert_(IMP.core.RigidBodyMember.get_is_setup(r2.get_child(0)))
             for i in range(0, 11):
