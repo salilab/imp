@@ -189,6 +189,7 @@ class OutputPrinter(object):
     def __init__(self):
         # The number of the next line to be written (1-based)
         self.lineno = 1
+        self.last_line_was_comment = False
 
     def output_line(self, indent, line):
         """Output a single line of text at the given indentation level."""
@@ -205,11 +206,17 @@ class OutputPrinter(object):
            to before it, but since we discard the body of each class/function,
            we stand a good chance.)"""
         pad = lineno - len(lines) - self.lineno + 1
+        # Make sure multiple comments (e.g. a namespace docstring followed
+        # by the first class docstring) have at least one blank line between
+        # them so doxygen knows to start a new paragraph
+        if self.last_line_was_comment and lines[0].startswith('#') and pad <= 0:
+            pad = 1
         if pad > 0:
             sys.stdout.write('\n' * pad)
             self.lineno += pad
         for line in lines:
             self.output_line(indent, line)
+        self.last_line_was_comment = lines[-1].startswith('#')
 
 
 def parse_file(fname):
