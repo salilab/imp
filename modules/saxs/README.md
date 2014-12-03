@@ -1,5 +1,17 @@
 \brief Support for small angle X-ray scattering (SAXS) data.
 
+Small angle X-ray scattering (SAXS) is an experimental technique that uses
+scattering of X-rays at low angles to determine structural information about
+proteins in solution. This has the advantage that a crystal is not required;
+however, the information is rotationally averaged.
+
+This module provides a number of classes to handle SAXS profiles. For example,
+Restraint includes the fit to a SAXS profile as an IMP restraint.
+
+See also IMP::foxs for a command line tool to generate a SAXS profile for a
+protein and fit it against an experimental profile, or IMP::saxs_merge for a
+tool to combine multiple experimental profiles.
+
 We provide a number of command line tools to handle SAXS profiles:
 
 # cluster_profiles {#cluster_profiles_bin}
