@@ -41,10 +41,14 @@ def find_pages(topdir, pages):
             if f.endswith('.dox'):
                 fullname = os.path.join(dirpath, f)
                 find_pages_in_file(fullname, pages, page_map)
+            elif f.endswith('.md'):
+                fullname = os.path.join(dirpath, f)
+                pages.append(f)
+                page_map[f] = fullname
     for key, val in page_map.items():
         if val is None:
             raise RuntimeError("Cannot find page %s" % key)
-    return page_map
+    return pages, page_map
 
 
 def make_doxyfile(infh, outfh, mainpage, pages, page_map):
@@ -57,6 +61,6 @@ def make_doxyfile(infh, outfh, mainpage, pages, page_map):
 ourdir = os.path.abspath(os.path.dirname(sys.argv[0]))
 mainpage = os.path.join(ourdir, 'mainpage.dox')
 pages = parse_mainpage(open(mainpage))
-page_map = find_pages(ourdir, pages)
+pages, page_map = find_pages(ourdir, pages)
 make_doxyfile(open('doxygen/tutorial.in'),
               open('doxygen/tutorial', 'w'), mainpage, pages, page_map)

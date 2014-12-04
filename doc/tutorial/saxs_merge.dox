@@ -4,7 +4,7 @@
 
 \section saxs_merge_intro Introduction
 
-In this example, [saxs_merge](@ref impsaxs_merge) is used to join multiple
+In this example, [saxs_merge](@ref IMP::saxs_merge) is used to join multiple
 profiles from small angle X-ray (SAXS) experiments.
 
 All steps in the procedure use a command line tool called

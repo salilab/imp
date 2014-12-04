@@ -7,7 +7,11 @@ for more information, please refer to the
 [IMP manual](../html/index.html).
 
 In order to follow along with the tutorial, you will first need to download
-and install IMP. Please note that if you choose to use a newer version of IMP,
+and install IMP and its dependencies. This is most easily done by downloading
+the [latest stable release](http://integrativemodeling.org/download.html);
+pre-compiled binaries are availble, or you can build from source code.
+
+Please note that if you choose to use a newer version of IMP,
 some scripts may need some modification to work correctly. (If you use an
 older version, some of the applications demonstrated here may not be
 available.)
@@ -17,6 +21,9 @@ available.)
 
    2. [The IMP C++/Python library](library.html). Simple usage of basic
       parts of the IMP library.
+
+   3. [Modeling of RNA Polymerase II stalk]](rnapolii_stalk.html).
+      Modeling of a real complex using the IMP::pmi module.
 
    3. [FoXS](foxs_nup133.html).
       Using IMP's FoXS application to use small-angle X-ray (SAXS) data
