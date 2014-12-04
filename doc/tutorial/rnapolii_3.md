@@ -1,7 +1,7 @@
 Stage 3 - Sampling {#rnapolii_3}
 ==================
 
-With the system representation built and data restraints entered, the system is now ready to sample configurations.  A replica exchange run can be set up using the macro _ReplicaExchange0_:
+With the system representation built and data restraints entered, the system is now ready to sample configurations.  A replica exchange run can be set up using the macro \link IMP::pmi::macros::ReplicaExchange0 ReplicaExchange0\endlink:
 
 \code{.py}
 mc1=IMP.pmi.macros.ReplicaExchange0(m,
@@ -23,25 +23,9 @@ mc1=IMP.pmi.macros.ReplicaExchange0(m,
                                     global_output_directory="output")
 \endcode
 
-Input parameters and [defaults] are:
-* **_m_**: The IMP model
-* **_representation_**: The system [representation](@ref rnapolii_2)
-* **_sampleobjects_**: a list of structural components (generally _representation_) that will be moved and restraints with parameters that need to be sampled
-* **_outputobjects_**: a list of structural objects and restraints that will be included in output
-* **_crosslink_restraints_**: List of cross-link restraints to be included in the RMF file for visualization
-* **_monte_carlo_temperature_**: This temperature may need to be optimized based on post-sampling analysis [1.0]
-* **_simulated_annealing_**: Flag to either do or not do annealing.  [True]
-* **_simulated_annealing_minimum_temperature_**: Should be same as _monte_carlo_temperature_ [1.0]
-* **_simulated_annealing_maximum_temperature_**: [2.5]
-* **_simulated_annealing_minimum_temperature_frames_**: Number of frames to compute at minimum temperature [200]
-* **_simulated_annealing_maximum_temperature_frames_**: Number of frames to compute at temps >_simulated_annealing_maximum_temperature_  [20]
-* **_replica_exchange_minimum_temperature_**: Should be same as _monte_carlo_temperature_ [1.0]
-* **_replica_exchange_maximum_temperature_**: High temperature for Replica Exchange [2.5]
-* **_monte_carlo_steps_**: Total number of MC steps between output frames [10]
-* **_number_of_frames_**: Number of frames to output [1000]
-* **_number_of_best_scoring_models_**: number of top-scoring PDBs to keep around for analysis [500]
-* **_global_output_directory_**: Folder that will be created to house output. [./output]
-
+See the
+\link IMP::pmi::macros::ReplicaExchange0 ReplicaExchange0 documentation\endlink
+for a full description of all of the input parameters.
 
 ---
 The sampling is performed by executing the macro built above:
