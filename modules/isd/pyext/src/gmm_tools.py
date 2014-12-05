@@ -56,7 +56,7 @@ def write_gmm_to_text(ps,out_fn):
         except ValueError:
             #python 2.6 and below
             outf.write('|{0}|{1}|{2} {3} {4}|{5} {6} {7} {8} {9} {10} {11} {12} {13}|\n'.format(*fm))
-        outf.close()
+    outf.close()
 
 def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None):
     '''write density map from GMM. input can be either particles or gaussians'''
