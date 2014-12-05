@@ -22,7 +22,7 @@ available.)
    2. [The IMP C++/Python library](library.html). Simple usage of basic
       parts of the IMP library.
 
-   3. [Modeling of RNA Polymerase II stalk]](rnapolii_stalk.html).
+   3. [Modeling of RNA Polymerase II stalk](rnapolii_stalk.html).
       Modeling of a real complex using the IMP::pmi module.
 
    3. [FoXS](foxs_nup133.html).
