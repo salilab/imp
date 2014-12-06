@@ -25,28 +25,28 @@ available.)
    3. [Modeling of RNA Polymerase II stalk](rnapolii_stalk.html).
       Modeling of a real complex using the IMP::pmi module.
 
-   3. [FoXS](foxs_nup133.html).
+   4. [FoXS](foxs_nup133.html).
       Using IMP's FoXS application to use small-angle X-ray (SAXS) data
       in combination with comparative modeling to improve the structure
       of a protein.
 
-   4. [Integrative docking](idock_pcsk9.html).
+   5. [Integrative docking](idock_pcsk9.html).
       Improving the quality of computational pairwise docking by incorporating
       additional experimental information.
 
-   5. [EMageFit](emagefit_3sfd.html).
+   6. [EMageFit](emagefit_3sfd.html).
       A simple example of modeling of a complex of 4 proteins, by
       combining electron microscopy (EM) class averages of the complex
       with crystal structures of the proteins.
 
-   6. [MultiFit](multifit_3sfd.html).
+   7. [MultiFit](multifit_3sfd.html).
       A similar example of modeling a complex, by multiple fitting of
       individual proteins into a 3D cryo-EM density map of the complex.
 
-   7. [MultiFit of symmetric complexes](cnmultifit_groel.html).
+   8. [MultiFit of symmetric complexes](cnmultifit_groel.html).
       Multiple fitting of a protein structure into a symmetric (ring) complex,
       using a 3D cryo-EM density map of the complex.
 
-   8. [Merging SAXS profiles](saxs_merge.html).
+   9. [Merging SAXS profiles](saxs_merge.html).
       Merging multiple small angle X-ray (SAXS) profiles using `saxs_merge`.
 */
