@@ -69,7 +69,7 @@ KahanVectorAccumulation KahanVectorSum(KahanVectorAccumulation accumulation, IMP
     \f]
     Where the integral is the "overlap function" given by:
     \f[
-    ov(f_M,f_D) = \sum_{i=1}^{N_M} \sum_{j=1}^{N_D} \frac{1}{(2 \pi)^{3/2}|\Sigma_{Mi}+\Sigma_{Dj}|^{1/2}}\exp\left [-\frac{1}{2}(\boldsymbol\mu_{Mi} - \boldsymbol\mu_{Dj})^\intercal (\Sigma_{Mi}+\Sigma_{Dj})^{-1} (\boldsymbol\mu_{Mi} - \boldsymbol \mu_{Dj})\right ]
+    ov(f_M,f_D) = \sum_{i=1}^{N_M} \sum_{j=1}^{N_D} \frac{1}{(2 \pi)^{3/2}|\Sigma_{Mi}+\Sigma_{Dj}|^{1/2}}\exp\left [-\frac{1}{2}(\boldsymbol\mu_{Mi} - \boldsymbol\mu_{Dj})^\top (\Sigma_{Mi}+\Sigma_{Dj})^{-1} (\boldsymbol\mu_{Mi} - \boldsymbol \mu_{Dj})\right ]
     \f]
     \note Source: Greenberg, Pellarin, Sali. In preparation.
  */
