@@ -142,7 +142,7 @@ The excluded volume restraint is calculated at [resolution](resolution) 10 (10 r
 
 **Crosslinks**
 
-A [crosslinking restraint](Cross Linking) is implemented as a distance restraint between two residues.  The two residues are each defined by the protein (component) name and the residue number.  The script here extracts the correct four columns that provide this information from the [input data file](Stage_1.Data_Gathering).
+A [crosslinking restraint](Cross Linking) is implemented as a distance restraint between two residues.  The two residues are each defined by the protein (component) name and the residue number.  The script here extracts the correct four columns that provide this information from the [input data file](@ref rnapolii_1).
 
 \code{.py}
 columnmap={}
