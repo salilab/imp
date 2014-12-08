@@ -389,7 +389,7 @@ def set_sorted_order(
     global order_cache
     order_cache = sorted
     rewrite(outpath,
-            "\n".join(sorted))
+            "\n".join(sorted), verbose=False)
 
 
 def compute_sorted_order(source, extra_data_path):
