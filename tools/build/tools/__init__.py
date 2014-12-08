@@ -138,7 +138,7 @@ def filter_pyapps(fname):
            and (fname.endswith('.py') or has_python_hashbang(fname))
 
 def link_dir(source_dir, target_dir, match=["*"], exclude=[],
-             clean=True, verbose=False, filt=None):
+             clean=True, verbose=False, filt=None, make_subdirs=False):
     if not isinstance(match, list):
         raise TypeError("Expecting a list object for match")
     exclude = exclude + ["SConscript", "CMakeLists.txt", "Files.cmake", ".svn"]
@@ -160,7 +160,13 @@ def link_dir(source_dir, target_dir, match=["*"], exclude=[],
         if name not in exclude:
             target = os.path.join(target_dir, name)
             targets[target] = None
-            link(g, target, verbose=verbose)
+            if os.path.isdir(g) and make_subdirs:
+                if os.path.islink(target):
+                    os.unlink(target)
+                link_dir(g, target, match, exclude, clean=clean,
+                         verbose=verbose, filt=filt, make_subdirs=True)
+            else:
+                link(g, target, verbose=verbose)
     if clean:
         # Remove any old links that are no longer valid
         for ln in existing_links:

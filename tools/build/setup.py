@@ -121,7 +121,8 @@ def link_python(source):
             if os.path.split(old)[1] != "__init__.py" and os.path.split(old)[1] != "_version_check.py":
                 os.unlink(old)
                 # print "linking", path
-        tools.link_dir(os.path.join(g, "pyext", "src"), path, clean=False)
+        tools.link_dir(os.path.join(g, "pyext", "src"), path, clean=False,
+                       make_subdirs=True)
 
 
 def _make_test_driver(outf, cpps):
