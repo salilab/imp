@@ -134,7 +134,8 @@ After defining the representation of the model, we build the restraints by which
 
 **Excluded Volume Restraint**
 \code{.py}
-ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(representation,resolution=10)
+ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(
+                                         representation, resolution=10)
 ev.add_to_model()
 outputobjects.append(ev)
 \endcode
