@@ -254,7 +254,7 @@ def setup_module(module, source, datapath):
     data = tools.get_module_description(source, module, datapath)
     for d in data["required_dependencies"]:
         if not tools.get_dependency_info(d, datapath)["ok"]:
-            print d, "not found"
+            print "Required dependency %s not found" % d
             write_no_ok(module)
             return False, []
     dependencies = data["required_dependencies"]
@@ -266,7 +266,7 @@ def setup_module(module, source, datapath):
             unfound_dependencies.append(d)
     for d in data["required_modules"]:
         if not tools.get_module_info(d, datapath)["ok"]:
-            print "IMP." + d, "not found"
+            print "Required module IMP.%s not available" % d
             write_no_ok(module)
             return False, []
     modules = data["required_modules"]
