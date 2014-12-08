@@ -73,8 +73,10 @@ _super_rigid_bodies_ defines sets of rigid bodies and beads that will move toget
 
 _chain_of_super_rigid_bodies_ sets additional Monte Carlo movers along the connectivity chain of a subunit. It groups sequence-connected rigid domains and/or beads into overlapping pairs and triplets. Each of these groups will be moved rigidly. This mover helps to sample more efficiently complex topologies, made of several rigid bodies, connected by flexible linkers.
 
-***Build the Model Representation***
-The next bit of code takes the input files and creates an [IMP hierarchy](http://integrativemodeling.org/nightly/doc/html/classIMP_1_1atom_1_1Hierarchy.html) based on the given topology, rigid body lists and data files:
+**Build the Model Representation**
+The next bit of code takes the input files and creates an
+\link IMP::atom::Hierarchy IMP hierarchy \endlink based on the given
+topology, rigid body lists and data files:
 
 \code{.py}
 # Initialize model
@@ -151,9 +153,7 @@ columnmap["Protein2"]="pep2.accession"
 columnmap["Residue1"]="pep1.xlinked_aa"
 columnmap["Residue2"]="pep2.xlinked_aa"
 columnmap["IDScore"]=None
-\endcode
-
-\code{.py}
+...
 xl1 = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(representation,
                                    datadirectory+'polii_xlinks.csv',
                                    length=21.0,            
@@ -164,6 +164,10 @@ xl1 = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(representation,
                                    csvfile=True)
 
 xl1.add_to_model()   
+
+# Since we are sampling psi, crosslink restraint must be added to sampleobjects
+sampleobjects.append(xl1)
+outputobjects.append(xl1)
 \endcode
 
 An object _xl1_ for this crosslinking restraint is created and then added to the model.
@@ -172,12 +176,6 @@ An object _xl1_ for this crosslinking restraint is created and then added to the
 * _columnmapping_: Defining the structure of the input file
 * _resolution_: The resolution at which the restraint is evaluated. 1 = residue level
 * _label_: A label for this set of cross links - helpful to identify them later in the stat file
-
-\code{.py}
-# Since we are sampling psi, crosslink restraint must be added to sampleobjects
-sampleobjects.append(xl1)
-outputobjects.append(xl1)
-\endcode
 
 \code{.py}
 # optimize a bit before adding the EM restraint
@@ -206,10 +204,6 @@ The GaussianEMRestraint uses a density overlap function to compare model to data
 * _weight_: heuristic, needed because to calibrate the EM restraint with the other terms. 
 
 and then add it to the output object.  Nothing is being sampled, so it does not need to be added to sample objects.
-
-\code{.py}
-outputobjects.append(gemt)
-\endcode
 
 ---
 
