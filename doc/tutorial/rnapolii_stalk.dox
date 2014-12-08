@@ -41,7 +41,7 @@ The rnapolii example contains three directories: `analysis`, `data` and
 [RNA Pol II](http://en.wikipedia.org/wiki/RNA_polymerase_II) is a eukaryotic complex that catalyzes DNA transcription to synthesize mRNA strands.  Eukaryotic RNA polymerase II contains 12 sub- units, Rpb1 to Rpb12. The yeast RNA Pol II dissociates into a 10-subunit core and a Rpb4/Rpb7 heterodimer. Rpb4 and Rpb7 are conserved from yeast to humans, and form a stalk-like protrusion extending from the main body of the RNA Pol II complex.
 
 
-\section rnapolii_imp Integrative Modeling RNA Polymerase II stalk using IMP
+\section rnapolii_imp Integrative Modeling using IMP
 
 This example will use data from chemical cross linking, EM and x-ray crystallography to localize the two subunits of the RNA Polymerase II stalk (Rpb4, Rpb7) to a static core of the remaining ten subunits.  
 
@@ -49,7 +49,7 @@ This example will use data from chemical cross linking, EM and x-ray crystallogr
 
 \section rnapolii_stages The four stages of Integrative Modeling
 
-Structural modeling using IMP is divided into [four stages](../html/introduction.html).  
+Structural modeling using IMP is divided into [four stages](@ref introduction_four_stages).
 
 Click the links below to see a breakdown of all the modeling steps.
 
@@ -77,5 +77,7 @@ It will take a very long time to complete the sampling; to get an idea of what's
 \code{.sh}
 python modeling.py --test
 \endcode
+
+[On to stage 1...](@ref rnapolii_1)
 
 */

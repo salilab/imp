@@ -4,13 +4,13 @@ Stage 1 - Gathering of data {#rnapolii_1}
 In this stage, we find all available experimental data that we wish to utilize in structural modeling.  In theory, any method that provides information about absolute or relative structural information can be used.  A non-exhaustive list of data types currently supported in IMP is:
 
 * [Solution X-ray Scattering (SAXS)](@ref IMP::saxs)
-* [Cysteine cross-linking](Cross-linking)
-* [Chemical cross-linking](Cross-linking)
+* Cysteine cross-linking
+* Chemical cross-linking
 * [Electron Microscopy (2D or 3D maps)](@ref IMP::em)
-* [FRET](FRET)
-* NMR Restraints ([CSP](CSP), [NOE](NOE), [J-couplings](J_couplings))
-* [Immunoprecipitation pull-down](Colocalization)
-* Atomic resolution structures (PDB, RMF from experimental data or [homology modeling](homology))
+* FRET
+* NMR Restraints (CSP, NOE, J-couplings)
+* Immunoprecipitation pull-down
+* \link IMP::atom Atomic resolution structures \endlink (PDB, RMF from experimental data or homology modeling)
 
 ## Data for yeast RNA Polymerase II
 The `rnapolii/data` folder in the tutorial input files contains the data included in this example:
@@ -42,7 +42,7 @@ The electron density map of the entire RNA Poly II complex is at 20.9 Angstrom r
 _Electron microscopy density map for yeast RNA Polymerase II_
 
 **Electron Density as Gaussian Mixture Models**  
-[Gaussian mixture models](gmm) (GMMs) are used to greatly speed up scoring by approximating the electron density of individual subunits and experimental EM maps.  A GMM has been created for the experimental density map, and is stored in _emd_1883.map.mrc.gmm.50.mrc_.  The weight, center, and covariance matrix of each Gaussian used to approximate the original EM density can be seen in the corresponding `.txt` file.  
+Gaussian mixture models (GMMs) are used to greatly speed up scoring by approximating the electron density of individual subunits and experimental EM maps.  A GMM has been created for the experimental density map, and is stored in _emd_1883.map.mrc.gmm.50.mrc_.  The weight, center, and covariance matrix of each Gaussian used to approximate the original EM density can be seen in the corresponding `.txt` file.  
 <img src="rnapolii_em_gmm_50.png" width="250px" />
 _The EM data represented as a 50 Gaussian mixture model_
 
