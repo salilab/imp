@@ -1,7 +1,10 @@
 Stage 2 - Representation of subunits and translation of the data into spatial restraints {#rnapolii_2}
 ========================================================================================
 
-In this stage, we will initially define a representation of the system. Afterwards, we will convert the data into spatial restraints.  This is performed using the script `rnapolii/modeling/modeling.py` and uses the [topology file](topology_file), _topology.txt_, to define the system components and their representation parameters.
+In this stage, we will initially define a representation of the system. Afterwards, we will convert the data into spatial restraints.  This is performed using the script `rnapolii/modeling/modeling.py` and uses the
+\link IMP::pmi::topology::TopologyReader topology file \endlink,
+`topology.txt`, to define the system components and their representation
+parameters.
 
 ### Setting up Model Representation in IMP
 
@@ -17,7 +20,9 @@ _Multi-scale representation of Rpb1 subunit of RNA Pol II_
 
 
 
-The GMM of a subunit is the set of all 3D Gaussians used to represent it; it will be used to calculate the EM score. The calculation of the GMM of a subunit can be done automatically in the [topology file](topology_file). For the purposes of this tutorial, we already created these for Rpb4 and Rpb7 and placed them in the `rnapolii/data` directory in their respective `.mrc` and `.txt` files. 
+The GMM of a subunit is the set of all 3D Gaussians used to represent it; it will be used to calculate the EM score. The calculation of the GMM of a subunit can be done automatically in the
+\link IMP::pmi::topology::TopologyReader topology file \endlink.
+For the purposes of this tutorial, we already created these for Rpb4 and Rpb7 and placed them in the `rnapolii/data` directory in their respective `.mrc` and `.txt` files. 
 
 **Dissecting the script**
 The script `rnapolii/modeling/modeling.py` sets up the representation of the system and the restraint. (Subsequently it also performs [sampling](@ref rnapolii_3), but more on that later.)
@@ -34,7 +39,9 @@ topology_file = datadirectory+"topology.txt"
 target_gmm_file = datadirectory+'emd_1883.map.mrc.gmm.50.txt'
 \endcode
 
-The first section defines where input files are located.  The [_topology_file_](topology_file) defines how the system components are structurally represented. _target_gmm_file_ stores the EM map for the entire complex, which has already been converted into a [Gaussian mixture model](gmm).
+The first section defines where input files are located.  The
+\link IMP::pmi::topology::TopologyReader topology file \endlink
+defines how the system components are structurally represented. _target_gmm_file_ stores the EM map for the entire complex, which has already been converted into a [Gaussian mixture model](gmm).
 
 \code{.py}
 #--------------------------
