@@ -1,3 +1,7 @@
+"""@namespace IMP.EMageFit.utility
+   Utility functions.
+"""
+
 import os
 import IMP.base as base
 

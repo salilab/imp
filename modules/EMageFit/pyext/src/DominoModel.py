@@ -1,3 +1,7 @@
+"""@namespace IMP.EMageFit.DominoModel
+   Classes to manage a model using DOMINO.
+"""
+
 import sys
 import time
 import csv

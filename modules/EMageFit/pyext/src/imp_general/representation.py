@@ -1,3 +1,6 @@
+"""@namespace IMP.EMageFit.imp_general.representation
+   Utility functions to handle representation.
+"""
 
 import IMP
 import IMP.atom as atom

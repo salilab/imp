@@ -1,4 +1,6 @@
-
+"""@namespace IMP.EMageFit.imp_general.io
+   Utility functions to handle IO.
+"""
 
 import IMP
 import IMP.display as display

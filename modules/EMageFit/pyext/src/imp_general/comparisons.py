@@ -1,3 +1,6 @@
+"""@namespace IMP.EMageFit.imp_general.comparisons
+   Utility functions for comparisons.
+"""
 
 
 import IMP

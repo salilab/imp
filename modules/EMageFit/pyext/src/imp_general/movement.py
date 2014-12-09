@@ -1,3 +1,6 @@
+"""@namespace IMP.EMageFit.imp_general.movement
+   Utility functions to handle movement.
+"""
 
 import IMP
 import IMP.algebra as alg

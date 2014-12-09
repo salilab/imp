@@ -1,4 +1,6 @@
-
+"""@namespace IMP.EMageFit.imp_general.alignments
+   Utility functions to handle alignments.
+"""
 
 import IMP
 import IMP.domino as domino

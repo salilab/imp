@@ -1,3 +1,7 @@
+"""@namespace IMP.EMageFit.MonteCarloRelativeMoves
+   Classes for Monte Carlo sampling using rigid body relative moves.
+"""
+
 import IMP
 import IMP.core as core
 import IMP.atom as atom

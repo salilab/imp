@@ -1,3 +1,6 @@
+"""@namespace IMP.EMageFit.sampling
+   Utility functions to handle sampling.
+"""
 
 import IMP
 import IMP.algebra as alg
