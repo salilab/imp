@@ -7,6 +7,8 @@ ChangeLog {#changelog}
   now called `utility`). The `applications` directory is removed.
 - Several Python modules that were only used by EMageFit have been moved from
   IMP::em2d to IMP::EMageFit.
+- A new tutorial that uses the IMP::pmi module is now available (modeling of
+  the RNA Polymerase II stalk).
 
 # 2.3.0 - 2014-10-24 # {#changelog_2_3_0}
 - A new IMP::pmi module was added, containing high-level Python classes to simplify the representation, scoring, sampling and analyzing of models in IMP. This module is still under heavy development, and should be considered experimental.
