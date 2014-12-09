@@ -46,7 +46,7 @@ The rnapolii example contains three directories: `analysis`, `data` and
 
 \section rnapolii_background Background of RNA Polymerase II
 
-[RNA Pol II](http://en.wikipedia.org/wiki/RNA_polymerase_II) is a eukaryotic complex that catalyzes DNA transcription to synthesize mRNA strands.  Eukaryotic RNA polymerase II contains 12 sub- units, Rpb1 to Rpb12. The yeast RNA Pol II dissociates into a 10-subunit core and a Rpb4/Rpb7 heterodimer. Rpb4 and Rpb7 are conserved from yeast to humans, and form a stalk-like protrusion extending from the main body of the RNA Pol II complex.
+[RNA Pol II](http://en.wikipedia.org/wiki/RNA_polymerase_II) is a eukaryotic complex that catalyzes DNA transcription to synthesize mRNA strands.  Eukaryotic RNA polymerase II contains 12 subunits, Rpb1 to Rpb12. The yeast RNA Pol II dissociates into a 10-subunit core and a Rpb4/Rpb7 heterodimer. Rpb4 and Rpb7 are conserved from yeast to humans, and form a stalk-like protrusion extending from the main body of the RNA Pol II complex.
 
 
 \section rnapolii_imp Integrative Modeling using IMP
