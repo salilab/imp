@@ -24,7 +24,7 @@ mc1=IMP.pmi.macros.ReplicaExchange0(m,
 \endcode
 
 See the
-\link IMP::pmi::macros::ReplicaExchange0 ReplicaExchange0 documentation\endlink
+\link IMP::pmi::macros::ReplicaExchange0.__init__ ReplicaExchange0 documentation\endlink
 for a full description of all of the input parameters.
 
 ---
