@@ -226,16 +226,18 @@ class SGEQsubSlaveArray(SlaveArray):
        can submit Sun Grid Engine (SGE) jobs using the 'qsub' command (this
        is termed a 'submit host' by SGE). The class starts an SGE job array
        (every slave has the same SGE job ID, but a different task ID).
-       @param numslave The number of slaves, which correponds to the number of
-                       tasks in the SGE job.
-       @param options  A string of SGE options that are passed on the 'qsub'
-                       command line. This is added to standard_options.
     """
 
 
     standard_options = '-j y -cwd -r n -o sge-errors'
 
     def __init__(self, numslave, options):
+        """Constructor.
+           @param numslave The number of slaves, which correponds to the
+                           number of tasks in the SGE job.
+           @param options  A string of SGE options that are passed on the 'qsub'
+                           command line. This is added to standard_options.
+        """
         self._numslave = numslave
         self._options = options
         self._starting_slaves = []
@@ -329,6 +331,7 @@ class Context(object):
        Context objects are typically created by calling Manager::get_context().
     """
     def __init__(self, manager, startup=None):
+        """Constructor."""
         self._manager = manager
         self._startup = startup
         self._tasks = []
@@ -362,24 +365,6 @@ class Context(object):
 
 class Manager(object):
     """Manages slaves and contexts.
-       @param python If not None, the command to run to start a Python
-                     interpreter that can import the IMP module. Otherwise,
-                     the same interpreter that the master is currently using
-                     is used. This is passed to the shell, so a full command
-                     line (including multiple words separated by spaces) can
-                     be used if necessary.
-       @param host   The hostname that slaves use to connect back to the master.
-                     If not specified, the master machine's primary IP address
-                     is used. On multi-homed machines, such as compute cluster
-                     headnodes, this may need to be changed to allow all
-                     slaves to reach the master (typically the name of the
-                     machine's internal network address is needed). If only
-                     running local slaves, 'localhost' can be used to prohibit
-                     connections across the network.
-       @param output A format string used to name slave output files. It is
-                     given the numeric slave id, so for example the default
-                     value 'slave\%d.output' will yield output files called
-                     slave0.output, slave1.output, etc.
     """
   
     connect_timeout = 7200
@@ -388,6 +373,26 @@ class Manager(object):
     heartbeat_timeout = 7200
 
     def __init__(self, python=None, host=None, output='slave%d.output'):
+        """Constructor.
+           @param python If not None, the command to run to start a Python
+                         interpreter that can import the IMP module. Otherwise,
+                         the same interpreter that the master is currently using
+                         is used. This is passed to the shell, so a full command
+                         line (including multiple words separated by spaces) can
+                         be used if necessary.
+           @param host   The hostname that slaves use to connect back to the
+                         master. If not specified, the master machine's primary
+                         IP address is used. On multi-homed machines, such as
+                         compute cluster headnodes, this may need to be changed
+                         to allow all slaves to reach the master (typically the
+                         name of the machine's internal network address is
+                         needed). If only running local slaves, 'localhost' can
+                         be used to prohibit connections across the network.
+           @param output A format string used to name slave output files. It is
+                         given the numeric slave id, so for example the default
+                         value 'slave\%d.output' will yield output files called
+                         slave0.output, slave1.output, etc.
+        """
         if python is None:
             self._python = sys.executable
         else:
