@@ -38,7 +38,8 @@ def report_python_component(cov, morfs, name, typ, reldir, outdir):
 
 
 def report_python_module(cov, modname, outdir):
-    mods = glob.glob('lib/IMP/%s/*.py' % modname)
+    mods = glob.glob('lib/IMP/%s/*.py' % modname) \
+           + glob.glob('lib/IMP/%s/*/*.py' % modname)
     mods = [x for x in mods if not x.endswith('_version_check.py')]
     report_python_component(cov, mods, modname, 'module', '', outdir)
 
