@@ -23,7 +23,7 @@ The `rnapolii/data` folder in the tutorial input files contains the data include
 
 
 **FASTA File**  
-Each residue included in modeling must be explicitly defined in the FASTA text file.  Each individual component (i.e., a protein chain) is identified by a string in the FASTA header line.  From _1WCM.fasta.txt_:
+Each residue included in modeling must be explicitly defined in the FASTA text file.  Each individual component (i.e., a protein chain) is identified by a string in the FASTA header line.  From `1WCM.fasta.txt`:
 
     >1WCM:A
     MVGQQYSSAPLRTVKEVQFGLFSPEEVRAISVAKIRFPETMDETQTRAKIGGLNDPRLGSIDRNLKCQTCQEGMNECPGH
@@ -38,23 +38,23 @@ Each residue included in modeling must be explicitly defined in the FASTA text f
 defines two chains with unique IDs of 1WCM:A and 1WCM:B respectively.  The entire complex is 12 chains and 4582 residues.
 
 **Electron Density Map**  
-The electron density map of the entire RNA Poly II complex is at 20.9 Angstrom resolution.  The raw data file for this is stored in _emd_1883.map.mrc_.  
+The electron density map of the entire RNA Poly II complex is at 20.9 Angstrom resolution.  The raw data file for this is stored in `emd_1883.map.mrc`.
 <img src="rnapolii_em_raw.png" width="300px" />
 _Electron microscopy density map for yeast RNA Polymerase II_
 
 **Electron Density as Gaussian Mixture Models**  
-Gaussian mixture models (GMMs) are used to greatly speed up scoring by approximating the electron density of individual subunits and experimental EM maps.  A GMM has been created for the experimental density map, and is stored in _emd_1883.map.mrc.gmm.50.mrc_.  The weight, center, and covariance matrix of each Gaussian used to approximate the original EM density can be seen in the corresponding `.txt` file.  
+Gaussian mixture models (GMMs) are used to greatly speed up scoring by approximating the electron density of individual subunits and experimental EM maps.  A GMM has been created for the experimental density map, and is stored in `emd_1883.map.mrc.gmm.50.mrc`.  The weight, center, and covariance matrix of each Gaussian used to approximate the original EM density can be seen in the corresponding `.txt` file.  
 <img src="rnapolii_em_gmm_50.png" width="250px" />
 _The EM data represented as a 50 Gaussian mixture model_
 
 
 **PDB File**  
-High resolution coordinates for all 12 chains of RNA Pol II are found in _1WCM.pdb_.  
+High resolution coordinates for all 12 chains of RNA Pol II are found in `1WCM.pdb`.  
 <img src="rnapolii_all_1wc4.png" width="300px" />
 _Coordinates from PDBID [1WCM](http://www.rcsb.org/pdb/explore.do?structureId=1wcm)_
 
 **Chemical Cross-Links**  
-All chemical cross-linking data is located in _polii_xlinks.csv_ and _polii_juri.csv_.  These files contain multiple comma-separated columns; four of these specify the protein and residue number for each of the two linker residues.
+All chemical cross-linking data is located in `polii_xlinks.csv` and `polii_juri.csv`.  These files contain multiple comma-separated columns; four of these specify the protein and residue number for each of the two linker residues.
 
     prot1,res1,prot2,res2
     Rpb1,34,Rpb1,49

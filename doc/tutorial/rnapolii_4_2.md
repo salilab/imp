@@ -26,7 +26,7 @@ selections={"Rpb4":["Rpb4"],
             "Rpb4_Rpb7":["Rpb4","Rpb7"]}
 \endcode
 
-The script then sets up a model and `Precision` object for the given `selections` at the desired resolution for computation of the precision (`resolution=1` specifies at the residue level).
+The script then sets up a model and [Precision](@ref IMP::pmi::analysis::Precision) object for the given `selections` at the desired resolution for computation of the precision (`resolution=1` specifies at the residue level).
 
 \code{.py}
 # setup Precision calculator
@@ -61,7 +61,7 @@ for rmfs,frames,cdir in zip(rmf_list,frame_list,cluster_dirs):
     pr.add_structures(zip(rmfs,frames),cdir)
 \endcode
 
-Self-precision and inter-cluster precision is then calculated, using the `rmf_list` and the output is placed in `root_cluster_directory+"/precision."+str(clus1)+"."+str(clus2)+".out"`
+Self-precision and inter-cluster precision is then calculated, using the `rmf_list` and the output is placed in `root_cluster_directory`.
 
 \code{.py}
 # calculate intra-cluster and inter-cluster precision

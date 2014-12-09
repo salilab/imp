@@ -41,7 +41,7 @@ target_gmm_file = datadirectory+'emd_1883.map.mrc.gmm.50.txt'
 
 The first section defines where input files are located.  The
 \link IMP::pmi::topology::TopologyReader topology file \endlink
-defines how the system components are structurally represented. _target_gmm_file_ stores the EM map for the entire complex, which has already been converted into a [Gaussian mixture model](gmm).
+defines how the system components are structurally represented. `target_gmm_file` stores the EM map for the entire complex, which has already been converted into a Gaussian mixture model.
 
 \code{.py}
 #--------------------------
@@ -51,7 +51,7 @@ num_frames = 20000
 num_mc_steps = 10
 \endcode
 
-MC sampling parameters define the number of frames (model structures) which will be output during sampling. _num_mc_steps_ defines the number of Monte Carlo steps between output frames.  This setup would therefore encompass 200000 MC steps in total. 
+MC sampling parameters define the number of frames (model structures) which will be output during sampling. `num_mc_steps` defines the number of Monte Carlo steps between output frames.  This setup would therefore encompass 200000 MC steps in total. 
 
 \code{.py}
 #--------------------------
@@ -72,13 +72,13 @@ chain_of_super_rigid_bodies = [["Rpb4"],
                                ["Rpb7"]]
 \endcode
 
-The movers section defines movement parameters and hierarchies of movers.  _rb_max_trans_ and _bead_max_trans_ set the maximum translation (in angstroms) allowed per MC step. _rb_max_rot_ is the maximum rotation for rigid bodies in radians.
+The movers section defines movement parameters and hierarchies of movers.  `rb_max_trans` and `bead_max_trans` set the maximum translation (in angstroms) allowed per MC step. `rb_max_rot` is the maximum rotation for rigid bodies in radians.
 
-_rigid_bodies_ is a Python list defining the components that will be moved as rigid bodies.  Components must be identified by the _domain_name_.
+`rigid_bodies` is a Python list defining the components that will be moved as rigid bodies.  Components must be identified by the _domain name_ (as given in the topology file).
 
-_super_rigid_bodies_ defines sets of rigid bodies and beads that will move together in an additional Monte Carlo move.
+`super_rigid_bodies` defines sets of rigid bodies and beads that will move together in an additional Monte Carlo move.
 
-_chain_of_super_rigid_bodies_ sets additional Monte Carlo movers along the connectivity chain of a subunit. It groups sequence-connected rigid domains and/or beads into overlapping pairs and triplets. Each of these groups will be moved rigidly. This mover helps to sample more efficiently complex topologies, made of several rigid bodies, connected by flexible linkers.
+`chain_of_super_rigid_bodies` sets additional Monte Carlo movers along the connectivity chain of a subunit. It groups sequence-connected rigid domains and/or beads into overlapping pairs and triplets. Each of these groups will be moved rigidly. This mover helps to sample more efficiently complex topologies, made of several rigid bodies, connected by flexible linkers.
 
 **Build the Model Representation**
 The next bit of code takes the input files and creates an
@@ -153,7 +153,7 @@ The excluded volume restraint is calculated at [resolution](resolution) 10 (10 r
 
 **Crosslinks**
 
-A [crosslinking restraint](Cross Linking) is implemented as a distance restraint between two residues.  The two residues are each defined by the protein (component) name and the residue number.  The script here extracts the correct four columns that provide this information from the [input data file](@ref rnapolii_1).
+A crosslinking restraint is implemented as a distance restraint between two residues.  The two residues are each defined by the protein (component) name and the residue number.  The script here extracts the correct four columns that provide this information from the [input data file](@ref rnapolii_1).
 
 \code{.py}
 columnmap={}
@@ -180,18 +180,18 @@ outputobjects.append(xl1)
 \endcode
 
 An object _xl1_ for this crosslinking restraint is created and then added to the model.
-* _length_: The maximum length of the crosslink
-* _slope_: Slope of linear energy function added to sigmoidal restraint
-* _columnmapping_: Defining the structure of the input file
-* _resolution_: The resolution at which the restraint is evaluated. 1 = residue level
-* _label_: A label for this set of cross links - helpful to identify them later in the stat file
+* `length`: The maximum length of the crosslink
+* `slope`: Slope of linear energy function added to sigmoidal restraint
+* `columnmapping`: Defining the structure of the input file
+* `resolution`: The resolution at which the restraint is evaluated. 1 = residue level
+* `label`: A label for this set of cross links - helpful to identify them later in the stat file
 
 \code{.py}
 # optimize a bit before adding the EM restraint
 representation.optimize_floppy_bodies(10)
 \endcode
 
-All flexible beads are initially optimized for 10 Monte Carlo steps, keeping the rigid body fixed in the space.
+All flexible beads are initially optimized for 10 Monte Carlo steps, keeping the rigid body fixed in space.
 
 
 **EM Restraint**
@@ -208,9 +208,9 @@ outputobjects.append(gemt)
 \endcode
 
 The GaussianEMRestraint uses a density overlap function to compare model to data. First the EM map is approximated with a Gaussian Mixture Model (done separately). Second, the components of the model are represented with Gaussians (forming the model GMM)
-* _scale_to_target_mass_ ensures the total mass of model and map are identical
-* _slope_: nudge model closer to map when far away
-* _weight_: heuristic, needed because to calibrate the EM restraint with the other terms. 
+* `scale_to_target_mass` ensures the total mass of model and map are identical
+* `slope`: nudge model closer to map when far away
+* `weight`: heuristic, needed to calibrate the EM restraint with the other terms. 
 
 and then add it to the output object.  Nothing is being sampled, so it does not need to be added to sample objects.
 

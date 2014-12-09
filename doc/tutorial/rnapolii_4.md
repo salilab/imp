@@ -9,7 +9,7 @@ In the analysis stage we cluster (group by similarity) the sampled models to det
 A long modeling run was precomputed and analyzed. You can [download](ftp://salilab.org/tutorials/imp/rnapolii/results.tar.gz) it from our website, and you can [download](ftp://salilab.org/tutorials/imp/rnapolii/analysis.tar.gz) the corresponding analysis.
 
 ### Clustering top models (clustering.py)
-The `clustering.py` script, found in the `rnapolii/analysis` directory, calls the `AnalysisReplicaExchange0` macro, which finds top-scoring models, extracts coordinates, runs k-means clustering, and does basic cluster analysis including creating localization densities for each subunit. The script generates a directory containing as many subdirectories as the number of clusters queried. Each subdirectory contains an RMF and a PDB for each structure extracted, a stat file, and the localization densities.
+The `clustering.py` script, found in the `rnapolii/analysis` directory, calls the [AnalysisReplicaExchange0](@ref IMP::pmi::macros::AnalysisReplicaExchange0) macro, which finds top-scoring models, extracts coordinates, runs k-means clustering, and does basic cluster analysis including creating localization densities for each subunit. The script generates a directory containing as many subdirectories as the number of clusters queried. Each subdirectory contains an RMF and a PDB for each structure extracted, a stat file, and the localization densities.
 
 We can choose the number of clusters, the subunits we want to use to calculate the RMSD, and the number of good-scoring solutions to include. These options are at the top of the script: 
 
@@ -42,7 +42,7 @@ feature_list=["ISDCrossLinkMS_Distance_intrarb",
               "ISDCrossLinkMS_Sigma"]
 \endcode
 
-Now we specify the subunits (or groups or fractions of subunits) for which we want to create density localization maps. `density_names` is a dictionary, where the keys are convenient names like “Rpb1-CTD” and the values are a list of selections. The selection items can either be a domain name like “Rpb1” or a list like (200,300,”Rpb1”) which means residues 200-300 of component Rpb1. This enables the user to combine multiple selections for a single density calculation.
+Now we specify the subunits (or groups or fractions of subunits) for which we want to create density localization maps. `density_names` is a dictionary, where the keys are convenient names like "Rpb1-CTD" and the values are a list of selections. The selection items can either be a domain name like "Rpb1" or a list like (200,300,"Rpb1") which means residues 200-300 of component Rpb1. This enables the user to combine multiple selections for a single density calculation.
 
 \code{.py}
 density_names = {"Rpb4":["Rpb4"],
@@ -94,7 +94,7 @@ First we can look through the cluster results directory to see the output (see e
 
 <img src="rnapolii_cluster_files.png" alt="clustering files" />
 
-Here is an example modeling result (from the provided files, cluster.1/4.rmf3, the cluster center):
+Here is an example modeling result (from the provided files, `cluster.1/4.rmf3`, the cluster center):
 
 <img src="rnapolii_result.png" alt="Example result" width="600px" />
 
@@ -104,7 +104,7 @@ The second plot is a dendrogram, basically showing the distance matrix in a hier
 
 <img src="rnapolii_dist_matrix.png" alt="Distance matrix and dendrogram" width="600px" />
 
-Next can examine the localization densities of a cluster. These can give a qualitative idea of the precision of a cluster. Below we show results from cluster.1 in the provided results: the native structure without Rpb4/7 (in blue), the target density map (in mesh), and the localization densities (Rpb4 in cyan, Rpb7 in purple). The localizations are quite narrow and close to the native solution:
+Next can examine the localization densities of a cluster. These can give a qualitative idea of the precision of a cluster. Below we show results from `cluster.1` in the provided results: the native structure without Rpb4/7 (in blue), the target density map (in mesh), and the localization densities (Rpb4 in cyan, Rpb7 in purple). The localizations are quite narrow and close to the native solution:
 
 <img src="rnapolii_localization.png" alt="Localization densities" width="600px" />
 
