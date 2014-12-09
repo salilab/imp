@@ -1,7 +1,7 @@
-# EMageFit
+\brief Build assembly models consistent with EM images (class averages).
 
 EMageFit is an application to build models of macromolecular assemblies using
-restraints from EM images (class-averages).
+restraints from EM images (class averages).
 
 Apart from EM images, the method relies on other types of restraints:
   - Maximum distance restraints imposing a maximum distance between a pair
