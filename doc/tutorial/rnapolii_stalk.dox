@@ -29,6 +29,14 @@ packages installed:
 - [Chimera](https://www.cgl.ucsf.edu/chimera/download.html)
   for visualization of results
 
+(On a Mac you can get the Python packages above using the
+[pip](https://pypi.python.org/pypi/pip) tool, e.g. by running a command like
+`sudo easy_install pip`, then install the packages with something like
+`sudo pip install scikit-learn; sudo pip install matplotlib; sudo pip install biopython`. `numpy` and `scipy` are already installed on modern Macs. Something
+similar may also work on a Linux box, although it's probably better to install
+the packages using the distribution's package manager, such as `yum` or
+`apt-get`.)
+
 Then download the input files, either by 
 [cloning the github repository](https://github.com/salilab/imp_tutorial/)
 or by [downloading the zip file](https://github.com/salilab/imp_tutorial/archive/master.zip).
