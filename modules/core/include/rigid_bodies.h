@@ -346,6 +346,7 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
   }
 }
 
+#ifndef IMP_DOXYGEN
 // inline implementation
 void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &local,
@@ -355,7 +356,7 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
   const algebra::Vector3D deriv_global = rot * deriv_local;
   add_to_derivatives(deriv_local, deriv_global, local, rot, da);
 }
-
+#endif
 
 
 /** It is often useful to store precalculated properties of the rigid body
