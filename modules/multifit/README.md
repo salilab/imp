@@ -2,7 +2,7 @@
 
 MultiFit is a computational method for simultaneously fitting atomic
 structures of components into their assembly density map at
-resolutions as low as 25A. The component positions and orientations
+resolutions as low as 25Å. The component positions and orientations
 are optimized with respect to a scoring function that includes the
 quality-of-fit of components in the map, the protrusion of components
 from the map envelope, as well as the shape complementarity between
