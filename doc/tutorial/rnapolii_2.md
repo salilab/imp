@@ -102,7 +102,8 @@ bm = IMP.pmi.macros.BuildModel(m,
 representation = bm.get_representation()
 \endcode
 
-The representation object returned holds a list of molecular hierarchies that define the model, that are passed to subsequent functions.
+The \link IMP::pmi::representation::Representation representation \endlink
+object returned holds a list of molecular hierarchies that define the model, that are passed to subsequent functions.
 
 \code{.py}
 # Randomize the initial configuration before sampling
