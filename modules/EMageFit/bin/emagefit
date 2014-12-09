@@ -14,12 +14,11 @@ import IMP.algebra as alg
 import IMP.em2d as em2d
 
 
-import IMP.EMageFit.Database as Database
 import IMP.EMageFit.imp_general.io as io
 import IMP.EMageFit.imp_general.alignments as alignments
 import IMP.EMageFit.imp_general.representation as representation
-import IMP.EMageFit.DominoModel as DominoModel
-import IMP.EMageFit.MonteCarloRelativeMoves as MonteCarloRelativeMoves
+import IMP.EMageFit.domino_model as domino_model
+import IMP.EMageFit.monte_carlo as monte_carlo
 import IMP.EMageFit.sampling as sampling
 import IMP.EMageFit.solutions_io as solutions_io
 import IMP.EMageFit.utility as utility
@@ -56,7 +55,7 @@ def write_pdbs_for_solutions(params, fn_database, n=10, orderby="em2d",
         @param split_components If true, each component of the assembly in a
                             solution is written as a separate PDB file
     """
-    m = DominoModel.DominoModel()
+    m = domino_model.DominoModel()
     m.set_assembly_components(params.fn_pdbs, params.names)
     db = solutions_io.ResultsDB()
     db.connect(fn_database)
@@ -87,7 +86,7 @@ def write_nth_largest_cluster(params, fn_database, fn_db_clusters,
         @param position Cluster position (by number of elements) requested.
                                            The index of largest cluster is 1.
     """
-    m = DominoModel.DominoModel()
+    m = domino_model.DominoModel()
     m.set_assembly_components(params.fn_pdbs, params.names)
     # get cluster
     db_clusters = solutions_io.ResultsDB()
@@ -118,7 +117,7 @@ def generate_domino_model(params, fn_database, fn_log=None):
     """
     log.info(io.imp_info([IMP, em2d]))
     t0 = time.time()
-    m = DominoModel.DominoModel()
+    m = domino_model.DominoModel()
     if hasattr(params, "test_opts") and params.test_opts.do_test:
         m.set_assembly(params.test_opts.test_fn_assembly, params.names)
     else:
@@ -159,7 +158,7 @@ def print_restraints(params):
     """
     log.info(io.imp_info([IMP, em2d]))
     t0 = time.time()
-    m = DominoModel.DominoModel()
+    m = domino_model.DominoModel()
     if hasattr(params, "test_opts") and params.test_opts.do_test:
         m.set_assembly(params.test_opts.test_fn_assembly, params.names)
     else:
@@ -173,7 +172,7 @@ def print_restraints(params):
     set_pairs_excluded_restraint(params, m)
     set_em2d_restraints(params, m)
     log.debug("RESTRAINTS FOR THE INPUT CONFIGURATION")
-    DominoModel.print_restraints_values(m.model)
+    domino_model.print_restraints_values(m.model)
 
 
 def set_pair_score_restraints(params, model):
@@ -253,7 +252,7 @@ def generate_monte_carlo_model(params, fn_database, seed,
         @param fn_log File for logging. If the value is None, no file is written
     """
     log.info(io.imp_info([IMP, em2d]))
-    m = DominoModel.DominoModel()
+    m = domino_model.DominoModel()
     m.set_assembly_components(params.fn_pdbs, params.names)
     set_pair_score_restraints(params, m)
     set_xlink_restraints(params, m)
@@ -264,9 +263,9 @@ def generate_monte_carlo_model(params, fn_database, seed,
     if hasattr(params, "benchmark"):
         m.set_native_assembly_for_benchmark(params)
 
-    MonteCarloRelativeMoves.set_random_seed(seed)
-    mc = MonteCarloRelativeMoves.MonteCarloRelativeMoves(m.model,
-                                                         m.components_rbs, params.anchor)
+    monte_carlo.set_random_seed(seed)
+    mc = monte_carlo.MonteCarloRelativeMoves(m.model,
+                                             m.components_rbs, params.anchor)
     mc.set_temperature_pattern(params.monte_carlo.temperatures,
                                params.monte_carlo.iterations,
                                params.monte_carlo.cycles)
@@ -309,7 +308,7 @@ def create_dockings_from_xlinks(params):
                                         "emagefit_dock"))
     import emagefit_dock as dock
     import IMP.EMageFit.buildxlinks as bx
-    m = DominoModel.DominoModel()
+    m = domino_model.DominoModel()
     m.set_assembly_components(params.fn_pdbs, params.names)
     set_xlink_restraints(params, m)
     order = bx.DockOrder()

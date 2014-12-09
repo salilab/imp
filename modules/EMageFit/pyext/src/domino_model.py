@@ -1,4 +1,4 @@
-"""@namespace IMP.EMageFit.DominoModel
+"""@namespace IMP.EMageFit.domino_model
    Classes to manage a model using DOMINO.
 """
 

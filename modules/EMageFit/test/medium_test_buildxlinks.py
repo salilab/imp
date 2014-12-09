@@ -7,7 +7,6 @@ import IMP.EMageFit.utility as utility
 import IMP.EMageFit.imp_general.io as io
 import IMP.EMageFit.imp_general.representation as representation
 import IMP.EMageFit.solutions_io as solutions_io
-import IMP.EMageFit.Database as Database
 import IMP.algebra as alg
 
 import sys

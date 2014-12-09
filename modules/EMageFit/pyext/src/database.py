@@ -1,4 +1,4 @@
-"""@namespace IMP.EMageFit.Database
+"""@namespace IMP.EMageFit.database
    Utility functions to manage SQL databases with sqlite3.
 """
 

@@ -7,14 +7,14 @@ import IMP.em2d as em2d
 import sys
 import os
 from math import *
-import IMP.EMageFit.Database as Database
+import IMP.EMageFit.database as database
 
 
 class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        self.db = Database.Database2()
+        self.db = database.Database2()
         self.fn = IMP.base.create_temporary_file_name('test.db')
         self.db.create(self.fn, True)
         self.db.connect(self.fn)
@@ -95,7 +95,7 @@ class Tests(IMP.test.TestCase):
     def test_merging(self):
         """ of merging databases """
 
-        db = Database.Database2()
+        db = database.Database2()
         my_table = "mytable"
         column_names = ["id", "property", "value"]
         column_types = [int, str, float]
@@ -108,7 +108,7 @@ class Tests(IMP.test.TestCase):
             db.store_data(my_table, data)
             db.close()
         fn_output = "file3.db"
-        Database.merge_databases(fns, fn_output, my_table)
+        database.merge_databases(fns, fn_output, my_table)
         db.connect(fn_output)
         data = db.get_table(my_table)
         self.assertEqual(len(data), 4)

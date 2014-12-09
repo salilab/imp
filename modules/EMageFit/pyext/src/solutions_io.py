@@ -3,7 +3,7 @@
 """
 
 import IMP.EMageFit.imp_general.io as io
-import IMP.EMageFit.Database as Database
+import IMP.EMageFit.database as database
 
 import sys
 import heapq
@@ -111,7 +111,7 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
     """
     tbl = "results"
     # Get names and types of the columns from first database file
-    db = Database.Database2()
+    db = database.Database2()
     db.connect(fns[0])
     names = db.get_table_column_names(tbl)
     types = db.get_table_types(tbl)
@@ -128,7 +128,7 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
     native_data = db.retrieve_data(sql_command)
     db.close()
     log.info("Gathering results. Saving to %s", fn_output)
-    out_db = Database.Database2()
+    out_db = database.Database2()
     out_db.create(fn_output, overwrite=True)
     out_db.connect(fn_output)
     out_db.create_table(tbl, sorted_names, sorted_types)
@@ -184,7 +184,7 @@ def gather_solution_results(fns, fn_output, raisef=0.1):
     """
     tbl = "results"
     # Get names and types of the columns from first database file
-    db = Database.Database2()
+    db = database.Database2()
     db.connect(fns[0])
     names = db.get_table_column_names(tbl)
     types = db.get_table_types(tbl)
@@ -192,7 +192,7 @@ def gather_solution_results(fns, fn_output, raisef=0.1):
     sorted_names = [names[i] for i in indices]
     sorted_types = [types[i] for i in indices]
     log.info("Gathering results. Saving to %s", fn_output)
-    out_db = Database.Database2()
+    out_db = database.Database2()
     out_db.create(fn_output, overwrite=True)
     out_db.connect(fn_output)
     out_db.create_table(tbl, sorted_names, sorted_types)
@@ -236,7 +236,7 @@ def get_best_solution(fn_database, Nth, fields=False, orderby=False,
     sql_command = """ SELECT %s FROM %s
                       ORDER BY %s
                       ASC LIMIT 1 OFFSET %d """ % (f, tbl, orderby, Nth)
-    data = Database.read_data(fn_database, sql_command)
+    data = database.read_data(fn_database, sql_command)
     if len(data) == 0:
         raise ValueError("The requested %s-th best solution does not exist. "
                          "Only %s solutions found" % (Nth, len(data)))
@@ -263,7 +263,7 @@ def get_fields_string(fields):
     return "*"
 
 
-class ResultsDB(Database.Database2):
+class ResultsDB(database.Database2):
 
     """
         Class for managing the results of the experiments

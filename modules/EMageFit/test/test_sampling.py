@@ -5,7 +5,7 @@ import sys
 import os
 
 import IMP.EMageFit.sampling as sampling
-import IMP.EMageFit.Database as Database
+import IMP.EMageFit.database as database
 import IMP.EMageFit.imp_general.io as io
 
 
@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         fixed = [False, False, False, False]
 
         n_transformations = 50
-        db = Database.Database2()
+        db = database.Database2()
         fn = 'temp.db'
         db.create(fn, overwrite=True)
         db.connect(fn)

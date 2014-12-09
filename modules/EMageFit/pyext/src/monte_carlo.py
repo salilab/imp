@@ -1,4 +1,4 @@
-"""@namespace IMP.EMageFit.MonteCarloRelativeMoves
+"""@namespace IMP.EMageFit.monte_carlo
    Classes for Monte Carlo sampling using rigid body relative moves.
 """
 

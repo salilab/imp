@@ -3,20 +3,20 @@ import os
 import IMP.test
 import IMP.em2d
 import IMP.EMageFit.solutions_io
-import IMP.EMageFit.Database as Database
+import IMP.EMageFit.database as database
 
 
 class Tests(IMP.test.TestCase):
 
     def make_db_with_table(self, fname, tbl):
-        db = Database.Database2()
+        db = database.Database2()
         db.create(fname, overwrite=True)
         db.connect(fname)
         db.create_table(tbl, ["foo", "bar"], [int, float])
         db.close()
 
     def make_db_with_data(self, fname, tbl, data):
-        db = Database.Database2()
+        db = database.Database2()
         db.create(fname, overwrite=True)
         db.connect(fname)
         db.create_table(tbl, ["assignment", "em2d"], [str, float])
@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
             ["test1.db", "dummy.db"], "out.db",
             max_number=2, raisef=1.0)
         # Make sure output db contains best 2 results, plus native
-        data = IMP.EMageFit.Database.read_data('out.db',
+        data = IMP.EMageFit.database.read_data('out.db',
                                            'SELECT assignment,em2d from results')
         self.assertEqual(len(data), 3)
         self.assertEqual(data[0][0], 'native')
