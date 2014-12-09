@@ -2,7 +2,7 @@ Stage 2 - Representation of subunits and translation of the data into spatial re
 ========================================================================================
 
 In this stage, we will initially define a representation of the system. Afterwards, we will convert the data into spatial restraints.  This is performed using the script `rnapolii/modeling/modeling.py` and uses the
-\link IMP::pmi::topology::TopologyReader topology file \endlink,
+[topology file](@ref IMP::pmi::topology::TopologyReader),
 `topology.txt`, to define the system components and their representation
 parameters.
 
@@ -21,7 +21,7 @@ _Multi-scale representation of Rpb1 subunit of RNA Pol II_
 
 
 The GMM of a subunit is the set of all 3D Gaussians used to represent it; it will be used to calculate the EM score. The calculation of the GMM of a subunit can be done automatically in the
-\link IMP::pmi::topology::TopologyReader topology file \endlink.
+[topology file](@ref IMP::pmi::topology::TopologyReader).
 For the purposes of this tutorial, we already created these for Rpb4 and Rpb7 and placed them in the `rnapolii/data` directory in their respective `.mrc` and `.txt` files. 
 
 **Dissecting the script**
@@ -40,7 +40,7 @@ target_gmm_file = datadirectory+'emd_1883.map.mrc.gmm.50.txt'
 \endcode
 
 The first section defines where input files are located.  The
-\link IMP::pmi::topology::TopologyReader topology file \endlink
+[topology file](@ref IMP::pmi::topology::TopologyReader)
 defines how the system components are structurally represented. `target_gmm_file` stores the EM map for the entire complex, which has already been converted into a Gaussian mixture model.
 
 \code{.py}
@@ -82,7 +82,7 @@ The movers section defines movement parameters and hierarchies of movers.  `rb_m
 
 **Build the Model Representation**
 The next bit of code takes the input files and creates an
-\link IMP::atom::Hierarchy IMP hierarchy \endlink based on the given
+[IMP hierarchy](@ref IMP::atom::Hierarchy) based on the given
 topology, rigid body lists and data files:
 
 \code{.py}
@@ -102,7 +102,7 @@ bm = IMP.pmi.macros.BuildModel(m,
 representation = bm.get_representation()
 \endcode
 
-The \link IMP::pmi::representation::Representation representation \endlink
+The [representation](@ref IMP::pmi::representation::Representation)
 object returned holds a list of molecular hierarchies that define the model, that are passed to subsequent functions.
 
 \code{.py}
@@ -148,7 +148,7 @@ ev.add_to_model()
 outputobjects.append(ev)
 \endcode
 
-The excluded volume restraint is calculated at [resolution](resolution) 10 (10 residues per bead)
+The excluded volume restraint is calculated at resolution 10 (10 residues per bead)
 
 
 **Crosslinks**
@@ -179,7 +179,7 @@ sampleobjects.append(xl1)
 outputobjects.append(xl1)
 \endcode
 
-An object _xl1_ for this crosslinking restraint is created and then added to the model.
+An object `xl1` for this crosslinking restraint is created and then added to the model.
 * `length`: The maximum length of the crosslink
 * `slope`: Slope of linear energy function added to sigmoidal restraint
 * `columnmapping`: Defining the structure of the input file

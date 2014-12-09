@@ -1,7 +1,7 @@
 Stage 3 - Sampling {#rnapolii_3}
 ==================
 
-With the system representation built and data restraints entered, the system is now ready to sample configurations.  A replica exchange run can be set up using the macro \link IMP::pmi::macros::ReplicaExchange0 ReplicaExchange0\endlink:
+With the system representation built and data restraints entered, the system is now ready to sample configurations.  A replica exchange run can be set up using the [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0) macro:
 
 \code{.py}
 mc1=IMP.pmi.macros.ReplicaExchange0(m,
@@ -23,8 +23,7 @@ mc1=IMP.pmi.macros.ReplicaExchange0(m,
                                     global_output_directory="output")
 \endcode
 
-See the
-\link IMP::pmi::macros::ReplicaExchange0.__init__ ReplicaExchange0 documentation\endlink
+See the [ReplicaExchange0 documentation](@ref IMP::pmi::macros::ReplicaExchange0.__init__)
 for a full description of all of the input parameters.
 
 The sampling is performed by executing the macro built above:
