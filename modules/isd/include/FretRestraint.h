@@ -1,7 +1,6 @@
 /**
  *  \file IMP/isd/FretRestraint.h
- *  \brief FRET_R restraint
- *  to use in vivo FRET data [Muller et al. Mol Biol Cell 16, 3341, 2005]
+ *  \brief FRET_R restraint to use in vivo FRET data.
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  *
@@ -15,8 +14,10 @@
 #include <IMP/isd/FretData.h>
 
 IMPISD_BEGIN_NAMESPACE
-/** A restraint for using in-vivo ensemble FRET data,
-    see Muller et al. Mol Biol Cell 16, 3341, 2005 for more info.
+/** A restraint for using in-vivo ensemble FRET data.
+    See [Muller et al. Mol Biol Cell
+    16, 3341, 2005](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1165416/)
+    for more info.
  */
 
 class IMPISDEXPORT FretRestraint : public kernel::Restraint {

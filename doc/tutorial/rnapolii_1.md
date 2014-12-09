@@ -4,13 +4,14 @@ Stage 1 - Gathering of data {#rnapolii_1}
 In this stage, we find all available experimental data that we wish to utilize in structural modeling.  In theory, any method that provides information about absolute or relative structural information can be used.  A non-exhaustive list of data types currently supported in IMP is:
 
 * [Solution X-ray Scattering (SAXS)](@ref IMP::saxs)
-* Cysteine cross-linking
-* Chemical cross-linking
-* [Electron Microscopy (2D or 3D maps)](@ref IMP::em)
-* FRET
-* NMR Restraints (CSP, NOE, J-couplings)
-* Immunoprecipitation pull-down
-* \link IMP::atom Atomic resolution structures \endlink (PDB, RMF from experimental data or homology modeling)
+* [Cysteine cross-linking](@ref IMP::isd::CysteineCrossLinkRestraint)
+* [Chemical cross-linking](@ref IMP::isd::CrossLinkMSRestraint)
+* Electron Microscopy ([2D class averages](@ref IMP::em2d)
+  or [3D maps](@ref IMP::em))
+* [FRET](@ref IMP::isd::FretRestraint)
+* NMR Restraints (CSP, [NOE](@ref IMP::isd::NOERestraint), J-couplings)
+* [Immunoprecipitation pull-down](@ref IMP::core::ConnectivityRestraint)
+* [Atomic resolution structures](@ref IMP::atom) (PDB, RMF from experimental data or homology modeling)
 
 ## Data for yeast RNA Polymerase II
 The `rnapolii/data` folder in the tutorial input files contains the data included in this example:

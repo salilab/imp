@@ -14,11 +14,11 @@
 #include <IMP/kernel/particle_index.h>
 
 IMPISD_BEGIN_NAMESPACE
-/** A restraint for ambiguous cross-linking MS data and multiple state approach.
-    It marginalizes the false positive rate and depends on the expected fpr and
+
+//! A restraint for ambiguous cross-linking MS data and multiple state approach.
+/** It marginalizes the false positive rate and depends on the expected fpr and
     an uncertainty parameter beta.
  */
-
 class IMPISDEXPORT CrossLinkMSRestraint : public kernel::Restraint {
 
     IMP::kernel::ParticleIndexPairs ppis_;

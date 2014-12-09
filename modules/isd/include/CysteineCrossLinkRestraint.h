@@ -17,8 +17,8 @@
 #include <IMP/isd/CysteineCrossLinkData.h>
 
 IMPISD_BEGIN_NAMESPACE
-/** A restraint for cysteine cross-linking data. It models the
-    frequency fexp derived from gel separation of cross-linked
+//! A restraint for cysteine cross-linking data.
+/** It models the frequency fexp derived from gel separation of cross-linked
     complexes. The experimental frequency fexp is derived as the
     fraction of dimeric versus monomeric complex, upon cysteine
     cross-linking.  The forward model is derived from free energy
