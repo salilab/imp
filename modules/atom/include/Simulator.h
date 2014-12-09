@@ -167,7 +167,6 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   //! Return true if the passed particle is appropriate for the simulation.
   virtual bool get_is_simulation_particle(ParticleIndex p) const = 0;
 
- private:
   /** called by simulate() -
       calls setup() and then calls do_step() iteratively
       till given simulation time is completed
@@ -176,7 +175,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
       @return score at end of simulation period
   */
-  double do_simulate(double time);
+  virtual double do_simulate(double time);
 
   /** Calls the protected method setup() and then calls
       method do_step() iteratively, and using a self adjusting time
@@ -185,8 +184,10 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
       \see simulate_wave()
   */
-  double do_simulate_wave(double time_in_fs, double max_time_step_factor = 10.0,
+  virtual double do_simulate_wave(double time_in_fs, double max_time_step_factor = 10.0,
                           double base = 1.5);
+
+ private:
   double temperature_;
   double max_time_step_;
   double current_time_;
