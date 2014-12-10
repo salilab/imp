@@ -10,6 +10,10 @@ ChangeLog {#changelog}
 - A new tutorial that uses the IMP::pmi module is now available (modeling of
   the RNA Polymerase II stalk).
 
+# 2.3.1 - 2014-12-01 # {#changelog_2_3_1}
+- Minor bug fixes.
+- Update to IMP::pmi to support the Nup84 and rnapolii biological systems.
+
 # 2.3.0 - 2014-10-24 # {#changelog_2_3_0}
 - A new IMP::pmi module was added, containing high-level Python classes to simplify the representation, scoring, sampling and analyzing of models in IMP. This module is still under heavy development, and should be considered experimental.
 - Binary installers for 64-bit Windows are now available.
