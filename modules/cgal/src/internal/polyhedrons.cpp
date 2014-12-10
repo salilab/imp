@@ -271,18 +271,6 @@ std::pair<algebra::Vector3Ds, Ints> get_skin_surface(
   CGAL::Union_of_balls_3<CGAL::Skin_surface_traits_3<IKernel> > skin_surface(
       l.begin(), l.end());
   CGAL::mesh_skin_surface_3(skin_surface, p);
-  // CGAL::make_skin_surface_mesh_3(p, l.begin(), l.end(), 1.0);
-  namespace SMS = CGAL::Surface_mesh_simplification;
-  /*SMS::Count_stop_predicate<CGAL::Polyhedron_3<IKernel> > stop(10*ss.size());
-  IMP_LOG_TERSE( "Simplifying polyhedron from "
-          << std::distance(p.facets_begin(), p.facets_end())
-          << " faces from " << ss.size() << " balls" << std::endl);*/
-  /*SMS::edge_collapse(p, stop,
-                  CGAL::vertex_index_map(boost::get(CGAL::vertex_external_index,
-                                                       p))
-                     .edge_index_map(boost::get(CGAL::edge_external_index, p)));
-  IMP_LOG_TERSE( "Simplified polyhedron to "
-  << std::distance(p.facets_begin(), p.facets_end()) << std::endl);*/
   return get_indexed_facets(p);
 }
 
