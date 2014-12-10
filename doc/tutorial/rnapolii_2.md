@@ -143,12 +143,12 @@ After defining the representation of the model, we build the restraints by which
 **Excluded Volume Restraint**
 \code{.py}
 ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(
-                                         representation, resolution=10)
+                                         representation, resolution=20)
 ev.add_to_model()
 outputobjects.append(ev)
 \endcode
 
-The excluded volume restraint is calculated at resolution 10 (10 residues per bead)
+The excluded volume restraint is calculated at resolution 20 (20 residues per bead).
 
 
 **Crosslinks**
