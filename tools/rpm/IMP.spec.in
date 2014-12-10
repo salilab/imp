@@ -167,6 +167,7 @@ else
   echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
 fi
 # Bundle libTAU from build machine so users don't have to get it separately
+mkdir ${RPM_BUILD_ROOT}%{_libdir}/IMP
 cp %{_libdir}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 
 
