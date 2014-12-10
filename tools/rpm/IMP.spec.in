@@ -213,6 +213,9 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}/usr/bin/*
 %{_libdir}/libimp*.so
 
 %changelog
+* Tue Dec 09 2014 Ben Webb <ben@salilab.org>   2.3.1-1
+- 2.3.1 release.
+
 * Fri Oct 24 2014 Ben Webb <ben@salilab.org>   2.3.0-1
 - 2.3.0 release.
 
