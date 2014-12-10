@@ -66,8 +66,8 @@ BuildRequires: CGAL-devel, opencv-devel
 
 # If building in the Sali lab, pass '-D "RHEL_SALI_LAB 1"' to your rpmbuild
 # invocation. This will pull in our custom OpenCV package and bundle the
-# libraries with IMP (currently on RHEL 6 only).
-%if 0%{?rhel} == 6 && 0%{?RHEL_SALI_LAB}
+# libraries with IMP
+%if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 BuildRequires: opencv-nogui-devel
 %endif
 
@@ -170,7 +170,7 @@ fi
 cp %{_libdir}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 
 
-%if 0%{?rhel} == 6 && 0%{?RHEL_SALI_LAB}
+%if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 # Bundle OpenCV libraries
 for cvlib in cv cxcore highgui; do
   cp %{_libdir}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
