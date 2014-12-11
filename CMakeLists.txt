@@ -8,6 +8,18 @@ if(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
    message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} is ${CMAKE_BINARY_DIR}. If this message seems wrong, make sure to delete the CMakeFiles directory and the CMakeCache.txt file if they exist in the source dir (${CMAKE_SOURCE_DIR}).")
 endif()
 
+# Check Python version early so we can use Python >= 2.6 features in other
+# build scripts
+execute_process(COMMAND python "tools/build/check_python_version.py"
+                RESULT_VARIABLE setup
+                OUTPUT_VARIABLE toutput
+                ERROR_VARIABLE error
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(NOT ${setup} EQUAL 0)
+   message(FATAL_ERROR "Failed checking Python version: ${error}")
+endif()
+
 if(IS_DIRECTORY "${PROJECT_SOURCE_DIR}/.git")
   execute_process(COMMAND python "tools/dev_tools/git/setup_git.py"
                     RESULT_VARIABLE setup
