@@ -35,7 +35,8 @@ In order to obtain and compile IMP, you will need:
 - [cmake](http://www.cmake.org) (2.8 or later)
 - [Boost](http://www.boost.org) (1.40 or later)
 - [HDF5](http://www.hdfgroup.org/HDF5/) (1.8 or later)
-- [Python](http://www.python.org) (2.6 or later)
+- [Python](http://www.python.org) (2.6 or later; note that Python 3 is
+  *not* supported)
 - [SWIG](http://www.swig.org) (1.3.40 or later)
 - Developers will also need a [git](http://git-scm.com/) client
   to access the repository
