@@ -9,15 +9,15 @@ class IMPMockTests(unittest.TestCase):
 
     def test_modules_installed(self):
         """Check modules included in the RPM or .deb"""
-        # RHEL systems don't include cgal, em2d; Fedora and Ubuntu do
+        # RHEL systems don't include cgal; Fedora and Ubuntu do
         if mock_config.startswith('fedora') or mock_config.startswith('ubuntu'):
             import IMP.cgal
-            import IMP.em2d
         else:
             self.assertRaises(ImportError, __import__, 'IMP.cgal')
-            self.assertRaises(ImportError, __import__, 'IMP.em2d')
         # The scratch module should not be included
         self.assertRaises(ImportError, __import__, 'IMP.scratch')
+        # We bundle OpenCV now, so everyone should have IMP.em2d
+        import IMP.em2d
         # We build our own Eigen on RHEL, so everyone should have IMP.isd
         import IMP.isd
         # Check that most other modules (particularly those with many
@@ -60,13 +60,9 @@ class IMPMockTests(unittest.TestCase):
                 'rmf_validate', 'rmf_xml', 'saxs_merge',
                 'simulate_density_from_pdb',
                 'validate_profile', 'view_density_header']
-        # RHEL systems don't include EMageFit and idock; Fedora and Ubuntu do
-        if mock_config.startswith('fedora') or mock_config.startswith('ubuntu'):
-            apps.extend(emagefit_apps)
-            apps.extend(idock_apps)
-        else:
-            for app in emagefit_apps + idock_apps:
-                self.assertRaises(OSError, subprocess.call, app)
+        # Everyone should have EMageFit and idock now
+        apps.extend(emagefit_apps)
+        apps.extend(idock_apps)
         for app in apps:
             try:
                 p = subprocess.Popen([app, '--help'], stdout=subprocess.PIPE,
