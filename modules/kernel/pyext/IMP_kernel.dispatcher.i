@@ -21,13 +21,15 @@ class CommandDispatcher(object):
        ('IMP.foo' in the example) should define _all_commands as a Python
        list of all valid commands.
 
-       @param short_help A few words that describe the application.
-       @param long_help Longer text, used in the 'help' command.
-       @param module_name Name of the module (e.g. 'IMP.foo') that implements
-                          the commands.
     """
 
     def __init__(self, short_help, long_help, module_name):
+        """Constructor.
+           @param short_help A few words that describe the application.
+           @param long_help Longer text, used in the 'help' command.
+           @param module_name Name of the module (e.g. 'IMP.foo') that
+                  implements the commands.
+        """
         self.short_help = short_help
         self.long_help = long_help
         self.module_name = module_name
