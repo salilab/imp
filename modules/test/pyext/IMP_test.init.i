@@ -524,7 +524,7 @@ class TestCase(unittest.TestCase):
                 exec(open(filename), vars)
             # Catch sys.exit() called from within the example; a non-zero exit
             # value should cause the test case to fail
-            except SystemExit as, e:
+            except SystemExit as e:
                 if e.code != 0 and e.code is not None:
                     raise _FatalError("Example exit with code %s" % str(e.code))
         finally:
