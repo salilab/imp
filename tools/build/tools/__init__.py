@@ -183,52 +183,46 @@ def get_modules(source):
 
 
 def get_dependency_description(path):
-    name = os.path.splitext(os.path.split(path)[1])[0]
-    pkg_config_name = None
-    headers = ""
-    libraries = ""
-    extra_libraries = ""
-    version_cpp = ""
-    version_headers = ""
-    body = ""
-    python_module = ""
-    is_cmake = False
-    exec(open(path, "r").read())
-    passlibs = split(libraries)
-    passheaders = split(headers)
-    extra_libs = split(extra_libraries)
+    d = {'pkg_config_name':  None, 'headers': "", 'libraries': "",
+         'extra_libraries': "", 'version_cpp': "", 'version_headers': "",
+         'body': "", 'python_module': "", 'is_cmake': False,
+         'name': os.path.splitext(os.path.split(path)[1])[0]}
+    exec(open(path, "r").read(), d)
+    passlibs = split(d['libraries'])
+    passheaders = split(d['headers'])
+    extra_libs = split(d['extra_libraries'])
     cmakef = os.path.splitext(path)[0] + ".cmake"
     if os.path.exists(cmakef):
         cmake = "include(\"${PROJECT_SOURCE_DIR}/%s\")" % (
             to_cmake_path(os.path.splitext(path)[0] + ".cmake"))
     else:
         cmake = ""
-    if pkg_config_name is None:
-        pkg_config_name = name.lower()
-    return {"name": name,
-            "pkg_config_name": pkg_config_name,
+    if d['pkg_config_name'] is None:
+        d['pkg_config_name'] = d['name'].lower()
+    return {"name": d['name'],
+            "pkg_config_name": d['pkg_config_name'],
             "headers": passheaders,
             "libraries": passlibs,
             "extra_libraries": extra_libs,
-            "body": body,
-            "version_cpp": split(version_cpp),
-            "version_headers": split(version_headers),
+            "body": d['body'],
+            "version_cpp": split(d['version_cpp']),
+            "version_headers": split(d['version_headers']),
             "cmake": cmake,
-            "python_module": python_module}
+            "python_module": d['python_module']}
 
 
 def get_module_description(source, module, extra_data_path, root="."):
     df = os.path.join(root, source, "modules", module, "dependencies.py")
     if os.path.exists(df):
-        required_modules = ""
-        optional_modules = ""
-        required_dependencies = ""
-        optional_dependencies = ""
-        exec(open(df, "r").read())
-        return {"required_modules": split(required_modules),
-                "optional_modules": split(optional_modules),
-                "required_dependencies": split(required_dependencies),
-                "optional_dependencies": split(optional_dependencies)}
+        d = {'required_modules': "",
+             'optional_modules': "",
+             'required_dependencies': "",
+             'optional_dependencies': ""}
+        exec(open(df, "r").read(), d)
+        return {"required_modules": split(d['required_modules']),
+                "optional_modules": split(d['optional_modules']),
+                "required_dependencies": split(d['required_dependencies']),
+                "optional_dependencies": split(d['optional_dependencies'])}
     else:
         info = get_module_info(module, extra_data_path)
         return {"required_modules": info["modules"],
@@ -278,22 +272,18 @@ def get_dependency_info(dependency, extra_data_path, root="."):
     df = os.path.join(root, "data", "build_info", dependency)
     if not os.path.exists(df) and extra_data_path != "":
         df = os.path.join(extra_data_path, "build_info", dependency)
-    ok = False
-    libraries = ""
-    version = ""
-    includepath = ""
-    libpath = ""
-    swigpath = ""
+    d = {'libraries': "", 'version': "", 'includepath': "",
+         'libpath': "", 'swigpath': "", 'ok': False}
     # try:
-    exec(open(df, "r").read())
+    exec(open(df, "r").read(), d)
     # except:
     #    print >> sys.stderr, "Error reading dependency", dependency, "at", df
-    ret = {"ok": ok,
-           "libraries": split(libraries),
-           "version": split(version),
-           "includepath": includepath,
-           "libpath": libpath,
-           "swigpath": swigpath}
+    ret = {"ok": d['ok'],
+           "libraries": split(d['libraries']),
+           "version": split(d['version']),
+           "includepath": d['includepath'],
+           "libpath": d['libpath'],
+           "swigpath": d['swigpath']}
     dependency_info_cache[dependency] = ret
     return ret
 
@@ -311,24 +301,18 @@ def get_module_info(module, extra_data_path, root="."):
     if not os.path.exists(df) and extra_data_path != "":
         external = True
         df = os.path.join(extra_data_path, "build_info", "IMP." + module)
-    ok = False
-    modules = ""
-    unfound_modules = ""
-    dependencies = ""
-    unfound_dependencies = ""
-    swig_wrapper_includes = ""
-    swig_includes = ""
-    swig_path = ""
-    include_path = ""
-    lib_path = ""
-    exec(open(df, "r").read())
-    ret = {"ok": ok,
-           "modules": split(modules),
-           "unfound_modules": split(unfound_modules),
-           "dependencies": split(dependencies),
-           "unfound_dependencies": split(unfound_dependencies),
-           "swig_includes": split(swig_includes),
-           "swig_wrapper_includes": split(swig_wrapper_includes)}
+    d = {'modules': "", 'unfound_modules': "",
+         'dependencies': "", 'unfound_dependencies': "",
+         'swig_wrapper_includes': "", 'swig_includes': "",
+         'swig_path': "", 'include_path': "", 'lib_path': "", 'ok': False}
+    exec(open(df, "r").read(), d)
+    ret = {"ok": d['ok'],
+           "modules": split(d['modules']),
+           "unfound_modules": split(d['unfound_modules']),
+           "dependencies": split(d['dependencies']),
+           "unfound_dependencies": split(d['unfound_dependencies']),
+           "swig_includes": split(d['swig_includes']),
+           "swig_wrapper_includes": split(d['swig_wrapper_includes'])}
     if external:
         ret["external"] = True
     module_info_cache[module] = ret
