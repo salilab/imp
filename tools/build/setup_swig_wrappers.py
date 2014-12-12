@@ -12,7 +12,7 @@ from optparse import OptionParser
 
 
 imp_init = """try:
-    from kernel import *
+    from IMP.kernel import *
 except:
     import traceback
     print("no kernel")
