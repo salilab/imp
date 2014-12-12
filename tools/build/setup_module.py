@@ -94,24 +94,22 @@ using ::IMP::base::hash_value;
             else:
                 cppdefines.append("#define %s" % parts[0])
 
-    required_modules = ""
-    lib_only_required_modules = ""
-    required_dependencies = ""
-    optional_dependencies = ""
+    d = {'required_modules': "", 'lib_only_required_modules': "",
+         'required_dependencies': "", 'optional_dependencies': ""}
     exec(open(os.path.join(options.source, "modules", data["name"],
-                           "dependencies.py"), "r").read())
+                           "dependencies.py"), "r").read(), d)
 
     info = tools.get_module_info(data["name"], options.datapath)
 
     optional_modules = [
         x for x in info[
             "modules"] if x not in tools.split(
-            required_modules) and x != ""]
+            d['required_modules']) and x != ""]
     unfound_modules = [x for x in info["unfound_modules"] if x != ""]
     optional_dependencies = [
         x for x in info[
             "dependencies"] if x not in tools.split(
-            required_dependencies) and x != ""]
+            d['required_dependencies']) and x != ""]
     unfound_dependencies = [x for x in info["unfound_dependencies"] if x != ""]
     add_list_to_defines(cppdefines, data, "USE", 1,
                         ["imp_" + x for x in optional_modules])
