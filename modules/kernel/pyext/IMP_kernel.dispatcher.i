@@ -74,7 +74,7 @@ class CommandDispatcher(object):
     def show_help(self):
         ver = self._get_version()
         print("%s, version %s." % (self._progname, ver))
-        print(self.long_help + """)
+        print(self.long_help + """
 
 This program is part of IMP, the Integrative Modeling Platform,
 which is Copyright 2007-2014 IMP Inventors.
@@ -82,7 +82,7 @@ For additional information about IMP, see <http://integrativemodeling.org>.
 
 Usage: %s <command> [options] [args]
 
-Commands:""" % self._progname
+Commands:""" % self._progname)
         commands = self._all_commands[:] + ['help']
         commands.sort()
         cmdlen = max([len(c) for c in commands])
