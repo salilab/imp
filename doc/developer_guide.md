@@ -103,6 +103,16 @@ conventions are automatically checked for by source control before
 allowing a new commit, and can also be checked yourself in new
 code by running [check_standards.py](#devguide_check_standards).
 
+### Compatibility ### (devguide_compatibility}
+
+You should try to make sure your code is compatible with as wide a range of
+build and run environments as possible. To this end,
+- don't use Python modules that aren't available in Python 2.6 (the oldest version of Python supported by IMP). For example, avoid `argparse` (use `optparse` instead).
+- try to write Python code that also works in Python 3 (IMP doesn't *yet* support Python 3, but it will - and we will do that with one codebase that works everywhere, rather than having a separate Python 3 version). Most obviously, in Python 3, `print` is a function, not a statement. So write `print("foo")` rather than `print "foo"` - the former works in Python 2 too. To catch this quickly, add `from __future__ import print_function` at the very top of your Python modules.
+- if you must use an external C++ library, it needs to have a very permissive open source license (such as BSD or LGPL - not GPL) and note that this will reduce the number of potential users of your code (since it's another dependency to find).
+- try to avoid Linux- or Mac-centric coding that won't work on Windows. For example, use `os.path.join` to join paths in Python, rather than adding the '/' character. Write utility scripts in Python (which is available on Windows, since the rest of IMP requires it) not as shell scripts, Perl scripts, etc.
+
+
 ### Indentation ### {#devguide_indentation}
 
 All C++ headers and code should be indented with 2-space indents. Do not use
