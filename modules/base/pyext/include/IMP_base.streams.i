@@ -452,8 +452,9 @@ public:
     // Is the object a 'real' C-style FILE ?
     bool real_file;
     /* Cannot reliably detect a "real" file pointer on Windows
-       (differing C runtimes) so always use a file-like approach here */
-#ifdef _MSC_VER
+       (differing C runtimes) so always use a file-like approach here;
+       in Python 3 all files are only file-like */
+#if PY_VERSION_HEX >= 0x03000000 || defined(_MSC_VER)
     real_file = false;
 #else
     try {
@@ -463,9 +464,12 @@ public:
     }
 #endif
 
+#if PY_VERSION_HEX < 0x03000000
     if (real_file) {
       streambuf_ = std::auto_ptr<InAdapter>(new PyInCFileAdapter(PyFile_AsFile(p)));
-    } else {
+    } else 
+#endif
+    {
       PyObject *read_method;
       if (!(read_method = PyObject_GetAttrString(p, "read"))) {
         return NULL;
