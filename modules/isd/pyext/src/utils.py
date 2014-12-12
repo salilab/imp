@@ -401,7 +401,7 @@ def Dump(this, filename, gzip=0, mode='w', bin=1):
     filename = os.path.expanduser(filename)
 
     if not mode in ['w', 'a']:
-        raise "mode has to be 'w' (write) or 'a' (append)"
+        raise ValueError("mode has to be 'w' (write) or 'a' (append)")
 
     if gzip:
         import gzip
