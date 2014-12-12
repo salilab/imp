@@ -138,7 +138,7 @@ std::string get_data_path(std::string fname);
 }
 """ % module)
     contents.append("""%pythoncode %{
-import _version_check
+from . import _version_check
 _version_check.check_version(get_module_version())
 %}
 """)
