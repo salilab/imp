@@ -10,7 +10,8 @@ class Tests(IMP.test.ApplicationTestCase):
            produced. This makes the test run faster, and we don't need to
            install HEXDOCK."""
         os.environ['PATH'] = os.getcwd() + os.pathsep + os.environ['PATH']
-        open('hex', 'w').write("""#!/usr/bin/env python
+        with open('hex', 'w') as fh:
+            fh.write("""#!/usr/bin/env python
 import sys, shutil
 for line in sys.stdin.readlines():
     spl = line.rstrip('\\r\\n').split()
