@@ -791,14 +791,15 @@ class ApplicationTestCase(TestCase):
         inline = False
         cmds = []
         example_path = os.path.abspath(IMP.get_example_path('..'))
-        for line in open(doc).readlines():
-          if '\code{.sh}' in line:
-              inline = True
-          elif '\endcode' in line:
-              inline = False
-          elif inline:
-              cmds.append(line.rstrip('\r\n').replace('<imp_example_path>',
-                                                      example_path))
+        with open(doc) as fh:
+            for line in fh.readlines():
+                if '\code{.sh}' in line:
+                    inline = True
+                elif '\endcode' in line:
+                    inline = False
+                elif inline:
+                    cmds.append(line.rstrip('\r\n').replace(
+                                  '<imp_example_path>', example_path))
         if sys.platform == 'win32':
             cmds = [fix_win32_command(x) for x in cmds]
         return cmds
