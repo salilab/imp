@@ -684,56 +684,22 @@ def main(*args, **keys):
        are."""
     return unittest.main(testRunner=_TestRunner, *args, **keys)
 
-try:
-    import subprocess
-    class _SubprocessWrapper(subprocess.Popen):
-        def __init__(self, app, args):
-            # For (non-Python) applications to work on Windows, the
-            # PATH must include the directory containing built DLLs
-            if sys.platform == 'win32' and app != sys.executable:
-                # Hack to find the location of build/lib/
-                libdir = os.environ['PYTHONPATH'].split(';')[0]
-                env = os.environ.copy()
-                env['PATH'] += ';' + libdir
-            else:
-                env = None
-            subprocess.Popen.__init__(self, [app]+list(args),
-                                      stdin=subprocess.PIPE,
-                                      stdout=subprocess.PIPE,
-                                      stderr=subprocess.PIPE, env=env)
-except ImportError:
-    import threading
-    import popen2
-    # Provide a subprocess workalike for Python 2.3 systems (e.g. old Macs)
-    class _SubprocessWrapper(object):
-        def __init__(self, app, args):
-            self.popen = popen2.Popen3(app + " " + " ".join(args), True)
-            self.stdin = self.popen.tochild
-            self.stdout = self.popen.fromchild
-            self.stderr = self.popen.childerr
-
-        def _readerthread(self, fh, buffer):
-            buffer.append(fh.read())
-
-        def communicate(self, input=None):
-            stdout = []
-            stderr = []
-            stdout_thread = threading.Thread(target=self._readerthread,
-                                             args=(self.stdout, stdout))
-            stdout_thread.setDaemon(True)
-            stdout_thread.start()
-            stderr_thread = threading.Thread(target=self._readerthread,
-                                             args=(self.stderr, stderr))
-            stderr_thread.setDaemon(True)
-            stderr_thread.start()
-
-            if input:
-                self.stdin.write(input)
-            self.stdin.close()
-            stdout_thread.join()
-            stderr_thread.join()
-            self.returncode = self.popen.wait()
-            return stdout[0], stderr[0]
+import subprocess
+class _SubprocessWrapper(subprocess.Popen):
+    def __init__(self, app, args):
+        # For (non-Python) applications to work on Windows, the
+        # PATH must include the directory containing built DLLs
+        if sys.platform == 'win32' and app != sys.executable:
+            # Hack to find the location of build/lib/
+            libdir = os.environ['PYTHONPATH'].split(';')[0]
+            env = os.environ.copy()
+            env['PATH'] += ';' + libdir
+        else:
+            env = None
+        subprocess.Popen.__init__(self, [app]+list(args),
+                                  stdin=subprocess.PIPE,
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE, env=env)
 
 
 class ApplicationTestCase(TestCase):
