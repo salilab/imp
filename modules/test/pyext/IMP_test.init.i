@@ -44,7 +44,7 @@ def __load_unittest_package():
             else:
                 errors.append("'%s' does not have the 'skip' decorator" \
                               % modname)
-        except ImportError, e:
+        except ImportError as e:
             errors.append(str(e))
         #u = __import__("_compat_python.unittest2
         return _compat_python.unittest2
@@ -524,7 +524,7 @@ class TestCase(unittest.TestCase):
                 exec open(filename) in vars
             # Catch sys.exit() called from within the example; a non-zero exit
             # value should cause the test case to fail
-            except SystemExit, e:
+            except SystemExit as, e:
                 if e.code != 0 and e.code is not None:
                     raise _FatalError("Example exit with code %s" % str(e.code))
         finally:
