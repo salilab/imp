@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-import ConfigParser
+try:
+    from configparser import ConfigParser # python3
+except ImportError:
+    from ConfigParser import SafeConfigParser as ConfigParser # python2
 import sys
 import os
 import time
@@ -391,8 +394,7 @@ def create_dockings_from_xlinks(params):
         # os.remove(fn_initial_docking)
 
 if __name__ == "__main__":
-    import ConfigParser
-    cparser = ConfigParser.SafeConfigParser()
+    cparser = ConfigParser()
 
     parser = IMP.OptionParser(description="Domino grid sampling")
     parser.add_option("--o",
