@@ -60,15 +60,15 @@ def show_graphviz(g):
         import subprocess
     except ImportError:
         import sys
-        print >> sys.stderr, "Cannot run dot on Python 2.3 systems."
+        sys.stderr.write("Cannot run dot on Python 2.3 systems.\n")
         return
     try:
-        print "running dot"
+        print("running dot")
         sp = subprocess.Popen(["dot", "-Tpdf", tfn, "-o" + tfon])
         sp.wait()
     except:
         import sys
-        print >> sys.stderr, "The dot command from the graphviz package was not found. Please make sure it is in the PATH passed to IMP."
+        sys.stderr.write("The dot command from the graphviz package was not found. Please make sure it is in the PATH passed to IMP.\n")
         return
     import platform
     if platform.system() == "Darwin":
@@ -77,7 +77,7 @@ def show_graphviz(g):
         cmd = ["gv", "acroread", "xpdf"]
     success = False
     for c in cmd:
-        print "launching viewer", c
+        print("launching viewer " + c)
         try:
             subprocess.check_call([c, tfon])
             success = True
@@ -85,5 +85,5 @@ def show_graphviz(g):
         except:
             pass
     if not success:
-        print "Could not display file. It is saved at", tfon
+        print("Could not display file. It is saved at " + tfon)
     return tfon
