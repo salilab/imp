@@ -44,6 +44,6 @@ IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(5,5)
 IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(6,6)
 
 %pythoncode %{
-import _histogram
+from . import _histogram
 show_histogram= _histogram.show_histogram
 %}
