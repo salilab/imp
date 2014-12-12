@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import sys
 import os
 import re
@@ -73,7 +74,7 @@ class LogHolder:
         # see if there are multiple files in the same category, and store them
         self.dumpfiles = {}
         self.trajfiles = {}
-        for cat, fnames in files.iteritems():
+        for cat, fnames in files.items():
             if len(fnames) > 1 \
                     or os.path.splitext(fnames[0].split('_')[-1])[0].isdigit():
                 # there are multiple files, no need to understand their content
@@ -131,12 +132,12 @@ class LogHolder:
             stepno = int(stat.split()[1])
             step = LogStep(stepno, stat, self.get_stats_header())
             # get other files' entries at this step if available
-            for cat, df in self.dumpfiles.iteritems():
+            for cat, df in self.dumpfiles.items():
                 if stepno in df:
                     fullpath = os.path.join(self.folder,
                                             self.prefix + df[stepno])
                     step.add('dump', cat, fullpath)
-            for cat, tf in self.trajfiles.iteritems():
+            for cat, tf in self.trajfiles.items():
                 fullpath = os.path.join(self.folder,
                                         self.prefix + tf[1])
                 step.add('traj', cat, tf[0], fullpath, stepno, tf[1])
@@ -164,7 +165,7 @@ class Demuxer:
         # create needed folders
         if not os.path.isdir(outfolder):
             os.mkdir(outfolder)
-        for l in xrange(len(self.logs)):
+        for l in range(len(self.logs)):
             fname = os.path.join(outfolder, 'p%d' % l)
             if not os.path.isdir(fname):
                 os.mkdir(fname)
@@ -198,7 +199,7 @@ class Demuxer:
         self.stat_handles[stateno].write(lstep.get_stats())
 
     def _write_step_dump(self, stateno, lstep):
-        for cat, fname in lstep.get_dumps().iteritems():
+        for cat, fname in lstep.get_dumps().items():
             shutil.copyfile(fname, os.path.join(self.folders[stateno],
                                                 str(stateno) + '_' + cat + fname.split(cat)[1]))
 
@@ -225,7 +226,7 @@ class Demuxer:
 
     def _write_step_traj(self, stateno, lstep):
         # loop over categories
-        for cat, data in lstep.get_trajs().iteritems():
+        for cat, data in lstep.get_trajs().items():
             destfile = os.path.join(self.outfolder, 'p' + str(stateno),
                                     str(stateno) + '_' + data['tail'])
             if data['ftype'].startswith('rmf'):
@@ -241,19 +242,19 @@ class Demuxer:
 
     def write(self):
         # loop over time steps
-        log_iterators = [l.items() for l in self.logs]
-        print "Demuxing", len(log_iterators), "replicas"
+        log_iterators = [list(l.items()) for l in self.logs]
+        print("Demuxing", len(log_iterators), "replicas")
         for idx, steps in enumerate(zip(*log_iterators)):
             if idx % 10 == 0 and idx > 0:
-                print "step", idx, '\r',
+                print("step", idx, '\r', end=' ')
                 sys.stdout.flush()
             # assign state numbers to these logs
             params = [(self.get_param(i.get_stats()), i) for i in steps]
             params.sort(reverse=self.reverse)
             # write them
-            for i in xrange(len(params)):
+            for i in range(len(params)):
                 self._write_step(i, params[i][1])
-        print "Done"
+        print("Done")
 
 
 def get_prefix(folder):

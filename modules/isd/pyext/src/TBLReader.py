@@ -4,6 +4,7 @@
    Classes to handle TBL files.
 """
 
+from __future__ import print_function
 import sys
 import os
 import IMP.isd
@@ -93,7 +94,7 @@ class TBLReader:
                     residue_type, atom_name)
 
                 if self.ignore:
-                    print msg
+                    print(msg)
                 else:
                     raise KeyError(msg)
 
@@ -130,14 +131,14 @@ class TBLReader:
                     msg = 'Pseudoatoms not upported: %s' % atom_name
 
                     if self.ignore:
-                        print msg
+                        print(msg)
 
                     else:
                         raise KeyError(msg)
 
                 elif self.ignore:
                     msg = 'Warning: atom %s not found in residue %s.' % key
-                    print msg
+                    print(msg)
                 else:
                     raise KeyError(msg % key)
 
@@ -157,7 +158,7 @@ class TBLReader:
             res_type = self.sequence[atoms[1]['resid']]
 
         except IndexError:
-            print 'Residue number overflow in atoms', atoms
+            print('Residue number overflow in atoms', atoms)
             return ''
 
         for dihedral in self.connectivity[res_type].dihedrals.values():
@@ -180,7 +181,7 @@ class TBLReader:
             names)
 
         if self.ignore:
-            print msg
+            print(msg)
             return ''
 
         raise KeyError(msg)
@@ -240,7 +241,7 @@ class TBLReader:
                 res_type = self.sequence[a['resid']]
 
             except IndexError:
-                print 'Residue number overflow in atoms', atoms
+                print('Residue number overflow in atoms', atoms)
                 return []
 
             atom_name = a['name']
@@ -476,7 +477,7 @@ class TBLReader:
                         del d[_type]
 
                 else:
-                    d = {key: d.values()[0]}
+                    d = {key: list(d.values())[0]}
             else:
                 d = {key: restraints}
 

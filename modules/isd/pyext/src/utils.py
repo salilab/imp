@@ -2,6 +2,7 @@
    Miscellaneous utilities.
 """
 
+from __future__ import print_function
 #
 # The Inferential Structure Determination (ISD) software library
 #
@@ -28,7 +29,10 @@ import os.path
 import socket
 
 
-from Queue import Queue
+try:
+    from queue import Queue # python3
+except ImportError:
+    from Queue import Queue # python2
 from threading import Thread
 
 debug = False
@@ -106,7 +110,7 @@ class WatchDog(Thread):
         "set the _last_ping variable of the WatchDog instance"
 
         if self.debug:
-            print 'Watchdog: set(%s) called.' % str(x)
+            print('Watchdog: set(%s) called.' % str(x))
 
         self._last_ping = x
 
@@ -129,14 +133,14 @@ class WatchDog(Thread):
                 else:
                     val = '%.0f s' % delta
 
-                print 'Watchdog: last life sign %s ago; timeout is %d min(s).' % \
-                      (val, self.timeout / 60.)
+                print('Watchdog: last life sign %s ago; timeout is %d min(s).' % \
+                      (val, self.timeout / 60.))
 
             if self._last_ping is not None and delta > self.timeout:
 
                 s = 'No life sign for > %d minute(s)' % (self.timeout / 60.)
 
-                print s + ', exiting...'
+                print(s + ', exiting...')
 
                 if self.logfile is not None:
 
@@ -158,7 +162,7 @@ class WatchDog(Thread):
                 if not self.debug:
                     os._exit(0)
                 else:
-                    print 'Watchdog: keeping Python interpreter alive.'
+                    print('Watchdog: keeping Python interpreter alive.')
                     self.stop()
 
             time.sleep(self.timeout / 4.)
@@ -296,7 +300,7 @@ def copyfiles(src_path, dest_path, pattern=None, verbose=False):
         copyfile(f, os.path.join(dest_path, os.path.basename(f)))
 
         if verbose:
-            print f
+            print(f)
 
 
 def touch(filename):
@@ -328,20 +332,20 @@ def read_sequence_file(filename, first_residue_number=1):
     seq = f.read().upper()
 
     if seq.startswith('>'):
-        print "Detected FASTA 1-letter sequence"
+        print("Detected FASTA 1-letter sequence")
         pos = seq.find('\n')
         # get rid of first line and get sequence in one line
         seq = ''.join(seq[pos + 1:].split())
         names = [code[i] for i in seq]
-        numbers = range(first_residue_number, first_residue_number + len(seq))
-        return dict(zip(numbers, names))
+        numbers = list(range(first_residue_number, first_residue_number + len(seq)))
+        return dict(list(zip(numbers, names)))
     else:
         l = seq.split()
         for x in l:
-            if not x in code.values():
-                print 'Warning: unknown 3-letter code: %s' % x
-        numbers = range(first_residue_number, first_residue_number + len(l))
-        return dict(zip(numbers, l))
+            if not x in list(code.values()):
+                print('Warning: unknown 3-letter code: %s' % x)
+        numbers = list(range(first_residue_number, first_residue_number + len(l)))
+        return dict(list(zip(numbers, l)))
 
 # Yannick
 
@@ -352,22 +356,22 @@ def check_residue(a, b):
     b = b.upper()
     if len(a) == 1:
         if a not in code:
-            print 'Warning: unknown 1-letter code: %s' % a
+            print('Warning: unknown 1-letter code: %s' % a)
             return False
         a = code[a]
     if len(b) == 1:
         if b not in code:
-            print 'Warning: unknown 1-letter code: %s' % b
+            print('Warning: unknown 1-letter code: %s' % b)
             return False
         b = code[b]
     if len(a) != 3:
-        print 'Unknown residue code %s' % a
+        print('Unknown residue code %s' % a)
         return False
     if len(b) != 3:
-        print 'Unknown residue code %s' % b
+        print('Unknown residue code %s' % b)
         return False
     if a != b:
-        print 'Residues %s and %s are not the same' % (a, b)
+        print('Residues %s and %s are not the same' % (a, b))
         return False
     else:
         return True
@@ -396,7 +400,10 @@ def Dump(this, filename, gzip=0, mode='w', bin=1):
     """
 
     import os
-    import cPickle
+    try:
+        import cPickle as pickle
+    except ImportError:
+        import pickle
 
     filename = os.path.expanduser(filename)
 
@@ -409,7 +416,7 @@ def Dump(this, filename, gzip=0, mode='w', bin=1):
     else:
         f = open(filename, mode)
 
-    cPickle.dump(this, f, bin)
+    pickle.dump(this, f, bin)
 
     f.close()
 
@@ -421,7 +428,7 @@ def Load(filename, gzip=0, force=0):
     force: returns all objects that could be unpickled. Useful
            when unpickling of sequential objects fails at some point.
     """
-    import cPickle
+    import pickle
     import os
 
     filename = os.path.expanduser(filename)
@@ -443,7 +450,7 @@ def Load(filename, gzip=0, force=0):
     while not eof:
 
         try:
-            object = cPickle.load(f)
+            object = pickle.load(f)
 
             if objects is None:
                 objects = object
@@ -457,12 +464,12 @@ def Load(filename, gzip=0, force=0):
             eof = 1
 
         except Exception:
-            print 'Could not load chunk %d. Stopped.' % n
+            print('Could not load chunk %d. Stopped.' % n)
 
             if force:
                 eof = 1
             else:
-                object = cPickle.load(f)
+                object = pickle.load(f)
 
     f.close()
 
@@ -508,7 +515,7 @@ def get_pdb(pdb_entry, dest='.', verbose_level=0):
 def compile_index_list(chain, atom_names, residue_index_list=None):
 
     if residue_index_list is None:
-        residue_index_list = range(len(chain))
+        residue_index_list = list(range(len(chain)))
 
     index_list = []
 
@@ -540,7 +547,7 @@ def get_coordinates(universe, E, indices=None, atom_names=('CA',),
     from numpy.oldnumeric import array, take
 
     if indices is None:
-        indices = range(len(E))
+        indices = list(range(len(E)))
 
     chain = universe.get_polymer()
 
@@ -600,7 +607,7 @@ def indent(lines, prefix):
     tag = ' ' * len(str(prefix))
 
     lines[0] = prefix + lines[0]
-    lines = [lines[0]] + map(lambda s, t=tag: t + s, lines[1:])
+    lines = [lines[0]] + list(map(lambda s, t=tag: t + s, lines[1:]))
 
     return '\n'.join(lines)
 
@@ -670,13 +677,13 @@ def _save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
         import time
 
         if err_msg is None:
-            print 'IOError: %s' % str(msg)
+            print('IOError: %s' % str(msg))
 
         else:
             if show_io_err:
-                print '%s. %s' % (str(msg), err_msg)
+                print('%s. %s' % (str(msg), err_msg))
             else:
-                print err_msg
+                print(err_msg)
 
         while True:
 

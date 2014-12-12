@@ -4,6 +4,7 @@
    Classes to store output from replicas.
 """
 
+from __future__ import print_function
 import numpy
 import sys
 
@@ -38,14 +39,14 @@ class History:
                 if goodlen is None:
                     goodlen = len(self.data[cat][name])
                 if len(self.data[cat][name]) != goodlen:
-                    print "category %s entry %s : length %s expected, got %s"\
-                        % (cat, name, goodlen, len(self.data[cat][name]))
+                    print("category %s entry %s : length %s expected, got %s"\
+                        % (cat, name, goodlen, len(self.data[cat][name])))
                     break
                 goodtype = type(self.data[cat][name][0])
                 for ent in self.data[cat][name]:
                     if not isinstance(ent, goodtype):
-                        print "category %s entry %s : %s expected, got %s"\
-                            % (cat, name, goodtype, type(ent))
+                        print("category %s entry %s : %s expected, got %s"\
+                            % (cat, name, goodtype, type(ent)))
                         break
 
     def get_data(self, cat, name):
