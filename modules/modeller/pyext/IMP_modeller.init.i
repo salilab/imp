@@ -315,7 +315,7 @@ def _load_entire_restraints_file(filename, protein):
             rsr = _load_restraints_line(line, atoms)
             if rsr is not None:
                 yield rsr
-        except Exception, err:
+        except Exception as err:
             print("Cannot read restraints file line:\n" + line)
             raise
 
