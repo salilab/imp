@@ -521,7 +521,7 @@ class TestCase(unittest.TestCase):
         vars = {}
         try:
             try:
-                exec open(filename) in vars
+                exec(open(filename), vars)
             # Catch sys.exit() called from within the example; a non-zero exit
             # value should cause the test case to fail
             except SystemExit as, e:
