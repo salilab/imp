@@ -1,6 +1,5 @@
 %pythoncode %{
 
-from __future__ import print_statement
 import sys
 import os
 
