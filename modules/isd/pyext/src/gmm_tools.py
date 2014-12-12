@@ -106,7 +106,8 @@ def write_sklearn_gmm_to_map(gmm,out_fn,apix=0,bbox=None,dmap_model=None):
     scores=gmm.score(apos)
 
     print 'assigning'
-    map(lambda nv: d1.set_value(nv,exp(scores[nv])),xrange(nvox))
+    for nv, score in enumerate(scores):
+        d1.set_value(nv,exp(score))
     print 'will write GMM map to',out_fn
     IMP.em.write_map(d1,out_fn,IMP.em.MRCReaderWriter())
 
