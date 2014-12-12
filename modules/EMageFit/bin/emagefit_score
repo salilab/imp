@@ -24,7 +24,7 @@ def score_model(complete_fn_model,
     resolution and pixel_size are used for generating projections of the model
     The finder is an em2d.ProjectionFinder used for projection matching and optimizations
     """
-    print "SCORING MODEL:", complete_fn_model
+    print("SCORING MODEL: " + complete_fn_model)
     cwd = os.getcwd()
 
     images_dir, nil = os.path.split(images_sel_file)
@@ -94,9 +94,11 @@ def score_model(complete_fn_model,
     em2d.write_registration_results(
         "registration.params",
         all_registration_results)
-    print "score_model: time complete registration", time.time() - init_time
-    print "coarse registration time", finder.get_coarse_registration_time()
-    print "fine registration time", finder.get_fine_registration_time()
+    print("score_model: time complete registration %.2f"
+          % (time.time() - init_time))
+    print("coarse registration time %2.f"
+          % finder.get_coarse_registration_time())
+    print("fine registration time %.2f" % finder.get_fine_registration_time())
     return all_registration_results
 
 
@@ -134,5 +136,5 @@ if __name__ == "__main__":
                            resolution,
                            images_per_batch)
     for i, reg in enumerate(all_regs):
-        print "Score for image %s: %f" % (i, reg.get_score())
-    print "Global score ", em2d.get_global_score(all_regs)
+        print("Score for image %s: %f" % (i, reg.get_score()))
+    print("Global score " + str(em2d.get_global_score(all_regs)))
