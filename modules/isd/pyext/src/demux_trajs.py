@@ -173,7 +173,7 @@ class Demuxer:
         h0 = self.logs[0].get_stats_header()
         for log in self.logs[1:]:
             if h0 != log.get_stats_header():
-                raise "headers must be identical!"
+                raise ValueError("headers must be identical!")
         # get column number from header
         tokens = [idx for idx, i in enumerate(h0.split()) if self.column in i]
         if len(tokens) == 0:
