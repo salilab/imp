@@ -34,7 +34,7 @@ def create_sampling_grid_3d(diameter, n_axis_points):
     step = diameter / n_axis_points
     points = [-radius + step * n for n in range(n_axis_points + 1)]
     # filter points closer than 1A
-    points = filter(lambda x: abs(x) > 1, points)
+    points = [x for x in points if abs(x) > 1]
     log.info("Points along the axis %s", points)
     positions = []
     for x, y, z in itertools.product(points, points, points):

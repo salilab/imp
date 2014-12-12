@@ -18,7 +18,7 @@ def argmin(sequence):
 
 def keymin(dictionary):
     """ return the key of the dictionary that has the minimum value """
-    ks = dictionary.keys()
+    ks = list(dictionary.keys())
     min_key = ks[0]
     min_value = dictionary[min_key]
     for k in ks:
@@ -43,7 +43,7 @@ def argmax(sequence):
 
 def keymax(dictionary):
     """ return the key of the dictionary that has the maximum value """
-    ks = dictionary.keys()
+    ks = list(dictionary.keys())
     max_key = ks[0]
     min_value = dictionary[max_key]
     for k in ks:

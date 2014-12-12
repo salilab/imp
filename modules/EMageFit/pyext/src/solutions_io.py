@@ -649,8 +649,8 @@ class ResultsDB(database.Database2):
         self.check_if_is_connected()
         table = self.placements_table
         fields = self.get_table_column_names(table)
-        distance_fields = filter(lambda x: 'distance' in x, fields)
-        angle_fields = filter(lambda x: 'angle' in x, fields)
+        distance_fields = [x for x in fields if 'distance' in x]
+        angle_fields = [x for x in fields if 'angle' in x]
         sql_command = """ SELECT %s FROM %s WHERE solution_id IN (%s) """
         # string with the solution ids to pass to the sql_command
         str_ids = ",".join(map(str, solutions_ids))

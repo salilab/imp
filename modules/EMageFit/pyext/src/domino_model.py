@@ -569,7 +569,7 @@ class DominoModel:
             # get particles in the subset
             particles = []
             for name in names:
-                l = filter(lambda p: p.get_name() == name, ps)
+                l = [p for p in ps if p.get_name() == name]
                 if (len(l) > 1):
                     ValueError("More than one particle with same name" % names)
                 particles.extend(l)
@@ -639,7 +639,7 @@ class DominoModel:
         no_child_index = -1
         subset = self.merge_tree.get_vertex_name(v)
         names = [p.get_name() for p in subset]
-        reps = filter(lambda x: names.count(x) > 1, names)  # repeated names
+        reps = [x for x in names if names.count(x) > 1]  # repeated names
         if(len(reps)):
             raise ValueError("The names of the "
                              "particles in the subset %s are not unique" % subset)
@@ -888,12 +888,10 @@ class DominoModel:
         # Set the state of the model to native
         for rb, rn in zip(self.components_rbs, self.native_rbs):
             # remove sub-rigid bodies
-            rb_members = filter(
-                lambda m: not core.RigidBody.get_is_setup(
-                    m.get_particle()), rb.get_members())
-            rn_members = filter(
-                lambda m: not core.RigidBody.get_is_setup(
-                    m.get_particle()), rn.get_members())
+            rb_members = [m for m in rb.get_members()
+                          if not core.RigidBody.get_is_setup(m.get_particle())]
+            rn_members = [m for m in rn.get_members()
+                          if not core.RigidBody.get_is_setup(m.get_particle())]
             rb_coords = [m.get_coordinates() for m in rb_members]
             rn_coords = [m.get_coordinates() for m in rn_members]
 
@@ -1002,16 +1000,16 @@ class DominoModel:
 
 
 def print_restraints_values(model):
-    print "Restraints: Name, weight, value, maximum_value"
+    print("Restraints: Name, weight, value, maximum_value")
     total_score = 0
     for i in range(model.get_number_of_restraints()):
         r = model.get_restraint(i)
         score = r.evaluate(False)
 #        print "%20s %18f %18f %18f" % (r.get_name(), r.get_weight(),
 #                                                score, r.get_maximum_score())
-        print "%20s %18f %18f" % (r.get_name(), r.get_weight(), score)
+        print("%20s %18f %18f" % (r.get_name(), r.get_weight(), score))
         total_score += score
-    print "total_score:", total_score
+    print("total_score:", total_score)
 
 
 def anchor_assembly(components_rbs, anchored):
@@ -1081,8 +1079,7 @@ def get_coordinates(rigid_bodies):
     coords = []
     for rb in rigid_bodies:
             # remove sub-rigid bodies
-        rb_members = filter(
-            lambda m: not core.RigidBody.get_is_setup(
-                m.get_particle()), rb.get_members())
+        rb_members = [m for m in rb.get_members()
+                      if not core.RigidBody.get_is_setup(m.get_particle())]
         coords.extend([m.get_coordinates() for m in rb_members])
     return coords

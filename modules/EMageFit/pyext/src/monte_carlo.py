@@ -152,7 +152,7 @@ class MonteCarloRelativeMoves:
         log.info("Running MonteCarlo")
         mc = core.MonteCarlo(self.model)
         mc.set_return_best(True)
-        for i in xrange(self.cycles):
+        for i in range(self.cycles):
             log.info("Cycle: %s", i)
             for iters, T, tr, rot in zip(self.iterations, self.temperatures,
                                          self.max_translations, self.max_rotations):
@@ -177,7 +177,7 @@ class MonteCarloRelativeMoves:
         mc = core.MonteCarlo(self.model)
         mc.set_return_best(True)
 
-        for i in xrange(self.cycles):
+        for i in range(self.cycles):
             log.info("Cycle: %s", i)
             for iters, T, tr, rot in zip(self.iterations, self.temperatures,
                                          self.max_translations, self.max_rotations):

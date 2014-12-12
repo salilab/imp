@@ -108,7 +108,7 @@ class Database2:
         # Fill the table with the info in the tuples
         types = self.get_table_types(table_name)
 #        log.debug("Storing types: %s", types)
-        for i in xrange(len(data)):
+        for i in range(len(data)):
             data[i] = [apply_type(d) for d, apply_type in zip(data[i], types)]
         self.cursor.executemany(sql_command, data)
         self.connection.commit()
@@ -315,7 +315,7 @@ def print_data(data, delimiter=" "):
     """ Prints the data recovered from a database """
     for row in data:
         line = delimiter.join([str(x) for x in row])
-        print line
+        print(line)
 
 
 def write_data(data, output_file, delimiter=" "):
