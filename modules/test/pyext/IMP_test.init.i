@@ -15,8 +15,8 @@ import IMP
 import time
 import types
 import shutil
-import _compat_python
-import _compat_python.unittest2
+from . import _compat_python
+from ._compat_python import unittest2
 import datetime
 import pickle
 
