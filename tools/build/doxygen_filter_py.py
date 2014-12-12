@@ -58,6 +58,8 @@ def format_value(val):
         return '~'
     elif isinstance(val, ast.Not):
         return 'not '
+    elif isinstance(val, ast.USub):
+        return '-'
     elif isinstance(val, ast.Attribute):
         return format_value(val.value) + '.' + val.attr
     elif isinstance(val, ast.List):
