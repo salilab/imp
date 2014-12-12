@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import re
 import sys
@@ -21,7 +22,7 @@ def readParameters(parameterFileName):
 
         line = line.rstrip("\n\r")
         [paramName, paramValue] = line.split('\t')
-        print "parameter %s:\t%s" % (paramName, paramValue)
+        print("parameter %s:\t%s" % (paramName, paramValue))
         parameters[paramName] = paramValue
 
     parameterFh.close()
