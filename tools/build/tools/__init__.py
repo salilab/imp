@@ -77,11 +77,11 @@ def rewrite(filename, contents, verbose=True):
         if old == contents:
             return
         elif verbose:
-            print "    Different", filename
+            print("    Different", filename)
             for l in difflib.unified_diff(old.split("\n"), contents.split("\n")):
                 stl = str(l)
                 if (stl[0] == '-' or stl[0] == '+') and stl[1] != '-' and stl[1] != '+':
-                    print "    " + stl
+                    print("    " + stl)
     except:
         pass
         # print "Missing", filename
@@ -104,7 +104,7 @@ def link(source, target, verbose=False):
     # print tpath, spath
     if not os.path.exists(spath):
         if verbose:
-            print "no source", spath
+            print("no source", spath)
         return
     if os.path.islink(tpath):
         if os.readlink(tpath) == spath:
@@ -116,7 +116,7 @@ def link(source, target, verbose=False):
     elif os.path.exists(tpath):
         os.unlink(tpath)
     if verbose:
-        print "linking", spath, tpath
+        print("linking", spath, tpath)
     if hasattr(os, 'symlink'):
         os.symlink(spath, tpath)
     # Copy instead of link on platforms that don't support symlinks (Windows)
@@ -224,7 +224,7 @@ def get_module_description(source, module, extra_data_path, root="."):
         optional_modules = ""
         required_dependencies = ""
         optional_dependencies = ""
-        exec open(df, "r").read()
+        exec(open(df, "r").read())
         return {"required_modules": split(required_modules),
                 "optional_modules": split(optional_modules),
                 "required_dependencies": split(required_dependencies),
@@ -248,7 +248,7 @@ def get_all_modules(source, modules, extra_data_path, ordered, root="."):
             if m not in ret:
                 ret.append(m)
                 stack.append(m)
-    ret.sort(cmp=lambda x, y: cmp(ordered.index(x), ordered.index(y)))
+    ret.sort(key=lambda x: ordered.index(x))
     return ret
 
 
@@ -285,7 +285,7 @@ def get_dependency_info(dependency, extra_data_path, root="."):
     libpath = ""
     swigpath = ""
     # try:
-    exec open(df, "r").read()
+    exec(open(df, "r").read())
     # except:
     #    print >> sys.stderr, "Error reading dependency", dependency, "at", df
     ret = {"ok": ok,
@@ -321,7 +321,7 @@ def get_module_info(module, extra_data_path, root="."):
     swig_path = ""
     include_path = ""
     lib_path = ""
-    exec open(df, "r").read()
+    exec(open(df, "r").read())
     ret = {"ok": ok,
            "modules": split(modules),
            "unfound_modules": split(unfound_modules),
@@ -407,7 +407,7 @@ def compute_sorted_order(source, extra_data_path):
         for mk in data.keys():
             for m in data[mk]:
                 if m not in data:
-                    print 'adding', m
+                    print('adding', m)
                     info = get_module_info(m, extra_data_path)
                     to_add[m] = info["modules"]
         for m in to_add.keys():
@@ -495,23 +495,23 @@ def run_subprocess(command, **kwargs):
     #    kwargs["stderr"] = subprocess.PIPE
     pro = subprocess.Popen(
         command, preexec_fn=os.setsid, stderr=subprocess.PIPE,
-        stdout=subprocess.PIPE, **kwargs)
+        stdout=subprocess.PIPE, universal_newlines=True, **kwargs)
     _subprocesses.append(pro)
     output, error = pro.communicate()
     ret = pro.returncode
     if ret != 0:
-        print >> sys.stderr, error
+        sys.stderr.write(error + '\n')
         raise OSError("subprocess failed with return code %d: %s\n%s"
                       % (ret, " ".join(command), error))
     return output
 
 
 def _sigHandler(signum, frame):
-    print "starting handler"
+    print("starting handler")
     signal.signal(signal.SIGTERM, signal.SIG_DFL)
     global _subprocesses
     for p in _subprocesses:
-        print "killing", p
+        print("killing", p)
         try:
             os.kill(p.pid, signal.SIGTERM)
         except:

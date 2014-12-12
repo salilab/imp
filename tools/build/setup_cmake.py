@@ -258,7 +258,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/utility)""" % ((module,) * 6)
              "tools",
              "dev_tools",
              "setup_cmake.py")],
-        cwd=path)
+        cwd=path, universal_newlines=True)
 
     return out
 
