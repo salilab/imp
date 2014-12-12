@@ -167,7 +167,7 @@ class TestCase(unittest.TestCase):
                 input = os.path.sep.join(dirs[:i] + ['input'])
                 if os.path.isdir(input):
                     ret = os.path.join(input, filename)
-                    if not open(ret, "r"):
+                    if not os.path.exists(ret):
                          raise IOError("Test input file "+ret+" does not exist")
                     return ret
         raise IOError("No test input directory found")
