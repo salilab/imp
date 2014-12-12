@@ -104,7 +104,10 @@ def get_function_signature(m):
         args[off + i][1] = default
 
     def format_arg(arg):
-        sig = arg[0].id
+        if hasattr(arg[0], 'id'):
+            sig = arg[0].id
+        else:
+            sig = arg[0].arg
         if arg[1]:
             sig += "=" + format_value(arg[1])
         return sig
