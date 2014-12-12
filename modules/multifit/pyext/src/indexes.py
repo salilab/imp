@@ -2,6 +2,7 @@
 
 __doc__ = "Generate indexes of fitting solutions."
 
+from __future__ import print_function
 import IMP.multifit
 from IMP import OptionParser
 
@@ -31,7 +32,7 @@ def run(assembly_name, asmb_fn, num_fits, mapping_fn=""):
         name = asmb_input.get_component_header(i).get_name()
         trans_fn = asmb_input.get_component_header(i).get_transformations_fn()
         fits = IMP.multifit.read_fitting_solutions(trans_fn)
-        print "number of fits for component", i, "is", len(fits), trans_fn
+        print("number of fits for component", i, "is", len(fits), trans_fn)
         index_fn = assembly_name + "." + name + ".fit.indexes.txt"
         indexes = []
         for i in range(min(num_fits, len(fits))):

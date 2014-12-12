@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # analyse the ensemble, first we will do the rmsd stuff
+from __future__ import print_function
 import operator
 import IMP.multifit
 from IMP import OptionParser
@@ -38,7 +39,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, align_param_fn,
 
     mol_path_centers = []  # save the molecule centers for each path
     # iterate over the molecules
-    print "NUMBER OF COMPS:", asmb_data.get_number_of_component_headers()
+    print("NUMBER OF COMPS:", asmb_data.get_number_of_component_headers())
     for i in range(asmb_data.get_number_of_component_headers()):
         mol_centers = []  # all the centers of a specific molecule
         mh_leaves = IMP.core.get_leaves(mhs[i])
@@ -56,7 +57,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, align_param_fn,
             ensb.unload_combination(dummy_comb)
         mol_path_centers.append(mol_centers)
     for i, p in enumerate(mol_path_centers):
-        print "number of paths for mol:", i, "is", len(p)
+        print("number of paths for mol:", i, "is", len(p))
     # load combinations
     combs = IMP.multifit.read_paths(comb_fn)
     comb_centroids = []
@@ -68,7 +69,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, align_param_fn,
     embed = IMP.statistics.VectorDEmbedding(comb_centroids)
     # TODO - use your RMSD clustering
     bin_cluster = IMP.statistics.create_bin_based_clustering(embed, diameter)
-    print "number of clusters:", bin_cluster.get_number_of_clusters()
+    print("number of clusters:", bin_cluster.get_number_of_clusters())
     cluster_stat = []
     for k in range(bin_cluster.get_number_of_clusters()):
         bc = bin_cluster.get_cluster(k)
@@ -79,15 +80,15 @@ def run(asmb_fn, proteomics_fn, mapping_fn, align_param_fn,
         reverse=True)
     cluster_reps = []
     for ind, [cluster_size, cluster_ind, cluster_elems] in enumerate(cluster_stat):
-        print "cluster index:", ind, "with", cluster_size, "combinations"
+        print("cluster index:", ind, "with", cluster_size, "combinations")
         cluster_reps.append(combs[cluster_elems[0]])
-    print "============clustering============"
-    print "Number of clusters found " + str(len(cluster_reps))
-    print "=================================="
+    print("============clustering============")
+    print("Number of clusters found " + str(len(cluster_reps)))
+    print("==================================")
     IMP.multifit.write_paths(cluster_reps, output_comb_fn)
 
 if __name__ == "__main__":
     options, args = parse_args()
-    print options
+    print(options)
     run(args[0], args[1], args[2], args[3],
         args[4], float(args[5]), args[6], options.max)

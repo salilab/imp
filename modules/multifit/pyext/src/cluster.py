@@ -2,6 +2,7 @@
 
 __doc__ = "Cluster assembly solutions."
 
+from __future__ import print_function
 from IMP import OptionParser
 import itertools
 import math
@@ -15,7 +16,7 @@ def get_uniques(seq):
     counter = []
     for e in seq:
         keys[e] = 1
-    num_keys = len(keys.keys())
+    num_keys = len(list(keys.keys()))
     for i in range(num_keys + 1):
         counter.append([0, i])
     for e in seq:
@@ -128,7 +129,7 @@ class AlignmentClustering:
             self.all_ca.append(s1.get_selected_particles())
         # load configurations
         self.coords = []
-        print "load configurations"
+        print("load configurations")
         for combi, comb in enumerate(self.combs[:max_comb_ind]):
             self.ensmb.load_combination(comb)
             c1 = []
@@ -140,19 +141,19 @@ class AlignmentClustering:
             self.coords.append(c1)
             self.ensmb.unload_combination(comb)
         self.distances = []
-        print "calculate distances"
+        print("calculate distances")
         for i in range(len(self.coords)):
             for j in range(i + 1, len(self.coords)):
                 self.distances.append(
                     IMP.atom.get_rmsd(
                         list(itertools.chain.from_iterable(self.coords[i])),
                         list(itertools.chain.from_iterable(self.coords[j]))))
-        print "cluster"
+        print("cluster")
         Z = fastcluster.linkage(self.distances)
         self.cluster_inds = scipy.cluster.hierarchy.fcluster(
             Z, max_rmsd, criterion='distance')
         self.uniques = get_uniques(self.cluster_inds)
-        print "number of clusters", len(self.uniques)
+        print("number of clusters", len(self.uniques))
 
         # return clusters by their size
         return self.uniques
@@ -372,8 +373,8 @@ def main():
         combs_fn)
     clusters = clust_engine.do_clustering(options.max, options.rmsd)
     cluster_representatives = []
-    print "clustering completed"
-    print "start analysis"
+    print("clustering completed")
+    print("start analysis")
     clust_engine.do_analysis(options.max)
     repr_combs = []
     for cluster_ind in clust_engine.uniques:
@@ -385,13 +386,13 @@ def main():
         info = clust_engine.get_cluster_stats(cluster_ind)
         repr_combs.append(
             clust_engine.get_cluster_representative_combination(cluster_ind))
-        print "==========Cluster index:", info.cluster_ind, "size:", info.cluster_size
+        print("==========Cluster index:", info.cluster_ind, "size:", info.cluster_size)
         if info.rmsd_calculated:
-            print "best sampled in cluster (index,cc,distance,angle,rmsd):", info.best_sampled_ind, info.best_sampled_cc, info.best_sampled_distance, info.best_sampled_angle, info.best_sampled_rmsd
+            print("best sampled in cluster (index,cc,distance,angle,rmsd):", info.best_sampled_ind, info.best_sampled_cc, info.best_sampled_distance, info.best_sampled_angle, info.best_sampled_rmsd)
         if info.rmsd_calculated:
-            print "cluster representative (index,cc,distance,angle,rmsd):", info.best_scored_ind, info.best_scored_cc, info.best_scored_distance, info.best_scored_angle, info.best_scored_rmsd
+            print("cluster representative (index,cc,distance,angle,rmsd):", info.best_scored_ind, info.best_scored_cc, info.best_scored_distance, info.best_scored_angle, info.best_scored_rmsd)
         else:
-            print "cluster representative (index,cc):", info.best_scored_ind, info.best_scored_cc
+            print("cluster representative (index,cc):", info.best_scored_ind, info.best_scored_cc)
 
 
 if __name__ == "__main__":

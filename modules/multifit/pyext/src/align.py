@@ -2,6 +2,7 @@
 
 __doc__ = "Align proteomics graph with the EM map."
 
+from __future__ import print_function
 # analyse the ensemble, first we will do the rmsd stuff
 import sys
 import IMP.multifit
@@ -86,29 +87,29 @@ def report_solutions(asmb, mdl, mhs, dmap, mapping_data, combs,
         s1 = IMP.atom.Selection(mh_res)
         s1.set_atom_types([IMP.atom.AtomType("CA")])
         all_leaves = all_leaves + s1.get_selected_particles()
-    print "number of leaves:", len(all_leaves)
-    print "Get number of restraints:", len(mdl.get_restraints())
+    print("number of leaves:", len(all_leaves))
+    print("Get number of restraints:", len(mdl.get_restraints()))
     pb = progressBar(0, len(combs))
     fitr = IMP.em.FitRestraint(all_leaves, dmap)
     mdl.add_restraint(fitr)
     ranked_combs = []
     sorted_combs = []
-    print "going to calculate fits for:", len(combs)
+    print("going to calculate fits for:", len(combs))
     for i, comb in enumerate(combs):
         if i % 100 == 0:
-            print "i:", i
+            print("i:", i)
         ensmb.load_combination(comb)
         ranked_combs.append([comb, fitr.evaluate(False)])
         ensmb.unload_combination(comb)
         pb.updateAmount(i)
         # print pb
-    print "end fitting"
+    print("end fitting")
     # Sort by score
     ranked_combs.sort(lambda a, b: cmp(a[1], b[1]))
     # Remove excess combinations
-    print "ranked combs:", len(ranked_combs)
+    print("ranked combs:", len(ranked_combs))
     ranked_combs[max_comb:] = []
-    print "ranked combs:", len(ranked_combs)
+    print("ranked combs:", len(ranked_combs))
     for comb in ranked_combs:
         sorted_combs.append(comb[0])
     IMP.multifit.write_paths(sorted_combs, combs_fn_output_fn)
@@ -132,29 +133,29 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn,
     dmap.update_voxel_size(asmb.get_assembly_header().get_spacing())
     dmap.set_origin(asmb.get_assembly_header().get_origin())
     # get rmsd for subunits
-    print params_fn
+    print(params_fn)
     alignment_params = IMP.multifit.AlignmentParams(params_fn)
     alignment_params.show()
     IMP.base.set_log_level(IMP.WARNING)
     prot_data = IMP.multifit.read_proteomics_data(proteomics_fn)
-    print "=========3"
+    print("=========3")
     mapping_data = IMP.multifit.read_protein_anchors_mapping(prot_data,
                                                              mapping_fn)
-    print "=========4"
+    print("=========4")
     em_anchors = mapping_data.get_anchors()
-    print "=========5"
+    print("=========5")
     # load all proteomics restraints
     align = IMP.multifit.ProteomicsEMAlignmentAtomic(mapping_data, asmb,
                                                      alignment_params)
-    print "align"
+    print("align")
     align.set_fast_scoring(False)
     align.set_density_map(dmap, threshold)
     align.add_states_and_filters()
     align.add_all_restraints()
 
-    print "before align"
+    print("before align")
     align.align()
-    print "after align"
+    print("after align")
     combs = align.get_combinations()
     # print "after get combinations"
     if len(combs) == 0:

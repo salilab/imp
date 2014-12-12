@@ -3,6 +3,7 @@
 __doc__ = "Compare output models to a reference structure."
 
 # analyse the ensemble, first we will do the rmsd stuff
+from __future__ import print_function
 import IMP.multifit
 from IMP import OptionParser
 
@@ -131,11 +132,11 @@ def run(asmb_fn, proteomics_fn, mapping_fn, combs_fn, max_comb):
                     j).get_reference_fn(
                 ),
                 mdl))
-    print "number of combinations:", len(combs), max_comb
+    print("number of combinations:", len(combs), max_comb)
     results = []
     for i, comb in enumerate(combs[:max_comb]):
         if i % 500 == 0:
-            print i
+            print(i)
         ensmb.load_combination(comb)
         scores = []
         for j, mh in enumerate(mhs):
@@ -152,7 +153,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, combs_fn, max_comb):
             # IMP.core.XYZs(IMP.atom.get_leaves(mh_ref)))
 
         rmsd = get_rmsd(mhs, mhs_ref)
-        print i, rmsd, scores
+        print(i, rmsd, scores)
         results.append((rmsd, scores))
         ensmb.unload_combination(comb)
     return results

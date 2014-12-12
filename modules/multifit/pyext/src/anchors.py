@@ -2,6 +2,7 @@
 
 __doc__ = "Generate anchors for a density map."
 
+from __future__ import print_function
 import IMP.multifit
 import IMP.em
 from IMP import OptionParser
@@ -44,7 +45,7 @@ def main():
                         mdl),
                     IMP.atom.RESIDUE_TYPE))
             number_of_means = total_num_residues / options.size
-    print "Calculating a segmentation into", number_of_means, "regions"
+    print("Calculating a segmentation into", number_of_means, "regions")
     density_threshold = asmb.get_assembly_header().get_threshold()
 
     IMP.multifit.get_anchors_for_density(dmap, number_of_means,

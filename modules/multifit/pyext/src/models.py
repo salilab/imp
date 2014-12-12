@@ -3,6 +3,7 @@
 __doc__ = "Write output models as PDB files."
 
 # analyse the ensemble, first we will do the rmsd stuff
+from __future__ import print_function
 import IMP.multifit
 from IMP import OptionParser
 
@@ -33,12 +34,12 @@ def run(asmb_fn, proteomics_fn, mapping_fn, combs_fn, model_output, max_comb):
                                                              mapping_fn)
     ensmb = IMP.multifit.load_ensemble(sd, mdl, mapping_data)
     mhs = ensmb.get_molecules()
-    print "number of combinations:", len(combs), max_comb
+    print("number of combinations:", len(combs), max_comb)
     for i, comb in enumerate(combs[:max_comb]):
         if i % 500 == 0:
-            print i
+            print(i)
         ensmb.load_combination(comb)
-        print model_output + "." + str(i) + ".pdb"
+        print(model_output + "." + str(i) + ".pdb")
         IMP.atom.write_pdb(mhs, model_output + "." + str(i) + ".pdb")
         ensmb.unload_combination(comb)
 

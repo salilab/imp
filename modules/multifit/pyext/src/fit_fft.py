@@ -2,6 +2,7 @@
 
 __doc__ = "Fit subunits into a density map with FFT."
 
+from __future__ import print_function
 import math
 import IMP.multifit
 import IMP.atom
@@ -52,7 +53,7 @@ class Fitter(object):
         self.ref_pdb = ref_pdb
 
     def run(self):
-        print "resolution is:", self.resolution
+        print("resolution is:", self.resolution)
         dmap = IMP.em.read_map(self.em_map)
         dmap.get_header().set_resolution(self.resolution)
         dmap.update_voxel_size(self.spacing)
@@ -89,7 +90,7 @@ class Fitter(object):
                 fit.set_rmsd_to_reference(rmsd)
                 IMP.atom.transform(mol2fit, trans.get_inverse())
         if self.ref_pdb != '':
-            print 'from all fits, lowest rmsd to ref:', cur_low
+            print('from all fits, lowest rmsd to ref:', cur_low)
         IMP.multifit.write_fitting_solutions(self.fits_fn, final_fits)
 
 
@@ -158,11 +159,11 @@ def run(asmb_fn, options):
         else:
             if options.cpus > 1:
                 options.cpus = 1
-                print >> sys.stderr, """
+                print("""
 The Python 'multiprocessing' module (available in Python 2.6 and later) is
 needed to run on multiple CPUs, and could not be found
 (Python error: '%s').
-Running on a single processor.""" % multiproc_exception
+Running on a single processor.""" % multiproc_exception, file=sys.stderr)
             f.run()
     if multiproc_exception is None and options.cpus > 1:
         # No point in spawning more processes than components
