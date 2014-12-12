@@ -381,7 +381,7 @@ class TestCase(unittest.TestCase):
                     bad.append(name)
                 for t in re.findall(cc, name):
                     if not self._check_spelling(t.lower(), words):
-                        print "misspelled", t, "in", name
+                        print("misspelled %s in %s" % (t, name))
                         bad.append(name)
         message="All IMP classes should have CamelCase names. The following do not: %s." \
                           % ("\n".join(bad))
@@ -417,7 +417,7 @@ class TestCase(unittest.TestCase):
         for t in tokens:
             if not self._check_spelling(t, words):
                 misspelled.append(t)
-                print "misspelled", t, "in", name
+                print("misspelled %s in %s" % (t, name))
                 return [fullname]
         return []
 
@@ -699,7 +699,8 @@ class _SubprocessWrapper(subprocess.Popen):
         subprocess.Popen.__init__(self, [app]+list(args),
                                   stdin=subprocess.PIPE,
                                   stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE, env=env)
+                                  stderr=subprocess.PIPE, env=env,
+                                  universal_newlines=True)
 
 
 class ApplicationTestCase(TestCase):
@@ -805,7 +806,7 @@ class ApplicationTestCase(TestCase):
     def run_shell_command(self, cmd):
         "Print and run a shell command, as returned by read_shell_commands()"
         import subprocess
-        print cmd
+        print(cmd)
         p = subprocess.call(cmd, shell=True)
         if p != 0:
             raise OSError("%s failed with exit value %d" % (cmd, p))
