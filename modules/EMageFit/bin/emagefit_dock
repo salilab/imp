@@ -85,7 +85,8 @@ class HexDocking(object):
         hex_commands = self.text_base % (fn_receptor, fn_ligand,
                                          fn_transforms, fn_docked)
         pid = subprocess.Popen(["hex"], stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                               universal_newlines=True)
         # send the commands to hex with the PIPE file object for stdin
         pid.stdin.write(hex_commands)
         out, err = pid.communicate()
@@ -109,9 +110,8 @@ def parse_hex_transform(row):
         @param row A list containing a splitted line from the HEX output file
         NOTE: An HEX rotation is the inverse of the IMP convention
     """
-    euler = map(float, row[8:11])
-    xyz = map(float, row[5:8])
-    euler = [-euler[0], -euler[1], -euler[2]]
+    euler = [-float(x) for x in row[8:11]]
+    xyz = [float(x) for x in row[5:8]]
     R = alg.get_rotation_from_fixed_zyz(*euler)
     R = R.get_inverse()
     t = alg.Vector3D(*xyz)
