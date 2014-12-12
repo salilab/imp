@@ -9,7 +9,7 @@ import unittest
 
 from fnmatch import fnmatch
 
-from IMP.test._compat_python.unittest2 import case, suite
+from IMP.test._compat_python.unittest2 import case, suite, util
 
 try:
     from os.path import relpath
@@ -66,7 +66,7 @@ class TestLoader(unittest.TestLoader):
     and returning them wrapped in a TestSuite
     """
     testMethodPrefix = 'test'
-    sortTestMethodsUsing = cmp
+    sortTestMethodsUsing = util.three_way_cmp
     suiteClass = suite.TestSuite
     _top_level_dir = None
 
@@ -94,7 +94,7 @@ class TestLoader(unittest.TestLoader):
         if use_load_tests and load_tests is not None:
             try:
                 return load_tests(self, tests, None)
-            except Exception, e:
+            except Exception as e:
                 return _make_failed_load_tests(module.__name__, e,
                                                self.suiteClass)
         return tests
@@ -313,7 +313,7 @@ class TestLoader(unittest.TestLoader):
                 else:
                     try:
                         yield load_tests(self, tests, pattern)
-                    except Exception, e:
+                    except Exception as e:
                         yield _make_failed_load_tests(package.__name__, e,
                                                       self.suiteClass)
 
@@ -329,11 +329,11 @@ def _makeLoader(prefix, sortUsing, suiteClass=None):
     return loader
 
 
-def getTestCaseNames(testCaseClass, prefix, sortUsing=cmp):
+def getTestCaseNames(testCaseClass, prefix, sortUsing=util.three_way_cmp):
     return _makeLoader(prefix, sortUsing).getTestCaseNames(testCaseClass)
 
 
-def makeSuite(testCaseClass, prefix='test', sortUsing=cmp,
+def makeSuite(testCaseClass, prefix='test', sortUsing=util.three_way_cmp,
               suiteClass=suite.TestSuite):
     return (
         _makeLoader(
@@ -344,7 +344,7 @@ def makeSuite(testCaseClass, prefix='test', sortUsing=cmp,
     )
 
 
-def findTestCases(module, prefix='test', sortUsing=cmp,
+def findTestCases(module, prefix='test', sortUsing=util.three_way_cmp,
                   suiteClass=suite.TestSuite):
     return (
         _makeLoader(prefix, sortUsing, suiteClass).loadTestsFromModule(module)
