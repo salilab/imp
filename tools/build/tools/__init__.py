@@ -77,7 +77,7 @@ def rewrite(filename, contents, verbose=True):
         if old == contents:
             return
         elif verbose:
-            print("    Different", filename)
+            print("    Different " + filename)
             for l in difflib.unified_diff(old.split("\n"), contents.split("\n")):
                 stl = str(l)
                 if (stl[0] == '-' or stl[0] == '+') and stl[1] != '-' and stl[1] != '+':
