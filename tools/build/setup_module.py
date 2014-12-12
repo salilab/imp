@@ -98,12 +98,8 @@ using ::IMP::base::hash_value;
     lib_only_required_modules = ""
     required_dependencies = ""
     optional_dependencies = ""
-    exec open(
-        os.path.join(options.source,
-                     "modules",
-                     data["name"],
-                     "dependencies.py"),
-        "r").read()
+    exec(open(os.path.join(options.source, "modules", data["name"],
+                           "dependencies.py"), "r").read())
 
     info = tools.get_module_info(data["name"], options.datapath)
 
@@ -216,7 +212,7 @@ def write_no_ok(module):
 def write_ok(
     module, modules, unfound_modules, dependencies, unfound_dependencies,
         swig_includes, swig_wrapper_includes):
-    print "yes"
+    print("yes")
     config = ["ok=True"]
     if len(modules) > 0:
         config.append("modules = \"" + ":".join(modules) + "\"")
@@ -250,11 +246,11 @@ def write_ok(
 
 
 def setup_module(module, source, datapath):
-    print "Configuring module", module, "...",
+    sys.stdout.write("Configuring module %s ..." % module)
     data = tools.get_module_description(source, module, datapath)
     for d in data["required_dependencies"]:
         if not tools.get_dependency_info(d, datapath)["ok"]:
-            print "Required dependency %s not found" % d
+            print("Required dependency %s not found" % d)
             write_no_ok(module)
             return False, []
     dependencies = data["required_dependencies"]
@@ -266,7 +262,7 @@ def setup_module(module, source, datapath):
             unfound_dependencies.append(d)
     for d in data["required_modules"]:
         if not tools.get_module_info(d, datapath)["ok"]:
-            print "Required module IMP.%s not available" % d
+            print("Required module IMP.%s not available" % d)
             write_no_ok(module)
             return False, []
     modules = data["required_modules"]
@@ -344,8 +340,7 @@ def find_cmdline_links(mod, docdir, cmdline_tools):
         for line in open(g):
             if todo and len(line.rstrip('\r\n ')) > 0 \
                and line[0] not in " =-\\":
-                k = todo.keys()[0]
-                v = todo.values()[0]
+                (k, v) = todo.popitem()
                 links[k] = (v, line.rstrip('\r\n '), num)
                 num += 1
                 todo = {}
@@ -363,9 +358,9 @@ def find_cmdline_links(mod, docdir, cmdline_tools):
             m = mdre_sep.search(line)
             if m and m.group(1) in links:
                 todo = {m.group(1): m.group(2)}
-    missing_links = [tool for tool, link in links.iteritems() if link is None]
+    missing_links = [tool for tool, link in links.items() if link is None]
     if missing_links:
-        print """
+        print("""
 Could not find section title for command line tool %s
 in IMP.%s docs.
 
@@ -399,7 +394,7 @@ or
 Do something with foo
 
 in Markdown.
-""" % (", ".join(missing_links), mod, docdir, docdir)
+""" % (", ".join(missing_links), mod, docdir, docdir))
         sys.exit(1)
     return links
 
@@ -408,7 +403,7 @@ def make_overview(options, cmdline_tools):
     cmdline_links = find_cmdline_links(options.name, docdir, cmdline_tools)
     pickle.dump(cmdline_links,
                 open(os.path.join("data", "build_info",
-                                  "IMP_%s.pck" % options.name), 'w'), -1)
+                                  "IMP_%s.pck" % options.name), 'wb'), -1)
     rmd = open(
         os.path.join(
             options.source,
@@ -431,7 +426,7 @@ def main():
     (options, apps) = parser.parse_args()
     disabled = tools.split(open("data/build_info/disabled", "r").read(), "\n")
     if options.name in disabled:
-        print options.name, "is disabled"
+        print(options.name, "is disabled")
         write_no_ok(options.name)
         tools.rmdir(os.path.join("module_bin", options.name))
         tools.rmdir(os.path.join("benchmark", options.name))

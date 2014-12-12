@@ -17,8 +17,8 @@ import tools
 def check_readme():
     for module, g in tools.get_modules("."):
         if not os.path.exists(os.path.join(g, "README.md")):
-            print >> sys.stderr, "Each module must have a file 'README.md' describing what what it does and who wrote it."
-            print >> sys.stderr, module, "does not."
+            sys.stderr.write("Each module must have a file 'README.md' describing what what it does and who wrote it.\n")
+            sys.stderr.write(module, "does not.\n")
             exit(1)
 
 def check_submodules():
@@ -29,8 +29,8 @@ def check_submodules():
         "RMF_source",
         "README.md")
     if not os.path.exists(path):
-        print >> sys.stderr, "Could not find RMF source in", path
-        print >> sys.stderr, "You need to run ./setup_git.py first."
+        sys.stderr.write("Could not find RMF source in", path,"\n")
+        sys.stderr.write("You need to run ./setup_git.py first.\n")
         exit(1)
 
 

@@ -21,8 +21,9 @@ def get_python_pathsep(python):
         return os.pathsep
     else:
         # Query the other Python for the path separator it uses
-        args = [python, '-c', 'import os; print os.pathsep']
-        p = subprocess.Popen(args, stdout=subprocess.PIPE)
+        args = [python, '-c', 'import os; print(os.pathsep)']
+        p = subprocess.Popen(args, stdout=subprocess.PIPE,
+                             universal_newlines=True)
         pathsep = p.stdout.read().rstrip('\r\n')
         ret = p.wait()
         if ret != 0:

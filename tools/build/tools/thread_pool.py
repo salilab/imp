@@ -1,4 +1,7 @@
-from Queue import Queue
+try:
+    from queue import Queue # Python3
+except ImportError:
+    from Queue import Queue # Python2
 from threading import Thread
 
 if hasattr(Queue, 'task_done'):
@@ -28,7 +31,7 @@ if hasattr(Queue, 'task_done'):
                 try:
                     func(*args, **kargs)
                 except Exception as e:
-                    print e
+                    print(e)
                     error = str(e)
                 self.tasks.task_done()
 
@@ -39,7 +42,7 @@ if hasattr(Queue, 'task_done'):
         def __init__(self, num_threads=-1):
             if num_threads == -1:
                 num_threads = 2 * cpu_count()
-            print "Creating thread pool with", num_threads
+            print("Creating thread pool with %d threads" % num_threads)
             self.tasks = Queue(-1)
             for _ in range(num_threads):
                 _Worker(self.tasks)

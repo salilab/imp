@@ -23,7 +23,8 @@ def main():
 
 def get_short_rev(source):
     process = subprocess.Popen(['git', 'rev-parse', '--short', 'HEAD'],
-                               cwd=source, stdout=subprocess.PIPE)
+                               cwd=source, stdout=subprocess.PIPE,
+                               universal_newlines=True)
     version, err = process.communicate()
     return version
 
@@ -35,7 +36,7 @@ def make_version(source, bindir):
     else:
         process = subprocess.Popen(
             ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
-            cwd=source, stdout=subprocess.PIPE)
+            cwd=source, stdout=subprocess.PIPE, universal_newlines=True)
         branch, err = process.communicate()
         branch = branch.strip()
 
@@ -44,7 +45,8 @@ def make_version(source, bindir):
         elif branch == "master" or branch.startswith("release"):
             process = subprocess.Popen(['git', 'describe'], cwd=source,
                                        stdout=subprocess.PIPE,
-                                       stderr=subprocess.PIPE)
+                                       stderr=subprocess.PIPE,
+                                       universal_newlines=True)
             version, err = process.communicate()
             if err:
                 version = branch + "-" + get_short_rev(source)

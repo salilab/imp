@@ -439,10 +439,7 @@ def get_dependent_modules(modules, extra_data_path, root="."):
                        if x not in all_modules]
         all_modules += cur_modules
         new_modules += cur_modules
-    all_modules.sort(
-        lambda x,
-        y: -cmp(sorted_order.index(x),
-                sorted_order.index(y)))
+    all_modules.sort(key=lambda x: sorted_order.index(x), reverse=True)
     return all_modules
 
 

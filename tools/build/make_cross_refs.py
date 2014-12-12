@@ -257,11 +257,11 @@ def main():
         try:
             et = ET.parse(f)
         except ET.ParseError:
-            print >> sys.stderr, "ERROR parsing", f
+            sys.stderr.write("ERROR parsing", f, "\n")
         fname = os.path.basename(f)
         if fname.startswith("namespaceIMP"):
             if verbose:
-                print "namespace", fname
+                print("namespace", fname)
             traverse_namespace(
                 get_namespace_name(et.getroot()),
                 et.getroot(),
@@ -272,19 +272,19 @@ def main():
             #traverse_example(get_example_name(et.getroot()), et.getroot())
         elif fname.endswith("example.xml"):
             if verbose:
-                print "example 2", fname
+                print("example 2", fname)
             traverse_example_2(get_example_2_name(et.getroot()), et.getroot())
         # skip structs for nwo
         elif fname.startswith("classIMP"):
             if verbose:
-                print "class", fname
+                print("class", fname)
             traverse_class(
                 get_file_class_name(et.getroot()),
                 et.getroot(),
                 module)
         else:
             if verbose:
-                print "skipping", fname
+                print("skipping", fname)
     indexes = [("Factory Index", "factory_index"),
                ("Argument Index", "argument_index"),
                ("Class Examples", "class_example_index"),

@@ -193,7 +193,7 @@ class OutputPrinter(object):
 
     def output_line(self, indent, line):
         """Output a single line of text at the given indentation level."""
-        print " " * indent + line
+        print(" " * indent + line)
         self.lineno += 1
 
     def output_lines(self, indent, lines, lineno):

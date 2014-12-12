@@ -127,8 +127,7 @@ def link_python(source):
 
 def _make_test_driver(outf, cpps):
     out = open(outf, "w")
-    print >> out, \
-"""import IMP
+    out.write("""import IMP
 import IMP.test
 import sys
 try:
@@ -136,7 +135,8 @@ try:
 except ImportError:
     subprocess = None
 
-class TestCppProgram(IMP.test.TestCase):"""
+class TestCppProgram(IMP.test.TestCase):
+""")
     for t in cpps:
         tbase = os.path.splitext(t)[0]
         # remove suffix
@@ -145,7 +145,7 @@ class TestCppProgram(IMP.test.TestCase):"""
         exename = os.path.join(os.path.split(outf)[0], os.path.split(tbase)[1])
         if platform.system == "Windows":
             exename = exename + ".exe"
-        print >> out, \
+        out.write(
 """    def test_%(name)s(self):
         \"\"\"Running C++ test %(name)s\"\"\"
         if subprocess is None:
@@ -155,11 +155,12 @@ class TestCppProgram(IMP.test.TestCase):"""
         # been installed for the binary to load correctly.
         p = subprocess.Popen(["%(path)s"],
                              shell=False, cwd="%(libdir)s")
-        self.assertEqual(p.wait(), 0)""" \
-       % {'name': nm, 'path': os.path.abspath(exename), 'libdir': os.path.abspath("lib")}
-    print >> out, """
+        self.assertEqual(p.wait(), 0)
+""" % {'name': nm, 'path': os.path.abspath(exename), 'libdir': os.path.abspath("lib")})
+    out.write("""
 if __name__ == '__main__':
-    IMP.test.main()"""
+    IMP.test.main()
+""")
 
 
 def generate_tests(source, scons):
@@ -205,7 +206,7 @@ if __name__ == '__main__':
         class_name_exceptions = []
         spelling_exceptions = []
         try:
-            exec open(exceptions, "r").read()
+            exec(open(exceptions, "r").read())
         except:
             pass
         impmodule = "IMP." + module

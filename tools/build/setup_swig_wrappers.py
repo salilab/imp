@@ -15,7 +15,7 @@ imp_init = """try:
     from kernel import *
 except:
     import traceback
-    print "no kernel"
+    print("no kernel")
     traceback.print_exc()
 """
 
