@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
-__doc__ = "Generate indexes of fitting solutions."
-
 from __future__ import print_function
 import IMP.multifit
 from IMP import OptionParser
 
+__doc__ = "Generate indexes of fitting solutions."
 
 def parse_args():
     usage = """%prog [options] <assembly name> <assembly input> <number of fits> <indexes filename>

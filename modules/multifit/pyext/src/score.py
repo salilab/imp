@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-__doc__ = "Score each of a set of combinations."
-
-# analyse the ensemble, first we will do the rmsd stuff
 from __future__ import print_function
 import IMP.multifit
 from IMP import OptionParser
 
+__doc__ = "Score each of a set of combinations."
+
+# analyse the ensemble, first we will do the rmsd stuff
 
 def get_color_map():
     colors = {}

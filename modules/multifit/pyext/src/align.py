@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
-__doc__ = "Align proteomics graph with the EM map."
-
 from __future__ import print_function
-# analyse the ensemble, first we will do the rmsd stuff
 import sys
 import IMP.multifit
 from IMP import OptionParser
 
+__doc__ = "Align proteomics graph with the EM map."
+
+# analyse the ensemble, first we will do the rmsd stuff
 
 class progressBar:
 

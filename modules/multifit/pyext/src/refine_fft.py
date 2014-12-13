@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-__doc__ = "Refine fitting subunits into a density map with FFT."
-
 from __future__ import print_function
 import math
 import IMP.multifit
@@ -11,6 +9,7 @@ from IMP import OptionParser
 import os
 import sys
 
+__doc__ = "Refine fitting subunits into a density map with FFT."
 
 class Fitter(object):
 

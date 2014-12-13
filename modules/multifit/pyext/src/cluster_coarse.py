@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-# analyse the ensemble, first we will do the rmsd stuff
 from __future__ import print_function
 import operator
 import IMP.multifit
 from IMP import OptionParser
 
+# analyse the ensemble, first we will do the rmsd stuff
 
 def parse_args():
     usage = "usage %prog [options] <asmb.input> <proteomics.input> <mapping.input> <alignment params> <combinatins> <diameter> <output combinations>\n"

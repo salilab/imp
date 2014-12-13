@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-__doc__ = "Fit subunits into a density map with FFT."
-
 from __future__ import print_function
 import math
 import IMP.multifit
@@ -10,6 +8,8 @@ import IMP.em
 from IMP import OptionParser
 import os
 import sys
+
+__doc__ = "Fit subunits into a density map with FFT."
 
 multiproc_exception = None
 try:

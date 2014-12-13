@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
-__doc__ = "Generate anchors for a density map."
-
 from __future__ import print_function
 import IMP.multifit
 import IMP.em
 from IMP import OptionParser
 
+__doc__ = "Generate anchors for a density map."
 
 def parse_args():
     usage = """%prog [options] <assembly input> <output anchors prefix>

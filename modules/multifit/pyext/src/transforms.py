@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
-__doc__ = "Write assembly transformation file in other formats."
-
 from __future__ import print_function
 import IMP
 import IMP.multifit
 from IMP import OptionParser
 
+__doc__ = "Write assembly transformation file in other formats."
 
 class Formatter(object):
 

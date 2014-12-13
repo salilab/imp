@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-__doc__ = "Write output models as PDB files."
-
-# analyse the ensemble, first we will do the rmsd stuff
 from __future__ import print_function
 import IMP.multifit
 from IMP import OptionParser
 
+__doc__ = "Write output models as PDB files."
+
+# analyse the ensemble, first we will do the rmsd stuff
 
 def parse_args():
     usage = """%prog [options] <asmb.input> <proteomics.input>

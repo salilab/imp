@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-__doc__ = "Cluster assembly solutions."
-
 from __future__ import print_function
 from IMP import OptionParser
 import itertools
@@ -9,6 +7,7 @@ import math
 import IMP.multifit
 import IMP.container
 
+__doc__ = "Cluster assembly solutions."
 
 def get_uniques(seq):
     # Not order preserving

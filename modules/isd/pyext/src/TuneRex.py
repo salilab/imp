@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 __doc__ = """
 This module provides a few methods to improve the efficiency of a replica-exchange simulation
 by tuning its parameters.
 Author: Yannick Spill
 """
 
-from __future__ import print_function
 import sys
 #from mpmath import erf, erfinv
 #from math import sqrt
