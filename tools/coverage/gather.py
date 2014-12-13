@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import coverage
 import os
 import sys
@@ -61,7 +62,7 @@ def gather_cpp():
     t = _TempDir()
     lcov = t.make_lcov_binary()
     cmd = [lcov, '-c', '-d', '.', '-b', os.getcwd(), '-o', 'coverage/all.info']
-    print " ".join(cmd)
+    print(" ".join(cmd))
     subprocess.check_call(cmd)
 
 

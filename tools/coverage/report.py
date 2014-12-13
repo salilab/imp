@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import coverage
 from optparse import OptionParser
 import subprocess
@@ -30,7 +31,7 @@ def setup_excludes(cov):
 
 def report_python_component(cov, morfs, name, typ, reldir, outdir):
     if len(morfs) > 0:
-        print "Generating HTML report for %s %s Python coverage" % (name, typ)
+        print("Generating HTML report for %s %s Python coverage" % (name, typ))
         sys.stdout.flush()
         cov.file_locator.relative_dir = reldir
         cov.html_report(morfs=morfs, directory=os.path.join(outdir, 'python',
@@ -111,11 +112,11 @@ def extract_lcov(infile, outfile, matches, excludes):
 def report_cpp_component(name, typ, matches, excludes, prefix, outdir):
     info_file = 'coverage/%s.%s.info' % (typ, name)
     if extract_lcov('coverage/all.info', info_file, matches, excludes):
-        print "Generating HTML report for %s %s C++ coverage" % (name, typ)
+        print("Generating HTML report for %s %s C++ coverage" % (name, typ))
         cmd = ['genhtml', '-p', prefix, info_file, '-o',
                os.path.join(outdir, 'cpp', name), '--no-branch-coverage',
                '--legend', '--demangle-cpp']
-        print " ".join(cmd)
+        print(" ".join(cmd))
         sys.stdout.flush()
         subprocess.check_call(cmd)
 
