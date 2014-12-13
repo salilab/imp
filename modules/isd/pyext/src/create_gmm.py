@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.em
 import IMP.isd_emxl
@@ -86,14 +87,14 @@ def run():
         dmap=IMP.em.read_map(data_fn,IMP.em.MRCReaderWriter())
         #dmap.set_origin(-56/options.apix,-56/options.apix,-56/options.apix)
     else:
-        print 'ERROR: data_fn extension must be pdb, mrc, or npy'
+        print('ERROR: data_fn extension must be pdb, mrc, or npy')
         sys.exit()
 
     if not options.use_cpp:
-        print 'sampling points'
+        print('sampling points')
         pts=IMP.isd_emxl.sample_points_from_density(dmap,options.num_samples,options.threshold)
         density_ps=[]
-        print 'fitting gmm'
+        print('fitting gmm')
         #IMP.isd_emxl.gmm_tools.draw_points(pts,'test_points.bild')
 
         if options.force_weight_frac:
@@ -101,7 +102,7 @@ def run():
         else:
             force_weight=options.force_weight
         if force_weight!=-1:
-            print 'weight forced to',force_weight
+            print('weight forced to',force_weight)
         if not options.use_dirichlet:
             gmm=IMP.isd_emxl.gmm_tools.fit_gmm_to_points(pts,ncenters,mdl,density_ps,
                                                          options.num_iter,options.covar_type,
