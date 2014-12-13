@@ -355,7 +355,7 @@ class SummaryWriter(object):
             if self.all_key:
                 summary[self.all_key] = {'build_result': self.all_state,
                                          'build_time': self.all_time}
-            pickle.dump(summary, fh, -1)
+            pickle.dump(summary, fh, 2)
 
 
 def test_all(comps, builder, test_type, summary_writer, expensive=None):
@@ -367,7 +367,7 @@ def get_comps_to_build(all_comps, exclude):
     if not exclude:
         return all_comps
     else:
-        p = pickle.load(open(exclude))
+        p = pickle.load(open(exclude, 'rb'))
         for compname, result in p.items():
             if compname in all_comps:
                 c = all_comps[compname]
