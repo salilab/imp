@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 """Build as many IMP components (modules, dependencies) as possible, even
    if some of them fail."""
 
@@ -149,8 +151,8 @@ class Component(object):
             elif m.build_result != 0:
                 # Propagate the original failure
                 self.dep_failure = m.dep_failure or m
-                print "%s: skipped due to previous failure to build %s" \
-                      % (self.name, self.dep_failure.name)
+                print("%s: skipped due to previous failure to build %s" \
+                      % (self.name, self.dep_failure.name))
                 self.build_result = 'depfail'
                 self.done = True
                 summary.write()
@@ -168,7 +170,7 @@ class Component(object):
             # We can't test components that were disabled
             return
         elif self.build_result != 0:
-            print "%s: %s skipped due to build failure" % (self.name, test_type)
+            print("%s: %s skipped due to build failure" % (self.name, test_type))
         else:
             setattr(self, test_type + '_result', 'running')
             summary.write()
@@ -262,7 +264,7 @@ class Builder(object):
         if self.outdir:
             outfile = os.path.join(self.outdir,
                                    '%s.%s.log' % (component.name, typ))
-            print "%s > %s" % ("; ".join(cmds), outfile)
+            print("%s > %s" % ("; ".join(cmds), outfile))
             outfh = open(outfile, 'w')
             errfh = subprocess.STDOUT
         else:
@@ -272,19 +274,19 @@ class Builder(object):
         ret = 0
         for cmd in cmds:
             if self.outdir:
-                print >> outfh, "Executing: %s" % cmd
+                print("Executing: %s" % cmd, file=outfh)
                 outfh.flush()
             else:
-                print cmd
+                print(cmd)
             sys.stdout.flush()
             cmdret = subprocess.call(cmd, shell=True, stdout=outfh,
                                      stderr=errfh, env=env)
             if cmdret != 0:
                 ret = cmdret
-                print "%s: %s FAILED with exit code %d" % (component.name,
-                                                           typ, ret)
+                print("%s: %s FAILED with exit code %d" % (component.name,
+                                                           typ, ret))
                 if self.outdir:
-                    print >> outfh, "Command FAILED with exit code %d" % ret
+                    print("Command FAILED with exit code %d" % ret, file=outfh)
         endtime = time.time()
         return (ret, endtime - starttime)
 
@@ -399,7 +401,7 @@ def build_all(builder, opts):
         # somewhere
         for m in comps.values():
             if not m.done:
-                print "%s: did not build (circular dependency?)" % m.name
+                print("%s: did not build (circular dependency?)" % m.name)
                 m.build_result = 'circdep'
         summary_writer.write()
         builder.setup_coverage()
