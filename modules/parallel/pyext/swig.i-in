@@ -84,7 +84,7 @@ class _Communicator(object):
             except (IndexError, EOFError):
                 try:
                     data = self._socket.recv(4096)
-                except socket.error, detail:
+                except socket.error as detail:
                     raise NetworkError("Connection lost to %s: %s" \
                                        % (str(self), str(detail)))
                 if len(data) > 0:
@@ -486,7 +486,7 @@ class Manager(object):
         try:
             slave._start_task(t, context)
             context._tasks.pop(0)
-        except socket.error, detail:
+        except socket.error as detail:
             slave._kill()
 
     def _get_finished_tasks(self, context):
@@ -512,7 +512,7 @@ class Manager(object):
                     return task
                 else: # the slave sent back a heartbeat
                     self._kill_timed_out_slaves(context)
-            except NetworkError, detail:
+            except NetworkError as detail:
                 task = event._kill()
                 print("Slave %s failed (%s): rescheduling task %s" \
                       % (str(event), str(detail), str(task)))
