@@ -117,7 +117,7 @@ def run():
         try:
             import isd_emxl
         except ImportError:
-            print "This option is experimental, only works if you have isd_emxl"
+            print("This option is experimental, only works if you have isd_emxl")
         gmm_threshold=0.01
         density_ps=IMP.isd_emxl.fit_gaussians_to_density(mdl,dmap,options.num_samples,
                                                          ncenters,options.num_iter,
