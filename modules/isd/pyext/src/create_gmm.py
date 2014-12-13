@@ -1,8 +1,8 @@
 from __future__ import print_function
 import IMP
 import IMP.em
-import IMP.isd_emxl
-import IMP.isd_emxl.gmm_tools
+import IMP.isd
+import IMP.isd.gmm_tools
 import numpy as np
 from optparse import OptionParser
 import sys,os
@@ -54,7 +54,7 @@ def parse_args():
 
     parser.add_option("-z","--use_cpp",dest="use_cpp",default=False,
                       action="store_true",
-                      help="use the IMP GMM code")
+                      help="EXPERIMENTAL. Uses the IMP GMM code. Requires isd_emxl")
 
 
     (options, args) = parser.parse_args()
@@ -85,14 +85,13 @@ def run():
             mass_multiplier=sum(IMP.atom.Mass(p).get_mass() for p in mps)
     elif ext=='mrc':
         dmap=IMP.em.read_map(data_fn,IMP.em.MRCReaderWriter())
-        #dmap.set_origin(-56/options.apix,-56/options.apix,-56/options.apix)
     else:
         print('ERROR: data_fn extension must be pdb, mrc, or npy')
         sys.exit()
 
     if not options.use_cpp:
         print('sampling points')
-        pts=IMP.isd_emxl.sample_points_from_density(dmap,options.num_samples,options.threshold)
+        pts=IMP.isd.sample_points_from_density(dmap,options.num_samples,options.threshold)
         density_ps=[]
         print('fitting gmm')
         #IMP.isd_emxl.gmm_tools.draw_points(pts,'test_points.bild')
@@ -104,32 +103,36 @@ def run():
         if force_weight!=-1:
             print('weight forced to',force_weight)
         if not options.use_dirichlet:
-            gmm=IMP.isd_emxl.gmm_tools.fit_gmm_to_points(pts,ncenters,mdl,density_ps,
+            gmm=IMP.isd.gmm_tools.fit_gmm_to_points(pts,ncenters,mdl,density_ps,
                                                          options.num_iter,options.covar_type,
                                                          force_radii=options.force_radii,
                                                          force_weight=options.force_weight,
                                                          mass_multiplier=mass_multiplier)
         else:
-            gmm=IMP.isd_emxl.gmm_tools.fit_dirichlet_gmm_to_points(pts,ncenters,mdl,density_ps,
+            gmm=IMP.isd.gmm_tools.fit_dirichlet_gmm_to_points(pts,ncenters,mdl,density_ps,
                                                          options.num_iter,options.covar_type,
                                                          mass_multiplier=mass_multiplier)
 
     else:
+        try:
+            import isd_emxl
+        except ImportError:
+            print "This option is experimental, only works if you have isd_emxl"
         gmm_threshold=0.01
         density_ps=IMP.isd_emxl.fit_gaussians_to_density(mdl,dmap,options.num_samples,
                                                          ncenters,options.num_iter,
                                                          options.threshold,
                                                          gmm_threshold)
 
-    IMP.isd_emxl.gmm_tools.write_gmm_to_text(density_ps,out_txt_fn)
+    IMP.isd.gmm_tools.write_gmm_to_text(density_ps,out_txt_fn)
     if options.out_map!='':
-        IMP.isd_emxl.gmm_tools.write_gmm_to_map(density_ps,options.out_map,
-                                                options.apix,
-                                                IMP.em.get_bounding_box(dmap))
+        IMP.isd.gmm_tools.write_gmm_to_map(density_ps,options.out_map,
+                                           options.apix,
+                                           IMP.em.get_bounding_box(dmap))
 
     if options.out_anchors_txt!='':
-        IMP.isd_emxl.gmm_tools.write_gmm_to_anchors(density_ps,options.out_anchors_txt,
-                                                options.out_anchors_cmm)
+        IMP.isd.gmm_tools.write_gmm_to_anchors(density_ps,options.out_anchors_txt,
+                                               options.out_anchors_cmm)
 
 
 
