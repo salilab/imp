@@ -23,15 +23,15 @@ IMPMISC_BEGIN_NAMESPACE
     particles. As a result, it should be usable with weird metrics (eg ones
     that include symmetry).
 
-    The LowerBound template should be a functors that bounds the
+    The LowerBound and UpperBound templates should be functors that bound the
     distance between two particles. For example the LowerBound
     distance between two balls is the center distance minus the radii,
-    and the upperbound distance is the center distance plus the
-    radii. They signature should be `double operator()(kernel::Model *m, const
+    and the UpperBound distance is the center distance plus the
+    radii. The signature should be `double operator()(kernel::Model *m, const
     kernel::ParticleIndexPair &pip) const`
 
-    The algorithm works by building an index used `sqrt(n)` of the `n` input
-    particles, assigning each particle to a bucked based on the closest index
+    The algorithm works by building an index using `sqrt(n)` of the `n` input
+    particles, assigning each particle to a bucket based on the closest index
     particle, and then checking for close pairs in buckets such that they can
     be close enough.
 
