@@ -32,7 +32,7 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
         """Simple test of interface cross links single structure score application"""
         destination = open('complex.pdb', 'w')
         file1 = open(self.get_input_file_name('static.pdb'), 'r')
-        file2 = open(self.get_input_file_name('transformed.pdb'), 'rb')
+        file2 = open(self.get_input_file_name('transformed.pdb'), 'r')
         destination.write(file1.read())
         destination.write(file2.read())
         destination.close()

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function, division
 import sys
 import os
 import optparse
@@ -79,15 +80,15 @@ class SAXSProfile:
             # read all lines
             stuff = [i.split() for i in open(input).readlines()]
             # keep the ones that have data
-            stuff = filter(lambda a: (len(a) >= self.nflags)
-                           and not a[0].startswith('#'), stuff)
+            stuff = [a for a in stuff if (len(a) >= self.nflags)
+                           and not a[0].startswith('#')]
             # drop offset, and first 3 columns must be of float type and not
             # nan
-            stuff = map(lambda a: a[:self.nflags + offset], stuff)
+            stuff = [a[:self.nflags + offset] for a in stuff]
             s2 = []
             for s in stuff:
                 try:
-                    map(float, s[:3])
+                    list(map(float, s[:3]))
                 except ValueError:
                     continue
                 if 'nan' in s[:3]:
@@ -218,8 +219,8 @@ class SAXSProfile:
             keys, values = zip(*retval.items())
             values = zip(
                 *self._subsample(retval['q'],
-                                 zip(*values),
-                                 maxpoints))
+                                 zip(*values)),
+                                 maxpoints)
             values = map(list, values)
             return dict(zip(keys, values))
         else:
@@ -369,8 +370,8 @@ class SAXSProfile:
         q = self.gp.get_data_abscissa()
         I = self.gp.get_data_mean()
         S = self.gp.get_data_variance()
-        err = [S[i][i] for i in xrange(len(S))]
-        q, I, err = zip(*self._subsample(q, zip(q, I, err), npoints))
+        err = [S[i][i] for i in range(len(S))]
+        q, I, err = list(zip(*self._subsample(q, zip(q, I, err), npoints)))
         gp = IMP.isd.GaussianProcessInterpolation(q, I, err,
                                                   self.get_Nreps(), self.functions[
                                                       'mean'],
@@ -410,9 +411,9 @@ class SAXSProfile:
         self.model.add_restraint(gpr)
         Hessian = matrix(gpr.get_hessian(False))
         if linalg.det(Hessian) == 0:
-            print Hessian, [(i, j.get_nuisance())
+            print(Hessian, [(i, j.get_nuisance())
                             for i, j in self.particles.items()
-                            if j.get_nuisance_is_optimized()]
+                            if j.get_nuisance_is_optimized()])
         self.model.remove_restraint(gpr)
         # fl=open('avcov','w')
         # fl.write("#q I err err*lapl lapl det (Hessian= %f )\n"
@@ -512,8 +513,8 @@ class SAXSProfile:
                 sys.stdout.flush()
                 sys.stdout.write('\b' * (len(percent) + 1))
             if len(flagnames) > 4:
-                flags = map(self.get_flag, [q] * len(flagnames[4:]),
-                            flagnames[4:])
+                flags = list(map(self.get_flag, [q] * len(flagnames[4:]),
+                            flagnames[4:]))
                 if False in [flags[i - 3] for i in flagnos]:
                     continue
             thing = [q, gamma * (self.gp.get_posterior_mean([q]) + offset),
@@ -955,7 +956,7 @@ def setup_process(data, subs, maxpoints=-1):
     I = data['I'][::subs]
     err = data['err'][::subs]
     if maxpoints > 0:
-        q, I, err = zip(*subsample(q, zip(q, I, err), maxpoints))
+        q, I, err = list(zip(*subsample(q, zip(q, I, err), maxpoints)))
     gp = IMP.isd.GaussianProcessInterpolation(q, I, err,
                                               data['N'], functions[
                                                   'mean'], functions['covariance'],
@@ -973,7 +974,7 @@ def _get_guinier_fit_fixed(qs, Is, errs):
     try:
         beta = linalg.solve(dot(XW, X), dot(XW, y), sym_pos=True)
     except linalg.LinAlgError:
-        print "Warning: singular matrix during guinier fit"
+        print("Warning: singular matrix during guinier fit")
         beta = atleast_2d(ones(2)).transpose()
     if beta[1, 0] > 0:
         rg = 0
@@ -984,11 +985,11 @@ def _get_guinier_fit_fixed(qs, Is, errs):
 
 
 def get_guinier_fit(data, end_q_rg=1.3):
-    qs, Is, errs = map(array, [data['q'], data['I'], data['err']])
+    qs, Is, errs = list(map(array, [data['q'], data['I'], data['err']]))
     # fit the whole range up to q_rg, take median values for robustness
     cut = 5  # drop first 5 points, and take at least 5 points to estimate
     vals = []
-    for i in xrange(cut + 5, len(qs)):
+    for i in range(cut + 5, len(qs)):
         rg, izero = _get_guinier_fit_fixed(qs[cut:i], Is[cut:i], errs[cut:i])
         if rg > 0:
             vals.append((rg, izero, qs[i - 1] * rg))
@@ -1254,7 +1255,7 @@ def find_fit_mean(data, verbose, mean_function):
     particles['A'].set_nuisance(Af)
     #
     newvals = dict([(k, v.get_nuisance())
-                    for (k, v) in particles.iteritems()])
+                    for (k, v) in particles.items()])
     ene = model.evaluate(False)
     return newvals, ene
 
@@ -1378,7 +1379,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
     particles['lambda'].set_scale(untransform(clf, particles['lambda']))
     #
     newvals = dict([(k, v.get_nuisance())
-                    for (k, v) in particles.iteritems()])
+                    for (k, v) in particles.items()])
     ene = model.evaluate(False)
     # make sure the errors are defined
     if not success:
@@ -1471,7 +1472,7 @@ def find_fit(data, verbose, model_comp=False, model_comp_maxpoints=-1,
     param_vals = {}
     # optimize parameters for each function
     if verbose > 2:
-        print ""
+        print("")
     for mean_func in functions:
         if verbose > 2:
             sys.stdout.write("     " + mean_func + ": ")
@@ -1481,7 +1482,7 @@ def find_fit(data, verbose, model_comp=False, model_comp_maxpoints=-1,
         param_vals[mean_func] = endvals
         if mean_func not in param_vals:
             if model_comp:
-                print "error"
+                print("error")
                 sys.stdout.flush()
                 continue
             else:
@@ -1498,27 +1499,27 @@ def find_fit(data, verbose, model_comp=False, model_comp_maxpoints=-1,
                 sys.stdout.write("s=%1.3f " % param_vals[mean_func]['s'])
             for i in ['tau', 'lambda', 'sigma2']:
                 sys.stdout.write("%s=%1.3f " % (i, param_vals[mean_func][i]))
-            print ""
+            print("")
             sys.stdout.flush()
     # compare functions via model comparison
     if len(functions) == 1:
         return functions[0], param_vals[functions[0]], {}
     free_energies = {}
     if verbose > 2:
-        print "     -log(Bayes Factor):",
+        print("     -log(Bayes Factor):", end=' ')
     for f in functions:
         if verbose > 2:
-            print f + " =",
+            print(f + " =", end=' ')
         if f in param_vals:
             free_energies[f] = bayes_factor(data, param_vals[f], verbose, f,
                                             model_comp_maxpoints)
         else:
             free_energies[f] = [-1] + [inf] * 8
         if verbose > 2:
-            print "%.1f" % free_energies[f][8],
+            print("%.1f" % free_energies[f][8], end=' ')
             sys.stdout.flush()
     if verbose > 2:
-        print ""
+        print("")
     # must have at least one model with admissible bayes factor
     if not (False in map(isinf, [free_energies[f][8] for f in functions])):
         raise FittingError("Error while fitting! All Bayes factors are "
@@ -1665,7 +1666,7 @@ def write_merge_profile(merge, qvals, args):
         dflags = None
         mflags = None
     if args.verbose > 2:
-        print "   data ",
+        print("   data ", end=' ')
     merge.write_data(merge.get_filename(), bool_to_int=True, dir=args.destdir,
                      header=args.header, flags=dflags)
     qmax = max([i[1] for i in merge.get_flag_intervals('eextrapol')])
@@ -1675,14 +1676,14 @@ def write_merge_profile(merge, qvals, args):
         qmin = 0
     if args.npoints > 0:
         if args.verbose > 2:
-            print " mean ",
+            print(" mean ", end=' ')
         merge.write_mean(merge.get_filename(), bool_to_int=True,
                          dir=args.destdir, qmin=qmin, qmax=qmax, header=args.header,
                          flags=mflags, num=args.npoints, average=args.eaverage,
                          verbose=(args.verbose > 2))
     else:
         if args.verbose > 2:
-            print " mean ",
+            print(" mean ", end=' ')
         qvalues = qvals[where(qvals >= qmin)]
         qvalues = qvals[where(qvalues <= qmax)]
         merge.write_mean(merge.get_filename(), bool_to_int=True,
@@ -1715,7 +1716,7 @@ def write_summary_file(merge, profiles, args):
         data = merge.get_data(colwise=True)
         fl.write("   Number of points: %d\n" % len(data['q']) +
                  "   Data range: %.5f %.5f\n" % (data['q'][0], data['q'][-1]))
-        for i in xrange(len(profiles)):
+        for i in range(len(profiles)):
             fl.write("   %d points from profile %d (%s)\n" %
                      (len([1 for k in data['eorigin'] if k == i]),
                       i, profiles[i].filename))
@@ -1907,15 +1908,15 @@ def remove_redundant(profiles, verbose=0):
     # remove profile if it has no data
     tbd = []
     for i, d in enumerate(data):
-        if d.keys() == []:
+        if list(d.keys()) == []:
             tbd.append(i)
     tbd.reverse()
     for i in tbd:
         pbye = profiles.pop(i)
         data.pop(i)
         if verbose > 0:
-            print "    removed profile %d (%s) because it is redundant" % \
-                (i, os.path.basename(pbye.filename))
+            print("    removed profile %d (%s) because it is redundant" % \
+                (i, os.path.basename(pbye.filename)))
     if len(profiles) <= 1:
         return profiles
     # map noise levels to profiles
@@ -1924,7 +1925,7 @@ def remove_redundant(profiles, verbose=0):
     dbest = data[n2p[0]]
     # get median distance between q values
     qdist = median([dbest['q'][i + 1] - dbest['q'][i]
-                    for i in xrange(len(dbest['q']) - 1)])
+                    for i in range(len(dbest['q']) - 1)])
     for p in n2p[1:]:
         prof = profiles[p]
         dat = data[p]
@@ -1944,7 +1945,7 @@ def remove_redundant(profiles, verbose=0):
             while imax < len(dat['q']) and dat['q'][imax] <= qbest + qdist:
                 imax += 1
             # loop over qs and discard them
-            for i in xrange(imin, imax):
+            for i in range(imin, imax):
                 prof.set_flag(dat['id'][i], 'dgood', False)
                 prof.set_flag(dat['id'][i], 'dpvalue', -1)
     # apply same alg to remaining profiles
@@ -1973,13 +1974,13 @@ def write_fit(data, initvals, outfile, mean_function, npoints=200):
 def initialize():
     args, files = parse_args()
     if args.verbose >= 2:
-        print "Parsing files and creating profile classes"
-        print ""
+        print("Parsing files and creating profile classes")
+        print("")
     filenames, Nreps = parse_filenames(files, defaultvalue=10)
     args.filenames = filenames
     args.Nreps = Nreps
     scale = get_global_scaling_factor(filenames[-1])
-    profiles = map(create_profile, filenames, Nreps, [scale] * len(filenames))
+    profiles = list(map(create_profile, filenames, Nreps, [scale] * len(filenames)))
     return profiles, args
 
 
@@ -1993,15 +1994,15 @@ def cleanup(profiles, args):
     alpha = args.aalpha
     q_cutoff = args.acutoff
     if verbose > 0:
-        print "1. cleanup ( alpha = %2G %% / M " % (alpha * 100),
+        print("1. cleanup ( alpha = %2G %% / M " % (alpha * 100), end=' ')
         if args.remove_noisy:
-            print "and removing noisy points",
-        print ")"
+            print("and removing noisy points", end=' ')
+        print(")")
     # loop over profiles
     good_profiles = []
     for p in profiles:
         if verbose > 1:
-            print "   ", os.path.basename(p.filename),
+            print("   ", os.path.basename(p.filename), end=' ')
         N = p.get_Nreps()
         p.new_flag('agood', bool)
         p.new_flag('apvalue', float)
@@ -2027,8 +2028,8 @@ def cleanup(profiles, args):
         if args.remove_noisy:
             data = p.get_data(filter="agood", colwise=True)
             if len(data) == 0:
-                print "Warning: all points in file %s have been discarded"\
-                    " on cleanup" % os.path.basename(p.filename)
+                print("Warning: all points in file %s have been discarded"\
+                    " on cleanup" % os.path.basename(p.filename))
                 continue
             med = median(data['err'])
             ids = []
@@ -2039,15 +2040,15 @@ def cleanup(profiles, args):
                     p.set_flag(id, 'apvalue', -1)
         data = p.get_data(filter="agood", colwise=True)
         if data == {}:
-            print "Warning: all points in file %s have been discarded"\
-                " on cleanup" % os.path.basename(p.filename)
+            print("Warning: all points in file %s have been discarded"\
+                " on cleanup" % os.path.basename(p.filename))
             continue
         qvals = data['q']
         if verbose > 2:
-            print "\tqmin = %.3f\tqmax = %.3f" % \
-                (qvals[0], qvals[-1])
+            print("\tqmin = %.3f\tqmax = %.3f" % \
+                (qvals[0], qvals[-1]))
         elif verbose == 2:
-            print ""
+            print("")
         good_profiles.append(p)
     # need a continuous indicator of validity
     for p in good_profiles:
@@ -2065,10 +2066,10 @@ def fitting(profiles, args):
     mean_function = args.bmean
     model_comp = not args.bnocomp
     if verbose > 0:
-        print "2. fitting"
+        print("2. fitting")
     for p in profiles:
         if verbose > 1:
-            print "   ", os.path.basename(p.filename),
+            print("   ", os.path.basename(p.filename), end=' ')
         try:
             data = p.get_data(
                 filter='agood',
@@ -2078,9 +2079,9 @@ def fitting(profiles, args):
             data = p.get_data(colwise=True, maxpoints=maxpointsF)
         if verbose > 1:
             if len(data['q']) == maxpointsF:
-                print " (subsampled fitting: %d points) " % maxpointsF,
+                print(" (subsampled fitting: %d points) " % maxpointsF, end=' ')
             if model_comp and maxpointsH > 0 and maxpointsH < len(data['q']):
-                print " (subsampled hessian: %d points) " % maxpointsH,
+                print(" (subsampled hessian: %d points) " % maxpointsH, end=' ')
         data['N'] = p.get_Nreps()
         mean, initvals, bayes = find_fit(data, verbose,
                                          model_comp=model_comp, model_comp_maxpoints=maxpointsH,
@@ -2094,7 +2095,7 @@ def fitting(profiles, args):
         else:
             p.set_interpolant(gp, particles, functions, mean, model, bayes)
         if verbose > 1 and model_comp:
-            print "    => " + mean
+            print("    => " + mean)
     return profiles, args
 
 
@@ -2112,15 +2113,15 @@ def rescaling(profiles, args):
     reference = args.creference
     average = args.baverage
     if verbose > 0:
-        print "3. rescaling",
+        print("3. rescaling", end=' ')
         if use_normal:
-            print "(normal model",
+            print("(normal model", end=' ')
         else:
-            print "(lognormal model",
+            print("(lognormal model", end=' ')
         if use_offset:
-            print "with constant offset)"
+            print("with constant offset)")
         else:
-            print "without constant offset)"
+            print("without constant offset)")
     # take last as internal reference as there's usually good overlap
     pref = profiles[-1]
     gammas = []
@@ -2149,7 +2150,7 @@ def rescaling(profiles, args):
             numint = int(round(dist / totaldist * numpoints))
             if numint <= 1:
                 continue
-            for i in xrange(numint):
+            for i in range(numint):
                 qvalues.append((float(i) / (numint - 1)) * dist + qmin)
         pvalues = p.get_mean(qvalues=qvalues, colwise=True, average=average)
         if True in map(isnan, pvalues['I']):
@@ -2198,10 +2199,10 @@ def rescaling(profiles, args):
         p.set_gamma(gamma)
         p.set_offset(c)
         if verbose > 1:
-            print "   ", os.path.basename(p.filename), "   gamma = %.3G" % gamma,
+            print("   ", os.path.basename(p.filename), "   gamma = %.3G" % gamma, end=' ')
             if use_offset:
-                print "   offset = %.3G" % c,
-            print " (%d)" % mat
+                print("   offset = %.3G" % c, end=' ')
+            print(" (%d)" % mat)
     if True in map(isnan, gammas[-1]):
         raise RuntimeError("Got NAN in rescaling step, try another rescaling "
                            "or fitting model.")
@@ -2225,15 +2226,15 @@ def classification(profiles, args):
     verbose = args.verbose
     average = args.baverage
     if verbose > 0:
-        print "4. classification ( alpha = %2G %% )" % (alpha * 100)
+        print("4. classification ( alpha = %2G %% )" % (alpha * 100))
     if args.auto:
         if verbose > 0:
-            print "   Reordering files"
+            print("   Reordering files")
         profiles = reorder_profiles(profiles)
-    for i in xrange(len(profiles)):
+    for i in range(len(profiles)):
         p = profiles[i]
         if verbose > 1:
-            print "   ", os.path.basename(p.filename)
+            print("   ", os.path.basename(p.filename))
         p.new_flag('drefnum', int)
         p.new_flag('drefname', str)
         p.new_flag('dgood', bool)
@@ -2267,19 +2268,19 @@ def classification(profiles, args):
     # remove unused profiles
     tbd = []
     for i, p in enumerate(profiles):
-        if p.get_data(filter='dgood', colwise=True).keys() == []:
+        if list(p.get_data(filter='dgood', colwise=True).keys()) == []:
             tbd.append(i)
     tbd.reverse()
     for i in tbd:
         name = os.path.basename(profiles[i].get_filename())
         profiles.pop(i)
         if verbose > 1:
-            print "   All points of profile %d (%s) were discarded" % \
-                (i, name)
+            print("   All points of profile %d (%s) were discarded" % \
+                (i, name))
     # remove redundant data if required
     if args.remove_redundant:
         if verbose > 0:
-            print "   Removing redundant data"
+            print("   Removing redundant data")
         profiles = remove_redundant(profiles, verbose=verbose)
     return profiles, args
 
@@ -2301,8 +2302,8 @@ def merging(profiles, args):
     mean_function = args.emean
     model_comp = not args.enocomp
     if verbose > 0:
-        print "5. merging"
-        print "   gathering data"
+        print("5. merging")
+        print("   gathering data")
     merge = SAXSProfile()
     merge.set_filename(args.mergename)
     merge.new_flag('dselfref', bool)
@@ -2315,7 +2316,7 @@ def merging(profiles, args):
     # loop over profiles and add data
     for i, p in enumerate(profiles):
         if verbose > 1:
-            print "    ", os.path.basename(p.filename)
+            print("    ", os.path.basename(p.filename))
         # get data and keep only relevant flags
         data = p.get_data(filter='dgood', colwise=True)
         if data == {}:  # no good datapoints
@@ -2333,14 +2334,14 @@ def merging(profiles, args):
         data['eextrapol'] = [False] * len(data['q'])
         cleaned = []
         all_flags = flags_to_keep + ['eorigin', 'eoriname', 'eextrapol']
-        for j in xrange(len(data['q'])):
+        for j in range(len(data['q'])):
             entry = []
             for k in all_flags:
                 entry.append(data[k][j])
             cleaned.append(entry)
         merge.add_data(cleaned)
     if verbose > 0:
-        print "   calculating merged mean",
+        print("   calculating merged mean", end=' ')
     # recompute all intervals
     for n, t in zip(merge.flag_names, merge.flag_types):
         if t != float and n not in ['q', 'I', 'err']:
@@ -2360,9 +2361,9 @@ def merging(profiles, args):
     data = merge.get_data(colwise=True, maxpoints=maxpointsF)
     if verbose > 1:
         if len(data['q']) == maxpointsF:
-            print " (subsampled fitting: %d points) " % maxpointsF,
+            print(" (subsampled fitting: %d points) " % maxpointsF, end=' ')
         if model_comp and maxpointsH > 0 and maxpointsH < len(data['q']):
-            print " (subsampled hessian: %d points) " % maxpointsH,
+            print(" (subsampled hessian: %d points) " % maxpointsH, end=' ')
     data['N'] = merge.get_Nreps()
     # take initial values from the curve which has gamma == 1
     initvals = profiles[-1].get_params()
@@ -2371,7 +2372,7 @@ def merging(profiles, args):
                                      model_comp_maxpoints=maxpointsH,
                                      mean_function=mean_function)
     if verbose > 1 and model_comp:
-        print "    => " + mean
+        print("    => " + mean)
     model, particles, functions, gp = setup_process(data, 1)
     for part, v in initvals.items():
         particles[part].set_nuisance(v)
@@ -2381,37 +2382,37 @@ def merging(profiles, args):
     else:
         merge.set_interpolant(gp, particles, functions, mean, model, bayes)
     if verbose > 0:
-        print ""
+        print("")
     return merge, profiles, args
 
 
 def write_data(merge, profiles, args):
     if args.verbose > 0:
-        print "writing data to %s" % args.destdir
+        print("writing data to %s" % args.destdir)
     if not os.path.isdir(args.destdir):
         os.mkdir(args.destdir)
     qvals = array(profiles[0].get_raw_data(colwise=True)['q'])
     # individual profiles
     if args.allfiles:
         if args.verbose > 1:
-            print "   individual profiles"
+            print("   individual profiles")
         for i in profiles:
             if args.verbose > 2:
-                print "    %s" % os.path.basename(i.get_filename())
+                print("    %s" % os.path.basename(i.get_filename()))
             write_individual_profile(i, qvals, args)
     # merge profile
     if args.stop == 'merging':
         if args.verbose > 1:
-            print "   merge profile",
+            print("   merge profile", end=' ')
         write_merge_profile(merge, qvals, args)
         if args.verbose > 1:
-            print ""
+            print("")
     # summary
     if args.verbose > 1:
-        print "   summary"
+        print("   summary")
     write_summary_file(merge, profiles, args)
     if args.verbose > 0:
-        print "Done."
+        print("Done.")
 
 
 def main():

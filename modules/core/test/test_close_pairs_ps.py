@@ -86,7 +86,7 @@ class Tests(IMP.test.TestCase):
         apd = [(IMP.core.get_distance(IMP.core.XYZR(p0),
                                       IMP.core.XYZR(p1)),
                (p0, p1)) for p0 in ls0 for p1 in ls1]
-        apd.sort(lambda a, b: cmp(a[0], b[0]))
+        apd.sort(key=lambda a: a[0])
         # print apd
         for p in lps.get_particle_pairs():
             print(IMP.core.get_distance(IMP.core.XYZR(p[0]), IMP.core.XYZR(p[1])),\

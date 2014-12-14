@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, division
 import IMP
 import IMP.test
 import IMP.core
@@ -128,7 +128,7 @@ class Tests(IMP.test.TestCase):
         rb.set_coordinates_are_optimized(True)
         print("done setting up")
         ls = hs
-        keypts = [ls[0], ls[-1], ls[len(ls) / 3], ls[len(ls) / 3 * 2]]
+        keypts = [ls[0], ls[-1], ls[len(ls) // 3], ls[len(ls) // 3 * 2]]
         tr = IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(),
                                           IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0), IMP.algebra.Vector3D(500, 500, 500))))
         for p in keypts:

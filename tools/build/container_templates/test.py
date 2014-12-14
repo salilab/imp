@@ -142,13 +142,13 @@ class ClassnameContainerTest(IMP.test.TestCase):
         cs = IMP.get_indexes(cs)
         for pi in cs:
             self.assertIn(pi, ret)
-        ret.sort(cmp)
+        ret.sort()
         # print ret
-        cs.sort(cmp)
+        cs.sort()
         # rint cs
         self.assertEqual(len(ret), len(cs))
-        for i in range(0, len(ret)):
-            self.assertEqual(cmp(ret[i], cs[i]), 0)
+        for r, c in zip(ret, cs):
+            self.assertEqual(r, c)
 
 if __name__ == '__main__':
     IMP.test.main()

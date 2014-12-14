@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
+from __future__ import print_function, division
 import sys
 import IMP.multifit
 from IMP import OptionParser
@@ -43,7 +43,7 @@ class progressBar:
             ' ' * (allFull - numHashes) + "]"
 
         # figure out where to put the percentage, roughly centered
-        percentPlace = (len(self.progBar) / 2) - len(str(percentDone))
+        percentPlace = (len(self.progBar) // 2) - len(str(percentDone))
         percentString = str(percentDone) + "%"
 
         # slice the percentage into the bar

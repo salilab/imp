@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import IMP
 import IMP.saxs
 import os
@@ -41,7 +42,7 @@ def _run_binary(path, binary, args, out_file=None):
         cmd += ' > ' + out_file
     else:
         stdout = sys.stdout
-    print cmd
+    print(cmd)
     p = subprocess.Popen([binary] + args, stdout=stdout, stderr=sys.stderr)
     ret = p.wait()
     if ret != 0:
@@ -82,7 +83,7 @@ class Scorer(object):
     def score(self, num_transforms):
         if os.path.exists(self.output_file) \
            and _count_lines(self.output_file) >= num_transforms:
-            print "Skipping %s for %s" % (str(self), self.receptor)
+            print("Skipping %s for %s" % (str(self), self.receptor))
         else:
             self._run_score_binary()
 
@@ -440,7 +441,7 @@ where the PatchDock program is installed."""
         # Skip if PatchDock output file exists and contains transformations
         # (not just the header containing parameter information)
         if os.path.exists(out_file) and _count_lines(out_file) > 36:
-            print "Skipping PatchDock for %s" % self.receptor
+            print("Skipping PatchDock for %s" % self.receptor)
         else:
             self.run_patch_dock_binary('patch_dock.Linux',
                                        ['params.txt', out_file])
@@ -455,7 +456,7 @@ where the PatchDock program is installed."""
             fields = line.split('|')
             if len(fields) > 1 and num_re.search(fields[0]):
                 num_transforms += 1
-                print >> fout, int(fields[0]), fields[-1].strip(' \r\n')
+                print(int(fields[0]), fields[-1].strip(' \r\n'), file=fout)
                 if self.opts.precision == 1 and num_transforms >= 5000:
                     break
         return num_transforms
@@ -528,11 +529,11 @@ where the PatchDock program is installed."""
         solutions.sort(key=lambda x: float(x[3]))
         # Write results file
         fh = open(out_fname, 'w')
-        print >> fh, "receptorPdb Str " + self.receptor
-        print >> fh, "ligandPdb Str " + self.ligand
-        print >> fh, "     # |  Score  | filt| ZScore |" \
+        print("receptorPdb Str " + self.receptor, file=fh)
+        print("ligandPdb Str " + self.ligand, file=fh)
+        print("     # |  Score  | filt| ZScore |" \
             + "|".join(["%-8s| Zscore " % s.short_name for s in scorers]) \
-            + "| Transformation"
+            + "| Transformation", file=fh)
         for i, solution in enumerate(solutions):
             fh.write("%6d | " % (i + 1) + "|".join(solution[1:]))
         return out_fname
