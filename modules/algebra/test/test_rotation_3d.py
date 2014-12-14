@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
 
     def test_axis_rotation(self):
         """Check random rotations about axis"""
-        for ii in xrange(1, 10):
+        for ii in range(1, 10):
             axis = IMP.algebra.get_random_vector_on(
                 IMP.algebra.get_unit_sphere_3d())
             angle = math.pi / ii  # random.uniform(-math.pi,math.pi)
@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
             v_start = IMP.algebra.get_random_vector_in(
                 IMP.algebra.get_unit_bounding_box_3d())
             vt = v_start
-            for i in xrange(2 * ii):
+            for i in range(2 * ii):
                 vt = r.get_rotated(vt)
                 if i == 0:
                     vti = ri.get_rotated(vt)

@@ -12,7 +12,7 @@ from math import cos, sin, pi, sqrt, exp, log
 
 def create_test_points(mu, radii):
     testers = [[mu[0], mu[1], mu[2]]]
-    for i in xrange(3):
+    for i in range(3):
         t = mu[:]
         t[i] += radii[i] + 1
         testers.append(t)

@@ -40,7 +40,7 @@ class Tests(IMP.test.TestCase):
         """
         p0 = self.p0
         p1 = self.p1
-        for i in xrange(100):
+        for i in range(100):
             p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(-5, 5)
                                                       for i in range(3)]))
             p1.set_coordinates(IMP.algebra.Vector3D(*[uniform(-5, 5)
@@ -60,7 +60,7 @@ class Tests(IMP.test.TestCase):
         """tests if derivative is -2*(d-x0)**3"""
         p0 = self.p0
         p1 = self.p1
-        for i in xrange(100):
+        for i in range(100):
             p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(-3, 3)
                                                       for i in range(3)]))
             p1.set_coordinates(IMP.algebra.Vector3D(*[uniform(-3, 3)
@@ -74,7 +74,7 @@ class Tests(IMP.test.TestCase):
             delta = p0.get_coordinates() - p1.get_coordinates()
             delta = delta / delta.get_magnitude()
             self.m.evaluate(True)
-            for i in xrange(3):
+            for i in range(3):
                 self.assertAlmostEqual(p0.get_derivatives()[i],
                                        expected * delta[i], delta=0.001)
                 self.assertAlmostEqual(p1.get_derivatives()[i],

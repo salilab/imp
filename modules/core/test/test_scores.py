@@ -18,7 +18,7 @@ class TestEMRestraint(IMP.test.TestCase):
             atom_type=IMP.atom.AtomType("CA")).get_selected_particles()
         strength = 10.0
         rs = IMP.RestraintSet(mdl, "ElasticNetwork")
-        for pidx in itertools.combinations(xrange(len(ps)), 2):
+        for pidx in itertools.combinations(range(len(ps)), 2):
             pair = [ps[pidx[0]], ps[pidx[1]]]
             distance = IMP.algebra.get_distance(
                 IMP.core.XYZ(pair[0]).get_coordinates(),

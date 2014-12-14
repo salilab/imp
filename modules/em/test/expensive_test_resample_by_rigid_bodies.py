@@ -56,7 +56,7 @@ class Tests(IMP.test.TestCase):
         # load as lots of particles, generate EM map, use it to define
         # restraint
         self.ps_all = []  # all the molecules together as one particle
-        for n in xrange(3):
+        for n in range(3):
             self.ps_all += self.pss[n]
         map = IMP.em.particles2density(self.ps_all, 8, 1.5)
         map.calcRMS()
@@ -109,7 +109,7 @@ class Tests(IMP.test.TestCase):
         # load as lots of particles, generate EM map, use it to define
         # restraint
         self.ps_all = []  # all the molecules together as one particle
-        for n in xrange(3):
+        for n in range(3):
             self.ps_all += self.pss[n]
         map = IMP.em.particles2density(self.ps_all, 8, 1.5)
         map.calcRMS()
@@ -131,7 +131,7 @@ class Tests(IMP.test.TestCase):
     def _test_fast_local_refinement(self):
         """test that local rigid fitting work well with rigid bodies"""
         self.ps_all = []  # all the molecules together as one particle
-        for n in xrange(3):
+        for n in range(3):
             self.ps_all += self.pss[n]
         d_map = IMP.em.particles2density(self.ps_all, 8, 1.5)
         d_map.calcRMS()

@@ -55,7 +55,7 @@ class Tests(IMP.test.TestCase):
                      (self.Rg, 0, 100),
                      (self.d, 1, 4)]
         # number of shuffled values
-        for i in xrange(random.randint(0, len(particles))):
+        for i in range(random.randint(0, len(particles))):
             # which particle
             p, imin, imax = particles.pop(random.randint(0, len(particles)))
             p.set_nuisance(random.uniform(imin, imax))
@@ -123,8 +123,8 @@ class Tests(IMP.test.TestCase):
         test the value of the function by shuffling all particles
         """
         skipped = 0
-        for rep in xrange(10):
-            for i in xrange(10):
+        for rep in range(10):
+            for i in range(10):
                 pos = random.uniform(0, 1)
                 observed = self.mean([pos])[0]
                 expected = self.get_value(pos)
@@ -150,7 +150,7 @@ class Tests(IMP.test.TestCase):
         """
         tests if we can get multiple values at once
         """
-        for rep in xrange(10):
+        for rep in range(10):
             data = random.uniform(0, 1, random.randint(1, 100))
             expected = [self.mean([i]) for i in data]
             observed = self.mean([[i] for i in data], True)
@@ -163,8 +163,8 @@ class Tests(IMP.test.TestCase):
         Test on one point at a time
         """
         skipped = 0
-        for rep in xrange(10):
-            for i in xrange(10):
+        for rep in range(10):
+            for i in range(10):
                 pos = random.uniform(0, 1)
                 self.mean.add_to_derivatives([pos], self.DA)
                 # G
@@ -271,12 +271,12 @@ class Tests(IMP.test.TestCase):
         test the derivatives of the function by shuffling all particles
         Test on multiple points at a time
         """
-        for rep in xrange(10):
+        for rep in range(10):
             expectedG = 0
             expectedRg = 0
             expectedd = 0
             expecteds = 0
-            for i in xrange(10):
+            for i in range(10):
                 pos = random.uniform(0, 1)
                 self.mean.add_to_derivatives([pos], self.DA)
                 expectedG += self.get_deriv_G(pos)
@@ -358,7 +358,7 @@ class Tests(IMP.test.TestCase):
         pos = self.get_params()[5]
         GFunc = MockFunc(self.G.set_nuisance,
                          lambda a: self.mean([a])[0], pos, update=self.mean.update)
-        for G in xrange(1, 10):
+        for G in range(1, 10):
             self.G.set_nuisance(G)
             self.mean.update()
             observed = self.mean.get_derivative_matrix([[pos]],
@@ -375,7 +375,7 @@ class Tests(IMP.test.TestCase):
         pos = self.get_params()[5]
         RgFunc = MockFunc(self.Rg.set_nuisance,
                           lambda a: self.mean([a])[0], pos, update=self.mean.update)
-        for Rg in xrange(1, 10):
+        for Rg in range(1, 10):
             self.Rg.set_nuisance(Rg)
             self.mean.update()
             observed = self.mean.get_derivative_matrix([[pos]],
@@ -433,7 +433,7 @@ class Tests(IMP.test.TestCase):
         pos = self.get_params()[4]
         AFunc = MockFunc(self.A.set_nuisance,
                          lambda a: self.mean([a])[0], pos, update=self.mean.update)
-        for A in xrange(1, 10):
+        for A in range(1, 10):
             self.A.set_nuisance(A)
             self.mean.update()
             observed = self.mean.get_derivative_matrix([[pos]],
@@ -447,13 +447,13 @@ class Tests(IMP.test.TestCase):
         particle
         """
         pa = 4
-        for pb in xrange(4):
+        for pb in range(4):
             self.G.set_nuisance(5)
             pos = self.get_params()[5]
             GFunc = MockFunc(self.particles[pb].set_nuisance,
                              lambda a: self.mean.get_derivative_matrix([[a]],
                                                                        False)[0][pa], pos, update=self.mean.update)
-            for part in xrange(1, 10):
+            for part in range(1, 10):
                 self.particles[pb].set_nuisance(part)
                 self.mean.update()
                 observed = self.mean.get_second_derivative_vector(pa,
@@ -473,7 +473,7 @@ class Tests(IMP.test.TestCase):
                          lambda a: self.mean.get_derivative_matrix(
                              [[a]], False)[0][pa],
                          pos, update=self.mean.update)
-        for G in xrange(1, 10):
+        for G in range(1, 10):
             self.G.set_nuisance(G)
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
@@ -493,7 +493,7 @@ class Tests(IMP.test.TestCase):
                           lambda a: self.mean.get_derivative_matrix(
                               [[a]], False)[0][pa],
                           pos, update=self.mean.update)
-        for Rg in xrange(1, 10):
+        for Rg in range(1, 10):
             self.Rg.set_nuisance(Rg)
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
@@ -513,7 +513,7 @@ class Tests(IMP.test.TestCase):
                          lambda a: self.mean.get_derivative_matrix(
                              [[a]], False)[0][pa],
                          pos, update=self.mean.update)
-        for G in xrange(1, 10):
+        for G in range(1, 10):
             self.G.set_nuisance(G)
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
@@ -696,7 +696,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
     def testGetDerivativeMatrix(self):
-        for rep in xrange(3):
+        for rep in range(3):
             xlist = random.uniform(0, 1, random.randint(1, 100))
             data = self.mean.get_derivative_matrix([[i] for i in xlist], True)
             self.assertEqual(len(data), len(xlist))
@@ -728,7 +728,7 @@ class Tests(IMP.test.TestCase):
             self.shuffle_particle_values()
 
     def testAddToParticleDerivative(self):
-        for i in xrange(10):
+        for i in range(10):
             # G
             val = random.uniform(0, 1)
             self.mean.add_to_particle_derivative(0, val, self.DA)

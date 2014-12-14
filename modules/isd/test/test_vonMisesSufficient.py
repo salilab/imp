@@ -28,12 +28,12 @@ class TestvonMisesSufficient(IMP.test.TestCase):
 
     def testAlternative(self):
         "Test alternative vonMisesSufficient constructor"
-        for i in xrange(100):
+        for i in range(100):
             x = uniform(-4 * pi, 4 * pi)
             N = randint(1, 20)
             meanv = uniform(-pi, pi)
             stdev = uniform(0, 2 * pi)
-            obs = array([gauss(meanv, stdev) for j in xrange(N)])
+            obs = array([gauss(meanv, stdev) for j in range(N)])
             cosbar = cos(obs).sum()
             sinbar = sin(obs).sum()
             R = sqrt(cosbar ** 2 + sinbar ** 2)
@@ -47,11 +47,11 @@ class TestvonMisesSufficient(IMP.test.TestCase):
 
     def testStatistics(self):
         "Test vonMisesSufficient statistics"
-        for i in xrange(100):
+        for i in range(100):
             N = randint(1, 20)
             meanv = uniform(-pi, pi)
             stdev = uniform(0, 2 * pi)
-            obs = array([gauss(meanv, stdev) for j in xrange(N)])
+            obs = array([gauss(meanv, stdev) for j in range(N)])
             cpp = IMP.isd.vonMisesSufficient.get_sufficient_statistics(obs)
             cosbar = cos(obs).sum()
             sinbar = sin(obs).sum()
@@ -69,7 +69,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
             from scipy.special import i0, i1
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
-        for i in xrange(100):
+        for i in range(100):
             x = uniform(-4 * pi, 4 * pi)
             N = randint(1, 10)
             R = randint(1, N)
@@ -83,7 +83,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
 
     def testEvaluateDX(self):
         "Test vonMisesSufficient.evaluate_derivative_x"
-        for i in xrange(100):
+        for i in range(100):
             x = uniform(-4 * pi, 4 * pi)
             N = randint(1, 20)
             R = randint(1, N)
@@ -100,7 +100,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
             from scipy.special import i0, i1
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
-        for i in xrange(100):
+        for i in range(100):
             x = uniform(-4 * pi, 4 * pi)
             N = randint(1, 20)
             R = randint(1, N)
@@ -120,7 +120,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
             from scipy.special import i0, i1
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
-        for i in xrange(100):
+        for i in range(100):
             #x, N, cmu1, smu2, kappa
             x = uniform(-4 * pi, 4 * pi)
             N = randint(1, 20)
@@ -149,7 +149,7 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
 
     def testEvaluate(self):
         "Test vonMisesSufficient.evaluate degenerate case"
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-4 * pi, 4 * pi), uniform(-pi, pi),
                       uniform(0.1, 100)]
             fn = vonMises(*randno)
@@ -158,7 +158,7 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
 
     def testEvaluateDX(self):
         "Test vonMisesSufficient.evaluate_derivative_x degenerate case"
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-4 * pi, 4 * pi), uniform(-pi, pi),
                       uniform(0.1, 100)]
             fn = vonMises(*randno)
@@ -169,7 +169,7 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
 
     def testEvaluateDKappa(self):
         "Test vonMisesSufficient.evaluate_derivative_kappa degenerate case"
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-4 * pi, 4 * pi), uniform(-pi, pi),
                       uniform(0.1, 100)]
             fn = vonMises(*randno)
@@ -180,7 +180,7 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
 
     def testDensity(self):
         "Test vonMisesSufficient.density degenerate case"
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-4 * pi, 4 * pi), uniform(-pi, pi),
                       uniform(0.1, 100)]
             fn = vonMises(*randno)

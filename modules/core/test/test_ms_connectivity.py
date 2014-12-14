@@ -141,12 +141,12 @@ class Tests(IMP.test.TestCase):
         o.optimize(100)
 
 #        print 'AFTER optimization'
-        dist = [[0] * 6 for x in xrange(6)]
-        ok = [[0] * 6 for x in xrange(6)]
+        dist = [[0] * 6 for x in range(6)]
+        ok = [[0] * 6 for x in range(6)]
         sum = 0
-        for i in xrange(6):
+        for i in range(6):
             i_connected = False
-            for j in xrange(6):
+            for j in range(6):
                 if j > i:
                     dist[j][i] = dist[i][j] = IMP.core.get_distance(
                         self.ds[i], self.ds[j])

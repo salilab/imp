@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
 
     def testValueP(self):
         "Test if JeffreysRestraint probability is 1/scale"
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.get_probability(),
@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
 
     def testValueE(self):
         "Test if JeffreysRestraint score is log(scale)"
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.unprotected_evaluate(self.DA),
@@ -45,7 +45,7 @@ class Tests(IMP.test.TestCase):
     def testDerivative(self):
         "Test the derivative of JeffreysRestraint"
         self.m.add_restraint(self.J)
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.sigma.set_scale(no)
             self.m.evaluate(True)
@@ -85,7 +85,7 @@ class Tests(IMP.test.TestCase):
 
     def testSanityEP(self):
         "Test if JeffreysRestraint score is -log(prob)"
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.unprotected_evaluate(self.DA),
@@ -93,7 +93,7 @@ class Tests(IMP.test.TestCase):
 
     def testSanityPE(self):
         "Test if JeffreysRestraint prob is exp(-score)"
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.get_probability(),

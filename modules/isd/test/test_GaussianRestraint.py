@@ -84,7 +84,7 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
         "Test GaussianRestraint(3) score"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             e = self.m.evaluate(False)
@@ -94,7 +94,7 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
         "Test GaussianRestraint(3) x derivative"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.m.evaluate(True)
@@ -105,7 +105,7 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
         "Test GaussianRestraint(3) mu derivative"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.m.evaluate(True)
@@ -116,7 +116,7 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
         "Test GaussianRestraint(3) sigma derivative"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.m.evaluate(True)
@@ -128,7 +128,7 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
         "Test if GaussianRestraint(3) prob is exp(-score)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.assertAlmostEqual(gr.get_probability(),
@@ -138,7 +138,7 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
         "Test if GaussianRestraint(3) score is -log(prob)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             expected = gr.get_probability()
@@ -226,7 +226,7 @@ class TestGaussianRestraintSimple21(IMP.test.TestCase):
         "Test GaussianRestraint(21) score"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             e = self.m.evaluate(False)
@@ -236,7 +236,7 @@ class TestGaussianRestraintSimple21(IMP.test.TestCase):
         "Test GaussianRestraint(21) x derivative"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.m.evaluate(True)
@@ -247,7 +247,7 @@ class TestGaussianRestraintSimple21(IMP.test.TestCase):
         "Test GaussianRestraint(21) mu derivative"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.m.evaluate(True)
@@ -258,7 +258,7 @@ class TestGaussianRestraintSimple21(IMP.test.TestCase):
         "Test if GaussianRestraint(21) prob is exp(-score)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.assertAlmostEqual(gr.get_probability(),
@@ -268,7 +268,7 @@ class TestGaussianRestraintSimple21(IMP.test.TestCase):
         "Test if GaussianRestraint(21) score is -log(prob)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             expected = gr.get_probability()
@@ -344,7 +344,7 @@ class TestGaussianRestraintSimple22(IMP.test.TestCase):
         "Test GaussianRestraint(22) score"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             e = self.m.evaluate(False)
@@ -354,7 +354,7 @@ class TestGaussianRestraintSimple22(IMP.test.TestCase):
         "Test GaussianRestraint(22) x derivative"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.m.evaluate(True)
@@ -365,7 +365,7 @@ class TestGaussianRestraintSimple22(IMP.test.TestCase):
         "Test GaussianRestraint(22) sigma derivative"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.m.evaluate(True)
@@ -377,7 +377,7 @@ class TestGaussianRestraintSimple22(IMP.test.TestCase):
         "Test if GaussianRestraint(22) prob is exp(-score)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.assertAlmostEqual(gr.get_probability(),
@@ -387,7 +387,7 @@ class TestGaussianRestraintSimple22(IMP.test.TestCase):
         "Test if GaussianRestraint(22) score is -log(prob)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             expected = gr.get_probability()
@@ -463,7 +463,7 @@ class TestGaussianRestraintSimple23(IMP.test.TestCase):
         "Test GaussianRestraint(23) score"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             e = self.m.evaluate(False)
@@ -473,7 +473,7 @@ class TestGaussianRestraintSimple23(IMP.test.TestCase):
         "Test GaussianRestraint(23) mu derivative"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.m.evaluate(True)
@@ -484,7 +484,7 @@ class TestGaussianRestraintSimple23(IMP.test.TestCase):
         "Test GaussianRestraint(23) sigma derivative"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.m.evaluate(True)
@@ -496,7 +496,7 @@ class TestGaussianRestraintSimple23(IMP.test.TestCase):
         "Test if GaussianRestraint(23) prob is exp(-score)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.assertAlmostEqual(gr.get_probability(),
@@ -506,7 +506,7 @@ class TestGaussianRestraintSimple23(IMP.test.TestCase):
         "Test if GaussianRestraint(23) score is -log(prob)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             expected = gr.get_probability()
@@ -578,7 +578,7 @@ class TestGaussianRestraintSimple11(IMP.test.TestCase):
         "Test GaussianRestraint(11) score"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             e = self.m.evaluate(False)
@@ -588,7 +588,7 @@ class TestGaussianRestraintSimple11(IMP.test.TestCase):
         "Test GaussianRestraint(11) sigma derivative"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.m.evaluate(True)
@@ -600,7 +600,7 @@ class TestGaussianRestraintSimple11(IMP.test.TestCase):
         "Test if GaussianRestraint(11) prob is exp(-score)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.assertAlmostEqual(gr.get_probability(),
@@ -610,7 +610,7 @@ class TestGaussianRestraintSimple11(IMP.test.TestCase):
         "Test if GaussianRestraint(11) score is -log(prob)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             expected = gr.get_probability()
@@ -682,7 +682,7 @@ class TestGaussianRestraintSimple12(IMP.test.TestCase):
         "Test GaussianRestraint(12) score"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             e = self.m.evaluate(False)
@@ -692,7 +692,7 @@ class TestGaussianRestraintSimple12(IMP.test.TestCase):
         "Test GaussianRestraint(12) mu derivative"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.m.evaluate(True)
@@ -703,7 +703,7 @@ class TestGaussianRestraintSimple12(IMP.test.TestCase):
         "Test if GaussianRestraint(12) prob is exp(-score)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.assertAlmostEqual(gr.get_probability(),
@@ -713,7 +713,7 @@ class TestGaussianRestraintSimple12(IMP.test.TestCase):
         "Test if GaussianRestraint(12) score is -log(prob)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             expected = gr.get_probability()
@@ -785,7 +785,7 @@ class TestGaussianRestraintSimple13(IMP.test.TestCase):
         "Test GaussianRestraint(13) score"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             e = self.m.evaluate(False)
@@ -795,7 +795,7 @@ class TestGaussianRestraintSimple13(IMP.test.TestCase):
         "Test GaussianRestraint(13) x derivative"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.m.evaluate(True)
@@ -806,7 +806,7 @@ class TestGaussianRestraintSimple13(IMP.test.TestCase):
         "Test if GaussianRestraint(13) prob is exp(-score)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             self.assertAlmostEqual(gr.get_probability(),
@@ -816,7 +816,7 @@ class TestGaussianRestraintSimple13(IMP.test.TestCase):
         "Test if GaussianRestraint(13) score is -log(prob)"
         gr = GaussianRestraint(*self.all)
         self.m.add_restraint(gr)
-        for i in xrange(100):
+        for i in range(100):
             map(self.change_value, self.all)
             map(self.change_sign, self.locations)
             expected = gr.get_probability()

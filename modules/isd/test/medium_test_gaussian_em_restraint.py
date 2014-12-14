@@ -14,7 +14,7 @@ import itertools
 
 def create_test_points(mu, radii):
     testers = [[mu[0], mu[1], mu[2]]]
-    for i in xrange(3):
+    for i in range(3):
         t = mu[:]
         t[i] += radii[i] + 1  # kluge to ensure good order at the end
         testers.append(t)
@@ -129,7 +129,7 @@ class TestGaussianEM(IMP.test.TestCase):
 
     def test_gem_score(self):
         """test accuracy of GMM score"""
-        for nt in xrange(10):
+        for nt in range(10):
             shuffle_particles(self.model_ps)
             score = self.m.evaluate(False)
             pyscore = gem_score(self.model_ps, self.density_ps)
@@ -140,7 +140,7 @@ class TestGaussianEM(IMP.test.TestCase):
         reset_coords(self.model_ps,self.orig_coords)
         slope=0.1
         self.gem.set_slope(slope)
-        for nt in xrange(10):
+        for nt in range(10):
             shuffle_particles(self.model_ps)
             score = self.m.evaluate(False)
             pyscore = gem_score(self.model_ps, self.density_ps,slope=slope)

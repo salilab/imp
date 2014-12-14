@@ -42,7 +42,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
         # Probability should be equal to
         # 1/(sqrt(2*pi)*sigma*V_obs) *
         # exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
-        for i in xrange(100):
+        for i in range(100):
             p0 = self.p0
             p1 = self.p1
             no = self.sigma.get_scale()
@@ -59,7 +59,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
 
     def testValuePSigma(self):
         "Test NOERestraint probability by changing sigma"
-        for i in xrange(100):
+        for i in range(100):
             p0 = self.p0
             p1 = self.p1
             no = uniform(0.1, 100)
@@ -73,7 +73,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
 
     def testValuePGamma(self):
         "Test NOERestraint probability by changing gamma"
-        for i in xrange(100):
+        for i in range(100):
             p0 = self.p0
             p1 = self.p1
             no = self.sigma.get_scale()
@@ -87,7 +87,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
 
     def testValueChi(self):
         "Test NOERestraint value of chi by changing distance"
-        for i in xrange(100):
+        for i in range(100):
             p0 = self.p0
             p1 = self.p1
             no = self.sigma.get_scale()
@@ -107,7 +107,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
         # Score should be equal to
         # 0.5*log(2*pi) + log(sigma*V_obs) +
         # 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
-        for i in xrange(100):
+        for i in range(100):
             p0 = self.p0
             p1 = self.p1
             no = self.sigma.get_scale()
@@ -124,7 +124,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
 
     def testValueESigma(self):
         "Test NOERestraint score by changing sigma"
-        for i in xrange(100):
+        for i in range(100):
             p0 = self.p0
             p1 = self.p1
             no = uniform(0.1, 100)
@@ -138,7 +138,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
 
     def testValueEGamma(self):
         "Test NOERestraint score by changing gamma"
-        for i in xrange(100):
+        for i in range(100):
             p0 = self.p0
             p1 = self.p1
             no = self.sigma.get_scale()
@@ -159,7 +159,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
     def testDerivativeX(self):
         "Test NOERestraint derivative w/r to X"
         self.m.add_restraint(self.noe)
-        for i in xrange(100):
+        for i in range(100):
             pos0 = [uniform(0.1, 100) for i in range(3)]
             self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
             pos1 = [uniform(0.1, 100) for i in range(3)]
@@ -185,7 +185,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
     def testDerivativeSigma(self):
         "Test NOERestraint derivative w/r to sigma"
         self.m.add_restraint(self.noe)
-        for i in xrange(100):
+        for i in range(100):
             pos0 = [uniform(0.1, 100) for i in range(3)]
             self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
             pos1 = [uniform(0.1, 100) for i in range(3)]
@@ -204,7 +204,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
     def testDerivativeGamma(self):
         "Test NOERestraint derivative w/r to gamma"
         self.m.add_restraint(self.noe)
-        for i in xrange(100):
+        for i in range(100):
             pos0 = [uniform(0.1, 100) for i in range(3)]
             self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
             pos1 = [uniform(0.1, 100) for i in range(3)]
@@ -223,7 +223,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
 
     def testSanityEP(self):
         "Test if NOE score is -log(prob)"
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.noe.unprotected_evaluate(self.DA),
@@ -231,7 +231,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
 
     def testSanityPE(self):
         "Test if NOE prob is exp(-score)"
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.noe.get_probability(),

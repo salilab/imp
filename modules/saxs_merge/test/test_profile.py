@@ -106,7 +106,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         test = p.get_data(colwise=True)
         self.assertEqual(len(test), 4)
         self.assertEqual(set(test.keys()), set(['id', 'q', 'I', 'err']))
-        self.assertEqual(test['id'], range(3))
+        self.assertEqual(test['id'], list(range(3)))
         self.assertEqual(test['q'], [i[0] for i in data])
         self.assertEqual(test['I'], [i[1] for i in data])
         self.assertEqual(test['err'], [i[2] for i in data])

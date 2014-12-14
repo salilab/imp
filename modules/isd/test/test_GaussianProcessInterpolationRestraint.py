@@ -191,14 +191,14 @@ class Tests(IMP.test.TestCase):
                      (self.lam, 0.1, 10),
                      (self.sig, 0.1, 10)]
         # number of shuffled values
-        for i in xrange(randint(0, 5)):
+        for i in range(randint(0, 5)):
             # which particle
             p, imin, imax = particles.pop(randint(0, len(particles) - 1))
             p.set_nuisance(uniform(imin, imax))
 
     def testEnergyTerms(self):
         "Test GPI restraint energy terms"
-        for i in xrange(10):
+        for i in range(10):
             self.shuffle_particle_values()
             expected = self.m.evaluate(False)
             U = self.gpr.get_minus_exponent()
@@ -466,7 +466,7 @@ class Tests(IMP.test.TestCase):
     def testValueEnergyAll(self):
         "Test the value of the GPI restraint energy by shuffling all particles"
         skipped = 0
-        for rep in xrange(100):
+        for rep in range(100):
             self.shuffle_particle_values()
             observed = self.m.evaluate(False)
             expected = self.get_energy()
@@ -829,7 +829,7 @@ class Tests(IMP.test.TestCase):
     def testDerivativesAll(self):
         "Test GPI restraint derivatives by shuffling all particles"
         skipped = 0
-        for rep in xrange(100):
+        for rep in range(100):
             self.shuffle_particle_values()
             observed = self.m.evaluate(True)
             expected = self.get_energy()

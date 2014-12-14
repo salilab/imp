@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         srw = em2d.SpiderImageReaderWriter()
         selection_file = self.get_input_file_name("1gyt-subjects-0.5-SNR.sel")
         images_to_read_names = em2d.read_selection_file(selection_file)
-        for i in xrange(0, len(images_to_read_names)):
+        for i in range(0, len(images_to_read_names)):
             images_to_read_names[i] = self.get_input_file_name(
                 images_to_read_names[i])
         subjects = em2d.read_images(images_to_read_names, srw)
@@ -77,7 +77,7 @@ class Tests(IMP.test.TestCase):
         print("correct: ")
         for r in correct_parameters:
             print(r.get_rotation(), r.get_shift())
-        for i in xrange(0, len(registration_parameters)):
+        for i in range(0, len(registration_parameters)):
             # Generate the registered projection
             imgx = em2d.Image()
             imgx.set_size(rows, cols)

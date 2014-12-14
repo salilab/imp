@@ -24,8 +24,8 @@ class Tests(IMP.test.TestCase):
         random.seed()
         nreps = self.nreps = 9
         temps = self.temps = [300.0 + (500.0 - 300.0) * i / float(nreps - 1) for i in
-                              xrange(nreps)]
-        steps = self.steps = [1.0 for i in xrange(nreps)]
+                              range(nreps)]
+        steps = self.steps = [1.0 for i in range(nreps)]
         tune_data = {'rate': 100,  # temp optimization rate, in rex steps.
                      'method': 'ar',  # flux-optimization or cv-optimization
                      'targetAR': 0.4,

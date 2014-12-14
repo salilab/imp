@@ -113,7 +113,7 @@ class TestFretRestraint(IMP.test.TestCase):
     def testValueFMDist(self):
         "Test FretRestraint Forward Model by changing distances"
         self.reset()
-        for i in xrange(100):
+        for i in range(100):
             pos0 = [uniform(0.1, 100) for i in range(3)]
             self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
             pos1 = [uniform(0.1, 100) for i in range(3)]
@@ -130,7 +130,7 @@ class TestFretRestraint(IMP.test.TestCase):
     def testValueFMIda(self):
         "Test FretRestraint Forward Model by changing Ida"
         self.reset()
-        for i in xrange(100):
+        for i in range(100):
             Ida = uniform(1.0, 10.0)
             self.Ida.set_scale(Ida)
             expected0 = self.getFM0()
@@ -143,7 +143,7 @@ class TestFretRestraint(IMP.test.TestCase):
     def testValueFMkda(self):
         "Test FretRestraint Forward Model by changing kda"
         self.reset()
-        for i in xrange(100):
+        for i in range(100):
             kda = uniform(1.0, 20.0)
             self.kda.set_scale(kda)
             expected0 = self.getFM0()
@@ -156,7 +156,7 @@ class TestFretRestraint(IMP.test.TestCase):
     def testValueFMPbl(self):
         "Test FretRestraint Forward Model by changing Pbl"
         self.reset()
-        for i in xrange(100):
+        for i in range(100):
             Pbl = uniform(0.6, 1.0)
             self.Pbl.set_scale(Pbl)
             expected0 = self.getFM0()
@@ -169,7 +169,7 @@ class TestFretRestraint(IMP.test.TestCase):
     def testValueFMR0(self):
         "Test FretRestraint Forward Model by changing R0"
         self.reset()
-        for i in xrange(100):
+        for i in range(100):
             R0 = uniform(30.0, 60.0)
             self.R0.set_scale(R0)
             expected0 = self.getFM0()
@@ -184,7 +184,7 @@ class TestFretRestraint(IMP.test.TestCase):
         self.reset()
         fretr0 = self.getFM0()
         fretr1 = self.getFM1()
-        for i in xrange(100):
+        for i in range(100):
             self.fexp = uniform(0.0, 10.0)
             expected0 = self.getP(fretr0)
             expected1 = self.getP(fretr1)
@@ -200,7 +200,7 @@ class TestFretRestraint(IMP.test.TestCase):
         self.reset()
         fretr0 = self.getFM0()
         fretr1 = self.getFM1()
-        for i in xrange(100):
+        for i in range(100):
             sigma = uniform(0.001, 0.01)
             self.sigma.set_scale(sigma)
             expected0 = self.getP(fretr0)

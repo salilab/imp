@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
         nCenters = km.get_number_of_centers()
         print("Number of centers: ", nCenters)
         self.assertEqual(nCenters, k)
-        print(range(1, nCenters))
+        print(list(range(1, nCenters)))
         for i in range(0, nCenters):
             print("Center ", i, "   ", km.get_center(i))
         # make sure centers were found correctly

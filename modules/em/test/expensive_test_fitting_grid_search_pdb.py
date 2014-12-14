@@ -62,7 +62,7 @@ class Tests(IMP.test.TestCase):
                                 "not enough solutions returned")
         self.assertLess(fr.get_score(0), fr.get_score(1),
                         "solutions are not sorted")
-        for i in xrange(fr.get_number_of_solutions()):
+        for i in range(fr.get_number_of_solutions()):
             print("score", fr.get_score(i))
             self.assertLess(fr.get_score(i), 1.0, "wrong CC values")
 

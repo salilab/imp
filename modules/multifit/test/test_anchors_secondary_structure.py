@@ -23,8 +23,8 @@ class Tests(IMP.test.TestCase):
             anchor_ssres_ps[1], 0.0, 1.0, 0.0)
         anchors_data.set_secondary_structure_probabilities(
             anchor_ssres_ps, [0, 2])
-        out_ssres = map(IMP.atom.SecondaryStructureResidue,
-                        anchors_data.get_secondary_structure_particles())
+        out_ssres = [IMP.atom.SecondaryStructureResidue(r) for r in
+                        anchors_data.get_secondary_structure_particles()]
         self.assertEqual(len(out_ssres), 3)
         self.assertAlmostEqual(out_ssres[0].get_prob_helix(), 1.0, delta=1e-6)
         self.assertAlmostEqual(out_ssres[0].get_prob_strand(), 0.0, delta=1e-6)

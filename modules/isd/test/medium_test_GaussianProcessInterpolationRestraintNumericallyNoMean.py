@@ -91,7 +91,7 @@ class Tests(IMP.test.TestCase):
                      (self.lam, 0.1, 10),
                      (self.sig, 0.1, 10)]
         # number of shuffled values
-        for i in xrange(randint(0, 5)):
+        for i in range(randint(0, 5)):
             # which particle
             p, imin, imax = particles.pop(randint(0, len(particles) - 1))
             p.set_nuisance(uniform(imin, imax))

@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
         R2 = IMP.algebra.get_rotation_from_fixed_zyz(phi, theta, psi)
         q1 = R1.get_quaternion()
         q2 = R2.get_quaternion()
-        for i in xrange(0, 4):
+        for i in range(0, 4):
             self.assertAlmostEqual(q1[i], q2[i], delta=0.001,
                                    msg="Error in Registration rotation back and forth")
 
@@ -51,10 +51,10 @@ class Tests(IMP.test.TestCase):
         Regs1 = IMP.em2d.get_evenly_distributed_registration_results(3)
         Regs2 = IMP.em2d.read_registration_results(
             self.get_input_file_name("1z5s-projections.params"))
-        for j in xrange(0, len(Regs1)):
+        for j in range(0, len(Regs1)):
             q1 = Regs1[j].get_rotation().get_quaternion()
             q2 = Regs2[j].get_rotation().get_quaternion()
-            for i in xrange(0, 4):
+            for i in range(0, 4):
                 self.assertAlmostEqual(q1[i], q2[i], delta=0.001,
                                        msg="Error in generation of evenly distributed "
                                        "RegistrationResults")
