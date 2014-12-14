@@ -28,7 +28,7 @@ class TestXMLHandler(XMLGenerator):
     """Copy an XML file and insert additional measurements"""
 
     def __init__(self, dest, detail_dir):
-        self.fh = open(dest, 'wb')
+        self.fh = open(dest, 'w')
         XMLGenerator.__init__(self, self.fh, "UTF-8")
         self.detail_dir = detail_dir
         self._test = None
