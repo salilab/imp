@@ -319,8 +319,7 @@ class TestCase(unittest.TestCase):
                 bad.append(name)
         message="All IMP classes should be labeled as values or objects to get memory management correct in Python. The following are not:\n%s\nPlease add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the Python wrapper, or if the class has a good reason to be neither, add the name to the value_object_exceptions list in the IMPModuleTest call." \
                           % (str(bad))
-        self.assertEquals(len(bad), 0,
-                          message)
+        self.assertEqual(len(bad), 0, message)
         for e in exceptions_list:
             self.assertTrue(e not in module._value_types
                        + module._object_types
@@ -368,9 +367,9 @@ class TestCase(unittest.TestCase):
                         misspelled.append(t.lower())
                         bad.append(name)
 
-        self.assertEquals(len(bad), 0,
-                          "All IMP classes should be properly spelled. The following are not: %s.\nMisspelled words: %s. Add words to the spelling_exceptions variable of the IMPModuleTest if needed." \
-                          % (str(bad), ", ".join(set(misspelled))))
+        self.assertEqual(len(bad), 0,
+                         "All IMP classes should be properly spelled. The following are not: %s.\nMisspelled words: %s. Add words to the spelling_exceptions variable of the IMPModuleTest if needed." \
+                         % (str(bad), ", ".join(set(misspelled))))
 
         for name in all:
             if self._get_type(module.__name__, name)==type and not name.startswith("_"):
@@ -386,8 +385,7 @@ class TestCase(unittest.TestCase):
                         bad.append(name)
         message="All IMP classes should have CamelCase names. The following do not: %s." \
                           % ("\n".join(bad))
-        self.assertEquals(len(bad), 0,
-                          message)
+        self.assertEqual(len(bad), 0, message)
 
     def _check_function_name(self, prefix, name, verbs, all, exceptions, words,
                              misspelled):
@@ -473,8 +471,7 @@ class TestCase(unittest.TestCase):
             message += "\nMisspelled words: " + ", ".join(set(misspelled)) \
                        + ". Add words to the spelling_exceptions variable " \
                        + "of the standards_exceptions file if needed."
-        self.assertEquals(len(bad), 0,
-                          message)
+        self.assertEqual(len(bad), 0, message)
 
 
     def assertShow(self, modulename, exceptions):
@@ -498,8 +495,7 @@ class TestCase(unittest.TestCase):
                     not_found.append(f)
         message="All IMP classes should support show and __str__. The following do not:\n%s\n If there is a good reason for them not to, add them to the show_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
                           % "\n".join(not_found)
-        self.assertEquals(len(not_found), 0,
-                          message)
+        self.assertEqual(len(not_found), 0, message)
         for e in exceptions:
             self.assertIn(e, all, "Show exception "+e+" is not a class in module")
             self.assertTrue(not hasattr(getattr(modulename, e), 'show'),
