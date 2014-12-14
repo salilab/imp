@@ -1,12 +1,31 @@
 show_exceptions=['Decorator', "ParticlePair", "ParticleTriplet", "ParticleQuad"]
-function_name_exceptions=['Particle.has_attribute', 'Model.restore_particle',
-                          'RandomNumberGenerator.seed',
-                          'CommandDispatcher.import_module',
-                          'CommandDispatcher.main',
-                          'CommandDispatcher.unknown_command',
-                          'check_particle']
+function_name_exceptions=[
+    'Particle.has_attribute', 'Model.restore_particle',
+    'RandomNumberGenerator.seed',
+    'CommandDispatcher.import_module',
+    'CommandDispatcher.main',
+    'CommandDispatcher.unknown_command',
+    'check_particle',
+    'OptionParser.check_values',
+    'OptionParser.disable_interspersed_args',
+    'OptionParser.enable_interspersed_args',
+    'OptionParser.error',
+    'OptionParser.exit',
+    'OptionParser.expand_prog_name',
+    'OptionParser.format_description',
+    'OptionParser.format_epilog',
+    'OptionParser.format_help',
+    'OptionParser.format_option_help',
+    'OptionParser.has_option',
+    'OptionParser.parse_args',
+    'OptionParser.print_help',
+    'OptionParser.print_usage',
+    'OptionParser.print_version']
 value_object_exceptions=['Decorator', 'DerivativeAccumulator',
                                            # imported
                                            'Object', 'SetLogState',
                                            'SetLogTarget', 'RestraintBase', 'ScoreStateBase']
-spelling_exceptions=["undecorator", "undecorate", "altgraph", "networkx"]
+spelling_exceptions=["undecorator", "undecorate", "altgraph", "networkx",
+
+
+]
