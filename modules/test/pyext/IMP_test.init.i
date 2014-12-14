@@ -307,7 +307,7 @@ class TestCase(unittest.TestCase):
 
         bad=[]
         for name in all:
-            if self._get_type(module.__name__, name)==types.TypeType and not name.startswith("_"):
+            if self._get_type(module.__name__, name)==type and not name.startswith("_"):
                 if name.find("SwigPyIterator") != -1:
                     continue
                 # Exclude Python-only classes
@@ -359,7 +359,7 @@ class TestCase(unittest.TestCase):
         bad=[]
         cc=re.compile("([A-Z][a-z]*)")
         for name in all:
-            if self._get_type(module.__name__, name)==types.TypeType and not name.startswith("_"):
+            if self._get_type(module.__name__, name)==type and not name.startswith("_"):
                 if name.find("SwigPyIterator") != -1:
                     continue
                 for t in re.findall(cc, name):
@@ -372,7 +372,7 @@ class TestCase(unittest.TestCase):
                           % (str(bad), ", ".join(set(misspelled))))
 
         for name in all:
-            if self._get_type(module.__name__, name)==types.TypeType and not name.startswith("_"):
+            if self._get_type(module.__name__, name)==type and not name.startswith("_"):
                 if name.find("SwigPyIterator") != -1:
                     continue
                 if name.find('_') != -1:
@@ -446,7 +446,7 @@ class TestCase(unittest.TestCase):
                 bad.extend(self._check_function_name(prefix, name, verbs, all,
                                                      exceptions, words,
                                                      misspelled))
-            if typ == types.TypeType and "SwigPyIterator" not in name:
+            if typ == type and "SwigPyIterator" not in name:
                 members=eval("dir("+module+"."+name+")")
                 bad.extend(self._check_function_names(module+"."+name,
                                                       name, members, verbs, [],
@@ -485,7 +485,7 @@ class TestCase(unittest.TestCase):
             if not eval('hasattr(%s.%s, "__swig_destroy__")' \
                         % (modulename.__name__, f)):
                 continue
-            if self._get_type(modulename.__name__, f) == types.TypeType\
+            if self._get_type(modulename.__name__, f) == type \
                    and not f.startswith("_") \
                    and not f.endswith("_swigregister")\
                    and f not in exceptions\
