@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import IMP
 import IMP.test
@@ -15,7 +16,7 @@ class LoggingScoreState(IMP.ScoreState):
         self.log.append('update')
 
     def do_show(self, out):
-        print "Hi"
+        print("Hi")
 
     def get_type_name(self):
         return "LoggingScoreState"

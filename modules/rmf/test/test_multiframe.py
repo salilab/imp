@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import IMP.rmf
 import IMP.test
@@ -9,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def _show(self, g):
         for i in range(0, g.get_number_of_children()):
-            print i, g.get_child_name(i), g.get_child_is_group(i)
+            print(i, g.get_child_name(i), g.get_child_is_group(i))
     """Test the python code"""
 
     def test_large(self):
@@ -31,7 +32,7 @@ class Tests(IMP.test.TestCase):
             d.set_z(0)
             nf = 10
             path = self.get_tmp_file_name("test_mf" + suffix)
-            print path
+            print(path)
             f = RMF.create_rmf_file(path)
             IMP.rmf.add_hierarchy(f, h)
             for i in range(0, nf):

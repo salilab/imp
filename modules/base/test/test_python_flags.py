@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import sys
@@ -22,12 +23,12 @@ class Tests(IMP.test.TestCase):
                                           "--myboolflag", "zero", "one"],
                                          "test things",
                                          "arg0 arg1", 2)
-        print IMP.base.get_string_flag("mystringflag")
-        print IMP.base.get_int_flag("myintflag")
-        print IMP.base.get_float_flag("myfloatflag")
-        print IMP.base.get_bool_flag("myboolflag")
-        print IMP.base.get_log_level()
-        print extra
+        print(IMP.base.get_string_flag("mystringflag"))
+        print(IMP.base.get_int_flag("myintflag"))
+        print(IMP.base.get_float_flag("myfloatflag"))
+        print(IMP.base.get_bool_flag("myboolflag"))
+        print(IMP.base.get_log_level())
+        print(extra)
         self.assertEqual(IMP.base.get_string_flag("mystringflag"), "hi")
         self.assertEqual(IMP.base.get_int_flag("myintflag"), 6)
         self.assertEqual(IMP.base.get_float_flag("myfloatflag"), -6.0)

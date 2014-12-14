@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.base
 import IMP.test
@@ -33,7 +34,7 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
         #    print "restraint",r.get_name(),"value",r.evaluate(False)
 
     def do_show(self, stream):
-        print >> stream, ps
+        print(ps, file=stream)
 
 
 class Tests(IMP.test.TestCase):

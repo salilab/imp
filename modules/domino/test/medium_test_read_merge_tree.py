@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -11,7 +12,7 @@ class Tests(IMP.test.TestCase):
 
         #protein and model
         #pdbFile = "/trombone1/home/dbarkan/IMP/docking/grb.flex.pdb"
-        print "reading pdb"
+        print("reading pdb")
         pdbFile = self.get_input_file_name("grb.flex.pdb")
         outputFile = self.get_tmp_file_name("mergeTreeOut.txt")
         closePairDistance = 4.0
@@ -71,10 +72,10 @@ class Tests(IMP.test.TestCase):
         newMergeTree = IMP.domino.read_merge_tree(inputFh, sortedParticles)
 
         # print second merge tree
-        print "begin second merge tree"
+        print("begin second merge tree")
         for v in newMergeTree.get_vertices():
-            print newMergeTree.get_vertex_name(v)
-        print "end second merge tree"
+            print(newMergeTree.get_vertex_name(v))
+        print("end second merge tree")
         for v0, v1 in zip(mt.get_vertices(), newMergeTree.get_vertices()):
             self.assertEqual(
                 mt.get_vertex_name(v0),

@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Test case:
 # Open three proteins
 # Generate density maps for each
@@ -90,8 +91,8 @@ class Tests(IMP.test.TestCase):
                 IMP.core.transform(self.rbs_of_copy[i], rand_t[i])
             score1 = self.restr_ps_all.evaluate(False)
             score2 = self.restr_rb_all_fast.evaluate(False)
-            print "evaluate ps_all after transform: ", j, " : ", score1
-            print "evaluate rb_all after transform fast: ", j, " : ", score2
+            print("evaluate ps_all after transform: ", j, " : ", score1)
+            print("evaluate rb_all after transform fast: ", j, " : ", score2)
             self.assertAlmostEqual(score1, score2, delta=0.1)
             for i in range(3):
                 for x in IMP.core.XYZs(IMP.core.get_leaves(self.mhs[i])):
@@ -161,9 +162,9 @@ class Tests(IMP.test.TestCase):
             rb, self.radius_key, self.weight_key, d_map,
             None, 3, 5, 20, 2, 3, True)
         score_after = IMP.em.compute_fitting_score(ps, d_map)
-        print "score_after:", score_after, " score_before:", score_before
+        print("score_after:", score_after, " score_before:", score_before)
         self.assertAlmostEqual(score_after, score_before, delta=0.05)
         self.assertGreater(fs.get_number_of_solutions(), 0)
-        print fs.get_score(0)
+        print(fs.get_score(0))
 if __name__ == '__main__':
     IMP.test.main()

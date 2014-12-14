@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -8,12 +9,12 @@ import IMP.algebra
 class Tests(IMP.test.TestCase):
 
     def _get_full_list(self, pst, lsc):
-        print 'getting'
+        print('getting')
         dsst = IMP.domino.BranchAndBoundAssignmentsTable(pst, [])
         pss = IMP.domino.PackedAssignmentContainer()
         dsst.load_assignments(lsc, pss)
         ss = pss.get_assignments((0, pss.get_number_of_assignments()))
-        print "got all"
+        print("got all")
         all_states = []
         for state in ss:
             # print all_states
@@ -38,9 +39,9 @@ class Tests(IMP.test.TestCase):
             ps.append(IMP.kernel.Particle(m))
             IMP.core.XYZ.setup_particle(ps[-1])
         pst = IMP.domino.ParticleStatesTable()
-        print "creating subset"
+        print("creating subset")
         lsc = IMP.domino.Subset(ps)
-        print "returning"
+        print("returning")
         return (m, pst, lsc)
 
     def _test_filtering(self, nm):
@@ -49,11 +50,11 @@ class Tests(IMP.test.TestCase):
         vs = self._get_positions()
         for p in lsc:
             pst.set_particle_states(p, IMP.domino.XYZStates(vs))
-        print lsc[0].get_name()
-        print lsc[1].get_name()
+        print(lsc[0].get_name())
+        print(lsc[1].get_name())
         s = IMP.domino.Subset(lsc)
         all_states = self._get_full_list(pst, lsc)
-        print "There are ", len(all_states), "states"
+        print("There are ", len(all_states), "states")
         r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
                                        s[1],
                                        s[2])
@@ -66,13 +67,13 @@ class Tests(IMP.test.TestCase):
         rssft.set_log_level(IMP.base.SILENT)
         dsst = nm(pst, [rssft])
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        print "setting"
+        print("setting")
         pss = IMP.domino.PackedAssignmentContainer()
         dsst.load_assignments(lsc, pss)
         ss = pss.get_assignments((0, pss.get_number_of_assignments()))
-        print len(ss), "states"
+        print(len(ss), "states")
         found_states = []
-        print repr(lsc)
+        print(repr(lsc))
         for s in ss:
             # print s
             found_states.append(s)
@@ -89,11 +90,11 @@ class Tests(IMP.test.TestCase):
         vs = self._get_positions()
         for p in lsc:
             pst.set_particle_states(p, IMP.domino.XYZStates(vs))
-        print lsc[0].get_name()
-        print lsc[1].get_name()
+        print(lsc[0].get_name())
+        print(lsc[1].get_name())
         s = IMP.domino.Subset(lsc)
         all_states = self._get_full_list(pst, lsc)
-        print "There are ", len(all_states), "states"
+        print("There are ", len(all_states), "states")
         r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
                                        s[1],
                                        s[2])
@@ -120,13 +121,13 @@ class Tests(IMP.test.TestCase):
         rssft.set_log_level(IMP.base.SILENT)
         dsst = nm(pst, [rssft])
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        print "setting"
+        print("setting")
         pss = IMP.domino.PackedAssignmentContainer()
         dsst.load_assignments(lsc, pss)
         ss = pss.get_assignments((0, pss.get_number_of_assignments()))
-        print len(ss), "states"
+        print(len(ss), "states")
         found_states = []
-        print repr(lsc)
+        print(repr(lsc))
         for s in ss:
             # print s
             found_states.append(s)
@@ -143,10 +144,10 @@ class Tests(IMP.test.TestCase):
         vs = self._get_positions()
         for p in lsc:
             pst.set_particle_states(p, IMP.domino.XYZStates(vs))
-        print lsc[0].get_name()
-        print lsc[1].get_name()
+        print(lsc[0].get_name())
+        print(lsc[1].get_name())
         all_states = self._get_full_list(pst, lsc)
-        print "There are ", len(all_states), "states"
+        print("There are ", len(all_states), "states")
         r0 = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 1),
                                         lsc[1],
                                         lsc[2])
@@ -163,13 +164,13 @@ class Tests(IMP.test.TestCase):
         rssft = IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
         dsst = nm(pst, [rssft])
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        print "setting"
+        print("setting")
         pss = IMP.domino.PackedAssignmentContainer()
         dsst.load_assignments(lsc, pss)
         ss = pss.get_assignments((0, pss.get_number_of_assignments()))
-        print len(ss), "states"
+        print(len(ss), "states")
         found_states = []
-        print repr(lsc)
+        print(repr(lsc))
         for s in ss:
             # print s, (s[1]-s[2])**2, (s[0]-s[1])**2
             found_states.append(s)

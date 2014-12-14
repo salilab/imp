@@ -1,3 +1,4 @@
+from __future__ import print_function
 # test that impEM is able to sample IMP particles on a grid.
 import IMP
 import IMP.test
@@ -45,8 +46,8 @@ class Tests(IMP.test.TestCase):
 
         cc = IMP.em.CoarseCC()
         self.scene.get_header_writable().compute_xyz_top()
-        print "em_origin: " + str(self.scene.get_header().get_xorigin()) + '  ' + str(self.scene.get_header().get_yorigin()) + '  ' + str(self.scene.get_header().get_zorigin()) + '\n'
-        print "model_origin: " + str(self.particles_sampling.get_header().get_xorigin()) + '  ' + str(self.particles_sampling.get_header().get_yorigin()) + '  ' + str(self.particles_sampling.get_header().get_zorigin()) + '\n'
+        print("em_origin: " + str(self.scene.get_header().get_xorigin()) + '  ' + str(self.scene.get_header().get_yorigin()) + '  ' + str(self.scene.get_header().get_zorigin()) + '\n')
+        print("model_origin: " + str(self.particles_sampling.get_header().get_xorigin()) + '  ' + str(self.particles_sampling.get_header().get_yorigin()) + '  ' + str(self.particles_sampling.get_header().get_zorigin()) + '\n')
 
         score = cc.evaluate(
             self.scene,
@@ -56,7 +57,7 @@ class Tests(IMP.test.TestCase):
             1.0,
             0
         )
-        print 'test_sample ' + str(score)
+        print('test_sample ' + str(score))
         self.assertLess(score, 0.1, "unexpected cross correlation score")
 
 

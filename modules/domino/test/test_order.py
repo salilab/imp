@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -8,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def _print_order(self, order, s):
         for i in order:
-            print s[order[i]].get_name(),
+            print(s[order[i]].get_name(), end=' ')
 
     def _test_global_min2(self):
         """Testing ordering"""
@@ -24,10 +25,10 @@ class Tests(IMP.test.TestCase):
         s = IMP.domino.Subset(ps)
         order = IMP.domino.get_order(IMP.domino.Subset(ps),
                                      [eqft])
-        print "order is", order
-        print s
+        print("order is", order)
+        print(s)
         self._print_order(order, s)
-        print
+        print()
         for i, oi in enumerate(order):
             self.assertEqual(i, oi)
 
@@ -50,7 +51,7 @@ class Tests(IMP.test.TestCase):
         pss = IMP.domino.PackedAssignmentContainer()
         sst.load_assignments(s, pss)
         ss = pss.get_assignments((0, pss.get_number_of_assignments()))
-        print ss
+        print(ss)
         self.assertEqual(len(ss), 56)
 
     def test_global_min5(self):
@@ -71,7 +72,7 @@ class Tests(IMP.test.TestCase):
         pss = IMP.domino.PackedAssignmentContainer()
         sst.load_assignments(s, pss)
         ss = pss.get_assignments((0, pss.get_number_of_assignments()))
-        print ss
+        print(ss)
         self.assertEqual(len(ss), 11)
 
     def _test_global_min3(self):
@@ -91,7 +92,7 @@ class Tests(IMP.test.TestCase):
         s = IMP.domino.Subset(ps + [pp])
         order = IMP.domino.get_order(s,
                                      [eqft])
-        print "order is", order
+        print("order is", order)
         self._print_order(order, s)
         for i, e in enumerate(order):
             if i < 4:

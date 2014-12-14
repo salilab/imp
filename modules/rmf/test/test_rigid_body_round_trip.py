@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import IMP.rmf
 import IMP.test
@@ -98,16 +99,16 @@ class Tests(IMP.test.TestCase):
             frame0 = rb.get_reference_frame()
             self.assert_(IMP.core.RigidMember.get_is_setup(r2.get_child(0)))
             for i in range(0, 11):
-                print "loading", i
+                print("loading", i)
                 # if i != 0:
                 IMP.rmf.load_frame(f, RMF.FrameID(i))
-                print i, frames[i], frame0.get_local_reference_frame(rb.get_reference_frame())
+                print(i, frames[i], frame0.get_local_reference_frame(rb.get_reference_frame()))
                 for j, c in enumerate(ps):
                     oc = IMP.core.XYZ(c).get_coordinates()
-                    print "before update", j, c, oc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates()
+                    print("before update", j, c, oc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates())
                     m.update()
                     nc = IMP.core.XYZ(c).get_coordinates()
-                    print "after update", i, j, c, nc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates()
+                    print("after update", i, j, c, nc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates())
                     self.assertAlmostEqual((oc - nc).get_magnitude(), 0,
                                            delta=.1)
                     self.assertAlmostEqual(
@@ -118,7 +119,7 @@ class Tests(IMP.test.TestCase):
                         (coords[i][j] - oc).get_magnitude(),
                         0,
                         delta=.1)
-                print "ok"
+                print("ok")
 
     def test_gaussian_round_trip(self):
         """Make sure that Gaussians can be written to and read from RMFs"""
@@ -246,16 +247,16 @@ class Tests(IMP.test.TestCase):
             frame0 = rb.get_reference_frame()
             self.assert_(IMP.core.RigidMember.get_is_setup(r2.get_child(0)))
             for i in range(0, 11):
-                print "loading", i
+                print("loading", i)
                 # if i != 0:
                 IMP.rmf.load_frame(f, RMF.FrameID(i))
-                print i, frames[i], frame0.get_local_reference_frame(rb.get_reference_frame())
+                print(i, frames[i], frame0.get_local_reference_frame(rb.get_reference_frame()))
                 for j, c in enumerate(ps):
                     oc = IMP.core.XYZ(c).get_coordinates()
-                    print "before update", j, c, oc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates()
+                    print("before update", j, c, oc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates())
                     m.update()
                     nc = IMP.core.XYZ(c).get_coordinates()
-                    print "after update", i, j, c, nc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates()
+                    print("after update", i, j, c, nc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates())
                     self.assertAlmostEqual((oc - nc).get_magnitude(), 0,
                                            delta=.1)
                     self.assertAlmostEqual(
@@ -266,7 +267,7 @@ class Tests(IMP.test.TestCase):
                         (coords[i][j] - oc).get_magnitude(),
                         0,
                         delta=.1)
-                print "ok"
+                print("ok")
     def test_nested_rigid_body_linking(self):
         """Test create, save, load, link, and save with nested rigid bodies"""
         for suffix in IMP.rmf.suffixes:
@@ -387,16 +388,16 @@ class Tests(IMP.test.TestCase):
             frame0 = rb.get_reference_frame()
             self.assert_(IMP.core.RigidMember.get_is_setup(r2.get_child(0)))
             for i in range(0, 11):
-                print "loading", i
+                print("loading", i)
                 # if i != 0:
                 IMP.rmf.load_frame(f, RMF.FrameID(i))
-                print i, frames[i], frame0.get_local_reference_frame(rb.get_reference_frame())
+                print(i, frames[i], frame0.get_local_reference_frame(rb.get_reference_frame()))
                 for j, c in enumerate(ps):
                     oc = IMP.core.XYZ(c).get_coordinates()
-                    print "before update", j, c, oc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates()
+                    print("before update", j, c, oc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates())
                     m.update()
                     nc = IMP.core.XYZ(c).get_coordinates()
-                    print "after update", i, j, c, nc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates()
+                    print("after update", i, j, c, nc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates())
                     self.assertAlmostEqual((oc - nc).get_magnitude(), 0,
                                            delta=.1)
                     self.assertAlmostEqual(
@@ -407,7 +408,7 @@ class Tests(IMP.test.TestCase):
                         (coords[i][j] - oc).get_magnitude(),
                         0,
                         delta=.1)
-                print "ok"
+                print("ok")
 
     def test_nested_rigid_body_all_nonrigid(self):
         """Create a rigid body that ONLY consists of nonrigid members
@@ -487,16 +488,16 @@ class Tests(IMP.test.TestCase):
             frame0 = rb.get_reference_frame()
             self.assert_(IMP.core.RigidBodyMember.get_is_setup(r2.get_child(0)))
             for i in range(0, 11):
-                print "loading", i
+                print("loading", i)
                 # if i != 0:
                 IMP.rmf.load_frame(f, RMF.FrameID(i))
-                print i, frames[i], frame0.get_local_reference_frame(rb.get_reference_frame())
+                print(i, frames[i], frame0.get_local_reference_frame(rb.get_reference_frame()))
                 for j, c in enumerate(ps):
                     oc = IMP.core.XYZ(c).get_coordinates()
-                    print "before update", j, c, oc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates()
+                    print("before update", j, c, oc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates())
                     m.update()
                     nc = IMP.core.XYZ(c).get_coordinates()
-                    print "after update", i, j, c, nc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates()
+                    print("after update", i, j, c, nc, coords[i][j], IMP.core.RigidBodyMember(c).get_internal_coordinates())
                     self.assertAlmostEqual((oc - nc).get_magnitude(), 0,
                                            delta=.1)
                     self.assertAlmostEqual(
@@ -507,7 +508,7 @@ class Tests(IMP.test.TestCase):
                         (coords[i][j] - oc).get_magnitude(),
                         0,
                         delta=.1)
-                print "ok"
+                print("ok")
 
     def _create_rb(self, m):
         h = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("h"))
@@ -527,7 +528,7 @@ class Tests(IMP.test.TestCase):
         h0 = self._create_rb(m)
         h1 = self._create_rb(m)
         path = self.get_tmp_file_name("multiple_rb.rmf3")
-        print path
+        print(path)
         fh = RMF.create_rmf_file(path)
         IMP.rmf.add_hierarchy(fh, h0)
         IMP.rmf.add_hierarchy(fh, h1)
@@ -540,7 +541,7 @@ class Tests(IMP.test.TestCase):
         rb_count = 0
         for pi in m.get_particle_indexes():
             if IMP.core.RigidBody.get_is_setup(m, pi):
-                print m.get_particle_name(pi)
+                print(m.get_particle_name(pi))
                 rb_count += 1
         self.assertEqual(rb_count, 2)
 

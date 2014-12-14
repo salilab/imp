@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -20,8 +21,8 @@ class Tests(IMP.test.TestCase):
         r1 = IMP.algebra.get_rotation_from_fixed_zyz(rot1, tilt1, psi1)
         r2 = IMP.algebra.get_rotation_from_fixed_zyz(rot2, tilt2, psi2)
         d = IMP.algebra.get_distance(r1, r2)
-        print "Out:"
-        print d
+        print("Out:")
+        print(d)
         self.assertAlmostEqual(d, 0.39, delta=.1)
 
 

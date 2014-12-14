@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -25,9 +26,9 @@ class Tests(IMP.test.TestCase):
         for i in range(0, 20):
             vs.append(IMP.algebra.get_random_vector_in(
                 IMP.algebra.get_unit_bounding_box_3d()))
-            print vs[-1]
+            print(vs[-1])
             vsr.append(tr.get_transformed(vs[-1]))
-            print vsr[-1]
+            print(vsr[-1])
         return (vs, vsr)
 
     def test_align(self):
@@ -40,30 +41,30 @@ class Tests(IMP.test.TestCase):
         tr = IMP.algebra.Transformation3D(r, t)
         (vs, vsr) = self._produce_point_sets(tr)
         tr = IMP.algebra.get_transformation_aligning_first_to_second(vs, vsr)
-        print "tr"
+        print("tr")
         tr.show()
-        print "tr.r"
+        print("tr.r")
         tr.get_rotation().show()
-        print "tr.t"
+        print("tr.t")
         tr.get_translation().show()
-        print "r"
+        print("r")
         r.show()
-        print "t"
+        print("t")
         t.show()
         for i in range(0, len(vs)):
-            print i
+            print(i)
             vsr[i].show()
-            print
+            print()
             tr.get_transformed(vs[i]).show()
-            print
-            print
-        print "getting quaternion"
+            print()
+            print()
+        print("getting quaternion")
         q0 = tr.get_rotation().get_quaternion()
-        print "it is ", q0
-        print
+        print("it is ", q0)
+        print()
         q1 = r.get_quaternion()
-        print "other is ", q1
-        print
+        print("other is ", q1)
+        print()
         self.assertAlmostEqual(IMP.algebra.get_distance(tr.get_rotation(), r),
                                0, delta=.1)
         self.assertAlmostEqual(IMP.algebra.get_distance(tr.get_translation(),
@@ -78,15 +79,15 @@ class Tests(IMP.test.TestCase):
         tr = IMP.algebra.Transformation3D(r, t)
         (vs, vsr) = self._produce_point_sets(tr)
         tr = IMP.algebra.get_transformation_aligning_first_to_second(vs, vsr)
-        print "tr"
+        print("tr")
         tr.show()
-        print "tr.r"
+        print("tr.r")
         tr.get_rotation().show()
-        print "tr.t"
+        print("tr.t")
         tr.get_translation().show()
-        print "r"
+        print("r")
         r.show()
-        print "t"
+        print("t")
         t.show()
         # for i in range(0, len(vs)):
         #    vsr[i].show()

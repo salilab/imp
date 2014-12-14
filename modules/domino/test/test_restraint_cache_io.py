@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -43,7 +44,7 @@ class Tests(IMP.test.TestCase):
         bb = IMP.algebra.BoundingBox3D([0, 0, 0], [10, 10, 10])
         vs = [IMP.algebra.get_random_vector_in(bb)
               for i in range(0, num_states)]
-        print vs
+        print(vs)
         (m0, ps0, r0, pst0, cache0) = self._create_stuff()
         (m1, ps1, r1, pst1, cache1) = self._create_stuff()
         for p in ps0:
@@ -54,10 +55,10 @@ class Tests(IMP.test.TestCase):
         cache0.add_restraints([r0])
         cache1.add_restraints([r1])
         rs0 = cache0.get_restraints(s0, [])
-        print rs0
+        print(rs0)
         asss = [IMP.domino.Assignment([random.randint(0, num_states - 1)
                                       for i in s0]) for i in range(0, 100)]
-        print asss
+        print(asss)
         for ass in asss:
             for r in rs0:
                 cache0.get_score(r, s0, ass)
@@ -67,7 +68,7 @@ class Tests(IMP.test.TestCase):
         cache0.save_cache(ps0, rs0, fl, 10000000)
         # depend on cache validate call
         cache1.load_cache(ps1, fl)
-        print "Have", cache1.get_number_of_entries()
+        print("Have", cache1.get_number_of_entries())
         self.assertEqual(
             cache0.get_number_of_entries(),
             cache1.get_number_of_entries())

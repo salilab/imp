@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -70,26 +71,26 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
     def test_ev(self):
         """Testing excluded volume restraint"""
         (m, r, xyzrs, rbs) = self._setup_ev_restraint()
-        print "mc"
+        print("mc")
         o = IMP.core.MonteCarlo(m)
         mvs = self._setup_movers(xyzrs, rbs)
         o.set_movers(mvs)
-        print "opt"
+        print("opt")
         # rely on internal checks
-        print o.optimize(1000)
-        print "inspect", m.evaluate(False)
+        print(o.optimize(1000))
+        print("inspect", m.evaluate(False))
 
     def test_evs(self):
         """Testing excluded volume serial restraint"""
         (m, r, xyzrs, rbs) = self._setup_ev_restraint()
-        print "mc"
+        print("mc")
         o = IMP.core.MonteCarlo(m)
         mvs = self._setup_movers(xyzrs, rbs)
         sm = IMP.core.SerialMover(mvs)
         o.set_movers([sm])
-        print "opt"
+        print("opt")
         # rely on internal checks
-        print o.optimize(1000)
-        print "inspect", m.evaluate(False)
+        print(o.optimize(1000))
+        print("inspect", m.evaluate(False))
 if __name__ == '__main__':
     IMP.test.main()

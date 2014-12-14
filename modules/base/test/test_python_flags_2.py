@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import sys
@@ -14,9 +15,9 @@ class Tests(IMP.test.TestCase):
         extra = IMP.base.setup_from_argv(["python", "zero", "one"],
                                          "test things",
                                          "arg0 arg1", 2)
-        print IMP.base.get_bool_flag("myboolflag")
-        print IMP.base.get_log_level()
-        print extra
+        print(IMP.base.get_bool_flag("myboolflag"))
+        print(IMP.base.get_log_level())
+        print(extra)
         self.assertEqual(IMP.base.get_bool_flag("myboolflag"), False)
 if __name__ == '__main__':
     IMP.test.main()

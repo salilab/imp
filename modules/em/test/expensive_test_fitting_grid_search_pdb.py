@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import os
 import IMP
@@ -44,25 +45,25 @@ class Tests(IMP.test.TestCase):
     def test_local_fitting(self):
         """Check that the local rigid fitting grid search works"""
         # create a rigid body
-        print "start : "
+        print("start : ")
         fr = IMP.em.local_rigid_fitting_grid_search(
             self.particles,
             self.weight_key,
             self.scene,
             2, 1, 0.174, 3)
-        print "end"
+        print("end")
         # test that if you apply the transformation on the original configuration you get the same result
         # (in rmsd and score)
 
         # second, test that the optimization gets you close.
         score = self.imp_model.evaluate(False)
-        print fr.get_number_of_solutions()
+        print(fr.get_number_of_solutions())
         self.assertGreaterEqual(fr.get_number_of_solutions(), 2,
                                 "not enough solutions returned")
         self.assertLess(fr.get_score(0), fr.get_score(1),
                         "solutions are not sorted")
         for i in xrange(fr.get_number_of_solutions()):
-            print "score", fr.get_score(i)
+            print("score", fr.get_score(i))
             self.assertLess(fr.get_score(i), 1.0, "wrong CC values")
 
 if __name__ == '__main__':

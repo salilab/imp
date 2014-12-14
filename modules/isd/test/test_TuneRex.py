@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import os
 import numpy.random as random
 from numpy import *
@@ -69,7 +70,7 @@ class Tests(IMP.test.TestCase):
 
         replicanums = self.read_replicanums_file()
         indicators = TuneRex.compute_indicators(replicanums, subs=1, start=0)
-        print array([sum(ind) / float(len(ind)) for ind in indicators])
+        print(array([sum(ind) / float(len(ind)) for ind in indicators]))
 
     def test_repnums(self):
         if TuneRex is None:
@@ -77,7 +78,7 @@ class Tests(IMP.test.TestCase):
         TuneRex.debug = True
         rn = self.read_replicanums_file()
         changed, params = TuneRex.tune_params_flux(rn, self.temps)
-        print params
+        print(params)
 
     def tearDown(self):
         IMP.test.TestCase.tearDown(self)

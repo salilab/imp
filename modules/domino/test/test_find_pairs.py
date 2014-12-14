@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -37,7 +38,7 @@ class Tests(IMP.test.TestCase):
                 st = pst.get_particle_states(p)
                 st.load_particle_state(random.sample(range(0, ns), 1)[0], p)
             curp = cpf.get_close_pairs(ps)
-            print len(curp)
+            print(len(curp))
             for p in curp:
                 self.assertTrue(p in allp or (p[1], p[0]) in allp)
 if __name__ == '__main__':

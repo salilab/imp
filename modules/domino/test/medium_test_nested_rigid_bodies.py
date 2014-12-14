@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -56,7 +57,7 @@ class Tests(IMP.test.TestCase):
         pst.set_particle_states(rbs[0], IMP.domino.RigidBodyStates(id_trans))
         ds = IMP.domino.DominoSampler(mdl, pst)
         cg = ds.create_sample()
-        print cg.get_number_of_configurations()
+        print(cg.get_number_of_configurations())
 
 if __name__ == '__main__':
     IMP.test.main()

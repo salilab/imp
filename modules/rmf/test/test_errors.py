@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import IMP.rmf
 import IMP.atom
@@ -19,9 +20,9 @@ class Tests(IMP.test.TestCase):
         IMP.core.XYZR.setup_particle(h)
         IMP.atom.Mass.setup_particle(h, 1)
         IMP.rmf.add_hierarchies(rmf, [h])
-        print 'saving 0'
+        print('saving 0')
         IMP.rmf.save_frame(rmf, "zero")
-        print 'loading bad'
+        print('loading bad')
         self.assertRaises(
             IMP.base.IOException,
             IMP.rmf.load_frame,

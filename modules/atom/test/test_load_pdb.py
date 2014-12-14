@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import IMP.atom
 import IMP.test
@@ -17,7 +18,7 @@ class Tests(IMP.test.TestCase):
         IMP.atom.read_pdb(self.get_input_file_name("dna.pdb"), 0,
                           h)
         nrf = rbp.get_reference_frame().get_transformation_to()
-        print rf, nrf
+        print(rf, nrf)
         self.assertAlmostEqual((rf.get_translation()
                                 - nrf.get_translation()).get_magnitude(),
                                0, delta=.1)

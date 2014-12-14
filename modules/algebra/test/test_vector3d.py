@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import IMP.algebra
 import io
@@ -113,7 +114,7 @@ class Tests(IMP.test.TestCase):
         """Check vector 3D show"""
         v = IMP.algebra.Vector3D(1, 2, 3)
         out = io.StringIO()
-        print >> out, v
+        print(v, file=out)
         self.assertEqual(out.getvalue().find("Swig"), -1)
 
     def test_addition(self):

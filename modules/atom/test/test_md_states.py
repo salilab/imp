@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -93,7 +94,7 @@ class Tests(IMP.test.TestCase):
                 ts.append(md.get_kinetic_temperature(md.get_kinetic_energy()))
                 scaler.rescale_velocities()
             # Temperature should decrease from start to set temp
-            print ts
+            print(ts)
             self.assertAlmostEqual(ts[0], 4009.0, delta=0.2)
             self.assertGreater(ts[steps - 1], 298.1)
             # Make sure that once set temperature is reached, it is maintained

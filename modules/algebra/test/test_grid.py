@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import IMP.algebra
 import io
@@ -9,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def test_magnitude(self):
         """Check sparse grid of ints"""
-        print "construct"
+        print("construct")
         g = IMP.algebra.SparseUnboundedIntGrid3D(
             33.4, IMP.algebra.Vector3D(-4, -5, -6), 0)
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-100, -100, -100),
@@ -27,13 +28,13 @@ class Tests(IMP.test.TestCase):
                 self.assertEqual(g[v], 1)
             vs.append(v)
         count = 0
-        print "list"
+        print("list")
         for i in g.get_indexes(g.get_extended_index(bb.get_corner(0)),
                                g.get_extended_index(bb.get_corner(1))):
             # print g[i]
             pass
 
-        print "check"
+        print("check")
         for j, i in enumerate(
             g.get_extended_indexes(g.get_extended_index(bb.get_corner(0)),
                                    g.get_extended_index(bb.get_corner(1)))):
@@ -44,13 +45,13 @@ class Tests(IMP.test.TestCase):
                 if cbb.get_contains(vs):
                     self.assertGreater(g[g.get_index(i)], 0)
             if g.get_has_index(i):
-                print "adding", i, g[g.get_index(i)]
+                print("adding", i, g[g.get_index(i)])
                 count = count + g[g.get_index(i)]
-        print "asserting"
+        print("asserting")
         self.assertEqual(count, len(vs))
-        print "subtracting"
+        print("subtracting")
         for i in g.get_all_indexes():
-            print i, g[i]
+            print(i, g[i])
             # print g[i]
             count = count - g[i]
         self.assertEqual(count, 0)

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -17,7 +18,7 @@ class Tests(IMP.test.TestCase):
             w.add_geometry(g)
         del w
         bstr = buf.getvalue()
-        print bstr
+        print(bstr)
         self.assertNotEqual(bstr.find("from pymol.cgo import"), -1)
         for i in range(0, 5):
             self.assertNotEqual(

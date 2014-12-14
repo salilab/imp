@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -25,11 +26,11 @@ class Tests(IMP.test.TestCase):
         cps = IMP.kernel._ConstPairScore(1)
         rps = IMP.core.RefinedPairsPairScore(pr, cps)
         ppp = (pp, pp)
-        print type(rps)
-        print type(rps.evaluate)
+        print(type(rps))
+        print(type(rps.evaluate))
         da = IMP.DerivativeAccumulator()
-        print type(pp)
-        print type(ppp)
+        print(type(pp))
+        print(type(ppp))
         self.assertEqual(rps.evaluate(ppp, da), 100)
 
 

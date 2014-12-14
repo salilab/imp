@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -29,9 +30,9 @@ class Tests(IMP.test.TestCase):
         cpf.set_distance(.5)
         # check that no internal checks fail
         cp0 = cpf.get_close_pairs(ps)
-        print [(p[0].get_name(), p[1].get_name()) for p in cp0]
+        print([(p[0].get_name(), p[1].get_name()) for p in cp0])
         cp1 = cpf.get_close_pairs(ps[3:])
-        print [(p[0].get_name(), p[1].get_name()) for p in cp1]
+        print([(p[0].get_name(), p[1].get_name()) for p in cp1])
 
 if __name__ == '__main__':
     IMP.test.main()

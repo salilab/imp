@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.container
@@ -32,7 +33,7 @@ class Tests(IMP.test.TestCase):
         hub = IMP.core.HarmonicUpperBound(0, 1)
         sdps = IMP.core.SphereDistancePairScore(hub)
         r = IMP.container.PairsRestraint(sdps, cpc)
-        print "added"
+        print("added")
         m.add_restraint(r)
         w = IMP.display.PymolWriter(self.get_tmp_file_name("connectivity.pym"))
         for d in ds:
@@ -41,13 +42,13 @@ class Tests(IMP.test.TestCase):
         g = IMP.display.RestraintGeometry(r)
         w.add_geometry(g)
         del w
-        print 'eval'
+        print('eval')
         m.evaluate(False)
-        print 'done eval'
+        print('done eval')
         for pr in cpc.get_particle_pairs():
             dist = IMP.core.get_distance(IMP.core.XYZR(pr[0]),
                                          IMP.core.XYZR(pr[1]))
-        print 'eval2'
+        print('eval2')
         self.assertAlmostEqual(m.evaluate(False), 0, delta=1e-3)
 
     def test_score(self):
@@ -62,7 +63,7 @@ class Tests(IMP.test.TestCase):
         # m.add_restraint(pr)
         m.evaluate(False)
         for pp in cpc.get_particle_pairs():
-            print pp
+            print(pp)
             # for p0 in ps:
             #     for p1 in ps:
             #         if p0 != p1:
@@ -76,15 +77,15 @@ class Tests(IMP.test.TestCase):
         ub = IMP.core.HarmonicUpperBound(0, 1)
         sd = IMP.core.DistancePairScore(ub)
         pr = IMP.container.PairsRestraint(sd, cpc)
-        print "adding"
+        print("adding")
         m.add_restraint(pr)
-        print "added"
-        print pr.evaluate(False)
-        print "eval"
+        print("added")
+        print(pr.evaluate(False))
+        print("eval")
         cg.set_threshold(.0001)
         for i in range(10):
             try:
-                print "opt"
+                print("opt")
                 cg.optimize(100)
             except IMP.base.ValueException:  # Catch CG failure
                 pass
@@ -93,18 +94,18 @@ class Tests(IMP.test.TestCase):
             # Nudge the particles a little to escape a local minimum
             for p in ps:
                 nudge_particle(p, 1.0)
-        print "get"
+        print("get")
         for pp in cpc.get_particle_pairs():
-            print pp
-            print
+            print(pp)
+            print()
         for p0 in ps:
             for p1 in ps:
                 if p0 != p1:
                     d0 = IMP.core.XYZR(p0.get_particle())
                     d1 = IMP.core.XYZR(p1.get_particle())
-                    print d0
-                    print d1
-                    print (p0.get_particle(), p1.get_particle())
+                    print(d0)
+                    print(d1)
+                    print((p0.get_particle(), p1.get_particle()))
                     self.assertLessEqual(IMP.core.get_distance(d0, d1), 0.1)
                     # self.assert_(cpc.get_contains_particle_pair((p0.get_particle(), p1.get_particle()))
                                  # or

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import IMP.rmf
 import IMP.test
@@ -11,7 +12,7 @@ class Tests(IMP.test.TestCase):
         """Test reading and writing static geometry"""
         for suffix in IMP.rmf.suffixes:
             nm = self.get_tmp_file_name("static_geometry" + suffix)
-            print nm
+            print(nm)
             f = RMF.create_rmf_file(nm)
             bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                            IMP.algebra.Vector3D(10, 10, 10))

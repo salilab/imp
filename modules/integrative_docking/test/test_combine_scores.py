@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import sys
 import os
@@ -38,9 +39,9 @@ class CombineScoresApplicationTest(IMP.test.ApplicationTestCase):
 
     def test_scores_combination(self):
         """Simple test of score combination"""
-        print self.get_input_file_name('saxs_score.res')
-        print self.get_input_file_name('em2d_score.res')
-        print self.get_input_file_name('em3d_score.res')
+        print(self.get_input_file_name('saxs_score.res'))
+        print(self.get_input_file_name('em2d_score.res'))
+        print(self.get_input_file_name('em3d_score.res'))
         p = self.run_application('combine_scores',
                                  [self.get_input_file_name(
                                      'saxs_score.res'), '1',
@@ -57,7 +58,7 @@ class CombineScoresApplicationTest(IMP.test.ApplicationTestCase):
 
     def test_z_score_computation(self):
         """Simple test of zscore combination"""
-        print self.get_input_file_name('saxs_score.res')
+        print(self.get_input_file_name('saxs_score.res'))
         p = self.run_application('recompute_zscore',
                                  [self.get_input_file_name('saxs_score.res')])
         out, err = p.communicate()

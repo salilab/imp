@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.base
 import IMP.test
 import io
@@ -8,19 +9,19 @@ class Tests(IMP.test.TestCase):
     """Test particles"""
 
     def _equal_lists(self, va, vb):
-        print "testing"
+        print("testing")
         self.assertEqual(len(va), len(vb))
         for i in range(len(va)):
-            print va[i]
-            print vb[i]
+            print(va[i])
+            print(vb[i])
             self.assertEqual(va[i], vb[i])
 
     def _almost_equal_lists(self, va, vb):
-        print "testing"
+        print("testing")
         self.assertEqual(len(va), len(vb))
         for i in range(len(va)):
-            print va[i]
-            print vb[i]
+            print(va[i])
+            print(vb[i])
             self.assertAlmostEqual(va[i], vb[i], delta=.01)
 
     def test_a(self):
@@ -62,15 +63,15 @@ class Tests(IMP.test.TestCase):
         """Checking that conversion to/from pairs is OK"""
         p = (1.0, 2.0)
         op = IMP.base._pass_pair(p)
-        print "first"
-        print p
-        print op
+        print("first")
+        print(p)
+        print(op)
         self.assertAlmostEqual(p[0], op[0], delta=.01)
         self.assertAlmostEqual(p[1], op[1], delta=.01)
         op = IMP.base._pass_plain_pair(p)
-        print "second"
-        print p
-        print op
+        print("second")
+        print(p)
+        print(op)
         self.assertAlmostEqual(p[0], op[0], delta=.01)
         self.assertAlmostEqual(p[1], op[1], delta=.01)
 

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import os
 import IMP
@@ -53,7 +54,7 @@ class Tests(IMP.test.TestCase):
 
     def test_cc_derivaties_using_rigid_body_fast_mode(self):
         """Test that multiple rigid bodies are correctly pulled into the density"""
-        print self.leaves_ref.get_can_refine(self.mhs[0])
+        print(self.leaves_ref.get_can_refine(self.mhs[0]))
         fit_r = IMP.em.FitRestraint(self.ps,
                                     self.scene)
         self.imp_model.add_restraint(fit_r)
@@ -72,9 +73,9 @@ class Tests(IMP.test.TestCase):
         opt = IMP.core.ConjugateGradients(self.imp_model)
         # opt.add_optimizer_state(self.pdb_opt_state)
         start_score = self.imp_model.evaluate(False)
-        print "before optimization"
+        print("before optimization")
         end_score = opt.optimize(10)
-        print "after optimization"
+        print("after optimization")
         # IMP.atom.write_pdb(self.mhs,"aa.pdb")
         self.assertGreater(start_score + .01, end_score)
 

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -12,9 +13,9 @@ class Tests(IMP.test.TestCase):
         mh = IMP.atom.read_pdb(self.get_input_file_name("input.pdb"),
                                m)
         pat = IMP.atom.Selection(mh, residue_index=10)
-        print type(pat)
+        print(type(pat))
         got = pat.get_selected_particles()
-        print [x.get_name() for x in got]
+        print([x.get_name() for x in got])
         self.assertGreater(len(got), 0)
         for g in [IMP.atom.Hierarchy(g) for g in got]:
             self.assertEqual(IMP.atom.Residue(g.get_parent()).get_index(), 10)

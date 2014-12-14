@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import sys
@@ -40,17 +41,17 @@ class Tests(IMP.test.TestCase):
         for r in self.rbs:
             self.c_r.add_particle(r.get_particle())
 
-        print "going to evaluate 2"
+        print("going to evaluate 2")
         self.mdl.evaluate(False)
         self.wev_r = IMP.multifit.create_weighted_excluded_volume_restraint(
             self.rbs[0], self.rbs[1])
 
-        print "going to evaluate 1"
+        print("going to evaluate 1")
         self.mdl.evaluate(False)
         self.mdl.add_restraint(self.c_r)
-        print "going to evaluate"
+        print("going to evaluate")
         self.mdl.evaluate(False)
-        print "end setup"
+        print("end setup")
 
     def test_weighted_excluded_volume_restraint(self):
         """Check that weighted excluded volume restraint works"""
@@ -96,7 +97,7 @@ class Tests(IMP.test.TestCase):
             # to make sure the coordinates were transformed
             self.mdl.evaluate(False)
             end = time.clock()
-            print "Time elapsed for PairRestraint evaluatation = ", end - start, "seconds"
+            print("Time elapsed for PairRestraint evaluatation = ", end - start, "seconds")
             conn_r = self.c_r.evaluate(False)
             w_exc_vol_r = self.wev_r.evaluate(False)
             self.assertTrue(

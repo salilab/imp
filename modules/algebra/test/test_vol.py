@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -24,11 +25,11 @@ class Tests(IMP.test.TestCase):
                     s = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(x, y, z), 10)
                     ss.append(s)
         for s in ss:
-            print ".sphere", s.get_center()[0], s.get_center()[1], s.get_center()[2], s.get_radius()
-        print 30 * 30 * 30
+            print(".sphere", s.get_center()[0], s.get_center()[1], s.get_center()[2], s.get_radius())
+        print(30 * 30 * 30)
         sp = IMP.algebra.get_surface_area_and_volume(ss)
-        print sp
-        print 6 * 25 * 25, 6 * 30 * 30, 30 * 30 * 30, 25 * 25 * 25
+        print(sp)
+        print(6 * 25 * 25, 6 * 30 * 30, 30 * 30 * 30, 25 * 25 * 25)
         self.assertGreater(sp[0], .9 * 6 * 25 * 25)
         self.assertLess(sp[0], 6 * 30 * 30)
         self.assertLess(sp[1], 30 * 30 * 30)

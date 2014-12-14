@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -38,7 +39,7 @@ class Tests(IMP.test.TestCase):
         nrda = IMP.core.XYZ(pa)
         nrdb = IMP.core.XYZ(pb)
         dbr = IMP.core.get_distance(nrda, nrdb)
-        print d, dbr
+        print(d, dbr)
         self.assertLess(d + 2.4, dbr)
 
 

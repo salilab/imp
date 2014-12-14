@@ -1,3 +1,4 @@
+from __future__ import print_function
 from io import StringIO
 import IMP
 import IMP.test
@@ -66,7 +67,7 @@ class Tests(IMP.test.TestCase):
             s = StringIO()
             IMP.atom.write_pdb(pdb, s)
             m.evaluate(False)
-            print s.getvalue()
+            print(s.getvalue())
             self.assertEqual(s.getvalue()[15 + 12:15 + 16].strip(), atom)
 
     def test_read_atom(self):

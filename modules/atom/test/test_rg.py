@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -30,7 +31,7 @@ class Tests(IMP.test.TestCase):
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(20, 20, 20),
                                        IMP.algebra.Vector3D(120, 120, 120))
         s = IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 20)
-        print s
+        print(s)
         p = IMP.kernel.Particle(m)
         IMP.core.XYZR.setup_particle(p, s)
         ps = [p]
@@ -48,7 +49,7 @@ class Tests(IMP.test.TestCase):
                                        IMP.algebra.Vector3D(120, 120, 120))
         s0 = IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 20)
         s1 = IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 30)
-        print s0, s1
+        print(s0, s1)
         p0 = IMP.kernel.Particle(m)
         IMP.core.XYZR.setup_particle(p0, s0)
         p1 = IMP.kernel.Particle(m)

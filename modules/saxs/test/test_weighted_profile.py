@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.atom
@@ -66,8 +67,8 @@ class Tests(IMP.test.TestCase):
         chi = wfp.get_chi()
         weights = wfp.get_weights()
 
-        print 'Chi = ', str(chi)
-        print 'weight1 = ', weights[0], ' weight2 = ', weights[1]
+        print('Chi = ', str(chi))
+        print('weight1 = ', weights[0], ' weight2 = ', weights[1])
 
         self.assertAlmostEqual(chi, 1.67, delta=0.1)
         self.assertAlmostEqual(weights[0], 0.283, delta=0.1)

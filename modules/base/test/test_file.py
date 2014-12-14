@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.base
 import IMP.test
 import os.path
@@ -8,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_data_directory(self):
         """Test that conversions to input files work properly"""
-        print "starting"
+        print("starting")
         IMP.base.set_log_level(IMP.base.MEMORY)
         v = IMP.base._test_ifile(self.get_input_file_name("text"))
         self.assertEqual(v, "word")
@@ -18,11 +19,11 @@ class Tests(IMP.test.TestCase):
         s = StringIO("hi there")
         v = IMP.base._test_ifile(s)
         self.assertEqual(v, "hithere")
-        print "done"
+        print("done")
 
     def test_odata_directory(self):
         """Test that conversions to output files work properly"""
-        print "starting"
+        print("starting")
         IMP.base.set_log_level(IMP.base.MEMORY)
         IMP.base._test_ofile("ofile_test")
         self.assertRaises(IOError, IMP.base._test_ofile, "nodir/hi")
@@ -37,20 +38,20 @@ class Tests(IMP.test.TestCase):
             pass
         self.assertRaises(TypeError, IMP.base._test_ofile, NoMethods)
         del f
-        print "unlinking"
+        print("unlinking")
         # os.unlink('ofile_test')
         # os.unlink('hi')
-        print "done"
+        print("done")
 
     def test_odata_directory_2(self):
         """Test temporary files"""
         simple = IMP.base.create_temporary_file()
-        print simple.get_name()
+        print(simple.get_name())
         prefix = IMP.base.create_temporary_file("imp")
-        print prefix.get_name()
+        print(prefix.get_name())
         self.assertIn("imp", prefix.get_name())
         suffix = IMP.base.create_temporary_file("imp", ".py")
-        print suffix.get_name()
+        print(suffix.get_name())
         self.assertIn("imp", suffix.get_name())
         self.assertIn(".py", suffix.get_name())
 

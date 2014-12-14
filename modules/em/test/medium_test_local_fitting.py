@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import os
 import IMP
@@ -51,7 +52,7 @@ class Tests(IMP.test.TestCase):
             rand_translation)
         IMP.core.transform(self.rb, rt)
         refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
-        print "calculate fast"
+        print("calculate fast")
         num_mc = 1
         num_cg = 10
         fr_fast = IMP.em.local_rigid_fitting(
@@ -59,13 +60,13 @@ class Tests(IMP.test.TestCase):
             refiner,
             self.weight_key,
             self.scene, [self.fast_pdb_opt_state], 1, num_mc, num_cg, 2., .3, True)
-        print "calculate slow"
+        print("calculate slow")
         fr_slow = IMP.em.local_rigid_fitting(
             self.mh,
             refiner,
             self.weight_key,
             self.scene, [self.slow_pdb_opt_state], 1, num_mc, num_cg, 2., .3, False)
-        print "fast:", fr_fast.get_score(0), " slow:", fr_slow.get_score(0)
+        print("fast:", fr_fast.get_score(0), " slow:", fr_slow.get_score(0))
         self.assertAlmostEqual(fr_fast.get_score(0), fr_slow.get_score(0),
                                delta=0.1)
 

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import io
@@ -35,7 +36,7 @@ class Tests(IMP.test.TestCase):
         r = DummyRestraint(m)
         r.set_name("dummy")
         dirchk.assert_number(3)
-        print r.evaluate(False)
+        print(r.evaluate(False))
         dirchk.assert_number(4)
         del r
         dirchk.assert_number(2)

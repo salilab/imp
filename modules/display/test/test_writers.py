@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -11,13 +12,13 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.VERBOSE)
 
     def _testit(self, w, cylinder=True, triangle=True):
-        print "create sg"
+        print("create sg")
         sg = IMP.display.SphereGeometry(
             IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))
         sg.set_name("sphere")
-        print "setting color"
+        print("setting color")
         sg.set_color(IMP.display.Color(1, 0, 0))
-        print "add 0"
+        print("add 0")
         w.add_geometry(sg)
         if cylinder:
             sg = IMP.display.CylinderGeometry(
@@ -26,7 +27,7 @@ class Tests(IMP.test.TestCase):
                                           IMP.algebra.Vector3D(4, 5, 6)), 1))
             sg.set_name("cylinder")
             sg.set_color(IMP.display.Color(0, 1, 0))
-            print "add 1"
+            print("add 1")
             w.add_geometry(sg)
         if triangle:
             vs = IMP.algebra.Triangle3D(IMP.algebra.Vector3D(1, 2, 3),

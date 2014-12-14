@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import sys
@@ -15,7 +16,7 @@ class Tests(IMP.test.TestCase):
         """Test filters on excluded volume"""
         m = IMP.kernel.Model()
         m.set_log_level(IMP.base.SILENT)
-        print "pdb"
+        print("pdb")
         h0s = IMP.kernel._create_particles_from_pdb(
             self.get_input_file_name("1z5s_A.pdb"),
             m)
@@ -25,26 +26,26 @@ class Tests(IMP.test.TestCase):
             m.remove_particle(r)
         del h0s
         del rm
-        print "ev"
+        print("ev")
         # set the restraint
         r = IMP.core.ExcludedVolumeRestraint(l0, 1, 0)
-        print "cpc"
+        print("cpc")
         cpc = IMP.container.ClosePairContainer(l0, 0, 0)
         cr = IMP.container.PairsRestraint(IMP.core.SoftSpherePairScore(1), cpc)
         dg = IMP.get_dependency_graph(m)
         # IMP.base.show_graphviz(dg)
         idx = IMP.get_vertex_index(dg)
         ss = IMP.get_required_score_states(cr, [], dg, idx)
-        print "ss", ss
+        print("ss", ss)
         self.assert_(len(ss) > 0)
         crsf = IMP.core.RestraintsScoringFunction([cr])
         crsf.set_has_required_score_states(True)
-        print crsf.get_required_score_states()
-        print r.evaluate(False)
+        print(crsf.get_required_score_states())
+        print(r.evaluate(False))
         m.set_log_level(IMP.base.VERBOSE)
-        print cr.evaluate(False)
+        print(cr.evaluate(False))
         pp = cpc.get_particle_pairs()
-        print "pairs are", pp
+        print("pairs are", pp)
         self.assertAlmostEqual(r.evaluate(False), cr.evaluate(False),
                                delta=.1)
 if __name__ == '__main__':

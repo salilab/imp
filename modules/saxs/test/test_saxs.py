@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.atom
@@ -49,12 +50,12 @@ class Tests(IMP.test.TestCase):
         #! calculate chi-square
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         chi = saxs_score.compute_score(model_profile, False, 'chi.dat')
-        print 'Chi = ' + str(chi)
+        print('Chi = ' + str(chi))
         self.assertAlmostEqual(chi, 0.54, delta=0.01)
 
         saxs_score_log = IMP.saxs.ProfileFitterChiLog(exp_profile)
         chi = saxs_score_log.compute_score(model_profile, False, 'chilog.dat')
-        print 'Chi log = ' + str(chi)
+        print('Chi log = ' + str(chi))
         self.assertAlmostEqual(chi, 0.0347, delta=0.001)
 
         #! calculate SAXS profile that is good for c1/c2 fitting using calculate_profile_partial
@@ -64,20 +65,20 @@ class Tests(IMP.test.TestCase):
         fp = saxs_score.fit_profile(model_profile,
                                     0.95, 1.12, -2.0, 4.0, False, "chi_fit.dat")
         chi = fp.get_chi()
-        print 'Chi after adjustment of excluded volume and water layer parameters = ' + str(chi)
+        print('Chi after adjustment of excluded volume and water layer parameters = ' + str(chi))
         sio = io.StringIO()
         fp.show(sio)
         self.assertAlmostEqual(chi, 0.45, delta=0.01)
 
         #! test interval chi
         chi = saxs_score.compute_score(model_profile, 0.0, 0.2)
-        print 'Chi interval [0.0:0.2] = ' + str(chi)
+        print('Chi interval [0.0:0.2] = ' + str(chi))
         self.assertAlmostEqual(chi, 0.482, delta=0.01)
 
         #! test chi with log intensities
         chi = (saxs_score_log.fit_profile(model_profile,
                                           0.95, 1.12, -2.0, 4.0, False, "chilog_fit.dat")).get_chi()
-        print 'ChiLog after adjustment of excluded volume and water layer parameters = ' + str(chi)
+        print('ChiLog after adjustment of excluded volume and water layer parameters = ' + str(chi))
         self.assertAlmostEqual(chi, 0.0323, delta=0.001)
 
     def test_saxs_restraint(self):
@@ -93,7 +94,7 @@ class Tests(IMP.test.TestCase):
 
         #! select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
-        print 'Atomic level, number of particles ' + str(len(particles))
+        print('Atomic level, number of particles ' + str(len(particles)))
 
         #! calculate SAXS profile
         model_profile = IMP.saxs.Profile()
@@ -123,7 +124,7 @@ class Tests(IMP.test.TestCase):
 
         #! select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
-        print 'Residue level, number of particles ' + str(len(particles))
+        print('Residue level, number of particles ' + str(len(particles)))
 
         #! calculate SAXS profile
         model_profile = IMP.saxs.Profile()
@@ -132,7 +133,7 @@ class Tests(IMP.test.TestCase):
         #! calculate chi-square
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         chi = saxs_score.compute_score(model_profile)
-        print 'Chi = ' + str(chi)
+        print('Chi = ' + str(chi))
 
         #! define residue level restraint
         saxs_restraint = IMP.saxs.Restraint(
@@ -141,7 +142,7 @@ class Tests(IMP.test.TestCase):
             IMP.saxs.CA_ATOMS)
         m.add_restraint(saxs_restraint)
         score = saxs_restraint.evaluate(False)
-        print 'initial score = ' + str(score)
+        print('initial score = ' + str(score))
 
 
 if __name__ == '__main__':

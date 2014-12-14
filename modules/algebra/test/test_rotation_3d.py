@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -78,7 +79,7 @@ class Tests(IMP.test.TestCase):
                 rot_mat[6], rot_mat[7], rot_mat[8])
             comp = rot_copy * r.get_inverse()
             q = comp.get_quaternion()
-            print "===q:", q
+            print("===q:", q)
             for j, e in enumerate([1, 0, 0, 0]):
                 self.assertAlmostEqual(q[j], e, delta=.1)
 
@@ -113,13 +114,13 @@ class Tests(IMP.test.TestCase):
         # x=IMP.algebra.Vector3D(1,0,0)
         for qi in range(0, 4):
             for xi in range(0, 3):
-                print "qi=" + str(qi) + " and xi= " + str(xi)
+                print("qi=" + str(qi) + " and xi= " + str(xi))
                 tf = TransformFunct(xi, qi, x, r.get_quaternion())
                 d = IMP.test.numerical_derivative(
                     tf, r.get_quaternion()[qi], .01)
-                print d
+                print(d)
                 ad = tf.get_analytic_deriv()
-                print ad
+                print(ad)
                 self.assertAlmostEqual(d, ad, delta=.05)
 
     def test_rotation_between_vectors(self):
@@ -190,15 +191,15 @@ class Tests(IMP.test.TestCase):
         """Check that rotations can be interpolated"""
         r0 = IMP.algebra.get_random_rotation_3d()
         r1 = IMP.algebra.get_random_rotation_3d()
-        print "Inputs"
+        print("Inputs")
         r0.show()
         r1.show()
         r5 = IMP.algebra.get_interpolated(r0, r1, .5)
         d = r5 / r0
         r1p = d * d * r0
-        print "final"
+        print("final")
         r1.show()
-        print "out"
+        print("out")
         r1p.show()
         self.assertAlmostEqual(
             (r1.get_quaternion() - r1p.get_quaternion()

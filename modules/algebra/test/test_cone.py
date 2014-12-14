@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -39,7 +40,7 @@ class Tests(IMP.test.TestCase):
         self.assertFalse(cone.get_contains(IMP.algebra.Vector3D(0.5, 0.5, 0.0)))
         self.assertFalse(
                   cone.get_contains(IMP.algebra.Vector3D(1.0, 1.0, -3.0)))
-        print cone
+        print(cone)
 
     def test_sphere_patch2(self):
         """Testing sampling a patch"""

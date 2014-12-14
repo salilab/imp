@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.em
@@ -28,7 +29,7 @@ class Tests(IMP.test.TestCase):
                                           self.weight_key)
         em_map.calcRMS()
         self.rms = em_map.get_header().rms
-        print "RMSD of original map = " + str(self.rms)
+        print("RMSD of original map = " + str(self.rms))
         self.erw = IMP.em.MRCReaderWriter()
         self.out_filename = "aa.mrc"
         IMP.em.write_map(em_map, self.out_filename, self.erw)
@@ -36,12 +37,12 @@ class Tests(IMP.test.TestCase):
     def _test_read(self):
         """read map back in and check that rmsd is the same """
         em_map = IMP.em.DensityMap()
-        print self.out_filename
+        print(self.out_filename)
         em_map = IMP.em.read_map(self.out_filename, self.erw)
         os.unlink(self.out_filename)
         em_map.calcRMS()
         rms2 = em_map.get_header().rms
-        print "RMSD of file = " + str(rms2)
+        print("RMSD of file = " + str(rms2))
         self.assertLess(abs(rms2 - self.rms), 0.00001, "rms values differ!")
 
     def _test_em_read_write(self):
@@ -83,7 +84,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(94, scene.get_header().get_nx())
         self.assertEqual(98, scene.get_header().get_ny())
         self.assertEqual(84, scene.get_header().get_nz())
-        print "rms: " + str(scene.calcRMS())
+        print("rms: " + str(scene.calcRMS()))
         self.assertAlmostEqual(scene.calcRMS(), 0.00688, delta=1.0)
         IMP.em.write_map(scene, out_filename, mrc_rw)
         os.unlink(out_filename)
@@ -91,10 +92,10 @@ class Tests(IMP.test.TestCase):
     def test_emheader(self):
         """test correct I/O of EM header"""
         in_filename = self.get_input_file_name("cube.em")
-        print "read in " + in_filename + " ..."
-        print "here -------------"
+        print("read in " + in_filename + " ...")
+        print("here -------------")
         #scene = IMP.em.DensityMap()
-        print "here --------11111111111111-----"
+        print("here --------11111111111111-----")
         '''
         em_rw = IMP.em.EMReaderWriter()
         scene= IMP.em.read_map(in_filename, em_rw)

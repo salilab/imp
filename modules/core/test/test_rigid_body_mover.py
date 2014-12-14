@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.kernel
 import IMP.test
 import IMP.core
@@ -14,11 +15,11 @@ class NormalMoverTest(IMP.test.TestCase):
         rb = IMP.core.RigidBody.setup_particle(
             m, pi, IMP.algebra.ReferenceFrame3D())
         rb.set_coordinates_are_optimized(True)
-        print "0"
+        print("0")
         rbmt0 = IMP.core.RigidBodyMover(m, pi, 0, 1)
         rbmt0.propose()
         rbmt0.accept()
-        print "1"
+        print("1")
         rbmr0 = IMP.core.RigidBodyMover(m, pi, 1, 0)
         rbmr0.propose()
         rbmr0.accept()

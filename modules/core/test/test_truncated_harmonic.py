@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -66,7 +67,7 @@ class Tests(IMP.test.TestCase):
      #       print "l=" +str(l)
             h = IMP.core.TruncatedHarmonicBound(c, k, t, l)
             for x in range(-200, 200):
-                print str(x / 10.0) + ", " + str(h.evaluate(x / 10.0))
+                print(str(x / 10.0) + ", " + str(h.evaluate(x / 10.0)))
 
             self.assertAlmostEqual(h.evaluate(c + t + 100000), l, delta=.1)
             self.assertAlmostEqual(h.evaluate(c - t - 100000), l, delta=.1)

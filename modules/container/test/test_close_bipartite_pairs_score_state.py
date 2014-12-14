@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -18,10 +19,10 @@ class Tests(IMP.test.TestCase):
         return (cd - r <= d)
 
     def _compare_lists(self, m, pc0, pc1, out, d):
-        print "comparing"
+        print("comparing")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         m.update()
-        print "list is " + str(out.get_number_of_particle_pairs())
+        print("list is " + str(out.get_number_of_particle_pairs()))
         for a in pc0:
             for b in pc1:
                 if self._are_close(a, b, IMP.core.XYZR.get_radius_key(), d):
@@ -32,7 +33,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.VERBOSE)
         ps0 = self.create_particles_in_box(m, 10)
         ps1 = self.create_particles_in_box(m, 10)
-        print "adding a radius"
+        print("adding a radius")
         for p in ps0:
             d = IMP.core.XYZR.setup_particle(p)
             d.set_radius(random.uniform(0, 2))
@@ -47,9 +48,9 @@ class Tests(IMP.test.TestCase):
         # test rebuilding under move, set input and change radius
         pc0 = IMP.container.ListSingletonContainer(ps0)
         pc1 = IMP.container.ListSingletonContainer(ps1)
-        print "creat cpss " + str(pc0)
+        print("creat cpss " + str(pc0))
         # IMP.base.set_log_level(IMP.base.VERBOSE)
-        print 1
+        print(1)
         threshold = .3
 
         cpss = IMP.container.CloseBipartitePairContainer(
@@ -68,9 +69,9 @@ class Tests(IMP.test.TestCase):
             d.set_coordinates(IMP.algebra.get_random_vector_in(
                 IMP.algebra.get_unit_bounding_box_3d()))
         self._compare_lists(m, ps0, ps1, cpss, threshold)
-        print "done"
+        print("done")
         del m
-        print "deleted model"
+        print("deleted model")
 
     def test_it_0(self):
         """Test CloseBipartitePairContainer"""
@@ -105,7 +106,7 @@ class Tests(IMP.test.TestCase):
             len(ps0) * len(ps1))
         abpc = IMP.container.AllBipartitePairContainer(pc0, pc1)
         cpss.add_pair_filter(IMP.container.InContainerPairFilter(abpc))
-        print "re-evaluate"
+        print("re-evaluate")
         m.update()
         self.assertEqual(cpss.get_number_of_particle_pairs(), 0)
 

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import IMP.algebra
 #import IMP.display
@@ -20,7 +21,7 @@ class Tests(IMP.test.TestCase):
             h.add(pt)
         center = h.get_mean()
         std = h.get_standard_deviation(center)
-        print center, std
+        print(center, std)
         for i in range(0, 2):
             self.assertAlmostEqual(center[i], .5, delta=.05)
             self.assertAlmostEqual(std[i], .7 * 1.5, delta=.05)
@@ -37,7 +38,7 @@ class Tests(IMP.test.TestCase):
             h.add(pt)
         center = h.get_mean()
         std = h.get_standard_deviation(center)
-        print center, std
+        print(center, std)
         for i in range(0, 3):
             self.assertAlmostEqual(center[i], .75, delta=.016)
             self.assertAlmostEqual(std[i], .58 * .7, delta=.05)

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -27,9 +28,9 @@ class Tests(IMP.test.TestCase):
             if v[0] > 80 and v[1] > 80:
                 fb.append(i)
         self.assertEqual(len(fa), len(fb))
-        print "sets are"
-        print fa
-        print fb
+        print("sets are")
+        print(fa)
+        print(fb)
         s = IMP.domino.Subset([p0, p1])
         states = []
         for i in fa:
@@ -42,8 +43,8 @@ class Tests(IMP.test.TestCase):
         pst.set_particle_states(p1, IMP.domino.XYZStates(pts))
         IMP.base.set_log_level(IMP.base.TERSE)
         ssl = IMP.domino.get_state_clusters(s, states, pst, 6)
-        print "Solutions are"
+        print("Solutions are")
         for s in ssl:
-            print s
+            print(s)
 if __name__ == '__main__':
     IMP.test.main()

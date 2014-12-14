@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import sys
 import os
@@ -8,8 +9,8 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
 
     def test_simple(self):
         """Simple test of SAXS profile application"""
-        print self.get_input_file_name('6lyz.pdb')
-        print self.get_input_file_name('lyzexp.dat')
+        print(self.get_input_file_name('6lyz.pdb'))
+        print(self.get_input_file_name('lyzexp.dat'))
         p = self.run_application('foxs',
                                  [self.get_input_file_name('6lyz.pdb'),
                                   self.get_input_file_name('lyzexp.dat')])
@@ -24,8 +25,8 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
 
     def test_simple_no_fit(self):
         """Simple test of SAXS profile application no fitting of c1/c2 parameters"""
-        print self.get_input_file_name('6lyz.pdb')
-        print self.get_input_file_name('lyzexp.dat')
+        print(self.get_input_file_name('6lyz.pdb'))
+        print(self.get_input_file_name('lyzexp.dat'))
         p = self.run_application('foxs',
                                  ['-e', '1.0', '-w', '0.0',
                                   self.get_input_file_name('6lyz.pdb'),
@@ -41,8 +42,8 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
 
     def test_simple_residue(self):
         """Simple test of SAXS profile application CA only calculation"""
-        print self.get_input_file_name('6lyz.pdb')
-        print self.get_input_file_name('lyzexp.dat')
+        print(self.get_input_file_name('6lyz.pdb'))
+        print(self.get_input_file_name('lyzexp.dat'))
         p = self.run_application('foxs',
                                  ['-r',
                                   self.get_input_file_name('6lyz.pdb'),
@@ -58,8 +59,8 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
 
     def test_simple_js(self):
         """Simple test of SAXS profile application js output"""
-        print self.get_input_file_name('6lyz.pdb')
-        print self.get_input_file_name('lyzexp.dat')
+        print(self.get_input_file_name('6lyz.pdb'))
+        print(self.get_input_file_name('lyzexp.dat'))
         p = self.run_application('foxs',
                                  ['-j',
                                   self.get_input_file_name('6lyz.pdb'),

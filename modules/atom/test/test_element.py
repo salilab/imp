@@ -1,3 +1,4 @@
+from __future__ import print_function
 from io import StringIO
 import IMP
 import IMP.test
@@ -20,7 +21,7 @@ class Tests(IMP.test.TestCase):
         mass = 0
         for a in atoms:
             mass += IMP.atom.Mass(a.get_particle()).get_mass()
-        print mass
+        print(mass)
         self.assertAlmostEqual(mass, 13346, delta=1.0)
 
     def test_element_write(self):

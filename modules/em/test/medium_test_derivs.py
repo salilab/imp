@@ -1,3 +1,4 @@
+from __future__ import print_function
 # test that derivatives agree with numerical ones
 try:
     import modeller
@@ -69,7 +70,7 @@ class Tests(IMP.test.TestCase):
             p.add_attribute(id_key, i)
 
         self.atmsel = modeller.selection(self.modeller_model)
-        print "initialization done ..."
+        print("initialization done ...")
 
         resolution = 3.
         voxel_size = 1.
@@ -82,11 +83,11 @@ class Tests(IMP.test.TestCase):
         xorigin = model_map.get_header().get_xorigin()
         yorigin = model_map.get_header().get_yorigin()
         zorigin = model_map.get_header().get_zorigin()
-        print(
+        print((
             "x= " + str(
                 xorigin) + " y=" + str(
                 yorigin) + " z=" + str(
-                zorigin))
+                zorigin)))
         mapfile = IMP.base.create_temporary_file_name('xxx.em')
         IMP.em.write_map(model_map, mapfile, erw)
         # EM restraint
@@ -96,9 +97,9 @@ class Tests(IMP.test.TestCase):
         em_map.get_header_writable().set_zorigin(zorigin)
         em_map.get_header_writable().compute_xyz_top()
         em_map.get_header_writable().set_resolution(resolution)
-        print "rms_calc", em_map.get_rms_calculated()
+        print("rms_calc", em_map.get_rms_calculated())
         em_map.calcRMS()
-        print "rms_calc", em_map.get_rms_calculated()
+        print("rms_calc", em_map.get_rms_calculated())
         ind_emrsr = []
         ind_emrsr.append(IMP.em.FitRestraint(self.particles,
                                              em_map,
@@ -106,13 +107,13 @@ class Tests(IMP.test.TestCase):
                                              wei_key,
                                              1.0))
         self.imp_model.add_restraint(ind_emrsr[0])
-        print("EM-score score: " + str(self.atmsel.energy()))
+        print(("EM-score score: " + str(self.atmsel.energy())))
         self.atmsel.randomize_xyz(1.0)
         nviol = self.atmsel.debug_function(
             debug_function_cutoff=(.010, 0.010, 0.01),
             detailed_debugging=True)
         self.assertLess(nviol, 1, "at least one partial derivative is wrong!")
-        print " derivs done ..."
+        print(" derivs done ...")
         os.unlink(mapfile)
 
     def test_deriv_to_pull_particles_into_density(self):
@@ -157,7 +158,7 @@ class Tests(IMP.test.TestCase):
             p.add_attribute(id_key, i)
 
         self.atmsel = modeller.selection(self.modeller_model)
-        print "initialization done ..."
+        print("initialization done ...")
 
         resolution = 3.
         voxel_size = 1.
@@ -170,11 +171,11 @@ class Tests(IMP.test.TestCase):
         xorigin = model_map.get_header().get_xorigin()
         yorigin = model_map.get_header().get_yorigin()
         zorigin = model_map.get_header().get_zorigin()
-        print(
+        print((
             "x= " + str(
                 xorigin) + " y=" + str(
                 yorigin) + " z=" + str(
-                zorigin))
+                zorigin)))
         mapfile = IMP.base.create_temporary_file_name('xxx.em')
         IMP.em.write_map(model_map, mapfile, erw)
         # EM restraint
@@ -200,13 +201,13 @@ class Tests(IMP.test.TestCase):
                     20,
                     20,
                     20))
-        print("EM-score score: " + str(self.atmsel.energy()))
+        print(("EM-score score: " + str(self.atmsel.energy())))
         self.atmsel.randomize_xyz(1.0)
         nviol = self.atmsel.debug_function(
             debug_function_cutoff=(.010, 0.010, 0.01),
             detailed_debugging=True)
         self.assertLess(nviol, 1, "at least one partial derivative is wrong!")
-        print " derivs done ..."
+        print(" derivs done ...")
         os.unlink(mapfile)
 
     def test_fr_deriv(self):
@@ -233,9 +234,9 @@ class Tests(IMP.test.TestCase):
 
         dmap.resample()
         # computes statistic stuff about the map and insert it in the header
-        print "BEFORE calcRMS", dmap.get_rms_calculated()
+        print("BEFORE calcRMS", dmap.get_rms_calculated())
         dmap.calcRMS()
-        print "AFTER calcRMS", dmap.get_rms_calculated()
+        print("AFTER calcRMS", dmap.get_rms_calculated())
         IMP.em.write_map(dmap, "map.mrc", IMP.em.MRCReaderWriter())
         rs = IMP.kernel.RestraintSet(m)
         m.add_restraint(rs)

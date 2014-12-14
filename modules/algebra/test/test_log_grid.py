@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import IMP.algebra
 import io
@@ -15,13 +16,13 @@ class Tests(IMP.test.TestCase):
 
     def test_magnitude(self):
         """Check dense log grid of ints"""
-        print "construct"
+        print("construct")
         bb = BoundingBox3D(Vector3D(1, 1, 1), Vector3D(15, 15, 15))
         sz = [5, 5, 5]
         le = LogEmbedding3D(bb, Vector3D(2.0, 2.0, 2.0), sz)
         g = DenseIntLogGrid3D(sz, le)
         bbo = g.get_bounding_box()
-        print bb, bbo
+        print(bb, bbo)
         if displayit:
             w = IMP.display.PymolWriter(self.get_tmp_file_name("log.pym"))
             bbg = IMP.display.BoundingBoxGeometry(bb)
@@ -54,7 +55,7 @@ class Tests(IMP.test.TestCase):
         for i in range(0, 10):
             gi = IMP.algebra.ExtendedGridIndex3D([i, i, i])
             center = eb.get_center(gi)
-            print center
+            print(center)
 
 
 if __name__ == '__main__':

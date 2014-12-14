@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -38,7 +39,7 @@ class Tests(IMP.test.TestCase):
         t2d = IMP.algebra.Transformation2D(R, shift_applied)
         t3d = IMP.algebra.get_transformation_3d(t2d)
         v1 = t3d.get_transformed(v)
-        print "V1: " + str(v1)
+        print("V1: " + str(v1))
         self.assertAlmostEqual(v1[2], 0.0, delta=.01)
 
     def test_transformation_between_two_reference_frames(self):

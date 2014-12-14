@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import IMP
 import IMP.statistics
@@ -23,13 +24,13 @@ class Tests(IMP.test.TestCase):
         e = IMP.statistics.VectorDEmbedding(vs)
         c0 = IMP.statistics.create_bin_based_clustering(e, bin)
         for i in range(c0.get_number_of_clusters()):
-            print c0.get_cluster_representative(i), vs[c0.get_cluster_representative(i)], len(c0.get_cluster(i))
+            print(c0.get_cluster_representative(i), vs[c0.get_cluster_representative(i)], len(c0.get_cluster(i)))
         m = IMP.statistics.EuclideanMetric(e)
         r = IMP.statistics.RecursivePartitionalClusteringMetric(m, c0)
         self.assertEqual(r.get_number_of_items(), c0.get_number_of_clusters())
         for i in range(0, r.get_number_of_items()):
             for j in range(0, i):
-                print r.get_distance(i, j), (vs[c0.get_cluster_representative(i)] - vs[c0.get_cluster_representative(j)]).get_magnitude()
+                print(r.get_distance(i, j), (vs[c0.get_cluster_representative(i)] - vs[c0.get_cluster_representative(j)]).get_magnitude())
         ci = IMP.statistics.create_diameter_clustering(r, 14 * scale + 2 * err)
         c = r.create_full_clustering(ci)
         w = IMP.display.PymolWriter(self.get_tmp_file_name("rcluster.pym"))

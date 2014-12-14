@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -24,7 +25,7 @@ class Tests(IMP.test.TestCase):
                     mdl))
             mhs[-1].set_name("prot" + str(i))
             rb = IMP.atom.create_rigid_body(mhs[-1])
-            print rb.get_name()
+            print(rb.get_name())
             rbs.append(rb)
             orig_rfs.append(rb.get_reference_frame())
         # set the nesting
@@ -48,10 +49,10 @@ class Tests(IMP.test.TestCase):
         pst.set_particle_states(
             rbs[0],
             IMP.domino.RigidBodyStates([rbs[0].get_reference_frame()]))
-        print "sample"
+        print("sample")
         s = IMP.domino.DominoSampler(mdl, pst)
         cs = s.create_sample()
-        print "number of configurations", cs.get_number_of_configurations()
+        print("number of configurations", cs.get_number_of_configurations())
         # TODO - check that the transformations are correct
         cs.load_configuration(0)
         for i, rb in enumerate(rbs[1:]):

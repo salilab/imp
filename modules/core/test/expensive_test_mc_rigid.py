@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -46,15 +47,15 @@ class MCOptimizerTest(IMP.test.TestCase):
         mhs.append(self.m1)
         mhs.append(self.m2)
         for i in range(0, 1000):
-            print "randomizing"
-            print IMP.core.XYZ(self.rb0).get_coordinates()
-            print IMP.core.XYZ(self.rb1).get_coordinates()
+            print("randomizing")
+            print(IMP.core.XYZ(self.rb0).get_coordinates())
+            print(IMP.core.XYZ(self.rb1).get_coordinates())
             self.randomize(self.rb0)
             self.randomize(self.rb1)
-            print IMP.core.XYZ(self.rb0).get_coordinates()
-            print IMP.core.XYZ(self.rb1).get_coordinates()
+            print(IMP.core.XYZ(self.rb0).get_coordinates())
+            print(IMP.core.XYZ(self.rb1).get_coordinates())
             score = self.m.evaluate(False)
-            print score
+            print(score)
             if score > 0:
                 break
         # optimize
@@ -66,13 +67,13 @@ class MCOptimizerTest(IMP.test.TestCase):
         opt.add_mover(mover2)
         opt.set_score_threshold(.001)
         for i in range(0, 5):
-            print "run", i
+            print("run", i)
             opt.optimize(20)
             e = self.m.evaluate(False)
             if e < .001:
                 break
         self.assertAlmostEqual(e, 0.0, places=2)
-        print "all done"
+        print("all done")
 
 if __name__ == '__main__':
     IMP.test.main()

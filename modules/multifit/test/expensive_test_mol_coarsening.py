@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.multifit
 import IMP.test
@@ -22,8 +23,8 @@ class Tests(IMP.test.TestCase):
     def test_coarsening(self):
         cmhs = IMP.multifit.create_coarse_molecules_from_molecules(
             self.mhs, 30, self.mdl, 5)
-        print len(IMP.core.get_leaves(cmhs[0])), len(IMP.atom.get_by_type(self.mhs[0], IMP.atom.RESIDUE_TYPE))
-        print len(IMP.core.get_leaves(cmhs[1])), len(IMP.atom.get_by_type(self.mhs[1], IMP.atom.RESIDUE_TYPE))
+        print(len(IMP.core.get_leaves(cmhs[0])), len(IMP.atom.get_by_type(self.mhs[0], IMP.atom.RESIDUE_TYPE)))
+        print(len(IMP.core.get_leaves(cmhs[1])), len(IMP.atom.get_by_type(self.mhs[1], IMP.atom.RESIDUE_TYPE)))
         self.assertEqual(len(IMP.core.get_leaves(cmhs[0])), 5)
         self.assertEqual(len(IMP.core.get_leaves(cmhs[1])), 2)
 

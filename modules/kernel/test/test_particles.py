@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 
@@ -35,9 +36,9 @@ class Tests(IMP.test.TestCase):
         for i in range(0, 6):
             p1.add_attribute(IMP.FloatKey("attr_" + str(i)), 3.5 * i, False)
         # clear derivatives
-        print model.get_ref_count()
+        print(model.get_ref_count())
         model.evaluate(True)
-        print model.get_ref_count()
+        print(model.get_ref_count())
         return (model, particles)
 
     def test_no_model(self):
@@ -83,10 +84,10 @@ class Tests(IMP.test.TestCase):
         d = {}
         d[p0] = 1
         d[p1] = 2
-        print p0.__hash__()
+        print(p0.__hash__())
         td = IMP.kernel._TrivialDecorator.setup_particle(p0)
-        print td.__hash__()
-        print td.get_particle().__hash__()
+        print(td.__hash__())
+        print(td.get_particle().__hash__())
         d[td] = 3
         self.assertEqual(d[p0], 3)
 
@@ -204,13 +205,13 @@ class Tests(IMP.test.TestCase):
         for i in range(0, num):
             p = IMP.kernel.Particle(m)
             if i % 10000 == 0:
-                print i
-        print "removing"
+                print(i)
+        print("removing")
         for i in range(0, num):
             if i % 1000 == 0:
                 m.remove_particle(m.get_particles()[i])
             if i % 10000 == 0:
-                print i
+                print(i)
 
 if __name__ == '__main__':
     IMP.test.main()

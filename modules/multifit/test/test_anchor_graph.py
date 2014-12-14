@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.em
 import IMP.test
@@ -31,10 +32,10 @@ class Tests(IMP.test.TestCase):
         IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0, 0, 0))
         sols = IMP.multifit.read_fitting_solutions(
             self.get_input_file_name("1z5s_A_fitting_solutions.txt"))
-        print sols[0].get_fit_transformation()
+        print(sols[0].get_fit_transformation())
         self.anchor_graph.set_particle_probabilities_on_anchors(p, sols)
         probs = self.anchor_graph.get_particle_probabilities(p)
-        print probs
+        print(probs)
         self.assertAlmostEqual(probs[0], 0, 1)
         self.assertAlmostEqual(probs[2], 0.92, 1)
         self.anchor_graph.show()

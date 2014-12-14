@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 
@@ -16,7 +17,7 @@ class Tests(IMP.test.TestCase):
         # For now (r675) our workaround is to #define PySwigIterator to a unique
         # name in each module that uses vector classes, in the SWIG .i file.
         for p in []:
-            print p
+            print(p)
 
 if __name__ == '__main__':
     IMP.test.main()

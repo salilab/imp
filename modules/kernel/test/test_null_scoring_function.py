@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.kernel
 import IMP.test
 import os
@@ -9,7 +10,7 @@ class Tests(IMP.test.TestCase):
         """Check that ScoringFunctionAdaptors create null scoring functions"""
         m = IMP.kernel.Model()
         n = 10
-        print 1
+        print(1)
         opt = IMP.kernel._ConstOptimizer(m)
         opt.set_scoring_function([])
         opt.optimize(100)

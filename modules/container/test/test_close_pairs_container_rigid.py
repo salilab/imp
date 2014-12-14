@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.kernel
 import IMP.test
 import IMP.core
@@ -56,7 +57,7 @@ class Tests(IMP.test.TestCase):
                         return
             self.assert_(False)
 
-        print ps0, ps1
+        print(ps0, ps1)
         rbm0 = IMP.core.RigidBodyMover(rb0, 5, 1)
         rbm1 = IMP.core.RigidBodyMover(rb1, 5, 1)
         tested = False
@@ -68,10 +69,10 @@ class Tests(IMP.test.TestCase):
             m.update()
             if nbl.get_number_of_particle_pairs() == 0:
                 test_empty()
-                print "tested"
+                print("tested")
                 tested = True
             else:
-                print "collision"
+                print("collision")
                 test_not_empty()
                 # print "collision"
         assert tested, "Never cleared"

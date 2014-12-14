@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -19,9 +20,9 @@ class Tests(IMP.test.TestCase):
             w.add_geometry(g)
         del w
         for n in names:
-            print n
+            print(n)
             contents = open(n, "r").read()
-            print contents
+            print(contents)
 
 if __name__ == '__main__':
     IMP.test.main()

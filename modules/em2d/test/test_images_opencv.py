@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.em2d as em2d
@@ -172,7 +173,7 @@ class Tests(IMP.test.TestCase):
         # Values can change, but the ccc has to be very close to 1.
         ccc = em2d.get_cross_correlation_coefficient(img1.get_data(),
                                                      img2.get_data())
-        print ccc
+        print(ccc)
         self.assertAlmostEqual(ccc, 1, delta=0.01,
                                msg="Written TIFF image is not equal to read ")
         os.remove(fn_img2)

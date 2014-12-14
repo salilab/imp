@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.base
 import IMP.test
 import sys
@@ -21,7 +22,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.add_to_log(IMP.base.VERBOSE, "Hey there\n")
         IMP.base.add_to_log(IMP.base.VERBOSE, "Big guy")
         del t
-        print 'testing'
+        print('testing')
         self.assertEqual(s.getvalue(), "Hey there\nBig guy")
         del s
         IMP.base.add_to_log(IMP.base.VERBOSE, "what's up")
@@ -49,12 +50,12 @@ class Tests(IMP.test.TestCase):
     def test_log_functions(self):
         """Test function log looks ok"""
         # I don't feel like arranging to capture the output...
-        print "calling"
+        print("calling")
         if not IMP.base.get_log_level():
             self.skipTest("Logging is disabled")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         IMP.base._test_log()
-        print "done"
+        print("done")
 
     def test_log_time_functions(self):
         """Test time log looks ok"""
@@ -63,11 +64,11 @@ class Tests(IMP.test.TestCase):
             self.skipTest("Log4CXX log backend doesnt (yet) support targets")
         if not IMP.base.get_log_level():
             self.skipTest("Logging is disabled")
-        print "calling"
+        print("calling")
         IMP.base.set_log_timer(True)
         IMP.base.set_log_level(IMP.base.VERBOSE)
         IMP.base._test_log()
-        print "done"
+        print("done")
 
     def test_log_state(self):
         """Test SetLogState"""

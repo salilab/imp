@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -14,19 +15,19 @@ class Tests(IMP.test.TestCase):
         sa = S(V(0, 0, 0), V(0, 0, 10))
         sb = S(V(1, 0, 0), V(1, 0, 10))
         ssab = ss(sa, sb)
-        print ssab
+        print(ssab)
         self.assertAlmostEqual(ssab.get_length(), 1, delta=.1)
         self.assertAlmostEqual(IMP.algebra.get_distance(sa, sb), 1, delta=.1)
         sa = S(V(0, 0, 10), V(0, 0, 0))
         sb = S(V(1, 0, 0), V(1, 0, 10))
         ssab = ss(sa, sb)
-        print ssab
+        print(ssab)
         self.assertAlmostEqual(ssab.get_length(), 1, delta=.1)
         self.assertAlmostEqual(IMP.algebra.get_distance(sa, sb), 1, delta=.1)
         sa = S(V(0, 0, -10), V(0, 0, 0))
         sb = S(V(1, 0, 0), V(1, 0, 10))
         ssab = ss(sa, sb)
-        print ssab
+        print(ssab)
         self.assertAlmostEqual(ssab.get_length(), 1, delta=.1)
         self.assertAlmostEqual(IMP.algebra.get_distance(sa, sb), 1, delta=.1)
 

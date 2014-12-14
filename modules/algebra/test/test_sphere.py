@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -40,14 +41,14 @@ class Tests(IMP.test.TestCase):
             ss.append(s)
         for i in range(1, 20):
             css = ss[0:i]
-            print len(css)
+            print(len(css))
             es = IMP.algebra.get_enclosing_sphere(css)
             es.show()
-            print
+            print()
             for cs in css:
                 d = (cs.get_center() - es.get_center()).get_magnitude()
                 cs.show()
-                print
+                print()
                 self.assertLess(d + cs.get_radius() - es.get_radius(), .5)
 
     def test_enclosing_vector(self):
@@ -80,7 +81,7 @@ class Tests(IMP.test.TestCase):
         inner_box_area = 1.0
         expected_p = inner_box_area / s_area
         observed_p = float(n) / float(m)
-        print expected_p, observed_p
+        print(expected_p, observed_p)
         self.assertAlmostEqual(observed_p, expected_p, places=1)
 
     def test_io(self):

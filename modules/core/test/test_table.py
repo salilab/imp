@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -10,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def test_set_position(self):
         """Make sure the Table PR works"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        print "hello"
+        print("hello")
         m = IMP.kernel.Model()
         p = IMP.kernel.Particle(m)
         tpr = IMP.core.TableRefiner()

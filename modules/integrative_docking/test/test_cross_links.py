@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import sys
 import os
@@ -8,8 +9,8 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
 
     def test_simple_interface(self):
         """Simple test of interface cross links generation application"""
-        print self.get_input_file_name('static.pdb')
-        print self.get_input_file_name('transformed.pdb')
+        print(self.get_input_file_name('static.pdb'))
+        print(self.get_input_file_name('transformed.pdb'))
         p = self.run_application('interface_cross_links',
                                  [self.get_input_file_name('static.pdb'),
                                   self.get_input_file_name('transformed.pdb'), '20'])

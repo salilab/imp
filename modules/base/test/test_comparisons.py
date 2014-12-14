@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.base
 import IMP.test
 import sys
@@ -18,9 +19,9 @@ class Tests(IMP.test.TestCase):
         ilt = (b.get() < c.get())
         eq = b == c
         ieq = (b.get() == c.get())
-        print cp, icp
-        print lt, ilt
-        print eq, ieq
+        print(cp, icp)
+        print(lt, ilt)
+        print(eq, ieq)
         self.assertEqual(cp, icp)
         self.assertEqual(lt, ilt)
         self.assertEqual(eq, ieq)
@@ -32,9 +33,9 @@ class Tests(IMP.test.TestCase):
             ilt = (b.get() < c.get())
             eq = b == c
             ieq = (b.get() == c.get())
-            print cp, icp
-            print lt, ilt
-            print eq, ieq
+            print(cp, icp)
+            print(lt, ilt)
+            print(eq, ieq)
             self.assertEqual(cp, icp)
             self.assertEqual(lt, ilt)
             self.assertEqual(eq, ieq)

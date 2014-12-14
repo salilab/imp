@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import IMP
 import IMP.em
@@ -12,7 +13,7 @@ class Tests(IMP.test.TestCase):
     def load_density_maps(self):
         mrw = IMP.em.MRCReaderWriter()
         erw = IMP.em.EMReaderWriter()
-        print self.get_input_file_name("in.em")
+        print(self.get_input_file_name("in.em"))
         self.scene1 = IMP.em.read_map(self.get_input_file_name("in.em"), erw)
         self.scene2 = IMP.em.read_map(
             self.get_input_file_name("1z5s.mrc"),
@@ -55,7 +56,7 @@ class Tests(IMP.test.TestCase):
         m.add_restraint(r)
         score = self.imp_model.evaluate(False)
         self.assertLess(score, 0.01)
-        print "score:", score, r.evaluate(False)
+        print("score:", score, r.evaluate(False))
         # check origin
         ps_centroid = IMP.core.get_centroid(IMP.core.XYZs(ps))
         map_centroid = dmap.get_centroid()

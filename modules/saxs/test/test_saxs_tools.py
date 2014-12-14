@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import sys
 import os
@@ -8,8 +9,8 @@ class SAXSToolsTest(IMP.test.ApplicationTestCase):
 
     def test_rg(self):
         """Simple test of Rg calculation"""
-        print self.get_input_file_name('6lyz.pdb')
-        print self.get_input_file_name('lyzexp.dat')
+        print(self.get_input_file_name('6lyz.pdb'))
+        print(self.get_input_file_name('lyzexp.dat'))
         p = self.run_application('rg',
                                  [self.get_input_file_name('6lyz.pdb'),
                                   self.get_input_file_name('lyzexp.dat')])
@@ -25,8 +26,8 @@ class SAXSToolsTest(IMP.test.ApplicationTestCase):
 
     def test_compute_chi(self):
         """Simple test of Chi calculation"""
-        print self.get_input_file_name('6lyz.pdb')
-        print self.get_input_file_name('lyzexp.dat')
+        print(self.get_input_file_name('6lyz.pdb'))
+        print(self.get_input_file_name('lyzexp.dat'))
         p = self.run_application('compute_chi',
                                  [self.get_input_file_name('lyzexp.dat'),
                                   self.get_input_file_name('6lyz.pdb.dat')])

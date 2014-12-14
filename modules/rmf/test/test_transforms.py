@@ -1,3 +1,4 @@
+from __future__ import print_function
 import RMF
 import IMP.rmf
 import IMP.algebra
@@ -49,7 +50,7 @@ class Tests(IMP.test.TestCase):
 
         vr = ctr.get_global_coordinates(pf.get(n).get_coordinates())
         vi = tr.get_transformed(IMP.algebra.Vector3D(*coords))
-        print vr, vi
+        print(vr, vi)
         self.assertAlmostEqual(
             IMP.algebra.get_distance(vi,
                                      IMP.algebra.Vector3D(*vr)),
@@ -105,11 +106,11 @@ class Tests(IMP.test.TestCase):
         vin0 = tr.get_transformed(IMP.algebra.Vector3D(1, 0, 0))
         vin1 = tr.get_transformed(IMP.algebra.Vector3D(0, 1, 0))
         vin2 = tr.get_transformed(IMP.algebra.Vector3D(0, 0, 1))
-        print IMP.algebra.get_distance(vin0, vich0),\
+        print(IMP.algebra.get_distance(vin0, vich0),\
             IMP.algebra.get_distance(vin1, vich0),\
-            IMP.algebra.get_distance(vin2, vich0)
+            IMP.algebra.get_distance(vin2, vich0))
         for p in [(vch0, vich0), (vn0, vin0), (vn1, vin1), (vn2, vin2)]:
-            print p[0], p[1]
+            print(p[0], p[1])
             self.assertAlmostEqual(
                 IMP.algebra.get_distance(p[1],
                                          IMP.algebra.Vector3D(*p[0])),

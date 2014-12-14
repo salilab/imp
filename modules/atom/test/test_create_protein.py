@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -15,14 +16,14 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model()
         rp = IMP.kernel.Particle(m)
         r = IMP.atom.create_protein(rp, "hi", 10.0, 150)
-        print "back"
+        print("back")
         r.show()
         m.add_restraint(r)
         p = IMP.atom.Hierarchy(rp)
-        print "printing"
-        print p.get_number_of_children()
-        print p.get_children()
-        print p.get_children().size()
+        print("printing")
+        print(p.get_number_of_children())
+        print(p.get_children())
+        print(p.get_children().size())
         for c in p.get_children():
             d = IMP.core.XYZ(c.get_particle())
             d.set_coordinates(get_random_vector_in(Vector3D(0, 0, 0),
@@ -30,7 +31,7 @@ class Tests(IMP.test.TestCase):
         o = IMP.core.SteepestDescent()
         o.set_model(m)
         score = o.optimize(1000)
-        print score
+        print(score)
         w = IMP.display.ChimeraWriter(self.get_tmp_file_name("proteinconf.py"))
         for c in p.get_children():
             d = IMP.core.XYZR(c.get_particle())

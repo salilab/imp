@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.container
@@ -18,7 +19,7 @@ class Tests(IMP.test.TestCase):
                                        IMP.algebra.Vector3D(10, 10, 10))
         for d in ds:
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
-            print d
+            print(d)
             d.set_radius(4)
         cpc = IMP.container.ConsecutivePairContainer(ps)
         hdps = IMP.core.HarmonicDistancePairScore(0, 1)
@@ -33,7 +34,7 @@ class Tests(IMP.test.TestCase):
         rdse = [x.evaluate(False) for x in rds]
         self.assertAlmostEqual(re, rde, delta=.1)
         self.assertAlmostEqual(re, sum(rdse), delta=.1)
-        print re, rde, sum(rdse)
+        print(re, rde, sum(rdse))
 
     def test_pair_filter(self):
         """Test consecutive pair filter"""

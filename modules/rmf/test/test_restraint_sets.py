@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import IMP.rmf
 import IMP.test
@@ -30,7 +31,7 @@ class Tests(IMP.test.TestCase):
             f = RMF.open_rmf_file_read_only(fn)
             hs = IMP.rmf.create_hierarchies(f, m)
             nrs = IMP.rmf.create_restraints(f, m)
-            print nrs
+            print(nrs)
             self.assertEqual(len(nrs), 1)
             rsnrs0 = IMP.kernel.RestraintSet.get_from(nrs[0])
             self.assertEqual(len(rsnrs0.get_restraints()), 1)
@@ -64,7 +65,7 @@ class Tests(IMP.test.TestCase):
             f = RMF.open_rmf_file_read_only(fn)
             hs = IMP.rmf.create_hierarchies(f, m)
             nrs = IMP.rmf.create_restraints(f, m)
-            print nrs
+            print(nrs)
             self.assertEqual(len(nrs), 2)
             rsnrs0 = IMP.kernel.RestraintSet.get_from(nrs[0])
             rsnrs1 = IMP.kernel.RestraintSet.get_from(nrs[1])

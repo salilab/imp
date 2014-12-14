@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import sys
 import os
@@ -8,8 +9,8 @@ class NMR_RTCApplicationTest(IMP.test.ApplicationTestCase):
 
     def test_simple_interface(self):
         """Simple test of interface_rtc application"""
-        print self.get_input_file_name('static.pdb')
-        print self.get_input_file_name('transformed.pdb')
+        print(self.get_input_file_name('static.pdb'))
+        print(self.get_input_file_name('transformed.pdb'))
         p = self.run_application('interface_rtc',
                                  [self.get_input_file_name('static.pdb'),
                                   self.get_input_file_name('transformed.pdb')])

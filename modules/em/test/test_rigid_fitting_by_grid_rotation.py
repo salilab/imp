@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import os
 import IMP
@@ -65,7 +66,7 @@ class Tests(IMP.test.TestCase):
             sampled_density_map,
             threshold,
             True)
-        print "score1:", score1
+        print("score1:", score1)
         # determine a random transformation
         # t=IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
         # IMP.algebra.random_vector_in_unit_box())
@@ -102,7 +103,7 @@ class Tests(IMP.test.TestCase):
         score2 = ccc.cross_correlation_coefficient(transformed_density,
                                                    sampled_density_map1,
                                                    threshold, True)
-        print "score2:", score2
+        print("score2:", score2)
         # move the particles back for the next test
         t_inv = t.get_inverse()
         for p in self.particles:
@@ -149,7 +150,7 @@ class Tests(IMP.test.TestCase):
             sampled_density_map,
             threshold,
             True)
-        print "score1:", score1
+        print("score1:", score1)
 
         transformed_sampled_density.calcRMS()
         threshold = transformed_sampled_density.get_header().dmin
@@ -158,13 +159,13 @@ class Tests(IMP.test.TestCase):
             transformed_sampled_density,
             transformed_sampled_density.get_header().dmin, True)
 
-        print "score2:", score2
+        print("score2:", score2)
         # move the particles back for the next test
         t_inv = t.get_inverse()
         for p in self.particles:
             IMP.core.XYZ(p).set_coordinates(
                 t_inv.get_transformed(IMP.core.XYZ(p).get_coordinates()))
-        print "scores:", score1, ":", score2
+        print("scores:", score1, ":", score2)
         self.assertAlmostEqual(score1, score2, delta=0.055)
 if __name__ == '__main__':
     IMP.test.main()

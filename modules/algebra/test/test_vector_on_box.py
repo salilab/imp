@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import IMP.algebra
 import math
@@ -18,10 +19,10 @@ class Tests(IMP.test.TestCase):
         """Testing the distribution of vectors on a box"""
         lb = IMP.algebra.Vector3D(10, 8, 12)
         ub = IMP.algebra.Vector3D(23, 25, 28)
-        print ".color 1 0 0"
-        print ".dotat " + str(lb[0]) + " " + str(lb[1]) + " " + str(lb[2])
-        print ".dotat " + str(ub[0]) + " " + str(ub[1]) + " " + str(ub[2])
-        print ".color .5 .5 .5"
+        print(".color 1 0 0")
+        print(".dotat " + str(lb[0]) + " " + str(lb[1]) + " " + str(lb[2]))
+        print(".dotat " + str(ub[0]) + " " + str(ub[1]) + " " + str(ub[2]))
+        print(".color .5 .5 .5")
         delta = IMP.algebra.Vector3D(.1, .1, .1)
         ilb = lb + delta
         iub = ub - delta
@@ -30,7 +31,7 @@ class Tests(IMP.test.TestCase):
         for i in range(0, 100):
             rv = IMP.algebra.get_random_vector_on(
                 IMP.algebra.BoundingBox3D(lb, ub))
-            print ".dotat " + str(rv[0]) + " " + str(rv[1]) + " " + str(rv[2])
+            print(".dotat " + str(rv[0]) + " " + str(rv[1]) + " " + str(rv[2]))
             for i in range(0, 3):
                 self.assertTrue(in_box(olb, oub, rv))
                 self.assertFalse(in_box(ilb, iub, rv))

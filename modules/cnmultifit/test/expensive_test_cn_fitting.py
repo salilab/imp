@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import sys
@@ -44,7 +45,7 @@ class CnFittingTests(IMP.test.TestCase):
             sols = IMP.cnmultifit.fit_cn_assembly(self.ref_chains, 1,
                                                   self.dmap, self.dens_threshold,
                                                   aligner, False, False)
-            print "FOR trans ", i, " FIT VALUE:", sols.get_score(0)
+            print("FOR trans ", i, " FIT VALUE:", sols.get_score(0))
             # Since the fit is done in 'fast' mode, the density map is not
             # resampled, and particles can end up outside the density, giving
             # relatively poor scores. So relax the score tolerance from

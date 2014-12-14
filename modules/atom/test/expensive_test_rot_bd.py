@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.container
@@ -37,9 +38,9 @@ class Tests(IMP.test.TestCase):
             angle = IMP.algebra.get_axis_and_angle(rots[-1])
             angles.append(angle[1])
         # print angles
-        print IMP.atom.get_diffusion_angle(dd.get_rotational_diffusion_coefficient(), dt),\
+        print(IMP.atom.get_diffusion_angle(dd.get_rotational_diffusion_coefficient(), dt),\
             dd.get_rotational_diffusion_coefficient(),\
-            IMP.atom.get_rotational_diffusion_coefficient(rots, dt)
+            IMP.atom.get_rotational_diffusion_coefficient(rots, dt))
         self.assertAlmostEqual(dd.get_rotational_diffusion_coefficient(),
                                IMP.atom.get_rotational_diffusion_coefficient(
                                    rots, dt),

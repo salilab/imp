@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import IMP
 import IMP.em
@@ -17,7 +18,7 @@ class Tests(IMP.test.TestCase):
             r = IMP.em.FitRestraint(self.particles, scene)
             self.imp_model.add_restraint(r)
             score = self.imp_model.evaluate(False)
-            print "EM score (1-CC) = " + str(score), " filename:", fn, " res:", res
+            print("EM score (1-CC) = " + str(score), " filename:", fn, " res:", res)
             self.assertLess(
                 score,
                 0.05,
@@ -35,7 +36,7 @@ class Tests(IMP.test.TestCase):
         self.mrw = IMP.em.MRCReaderWriter()
         self.imp_model = IMP.kernel.Model()
         name = self.get_input_file_name("1z5s.pdb")
-        print name
+        print(name)
         self.mh = IMP.atom.read_pdb(name,
                                     self.imp_model, IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(self.mh)

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import IMP.rmf
 import IMP.test
@@ -50,7 +51,7 @@ class Tests(IMP.test.TestCase):
         h2 = IMP.rmf.create_hierarchies(fh, m)
         rd = IMP.atom.Representation(h2[0])
         back_resolutions = rd.get_resolutions()
-        print back_resolutions
+        print(back_resolutions)
         for p in zip(resolutions, back_resolutions):
             self.assertAlmostEqual(p[0], p[1], delta=.1)
 
@@ -74,7 +75,7 @@ class Tests(IMP.test.TestCase):
         h2 = IMP.rmf.create_hierarchies(fh, m)
         rd = IMP.atom.Representation(h2[0])
         back_resolutions = rd.get_resolutions()
-        print back_resolutions
+        print(back_resolutions)
         for p in zip(resolutions, back_resolutions):
             self.assertAlmostEqual(p[0], p[1], delta=.1)
 

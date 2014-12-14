@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import IMP
 import IMP.statistics
@@ -20,9 +21,9 @@ class Tests(IMP.test.TestCase):
         c = IMP.statistics.create_lloyds_kmeans(e,
                                                 3, 1000)
         self.assertEqual(c.get_number_of_clusters(), 3)
-        print c.get_cluster_center(0)
-        print c.get_cluster_center(1)
-        print c.get_cluster_center(2)
+        print(c.get_cluster_center(0))
+        print(c.get_cluster_center(1))
+        print(c.get_cluster_center(2))
 
         for i in range(0, 3):
             found = False
@@ -33,7 +34,7 @@ class Tests(IMP.test.TestCase):
                                                  c.get_cluster_center(
                                                      j)[1],
                                                  c.get_cluster_center(j)[2]))
-                print d
+                print(d)
                 if d < 2:
                     found = True
             self.assertTrue(found)

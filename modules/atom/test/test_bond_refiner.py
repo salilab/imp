@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -18,19 +19,19 @@ class Tests(IMP.test.TestCase):
         p1 = IMP.kernel.Particle(m)
         b1 = IMP.atom.Bonded.setup_particle(p1)
         b = IMP.atom.create_custom_bond(b0, b1, 1)
-        print "creating r"
+        print("creating r")
         r = IMP.atom.BondEndpointsRefiner()
         self.assertFalse(r.get_can_refine(p0))
         self.assertFalse(r.get_can_refine(p1))
         self.assertTrue(r.get_can_refine(b.get_particle()))
-        print "get"
+        print("get")
         ps = r.get_refined(b.get_particle())
-        print "post get"
+        print("post get")
         self.assertEqual(ps[0], p0)
         self.assertEqual(ps[1], p1)
-        print "clean r"
+        print("clean r")
         r = None
-        print "done clean r"
+        print("done clean r")
 
 
 if __name__ == '__main__':

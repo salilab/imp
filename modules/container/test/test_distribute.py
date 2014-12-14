@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.container
@@ -43,9 +44,9 @@ class Tests(IMP.test.TestCase):
         odd = dss.add_predicate(Odd(), 1)
         zf = dss.add_predicate(Mod5(), 0)
         m.update()
-        print even.get_particles()
-        print odd.get_particles()
-        print zf.get_particles()
+        print(even.get_particles())
+        print(odd.get_particles())
+        print(zf.get_particles())
         pse = [ps[i * 2] for i in range(len(ps) / 2)]
         pso = [ps[i * 2 + 1] for i in range(len(ps) / 2)]
         psf = [ps[0], ps[5]]

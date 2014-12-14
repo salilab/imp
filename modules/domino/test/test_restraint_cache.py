@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -27,7 +28,7 @@ class Tests(IMP.test.TestCase):
         (m, ps, r, pst, ik, cache) = self._create_stuff()
         cache.add_restraints([r])
         subset = IMP.domino.Subset(random.sample(ps, 2))
-        print subset
+        print(subset)
         rsb = cache.get_restraints(subset, [])
         self.assertEqual(len(rsb), 0)
 
@@ -38,15 +39,15 @@ class Tests(IMP.test.TestCase):
         r.set_weight(3)
         cache.add_restraints([r])
         subset = IMP.domino.Subset(random.sample(ps, 2))
-        print subset
+        print(subset)
         rsb = cache.get_restraints(subset, [])
-        print rsb
+        print(rsb)
         self.assertEqual(len(rsb), 2)
         slc = cache.get_slice(rsb[0], subset)
-        print slc
+        print(slc)
         self.assertEqual(len(slc), 1)
         aslc = slc.get_sliced(IMP.domino.Assignment([0, 1]))
-        print aslc
+        print(aslc)
         self.assertEqual(len(aslc), 1)
         score = cache.get_score(rsb[0], aslc)
         self.assertAlmostEqual(score, 1.0 / len(ps), delta=.01)
@@ -58,20 +59,20 @@ class Tests(IMP.test.TestCase):
         r.set_weight(3)
         cache.add_restraints([r])
         subset = IMP.domino.Subset(ps)
-        print subset
+        print(subset)
         rsb = cache.get_restraints(
             subset,
             [IMP.domino.Subset([p]) for p in ps])
-        print rsb
+        print(rsb)
         self.assertEqual(len(rsb), 1)
         slc = cache.get_slice(rsb[0], subset)
-        print slc
+        print(slc)
         self.assertEqual(len(slc), len(ps))
         aslc = slc.get_sliced(IMP.domino.Assignment(range(len(ps))))
-        print aslc
+        print(aslc)
         self.assertEqual(len(aslc), len(ps))
         score = cache.get_score(rsb[0], aslc)
-        print score
+        print(score)
         self.assert_(score > 1000)
 
     def test_decomposition_4(self):
@@ -103,7 +104,7 @@ class Tests(IMP.test.TestCase):
         rs.add_restraint(r)
         r.set_maximum_score(.5)
         cache.add_restraints([rs])
-        print "info:"
+        print("info:")
         cache.show_restraint_information()
         subset = IMP.domino.Subset([ps[0]])
         rsb = cache.get_restraints(subset, [])
@@ -113,7 +114,7 @@ class Tests(IMP.test.TestCase):
         aslc = slc.get_sliced(IMP.domino.Assignment(range(len(ps))))
         self.assertEqual(len(aslc), 1)
         score = cache.get_score(rsb[0], aslc)
-        print score
+        print(score)
         self.assert_(score > 1000)
 
 if __name__ == '__main__':

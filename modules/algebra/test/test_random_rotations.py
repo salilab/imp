@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -13,26 +14,26 @@ class Tests(IMP.test.TestCase):
         """Test uniform random rotation"""
         if not hasattr(IMP, 'cgal'):
             self.skipTest("IMP.cgal module disabled")
-        print "Getting them"
+        print("Getting them")
         rots = IMP.algebra.get_uniform_cover_rotations_3d(100)
-        print "got them"
+        print("got them")
         pts = [IMP.algebra.Vector3D(1, 0, 0),
                IMP.algebra.Vector3D(0, 1, 0)]
-        print type(rots)
-        print rots
+        print(type(rots))
+        print(rots)
         for r in rots:
-            print r
-            print type(r)
-            print str(r)
+            print(r)
+            print(type(r))
+            print(str(r))
             r0 = r.get_rotated(pts[0])
             r1 = r.get_rotated(pts[1])
-            print ".color red"
-            print ".sphere " + str(r0[0]) + " " + str(r0[1]) + " " + str(r0[2])\
-                + " .1"
-            print ".color blue"
-            print ".sphere " + str(.5 * r1[0]) + " " + str(.5 * r1[1]) + " " \
+            print(".color red")
+            print(".sphere " + str(r0[0]) + " " + str(r0[1]) + " " + str(r0[2])\
+                + " .1")
+            print(".color blue")
+            print(".sphere " + str(.5 * r1[0]) + " " + str(.5 * r1[1]) + " " \
                 + str(.5 * r1[2])\
-                + " .1"
+                + " .1")
 
         c0 = IMP.algebra.get_zero_vector_3d()
         c1 = c0

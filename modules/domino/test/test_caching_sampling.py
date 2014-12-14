@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -15,7 +16,7 @@ class Tests(IMP.test.TestCase):
         for i in range(0, 3):
             p = IMP.kernel.Particle(m)
             d = IMP.core.XYZ.setup_particle(p)
-            print d
+            print(d)
             ds.append(d)
             ps.append(p)
         pts = [IMP.algebra.Vector3D(0, 0, 0),
@@ -38,16 +39,16 @@ class Tests(IMP.test.TestCase):
         sampler.set_log_level(IMP.base.VERBOSE)
         # sampler.set_assignments_table(sst)
         m.set_maximum_score(3.1)
-        print "getting sample"
+        print("getting sample")
         cs = sampler.create_sample()
-        print "done"
+        print("done")
         self.assertGreater(cs.get_number_of_configurations(), 0)
         for i in range(0, cs.get_number_of_configurations()):
-            print "loading ", i
+            print("loading ", i)
             cs.load_configuration(i)
-            print "testing"
+            print("testing")
             dist = IMP.core.get_distance(ds[0], ds[1])
-            print dist
+            print(dist)
             self.assertLess((dist - 1) ** 2, .1)
             self.assertLess((IMP.core.get_distance(ds[1], ds[2]) - 1) ** 2, .1)
 

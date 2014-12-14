@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import IMP
 import IMP.statistics
@@ -23,8 +24,8 @@ class Tests(IMP.test.TestCase):
                                           random.gauss(0, 10)))
         mean = hist.get_mean()
         sigmaout = hist.get_standard_deviation(mean)
-        print mean
-        print sigmaout
+        print(mean)
+        print(sigmaout)
         for i in range(0, 2):
             self.assertAlmostEqual(mean[i], 0, delta=.5)
             self.assertAlmostEqual(sigmaout[i], 10, delta=.5)
@@ -38,8 +39,8 @@ class Tests(IMP.test.TestCase):
             hist.add(random.gauss(0, 10))
         mean = hist.get_mean()
         sigmaout = hist.get_standard_deviation(mean)
-        print mean
-        print sigmaout
+        print(mean)
+        print(sigmaout)
         self.assertAlmostEqual(mean[0], 0, delta=.5)
         self.assertAlmostEqual(sigmaout[0], 10, delta=.5)
 
