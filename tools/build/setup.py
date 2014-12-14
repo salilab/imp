@@ -199,27 +199,28 @@ if __name__ == '__main__':
         targetdir = os.path.join(target, module)
         tools.mkdir(targetdir)
         exceptions = os.path.join(g, "test", "standards_exceptions")
-        plural_exceptions = []
-        show_exceptions = []
-        function_name_exceptions = []
-        value_object_exceptions = []
-        class_name_exceptions = []
-        spelling_exceptions = []
+        d = {'plural_exceptions': [],
+             'show_exceptions': [],
+             'function_name_exceptions': [],
+             'value_object_exceptions': [],
+             'class_name_exceptions': [],
+             'spelling_exceptions': []}
         try:
-            exec(open(exceptions, "r").read())
-        except:
+            exec(open(exceptions, "r").read(), d)
+        except IOError:
             pass
         impmodule = "IMP." + module
         test = template % ({'module': impmodule,
-                            'plural_exceptions': str(plural_exceptions),
-                           'show_exceptions': str(show_exceptions),
+                            'plural_exceptions': str(d['plural_exceptions']),
+                            'show_exceptions': str(d['show_exceptions']),
                             'function_name_exceptions':
-                            str(function_name_exceptions),
+                                str(d['function_name_exceptions']),
                             'value_object_exceptions':
-                            str(value_object_exceptions),
+                                str(d['value_object_exceptions']),
                             'class_name_exceptions':
-                            str(class_name_exceptions),
-                            'spelling_exceptions': str(spelling_exceptions)})
+                                str(d['class_name_exceptions']),
+                            'spelling_exceptions':
+                                str(d['spelling_exceptions'])})
         open(
             os.path.join("test",
                          module,
