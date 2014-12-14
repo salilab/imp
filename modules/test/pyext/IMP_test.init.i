@@ -614,7 +614,8 @@ class _TestResult(unittest.TextTestResult):
         if 'IMP_TEST_DETAIL_DIR' in os.environ:
             fname = os.path.join(os.environ['IMP_TEST_DETAIL_DIR'],
                                  os.path.basename(sys.argv[0]))
-            pickle.dump(self.all_tests, open(fname, 'wb'), -1)
+            with open(fname, 'wb') as fh:
+                pickle.dump(self.all_tests, fh, -1)
         super(_TestResult, self).stopTestRun()
 
     def startTest(self, test):
