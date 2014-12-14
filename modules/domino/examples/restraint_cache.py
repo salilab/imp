@@ -56,7 +56,7 @@ g = IMP.algebra.DenseFloatGrid3D(
     resolution, IMP.algebra.get_unit_bounding_box_3d())
 # create some random sites
 vs = [g.get_center(i) for i in g.get_all_indexes()]
-print "States are", vs
+print("States are", vs)
 pst = IMP.domino.ParticleStatesTable()
 states = IMP.domino.XYZStates(vs)
 for p in ps:
@@ -87,7 +87,7 @@ sts = s.get_sample_assignments(alls)
 
 # create a temporary file to write things to
 rmf = RMF.create_rmf_file(IMP.create_temporary_file_name("cache", ".rmf"))
-print "saving configurations to", rmf.get_name()
+print("saving configurations to", rmf.get_name())
 
 IMP.rmf.add_hierarchy(rmf, h)
 
@@ -101,7 +101,7 @@ for r in domino_restraints:
 
 IMP.rmf.add_restraints(rmf, domino_restraints)
 # for each assignment load it, and add the configuration to an rmf file
-print "found assignments", sts
+print("found assignments", sts)
 # we don't care about messages during saving
 for i, s in enumerate(sts):
     IMP.domino.load_particle_states(alls, s, pst)
@@ -111,4 +111,4 @@ for i, s in enumerate(sts):
         rc.load_last_score(r, alls, s)
     # save the configuration and scores to the rmf
     IMP.rmf.save_frame(rmf, i)
-print "done"
+print("done")

@@ -14,7 +14,7 @@ ss = IMP.domino.Subset([ps[3], ps[5], ps[7]])
 
 file_name = IMP.create_temporary_file_name("assignments", ".asn")
 
-print "File name is", file_name
+print("File name is", file_name)
 
 # create a list of assignments
 
@@ -35,10 +35,10 @@ back_asl = IMP.domino.ReadAssignmentContainer(file_name, ss, ps, "reader")
 
 
 if back_asl.get_assignments() == written:
-    print "They match!"
+    print("They match!")
 else:
-    print back_asl.get_assignments()
-    print written
+    print(back_asl.get_assignments())
+    print(written)
     raise RuntimeError("They don't match :-(")
 
 
@@ -50,9 +50,9 @@ psp = [IMP.kernel.Particle(mp) for i in range(0, 10)]
 # create a subset with a few of the particles
 ssp = IMP.domino.Subset([psp[3], psp[5], psp[7]])
 
-print "Note the subsets are differently ordered (most of the time): ", ss, ssp
+print("Note the subsets are differently ordered (most of the time): ", ss, ssp)
 
 back_aslp = IMP.domino.ReadAssignmentContainer(file_name, ssp, psp, "reader2")
 
 # however, the states are demuxed so they match the particles
-print [str(a) for a in back_aslp.get_assignments()]
+print([str(a) for a in back_aslp.get_assignments()])

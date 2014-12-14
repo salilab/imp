@@ -42,10 +42,10 @@ ig = IMP.domino.get_interaction_graph([r],
                                       pst)
 # generate a junction tree from the interaction graph
 jt = IMP.domino.get_junction_tree(ig)
-print dir(jt)
-print type(jt)
+print(dir(jt))
+print(type(jt))
 # create a merge tree from the junction tree, this can be passed to
 # IMP.domin.DominoSampler
 mt = IMP.domino.get_merge_tree(jt)
 s = pst.get_subset()
-print s, type(s)
+print(s, type(s))

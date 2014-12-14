@@ -42,8 +42,8 @@ def create_discrete_states(ps):
           IMP.algebra.Vector3D(2, 1, 0),
           IMP.algebra.Vector3D(2, 0, 0)]
     vs = vs + [-v for v in vs]
-    print len(vs), "states for each particle"
-    print vs[1]
+    print(len(vs), "states for each particle")
+    print(vs[1])
     states = IMP.domino.XYZStates(vs)
     # special case ps[0] to remove a sliding degree of freedom
     for p in ps[1:]:
@@ -125,23 +125,23 @@ IMP.base.set_log_level(IMP.base.TERSE)
 m = IMP.kernel.Model()
 m.set_log_level(IMP.base.SILENT)
 
-print "creating representation"
+print("creating representation")
 ps = create_representation(m)
-print "creating discrete states"
+print("creating discrete states")
 pst = create_discrete_states(ps)
-print "creating score function"
+print("creating score function")
 rs = create_scoring(m, ps)
 
-print "creating sampler"
+print("creating sampler")
 s = create_sampler(m, ps, rs, pst)
 
 # s.set_log_level(IMP.base.SILENT)
-print "sampling"
+print("sampling")
 cs = s.create_sample()
 
-print "found ", cs.get_number_of_configurations(), "solutions"
+print("found ", cs.get_number_of_configurations(), "solutions")
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
-    print "solution number:", i, " is:", m.evaluate(False)
+    print("solution number:", i, " is:", m.evaluate(False))
     for p in ps:
-        print IMP.core.XYZ(p).get_x(), IMP.core.XYZ(p).get_y()
+        print(IMP.core.XYZ(p).get_x(), IMP.core.XYZ(p).get_y())

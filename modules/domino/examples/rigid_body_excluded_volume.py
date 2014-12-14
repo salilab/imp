@@ -83,27 +83,27 @@ def display(m, helices, name):
         w.add_geometry(g)
 
 IMP.base.set_log_level(IMP.base.SILENT)
-print "creating representation"
+print("creating representation")
 (m, helices) = create_representation()
 
-print "creating score function"
+print("creating score function")
 rs = create_excluded_volume(m, helices)
 
-print "creating discrete states"
+print("creating discrete states")
 pst = create_discrete_states(m, helices)
 
-print "creating sampler"
+print("creating sampler")
 s = create_sampler(m, rs, pst)
 m.set_log_level(IMP.base.SILENT)
 IMP.base.set_log_level(IMP.base.VERBOSE)
-print "sampling"
+print("sampling")
 cs = s.create_sample()
 
-print "found ", cs.get_number_of_configurations(), "solutions"
+print("found ", cs.get_number_of_configurations(), "solutions")
 score = []
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
     ss = m.evaluate(False)
     score.append(ss)
-    print "** solution number:", i, " is:", ss
+    print("** solution number:", i, " is:", ss)
     display(m, helices, "sol_" + str(i) + ".pym")
