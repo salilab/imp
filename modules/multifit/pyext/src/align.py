@@ -105,7 +105,7 @@ def report_solutions(asmb, mdl, mhs, dmap, mapping_data, combs,
         # print pb
     print("end fitting")
     # Sort by score
-    ranked_combs.sort(lambda a, b: cmp(a[1], b[1]))
+    ranked_combs.sort(key=lambda a: a[1])
     # Remove excess combinations
     print("ranked combs:", len(ranked_combs))
     ranked_combs[max_comb:] = []

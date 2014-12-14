@@ -219,8 +219,8 @@ class SAXSProfile:
             keys, values = zip(*retval.items())
             values = zip(
                 *self._subsample(retval['q'],
-                                 zip(*values)),
-                                 maxpoints)
+                                 zip(*values),
+                                 maxpoints))
             values = map(list, values)
             return dict(zip(keys, values))
         else:
