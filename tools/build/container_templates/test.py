@@ -1,6 +1,7 @@
 # NOTE: This file is generated from modules/core/tools/container_tempates/test.py
 # do not edit.
 
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -86,7 +87,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         self.assertEqual(c.get_ref_count(), 1)
         for i in range(0, 10):
             c.add_FUNCTIONNAME(self.create_FUNCTIONNAME(m))
-        print c.get_number_of_FUNCTIONNAMEs()
+        print(c.get_number_of_FUNCTIONNAMEs())
         d = self.create_CLASSFUNCTIONNAME_score()
         self.assertEqual(d.get_ref_count(), 1)
         r = IMP.container.MinimumClassnameRestraint(d, c)
@@ -95,19 +96,19 @@ class ClassnameContainerTest(IMP.test.TestCase):
         r.set_n(4)
         m.add_restraint(r)
         f = m.evaluate(False)
-        print f
+        print(f)
         ms = []
-        print c.get_number_of_FUNCTIONNAMEs()
+        print(c.get_number_of_FUNCTIONNAMEs())
         for i in range(0, 10):
             ps = c.get_FUNCTIONNAME(i)
             cm = d.evaluate(ps, None)
             ms.append(cm)
-        print ms
+        print(ms)
         ms.sort()
         mt = 0
         for i in range(0, 4):
             mt = mt + ms[i]
-        print mt
+        print(mt)
         self.assertAlmostEqual(mt, f, delta=.1 * f)
 
     def test_min_score(self):
@@ -126,7 +127,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         """Testing ClassnameContainerSet"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
         m = IMP.kernel.Model()
-        print "hi"
+        print("hi")
         c = IMP.container.ClassnameContainerSet(m)
         ls = []
         cs = []
