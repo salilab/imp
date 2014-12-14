@@ -303,7 +303,7 @@ class TestCase(unittest.TestCase):
     def assertValueObjects(self, module, exceptions_list):
         "Check that all the C++ classes in the module are values or objects."
         all= dir(module)
-        ok = set(exceptions_list + eval(module.__name__+"._value_types") + eval(module.__name__+"._object_types") + eval(module.__name__+"._raii_types") +eval(module.__name__+"._plural_types"))
+        ok = set(exceptions_list + module._value_types + module._object_types + module._raii_types + module._plural_types)
 
         bad=[]
         for name in all:
@@ -322,10 +322,10 @@ class TestCase(unittest.TestCase):
         self.assertEquals(len(bad), 0,
                           message)
         for e in exceptions_list:
-            self.assertTrue(e not in eval(module.__name__+"._value_types")\
-                       + eval(module.__name__+"._object_types")\
-                       + eval(module.__name__+"._raii_types")\
-                       + eval(module.__name__+"._plural_types"),
+            self.assertTrue(e not in module._value_types
+                       + module._object_types
+                       + module._raii_types
+                       + module._plural_types,
                         "Value/Object exception "+e+" is not an exception")
 
     def _check_spelling(self, word, words):
@@ -491,8 +491,8 @@ class TestCase(unittest.TestCase):
                    and f not in exceptions\
                    and not f.endswith("Temp") and not f.endswith("Iterator")\
                    and not f.endswith("Exception") and\
-                   f not in eval(modulename.__name__+"._raii_types") and \
-                   f not in eval(modulename.__name__+"._plural_types"):
+                   f not in modulename._raii_types and \
+                   f not in modulename._plural_types:
                 if not hasattr(getattr(modulename, f), 'show'):
                     not_found.append(f)
         message="All IMP classes should support show and __str__. The following do not:\n%s\n If there is a good reason for them not to, add them to the show_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
