@@ -1,6 +1,6 @@
 import IMP.test
 import IMP.algebra
-import StringIO
+import io
 import os
 import math
 

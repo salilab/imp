@@ -1,6 +1,6 @@
 import IMP
 import IMP.test
-import StringIO
+import io
 import random
 
 

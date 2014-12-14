@@ -1,4 +1,4 @@
-import StringIO
+import io
 import random
 import IMP
 import IMP.test

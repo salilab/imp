@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
-import StringIO
+import io
 
 class Tests(IMP.test.TestCase):
 
@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
     def test_showable(self):
         """Test showable"""
         r = IMP.algebra.Rotation2D(math.pi / 2.)
-        sio = StringIO.StringIO()
+        sio = io.StringIO()
         r.show(sio)
 
 if __name__ == '__main__':

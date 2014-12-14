@@ -2,14 +2,14 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.display
-import StringIO
+import io
 
 
 class Tests(IMP.test.TestCase):
 
     def test_5(self):
         """Testing the CGO writer and frames"""
-        buf = StringIO.StringIO()
+        buf = io.StringIO()
         w = IMP.display.PymolWriter(buf)
         for i in range(0, 5):
             w.set_frame(i)

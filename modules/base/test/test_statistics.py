@@ -1,16 +1,16 @@
 import IMP.base
 import IMP.test
-import StringIO
+import io
 
 class Tests(IMP.test.TestCase):
 
     def test_statistics(self):
         """Test statistics"""
-        sio = StringIO.StringIO()
+        sio = io.StringIO()
         IMP.base.show_timings(sio)
         print sio.getvalue()
         IMP.base.clear_statistics()
-        sio = StringIO.StringIO()
+        sio = io.StringIO()
         IMP.base.show_timings(sio)
         print sio.getvalue()
 

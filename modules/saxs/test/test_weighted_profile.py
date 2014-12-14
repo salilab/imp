@@ -5,7 +5,7 @@ import IMP.core
 import IMP.saxs
 import os
 import time
-import StringIO
+import io
 
 
 class Tests(IMP.test.TestCase):

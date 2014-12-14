@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
-import StringIO
+import io
 
 class Tests(IMP.test.TestCase):
 
@@ -143,7 +143,7 @@ class Tests(IMP.test.TestCase):
             self.assertTrue(b.get_contains(v1))
             self.assertEqual(b.get_dimension(), dim)
             self.assertLess(IMP.algebra.get_distance(b.get_corner(0), v1), 1e-4)
-            sio = StringIO.StringIO()
+            sio = io.StringIO()
             b.show(sio)
 
 if __name__ == '__main__':

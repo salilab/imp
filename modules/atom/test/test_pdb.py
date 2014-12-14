@@ -1,4 +1,4 @@
-import StringIO
+import io
 import IMP
 import IMP.test
 import IMP.atom
@@ -11,9 +11,9 @@ class Tests(IMP.test.TestCase):
         p = IMP.atom.read_pdb(self.get_input_file_name(name),
                               m, selector)
         n1 = len(IMP.atom.get_by_type(p, IMP.atom.ATOM_TYPE))
-        sout = StringIO.StringIO()
+        sout = io.StringIO()
         IMP.atom.write_pdb(p, sout)
-        sin = StringIO.StringIO(sout.getvalue())
+        sin = io.StringIO(sout.getvalue())
         p2 = IMP.atom.read_pdb(sin, m, selector)
         n2 = len(IMP.atom.get_by_type(p2, IMP.atom.ATOM_TYPE))
         self.assertEqual(n1, n2)

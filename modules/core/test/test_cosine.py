@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import math
-import StringIO
+import io
 
 
 def _cosfunc(val, force_constant, periodicity, phase):

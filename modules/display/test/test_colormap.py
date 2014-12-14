@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.display
-import StringIO
+import io
 import re
 
 

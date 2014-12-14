@@ -1,7 +1,7 @@
 import IMP
 import IMP.test
 import IMP.core
-import StringIO
+import io
 import math
 
 
@@ -69,7 +69,7 @@ class Tests(IMP.test.TestCase):
     def test_show(self):
         """Check AngleRestraint::show() method"""
         model, rsr, ps = self._setup_particles(math.pi / 2.0, math.pi / 2.0)
-        s = StringIO.StringIO()
+        s = io.StringIO()
         rsr.show(s)
         # no reason to check the show value
         #self.assertEqual(s.getvalue().split('\n')[0], "angle restraint:")

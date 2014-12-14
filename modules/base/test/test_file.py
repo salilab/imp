@@ -1,7 +1,7 @@
 import IMP.base
 import IMP.test
 import os.path
-from StringIO import StringIO
+from io import StringIO
 
 
 class Tests(IMP.test.TestCase):

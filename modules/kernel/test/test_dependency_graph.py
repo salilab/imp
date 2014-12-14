@@ -1,6 +1,6 @@
 import IMP.kernel
 import IMP.test
-import StringIO
+import io
 
 
 class NullConstraint(IMP.kernel.Constraint):

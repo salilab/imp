@@ -1,6 +1,6 @@
 import IMP
 import IMP.test
-import StringIO
+import io
 
 
 class Tests(IMP.test.TestCase):
@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(num, len(ps))
         num = IMP.kernel._take_particles(m, ps)
         self.assertEqual(num, len(ps))
-        num = IMP.kernel._take_particles(m, ps, StringIO.StringIO())
+        num = IMP.kernel._take_particles(m, ps, io.StringIO())
         self.assertEqual(num, len(ps))
         pps = IMP.kernel._pass_particles(ps)
         for i in range(len(ps)):

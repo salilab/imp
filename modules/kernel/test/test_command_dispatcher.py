@@ -1,7 +1,7 @@
 import IMP
 import sys
 import IMP.test
-from StringIO import StringIO
+from io import StringIO
 
 
 class TestModule:

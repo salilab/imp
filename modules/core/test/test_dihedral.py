@@ -1,7 +1,7 @@
 import IMP
 import IMP.test
 import IMP.core
-import StringIO
+import io
 import math
 
 

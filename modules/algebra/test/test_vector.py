@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
-import StringIO
+import io
 
 class Tests(IMP.test.TestCase):
 
@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
             v2 = v + V([0] * dim)
             v2 = v - V([0] * dim)
             v2 = v * v
-            sio = StringIO.StringIO()
+            sio = io.StringIO()
             v.show(sio)
 
 if __name__ == '__main__':

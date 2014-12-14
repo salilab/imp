@@ -1,6 +1,6 @@
 import IMP
 import IMP.test
-import StringIO
+import io
 import random
 
 
@@ -107,7 +107,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model("score state show")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         s = ClassScoreState(m)
-        sio = StringIO.StringIO()
+        sio = io.StringIO()
         s.show(sio)
         m.add_score_state(s)
         for s in m.get_score_states():
@@ -143,7 +143,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.VERBOSE)
         self.assertRaises(NotImplementedError, m.show, BrokenFile())
         self.assertRaises(AttributeError, m.show, None)
-        s = StringIO.StringIO()
+        s = io.StringIO()
         m.show(s)
         self.assertGreater(len(s.getvalue()), 0)
 

@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
-from StringIO import StringIO
+from io import StringIO
 
 class Tests(IMP.test.TestCase):
 
