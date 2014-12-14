@@ -110,13 +110,13 @@ def write_pca_cmm(pca, fh):
     eigen_vecs = pca.get_principal_components()
     centroid = pca.get_centroid()
 
-    print >> fh, "<marker_set>"
-    print >> fh, "<!-- PCA with eigen values: (%g,%g,%g) and " \
-                 "centroid (%g,%g,%g) -->" \
+    fh.write("<marker_set>\n")
+    fh.write("<!-- PCA with eigen values: (%g,%g,%g) and "
+                 "centroid (%g,%g,%g) -->\n"
           % (math.sqrt(eigen_values[0]),
              math.sqrt(eigen_values[1]),
              math.sqrt(eigen_values[2]),
-             centroid[0], centroid[1], centroid[2])
+             centroid[0], centroid[1], centroid[2]))
 
     radius = 2.
 
@@ -125,12 +125,12 @@ def write_pca_cmm(pca, fh):
         v1 = centroid - val * eigen_vecs[i]
         v2 = centroid + val * eigen_vecs[i]
         for markerid, v in ((i*2+1, v1), (i*2+2, v2)):
-            print >> fh, "<marker id=\"%d\" x=\"%g\" y=\"%g\" z=\"%g\" " \
-                         "radius=\"%g\"/>" \
-                  % (markerid, v[0], v[1], v[2], radius)
+            fh.write("<marker id=\"%d\" x=\"%g\" y=\"%g\" z=\"%g\" "
+                         "radius=\"%g\"/>\n"
+                  % (markerid, v[0], v[1], v[2], radius))
 
     for i in range(1, 7, 2):
-        print >> fh, "<link id1= \"%d\" id2=\"%d\" radius=\"%g\"/>" \
-              % (i, i+1, radius)
-    print >> fh, "</marker_set>"
+        fh.write("<link id1= \"%d\" id2=\"%d\" radius=\"%g\"/>\n"
+              % (i, i+1, radius))
+    fh.write("</marker_set>\n")
 %}

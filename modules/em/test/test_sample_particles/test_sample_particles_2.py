@@ -1,5 +1,6 @@
 # test that impEM is able to sample IMP particles on a grid.
 
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.em
@@ -12,7 +13,7 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        print 'start setup'
+        print('start setup')
         """ create particles """
         self.particles = []
         self.mass_key = IMP.atom.Mass.get_mass_key()
@@ -23,7 +24,7 @@ class Tests(IMP.test.TestCase):
                 IMP.algebra.Vector3D(val[0], val[1], val[2]), val[3]))
             p.add_attribute(self.mass_key, val[4])
             self.particles.append(p)
-        print 'after setup SampleParticlesTest'
+        print('after setup SampleParticlesTest')
 
     def test_sample(self):
         """ test that the sampling works """
