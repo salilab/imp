@@ -479,6 +479,9 @@ class TestCase(unittest.TestCase):
         all= dir(modulename)
         not_found=[]
         for f in all:
+            # Exclude SWIG C global variables object
+            if f == 'cvar':
+                continue
             # Exclude Python-only classes; they are all showable
             if not eval('hasattr(%s.%s, "__swig_destroy__")' \
                         % (modulename.__name__, f)):
