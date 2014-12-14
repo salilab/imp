@@ -2,7 +2,7 @@
 # inspired by ISD Replica.py
 # Yannick
 
-from __future__ import print_function
+from __future__ import print_function, division
 from numpy import *
 from numpy.random import random, randint
 from numpy.random import shuffle
@@ -81,7 +81,7 @@ class ReplicaTracker:
         if nreps == 2:
             return [(0, 1)]
         ret = [(2 * i + direction, 2 * i + 1 + direction)
-               for i in range(nreps / 2)]
+               for i in range(nreps // 2)]
         if nreps in ret[-1]:
             ret.pop()
         return ret

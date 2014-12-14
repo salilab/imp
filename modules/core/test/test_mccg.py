@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, division
 import IMP
 import IMP.test
 import IMP.core
@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
         print(4)
         lpc = IMP.container.ListPairContainer(m)
         print("finding pairs")
-        for i in range(0, n / 2):
+        for i in range(0, n // 2):
             print(lsc.get_particle(2 * i))
             qp = lsc.get_particle(2 * i)
             print(qp.get_name())

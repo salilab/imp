@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, division
 import IMP
 import IMP.test
 import IMP.container
@@ -47,8 +47,8 @@ class Tests(IMP.test.TestCase):
         print(even.get_particles())
         print(odd.get_particles())
         print(zf.get_particles())
-        pse = [ps[i * 2] for i in range(len(ps) / 2)]
-        pso = [ps[i * 2 + 1] for i in range(len(ps) / 2)]
+        pse = [ps[i * 2] for i in range(len(ps) // 2)]
+        pso = [ps[i * 2 + 1] for i in range(len(ps) // 2)]
         psf = [ps[0], ps[5]]
         self.assertEqual(even.get_contents(), pse)
         self.assertEqual(odd.get_contents(), pso)

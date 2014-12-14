@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, division
 import IMP
 import IMP.test
 import IMP.core
@@ -64,7 +64,7 @@ class Tests(IMP.test.TestCase):
         round_cycles = 250
         total_cycles = 0
         e_threshold = 2
-        for i in range(max_cycles / round_cycles):
+        for i in range(max_cycles // round_cycles):
             bd.optimize(round_cycles)
             energy = sf.evaluate(False)
             total_cycles += round_cycles
