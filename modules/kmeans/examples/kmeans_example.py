@@ -2,6 +2,7 @@
 # Create a set and points and cluster it, printing the resulting cluster
 # centers
 
+from __future__ import print_function
 import IMP
 import IMP.kmeans
 
@@ -25,19 +26,19 @@ add_points(km)
 k = 2
 km.execute(k)
 # print centers one by one
-print "\nCenters:"
+print("\nCenters:")
 nCenters = km.get_number_of_centers()  # this should actually be equal to k
-print "Number of centers (k): ", nCenters
+print("Number of centers (k): ", nCenters)
 for i in range(0, nCenters):
-    print "Center ", i, "   ", km.get_center(i)
+    print("Center ", i, "   ", km.get_center(i))
 
 # print data point assignments
 n = km.get_number_of_data_points()
 assignments = km.get_assignments()
 sqrdist = km.get_squared_distance_to_centers()
-print "Number of points: ", n
+print("Number of points: ", n)
 for i in range(0, n):
-    print "Point ", i, ": "
-    print km.get_data_point(i)
-    print "Cluster center: ", assignments[i], \
-        " sqrt-dist: ", sqrdist[i]
+    print("Point ", i, ": ")
+    print(km.get_data_point(i))
+    print("Cluster center: ", assignments[i], \
+        " sqrt-dist: ", sqrdist[i])

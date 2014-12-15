@@ -6,6 +6,7 @@
 # bodies). To save space, the models have had their sidechain atoms
 # removed.
 
+from __future__ import print_function
 import IMP.display
 import IMP.atom
 
@@ -17,7 +18,7 @@ IMP.base.set_check_level(IMP.base.USAGE)
 
 
 def read(m, beyond_file):
-    print "reading"
+    print("reading")
     hs = []
     for i in range(0, beyond_file):
         # create a simplified version for each chain to speed up computations
@@ -33,7 +34,7 @@ def read(m, beyond_file):
         IMP.atom.destroy(h)
         if i == 0:
             base = IMP.atom.get_leaves(hr)
-        print " ", i
+        print(" ", i)
     return hs
 
 
@@ -115,7 +116,7 @@ ps = IMP.core.KClosePairsPairScore(
 ps.set_log_level(IMP.base.SILENT)
 
 
-print "creating rigid bodies"
+print("creating rigid bodies")
 base_chains = {}
 for hc in IMP.atom.get_by_type(hs[0], IMP.atom.CHAIN_TYPE):
     c = IMP.atom.Chain(hc)
@@ -133,11 +134,10 @@ for i, h in enumerate(hs):
             # orientations
             crb = IMP.atom.create_compatible_rigid_body(
                 hc, base_chains[c.get_id()])
-    print " ", i
+    print(" ", i)
 
 chains = IMP.atom.get_by_type(hs[0], IMP.atom.CHAIN_TYPE)
-chains.sort(lambda x, y: cmp(IMP.core.XYZ(x).get_x() + IMP.core.XYZ(x).get_y(),
-                             IMP.core.XYZ(y).get_x() + IMP.core.XYZ(y).get_y()))
+chains.sort(key = lambda x: IMP.core.XYZ(x).get_x() + IMP.core.XYZ(x).get_y())
 chain_colors = {}
 for i, c in enumerate(chains):
     id = IMP.atom.Chain(c).get_id()
@@ -153,27 +153,24 @@ hso = hs[1:]
 
 # sort them spatially so the colors are nicely arranged and allow one to visually connect
 # the position of one end with that of the other
-hso.sort(lambda h0, h1: cmp(IMP.core.XYZ(IMP.atom.Selection(h0, chain='I',
-                                                            residue_index=237).get_selected_particles(
-)[0]).get_z(),
-    IMP.core.XYZ(IMP.atom.Selection(h1, chain='I',
-                                    residue_index=237).get_selected_particles()[0]).get_z()))
-print "adding markers",
+hso.sort(key=lambda h: IMP.core.XYZ(IMP.atom.Selection(h, chain='I',
+                       residue_index=237).get_selected_particles()[0]).get_z())
+print("adding markers", end=' ')
 for i, h in enumerate(hso):
     c = IMP.display.get_interpolated_rgb(
         IMP.display.Color(1, 0, 0), IMP.display.Color(0, 0, 1), i / 50.)
     add_markers(h, c, w)
-    print " ", i
+    print(" ", i)
 w = IMP.display.PymolWriter("axis.pym")
-print "adding axis",
+print("adding axis", end=' ')
 add_axis(hs[0], IMP.display.Color(1, 1, 1), w, chain_colors)
 for i, h in enumerate(hs[1:]):
     add_axis(h, None, w, chain_colors)
-    print i,
+    print(i, end=' ')
 
 w = IMP.display.PymolWriter("skeletons.pym")
 add_skeleton(hs[0], IMP.display.Color(1, 1, 1), 5, w, chain_colors)
-print "adding skeleton",
+print("adding skeleton", end=' ')
 for i, h in enumerate(hs[1:]):
     add_skeleton(h, None, 1, w, chain_colors)
-    print " ", i
+    print(" ", i)

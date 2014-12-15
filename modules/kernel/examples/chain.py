@@ -3,6 +3,7 @@
 # particles constrained to be connected in a loop. It uses non bonded
 # lists and a variety of restraints.
 
+from __future__ import print_function
 import IMP.kernel
 import IMP.atom
 import IMP.core
@@ -63,7 +64,7 @@ s.set_scoring_function(restraints)
 s.set_number_of_attempts(10)
 
 confs = s.create_sample()
-print "Found", confs.get_number_of_configurations(), "configurations"
+print("Found", confs.get_number_of_configurations(), "configurations")
 fh = RMF.create_rmf_file("solutions.rmfz")
 IMP.rmf.add_hierarchy(fh, h)
 for i in range(0, confs.get_number_of_configurations()):

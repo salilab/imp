@@ -26,6 +26,6 @@ c = IMP.statistics.create_lloyds_kmeans(e,
                                         3, 1000)
 
 # print out the cluster results
-print c.get_cluster_center(0)
-print c.get_cluster_center(1)
-print c.get_cluster_center(2)
+print(c.get_cluster_center(0))
+print(c.get_cluster_center(1))
+print(c.get_cluster_center(2))

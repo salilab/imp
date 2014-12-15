@@ -13,4 +13,4 @@ if IMP.base.get_string_flag("hello") == "":
     IMP.base.write_help()
     exit(1)
 
-print IMP.base.get_string_flag("hello")
+print(IMP.base.get_string_flag("hello"))

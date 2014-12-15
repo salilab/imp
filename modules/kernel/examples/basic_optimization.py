@@ -3,6 +3,7 @@
 # scoring conformation.
 #
 
+from __future__ import print_function
 import IMP.example
 import IMP.statistics
 
@@ -29,7 +30,7 @@ for i in range(0, configs.get_number_of_configurations()):
     # print out the sphere containing the point set
     # - Why? - Why not?
     sphere = IMP.core.get_enclosing_sphere(xyzrs)
-    print sphere
+    print(sphere)
 
 # cluster the solutions based on their coordinates
 e = IMP.statistics.ConfigurationSetXYZEmbedding(configs, c)
@@ -41,4 +42,4 @@ for i in range(0, clustering.get_number_of_clusters()):
     # load the configuration for a central point
     configs.load_configuration(clustering.get_cluster_representative(i))
     sphere = IMP.core.get_enclosing_sphere(xyzrs)
-    print sphere
+    print(sphere)

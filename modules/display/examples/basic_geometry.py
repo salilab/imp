@@ -2,13 +2,14 @@
 # This example shows how to write basic geometric primitives to a file
 # with color and name.
 
+from __future__ import print_function
 import IMP.display
 
 # or IMP.display.ChimeraWriter
 # if using chimera, make sure there is a %1% in the name to support
 # multiple frames
 name = IMP.create_temporary_file_name("example", ".py")
-print "File name is", name
+print("File name is", name)
 w = IMP.display.PymolWriter(name)
 
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
