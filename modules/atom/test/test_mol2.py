@@ -22,10 +22,10 @@ class Tests(IMP.test.TestCase):
         print(len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
         self.assertEqual(
             146, len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
-        m2 = io.StringIO()
+        m2 = io.BytesIO()
         IMP.atom.write_mol2(root_d, m2)
 
-        pdb = io.StringIO()
+        pdb = io.BytesIO()
         IMP.atom.write_pdb(root_d, pdb)
         # print m2.getvalue()
         # print pdb
@@ -45,7 +45,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(
             146, len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
 
-        pdb = io.StringIO()
+        pdb = io.BytesIO()
         IMP.atom.write_pdb(root_d, pdb)
         print(pdb.getvalue())
         return
@@ -69,17 +69,16 @@ class Tests(IMP.test.TestCase):
         root_d = IMP.atom.read_mol2(
             self.get_input_file_name("1d3d-ligands.mol2"),
             m, IMP.atom.AllMol2Selector())
-        out = io.StringIO()
+        out = io.BytesIO()
         IMP.atom.write_mol2(root_d, out)
         testout = open(
             self.get_input_file_name(
                 "1d3d-ligands.out1.mol2"),
-            "r").read(
+            "rb").read(
         )
         # print out.getvalue()
         # print " vs "
         # print testout
-        open(self.get_tmp_file_name("out1.mol2"), "w").write(out.getvalue())
         self.assertEqual(out.getvalue(), testout)
 
         m = IMP.kernel.Model()
@@ -90,14 +89,13 @@ class Tests(IMP.test.TestCase):
         print("number of particles")
         print(m.get_number_of_particles())
 
-        out = io.StringIO()
+        out = io.BytesIO()
         IMP.atom.write_mol2(root_d, out)
         testout = open(
             self.get_input_file_name(
                 "1d3d-ligands.out2.mol2"),
-            "r").read(
+            "rb").read(
         )
-        open(self.get_tmp_file_name("out2.mol2"), "w").write(out.getvalue())
         # print out.getvalue()
         # print " vs "
         # print testout

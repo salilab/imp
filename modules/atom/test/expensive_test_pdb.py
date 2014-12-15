@@ -11,9 +11,9 @@ class PDBReadWriteTest(IMP.test.TestCase):
         p = IMP.atom.read_pdb(self.get_input_file_name(name),
                               m, selector)
         n1 = len(IMP.atom.get_by_type(p, IMP.atom.ATOM_TYPE))
-        sout = io.StringIO()
+        sout = io.BytesIO()
         IMP.atom.write_pdb(p, sout)
-        sin = io.StringIO(sout.getvalue())
+        sin = io.BytesIO(sout.getvalue())
         p2 = IMP.atom.read_pdb(sin, m, selector)
         n2 = len(IMP.atom.get_by_type(p2, IMP.atom.ATOM_TYPE))
         self.assertEqual(n1, n2)

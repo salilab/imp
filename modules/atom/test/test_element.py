@@ -1,5 +1,4 @@
 from __future__ import print_function
-from io import StringIO
 import IMP
 import IMP.test
 import IMP.atom
