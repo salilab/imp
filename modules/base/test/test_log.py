@@ -2,8 +2,7 @@ from __future__ import print_function
 import IMP.base
 import IMP.test
 import sys
-from io import StringIO
-
+from io import BytesIO
 
 class Tests(IMP.test.TestCase):
 
@@ -17,16 +16,16 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.VERBOSE)
         if not IMP.base.get_log_level():
             self.skipTest("Logging is disabled")
-        s = StringIO()
+        s = BytesIO()
         t = IMP.base.SetLogTarget(s)
         IMP.base.add_to_log(IMP.base.VERBOSE, "Hey there\n")
         IMP.base.add_to_log(IMP.base.VERBOSE, "Big guy")
         del t
         print('testing')
-        self.assertEqual(s.getvalue(), "Hey there\nBig guy")
+        self.assertEqual(s.getvalue(), b"Hey there\nBig guy")
         del s
         IMP.base.add_to_log(IMP.base.VERBOSE, "what's up")
-        s = StringIO()
+        s = BytesIO()
         t = IMP.base.SetLogTarget(s)
         IMP.base.add_to_log(IMP.base.VERBOSE, "Hey there\n")
         del s
@@ -39,7 +38,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.MEMORY)
         if not IMP.base.get_log_level():
             self.skipTest("Logging is disabled")
-        s = StringIO()
+        s = BytesIO()
         t = IMP.base.SetLogTarget(s)
         # r4694 or earlier will crash here, since the 'Unrefing object' log
         # message emitted at MEMORY log level will attempt to be displayed
@@ -75,7 +74,7 @@ class Tests(IMP.test.TestCase):
         s = IMP.base.SetLogState()
         s.set(IMP.base.DEFAULT)
         s.set(IMP.base.VERBOSE)
-        sio = StringIO()
+        sio = BytesIO()
         s.show(sio)
 
 if __name__ == '__main__':

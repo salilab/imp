@@ -2,7 +2,8 @@ from __future__ import print_function
 import IMP.base
 import IMP.test
 import os.path
-from io import StringIO
+import sys
+from io import BytesIO, StringIO
 
 
 class Tests(IMP.test.TestCase):
@@ -16,7 +17,7 @@ class Tests(IMP.test.TestCase):
         v = IMP.base._test_ifile(self.open_input_file("text"))
         self.assertEqual(v, "word")
         self.assertRaises(IOError, IMP.base._test_ifile, "notafile")
-        s = StringIO("hi there")
+        s = BytesIO(b"hi there")
         v = IMP.base._test_ifile(s)
         self.assertEqual(v, "hithere")
         print("done")
@@ -29,9 +30,17 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(IOError, IMP.base._test_ofile, "nodir/hi")
         f = open("hi", "w")
         IMP.base._test_ofile(f)
-        s = StringIO()
+        # In Python 3 binary files are handled differently (as raw bytes,
+        # not Unicode)
+        f = open("hi", "wb")
+        IMP.base._test_ofile(f)
+        s = BytesIO()
         IMP.base._test_ofile(s)
-        self.assertTrue(s.getvalue().startswith("hi\n"))
+        self.assertTrue(s.getvalue().startswith(b"hi\n"))
+        if sys.version_info[0] >= 3:
+            s = StringIO()
+            IMP.base._test_ofile(s)
+            self.assertTrue(s.getvalue().startswith("hi\n"))
         self.assertRaises(TypeError, IMP.base._test_ofile, 1)
 
         class NoMethods(object):
@@ -62,7 +71,7 @@ class Tests(IMP.test.TestCase):
             IMP.base._test_ifile_overloaded,
             "bad path",
             "hi")
-        s = StringIO()
+        s = BytesIO()
         # shouldn't raise
         IMP.base._test_ifile_overloaded(s, "hi")
 if __name__ == '__main__':
