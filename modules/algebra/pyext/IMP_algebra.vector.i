@@ -61,6 +61,7 @@ namespace IMP {
   %pythoncode {
   __truediv__ = __div__
   __itruediv__ = __idiv__
+  __eq__ = __cmp__
   }
 };
 %enddef
