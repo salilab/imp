@@ -1,8 +1,7 @@
 import IMP
 import sys
 import IMP.test
-from io import StringIO
-
+import io
 
 class TestModule:
     _all_commands = ['foo', 'bar']
@@ -30,7 +29,10 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         self.old_argv = sys.argv
         self.old_stdout = sys.stdout
-        sys.stdout = StringIO()
+        if sys.version_info[0] >= 3:
+            sys.stdout = io.StringIO()
+        else:
+            sys.stdout = io.BytesIO()
         sys.modules['TestModule'] = TestModule
         sys.modules['TestModule.submodule'] = TestModule.submodule
         sys.modules['TestModule.foo'] = TestModule.foo
@@ -80,7 +82,7 @@ class Tests(IMP.test.TestCase):
         c = IMP.CommandDispatcher("short", "long", "TestModule")
         c.main()
         out = sys.stdout.getvalue()
-        self.assertEquals("testprog testver\n", out)
+        self.assertEqual("testprog testver\n", out)
 
     def test_show_help(self):
         """Test CommandDispatcher show help"""

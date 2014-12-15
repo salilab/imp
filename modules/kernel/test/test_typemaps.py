@@ -18,7 +18,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(num, len(ps))
         num = IMP.kernel._take_particles(m, ps)
         self.assertEqual(num, len(ps))
-        num = IMP.kernel._take_particles(m, ps, io.StringIO())
+        num = IMP.kernel._take_particles(m, ps, io.BytesIO())
         self.assertEqual(num, len(ps))
         pps = IMP.kernel._pass_particles(ps)
         for i in range(len(ps)):
@@ -29,7 +29,7 @@ class Tests(IMP.test.TestCase):
         di = {}
         for p in ps:
             di[p] = IMP.kernel._TrivialDecorator.setup_particle(p)
-        rps = IMP.kernel._take_particles(di.values())
+        rps = IMP.kernel._take_particles(list(di.values()))
 
     def test_particles_temps(self):
         """Test passing of ParticlesTemp"""

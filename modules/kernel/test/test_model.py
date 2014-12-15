@@ -108,7 +108,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model("score state show")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         s = ClassScoreState(m)
-        sio = io.StringIO()
+        sio = io.BytesIO()
         s.show(sio)
         m.add_score_state(s)
         for s in m.get_score_states():
@@ -144,7 +144,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.VERBOSE)
         self.assertRaises(NotImplementedError, m.show, BrokenFile())
         self.assertRaises(AttributeError, m.show, None)
-        s = io.StringIO()
+        s = io.BytesIO()
         m.show(s)
         self.assertGreater(len(s.getvalue()), 0)
 
