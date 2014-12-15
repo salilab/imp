@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
             v2 = v + V([0] * dim)
             v2 = v - V([0] * dim)
             v2 = v * v
-            sio = io.StringIO()
+            sio = io.BytesIO()
             v.show(sio)
 
 if __name__ == '__main__':

@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
     def test_showable(self):
         """Test showable"""
         r = IMP.algebra.Rotation2D(math.pi / 2.)
-        sio = io.StringIO()
+        sio = io.BytesIO()
         r.show(sio)
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 import IMP
 import IMP.test
 import IMP.algebra
-from io import StringIO
+from io import BytesIO
 
 class Tests(IMP.test.TestCase):
 
@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
         rf = IMP.algebra.ReferenceFrame3D(tran)
         var = IMP.algebra.Vector3D(4., 5., 6.)
         g = IMP.algebra.Gaussian3D(rf, var)
-        sio = StringIO()
+        sio = BytesIO()
         g.show(sio)
         def check_gauss(g):
             g_rf = g.get_reference_frame()

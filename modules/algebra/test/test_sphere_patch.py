@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
-from io import StringIO
+from io import BytesIO
 
 class Tests(IMP.test.TestCase):
 
@@ -35,9 +35,9 @@ class Tests(IMP.test.TestCase):
         p = patch.get_boundary_point()
         self.assertLess(IMP.algebra.get_distance(p,
                               IMP.algebra.Vector3D(3.53553, 3.53553, 0)), 1e-3)
-        sio = StringIO()
+        sio = BytesIO()
         patch.show(sio)
-        self.assertEqual(sio.getvalue(), '(0 0 0: 5)(0: 0 0 1)')
+        self.assertEqual(sio.getvalue(), b'(0 0 0: 5)(0: 0 0 1)')
         self.assertTrue(patch.get_plane().get_is_above(
                                  IMP.algebra.Vector3D(1., 0., 1.)))
         self.assertTrue(patch.get_contains(IMP.algebra.Vector3D(0.0, 1.0, 0.4)))

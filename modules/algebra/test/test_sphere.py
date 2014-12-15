@@ -91,7 +91,7 @@ class Tests(IMP.test.TestCase):
         vs1 = [S(V(1,2,3), 4),
                S(V(4,5,6), 7)]
 
-        sio = io.StringIO()
+        sio = io.BytesIO()
         IMP.algebra.write_spheres(vs1, sio)
         sio.seek(0)
         rpts = IMP.algebra.read_spheres(sio)
@@ -102,7 +102,7 @@ class Tests(IMP.test.TestCase):
             dist = IMP.algebra.get_distance(rpts[i].get_center(),
                                             vs1[i].get_center())
             self.assertLess(dist, 0.01)
-        sio = io.StringIO("garbage")
+        sio = io.BytesIO(b"garbage")
         self.assertRaises(ValueError, IMP.algebra.read_spheres, sio)
 
     def test_sphere_nd(self):
@@ -129,7 +129,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(s.get_dimension(), dim)
             self.assertAlmostEqual(s.get_radius(), 1.0, delta=1e-4)
             self.assertLess(IMP.algebra.get_distance(s.get_center(), v), 1e-4)
-            sio = io.StringIO()
+            sio = io.BytesIO()
             s.show(sio)
 
 if __name__ == '__main__':

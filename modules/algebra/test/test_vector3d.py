@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
                 6.0)]
 
         # Test read/write for regular files and file-like objects
-        sio = io.StringIO()
+        sio = io.BytesIO()
         IMP.algebra.write_pts(vs1, sio)
         sio.seek(0)
         rpts = IMP.algebra.read_pts(sio)
@@ -46,7 +46,7 @@ class Tests(IMP.test.TestCase):
         for i in range(0, len(rpts)):
             for j in range(0, 3):
                 self.assertAlmostEqual(rpts[i][j], vs1[i][j], delta=.01)
-        sio = io.StringIO("garbage")
+        sio = io.BytesIO(b"garbage")
         self.assertRaises(ValueError, IMP.algebra.read_pts, sio)
 
     def test_component(self):
@@ -113,7 +113,7 @@ class Tests(IMP.test.TestCase):
     def test_show(self):
         """Check vector 3D show"""
         v = IMP.algebra.Vector3D(1, 2, 3)
-        out = io.StringIO()
+        out = io.BytesIO()
         print(v, file=out)
         self.assertEqual(out.getvalue().find("Swig"), -1)
 

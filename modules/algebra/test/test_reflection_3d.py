@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
         r = IMP.algebra.Reflection3D()
         p = IMP.algebra.Plane3D(5.0, IMP.algebra.Vector3D(0.0, 1.0, 0.0))
         r = IMP.algebra.Reflection3D(p)
-        sio = io.StringIO()
+        sio = io.BytesIO()
         r.show(sio)
         v = r.get_reflected(IMP.algebra.Vector3D(20., 0., 0.))
         self.assertLess(IMP.algebra.get_distance(v,

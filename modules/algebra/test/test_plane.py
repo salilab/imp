@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
-from io import StringIO
+from io import BytesIO
 
 class Tests(IMP.test.TestCase):
 
@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         """Test Plane3D methods"""
         p = IMP.algebra.Plane3D(IMP.algebra.Vector3D(0., 5., 0.),
                                 IMP.algebra.Vector3D(0.0, 1.0, 0.0))
-        sio = StringIO()
+        sio = BytesIO()
         p.show(sio)
         self.assertLess(IMP.algebra.get_distance(p.get_normal(),
                                IMP.algebra.Vector3D(0., 1., 0.)), .1)
