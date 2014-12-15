@@ -168,19 +168,27 @@
   struct StreamBuf:public std::streambuf {
     PyObject *write_method_;
     std::vector<char> buffer_;
+    char fmat_[5];
     StreamBuf(PyObject *wm): write_method_(wm),
                              buffer_(1024){
+      strcpy(fmat_, "(s#)");
       setp(&buffer_.front(), &buffer_.front() + buffer_.size());
       // to make errors occur earlier
-#if PY_VERSION_HEX >= 0x03000000
-      static char fmat[] = "(y#)";
-#else
-      static char fmat[] = "(s#)";
-#endif
-      PyObject *result = PyObject_CallFunction(write_method_, fmat, fmat, 0);
+      PyObject *result = PyObject_CallFunction(write_method_, fmat_, fmat_, 0);
       if (!result) {
+#if PY_VERSION_HEX >= 0x03000000
+        // Failed to write string (Unicode); try bytes instead
+        fmat_[1] = 'y';
+        result = PyObject_CallFunction(write_method_, fmat_, fmat_, 0);
+        if (!result) {
+          throw std::ostream::failure("Python error on write");
+        } else {
+          Py_DECREF(result);
+        }
+#else
         // Python exception will be reraised when SWIG method finishes
         throw std::ostream::failure("Python error on write");
+#endif
       } else {
         Py_DECREF(result);
       }
@@ -198,16 +206,11 @@
     virtual int_type sync() {
       // Python API uses char* arguments rather than const char*, so create
       // here to quell the compiler warning
-#if PY_VERSION_HEX >= 0x03000000
-      static char fmat[] = "(y#)";
-#else
-      static char fmat[] = "(s#)";
-#endif
       int num = pptr() - pbase();
       if (num <= 0) {
         return 0;
       }
-      PyObject *result = PyObject_CallFunction(write_method_, fmat,
+      PyObject *result = PyObject_CallFunction(write_method_, fmat_,
                                                pbase(), num);
       if (!result) {
         // Python exception will be reraised when SWIG method finishes
@@ -225,12 +228,7 @@
         // result per call (one here, potentially one in sync) rather than one per
         // buffer_.size() characters via the regular buffering
         sync();
-#if PY_VERSION_HEX >= 0x03000000
-        static char fmat[] = "(y#)";
-#else
-        static char fmat[] = "(s#)";
-#endif
-        PyObject *result = PyObject_CallFunction(write_method_, fmat, s, n);
+        PyObject *result = PyObject_CallFunction(write_method_, fmat_, s, n);
         if (!result) {
           throw std::ostream::failure("Python error on write");
         } else {
