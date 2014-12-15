@@ -2,6 +2,7 @@
 # Write a PDB to an hdf5 file.
 #
 
+from __future__ import print_function
 import IMP.atom
 import IMP.rmf
 import RMF
@@ -13,7 +14,7 @@ h = IMP.atom.read_pdb(IMP.rmf.get_example_path("simple.pdb"), m)
 # find the name for a temporary file to use to for writing the hdf5 file
 tfn = IMP.create_temporary_file_name("pdb", ".rmf")
 
-print "File name is", tfn
+print("File name is", tfn)
 
 # open the temporary file, clearing any existing contents
 rh = RMF.create_rmf_file(tfn)
@@ -44,4 +45,4 @@ IMP.atom.show_molecular_hierarchy(hps[0])
 # load the second configuration into hps
 IMP.rmf.load_frame(rh, RMF.FrameID(0))
 
-print "Try running hdf5_display or hdf5_show on", tfn
+print("Try running hdf5_display or hdf5_show on", tfn)

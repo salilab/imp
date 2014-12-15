@@ -35,4 +35,4 @@ mc.optimize(1000)
 for p0 in ds0:
     for p1 in ds1:
         if IMP.core.get_distance(p0, p1) < .1:
-            print p0, p1
+            print(p0, p1)

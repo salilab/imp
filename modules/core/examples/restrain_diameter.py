@@ -28,7 +28,7 @@ for p0 in lc.get_particles():
                                   IMP.core.XYZ(p1))
         if d > max:
             max = d
-print "The maximum distance is " + str(max)
+print("The maximum distance is " + str(max))
 
 IMP.base.set_log_level(IMP.base.SILENT)
 o.optimize(100)
@@ -40,4 +40,4 @@ for p0 in lc.get_particles():
                                   IMP.core.XYZ(p1))
         if d > max:
             max = d
-print "Afterwards, the maximum distance is " + str(max)
+print("Afterwards, the maximum distance is " + str(max))

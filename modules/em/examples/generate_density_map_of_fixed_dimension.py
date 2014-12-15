@@ -2,6 +2,7 @@
 # Shows how to generate a density map of fixed dimension and how to sample
 # particles within this density map.
 
+from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.em
@@ -30,5 +31,5 @@ dmap.resample()
 dmap.calcRMS()
              # computes statistic stuff about the map and insert it in the
              # header
-print dmap.get_header().show(), "\n"
+print(dmap.get_header().show(), "\n")
 IMP.em.write_map(dmap, "map.mrc", IMP.em.MRCReaderWriter())

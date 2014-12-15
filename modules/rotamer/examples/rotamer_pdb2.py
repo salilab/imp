@@ -17,6 +17,7 @@
 
 #!/usr/bin/env python
 
+from __future__ import print_function
 import IMP
 import IMP.base
 import IMP.core
@@ -69,13 +70,13 @@ if __name__ == '__main__':
         quick_test()
         sys.exit(0)
     if not opts.input_pdb:
-        print '--input_pdb is required'
+        print('--input_pdb is required')
         sys.exit(1)
     if not opts.output_pdb:
-        print '--output_pdb is required'
+        print('--output_pdb is required')
         sys.exit(1)
     if not opts.input_lib:
-        print '--input_lib is required'
+        print('--input_lib is required')
         sys.exit(1)
     if opts.verbose:
         IMP.base.set_log_level(IMP.base.VERBOSE)

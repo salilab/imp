@@ -16,7 +16,7 @@
 #
 #
 
-
+from __future__ import print_function
 import IMP
 import IMP.domino
 import IMP.core
@@ -127,7 +127,7 @@ for i in range(n_girls):
     sampler.add_subset_filter_table(list_states_table)
 
 # create restraints
-for z in xrange(n_edges):
+for z in range(n_edges):
     # pair of friends
     i = random.randrange(0, n_girls)
     j = random.randrange(0, n_girls)

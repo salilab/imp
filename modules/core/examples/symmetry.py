@@ -40,6 +40,6 @@ d0.set_coordinates_are_optimized(True)
 
 opt = IMP.core.ConjugateGradients(m)
 opt.optimize(10)
-print "score is ", m.evaluate(False)
+print("score is ", m.evaluate(False))
 for p in ps:
-    print p.get_name(), IMP.core.XYZ(p).get_coordinates()
+    print(p.get_name(), IMP.core.XYZ(p).get_coordinates())

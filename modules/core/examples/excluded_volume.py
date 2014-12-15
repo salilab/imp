@@ -19,4 +19,4 @@ r = IMP.core.ExcludedVolumeRestraint(c)
 m.add_restraint(r)
 
 # get the current score
-print m.evaluate(False)
+print(m.evaluate(False))

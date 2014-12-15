@@ -3,6 +3,7 @@
 # forcefield. For more control over the setup of the forcefield, see
 # the 'charmm_forcefield_verbose.py' example.
 
+from __future__ import print_function
 import IMP.atom
 import IMP.container
 
@@ -64,4 +65,4 @@ scoring_function = IMP.core.RestraintsScoringFunction(restraints)
 # it gets awfully slow with internal checks
 IMP.base.set_check_level(IMP.base.USAGE)
 # Finally, evaluate the score of the whole system (without derivatives)
-print scoring_function.evaluate(False)
+print(scoring_function.evaluate(False))

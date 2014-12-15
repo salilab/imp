@@ -2,6 +2,7 @@
 # This example shows writing a brownian dynamics simulation to a rmf file.
 # It includes a bounding box, restraints and a hierarchy of particles.
 
+from __future__ import print_function, division
 import IMP.atom
 import IMP.rmf
 import RMF
@@ -28,7 +29,7 @@ for p in ps:
 rs = []
 link = IMP.core.HarmonicUpperBoundSphereDistancePairScore(0, k)
 pl = []
-for i in range(0, len(ps) / 2):
+for i in range(0, len(ps) // 2):
     pp = (ps[2 * i], ps[2 * i + 1])
     pl.append(pp)
     # create OK staring position
@@ -74,4 +75,4 @@ bd.add_optimizer_state(os)
 
 bd.optimize(frames)
 
-print "file is", rmf.get_name()
+print("file is", rmf.get_name())

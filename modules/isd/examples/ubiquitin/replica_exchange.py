@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import sys
 import os
 import errno
@@ -12,7 +13,7 @@ try:
     from IMP.isd.PyroGrid import PyroGrid as Grid
 #   from IMP.isd.FileBasedGrid import FileBasedGrid as Grid
 except ImportError:
-    print >> sys.stderr, "This example needs the Python Pyro module"
+    print("This example needs the Python Pyro module", file=sys.stderr)
     sys.exit(0)
 from IMP.isd.hosts import create_host_list
 import IMP.atom
@@ -144,25 +145,25 @@ def launch_grid():
 def main():
 
     # launch grid
-    print "launching grid"
+    print("launching grid")
     grid = launch_grid()
 
     # publish the shared object
-    print "publishing sfo"
+    print("publishing sfo")
     sfo = sf.sfo()
     sfo_id = grid.publish(sfo)
 
-    print "communication test"
+    print("communication test")
     # get a worker to do a task
     #proxy = grid.acquire_service(sfo_id)
     # print proxy.hello().get()
     # grid.release_service(proxy)
 
-    print "broadcast test"
-    print grid.gather(grid.broadcast(sfo_id, 'hello'))
+    print("broadcast test")
+    print(grid.gather(grid.broadcast(sfo_id, 'hello')))
 
     # call init on all nodes
-    print "initializing model"
+    print("initializing model")
     mkdir_p(tmpdir)
     mkdir_p(outfolder)
     requests = grid.broadcast(
@@ -181,12 +182,12 @@ def main():
     grid.gather(grid.broadcast(sfo_id, 'set_loglevel', IMP.base.NONE))
 
     # evaluate the score of the whole system (without derivatives, False flag)
-    print "initial energy"
+    print("initial energy")
     grid.gather(grid.broadcast(sfo_id, 'm', 'evaluate', False))
 
     # berendsen 300K tau=0.5ps
     # perform two independent MC moves for sigma and gamma
-    print "initializing simulation and statistics"
+    print("initializing simulation and statistics")
     grid.gather(grid.scatter(sfo_id, 'init_simulation',
                              zip(lambdas, tau)))
     grid.gather(grid.scatter(sfo_id, 'init_stats', zip(nums, stat_rate)))
@@ -195,18 +196,18 @@ def main():
                              scheme=rex_scheme, xchg=rex_xchg,
                              tune_temps=tune_temps, tune_data=tune_data, templog=templog)
 
-    print "thermalization"
+    print("thermalization")
     for i in range(n_therm):
-        print "\rgibbs step %d" % i,
+        print("\rgibbs step %d" % i, end=' ')
         sys.stdout.flush()
         grid.gather(grid.scatter(sfo_id, 'set_inv_temp',
                                  [n_therm / float(i + 1) * l for l in lambdas]))
         grid.gather(grid.broadcast(sfo_id, 'do_md', n_hmc_therm))
         grid.gather(grid.broadcast(sfo_id, 'write_stats'))
 
-    print "start gibbs sampling loop: first relaxation"
+    print("start gibbs sampling loop: first relaxation")
     for i in range(n_gibbs1):
-        print "\rgibbs step %d" % i,
+        print("\rgibbs step %d" % i, end=' ')
         sys.stdout.flush()
         # print " md"
         grid.gather(grid.broadcast(sfo_id, 'do_md', n_md))
@@ -219,9 +220,9 @@ def main():
         # print " stats"
         replica.write_rex_stats()
 
-    print "start gibbs sampling loop: second relaxation"
+    print("start gibbs sampling loop: second relaxation")
     for i in range(n_gibbs2):
-        print "\rgibbs step %d" % i,
+        print("\rgibbs step %d" % i, end=' ')
         sys.stdout.flush()
         # print " md"
         grid.gather(grid.broadcast(sfo_id, 'do_md', n_md))
@@ -234,9 +235,9 @@ def main():
         # print " stats"
         replica.write_rex_stats()
 
-    print "start gibbs sampling loop: production"
+    print("start gibbs sampling loop: production")
     for i in range(n_gibbs3):
-        print "\rgibbs step %d" % i,
+        print("\rgibbs step %d" % i, end=' ')
         sys.stdout.flush()
         # print " md"
         grid.gather(grid.broadcast(sfo_id, 'do_md', n_md))
@@ -249,9 +250,9 @@ def main():
         # print " stats"
         replica.write_rex_stats()
 
-    print "terminating grid"
+    print("terminating grid")
     grid.terminate()
-    print "done."
+    print("done.")
 
 
 if __name__ == '__main__':

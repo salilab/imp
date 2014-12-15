@@ -2,6 +2,7 @@
 # Use the IMP::misc::DecayPairContainerOptimizerState to gradually break
 # the bonds in a bd simulation.
 
+from __future__ import print_function
 import IMP.atom
 import IMP.container
 import IMP.misc
@@ -79,7 +80,7 @@ bd.add_optimizer_state(dos)
 # set up display
 fn = IMP.base.create_temporary_file_name("decay", ".rmf")
 rmf = RMF.create_rmf_file(fn)
-print "setting up file"
+print("setting up file")
 IMP.rmf.add_hierarchies(rmf, ps)
 IMP.rmf.add_restraints(rmf, rs + [ev])
 g = IMP.display.BoundingBoxGeometry(bb)
@@ -89,7 +90,7 @@ os.set_period(max(steps / 100, 1))
 bd.add_optimizer_state(os)
 
 # actually optimize things
-print "running"
+print("running")
 bd.optimize(steps)
 
-print "see", fn
+print("see", fn)

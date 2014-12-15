@@ -2,6 +2,7 @@
 # In this example, a PDB file is read in and scored using the CHARMM forcefield. It is similar to the 'charmm_forcefield.py' example, but fully works through each step of the procedure using lower-level IMP classes. This is useful if you want to customize the way in which the forcefield is applied.
 #
 
+from __future__ import print_function
 import IMP.atom
 import IMP.container
 
@@ -116,4 +117,4 @@ m.add_restraint(IMP.container.PairsRestraint(ps, nbl))
 IMP.base.set_check_level(IMP.base.USAGE)
 
 # Finally, evaluate the score of the whole system (without derivatives)
-print m.evaluate(False)
+print(m.evaluate(False))

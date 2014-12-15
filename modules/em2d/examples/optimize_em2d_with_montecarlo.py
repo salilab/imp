@@ -2,6 +2,7 @@
 # Example of optimizing an EM2D restraint using Monte Carlo.
 #
 
+from __future__ import print_function
 import IMP
 import IMP.base
 import IMP.core
@@ -30,7 +31,7 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
         o = self.get_optimizer()
         m = o.get_model()
         for r in self.restraints:
-            print r.get_name(), r.get_last_score()
+            print(r.get_name(), r.get_last_score())
         # for i in range(0,m.get_number_of_restraints()):
         #    r=m.get_restraint(i)
         #    print "restraint",r.get_name(),"value",r.evaluate(False)
@@ -45,7 +46,7 @@ IMP.atom.add_radii(prot)
 
 # get the chains
 chains = IMP.atom.get_by_type(prot, IMP.atom.CHAIN_TYPE)
-print "there are", len(chains), "chains in 1z5s.pdb"
+print("there are", len(chains), "chains in 1z5s.pdb")
 
 # set the chains as rigid bodies
 native_chain_centers = []
@@ -55,8 +56,8 @@ for c in chains:
     rbd = IMP.core.RigidBody.setup_particle(c, atoms)
     rbd.set_coordinates_are_optimized(True)
     rigid_bodies.append(rbd)
-    print "chain has", rbd.get_number_of_members(), \
-        "atoms", "coordinates: ", rbd.get_coordinates()
+    print("chain has", rbd.get_number_of_members(), \
+        "atoms", "coordinates: ", rbd.get_coordinates())
     native_chain_centers.append(rbd.get_coordinates())
 
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-25, -40, -60),
@@ -74,7 +75,7 @@ for rbd in rigid_bodies:
     final_transformation = IMP.algebra.compose(
         transformation1, transformation2)
     IMP.core.transform(rbd, final_transformation)
-print "Writing transformed assembly"
+print("Writing transformed assembly")
 IMP.atom.write_pdb(prot, "1z5s-transformed.pdb")
 
 # set distance restraints measusring some distances between rigid bodies
@@ -99,14 +100,14 @@ d30 = IMP.algebra.get_distance(
 r30 = IMP.core.DistanceRestraint(
     IMP.core.Harmonic(d30, 1), chains[3], chains[0])
 r30.set_name("distance 3-0")
-print "Distances in the solution: d01 =", \
-    d01, "d12 =", d12, "d23 =", d23, "d30 =", d30
+print("Distances in the solution: d01 =", \
+    d01, "d12 =", d12, "d23 =", d23, "d30 =", d30)
 
 # set distance restraints
-print "adding distance restraints "
+print("adding distance restraints ")
 for r in [r01, r12, r23, r30]:
     m.add_restraint(r)
-print "model has ", m.get_number_of_restraints(), "restraints"
+print("model has ", m.get_number_of_restraints(), "restraints")
 
 # set em2D restraint
 srw = IMP.em2d.SpiderImageReaderWriter()
@@ -114,7 +115,7 @@ selection_file = IMP.em2d.get_example_path("all-1z5s-projections.sel")
 images_to_read_names = [IMP.base.get_relative_path(selection_file, x) for x in
                         IMP.em2d.read_selection_file(selection_file)]
 em_images = IMP.em2d.read_images(images_to_read_names, srw)
-print len(em_images), "images read"
+print(len(em_images), "images read")
 
 em2d_restraint = IMP.em2d.Em2DRestraint(m)
 apix = 1.5  # sampling rate of the available EM images
@@ -148,10 +149,10 @@ em2d_restraints_set = IMP.kernel.RestraintSet(m)
 # em2d_restraints_set.add_restraint(em2d_restraint)
 # em2d_restraints_set.set_weight(1000) # weight for the em2D restraint
 
-print "adding em2d restraint "
+print("adding em2d restraint ")
 m.add_restraint(em2d_restraints_set)
 # Add all restraints to a model
-print "model has ", m.get_number_of_restraints(), "restraints"
+print("model has ", m.get_number_of_restraints(), "restraints")
 
 
 # MONTECARLO OPTIMIZATION
@@ -161,7 +162,7 @@ movers = []
 for rbd in rigid_bodies:
     movers.append(IMP.core.RigidBodyMover(rbd, 5, 2))
 s.add_movers(movers)
-print "MonteCarlo sampler has", s.get_number_of_movers(), "movers"
+print("MonteCarlo sampler has", s.get_number_of_movers(), "movers")
 # Add an optimizer state to save intermediate configurations of the hierarchy
 o_state = IMP.atom.WritePDBOptimizerState(chains, "intermediate-step-%1%.pdb")
 o_state.set_period(10)
@@ -182,16 +183,16 @@ IMP.atom.write_pdb(prot, "solution.pdb")
 
 
 # Check that the optimization achieves distances close to the solution
-print "*** End optimization ***"
+print("*** End optimization ***")
 new_centers = []
 for rbd in rigid_bodies:
-    print "chain has", rbd.get_number_of_members(), \
-        "atoms", "coordinates: ", rbd.get_coordinates()
+    print("chain has", rbd.get_number_of_members(), \
+        "atoms", "coordinates: ", rbd.get_coordinates())
     new_centers.append(rbd.get_coordinates())
 
 d01 = IMP.algebra.get_distance(new_centers[0], new_centers[1])
 d12 = IMP.algebra.get_distance(new_centers[1], new_centers[2])
 d23 = IMP.algebra.get_distance(new_centers[2], new_centers[3])
 d30 = IMP.algebra.get_distance(new_centers[3], new_centers[0])
-print "Distances at the end of the optimization: d01 =", \
-    d01, "d12 =", d12, "d23 =", d23, "d30 =", d30
+print("Distances at the end of the optimization: d01 =", \
+    d01, "d12 =", d12, "d23 =", d23, "d30 =", d30)

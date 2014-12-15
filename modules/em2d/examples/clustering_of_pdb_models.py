@@ -8,6 +8,7 @@
 # After the clustering procedure, a linkage matrix is generated.
 #
 
+from __future__ import print_function
 import IMP
 import IMP.algebra
 import IMP.core
@@ -72,7 +73,7 @@ def argmin(sequence):
 fn_selection = IMP.em2d.get_example_path("all-models-1z5s.sel")
 fn_em2d_scores = IMP.em2d.get_example_path("em2d_scores_for_clustering.data")
 # Load models
-print "Reading models ..."
+print("Reading models ...")
 model = IMP.kernel.Model()
 ssel = IMP.atom.ATOMPDBSelector()
 coords = []
@@ -86,13 +87,13 @@ for fn in fn_models:
     xyz = IMP.core.XYZs(IMP.atom.get_leaves(h))
     coords.append([x.get_coordinates() for x in xyz])
 
-print "Computing matrix of RMSD ..."
+print("Computing matrix of RMSD ...")
 rmsds = [[0.0 for i in range(0, n_models)] for n in range(0, n_models)]
 transformations = [[[] for i in range(0, n_models)]
                    for j in range(0, n_models)]
 # fill rmsd and transformations
-for i in xrange(0, n_models):
-    for j in xrange(i + 1, n_models):
+for i in range(0, n_models):
+    for j in range(i + 1, n_models):
         if(i != j):
             t = IMP.algebra.get_transformation_aligning_first_to_second(
                 coords[i],
@@ -105,12 +106,12 @@ for i in xrange(0, n_models):
             rmsds[j][i] = rmsd
 
 # cluster
-print "Clustering (Complete linkage method)..."
+print("Clustering (Complete linkage method)...")
 cluster_set = IMP.em2d.do_hierarchical_clustering_complete_linkage(rmsds)
 mat2 = cluster_set.get_linkage_matrix()
-print "Complete Linkage Matrix"
+print("Complete Linkage Matrix")
 for m in mat2:
-    print m
+    print(m)
 
 # Read scores from the scores file
 em2d_scores = get_columns(fn_em2d_scores, [1])
@@ -118,28 +119,28 @@ em2d_scores = em2d_scores[0]
 
 # get biggest clusters below a certain rmsd
 rmsd_cutoff = 1.4
-print "clusters below cutoff", rmsd_cutoff, "Angstroms"
+print("clusters below cutoff", rmsd_cutoff, "Angstroms")
 clusters = cluster_set.get_clusters_below_cutoff(rmsd_cutoff)
 for c in clusters:
     elems = cluster_set.get_cluster_elements(c)
     scores_elements = []
     for cid in elems:
         scores_elements.append(em2d_scores[cid])
-    print "Cluster", c, ":", elems, scores_elements,
+    print("Cluster", c, ":", elems, scores_elements, end=' ')
     # find model with best score
     min_value, min_index = argmin(scores_elements)
     min_elem_id = elems[min_index]
     # The representative element is the one with the minimum em2d score
-    print "representative element", min_elem_id, min_value
+    print("representative element", min_elem_id, min_value)
     for i in elems:
         pdb_name = "cluster-%03d-elem-%03d.pdb" % (c, i)
 
         if(i != min_elem_id):
-            print "Writing element", i, "aligned to ", min_elem_id, ":", pdb_name
+            print("Writing element", i, "aligned to ", min_elem_id, ":", pdb_name)
             T = IMP.core.Transform(transformations[i][min_elem_id])
             ps = IMP.atom.get_leaves(hierarchies[i])
             for p in ps:
                 T.apply(p)
         else:
-            print "Writing representative element", min_elem_id, ":", pdb_name
+            print("Writing representative element", min_elem_id, ":", pdb_name)
         IMP.atom.write_pdb(hierarchies[i], pdb_name)

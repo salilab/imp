@@ -2,6 +2,7 @@
 # This example shows writting one piece of geometry to an hdf5 and then
 # reading it back.
 
+from __future__ import print_function
 import IMP.display
 import IMP.rmf
 import RMF
@@ -35,10 +36,10 @@ f = RMF.open_rmf_file_read_only(tfn)
 # a set of cylinders instead.
 gs = IMP.rmf.create_geometries(f)
 IMP.rmf.load_frame(f, RMF.FrameID(0))
-print gs[0].get_name()
-print "Try running rmf_display  on", tfn
+print(gs[0].get_name())
+print("Try running rmf_display  on", tfn)
 
 # load another frame
 IMP.rmf.load_frame(f, RMF.FrameID(1))
 # cast it to a BoundingBoxGeometry and print out the geometry
-print IMP.display.BoundingBoxGeometry.get_from(gs[0]).get_geometry()
+print(IMP.display.BoundingBoxGeometry.get_from(gs[0]).get_geometry())

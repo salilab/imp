@@ -4,6 +4,7 @@
 # combination with new IMP restraints and optimization protocols.
 #
 
+from __future__ import print_function
 import modeller
 import IMP
 import IMP.modeller
@@ -33,4 +34,4 @@ m.add_restraint(IMP.modeller.ModellerRestraints(m, modmodel,
                                                 atoms))
 
 # Calculate the IMP score
-print m.evaluate(False)
+print(m.evaluate(False))

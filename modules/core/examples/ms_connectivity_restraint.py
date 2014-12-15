@@ -11,7 +11,7 @@ import IMP.algebra
 # Setup model
 
 m = IMP.kernel.Model()
-ps = [IMP.kernel.Particle(m) for x in xrange(6)]
+ps = [IMP.kernel.Particle(m) for x in range(6)]
 ds = []
 ds.append(IMP.core.XYZ.setup_particle(
     ps[0], IMP.algebra.Vector3D(0.0, 0.0, 0.0)))

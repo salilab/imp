@@ -5,6 +5,7 @@
 # conformations for scoring or other analysis without having to set up
 # restraints and things each time.
 
+from __future__ import print_function
 import IMP.atom
 import IMP.rmf
 import RMF
@@ -16,7 +17,7 @@ h = IMP.atom.read_pdb(IMP.rmf.get_example_path("simple.pdb"), m)
 # find the name for a temporary file to use to for writing the hdf5 file
 tfn = IMP.create_temporary_file_name("link", ".rmf")
 
-print "File name is", tfn
+print("File name is", tfn)
 
 # open the temporary file, clearing any existing contents
 rh = RMF.create_rmf_file(tfn)
@@ -39,4 +40,4 @@ IMP.rmf.link_hierarchies(rh, [h])
 # load the same coordinates in, ok, that is not very exciting
 IMP.rmf.load_frame(rh, RMF.FrameID(0))
 
-print "Try running hdf5_display or hdf5_show on", tfn
+print("Try running hdf5_display or hdf5_show on", tfn)

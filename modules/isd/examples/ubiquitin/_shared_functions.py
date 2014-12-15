@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import sys
 import os
 
@@ -28,7 +29,7 @@ class sfo(sfo_common):
         self.init_model_base(wd)
         m = self._m
         #
-        print "loading protein and force field"
+        print("loading protein and force field")
         prot, ff, rsb, rs = self.init_model_charmm_protein_and_ff(initpdb,
                                                                   "top.lib", "par.lib",
                                                                   IMP.atom.NonWaterPDBSelector(
@@ -42,7 +43,7 @@ class sfo(sfo_common):
         self._p = {}
         self._p['prot'] = prot
         #
-        print "NOE restraints"
+        print("NOE restraints")
         noe_rs, prior_rs, sigma, gamma = self.init_model_NOEs(prot,
                                                               seqfile, noe, name='NOE', prior_rs=None,
                                                               bounds_sigma=(
@@ -179,7 +180,7 @@ if __name__ == '__main__':
     sfo.init_simulation()
     sfo.init_stats()
     for i in xrange(100):
-        print "\r%d" % i,
+        print("\r%d" % i, end=' ')
         sys.stdout.flush()
         sfo.do_mc(10)
         sfo.do_md(10)

@@ -3,6 +3,7 @@
 # spheres and resolution are randomly chosen and so should not be
 # considered significant.
 
+from __future__ import print_function
 import IMP.em
 import IMP.core
 import IMP.atom
@@ -22,8 +23,8 @@ dmap = IMP.em.read_map(
     IMP.em.get_example_path("input.mrc"), IMP.em.MRCReaderWriter())
 dmap.get_header_writable().set_resolution(resolution)
 # 3. calculate the cross correlation between the density and the map
-print "The cross-correlation score is:", 1. - IMP.em.compute_fitting_score(ps, dmap)
+print("The cross-correlation score is:", 1. - IMP.em.compute_fitting_score(ps, dmap))
 # 4. add a fitting restraint
 r = IMP.em.FitRestraint(ps, dmap)
 m.add_restraint(r)
-print "The fit of the particles in the density is:", r.evaluate(False)
+print("The fit of the particles in the density is:", r.evaluate(False))
