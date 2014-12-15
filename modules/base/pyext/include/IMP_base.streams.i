@@ -172,8 +172,12 @@
                              buffer_(1024){
       setp(&buffer_.front(), &buffer_.front() + buffer_.size());
       // to make errors occur earlier
-      static char fmt[] = "(s#)";
-      PyObject *result = PyObject_CallFunction(write_method_, fmt, fmt, 0);
+#if PY_VERSION_HEX >= 0x03000000
+      static char fmat[] = "(y#)";
+#else
+      static char fmat[] = "(s#)";
+#endif
+      PyObject *result = PyObject_CallFunction(write_method_, fmat, fmat, 0);
       if (!result) {
         // Python exception will be reraised when SWIG method finishes
         throw std::ostream::failure("Python error on write");
@@ -194,12 +198,17 @@
     virtual int_type sync() {
       // Python API uses char* arguments rather than const char*, so create
       // here to quell the compiler warning
-      static char fmt[] = "(s#)";
+#if PY_VERSION_HEX >= 0x03000000
+      static char fmat[] = "(y#)";
+#else
+      static char fmat[] = "(s#)";
+#endif
       int num = pptr() - pbase();
       if (num <= 0) {
         return 0;
       }
-      PyObject *result = PyObject_CallFunction(write_method_, fmt, pbase(), num);
+      PyObject *result = PyObject_CallFunction(write_method_, fmat,
+                                               pbase(), num);
       if (!result) {
         // Python exception will be reraised when SWIG method finishes
         throw std::ostream::failure("Python error on write");
@@ -216,8 +225,12 @@
         // result per call (one here, potentially one in sync) rather than one per
         // buffer_.size() characters via the regular buffering
         sync();
-        static char fmt[] = "(s#)";
-        PyObject *result = PyObject_CallFunction(write_method_, fmt, s, n);
+#if PY_VERSION_HEX >= 0x03000000
+        static char fmat[] = "(y#)";
+#else
+        static char fmat[] = "(s#)";
+#endif
+        PyObject *result = PyObject_CallFunction(write_method_, fmat, s, n);
         if (!result) {
           throw std::ostream::failure("Python error on write");
         } else {
