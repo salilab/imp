@@ -146,6 +146,10 @@ def xyz_numerical_derivatives(model, xyz, step):
 class TestCase(unittest.TestCase):
     """Super class for IMP test cases"""
 
+    def __init__(self, *args, **keys):
+        unittest.TestCase.__init__(self, *args, **keys)
+        self._progname = os.path.abspath(sys.argv[0])
+
     def setUp(self):
         self.__check_level = IMP.base.get_check_level()
         # Turn on expensive runtime checks while running the test suite:
@@ -161,7 +165,7 @@ class TestCase(unittest.TestCase):
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
            test directory."""
-        testdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        testdir = os.path.dirname(self._progname)
         dirs = testdir.split(os.path.sep)
         for i in range(len(dirs), 0, -1):
                 input = os.path.sep.join(dirs[:i] + ['input'])
