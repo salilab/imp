@@ -64,6 +64,11 @@ def _forward_set_value(self, name, value):
   bool __gt__(const IMP::kernel::Decorator &d) const {
      return self > d.get_particle();
   }
+  # Since we override __eq__, Python 3 will automatically disable __hash__.
+  # So we need to explicitly use the base class implementation
+  %pythoncode {
+  __hash__ = ModelObject.__hash__
+  }
 }
 
 
