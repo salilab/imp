@@ -96,13 +96,13 @@ class Tests(IMP.test.ApplicationTestCase):
             self.assertEqual(app.subprocess.args,
                              ([os.path.join('testpath', 'bin'),
                                'arg1', 'arg2'],))
-            sys.stdout = io.StringIO()
+            sys.stdout = io.BytesIO()
             app._run_binary('', 'bin', ['arg1', 'arg2'])
             self.assertEqual(app.subprocess.args,
                              (['bin', 'arg1', 'arg2'],))
             self.assertEqual(sys.stdout.getvalue().rstrip('\r\n'),
                              'bin arg1 arg2')
-            sys.stdout = io.StringIO()
+            sys.stdout = io.BytesIO()
             app._run_binary('', 'bin', ['arg1', 'arg2'], out_file='foo')
             self.assertEqual(sys.stdout.getvalue().rstrip('\r\n'),
                              'bin arg1 arg2 > foo')

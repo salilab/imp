@@ -66,7 +66,7 @@ class Tests(IMP.test.TestCase):
                                     0.95, 1.12, -2.0, 4.0, False, "chi_fit.dat")
         chi = fp.get_chi()
         print('Chi after adjustment of excluded volume and water layer parameters = ' + str(chi))
-        sio = io.StringIO()
+        sio = io.BytesIO()
         fp.show(sio)
         self.assertAlmostEqual(chi, 0.45, delta=0.01)
 

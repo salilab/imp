@@ -22,13 +22,13 @@ class Tests(IMP.test.TestCase):
         mbt = IMP.domino.get_balanced_merge_tree(jt)
         # IMP.show_graphviz(mbt)
         print(mbt.get_graphviz_string())
-        buf = io.StringIO()
+        buf = io.BytesIO()
         IMP.domino.write_merge_tree(mbt, ps, buf)
         print("graph begin")
         print(buf.getvalue())
         print("graph end")
         mbt2 = IMP.domino.read_merge_tree(
-            io.StringIO(buf.getvalue()),
+            io.BytesIO(buf.getvalue()),
             ps)
         # IMP.show_graphviz(mbt)
         # IMP.show_graphviz(mbt2)
