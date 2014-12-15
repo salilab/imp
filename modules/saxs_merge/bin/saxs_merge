@@ -26,6 +26,7 @@ def subsample(idx, data, npoints):
     """keep min(npoints,len(data)) out of data if npoints>0,
     subsampling evenly along the idx (float) coordinate
     """
+    data = list(data)
     # defined here because it's used in the class
     Ntot = len(data)
     if len(idx) != Ntot:
