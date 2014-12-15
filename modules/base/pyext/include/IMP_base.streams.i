@@ -177,6 +177,7 @@
       PyObject *result = PyObject_CallFunction(write_method_, fmat_, fmat_, 0);
       if (!result) {
 #if PY_VERSION_HEX >= 0x03000000
+        PyErr_Clear();
         // Failed to write string (Unicode); try bytes instead
         fmat_[1] = 'y';
         result = PyObject_CallFunction(write_method_, fmat_, fmat_, 0);
