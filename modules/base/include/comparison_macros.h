@@ -49,6 +49,7 @@
 /** @} */
 #elif defined(SWIG)
 #define IMP_SWIG_COMPARISONS(Name)  \
+  int __cmp__(const Name& o) const; \
   bool __eq__(const Name& o) const; \
   bool __ne__(const Name& o) const; \
   bool __lt__(const Name& o) const; \
