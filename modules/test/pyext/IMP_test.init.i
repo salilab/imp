@@ -751,9 +751,18 @@ class ApplicationTestCase(TestCase):
         """Import an installed Python application, rather than running it.
            This is useful to directly test components of the application.
            @return the Python module object."""
-        import imp
-        return imp.load_source(os.path.splitext(app)[0],
-                               os.path.join(os.environ['IMP_BIN_DIR'], app))
+        try:
+            import importlib.machinery
+            imp = None
+        except ImportError:
+            import imp
+        name = os.path.splitext(app)[0]
+        pathname = os.path.join(os.environ['IMP_BIN_DIR'], app)
+        if imp is None:
+            return importlib.machinery.SourceFileLoader(name,
+                                                        pathname).load_module()
+        else:
+            return imp.load_source(name, pathname)
 
     def run_script(self, app, args):
         """Run an application with the given list of arguments.
