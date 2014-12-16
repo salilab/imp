@@ -57,11 +57,15 @@ namespace IMP {
     IMP_THROW("Geometric primitives cannot be compared",
               IMP::base::ValueException);
   }
+  bool __eq__(const IMP::algebra::VectorD<D> &) const {
+    IMP_UNUSED(self);
+    IMP_THROW("Geometric primitives cannot be compared",
+              IMP::base::ValueException);
+  }
   # Support new-style "true" division
   %pythoncode {
   __truediv__ = __div__
   __itruediv__ = __idiv__
-  __eq__ = __cmp__
   }
 };
 %enddef

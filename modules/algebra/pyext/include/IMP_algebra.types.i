@@ -31,9 +31,10 @@ IMP_SWIG_VALUE_TEMPLATE(Namespace, Namebase##D);
     IMP_THROW("Geometric primitives cannot be compared",
               IMP::base::ValueException);
   }
-  # In Python 3 cmp is not used
-  %pythoncode {
-  __eq__ = __cmp__
+  bool __eq__(const Namebase##D<D> &) const {
+    IMP_UNUSED(self);
+    IMP_THROW("Geometric primitives cannot be compared",
+              IMP::base::ValueException);
   }
 }
 %enddef
