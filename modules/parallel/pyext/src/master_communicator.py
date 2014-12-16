@@ -22,7 +22,7 @@ class MasterCommunicator(_Communicator):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(self.connect_timeout)
         s.connect((host, port))
-        s.sendall(identifier)
+        s.sendall(identifier.encode('ascii'))
         s.settimeout(None)
         self._socket = s
 

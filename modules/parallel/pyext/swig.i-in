@@ -58,7 +58,7 @@ class _Communicator(object):
 
     def __init__(self):
         self._socket = None
-        self._ibuffer = ''
+        self._ibuffer = b''
 
     def _send(self, obj):
         p = xdrlib.Packer()
@@ -543,6 +543,8 @@ class Manager(object):
     def _accept_slave(self, sock, context):
         sock.setblocking(True)
         identifier = sock.recv(1024)
+        if identifier:
+            identifier = identifier.decode('ascii')
         if identifier and identifier in self._starting_slaves:
             slave = self._starting_slaves.pop(identifier)
             slave._accept_connection(sock)
