@@ -440,7 +440,7 @@ def Load(filename, gzip=0, force=0):
         except:
             return
 
-    f = open(filename)
+    f = open(filename, 'rb')
 
     objects = None
 
