@@ -558,8 +558,9 @@ class ModelLoader(object):
                 return self
             def close(self, *args, **keys):
                 return self._gen.close(*args, **keys)
-            def next(self, *args, **keys):
-                return self._gen.next(*args, **keys)
+            def next(self):
+                return next(self._gen)
+            __next__ = next
             def send(self, *args, **keys):
                 return self._gen.send(*args, **keys)
             def throw(self, *args, **keys):
