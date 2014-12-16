@@ -64,24 +64,26 @@ def get_protein_data(
     sd.set_was_used(True)
     msg = sd.get_component_header_line()
     mdl = IMP.kernel.Model()
-    for i, fnn in enumerate(open(pdb_list)):
-        name = fnn[:-1].split()[0]
-        fn = fnn[:-1].split()[1]
-        surface_fn = fnn[:-1].split()[1] + ".ms"
-        # TODO - add the number of copies data
-        mh = IMP.atom.read_pdb(fn, mdl)
-        num_anchors = len(
-            IMP.atom.get_by_type(mh,
-                                 IMP.atom.RESIDUE_TYPE)) / coarse_level
-        msg += name + "|" + fn + "|" + surface_fn + "|" + anchor_dir_name + \
-            name + "_anchors.txt|" + str(num_anchors) + "|"
-        msg += anchor_dir_name + name + "_fine_anchors.txt|" + \
-            str(len(IMP.atom.get_by_type(mh, IMP.atom.RESIDUE_TYPE)))
-        msg += "|" + fit_dir_name + name + fit_fn_header + "|"
-        if add_reference_fn:
-            msg = msg + fn + "|\n"
-        else:
-            msg = msg + "|\n"
+    with open(pdb_list) as fh:
+        for i, fnn in enumerate(fh):
+            name = fnn[:-1].split()[0]
+            fn = fnn[:-1].split()[1]
+            surface_fn = fnn[:-1].split()[1] + ".ms"
+            # TODO - add the number of copies data
+            mh = IMP.atom.read_pdb(fn, mdl)
+            num_anchors = len(
+                IMP.atom.get_by_type(mh,
+                                     IMP.atom.RESIDUE_TYPE)) / coarse_level
+            msg += name + "|" + fn + "|" + surface_fn + "|" + \
+                anchor_dir_name + name + "_anchors.txt|" + \
+                str(num_anchors) + "|"
+            msg += anchor_dir_name + name + "_fine_anchors.txt|" + \
+                str(len(IMP.atom.get_by_type(mh, IMP.atom.RESIDUE_TYPE)))
+            msg += "|" + fit_dir_name + name + fit_fn_header + "|"
+            if add_reference_fn:
+                msg = msg + fn + "|\n"
+            else:
+                msg = msg + "|\n"
     return msg
 
 
