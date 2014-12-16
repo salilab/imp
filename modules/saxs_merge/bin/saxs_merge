@@ -2327,7 +2327,7 @@ def merging(profiles, args):
         # cleaned = [[d for j,d in enumerate(dat) if j in flag_numbers]
         #            + [i,p.filename] for dat in data]
         # print cleaned
-        for k in data.keys():
+        for k in list(data.keys()):
             if k not in flags_to_keep:
                 data.pop(k)
         data['eorigin'] = [i] * len(data['q'])
