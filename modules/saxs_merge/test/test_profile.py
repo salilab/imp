@@ -485,8 +485,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         expected_err = map(lambda a:
                            numpy.sqrt(gp.get_posterior_covariance([a], [1.0])),
                            expected_q)
-        expected_mean = numpy.array(map(lambda a:
-                                        functions['mean'](a), expected_q))
+        expected_mean = numpy.array(list(map(lambda a:
+                                        functions['mean'](a), expected_q)))
         for q, I, err, mean, v in zip(expected_q, expected_I, expected_err,
                                       expected_mean, test):
             self.assertEqual(len(v), 4)
@@ -560,8 +560,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
                            gamma *
                            numpy.sqrt(gp.get_posterior_covariance([a], [a])),
                            expected_q)
-        expected_mean = numpy.array(map(lambda a:
-                                        gamma * functions['mean'](a), expected_q))
+        expected_mean = numpy.array(list(map(lambda a:
+                                  gamma * functions['mean'](a), expected_q)))
         for q, I, err, mean, v in zip(expected_q, expected_I, expected_err,
                                       expected_mean, test):
             self.assertEqual(len(v), 4)
