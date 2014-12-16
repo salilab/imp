@@ -68,7 +68,7 @@ class Tests(IMP.test.TestCase):
         outputFh.close()
 
         # read in second merge tree
-        inputFh = open(outputFile, 'r')
+        inputFh = open(outputFile, 'rb')
         newMergeTree = IMP.domino.read_merge_tree(inputFh, sortedParticles)
 
         # print second merge tree
