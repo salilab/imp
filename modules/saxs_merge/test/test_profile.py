@@ -515,15 +515,15 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             None)
         test = p.get_mean(colwise=True)
         expected_q = numpy.linspace(0, 0.02, num=200)
-        expected_I = numpy.array(map(gp.get_posterior_mean,
-                                     [[i] for i in expected_q]))
-        expected_err = numpy.array(map(lambda a:
+        expected_I = numpy.array(list(map(gp.get_posterior_mean,
+                                     [[i] for i in expected_q])))
+        expected_err = numpy.array(list(map(lambda a:
                                        numpy.sqrt(
                                            gp.get_posterior_covariance(
                                                [a], [1.0])),
-                                       expected_q))
-        expected_mean = numpy.array(map(lambda a:
-                                        functions['mean'](a), expected_q))
+                                       expected_q)))
+        expected_mean = numpy.array(list(map(lambda a:
+                                        functions['mean'](a), expected_q)))
         self.assertEqual(len(test), 4)
         self.assertEqual(set(['q', 'I', 'err', 'mean']), set(test.keys()))
         self.assertTrue((expected_q == test['q']).all())
