@@ -79,7 +79,8 @@ class SAXSProfile:
         """
         if isinstance(input, str):
             # read all lines
-            stuff = [i.split() for i in open(input).readlines()]
+            with open(input) as fh:
+                stuff = [i.split() for i in fh.readlines()]
             # keep the ones that have data
             stuff = [a for a in stuff if (len(a) >= self.nflags)
                            and not a[0].startswith('#')]
