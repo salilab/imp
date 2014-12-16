@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import division
 
 __doc__ = 'Build initial parameters files.'
 
@@ -71,9 +72,8 @@ def get_protein_data(
             surface_fn = fnn[:-1].split()[1] + ".ms"
             # TODO - add the number of copies data
             mh = IMP.atom.read_pdb(fn, mdl)
-            num_anchors = len(
-                IMP.atom.get_by_type(mh,
-                                     IMP.atom.RESIDUE_TYPE)) / coarse_level
+            num_anchors = len(IMP.atom.get_by_type(mh,
+                                     IMP.atom.RESIDUE_TYPE)) // coarse_level
             msg += name + "|" + fn + "|" + surface_fn + "|" + \
                 anchor_dir_name + name + "_anchors.txt|" + \
                 str(num_anchors) + "|"
