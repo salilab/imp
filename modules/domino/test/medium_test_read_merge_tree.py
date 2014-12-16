@@ -63,13 +63,12 @@ class Tests(IMP.test.TestCase):
         # write out first merge tree
         sorted_keys = sorted(namesToParticles.keys())
         sortedParticles = [namesToParticles[x] for x in sorted_keys]
-        outputFh = open(outputFile, 'w')
-        IMP.domino.write_merge_tree(mt, sortedParticles, outputFh)
-        outputFh.close()
+        with open(outputFile, 'w') as outputFh:
+            IMP.domino.write_merge_tree(mt, sortedParticles, outputFh)
 
         # read in second merge tree
-        inputFh = open(outputFile, 'rb')
-        newMergeTree = IMP.domino.read_merge_tree(inputFh, sortedParticles)
+        with open(outputFile, 'rb') as inputFh:
+            newMergeTree = IMP.domino.read_merge_tree(inputFh, sortedParticles)
 
         # print second merge tree
         print("begin second merge tree")
