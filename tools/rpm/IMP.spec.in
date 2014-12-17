@@ -64,6 +64,9 @@ BuildRequires: boost-devel >= 1.41
 BuildRequires: CGAL-devel, opencv-devel
 %endif
 
+%define reqprog %{_builddir}/find-requires-%{name}
+%define proprog %{_builddir}/find-provides-%{name}
+
 # If building in the Sali lab, pass '-D "RHEL_SALI_LAB 1"' to your rpmbuild
 # invocation. This will pull in our custom OpenCV package and bundle the
 # libraries with IMP
@@ -71,15 +74,25 @@ BuildRequires: CGAL-devel, opencv-devel
 BuildRequires: opencv-nogui-devel
 
 # Exclude bundled libraries (OpenCV and libTAU) from provides and requires
-%global _use_internal_dependency_generator 0
-%global __find_provides /bin/sh -c "%{_rpmconfigdir}/find-provides | grep -v 'libcv\.so\|libcxcore\.so\|libhighgui.so\|libTAU\.so' || /bin/true"
-%global __find_requires /bin/sh -c "%{_rpmconfigdir}/find-requires | grep -v 'libcv\.so\|libcxcore\.so\|libhighgui.so\|libTAU\.so' || /bin/true"
+cat <<EOF > %{reqprog}
+%{__find_requires} | grep -v 'libcv\.so\|libcxcore\.so\|libhighgui.so\|libTAU\.so'
+EOF
+cat <<EOF > %{proprog}
+%{__find_provides} | grep -v 'libcv\.so\|libcxcore\.so\|libhighgui.so\|libTAU\.so'
+EOF
 %else
 # Exclude bundled libraries (libTAU) from provides and requires
-%global _use_internal_dependency_generator 0
-%global __find_provides /bin/sh -c "%{_rpmconfigdir}/find-provides | grep -v 'libTAU\.so' || /bin/true"
-%global __find_requires /bin/sh -c "%{_rpmconfigdir}/find-requires | grep -v 'libTAU\.so' || /bin/true"
+cat <<EOF > %{reqprog}
+%{__find_requires} | grep -v 'libTAU\.so'
+EOF
+cat <<EOF > %{proprog}
+%{__find_provides} | grep -v 'libTAU\.so'
+EOF
 %endif
+
+chmod a+x %{reqprog}
+chmod a+x %{proprog}
+%define _use_internal_dependency_generator 0
 
 # Many modules use Python's numpy module, so pull that in (at build time
 # for tests; at install time for using the modules)
