@@ -32,6 +32,7 @@ def run_swig(outputdir, options):
     args.append("-python")
     args.append("-c++")
     args.append("-naturalvar")
+    args.append("-modern")
     args.append("-fvirtual")
     args.append("-Wextra")
     args.append("-I" + os.path.join("..", "..", "include"))
