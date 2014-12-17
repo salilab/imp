@@ -29,25 +29,18 @@ VAR = PyDict_GetItemString(base_dict, "CNAME")
 #endif
 %enddef
 
-/* PyErr_NewException only takes a tuple in Python 2.5 or later. In older
-   Pythons we will have to reassign to __bases__ after the class is created
-   (but this in turn does not work in newer Pythons, JPython, IronPython etc.)
-*/
 %define CREATE_EXCEPTION_CLASS_PYTHON(VAR, CNAME, PYNAME)
 #if !defined(IMP_SWIG_BASE)
 CREATE_EXCEPTION_CLASS(VAR, CNAME)
 #else
-%#if PY_VERSION_HEX >= 0x02050000
 do {
   PyObject *base_tuple = PyTuple_Pack(2, imp_exception, PyExc_##PYNAME);
+  /* PyErr_NewException only takes a tuple in Python 2.5 or later. */
   VAR = PyErr_NewException((char *)"_IMP_base.CNAME", base_tuple, NULL);
   Py_INCREF(VAR);
   Py_DECREF(base_tuple);
   PyModule_AddObject(m, "CNAME", VAR);
 } while(0)
-%#else
-CREATE_EXCEPTION_CLASS(VAR, CNAME)
-%#endif
 #endif
 %enddef
 
@@ -83,18 +76,11 @@ CREATE_EXCEPTION_CLASS(VAR, CNAME)
   }
 }
 
-/* Make sure that exception classes are visible to Python, and make certain
-   subclasses also derive from Python builtins, in Pythons older than 2.5. */
+/* Make sure that exception classes are visible to Python */
 #ifdef IMP_SWIG_BASE
 %pythoncode %{
 from _IMP_base import Exception, InternalException, ModelException, EventException
 from _IMP_base import UsageException, IndexException, IOException, ValueException
-
-import sys
-if sys.version_info[:2] < (2,5):
-    IndexException.__bases__ += (IndexError,)
-    IOException.__bases__ += (IOError,)
-    ValueException.__bases__ += (ValueError,)
 %}
 #endif
 
