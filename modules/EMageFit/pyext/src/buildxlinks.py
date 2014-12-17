@@ -174,7 +174,7 @@ class DockOrder (object):
     """
         Compute the order of the docking experiments. The order is derived
         from the cross-linking restraints:
-        1) The subunit with the highest number of cross-linkns with others
+        1) The subunit with the highest number of cross-links with others
            works as the first receptor (A)
         2) All the subunits cross-linked with A are docked into A.
         3) The next receptor (B) is the subunit that has the highest number of
