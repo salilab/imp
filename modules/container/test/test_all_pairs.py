@@ -4,16 +4,6 @@ import IMP.test
 import IMP.container
 import math
 
-# Use faster built-in 'set' type on newer Pythons; fall back to the older
-# 'sets' module on older Pythons
-try:
-    x = set
-    del x
-except NameError:
-    import sets
-    set = sets.Set
-
-
 class Tests(IMP.test.TestCase):
 
     """Tests for all pairs pair container"""

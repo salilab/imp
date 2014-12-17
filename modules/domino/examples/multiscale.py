@@ -5,16 +5,6 @@
 import IMP.domino
 import IMP.core
 
-
-# Use faster built-in 'set' type on newer Pythons; fall back to the older
-# 'sets' module on older Pythons
-try:
-    x = set
-    del x
-except NameError:
-    import sets
-    set = sets.Set
-
 m = IMP.kernel.Model()
 m.set_log_level(IMP.base.SILENT)
 ds = [IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m))
