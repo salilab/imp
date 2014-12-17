@@ -2,6 +2,7 @@ ChangeLog {#changelog}
 =========
 
 # For next stable IMP release #
+- Python 3 is now supported.
 - Command line tools are now placed in the `bin` directory of modules (the
   old `bin` directory, used for utility programs that are not installed, is
   now called `utility`). The `applications` directory is removed.
