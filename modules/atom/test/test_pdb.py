@@ -34,6 +34,11 @@ class Tests(IMP.test.TestCase):
                           self.open_input_file("notapdb.pdb"),
                           m)
 
+    def test_cast_selectors(self):
+        """Check cast of selectors"""
+        self.check_get_from(IMP.atom.NonWaterPDBSelector())
+        self.check_get_from(IMP.atom.NPDBSelector())
+
     def test_read(self):
         """Check reading a pdb with one protein"""
         m = IMP.kernel.Model()

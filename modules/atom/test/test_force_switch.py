@@ -15,6 +15,11 @@ class Tests(IMP.test.TestCase):
             self.assertRaises(IMP.base.UsageException, IMP.atom.ForceSwitch,
                               6.0, 5.0)
 
+    def test_cast(self):
+        """Check ForceSwitch cast"""
+        sm = IMP.atom.ForceSwitch(9.0, 10.0)
+        self.check_get_from(sm)
+
     def test_value(self):
         """Check value of ForceSwitch"""
         s = IMP.atom.ForceSwitch(5.0, 6.0)

@@ -289,6 +289,12 @@ class TestCase(unittest.TestCase):
                 fmin, vmin = f, v
         self.assertAlmostEqual(fmin, expected_fmin, delta=step)
 
+    def check_get_from(self, obj):
+        """Check that the get_from() static method works correctly"""
+        cls = type(obj)
+        self.assertIsNotNone(cls.get_from(obj))
+        self.assertRaises(ValueError, cls.get_from, IMP.Model())
+
     def create_particles_in_box(self, model, num=10,
                                 lb= [0,0,0],
                                 ub= [10,10,10]):

@@ -76,6 +76,10 @@ class Tests(IMP.test.TestCase):
         self.particles[-1].add_attribute(masskey, cmass, False)
         self.md = IMP.atom.MolecularDynamics(self.model)
 
+    def test_cast(self):
+        """Check MD cast"""
+        self.check_get_from(self.md)
+
     def _check_trajectory(self, coor, traj, timestep, vxfunc):
         """Check generated trajectory against that predicted using vxfunc"""
         vx = 0.
