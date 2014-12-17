@@ -179,7 +179,7 @@ class DockOrder (object):
         2) All the subunits cross-linked with A are docked into A.
         3) The next receptor (B) is the subunit that has the highest number of
             cross-links after A.
-        4) All the subunits cross-linked to B are docked into B (expect A)
+        4) All the subunits cross-linked to B are docked into B (except A)
         5) The procedure is repeated until there are no more cross-links
     """
 
