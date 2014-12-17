@@ -41,15 +41,6 @@ class TestBuildXlinks(IMP.test.TestCase):
                            ("subunitD", "D", 7, "subunitE", "E", 4, 50),
                            ]
 
-        # docking order
-        # E into D (4 xlinks)
-        # C into D (2 xlinks)
-        # C into B (2 xlinks)
-        # A into B (remaining 3 xlinks)
-        self.optimal_order = [('subunitD', 'subunitE'),
-                              ('subunitD', 'subunitC'),
-                              ('subunitC', 'subunitB'),
-                              ('subunitB', 'subunitA')]
         # get different pairs of subunits
         self.xlinks = bx.XlinksDict()
         for c in self.crosslinks:
@@ -97,10 +88,36 @@ class TestBuildXlinks(IMP.test.TestCase):
         """
             Test the order recommendation for the xlinks
         """
+        # Note that we don't use the same crosslinks here as the other tests,
+        # because the order recommendation doesn't take account of multiple
+        # crosslinks between a given pair of subunits.
+        crosslinks = [("subunitA", "A", 1, "subunitB", "B", 1, 10),
+                      ("subunitA", "A", 1, "subunitC", "B", 1, 10),
+                      ("subunitA", "A", 1, "subunitD", "B", 1, 10),
+                      ("subunitA", "A", 1, "subunitE", "B", 1, 10),
+                      ("subunitA", "A", 1, "subunitF", "B", 1, 10),
+                      ("subunitC", "A", 1, "subunitE", "B", 1, 10),
+                      ("subunitC", "A", 1, "subunitD", "B", 1, 10),
+                      ("subunitB", "A", 1, "subunitF", "B", 1, 10),
+                      ]
+        xlinks = bx.XlinksDict()
+        for c in crosslinks:
+            xlinks.add(bx.Xlink(*c))
+
         dock_order = bx.DockOrder()
-        dock_order.set_xlinks(self.xlinks)
+        dock_order.set_xlinks(xlinks)
         docking_pairs = dock_order.get_docking_order()
-        for p, q in zip(docking_pairs, self.optimal_order):
+        # Optimal order should be:
+        # - First, pick the most linked subunit (A) and dock everything
+        #   that's linked to it (in any order)
+        # - Repeat with the remaining subunits in order of most links (C, B)
+        optimal_order = [('subunitA', 'subunitB'), ('subunitA', 'subunitC'),
+                         ('subunitA', 'subunitD'), ('subunitA', 'subunitE'),
+                         ('subunitA', 'subunitF'), ('subunitC', 'subunitD'),
+                         ('subunitC', 'subunitE'), ('subunitF', 'subunitB')]
+        docking_pairs = sorted(docking_pairs[:5]) + sorted(docking_pairs[5:7]) \
+                        + [docking_pairs[7]]
+        for p, q in zip(docking_pairs, optimal_order):
             self.assertEqual(p, q)
 
 
