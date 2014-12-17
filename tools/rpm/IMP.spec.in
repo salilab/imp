@@ -69,6 +69,16 @@ BuildRequires: CGAL-devel, opencv-devel
 # libraries with IMP
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 BuildRequires: opencv-nogui-devel
+
+# Exclude bundled libraries (OpenCV and libTAU) from provides and requires
+%global _use_internal_dependency_generator 0
+%global __find_provides /bin/sh -c "%{_rpmconfigdir}/find-provides | grep -v 'libcv\.so\|libcxcore\.so\|libhighgui.so\|libTAU\.so' || /bin/true"
+%global __find_requires /bin/sh -c "%{_rpmconfigdir}/find-requires | grep -v 'libcv\.so\|libcxcore\.so\|libhighgui.so\|libTAU\.so' || /bin/true"
+%else
+# Exclude bundled libraries (libTAU) from provides and requires
+%global _use_internal_dependency_generator 0
+%global __find_provides /bin/sh -c "%{_rpmconfigdir}/find-provides | grep -v 'libTAU\.so' || /bin/true"
+%global __find_requires /bin/sh -c "%{_rpmconfigdir}/find-requires | grep -v 'libTAU\.so' || /bin/true"
 %endif
 
 # Many modules use Python's numpy module, so pull that in (at build time
