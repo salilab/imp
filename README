@@ -1,21 +1,22 @@
-Elaborate documentation and an installation guide can be found at
+Documentation and an installation guide can be found at
 http://salilab.org/imp/nightly/doc/html/
 
 Building IMP:
 =====================
 
-To build IMP source found in `imp-source` and install it in `path_to_install` do:
+To build IMP source found in `path/to/imp-source` and install it in
+`path_to_install` do:
 
       1. `cmake path/to/imp-source -DCMAKE_INSTALL_PREFIX=path_to_install`
       2. `make -j 8`
       3. `make install`
 
 Run `ccmake` to see more variables that can be used to customize your build and
-install. Note, if you got IMP from `git` you need to run `setup_git.py` or at least
-`git submodule init; git submodule update` in the source directory to get the
-submodules.
+install. Note, if you got IMP from `git` you first need to run `setup_git.py`
+or at least `git submodule init; git submodule update` in the source
+directory to get the submodules.
 
-To run IMP without installing, build imp and then use `setup_environment.sh` to
+To run IMP without installing, build IMP and then use `setup_environment.sh` to
 set the required environment variables. For example, to run `ligand_score`, do
 `./setup_environment.sh ligand_score arguments...`, or
 `./setup_environment.sh $SHELL` and then `ligand_score arguments...` in the
