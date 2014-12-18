@@ -15,7 +15,8 @@ class Tests(IMP.test.ApplicationTestCase):
         for c in cmds:
             self.run_shell_command(c)
         r = re.compile('rmsd:\s+([\d\.]+)')
-        rmsds = open('rmsd.output').readlines()
+        with open('rmsd.output') as fh:
+            rmsds = fh.readlines()
         expected_files = ['1oel_A.pdb.ms', 'multifit.output']
         for i in range(5):
             expected_files.append('asmb.model.%d.pdb' % i)

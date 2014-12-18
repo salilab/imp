@@ -17,9 +17,11 @@ class Tests(IMP.test.ApplicationTestCase):
         for c in cmds:
             if have_gnuplot or 'gnuplot' not in c:
                 self.run_shell_command(c)
-        lines = open('3KFO_23922_merge.dat').readlines()
+        with open('3KFO_23922_merge.dat') as fh:
+            lines = fh.readlines()
         self.assertIn('Chi = 2.96', lines[1])
-        lines = open('3KFO-fill.B99990005_23922_merge.dat').readlines()
+        with open('3KFO-fill.B99990005_23922_merge.dat') as fh:
+            lines = fh.readlines()
         self.assertIn('Chi = 1.14', lines[1])
         expected = ['3KFO_23922_merge.dat',
                     '3KFO-fill.B99990005_23922_merge.dat', 'fit.plt',
