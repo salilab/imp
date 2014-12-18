@@ -10,17 +10,20 @@ class Tests(IMP.test.ApplicationTestCase):
            produced. This makes the test run faster, and we don't need to
            install PatchDock."""
         os.environ['PATCH_DOCK_HOME'] = os.getcwd()
-        open('buildParams.pl', 'w').write("#!/usr/bin/perl\n# do nothing\n")
+        with open('buildParams.pl', 'w') as fh:
+            fh.write("#!/usr/bin/perl\n# do nothing\n")
         os.chmod('buildParams.pl', 0o755)
 
-        open('patch_dock.Linux', 'w').write("""#!/usr/bin/python
+        with open('patch_dock.Linux', 'w') as fh:
+            fh.write("""#!/usr/bin/python
 import sys, shutil
 params, outfname = sys.argv[1:]
 shutil.copy('%s', outfname)
 """ % input_docking)
         os.chmod('patch_dock.Linux', 0o755)
 
-        open('interface_cluster.linux', 'w').write("""#!/usr/bin/python
+        with open('interface_cluster.linux', 'w') as fh:
+            fh.write("""#!/usr/bin/python
 import sys
 receptor, ligand, trans_in, dummy, clustered_out = sys.argv[1:]
 
@@ -50,7 +53,8 @@ for n, line in enumerate(open(trans_in)):
         for c in cmds:
             self.run_shell_command(c)
         # Should have produced 3 solutions
-        wc = len(open('results_cxms_soap.txt').readlines())
+        with open('results_cxms_soap.txt') as fh:
+            wc = len(fh.readlines())
         self.assertEqual(wc, 6) # account for 3 header lines
 
 if __name__ == '__main__':
