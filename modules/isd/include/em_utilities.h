@@ -20,7 +20,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-Float score_gaussian_overlap(kernel::Model *m,
+inline Float score_gaussian_overlap(kernel::Model *m,
                              kernel::ParticleIndexPair pp,
                              IMP_Eigen::Vector3d * deriv){
   double determinant;
@@ -43,7 +43,7 @@ Float score_gaussian_overlap(kernel::Model *m,
 }
 #endif
 
-FloatsList sample_points_from_density(const em::DensityMap * dmap_orig,
+inline FloatsList sample_points_from_density(const em::DensityMap * dmap_orig,
                                       int npoints,
                                       Float threshold=0.0){
     // get sample region

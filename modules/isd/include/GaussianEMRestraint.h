@@ -41,7 +41,7 @@ KahanVectorAccumulation():
     correction(IMP_Eigen::Vector3d(0,0,0))
   {}
 };
-KahanAccumulation KahanSum(KahanAccumulation accumulation, double value){
+inline KahanAccumulation KahanSum(KahanAccumulation accumulation, double value){
   KahanAccumulation result;
   double y = value - accumulation.correction;
   double t = accumulation.sum + y;
@@ -49,7 +49,8 @@ KahanAccumulation KahanSum(KahanAccumulation accumulation, double value){
   result.sum = t;
   return result;
 }
-KahanVectorAccumulation KahanVectorSum(KahanVectorAccumulation accumulation, IMP_Eigen::Vector3d value){
+inline KahanVectorAccumulation
+KahanVectorSum(KahanVectorAccumulation accumulation, IMP_Eigen::Vector3d value){
   KahanVectorAccumulation result;
   IMP_Eigen::Vector3d y = value - accumulation.correction;
   IMP_Eigen::Vector3d t = accumulation.sum + y;
