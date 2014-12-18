@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import IMP.em
 import IMP.atom
 
@@ -26,8 +27,8 @@ the complex."""
     mass = IMP.atom.get_mass_from_number_of_residues(num_res)
 
     t = IMP.em.get_threshold_for_approximate_mass(dmap, mass)
-    print "Mass", mass
-    print "approximated threshold:", t
+    print("Mass", mass)
+    print("approximated threshold:", t)
 
 if __name__ == "__main__":
     main()
