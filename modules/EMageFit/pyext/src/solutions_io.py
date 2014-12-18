@@ -16,11 +16,6 @@ import glob
 import numpy as np
 import collections
 
-try:
-    set = set
-except NameError:
-    from sets import Set as set
-
 log = logging.getLogger("solutions_io")
 
 unit_delim = "/"  # separate units within a field (eg, reference frames).
