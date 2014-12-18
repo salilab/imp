@@ -51,9 +51,9 @@ class Tests(IMP.test.TestCase):
     def test_cluster_record(self):
         """Test ClusterRecord class"""
         it = ["testid", 42, "testrep", 23, ["foo", "bar"]]
-        c = IMP.EMageFit.solutions_io.ClusterRecord(it)
+        c = IMP.EMageFit.solutions_io.ClusterRecord(*it)
         self.assertRaises(TypeError,
-                          IMP.EMageFit.solutions_io.ClusterRecord, it[:3])
+                          IMP.EMageFit.solutions_io.ClusterRecord, *it[:3])
         self.assertEqual([x for x in c], it)
         self.assertEqual(c.cluster_id, "testid")
         self.assertEqual(c.n_elements, 42)
