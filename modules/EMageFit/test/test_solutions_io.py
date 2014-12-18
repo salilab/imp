@@ -48,5 +48,18 @@ class Tests(IMP.test.TestCase):
         os.unlink('out.db')
         os.unlink('test1.db')
 
+    def test_cluster_record(self):
+        """Test ClusterRecord class"""
+        it = ["testid", 42, "testrep", 23, ["foo", "bar"]]
+        c = IMP.EMageFit.solutions_io.ClusterRecord(it)
+        self.assertRaises(TypeError,
+                          IMP.EMageFit.solutions_io.ClusterRecord, it[:3])
+        self.assertEqual([x for x in c], it)
+        self.assertEqual(c.cluster_id, "testid")
+        self.assertEqual(c.n_elements, 42)
+        self.assertEqual(c.representative, "testrep")
+        self.assertEqual(c.elements, 23)
+        self.assertEqual(c.solutions_ids, ["foo", "bar"])
+
 if __name__ == '__main__':
     IMP.test.main()
