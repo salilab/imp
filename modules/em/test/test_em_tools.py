@@ -57,5 +57,14 @@ class EMToolsApplicationTest(IMP.test.ApplicationTestCase):
         self.assertApplicationExitedCleanly(p.returncode, err)
         os.unlink('out.mrc')
 
+    def test_estimate_threshold(self):
+        """Simple test of estimate_threshold application"""
+        p = self.run_python_application(
+                  'estimate_threshold_from_molecular_mass',
+                  [self.get_input_file_name('mini.mrc'), '400'])
+        out, err = p.communicate()
+        sys.stderr.write(err)
+        self.assertApplicationExitedCleanly(p.returncode, err)
+
 if __name__ == '__main__':
     IMP.test.main()
