@@ -428,6 +428,7 @@ def main():
         write_no_ok(options.name)
         tools.rmdir(os.path.join("module_bin", options.name))
         tools.rmdir(os.path.join("benchmark", options.name))
+        tools.rmdir(os.path.join("lib", "IMP", options.name))
         sys.exit(1)
     success, modules = setup_module(
         options.name, options.source, options.datapath)
@@ -442,6 +443,7 @@ def main():
     else:
         tools.rmdir(os.path.join("module_bin", options.name))
         tools.rmdir(os.path.join("benchmark", options.name))
+        tools.rmdir(os.path.join("lib", "IMP", options.name))
         sys.exit(1)
 
 if __name__ == '__main__':
