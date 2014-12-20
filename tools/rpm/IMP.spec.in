@@ -123,7 +123,6 @@ against IMP.
 
 %define reqprog %{_builddir}/find-requires-%{name}
 %define proprog %{_builddir}/find-provides-%{name}
-%define _use_internal_dependency_generator 0
 
 %prep
 %setup -n imp-%{version}
@@ -137,6 +136,9 @@ cat <<EOF > %{proprog}
 EOF
 chmod a+x %{reqprog}
 chmod a+x %{proprog}
+%define _use_internal_dependency_generator 0
+%define __find_requires %{reqprog}
+%define __find_provides %{proprog}
 
 %build
 # For now, bundle RMF with IMP (long term, may be better to put in a separate
