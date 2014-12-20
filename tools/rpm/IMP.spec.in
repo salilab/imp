@@ -129,10 +129,14 @@ against IMP.
 
 # Exclude bundled libraries from provides and requires
 cat <<EOF > %{reqprog}
-%{__find_requires} | grep -v %{bundled}
+#!/bin/bash
+%{__find_requires} $@ | grep -v %{bundled}
+exit $?
 EOF
 cat <<EOF > %{proprog}
-%{__find_provides} | grep -v %{bundled}
+#!/bin/bash
+%{__find_provides} $@ | grep -v %{bundled}
+exit $?
 EOF
 chmod a+x %{reqprog}
 chmod a+x %{proprog}
