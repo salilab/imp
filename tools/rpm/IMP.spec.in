@@ -116,6 +116,15 @@ as well as easy addition of new functionality.
 Group:         Applications/Engineering
 Summary:       Development package for IMP developers.
 Requires:      %{name} = %{version}-%{release}
+Requires:      gsl-devel, fftw-devel, zlib-devel
+%if 0%{?rhel} == 5
+Requires:      boost141-devel, python26-devel
+%else
+Requires:      boost-devel, python-devel
+%endif
+%if 0%{?fedora}
+Requires:      CGAL-devel, opencv-devel
+%endif
 
 %description devel
 This package contains the include files for building applications that link
