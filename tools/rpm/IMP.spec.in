@@ -69,9 +69,9 @@ BuildRequires: CGAL-devel, opencv-devel
 # libraries with IMP
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 BuildRequires: opencv-nogui-devel
-%define bundled 'libcv\.so\|libcxcore\.so\|libhighgui.so\|libTAU\.so'
+%define bundled 'libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so'
 %else
-%define bundled 'libTAU\.so'
+%define bundled 'libTAU\\.so'
 %endif
 
 # Many modules use Python's numpy module, so pull that in (at build time
