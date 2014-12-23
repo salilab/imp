@@ -38,11 +38,15 @@ def report_python_component(cov, morfs, name, typ, reldir, outdir):
                                                             name))
 
 
-def report_python_module(cov, modname, outdir):
+def report_python_module(cov, modname, srcdir, outdir):
     mods = glob.glob('lib/IMP/%s/*.py' % modname) \
            + glob.glob('lib/IMP/%s/*/*.py' % modname)
     mods = [x for x in mods if not x.endswith('_version_check.py')]
-    report_python_component(cov, mods, modname, 'module', '', outdir)
+    bins = tools.get_glob([os.path.join(srcdir, 'modules', modname, 'bin',
+                                        '*')])
+    bins = [os.path.basename(x) for x in bins if tools.filter_pyapps(x)]
+    bins = [os.path.join('bin', x) for x in bins if x != 'dependencies.py']
+    report_python_component(cov, mods + bins, modname, 'module', '', outdir)
 
 
 def report_python_dependency(cov, dep, outdir):
@@ -64,7 +68,7 @@ def report_python(opts, outdir):
     setup_excludes(cov)
     cov.load()
     for module in opts.modules:
-        report_python_module(cov, module, outdir)
+        report_python_module(cov, module, srcdir, outdir)
     for dep in opts.dependencies:
         report_python_dependency(cov, dep, outdir)
 
