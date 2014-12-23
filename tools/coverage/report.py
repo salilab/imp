@@ -162,7 +162,7 @@ Generate HTML coverage reports for IMP C++/Python code in the given directory.
                       choices=['python', 'cpp', 'both'], default='both',
                       help="Generate reports for Python code ('python'), "
                            "C++ code ('cpp') or both Python and C++ ('both'). "
-                           "Default 'both'.")
+                           "Default '%default'.")
     parser.add_option("--modules", metavar='STR', default=None,
                       help="Report only for the given colon-separated list of "
                            "IMP modules, e.g. 'base:kernel'. By default, "
