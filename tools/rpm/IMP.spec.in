@@ -49,7 +49,7 @@ BuildRequires: cmake >= 2.8
 # that is in EPEL instead
 %if 0%{?rhel} == 5
 BuildRequires: boost141-devel
-%define boost -DCMAKE_INCLUDE_PATH=/usr/include/boost141;/usr/include/hdf518/ -DCMAKE_LIBRARY_PATH=%{_libdir}/boost141;%{_libdir}/hdf518
+%define boost -DCMAKE_INCLUDE_PATH="/usr/include/boost141;/usr/include/hdf518/" -DCMAKE_LIBRARY_PATH="%{_libdir}/boost141;%{_libdir}/hdf518"
 %else
 BuildRequires: boost-devel >= 1.41
 %define boost %{nil}
