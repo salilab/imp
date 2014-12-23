@@ -479,7 +479,7 @@ failures are considered to be non-fatal).
     parser.add_option("--ctest", default="ctest",
                       help="Command (and optional arguments) to use to run "
                            "tests/benchmarks/examples, e.g. \"ctest -j8\", "
-                           "\"ctest28\". Defaults to 'ctest'.")
+                           "\"ctest28\". Defaults to '%default'.")
     parser.add_option("--coverage", action="store_true",
                       dest="coverage", default=False,
                       help="If set, capture Python coverage information when "
