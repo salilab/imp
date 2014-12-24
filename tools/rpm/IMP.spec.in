@@ -1,6 +1,5 @@
 %if 0%{?fedora} > 12
 %define with_python3 1
-%define python3_version %(python3 -c "import sys; print('%d.%d' % sys.version_info[:2])")
 %else
 %define with_python3 0
 %endif
@@ -206,7 +205,8 @@ make DESTDIR=${RPM_BUILD_ROOT} install
 
 %if 0%{?with_python3}
 # Build Python 3 wrappers
-%{cmake} ../imp -DCMAKE_INSTALL_PYTHONDIR=%{_libdir}/python%{python3_version} \
+py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
+%{cmake} ../imp -DCMAKE_INSTALL_PYTHONDIR=%{_libdir}/python${py3_ver} \
          -DSWIG_PYTHON_LIBRARIES=%{_libdir}/libpython3.*.so \
          -DPYTHON_INCLUDE_DIRS=/usr/include/python3.* \
          -DPYTHON_INCLUDE_PATH=/usr/include/python3.* \
