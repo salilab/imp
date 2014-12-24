@@ -3,7 +3,7 @@
 # Make a Win32 installer
 
 # First run the following in the binary directory to install files:
-# cmake <source_dir> DCMAKE_INSTALL_PYTHONDIR=/pylib/2.6 \
+# cmake <source_dir> -DCMAKE_INSTALL_PYTHONDIR=/pylib/2.6 \
 #       -DSWIG_PYTHON_LIBRARIES=$w32py/2.6/lib/python26.lib \
 #       -DPYTHON_INCLUDE_DIRS=$w32py/2.6/include/ \
 #       -DPYTHON_INCLUDE_PATH=$w32py/2.6/include/ \
