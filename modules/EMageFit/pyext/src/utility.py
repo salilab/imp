@@ -43,10 +43,17 @@ def get_experiment_params(fn_params):
         @param fn_params configuration file
         @return Experiment Class with all the infomation from the config file
     """
-
+    try:
+        import importlib.machinery
+        imp = None
+    except ImportError:
+        import imp
     name, ext = os.path.splitext(fn_params)
-    import imp
-    foo = imp.load_source(name, fn_params)
+    if imp is None:
+        foo = importlib.machinery.SourceFileLoader(name,
+                                                   fn_params).load_module()
+    else:
+        foo = imp.load_source(name, fn_params)
     exp = foo.Experiment()
     # convert to absolute paths
     exp.fn_pdbs = [base.get_relative_path(fn_params, fn) for fn in exp.fn_pdbs]
