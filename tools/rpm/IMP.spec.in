@@ -278,6 +278,7 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}/usr/bin/*
 %{_libdir}/python3*/site-packages/_IMP*so
 %{_libdir}/python3*/site-packages/RMF*
 %{_libdir}/python3*/site-packages/_RMF*so
+%{_libdir}/python3*/site-packages/__pycache__
 %endif
 
 %files devel
