@@ -65,15 +65,15 @@ class IMPMockTests(unittest.TestCase):
         apps.extend(idock_apps)
         for app in apps:
             try:
-                p = subprocess.Popen([app, '--help'], stdout=subprocess.PIPE,
-                                     stderr=subprocess.STDOUT)
+                with subprocess.Popen([app, '--help'], stdout=subprocess.PIPE,
+                                      stderr=subprocess.STDOUT) as p:
+                    out = p.stdout.read()
+                    ret = p.wait()
             except OSError:
                 raise OSError("Could not run %s" % app)
-            out = p.stdout.read()
-            ret = p.wait()
-            self.assert_(ret == 1 or ret == 0,
-                         "Return code for %s app is %d, not 0 or 1; "
-                         "output is %s" % (app, ret, out))
+            self.assertTrue(ret == 1 or ret == 0,
+                            "Return code for %s app is %d, not 0 or 1; "
+                            "output is %s" % (app, ret, out))
 
 if __name__ == '__main__':
     # Note we use unittest rather than IMP.test, since the latter requires
