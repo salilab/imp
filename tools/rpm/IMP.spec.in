@@ -1,3 +1,10 @@
+%if 0%{?fedora} > 12
+%define with_python3 1
+%define python3_version %(python3 -c "import sys; print('%d.%d' % sys.version_info[:2])")
+%else
+%define with_python3 0
+%endif
+
 Name:          IMP
 Version:       @IMP_VERSION@
 Release:       1%{?dist}
@@ -8,6 +15,9 @@ Packager:      Ben Webb <ben@salilab.org>
 URL:           http://www.integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
 BuildRoot:     %{_tmppath}/%{name}-%{version}-root
+%if 0%{?with_python3}
+BuildRequires: python3-devel
+%endif
 # RHEL 5 ships with Python 2.4. We need Python 2.6 or later, so pull in that
 # from EPEL (note we need to tell the build later on where to find this python)
 # The HDF5 package in EPEL is too old though - we need a newer version
@@ -128,6 +138,18 @@ Requires:      CGAL-devel, opencv-devel
 This package contains the include files for building applications that link
 against IMP.
 
+%if 0%{?with_python3}
+%package python3
+Group:         Applications/Engineering
+Summary:       Python wrappers for Python 3
+Requires:      %{name} = %{version}-%{release}
+Requires:      python3
+
+%description python3
+This package contains wrappers for Python 3 (the base package already
+includes Python 2 wrappers).
+%endif
+
 %define reqprog %{_builddir}/find-requires-%{name}
 %define proprog %{_builddir}/find-provides-%{name}
 
@@ -181,6 +203,17 @@ make
 %install
 cd build
 make DESTDIR=${RPM_BUILD_ROOT} install
+
+%if 0%{?with_python3}
+# Build Python 3 wrappers
+%{cmake} ../imp -DCMAKE_INSTALL_PYTHONDIR=%{_libdir}/python%{python3_version} \
+         -DSWIG_PYTHON_LIBRARIES=%{_libdir}/libpython3.*.so \
+         -DPYTHON_INCLUDE_DIRS=/usr/include/python3.* \
+         -DPYTHON_INCLUDE_PATH=/usr/include/python3.* \
+         -DPYTHON_LIBRARIES=%{_libdir}/libpython3.*.so
+make DESTDIR=${RPM_BUILD_ROOT} install
+%endif
+
 # Note that we currently don't include the documentation in the RPM, since
 #      a) it takes a long time to run doxygen
 #      b) doxygen isn't installed on all of our build systems
@@ -200,7 +233,6 @@ fi
 mkdir ${RPM_BUILD_ROOT}%{_libdir}/IMP
 cp %{_libdir}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 
-
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 # Bundle OpenCV libraries
 for cvlib in cv cxcore highgui; do
@@ -209,7 +241,7 @@ done
 %endif
 
 # Don't distribute example application, dependency, or system
-pydir=${RPM_BUILD_ROOT}%{_libdir}/python*/site-packages
+pydir=${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages
 rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
        ${RPM_BUILD_ROOT}%{_libdir}/libimp_example_system* \
        ${RPM_BUILD_ROOT}%{_libdir}/libexample* \
@@ -231,10 +263,19 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}/usr/bin/*
 %{_libdir}/libimp*.so.*
 %{_libdir}/libRMF*.so
 %{_libdir}/IMP
-%{_libdir}/python*/site-packages/IMP
-%{_libdir}/python*/site-packages/_IMP*so
-%{_libdir}/python*/site-packages/RMF*
-%{_libdir}/python*/site-packages/_RMF*so
+%{_libdir}/python2*/site-packages/IMP
+%{_libdir}/python2*/site-packages/_IMP*so
+%{_libdir}/python2*/site-packages/RMF*
+%{_libdir}/python2*/site-packages/_RMF*so
+
+%if 0%{?with_python3}
+%files python3
+%defattr(-,root,root)
+%{_libdir}/python3*/site-packages/IMP
+%{_libdir}/python3*/site-packages/_IMP*so
+%{_libdir}/python3*/site-packages/RMF*
+%{_libdir}/python3*/site-packages/_RMF*so
+%endif
 
 %files devel
 %defattr(-,root,root)
