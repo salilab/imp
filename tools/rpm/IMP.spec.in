@@ -15,7 +15,7 @@ URL:           http://www.integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
 BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 %if 0%{?with_python3}
-BuildRequires: python3-devel
+BuildRequires: python3-devel, symlinks
 %endif
 # RHEL 5 ships with Python 2.4. We need Python 2.6 or later, so pull in that
 # from EPEL (note we need to tell the build later on where to find this python)
@@ -205,6 +205,7 @@ make DESTDIR=${RPM_BUILD_ROOT} install
 
 %if 0%{?with_python3}
 # Build Python 3 wrappers
+py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py3_lib=`echo %{_libdir}/libpython3.*.so`
 py3_inc=`echo /usr/include/python3.*`
@@ -215,6 +216,12 @@ py3_inc=`echo /usr/include/python3.*`
          -DPYTHON_INCLUDE_PATH=${py3_inc} \
          -DPYTHON_LIBRARIES={py3_lib}
 make DESTDIR=${RPM_BUILD_ROOT} install
+
+# Replace .py files with symlinks to Python 2 files (since they are the same)
+(cd ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver} \
+ && find site-packages -name '*.py' \
+      -exec ln -sf ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver}/\{\} \{\} \; \
+ && symlinks -rc .)
 %endif
 
 # Note that we currently don't include the documentation in the RPM, since
