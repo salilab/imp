@@ -41,11 +41,11 @@ class IMPInstallTests(unittest.TestCase):
         one_apps = ['rmf_cat', 'saxs_merge']
         def test_app(app):
             try:
-                with subprocess.Popen([app, '--help'], stdout=subprocess.PIPE,
-                                      stderr=subprocess.STDOUT) as p:
-                    return p.wait(), p.stdout.read()
+                p = subprocess.Popen([app, '--help'], stdout=subprocess.PIPE,
+                                     stderr=subprocess.STDOUT)
             except OSError:
                 raise OSError("Could not run %s" % app)
+            return p.wait(), p.stdout.read()
         for app in zero_apps:
             ret, out = test_app(app)
             self.assertEqual(ret, 0,
