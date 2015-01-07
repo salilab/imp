@@ -29,8 +29,21 @@
 IMPKINEMATICS_BEGIN_NAMESPACE
 
 typedef boost::adjacency_list<
-    boost::vecS, boost::vecS, boost::undirectedS, boost::no_property,
-    boost::property<boost::edge_color_t, boost::default_color_type> > Graph;
+    boost::vecS, boost::vecS, boost::undirectedS > Graph;
+
+class MyDFSVisitor : public boost::default_dfs_visitor {
+public:
+  MyDFSVisitor(std::vector<int>& dfs_order) : dfs_order_(dfs_order), counter_(0) {}
+
+  template < typename Vertex, typename Graph >
+  void discover_vertex(Vertex v, const Graph& g) {
+    dfs_order_[v] = counter_;
+    counter_++;
+  }
+
+  std::vector<int>& dfs_order_;
+  int counter_;
+};
 
 /**
    Defines a kinematic structure over a protein, with backbone
@@ -48,15 +61,20 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
   ProteinKinematics(IMP::atom::Hierarchy mhd,
                     const IMP::atom::Residues& flexible_residues,
                     const std::vector<IMP::atom::Atoms>& dihedral_angles,
+                    IMP::atom::Atoms open_loop_bond_atoms = IMP::atom::Atoms(),
                     bool flexible_backbone = true,
                     bool flexible_side_chains = false);
 
  private:
   //! the actual construction is done here,
   //! see constructors for documentation
-  void init(const IMP::atom::Residues& flexible_residues,
-            const std::vector<IMP::atom::Atoms>& dihedral_angles,
-            bool flexible_backbone, bool flexible_side_chains);
+  void init( const IMP::atom::Residues& flexible_residues,
+             const std::vector<IMP::atom::Atoms>& dihedral_angles,
+             IMP::atom::Atoms open_loop_bond_atoms,
+             bool flexible_backbone,
+             bool flexible_side_chains);
+
+  void add_edges_to_rb_graph(const std::vector<IMP::atom::Atoms>& dihedral_angles);
 
  public:
   /* Access methods */
@@ -131,6 +149,8 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
                           ProteinAngleType angle_type,
                           const IMP::atom::Atoms& atoms);
 
+  void open_loop(IMP::atom::Atoms open_loop_bond_atoms);
+
   /* Joint access methods */
   DihedralAngleRevoluteJoint* get_phi_joint(const IMP::atom::Residue r) const {
     return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, PHI);
@@ -140,7 +160,11 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
     return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, PSI);
   }
 
-// DihedralAngleRevoluteJoints get_joints(const IMP::atom::Residue r) const;
+  DihedralAngleRevoluteJoint* get_other_joint(const IMP::atom::Residue r) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, OTHER);
+  }
+
+  //DihedralAngleRevoluteJoints get_joints(const IMP::atom::Residue r) const;
 
 #ifndef IMP_DOXYGEN
   // A map between residue phi/psi and joints
@@ -174,9 +198,17 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
   // topology graph: nodes = atoms, edges = bonds
   Graph graph_;
 
-  // mapping between atom kernel::ParticleIndex and node number in the graph
-  boost::unordered_map<IMP::kernel::ParticleIndex, int>
-      particle_index_to_node_map_;
+  // rigid bodies topology graph: node = atoms, edges = joints
+  Graph rb_graph_;
+
+  // dfs order of rigid bodies
+  std::vector<int> rb_order_;
+
+  int largest_rb_;
+
+  // mapping between atom ParticleIndex and node number in the graph
+  boost::unordered_map<IMP::kernel::ParticleIndex, int> particle_index_to_node_map_, rb_particle_index_to_node_map_;
+
   IMP::base::Vector<IMP::kernel::ParticleIndex> node_to_particle_index_map_;
 
   // rigid bodies

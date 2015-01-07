@@ -1,3 +1,5 @@
+# rrt {#rrt_bin}
+
 \brief Functionality for dealing with kinematic mechanical structures.
 
 Tools for handling the associated internal coordinates system are also
