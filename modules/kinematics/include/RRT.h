@@ -113,7 +113,8 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
   // Constructor
   RRT(kernel::Model* m, DOFsSampler* sampler, LocalPlanner* planner,
       const DOFs& cspace_dofs, unsigned int iteration_number = 1000,
-      unsigned int tree_size = 100);
+      unsigned int tree_size = 100,
+      unsigned int number_of_sampled_dofs = 0); // 0 for all dofs
 
   // function required by Sampler
   // TODO: think how to save configurations in internal coords
@@ -168,6 +169,10 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
   RRTTree tree_;
   DOFs cspace_dofs_;               // configuration space dofs
   Parameters default_parameters_;  // limits for stop condition
+
+  // for sampling subsets of dofs
+  unsigned int number_of_sampled_dofs_;
+  std::vector<bool> active_dofs_;
 };
 
 IMPKINEMATICS_END_NAMESPACE

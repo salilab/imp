@@ -41,13 +41,34 @@ class IMPKINEMATICSEXPORT DOFValues : public std::vector<double> {
       double diff3 = std::fabs(diff1 + 2.0*IMP::algebra::PI);
       double diff = std::min(std::fabs(diff1), std::min(diff2, diff3));
       dist += (diff*diff);
-
     }
     return dist / size();
   }
 
+  double get_distance2(const DOFValues& other_dof_values,
+                       const std::vector<bool>& active_dofs) const {
+    double dist = 0.0;
+    unsigned int asize = 0;
+    for(unsigned int i=0; i<size(); i++) {
+      if(active_dofs.size() == 0 || active_dofs[i]) {
+        double diff1 = ((*this)[i] - other_dof_values[i]);
+        double diff2 = std::fabs(diff1 - 2.0*IMP::algebra::PI);
+        double diff3 = std::fabs(diff1 + 2.0*IMP::algebra::PI);
+        double diff = std::min(std::fabs(diff1), std::min(diff2, diff3));
+        dist += (diff*diff);
+        asize++;
+      }
+    }
+    return dist / asize;
+  }
+
   double get_distance(const DOFValues& other_dof_values) const {
     return sqrt(get_distance2(other_dof_values));
+  }
+
+  double get_distance(const DOFValues& other_dof_values,
+                      const std::vector<bool>& active_dofs) const {
+    return sqrt(get_distance2(other_dof_values, active_dofs));
   }
 
  public:

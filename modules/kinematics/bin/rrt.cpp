@@ -167,6 +167,7 @@ int main(int argc, char **argv)
   int number_of_nodes = 100;
   int save_configuration_number = 10;
   int number_of_models_in_pdb = 100;
+  int number_of_active_dofs = 0;
   float radii_scaling = 0.5;
   bool reset_angles = false;
   std::string configuration_file;
@@ -181,6 +182,8 @@ int main(int argc, char **argv)
      "number of nodes (default = 100)")
     ("number_of_path_configurations_saved,p", po::value<int>(&save_configuration_number)->default_value(10),
      "if the path between two nodes is feasible, each Nth configuration on the path will be added to the tree (default = 10?)")
+    ("number_of_active_dofs,a", po::value<int>(&number_of_active_dofs)->default_value(0),
+     "for many dofs use this option with 10-50 dofs (default = 0)")
     ("radii_scaling,s", po::value<float>(&radii_scaling)->default_value(0.5),
      "radii scaling parameter (0.5 < s < 1.0, default = 0.5)")
     ("reset_angles", "set initial values in rotatable angles to PI (default = false)")
@@ -367,7 +370,7 @@ int main(int argc, char **argv)
   PathLocalPlanner *planner = new PathLocalPlanner(model, ub_sampler, &dd, save_configuration_number);
   std::cerr << "Init  RRT" << std::endl;
   RRT *rrt = new RRT(model, ub_sampler, planner, dofs,
-                     number_of_iterations, number_of_nodes);
+                     number_of_iterations, number_of_nodes, number_of_active_dofs);
 
 
   std::cerr << "Start RRT run" << std::endl;

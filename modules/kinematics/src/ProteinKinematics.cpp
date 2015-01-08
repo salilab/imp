@@ -302,12 +302,6 @@ void ProteinKinematics::add_dihedral_joint(const IMP::atom::Residue r,
                                              IMP::core::XYZ(atoms[0].get_particle()));
     }
 
-    /*    IMP_NEW(IMP::kinematics::DihedralAngleRevoluteJoint, joint,
-            (rb1, rb2, IMP::core::XYZ(atoms[0].get_particle()),
-             IMP::core::XYZ(atoms[1].get_particle()),
-             IMP::core::XYZ(atoms[2].get_particle()),
-             IMP::core::XYZ(atoms[3].get_particle())));*/
-
     joints_.push_back(joint);
     kf_->add_edge(joint);
     joint_map_.add_joint(r, angle_type, joint);
