@@ -51,9 +51,6 @@ public:
   //! Evaluate the restraint just for a subset of contribution indexes
   Float evaluate_for_contributions(Ints c,DerivativeAccumulator *accum) const;
 
-  //! Returns a description of each contribution (distance, sig1, sig2, psi)
-  Floats get_contribution_scores(int index) const;
-
   //! Get number of contributions added to the restraint
   unsigned int get_number_of_contributions() const { return ppis_.size(); }
 

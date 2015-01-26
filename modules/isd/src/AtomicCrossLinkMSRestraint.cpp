@@ -46,16 +46,6 @@ void AtomicCrossLinkMSRestraint::add_contribution(
   default_range_.push_back((int)default_range_.size());
 }
 
-Floats AtomicCrossLinkMSRestraint::get_contribution_scores(int idx) const{
-  Floats ret;
-  ret.push_back(core::get_distance(core::XYZ(get_model(),ppis_[idx][0]),
-                                   core::XYZ(get_model(),ppis_[idx][1])));
-  ret.push_back(isd::Scale(get_model(),sigmass_[idx][0]).get_scale());
-  ret.push_back(isd::Scale(get_model(),sigmass_[idx][1]).get_scale());
-  ret.push_back(isd::Scale(get_model(),psi_).get_scale());
-  return ret;
-}
-
 Float AtomicCrossLinkMSRestraint::evaluate_for_contributions(Ints c,
                                        DerivativeAccumulator *accum) const{
   Float score_accum = 1.0;
