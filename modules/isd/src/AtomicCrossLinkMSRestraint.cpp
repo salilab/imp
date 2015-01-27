@@ -65,11 +65,18 @@ Float AtomicCrossLinkMSRestraint::evaluate_for_contributions(Ints c,
     Float sig2 = sig*sig;
     Float dist = algebra::get_distance(d0.get_coordinates(),
                                        d1.get_coordinates());
+
     Float eLpR_2 = std::exp(-(dist+xlen_)*(dist+xlen_)/(2*sig2));
-    Float e2LR   = std::exp(2*xlen_*dist/sig2);
+    //Float e2LR   = std::exp(2*xlen_*dist/sig2);
+
+    Float log_eLpR_2 = -(dist+xlen_)*(dist+xlen_)/(2*sig2);
+    Float log_e2LR   = 2*xlen_*dist/sig2;
+    Float eLpR_2_e2LR = std::exp(log_eLpR_2+log_e2LR);
+
+
     Float erfLmR = boost::math::erf((xlen_-dist)/sq2/sig);
     Float erfLpR = boost::math::erf((xlen_+dist)/sq2/sig);
-    Float score = -sig/(sq2Pi*dist) * eLpR_2 * (e2LR-1) + 0.5 * (erfLmR + erfLpR);
+    Float score = -sig/(sq2Pi*dist) * (eLpR_2_e2LR - eLpR_2) + 0.5 * (erfLmR + erfLpR);
 
     // add the prior
     Float prior = std::exp(-slope_*dist);
@@ -78,7 +85,7 @@ Float AtomicCrossLinkMSRestraint::evaluate_for_contributions(Ints c,
 
     if (accum){
       tmp_scores[n] = score_adj;
-      Float dd = 1.0/(sq2Pi*dist*dist*sig) * eLpR_2*(-sig2 - dist*xlen_ + e2LR*(sig2-dist*xlen_));
+      Float dd = 1.0/(sq2Pi*dist*dist*sig) * (eLpR_2*(-sig2 - dist*xlen_) + eLpR_2_e2LR*(sig2-dist*xlen_));
       dd = prior*(slope_*score - dd);
       tmp_derivs[n] = -dd/dist * (d1.get_coordinates()-d0.get_coordinates());
     }

@@ -16,15 +16,15 @@ class TestAtomicXL_1State(IMP.test.TestCase):
         p0 = IMP.Particle(self.m)
         p1 = IMP.Particle(self.m)
         self.d0 = IMP.core.XYZ.setup_particle(p0, [0, 0, 0])
-        self.d1 = IMP.core.XYZ.setup_particle(p1, [0, 0, 0])
+        self.d1 = IMP.core.XYZ.setup_particle(p1, [1, 0, 0])
 
         # create nuisance parameters
-        sp0 = IMP.Particle(self.m)
-        sp1 = IMP.Particle(self.m)
+        self.sig0 = IMP.Particle(self.m)
+        self.sig1 = IMP.Particle(self.m)
         psip = IMP.Particle(self.m)
-        IMP.isd.Scale.setup_particle(sp0, 1)
-        IMP.isd.Scale.setup_particle(sp1, 1)
-        IMP.isd.Scale.setup_particle(psip, 1)
+        IMP.isd.Scale.setup_particle(self.sig0, 0.9)
+        IMP.isd.Scale.setup_particle(self.sig1, 0.9)
+        IMP.isd.Scale.setup_particle(psip, 0.01)
 
         # create restraint
         xlen = 10
@@ -34,7 +34,7 @@ class TestAtomicXL_1State(IMP.test.TestCase):
                                                      psip.get_index(),
                                                      slope)
         self.xl.add_contribution([p0.get_index(), p1.get_index()],
-                                 [sp0.get_index(), sp1.get_index()])
+                                 [self.sig0.get_index(), self.sig1.get_index()])
 
         self.m.add_restraint(self.xl)
 
@@ -53,6 +53,7 @@ class TestAtomicXL_1State(IMP.test.TestCase):
                 self.d1,
                 tolerance=1.,
                 percentage=3.0)
+
     def test_atomic_xl_derivatives_with_slope(self):
         """Test single-contribution derivs with slope"""
         self.xl.set_slope(0.1)
@@ -69,6 +70,9 @@ class TestAtomicXL_1State(IMP.test.TestCase):
                 self.d1,
                 tolerance=1.,
                 percentage=3.0)
+    def test_sigma_behavior(self):
+        IMP.isd.Scale(self.sig0).set_scale(0.5)
+        self.xl.unprotected_evaluate(None)
 
 
 class TestAtomicXL_ManyState(IMP.test.TestCase):
