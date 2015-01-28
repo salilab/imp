@@ -85,10 +85,10 @@ Float AtomicCrossLinkMSRestraint::evaluate_for_contributions(Ints c,
       Float prior = std::exp(-slope_*dist);
       prior_accum *= (1-prior);
     }
-    score_accum *= score;
+    score_accum *= (1-score);
 
     if (accum){
-      tmp_scores[n] = score;
+      tmp_scores[n] = (1-score);
       tmp_derivs[n] = 1.0/(sq2Pi*dist*dist*sig) * (eLpR_2*(-sig2 - dist*xlen_) + eLpR_2_e2LR*(sig2-dist*xlen_));
     }
   }
@@ -107,7 +107,7 @@ Float AtomicCrossLinkMSRestraint::evaluate_for_contributions(Ints c,
       core::XYZ d1(get_model(),ppis_[n][1]);
       algebra::Vector3D v = d1.get_coordinates() - d0.get_coordinates();
       Float dist = v.get_magnitude();
-      Float score_deriv = (2*psi-1) * score_accum/tmp_scores[n] * tmp_derivs[n];
+      Float score_deriv = - (2*psi-1) * score_accum/tmp_scores[n] * tmp_derivs[n];
       if (slope_>0.0){
         Float ekr = std::exp(-slope_*dist);
         Float prior_deriv = - slope_ * prior_accum * ekr / (1-ekr);
