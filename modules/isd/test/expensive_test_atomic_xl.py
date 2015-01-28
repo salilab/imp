@@ -40,7 +40,7 @@ class TestAtomicXL_1State(IMP.test.TestCase):
 
     def test_atomic_xl_derivatives(self):
         """Test single-contribution derivs with no slope"""
-        for i in range(100):
+        for i in range(10):
             self.randomize_particles([self.d0, self.d1], 2)
             self.m.evaluate(True)
             #print 'n', IMP.test.xyz_numerical_derivatives(self.m, self.d0, 0.01), 'a', self.d0.get_derivatives()
@@ -60,7 +60,7 @@ class TestAtomicXL_1State(IMP.test.TestCase):
     def test_atomic_xl_derivatives_with_slope(self):
         """Test single-contribution derivs with slope"""
         self.xl.set_slope(0.1)
-        for i in range(100):
+        for i in range(10):
             self.randomize_particles([self.d0, self.d1], 2)
             self.m.evaluate(True)
             self.assertXYZDerivativesInTolerance(
@@ -106,9 +106,7 @@ class TestAtomicXL_ManyState(IMP.test.TestCase):
 
         # make pairs and add contributions
         pairs = [[i, i + 1] for i in range(9)]
-
         for pp in pairs:
-
             self.xl.add_contribution(
                 [ps[pp[0]].get_index(), ps[pp[1]].get_index()],
                 [psigs[pp[0]].get_index(),
@@ -117,7 +115,7 @@ class TestAtomicXL_ManyState(IMP.test.TestCase):
     def test_atomic_xl_derivatives_many(self):
         """ test the atomix XL restraint derivatives"""
         self.m.add_restraint(self.xl)
-        for i in range(100):
+        for i in range(10):
             self.randomize_particles(self.xyzs, 6)
             self.m.evaluate(True)
             for d in self.xyzs:
@@ -127,13 +125,12 @@ class TestAtomicXL_ManyState(IMP.test.TestCase):
                     tolerance=1e-2,
                     percentage=5.)
 
-
     def test_log_derivatives(self):
         """ test the atomix XL restraint derivatives when in a LogWrapper"""
         self.xl.set_part_of_log_score(True)
         log_wrapper = IMP.isd.LogWrapper([self.xl], 1.0)
         self.m.add_restraint(log_wrapper)
-        for i in range(100):
+        for i in range(10):
             self.randomize_particles(self.xyzs, 6)
             self.m.evaluate(True)
             for d in self.xyzs:
