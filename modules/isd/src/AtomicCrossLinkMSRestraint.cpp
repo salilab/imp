@@ -49,7 +49,9 @@ void AtomicCrossLinkMSRestraint::add_contribution(
 Float AtomicCrossLinkMSRestraint::evaluate_for_contributions(Ints c,
                                        DerivativeAccumulator *accum) const{
   Float score_accum = 1.0;
-  algebra::Vector3Ds tmp_derivs(c.size());
+  Float prior_accum = 1.0;
+  Float prior_part = 1.0;
+  Floats tmp_derivs(c.size());
   Floats tmp_scores(c.size());
 
   // loop over the contributions and score things
@@ -79,19 +81,23 @@ Float AtomicCrossLinkMSRestraint::evaluate_for_contributions(Ints c,
     Float score = -sig/(sq2Pi*dist) * (eLpR_2_e2LR - eLpR_2) + 0.5 * (erfLmR + erfLpR);
 
     // add the prior
-    Float prior = std::exp(-slope_*dist);
-    Float score_adj = 1-prior*score;
-    score_accum*=score_adj;
+    if (slope_>0.0){
+      Float prior = std::exp(-slope_*dist);
+      prior_accum *= (1-prior);
+    }
+    score_accum *= score;
 
     if (accum){
-      tmp_scores[n] = score_adj;
-      Float dd = 1.0/(sq2Pi*dist*dist*sig) * (eLpR_2*(-sig2 - dist*xlen_) + eLpR_2_e2LR*(sig2-dist*xlen_));
-      dd = prior*(slope_*score - dd);
-      tmp_derivs[n] = -dd/dist * (d1.get_coordinates()-d0.get_coordinates());
+      tmp_scores[n] = score;
+      tmp_derivs[n] = 1.0/(sq2Pi*dist*dist*sig) * (eLpR_2*(-sig2 - dist*xlen_) + eLpR_2_e2LR*(sig2-dist*xlen_));
     }
   }
   Float psi  = isd::Scale(get_model(),psi_).get_scale();
-  Float like = psi*score_accum + (1-psi)*(1-score_accum);
+  Float score_part = psi*score_accum + (1-psi)*(1-score_accum);
+  if (slope_>0.0){
+    prior_part = 1-prior_accum;
+  }
+  Float like = score_part*prior_part;
 
   // final derivative calculation (needs the scores already calculated)
   if (accum){
@@ -99,8 +105,16 @@ Float AtomicCrossLinkMSRestraint::evaluate_for_contributions(Ints c,
       int n = *nit;
       core::XYZ d0(get_model(),ppis_[n][0]);
       core::XYZ d1(get_model(),ppis_[n][1]);
-
-      algebra::Vector3D deriv = -1/like*(2*psi-1) * score_accum/tmp_scores[n] * tmp_derivs[n];
+      algebra::Vector3D v = d1.get_coordinates() - d0.get_coordinates();
+      Float dist = v.get_magnitude();
+      Float score_deriv = (2*psi-1) * score_accum/tmp_scores[n] * tmp_derivs[n];
+      if (slope_>0.0){
+        Float ekr = std::exp(-slope_*dist);
+        Float prior_deriv = - slope_ * prior_accum * ekr / (1-ekr);
+        score_deriv = score_deriv*prior_part + prior_deriv*score_part;
+      }
+      //std::cout<<"dist "<<dist<<" like "<<like<<" score accum " <<score_accum<< " tmp_scores[n] "<<tmp_scores[n]<<" tmp_derivs[n] "<<tmp_derivs[n]<<" score deriv "<<score_deriv<<std::endl;
+      algebra::Vector3D deriv = 1/(dist*like) * score_deriv * v;
       d0.add_to_derivatives(deriv,*accum);
       d1.add_to_derivatives(-1.0*deriv,*accum);
     }

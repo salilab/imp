@@ -16,7 +16,7 @@ class TestAtomicXL_1State(IMP.test.TestCase):
         p0 = IMP.Particle(self.m)
         p1 = IMP.Particle(self.m)
         self.d0 = IMP.core.XYZ.setup_particle(p0, [0, 0, 0])
-        self.d1 = IMP.core.XYZ.setup_particle(p1, [1, 0, 0])
+        self.d1 = IMP.core.XYZ.setup_particle(p1, [2, 0, 0])
 
         # create nuisance parameters
         self.sig0 = IMP.Particle(self.m)
@@ -24,7 +24,7 @@ class TestAtomicXL_1State(IMP.test.TestCase):
         psip = IMP.Particle(self.m)
         IMP.isd.Scale.setup_particle(self.sig0, 0.9)
         IMP.isd.Scale.setup_particle(self.sig1, 0.9)
-        IMP.isd.Scale.setup_particle(psip, 0.01)
+        IMP.isd.Scale.setup_particle(psip, 0.2)
 
         # create restraint
         xlen = 10
@@ -43,16 +43,19 @@ class TestAtomicXL_1State(IMP.test.TestCase):
         for i in range(100):
             self.randomize_particles([self.d0, self.d1], 2)
             self.m.evaluate(True)
+            #print 'n', IMP.test.xyz_numerical_derivatives(self.m, self.d0, 0.01), 'a', self.d0.get_derivatives()
             self.assertXYZDerivativesInTolerance(
                 self.m,
                 self.d0,
-                tolerance=1.,
+                tolerance=1e-2,
                 percentage=3.0)
+
             self.assertXYZDerivativesInTolerance(
                 self.m,
                 self.d1,
-                tolerance=1.,
+                tolerance=1e-2,
                 percentage=3.0)
+
 
     def test_atomic_xl_derivatives_with_slope(self):
         """Test single-contribution derivs with slope"""
@@ -63,16 +66,13 @@ class TestAtomicXL_1State(IMP.test.TestCase):
             self.assertXYZDerivativesInTolerance(
                 self.m,
                 self.d0,
-                tolerance=1.,
+                tolerance=1e-2,
                 percentage=3.0)
             self.assertXYZDerivativesInTolerance(
                 self.m,
                 self.d1,
-                tolerance=1.,
+                tolerance=1e-2,
                 percentage=3.0)
-    def test_sigma_behavior(self):
-        IMP.isd.Scale(self.sig0).set_scale(0.5)
-        self.xl.unprotected_evaluate(None)
 
 
 class TestAtomicXL_ManyState(IMP.test.TestCase):
@@ -124,8 +124,8 @@ class TestAtomicXL_ManyState(IMP.test.TestCase):
                 self.assertXYZDerivativesInTolerance(
                     self.m,
                     d,
-                    tolerance=1.,
-                    percentage=3.)
+                    tolerance=1e-2,
+                    percentage=5.)
 
 
     def test_log_derivatives(self):
@@ -137,12 +137,12 @@ class TestAtomicXL_ManyState(IMP.test.TestCase):
             self.randomize_particles(self.xyzs, 6)
             self.m.evaluate(True)
             for d in self.xyzs:
+                #print 'n', IMP.test.xyz_numerical_derivatives(self.m, d, 0.01), 'a', d.get_derivatives()
                 self.assertXYZDerivativesInTolerance(
                     self.m,
                     d,
-                    tolerance=1.,
-                    percentage=3.)
-
+                    tolerance=1e-2,
+                    percentage=5.)
 
 if __name__ == '__main__':
     IMP.test.main()
