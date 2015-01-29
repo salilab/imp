@@ -37,9 +37,6 @@ class Tests(IMP.test.TestCase):
     def test_score(self):
         """Test CHARMMStereochemistryRestraint::evaluate()"""
         r, m, pdb = self.setup_restraint()
-        check_xyzr=[p for p in IMP.core.get_leaves(pdb)
-                    if not IMP.core.XYZR.get_is_setup(p)]
-        self.assertEqual(len(check_xyzr),0)
         score = pdb.get_model().evaluate(False)
         self.assertAlmostEqual(score, 2.90562, delta=0.02)
 
