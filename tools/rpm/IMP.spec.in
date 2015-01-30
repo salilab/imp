@@ -214,7 +214,7 @@ py3_inc=`echo /usr/include/python3.*`
          -DSWIG_PYTHON_LIBRARIES=${py3_lib} \
          -DPYTHON_INCLUDE_DIRS=${py3_inc} \
          -DPYTHON_INCLUDE_PATH=${py3_inc} \
-         -DPYTHON_LIBRARIES={py3_lib}
+         -DPYTHON_LIBRARIES=${py3_lib}
 make DESTDIR=${RPM_BUILD_ROOT} install
 
 # Replace .py files with symlinks to Python 2 files (since they are the same)
