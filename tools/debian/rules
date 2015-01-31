@@ -47,8 +47,8 @@ override_dh_install:
 	    -DPYTHON_INCLUDE_PATH=$${py3_inc} -DPYTHON_LIBRARIES=$${py3_lib} \
 	   && $(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
 	# Bundle libTAU so users don't have to get it separately
-	cp build/libTAU-1.0.0/lib/Fedora17.x86_64/libTAU.so.1 debian/tmp/usr/lib/*/
-	(cd debian/tmp/usr/lib/*/ && ln -sf libTAU.so.1 libTAU.so)
+	cp build/libTAU-1.0.0/lib/Fedora17.x86_64/libTAU.so.1 debian/tmp/usr/lib/*linux*/
+	(cd debian/tmp/usr/lib/*linux*/ && ln -sf libTAU.so.1 libTAU.so)
 	# Replace Python 3 .py files with symlinks to Python 2 files
 	# (since they are the same)
 	(cd debian/tmp/usr/lib/python3* \
