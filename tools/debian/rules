@@ -32,12 +32,31 @@ override_dh_auto_build:
 
 override_dh_install:
 	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install
+	# Install Python 3 extension modules
+	cd build \
+	   && py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
+	   && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
+	   && unamem=`uname -m` \
+	   && py3_lib=`echo /usr/lib/$${unamem}-*/libpython3*.so` \
+	   && py3_inc=/usr/include/python$${py3_ver} \
+	   && cmake .. \
+	    -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python$${py3_ver}/dist-packages \
+	    -DSWIG_PYTHON_LIBRARIES=$${py3_lib} \
+	    -DPYTHON_INCLUDE_DIRS=$${py3_inc} \
+	    -DPYTHON_INCLUDE_PATH=$${py3_inc} -DPYTHON_LIBRARIES=$${py3_lib} \
+	   && $(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
 	# Bundle libTAU so users don't have to get it separately
 	cp build/libTAU-1.0.0/lib/Fedora17.x86_64/libTAU.so.1 debian/tmp/usr/lib/*/
 	(cd debian/tmp/usr/lib/*/ && ln -sf libTAU.so.1 libTAU.so)
 	mkdir debian/tmp/usr/lib/python2.7
 	mv debian/tmp/usr/lib/*/python2.7/site-packages debian/tmp/usr/lib/python2.7/dist-packages
 	rmdir debian/tmp/usr/lib/*/python2.7
+	# Replace Python 3 .py files with symlinks to Python 2 files
+	# (since they are the same)
+	(cd debian/tmp/usr/lib/python3* \
+	 && find dist-packages -name '*.py' \
+	      -exec ln -sf $(CURDIR)/debian/tmp/usr/lib/python2.7/\{\} \{\} \; \
+	 && symlinks -rc .)
 	# Don't distribute example application, dependency, or system
 	rm -rf debian/tmp/usr/bin/example \
 	       debian/tmp/usr/lib/libimp_example_system* \
