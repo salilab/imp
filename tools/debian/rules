@@ -20,6 +20,7 @@ override_dh_auto_configure:
 	cd build && unzip libTAU-1.0.0.zip && mv libTAU-1.0.0/include libTAU
 	cd build/libTAU-1.0.0/lib/Fedora17.x86_64 && ln -sf libTAU.so.1 libTAU.so
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release \
+	        -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python2.7/dist-packages \
 	        -DCMAKE_INCLUDE_PATH=`pwd` \
 	        -DCMAKE_LIBRARY_PATH=`pwd`/libTAU-1.0.0/lib/Fedora17.x86_64 \
                 -DCMAKE_INSTALL_PREFIX=/usr \
@@ -48,9 +49,6 @@ override_dh_install:
 	# Bundle libTAU so users don't have to get it separately
 	cp build/libTAU-1.0.0/lib/Fedora17.x86_64/libTAU.so.1 debian/tmp/usr/lib/*/
 	(cd debian/tmp/usr/lib/*/ && ln -sf libTAU.so.1 libTAU.so)
-	mkdir debian/tmp/usr/lib/python2.7
-	mv debian/tmp/usr/lib/*/python2.7/site-packages debian/tmp/usr/lib/python2.7/dist-packages
-	rmdir debian/tmp/usr/lib/*/python2.7
 	# Replace Python 3 .py files with symlinks to Python 2 files
 	# (since they are the same)
 	(cd debian/tmp/usr/lib/python3* \
