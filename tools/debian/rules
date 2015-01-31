@@ -57,11 +57,11 @@ override_dh_install:
 	 && symlinks -rc .)
 	# Don't distribute example application, dependency, or system
 	rm -rf debian/tmp/usr/bin/example \
-	       debian/tmp/usr/lib/libimp_example_system* \
-	       debian/tmp/usr/lib/libexample* \
+	       debian/tmp/usr/lib/*/libimp_example_system* \
+	       debian/tmp/usr/lib/*/libexample* \
 	       debian/tmp/usr/include/example* \
-	       debian/tmp/usr/lib/*/python*/IMP/example_system_local \
-	       debian/tmp/usr/lib/*/python*/_IMP_example_system_local.so
+	       debian/tmp/usr/lib/python*/IMP/example_system_local \
+	       debian/tmp/usr/lib/python*/_IMP_example_system_local.so
 	dh_install --list-missing
 
 override_dh_compress:
