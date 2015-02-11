@@ -44,6 +44,7 @@ def generate_doxyfile(
         doxygen = doxygen.replace("@RECURSIVE@", "NO")
         doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/tutorial/")
         doxygen = doxygen.replace("@LAYOUT_FILE@", "")
+        doxygen = doxygen.replace("@TREEVIEW@", "YES")
         doxygen = doxygen.replace("@GENERATE_TAGFILE@", "")
         doxygen = doxygen.replace(
             "@WARNINGS@",
@@ -60,6 +61,7 @@ def generate_doxyfile(
         doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/html/")
         doxygen = doxygen.replace("@LAYOUT_FILE@",
                                   "%s/doc/doxygen/main_layout.xml" % source)
+        doxygen = doxygen.replace("@TREEVIEW@", "NO")
         doxygen = doxygen.replace("@GENERATE_TAGFILE@", "doxygen/tags.html")
         doxygen = doxygen.replace("@WARNINGS@", "doxygen/warnings.txt")
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
