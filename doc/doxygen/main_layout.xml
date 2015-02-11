@@ -7,7 +7,6 @@
       <tab type="namespacelist" visible="yes" title="Module/Namespace List" intro="Here is a list of all IMP modules - each is also a C++ namespace and a Python package:"/>
       <tab type="namespacemembers" visible="yes" title="Module/Namespace Members" intro=""/>
     </tab>
-    <tab type="user" visible="yes" title="Applications" url="applications.html"/>
     <tab type="classes" visible="yes" title="">
       <tab type="classlist" visible="yes" title="" intro=""/>
       <tab type="classindex" visible="$ALPHABETICAL_INDEX" title=""/>

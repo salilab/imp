@@ -228,7 +228,8 @@ def parse_file(fname):
     # Exclude non-IMP code
     if '_compat_python' in fname or 'compat_subprocess' in fname:
         return
-    # Don't try to document applications (which get symlinked into bin dir)
+    # Don't try to document command line tools
+    # (which get symlinked into bin dir)
     if '/bin/' in fname:
         return
     # Pass examples through unchanged

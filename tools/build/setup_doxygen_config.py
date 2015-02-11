@@ -104,12 +104,12 @@ def generate_doxyfile(
 
 
 def generate_overview_pages(source):
-    name = os.path.join("doxygen", "generated", "applications.dox")
+    name = os.path.join("doxygen", "generated", "cmdline_tools.dox")
     contents = []
     contents.append("/** ")
-    contents.append("\\page applications All IMP Applications")
+    contents.append("\\page cmdline_tools All IMP command line tools")
     contents.append("""
-IMP modules provide a number of applications (command line tools).
+IMP modules provide a number of command line tools.
 These are listed below under their parent module:""")
     for bs, g in tools.get_modules(source):
         p = pickle.load(open(os.path.join("data", "build_info",

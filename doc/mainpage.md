@@ -11,7 +11,7 @@ In addition to the tabs above that take you to individual module, class and func
 - [Tutorial](../tutorial/index.html)
 - [Change history](@ref changelog)
 - [Modules](namespaces.html)
-- [Applications](@ref applications)
+- [Command line tools](@ref cmdline_tools)
 - [Biological systems modeled in IMP](http://integrativemodeling.org/systems/)
 - [Wiki](https://github.com/salilab/imp/wiki)
 - [Mailing lists](http://integrativemodeling.org/contact.html)
