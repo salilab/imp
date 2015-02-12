@@ -148,6 +148,7 @@ def make_doxygen(options, modules):
     template = template.replace("@PROJECT_NAME@", "IMP." + name)
     template = template.replace("@HTML_OUTPUT@", "../../doc/html/" + name)
     template = template.replace("@XML_OUTPUT@", "xml")
+    template = template.replace("@TREEVIEW@", "NO")
     template = template.replace("@GENERATE_TAGFILE@", "tags")
     template = template.replace("@LAYOUT_FILE@",
                                 "%s/doc/doxygen/module_layout.xml" % options.source)
