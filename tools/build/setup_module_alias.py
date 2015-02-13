@@ -6,6 +6,7 @@ existing one. This is used to create the IMP/foo.h headers from IMP.kernel,
 for backwards compatibility.
 """
 
+from __future__ import print_function
 import tools
 from optparse import OptionParser
 import glob
