@@ -9,13 +9,10 @@ class IMPMockTests(unittest.TestCase):
 
     def test_modules_installed(self):
         """Check modules included in the RPM or .deb"""
-        # RHEL systems don't include cgal; Fedora and Ubuntu do
-        if mock_config.startswith('fedora') or mock_config.startswith('ubuntu'):
-            import IMP.cgal
-        else:
-            self.assertRaises(ImportError, __import__, 'IMP.cgal')
         # The scratch module should not be included
         self.assertRaises(ImportError, __import__, 'IMP.scratch')
+        # We bundle CGAL now, so everyone should have IMP.cgal
+        import IMP.cgal
         # We bundle OpenCV now, so everyone should have IMP.em2d
         import IMP.em2d
         # We build our own Eigen on RHEL, so everyone should have IMP.isd
