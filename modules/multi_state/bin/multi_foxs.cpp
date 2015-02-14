@@ -301,7 +301,7 @@ recommended q value is 0.2")
     for (unsigned int i=0; i<scorers.size(); i++) {
       WeightedFitParameters fp = scorers[i]->get_fit_parameters();
       std::string out_file_name = "nnls_" + std::string(boost::lexical_cast<std::string>(i+1)) + ".txt";
-      std::ofstream s(out_file_name);
+      std::ofstream s(out_file_name.c_str());
       s.setf(std::ios::fixed, std::ios::floatfield);
       s << std::setw(6) << std::setprecision(3) << " Chi = " << fp.get_chi()
         << " c1 = " << fp.get_c1() << " c2 = " << fp.get_c2() << std::endl;
