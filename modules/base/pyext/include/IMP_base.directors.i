@@ -51,7 +51,7 @@ up periodically by inspecting the real C++ and Python reference counts.
 For small numbers of director objects (our expected usage) this works well.
 */
 
-%pythoncode {
+%pythoncode %{
 import sys
 class _DirectorObjects(object):
     """@internal Simple class to keep references to director objects
@@ -77,7 +77,7 @@ class _DirectorObjects(object):
         """Get number of director objects (useful for testing only)"""
         return len(self._objects)
 _director_objects = _DirectorObjects()
-}
+%}
 
 // Trigger cleanup of unused director objects when other IMP cleanup is done
 %pythonappend IMP::kernel::Model::~Model %{

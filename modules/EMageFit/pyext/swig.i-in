@@ -3,4 +3,4 @@
 #include "RMF.h"
 %}
 
-# No .cpp or .h files, so nothing to wrap
+/* No .cpp or .h files, so nothing to wrap */

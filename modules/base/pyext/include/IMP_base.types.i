@@ -562,9 +562,9 @@ IMP_SWIG_FORWARD_0(get_check_level, IMP::base::CheckLevel);
   bool __gt__(Particle *d) const {
      return self->get_particle() > d;
   }
-  # This forces __hash__ to be defined for each Decorator subclass; otherwise
-  # Python 3 assumes subclasses are unhashable since they appear
-  # to override __eq__ (which disables use of __hash__ from the super class)
+  /* This forces __hash__ to be defined for each Decorator subclass; otherwise
+     Python 3 assumes subclasses are unhashable since they appear
+     to override __eq__ (which disables use of __hash__ from the super class) */
   std::size_t __hash__() const {
      return self->__hash__();
   }
