@@ -76,7 +76,17 @@ BuildRequires: CGAL-devel, opencv-devel
 # and bundle the libraries with IMP.
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 BuildRequires: opencv-nogui-devel, CGAL-nogui-devel
-%define bundled 'libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so'
+# Also bundle mpfr on 64-bit RHEL5
+%if 0%{?rhel} == 5
+%ifarch x86_64
+%define bundledmpfr '\\|libmpfr.so'
+%else
+%define bundledmpfr %{nil}
+%endif
+%else
+%define bundledmpfr %{nil}
+%endif
+%define bundled 'libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so%{bundledmpfr}'
 %else
 %define bundled 'libTAU\\.so'
 %endif
@@ -249,6 +259,12 @@ for cvlib in cv cxcore highgui; do
   cp %{_libdir}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 done
 cp %{_libdir}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+# Also bundle mpfr on 64-bit RHEL5
+%if 0%{?rhel} == 5
+%ifarch x86_64
+cp %{_libdir}/libmpfr.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+%endif
+%endif
 %endif
 
 # Don't distribute example application, dependency, or system
