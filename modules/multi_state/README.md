@@ -1,11 +1,13 @@
+Functionality for handling multi-state models. These are used in IMP to
+model systems that are found simultaneously in multiple states. For example,
+a hinge protein may be found in both 'open' and 'closed' forms, and so some
+experiments conducted on a sample of the protein will return data from both
+forms. Building a single model that tries to be consistent with all the data
+will therefore fail - two models need to be constructed.
+
 # multi_foxs {#multi_foxs_bin}
-
-
-The IMP.multi_foxs module allows enumeration of multi-state models with SAXS profiles.
-
-
-_Examples_:
- - [Determination of a Nup133 structure](../tutorial/foxs_nup133.html)
+Command line tool to enumerate multi-state models with SAXS profiles.
+See also IMP::foxs for the similar FoXS command line tool.
 
 # Info
 
