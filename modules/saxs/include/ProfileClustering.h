@@ -16,6 +16,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+/** Class for profile clustering */
 class IMPSAXSEXPORT ProfileClustering {
 public:
   ProfileClustering(IMP::saxs::Profile* exp_profile,
