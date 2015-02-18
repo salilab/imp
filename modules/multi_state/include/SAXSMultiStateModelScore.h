@@ -21,6 +21,7 @@
 
 IMPMULTISTATE_BEGIN_NAMESPACE
 
+/** Score multi-state models against SAXS profiles */
 class IMPMULTISTATEEXPORT SAXSMultiStateModelScore :
   public MultiStateModelScore {
 public:
