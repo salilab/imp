@@ -76,17 +76,21 @@ BuildRequires: CGAL-devel, opencv-devel
 # and bundle the libraries with IMP.
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 BuildRequires: opencv-nogui-devel, CGAL-nogui-devel
-# Also bundle mpfr on 64-bit RHEL5
 %if 0%{?rhel} == 5
 %ifarch x86_64
-%define bundledmpfr '\\|libmpfr.so'
+# Also bundle mpfr on 64-bit RHEL5
+%define extralib '\\|libmpfr\\.so'
 %else
-%define bundledmpfr %{nil}
+# On 32-bit RHEL5, sometimes 'file' misidentifies libimp_domino.so as a core
+# file (not as a shared object) and doesn't add it to the Provides - this
+# results in a broken dependency. Work around this by excluding it from the
+# Requires too.
+%define extralib '\\|libimp_domino\\.so'
 %endif
 %else
-%define bundledmpfr %{nil}
+%define extralib %{nil}
 %endif
-%define bundled 'libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so%{bundledmpfr}'
+%define bundled 'libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so%{extralib}'
 %else
 %define bundled 'libTAU\\.so'
 %endif
