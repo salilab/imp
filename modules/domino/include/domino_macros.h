@@ -91,9 +91,9 @@
   virtual Assignments get_assignments() const IMP_OVERRIDE {               \
     return get_assignments(IntRange(0, get_number_of_assignments()));      \
   };                                                                       \
-  virtual void add_assignments(const Assignments &as) IMP_OVERRIDE {       \
-    for (unsigned int i = 0; i < as.size(); ++i) {                         \
-      Name::add_assignment(as[i]);                                         \
+  virtual void add_assignments(const Assignments &asgn) IMP_OVERRIDE {     \
+    for (unsigned int i = 0; i < asgn.size(); ++i) {                       \
+      Name::add_assignment(asgn[i]);                                       \
     }                                                                      \
   }                                                                        \
   virtual Ints get_particle_assignments(unsigned int index) const          \

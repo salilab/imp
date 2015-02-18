@@ -48,7 +48,7 @@ class IMPDOMINOEXPORT AssignmentContainer : public IMP::base::Object {
   virtual Assignments get_assignments(IntRange ir) const = 0;
   virtual Assignments get_assignments() const = 0;
   virtual void add_assignment(const Assignment &a) = 0;
-  virtual void add_assignments(const Assignments &as) = 0;
+  virtual void add_assignments(const Assignments &asgn) = 0;
   //! Get all the assignments for the ith particle
   virtual Ints get_particle_assignments(unsigned int i) const = 0;
 
