@@ -229,7 +229,7 @@ void ProteinKinematics::build_rigid_bodies() {
   // build the rigid bodies
   IMP::kernel::Model* m = mhd_->get_model();
   largest_rb_ = 0;
-  int largest_rb_size = 0;
+  unsigned int largest_rb_size = 0;
   for (unsigned int i = 0; i < rigid_bodies_atoms.size(); i++) {
     IMP::kernel::Particle* rbp = new IMP::kernel::Particle(m);
     std::string name = "rb_name";  // TODO: add rb id

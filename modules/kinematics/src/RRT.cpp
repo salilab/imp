@@ -88,7 +88,7 @@ void RRT::run() {
     DOFValues q_rand = dofs_sampler_->get_sample();
 
     // random selection of active dofs
-    if (number_of_sampled_dofs_ > 0 && current_counters.number_of_iterations_ % 100 == 0) {
+    if (number_of_sampled_dofs_ > 0 && current_counters.number_of_iterations_ % 10 == 0) {
       active_dofs_ = select_k_out_of_n_dofs(number_of_sampled_dofs_, q_rand.size());
     }
 

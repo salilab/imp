@@ -25,6 +25,8 @@
 #include <IMP/kinematics/UniformBackboneSampler.h>
 #include <IMP/kinematics/KinematicForestScoreState.h>
 
+#include <IMP/saxs/utility.h>
+
 #include <string>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
@@ -32,16 +34,6 @@
 namespace po = boost::program_options;
 
 namespace {
-
-
-void scale_radii(IMP::ParticlesTemp& particles, double scale);
-
-void scale_radii(IMP::ParticlesTemp& particles, double scale) {
-  for(unsigned int i=0; i<particles.size(); i++) {
-    IMP::core::XYZR xyzr(particles[i]);
-    xyzr.set_radius(xyzr.get_radius()*scale);
-  }
-}
 
 IMP::atom::Atom find_atom(const IMP::ParticlesTemp& atoms, int input_index) {
   for(unsigned int i=0; i<atoms.size(); i++) {
@@ -154,6 +146,39 @@ IMP::atom::Bond create_bond(IMP::atom::Atoms& as) {
   } else return IMP::atom::Bond();
 }
 
+void add_missing_bonds(IMP::ParticlesTemp& atoms, IMP::ParticlesTemp& bonds) {
+  float thr2 = 2.0*2.0;
+  std::vector<IMP::algebra::Vector3D> coordinates;
+  IMP::saxs::get_coordinates(atoms, coordinates);
+  int counter = 0;
+  for(unsigned int i=0; i<atoms.size(); i++) {
+    for(unsigned int j=i+1; j<atoms.size(); j++) {
+      float dist2 = IMP::algebra::get_squared_distance(coordinates[i], coordinates[j]);
+      if(dist2 < thr2) { // add bond
+        IMP::atom::Atoms as;
+        IMP::atom::Atom ai = IMP::atom::Atom(atoms[i]);
+        IMP::atom::Atom aj = IMP::atom::Atom(atoms[j]);
+        as.push_back(ai);
+        as.push_back(aj);
+
+        IMP::atom::Bonded b[2];
+        for(unsigned int i = 0; i < 2; ++i) {
+          if(IMP::atom::Bonded::get_is_setup(as[i]))
+            b[i] = IMP::atom::Bonded(as[i]);
+          else
+            b[i] = IMP::atom::Bonded::setup_particle(as[i]);
+        }
+        IMP::atom::Bond bd = IMP::atom::get_bond(b[0], b[1]);
+        if(bd == IMP::atom::Bond()) {
+          bd = IMP::atom::create_bond(b[0], b[1], IMP::atom::Bond::SINGLE);
+          bonds.push_back(bd);
+          counter++;
+        }
+      }
+    }
+  }
+  std::cerr << counter << " bonds were added" << std::endl;
+}
 }
 
 using namespace IMP::kinematics;
@@ -244,8 +269,8 @@ int main(int argc, char **argv)
   IMP::ParticlesTemp atoms = IMP::atom::get_by_type(mhd, IMP::atom::ATOM_TYPE);
   IMP::ParticlesTemp residues = IMP::atom::get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
 
-  const std::string topology_file_name = "top_heav.lib";
-  const std::string parameter_file_name = "par.lib";
+  const std::string topology_file_name = IMP::atom::get_data_path("top_heav.lib");
+  const std::string parameter_file_name = IMP::atom::get_data_path("par.lib");
   std::ifstream test(topology_file_name.c_str());
   if(!test) {
     std::cerr << "Please provide topology file " << topology_file_name
@@ -266,8 +291,8 @@ int main(int argc, char **argv)
 
   // We don't want to add/remove any atoms, so we only add atom types
   topology->apply_default_patches();
-  topology->setup_hierarchy(mhd);
-  //topology->add_atom_types(mhd);
+  //  topology->setup_hierarchy(mhd); //removes atoms
+  topology->add_atom_types(mhd);
 
   IMP::ParticlesTemp bonds =  topology->add_bonds(mhd);
 
@@ -279,17 +304,6 @@ int main(int argc, char **argv)
                     flexible_residues, dihedral_angles);
   } else {
     flexible_residues = residues;
-  }
-
-  for(unsigned i=0; i<dihedral_angles.size(); i++) {
-    // add bonds
-    for(unsigned int j=0; j<3; j++) {
-      IMP::atom::Atoms as;
-      as.push_back(dihedral_angles[i][j]);
-      as.push_back(dihedral_angles[i][j+1]);
-      IMP::atom::Bond bond = create_bond(as);
-      if(bond != IMP::atom::Bond()) bonds.push_back(bond);
-    }
   }
 
   std::vector<IMP::atom::Atoms> connect_chains_atoms;
@@ -308,11 +322,15 @@ int main(int argc, char **argv)
             << " # angles " << angles.size()
             << " # dihedrals " << dihedrals.size() << std::endl;
 
+  add_missing_bonds(atoms, bonds);
+
+  std::cerr << "# atoms " << atoms.size()
+            << " # bonds " << bonds.size()
+            << " # angles " << angles.size()
+            << " # dihedrals " << dihedrals.size() << std::endl;
 
   // add radius
-  ff->add_radii(mhd);
-  scale_radii(atoms, radii_scaling);
-  ff->add_well_depths(mhd);
+  ff->add_radii(mhd, radii_scaling);
 
   // prepare exclusions list
   IMP_NEW(IMP::atom::StereochemistryPairFilter, pair_filter, ());
@@ -332,7 +350,6 @@ int main(int argc, char **argv)
   //IMP::base::Pointer<IMP::Restraint> pr=
   //   IMP::container::create_restraint(score, cpc);
   model->add_restraint(pr);
-
 
   ProteinKinematics pk(mhd, flexible_residues, dihedral_angles);
   std::cerr << "ProteinKinematics done" << std::endl;
@@ -355,7 +372,6 @@ int main(int argc, char **argv)
   }
 
   DOFValues val(dofs);
-  std::cerr << "DOFs done" << std::endl;
 
   if(reset_angles) {
     kfss->do_before_evaluate();
