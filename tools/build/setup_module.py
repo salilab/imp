@@ -425,7 +425,7 @@ def main():
     (options, apps) = parser.parse_args()
     disabled = tools.split(open("data/build_info/disabled", "r").read(), "\n")
     if options.name in disabled:
-        print(options.name, "is disabled")
+        print("%s is disabled" % options.name)
         write_no_ok(options.name)
         tools.rmdir(os.path.join("module_bin", options.name))
         tools.rmdir(os.path.join("benchmark", options.name))
