@@ -1,4 +1,4 @@
-# rrt {#rrt_bin}
+# rrt_sample {#rrt_sample_bin}
 
 \brief Functionality for dealing with kinematic mechanical structures.
 
