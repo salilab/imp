@@ -1,5 +1,3 @@
-# rrt_sample {#rrt_sample_bin}
-
 \brief Functionality for dealing with kinematic mechanical structures.
 
 Tools for handling the associated internal coordinates system are also
@@ -14,6 +12,12 @@ This module provides a variety of functionality for defining and controlling kin
 # Conventions
 
 The name "Joint" is used to refer to a kinematic pair between two rigid bodies.
+
+# rrt_sample {#rrt_sample_bin}
+Sample protein conformations using rapidly exploring random tree (RRT).
+
+For an example of using the `rrt_sample` command line tool, see
+[the tutorial](../tutorial/kinematics_rrt.html).
 
 # Info
 
