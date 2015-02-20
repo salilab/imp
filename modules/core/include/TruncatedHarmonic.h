@@ -56,7 +56,7 @@ class TruncatedHarmonic : public UnaryFunction {
       : d_(center, k, threshold, limit) {}
   /** Set limit to a reasonable value. */
   TruncatedHarmonic(Float center, Float k, Float threshold)
-      : d_(center, k, threshold, k * square(threshold - center)) {}
+      : d_(center, k, threshold, k * square(threshold)) {}
   virtual DerivativePair evaluate_with_derivative(double feature) const
       IMP_OVERRIDE {
     return DerivativePair(evaluate(feature),

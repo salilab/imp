@@ -69,6 +69,8 @@ class Tests(IMP.test.TestCase):
             self.assertRaises(IMP.base.UsageException,
                               IMP.core.TruncatedHarmonicBound,
                               10., -2.0, 1., 5.)
+            # Default value for limit should be reasonable
+            h = IMP.core.TruncatedHarmonicBound(10., 0.1, 10.)
 
 if __name__ == '__main__':
     IMP.test.main()
