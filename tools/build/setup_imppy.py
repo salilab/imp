@@ -104,9 +104,6 @@ class FileGenerator(object):
                                         os.pathsep.join([exampledir]),
                                         True, False),
                  "@TMPDIR@": ("IMP_TMP_DIR", tmpdir, True, False)}
-        if self.options.wine_hack == "yes":
-            lines['@LDPATH@'] = ('IMP_LD_PATH', os.pathsep.join(ldpath),
-                                 True, False)
 
         contents = []
 
@@ -185,8 +182,6 @@ parser.add_option("-d", "--external_data", dest="external_data", default=[],
                   action="append", help="External data.")
 parser.add_option("-e", "--propagate", dest="propagate", default="no",
                   help="Whether to pass the relevant environment variables through.")
-parser.add_option("-W", "--wine_hack", dest="wine_hack", default="no",
-                  help="Base dir, either . or build.")
 parser.add_option("-o", "--output", dest="output", default="imppy.sh",
                   help="Name of the file to produce.")
 parser.add_option("--suffix", default="",
