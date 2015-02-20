@@ -1,7 +1,7 @@
 Source: imp
 Priority: optional
 Maintainer: Ben Webb <ben@salilab.org>
-Build-Depends: debhelper (>= 8.0.0), cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python-dev, coreutils, unzip, wget, python3-dev, symlinks
+Build-Depends: debhelper (>= 8.0.0), cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python-dev, coreutils, unzip, wget, python3-dev, symlinks, libann-dev
 Standards-Version: 3.9.4
 Section: libs
 Homepage: http://integrativemodeling.org/
@@ -11,7 +11,7 @@ Vcs-Browser: https://github.com/salilab/imp/
 Package: imp-dev
 Section: libdevel
 Architecture: any
-Depends: imp (= ${binary:Version}), ${misc:Depends}, cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python-dev
+Depends: imp (= ${binary:Version}), ${misc:Depends}, cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python-dev, libann-dev
 Description: The Integrative Modeling Platform
  Headers to compile against IMP.
 

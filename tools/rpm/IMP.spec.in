@@ -35,7 +35,7 @@ BuildRequires: hdf5-devel >= 1.8
 # use RHEL 5 (we recommend RHEL 6) you will need to build a newer SWIG package
 # before building IMP.
 BuildRequires: swig >= 1.3.40
-BuildRequires: gsl-devel, fftw-devel
+BuildRequires: gsl-devel, fftw-devel, ann-devel
 BuildRequires: zlib-devel, perl
 # Needed to build the cnmultifit module; obtain
 # from http://salilab.org/imp/libTAU.html
@@ -137,7 +137,7 @@ as well as easy addition of new functionality.
 Group:         Applications/Engineering
 Summary:       Development package for IMP developers.
 Requires:      %{name} = %{version}-%{release}
-Requires:      gsl-devel, fftw-devel, zlib-devel
+Requires:      gsl-devel, fftw-devel, zlib-devel, ann-devel
 %if 0%{?rhel} == 5
 Requires:      boost141-devel, python26-devel, hdf518-devel
 %else
