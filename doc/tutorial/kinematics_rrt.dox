@@ -4,9 +4,11 @@
 
 \section kinematics_rrt_intro Introduction
 
-Full length antibody structure consists of two Fab domains and an Fc domain. There are hinge regions between the Fc and Fab domains that we sample here to explore the range of conformations accesible to the antibody.
+A full length antibody structure consists of two Fab domains and an Fc domain. There are hinge regions between the Fc and Fab domains that we sample here to explore the range of conformations accessible to the antibody.
 
-IMP includes a command line tool <tt>rrt_sample</tt> for running RRT based sampling, which will be demonstrated in this example.
+IMP includes a command line tool <tt>rrt_sample</tt> for running rapidly
+exploring random tree (RRT) based sampling, which will be demonstrated in
+this example.
 
 For full help on the <tt>rrt_sample</tt> tool, run from a command line:
 
@@ -33,15 +35,15 @@ print IMP.kinematics.get_example_path('antibody')</tt>'.
 The structure of the antibody is available in the
 \external{http://www.pdb.org,RCSB Protein Data Bank (PDB)} as code
 \external{http://www.pdb.org/pdb/explore/explore.do?structureId=1IGT,1igt}
-(file <tt>1igt.pdb</tt>). The atomic structure can be sampled by running rrt_sample. First, we need to define the linker regions (residues 229-235 in chains B and D). These residues are listed in the input file <tt>linker.txt</tt>. Since the antibody contains four chains (A-D), we would like to connect them into a single rigid body using '-c' connect_chains option. We do that for the antibody structure using the S-S bonds between the chains. Therefore, the file <tt>conect_chains.txt</tt> specifies atom numbers for the two chains we want to connect.
+(file <tt>1igt.pdb</tt>). The atomic structure can be sampled by running <tt>rrt_sample</tt>. First, we need to define the linker regions (residues 229-235 in chains B and D). These residues are listed in the input file <tt>linker.txt</tt>. Since the antibody contains four chains (A-D), we would like to connect them into a single rigid body using '-c' connect_chains option. We do that for the antibody structure using the S-S bonds between the chains. Therefore, the file <tt>conect_chains.txt</tt> specifies atom numbers for the two chains we want to connect.
 
 \code{.sh}
 rrt_sample 1igt.pdb linker.txt -c conect_chains.txt -n 10
 \endcode
 
-By default the method will run RRT for 100 iterations or untill it generates 100 conformations. To generate more use -i 1000000 -n 10000 options.
+By default the method will run RRT for 100 iterations or until it generates 100 conformations. To generate more use -i 1000000 -n 10000 options.
 
-The output files are pdb files with each conformation as a MODEL. By default the program writes 100 conformations into each file. This can be changed using -m option.
+The output files are PDB files with each conformation as a MODEL. By default the program writes 100 conformations into each file. This can be changed using the -m option.
 
 <img src="kinematics_rrt.gif" alt="A sample of 15 antibody conformations" width="450px">
 
