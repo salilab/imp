@@ -34,19 +34,23 @@ available.)
       Improving the quality of computational pairwise docking by incorporating
       additional experimental information.
 
-   6. [EMageFit](@ref emagefit_3sfd).
+   6. [Conformational sampling)(@ref kinematics_rrt).
+      Sampling antibody conformations using the rapidly exploring random
+      tree (RRT) algorithm.
+
+   7. [EMageFit](@ref emagefit_3sfd).
       A simple example of modeling of a complex of 4 proteins, by
       combining electron microscopy (EM) class averages of the complex
       with crystal structures of the proteins.
 
-   7. [MultiFit](@ref multifit_3sfd).
+   8. [MultiFit](@ref multifit_3sfd).
       A similar example of modeling a complex, by multiple fitting of
       individual proteins into a 3D cryo-EM density map of the complex.
 
-   8. [MultiFit of symmetric complexes](@ref cnmultifit_groel).
+   9. [MultiFit of symmetric complexes](@ref cnmultifit_groel).
       Multiple fitting of a protein structure into a symmetric (ring) complex,
       using a 3D cryo-EM density map of the complex.
 
-   9. [Merging SAXS profiles](@ref saxs_merge).
-      Merging multiple small angle X-ray (SAXS) profiles using `saxs_merge`.
+   10. [Merging SAXS profiles](@ref saxs_merge).
+       Merging multiple small angle X-ray (SAXS) profiles using `saxs_merge`.
 */
