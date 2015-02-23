@@ -1,5 +1,5 @@
 /**
- * \file IMP/MultiStateModelScore.h
+ * \file IMP/multi_state/MultiStateModelScore.h
  * base class for MultiStateModel scoring classes
  * \brief
  *

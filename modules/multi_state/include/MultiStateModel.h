@@ -1,5 +1,5 @@
 /**
- * \file IMP/MultiStateModel.h
+ * \file IMP/multi_state/MultiStateModel.h
  * \brief base class for MultiStateModel
  *
  * \authors Dina Schneidman

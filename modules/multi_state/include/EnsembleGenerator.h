@@ -1,5 +1,5 @@
 /**
- * \file IMP/EnsembleGenerator.h
+ * \file IMP/multi_state/EnsembleGenerator.h
  * \brief implements branch&bound enumeration of an ensemble of good scoring MultiStateModels
  *
  * \authors Dina Schneidman
