@@ -1,5 +1,5 @@
 /**
- * \file IMP/SAXSMultiStateModelScore.h
+ * \file IMP/multi_state/SAXSMultiStateModelScore.h
  * \brief
  *
  * \authors Dina Schneidman

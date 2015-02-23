@@ -1,5 +1,5 @@
 /**
- * \file IMP/stat_helpers.h
+ * \file IMP/multi_state/stat_helpers.h
  * \brief
  *
  * \authors Dina Schneidman
