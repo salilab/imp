@@ -1,7 +1,7 @@
 /*!
  *  \file IMP/em2d/scores2D.h
  *  \brief Scoring functions for 2D
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_SCORES_2D_H

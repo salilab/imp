@@ -2,7 +2,7 @@
  *  \file IMP/display/ChimeraWriter.h
  *  \brief A writer for Chimera Python files.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_CHIMERA_WRITER_H
