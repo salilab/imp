@@ -2,7 +2,7 @@
  *  \file IMP/multifit/density_analysis.h
  *  \brief density analysis tools, such as segmentation
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 

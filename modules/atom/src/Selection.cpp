@@ -2,7 +2,7 @@
  *  \file IMP/atom/Selection.cpp
  *  \brief Select a subset of a hierarchy.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 

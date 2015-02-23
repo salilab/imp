@@ -2,7 +2,7 @@
  *  \file Mass.cpp
  *  \brief A decorator for particles with mass.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 

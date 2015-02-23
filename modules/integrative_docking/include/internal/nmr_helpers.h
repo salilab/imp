@@ -2,7 +2,7 @@
  *  \file IMP/integrative_docking/nmr_helpers.h
  *  \brief A set of helper functions
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 

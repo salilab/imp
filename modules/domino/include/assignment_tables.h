@@ -2,7 +2,7 @@
  *  \file IMP/domino/assignment_tables.h
  *  \brief A Bayesian inference-based sampler.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 

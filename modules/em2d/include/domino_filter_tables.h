@@ -2,7 +2,7 @@
  *  \file IMP/em2d/domino_filter_tables.h
  *  \brief Managing of projection overlap filter
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 

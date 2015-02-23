@@ -2,7 +2,7 @@
  *  \file IMP/core/SerialMover.h
  *  \brief  A mover that applies other movers one at a time
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
