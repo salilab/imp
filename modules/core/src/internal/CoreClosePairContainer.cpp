@@ -139,6 +139,7 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
     cpf_->set_pair_filters(access_pair_filters());
     kernel::ParticleIndexPairs found = cpf_->get_close_pairs(get_model(),
                                                              c_->get_indexes());
+    internal::filter_close_pairs(this, found);
     IMP_LOG_TERSE("In check found " << found << std::endl);
     for (unsigned int i = 0; i < found.size(); ++i) {
       kernel::ParticleIndexPair pi(found[i][0], found[i][1]);
