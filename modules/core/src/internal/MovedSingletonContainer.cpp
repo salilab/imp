@@ -303,7 +303,12 @@ kernel::ModelObjectsTemp RigidMovedSingletonContainer::get_extra_inputs()
   IMP_FOREACH(kernel::ParticleIndex pi,
               get_singleton_container()->get_contents()) {
     if (core::RigidMember::get_is_setup(get_model(), pi)) {
-      ret.push_back(core::RigidMember(get_model(), pi).get_rigid_body());
+      RigidBody rb = core::RigidMember(get_model(), pi).get_rigid_body();
+      ret.push_back(rb);
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+      // The checks in check_estimate() need to touch *all* members
+      ret += rb.get_members();
+#endif
     }
   }
   std::sort(ret.begin(), ret.end());
