@@ -131,27 +131,25 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
             << num << " vs " << existings.size() << " lists " << get_access()
             << " vs " << kernel::ParticleIndexPairs(
                              existings.begin(), existings.end()) << std::endl);
-    kernel::ParticlesTemp all(
-        IMP::get_particles(get_model(), c_->get_indexes()));
     double check_distance = distance_ * .9;
     if (check_slack) {
       check_distance += 1.8 * slack_;
     }
     cpf_->set_distance(check_distance);
     cpf_->set_pair_filters(access_pair_filters());
-    kernel::ParticlePairsTemp found = cpf_->get_close_pairs(all);
+    kernel::ParticleIndexPairs found = cpf_->get_close_pairs(get_model(),
+                                                             c_->get_indexes());
     IMP_LOG_TERSE("In check found " << found << std::endl);
     for (unsigned int i = 0; i < found.size(); ++i) {
-      kernel::ParticleIndexPair pi(found[i][0]->get_index(),
-                                   found[i][1]->get_index());
-      kernel::ParticleIndexPair pii(found[i][1]->get_index(),
-                                    found[i][0]->get_index());
+      kernel::ParticleIndexPair pi(found[i][0], found[i][1]);
+      kernel::ParticleIndexPair pii(found[i][1], found[i][0]);
       IMP_INTERNAL_CHECK(
           existings.find(pi) != existings.end() ||
               existings.find(pii) != existings.end(),
           "Pair " << pi << " not found in close pairs list"
                   << " at distance "
-                  << core::get_distance(XYZR(found[i][0]), XYZR(found[i][1])));
+                  << core::get_distance(XYZR(get_model(), found[i][0]),
+                                        XYZR(get_model(), found[i][1])));
     }
   }
 }
