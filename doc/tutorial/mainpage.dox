@@ -9,7 +9,7 @@ for more information, please refer to the
 In order to follow along with the tutorial, you will first need to download
 and install IMP and its dependencies. This is most easily done by downloading
 the [latest stable release](http://integrativemodeling.org/download.html);
-pre-compiled binaries are availble, or you can build from source code.
+pre-compiled binaries are available, or you can build from source code.
 
 Please note that if you choose to use a newer version of IMP,
 some scripts may need some modification to work correctly. (If you use an
@@ -34,7 +34,7 @@ available.)
       Improving the quality of computational pairwise docking by incorporating
       additional experimental information.
 
-   6. [Conformational sampling)(@ref kinematics_rrt).
+   6. [Conformational sampling](@ref kinematics_rrt).
       Sampling antibody conformations using the rapidly exploring random
       tree (RRT) algorithm.
 
