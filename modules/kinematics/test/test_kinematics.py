@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -149,13 +150,13 @@ class Test(IMP.test.TestCase):
         self.assertAlmostEqual(pj12.get_length(), 1.0, 10)
         self.assertAlmostEqual(dj12.get_angle(), 0.0, 10)
         pj12.set_length(10.0)
-        print "After set length(10.0):"
+        print("After set length(10.0):")
         for rb in rbs:
-            print kf.get_coordinates_safe(rb)
-        print "After set angle(90.0):"
+            print(kf.get_coordinates_safe(rb))
+        print("After set angle(90.0):")
         dj12.set_angle(math.pi / 2)
         for rb in rbs:
-            print kf.get_coordinates_safe(rb)
+            print(kf.get_coordinates_safe(rb))
 
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -32,7 +33,7 @@ class Score(IMP.PairScore):
         if self._pred.get_value(pp) == self._value:
             return 0
         else:
-            print "uh oh", pp[0].get_value(tk), pp[1].get_value(tk), self._value
+            print("uh oh", pp[0].get_value(tk), pp[1].get_value(tk), self._value)
             return 1
 
     def do_get_inputs(self, m, pis):
@@ -48,7 +49,7 @@ class Tests(IMP.test.TestCase):
         ps = self.create_particles_in_box(m, 20)
         for i, p in enumerate(ps):
             p.add_attribute(tk, i % 5)
-        print 1
+        print(1)
         threshold = 1
         cpss = IMP.container.ClosePairContainer(ps, 1,
                                                 IMP.core.QuadraticClosePairsFinder(

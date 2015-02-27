@@ -3,6 +3,7 @@
 # current length.
 #
 
+from __future__ import print_function
 import IMP.atom
 import IMP.container
 m = IMP.kernel.Model()
@@ -14,4 +15,4 @@ h = IMP.core.Harmonic(0, 1)
 bs = IMP.atom.BondSingletonScore(h)
 br = IMP.container.SingletonsRestraint(bs, bl)
 m.add_restraint(br)
-print m.evaluate(False)
+print(m.evaluate(False))

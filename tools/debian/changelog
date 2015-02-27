@@ -1,4 +1,4 @@
-imp (@VERSION@-1) unstable; urgency=low
+imp (@VERSION@-1) trusty; urgency=low
 
   * Initial release
 

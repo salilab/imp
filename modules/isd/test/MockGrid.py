@@ -4,8 +4,8 @@ import numpy.random as random
 kB = 1.3806503 * 6.0221415 / 4184.0  # Boltzmann constant in kcal/mol/K
 example_nreps = 10
 example_temps = [300.0 + (600.0 - 300.0) * i / float(example_nreps - 1) for i in
-                 xrange(example_nreps)]
-example_steps = [1.0 for i in xrange(example_nreps)]
+                 range(example_nreps)]
+example_steps = [1.0 for i in range(example_nreps)]
 
 
 class MockModel:
@@ -104,7 +104,7 @@ class MockGrid:
     def scatter(self, id, funcname, *arglist, **kwlist):
         results = []
         if kwlist is None:
-            kwlist = [{} for i in xrange(len(arglist))]
+            kwlist = [{} for i in range(len(arglist))]
         if not hasattr(arglist[0], '__iter__'):
             arglist = [[i] for i in arglist]
         for prox, args, kw in zip(self._slaves, arglist, kwlist):

@@ -1,4 +1,5 @@
-import StringIO
+from __future__ import print_function
+import io
 import IMP
 import IMP.test
 import IMP.atom
@@ -11,9 +12,9 @@ class Tests(IMP.test.TestCase):
         p = IMP.atom.read_pdb(self.get_input_file_name(name),
                               m, selector)
         n1 = len(IMP.atom.get_by_type(p, IMP.atom.ATOM_TYPE))
-        sout = StringIO.StringIO()
+        sout = io.BytesIO()
         IMP.atom.write_pdb(p, sout)
-        sin = StringIO.StringIO(sout.getvalue())
+        sin = io.BytesIO(sout.getvalue())
         p2 = IMP.atom.read_pdb(sin, m, selector)
         n2 = len(IMP.atom.get_by_type(p2, IMP.atom.ATOM_TYPE))
         self.assertEqual(n1, n2)
@@ -32,6 +33,11 @@ class Tests(IMP.test.TestCase):
                           IMP.atom.read_pdb,
                           self.open_input_file("notapdb.pdb"),
                           m)
+
+    def test_cast_selectors(self):
+        """Check cast of selectors"""
+        self.check_get_from(IMP.atom.NonWaterPDBSelector())
+        self.check_get_from(IMP.atom.NPDBSelector())
 
     def test_read(self):
         """Check reading a pdb with one protein"""
@@ -149,7 +155,7 @@ class Tests(IMP.test.TestCase):
                               IMP.atom.AllPDBSelector(), True)
         # print m.number
         ln = IMP.atom.get_leaves(h)
-        print len(ln)
+        print(len(ln))
         self.assertLess(len(ln), 1000)
 
     def test_one_atom(self):
@@ -159,7 +165,7 @@ class Tests(IMP.test.TestCase):
                               IMP.atom.AllPDBSelector(), True)
         # print m.number
         ln = IMP.atom.get_leaves(h)
-        print len(ln)
+        print(len(ln))
         self.assertLess(len(ln), 1000)
 
     def test_indexes(self):

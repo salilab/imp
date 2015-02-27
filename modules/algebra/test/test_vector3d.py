@@ -1,9 +1,10 @@
+from __future__ import print_function
 import IMP.test
 import IMP.algebra
-import StringIO
+import io
 import os
 import math
-
+import sys
 
 class Tests(IMP.test.TestCase):
 
@@ -37,15 +38,16 @@ class Tests(IMP.test.TestCase):
                 6.0)]
 
         # Test read/write for regular files and file-like objects
-        sio = StringIO.StringIO()
+        sio = io.BytesIO()
         IMP.algebra.write_pts(vs1, sio)
         sio.seek(0)
         rpts = IMP.algebra.read_pts(sio)
-        print sio.getvalue()
         self.assertEqual(len(rpts), len(vs1))
         for i in range(0, len(rpts)):
             for j in range(0, 3):
                 self.assertAlmostEqual(rpts[i][j], vs1[i][j], delta=.01)
+        sio = io.BytesIO(b"garbage")
+        self.assertRaises(ValueError, IMP.algebra.read_pts, sio)
 
     def test_component(self):
         """Check Vector3D components"""
@@ -111,8 +113,11 @@ class Tests(IMP.test.TestCase):
     def test_show(self):
         """Check vector 3D show"""
         v = IMP.algebra.Vector3D(1, 2, 3)
-        out = StringIO.StringIO()
-        print >> out, v
+        if sys.version_info[0] >= 3:
+            out = io.StringIO()
+        else:
+            out = io.BytesIO()
+        print(v, file=out)
         self.assertEqual(out.getvalue().find("Swig"), -1)
 
     def test_addition(self):
@@ -177,6 +182,16 @@ class Tests(IMP.test.TestCase):
         v = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
         v = IMP.algebra.get_random_vector_in(
             IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 1))
+
+    def test_orth_vector(self):
+        """Check get_orthogonal_vector()"""
+        v1 = IMP.algebra.Vector3D(3.0, 6.0, 9.0)
+        v2 = IMP.algebra.get_orthogonal_vector(v1)
+        self.assertLess(IMP.algebra.get_distance(v2,
+                                       IMP.algebra.Vector3D(1,1,-1)), 1e-4)
+        v1 = IMP.algebra.Vector3D(0, 0, 0)
+        v2 = IMP.algebra.get_orthogonal_vector(v1)
+        self.assertLess(IMP.algebra.get_distance(v2, v1), 1e-4)
 
 if __name__ == '__main__':
     IMP.test.main()

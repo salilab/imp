@@ -1,4 +1,4 @@
-import StringIO
+import io
 import IMP
 import IMP.test
 import IMP.atom
@@ -14,6 +14,11 @@ class Tests(IMP.test.TestCase):
         if IMP.base.get_check_level() != IMP.base.NONE:
             self.assertRaises(IMP.base.UsageException, IMP.atom.ForceSwitch,
                               6.0, 5.0)
+
+    def test_cast(self):
+        """Check ForceSwitch cast"""
+        sm = IMP.atom.ForceSwitch(9.0, 10.0)
+        self.check_get_from(sm)
 
     def test_value(self):
         """Check value of ForceSwitch"""

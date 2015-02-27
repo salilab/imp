@@ -1,4 +1,4 @@
-import StringIO
+import io
 import IMP
 import IMP.test
 import IMP.atom

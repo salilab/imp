@@ -45,7 +45,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(0)
         self.m = IMP.kernel.Model()
         data = open(self.get_input_file_name('lyzexp_gpir.dat')).readlines()
-        data = [map(float, d.split()) for d in data]
+        data = [list(map(float, d.split())) for d in data]
         self.q = [[i[0]] for i in data]
         self.I = [i[1] for i in data]
         self.err = [i[2] for i in data]
@@ -91,7 +91,7 @@ class Tests(IMP.test.TestCase):
                      (self.lam, 0.1, 10),
                      (self.sig, 0.1, 10)]
         # number of shuffled values
-        for i in xrange(randint(0, 5)):
+        for i in range(randint(0, 5)):
             # which particle
             p, imin, imax = particles.pop(randint(0, len(particles) - 1))
             p.set_nuisance(uniform(imin, imax))

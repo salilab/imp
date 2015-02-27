@@ -2,7 +2,7 @@
  *  \file IMP/core/LeavesRefiner.h
  *  \brief Return the hierarchy leaves under a particle.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_LEAVES_REFINER_H

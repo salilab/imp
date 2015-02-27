@@ -2,7 +2,7 @@
  *  \file DerivativesToRefined.cpp
  *  \brief Copy derivatives from coarse particles to fine particles.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
 #include "IMP/core/DerivativesToRefined.h"

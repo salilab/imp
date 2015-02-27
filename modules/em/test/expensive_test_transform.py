@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import IMP.algebra
 import IMP.em
@@ -21,21 +22,21 @@ class Tests(IMP.test.TestCase):
         tr = IMP.algebra.Transformation3D(r, translation)
         #                             IMP.algebra.get_random_vector_in(Vector3D(-100,-100,-100),
         # Vector3D(100,100,100)))
-        print "going to"
+        print("going to")
         mt = IMP.em.get_transformed(m, tr, .01)
         mrw = IMP.em.MRCReaderWriter()
         IMP.em.write_map(mt, self.get_tmp_file_name("transformed.mrc"), mrw)
-        print "coming from"
+        print("coming from")
         mtit = IMP.em.get_transformed(mt, tr.get_inverse(), .01)
         IMP.em.write_map(
             mtit,
             self.get_tmp_file_name(
                 "backtransformed.mrc"),
             mrw)
-        print "testing"
-        print IMP.em.get_bounding_box(m)
-        print IMP.em.get_bounding_box(mt)
-        print IMP.em.get_bounding_box(mtit)
+        print("testing")
+        print(IMP.em.get_bounding_box(m))
+        print(IMP.em.get_bounding_box(mt))
+        print(IMP.em.get_bounding_box(mtit))
         errors = 0
         for v in range(m.get_number_of_voxels()):
             pt = Vector3D(m.get_location_in_dim_by_voxel(v, 0),

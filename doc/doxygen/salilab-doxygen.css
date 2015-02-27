@@ -1,3 +1,19 @@
 code {
     background-color: #EEE;
 }
+
+/* Hide line numbers in Python examples */
+span.lineno {
+    display: none;
+}
+
+/* Make long lines scroll (rather than wrap) and make a nicer background and
+   border */
+div.fragment {
+    background-color: #F7F7F7;
+    border: 1px dashed #666;
+    overflow: auto;
+}
+div.line {
+    white-space: pre;
+}

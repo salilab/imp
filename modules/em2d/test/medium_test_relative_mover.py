@@ -23,9 +23,8 @@ def parse_relative_transform(row):
         Returns an relative transform with the conventions used by IMP.
         row - A list containing a splitted line from the relative output file
     """
-    euler = map(float, row[8:11])
-    xyz = map(float, row[5:8])
-    euler = [-euler[0], -euler[1], -euler[2]]
+    euler = [-float(x) for x in row[8:11]]
+    xyz = [float(x) for x in row[5:8]]
     R = alg.get_rotation_from_fixed_zyz(*euler)
     R = R.get_inverse()
     t = alg.Vector3D(*xyz)

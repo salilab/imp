@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -42,14 +43,14 @@ class Tests(IMP.test.TestCase):
         #sp= IMP.atom.get_simplified_by_residue(p, 1)
         cpf = IMP.core.QuadraticClosePairsFinder()
         cpf.set_distance(0.0)
-        print len(ps), "leaves"
+        print(len(ps), "leaves")
         cp = cpf.get_close_pairs(ps)
         for pr in cp:
             r = IMP.core.PairRestraint(
                 IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0, 1)), pr)
             m.add_restraint(r)
             r.set_name("pair")
-        print "computing graph"
+        print("computing graph")
         pst = IMP.domino.ParticleStatesTable()
         for p in ps:
             pst.set_particle_states(p, NullStates())
@@ -57,7 +58,7 @@ class Tests(IMP.test.TestCase):
                                              pst)
         #w = IMP.display.PymolWriter(self.get_tmp_file_name("ig-large.pym"))
         gs = IMP.domino.get_interaction_graph_geometry(g)
-        print "There are ", len(gs)
+        print("There are ", len(gs))
         # for gg in gs:
         #    w.add_geometry(gg)
         #del w

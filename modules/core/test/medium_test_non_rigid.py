@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -119,7 +120,7 @@ class Tests(IMP.test.TestCase):
             + [ICMover(m, x, 1) for x in nr0 + nr1]
         cpc.set_was_used(True)
         for i in range(0, 100):
-            print i
+            print(i)
             m.update()
             self._check_close_pairs(m, cpc.get_indexes())
             self._move(movers)

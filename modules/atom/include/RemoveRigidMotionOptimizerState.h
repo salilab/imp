@@ -2,7 +2,7 @@
  *  \file IMP/atom/RemoveRigidMotionOptimizerState.h
  *  \brief Remove rigid rotation and translation during molecular dynamics.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -37,9 +37,6 @@ class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState {
   void remove_linear() const;
   void remove_angular() const;
   kernel::Particles pis_;
-
-  //! Keys of the xyz velocities
-  FloatKey vs_[3];
 };
 
 IMP_OBJECTS(RemoveRigidMotionOptimizerState, RemoveRigidMotionOptimizerStates);

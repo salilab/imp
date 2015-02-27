@@ -12,10 +12,10 @@ from optparse import OptionParser
 
 
 imp_init = """try:
-    from kernel import *
+    from IMP.kernel import *
 except:
     import traceback
-    print "no kernel"
+    print("no kernel")
     traceback.print_exc()
 """
 
@@ -138,7 +138,7 @@ std::string get_data_path(std::string fname);
 }
 """ % module)
     contents.append("""%pythoncode %{
-import _version_check
+from . import _version_check
 _version_check.check_version(get_module_version())
 %}
 """)

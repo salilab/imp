@@ -1,3 +1,4 @@
+from __future__ import division
 import IMP
 import IMP.test
 import IMP.algebra
@@ -27,11 +28,11 @@ class Tests(IMP.test.TestCase):
         pos.set_period(period)
         for i in range(0, 100):
             pos.update()
-        self.assertEqual(pos.calls, range(0, 100 / period))
+        self.assertEqual(pos.calls, list(range(0, 100 // period)))
         pos.reset()
         pos.calls = []
         for i in range(0, 100):
             pos.update()
-        self.assertEqual(pos.calls, range(0, 100 / period))
+        self.assertEqual(pos.calls, list(range(0, 100 // period)))
 if __name__ == '__main__':
     IMP.test.main()

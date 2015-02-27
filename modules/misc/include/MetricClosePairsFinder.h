@@ -2,7 +2,7 @@
  *  \file IMP/misc/MetricClosePairsFinder.h
  *  \brief Decorator for a sphere-like particle.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,20 +23,20 @@ IMPMISC_BEGIN_NAMESPACE
     particles. As a result, it should be usable with weird metrics (eg ones
     that include symmetry).
 
-    The LowerBound template should be a functors that bounds the
+    The LowerBound and UpperBound templates should be functors that bound the
     distance between two particles. For example the LowerBound
     distance between two balls is the center distance minus the radii,
-    and the upperbound distance is the center distance plus the
-    radii. They signature should be `double operator()(kernel::Model *m, const
+    and the UpperBound distance is the center distance plus the
+    radii. The signature should be `double operator()(kernel::Model *m, const
     kernel::ParticleIndexPair &pip) const`
 
-    The algorithm works by building an index used `sqrt(n)` of the `n` input
-    particles, assigning each particle to a bucked based on the closest index
+    The algorithm works by building an index using `sqrt(n)` of the `n` input
+    particles, assigning each particle to a bucket based on the closest index
     particle, and then checking for close pairs in buckets such that they can
     be close enough.
 
     If we need something more involved, we can try
-    [this paper](http://dimitris-agrafiotis.com/Papers/ci034150f.pdf).
+    [this paper](http://pubs.acs.org/doi/abs/10.1021/ci034150f)
  */
 template <class LowerBound, class UpperBound>
 class MetricClosePairsFinder : public core::ClosePairsFinder {

@@ -5,16 +5,6 @@
 import IMP.domino
 import IMP.core
 
-
-# Use faster built-in 'set' type on newer Pythons; fall back to the older
-# 'sets' module on older Pythons
-try:
-    x = set
-    del x
-except NameError:
-    import sets
-    set = sets.Set
-
 m = IMP.kernel.Model()
 m.set_log_level(IMP.base.SILENT)
 ds = [IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m))
@@ -48,7 +38,7 @@ bb = IMP.algebra.BoundingBox2D(IMP.algebra.Vector2D(0, 0),
 covers = []
 for i in range(0, 6):
     cur = IMP.algebra.get_grid_interior_cover_by_spacing(bb, 4.0 / 2 ** i)
-    print cur
+    print(cur)
     covers.append([IMP.algebra.Vector3D(x[0], x[1], 0) for x in cur])
 
 
@@ -74,7 +64,7 @@ def setup(cover, scale):
 subset = IMP.domino.Subset(ds)
 ac = sampler.get_sample_assignments(subset)
 
-print ac
+print(ac)
 
 
 def get_mapping(cover0, cover1):
@@ -105,9 +95,9 @@ def display_mapping(index, cover0, cover1, mapping):
 
 for curi in range(1, len(covers)):
     scale = 4.0 / 2 ** curi
-    print scale
+    print(scale)
     mapping = get_mapping(covers[curi - 1], covers[curi])
-    print mapping
+    print(mapping)
     display_mapping(curi - 1, covers[curi - 1], covers[curi], mapping)
     (sampler, lf, pst) = setup(covers[curi], scale)
     lac = ac
@@ -118,10 +108,10 @@ for curi in range(1, len(covers)):
             allowed = mapping[s]
             lf.set_allowed_states(p, allowed)
         ccac = sampler.get_sample_assignments(subset)
-        print a, ccac
+        print(a, ccac)
         cac = cac + ccac
     ac = list(set(cac))
-    print "for scale", scale, "got", ac
+    print("for scale", scale, "got", ac)
     sw = IMP.display.PymolWriter("solutions." + str(curi) + ".pym")
     for i, a in enumerate(ac):
         IMP.domino.load_particle_states(subset, a, pst)

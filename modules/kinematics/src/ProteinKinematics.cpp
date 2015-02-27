@@ -2,7 +2,7 @@
  * \file ProteinKinematics
  * \brief functionality for defining a kinematic forest for proteins
  *
- * Copyright 2007-2014 IMP Inventors. All rights reserved.
+ * Copyright 2007-2015 IMP Inventors. All rights reserved.
  *  \authors Dina Schneidman, Barak Raveh
  *
  */
@@ -23,25 +23,37 @@ ProteinKinematics::ProteinKinematics(IMP::atom::Hierarchy mhd,
       atom_particles_(IMP::atom::get_by_type(mhd_, IMP::atom::ATOM_TYPE)),
       graph_(atom_particles_.size()) {
   init(IMP::atom::get_by_type(mhd, IMP::atom::RESIDUE_TYPE),
-       std::vector<IMP::atom::Atoms>(), flexible_backbone,
+       std::vector<IMP::atom::Atoms>(),
+       IMP::atom::Atoms(),
+       flexible_backbone,
        flexible_side_chains);
 }
 
-ProteinKinematics::ProteinKinematics(
-    IMP::atom::Hierarchy mhd, const IMP::atom::Residues& flexible_residues,
-    const std::vector<IMP::atom::Atoms>& dihedral_angles,
-    bool flexible_backbone, bool flexible_side_chains)
-    : mhd_(mhd),
-      atom_particles_(IMP::atom::get_by_type(mhd_, IMP::atom::ATOM_TYPE)),
-      graph_(atom_particles_.size()) {
-  init(flexible_residues, dihedral_angles, flexible_backbone,
+
+ProteinKinematics::ProteinKinematics
+(     IMP::atom::Hierarchy mhd,
+      const IMP::atom::Residues& flexible_residues,
+      const std::vector<IMP::atom::Atoms>& dihedral_angles,
+      IMP::atom::Atoms open_loop_bond_atoms,
+      bool flexible_backbone,
+      bool flexible_side_chains )
+  : mhd_(mhd),
+    atom_particles_(IMP::atom::get_by_type(mhd_, IMP::atom::ATOM_TYPE)),
+    graph_(atom_particles_.size())
+{
+  init(flexible_residues,
+       dihedral_angles, open_loop_bond_atoms,
+       flexible_backbone,
        flexible_side_chains);
 }
 
-void ProteinKinematics::init(
-    const IMP::atom::Residues& flexible_residues,
-    const std::vector<IMP::atom::Atoms>& dihedral_angles,
-    bool flexible_backbone, bool flexible_side_chains) {
+void ProteinKinematics::init
+( const IMP::atom::Residues& flexible_residues,
+  const std::vector<IMP::atom::Atoms>& dihedral_angles,
+  IMP::atom::Atoms open_loop_bond_atoms,
+  bool flexible_backbone,
+  bool flexible_side_chains)
+{
   kf_ = new IMP::kinematics::KinematicForest(mhd_.get_model());
 
   // 1.
@@ -75,6 +87,8 @@ void ProteinKinematics::init(
     mark_rotatable_angles(psi_angles);
   }
 
+  open_loop(open_loop_bond_atoms);
+
   std::vector<IMP::atom::Atoms> chi1_angles, chi2_angles, chi3_angles,
       chi4_angles;
   std::vector<IMP::atom::Residue> chi1_residues, chi2_residues, chi3_residues,
@@ -83,8 +97,15 @@ void ProteinKinematics::init(
     // TODO
   }
 
-  // 3.
+  // 3. build rbs and sort them by dfs
   build_rigid_bodies();
+
+  add_edges_to_rb_graph(dihedral_angles);
+  add_edges_to_rb_graph(phi_angles);
+  add_edges_to_rb_graph(psi_angles);
+  rb_order_.resize(rbs_.size());
+  MyDFSVisitor vis(rb_order_);
+  boost::depth_first_search(rb_graph_, visitor(vis).root_vertex(largest_rb_));
 
   // 4. add joints to kf
   add_dihedral_joints(dihedral_angles);
@@ -100,6 +121,21 @@ void ProteinKinematics::init(
   }
 
   std::cerr << joints_.size() << " joints were constructed " << std::endl;
+}
+
+void ProteinKinematics::add_edges_to_rb_graph(const std::vector<IMP::atom::Atoms>& dihedral_angles) {
+  for (unsigned int i = 0; i < dihedral_angles.size(); i++) {
+    IMP::kernel::Particle* p1 = dihedral_angles[i][1].get_particle();
+    IMP::kernel::Particle* p2 = dihedral_angles[i][2].get_particle();
+    if (IMP::core::RigidMember::get_is_setup(p1) &&
+        IMP::core::RigidMember::get_is_setup(p2)) {
+      IMP::core::RigidBody rb1 = IMP::core::RigidMember(p1).get_rigid_body();
+      IMP::core::RigidBody rb2 = IMP::core::RigidMember(p2).get_rigid_body();
+      int rb_index1 = rb_particle_index_to_node_map_[rb1->get_index()];
+      int rb_index2 = rb_particle_index_to_node_map_[rb2->get_index()];
+      boost::add_edge(rb_index1, rb_index2, rb_graph_);
+    }
+  }
 }
 
 void ProteinKinematics::build_topology_graph() {
@@ -154,6 +190,30 @@ void ProteinKinematics::mark_rotatable_angles(
   }
 }
 
+void ProteinKinematics::open_loop(IMP::atom::Atoms open_loop_bond_atoms) {
+  if(open_loop_bond_atoms.size()==2) {
+    // get the ParticleIndex and map it to graph node
+    IMP::ParticleIndex p1 = open_loop_bond_atoms[0].get_particle_index();
+    IMP::ParticleIndex p2 = open_loop_bond_atoms[1].get_particle_index();
+    int atom_index1 = 0;
+    int atom_index2 = 0;
+    if(particle_index_to_node_map_.find(p1) !=
+       particle_index_to_node_map_.end()) {
+      atom_index1 = particle_index_to_node_map_[p1];
+    } else {
+      IMP_THROW("cannot find node index for angle", IMP::base::ValueException);
+    }
+    if(particle_index_to_node_map_.find(p2) !=
+       particle_index_to_node_map_.end()) {
+      atom_index2 = particle_index_to_node_map_[p2];
+    } else {
+      IMP_THROW("cannot find node index for angle", IMP::base::ValueException);
+    }
+
+    boost::remove_edge(atom_index1, atom_index2, graph_);
+  }
+}
+
 void ProteinKinematics::build_rigid_bodies() {
   // compute connected components that represent rigid parts
   std::vector<int> component(boost::num_vertices(graph_));
@@ -168,6 +228,8 @@ void ProteinKinematics::build_rigid_bodies() {
 
   // build the rigid bodies
   IMP::kernel::Model* m = mhd_->get_model();
+  largest_rb_ = 0;
+  unsigned int largest_rb_size = 0;
   for (unsigned int i = 0; i < rigid_bodies_atoms.size(); i++) {
     IMP::kernel::Particle* rbp = new IMP::kernel::Particle(m);
     std::string name = "rb_name";  // TODO: add rb id
@@ -182,6 +244,12 @@ void ProteinKinematics::build_rigid_bodies() {
         IMP::core::RigidBody::setup_particle(rbp, core::XYZs(all));
     rbd.set_coordinates_are_optimized(true);
     rbs_.push_back(rbd);
+    rb_particle_index_to_node_map_[rbp->get_index()] = i;
+    // update largest rb
+    if(rigid_bodies_atoms[i].size() > largest_rb_size) {
+      largest_rb_size = rigid_bodies_atoms[i].size();
+      largest_rb_ = i;
+    }
   }
   std::cerr << rbs_.size() << " rigid bodies were created " << std::endl;
 }
@@ -215,12 +283,24 @@ void ProteinKinematics::add_dihedral_joint(const IMP::atom::Residue r,
       IMP::core::RigidMember::get_is_setup(p2)) {
     IMP::core::RigidBody rb1 = IMP::core::RigidMember(p1).get_rigid_body();
     IMP::core::RigidBody rb2 = IMP::core::RigidMember(p2).get_rigid_body();
+    int rb_index1 = rb_particle_index_to_node_map_[rb1->get_index()];
+    int rb_index2 = rb_particle_index_to_node_map_[rb2->get_index()];
 
-    IMP_NEW(IMP::kinematics::DihedralAngleRevoluteJoint, joint,
-            (rb1, rb2, IMP::core::XYZ(atoms[0].get_particle()),
-             IMP::core::XYZ(atoms[1].get_particle()),
-             IMP::core::XYZ(atoms[2].get_particle()),
-             IMP::core::XYZ(atoms[3].get_particle())));
+    IMP::base::Pointer<DihedralAngleRevoluteJoint> joint;
+
+    if(rb_order_[rb_index1] < rb_order_[rb_index2]) {
+      joint = new DihedralAngleRevoluteJoint(rb1, rb2,
+                                             IMP::core::XYZ(atoms[0].get_particle()),
+                                             IMP::core::XYZ(atoms[1].get_particle()),
+                                             IMP::core::XYZ(atoms[2].get_particle()),
+                                             IMP::core::XYZ(atoms[3].get_particle()));
+    } else {
+      joint = new DihedralAngleRevoluteJoint(rb2, rb1,
+                                             IMP::core::XYZ(atoms[3].get_particle()),
+                                             IMP::core::XYZ(atoms[2].get_particle()),
+                                             IMP::core::XYZ(atoms[1].get_particle()),
+                                             IMP::core::XYZ(atoms[0].get_particle()));
+    }
 
     joints_.push_back(joint);
     kf_->add_edge(joint);

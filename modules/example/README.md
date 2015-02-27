@@ -9,7 +9,9 @@ The overview section of the module page can contain any
 [doxygen](http://www.stack.nl/~dimitri/doxygen/manual/docblocks.html)
 markup as well as references to IMP classes such as IMP::Model.
 
-See also the [example application](@ref impexample_app).
+# imp_example_app {#imp_example_app_bin}
+
+This is an example application (command line tool).
 
 # Info
 

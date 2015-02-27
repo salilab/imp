@@ -1,8 +1,9 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
 import IMP.core
-import StringIO
+import io
 
 
 class Tests(IMP.test.TestCase):
@@ -20,14 +21,14 @@ class Tests(IMP.test.TestCase):
         # IMP.show_graphviz(jt)
         mbt = IMP.domino.get_balanced_merge_tree(jt)
         # IMP.show_graphviz(mbt)
-        print mbt.get_graphviz_string()
-        buf = StringIO.StringIO()
+        print(mbt.get_graphviz_string())
+        buf = io.BytesIO()
         IMP.domino.write_merge_tree(mbt, ps, buf)
-        print "graph begin"
-        print buf.getvalue()
-        print "graph end"
+        print("graph begin")
+        print(buf.getvalue())
+        print("graph end")
         mbt2 = IMP.domino.read_merge_tree(
-            StringIO.StringIO(buf.getvalue()),
+            io.BytesIO(buf.getvalue()),
             ps)
         # IMP.show_graphviz(mbt)
         # IMP.show_graphviz(mbt2)

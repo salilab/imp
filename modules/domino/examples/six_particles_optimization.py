@@ -29,7 +29,7 @@ def create_scoring(m, ps):
     # we are not interested in conformations which don't fit the distances
     # exactly, but using 0 is tricky
     dr.set_maximum_score(.01)
-    print m.get_root_restraint_set()
+    print(m.get_root_restraint_set())
     return [pr, dr]
 
 
@@ -51,7 +51,7 @@ def create_discrete_states(ps):
           IMP.algebra.Vector3D(2, 1, 0),
           IMP.algebra.Vector3D(2, 0, 0)]
     vs = vs + [-v for v in vs]
-    print len(vs), "states for each particle"
+    print(len(vs), "states for each particle")
     states = IMP.domino.XYZStates(vs)
     # special case ps[0] to remove a sliding degree of freedom
     # all other particles are given the same set of states
@@ -88,25 +88,25 @@ m = IMP.kernel.Model()
 # don't print information during Model.evaluate
 m.set_log_level(IMP.base.SILENT)
 
-print "creating representation"
+print("creating representation")
 ps = create_representation(m)
-print "creating discrete states"
+print("creating discrete states")
 pst = create_discrete_states(ps)
-print "creating score function"
+print("creating score function")
 rs = create_scoring(m, ps)
-print "creating sampler"
+print("creating sampler")
 s = create_sampler(m, rs, pst)
 
-print "sampling"
+print("sampling")
 # get an IMP.ConfigurationSet with the sampled states. If there are very
 # many, it might be better to use s.get_sample_states() and then
 # IMP.domino.load_particle_states() to handle the states as that takes
 # much less memory, and time.
 cs = s.create_sample()
 
-print "found ", cs.get_number_of_configurations(), "solutions"
+print("found ", cs.get_number_of_configurations(), "solutions")
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
-    print "solution number:", i, " is:", m.evaluate(False)
+    print("solution number:", i, " is:", m.evaluate(False))
     for p in ps:
-        print IMP.core.XYZ(p).get_x(), IMP.core.XYZ(p).get_y()
+        print(IMP.core.XYZ(p).get_x(), IMP.core.XYZ(p).get_y())

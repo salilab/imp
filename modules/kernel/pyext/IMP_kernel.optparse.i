@@ -35,7 +35,7 @@ class OptionParser(optparse.OptionParser):
         if self._use_boost_parser:
             try:
                 optparse.OptionParser._process_long_opt(self, rargs, values)
-            except optparse.BadOptionError, err:
+            except optparse.BadOptionError as err:
                 if not hasattr(err, 'opt_str') \
                    and err.msg.startswith('no such option:'):
                     self.largs.append(err.msg[16:])
@@ -47,7 +47,7 @@ class OptionParser(optparse.OptionParser):
         if self._use_boost_parser:
             try:
                 optparse.OptionParser._process_short_opts(self, rargs, values)
-            except optparse.BadOptionError, err:
+            except optparse.BadOptionError as err:
                 self.largs.append(err.opt_str)
         else:
             optparse.OptionParser._process_short_opts(self, rargs, values)

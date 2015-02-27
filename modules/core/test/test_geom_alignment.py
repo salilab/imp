@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -14,9 +15,9 @@ class Tests(IMP.test.TestCase):
         for i in range(0, 20):
             vs.append(IMP.algebra.get_random_vector_in(
                 IMP.algebra.get_unit_bounding_box_3d()))
-            print vs[-1]
+            print(vs[-1])
             vsr.append(tr.get_transformed(vs[-1]))
-            print vsr[-1]
+            print(vsr[-1])
         return (vs, vsr)
 
     def _convert_to_xyzs(self, m, vs):
@@ -42,9 +43,9 @@ class Tests(IMP.test.TestCase):
         #tr0= IMP.algebra.get_transformation_aligning_first_to_second(vs, vsr)
         # print "tr", tr
         tr1 = IMP.core.get_transformation_aligning_first_to_second(ds, dsr)
-        print "tr1", tr1
+        print("tr1", tr1)
         tr2 = IMP.core.get_transformation_aligning_first_to_second(vs, dsr)
-        print "tr2", tr2
+        print("tr2", tr2)
         self.assertAlmostEqual(IMP.algebra.get_distance(tr.get_rotation(), r),
                                0, delta=.1)
 

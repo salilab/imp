@@ -47,7 +47,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(0)
         self.m = IMP.kernel.Model()
         data = open(self.get_input_file_name('lyzexp_gpir.dat')).readlines()
-        data = [map(float, d.split()) for d in data]
+        data = [list(map(float, d.split())) for d in data]
         self.q = [[i[0]] for i in data]
         self.I = [i[1] for i in data]
         self.err = [i[2] for i in data]
@@ -93,7 +93,7 @@ class Tests(IMP.test.TestCase):
                      (self.lam, 0.1, 10),
                      (self.sig, 0.1, 10)]
         # number of shuffled values
-        for i in xrange(randint(0, 5)):
+        for i in range(randint(0, 5)):
             # which particle
             p, imin, imax = particles.pop(randint(0, len(particles) - 1))
             p.set_nuisance(uniform(imin, imax))
@@ -530,7 +530,7 @@ class Tests(IMP.test.TestCase):
         # self.shuffle_particle_values()
         # gen list of all possible combinations
         combinations = [[]]
-        for np in xrange(len(self.particles)):
+        for np in range(len(self.particles)):
             tmp = [[True] + i[:] for i in combinations]
             tmp += [[False] + i[:] for i in combinations]
             combinations = [i[:] for i in tmp]
@@ -542,7 +542,7 @@ class Tests(IMP.test.TestCase):
                 p.set_nuisance_is_optimized(c)
                 if c:
                     np += 1
-            for rep in xrange(3):
+            for rep in range(3):
                 self.shuffle_particle_values()
                 Hessian = array(self.gpr.get_hessian(False))
                 if np != 0:
@@ -565,8 +565,8 @@ class Tests(IMP.test.TestCase):
                 #        particlenum += 1
                 #    print numrow,particlenum,self.particles[particlenum].get_nuisance()
                 #    raise
-                for i in xrange(np):
-                    for j in xrange(i, np):
+                for i in range(np):
+                    for j in range(i, np):
                         self.assertAlmostEqual(Hessian[i, j], Hessian[j, i],
                                                delta=1e-7)
 

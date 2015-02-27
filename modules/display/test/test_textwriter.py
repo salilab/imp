@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -11,18 +12,18 @@ class DummyWriter(IMP.display.TextWriter):
         IMP.display.TextWriter.__init__(self, name)
 
     def do_open(self):
-        print "opening"
-        print >> self.get_stream(), "open"
+        print("opening")
+        print("open", file=self.get_stream())
 
     def do_close(self):
-        print "closing"
-        print >> self.get_stream(), "close"
+        print("closing")
+        print("close", file=self.get_stream())
 
     def poke(self):
-        print >> self.get_stream(), "hi"
+        print("hi", file=self.get_stream())
 
     def close(self):
-        print "bye"
+        print("bye")
         self.do_close()
 
 
@@ -43,7 +44,7 @@ class Tests(IMP.test.TestCase):
         # to not bother about working out how to make sure that the director
         # objects are all cleanup up properly
         w.set_frame(3)
-        print "deleted"
+        print("deleted")
         c0 = open(self.get_tmp_file_name("test.0.dum"), "r").read()
         c1 = open(self.get_tmp_file_name("test.1.dum"), "r").read()
         c2 = open(self.get_tmp_file_name("test.2.dum"), "r").read()
@@ -55,7 +56,7 @@ class Tests(IMP.test.TestCase):
             IOError,
             self._testopen,
             self.get_tmp_file_name("test.%1%.dum"))
-        print "done"
+        print("done")
 
 if __name__ == '__main__':
     IMP.test.main()

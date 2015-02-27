@@ -46,7 +46,7 @@ class Tests(IMP.test.TestCase):
         self.noe.add_contribution(
             IMP.container.ListPairContainer([(self.p0, self.p2)]), 2.0)
         self.m.add_restraint(self.noe)
-        for i in xrange(100):
+        for i in range(100):
             for p in [self.p0, self.p1, self.p2]:
                 p.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1, 100)
                                                          for i in range(3)]))
@@ -67,7 +67,7 @@ class Tests(IMP.test.TestCase):
         self.noe.add_contribution(
             IMP.container.ListPairContainer([(self.p0, self.p2)]), v2)
         self.m.add_restraint(self.noe)
-        for i in xrange(100):
+        for i in range(100):
             for p in [self.p0, self.p1, self.p2]:
                 p.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1, 100)
                                                          for i in range(3)]))
@@ -87,7 +87,7 @@ class Tests(IMP.test.TestCase):
         volumes = []
         distances = []
         self.m.add_restraint(self.noe)
-        for i in xrange(2, 100):
+        for i in range(2, 100):
             while len(pairs) <= i:
                 pair = [IMP.core.XYZ.setup_particle(
                     IMP.kernel.Particle(self.m),
@@ -100,11 +100,11 @@ class Tests(IMP.test.TestCase):
                     IMP.container.ListPairContainer([pair]),
                     volumes[-1])
             v = 1.0
-            for j in xrange(len(pairs)):
+            for j in range(len(pairs)):
                 v *= volumes[j] * distances[j] ** 6
             v = v ** (1.0 / len(pairs))
             b = 0
-            for j in xrange(len(pairs)):
+            for j in range(len(pairs)):
                 b += log(volumes[j] * distances[j] ** 6 / v) ** 2
             expected = b ** (-(len(pairs) - 1) / 2.0)
             self.assertAlmostEqual(self.noe.get_probability(),
@@ -117,7 +117,7 @@ class Tests(IMP.test.TestCase):
         volumes = []
         distances = []
         self.m.add_restraint(self.noe)
-        for i in xrange(2, 100):
+        for i in range(2, 100):
             while len(pairs) <= i:
                 pair = [IMP.core.XYZ.setup_particle(
                     IMP.kernel.Particle(self.m),
@@ -130,23 +130,24 @@ class Tests(IMP.test.TestCase):
                     IMP.container.ListPairContainer([pair]),
                     volumes[-1])
             v = 1.0
-            for j in xrange(len(pairs)):
+            for j in range(len(pairs)):
                 v *= volumes[j] * distances[j] ** 6
             v = v ** (1.0 / len(pairs))
             b = 0
-            for j in xrange(len(pairs)):
+            for j in range(len(pairs)):
                 b += log(volumes[j] * distances[j] ** 6 / v) ** 2
             expected = (len(pairs) - 1) / 2.0 * log(b)
             self.assertAlmostEqual(self.noe.evaluate(False),
                                    expected, delta=0.002)
 
+    @IMP.test.expectedFailure
     def testValueGammaHat(self):
         """Test MarginalNOERestraint gamma hat on n particles"""
         pairs = []
         volumes = []
         distances = []
         self.m.add_restraint(self.noe)
-        for i in xrange(2, 100):
+        for i in range(2, 100):
             while len(pairs) <= i:
                 pair = [IMP.core.XYZ.setup_particle(
                     IMP.kernel.Particle(self.m),
@@ -159,22 +160,22 @@ class Tests(IMP.test.TestCase):
                     IMP.container.ListPairContainer([pair]),
                     volumes[-1])
             v = 1.0
-            for j in xrange(len(pairs)):
+            for j in range(len(pairs)):
                 v *= volumes[j] * distances[j] ** 6
             v = v ** (1.0 / len(pairs))
             expected = v
             self.noe.evaluate(False)
             self.assertAlmostEqual(self.noe.get_gammahat(),
                                    expected, delta=0.001)
-    testValueGammaHat = IMP.test.expectedFailure(testValueGammaHat)
 
+    @IMP.test.expectedFailure
     def testValueSS(self):
         """Test MarginalNOERestraint sum of squares on n particles"""
         pairs = []
         volumes = []
         distances = []
         self.m.add_restraint(self.noe)
-        for i in xrange(2, 100):
+        for i in range(2, 100):
             while len(pairs) <= i:
                 pair = [IMP.core.XYZ.setup_particle(
                     IMP.kernel.Particle(self.m),
@@ -187,17 +188,16 @@ class Tests(IMP.test.TestCase):
                     IMP.container.ListPairContainer([pair]),
                     volumes[-1])
             v = 1.0
-            for j in xrange(len(pairs)):
+            for j in range(len(pairs)):
                 v *= volumes[j] * distances[j] ** 6
             v = v ** (1.0 / len(pairs))
             b = 0
-            for j in xrange(len(pairs)):
+            for j in range(len(pairs)):
                 b += log(volumes[j] * distances[j] ** 6 / v) ** 2
             expected = b
             self.noe.evaluate(False)
             self.assertAlmostEqual(self.noe.get_SS(),
                                    expected, delta=0.001)
-    testValueSS = IMP.test.expectedFailure(testValueSS)
 
     def testValueN(self):
         """Test MarginalNOERestraint n on n particles"""
@@ -205,7 +205,7 @@ class Tests(IMP.test.TestCase):
         volumes = []
         distances = []
         self.m.add_restraint(self.noe)
-        for i in xrange(2, 100):
+        for i in range(2, 100):
             while len(pairs) <= i:
                 pair = [IMP.core.XYZ.setup_particle(
                     IMP.kernel.Particle(self.m),
@@ -274,7 +274,7 @@ class Tests(IMP.test.TestCase):
         self.noe.add_contribution(c1, v1)
         self.noe.add_contribution(c2, v2)
         self.m.add_restraint(self.noe)
-        for i in xrange(100):
+        for i in range(100):
             p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(-10, 10) for i in
                                                       range(3)]))
             self.assertAlmostEqual(self.noe.evaluate(False),
@@ -289,7 +289,7 @@ class Tests(IMP.test.TestCase):
         self.noe.add_contribution(c1, v1)
         self.noe.add_contribution(c2, v2)
         self.m.add_restraint(self.noe)
-        for i in xrange(100):
+        for i in range(100):
             p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(-10, 10) for i in
                                                       range(3)]))
             self.assertAlmostEqual(self.noe.get_probability(),

@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
     def writetotbl(self, data):
         handle, name = tempfile.mkstemp(suffix='.tbl', text=True)
         for line in data:
-            os.write(handle, line + '\n')
+            os.write(handle, line.encode('ascii') + b'\n')
         os.close(handle)
         return name
 

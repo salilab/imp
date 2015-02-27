@@ -95,8 +95,8 @@ cs = domino_smp.create_sample()
 
 # ANALYSE
 # 4. report solutions
-print "Found ", cs.get_number_of_configurations(), "solutions"
+print("Found ", cs.get_number_of_configurations(), "solutions")
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
     # print the configuration:
-    print "solution number:", i, " scored:", m.evaluate(False)
+    print("solution number:", i, " scored:", m.evaluate(False))

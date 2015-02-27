@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 
@@ -22,7 +23,7 @@ class Tests(IMP.test.TestCase):
         """Test that sets can be printed"""
         (m, rs, r0, r1, r2) = self._make_stuff()
         self.assertEqual(m.evaluate(False), 2)
-        print rs
+        print(rs)
 
     def test_restraints(self):
         """Check access to RestraintSet's restraints"""
@@ -58,8 +59,8 @@ class Tests(IMP.test.TestCase):
         (m, rs, r0, r1, r2) = self._make_stuff()
         m.add_restraint(rs)
         m.remove_restraint(rs)
-        print "print removed", r1.evaluate(False)
+        print("print removed", r1.evaluate(False))
         del rs
-        print "destroyed", r1.evaluate(False)
+        print("destroyed", r1.evaluate(False))
 if __name__ == '__main__':
     IMP.test.main()

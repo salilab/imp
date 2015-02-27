@@ -44,6 +44,7 @@ def generate_doxyfile(
         doxygen = doxygen.replace("@RECURSIVE@", "NO")
         doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/tutorial/")
         doxygen = doxygen.replace("@LAYOUT_FILE@", "")
+        doxygen = doxygen.replace("@TREEVIEW@", "YES")
         doxygen = doxygen.replace("@GENERATE_TAGFILE@", "")
         doxygen = doxygen.replace(
             "@WARNINGS@",
@@ -60,6 +61,7 @@ def generate_doxyfile(
         doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/html/")
         doxygen = doxygen.replace("@LAYOUT_FILE@",
                                   "%s/doc/doxygen/main_layout.xml" % source)
+        doxygen = doxygen.replace("@TREEVIEW@", "NO")
         doxygen = doxygen.replace("@GENERATE_TAGFILE@", "doxygen/tags.html")
         doxygen = doxygen.replace("@WARNINGS@", "doxygen/warnings.txt")
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
@@ -96,33 +98,30 @@ def generate_doxyfile(
         inputsh.append(os.path.join("lib", "IMP", m))
         if os.path.exists(doc):
             inputsh.append(doc + "/")
-    for m, p in tools.get_applications(source):
-        doc = os.path.join(p, "doc")
-        if os.path.exists(doc):
-            inputsh.append(doc + "/")
     if not tutorial:
         doxygen = doxygen.replace("@INPUT_PATH@", " ".join(inputsh))
     open(target, "w").write(doxygen)
 
-# generate the pages that list biological systems and applications
-
 
 def generate_overview_pages(source):
-    name = os.path.join("doxygen", "generated", "applications.dox")
+    name = os.path.join("doxygen", "generated", "cmdline_tools.dox")
     contents = []
     contents.append("/** ")
-    contents.append("\\page applications All IMP Applications")
+    contents.append("\\page cmdline_tools All IMP command line tools")
     contents.append("""
-IMP provides a number of applications (command line tools).
-These are listed below:""")
-    for bs, g in tools.get_applications(source):
-        contents.append("- \subpage imp%s \"IMP.%s\"" % (bs, bs))
-        p = pickle.load(open(os.path.join("data", "build_info",
-                                          "IMP_%s.pck" % bs)))
-        apps = sorted([[k]+list(v) for k,v in p.iteritems() if v],
-                      key=lambda x:x[3])
-        for app in apps:
-            contents.append("  - [%s](\\ref %s): %s" % (app[0], app[1], app[2]))
+IMP modules provide a number of command line tools.
+These are listed below under their parent module:""")
+    for bs, g in tools.get_modules(source):
+        if tools.get_module_info(bs, '')['ok']:
+            p = pickle.load(open(os.path.join("data", "build_info",
+                                              "IMP_%s.pck" % bs)))
+            if len(p) > 0:
+                contents.append("- IMP::%s" % bs)
+            apps = sorted([[k]+list(v) for k,v in p.iteritems() if v],
+                          key=lambda x:x[3])
+            for app in apps:
+                contents.append("  - [%s](\\ref %s): %s" % (app[0], app[1],
+                                                            app[2]))
     contents.append("""
 See also the [command line tools provided by RMF](http://integrativemodeling.org/rmf/nightly/doc/executables.html).""")
     contents.append("*/")

@@ -64,10 +64,10 @@ def _show_histogram_3d(h, vmin, vmax):
             vmin = minmax[0]
         if not vmax:
             vmax = minmax[1]
-    print vmin, vmax
+    print(vmin, vmax)
     if not IMP.display.PivyWriter:
         import sys
-        print >> sys.stderr, "No pivy found"
+        sys.stderr.write("No pivy found\n")
         return
     w = IMP.display.PivyWriter()
     for idx in cg.get_all_indexes():

@@ -1,7 +1,7 @@
 /**
  *  \file connolly_surface.cpp     \brief Generate surface for a set of atoms
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,12 +13,12 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-void write_connolly_surface(atom::Atoms as, base::TextOutput fn, float density,
-                            float probe_radius) {
+void write_connolly_surface(atom::Atoms atoms, base::TextOutput fn,
+                            float density, float probe_radius) {
 
   algebra::Sphere3Ds spheres;
-  for (unsigned int i = 0; i < as.size(); ++i) {
-    spheres.push_back(core::XYZR(as[i]).get_sphere());
+  for (unsigned int i = 0; i < atoms.size(); ++i) {
+    spheres.push_back(core::XYZR(atoms[i]).get_sphere());
   }
 
   algebra::ConnollySurfacePoints sps =

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Reflection3D.h   \brief Reflect about a plane in 3D.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -25,7 +25,7 @@ class Reflection3D : public GeometricPrimitiveD<3> {
   Reflection3D(Plane3D pl) : pl_(pl) {}
 
   Vector3D get_reflected(const Vector3D &v) const {
-    Vector3D p = pl_.get_projection(v);
+    Vector3D p = pl_.get_projected(v);
     return v + 2 * (p - v);
   }
   IMP_SHOWABLE_INLINE(Transformation3D, { out << pl_; });

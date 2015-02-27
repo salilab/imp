@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Sphere3D.h   \brief Simple 3D sphere class.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,7 +20,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
  */
 IMPALGEBRAEXPORT Sphere3D get_enclosing_sphere(const Sphere3Ds &ss);
 
-//! Return a sphere containing the listed spheres
+//! Return a sphere containing the listed vectors
 /** \see Sphere3D
     \see Vector3D
     \note This method produces tighter bounding spheres if CGAL

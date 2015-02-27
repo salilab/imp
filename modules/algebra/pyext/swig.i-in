@@ -90,6 +90,7 @@ namespace multi_array_types {
 %include "IMP_algebra.vector.i"
 %include "IMP_algebra.transformation2d.i"
 %include "IMP_algebra.transformation3d.i"
+%include "IMP_algebra.segment3d.i"
 
 /* Wrap our own classes */
 %include "IMP/algebra/VectorBaseD.h"

@@ -3,10 +3,13 @@
 
 The core of IMP is the C++/Python library, which provides all of the necessary
 components, as a set of classes and modules, to allow methods developers to
-build an integrative modeling protocol from scratch. Most users of IMP will
-use one of the higher-level interfaces described in later sections of this
-tutorial; however, we will briefly demonstrate this library here to illustrate
-the core IMP concepts that these interfaces rely on. 
+build an integrative modeling protocol from scratch.
+
+Most users of IMP will use one of the higher-level interfaces described in
+later sections of this tutorial; however, we will briefly demonstrate this
+library here to illustrate the core IMP concepts that these interfaces rely on.
+A basic understanding of IMP's core and integrative modeling is recommended,
+but not required for using later parts of the tutorial.
 
 The IMP library is designed as a set of modules. The '\ref IMP::kernel "kernel"'
 module is a small collection of classes that define the storage of information

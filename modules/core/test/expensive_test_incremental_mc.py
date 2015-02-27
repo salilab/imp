@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -38,13 +39,13 @@ class Tests(IMP.test.TestCase):
         #    g= IMP.core.XYZRGeometry(p)
         #    w.add_geometry(g);
         for i in range(0, 10):
-            print "optimizing"
+            print("optimizing")
             mc.optimize(1000)
             # w.set_frame(i+1)
             # for p in ps:
             #    g= IMP.core.XYZRGeometry(p)
             #    w.add_geometry(g);
-        print m.evaluate(False)
+        print(m.evaluate(False))
         self.assertLess(m.evaluate(False), 3)
 
     def test_incr_nbl(self):
@@ -90,7 +91,7 @@ class Tests(IMP.test.TestCase):
             # for p in ps:
             #    g= IMP.core.XYZRGeometry(p)
             #    w.add_geometry(g);
-        print m.evaluate(False)
+        print(m.evaluate(False))
         self.assert_(m.evaluate(False) < 3)
 
 

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import os
 import IMP
@@ -61,7 +62,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             self.rb, self.refiner, self.scene, 0.15)
         # check that the rmsd to the reference is low
         self.assertEqual(fs.get_number_of_solutions(), 24)
-        print "number of solutions:", fs.get_number_of_solutions()
+        print("number of solutions:", fs.get_number_of_solutions())
         best_rmsd = 999.
         for i in range(fs.get_number_of_solutions()):
             fit_t = fs.get_transformation(i)
@@ -69,7 +70,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             IMP.core.transform(self.rb, fit_t)
             rmsd = IMP.atom.get_rmsd(xyz_ref, xyz)
             # IMP.atom.write_pdb(self.mp,"fitted_"+str(i)+".pdb")
-            print "====rmsd: ", rmsd, " score: ", fs.get_score(i)
+            print("====rmsd: ", rmsd, " score: ", fs.get_score(i))
             if best_rmsd > rmsd:
                 best_rmsd = rmsd
             IMP.core.transform(self.rb, fit_t_inv)

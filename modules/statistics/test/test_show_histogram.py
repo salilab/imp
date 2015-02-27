@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import IMP
 import IMP.statistics
@@ -116,8 +117,8 @@ class Tests(IMP.test.TestCase):
             y = random.gauss(0, 10)
             # print x
             hist.add(IMP.algebra.Vector2D(x, y))
-        print hist.get_counts()
-        print hist.get_frequencies()
+        print(hist.get_counts())
+        print(hist.get_frequencies())
         self.skipTest("No x available for 2d")
 
     def test_histogram_3d(self):
@@ -130,8 +131,8 @@ class Tests(IMP.test.TestCase):
             z = random.gauss(0, 1)
             # print x
             hist.add(IMP.algebra.Vector3D(x, y, z))
-        print hist.get_counts()
-        print hist.get_frequencies()
+        print(hist.get_counts())
+        print(hist.get_frequencies())
         if not "DISPLAY" in os.environ.keys():
             self.skipTest("no DISPLAY variable found")
         IMP.statistics.show_histogram(

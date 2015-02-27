@@ -2,7 +2,7 @@
  *  \file internal/swig_helpers.h
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPBASE_INTERNAL_SWIG_HELPERS_H
@@ -463,19 +463,41 @@ struct Convert<std::string> {
   static const int converter = 10;
   template <class SwigData>
   static std::string get_cpp_object(PyObject* o, SwigData, SwigData, SwigData) {
+#if PY_VERSION_HEX>=0x03000000
+    if (!o || !PyUnicode_Check(o)) {
+      IMP_THROW("Not all objects in list have correct type.", ValueException);
+    } else {
+      PyObject *obj = PyUnicode_AsUTF8String(o);
+      if (!obj) {
+        IMP_THROW("Invalid unicode", ValueException);
+      }
+      std::string s(PyString_AsString(obj));
+      Py_DECREF(obj);
+      return s;
+    }
+#else
     if (!o || !PyString_Check(o)) {
       IMP_THROW("Not all objects in list have correct type.", ValueException);
     } else {
       return std::string(PyString_AsString(o));
     }
+#endif
   }
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData, SwigData, SwigData) {
+#if PY_VERSION_HEX>=0x03000000
+    return PyUnicode_Check(o);
+#else
     return PyString_Check(o);
+#endif
   }
   template <class SwigData>
   static PyObject* create_python_object(std::string f, SwigData, int) {
+#if PY_VERSION_HEX>=0x03000000
+    return PyUnicode_FromString(f.c_str());
+#else
     return PyString_FromString(f.c_str());
+#endif
   }
 };
 

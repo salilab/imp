@@ -1,7 +1,7 @@
 # NOTE: This file is generated from modules/core/tools/container_tempates/test.py
 # do not edit.
 
-
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -115,46 +115,46 @@ class Tests(IMP.test.TestCase):
         # write increment an int field
         # call evaluate and check that it is incremented
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        print "start"
+        print("start")
         m = IMP.kernel.Model()
-        print "hi"
+        print("hi")
         c = IMP.container.ListClassnameContainer(m)
         cs = []
         for i in range(0, 30):
             t = self.create_FUNCTIONNAME(m)
             c.add_FUNCTIONNAME(t)
             cs.append(t)
-        print "dl"
+        print("dl")
         k = IMP.IntKey("thevalue")
         f = ClassnameTestModifier(k)
-        print "apply"
+        print("apply")
         s = IMP.container.ClassnamesConstraint(f, None, c)
-        print "add"
+        print("add")
         m.add_score_state(s)
         m.update()
         for p in cs:
             self.assertTrue(FUNCTIONNAME_has_attribute(p, k))
-        print "done"
+        print("done")
 
     def test_sset(self):
         """Testing ClassnameConstraint"""
         # write increment an int field
         # call evaluate and check that it is incremented
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        print "start"
+        print("start")
         m = IMP.kernel.Model()
-        print "hi"
+        print("hi")
         t = self.create_FUNCTIONNAME(m)
-        print "dl"
+        print("dl")
         k = IMP.IntKey("thevalue")
         f = ClassnameTestModifier(k)
-        print "apply"
+        print("apply")
         s = self.create_CLASSFUNCTIONNAME_score_state(f, None, t)
         m.add_score_state(s)
-        print "add"
+        print("add")
         m.update()
         self.assertTrue(FUNCTIONNAME_has_attribute(t, k))
-        print "done"
+        print("done")
 
 if __name__ == '__main__':
     IMP.test.main()

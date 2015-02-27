@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.algebra
@@ -17,11 +18,11 @@ class Tests(IMP.test.TestCase):
         r = IMP.algebra.get_rotation_from_fixed_xyz(0.2, 0.8, -0.4)
         t = IMP.algebra.Transformation3D(
             r, IMP.algebra.Vector3D(20.0, -12.4, 18.6))
-        print "create transform"
+        print("create transform")
         tf = IMP.core.Transform(t)
         tf.set_was_used(True)
         for p in particles:
-            print "applying to " + str(p)
+            print("applying to " + str(p))
             r = tf.apply(p.get_particle())
         for i in range(0, len(particles)):
             v = particles[i].get_coordinates()

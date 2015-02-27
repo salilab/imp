@@ -31,9 +31,6 @@ IMP_SWIG_OBJECT(IMP::multifit, ProbabilisticAnchorGraph, ProbabilisticAnchorGrap
 IMP_SWIG_OBJECT(IMP::multifit, Ensemble, Ensembles);
 IMP_SWIG_OBJECT(IMP::multifit, ProteomicsEMAlignmentAtomic, ProteomicsEMAlignmentAtomics);
 
-/* Make selected classes extensible in Python */
-#IMP_SWIG_OBJECT(IMP::em, DataContainer,DataContainers);
-
 /* Wrap our own classes */
 %include "IMP/multifit/weighted_excluded_volume.h"
 %include "IMP/multifit/FittingSolutionRecord.h"

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -70,7 +71,7 @@ class Tests(IMP.test.TestCase):
         ss = pss.get_assignments((0, pss.get_number_of_assignments()))
         self.assertEqual(len(ss), ns ** (len(ps) - 2) * (ns) * (ns - 1))
         all_states = []
-        print "testing"
+        print("testing")
         for state in ss:
             # print state
             # print all_states
@@ -101,7 +102,7 @@ class Tests(IMP.test.TestCase):
         ss = pss.get_assignments((0, pss.get_number_of_assignments()))
         self.assertEqual(len(ss), ns ** (len(ps) - 2) * (ns) * (ns - 1))
         all_states = []
-        print "testing"
+        print("testing")
         for state in ss:
             # print state
             # print all_states

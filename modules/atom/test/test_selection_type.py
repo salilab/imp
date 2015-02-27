@@ -1,4 +1,5 @@
-import StringIO
+from __future__ import print_function
+import io
 import IMP
 import IMP.test
 import IMP.atom
@@ -60,8 +61,8 @@ class Tests(IMP.test.TestCase):
         h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         cterm = IMP.atom.Selection(h, terminus=IMP.atom.Selection.C)
         nterm = IMP.atom.Selection(h, terminus=IMP.atom.Selection.N)
-        print cterm.get_selected_particles()
-        print nterm.get_selected_particles()
+        print(cterm.get_selected_particles())
+        print(nterm.get_selected_particles())
         self.assertEqual(len(cterm.get_selected_particle_indexes()), 1)
         self.assertEqual(len(nterm.get_selected_particle_indexes()), 1)
         self.assertEqual(self._get_index(cterm.get_selected_particles()), 440)
@@ -185,7 +186,7 @@ class Tests(IMP.test.TestCase):
         pis = s.get_selected_particle_indexes()
         for pi in pis:
             a = IMP.atom.Atom(m, pi)
-            print a, IMP.atom.Residue(a.get_parent()).get_index()
+            print(a, IMP.atom.Residue(a.get_parent()).get_index())
         self.assertEqual(len(pis), 18)
 
     def test_disjoint_selections(self):
@@ -203,15 +204,15 @@ class Tests(IMP.test.TestCase):
         create_protein("Nup145C", 442)
 
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        print "145"
+        print("145")
         s145 = IMP.atom.Selection(hierarchy=all, molecule="Nup145C",
                                   residue_indexes=range(0, 423)).get_selected_particle_indexes()
-        print "85"
+        print("85")
         s85 = IMP.atom.Selection(
             hierarchy=all,
             molecule="Nup85").get_selected_particle_indexes()
-        print s145
-        print s85
+        print(s145)
+        print(s85)
         for s in s145:
             assert(s not in s85)
 

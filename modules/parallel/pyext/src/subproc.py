@@ -1,5 +1,6 @@
 """@namespace IMP.parallel.subproc Subprocess handling."""
 
+from __future__ import print_function
 import sys
 import subprocess
 
@@ -15,7 +16,7 @@ class _Popen4(subprocess.Popen):
         subprocess.Popen.__init__(
             self, cmd, shell=shell, stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT)
+            stderr=subprocess.STDOUT, universal_newlines=True)
 
     def require_clean_exit(self):
         """Make sure the child exited with a zero return code"""
@@ -26,21 +27,23 @@ class _Popen4(subprocess.Popen):
 if sys.platform == 'win32':
     def _run_background(cmdline, out):
         """Run a process in the background and direct its output to a file"""
-        print "%s > %s" % (cmdline, out)
+        print("%s > %s" % (cmdline, out))
         try:
             # shell isn't needed on Win32, and may not be found under wine
             # anyway
             p = subprocess.Popen(cmdline, shell=False, stdout=open(out, 'w'),
-                                 stderr=subprocess.STDOUT)
+                                 stderr=subprocess.STDOUT,
+                                 universal_newlines=True)
         # Ignore Windows "file not found" errors, so that behavior is consistent
         # between Unix and Windows
         except WindowsError as detail:
-            print("WindowsError: %s (ignored)" % detail)
+            print(("WindowsError: %s (ignored)" % detail))
 
 else:
 
     def _run_background(cmdline, out):
         """Run a process in the background and direct its output to a file"""
-        print "%s > %s" % (cmdline, out)
+        print("%s > %s" % (cmdline, out))
         subprocess.Popen(cmdline, shell=True, stdout=open(out, 'w'),
-                         stderr=subprocess.STDOUT)
+                         stderr=subprocess.STDOUT,
+                         universal_newlines=True)

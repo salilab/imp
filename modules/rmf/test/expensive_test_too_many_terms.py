@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import IMP.rmf
 import IMP.atom
@@ -31,7 +32,7 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.set_maximum_number_of_terms(rmf, 10)
             IMP.rmf.save_frame(rmf)
             num_nodes = self._get_num_nodes(rmf.get_root_node())
-            print num_nodes
+            print(num_nodes)
             self.assertEqual(num_nodes,
                              m.get_number_of_particles() + 1 + 1)
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-"""Create doxygen config files for the tutorial"""
+"""Create doxygen config files for the tutorial. List files explictly so
+   that the left pane of the generated HTML looks tidy."""
 
 import xml.dom.minidom
 import os
@@ -13,38 +14,43 @@ def parse_mainpage(fh):
     """Find all links to local pages in the tutorial main page, and
        return the doxygen page names"""
     pages = []
-    r = re.compile('\[.*\]\(([^/]*)\.html\)')
+    r = re.compile('@ref\s+(\w+)')
     for line in fh:
         m = r.search(line)
         if m:
             pages.append(m.group(1))
     return pages
 
-
-def find_pages_in_file(fname, pages, page_map):
-    """Look through the given doxygen file, and see if it matches any of
-       the given doxygen page names"""
-    r = re.compile('\\page (\w+)')
+def get_doxygen_name(fname):
+    """Get the doxygen page name from a file"""
+    if fname.endswith('.dox'):
+        r = re.compile('\\page (\w+)')
+    elif fname.endswith('.md'):
+        r = re.compile('{#([^}]+)}')
+    else:
+        return None
     for line in open(fname):
         m = r.search(line)
         if m:
-            if m.group(1) in pages:
-                page_map[m.group(1)] = fname
-            return
+            return m.group(1)
 
-
-def find_pages(topdir, pages):
+def find_pages(topdir, pages, mainpage):
     """Get the mapping from doxygen page names to actual files on disk"""
     page_map = dict.fromkeys(pages)
     for dirpath, dirnames, filenames in os.walk(topdir):
         for f in filenames:
-            if f.endswith('.dox'):
-                fullname = os.path.join(dirpath, f)
-                find_pages_in_file(fullname, pages, page_map)
+            fullname = os.path.join(dirpath, f)
+            if fullname == mainpage:
+                continue
+            dox_name = get_doxygen_name(fullname)
+            if dox_name:
+                if dox_name not in page_map:
+                    pages.append(dox_name)
+                page_map[dox_name] = fullname
     for key, val in page_map.items():
         if val is None:
             raise RuntimeError("Cannot find page %s" % key)
-    return page_map
+    return pages, page_map
 
 
 def make_doxyfile(infh, outfh, mainpage, pages, page_map):
@@ -57,6 +63,6 @@ def make_doxyfile(infh, outfh, mainpage, pages, page_map):
 ourdir = os.path.abspath(os.path.dirname(sys.argv[0]))
 mainpage = os.path.join(ourdir, 'mainpage.dox')
 pages = parse_mainpage(open(mainpage))
-page_map = find_pages(ourdir, pages)
+pages, page_map = find_pages(ourdir, pages, mainpage)
 make_doxyfile(open('doxygen/tutorial.in'),
               open('doxygen/tutorial', 'w'), mainpage, pages, page_map)

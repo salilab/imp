@@ -21,6 +21,20 @@ and score data.
  See the [RMF library](http://integrativemodeling.org/rmf/nightly/doc/)
 for more information.
 
+Several helper programs are also provided:
+
+# rmf_display {#rmf_display_bin}
+Export an RMF file to a viewer.
+`rmf_display` outputs an arbitrary
+RMF file to pymol or chimera as appropriate (based on the file name of the
+second argument). It supports hierarchies, restraints and geometry.
+
+# pdb_rmf {#pdb_rmf_bin}
+Make an RMF file from a PDB.
+
+# rmf_simplify {#rmf_simplify_bin}
+Create a simplified representation of a PDB.
+
 # Info
 
 _Author(s)_: Daniel Russel

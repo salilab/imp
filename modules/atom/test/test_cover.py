@@ -1,4 +1,5 @@
-import StringIO
+from __future__ import print_function
+import io
 import IMP
 import IMP.test
 import IMP.atom
@@ -48,7 +49,7 @@ class Tests(IMP.test.TestCase):
         s = IMP.atom.Selection(mp, residue_indexes=[26, 30])
         d = IMP.atom.create_cover(s, "my cover")
         m.update()
-        print d.get_radius()
+        print(d.get_radius())
         self._display(mp, "before", d, s)
         self._perturb(mp)
         m.update()
@@ -68,19 +69,19 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.VERBOSE)
         s = IMP.atom.Selection(mp, residue_indexes=[26, 30])
 
-        print "selected:"
+        print("selected:")
         for p in s.get_selected_particles():
-            print p.get_name(), IMP.core.XYZ(p)
-        print "onward"
+            print(p.get_name(), IMP.core.XYZ(p))
+        print("onward")
         d = IMP.atom.create_cover(s, "my cover")
         m.update()
-        print d.get_radius()
+        print(d.get_radius())
         self._display(mp, "before_rigid", d, s)
         self._perturb(mp, rb)
         m.update()
         self._display(mp, "after_rigid", d, s)
         self._check(mp, s, d)
-        print "done"
+        print("done")
         IMP.base.set_log_level(IMP.base.MEMORY)
 
 if __name__ == '__main__':

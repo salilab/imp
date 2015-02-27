@@ -3,7 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.display
 import os
-import StringIO
+import io
 
 
 class Tests(IMP.test.TestCase):

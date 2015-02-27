@@ -1,6 +1,7 @@
+from __future__ import print_function
 import IMP.kernel
 import IMP.test
-import StringIO
+import io
 
 
 class NullConstraint(IMP.kernel.Constraint):
@@ -29,7 +30,7 @@ class Tests(IMP.test.TestCase):
         """Test dependency graph"""
         m = IMP.kernel.Model("dependency graph")
         dg = IMP.kernel.get_dependency_graph(m)
-        print dir(dg)
+        print(dir(dg))
         dg.show()
 
     def test_loop_detection(self):

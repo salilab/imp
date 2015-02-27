@@ -457,6 +457,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(self.gpi.get_Omega_particle_is_optimized(1), True)
         self.assertEqual(self.gpi.get_Omega_particle_is_optimized(2), True)
 
+    @IMP.test.expectedFailure
     def testDOFSigma(self):
         """
         test the value of the degrees of freedom by changing lambda
@@ -486,7 +487,6 @@ class Tests(IMP.test.TestCase):
                     delta=0.001)
         if skipnan > 10:  # less than 10%
             self.fail("too much NANs")
-    testDOFSigma = IMP.test.expectedFailure(testDOFSigma)
 
 if __name__ == '__main__':
     IMP.test.main()

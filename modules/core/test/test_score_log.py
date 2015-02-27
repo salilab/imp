@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.test
@@ -25,7 +26,7 @@ class Tests(IMP.test.TestCase):
         l.update()
         del l
         txt = open(nm, "r").read()
-        print txt
+        print(txt)
 
 if __name__ == '__main__':
     IMP.test.main()

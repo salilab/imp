@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import traceback
 import socket
@@ -38,8 +39,8 @@ class SlaveHandler(object):
         self._master_addr = master_addr
 
     def run(self):
-        print "Connect back to master at %s:%d with ID %s" \
-              % tuple(self._master_addr)
+        print("Connect back to master at %s:%d with ID %s" \
+              % tuple(self._master_addr))
         lock = threading.Lock()
         master = MasterCommunicator(self._master_addr, lock)
         hb = _HeartBeatThread(master)

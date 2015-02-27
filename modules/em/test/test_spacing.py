@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import os
 import IMP
@@ -43,7 +44,7 @@ class Tests(IMP.test.TestCase):
             scores.append(IMP.em.compute_fitting_score(
                 IMP.core.get_leaves(self.mh), self.scene))
         for i, score in enumerate(scores):
-            print "score for spacing:", spacings[i], " is:", score
+            print("score for spacing:", spacings[i], " is:", score)
         for ind in [0, 1, 2, 4, 5, 6]:
             self.assertGreater(
                 scores[i],

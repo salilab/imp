@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -23,7 +24,7 @@ class Tests(IMP.test.TestCase):
         for p0 in lp.get_particles():
             for pr in psr:
                 self.assertNotEqual(p0, pr)
-        print "bye0"
+        print("bye0")
 
     def test_allp2(self):
         """Check that removal from a list container works and removal from model"""
@@ -39,7 +40,7 @@ class Tests(IMP.test.TestCase):
             ps.remove(p)
         for p in psr:
             m.remove_particle(p)
-        print "bye"
+        print("bye")
         # make sure cleanup goes without error
 
 

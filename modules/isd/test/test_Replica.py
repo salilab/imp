@@ -9,16 +9,6 @@ import IMP.isd.Replica
 import MockGrid
 import IMP.test
 
-# Use faster built-in 'set' type on newer Pythons; fall back to the older
-# 'sets' module on older Pythons
-try:
-    x = set
-    del x
-except NameError:
-    import sets
-    set = sets.Set
-
-
 class Tests(IMP.test.TestCase):
 
     def setUp(self):
@@ -26,8 +16,8 @@ class Tests(IMP.test.TestCase):
         random.seed()
         nreps = self.nreps = 9
         temps = self.temps = [300.0 + (600.0 - 300.0) * i / float(nreps - 1) for i in
-                              xrange(nreps)]
-        steps = self.steps = [1.0 for i in xrange(nreps)]
+                              range(nreps)]
+        steps = self.steps = [1.0 for i in range(nreps)]
         grid = self.grid = MockGrid.MockGrid(nreps, temps, steps)
         replica = self.replica = IMP.isd.Replica.ReplicaTracker(grid.nreps,
                                                                 [1 / (MockGrid.kB * t)
@@ -48,7 +38,7 @@ class Tests(IMP.test.TestCase):
         # state numbers as a function of replica
         self.replica.statenums = state = [4, 0, 5, 1, 6, 2, 7, 3, 8]
         self.assertEqual(self.replica.sort_per_state(state),
-                         range(self.replica.nreps))
+                         list(range(self.replica.nreps)))
 
     def test_sort_per_replica(self):
         """Test ReplicaTracker sort_per_replica"""
@@ -57,12 +47,12 @@ class Tests(IMP.test.TestCase):
         # state numbers as a function of replica
         self.replica.statenums = state = [4, 0, 5, 1, 6, 2, 7, 3, 8]
         self.assertEqual(self.replica.sort_per_replica(replist),
-                         range(self.replica.nreps))
+                         list(range(self.replica.nreps)))
 
     def test_sort_sanity(self):
         """Test ReplicaTracker sort sanity"""
-        testlist = range(self.replica.nreps)
-        for i in xrange(100):
+        testlist = list(range(self.replica.nreps))
+        for i in range(100):
             random.shuffle(testlist)
             self.assertEqual(testlist,
                              self.replica.sort_per_state(
@@ -74,14 +64,14 @@ class Tests(IMP.test.TestCase):
     def test_sort_errors(self):
         """Test ReplicaTracker sort methods with invalid input"""
         self.assertRaises(ValueError,
-                          self.replica.sort_per_state, range(self.nreps - 1))
+                          self.replica.sort_per_state, list(range(self.nreps - 1)))
         self.assertRaises(ValueError,
-                          self.replica.sort_per_replica, range(self.nreps - 1))
+                          self.replica.sort_per_replica, list(range(self.nreps - 1)))
 
     def test_energies(self):
         """Test ReplicaTracker get_energies()"""
-        a = range(self.nreps)
-        for i in xrange(100):
+        a = list(range(self.nreps))
+        for i in range(100):
             random.shuffle(a)
             self.grid.set_replay(a)
             self.assertEqual(self.replica.get_energies(), a)
@@ -106,37 +96,37 @@ class Tests(IMP.test.TestCase):
     def test_gen_pairs_list_gromacs_neighbors(self):
         """Test ReplicaTracker gen_pairs_list_gromacs() neighbors"""
         self.replica.nreps = 9
-        for i in xrange(100):
+        for i in range(100):
             for pair in self.replica.gen_pairs_list_gromacs(0):
                 self.assertEqual(pair[1] - pair[0], 1)
         self.replica.nreps = 10
-        for i in xrange(100):
+        for i in range(100):
             for pair in self.replica.gen_pairs_list_gromacs(0):
                 self.assertEqual(pair[1] - pair[0], 1)
         self.replica.nreps = 9
-        for i in xrange(100):
+        for i in range(100):
             for pair in self.replica.gen_pairs_list_gromacs(1):
                 self.assertEqual(pair[1] - pair[0], 1)
         self.replica.nreps = 10
-        for i in xrange(100):
+        for i in range(100):
             for pair in self.replica.gen_pairs_list_gromacs(1):
                 self.assertEqual(pair[1] - pair[0], 1)
 
     def test_gen_pairs_list_rand_neighbors(self):
         """Test ReplicaTracker gen_pairs_list_rand() neighbors"""
         self.replica.nreps = 9
-        for i in xrange(100):
+        for i in range(100):
             for pair in self.replica.gen_pairs_list_rand():
                 self.assertEqual(pair[1] - pair[0], 1)
         self.replica.nreps = 10
-        for i in xrange(100):
+        for i in range(100):
             for pair in self.replica.gen_pairs_list_rand():
                 self.assertEqual(pair[1] - pair[0], 1)
 
     def test_gen_pairs_list_rand_singletons(self):
         """Test ReplicaTracker gen_pairs_list_rand() singletons"""
         self.replica.nreps = 9
-        for i in xrange(100):
+        for i in range(100):
             plist = set()
             for p in self.replica.gen_pairs_list_rand():
                 # print p
@@ -151,7 +141,7 @@ class Tests(IMP.test.TestCase):
                 if i - 1 != 0 and i != self.nreps - 1:
                     self.assertEqual((i - 1) in singletons, False)
         self.replica.nreps = 10
-        for i in xrange(100):
+        for i in range(100):
             plist = set()
             for p in self.replica.gen_pairs_list_rand():
                 plist.add(p[0])
@@ -167,7 +157,7 @@ class Tests(IMP.test.TestCase):
     def test_gen_pairs_list_rand_uniform_distr(self):
         "Test uniformity of randomly generated replica pairs"
         pairs = {}
-        for i in xrange(100000):
+        for i in range(100000):
             for pair in self.replica.gen_pairs_list_rand():
                 if pair in pairs:
                     pairs[pair] += 1

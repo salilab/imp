@@ -32,7 +32,7 @@ class Tests(IMP.test.TestCase):
             from scipy.special import i0, i1
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.kappa.set_scale(no)
             ratio = i1(no) / i0(no)
@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
             from scipy.special import i0, i1
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.kappa.set_scale(no)
             ratio = i1(no) / i0(no)
@@ -64,7 +64,7 @@ class Tests(IMP.test.TestCase):
             from scipy.special import i0, i1
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.kappa.set_scale(no)
             self.m.evaluate(True)
@@ -108,7 +108,7 @@ class Tests(IMP.test.TestCase):
 
     def testSanityEP(self):
         "Test if vonMisesKappaJeffreys score is -log(prob)"
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.kappa.set_scale(no)
             self.assertAlmostEqual(self.J.unprotected_evaluate(self.DA),
@@ -116,7 +116,7 @@ class Tests(IMP.test.TestCase):
 
     def testSanityPE(self):
         "Test if vonMisesKappaJeffreys prob is exp(-score)"
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.kappa.set_scale(no)
             self.assertAlmostEqual(self.J.get_probability(),

@@ -17,4 +17,4 @@ rd = IMP.atom.Hierarchy(chains[0])
 # note that rbs != chains[0] as the bounding volume for rbs needs to include all of the
 # chain, but chains[0] might have a smaller sphere associated with it.
 rbs = IMP.atom.create_rigid_body(chains[0])
-print "all done"
+print("all done")

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.atom
@@ -20,7 +21,7 @@ class Tests(IMP.test.TestCase):
         # IMP.atom.show_molecular_hierarchy(p)
         # print "ligand"
         # IMP.atom.show_molecular_hierarchy(l)
-        print "rigid bodies"
+        print("rigid bodies")
         rbp = IMP.atom.create_rigid_body(p)
         rbl = IMP.atom.create_rigid_body(l)
         it = IMP.algebra.Transformation3D(
@@ -37,14 +38,14 @@ class Tests(IMP.test.TestCase):
             self.get_tmp_file_name(
                 "transformed_protein.pdb"))
 
-        print "evaluate"
+        print("evaluate")
         # IMP.base.set_log_level(IMP.base.VERBOSE)
         r = IMP.atom.ProteinLigandRestraint(p, l, 15.0)
         m.add_restraint(r)
         raw = m.evaluate(False)
         deriv = m.evaluate(True)
         self.assertAlmostEqual(raw, deriv, delta=.1 * (raw + deriv))
-        print r.evaluate(False)
+        print(r.evaluate(False))
 
     def test_score_2(self):
         """Test protein ligand restraint 2"""
@@ -63,7 +64,7 @@ class Tests(IMP.test.TestCase):
         # "+str(IMP.core.XYZ(cp.get_particle()).get_coordinates())+":Type:
         # \""+str(IMP.atom.Atom(cp.get_particle()).get_atom_type())+"\" atom
         # number: "+str(IMP.atom.Atom(cp.get_particle()).get_input_index())
-        print "evaluate"
+        print("evaluate")
         ls = IMP.atom.get_by_type(l, IMP.atom.RESIDUE_TYPE)
         self.assertEqual(len(ls), 2)
         IMP.base.set_log_level(IMP.base.SILENT)
@@ -71,8 +72,8 @@ class Tests(IMP.test.TestCase):
         m.add_restraint(r0)
         r1 = IMP.atom.ProteinLigandRestraint(p, ls[1], 6.0)
         m.add_restraint(r1)
-        print r0.evaluate(False)
-        print r1.evaluate(False)
+        print(r0.evaluate(False))
+        print(r1.evaluate(False))
         self.assertAlmostEqual(r0.evaluate(False), 8.3, delta=1)
         self.assertAlmostEqual(r1.evaluate(False), 6.5, delta=1)
 

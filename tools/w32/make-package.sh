@@ -3,7 +3,7 @@
 # Make a Win32 installer
 
 # First run the following in the binary directory to install files:
-# cmake <source_dir> DCMAKE_INSTALL_PYTHONDIR=/pylib/2.6 \
+# cmake <source_dir> -DCMAKE_INSTALL_PYTHONDIR=/pylib/2.6 \
 #       -DSWIG_PYTHON_LIBRARIES=$w32py/2.6/lib/python26.lib \
 #       -DPYTHON_INCLUDE_DIRS=$w32py/2.6/include/ \
 #       -DPYTHON_INCLUDE_PATH=$w32py/2.6/include/ \
@@ -11,7 +11,7 @@
 # make DESTDIR=`pwd`/w32-inst install
 #
 # Where $w32py is the path containing Python headers and libraries.
-# Repeat for all desired Python versions (just 2.7 for us)
+# Repeat for all desired Python versions (2.7, 3.3, and 3.4 for us)
 #
 # Then run (still in the binary directory)
 # <source_dir>/tools/w32/make-package.sh <version> <bits>
@@ -73,7 +73,7 @@ for app in ${ROOT}/bin/*; do
 done
 
 # Make Python version-specific directories for extensions (.pyd)
-PYVERS="2.6 2.7"
+PYVERS="2.6 2.7 3.3 3.4"
 for PYVER in ${PYVERS}; do
   mkdir ${ROOT}/python/python${PYVER} || exit 1
   mv ${ROOT}/pylib/${PYVER}/*.pyd ${ROOT}/python/python${PYVER} || exit 1
@@ -96,7 +96,7 @@ rm -rf ${ROOT}/bin/example \
 rm -rf `find ${ROOT} -name .svn`
 
 if [ "${BITS}" = "32" ]; then
-  PYVERS="26 27"
+  PYVERS="26 27 33 34"
   MAKENSIS="makensis"
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w32comp/windows/system
@@ -124,7 +124,7 @@ if [ "${BITS}" = "32" ]; then
      ${DLLSRC}/opencv_ffmpeg220.dll \
      ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/bin || exit 1
 else
-  PYVERS="26 27"
+  PYVERS="26 27 33 34"
   MAKENSIS="makensis -DIMP_64BIT"
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w64comp/windows/system32

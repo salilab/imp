@@ -58,6 +58,8 @@ def format_value(val):
         return '~'
     elif isinstance(val, ast.Not):
         return 'not '
+    elif isinstance(val, ast.USub):
+        return '-'
     elif isinstance(val, ast.Attribute):
         return format_value(val.value) + '.' + val.attr
     elif isinstance(val, ast.List):
@@ -104,7 +106,10 @@ def get_function_signature(m):
         args[off + i][1] = default
 
     def format_arg(arg):
-        sig = arg[0].id
+        if hasattr(arg[0], 'id'):
+            sig = arg[0].id
+        else:
+            sig = arg[0].arg
         if arg[1]:
             sig += "=" + format_value(arg[1])
         return sig
@@ -189,10 +194,11 @@ class OutputPrinter(object):
     def __init__(self):
         # The number of the next line to be written (1-based)
         self.lineno = 1
+        self.last_line_was_comment = False
 
     def output_line(self, indent, line):
         """Output a single line of text at the given indentation level."""
-        print " " * indent + line
+        print(" " * indent + line)
         self.lineno += 1
 
     def output_lines(self, indent, lines, lineno):
@@ -205,18 +211,25 @@ class OutputPrinter(object):
            to before it, but since we discard the body of each class/function,
            we stand a good chance.)"""
         pad = lineno - len(lines) - self.lineno + 1
+        # Make sure multiple comments (e.g. a namespace docstring followed
+        # by the first class docstring) have at least one blank line between
+        # them so doxygen knows to start a new paragraph
+        if self.last_line_was_comment and lines[0].startswith('#') and pad <= 0:
+            pad = 1
         if pad > 0:
             sys.stdout.write('\n' * pad)
             self.lineno += pad
         for line in lines:
             self.output_line(indent, line)
+        self.last_line_was_comment = lines[-1].startswith('#')
 
 
 def parse_file(fname):
     # Exclude non-IMP code
     if '_compat_python' in fname or 'compat_subprocess' in fname:
         return
-    # Don't try to document applications (which get symlinked into bin dir)
+    # Don't try to document command line tools
+    # (which get symlinked into bin dir)
     if '/bin/' in fname:
         return
     # Pass examples through unchanged

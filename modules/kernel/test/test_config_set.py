@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 
@@ -40,7 +41,7 @@ class Tests(IMP.test.TestCase):
         p.add_attribute(pk1, op)
 
     def _test_base(self, p, n, op):
-        print "testing"
+        print("testing")
         self.assertEqual(p.get_value(fk0), n)
         self.assertEqual(p.get_value(fk1), n + 1)
         self.assertEqual(p.get_value(ik0), 100 * n)
@@ -94,31 +95,31 @@ class Tests(IMP.test.TestCase):
 
     def _make_things(self):
         IMP.base.set_log_level(IMP.MEMORY)
-        print "starting"
+        print("starting")
         m = IMP.kernel.Model("config set")
-        print "adding"
+        print("adding")
         ps = [IMP.kernel.Particle(
             m),
             IMP.kernel.Particle(m),
             IMP.kernel.Particle(m)]
-        print "adding attribute"
+        print("adding attribute")
         self._add_attributes(ps[0], 0, ps[1])
         self._add_attributes(ps[1], 1, ps[1])
         self._add_attributes(ps[2], 2, ps[0])
-        print "removing"
+        print("removing")
         m.remove_particle(ps[2])
-        print "returning"
+        print("returning")
         return (m, ps)
 
     def test_noop(self):
         """Testing no-ops with the ConfigurationSet"""
         (m, ps) = self._make_things()
-        print "create"
+        print("create")
         cs = IMP.ConfigurationSet(m)
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[1])
         # no-op
-        print "load"
+        print("load")
         cs.load_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[1])
@@ -144,13 +145,13 @@ class Tests(IMP.test.TestCase):
         cs.save_configuration()
         self._scramble(ps[0])
         self._scramble(ps[1])
-        print "load 0"
+        print("load 0")
         cs.load_configuration(0)
-        print "testing"
+        print("testing")
         self._test_set(ps[0], 0, ps[1])
-        print "testing"
+        print("testing")
         self._test_set(ps[1], 1, ps[0])
-        print "load -1"
+        print("load -1")
         cs.load_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[1])

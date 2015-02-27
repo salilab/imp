@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Plane3D.h   \brief Simple 3D plane class.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -69,7 +69,7 @@ class Plane3D : public GeometricPrimitiveD<3> {
 //! Return the distance between a plane and a point in 3D
 /** \see Plane3D */
 inline double get_distance(const Plane3D &pln, const Vector3D &p) {
-  return (pln.get_projection(p) - p).get_magnitude();
+  return (pln.get_projected(p) - p).get_magnitude();
 }
 
 //! Return the point reflected about the plane

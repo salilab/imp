@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
-from StringIO import StringIO
+from io import BytesIO
 
 class Tests(IMP.test.TestCase):
 
@@ -15,12 +15,15 @@ class Tests(IMP.test.TestCase):
         p = IMP.algebra.Plane3D(5.0, IMP.algebra.Vector3D(0.0, 1.0, 0.0))
         self.assertGreater(IMP.algebra.get_area(p), 1e20) # infinite area
         bb = IMP.algebra.get_bounding_box(p)
+        g = IMP.algebra.get_plane_3d_geometry(p)
+        self.assertLess(IMP.algebra.get_distance(p.get_normal(),
+                                                 g.get_normal()), 1e-4)
 
     def test_plane(self):
         """Test Plane3D methods"""
         p = IMP.algebra.Plane3D(IMP.algebra.Vector3D(0., 5., 0.),
                                 IMP.algebra.Vector3D(0.0, 1.0, 0.0))
-        sio = StringIO()
+        sio = BytesIO()
         p.show(sio)
         self.assertLess(IMP.algebra.get_distance(p.get_normal(),
                                IMP.algebra.Vector3D(0., 1., 0.)), .1)

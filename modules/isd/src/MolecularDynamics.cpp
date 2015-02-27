@@ -1,7 +1,7 @@
 /**
  *  \file MolecularDynamics.cpp  \brief 1-D and 3-D MD optimizer
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -43,10 +43,8 @@ bool MolecularDynamics::get_is_simulation_particle(kernel::ParticleIndex pi)
                                               << " is both XYZ and Nuisance!");
 
   if (ret) {
-    for (unsigned int i = 0; i < 3; ++i) {
-      if (!p->has_attribute(vs_[i])) {
-        p->add_attribute(vs_[i], 0.0, false);
-      }
+    if (!atom::LinearVelocity::get_is_setup(p)) {
+      atom::LinearVelocity::setup_particle(p);
     }
   }
   if (ret2) {
@@ -92,23 +90,22 @@ void MolecularDynamics::propagate_coordinates(const kernel::ParticleIndexes &ps,
       d.set_nuisance(coord);
 
     } else {
+      core::XYZ d(p);
+      atom::LinearVelocity v(p);
+      algebra::Vector3D coord = d.get_coordinates();
+      algebra::Vector3D dcoord = d.get_derivatives();
+
+      // calculate velocity at t+(delta t/2) from that at t
+      algebra::Vector3D velocity = v.get_velocity();
+      velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
       for (unsigned j = 0; j < 3; ++j) {
-        core::XYZ d(p);
-
-        Float coord = d.get_coordinate(j);
-        Float dcoord = d.get_derivative(j);
-
-        // calculate velocity at t+(delta t/2) from that at t
-        Float velocity = get_model()->get_attribute(vs_[j], ps[i]);
-        velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
-
-        cap_velocity_component(velocity);
-        get_model()->set_attribute(vs_[j], ps[i], velocity);
-
-        // calculate position at t+(delta t) from that at t
-        coord += velocity * ts;
-        d.set_coordinate(j, coord);
+        cap_velocity_component(velocity[j]);
       }
+      v.set_velocity(velocity);
+
+      // calculate position at t+(delta t) from that at t
+      coord += velocity * ts;
+      d.set_coordinates(coord);
     }
   }
 }
@@ -129,15 +126,12 @@ void MolecularDynamics::propagate_velocities(const kernel::ParticleIndexes &ps,
 
     } else {
       core::XYZ d(p);
-      for (unsigned j = 0; j < 3; ++j) {
-        Float dcoord = d.get_derivative(j);
-
-        // calculate velocity at t+(delta t) from that at t+(delta t/2)
-        Float velocity = get_model()->get_attribute(vs_[j], ps[i]);
-        velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
-
-        get_model()->set_attribute(vs_[j], ps[i], velocity);
-      }
+      algebra::Vector3D dcoord = d.get_derivatives();
+      atom::LinearVelocity v(p);
+      // calculate velocity at t+(delta t) from that at t+(delta t/2)
+      algebra::Vector3D velocity = v.get_velocity();
+      velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
+      v.set_velocity(velocity);
     }
   }
 }
@@ -157,10 +151,8 @@ Float MolecularDynamics::get_kinetic_energy() const {
       Float vel = p->get_value(vnuis_);
       ekinetic += mass * vel * vel;
     } else {
-      Float vx = p->get_value(vs_[0]);
-      Float vy = p->get_value(vs_[1]);
-      Float vz = p->get_value(vs_[2]);
-      ekinetic += mass * (vx * vx + vy * vy + vz * vz);
+      algebra::Vector3D v = atom::LinearVelocity(p).get_velocity();
+      ekinetic += mass * (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     }
   }
   return 0.5 * ekinetic * conversion;
@@ -182,9 +174,8 @@ void MolecularDynamics::assign_velocities(Float temperature) {
     if (Nuisance::get_is_setup(p)) {
       p->set_value(vnuis_, sampler());
     } else {
-      for (int i = 0; i < 3; ++i) {
-        p->set_value(vs_[i], sampler());
-      }
+      atom::LinearVelocity(p).set_velocity(algebra::Vector3D(sampler(),
+                                                 sampler(), sampler()));
     }
   }
 
@@ -199,11 +190,11 @@ void MolecularDynamics::assign_velocities(Float temperature) {
       velocity *= rescale;
       p->set_value(vnuis_, velocity);
     } else {
-      for (int i = 0; i < 3; ++i) {
-        Float velocity = p->get_value(vs_[i]);
-        velocity *= rescale;
-        p->set_value(vs_[i], velocity);
-      }
+      atom::LinearVelocity v(p);
+
+      algebra::Vector3D velocity = v.get_velocity();
+      velocity *= rescale;
+      v.set_velocity(velocity);
     }
   }
 }

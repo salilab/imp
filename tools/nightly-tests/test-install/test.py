@@ -25,12 +25,12 @@ class IMPInstallTests(unittest.TestCase):
     def test_data_installed(self):
         """Check install of data files"""
         d = IMP.atom.get_data_path("top_heav.lib")
-        self.assert_(os.path.exists(d))
+        self.assertTrue(os.path.exists(d))
 
     def test_examples_installed(self):
         """Check install of example files"""
         d = IMP.atom.get_example_path("assess_dope.py")
-        self.assert_(os.path.exists(d))
+        self.assertTrue(os.path.exists(d))
 
     def test_applications_installed(self):
         """Check install of basic applications"""
@@ -45,19 +45,17 @@ class IMPInstallTests(unittest.TestCase):
                                      stderr=subprocess.STDOUT)
             except OSError:
                 raise OSError("Could not run %s" % app)
-            out = p.stdout.read()
-            ret = p.wait()
-            return ret, out
+            return p.wait(), p.stdout.read()
         for app in zero_apps:
             ret, out = test_app(app)
-            self.assert_(ret == 0,
-                         "Return code for %s app is %d, not 0; "
-                         "output is %s" % (app, ret, out))
+            self.assertEqual(ret, 0,
+                             "Return code for %s app is %d, not 0; "
+                             "output is %s" % (app, ret, out))
         for app in one_apps:
             ret, out = test_app(app)
-            self.assert_(ret == 1 or ret == 0,
-                         "Return code for %s app is %d, not 0 or 1; "
-                         "output is %s" % (app, ret, out))
+            self.assertTrue(ret == 1 or ret == 0,
+                            "Return code for %s app is %d, not 0 or 1; "
+                            "output is %s" % (app, ret, out))
 
 if __name__ == '__main__':
     # Note we use unittest rather than IMP.test, since the latter requires

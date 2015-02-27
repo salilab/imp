@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -14,7 +15,7 @@ class WoodsFunc(IMP.kernel.Restraint):
         self.index = IMP.FloatKey("x")
 
     def do_show(self, junk):
-        print "Woods function"
+        print("Woods function")
 
     def get_version_info(self):
         return IMP.VersionInfo("Daniel Russel", "0.5")

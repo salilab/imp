@@ -131,7 +131,7 @@ class Tests(IMP.test.TestCase):
             IMP.algebra.get_identity_rotation_3d(),
             IMP.algebra.Vector3D(0.1, 0.1, 0.1))
         # calculate correlation
-        for i in xrange(0, times):
+        for i in range(0, times):
             scores_wo_intervals.append(
                 self.ccc.calc_score(
                     self.EM_map,
@@ -152,7 +152,7 @@ class Tests(IMP.test.TestCase):
                     translation.get_transformed(xyz.get_coordinates()))
             # check that the scores are equal when they have to be due to the
             # function skipping computations
-        for i in xrange(0, times):
+        for i in range(0, times):
             if(i % interval == 0):
                 result = scores_intervals[i][0]
                 self.assertAlmostEqual(scores_wo_intervals[i],

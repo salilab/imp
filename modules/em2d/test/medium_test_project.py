@@ -67,14 +67,14 @@ class Tests(IMP.test.TestCase):
         # Read the stored projections
         stored_projection_names = em2d.create_filenames(
             n_projections, "1z5s-fast-projection", "spi")
-        for n in xrange(0, n_projections):
+        for n in range(0, n_projections):
             stored_projection_names[n] = self.get_input_file_name(
                 stored_projection_names[n])
         stored_projections = em2d.read_images(stored_projection_names, srw)
         # check
-        for n in xrange(0, n_projections):
-            for i in xrange(0, rows):
-                for j in xrange(0, cols):
+        for n in range(0, n_projections):
+            for i in range(0, rows):
+                for j in range(0, cols):
                     self.assertAlmostEqual(projections[n](i, j),
                                            stored_projections[n](i, j), delta=0.001,
                                            msg="Projections generated and stored are different")
@@ -95,7 +95,7 @@ class Tests(IMP.test.TestCase):
         # read the stored noisy images
         stored_names = []
         srw = em2d.SpiderImageReaderWriter()
-        for i in xrange(0, n_projections):
+        for i in range(0, n_projections):
             fn_subject = "1e6v-subject-%d-set-%d-%s-apix" \
                 "-%s-SNR.spi" % (i, n_projections, str(apix), str(noise_SNR))
             stored_names.append(self.get_input_file_name(fn_subject))
@@ -108,13 +108,13 @@ class Tests(IMP.test.TestCase):
         projections = em2d.get_projections(particles, Regs,
                                            rows, cols, options)
         # Add noise
-        for i in xrange(0, n_projections):
+        for i in range(0, n_projections):
             em2d.do_normalize(projections[i], True)
             em2d.add_noise(projections[i],
                            0.0, 1. / (noise_SNR ** 0.5), "gaussian", 3)
         # theoretical ccc for same images at a level of noise
         theoretical_ccc = noise_SNR / (noise_SNR + 1)
-        for n in xrange(0, n_projections):
+        for n in range(0, n_projections):
             ccc = em2d.get_cross_correlation_coefficient(projections[n],
                                                          stored_images[n])
              # allow 3% difference in cross-correlation

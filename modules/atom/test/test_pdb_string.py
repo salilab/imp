@@ -1,4 +1,5 @@
-from StringIO import StringIO
+from __future__ import print_function
+from io import BytesIO
 import IMP
 import IMP.test
 import IMP.atom
@@ -55,27 +56,29 @@ class Tests(IMP.test.TestCase):
         # break usage of PDBs containing CHARMM atom names.
         for atom in ('OT1', 'OT2', 'OXT', 'HE21', 'HE22', '1HE2',
                      '2HE2', 'foo'):
-            s = StringIO()
-            s.write('ATOM      2 %-4s ALA A   1      17.121  17.162   '
+            line = ('ATOM      2 %-4s ALA A   1      17.121  17.162   '
                     '6.197  1.00 15.60           C\n' % atom)
+            s = BytesIO()
+            s.write(line.encode('ascii'))
             s.seek(0)
 
             m = IMP.kernel.Model()
             pdb = IMP.atom.read_pdb(s, m)
 
-            s = StringIO()
+            s = BytesIO()
             IMP.atom.write_pdb(pdb, s)
             m.evaluate(False)
-            print s.getvalue()
-            self.assertEqual(s.getvalue()[15 + 12:15 + 16].strip(), atom)
+            print(s.getvalue())
+            self.assertEqual(s.getvalue()[15 + 12:15 + 16].strip(),
+                             atom.encode('ascii'))
 
     def test_read_atom(self):
         """Test that all fields are read from PDB ATOM records"""
-        s = StringIO()
+        s = BytesIO()
         # PDB is fixed-format; we should be able to read coordinates even
         # without spaces between them
-        s.write('ATOM      1  N   ALA A   5    3000.0001000.4002000.600'
-                '  2.00  6.40           N\n')
+        s.write(b'ATOM      1  N   ALA A   5    3000.0001000.4002000.600'
+                b'  2.00  6.40           N\n')
         s.seek(0)
 
         m = IMP.kernel.Model()
@@ -100,8 +103,8 @@ class Tests(IMP.test.TestCase):
 
     def test_read_short_atom_line(self):
         """Test that we can read PDB ATOM record with coordinates only"""
-        s = StringIO()
-        s.write('ATOM                          3000.0001000.4002000.600\n')
+        s = BytesIO()
+        s.write(b'ATOM                          3000.0001000.4002000.600\n')
         s.seek(0)
         m = IMP.kernel.Model()
         pdb = IMP.atom.read_pdb(s, m)

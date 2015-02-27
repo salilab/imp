@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import os
 import IMP
@@ -117,9 +118,9 @@ class Tests(IMP.test.TestCase):
         for i in range(len(self.mhs)):
             decomposed_score += cc.cross_correlation_coefficient(self.scene,
                                                                  sampled_maps[i], 0., False, self.norm_factors)
-        print "decomposed_score_norm:", decomposed_score
-        print "full score:", cc.cross_correlation_coefficient(self.scene,
-                                                              self.full_sampled_map, 0., False)
+        print("decomposed_score_norm:", decomposed_score)
+        print("full score:", cc.cross_correlation_coefficient(self.scene,
+                                                              self.full_sampled_map, 0., False))
         self.assertAlmostEqual(decomposed_score,
                                cc.cross_correlation_coefficient(self.scene,
                                                                 self.full_sampled_map, 0., False),
@@ -139,24 +140,24 @@ class Tests(IMP.test.TestCase):
         # full sampled map
         decomposed_score = 0.
         for i in range(len(self.mhs)):
-            print "iindex:", i, "mol size", len(IMP.core.get_leaves(self.mhs[i]))
+            print("iindex:", i, "mol size", len(IMP.core.get_leaves(self.mhs[i])))
             r = IMP.em.FitRestraint(
                 IMP.core.get_leaves(self.mhs[i]), self.scene,
                 self.norm_factors,
                 IMP.atom.Mass.get_mass_key(),
                 1., False)
-            print "finish set fit restraint"
+            print("finish set fit restraint")
             self.imp_model.add_restraint(r)
-            print "add rstraint"
+            print("add rstraint")
             decomposed_score += r.evaluate(False)
-            print "after evaluate"
+            print("after evaluate")
         full_r = IMP.em.FitRestraint(self.all_ps, self.scene, [0, 0],
                                      IMP.atom.Mass.get_mass_key(),
                                      1., False)
         self.imp_model.add_restraint(full_r)
         full_score = full_r.evaluate(False)
-        print "decomposed score:", decomposed_score - (len(self.mhs) - 1)
-        print "decomposed score normalized:", full_score
+        print("decomposed score:", decomposed_score - (len(self.mhs) - 1))
+        print("decomposed score normalized:", full_score)
         self.assertAlmostEqual(
             decomposed_score - (len(self.mhs) - 1),
             full_score,

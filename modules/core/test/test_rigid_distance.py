@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -15,8 +16,8 @@ class Tests(IMP.test.TestCase):
         p0 = IMP.kernel._create_particles_from_pdb(name, m)
         p1 = IMP.kernel._create_particles_from_pdb(
             self.get_input_file_name("input.pdb"), m)
-        print len(p0), "particles", name
-        print len(p1), "particles", name
+        print(len(p0), "particles", name)
+        print(len(p1), "particles", name)
         rb0 = IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), p0)
         rb1 = IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), p1)
         randt = IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(), IMP.algebra.get_random_vector_in(
@@ -35,7 +36,7 @@ class Tests(IMP.test.TestCase):
             for l1 in p1:
                 d = sdps.evaluate((l0, l1), None)
                 if d < dm:
-                    print "found ", l0.get_name(), l1.get_name(), d
+                    print("found ", l0.get_name(), l1.get_name(), d)
                     dm = d
         self.assertAlmostEqual(v, dm, delta=.1)
 
@@ -45,7 +46,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model()
         p0 = IMP.kernel._create_particles_from_pdb(
             self.get_input_file_name("input.pdb"), m)
-        print len(p0), "particles"
+        print(len(p0), "particles")
         p1 = IMP.kernel.Particle(m)
         randt = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(
             IMP.algebra.Vector3D(0, 0, 0), IMP.algebra.Vector3D(100, 100, 100)))

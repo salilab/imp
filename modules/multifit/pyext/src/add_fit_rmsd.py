@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-__doc__ = "Add RMSD to reference to each fitting file."
-
+from __future__ import print_function
 import IMP.multifit
 from IMP import OptionParser
 
+__doc__ = "Add RMSD to reference to each fitting file."
 
 def parse_args():
     usage =  """%prog [options] <asmb.input> <proteomics> <mapping> <align param>
@@ -30,14 +30,14 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, dock_trans):
     asmb = IMP.multifit.read_settings(asmb_fn)
 
     prot_data = IMP.multifit.read_proteomics_data(proteomics_fn)
-    print "=========3"
+    print("=========3")
     mapping_data = IMP.multifit.read_protein_anchors_mapping(
         prot_data, mapping_fn)
     alignment_params = IMP.multifit.AlignmentParams(params_fn)
     align = IMP.multifit.ProteomicsEMAlignmentAtomic(
         mapping_data, asmb, alignment_params)
     ensmb = IMP.multifit.Ensemble(asmb, mapping_data)
-    print "=========6"
+    print("=========6")
     # load all proteomics restraints
     mdl = align.get_model()
     mhs = align.get_molecules()
@@ -45,7 +45,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, dock_trans):
     for i, mh in enumerate(mhs):
         fits_fn = asmb.get_component_header(i).get_transformations_fn()
         fits = IMP.multifit.read_fitting_solutions(fits_fn)
-        print "calculating rmsd for", len(fits), "fits of protein", mh.get_name()
+        print("calculating rmsd for", len(fits), "fits of protein", mh.get_name())
         xyz = IMP.core.XYZs(IMP.core.get_leaves(mh))
         mh_ref = IMP.atom.read_pdb(
             asmb.get_component_header(i).get_reference_fn(),

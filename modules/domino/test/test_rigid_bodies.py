@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -46,15 +47,15 @@ class Tests(IMP.test.TestCase):
         pst.set_particle_states(rbs[1], pstate)
         rg = IMP.domino.get_restraint_graph(m.get_root_restraint_set(), pst)
         # rg.show_dotty()
-        print "ig"
+        print("ig")
         ig = IMP.domino.get_interaction_graph(
             [m.get_root_restraint_set()], pst)
         # IMP.show_graphviz(ig)
-        print "dg"
+        print("dg")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         dg = IMP.get_dependency_graph(m)
         # IMP.show_graphviz(dg)
-        print "jt"
+        print("jt")
         jt = IMP.domino.get_junction_tree(ig)
         # jt.show_dotty()
         s = IMP.domino.DominoSampler(m, pst)
@@ -90,7 +91,7 @@ class Tests(IMP.test.TestCase):
         rc.add_restraints([m])
         allr = rc.get_restraints()
         for r in allr:
-            print r.get_name()
+            print(r.get_name())
         self.assertEqual(len(allr), 3)
 
     def test_global_min3(self):
@@ -125,7 +126,7 @@ class Tests(IMP.test.TestCase):
         rc.add_restraints([m])
         allr = rc.get_restraints()
         for r in allr:
-            print r.get_name()
+            print(r.get_name())
         self.assertEqual(len(allr), 3)
 
     def _create_rigid_body(self, m):

@@ -32,4 +32,4 @@ for dist in range(0, 10):
 # This produces a simple table of score versus distance for a harmonic distance
 # restraint (see tasks.py for the actual calculations).
 for x in c.get_results_unordered():
-    print x
+    print(x)

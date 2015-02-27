@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import sys
@@ -31,21 +32,21 @@ class Tests(IMP.test.TestCase):
         # (not the Python IMP.kernel.Particle() constructor)
         # These accessors call specific methods in the SWIG wrapper which
         # are modified by typemaps in our interface.
-        print "getting particles"
+        print("getting particles")
         ps = m.get_particles()
-        print "getting particle"
+        print("getting particle")
         p = ps[0]
         del ps
         # Python reference p plus C++ reference from m
         self.assertEqual(p.get_ref_count(), 2)
-        print "deleting model"
+        print("deleting model")
         del m
         # Now only the Python reference p should survive
         self.assertEqual(p.get_ref_count(), 1)
         refcnt.assert_number(1)
-        print p
-        print "deleting p"
-        print p.thisown
+        print(p)
+        print("deleting p")
+        print(p.thisown)
         del p
         refcnt.assert_number(0)
 
@@ -55,55 +56,55 @@ class Tests(IMP.test.TestCase):
         refcnt = IMP.test.RefCountChecker(self)
         m = IMP.kernel.Model("test model")
         r = IMP.kernel._ConstRestraint(m, [], 1)
-        print "adding"
+        print("adding")
         m.add_restraint(r)
-        print r
-        print r.__del__
+        print(r)
+        print(r.__del__)
         # Now create new Python particle p from a C++ vector accessor
         # (front(), back(), [], etc.)
         # (not the Python IMP.kernel.Particle() constructor)
         # These accessors call specific methods in the SWIG wrapper which
         # are modified by typemaps in our interface.
-        print "getting restraints"
+        print("getting restraints")
         ps = m.get_restraints()
-        print "getting restraint"
+        print("getting restraint")
         p = ps[0]
-        print sys.getrefcount(p), len(ps)
-        print p
+        print(sys.getrefcount(p), len(ps))
+        print(p)
         # r, m, p/ps
         self.assertEqual(p.get_ref_count(), 3)
-        print "deleting ps"
+        print("deleting ps")
         del ps
         # r, m, p
         self.assertEqual(p.get_ref_count(), 3)
-        print "getting it again"
+        print("getting it again")
         rp = m.get_restraint(0)
-        print "check"
+        print("check")
         # Python reference p, m, r, rp
         self.assertEqual(p.get_ref_count(), 4)
-        print p
-        print p.thisown
-        print dir(p)
-        print sys.getrefcount(p)
-        print "deleting p"
+        print(p)
+        print(p.thisown)
+        print(dir(p))
+        print(sys.getrefcount(p))
+        print("deleting p")
         #del p
         # p.__del__
-        print p.__del__
+        print(p.__del__)
         del p
         # Python reference m, r, rp
-        print "checking p"
+        print("checking p")
         self.assertEqual(r.get_ref_count(), 3)
-        print 'deleting rp'
+        print('deleting rp')
         del rp
         # Python reference m, r
         self.assertEqual(r.get_ref_count(), 2)
-        print "deleting model"
+        print("deleting model")
         del m
         refcnt.assert_number(1)
         # Now only the Python reference p should survive
         self.assertEqual(r.get_ref_count(), 1)
-        print 'deleting r'
-        print r
+        print('deleting r')
+        print(r)
         del r
         refcnt.assert_number(0)
 
@@ -135,26 +136,26 @@ class Tests(IMP.test.TestCase):
         r = IMP.kernel._ConstRestraint(m, [], 1)
         r.set_name("R")
         s = IMP.kernel.RestraintSet(m, 1.0, "S")
-        print "add s to m"
+        print("add s to m")
         m.add_restraint(s)
-        print "add r to m"
+        print("add r to m")
         m.add_restraint(r)
-        print "add r to s"
+        print("add r to s")
         s.add_restraint(r)
         """m.evaluate(False)
         refcnt.assert_number(3)
         # Model should hold a ref to restraints, so nothing should be freed
         # until it is
 """
-        print r.get_ref_count(), s.get_ref_count(), m.get_ref_count()
+        print(r.get_ref_count(), s.get_ref_count(), m.get_ref_count())
         del r
         refcnt.assert_number(4)
-        print s.get_ref_count(), m.get_ref_count()
+        print(s.get_ref_count(), m.get_ref_count())
         del s
         refcnt.assert_number(4)
-        print m.get_ref_count()
+        print(m.get_ref_count())
         del m
-        print "check"
+        print("check")
         refcnt.assert_number(0)
 
     def test_delete_model_iterator(self):
@@ -222,7 +223,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model("sequence ref counting")
         p = IMP.kernel.Particle(m)
         ps = m.get_particles()
-        print IMP.kernel._take_particles(ps)
+        print(IMP.kernel._take_particles(ps))
         del m
         del ps
         del p

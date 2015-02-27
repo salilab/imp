@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -17,7 +18,7 @@ class Tests(IMP.test.TestCase):
         ps = IMP.core.create_xyzr_particles(m, 10, 1)
         fpr = IMP.core.FixedRefiner(ps)
         p = IMP.core.Centroid.setup_particle(IMP.kernel.Particle(m), fpr)
-        print "eval"
+        print("eval")
         m.evaluate(True)
 if __name__ == '__main__':
     IMP.test.main()

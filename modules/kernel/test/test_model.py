@@ -1,6 +1,7 @@
+from __future__ import print_function
 import IMP
 import IMP.test
-import StringIO
+import io
 import random
 
 
@@ -107,7 +108,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model("score state show")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         s = ClassScoreState(m)
-        sio = StringIO.StringIO()
+        sio = io.BytesIO()
         s.show(sio)
         m.add_score_state(s)
         for s in m.get_score_states():
@@ -143,7 +144,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.VERBOSE)
         self.assertRaises(NotImplementedError, m.show, BrokenFile())
         self.assertRaises(AttributeError, m.show, None)
-        s = StringIO.StringIO()
+        s = io.BytesIO()
         m.show(s)
         self.assertGreater(len(s.getvalue()), 0)
 
@@ -205,7 +206,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(m.get_number_of_restraints(), 0)
         r = DummyRestraint(m)
         r.set_name("dummy")
-        print r.evaluate(False)
+        print(r.evaluate(False))
         del r
         m.evaluate(False)
 
@@ -290,13 +291,13 @@ class Tests(IMP.test.TestCase):
                     if i in j.get_outputs():
                         required.append(j)
         required = sorted(set(required))
-        print required
+        print(required)
         sf.set_has_required_score_states(True)
         found = sorted(sf.get_required_score_states())
         self.assertEqual(required, found)
         sf.evaluate(False)
         for s in cs:
-            print s.get_name()
+            print(s.get_name())
             self.assertEqual(s.updated, s in required)
             # IMP.show_graphviz(rdg)
         for p in ps:

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import sys
@@ -36,7 +37,7 @@ class Tests(IMP.test.TestCase):
         self.particle_indexes = []
         for i in range(npart):
             self.particle_indexes.append(i)
-        print "initialization done ..."
+        print("initialization done ...")
 
     def test_sample_map(self):
         """Check that surface sampling works"""
@@ -47,7 +48,7 @@ class Tests(IMP.test.TestCase):
             self.weight_key)
         for p in self.particles:
             val = model_map.get_value(IMP.core.XYZ(p).get_coordinates())
-            print val
+            print(val)
             self.assertEqual(val > 9.1 and val < 10.1, True)
 
 if __name__ == '__main__':

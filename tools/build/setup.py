@@ -13,7 +13,6 @@ Set up the build environment:
 - create pages that list things in the documentation
 - setup the doxygen config files
 - generate standards tests
-- create a list of applications
 
 No repository directories are changed.
 """
@@ -122,13 +121,13 @@ def link_python(source):
             if os.path.split(old)[1] != "__init__.py" and os.path.split(old)[1] != "_version_check.py":
                 os.unlink(old)
                 # print "linking", path
-        tools.link_dir(os.path.join(g, "pyext", "src"), path, clean=False)
+        tools.link_dir(os.path.join(g, "pyext", "src"), path, clean=False,
+                       make_subdirs=True)
 
 
 def _make_test_driver(outf, cpps):
     out = open(outf, "w")
-    print >> out, \
-"""import IMP
+    out.write("""import IMP
 import IMP.test
 import sys
 try:
@@ -136,7 +135,8 @@ try:
 except ImportError:
     subprocess = None
 
-class TestCppProgram(IMP.test.TestCase):"""
+class TestCppProgram(IMP.test.TestCase):
+""")
     for t in cpps:
         tbase = os.path.splitext(t)[0]
         # remove suffix
@@ -145,7 +145,7 @@ class TestCppProgram(IMP.test.TestCase):"""
         exename = os.path.join(os.path.split(outf)[0], os.path.split(tbase)[1])
         if platform.system == "Windows":
             exename = exename + ".exe"
-        print >> out, \
+        out.write(
 """    def test_%(name)s(self):
         \"\"\"Running C++ test %(name)s\"\"\"
         if subprocess is None:
@@ -155,11 +155,12 @@ class TestCppProgram(IMP.test.TestCase):"""
         # been installed for the binary to load correctly.
         p = subprocess.Popen(["%(path)s"],
                              shell=False, cwd="%(libdir)s")
-        self.assertEqual(p.wait(), 0)""" \
-       % {'name': nm, 'path': os.path.abspath(exename), 'libdir': os.path.abspath("lib")}
-    print >> out, """
+        self.assertEqual(p.wait(), 0)
+""" % {'name': nm, 'path': os.path.abspath(exename), 'libdir': os.path.abspath("lib")})
+    out.write("""
 if __name__ == '__main__':
-    IMP.test.main()"""
+    IMP.test.main()
+""")
 
 
 def generate_tests(source, scons):
@@ -198,27 +199,28 @@ if __name__ == '__main__':
         targetdir = os.path.join(target, module)
         tools.mkdir(targetdir)
         exceptions = os.path.join(g, "test", "standards_exceptions")
-        plural_exceptions = []
-        show_exceptions = []
-        function_name_exceptions = []
-        value_object_exceptions = []
-        class_name_exceptions = []
-        spelling_exceptions = []
+        d = {'plural_exceptions': [],
+             'show_exceptions': [],
+             'function_name_exceptions': [],
+             'value_object_exceptions': [],
+             'class_name_exceptions': [],
+             'spelling_exceptions': []}
         try:
-            exec open(exceptions, "r").read()
-        except:
+            exec(open(exceptions, "r").read(), d)
+        except IOError:
             pass
         impmodule = "IMP." + module
         test = template % ({'module': impmodule,
-                            'plural_exceptions': str(plural_exceptions),
-                           'show_exceptions': str(show_exceptions),
+                            'plural_exceptions': str(d['plural_exceptions']),
+                            'show_exceptions': str(d['show_exceptions']),
                             'function_name_exceptions':
-                            str(function_name_exceptions),
+                                str(d['function_name_exceptions']),
                             'value_object_exceptions':
-                            str(value_object_exceptions),
+                                str(d['value_object_exceptions']),
                             'class_name_exceptions':
-                            str(class_name_exceptions),
-                            'spelling_exceptions': str(spelling_exceptions)})
+                                str(d['class_name_exceptions']),
+                            'spelling_exceptions':
+                                str(d['spelling_exceptions'])})
         open(
             os.path.join("test",
                          module,
@@ -246,8 +248,6 @@ if __name__ == '__main__':
                 os.path.join(targetdir,
                              "cpp_examples_test.py"),
                 cppexamples)
-    for app, g in tools.get_applications(source):
-        tools.mkdir(os.path.join(target, app))
 
 
 def clean_pyc(dir):
@@ -255,17 +255,6 @@ def clean_pyc(dir):
         for d in dirnames:
             for f in tools.get_glob([os.path.join(d, "*.pyc")]):
                 os.unlink(f)
-
-
-def generate_applications_list(source):
-    apps = tools.get_glob([os.path.join(source, "applications", "*")])
-    names = []
-    for a in apps:
-        if os.path.isdir(a):
-            name = os.path.split(a)[1]
-            names.append(name)
-    path = os.path.join("data", "build_info", "applications")
-    tools.rewrite(path, "\n".join(names))
 
 
 def generate_src_dirs(source):
@@ -301,7 +290,6 @@ def main():
     link_data(options.source)
     generate_tests(options.source, options.scons)
     generate_src_dirs(options.source)
-    generate_applications_list(options.source)
 
 if __name__ == '__main__':
     main()

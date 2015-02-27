@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -37,8 +38,8 @@ class Tests(IMP.test.TestCase):
         for i in range(0, np):
             ps.append(IMP.kernel.Particle(m))
         pst = IMP.domino.ParticleStatesTable()
-        print m.get_number_of_score_states()
-        print m.get_number_of_restraints()
+        print(m.get_number_of_score_states())
+        print(m.get_number_of_restraints())
         dsst = IMP.domino.BranchAndBoundSampler(m, pst)
         for p in ps:
             pst.set_particle_states(p, TrivialParticleStates(ns))

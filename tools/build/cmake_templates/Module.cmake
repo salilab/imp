@@ -9,7 +9,9 @@ imp_get_process_exit_code("Setting up module %(name)s" status ${CMAKE_BINARY_DIR
                           --name=%(name)s
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_%(name)s_CONFIG}:%(defines)s
-                           --source=${CMAKE_SOURCE_DIR})
+                          --source=${CMAKE_SOURCE_DIR}
+                          %(bin_names)s)
+
 if(${status} EQUAL 0)
   imp_execute_process("setup_swig_wrappers %(name)s" ${CMAKE_BINARY_DIR}
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -56,7 +58,9 @@ if(${status} EQUAL 0)
     set_property(TARGET "IMP.%(name)s-doc" PROPERTY FOLDER "IMP.%(name)s")
     set(IMP_%(name)s_DOC "IMP.%(name)s-doc" CACHE INTERNAL "" FORCE)
 
-    list(APPEND IMP_DOC_DEPENDS "${IMP.%(name)s-python}")
+    if(NOT IMP_STATIC)
+      list(APPEND IMP_DOC_DEPENDS "${IMP.%(name)s-python}")
+    endif()
     list(REMOVE_DUPLICATES IMP_DOC_DEPENDS)
     set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} CACHE INTERNAL "" FORCE)
   else()

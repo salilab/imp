@@ -168,15 +168,28 @@
   struct StreamBuf:public std::streambuf {
     PyObject *write_method_;
     std::vector<char> buffer_;
+    char fmat_[5];
     StreamBuf(PyObject *wm): write_method_(wm),
                              buffer_(1024){
+      strcpy(fmat_, "(s#)");
       setp(&buffer_.front(), &buffer_.front() + buffer_.size());
       // to make errors occur earlier
-      static char fmt[] = "(s#)";
-      PyObject *result = PyObject_CallFunction(write_method_, fmt, fmt, 0);
+      PyObject *result = PyObject_CallFunction(write_method_, fmat_, fmat_, 0);
       if (!result) {
+#if PY_VERSION_HEX >= 0x03000000
+        PyErr_Clear();
+        // Failed to write string (Unicode); try bytes instead
+        fmat_[1] = 'y';
+        result = PyObject_CallFunction(write_method_, fmat_, fmat_, 0);
+        if (!result) {
+          throw std::ostream::failure("Python error on write");
+        } else {
+          Py_DECREF(result);
+        }
+#else
         // Python exception will be reraised when SWIG method finishes
         throw std::ostream::failure("Python error on write");
+#endif
       } else {
         Py_DECREF(result);
       }
@@ -194,12 +207,12 @@
     virtual int_type sync() {
       // Python API uses char* arguments rather than const char*, so create
       // here to quell the compiler warning
-      static char fmt[] = "(s#)";
       int num = pptr() - pbase();
       if (num <= 0) {
         return 0;
       }
-      PyObject *result = PyObject_CallFunction(write_method_, fmt, pbase(), num);
+      PyObject *result = PyObject_CallFunction(write_method_, fmat_,
+                                               pbase(), num);
       if (!result) {
         // Python exception will be reraised when SWIG method finishes
         throw std::ostream::failure("Python error on write");
@@ -216,8 +229,7 @@
         // result per call (one here, potentially one in sync) rather than one per
         // buffer_.size() characters via the regular buffering
         sync();
-        static char fmt[] = "(s#)";
-        PyObject *result = PyObject_CallFunction(write_method_, fmt, s, n);
+        PyObject *result = PyObject_CallFunction(write_method_, fmat_, s, n);
         if (!result) {
           throw std::ostream::failure("Python error on write");
         } else {
@@ -243,7 +255,7 @@
 public:
  PyOutFileAdapter():IMP::base::Object("PyOutFileAdapter") {
   }
-  std::string get_type_name() const {return "Pyton output file";}
+  std::string get_type_name() const {return "Python output file";}
   IMP::base::VersionInfo get_version_info() const {
     return IMP::base::VersionInfo("IMP", IMP::base::get_module_version());
   }
@@ -442,7 +454,7 @@ protected:
   std::auto_ptr<std::istream> istr_;
 public:
  PyInFileAdapter(): IMP::base::Object("PyInFileAdapter") {}
-  std::string get_type_name() const {return "Pyton input file";}
+  std::string get_type_name() const {return "Python input file";}
   IMP::base::VersionInfo get_version_info() const {
     return IMP::base::VersionInfo("IMP.base", IMP::base::get_module_version());
   }
@@ -452,8 +464,9 @@ public:
     // Is the object a 'real' C-style FILE ?
     bool real_file;
     /* Cannot reliably detect a "real" file pointer on Windows
-       (differing C runtimes) so always use a file-like approach here */
-#ifdef _MSC_VER
+       (differing C runtimes) so always use a file-like approach here;
+       in Python 3 all files are only file-like */
+#if PY_VERSION_HEX >= 0x03000000 || defined(_MSC_VER)
     real_file = false;
 #else
     try {
@@ -463,9 +476,12 @@ public:
     }
 #endif
 
+#if PY_VERSION_HEX < 0x03000000
     if (real_file) {
       streambuf_ = std::auto_ptr<InAdapter>(new PyInCFileAdapter(PyFile_AsFile(p)));
-    } else {
+    } else 
+#endif
+    {
       PyObject *read_method;
       if (!(read_method = PyObject_GetAttrString(p, "read"))) {
         return NULL;

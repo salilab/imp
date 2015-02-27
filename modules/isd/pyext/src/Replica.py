@@ -2,6 +2,7 @@
 # inspired by ISD Replica.py
 # Yannick
 
+from __future__ import print_function, division
 from numpy import *
 from numpy.random import random, randint
 from numpy.random import shuffle
@@ -16,9 +17,9 @@ class ReplicaTracker:
                  tune_data={}, templog='temps.txt'):
         self.nreps = nreps
         # replica number as a function of state no
-        self.replicanums = range(nreps)
+        self.replicanums = list(range(nreps))
         # state no as a function of replica no
-        self.statenums = range(nreps)
+        self.statenums = list(range(nreps))
         self.grid = grid
         self.sfo_id = sfo_id
         # expect inverse temperatures
@@ -35,7 +36,7 @@ class ReplicaTracker:
         if scheme == "convective":
             self.stirred = {}
             # which order the replicas should be chosen
-            self.stirred['order'] = range(self.nreps)
+            self.stirred['order'] = list(range(self.nreps))
             self.stirred['order'].reverse()
             # which replica is currently being stirred
             self.stirred['replica'] = self.stirred['order'][0]
@@ -80,7 +81,7 @@ class ReplicaTracker:
         if nreps == 2:
             return [(0, 1)]
         ret = [(2 * i + direction, 2 * i + 1 + direction)
-               for i in xrange(nreps / 2)]
+               for i in range(nreps // 2)]
         if nreps in ret[-1]:
             ret.pop()
         return ret
@@ -90,7 +91,7 @@ class ReplicaTracker:
         nreps = self.nreps
         pairslist = []
         # generate all possible pairs
-        init = [(i, i + 1) for i in xrange(nreps - 1)]
+        init = [(i, i + 1) for i in range(nreps - 1)]
         # add this pair to form a loop
         init.append((0, nreps - 1))
         # add needed pairs and remove overlapping candidates
@@ -153,7 +154,7 @@ class ReplicaTracker:
 
     def get_cross_energies(self, pairslist):
         "get energies assuming all exchanges have succeeded"
-        print "this is not needed for temperature replica-exchange"
+        print("this is not needed for temperature replica-exchange")
         raise NotImplementedError
 
     def get_metropolis(self, pairslist, old_ene):
@@ -261,7 +262,7 @@ class ReplicaTracker:
                     temps, **kwargs)
             if changed:
                 self.rn_history = []
-                print newparams
+                print(newparams)
                 self.inv_temps = [1 / (kB * t) for t in newparams]
 
     def do_bookkeeping_before(self):

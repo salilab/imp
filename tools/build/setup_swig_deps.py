@@ -80,7 +80,7 @@ def main():
             options.swig)
     err = pool.wait_completion()
     if err:
-        print >> sys.stderr, err
+        sys.stderr.write(err + '\n')
         return 1
     return 0
 

@@ -2,7 +2,7 @@
  *  \file Transformation2D.cpp
  *  \brief Simple 2D transformation class.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 #include "IMP/algebra/Transformation2D.h"
 #include "IMP/algebra/geometric_alignment.h"
@@ -18,9 +18,8 @@ Transformation2D Transformation2D::get_inverse() const {
 
 Transformation2D get_transformation_aligning_pair(const Vector2Ds &set_from,
                                                   const Vector2Ds &set_to) {
-  IMP_INTERNAL_CHECK(set_from.size() == 2 && set_to.size() == 2,
-                     "rigid_align_first_to_second_2d:: The number of points "
-                     "in both sets must be 2");
+  IMP_USAGE_CHECK(set_from.size() == 2 && set_to.size() == 2,
+                  "The number of points in both sets must be 2");
   // v1 and v2 should be similar
   Vector2D v1 = set_from[1] - set_from[0];
   Vector2D v2 = set_to[1] - set_to[0];

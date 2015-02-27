@@ -34,7 +34,7 @@ else:
     ninner = 5
     nouter = 11
 
-print IMP.base.get_is_quick_test(), ni, nj, np, ninner, nouter
+print(IMP.base.get_is_quick_test(), ni, nj, np, ninner, nouter)
 # using a HarmonicDistancePairScore for fixed length links is more
 # efficient than using a HarmonicSphereDistnacePairScore and works
 # better with the optimizer
@@ -115,7 +115,7 @@ for p in aps:
 cg.set_scoring_function(sf)
 cg.optimize(ncg)
 for r in restraints:
-    print r.get_name(), r.evaluate(False)
+    print(r.get_name(), r.evaluate(False))
 
 # shrink each of the particles, relax the configuration, repeat
 for i in range(1, nouter):
@@ -126,14 +126,14 @@ for i in range(1, nouter):
             IMP.ScopedSetFloatAttribute(p, IMP.core.XYZR.get_radius_key(),
                                         IMP.core.XYZR(p).get_radius() * factor))
     # move each particle nmc times
-    print factor
+    print(factor)
     for j in range(0, ninner):
-        print "stage", j
+        print("stage", j)
         mc.set_kt(100.0 / (3 * j + 1))
-        print "mc", mc.optimize((j + 1) * nmc), cg.optimize(nmc)
+        print("mc", mc.optimize((j + 1) * nmc), cg.optimize(nmc))
     del rs
     for r in restraints:
-        print r.get_name(), r.evaluate(False)
+        print(r.get_name(), r.evaluate(False))
 
 w = IMP.display.PymolWriter("final.pym")
 for p in aps:

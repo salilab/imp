@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -17,8 +18,8 @@ class Tests(IMP.test.TestCase):
         for i in range(1, 10):
             jt.add_edge(i - 1, i)
         # IMP.show_graphviz(jt)
-        print jt
-        print type(jt)
+        print(jt)
+        print(type(jt))
         mbt = IMP.domino.get_balanced_merge_tree(jt)
         # IMP.show_graphviz(mbt)
 

@@ -52,17 +52,19 @@ class IMPRestraints(modeller.terms.energy_term):
        This can be used to incorporate IMP Restraints into an existing
        comparative modeling pipeline, or to use Modeller optimizers or
        protocols.
-       @param particles A list of the IMP atoms (as Particle objects),
-                        same order as the Modeller atoms.
-       @note since Modeller, unlike IMP, is sensitive to the ordering
-             of atoms, it usually makes sense to create the model in
-             Modeller and then use ModelLoader to load it into IMP,
-             since that will preserve the Modeller atom ordering in IMP.
     """
 
     _physical_type = modeller.physical.absposition
 
     def __init__(self, particles):
+        """Constructor.
+           @param particles A list of the IMP atoms (as Particle objects),
+                            same order as the Modeller atoms.
+           @note since Modeller, unlike IMP, is sensitive to the ordering
+                 of atoms, it usually makes sense to create the model in
+                 Modeller and then use ModelLoader to load it into IMP,
+                 since that will preserve the Modeller atom ordering in IMP.
+        """
         modeller.terms.energy_term.__init__(self)
         self._particles = particles
 
@@ -88,20 +90,23 @@ class ModellerRestraints(IMP.Restraint):
        This is useful if you want to use Modeller restraints with an IMP
        optimizer, or in combination with IMP restraints.
 
-       @param model The IMP Model object.
-       @param modeller_model The Modeller model object.
-       @param particles A list of the IMP atoms (as Particle objects),
-                        in the same order as the Modeller atoms.
-       @note since Modeller, unlike IMP, is sensitive to the ordering
-             of atoms, it usually makes sense to create the model in
-             Modeller and then use ModelLoader to load it into IMP,
-             since that will preserve the Modeller atom ordering in IMP.
        @note Currently only the coordinates of the atoms are translated
              between Modeller and IMP; thus, a Modeller restraint which
              uses any other attribute (e.g. charge) will not react if
              this attribute is changed by IMP.
     """
+
     def __init__(self, model, modeller_model, particles):
+        """Constructor.
+           @param model The IMP Model object.
+           @param modeller_model The Modeller model object.
+           @param particles A list of the IMP atoms (as Particle objects),
+                            in the same order as the Modeller atoms.
+           @note since Modeller, unlike IMP, is sensitive to the ordering
+                 of atoms, it usually makes sense to create the model in
+                 Modeller and then use ModelLoader to load it into IMP,
+                 since that will preserve the Modeller atom ordering in IMP.
+        """
         def get_particle(x):
             if hasattr(x, 'get_particle'):
                 return x.get_particle()
@@ -310,8 +315,8 @@ def _load_entire_restraints_file(filename, protein):
             rsr = _load_restraints_line(line, atoms)
             if rsr is not None:
                 yield rsr
-        except Exception, err:
-            print "Cannot read restraints file line:\n" + line
+        except Exception as err:
+            print("Cannot read restraints file line:\n" + line)
             raise
 
 
@@ -404,11 +409,13 @@ class ModelLoader(object):
        however, only load_atoms() will be useful in such a case (since
        alignment structures don't have restraints or other information).
 
-       @param modeller_model The Modeller model or alignment structure
-                             object to read.
     """
 
     def __init__(self, modeller_model):
+        """Constructor.
+           @param modeller_model The Modeller model or alignment structure
+                                 object to read.
+        """
         self._modeller_model = modeller_model
 
     def load_atoms(self, model):
@@ -551,8 +558,9 @@ class ModelLoader(object):
                 return self
             def close(self, *args, **keys):
                 return self._gen.close(*args, **keys)
-            def next(self, *args, **keys):
-                return self._gen.next(*args, **keys)
+            def next(self):
+                return next(self._gen)
+            __next__ = next
             def send(self, *args, **keys):
                 return self._gen.send(*args, **keys)
             def throw(self, *args, **keys):

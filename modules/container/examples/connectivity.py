@@ -1,6 +1,7 @@
 ## \example container/connectivity.py
 # Shows how to use and visualize the IMP::misc::ConnectingPairContainer.
 
+from __future__ import print_function
 import IMP.container
 import IMP.display
 
@@ -12,5 +13,5 @@ m.evaluate(False)
 pg = IMP.core.EdgePairsGeometry(cpc)
 w = IMP.display.ChimeraWriter("pairs.py")
 w.add_geometry(pg)
-print pg.get_name()
+print(pg.get_name())
 del w

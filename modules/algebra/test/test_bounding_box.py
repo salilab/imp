@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
-
+import io
 
 class Tests(IMP.test.TestCase):
 
@@ -48,5 +48,103 @@ class Tests(IMP.test.TestCase):
                                                         IMP.algebra.Vector3D(-5, -5, -5)), 0.001, places=1)
         self.assertAlmostEqual(IMP.algebra.get_distance(bu.get_corner(1),
                                                         IMP.algebra.Vector3D(9, 9, 9)), 0.001, places=1)
+
+    def test_addition_bb(self):
+        """Check BoundingBox3D addition of BoundingBox3D"""
+        V = IMP.algebra.Vector3D
+        b1 = IMP.algebra.BoundingBox3D(V(1, 1, 1), V(9, 9, 9))
+        b2 = IMP.algebra.BoundingBox3D(V(-5, -5, -5), V(3, 3, 3))
+        idb1 = id(b1)
+        cppobj = str(b1.this)
+        bsum = b1 + b2
+        b1 += b2
+        # Inplace addition should not change the Python object identity:
+        self.assertEqual(id(b1), idb1)
+        # The underlying C++ object pointer should be unchanged too:
+        self.assertEqual(str(b1.this), cppobj)
+        for obj in b1, bsum:
+            self.assertLess(IMP.algebra.get_distance(b1.get_corner(0),
+                                                     V(-5, -5, -5)), 1e-4)
+            self.assertLess(IMP.algebra.get_distance(b1.get_corner(1),
+                                                     V(9, 9, 9)), 1e-4)
+
+    def test_addition_vector(self):
+        """Check BoundingBox3D addition of Vector3D"""
+        V = IMP.algebra.Vector3D
+        b1 = IMP.algebra.BoundingBox3D(V(1, 1, 1), V(9, 9, 9))
+        v2 = V(-5, -5, -5)
+        idb1 = id(b1)
+        cppobj = str(b1.this)
+        bsum = b1 + v2
+        b1 += v2
+        # Inplace addition should not change the Python object identity:
+        self.assertEqual(id(b1), idb1)
+        # The underlying C++ object pointer should be unchanged too:
+        self.assertEqual(str(b1.this), cppobj)
+        for obj in b1, bsum:
+            self.assertLess(IMP.algebra.get_distance(b1.get_corner(0),
+                                                     V(-5, -5, -5)), 1e-4)
+            self.assertLess(IMP.algebra.get_distance(b1.get_corner(1),
+                                                     V(9, 9, 9)), 1e-4)
+
+    def test_addition_float(self):
+        """Check BoundingBox3D addition of a float"""
+        V = IMP.algebra.Vector3D
+        b1 = IMP.algebra.BoundingBox3D(V(1, 1, 1), V(9, 9, 9))
+        v2 = 4.
+        idb1 = id(b1)
+        cppobj = str(b1.this)
+        bsum = b1 + v2
+        b1 += v2
+        # Inplace addition should not change the Python object identity:
+        self.assertEqual(id(b1), idb1)
+        # The underlying C++ object pointer should be unchanged too:
+        self.assertEqual(str(b1.this), cppobj)
+        for obj in b1, bsum:
+            self.assertLess(IMP.algebra.get_distance(b1.get_corner(0),
+                                                     V(-3, -3, -3)), 1e-4)
+            self.assertLess(IMP.algebra.get_distance(b1.get_corner(1),
+                                                     V(13, 13, 13)), 1e-4)
+
+    def test_default_kd(self):
+        """Test default KD constructor"""
+        if IMP.base.get_check_level() >= IMP.base.USAGE:
+            self.assertRaises(IMP.base.UsageException,
+                              IMP.algebra.BoundingBoxKD)
+
+    def test_bounding_box_nd(self):
+        """Test BoundingBox<N> operations for unusual N"""
+        for N in (-1,1,2,4,5,6):
+            if N == -1:
+                clsdim = 'K'
+                dim = 5
+            else:
+                clsdim = '%d' % N
+                dim = N
+            V = getattr(IMP.algebra, "Vector%sD" % clsdim)
+            B = getattr(IMP.algebra, "BoundingBox%sD" % clsdim)
+            v1 = V([0] * dim)
+            v2 = V([2] * dim)
+            b = B(v1, v2)
+            if N == -1:
+                c = IMP.algebra.get_cube_kd(5, 1.0)
+                ub = IMP.algebra.get_unit_bounding_box_kd(5)
+                self.assertRaises(IMP.base.InternalException,
+                                  IMP.algebra.get_vertices, b)
+            else:
+                c = getattr(IMP.algebra, "get_cube_%sd" % clsdim)(1.0)
+                vertices = IMP.algebra.get_vertices(b)
+                self.assertEqual(len(vertices), 2 ** N)
+                ub = getattr(IMP.algebra,
+                             "get_unit_bounding_box_%sd" % clsdim)()
+            inters = IMP.algebra.get_intersection(b, b)
+            uni = IMP.algebra.get_union(b, b)
+            self.assertTrue(IMP.algebra.get_interiors_intersect(b, b))
+            self.assertTrue(b.get_contains(v1))
+            self.assertEqual(b.get_dimension(), dim)
+            self.assertLess(IMP.algebra.get_distance(b.get_corner(0), v1), 1e-4)
+            sio = io.BytesIO()
+            b.show(sio)
+
 if __name__ == '__main__':
     IMP.test.main()

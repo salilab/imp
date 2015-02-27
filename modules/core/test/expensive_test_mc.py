@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -89,10 +90,10 @@ class MCOptimizerTest(IMP.test.TestCase):
     def _test_starting_conditions(self, model, opt, starting_values, nrounds):
         """Test the optimizer with given starting conditions"""
 
-        print "Start energy is " + str(model.evaluate(False))
+        print("Start energy is " + str(model.evaluate(False)))
         for i in range(0, nrounds):
             e = opt.optimize(100)
-            print "Energy after step is " + str(e)
+            print("Energy after step is " + str(e))
             for p in model.get_particles():
                 val = p.get_value(self.xkey)
                 # print "Particle " + str(p.get_name()) +\

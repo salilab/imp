@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.atom
@@ -57,7 +58,7 @@ class Tests(IMP.test.TestCase):
         total_area = 0.0
         for area in surface_area:
             total_area += area
-        print 'Area = ' + str(total_area)
+        print('Area = ' + str(total_area))
         self.assertAlmostEqual(total_area, 73.53, delta=0.1)
 
     def test_corner_case(self):
@@ -68,7 +69,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model()
         #! read PDBs
         for struc in ensemble:
-            print " ... Fitting structure %s" % struc
+            print(" ... Fitting structure %s" % struc)
             mp = IMP.atom.read_pdb(self.get_input_file_name(struc), m,
                                    IMP.atom.NonWaterNonHydrogenPDBSelector())
 

@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
 
     def testEvaluate(self):
         "tests FNormal.evaluate"
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-100, 100), uniform(0.1, 100),
                       uniform(-100, 100), uniform(0.1, 100)]
             fn = FNormal(*randno)
@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
 
     def testEvaluateDFA(self):
         "tests FNormal.evaluate_derivative_FA"
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-100, 100), uniform(0.1, 100),
                       uniform(-100, 100), uniform(0.1, 100)]
             fn = FNormal(*randno)
@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
 
     def testEvaluateDJA(self):
         "tests FNormal.evaluate_derivative_JA"
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-100, 100), uniform(0.1, 100),
                       uniform(-100, 100), uniform(0.1, 100)]
             fn = FNormal(*randno)
@@ -57,7 +57,7 @@ class Tests(IMP.test.TestCase):
 
     def testEvaluateDFM(self):
         "tests FNormal.evaluate_derivative_FM"
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-100, 100), uniform(0.1, 100),
                       uniform(-100, 100), uniform(0.1, 100)]
             fn = FNormal(*randno)
@@ -67,7 +67,7 @@ class Tests(IMP.test.TestCase):
 
     def testEvaluateDSigma(self):
         "tests FNormal.evaluate_derivative_sigma"
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-100, 100), uniform(0.1, 100),
                       uniform(-100, 100), uniform(0.1, 100)]
             fn = FNormal(*randno)
@@ -81,7 +81,7 @@ class Tests(IMP.test.TestCase):
 
     def testDensity(self):
         "tests FNormal.density"
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-100, 100), uniform(0.1, 100),
                       uniform(-100, 100), uniform(0.1, 100)]
             fn = FNormal(*randno)

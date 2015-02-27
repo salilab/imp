@@ -1,3 +1,4 @@
+from __future__ import print_function
 from xml.dom import minidom
 import sys
 import IMP.algebra
@@ -25,7 +26,7 @@ def load_anchor_graph(cmm_filename):
         cmm_doc = minidom.parse(cmm_filename)
     except IOError as xxx_todo_changeme:
         (e) = xxx_todo_changeme
-        print e
+        print(e)
         sys.exit(-1)
     positions = IMP.algebra.Vector3Ds()
     links = []

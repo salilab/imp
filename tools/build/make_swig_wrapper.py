@@ -32,6 +32,7 @@ def run_swig(outputdir, options):
     args.append("-python")
     args.append("-c++")
     args.append("-naturalvar")
+    args.append("-modern")
     args.append("-fvirtual")
     args.append("-Wextra")
     args.append("-I" + os.path.join("..", "..", "include"))
@@ -64,7 +65,7 @@ def run_swig(outputdir, options):
 # rather than 'import IMP.foo'). See also IMP bug #41 at
 #    https://salilab.org/imp/bugs/show_bug.cgi?id=41
 def patch_file(infile, out, options):
-    lines = file(infile, 'r').readlines()
+    lines = open(infile, 'r').readlines()
     preproc = "IMP_%s" % options.module.upper()
     repl1 = '"swig::%s_PySwigIterator *"' % preproc
     repl2 = '"swig::%s_SwigPyIterator *"' % preproc

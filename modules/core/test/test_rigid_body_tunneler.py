@@ -43,7 +43,7 @@ class RigidBodyTunnelerTest(IMP.test.TestCase):
         """
         # get coordinates of all, subtract centroid
         coords = [c1, c2, c3]
-        for i in xrange(5):
+        for i in range(5):
             coo = random.random(3).tolist()
             coords.append(coo)
         coords = array(coords)
@@ -57,7 +57,7 @@ class RigidBodyTunnelerTest(IMP.test.TestCase):
         IMP.core.XYZ.setup_particle(pr3, IMP.algebra.Vector3D(newcoords[2]))
         prb = IMP.Particle(self.m)
         rbparts = [pr1, pr2, pr3]
-        for i in xrange(5):
+        for i in range(5):
             p = IMP.Particle(self.m)
             IMP.core.XYZ.setup_particle(
                 p,

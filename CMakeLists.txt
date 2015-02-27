@@ -8,6 +8,18 @@ if(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
    message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} is ${CMAKE_BINARY_DIR}. If this message seems wrong, make sure to delete the CMakeFiles directory and the CMakeCache.txt file if they exist in the source dir (${CMAKE_SOURCE_DIR}).")
 endif()
 
+# Check Python version early so we can use Python >= 2.6 features in other
+# build scripts
+execute_process(COMMAND python "tools/build/check_python_version.py"
+                RESULT_VARIABLE setup
+                OUTPUT_VARIABLE toutput
+                ERROR_VARIABLE error
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(NOT ${setup} EQUAL 0)
+   message(FATAL_ERROR "Failed checking Python version: ${error}")
+endif()
+
 if(IS_DIRECTORY "${PROJECT_SOURCE_DIR}/.git")
   execute_process(COMMAND python "tools/dev_tools/git/setup_git.py"
                     RESULT_VARIABLE setup
@@ -41,6 +53,10 @@ if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
 endif(POLICY CMP0017)
 
+# Don't set MACOSX_RPATH by default
+if(POLICY CMP0042)
+cmake_policy(SET CMP0042 OLD)
+endif(POLICY CMP0042)
 
 set(IMP_TEST_SETUP ${PROJECT_BINARY_DIR}/setup_imp.py)
 
@@ -96,11 +112,11 @@ set(IMP_${m}_IS_PER_CPP 1)
 endforeach(m)
 
 if(NOT DEFINED PYTHON_INCLUDE_DIRS AND NOT IMP_STATIC)
-  execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print sys.executable"
+  execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print(sys.executable)"
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                   OUTPUT_VARIABLE python_full_path
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
-  execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print '%d.%d.%d' % sys.version_info[:3]"
+  execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print('%d.%d.%d' % sys.version_info[:3])"
                 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                 OUTPUT_VARIABLE python_full_version
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -282,12 +298,6 @@ foreach(mod ${enabled_modules})
   ${IMP_${mod}_EXAMPLES}
   ${IMP_${mod}_DOC})
 endforeach(mod)
-
-
-file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/applications" applications)
-foreach(app ${applications})
-  add_subdirectory("${CMAKE_SOURCE_DIR}/applications/${app}")
-endforeach(app)
 
 list(INSERT IMP_PYTHONPATH 0 "${CMAKE_BINARY_DIR}/lib")
 list(INSERT IMP_LDPATH 0 "${CMAKE_BINARY_DIR}/lib")

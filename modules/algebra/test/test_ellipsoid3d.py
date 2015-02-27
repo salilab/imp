@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -19,7 +20,7 @@ class Tests(IMP.test.TestCase):
         r = IMP.algebra.ReferenceFrame3D(tf)
         radii = IMP.algebra.Vector3D(10, 20, 30)
         e = IMP.algebra.Ellipsoid3D(r, radii)
-        print e
+        print(e)
         self.assertLess((e.get_radii() - radii).get_magnitude(), 1e-4)
         newr = e.get_reference_frame()
         self.assertLess((newr.get_transformation_to().get_translation()

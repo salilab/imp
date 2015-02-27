@@ -725,7 +725,9 @@ EXCLUDE_SYMLINKS       = NO
 # against the file with absolute path, so to exclude all test directories
 # for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       = */internal/* @EXCLUDE_PATTERNS@
+# We really want _[a-zA-Z]* here (because we don't want to hide things
+# # like __init__) but doxygen patterns aren't that flexible
+EXCLUDE_PATTERNS       = */internal/* */_*/* */_a* */_b* */_c* */_d* */_e* */_f* */_g* */_h* */_i* */_j* */_k* */_l* */_m* */_n* */_o* */_p* */_q* */_r* */_s* */_t* */_u* */_v* */_w* */_x* */_y* */_z* */_A* */_B* */_C* */_D* */_E* */_F* */_G* */_H* */_I* */_J* */_K* */_L* */_M* */_N* */_O* */_P* */_Q* */_R* */_S* */_T* */_U* */_V* */_W* */_X* */_Y* */_Z* @EXCLUDE_PATTERNS@
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
@@ -733,7 +735,9 @@ EXCLUDE_PATTERNS       = */internal/* @EXCLUDE_PATTERNS@
 # wildcard * is used, a substring. Examples: ANamespace, AClass,
 # AClass::ANamespace, ANamespace::*Test
 
-EXCLUDE_SYMBOLS        = _*
+# We really want _[a-zA-Z]* here (because we don't want to hide things
+# like __init__) but doxygen patterns aren't that flexible
+EXCLUDE_SYMBOLS        = _a* _b* _c* _d* _e* _f* _g* _h* _i* _j* _k* _l* _m* _n* _o* _p* _q* _r* _s* _t* _u* _v* _w* _x* _y* _z* _A* _B* _C* _D* _E* _F* _G* _H* _I* _J* _K* _L* _M* _N* _O* _P* _Q* _R* _S* _T* _U* _V* _W* _X* _Y* _Z*
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or
 # directories that contain example code fragments that are included (see
@@ -1187,7 +1191,7 @@ DISABLE_INDEX          = NO
 # Since the tree basically has the same information as the tab index you
 # could consider to set DISABLE_INDEX to NO when enabling this option.
 
-GENERATE_TREEVIEW      = YES
+GENERATE_TREEVIEW      = @TREEVIEW@
 
 # The ENUM_VALUES_PER_LINE tag can be used to set the number of enum values
 # (range [0,1..20]) that doxygen will group on one line in the generated HTML

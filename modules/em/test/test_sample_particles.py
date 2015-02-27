@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import sys
@@ -34,7 +35,7 @@ class Tests(IMP.test.TestCase):
         self.particle_indexes = []
         for i in range(npart):
             self.particle_indexes.append(i)
-        print "initialization done ..."
+        print("initialization done ...")
 
     def _test_sample_map(self):
         """Check that sampling particles works"""
@@ -98,9 +99,9 @@ class Tests(IMP.test.TestCase):
 
         #IMP.em.write_map(model_map2, "yyy.mrc",mrw)
         reloaded_model_map.calcRMS()
-        print model_map.get_header().rms, ": ", \
+        print(model_map.get_header().rms, ": ", \
             reloaded_model_map.get_header().rms, " : ",\
-            model_map2.get_header().rms
+            model_map2.get_header().rms)
 
         self.assertAlmostEqual(reloaded_model_map.get_header().rms,
                                model_map2.get_header().rms, delta=.001,

@@ -2,7 +2,7 @@
  *  \file WeightedExcludedVolumeRestraint.cpp
  *  \brief Calculate excluded volume between rigid bodies.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 

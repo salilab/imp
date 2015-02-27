@@ -2,9 +2,13 @@ import IMP
 import IMP.test
 import IMP.algebra
 import math
-
+from io import BytesIO
 
 class Tests(IMP.test.TestCase):
+
+    def test_trivial_constructor(self):
+        """Test trivial SpherePatch3D constructor"""
+        p = IMP.algebra.SpherePatch3D()
 
     def test_sphere_patch_construction(self):
         """Check that a patch of a sphere is constructed correctly"""
@@ -14,19 +18,31 @@ class Tests(IMP.test.TestCase):
         xy_plane = IMP.algebra.Plane3D(
             IMP.algebra.Vector3D(0., 0., 0.), IMP.algebra.Vector3D(0., 0., 1.))
         patch = IMP.algebra.SpherePatch3D(sph, xy_plane)
-        self.assertEqual(
-            patch.get_plane(
-            ).get_is_above(
-                IMP.algebra.Vector3D(
-                    1.,
-                    0.,
-                    1.)),
-            True)
-        self.assertEqual(
-            patch.get_contains(IMP.algebra.Vector3D(0.0, 1.0, 0.4)), True)
-        # self.assertEqual(patch.get_contains(IMP.algebra.Vector3D(3.0,3.0,8.0)),False)
-        self.assertEqual(
-            patch.get_contains(IMP.algebra.Vector3D(0.0, 1.0, -0.4)), False)
+        # Not implemented
+        self.assertRaises(Exception, IMP.algebra.get_area, patch)
+        g = IMP.algebra.get_sphere_patch_3d_geometry(patch)
+        self.assertLess(IMP.algebra.get_distance(patch.get_plane().get_normal(),
+                                                 g.get_plane().get_normal()),
+                                                 1e-4)
+        self.assertLess(IMP.algebra.get_distance(
+                          patch.get_sphere().get_center(),
+                          g.get_sphere().get_center()), 1e-4)
+        bb = IMP.algebra.get_bounding_box(patch)
+        self.assertLess(IMP.algebra.get_distance(bb.get_corner(0),
+                                     IMP.algebra.Vector3D(-5,-5,-5)), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(bb.get_corner(1),
+                                     IMP.algebra.Vector3D(5,5,5)), 1e-4)
+        p = patch.get_boundary_point()
+        self.assertLess(IMP.algebra.get_distance(p,
+                              IMP.algebra.Vector3D(3.53553, 3.53553, 0)), 1e-3)
+        sio = BytesIO()
+        patch.show(sio)
+        self.assertEqual(sio.getvalue(), b'(0 0 0: 5)(0: 0 0 1)')
+        self.assertTrue(patch.get_plane().get_is_above(
+                                 IMP.algebra.Vector3D(1., 0., 1.)))
+        self.assertTrue(patch.get_contains(IMP.algebra.Vector3D(0.0, 1.0, 0.4)))
+        self.assertFalse(patch.get_contains(
+                                         IMP.algebra.Vector3D(0.0, 1.0, -0.4)))
 
     def test_get_uniform_surface_cover(self):
         """Check uniform cover on a patch of a sphere"""

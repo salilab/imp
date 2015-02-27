@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import IMP.rmf
 import IMP.test
@@ -53,10 +54,10 @@ class Tests(IMP.test.TestCase):
             del f
             f = RMF.open_rmf_file_read_only(fn)
             IMP.rmf.link_hierarchies(f, [r])
-            print frames
+            print(frames)
             for i in range(0, 11):
                 IMP.rmf.load_frame(f, RMF.FrameID(i))
-                print rbd.get_reference_frame()
+                print(rbd.get_reference_frame())
                 for j, c in enumerate(r.get_children()):
                     oc = IMP.core.XYZ(c).get_coordinates()
                     m.update()

@@ -3,6 +3,7 @@
 # simple model and then displays the derivatives, em score and how well
 # conjugate gradients converges under various displacements of the model.
 
+from __future__ import print_function
 import IMP.display
 import IMP.em
 
@@ -24,13 +25,13 @@ if use_rigid_bodies:
     drb = IMP.core.RigidBody.setup_particle(
         prb, IMP.algebra.ReferenceFrame3D())
     drb.add_member(p)
-    print "initial frame", drb.get_reference_frame()
+    print("initial frame", drb.get_reference_frame())
     fp = prb
     drb.set_coordinates_are_optimized(True)
     refiner = IMP.core.TableRefiner()
     refiner.add_particle(prb, [p])
     to_move = drb
-    print [p.get_name() for p in refiner.get_refined(prb)]
+    print([p.get_name() for p in refiner.get_refined(prb)])
     fp = d
 else:
     fp = d
@@ -71,7 +72,7 @@ opt = IMP.core.ConjugateGradients(m)
 
 
 def try_point(i, j, k):
-    print "trying", i, j, k
+    print("trying", i, j, k)
     vc = IMP.algebra.Vector3D(i, j, k)
     to_move.set_coordinates(vc)
     # display the score at this position
@@ -80,11 +81,11 @@ def try_point(i, j, k):
     v = m.evaluate(True)
     cg.set_color(IMP.display.get_hot_color(v))
     w.add_geometry(cg)
-    print "score and derivatives", v, to_move.get_derivatives()
+    print("score and derivatives", v, to_move.get_derivatives())
     w.add_geometry(g)
 
     opt.optimize(10)
-    print "after", d.get_coordinates()
+    print("after", d.get_coordinates())
     mag = to_move.get_coordinates().get_magnitude()
 
     converge_color = IMP.display.get_gray_color(1.0 / (1.0 + mag))

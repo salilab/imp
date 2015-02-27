@@ -6,6 +6,7 @@
 # The experimental data for lysozyme is taken from crysol program (www.embl-hamburg.de/ExternalInfo/Research/Sax/crysol.html)
 #
 
+from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.core
@@ -22,9 +23,9 @@ mp = IMP.atom.read_pdb(IMP.saxs.get_example_path('6lyz.pdb'), m,
 #! read experimental profile
 exp_profile = IMP.saxs.Profile(IMP.saxs.get_example_path('lyzexp.dat'))
 
-print 'min_q = ' + str(exp_profile.get_min_q())
-print 'max_q = ' + str(exp_profile.get_max_q())
-print 'delta_q = ' + str(exp_profile.get_delta_q())
+print('min_q = ' + str(exp_profile.get_min_q()))
+print('max_q = ' + str(exp_profile.get_max_q()))
+print('delta_q = ' + str(exp_profile.get_delta_q()))
 
 #! select particles from the model
 particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
@@ -47,9 +48,9 @@ model_profile.calculate_profile_partial(particles, surface_area)
 #! calculate chi score (should be ~0.5 for this example)
 saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
 chi = saxs_score.compute_score(model_profile)
-print 'Chi without parameter fitting = ' + str(chi)
+print('Chi without parameter fitting = ' + str(chi))
 
 chi = (saxs_score.fit_profile(model_profile)).get_chi()
-print 'Chi after adjustment of excluded volume and water layer parameters = ' + str(chi)
+print('Chi after adjustment of excluded volume and water layer parameters = ' + str(chi))
 saxs_score.fit_profile(model_profile, 0.95, 1.05, -2.0, 4.0, False,
                        '6lyz_fitted.dat')

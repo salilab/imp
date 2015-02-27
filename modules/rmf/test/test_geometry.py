@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import IMP.rmf
 import IMP.test
@@ -17,7 +18,7 @@ class Tests(IMP.test.TestCase):
         """Test reading and writing geometry"""
         for suffix in IMP.rmf.suffixes:
             nm = self.get_tmp_file_name("geometry" + suffix)
-            print nm
+            print(nm)
             f = RMF.create_rmf_file(nm)
             bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                            IMP.algebra.Vector3D(10, 10, 10))
@@ -35,7 +36,7 @@ class Tests(IMP.test.TestCase):
     def _do_test_round_trip(self, g, suffix):
         gg = IMP.display.create_geometry(g)
         nm = self.get_tmp_file_name("round_trip_g" + suffix)
-        print nm
+        print(nm)
         rmf = RMF.create_rmf_file(nm)
         IMP.rmf.add_geometries(rmf.get_root_node(), [gg])
         IMP.rmf.save_frame(rmf, "zero")

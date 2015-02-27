@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -51,7 +52,7 @@ class Tests(IMP.test.TestCase):
             p.set_value(key, a0[i])
         for i, p in enumerate(ss1):
             p.set_value(key, a1[i])
-        print a0, a1
+        print(a0, a1)
         for p0, p1 in zip(ps0, ps1):
             self.assertEqual(p0.get_value(key), p1.get_value(key))
 
@@ -59,7 +60,7 @@ class Tests(IMP.test.TestCase):
         container.set_was_used(True)
         for i, a in enumerate(assignments):
             ac = container.get_assignment(i)
-            print ac
+            print(ac)
             self._check_equal(a, ac, ps0, ps1)
         self.assertEqual(
             len(assignments),
@@ -86,22 +87,22 @@ class Tests(IMP.test.TestCase):
         iss = IMP.domino.ReadHDF5AssignmentContainer(ds, ss1, ps1,
                                                      "in assignments")
         iss.set_cache_size(4)
-        print ss0, ss1
+        print(ss0, ss1)
         self._test_in(iss, ass0, ps0, ps1)
 
     def test_binary(self):
         """Testing default subset states writing to a binary data set"""
         (ps0, ss0, ass0, m0) = self._setup_round_trip()
         (ps1, ss1, ass1, m1) = self._setup_round_trip()
-        print ps0, ps1, ss0, ss1
+        print(ps0, ps1, ss0, ss1)
         name = self.get_tmp_file_name("round_trip.assignments")
         pss = IMP.domino.WriteAssignmentContainer(
             name, ss0, ps0, "assignments")
         pss.set_cache_size(3)
-        print ass0
+        print(ass0)
         self._test_out(pss, ass0)
         del pss
-        print "done writing"
+        print("done writing")
         iss = IMP.domino.ReadAssignmentContainer(
             name, ss1, ps1, "in assignments")
         iss.set_cache_size(4)
@@ -114,7 +115,7 @@ class Tests(IMP.test.TestCase):
             ass = IMP.domino.Assignment([i])
             sac.add_assignment(ass)
         self.assertEqual(sac.get_number_of_assignments(), 10)
-        print sac.get_assignments()
+        print(sac.get_assignments())
 
     def test_heap_container(self):
         """Testing heap sample container"""
@@ -141,7 +142,7 @@ class Tests(IMP.test.TestCase):
             IMP.core.Harmonic(1, 1), ps[0], ps[1]))
         m.add_restraint(IMP.core.DistanceRestraint(
             IMP.core.Harmonic(1, 1), ps[1], ps[2]))
-        print 5
+        print(5)
         sampler = IMP.domino.DominoSampler(m, pst)
         rc = IMP.domino.RestraintCache(pst)
         rc.add_restraints([m])
@@ -150,12 +151,12 @@ class Tests(IMP.test.TestCase):
         rs = rc.get_restraints(s, [])
         slcs = [rc.get_slice(r, s) for r in rs]
         assignments = sampler.get_sample_assignments(s)
-        print "number of assignments:", len(assignments)
+        print("number of assignments:", len(assignments))
         scores = []
         for i in range(len(assignments)):
             score = sum([rc.get_score(rsp[0], rsp[1].get_sliced(assignments[i]))
                          for rsp in zip(rs, slcs)])
-            print assignments[i], score
+            print(assignments[i], score)
             scores.append(score)
         scores.sort()
         hac = IMP.domino.HeapAssignmentContainer(s, 10, rc)
@@ -163,12 +164,12 @@ class Tests(IMP.test.TestCase):
             hac.add_assignment(a)
         self.assertEqual(hac.get_number_of_assignments(), 10)
         # check that you have the top 10
-        print "top ten"
+        print("top ten")
         for a in hac.get_assignments():
             score = sum([rc.get_score(rsp[0], rsp[1].get_sliced(a))
                         for rsp in zip(rs, slcs)])
             self.assertLess(score, scores[9] + 0.01)
-            print a, score
+            print(a, score)
 
 
 if __name__ == '__main__':

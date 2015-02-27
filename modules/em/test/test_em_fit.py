@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import IMP
 import IMP.em
@@ -85,11 +86,11 @@ class Tests(IMP.test.TestCase):
     def test_em_fit(self):
         """Check that correlation of particles with their own density is 1"""
         for p in self.particles:
-            print "is rigid body?", IMP.core.RigidBody.get_is_setup(p)
+            print("is rigid body?", IMP.core.RigidBody.get_is_setup(p))
         r = IMP.em.FitRestraint(self.particles, self.scene)
         self.imp_model.add_restraint(r)
         score = self.imp_model.evaluate(False)
-        print "EM score (1-CC) = " + str(score)
+        print("EM score (1-CC) = " + str(score))
         self.assertLess(score, 0.05, "the correlation score is not correct")
 
     def test_cast(self):

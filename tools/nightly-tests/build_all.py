@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-"""Build as many IMP components (modules, applications) as possible, even
+from __future__ import print_function
+
+"""Build as many IMP components (modules, dependencies) as possible, even
    if some of them fail."""
 
 import sys
@@ -26,7 +28,7 @@ class TestXMLHandler(XMLGenerator):
     """Copy an XML file and insert additional measurements"""
 
     def __init__(self, dest, detail_dir):
-        self.fh = open(dest, 'wb')
+        self.fh = open(dest, 'w')
         XMLGenerator.__init__(self, self.fh, "UTF-8")
         self.detail_dir = detail_dir
         self._test = None
@@ -120,7 +122,7 @@ def copy_xml(src, dest, detail_dir):
 
 class Component(object):
 
-    """Represent an IMP application or module"""
+    """Represent an IMP module"""
 
     def __init__(self, name):
         self.name = name
@@ -149,8 +151,8 @@ class Component(object):
             elif m.build_result != 0:
                 # Propagate the original failure
                 self.dep_failure = m.dep_failure or m
-                print "%s: skipped due to previous failure to build %s" \
-                      % (self.name, self.dep_failure.name)
+                print("%s: skipped due to previous failure to build %s" \
+                      % (self.name, self.dep_failure.name))
                 self.build_result = 'depfail'
                 self.done = True
                 summary.write()
@@ -168,7 +170,7 @@ class Component(object):
             # We can't test components that were disabled
             return
         elif self.build_result != 0:
-            print "%s: %s skipped due to build failure" % (self.name, test_type)
+            print("%s: %s skipped due to build failure" % (self.name, test_type))
         else:
             setattr(self, test_type + '_result', 'running')
             summary.write()
@@ -185,17 +187,6 @@ class Component(object):
             if hasattr(self, typ + '_time'):
                 ret[typ + '_time'] = getattr(self, typ + '_time')
         return ret
-
-
-class Application(Component):
-
-    """Represent an IMP application"""
-
-    def __init__(self, name):
-        Component.__init__(self, name)
-        # No special targets to build tests
-        self.target['build'] = 'IMP.' + name
-        self.test_regex = '^IMP\\.' + name + '\\-'
 
 
 class Module(Component):
@@ -273,7 +264,7 @@ class Builder(object):
         if self.outdir:
             outfile = os.path.join(self.outdir,
                                    '%s.%s.log' % (component.name, typ))
-            print "%s > %s" % ("; ".join(cmds), outfile)
+            print("%s > %s" % ("; ".join(cmds), outfile))
             outfh = open(outfile, 'w')
             errfh = subprocess.STDOUT
         else:
@@ -283,19 +274,19 @@ class Builder(object):
         ret = 0
         for cmd in cmds:
             if self.outdir:
-                print >> outfh, "Executing: %s" % cmd
+                print("Executing: %s" % cmd, file=outfh)
                 outfh.flush()
             else:
-                print cmd
+                print(cmd)
             sys.stdout.flush()
             cmdret = subprocess.call(cmd, shell=True, stdout=outfh,
                                      stderr=errfh, env=env)
             if cmdret != 0:
                 ret = cmdret
-                print "%s: %s FAILED with exit code %d" % (component.name,
-                                                           typ, ret)
+                print("%s: %s FAILED with exit code %d" % (component.name,
+                                                           typ, ret))
                 if self.outdir:
-                    print >> outfh, "Command FAILED with exit code %d" % ret
+                    print("Command FAILED with exit code %d" % ret, file=outfh)
         endtime = time.time()
         return (ret, endtime - starttime)
 
@@ -329,25 +320,16 @@ def get_all_components():
             comps[dep].set_dep_modules(comps, [], [], special_dep_targets)
 
     modules = tools.get_sorted_order()
-    apps = tools.get_all_configured_applications()
     for m in modules:
         comps[m] = Module(m)
-    for a in apps:
-        comps[a] = Application(a)
 
     for m in modules:
         i = tools.get_module_info(m, "")
         comps[m].set_dep_modules(comps, i['modules'], i['dependencies'],
                                  special_dep_targets)
-    for a in apps:
-        i = tools.get_application_info(a, "")
-        comps[a].set_dep_modules(comps, i['modules'], i['dependencies'],
-                                 special_dep_targets)
     source_dir = os.path.join(os.path.dirname(sys.argv[0]), '..', '..')
     all_modules = [x[0] for x in tools.get_modules(source_dir)]
-    all_apps = [x[0] for x in tools.get_applications(source_dir)]
     add_disabled_components(modules, all_modules, comps, "module")
-    add_disabled_components(apps, all_apps, comps, "application")
     return comps
 
 
@@ -375,7 +357,7 @@ class SummaryWriter(object):
             if self.all_key:
                 summary[self.all_key] = {'build_result': self.all_state,
                                          'build_time': self.all_time}
-            pickle.dump(summary, fh, -1)
+            pickle.dump(summary, fh, 2)
 
 
 def test_all(comps, builder, test_type, summary_writer, expensive=None):
@@ -387,7 +369,7 @@ def get_comps_to_build(all_comps, exclude):
     if not exclude:
         return all_comps
     else:
-        p = pickle.load(open(exclude))
+        p = pickle.load(open(exclude, 'rb'))
         for compname, result in p.items():
             if compname in all_comps:
                 c = all_comps[compname]
@@ -419,7 +401,7 @@ def build_all(builder, opts):
         # somewhere
         for m in comps.values():
             if not m.done:
-                print "%s: did not build (circular dependency?)" % m.name
+                print("%s: did not build (circular dependency?)" % m.name)
                 m.build_result = 'circdep'
         summary_writer.write()
         builder.setup_coverage()
@@ -446,7 +428,7 @@ def parse_args():
     from optparse import OptionParser
     usage = """%prog [options] makecmd
 
-Build (and optionally test) all components (modules, applications) using the
+Build (and optionally test) all components (modules, dependencies) using the
 given makecmd (e.g. "make", "ninja", "make -j8").
 
 This is similar to just running the makecmd itself, but will build as many
@@ -497,7 +479,7 @@ failures are considered to be non-fatal).
     parser.add_option("--ctest", default="ctest",
                       help="Command (and optional arguments) to use to run "
                            "tests/benchmarks/examples, e.g. \"ctest -j8\", "
-                           "\"ctest28\". Defaults to 'ctest'.")
+                           "\"ctest28\". Defaults to '%default'.")
     parser.add_option("--coverage", action="store_true",
                       dest="coverage", default=False,
                       help="If set, capture Python coverage information when "

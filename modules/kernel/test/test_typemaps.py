@@ -1,6 +1,7 @@
+from __future__ import print_function
 import IMP
 import IMP.test
-import StringIO
+import io
 
 
 class Tests(IMP.test.TestCase):
@@ -17,18 +18,18 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(num, len(ps))
         num = IMP.kernel._take_particles(m, ps)
         self.assertEqual(num, len(ps))
-        num = IMP.kernel._take_particles(m, ps, StringIO.StringIO())
+        num = IMP.kernel._take_particles(m, ps, io.BytesIO())
         self.assertEqual(num, len(ps))
         pps = IMP.kernel._pass_particles(ps)
         for i in range(len(ps)):
             self.assertEqual(pps[i], ps[i])
         pso = IMP.kernel._give_particles(m)
         self.assertEqual(len(pso), 10)
-        print pso[0]
+        print(pso[0])
         di = {}
         for p in ps:
             di[p] = IMP.kernel._TrivialDecorator.setup_particle(p)
-        rps = IMP.kernel._take_particles(di.values())
+        rps = IMP.kernel._take_particles(list(di.values()))
 
     def test_particles_temps(self):
         """Test passing of ParticlesTemp"""
@@ -41,19 +42,19 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(inlist, outlist)
 
     def _equal_lists(self, va, vb):
-        print "testing"
+        print("testing")
         self.assertEqual(len(va), len(vb))
         for i in range(len(va)):
-            print va[i]
-            print vb[i]
+            print(va[i])
+            print(vb[i])
             self.assertEqual(va[i], vb[i])
 
     def _almost_equal_lists(self, va, vb):
-        print "testing"
+        print("testing")
         self.assertEqual(len(va), len(vb))
         for i in range(len(va)):
-            print va[i]
-            print vb[i]
+            print(va[i])
+            print(vb[i])
             self.assertAlmostEqual(va[i], vb[i], delta=.01)
 
     def _test_o(self):
@@ -141,18 +142,18 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model("decorator conversion")
         p0 = IMP.kernel.Particle(m)
         p1 = IMP.kernel.Particle(m)
-        print p0
-        print p1
+        print(p0)
+        print(p1)
         d0 = IMP.kernel._TrivialDecorator.setup_particle(p0)
         d1 = IMP.kernel._TrivialTraitsDecorator.setup_particle(p1)
-        print d0
-        print d1
+        print(d0)
+        print(d1)
         d1p = IMP.kernel._TrivialDecorator.setup_particle(p1)
-        print d1p
+        print(d1p)
         ps = [p0, d1]
         pso = IMP.kernel._pass_decorators(ps)
-        print pso[0]
-        print pso[1]
+        print(pso[0])
+        print(pso[1])
         self.assertEqual(pso[0], d0)
         self.assertEqual(pso[1], d1p)
 
@@ -163,8 +164,8 @@ class Tests(IMP.test.TestCase):
         p1 = IMP.kernel.Particle(m)
         pp = (p0, p1)
         ppo = IMP.kernel._pass_particle_pair(pp)
-        print [x.get_name() for x in pp]
-        print [x.get_name() for x in ppo]
+        print([x.get_name() for x in pp])
+        print([x.get_name() for x in ppo])
         self.assertEqual(ppo[0], pp[0])
         self.assertEqual(ppo[1], pp[1])
 
@@ -227,7 +228,7 @@ class Tests(IMP.test.TestCase):
         rb = m.get_restraints()[0]
         # print rb.get_value()
         rc = IMP.kernel._ConstRestraint.get_from(rb)
-        print rc.get_value()
+        print(rc.get_value())
 
     def test_model_objects(self):
         """Test that model objects can get passed from python"""
@@ -299,7 +300,7 @@ class Tests(IMP.test.TestCase):
         missing = []
         for m in dir(IMP.kernel.Particle):
             if not m in md and m not in exclusions and not m.startswith("_") and not m.startswith("do_"):
-                print m
+                print(m)
                 missing.append(m)
         self.assertEqual(len(missing), 0,
                          "The following methods are not found in decorators: " + str(missing))

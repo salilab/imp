@@ -2,7 +2,7 @@
  *  \file truncated_harmonic.h
  *  \brief Helpers for the truncated harmonics.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,7 +20,10 @@ struct TruncatedHarmonicData {
       : c_(center), l_(limit), k_(k), t_(threshold) {
     IMP_USAGE_CHECK(
         .5 * k * square(threshold) < limit,
-        "The limit must be larger than the harmonic at the threshold");
+        "The limit (" << limit
+        << ") must be larger than the value of the harmonic ("
+        << .5 * k * square(threshold) << ") at the threshold ("
+        << threshold << ")");
     IMP_USAGE_CHECK(k > 0, "The spring constant must be positive");
     IMP_USAGE_CHECK(threshold >= 0, "The threshold must be non-negative.");
     b_ = .5 * (-k_ * k_ * k_ * square(t_ * t_ * t_) +

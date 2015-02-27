@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-__doc__ = "Show the DOMINO merge tree to be used in alignment."
-
+from __future__ import print_function
 import IMP.multifit
 from IMP import OptionParser
 
+__doc__ = "Show the DOMINO merge tree to be used in alignment."
 
 def parse_args():
     usage =  """%prog [options] <asmb> <asmb.proteomics> <asmb.mapping>
@@ -48,7 +48,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn):
     align.set_density_map(dmap, threshold)
     align.add_states_and_filters()
     align.add_all_restraints()
-    print "\n\n\nDOMINO MERGE TREE\n\n"
+    print("\n\n\nDOMINO MERGE TREE\n\n")
     align.show_domino_merge_tree()
 
 

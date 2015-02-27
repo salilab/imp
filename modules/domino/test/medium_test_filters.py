@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -30,7 +31,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model()
         ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
         ss = IMP.domino.Subset(ps)
-        print ps, ss
+        print(ps, ss)
         ft = IMP.domino.ExclusionSubsetFilterTable()
         pairs = [(ps[0], ps[1]), (ps[3], ps[4])]
         for pr in pairs:
@@ -38,9 +39,9 @@ class Tests(IMP.test.TestCase):
         psp = [x for x in ps]
         random.shuffle(psp)
         css = IMP.domino.Subset(psp[0:5])
-        print css
+        print(css)
         f = ft.get_subset_filter(css, [])
-        print f, css
+        print(f, css)
         if not f:
             return
         filtered = self._get_filtered(f, 5)
@@ -57,18 +58,18 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model()
         ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
         ss = IMP.domino.Subset(ps)
-        print [x.get_name() for x in ps], ss
+        print([x.get_name() for x in ps], ss)
         ft = IMP.domino.ExclusionSubsetFilterTable()
         ft.add_set(ps)
         psp = [x for x in ps]
         random.shuffle(psp)
         css = IMP.domino.Subset(psp[0:5])
-        print "selected", css
+        print("selected", css)
         f = ft.get_subset_filter(css, [])
         filtered = self._get_filtered(f, 5)
-        print "filtered", filtered
+        print("filtered", filtered)
         for s in filtered:
-            print s
+            print(s)
             for i, p0 in enumerate(css):
                 for j, p1 in enumerate(css):
                     if i == j:
@@ -80,19 +81,19 @@ class Tests(IMP.test.TestCase):
         m = IMP.kernel.Model()
         ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
         ss = IMP.domino.Subset(ps)
-        print [x.get_name() for x in ps], ss
+        print([x.get_name() for x in ps], ss)
         ft = IMP.domino.EquivalenceSubsetFilterTable()
         ft.add_set(ps)
         psp = [x for x in ps]
         random.shuffle(psp)
         css = IMP.domino.Subset(psp[0:5])
-        print "selected", css
+        print("selected", css)
         f = ft.get_subset_filter(css, [])
         filtered = self._get_filtered(f, 5)
         seen = []
         for s in filtered:
             cur = sorted([x for x in s])
-            print s, cur
+            print(s, cur)
             self.assertNotIn(cur, seen)
             seen.append(cur)
 

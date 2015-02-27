@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/SphereD.h   \brief Simple 3D sphere class.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -122,7 +122,7 @@ inline double get_power_distance(const SphereD<D> &a, const SphereD<D> &b) {
 template <int D>
 inline bool get_interiors_intersect(const SphereD<D> &a, const SphereD<D> &b) {
   double sr = a.get_radius() + b.get_radius();
-  for (unsigned int i = 0; i < 3; ++i) {
+  for (unsigned int i = 0; i < a.get_dimension(); ++i) {
     double delta = std::abs(a.get_center()[i] - b.get_center()[i]);
     if (delta >= sr) return false;
   }

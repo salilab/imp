@@ -1,6 +1,7 @@
 ## \example multistate.py
 #
 
+from __future__ import print_function
 import IMP.atom
 import IMP.kernel
 
@@ -29,4 +30,4 @@ r8 = IMP.atom.Selection(
 
 # we get the 8th CA from state 1
 for p in r8.get_selected_particles():
-    print IMP.atom.get_state_index(p), p
+    print(IMP.atom.get_state_index(p), p)

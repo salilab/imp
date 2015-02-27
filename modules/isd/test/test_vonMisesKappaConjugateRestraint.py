@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(
             self.m, self.kappa, c, R0)
         self.m.add_restraint(self.J)
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 60)
             self.kappa.set_scale(no)
             ratio = i1(no) / i0(no)
@@ -52,7 +52,7 @@ class Tests(IMP.test.TestCase):
         R0 = 1.0
         no = 1.0
         self.kappa.set_scale(no)
-        for i in xrange(100):
+        for i in range(100):
             c = uniform(2.0, 75)
             self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
                                                              self.kappa, c, R0)
@@ -72,7 +72,7 @@ class Tests(IMP.test.TestCase):
         c = 10.0
         no = 1.0
         self.kappa.set_scale(no)
-        for i in xrange(100):
+        for i in range(100):
             R0 = uniform(0.0, 10.0)
             self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
                                                              self.kappa, c, R0)
@@ -94,7 +94,7 @@ class Tests(IMP.test.TestCase):
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
                                                          self.kappa, c, R0)
         self.m.add_restraint(self.J)
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.kappa.set_scale(no)
             ratio = i1(no) / i0(no)
@@ -111,7 +111,7 @@ class Tests(IMP.test.TestCase):
         R0 = 1
         no = 1.0
         self.kappa.set_scale(no)
-        for i in xrange(100):
+        for i in range(100):
             c = uniform(1.0, 100)
             self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
                                                              self.kappa, c, R0)
@@ -131,7 +131,7 @@ class Tests(IMP.test.TestCase):
         c = 10.0
         no = 1.0
         self.kappa.set_scale(no)
-        for i in xrange(100):
+        for i in range(100):
             R0 = uniform(0.0, 10.0)
             self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
                                                              self.kappa, c, R0)
@@ -153,7 +153,7 @@ class Tests(IMP.test.TestCase):
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.m,
                                                          self.kappa, c, R0)
         self.m.add_restraint(self.J)
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.kappa.set_scale(no)
             self.m.evaluate(True)
@@ -245,7 +245,7 @@ class Tests(IMP.test.TestCase):
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(
             self.m, self.kappa, c, R0)
         self.m.add_restraint(self.J)
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 75)  # can't go higher because overflow errors
             self.kappa.set_scale(no)
             prob = self.J.get_probability()
@@ -259,7 +259,7 @@ class Tests(IMP.test.TestCase):
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(
             self.m, self.kappa, c, R0)
         self.m.add_restraint(self.J)
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 100)
             self.kappa.set_scale(no)
             self.assertAlmostEqual(self.J.get_probability(),

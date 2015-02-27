@@ -32,3 +32,10 @@ namespace IMP {
 
  }
 }
+
+%extend IMP::algebra::Transformation2D {
+  /* Support new-style "true" division */
+  %pythoncode %{
+  __truediv__ = __div__
+  %}
+}

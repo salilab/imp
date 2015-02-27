@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -29,7 +30,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(tps.evaluate((p0, p1), None), 0)
         self.assertNotEqual(tps.evaluate((p1, p0), None), 0)
 
-        print "test rotation"
+        print("test rotation")
         rot = IMP.algebra.get_rotation_from_matrix(0, 0, -1,
                                                    0, 1, 0,
                                                    1, 0, 0)
@@ -46,15 +47,15 @@ class Tests(IMP.test.TestCase):
         d0.set_coordinates(IMP.algebra.Vector3D(0, 1, 0))
         d1.set_coordinates(IMP.algebra.Vector3D(1, 1, 0))
         # clear derivs
-        print "test derivs"
+        print("test derivs")
         m.evaluate(True)
         tps.evaluate((p0, p1), IMP.DerivativeAccumulator(1))
-        print d0.get_derivative(0)
-        print d0.get_derivative(1)
-        print d0.get_derivative(2)
-        print d1.get_derivative(0)
-        print d1.get_derivative(1)
-        print d1.get_derivative(2)
+        print(d0.get_derivative(0))
+        print(d0.get_derivative(1))
+        print(d0.get_derivative(2))
+        print(d1.get_derivative(0))
+        print(d1.get_derivative(1))
+        print(d1.get_derivative(2))
         self.assertGreater(d0.get_derivative(0), 0)
         self.assertAlmostEqual(d0.get_derivative(1), 0, delta=.1)
         self.assertAlmostEqual(d0.get_derivative(2), 0, delta=.1)
@@ -94,8 +95,8 @@ class Tests(IMP.test.TestCase):
                                   * IMP.algebra.Vector3D(0, 0, -1) + 1,
                                   d1.get_coordinates()
                                   * IMP.algebra.Vector3D(0, 1, 0) + 0)
-        print "trans"
-        print str(vt[0]) + " " + str(vt[1]) + " " + str(vt[2])
+        print("trans")
+        print(str(vt[0]) + " " + str(vt[1]) + " " + str(vt[2]))
         self.assertAlmostEqual(vt[0], d0.get_coordinate(0), delta=.1)
         self.assertAlmostEqual(vt[1], d0.get_coordinate(1), delta=.1)
         self.assertAlmostEqual(vt[2], d0.get_coordinate(2), delta=.1)

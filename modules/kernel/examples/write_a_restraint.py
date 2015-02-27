@@ -2,6 +2,7 @@
 # While we do not recommend doing serious work using restraints written in Python, it is often useful when prototyping or testing code. Copy this example and modify as needed.
 #
 
+from __future__ import print_function
 import IMP
 
 # a restraint which checks if particles are sorted in
@@ -28,7 +29,7 @@ class MyRestraint(IMP.kernel.Restraint):
                 p1.add_to_derivative(k, 1, da)
             else:
                 if IMP.get_log_level() >= IMP.base.TERSE:
-                    print p0.get_name(), "and", p1.get_name(), " are ok"
+                    print(p0.get_name(), "and", p1.get_name(), " are ok")
         return score
 
     def do_get_inputs(self):
@@ -44,4 +45,4 @@ for i in range(0, 10):
     ps.append(p)
 r = MyRestraint(m, ps, k)
 # IMP.base.set_log_level(IMP.base.TERSE)
-print r.evaluate(True)
+print(r.evaluate(True))

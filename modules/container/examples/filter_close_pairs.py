@@ -5,6 +5,7 @@
 # probably be implemented in C++, for speed but implementing the filter in
 # python is good for prototyping.
 
+from __future__ import print_function
 import IMP
 import IMP.container
 import IMP.core
@@ -27,7 +28,7 @@ lsc = IMP.container.ListSingletonContainer(l)
 cpc = IMP.container.ClosePairContainer(lsc, 0.0)
 
 m.update()
-print "without", [(x[0].get_name(), x[1].get_name()) for x in cpc.get_particle_pairs()]
+print("without", [(x[0].get_name(), x[1].get_name()) for x in cpc.get_particle_pairs()])
 
 
 class ConsecutiveFilter(IMP.PairPredicate):
@@ -49,4 +50,4 @@ class ConsecutiveFilter(IMP.PairPredicate):
 f = ConsecutiveFilter()
 cpc.add_pair_filter(f)
 m.update()
-print "with", [(x[0].get_name(), x[1].get_name()) for x in cpc.get_particle_pairs()]
+print("with", [(x[0].get_name(), x[1].get_name()) for x in cpc.get_particle_pairs()])

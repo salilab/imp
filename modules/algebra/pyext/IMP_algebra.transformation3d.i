@@ -32,3 +32,17 @@ namespace IMP {
 
  }
 }
+
+%extend IMP::algebra::Rotation3D {
+  /* Support new-style "true" division */
+  %pythoncode %{
+  __truediv__ = __div__
+  %}
+}
+
+%extend IMP::algebra::Transformation3D {
+  /* Support new-style "true" division */
+  %pythoncode %{
+  __truediv__ = __div__
+  %}
+}

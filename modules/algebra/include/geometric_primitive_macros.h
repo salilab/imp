@@ -2,7 +2,7 @@
  *  \file IMP/algebra/geometric_primitive_macros.h
  *  \brief Various important macros for implementing geometry.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,7 +14,7 @@
     - IMP::algebra::get_surface_area()
     - IMP::algebra::get_volume()
     - IMP::algebra::get_bounding_box()
-    - output to a stream
+    - get/set geometry functions
 
     The name of the argument is g and the code snippets should return
     the expected value.
@@ -38,7 +38,7 @@
     - IMP::algebra::get_surface_area()
     - IMP::algebra::get_volume()
     - IMP::algebra::get_bounding_box()
-    - output to a stream
+    - get/set geometry functions
 
     The name of the argument is g and the code snippets should return
     the expected value.
@@ -85,7 +85,7 @@
 //! Implement the needed namespace methods for a geometry type
 /** These are
     - IMP::algebra::get_bounding_box()
-    - output to a stream
+    - get/set geometry functions
 
     The name should not include the D.
 
@@ -105,7 +105,7 @@
 /** These are
     - IMP::algebra::get_area()
     - IMP::algebra::get_bounding_box()
-    - output to a stream
+    - get/set geometry functions
 
     The name of the argument is g and the code snippets should return
     the expected value.
@@ -126,7 +126,7 @@
 /** These are
     - IMP::algebra::get_area()
     - IMP::algebra::get_bounding_box()
-    - output to a stream
+    - get/set geometry functions
 
     The name of the argument is g and the code snippets should return
     the expected value.

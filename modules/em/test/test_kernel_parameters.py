@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import math
 import IMP
@@ -32,8 +33,8 @@ class Tests(IMP.test.TestCase):
         rad = 1.
         self.kp.set_params(rad)
         kp = self.kp.get_params(rad)
-        print dir(kp)
-        print type(kp)
+        print(dir(kp))
+        print(type(kp))
         self.assertAlmostEqual(
             kp.get_vsig(),
             1. / math.sqrt(2) * rad,

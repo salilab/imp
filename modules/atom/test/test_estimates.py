@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -9,13 +10,13 @@ class Tests(IMP.test.TestCase):
     def test_massvol(self):
         """Testing the mass and volume estimates"""
         m = IMP.atom.get_mass_from_number_of_residues(250)
-        print m
+        print(m)
         v = IMP.atom.get_volume_from_mass(m)
-        print v
+        print(v)
         r = (v / (4.0 * 3.1415) * 3.0) ** .333
         rc = 0.726 * m ** .333  # from Frank's paper
-        print r
-        print rc
+        print(r)
+        print(rc)
         self.assertAlmostEqual(r, rc, delta=.1 * r)
 
     def test_d(self):
@@ -37,7 +38,7 @@ class Tests(IMP.test.TestCase):
             bd.optimize(1)
             diffs.append(d.get_coordinates())
         nd = IMP.atom.get_diffusion_coefficient(diffs, dt)
-        print nd, dd.get_diffusion_coefficient()
+        print(nd, dd.get_diffusion_coefficient())
         self.assertAlmostEqual(
             nd,
             dd.get_diffusion_coefficient(),

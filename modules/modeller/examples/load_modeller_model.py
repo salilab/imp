@@ -3,6 +3,7 @@
 # Modeller restraints (both static and dynamic) into equivalent IMP restraints.
 #
 
+from __future__ import print_function
 import modeller
 import IMP
 import IMP.modeller
@@ -33,4 +34,4 @@ for r in loader.load_static_restraints():
 for r in loader.load_dynamic_restraints():
     m.add_restraint(r)
 
-print m.evaluate(False)
+print(m.evaluate(False))

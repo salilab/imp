@@ -1,6 +1,7 @@
 ## \example kernel/graph.py
 # A simple example showing how to use the graph interface for in python.
 
+from __future__ import print_function
 import IMP
 
 m = IMP.kernel.Model()
@@ -19,7 +20,7 @@ IMP.show_graphviz(g)
 try:
     IMP.show_graphviz(g)
 except:
-    print "Oh well, no altgraph"
+    print("Oh well, no altgraph")
 
 try:
     import matplotlib
@@ -36,7 +37,7 @@ try:
     # networkx.draw_shell(xg)
     # plt.show()
 except:
-    print "networkx not fully installed"
+    print("networkx not fully installed")
 
 g.remove_vertex(0)
 
@@ -44,9 +45,9 @@ g.remove_vertex(0)
 try:
     IMP.show_graphviz(g)
 except:
-    print "oh well, something not working with graphviz"
+    print("oh well, something not working with graphviz")
 
 # finally, we can
 # in and out neighbors are the same
 for n in g.get_in_neighbors(8):
-    print g.get_vertex_name(n).get_name()
+    print(g.get_vertex_name(n).get_name())

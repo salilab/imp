@@ -2,7 +2,7 @@
  *  \file IMP/atom/VelocityScalingOptimizerState.h
  *  \brief Maintains temperature during molecular dynamics by velocity scaling.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -47,9 +47,6 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
   Float temperature_;
   unsigned skip_steps_;
   unsigned call_number_;
-
-  //! Keys of the xyz velocities
-  FloatKey vs_[3];
 };
 
 IMP_OBJECTS(VelocityScalingOptimizerState, VelocityScalingOptimizerStates);

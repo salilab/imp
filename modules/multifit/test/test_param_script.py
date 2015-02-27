@@ -33,7 +33,8 @@ class Tests(IMP.test.TestCase):
                                 'testasmb', 'testasmb.subunits',
                                 '10', 'testasmb.mrc', '15', '2', '300',
                                 '30', '4', '-96'])
-        lines = open('testasmb.input').readlines()
+        with open('testasmb.input') as fh:
+            lines = fh.readlines()
         self.assertEqual(len(lines), 5)
         spl = lines[1].rstrip('\r\n').split('|')
         self.assertEqual(len(spl), 10)

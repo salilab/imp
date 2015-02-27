@@ -27,7 +27,7 @@ class Tests(IMP.test.TestCase):
             from scipy.special import i0, i1
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-4 * pi, 4 * pi), uniform(-pi, pi),
                       uniform(0.1, 100)]
             fn = vonMises(*randno)
@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
 
     def testEvaluateDX(self):
         "tests vonMises.evaluate_derivative_x"
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-4 * pi, 4 * pi), uniform(-pi, pi),
                       uniform(0.1, 100)]
             fn = vonMises(*randno)
@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
 
     def testEvaluateDMu(self):
         "tests vonMises.evaluate_derivative_mu"
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-4 * pi, 4 * pi), uniform(-pi, pi),
                       uniform(0.1, 100)]
             fn = vonMises(*randno)
@@ -62,7 +62,7 @@ class Tests(IMP.test.TestCase):
             from scipy.special import i0, i1
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-4 * pi, 4 * pi), uniform(-pi, pi),
                       uniform(0.1, 100)]
             fn = vonMises(*randno)
@@ -77,7 +77,7 @@ class Tests(IMP.test.TestCase):
             from scipy.special import i0, i1
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
-        for i in xrange(100):
+        for i in range(100):
             randno = [uniform(-4 * pi, 4 * pi), uniform(-pi, pi),
                       uniform(0.1, 100)]
             fn = vonMises(*randno)

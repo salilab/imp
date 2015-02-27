@@ -29,4 +29,4 @@ opt.set_initial_length(1)
 
 # probably more steps than are needed
 e = opt.optimize(1000000)
-print IMP.core.get_distance(d0, d1)
+print(IMP.core.get_distance(d0, d1))

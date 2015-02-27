@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Test case:
 # Open three proteins
 # Generate density maps for each
@@ -55,7 +56,7 @@ class Tests(IMP.test.TestCase):
         # load as lots of particles, generate EM map, use it to define
         # restraint
         self.ps_all = []  # all the molecules together as one particle
-        for n in xrange(3):
+        for n in range(3):
             self.ps_all += self.pss[n]
         map = IMP.em.particles2density(self.ps_all, 8, 1.5)
         map.calcRMS()
@@ -90,8 +91,8 @@ class Tests(IMP.test.TestCase):
                 IMP.core.transform(self.rbs_of_copy[i], rand_t[i])
             score1 = self.restr_ps_all.evaluate(False)
             score2 = self.restr_rb_all_fast.evaluate(False)
-            print "evaluate ps_all after transform: ", j, " : ", score1
-            print "evaluate rb_all after transform fast: ", j, " : ", score2
+            print("evaluate ps_all after transform: ", j, " : ", score1)
+            print("evaluate rb_all after transform fast: ", j, " : ", score2)
             self.assertAlmostEqual(score1, score2, delta=0.1)
             for i in range(3):
                 for x in IMP.core.XYZs(IMP.core.get_leaves(self.mhs[i])):
@@ -108,7 +109,7 @@ class Tests(IMP.test.TestCase):
         # load as lots of particles, generate EM map, use it to define
         # restraint
         self.ps_all = []  # all the molecules together as one particle
-        for n in xrange(3):
+        for n in range(3):
             self.ps_all += self.pss[n]
         map = IMP.em.particles2density(self.ps_all, 8, 1.5)
         map.calcRMS()
@@ -130,7 +131,7 @@ class Tests(IMP.test.TestCase):
     def _test_fast_local_refinement(self):
         """test that local rigid fitting work well with rigid bodies"""
         self.ps_all = []  # all the molecules together as one particle
-        for n in xrange(3):
+        for n in range(3):
             self.ps_all += self.pss[n]
         d_map = IMP.em.particles2density(self.ps_all, 8, 1.5)
         d_map.calcRMS()
@@ -161,9 +162,9 @@ class Tests(IMP.test.TestCase):
             rb, self.radius_key, self.weight_key, d_map,
             None, 3, 5, 20, 2, 3, True)
         score_after = IMP.em.compute_fitting_score(ps, d_map)
-        print "score_after:", score_after, " score_before:", score_before
+        print("score_after:", score_after, " score_before:", score_before)
         self.assertAlmostEqual(score_after, score_before, delta=0.05)
         self.assertGreater(fs.get_number_of_solutions(), 0)
-        print fs.get_score(0)
+        print(fs.get_score(0))
 if __name__ == '__main__':
     IMP.test.main()

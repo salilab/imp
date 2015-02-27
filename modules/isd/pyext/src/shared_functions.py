@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import sys
 import os
 from glob import glob
@@ -15,7 +16,7 @@ import IMP.isd.utils
 from IMP.isd.Entry import Entry
 
 from math import sqrt, exp
-from StringIO import StringIO
+from io import StringIO
 
 from random import random
 
@@ -34,7 +35,7 @@ class PyMDMover:
     def store_move(self):
         self.oldcoords = []
         # self.oldvel=[]
-        for i in xrange(self.cont.get_number_of_particles()):
+        for i in range(self.cont.get_number_of_particles()):
             p = self.cont.get_particle(i)
             #self.oldvel.append([p.get_value(k) for k in self.velkeys])
             d = IMP.core.XYZ(p)
@@ -44,7 +45,7 @@ class PyMDMover:
         self.md.optimize(self.n_md_steps)
 
     def reset_move(self):
-        for i in xrange(self.cont.get_number_of_particles()):
+        for i in range(self.cont.get_number_of_particles()):
             p = self.cont.get_particle(i)
             # for j,k in enumerate(self.velkeys):
             #    p.set_value(k, self.oldvel[i][j])
@@ -85,9 +86,9 @@ class PyMC(IMP.Optimizer):
     def metropolis(self, old, new):
         deltaE = new - old
         if self.debug:
-            print ": old %f new %f deltaE %f new_epot: %f" % (old, new, deltaE,
+            print(": old %f new %f deltaE %f new_epot: %f" % (old, new, deltaE,
                                                               self.m.evaluate(
-                                                                  False)),
+                                                                  False)), end=' ')
         kT = self.kT
         if deltaE < 0:
             return True
@@ -96,11 +97,11 @@ class PyMC(IMP.Optimizer):
 
     def optimize(self, nsteps):
         self.naccept = 0
-        print "=== new MC call"
+        print("=== new MC call")
         # store initial coordinates
         self.mv.store_move()
-        for i in xrange(nsteps):
-            print "MC step %d " % i,
+        for i in range(nsteps):
+            print("MC step %d " % i, end=' ')
             # draw new velocities
             self.mv.md.assign_velocities(self.kT / kB)
             # get total energy
@@ -113,11 +114,11 @@ class PyMC(IMP.Optimizer):
                 # move was accepted: store new conformation
                 self.mv.store_move()
                 self.naccept += 1
-                print "accepted "
+                print("accepted ")
             else:
                 # move rejected: restore old conformation
                 self.mv.reset_move()
-                print " "
+                print(" ")
 
     def get_number_of_forward_steps(self):
         return self.naccept
@@ -211,7 +212,7 @@ class sfo_common:
         else:
             raise NotImplementedError(representation)
         if representation == 'calpha':
-            print "setting up simplified C alpha force field"
+            print("setting up simplified C alpha force field")
             # set radii
             for ca in IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE):
                 IMP.core.XYZR(ca.get_particle()).set_radius(1.89)
@@ -220,7 +221,7 @@ class sfo_common:
             pairs = []
             for chain in prot.get_children():
                 residues = [(chain.get_child(i), chain.get_child(i + 1))
-                            for i in xrange(chain.get_number_of_children() - 1)]
+                            for i in range(chain.get_number_of_children() - 1)]
                 residues = [(i.get_child(0).get_particle(),
                              j.get_child(0).get_particle())
                             for (i, j) in residues]
@@ -250,7 +251,7 @@ class sfo_common:
             nonbonded_pair_filter.set_bonds(bonds)
             ff = None
         else:
-            print "setting up CHARMM forcefield"
+            print("setting up CHARMM forcefield")
             #
             # Using the CHARMM libraries, determine the ideal topology (atoms and their
             # connectivity) for the PDB file's primary sequence
@@ -273,7 +274,7 @@ class sfo_common:
                     if j == 0:
                         r1.set_patched(False)
                     dis.apply(r0, r1)
-                    print "added disulfide bridge between cysteines %d and %d" % (i, j)
+                    print("added disulfide bridge between cysteines %d and %d" % (i, j))
             # Make the PDB file conform with the topology; i.e. if it contains extra
             # atoms that are not in the CHARMM topology file, remove them; if it is
             # missing atoms (e.g. sidechains, hydrogens) that are in the CHARMM topology,
@@ -385,11 +386,11 @@ class sfo_common:
                                      atom_type=IMP.atom.AtomType(atom[1])
                                      ).get_selected_particles()
             if len(sel) > 1:
-                print "found multiple atoms for atom %d %s!" % atom
+                print("found multiple atoms for atom %d %s!" % atom)
                 return
             p0 = IMP.core.XYZ(sel[0])
         except:
-            print "atom %d %s not found" % atom
+            print("atom %d %s not found" % atom)
             return
         self.__memoized[prot][atom] = p0
         return p0
@@ -468,7 +469,7 @@ class sfo_common:
         """
         # prior
         if verbose:
-            print "Prior for the NOE Scales"
+            print("Prior for the NOE Scales")
         sigma = self.init_model_setup_scale(*bounds_sigma)
         gamma = self.init_model_setup_scale(*bounds_gamma)
         prior_rs = self.init_model_jeffreys([sigma, gamma], prior_rs)
@@ -482,7 +483,7 @@ class sfo_common:
         restraints = tblr.read_distances(tblfile, 'NOE')['NOE']
         for i, restraint in enumerate(restraints):
             if verbose and i % 100 == 0:
-                print "\r%d" % i,
+                print("\r%d" % i, end=' ')
                 sys.stdout.flush()
             # a restraint is (contributions, dist, upper, lower, volume)
             # where contributions is a tuple of contributing pairs
@@ -496,7 +497,7 @@ class sfo_common:
                                                    restraint[1], sigma, gamma)
             rs.add_restraint(ln)
         if verbose:
-            print "\r%d NOE restraints read" % i
+            print("\r%d NOE restraints read" % i)
         # set weight of rs and add to model.
         # Weight is 1.0 cause sigma particle already has this role.
         self._m.add_restraint(rs)
@@ -525,7 +526,7 @@ class sfo_common:
         ln = IMP.isd.MarginalNOERestraint()
         for i, restraint in enumerate(restraints):
             if verbose and i % 100 == 0:
-                print "\r%d" % i,
+                print("\r%d" % i, end=' ')
                 sys.stdout.flush()
             # a restraint is (contributions, dist, upper, lower, volume)
             # where contributions is a tuple of contributing pairs
@@ -538,7 +539,7 @@ class sfo_common:
             ln.add_contribution(pairs, restraint[4])
         rs.add_restraint(ln)
         if verbose:
-            print "\r%d NOE contributions added" % (len(restraints))
+            print("\r%d NOE contributions added" % (len(restraints)))
         self._m.add_restraint(rs)
         return rs
 
@@ -562,7 +563,7 @@ class sfo_common:
         ln = IMP.isd.MarginalHBondRestraint()
         for i, restraint in enumerate(restraints):
             if verbose and i % 100 == 0:
-                print "\r%d" % i,
+                print("\r%d" % i, end=' ')
                 sys.stdout.flush()
             # a restraint is (contributions, dist, upper, lower, volume)
             # where contributions is a tuple of contributing pairs
@@ -575,7 +576,7 @@ class sfo_common:
             ln.add_contribution(pairs, restraint[4])
         rs.add_restraint(ln)
         if verbose:
-            print "\r%d Hbond contributions added" % (len(restraints))
+            print("\r%d Hbond contributions added" % (len(restraints)))
         self._m.add_restraint(rs)
         return rs
 
@@ -612,12 +613,12 @@ class sfo_common:
         """
         # prior
         if verbose:
-            print "Prior for von Mises Kappa"
+            print("Prior for von Mises Kappa")
         kappa = self.init_model_setup_scale(*bounds_kappa)
         prior_rs = self.init_model_jeffreys_kappa([kappa], prior_rs)
         # likelihood
         if verbose:
-            print "reading data"
+            print("reading data")
         rs = IMP.RestraintSet(self._m, 1.0, name)
         sequence = IMP.isd.utils.read_sequence_file(seqfile,
                                                     first_residue_no=sequence_match[1])
@@ -628,7 +629,7 @@ class sfo_common:
                 # using pred/res???.tab files
                 for i, res in enumerate(glob(os.path.join(talos_data, 'res???.tab'))):
                     if verbose and i % 100:
-                        print "\r%d" % i,
+                        print("\r%d" % i, end=' ')
                         sys.stdout.flush()
                     talosr.read(res)
             else:
@@ -642,10 +643,10 @@ class sfo_common:
         # get harvested data and create restraints
         data = talosr.get_data()
         if verbose:
-            print "\rread dihedral data for %d residues" % len(data)
-            print "creating restraints"
+            print("\rread dihedral data for %d residues" % len(data))
+            print("creating restraints")
         avgR = []
-        for resno, datum in data.iteritems():
+        for resno, datum in data.items():
             phidata = datum['phi']
             psidata = datum['psi']
             num = datum['num']
@@ -675,8 +676,8 @@ class sfo_common:
                 if verbose:
                     avgR.append(r.get_R0())
         if verbose:
-            print "%s Restraints created. Average R0: %f" % \
-                (len(avgR), sum(avgR) / float(len(avgR)))
+            print("%s Restraints created. Average R0: %f" % \
+                (len(avgR), sum(avgR) / float(len(avgR))))
         self._m.add_restraint(rs)
         return rs, prior_rs, kappa
 

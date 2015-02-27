@@ -26,4 +26,4 @@ class MyMetric(IMP.statistics.Metric):
 mm = MyMetric([random.uniform(0, 1) for i in range(0, 15)])
 
 cc = IMP.statistics.create_centrality_clustering(mm, .1, 3)
-print cc.get_number_of_clusters()
+print(cc.get_number_of_clusters())

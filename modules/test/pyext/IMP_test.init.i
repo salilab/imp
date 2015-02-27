@@ -15,8 +15,8 @@ import IMP
 import time
 import types
 import shutil
-import _compat_python
-import _compat_python.unittest2
+from . import _compat_python
+from ._compat_python import unittest2
 import datetime
 import pickle
 
@@ -44,7 +44,7 @@ def __load_unittest_package():
             else:
                 errors.append("'%s' does not have the 'skip' decorator" \
                               % modname)
-        except ImportError, e:
+        except ImportError as e:
             errors.append(str(e))
         #u = __import__("_compat_python.unittest2
         return _compat_python.unittest2
@@ -146,6 +146,10 @@ def xyz_numerical_derivatives(model, xyz, step):
 class TestCase(unittest.TestCase):
     """Super class for IMP test cases"""
 
+    def __init__(self, *args, **keys):
+        unittest.TestCase.__init__(self, *args, **keys)
+        self._progname = os.path.abspath(sys.argv[0])
+
     def setUp(self):
         self.__check_level = IMP.base.get_check_level()
         # Turn on expensive runtime checks while running the test suite:
@@ -161,13 +165,13 @@ class TestCase(unittest.TestCase):
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
            test directory."""
-        testdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        testdir = os.path.dirname(self._progname)
         dirs = testdir.split(os.path.sep)
         for i in range(len(dirs), 0, -1):
                 input = os.path.sep.join(dirs[:i] + ['input'])
                 if os.path.isdir(input):
                     ret = os.path.join(input, filename)
-                    if not open(ret, "r"):
+                    if not os.path.exists(ret):
                          raise IOError("Test input file "+ret+" does not exist")
                     return ret
         raise IOError("No test input directory found")
@@ -285,6 +289,12 @@ class TestCase(unittest.TestCase):
                 fmin, vmin = f, v
         self.assertAlmostEqual(fmin, expected_fmin, delta=step)
 
+    def check_get_from(self, obj):
+        """Check that the get_from() static method works correctly"""
+        cls = type(obj)
+        self.assertIsNotNone(cls.get_from(obj))
+        self.assertRaises(ValueError, cls.get_from, IMP.Model())
+
     def create_particles_in_box(self, model, num=10,
                                 lb= [0,0,0],
                                 ub= [10,10,10]):
@@ -303,11 +313,11 @@ class TestCase(unittest.TestCase):
     def assertValueObjects(self, module, exceptions_list):
         "Check that all the C++ classes in the module are values or objects."
         all= dir(module)
-        ok = set(exceptions_list + eval(module.__name__+"._value_types") + eval(module.__name__+"._object_types") + eval(module.__name__+"._raii_types") +eval(module.__name__+"._plural_types"))
+        ok = set(exceptions_list + module._value_types + module._object_types + module._raii_types + module._plural_types)
 
         bad=[]
         for name in all:
-            if self._get_type(module.__name__, name)==types.TypeType and not name.startswith("_"):
+            if self._get_type(module.__name__, name)==type and not name.startswith("_"):
                 if name.find("SwigPyIterator") != -1:
                     continue
                 # Exclude Python-only classes
@@ -319,19 +329,19 @@ class TestCase(unittest.TestCase):
                 bad.append(name)
         message="All IMP classes should be labeled as values or objects to get memory management correct in Python. The following are not:\n%s\nPlease add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the Python wrapper, or if the class has a good reason to be neither, add the name to the value_object_exceptions list in the IMPModuleTest call." \
                           % (str(bad))
-        self.assertEquals(len(bad), 0,
-                          message)
+        self.assertEqual(len(bad), 0, message)
         for e in exceptions_list:
-            self.assertTrue(e not in eval(module.__name__+"._value_types")\
-                       + eval(module.__name__+"._object_types")\
-                       + eval(module.__name__+"._raii_types")\
-                       + eval(module.__name__+"._plural_types"),
+            self.assertTrue(e not in module._value_types
+                       + module._object_types
+                       + module._raii_types
+                       + module._plural_types,
                         "Value/Object exception "+e+" is not an exception")
 
     def _check_spelling(self, word, words):
         """Check that the word is spelled correctly"""
         if "words" not in dir(self):
-            wordlist= open(IMP.test.get_data_path("linux.words"), "r").read().split("\n")
+            with open(IMP.test.get_data_path("linux.words"), "r") as fh:
+                wordlist= fh.read().split("\n")
             # why is "all" missing on my mac?
             custom_words=["info", "prechange", "int", "ints", "optimizeds", "graphviz",
                           "voxel", "voxels", "endian", 'rna', 'dna',
@@ -359,7 +369,7 @@ class TestCase(unittest.TestCase):
         bad=[]
         cc=re.compile("([A-Z][a-z]*)")
         for name in all:
-            if self._get_type(module.__name__, name)==types.TypeType and not name.startswith("_"):
+            if self._get_type(module.__name__, name)==type and not name.startswith("_"):
                 if name.find("SwigPyIterator") != -1:
                     continue
                 for t in re.findall(cc, name):
@@ -367,12 +377,12 @@ class TestCase(unittest.TestCase):
                         misspelled.append(t.lower())
                         bad.append(name)
 
-        self.assertEquals(len(bad), 0,
-                          "All IMP classes should be properly spelled. The following are not: %s.\nMisspelled words: %s. Add words to the spelling_exceptions variable of the IMPModuleTest if needed." \
-                          % (str(bad), ", ".join(set(misspelled))))
+        self.assertEqual(len(bad), 0,
+                         "All IMP classes should be properly spelled. The following are not: %s.\nMisspelled words: %s. Add words to the spelling_exceptions variable of the IMPModuleTest if needed." \
+                         % (str(bad), ", ".join(set(misspelled))))
 
         for name in all:
-            if self._get_type(module.__name__, name)==types.TypeType and not name.startswith("_"):
+            if self._get_type(module.__name__, name)==type and not name.startswith("_"):
                 if name.find("SwigPyIterator") != -1:
                     continue
                 if name.find('_') != -1:
@@ -381,12 +391,11 @@ class TestCase(unittest.TestCase):
                     bad.append(name)
                 for t in re.findall(cc, name):
                     if not self._check_spelling(t.lower(), words):
-                        print "misspelled", t, "in", name
+                        print("misspelled %s in %s" % (t, name))
                         bad.append(name)
         message="All IMP classes should have CamelCase names. The following do not: %s." \
                           % ("\n".join(bad))
-        self.assertEquals(len(bad), 0,
-                          message)
+        self.assertEqual(len(bad), 0, message)
 
     def _check_function_name(self, prefix, name, verbs, all, exceptions, words,
                              misspelled):
@@ -417,7 +426,7 @@ class TestCase(unittest.TestCase):
         for t in tokens:
             if not self._check_spelling(t, words):
                 misspelled.append(t)
-                print "misspelled", t, "in", name
+                print("misspelled %s in %s" % (t, name))
                 return [fullname]
         return []
 
@@ -446,7 +455,7 @@ class TestCase(unittest.TestCase):
                 bad.extend(self._check_function_name(prefix, name, verbs, all,
                                                      exceptions, words,
                                                      misspelled))
-            if typ == types.TypeType and "SwigPyIterator" not in name:
+            if typ == type and "SwigPyIterator" not in name:
                 members=eval("dir("+module+"."+name+")")
                 bad.extend(self._check_function_names(module+"."+name,
                                                       name, members, verbs, [],
@@ -472,8 +481,7 @@ class TestCase(unittest.TestCase):
             message += "\nMisspelled words: " + ", ".join(set(misspelled)) \
                        + ". Add words to the spelling_exceptions variable " \
                        + "of the standards_exceptions file if needed."
-        self.assertEquals(len(bad), 0,
-                          message)
+        self.assertEqual(len(bad), 0, message)
 
 
     def assertShow(self, modulename, exceptions):
@@ -481,24 +489,26 @@ class TestCase(unittest.TestCase):
         all= dir(modulename)
         not_found=[]
         for f in all:
+            # Exclude SWIG C global variables object
+            if f == 'cvar':
+                continue
             # Exclude Python-only classes; they are all showable
             if not eval('hasattr(%s.%s, "__swig_destroy__")' \
                         % (modulename.__name__, f)):
                 continue
-            if self._get_type(modulename.__name__, f) == types.TypeType\
+            if self._get_type(modulename.__name__, f) == type \
                    and not f.startswith("_") \
                    and not f.endswith("_swigregister")\
                    and f not in exceptions\
                    and not f.endswith("Temp") and not f.endswith("Iterator")\
                    and not f.endswith("Exception") and\
-                   f not in eval(modulename.__name__+"._raii_types") and \
-                   f not in eval(modulename.__name__+"._plural_types"):
+                   f not in modulename._raii_types and \
+                   f not in modulename._plural_types:
                 if not hasattr(getattr(modulename, f), 'show'):
                     not_found.append(f)
         message="All IMP classes should support show and __str__. The following do not:\n%s\n If there is a good reason for them not to, add them to the show_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
                           % "\n".join(not_found)
-        self.assertEquals(len(not_found), 0,
-                          message)
+        self.assertEqual(len(not_found), 0, message)
         for e in exceptions:
             self.assertIn(e, all, "Show exception "+e+" is not a class in module")
             self.assertTrue(not hasattr(getattr(modulename, e), 'show'),
@@ -521,10 +531,10 @@ class TestCase(unittest.TestCase):
         vars = {}
         try:
             try:
-                exec open(filename) in vars
+                exec(open(filename).read(), vars)
             # Catch sys.exit() called from within the example; a non-zero exit
             # value should cause the test case to fail
-            except SystemExit, e:
+            except SystemExit as e:
                 if e.code != 0 and e.code is not None:
                     raise _FatalError("Example exit with code %s" % str(e.code))
         finally:
@@ -614,7 +624,8 @@ class _TestResult(unittest.TextTestResult):
         if 'IMP_TEST_DETAIL_DIR' in os.environ:
             fname = os.path.join(os.environ['IMP_TEST_DETAIL_DIR'],
                                  os.path.basename(sys.argv[0]))
-            pickle.dump(self.all_tests, open(fname, 'wb'), -1)
+            with open(fname, 'wb') as fh:
+                pickle.dump(self.all_tests, fh, -1)
         super(_TestResult, self).stopTestRun()
 
     def startTest(self, test):
@@ -684,56 +695,23 @@ def main(*args, **keys):
        are."""
     return unittest.main(testRunner=_TestRunner, *args, **keys)
 
-try:
-    import subprocess
-    class _SubprocessWrapper(subprocess.Popen):
-        def __init__(self, app, args):
-            # For (non-Python) applications to work on Windows, the
-            # PATH must include the directory containing built DLLs
-            if sys.platform == 'win32' and app != sys.executable:
-                # Hack to find the location of build/lib/
-                libdir = os.environ['PYTHONPATH'].split(';')[0]
-                env = os.environ.copy()
-                env['PATH'] += ';' + libdir
-            else:
-                env = None
-            subprocess.Popen.__init__(self, [app]+list(args),
-                                      stdin=subprocess.PIPE,
-                                      stdout=subprocess.PIPE,
-                                      stderr=subprocess.PIPE, env=env)
-except ImportError:
-    import threading
-    import popen2
-    # Provide a subprocess workalike for Python 2.3 systems (e.g. old Macs)
-    class _SubprocessWrapper(object):
-        def __init__(self, app, args):
-            self.popen = popen2.Popen3(app + " " + " ".join(args), True)
-            self.stdin = self.popen.tochild
-            self.stdout = self.popen.fromchild
-            self.stderr = self.popen.childerr
-
-        def _readerthread(self, fh, buffer):
-            buffer.append(fh.read())
-
-        def communicate(self, input=None):
-            stdout = []
-            stderr = []
-            stdout_thread = threading.Thread(target=self._readerthread,
-                                             args=(self.stdout, stdout))
-            stdout_thread.setDaemon(True)
-            stdout_thread.start()
-            stderr_thread = threading.Thread(target=self._readerthread,
-                                             args=(self.stderr, stderr))
-            stderr_thread.setDaemon(True)
-            stderr_thread.start()
-
-            if input:
-                self.stdin.write(input)
-            self.stdin.close()
-            stdout_thread.join()
-            stderr_thread.join()
-            self.returncode = self.popen.wait()
-            return stdout[0], stderr[0]
+import subprocess
+class _SubprocessWrapper(subprocess.Popen):
+    def __init__(self, app, args):
+        # For (non-Python) applications to work on Windows, the
+        # PATH must include the directory containing built DLLs
+        if sys.platform == 'win32' and app != sys.executable:
+            # Hack to find the location of build/lib/
+            libdir = os.environ['PYTHONPATH'].split(';')[0]
+            env = os.environ.copy()
+            env['PATH'] += ';' + libdir
+        else:
+            env = None
+        subprocess.Popen.__init__(self, [app]+list(args),
+                                  stdin=subprocess.PIPE,
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE, env=env,
+                                  universal_newlines=True)
 
 
 class ApplicationTestCase(TestCase):
@@ -779,9 +757,18 @@ class ApplicationTestCase(TestCase):
         """Import an installed Python application, rather than running it.
            This is useful to directly test components of the application.
            @return the Python module object."""
-        import imp
-        return imp.load_source(os.path.splitext(app)[0],
-                               os.path.join(os.environ['IMP_BIN_DIR'], app))
+        try:
+            import importlib.machinery
+            imp = None
+        except ImportError:
+            import imp
+        name = os.path.splitext(app)[0]
+        pathname = os.path.join(os.environ['IMP_BIN_DIR'], app)
+        if imp is None:
+            return importlib.machinery.SourceFileLoader(name,
+                                                        pathname).load_module()
+        else:
+            return imp.load_source(name, pathname)
 
     def run_script(self, app, args):
         """Run an application with the given list of arguments.
@@ -824,14 +811,15 @@ class ApplicationTestCase(TestCase):
         inline = False
         cmds = []
         example_path = os.path.abspath(IMP.get_example_path('..'))
-        for line in open(doc).readlines():
-          if '\code{.sh}' in line:
-              inline = True
-          elif '\endcode' in line:
-              inline = False
-          elif inline:
-              cmds.append(line.rstrip('\r\n').replace('<imp_example_path>',
-                                                      example_path))
+        with open(doc) as fh:
+            for line in fh.readlines():
+                if '\code{.sh}' in line:
+                    inline = True
+                elif '\endcode' in line:
+                    inline = False
+                elif inline:
+                    cmds.append(line.rstrip('\r\n').replace(
+                                  '<imp_example_path>', example_path))
         if sys.platform == 'win32':
             cmds = [fix_win32_command(x) for x in cmds]
         return cmds
@@ -839,7 +827,7 @@ class ApplicationTestCase(TestCase):
     def run_shell_command(self, cmd):
         "Print and run a shell command, as returned by read_shell_commands()"
         import subprocess
-        print cmd
+        print(cmd)
         p = subprocess.call(cmd, shell=True)
         if p != 0:
             raise OSError("%s failed with exit value %d" % (cmd, p))

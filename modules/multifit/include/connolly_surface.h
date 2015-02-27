@@ -2,7 +2,7 @@
  *  \file IMP/multifit/connolly_surface.h
  *  \brief Generate surface for a set of atoms
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,8 +17,8 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Write the Connolly surface for a set of atoms to a file.
 void IMPMULTIFITEXPORT
-    write_connolly_surface(atom::Atoms as, base::TextOutput fn, float density,
-                           float probe_radius);
+    write_connolly_surface(atom::Atoms atoms, base::TextOutput fn,
+                           float density, float probe_radius);
 
 IMPMULTIFIT_END_NAMESPACE
 

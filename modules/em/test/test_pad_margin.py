@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import IMP
 import IMP.em
@@ -37,8 +38,8 @@ class Tests(IMP.test.TestCase):
         scene_center = self.scene.get_centroid(0.1)
         padded_scene_center = scene_padded.get_centroid(0.1)
 
-        print scene_center, padded_scene_center
-        print IMP.algebra.get_distance(padded_scene_center, scene_center)
+        print(scene_center, padded_scene_center)
+        print(IMP.algebra.get_distance(padded_scene_center, scene_center))
 
         self.assertAlmostEqual(
             IMP.algebra.get_distance(

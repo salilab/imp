@@ -3,6 +3,7 @@
 # written it python, it is often useful when prototyping or testing code.
 # Copy this example and modify as needed.
 
+from __future__ import print_function
 import IMP
 
 # an optimizer state which prints out the last scores of some restraints.
@@ -17,7 +18,7 @@ class MyOptimizerState(IMP.OptimizerState):
 
     def update(self):
         for r in self.rs:
-            print r.get_name(), r.get_last_score()
+            print(r.get_name(), r.get_last_score())
 
 # some code to create and evaluate it
 k = IMP.FloatKey("a key")
@@ -38,7 +39,7 @@ os.set_name("python optimizer state")
 co = IMP.kernel._ConstOptimizer(m)
 co.set_scoring_function(sf)
 co.add_optimizer_state(os)
-print co.optimize(100)
+print(co.optimize(100))
 
 # this is needed to clean up memory properly for some reason
 co.remove_optimizer_state(os)

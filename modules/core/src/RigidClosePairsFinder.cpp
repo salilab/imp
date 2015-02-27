@@ -2,7 +2,7 @@
  *  \file RigidClosePairsFinder.cpp
  *  \brief Test all pairs.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -245,16 +245,20 @@ ModelObjectsTemp RigidClosePairsFinder::do_get_inputs(
     kernel::Model *m, const kernel::ParticleIndexes &pis) const {
   kernel::ModelObjectsTemp ret = IMP::get_particles(m, pis);
   kernel::ParticlesTemp rbs = get_rigid_bodies(m, pis);
+  kernel::ParticleIndexes all_pis = pis;
+  all_pis += kernel::get_indexes(rbs);
   ret += rbs;
   for (unsigned int i = 0; i < rbs.size(); ++i) {
-    ret += RigidBody(rbs[i]).get_members();
+    RigidMembers rms = RigidBody(rbs[i]).get_members();
+    for (unsigned i = 0; i < rms.size(); ++i) {
+      all_pis.push_back(rms[i].get_particle_index());
+    }
+    ret += rms;
   }
   if (get_number_of_pair_filters() > 0) {
     for (PairFilterConstIterator it = pair_filters_begin();
          it != pair_filters_end(); ++it) {
-      for (unsigned int i = 0; i < ret.size(); ++i) {
-        ret += (*it)->get_inputs(m, pis);
-      }
+      ret += (*it)->get_inputs(m, all_pis);
     }
   }
   return ret;

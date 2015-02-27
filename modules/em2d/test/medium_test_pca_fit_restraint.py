@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.atom
@@ -22,7 +23,7 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
         pca_fit_restraint = IMP.em2d.PCAFitRestraint(
             particles, image_list, 2.2, 10, 50)
         score = pca_fit_restraint.evaluate(False)
-        print 'initial score = ' + str(score)
+        print('initial score = ' + str(score))
         self.assertAlmostEqual(score, 0.052, delta=0.01)
         os.unlink('images.pgm')
 

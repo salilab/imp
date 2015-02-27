@@ -19,7 +19,7 @@ d2 = IMP.core.XYZ.setup_particle(p2)
 # Use some XYZ-specific functionality (set coordinates)
 d1.set_coordinates(IMP.algebra.Vector3D(10.0, 10.0, 10.0))
 d2.set_coordinates(IMP.algebra.Vector3D(-10.0, -10.0, -10.0))
-print d1, d2
+print(d1, d2)
 
 # Harmonically restrain p1 to be zero distance from the origin
 f = IMP.core.Harmonic(0.0, 1.0)
@@ -38,4 +38,4 @@ d1.set_coordinates_are_optimized(True)
 d2.set_coordinates_are_optimized(True)
 o = IMP.core.ConjugateGradients(m)
 o.optimize(50)
-print d1, d2
+print(d1, d2)

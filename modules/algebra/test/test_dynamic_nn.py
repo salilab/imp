@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -15,24 +16,24 @@ class Tests(IMP.test.TestCase):
         for i in range(10):
             vecs.append(IMP.algebra.get_random_vector_in(bb))
         nn = IMP.algebra.DynamicNearestNeighbor3D(vecs, 2)
-        print vecs
+        print(vecs)
         for i in range(10):
             n1 = nn.get_in_ball(i, i)
-            print "found", n1
+            print("found", n1)
             for ij, j in enumerate(vecs):
                 if IMP.algebra.get_distance(vecs[i], j) < i * .98 and ij != i:
-                    print ij, j, IMP.algebra.get_distance(vecs[i], j)
+                    print(ij, j, IMP.algebra.get_distance(vecs[i], j))
                     self.assertIn(ij, n1)
         for i in range(10):
             npt = IMP.algebra.get_random_vector_in(bb)
             vecs[i] = npt
-            print "now", i, npt
+            print("now", i, npt)
             nn.set_coordinates(i, npt)
             n1 = nn.get_in_ball(i, i)
-            print "xfound", n1
+            print("xfound", n1)
             for ij, j in enumerate(vecs):
                 if IMP.algebra.get_distance(vecs[i], j) < i * .98 and ij != i:
-                    print ij, j, IMP.algebra.get_distance(vecs[i], j)
+                    print(ij, j, IMP.algebra.get_distance(vecs[i], j))
                     self.assertIn(ij, n1)
 if __name__ == '__main__':
     IMP.test.main()

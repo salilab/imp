@@ -21,8 +21,8 @@ class Tests(IMP.test.TestCase):
         cols = image.get_header().get_number_of_columns()
         fn_corr = self.get_input_file_name("autocorrelation_img.spi")
         stored_corr = IMP.em2d.Image(fn_corr, srw)
-        for i in xrange(0, int(rows)):
-            for j in xrange(0, int(cols)):
+        for i in range(0, int(rows)):
+            for j in range(0, int(cols)):
                 self.assertAlmostEqual(
                     corr(i, j), stored_corr(i, j), delta=0.001,
                     msg="Autocorrelation image is different than stored")
@@ -44,8 +44,8 @@ class Tests(IMP.test.TestCase):
         stored_corr = IMP.em2d.Image(name, srw)
         rows = stored_corr.get_header().get_number_of_rows()
         cols = stored_corr.get_header().get_number_of_columns()
-        for i in xrange(0, int(rows)):
-            for j in xrange(0, int(cols)):
+        for i in range(0, int(rows)):
+            for j in range(0, int(cols)):
                 self.assertAlmostEqual(
                     corr(i, j), stored_corr(i, j), delta=0.001,
                     msg="Correlation image is different than stored")

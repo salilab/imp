@@ -2,7 +2,7 @@
  *  \file IMP/isd/WeightRestraint.h
  *  \brief Put description here
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 

@@ -26,17 +26,12 @@ def link_dox(source):
     for module, g in tools.get_modules(source):
         tools.link_dir(os.path.join(g, "doc"),
                        os.path.join("doc", "html", module),
-                       match=["*.png", "*.pdf"], clean=False)
-    for app, g in tools.get_applications(source):
-        tools.link_dir(g, os.path.join("doc", "html", app),
-                       match=["*.png", "*.pdf"], exclude=["README.md"],
-                       clean=False)
-    tools.link_dir(
-        os.path.join(source, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
-        clean=False)
+                       match=["*.png", "*.pdf", "*.gif"], clean=False)
+    tools.link_dir(os.path.join(source, "doc"), os.path.join("doc", "html"),
+                   match=["*.png", "*.pdf", "*.gif"], clean=False)
     tools.link_dir(os.path.join(source, "doc", "tutorial"),
-                   os.path.join("doc", "tutorial"), match=["*.png", "*.pdf"],
-                   clean=False)
+                   os.path.join("doc", "tutorial"),
+                   match=["*.png", "*.pdf", "*.gif"], clean=False)
 
 parser = OptionParser()
 parser.add_option("-s", "--source", dest="source",

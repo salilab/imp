@@ -2,7 +2,7 @@
  *  \file IMP/base/comparison_macros.h
  *  \brief Various general useful macros for IMP.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -49,6 +49,7 @@
 /** @} */
 #elif defined(SWIG)
 #define IMP_SWIG_COMPARISONS(Name)  \
+  int __cmp__(const Name& o) const; \
   bool __eq__(const Name& o) const; \
   bool __ne__(const Name& o) const; \
   bool __lt__(const Name& o) const; \

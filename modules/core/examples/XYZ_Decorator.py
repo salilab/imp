@@ -18,4 +18,4 @@ d1.set_coordinates(IMP.algebra.Vector3D(3, 4, 5))
 
 # return the distance between the two points described by the decorated
 # particles
-print IMP.core.get_distance(d0, d1)
+print(IMP.core.get_distance(d0, d1))

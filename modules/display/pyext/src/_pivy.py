@@ -24,7 +24,7 @@ def get_writer(parent):
             if myWindow is None:
                 raise RuntimeError("Can't open PiVy window.")
             self.window = myWindow
-            print "scene"
+            print("scene")
             scene = pivy.coin.SoSeparator()
 
             # Create a viewer in which to see our scene graph.
@@ -32,9 +32,9 @@ def get_writer(parent):
 
             # Put our scene into viewer, change the title
             viewer.setSceneGraph(scene)
-            print "title"
+            print("title")
             viewer.setTitle("IMP")
-            print "show"
+            print("show")
             viewer.show()
             self.root = scene
             self.viewer = viewer

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import IMP
 import IMP.test
@@ -43,20 +44,20 @@ class Tests(IMP.test.TestCase):
         ok03 = (d03 < 1.2)
         ok13 = (d13 < 1.2)
         ok23 = (d23 < 1.2)
-        print ok01
-        print ok02
-        print ok12
-        print ok03
-        print ok13
-        print ok23
+        print(ok01)
+        print(ok02)
+        print(ok12)
+        print(ok03)
+        print(ok13)
+        print(ok23)
         sum = ok01 + ok02 + ok12 + ok03 + ok13 + ok23
-        print sum
-        print d01
-        print d02
-        print d12
-        print d03
-        print d13
-        print d23
+        print(sum)
+        print(d01)
+        print(d02)
+        print(d12)
+        print(d03)
+        print(d13)
+        print(d23)
         score = m.evaluate(False)
         self.assertGreaterEqual(sum, 3, "Wrong number of close pairs")
         self.assertTrue(ok01 or ok02 or ok03,

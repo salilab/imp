@@ -58,7 +58,7 @@ class _Communicator(object):
 
     def __init__(self):
         self._socket = None
-        self._ibuffer = ''
+        self._ibuffer = b''
 
     def _send(self, obj):
         p = xdrlib.Packer()
@@ -84,7 +84,7 @@ class _Communicator(object):
             except (IndexError, EOFError):
                 try:
                     data = self._socket.recv(4096)
-                except socket.error, detail:
+                except socket.error as detail:
                     raise NetworkError("Connection lost to %s: %s" \
                                        % (str(self), str(detail)))
                 if len(data) > 0:
@@ -226,16 +226,18 @@ class SGEQsubSlaveArray(SlaveArray):
        can submit Sun Grid Engine (SGE) jobs using the 'qsub' command (this
        is termed a 'submit host' by SGE). The class starts an SGE job array
        (every slave has the same SGE job ID, but a different task ID).
-       @param numslave The number of slaves, which correponds to the number of
-                       tasks in the SGE job.
-       @param options  A string of SGE options that are passed on the 'qsub'
-                       command line. This is added to standard_options.
     """
 
 
     standard_options = '-j y -cwd -r n -o sge-errors'
 
     def __init__(self, numslave, options):
+        """Constructor.
+           @param numslave The number of slaves, which correponds to the
+                           number of tasks in the SGE job.
+           @param options  A string of SGE options that are passed on the 'qsub'
+                           command line. This is added to standard_options.
+        """
         self._numslave = numslave
         self._options = options
         self._starting_slaves = []
@@ -252,7 +254,7 @@ class SGEQsubSlaveArray(SlaveArray):
         qsub = "qsub -S /bin/sh %s %s -t 1-%d" % \
                (self._options, self.standard_options,
                 len(self._starting_slaves))
-        print qsub
+        print(qsub)
         a = _Popen4(qsub)
         (inp, out) = (a.stdin, a.stdout)
         slave_uid = " ".join([repr(s[0]) for s in self._starting_slaves])
@@ -267,7 +269,7 @@ class SGEQsubSlaveArray(SlaveArray):
         outlines = out.readlines()
         out.close()
         for line in outlines:
-            print line.rstrip('\r\n')
+            print(line.rstrip('\r\n'))
         a.require_clean_exit()
         self._set_jobid(outlines)
         self._starting_slaves = []
@@ -329,6 +331,7 @@ class Context(object):
        Context objects are typically created by calling Manager::get_context().
     """
     def __init__(self, manager, startup=None):
+        """Constructor."""
         self._manager = manager
         self._startup = startup
         self._tasks = []
@@ -362,24 +365,6 @@ class Context(object):
 
 class Manager(object):
     """Manages slaves and contexts.
-       @param python If not None, the command to run to start a Python
-                     interpreter that can import the IMP module. Otherwise,
-                     the same interpreter that the master is currently using
-                     is used. This is passed to the shell, so a full command
-                     line (including multiple words separated by spaces) can
-                     be used if necessary.
-       @param host   The hostname that slaves use to connect back to the master.
-                     If not specified, the master machine's primary IP address
-                     is used. On multi-homed machines, such as compute cluster
-                     headnodes, this may need to be changed to allow all
-                     slaves to reach the master (typically the name of the
-                     machine's internal network address is needed). If only
-                     running local slaves, 'localhost' can be used to prohibit
-                     connections across the network.
-       @param output A format string used to name slave output files. It is
-                     given the numeric slave id, so for example the default
-                     value 'slave\%d.output' will yield output files called
-                     slave0.output, slave1.output, etc.
     """
   
     connect_timeout = 7200
@@ -388,6 +373,26 @@ class Manager(object):
     heartbeat_timeout = 7200
 
     def __init__(self, python=None, host=None, output='slave%d.output'):
+        """Constructor.
+           @param python If not None, the command to run to start a Python
+                         interpreter that can import the IMP module. Otherwise,
+                         the same interpreter that the master is currently using
+                         is used. This is passed to the shell, so a full command
+                         line (including multiple words separated by spaces) can
+                         be used if necessary.
+           @param host   The hostname that slaves use to connect back to the
+                         master. If not specified, the master machine's primary
+                         IP address is used. On multi-homed machines, such as
+                         compute cluster headnodes, this may need to be changed
+                         to allow all slaves to reach the master (typically the
+                         name of the machine's internal network address is
+                         needed). If only running local slaves, 'localhost' can
+                         be used to prohibit connections across the network.
+           @param output A format string used to name slave output files. It is
+                         given the numeric slave id, so for example the default
+                         value 'slave\%d.output' will yield output files called
+                         slave0.output, slave1.output, etc.
+        """
         if python is None:
             self._python = sys.executable
         else:
@@ -481,7 +486,7 @@ class Manager(object):
         try:
             slave._start_task(t, context)
             context._tasks.pop(0)
-        except socket.error, detail:
+        except socket.error as detail:
             slave._kill()
 
     def _get_finished_tasks(self, context):
@@ -507,10 +512,10 @@ class Manager(object):
                     return task
                 else: # the slave sent back a heartbeat
                     self._kill_timed_out_slaves(context)
-            except NetworkError, detail:
+            except NetworkError as detail:
                 task = event._kill()
-                print "Slave %s failed (%s): rescheduling task %s" \
-                      % (str(event), str(detail), str(task))
+                print("Slave %s failed (%s): rescheduling task %s" \
+                      % (str(event), str(detail), str(task)))
                 context._tasks.append(task)
                 self._send_tasks_to_slaves(context)
         else:
@@ -538,15 +543,17 @@ class Manager(object):
     def _accept_slave(self, sock, context):
         sock.setblocking(True)
         identifier = sock.recv(1024)
+        if identifier:
+            identifier = identifier.decode('ascii')
         if identifier and identifier in self._starting_slaves:
             slave = self._starting_slaves.pop(identifier)
             slave._accept_connection(sock)
-            print "Identified slave %s " % str(slave)
+            print("Identified slave %s " % str(slave))
             self._init_slave(slave)
             self._send_task_to_slave(slave, context)
             return slave
         else:
-            print "Ignoring request from unknown slave"
+            print("Ignoring request from unknown slave")
 
     def _init_slave(self, slave):
         if _import_time_path[0] != '':

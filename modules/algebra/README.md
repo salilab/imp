@@ -54,7 +54,7 @@ IMP::algebra::Vector2Ds style names.
 [ ANN](http://www.cs.umd.edu/~mount/ANN) is a library implementing fast
 nearest neighbor searches. Certain data structures will be faster if
 it is installed. While compilation of the library from source is quite
-straight forward, it is not avaible as a package for common platforms.
+straightforward, it is not available as a package for common platforms.
 In addition, ANN must be built as a shared library rather than a static
 library.
 

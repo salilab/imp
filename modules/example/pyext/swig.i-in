@@ -67,5 +67,5 @@ namespace IMP {
 
 /* Import the function from _randomize.py */
 %pythoncode %{
-from _randomize import *
+from ._randomize import *
 %}

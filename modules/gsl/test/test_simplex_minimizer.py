@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -15,13 +16,13 @@ class EasyCubeFunc(IMP.kernel.Restraint):
         self.index = IMP.FloatKey("x")
 
     def do_show(self, junk):
-        print "Woods function"
+        print("Woods function")
 
     def get_version_info(self):
         return IMP.VersionInfo("Daniel Russel", "0.5")
 
     def unprotected_evaluate(self, accum):
-        print "eval"
+        print("eval")
         e = 0
         for i in range(0, len(self.particles)):
             d = IMP.core.XYZ(self.particles[i])
@@ -55,13 +56,13 @@ class Tests(IMP.test.TestCase):
                 True)
         rsr = EasyCubeFunc(model, particles)
         model.add_restraint(rsr)
-        print "creating"
+        print("creating")
         opt = IMP.gsl.Simplex()
         opt.set_minimum_size(.000001)
         opt.set_initial_length(1)
         opt.set_model(model)
         # opt.set_threshold(1e-5)
-        print "optimize"
+        print("optimize")
         e = opt.optimize(1000000)
         self.assertAlmostEqual(e, 0.0, places=1)
 

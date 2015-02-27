@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-__doc__ = "Refine fitting subunits into a density map with FFT."
-
+from __future__ import print_function
 import math
 import IMP.multifit
 import IMP.atom
@@ -10,6 +9,7 @@ from IMP import OptionParser
 import os
 import sys
 
+__doc__ = "Refine fitting subunits into a density map with FFT."
 
 class Fitter(object):
 
@@ -46,7 +46,7 @@ class Fitter(object):
 
     # TODO - update function
     def run_local_fitting(self, mol2fit, rb, initial_transformation):
-        print "resolution is:", self.resolution
+        print("resolution is:", self.resolution)
         dmap = IMP.em.read_map(self.em_map)
         dmap.get_header().set_resolution(self.resolution)
         dmap.update_voxel_size(self.spacing)
@@ -89,7 +89,7 @@ class Fitter(object):
                 IMP.atom.transform(mol2fit, trans.get_inverse())
                 fit.set_fit_transformation(trans * initial_transformation)
         if self.ref_pdb != '':
-            print 'from all fits, lowest rmsd to ref:', cur_low
+            print('from all fits, lowest rmsd to ref:', cur_low)
         IMP.multifit.write_fitting_solutions(self.fits_fn, final_fits)
 
 

@@ -77,11 +77,11 @@ def rewrite(filename, contents, verbose=True):
         if old == contents:
             return
         elif verbose:
-            print "    Different", filename
+            print("    Different " + filename)
             for l in difflib.unified_diff(old.split("\n"), contents.split("\n")):
                 stl = str(l)
                 if (stl[0] == '-' or stl[0] == '+') and stl[1] != '-' and stl[1] != '+':
-                    print "    " + stl
+                    print("    " + stl)
     except:
         pass
         # print "Missing", filename
@@ -104,7 +104,7 @@ def link(source, target, verbose=False):
     # print tpath, spath
     if not os.path.exists(spath):
         if verbose:
-            print "no source", spath
+            print("no source", spath)
         return
     if os.path.islink(tpath):
         if os.readlink(tpath) == spath:
@@ -116,7 +116,7 @@ def link(source, target, verbose=False):
     elif os.path.exists(tpath):
         os.unlink(tpath)
     if verbose:
-        print "linking", spath, tpath
+        print("linking", spath, tpath)
     if hasattr(os, 'symlink'):
         os.symlink(spath, tpath)
     # Copy instead of link on platforms that don't support symlinks (Windows)
@@ -138,7 +138,7 @@ def filter_pyapps(fname):
            and (fname.endswith('.py') or has_python_hashbang(fname))
 
 def link_dir(source_dir, target_dir, match=["*"], exclude=[],
-             clean=True, verbose=False, filt=None):
+             clean=True, verbose=False, filt=None, make_subdirs=False):
     if not isinstance(match, list):
         raise TypeError("Expecting a list object for match")
     exclude = exclude + ["SConscript", "CMakeLists.txt", "Files.cmake", ".svn"]
@@ -160,7 +160,13 @@ def link_dir(source_dir, target_dir, match=["*"], exclude=[],
         if name not in exclude:
             target = os.path.join(target_dir, name)
             targets[target] = None
-            link(g, target, verbose=verbose)
+            if os.path.isdir(g) and make_subdirs:
+                if os.path.islink(target):
+                    os.unlink(target)
+                link_dir(g, target, match, exclude, clean=clean,
+                         verbose=verbose, filt=filt, make_subdirs=True)
+            else:
+                link(g, target, verbose=verbose)
     if clean:
         # Remove any old links that are no longer valid
         for ln in existing_links:
@@ -176,61 +182,47 @@ def get_modules(source):
     return mods
 
 
-def get_applications(source):
-    path = os.path.join(source, "applications", "*")
-    globs = get_glob([path])
-    mods = [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1] != "SConscript")
-            and os.path.exists(os.path.join(g, "dependencies.py"))]
-    return mods
-
-
 def get_dependency_description(path):
-    name = os.path.splitext(os.path.split(path)[1])[0]
-    pkg_config_name = None
-    headers = ""
-    libraries = ""
-    extra_libraries = ""
-    version_cpp = ""
-    version_headers = ""
-    body = ""
-    python_module = ""
-    is_cmake = False
-    exec(open(path, "r").read())
-    passlibs = split(libraries)
-    passheaders = split(headers)
-    extra_libs = split(extra_libraries)
+    d = {'pkg_config_name':  None, 'headers': "", 'libraries': "",
+         'extra_libraries': "", 'version_cpp': "", 'version_headers': "",
+         'body': "", 'python_module': "", 'is_cmake': False,
+         'name': os.path.splitext(os.path.split(path)[1])[0]}
+    exec(open(path, "r").read(), d)
+    passlibs = split(d['libraries'])
+    passheaders = split(d['headers'])
+    extra_libs = split(d['extra_libraries'])
     cmakef = os.path.splitext(path)[0] + ".cmake"
     if os.path.exists(cmakef):
         cmake = "include(\"${PROJECT_SOURCE_DIR}/%s\")" % (
             to_cmake_path(os.path.splitext(path)[0] + ".cmake"))
     else:
         cmake = ""
-    if pkg_config_name is None:
-        pkg_config_name = name.lower()
-    return {"name": name,
-            "pkg_config_name": pkg_config_name,
+    if d['pkg_config_name'] is None:
+        d['pkg_config_name'] = d['name'].lower()
+    return {"name": d['name'],
+            "pkg_config_name": d['pkg_config_name'],
             "headers": passheaders,
             "libraries": passlibs,
             "extra_libraries": extra_libs,
-            "body": body,
-            "version_cpp": split(version_cpp),
-            "version_headers": split(version_headers),
+            "body": d['body'],
+            "version_cpp": split(d['version_cpp']),
+            "version_headers": split(d['version_headers']),
             "cmake": cmake,
-            "python_module": python_module}
+            "python_module": d['python_module']}
 
 
 def get_module_description(source, module, extra_data_path, root="."):
     df = os.path.join(root, source, "modules", module, "dependencies.py")
     if os.path.exists(df):
-        required_modules = ""
-        optional_modules = ""
-        required_dependencies = ""
-        optional_dependencies = ""
-        exec open(df, "r").read()
-        return {"required_modules": split(required_modules),
-                "optional_modules": split(optional_modules),
-                "required_dependencies": split(required_dependencies),
-                "optional_dependencies": split(optional_dependencies)}
+        d = {'required_modules': "",
+             'optional_modules': "",
+             'required_dependencies': "",
+             'optional_dependencies': ""}
+        exec(open(df, "r").read(), d)
+        return {"required_modules": split(d['required_modules']),
+                "optional_modules": split(d['optional_modules']),
+                "required_dependencies": split(d['required_dependencies']),
+                "optional_dependencies": split(d['optional_dependencies'])}
     else:
         info = get_module_info(module, extra_data_path)
         return {"required_modules": info["modules"],
@@ -250,7 +242,7 @@ def get_all_modules(source, modules, extra_data_path, ordered, root="."):
             if m not in ret:
                 ret.append(m)
                 stack.append(m)
-    ret.sort(cmp=lambda x, y: cmp(ordered.index(x), ordered.index(y)))
+    ret.sort(key=lambda x: ordered.index(x))
     return ret
 
 
@@ -270,18 +262,6 @@ def get_all_dependencies(source, modules, extra_data_path, ordered, root="."):
     return ret
 
 
-def get_application_description(source, module, extra_data_path, root="."):
-    df = os.path.join(root, source, "applications", module, "dependencies.py")
-    required_modules = ""
-    optional_modules = ""
-    required_dependencies = ""
-    optional_dependencies = ""
-    exec open(df, "r").read()
-    return {"required_modules": split(required_modules),
-            "optional_modules": split(optional_modules),
-            "required_dependencies": split(required_dependencies),
-            "optional_dependencies": split(optional_dependencies)}
-
 dependency_info_cache = {}
 
 
@@ -292,22 +272,18 @@ def get_dependency_info(dependency, extra_data_path, root="."):
     df = os.path.join(root, "data", "build_info", dependency)
     if not os.path.exists(df) and extra_data_path != "":
         df = os.path.join(extra_data_path, "build_info", dependency)
-    ok = False
-    libraries = ""
-    version = ""
-    includepath = ""
-    libpath = ""
-    swigpath = ""
+    d = {'libraries': "", 'version': "", 'includepath': "",
+         'libpath': "", 'swigpath': "", 'ok': False}
     # try:
-    exec open(df, "r").read()
+    exec(open(df, "r").read(), d)
     # except:
     #    print >> sys.stderr, "Error reading dependency", dependency, "at", df
-    ret = {"ok": ok,
-           "libraries": split(libraries),
-           "version": split(version),
-           "includepath": includepath,
-           "libpath": libpath,
-           "swigpath": swigpath}
+    ret = {"ok": d['ok'],
+           "libraries": split(d['libraries']),
+           "version": split(d['version']),
+           "includepath": d['includepath'],
+           "libpath": d['libpath'],
+           "swigpath": d['swigpath']}
     dependency_info_cache[dependency] = ret
     return ret
 
@@ -325,54 +301,23 @@ def get_module_info(module, extra_data_path, root="."):
     if not os.path.exists(df) and extra_data_path != "":
         external = True
         df = os.path.join(extra_data_path, "build_info", "IMP." + module)
-    ok = False
-    modules = ""
-    unfound_modules = ""
-    dependencies = ""
-    unfound_dependencies = ""
-    swig_wrapper_includes = ""
-    swig_includes = ""
-    swig_path = ""
-    include_path = ""
-    lib_path = ""
-    exec open(df, "r").read()
-    ret = {"ok": ok,
-           "modules": split(modules),
-           "unfound_modules": split(unfound_modules),
-           "dependencies": split(dependencies),
-           "unfound_dependencies": split(unfound_dependencies),
-           "swig_includes": split(swig_includes),
-           "swig_wrapper_includes": split(swig_wrapper_includes)}
+    d = {'modules': "", 'unfound_modules': "",
+         'dependencies': "", 'unfound_dependencies': "",
+         'swig_wrapper_includes': "", 'swig_includes': "",
+         'swig_path': "", 'include_path': "", 'lib_path': "", 'ok': False}
+    exec(open(df, "r").read(), d)
+    ret = {"ok": d['ok'],
+           "modules": split(d['modules']),
+           "unfound_modules": split(d['unfound_modules']),
+           "dependencies": split(d['dependencies']),
+           "unfound_dependencies": split(d['unfound_dependencies']),
+           "swig_includes": split(d['swig_includes']),
+           "swig_wrapper_includes": split(d['swig_wrapper_includes'])}
     if external:
         ret["external"] = True
     module_info_cache[module] = ret
     return ret
 
-
-def get_application_info(module, extra_data_path, root="."):
-    df = os.path.join(root, "data", "build_info", "IMP." + module)
-    if not os.path.exists(df) and extra_data_path != "":
-        df = os.path.join(extra_data_path, "build_info", "IMP." + module)
-    ok = False
-    modules = ""
-    unfound_modules = ""
-    dependencies = ""
-    unfound_dependencies = ""
-    exec open(df, "r").read()
-    return {"ok": ok,
-            "modules": split(modules),
-            "unfound_modules": split(unfound_modules),
-            "dependencies": split(dependencies),
-            "unfound_dependencies": split(unfound_dependencies)}
-
-
-def get_applications(source):
-    path = os.path.join(source, "applications", "*")
-    globs = get_glob([path])
-    return (
-        [(os.path.split(g)[1], g)
-         for g in globs if (os.path.split(g)[1].find("SConscript") == -1)]
-    )
 
 # a version of split that doesn't return empty strings when there are no items
 
@@ -399,20 +344,6 @@ def toposort2(data):
     return ret
 
 order_cache = None
-
-
-def get_all_configured_applications(root="."):
-    apps = split(
-        open(
-            os.path.join(
-                root,
-                "data",
-                "build_info",
-                "applications"),
-            "r").read(
-        ),
-        "\n")
-    return apps
 
 
 def get_sorted_order(root="."):
@@ -442,7 +373,7 @@ def set_sorted_order(
     global order_cache
     order_cache = sorted
     rewrite(outpath,
-            "\n".join(sorted))
+            "\n".join(sorted), verbose=False)
 
 
 def compute_sorted_order(source, extra_data_path):
@@ -460,7 +391,7 @@ def compute_sorted_order(source, extra_data_path):
         for mk in data.keys():
             for m in data[mk]:
                 if m not in data:
-                    print 'adding', m
+                    print('adding', m)
                     info = get_module_info(m, extra_data_path)
                     to_add[m] = info["modules"]
         for m in to_add.keys():
@@ -492,10 +423,7 @@ def get_dependent_modules(modules, extra_data_path, root="."):
                        if x not in all_modules]
         all_modules += cur_modules
         new_modules += cur_modules
-    all_modules.sort(
-        lambda x,
-        y: -cmp(sorted_order.index(x),
-                sorted_order.index(y)))
+    all_modules.sort(key=lambda x: sorted_order.index(x), reverse=True)
     return all_modules
 
 
@@ -528,18 +456,6 @@ def get_module_version(module, source_dir):
         return open(in_build, "r").read().strip()
 
 
-def get_application_version(module, source_dir):
-    in_module = os.path.join(source_dir, "applications", module, "VERSION")
-    in_source = os.path.join(source_dir, "VERSION")
-    in_build = "VERSION"
-    if os.path.exists(in_module):
-        return open(in_module, "r").read().strip()
-    elif os.path.exists(in_source):
-        return open(in_source, "r").read().strip()
-    else:
-        return open(in_build, "r").read().strip()
-
-
 def get_disabled_modules(extra_data_path, root="."):
     all = get_glob([os.path.join(root, "data", "build_info", "IMP.*")])
     modules = [os.path.splitext(a)[1][1:] for a in all]
@@ -548,28 +464,6 @@ def get_disabled_modules(extra_data_path, root="."):
             x, extra_data_path, root)["ok"]]
     )
 
-
-def get_application_executables(path):
-    """Return a list of tuples of ([.cpps], [includepath])"""
-    def _handle_cpp_dir(path):
-        cpps = get_glob([os.path.join(path, "*.cpp")])
-        libcpps = get_glob([os.path.join(path, "lib", "*.cpp")])
-        if len(libcpps) > 0:
-            includes = [os.path.join(path, "lib")]
-        else:
-            includes = []
-        return [([c] + libcpps, includes) for c in cpps]
-
-    ret = _handle_cpp_dir(path)
-    for d in get_glob([os.path.join(path, "*")]):
-        if not os.path.isdir(d):
-            continue
-        if os.path.split(d)[1] == "test":
-            continue
-        if os.path.split(d)[1] == "lib":
-            continue
-        ret += _handle_cpp_dir(d)
-    return ret
 
 _subprocesses = []
 
@@ -582,23 +476,23 @@ def run_subprocess(command, **kwargs):
     #    kwargs["stderr"] = subprocess.PIPE
     pro = subprocess.Popen(
         command, preexec_fn=os.setsid, stderr=subprocess.PIPE,
-        stdout=subprocess.PIPE, **kwargs)
+        stdout=subprocess.PIPE, universal_newlines=True, **kwargs)
     _subprocesses.append(pro)
     output, error = pro.communicate()
     ret = pro.returncode
     if ret != 0:
-        print >> sys.stderr, error
+        sys.stderr.write(error + '\n')
         raise OSError("subprocess failed with return code %d: %s\n%s"
                       % (ret, " ".join(command), error))
     return output
 
 
 def _sigHandler(signum, frame):
-    print "starting handler"
+    print("starting handler")
     signal.signal(signal.SIGTERM, signal.SIG_DFL)
     global _subprocesses
     for p in _subprocesses:
-        print "killing", p
+        print("killing", p)
         try:
             os.kill(p.pid, signal.SIGTERM)
         except:

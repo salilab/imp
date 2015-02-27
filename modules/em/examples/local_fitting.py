@@ -7,6 +7,7 @@
 # please adjust the parameters of the function IMP.em.local_rigid_fitting
 # accordingly.
 
+from __future__ import print_function
 import IMP.em
 import IMP.core
 import IMP.atom
@@ -50,7 +51,7 @@ IMP.em.write_map(sampled_input_density, "vv0.mrc", IMP.em.MRCReaderWriter())
 # 3.2 calculate the cross-correlation score, which should be close to 1
 best_score = IMP.em.CoarseCC.cross_correlation_coefficient(
     dmap, sampled_input_density, sampled_input_density.get_header().dmin)
-print "The CC score of the native transformation is:", best_score
+print("The CC score of the native transformation is:", best_score)
 
 # 4. To denostrate local fitting we locally rotate and translate the
 # protein and show how we can go back to the correct placement.
@@ -73,7 +74,7 @@ prot_rb = IMP.core.RigidMember(IMP.core.get_leaves(mh)[0]).get_rigid_body()
 IMP.core.transform(prot_rb, local_trans)
 m.evaluate(False)  # to make sure the transformation was applied
 # 4.4 print the new correlation score, should be lower than before
-print len(IMP.core.get_leaves(mh))
+print(len(IMP.core.get_leaves(mh)))
 IMP.atom.write_pdb(mh, "input2.pdb")
 sampled_input_density.resample()
 sampled_input_density.calcRMS()
@@ -81,10 +82,10 @@ IMP.em.write_map(sampled_input_density, "vv.mrc", IMP.em.MRCReaderWriter())
 start_score = IMP.em.CoarseCC.cross_correlation_coefficient(
     dmap, sampled_input_density, sampled_input_density.get_header().dmin)
 start_rmsd = IMP.atom.get_rmsd(IMP.core.XYZs(ps), IMP.core.XYZs(ps_ref))
-print "The start score is:", start_score, "with rmsd of:", start_rmsd
+print("The start score is:", start_score, "with rmsd of:", start_rmsd)
 # 5. apply local fitting
 # 5.1 run local fitting
-print "preforming local refinement, may run for 3-4 minutes"
+print("preforming local refinement, may run for 3-4 minutes")
 # translate the molecule to the center of the density
 IMP.core.transform(prot_rb, IMP.algebra.Transformation3D(
     IMP.algebra.get_identity_rotation_3d(), dmap.get_centroid() - IMP.core.get_centroid(ps)))
@@ -94,7 +95,7 @@ sampled_input_density.calcRMS()
 rmsd = IMP.atom.get_rmsd(IMP.core.XYZs(ps), IMP.core.XYZs(ps_ref))
 score2 = IMP.em.CoarseCC.cross_correlation_coefficient(
     dmap, sampled_input_density, sampled_input_density.get_header().dmin)
-print "The score after centering is:", score2, "with rmsd of:", rmsd
+print("The score after centering is:", score2, "with rmsd of:", rmsd)
 # IMP.em.local_rigid_fitting_grid_search(
 #    ps,IMP.core.XYZR.get_radius_key(),
 #    IMP.atom.Mass.get_mass_key(),
@@ -108,7 +109,7 @@ fitting_sols = IMP.em.local_rigid_fitting(
 
 # 5.2 report best result
 # 5.2.1 transform the protein to the preferred transformation
-print "The start score is:", start_score, "with rmsd of:", start_rmsd
+print("The start score is:", start_score, "with rmsd of:", start_rmsd)
 for i in range(fitting_sols.get_number_of_solutions()):
     IMP.core.transform(prot_rb, fitting_sols.get_transformation(i))
     # prot_rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(fitting_sols.get_transformation(i)))
@@ -117,8 +118,8 @@ for i in range(fitting_sols.get_number_of_solutions()):
     rmsd = IMP.atom.get_rmsd(
         IMP.core.XYZs(ps), IMP.core.XYZs(IMP.core.get_leaves(mh_ref)))
     IMP.atom.write_pdb(mh, "temp_" + str(i) + ".pdb")
-    print "Fit with index:", i, " with cc: ", 1. - fitting_sols.get_score(i), " and rmsd to native of:", rmsd
+    print("Fit with index:", i, " with cc: ", 1. - fitting_sols.get_score(i), " and rmsd to native of:", rmsd)
     IMP.atom.write_pdb(mh, "sol_" + str(i) + ".pdb")
     IMP.core.transform(
         prot_rb, fitting_sols.get_transformation(i).get_inverse())
-print "done"
+print("done")

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import sys
@@ -75,7 +76,7 @@ class Tests(IMP.test.TestCase):
                                                      sol_ind].get_transformation(
                                                  ),
                                                  self.ccw)
-            print aligner.score_alignment(self.mhs)
+            print(aligner.score_alignment(self.mhs))
             IMP.cnmultifit.transform_cn_assembly(self.mhs,
                                                  self.asmb_sols[
                                                      sol_ind].get_transformation(

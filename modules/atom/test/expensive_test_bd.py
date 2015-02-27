@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -21,7 +22,7 @@ k = .01
 f = .1
 temperature = 297.15
 kt_silly = IMP.atom.get_kt(temperature)  # (273.)
-print "KT", kt_silly
+print("KT", kt_silly)
 t = timestep * nsteps
 
 if use_sympy:
@@ -65,12 +66,12 @@ class Tests(IMP.test.TestCase):
             bd.optimize(nsteps)
             h.add(xyzr.get_coordinates())
             if i % 1000 == 0:
-                print i, xyzr.get_coordinates()
-        print "computing"
+                print(i, xyzr.get_coordinates())
+        print("computing")
         mn = h.get_mean()
-        print mn
+        print(mn)
         std = h.get_standard_deviation(mn)
-        print mn, std
+        print(mn, std)
         # IMP.benchmark.set_is_profiling(False)
         return (mn, std, nreps)
 
@@ -92,9 +93,9 @@ class Tests(IMP.test.TestCase):
 
     def _get_sigma_free(self):
         sigma = (6.0 * t_u * D_u) ** sympy.Rational(1, 2)
-        print "GET SIGMA FREE"
-        print sigma
-        print math.sqrt(6 * t * D)
+        print("GET SIGMA FREE")
+        print(sigma)
+        print(math.sqrt(6 * t * D))
         return sigma
 
     def _get_sigma_1_free(self):
@@ -102,24 +103,24 @@ class Tests(IMP.test.TestCase):
             sigma = (2.0 * t_u * D_u) ** sympy.Rational(1, 2)
             return sigma
         else:
-            print "Computed SIGMA 1 FREE", math.sqrt(2 * t * D)
+            print("Computed SIGMA 1 FREE", math.sqrt(2 * t * D))
             return 14
 
     def _get_sigma_harmonic(self):
         if use_sympy:
             delta2 = (kT_u / k_u)
             delta = delta2 ** sympy.Rational(1, 2)
-            print "delta", delta
+            print("delta", delta)
             taut = 2 * delta2 / D_u
-            print "taut", taut.evalf()
+            print("taut", taut.evalf())
             tau = t_u / taut
-            print "tau", tau.evalf()
+            print("tau", tau.evalf())
             scale = 2 * delta2
-            print "scale", scale.evalf()
+            print("scale", scale.evalf())
             sigma2 = scale * (1 - sympy.E ** (-4 * tau))
-            print "sigma2", sigma2.evalf()
+            print("sigma2", sigma2.evalf())
             sigma = sigma2 ** sympy.Rational(1, 2)
-            print "sigma", sigma.evalf()
+            print("sigma", sigma.evalf())
             return sigma
         else:
             delta2 = kt_silly / k
@@ -129,7 +130,7 @@ class Tests(IMP.test.TestCase):
             scale = 2 * delta2
             sigma2 = scale * (1 - math.exp(-4 * tau))
             sigma = math.sqrt(sigma2)
-            print "CALCULATED SIGMA", sigma
+            print("CALCULATED SIGMA", sigma)
 #            return 10
             return (
                 # TODO: this should be evaluted - set it just to make the test
@@ -140,11 +141,11 @@ class Tests(IMP.test.TestCase):
     def _get_sigma_limit_harmonic(self):
         if use_sympy:
             sigmass = 2 * kT_u / k_u
-            print "sigma steady state 2", sigmass.evalf()
+            print("sigma steady state 2", sigmass.evalf())
             return sigmass ** sympy.Rational(1, 2)
         else:
             sigmass = math.sqrt(2 * kt_silly / k)
-            print "CALCULATED SIGMA STEADY STATE", sigmass
+            print("CALCULATED SIGMA STEADY STATE", sigmass)
             return (
                 # TODO: this should be evaluated. was 0, now it's something
                 # else just to make the test work - and actually the results
@@ -156,9 +157,9 @@ class Tests(IMP.test.TestCase):
         (mn, std) = xxx_todo_changeme
         (calc_mn, calc_std) = xxx_todo_changeme1
         if use_sympy:
-            print [(x.evalf() / angstrom).evalf() for x in calc_std]
-            print "mean", mn, [float((x / angstrom).evalf()) for x in calc_mn]
-            print "std", std, [float((x / angstrom).evalf()) for x in calc_std]
+            print([(x.evalf() / angstrom).evalf() for x in calc_std])
+            print("mean", mn, [float((x / angstrom).evalf()) for x in calc_mn])
+            print("std", std, [float((x / angstrom).evalf()) for x in calc_std])
         for i in range(0, 3):
             if use_sympy:
                 self.assertAlmostEqual(
@@ -183,23 +184,23 @@ class Tests(IMP.test.TestCase):
 
     def test_free(self):
         """Test brownian free diffusion"""
-        print "\ntest_free"
+        print("\ntest_free")
         #self.skipTest("too expensive")
         (m, xyzr, d, bd) = self._setup()
         sigma = self._get_sigma_1_free()
-        print "free sigma is", sigma
+        print("free sigma is", sigma)
         (mn, std, nreps) = self._measure(m, xyzr, bd)
-        print mn, std
+        print(mn, std)
         self._check(
             (mn, std), ([0 * angstrom, 0 * angstrom, 0 * angstrom], [sigma, sigma, sigma]), nreps)
 
     def test_linear(self):
         """Test brownian linear diffusion"""
-        print "\ntest_linear"
+        print("\ntest_linear")
         #self.skipTest("too expensive")
         # from of course notes http://www.ks.uiuc.edu/~kosztin/
         (m, xyzr, d, bd) = self._setup()
-        print "Temperature", bd.get_temperature()
+        print("Temperature", bd.get_temperature())
         # print D_u, f_u, kT_u
         # print D_u*f_u, f_u/kT_u, 1/kT_u
         if use_sympy:
@@ -207,8 +208,8 @@ class Tests(IMP.test.TestCase):
         else:
 # mean=-18 # -18 is wrong - was made for the wrong simulation temperature
             mean = -D * f * t / kt_silly
-            print "Calculated mean linear D", mean
-        print "mean", mean
+            print("Calculated mean linear D", mean)
+        print("mean", mean)
         h = IMP.core.Linear(0, f)
         dss = IMP.core.AttributeSingletonScore(
             h, IMP.core.XYZ.get_xyz_keys()[0])
@@ -221,13 +222,13 @@ class Tests(IMP.test.TestCase):
 
     def test_harmonic(self):
         """Test a brownian harmonic"""
-        print "\ntest_harmonic"
+        print("\ntest_harmonic")
         #self.skipTest("too expensive")
         # taken from chapter 13 of course notes
         # http://www.ks.uiuc.edu/~kosztin/
         (m, xyzr, d, bd) = self._setup()
         sigma = self._get_sigma_harmonic()
-        print "harmonic sigma", sigma
+        print("harmonic sigma", sigma)
         sigmaf = self._get_sigma_1_free()
         sigmass = self._get_sigma_limit_harmonic()
 
@@ -237,12 +238,12 @@ class Tests(IMP.test.TestCase):
         r = IMP.core.SingletonRestraint(dss, xyzr)
         m.add_restraint(r)
         mn, std, nreps = self._measure(m, xyzr, bd)
-        print "Mean / std / sigma / sigmaf / sigmass"
-        print mn
-        print std
-        print sigma
-        print sigmaf
-        print sigmass
+        print("Mean / std / sigma / sigmaf / sigmass")
+        print(mn)
+        print(std)
+        print(sigma)
+        print(sigmaf)
+        print(sigmass)
         self._check(
             (mn, std), ([0 * angstrom, 0 * angstrom, 0 * angstrom], [sigma, sigmaf, sigmaf]), nreps)
 if __name__ == '__main__':

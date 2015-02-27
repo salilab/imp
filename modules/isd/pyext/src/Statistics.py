@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 from IMP.isd.Entry import Entry
 import gzip
 import os

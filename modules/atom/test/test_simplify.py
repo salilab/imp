@@ -1,3 +1,4 @@
+from __future__ import division
 import IMP
 import IMP.test
 import IMP.core
@@ -30,7 +31,7 @@ class Tests(IMP.test.TestCase):
             # IMP.atom.show_molecular_hierarchy(mh_simp)
             o = self._residual_cond(num_residues % res_segment)
             lvs = IMP.core.get_leaves(mh_simp)
-            self.assertEqual(num_residues / res_segment + o, len(lvs))
+            self.assertEqual(num_residues // res_segment + o, len(lvs))
 
     def test_simplify_by_segments(self):
         """Test protein simplification by segments"""

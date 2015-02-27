@@ -1,6 +1,7 @@
 ## \example atom/assess_dope.py
 # The script shows how to assess a protein conformation using DOPE.
 
+from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.container
@@ -18,7 +19,7 @@ def add_dope(m, prot):
     ps = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
     for p in ps:
         if not IMP.atom.Atom.get_is_setup(p):
-            print "Huh?", p
+            print("Huh?", p)
     dpc = IMP.container.ClosePairContainer(ps, 15.0, 0.0)
 # exclude pairs of atoms belonging to the same residue
 # for consistency with MODELLER DOPE score
@@ -30,11 +31,11 @@ def add_dope(m, prot):
     d = IMP.container.PairsRestraint(dps, dpc)
     m.add_restraint(d)
 
-print "creating representation"
+print("creating representation")
 (m, prot) = create_representation()
 
-print "creating DOPE score function"
+print("creating DOPE score function")
 add_dope(m, prot)
 
 IMP.base.set_check_level(IMP.base.USAGE)
-print "DOPE SCORE ::", m.evaluate(False)
+print("DOPE SCORE ::", m.evaluate(False))

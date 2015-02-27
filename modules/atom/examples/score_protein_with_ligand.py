@@ -2,6 +2,7 @@
 # Show how to score a number of ligand conformations loaded from a file
 # against a protein loaded from a pdb.
 
+from __future__ import print_function
 import IMP.atom
 
 m = IMP.kernel.Model()
@@ -25,4 +26,4 @@ for l in ligands.get_children():
             if IMP.core.get_distance(IMP.core.XYZ(pa), IMP.core.XYZ(la)) < 15:
                 # score one pair of atoms
                 score += ps.evaluate((pa, la), None)
-    print "score for ", l.get_name(), "is", score
+    print("score for ", l.get_name(), "is", score)

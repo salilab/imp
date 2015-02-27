@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -49,7 +50,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.MEMORY)
         refcnt = IMP.test.RefCountChecker(self)
         m = IMP.kernel.Model()
-        print "reading"
+        print("reading")
         h = IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), m)
         del m
         del h
@@ -64,7 +65,7 @@ class Tests(IMP.test.TestCase):
         del rb
         del m
         del h
-        print "initial live"
+        print("initial live")
         while (True):
             # charm creates all sorts of things
             refcnt = IMP.test.RefCountChecker(self)
@@ -80,7 +81,7 @@ class Tests(IMP.test.TestCase):
             #del x
             del m
             del h
-            print dir()
+            print(dir())
             # print "live"
             # print [x  for x in IMP.Object.get_live_object_names() if
             # (x.find("CHARMM")==-1)]

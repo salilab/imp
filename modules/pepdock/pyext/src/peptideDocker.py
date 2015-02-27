@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import subprocess
 import random
@@ -13,7 +14,7 @@ import re
 import sys
 import operator
 import os
-import atomicDominoUtilities
+from . import atomicDominoUtilities
 
 
 class PeptideDocker:
@@ -117,18 +118,18 @@ class PeptideDocker:
     # output current time
     def logTime(self, label):
         nextTime = time.asctime(time.localtime(time.time()))
-        print "%s:\t %s" % (label, nextTime)
+        print("%s:\t %s" % (label, nextTime))
         nextTimeEntry = [label, nextTime]
         self.times.append(nextTimeEntry)
         self.rawTimes.append(time.time())
 
     # output all times that were saved by logTime()
     def outputTimes(self):
-        print "Time for each step:"
+        print("Time for each step:")
         for timeEntry in self.times:
             label = timeEntry[0]
             value = timeEntry[1]
-            print "%s:\t%s" % (label, value)
+            print("%s:\t%s" % (label, value))
 
     def getFlexibleAtoms(self):
         return self.flexibleAtoms
@@ -230,7 +231,7 @@ class PeptideDocker:
         for pName in particlesToVary:
             randomPname = random.choice(particlesToVary)
             randomP = self.namesToParticles[randomPname]
-            print "setting coordinates for particle %s to the ones currently set for particle %s" % (pName, randomPname)
+            print("setting coordinates for particle %s to the ones currently set for particle %s" % (pName, randomPname))
             atomToCoordinates[pName] = IMP.core.XYZ(randomP).get_coordinates()
 
         for pName in particlesToVary:
@@ -267,7 +268,7 @@ class PeptideDocker:
         # for each flexible atom, give it the coordinates of another flexible
         # atom (ensures that each atom starts out in the binding site)
         elif (initialPositionMethod == "random_existing"):
-            print "start random existing"
+            print("start random existing")
             xyzs = self.initializeRandomExisting()
 
         # same as random_existing except offset each atom a little (doesn't
@@ -298,7 +299,7 @@ class PeptideDocker:
                         fixedAtom = self.namesToParticles[firstPname]
 
                         bsParticles.append(IMP.core.XYZ(fixedAtom))
-                        print "added next close atom %s to bounding box particles" % firstPname
+                        print("added next close atom %s to bounding box particles" % firstPname)
             # bsBoundingBox = IMP.core.get_bounding_box(bsParticles)  -- revert
             # if I can figure out how
             peptideParticles = []
@@ -314,7 +315,7 @@ class PeptideDocker:
                 goodPosition = 0
                 flexParticle = self.namesToParticles[flexPname]
                 flexXyzDecorator = IMP.core.XYZ(flexParticle)
-                print "processing position for pname %s" % flexPname
+                print("processing position for pname %s" % flexPname)
                 while(goodPosition == 0):
                     goodPosition = 1
                     flexXyzDecorator.set_coordinates(
@@ -325,7 +326,7 @@ class PeptideDocker:
                             IMP.core.XYZ(fixedParticle).get_coordinates(),
                             IMP.core.XYZ(flexParticle).get_coordinates())
                         if (distance < 2):
-                            print "finding new position for %s" % flexPname
+                            print("finding new position for %s" % flexPname)
                             goodPosition = 0
                             # start the while loop over which will set new
                             # coordinates
@@ -336,7 +337,7 @@ class PeptideDocker:
         elif (initialPositionMethod == "random_full"):
             bb = IMP.atom.get_bounding_box(self.protein)
             for particleName in self.flexibleAtoms.keys():
-                print "creating random position for particle %s" % particleName
+                print("creating random position for particle %s" % particleName)
                 p = self.namesToParticles[particleName]
                 xyzDecorator = IMP.core.XYZ(p)
                 randomXyz = IMP.algebra.get_random_vector_in(bb)
@@ -349,7 +350,7 @@ class PeptideDocker:
         elif (initialPositionMethod == "file"):
 
             initialPositionFile = self.getParam("saved_initial_atom_positions")
-            print "reading initial positions from %s" % initialPositionFile
+            print("reading initial positions from %s" % initialPositionFile)
             initialModel = IMP.kernel.Model()
             initialProtein = IMP.atom.read_pdb(
                 initialPositionFile,
@@ -365,9 +366,9 @@ class PeptideDocker:
                     existingLeafXyz.set_coordinates(
                         initialLeafXyz.get_coordinates())
                 else:
-                    print "Read in initial positions from file %s but this file contained particle %s which is not in current model" % (initialPositionFile, name)
+                    print("Read in initial positions from file %s but this file contained particle %s which is not in current model" % (initialPositionFile, name))
         else:
-            print "Please specify valid initial position method (random or file)\n"
+            print("Please specify valid initial position method (random or file)\n")
             sys.exit()
 
         # output initial positions
@@ -375,12 +376,12 @@ class PeptideDocker:
         initialAtomPositionFile = self.getParam(
             "initial_atom_positions_output_file")
         fullOutputFile = os.path.join(outputDir, initialAtomPositionFile)
-        print "writing output to file %s" % fullOutputFile
+        print("writing output to file %s" % fullOutputFile)
         IMP.atom.write_pdb(self.protein, fullOutputFile)
 
         # get initial score for model
         initialScore = self.model.evaluate(False)
-        print "initial score for model is %s" % initialScore
+        print("initial score for model is %s" % initialScore)
 
     # Get non-bonded pairs in the system in preparation for restraining them
     def getNonBondedPairs(self):
@@ -393,7 +394,7 @@ class PeptideDocker:
         elif (nonBondedDefinition == "manual"):
             particlePairs = self.readManualRestraints(nativeProtein, 6)
         else:
-            print "Please specify valid non bonded pair definition"
+            print("Please specify valid non bonded pair definition")
             sys.exit()
         return particlePairs
 
@@ -563,7 +564,7 @@ class PeptideDocker:
     # factor
     def addFlexFlexLjRestraints(self, scalingFactor):
         if (self.initializedFlexFlexLjRestraints == 0):
-            print "adding initial lennard jones restraints between pairs of flexible atoms"
+            print("adding initial lennard jones restraints between pairs of flexible atoms")
             self.initializedFlexFlexLjRestraints = 1
             leaves = IMP.atom.get_leaves(self.protein)
             counter = 0
@@ -582,7 +583,7 @@ class PeptideDocker:
         chainHierarchies = IMP.atom.get_by_type(
             self.protein, IMP.atom.CHAIN_TYPE)
         peptideChainHierarchy = None
-        print "scaling atomic radii by scaling factor %s" % scalingFactor
+        print("scaling atomic radii by scaling factor %s" % scalingFactor)
         # reset radii back to original in preparation for rescaling
         self.ff.add_radii(self.protein)
         for pName in self.flexibleAtoms.keys():
@@ -595,7 +596,7 @@ class PeptideDocker:
     # add lennard-jones restraints between all fixed atoms and all flexible
     # atoms
     def addFixedFlexibleLjRestraints(self):
-        print "adding initial fixed flexible lj restraints"
+        print("adding initial fixed flexible lj restraints")
         fixedAtoms = self.getFixedAtoms()
         sf = IMP.atom.ForceSwitch(6.0, 7.0)
         ps = IMP.atom.LennardJonesPairScore(sf)
@@ -655,7 +656,7 @@ class PeptideDocker:
             self.nonBondedPairs[self.quickParticleName(pair[1])][
                 self.quickParticleName(pair[1])] = 1
 
-        print "Added %s non-bonded restraints" % nonBondedCount
+        print("Added %s non-bonded restraints" % nonBondedCount)
         self.model.evaluate(False)
 
     def addCompleteNonBondedRestraints(self):
@@ -677,14 +678,14 @@ class PeptideDocker:
                 # print "added complete restraint between %s and %s" %
                 # (self.quickParticleName(iLeaf),
                 # self.quickParticleName(jLeaf))
-        print "added %s restraints for %s particles" % (counter, len(leaves))
+        print("added %s restraints for %s particles" % (counter, len(leaves)))
         self.model.evaluate(False)
 
     # lots of output on all restraints
     def writeAllRestraints(self):
-        print "write all restraints:"
+        print("write all restraints:")
         for r in IMP.get_restraints([self.model.get_root_restraint_set()]):
-            print self.quickRestraintName(r)
+            print(self.quickRestraintName(r))
 
     # Read parameterss with md temperature / step schedule and save them
     def initializeMdSchedule(self):
@@ -692,7 +693,7 @@ class PeptideDocker:
         stages = schedule.split()
         totalSteps = 0
         for stage in stages:
-            print "unpacking stage %s" % stage
+            print("unpacking stage %s" % stage)
             [steps, temperature, excludedVolume] = stage.split('_')
             totalSteps += int(steps)
         self.totalMdSteps = totalSteps
@@ -710,7 +711,7 @@ class PeptideDocker:
             # create new hdf5 file to which md output will be written
             mdFileName = self.getParam("md_trajectory_output_file")
             fileName = os.path.join(outputDir, mdFileName)
-            print "creating rmf file with filename %s" % fileName
+            print("creating rmf file with filename %s" % fileName)
             rh = RMF.create_rmf_file(fileName)
             my_kc = rh.add_category("my data")
             IMP.rmf.add_hierarchy(rh, self.protein)
@@ -742,7 +743,7 @@ class PeptideDocker:
 
     # Create the optimizer object for running MD
     def createMdOptimizer(self):
-        print "creating md object"
+        print("creating md object")
         md = IMP.atom.MolecularDynamics(self.model)
         # hack to get around bug where vx attributes in non-optimized particles
         # are not being set
@@ -796,7 +797,7 @@ class PeptideDocker:
                 IMP.rmf.load_frame(rh, frameCount - 1, self.protein)
                 score = self.model.evaluate(False)
                 rmsd = self.calculateNativeRmsd(self.flexibleAtoms)
-                print "cg number %s has score %s rmsd %s" % (cgNumber, score, rmsd)
+                print("cg number %s has score %s rmsd %s" % (cgNumber, score, rmsd))
                 if (score < bestCgScore):
                     bestCgScore = score
                     bestCgScoreFile = fullCgFileName
@@ -870,7 +871,7 @@ class PeptideDocker:
     def runMolecularDynamics(self):
         self.initializedFlexFlexLjRestraints = 0
         if (self.fixedNonFlexibleAtoms == 0):
-            print "error: before running md, must fix non flexible atoms"
+            print("error: before running md, must fix non flexible atoms")
             sys.exit()
         stepsSoFar = 0
         for stage in self.mdStages:
@@ -889,7 +890,7 @@ class PeptideDocker:
                 else:
                     "please set excluded_volume_type to either lj or ev"
                     sys.exit()
-            print "running md at temperature %s for %s steps" % (temperature, steps)
+            print("running md at temperature %s for %s steps" % (temperature, steps))
             self.mdOptimizer.optimize(int(steps))
 
             IMP.atom.write_pdb(
@@ -899,15 +900,15 @@ class PeptideDocker:
                         "output_directory"),
                     "md_after_%s.pdb" %
                     stepsSoFar))
-            print "model score after stage %s is %s" % (stage, self.model.evaluate(False))
-        print "done running md"
+            print("model score after stage %s is %s" % (stage, self.model.evaluate(False)))
+        print("done running md")
 
     def runAllCg(self):
         cgInterval = int(self.getParam("cg_interval"))
         outputDir = self.getParam("output_directory")
         trajectoryFile = self.getParam("md_trajectory_output_file")
         fullFile = os.path.join(outputDir, trajectoryFile)
-        print "open rmf %s" % fullFile
+        print("open rmf %s" % fullFile)
         rh = RMF.open_rmf_file(fullFile)
         IMP.rmf.set_hierarchies(rh, [self.protein])
         framesToRead = atomicDominoUtilities.getMdIntervalFrames(
@@ -924,13 +925,13 @@ class PeptideDocker:
         cgSteps = int(self.getParam("cg_steps"))
 
         # load md step specified by calling object
-        print "apply cg: loading md frame for cg step start %s" % mdStepStart
+        print("apply cg: loading md frame for cg step start %s" % mdStepStart)
         IMP.rmf.load_frame(self.rootHandle, mdStepStart, self.protein)
 
         # create new hdf5 file to which cg output will be written
         outputDir = self.getParam("output_directory")
         fileName = os.path.join(outputDir, cgFileName)
-        print "creating cg hdf5 file %s" % fileName
+        print("creating cg hdf5 file %s" % fileName)
         rh = RMF.create_rmf_file(fileName)
         my_kc = rh.add_category("my data")
         IMP.rmf.add_hierarchy(rh, self.protein)
@@ -939,17 +940,17 @@ class PeptideDocker:
         cg = IMP.core.ConjugateGradients(self.model)
         firstScore = self.model.evaluate(False)
 
-        print "creating optimizer state"
+        print("creating optimizer state")
         hdos = IMP.rmf.SaveHierarchyConfigurationOptimizerState(
             [self.protein], rh)
         hdos.set_skip_steps(0)
         # hdos is the optimizer state writing configurations to disk
         cg.add_optimizer_state(hdos)
 
-        print "running cg"
+        print("running cg")
         cg.optimize(cgSteps)
         secondScore = self.model.evaluate(False)
-        print "cg score after md step %s before %s after %s" % (mdStepStart, firstScore, secondScore)
+        print("cg score after md step %s before %s after %s" % (mdStepStart, firstScore, secondScore))
         return secondScore
 
     # Tell the optimizer not to move atoms we have determined ar fixed
@@ -985,14 +986,14 @@ class PeptideDocker:
                     flexiblePeptideAtoms += 1
                 else:
                     flexibleProteinAtoms += 1
-        print "Flexible peptide atoms: %s" % flexiblePeptideAtoms
-        print "Fixed peptide atoms: %s" % fixedPeptideAtoms
-        print "Flexible protein atoms: %s" % flexibleProteinAtoms
-        print "Fixed protein atoms: %s" % fixedProteinAtoms
-        print "Total number of restraints: %s" % restraintCount
+        print("Flexible peptide atoms: %s" % flexiblePeptideAtoms)
+        print("Fixed peptide atoms: %s" % fixedPeptideAtoms)
+        print("Flexible protein atoms: %s" % flexibleProteinAtoms)
+        print("Fixed protein atoms: %s" % fixedProteinAtoms)
+        print("Total number of restraints: %s" % restraintCount)
 
     def writeOsOutput(self):
 
-        print "Best cg score: %s" % self.bestCgScore
-        print "best cg rmsd: %s" % self.bestCgRmsd
-        print "final cg rmsd: %s" % self.finalCgRmsd
+        print("Best cg score: %s" % self.bestCgScore)
+        print("best cg rmsd: %s" % self.bestCgRmsd)
+        print("final cg rmsd: %s" % self.finalCgRmsd)

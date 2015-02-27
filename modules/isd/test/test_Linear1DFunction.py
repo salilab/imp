@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
         particles = [(self.alpha, -100, 100),
                      (self.beta, -100, 100)]
         # number of shuffled values
-        for i in xrange(random.randint(0, len(particles))):
+        for i in range(random.randint(0, len(particles))):
             # which particle
             p, imin, imax = particles.pop(random.randint(0, len(particles)))
             p.set_nuisance(random.uniform(imin, imax))
@@ -68,9 +68,9 @@ class Tests(IMP.test.TestCase):
         test the value of the function by shuffling all particles
         """
         skipped = 0
-        for rep in xrange(10):
+        for rep in range(10):
             self.shuffle_particle_values()
-            for i in xrange(10):
+            for i in range(10):
                 pos = random.uniform(-10, 10)
                 observed = self.mean([pos])[0]
                 a = self.alpha.get_nuisance()
@@ -99,9 +99,9 @@ class Tests(IMP.test.TestCase):
         Test on one point at a time
         """
         skipped = 0
-        for rep in xrange(10):
+        for rep in range(10):
             self.shuffle_particle_values()
-            for i in xrange(10):
+            for i in range(10):
                 pos = random.uniform(-10, 10)
                 self.mean.add_to_derivatives([pos], self.DA)
                 # alpha
@@ -153,7 +153,7 @@ class Tests(IMP.test.TestCase):
         pos = random.uniform(-10, 10)
         AlphaFunc = MockFunc(self.alpha.set_nuisance,
                              lambda a: self.mean([a])[0], pos, update=self.mean.update)
-        for alpha in xrange(-10, 10):
+        for alpha in range(-10, 10):
             self.alpha.set_nuisance(alpha)
             self.mean.update()
             observed = self.mean.get_derivative_matrix([[pos]], False)[0][0]
@@ -170,7 +170,7 @@ class Tests(IMP.test.TestCase):
         pos = random.uniform(-10, 10)
         BetaFunc = MockFunc(self.beta.set_nuisance,
                             lambda a: self.mean([a])[0], pos, update=self.mean.update)
-        for beta in xrange(-10, 10):
+        for beta in range(-10, 10):
             self.beta.set_nuisance(beta)
             self.mean.update()
             observed = self.mean.get_derivative_matrix([[pos]], False)[0][1]
@@ -185,11 +185,11 @@ class Tests(IMP.test.TestCase):
         test the derivatives of the function by shuffling all particles
         Test on multiple points at a time
         """
-        for rep in xrange(10):
+        for rep in range(10):
             self.shuffle_particle_values()
             expecteda = 0
             expectedb = 0
-            for i in xrange(10):
+            for i in range(10):
                 pos = random.uniform(-10, 10)
                 self.mean.add_to_derivatives([pos], self.DA)
                 # alpha
@@ -231,7 +231,7 @@ class Tests(IMP.test.TestCase):
         """
         tests if we can get multiple values at once
         """
-        for rep in xrange(10):
+        for rep in range(10):
             self.shuffle_particle_values()
             data = random.uniform(-10, 10, random.randint(100))
             expected = [self.mean([i]) for i in data]
@@ -239,7 +239,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(observed, expected)
 
     def testGetDerivativeMatrix(self):
-        for rep in xrange(3):
+        for rep in range(3):
             self.shuffle_particle_values()
             xlist = random.uniform(-10, 10, random.randint(1, 100))
             data = self.mean.get_derivative_matrix([[i] for i in xlist], True)
@@ -250,7 +250,7 @@ class Tests(IMP.test.TestCase):
                 self.assertAlmostEqual(i[1], 1, delta=1e-5)
 
     def testAddToParticleDerivative(self):
-        for i in xrange(10):
+        for i in range(10):
             val = random.uniform(-10, 10)
             self.mean.add_to_particle_derivative(0, val, self.DA)
             self.assertAlmostEqual(self.alpha.get_nuisance_derivative(), val)

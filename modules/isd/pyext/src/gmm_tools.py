@@ -2,6 +2,7 @@
    Tools for handling Gaussian Mixture Models.
 """
 
+from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.algebra
@@ -26,8 +27,8 @@ def decorate_gmm_from_text(in_fn,ps,mdl,transform=None,radius_scale=1.0,mass_sca
         if l[0]!='#':
             fields=l.split('|')
             weight=float(fields[2])
-            center=map(float,fields[3].split())
-            covar=np.array(map(float,fields[4].split())).reshape((3,3))
+            center=list(map(float,fields[3].split()))
+            covar=np.array(list(map(float,fields[4].split()))).reshape((3,3))
             if ncomp>=len(ps):
                 ps.append(IMP.Particle(mdl))
             shape=IMP.algebra.get_gaussian_from_covariance(covar.tolist(),
@@ -39,6 +40,24 @@ def decorate_gmm_from_text(in_fn,ps,mdl,transform=None,radius_scale=1.0,mass_sca
             if not transform is None:
                 IMP.core.transform(IMP.core.RigidBody(ps[ncomp]),transform)
             ncomp+=1
+def write_gmm_to_text(ps,out_fn):
+    '''write a list of gaussians to text. must be decorated as Gaussian and Mass'''
+    print('will write GMM text to',out_fn)
+    outf=open(out_fn,'w')
+    outf.write('#|num|weight|mean|covariance matrix|\n')
+    for ng,g in enumerate(ps):
+        shape=IMP.core.Gaussian(g).get_gaussian()
+        weight=IMP.atom.Mass(g).get_mass()
+        covar=[c for row in IMP.algebra.get_covariance(shape) for c in row]
+        mean=list(shape.get_center())
+        fm=[ng,weight]+mean+covar
+        try:
+            #python 2.7 format
+            outf.write('|{}|{}|{} {} {}|{} {} {} {} {} {} {} {} {}|\n'.format(*fm))
+        except ValueError:
+            #python 2.6 and below
+            outf.write('|{0}|{1}|{2} {3} {4}|{5} {6} {7} {8} {9} {10} {11} {12} {13}|\n'.format(*fm))
+    outf.close()
 
 def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None):
     '''write density map from GMM. input can be either particles or gaussians'''
@@ -47,9 +66,9 @@ def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None):
     elif type(to_draw[0])==IMP.core.Gaussian:
         ps=[g.get_particle() for g in to_draw]
     else:
-        print 'ps must be Particles or Gaussians'
+        print('ps must be Particles or Gaussians')
         return
-    print 'will write GMM map to',out_fn
+    print('will write GMM map to',out_fn)
     if bounding_box is None:
         if len(ps)>1:
             s=IMP.algebra.get_enclosing_sphere([IMP.core.XYZ(p).get_coordinates() for p in ps])
@@ -63,11 +82,11 @@ def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None):
     for p in ps:
         shapes.append(IMP.core.Gaussian(p).get_gaussian())
         weights.append(IMP.atom.Mass(p).get_mass())
-    print 'rasterizing'
+    print('rasterizing')
     grid=IMP.algebra.get_rasterized(shapes,weights,voxel_size,bounding_box)
-    print 'creating map'
+    print('creating map')
     d1=IMP.em.create_density_map(grid)
-    print 'writing'
+    print('writing')
     IMP.em.write_map(d1,out_fn,IMP.em.MRCReaderWriter())
     del d1
 
@@ -80,16 +99,17 @@ def write_sklearn_gmm_to_map(gmm,out_fn,apix=0,bbox=None,dmap_model=None):
         d1=IMP.em.create_density_map(bbox,apix)
 
     ### fill it with values from the GMM
-    print 'getting coords'
+    print('getting coords')
     nvox=d1.get_number_of_voxels()
-    apos=[list(d1.get_location_by_voxel(nv)) for nv in xrange(nvox)]
+    apos=[list(d1.get_location_by_voxel(nv)) for nv in range(nvox)]
 
-    print 'scoring'
+    print('scoring')
     scores=gmm.score(apos)
 
-    print 'assigning'
-    map(lambda nv: d1.set_value(nv,exp(scores[nv])),xrange(nvox))
-    print 'will write GMM map to',out_fn
+    print('assigning')
+    for nv, score in enumerate(scores):
+        d1.set_value(nv,exp(score))
+    print('will write GMM map to',out_fn)
     IMP.em.write_map(d1,out_fn,IMP.em.MRCReaderWriter())
 
 def draw_points(pts,out_fn,trans=IMP.algebra.get_identity_transformation_3d(),
@@ -123,7 +143,7 @@ def create_gmm_for_bead(mdl,
                         n_components,
                         sampled_points=100000,
                         num_iter=100):
-    print 'fitting bead with',n_components,'gaussians'
+    print('fitting bead with',n_components,'gaussians')
     dmap=IMP.em.SampledDensityMap([particle],1.0,1.0,
                                   IMP.atom.Mass.get_mass_key(),3,IMP.em.SPHERE)
     IMP.em.write_map(dmap,'test_intermed.mrc')
@@ -150,10 +170,10 @@ def sample_and_fit_to_particles(model,
     density_particles=[]
     if multiply_by_total_mass:
         mass_multiplier=sum((IMP.atom.Mass(p).get_mass() for p in set(fragment_particles)))
-        print 'add_component_density: will multiply by mass',mass_multiplier
+        print('add_component_density: will multiply by mass',mass_multiplier)
 
     # simulate density from ps, then calculate points to fit
-    print 'add_component_density: sampling points'
+    print('add_component_density: sampling points')
     dmap=IMP.em.SampledDensityMap(fragment_particles,simulation_res,voxel_size,
                                  IMP.atom.Mass.get_mass_key(),3)
     dmap.calcRMS()
@@ -162,7 +182,7 @@ def sample_and_fit_to_particles(model,
     pts=IMP.isd.sample_points_from_density(dmap,sampled_points)
 
     # fit GMM
-    print 'add_component_density: fitting GMM to',len(pts),'points'
+    print('add_component_density: fitting GMM to',len(pts),'points')
     fit_gmm_to_points(points=pts,
                       n_components=num_components,
                       mdl=model,
@@ -217,15 +237,15 @@ def fit_gmm_to_points(points,
         init_params+='c'
     else:
         covariance_type='spherical'
-        print 'forcing spherical with radii',force_radii
+        print('forcing spherical with radii',force_radii)
 
     if force_weight==-1.0:
         params+='w'
         init_params+='w'
     else:
-        print 'forcing weights to be',force_weight
+        print('forcing weights to be',force_weight)
 
-    print 'creating GMM with params',params,'init params',init_params,'n_components',n_components,'n_iter',num_iter,'covar type',covariance_type
+    print('creating GMM with params',params,'init params',init_params,'n_components',n_components,'n_iter',num_iter,'covar type',covariance_type)
     gmm=sklearn.mixture.GMM(n_components=n_components,
                           n_iter=num_iter,
                           covariance_type=covariance_type,
@@ -235,16 +255,16 @@ def fit_gmm_to_points(points,
     if force_weight!=-1.0:
         gmm.weights_=np.array([force_weight]*n_components)
     if force_radii!=-1.0:
-        gmm.covars_=np.array([[force_radii]*3 for i in xrange(n_components)])
+        gmm.covars_=np.array([[force_radii]*3 for i in range(n_components)])
     if init_centers!=[]:
         gmm.means_=init_centers
-    print 'fitting'
+    print('fitting')
     gmm.fit(points)
 
-    print '>>> GMM score',gmm.score(points)
+    print('>>> GMM score',gmm.score(points))
 
     ### convert format to core::Gaussian
-    for ng in xrange(n_components):
+    for ng in range(n_components):
         covar=gmm.covars_[ng]
         if covar.size==3:
             covar=np.diag(covar).tolist()
@@ -285,20 +305,20 @@ def fit_dirichlet_gmm_to_points(points,
     import sklearn.mixture
 
     ### create and fit GMM
-    print 'using dirichlet prior'
+    print('using dirichlet prior')
     gmm=sklearn.mixture.DPGMM(n_components=n_components,
                               n_iter=num_iter,
                               covariance_type=covariance_type)
 
     gmm.fit(points)
 
-    print '>>> GMM score',gmm.score(points)
+    print('>>> GMM score',gmm.score(points))
 
     #print gmm.covars_
     #print gmm.weights_
     #print gmm.means_
     ### convert format to core::Gaussian
-    for ng in xrange(n_components):
+    for ng in range(n_components):
         invcovar=gmm.precs_[ng]
         covar=np.linalg.inv(invcovar)
         if covar.size==3:

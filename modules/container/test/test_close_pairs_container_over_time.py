@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -17,9 +18,9 @@ class Tests(IMP.test.TestCase):
             IMP.core.XYZR.setup_particle(p, 0)
         # test rebuilding under move, set input and change radius
         pc = IMP.container.ListSingletonContainer(ps)
-        print "creat cpss " + str(pc)
+        print("creat cpss " + str(pc))
         # IMP.base.set_log_level(IMP.base.VERBOSE)
-        print 1
+        print(1)
         threshold = 1
         cpss = IMP.container.ClosePairContainer(pc, threshold,
                                                 IMP.core.GridClosePairsFinder(
@@ -56,12 +57,12 @@ class Tests(IMP.test.TestCase):
                 IMP.algebra.Sphere3D(IMP.algebra.get_zero_vector_3d(), 10))
             d = IMP.core.XYZ(p)
             d.set_coordinates(d.get_coordinates() + r)
-        print cpss.get_number_of_full_rebuilds(), cpss.get_number_of_partial_rebuilds()
+        print(cpss.get_number_of_full_rebuilds(), cpss.get_number_of_partial_rebuilds())
         m.update()
-        print cpss.get_number_of_full_rebuilds(), cpss.get_number_of_partial_rebuilds()
-        print "updating without moving"
+        print(cpss.get_number_of_full_rebuilds(), cpss.get_number_of_partial_rebuilds())
+        print("updating without moving")
         m.update()
-        print cpss.get_number_of_full_rebuilds(), cpss.get_number_of_partial_rebuilds()
+        print(cpss.get_number_of_full_rebuilds(), cpss.get_number_of_partial_rebuilds())
         self.assertEqual(cpss.get_number_of_update_calls(), 3)
         self.assertEqual(
             cpss.get_number_of_full_rebuilds(

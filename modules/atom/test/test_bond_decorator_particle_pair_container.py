@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -19,13 +20,13 @@ class Tests(IMP.test.TestCase):
         b = IMP.atom.create_custom_bond(b0, b1, 1, 1)
 
         pc = IMP.atom.BondedPairFilter()
-        print pc.get_value((p0, p0))
+        print(pc.get_value((p0, p0)))
         self.assertTrue(pc.get_value((p0, p1)))
-        print 0
+        print(0)
         self.assertFalse(pc.get_value((p2, p0)))
-        print 1
+        print(1)
         self.assertFalse(pc.get_value((p2, p2)))
-        print 2
+        print(2)
         self.assertFalse(pc.get_value((p0, p0)))
         self.assertFalse(pc.get_value((p0, p3)))
 

@@ -15,7 +15,7 @@ ps = [IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m)) for x in range(0, 3)]
 s = IMP.core.HarmonicDistancePairScore(1, 1)
 lpc = IMP.container.ListPairContainer(
     [(ps[i[0]], ps[i[1]]) for i in [(0, 1), (1, 2)]])
-print [(p[0].get_name(), p[1].get_name()) for p in lpc.get_particle_pairs()]
+print([(p[0].get_name(), p[1].get_name()) for p in lpc.get_particle_pairs()])
 r = IMP.container.PairsRestraint(s, lpc)
 r.set_maximum_score(.1)
 
@@ -33,7 +33,7 @@ mt = IMP.domino.get_merge_tree([r], pst)
 try:
     IMP.show_graphviz(mt)
 except:
-    print "Unable to display graph using 'dot'"
+    print("Unable to display graph using 'dot'")
 
 ds = IMP.domino.DominoSampler(m, pst)
 # use the default setup for filters
@@ -58,7 +58,7 @@ def get_assignments(vertex):
         a0 = get_assignments(on[0])
         a1 = get_assignments(on[1])
         ret = ds.get_vertex_assignments(vertex, a0, a1)
-    print mt.get_vertex_name(vertex), [str(r) for r in ret]
+    print(mt.get_vertex_name(vertex), [str(r) for r in ret])
     return ret
 
 # the root is the last vetex
@@ -84,4 +84,4 @@ def schedule_job(vertex):
     return my_time
 
 schedule_job(mt.get_vertices()[-1])
-print "The merging can be scheduled as", schedule
+print("The merging can be scheduled as", schedule)

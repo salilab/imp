@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -20,7 +21,7 @@ class Tests(IMP.test.TestCase):
         for h in hs.get_children():
             d = IMP.core.XYZR(h)
             r = d.get_radius()
-            print r
+            print(r)
             self.assertTrue(r > 3.5 and r < 5.5)
 
     def test_bonded2(self):
@@ -36,7 +37,7 @@ class Tests(IMP.test.TestCase):
         for h in hs.get_children():
             d = IMP.core.XYZR(h)
             r = d.get_radius()
-            print r
+            print(r)
             self.assertTrue(r > 4 and r < 6.8)
 
 if __name__ == '__main__':

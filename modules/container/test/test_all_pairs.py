@@ -1,17 +1,8 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.container
 import math
-
-# Use faster built-in 'set' type on newer Pythons; fall back to the older
-# 'sets' module on older Pythons
-try:
-    x = set
-    del x
-except NameError:
-    import sets
-    set = sets.Set
-
 
 class Tests(IMP.test.TestCase):
 
@@ -27,8 +18,8 @@ class Tests(IMP.test.TestCase):
         #self.assertEqual(lp.get_ref_count(), 2)
         # use that names are unique
         psl = set()
-        print apc.get_number_of_particle_pairs()
-        print lp.get_number_of_particles()
+        print(apc.get_number_of_particle_pairs())
+        print(lp.get_number_of_particles())
         IMP.base.set_log_level(IMP.base.VERBOSE)
         for i in range(0, apc.get_number_of_particle_pairs()):
             # print ap[-1][0]
@@ -39,12 +30,12 @@ class Tests(IMP.test.TestCase):
                 dp = (n0, n1)
             else:
                 dp = (n1, n0)
-            print dp
+            print(dp)
             # print psl
             self.assertNotIn(dp, psl, "Pair " + n0 + " and " + n1
                              + " is already in list " + str(psl))
             psl = psl.union([dp])
-        print psl
+        print(psl)
         self.assertEqual(apc.get_number_of_particle_pairs(),
                          lp.get_number_of_particles() * (lp.get_number_of_particles() - 1) / 2)
 

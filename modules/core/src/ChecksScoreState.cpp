@@ -2,7 +2,7 @@
  *  \file ChecksScoreState.cpp
  *  \brief Keep track of the maximum change of a set of attributes.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/core/ChecksScoreState.h>

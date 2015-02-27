@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -27,7 +28,7 @@ class Tests(IMP.test.TestCase):
             # Write out the final structure to a PDB file
             IMP.base.set_log_level(IMP.MEMORY)
             return h
-        print "testing"
+        print("testing")
         h = init_linear()
         self.assertRaises(IMP.base.InternalException, h.show)
 

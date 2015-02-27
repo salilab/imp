@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -13,20 +14,20 @@ class Tests(IMP.test.TestCase):
         """Test example modifier"""
         IMP.base.set_log_level(IMP.MEMORY)
         m = IMP.kernel.Model()
-        print "creating particle"
+        print("creating particle")
         p = IMP.kernel.Particle(m)
-        print "created"
+        print("created")
         bbb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                         IMP.algebra.Vector3D(100, 100, 100))
         sbb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(20, 30, 40),
                                         IMP.algebra.Vector3D(30, 39, 48))
-        print "setting up"
+        print("setting up")
         d = IMP.core.XYZ.setup_particle(
             p,
             IMP.algebra.get_random_vector_in(bbb))
-        print "creating m"
+        print("creating m")
         mod = IMP.example.ExampleSingletonModifier(sbb)
-        print "applying"
+        print("applying")
         mod.apply(d.get_particle())
         for i in range(0, 3):
             self.assertGreaterEqual(d.get_coordinate(i), sbb.get_corner(0)[i])

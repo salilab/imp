@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
-__doc__ = "Score each of a set of combinations."
-
-# analyse the ensemble, first we will do the rmsd stuff
+from __future__ import print_function
 import IMP.multifit
 from IMP import OptionParser
 
+__doc__ = "Score each of a set of combinations."
+
+# analyse the ensemble, first we will do the rmsd stuff
 
 def get_color_map():
     colors = {}
@@ -80,7 +81,7 @@ def decompose(dmap, mhs):
     ).rms * full_sampled_map.get_header(
     ).rms
     norm_factors = [upper, lower]
-    print "===============my norm factors:", upper, lower
+    print("===============my norm factors:", upper, lower)
     return norm_factors
 
 
@@ -111,7 +112,7 @@ def score_each_protein(dmap, mhs, sd):
                     norm_factors))
             IMP.core.transform(rb, fit.get_fit_transformation().get_inverse())
         scores.append(mh_scores)
-        print "=====mol", i, mh_scores
+        print("=====mol", i, mh_scores)
     return scores
 
 
@@ -142,36 +143,36 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
     combs = IMP.multifit.read_paths(combs_fn)
     # get rmsd for subunits
     colors = get_color_map()
-    names = colors.keys()
-    print params_fn
+    names = list(colors.keys())
+    print(params_fn)
     alignment_params = IMP.multifit.AlignmentParams(params_fn)
     alignment_params.show()
 
     IMP.base.set_log_level(IMP.base.TERSE)
-    print "=========", combs_fn
+    print("=========", combs_fn)
     combs = IMP.multifit.read_paths(combs_fn)
-    print "=========1"
+    print("=========1")
     # sd=IMP.multifit.read_settings(asmb_fn)
-    print "=========2"
+    print("=========2")
     prot_data = IMP.multifit.read_proteomics_data(proteomics_fn)
-    print "=========3"
+    print("=========3")
     mapping_data = IMP.multifit.read_protein_anchors_mapping(
         prot_data, mapping_fn)
-    print "=========4"
+    print("=========4")
     em_anchors = mapping_data.get_anchors()
-    print "=========5"
+    print("=========5")
     ensmb = IMP.multifit.Ensemble(asmb, mapping_data)
-    print "=========6"
+    print("=========6")
     # load all proteomics restraints
     align = IMP.multifit.ProteomicsEMAlignmentAtomic(
         mapping_data, asmb, alignment_params)
     align.set_fast_scoring(False)
-    print "align"
+    print("align")
     mdl = align.get_model()
     mhs = align.get_molecules()
     align.add_states_and_filters()
     rbs = align.get_rigid_bodies()
-    print IMP.core.RigidMember(IMP.core.get_leaves(mhs[0])[0]).get_rigid_body()
+    print(IMP.core.RigidMember(IMP.core.get_leaves(mhs[0])[0]).get_rigid_body())
     align.set_density_map(dmap, threshold)
     gs = []
     for i, mh in enumerate(mhs):
@@ -193,13 +194,13 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
         all_leaves += IMP.core.XYZs(IMP.core.get_leaves(mh))
 
     align.add_all_restraints()
-    print "====1"
-    print "Get number of restraints:", len(mdl.get_restraints())
+    print("====1")
+    print("Get number of restraints:", len(mdl.get_restraints()))
     rs = mdl.get_restraints()
     for r in mdl.get_restraints():
         rr = IMP.kernel.RestraintSet.get_from(r)
         for i in range(rr.get_number_of_restraints()):
-            print rr.get_restraint(i).get_name()
+            print(rr.get_restraint(i).get_name())
     output = open(scored_comb_output_fn, "w")
     # load ref structure
     ref_mhs = []
@@ -218,29 +219,29 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
     # add fit restraint
     fitr = IMP.em.FitRestraint(all_leaves, dmap)
     mdl.add_restraint(fitr)
-    print "Number of combinations:", len(combs[:max_comb])
+    print("Number of combinations:", len(combs[:max_comb]))
 
-    print "native score"
+    print("native score")
     num_violated = 0
     for r in rs:
         rr = IMP.kernel.RestraintSet.get_from(r)
         for j in range(rr.get_number_of_restraints()):
-            print rr.get_restraint(j).get_name(), rr.evaluate(False)
+            print(rr.get_restraint(j).get_name(), rr.evaluate(False))
 
     prev_name = ''
     for i, comb in enumerate(combs[:max_comb]):
-        print "Scoring combination:", comb
+        print("Scoring combination:", comb)
         ensmb.load_combination(comb)
         num_violated = 0
         for r in rs:
             rr = IMP.kernel.RestraintSet.get_from(r)
             for j in range(rr.get_number_of_restraints()):
-                print rr.get_restraint(j).get_name()
+                print(rr.get_restraint(j).get_name())
                 rscore = rr.evaluate(False)
                 if rscore > 5:
                     num_violated = num_violated + 1
         IMP.atom.write_pdb(mhs, "model.%d.pdb" % (i))
-        print str(all_leaves[0]) + " :: " + str(all_leaves[-1])
+        print(str(all_leaves[0]) + " :: " + str(all_leaves[-1]))
         score = mdl.evaluate(False)
         num_violated = 0
         msg = "COMB" + str(i) + "|"
@@ -264,7 +265,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
             msg += str(IMP.atom.get_rmsd(IMP.core.XYZs(all_leaves),
                                          IMP.core.XYZs(all_ref_leaves)))
         output.write(msg + "\n")
-        print msg
+        print(msg)
         ensmb.unload_combination(comb)
     output.close()
 

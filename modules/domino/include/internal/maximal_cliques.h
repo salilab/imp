@@ -86,7 +86,7 @@ inline void maximal_cliques(const Graph& graph, CliqueOutputIterator out) {
 
   // Initially, P = V[G]
   vertex_iterator first, last;
-  tie(first, last) = vertices(graph);
+  boost::tie(first, last) = vertices(graph);
   Vector P(first, last);
 
   // We keep R, P, X as sorted vectors

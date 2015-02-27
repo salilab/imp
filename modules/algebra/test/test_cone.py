@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -19,6 +20,8 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(Exception, IMP.algebra.get_surface_area, c)
         self.assertRaises(Exception, IMP.algebra.get_volume, c)
         self.assertRaises(Exception, IMP.algebra.get_bounding_box, c)
+        g = IMP.algebra.get_cone_3d_geometry(c)
+        self.assertLess((g.get_tip() - c.get_tip()).get_magnitude(), 1e-4)
 
     def test_cone_construction(self):
         """Check that cones on Z are constructed correctly"""
@@ -37,7 +40,7 @@ class Tests(IMP.test.TestCase):
         self.assertFalse(cone.get_contains(IMP.algebra.Vector3D(0.5, 0.5, 0.0)))
         self.assertFalse(
                   cone.get_contains(IMP.algebra.Vector3D(1.0, 1.0, -3.0)))
-        print cone
+        print(cone)
 
     def test_sphere_patch2(self):
         """Testing sampling a patch"""
@@ -53,6 +56,16 @@ class Tests(IMP.test.TestCase):
                                   sphere.get_radius() * 1.1)
         for v in IMP.algebra.get_uniform_surface_cover(sp, 3):
             self.assertTrue(bs.get_contains(v))
+
+    def test_surface_cover(self):
+        """Check surface cover of cone"""
+        s = IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0, 0.0, 0.0),
+                                  IMP.algebra.Vector3D(0.0, 0.0, 5.0))
+        cone = IMP.algebra.Cone3D(s, 4.0)
+        pts = IMP.algebra.get_uniform_surface_cover(cone, 10)
+        self.assertEqual(len(pts), 10)
+        for p in pts:
+            self.assertTrue(cone.get_contains(p))
 
 if __name__ == '__main__':
     IMP.test.main()

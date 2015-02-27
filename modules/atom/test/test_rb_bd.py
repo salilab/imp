@@ -1,3 +1,4 @@
+from __future__ import print_function, division
 import IMP
 import IMP.test
 import IMP.core
@@ -57,18 +58,18 @@ class Tests(IMP.test.TestCase):
         bd.set_maximum_time_step(10)
         IMP.base.set_log_level(IMP.base.VERBOSE)
         bd.optimize(10)
-        print "going silent"
+        print("going silent")
         IMP.base.set_log_level(IMP.base.SILENT)
         max_cycles = 5000
         round_cycles = 250
         total_cycles = 0
         e_threshold = 2
-        for i in range(max_cycles / round_cycles):
+        for i in range(max_cycles // round_cycles):
             bd.optimize(round_cycles)
             energy = sf.evaluate(False)
             total_cycles += round_cycles
-            print "energy after %d cycles = %.2f" \
-                % (total_cycles, energy)
+            print("energy after %d cycles = %.2f" \
+                % (total_cycles, energy))
             if(energy < e_threshold):
                 break
         self.assertLess(energy, e_threshold)

@@ -1,3 +1,4 @@
+from __future__ import print_function, division
 import IMP
 import IMP.test
 import IMP.core
@@ -11,7 +12,7 @@ class Tests(IMP.test.TestCase):
 
     def check_model(self, m, lsc, lpc):
         s = m.evaluate(False)
-        print "score is ", s
+        print("score is ", s)
         for p0 in lsc.get_particles():
             p0.show()
         self.assertLessEqual(s, max_score)
@@ -31,34 +32,34 @@ class Tests(IMP.test.TestCase):
         """Check that MCCG can make spheres connect not penetrate"""
         m = IMP.kernel.Model()
         n = 10
-        print 1
+        print(1)
         ds = IMP.core.create_xyzr_particles(m, n, 2)
         lsc = IMP.container.ListSingletonContainer(ds)
-        print 2
+        print(2)
         cpf = IMP.core.QuadraticClosePairsFinder()
-        print 2.1
+        print(2.1)
         cpc = IMP.container.ClosePairContainer(lsc, .1, cpf)
-        print 2.2
+        print(2.2)
         evr = IMP.container.PairsRestraint(
             IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0, 1)), cpc)
-        print 3
+        print(3)
         m.add_restraint(evr)
         evr.set_log_level(IMP.WARNING)
-        print 4
+        print(4)
         lpc = IMP.container.ListPairContainer(m)
-        print "finding pairs"
-        for i in range(0, n / 2):
-            print lsc.get_particle(2 * i)
+        print("finding pairs")
+        for i in range(0, n // 2):
+            print(lsc.get_particle(2 * i))
             qp = lsc.get_particle(2 * i)
-            print qp.get_name()
-            print qp
+            print(qp.get_name())
+            print(qp)
             pp = (lsc.get_particle(2 * i),
                   lsc.get_particle(2 * i + 1))
-            print pp
+            print(pp)
             pp2 = (lsc.get_particle(2 * i),
                    lsc.get_particle(2 * i + 1))
-            print pp2
-            print str(pp2[0])
+            print(pp2)
+            print(str(pp2[0]))
             lpc.add_particle_pair(pp2)
         d = IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(0, 1))
         pr = IMP.container.PairsRestraint(d, lpc)
@@ -77,9 +78,9 @@ class Tests(IMP.test.TestCase):
         trial = 1
         while(True):
             try:
-                print "sampling"
+                print("sampling")
                 cs = s.create_sample()
-                print "found ", cs.get_number_of_configurations(), cs.get_name()
+                print("found ", cs.get_number_of_configurations(), cs.get_name())
                 for i in range(0, cs.get_number_of_configurations()):
                     cs.load_configuration(i)
                     nm = "config" + str(i) + ".pym"
@@ -92,8 +93,8 @@ class Tests(IMP.test.TestCase):
                 return
             except:
                 if trial < n_trials:
-                    print "Trial #%d out of %d has failed, trying again" \
-                        % (trial, n_trials)
+                    print("Trial #%d out of %d has failed, trying again" \
+                        % (trial, n_trials))
                     trial = trial + 1
                 else:
                     raise

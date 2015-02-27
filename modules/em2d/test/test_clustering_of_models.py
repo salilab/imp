@@ -73,9 +73,9 @@ class Tests(IMP.test.TestCase):
         # compute rmsds
         x = [0.0 for i in range(0, n_models)]
         rmsds = [[0.0 for i in range(0, n_models)]
-                 for n in xrange(0, n_models)]
-        for i in xrange(0, n_models):
-            for j in xrange(i + 1, n_models):
+                 for n in range(0, n_models)]
+        for i in range(0, n_models):
+            for j in range(i + 1, n_models):
                 if(i != j):
                     t = IMP.algebra.get_transformation_aligning_first_to_second(
                         coords[i],

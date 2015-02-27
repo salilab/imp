@@ -16,7 +16,7 @@
 #
 #
 
-
+from __future__ import print_function
 import IMP
 import IMP.domino
 import IMP.core
@@ -82,12 +82,12 @@ def get_total_price(states_table, subset, assignment):
 
 def print_assignment(states_table, subset, assignment):
     total_price = 0
-    print "########## solution assignment", assignment
+    print("########## solution assignment", assignment)
     for i, p in enumerate(subset):
         price_states = states_table.get_particle_states(p)
         price_states.load_particle_state(assignment[i], p)
         price = Price(p).get_price()
-        print p.get_name(), "price", price
+        print(p.get_name(), "price", price)
 
 
 n_girls = 10
@@ -121,13 +121,13 @@ for i in range(n_girls):
     # Each girl has a selection of dresses
     selection = random.sample(prices, n_dresses)
     allowed_states_indices = [prices.index(price) for price in selection]
-    print p.get_name(), "prices selected", selection, "indices", allowed_states_indices
+    print(p.get_name(), "prices selected", selection, "indices", allowed_states_indices)
     list_states_table = IMP.domino.ListSubsetFilterTable(states_table)
     list_states_table.set_allowed_states(p, allowed_states_indices)
     sampler.add_subset_filter_table(list_states_table)
 
 # create restraints
-for z in xrange(n_edges):
+for z in range(n_edges):
     # pair of friends
     i = random.randrange(0, n_girls)
     j = random.randrange(0, n_girls)
@@ -145,7 +145,7 @@ subset = states_table.get_subset()
 solutions = sampler.get_sample_assignments(subset)
 
 if len(solutions) == 0:
-    print "There are no solutions to the problem"
+    print("There are no solutions to the problem")
 else:
     most_expensive = 0
     best_solution = solutions[0]
@@ -154,6 +154,6 @@ else:
         if(total_price > most_expensive):
             most_expensive = total_price
             best_solution = assignment
-    print " There are", len(solutions), "possible solutions"
-    print "=================> BEST SOLUTION <=============="
+    print(" There are", len(solutions), "possible solutions")
+    print("=================> BEST SOLUTION <==============")
     print_assignment(states_table, subset, best_solution)

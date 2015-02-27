@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -48,7 +49,7 @@ class Tests(IMP.test.TestCase):
                 if min_dist > IMP.algebra.get_distance(v, vecs[j]):
                     min_dist = IMP.algebra.get_distance(v, vecs[j])
                     closet_v = j
-            print n1, closet_v
+            print(n1, closet_v)
             self.assertEqual(n1, closet_v)
 
     def test_nn_functionality(self):
@@ -65,13 +66,13 @@ class Tests(IMP.test.TestCase):
             self.assertNotEqual(cnn, i)
             rnn = get_nn(vs, i)
             # print i
-            print "start", i
-            print "vs", vs[i]
-            print "cnn", cnn
-            print "rnn", rnn
-            print vs[cnn], (vs[i] - vs[cnn]).get_magnitude()
+            print("start", i)
+            print("vs", vs[i])
+            print("cnn", cnn)
+            print("rnn", rnn)
+            print(vs[cnn], (vs[i] - vs[cnn]).get_magnitude())
             for x in rnn:
-                print vs[x], (vs[x] - vs[i]).get_magnitude()
+                print(vs[x], (vs[x] - vs[i]).get_magnitude())
             # print
             self.assertNotEqual(rnn.index(cnn), -1)
 

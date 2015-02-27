@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-__doc__ = "Write assembly transformation file in other formats."
-
+from __future__ import print_function
 import IMP
 import IMP.multifit
 from IMP import OptionParser
 
+__doc__ = "Write assembly transformation file in other formats."
 
 class Formatter(object):
 
@@ -67,11 +67,11 @@ def parse_args():
 
 Write assembly transformation file in other formats.
 
-""" + "\n\n".join([x.__doc__ for x in formatters.values()])
+""" + "\n\n".join(x.__doc__ for x in formatters.values())
 
     parser = OptionParser(usage)
     parser.add_option("-f", "--format", default='chimera', type="choice",
-                      choices=formatters.keys(),
+                      choices=list(formatters.keys()),
                       help="type of output to generate ("
                            + ", ".join(formatters.keys())
                            + "; default: chimera)")

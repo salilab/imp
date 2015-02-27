@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import IMP
 import IMP.test
@@ -14,7 +15,7 @@ class Tests(IMP.test.TestCase):
     def test_read_paths(self):
         paths = IMP.multifit.read_paths(
             self.get_input_file_name("1z5s_8_18_anchors_5.txt"))
-        print len(paths)
+        print(len(paths))
         self.assertEqual(len(paths), 684)
 
 if __name__ == '__main__':

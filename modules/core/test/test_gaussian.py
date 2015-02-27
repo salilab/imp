@@ -12,7 +12,7 @@ from math import cos, sin, pi, sqrt, exp, log
 
 def create_test_points(mu, radii):
     testers = [[mu[0], mu[1], mu[2]]]
-    for i in xrange(3):
+    for i in range(3):
         t = mu[:]
         t[i] += radii[i] + 1
         testers.append(t)
@@ -87,7 +87,7 @@ class TestGaussian(IMP.test.TestCase):
         # now decorate a particle with the gaussian and see if it has the right
         # parameters
         final_test_pts = create_test_points([0, 0, 0],
-                                            map(sqrt, list(self.g0.get_gaussian().get_variances())))
+                     [sqrt(x) for x in self.g0.get_gaussian().get_variances()])
         final_trans = self.g0.get_gaussian(
         ).get_reference_frame(
         ).get_transformation_to(

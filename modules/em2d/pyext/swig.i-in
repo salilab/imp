@@ -115,8 +115,8 @@ namespace IMP {
   }
 }
 
-%pythoncode {
+%pythoncode %{
   do_hierarchical_clustering_single_linkage = _do_hierarchical_clustering_single_linkage
   do_hierarchical_clustering_complete_linkage = _do_hierarchical_clustering_complete_linkage
   do_hierarchical_clustering_average_distance_linkage = _do_hierarchical_clustering_average_distance_linkage
-}
+%}

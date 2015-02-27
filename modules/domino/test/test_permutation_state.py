@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -12,7 +13,7 @@ class Tests(IMP.test.TestCase):
         dps = IMP.domino.IndexStates(10)
         pps = IMP.domino.PermutationStates(dps)
         all = [pps.get_inner_state(i) for i in range(0, 10)]
-        print all
+        print(all)
         for i in range(0, 10):
             self.assertIn(i, all)
 if __name__ == '__main__':

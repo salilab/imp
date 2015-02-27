@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 # general imports
 from numpy import *
 from random import uniform
@@ -101,25 +102,25 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         self.hmc.get_md().optimize(0)
         pos = []
         ene = []
-        for i in xrange(2000):
+        for i in range(2000):
             self.hmc.optimize(1)
             pos.append(IMP.core.XYZ(self.xyzs[1]).get_coordinates())
             ene.append(self.m.evaluate(False))
         dist = [i.get_magnitude() for i in pos]
         # mean should be exp(s^2/24) g^(1/6)
         #e.g. exp(1/24)
-        print mean(dist), exp(1 / 24.)
+        print(mean(dist), exp(1 / 24.))
         self.assertAlmostEqual(mean(dist), exp(1 / 24.), delta=0.1)
         # variance should be exp(s^2/12)(exp(s^2/36)-1)g^(1/3)
         #e.g. exp(1/12)(exp(1/36)-1)
-        print var(dist), exp(1 / 12.) * (exp(1 / 36.) - 1)
+        print(var(dist), exp(1 / 12.) * (exp(1 / 36.) - 1))
         self.assertAlmostEqual(
             var(dist),
             exp(1 / 12.) * (exp(1 / 36.) - 1),
             delta=1e-2)
         # average energy should be 1/72(s^2+36*(1+log(2*pi))) + log(s)
         # e.g. 1/72(37+36*log(2*pi))
-        print mean(ene), 1 / 72. * (37 + 36 * log(2 * pi))
+        print(mean(ene), 1 / 72. * (37 + 36 * log(2 * pi)))
         self.assertAlmostEqual(
             mean(ene),
             1 / 72. * (37 + 36 * log(2 * pi)),
@@ -135,7 +136,7 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         # HMC
         pos = []
         ene = []
-        for i in xrange(1000):
+        for i in range(1000):
             self.hmc.optimize(1)
             pos.append(IMP.core.XYZ(self.xyzs[1]).get_coordinates())
             ene.append(self.m.evaluate(False))
@@ -149,7 +150,7 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         mc.set_kt(1.0)
         pos2 = []
         ene2 = []
-        for i in xrange(2000):
+        for i in range(2000):
             mc.optimize(1)
             pos2.append(IMP.core.XYZ(self.xyzs[1]).get_coordinates())
             ene2.append(self.m.evaluate(False))

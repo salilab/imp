@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.em2d as em2d
@@ -26,7 +27,7 @@ class Tests(IMP.test.TestCase):
         states_table = domino.ParticleStatesTable()
         for p in particles:
             states_table.set_particle_states(p, states)
-            print p
+            print(p)
         # Restraints
         sf = IMP.core.Harmonic(10.0, 1.0)
         r1 = IMP.core.DistanceRestraint(sf, particles[0], particles[1])
@@ -62,7 +63,7 @@ class Tests(IMP.test.TestCase):
 
         configuration_set = sampler.create_sample()
         n = configuration_set.get_number_of_configurations()
-        print "number of possible_configurations", n
+        print("number of possible_configurations", n)
         for i in range(n):
             configuration_set.load_configuration(i)
             # Check that the distance between the particles is correct

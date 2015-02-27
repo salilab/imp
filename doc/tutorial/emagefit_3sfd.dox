@@ -4,7 +4,7 @@
 
 \section emagefit_3sfd_intro Introduction
 
-In this example, [EMageFit](@ref impEMageFit) is used to build
+In this example, [EMageFit](@ref IMP::EMageFit) is used to build
 a model of porcine mitochondrial
 respiratory complex II (PDB id 3sfd), using crystal structures of its
 4 constituent proteins and a number of electron microscopy (EM) class averages
@@ -28,14 +28,14 @@ First, obtain the input files used in this example and put them in the
 current directory, by typing:
 
 \code{.sh}
-cp -r <imp_example_path>/em2d/3sfd/* .
+cp -r <imp_example_path>/EMageFit/3sfd/* .
 \endcode
 
 (On a Windows machine, use 'xcopy /E' rather than 'cp -r'.) Here,
 \<imp_example_path\>
 is the directory containing the IMP example files. The full path to the files
-can be determined by running in a Python interpreter '<tt>import IMP.em2d;
-print IMP.em2d.get_example_path('3sfd')</tt>'.
+can be determined by running in a Python interpreter '<tt>import IMP.EMageFit;
+print IMP.EMageFit.get_example_path('3sfd')</tt>'.
 
 The input files are for modeling are the three simulated class averages of
 the complex located in the <tt>em_images</tt> directory, and the subunits to

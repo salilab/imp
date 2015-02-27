@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.multifit
@@ -37,7 +38,7 @@ class Tests(IMP.test.TestCase):
             in_fh = open(self.get_input_file_name("test.align.param"))
             for line in in_fh:
                 if line.startswith("scoring_mode"):
-                    print >> out_fh, "scoring_mode = " + mode
+                    print("scoring_mode = " + mode, file=out_fh)
                 else:
                     out_fh.write(line)
             out_fh.close()

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.domino
@@ -8,7 +9,7 @@ import random
 class Tests(IMP.test.TestCase):
 
     def _get_path(self, jt, v0, v1):
-        print "path for ", v0, v1
+        print("path for ", v0, v1)
         front = [([], v0)]
         while len(front) > 0:
             cur = front[-1]
@@ -19,13 +20,13 @@ class Tests(IMP.test.TestCase):
                 if len(cur[0]) == 0 or not v == cur[0][-1]:
                     if v == v1:
                         path = cur[0] + [cur[1], v]
-                        print "path is ", path
+                        print("path is ", path)
                         return path
                     front.append((cur[0] + [cur[1]], v))
         raise ValueError("huh")
 
     def _check_jt_property(self, jt):
-        print "vertices are", jt.get_vertices()
+        print("vertices are", jt.get_vertices())
         for v0 in jt.get_vertices():
             ps0 = [p for p in jt.get_vertex_name(v0)]
             for v1 in jt.get_vertices():
@@ -35,11 +36,11 @@ class Tests(IMP.test.TestCase):
                 intersection = [x for x in ps0 if x in jt.get_vertex_name(v1)]
                 path = self._get_path(jt, v0, v1)
                 for v in path:
-                    print "node", v
+                    print("node", v)
                     set = [x for x in jt.get_vertex_name(v)]
-                    print [x.get_name() for x in jt.get_vertex_name(v)]
+                    print([x.get_name() for x in jt.get_vertex_name(v)])
                     for i in intersection:
-                        print i.get_name()
+                        print(i.get_name())
                         self.assertIn(i, set)
 
     def test_global_min2(self):

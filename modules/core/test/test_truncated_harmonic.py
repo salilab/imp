@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -19,11 +20,6 @@ class Tests(IMP.test.TestCase):
             k = random.uniform(.1, 10)
             t = random.uniform(0, 10)
             l = random.uniform(1.1 * .5 * k * t * t, 10 + 1.1 * .5 * k * t * t)
-#        print "i=",i
-#        print "c=" +str(c)
-#        print "k=" +str(k)
-#        print "t=" +str(t)
-#        print "l=" +str(l)
             h = IMP.core.TruncatedHarmonicLowerBound(c, k, t, l)
             self.check_unary_function_deriv(h, -10, 10, .1)
             self.assertEqual(h.evaluate(c + 1), 0)
@@ -40,10 +36,6 @@ class Tests(IMP.test.TestCase):
             k = 1
             t = 2
             l = 10
-     #       print "c=" +str(c)
-     #       print "k=" +str(k)
-     #       print "t=" +str(t)
-     #       print "l=" +str(l)
             h = IMP.core.TruncatedHarmonicUpperBound(c, k, t, l)
             self.check_unary_function_deriv(h, -10, 10, .1)
             self.assertEqual(h.evaluate(c - 1), 0)
@@ -56,22 +48,29 @@ class Tests(IMP.test.TestCase):
             k = random.uniform(.1, 10)
             t = random.uniform(0, 10)
             l = random.uniform(1.1 * .5 * k * t * t, 10 + 1.1 * .5 * k * t * t)
-            # c=0
-            # k=1
-            # t=2
-            # l=10
-     #       print "c=" +str(c)
-     #       print "k=" +str(k)
-     #       print "t=" +str(t)
-     #       print "l=" +str(l)
             h = IMP.core.TruncatedHarmonicBound(c, k, t, l)
-            for x in range(-200, 200):
-                print str(x / 10.0) + ", " + str(h.evaluate(x / 10.0))
 
             self.assertAlmostEqual(h.evaluate(c + t + 100000), l, delta=.1)
             self.assertAlmostEqual(h.evaluate(c - t - 100000), l, delta=.1)
             self.check_unary_function_min(h, -10, 10, .1, c)
             self.check_unary_function_deriv(h, -10, 10, .1)
+
+    def test_sanity_checks(self):
+        """Test TruncatedHarmonic sanity checks"""
+        if IMP.base.get_check_level() >= IMP.base.USAGE:
+            # Limit too low
+            self.assertRaises(IMP.base.UsageException,
+                              IMP.core.TruncatedHarmonicBound, 10., 3.0, 3., 1.)
+            # Negative spring constant
+            self.assertRaises(IMP.base.UsageException,
+                              IMP.core.TruncatedHarmonicBound,
+                              10., 2.0, -1., 5.)
+            # Negative threshold
+            self.assertRaises(IMP.base.UsageException,
+                              IMP.core.TruncatedHarmonicBound,
+                              10., -2.0, 1., 5.)
+            # Default value for limit should be reasonable
+            h = IMP.core.TruncatedHarmonicBound(10., 0.1, 10.)
 
 if __name__ == '__main__':
     IMP.test.main()

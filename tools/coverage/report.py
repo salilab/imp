@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import coverage
 from optparse import OptionParser
 import subprocess
@@ -30,25 +31,22 @@ def setup_excludes(cov):
 
 def report_python_component(cov, morfs, name, typ, reldir, outdir):
     if len(morfs) > 0:
-        print "Generating HTML report for %s %s Python coverage" % (name, typ)
+        print("Generating HTML report for %s %s Python coverage" % (name, typ))
         sys.stdout.flush()
         cov.file_locator.relative_dir = reldir
         cov.html_report(morfs=morfs, directory=os.path.join(outdir, 'python',
                                                             name))
 
 
-def report_python_module(cov, modname, outdir):
-    mods = glob.glob('lib/IMP/%s/*.py' % modname)
+def report_python_module(cov, modname, srcdir, outdir):
+    mods = glob.glob('lib/IMP/%s/*.py' % modname) \
+           + glob.glob('lib/IMP/%s/*/*.py' % modname)
     mods = [x for x in mods if not x.endswith('_version_check.py')]
-    report_python_component(cov, mods, modname, 'module', '', outdir)
-
-
-def report_python_application(cov, app, srcdir, outdir):
-    mods = tools.get_glob([os.path.join(srcdir, 'applications', app, '*')])
-    mods = [x for x in mods if tools.filter_pyapps(x)]
-    mods = [os.path.basename(x) for x in mods]
-    mods = [os.path.join('bin', x) for x in mods if x != 'dependencies.py']
-    report_python_component(cov, mods, app, 'application', '', outdir)
+    bins = tools.get_glob([os.path.join(srcdir, 'modules', modname, 'bin',
+                                        '*')])
+    bins = [os.path.basename(x) for x in bins if tools.filter_pyapps(x)]
+    bins = [os.path.join('bin', x) for x in bins if x != 'dependencies.py']
+    report_python_component(cov, mods + bins, modname, 'module', '', outdir)
 
 
 def report_python_dependency(cov, dep, outdir):
@@ -70,9 +68,7 @@ def report_python(opts, outdir):
     setup_excludes(cov)
     cov.load()
     for module in opts.modules:
-        report_python_module(cov, module, outdir)
-    for app in opts.applications:
-        report_python_application(cov, app, srcdir, outdir)
+        report_python_module(cov, module, srcdir, outdir)
     for dep in opts.dependencies:
         report_python_dependency(cov, dep, outdir)
 
@@ -120,23 +116,18 @@ def extract_lcov(infile, outfile, matches, excludes):
 def report_cpp_component(name, typ, matches, excludes, prefix, outdir):
     info_file = 'coverage/%s.%s.info' % (typ, name)
     if extract_lcov('coverage/all.info', info_file, matches, excludes):
-        print "Generating HTML report for %s %s C++ coverage" % (name, typ)
+        print("Generating HTML report for %s %s C++ coverage" % (name, typ))
         cmd = ['genhtml', '-p', prefix, info_file, '-o',
                os.path.join(outdir, 'cpp', name), '--no-branch-coverage',
                '--legend', '--demangle-cpp']
-        print " ".join(cmd)
+        print(" ".join(cmd))
         sys.stdout.flush()
         subprocess.check_call(cmd)
 
 
 def report_cpp_module(module, srcdir, outdir):
     report_cpp_component(module, "module", ['/modules/%s/' % module],
-                         ['/dependency/'], srcdir, outdir)
-
-
-def report_cpp_application(app, srcdir, outdir):
-    report_cpp_component(app, "application", ['/applications/%s/' % app], [],
-                         srcdir, outdir)
+                         ['/dependency/', '/test/'], srcdir, outdir)
 
 
 def report_cpp_dependency(dep, srcdir, outdir):
@@ -152,8 +143,6 @@ def report_cpp(opts, outdir):
                                           '..', '..'))
     for module in opts.modules:
         report_cpp_module(module, srcdir, outdir)
-    for app in opts.applications:
-        report_cpp_application(app, srcdir, outdir)
     for dep in opts.dependencies:
         report_cpp_dependency(dep, srcdir, outdir)
 
@@ -177,16 +166,11 @@ Generate HTML coverage reports for IMP C++/Python code in the given directory.
                       choices=['python', 'cpp', 'both'], default='both',
                       help="Generate reports for Python code ('python'), "
                            "C++ code ('cpp') or both Python and C++ ('both'). "
-                           "Default 'both'.")
+                           "Default '%default'.")
     parser.add_option("--modules", metavar='STR', default=None,
                       help="Report only for the given colon-separated list of "
                            "IMP modules, e.g. 'base:kernel'. By default, "
                            "coverage for all modules is reported.")
-    parser.add_option("--applications", metavar='STR', default=None,
-                      help="Report only for the given colon-separated list of "
-                           "IMP applications, e.g. 'foxs:saxs_merge'. By "
-                           "default, coverage for all applications is "
-                           "reported.")
     parser.add_option("--dependencies", metavar='STR', default=None,
                       help="Report only for the given colon-separated list of "
                            "IMP dependencies, e.g. 'RMF'. By default, coverage "
@@ -205,10 +189,6 @@ Generate HTML coverage reports for IMP C++/Python code in the given directory.
         exclude = {}
     opts.modules = _get_components(opts.modules, tools.get_sorted_order(),
                                    exclude)
-    opts.applications = _get_components(opts.applications,
-                                        tools.get_all_configured_applications(
-                                        ),
-                                        exclude)
     opts.dependencies = _get_components(opts.dependencies, ['RMF'], exclude)
     return opts, args[0]
 

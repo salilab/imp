@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -37,9 +38,9 @@ class Tests(IMP.test.TestCase):
                                                   rnb.create_decomposition()])
         isf = IMP.core.IncrementalScoringFunction(ps, [r])
         isf.add_close_pair_score(nbps, 0, ps, [f])
-        print "iscore"
+        print("iscore")
         iscore = isf.evaluate(False)
-        print "oscore"
+        print("oscore")
         # sf.set_log_level(IMP.base.VERBOSE)
         # m.set_log_level(IMP.base.VERBOSE)
         oscore = sf.evaluate(False)
@@ -53,11 +54,11 @@ class Tests(IMP.test.TestCase):
             nc = oc + IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
             isf.set_moved_particles([pi.get_particle_index()])
-            print "moved", pi
+            print("moved", pi)
             iscore = isf.evaluate(False)
             dscore = dsf.evaluate(False)
             rscore = sf.evaluate(False)
-            print 'scores', iscore, dscore, rscore
+            print('scores', iscore, dscore, rscore)
             self.assertAlmostEqual(iscore,
                                    dscore, delta=.1)
             self.assertAlmostEqual(iscore,
@@ -68,7 +69,7 @@ class Tests(IMP.test.TestCase):
                 iscore = isf.evaluate(False)
                 dscore = dsf.evaluate(False)
                 rscore = sf.evaluate(False)
-                print 'scores', iscore, dscore, rscore
+                print('scores', iscore, dscore, rscore)
                 self.assertAlmostEqual(iscore,
                                        dscore, delta=.1)
                 self.assertAlmostEqual(iscore,
@@ -96,9 +97,9 @@ class Tests(IMP.test.TestCase):
         dsf = IMP.core.RestraintsScoringFunction([rnb.create_decomposition()])
         isf = IMP.core.IncrementalScoringFunction(ps, [])
         isf.add_close_pair_score(nbps, 0, ps, [])
-        print "iscore"
+        print("iscore")
         iscore = isf.evaluate(False)
-        print "oscore"
+        print("oscore")
         # sf.set_log_level(IMP.base.VERBOSE)
         # m.set_log_level(IMP.base.VERBOSE)
         oscore = sf.evaluate(False)
@@ -112,11 +113,11 @@ class Tests(IMP.test.TestCase):
             nc = oc + IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
             isf.set_moved_particles([pi.get_particle_index()])
-            print "moved", pi
+            print("moved", pi)
             iscore = isf.evaluate(False)
             dscore = dsf.evaluate(False)
             rscore = sf.evaluate(False)
-            print 'scores', iscore, dscore, rscore
+            print('scores', iscore, dscore, rscore)
             self.assertAlmostEqual(iscore,
                                    dscore, delta=.1)
             self.assertAlmostEqual(iscore,
@@ -127,7 +128,7 @@ class Tests(IMP.test.TestCase):
                 iscore = isf.evaluate(False)
                 dscore = dsf.evaluate(False)
                 rscore = sf.evaluate(False)
-                print 'scores', iscore, dscore, rscore
+                print('scores', iscore, dscore, rscore)
                 self.assertAlmostEqual(iscore,
                                        dscore, delta=.1)
                 self.assertAlmostEqual(iscore,
@@ -155,11 +156,11 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.RestraintsScoringFunction([r])
         isf = IMP.core.IncrementalScoringFunction(ps, [r])
         # isf.set_log_level(IMP.base.VERBOSE)
-        print 'initial test'
+        print('initial test')
         iscore = isf.evaluate(False)
         dscore = dsf.evaluate(False)
         rscore = sf.evaluate(False)
-        print 'scores', iscore, dscore, rscore
+        print('scores', iscore, dscore, rscore)
         self.assertAlmostEqual(iscore,
                                dscore, delta=.1)
         self.assertAlmostEqual(iscore,
@@ -172,28 +173,28 @@ class Tests(IMP.test.TestCase):
             nc = oc + IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
             isf.set_moved_particles([pi.get_particle_index()])
-            print "moved", pi
+            print("moved", pi)
             iscore = isf.evaluate(False)
             dscore = dsf.evaluate(False)
             rscore = sf.evaluate(False)
-            print 'scores', iscore, dscore, rscore
+            print('scores', iscore, dscore, rscore)
             self.assertAlmostEqual(iscore,
                                    dscore, delta=.1)
             self.assertAlmostEqual(iscore,
                                    rscore, delta=.1)
             if i % 2 == 0:
                 d.set_coordinates(oc)
-                print 'reseting'
+                print('reseting')
                 isf.reset_moved_particles()
                 iscore = isf.evaluate(False)
                 dscore = dsf.evaluate(False)
                 rscore = sf.evaluate(False)
-                print 'scores', iscore, dscore, rscore
+                print('scores', iscore, dscore, rscore)
                 self.assertAlmostEqual(iscore,
                                        dscore, delta=.1)
                 self.assertAlmostEqual(iscore,
                                        rscore, delta=.1)
-        print "resetting"
+        print("resetting")
         for pi in ps:
             d = IMP.core.XYZ(pi)
             oc = d.get_coordinates()
@@ -203,7 +204,7 @@ class Tests(IMP.test.TestCase):
         iscore = isf.evaluate(False)
         dscore = dsf.evaluate(False)
         rscore = sf.evaluate(False)
-        print 'scores', iscore, dscore, rscore
+        print('scores', iscore, dscore, rscore)
         for i in range(10):
             pi = random.choice(ps)
             d = IMP.core.XYZ(pi)
@@ -211,23 +212,23 @@ class Tests(IMP.test.TestCase):
             nc = oc + IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
             isf.set_moved_particles([pi.get_particle_index()])
-            print "moved", pi
+            print("moved", pi)
             iscore = isf.evaluate(False)
             dscore = dsf.evaluate(False)
             rscore = sf.evaluate(False)
-            print 'scores', iscore, dscore, rscore
+            print('scores', iscore, dscore, rscore)
             self.assertAlmostEqual(iscore,
                                    dscore, delta=.1)
             self.assertAlmostEqual(iscore,
                                    rscore, delta=.1)
             if i % 2 == 0:
                 d.set_coordinates(oc)
-                print 'reseting'
+                print('reseting')
                 isf.reset_moved_particles()
                 iscore = isf.evaluate(False)
                 dscore = dsf.evaluate(False)
                 rscore = sf.evaluate(False)
-                print 'scores', iscore, dscore, rscore
+                print('scores', iscore, dscore, rscore)
                 self.assertAlmostEqual(iscore,
                                        dscore, delta=.1)
                 self.assertAlmostEqual(iscore,
@@ -278,7 +279,7 @@ class Tests(IMP.test.TestCase):
         iscore = isf.evaluate(False)
         dscore = dsf.evaluate(False)
         rscore = sf.evaluate(False)
-        print 'scores', iscore, dscore, rscore
+        print('scores', iscore, dscore, rscore)
 
         dg = IMP.get_dependency_graph(m)
         # IMP.base.show_graphviz(dg)
@@ -295,11 +296,11 @@ class Tests(IMP.test.TestCase):
             nc = oc + IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
             isf.set_moved_particles([pi.get_index()])
-            print "moved", pi.get_name(), pi.get_particle().get_index()
+            print("moved", pi.get_name(), pi.get_particle().get_index())
             iscore = isf.evaluate(False)
             dscore = dsf.evaluate(False)
             rscore = sf.evaluate(False)
-            print 'scores', iscore, dscore, rscore
+            print('scores', iscore, dscore, rscore)
             self.assertAlmostEqual(iscore,
                                    dscore, delta=.1)
             self.assertAlmostEqual(iscore,
@@ -310,7 +311,7 @@ class Tests(IMP.test.TestCase):
                 iscore = isf.evaluate(False)
                 dscore = dsf.evaluate(False)
                 rscore = sf.evaluate(False)
-                print 'scores', iscore, dscore, rscore
+                print('scores', iscore, dscore, rscore)
                 self.assertAlmostEqual(iscore,
                                        dscore, delta=.1)
                 self.assertAlmostEqual(iscore,

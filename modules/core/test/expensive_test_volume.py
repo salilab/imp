@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.algebra
@@ -59,9 +60,9 @@ class Volume(IMP.test.TestCase):
                                                             Vector3D(
                                                                 5, 5, 5))),
                          4)
-        print inits
+        print(inits)
         d = XYZR.setup_particle(p, inits)
-        print d
+        print(d)
         ps.append(p)
         d.set_coordinates_are_optimized(True)
         d.get_particle().set_is_optimized(XYZR.get_radius_key(), True)
@@ -75,7 +76,7 @@ class Volume(IMP.test.TestCase):
         c = MonteCarlo(m)
         c.set_score_threshold(.1)
         c.optimize(20)
-        print d
+        print(d)
         self.assertAlmostEqual(d.get_radius(), 5, delta=.1)
 
 if __name__ == '__main__':

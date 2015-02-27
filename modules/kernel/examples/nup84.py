@@ -5,6 +5,7 @@
 # rejected conformations. Both are useful things to do when trying to
 # figure out why optimization is not converging.
 
+from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.container
@@ -264,7 +265,7 @@ configuration_set = get_configurations(model, restraints,
                                        excluded_volume_particles,
                                        optimized_particles)
 
-print "Found", configuration_set.get_number_of_configurations(), "good configurations"
+print("Found", configuration_set.get_number_of_configurations(), "good configurations")
 
 # now lets save them all to a file
 rmf_file_name = IMP.base.create_temporary_file_name("nup84", ".rmf")
@@ -290,4 +291,4 @@ for i in range(0, configuration_set.get_number_of_configurations()):
     sf.evaluate(False)
     IMP.rmf.save_frame(rmf, i)
 
-print "You can now open", rmf_file_name, "in chimera"
+print("You can now open", rmf_file_name, "in chimera")

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import IMP.rmf
 import IMP.test
@@ -9,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def _assert_same(self, h0, h1):
         IMP.atom.get_mass(h0)
-        print h1
+        print(h1)
         s = IMP.atom.Selection(h1)
         IMP.atom.get_mass(s)
         self.assertAlmostEqual(IMP.atom.get_mass(h0),
@@ -31,7 +32,7 @@ class Tests(IMP.test.TestCase):
 
     def _show(self, g):
         for i in range(0, g.get_number_of_children()):
-            print i, g.get_child_name(i), g.get_child_is_group(i)
+            print(i, g.get_child_name(i), g.get_child_is_group(i))
     """Test the python code"""
 
     def test_perturbed(self):
@@ -50,42 +51,42 @@ class Tests(IMP.test.TestCase):
         """Test writing a huge hierarchy"""
         for suffix in IMP.rmf.suffixes:
             m = IMP.kernel.Model()
-            print "reading pdb"
+            print("reading pdb")
             h = IMP.atom.read_pdb(
                 self.get_input_file_name("huge_protein.pdb"), m,
                 IMP.atom.NonAlternativePDBSelector())
             IMP.base.set_log_level(IMP.base.SILENT)
             IMP.atom.add_bonds(h)
-            print "done"
+            print("done")
             IMP.base.set_log_level(IMP.base.VERBOSE)
-            print "writing hierarchy"
+            print("writing hierarchy")
             IMP.base.set_log_level(IMP.PROGRESS)
             self._test_round_trip(
                 h, self.get_tmp_file_name("test_huge" + suffix))
-            print "done"
+            print("done")
 
     def test_large(self):
         """Test writing a large hierarchy"""
         for suffix in IMP.rmf.suffixes:
             m = IMP.kernel.Model()
-            print "reading pdb"
+            print("reading pdb")
             h = IMP.atom.read_pdb(self.get_input_file_name("large.pdb"), m,
                                   IMP.atom.NonAlternativePDBSelector())
             IMP.base.set_log_level(IMP.base.SILENT)
             IMP.atom.add_bonds(h)
-            print "done"
+            print("done")
             IMP.base.set_log_level(IMP.base.VERBOSE)
-            print "writing hierarchy"
+            print("writing hierarchy")
             IMP.base.set_log_level(IMP.PROGRESS)
             self._test_round_trip(
                 h, self.get_tmp_file_name("test_large" + suffix))
-            print "done"
+            print("done")
 
     def test_navigation(self):
         """Test that navigation of read hierarchies works"""
         for suffix in IMP.rmf.suffixes:
             m = IMP.kernel.Model()
-            print "reading pdb"
+            print("reading pdb")
             h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                   IMP.atom.NonAlternativePDBSelector())
             IMP.base.set_log_level(IMP.base.SILENT)
@@ -105,7 +106,7 @@ class Tests(IMP.test.TestCase):
         """Test that linking hierarchies works"""
         for suffix in IMP.rmf.suffixes:
             m = IMP.kernel.Model()
-            print "reading pdb"
+            print("reading pdb")
             h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                   IMP.atom.NonAlternativePDBSelector())
             IMP.base.set_log_level(IMP.base.SILENT)

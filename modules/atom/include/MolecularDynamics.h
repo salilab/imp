@@ -2,7 +2,7 @@
  *  \file IMP/atom/MolecularDynamics.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,6 +16,104 @@
 #include <IMP/Optimizer.h>
 
 IMPATOM_BEGIN_NAMESPACE
+
+//! A particle with linear (XYZ) velocity
+/** Typically this is used in combination with the MolecularDynamics optimizer.
+ */
+class IMPATOMEXPORT LinearVelocity : public Decorator {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                     const algebra::Vector3D v = algebra::Vector3D(0, 0, 0)) {
+    m->add_attribute(get_velocity_key(0), pi, v[0]);
+    m->add_attribute(get_velocity_key(1), pi, v[1]);
+    m->add_attribute(get_velocity_key(2), pi, v[2]);
+  }
+
+public:
+  static FloatKey get_velocity_key(unsigned int i) {
+    IMP_USAGE_CHECK(i < 3, "Out of range coordinate");
+    static const FloatKey keys[] = {FloatKey("vx"), FloatKey("vy"),
+                                    FloatKey("vz")};
+    return keys[i];
+  }
+
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+    return m->get_has_attribute(get_velocity_key(0), pi)
+           && m->get_has_attribute(get_velocity_key(1), pi)
+           && m->get_has_attribute(get_velocity_key(2), pi);
+  }
+
+  IMP_DECORATOR_METHODS(LinearVelocity, Decorator);
+  IMP_DECORATOR_SETUP_0(LinearVelocity);
+  IMP_DECORATOR_SETUP_1(LinearVelocity, algebra::Vector3D, v);
+
+  void set_velocity(const algebra::Vector3D &v) {
+    kernel::Model *m = get_model();
+    kernel::ParticleIndex pi = get_particle_index();
+    m->set_attribute(get_velocity_key(0), pi, v[0]);
+    m->set_attribute(get_velocity_key(1), pi, v[1]);
+    m->set_attribute(get_velocity_key(2), pi, v[2]);
+  }
+
+  algebra::Vector3D get_velocity() const {
+    kernel::Model *m = get_model();
+    kernel::ParticleIndex pi = get_particle_index();
+    return algebra::Vector3D(m->get_attribute(get_velocity_key(0), pi),
+                             m->get_attribute(get_velocity_key(1), pi),
+                             m->get_attribute(get_velocity_key(2), pi));
+  }
+};
+
+//! A particle with angular velocity
+/** Typically this is used for RigidBody particles in combination
+    with the MolecularDynamics optimizer. The velocity is stored as
+    a quaternion.
+ */
+class IMPATOMEXPORT AngularVelocity : public Decorator {
+  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+                   const algebra::Vector4D v = algebra::Vector4D(0, 0, 0, 0)) {
+    m->add_attribute(get_velocity_key(0), pi, v[0]);
+    m->add_attribute(get_velocity_key(1), pi, v[1]);
+    m->add_attribute(get_velocity_key(2), pi, v[2]);
+    m->add_attribute(get_velocity_key(3), pi, v[3]);
+  }
+
+public:
+  static FloatKey get_velocity_key(unsigned int i) {
+    IMP_USAGE_CHECK(i < 4, "Out of range coordinate");
+    static const FloatKey keys[] = {FloatKey("angvel0"), FloatKey("angvel1"),
+                                    FloatKey("angvel2"), FloatKey("angvel3")};
+    return keys[i];
+  }
+
+  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+    return m->get_has_attribute(get_velocity_key(0), pi)
+           && m->get_has_attribute(get_velocity_key(1), pi)
+           && m->get_has_attribute(get_velocity_key(2), pi)
+           && m->get_has_attribute(get_velocity_key(3), pi);
+  }
+
+  IMP_DECORATOR_METHODS(AngularVelocity, Decorator);
+  IMP_DECORATOR_SETUP_0(AngularVelocity);
+  IMP_DECORATOR_SETUP_1(AngularVelocity, algebra::Vector4D, v);
+
+  void set_velocity(const algebra::Vector4D &v) {
+    kernel::Model *m = get_model();
+    kernel::ParticleIndex pi = get_particle_index();
+    m->set_attribute(get_velocity_key(0), pi, v[0]);
+    m->set_attribute(get_velocity_key(1), pi, v[1]);
+    m->set_attribute(get_velocity_key(2), pi, v[2]);
+    m->set_attribute(get_velocity_key(3), pi, v[3]);
+  }
+
+  algebra::Vector4D get_velocity() const {
+    kernel::Model *m = get_model();
+    kernel::ParticleIndex pi = get_particle_index();
+    return algebra::Vector4D(m->get_attribute(get_velocity_key(0), pi),
+                             m->get_attribute(get_velocity_key(1), pi),
+                             m->get_attribute(get_velocity_key(2), pi),
+                             m->get_attribute(get_velocity_key(3), pi));
+  }
+};
 
 //! Simple molecular dynamics optimizer.
 /** The particles to be optimized must have optimizable x,y,z attributes
@@ -87,9 +185,6 @@ class IMPATOMEXPORT MolecularDynamics : public Simulator {
       vel = std::max(vel, -velocity_cap_);
     }
   }
-
-  //! Keys of the xyz velocities
-  FloatKey vs_[3];
 
   //! Number of degrees of freedom in the system
   int degrees_of_freedom_;

@@ -15,10 +15,16 @@ foreach (bin ${cppfiles})
     %(modules)s
     %(dependencies)s)
    set_target_properties(IMP.%(name)s-${name} PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/module_bin/%(name)s"
+                         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
                          OUTPUT_NAME ${name})
-  set_property(TARGET "IMP.%(name)s-${name}" PROPERTY FOLDER "IMP.%(name)s")
+   set_property(TARGET "IMP.%(name)s-${name}" PROPERTY FOLDER "IMP.%(name)s")
+   install(TARGETS "IMP.%(name)s-${name}" DESTINATION ${CMAKE_INSTALL_BINDIR})
    set(executables ${executables} IMP.%(name)s-${name})
 endforeach(bin)
+
+set(pybins %(pybins)s)
+foreach (pybin ${pybins})
+  install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
+endforeach(pybin)
 
 set(IMP_%(name)s_BINS ${executables} CACHE INTERNAL "" FORCE)

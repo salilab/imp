@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 
@@ -8,7 +9,7 @@ class Tests(IMP.test.TestCase):
         """Check that printing particle indexes in python works"""
         pi = IMP.kernel.ParticleIndex(1)
         strpi = str(pi)
-        print strpi
+        print(strpi)
         self.assertEqual(strpi, "1")
 
     def test_indexes(self):

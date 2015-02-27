@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import os
 import IMP
@@ -82,8 +83,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(scores_slow.get_number_of_solutions(), len(ts))
         # check that the scores are similar
         for i in range(scores_fast.get_number_of_solutions()):
-            print i, " fast:", scores_fast.get_score(i)
-            print i, " slow:", scores_slow.get_score(i)
+            print(i, " fast:", scores_fast.get_score(i))
+            print(i, " slow:", scores_slow.get_score(i))
             self.assertAlmostEqual(scores_fast.get_score(i),
                                    scores_slow.get_score(i), delta=0.1)
         # check that scores make sense, we use the slow scores are
@@ -105,10 +106,10 @@ class Tests(IMP.test.TestCase):
                 xyz.set_coordinates(
                     ts[i].get_inverse().get_transformed(xyz.get_coordinates()))
             score = scores_slow.get_score(i)
-            print "rmsd:", rmsd, " score:", score
+            print("rmsd:", rmsd, " score:", score)
             if score < best_score[1]:
                 best_score = [i, score, rmsd]
-        print "best score:", best_score
+        print("best score:", best_score)
         self.assertLess(best_score[2], 5)
 
 if __name__ == '__main__':

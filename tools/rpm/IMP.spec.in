@@ -1,3 +1,9 @@
+%if 0%{?fedora} > 12
+%define with_python3 1
+%else
+%define with_python3 0
+%endif
+
 Name:          IMP
 Version:       @IMP_VERSION@
 Release:       1%{?dist}
@@ -8,22 +14,33 @@ Packager:      Ben Webb <ben@salilab.org>
 URL:           http://www.integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
 BuildRoot:     %{_tmppath}/%{name}-%{version}-root
+%if 0%{?with_python3}
+BuildRequires: python3-devel, symlinks
+%endif
 # RHEL 5 ships with Python 2.4. We need Python 2.6 or later, so pull in that
 # from EPEL (note we need to tell the build later on where to find this python)
+# The HDF5 package in EPEL is too old though - we need a newer version
+# (which can be obtained from http://integrativemodeling.org/nightly/download/)
 %if 0%{?rhel} == 5
 BuildRequires: python26-devel
+BuildRequires: hdf518-devel
 Requires: python26
 %define apppython /usr/bin/python26
 %else
 %define apppython /usr/bin/python
 BuildRequires: python-devel >= 2.6
+BuildRequires: hdf5-devel >= 1.8
 %endif
 # Note that RHEL 5 doesn't have a new enough swig to build IMP. If you must
 # use RHEL 5 (we recommend RHEL 6) you will need to build a newer SWIG package
 # before building IMP.
 BuildRequires: swig >= 1.3.40
-BuildRequires: gsl-devel, fftw-devel, hdf5-devel >= 1.8
+BuildRequires: gsl-devel, fftw-devel
 BuildRequires: zlib-devel, perl
+# EPEL 7 doesn't have ANN yet
+%if 0%{?rhel} != 7
+BuildRequires: ann-devel
+%endif
 # Needed to build the cnmultifit module; obtain
 # from http://salilab.org/imp/libTAU.html
 # (Or, if you don't need cnmultifit, you can comment out this line)
@@ -45,7 +62,7 @@ BuildRequires: cmake >= 2.8
 # that is in EPEL instead
 %if 0%{?rhel} == 5
 BuildRequires: boost141-devel
-%define boost -DCMAKE_INCLUDE_PATH=/usr/include/boost141 -DCMAKE_LIBRARY_PATH=%{_libdir}/boost141
+%define boost -DCMAKE_INCLUDE_PATH="/usr/include/boost141;/usr/include/hdf518/" -DCMAKE_LIBRARY_PATH="%{_libdir}/boost141;%{_libdir}/hdf518"
 %else
 BuildRequires: boost-devel >= 1.41
 %define boost %{nil}
@@ -53,15 +70,33 @@ BuildRequires: boost-devel >= 1.41
 
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
 # doesn't have a new enough OpenCV in EPEL, so disable the em2d module.
-# RHEL 5 also doesn't have a new enough HDF5 package (RHEL 6 does) so this
-# must be upgraded in order to build RMF (to simply install the binary RPM,
-# you can install the libdhf5-187 package from the Sali lab website to
-# provide a new enough HDF5 without having to mess with the system
-# copy of HDF5).
 # On Fedora, all of these packages are available; add them as dependencies
-
 %if 0%{?fedora}
 BuildRequires: CGAL-devel, opencv-devel
+%endif
+
+# If building in the Sali lab, pass '-D "RHEL_SALI_LAB 1"' to your rpmbuild
+# invocation. This will pull in our custom OpenCV and CGAL packages
+# and bundle the libraries with IMP.
+%if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
+BuildRequires: opencv-nogui-devel, CGAL-nogui-devel
+%if 0%{?rhel} == 5
+%ifarch x86_64
+# Also bundle mpfr on 64-bit RHEL5
+%define extralib \\|libmpfr\\.so
+%else
+# On 32-bit RHEL5, sometimes 'file' misidentifies libimp_domino.so as a core
+# file (not as a shared object) and doesn't add it to the Provides - this
+# results in a broken dependency. Work around this by excluding it from the
+# Requires too.
+%define extralib \\|libimp_domino\\.so
+%endif
+%else
+%define extralib %{nil}
+%endif
+%define bundled 'libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so%{extralib}'
+%else
+%define bundled 'libTAU\\.so'
 %endif
 
 # Many modules use Python's numpy module, so pull that in (at build time
@@ -74,7 +109,7 @@ BuildRequires: numpy
 Requires: numpy
 %endif
 
-%define cmake_opts %{boost}
+%define cmake_opts %{boost} -DCMAKE_INSTALL_RPATH=%{_libdir}/IMP
 
 %description
 IMP's broad goal is to contribute to a comprehensive structural
@@ -106,13 +141,57 @@ as well as easy addition of new functionality.
 Group:         Applications/Engineering
 Summary:       Development package for IMP developers.
 Requires:      %{name} = %{version}-%{release}
+Requires:      gsl-devel, fftw-devel, zlib-devel
+%if 0%{?rhel} != 7
+Requires:      ann-devel
+%endif
+%if 0%{?rhel} == 5
+Requires:      boost141-devel, python26-devel, hdf518-devel
+%else
+Requires:      boost-devel, python-devel, hdf5-devel
+%endif
+%if 0%{?fedora}
+Requires:      CGAL-devel, opencv-devel
+%endif
 
 %description devel
 This package contains the include files for building applications that link
 against IMP.
 
+%if 0%{?with_python3}
+%package python3
+Group:         Applications/Engineering
+Summary:       Python wrappers for Python 3
+Requires:      %{name} = %{version}-%{release}
+Requires:      python3
+
+%description python3
+This package contains wrappers for Python 3 (the base package already
+includes Python 2 wrappers).
+%endif
+
+%define reqprog %{_builddir}/find-requires-%{name}
+%define proprog %{_builddir}/find-provides-%{name}
+
 %prep
 %setup -n imp-%{version}
+
+# Exclude bundled libraries from provides and requires
+cat <<EOF > %{reqprog}
+#!/bin/bash
+%{__find_requires} $@ | grep -v %{bundled}
+exit $?
+EOF
+cat <<EOF > %{proprog}
+#!/bin/bash
+%{__find_provides} $@ | grep -v %{bundled}
+exit $?
+EOF
+chmod a+x %{reqprog}
+chmod a+x %{proprog}
+%define _use_internal_dependency_generator 0
+%define __find_requires %{reqprog}
+%define __find_provides %{proprog}
 
 %build
 # For now, bundle RMF with IMP (long term, may be better to put in a separate
@@ -144,6 +223,28 @@ make
 %install
 cd build
 make DESTDIR=${RPM_BUILD_ROOT} install
+
+%if 0%{?with_python3}
+# Build Python 3 wrappers
+py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
+py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
+py3_lib=`echo %{_libdir}/libpython3.*.so`
+py3_inc=`echo /usr/include/python3.*`
+%{cmake} ../imp \
+         -DCMAKE_INSTALL_PYTHONDIR=%{_libdir}/python${py3_ver}/site-packages \
+         -DSWIG_PYTHON_LIBRARIES=${py3_lib} \
+         -DPYTHON_INCLUDE_DIRS=${py3_inc} \
+         -DPYTHON_INCLUDE_PATH=${py3_inc} \
+         -DPYTHON_LIBRARIES=${py3_lib}
+make DESTDIR=${RPM_BUILD_ROOT} install
+
+# Replace .py files with symlinks to Python 2 files (since they are the same)
+(cd ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver} \
+ && find site-packages -name '*.py' \
+      -exec ln -sf ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver}/\{\} \{\} \; \
+ && symlinks -rc .)
+%endif
+
 # Note that we currently don't include the documentation in the RPM, since
 #      a) it takes a long time to run doxygen
 #      b) doxygen isn't installed on all of our build systems
@@ -160,10 +261,25 @@ else
   echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
 fi
 # Bundle libTAU from build machine so users don't have to get it separately
-cp %{_libdir}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}
-ln -sf libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/libTAU.so
+mkdir ${RPM_BUILD_ROOT}%{_libdir}/IMP
+cp %{_libdir}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+
+%if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
+# Bundle OpenCV and CGAL libraries
+for cvlib in cv cxcore highgui; do
+  cp %{_libdir}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+done
+cp %{_libdir}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+# Also bundle mpfr on 64-bit RHEL5
+%if 0%{?rhel} == 5
+%ifarch x86_64
+cp %{_libdir}/libmpfr.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+%endif
+%endif
+%endif
+
 # Don't distribute example application, dependency, or system
-pydir=${RPM_BUILD_ROOT}%{_libdir}/python*/site-packages
+pydir=${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages
 rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
        ${RPM_BUILD_ROOT}%{_libdir}/libimp_example_system* \
        ${RPM_BUILD_ROOT}%{_libdir}/libexample* \
@@ -182,23 +298,38 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}/usr/bin/*
 %doc /usr/share/doc/%{name}-%{version}
 /usr/share/IMP
 /usr/bin/*
-%{_libdir}/libTAU.so.*
 %{_libdir}/libimp*.so.*
 %{_libdir}/libRMF*.so
-%{_libdir}/python*/site-packages/IMP
-%{_libdir}/python*/site-packages/_IMP*so
-%{_libdir}/python*/site-packages/RMF*
-%{_libdir}/python*/site-packages/_RMF*so
+%{_libdir}/IMP
+%{_libdir}/python2*/site-packages/IMP
+%{_libdir}/python2*/site-packages/_IMP*so
+%{_libdir}/python2*/site-packages/RMF*
+%{_libdir}/python2*/site-packages/_RMF*so
+
+%if 0%{?with_python3}
+%files python3
+%defattr(-,root,root)
+%{_libdir}/python3*/site-packages/IMP
+%{_libdir}/python3*/site-packages/_IMP*so
+%{_libdir}/python3*/site-packages/RMF*
+%{_libdir}/python3*/site-packages/_RMF*so
+%{_libdir}/python3*/site-packages/__pycache__
+%endif
 
 %files devel
 %defattr(-,root,root)
 /usr/include/IMP
 /usr/include/IMP.h
 /usr/include/RMF
-%{_libdir}/libTAU.so
 %{_libdir}/libimp*.so
 
 %changelog
+* Fri Feb 27 2015 Ben Webb <ben@salilab.org>   2.4.0-1
+- 2.4.0 release.
+
+* Tue Dec 09 2014 Ben Webb <ben@salilab.org>   2.3.1-1
+- 2.3.1 release.
+
 * Fri Oct 24 2014 Ben Webb <ben@salilab.org>   2.3.0-1
 - 2.3.0 release.
 

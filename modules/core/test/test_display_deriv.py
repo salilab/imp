@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.algebra
 import IMP.display
@@ -43,14 +44,14 @@ class Tests(IMP.test.TestCase):
 
         rbd = IMP.core.RigidBody.setup_particle(p, IMP.core.XYZs(ps))
         IMP.base.set_log_level(IMP.base.TERSE)
-        print "eval"
+        print("eval")
         m.evaluate(True)
         w = IMP.display.BildWriter(self.get_tmp_file_name("qderiv.bild"))
         #oge= display.XYZRGeometryExtractor(FloatKey("hi"))
         for i in range(0, 4):
             gs = IMP.core.RigidBodyDerivativeGeometry(rbd)
             w.add_geometry(gs)
-            print gs
+            print(gs)
         del w
 
 if __name__ == '__main__':

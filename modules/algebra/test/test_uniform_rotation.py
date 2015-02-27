@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
@@ -13,7 +14,7 @@ class Tests(IMP.test.TestCase):
         """test conversion of euler angles"""
         # Currently fails (see issue #303)
         n_tests = 1000
-        print "Testing %d times" % n_tests
+        print("Testing %d times" % n_tests)
         for i in range(n_tests):
             phi = math.radians(random.randint(0, 360))
             theta = math.radians(random.randint(0, 180))
@@ -24,15 +25,15 @@ class Tests(IMP.test.TestCase):
             psi1 = eu_angles.get_psi()
             theta1 = eu_angles.get_theta()
             rot1 = IMP.algebra.get_rotation_from_fixed_zxz(phi1, theta1, psi1)
-            print "Test #%3d:" % i,
-            print "phi %5.2f / %5.2f theta %5.2f / %5.2f psi %5.2f / %5.2f" \
-                % (phi, phi1, theta, theta1, psi, psi1)
+            print("Test #%3d:" % i, end=' ')
+            print("phi %5.2f / %5.2f theta %5.2f / %5.2f psi %5.2f / %5.2f" \
+                % (phi, phi1, theta, theta1, psi, psi1))
             self.assertAlmostEqual(IMP.algebra.get_distance(rot, rot1), 0, 3)
-        print
+        print()
 
     def test_euler_sampling(self):
         rots = IMP.algebra.get_uniformly_sampled_rotations(math.radians(30))
-        print "number of rots", len(rots)
+        print("number of rots", len(rots))
         self.assertEqual(552, len(rots))
 
 if __name__ == '__main__':

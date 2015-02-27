@@ -2,7 +2,7 @@
  *  \file VelocityScalingOptimizerState.cpp
  *  \brief Maintains temperature during molecular dynamics by velocity scaling.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,9 +18,6 @@ VelocityScalingOptimizerState::VelocityScalingOptimizerState(
   IMP_FOREACH(kernel::ParticleIndex pi, pis) {
     pis_.push_back(m->get_particle(pi));
   }
-  vs_[0] = FloatKey("vx");
-  vs_[1] = FloatKey("vy");
-  vs_[2] = FloatKey("vz");
 }
 
 void VelocityScalingOptimizerState::do_update(unsigned int) {
@@ -38,10 +35,8 @@ void VelocityScalingOptimizerState::rescale_velocities() const {
   if (tkinetic > 1e-8) {
     Float scale = std::sqrt(temperature_ / tkinetic);
     for (unsigned i = 0; i < pis_.size(); ++i) {
-      for (unsigned j = 0; j < 3; ++j) {
-        Float v = pis_[i]->get_value(vs_[j]) * scale;
-        pis_[i]->set_value(vs_[j], v);
-      }
+      LinearVelocity v(pis_[i]);
+      v.set_velocity(v.get_velocity() * scale);
     }
   }
 }

@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
         self.N = N
         self.meanv = uniform(-pi, pi)
         self.stdev = uniform(0, 2 * pi)
-        self.obs = [gauss(self.meanv, self.stdev) for i in xrange(N)]
+        self.obs = [gauss(self.meanv, self.stdev) for i in range(N)]
         self.cosbar = sum([math.cos(x) for x in self.obs])
         self.sinbar = sum([math.sin(x) for x in self.obs])
         self.R = sqrt(self.cosbar ** 2 + self.sinbar ** 2)
@@ -108,7 +108,7 @@ class Tests(IMP.test.TestCase):
         self.p1.set_coordinates_are_optimized(False)
         self.p0.set_coordinates_are_optimized(False)
         cg = IMP.core.ConjugateGradients(self.m)
-        for i in xrange(10):
+        for i in range(10):
             x = i / (2 * pi)
             self.p3.set_coordinates(IMP.algebra.Vector3D(
                 cos(2 * pi - x), 1, sin(2 * pi - x)))
@@ -130,7 +130,7 @@ class Tests(IMP.test.TestCase):
             self.skipTest("this test requires the scipy Python module")
         self.setup_restraint()
         self.p3.set_coordinates(IMP.algebra.Vector3D(0, 1, -1))
-        for i in xrange(100):
+        for i in range(100):
             kappa = uniform(0.1, 10)
             self.kappa.set_scale(kappa)
             self.talos.evaluate(True)
@@ -151,7 +151,7 @@ class Tests(IMP.test.TestCase):
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
         self.setup_restraint()
-        for i in xrange(100):
+        for i in range(100):
             x = i / (2 * pi)
             self.p3.set_coordinates(IMP.algebra.Vector3D(
                 cos(2 * pi - x), 1, sin(2 * pi - x)))
@@ -171,7 +171,7 @@ class Tests(IMP.test.TestCase):
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
         self.setup_restraint()
-        for i in xrange(100):
+        for i in range(100):
             x = i / (2 * pi)
             self.p3.set_coordinates(IMP.algebra.Vector3D(
                 cos(2 * pi - x), 1, sin(2 * pi - x)))
@@ -192,7 +192,7 @@ class Tests(IMP.test.TestCase):
             self.skipTest("this test requires the scipy Python module")
         self.setup_restraint()
         self.p3.set_coordinates(IMP.algebra.Vector3D(0, 1, -1))
-        for i in xrange(100):
+        for i in range(100):
             kappa = uniform(0.1, 10)
             self.kappa.set_scale(kappa)
             cpp = self.talos.evaluate(False)
@@ -213,7 +213,7 @@ class Tests(IMP.test.TestCase):
     def testSanityEP(self):
         "Test if TALOS score is -log(prob)"
         self.setup_restraint()
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 10)
             self.kappa.set_scale(no)
             self.assertAlmostEqual(self.talos.unprotected_evaluate(self.DA),
@@ -222,7 +222,7 @@ class Tests(IMP.test.TestCase):
     def testSanityPE(self):
         "Test if TALOS prob is exp(-score)"
         self.setup_restraint()
-        for i in xrange(100):
+        for i in range(100):
             no = uniform(0.1, 10)
             self.kappa.set_scale(no)
             self.assertAlmostEqual(self.talos.get_probability(),

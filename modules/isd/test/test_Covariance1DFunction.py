@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
         particles = [(self.tau, 0, 10),
                      (self.lam, 0, 10)]
         # number of shuffled values
-        for i in xrange(random.randint(0, len(particles))):
+        for i in range(random.randint(0, len(particles))):
             # which particle
             p, imin, imax = particles.pop(random.randint(0, len(particles)))
             p.set_scale(random.uniform(imin, imax))
@@ -75,11 +75,11 @@ class Tests(IMP.test.TestCase):
         """
         test the value of the function by shuffling all particles
         """
-        for rep in xrange(100):
+        for rep in range(100):
             self.shuffle_particle_values()
-            for i in xrange(10):
+            for i in range(10):
                 pos1 = random.uniform(-10, 10)
-                for j in xrange(10):
+                for j in range(10):
                     pos2 = random.uniform(-10, 10)
                     observed = self.cov([pos1], [pos2])[0]
                     t = self.tau.get_nuisance()
@@ -225,11 +225,11 @@ class Tests(IMP.test.TestCase):
         Test on one point at a time
         """
         skipped = 0
-        for rep in xrange(10):
+        for rep in range(10):
             self.shuffle_particle_values()
-            for i in xrange(10):
+            for i in range(10):
                 pos1 = random.uniform(-10, 10)
-                for j in xrange(10):
+                for j in range(10):
                     pos2 = random.uniform(-10, 10)
                     t = self.tau.get_nuisance()
                     l = self.lam.get_nuisance()
@@ -280,9 +280,9 @@ class Tests(IMP.test.TestCase):
         Test on one point at a time when pos1=pos2
         """
         skipped = 0
-        for rep in xrange(10):
+        for rep in range(10):
             self.shuffle_particle_values()
-            for i in xrange(10):
+            for i in range(10):
                 pos1 = random.uniform(-10, 10)
                 pos2 = pos1
                 t = self.tau.get_nuisance()
@@ -337,7 +337,7 @@ class Tests(IMP.test.TestCase):
         """
         tests if we can get multiple values at once
         """
-        for rep in xrange(10):
+        for rep in range(10):
             self.shuffle_particle_values()
             data = random.uniform(-10, 10, random.randint(100))
             expected = [self.cov([i], [j]) for i in data for j in data]
@@ -345,7 +345,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(observed, expected)
 
     def testGetDerivativeMatrix(self):
-        for rep in xrange(3):
+        for rep in range(3):
             self.shuffle_particle_values()
             #xlist = random.uniform(-10,10,random.randint(100))
             xlist = random.uniform(-10, 10, 3)
@@ -369,11 +369,11 @@ class Tests(IMP.test.TestCase):
                             -p.get_nuisance_derivative(), self.DA)
 
     def testAddToParticleDerivative(self):
-        for i in xrange(10):
+        for i in range(10):
             for ipart, part in enumerate(self.particles):
                 val = random.uniform(-10, 10)
                 self.cov.add_to_particle_derivative(ipart, val, self.DA)
-                for jpart in xrange(2):
+                for jpart in range(2):
                     if ipart == jpart:
                         self.assertAlmostEqual(
                             part.get_nuisance_derivative(), val)

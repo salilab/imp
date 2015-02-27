@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 __doc__ = """
 This module provides a few methods to improve the efficiency of a replica-exchange simulation
 by tuning its parameters.
@@ -23,7 +25,7 @@ debug = False
 
 def prdb(arg):
     if debug:
-        print arg
+        print(arg)
 
 # R compatibility functions
 
@@ -51,7 +53,7 @@ def spline(xy, mean, method=None):
     """spline interpolation of (x,y) coordinates. If interpolation goes
     negative, replace by mean value.
     """
-    x, y = zip(*xy)
+    x, y = list(zip(*xy))
     robjects.globalenv["x"] = robjects.FloatVector(x)
     robjects.globalenv["y"] = robjects.FloatVector(y)
     global _rinterp
@@ -73,7 +75,7 @@ def spline(xy, mean, method=None):
 def linear_interpolation(xy, mean):
     """linear interpolation of (x,y) coordinates. No extrapolation possible.
     """
-    x, y = zip(*xy)
+    x, y = list(zip(*xy))
     robjects.globalenv["x"] = robjects.FloatVector(x)
     robjects.globalenv["y"] = robjects.FloatVector(y)
     global _rinterp
@@ -95,7 +97,7 @@ def anova(*args):
     #group = r.gl(ngroups,nreps)
     reps = r.rep(0, len(args[0]))
     weight = robjects.FloatVector(args[0])
-    for i in xrange(1, len(args)):
+    for i in range(1, len(args)):
         reps += r.rep(i, len(args[i]))
         weight += robjects.FloatVector(args[i])
     group = r.factor(reps)
@@ -122,7 +124,7 @@ def kruskal(*args):
     #group = r.gl(ngroups,nreps)
     reps = r.rep(0, len(args[0]))
     weight = robjects.FloatVector(args[0])
-    for i in xrange(1, len(args)):
+    for i in range(1, len(args)):
         reps += r.rep(i, len(args[i]))
         weight += robjects.FloatVector(args[i])
     group = r.factor(reps)
@@ -275,7 +277,7 @@ class CvEstimator:
         prdb("storing params and means")
         self.__params = params
         self.__pmeans = [(params[i] + params[i + 1]) / 2.
-                         for i in xrange(len(params) - 1)]
+                         for i in range(len(params) - 1)]
         prdb("computing __cv")
         for i, ind in enumerate(indicators):
             mean = sum(ind) / float(len(ind))
@@ -436,7 +438,7 @@ def update_any_cv_sc(newp, oldp, ind, targetAR=0.4, Cv=None,
         raise ValueError("""targetAR too small for this approximate method, use
         the full self-consistent method instead.""")
     targetp = newp[0] * (cv + Y * sqrt(2 * cv - Y ** 2)) / (cv - Y ** 2)
-    for i in xrange(maxiter):
+    for i in range(maxiter):
         cv = Cv.mean(newp[0], targetp)
         (oldtargetp, targetp) = (
             targetp, newp[0] * (cv + Y * sqrt(2 * cv - Y ** 2)) / (cv - Y ** 2))
@@ -678,7 +680,7 @@ def find_good_ARs(indicators, targetAR=0.4, alpha=0.05, method="binom"):
     # intermediate
     else:
         isGoodTuple.extend([(means[i][1], True) for i in
-                            xrange(goodstart, goodstop + 1)])
+                            range(goodstart, goodstop + 1)])
         isGoodTuple.sort()
         return tuple([tup[1] for tup in isGoodTuple])
 
@@ -717,10 +719,10 @@ def mean_first_passage_times(
     if use_avgAR:
         tau0[0] = 0.0
         tauN[-1] = 0.0
-        for state in xrange(1, N):
+        for state in range(1, N):
             tau0[state] = tau0[state - 1] + \
                 state / (float(use_avgAR[state - 1]))
-        for state in reversed(xrange(1, N)):
+        for state in reversed(range(1, N)):
             tauN[state - 1] = tauN[state] \
                 + (N - (state - 1)) / (float(use_avgAR[state - 1]))
 
@@ -728,19 +730,22 @@ def mean_first_passage_times(
 
     else:
         #prdb('not using average AR')
-        from itertools import izip
+        if sys.version_info[0] >= 3:
+            izip = zip
+        else:
+            from itertools import izip
         # the algorithm looks for replicas that start at the lowest temp, and
         # records the farthest state it went to before returning to zero. Once
         # back it increments the counter of all concerned replicas. Similar
         # procedure if starting from N.
         store0 = zeros((N, N), dtype=bool)
-        last0 = [0 for i in xrange(N)]
-        already0 = [False for i in xrange(N)]
-        times0 = [[] for i in xrange(N)]
+        last0 = [0 for i in range(N)]
+        already0 = [False for i in range(N)]
+        times0 = [[] for i in range(N)]
         storeN = zeros((N, N), dtype=bool)
-        lastN = [0 for i in xrange(N)]
-        alreadyN = [False for i in xrange(N)]
-        timesN = [[] for i in xrange(N)]
+        lastN = [0 for i in range(N)]
+        alreadyN = [False for i in range(N)]
+        timesN = [[] for i in range(N)]
 
         #prdb('looping over replicanums')
         for time, frame in enumerate(izip(*replicanums)):
@@ -770,10 +775,10 @@ def mean_first_passage_times(
                     # store time since this replica left state N
                     timesN[state].append(time - lastN[rep])
         #prdb([replicanums.shape, len(storeN), len(last0)])
-        times = [[] for i in xrange(N)]
+        times = [[] for i in range(N)]
         chose_N = [len(timesN[state]) > len(times0[state]) for state in
-                   xrange(N)]
-        for state in xrange(N):
+                   range(N)]
+        for state in range(N):
             tauN[state] = sum(timesN[state]) / float(len(timesN[state]))
             tau0[state] = sum(times0[state]) / float(len(times0[state]))
         # prdb(len(chose_N))
@@ -803,22 +808,22 @@ def compute_effective_fraction(tau0, tauN, chose_N):
     # compute helper functions h
     h0 = [0] * N
     h0[1] = tau0[1]
-    for state in xrange(2, nstar + 1):
+    for state in range(2, nstar + 1):
         h0[state] = h0[state - 1] + \
             (tau0[state] - tau0[state - 1]) / float(state)
 
     hN = [0] * N
     hN[-2] = tauN[-2]
-    for state in reversed(xrange(nstar, N - 1)):
+    for state in reversed(range(nstar, N - 1)):
         hN[state] = hN[state + 1] + \
             (tauN[state] - tauN[state + 1]) / float(N - state)
 
     # compute flow probabilities
     pup = [0] * N
     pup[0] = 1
-    for n in xrange(1, nstar + 1):
+    for n in range(1, nstar + 1):
         pup[n] = 1 - h0[n] / (h0[nstar] + hN[nstar])
-    for n in xrange(nstar + 1, N):
+    for n in range(nstar + 1, N):
         pup[n] = hN[n] / (h0[nstar] + hN[nstar])
 
     return pup
@@ -855,9 +860,9 @@ def compute_indicators(replicanums, subs=1, start=0):
             return 0
 
     indicators = []
-    for n in xrange(len(replicanums) - 1):
+    for n in range(len(replicanums) - 1):
         indicators.append([exchange(n, m)
-                           for m in xrange(len(replicanums[n]) - 1)][start::subs])
+                           for m in range(len(replicanums[n]) - 1)][start::subs])
     return indicators
 
 # Main routines
@@ -867,7 +872,7 @@ def update_params_nonergodic(pup, params, write_g=False, num=False):
 
     from numpy import linspace
     #g = spline(zip(pup,params),0,method='monoH.FC')
-    g = linear_interpolation(zip(pup, params), 0)
+    g = linear_interpolation(list(zip(pup, params)), 0)
     if write_g:
         d = spline_diffusivity(pup, params)
         fl = open('g', 'w')
@@ -934,7 +939,7 @@ def update_params(
         raise NotImplementedError(badMethod)
 
     # scan each position starting from the immobilePoint
-    for pos in xrange(len(params) - 1):
+    for pos in range(len(params) - 1):
         if isGood[pos]:
             newparams[pos + 1] = update_good(
                 newparams[pos:pos + 2], params[pos:pos + 2],
@@ -972,7 +977,7 @@ def tune_params_flux(replicanums, params, subs=1, start=0, alpha=0.05,
 
     reduced = []
     # no need to check for times?[0] or times?[N]
-    for n in xrange(1, N - 1):
+    for n in range(1, N - 1):
         if n > nstar:
             reduced.append([i * 2.0 / ((N - n) * (N - n + 1))
                            for i in timesN[n]])
@@ -1105,7 +1110,7 @@ def tune_params_ar(
 if __name__ == '__main__':
     from numpy import *
     replicanums = []
-    for i in xrange(1, 8):
+    for i in range(1, 8):
         replicanums.append(tuple(fromfile('data/replica-indices/%d.rep' % i,
                                           dtype=int, sep='\n')))
 
@@ -1122,11 +1127,11 @@ if __name__ == '__main__':
     changed, newparams = tune_params(indicators, params, targetAR=0.25,
                                      badMethod="dumb", goodMethod="dumb", CvMethod="skip", testMethod="anova", alpha=0.05)
     if not changed:
-        print "Parameter set seems optimal."
+        print("Parameter set seems optimal.")
     else:
-        if not True in [abs(newparams[i + 1] - newparams[i]) < 1e-3 for i in xrange(len(newparams) - 1)]:
+        if not True in [abs(newparams[i + 1] - newparams[i]) < 1e-3 for i in range(len(newparams) - 1)]:
             array(newparams).tofile('data/temperatures', sep=' ')
         else:
-            print "PROBLEM IN NEW PARAMETERSET -> not saved"
-    print "params    :", params
-    print "new params:", newparams
+            print("PROBLEM IN NEW PARAMETERSET -> not saved")
+    print("params    :", params)
+    print("new params:", newparams)

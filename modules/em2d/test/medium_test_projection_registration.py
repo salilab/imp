@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -22,7 +23,7 @@ class Tests(IMP.test.TestCase):
         srw = em2d.SpiderImageReaderWriter()
         selection_file = self.get_input_file_name("1gyt-subjects-0.5-SNR.sel")
         images_to_read_names = em2d.read_selection_file(selection_file)
-        for i in xrange(0, len(images_to_read_names)):
+        for i in range(0, len(images_to_read_names)):
             images_to_read_names[i] = self.get_input_file_name(
                 images_to_read_names[i])
         subjects = em2d.read_images(images_to_read_names, srw)
@@ -70,13 +71,13 @@ class Tests(IMP.test.TestCase):
         correct_parameters = em2d.read_registration_results(
             self.get_input_file_name("1gyt-subjects-0.5-SNR.params"))
 
-        print "determined: "
+        print("determined: ")
         for r in registration_parameters:
-            print r.get_rotation(), r.get_shift()
-        print "correct: "
+            print(r.get_rotation(), r.get_shift())
+        print("correct: ")
         for r in correct_parameters:
-            print r.get_rotation(), r.get_shift()
-        for i in xrange(0, len(registration_parameters)):
+            print(r.get_rotation(), r.get_shift())
+        for i in range(0, len(registration_parameters)):
             # Generate the registered projection
             imgx = em2d.Image()
             imgx.set_size(rows, cols)
@@ -85,7 +86,7 @@ class Tests(IMP.test.TestCase):
             ccc = em2d.get_cross_correlation_coefficient(
                 subjects[i].get_data(),
                 imgx.get_data())
-            print i, "ccc", ccc
+            print(i, "ccc", ccc)
             snr = 0.5
             theoretical_ccc = (snr / (1. + snr)) ** .5
             self.assertAlmostEqual(ccc, theoretical_ccc, delta=0.02,
