@@ -1,0 +1,74 @@
+/** \page multi_foxs Determination of multi-state models with MultiFoXS
+
+\tableofcontents
+
+\section multi_foxs_intro Introduction
+
+In many cases our data comes from heterogeneous sample. Heterogeneity can be both compositional and conformational. Interpretation of data collected on heterogeneous sample requires a <tt> multi-state model </tt>. A multi-state model is a model that specifies two or more co-existing structural states and values for other parameters, such as the weights of each state.
+
+IMP includes a command line tool <tt>multi_foxs</tt> for enumeration and scoring of multi-state models against SAXS profiles. There is also a \salilab{foxs/,web interface} available, which functions similarly.
+
+In this example, we will demonstrate how to use it using PDB structures of replication protein A and simulated SAXS profile.
+
+For full help on the <tt>multi_foxs</tt> tool, run from a command line:
+
+\code{.sh}
+multi_foxs --help
+\endcode
+
+\section multi_foxs_setup Setup
+
+First, obtain the input files used in this example and put them in the
+current directory, by typing:
+
+\code{.sh}
+cp <imp_example_path>/multi_foxs/rpa/* .
+\endcode
+
+(On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\>
+is the directory containing the IMP example files. The full path to the files
+can be determined by running in a Python interpreter '<tt>import IMP.multi_foxs;
+print IMP.multi_foxs.get_example_path('rpa')</tt>'.
+
+\section multi_foxs_calc Calculation
+
+The structure of the RPA in complex with ssDNA is available in the
+\external{http://www.pdb.org,RCSB Protein Data Bank (PDB)} as code
+\external{http://www.pdb.org/pdb/explore/explore.do?structureId=1JMC,1jmc}
+(file <tt>1jmc.pdb</tt>), the unbound RPA structures are availble as code
+\external{http://www.pdb.org/pdb/explore/explore.do?structureId=1FGU,1fgu}
+(file <tt>1fguA.pdb</tt>, <tt>1fguB.pdb</tt>), while the SAXS profile is given in the <tt>weighted.dat</tt> file. The SAXS profile was simulated from the 3 structures with the following weights:
+<tt>1jmc.pdb 0.5</tt>
+<tt>1fguA.pdb 0.25</tt>
+<tt>1fguB.pdb 0.25</tt>
+3% Gaussian noise was added to the simulated profile.
+
+
+The atomic structures can be fit against the SAXS profile by running MultiFoXS:
+
+\code{.sh}
+multi_foxs weighted.dat 1fguA.pdb 1fguB.pdb 1jmc.pdb
+\endcode
+
+FoXS calculates the theoretical profiles of the input structures,
+enumerates multi-state models, and fits them to the input SAXS
+profile.  The output is a list of best scoring multi-state models of
+size 1, 2, and 3 in files <tt>ensembles_size_1.txt</tt>,
+<tt>ensembles_size_2.txt</tt>, and <tt>ensembles_size_3.txt</tt>,
+respectively. It also generates <tt>multi_state_model_x_x_x.dat</tt>
+files, containing the computed theoretical profile for the multi-state
+model and its fit against the experimental profile.
+
+In this example, the best fit is obtained using 3-state model
+(Chi=1.74) <tt>ensembles_size_3.txt</tt>, with the weights of 0.53, 0.197, and 0.27, showing a
+maximal deviation of 7% compared to the weights that were used to
+simulate the profile:
+
+
+1 |  1.74 | x1 1.74 (1.03, 0.53)
+    0   | 0.533 (0.533, 1.000) | 1jmc.pdb (0.333)
+    1   | 0.197 (0.197, 1.000) | 1fguA.pdb (0.333)
+    2   | 0.270 (0.270, 1.000) | 1fguB.pdb (0.333)
+
+
+*/
