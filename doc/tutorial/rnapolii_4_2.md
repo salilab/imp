@@ -136,10 +136,10 @@ you will get something like:
     Rpb7 average distance 10.5032807663 minimum distance 5.06599370365
     Rpb4_Rpb7 average distance 16.0757238511 minimum distance 9.63785403195
 
-The average distance, is the average RMSD of each model in the cluster with respect to the reference structure. The program prints values for all selections (`Rpb4`, `Rpb7` and `Rpb4_Rpb7`) and automatically for all the complex (`All`)
+The average distance is the average RMSD of each model in the cluster with respect to the reference structure. The program prints values for all selections (`Rpb4`, `Rpb7` and `Rpb4_Rpb7`) and automatically for all the complex (`All`)
 
 ### Sampling Exhaustiveness
-We can also determine sampling exhaustiveness by dividing the models into multiple sets, performing clustering on each set separately, and comparing the clusters. This step is left as an exercise to the reader. To aide with splitting the data, we have added the optional keyword `first_and_last_frames` to the IMP::pmi::macros::AnalysisReplicaExchange0::clustering() method.
+We can also determine sampling exhaustiveness by dividing the models into multiple sets, performing clustering on each set separately, and comparing the clusters. This step is left as an exercise to the reader. To aid with splitting the data, we have added the optional keyword `first_and_last_frames` to the IMP::pmi::macros::AnalysisReplicaExchange0::clustering() method.
 If you set this keyword to a tuple (values are percentages, e.g. [0,0.5]), it will only analyze that fraction of the data. Some things you can try:
 * cluster two subsets of the data
 * qualitative analysis: look at the localization densities - they should be similar for the two subsets
