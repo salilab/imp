@@ -17,7 +17,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! Ez Potential kernel::Restraint
+//! Ez Potential restraint
 /** Ez, a Depth-dependent Potential for Assessing the Energies of
     Insertion of Amino Acid Side-chains into Membranes.
     Senes et al. J. Mol. Biol. (2007) 366, 436–448
