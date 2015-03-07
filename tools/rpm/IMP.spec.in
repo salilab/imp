@@ -204,8 +204,9 @@ ln -sf /usr/bin/python26 python-bin/python
 PATH="`pwd`/python-bin:$PATH"
 %endif
 mkdir build && cd build
-%{cmake} ../imp -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
-                -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/%{name}-%{version} \
+%{cmake} ../imp -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_INSTALL_PREFIX=%{_prefix} \
+                -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
                 -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
 
 # Normally make will stop at the first error. Since an RPM cannot be built
@@ -231,6 +232,7 @@ py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py3_lib=`echo %{_libdir}/libpython3.*.so`
 py3_inc=`echo /usr/include/python3.*`
 %{cmake} ../imp \
+         -DCMAKE_INSTALL_PREFIX=%{_prefix} \
          -DCMAKE_INSTALL_PYTHONDIR=%{_libdir}/python${py3_ver}/site-packages \
          -DSWIG_PYTHON_LIBRARIES=${py3_lib} \
          -DPYTHON_INCLUDE_DIRS=${py3_inc} \
@@ -252,7 +254,7 @@ make DESTDIR=${RPM_BUILD_ROOT} install
 #  and d) only certain versions of doxygen work correctly
 # You can build the documentation by running "make IMP-doc"
 # on the IMP source code.
-README=${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}/README
+README=${RPM_BUILD_ROOT}%{_prefix}/share/doc/%{name}-%{version}/README
 echo "For full IMP documentation, please go to" > ${README}
 # Direct nightly build users to most recent nightly build docs
 if echo ${version} | grep -q git; then
@@ -280,24 +282,24 @@ cp %{_libdir}/libmpfr.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 
 # Don't distribute example application, dependency, or system
 pydir=${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages
-rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
+rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/example \
        ${RPM_BUILD_ROOT}%{_libdir}/libimp_example_system* \
        ${RPM_BUILD_ROOT}%{_libdir}/libexample* \
-       ${RPM_BUILD_ROOT}/usr/include/example* \
+       ${RPM_BUILD_ROOT}%{_prefix}/include/example* \
        ${pydir}/IMP/example_system_local \
        ${pydir}/_IMP_example_system_local.so
 
 # Make sure all Python applications use the same Python we built with
-perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}/usr/bin/*
+perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
 
 %files
 %defattr(-,root,root)
-%doc /usr/share/doc/%{name}-%{version}
-/usr/share/IMP
-/usr/bin/*
+%doc %{_prefix}/share/doc/%{name}-%{version}
+%{_prefix}/share/IMP
+%{_prefix}/bin/*
 %{_libdir}/libimp*.so.*
 %{_libdir}/libRMF*.so
 %{_libdir}/IMP
@@ -318,9 +320,9 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}/usr/bin/*
 
 %files devel
 %defattr(-,root,root)
-/usr/include/IMP
-/usr/include/IMP.h
-/usr/include/RMF
+%{_prefix}/include/IMP
+%{_prefix}/include/IMP.h
+%{_prefix}/include/RMF
 %{_libdir}/libimp*.so
 
 %changelog
