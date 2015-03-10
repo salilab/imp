@@ -48,11 +48,32 @@ def run_swig(outputdir, options):
     args.append(os.path.abspath("./swig/IMP_%s.i" % options.module))
 
     ret = tools.run_subprocess(args, cwd=outputdir)
-    if len(open("src/%s_swig/IMP.%s.py" % (options.module, options.module), "r").read()) < 10:
-        raise IOError("Empty swig wrapper file")
-    tools.link("src/%s_swig/IMP.%s.py" % (options.module, options.module),
-               "lib/IMP/%s/__init__.py" % options.module)
+    patch_py_wrapper("src/%s_swig/IMP.%s.py" % (options.module, options.module),
+                     "lib/IMP/%s/__init__.py" % options.module)
 
+def patch_py_wrapper(infile, outfile):
+    """Add custom header to Python wrappers.
+       This is more properly done by SWIG's %pythonbegin directive, but
+       only very recent versions of SWIG understand that."""
+    # outfile might be a symlink
+    if os.path.exists(outfile):
+        os.unlink(outfile)
+    outfh = open(outfile, "w")
+    in_initial_comment = True
+    header = """# This wrapper is part of IMP,
+# Copyright 2007-2015 IMP Inventors. All rights reserved.
+
+from __future__ import print_function, division, absolute_import
+"""
+    with open(infile) as infh:
+        for line in infh:
+            outfh.write(line)
+            if in_initial_comment and not line.startswith('#'):
+                in_initial_comment = False
+                outfh.write(header)
+        if in_initial_comment:
+            raise IOError("Empty SWIG wrapper file")
+    outfh.close()
 
 # 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
 #    (SwigPyIterator in 1.3.38 or later) is renamed with a module-specific
