@@ -55,7 +55,7 @@ def run_swig(outputdir, options):
 
 
 # 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
-#    (SwigPyIterator in 1.3.38 or later) is renamed with a module-speci\fic
+#    (SwigPyIterator in 1.3.38 or later) is renamed with a module-specific
 #    prefix, to avoid collisions when using multiple modules
 # 2. If module names contain '.' characters, SWIG emits these into the CPP
 #    macros used in the director header. Work around this by replacing them
