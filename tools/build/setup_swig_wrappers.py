@@ -54,6 +54,13 @@ def build_wrapper(module, module_path, source, sorted, info, target, datapath):
 // Warning 314: 'lambda' is a python keyword, renaming to '_lambda'
 %%warnfilter(321,302,314);
 
+%%pythonbegin %%{
+# This wrapper is part of IMP,
+# Copyright 2007-2015 IMP Inventors. All rights reserved.
+
+from __future__ import print_function
+%%}
+
 %%inline %%{
 namespace IMP {
 namespace kernel {
