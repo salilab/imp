@@ -5,6 +5,7 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
+#include <IMP/core/rigid_bodies.h>
 #include <IMP/core/RigidBodyAnglePairScore.h>
 #include <IMP/algebra.h>
 #include <IMP/UnaryFunction.h>
