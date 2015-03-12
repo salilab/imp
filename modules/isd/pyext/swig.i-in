@@ -22,6 +22,7 @@ IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
 IMP_SWIG_DECORATOR(IMP::isd, Weight, Weights);
 IMP_SWIG_OBJECT(IMP::isd, GaussianRestraint, GaussianRestraints);
 IMP_SWIG_OBJECT(IMP::isd, LognormalRestraint, LognormalRestraints);
+IMP_SWIG_OBJECT(IMP::isd, LognormalAmbiguousRestraint, LognormalAmbiguousRestraints);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousNOERestraint, AmbigousNOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, MarginalNOERestraint, AmbigousNOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, MarginalHBondRestraint, AmbigousHBondRestraints);
@@ -82,6 +83,7 @@ def create_model_and_particles():
 %include "IMP/isd/NOERestraint.h"
 %include "IMP/isd/GaussianRestraint.h"
 %include "IMP/isd/LognormalRestraint.h"
+%include "IMP/isd/LognormalAmbiguousRestraint.h"
 %include "IMP/isd/AmbiguousNOERestraint.h"
 %include "IMP/isd/MarginalNOERestraint.h"
 %include "IMP/isd/MarginalHBondRestraint.h"
