@@ -1,6 +1,6 @@
 /**
  *  \file IMP/isd/WeightMover.h
- *  \brief A mover that transforms a rigid body
+ *  \brief A mover that perturbs a Weight particle.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -16,11 +16,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Modify the transformation of a rigid body
-/** The transformation of a rigid body is moved in a ball of given
-    size. The probability distribution is uniform over the ball.
-    \see MonteCarlo
- */
+//! A mover that perturbs a Weight particle.
 class IMPISDEXPORT WeightMover : public core::MonteCarloMover {
  public:
   /** Mover for weight decorator
