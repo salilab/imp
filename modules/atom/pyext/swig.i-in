@@ -105,6 +105,8 @@ IMP_SWIG_OBJECT(IMP::atom, HierarchyGeometry, HierarchyGeometries);
 IMP_SWIG_OBJECT(IMP::atom, HierarchiesGeometry, HierarchiesGeometries);
 IMP_SWIG_OBJECT(IMP::atom, BondGeometry, BondGeometries);
 IMP_SWIG_OBJECT(IMP::atom, BondsGeometry, BondsGeometries);
+IMP_SWIG_OBJECT(IMP::atom, CAAngleRestraint, CAAngleRestraints);
+IMP_SWIG_OBJECT(IMP::atom, CADihedralRestraint, CADihedralRestraints);
 
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMDihedral, CHARMMConnection, CHARMMDihedrals);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMBond, CHARMMConnection, CHARMMBonds);
@@ -257,6 +259,8 @@ namespace IMP {
 %include "IMP/atom/LangevinThermostatOptimizerState.h"
 %include "IMP/atom/pdb.h"
 %include "IMP/atom/constants.h"
+%include "IMP/atom/CAAngleRestraint.h"
+%include "IMP/atom/CADihedralRestraint.h"
 
 namespace IMP {
   namespace atom {
