@@ -100,5 +100,29 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.save_frame(f, str(0))
             del f
 
+    def test_some_rigid(self):
+        """Test rigid body where children don't match members"""
+        for suffix in IMP.rmf.suffixes:
+            m = IMP.kernel.Model()
+            r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            r.set_name("rb")
+            rbd = IMP.core.RigidBody.setup_particle(r,
+                                          IMP.algebra.ReferenceFrame3D())
+            for i in range(0, 3):
+                p = IMP.kernel.Particle(m)
+                v = IMP.algebra.Vector3D(0, 0, 0)
+                v[i] = 1
+                d = IMP.core.XYZR.setup_particle(p)
+                d.set_coordinates(v)
+                d.set_radius(.5)
+                IMP.atom.Mass.setup_particle(p, .1)
+                r.add_child(IMP.atom.Hierarchy.setup_particle(p))
+                if i > 1: rbd.add_member(p)
+            fn = self.get_tmp_file_name("rigid" + suffix)
+            f = RMF.create_rmf_file(fn)
+            IMP.rmf.add_hierarchies(f, [r])
+            IMP.rmf.save_frame(f, str(0))
+            del f
+
 if __name__ == '__main__':
     IMP.test.main()
