@@ -72,5 +72,33 @@ class Tests(IMP.test.TestCase):
                             c).get_internal_coordinates()
                         self.assertAlmostEqual(ic[j % 3], 1, delta=.01)
 
+    def test_no_match_hierarchy(self):
+        """Test rigid body that does not match the hierarchy"""
+        for suffix in IMP.rmf.suffixes:
+            m = IMP.kernel.Model()
+            top = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            top.set_name("top")
+            rbd = IMP.core.RigidBody.setup_particle(
+                          IMP.Particle(m), IMP.algebra.ReferenceFrame3D())
+            for child in range(2):
+                r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+                r.set_name("r%d" % child)
+                top.add_child(r)
+                for i in range(0, 3):
+                    p = IMP.kernel.Particle(m)
+                    v = IMP.algebra.Vector3D(0, 0, 0)
+                    v[i] = 1
+                    d = IMP.core.XYZR.setup_particle(p)
+                    d.set_coordinates(v)
+                    d.set_radius(.5)
+                    IMP.atom.Mass.setup_particle(p, .1)
+                    r.add_child(IMP.atom.Hierarchy.setup_particle(p))
+                    if i > 1: rbd.add_member(p)
+            fn = self.get_tmp_file_name("rigid" + suffix)
+            f = RMF.create_rmf_file(fn)
+            IMP.rmf.add_hierarchies(f, [top])
+            IMP.rmf.save_frame(f, str(0))
+            del f
+
 if __name__ == '__main__':
     IMP.test.main()
