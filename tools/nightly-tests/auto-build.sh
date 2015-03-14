@@ -22,6 +22,22 @@ IMPTOP=/salilab/diva1/home/imp/$BRANCH
 mkdir -p ${IMPTOP}
 
 cd ${GIT_TOP}/imp
+
+# Get top-most revision of branch we're interested in
+rev=`git rev-parse origin/${BRANCH}`
+shortrev=`git rev-parse --short origin/${BRANCH}`
+
+# Get old revision
+oldrev_file=${IMPTOP}/.SVN-new/build/imp-gitrev
+if [ -f "${oldrev_file}" ]; then
+  oldrev=`cat ${oldrev_file}`
+fi
+
+# For non-develop builds, skip if the revision hasn't changed
+if [ ${BRANCH} != "develop" -a "${oldrev}" = "${rev}" ]; then
+  exit 0
+fi
+
 # Switch to the branch we're interested in
 git checkout ${BRANCH} -f -q >& /tmp/$$.out
 # Squash chatty output from git checkout
@@ -43,23 +59,8 @@ rm -f /tmp/$$.out
 git submodule update --recursive
 ./setup_git.py > /dev/null || exit 1
 
-# Get top-most revision
-rev=`git rev-parse HEAD`
-shortrev=`git rev-parse --short HEAD`
-
 # Get submodule revisions
 RMF_rev=`(cd modules/rmf/dependency/RMF_source && git rev-parse HEAD)`
-
-# Get old revision
-oldrev_file=${IMPTOP}/.SVN-new/build/imp-gitrev
-if [ -f "${oldrev_file}" ]; then
-  oldrev=`cat ${oldrev_file}`
-fi
-
-# For non-develop builds, skip if the revision hasn't changed
-if [ ${BRANCH} != "develop" -a "${oldrev}" = "${rev}" ]; then
-  exit 0
-fi
 
 GIT_DIR=${GIT_TOP}/imp/.git
 export GIT_DIR
