@@ -23,6 +23,7 @@ function_name_exceptions=[
         'GaussianProcessInterpolationRestraint.stats',
         'GeneralizedGuinierPorodFunction.has_changed',
         'Linear1DFunction.has_changed',
+        'LognormalAmbiguousRestraint.draw_k_from_posterior',
         'MarginalNOERestraint.get_SS',
         'MolecularDynamics.assign_velocities',
         'MolecularDynamics.simulate',
