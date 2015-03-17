@@ -488,7 +488,7 @@ class IMPCOREEXPORT RigidMember : public RigidBodyMember {
 };
 
 //! A decorator for a particle that is part of a rigid body but not rigid
-/** NonRigidMembers, like RigidMembers have internal coordinates and move
+/** NonRigidMembers, like RigidMembers, have internal coordinates and move
     along with the rigid body. However, it is expected that their internal
     coordinates will change, and so they are not part of structures that
     assume rigidity.
