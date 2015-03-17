@@ -124,5 +124,31 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.save_frame(f, str(0))
             del f
 
+    def test_parent_non_rigid(self):
+        """Test rigid body where children are rigid but parents are not"""
+        for suffix in IMP.rmf.suffixes:
+            m = IMP.kernel.Model()
+            r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            r.set_name("rb")
+            rbd = IMP.core.RigidBody.setup_particle(IMP.Particle(m),
+                                          IMP.algebra.ReferenceFrame3D())
+            hs = []
+            for i in range(2):
+                p = IMP.kernel.Particle(m)
+                v = IMP.algebra.Vector3D(0, 0, 0)
+                d = IMP.core.XYZR.setup_particle(p)
+                d.set_coordinates(v)
+                d.set_radius(.5)
+                IMP.atom.Mass.setup_particle(p, .1)
+                hs.append(IMP.atom.Hierarchy.setup_particle(p))
+            r.add_child(hs[0])
+            hs[0].add_child(hs[1])
+            rbd.add_member(hs[1])
+            fn = self.get_tmp_file_name("rigid" + suffix)
+            f = RMF.create_rmf_file(fn)
+            IMP.rmf.add_hierarchies(f, [r])
+            IMP.rmf.save_frame(f, str(0))
+            del f
+
 if __name__ == '__main__':
     IMP.test.main()
