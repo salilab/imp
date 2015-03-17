@@ -78,8 +78,11 @@ class Tests(IMP.test.TestCase):
             m = IMP.kernel.Model()
             top = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
             top.set_name("top")
-            rbd = IMP.core.RigidBody.setup_particle(
-                          IMP.Particle(m), IMP.algebra.ReferenceFrame3D())
+            tr = IMP.algebra.Transformation3D(
+                         IMP.algebra.get_identity_rotation_3d(),
+                         IMP.algebra.Vector3D(1,2,3))
+            rbd = IMP.core.RigidBody.setup_particle(IMP.Particle(m),
+                                          IMP.algebra.ReferenceFrame3D(tr))
             for child in range(2):
                 r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
                 r.set_name("r%d" % child)
@@ -106,8 +109,11 @@ class Tests(IMP.test.TestCase):
             m = IMP.kernel.Model()
             r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
             r.set_name("rb")
+            tr = IMP.algebra.Transformation3D(
+                         IMP.algebra.get_identity_rotation_3d(),
+                         IMP.algebra.Vector3D(1,2,3))
             rbd = IMP.core.RigidBody.setup_particle(r,
-                                          IMP.algebra.ReferenceFrame3D())
+                                          IMP.algebra.ReferenceFrame3D(tr))
             ps = []
             for i in range(0, 3):
                 p = IMP.kernel.Particle(m)
