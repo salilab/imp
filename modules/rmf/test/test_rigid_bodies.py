@@ -108,8 +108,10 @@ class Tests(IMP.test.TestCase):
             r.set_name("rb")
             rbd = IMP.core.RigidBody.setup_particle(r,
                                           IMP.algebra.ReferenceFrame3D())
+            ps = []
             for i in range(0, 3):
                 p = IMP.kernel.Particle(m)
+                ps.append(p)
                 v = IMP.algebra.Vector3D(0, 0, 0)
                 v[i] = 1
                 d = IMP.core.XYZR.setup_particle(p)
@@ -123,6 +125,12 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.add_hierarchies(f, [r])
             IMP.rmf.save_frame(f, str(0))
             del f
+            # Reread RMF and make sure coordinates match
+            f = RMF.open_rmf_file_read_only(fn)
+            r2 = IMP.rmf.create_hierarchies(f, m)[0]
+            IMP.rmf.load_frame(f, RMF.FrameID(0))
+            new_ps = r2.get_children()
+            self.compare_coords(ps, new_ps, m)
 
     def test_parent_non_rigid(self):
         """Test rigid body where children are rigid but parents are not"""
@@ -130,12 +138,16 @@ class Tests(IMP.test.TestCase):
             m = IMP.kernel.Model()
             r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
             r.set_name("rb")
+            tr = IMP.algebra.Transformation3D(
+                         IMP.algebra.get_identity_rotation_3d(),
+                         IMP.algebra.Vector3D(1,2,3))
             rbd = IMP.core.RigidBody.setup_particle(IMP.Particle(m),
-                                          IMP.algebra.ReferenceFrame3D())
+                                          IMP.algebra.ReferenceFrame3D(tr))
             hs = []
             for i in range(2):
                 p = IMP.kernel.Particle(m)
                 v = IMP.algebra.Vector3D(0, 0, 0)
+                v[i] = 2.
                 d = IMP.core.XYZR.setup_particle(p)
                 d.set_coordinates(v)
                 d.set_radius(.5)
@@ -149,6 +161,24 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.add_hierarchies(f, [r])
             IMP.rmf.save_frame(f, str(0))
             del f
+            # Reread RMF and make sure coordinates match
+            f = RMF.open_rmf_file_read_only(fn)
+            r2 = IMP.rmf.create_hierarchies(f, m)[0]
+            IMP.rmf.load_frame(f, RMF.FrameID(0))
+            new_hs = [r2.get_child(0)]
+            new_hs.append(new_hs[0].get_child(0))
+            self.compare_coords(hs, new_hs, m)
+
+    def compare_coords(self, hs, new_hs, m):
+        coords = [IMP.core.XYZ(x).get_coordinates() for x in hs]
+        new_coords = [IMP.core.XYZ(x).get_coordinates() for x in new_hs]
+        self.assertEqual(len(coords), len(new_coords))
+        for c, newc in zip(coords, new_coords):
+            self.assertAlmostEqual((c - newc).get_magnitude(), 0, delta=.1)
+        m.update()
+        new_coords = [IMP.core.XYZ(x).get_coordinates() for x in new_hs]
+        for c, newc in zip(coords, new_coords):
+            self.assertAlmostEqual((c - newc).get_magnitude(), 0, delta=.1)
 
 if __name__ == '__main__':
     IMP.test.main()
