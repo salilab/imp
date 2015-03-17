@@ -100,11 +100,9 @@ BuildRequires: opencv-nogui-devel, CGAL-nogui-devel
 %endif
 
 # Many modules use Python's numpy module, so pull that in (at build time
-# for tests; at install time for using the modules)
-%if 0%{?rhel} == 5
-BuildRequires: python26-numpy
-Requires: python26-numpy
-%else
+# for tests; at install time for using the modules). Note that the
+# python26-numpy package in EPEL5 has been retired.
+%if 0%{?rhel} != 5
 BuildRequires: numpy
 Requires: numpy
 %endif
