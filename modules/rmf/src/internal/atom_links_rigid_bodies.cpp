@@ -269,6 +269,11 @@ kernel::ParticleIndex HierarchySaveRigidBodies::fill_external(
     ret = core::RigidBodyMember(m, p).get_rigid_body().get_particle_index();
     rbs.insert(ret);
   }
+  // If we are a rigid body, ignore children that are *not* in the rigid
+  // body (they will be coerced to nonrigid members elsewhere)
+  if (core::RigidBody::get_is_setup(m, p)) {
+    rbs.erase(base::get_invalid_index<ParticleIndexTag>());
+  }
   if (rbs.size() == 1 &&
       *rbs.begin() != base::get_invalid_index<ParticleIndexTag>()) {
     externals_[p] = *rbs.begin();

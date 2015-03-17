@@ -114,7 +114,14 @@ void HierarchySaveXYZs::setup_node(
     } else if (core::NonRigidMember::get_is_setup(m, p)) {
       local_.push_back(std::make_pair(n.get_id(), p));
     } else {
-      IMP_FAILURE("not sure why I am here");
+      /* Treat a particle that is a child of a rigid body but not a member
+         as a nonrigid member. This results in tidier RMF files than using the
+         external rigid body mechanism (which duplicates the rigid body's
+         reference frame for every particle in the body). The (minor) drawback
+         is that when the RMF is read back in, these particles will become
+         "real" nonrigid members. */
+      rigid_nonmember_.push_back(std::make_pair(n.get_id(),
+                           kernel::ParticleIndexPair(p, rigid_bodies.back())));
     }
   }
 }
@@ -123,6 +130,17 @@ void HierarchySaveXYZs::save(kernel::Model *m, RMF::FileHandle fh) {
   IMP_FOREACH(Pair pp, global_) {
     copy_to_frame_particle(core::XYZ(m, pp.second).get_coordinates(),
                            fh.get_node(pp.first), ip_factory_);
+  }
+  IMP_FOREACH(Triplet pp, rigid_nonmember_) {
+    /* Transform global coordinates to those relative to the "parent"
+       rigid body */
+    algebra::Vector3D global_coord
+                          = core::XYZ(m, pp.second[0]).get_coordinates();
+    algebra::ReferenceFrame3D rf
+                      = core::RigidBody(m, pp.second[1]).get_reference_frame();
+    copy_to_frame_particle(
+                   rf.get_transformation_from().get_transformed(global_coord),
+                   fh.get_node(pp.first), ip_factory_);
   }
   IMP_FOREACH(Pair pp, local_) {
     copy_to_frame_particle(
