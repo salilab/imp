@@ -20,17 +20,18 @@
 IMPISD_BEGIN_NAMESPACE
 
 /** A restraint for ambiguous cross-linking MS data.
-    \f$ z_i \f$ is the discrete classifier
-    \f$ \sigma_G \f$ is the uncertainty estimate for good data points
-    \f$ \sigma_B \f$ is the uncertainty estimate for bad data points
-    \f$ k_i \f$ is the index of restraint to be
-    picked up from the ambiguous set.
-    \f$ \lambda_0 \f$ is the maximum lenght for the cross-linker.
+    \f$ z_i \f$ is the discrete classifier,
+    \f$ \sigma_G \f$ is the uncertainty estimate for good data points,
+    \f$ \sigma_B \f$ is the uncertainty estimate for bad data points,
+    \f$ k_i \f$ is the index of the restraint to be
+    picked up from the ambiguous set, and
+    \f$ \lambda_0 \f$ is the maximum length for the cross-linker.
+
     Usage: Construct the ambiguous set using
     LognormalAmbiguousRestraint(\f$ z_i \f$, \f$ sigma_G \f$,
-    \f$ sigma_B \f$, \f$ k_i \f$, \f$ \lambda_0 \f$) method.
+    \f$ sigma_B \f$, \f$ k_i \f$, \f$ \lambda_0 \f$).
     Pass individual cross-linked particles to
-    add_contribution(part0, part1) command.
+    add_contribution(part0, part1).
     The marginal likelihood is modeled by a sigmoid function:
 
     \f[p(D|X,I) = \frac{1}{\lambda_0+\sigma(\sqrt(\pi/2)-1)}
@@ -39,7 +40,7 @@ IMPISD_BEGIN_NAMESPACE
     \f]
 
     where \f$ \sigma=z_i\sigma_G+(1-z_i)\sigma_B \f$
-    and $r_k$ is the distance between part0 and part1.
+    and \f$ r_k \f$ is the distance between part0 and part1.
  */
 class IMPISDEXPORT LognormalAmbiguousRestraint : public kernel::Restraint
 {
