@@ -184,7 +184,7 @@ Generate HTML coverage reports for IMP C++/Python code in the given directory.
     if len(args) != 1:
         parser.error("wrong number of arguments")
     if opts.exclude:
-        exclude = pickle.load(open(opts.exclude))
+        exclude = pickle.load(open(opts.exclude, 'rb'))
     else:
         exclude = {}
     opts.modules = _get_components(opts.modules, tools.get_sorted_order(),
