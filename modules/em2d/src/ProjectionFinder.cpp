@@ -13,6 +13,7 @@
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/Fine2DRegistrationRestraint.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
+#include "IMP/em2d/TIFFImageReaderWriter.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/internal/image_processing_helper.h"
@@ -284,6 +285,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     match->set_name(strm.str());  ////
     match->set_was_used(true);
     match->write(strm.str(), srw);
+
   }
 }
 
@@ -421,7 +423,9 @@ void ProjectionFinder::get_complete_registration() {
     // save if requested
     if (params_.save_match_images) {
       IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());
+      IMP_NEW(em2d::TIFFImageReaderWriter, srx, ());
       srw->set_was_used(true);
+      srx->set_was_used(true);
       ProjectingOptions options(params_.pixel_size, params_.resolution);
       options.normalize = true;
       get_projection(match, model_particles_, registration_results_[i], options,
@@ -432,9 +436,18 @@ void ProjectionFinder::get_complete_registration() {
       strm.width(4);
       strm << i << ".spi";
 
+      std::ostringstream strn;
+      strn << "fine_match-";
+      strn.fill('0');
+      strn.width(4);
+      strn << i << ".tif";
+
       registration_results_[i].set_in_image(match->get_header());
       match->set_name(strm.str());  //
       match->write(strm.str(), srw);
+      match->write(strn.str(), srx);
+      
+     
     }
     // ++show_progress;
   }
