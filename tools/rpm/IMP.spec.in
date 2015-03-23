@@ -99,12 +99,12 @@ BuildRequires: opencv-nogui-devel, CGAL-nogui-devel
 %define bundled 'libTAU\\.so'
 %endif
 
-# Many modules use Python's numpy module, so pull that in (at build time
-# for tests; at install time for using the modules). Note that the
-# python26-numpy package in EPEL5 has been retired.
+# Many modules use Python's numpy and scipy modules, so pull those in
+# (at build time for tests; at install time for using the modules).
+# Note that the python26-numpy package in EPEL5 has been retired.
 %if 0%{?rhel} != 5
-BuildRequires: numpy
-Requires: numpy
+BuildRequires: numpy, scipy
+Requires: numpy, scipy
 %endif
 
 %define cmake_opts %{boost} -DCMAKE_INSTALL_RPATH=%{_libdir}/IMP
