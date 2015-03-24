@@ -1,5 +1,5 @@
 code {
-    background-color: #EEE;
+    background-color: #F7F7F7;
     padding: 2px;
     border-radius: 2px;
 }
@@ -12,6 +12,7 @@ span.lineno {
 /* Make long lines scroll (rather than wrap) and make a nicer background and
    border */
 div.fragment, pre.fragment {
+    padding: 5px;
     background-color: #F7F7F7;
     border: 1px dashed #666;
     overflow: auto;
