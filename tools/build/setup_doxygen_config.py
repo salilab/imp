@@ -99,7 +99,9 @@ def generate_doxyfile(
         inputsh.append(os.path.join("lib", "IMP", m))
         if os.path.exists(doc):
             inputsh.append(doc + "/")
-    if not tutorial:
+    if tutorial:
+        doxygen = doxygen.replace("@INPUT_PATH@", source + "/doc/tutorial")
+    else:
         doxygen = doxygen.replace("@INPUT_PATH@", " ".join(inputsh))
     open(target, "w").write(doxygen)
 
@@ -144,7 +146,7 @@ def main():
                       os.path.join("doxygen", "Doxyfile.xml"),
                       is_html=False, is_xml=True)
     generate_doxyfile(options.source,
-                      os.path.join("doxygen", "tutorial.in"),
+                      os.path.join("doxygen", "tutorial"),
                       is_html=True, is_xml=False,
                       tutorial=True)
 
