@@ -1,5 +1,7 @@
 code {
     background-color: #EEE;
+    padding: 2px;
+    border-radius: 2px;
 }
 
 /* Hide line numbers in Python examples */
@@ -9,11 +11,80 @@ span.lineno {
 
 /* Make long lines scroll (rather than wrap) and make a nicer background and
    border */
-div.fragment {
+div.fragment, pre.fragment {
     background-color: #F7F7F7;
     border: 1px dashed #666;
     overflow: auto;
+    font-size: 13px;
+    line-height: 1;
 }
 div.line {
     white-space: pre;
+}
+
+/* Use same fonts as the rest of the website */
+body, table, div, p, dl {
+    color: #666;
+    font: 100% Arial,Helvetica,sans-serif;
+}
+
+/* Style doxygen title like our h1 title */
+div.title {
+    margin-top: 0px;
+    font-weight: bold;
+    font-size: 180%;
+    color: #FF7C02;
+}
+div.header {
+    border-bottom: none;
+    background-image: none;
+    background-color: #FFF;
+}
+
+div.tabs {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #666;
+    margin-bottom: 15px;
+}
+
+.tabs {
+    background-image: none;
+}
+
+.tablist li {
+    background-image: none;
+}
+
+.tablist a {
+    background-image: none;
+}
+
+.tablist li.current a {
+    background-image: none;
+    color: #283A5D;
+    text-shadow: 0px 1px 1px rgba(255, 255, 255, 0.9);
+}
+
+.tablist li a:hover {
+    background-image: url('tab_a.png');
+    background-repeat:repeat-x;
+    color: #fff;
+    text-shadow: 0px 1px 1px rgba(0, 0, 0, 1.0);
+}
+
+.tablist li, li.current {
+    background-image: none;
+}
+
+/* Hide some elements which look unnecessary with our layout */
+hr.footer {
+    display: none;
+}
+
+div.navpath {
+    display: none;
+}
+
+div#titlearea {
+    display: none;
 }

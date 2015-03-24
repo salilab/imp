@@ -43,7 +43,8 @@ def generate_doxyfile(
         doxygen = doxygen.replace("@MAINPAGE@", "")
         doxygen = doxygen.replace("@RECURSIVE@", "NO")
         doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/tutorial/")
-        doxygen = doxygen.replace("@LAYOUT_FILE@", "")
+        doxygen = doxygen.replace("@LAYOUT_FILE@",
+                                  "%s/doc/doxygen/tutorial_layout.xml" % source)
         doxygen = doxygen.replace("@TREEVIEW@", "NO")
         doxygen = doxygen.replace("@GENERATE_TAGFILE@", "")
         doxygen = doxygen.replace(
