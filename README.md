@@ -3,22 +3,19 @@
 These scripts demonstrate the use of [IMP](http://salilab.org/imp) in the modeling of the NPC complex using data as described in Frank Alber's 2007 NPC paper. 
 
 The scripts work with the [IMP](http://salilab.org/imp) (version 385a178).
-A default build of IMP compiled with IMP\_NPC\_codes should work, but for most effective sampling, it should
+A default build of IMP compiled with the IMP::npc module should work, but for most effective sampling, it should
 be built with [MPI](http://integrativemodeling.org/nightly/doc/html/namespaceIMP_1_1mpi.html) so that replica exchange can be used.
 
 ## List of files and directories:
 
 - `data`		            contains all relevant data
-- `IMP_NPC_codes`		    contains IMP codes for NPC restraints
 - `NPC_papers`			    contains relevant NPC papers
 - `scripts`			  
   - `test_NPC_scoring_functions.py` the main IMP script modeling for NPC
 
-## Compiling IMP with IMP\_NPC\_codes:
+## Compiling IMP with NPC-specific module:
 - Clone IMP version 385a178
-- copy IMP\_NPC\_codes/ProteinLocalizationRestraint.cpp to IMP/modules/core/src
-- copy IMP\_NPC\_codes/ProteinLocalizationRestraint.h   to IMP/modules/core/include
-- copy IMP\_NPC\_codes/swig.i-in                        to IMP/modules/core/pyext
+- Clone this repository into imp/modules/npc/.
 - Compile IMP
 
 ## Running the IMP scripts for the NPC complex:
@@ -34,8 +31,6 @@ This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
-
-_Last known good IMP version_: [![build info](https://salilab.org/imp/systems/?sysstat=6)](http://salilab.org/imp/systems/)
 
 _Publications_:
 
