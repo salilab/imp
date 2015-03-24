@@ -44,7 +44,7 @@ def generate_doxyfile(
         doxygen = doxygen.replace("@RECURSIVE@", "NO")
         doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/tutorial/")
         doxygen = doxygen.replace("@LAYOUT_FILE@", "")
-        doxygen = doxygen.replace("@TREEVIEW@", "YES")
+        doxygen = doxygen.replace("@TREEVIEW@", "NO")
         doxygen = doxygen.replace("@GENERATE_TAGFILE@", "")
         doxygen = doxygen.replace(
             "@WARNINGS@",
