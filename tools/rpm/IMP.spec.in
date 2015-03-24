@@ -33,7 +33,9 @@ BuildRequires: hdf5-devel >= 1.8
 %endif
 # Note that RHEL 5 doesn't have a new enough swig to build IMP. If you must
 # use RHEL 5 (we recommend RHEL 6) you will need to build a newer SWIG package
-# before building IMP.
+# before building IMP (or use ours, available at
+# http://integrativemodeling.org/build-extras/RHEL5/)
+.
 BuildRequires: swig >= 1.3.40
 BuildRequires: gsl-devel, fftw-devel
 BuildRequires: zlib-devel, perl
@@ -47,7 +49,8 @@ BuildRequires: ann-devel
 BuildRequires: libTAU-devel
 
 # The cmake included with RHEL 6 is too old; use cmake28 from EPEL instead.
-# RHEL 5 doesn't have cmake28; you will need to build this package yourself.
+# RHEL 5 doesn't have cmake28; you will need to build this package yourself
+# (or use ours, available at http://integrativemodeling.org/build-extras/RHEL5/)
 %if 0%{?rhel} == 5 || 0%{?rhel} == 6
 BuildRequires: cmake28
 %define cmake cmake28
@@ -78,6 +81,8 @@ BuildRequires: CGAL-devel, opencv-devel
 # If building in the Sali lab, pass '-D "RHEL_SALI_LAB 1"' to your rpmbuild
 # invocation. This will pull in our custom OpenCV and CGAL packages
 # and bundle the libraries with IMP.
+# If building outside of the lab and you still want these packages, get them
+# from http://integrativemodeling.org/build-extras/
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 BuildRequires: opencv-nogui-devel, CGAL-nogui-devel
 %if 0%{?rhel} == 5
