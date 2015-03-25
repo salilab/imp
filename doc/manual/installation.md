@@ -5,10 +5,16 @@ Installation {#installation}
 
 # Binary installation {#installation_binary}
 
-## Stable release {#installation_bin_stable}
+Binary installation is strongly recommended for new users of %IMP. It is
+much faster than building from source code, requires a smaller download,
+and all the necessary prerequisites are handled for you automatically.
 
-## Nightly build {#installation_bin_nightly}
+We recommend you use a stable release. These are available for
+Windows, Mac and Linux from our [download page](http://integrativemodeling.org/download.html#stable).
 
+Binaries are [also available for our latest nightly builds](http://integrativemodeling.org/download.html#develop). If you do decide to use a nightly build,
+please check out the [nightly builds results page](http://integrativemodeling.org/nightly/results/)
+to see if the code is currently stable enough for your purposes.
 
 # Source code installation {#installation_source}
 
@@ -65,7 +71,7 @@ need the Xcode command line tools (install by going to Xcode Preferences, then
 Downloads, then Components, and select "Command Line Tools").
 
 Then Mac users should use one of the available collections of Unix tools,
-either
+such as
 - [Homebrew](http://brew.sh) (_recommended_) Once you installed `homebrew`
   do
 
@@ -107,7 +113,8 @@ procedure we use.
 
   (the `master` branch tracks the most recent stable
   release; alternatively you can use `develop` to get the most recent code,
-  but [see the warnings above](@ref installation_bin_nightly))
+  but please check out the [nightly builds results page](http://integrativemodeling.org/nightly/results/)
+  to see if the code is currently stable enough for your purposes)
 
 ## Compilation {#installation_compilation}
 
