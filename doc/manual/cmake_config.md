@@ -38,14 +38,16 @@ command do:
 You can then look through the various options available.
 2. If you want a debug build, set `CMAKE_BUILD_TYPE` to `Debug`
 3. Tell cmake to configure (hit `c`) and generate (hit `g`) 
-4. `make -j 8`
+4. `make -j8`
 
 You can run `ccmake` after running `cmake` as above if you want, too.
 Running it never hurts.
 
 # Further configuration options {#cmake_further}
 
-You can use `ninja` instead if it is available by passing `-G Ninja` to the `(c)cmake` call. That is highly recommended when it is available.
+You can use [Ninja](https://martine.github.io/ninja/)
+instead if it is available by passing `-G Ninja` to the `(c)cmake` call.
+That is highly recommended when it is available.
 
 Various aspects of %IMP build behavior can be controlled via variables. These can be set interactively using `ccmake` (eg `ccmake ../imp`) or by passing them with `-D` in a call to `cmake`. Key ones include:
 - `IMP_DISABLED_MODULES`: A colon-separated list of disabled modules.
@@ -54,6 +56,27 @@ Various aspects of %IMP build behavior can be controlled via variables. These ca
 - `IMP_PER_CPP_COMPILATION`: A colon-separated list of modules to build one .cpp at a time.
 - `CMAKE_BUILD_TYPE`: one of `Debug` or `Release`.
 
-There also are a [variety of standard cmake options](http://www.cmake.org/Wiki/CMake_Useful_Variables) which control the build. In particular, if you have dependencies installed in non-standard locations, you may need to set the `CMAKE_INCLUDE_PATH` and `CMAKE_LIBRARY_PATH` variables so that cmake can find them.
-If you want to install %IMP in a non-standard location you should also set the
-`CMAKE_INSTALL_PREFIX` variable.
+There also are a [variety of standard cmake options](http://www.cmake.org/Wiki/CMake_Useful_Variables) which control the build. For example:
+- `CMAKE_INCLUDE_PATH` and `CMAKE_LIBRARY_PATH` control the paths CMake searches
+  in to locate %IMP prerequisite libraries. If your libraries are installed in
+  non-standard locations, you can set these variables to help CMake find them.
+  For example, on a 32-bit RHEL5 system, which has both Boost and HDF5 in
+  non-standard locations, we use
+
+        -DCMAKE_INCLUDE_PATH="/usr/include/boost141;/usr/include/hdf518/" -DCMAKE_LIBRARY_PATH="/usr/lib/boost141;/usr/lib/hdf518"
+
+- `CMAKE_INSTALL_PREFIX` should be set if you want to install %IMP in a
+  non-standard location.
+
+Note also that CMake searches in the system path (`PATH` environment variable)
+for command line tools such as `python` and `swig`. Thus, if you have multiple
+versions of tools (e.g. `/usr/bin/swig` and `/usr/local/bin/swig`) make sure
+the `PATH` variable is set correctly so that the right tool is found *before*
+you run CMake. You may need to make symlinks or copies to help it out if your
+binaries are named oddly; for example on a RHEL5 system we need to force CMake
+to use `/usr/bin/python2.6` rather than `/usr/bin/python` (which is Python 2.4,
+which is too old to work with %IMP) by doing something like:
+
+    mkdir bin
+    ln -sf /usr/bin/python26 bin/python
+    PATH=`pwd`/bin:$PATH
