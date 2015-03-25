@@ -21,7 +21,7 @@ multifit: command line tool {#multifit_bin}
 
 Generally, this module is not used directly; instead, the
 `multifit` command line tool is used. For an example, see
-[Modeling of 3sfd](../tutorial/multifit_3sfd.html).
+[Modeling of 3sfd](@ref multifit_3sfd).
 
 Web server
 ==========

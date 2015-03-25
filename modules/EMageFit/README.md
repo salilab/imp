@@ -36,7 +36,7 @@ More detail on the functioning of EMageFit can be found on the
 utilities are documented on the \ref emagefit_scripts "scripts page".
 
 _Examples_:
- - [Modeling of 3sfd](../tutorial/emagefit_3sfd.html)
+ - [Modeling of 3sfd](@ref emagefit_3sfd)
 
 # Info
 

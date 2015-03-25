@@ -28,7 +28,7 @@ docking, followed by
 clustering and composite scoring.
 
 _Examples_:
- - [Docking of PCSK9](../tutorial/idock_pcsk9.html)
+ - [Docking of PCSK9](@idock_pcsk9)
 
 # Info
 

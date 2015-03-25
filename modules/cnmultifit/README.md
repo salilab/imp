@@ -11,7 +11,7 @@ cnmultifit: command line tool {#cnmultifit_bin}
 
 Generally, this module is not used directly; instead, the
 `cnmultifit` command line tool is used. For an example, see
-[Modeling of GroEL](../tutorial/cnmultifit_groel.html).
+[Modeling of GroEL](@ref cnmultifit_groel).
 
 Web server
 ==========

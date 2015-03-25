@@ -16,7 +16,7 @@ of the problem that accounts for correlation in the data.
 A [webserver](http://salilab.org/saxsmerge) is also available.
 
 _Examples_:
- - [Merging of SAXS profiles](../tutorial/saxs_merge.html)
+ - [Merging of SAXS profiles](@ref saxs_merge)
 
 # Info
 
