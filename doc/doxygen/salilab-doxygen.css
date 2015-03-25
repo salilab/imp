@@ -89,3 +89,12 @@ div.navpath {
 div#titlearea {
     display: none;
 }
+
+a.el {
+    font-weight: normal;
+}
+
+/* Fix odd spacing for h1 titles */
+div.textblock h1 {
+    margin-top: 0.8em;
+}
