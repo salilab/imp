@@ -16,44 +16,48 @@ some scripts may need some modification to work correctly. (If you use an
 older version, some of the applications demonstrated here may not be
 available.)
 
-   1. [Introduction](@ref intro). Discussion of the problems that IMP
-      is designed to solve, and the high-level design of the software. 
+ - [Installation](@ref installation).
 
-   2. [The IMP C++/Python library](@ref library). Simple usage of basic
-      parts of the IMP library.
+ - [Introduction](@ref intro). Discussion of the problems that IMP
+   is designed to solve, and the high-level design of the software. 
 
-   3. [Modeling of RNA Polymerase II stalk](@ref rnapolii_stalk).
+ - [The IMP C++/Python library](@ref library). Simple usage of basic
+   parts of the IMP library.
+
+ - Using the IMP::pmi high-level interface
+   - [Modeling of RNA Polymerase II stalk](@ref rnapolii_stalk).
       Modeling of a real complex using the IMP::pmi module.
 
-   4. [FoXS](@ref foxs_nup133).
-      Using IMP's FoXS application to use small-angle X-ray (SAXS) data
-      in combination with comparative modeling to improve the structure
-      of a protein.
+ - Using command line tools
+   - [FoXS](@ref foxs_nup133).
+     Using IMP's FoXS application to use small-angle X-ray (SAXS) data
+     in combination with comparative modeling to improve the structure
+     of a protein.
 
-   5. [MultiFoXS](@ref multi_foxs).
-      Determination of multi-state models with MultiFoXS.
+   - [MultiFoXS](@ref multi_foxs).
+     Determination of multi-state models with MultiFoXS.
 
-   6. [Integrative docking](@ref idock_pcsk9).
-      Improving the quality of computational pairwise docking by incorporating
-      additional experimental information.
+   - [Integrative docking](@ref idock_pcsk9).
+     Improving the quality of computational pairwise docking by incorporating
+     additional experimental information.
 
-   7. [Conformational sampling](@ref kinematics_rrt).
-      Sampling antibody conformations using the rapidly exploring random
-      tree (RRT) algorithm.
+   - [Conformational sampling](@ref kinematics_rrt).
+     Sampling antibody conformations using the rapidly exploring random
+     tree (RRT) algorithm.
 
-   8. [EMageFit](@ref emagefit_3sfd).
-      A simple example of modeling of a complex of 4 proteins, by
-      combining electron microscopy (EM) class averages of the complex
-      with crystal structures of the proteins.
+   - [EMageFit](@ref emagefit_3sfd).
+     A simple example of modeling of a complex of 4 proteins, by
+     combining electron microscopy (EM) class averages of the complex
+     with crystal structures of the proteins.
 
-   9. [MultiFit](@ref multifit_3sfd).
-      A similar example of modeling a complex, by multiple fitting of
-      individual proteins into a 3D cryo-EM density map of the complex.
+   - [MultiFit](@ref multifit_3sfd).
+     A similar example of modeling a complex, by multiple fitting of
+     individual proteins into a 3D cryo-EM density map of the complex.
 
-   10. [MultiFit of symmetric complexes](@ref cnmultifit_groel).
-       Multiple fitting of a protein structure into a symmetric (ring) complex,
-       using a 3D cryo-EM density map of the complex.
+   - [MultiFit of symmetric complexes](@ref cnmultifit_groel).
+     Multiple fitting of a protein structure into a symmetric (ring) complex,
+     using a 3D cryo-EM density map of the complex.
 
-   11. [Merging SAXS profiles](@ref saxs_merge).
-       Merging multiple small angle X-ray (SAXS) profiles using `saxs_merge`.
+   - [Merging SAXS profiles](@ref saxs_merge).
+     Merging multiple small angle X-ray (SAXS) profiles using `saxs_merge`.
 */
