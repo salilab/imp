@@ -1,24 +1,13 @@
 Contents
 ========
 
-Welcome to the IMP library documentation.
- Throughout the documentation we refer to two, overlapping sets of people.
-- _users_ write Python scripts to use existing IMP functionality
-- _developers_ develop new methods for scoring, sampling or representation,
-   and hopefully contribute them back to IMP central.
- Various pieces of documentation are marked as being intended for developers.
-
-In addition to the tabs above that take you to individual module, class and function documentation, we have the following pages to help users get started:
-- [Introduction](@ref introduction)
-- [Tutorial](../tutorial/index.html)
-- [Change history](@ref changelog)
-- [Modules](namespaces.html)
-- [Command line tools](@ref cmdline_tools)
-- [Biological systems modeled in IMP](http://integrativemodeling.org/systems/)
-- [Wiki](https://github.com/salilab/imp/wiki)
-- [Mailing lists](http://integrativemodeling.org/contact.html)
+This reference guide shows the modules, classes and functions that make
+up the %IMP API. It is targeted mainly at more advanced users and developers;
+for an introduction to %IMP, see the [manual](../manual/).
 
 To help find things we provide the following indexes:
+- [Modules](namespaces.html)
+- [Command line tools](@ref cmdline_tools)
 - [Methods that create classes](@ref factory_index)
 - [Methods that use classes](@ref argument_index)
 - [Which examples each class is used in](@ref class_example_index)
@@ -26,8 +15,6 @@ To help find things we provide the following indexes:
 
 Additional developer documentation:
 - [Developers' guide](@ref devguide)
-- [Bug Tracker](https://github.com/salilab/imp/issues)
-- [Nightly tests](http://integrativemodeling.org/nightly/results/)
 
 An overview of some of the various modules currently
 available. Representative classes and functions are shown. Most

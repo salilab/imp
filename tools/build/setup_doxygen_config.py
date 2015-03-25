@@ -92,19 +92,18 @@ def generate_doxyfile(
     else:
         doxygen = doxygen.replace("@IS_HTML@", "NO")
 
-    # skip linking later
-    inputsh = ["doxygen/generated", source + "/doc/ref",
-               source + "/ChangeLog.md",
-               source + "/tools/README.md", "include", "doc/examples"]
-    for m, p in tools.get_modules(source):
-        doc = os.path.join(p, "doc")
-        inputsh.append(os.path.join("lib", "IMP", m))
-        if os.path.exists(doc):
-            inputsh.append(doc + "/")
     if manual:
-        doxygen = doxygen.replace("@INPUT_PATH@", source + "/doc/manual")
+        inputsh = [source + "/doc/manual",
+                   source + "/ChangeLog.md"]
     else:
-        doxygen = doxygen.replace("@INPUT_PATH@", " ".join(inputsh))
+        inputsh = ["doxygen/generated", source + "/doc/ref",
+                   source + "/tools/README.md", "include", "doc/examples"]
+        for m, p in tools.get_modules(source):
+            doc = os.path.join(p, "doc")
+            inputsh.append(os.path.join("lib", "IMP", m))
+            if os.path.exists(doc):
+                inputsh.append(doc + "/")
+    doxygen = doxygen.replace("@INPUT_PATH@", " ".join(inputsh))
     open(target, "w").write(doxygen)
 
 
