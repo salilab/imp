@@ -98,3 +98,8 @@ a.el {
 div.textblock h1 {
     margin-top: 0.8em;
 }
+
+/* Increase spacing for lists */
+.textblock li {
+  padding-bottom: 0.3em;
+}
