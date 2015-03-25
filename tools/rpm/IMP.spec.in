@@ -35,7 +35,6 @@ BuildRequires: hdf5-devel >= 1.8
 # use RHEL 5 (we recommend RHEL 6) you will need to build a newer SWIG package
 # before building IMP (or use ours, available at
 # http://integrativemodeling.org/build-extras/RHEL5/)
-.
 BuildRequires: swig >= 1.3.40
 BuildRequires: gsl-devel, fftw-devel
 BuildRequires: zlib-devel, perl
