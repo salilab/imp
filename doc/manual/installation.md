@@ -1,47 +1,62 @@
 Installation {#installation}
 ============
 
-# Building and installing basics #
-
 [TOC]
 
-IMP is available in a variety of different ways. If you are just planning on using
-existing IMP code and run on a standard platform, you may be able to install
-a pre-built binary. See the [download](http://integrativemodeling.org/download.html) page.
+# Binary installation {#installation_binary}
 
-If you are planning on contributing to IMP, you should download and build the source.
-See the next section for more information.
+## Stable release {#installation_bin_stable}
 
+## Nightly build {#installation_bin_nightly}
 
 
-Building IMP from source is straightforward if the [prerequisites](#prereqs)
-are already installed.
+# Source code installation {#installation_source}
 
-    git clone git://github.com/salilab/imp.git
-    cd imp
-    ./setup_git.py
-    mkdir ../imp_release
-    cd ../imp_release
-    cmake ../imp -DCMAKE_BUILD_TYPE=Release
-    make -j 8
+## Prerequisites {#installation_prereqs}
 
-See [Building IMP with CMake](https://github.com/salilab/imp/wiki/Cmake)
-for more information.
+In order to build %IMP from source, you will need:
 
-
-# Prerequisites # {#installation_prereqs}
-In order to obtain and compile IMP, you will need:
-
-- [cmake](http://www.cmake.org) (2.8 or later)
+- [CMake](http://www.cmake.org) (2.8 or later)
 - [Boost](http://www.boost.org) (1.40 or later)
 - [HDF5](http://www.hdfgroup.org/HDF5/) (1.8 or later)
 - [Python](http://www.python.org) (2.6 or later, or any version of Python 3)
 - [SWIG](http://www.swig.org) (1.3.40 or later; 2.0.4 or later is needed
   if you want to use Python 3)
-- Developers will also need a [git](http://git-scm.com/) client
-  to access the repository
 
-## Getting prerequisites on a Mac ## {#installation_prereqs_mac}
+The following prerequisites are _optional_; without them some parts of %IMP
+will not build, and some will not function optimally.
+
+- [Doxygen](http://www.doxygen.org/) (only exactly version 1.8.6 is supported)
+  and [Graphviz](http://www.graphviz.org/): Required for building
+  documentation.
+- [Modeller](\ref modeller): needed to use the IMP.modeller module
+- [CGAL](\ref CGAL): enables faster geometric operations, such as
+  nonbonded lists.
+- [Google perf tools](\ref perf): needed only for profiling %IMP code.
+- [ANN](\ref ANN): certain data structures will be faster if it is available.
+- [GSL](\ref GSL): needed to use the IMP.gsl module
+- [OpenCV](\ref OpenCV): needed to use the IMP.em2d module or the
+  [idock](@ref idock_pcsk9) and [emagefit](@ref emagefit_3sfd) command
+  line tools.
+- [FFTW](http://www.fftw.org): need to use the IMP.em2d or IMP.multifit modules
+  or the [multifit](@ref multifit_3sfd) command line tool.
+- [libTAU](http://integrativemodeling.org/libTAU.html): needed to use the
+  IMP.cnmultifit module or the [cnmultifit](@ref cnmultifit_groel) command
+  line tool.
+- An [MPI](\ref impmpi) library is needed to use the IMP.mpi module.
+- The [numpy, scipy](http://www.scipy.org/scipylib/download.html),
+  [scikit-learn](http://scikit-learn.org/stable/install.html),
+  [matplotlib](http://matplotlib.org/downloads.html) and
+  [biopython](http://biopython.org/wiki/Download) Python libraries are also
+  recommended.
+- [Chimera](https://www.cgl.ucsf.edu/chimera/download.html) is recommended
+  for visualization of results
+
+### Getting prerequisites on Linux {#installation_prereqs_linux}
+All of the prerequisites should be available as pre-built packages for
+your Linux distribution of choice.
+
+### Getting prerequisites on a Mac {#installation_prereqs_mac}
 
 Mac users must first install Xcode (previously known as Developer Tools)
 which is not installed by default with OS X, but is available from the App store
@@ -54,135 +69,95 @@ either
 - [Homebrew](http://brew.sh) (_recommended_) Once you installed `homebrew`
   do
 
-    `brew tap homebrew/science`
-
-    `brew tap salilab/salilab`
-
-    `brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr libtau`
+        brew tap homebrew/science
+        brew tap salilab/salilab
+        brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr libtau
 
   to install everything IMP finds useful (or that you will want for installing various useful Python libs that IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
 - [Macports](http://www.macports.org/) If you use MacPorts, you must add `/opt/local/bin` to your path (either by modifying your shell's
   config file or by making an `environment.plist` file) and then do
 
-    `sudo port install boost cmake swig-python`
+        sudo port install boost cmake swig-python
 
   to install the needed libraries and tools. When installing HDF5 with MacPorts, be sure to install `hdf5-18`
   (version 1.8), rather than the older `hdf5` (version 1.6.9).
-- or [Fink](http://www.finkproject.org/)
+- or [Fink](http://www.finkproject.org/) (not supported)
 
-### Mac OS X 10.5 and 10.6
-These versions of Mac OS X include a 'swig' binary, but it is too old to use
-with IMP. You need to make sure that the newer version of `swig` is found first
-in your `PATH`.
-
-
-## Getting prerequisites on Windows ## {#installation_prereqs_windows}
+### Getting prerequisites on Windows {#installation_prereqs_windows}
 
 We recommend Linux or Mac for developing with IMP, as obtaining the
-prerequisites on Windows is much more involved. However, we do test IMP on
-Windows, built with the Microsoft Visual Studio compilers (we use Visual Studio
-Express 2010 SP1 for 32-bit Windows, and VS Express 2012 for 64-bit).
-One complication is that different packages are compiled
-with different versions of Visual Studio, and mixing the different runtimes
-(msvc*.dll) can cause odd behavior; therefore, we recommend building most
-of the dependencies from source code using the same version of Visual Studio
-that you're going to use to build IMP. The basic procedure is as follows:
+prerequisites on Windows is much more involved. However, if you really want
+to build on Windows, see the
+[building from source code on Windows](@ref install_windows) page for the
+procedure we use.
 
-  - Install Microsoft Visual Studio Express (it is free, but registration with
-    Microsoft is required).
-  - Get and install [cmake](http://www.cmake.org).
-  - Get [Python 2](http://www.python.org) (not Python 3)
-    (make sure you get the
-    32-bit version if you're going to build IMP for 32-bit Windows).
-  - Get and install the
-    [zlib package](http://gnuwin32.sourceforge.net/packages/zlib.htm)
-    (both the "complete package, except sources" and the "sources" installers).
-     - The package without sources can be installed anywhere; we chose the
-       default location of `C:\Program Files\GnuWin32`. The sources, however,
-       must be installed in a path that doesn't contain spaces (otherwise the
-       Boost build will fail). We chose `C:\zlib`.
-     - We found that the zconf.h header included with zlib erroneously includes
-       unistd.h, which doesn't exist on Windows, so we commented out that line
-       (in both packages).
-  - Download the [Boost source code](http://www.boost.org)
-    (we extracted it into `C:\Program Files\boost_1_53_0`), then
-     - Open a Visual Studio Command Prompt, and cd into the directory where
-       Boost was extracted
-     - Run bootstrap.bat
-     - You may need to help the compiler find the zlib header file with
-       `set INCLUDE=C:\Program Files\GnuWin32\include`
-     - Run `bjam link=shared runtime-link=shared -sNO_ZLIB=0 -sZLIB_SOURCE=C:\zlib\1.2.3\zlib-1.2.3`
-  - Get and install [SWIG for Windows](http://www.swig.org)
-  - Get the [HDF5 source code](http://www.hdfgroup.org)
-     - Make a 'build' subdirectory, then run from a command prompt in
-       that subdirectory something similar to
-       `cmake.exe -G "Visual Studio 10" -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=OFF -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DHDF5_BUILD_HL_LIB:BOOL=ON -DZLIB_INCLUDE_DIR="C:\Program Files\GnuWin32\include" -DZLIB_LIBRARY="C:\Program Files\GnuWin32\lib\zlib.lib" -DBUILD_SHARED_LIBS:BOOL=ON ..`
-     - Open the resulting HDF5 solution file in Visual Studio, change to
-       Release configuration, then build the hdf5 project.
-  - (Optional) [Build CGAL from source code](http://www.cgal.org/windows_installation.html).
-  - (Optional) Download the
-    [FFTW DLLs](http://www.fftw.org/install/windows.html) and follow the
-    instructions at that website to make .lib import libraries needed for
-    Visual Studio.
-     - Copy `libfftw3-3.lib` to `fftw3.lib` to help cmake find it
-  - (Optional) Get the
-    [GSL source code](http://gnuwin32.sourceforge.net/packages/gsl.htm)
-    and build it:
-     - Open the libgsl project file in the `src\gsl\1.8\gsl-1.8\VC8`
-       subdirectory
-     - Build in Release-DLL configuration
-     - Copy the generated `libgsl.dll` and `libgslcblas.dll` to a suitable
-       location (we used `C:\Program Files\gsl-1.8\lib`)
-     - Copy the corresponding .lib files, libgsl_dll.lib and libgslcblas_dll.lib
-       (we recommend removing the _dll suffix and the lib prefix when you do
-       this so that cmake has an easier time finding them, i.e. call them
-       gsl.lib and gslcblas.lib).
-  - (Optional) Get [numpy and scipy](http://www.scipy.org) to match your
-    Python version.
-  - (Optional) Get and install
-    [libTAU](http://integrativemodeling.org/libTAU.html)
-     - Copy `libTAU.lib` to `TAU.lib` to help cmake find it.
-  - (Optional) Get the [OpenCV source code](http://opencv.org/)
-    and build it by [following these instructions](http://docs.opencv.org/doc/tutorials/introduction/windows_install/windows_install.html)
-     - Copy each `opencv_*.lib` to a similar file without the version extension
-       (e.g. copy `opencv_ml244.lib` to `opencv_ml.lib`) to help cmake find it
-  - Set PATH, INCLUDE, and/or LIB environment variables so that the compiler
-    can find all of the dependencies. (We wrote a little batch file.)
-  - Set up IMP by running something similar to
 
-     `cmake <imp_source_directory> -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DWIN32 /DGSL_DLL" -G "NMake Makefiles"`
+## Download {#installation_download}
 
-  - Note: if building for 64-bit Windows, you may need to add `/bigobj` to `CMAKE_CXX_CFLAGS`.
-  - Then use simply 'nmake' (instead of 'make', as on Linux or Mac) to
-    build IMP. (cmake can also generate Visual Studio project files, but
-    we recommend nmake.)
-  - To use IMP or run tests, first run the setup_environment.bat file to set
-    up the environment so all the programs and Python modules can be found.
-    (This batch file needs to be run only once, not for each test.)
+- Download the source code tarball from [our download page](http://integrativemodeling.org/download.html#source), then extract it with something like:
 
-## Getting prerequisites on Linux
-All of the prerequisites should be available as pre-built packages for
-your Linux distribution of choice.
+        tar -xvzf ../imp-<version>.tar.gz
 
-# Optional prerequisites # {#installation_preqs_optional}
+- Alternatively you can use [git](http://git-scm.com/) to get the code
+  directly from our [GitHub repository](https://github.com/salilab/imp)
+  with something like:
 
-IMP can make use of a variety of external tools to provide more or
-better functionality.
+        git clone -b master https://github.com/salilab/imp.git
+        (cd imp && ./setup_git.py)
 
-- [Doxygen](http://www.doxygen.org/) and [Graphviz](http://www.graphviz.org/): Required for building documentation. They are available as
-part of most Unix tool sets (HomeBrew, all Linux distributions etc.).
-- [Modeller](\ref modeller)
-- [CGAL](\ref CGAL)
-- [Google perf tools](\ref perf)
-- [ANN](\ref ANN)
-- [GSL](\ref GSL)
-- [OpenCV](\ref OpenCV) is needed for IMP.em2d
-- [libTAU](http://integrativemodeling.org/libTAU.html) is needed for IMP.cnmultifit
-- [MPI](\ref impmpi)
+  (the `master` branch tracks the most recent stable
+  release; alternatively you can use `develop` to get the most recent code,
+  but [see the warnings above](@ref installation_bin_nightly))
 
-# Where to go next # {#installation_next}
+## Compilation {#installation_compilation}
 
-You are now ready to use IMP within Python and C++.
+Make a separate directory to keep the compiled version of %IMP in (it's tidier
+to keep this separate from the source code, and if you need to later you can
+just delete this directory without affecting the source). Set up the build
+with [CMake](http://www.cmake.org/), then finally compile it, with something
+like:
 
-Everyone should read the [introduction](\ref introduction) and developers should
-then move on to the [Developer Guide](\ref devguide).
+    mkdir imp_release
+    cd imp_release
+    cmake <path to IMP source>
+    make -j8
+
+There are a number of ways in which %IMP can be configured.
+See [the configuration options page](@ref cmake_config) for more details.
+
+## Testing {#installation_testing}
+Once the compilation is complete, you can optionally run the test suite.
+Test are run using `ctest`. A good start is to run `ctest --output-on-failure`.
+
+Tests are labeled with the module name and the type and cost of the test, so to run just the expensive tests in the `atom` module, use `ctest -L "^IMP\.atom\-test\-.*EXPENSIVE"`.
+
+Benchmarks are simply tests labeled as `benchmark`; examples are tests labeled as `example`.
+
+Note that some test failures are to be expected; compare the failures with
+those at our own [nightly builds page](http://integrativemodeling.org/nightly/results/)
+if you are concerned.
+
+## Installation {#installation_install}
+
+Once everything is compiled (and optionally tested) you can install %IMP
+by simply running `make install`. If you opted to install in a non-standard
+location, it is up to you to set up your environment variables so that %IMP
+can be found (you may need to set `PATH`, `PYTHONPATH`, and `LD_LIBRARY_PATH`).
+ 
+Alternatively, you can run %IMP directly from the build directory by using
+the `setup_environment.sh` script. This sets the necessary environment
+variables and then runs the rest of the command line with this modified
+environment. For example, to run the `ligand_score` command line tool you
+can either run
+
+    ./setup_environment.sh ligand_score <arguments>
+
+or create a new shell with
+
+    ./setup_environment.sh $SHELL
+
+and then run
+
+    ligand_score <arguments>
+
+in that shell.
