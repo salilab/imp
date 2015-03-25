@@ -323,25 +323,25 @@ imp_execute_process("setup_imppy" ${CMAKE_BINARY_DIR}
 
 if(IMP_DOXYGEN_FOUND)
 
- file(GLOB docs ${CMAKE_SOURCE_DIR}/doc/*.dox
-   ${CMAKE_SOURCE_DIR}/doc/*.md)
+ file(GLOB docs ${CMAKE_SOURCE_DIR}/doc/*/*.dox
+   ${CMAKE_SOURCE_DIR}/doc/*/*.md)
 
   add_custom_target(IMP-doc
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${CMAKE_SOURCE_DIR}"
-    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
+    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/ref.xml
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_cross_refs.py
-    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/warnings.txt
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_links.py ${CMAKE_BINARY_DIR}/doc/html
-    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/tutorial
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/tutorial-warnings.txt
+    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/ref.html
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/ref-warnings.txt
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_links.py ${CMAKE_BINARY_DIR}/doc/ref
+    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/manual-warnings.txt
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS ${IMP_DOC_DEPENDS} ${docs} ${IMP_DOXYGEN_FETCH} IMP-version
     COMMENT "Building documentation")
 
   add_custom_target(IMP-doc-install
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/html" "${CMAKE_INSTALL_FULL_DOCDIR}/html"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/tutorial" "${CMAKE_INSTALL_FULL_DOCDIR}/tutorial"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/manual" "${CMAKE_INSTALL_FULL_DOCDIR}/manual"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/ref" "${CMAKE_INSTALL_FULL_DOCDIR}/ref"
     DEPENDS "IMP-doc"
     COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}")
 else()

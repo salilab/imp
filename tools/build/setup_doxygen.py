@@ -23,14 +23,11 @@ from optparse import OptionParser
 def link_dox(source):
     target = os.path.join("doxygen")
     tools.mkdir(target)
-    for module, g in tools.get_modules(source):
-        tools.link_dir(os.path.join(g, "doc"),
-                       os.path.join("doc", "html", module),
-                       match=["*.png", "*.pdf", "*.gif"], clean=False)
-    tools.link_dir(os.path.join(source, "doc"), os.path.join("doc", "html"),
+    tools.link_dir(os.path.join(source, "doc", "ref"),
+                   os.path.join("doc", "ref"),
                    match=["*.png", "*.pdf", "*.gif"], clean=False)
-    tools.link_dir(os.path.join(source, "doc", "tutorial"),
-                   os.path.join("doc", "tutorial"),
+    tools.link_dir(os.path.join(source, "doc", "manual"),
+                   os.path.join("doc", "manual"),
                    match=["*.png", "*.pdf", "*.gif"], clean=False)
 
 parser = OptionParser()

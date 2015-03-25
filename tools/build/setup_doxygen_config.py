@@ -23,7 +23,7 @@ def generate_doxyfile(
     target,
     is_xml=False,
     is_html=False,
-        tutorial=False):
+        manual=False):
     doxyin = os.path.join(
         source,
         "tools",
@@ -34,38 +34,38 @@ def generate_doxyfile(
     versionpath = os.path.join("VERSION")
     if os.path.exists(versionpath):
         version = open(versionpath, "r").read().strip()
-    if tutorial:
+    if manual:
         version = '"for IMP version ' + version + '"'
     doxygen = open(doxyin, "r").read()
-    if tutorial:
-        doxygen = doxygen.replace("@PROJECT_NAME@", '"IMP Tutorial"')
+    if manual:
+        doxygen = doxygen.replace("@PROJECT_NAME@", '"IMP Manual"')
         doxygen = doxygen.replace("@PROJECT_BRIEF@", "")
         doxygen = doxygen.replace("@MAINPAGE@", "")
-        doxygen = doxygen.replace("@RECURSIVE@", "NO")
-        doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/tutorial/")
+        doxygen = doxygen.replace("@RECURSIVE@", "YES")
+        doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/manual/")
         doxygen = doxygen.replace("@LAYOUT_FILE@",
-                                  "%s/doc/doxygen/tutorial_layout.xml" % source)
+                                  "%s/doc/doxygen/manual_layout.xml" % source)
         doxygen = doxygen.replace("@TREEVIEW@", "NO")
         doxygen = doxygen.replace("@GENERATE_TAGFILE@", "")
         doxygen = doxygen.replace(
             "@WARNINGS@",
-            "doxygen/tutorial-warnings.txt")
+            "doxygen/manual-warnings.txt")
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "")
         doxygen = doxygen.replace("@EXAMPLE_PATH@", ".")
-        doxygen = doxygen.replace("@TAGS@", "doxygen/tags.html=../html")
+        doxygen = doxygen.replace("@TAGS@", "doxygen/reftags.xml=../ref")
     else:
-        doxygen = doxygen.replace("@PROJECT_NAME@", "IMP")
+        doxygen = doxygen.replace("@PROJECT_NAME@", '"IMP Reference Guide"')
         doxygen = doxygen.replace("@PROJECT_BRIEF@",
                                   '"The Integrative Modeling Platform"')
         doxygen = doxygen.replace("@MAINPAGE@", "mainpage.md")
         doxygen = doxygen.replace("@RECURSIVE@", "YES")
-        doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/html/")
+        doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/ref/")
         doxygen = doxygen.replace("@LAYOUT_FILE@",
                                   "%s/doc/doxygen/main_layout.xml" % source)
         doxygen = doxygen.replace("@TREEVIEW@", "NO")
-        doxygen = doxygen.replace("@GENERATE_TAGFILE@", "doxygen/tags.html")
-        doxygen = doxygen.replace("@WARNINGS@", "doxygen/warnings.txt")
-        doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
+        doxygen = doxygen.replace("@GENERATE_TAGFILE@", "doxygen/reftags.xml")
+        doxygen = doxygen.replace("@WARNINGS@", "doxygen/ref-warnings.txt")
+        doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "")
         doxygen = doxygen.replace(
             "@EXAMPLE_PATH@",
             "doc/examples %s/modules/example" %
@@ -92,15 +92,16 @@ def generate_doxyfile(
         doxygen = doxygen.replace("@IS_HTML@", "NO")
 
     # skip linking later
-    inputsh = ["doxygen/generated", source + "/doc", source + "/ChangeLog.md",
+    inputsh = ["doxygen/generated", source + "/doc/ref",
+               source + "/ChangeLog.md",
                source + "/tools/README.md", "include", "doc/examples"]
     for m, p in tools.get_modules(source):
         doc = os.path.join(p, "doc")
         inputsh.append(os.path.join("lib", "IMP", m))
         if os.path.exists(doc):
             inputsh.append(doc + "/")
-    if tutorial:
-        doxygen = doxygen.replace("@INPUT_PATH@", source + "/doc/tutorial")
+    if manual:
+        doxygen = doxygen.replace("@INPUT_PATH@", source + "/doc/manual")
     else:
         doxygen = doxygen.replace("@INPUT_PATH@", " ".join(inputsh))
     open(target, "w").write(doxygen)
@@ -140,15 +141,15 @@ def main():
 
     generate_overview_pages(options.source)
     generate_doxyfile(options.source,
-                      os.path.join("doxygen", "Doxyfile.html"),
+                      os.path.join("doxygen", "ref.html"),
                       is_html=True, is_xml=False)
     generate_doxyfile(options.source,
-                      os.path.join("doxygen", "Doxyfile.xml"),
+                      os.path.join("doxygen", "ref.xml"),
                       is_html=False, is_xml=True)
     generate_doxyfile(options.source,
-                      os.path.join("doxygen", "tutorial"),
+                      os.path.join("doxygen", "manual"),
                       is_html=True, is_xml=False,
-                      tutorial=True)
+                      manual=True)
 
 if __name__ == '__main__':
     main()
