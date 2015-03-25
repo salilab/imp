@@ -46,13 +46,14 @@ def generate_doxyfile(
         doxygen = doxygen.replace("@LAYOUT_FILE@",
                                   "%s/doc/doxygen/manual_layout.xml" % source)
         doxygen = doxygen.replace("@TREEVIEW@", "NO")
-        doxygen = doxygen.replace("@GENERATE_TAGFILE@", "")
+        doxygen = doxygen.replace("@GENERATE_TAGFILE@",
+                                  "doxygen/manual-tags.xml")
         doxygen = doxygen.replace(
             "@WARNINGS@",
             "doxygen/manual-warnings.txt")
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "")
         doxygen = doxygen.replace("@EXAMPLE_PATH@", ".")
-        doxygen = doxygen.replace("@TAGS@", "doxygen/reftags.xml=../ref")
+        doxygen = doxygen.replace("@TAGS@", "doxygen/ref-tags.xml=../ref")
     else:
         doxygen = doxygen.replace("@PROJECT_NAME@", '"IMP Reference Guide"')
         doxygen = doxygen.replace("@PROJECT_BRIEF@",
@@ -63,14 +64,14 @@ def generate_doxyfile(
         doxygen = doxygen.replace("@LAYOUT_FILE@",
                                   "%s/doc/doxygen/main_layout.xml" % source)
         doxygen = doxygen.replace("@TREEVIEW@", "NO")
-        doxygen = doxygen.replace("@GENERATE_TAGFILE@", "doxygen/reftags.xml")
+        doxygen = doxygen.replace("@GENERATE_TAGFILE@", "doxygen/ref-tags.xml")
         doxygen = doxygen.replace("@WARNINGS@", "doxygen/ref-warnings.txt")
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "")
         doxygen = doxygen.replace(
             "@EXAMPLE_PATH@",
             "doc/examples %s/modules/example" %
             source)
-        doxygen = doxygen.replace("@TAGS@", "")
+        doxygen = doxygen.replace("@TAGS@", "doxygen/manual-tags.xml=../manual")
     doxygen = doxygen.replace("@NAME@", "IMP")
     doxygen = doxygen.replace(
         "@IMP_SOURCE_PATH@",
