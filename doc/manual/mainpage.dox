@@ -52,6 +52,8 @@ to the [Reference Guide](../ref/).
    - [Merging SAXS profiles](@ref saxs_merge).
      Merging multiple small angle X-ray (SAXS) profiles using `saxs_merge`.
 
+ - [Parallelization](@ref parallel)
+
  - [Copyright and licenses](@ref licenses)
 
  - [Change history](@ref changelog)
