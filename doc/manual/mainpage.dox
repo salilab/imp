@@ -1,20 +1,11 @@
 /**
 \mainpage Contents
 
-This tutorial aims to give a simple introduction to the IMP software itself
-and some specific applications. It cannot cover all parts of IMP in detail;
-for more information, please refer to the
-[IMP manual](../html/index.html).
-
-In order to follow along with the tutorial, you will first need to download
-and install IMP and its dependencies. This is most easily done by downloading
-the [latest stable release](http://integrativemodeling.org/download.html);
-pre-compiled binaries are available, or you can build from source code.
-
-Please note that if you choose to use a newer version of IMP,
-some scripts may need some modification to work correctly. (If you use an
-older version, some of the applications demonstrated here may not be
-available.)
+This manual covers the installation of the Integrative Modeling Platform (%IMP)
+software and its basic usage. It is targeted mainly at _users_, i.e. people
+that want to use existing %IMP functionality. Those that want to modify the
+%IMP source code to develop new methods (_developers_) may also want to refer
+to the [Reference Guide](../ref/).
 
  - [Installation](@ref installation).
 
