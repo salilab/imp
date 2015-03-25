@@ -4,6 +4,7 @@
   <navindex>
     <tab type="mainpage" visible="yes" title="Documentation Main Page"/>
     <tab type="pages" visible="yes" title="" intro=""/>
+    <tab type="user" visible="yes" title="Reference Guide" url="../html/"/>
     <tab type="modules" visible="yes" title="" intro=""/>
     <tab type="namespaces" visible="yes" title="">
       <tab type="namespacelist" visible="yes" title="" intro=""/>
