@@ -26,7 +26,7 @@ def link_dox(source):
     tools.link_dir(os.path.join(source, "doc", "ref"),
                    os.path.join("doc", "ref"),
                    match=["*.png", "*.pdf", "*.gif"], clean=False)
-    tools.link_dir(os.path.join(source, "doc", "manual"),
+    tools.link_dir(os.path.join(source, "doc", "manual", "images"),
                    os.path.join("doc", "manual"),
                    match=["*.png", "*.pdf", "*.gif"], clean=False)
 
