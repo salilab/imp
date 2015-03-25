@@ -338,6 +338,7 @@ if(IMP_DOXYGEN_FOUND)
     # Rebuild manual so that it can link to the refguide tags
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/manual-warnings.txt
+    COMMAND patch -p1 < ${CMAKE_SOURCE_DIR}/doc/doxygen/search.patch
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS ${IMP_DOC_DEPENDS} ${docs} ${IMP_DOXYGEN_FETCH} IMP-version
     COMMENT "Building documentation")
