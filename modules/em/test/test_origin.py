@@ -44,12 +44,13 @@ class Tests(IMP.test.TestCase):
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1,2,3),
                                        IMP.algebra.Vector3D(2.9,4.9,7))
         d = IMP.em.create_density_map(bb, 0.5)
-        bb = IMP.em.get_bounding_box(d, -1.)
         self.assertEqual(d.get_number_of_voxels(), 192)
-        self.assertLess(IMP.algebra.get_distance(IMP.algebra.Vector3D(1,2,3),
-                                                 bb.get_corner(0)), 1e-4)
-        self.assertLess(IMP.algebra.get_distance(IMP.algebra.Vector3D(3,5,7),
-                                                 bb.get_corner(1)), 1e-4)
+        for bb in (IMP.em.get_bounding_box(d, -1.),
+                   IMP.em.get_bounding_box(d)):
+            self.assertLess(IMP.algebra.get_distance(
+                       IMP.algebra.Vector3D(1,2,3), bb.get_corner(0)), 1e-4)
+            self.assertLess(IMP.algebra.get_distance(
+                       IMP.algebra.Vector3D(3,5,7), bb.get_corner(1)), 1e-4)
         # "Left" edge of origin voxel must be at (1,2,3) to cover the original
         # bounding box, so the origin must be offset by half the spacing
         self.assertLess(IMP.algebra.get_distance(

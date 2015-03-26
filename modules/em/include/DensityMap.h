@@ -461,11 +461,14 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
 
 inline algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m) {
   const DensityHeader *h = m->get_header();
+  float hspace = m->get_spacing() / 2.0;
+  algebra::Vector3D lb = m->get_origin()
+                         - algebra::Vector3D(hspace, hspace, hspace);
   return algebra::BoundingBoxD<3>(
-      m->get_origin(),
-      m->get_origin() + algebra::Vector3D(m->get_spacing() * h->get_nx(),
-                                          m->get_spacing() * h->get_ny(),
-                                          m->get_spacing() * h->get_nz()));
+      lb,
+      lb + algebra::Vector3D(m->get_spacing() * h->get_nx(),
+                             m->get_spacing() * h->get_ny(),
+                             m->get_spacing() * h->get_nz()));
 }
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
