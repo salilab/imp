@@ -448,8 +448,9 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
   boost::scoped_array<emreal> data_;  // the order is ZYX (Z-slowest)
   bool data_allocated_;
 
-  //! Locations for each of the voxels of the map (they are precomputed and
-  //! each one is of size nvox, being nvox the size of the map)
+  //! Locations (centers) for each of the voxels of the map (they are
+  //! precomputed and each one is of size nvox, where nvox is the
+  //! size of the map)
   boost::scoped_array<float> x_loc_, y_loc_, z_loc_;
   //! true if the locations have already been computed
   bool loc_calculated_;

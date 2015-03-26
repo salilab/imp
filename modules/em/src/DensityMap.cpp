@@ -43,12 +43,14 @@ DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
                                double spacing) {
   base::Pointer<DensityMap> ret(new DensityMap());
   unsigned int n[3];
+  float hspace = spacing / 2.0;
+  algebra::Vector3D offset(hspace, hspace, hspace);
   algebra::Vector3D wid = bb.get_corner(1) - bb.get_corner(0);
   for (unsigned int i = 0; i < 3; ++i) {
     n[i] = static_cast<int>(std::ceil(wid[i] / spacing));
   }
   ret->set_void_map(n[0], n[1], n[2]);
-  ret->set_origin(bb.get_corner(0));
+  ret->set_origin(bb.get_corner(0) + offset);
   ret->update_voxel_size(spacing);
   ret->get_header_writable()->compute_xyz_top();
   ret->set_name("created density map");
@@ -357,11 +359,10 @@ void DensityMap::calc_all_voxel2loc() {
   z_loc_.reset(new float[nvox]);
 
   int ix = 0, iy = 0, iz = 0;
-  float hspace = header_.get_spacing() / 2.0;
   for (long ii = 0; ii < nvox; ii++) {
-    x_loc_[ii] = ix * header_.get_spacing() + header_.get_xorigin() + hspace;
-    y_loc_[ii] = iy * header_.get_spacing() + header_.get_yorigin() + hspace;
-    z_loc_[ii] = iz * header_.get_spacing() + header_.get_zorigin() + hspace;
+    x_loc_[ii] = ix * header_.get_spacing() + header_.get_xorigin();
+    y_loc_[ii] = iy * header_.get_spacing() + header_.get_yorigin();
+    z_loc_[ii] = iz * header_.get_spacing() + header_.get_zorigin();
 
     // bookkeeping
     ix++;
@@ -1095,7 +1096,7 @@ DensityMap *DensityMap::get_cropped(float threshold) {
 
 int DensityMap::get_dim_index_by_location(float loc_val, int ind) const {
   return static_cast<int>(
-      std::floor((loc_val - get_origin()[ind]) / header_.get_spacing()));
+      std::floor(0.5 + (loc_val - get_origin()[ind]) / header_.get_spacing()));
 }
 int DensityMap::get_dim_index_by_location(const algebra::Vector3D &v,
                                           int ind) const {
