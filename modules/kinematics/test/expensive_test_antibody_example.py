@@ -9,7 +9,7 @@ class Tests(IMP.test.ApplicationTestCase):
     def test_antibody(self):
         """Test the antibody example"""
         cmds = self.read_shell_commands(
-            '../../../doc/tutorial/kinematics_rrt.dox')
+            '../../../doc/manual/kinematics_rrt.dox')
         d = IMP.test.RunInTempDir()
         for c in cmds:
             self.run_shell_command(c)

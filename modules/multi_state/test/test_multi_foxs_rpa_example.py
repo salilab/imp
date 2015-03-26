@@ -9,7 +9,7 @@ class Tests(IMP.test.ApplicationTestCase):
     def test_multi_foxs_rpa(self):
         """Test multi_foxs with RPA example"""
         cmds = self.read_shell_commands(
-            '../../../doc/tutorial/multi_foxs.dox')
+            '../../../doc/manual/multi_foxs.dox')
         d = IMP.test.RunInTempDir()
         for c in cmds:
             self.run_shell_command(c)
