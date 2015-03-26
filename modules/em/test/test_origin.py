@@ -13,6 +13,32 @@ def get_points_around(v, offset):
 
 class Tests(IMP.test.TestCase):
 
+    def test_crop_bounding_box(self):
+        """Crop should handle bounding box correctly"""
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1,2,3),
+                                       IMP.algebra.Vector3D(3,5,7))
+        d = IMP.em.create_density_map(bb, 0.5)
+        # Make sure that bounding box is snapped
+        for crop in [0, IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                                       IMP.algebra.Vector3D(3,5,7)),
+                        IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1,2,3),
+                                       IMP.algebra.Vector3D(10,10,10))]:
+            cd = d.get_cropped(crop)
+            cd_bb = IMP.em.get_bounding_box(cd, -1.)
+            self.assertLess(IMP.algebra.get_distance(cd_bb.get_corner(0),
+                                                     bb.get_corner(0)), 1e-4)
+            self.assertLess(IMP.algebra.get_distance(cd_bb.get_corner(1),
+                                                     bb.get_corner(1)), 1e-4)
+        # If a subset bounding box is given as input, it should be preserved
+        new_bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(2,3,4),
+                                           IMP.algebra.Vector3D(2.99999,4,5))
+        cd = d.get_cropped(new_bb)
+        cd_bb = IMP.em.get_bounding_box(cd, -1.)
+        self.assertLess(IMP.algebra.get_distance(cd_bb.get_corner(0),
+                                                 new_bb.get_corner(0)), 1e-4)
+        self.assertLess(IMP.algebra.get_distance(cd_bb.get_corner(1),
+                                                 new_bb.get_corner(1)), 1e-4)
+
     def test_bounding_box(self):
         """Map should round up range from bounding box"""
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1,2,3),

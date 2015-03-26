@@ -1043,13 +1043,15 @@ float DensityMap::get_maximum_value_in_yz_plane(int x_ind) {
 DensityMap *DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
   // snap the input bb to the density dimensions
   algebra::Vector3D ll, ur;
+  float hspace = header_.get_spacing() / 2.0;
+  algebra::Vector3D offset(hspace, hspace, hspace);
   ll = bb.get_corner(0);
   ur = bb.get_corner(1);
   if (!is_part_of_volume(ll)) {
-    ll = get_origin();
+    ll = get_origin() - offset;
   }
   if (!is_part_of_volume(ur)) {
-    ur = get_top();
+    ur = get_top() - offset;
   }
   algebra::BoundingBox3D snapped_bb(ll, ur);
   base::Pointer<DensityMap> cropped_dmap =

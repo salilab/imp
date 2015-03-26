@@ -30,6 +30,7 @@ class Tests(IMP.test.TestCase):
         cropped_scene = self.scene.get_cropped(0.)
         cropped_bb = IMP.em.get_bounding_box(cropped_scene)
         scene_bb = IMP.em.get_bounding_box(self.scene, t)
+        print cropped_bb, scene_bb
         # check that the scene and cropped scene have the same bounding box
         for i in range(2):
             self.assertAlmostEqual(IMP.algebra.get_distance(
