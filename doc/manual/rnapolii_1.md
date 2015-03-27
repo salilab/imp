@@ -1,7 +1,7 @@
 Stage 1 - Gathering of data {#rnapolii_1}
 ===========================
 
-In this stage, we find all available experimental data that we wish to utilize in structural modeling.  In theory, any method that provides information about absolute or relative structural information can be used.  A non-exhaustive list of data types currently supported in IMP is:
+In this stage, we find all available experimental data that we wish to utilize in structural modeling.  In theory, any method that provides information about absolute or relative structural information can be used.  A non-exhaustive list of data types currently supported in %IMP is:
 
 * [Solution X-ray Scattering (SAXS)](@ref IMP::saxs)
 * [Cysteine cross-linking](@ref IMP::isd::CysteineCrossLinkRestraint)

@@ -8,14 +8,14 @@ One complication is that different packages are compiled
 with different versions of Visual Studio, and mixing the different runtimes
 (msvc*.dll) can cause odd behavior; therefore, we recommend building most
 of the dependencies from source code using the same version of Visual Studio
-that you're going to use to build IMP. The basic procedure is as follows:
+that you're going to use to build %IMP. The basic procedure is as follows:
 
   - Install Microsoft Visual Studio Express (it is free, but registration with
     Microsoft is required).
   - Get and install [cmake](http://www.cmake.org).
   - Get [Python 2](http://www.python.org) (not Python 3)
     (make sure you get the
-    32-bit version if you're going to build IMP for 32-bit Windows).
+    32-bit version if you're going to build %IMP for 32-bit Windows).
   - Get and install the
     [zlib package](http://gnuwin32.sourceforge.net/packages/zlib.htm)
     (both the "complete package, except sources" and the "sources" installers).
@@ -70,14 +70,14 @@ that you're going to use to build IMP. The basic procedure is as follows:
        (e.g. copy `opencv_ml244.lib` to `opencv_ml.lib`) to help cmake find it
   - Set PATH, INCLUDE, and/or LIB environment variables so that the compiler
     can find all of the dependencies. (We wrote a little batch file.)
-  - Set up IMP by running something similar to
+  - Set up %IMP by running something similar to
 
      `cmake <imp_source_directory> -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DWIN32 /DGSL_DLL" -G "NMake Makefiles"`
 
   - Note: if building for 64-bit Windows, you may need to add `/bigobj` to `CMAKE_CXX_CFLAGS`.
   - Then use simply 'nmake' (instead of 'make', as on Linux or Mac) to
-    build IMP. (cmake can also generate Visual Studio project files, but
+    build %IMP. (cmake can also generate Visual Studio project files, but
     we recommend nmake.)
-  - To use IMP or run tests, first run the setup_environment.bat file to set
+  - To use %IMP or run tests, first run the `setup_environment.bat` file to set
     up the environment so all the programs and Python modules can be found.
     (This batch file needs to be run only once, not for each test.)

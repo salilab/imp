@@ -109,7 +109,7 @@ selections = {"Rpb4":["Rpb4"],
               "Rpb4_Rpb7":["Rpb4","Rpb7"]}
 \endcode
 
-Initialize an IMP `Model` and `Precision` class object and add the `selections`.  Then add the list of `.rmf` structures 
+Initialize an %IMP `Model` and `Precision` class object and add the `selections`.  Then add the list of `.rmf` structures 
 
 \code{.py}
 # setup Precision calculator
