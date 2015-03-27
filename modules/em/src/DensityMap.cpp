@@ -1057,7 +1057,10 @@ DensityMap *DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
   base::Pointer<DensityMap> cropped_dmap =
       create_density_map(snapped_bb, get_spacing());
   // copy resolution
-  cropped_dmap->get_header_writable()->set_resolution(header_.get_resolution());
+  if (header_.get_has_resolution()) {
+    cropped_dmap->get_header_writable()->set_resolution(
+                       header_.get_resolution());
+  }
   // now fill the density
   const DensityHeader *c_header = cropped_dmap->get_header();
   long z_temp, zy_temp, c_z_temp, c_zy_temp;
