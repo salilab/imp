@@ -20,7 +20,7 @@ Hybrid structures based on our integrative approach:
  - Transport through the NPC
  - Microtubule nucleation
  - The 26S proteasome
- - [PCS9K-Fab complex](../tutorial/idock_pcsk9.html)
+ - [PCS9K-Fab complex](@ref idock_pcsk9)
  - The yeast spindle pole body
  - Chromatin globin domain
  - The lymphoblastoid cell genome
