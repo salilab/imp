@@ -12,7 +12,7 @@ IMPEM_BEGIN_NAMESPACE
 long get_number_of_particles_outside_of_the_density(
     DensityMap *dmap, const kernel::Particles &ps,
     const IMP::algebra::Transformation3D &t, float thr) {
-  IMP_LOG_VERBOSE("start calculating the how many particles out of "
+  IMP_LOG_VERBOSE("start calculating how many particles out of "
                   << ps.size() << " in density" << std::endl);
   long out_of_dens = 0;
   core::XYZs xyz = core::XYZs(ps);
