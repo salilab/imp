@@ -30,7 +30,7 @@ cp <imp_example_path>/multifit/3sfd/* .
 \endcode
 
 (On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\>
-is the directory containing the IMP example files. The full path to the files
+is the directory containing the %IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.multifit;
 print IMP.multifit.get_example_path('3sfd')</tt>'.
 
@@ -78,7 +78,7 @@ provided in the corresponding publication and can also be found in the
 corresponding \external{http://www.ebi.ac.uk/pdbe/emdb/,EMDB} entry.
 A threshold is often provided by the author in the EMDB entry as
 "Recommended counter level" under the "Map Information" section.
-Alternatively, IMP provides a utility to calculate an approximate counter
+Alternatively, %IMP provides a utility to calculate an approximate counter
 level based on the molecular mass of the complex, which can be run as:
 
 \code{.sh}

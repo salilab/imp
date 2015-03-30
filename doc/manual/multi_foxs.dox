@@ -6,7 +6,7 @@
 
 In many cases our data comes from heterogeneous sample. Heterogeneity can be both compositional and conformational. Interpretation of data collected on heterogeneous sample requires a <tt> multi-state model </tt>. A multi-state model is a model that specifies two or more co-existing structural states and values for other parameters, such as the weights of each state.
 
-IMP includes a command line tool <tt>multi_foxs</tt> for enumeration and scoring of multi-state models against SAXS profiles. There is also a \salilab{foxs/,web interface} available, which functions similarly.
+%IMP includes a command line tool <tt>multi_foxs</tt> for enumeration and scoring of multi-state models against SAXS profiles. There is also a \salilab{foxs/,web interface} available, which functions similarly.
 
 In this example, we will demonstrate how to use it using PDB structures of replication protein A and simulated SAXS profile.
 
@@ -26,7 +26,7 @@ cp <imp_example_path>/multi_state/rpa/* .
 \endcode
 
 (On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\>
-is the directory containing the IMP example files. The full path to the files
+is the directory containing the %IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.multi_foxs;
 print IMP.multi_foxs.get_example_path('rpa')</tt>'.
 

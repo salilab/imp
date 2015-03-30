@@ -6,7 +6,7 @@
 
 A full length antibody structure consists of two Fab domains and an Fc domain. There are hinge regions between the Fc and Fab domains that we sample here to explore the range of conformations accessible to the antibody.
 
-IMP includes a command line tool <tt>rrt_sample</tt> for running rapidly
+%IMP includes a command line tool <tt>rrt_sample</tt> for running rapidly
 exploring random tree (RRT) based sampling, which will be demonstrated in
 this example.
 
@@ -26,7 +26,7 @@ cp <imp_example_path>/kinematics/antibody/* .
 \endcode
 
 (On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\>
-is the directory containing the IMP example files. The full path to the files
+is the directory containing the %IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.kinematics;
 print IMP.kinematics.get_example_path('antibody')</tt>'.
 
