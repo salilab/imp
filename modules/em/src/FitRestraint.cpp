@@ -76,7 +76,7 @@ void FitRestraint::initialize_model_density_map(FloatKey weight_key) {
           get_as<kernel::ParticlesTemp>(member_map_[*it]);
       // The rigid body may be outside of the density. This means
       // that the generated SampledDensityMap will be empty,
-      // as it ignore particles outside of the boundaries.
+      // as it ignores particles outside of the boundaries.
       // To overcome that, we transform the rb to the center of the
       // density map, resample in this transformation and then move
       // the rigid body back to its correct position.
@@ -123,7 +123,7 @@ void FitRestraint::initialize_model_density_map(FloatKey weight_key) {
 }
 void FitRestraint::resample() const {
   // TODO - first check that the bounding box of the particles
-  // match the one of the sampled ones.
+  // matches that of the sampled ones.
   // resample the map containing all non rigid body particles
   // this map has all of the non rigid body particles.
   if (not_part_of_rb_.size() > 0) {
