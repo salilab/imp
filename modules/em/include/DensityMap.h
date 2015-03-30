@@ -199,6 +199,8 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
       \param[in] z The position ( in angstroms) of the z coordinate
       \return the value of the voxel located at (x,y,z)
       \exception IndexException The point is not covered by the grid.
+      \note the value is not interpolated between this and neighboring
+            voxels. For that, see get_density().
    */
   emreal get_value(float x, float y, float z) const;
   emreal get_value(const algebra::Vector3D &point) const {
