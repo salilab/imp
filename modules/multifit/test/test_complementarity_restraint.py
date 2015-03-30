@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
         r.set_complementarity_coefficient(10.0)
         r.set_boundary_coefficient(0.0)
         self._set_separation(rb0, 20.0)
-        self.assertAlmostEqual(m.evaluate(False), -72000., delta=1000.)
+        self.assertAlmostEqual(m.evaluate(False), -78000., delta=1000.)
         # No complementarity contribution when
         # sphere distance > complementarity_thickness
         self._set_separation(rb0, 26.0)
@@ -62,9 +62,9 @@ class Tests(IMP.test.TestCase):
         r.set_complementarity_coefficient(0.0)
         r.set_boundary_coefficient(10.0)
         self._set_separation(rb0, 20.0)
-        self.assertAlmostEqual(m.evaluate(False), 625000., delta=1000.)
+        self.assertAlmostEqual(m.evaluate(False), 687000., delta=1000.)
         self._set_separation(rb0, 26.0)
-        self.assertAlmostEqual(m.evaluate(False), 359375., delta=1000.)
+        self.assertAlmostEqual(m.evaluate(False), 390625., delta=1000.)
 
 if __name__ == '__main__':
     IMP.test.main()
