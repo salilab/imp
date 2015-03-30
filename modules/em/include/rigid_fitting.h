@@ -51,7 +51,7 @@ class IMPEMEXPORT FittingSolutions {
   inline algebra::Transformation3D get_transformation(unsigned int i) const {
     IMP_USAGE_CHECK(i < fs_.size(),
                     "The index requested ("
-                        << i << ") in get_transformation is our of range ("
+                        << i << ") in get_transformation is out of range ("
                         << fs_.size() << ")" << std::endl);
     return fs_[i].first;
   }
