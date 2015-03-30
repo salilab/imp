@@ -2,9 +2,27 @@ ChangeLog {#changelog}
 =========
 
 # For next stable IMP release #
+- Documentation has been revised and updated; the main manual now gives a
+  gentler introduction to IMP, with more technical details on the code
+  provided in a separate reference guide.
+- A new command line tool, `multi_foxs`, allows for enumeration and scoring
+  of multi-state models against SAXS profiles.
+- A new application of IMP (to the multi-state modeling of the histidine
+  kinase, PhoQ) is [now available](http://salilab.org/phoq).
+- Bugfix #775: coordinates of voxels in EM maps were previously inconsistently
+  treated (they are supposed to be the centers of the voxels, but in some
+  cases they were the lower left edge). The fix may result in maps and their
+  bounding boxes appearing shifted by half the voxel size.
 
 # 2.4.0 - 2015-02-27 # {#changelog_2_4_0}
-- Python 3 is now supported.
+- Python 3 is now supported. The Windows package now works out of the box
+  with Python 3.3 or 3.4; a `-python3` subpackage is provided for Ubuntu
+  and Fedora. (Apple does not yet provide Python 3 so the Mac package is not
+  built with Python 3 support, but if you install Python 3 you can compile
+  IMP from source to work with it.)
+- A new command line tool, `rrt_sample`, allows for running rapidly exploring
+  random tree (RRT) based sampling, e.g. to sample conformations of multiple
+  domains connected by flexible linkers.
 - Command line tools are now placed in the `bin` directory of modules (the
   old `bin` directory, used for utility programs that are not installed, is
   now called `utility`). The `applications` directory is removed.
