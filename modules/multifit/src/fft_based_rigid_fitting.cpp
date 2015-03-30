@@ -304,9 +304,9 @@ FFTFittingOutput *FFTFitting::do_local_fitting(
   nx_half_ = (nx_ - 1) / 2;
   ny_half_ = (ny_ - 1) / 2;
   nz_half_ = (nz_ - 1) / 2;
-  map_cen_ = algebra::Vector3D((nx_ / 2.0) * spacing_ + origx_,
-                               (ny_ / 2.0) * spacing_ + origy_,
-                               (nz_ / 2.0) * spacing_ + origz_);
+  map_cen_ = algebra::Vector3D(((nx_ - 1.0)/ 2.0) * spacing_ + origx_,
+                               ((ny_ - 1.0)/ 2.0) * spacing_ + origy_,
+                               ((nz_ - 1.0)/ 2.0) * spacing_ + origz_);
 
   prepare_poslist_flipped(low_map_);
   prepare_poslist(low_map_);
