@@ -14,7 +14,6 @@ class Tests(IMP.test.TestCase):
         self.dmap = IMP.em.particles2density(self.ps,
                                              res, apix)
         self.dmap.show()
-        IMP.em.write_map(self.dmap, "temp.mrc", IMP.em.MRCReaderWriter())
         self.thr = IMP.em.get_threshold_for_approximate_mass(
             self.dmap, 2 * IMP.atom.get_mass_from_number_of_residues(len(IMP.atom.get_by_type(self.mh, IMP.atom.RESIDUE_TYPE))))
         print("threshold:", self.thr)
