@@ -1052,7 +1052,7 @@ DensityMap *DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
   algebra::Vector3D offset(hspace, hspace, hspace);
   ll = bb.get_corner(0);
   ur = bb.get_corner(1);
-  if (!is_part_of_volume(ll)) {
+  if (!is_part_of_volume(ll + offset)) {
     ll = get_origin() - offset;
   }
   if (!is_part_of_volume(ur)) {
@@ -1070,15 +1070,17 @@ DensityMap *DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
   const DensityHeader *c_header = cropped_dmap->get_header();
   long z_temp, zy_temp, c_z_temp, c_zy_temp;
   int c_nx, c_ny;
-  // the bounding box in the original map
+  // the bounding box in the original map, converted to voxel centers
   int z_start, y_start, x_start;
   int z_end, y_end, x_end;
-  x_start = get_dim_index_by_location(snapped_bb.get_corner(0), 0);
-  y_start = get_dim_index_by_location(snapped_bb.get_corner(0), 1);
-  z_start = get_dim_index_by_location(snapped_bb.get_corner(0), 2);
-  x_end = get_dim_index_by_location(snapped_bb.get_corner(1), 0);
-  y_end = get_dim_index_by_location(snapped_bb.get_corner(1), 1);
-  z_end = get_dim_index_by_location(snapped_bb.get_corner(1), 2);
+  x_start = get_dim_index_by_location(snapped_bb.get_corner(0)[0] + hspace, 0);
+  y_start = get_dim_index_by_location(snapped_bb.get_corner(0)[1] + hspace, 1);
+  z_start = get_dim_index_by_location(snapped_bb.get_corner(0)[2] + hspace, 2);
+  IMP_INTERNAL_CHECK(x_start >= 0 && y_start >= 0 && z_start >= 0,
+                     "Crop origin outside density");
+  x_end = get_dim_index_by_location(snapped_bb.get_corner(1)[0] + hspace, 0);
+  y_end = get_dim_index_by_location(snapped_bb.get_corner(1)[1] + hspace, 1);
+  z_end = get_dim_index_by_location(snapped_bb.get_corner(1)[2] + hspace, 2);
   c_nx = c_header->get_nx();
   c_ny = c_header->get_ny();
   for (int iz = z_start; iz < z_end; iz++) {  // z slowest
