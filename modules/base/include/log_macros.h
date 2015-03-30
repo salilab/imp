@@ -98,7 +98,7 @@
 
     Usage:
     \code
-    IMP_LOG_VERBOSE( "Hi there, I'm very talkative. My favorite numbers are "
+    IMP_LOG_PROGRESS( "Hi there, I'm very talkative. My favorite numbers are "
                      << 1 << " " << 2 << " " << 3);
     \endcode
 */
