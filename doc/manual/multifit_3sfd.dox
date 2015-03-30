@@ -32,7 +32,7 @@ cp <imp_example_path>/multifit/3sfd/* .
 (On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\>
 is the directory containing the %IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.multifit;
-print IMP.multifit.get_example_path('3sfd')</tt>'.
+print(IMP.multifit.get_example_path('3sfd'))</tt>'.
 
 The first step is to create an input file listing the subunits involved in the
 complex. This file is a text file with a simple format; it simply contains one

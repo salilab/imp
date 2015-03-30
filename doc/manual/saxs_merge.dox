@@ -27,7 +27,7 @@ cp -r <imp_example_path>/saxs_merge/* .
 \<imp_example_path\>
 is the directory containing the %IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.saxs_merge;
-print IMP.saxs_merge.get_example_path('')</tt>'.
+print(IMP.saxs_merge.get_example_path(''))</tt>'.
 
 These input files are two SAXS profiles. Each is a text file containing the
 SAXS data in three columns, corresponding to q, l and err respectively.

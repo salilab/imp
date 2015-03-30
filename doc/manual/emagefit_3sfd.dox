@@ -35,7 +35,7 @@ cp -r <imp_example_path>/EMageFit/3sfd/* .
 \<imp_example_path\>
 is the directory containing the %IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.EMageFit;
-print IMP.EMageFit.get_example_path('3sfd')</tt>'.
+print(IMP.EMageFit.get_example_path('3sfd'))</tt>'.
 
 The input files are for modeling are the three simulated class averages of
 the complex located in the <tt>em_images</tt> directory, and the subunits to

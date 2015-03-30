@@ -28,7 +28,7 @@ cp <imp_example_path>/multi_state/rpa/* .
 (On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\>
 is the directory containing the %IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.multi_foxs;
-print IMP.multi_foxs.get_example_path('rpa')</tt>'.
+print(IMP.multi_foxs.get_example_path('rpa'))</tt>'.
 
 \section multi_foxs_calc Calculation
 

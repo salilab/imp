@@ -65,7 +65,7 @@ Self-precision and inter-cluster precision is then calculated, using the `rmf_li
 
 \code{.py}
 # calculate intra-cluster and inter-cluster precision
-print "calculating precision"
+print("calculating precision")
 for clus1,clus2 in combinations_with_replacement(range(len(rmf_list)),2):
     pr.get_precision(cluster_dirs[clus1],
                      cluster_dirs[clus2],
@@ -76,7 +76,7 @@ Finally, the RMSFs for each residue in the analyzed components are calculated an
 
 \code{.py}
 # compute residue mean-square fluctuation (RMSF)
-print "calculating RMSF"
+print("calculating RMSF")
 for d in cluster_dirs:
     pr.get_rmsf(structure_set_name=d,outdir=d)
 \endcode
@@ -125,7 +125,7 @@ Average to the reference structure in angstroms for each component in `selection
 \code{.py}
 # calculate average distance to the reference file
 pr.set_reference_structure(reference_rmf,0)
-print pr.get_average_distance_wrt_reference_structure("ALL")
+print(pr.get_average_distance_wrt_reference_structure("ALL"))
 \endcode
 
 The output of this analysis will be printed in the terminal. For instance,
