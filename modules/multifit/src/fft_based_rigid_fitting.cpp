@@ -257,7 +257,7 @@ FFTFittingOutput *FFTFitting::do_local_fitting(
     rots_all =
         internal::get_uniformly_sampled_rotations(angle_sampling_interval_rad);
   }
-  std::cout << "all rots size:" << rots_all.size() << std::endl;
+  IMP_LOG_TERSE("all rots size:" << rots_all.size() << std::endl);
   // now remove rotations if required
   multifit::internal::EulerAnglesList rots;
   for (unsigned int i = 0; i < rots_all.size(); i++) {
@@ -271,7 +271,7 @@ FFTFittingOutput *FFTFitting::do_local_fitting(
       rots.push_back(rots_all[i]);
     }
   }
-  std::cout << "number of rotations:" << rots.size() << std::endl;
+  IMP_LOG_TERSE("number of rotations:" << rots.size() << std::endl);
   resolution_ = dmap->get_header()->get_resolution();
   rots_ = rots;
   num_fits_reported_ = num_fits_to_report;
@@ -290,7 +290,7 @@ FFTFittingOutput *FFTFitting::do_local_fitting(
     fftw_pad_factor_ = 0.2;
   //----------------------------
   orig_cen_ = core::get_centroid(core::XYZs(core::get_leaves(mol2fit)));
-  std::cout << "orig_cen_:" << orig_cen_ << std::endl;
+  IMP_LOG_TERSE("orig_cen_:" << orig_cen_ << std::endl);
   // prepare low resolution map
   prepare_lowres_map(dmap);
   // prepare probe, the molecule is being centered
@@ -365,7 +365,7 @@ FFTFittingOutput *FFTFitting::do_local_fitting(
   fftw_plan_reverse_hi_ = fftw_plan_dft_c2r_3d(
       nz_, ny_, nx_, fftw_grid_hi_, reversed_fftw_data_, FFTW_MEASURE);
   boost::progress_display show_progress(rots_.size());
-  std::cout << "number of rots_:" << rots_.size() << std::endl;
+  IMP_LOG_TERSE("number of rots_:" << rots_.size() << std::endl);
   for (unsigned int kk = 0; kk < rots_.size(); kk++) {
     fftw_translational_search(rots_[kk], kk);
     ++show_progress;
@@ -374,13 +374,13 @@ FFTFittingOutput *FFTFitting::do_local_fitting(
   fftw_grid_lo_.release();
   fftw_grid_hi_.release();
   // detect the best fits
-  std::cout << "going to detect top fits" << std::endl;
+  IMP_LOG_TERSE("going to detect top fits" << std::endl);
   best_fits_ =
       detect_top_fits(fits_hash_, cluster_fits, max_translation,
                       max_clustering_translation, max_clustering_rotation);
-  std::cout << "END detect top fits" << std::endl;
+  IMP_LOG_TERSE("END detect top fits" << std::endl);
   if (best_fits_.size() == 0) {
-    std::cout << "No fits found" << std::endl;
+    IMP_LOG_TERSE("No fits found" << std::endl);
     // Return empty output
     IMP_NEW(FFTFittingOutput, ret, ());
     return ret.release();
@@ -602,7 +602,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
     double max_translation, double max_clustering_trans,
     double max_clustering_rotation) {
   max_clustering_rotation = max_clustering_rotation * PI / 180.;
-  std::cout << "max translation: " << max_translation << std::endl;
+  IMP_LOG_TERSE("max translation: " << max_translation << std::endl);
   // Note: ccr has translations inverted due to definition
   // of Fourier correlation. We need to invert them back to the
   // actual displacements
@@ -682,7 +682,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
   int peak_count = 0;
   multifit::FittingSolutionRecords found_peak(num_fits_reported_);
   if (cluster_fits) {
-    std::cout << "going to cluster fits" << std::endl;
+    IMP_LOG_TERSE("going to cluster fits" << std::endl);
     // create a smoothed peak map
     base::Pointer<em::DensityMap> gpeak =
         em::create_density_map(nx_ + 2, ny_ + 2, nz_ + 2, spacing_);
@@ -842,14 +842,14 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
     // sort the found peaks
     std::sort(found_peak.begin(), found_peak.end(), cmp_fit_scores_min);
 
-    std::cout << "number of peak count in clustering: " << peak_count
-              << std::endl;
+    IMP_LOG_TERSE("number of peak count in clustering: " << peak_count
+                  << std::endl);
     lpeak = static_cast<em::DensityMap *>(nullptr);
     gpeak = static_cast<em::DensityMap *>(nullptr);
   }  // end cluster
   // add the num_fits_reported_ saved maximum scoring peaks
-  std::cout << "number of max peaks:" << max_peaks.size() << std::endl;
-  std::cout << "number of found peaks:" << found_peak.size() << std::endl;
+  IMP_LOG_TERSE("number of max peaks:" << max_peaks.size() << std::endl);
+  IMP_LOG_TERSE("number of found peaks:" << found_peak.size() << std::endl);
   for (int i = 0;
        i < std::min(num_fits_reported_, static_cast<int>(max_peaks.size()));
        ++i) {
