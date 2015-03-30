@@ -9,11 +9,11 @@ to the [Reference Guide](../ref/).
 
  - [Installation](@ref installation).
 
- - [Introduction](@ref intro). Discussion of the problems that IMP
+ - [Introduction](@ref intro). Discussion of the problems that %IMP
    is designed to solve, and the high-level design of the software. 
 
  - [The IMP C++/Python library](@ref library). Simple usage of basic
-   parts of the IMP library.
+   parts of the %IMP library.
 
  - Using the IMP::pmi high-level interface
    - [Modeling of RNA Polymerase II stalk](@ref rnapolii_stalk).
@@ -21,7 +21,7 @@ to the [Reference Guide](../ref/).
 
  - Using command line tools
    - [FoXS](@ref foxs_nup133).
-     Using IMP's FoXS application to use small-angle X-ray (SAXS) data
+     Using %IMP's FoXS application to use small-angle X-ray (SAXS) data
      in combination with comparative modeling to improve the structure
      of a protein.
 

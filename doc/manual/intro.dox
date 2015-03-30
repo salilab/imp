@@ -72,28 +72,28 @@ each subunit in the assembly.
 
 \section intplat Integrative Modeling Platform
 
-The Integrative Modeling Platform (IMP) software implements the
+The Integrative Modeling Platform (%IMP) software implements the
 integrative modeling procedure described above. Integrative modeling
-problems vary in size and scope, and thus IMP offers a great deal of
+problems vary in size and scope, and thus %IMP offers a great deal of
 flexibility and several abstraction levels as part of a multi-tiered
 platform:
 
 <img class="textfigure" src="imp-design.png"
      alt="IMP software design">
 
-At the lowest level, IMP provides building blocks and tools to
+At the lowest level, %IMP provides building blocks and tools to
 allow methods developers to convert data from new experimental methods
 into spatial restraints, to implement optimization and analysis techniques,
 and to implement an integrative modeling procedure from scratch; the
 developer can use the C++ and Python programming languages to achieve
-these tasks. Higher abstraction levels, designed to be used by IMP users
+these tasks. Higher abstraction levels, designed to be used by %IMP users
 with no programming experience, provide less flexible but more user-friendly
 applications to handle specific tasks, such as fitting of proteins into
 a density map of their assembly, or comparing a structure with the
 corresponding SAXS profile.
 
 In the \ref library "next part of the tutorial", we will
-demonstrate the building blocks and tools in the lowest level of the IMP
+demonstrate the building blocks and tools in the lowest level of the %IMP
 software, then move to the higher level tools in later parts.
 
 */
