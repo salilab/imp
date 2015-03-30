@@ -23,7 +23,7 @@ current directory, by typing:
 cp <imp_example_path>/saxs/idock/* .
 \endcode
 
-(On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\>
+(On a Windows machine, use `copy` rather than `cp`.) Here, `<imp_example_path>`
 is the directory containing the %IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.saxs;
 print(IMP.saxs.get_example_path('idock'))</tt>'.

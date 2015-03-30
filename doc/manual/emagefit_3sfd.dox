@@ -31,8 +31,8 @@ current directory, by typing:
 cp -r <imp_example_path>/EMageFit/3sfd/* .
 \endcode
 
-(On a Windows machine, use 'xcopy /E' rather than 'cp -r'.) Here,
-\<imp_example_path\>
+(On a Windows machine, use `xcopy /E` rather than `cp -r`.) Here,
+`<imp_example_path>`
 is the directory containing the %IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.EMageFit;
 print(IMP.EMageFit.get_example_path('3sfd'))</tt>'.
