@@ -269,19 +269,21 @@ else
   echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
 fi
 # Bundle libTAU from build machine so users don't have to get it separately
+# (can't use %_libdir here since that is dependent on whatever we redefined
+# %_prefix to be, but dependent libraries are always in /usr)
 mkdir ${RPM_BUILD_ROOT}%{_libdir}/IMP
-cp %{_libdir}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+cp /usr/%{_lib}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 # Bundle OpenCV and CGAL libraries
 for cvlib in cv cxcore highgui; do
-  cp %{_libdir}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+  cp /usr/%{_lib}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 done
-cp %{_libdir}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 # Also bundle mpfr on 64-bit RHEL5
 %if 0%{?rhel} == 5
 %ifarch x86_64
-cp %{_libdir}/libmpfr.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+cp /usr/%{_lib}/libmpfr.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 %endif
 %endif
 %endif
