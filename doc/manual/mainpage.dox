@@ -54,6 +54,8 @@ to the [Reference Guide](../ref/).
 
  - [Parallelization](@ref parallel)
 
+ - [Frequently asked questions (FAQ)](@ref faq)
+
  - Contributing to %IMP
 
    - [Code coverage](@ref coverage)
