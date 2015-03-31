@@ -292,6 +292,7 @@ foreach(mod ${enabled_modules})
   add_custom_target(IMP.${mod} DEPENDS
   IMP.${mod}-lib
   ${IMP_${mod}_BINS}
+  ${IMP_${mod}_UTILS}
   ${IMP_${mod}_TESTS}
   ${IMP_${mod}_BENCHMARKS}
   ${IMP_${mod}_PYTHON}
