@@ -26,8 +26,8 @@ void WeightedExcludedVolumeRestraint::initialize_model_density_map(FloatKey) {
        it++) {
     core::RigidBody rb = *it;
     kernel::ParticlesTemp rb_ps = rb_refiner_->get_refined(rb);
-    std::cout << "Creating a density map for:" << rb_ps.size() << " particles"
-              << std::endl;
+    IMP_LOG_TERSE("Creating a density map for:" << rb_ps.size() << " particles"
+                  << std::endl);
     rbs_surface_maps_.push_back(new em::SurfaceShellDensityMap(rb_ps, 1));
     rbs_orig_trans_.push_back(
         rb.get_reference_frame().get_transformation_to().get_inverse());

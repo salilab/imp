@@ -133,7 +133,7 @@ void Ensemble::unload_combination(Ints fit_comb) {
 void Ensemble::add_component_and_fits(
     atom::Hierarchy mh, const multifit::FittingSolutionRecords &fits) {
   mhs_.push_back(mh);
-  std::cout << "Adding molecule:" << mh->get_name() << std::endl;
+  IMP_LOG_TERSE("Adding molecule:" << mh->get_name() << std::endl);
   core::XYZs mh_xyz = core::XYZs(core::get_leaves(mh));
   xyz_.insert(xyz_.end(), mh_xyz.begin(), mh_xyz.end());
   core::RigidBody rb = core::RigidMember(mh_xyz[0]).get_rigid_body();
@@ -152,20 +152,20 @@ std::vector<Floats> Ensemble::score_by_restraints(
   boost::progress_display show_progress(combinations.size());
   for (int i = 0; i < (int)combinations.size(); i++) {
     load_combination(combinations[i]);
-    std::cout << "i:" << i << "  comb:" << combinations[i] << std::endl;
+    IMP_LOG_TERSE("i:" << i << "  comb:" << combinations[i] << std::endl);
     ++show_progress;
-    std::cout << "===step1" << std::endl;
+    IMP_LOG_TERSE("===step1" << std::endl);
     Floats comb_scores(rs.size());
-    std::cout << "===step2" << std::endl;
+    IMP_LOG_TERSE("===step2" << std::endl);
     for (int j = 0; j < (int)rs.size(); j++) {
-      std::cout << "j is:" << rs[j]->get_name() << std::endl;
+      IMP_LOG_TERSE("j is:" << rs[j]->get_name() << std::endl);
       comb_scores[j] = rs[j]->evaluate(false);
     }
-    std::cout << "===step3" << std::endl;
+    IMP_LOG_TERSE("===step3" << std::endl);
     scores[i] = comb_scores;
-    std::cout << "===step4" << std::endl;
+    IMP_LOG_TERSE("===step4" << std::endl);
     unload_combination(combinations[i]);
-    std::cout << "===step5" << std::endl;
+    IMP_LOG_TERSE("===step5" << std::endl);
   }
   return scores;
 }

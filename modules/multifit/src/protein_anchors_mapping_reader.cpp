@@ -82,7 +82,7 @@ boost::tuple<std::string, std::string, IntsList> parse_protein_line(
                   "wrong format, should look like |protein|| or "
                   "|protein|paths|"
                       << std::endl);
-  std::cout << "===== Line split size:" << line_split.size() << std::endl;
+  IMP_LOG_TERSE("===== Line split size:" << line_split.size() << std::endl);
   IntsList paths;
   std::string paths_fn;
   if (line_split.size() == 2) {
@@ -91,7 +91,7 @@ boost::tuple<std::string, std::string, IntsList> parse_protein_line(
   }
   if (line_split.size() > 2) {
     paths_fn = base::get_relative_path(config, line_split[2]);
-    std::cout << "PATH FN:" << paths_fn << std::endl;
+    IMP_LOG_TERSE("PATH FN:" << paths_fn << std::endl);
     paths = read_paths(paths_fn.c_str(), max_paths);
   }
   return boost::make_tuple(boost::lexical_cast<std::string>(line_split[1]),
@@ -104,7 +104,7 @@ ProteinsAnchorsSamplingSpace read_protein_anchors_mapping(
     int max_paths) {
   ProteinsAnchorsSamplingSpace ret(prots);
   std::fstream in;
-  std::cout << "FN:" << anchors_prot_map_fn << std::endl;
+  IMP_LOG_TERSE("FN:" << anchors_prot_map_fn << std::endl);
   in.open(anchors_prot_map_fn.c_str(), std::fstream::in);
   if (!in.good()) {
     IMP_WARN(
@@ -119,7 +119,7 @@ ProteinsAnchorsSamplingSpace read_protein_anchors_mapping(
   getline(in, line);
   std::string anchors_fn =
       base::get_relative_path(anchors_prot_map_fn, parse_anchors_line(line));
-  std::cout << "FN:" << anchors_fn << std::endl;
+  IMP_LOG_TERSE("FN:" << anchors_fn << std::endl);
   multifit::AnchorsData anchors_data =
       multifit::read_anchors_data(anchors_fn.c_str());
   ret.set_anchors(anchors_data);
