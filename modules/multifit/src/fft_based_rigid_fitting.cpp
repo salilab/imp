@@ -51,10 +51,6 @@ internal::EulerAnglesList parse_angles_file(const std::string &filename) {
 // clang doesn't see that these functions are used
 IMP_CLANG_PRAGMA(diagnostic push)
 IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-function")
-bool cmp_fit_scores_max(FittingSolutionRecord a, FittingSolutionRecord b) {
-  return a.get_fitting_score() < b.get_fitting_score();
-}
-
 bool cmp_fit_scores_min(FittingSolutionRecord a, FittingSolutionRecord b) {
   return a.get_fitting_score() > b.get_fitting_score();
 }
