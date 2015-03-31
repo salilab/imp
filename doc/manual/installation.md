@@ -121,7 +121,7 @@ procedure we use.
 Make a separate directory to keep the compiled version of %IMP in (it's tidier
 to keep this separate from the source code, and if you need to later you can
 just delete this directory without affecting the source). Set up the build
-with [CMake](http://www.cmake.org/), then finally compile it, with something
+with [CMake](@ref cmake_config), then finally compile it, with something
 like:
 
     mkdir imp_release
