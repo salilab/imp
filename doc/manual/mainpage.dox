@@ -54,6 +54,10 @@ to the [Reference Guide](../ref/).
 
  - [Parallelization](@ref parallel)
 
+ - Contributing to %IMP
+
+   - [Code coverage](@ref coverage)
+
  - [Copyright and licenses](@ref licenses)
 
  - [Change history](@ref changelog)
