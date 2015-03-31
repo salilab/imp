@@ -7,9 +7,9 @@
  */
 #include <IMP/multifit/fft_based_rigid_fitting.h>
 #include <IMP/multifit/internal/fft_fitting_utils.h>
-#include <boost/progress.hpp>
 #include <IMP/constants.h>
 #include <IMP/atom/pdb.h>
+#include <IMP/base/log.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <algorithm>
 #include <boost/bind.hpp>
@@ -364,11 +364,11 @@ FFTFittingOutput *FFTFitting::do_local_fitting(
   reversed_fftw_data_.resize(fftw_nvox_r2c_);
   fftw_plan_reverse_hi_ = fftw_plan_dft_c2r_3d(
       nz_, ny_, nx_, fftw_grid_hi_, reversed_fftw_data_, FFTW_MEASURE);
-  boost::progress_display show_progress(rots_.size());
   IMP_LOG_TERSE("number of rots_:" << rots_.size() << std::endl);
+  base::set_progress_display("searching rotations", rots_.size());
   for (unsigned int kk = 0; kk < rots_.size(); kk++) {
     fftw_translational_search(rots_[kk], kk);
-    ++show_progress;
+    base::add_to_progress_display();
   }
   // clear grids
   fftw_grid_lo_.release();
