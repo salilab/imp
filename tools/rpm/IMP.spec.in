@@ -4,9 +4,9 @@
 %define with_python3 0
 %endif
 
-# Uncomment if you want to build to install somewhere other than the
-# default /usr
-#%define _prefix /usr/local
+# Change '#' to '%' in the line below if you want to build to install
+# somewhere other than the default /usr
+#define _prefix /usr/local
 
 Name:          IMP
 Version:       @IMP_VERSION@
