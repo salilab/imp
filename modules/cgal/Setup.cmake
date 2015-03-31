@@ -3,6 +3,8 @@ include(FindCGAL)
 if (${CGAL_FOUND})
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/CGAL" "ok=True")
 set(CGAL_DONT_OVERRIDE_CMAKE_FLAGS TRUE CACHE BOOL "Don't override flags")
+# Ignore CGAL_CXX_FLAGS from previous cmake run, if any
+set( CGAL_CXX_FLAGS "" CACHE INTERNAL "" FORCE)
 include(${CGAL_USE_FILE})
 # Set "standard" include/link variables from CGAL's
 set(CGAL_INCLUDE_PATH ${CGAL_INCLUDE_DIRS} CACHE INTERNAL "" FORCE)
