@@ -58,6 +58,10 @@ to the [Reference Guide](../ref/).
 
  - Contributing to %IMP
 
+   - [Documenting your code](@ref documenting)
+   - [Debugging and testing your code](@ref testing)
+   - [Writing examples](@ref examples)
+   - [Exporting C++ code to Python](@ref swig)
    - [Code coverage](@ref coverage)
    - [Profiling your code](@ref profiling)
    - [Deprecation](@ref deprecation)
