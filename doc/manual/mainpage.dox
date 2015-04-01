@@ -59,6 +59,7 @@ to the [Reference Guide](../ref/).
  - Contributing to %IMP
 
    - [Code coverage](@ref coverage)
+   - [Profiling your code](@ref profiling)
 
  - [Copyright and licenses](@ref licenses)
 
