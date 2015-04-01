@@ -3,36 +3,6 @@ Introduction {#introduction}
 
 [TOC]
 
-# Integrative modeling # {#introduction_intmod}
-
-Detailed structural characterization of macromolecular assemblies is usually more difficult than that of single proteins because assemblies often don’t crystallize or are too large for NMR spectroscopy. This challenge can be addressed by an “integrative” or “hybrid” approach that simultaneously considers all available information about a given assembly. The integrative approach has several advantages. First, synergy among the input data minimizes the drawbacks of sparse, noisy, ambiguous and incoherent datasets. Each individual piece of data contains little structural information, but by simultaneously fitting a model to all data derived from independent experiments, the degeneracy of the structures that fit the data can be markedly reduced. Second, this approach has the potential to produce all structures that are consistent with the data, not only one structure. Third, an analysis of the structures allows us to estimate the precision of both the data and the structures. Last, this approach can make the process of structure determination more efficient, by indicating which measurements would be most informative.
-
-## Example modeling efforts ## {#introduction_efforts}
-Hybrid structures based on our integrative approach:
- - The E. coli ribosome, the first eukaryotic ribosome from S. cerevisiae
- - The first mammalian ribosome from C. lupus48 and a fungal ribosome
- - The E. coli Hsp90
- - The eukaryotic chaperonin TRiC/CCT
- - The actin/scruin complex
- - Ryr1 voltage gated channel
- - The baker’s yeast [nuclear pore complex](http://salilab.org/npc) (NPC)
- - The [Nup84 complex](http://salilab.org/nup84/)
- - Transport through the NPC
- - Microtubule nucleation
- - The 26S proteasome
- - [PCS9K-Fab complex](@ref idock_pcsk9)
- - The yeast spindle pole body
- - Chromatin globin domain
- - The lymphoblastoid cell genome
-
-## The four stage process ## {#introduction_four_stages}
-
-The integrative structure determination is an iterative process consisting of four stages:
-1. gathering of data;
-2. design of the model representation and encoding of the data as a scoring function. The scoring function consists of terms, called restraints, one for each data-point;
-3. the sampling method that finds good scoring conformations of the model;
-4. and analysis of data and resulting model conformations, including of uncertainty in the solutions.
-
 # IMP # {#introduction_imp}
 
 IMP provides tools to implement the computational parts of the integrative modeling iterative process, steps 2-4. This computation can be driven from Python scripts or C++ programs. The examples below will use Python scripts.
