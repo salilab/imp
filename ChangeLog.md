@@ -5,6 +5,12 @@ ChangeLog {#changelog}
 - Documentation has been revised and updated; the main manual now gives a
   gentler introduction to IMP, with more technical details on the code
   provided in a separate reference guide.
+- On platforms that support it, OpenMP is turned on by default. To speed up
+  some parts of IMP, call IMP::base::set_number_of_threads(). By default,
+  only a single thread is used.
+- The RPM packages now include an -mpich subpackage that can be installed
+  to enable parallel computation, using the IMP.mpi module in concert
+  with the mpich library.
 - A new command line tool, `multi_foxs`, allows for enumeration and scoring
   of multi-state models against SAXS profiles.
 - A new application of IMP (to the multi-state modeling of the histidine
