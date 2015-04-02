@@ -8,6 +8,7 @@ fi
 
 VERSION=$1
 DATE=`date -R`
+CODENAME=`lsb_release -c -s`
 
 # Make sure we can find the rest of our input files
 TOOL_DIR=`dirname "$0"`
@@ -20,7 +21,7 @@ cd ${TOP_DIR} || exit 1
 rm -rf debian
 cp -r tools/debian/ . || exit 1
 rm debian/make-package.sh || exit 1
-perl -pi -e "s/\@VERSION\@/$VERSION/; s/\@DATE\@/$DATE/" debian/changelog  || exit 1
+perl -pi -e "s/\@VERSION\@/$VERSION/; s/\@DATE\@/$DATE/; s/\@CODENAME\@/$CODENAME/;" debian/changelog  || exit 1
 cd .. || exit 1
 if [ "${imp_dir_name}" != "imp" ]; then
   mv "${imp_dir_name}" imp
