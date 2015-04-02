@@ -43,10 +43,7 @@ BuildRequires: hdf5-devel >= 1.8
 BuildRequires: swig >= 1.3.40
 BuildRequires: gsl-devel, fftw-devel
 BuildRequires: zlib-devel, perl
-# EPEL 7 doesn't have ANN yet
-%if 0%{?rhel} != 7
 BuildRequires: ann-devel
-%endif
 # Needed to build the cnmultifit module; obtain
 # from http://salilab.org/imp/libTAU.html
 # (Or, if you don't need cnmultifit, you can comment out this line)
@@ -149,9 +146,7 @@ Group:         Applications/Engineering
 Summary:       Development package for IMP developers.
 Requires:      %{name} = %{version}-%{release}
 Requires:      gsl-devel, fftw-devel, zlib-devel
-%if 0%{?rhel} != 7
 Requires:      ann-devel
-%endif
 %if 0%{?rhel} == 5
 Requires:      boost141-devel, python26-devel, hdf518-devel
 %else
