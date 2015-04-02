@@ -22,6 +22,9 @@ rm -rf debian
 cp -r tools/debian/ . || exit 1
 rm debian/make-package.sh || exit 1
 perl -pi -e "s/\@VERSION\@/$VERSION/; s/\@DATE\@/$DATE/; s/\@CODENAME\@/$CODENAME/;" debian/changelog  || exit 1
+if [ "${CODENAME}" = "precise" ]; then
+  perl -pi -e "s/libhdf5\-dev/libhdf5-serial-dev/g" debian/control || exit 1
+fi
 cd .. || exit 1
 if [ "${imp_dir_name}" != "imp" ]; then
   mv "${imp_dir_name}" imp
