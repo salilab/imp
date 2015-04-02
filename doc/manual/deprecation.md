@@ -59,6 +59,6 @@ that is deprecated should be marked in the following way (where EXAMPLE is repla
 
 - All things should also use the `\deprecated_at` doxygen macro in their docs:
 
-          /** \deprecated_at{2.1} Replaced by my_new_function(). */
+          /** \\deprecated_at{2.1} Replaced by my_new_function(). */
 
 These will provide documentation, and runtime and compile time warning messages to users.

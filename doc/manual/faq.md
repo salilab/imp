@@ -82,11 +82,10 @@ The `swig.i-in` file that you will find under `mymodule/pyext`.
 
 ## Why is SWIG telling me that a class is not defined?
 
-The order of the includes in the swig.i-in matters. If a class uses code that is in another file, then you should put the latter first (note also that SWIG does not recursively follow #includes inside the .h files you %include). For example, if your class EnergyTermsRestraint requires EnergyTerms these lines in the swig.i-in must appear in this order:
+The order of the includes in the `swig.i-in` matters. If a class uses code that is in another file, then you should put the latter first (note also that SWIG does not recursively follow `#includes` inside the `.h` files you `%include`). For example, if your class EnergyTermsRestraint requires EnergyTerms these lines in the `swig.i-in` must appear in this order:
 
-`%include "IMP/mymodule/EnergyTerms.h"`
-
-`%include "IMP/mymodule/EnergyTermsRestraint.h"`
+    %include "IMP/mymodule/EnergyTerms.h"
+    %include "IMP/mymodule/EnergyTermsRestraint.h"
 
 # git {#faq_git}
 

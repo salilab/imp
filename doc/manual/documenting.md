@@ -3,8 +3,8 @@ Documenting your code {#documenting}
 
 %IMP is documented using `doxygen`. See
 [Documenting your code in doxygen](http://www.doxygen.nl/docblocks.html)
-to get started. We use `//!` and `/**` ... * / blocks for documentation.
-You are encouraged to use `Doxygen's`
+to get started. We use `//!` and `/**` ... `*/` blocks for documentation.
+You are encouraged to use Doxygen's
 [markdown support](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html) as much as possible.
 
 Python code should provide Python doc strings.
@@ -21,11 +21,12 @@ We provide a number of extra Doxygen commands to aid in producing nice
 %IMP documentation.
 
 - To mark that some part of the API has not yet been well planned and may change
-  using `\unstable{Classname}.` The documentation will include a disclaimer
+  use `\\unstable{Classname}.` The documentation will include a disclaimer
   and the class or function will be added to a list of unstable classes. It is
-  better to simply hide such things from `doxygen`.
+  generally better to simply hide such things from `doxygen`.
 
 - To mark a method as not having been well tested yet, use
-  `\untested{Classname}.`
+  `\\untested{Classname}.`
 
-- To mark a method as not having been implemented, use `\untested{Classname}.`
+- To mark a method as not having been implemented, use
+  `\\unimplemented{Classname}.`
