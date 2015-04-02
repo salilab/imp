@@ -1,18 +1,20 @@
 OpenMP {#openmp}
 ======
 
-%IMP supports multithreaded evaluation using [OpenMP](http://openmp.org/wp/) (version 3.0 or later). OpenMP 3.0 is supported by recent versions of `gcc`, but not `clang++`. Multithreaded evaluation uses OpenMP tasks, with each IMP::kernel::Restraint or IMP::kernel::ScoreState being made into one or more tasks that are executed independently. %IMP uses the information in the IMP::kernel::DepdendencyGraph to automatically determine which IMP::kernel::ScoreState objects can be used in parallel. That is, two score states are independent if neither depend on data written by the other.
+%IMP supports multithreaded evaluation using [OpenMP](http://openmp.org/wp/)
+(version 3.0 or later). This is automatically supported on Linux, but not
+currently on Mac or Windows (the compilers there do not support OpenMP).
 
-## Activating OpenMP
-
-To use OpenMP with %IMP, turn it on [during compilation](@ref cmake_config)
-by adding the following flag to your `cmake` invocation:
-
-      -DCMAKE_CXX_FLAGS=-fopenmp
+Multithreaded evaluation uses OpenMP tasks, with each IMP::kernel::Restraint or IMP::kernel::ScoreState being made into one or more tasks that are executed independently. %IMP uses the information in the IMP::kernel::DepdendencyGraph to automatically determine which IMP::kernel::ScoreState objects can be used in parallel. That is, two score states are independent if neither depend on data written by the other.
 
 ## Controlling OpenMP
 
-The functions IMP::base::get_number_of_threads(), IMP::base::set_number_of_threads(), and the RAII class IMP::base::SetNumberOfThreads can be used to control OpenMP evaluation, as can the command line flag "number_of_threads" in executables that use %IMP's flags suport (see base/flags.h).
+By default, %IMP runs on a single thread (i.e. not parallel). This can be
+changed by calling the IMP::base::set_number_of_threads() function, using
+the RAII class IMP::base::SetNumberOfThreads, or setting the command line flag
+"number_of_threads" in executables that use %IMP's flags support.
+The IMP::base::get_number_of_threads() returns the current number of threads
+being used.
 
 ## Writing code with OpenMP
 
