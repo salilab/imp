@@ -385,6 +385,7 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %files mpich-devel
 %defattr(-,root,root)
 %{_libdir}/libimp_mpi.so
+%{_prefix}/include/IMP/mpi
 %endif
 
 %files devel
@@ -393,7 +394,10 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %{_prefix}/include/IMP.h
 %{_prefix}/include/RMF
 %{_libdir}/libimp*.so
+%if 0%{?with_mpich}
+%exclude %{_prefix}/include/IMP/mpi
 %exclude %{_libdir}/libimp_mpi.so
+%endif
 
 %changelog
 * Fri Feb 27 2015 Ben Webb <ben@salilab.org>   2.4.0-1
