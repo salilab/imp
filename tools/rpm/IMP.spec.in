@@ -352,6 +352,10 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %{_libdir}/python2*/site-packages/RMF*
 %{_libdir}/python2*/site-packages/_RMF*so
 %if 0%{?with_mpich}
+%exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
+%exclude %{_prefix}/share/IMP/swig/IMP_mpi.*
+%exclude %{_prefix}/share/IMP/build_info/IMP.mpi
+%exclude %{_prefix}/share/IMP/build_info/IMP.mpi.pck
 %exclude %{_libdir}/python2*/site-packages/IMP/mpi
 %exclude %{_libdir}/python2*/site-packages/_IMP_mpi.so
 %exclude %{_libdir}/libimp_mpi.so.*
@@ -370,6 +374,10 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %if 0%{?with_mpich}
 %files mpich
 %defattr(-,root,root)
+%doc %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
+%{_prefix}/share/IMP/swig/IMP_mpi.*
+%{_prefix}/share/IMP/build_info/IMP.mpi
+%{_prefix}/share/IMP/build_info/IMP.mpi.pck
 %{_libdir}/python2*/site-packages/IMP/mpi
 %{_libdir}/python2*/site-packages/_IMP_mpi.so
 %{_libdir}/libimp_mpi.so.*
@@ -385,6 +393,7 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %{_prefix}/include/IMP.h
 %{_prefix}/include/RMF
 %{_libdir}/libimp*.so
+%exclude %{_libdir}/libimp_mpi.so
 
 %changelog
 * Fri Feb 27 2015 Ben Webb <ben@salilab.org>   2.4.0-1
