@@ -265,9 +265,9 @@ README=${RPM_BUILD_ROOT}%{_prefix}/share/doc/%{name}-%{version}/README
 echo "For full IMP documentation, please go to" > ${README}
 # Direct nightly build users to most recent nightly build docs
 if echo ${version} | grep -q git; then
-  echo "http://salilab.org/imp/nightly/doc/html/" >> ${README}
+  echo "http://integrativemodeling.org/nightly/doc/manual/" >> ${README}
 else
-  echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
+  echo "http://integrativemodeling.org/%{version}/doc/manual/" >> ${README}
 fi
 # Bundle libTAU from build machine so users don't have to get it separately
 # (can't use %_libdir here since that is dependent on whatever we redefined
