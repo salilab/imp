@@ -24,7 +24,8 @@ BuildRequires: python3-devel, symlinks
 # RHEL 5 ships with Python 2.4. We need Python 2.6 or later, so pull in that
 # from EPEL (note we need to tell the build later on where to find this python)
 # The HDF5 package in EPEL is too old though - we need a newer version
-# (which can be obtained from http://integrativemodeling.org/nightly/download/)
+# (which can be obtained from
+# http://integrativemodeling.org/build-extras/RHEL5/)
 %if 0%{?rhel} == 5
 BuildRequires: python26-devel
 BuildRequires: hdf518-devel
