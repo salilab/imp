@@ -4,6 +4,12 @@
 %define with_python3 0
 %endif
 
+%if 0%{?rhel} == 5
+%define with_mpich 0
+%else
+%define with_mpich 1
+%endif
+
 # Change '#' to '%' in the line below if you want to build to install
 # somewhere other than the default /usr
 #define _prefix /usr/local
@@ -115,6 +121,12 @@ Requires: numpy, scipy
 
 %define cmake_opts %{boost} -DCMAKE_INSTALL_RPATH=%{_libdir}/IMP
 
+%if 0%{?rhel}
+%define mpiprefix %{nil}
+%else
+%define mpiprefix mpi/
+%endif
+
 %description
 IMP's broad goal is to contribute to a comprehensive structural
 characterization of biomolecules ranging in size and complexity from small
@@ -172,6 +184,28 @@ This package contains wrappers for Python 3 (the base package already
 includes Python 2 wrappers).
 %endif
 
+%if 0%{?with_mpich}
+%package mpich
+Group:         Applications/Engineering
+Summary:       MPI module, for mpich
+Requires:      %{name} = %{version}-%{release}
+Requires:      mpich
+BuildRequires: mpich-devel
+
+%description mpich
+This package contains an IMP.mpi module to add MPI support,
+using the mpich library.
+
+%package mpich-devel
+Group:         Applications/Engineering
+Summary:       MPI module development files, for mpich
+Requires:      %{name}-mpich = %{version}-%{release}
+Requires:      mpich
+
+%description mpich-devel
+Development files for IMP.mpi module with mpich.
+%endif
+
 %define reqprog %{_builddir}/find-requires-%{name}
 %define proprog %{_builddir}/find-provides-%{name}
 
@@ -206,6 +240,9 @@ ln -sf /usr/bin/python26 python-bin/python
 PATH="`pwd`/python-bin:$PATH"
 %endif
 mkdir build && cd build
+%if 0%{?with_mpich}
+module load %{mpiprefix}mpich-%{_arch}
+%endif
 %{cmake} ../imp -DCMAKE_BUILD_TYPE=Release \
                 -DCMAKE_INSTALL_PREFIX=%{_prefix} \
                 -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
@@ -221,6 +258,9 @@ mkdir logs
 ../imp/tools/nightly-tests/build_all.py --run-tests=fast --ctest="%{ctest} --output-on-failure" --outdir=logs --summary=logs/summary.pck "make -k"
 %else
 make
+%endif
+%if 0%{?with_mpich}
+module purge
 %endif
 
 %install
@@ -311,6 +351,11 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %{_libdir}/python2*/site-packages/_IMP*so
 %{_libdir}/python2*/site-packages/RMF*
 %{_libdir}/python2*/site-packages/_RMF*so
+%if 0%{?with_mpich}
+%exclude %{_libdir}/python2*/site-packages/IMP/mpi
+%exclude %{_libdir}/python2*/site-packages/_IMP_mpi.so
+%exclude %{_libdir}/libimp_mpi.so.*
+%endif
 
 %if 0%{?with_python3}
 %files python3
@@ -320,6 +365,18 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %{_libdir}/python3*/site-packages/RMF*
 %{_libdir}/python3*/site-packages/_RMF*so
 %{_libdir}/python3*/site-packages/__pycache__
+%endif
+
+%if 0%{?with_mpich}
+%files mpich
+%defattr(-,root,root)
+%{_libdir}/python2*/site-packages/IMP/mpi
+%{_libdir}/python2*/site-packages/_IMP_mpi.so
+%{_libdir}/libimp_mpi.so.*
+
+%files mpich-devel
+%defattr(-,root,root)
+%{_libdir}/libimp_mpi.so
 %endif
 
 %files devel
