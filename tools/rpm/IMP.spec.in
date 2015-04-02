@@ -355,7 +355,7 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
 %exclude %{_prefix}/share/IMP/swig/IMP_mpi.*
 %exclude %{_prefix}/share/IMP/build_info/IMP.mpi
-%exclude %{_prefix}/share/IMP/build_info/IMP.mpi.pck
+%exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %exclude %{_libdir}/python2*/site-packages/IMP/mpi
 %exclude %{_libdir}/python2*/site-packages/_IMP_mpi.so
 %exclude %{_libdir}/libimp_mpi.so.*
@@ -377,7 +377,7 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %doc %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
 %{_prefix}/share/IMP/swig/IMP_mpi.*
 %{_prefix}/share/IMP/build_info/IMP.mpi
-%{_prefix}/share/IMP/build_info/IMP.mpi.pck
+%{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %{_libdir}/python2*/site-packages/IMP/mpi
 %{_libdir}/python2*/site-packages/_IMP_mpi.so
 %{_libdir}/libimp_mpi.so.*
