@@ -273,6 +273,9 @@ py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py3_lib=`echo %{_libdir}/libpython3.*.so`
 py3_inc=`echo /usr/include/python3.*`
+%if 0%{?with_mpich}
+module load %{mpiprefix}mpich-%{_arch}
+%endif
 %{cmake} ../imp \
          -DCMAKE_INSTALL_PREFIX=%{_prefix} \
          -DCMAKE_INSTALL_PYTHONDIR=%{_libdir}/python${py3_ver}/site-packages \
@@ -281,6 +284,13 @@ py3_inc=`echo /usr/include/python3.*`
          -DPYTHON_INCLUDE_PATH=${py3_inc} \
          -DPYTHON_LIBRARIES=${py3_lib}
 make DESTDIR=${RPM_BUILD_ROOT} install
+%if 0%{?with_mpich}
+module purge
+%endif
+
+# Don't build Python 3 MPI for now
+rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/IMP/mpi
+rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/_IMP_mpi.so
 
 # Replace .py files with symlinks to Python 2 files (since they are the same)
 (cd ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver} \
