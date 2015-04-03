@@ -121,7 +121,7 @@ Requires: numpy, scipy
 
 %define cmake_opts %{boost} -DCMAKE_INSTALL_RPATH=%{_libdir}/IMP
 
-%if 0%{?rhel}
+%if 0%{?rhel} == 6
 %define mpiprefix %{nil}
 %else
 %define mpiprefix mpi/
