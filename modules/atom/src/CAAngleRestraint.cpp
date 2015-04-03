@@ -56,7 +56,7 @@ int CAAngleRestraint::get_closest
 }
 
 double
-CAAngleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+CAAngleRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 {
   core::XYZ d0(p_[0]);
   core::XYZ d1(p_[1]);

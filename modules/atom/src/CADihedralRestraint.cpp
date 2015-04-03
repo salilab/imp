@@ -63,7 +63,7 @@ int CADihedralRestraint::get_closest
 }
 
 double
-CADihedralRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+CADihedralRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 {
   core::XYZ d0(p_[0]);
   core::XYZ d1(p_[1]);
