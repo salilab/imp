@@ -61,7 +61,9 @@ double Optimizer::optimize(unsigned int max_steps) {
   set_was_used(true);
   set_is_optimizing_states(true);
   double ret;
-  IMP_THREADS((ret, max_steps), ret = do_optimize(max_steps););
+  IMP_THREADS((ret, max_steps), {
+    ret = do_optimize(max_steps);
+  });
   set_is_optimizing_states(false);
   return ret;
 }
