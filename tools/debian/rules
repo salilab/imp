@@ -16,7 +16,7 @@ override_dh_auto_configure:
 	mkdir build
 	# Get libTAU (for cnmultifit) and put in search path
 	cd build && wget http://integrativemodeling.org/libTAU/libTAU-1.0.0.zip
-	cd build && echo "861614ac6c03f82c1ee17ccb66caf975a051dc0b libTAU-1.0.0.zip" | sha1sum -c --quiet
+	cd build && echo "861614ac6c03f82c1ee17ccb66caf975a051dc0b  libTAU-1.0.0.zip" | sha1sum -c --quiet
 	cd build && unzip libTAU-1.0.0.zip && mv libTAU-1.0.0/include libTAU
 	cd build/libTAU-1.0.0/lib/Fedora17.x86_64 && ln -sf libTAU.so.1 libTAU.so
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release \
