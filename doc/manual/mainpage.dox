@@ -52,7 +52,9 @@ to the [Reference Guide](../ref/).
    - [Merging SAXS profiles](@ref saxs_merge).
      Merging multiple small angle X-ray (SAXS) profiles using `saxs_merge`.
 
- - [Parallelization](@ref parallel)
+ - The IMP C++/Python library
+   - [Units](@ref units)
+   - [Parallelization](@ref parallel)
 
  - [Frequently asked questions (FAQ)](@ref faq)
 

@@ -76,7 +76,8 @@ In the second part, we set up the scoring of the system. We add two restraints
 to the Model, one of which harmonically restrains p1 to the origin and the
 other of which restrains p1 and p2 to be distance 5.0 apart. (%IMP does not
 enforce any units of distance; however, some physical optimizers, such
-as molecular dynamics, expect distances to be in angstroms.) Note that
+as molecular dynamics, [expect distances to be in angstroms](@ref units).)
+Note that
 the core module provides suitable building block restraints for this purpose.
 In the first case, we use the
 \ref IMP::core::SingletonRestraint "SingletonRestraint" class that creates
