@@ -257,8 +257,8 @@ file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.FileSystem" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.ProgramOptions" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
 
-# Automatically enable OpenMP if available
-find_package(OpenMP)
+# Automatically enable OpenMP if available and at least version 3
+find_package(OpenMP3)
 
 add_custom_target("IMP-version"
                   COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_version.py --source=${CMAKE_SOURCE_DIR}
