@@ -1,4 +1,4 @@
-Writing examples {#examples}
+Writing examples {#write_examples}
 ================
 
 Writing examples is a very important part of being an %IMP developer and

@@ -62,7 +62,7 @@ to the [Reference Guide](../ref/).
 
    - [Documenting your code](@ref documenting)
    - [Debugging and testing your code](@ref testing)
-   - [Writing examples](@ref examples)
+   - [Writing examples](@ref write_examples)
    - [Exporting C++ code to Python](@ref swig)
    - [Code coverage](@ref coverage)
    - [Profiling your code](@ref profiling)
