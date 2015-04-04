@@ -68,6 +68,8 @@ to the [Reference Guide](../ref/).
    - [Profiling your code](@ref profiling)
    - [Deprecation](@ref deprecation)
 
+ - [Internals](@ref internals)
+
  - [Copyright and licenses](@ref licenses)
 
  - [Change history](@ref changelog)
