@@ -54,6 +54,7 @@ def generate_doxyfile(
         doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "")
         doxygen = doxygen.replace("@EXAMPLE_PATH@", ".")
         doxygen = doxygen.replace("@TAGS@", "doxygen/ref-tags.xml=../ref")
+        doxygen = doxygen.replace("@XML_OUTPUT@", "doxygen/manual/xml/")
     else:
         doxygen = doxygen.replace("@PROJECT_NAME@", '"IMP Reference Guide"')
         doxygen = doxygen.replace("@PROJECT_BRIEF@",
@@ -72,6 +73,7 @@ def generate_doxyfile(
             "doc/examples %s/modules/example" %
             source)
         doxygen = doxygen.replace("@TAGS@", "doxygen/manual-tags.xml=../manual")
+        doxygen = doxygen.replace("@XML_OUTPUT@", "doxygen/ref/xml/")
     doxygen = doxygen.replace("@NAME@", "IMP")
     doxygen = doxygen.replace(
         "@IMP_SOURCE_PATH@",
@@ -81,7 +83,6 @@ def generate_doxyfile(
     doxygen = doxygen.replace("@EXCLUDE@", "")
     doxygen = doxygen.replace("@INCLUDE_PATH@", "include")
     doxygen = doxygen.replace("@FILE_PATTERNS@", "*.cpp *.h *.py *.md *.dox")
-    doxygen = doxygen.replace("@XML_OUTPUT@", "doxygen/xml/")
     # TAGS, INPUT_PATH
     if is_xml:
         doxygen = doxygen.replace("@IS_XML@", "YES")
@@ -147,8 +148,12 @@ def main():
                       os.path.join("doxygen", "ref.xml"),
                       is_html=False, is_xml=True)
     generate_doxyfile(options.source,
-                      os.path.join("doxygen", "manual"),
+                      os.path.join("doxygen", "manual.html"),
                       is_html=True, is_xml=False,
+                      manual=True)
+    generate_doxyfile(options.source,
+                      os.path.join("doxygen", "manual.xml"),
+                      is_html=False, is_xml=True,
                       manual=True)
 
 if __name__ == '__main__':

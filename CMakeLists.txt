@@ -335,14 +335,14 @@ if(IMP_DOXYGEN_FOUND)
   add_custom_target(IMP-doc
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${CMAKE_SOURCE_DIR}"
     # Generate manual's tag file so we can link from the refguide to it
-    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual
+    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual.xml
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/ref.xml
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_cross_refs.py
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/ref.html
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/ref-warnings.txt
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_links.py ${CMAKE_BINARY_DIR}/doc/ref
     # Rebuild manual so that it can link to the refguide tags
-    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual
+    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual.html
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/manual-warnings.txt
     COMMAND patch -p1 < ${CMAKE_SOURCE_DIR}/doc/doxygen/search.patch
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
