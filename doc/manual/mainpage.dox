@@ -74,6 +74,12 @@ to the [Reference Guide](../ref/).
    - [Cross platform compatibility](@ref cross_platform)
 
  - [Internals](@ref internals)
+   - [Dependencies](@ref dependencies)
+   - [Evaluation](@ref evaluation)
+   - [Close pairs lists](@ref close_pairs)
+   - [RMF](@ref rmf)
+   - [Building](@ref building)
+   - [Eigen](@ref eigen)
 
  - [Copyright and licenses](@ref licenses)
 
