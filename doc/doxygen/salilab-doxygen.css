@@ -103,7 +103,8 @@ div.textblock h1 {
 
 /* Increase spacing for lists */
 .textblock li {
-  padding-bottom: 0.3em;
+  padding-top: 0.3em;
+  padding-bottom: 0.15em;
 }
 
 div.doxnavlinks {
