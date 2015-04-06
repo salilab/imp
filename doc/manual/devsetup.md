@@ -11,7 +11,7 @@ tasks, you will need to [work with git](@ref faq_git) and make a copy of the
 used to [build IMP from source](@ref installation_download).
 
  1. Make a copy (fork) of the [IMP repository](https://github.com/salilab/imp).
-    There is an [excellent help page at GitHub](https://help.github.com/articles/fork-a-repo/
+    There is an [excellent help page at GitHub](https://help.github.com/articles/fork-a-repo/)
     that explains this in detail. (If you are working in the Sali lab, you can
     skip this step and work on the main %IMP repository directly; speak to
     an existing developer to make sure.)
