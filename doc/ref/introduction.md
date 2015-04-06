@@ -212,14 +212,6 @@ All types in IMP, with a few documented exceptions, can be
 - output to a C++ stream or printed in Python
 - meaningfully put into Python dictionaries or C++ hash maps
 
-### Backwards compatibility and deprecation ### {#introduction_backwards}
-
-IMP tries to maintain backwards compatibility, however, this is not always feasible. Our general
-policy is that functionality that is deprecated in one release (e.g. 2.1) is removed in the next one (2.2).
-Deprecated functionality should produce warnings when use (e.g. compile time messages for deprecated
-macros and runtime messages for deprecated functions called from Python). In addition, bugs discovered
-in deprecated functionality are not fixed.
-
 # Where to go next # {#introduction_next}
 
 Probably the best thing to do next is to read the [kernel/nup84.py](kernel_2nup84_8py-example.html) example.

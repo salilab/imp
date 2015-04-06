@@ -7,8 +7,11 @@ Sometimes it is useful to drop support for code for various reasons, for example
 - it wasn't used
 - it is broken and not worth fixing
 
-Our policy is to support code for one release with warning messages and then remove it in the next. Code
-that is deprecated should be marked in the following way (where EXAMPLE is replaced by your module name):
+For such code that will be removed, our policy is to mark it as deprecated
+for one stable release (e.g. 2.1) and then remove it in the next one (2.2).
+
+Code that is deprecated must produce warnings when used. To achieve this,
+it should be marked in the following way (where EXAMPLE is replaced by your module name):
 - macros should have an `IMPEXAMPLE_DEPRECATED_MACRO(version, replacement)` line added within their definition
 
           #define MY_DEPRECATED_MACRO(args)                                                     \
