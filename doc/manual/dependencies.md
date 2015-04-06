@@ -1,4 +1,4 @@
-Dependencies {#dependencies}
+Dependencies {#internal_dependencies}
 ============
 
 IMP needs to keep track of how various IMP::kernel::Particle, IMP::kernel::ScoreState, IMP::kernel::Restraint and other things related to one another. For example, it needs to know that in order to evaluate a certain IMP::kernel::Restraint, the IMP::kernel::ScoreState managing the IMP::core::RigidBody that one of the restraint's input particles is an IMP::core::RigidMember of needs to be updated.

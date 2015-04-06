@@ -74,7 +74,7 @@ to the [Reference Guide](../ref/).
    - [Cross platform compatibility](@ref cross_platform)
 
  - [Internals](@ref internals)
-   - [Dependencies](@ref dependencies)
+   - [Dependencies](@ref internal_dependencies)
    - [Evaluation](@ref evaluation)
    - [Close pairs lists](@ref close_pairs)
    - [RMF](@ref rmf)
