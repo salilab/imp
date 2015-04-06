@@ -11,10 +11,13 @@ ChangeLog {#changelog}
 - The RPM packages now include an -mpich subpackage that can be installed
   to enable parallel computation, using the IMP.mpi module in concert
   with the mpich library.
+- We now provide packages for both of the currently-supported Ubuntu LTS
+  releases: Ubuntu 12.04 (Precise Pangolin) and Ubuntu 14.04 (Trusty Tahr).
 - A new command line tool, `multi_foxs`, allows for enumeration and scoring
   of multi-state models against SAXS profiles.
-- A new application of IMP (to the multi-state modeling of the histidine
-  kinase, PhoQ) is [now available](http://salilab.org/phoq).
+- New applications of IMP are now available:
+  - [Multi-state modeling of the histidine kinase, PhoQ](http://salilab.org/phoq).
+  - [Determination of the molecular architecture of the 40S•eIF1•eIF3 translation initiation complex](http://salilab.org/40S-eIF1-eIF3).
 - Bugfix #775: coordinates of voxels in EM maps were previously inconsistently
   treated (they are supposed to be the centers of the voxels, but in some
   cases they were the lower left edge). The fix may result in maps and their
