@@ -27,6 +27,10 @@ div.line {
 body, table, div, p, dl {
     color: #666;
     font: 100% Arial,Helvetica,sans-serif;
+}
+
+/* Don't put navigation right against the bottom of the page */
+body {
     margin-bottom: 1em;
 }
 
