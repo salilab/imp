@@ -12,8 +12,7 @@ to the [Reference Guide](../ref/).
  - [Introduction](@ref intro). Discussion of the problems that %IMP
    is designed to solve, and the high-level design of the software. 
 
- - [The IMP C++/Python library](@ref library). Simple usage of basic
-   parts of the %IMP library.
+ - [Introduction to the IMP C++/Python library](@ref library_intro).
 
  - Using the IMP::pmi high-level interface
    - [Modeling of RNA Polymerase II stalk](@ref rnapolii_stalk).
@@ -53,6 +52,7 @@ to the [Reference Guide](../ref/).
      Merging multiple small angle X-ray (SAXS) profiles using `saxs_merge`.
 
  - The IMP C++/Python library
+   - [Overview](@ref library_overview)
    - [Units](@ref units)
    - [Parallelization](@ref parallel)
 

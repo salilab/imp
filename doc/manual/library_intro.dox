@@ -1,5 +1,5 @@
 /**
-\page library The %IMP C++/Python library
+\page library_intro The %IMP C++/Python library
 
 The core of %IMP is the C++/Python library, which provides all of the necessary
 components, as a set of classes and modules, to allow methods developers to
