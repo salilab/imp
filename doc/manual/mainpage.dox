@@ -7,49 +7,32 @@ that want to use existing %IMP functionality. Those that want to modify the
 %IMP source code to develop new methods (_developers_) may also want to refer
 to the [Reference Guide](../ref/).
 
- - [Installation](@ref installation).
+ - [Installation](@ref installation)
 
- - [Introduction](@ref intro). Discussion of the problems that %IMP
-   is designed to solve, and the high-level design of the software. 
+ - [Introduction](@ref intro)
 
- - [Introduction to the IMP C++/Python library](@ref library_intro).
+ - [Introduction to the IMP C++/Python library](@ref library_intro)
 
  - Using the IMP::pmi high-level interface
    - [Modeling of RNA Polymerase II stalk](@ref rnapolii_stalk).
       Modeling of a real complex using the IMP::pmi module.
 
- - Using command line tools
-   - [FoXS](@ref foxs_nup133).
-     Using %IMP's FoXS application to use small-angle X-ray (SAXS) data
-     in combination with comparative modeling to improve the structure
-     of a protein.
+ - [Using command line tools](@ref cmdline)
+   - [FoXS: fitting structures against SAXS data](@ref foxs_nup133).
 
-   - [MultiFoXS](@ref multi_foxs).
-     Determination of multi-state models with MultiFoXS.
+   - [MultiFoXS: determination of multi-state models](@ref multi_foxs).
 
-   - [Integrative docking](@ref idock_pcsk9).
-     Improving the quality of computational pairwise docking by incorporating
-     additional experimental information.
+   - [Integrative docking: combining experimental data with computational pairwise docking](@ref idock_pcsk9).
 
-   - [Conformational sampling](@ref kinematics_rrt).
-     Sampling antibody conformations using the rapidly exploring random
-     tree (RRT) algorithm.
+   - [Conformational sampling: sampling antibody conformations using the rapidly exploring random tree (RRT) algorithm](@ref kinematics_rrt).
 
-   - [EMageFit](@ref emagefit_3sfd).
-     A simple example of modeling of a complex of 4 proteins, by
-     combining electron microscopy (EM) class averages of the complex
-     with crystal structures of the proteins.
+   - [EMageFit: solution of a complex structure using subunit structures and EM class averages](@ref emagefit_3sfd).
 
-   - [MultiFit](@ref multifit_3sfd).
-     A similar example of modeling a complex, by multiple fitting of
-     individual proteins into a 3D cryo-EM density map of the complex.
+   - [MultiFit: solution of a complex structure using subunit structures and a cryo-EM density map](@ref multifit_3sfd).
 
-   - [MultiFit of symmetric complexes](@ref cnmultifit_groel).
-     Multiple fitting of a protein structure into a symmetric (ring) complex,
-     using a 3D cryo-EM density map of the complex.
+   - [CNMultiFit: solution of symmetric complexes using a cryo-EM density map](@ref cnmultifit_groel).
 
-   - [Merging SAXS profiles](@ref saxs_merge).
-     Merging multiple small angle X-ray (SAXS) profiles using `saxs_merge`.
+   - [SAXSMerge: merging multiple SAXS profiles](@ref saxs_merge).
 
  - The IMP C++/Python library
    - [Overview](@ref library_overview)
@@ -62,7 +45,7 @@ to the [Reference Guide](../ref/).
 
  - [Bug reports](@ref bugs)
 
- - Developing the IMP source code
+ - [Developing the IMP source code](@ref developing)
    - [Developer setup](@ref devsetup)
    - [Documenting your code](@ref documenting)
    - [Debugging and testing your code](@ref testing)
