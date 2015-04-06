@@ -13,9 +13,12 @@ to the [Reference Guide](../ref/).
 
  - [Introduction to the IMP C++/Python library](@ref library_intro)
 
- - Using the IMP::pmi high-level interface
-   - [Modeling of RNA Polymerase II stalk](@ref rnapolii_stalk).
-      Modeling of a real complex using the IMP::pmi module.
+ - [Modeling of complexes using IMP::pmi](@ref rnapolii_stalk)
+   - [Stage 1: Gathering of data](@ref rnapolii_1)
+   - [Stage 2: Representation of the system](@ref rnapolii_2)
+   - [Stage 3: Sampling](@ref rnapolii_3)
+   - [Stage 4a: Analysis part 1](@ref rnapolii_4)
+   - [Stage 4b: Analysis part 2](@ref rnapolii_4_2)
 
  - [Using command line tools](@ref cmdline)
    - [FoXS: fitting structures against SAXS data](@ref foxs_nup133)
