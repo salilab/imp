@@ -58,8 +58,12 @@ to the [Reference Guide](../ref/).
 
  - [Frequently asked questions (FAQ)](@ref faq)
 
- - Contributing to %IMP
+ - [Contributing to IMP](@ref contributing)
 
+ - [Bug reports](@ref bugs)
+
+ - Developing the IMP source code
+   - [Developer setup](@ref devsetup)
    - [Documenting your code](@ref documenting)
    - [Debugging and testing your code](@ref testing)
    - [Writing examples](@ref write_examples)
