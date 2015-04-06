@@ -21,8 +21,9 @@ from optparse import OptionParser
 
 
 def link_dox(source):
-    target = os.path.join("doxygen")
-    tools.mkdir(target)
+    for subdir in ("ref", "manual"):
+        target = os.path.join("doxygen", subdir)
+        tools.mkdir(target)
     tools.link_dir(os.path.join(source, "doc", "ref"),
                    os.path.join("doc", "ref"),
                    match=["*.png", "*.pdf", "*.gif"], clean=False)
