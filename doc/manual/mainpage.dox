@@ -18,21 +18,21 @@ to the [Reference Guide](../ref/).
       Modeling of a real complex using the IMP::pmi module.
 
  - [Using command line tools](@ref cmdline)
-   - [FoXS: fitting structures against SAXS data](@ref foxs_nup133).
+   - [FoXS: fitting structures against SAXS data](@ref foxs_nup133)
 
-   - [MultiFoXS: determination of multi-state models](@ref multi_foxs).
+   - [MultiFoXS: determination of multi-state models](@ref multi_foxs)
 
-   - [Integrative docking: combining experimental data with computational pairwise docking](@ref idock_pcsk9).
+   - [Integrative docking: combining experimental data with computational pairwise docking](@ref idock_pcsk9)
 
-   - [Conformational sampling: sampling antibody conformations using the rapidly exploring random tree (RRT) algorithm](@ref kinematics_rrt).
+   - [Conformational sampling: sampling antibody conformations using the rapidly exploring random tree (RRT) algorithm](@ref kinematics_rrt)
 
-   - [EMageFit: solution of a complex structure using subunit structures and EM class averages](@ref emagefit_3sfd).
+   - [EMageFit: solution of a complex structure using subunit structures and EM class averages](@ref emagefit_3sfd)
 
-   - [MultiFit: solution of a complex structure using subunit structures and a cryo-EM density map](@ref multifit_3sfd).
+   - [MultiFit: solution of a complex structure using subunit structures and a cryo-EM density map](@ref multifit_3sfd)
 
-   - [CNMultiFit: solution of symmetric complexes using a cryo-EM density map](@ref cnmultifit_groel).
+   - [CNMultiFit: solution of symmetric complexes using a cryo-EM density map](@ref cnmultifit_groel)
 
-   - [SAXSMerge: merging multiple SAXS profiles](@ref saxs_merge).
+   - [SAXSMerge: merging multiple SAXS profiles](@ref saxs_merge)
 
  - The IMP C++/Python library
    - [Overview](@ref library_overview)
