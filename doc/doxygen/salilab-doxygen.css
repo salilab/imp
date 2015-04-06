@@ -27,6 +27,7 @@ div.line {
 body, table, div, p, dl {
     color: #666;
     font: 100% Arial,Helvetica,sans-serif;
+    margin-bottom: 1em;
 }
 
 /* Style doxygen title like our h1 title */
@@ -77,11 +78,12 @@ div.tabs {
     background-image: none;
 }
 
-/* Hide some elements which look unnecessary with our layout */
 hr.footer {
-    display: none;
+    margin-top: 0.5em;
+    border-color: #666;
 }
 
+/* Hide some elements which look unnecessary with our layout */
 div.navpath {
     display: none;
 }
@@ -102,4 +104,13 @@ div.textblock h1 {
 /* Increase spacing for lists */
 .textblock li {
   padding-bottom: 0.3em;
+}
+
+div.doxnavlinks {
+  text-align: right;
+}
+
+div.doxnavlinks img {
+  height: 1.4em;
+  margin-left: 1.0em;
 }

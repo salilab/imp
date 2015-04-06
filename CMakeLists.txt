@@ -345,6 +345,7 @@ if(IMP_DOXYGEN_FOUND)
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual.html
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/manual-warnings.txt
     COMMAND patch -p1 < ${CMAKE_SOURCE_DIR}/doc/doxygen/search.patch
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_add_nav.py
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS ${IMP_DOC_DEPENDS} ${docs} ${IMP_DOXYGEN_FETCH} IMP-version
     COMMENT "Building documentation")
