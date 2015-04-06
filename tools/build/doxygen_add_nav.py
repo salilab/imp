@@ -46,9 +46,17 @@ def get_contents(root, page_map):
             else:
                 parent_pages[parent] = None
         for link in get_all_links(item):
-            yield page_map[link.attrib['refid']], parent_pages.get(parent, None)
+            yield page_map[link.attrib['refid']], link.text, parent_pages.get(parent, None)
 
-def add_page_navigation(html_dir, pagename, prevpage, nextpage, uppage):
+def write_children(children, out):
+    out.write('<ul>\n')
+    for c in children:
+        out.write('<li><a class="el" href="%s.html">%s</a></li>\n'
+                  % (c[0], c[1]))
+    out.write('</ul>\n')
+
+def add_page_navigation(html_dir, pagename, children, prevpage, nextpage,
+                        uppage):
     def make_link(title, img, dest):
         return '<a href="%s.html" title="%s"><img src="%s.png" alt="%s"></a>' \
                % (dest, title, img, img)
@@ -70,8 +78,19 @@ def add_page_navigation(html_dir, pagename, prevpage, nextpage, uppage):
         elif line.startswith('<hr class="footer"'):
             out.write('<hr class="footer"/>')
             out.write(links)
+        elif '[SUBPAGES]' in line:
+            write_children(children, out)
         else:
             out.write(line)
+
+def get_page_children(i, contents):
+    children = []
+    for ind in range(i + 1, len(contents)):
+        if contents[ind][2] == contents[i][0]:
+            children.append(contents[ind][:2])
+        else:
+            break
+    return children
 
 def main():
     xml_dir = 'doxygen/manual/xml'
@@ -82,12 +101,13 @@ def main():
 
     contents = list(get_contents(root, page_map))
     for i, page in enumerate(contents):
-        add_page_navigation(html_dir, page[0],
+        children = get_page_children(i, contents)
+        add_page_navigation(html_dir, page[0], children,
                             contents[i-1][0] if i > 0 else 'index',
                             contents[i+1][0] if i+1 < len(contents) else None,
-                            contents[i][1] if contents[i][1] else 'index')
+                            contents[i][2] if contents[i][2] else 'index')
     if len(contents) > 0:
-        add_page_navigation(html_dir, 'index', None, contents[0][0], None)
+        add_page_navigation(html_dir, 'index', [], None, contents[0][0], None)
 
 if __name__ == '__main__':
     main()
