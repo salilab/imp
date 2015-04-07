@@ -31,7 +31,7 @@ Two different scoring files are provided:
 # ligand_score_multiple {#ligand_score_multiple_bin}
 Score ligand poses from docking output.
 Like the `ligand_score` tool, this scores ligand poses, but unlike that tool,
-it does score the current pose; instead, it scores each pose
+it does not score the current pose; instead, it scores each pose
 corresponding to a transformation in a docking program output file.
 The transformation file has a simple format (it is a subset of the PatchDock
 output); the 7 space-separated columns should be the transformation number
