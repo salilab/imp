@@ -48,6 +48,8 @@ to the [Reference Guide](../ref/).
 
  - [Bug reports](@ref bugs)
 
+ - [Applying IMP to a new biological system](@ref biosystem)
+
  - [Developing the IMP source code](@ref developing)
    - [Developer setup](@ref devsetup)
    - [Documenting your code](@ref documenting)
