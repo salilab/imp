@@ -36,12 +36,6 @@ You can use your new module in a variety of ways:
 If you feel your module is of interest to other IMP users and
 developers, see the [contributing code to IMP](#devguide_contributing) section.
 
-If you document your code, building the target `IMP-doc` will build
-documentation for all of the modules including yours and
-`IMP.mymodule-doc` will build the doc for just yours. To access the
-documentation for all of IMP, open `doc/html/index.html` and for just
-your module, open `doc/html/mymodule/index.html`
-
 # Formatting your code # {#dev_tools_clang_format}
 
 The command `./tools/dev_tools/cleanup_code.py` uses the external
