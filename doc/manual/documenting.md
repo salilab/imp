@@ -7,7 +7,8 @@ to get started. We use `//!` and `/**` ... `*/` blocks for documentation.
 You are encouraged to use Doxygen's
 [markdown support](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html) as much as possible.
 
-Python code should provide Python doc strings.
+Python code should provide Python doc strings. We automatically convert these
+into a form Doxygen can parse, so you can use Doxygen commands in them.
 
 All headers not in internal directories are parsed through
 `doxygen`. Any function that you do not want documented (for example,
