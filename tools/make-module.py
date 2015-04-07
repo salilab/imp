@@ -20,7 +20,7 @@ def fix_string(input, modname):
 
 def copy_dir(source, dest, modname):
     for x in os.listdir(source):
-        if x == ".svn":
+        if x == ".svn" or x == 'CMakeLists.txt':
             continue
         if x.endswith(".pyc"):
             continue
