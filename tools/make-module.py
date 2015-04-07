@@ -38,7 +38,8 @@ def copy_dir(source, dest, modname):
             #print("->" + xdpath)
             input = file(xspath, 'r').read()
             if xspath.endswith(".cpp") or xspath.endswith(".h") \
-                    or xspath.endswith(".i-in") or xspath.endswith(".py"):
+                    or xspath.endswith(".i-in") or xspath.endswith(".py") \
+                    or xspath.endswith(".md"):
                 output = fix_string(input, modname)
             else:
                 output = input
