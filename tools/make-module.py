@@ -27,15 +27,15 @@ def copy_dir(source, dest, modname):
         if x.endswith(".old"):
             continue
         xspath = os.path.join(source, x)
-        print("handling " + xspath, end='')
+        #print("handling " + xspath, end='')
         if os.path.isdir(xspath):
             xdpath = os.path.join(dest, x)
-            print("->" + xdpath)
+            #print("->" + xdpath)
             os.mkdir(xdpath)
             copy_dir(xspath, xdpath, modname)
         else:
             xdpath = os.path.join(dest, fix_string(x, modname))
-            print("->" + xdpath)
+            #print("->" + xdpath)
             input = file(xspath, 'r').read()
             if xspath.endswith(".cpp") or xspath.endswith(".h") \
                     or xspath.endswith(".i-in") or xspath.endswith(".py"):
@@ -58,7 +58,7 @@ def main():
     if os.path.isdir(modpath):
         print("Module already exists")
         return
-    print("Creating a new module " + modname)
+    print("Creating a new module " + modname + " in " + modpath)
     os.mkdir(modpath)
     copy_dir(os.path.join(impdir, "modules", "scratch"), modpath, modname)
 
