@@ -12,6 +12,7 @@ using Gaussian processes. This method requires only the buffer-subtracted
 profile files in a specific order. At the heart of its formulation is
 nonlinear interpolation using Gaussian Processes, which provide a statement
 of the problem that accounts for correlation in the data.
+The method is [benchmarked](http://salilab.org/saxsmerge/benchmark).
 
 A [webserver](http://salilab.org/saxsmerge) is also available.
 
