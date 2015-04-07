@@ -114,7 +114,7 @@ procedure we use.
   (the `master` branch tracks the most recent stable
   release; alternatively you can use `develop` to get the most recent code,
   but please check out the [nightly builds results page](http://integrativemodeling.org/nightly/results/)
-  to see if the code is currently stable enough for your purposes)
+  to see if the code is currently stable enough for your purposes).
 
 ## Compilation {#installation_compilation}
 
