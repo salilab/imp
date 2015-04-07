@@ -28,6 +28,15 @@ Two different scoring files are provided:
     From the command line, the files can be found at \c build/data/atom if \imp
     is not installed or something like \c /usr/share/imp/data/atom if it is installed.
 
+# ligand_score_multiple {#ligand_score_multiple_bin}
+Score ligand poses from docking output.
+Like the `ligand_score` tool, this scores ligand poses, but unlike that tool,
+it does score the current pose; instead, it scores each pose
+corresponding to a transformation in a docking program output file.
+The transformation file has a simple format (it is a subset of the PatchDock
+output); the 7 space-separated columns should be the transformation number
+followed by the ligand translation and rotation.
+
 # Info
 
 _Author(s)_: Daniel Russel, Ben Webb, Dina Schneidman, Javier Velazquez-Muriel, Hao Fan
