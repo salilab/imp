@@ -11,7 +11,7 @@ import sys
 import getopt
 import shutil
 import re
-
+import time
 
 def fix_string(input, modname):
     return input.replace("scratch", modname)\
@@ -45,6 +45,25 @@ def copy_dir(source, dest, modname):
                 output = input
             file(xdpath, 'w').write(output)
 
+def make_readme(modpath):
+    """Overwrite README.md from scratch module with a new one"""
+    outf = os.path.join(modpath, 'README.md')
+    with open(outf, 'w') as fh:
+        fh.write("""\\brief New module created by make-module.py on %s
+
+Fill in this file with a description of your module.
+
+# Info
+
+_Author(s)_: (full names of author(s))
+
+_Maintainer_: (GitHub name of active maintainer)
+
+_License_: None
+
+_Publications_:
+- None
+""" % time.strftime("%c"))
 
 def main():
     impdir = os.path.split(os.path.split(sys.argv[0])[0])[0]
@@ -62,6 +81,7 @@ def main():
     print("Creating a new module " + modname + " in " + modpath)
     os.mkdir(modpath)
     copy_dir(os.path.join(impdir, "modules", "scratch"), modpath, modname)
+    make_readme(modpath)
 
 
 if __name__ == '__main__':
