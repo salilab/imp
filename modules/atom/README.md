@@ -39,7 +39,7 @@ followed by the ligand translation and rotation.
 
 # Info
 
-_Author(s)_: Daniel Russel, Ben Webb, Dina Schneidman, Javier Velazquez-Muriel, Hao Fan
+_Author(s)_: Daniel Russel, Ben Webb, Dina Schneidman, Javier Velázquez-Muriel, Hao Fan
 
 _Maintainer_: `benmwebb`
 

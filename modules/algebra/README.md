@@ -63,7 +63,7 @@ We ship a copy of Eigen as part of IMP as Eigen support varies quite considerabl
 
 # Info
 
-_Author(s)_: Daniel Russel, Keren Lasker, Ben Webb, Javier Angel Velazquez-Muriel
+_Author(s)_: Daniel Russel, Keren Lasker, Ben Webb, Javier Angel Velázquez-Muriel
 
 _Maintainer_: `benmwebb`
 
