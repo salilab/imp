@@ -75,6 +75,9 @@ def main():
         modpath = sys.argv[2]
     else:
         modpath = os.path.join("modules", modname)
+    if not re.match('[a-zA-Z0-9_]+$', modname):
+        print("Module names can only contain letters, numbers, and underscores")
+        return
     if os.path.isdir(modpath):
         print("Module already exists")
         return
