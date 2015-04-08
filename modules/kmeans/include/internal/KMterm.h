@@ -1,8 +1,6 @@
 /**
  *  \file KMterm.h
  *  \brief Include file for kmeans algorithm
- *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPKMEANS_INTERNAL_KMTERM_H

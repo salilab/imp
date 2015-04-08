@@ -2,7 +2,6 @@
  *  \file KMfilterCenters.h
  *  \brief
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
 //----------------------------------------------------------------------
 //      File:           KMfilterCenters.h
 //      Programmer:     David Mount

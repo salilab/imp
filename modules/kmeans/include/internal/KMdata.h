@@ -2,7 +2,6 @@
  *  \file KMdata.h
  *  \brief
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
 //----------------------------------------------------------------------
 //      File:           KMData.h
 //      Programmer:     David Mount

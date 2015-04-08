@@ -2,7 +2,6 @@
  *  \file KM_ANN.h
  *  \brief
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
 //----------------------------------------------------------------------
 //      File:           KM_ANN.h
 //      Programmer:     David Mount

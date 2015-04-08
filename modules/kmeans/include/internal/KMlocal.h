@@ -2,7 +2,6 @@
  *  \file KMlocal.h
  *  \brief
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
 //----------------------------------------------------------------------
 //      File:           KMlocal.h
 //      Programmer:     David Mount

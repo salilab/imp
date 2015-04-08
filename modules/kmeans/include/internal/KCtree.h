@@ -2,7 +2,6 @@
  *  \file KCtree.h
  *  \brief
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
 //----------------------------------------------------------------------
 //      File:            KCtree.h
 //      Programmer:      David Mount

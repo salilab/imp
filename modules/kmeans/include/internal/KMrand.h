@@ -2,7 +2,6 @@
  *  \file KMrand.h
  *  \brief
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
 //----------------------------------------------------------------------
 //      File:            KMrand.h
 //      Programmer:      Sunil Arya and David Mount

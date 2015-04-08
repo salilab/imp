@@ -2,7 +2,6 @@
  *  \file KCutil.h
  *  \brief
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
 //----------------------------------------------------------------------
 //      File:            KCutil.h
 //      Programmer:      David Mount
