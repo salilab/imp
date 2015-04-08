@@ -58,8 +58,6 @@ if(POLICY CMP0042)
 cmake_policy(SET CMP0042 OLD)
 endif(POLICY CMP0042)
 
-set(IMP_TEST_SETUP ${PROJECT_BINARY_DIR}/setup_imp.py)
-
 set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")
 set(SWIG_EXECUTABLE swig CACHE STRING "Swig program")
