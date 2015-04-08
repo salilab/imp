@@ -13,13 +13,13 @@
 #include "deprecation.h"
 
 /** Used to implement deprecation support. See the
-    [IMP deprecation policy](https://github.com/salilab/imp/wiki/Deprecation).*/
+    [IMP deprecation policy](@ref deprecation).*/
 #define IMP_DEPRECATED_MACRO(version, help_message)                 \
   IMP_PRAGMA(message("This macro is deprecated as of IMP " #version \
                      ": " help_message))
 
 /** Used to implement deprecation support. See the
-    [IMP deprecation policy](https://github.com/salilab/imp/wiki/Deprecation).*/
+    [IMP deprecation policy](@ref deprecation).*/
 #define IMP_DEPRECATED_OBJECT_RUNTIME_WARNING(version, help_message) \
   {                                                                  \
     std::ostringstream oss;                                          \
@@ -29,7 +29,7 @@
   }
 
 /** Used to implement deprecation support. See the
-    [IMP deprecation policy](https://github.com/salilab/imp/wiki/Deprecation).*/
+    [IMP deprecation policy](@ref deprecation).*/
 #define IMP_DEPRECATED_VALUE_RUNTIME_WARNING(version, help_message)      \
   {                                                                      \
     std::ostringstream oss;                                              \
@@ -39,7 +39,7 @@
   }
 
 /** Used to implement deprecation support. See the
-    [IMP deprecation policy](https://github.com/salilab/imp/wiki/Deprecation).*/
+    [IMP deprecation policy](@ref deprecation).*/
 #define IMP_DEPRECATED_FUNCTION_RUNTIME_WARNING(version, help_message)      \
   {                                                                         \
     std::ostringstream oss;                                                 \
@@ -49,7 +49,7 @@
   }
 
 /** Used to implement deprecation support. See the
-    [IMP deprecation policy](https://github.com/salilab/imp/wiki/Deprecation).*/
+    [IMP deprecation policy](@ref deprecation).*/
 #define IMP_DEPRECATED_METHOD_RUNTIME_WARNING(version, help_message)      \
   {                                                                       \
     std::ostringstream oss;                                               \

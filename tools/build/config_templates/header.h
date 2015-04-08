@@ -199,15 +199,15 @@ namespace IMP {
   IMP_DEPRECATED_ATTRIBUTE
 
 #else //%(cppprefix)s_SHOW_WARNINGS
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
+/** See [deprecation support](@ref deprecation). */
 #define %(cppprefix)s_DEPRECATED_HEADER(version, help_message) \
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
+/** See [deprecation support](@ref deprecation). */
 #define %(cppprefix)s_DEPRECATED_VALUE_DECL(version)
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
+/** See [deprecation support](@ref deprecation). */
 #define %(cppprefix)s_DEPRECATED_OBJECT_DECL(version)
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
+/** See [deprecation support](@ref deprecation). */
 #define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version)
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
+/** See [deprecation support](@ref deprecation). */
 #define %(cppprefix)s_DEPRECATED_METHOD_DECL(version)
 
 #endif // %(cppprefix)s_SHOW_WARNINGS
@@ -219,7 +219,7 @@ namespace IMP {
   || defined(IMPSTATISTICS_COMPILATION) || defined(IMPDOMINO_COMPILATION) \
   || defined(IMPCONTAINER_COMPILATION) || defined(IMPDISPLAY_COMPILATION) \
   || defined(IMPSCOREFUNCTOR_COMPILATION)
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
+/** See [deprecation support](@ref deprecation). */
 #define %(cppprefix)s_DEPRECATED_MACRO(version, message)
 
 #else
@@ -227,19 +227,19 @@ namespace IMP {
   IMP_DEPRECATED_MACRO(version, message)
 #endif
 
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
+/** See [deprecation support](@ref deprecation). */
 #define %(cppprefix)s_DEPRECATED_VALUE_DEF(version, message) \
   IMP_DEPRECATED_VALUE_RUNTIME_WARNING(version, message)
 
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
+/** See [deprecation support](@ref deprecation). */
 #define %(cppprefix)s_DEPRECATED_OBJECT_DEF(version, message) \
   IMP_DEPRECATED_OBJECT_RUNTIME_WARNING(version, message)
 
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
+/** See [deprecation support](@ref deprecation). */
 #define %(cppprefix)s_DEPRECATED_FUNCTION_DEF(version, message) \
   IMP_DEPRECATED_FUNCTION_RUNTIME_WARNING(version, message)
 
-/** See [deprecation support](https://github.com/salilab/imp/wiki/Deprecation). */
+/** See [deprecation support](@ref deprecation). */
 #define %(cppprefix)s_DEPRECATED_METHOD_DEF(version, message) \
   IMP_DEPRECATED_METHOD_RUNTIME_WARNING(version, message)
 
