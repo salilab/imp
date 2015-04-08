@@ -117,5 +117,8 @@ div.doxnavlinks {
 
 div.doxnavlinks img {
   height: 1.4em;
+}
+
+div.doxnavlinks a {
   margin-left: 1.0em;
 }
