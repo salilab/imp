@@ -1,0 +1,94 @@
+#! /usr/bin/env bash
+#
+# git-flow -- A collection of Git extensions to provide high-level
+# repository operations for Vincent Driessen's branching model.
+#
+# Original blog post presenting this model is found at:
+#    http://nvie.com/git-model
+#
+# Feel free to contribute to this project at:
+#    http://github.com/nvie/gitflow
+#
+# Copyright 2010 Vincent Driessen. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#    1. Redistributions of source code must retain the above copyright notice,
+#       this list of conditions and the following disclaimer.
+#
+#    2. Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY VINCENT DRIESSEN ``AS IS'' AND ANY EXPRESS OR
+# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+# EVENT SHALL VINCENT DRIESSEN OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+# OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+# EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# The views and conclusions contained in the software and documentation are
+# those of the authors and should not be interpreted as representing official
+# policies, either expressed or implied, of Vincent Driessen.
+#
+
+init() {
+  require_git_repo
+  require_gitimp_initialized
+  gitimp_load_settings
+  PREFIX=$(git config --get gitimp.prefix.feature)
+}
+
+
+usage() {
+	echo "usage: git imp update"
+}
+
+# Default entry when no SUBACTION is given
+cmd_default() {
+        require_clean_working_tree
+        branch=`git rev-parse --abbrev-ref HEAD`
+        echo "Fetching changes from origin"
+        if ! git_do fetch --all > /dev/null; then
+           die "Could not get changes from origin"
+        fi
+        changes=`git_do diff develop origin/develop -- ChangeLog.md | grep "^\+[^\+]"`
+        echo "Merging in changes"
+        if ! git_do pull -q --all; then
+          die "Error merging in changes. Please clean things up and re-run git imp update."
+        fi
+        if ! git_do submodule update --recursive --init; then
+          die "Initializing submodules. Please clean things up and re-run git imp update."
+        fi
+        if ! git_do submodule update --recursive; then
+          die "Error merging in changes for submodules. Please clean things up and re-run git imp update."
+        fi
+        echo "Running setup_git.py"
+        ./setup_git.py > /dev/null
+        echo "Updating submodules"
+        if ! git_do submodule update; then
+          die "Unable to update submodules."
+        fi
+
+        for m in modules/* applications/*; do
+          if [ -e $m/.git ]; then
+            echo "Updating" $m
+            pushd $m > /dev/null
+            git pull --rebase --all
+            popd > /dev/null
+          fi
+        done
+        if ! [ -z "$changes" ]; then
+          echo "$changes"
+        fi
+}
+
+cmd_help() {
+	usage
+	exit 0
+}
