@@ -2,9 +2,6 @@
 	path = modules/rmf/dependency/RMF_source
 	url = ../rmf.git
 
-[submodule "tools/git/gitflow"]
-	path = tools/git/gitflow
-	url = ../gitflow_imp.git
 [submodule "modules/pmi"]
 	path = modules/pmi
 	url = ../pmi.git
