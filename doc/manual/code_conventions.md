@@ -29,18 +29,18 @@ is correctly indented by using the
 In addition to the previously-described
 [naming and interface conventions](@ref conventions),
 developers should be aware that
-- all preprocessor symbols must begin with `IMP`.
+- all preprocessor symbols must begin with `%IMP`.
 - names of files that implement a single class should be named for that
   class; for example the `SpecialVector` class could be implemented in
   `SpecialVector.h` and `SpecialVector.cpp`
 - files that provide free functions or macros should be given names
-  `separated_by_underscores`, for `example `container_macros.h`
+  `separated_by_underscores`, for %example `container_macros.h`
 - Functions which take a parameter which has [units](@ref units) should have the
   unit as part of the function name, for %example
   IMP::atom::SimulationParameters::set_maximum_time_step_in_femtoseconds().
   Remember the Mars orbiter. The exception to this is distance and
-  force numbers which should always be in angstroms and kcal/mol
-  angstrom respectively unless otherwise stated.
+  force numbers which should always be in angstroms and
+  kcal/mol/angstrom respectively unless otherwise stated.
 
 # Passing and storing data {#codeconv_passing}
 
@@ -78,13 +78,13 @@ IMP::base::Exception for a list of existing exceptions. See
 
 # Namespaces {#codeconv_namespace}
 
-Use the provided `IMPMODULE_BEGIN_NAMESPACE,`
-`IMPMODULE_END_NAMESPACE,` `IMPMODULE_BEGIN_INTERNAL_NAMESPACE` and
+Use the provided `IMPMODULE_BEGIN_NAMESPACE`,
+`IMPMODULE_END_NAMESPACE`, `IMPMODULE_BEGIN_INTERNAL_NAMESPACE` and
 `IMPMODULE_END_INTERNAL_NAMESPACE` macros to put declarations in a
-namespace appropriate for module `MODULE.`
+namespace appropriate for module `MODULE`.
 
 Each module has an internal namespace, eg `IMP::base::internal` and an internal
-include directory `IMP/base/internal.` Any function which is
+include directory `IMP/base/internal`. Any function which is
  - not intended to be part of the API,
  - not documented,
  - liable to change without notice,
