@@ -4,8 +4,7 @@ Conventions {#conventions}
 [TOC]
 
 %IMP tries to make things simpler to use by adhering to various naming
-and interface conventions (see also the [units used in IMP](@ref units)).
-New code should follow the same conventions.
+and interface conventions.
 
 # Names {#conventions_names}
 
