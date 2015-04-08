@@ -39,6 +39,8 @@ to the [Reference Guide](../ref/).
 
  - The IMP C++/Python library
    - [Overview](@ref library_overview)
+   - [Logging](@ref logging)
+   - [Runtime checks](@ref checks)
    - [Units](@ref units)
    - [Parallelization](@ref parallel)
 
