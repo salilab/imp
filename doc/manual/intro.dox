@@ -26,8 +26,7 @@ detail</a> previously. These methods can include:
   - X-ray crystallography
   - nuclear magnetic resonance (NMR) spectroscopy
     (CSP, [NOE](@ref IMP::isd::NOERestraint), J-couplings)
-  - electron microscopy (EM)
-  - Electron Microscopy (EM) ([2D class averages](@ref IMP::em2d)
+  - electron microscopy (EM) ([2D class averages](@ref IMP::em2d)
     or [3D maps](@ref IMP::em))
   - footprinting
   - [Immunoprecipitation pull-down](@ref IMP::core::ConnectivityRestraint)
