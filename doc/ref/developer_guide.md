@@ -143,16 +143,6 @@ are committing patches to svn may want to subscribe to the `imp-commits` email
 list which receives notices of all changes made to the IMP repository.
 
 
-### C++ 11 ### {#devguide_cxx11}
-IMP now turns on C++ 11 support when it can. However, since compilers
-are still quite variable in which C++ 11 features they support, it is
-not adviseable to use them directly in IMP code at this point. To aid
-in their use when practical we provide several helper macros:
-- IMP_OVERRIDE inserts the `override` keyword when available
-- IMP_FINAL inserts the `final` keyword when available
-
-More will come.
-
 # Good programming practices # {#devguide_cpp}
 
 Two excellent sources for general C++ coding guidelines are

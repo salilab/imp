@@ -98,3 +98,13 @@ The functionality in such internal headers is
 
 As a result, such functions do not need to obey all the coding conventions
 (but we recommend that they do).
+
+# C++ 11 {#codeconv_cxx11}
+%IMP now turns on C++ 11 support when it can. However, since compilers
+are still quite variable in which C++ 11 features they support, it is
+not advisable to use them directly in %IMP code at this point. To aid
+in their use when practical we provide several helper macros:
+- `IMP_OVERRIDE` inserts the `override` keyword when available
+- `IMP_FINAL` inserts the `final` keyword when available
+
+More will come.
