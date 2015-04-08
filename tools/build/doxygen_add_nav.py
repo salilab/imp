@@ -24,6 +24,22 @@ def patch_html(content):
                   .replace('%IMP', 'IMP') \
                   .replace('`` blocks', '<code>*/</code> blocks')
 
+def patch_contents(index_html):
+    """Apply extra patches to index.html"""
+    version = "develop"
+    versionpath = "VERSION"
+    if os.path.exists(versionpath):
+        version = open(versionpath, "r").read().strip()
+    if 'develop' in version:
+        version += ' (a nightly build)'
+    content = open(index_html).readlines()
+    out = open(index_html, 'w')
+    for line in content:
+        line = line.replace('<div class="title">Contents',
+                            '<div class="title">IMP Manual')
+        line = line.replace('IMPVERSION', version)
+        out.write(line)
+
 def patch_all_other_html_pages(html_dir, already_patched):
     """Patch pages not already patched"""
     for f in glob.glob(os.path.join(html_dir, "*.html")):
@@ -138,6 +154,7 @@ def main():
         add_page_navigation(html_dir, 'index', [], None, contents[0][0], None,
                             already_patched)
     patch_all_other_html_pages(html_dir, already_patched)
+    patch_contents(os.path.join(html_dir, 'index.html'))
 
 if __name__ == '__main__':
     main()
