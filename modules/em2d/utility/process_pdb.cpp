@@ -29,8 +29,6 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/program_options.hpp>
-#include <time.h>    // time
-#include <stdlib.h>  // srand, rand
 
 namespace po = boost::program_options;
 namespace em = IMP::em;

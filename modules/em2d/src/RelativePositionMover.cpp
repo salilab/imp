@@ -9,9 +9,10 @@
 #include <IMP/em2d/RelativePositionMover.h>
 #include <IMP/base/random.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
-#include <ctime>
 #include <IMP/base/random.h>
 #include <IMP/algebra/vector_generators.h>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_int.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -23,7 +24,6 @@ RelativePositionMover::RelativePositionMover(core::RigidBody d,
   rbA_ = d;
   max_angle_ = max_rotation;
   max_translation_ = max_translation;
-  srand(time(nullptr));
   probabily_of_random_move_ = 0.0;
 }
 
@@ -35,7 +35,8 @@ void RelativePositionMover::add_internal_transformations(
 
 core::MonteCarloMoverResult RelativePositionMover::do_propose() {
   last_transformation_ = rbA_.get_reference_frame().get_transformation_to();
-  double p = static_cast<double>(rand()) / RAND_MAX;
+  ::boost::uniform_real<> zeroone(0., 1.);
+  double p = zeroone(base::random_number_generator);
   if (p < probabily_of_random_move_) {
     algebra::Vector3D translation = algebra::get_random_vector_in(
         algebra::Sphere3D(rbA_.get_coordinates(), max_translation_));
@@ -52,9 +53,12 @@ core::MonteCarloMoverResult RelativePositionMover::do_propose() {
     //         << rbA_ << " Transformation " <<  t << std::endl;
     rbA_.set_reference_frame(algebra::ReferenceFrame3D(t));
   } else {
+    ::boost::uniform_int<> randi(0, reference_rbs_.size() - 1);
+    unsigned int i = randi(base::random_number_generator);
 
-    unsigned int i = rand() % reference_rbs_.size();
-    unsigned int j = rand() % transformations_map_[i].size();
+    ::boost::uniform_int<> randj(0, transformations_map_[i].size() - 1);
+    unsigned int j = randj(base::random_number_generator);
+
     algebra::Transformation3D Tint = transformations_map_[i][j];
     IMP_LOG_TERSE("proposing a relative move. Rigid body "
                   << i << "Internal transformation " << j << " " << Tint
