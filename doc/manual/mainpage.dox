@@ -52,6 +52,7 @@ to the [Reference Guide](../ref/).
 
  - [Developing the IMP source code](@ref developing)
    - [Developer setup](@ref devsetup)
+   - [Conventions](@ref conventions)
    - [Documenting your code](@ref documenting)
    - [Debugging and testing your code](@ref testing)
    - [Writing examples](@ref write_examples)
