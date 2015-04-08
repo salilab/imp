@@ -2,7 +2,7 @@ Coding conventions {#code_conventions}
 ==================
 
 To ensure code consistency and readability, certain conventions
-must be adhered to when writing code for IMP. Some of these
+must be adhered to when writing code for %IMP. Some of these
 conventions are automatically checked for by source control before
 allowing a new commit, and can also be checked yourself in new
 code by running [check_standards.py](#devguide_check_standards).
