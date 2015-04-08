@@ -59,6 +59,8 @@ Note that this documentation is for version IMPVERSION of %IMP. For documentatio
    - [Developer setup](@ref devsetup)
    - [Directory structure](@ref directories)
    - [Coding conventions](@ref code_conventions)
+   - [Good programming practices](@ref good_practice)
+   - [IMP gotchas](@ref gotchas)
    - [Documenting your code](@ref documenting)
    - [Debugging and testing your code](@ref testing)
    - [Writing examples](@ref write_examples)
