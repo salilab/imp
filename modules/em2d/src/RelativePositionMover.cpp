@@ -24,7 +24,7 @@ RelativePositionMover::RelativePositionMover(core::RigidBody d,
   rbA_ = d;
   max_angle_ = max_rotation;
   max_translation_ = max_translation;
-  probabily_of_random_move_ = 0.0;
+  probability_of_random_move_ = 0.0;
 }
 
 void RelativePositionMover::add_internal_transformations(
@@ -37,7 +37,7 @@ core::MonteCarloMoverResult RelativePositionMover::do_propose() {
   last_transformation_ = rbA_.get_reference_frame().get_transformation_to();
   ::boost::uniform_real<> zeroone(0., 1.);
   double p = zeroone(base::random_number_generator);
-  if (p < probabily_of_random_move_) {
+  if (p < probability_of_random_move_) {
     algebra::Vector3D translation = algebra::get_random_vector_in(
         algebra::Sphere3D(rbA_.get_coordinates(), max_translation_));
     algebra::Vector3D axis = algebra::get_random_vector_on(
