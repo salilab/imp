@@ -1,18 +1,24 @@
-/** \page rnapolii_stalk Modeling of RNA Polymerase II stalk
+/** \page rnapolii_stalk Modeling of complexes using IMP::pmi
 
 \tableofcontents
 
+The _Python Modeling Interface_ (PMI) is a powerful set of tools designed
+to handle all [steps of the modeling protocol](@ref procedure) for
+typical modeling problems. It is designed to be used by writing a set of
+Python scripts.
+
 \section rnapolii_intro Introduction
 
-This example utilizes chemical cross-linking coupled with mass spectrometry,
-negative-stain electron microscopy (EM), and x-ray crystallography data to
-determine the localization of two subunits of RNA Polymerase II. We will try
+We will illustrate the use of PMI by determining the localization of two
+subunits of RNA Polymerase II, utilizing chemical cross-linking coupled with
+mass spectrometry, negative-stain electron microscopy (EM), and x-ray
+crystallography data. We will try
 to reconstruct the stalk of the complex, comprising of subunits Rpb4 and Rpb7,
 hypothesizing that we know already the structure of the remaining 10-subunit
 complex. The example can be easily generalized to any other set of subunits.
 
 To work through the example on your own system, you will need the following
-packages installed:
+packages installed in addition to [IMP itself](@ref installation):
 
 - [numpy and scipy](http://www.scipy.org/scipylib/download.html)
   for matrix and linear algebra

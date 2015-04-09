@@ -11,16 +11,11 @@ to the [Reference Guide](../ref/).
 
  - [Installation](@ref installation)
 
- - [Introduction](@ref intro)
+ - [Introduction to integrative modeling](@ref intro)
 
- - [Introduction to the IMP C++/Python library](@ref library_intro)
+ - [Design of IMP](@ref design)
 
- - [Modeling of complexes using IMP::pmi](@ref rnapolii_stalk)
-   - [Stage 1: Gathering of data](@ref rnapolii_1)
-   - [Stage 2: Representation of the system](@ref rnapolii_2)
-   - [Stage 3: Sampling](@ref rnapolii_3)
-   - [Stage 4a: Analysis part 1](@ref rnapolii_4)
-   - [Stage 4b: Analysis part 2](@ref rnapolii_4_2)
+ - [Chimera tools and web services](@ref web_services)
 
  - [Using command line tools](@ref cmdline)
    - [FoXS: fitting structures against SAXS data](@ref foxs_nup133)
@@ -39,7 +34,14 @@ to the [Reference Guide](../ref/).
 
    - [SAXSMerge: merging multiple SAXS profiles](@ref saxs_merge)
 
- - The IMP C++/Python library
+ - [Modeling of complexes using IMP::pmi](@ref rnapolii_stalk)
+   - [Stage 1: Gathering of data](@ref rnapolii_1)
+   - [Stage 2: Representation of the system](@ref rnapolii_2)
+   - [Stage 3: Sampling](@ref rnapolii_3)
+   - [Stage 4a: Analysis part 1](@ref rnapolii_4)
+   - [Stage 4b: Analysis part 2](@ref rnapolii_4_2)
+
+ - [The IMP C++/Python library](@ref library_intro)
    - [Overview](@ref library_overview)
    - [Logging](@ref logging)
    - [Runtime checks](@ref checks)

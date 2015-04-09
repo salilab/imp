@@ -1,5 +1,5 @@
 /**
-\page intro Introduction
+\page intro Introduction to integrative modeling
 
 To understand the function of a macromolecular assembly, we must know the
 structure of its components and the interactions between them. However,
@@ -13,8 +13,6 @@ atomic resolution. Finally, proteomics techniques, such as yeast two-hybrid
 and mass spectrometry, yield information about the interactions between
 proteins, but not the positions of these proteins within the assembly or
 the structures of the proteins themselves.
-
-\section intmodel Integrative modeling
 
 One approach to solve the structures of proteins and their assemblies
 is by "integrative" or "hybrid" modeling, in which information from different methods
@@ -73,6 +71,8 @@ Hybrid structures based on our integrative approach:
  - Chromatin globin domain
  - The lymphoblastoid cell genome
 
+\section procedure Integrative modeling procedure
+
 The integrative modeling procedure used here is shown below.
 
 <img class="textfigure" src="intmodel.png"
@@ -108,27 +108,3 @@ subsets of data conflict with others. The analysis may generate a
 consensus model, such as the probability density for the location of
 each subunit in the assembly, and yield a measure of the uncertainty in the
 solutions.
-
-\section intplat Integrative Modeling Platform
-
-The Integrative Modeling Platform (%IMP) software implements the
-integrative modeling procedure described above. Integrative modeling
-problems vary in size and scope, and thus %IMP offers a great deal of
-flexibility and several abstraction levels as part of a multi-tiered
-platform:
-
-<img class="textfigure" src="imp-design.png"
-     alt="IMP software design">
-
-At the lowest level, %IMP provides building blocks and tools to
-allow methods developers to convert data from new experimental methods
-into spatial restraints, to implement optimization and analysis techniques,
-and to implement an integrative modeling procedure from scratch; the
-developer can use the C++ and Python programming languages to achieve
-these tasks. Higher abstraction levels, designed to be used by %IMP users
-with no programming experience, provide less flexible but more user-friendly
-applications to handle specific tasks, such as fitting of proteins into
-a density map of their assembly, or comparing a structure with the
-corresponding SAXS profile.
-
-*/
