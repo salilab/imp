@@ -99,7 +99,7 @@ def write_children(children, out):
 def add_page_navigation(html_dir, pagename, children, prevpage, nextpage,
                         uppage, already_patched):
     def make_link(title, img, dest):
-        return '<a href="%s.html" title="%s"><img src="%s.png" alt="%s"></a>' \
+        return '<a href="%s.html" title="%s"><img src="%s.png" alt="%s"/></a>' \
                % (dest, title, img, img)
     links = []
     if prevpage:
