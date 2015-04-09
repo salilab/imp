@@ -7,7 +7,7 @@ that want to use existing %IMP functionality. Those that want to modify the
 %IMP source code to develop new methods (_developers_) may also want to refer
 to the [Reference Guide](../ref/).
 
-Note that this documentation is for version IMPVERSION of %IMP. For documentation for other versions, please see the [documentation page at the IMP website](http://integrativemodeling.org/doc.html).
+\note This documentation is for version IMPVERSION of %IMP. For documentation for other versions, please see the [documentation page at the IMP website](http://integrativemodeling.org/doc.html).
 
  - [Installation](@ref installation)
 

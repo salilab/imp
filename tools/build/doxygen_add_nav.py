@@ -29,7 +29,7 @@ def patch_contents(index_html):
     version = "develop"
     versionpath = "VERSION"
     if os.path.exists(versionpath):
-        version = open(versionpath, "r").read().strip()
+        version = '<b>' + open(versionpath, "r").read().strip() + '</b>'
     if 'develop' in version:
         version += ' (a nightly build)'
     content = open(index_html).readlines()
