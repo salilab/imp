@@ -122,3 +122,9 @@ div.doxnavlinks img {
 div.doxnavlinks a {
   margin-left: 1.0em;
 }
+
+.doxversion {
+  font-size: small;
+  font-style: italic;
+  vertical-align: top;
+}
