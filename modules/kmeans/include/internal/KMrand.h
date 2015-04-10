@@ -26,6 +26,8 @@
 #ifndef IMPKMEANS_INTERNAL_KMRAND_H
 #define IMPKMEANS_INTERNAL_KMRAND_H
 
+#include <IMP/kmeans/kmeans_config.h>
+
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
 IMPKMEANSEXPORT int kmRanInt(  // random integer
