@@ -1,0 +1,8 @@
+*.pyc
+*~
+~.orig
+*~
+.*.sw?
+CMakeLists.txt
+CMakeModules
+Files.cmake
