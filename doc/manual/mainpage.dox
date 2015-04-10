@@ -63,6 +63,7 @@ to the [Reference Guide](../ref/).
    - [Coding conventions](@ref code_conventions)
    - [Good programming practices](@ref good_practice)
    - [IMP gotchas](@ref gotchas)
+   - [Tools for developers](@ref dev_tools)
    - [Documenting your code](@ref documenting)
    - [Debugging and testing your code](@ref testing)
    - [Writing examples](@ref write_examples)

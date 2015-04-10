@@ -14,7 +14,7 @@ All new code should also conform to the previously-described
 # Indentation {#codeconv_indentation}
 
 All C++ headers and code should be indented with 2-space indents. Do not use
-tabs. [clang-format](\ref dev_tools_clang_format) can help you do this formatting
+tabs. [cleanup_code.py](\ref dev_tools_cleanup_code) can help you do this formatting
 automatically.
 
 All Python code should conform to the [Python style
@@ -22,7 +22,7 @@ guide](http://www.python.org/dev/peps/pep-0008/).  In essence this
 translates to 4-space indents, no tabs, and similar class, method and
 variable naming to the C++ code. You can ensure that your Python code
 is correctly indented by using the
-[cleanup_code.py script](\ref dev_tools_clang_format).
+[cleanup_code.py script](\ref dev_tools_cleanup_code).
 
 # Names {#codeconv_names}
 

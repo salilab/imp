@@ -95,10 +95,11 @@ def generate_doxyfile(
 
     if manual:
         inputsh = [source + "/doc/manual",
+                   source + "/tools/README.md",
                    source + "/ChangeLog.md"]
     else:
         inputsh = ["doxygen/generated", source + "/doc/ref",
-                   source + "/tools/README.md", "include", "doc/examples"]
+                   "include", "doc/examples"]
         for m, p in tools.get_modules(source):
             doc = os.path.join(p, "doc")
             inputsh.append(os.path.join("lib", "IMP", m))
