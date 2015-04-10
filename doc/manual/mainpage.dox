@@ -75,6 +75,7 @@ to the [Reference Guide](../ref/).
    - [Profiling your code](@ref profiling)
    - [Deprecation](@ref deprecation)
    - [Cross platform compatibility](@ref cross_platform)
+   - [Supporting your code](@ref supporting)
 
  - [Internals](@ref internals)
    - [Dependencies](@ref internal_dependencies)

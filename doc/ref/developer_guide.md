@@ -53,14 +53,3 @@ All code contributed to IMP
 - must not have warnings when its doc is built
 
 See [getting started as a developer](https://github.com/salilab/imp/wiki/Getting-started-as-a-developer) for more information on submitting code.
-
-## Once you have submitted code ## {#devguide_supporting}
-
-Once you have submitted code, you should monitor the [Nightly build
-status](http://integrativemodeling.org/nightly/results/) to make sure that
-your code builds on all platforms and passes the unit tests. Please
-fix all build problems as fast as possible.
-
-In addition to monitoring the `imp-dev` list, developers who have a module or
-are committing patches to svn may want to subscribe to the `imp-commits` email
-list which receives notices of all changes made to the IMP repository.
