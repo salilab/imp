@@ -1,0 +1,10 @@
+#!/bin/sh
+branch=`git rev-parse --abbrev-ref HEAD`
+
+last_message=`git log -n 1 --oneline | grep "Merge branch"`
+
+if test -n "$last_message"
+then
+    echo "$(tput setaf 1)WARNING: The last commit message is a merge commit. Please undo the merge and make sure you rebase your branch before merging.$(tput sgr0)"
+    echo "To undo, you can do git reset HEAD\^ --keep. Please make sure you don't have any uncommitted changes first."
+fi

@@ -1,0 +1,20 @@
+/**
+\namespace RMF
+
+\brief The namespace for all functionality in the library.
+
+In python, the module is also called RMF.
+
+\namespace RMF::HDF5
+
+\brief The namespace for all HDF5 functionality in the library.
+
+In python, the module is also called RMF.HDF5.
+
+\namespace RMF::decorator
+
+\brief See [Decorators and Attributes](\ref decoratorsattributes) for more information.
+
+This namespace contains all decorator-related functionality. In python it is simply mapped to the RMF module.
+
+*/

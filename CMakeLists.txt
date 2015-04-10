@@ -1,0 +1,143 @@
+cmake_minimum_required(VERSION 2.8)
+project(RMF)
+
+# needs to be in main CMakeLists.txt
+enable_testing()
+
+execute_process(COMMAND python setup_git.py
+                  RESULT_VARIABLE setup
+                  OUTPUT_VARIABLE toutput
+                  ERROR_VARIABLE error
+                  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(NOT ${setup} EQUAL 0)
+   message(FATAL_ERROR " Failed to run setup_git.py: ${setup}; ${error}")
+endif()
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake_modules)
+
+# C++11 can use the boost version
+set(Boost_NO_BOOST_CMAKE ON)
+find_package(Boost COMPONENTS system filesystem thread program_options iostreams
+  REQUIRED)
+
+include(FindHDF5)
+find_package(HDF5 1.8)
+
+if("${HDF5_INCLUDE_DIRS}" MATCHES .*NOTFOUND)
+set(RMF_DEPRECATED_BACKENDS 0 CACHE BOOL "Whether to build deprecated backends.")
+set(HDF5_LIBRARIES "" CACHE INTERNAL "" FORCE)
+set(HDF5_INCLUDE_DIRS "" CACHE INTERNAL "" FORCE)
+else()
+set(RMF_DEPRECATED_BACKENDS 1 CACHE BOOL "Whether to build deprecated backends.")
+endif()
+
+if(RMF_DEPRECATED_BACKENDS)
+message(STATUS "Deprecated backends (and hdf5) are enabled")
+else()
+message(STATUS "Deprecated backends (and hdf5) are disabled")
+endif()
+
+include(cmake_modules/IMPExecuteProcess.cmake)
+include(cmake_modules/FindLog4CXX.cmake)
+include(cmake_modules/IMPFindC++11.cmake)
+include(cmake_modules/IMPFindCompilerFlags.cmake)
+
+if(RMF_DEPRECATED_BACKENDS)
+imp_execute_process("Making RMF/HDF5.h" ${PROJECT_SOURCE_DIR}
+  COMMAND "python" "${PROJECT_SOURCE_DIR}/tools/dev_tools/make_all_header.py" ${PROJECT_BINARY_DIR}/include/RMF/HDF5.h RMF/HDF5 ${PROJECT_SOURCE_DIR}/include/RMF/HDF5)
+endif()
+
+imp_execute_process("Making RMF.h" ${PROJECT_SOURCE_DIR}
+  COMMAND "python" "${PROJECT_SOURCE_DIR}/tools/dev_tools/make_all_header.py" ${PROJECT_BINARY_DIR}/include/RMF.h RMF ${PROJECT_SOURCE_DIR}/include/RMF)
+
+
+message(STATUS "Running setup_cmake.py")
+imp_execute_process("Running setup_cmake.py"  ${PROJECT_SOURCE_DIR} COMMAND python ${PROJECT_SOURCE_DIR}/tools/dev_tools/setup_cmake.py)
+
+include_directories(BEFORE "${PROJECT_BINARY_DIR}/include"
+  "${PROJECT_SOURCE_DIR}/include")
+
+set(RMF_INCLUDE_PATH "" CACHE INTERNAL "" FORCE)
+
+# make sure it initialized
+set(RMF_TESTS "" CACHE INTERNAL "" FORCE)
+
+if(POLICY CMP0017)
+cmake_policy(SET CMP0017 NEW)
+endif(POLICY CMP0017)
+
+# Don't set MACOSX_RPATH by default
+if(POLICY CMP0042)
+cmake_policy(SET CMP0042 OLD)
+endif(POLICY CMP0042)
+
+if (${Log4CXX_LIBRARY} MATCHES "Log4CXX_LIBRARY-NOTFOUND")
+  set(RMF_HAS_LOG4CXX "0" CACHE BOOL "Whether to use Log4CXX" FORCE)
+  message(STATUS "Logging disabled")
+  set(Log4CXX_LIBRARY "")
+else()
+  message(STATUS "Logging enabled")
+  set(RMF_HAS_LOG4CXX "1" CACHE BOOL "Whether to use Log4CXX" FORCE)
+  include_directories(${Log4CXX_INCLUDE_DIR})
+  link_directories(${Log4CXX_LIBRARY_DIR})
+endif()
+
+
+include(GNUInstallDirs)
+
+
+include_directories(${HDF5_INCLUDE_DIRS})
+set(RMF_INCLUDE_PATH ${RMF_INCLUDE_PATH} ${HDF5_INCLUDE_DIRS}
+    CACHE INTERNAL "" FORCE)
+
+include_directories(${Boost_INCLUDE_DIR})
+link_directories(${Boost_LIBRARY_DIRS})
+
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+
+set (RMF_VERSION_MAJOR 1)
+set (RMF_VERSION_MINOR 1)
+
+set(RMF_HAS_DEBUG_VECTOR 0 CACHE BOOL "Whether to use a bounds checked vector")
+
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file (
+  "${PROJECT_SOURCE_DIR}/config.h.in"
+  "${PROJECT_BINARY_DIR}/include/RMF/config.h"
+  )
+
+add_subdirectory(data)
+add_subdirectory(include)
+
+add_subdirectory(src)
+add_subdirectory(bin)
+
+add_subdirectory(plugins/vmd/)
+add_subdirectory(plugins/pymol/)
+
+# swig support is a little broken
+
+if (DEFINED CMAKE_INSTALL_PYTHONDIR)
+  #message(STATUS "CMAKE_INSTALL_PYTHONDIR defined as ${CMAKE_INSTALL_PYTHONDIR}")
+else()
+  set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python/site_packages")
+endif()
+
+if (DEFINED CMAKE_INSTALL_SWIGDIR)
+  #message(STATUS "CMAKE_INSTALL_SWIGDIR defined as ${CMAKE_INSTALL_SWIGDIR}")
+else()
+  set(CMAKE_INSTALL_SWIGDIR "${CMAKE_INSTALL_PREFIX}/share/RMF/swig")
+endif()
+
+
+add_subdirectory(swig)
+
+add_subdirectory(test)
+add_subdirectory(examples)
+add_subdirectory(benchmark)
+add_subdirectory(doc)
+
+add_custom_target(RMF DEPENDS ${RMF_BINS} ${RMF_SWIG} ${RMF_TESTS} ${RMF_VMD} RMF-decorators)
+set_property(TARGET "RMF" PROPERTY FOLDER "RMF")
