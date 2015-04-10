@@ -32,9 +32,9 @@ if(IS_DIRECTORY "${PROJECT_SOURCE_DIR}/.git")
   endif()
 endif()
 
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPExecuteProcess.cmake)
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPAddTests.cmake)
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/CheckCompiles.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPExecuteProcess.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPAddTests.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/CheckCompiles.cmake)
 
 imp_execute_process("check_common_problems" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/check_common_problems.py)
 
@@ -42,12 +42,12 @@ imp_execute_process("clean_build_dir" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE
 
 imp_execute_process("setup_cmake" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_cmake.py)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules)
 
 enable_testing()
 
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPFindC++11.cmake)
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPFindCompilerFlags.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindC++11.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindCompilerFlags.cmake)
 
 if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
