@@ -64,6 +64,7 @@ to the [Reference Guide](../ref/).
    - [Good programming practices](@ref good_practice)
    - [IMP gotchas](@ref gotchas)
    - [Writing new code](@ref new_code)
+   - [Working with source control](@ref scm)
    - [Adding external dependencies](@ref extdepends)
    - [Design example](@ref designexample)
    - [Tools for developers](@ref dev_tools)
@@ -75,6 +76,7 @@ to the [Reference Guide](../ref/).
    - [Profiling your code](@ref profiling)
    - [Deprecation](@ref deprecation)
    - [Cross platform compatibility](@ref cross_platform)
+   - [Contributing code back to IMP](@ref cont_back)
    - [Supporting your code](@ref supporting)
 
  - [Internals](@ref internals)

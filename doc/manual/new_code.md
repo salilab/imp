@@ -6,17 +6,24 @@ create a new module using the [make-module.py](\ref dev_tools_make_module)
 script.  This creates a new module in the `modules` directory. Alternatively,
 you can simply use the `scratch` module.
 
-We highly recommend using a revision control system such as
-[git](http://git-scm.com/) to keep track of changes to your module.
-
 If, instead, you choose to add code to an existing module, you need to
 consult with the maintainer of that module. Their GitHub username
 can be found on the [module main page](../ref/namespaces.html).
 
+Either way, we highly recommend doing this in a [git clone](@ref devsetup),
+as described earlier, then using [git](@ref faq_git) to keep track of
+changes to your code.
+
 When designing the interface for your new code, you should
 
+- think about what exactly is the functionality you want to contribute. Is
+  it a single function, a single Restraint, a set of related classes
+  and functions?
+
 - search %IMP for similar functionality and, if there is any, adapt
-  the existing interface for your purposes. For example, the existing
+  the existing interface for your purposes. (It might make more sense to
+  modify the existing code in cooperation with its author.) For example,
+  the existing
   IMP::atom::read_pdb() and IMP::atom::write_pdb() functions provide
   templates that should be used for the design of any functions that
   create particles from a file or write particles to a file. Since
@@ -38,6 +45,11 @@ When designing the interface for your new code, you should
   IMP::kernel::Refiner, a IMP::kernel::SingletonContainer or just an arbitrary
   IMP::kernel::ParticleIndexes object.
 
-You may want to read [the design example](\ref designexample) for
+You are encouraged to post to the
+[imp-dev list](http://integrativemodeling.org/contact.html) to find help
+answering these questions as it can be hard to grasp all the various
+pieces of functionality already in the repository.
+
+You may also want to read [the design example](\ref designexample) for
 some suggestions on how to go about implementing your functionality
 in %IMP.

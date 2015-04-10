@@ -18,7 +18,7 @@ used to [build IMP from source](@ref installation_download).
 
  2. Build %IMP [as previously described](@ref installation_download) - the only
     difference is you will want to clone your fork, not the main %IMP
-    repository. You will probably want to use the `develop` branch, as that
+    repository. You will almost always want to use the `develop` branch, as that
     is where all new %IMP development occurs.
 
  3. Make your changes to %IMP (described in more detail below).

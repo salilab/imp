@@ -13,9 +13,6 @@ To help find things we provide the following indexes:
 - [Which examples each class is used in](@ref class_example_index)
 - [Which examples each function is used in](@ref function_example_index)
 
-Additional developer documentation:
-- [Developers' guide](@ref devguide)
-
 An overview of some of the various modules currently
 available. Representative classes and functions are shown. Most
 modules are licensed under the
