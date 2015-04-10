@@ -108,3 +108,4 @@ subsets of data conflict with others. The analysis may generate a
 consensus model, such as the probability density for the location of
 each subunit in the assembly, and yield a measure of the uncertainty in the
 solutions.
+*/
