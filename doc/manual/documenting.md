@@ -32,6 +32,10 @@ We provide a number of extra Doxygen commands to aid in producing nice
 - To mark a method as not having been implemented, use
   `\\unimplemented{Classname}`.
 
+Each %IMP module has a top-level `README.md` which is also parsed
+by Doxygen; it includes the names of the authors and
+a description of what the module is supposed to do.
+
 Building the target `IMP-doc` (e.g. by running `make IMP-doc`) will build
 documentation for all of the modules, while the `IMP.foobar-doc` target
 will build documentation only for the `foobar` module.
