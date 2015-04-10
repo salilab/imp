@@ -3,7 +3,9 @@ Overview {#library_overview}
 
 [TOC]
 
-The %IMP library provides tools to implement the computational parts of the integrative modeling iterative process, steps 2-4. This computation can be driven from Python scripts or C++ programs. The examples below will use Python scripts.
+The %IMP library provides tools to implement the computational parts of
+the [integrative modeling iterative process](@ref procedure) (steps 2-4).
+This computation can be driven from Python scripts or C++ programs. The examples below will use Python scripts.
 
 # Representation: IMP::Model {#overview_representation}
 

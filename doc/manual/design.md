@@ -1,5 +1,5 @@
-Design of IMP {#design}
-=============
+Design of %IMP {#design}
+==============
 
 The Integrative Modeling Platform (%IMP) software implements the
 integrative modeling procedure [described above](@ref procedure).
