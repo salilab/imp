@@ -225,3 +225,8 @@ Configurations of the model can be saved and visualized in a variety of ways. At
      IMP.rmf.add_hierarchy(my_rmf, my_hierarchy)
      IMP.rmf.add_restraint(my_rmf, my_excluded_volume_restraint)
      IMP.rmf.save_frame(my_rmf, 0)
+
+# Further reading {#overview_further}
+
+For more information on the various %IMP classes and modules, see the
+[Reference Guide](../ref/).
