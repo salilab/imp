@@ -25,17 +25,17 @@ print(d1, d2)
 f = IMP.core.Harmonic(0.0, 1.0)
 s = IMP.core.DistanceToSingletonScore(f, IMP.algebra.Vector3D(0., 0., 0.))
 r1 = IMP.core.SingletonRestraint(m, s, p1)
-m.add_restraint(r1)
 
 # Harmonically restrain p1 and p2 to be distance 5.0 apart
 f = IMP.core.Harmonic(5.0, 1.0)
 s = IMP.core.DistancePairScore(f)
 r2 = IMP.core.PairRestraint(m, s, (p1, p2))
-m.add_restraint(r2)
 
 # Optimize the x,y,z coordinates of both particles with conjugate gradients
+sf = IMP.core.RestraintsScoringFunction([r1, r2], "scoring function")
 d1.set_coordinates_are_optimized(True)
 d2.set_coordinates_are_optimized(True)
 o = IMP.core.ConjugateGradients(m)
+o.set_scoring_function(sf)
 o.optimize(50)
 print(d1, d2)

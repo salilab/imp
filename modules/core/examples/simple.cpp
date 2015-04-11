@@ -7,21 +7,21 @@
 
 #include <fstream>
 
-#include <IMP/kernel.h>
+#include <IMP.h>
 #include <IMP/algebra.h>
 #include <IMP/core.h>
 
 int main() {
-  IMP_NEW(IMP::kernel::Model, m, ());
+  IMP_NEW(IMP::Model, m, ());
 
-  // Create two "untyped" kernel::Particles
-  IMP_NEW(IMP::kernel::Particle, p1, (m));
-  IMP_NEW(IMP::kernel::Particle, p2, (m));
+  // Create two "untyped" particles
+  IMP::ParticleIndex p1 = m->add_particle("p1");
+  IMP::ParticleIndex p2 = m->add_particle("p2");
 
-  // "Decorate" the kernel::Particles with x,y,z attributes (point-like
+  // "Decorate" the particles with x,y,z attributes (point-like
   // particles)
-  IMP::core::XYZ d1 = IMP::core::XYZ::setup_particle(p1);
-  IMP::core::XYZ d2 = IMP::core::XYZ::setup_particle(p2);
+  IMP::core::XYZ d1 = IMP::core::XYZ::setup_particle(m, p1);
+  IMP::core::XYZ d2 = IMP::core::XYZ::setup_particle(m, p2);
 
   // Use some XYZ-specific functionality (set coordinates)
   d1.set_coordinates(IMP::algebra::Vector3D(10.0, 10.0, 10.0));
