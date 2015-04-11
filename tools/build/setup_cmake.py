@@ -15,91 +15,53 @@ import tools
 import subprocess
 from optparse import OptionParser
 
-check_template = open(
-    os.path.join("tools",
-                 "build",
-                 "cmake_templates",
-                 "Check.cmake"),
-    "r").read()
+check_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+                                                       "cmake_templates",
+                                                       "Check.cmake"))
 
-dep_template = open(
-    os.path.join("tools",
-                 "build",
-                 "cmake_templates",
-                 "Dependency.cmake"),
-    "r").read()
+dep_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+                                                     "cmake_templates",
+                                                     "Dependency.cmake"))
 
-lib_template = open(
-    os.path.join("tools",
-                 "build",
-                 "cmake_templates",
-                 "ModuleLib.cmake"),
-    "r").read()
+lib_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+                                                     "cmake_templates",
+                                                     "ModuleLib.cmake"))
 
-test_template = open(
-    os.path.join("tools",
-                 "build",
-                 "cmake_templates",
-                 "ModuleTest.cmake"),
-    "r").read()
+test_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+                                                      "cmake_templates",
+                                                      "ModuleTest.cmake"))
 
-examples_template = open(
-    os.path.join("tools",
-                 "build",
-                 "cmake_templates",
-                 "ModuleExamples.cmake"),
-    "r").read()
+examples_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+                                   "cmake_templates", "ModuleExamples.cmake"))
 
-swig_template = open(
-    os.path.join("tools",
-                 "build",
-                 "cmake_templates",
-                 "ModuleSwig.cmake"),
-    "r").read()
+swig_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+                                                      "cmake_templates",
+                                                      "ModuleSwig.cmake"))
 
-util_template = open(
-    os.path.join("tools",
-                 "build",
-                 "cmake_templates",
-                 "ModuleUtil.cmake"),
-    "r").read()
+util_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+                                                      "cmake_templates",
+                                                      "ModuleUtil.cmake"))
 
-bin_template = open(
-    os.path.join("tools",
-                 "build",
-                 "cmake_templates",
-                 "ModuleBin.cmake"),
-    "r").read()
+bin_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+                                                     "cmake_templates",
+                                                     "ModuleBin.cmake"))
 
-module_template = open(
-    os.path.join("tools",
-                 "build",
-                 "cmake_templates",
-                 "Module.cmake"),
-    "r").read()
+module_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+                                             "cmake_templates", "Module.cmake"))
 
-benchmark_template = open(
-    os.path.join("tools",
-                 "build",
-                 "cmake_templates",
-                 "ModuleBenchmark.cmake"),
-    "r").read()
+benchmark_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+                                    "cmake_templates", "ModuleBenchmark.cmake"))
 
 def make_check(path, module, module_path):
     name = os.path.splitext(os.path.split(path)[1])[0]
     cppsource = open(path, "r").read()
     macro = "IMP_COMPILER_%s" % name.upper()
-    output = check_template % {
-        "macro": macro,
-        "cppsource": tools.quote(
-            cppsource),
-        "module": module,
-        "name": name}
-    filename = os.path.join(
-        module_path,
-        "CMakeModules",
-        "Check" + name + ".cmake")
-    tools.rewrite(filename, output)
+    filename = os.path.join(module_path, "CMakeModules",
+                            "Check" + name + ".cmake")
+    check_template.write(filename,
+                         {"macro": macro,
+                          "cppsource": tools.quote(cppsource),
+                          "module": module, "name": name})
     defr = "%s=${%s}" % (macro, macro)
     return filename, defr
 
@@ -138,8 +100,7 @@ endif(DEFINED %(PKGNAME)s_INTERNAL)""" % descr
             descr["on_failure"] = """message("%s not found")\nfile(WRITE "${CMAKE_BINARY_DIR}/data/build_info/%s" "ok=False")""" % (
                 name, name)
             descr["on_setup"] = ""
-        output = dep_template % descr
-        tools.rewrite(filename, output)
+        dep_template.write(filename, descr)
     return filename
 
 
@@ -177,18 +138,17 @@ def setup_module(module, path, ordered):
         if ret:
             deps.append(ret)
 
+    g = tools.CMakeFileGenerator()
     if len(checks) > 0:
-        tools.rewrite(
-            "modules/%s/compiler/CMakeLists.txt" %
-            module, "\n".join(["include(${CMAKE_SOURCE_DIR}/%s)\n" %
+        g.write("modules/%s/compiler/CMakeLists.txt" % module,
+                "\n".join(["include(${CMAKE_SOURCE_DIR}/%s)\n" %
                                tools.to_cmake_path(x) for x in checks]))
         contents.append(
             "add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/compiler)" %
             module)
     if len(deps) > 0:
-        tools.rewrite(
-            "modules/%s/dependency/CMakeLists.txt" %
-            module, "\n".join(["include(${CMAKE_SOURCE_DIR}/%s)" %
+        g.write("modules/%s/dependency/CMakeLists.txt" % module,
+                "\n".join(["include(${CMAKE_SOURCE_DIR}/%s)" %
                                tools.to_cmake_path(x) for x in deps]))
         contents.append(
             "add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/dependency)" %
@@ -231,13 +191,13 @@ def setup_module(module, path, ordered):
     bin = os.path.join(path, "bin", "CMakeLists.txt")
     benchmark = os.path.join(path, "benchmark", "CMakeLists.txt")
     examples = os.path.join(path, "examples", "CMakeLists.txt")
-    tools.rewrite(main, lib_template % values)
-    tools.rewrite(tests, test_template % values)
-    tools.rewrite(swig, swig_template % values)
-    tools.rewrite(util, util_template % values)
-    tools.rewrite(bin, bin_template % values)
-    tools.rewrite(benchmark, benchmark_template % values)
-    tools.rewrite(examples, examples_template % values)
+    lib_template.write(main, values)
+    test_template.write(tests, values)
+    swig_template.write(swig, values)
+    util_template.write(util, values)
+    bin_template.write(bin, values)
+    benchmark_template.write(benchmark, values)
+    examples_template.write(examples, values)
     values["tests"] = "\n".join(contents)
     values["subdirs"] = """add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/src)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/test)
@@ -247,7 +207,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/bin)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/utility)""" % ((module,) * 6)
 
     out = os.path.join(path, "CMakeLists.txt")
-    tools.rewrite(out, module_template % values)
+    module_template.write(out, values)
 
     # at end so directories exist
     cmd = subprocess.Popen(
