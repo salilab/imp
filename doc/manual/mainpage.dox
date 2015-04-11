@@ -87,6 +87,7 @@ to the [Reference Guide](../ref/).
    - [RMF](@ref rmf)
    - [Building](@ref building)
    - [Eigen](@ref eigen)
+   - [git submodules and subtrees](@ref subtree)
 
  - [Copyright and licenses](@ref licenses)
 
