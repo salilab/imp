@@ -21,7 +21,7 @@ method to a real biological system, you should write a
 example.
 
 When writing examples, one should try (as appropriate) to do the following:
-- begin the example with `import` lines for the IMP modules used
+- begin the example with `import` lines for the %IMP modules used
 - have parameters describing the process taking place. These include names of
   PDB files, the resolution to perform computations at etc.
 - define a function `create_representating` which creates and returns the model

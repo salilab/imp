@@ -11,9 +11,9 @@ In order to make it more likely that your code works on all the supported platfo
   conditionally on the symbols `SWIG` and `IMP_DOXYGEN` to hide code as
   needed instead.
 - don't use Python modules that aren't available in Python 2.6 (the oldest
-  version of Python supported by IMP). For example, avoid `argparse`
+  version of Python supported by %IMP). For example, avoid `argparse`
   (use `optparse` instead).
-- try to write Python code that also works in Python 3 (IMP supports both
+- try to write Python code that also works in Python 3 (%IMP supports both
   Python 2 and Python 3 in one codebase). Most
   obviously, in Python 3, `print` is a function, not a statement. So write
   `print("foo")` rather than `print "foo"` - the former works in Python 2 too.
@@ -27,5 +27,5 @@ In order to make it more likely that your code works on all the supported platfo
 - try to avoid Linux- or Mac-centric coding that won't work on Windows.
   For example, use `os.path.join` to join paths in Python, rather than
   adding the '/' character. Write utility scripts in Python (which is
-  available on Windows, since the rest of IMP requires it) not as shell
+  available on Windows, since the rest of %IMP requires it) not as shell
   scripts, Perl scripts, etc.

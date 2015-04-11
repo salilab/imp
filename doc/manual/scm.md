@@ -43,8 +43,8 @@ or to test it as you are developing it). We provide tools, based on
 to facilitate this process.
 
  1. Run `git imp feature start feature_name` to start a new feature branch.
-    This will open up up an editor where you can write a `README.md` for
-    the feature. The contents of the `README.md` will be used to describe
+    This will open up up an editor where you can write a `%README.md` for
+    the feature. The contents of the `%README.md` will be used to describe
     the branch as well as the final commit message for the branch when
     it is merged into `develop`.
  2. Work on the branch as above (`git commit`, `git add` etc.)
@@ -58,7 +58,7 @@ to facilitate this process.
 When you are done and want to merge into `develop` do
 
  1. `git imp feature finish <feature_name>` to merge into `develop`,
-    using the contents of the `README.md` as the commit message.
-    The `README.md` file is removed before this is done.
+    using the contents of the `%README.md` as the commit message.
+    The `%README.md` file is removed before this is done.
  2. `git push origin :feature/<feature_name>` to remove the branch from
     the GitHub repository if you shared it

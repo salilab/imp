@@ -11,12 +11,12 @@ file (see `modules/example/pyext/swig.i-in`). The key bits are
 
       IMP_SWIG_VALUE(IMP::module_namespace, ClassName, ClassNames);
 
-- then there should be a number of `\%include` lines, one per header file
+- then there should be a number of `%%include` lines, one per header file
   in the module which exports a class or function to Python. The header files
   must be in order such that no class is used before a declaration for it
   is encountered (SWIG does not do recursive inclusion)
 - finally, any templates that are to be exported to SWIG must have a
-  `\%template` call. It should look something like
+  `%%template` call. It should look something like
 
       namespace IMP {
         namespace module_namespace {

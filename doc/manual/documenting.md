@@ -32,7 +32,7 @@ We provide a number of extra Doxygen commands to aid in producing nice
 - To mark a method as not having been implemented, use
   `\\unimplemented{Classname}`.
 
-Each %IMP module has a top-level `README.md` which is also parsed
+Each %IMP module has a top-level `%README.md` which is also parsed
 by Doxygen; it includes the names of the authors and
 a description of what the module is supposed to do.
 

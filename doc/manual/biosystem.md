@@ -1,5 +1,5 @@
-Applying IMP to a new biological system {#biosystem}
-=======================================
+Applying %IMP to a new biological system {#biosystem}
+========================================
 
 We have already applied %IMP to solve the structures of many novel biological
 systems, listed on the [biological systems page](http://integrativemodeling.org/systems/).
@@ -27,7 +27,7 @@ for an example):
    crosslinks), and outputs (where possible, due to size; it may not be feasible
    to upload all of your output models, for example, but only cluster
    representatives).
- - a top-level `README.md` file describing the system and explaining how to
+ - a top-level `%README.md` file describing the system and explaining how to
    run the protocol.
  - a `test` directory containing one or more Python scripts. It should be
    possible to run these scripts without any "special" setup (e.g. they should

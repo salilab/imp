@@ -30,7 +30,7 @@ collection of classes that define the storage of information about the system
 and the main interfaces used to interact with that information. However, in
 most cases the kernel does not provide actual implementations of these classes;
 these are provided in other modules.
-For example, it merely defines a [Restraint](IMP::Restraint)
+For example, it merely defines a [Restraint](@ref IMP::Restraint)
 as any object that, given a set of particles, returns a score, and an
 [Optimizer](@ref IMP::Optimizer) as an object that changes the
 attributes of all particles to yield an optimized score over all restraints.
@@ -40,10 +40,8 @@ harmonic 'spring' between two point-like particles, an Optimizer that
 [utilizes the conjugate gradients minimization method](@ref IMP::core::ConjugateGradients),
 and much other functionality.
 
-Some other %IMP modules provide the basic building blocks needed to construct
-a protocol, such as the [core module](@ref IMP::core) that provides
-functionality including harmonic restraints, point-like and spherical
-particles, and basic optimizers, and the [atom module](@ref IMP::atom) that
+Other %IMP modules provide the basic building blocks needed to construct
+a protocol, such as the [atom module](@ref IMP::atom) that
 provides atom-like particles, a molecular dynamics optimizer, etc.
 Other modules provide support for specific types of experimental data
 or specialized optimizers, such as the [em module](@ref IMP::em) that
@@ -142,7 +140,7 @@ IMP::core::RigidMember decorator.
 
 Biological modules are represented hierarchically in IMP using the IMP::atom::Hierarchy. These hierarchies follow the natural hierarchical nature of most biomolecules. A protein from a PDB would be a hierarchy with a root for the whole PDB file with a child per chain. Each chain particle has a child for each residue in the chain, and each residue has a child for each atom. Each particle has various types of associated data. For example an atom has data using the IMP::atom::Atom, IMP::core::XYZR, IMP::atom::Mass and IMP::atom::Hierarchy decorators.
 
-The structures represented do not have to be atomic and can be multi-resolution -  that is, they can have coordinates at any level of the hierarchy. The invariants are that the leaves must have coordinates, radii and mass. Pieces of the hierarchy can be picked out using the IMP::atom::Selection using the standard sorts of biological criteria:
+The structures represented do not have to be atomic and can be multi-resolution -  that is, they can have coordinates at any level of the hierarchy. The invariants are that the leaves must have coordinates, radii and mass. Pieces of the hierarchy can be picked out using IMP::atom::Selection using the standard sorts of biological criteria:
 
     # Select residues 10 through 49.
     my_residues= IMP.atom.Selection(my_pdb, residue_indexes=range(10,50)).get_particles()
@@ -162,7 +160,7 @@ These containers can then be used to create scoring functions or analyze the dat
 
 Many things such as rigid bodies and lists of all close pairs depend on maintaining some property as the model changes. These properties are maintained by IMP::Constraint objects. Since the invariants may depend on things that are reasonably expensive to compute, these invariants are updated only when requested. This means that if you change the coordinates of some particles, the contents of the close pairs list might be incorrect until it is updated. The required update can be triggered implicitly, for example when some scoring function needs it, or explicitly, when IMP::Model::update() is called.
 
-Behind the scenes, IMP maintains an IMP::DependencyGraph that tracks how information flows between the particles and the containers, based on the constraints. It is used to detect, for example, that a particular particle is part of a rigid body, and so if its coordinates are needed for scoring, the rigid body must be brought up to date and the appropriate constraint must be asked to update the member particle's coordinates. In order to be able to track this information, relevant objects (IMP::kernel::ModelObject) have methods IMP::kernel::ModelObject::get_inputs() and IMP::kernel::ModelObject::get_outputs() that return the things that are read and written respectively.
+Behind the scenes, IMP maintains an IMP::DependencyGraph that tracks how information flows between the particles and the containers, based on the constraints. It is used to detect, for example, that a particular particle is part of a rigid body, and so if its coordinates are needed for scoring, the rigid body must be brought up to date and the appropriate constraint must be asked to update the member particle's coordinates. In order to be able to track this information, relevant objects (IMP::ModelObject) have methods IMP::ModelObject::get_inputs() and IMP::ModelObject::get_outputs() that return the things that are read and written respectively.
 
 # Scoring {#overview_scoring}
 
@@ -172,7 +170,7 @@ One then needs to be able to evaluate how well the current configuration of the 
 
 An IMP::Restraint computes a score on some set of particles. For example, a restraint be used to penalize configurations of the model that have collisions
 
-    # penalize collisions with a spring constant of 10 kcal/mol A
+    # penalize collisions with a spring constant of 10 kcal/mol/A
     soft_sphere_pair_score= IMP.core.SoftSpherePairScore(10)
     my_excluded_volume_restraint= IMP.container.PairsRestraint(soft_sphere_pair_score,
                                                               close_pairs,

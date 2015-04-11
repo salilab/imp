@@ -34,7 +34,7 @@ a fixed point (in this case the origin), and again delegates the task of
 scoring the distance to another class, an
 IMP::UnaryFunction. In this case, the
 UnaryFunction is a simple harmonic function, IMP::core::Harmonic,
-with a mean of zero. Thus, the Particle p1 is harmonically restrained
+with a mean of zero. Thus, the Particle `p1` is harmonically restrained
 to be at the origin. The second restraint is set up similarly; however,
 in this case the restraints and scores act on a pair of particles.
 This building block functionality makes it easy to add a new type of

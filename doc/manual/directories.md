@@ -8,7 +8,7 @@ The input files in the %IMP repository are structured as follows:
   page), as well as configuration scripts for `doxygen`.
 - each subdirectory of `modules/` defines a module; they all have the same
   structure. The directory for module `name` has the following structure:
-   - `README.md` contains a module overview
+   - `%README.md` contains a module overview
    - `include` contains the C++ header files
    - `src` contains the C++ source files
    - `bin` contains C++ source files each of which is built into an executable,

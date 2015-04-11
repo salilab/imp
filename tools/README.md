@@ -15,7 +15,7 @@ To create the module run `tools/make-module.py my_module` from the top-level
 to help you add code to the module. The directory structure of the new module
 is identical to [that of existing modules](@ref directories).
 
-If you feel your module is of interest to other IMP users and
+If you feel your module is of interest to other %IMP users and
 developers, see the [contributing code to IMP](#devguide_contributing) section.
 
 # Formatting your code # {#dev_tools_cleanup_code}

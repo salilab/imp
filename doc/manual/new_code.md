@@ -42,14 +42,14 @@ When designing the interface for your new code, you should
 - look for easy ways of splitting the functionality into pieces. It
   generally makes sense, for %example, to split selection of the
   particles from the action taken on them, either by accepting a
-  IMP::kernel::Refiner, a IMP::kernel::SingletonContainer or just an arbitrary
-  IMP::kernel::ParticleIndexes object.
+  IMP::Refiner, a IMP::SingletonContainer or just an arbitrary
+  IMP::ParticleIndexes object.
 
 You are encouraged to post to the
 [imp-dev list](http://integrativemodeling.org/contact.html) to find help
 answering these questions as it can be hard to grasp all the various
 pieces of functionality already in the repository.
 
-You may also want to read [the design example](\ref designexample) for
+You may also want to read [the design example](\ref design_example) for
 some suggestions on how to go about implementing your functionality
 in %IMP.

@@ -1,4 +1,4 @@
-Design example {#designexample}
+Design example {#design_example}
 ==============
 
 # Overview #
@@ -10,7 +10,7 @@ when choosing how to implement some functionality.
 
 # Original Description # {#design_original}
 
- Hao wants to implement ligand/protein scoring to IMP so that he can
+ Hao wants to implement ligand/protein scoring to %IMP so that he can
  take advantage of the existing infrastructure. The details of the scoring
  function are currently experimental. The code does the following:
 
@@ -32,14 +32,14 @@ when choosing how to implement some functionality.
 ## Comments on the original description ## {#design_original_comments}
 
 1. mol2 is a standard file format so it makes sense to have a reader
-   for it in IMP. We can adopt the mol2 atom names as the standard names
-   for ligand atoms in IMP.
+   for it in %IMP. We can adopt the mol2 atom names as the standard names
+   for ligand atoms in %IMP.
 2. The details of how the coordinates are stored and accessed are
    implementation details and worrying about them too much should probably
    be delayed until later once other considerations are figured out.
 3. Loading the PMF table is a natural operation for an initialization
    function. However, since the PMF table is not a standard file format,
-   it doesn't make sense for it to go into IMP, at least not until a file
+   it doesn't make sense for it to go into %IMP, at least not until a file
    format for the protein-ligand scoring has been worked out. Also there is
    little reason to keep the PMF table atom types around, and they probably
    should be converted to more standard atom types on load. Finally, since
@@ -89,7 +89,7 @@ way to implement things.
 As with the restraint solution, the IMP::PairScore would use the
 IMP::atom::Atom::get_type() value to look up the correct function to use.
 
-If you look around in \imp for similar pair scores (see IMP::PairScore and the
+If you look around in %IMP for similar pair scores (see IMP::PairScore and the
 inheritance diagram) you see there is a IMP::core::TypedPairScore which
 already does what you need. That is, it takes a pair of particles, looks up
 their types, and then applies a particular IMP::PairScore based on their types.
@@ -128,4 +128,4 @@ in a central place.
  without touching anything else and since each part is simple,
  replacing a particular piece doesn't take much work. The added
  complexity can easily be hidden away using helper functions in
- your code (or, if the action is very common, in IMP).
+ your code (or, if the action is very common, in %IMP).

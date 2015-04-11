@@ -67,7 +67,7 @@ to the [Reference Guide](../ref/).
    - [Writing new code](@ref new_code)
    - [Working with source control](@ref scm)
    - [Adding external dependencies](@ref extdepends)
-   - [Design example](@ref designexample)
+   - [Design example](@ref design_example)
    - [Tools for developers](@ref dev_tools)
    - [Documenting your code](@ref documenting)
    - [Debugging and testing your code](@ref testing)

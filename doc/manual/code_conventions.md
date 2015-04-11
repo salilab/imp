@@ -34,7 +34,7 @@ developers should be aware that
   class; for example the `SpecialVector` class could be implemented in
   `SpecialVector.h` and `SpecialVector.cpp`
 - files that provide free functions or macros should be given names
-  `separated_by_underscores`, for %example `container_macros.h`
+  `separated_by_underscores`, for %example `%container_macros.h`
 - Functions which take a parameter which has [units](@ref units) should have the
   unit as part of the function name, for %example
   IMP::atom::SimulationParameters::set_maximum_time_step_in_femtoseconds().

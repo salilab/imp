@@ -31,7 +31,7 @@ and interface conventions.
 
 # Graphs {#conventions_graphs}
 
-Graphs in IMP are represented in C++ using the \external{http://www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in IMP are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
+Graphs in %IMP are represented in C++ using the \external{http://www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in IMP are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
 and are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, BidirectionalGraphs} if they are directed.
 
 The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper IMP::PythonDirectedGraph. There are methods to translate the graphs into various common Python and other formats (e.g. graphviz).
@@ -47,7 +47,7 @@ As is conventional in C++, IMP classes are divided into broad, exclusive types
 - *RAII classes* control some particular resource using the [RAII idiom](http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization).
 They grab control of a resource when created and then free it when they are destroyed. As a result, they cannot be copied. Non-IMP examples include things like files in Python, which are automatically closed when the file object is deleted.
 
-All types in IMP, with a few documented exceptions, can be
+All types in %IMP, with a few documented exceptions, can be
 - compared to other objects of the same type
 - output to a C++ stream or printed in Python
 - meaningfully put into Python dictionaries or C++ hash maps

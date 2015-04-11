@@ -23,4 +23,4 @@ merging from the `develop` branch, as per the
 If your change is a bug fix that should also patch the last release, once your
 code is in `develop` open an [issue on GitHub](https://github.com/salilab/imp/issues)
 assigned to `benmwebb` and connected to the milestone for the next point
-release (e.g. a milestone with a name like `IMP 2.0.1 point release`).
+release (e.g. a milestone with a name like `%IMP 2.0.1 point release`).
