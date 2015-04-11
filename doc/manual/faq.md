@@ -64,7 +64,7 @@ In %IMP we only export selected functions and classes from the dynamically linke
 
 Note that the pickiest compiler about this is the Visual Studio compiler, so the fact that your code works with gcc does not guarantee it is correct.
 
-## How do I use CPPCheck with IMP
+## How do I use CPPCheck with %IMP
 
 `cppcheck --enable=all . -I../debug/build/include --template="{file}:{line}:{severity},{id},{message}"`
 
@@ -82,7 +82,7 @@ The `swig.i-in` file that you will find under `mymodule/pyext`.
 
 ## Why is SWIG telling me that a class is not defined?
 
-The order of the includes in the `swig.i-in` matters. If a class uses code that is in another file, then you should put the latter first (note also that SWIG does not recursively follow `#includes` inside the `.h` files you `%include`). For example, if your class EnergyTermsRestraint requires EnergyTerms these lines in the `swig.i-in` must appear in this order:
+The order of the includes in the `swig.i-in` matters. If a class uses code that is in another file, then you should put the latter first (note also that SWIG does not recursively follow `#include`s inside the `.h` files you `%include`). For example, if your class EnergyTermsRestraint requires EnergyTerms these lines in the `swig.i-in` must appear in this order:
 
     %include "IMP/mymodule/EnergyTerms.h"
     %include "IMP/mymodule/EnergyTermsRestraint.h"
@@ -90,7 +90,7 @@ The order of the includes in the `swig.i-in` matters. If a class uses code that 
 # git {#faq_git}
 
 ## What are some resources for getting started with GIT?
-One of its strengths is that there are excellent references, and Google will find you good answers to almost any question you have (many on [Stack Overflow](http://www.stackoverflow.com). Some good overviews that %IMP users have liked can be found at:
+One of its strengths is that there are excellent references, and Google will find you good answers to almost any question you have (many on [Stack Overflow](http://www.stackoverflow.com)). Some good overviews that %IMP users have liked can be found at:
 * [An introduction to GitHub](http://kbroman.github.io/github_tutorial)
 * [The official Git tutorial](http://git-scm.com/book/en/Getting-Started)
 * [A light-weight explanation of most commands and workflows](http://www.atlassian.com/git/)

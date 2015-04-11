@@ -63,7 +63,7 @@ This example will use data from chemical cross linking, EM and x-ray crystallogr
 
 \section rnapolii_stages The four stages of Integrative Modeling
 
-Structural modeling using IMP is divided into [four stages](@ref introduction_four_stages).
+Structural modeling using IMP is divided into [four stages](@ref procedure).
 
 Click the links below to see a breakdown of all the modeling steps.
 

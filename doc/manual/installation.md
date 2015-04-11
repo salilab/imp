@@ -49,7 +49,7 @@ will not build, and some will not function optimally.
 - [libTAU](http://integrativemodeling.org/libTAU.html): needed to use the
   IMP.cnmultifit module or the [cnmultifit](@ref cnmultifit_groel) command
   line tool.
-- An [MPI](\ref impmpi) library is needed to use the IMP.mpi module.
+- An [MPI](@ref IMP::mpi) library is needed to use the IMP.mpi module.
 - The [numpy, scipy](http://www.scipy.org/scipylib/download.html),
   [scikit-learn](http://scikit-learn.org/stable/install.html),
   [matplotlib](http://matplotlib.org/downloads.html) and

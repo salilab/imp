@@ -709,9 +709,8 @@ external code,
 
 ## Week of July 11
 
-- Per Javi's suggestion, the conventions have been split into \ref
-  devguide_conventions "Coding conventions" and \ref introduction_conventions
-  "API conventions" and linked from the main page.
+- Per Javi's suggestion, the conventions have been split into
+  "Coding conventions" and "API conventions" and linked from the main page.
 
 - benchmarks got moved to their own module, IMP::benchmark and will
   now be tracked over time
