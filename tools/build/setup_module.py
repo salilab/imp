@@ -180,7 +180,8 @@ def make_doxygen(options, modules):
     template = template.replace(
         "@INPUT_PATH@",
         " \\\n                         ".join(inputs))
-    tags = []
+    tags = [os.path.join(options.source, 'doc', 'doxygen',
+                         'dummy_module_tags.xml')]
     for m in modules:
         tags.append(os.path.join("../", m, "tags") + "=" + "../" + m)
     template = template.replace(
