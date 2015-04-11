@@ -33,10 +33,10 @@ A call to the evaluate() method prompts the following events:
 being evaluated (this is cached)
 1. call ScoreState::before_evaluate() on each of them to update
     configuration
-1. call Restraint::unprotected_evaluate() to compute scores
+2. call Restraint::unprotected_evaluate() to compute scores
     [and add derivatives in the particles]
-1. [call ScoreState::after_evaluate() on each score state to update derivatives]
-1. score returned
+3. [call ScoreState::after_evaluate() on each score state to update derivatives]
+4. score returned
 
     \headerfile ScoringFunction.h "IMP/ScoringFunction.h"
 
