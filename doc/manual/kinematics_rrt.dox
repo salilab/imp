@@ -1,4 +1,4 @@
-/** \page kinematics_rrt Sampling antibody conformations using rapidly exploring random trees algorithm from kinematics module
+/** \page kinematics_rrt Conformational sampling: sampling antibody conformations using the rapidly exploring random tree (RRT) algorithm
 
 \tableofcontents
 
