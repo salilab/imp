@@ -49,12 +49,12 @@ git clone -b ${BRANCH} -q ${GIT_TOP}/imp.git
 (cd imp && git submodule --quiet update --init --recursive) > /dev/null
 (cd imp && ./setup_git.py) > /dev/null || exit 1
 
-if [-d imp/modules/rmf/dependency/RMF_source ]; then
+if [ -d imp/modules/rmf/dependency/RMF_source ]; then
   # Get submodule revision
   RMF_rev=`(cd imp/modules/rmf/dependency/RMF_source && git rev-parse HEAD)`
 else
   # Harder to do for subtree; parse the specially-formatted log message
-  RMF_rev=`(cd imp && git log --grep='git\-subtree\-dir: modules\/rmf\/dependency\/RMF' -n 1|grep git-subtree-split|cut -d: -f 2)`
+  RMF_rev=`(cd imp && git log --grep='git\-subtree\-dir: modules\/rmf\/dependency\/RMF' -n 1|grep git-subtree-split|cut -d: -f 2|cut -b2-)`
 fi
 
 # Get date and revision-specific install directories
