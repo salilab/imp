@@ -30,7 +30,8 @@ def main():
     data = {}
     data["examplepath"] = options.examplepath
     data["datapath"] = options.datapath
-    tools.rewrite(options.output, template % data)
+    g = tools.CPPFileGenerator()
+    g.write(options.output, template % data)
 
 if __name__ == '__main__':
     main()

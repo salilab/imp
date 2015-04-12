@@ -159,7 +159,8 @@ def main():
     sorted_order = tools.get_sorted_order()
     if options.module != "":
         if options.module == "kernel":
-            tools.rewrite("lib/IMP/__init__.py", imp_init)
+            g = tools.PythonFileGenerator()
+            g.write("lib/IMP/__init__.py", imp_init)
         build_wrapper(
             options.module, os.path.join(
                 options.source, "modules", options.module),
@@ -171,7 +172,8 @@ def main():
             os.path.join("swig", "IMP_" + options.module + ".i"),
             options.datapath)
     else:
-        tools.rewrite("lib/IMP/__init__.py", imp_init)
+        g = tools.PythonFileGenerator()
+        g.write("lib/IMP/__init__.py", imp_init)
         for m, path in tools.get_modules(options.source):
             build_wrapper(m, path, options.source, sorted_order,
                           tools.get_module_description(

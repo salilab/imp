@@ -55,7 +55,8 @@ def make_version_check(options):
   version = '%s'
   _check_one('%s', version, myversion)
   """
-    tools.rewrite(outf, template % (version, version))
+    g = tools.PythonFileGenerator()
+    g.write(outf, template % (version, version))
 
 
 def main():

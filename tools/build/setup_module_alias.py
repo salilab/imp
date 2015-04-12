@@ -82,9 +82,8 @@ def main():
         filename = os.path.split(h)[1]
         var["file"] = filename
         header = header_template % var
-        tools.rewrite(
-            "include/IMP%s/%s" %
-            (var["slashalias"], filename), header)
+        g = tools.CPPFileGenerator()
+        g.write("include/IMP%s/%s" % (var["slashalias"], filename), header)
     # Remove aliased header if the source header is gone
     for h in glob.glob("include/IMP%s/*.h" % var["slashalias"]):
         filename = os.path.split(h)[1]
@@ -96,11 +95,12 @@ def main():
         filename = os.path.split(h)[1]
         var["file"] = filename
         header = internal_header_template % var
-        tools.rewrite(
-            "include/IMP/%s/internal/%s" %
-            (options.alias, filename), header)
+        g = tools.CPPFileGenerator()
+        g.write("include/IMP/%s/internal/%s" % (options.alias, filename),
+                header)
     allh = allh_template % var
-    tools.rewrite("include/IMP%s.h" % var["slashalias"], allh)
+    g = tools.CPPFileGenerator()
+    g.write("include/IMP%s.h" % var["slashalias"], allh)
 
 if __name__ == '__main__':
     main()

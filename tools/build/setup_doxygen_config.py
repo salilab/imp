@@ -131,7 +131,8 @@ These are listed below under their parent module:""")
     contents.append("""
 See also the [command line tools provided by RMF](http://integrativemodeling.org/rmf/nightly/doc/executables.html).""")
     contents.append("*/")
-    tools.rewrite(name, "\n".join(contents))
+    g = tools.DoxFileGenerator()
+    g.write(name, "\n".join(contents))
 
 parser = OptionParser()
 parser.add_option("-s", "--source", dest="source",

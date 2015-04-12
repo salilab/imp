@@ -44,15 +44,8 @@ def add_list_to_defines(cppdefines, data, sym, val, names):
 def make_header(options):
     dir = os.path.join("include", "IMP", options.name)
     file = os.path.join(dir, "%s_config.h" % options.name)
-    header_template = open(
-        os.path.join(
-            options.source,
-            "tools",
-            "build",
-            "config_templates",
-            "header.h"),
-        "r").read(
-    )
+    header_template = tools.CPPFileGenerator(os.path.join(options.source,
+                            "tools", "build", "config_templates", "header.h"))
     try:
         os.makedirs(dir)
     except:
@@ -123,7 +116,7 @@ using ::IMP::base::hash_value;
         0,
         info["unfound_dependencies"])
     data["cppdefines"] = "\n".join(cppdefines)
-    tools.rewrite(file, header_template % data)
+    header_template.write(file, data)
 
 
 def make_doxygen(options, modules):

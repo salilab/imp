@@ -14,13 +14,13 @@ from optparse import OptionParser
 def generate_all_cpp(source):
     target = os.path.join("src")
     tools.mkdir(target)
+    gen = tools.CPPFileGenerator()
     for module, g in tools.get_modules(source):
         sources = tools.get_glob([os.path.join(g, "src", "*.cpp")])\
             + tools.get_glob([os.path.join(g, "src", "internal", "*.cpp")])
         targetf = os.path.join(target, module + "_all.cpp")
         sources.sort()
-        tools.rewrite(
-            targetf, "\n".join(["#include <%s>" %
+        gen.write(targetf, "\n".join(["#include <%s>" %
                                 os.path.abspath(s) for s in sources]) + '\n')
 
 parser = OptionParser()
