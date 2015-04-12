@@ -27,15 +27,8 @@ parser.add_option("-d", "--datapath",
 def make_cpp(options):
     dir = os.path.join("src")
     file = os.path.join(dir, "%s_config.cpp" % options.name)
-    cpp_template = open(
-        os.path.join(
-            options.source,
-            "tools",
-            "build",
-            "config_templates",
-            "src.cpp"),
-        "r").read(
-    )
+    cpp_template = tools.CPPFileGenerator(os.path.join(options.source,
+                             "tools", "build", "config_templates", "src.cpp"))
     try:
         os.makedirs(dir)
     except:
@@ -46,7 +39,7 @@ def make_cpp(options):
     data["cppprefix"] = "IMP%s" % options.name.upper().replace("_", "")
     data["name"] = options.name
     data["version"] = tools.get_module_version(options.name, options.source)
-    tools.rewrite(file, cpp_template % data)
+    cpp_template.write(file, data)
 
 
 def make_version_check(options):

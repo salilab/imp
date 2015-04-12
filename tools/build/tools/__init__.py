@@ -136,6 +136,10 @@ class CMakeFileGenerator(FileGenerator):
     def __init__(self, template_file=None):
         FileGenerator.__init__(self, template_file, '#')
 
+class CPPFileGenerator(FileGenerator):
+    def __init__(self, template_file=None):
+        FileGenerator.__init__(self, template_file, '//')
+
 
 def rmdir(path):
     try:
