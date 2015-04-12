@@ -97,20 +97,21 @@ class FileGenerator(object):
        (or None) and `start_comment` specifies the string used to start
        a single-line comment (e.g. #, ;, //)
     """
-    _gen_prog = None
     def __init__(self, template_file, start_comment):
         self.template_file = template_file
         self.start_comment = start_comment
         if template_file:
             self.template = open(template_file).read()
+            self.template_file = os.path.relpath(template_file,
+                                                 self.get_imp_top())
+
+    def get_imp_top(self):
+        ourdir = os.path.dirname(__file__)
+        return os.path.abspath(os.path.join(ourdir, '..', '..', '..'))
 
     def get_gen_prog(self):
         """Get the name of the program that generated the file"""
-        if not self._gen_prog:
-            ourdir = os.path.dirname(__file__)
-            imp_top = os.path.abspath(os.path.join(ourdir, '..', '..', '..'))
-            FileGenerator._gen_prog = os.path.relpath(sys.argv[0], imp_top)
-        return self._gen_prog
+        return os.path.relpath(sys.argv[0], self.get_imp_top())
 
     def write(self, outfile, output):
         """Write the output file `outfile` using `output`.
