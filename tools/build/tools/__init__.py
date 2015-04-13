@@ -119,6 +119,9 @@ class FileGenerator(object):
         else:
             return output
 
+    def _write_file(self, outfile, contents):
+        rewrite(outfile, contents)
+
     def write(self, outfile, output):
         """Write the output file `outfile` using `output`.
            If `template_file` specified a file above, read the contents of that
@@ -136,7 +139,8 @@ class FileGenerator(object):
                       '%s Do not edit - any changes will be lost!\n\n' \
                       % (self.start_comment, self.get_gen_prog(),
                          self.start_comment)
-        rewrite(outfile, autogen + self.get_output_file_contents(output))
+        self._write_file(outfile,
+                         autogen + self.get_output_file_contents(output))
 
 
 class CMakeFileGenerator(FileGenerator):
