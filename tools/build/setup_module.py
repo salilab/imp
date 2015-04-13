@@ -118,77 +118,80 @@ using ::IMP::base::hash_value;
     data["cppdefines"] = "\n".join(cppdefines)
     header_template.write(file, data)
 
+class ModuleDoxFileGenerator(tools.FileGenerator):
+    def __init__(self, template_file, modules):
+        self.modules = modules
+        tools.FileGenerator.__init__(self, template_file, '#')
+
+    def get_output_file_contents(self, options):
+        template = self.template
+        name = options.name
+        modules = self.modules
+        template = template.replace("@IMP_SOURCE_PATH@", options.source)
+        template = template.replace("@VERSION@", "NONE")
+        template = template.replace("@NAME@", name)
+        template = template.replace("@PROJECT_BRIEF@",
+                                    '"The Integrative Modeling Platform"')
+        template = template.replace("@RECURSIVE@", "YES")
+        template = template.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
+        template = template.replace("@IS_HTML@", "NO")
+        template = template.replace("@IS_XML@", "YES")
+        template = template.replace("@PROJECT_NAME@", "IMP." + name)
+        template = template.replace("@HTML_OUTPUT@", "../../doc/html/" + name)
+        template = template.replace("@XML_OUTPUT@", "xml")
+        template = template.replace("@TREEVIEW@", "NO")
+        template = template.replace("@GENERATE_TAGFILE@", "tags")
+        template = template.replace("@LAYOUT_FILE@",
+                          "%s/doc/doxygen/module_layout.xml" % options.source)
+        template = template.replace("@MAINPAGE@", "README.md")
+        template = template.replace("@INCLUDE_PATH@", "include")
+        template = template.replace("@FILE_PATTERNS@",
+                                    "*.cpp *.h *.py *.md *.dox")
+        template = template.replace("@WARNINGS@", "warnings.txt")
+        # include lib and doxygen in imput
+        inputs = []
+        if options.name == "kernel":
+            inputs.append("include/IMP/")
+            exclude = ["include/IMP/%s include/IMP/%s.h" % (m, m)
+                       for m, g in tools.get_modules(options.source)
+                       if m != "kernel"]
+            template = template.replace("@EXCLUDE@",
+                               " \\\n                         ".join(exclude))
+        else:
+            template = template.replace("@EXCLUDE@", "")
+        inputs.append("include/IMP/" + options.name)
+        inputs.append("lib/IMP/" + options.name)
+        inputs.append("examples/" + options.name)
+        # suppress a warning since git removes empty dirs and doxygen
+        # gets confused if the input path doesn't exist
+        docpath = os.path.join(options.source, "modules", options.name, "doc")
+        if os.path.exists(docpath):
+            inputs.append(docpath)
+        # overview for module
+        inputs.append("../generated/IMP_%s.dox" % options.name)
+        template = template.replace("@INPUT_PATH@",
+                                " \\\n                         ".join(inputs))
+        tags = [os.path.join(options.source, 'doc', 'doxygen',
+                             'dummy_module_tags.xml')]
+        for m in modules:
+            tags.append(os.path.join("../", m, "tags") + "=" + "../" + m)
+        template = template.replace("@TAGS@",
+                                 " \\\n                         ".join(tags))
+        if options.name == "example":
+            template = template.replace("@EXAMPLE_PATH@",
+                         "examples/example %s/modules/example" % options.source)
+        else:
+            template = template.replace("@EXAMPLE_PATH@",
+                                       "examples/" + options.name)
+        return template
 
 def make_doxygen(options, modules):
     file = os.path.join("doxygen", options.name, "Doxyfile")
     name = options.name
-    template_file = os.path.join(
-        options.source,
-        "tools",
-        "build",
-        "doxygen_templates",
-        "Doxyfile.in")
-    template = open(template_file, "r").read()
-    template = template.replace("@IMP_SOURCE_PATH@", options.source)
-    template = template.replace("@VERSION@", "NONE")
-    template = template.replace("@NAME@", name)
-    template = template.replace("@PROJECT_BRIEF@",
-                                '"The Integrative Modeling Platform"')
-    template = template.replace("@RECURSIVE@", "YES")
-    template = template.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
-    template = template.replace("@IS_HTML@", "NO")
-    template = template.replace("@IS_XML@", "YES")
-    template = template.replace("@PROJECT_NAME@", "IMP." + name)
-    template = template.replace("@HTML_OUTPUT@", "../../doc/html/" + name)
-    template = template.replace("@XML_OUTPUT@", "xml")
-    template = template.replace("@TREEVIEW@", "NO")
-    template = template.replace("@GENERATE_TAGFILE@", "tags")
-    template = template.replace("@LAYOUT_FILE@",
-                                "%s/doc/doxygen/module_layout.xml" % options.source)
-    template = template.replace("@MAINPAGE@", "README.md")
-    template = template.replace("@INCLUDE_PATH@", "include")
-    template = template.replace("@FILE_PATTERNS@", "*.cpp *.h *.py *.md *.dox")
-    template = template.replace("@WARNINGS@", "warnings.txt")
-    # include lib and doxygen in imput
-    inputs = []
-    if options.name == "kernel":
-        inputs.append("include/IMP/")
-        exclude = ["include/IMP/%s include/IMP/%s.h" % (m, m)
-                   for m, g in tools.get_modules(options.source) if m != "kernel"]
-        template = template.replace(
-            "@EXCLUDE@",
-            " \\\n                         ".join(exclude))
-    else:
-        template = template.replace("@EXCLUDE@", "")
-    inputs.append("include/IMP/" + options.name)
-    inputs.append("lib/IMP/" + options.name)
-    inputs.append("examples/" + options.name)
-    # suppress a warning since git removes empty dirs and doxygen gets confused
-    # if the input path doesn't exist
-    docpath = os.path.join(options.source, "modules", options.name, "doc")
-    if os.path.exists(docpath):
-        inputs.append(docpath)
-    # overview for module
-    inputs.append("../generated/IMP_%s.dox" % options.name)
-    template = template.replace(
-        "@INPUT_PATH@",
-        " \\\n                         ".join(inputs))
-    tags = [os.path.join(options.source, 'doc', 'doxygen',
-                         'dummy_module_tags.xml')]
-    for m in modules:
-        tags.append(os.path.join("../", m, "tags") + "=" + "../" + m)
-    template = template.replace(
-        "@TAGS@",
-        " \\\n                         ".join(tags))
-    if options.name == "example":
-        template = template.replace("@EXAMPLE_PATH@",
-                                    "examples/example %s/modules/example" % options.source)
-    else:
-        template = template.replace(
-            "@EXAMPLE_PATH@",
-            "examples/" + options.name)
-    tools.rewrite(file, template)
-
+    g = ModuleDoxFileGenerator(os.path.join(options.source, "tools", "build",
+                                            "doxygen_templates", "Doxyfile.in"),
+                               modules)
+    g.write(file, options)
 
 def write_no_ok(module):
     new_order = [x for x in tools.get_sorted_order() if x != module]
