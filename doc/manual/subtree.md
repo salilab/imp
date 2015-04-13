@@ -27,8 +27,9 @@ As an %example, a typical workflow for working with the IMP::pmi module is:
 
  - *Important*: be careful not to also push these commits to %IMP. You may need
    to use `git reset HEAD~N` (where `N` is the number of commits you made) to
-   remove them from %IMP. Use `git subtree pull` (below) to incorporate PMI
-   changes into %IMP.
+   remove them from %IMP (or, if you made both PMI commits and regular %IMP
+   commits, use `git rebase -i` to delete just the PMI commits).
+   Use `git subtree pull` (below) to incorporate PMI changes into %IMP.
 
  - To incorporate changes from the PMI repository into %IMP, use
 
