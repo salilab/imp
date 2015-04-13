@@ -142,7 +142,8 @@ from . import _version_check
 _version_check.check_version(get_module_version())
 %}
 """)
-    tools.rewrite(target, "\n".join(contents))
+    g = tools.SWIGFileGenerator()
+    g.write(target, "\n".join(contents))
 
 
 parser = OptionParser()

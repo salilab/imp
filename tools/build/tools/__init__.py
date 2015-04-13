@@ -147,6 +147,10 @@ class CPPFileGenerator(FileGenerator):
     def __init__(self, template_file=None):
         FileGenerator.__init__(self, template_file, '//')
 
+class SWIGFileGenerator(FileGenerator):
+    def __init__(self, template_file=None):
+        FileGenerator.__init__(self, template_file, '//')
+
 class DoxFileGenerator(FileGenerator):
     def __init__(self, template_file=None):
         FileGenerator.__init__(self, template_file, '//')
