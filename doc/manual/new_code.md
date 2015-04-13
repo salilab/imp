@@ -43,13 +43,16 @@ When designing the interface for your new code, you should
   generally makes sense, for %example, to split selection of the
   particles from the action taken on them, either by accepting a
   IMP::Refiner, a IMP::SingletonContainer or just an arbitrary
-  IMP::ParticleIndexes object.
+  IMP::ParticleIndexes object. Similarly, rather than writing a Restraint,
+  it may make more sense to write an IMP::PairScore or IMP::UnaryFunction.
 
 You are encouraged to post to the
 [imp-dev list](http://integrativemodeling.org/contact.html) to find help
 answering these questions as it can be hard to grasp all the various
 pieces of functionality already in the repository.
 
+See also the IMP::example module, which contains many examples of writing
+new %IMP functionality in C++ or Python.
 You may also want to read [the design example](\ref design_example) for
 some suggestions on how to go about implementing your functionality
 in %IMP.
