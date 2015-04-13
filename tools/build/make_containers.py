@@ -178,10 +178,9 @@ set( IMP_container_EXTRA_HEADERS ${IMP_container_EXTRA_HEADERS} %s)
             "\n   ".join(get_files("core", ".h", "", targets)),
             "\n   ".join(get_files("container", ".h", "", targets)))
 
-        tools.rewrite(
-            os.path.join(os.path.split(sys.argv[0])[0],
-                         "cmake_files",
-                         "MakeContainers.cmake"), out)
+        g = tools.CMakeFileGenerator()
+        g.write(os.path.join(os.path.split(sys.argv[0])[0],
+                             "cmake_files", "MakeContainers.cmake"), out)
     # make_one("particle tuple", "ParticlesTemp", "const ParticlesTemp&", "Particles",
     #         "Tuple", "particle tuples", "ParticlesList", "Tuples", test=False)
 
