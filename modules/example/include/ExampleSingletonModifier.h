@@ -17,18 +17,18 @@
 IMPEXAMPLE_BEGIN_NAMESPACE
 
 //! An example singleton modifer
-/**  A simple singleton modifier which restrains the x,y,z
-     coordinates to a box by wrapping them.
+/** A simple singleton modifier which ensures the x,y,z coordinates
+    stay in a box by wrapping them.
 
-     Such a class could be coupled with an IMP::core::SingletonRestraint
-     or IMP::core::SingletonsRestraint to keep a set of particles
-     in a box.
+    Such a class could be coupled with an IMP::core::SingletonConstraint
+    or IMP::core::SingletonsConstraint to keep a set of particles
+    in a box.
 
-     \include range_restriction.py
+    \include range_restriction.py
 
-     The source code is as follows:
-     \include ExampleRestraint.h
-     \include ExampleRestraint.cpp
+    The source code is as follows:
+    \include ExampleRestraint.h
+    \include ExampleRestraint.cpp
  */
 class IMPEXAMPLEEXPORT ExampleSingletonModifier : public SingletonModifier {
   algebra::BoundingBoxD<3> bb_;
