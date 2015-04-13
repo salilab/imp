@@ -1,6 +1,3 @@
-# NOTE: This file is generated from modules/core/tools/container_tempates/test.py
-# do not edit.
-
 from __future__ import print_function
 import IMP
 import IMP.test

@@ -2,8 +2,6 @@
  *  \file IMP/kernel/ClassnamePredicate.h
  *  \brief Define ClassnamePredicate.
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 

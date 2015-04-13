@@ -2,8 +2,6 @@
  *  \file IMP/container/DynamicListClassnameContainer.h
  *  \brief Store a list of PLURALVARIABLETYPE
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 

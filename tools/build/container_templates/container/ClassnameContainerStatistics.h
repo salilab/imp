@@ -2,8 +2,6 @@
  *  \file IMP/container/ClassnameContainerStatistics.h
  *  \brief A container for Classnames.
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 

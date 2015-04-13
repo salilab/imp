@@ -25,9 +25,6 @@ def filter(xxx_todo_changeme,
     header_guard_class_name = class_name.upper()
     helpername = class_name.lower()
     return infile\
-        .replace("BLURB", """WARNING This file was generated from %s
- *  in %s
- *  by tools/build/make_containers.py.""" % (os.path.split(file_name)[1], os.path.split(file_name)[0]))\
         .replace("HELPERNAME", helpername)\
         .replace("CLASSFUNCTIONNAME", helpername)\
         .replace("FUNCTIONNAME", function_name)\
@@ -46,6 +43,16 @@ def filter(xxx_todo_changeme,
         .replace("ARGUMENTTYPE", argument_type)\
         .replace("STORAGETYPE", storage_type)\
         .replace("FILESOURCE", file_name)
+
+class ContainerFileGenerator(tools.FileGenerator):
+    def __init__(self, template_file):
+        if template_file.endswith('.py'):
+            tools.FileGenerator.__init__(self, template_file, '#')
+        else:
+            tools.FileGenerator.__init__(self, template_file, '//')
+
+    def get_output_file_contents(self, output):
+        return filter(output, self.template, self.template_file)
 
 
 def make_one(path, params, test=True):
@@ -82,8 +89,8 @@ def make_one(path, params, test=True):
         files.append(("test/container/test_" + cname + "_state.py",
                       path + "/test_state.py"))
     for p in files:
-        contents = filter(params, open(p[1], 'r').read(), p[1])
-        tools.rewrite(p[0], contents)
+        g = ContainerFileGenerator(p[1])
+        g.write(p[0], params)
         all_outputs.append(p[0])
         all_inputs.append(p[1])
 

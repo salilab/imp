@@ -2,8 +2,6 @@
  *  \file IMP/core/classname_predicates.h
  *  \brief Define some predicates.
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 

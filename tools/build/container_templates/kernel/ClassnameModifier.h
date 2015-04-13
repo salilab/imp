@@ -2,8 +2,6 @@
  *  \file IMP/kernel/ClassnameModifier.h
  *  \brief A Modifier on PLURALVARIABLETYPE
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 

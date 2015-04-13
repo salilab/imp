@@ -2,8 +2,6 @@
  *  \file IMP/container/MinimumClassnameRestraint.h
  *  \brief Score based on the minimum score over a set of Classnames
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
