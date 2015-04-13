@@ -49,6 +49,7 @@ def create_model_and_particles():
    %include directive and put it in a separate file.
  */
 %include "IMP_example.restraint.i"
+%include "IMP_example.pairscore.i"
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line. */
