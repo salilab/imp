@@ -31,6 +31,8 @@ class IMPEXAMPLEEXPORT ExampleConstraint : public Constraint {
   virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+
+  static IntKey get_key();
   IMP_OBJECT_METHODS(ExampleConstraint);
 };
 
