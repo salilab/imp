@@ -221,11 +221,9 @@ if __name__ == '__main__':
                                 str(d['class_name_exceptions']),
                             'spelling_exceptions':
                                 str(d['spelling_exceptions'])})
-        open(
-            os.path.join("test",
-                         module,
-                         "medium_test_standards.py"),
-            "w").write(test)
+        gen = tools.PythonFileGenerator()
+        gen.write(os.path.join("test", module, "medium_test_standards.py"),
+                  test, show_diff=False)
 
         cpptests = tools.get_glob([os.path.join(g, "test", "test_*.cpp")])
         ecpptests = tools.get_glob(

@@ -119,10 +119,14 @@ class FileGenerator(object):
         else:
             return output
 
-    def _write_file(self, outfile, contents):
-        rewrite(outfile, contents)
+    def _write_file(self, outfile, contents, show_diff):
+        if show_diff:
+            rewrite(outfile, contents)
+        else:
+            with open(outfile, 'w') as fh:
+                fh.write(contents)
 
-    def write(self, outfile, output):
+    def write(self, outfile, output, show_diff=True):
         """Write the output file `outfile` using `output`.
            If `template_file` specified a file above, read the contents of that
            file and make Python-style substitutions using output (which should
@@ -140,7 +144,8 @@ class FileGenerator(object):
                       % (self.start_comment, self.get_gen_prog(),
                          self.start_comment)
         self._write_file(outfile,
-                         autogen + self.get_output_file_contents(output))
+                         autogen + self.get_output_file_contents(output),
+                         show_diff)
 
 
 class CMakeFileGenerator(FileGenerator):

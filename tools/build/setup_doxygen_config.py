@@ -21,10 +21,6 @@ class DoxConfigFileGenerator(tools.FileGenerator):
     def __init__(self, template_file):
         tools.FileGenerator.__init__(self, template_file, '#')
 
-    def _write_file(self, outfile, contents):
-        with open(outfile, 'w') as fh:
-            fh.write(contents)
-
     def get_output_file_contents(self, output):
         is_xml = output['is_xml']
         is_html = output['is_html']
@@ -111,7 +107,8 @@ def generate_doxyfile(source, target, is_xml=False, is_html=False,
     g = DoxConfigFileGenerator(os.path.join(source, "tools", "build",
                                             "doxygen_templates", "Doxyfile.in"))
     g.write(target, {'is_xml':is_xml, 'is_html':is_html, 'manual':manual,
-                     'source':source})
+                     'source':source},
+            show_diff=False)
 
 def generate_overview_pages(source):
     name = os.path.join("doxygen", "generated", "cmdline_tools.dox")
