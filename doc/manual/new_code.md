@@ -44,7 +44,8 @@ When designing the interface for your new code, you should
   particles from the action taken on them, either by accepting a
   IMP::Refiner, a IMP::SingletonContainer or just an arbitrary
   IMP::ParticleIndexes object. Similarly, rather than writing a Restraint,
-  it may make more sense to write an IMP::PairScore or IMP::UnaryFunction.
+  it may make more sense to write an IMP::PairScore or IMP::UnaryFunction;
+  an IMP::SingletonModifier may be more appropriate than an IMP::Constraint.
 
 You are encouraged to post to the
 [imp-dev list](http://integrativemodeling.org/contact.html) to find help
