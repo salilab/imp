@@ -21,7 +21,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     stay in a box by wrapping them.
 
     Such a class could be coupled with an IMP::core::SingletonConstraint
-    or IMP::core::SingletonsConstraint to keep a set of particles
+    or IMP::container::SingletonsConstraint to keep a set of particles
     in a box.
 
     \include range_restriction.py
