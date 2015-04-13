@@ -175,10 +175,10 @@ imp_execute_process("setup_all" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_all.py
                     --source=${CMAKE_SOURCE_DIR})
 
-include(${PROJECT_SOURCE_DIR}/tools/build/cmake_files/MakeContainers.cmake)
-
 imp_execute_process("making containers" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_containers.py)
+
+include(${PROJECT_SOURCE_DIR}/tools/build/cmake_files/MakeContainers.cmake)
 
 imp_execute_process("setup_module_alias for kernel" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py
