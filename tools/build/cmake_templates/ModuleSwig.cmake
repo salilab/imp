@@ -34,7 +34,7 @@ add_custom_command(OUTPUT ${source} ${wrap_py} ${wrap_py_orig}
             ${PATH_ARGS}
    DEPENDS ${swigdeps} ${IMP_%(name)s_PYTHON_EXTRA_DEPENDENCIES}
    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-   COMMENT "Running swig on %(name)s")
+   COMMENT "Running SWIG on %(name)s")
 
 add_library(IMP.%(name)s-python MODULE ${source})
 # Apple linkers complain by default if there are undefined symbols
