@@ -23,9 +23,7 @@ IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD);
 
 
 /* One can add Python functions to your module by putting code in
-   %pythoncode blocks. If you have lots of such code, you can use SWIG's
-   %include directive and put it in a separate file. See the IMP.modeller
-   module for an example.
+   %pythoncode blocks.
 
    This function can be called as IMP.example.create_model_and_particles().
 
@@ -46,6 +44,11 @@ def create_model_and_particles():
         d.set_coordinates_are_optimized(True)
     return (m, sc)
 %}
+
+/* If you have lots of Python code, you can use SWIG's
+   %include directive and put it in a separate file.
+ */
+%include "IMP_example.restraint.i"
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line. */
