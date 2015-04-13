@@ -391,10 +391,10 @@ IMP_SWIG_OBJECT(Namespace, Name, PluralName);
     def do_show(self, out):
         pass
     def get_version_info(self):
-        if #Namespace == "IMP":
+        if #Namespace == "IMP::base":
           return VersionInfo("python", "0")
         else:
-          return IMP.VersionInfo("python", "0")
+          return IMP.base.VersionInfo("python", "0")
     def get_from(o):
        return _object_cast_to_##Name(o)
     get_from = staticmethod(get_from)
