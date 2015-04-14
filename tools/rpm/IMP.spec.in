@@ -264,6 +264,9 @@ module purge
 %endif
 
 %install
+%if 0%{?rhel} == 5
+PATH="`pwd`/python-bin:$PATH"
+%endif
 cd build
 make DESTDIR=${RPM_BUILD_ROOT} install
 
