@@ -14,8 +14,8 @@ list(APPEND swig_path ${IMP_SWIG_PATH})
 
 file(STRINGS "${CMAKE_BINARY_DIR}/src/%(name)s_swig.deps" swigdeps)
 
-set(wrap_py "${CMAKE_BINARY_DIR}/lib/IMP/%(name)s/__init__.py")
-set(wrap_py_orig "${CMAKE_BINARY_DIR}/src/%(name)s_swig/IMP.%(name)s.py")
+set(wrap_py "${CMAKE_BINARY_DIR}/lib/%(subdir)s/__init__.py")
+set(wrap_py_orig "${CMAKE_BINARY_DIR}/src/%(name)s_swig/%(pymod)s.py")
 set(source "${CMAKE_BINARY_DIR}/src/%(name)s_swig/wrap.cpp"
                           "${CMAKE_BINARY_DIR}/src/%(name)s_swig/wrap.h")
 

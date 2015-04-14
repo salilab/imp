@@ -161,9 +161,11 @@ def setup_module(module, path, ordered):
     values = {"name": module}
     if module == 'kernel':
         values['subdir'] = 'IMP'
+        values['pymod'] = 'IMP'
         values['allh_header'] = 'IMP.h'
     else:
         values['subdir'] = 'IMP/' + module
+        values['pymod'] = 'IMP.' + module
         values['allh_header'] = 'IMP/%s.h' % module
     values["NAME"] = module.upper()
     values["CPPNAME"] = module.upper().replace('_', '')

@@ -69,7 +69,7 @@ if(${status} EQUAL 0)
   list(APPEND imp_%(name)s_libs %(dependencies)s)
   list(REMOVE_DUPLICATES imp_%(name)s_libs)
 
-  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/lib/IMP/%(name)s/_version_check.py
+  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/lib/%(subdir)s/_version_check.py
                             ${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_module_version.py --name=%(name)s --datapath=${IMP_DATAPATH} --source=${CMAKE_SOURCE_DIR}
     DEPENDS IMP-version
@@ -77,7 +77,7 @@ if(${status} EQUAL 0)
     COMMENT "Building module version info")
 
   add_custom_target("IMP.%(name)s-version" ALL DEPENDS
-                          ${CMAKE_BINARY_DIR}/lib/IMP/%(name)s/_version_check.py
+                          ${CMAKE_BINARY_DIR}/lib/%(subdir)s/_version_check.py
                           ${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp)
   set_property(TARGET "IMP.%(name)s-version" PROPERTY FOLDER "IMP.%(name)s")
   install(FILES "${CMAKE_BINARY_DIR}/lib/IMP/%(name)s/_version_check.py" DESTINATION "${CMAKE_INSTALL_PYTHONDIR}/IMP/%(name)s/")
