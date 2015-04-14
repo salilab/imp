@@ -1,6 +1,6 @@
 /**
  *  \file config.cpp
- *  \brief base module version information.
+ *  \brief %(name)s module version information.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
