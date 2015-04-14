@@ -43,7 +43,8 @@ def make_cpp(options):
 
 
 def make_version_check(options):
-    dir = os.path.join("lib", "IMP", options.name)
+    dir = os.path.join("lib", "IMP",
+                       "" if options.name == 'kernel' else options.name)
     tools.mkdir(dir, clean=False)
     version = tools.get_module_version(options.name, options.source)
     outf = os.path.join(dir, "_version_check.py")

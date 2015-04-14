@@ -49,7 +49,9 @@ def run_swig(outputdir, options):
 
     ret = tools.run_subprocess(args, cwd=outputdir)
     patch_py_wrapper("src/%s_swig/IMP.%s.py" % (options.module, options.module),
-                     "lib/IMP/%s/__init__.py" % options.module)
+                     os.path.join("lib", "IMP",
+                          "" if options.module == 'kernel' else options.module,
+                          "__init__.py"))
 
 def patch_py_wrapper(infile, outfile):
     """Add custom header to Python wrappers.

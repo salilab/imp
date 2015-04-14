@@ -10,16 +10,6 @@ import copy
 import tools
 from optparse import OptionParser
 
-
-imp_init = """try:
-    from IMP.kernel import *
-except:
-    import traceback
-    print("no kernel")
-    traceback.print_exc()
-"""
-
-
 def write_module_cpp(m, contents, datapath):
     info = tools.get_module_info(m, datapath)
     if m == 'kernel':
@@ -170,17 +160,6 @@ def main():
                 options.datapath),
             os.path.join("swig", "IMP_" + options.module + ".i"),
             options.datapath)
-    else:
-        g = tools.PythonFileGenerator()
-        g.write("lib/IMP/__init__.py", imp_init)
-        for m, path in tools.get_modules(options.source):
-            build_wrapper(m, path, options.source, sorted_order,
-                          tools.get_module_description(
-                              options.source,
-                              m,
-                              options.datapath),
-                          os.path.join("swig", "IMP_" + m + ".i"),
-                          options.datapath)
 
 if __name__ == '__main__':
     main()
