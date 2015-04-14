@@ -1,7 +1,7 @@
 /**
  *  \file IMP/kernel/Particle.h
  *  \brief Classes to handle individual model particles.
- *         (Note that implementation of inline functions in in internal)
+ *         (Note that implementation of inline functions is in internal)
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
