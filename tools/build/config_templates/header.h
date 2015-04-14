@@ -13,7 +13,7 @@
  * this way; we use the same markings to set the visibility of ELF symbols
  * if we have compiler support.
  *
- * All code in this module should live in the IMP::%(name)s namespace.
+ * All code in this module should live in the %(namespace)s namespace.
  * This is simply achieved by wrapping things with the
  * %(cppprefix)s_BEGIN_NAMESPACE and %(cppprefix)s_END_NAMESPACE macros.
  * There are similar macros for module code that is designed to be for
@@ -71,9 +71,9 @@
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 
 #define %(cppprefix)s_BEGIN_NAMESPACE \
-  IMP_COMPILER_ENABLE_WARNINGS namespace IMP{namespace %(name)s {
+  IMP_COMPILER_ENABLE_WARNINGS %(begin_ns)s
 
-#define %(cppprefix)s_END_NAMESPACE } } \
+#define %(cppprefix)s_END_NAMESPACE %(end_ns)s \
 IMP_COMPILER_DISABLE_WARNINGS
 
 #define %(cppprefix)s_BEGIN_INTERNAL_NAMESPACE %(cppprefix)s_BEGIN_NAMESPACE \
@@ -82,9 +82,9 @@ IMP_COMPILER_DISABLE_WARNINGS
 #define %(cppprefix)s_END_INTERNAL_NAMESPACE } %(cppprefix)s_END_NAMESPACE
 
 #else  // SWIG and DOXYGEN
-#define %(cppprefix)s_BEGIN_NAMESPACE namespace IMP{namespace %(name)s {
+#define %(cppprefix)s_BEGIN_NAMESPACE %(begin_ns)s
 
-#define %(cppprefix)s_END_NAMESPACE } }
+#define %(cppprefix)s_END_NAMESPACE %(end_ns)s
 
 #define %(cppprefix)s_BEGIN_INTERNAL_NAMESPACE %(cppprefix)s_BEGIN_NAMESPACE\
   namespace internal {
@@ -96,8 +96,7 @@ IMP_COMPILER_DISABLE_WARNINGS
 %(cppdefines)s
 
 // functions are defined explicitly for SWIG
-namespace IMP {
-  namespace %(name)s {
+%(begin_ns)s
 /** \name Standard module functions
   All \imp modules have a set of standard functions to help get information
   about the module and about files associated with the module.
@@ -109,7 +108,7 @@ namespace IMP {
 
 #if !defined(SWIG)
     // SWIG will whine about duplicate definitions of function
-    inline std::string get_module_name() { return "IMP::%(name)s"; }
+    inline std::string get_module_name() { return "%(namespace)s"; }
 #endif
 
     //! Return the full path to installed data
@@ -145,8 +144,7 @@ namespace IMP {
     /** @} */
 
 
-  }
-}  //namespace
+%(end_ns)s  //namespace
 
 %(showable)s
 

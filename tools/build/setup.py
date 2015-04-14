@@ -37,22 +37,16 @@ def link_headers(source):
     tools.mkdir(root)
     for (module, g) in tools.get_modules(source):
         # print g, module
+        modroot = os.path.join(root, '' if module == 'kernel' else module)
         if module == "SConscript":
             continue
-        tools.link_dir(
-            os.path.join(g,
-                         "include"),
-            os.path.join(root,
-                         module),
-            match=["*.h"])
-        tools.link_dir(
-            os.path.join(g, "include", "internal"), os.path.join(
-                root, module, "internal"),
-            match=["*.h"])
+        tools.link_dir(os.path.join(g, "include"), modroot, match=["*.h"])
+        tools.link_dir(os.path.join(g, "include", "internal"),
+                       os.path.join(modroot, "internal"), match=["*.h"])
         # ick
         if os.path.exists(os.path.join(g, "include", "eigen3")):
             tools.link_dir(os.path.join(g, "include", "eigen3"),
-                           os.path.join(root, module, "eigen3"),
+                           os.path.join(modroot, "eigen3"),
                            match=["*"])
 
 # link example scripts and data from the source dirs into the build tree

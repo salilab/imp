@@ -78,7 +78,8 @@ def make_one(path, params, test=True):
             rest = os.path.join("internal", rest)
         name = filter(params, rest, rest)
         if p.endswith(".h"):
-            out_path = os.path.join("include", "IMP", module, name)
+            out_path = os.path.join("include", "IMP",
+                                    '' if module == 'kernel' else module, name)
         else:
             out_path = os.path.join("src", module, name)
         files.append((out_path, ip))

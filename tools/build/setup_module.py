@@ -42,7 +42,10 @@ def add_list_to_defines(cppdefines, data, sym, val, names):
 
 
 def make_header(options):
-    dir = os.path.join("include", "IMP", options.name)
+    if options.name == 'kernel':
+        dir = os.path.join("include", "IMP")
+    else:
+        dir = os.path.join("include", "IMP", options.name)
     file = os.path.join(dir, "%s_config.h" % options.name)
     header_template = tools.CPPFileGenerator(os.path.join(options.source,
                             "tools", "build", "config_templates", "header.h"))
@@ -54,7 +57,16 @@ def make_header(options):
 
     data = {}
     data["name"] = options.name
-    data["filename"] = "IMP/%s/%s_config.h" % (options.name, options.name)
+    if options.name == 'kernel':
+        data["namespace"] = "IMP"
+        data["begin_ns"] = "namespace IMP{"
+        data["end_ns"] = "}"
+        data["filename"] = "IMP/%s_config.h" % options.name
+    else:
+        data["namespace"] = "IMP::%s" % options.name
+        data["begin_ns"] = "namespace IMP{ namespace %s {" % options.name
+        data["end_ns"] = "} }"
+        data["filename"] = "IMP/%s/%s_config.h" % (options.name, options.name)
     data["cppprefix"] = "IMP%s" % options.name.upper().replace("_", "")
     if data["name"] != "base":
         data["showable"] = """#if !defined(IMP_DOXYGEN) && !defined(SWIG)
@@ -62,16 +74,16 @@ def make_header(options):
 #include <IMP/base/Showable.h>
 #include <IMP/base/hash.h>
 
-namespace IMP { namespace %(name)s {
+%(begin_ns)s
 using ::IMP::base::Showable;
 using ::IMP::base::operator<<;
 using ::IMP::base::hash_value;
-} } // namespace
-namespace IMP { namespace %(name)s { namespace internal {
+%(end_ns)s // namespace
+%(begin_ns)s namespace internal {
 using ::IMP::base::Showable;
 using ::IMP::base::operator<<;
 using ::IMP::base::hash_value;
-} } } // namespace
+} %(end_ns)s // namespace
 
 #endif // !defined(SWIG) && !defined(IMP_DOXYGEN)
 """ % data
@@ -410,12 +422,12 @@ def make_overview(options, cmdline_tools):
     )
     tools.rewrite(
         os.path.join("doxygen", "generated", "IMP_%s.dox" % options.name),
-                  """/** \\namespace IMP::%s
+                  """/** \\namespace %s
 \\tableofcontents
 
 %s
 */
-""" % (options.name, rmd))
+""" % ('IMP' if options.name == 'kernel' else 'IMP::' + options.name, rmd))
 
 
 def main():
