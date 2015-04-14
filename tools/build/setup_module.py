@@ -89,6 +89,10 @@ using ::IMP::base::hash_value;
 """ % data
     else:
         data["showable"] = ""
+    # Hack: add module alias for IMP::kernel
+    if data["name"] == "kernel":
+        data["showable"] = "namespace IMP{ namespace kernel = ::IMP; }\n" \
+                           + data["showable"]
 
     cppdefines = []
     if options.defines != "":
