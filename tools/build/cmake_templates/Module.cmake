@@ -20,7 +20,7 @@ if(${status} EQUAL 0)
   # for warning control
   add_definitions(-DIMP%(NAME)s_COMPILATION)
 
-  set(allh_command  "python" "${CMAKE_SOURCE_DIR}/tools/dev_tools/make_all_header.py" "${CMAKE_BINARY_DIR}/include/IMP/%(name)s.h" "IMP/%(name)s" "${PROJECT_SOURCE_DIR}/include/" ${IMP_%(name)s_EXTRA_HEADERS})
+  set(allh_command  "python" "${CMAKE_SOURCE_DIR}/tools/dev_tools/make_all_header.py" "${CMAKE_BINARY_DIR}/include/%(allh_header)s" "%(subdir)s" "${PROJECT_SOURCE_DIR}/include/" ${IMP_%(name)s_EXTRA_HEADERS})
   # for swig
   imp_execute_process("IMP.%(name)s making all header" ${PROJECT_BINARY_DIR}
                    COMMAND ${allh_command})

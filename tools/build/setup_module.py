@@ -285,12 +285,13 @@ def setup_module(module, source, datapath):
         else:
             unfound_modules.append(d)
     all_modules = tools.get_dependent_modules(modules, datapath)
+    moddir = os.path.join('IMP', '' if module == 'kernel' else module)
     swig_includes = [os.path.split(x)[1] for x
                      in tools.get_glob([os.path.join(source, "modules", module,
                                                      "pyext", "include", "*.i")])]\
-        + ["IMP/" + module + "/" + os.path.split(x)[1] for x
-           in tools.get_glob([os.path.join("include", "IMP", module, "*_macros.h")])]
-    swig_wrapper_includes = ["IMP/" + module + "/internal/" + os.path.split(x)[1] for x
+        + [os.path.join(moddir, os.path.split(x)[1]) for x
+           in tools.get_glob([os.path.join("include", moddir, "*_macros.h")])]
+    swig_wrapper_includes = [os.path.join(moddir, "internal", os.path.split(x)[1]) for x
                              in tools.get_glob([os.path.join(source, "modules", module, "include", "internal", "swig*.h")])]
     tools.mkdir(os.path.join("src", module))
     tools.mkdir(os.path.join("src", module + "_swig"))

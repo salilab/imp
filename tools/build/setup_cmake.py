@@ -159,6 +159,12 @@ def setup_module(module, path, ordered):
                         % tools.to_cmake_path(local))
 
     values = {"name": module}
+    if module == 'kernel':
+        values['subdir'] = 'IMP'
+        values['allh_header'] = 'IMP.h'
+    else:
+        values['subdir'] = 'IMP/' + module
+        values['allh_header'] = 'IMP/%s.h' % module
     values["NAME"] = module.upper()
     values["CPPNAME"] = module.upper().replace('_', '')
     data = tools.get_module_description(".", module, "")

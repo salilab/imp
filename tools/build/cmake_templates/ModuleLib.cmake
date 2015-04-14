@@ -2,7 +2,7 @@ FILE(GLOB gensources
      "${CMAKE_BINARY_DIR}/src/%(name)s/*.cpp")
 
 FILE(GLOB genheaders
-     "${CMAKE_BINARY_DIR}/include/IMP/%(name)s/*.h")
+     "${CMAKE_BINARY_DIR}/include/%(subdir)s/*.h")
 
 include_directories(%(includepath)s)
 link_directories(%(libpath)s)
