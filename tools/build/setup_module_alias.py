@@ -31,7 +31,7 @@ def main():
     pymod = os.path.join('lib', 'IMP', 'kernel', '__init__.py')
     with open(pymod, 'w') as fh:
         fh.write("""import sys
-sys.sysderr.write('IMP.kernel is deprecated - use "import IMP" instead\n')
+sys.stderr.write('IMP.kernel is deprecated - use "import IMP" instead\\n')
 from IMP import *
 """)
 
