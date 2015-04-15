@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMPKERNEL_UTILITY_H
-#define IMPKERNEL_UTILITY_H
+#ifndef IMPKERNEL_BASE_UTILITY_H
+#define IMPKERNEL_BASE_UTILITY_H
 
 #include <IMP/kernel_config.h>
 #include <boost/utility.hpp>
@@ -68,4 +68,4 @@ IMPKERNELEXPORT std::string get_unique_name(std::string templ);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif /* IMPKERNEL_UTILITY_H */
+#endif /* IMPKERNEL_BASE_UTILITY_H */

@@ -10,16 +10,9 @@
 #define IMPKERNEL_UTILITY_H
 
 #include <IMP/kernel_config.h>
-#include <IMP/utility.h>
-#include <IMP/types.h>
-#include <IMP/Vector.h>
+#include <IMP/base_utility.h>
+
 IMPKERNEL_BEGIN_NAMESPACE
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-using IMP::cube;
-using IMP::square;
-using IMP::is_nan;
-using IMP::get_as;
-#endif
 IMPKERNEL_END_NAMESPACE
 
 #endif /* IMPKERNEL_UTILITY_H */
