@@ -1,5 +1,8 @@
 # list various exceptions to IMP standards in this file
-value_object_exceptions=["ExampleRefCounted"]
+value_object_exceptions=["ExampleRefCounted", 'PythonExampleConstraint',
+                         'PythonExamplePairScore', 'PythonExampleRestraint',
+                         'PythonExampleSingletonModifier',
+                         'PythonExampleUnaryFunction']
 function_name_exceptions=['randomize_particle']
 show_exceptions=[]
 spelling_exceptions=[]
