@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-   Make an alias for the kernel module headers and Python code.
+   Make an alias for the kernel and base module headers and Python code.
 """
 
 import tools
@@ -28,12 +28,15 @@ def main():
                  'IMP/internal')
     tools.link(os.path.join('include', 'IMP.h'),
                os.path.join('include', 'IMP', 'kernel.h'))
-    pymod = os.path.join('lib', 'IMP', 'kernel', '__init__.py')
-    with open(pymod, 'w') as fh:
-        fh.write("""import sys
-sys.stderr.write('IMP.kernel is deprecated - use "import IMP" instead\\n')
+    tools.link(os.path.join('include', 'IMP.h'),
+               os.path.join('include', 'IMP', 'base.h'))
+    for mod in ('base', 'kernel'):
+        pymod = os.path.join('lib', 'IMP', mod, '__init__.py')
+        with open(pymod, 'w') as fh:
+            fh.write("""import sys
+sys.stderr.write('IMP.%s is deprecated - use "import IMP" instead\\n')
 from IMP import *
-""")
+""" % mod)
 
 if __name__ == '__main__':
     main()
