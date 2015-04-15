@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/enums.h    \brief Basic types used by IMP.
+ *  \file IMP/enums.h    \brief Basic types used by IMP.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -15,7 +15,6 @@
 // IMPKERNEL_BEGIN_NAMESPACE
 namespace IMP {
 
-namespace base {
 //! The log levels supported by \imp
 enum LogLevel {
   /** Use to specify that the global log level should be used
@@ -47,7 +46,7 @@ IMPKERNELEXPORT std::istream &operator>>(std::istream &in, LogLevel &ll);
 IMPKERNELEXPORT std::ostream &operator<<(std::ostream &in, LogLevel ll);
 #endif
 
-// duplicated in IMP_base_exception.i otherwise IMP_base_exception.i
+// duplicated in IMP_kernel_exception.i otherwise IMP_kernel_exception.i
 // is processed without seeing this definition yet.
 #ifndef SWIG
 //! Specify the level of runtime checks performed
@@ -78,8 +77,6 @@ enum StatisticsLevel {
 IMPKERNELEXPORT std::istream &operator>>(std::istream &in, StatisticsLevel &ll);
 IMPKERNELEXPORT std::ostream &operator<<(std::ostream &in, StatisticsLevel ll);
 #endif
-
-}  // base
 
 }  // imp
 

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/exception.h
+ *  \file IMP/exception.h
  *  \brief Exception definitions and assertions.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -36,7 +36,7 @@ typedef std::runtime_error ExceptionBase;
     USAGE before running your final optimization to make sure that
     \imp is used correctly.
 
-    Error handling is provided by IMP/base/exception.h,
+    Error handling is provided by IMP/exception.h,
 
     Use the \c gdbinit file provided in \c tools to automatically have \c gdb
     break when \imp errors are detected.

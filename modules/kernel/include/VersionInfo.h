@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/VersionInfo.h   \brief Version and authorship of IMP objects.
+ *  \file IMP/VersionInfo.h   \brief Version and authorship of IMP objects.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *

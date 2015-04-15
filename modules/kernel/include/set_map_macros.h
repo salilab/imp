@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/set_map_macros.h
+ *  \file IMP/set_map_macros.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

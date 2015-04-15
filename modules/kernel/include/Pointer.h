@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/Pointer.h
+ *  \file IMP/Pointer.h
  *  \brief A nullptr-initialized pointer to an \imp Object.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

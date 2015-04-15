@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/math.h
+ *  \file IMP/math.h
  *  \brief Declare an efficient stl-compatible map
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

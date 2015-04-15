@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/Object.h
+ *  \file IMP/Object.h
  *  \brief A shared base class to help in debugging and things.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

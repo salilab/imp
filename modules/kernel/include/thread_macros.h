@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/thread_macros.h
+ *  \file IMP/thread_macros.h
  *  \brief Control for OpenMP
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

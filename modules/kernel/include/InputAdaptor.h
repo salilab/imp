@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/InputAdaptor.h    \brief Basic types used by IMP.
+ *  \file IMP/InputAdaptor.h    \brief Basic types used by IMP.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *

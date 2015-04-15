@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/Array.h
+ *  \file IMP/Array.h
  *  \brief Classes to handle static sized arrays of things.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

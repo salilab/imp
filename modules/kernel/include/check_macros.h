@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/check_macros.h
+ *  \file IMP/check_macros.h
  *  \brief Exception definitions and assertions.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -49,8 +49,6 @@
  */
 #define IMP_THROW(message, exception_name)             \
   do {                                                 \
-    /* to bring in exceptions for backward compat */   \
-    using namespace IMP::base;                         \
     std::ostringstream imp_throw_oss;                  \
     imp_throw_oss << message << std::endl;             \
     throw exception_name(imp_throw_oss.str().c_str()); \

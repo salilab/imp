@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/threads.h
+ *  \file IMP/threads.h
  *  \brief Control for using multiple threads in IMP
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

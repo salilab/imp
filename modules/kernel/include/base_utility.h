@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/base_utility.h
+ *  \file IMP/base_utility.h
  *  \brief Various general useful functions for IMP.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

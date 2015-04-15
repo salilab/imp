@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/graph_macros.h
+ *  \file IMP/graph_macros.h
  *  \brief Various general useful macros for IMP.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

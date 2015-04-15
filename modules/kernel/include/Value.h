@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/Value.h    \brief Basic types used by IMP.
+ *  \file IMP/Value.h    \brief Basic types used by IMP.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *

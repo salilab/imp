@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/random.h    \brief Random number generators used by IMP.
+ *  \file IMP/random.h    \brief Random number generators used by IMP.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *

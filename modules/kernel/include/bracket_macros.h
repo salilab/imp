@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/bracket_macros.h
+ *  \file IMP/bracket_macros.h
  *  \brief Various general useful macros for IMP.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

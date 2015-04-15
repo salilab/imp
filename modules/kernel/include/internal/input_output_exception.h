@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/exception.h
+ *  \file IMP/exception.h
  *  \brief Exception definitions and assertions.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

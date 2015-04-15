@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/log.h
+ *  \file IMP/log.h
  *  \brief Logging and error reporting support.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -36,7 +36,7 @@ extern IMPKERNELEXPORT Flag<LogLevel, IMP_HAS_LOG != IMP_SILENT> log_level;
     IMP::Object::set_log_level()) which is used when executing code on
     that object.
 
-    Logging is provided by IMP/base/log.h.
+    Logging is provided by IMP/log.h.
 
     People implementing IMP::Object classes should also see IMP_OBJECT_LOG()
     and IMP::SetLogState.

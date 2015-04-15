@@ -158,7 +158,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
                                  std::string usage, int num_positional,
                                  bool allow_unknown) {
   if (already_run) {
-    IMP_FAILURE("IMP.base.setup_from_argv can only be run once per invocation"
+    IMP_FAILURE("IMP.setup_from_argv can only be run once per invocation"
                 << " of IMP.");
   }
   already_run = true;

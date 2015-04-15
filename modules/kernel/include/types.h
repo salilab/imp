@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/types.h    \brief Basic types used by IMP.
+ *  \file IMP/types.h    \brief Basic types used by IMP.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -57,11 +57,9 @@ IMP_BUILTIN_VALUES(Ints, IntsList);
 //! Standard way to pass a bunch of Strings values
 IMP_BUILTIN_VALUES(Strings, StringsList);
 
-namespace base {
 class Object;
 //! A list of objects
 IMP_OBJECTS(Object, Objects);
-}
 }
 // IMPKERNEL_END_NAMESPACE
 

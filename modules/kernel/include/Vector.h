@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/Vector.h
+ *  \file IMP/Vector.h
  *  \brief A class for storing lists of IMP items.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

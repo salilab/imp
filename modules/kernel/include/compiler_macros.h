@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/compiler_macros.h
+ *  \file IMP/compiler_macros.h
  *  \brief Various compiler workarounds
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

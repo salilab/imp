@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/hash.h    \brief IO support.
+ *  \file IMP/hash.h    \brief IO support.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/ConstVector.h
+ *  \file IMP/ConstVector.h
  *  \brief A beyesian infererence-based sampler.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

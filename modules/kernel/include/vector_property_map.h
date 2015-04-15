@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/vector_property_map.h
+ *  \file IMP/vector_property_map.h
  *  \brief Include the correct headers to get the boost vector_property_map
  *
  *  The location of the definition of boost::vector_property_map has changed

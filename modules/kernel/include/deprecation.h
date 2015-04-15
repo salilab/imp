@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/deprecation.h
+ *  \file IMP/deprecation.h
  *  \brief Control display of deprecation information.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

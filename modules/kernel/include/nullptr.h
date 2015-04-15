@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/nullptr.h
+ *  \file IMP/nullptr.h
  *  \brief Provide a nullptr keyword analog.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

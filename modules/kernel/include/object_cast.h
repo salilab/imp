@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/object_cast.h
+ *  \file IMP/object_cast.h
  *  \brief A shared base class to help in debugging and things.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
