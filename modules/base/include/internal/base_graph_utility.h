@@ -5,8 +5,8 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPBASE_INTERNAL_GRAPH_UTILITY_H
-#define IMPBASE_INTERNAL_GRAPH_UTILITY_H
+#ifndef IMPBASE_INTERNAL_BASE_GRAPH_UTILITY_H
+#define IMPBASE_INTERNAL_BASE_GRAPH_UTILITY_H
 
 #include <IMP/base/base_config.h>
 #include "../file.h"
@@ -78,4 +78,4 @@ get_graph_vertex_index(const Graph &g) {
 
 IMPBASE_END_INTERNAL_NAMESPACE
 
-#endif /* IMPBASE_INTERNAL_GRAPH_UTILITY_H */
+#endif /* IMPBASE_INTERNAL_BASE_GRAPH_UTILITY_H */

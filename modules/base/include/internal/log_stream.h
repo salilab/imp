@@ -12,7 +12,7 @@
 #if !IMP_BASE_HAS_LOG4CXX
 
 #include "../file.h"
-#include "static.h"
+#include "base_static.h"
 #include <istream>
 #include <sstream>
 #include <boost/iostreams/categories.hpp>

@@ -5,7 +5,7 @@
  *
  */
 
-#include <IMP/base/internal/swig.h>
+#include <IMP/base/internal/swig_base.h>
 #include <IMP/base/log_macros.h>
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 namespace {

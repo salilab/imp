@@ -5,8 +5,8 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPBASE_INTERNAL_SWIG_HELPERS_H
-#define IMPBASE_INTERNAL_SWIG_HELPERS_H
+#ifndef IMPBASE_INTERNAL_SWIG_HELPERS_BASE_H
+#define IMPBASE_INTERNAL_SWIG_HELPERS_BASE_H
 
 // Python.h must be included first
 #include <IMP/base/base_config.h>
@@ -558,4 +558,4 @@ struct Convert<int> {
 
 #endif
 
-#endif /* IMPBASE_INTERNAL_SWIG_HELPERS_H */
+#endif /* IMPBASE_INTERNAL_SWIG_HELPERS_BASE_H */

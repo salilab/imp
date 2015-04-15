@@ -5,11 +5,11 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPBASE_INTERNAL_SWIG_H
-#define IMPBASE_INTERNAL_SWIG_H
+#ifndef IMPBASE_INTERNAL_SWIG_BASE_H
+#define IMPBASE_INTERNAL_SWIG_BASE_H
 
 #include <IMP/base/base_config.h>
-#include "graph_utility.h"
+#include "base_graph_utility.h"
 #include "../VersionInfo.h"
 #include "../Object.h"
 #include "../types.h"
@@ -228,4 +228,4 @@ class _TestObject : public Object {
 
 IMPBASE_END_INTERNAL_NAMESPACE
 
-#endif /* IMPBASE_INTERNAL_SWIG_H */
+#endif /* IMPBASE_INTERNAL_SWIG_BASE_H */

@@ -9,11 +9,11 @@
 #include <IMP/base/file.h>
 #include <IMP/base/types.h>
 #include <IMP/base/log_macros.h>
-#include <IMP/base/internal/static.h>
+#include <IMP/base/internal/base_static.h>
 #include <IMP/base/internal/directories.h>
 #include <IMP/base/internal/log.h>
 #include <IMP/base/random.h>
-#include "internal/static.h"
+#include "internal/base_static.h"
 #include <boost/program_options/parsers.hpp>
 
 #if IMP_BASE_HAS_GPERFTOOLS

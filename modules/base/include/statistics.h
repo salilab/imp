@@ -12,7 +12,7 @@
 #include <IMP/base/base_config.h>
 #include "file.h"
 #include "enums.h"
-#include "internal/static.h"
+#include "internal/base_static.h"
 #include <string>
 #include <ctime>
 

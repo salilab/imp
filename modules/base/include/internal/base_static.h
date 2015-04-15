@@ -5,8 +5,8 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPBASE_INTERNAL_STATIC_H
-#define IMPBASE_INTERNAL_STATIC_H
+#ifndef IMPBASE_INTERNAL_BASE_STATIC_H
+#define IMPBASE_INTERNAL_BASE_STATIC_H
 
 #include <IMP/base/base_config.h>
 #include <IMP/base/Vector.h>
@@ -49,4 +49,4 @@ extern IMPBASEEXPORT AdvancedFlag<bool> show_seed;
 
 IMPBASE_END_INTERNAL_NAMESPACE
 
-#endif /* IMPBASE_INTERNAL_STATIC_H */
+#endif /* IMPBASE_INTERNAL_BASE_STATIC_H */

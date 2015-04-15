@@ -6,7 +6,7 @@
  */
 
 #include "IMP/base/internal/log_stream.h"
-#include "static.h"
+#include "base_static.h"
 #include <IMP/base/log.h>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE

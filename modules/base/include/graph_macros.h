@@ -11,7 +11,7 @@
 #include <IMP/base/base_config.h>
 #include <boost/graph/adjacency_list.hpp>
 #include "file.h"
-#include "internal/graph_utility.h"
+#include "internal/base_graph_utility.h"
 #include <boost/unordered_map.hpp>
 #include <boost/version.hpp>
 

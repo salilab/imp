@@ -5,10 +5,10 @@
  *
  */
 
-#include "IMP/base/utility.h"
+#include "IMP/base/base_utility.h"
 #include <boost/unordered_map.hpp>
 #include <boost/format.hpp>
-#include "internal/static.h"
+#include "internal/base_static.h"
 IMPBASE_BEGIN_NAMESPACE
 std::string get_unique_name(std::string name) {
   if (std::find(name.begin(), name.end(), '%') != name.end()) {

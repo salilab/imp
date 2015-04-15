@@ -5,11 +5,11 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPBASE_SRC_INTERNAL_STATIC_H
-#define IMPBASE_SRC_INTERNAL_STATIC_H
+#ifndef IMPBASE_BASE_STATIC_H
+#define IMPBASE_BASE_STATIC_H
 
 #include <IMP/base/base_config.h>
-#include <IMP/base/internal/static.h>
+#include <IMP/base/internal/base_static.h>
 #include <IMP/base/tuple_macros.h>
 #include <IMP/base/enums.h>
 #include <boost/cstdint.hpp>
@@ -77,4 +77,4 @@ struct Timing {
 extern IMPBASEEXPORT boost::unordered_map<std::string, Timing> timings;
 IMPBASE_END_INTERNAL_NAMESPACE
 
-#endif /* IMPBASE_SRC_INTERNAL_STATIC_H */
+#endif /* IMPBASE_BASE_STATIC_H */

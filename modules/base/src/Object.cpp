@@ -10,7 +10,7 @@
 #include "IMP/base/log.h"
 #include "IMP/base/log_macros.h"
 #include "IMP/base/exception.h"
-#include "IMP/base/utility.h"
+#include "IMP/base/base_utility.h"
 #include <exception>
 
 IMPBASE_BEGIN_NAMESPACE

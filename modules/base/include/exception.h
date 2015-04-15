@@ -13,7 +13,7 @@
 #include "compiler_macros.h"
 #include "enums.h"
 #include "nullptr.h"
-#include "internal/static.h"
+#include "internal/base_static.h"
 #include <string>
 #include <stdexcept>
 
