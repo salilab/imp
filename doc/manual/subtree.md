@@ -23,7 +23,7 @@ As an %example, a typical workflow for working with the IMP::pmi module is:
  - Use regular `git` commands `git add`, `git commit` etc. to record changes
  - Periodically push them to the PMI repository (_not_ the main %IMP repository) by running (in the top level %IMP directory)
 
-    git subtree push --prefix=modules/pmi git@github.com:salilab/pmi.git develop
+    `git subtree push --prefix=modules/pmi git@github.com:salilab/pmi.git develop`
 
  - *Important*: be careful not to also push these commits to %IMP. You may need
    to use `git reset HEAD~N` (where `N` is the number of commits you made) to
@@ -33,7 +33,7 @@ As an %example, a typical workflow for working with the IMP::pmi module is:
 
  - To incorporate changes from the PMI repository into %IMP, use
 
-    git subtree pull --squash --prefix=modules/pmi git@github.com:salilab/pmi.git develop
+    `git subtree pull --squash --prefix=modules/pmi git@github.com:salilab/pmi.git develop`
 
  - This will condense all of the PMI changes into a single %IMP
    commit (`--squash`) then merge that into %IMP itself (so you'll always end
