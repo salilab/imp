@@ -13,7 +13,7 @@
 #include <IMP/ClassnameContainer.h>
 #include <IMP/ClassnameModifier.h>
 #include <IMP/Constraint.h>
-#include <IMP/base/object_macros.h>
+#include <IMP/object_macros.h>
 #include <IMP/internal/ContainerConstraint.h>
 
 IMPKERNEL_BEGIN_NAMESPACE

@@ -22,8 +22,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
     score over the container.
  */
 class IMPCONTAINEREXPORT MinimumClassnameRestraint : public Restraint {
-  IMP::base::PointerMember<ClassnameScore> f_;
-  IMP::base::PointerMember<ClassnameContainer> c_;
+  IMP::PointerMember<ClassnameScore> f_;
+  IMP::PointerMember<ClassnameContainer> c_;
   unsigned int n_;
 
  public:

@@ -14,8 +14,8 @@
 #include <IMP/internal/container_helpers.h>
 #include "internal/ClassnameContainerIndex.h"
 #include <IMP/classname_macros.h>
-#include <IMP/base/object_macros.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/object_macros.h>
+#include <IMP/warning_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -27,7 +27,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT InContainerClassnameFilter
     : public ClassnamePredicate {
-  IMP::base::PointerMember<internal::ClassnameContainerIndex> c_;
+  IMP::PointerMember<internal::ClassnameContainerIndex> c_;
 
  public:
   InContainerClassnameFilter(ClassnameContainer *c,

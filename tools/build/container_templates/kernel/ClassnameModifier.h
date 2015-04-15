@@ -28,7 +28,7 @@ IMPKERNEL_BEGIN_NAMESPACE
  */
 class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
                                           public ParticleOutputs,
-                                          public base::Object {
+                                          public Object {
  public:
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;

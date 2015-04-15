@@ -29,7 +29,7 @@
 #ifndef %(cppprefix)s_CONFIG_H
 #define %(cppprefix)s_CONFIG_H
 
-#include <IMP/base/base_config.h>
+#include <IMP/kernel_config.h>
 #include <string>
 
 #ifdef _MSC_VER
@@ -148,7 +148,7 @@ IMP_COMPILER_DISABLE_WARNINGS
 
 %(showable)s
 
-#include <IMP/base/compiler_macros.h>
+#include <IMP/compiler_macros.h>
 
 #endif /* %(cppprefix)s_CONFIG_H */
 
@@ -242,7 +242,7 @@ IMP_COMPILER_DISABLE_WARNINGS
   IMP_DEPRECATED_METHOD_RUNTIME_WARNING(version, message)
 
 
-#include <IMP/base/compiler_macros.h>
+#include <IMP/compiler_macros.h>
 
 #if defined(IMP_EXECUTABLE) && !defined(IMP_EXECUTABLE_WARNINGS)
 IMP_COMPILER_ENABLE_WARNINGS

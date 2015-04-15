@@ -15,12 +15,12 @@
 #include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
 #include "ParticleTuple.h"
-#include <IMP/base/ref_counted_macros.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/base/InputAdaptor.h>
-#include <IMP/base/utility_macros.h>
-#include <IMP/base/deprecation_macros.h>
+#include <IMP/ref_counted_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/Pointer.h>
+#include <IMP/InputAdaptor.h>
+#include <IMP/utility_macros.h>
+#include <IMP/deprecation_macros.h>
 #include <algorithm>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -88,7 +88,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
 #ifndef SWIG
   bool get_provides_access() const;
   virtual const PLURALINDEXTYPE &get_access() const {
-    IMP_THROW("Object not implemented properly.", base::IndexException);
+    IMP_THROW("Object not implemented properly.", IndexException);
   }
 
   template <class Functor>
@@ -135,12 +135,12 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
 */
 class IMPKERNELEXPORT ClassnameContainerAdaptor :
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-    public base::Pointer<ClassnameContainer>
+    public Pointer<ClassnameContainer>
 #else
-    public base::InputAdaptor
+    public InputAdaptor
 #endif
     {
-  typedef base::Pointer<ClassnameContainer> P;
+  typedef Pointer<ClassnameContainer> P;
 
  public:
   ClassnameContainerAdaptor() {}
@@ -156,7 +156,7 @@ class IMPKERNELEXPORT ClassnameContainerAdaptor :
      dynamically, so do the contents of the adaptor, and vice versa)
    */
   template <class C>
-  ClassnameContainerAdaptor(base::internal::PointerBase<C> c)
+  ClassnameContainerAdaptor(IMP::internal::PointerBase<C> c)
       : P(c) {}
 
   /**

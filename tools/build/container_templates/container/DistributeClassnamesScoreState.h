@@ -14,7 +14,7 @@
 #include "DynamicListClassnameContainer.h"
 #include <IMP/ClassnamePredicate.h>
 #include <IMP/ClassnameContainer.h>
-#include <IMP/base/Vector.h>
+#include <IMP/Vector.h>
 #include <IMP/classname_macros.h>
 #include <boost/tuple/tuple.hpp>
 
@@ -30,10 +30,10 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \note The output containers contents are not necessarily disjoint.
 */
 class IMPCONTAINEREXPORT DistributeClassnamesScoreState : public ScoreState {
-  base::PointerMember<ClassnameContainer> input_;
-  typedef boost::tuple<base::Pointer<DynamicListClassnameContainer>,
-                       base::PointerMember<ClassnamePredicate>, int> Data;
-  base::Vector<Data> data_;
+  PointerMember<ClassnameContainer> input_;
+  typedef boost::tuple<Pointer<DynamicListClassnameContainer>,
+                       PointerMember<ClassnamePredicate>, int> Data;
+  Vector<Data> data_;
   mutable std::size_t input_version_;
   void update_lists_if_necessary() const;
 

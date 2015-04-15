@@ -68,21 +68,21 @@ def make_header(options):
         data["end_ns"] = "} }"
         data["filename"] = "IMP/%s/%s_config.h" % (options.name, options.name)
     data["cppprefix"] = "IMP%s" % options.name.upper().replace("_", "")
-    if data["name"] != "base":
+    if data["name"] != "kernel":
         data["showable"] = """#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 
-#include <IMP/base/Showable.h>
-#include <IMP/base/hash.h>
+#include <IMP/Showable.h>
+#include <IMP/hash.h>
 
 %(begin_ns)s
-using ::IMP::base::Showable;
-using ::IMP::base::operator<<;
-using ::IMP::base::hash_value;
+using ::IMP::Showable;
+using ::IMP::operator<<;
+using ::IMP::hash_value;
 %(end_ns)s // namespace
 %(begin_ns)s namespace internal {
-using ::IMP::base::Showable;
-using ::IMP::base::operator<<;
-using ::IMP::base::hash_value;
+using ::IMP::Showable;
+using ::IMP::operator<<;
+using ::IMP::hash_value;
 } %(end_ns)s // namespace
 
 #endif // !defined(SWIG) && !defined(IMP_DOXYGEN)

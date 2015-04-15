@@ -13,7 +13,7 @@
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
 #include "internal/container_helpers.h"
-#include <IMP/base/utility_macros.h>
+#include <IMP/utility_macros.h>
 #include "model_object_helpers.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -32,7 +32,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     \see PredicateClassnameRestraint
 */
 class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
-                                       public base::Object {
+                                       public Object {
  public:
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;

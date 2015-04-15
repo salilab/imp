@@ -26,7 +26,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     Implementers should check out IMP_CLASSNAME_PREDICATE().
 */
 class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
-                                           public base::Object {
+                                           public Object {
  public:
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;

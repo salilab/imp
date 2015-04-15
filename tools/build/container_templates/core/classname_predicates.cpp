@@ -5,7 +5,7 @@
  */
 
 #include <IMP/core/HELPERNAME_predicates.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

@@ -14,7 +14,7 @@
 #include "IMP/internal/utility.h"
 #include "IMP/ModelObject.h"
 #include <algorithm>
-#include <IMP/base/check_macros.h>
+#include <IMP/check_macros.h>
 #include <boost/unordered_set.hpp>
 #include <IMP/classname_macros.h>
 #include <IMP/ClassnameModifier.h>
@@ -78,7 +78,7 @@ ClassnameContainerAdaptor::ClassnameContainerAdaptor(
 
 void ClassnameContainerAdaptor::set_name_if_default(std::string name) {
   IMP_USAGE_CHECK(*this, "NULL passed as input");
-  base::Object *o = *this;
+  Object *o = *this;
   if (o->get_name().find("ClassnameContainerInput") == 0) {
     o->set_name(name);
   }

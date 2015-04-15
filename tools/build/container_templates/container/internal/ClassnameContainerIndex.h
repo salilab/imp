@@ -19,7 +19,7 @@ IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 /** Store an index that allows one to quickly determine of something
     is in a container.*/
 class IMPCONTAINEREXPORT ClassnameContainerIndex : public ScoreState {
-  base::Pointer<ClassnameContainer> container_;
+  Pointer<ClassnameContainer> container_;
   std::size_t container_version_;
   boost::unordered_set<INDEXTYPE> contents_;
   bool handle_permutations_;

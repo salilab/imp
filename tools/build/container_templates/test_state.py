@@ -111,7 +111,7 @@ class Tests(IMP.test.TestCase):
         """Testing ClassnamesConstraint"""
         # write increment an int field
         # call evaluate and check that it is incremented
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         print("start")
         m = IMP.Model()
         print("hi")
@@ -137,7 +137,7 @@ class Tests(IMP.test.TestCase):
         """Testing ClassnameConstraint"""
         # write increment an int field
         # call evaluate and check that it is incremented
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         print("start")
         m = IMP.Model()
         print("hi")

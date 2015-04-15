@@ -239,7 +239,7 @@ void DistributeClassnamesScoreState::update_lists_if_necessary() const {
   if (h == input_version_) return;
   input_version_ = h;
 
-  base::Vector<PLURALINDEXTYPE> output(data_.size());
+  Vector<PLURALINDEXTYPE> output(data_.size());
   IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
     for (unsigned int i = 0; i < data_.size(); ++i) {
       if (data_[i].get<1>()->get_value_index(get_model(), it) ==
@@ -292,7 +292,7 @@ void EventClassnamesOptimizerState::update() {
     if (pred_->get_value_index(m, it) == v_) ++met;
   }
   if (met >= min_ && met < max_) {
-    throw IMP::base::EventException("an event occurred");
+    throw IMP::EventException("an event occurred");
   }
 }
 IMPCONTAINER_END_NAMESPACE
@@ -530,7 +530,7 @@ ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
   ModelObjectsTemp ret;
   ParticleIndexes all = input_->get_all_possible_indexes();
   ret += predicate_->get_inputs(get_model(), all);
-  typedef std::pair<int, base::PointerMember<ClassnameScore> > SP;
+  typedef std::pair<int, PointerMember<ClassnameScore> > SP;
   IMP_FOREACH(const SP & sp, scores_) {
     ret += sp.second->get_inputs(get_model(), all);
   }

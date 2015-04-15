@@ -113,7 +113,7 @@ class IMPCOREEXPORT CoinFlipClassnamePredicate : public ClassnamePredicate {
                                            "CoinFlipClassnamePredicate%1%");
   virtual int get_value_index(Model *, PASSINDEXTYPE) const
       IMP_OVERRIDE {
-    if (rng_(base::random_number_generator) < p_)
+    if (rng_(random_number_generator) < p_)
       return 1;
     else
       return 0;

@@ -11,7 +11,7 @@
 #include "internal/TupleRestraint.h"
 #include "internal/functors.h"
 #include "container_macros.h"
-#include <IMP/base/object_macros.h>
+#include <IMP/object_macros.h>
 #include <algorithm>
 
 /** Define

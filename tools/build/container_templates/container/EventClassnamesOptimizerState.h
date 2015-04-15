@@ -15,14 +15,14 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-/** Raise an IMP::base::EventException when a certain condition is met.
+/** Raise an IMP::EventException when a certain condition is met.
     Currently the supported logic is when the number of items in the
     container for which the predicate returns a certain value is in the
     range [min_count, max_count).
  */
 class IMPCONTAINEREXPORT EventClassnamesOptimizerState : public OptimizerState {
-  IMP::base::PointerMember<ClassnamePredicate> pred_;
-  IMP::base::PointerMember<ClassnameContainer> container_;
+  IMP::PointerMember<ClassnamePredicate> pred_;
+  IMP::PointerMember<ClassnameContainer> container_;
   int v_;
   int min_, max_;
 

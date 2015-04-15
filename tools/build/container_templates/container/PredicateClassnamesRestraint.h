@@ -28,10 +28,10 @@ IMPCONTAINER_BEGIN_NAMESPACE
     different predicate values for different orderings.
 */
 class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
-  base::PointerMember<ClassnamePredicate> predicate_;
-  base::PointerMember<ClassnameContainer> input_;
+  PointerMember<ClassnamePredicate> predicate_;
+  PointerMember<ClassnameContainer> input_;
   mutable boost::unordered_map<int, PLURALINDEXTYPE> lists_;
-  boost::unordered_map<int, base::PointerMember<ClassnameScore> > scores_;
+  boost::unordered_map<int, PointerMember<ClassnameScore> > scores_;
   mutable std::size_t input_version_;
   bool error_on_unknown_;
   void update_lists_if_necessary() const;
