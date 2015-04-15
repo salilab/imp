@@ -11,7 +11,7 @@
 #include <IMP/algebra/vector_generators.h>
 IMPPMI_BEGIN_NAMESPACE
 
-TransformMover::TransformMover(kernel::Model *m,
+TransformMover::TransformMover(Model *m,
                                Float max_translation, Float max_angle)
     : MonteCarloMover(m, "Transform mover") {
   IMP_LOG_VERBOSE("start TransformMover constructor");
@@ -21,7 +21,7 @@ TransformMover::TransformMover(kernel::Model *m,
   IMP_LOG_VERBOSE("finish mover construction" << std::endl);
 }
 
-TransformMover::TransformMover(kernel::Model *m, algebra::Vector3D axis,
+TransformMover::TransformMover(Model *m, algebra::Vector3D axis,
                                Float max_translation, Float max_angle)
     : MonteCarloMover(m, "Transform mover") {
   IMP_LOG_VERBOSE("start TransformMover constructor");
@@ -112,8 +112,8 @@ void TransformMover::do_reject() {
   
 }
 
-kernel::ModelObjectsTemp TransformMover::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret(pis_.size());
+ModelObjectsTemp TransformMover::do_get_inputs() const {
+  ModelObjectsTemp ret(pis_.size());
   for (unsigned int i = 0; i < pis_.size(); ++i) {
     ret[i] = get_model()->get_particle(pis_[i]);
   }

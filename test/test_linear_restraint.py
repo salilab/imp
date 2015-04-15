@@ -5,8 +5,8 @@ import IMP.algebra
 
 m = IMP.Model()
 
-p1 = IMP.kernel.Particle(m)
-p2 = IMP.kernel.Particle(m)
+p1 = IMP.Particle(m)
+p2 = IMP.Particle(m)
 
 xyz1 = IMP.core.XYZ.setup_particle(p1)
 xyz2 = IMP.core.XYZ.setup_particle(p2)
