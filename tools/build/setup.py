@@ -108,7 +108,7 @@ def link_python(source):
     target = os.path.join("lib")
     tools.mkdir(target, clean=False)
     for module, g in tools.get_modules(source):
-        path = os.path.join(target, "IMP", module)
+        path = os.path.join(target, "IMP", '' if module == 'kernel' else module)
         tools.mkdir(path, clean=False)
         for old in tools.get_glob([os.path.join(path, "*.py")]):
             # don't unlink the generated file
