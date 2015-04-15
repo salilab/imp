@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_GRAPH_MACROS_H
 #define IMPKERNEL_GRAPH_MACROS_H
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <boost/graph/adjacency_list.hpp>
 #include "file.h"
 #include "internal/base_graph_utility.h"

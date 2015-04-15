@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_OBJECT_MACROS_H
 #define IMPKERNEL_OBJECT_MACROS_H
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "doxygen_macros.h"
 #include "ref_counted_macros.h"
 #include "Vector.h"

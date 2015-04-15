@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_FILE_H
 #define IMPKERNEL_FILE_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "exception.h"
 #include "internal/ifile.h"
 #include "Pointer.h"

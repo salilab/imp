@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CREATE_LOG_CONTEXT_H
 #define IMPKERNEL_CREATE_LOG_CONTEXT_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "raii_macros.h"
 #include "log.h"
 #include <IMP/nullptr.h>

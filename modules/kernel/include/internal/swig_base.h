@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_SWIG_BASE_H
 #define IMPKERNEL_INTERNAL_SWIG_BASE_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "base_graph_utility.h"
 #include "../VersionInfo.h"
 #include "../Object.h"

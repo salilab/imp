@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_INTERNAL_FLAG_H
 #define IMPKERNEL_INTERNAL_FLAG_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <boost/program_options.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_fundamental.hpp>

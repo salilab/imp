@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_BASE_STATIC_H
 #define IMPKERNEL_INTERNAL_BASE_STATIC_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <IMP/Vector.h>
 #include <IMP/Flag.h>
 #include <IMP/enums.h>

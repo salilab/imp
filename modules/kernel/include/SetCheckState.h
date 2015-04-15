@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_SET_CHECK_STATE_H
 #define IMPKERNEL_SET_CHECK_STATE_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "enums.h"
 #include "raii_macros.h"
 #include "value_macros.h"

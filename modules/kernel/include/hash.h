@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_HASH_H
 #define IMPKERNEL_HASH_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 
 #ifdef __clang__
 IMP_CLANG_PRAGMA(diagnostic push)

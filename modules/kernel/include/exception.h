@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_EXCEPTION_H
 #define IMPKERNEL_EXCEPTION_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "compiler_macros.h"
 #include "enums.h"
 #include "nullptr.h"

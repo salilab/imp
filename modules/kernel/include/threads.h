@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_THREADS_H
 #define IMPKERNEL_THREADS_H
 #include "raii_macros.h"
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 /** \name Number of threads

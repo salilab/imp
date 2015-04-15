@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_FLAGS_H
 #define IMPKERNEL_FLAGS_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <boost/cstdint.hpp>
 #include "types.h"
 #include <string>

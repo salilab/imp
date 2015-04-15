@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_RANDOM_H
 #define IMPKERNEL_RANDOM_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <boost/random/mersenne_twister.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE

@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_CONVERTIBLE_VECTOR_H
 #define IMPKERNEL_CONVERTIBLE_VECTOR_H
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 // do not include anything more from base
 #include "Showable.h"
 #include "Value.h"

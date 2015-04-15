@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_BASE_GRAPH_UTILITY_H
 #define IMPKERNEL_INTERNAL_BASE_GRAPH_UTILITY_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "../file.h"
 #include <cctype>
 #include <algorithm>

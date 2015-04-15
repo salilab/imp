@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_INTERNAL_POINTER_BASE_H
 #define IMPKERNEL_INTERNAL_POINTER_BASE_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "../check_macros.h"
 #include "../warning_macros.h"
 #include "../hash.h"

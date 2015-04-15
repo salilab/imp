@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_FLAG_H
 #define IMPKERNEL_FLAG_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "internal/Flag.h"
 #include <boost/program_options.hpp>
 #include <string>

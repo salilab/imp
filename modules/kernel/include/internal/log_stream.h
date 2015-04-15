@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_LOG_STREAM_H
 #define IMPKERNEL_INTERNAL_LOG_STREAM_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #if !IMP_KERNEL_HAS_LOG4CXX
 
 #include "../file.h"

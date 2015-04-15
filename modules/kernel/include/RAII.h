@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_RAI_I_H
 #define IMPKERNEL_RAI_I_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "NonCopyable.h"
 #include "utility_macros.h"
 

@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_RANGE_H
 #define IMPKERNEL_INTERNAL_RANGE_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <algorithm>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE

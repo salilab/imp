@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_SHOWABLE_MACROS_H
 #define IMPKERNEL_SHOWABLE_MACROS_H
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "Showable.h"
 #include "warning_macros.h"
 

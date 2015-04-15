@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_UTILITY_H
 #define IMPKERNEL_UTILITY_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <boost/utility.hpp>
 #include <cmath>
 #include "base_macros.h"

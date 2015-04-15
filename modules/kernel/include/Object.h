@@ -9,8 +9,8 @@
 #ifndef IMPKERNEL_OBJECT_H
 #define IMPKERNEL_OBJECT_H
 
-#include <IMP/base_config.h>
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "exception.h"
 #include "utility_macros.h"
 #include "NonCopyable.h"

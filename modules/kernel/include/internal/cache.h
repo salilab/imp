@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_CACHE_H
 #define IMPKERNEL_INTERNAL_CACHE_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <IMP/Vector.h>
 #include <algorithm>
 

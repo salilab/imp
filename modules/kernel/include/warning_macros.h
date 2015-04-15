@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_WARNING_MACROS_H
 #define IMPKERNEL_WARNING_MACROS_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "internal/eat.h"
 
 #define IMP_REQUIRE_SEMICOLON_CLASS(Name)

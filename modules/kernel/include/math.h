@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_BASE_MATH_H
 #define IMPKERNEL_BASE_MATH_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <boost/version.hpp>
 #include <cmath>
 #if !defined(_GLIBCXX_USE_C99_MATH)

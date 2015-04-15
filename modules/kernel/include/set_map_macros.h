@@ -39,7 +39,7 @@
 
 #else
 
-#include "IMP/base_config.h"
+#include "IMP/kernel_config.h"
 #include <boost/version.hpp>
 #include <boost/functional/hash/hash.hpp>  // IWYU pragma: export
 

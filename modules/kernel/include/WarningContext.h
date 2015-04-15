@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CREATE_WARNING_CONTEXT_H
 #define IMPKERNEL_CREATE_WARNING_CONTEXT_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "showable_macros.h"
 #include <boost/unordered_set.hpp>
 

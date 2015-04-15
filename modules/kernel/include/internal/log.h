@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_LOG_H
 #define IMPKERNEL_INTERNAL_LOG_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "../enums.h"
 #if IMP_KERNEL_HAS_LOG4CXX
 #include <log4cxx/logger.h>

@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INPUT_ADAPTOR_H
 #define IMPKERNEL_INPUT_ADAPTOR_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "utility_macros.h"
 
 IMPKERNEL_BEGIN_NAMESPACE

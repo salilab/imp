@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_ARRAY_H
 #define IMPKERNEL_ARRAY_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "Value.h"
 #include "comparison_macros.h"
 #include "hash_macros.h"

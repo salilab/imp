@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_COMPARISON_MACROS_H
 #define IMPKERNEL_COMPARISON_MACROS_H
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "warning_macros.h"
 
 #if defined(IMP_DOXYGEN)

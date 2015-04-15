@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_POINTER_H
 #define IMPKERNEL_POINTER_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "internal/PointerBase.h"
 #include "WeakPointer.h"
 

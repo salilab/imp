@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_TUPLE_MACROS_H
 #define IMPKERNEL_TUPLE_MACROS_H
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "Value.h"
 #include "Showable.h"
 #include "hash.h"

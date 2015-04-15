@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_SHOWABLE_H
 #define IMPKERNEL_SHOWABLE_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 // do not include anything else from IMP
 #include <sstream>
 #include <iostream>

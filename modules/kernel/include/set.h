@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_SET_H
 #define IMPKERNEL_SET_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <boost/version.hpp>
 
 #include <boost/unordered_set.hpp>

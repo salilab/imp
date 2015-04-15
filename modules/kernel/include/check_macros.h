@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CHECK_MACROS_H
 #define IMPKERNEL_CHECK_MACROS_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "exception.h"
 #include "compiler_macros.h"
 #include <iostream>

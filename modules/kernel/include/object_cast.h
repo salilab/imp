@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_OBJECT_CAST_H
 #define IMPKERNEL_OBJECT_CAST_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "Object.h"
 #include "check_macros.h"
 

@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_UTILITY_MACROS_H
 #define IMPKERNEL_UTILITY_MACROS_H
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <IMP/deprecation_macros.h>
 
 //! Use a copy_from method to create a copy constructor and operator=

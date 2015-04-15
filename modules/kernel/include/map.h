@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_BASE_MAP_H
 #define IMPKERNEL_BASE_MAP_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <boost/unordered_map.hpp>
 #include "hash.h"
 

@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_NON_COPYABLE_H
 #define IMPKERNEL_NON_COPYABLE_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "utility_macros.h"
 
 IMPKERNEL_BEGIN_NAMESPACE

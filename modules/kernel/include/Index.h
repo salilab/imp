@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INDEX_H
 #define IMPKERNEL_INDEX_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "bracket_macros.h"
 #include "showable_macros.h"
 #include "Value.h"

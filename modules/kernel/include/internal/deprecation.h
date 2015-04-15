@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_INTERNAL_DEPRECATION_H
 #define IMPKERNEL_INTERNAL_DEPRECATION_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 IMPKERNELEXPORT bool get_print_deprecation_message(std::string name);

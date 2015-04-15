@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_BASE_STATISTICS_H
 #define IMPKERNEL_BASE_STATISTICS_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "file.h"
 #include "enums.h"
 #include "internal/base_static.h"

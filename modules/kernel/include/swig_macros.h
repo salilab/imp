@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_SWIG_MACROS_H
 #define IMPKERNEL_SWIG_MACROS_H
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 
 #if defined(SWIG)
 #define IMP_NO_SWIG(x)

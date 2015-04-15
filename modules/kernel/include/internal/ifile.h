@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_INTERNAL_IFILE_H
 #define IMPKERNEL_INTERNAL_IFILE_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 namespace internal {

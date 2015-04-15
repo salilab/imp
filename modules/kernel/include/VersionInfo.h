@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_VERSION_INFO_H
 #define IMPKERNEL_VERSION_INFO_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "exception.h"
 #include "comparison_macros.h"
 #include "check_macros.h"

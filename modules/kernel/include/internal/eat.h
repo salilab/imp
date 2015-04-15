@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_EAT_H
 #define IMPKERNEL_INTERNAL_EAT_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 template <class T>

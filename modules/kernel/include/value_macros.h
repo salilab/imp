@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_VALUE_MACROS_H
 #define IMPKERNEL_VALUE_MACROS_H
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "Vector.h"
 
 //! Define the type for storing sets of values

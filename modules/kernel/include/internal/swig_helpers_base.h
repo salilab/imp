@@ -9,7 +9,7 @@
 #define IMPKERNEL_INTERNAL_SWIG_HELPERS_BASE_H
 
 // Python.h must be included first
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "../base_macros.h"
 #include "../Object.h"
 #include "../types.h"

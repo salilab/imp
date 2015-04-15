@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_NULLPTR_MACROS_H
 #define IMPKERNEL_NULLPTR_MACROS_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 
 #if(defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
     !defined(nullptr)

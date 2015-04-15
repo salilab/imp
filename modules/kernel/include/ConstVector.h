@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONST_VECTOR_H
 #define IMPKERNEL_CONST_VECTOR_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "base_macros.h"
 #include "exception.h"
 #include "Value.h"

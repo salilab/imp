@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_ENUMS_H
 #define IMPKERNEL_ENUMS_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "compiler_macros.h"
 #include <iostream>
 

@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_LIVE_OBJECTS_H
 #define IMPKERNEL_LIVE_OBJECTS_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "Object.h"
 #include "types.h"
 

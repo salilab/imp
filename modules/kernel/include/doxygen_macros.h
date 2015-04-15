@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_DOXYGEN_MACROS_H
 #define IMPKERNEL_DOXYGEN_MACROS_H
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 // for IMP_OVERRIDE
 #include "swig_macros.h"
 

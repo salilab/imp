@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_BASE_STATIC_H
 #define IMPKERNEL_BASE_STATIC_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include <IMP/internal/base_static.h>
 #include <IMP/tuple_macros.h>
 #include <IMP/enums.h>

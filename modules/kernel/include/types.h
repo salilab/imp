@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_TYPES_H
 #define IMPKERNEL_TYPES_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "value_macros.h"
 #include "object_macros.h"
 #include <IMP/hash.h>

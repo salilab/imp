@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_DEPRECATION_MACROS_H
 #define IMPKERNEL_DEPRECATION_MACROS_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "deprecation.h"
 
 /** Used to implement deprecation support. See the

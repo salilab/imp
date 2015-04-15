@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_PIECEWISE_LINEAR_DISTRIBUTION_H
 #define IMPKERNEL_PIECEWISE_LINEAR_DISTRIBUTION_H
 
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "Vector.h"
 #include <boost/version.hpp>
 #include <boost/random/uniform_real.hpp>

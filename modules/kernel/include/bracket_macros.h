@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_BRACKET_MACROS_H
 #define IMPKERNEL_BRACKET_MACROS_H
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 
 #ifdef IMP_DOXYGEN
 /** Implement operator[] and at() for C++, and __getitem__ for Python.

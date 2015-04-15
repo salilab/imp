@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_WEAK_POINTER_H
 #define IMPKERNEL_WEAK_POINTER_H
-#include <IMP/base_config.h>
+#include <IMP/kernel_config.h>
 #include "internal/PointerBase.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
