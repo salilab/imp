@@ -80,11 +80,11 @@ _director_objects = _DirectorObjects()
 %}
 
 // Trigger cleanup of unused director objects when other IMP cleanup is done
-%pythonappend IMP::kernel::Model::~Model %{
+%pythonappend IMP::Model::~Model %{
         import IMP.base
         IMP.base._director_objects.cleanup()
 %}
-%pythonappend IMP::kernel::Optimizer::~Optimizer %{
+%pythonappend IMP::Optimizer::~Optimizer %{
         import IMP.base
         IMP.base._director_objects.cleanup()
 %}
