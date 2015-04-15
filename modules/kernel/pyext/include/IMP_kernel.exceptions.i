@@ -1,27 +1,25 @@
 %{
   // make sure this is early enough
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 %}
 
 /* Get/set check level from Python */
-#ifdef IMP_SWIG_BASE
+#ifdef IMP_SWIG_KERNEL
 namespace IMP
 {
-  namespace base {
     enum CheckLevel {DEFAULT_CHECK=-1, NONE=IMP_NONE, USAGE=IMP_USAGE,
                      USAGE_AND_INTERNAL=IMP_INTERNAL};
     void set_check_level(CheckLevel tf);
     CheckLevel get_check_level();
-  }
 }
 #endif
 
 /* Create Python exception classes at startup to mirror C++ classes, if we're
-   building the base. If we're building a module, import these classes from
-   the base. */
+   building the kernel. If we're building a module, import these classes from
+   the kernel. */
 %define CREATE_EXCEPTION_CLASS(VAR, CNAME)
-#if defined(IMP_SWIG_BASE)
-VAR = PyErr_NewException((char *)"_IMP_base.CNAME", imp_exception, NULL);
+#if defined(IMP_SWIG_KERNEL)
+VAR = PyErr_NewException((char *)"_IMP_kernel.CNAME", imp_exception, NULL);
 Py_INCREF(VAR);
 PyModule_AddObject(m, "CNAME", VAR)
 #else
@@ -30,13 +28,13 @@ VAR = PyDict_GetItemString(base_dict, "CNAME")
 %enddef
 
 %define CREATE_EXCEPTION_CLASS_PYTHON(VAR, CNAME, PYNAME)
-#if !defined(IMP_SWIG_BASE)
+#if !defined(IMP_SWIG_KERNEL)
 CREATE_EXCEPTION_CLASS(VAR, CNAME)
 #else
 do {
   PyObject *base_tuple = PyTuple_Pack(2, imp_exception, PyExc_##PYNAME);
   /* PyErr_NewException only takes a tuple in Python 2.5 or later. */
-  VAR = PyErr_NewException((char *)"_IMP_base.CNAME", base_tuple, NULL);
+  VAR = PyErr_NewException((char *)"_IMP_kernel.CNAME", base_tuple, NULL);
   Py_INCREF(VAR);
   Py_DECREF(base_tuple);
   PyModule_AddObject(m, "CNAME", VAR);
@@ -46,13 +44,13 @@ do {
 
 %init {
   {
-    /* Create or load base exception class */
-#ifdef IMP_SWIG_BASE
-    imp_exception = PyErr_NewException((char *)"_IMP_base.Exception", NULL, NULL);
+    /* Create or load kernel exception class */
+#ifdef IMP_SWIG_KERNEL
+    imp_exception = PyErr_NewException((char *)"_IMP_kernel.Exception", NULL, NULL);
     Py_INCREF(imp_exception);
     PyModule_AddObject(m, "Exception", imp_exception);
 #else
-    PyObject *base = PyImport_ImportModule("_IMP_base");
+    PyObject *base = PyImport_ImportModule("_IMP_kernel");
     PyObject *base_dict = PyModule_GetDict(base);
     imp_exception = PyDict_GetItemString(base_dict, "Exception");
 #endif
@@ -70,17 +68,17 @@ do {
     CREATE_EXCEPTION_CLASS_PYTHON(imp_value_exception, ValueException,
                                   ValueError);
 
-#ifndef IMP_SWIG_BASE
+#ifndef IMP_SWIG_KERNEL
     Py_DECREF(base);
 #endif
   }
 }
 
 /* Make sure that exception classes are visible to Python */
-#ifdef IMP_SWIG_BASE
+#ifdef IMP_SWIG_KERNEL
 %pythoncode %{
-from _IMP_base import Exception, InternalException, ModelException, EventException
-from _IMP_base import UsageException, IndexException, IOException, ValueException
+from _IMP_kernel import Exception, InternalException, ModelException, EventException
+from _IMP_kernel import UsageException, IndexException, IOException, ValueException
 %}
 #endif
 
@@ -124,21 +122,21 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
       /* Internal error, such as attempt to resize a vector beyond max size */
       PyErr_SetString(imp_internal_exception, e.what());
     /* Map IMP exceptions to Python objects */
-    } catch (const IMP::base::IndexException &e) {
+    } catch (const IMP::IndexException &e) {
       PyErr_SetString(imp_index_exception, e.what());
-    } catch (const IMP::base::ValueException &e) {
+    } catch (const IMP::ValueException &e) {
       PyErr_SetString(imp_value_exception, e.what());
-    } catch (const IMP::base::InternalException &e) {
+    } catch (const IMP::InternalException &e) {
       PyErr_SetString(imp_internal_exception, e.what());
-    } catch (const IMP::base::ModelException &e) {
+    } catch (const IMP::ModelException &e) {
       PyErr_SetString(imp_model_exception, e.what());
-    } catch (const IMP::base::UsageException &e) {
+    } catch (const IMP::UsageException &e) {
       PyErr_SetString(imp_usage_exception, e.what());
-    } catch (const IMP::base::IOException &e) {
+    } catch (const IMP::IOException &e) {
       PyErr_SetString(imp_io_exception, e.what());
-    } catch (const IMP::base::EventException &e) {
+    } catch (const IMP::EventException &e) {
       PyErr_SetString(imp_event_exception, e.what());
-    } catch (const IMP::base::Exception &e) {
+    } catch (const IMP::Exception &e) {
       PyErr_SetString(imp_exception, e.what());
     /* Map Boost exceptions to Python exceptions */
     } catch (boost::filesystem::filesystem_error &e) {

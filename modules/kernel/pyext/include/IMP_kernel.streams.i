@@ -1,6 +1,6 @@
 %{
-#include <IMP/base/Object.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Object.h>
+#include <IMP/Pointer.h>
 %}
 
 // Typemaps to allow Python director class methods to write to C++ std::ostream
@@ -11,10 +11,10 @@
 // Typemaps to allow Python file-like objects to be used for C++ code that
 // expects a std::ostream
 
-%typemap(in) IMP::base::TextProxy<std::ostream> (IMP::base::OwnerPointer<PyOutFileAdapter> tmp){
+%typemap(in) IMP::TextProxy<std::ostream> (IMP::OwnerPointer<PyOutFileAdapter> tmp){
   tmp=new PyOutFileAdapter();
     try {
-      $1 = IMP::base::TextProxy<std::ostream>(tmp->set_python_file($input), tmp);
+      $1 = IMP::TextProxy<std::ostream>(tmp->set_python_file($input), tmp);
     } catch (...) {
       // If Python error indicator is set (e.g. from a failed director method),
       // it will be reraised at the end of the method
@@ -28,10 +28,10 @@
   }
 }
 
-%typemap(in) IMP::base::TextProxy<std::ostream> (IMP::base::PointerMember<PyOutFileAdapter> tmp){
+%typemap(in) IMP::TextProxy<std::ostream> (IMP::PointerMember<PyOutFileAdapter> tmp){
   tmp=new PyOutFileAdapter();
     try {
-      $1 = IMP::base::TextProxy<std::ostream>(tmp->set_python_file($input), tmp);
+      $1 = IMP::TextProxy<std::ostream>(tmp->set_python_file($input), tmp);
     } catch (...) {
       // If Python error indicator is set (e.g. from a failed director method),
       // it will be reraised at the end of the method
@@ -46,7 +46,7 @@
 }
 
 
-%typemap(in) std::ostream& (IMP::base::OwnerPointer<PyOutFileAdapter> tmp){
+%typemap(in) std::ostream& (IMP::OwnerPointer<PyOutFileAdapter> tmp){
   tmp=new PyOutFileAdapter();
   try {
        $1 = tmp->set_python_file($input);
@@ -64,7 +64,7 @@
   }
 }
 
-%typemap(in) std::ostream& (IMP::base::PointerMember<PyOutFileAdapter> tmp){
+%typemap(in) std::ostream& (IMP::PointerMember<PyOutFileAdapter> tmp){
   tmp=new PyOutFileAdapter();
   try {
        $1 = tmp->set_python_file($input);
@@ -114,29 +114,29 @@
   }
 }
 
-%typemap(typecheck) IMP::base::TextOutputProxy = PyObject *;
+%typemap(typecheck) IMP::TextOutputProxy = PyObject *;
 
 %typemap(typecheck) std::ostream& = PyObject *;
 
 // Typemaps to allow Python file objects to be used for C++ code that
 // expects a std::istream
-%typemap(in) IMP::base::TextProxy<std::istream> (IMP::base::OwnerPointer<PyInFileAdapter> tmp) {
+%typemap(in) IMP::TextProxy<std::istream> (IMP::OwnerPointer<PyInFileAdapter> tmp) {
     tmp=new PyInFileAdapter();
-    $1 = IMP::base::TextProxy<std::istream>(tmp->set_python_file($input), tmp);
+    $1 = IMP::TextProxy<std::istream>(tmp->set_python_file($input), tmp);
   if (!$1.str_) {
     SWIG_fail;
   }
 }
 
-%typemap(in) IMP::base::TextProxy<std::istream> (IMP::base::PointerMember<PyInFileAdapter> tmp) {
+%typemap(in) IMP::TextProxy<std::istream> (IMP::PointerMember<PyInFileAdapter> tmp) {
     tmp=new PyInFileAdapter();
-    $1 = IMP::base::TextProxy<std::istream>(tmp->set_python_file($input), tmp);
+    $1 = IMP::TextProxy<std::istream>(tmp->set_python_file($input), tmp);
   if (!$1.str_) {
     SWIG_fail;
   }
 }
 
-%typemap(in) std::istream& (IMP::base::OwnerPointer<PyInFileAdapter> tmp){
+%typemap(in) std::istream& (IMP::OwnerPointer<PyInFileAdapter> tmp){
     tmp= new PyInFileAdapter();
     $1 = tmp->set_python_file($input);
   if (!$1) {
@@ -144,7 +144,7 @@
   }
 }
 
-%typemap(in) std::istream& (IMP::base::PointerMember<PyInFileAdapter> tmp){
+%typemap(in) std::istream& (IMP::PointerMember<PyInFileAdapter> tmp){
     tmp= new PyInFileAdapter();
     $1 = tmp->set_python_file($input);
   if (!$1) {
@@ -152,15 +152,15 @@
   }
 }
 
-%typemap(typecheck) IMP::base::TextProxy<std::istream> = PyObject *;
-%typemap(typecheck) IMP::base::TextProxy<std::ostream> = PyObject *;
+%typemap(typecheck) IMP::TextProxy<std::istream> = PyObject *;
+%typemap(typecheck) IMP::TextProxy<std::ostream> = PyObject *;
 %typemap(typecheck) std::istream& = PyObject *;
 
 
 %{
 // Adapter class that acts like an output std::streambuf but delegates to
 // a Python file-like object, p
-  class PyOutFileAdapter : public IMP::base::Object
+  class PyOutFileAdapter : public IMP::Object
 {
 
   std::auto_ptr<std::ostream> ostr_;
@@ -253,11 +253,11 @@
   };
   std::auto_ptr<StreamBuf> stream_buf_;
 public:
- PyOutFileAdapter():IMP::base::Object("PyOutFileAdapter") {
+ PyOutFileAdapter():IMP::Object("PyOutFileAdapter") {
   }
   std::string get_type_name() const {return "Python output file";}
-  IMP::base::VersionInfo get_version_info() const {
-    return IMP::base::VersionInfo("IMP", IMP::base::get_module_version());
+  IMP::VersionInfo get_version_info() const {
+    return IMP::VersionInfo("IMP", IMP::get_module_version());
   }
   void pubsync() {
     stream_buf_->pubsync();
@@ -446,17 +446,17 @@ protected:
 //   inputs to seek() that have defined behavior are offsets previously
 //   returned by tell().
 
-   class PyInFileAdapter: public IMP::base::Object
+   class PyInFileAdapter: public IMP::Object
 {
   virtual ~PyInFileAdapter(){
   }
   std::auto_ptr<InAdapter> streambuf_;
   std::auto_ptr<std::istream> istr_;
 public:
- PyInFileAdapter(): IMP::base::Object("PyInFileAdapter") {}
+ PyInFileAdapter(): IMP::Object("PyInFileAdapter") {}
   std::string get_type_name() const {return "Python input file";}
-  IMP::base::VersionInfo get_version_info() const {
-    return IMP::base::VersionInfo("IMP.base", IMP::base::get_module_version());
+  IMP::VersionInfo get_version_info() const {
+    return IMP::VersionInfo("IMP", IMP::get_module_version());
   }
   // Given a Python file object, return an istream that will read from this
   // object, or NULL if the object is not suitable.

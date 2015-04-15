@@ -1,3 +1,115 @@
+%include "IMP_kernel.random.i"
+
+
+%extend IMP::Object {
+  bool __eq__(const Object *o) const {
+     return self ==o;
+  }
+  bool __ne__(const Object *o) const {
+     return self !=o;
+  }
+  bool __le__(const Object *o) const {
+     return self <= o;
+  }
+  bool __lt__(const Object *o) const {
+     return self < o;
+  }
+  bool __ge__(const Object *o) const {
+     return self >= o;
+  }
+  bool __gt__(const Object *o) const {
+     return self > o;
+  }
+}
+
+%feature("ref")   IMP::Object "if ($this) $this->ref();"
+%feature("unref") IMP::Object "if ($this) $this->unref();"
+
+%include "IMP/object_cast.h"
+
+IMP_SWIG_RAII(IMP, SetLogState);
+IMP_SWIG_RAII(IMP, SetNumberOfThreads);
+IMP_SWIG_RAII(IMP, SetCheckState);
+IMP_SWIG_OBJECT(IMP, Object, Objects);
+IMP_SWIG_OBJECT(IMP::internal, _TestObject, _TestObjects);
+IMP_SWIG_DIRECTOR(IMP, Object);
+IMP_SWIG_VALUE(IMP, VersionInfo, VersionInfos);
+/*IMP_SWIG_VALUE(IMP, TextOutput, TextOutputs);
+IMP_SWIG_VALUE(IMP, TextInput, TextInputs);*/
+IMP_SWIG_RAII(IMP, CreateLogContext)
+IMP_SWIG_RAII(IMP, WarningContext)
+IMP_SWIG_RAII(IMP, SetLogTarget);
+IMP_SWIG_VALUE(IMP::internal, _TestValue, _TestValues);
+
+
+IMP_SWIG_NATIVE_PAIR(IMP, double, DerivativePair, DerivativePairs);
+IMP_SWIG_NATIVE_PAIR(IMP, double, FloatRange, FloatRanges);
+IMP_SWIG_NATIVE_PAIR(IMP, double, FloatPair, FloatPairs);
+IMP_SWIG_NATIVE_PAIR(IMP, int, IntRange, IntRanges);
+IMP_SWIG_NATIVE_PAIR(IMP, int, IntPair, IntPairs);
+IMP_SWIG_NATIVE_VALUES_LIST(IMP, double, Floats, FloatsList);
+IMP_SWIG_NATIVE_VALUES_LIST(IMP, int, Ints, IntsList);
+IMP_SWIG_NATIVE_VALUES_LIST(IMP, std::string, Strings, StringsList);
+IMP_SWIG_VALUE_BUILTIN(IMP, Float, Floats, double);
+IMP_SWIG_VALUE_BUILTIN(IMP, Int, Ints, int);
+IMP_SWIG_VALUE_BUILTIN(IMP, String, Strings, std::string);
+IMP_SWIG_NATIVE_VALUE(float);
+IMP_SWIG_NATIVE_VALUE(double);
+IMP_SWIG_NATIVE_VALUE(int);
+IMP_SWIG_NATIVE_VALUE(std::string);
+
+IMP_SWIG_VALUE_TEMPLATE(IMP, Index);
+IMP_SWIG_VALUE(IMP::internal, _Protection, _Protections);
+
+%rename(_InputAdaptor) IMP::InputAdaptor;
+%rename(_NonCopyable) IMP::NonCopyable;
+%rename(_RAII) IMP::RAII;
+%rename(_Value) IMP::Value;
+
+%include "IMP/InputAdaptor.h"
+%include "IMP/NonCopyable.h"
+%include "IMP/RAII.h"
+%include "IMP/Value.h"
+%include "IMP/Vector.h"
+%include "IMP/types.h"
+%include "IMP/flags.h"
+%include "IMP/enums.h"
+%include "IMP/VersionInfo.h"
+%include "IMP/file.h"
+%include "IMP/log.h"
+%include "IMP/Object.h"
+%include "IMP/SetLogState.h"
+%include "IMP/WarningContext.h"
+%include "IMP/CreateLogContext.h"
+%include "IMP/SetCheckState.h"
+%include "IMP/base_utility.h"
+%include "IMP/internal/swig_base.h"
+%include "IMP/ConstVector.h"
+%include "IMP/Array.h"
+%include "IMP/Index.h"
+%include "IMP/live_objects.h"
+%include "IMP/deprecation.h"
+%include "IMP/threads.h"
+%include "IMP/statistics.h"
+
+%pythoncode %{
+
+from . import _graph_show
+show_altgraph= _graph_show.show_altgraph
+show_graphviz= _graph_show.show_graphviz
+get_networkx_graph= _graph_show.get_networkx_graph
+%}
+
+%{
+#if IMP_KERNEL_HAS_LOG4CXX
+namespace {
+struct LogInit {
+LogInit() {IMP::internal::init_logger();}
+} loginit;
+}
+#endif
+%}
+
 %{
 #include <IMP/internal/swig.h>
 %}
@@ -311,33 +423,6 @@ namespace IMP {
 #    for m in used_modules:
 #        print "%-20s %s" % (m.get_module(), m.get_version())
 
-
-import IMP.base
-get_networkx_graph=IMP.base.get_networkx_graph
-show_altgraph=IMP.base.show_altgraph
-show_graphviz=IMP.base.show_graphviz
-SetLogState= IMP.base.SetLogState
-SetLogTarget= IMP.base.SetLogTarget
-Object= IMP.base.Object
-NONE= IMP.base.NONE
-USAGE= IMP.base.USAGE
-USAGE_AND_INTERNAL= IMP.base.USAGE_AND_INTERNAL
-TERSE= IMP.base.TERSE
-SILENT= IMP.base.SILENT
-VERBOSE= IMP.base.VERBOSE
-WARNING= IMP.base.WARNING
-PROGRESS= IMP.base.PROGRESS
-MEMORY= IMP.base.MEMORY
-create_temporary_file= IMP.base.create_temporary_file
-create_temporary_file_name= IMP.base.create_temporary_file_name
-random_number_generator= IMP.base.random_number_generator
-set_log_level=IMP.base.set_log_level
-set_log_timer=IMP.base.set_log_timer
-get_log_level=IMP.base.get_log_level
-add_to_log= IMP.base.add_to_log
-set_check_level= IMP.base.set_check_level
-get_check_level= IMP.base.get_check_level
-
 # Ensure that Windows gets the PATH set to include anything in the library
 # search path
 if sys.platform == 'win32' and 'IMP_LD_PATH' in os.environ:
@@ -346,15 +431,6 @@ if sys.platform == 'win32' and 'IMP_LD_PATH' in os.environ:
     for d in dirs:
         if d not in pathcomps:
             os.environ['PATH'] = d + ';' + os.environ['PATH']
-%}
-
-
-%pythoncode %{
-IOException=IMP.base.IOException
-ValueException=IMP.base.ValueException
-ModelException=IMP.base.ModelException
-IOException=IMP.base.IOException
-IOException=IMP.base.IOException
 %}
 
 %include "IMP_kernel.dispatcher.i"

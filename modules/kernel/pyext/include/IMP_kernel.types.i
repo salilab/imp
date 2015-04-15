@@ -52,7 +52,7 @@
 %typemap(in) IMP::Particle* {
   try {
     $1 = Convert<IMP::Particle >::get_cpp_object($input, $descriptor(IMP::Particle*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
-  } catch (const IMP::base::Exception &e) {
+  } catch (const IMP::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -116,7 +116,7 @@
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertSequence<NamespacePluralName, Convert< NamespaceName > >::get_cpp_object($input, $descriptor(NamespaceName*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const IMP::base::Exception &e) {
+  } catch (const IMP::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -166,7 +166,7 @@ IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Name, Namespace::PluralName, CONSTREF)
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertSequence<ThirdList, ConvertSequence< SecondList, ConvertSequence<FirstList, Convert< Name > > > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const IMP::base::Exception &e) {
+  } catch (const IMP::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -210,7 +210,7 @@ IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Name, Namespace::PluralName, CONSTREF)
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertSequence<PluralName, ConvertSequence< IntermediateName, Convert< Name > > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const IMP::base::Exception &e) {
+  } catch (const IMP::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -265,10 +265,10 @@ IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Name, Namespace::PluralName, CONSTREF)
 %typemap(in) Namespace::Name const& {
   objects_like_##Name##_must_be_passed_by_pointer;
   }
-%typemap(in) IMP::base::Pointer<Namespace::Name> {
+%typemap(in) IMP::Pointer<Namespace::Name> {
   objects_like_##Name##_must_be_passed_by_raw_pointer;
 }
-%typemap(out) IMP::base::Pointer<Namespace::Name> {
+%typemap(out) IMP::Pointer<Namespace::Name> {
   objects_like_##Name##_must_be_passed_by_raw_pointer;
 }
 %pythoncode %{
@@ -349,7 +349,7 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Namespace::Name, PluralName##Temp,);
 IMP_SWIG_OBJECT_CHECKS(Namespace, Name);
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
-%template(_object_cast_to_##Name) IMP::base::object_cast<Namespace::Name>;
+%template(_object_cast_to_##Name) IMP::object_cast<Namespace::Name>;
 %enddef
 
 %define IMP_SWIG_OBJECT(Namespace,Name, PluralName)
@@ -391,11 +391,11 @@ IMP_SWIG_OBJECT(Namespace, Name, PluralName);
     def do_show(self, out):
         pass
     def get_version_info(self):
-        if #Namespace == "IMP::base":
+        if #Namespace == "IMP":
           return VersionInfo(self.__module__,
                              __import__(self.__module__).get_module_version())
         else:
-          return IMP.base.VersionInfo(self.__module__,
+          return IMP.VersionInfo(self.__module__,
                              __import__(self.__module__).get_module_version())
     def get_from(o):
        return _object_cast_to_##Name(o)
@@ -516,16 +516,16 @@ IMP_SWIG_DECORATOR_ATTRIBUTE(Float, FloatKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(Int, IntKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(String, StringKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(Particle*, ParticleIndexKey);
-IMP_SWIG_DECORATOR_ATTRIBUTE(base::Object*, ObjectKey);
+IMP_SWIG_DECORATOR_ATTRIBUTE(Object*, ObjectKey);
 IMP_SWIG_FORWARD_1(get_derivative, double, IMP::FloatKey);
 IMP_SWIG_FORWARD_0(get_name, std::string);
 IMP_SWIG_FORWARD_0(clear_caches, void);
 IMP_SWIG_VOID_FORWARD_1(set_name, std::string);
-IMP_SWIG_VOID_FORWARD_1(set_check_level, IMP::base::CheckLevel);
+IMP_SWIG_VOID_FORWARD_1(set_check_level, IMP::CheckLevel);
 IMP_SWIG_VOID_FORWARD_3(add_to_derivative, IMP::FloatKey, double, IMP::DerivativeAccumulator);
 IMP_SWIG_VOID_FORWARD_2(set_is_optimized, IMP::FloatKey, bool);
 IMP_SWIG_FORWARD_1(get_is_optimized, bool, IMP::FloatKey);
-IMP_SWIG_FORWARD_0(get_check_level, IMP::base::CheckLevel);
+IMP_SWIG_FORWARD_0(get_check_level, IMP::CheckLevel);
 }
 %extend Namespace::Name {
   bool __eq__(Name o) const {
@@ -747,58 +747,58 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %typemap(directorout) Name * {
   values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
 }
-%typemap(in) IMP::base::Vector< Name > const& {
+%typemap(in) IMP::Vector< Name > const& {
   try {
     // hack to get around swig's value wrapper being randomly used
-    assign($1, ConvertSequence<IMP::base::Vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const IMP::base::Exception &e) {
+    assign($1, ConvertSequence<IMP::Vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  } catch (const IMP::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
   }
  }
-%typemap(freearg) IMP::base::Vector< Name > const& {
+%typemap(freearg) IMP::Vector< Name > const& {
   delete_if_pointer($1);
  }
-%typecheck(SWIG_TYPECHECK_POINTER) IMP::base::Vector< Name > const& {
-  $1= ConvertSequence<IMP::base::Vector< Name >, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+%typecheck(SWIG_TYPECHECK_POINTER) IMP::Vector< Name > const& {
+  $1= ConvertSequence<IMP::Vector< Name >, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
  }
-%typemap(out) IMP::base::Vector< Name > const& {
-  $result = ConvertSequence<IMP::base::Vector< Name >, Convert< Name > >::create_python_object(ValueOrObject<IMP::base::Vector< Name > >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
+%typemap(out) IMP::Vector< Name > const& {
+  $result = ConvertSequence<IMP::Vector< Name >, Convert< Name > >::create_python_object(ValueOrObject<IMP::Vector< Name > >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
  }
-%typemap(directorout) IMP::base::Vector< Name > const& {
+%typemap(directorout) IMP::Vector< Name > const& {
   // hack to get around swig's evil value wrapper being randomly used
-  assign($result, ConvertSequence<IMP::base::Vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  assign($result, ConvertSequence<IMP::Vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
  }
-%typemap(directorin) IMP::base::Vector< Name > const& {
-  $input = ConvertSequence<IMP::base::Vector< Name >, Convert< Name > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
+%typemap(directorin) IMP::Vector< Name > const& {
+  $input = ConvertSequence<IMP::Vector< Name >, Convert< Name > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
  }
 
-%typemap(in) IMP::base::Vector< Name > {
+%typemap(in) IMP::Vector< Name > {
   try {
     // hack to get around swig's value wrapper being randomly used
-    assign($1, ConvertSequence<IMP::base::Vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const IMP::base::Exception &e) {
+    assign($1, ConvertSequence<IMP::Vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  } catch (const IMP::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
   }
  }
-%typemap(freearg) IMP::base::Vector< Name > {
+%typemap(freearg) IMP::Vector< Name > {
   delete_if_pointer($1);
  }
-%typecheck(SWIG_TYPECHECK_POINTER) IMP::base::Vector< Name > {
-  $1= ConvertSequence<IMP::base::Vector< Name >, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+%typecheck(SWIG_TYPECHECK_POINTER) IMP::Vector< Name > {
+  $1= ConvertSequence<IMP::Vector< Name >, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
  }
-%typemap(out) IMP::base::Vector< Name > {
-  $result = ConvertSequence<IMP::base::Vector< Name >, Convert< Name > >::create_python_object(ValueOrObject<IMP::base::Vector< Name > >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
+%typemap(out) IMP::Vector< Name > {
+  $result = ConvertSequence<IMP::Vector< Name >, Convert< Name > >::create_python_object(ValueOrObject<IMP::Vector< Name > >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
  }
-%typemap(directorout) IMP::base::Vector< Name > {
+%typemap(directorout) IMP::Vector< Name > {
   // hack to get around swig's evil value wrapper being randomly used
-  assign($result, ConvertSequence<IMP::base::Vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  assign($result, ConvertSequence<IMP::Vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
  }
-%typemap(directorin) IMP::base::Vector< Name > {
-  $input = ConvertSequence<IMP::base::Vector< Name >, Convert< Name > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
+%typemap(directorin) IMP::Vector< Name > {
+  $input = ConvertSequence<IMP::Vector< Name >, Convert< Name > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
  }
 
 %enddef
@@ -812,7 +812,7 @@ IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
   BOOST_STATIC_ASSERT($argnum==1); // RAII object Namespace::Name cannot be passed as an argument
 try {
   $1=ConvertRAII<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
-} catch (const IMP::base::Exception &e) {
+} catch (const IMP::Exception &e) {
   //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
   PyErr_SetString(PyExc_TypeError, e.what());
   return NULL;
@@ -886,43 +886,41 @@ IMP_SWIG_DOUBLY_NESTED_SEQUENCE_TYPEMAP(Name, Namespace::PluralName, Namespace::
 %define IMP_SWIG_GRAPH(Namespace, Name, Type, Label)
 %inline %{
 namespace IMP {
-  namespace base {
 namespace internal {
   template <class G, class L, class S>
 class BoostDigraph;
 }
-  }
 }
 %}
 %typemap(out) Namespace::Type {
-  typedef IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex> GT;
+  typedef IMP::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex> GT;
   IMP_NEW(GT, ret, ($1));
   if (ret) ret.get()->ref();
-  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), $owner | SWIG_POINTER_OWN));
+  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), $owner | SWIG_POINTER_OWN));
  }
 %typemap(out) Namespace::Type const& {
-  typedef IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex > GT;
+  typedef IMP::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex > GT;
   IMP_NEW(GT, ret, (*$1));
   if (ret) ret.get()->ref();
-  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), $owner | SWIG_POINTER_OWN));
+  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), $owner | SWIG_POINTER_OWN));
  }
 %typecheck(SWIG_TYPECHECK_POINTER) Namespace::Type const& {
   void *vp;
-  $1=SWIG_IsOK(SWIG_ConvertPtr($input, &vp, $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), 0 ));
+  $1=SWIG_IsOK(SWIG_ConvertPtr($input, &vp, $descriptor(IMP::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), 0 ));
  }
 %typemap(in) Namespace::Type const& {
       void *vp;
-      int res=SWIG_ConvertPtr($input, &vp, $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), 0 );
+      int res=SWIG_ConvertPtr($input, &vp, $descriptor(IMP::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >*), 0 );
       if (!SWIG_IsOK(res)) {
-        IMP_THROW( "Wrong type.", IMP::base::ValueException);
+        IMP_THROW( "Wrong type.", IMP::ValueException);
       }
       if (!vp) {
-        IMP_THROW( "Wrong type.", IMP::base::ValueException);
+        IMP_THROW( "Wrong type.", IMP::ValueException);
       }
-      IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >* p= reinterpret_cast< IMP::base::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex  >*>(vp);
+      IMP::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex >* p= reinterpret_cast< IMP::internal::BoostDigraph<Namespace::Type, Label, Namespace::Show##Name##Vertex  >*>(vp);
       $1= &p->access_graph();
  }
-%template(Name) ::IMP::base::internal::BoostDigraph< Namespace::Type, Label, Namespace::Show##Name##Vertex>;
+%template(Name) ::IMP::internal::BoostDigraph< Namespace::Type, Label, Namespace::Show##Name##Vertex>;
 %pythoncode %{
 _value_types.append(#Name)
 %}

@@ -82,7 +82,6 @@ class OptionParser(optparse.OptionParser):
                       arguments can be given.
            @returns   opts, args
         """
-        import IMP.base
         # First, parse the command line with optparse
         opts, args = optparse.OptionParser.parse_args(self)
         if not self._use_boost_parser:
@@ -104,7 +103,7 @@ class OptionParser(optparse.OptionParser):
             self.usage = self.description = None
             # Pass the rest of the command line to the Boost parser; add the
             # optparse-generated help to that from Boost
-            args = IMP.base.setup_from_argv([sys.argv[0]] + args,
+            args = IMP.setup_from_argv([sys.argv[0]] + args,
                            self.format_help() \
                            + "\nOptions common to all IMP applications:",
                            usage, numpos)
