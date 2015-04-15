@@ -22,11 +22,11 @@
 IMPNPC_BEGIN_NAMESPACE
 
 namespace {
-kernel::internal::StaticListContainer<kernel::SingletonContainer> *get_list(
+IMP::internal::StaticListContainer<SingletonContainer> *get_list(
     SingletonContainer *sc) {
-  kernel::internal::StaticListContainer<kernel::SingletonContainer> *ret =
+  IMP::internal::StaticListContainer<SingletonContainer> *ret =
       dynamic_cast<
-          kernel::internal::StaticListContainer<kernel::SingletonContainer> *>(
+          IMP::internal::StaticListContainer<SingletonContainer> *>(
           sc);
   if (!ret) {
     IMP_THROW("Can only use the set and add methods when no container"
@@ -61,7 +61,7 @@ ZAxialPositionLowerRestraint::ZAxialPositionLowerRestraint(Model *m,
 
 void ZAxialPositionLowerRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Z axial list");
   }
   get_list(sc_)->set(IMP::internal::get_index(ps));
@@ -69,7 +69,7 @@ void ZAxialPositionLowerRestraint::set_particles(const ParticlesTemp &ps) {
 
 void ZAxialPositionLowerRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Z axial list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -77,7 +77,7 @@ void ZAxialPositionLowerRestraint::add_particles(const ParticlesTemp &ps) {
 
 void ZAxialPositionLowerRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps->get_model(), "Z axial list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -89,7 +89,7 @@ ZAxialPositionLowerRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 {
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0;
-  IMP::kernel::ParticlesTemp all_particles = sc_->get();
+  IMP::ParticlesTemp all_particles = sc_->get();
   for (unsigned int i = 0; i < all_particles.size(); ++i )
   { 
     double r = core::XYZR(all_particles[i]).get_radius();
@@ -145,7 +145,7 @@ XYRadialPositionLowerRestraint::XYRadialPositionLowerRestraint(Model *m,
 
 void XYRadialPositionLowerRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "XY radial list");
   }
   get_list(sc_)->set(IMP::internal::get_index(ps));
@@ -153,7 +153,7 @@ void XYRadialPositionLowerRestraint::set_particles(const ParticlesTemp &ps) {
 
 void XYRadialPositionLowerRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "XY radial list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -161,7 +161,7 @@ void XYRadialPositionLowerRestraint::add_particles(const ParticlesTemp &ps) {
 
 void XYRadialPositionLowerRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps->get_model(), "XY radial list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -174,7 +174,7 @@ XYRadialPositionLowerRestraint::unprotected_evaluate(DerivativeAccumulator *accu
   IMP_CHECK_OBJECT(sc_.get());
   const double eps = 1e-9;
   double v = 0;
-  IMP::kernel::ParticlesTemp all_particles = sc_->get();
+  IMP::ParticlesTemp all_particles = sc_->get();
   for (unsigned int i = 0; i < all_particles.size(); ++i )
   { 
     core::XYZR xyzr = core::XYZR(all_particles[i]);
@@ -240,7 +240,7 @@ XYRadialPositionUpperRestraint::XYRadialPositionUpperRestraint(Model *m,
 
 void XYRadialPositionUpperRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "XY Radial list");
   }
   get_list(sc_)->set(IMP::internal::get_index(ps));
@@ -248,7 +248,7 @@ void XYRadialPositionUpperRestraint::set_particles(const ParticlesTemp &ps) {
 
 void XYRadialPositionUpperRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "XY Radial list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -256,7 +256,7 @@ void XYRadialPositionUpperRestraint::add_particles(const ParticlesTemp &ps) {
 
 void XYRadialPositionUpperRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps->get_model(), "XY Radial list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -269,7 +269,7 @@ XYRadialPositionUpperRestraint::unprotected_evaluate(DerivativeAccumulator *accu
   IMP_CHECK_OBJECT(sc_.get());
   const double eps = 1e-9;
   double v = 0;
-  IMP::kernel::ParticlesTemp all_particles = sc_->get();
+  IMP::ParticlesTemp all_particles = sc_->get();
   for (unsigned int i = 0; i < all_particles.size(); ++i )
   { 
     core::XYZR xyzr = core::XYZR(all_particles[i]);
@@ -335,7 +335,7 @@ ZAxialPositionUpperRestraint::ZAxialPositionUpperRestraint(Model *m,
 
 void ZAxialPositionUpperRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Z axial list");
   }
   get_list(sc_)->set(IMP::internal::get_index(ps));
@@ -343,7 +343,7 @@ void ZAxialPositionUpperRestraint::set_particles(const ParticlesTemp &ps) {
 
 void ZAxialPositionUpperRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Z axial list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -351,7 +351,7 @@ void ZAxialPositionUpperRestraint::add_particles(const ParticlesTemp &ps) {
 
 void ZAxialPositionUpperRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps->get_model(), "Z axial list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -363,7 +363,7 @@ ZAxialPositionUpperRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 {
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0;
-  IMP::kernel::ParticlesTemp all_particles = sc_->get();
+  IMP::ParticlesTemp all_particles = sc_->get();
   for (unsigned int i = 0; i < all_particles.size(); ++i )
   { 
     double r = consider_radius_ ? core::XYZR(all_particles[i]).get_radius() : 0;
@@ -417,7 +417,7 @@ ProteinContactRestraint::ProteinContactRestraint(Model *m,
 
 void ProteinContactRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein contact list");
   }
   get_list(sc_)->set(IMP::internal::get_index(ps));
@@ -425,7 +425,7 @@ void ProteinContactRestraint::set_particles(const ParticlesTemp &ps) {
 
 void ProteinContactRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein contact list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -433,7 +433,7 @@ void ProteinContactRestraint::add_particles(const ParticlesTemp &ps) {
 
 void ProteinContactRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps->get_model(), "Protein contact list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -445,7 +445,7 @@ ProteinContactRestraint::unprotected_evaluate(DerivativeAccumulator *accum) cons
 {
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0;
-  IMP::kernel::ParticlesTemp all_particles = sc_->get();
+  IMP::ParticlesTemp all_particles = sc_->get();
   std::vector<IMP::algebra::Vector3D> der(all_particles.size());
   for ( unsigned int i = 0; i < der.size(); ++i )
   {
@@ -512,7 +512,7 @@ ProteinChainRestraint::ProteinChainRestraint(Model *m,
 
 void ProteinChainRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein chain list");
   }
   get_list(sc_)->set(IMP::internal::get_index(ps));
@@ -520,7 +520,7 @@ void ProteinChainRestraint::set_particles(const ParticlesTemp &ps) {
 
 void ProteinChainRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein chain list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -528,7 +528,7 @@ void ProteinChainRestraint::add_particles(const ParticlesTemp &ps) {
 
 void ProteinChainRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps->get_model(), "Protein chain list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -540,7 +540,7 @@ ProteinChainRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0;
-  IMP::kernel::ParticlesTemp all_particles = sc_->get();
+  IMP::ParticlesTemp all_particles = sc_->get();
   std::vector<IMP::algebra::Vector3D> der(all_particles.size());
   for ( unsigned int i = 0; i < der.size(); ++i )
   {
@@ -678,7 +678,7 @@ MembraneSurfaceLocationRestraint::MembraneSurfaceLocationRestraint(Model *m,
 
 void MembraneSurfaceLocationRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Surface location list");
   }
   get_list(sc_)->set(IMP::internal::get_index(ps));
@@ -686,7 +686,7 @@ void MembraneSurfaceLocationRestraint::set_particles(const ParticlesTemp &ps) {
 
 void MembraneSurfaceLocationRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Surface location list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -694,7 +694,7 @@ void MembraneSurfaceLocationRestraint::add_particles(const ParticlesTemp &ps) {
 
 void MembraneSurfaceLocationRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps->get_model(), "Surface location list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -706,7 +706,7 @@ MembraneSurfaceLocationRestraint::unprotected_evaluate(DerivativeAccumulator *ac
 {
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0;
-  IMP::kernel::ParticlesTemp all_particles = sc_->get();
+  IMP::ParticlesTemp all_particles = sc_->get();
   for (unsigned int i = 0; i < all_particles.size(); ++i )
   {
     core::XYZ i_current = core::XYZ(all_particles[i]);
@@ -770,7 +770,7 @@ PoreSideVolumeLocationRestraint::PoreSideVolumeLocationRestraint(Model *m,
 
 void PoreSideVolumeLocationRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Surface location list");
   }
   get_list(sc_)->set(IMP::internal::get_index(ps));
@@ -778,7 +778,7 @@ void PoreSideVolumeLocationRestraint::set_particles(const ParticlesTemp &ps) {
 
 void PoreSideVolumeLocationRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Surface location list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -786,7 +786,7 @@ void PoreSideVolumeLocationRestraint::add_particles(const ParticlesTemp &ps) {
 
 void PoreSideVolumeLocationRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps->get_model(), "Surface location list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -798,7 +798,7 @@ PerinuclearVolumeLocationRestraint::unprotected_evaluate(DerivativeAccumulator *
 {
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0;
-  IMP::kernel::ParticlesTemp all_particles = sc_->get();
+  IMP::ParticlesTemp all_particles = sc_->get();
   for (unsigned int i = 0; i < all_particles.size(); ++i )
   {
     core::XYZR i_current = core::XYZR(all_particles[i]);
@@ -864,7 +864,7 @@ PerinuclearVolumeLocationRestraint::PerinuclearVolumeLocationRestraint(Model *m,
 
 void PerinuclearVolumeLocationRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Surface location list");
   }
   get_list(sc_)->set(IMP::internal::get_index(ps));
@@ -872,7 +872,7 @@ void PerinuclearVolumeLocationRestraint::set_particles(const ParticlesTemp &ps) 
 
 void PerinuclearVolumeLocationRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Surface location list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -880,7 +880,7 @@ void PerinuclearVolumeLocationRestraint::add_particles(const ParticlesTemp &ps) 
 
 void PerinuclearVolumeLocationRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps->get_model(), "Surface location list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -892,7 +892,7 @@ PoreSideVolumeLocationRestraint::unprotected_evaluate(DerivativeAccumulator *acc
 {
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0;
-  IMP::kernel::ParticlesTemp all_particles = sc_->get();
+  IMP::ParticlesTemp all_particles = sc_->get();
   for (unsigned int i = 0; i < all_particles.size(); ++i )
   {
     core::XYZR i_current = core::XYZR(all_particles[i]);
@@ -948,7 +948,7 @@ AssemblySymmetryByDistanceRestraint::AssemblySymmetryByDistanceRestraint(Model *
 
 void AssemblySymmetryByDistanceRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein group configuration list");
   }
   get_list(sc_)->set(IMP::internal::get_index(ps));
@@ -956,7 +956,7 @@ void AssemblySymmetryByDistanceRestraint::set_particles(const ParticlesTemp &ps)
 
 void AssemblySymmetryByDistanceRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein group configuration list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -964,7 +964,7 @@ void AssemblySymmetryByDistanceRestraint::add_particles(const ParticlesTemp &ps)
 
 void AssemblySymmetryByDistanceRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps->get_model(), "Protein group configuration list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -975,7 +975,7 @@ double
 AssemblySymmetryByDistanceRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_CHECK_OBJECT(sc_.get());
-  IMP::kernel::ParticlesTemp all_particles = sc_->get();
+  IMP::ParticlesTemp all_particles = sc_->get();
   IMP_USAGE_CHECK(all_particles.size() == 4, "AssemblySymmetryByDistanceRestraint must contain exactly 4 particles");
   double d1 = (core::XYZ(all_particles[0]).get_coordinates()
                - core::XYZ(all_particles[1]).get_coordinates()).get_magnitude();
@@ -1028,7 +1028,7 @@ AssemblySymmetryByDihedralRestraint::AssemblySymmetryByDihedralRestraint(Model *
 
 void AssemblySymmetryByDihedralRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein group configuration list");
   }
   get_list(sc_)->set(IMP::internal::get_index(ps));
@@ -1036,7 +1036,7 @@ void AssemblySymmetryByDihedralRestraint::set_particles(const ParticlesTemp &ps)
 
 void AssemblySymmetryByDihedralRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein group configuration list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -1044,7 +1044,7 @@ void AssemblySymmetryByDihedralRestraint::add_particles(const ParticlesTemp &ps)
 
 void AssemblySymmetryByDihedralRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps->get_model(), "Protein group configuration list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -1055,7 +1055,7 @@ double
 AssemblySymmetryByDihedralRestraint::unprotected_evaluate(DerivativeAccumulator * /*accum*/) const
 {
   IMP_CHECK_OBJECT(sc_.get());
-  IMP::kernel::ParticlesTemp all_particles = sc_->get();
+  IMP::ParticlesTemp all_particles = sc_->get();
   IMP_USAGE_CHECK(all_particles.size() == 8, "AssemblySymmetryByDihedralRestraint must contain exactly 8 particles");
   double a1 = IMP::core::get_dihedral(core::XYZ(all_particles[0]),
       core::XYZ(all_particles[1]), core::XYZ(all_particles[2]),
@@ -1107,7 +1107,7 @@ ProteinProximityRestraint::ProteinProximityRestraint(Model *m,
 
 void ProteinProximityRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein group configuration list");
   }
   get_list(sc_)->set(IMP::internal::get_index(ps));
@@ -1115,7 +1115,7 @@ void ProteinProximityRestraint::set_particles(const ParticlesTemp &ps) {
 
 void ProteinProximityRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein group configuration list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -1123,7 +1123,7 @@ void ProteinProximityRestraint::add_particles(const ParticlesTemp &ps) {
 
 void ProteinProximityRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_ = new kernel::internal::StaticListContainer<kernel::SingletonContainer>(
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps->get_model(), "Protein group configuration list");
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
@@ -1134,7 +1134,7 @@ double
 ProteinProximityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_CHECK_OBJECT(sc_.get());
-  IMP::kernel::ParticlesTemp all_particles = sc_->get();
+  IMP::ParticlesTemp all_particles = sc_->get();
   std::vector<IMP::algebra::Vector3D> der(all_particles.size());
   for ( unsigned int i = 0; i < der.size(); ++i )
   {
