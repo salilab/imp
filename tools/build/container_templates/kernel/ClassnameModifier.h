@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/ClassnameModifier.h
+ *  \file IMP/ClassnameModifier.h
  *  \brief A Modifier on PLURALVARIABLETYPE
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_CLASSNAME_MODIFIER_H
 #define IMPKERNEL_CLASSNAME_MODIFIER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "ParticleTuple.h"

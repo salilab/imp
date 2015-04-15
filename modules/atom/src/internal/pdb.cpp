@@ -124,7 +124,7 @@ base::Vector<unsigned short> connected_atoms(const String& pdb_line) {
   return conn_atoms;
 }
 
-void write_pdb(const kernel::ParticlesTemp& ps, base::TextOutput out) {
+void write_pdb(const ParticlesTemp& ps, base::TextOutput out) {
   IMP_FUNCTION_LOG;
   int last_index = 0;
   bool use_input_index = true;

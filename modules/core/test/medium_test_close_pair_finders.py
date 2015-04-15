@@ -29,7 +29,7 @@ class Tests(IMP.test.TestCase):
         print('Distance is ' + str(dist))
         # cpf.set_radius_key(rk)
         cpf.set_distance(dist)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = self.create_particles_in_box(m, num)
         for i in range(0, len(ps)):
             IMP.core.XYZR.setup_particle(ps[i], random.uniform(rmin, rmax))
@@ -47,7 +47,7 @@ class Tests(IMP.test.TestCase):
         print('Distance is ' + str(dist))
         # cpf.set_radius_key(rk)
         cpf.set_distance(dist)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = self.create_particles_in_box(m, num)
         for i in range(0, len(ps)):
             IMP.core.XYZR.setup_particle(ps[i], random.uniform(rmin, rmax))
@@ -149,7 +149,7 @@ class Tests(IMP.test.TestCase):
         # cpf.set_distance(dist)
         print('Distance is ' + str(dist))
         # cpf.set_radius_key(rk)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = IMP.core.create_xyzr_particles(m, nump, 1)
         rbpsa = []
         rbpsb = []
@@ -165,8 +165,8 @@ class Tests(IMP.test.TestCase):
             else:
                 fps.append(ps[i])
                 free_ps.append(ps[i])
-        rba = IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), rbpsa)
-        rbb = IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), rbpsb)
+        rba = IMP.core.RigidBody.setup_particle(IMP.Particle(m), rbpsa)
+        rbb = IMP.core.RigidBody.setup_particle(IMP.Particle(m), rbpsb)
         rba.get_particle().set_name("rba")
         rbb.get_particle().set_name("rbb")
         print("before", [IMP.core.XYZR(p) for p in rbpsa])
@@ -197,10 +197,10 @@ class Tests(IMP.test.TestCase):
             else:
                 fps2.append(ps2[i])
         rba2 = IMP.core.RigidBody.setup_particle(
-            IMP.kernel.Particle(m),
+            IMP.Particle(m),
             IMP.core.XYZs(rbpsa2))
         rbb2 = IMP.core.RigidBody.setup_particle(
-            IMP.kernel.Particle(m),
+            IMP.Particle(m),
             IMP.core.XYZs(rbpsb2))
         fps.append(rba2.get_particle())
         fps.append(rbb2.get_particle())

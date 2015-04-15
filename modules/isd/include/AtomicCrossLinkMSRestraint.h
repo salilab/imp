@@ -13,7 +13,7 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container_macros.h>
 #include <IMP/PairContainer.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 
 IMPISD_BEGIN_NAMESPACE
 

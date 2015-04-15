@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Configuration.h
+ *  \file IMP/Configuration.h
  *  \brief Store a set of configurations of the model.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONFIGURATION_H
 #define IMPKERNEL_CONFIGURATION_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
 #include "Model.h"
@@ -32,11 +32,11 @@ class IMPKERNELEXPORT Configuration : public IMP::base::Object {
   internal::ParticlesAttributeTable particle_lists_;
 
  public:
-  Configuration(kernel::Model *m, std::string name = "Configuration %1%");
+  Configuration(Model *m, std::string name = "Configuration %1%");
   //! Only store parts of the configuration that have changed from base
   /** At the moment, this does not play well with adding and removing
       attributes.*/
-  Configuration(kernel::Model *m, Configuration *base,
+  Configuration(Model *m, Configuration *base,
                 std::string name = "Configuration %1%");
   void load_configuration() const;
   //! Swap the current configuration with that in the Model

@@ -25,7 +25,7 @@ void trim_chain(atom::Hierarchy h) {
 }
 
 void do_it() {
-  IMP_NEW(kernel::Model, m, ());
+  IMP_NEW(Model, m, ());
   int seed = IMP::base::random_number_generator();
   atom::Hierarchy h0 =
       read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m);
@@ -41,8 +41,8 @@ void do_it() {
   RigidBody rb1 = create_rigid_body(h1);
   rb0.set_coordinates(IMP::algebra::Vector3D(0, 0, 0));
   rb1.set_coordinates(IMP::algebra::Vector3D(0, 0, 0));
-  kernel::ParticlesTemp leaves = get_leaves(h0);
-  kernel::ParticlesTemp leaves1 = get_leaves(h1);
+  ParticlesTemp leaves = get_leaves(h0);
+  ParticlesTemp leaves1 = get_leaves(h1);
   leaves.insert(leaves.end(), leaves1.begin(), leaves1.end());
   IMP_NEW(ListSingletonContainer, lsc, (leaves));
   lsc->set_was_used(true);

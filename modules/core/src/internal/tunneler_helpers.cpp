@@ -10,14 +10,14 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-Referential::Referential(kernel::Model* m, kernel::ParticleIndex pi)
+Referential::Referential(Model* m, ParticleIndex pi)
     : m_(m), pi_(pi), centroid_(compute_centroid()), base_(compute_base()),
       q_(compute_quaternion()) {}
 
 IMP_Eigen::Vector3d Referential::compute_centroid() const {
   // get rigid body member coordinates
   RigidBody d(m_, pi_);
-  kernel::ParticleIndexes pis(d.get_member_particle_indexes());
+  ParticleIndexes pis(d.get_member_particle_indexes());
   IMP_Eigen::Matrix<double, IMP_Eigen::Dynamic, 3> coords(pis.size(), 3);
   for (unsigned i = 0; i < pis.size(); i++) {
     XYZ xyz(m_, pis[i]);
@@ -30,7 +30,7 @@ IMP_Eigen::Vector3d Referential::compute_centroid() const {
 
 IMP_Eigen::Matrix3d Referential::compute_base() const {
   RigidBody d(m_, pi_);
-  kernel::ParticleIndexes pis(d.get_member_particle_indexes());
+  ParticleIndexes pis(d.get_member_particle_indexes());
   if (pis.size() < 3)
     IMP_THROW("rigid body must contain at least 3 xyzs", ModelException);
   XYZ o(m_, pis[0]), x(m_, pis[1]), y(m_, pis[2]);
@@ -71,7 +71,7 @@ void Transformer::transform() {
   IMP_Eigen::Vector3d centroid(Referential(m_, target_).get_centroid());
   // transform each rigid member
   RigidBody d(m_, target_);
-  kernel::ParticleIndexes pis(d.get_member_particle_indexes());
+  ParticleIndexes pis(d.get_member_particle_indexes());
   for (unsigned i = 0; i < pis.size(); i++) {
     XYZ xyz(m_, pis[i]);
     IMP_Eigen::Vector3d coords;
@@ -150,8 +150,8 @@ IMP_Eigen::Quaterniond pick_positive(const IMP_Eigen::Quaterniond
   }
 }
 
-Coord get_coordinates_from_rbs(kernel::Model* m, kernel::ParticleIndexes pis,
-                               kernel::ParticleIndex refidx) {
+Coord get_coordinates_from_rbs(Model* m, ParticleIndexes pis,
+                               ParticleIndex refidx) {
   // get current reference frame of rbs
   Referential ref(m, refidx);
   // get x

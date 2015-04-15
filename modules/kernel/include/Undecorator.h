@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Undecorator.h    \brief The base class for decorators.
+ *  \file IMP/Undecorator.h    \brief The base class for decorators.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_UNDECORATOR_H
 #define IMPKERNEL_UNDECORATOR_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include <IMP/base/Object.h>
 #include "particle_index.h"
@@ -26,7 +26,7 @@ class IMPKERNELEXPORT Undecorator : public base::Object {
   Model *m_;
 
  public:
-  Undecorator(kernel::Model *m, std::string name);
+  Undecorator(Model *m, std::string name);
   virtual void teardown(ParticleIndex pi) const = 0;
 };
 

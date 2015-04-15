@@ -206,7 +206,7 @@ void quasi_evenly_spherical_distribution(unsigned long N,
 }
 }
 
-void compute_projections(const kernel::Particles& particles,
+void compute_projections(const Particles& particles,
                          unsigned int projection_number, double pixel_size,
                          double resolution,
                          boost::ptr_vector<Projection>& projections,
@@ -278,8 +278,8 @@ void compute_projections(const kernel::Particles& particles,
   }
 }
 
-void compute_projections(const kernel::Particles& all_particles,
-                         const kernel::Particles& lig_particles,
+void compute_projections(const Particles& all_particles,
+                         const Particles& lig_particles,
                          unsigned int projection_number,
                          double pixel_size, double resolution,
                          boost::ptr_vector<Projection>& projections,

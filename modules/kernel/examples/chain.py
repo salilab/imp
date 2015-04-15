@@ -4,7 +4,6 @@
 # lists and a variety of restraints.
 
 from __future__ import print_function
-import IMP.kernel
 import IMP.atom
 import IMP.core
 import random
@@ -22,7 +21,7 @@ IMP.base.setup_from_argv(sys.argv, "Chain example")
 # another.
 
 IMP.base.set_log_level(IMP.base.TERSE)
-m = IMP.kernel.Model()
+m = IMP.Model()
 m.set_log_level(IMP.base.SILENT)
 h = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("root"))
 # The particles in the chain

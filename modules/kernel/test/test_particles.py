@@ -18,7 +18,7 @@ class Tests(IMP.test.TestCase):
         """Build a set of test particles"""
         IMP.test.TestCase.setUp(self)
 
-        model = IMP.kernel.Model("particles model")
+        model = IMP.Model("particles model")
         particles = []
 
         # create particles 0 - 11
@@ -85,7 +85,7 @@ class Tests(IMP.test.TestCase):
         d[p0] = 1
         d[p1] = 2
         print(p0.__hash__())
-        td = IMP.kernel._TrivialDecorator.setup_particle(p0)
+        td = IMP._TrivialDecorator.setup_particle(p0)
         print(td.__hash__())
         print(td.get_particle().__hash__())
         d[td] = 3
@@ -104,7 +104,7 @@ class Tests(IMP.test.TestCase):
         """Test particle get_ and set_ methods"""
         (model, particles) = self.setup()
         for (i, p) in enumerate(particles):
-            #self.assertEqual(p.get_index(), IMP.kernel.ParticleIndex(i))
+            #self.assertEqual(p.get_index(), IMP.ParticleIndex(i))
             model = p.get_model()
         p = particles[0]
         self.assertEqual(p.get_is_active(), True)
@@ -132,7 +132,7 @@ class Tests(IMP.test.TestCase):
         self._test_add_remove(p, IMP.FloatKey("something"), 1.0)
         self._test_add_remove(p, IMP.StringKey("something"), "Hello")
         self._test_add_remove(p, IMP.IntKey("something"), 1)
-        self._test_add_remove(p, IMP.kernel.ParticleIndexKey("something"), p)
+        self._test_add_remove(p, IMP.ParticleIndexKey("something"), p)
 
     def test_derivatives(self):
         """Test get/set of derivatives"""
@@ -193,17 +193,17 @@ class Tests(IMP.test.TestCase):
         p0a = particles[0]
         p0b = model.get_particles()[0]
         self.assertEqual(p0a, p0b)
-        td0a = IMP.kernel._TrivialDecorator.setup_particle(p0a)
-        td0b = IMP.kernel._TrivialDecorator(p0b)
+        td0a = IMP._TrivialDecorator.setup_particle(p0a)
+        td0b = IMP._TrivialDecorator(p0b)
         self.assertEqual(td0a, td0b)
         self.assertEqual(td0a, p0a)
 
     def test_many_particle(self):
         """Test that we can allocate many particles"""
-        m = IMP.kernel.Model("many particles")
+        m = IMP.Model("many particles")
         num = 20000
         for i in range(0, num):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             if i % 10000 == 0:
                 print(i)
         print("removing")

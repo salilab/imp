@@ -10,8 +10,8 @@
 #define IMPCONTAINER_GENERIC_H
 
 #include <IMP/container/container_config.h>
-#include <IMP/kernel/internal/ContainerRestraint.h>
-#include <IMP/kernel/internal/ContainerConstraint.h>
+#include <IMP/internal/ContainerRestraint.h>
+#include <IMP/internal/ContainerConstraint.h>
 #include "InContainerPairFilter.h"
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -23,7 +23,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     efficient restraint.
 */
 template <class Score, class Container>
-inline kernel::Restraint *create_restraint(Score *s, Container *c,
+inline Restraint *create_restraint(Score *s, Container *c,
                                            std::string name = std::string()) {
   return IMP::internal::create_container_restraint(s, c, name);
 }

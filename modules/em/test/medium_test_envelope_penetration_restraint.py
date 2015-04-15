@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.SILENT)
-        self.mdl = IMP.kernel.Model()
+        self.mdl = IMP.Model()
         self._load_particles()
         self._create_density_map(10, 1.5)
         self.epr = IMP.em.EnvelopePenetrationRestraint(

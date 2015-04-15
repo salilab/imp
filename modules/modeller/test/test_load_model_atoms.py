@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
         m.build_sequence('C')
         a = modeller.alignment(env)
         a.append_model(m, align_codes='test', atom_files='test')
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         loader = IMP.modeller.ModelLoader(a[0])
         mp = loader.load_atoms(m)
         all_atoms = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
         """Check reading a Modeller model with one protein"""
         i_num_res_type = IMP.atom.ResidueType.get_number_unique()
         i_num_atom_type = IMP.atom.AtomType.get_number_unique()
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         # Test both ModelLoader class and deprecated read_pdb function
         modmodel = modeller.scripts.complete_pdb(self.get_environ(),
                                                  self.get_input_file_name('single_protein.pdb'))
@@ -75,7 +75,7 @@ class Tests(IMP.test.TestCase):
         """Check that Modeller bonds and angles are loaded"""
         modmodel = modeller.scripts.complete_pdb(self.get_environ(),
                                                  self.get_input_file_name('single_protein.pdb'))
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         mp = loader.load_atoms(m)
         all_atoms = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
@@ -95,7 +95,7 @@ class Tests(IMP.test.TestCase):
             """Nucleic acid terminal patches."""
             mdl.patch('5TER', mdl.residues[0])
             mdl.patch('3TER', mdl.residues[-1])
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         modmodel = modeller.scripts.complete_pdb(self.get_environ(),
                                                  self.get_input_file_name(
                                                      'single_dna.pdb'),

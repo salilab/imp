@@ -1,5 +1,5 @@
 /**
- *  \file kernel::RestraintGraph.cpp
+ *  \file RestraintGraph.cpp
  *  \brief creates a MRF from a set of particles and restraints
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #include <IMP/domino/internal/inference_utility.h>
 #include <IMP/domino/internal/tree_inference.h>
 #include <IMP/domino/assignment_tables.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/base/log.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>

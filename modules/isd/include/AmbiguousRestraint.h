@@ -10,9 +10,9 @@
 #define IMPISD_AMBIGUOUS_RESTRAINT_H
 
 #include <IMP/isd/isd_config.h>
-#include <IMP/kernel/Restraint.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/ParticleTuple.h>
+#include <IMP/Restraint.h>
+#include <IMP/Particle.h>
+#include <IMP/ParticleTuple.h>
 #include <IMP/generic.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -27,27 +27,27 @@ IMPISD_BEGIN_NAMESPACE
     \include AmbiguousRestraint.h
     \include AmbiguousRestraint.cpp
 */
-class IMPISDEXPORT AmbiguousRestraint : public kernel::Restraint {
+class IMPISDEXPORT AmbiguousRestraint : public Restraint {
   int d_;
-  kernel::Restraints rs_;
+  Restraints rs_;
 
  public:
   //! Create the restraint.
-  /** kernel::Restraints should store the particles they are to act on,
+  /** Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
       Two ways to call it: pass it two restraints, or a list of restraints.
    */
-  AmbiguousRestraint(kernel::Model *m, int d, kernel::Restraint *r0,
-                     kernel::Restraint *r1);
-  AmbiguousRestraint(kernel::Model *m, int d, kernel::Restraints rs);
+  AmbiguousRestraint(Model *m, int d, Restraint *r0,
+                     Restraint *r1);
+  AmbiguousRestraint(Model *m, int d, Restraints rs);
 
   double get_probability() const { return exp(-unprotected_evaluate(nullptr)); }
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(AmbiguousRestraint);
 };
 

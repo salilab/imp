@@ -11,8 +11,8 @@
 
 #include <IMP/core/core_config.h>
 #include "internal/CoreClosePairContainer.h"
-#include <IMP/kernel/SingletonContainer.h>
-#include <IMP/kernel/ScoreState.h>
+#include <IMP/SingletonContainer.h>
+#include <IMP/ScoreState.h>
 #include <IMP/base/Pointer.h>
 #include <boost/unordered_map.hpp>
 
@@ -26,27 +26,27 @@ IMPCORE_BEGIN_NAMESPACE
     neighbors returned that are not close neighbors, but all close
     neighbors will be returned.
 */
-class IMPCOREEXPORT NeighborsTable : public kernel::ScoreState {
-  base::PointerMember<kernel::PairContainer> input_;
+class IMPCOREEXPORT NeighborsTable : public ScoreState {
+  base::PointerMember<PairContainer> input_;
   std::size_t input_version_;
-  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> data_;
+  boost::unordered_map<ParticleIndex, ParticleIndexes> data_;
 
  protected:
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
-    return kernel::ModelObjectsTemp(1, input_);
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp(1, input_);
   }
-  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
-    return kernel::ModelObjectsTemp();
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
   }
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *) IMP_OVERRIDE {}
 
  public:
-  NeighborsTable(kernel::PairContainer *input,
+  NeighborsTable(PairContainer *input,
                  std::string name = "CloseNeighborsTable%1%");
-  /** Return all kernel::ParticleIndexes that are within the distance threshold
+  /** Return all ParticleIndexes that are within the distance threshold
       of this one (plus some that are aren't, for efficiency). */
-  const kernel::ParticleIndexes &get_neighbors(kernel::ParticleIndex pi) const {
+  const ParticleIndexes &get_neighbors(ParticleIndex pi) const {
     set_was_used(true);
     return data_.find(pi)->second;
   }

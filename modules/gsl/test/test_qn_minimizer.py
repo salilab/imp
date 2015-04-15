@@ -5,12 +5,12 @@ import IMP.core
 import IMP.gsl
 
 
-class WoodsFunc(IMP.kernel.Restraint):
+class WoodsFunc(IMP.Restraint):
 
     """Woods function for four input values, defined as an IMP restraint"""
 
     def __init__(self, model, particles):
-        IMP.kernel.Restraint.__init__(self, model, "WoodsFunc %1%")
+        IMP.Restraint.__init__(self, model, "WoodsFunc %1%")
         self.particles = particles
         self.index = IMP.FloatKey("x")
 
@@ -51,11 +51,11 @@ class Tests(IMP.test.TestCase):
 
     def _test_starting_conditions(self, starting_values):
         """Test the optimizer with given starting conditions"""
-        model = IMP.kernel.Model()
+        model = IMP.Model()
         particles = []
 
         for value in starting_values:
-            p = IMP.kernel.Particle(model)
+            p = IMP.Particle(model)
             particles.append(p)
             p.add_attribute(IMP.FloatKey("x"), value, True)
         rsr = WoodsFunc(model, particles)

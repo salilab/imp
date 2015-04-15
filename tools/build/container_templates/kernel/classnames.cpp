@@ -5,25 +5,25 @@
  *
  */
 
-#include "IMP/kernel/classname_macros.h"
-#include "IMP/kernel/ClassnameContainer.h"
-#include "IMP/kernel/ClassnameModifier.h"
-#include "IMP/kernel/internal/container_helpers.h"
-#include "IMP/kernel/internal/DynamicListContainer.h"
-#include "IMP/kernel/internal/StaticListContainer.h"
-#include "IMP/kernel/internal/utility.h"
-#include "IMP/kernel/ModelObject.h"
+#include "IMP/classname_macros.h"
+#include "IMP/ClassnameContainer.h"
+#include "IMP/ClassnameModifier.h"
+#include "IMP/internal/container_helpers.h"
+#include "IMP/internal/DynamicListContainer.h"
+#include "IMP/internal/StaticListContainer.h"
+#include "IMP/internal/utility.h"
+#include "IMP/ModelObject.h"
 #include <algorithm>
 #include <IMP/base/check_macros.h>
 #include <boost/unordered_set.hpp>
-#include <IMP/kernel/classname_macros.h>
-#include <IMP/kernel/ClassnameModifier.h>
-#include <IMP/kernel/ClassnamePredicate.h>
-#include <IMP/kernel/ClassnameScore.h>
-#include <IMP/kernel/functor.h>
-#include <IMP/kernel/internal/TupleRestraint.h>
-#include <IMP/kernel/internal/utility.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/classname_macros.h>
+#include <IMP/ClassnameModifier.h>
+#include <IMP/ClassnamePredicate.h>
+#include <IMP/ClassnameScore.h>
+#include <IMP/functor.h>
+#include <IMP/internal/TupleRestraint.h>
+#include <IMP/internal/utility.h>
+#include <IMP/Restraint.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 

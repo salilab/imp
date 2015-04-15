@@ -70,7 +70,7 @@ class SelectionPredicate : public ParticleInputs, public base::Object {
             cannot be attempted); the search will continue to child particles
      \see do_get_value_index
    */
-  int get_value_index(kernel::Model *m, kernel::ParticleIndex vt,
+  int get_value_index(Model *m, ParticleIndex vt,
                       boost::dynamic_bitset<> &bs) const {
     /* If a parent particle already matched sucessfully, no need to
        check this one */
@@ -89,8 +89,8 @@ class SelectionPredicate : public ParticleInputs, public base::Object {
  protected:
   //! Do the actual match for get_value_index()
   /** Should be overridden in subclasses */
-  virtual int do_get_value_index(kernel::Model *m,
-                                 kernel::ParticleIndex vt,
+  virtual int do_get_value_index(Model *m,
+                                 ParticleIndex vt,
                                  boost::dynamic_bitset<> &bs) const = 0;
 };
 IMP_OBJECTS(SelectionPredicate, SelectionPredicates);
@@ -131,8 +131,8 @@ public:
     return index;
   }
 
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-        kernel::Model *m, const kernel::ParticleIndexes &pis) const
+  virtual ModelObjectsTemp do_get_inputs(
+        Model *m, const ParticleIndexes &pis) const
         IMP_OVERRIDE {
     return IMP::get_particles(m, pis);
   }

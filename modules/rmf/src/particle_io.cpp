@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/particle_io.cpp
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -16,8 +16,8 @@
 IMPRMF_BEGIN_NAMESPACE
 
 namespace {
-class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
-  typedef SimpleLoadLink<kernel::Particle> P;
+class ParticleLoadLink : public SimpleLoadLink<Particle> {
+  typedef SimpleLoadLink<Particle> P;
 
   template <class IK, class RK>
   void load_keys(RMF::FileConstHandle fh, RMF::Category cat,
@@ -36,7 +36,7 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
     }
   }
   template <class IK, class RK>
-  void load_one(kernel::Particle *o, RMF::NodeConstHandle nh,
+  void load_one(Particle *o, RMF::NodeConstHandle nh,
                 RMF::Category cat) {
     boost::unordered_map<RK, IK> map;
     load_keys(nh.get_file(), cat, map);
@@ -58,7 +58,7 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
       }
     }
   }
-  void do_load_one(RMF::NodeConstHandle nh, kernel::Particle *o) {
+  void do_load_one(RMF::NodeConstHandle nh, Particle *o) {
     RMF::Category cat = nh.get_file().get_category("IMP");
     load_one<IMP::FloatKey, RMF::FloatKey>(o, nh, cat);
     load_one<IMP::IntKey, RMF::IntKey>(o, nh, cat);
@@ -68,8 +68,8 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
     return nh.get_type() == RMF::CUSTOM;
   }
   using P::do_create;
-  kernel::Particle *do_create(RMF::NodeConstHandle name, kernel::Model *m) {
-    return new kernel::Particle(m, name.get_name());
+  Particle *do_create(RMF::NodeConstHandle name, Model *m) {
+    return new Particle(m, name.get_name());
   }
 
  public:
@@ -78,14 +78,14 @@ class ParticleLoadLink : public SimpleLoadLink<kernel::Particle> {
   IMP_OBJECT_METHODS(ParticleLoadLink);
 };
 
-class ParticleSaveLink : public SimpleSaveLink<kernel::Particle> {
-  typedef SimpleSaveLink<kernel::Particle> P;
+class ParticleSaveLink : public SimpleSaveLink<Particle> {
+  typedef SimpleSaveLink<Particle> P;
   RMF::Category cat_;
   boost::unordered_map<FloatKey, RMF::FloatKey> float_;
   boost::unordered_map<IntKey, RMF::IntKey> int_;
   boost::unordered_map<StringKey, RMF::StringKey> string_;
   template <class IK, class RK>
-  void save_one(kernel::Particle *o, const base::Vector<IK> &ks,
+  void save_one(Particle *o, const base::Vector<IK> &ks,
                 RMF::NodeHandle nh, boost::unordered_map<IK, RK> &map) {
     for (unsigned int i = 0; i < ks.size(); ++i) {
       if (map.find(ks[i]) == map.end()) {
@@ -96,12 +96,12 @@ class ParticleSaveLink : public SimpleSaveLink<kernel::Particle> {
     }
   }
 
-  void do_save_one(kernel::Particle *o, RMF::NodeHandle nh) {
+  void do_save_one(Particle *o, RMF::NodeHandle nh) {
     save_one(o, o->get_float_keys(), nh, float_);
     save_one(o, o->get_int_keys(), nh, int_);
     save_one(o, o->get_string_keys(), nh, string_);
   }
-  RMF::NodeType get_type(kernel::Particle *) const { return RMF::CUSTOM; }
+  RMF::NodeType get_type(Particle *) const { return RMF::CUSTOM; }
 
  public:
   ParticleSaveLink(RMF::FileHandle fh) : P("ParticleSaveLink%1%") {
@@ -112,8 +112,8 @@ class ParticleSaveLink : public SimpleSaveLink<kernel::Particle> {
 };
 }
 
-IMP_DEFINE_LINKERS(Particle, particle, particles, kernel::Particle *,
-                   kernel::ParticlesTemp,
-                   (RMF::FileConstHandle fh, kernel::Model *m), (fh, m));
+IMP_DEFINE_LINKERS(Particle, particle, particles, Particle *,
+                   ParticlesTemp,
+                   (RMF::FileConstHandle fh, Model *m), (fh, m));
 
 IMPRMF_END_NAMESPACE

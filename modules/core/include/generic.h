@@ -10,13 +10,13 @@
 #define IMPCORE_GENERIC_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/kernel/generic.h>
+#include <IMP/generic.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 /** A Python version of this is provided, but it produces a slightly less
     efficient restraint. */
-using IMP::kernel::create_restraint;
-using IMP::kernel::create_constraint;
+using IMP::create_restraint;
+using IMP::create_constraint;
 
 IMPKERNEL_END_NAMESPACE
 

@@ -11,15 +11,15 @@ use_rigid_bodies = True
 bd = 10
 radius = 10
 
-m = IMP.kernel.Model()
-p = IMP.kernel.Particle(m)
+m = IMP.Model()
+p = IMP.Particle(m)
 IMP.atom.Mass.setup_particle(p, 10000)
 d = IMP.core.XYZR.setup_particle(p)
 d.set_radius(radius)
 
 # Set up the particle as either a rigid body or a simple ball
 if use_rigid_bodies:
-    prb = IMP.kernel.Particle(m)
+    prb = IMP.Particle(m)
     prb.set_name("rigid body")
     d.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
     drb = IMP.core.RigidBody.setup_particle(
@@ -53,7 +53,7 @@ dmap.resample()
 # computes statistic stuff about the map and insert it in the header
 dmap.calcRMS()
 IMP.em.write_map(dmap, "map.mrc", IMP.em.MRCReaderWriter())
-rs = IMP.kernel.RestraintSet(m)
+rs = IMP.RestraintSet(m)
 m.add_restraint(rs)
 # rs.set_weight(.003)
 

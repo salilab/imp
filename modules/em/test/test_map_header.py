@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
     """Class for testing Map header data"""
 
     def make_map(self, voxel_size):
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = [IMP.Particle(m)]
         IMP.core.XYZR.setup_particle(ps[0],
                                      IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1, 2, 3), 4))

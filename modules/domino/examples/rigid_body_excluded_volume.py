@@ -13,7 +13,7 @@ import math
 
 
 def create_representation():
-    m = IMP.kernel.Model()
+    m = IMP.Model()
     h0 = IMP.atom.read_pdb(IMP.domino.get_example_path(
         'helix_0.pdb'), m, IMP.atom.CAlphaPDBSelector())
     h1 = IMP.atom.read_pdb(IMP.domino.get_example_path(

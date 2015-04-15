@@ -4,8 +4,8 @@
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
-#include <IMP/kernel/internal/swig.h>
-#include <IMP/kernel/internal/pdb.h>
+#include <IMP/internal/swig.h>
+#include <IMP/internal/pdb.h>
 #include <IMP/base/log.h>
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/classname_macros.h
+ *  \file IMP/classname_macros.h
  *  \brief Macros for various classes.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

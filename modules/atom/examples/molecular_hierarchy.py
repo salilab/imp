@@ -9,7 +9,7 @@ import IMP
 import IMP.core
 import IMP.atom
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 mp0 = IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)
 # get the 16th residue of the first chain
 hchain = IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]
@@ -49,7 +49,7 @@ except:
 IMP.atom.create_rigid_body(mp1)
 
 # create a hierarchy which contains the two proteins
-p = IMP.kernel.Particle(m)
+p = IMP.Particle(m)
 rmp = IMP.atom.Hierarchy.setup_particle(p)
 rmp.add_child(smp0)
 rmp.add_child(mp1)

@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
                 rind = r.get_index()
                 self.assert_(a.get_atom_type() == IMP.atom.AT_CG or rind == 433)
         IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         s1 = IMP.atom.Selection(h, residue_type=IMP.atom.ASP)
         s2 = IMP.atom.Selection(h, atom_type=IMP.atom.AT_CG)
@@ -40,7 +40,7 @@ class Tests(IMP.test.TestCase):
                 self.assert_(at == IMP.atom.AT_CG or at == IMP.atom.AT_CG1
                              or rind == 433)
         IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         s1 = IMP.atom.Selection(h, residue_type=IMP.atom.ASP)
         s2 = IMP.atom.Selection(h, atom_type=IMP.atom.AT_CG)
@@ -65,7 +65,7 @@ class Tests(IMP.test.TestCase):
                 self.assert_(a.get_atom_type() == IMP.atom.AT_CG \
                              and rind == 433)
         IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         s1 = IMP.atom.Selection(h, residue_type=IMP.atom.ASP)
         s2 = IMP.atom.Selection(h, atom_type=IMP.atom.AT_CG)
@@ -88,7 +88,7 @@ class Tests(IMP.test.TestCase):
                 self.assert_((a.get_atom_type() == IMP.atom.AT_CG) \
                              ^ (rind == 433))
         IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         s1 = IMP.atom.Selection(h, residue_type=IMP.atom.ASP)
         s2 = IMP.atom.Selection(h, atom_type=IMP.atom.AT_CG)
@@ -111,7 +111,7 @@ class Tests(IMP.test.TestCase):
                 self.assert_(a.get_atom_type() != IMP.atom.AT_CG
                              and rind == 433)
         IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         s1 = IMP.atom.Selection(h, residue_type=IMP.atom.ASP)
         s2 = IMP.atom.Selection(h, atom_type=IMP.atom.AT_CG)
@@ -126,7 +126,7 @@ class Tests(IMP.test.TestCase):
     def test_multiple(self):
         """Test combination of multiple selections"""
         IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         s = IMP.atom.Selection(h, residue_type=IMP.atom.PHE) \
               - (IMP.atom.Selection(h, atom_type=IMP.atom.AT_CG) \
@@ -152,7 +152,7 @@ class Tests(IMP.test.TestCase):
                 at = a.get_atom_type()
                 self.assert_(at == IMP.atom.AT_CG)
         IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         s1 = IMP.atom.Selection(h, atom_type=IMP.atom.AT_CG)
         s2 = IMP.atom.Selection(h)

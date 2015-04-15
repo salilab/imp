@@ -8,7 +8,7 @@
 #include <IMP/core/MonteCarlo.h>
 
 #include <IMP/base/random.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/ConfigurationSet.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/dependency_graph.h>
@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 IMP_LIST_IMPL(MonteCarlo, Mover, mover, MonteCarloMover *, MonteCarloMovers);
 
-MonteCarlo::MonteCarlo(kernel::Model *m)
+MonteCarlo::MonteCarlo(Model *m)
     : Optimizer(m, "MonteCarlo%1%"),
       temp_(1),
       max_difference_(std::numeric_limits<double>::max()),
@@ -79,7 +79,7 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last,
 }
 
 MonteCarloMoverResult MonteCarlo::do_move() {
-  kernel::ParticleIndexes ret;
+  ParticleIndexes ret;
   double prob = 1.0;
   for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
     IMP_LOG_VERBOSE("Moving using " << (*it)->get_name() << std::endl);
@@ -122,13 +122,13 @@ void MonteCarlo::do_step() {
 }
 
 ParticleIndexes MonteCarlo::get_movable_particles() const {
-  kernel::ParticleIndexes movable;
+  ParticleIndexes movable;
   for (unsigned int i = 0; i < get_number_of_movers(); ++i) {
-    kernel::ModelObjectsTemp t = get_mover(i)->get_outputs();
+    ModelObjectsTemp t = get_mover(i)->get_outputs();
     for (unsigned int j = 0; j < t.size(); ++j) {
-      kernel::ModelObject *mo = t[j];
-      if (dynamic_cast<kernel::Particle *>(mo)) {
-        movable.push_back(dynamic_cast<kernel::Particle *>(mo)->get_index());
+      ModelObject *mo = t[j];
+      if (dynamic_cast<Particle *>(mo)) {
+        movable.push_back(dynamic_cast<Particle *>(mo)->get_index());
       }
     }
   }
@@ -144,7 +144,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
               ValueException);
   }
 
-  kernel::ParticleIndexes movable = get_movable_particles();
+  ParticleIndexes movable = get_movable_particles();
 
   // provide a way of feeding in this value
   last_energy_ = do_evaluate(movable);

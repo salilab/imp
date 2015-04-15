@@ -47,7 +47,7 @@ const char *pdb =
 
 int do_benchmark() {
   try {
-    IMP_NEW(kernel::Model, m, ());
+    IMP_NEW(Model, m, ());
     std::istringstream iss(pdb);
     atom::Hierarchy prot = atom::read_pdb(iss, m);
     // Read in the CHARMM heavy atom topology and parameter files
@@ -62,7 +62,7 @@ int do_benchmark() {
 
     //## Molecular Dynamics
     IMP_NEW(MolecularDynamics, md, (m));
-    IMP::kernel::ParticleIndexes pis = md->get_simulation_particle_indexes();
+    IMP::ParticleIndexes pis = md->get_simulation_particle_indexes();
     IMP_TEST_EQUAL(pis.size(), atoms.size());
     for (unsigned int i = 0; i < atoms.size(); ++i) {
       IMP_TEST_EQUAL(pis[i], atoms[i].get_particle_index());

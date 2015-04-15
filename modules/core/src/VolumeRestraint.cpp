@@ -16,7 +16,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 VolumeRestraint::VolumeRestraint(UnaryFunction *f, SingletonContainer *sc,
                                  double volume)
-    : kernel::Restraint(sc->get_model(), "VolumeRestraint%1%"),
+    : Restraint(sc->get_model(), "VolumeRestraint%1%"),
       sc_(sc),
       f_(f),
       volume_(volume) {}
@@ -26,7 +26,7 @@ double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_CHECK_VARIABLE(da);
   IMP_USAGE_CHECK(!da, "VolumeRestraint does not support derivatives.");
   algebra::Sphere3Ds spheres;
-  kernel::Model *m = get_model();
+  Model *m = get_model();
   IMP_CONTAINER_FOREACH(SingletonContainer, sc_,
   { spheres.push_back(XYZR(m, _1).get_sphere()); });
   double vol = algebra::get_surface_area_and_volume(spheres).second;
@@ -183,8 +183,8 @@ double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
 }
 
 ModelObjectsTemp VolumeRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret =
-      IMP::kernel::get_particles(get_model(), sc_->get_all_possible_indexes());
+  ModelObjectsTemp ret =
+      IMP::get_particles(get_model(), sc_->get_all_possible_indexes());
   ret.push_back(sc_);
   return ret;
 }

@@ -11,7 +11,7 @@
 #define IMPISD_MARGINAL_HBOND_RESTRAINT_H
 
 #include <IMP/isd/isd_config.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/PairContainer.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -27,7 +27,7 @@ IMPISD_BEGIN_NAMESPACE
                      {d_i^{-6}(X)}\right)\right)^{-\frac{N}{2}}
     \f]
  */
-class IMPISDEXPORT MarginalHBondRestraint : public kernel::Restraint {
+class IMPISDEXPORT MarginalHBondRestraint : public Restraint {
   PairContainers contribs_;
   std::vector<double> volumes_;
   double logsquares_;
@@ -35,14 +35,14 @@ class IMPISDEXPORT MarginalHBondRestraint : public kernel::Restraint {
 
  public:
   //! Create the restraint.
-  /** kernel::Restraints should store the particles they are to act on,
+  /** Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  MarginalHBondRestraint(kernel::Model *m)
+  MarginalHBondRestraint(Model *m)
       : Restraint(m, "MarginalHBondRestraint%1%") {};
 
   // add a contribution: simple case
-  void add_contribution(kernel::Particle *p1, kernel::Particle *p2,
+  void add_contribution(Particle *p1, Particle *p2,
                         double Iexp);
 
   // add a contribution: general case
@@ -58,9 +58,9 @@ class IMPISDEXPORT MarginalHBondRestraint : public kernel::Restraint {
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(MarginalHBondRestraint);
 };
 

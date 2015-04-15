@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_GRAPH_UTILITY_H
 #define IMPKERNEL_INTERNAL_GRAPH_UTILITY_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "../Particle.h"
 #include "../Decorator.h"
 #include <IMP/base/internal/graph_utility.h>

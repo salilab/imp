@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_perturbed(self):
         """Test writing a simple hierarchy"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = IMP.atom.read_pdb(
             self.get_input_file_name("small_protein.pdb"),
             m)

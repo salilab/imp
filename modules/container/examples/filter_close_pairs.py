@@ -16,10 +16,10 @@ bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                IMP.algebra.Vector3D(5, 5, 5))
 ik = IMP.IntKey("num")
 IMP.base.set_log_level(IMP.base.SILENT)
-m = IMP.kernel.Model()
+m = IMP.Model()
 l = []
 for i in range(0, np):
-    p = IMP.kernel.Particle(m)
+    p = IMP.Particle(m)
     p.add_attribute(ik, i)
     IMP.core.XYZR.setup_particle(
         p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 1))

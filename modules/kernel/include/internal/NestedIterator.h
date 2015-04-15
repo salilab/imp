@@ -7,7 +7,7 @@
 
 #ifndef IMPKERNEL_INTERNAL_NESTED_ITERATOR_H
 #define IMPKERNEL_INTERNAL_NESTED_ITERATOR_H
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include <IMP/base/check_macros.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE

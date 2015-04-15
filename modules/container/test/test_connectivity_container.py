@@ -20,8 +20,8 @@ class Tests(IMP.test.TestCase):
 
     def test_connectivity_zero_set(self):
         """Test connectivity zero set"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 15)]
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(0, 15)]
         ds = [IMP.core.XYZR.setup_particle(p) for p in ps]
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(10, 10, 10))
@@ -54,7 +54,7 @@ class Tests(IMP.test.TestCase):
     def test_score(self):
         """Test connectivity"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = IMP.core.create_xyzr_particles(m, 10, .1)
         for p in ps:
             p.set_coordinates_are_optimized(True)

@@ -15,7 +15,7 @@ class Tests(IMP.test.TestCase):
            All particles should be at most radius apart"""
 
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         # create particles in a box
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-5, -5, -5),
                                        IMP.algebra.Vector3D(5, 5, 5))

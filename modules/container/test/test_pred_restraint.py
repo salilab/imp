@@ -44,7 +44,7 @@ class Tests(IMP.test.TestCase):
 
     def test_it(self):
         """Test PredicatePairsRestraints"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         IMP.base.set_log_level(IMP.base.VERBOSE)
         ps = self.create_particles_in_box(m, 20)
         for i, p in enumerate(ps):

@@ -10,8 +10,8 @@
 #include <IMP/base/Pointer.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
-WriteOptimizerState::WriteOptimizerState(kernel::Model *m, WriterAdaptor w)
-    : kernel::OptimizerState(m, "WriteOptimizerState%1%"), writer_(w) {}
+WriteOptimizerState::WriteOptimizerState(Model *m, WriterAdaptor w)
+    : OptimizerState(m, "WriteOptimizerState%1%"), writer_(w) {}
 
 void WriteOptimizerState::write(WriterAdaptor w) const {
   IMP::base::PointerMember<Writer> wp(w);

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Optimizer.h     \brief Base class for all optimizers.
+ *  \file IMP/Optimizer.h     \brief Base class for all optimizers.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_OPTIMIZER_H
 #define IMPKERNEL_OPTIMIZER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include <IMP/base/Object.h>
 #include "utility.h"
@@ -62,7 +62,7 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
   virtual ModelObjectsTemp do_get_outputs() const { return ModelObjectsTemp(); }
 
  public:
-  Optimizer(kernel::Model *m, std::string name = "Optimizer %1%");
+  Optimizer(Model *m, std::string name = "Optimizer %1%");
 
   //! Optimize the model for up to max_steps iterations
   /** Optimize the model

@@ -10,8 +10,8 @@ class Tests(IMP.test.TestCase):
 
     def test_symmetry(self):
         """Test the box score"""
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         d = IMP.core.XYZ.setup_particle(p)
         bbi = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(10, 10, 10),
                                         IMP.algebra.Vector3D(20, 20, 20))

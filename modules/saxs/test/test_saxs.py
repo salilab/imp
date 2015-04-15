@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
 
     def test_saxs_profile(self):
         """Check protein profile computation"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read PDB
         mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
@@ -83,7 +83,7 @@ class Tests(IMP.test.TestCase):
 
     def test_saxs_restraint(self):
         """Check saxs restraint"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read PDB
         mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
@@ -113,7 +113,7 @@ class Tests(IMP.test.TestCase):
 
     def test_saxs_residue_level_restraint(self):
         """Check residue level saxs restraint"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read PDB
         mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,

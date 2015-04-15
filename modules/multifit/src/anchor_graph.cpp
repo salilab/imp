@@ -25,7 +25,7 @@ ProbabilisticAnchorGraph::ProbabilisticAnchorGraph(
 }
 
 void ProbabilisticAnchorGraph::set_particle_probabilities_on_anchors(
-    kernel::Particle *p, FittingSolutionRecords sols) {
+    Particle *p, FittingSolutionRecords sols) {
   IMP_USAGE_CHECK(sols.size() > 0, "no solutions provided\n");
   IMP_NEW(algebra::NearestNeighborD<3>, nn, (positions_));
   Ints anchor_counters;
@@ -42,7 +42,7 @@ void ProbabilisticAnchorGraph::set_particle_probabilities_on_anchors(
   particle_to_anchor_probabilities_[p] = probs;
 }
 algebra::Vector3Ds ProbabilisticAnchorGraph::get_particle_anchors(
-    kernel::Particle *p, float min_prob) const {
+    Particle *p, float min_prob) const {
   Floats probs = get_particle_probabilities(p);
   algebra::Vector3Ds anchors;
   for (unsigned int i = 0; i < probs.size(); i++) {
@@ -52,7 +52,7 @@ algebra::Vector3Ds ProbabilisticAnchorGraph::get_particle_anchors(
   }
   return anchors;
 }
-Floats ProbabilisticAnchorGraph::get_particle_probabilities(kernel::Particle *p)
+Floats ProbabilisticAnchorGraph::get_particle_probabilities(Particle *p)
     const {
   IMP_USAGE_CHECK(particle_to_anchor_probabilities_.find(p) !=
                       particle_to_anchor_probabilities_.end(),
@@ -64,7 +64,7 @@ void ProbabilisticAnchorGraph::show(std::ostream &out) const {
   out << "( nodes:" << boost::num_vertices(g_)
       << ", edges:" << boost::num_edges(g_) << std::endl;
   out << "Probabilities:" << std::endl;
-  for (std::map<kernel::Particle *, Floats>::const_iterator it =
+  for (std::map<Particle *, Floats>::const_iterator it =
            particle_to_anchor_probabilities_.begin();
        it != particle_to_anchor_probabilities_.end(); it++) {
     out << it->first->get_name();  //<<" : "<<it->second<<std::endl;
@@ -75,7 +75,7 @@ void ProbabilisticAnchorGraph::show(std::ostream &out) const {
 //                ProbabilisticAnchorGraph *anchor_g,
 //                domino1::RestraintGraph *rest_g) {
 //   //setup a domino optimization
-//   IMP_NEW(kernel::Model,mdl,());
+//   IMP_NEW(Model,mdl,());
 
 // }
 IntRanges ProbabilisticAnchorGraph::get_edge_list() const {

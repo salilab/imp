@@ -10,7 +10,7 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/base/object_macros.h>
-#include <IMP/kernel/internal/DynamicListContainer.h>
+#include <IMP/internal/DynamicListContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

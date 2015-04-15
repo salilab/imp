@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Constraint.h   \brief A base class for constraints.
+ *  \file IMP/Constraint.h   \brief A base class for constraints.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -48,7 +48,7 @@ IMPKERNEL_BEGIN_NAMESPACE
  */
 class IMPKERNELEXPORT Constraint : public ScoreState {
  public:
-  Constraint(kernel::Model *m, std::string name = "Constraint %1%");
+  Constraint(Model *m, std::string name = "Constraint %1%");
   virtual void do_update_attributes() = 0;
   virtual void do_update_derivatives(DerivativeAccumulator *da) = 0;
 

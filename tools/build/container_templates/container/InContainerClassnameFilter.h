@@ -11,7 +11,7 @@
 #include <IMP/container/container_config.h>
 #include <IMP/ClassnamePredicate.h>
 #include <IMP/ClassnameContainer.h>
-#include <IMP/kernel/internal/container_helpers.h>
+#include <IMP/internal/container_helpers.h>
 #include "internal/ClassnameContainerIndex.h"
 #include <IMP/classname_macros.h>
 #include <IMP/base/object_macros.h>

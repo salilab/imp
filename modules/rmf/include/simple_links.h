@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/simple_links.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -16,7 +16,7 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base/object_macros.h>
 #include <IMP/base/log_macros.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <RMF/RestoreCurrentFrame.h>
 #include <RMF/SetCurrentFrame.h>
 #include <RMF/names.h>
@@ -50,7 +50,7 @@ class SimpleLoadLink : public LoadLink {
   }
   virtual bool get_is(RMF::NodeConstHandle nh) const = 0;
   virtual O *do_create(RMF::NodeConstHandle) { IMP_FAILURE("Wrong create"); }
-  virtual O *do_create(RMF::NodeConstHandle, kernel::Model *) {
+  virtual O *do_create(RMF::NodeConstHandle, Model *) {
     IMP_FAILURE("Wrong create");
   }
   SimpleLoadLink(std::string name) : LoadLink(name) {}
@@ -78,7 +78,7 @@ class SimpleLoadLink : public LoadLink {
 
   /** Create all the entities under the passed root.*/
   base::Vector<base::Pointer<O> > create(RMF::NodeConstHandle rt,
-                                         kernel::Model *m) {
+                                         Model *m) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Creating Model objects from " << rt << std::endl);
     RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));

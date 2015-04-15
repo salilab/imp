@@ -14,9 +14,9 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         ap = []
         for i in range(0, n):
             cs = IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_on(ls), r)
-            d = IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m), cs)
+            d = IMP.core.XYZR.setup_particle(IMP.Particle(m), cs)
             ap.append(d)
-        rbp = IMP.core.RigidBody.setup_particle(IMP.kernel.Particle(m), ap)
+        rbp = IMP.core.RigidBody.setup_particle(IMP.Particle(m), ap)
         # rbp.set_log_level(IMP.base.SILENT)
         rbp.set_coordinates_are_optimized(True)
         return rbp
@@ -24,7 +24,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
     def _create_xyzrs(self, m, n, r):
         ap = []
         for i in range(0, n):
-            d = IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m),
+            d = IMP.core.XYZR.setup_particle(IMP.Particle(m),
                                              IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), r))
             d.set_coordinates_are_optimized(True)
             ap.append(d)
@@ -32,7 +32,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
 
     def _setup_ev_restraint(self):
         # IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         m.set_log_level(IMP.base.SILENT)
         all = []
         rbs = []

@@ -17,8 +17,8 @@
 
 #include <IMP/saxs/RigidBodiesProfileHandler.h>
 
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Model.h>
+#include <IMP/Restraint.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
 
@@ -39,7 +39,7 @@ IMPSAXS_BEGIN_NAMESPACE
     The distances between the atoms of rigid body do not change, therefore
     their contribution to the profile is pre-computed and stored.
  */
-class IMPSAXSEXPORT Restraint : public kernel::Restraint {
+class IMPSAXSEXPORT Restraint : public IMP::Restraint {
  public:
   //! Constructor
   /**
@@ -50,13 +50,13 @@ class IMPSAXSEXPORT Restraint : public kernel::Restraint {
                 HEAVY_ATOMS - no hydrogens, all other atoms included
                 CA_ATOMS - residue level, residue represented by CA
   */
-  Restraint(const kernel::Particles& particles, const Profile* exp_profile,
+  Restraint(const Particles& particles, const Profile* exp_profile,
             FormFactorType ff_type = HEAVY_ATOMS);
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator* accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum)
       const IMP_OVERRIDE;
 
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(Restraint);
 

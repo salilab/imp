@@ -25,12 +25,12 @@ class Tests(IMP.test.TestCase):
 
     def _test_basic(self, nm):
         """Testing default subset states"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         ns = 5
         np = 4
         for i in range(0, np):
-            ps.append(IMP.kernel.Particle(m))
+            ps.append(IMP.Particle(m))
         pst = IMP.domino.ParticleStatesTable()
         pft = IMP.domino.ExclusionSubsetFilterTable(pst)
         dsst = nm(pst, [pft])
@@ -50,12 +50,12 @@ class Tests(IMP.test.TestCase):
 
     def _test_equivalencies(self, nm):
         """Testing default subset states with equivalencies"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         ns = 5
         np = 4
         for i in range(0, np):
-            ps.append(IMP.kernel.Particle(m))
+            ps.append(IMP.Particle(m))
         pst = IMP.domino.ParticleStatesTable()
         tps = TrivialParticleStates(ns)
         pst.set_particle_states(ps[0], tps)
@@ -80,12 +80,12 @@ class Tests(IMP.test.TestCase):
 
     def _test_explicit(self, nm):
         """Testing default subset states with explicit equivalencies"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         ns = 5
         np = 4
         for i in range(0, np):
-            ps.append(IMP.kernel.Particle(m))
+            ps.append(IMP.Particle(m))
         pst = IMP.domino.ParticleStatesTable()
         tps = TrivialParticleStates(ns)
         pst.set_particle_states(ps[0], tps)

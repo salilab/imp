@@ -9,8 +9,8 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min0(self):
         """Testing balanced merge tree algorithm"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for p in range(10)]
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for p in range(10)]
         jt = IMP.domino.SubsetGraph()
         for p in ps:
             jt.add_vertex(IMP.domino.Subset([p]))

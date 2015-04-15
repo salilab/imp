@@ -14,7 +14,7 @@ import IMP.saxs
 import os
 
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 
 #! read PDB
 mp = IMP.atom.read_pdb(IMP.saxs.get_example_path('6lyz.pdb'), m,

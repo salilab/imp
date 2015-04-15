@@ -16,8 +16,8 @@
 IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 void get_residue_solvent_accessibility(
-    const IMP::kernel::Particles& atom_particles,
-    const IMP::kernel::Particles& residue_particles,
+    const IMP::Particles& atom_particles,
+    const IMP::Particles& residue_particles,
     const std::vector<int>& atom_2_residue_map,
     std::vector<float>& residue_solvent_accessibility) {
 

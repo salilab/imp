@@ -11,7 +11,7 @@
 
 #include <IMP/saxs/saxs_config.h>
 
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Atom.h>
@@ -57,15 +57,15 @@ class IMPSAXSEXPORT FormFactorTable {
   // 1. Zero form factors
 
   //! get f(0), ie q=0 for real space profile calculation
-  Float get_form_factor(kernel::Particle* p,
+  Float get_form_factor(Particle* p,
                         FormFactorType ff_type = HEAVY_ATOMS) const;
 
   //! f(0) in vacuum
-  Float get_vacuum_form_factor(kernel::Particle* p,
+  Float get_vacuum_form_factor(Particle* p,
                                FormFactorType ff_type = HEAVY_ATOMS) const;
 
   //! f(0) for solvent
-  Float get_dummy_form_factor(kernel::Particle* p,
+  Float get_dummy_form_factor(Particle* p,
                               FormFactorType ff_type = HEAVY_ATOMS) const;
 
   //! f(0) for water
@@ -84,16 +84,16 @@ class IMPSAXSEXPORT FormFactorTable {
   // 2. Full form factors
 
   //! full form factor for reciprocal space profile calculation
-  const Floats& get_form_factors(kernel::Particle* p,
+  const Floats& get_form_factors(Particle* p,
                                  FormFactorType ff_type = HEAVY_ATOMS) const;
 
   //! for reciprocal space profile calculation
-  const Floats& get_vacuum_form_factors(kernel::Particle* p,
+  const Floats& get_vacuum_form_factors(Particle* p,
                                         FormFactorType ff_type =
                                             HEAVY_ATOMS) const;
 
   //! for reciprocal space profile calculation
-  const Floats& get_dummy_form_factors(kernel::Particle* p,
+  const Floats& get_dummy_form_factors(Particle* p,
                                        FormFactorType ff_type =
                                            HEAVY_ATOMS) const;
 
@@ -111,11 +111,11 @@ class IMPSAXSEXPORT FormFactorTable {
   }
 
   //! radius
-  Float get_radius(kernel::Particle* p,
+  Float get_radius(Particle* p,
                    FormFactorType ff_type = HEAVY_ATOMS) const;
 
   //! volume
-  Float get_volume(kernel::Particle* p,
+  Float get_volume(Particle* p,
                    FormFactorType ff_type = HEAVY_ATOMS) const;
 
   //! print tables
@@ -198,7 +198,7 @@ class IMPSAXSEXPORT FormFactorTable {
   // those represent excluded volume
   static Float dummy_zero_form_factors_[];
 
-  // a key for storing zero form factor in kernel::Particle as attribute
+  // a key for storing zero form factor in Particle as attribute
   static IntKey form_factor_type_key_;
 
   // class for storing form factors solvation table
@@ -238,7 +238,7 @@ class IMPSAXSEXPORT FormFactorTable {
 
   FormFactorAtomType get_form_factor_atom_type(atom::Element e) const;
 
-  FormFactorAtomType get_form_factor_atom_type(kernel::Particle* p,
+  FormFactorAtomType get_form_factor_atom_type(Particle* p,
                                                FormFactorType ff_type) const;
 
   FormFactorAtomType get_carbon_atom_type(const atom::AtomType& atom_type,

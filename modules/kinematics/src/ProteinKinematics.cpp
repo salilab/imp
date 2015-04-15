@@ -125,8 +125,8 @@ void ProteinKinematics::init
 
 void ProteinKinematics::add_edges_to_rb_graph(const std::vector<IMP::atom::Atoms>& dihedral_angles) {
   for (unsigned int i = 0; i < dihedral_angles.size(); i++) {
-    IMP::kernel::Particle* p1 = dihedral_angles[i][1].get_particle();
-    IMP::kernel::Particle* p2 = dihedral_angles[i][2].get_particle();
+    IMP::Particle* p1 = dihedral_angles[i][1].get_particle();
+    IMP::Particle* p2 = dihedral_angles[i][2].get_particle();
     if (IMP::core::RigidMember::get_is_setup(p1) &&
         IMP::core::RigidMember::get_is_setup(p2)) {
       IMP::core::RigidBody rb1 = IMP::core::RigidMember(p1).get_rigid_body();
@@ -140,9 +140,9 @@ void ProteinKinematics::add_edges_to_rb_graph(const std::vector<IMP::atom::Atoms
 
 void ProteinKinematics::build_topology_graph() {
 
-  // map graph nodes (=atoms) to kernel::ParticleIndex
+  // map graph nodes (=atoms) to ParticleIndex
   for (unsigned int i = 0; i < atom_particles_.size(); i++) {
-    IMP::kernel::ParticleIndex pindex = atom_particles_[i]->get_index();
+    IMP::ParticleIndex pindex = atom_particles_[i]->get_index();
     particle_index_to_node_map_[pindex] = i;
     node_to_particle_index_map_.push_back(pindex);
   }
@@ -168,9 +168,9 @@ void ProteinKinematics::mark_rotatable_angles(
     const std::vector<IMP::atom::Atoms>& dihedral_angles) {
   for (unsigned int i = 0; i < dihedral_angles.size(); i++) {
 
-    // get the kernel::ParticleIndex and map it to graph node
-    IMP::kernel::ParticleIndex p1 = dihedral_angles[i][1].get_particle_index();
-    IMP::kernel::ParticleIndex p2 = dihedral_angles[i][2].get_particle_index();
+    // get the ParticleIndex and map it to graph node
+    IMP::ParticleIndex p1 = dihedral_angles[i][1].get_particle_index();
+    IMP::ParticleIndex p2 = dihedral_angles[i][2].get_particle_index();
     int atom_index1 = 0;
     int atom_index2 = 0;
     if (particle_index_to_node_map_.find(p1) !=
@@ -227,15 +227,15 @@ void ProteinKinematics::build_rigid_bodies() {
   }
 
   // build the rigid bodies
-  IMP::kernel::Model* m = mhd_->get_model();
+  IMP::Model* m = mhd_->get_model();
   largest_rb_ = 0;
   unsigned int largest_rb_size = 0;
   for (unsigned int i = 0; i < rigid_bodies_atoms.size(); i++) {
-    IMP::kernel::Particle* rbp = new IMP::kernel::Particle(m);
+    IMP::Particle* rbp = new IMP::Particle(m);
     std::string name = "rb_name";  // TODO: add rb id
     rbp->set_name(name);
-    // rb atoms, get kernel::Particles from node indexes
-    IMP::kernel::ParticlesTemp all;
+    // rb atoms, get Particles from node indexes
+    IMP::ParticlesTemp all;
     for (unsigned int j = 0; j < rigid_bodies_atoms[i].size(); j++) {
       all.push_back(m->get_particle(
           node_to_particle_index_map_[rigid_bodies_atoms[i][j]]));
@@ -275,8 +275,8 @@ void ProteinKinematics::add_dihedral_joint(const IMP::atom::Residue r,
                                            ProteinAngleType angle_type,
                                            const IMP::atom::Atoms& atoms) {
 
-  IMP::kernel::Particle* p1 = atoms[1].get_particle();
-  IMP::kernel::Particle* p2 = atoms[2].get_particle();
+  IMP::Particle* p1 = atoms[1].get_particle();
+  IMP::Particle* p2 = atoms[2].get_particle();
 
   // TODO: check to DEBUG only check?
   if (IMP::core::RigidMember::get_is_setup(p1) &&
@@ -313,7 +313,7 @@ void ProteinKinematics::add_dihedral_joint(const IMP::atom::Residue r,
 
 Joint* ProteinKinematics::AngleToJointMap::get_joint(
     const IMP::atom::Residue r, ProteinAngleType angle_type) const {
-  IMP::kernel::ParticleIndex pi = r.get_particle_index();
+  IMP::ParticleIndex pi = r.get_particle_index();
   IMP_INTERNAL_CHECK(residue_to_joints_.find(pi) != residue_to_joints_.end(),
                      "Can't find joints for residue\n");
   const ResidueJoints& res_joints = residue_to_joints_.find(pi)->second;
@@ -325,7 +325,7 @@ Joint* ProteinKinematics::AngleToJointMap::get_joint(
 void ProteinKinematics::AngleToJointMap::add_joint(const IMP::atom::Residue r,
                                                    ProteinAngleType angle_type,
                                                    Joint* joint) {
-  IMP::kernel::ParticleIndex pi = r.get_particle_index();
+  IMP::ParticleIndex pi = r.get_particle_index();
   if (residue_to_joints_.find(pi) == residue_to_joints_.end()) {
     ResidueJoints residue_joints(angle_type + 1, nullptr);
     residue_joints[angle_type] = joint;

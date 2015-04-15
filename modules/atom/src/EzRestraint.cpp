@@ -9,7 +9,7 @@
 #include <IMP/atom/EzRestraint.h>
 #include <numeric>
 #include <IMP/core/XYZ.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/atom/internal/Sigmoid.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Atom.h>
@@ -22,8 +22,8 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-EzRestraint::EzRestraint(kernel::Particles ps)
-    : kernel::Restraint(ps[0]->get_model(), "Ez Potential") {
+EzRestraint::EzRestraint(Particles ps)
+    : Restraint(ps[0]->get_model(), "Ez Potential") {
   ps_ = ps;
   for (unsigned i = 0; i < ps_.size(); ++i) {
     // get residue type
@@ -148,7 +148,7 @@ double EzRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
 }
 
 ModelObjectsTemp EzRestraint::do_get_inputs() const {
-  kernel::ParticlesTemp ret;
+  ParticlesTemp ret;
   ret.insert(ret.end(), ps_.begin(), ps_.end());
   return ret;
 }

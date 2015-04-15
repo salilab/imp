@@ -23,12 +23,12 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         # IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.p0 = IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
+        self.m = IMP.Model()
+        self.p0 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
                                               IMP.algebra.Vector3D(0, 0, 0))
-        self.p1 = IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
+        self.p1 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
                                               IMP.algebra.Vector3D(1, 1, 1))
-        self.p2 = IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
+        self.p2 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
                                               IMP.algebra.Vector3D(1, 0, 0))
         self.DA = IMP.DerivativeAccumulator()
         self.V_obs = 3.0
@@ -90,7 +90,7 @@ class Tests(IMP.test.TestCase):
         for i in range(2, 100):
             while len(pairs) <= i:
                 pair = [IMP.core.XYZ.setup_particle(
-                    IMP.kernel.Particle(self.m),
+                    IMP.Particle(self.m),
                     IMP.algebra.Vector3D(*[uniform(-10, 10) for r in range(3)]))
                     for p in range(2)]
                 pairs.append(pair)
@@ -120,7 +120,7 @@ class Tests(IMP.test.TestCase):
         for i in range(2, 100):
             while len(pairs) <= i:
                 pair = [IMP.core.XYZ.setup_particle(
-                    IMP.kernel.Particle(self.m),
+                    IMP.Particle(self.m),
                     IMP.algebra.Vector3D(*[uniform(-10, 10) for r in range(3)]))
                     for p in range(2)]
                 pairs.append(pair)
@@ -150,7 +150,7 @@ class Tests(IMP.test.TestCase):
         for i in range(2, 100):
             while len(pairs) <= i:
                 pair = [IMP.core.XYZ.setup_particle(
-                    IMP.kernel.Particle(self.m),
+                    IMP.Particle(self.m),
                     IMP.algebra.Vector3D(*[uniform(-10, 10) for r in range(3)]))
                     for p in range(2)]
                 pairs.append(pair)
@@ -178,7 +178,7 @@ class Tests(IMP.test.TestCase):
         for i in range(2, 100):
             while len(pairs) <= i:
                 pair = [IMP.core.XYZ.setup_particle(
-                    IMP.kernel.Particle(self.m),
+                    IMP.Particle(self.m),
                     IMP.algebra.Vector3D(*[uniform(-10, 10) for r in range(3)]))
                     for p in range(2)]
                 pairs.append(pair)
@@ -208,7 +208,7 @@ class Tests(IMP.test.TestCase):
         for i in range(2, 100):
             while len(pairs) <= i:
                 pair = [IMP.core.XYZ.setup_particle(
-                    IMP.kernel.Particle(self.m),
+                    IMP.Particle(self.m),
                     IMP.algebra.Vector3D(*[uniform(-10, 10) for r in range(3)]))
                     for p in range(2)]
                 pairs.append(pair)

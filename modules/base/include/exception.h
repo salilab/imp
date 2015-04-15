@@ -168,7 +168,7 @@ class IMPBASEEXPORT IOException : public Exception {
   ~IOException() IMP_NOEXCEPT;
 };
 
-/** \brief An exception which is thrown when the kernel::Model has
+/** \brief An exception which is thrown when the Model has
     attributes with invalid values.
 
     It may be OK to catch an \imp ModelException, when, for example,

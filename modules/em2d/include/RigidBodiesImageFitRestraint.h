@@ -1,6 +1,6 @@
 /**
  *  \file IMP/em2d/RigidBodiesImageFitRestraint.h
- *  \brief Fit kernel::Restraint
+ *  \brief Fit Restraint
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -40,10 +40,10 @@ typedef std::map<Ints, unsigned int, IntsOrder> KeyIndexMap;
 typedef std::vector<KeyIndexMap> KeyIndexMaps;
 
 //! Fit rigid bodies to an image.
-class IMPEM2DEXPORT RigidBodiesImageFitRestraint : public kernel::Restraint {
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+class IMPEM2DEXPORT RigidBodiesImageFitRestraint : public Restraint {
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RigidBodiesImageFitRestraint);
 
  protected:

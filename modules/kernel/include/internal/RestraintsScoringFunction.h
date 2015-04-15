@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_INTERNAL_RESTRAINTS_SCORING_FUNCTION_H
 #define IMPKERNEL_INTERNAL_RESTRAINTS_SCORING_FUNCTION_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "../ScoringFunction.h"
 #include "../container_macros.h"
 #include "restraint_evaluation.h"
@@ -30,7 +30,7 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
   Storage restraints_;
 
  protected:
-  GenericRestraintsScoringFunction(kernel::Model *m, double weight = 1.0,
+  GenericRestraintsScoringFunction(Model *m, double weight = 1.0,
                                    double max = NO_MAX,
                                    std::string name =
                                        "RestraintsScoringFunction%1%")
@@ -41,12 +41,12 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
                                    double weight = 1.0, double max = NO_MAX,
                                    std::string name =
                                        "RestraintsScoringFunction%1%")
-      : ScoringFunction(IMP::kernel::internal::get_model(rs), name),
+      : ScoringFunction(IMP::internal::get_model(rs), name),
         weight_(weight),
         max_(max),
         restraints_(rs.begin(), rs.end()) {}
 
-  void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa,
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE {
     IMP_OBJECT_LOG;
     protected_evaluate(sa, restraints_, ss, get_model());

@@ -41,7 +41,7 @@ print(IMP.base.get_is_quick_test(), ni, nj, np, ninner, nouter)
 lps = IMP.core.HarmonicDistancePairScore(1.5 * radius, k)
 sps = IMP.core.SoftSpherePairScore(k)
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 # IMP.base.set_log_level(IMP.base.SILENT)
 aps = []
 filters = []
@@ -52,7 +52,7 @@ for i in range(0, ni):
         base = IMP.algebra.Vector3D(i, j, 0)
         chain = []
         for k in range(0, np):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             p.set_name("P" + str(i) + " " + str(j) + " " + str(k))
             s = IMP.algebra.Sphere3D(
                 IMP.algebra.get_random_vector_in(bb), radius)

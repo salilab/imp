@@ -11,8 +11,8 @@ class Tests(IMP.test.TestCase):
 
     def test_nested(self):
         """Test nested rigid bodies and close pairs"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(0, 10)]
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(10, 10, 10))
         ds = [IMP.core.XYZR.setup_particle(
@@ -20,11 +20,11 @@ class Tests(IMP.test.TestCase):
                                     1)) for p in ps]
 
         rb0 = IMP.core.RigidBody.setup_particle(
-            IMP.kernel.Particle(m), ps[0:3])
+            IMP.Particle(m), ps[0:3])
         rb1 = IMP.core.RigidBody.setup_particle(
-            IMP.kernel.Particle(m), ps[3:6])
+            IMP.Particle(m), ps[3:6])
         rb2 = IMP.core.RigidBody.setup_particle(
-            IMP.kernel.Particle(m), ps[6:10])
+            IMP.Particle(m), ps[6:10])
         rb0.add_member(rb1)
         cpf = IMP.core.RigidClosePairsFinder()
         cpf.set_distance(.5)

@@ -24,14 +24,14 @@ using namespace IMP::atom;
 
 namespace {
 template <class PT>
-void do_benchmark(std::string name, kernel::Model *, const PT &ps, Refiner *r,
+void do_benchmark(std::string name, Model *, const PT &ps, Refiner *r,
                   double) {
   // measure time
   double runtime;
   double total = 0;
   IMP_TIME({
              for (unsigned int i = 0; i < ps.size(); ++i) {
-               kernel::ParticlesTemp nps = r->get_refined(ps[i]);
+               ParticlesTemp nps = r->get_refined(ps[i]);
                total += nps.size();
              }
            },
@@ -42,7 +42,7 @@ void do_benchmark(std::string name, kernel::Model *, const PT &ps, Refiner *r,
 
 int main(int argc, char **argv) {
   IMP::base::setup_from_argv(argc, argv, "Benchmark refiners");
-  IMP_NEW(kernel::Model, m, ());
+  IMP_NEW(Model, m, ());
   IMP_NEW(LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
   lr->set_was_used(true);
   atom::Hierarchies hs;
@@ -51,13 +51,13 @@ int main(int argc, char **argv) {
   }
 
   {
-    kernel::ParticlesTemp ps;
+    ParticlesTemp ps;
     core::HierarchyTraits tr = core::Hierarchy::get_default_traits();
     for (unsigned int i = 0; i < hs.size(); ++i) {
-      IMP_NEW(kernel::Particle, p, (m));
+      IMP_NEW(Particle, p, (m));
       ps.push_back(p);
       core::Hierarchy h0 = core::Hierarchy::setup_particle(p, tr);
-      kernel::ParticlesTemp lps = lr->get_refined(hs[i]);
+      ParticlesTemp lps = lr->get_refined(hs[i]);
       for (unsigned int i = 0; i < lps.size(); ++i) {
         h0.add_child(core::Hierarchy::setup_particle(lps[i], tr));
       }

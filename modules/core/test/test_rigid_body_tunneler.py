@@ -1,4 +1,3 @@
-import IMP.kernel
 import IMP.test
 import IMP.core
 

@@ -296,7 +296,7 @@ class Tests(IMP.test.TestCase):
 
     def test_add_coordinates_backbone(self):
         """Test adding coordinates to a backbone- or CA-only structure"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pdb = IMP.atom.read_pdb(self.get_input_file_name('backbone-ca.pdb'), m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
@@ -313,7 +313,7 @@ class Tests(IMP.test.TestCase):
 
     def test_setup_hierarchy(self):
         """Test CHARMMTopology::setup_hierarchy() method"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pdb = IMP.atom.read_pdb(
             self.get_input_file_name('charmm_type_test.pdb'), m)
         ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
@@ -329,17 +329,17 @@ class Tests(IMP.test.TestCase):
 
     def test_heme(self):
         """Test CHARMM topology handling of HEME residues"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pdb = IMP.atom.read_pdb(
             self.get_input_file_name('HEM_model.pdb'), m)
         residue = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)[0]
         # Add some dummy atoms, to make sure they get removed
         a = IMP.atom.Atom.setup_particle(
-            IMP.kernel.Particle(m),
+            IMP.Particle(m),
             IMP.atom.AT_CA)
         residue.add_child(a)
         a = IMP.atom.Atom.setup_particle(
-            IMP.kernel.Particle(m),
+            IMP.Particle(m),
             IMP.atom.AT_CB)
         residue.add_child(a)
         # Remove some needed atoms, to make sure they get added
@@ -367,7 +367,7 @@ class Tests(IMP.test.TestCase):
                                        IMP.atom.get_data_path("par.lib"))
         topology = IMP.atom.CHARMMTopology(ff)
         topology.add_sequence('ACY')
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         topology.apply_default_patches()
         hierarchy = topology.create_hierarchy(m)
         topology.add_coordinates(hierarchy)
@@ -401,7 +401,7 @@ class Tests(IMP.test.TestCase):
 
     def test_make_patched_topology(self):
         """Test construction of topology with manual patching"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pdb = IMP.atom.read_pdb(self.get_input_file_name('mini.pdb'), m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
@@ -429,7 +429,7 @@ class Tests(IMP.test.TestCase):
                                         (['C', 'CA', 'N', 'O'], 1, 0.0),
                                         (['N', 'C', 'CA', 'SG'], 0, None),
                                         (['N', 'CA', 'C', '+N'], 0, None)]:
-            m = IMP.kernel.Model()
+            m = IMP.Model()
             ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                            IMP.atom.get_data_path("par.lib"))
             res = ff.get_residue_topology(IMP.atom.ResidueType('ALA'))
@@ -450,7 +450,7 @@ class Tests(IMP.test.TestCase):
 
     def test_dihedral_stiffness(self):
         """Make sure dihedrals can have negative stiffness"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = IMP.atom.CHARMMTopology(ff)
@@ -476,7 +476,7 @@ class Tests(IMP.test.TestCase):
 
     def test_make_topology(self):
         """Test construction of topology"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pdb = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'), m)
         atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
         residues = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)
@@ -548,7 +548,7 @@ class Tests(IMP.test.TestCase):
                                        IMP.atom.get_data_path("par.lib"))
         topology = IMP.atom.CHARMMTopology(ff)
         topology.add_sequence('ACY')
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         hierarchy = topology.create_hierarchy(m)
         chains = IMP.atom.get_by_type(hierarchy, IMP.atom.CHAIN_TYPE)
         residues = IMP.atom.get_by_type(hierarchy, IMP.atom.RESIDUE_TYPE)
@@ -577,7 +577,7 @@ class Tests(IMP.test.TestCase):
             # thus it should contain no atoms
             restop = IMP.atom.CHARMMResidueTopology(IMP.atom.ResidueType(res))
             segment.add_residue(restop)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         hierarchy = topology.create_hierarchy(m)
         chains = IMP.atom.get_by_type(hierarchy, IMP.atom.CHAIN_TYPE)
         residues = IMP.atom.get_by_type(hierarchy, IMP.atom.RESIDUE_TYPE)
@@ -588,7 +588,7 @@ class Tests(IMP.test.TestCase):
 
     def test_get_remove_untyped_atoms(self):
         """Test get or removal of untyped atoms"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pdb = IMP.atom.read_pdb(
             self.get_input_file_name('charmm_type_test.pdb'), m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
@@ -607,7 +607,7 @@ class Tests(IMP.test.TestCase):
 
     def test_add_missing_atoms(self):
         """Test adding missing atoms"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pdb = IMP.atom.read_pdb(
             self.get_input_file_name('charmm_type_test.pdb'), m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),

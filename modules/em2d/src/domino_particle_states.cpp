@@ -17,7 +17,7 @@ unsigned int ProjectionStates::get_number_of_particle_states() const {
 }
 
 void ProjectionStates::load_particle_state(unsigned int i,
-                                           kernel::Particle *p) const {
+                                           Particle *p) const {
   GridStates::load_particle_state(i, p);
 }
 
@@ -54,7 +54,7 @@ void GridStates::do_show(std::ostream &out) const {
 }
 
 void GridStates::load_particle_state(unsigned int i,
-                                     kernel::Particle *p) const {
+                                     Particle *p) const {
   algebra::Transformation3D T(get_orientation(i), get_position(i));
   core::XYZ xyz(p);
   core::transform(xyz, T);

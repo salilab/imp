@@ -32,7 +32,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     Defaults are provided for all the parameters:
     - if no SubsetFilterTables are provided, then the
     ExclusionSubsetFilterTable and the
-    kernel::RestraintScoreSubsetFilterTable are used.
+    RestraintScoreSubsetFilterTable are used.
 
     \note the restraint scores must be non-negative in general.
     If you are using restraints which can produce negative values,
@@ -54,7 +54,7 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
 
  protected:
   SubsetFilterTables get_subset_filter_tables_to_use(
-      const kernel::RestraintsTemp &rs, ParticleStatesTable *pst) const;
+      const RestraintsTemp &rs, ParticleStatesTable *pst) const;
   AssignmentsTable *get_assignments_table_to_use(
       const SubsetFilterTables &sfts,
       unsigned int max = std::numeric_limits<int>::max()) const;
@@ -62,16 +62,16 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
   virtual Assignments do_get_sample_assignments(const Subset &all) const = 0;
 
  public:
-  DiscreteSampler(kernel::Model *m, ParticleStatesTable *pst, std::string name);
+  DiscreteSampler(Model *m, ParticleStatesTable *pst, std::string name);
 
   ~DiscreteSampler();
 
-  /** kernel::Particle states can be set either using this method,
+  /** Particle states can be set either using this method,
       or equivalently, by accessing the table itself
       using get_particle_states_table(). This method
       is provided for users who want to use the default values
       and want a simple interface.*/
-  void set_particle_states(kernel::Particle *p, ParticleStates *se) {
+  void set_particle_states(Particle *p, ParticleStates *se) {
     pst_->set_particle_states(p, se);
   }
 

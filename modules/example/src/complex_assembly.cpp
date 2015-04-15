@@ -39,13 +39,13 @@
 IMPEXAMPLE_BEGIN_NAMESPACE
 
 class AssemblyData {
-  kernel::ParticlesTemp ps_;
-  boost::unordered_map<kernel::Particle *, int> index_;
-  kernel::Restraints rs_;
-  kernel::ParticlesTemps particles_;
+  ParticlesTemp ps_;
+  boost::unordered_map<Particle *, int> index_;
+  Restraints rs_;
+  ParticlesTemps particles_;
   domino::InteractionGraph interactions_;
 
-  int get_degree(unsigned int i, const kernel::ParticlesTemp &ps) const {
+  int get_degree(unsigned int i, const ParticlesTemp &ps) const {
     int ret = 0;
     domino::InteractionGraphConstVertexName vm =
         boost::get(boost::vertex_name, interactions_);
@@ -61,25 +61,25 @@ class AssemblyData {
   }
 
  public:
-  AssemblyData(kernel::ParticlesTemp ps, const kernel::RestraintsTemp &rs)
+  AssemblyData(ParticlesTemp ps, const RestraintsTemp &rs)
       : ps_(ps), rs_(rs.begin(), rs.end()) {
     std::sort(ps_.begin(), ps_.end());
     interactions_ = domino::get_interaction_graph(rs, ps);
     for (unsigned int i = 0; i < rs.size(); ++i) {
-      kernel::ParticlesTemp cur = IMP::get_input_particles(rs[i]->get_inputs());
+      ParticlesTemp cur = IMP::get_input_particles(rs[i]->get_inputs());
       std::sort(cur.begin(), cur.end());
       cur.erase(std::unique(cur.begin(), cur.end()), cur.end());
-      kernel::ParticlesTemp used;
+      ParticlesTemp used;
       std::set_intersection(cur.begin(), cur.end(), ps_.begin(), ps_.end(),
                             std::back_inserter(used));
       particles_.push_back(used);
     }
   }
-  kernel::RestraintsTemp get_restraints(kernel::ParticlesTemp ps) const {
+  RestraintsTemp get_restraints(ParticlesTemp ps) const {
     std::sort(ps.begin(), ps.end());
-    kernel::RestraintsTemp ret;
+    RestraintsTemp ret;
     for (unsigned int i = 0; i < rs_.size(); ++i) {
-      kernel::ParticlesTemp used;
+      ParticlesTemp used;
       std::set_intersection(particles_[i].begin(), particles_[i].end(),
                             ps.begin(), ps.end(), std::back_inserter(used));
       if (used.size() == particles_[i].size()) {
@@ -88,7 +88,7 @@ class AssemblyData {
     }
     return ret;
   }
-  kernel::Particle *get_highest_degree_unused_particle(kernel::ParticlesTemp ps)
+  Particle *get_highest_degree_unused_particle(ParticlesTemp ps)
       const {
     std::sort(ps.begin(), ps.end());
     int md = 0;
@@ -113,10 +113,10 @@ class AssemblyData {
     addition, the assembly is optimized. The protocol seems to work at
     assembling the residues of a protein from a truncated distance matrix.
 */
-void optimize_assembly(kernel::Model *m,
-                       const kernel::ParticlesTemp &components,
-                       const kernel::RestraintsTemp &interactions,
-                       const kernel::RestraintsTemp &other_restraints,
+void optimize_assembly(Model *m,
+                       const ParticlesTemp &components,
+                       const RestraintsTemp &interactions,
+                       const RestraintsTemp &other_restraints,
                        const algebra::BoundingBox3D &bb, PairScore *ev,
                        double cutoff, const PairPredicates &excluded) {
   IMP_NEW(core::ConjugateGradients, cg, (m));
@@ -127,32 +127,32 @@ void optimize_assembly(kernel::Model *m,
           (components, m->get_restraints()));
   mc->set_incremental_scoring_function(isf);
   AssemblyData ad(components, interactions);
-  kernel::ParticlesTemp cur;
+  ParticlesTemp cur;
   IMP_NEW(container::ListSingletonContainer, active, (m));
   // fix distance
   IMP_NEW(container::ClosePairContainer, cpc, (active, 0, 4));
   cpc->set_pair_filters(excluded);
   IMP_NEW(core::SoftSpherePairScore, ssps, (10));
-  base::Pointer<kernel::Restraint> evr =
+  base::Pointer<Restraint> evr =
       container::create_restraint(ssps.get(), cpc.get());
   IMP_NEW(core::HarmonicUpperBound, hub, (0, 10));
   IMP_NEW(core::BoundingBox3DSingletonScore, bbss, (hub, bb));
-  base::Pointer<kernel::Restraint> bbr =
+  base::Pointer<Restraint> bbr =
       container::create_restraint(bbss.get(), active.get());
   do {
-    kernel::Particle *add = ad.get_highest_degree_unused_particle(cur);
+    Particle *add = ad.get_highest_degree_unused_particle(cur);
     cur.push_back(add);
     core::XYZ(add).set_coordinates(algebra::get_random_vector_in(bb));
     mc->clear_movers();
     mc->add_mover(create_serial_mover(cur));
     isf->clear_close_pair_scores();
     isf->add_close_pair_score(ev, 0, cur, excluded);
-    kernel::RestraintsTemp rs = other_restraints + ad.get_restraints(cur);
+    RestraintsTemp rs = other_restraints + ad.get_restraints(cur);
     IMP_LOG_TERSE("Current restraints are " << rs << " and particles " << cur
                                             << std::endl);
     mc->set_scoring_function(rs);
-    cg->set_scoring_function(rs + kernel::RestraintsTemp(1, evr.get()) +
-                             kernel::RestraintsTemp(1, bbr.get()));
+    cg->set_scoring_function(rs + RestraintsTemp(1, evr.get()) +
+                             RestraintsTemp(1, bbr.get()));
     active->set_particles(cur);
     double e;
     for (int j = 0; j < 5; ++j) {

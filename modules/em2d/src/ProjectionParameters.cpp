@@ -5,19 +5,19 @@
 */
 
 #include "IMP/em2d/ProjectionParameters.h"
-#include "IMP/kernel/Model.h"  // kernel::ParticleIterator
+#include "IMP/Model.h"  // ParticleIterator
 #include "IMP/base/log.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
-bool ProjectionParameters::get_is_setup(kernel::Model *m,
-                                        kernel::ParticleIndex pi) {
+bool ProjectionParameters::get_is_setup(Model *m,
+                                        ParticleIndex pi) {
   // Check with only the first key
   return m->get_has_attribute(get_keys()[0], pi);
 }
 
-void ProjectionParameters::do_setup_particle(kernel::Model *m,
-                                             kernel::ParticleIndex pi) {
+void ProjectionParameters::do_setup_particle(Model *m,
+                                             ParticleIndex pi) {
   m->add_attribute(get_keys()[0], pi, 0.0);
   m->add_attribute(get_keys()[1], pi, 0.0);
   m->add_attribute(get_keys()[2], pi, 0.0);
@@ -43,7 +43,7 @@ const FloatKeys &ProjectionParameters::get_keys() {
 }
 
 void ProjectionParameters::set_proper_ranges_for_keys(
-    kernel::Model *m, const algebra::Vector3D &min_translation_values,
+    Model *m, const algebra::Vector3D &min_translation_values,
     const algebra::Vector3D &max_translation_values) {
   // Range for the quaternion of the rotation
   IMP::FloatRange range_q(0, 1);
@@ -69,7 +69,7 @@ void ProjectionParametersScoreState::do_after_evaluate(
 
 ModelObjectsTemp ProjectionParametersScoreState::do_get_inputs() const {
   // simply return the particle with the projection parameters
-  kernel::ModelObjectsTemp used;
+  ModelObjectsTemp used;
   used.push_back(proj_params_);
   return used;
 }

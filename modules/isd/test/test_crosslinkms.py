@@ -84,9 +84,9 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
 
         m = IMP.Model()
-        p1 = IMP.kernel.Particle(m)
-        p2 = IMP.kernel.Particle(m)
-        #p3 = IMP.kernel.Particle(m)
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        #p3 = IMP.Particle(m)
 
         self.slope = 0.01
         self.length = 10
@@ -139,9 +139,9 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
 
         m = IMP.Model()
-        p1 = IMP.kernel.Particle(m)
-        p2 = IMP.kernel.Particle(m)
-        p3 = IMP.kernel.Particle(m)
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        p3 = IMP.Particle(m)
 
         self.slope = 0.01
         self.length = 10

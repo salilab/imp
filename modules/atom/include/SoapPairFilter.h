@@ -40,8 +40,8 @@ class SoapPairFilter : public PairPredicate {
 #endif
   }
 
-  virtual int get_value_index(kernel::Model *m,
-                              const kernel::ParticleIndexPair &p) const
+  virtual int get_value_index(Model *m,
+                              const ParticleIndexPair &p) const
       IMP_OVERRIDE {
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
     return !chainsep_.get_separation_ok(m, p) ||
@@ -51,9 +51,9 @@ class SoapPairFilter : public PairPredicate {
 #endif
   }
 
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE {
-    kernel::ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+    ModelObjectsTemp ret = IMP::get_particles(m, pis);
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
     if (chainsep_.enabled() || bondsep_.enabled()) {
       // We touch the two parents (residue and chain) of each atom to

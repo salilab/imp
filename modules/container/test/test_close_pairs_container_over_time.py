@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
 
     def test_restraint_1(self):
         """Test ClosePairContainer complete list over time"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         ps = self.create_particles_in_box(m, 10)
         for p in ps:
@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(n, cpss.get_number_of_particle_pairs())
 
     def test_cache(self):
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         IMP.base.set_log_level(IMP.base.TERSE)
         ps = self.create_particles_in_box(m, 10)
         for p in ps:

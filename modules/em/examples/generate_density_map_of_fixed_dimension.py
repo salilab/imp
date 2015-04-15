@@ -6,7 +6,7 @@ from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.em
-m = IMP.kernel.Model()
+m = IMP.Model()
 # 1. read a protein and get its bounding box dimension
 sel = IMP.atom.CAlphaPDBSelector()
 # read protein

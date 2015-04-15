@@ -2,8 +2,8 @@
    This is the program for creating a simple kinematic tree from a protein
    and running rrt on phi psi angle
 */
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Model.h>
+#include <IMP/Particle.h>
 
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/container/generic.h>
@@ -31,9 +31,9 @@
 #include <string>
 #include <boost/lexical_cast.hpp>
 
-void scale_radii(IMP::kernel::ParticlesTemp& particles, double scale);
+void scale_radii(IMP::ParticlesTemp& particles, double scale);
 
-void scale_radii(IMP::kernel::ParticlesTemp& particles, double scale) {
+void scale_radii(IMP::ParticlesTemp& particles, double scale) {
   for (unsigned int i = 0; i < particles.size(); i++) {
     IMP::core::XYZR xyzr(particles[i]);
     xyzr.set_radius(xyzr.get_radius() * scale);
@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
   if (argc == 3) scale = atof(argv[2]);
 
   // read in the input protein
-  IMP::base::Pointer<IMP::kernel::Model> model = new IMP::kernel::Model();
+  IMP::base::Pointer<IMP::Model> model = new IMP::Model();
   std::cerr << "Starting reading pdb file " << fname << std::endl;
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       fname, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
@@ -89,11 +89,11 @@ int main(int argc, char** argv) {
   // IMP::atom::CHARMMStereochemistryRestraint* r =
   //  new IMP::atom::CHARMMStereochemistryRestraint(mhd, topology);
 
-  IMP::kernel::ParticlesTemp atoms =
+  IMP::ParticlesTemp atoms =
       IMP::atom::get_by_type(mhd, IMP::atom::ATOM_TYPE);
-  IMP::kernel::ParticlesTemp bonds = topology->add_bonds(mhd);
-  IMP::kernel::ParticlesTemp angles = ff->create_angles(bonds);
-  IMP::kernel::ParticlesTemp dihedrals = ff->create_dihedrals(bonds);
+  IMP::ParticlesTemp bonds = topology->add_bonds(mhd);
+  IMP::ParticlesTemp angles = ff->create_angles(bonds);
+  IMP::ParticlesTemp dihedrals = ff->create_dihedrals(bonds);
   std::cerr << "# bonds " << bonds.size() << " # angles " << angles.size()
             << " # dihedrals " << dihedrals.size() << std::endl;
 

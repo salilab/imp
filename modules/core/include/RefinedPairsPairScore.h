@@ -30,10 +30,10 @@ class IMPCOREEXPORT RefinedPairsPairScore : public PairScore {
       \param[in] f The pair score to apply to the generated pairs
    */
   RefinedPairsPairScore(Refiner *r, PairScore *f);
-  double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
+  double evaluate_index(Model *m, const ParticleIndexPair &p,
                         DerivativeAccumulator *da) const IMP_OVERRIDE;
-  kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const;
+  ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const;
   IMP_PAIR_SCORE_METHODS(RefinedPairsPairScore);
   IMP_OBJECT_METHODS(RefinedPairsPairScore);
   ;

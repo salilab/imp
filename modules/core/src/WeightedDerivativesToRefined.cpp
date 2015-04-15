@@ -18,20 +18,20 @@ WeightedDerivativesToRefined::WeightedDerivativesToRefined
 ( Refiner *r, FloatKey w, FloatKeys keys)
   : refiner_(r), w_(w), keys_(keys) {}
 
-void WeightedDerivativesToRefined::apply_index(kernel::Model *m,
-                                       kernel::ParticleIndex pi) const {
+void WeightedDerivativesToRefined::apply_index(Model *m,
+                                       ParticleIndex pi) const {
   // retrieving pis by ref if possible is cumbersome but is required for speed
-  kernel::ParticleIndexes pis_if_not_byref;
-  kernel::ParticleIndexes const* pPis;
+  ParticleIndexes pis_if_not_byref;
+  ParticleIndexes const* pPis;
   if(refiner_->get_is_by_ref_supported()){
-    kernel::ParticleIndexes const& pis =
+    ParticleIndexes const& pis =
       refiner_->get_refined_indexes_by_ref(m, pi);
     pPis = &pis;
   } else{
     pis_if_not_byref = refiner_->get_refined_indexes(m, pi);
     pPis = &pis_if_not_byref;
   }
-  kernel::ParticleIndexes const& pis = *pPis;
+  ParticleIndexes const& pis = *pPis;
   //  Prepare derivative accumulator to normalize by total weight
   Float total_weight;
   if(w_ != FloatKey()){
@@ -39,7 +39,7 @@ void WeightedDerivativesToRefined::apply_index(kernel::Model *m,
   } else {
     total_weight = pis.size();
   }
-  kernel::DerivativeAccumulator da( 1.0 / total_weight);
+  DerivativeAccumulator da( 1.0 / total_weight);
   // read K values for each key in keys_
   Floats Ks(keys_.size());
   for (unsigned int j = 0; j < Ks.size(); ++j){
@@ -55,22 +55,22 @@ void WeightedDerivativesToRefined::apply_index(kernel::Model *m,
 }
 
 ModelObjectsTemp WeightedDerivativesToRefined::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret = refiner_->get_inputs(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret = refiner_->get_inputs(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret +=
-        IMP::kernel::get_particles(m, refiner_->get_refined_indexes(m, pis[i]));
+        IMP::get_particles(m, refiner_->get_refined_indexes(m, pis[i]));
   }
-  ret += IMP::kernel::get_particles(m, pis);
+  ret += IMP::get_particles(m, pis);
   return ret;
 }
 
 ModelObjectsTemp WeightedDerivativesToRefined::do_get_outputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret;
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret;
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret +=
-        IMP::kernel::get_particles(m, refiner_->get_refined_indexes(m, pis[i]));
+        IMP::get_particles(m, refiner_->get_refined_indexes(m, pis[i]));
   }
   return ret;
 }

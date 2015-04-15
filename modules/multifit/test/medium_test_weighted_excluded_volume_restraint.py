@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         """initialize IMP environment create particles"""
         IMP.test.TestCase.setUp(self)
         # init IMP model ( the environment)
-        self.mdl = IMP.kernel.Model()
+        self.mdl = IMP.Model()
         self.sel = IMP.atom.CAlphaPDBSelector()
         self.mhs = IMP.atom.Hierarchies()
         self.mhs.append(

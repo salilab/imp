@@ -14,7 +14,7 @@
 #include <IMP/score_functor/Soap.h>
 #include <IMP/score_functor/OrientedSoap.h>
 
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 
 #include <IMP/algebra/standard_grids.h>
 
@@ -23,8 +23,8 @@
 IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 double soap_score(const IMP::score_functor::Soap* soap_score,
-                  IMP::kernel::Model* model, IMP::kernel::ParticleIndexes& pis1,
-                  IMP::kernel::ParticleIndexes& pis2,
+                  IMP::Model* model, IMP::ParticleIndexes& pis1,
+                  IMP::ParticleIndexes& pis2,
                   float distance_threshold) {
 
   IMP::algebra::Vector3Ds coordinates1;
@@ -62,7 +62,7 @@ double soap_score(const IMP::score_functor::Soap* soap_score,
         if (dist2 < distance_threshold2) {
           score += soap_score->get_score(
               model,
-              IMP::kernel::ParticleIndexPair(pis1[r_index], pis2[l_index]),
+              IMP::ParticleIndexPair(pis1[r_index], pis2[l_index]),
               sqrt(dist2));
         }
       }
@@ -72,9 +72,9 @@ double soap_score(const IMP::score_functor::Soap* soap_score,
 }
 
 double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
-                           IMP::kernel::Model* model,
-                           IMP::kernel::ParticleIndexes& pis1,
-                           IMP::kernel::ParticleIndexes& pis2) {
+                           IMP::Model* model,
+                           IMP::ParticleIndexes& pis1,
+                           IMP::ParticleIndexes& pis2) {
 
   IMP::algebra::Vector3Ds coordinates1;
   for (unsigned int i = 0; i < pis1.size(); i++) {
@@ -113,7 +113,7 @@ double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
         if (dist2 < distance_threshold2) {
           score += soap_score->get_score(
               model,
-              IMP::kernel::ParticleIndexPair(pis1[r_index], pis2[l_index]),
+              IMP::ParticleIndexPair(pis1[r_index], pis2[l_index]),
               sqrt(dist2));
         }
       }
@@ -124,8 +124,8 @@ double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
 
 
 double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
-                           IMP::kernel::Model* model,
-                           IMP::kernel::ParticleIndexes& pis,
+                           IMP::Model* model,
+                           IMP::ParticleIndexes& pis,
                            IMP::atom::StereochemistryPairFilter* filter) {
 
   IMP::algebra::Vector3Ds coordinates;
@@ -139,13 +139,13 @@ double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
   double score = 0.0;
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i+1; j < coordinates.size(); j++) {
-      if (!filter->get_value_index(model, IMP::kernel::ParticleIndexPair(pis[i], pis[j]))) {
+      if (!filter->get_value_index(model, IMP::ParticleIndexPair(pis[i], pis[j]))) {
         float dist2 =
           IMP::algebra::get_squared_distance(coordinates[i], coordinates[j]);
         if (dist2 < distance_threshold2) {
           score += soap_score->get_score(
               model,
-              IMP::kernel::ParticleIndexPair(pis[i], pis[j]),
+              IMP::ParticleIndexPair(pis[i], pis[j]),
               sqrt(dist2));
         }
       }

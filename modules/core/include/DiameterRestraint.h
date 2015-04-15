@@ -13,7 +13,7 @@
 #include "internal/remove_pointers.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -29,9 +29,9 @@ IMPCORE_BEGIN_NAMESPACE
     score deviations from the diameter with a harmonic upper bound of strength
     1.
  */
-class IMPCOREEXPORT DiameterRestraint : public kernel::Restraint {
+class IMPCOREEXPORT DiameterRestraint : public Restraint {
   IMP::base::PointerMember<ScoreState> ss_;
-  IMP::base::PointerMember<kernel::Particle> p_;
+  IMP::base::PointerMember<Particle> p_;
   Float diameter_;
   IMP::base::PointerMember<SingletonContainer> sc_;
   IMP::base::PointerMember<UnaryFunction> f_;
@@ -44,13 +44,13 @@ class IMPCOREEXPORT DiameterRestraint : public kernel::Restraint {
    */
   DiameterRestraint(UnaryFunction *f, SingletonContainer *sc, Float diameter);
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DiameterRestraint);
 #ifndef IMP_DOXYGEN
-  kernel::Restraints do_create_decomposition() const;
-  kernel::Restraints do_create_current_decomposition() const;
+  Restraints do_create_decomposition() const;
+  Restraints do_create_current_decomposition() const;
 #endif
 };
 

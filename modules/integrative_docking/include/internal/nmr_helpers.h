@@ -10,7 +10,7 @@
 #define IMPINTEGRATIVE_DOCKING_NMR_HELPERS_H
 
 #include <IMP/integrative_docking/integrative_docking_config.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/algebra/Transformation3D.h>
 
 #include <vector>
@@ -20,8 +20,8 @@ IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 IMPINTEGRATIVEDOCKINGEXPORT
 void get_residue_solvent_accessibility(
-    const IMP::kernel::Particles& atom_particles,
-    const IMP::kernel::Particles& residue_particles,
+    const IMP::Particles& atom_particles,
+    const IMP::Particles& residue_particles,
     const std::vector<int>& atom_2_residue_map,
     std::vector<float>& residue_solvent_accessibility);
 

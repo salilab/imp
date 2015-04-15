@@ -12,9 +12,9 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-UniformPrior::UniformPrior(IMP::kernel::Model *m, Particle *p, Float k, 
+UniformPrior::UniformPrior(IMP::Model *m, Particle *p, Float k, 
                          Float upperb, Float lowerb, std::string name):
-    kernel::Restraint(m, name), p_(p), upperb_(upperb), lowerb_(lowerb), k_(k) {}
+    Restraint(m, name), p_(p), upperb_(upperb), lowerb_(lowerb), k_(k) {}
 
 
 /* Apply the score if it's a scale decorator.

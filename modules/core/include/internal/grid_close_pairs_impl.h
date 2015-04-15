@@ -33,24 +33,24 @@ inline bool get_interiors_intersect(const algebra::Vector3D &v, double ra,
   return v * v < square(sr);
 }
 struct ParticleTraits {
-  typedef kernel::ParticleIndex ID;
-  kernel::Model *m_;
+  typedef ParticleIndex ID;
+  Model *m_;
   double d_;
-  ParticleTraits(kernel::Model *m, double d) : m_(m), d_(d) {}
-  kernel::ParticleIndex get_id(kernel::Particle *p, int) const {
+  ParticleTraits(Model *m, double d) : m_(m), d_(d) {}
+  ParticleIndex get_id(Particle *p, int) const {
     return p->get_index();
   }
-  algebra::Vector3D get_center(kernel::ParticleIndex p, int) const {
+  algebra::Vector3D get_center(ParticleIndex p, int) const {
     return m_->get_sphere(p).get_center();
   }
-  double get_radius(kernel::ParticleIndex p, int) const {
+  double get_radius(ParticleIndex p, int) const {
     return m_->get_sphere(p).get_radius();
   }
-  bool get_is_close(kernel::ParticleIndex a, kernel::ParticleIndex b) const {
+  bool get_is_close(ParticleIndex a, ParticleIndex b) const {
     return get_interiors_intersect(get_center(a, 0) - get_center(b, 0),
                                    get_radius(b, 0) + d_, get_radius(a, 0));
   }
-  bool check_close(kernel::ParticleIndex a, kernel::ParticleIndex b) const {
+  bool check_close(ParticleIndex a, ParticleIndex b) const {
     return get_interiors_intersect(get_center(a, 0) - get_center(b, 0),
                                    .95 * (get_radius(b, 0) + d_),
                                    .95 * (get_radius(a, 0)));
@@ -59,8 +59,8 @@ struct ParticleTraits {
 };
 
 struct ParticleIndexTraits : ParticleTraits {
-  ParticleIndexTraits(kernel::Model *m, double d) : ParticleTraits(m, d) {}
-  kernel::ParticleIndex get_id(kernel::ParticleIndex p, int) const { return p; }
+  ParticleIndexTraits(Model *m, double d) : ParticleTraits(m, d) {}
+  ParticleIndex get_id(ParticleIndex p, int) const { return p; }
 };
 
 struct BoundingBoxTraits {

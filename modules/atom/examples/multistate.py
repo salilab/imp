@@ -3,9 +3,8 @@
 
 from __future__ import print_function
 import IMP.atom
-import IMP.kernel
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 
 rt = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("root"))
 

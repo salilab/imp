@@ -303,7 +303,7 @@ float CoarseCC::local_cross_correlation_coefficient(
 
 algebra::Vector3Ds CoarseCC::calc_derivatives(const DensityMap *em_map,
                                               const DensityMap *model_map,
-                                              const kernel::Particles &model_ps,
+                                              const Particles &model_ps,
                                               const FloatKey &w_key,
                                               KernelParameters *kernel_params,
                                               const float &scalefac,

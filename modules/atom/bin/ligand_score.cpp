@@ -10,7 +10,7 @@
 #include <IMP/atom/mol2.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/particle_index.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/base/flags.h>
 
 namespace {
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
   }
 
 
-  IMP_NEW(IMP::kernel::Model, m, ());
+  IMP_NEW(IMP::Model, m, ());
   IMP::atom::Hierarchy p, l;
   {
     IMP::base::SetLogState ss(IMP::base::SILENT);
@@ -90,13 +90,13 @@ int main(int argc, char *argv[]) {
   IMP_NEW(IMP::core::GridClosePairsFinder, gcpf, ());
   gcpf->set_distance(d);
 
-  IMP::kernel::ParticlesTemp patoms = IMP::atom::get_leaves(p);
-  IMP::kernel::ParticleIndexes ipatoms = IMP::get_indexes(patoms);
+  IMP::ParticlesTemp patoms = IMP::atom::get_leaves(p);
+  IMP::ParticleIndexes ipatoms = IMP::get_indexes(patoms);
   for (unsigned int i = 0; i < mols.size(); ++i) {
     // IMP::SetLogState ss(i==0? TERSE: IMP::SILENT);
-    IMP::kernel::ParticlesTemp latoms = IMP::atom::get_leaves(mols[i]);
-    IMP::kernel::ParticleIndexes ilatoms = IMP::get_indexes(latoms);
-    IMP::kernel::ParticleIndexPairs ppt =
+    IMP::ParticlesTemp latoms = IMP::atom::get_leaves(mols[i]);
+    IMP::ParticleIndexes ilatoms = IMP::get_indexes(latoms);
+    IMP::ParticleIndexPairs ppt =
         gcpf->get_close_pairs(m, ipatoms, ilatoms);
     double score = ps->evaluate_indexes(m, ppt, NULL, 0, ppt.size());
     std::cout << "Score for " << mols[i]->get_name() << " is " << score

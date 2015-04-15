@@ -9,7 +9,7 @@
 #define IMPISD_BIVARIATE_FUNCTIONS_H
 
 #include <IMP/isd/isd_config.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/isd/Nuisance.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/Switching.h>
@@ -98,7 +98,7 @@ class IMPISDEXPORT BivariateFunction : public base::Object {
   virtual unsigned get_number_of_optimized_particles() const = 0;
 
   //! particle manipulation
-  virtual kernel::ParticlesTemp get_input_particles() const = 0;
+  virtual ParticlesTemp get_input_particles() const = 0;
   virtual ContainersTemp get_input_containers() const = 0;
 
   IMP_REF_COUNTED_DESTRUCTOR(BivariateFunction);
@@ -118,7 +118,7 @@ class IMPISDEXPORT BivariateFunction : public base::Object {
  */
 class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
  public:
-  Covariance1DFunction(kernel::Particle* tau, kernel::Particle* ilambda,
+  Covariance1DFunction(Particle* tau, Particle* ilambda,
                        double alpha = 2.0, double jitter = 0.0,
                        double cutoff = 1e-7)
       : BivariateFunction("Covariance1DFunction %1%"),
@@ -408,8 +408,8 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
     return count;
   }
 
-  kernel::ParticlesTemp get_input_particles() const {
-    kernel::ParticlesTemp ret;
+  ParticlesTemp get_input_particles() const {
+    ParticlesTemp ret;
     ret.push_back(tau_);
     ret.push_back(lambda_);
     return ret;
@@ -447,7 +447,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
 
  private:
   double alpha_;
-  base::Pointer<kernel::Particle> tau_, lambda_;
+  base::Pointer<Particle> tau_, lambda_;
   double tau_val_, lambda_val_, J_, cutoff_, alpha_square_;
   bool do_jitter;
 };

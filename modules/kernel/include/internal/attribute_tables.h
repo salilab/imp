@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_ATTRIBUTE_TABLES_H
 #define IMPKERNEL_INTERNAL_ATTRIBUTE_TABLES_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include <boost/dynamic_bitset.hpp>
 #include "../Key.h"
 #include "../utility.h"

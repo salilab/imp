@@ -18,10 +18,10 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-AmbiguousNOERestraint::AmbiguousNOERestraint(kernel::Model *m,
+AmbiguousNOERestraint::AmbiguousNOERestraint(Model *m,
                                              PairContainer *pc,
-                                             kernel::Particle *sigma,
-                                             kernel::Particle *gamma,
+                                             Particle *sigma,
+                                             Particle *gamma,
                                              double Vexp)
     : Restraint(m, "AmbiguousNOERestraint%1%"),
       pc_(pc),
@@ -91,7 +91,7 @@ double AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp AmbiguousNOERestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
+  ModelObjectsTemp ret;
   ret += IMP::get_particles(get_model(), pc_->get_all_possible_indexes());
   ret.push_back(sigma_);
   ret.push_back(gamma_);

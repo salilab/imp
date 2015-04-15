@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/Category.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -45,9 +45,9 @@ HierarchyLoadStatic::HierarchyLoadStatic(RMF::FileConstHandle fh)
   mass_key_ = fh.get_key(phy, "mass", RMF::FloatTraits());
 }
 void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
-                                         kernel::Model *m,
-                                         kernel::ParticleIndex p,
-                                         const kernel::ParticleIndexes &) {
+                                         Model *m,
+                                         ParticleIndex p,
+                                         const ParticleIndexes &) {
   atom::Hierarchy hp = atom::Hierarchy::setup_particle(m, p);
   IMP_LOG_VERBOSE("Particle " << hp << " is " << std::endl);
   if (nh.get_has_value(radius_key_)) {
@@ -131,9 +131,9 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
 }
 
 void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
-                                        kernel::Model *m,
-                                        kernel::ParticleIndex p,
-                                        const kernel::ParticleIndexes &) {
+                                        Model *m,
+                                        ParticleIndex p,
+                                        const ParticleIndexes &) {
   atom::Hierarchy hp(m, p);
   IMP_LOG_VERBOSE("Particle " << hp << " is " << std::endl);
   if (nh.get_has_value(radius_key_)) {
@@ -215,7 +215,7 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
   }
 }
 
-void HierarchySaveStatic::setup_node(kernel::Model *m, kernel::ParticleIndex p,
+void HierarchySaveStatic::setup_node(Model *m, ParticleIndex p,
                                      RMF::NodeHandle n) {
   if (core::XYZR::get_is_setup(m, p)) {
     core::XYZR d(m, p);
@@ -300,7 +300,7 @@ HierarchySaveStatic::HierarchySaveStatic(RMF::FileHandle fh)
       molecule_(fh) {}
 
 namespace {
-atom::Bonded get_bonded(kernel::Particle *p) {
+atom::Bonded get_bonded(Particle *p) {
   if (atom::Bonded::get_is_setup(p)) {
     return atom::Bonded(p);
   } else {
@@ -309,14 +309,14 @@ atom::Bonded get_bonded(kernel::Particle *p) {
 }
 }
 
-void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, kernel::Model *m,
-                                     kernel::ParticleIndex p) {
+void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, Model *m,
+                                     ParticleIndex p) {
   if (af_.get_is(n)) {
     RMF::decorator::BondConst bd = af_.get(n);
     RMF::NodeConstHandle bd0 = bd.get_bonded_0();
     RMF::NodeConstHandle bd1 = bd.get_bonded_1();
-    Particle *p0 = get_association<kernel::Particle>(bd0);
-    Particle *p1 = get_association<kernel::Particle>(bd1);
+    Particle *p0 = get_association<Particle>(bd0);
+    Particle *p1 = get_association<Particle>(bd1);
     if (p0 && p1) {
       // ignore type and things
       atom::create_bond(get_bonded(p0), get_bonded(p1), atom::Bond::SINGLE);
@@ -352,7 +352,7 @@ atom::Bonds get_rmf_bonds(atom::Hierarchy h) {
 }
 }
 
-void HierarchySaveBonds::setup_bonds(kernel::Model *m, kernel::ParticleIndex p,
+void HierarchySaveBonds::setup_bonds(Model *m, ParticleIndex p,
                                      RMF::NodeHandle n) {
   IMP_FUNCTION_LOG;
   // kind of stupid. Would be nice to put alt bonds in the alt tree too.
@@ -361,8 +361,8 @@ void HierarchySaveBonds::setup_bonds(kernel::Model *m, kernel::ParticleIndex p,
   // could do this better, but...
   RMF::NodeHandle bonds = n.add_child("bonds", RMF::ORGANIZATIONAL);
   RMF_FOREACH(atom::Bond bd, bds) {
-    kernel::Particle *p0 = bd.get_bonded(0);
-    kernel::Particle *p1 = bd.get_bonded(1);
+    Particle *p0 = bd.get_bonded(0);
+    Particle *p1 = bd.get_bonded(1);
     IMP_LOG_VERBOSE("Adding bond for pair " << Showable(p0) << " and "
                                             << Showable(p1) << std::endl);
     RMF::NodeHandle n0 = get_node_from_association(n.get_file(), p0);

@@ -10,7 +10,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 MoveStatisticsScoreState::MoveStatisticsScoreState(
-    const kernel::ParticlesTemp &ps)
+    const ParticlesTemp &ps)
     : ScoreState(ps[0]->get_model(), "MoveStatisticsScoreState%1%"),
       ps_(ps.begin(), ps.end()) {
   reset();
@@ -41,7 +41,7 @@ ModelObjectsTemp MoveStatisticsScoreState::do_get_inputs() const {
   return get_as<ModelObjectsTemp>(ps_);
 }
 ModelObjectsTemp MoveStatisticsScoreState::do_get_outputs() const {
-  return kernel::ModelObjectsTemp();
+  return ModelObjectsTemp();
 }
 void MoveStatisticsScoreState::reset() {
   max_move_ = 0;

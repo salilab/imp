@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
 
     def test_nested2(self):
         """Test nested with transformations"""
-        mdl = IMP.kernel.Model()
+        mdl = IMP.Model()
         mhs = []
         rbs = []
         orig_rfs = []

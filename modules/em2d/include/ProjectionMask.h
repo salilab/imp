@@ -151,7 +151,7 @@ class IMPEM2DEXPORT MasksManager {
 
   //! Generates all the masks for a set of particles. This is the function
   //! you typically want to use
-  void create_masks(const kernel::ParticlesTemp &ps);
+  void create_masks(const ParticlesTemp &ps);
 
   //! Creates the adequate mask for a particle of given radius
   /*!

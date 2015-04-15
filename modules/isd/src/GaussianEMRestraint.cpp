@@ -82,7 +82,7 @@ void GaussianEMRestraint::compute_initial_scores() {
   for (int i1=0;i1<dsize_;i1++){
     for (int i2=0;i2<dsize_;i2++){
       Float score = score_gaussian_overlap(get_model(),
-                    kernel::ParticleIndexPair(density_ps_[i1],density_ps_[i2]),
+                    ParticleIndexPair(density_ps_[i1],density_ps_[i2]),
                     &deriv);
       dd_score_+=score;
     }
@@ -91,7 +91,7 @@ void GaussianEMRestraint::compute_initial_scores() {
   // precalculate the self-mm score and initialize
   for (int i=0;i<msize_;i++){
     Float score = score_gaussian_overlap(get_model(),
-                    kernel::ParticleIndexPair(model_ps_[i],model_ps_[i]),
+                    ParticleIndexPair(model_ps_[i],model_ps_[i]),
                     &deriv);
     self_mm_score_+=score;
   }

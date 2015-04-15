@@ -10,7 +10,7 @@ class NormalMoverTest(IMP.test.TestCase):
 
     def _make_stuff(self):
         IMP.test.TestCase.setUp(self)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pa = m.add_particle("p")
         att = IMP.FloatKey("test")
         m.add_attribute(att, pa, 5.0)

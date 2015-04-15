@@ -6,9 +6,9 @@
  *
  */
 
-#include "IMP/kernel/Model.h"
-#include "IMP/kernel/Particle.h"
-#include "IMP/kernel/internal/scoring_functions.h"
+#include "IMP/Model.h"
+#include "IMP/Particle.h"
+#include "IMP/internal/scoring_functions.h"
 #include "IMP/base//set.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -52,7 +52,7 @@ Model::Model(std::string name) : base::Object(name) {
   restraints_ = new RestraintSet(this, 1.0, "Model Restraints");
 }
 
-IMP_LIST_ACTION_IMPL(kernel::Model, ScoreState, ScoreStates, score_state,
+IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
                      score_states, ScoreState *, ScoreStates);
 
 ParticleIndex Model::add_particle_internal(Particle *p) {
@@ -181,20 +181,20 @@ void Model::clear_particle_caches(ParticleIndex pi) {
   internal::ParticlesAttributeTable::clear_caches(pi);
 }
 
-void Model::add_data(kernel::ModelKey mk, Object *o) {
+void Model::add_data(ModelKey mk, Object *o) {
   model_data_.resize(std::max<int>(mk.get_index() + 1, model_data_.size()));
   model_data_[mk.get_index()] = o;
 }
 
-base::Object *Model::get_data(kernel::ModelKey mk) const {
+base::Object *Model::get_data(ModelKey mk) const {
   return model_data_[mk.get_index()].get();
 }
 
-void Model::remove_data(kernel::ModelKey mk) {
+void Model::remove_data(ModelKey mk) {
   model_data_[mk.get_index()] = nullptr;
 }
 
-bool Model::get_has_data(kernel::ModelKey mk) const {
+bool Model::get_has_data(ModelKey mk) const {
   if (model_data_.size() > mk.get_index()) {
     return model_data_[mk.get_index()];
   } else {

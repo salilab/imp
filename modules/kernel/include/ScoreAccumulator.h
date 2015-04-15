@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/ScoreAccumulator.h   \brief Class for adding scores from
+ *  \file IMP/ScoreAccumulator.h   \brief Class for adding scores from
  *                                         restraints to the model.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_SCORE_ACCUMULATOR_H
 #define IMPKERNEL_SCORE_ACCUMULATOR_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "constants.h"
 #include <IMP/base/showable_macros.h>

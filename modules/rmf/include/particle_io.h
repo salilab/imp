@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/particle_io.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -15,7 +15,7 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-/** \name kernel::Particle I/O
+/** \name Particle I/O
     Arbitrary (non IMP::atom::Hierarchy) particles can be written to
     the file and read back from them. All non IMP::base::Object attributes are
     supported. Note that currently particles must be added so that
@@ -25,9 +25,9 @@ IMPRMF_BEGIN_NAMESPACE
     The data is stored in a category named IMP.
     @{
 */
-IMP_DECLARE_LINKERS(kernel::Particle, particle, particles, kernel::Particle *,
-                    kernel::ParticlesTemp,
-                    (RMF::FileConstHandle fh, kernel::Model *m), );
+IMP_DECLARE_LINKERS(Particle, particle, particles, Particle *,
+                    ParticlesTemp,
+                    (RMF::FileConstHandle fh, Model *m), );
 
 /** @} */
 

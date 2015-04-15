@@ -40,9 +40,9 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(total_area, 64.4, delta=0.1)
 
     def test_molecule(self):
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         name = self.get_input_file_name("input.pdb")
-        pdb = IMP.kernel._create_particles_from_pdb(name, m)
+        pdb = IMP._create_particles_from_pdb(name, m)
         spheres = [IMP.core.XYZR(p).get_sphere() for p in pdb]
         sps = IMP.algebra.get_connolly_surface(spheres, 5, 1.8)
 

@@ -39,7 +39,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.VERBOSE)  # SILENT)
-        self.imp_model = IMP.kernel.Model()
+        self.imp_model = IMP.Model()
         self.load_density_map()
         self.load_protein("1f7dA00.pdb")
 

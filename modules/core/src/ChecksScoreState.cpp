@@ -13,7 +13,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ChecksScoreState::ChecksScoreState(kernel::Model *m, double prob)
+ChecksScoreState::ChecksScoreState(Model *m, double prob)
     : ScoreState(m, "ChecksScoreState %1%"),
       probability_(prob),
       num_checked_(0) {
@@ -33,11 +33,11 @@ void ChecksScoreState::do_before_evaluate() {
 void ChecksScoreState::do_after_evaluate(DerivativeAccumulator *) {}
 
 ModelObjectsTemp ChecksScoreState::do_get_inputs() const {
-  return kernel::ModelObjectsTemp();
+  return ModelObjectsTemp();
 }
 
 ModelObjectsTemp ChecksScoreState::do_get_outputs() const {
-  return kernel::ModelObjectsTemp();
+  return ModelObjectsTemp();
 }
 
 IMPCORE_END_NAMESPACE

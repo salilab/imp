@@ -166,7 +166,7 @@ int main(int argc, char **argv) {
   std::vector<str> opt;
 
   // Read PDB
-  IMP_NEW(IMP::kernel::Model, smodel, ());
+  IMP_NEW(IMP::Model, smodel, ());
   IMP::base::Pointer<atom::ATOMPDBSelector> ssel = new atom::ATOMPDBSelector();
   // Read only first model
   if (digest_parameter("i", vm, opt) == false) {
@@ -174,7 +174,7 @@ int main(int argc, char **argv) {
     exit(0);
   }
   atom::Hierarchy smh = atom::read_pdb(opt[0], smodel, ssel, true);
-  IMP::kernel::ParticlesTemp sps = core::get_leaves(smh);
+  IMP::ParticlesTemp sps = core::get_leaves(smh);
   //  atom::add_radii(smh);
   double resolution = vm["res"].as<double>();
   IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());

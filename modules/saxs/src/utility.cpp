@@ -9,7 +9,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-Profile* compute_profile(IMP::kernel::Particles particles, float min_q,
+Profile* compute_profile(IMP::Particles particles, float min_q,
                          float max_q, float delta_q, FormFactorTable* ft,
                          FormFactorType ff_type, float water_layer_c2, bool fit,
                          bool reciprocal, bool ab_initio, bool vacuum, std::string beam_profile_file) {

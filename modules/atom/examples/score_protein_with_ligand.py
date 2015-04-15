@@ -5,7 +5,7 @@
 from __future__ import print_function
 import IMP.atom
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 IMP.base.set_check_level(IMP.base.NONE)
 protein = IMP.atom.read_pdb(IMP.atom.get_example_path('1d3d-protein.pdb'), m)
 protein_atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)

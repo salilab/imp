@@ -113,7 +113,7 @@ private:
       each chain.
       \see add_coordinates.
    */
-  Hierarchy create_hierarchy(kernel::Model *model) const;
+  Hierarchy create_hierarchy(Model *model) const;
 
   //! Add CHARMM atom types to the given Hierarchy using this topology.
   /** The primary sequence of the Hierarchy must match that of the topology.
@@ -202,7 +202,7 @@ private:
 
       \return a list of the generated Bond decorators.
    */
-  kernel::Particles add_bonds(Hierarchy hierarchy) const;
+  Particles add_bonds(Hierarchy hierarchy) const;
 
   //! Add dihedrals to the given Hierarchy using this topology, and return them.
   /** The primary sequence of the Hierarchy must match that of the topology.
@@ -215,7 +215,7 @@ private:
 
       \see add_bonds().
    */
-  kernel::Particles add_dihedrals(Hierarchy hierarchy) const;
+  Particles add_dihedrals(Hierarchy hierarchy) const;
 
   //! Add impropers to the given Hierarchy using this topology, and return them.
   /** The primary sequence of the Hierarchy must match that of the topology.
@@ -227,7 +227,7 @@ private:
 
       \see add_bonds().
    */
-  kernel::Particles add_impropers(Hierarchy hierarchy) const;
+  Particles add_impropers(Hierarchy hierarchy) const;
 
   /** @name Segments
 

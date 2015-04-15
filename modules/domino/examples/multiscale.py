@@ -5,9 +5,9 @@
 import IMP.domino
 import IMP.core
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 m.set_log_level(IMP.base.SILENT)
-ds = [IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m))
+ds = [IMP.core.XYZR.setup_particle(IMP.Particle(m))
       for i in range(0, 3)]
 for i, d in enumerate(ds):
     d.set_radius(1)

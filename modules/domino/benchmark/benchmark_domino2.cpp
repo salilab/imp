@@ -6,7 +6,7 @@
 #include <IMP/container.h>
 #include <IMP/benchmark.h>
 #include <IMP/core.h>
-#include <IMP/kernel/internal/pdb.h>
+#include <IMP/internal/pdb.h>
 using namespace IMP;
 using namespace IMP::domino;
 using namespace IMP::algebra;
@@ -16,11 +16,11 @@ using namespace IMP::base;
 
 int main(int argc, char *argv[]) {
   IMP::base::setup_from_argv(argc, argv, "benchmark domino");
-  IMP_NEW(kernel::Model, m, ());
+  IMP_NEW(Model, m, ());
   set_log_level(SILENT);
   m->set_log_level(SILENT);
   std::string path = IMP::benchmark::get_data_path("small_protein.pdb");
-  kernel::ParticlesTemp ps = IMP::internal::create_particles_from_pdb(path, m);
+  ParticlesTemp ps = IMP::internal::create_particles_from_pdb(path, m);
   ReferenceFrame3Ds vs;
   unsigned num_rb;
   if (IMP_BUILD == IMP_DEBUG || IMP::base::run_quick_test) {
@@ -31,10 +31,10 @@ int main(int argc, char *argv[]) {
   while (ps.size() > num_rb * 10) {
     ps.pop_back();
   }
-  kernel::ParticlesTemp rs;
+  ParticlesTemp rs;
   for (unsigned int i = 0; i < num_rb; ++i) {
-    IMP_NEW(kernel::Particle, p, (m));
-    kernel::ParticlesTemp leaves(ps.begin() + i * 10,
+    IMP_NEW(Particle, p, (m));
+    ParticlesTemp leaves(ps.begin() + i * 10,
                                  ps.begin() + (i + 1) * 10);
     RigidBody r = RigidBody::setup_particle(p, leaves);
     vs.push_back(ReferenceFrame3D(r.get_reference_frame()));
@@ -47,10 +47,10 @@ int main(int argc, char *argv[]) {
   IMP_NEW(GridClosePairsFinder, cpf, ());
 #endif
   cpf->set_distance(3);
-  kernel::ParticleIndexPairs ppt = cpf->get_close_pairs(m, lsc->get_indexes());
+  ParticleIndexPairs ppt = cpf->get_close_pairs(m, lsc->get_indexes());
   for (unsigned int i = 0; i < ppt.size(); ++i) {
     double d = get_distance(XYZ(m, ppt[i][0]), XYZ(m, ppt[i][1]));
-    kernel::Restraint *r =
+    Restraint *r =
         new DistanceRestraint(new Harmonic(d, 1), m->get_particle(ppt[i][0]),
                               m->get_particle(ppt[i][1]));
     std::ostringstream oss;

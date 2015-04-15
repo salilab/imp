@@ -28,8 +28,8 @@ struct Score {
       and get_is_trivially_zero() is false.
   */
   template <unsigned int D>
-  double get_score(kernel::Model *m,
-                   const base::Array<D, kernel::ParticleIndex> &p,
+  double get_score(Model *m,
+                   const base::Array<D, ParticleIndex> &p,
                    double distance) const;
   //! Return the score and derivative at the passed feature size (eg distance).
   /** The derivative is for the feature decreasing.
@@ -39,7 +39,7 @@ struct Score {
   */
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &p,
+      Model *m, const base::Array<D, ParticleIndex> &p,
       double distance) const;
 #endif
   /** Return true if the function can be easily determined to be zero at the
@@ -49,8 +49,8 @@ struct Score {
       \note That it is squared distance, not distance.
   */
   template <unsigned int D>
-  bool get_is_trivially_zero(kernel::Model *m,
-                             const base::Array<D, kernel::ParticleIndex> &p,
+  bool get_is_trivially_zero(Model *m,
+                             const base::Array<D, ParticleIndex> &p,
                              double squared_distance) const {
     IMP_UNUSED(m);
     IMP_UNUSED(p);
@@ -61,7 +61,7 @@ struct Score {
       non-zero. The default implementation provided here returns infinity.*/
   template <unsigned int D>
   double get_maximum_range(
-      kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &p) const {
+      Model *m, const base::Array<D, ParticleIndex> &p) const {
     IMP_UNUSED(m);
     IMP_UNUSED(p);
     return std::numeric_limits<double>::infinity();
@@ -69,8 +69,8 @@ struct Score {
   /** Return the set of particles read when particle p is part of the passed
       tuples. The default implementation provided here just returns the list
       containing p.*/
-  kernel::ModelObjectsTemp get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const {
+  ModelObjectsTemp get_inputs(
+      Model *m, const ParticleIndexes &pis) const {
     return IMP::get_particles(m, pis);
   }
   void show(std::ostream &) const {}

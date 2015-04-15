@@ -21,8 +21,8 @@ class Tests(IMP.test.TestCase):
         if '.rmf' not in suffixes:
             suffixes.append('.rmf')
         for suffix in suffixes:
-            m = IMP.kernel.Model()
-            p = IMP.kernel.Particle(m)
+            m = IMP.Model()
+            p = IMP.Particle(m)
             h = IMP.atom.Hierarchy.setup_particle(p)
             d = IMP.core.XYZR.setup_particle(p)
             md = IMP.atom.Mass.setup_particle(p, 1)

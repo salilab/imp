@@ -12,16 +12,16 @@ class Tests(IMP.test.TestCase):
     def test_navigation(self):
         """Test loading and saving of rigid bodies implicitly"""
         for suffix in IMP.rmf.suffixes:
-            m = IMP.kernel.Model()
+            m = IMP.Model()
             m.set_log_level(IMP.base.SILENT)
-            r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             r.set_name("rt")
             rbd = IMP.core.RigidBody.setup_particle(
-                IMP.kernel.Particle(m, "rb"),
+                IMP.Particle(m, "rb"),
                 IMP.algebra.ReferenceFrame3D())
             ps = []
             for i in range(0, 4):
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 v = IMP.algebra.Vector3D(0, 0, 0)
                 v[0] = i % 2
                 if i >= 2:
@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
                 rbd.add_member(p)
                 ps.append(p)
 
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             v = IMP.algebra.Vector3D(.5, .5, .5)
             d = IMP.core.XYZR.setup_particle(p)
             d.set_coordinates(v)
@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
 
             nrbps = []
             for i in range(0, 4):
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 v = IMP.algebra.Vector3D(0, 0, 1)
                 v[0] = i % 2
                 if i >= 2:
@@ -124,8 +124,8 @@ class Tests(IMP.test.TestCase):
     def test_gaussian_round_trip(self):
         """Make sure that Gaussians can be written to and read from RMFs"""
         for suffix in IMP.rmf.suffixes:
-            m = IMP.kernel.Model()
-            r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            m = IMP.Model()
+            r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             r.set_name("rt")
             p = IMP.Particle(m)
             v = IMP.algebra.Vector3D(1, 2, 3)
@@ -159,16 +159,16 @@ class Tests(IMP.test.TestCase):
         """Test loading and saving of rigid bodies that contain
         non-rigid members that are also Gaussians (and thus Rigid Bodies)"""
         for suffix in IMP.rmf.suffixes:
-            m = IMP.kernel.Model()
+            m = IMP.Model()
             m.set_log_level(IMP.base.SILENT)
-            r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             r.set_name("rt")
             rbd = IMP.core.RigidBody.setup_particle(
-                IMP.kernel.Particle(m, "rb"),
+                IMP.Particle(m, "rb"),
                 IMP.algebra.ReferenceFrame3D())
             ps = []
             for i in range(0, 4):
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 v = IMP.algebra.Vector3D(0, 0, 0)
                 v[0] = i % 2
                 if i >= 2:
@@ -183,7 +183,7 @@ class Tests(IMP.test.TestCase):
                 rbd.add_member(p)
                 ps.append(p)
 
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             v = IMP.algebra.Vector3D(.5, .5, .5)
             d = IMP.core.XYZR.setup_particle(p)
             d.set_coordinates(v)
@@ -195,7 +195,7 @@ class Tests(IMP.test.TestCase):
 
             nrbps = []
             for i in range(0, 4):
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 v = IMP.algebra.Vector3D(0, 0, 1)
                 v[0] = i % 2
                 if i >= 2:
@@ -271,16 +271,16 @@ class Tests(IMP.test.TestCase):
     def test_nested_rigid_body_linking(self):
         """Test create, save, load, link, and save with nested rigid bodies"""
         for suffix in IMP.rmf.suffixes:
-            m = IMP.kernel.Model()
+            m = IMP.Model()
             m.set_log_level(IMP.base.SILENT)
-            r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             r.set_name("rt")
             rbd = IMP.core.RigidBody.setup_particle(
-                IMP.kernel.Particle(m, "rb"),
+                IMP.Particle(m, "rb"),
                 IMP.algebra.ReferenceFrame3D())
             ps = []
             for i in range(0, 4):
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 v = IMP.algebra.Vector3D(0, 0, 0)
                 v[0] = i % 2
                 if i >= 2:
@@ -295,7 +295,7 @@ class Tests(IMP.test.TestCase):
                 rbd.add_member(p)
                 ps.append(p)
 
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             v = IMP.algebra.Vector3D(.5, .5, .5)
             d = IMP.core.XYZR.setup_particle(p)
             d.set_coordinates(v)
@@ -307,7 +307,7 @@ class Tests(IMP.test.TestCase):
 
             nrbps = []
             for i in range(0, 4):
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 v = IMP.algebra.Vector3D(0, 0, 1)
                 v[0] = i % 2
                 if i >= 2:
@@ -414,21 +414,21 @@ class Tests(IMP.test.TestCase):
         """Create a rigid body that ONLY consists of nonrigid members
         that themselves are rigid bodies"""
         for suffix in IMP.rmf.suffixes:
-            m = IMP.kernel.Model()
+            m = IMP.Model()
             m.set_log_level(IMP.base.SILENT)
 
             # create rigid body
-            r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             r.set_name("rt")
             rbd = IMP.core.RigidBody.setup_particle(
-                IMP.kernel.Particle(m, "rb"),
+                IMP.Particle(m, "rb"),
                 IMP.algebra.ReferenceFrame3D())
 
             # add non-rigid members
             ps = []
             nrbps = []
             for i in range(0, 4):
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 v = IMP.algebra.Vector3D(0, 0, 1)
                 v[0] = i % 2
                 if i >= 2:
@@ -524,7 +524,7 @@ class Tests(IMP.test.TestCase):
 
     def test_multiple(self):
         """Test that adding with multiple calls results in unique ids"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h0 = self._create_rb(m)
         h1 = self._create_rb(m)
         path = self.get_tmp_file_name("multiple_rb.rmf3")
@@ -535,7 +535,7 @@ class Tests(IMP.test.TestCase):
         IMP.rmf.save_frame(fh, "frame")
         del fh, m, h0, h1
 
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         fh = RMF.open_rmf_file_read_only(path)
         hs = IMP.rmf.create_hierarchies(fh, m)
         rb_count = 0

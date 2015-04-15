@@ -5,10 +5,10 @@ import IMP.atom
 
 
 def setup_filter():
-    m = IMP.kernel.Model()
+    m = IMP.Model()
     ps = []
     for i in range(10):
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         ps.append(p)
     bd1 = IMP.atom.Bonded.setup_particle(ps[0])
@@ -17,13 +17,13 @@ def setup_filter():
     bonds.append(IMP.atom.create_bond(bd1, bd2,
                                       IMP.atom.Bond.SINGLE).get_particle())
     angles = []
-    angles.append(IMP.atom.Angle.setup_particle(IMP.kernel.Particle(m),
+    angles.append(IMP.atom.Angle.setup_particle(IMP.Particle(m),
                                                 IMP.core.XYZ(
                                                     ps[1]), IMP.core.XYZ(
                                                     ps[2]),
                                                 IMP.core.XYZ(ps[3])).get_particle())
     dihedrals = []
-    dihedrals.append(IMP.atom.Dihedral.setup_particle(IMP.kernel.Particle(m),
+    dihedrals.append(IMP.atom.Dihedral.setup_particle(IMP.Particle(m),
                                                       IMP.core.XYZ(
                                                           ps[4]), IMP.core.XYZ(
                                                           ps[5]),

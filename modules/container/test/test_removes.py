@@ -11,11 +11,11 @@ class Tests(IMP.test.TestCase):
 
     def _test_allp(self):
         """Check that removal from a list container works"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         psr = []
         for i in range(0, 50):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             ps.append(p)
             if i % 5 == 0:
                 psr.append(p)
@@ -28,11 +28,11 @@ class Tests(IMP.test.TestCase):
 
     def test_allp2(self):
         """Check that removal from a list container works and removal from model"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         psr = []
         for i in range(0, 50):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             ps.append(p)
             if i % 5 == 0:
                 psr.append(p)

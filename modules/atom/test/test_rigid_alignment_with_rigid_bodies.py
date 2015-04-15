@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def test_alignment_without_rigid_body(self):
         """Rigid aligment without rigid bodies"""
-        mdl = IMP.kernel.Model()
+        mdl = IMP.Model()
         mh1 = IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), mdl)
         xyz1 = IMP.core.XYZs(IMP.core.get_leaves(mh1))
         vec1 = []
@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
 
     def test_alignment_with_rigid_body(self):
         """Rigid aligment with rigid bodies"""
-        mdl = IMP.kernel.Model()
+        mdl = IMP.Model()
         mh1 = IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), mdl)
         xyz1 = IMP.core.XYZs(IMP.core.get_leaves(mh1))
         vec1 = [x.get_coordinates() for x in xyz1]

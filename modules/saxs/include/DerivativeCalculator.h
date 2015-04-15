@@ -35,8 +35,8 @@ class IMPSAXSEXPORT DerivativeCalculator : public base::Object {
      \param[in] effect_size Effect size
   */
   void compute_chisquare_derivative(
-      const Profile* model_profile, const kernel::Particles& particles1,
-      const kernel::Particles& particles2,
+      const Profile* model_profile, const Particles& particles1,
+      const Particles& particles2,
       std::vector<algebra::Vector3D>& derivatives,
       const std::vector<double>& effect_size) const;
 
@@ -48,7 +48,7 @@ class IMPSAXSEXPORT DerivativeCalculator : public base::Object {
      \param[in] effect_size Effect size
   */
   void compute_chisquare_derivative(
-      const Profile* model_profile, const kernel::Particles& particles,
+      const Profile* model_profile, const Particles& particles,
       std::vector<algebra::Vector3D>& derivatives,
       const std::vector<double>& effect_size) const {
     return compute_chisquare_derivative(model_profile, particles, particles,
@@ -65,7 +65,7 @@ class IMPSAXSEXPORT DerivativeCalculator : public base::Object {
   */
   DeltaDistributionFunction precompute_derivative_helpers(
       const Profile* resampled_model_profile,
-      const kernel::Particles& particles1, const kernel::Particles& particles2,
+      const Particles& particles1, const Particles& particles2,
       std::vector<Floats>& sinc_cos_values) const;
 
   /* compute dI(q)/dx_k for given q and k

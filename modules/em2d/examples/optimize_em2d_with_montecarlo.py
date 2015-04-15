@@ -39,7 +39,7 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
 
 # Get model from PDB file
 IMP.base.set_log_level(IMP.base.TERSE)
-m = IMP.kernel.Model()
+m = IMP.Model()
 prot = IMP.atom.read_pdb(
     IMP.em2d.get_example_path("1z5s.pdb"), m, IMP.atom.ATOMPDBSelector())
 IMP.atom.add_radii(prot)
@@ -141,7 +141,7 @@ em2d_restraint.set_images(em_images)
 em2d_restraint.set_name("em2d restraint")
 container = IMP.container.ListSingletonContainer(IMP.core.get_leaves(prot))
 em2d_restraint.set_particles(container)
-em2d_restraints_set = IMP.kernel.RestraintSet(m)
+em2d_restraints_set = IMP.RestraintSet(m)
 
 # The next two lines are commented, because the optimization of the example
 # is expensive. To run the full example, uncomment them (It can take a few

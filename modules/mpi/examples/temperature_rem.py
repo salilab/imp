@@ -25,12 +25,12 @@ myindex = rem.get_my_index()
 rem.set_my_parameter("temp", [temp[myindex]])
 
 # create model
-m = IMP.kernel.Model()
+m = IMP.Model()
 
 # add 2 particles
 ps = []
 for i in range(2):
-    p = IMP.kernel.Particle(m)
+    p = IMP.Particle(m)
     d = IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0.0, 0.0, 0.0))
     d.set_coordinates_are_optimized(True)
     ps.append(p)

@@ -5,21 +5,21 @@
  *
  */
 
-#include "IMP/kernel/Particle.h"
+#include "IMP/Particle.h"
 #include "IMP/base/log_macros.h"
-#include "IMP/kernel/Model.h"
-#include "IMP/kernel/internal/utility.h"
-#include "IMP/kernel/internal/PrefixStream.h"
-#include "IMP/kernel/Decorator.h"
+#include "IMP/Model.h"
+#include "IMP/internal/utility.h"
+#include "IMP/internal/PrefixStream.h"
+#include "IMP/Decorator.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-Particle::Particle(kernel::Model *m, std::string name)
+Particle::Particle(Model *m, std::string name)
     : ModelObject(m, name), id_(base::get_invalid_index<ParticleIndexTag>()) {
   m->add_particle_internal(this);
 }
 
-Particle::Particle(kernel::Model *m)
+Particle::Particle(Model *m)
     : ModelObject(m, "P%1%"), id_(base::get_invalid_index<ParticleIndexTag>()) {
   m->add_particle_internal(this);
 }
@@ -33,7 +33,7 @@ struct IdentityValue {
 };
 struct NameValue {
   Model *m_;
-  NameValue(kernel::Model *m) : m_(m) {}
+  NameValue(Model *m) : m_(m) {}
   template <class T>
   std::string operator()(const T &t) const {
     std::ostringstream oss;
@@ -69,7 +69,7 @@ struct SizeValue {
   }
 };
 template <class Keys, class GetValue>
-void show_attributes(kernel::Model *m, const Keys &fks, ParticleIndex id,
+void show_attributes(Model *m, const Keys &fks, ParticleIndex id,
                      std::string name, GetValue v,
                      internal::PrefixStream &preout) {
   if (!fks.empty()) {

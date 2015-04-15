@@ -9,8 +9,8 @@
 #include <IMP/base/file.h>
 IMPCORE_BEGIN_NAMESPACE
 WriteRestraintScoresOptimizerState::WriteRestraintScoresOptimizerState(
-    const kernel::Restraints &rs, base::TextOutput out)
-    : kernel::OptimizerState(rs[0]->get_model(),
+    const Restraints &rs, base::TextOutput out)
+    : OptimizerState(rs[0]->get_model(),
                              "WriteRestraintScoresOptimizerState%1%"),
       rs_(rs),
       out_(out) {

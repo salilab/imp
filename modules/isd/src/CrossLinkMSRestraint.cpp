@@ -12,29 +12,29 @@
 #include <IMP/isd/CrossLinkMSRestraint.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/Scale.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <math.h>
 #include <limits.h>
 #include <boost/math/special_functions/erf.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 
-CrossLinkMSRestraint::CrossLinkMSRestraint(IMP::kernel::Model *m, double length,
+CrossLinkMSRestraint::CrossLinkMSRestraint(IMP::Model *m, double length,
                                            std::string name)
-    : kernel::Restraint(m, name), length_(length) {
+    : Restraint(m, name), length_(length) {
     constr_ = 0;
 }
 
 CrossLinkMSRestraint::CrossLinkMSRestraint(
-    IMP::kernel::Model *m, IMP::kernel::ParticleIndexAdaptor lengthi,
+    IMP::Model *m, IMP::ParticleIndexAdaptor lengthi,
     std::string name)
-    : kernel::Restraint(m, name), lengthi_(lengthi) {
+    : Restraint(m, name), lengthi_(lengthi) {
     constr_ = 1;
 }
 
-CrossLinkMSRestraint::CrossLinkMSRestraint(IMP::kernel::Model *m, double length, double slope,
+CrossLinkMSRestraint::CrossLinkMSRestraint(IMP::Model *m, double length, double slope,
                                            std::string name)
-    : kernel::Restraint(m, name), length_(length), slope_(slope) {
+    : Restraint(m, name), length_(length), slope_(slope) {
     constr_ = 2;
 }
 
@@ -49,12 +49,12 @@ double CrossLinkMSRestraint::get_probability() const {
     }
 
     for (unsigned int k = 0; k < get_number_of_contributions(); ++k) {
-        IMP::kernel::ParticleIndexPair ppi = ppis_[k];
+        IMP::ParticleIndexPair ppi = ppis_[k];
         core::XYZ d0(get_model(), ppi[0]), d1(get_model(), ppi[1]);
         double dist =
             (d0.get_coordinates() - d1.get_coordinates()).get_magnitude();
-        IMP::kernel::ParticleIndexPair sigmas = sigmass_[k];
-        IMP::kernel::ParticleIndex psii = psis_[k];
+        IMP::ParticleIndexPair sigmas = sigmass_[k];
+        IMP::ParticleIndex psii = psis_[k];
         double psi = isd::Scale(get_model(), psii).get_scale();
         double sigmai = isd::Scale(get_model(), sigmas[0]).get_scale();
         double sigmaj = isd::Scale(get_model(), sigmas[1]).get_scale();

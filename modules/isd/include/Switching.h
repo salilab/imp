@@ -21,7 +21,7 @@ IMPISD_BEGIN_NAMESPACE
 /** This is just syntactic sugar for a Nuisance bounded to be betweeen 0 and 1.
  */
 class IMPISDEXPORT Switching : public Nuisance {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 double switching = 0.5) {
     if (!Nuisance::get_is_setup(m, pi))
       Nuisance::setup_particle(m, pi, switching);
@@ -34,7 +34,7 @@ class IMPISDEXPORT Switching : public Nuisance {
   IMP_DECORATOR_SETUP_0(Switching);
   IMP_DECORATOR_SETUP_1(Switching, double, switching);
 
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return Nuisance::get_is_setup(m, pi) && Nuisance(m, pi).get_lower() >= 0 &&
            Nuisance(m, pi).get_upper() <= 1;
   }

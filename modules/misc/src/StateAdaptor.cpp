@@ -7,11 +7,11 @@
  */
 
 #include "IMP/misc/StateAdaptor.h"
-#include "IMP/kernel/Model.h"
+#include "IMP/Model.h"
 
 IMPMISC_BEGIN_NAMESPACE
 
-StateAdaptor::StateAdaptor(kernel::Model *m, OptimizerState *before,
+StateAdaptor::StateAdaptor(Model *m, OptimizerState *before,
                            OptimizerState *after)
     : ScoreState(m, "StateAdaptor%1%"), before_(before), after_(after) {}
 
@@ -24,12 +24,12 @@ void StateAdaptor::do_after_evaluate(DerivativeAccumulator *) {
 }
 
 ModelObjectsTemp StateAdaptor::do_get_outputs() const {
-  return kernel::get_particles(get_model(),
+  return get_particles(get_model(),
                                get_model()->get_particle_indexes());
 }
 
 ModelObjectsTemp StateAdaptor::do_get_inputs() const {
-  return kernel::ModelObjectsTemp();
+  return ModelObjectsTemp();
 }
 
 IMPMISC_END_NAMESPACE

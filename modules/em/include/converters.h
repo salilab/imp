@@ -15,7 +15,7 @@
 #include "DensityMap.h"
 #include "SampledDensityMap.h"
 #include "SurfaceShellDensityMap.h"
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include "IMP/core/XYZ.h"
 #include "IMP/algebra/Vector3D.h"
 
@@ -32,9 +32,9 @@ type Float.
 \param[in] step sample every X steps in each direction
 \return particles corresponding to all voxels above the threshold
  */
-IMPEMEXPORT kernel::Particles density2particles(DensityMap *dmap,
+IMPEMEXPORT Particles density2particles(DensityMap *dmap,
                                                 Float threshold,
-                                                kernel::Model *m, int step = 1);
+                                                Model *m, int step = 1);
 
 //! Converts a density grid to a set of paritlces
 /**
@@ -61,7 +61,7 @@ Each such particle should have xyz, radius and weight attributes
 \see SampledDensityMap
  */
 IMPEMEXPORT SampledDensityMap *particles2density(
-    const kernel::ParticlesTemp &ps, Float resolution, Float apix,
+    const ParticlesTemp &ps, Float resolution, Float apix,
     int sig_cutoff = 3,
     const FloatKey &weight_key = IMP::atom::Mass::get_mass_key());
 
@@ -78,7 +78,7 @@ Each such particle should have xyz radius and weight attributes
 \see SampledDensityMap
  */
 inline IMPEMEXPORT SampledDensityMap *particles2binarized_density(
-    const kernel::ParticlesTemp &ps, Float resolution, Float apix,
+    const ParticlesTemp &ps, Float resolution, Float apix,
     int sig_cutoff = 3,
     const FloatKey &weight_key = IMP::atom::Mass::get_mass_key()) {
 
@@ -97,7 +97,7 @@ Each such particle should have xyz radius and weight attributes
 \see SampledDensityMap
  */
 IMPEMEXPORT SurfaceShellDensityMap *particles2surface(
-    const kernel::ParticlesTemp &ps, Float apix,
+    const ParticlesTemp &ps, Float apix,
     const FloatKey &weight_key = IMP::atom::Mass::get_mass_key());
 
 IMPEMEXPORT Float

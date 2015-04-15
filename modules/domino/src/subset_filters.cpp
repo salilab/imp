@@ -27,12 +27,12 @@ namespace {
  */
 class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter : public SubsetFilter {
   base::Pointer<RestraintCache> rc_;
-  kernel::RestraintsTemp rs_;
+  RestraintsTemp rs_;
   Slices slices_;
   unsigned int max_;
   friend class IMP::domino::MinimumRestraintScoreSubsetFilterTable;
   MinimumRestraintScoreSubsetFilter(RestraintCache *rc, Subset s,
-                                    const kernel::RestraintsTemp &rs, int max)
+                                    const RestraintsTemp &rs, int max)
       : SubsetFilter("Minimum restraint score filter"),
         rc_(rc),
         rs_(rs),
@@ -65,7 +65,7 @@ bool MinimumRestraintScoreSubsetFilter::get_is_ok(const Assignment &state)
 }
 
 MinimumRestraintScoreSubsetFilterTable::MinimumRestraintScoreSubsetFilterTable(
-    const kernel::RestraintsTemp &rs, RestraintCache *rc, int max)
+    const RestraintsTemp &rs, RestraintCache *rc, int max)
     : SubsetFilterTable("MinimumRestraintScoreSubsetFilterTable%1%"),
       rc_(rc),
       rs_(rs.begin(), rs.end()),
@@ -76,10 +76,10 @@ MinimumRestraintScoreSubsetFilterTable::MinimumRestraintScoreSubsetFilterTable(
 
 namespace {
 RestraintsTemp get_needed(RestraintCache *rc, const Subset &s,
-                          const kernel::Restraints &all) {
-  kernel::RestraintsTemp cur = rc->get_restraints(s, Subsets());
+                          const Restraints &all) {
+  RestraintsTemp cur = rc->get_restraints(s, Subsets());
   std::sort(cur.begin(), cur.end());
-  kernel::RestraintsTemp ret;
+  RestraintsTemp ret;
   std::set_intersection(cur.begin(), cur.end(), all.begin(), all.end(),
                         std::back_inserter(ret));
   return ret;
@@ -88,10 +88,10 @@ RestraintsTemp get_needed(RestraintCache *rc, const Subset &s,
 
 RestraintsTemp MinimumRestraintScoreSubsetFilterTable::get_restraints(
     const Subset &s, const Subsets &excluded) const {
-  kernel::RestraintsTemp all = get_needed(rc_, s, rs_);
+  RestraintsTemp all = get_needed(rc_, s, rs_);
   for (unsigned int i = 0; i < excluded.size(); ++i) {
-    kernel::RestraintsTemp cur = get_needed(rc_, excluded[i], rs_);
-    if (cur.size() == all.size()) return kernel::RestraintsTemp();
+    RestraintsTemp cur = get_needed(rc_, excluded[i], rs_);
+    if (cur.size() == all.size()) return RestraintsTemp();
   }
   return all;
 }
@@ -100,7 +100,7 @@ SubsetFilter *MinimumRestraintScoreSubsetFilterTable::get_subset_filter(
     const Subset &s, const Subsets &excluded) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  kernel::RestraintsTemp rs = get_restraints(s, excluded);
+  RestraintsTemp rs = get_restraints(s, excluded);
   if (rs.empty())
     return nullptr;
   else {
@@ -194,7 +194,7 @@ double get_disjoint_set_strength(const IMP::domino::Subset &s,
 }
 }
 
-int DisjointSetsSubsetFilterTable::get_index(kernel::Particle *p) {
+int DisjointSetsSubsetFilterTable::get_index(Particle *p) {
   if (index_.find(p) == index_.end()) {
     index_[p] = elements_.size();
     disjoint_sets_.make_set(elements_.size());
@@ -207,13 +207,13 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
   if (!sets_.empty()) return;
   if (pst_) {
     boost::unordered_map<ParticleStates *, int> map;
-    kernel::ParticlesTemp allps = pst_->get_particles();
-    base::Vector<kernel::ParticlesTemp> allsets;
+    ParticlesTemp allps = pst_->get_particles();
+    base::Vector<ParticlesTemp> allsets;
     for (unsigned int i = 0; i < allps.size(); ++i) {
       ParticleStates *ps = pst_->get_particle_states(allps[i]);
       if (map.find(ps) == map.end()) {
         map[pst_->get_particle_states(allps[i])] = allsets.size();
-        allsets.push_back(kernel::ParticlesTemp());
+        allsets.push_back(ParticlesTemp());
       }
       allsets[map.find(ps)->second].push_back(allps[i]);
     }
@@ -224,7 +224,7 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
     }
   }
 
-  base::Vector<kernel::ParticlesTemp> all(elements_.size());
+  base::Vector<ParticlesTemp> all(elements_.size());
   for (unsigned int i = 0; i < elements_.size(); ++i) {
     int set = disjoint_sets_.find_set(i);
     all[set].push_back(elements_[i]);
@@ -255,7 +255,7 @@ void DisjointSetsSubsetFilterTable::get_indexes(const Subset &s,
                                                 Ints &used) const {
   for (unsigned int i = 0; i < get_number_of_sets(); ++i) {
     Ints index = IMP::domino::get_partial_index(get_set(i), s, excluded);
-    /*std::cout << "Index of " << s << " wrt " << kernel::Particles(get_set(i))
+    /*std::cout << "Index of " << s << " wrt " << Particles(get_set(i))
       << " is " << internal::AsIndexes(index) << std::endl;*/
     int ct = 0;
     for (unsigned int j = 0; j < index.size(); ++j) {
@@ -270,7 +270,7 @@ void DisjointSetsSubsetFilterTable::get_indexes(const Subset &s,
   }
 }
 
-void DisjointSetsSubsetFilterTable::add_set(const kernel::ParticlesTemp &ps) {
+void DisjointSetsSubsetFilterTable::add_set(const ParticlesTemp &ps) {
   IMP_USAGE_CHECK(!pst_, "Defining sets through the ParticleStatesTable"
                              << " and explicitly are mutually exclusive.");
   if (ps.empty()) return;
@@ -281,7 +281,7 @@ void DisjointSetsSubsetFilterTable::add_set(const kernel::ParticlesTemp &ps) {
   }
   sets_.clear();
 }
-void DisjointSetsSubsetFilterTable::add_pair(const kernel::ParticlePair &pp) {
+void DisjointSetsSubsetFilterTable::add_pair(const ParticlePair &pp) {
   IMP_USAGE_CHECK(!pst_, "Defining sets through the ParticleStatesTable"
                              << " and explicitly are mutually exclusive.");
   int set_index = get_index(pp[0]);
@@ -508,7 +508,7 @@ ListSubsetFilterTable::ListSubsetFilterTable(ParticleStatesTable *pst)
   num_test_ = 0;
 }
 
-int ListSubsetFilterTable::get_index(kernel::Particle *p) const {
+int ListSubsetFilterTable::get_index(Particle *p) const {
   if (map_.find(p) == map_.end()) {
     return -1;
   } else {
@@ -517,7 +517,7 @@ int ListSubsetFilterTable::get_index(kernel::Particle *p) const {
 }
 
 void ListSubsetFilterTable::load_indexes(const Subset &s, Ints &indexes) const {
-  kernel::ParticlesTemp cur(s.begin(), s.end());
+  ParticlesTemp cur(s.begin(), s.end());
   indexes.resize(cur.size(), -1);
   for (unsigned int i = 0; i < cur.size(); ++i) {
     indexes[i] = get_index(cur[i]);
@@ -547,7 +547,7 @@ double ListSubsetFilterTable::get_strength(const Subset &s,
   return 1 - std::pow(.5, static_cast<int>(sz));
 }
 
-void ListSubsetFilterTable::set_allowed_states(kernel::Particle *p,
+void ListSubsetFilterTable::set_allowed_states(Particle *p,
                                                const Ints &states) {
   int index;
   if (map_.find(p) != map_.end()) {
@@ -566,7 +566,7 @@ void ListSubsetFilterTable::set_allowed_states(kernel::Particle *p,
 }
 
 void ListSubsetFilterTable::mask_allowed_states(
-    kernel::Particle *p, const boost::dynamic_bitset<> &bs) {
+    Particle *p, const boost::dynamic_bitset<> &bs) {
   if (map_.find(p) == map_.end()) {
     map_[p] = states_.size();
     states_.push_back(bs);
@@ -620,7 +620,7 @@ void PairListSubsetFilterTable::fill(const Subset &s, const Subsets &e,
                                      base::Vector<IntPairs> &allowed) const {
   for (unsigned int i = 0; i < s.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      kernel::ParticlePair pp(s[j], s[i]);
+      ParticlePair pp(s[j], s[i]);
       if (allowed_.find(pp) == allowed_.end()) continue;
       bool fp = false;
       for (unsigned int k = 0; k < e.size(); ++k) {
@@ -668,11 +668,11 @@ double PairListSubsetFilterTable::get_strength(const Subset &s,
 
 PairListSubsetFilterTable::PairListSubsetFilterTable() {}
 
-void PairListSubsetFilterTable::set_allowed_states(kernel::ParticlePair p,
+void PairListSubsetFilterTable::set_allowed_states(ParticlePair p,
                                                    const IntPairs &states) {
   IMP_USAGE_CHECK(allowed_.find(p) == allowed_.end(),
                   "Allowed states for " << p << " already set.");
-  if (p[0] < p[1]) p = kernel::ParticlePair(p[1], p[0]);
+  if (p[0] < p[1]) p = ParticlePair(p[1], p[0]);
   allowed_[p] = states;
   std::sort(allowed_[p].begin(), allowed_[p].end(), CP());
 }
@@ -728,12 +728,12 @@ ProbabilisticSubsetFilterTable::ProbabilisticSubsetFilterTable(double p,
 namespace {
 class RestraintScoreSubsetFilter : public SubsetFilter {
   base::PointerMember<RestraintCache> cache_;
-  kernel::RestraintsTemp rs_;
+  RestraintsTemp rs_;
   Slices slices_;
 
  public:
   RestraintScoreSubsetFilter(RestraintCache *cache,
-                             const kernel::RestraintsTemp rs, const Subset &s,
+                             const RestraintsTemp rs, const Subset &s,
                              const Subsets &)
       : SubsetFilter("RestraintScoreSubsetFilter%1%"), cache_(cache), rs_(rs) {
     for (unsigned int i = 0; i < rs_.size(); ++i) {
@@ -765,7 +765,7 @@ RestraintScoreSubsetFilterTable::RestraintScoreSubsetFilterTable(
     : SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"), cache_(cache) {}
 
 RestraintScoreSubsetFilterTable::RestraintScoreSubsetFilterTable(
-    kernel::RestraintsAdaptor rs, ParticleStatesTable *pst)
+    RestraintsAdaptor rs, ParticleStatesTable *pst)
     : SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
       cache_(new RestraintCache(pst)),
       rs_(rs.begin(), rs.end()) {}
@@ -773,10 +773,10 @@ RestraintScoreSubsetFilterTable::RestraintScoreSubsetFilterTable(
 SubsetFilter *RestraintScoreSubsetFilterTable::get_subset_filter(
     const Subset &s, const Subsets &excluded) const {
   if (!rs_.empty()) {
-    cache_->add_restraints(get_as<kernel::RestraintsTemp>(rs_));
+    cache_->add_restraints(get_as<RestraintsTemp>(rs_));
     rs_.clear();
   }
-  kernel::RestraintsTemp rs = cache_->get_restraints(s, excluded);
+  RestraintsTemp rs = cache_->get_restraints(s, excluded);
   if (rs.empty()) {
     IMP_LOG_TERSE("No restraints on subset " << s << " with excluded "
                                              << excluded << std::endl);

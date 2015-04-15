@@ -11,7 +11,7 @@
 
 #include <IMP/core/core_config.h>
 
-#include <IMP/kernel/internal/TupleRestraint.h>
+#include <IMP/internal/TupleRestraint.h>
 #include <IMP/ClassnameScore.h>
 
 #include <iostream>

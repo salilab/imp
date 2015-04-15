@@ -2,8 +2,8 @@
    This is the program for creating a simple kinematic tree
 
 */
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Model.h>
+#include <IMP/Particle.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/Hierarchy.h>
@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
   std::cout << fname << std::endl;
 
   // read in the input protein
-  IMP::kernel::Model* model = new IMP::kernel::Model();
+  IMP::Model* model = new IMP::Model();
   std::cerr << "Starting reading pdb file " << fname << std::endl;
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       fname, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
@@ -60,12 +60,12 @@ int main(int argc, char** argv) {
   topology->setup_hierarchy(mhd);
   // IMP::atom::CHARMMStereochemistryRestraint* r
   //   = new IMP::atom::CHARMMStereochemistryRestraint(mhd, topology);
-  IMP::kernel::ParticlesTemp bonds = topology->add_bonds(mhd);
+  IMP::ParticlesTemp bonds = topology->add_bonds(mhd);
 
   ProteinKinematics pk(mhd, true, false);
   std::cerr << "ProteinKinematics done" << std::endl;
 
-  IMP::kernel::Particles residue_particles =
+  IMP::Particles residue_particles =
       IMP::atom::get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
 
   std::cerr << "Psi of the first residue "

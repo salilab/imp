@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
 
     def test_it(self):
         """Test periodic optimizer state base"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pos = PeriodicOS(m)
         pos.set_was_used(True)
         period = random.randint(1, 10)

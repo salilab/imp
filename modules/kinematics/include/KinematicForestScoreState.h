@@ -19,7 +19,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 namespace {
 Model *extract_model(const IMP::core::RigidBodies &rbs,
-                     const IMP::kernel::ParticlesTemp &atoms) {
+                     const IMP::ParticlesTemp &atoms) {
   if (!rbs.empty())
     return rbs[0].get_model();
   else if (!atoms.empty())
@@ -43,7 +43,7 @@ class IMPKINEMATICSEXPORT KinematicForestScoreState : public IMP::ScoreState {
   IMP_OBJECT_METHODS(KinematicForestScoreState);
 
   KinematicForestScoreState(KinematicForest *kf, IMP::core::RigidBodies rbs,
-                            IMP::kernel::ParticlesTemp atoms)
+                            IMP::ParticlesTemp atoms)
       : ScoreState(extract_model(rbs, atoms), "KinematicForestScoreState%1%"),
         kf_(kf),
         rbs_(rbs),
@@ -54,14 +54,14 @@ class IMPKINEMATICSEXPORT KinematicForestScoreState : public IMP::ScoreState {
 
   void do_after_evaluate(DerivativeAccumulator *da) { IMP_UNUSED(da); }
 
-  kernel::ModelObjectsTemp do_get_inputs() const;
+  ModelObjectsTemp do_get_inputs() const;
 
-  kernel::ModelObjectsTemp do_get_outputs() const;
+  ModelObjectsTemp do_get_outputs() const;
 
  private:
   KinematicForest *kf_;
   IMP::core::RigidBodies rbs_;
-  IMP::kernel::ParticlesTemp atoms_;
+  IMP::ParticlesTemp atoms_;
 };
 
 IMPKINEMATICS_END_NAMESPACE

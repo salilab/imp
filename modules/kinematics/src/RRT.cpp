@@ -34,7 +34,7 @@ std::vector<bool> select_k_out_of_n_dofs(unsigned int k, unsigned int n) {
 
 }
 
-RRT::RRT(kernel::Model* m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
+RRT::RRT(Model* m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
          const DOFs& cspace_dofs, unsigned int iteration_number,
          unsigned int tree_size, unsigned int number_of_sampled_dofs)
     : Sampler(m, "rrt_sampler"),

@@ -13,7 +13,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
-    kernel::Model *m, GaussianProcessInterpolation *gpi)
+    Model *m, GaussianProcessInterpolation *gpi)
     : Restraint(m, "GaussianProcessInterpolationRestraint %1%"), gpi_(gpi) {
   // O(M^2)
   // number of observation points
@@ -40,7 +40,7 @@ void GaussianProcessInterpolationRestraint::create_score_state() {
 
 ModelObjectsTemp GaussianProcessInterpolationRestraint::do_get_inputs() const {
   // call the existing implementation
-  kernel::ModelObjectsTemp ret;
+  ModelObjectsTemp ret;
   ret += gpi_->get_input_particles();
   ret += gpi_->get_input_containers();
   // add the score state
@@ -57,7 +57,7 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
 
   /*
   std::cout << "===GPI ";
-  kernel::ParticlesTemp inppt(gpi_->get_input_particles());
+  ParticlesTemp inppt(gpi_->get_input_particles());
   for (unsigned i=0; i<inppt.size(); i++)
       std::cout << Nuisance(inppt[i]).get_nuisance() << " " ;
   if (accum) {
@@ -281,14 +281,14 @@ void GaussianProcessInterpolationScoreState::do_after_evaluate(
     DerivativeAccumulator *) {}
 
 ModelObjectsTemp GaussianProcessInterpolationScoreState::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret = gpir_->gpi_->get_input_particles();
+  ModelObjectsTemp ret = gpir_->gpi_->get_input_particles();
   ret += gpir_->gpi_->get_input_containers();
   return ret;
 }
 
 ModelObjectsTemp GaussianProcessInterpolationScoreState::do_get_outputs()
     const {
-  return kernel::ModelObjectsTemp();
+  return ModelObjectsTemp();
 }
 
 IMPISD_END_NAMESPACE

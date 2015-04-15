@@ -1,6 +1,6 @@
 /**
- *  \file IMP/kernel/generic.h    \brief Various important functionality
- *                                       for implementing decorators.
+ *  \file IMP/generic.h    \brief Various important functionality
+ *                                for implementing decorators.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_GENERIC_H
 #define IMPKERNEL_GENERIC_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "internal/scoring_functions.h"
 #include "internal/ContainerRestraint.h"
 #include "internal/TupleRestraint.h"
@@ -36,8 +36,8 @@ template <class Score>
 inline Restraint *create_restraint(Score *s, const typename Score::Argument &t,
                                    std::string name = std::string()) {
   return internal::create_tuple_restraint(
-      s, IMP::kernel::internal::get_model(t),
-      IMP::kernel::internal::get_index(t), name);
+      s, IMP::internal::get_model(t),
+      IMP::internal::get_index(t), name);
 }
 
 template <class Score>
@@ -45,8 +45,8 @@ inline Restraint *create_restraint(const Score *s,
                                    const typename Score::Argument &t,
                                    std::string name = std::string()) {
   return internal::create_tuple_restraint(
-      const_cast<Score *>(s), IMP::kernel::internal::get_model(t),
-      IMP::kernel::internal::get_index(t), name);
+      const_cast<Score *>(s), IMP::internal::get_model(t),
+      IMP::internal::get_index(t), name);
 }
 
 template <class Score, class Container>

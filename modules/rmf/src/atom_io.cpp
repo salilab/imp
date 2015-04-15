@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/atom_io.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -13,6 +13,6 @@ IMPRMF_BEGIN_NAMESPACE
 
 IMP_DEFINE_LINKERS(Hierarchy, hierarchy, hierarchies, atom::Hierarchy,
                    atom::Hierarchies,
-                   (RMF::FileConstHandle fh, kernel::Model *m), (fh, m));
+                   (RMF::FileConstHandle fh, Model *m), (fh, m));
 
 IMPRMF_END_NAMESPACE

@@ -31,10 +31,10 @@ class Tests(IMP.test.TestCase):
 
     def test_allp(self):
         """Checking distribute particles"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         for i in range(0, 10):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             ps.append(p.get_index())
             p.add_attribute(ik, i)
         lp = IMP.container.ListSingletonContainer(m, ps)

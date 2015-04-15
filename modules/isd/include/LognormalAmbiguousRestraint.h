@@ -14,7 +14,7 @@
 
 #include <IMP/isd/Scale.h>
 #include "isd_config.h"
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/PairContainer.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -42,7 +42,7 @@ IMPISD_BEGIN_NAMESPACE
     where \f$ \sigma=z_i\sigma_G+(1-z_i)\sigma_B \f$
     and \f$ r_k \f$ is the distance between part0 and part1.
  */
-class IMPISDEXPORT LognormalAmbiguousRestraint : public kernel::Restraint
+class IMPISDEXPORT LognormalAmbiguousRestraint : public Restraint
 {
   base::Pointer<Particle> p1_;
   base::Pointer<Particle> p2_;
@@ -73,9 +73,9 @@ public:
     return exp(-unprotected_evaluate(NULL));
   }
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(LognormalAmbiguousRestraint);
 };
 

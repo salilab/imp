@@ -10,10 +10,10 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/base/object_macros.h>
-#include <IMP/kernel/internal/StaticListContainer.h>
-#include <IMP/kernel/ClassnameContainer.h>
-#include <IMP/kernel/ClassnameModifier.h>
-#include <IMP/kernel/base_types.h>
+#include <IMP/internal/StaticListContainer.h>
+#include <IMP/ClassnameContainer.h>
+#include <IMP/ClassnameModifier.h>
+#include <IMP/base_types.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

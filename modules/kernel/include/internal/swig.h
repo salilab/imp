@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_SWIG_H
 #define IMPKERNEL_INTERNAL_SWIG_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "../Particle.h"
 #include "../ParticleTuple.h"
 #include "../Restraint.h"
@@ -40,7 +40,7 @@ class IMPKERNELEXPORT _ConstRestraint : public Restraint {
       : Restraint(m, "ConstRestraint%1%"), v_(v), ps_(get_particles(m, pis)) {}
   double get_value() const { return v_; }
   Restraints do_create_decomposition() const;
-  double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
   ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(_ConstRestraint);

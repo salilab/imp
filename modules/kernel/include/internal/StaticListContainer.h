@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_INTERNAL_STATIC_LIST_CONTAINER_H
 #define IMPKERNEL_INTERNAL_STATIC_LIST_CONTAINER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "ListLikeContainer.h"
 #include "container_helpers.h"
 #include <IMP/base/object_macros.h>
@@ -21,7 +21,7 @@ class StaticListContainer : public ListLikeContainer<Base> {
   typedef ListLikeContainer<Base> P;
 
  public:
-  StaticListContainer(kernel::Model *m, std::string name) : P(m, name) {}
+  StaticListContainer(Model *m, std::string name) : P(m, name) {}
   void add(typename Base::PassContainedIndexType vt) {
     Base::set_has_dependencies(false);
     typename Base::ContainedIndexTypes cur;

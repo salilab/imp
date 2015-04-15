@@ -12,10 +12,10 @@
 #include "Assignment.h"
 #include "Subset.h"
 #include "particle_states.h"
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/RestraintSet.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/display/Writer.h>
 #include <IMP/dependency_graph.h>
@@ -55,9 +55,9 @@ IMPDOMINOEXPORT void load_particle_states(const Subset &s, const Assignment &ss,
     do not depend on any particle in pst->get_particles() that is not in s
     The dependency graph is passed for efficiency.
 */
-IMPDOMINOEXPORT kernel::RestraintsTemp get_restraints(
+IMPDOMINOEXPORT RestraintsTemp get_restraints(
     const Subset &s, const ParticleStatesTable *pst, const DependencyGraph &dg,
-    kernel::RestraintSet *rs);
+    RestraintSet *rs);
 
 /** @} */
 
@@ -73,7 +73,7 @@ IMPDOMINOEXPORT kernel::RestraintsTemp get_restraints(
     This function is designed to be used for implementing SubsetFilterTable
     classes.
 */
-IMPDOMINOEXPORT Ints get_index(const kernel::ParticlesTemp &particles,
+IMPDOMINOEXPORT Ints get_index(const ParticlesTemp &particles,
                                const Subset &subset, const Subsets &excluded);
 
 /** All of the passed particles are not contained in an ofthe Subsets
@@ -83,15 +83,15 @@ IMPDOMINOEXPORT Ints get_index(const kernel::ParticlesTemp &particles,
     This function is designed to be used for implementing SubsetFilterTable
     classes.
 */
-IMPDOMINOEXPORT Ints get_partial_index(const kernel::ParticlesTemp &particles,
+IMPDOMINOEXPORT Ints get_partial_index(const ParticlesTemp &particles,
                                        const Subset &subset,
                                        const Subsets &excluded);
 
 /** Return the list of interactions implied by the passed balls
     given the allowed positions specified by the ParticleStatesTable.
 */
-IMPDOMINOEXPORT kernel::ParticlePairsTemp get_possible_interactions(
-    const kernel::ParticlesTemp &ps, double max_distance,
+IMPDOMINOEXPORT ParticlePairsTemp get_possible_interactions(
+    const ParticlesTemp &ps, double max_distance,
     ParticleStatesTable *pst);
 
 //! Return an embedding for an assignment

@@ -21,16 +21,16 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT FixedRefiner : public Refiner {
   Model* m_;
-  kernel::ParticleIndexes pis_;
+  ParticleIndexes pis_;
 
  public:
   //! Store the set of particles
-  FixedRefiner(const kernel::ParticlesTemp &ps);
+  FixedRefiner(const ParticlesTemp &ps);
 
   //! Store the set of particle indexes from passed model
-  FixedRefiner(Model* m, const kernel::ParticleIndexes &pis);
+  FixedRefiner(Model* m, const ParticleIndexes &pis);
 
-  virtual bool get_can_refine(kernel::Particle *) const IMP_OVERRIDE
+  virtual bool get_can_refine(Particle *) const IMP_OVERRIDE
   { return true; }
 
   //! Returns the fixed set of particles.
@@ -38,7 +38,7 @@ class IMPCOREEXPORT FixedRefiner : public Refiner {
 
       @param p coarse particle to be refined (ignored for FixedRefiner)
    */
-  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *p) const
+  virtual const ParticlesTemp get_refined(Particle *p) const
     IMP_OVERRIDE;
 
   //! Return the indexes of the particles returned by get_refined()
@@ -53,7 +53,7 @@ class IMPCOREEXPORT FixedRefiner : public Refiner {
       @note It is assumed that the refined particles are also in model m.
 
    */
-  virtual kernel::ParticleIndexes get_refined_indexes
+  virtual ParticleIndexes get_refined_indexes
     (Model* m, ParticleIndex) const IMP_OVERRIDE
   {
     IMP_USAGE_CHECK(m == m_,
@@ -76,8 +76,8 @@ class IMPCOREEXPORT FixedRefiner : public Refiner {
 #ifndef SWIG
   using Refiner::get_refined;
 #endif
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(FixedRefiner);
 };
 

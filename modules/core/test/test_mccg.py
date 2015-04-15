@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
 
     def test_cg_woods_func(self):
         """Check that MCCG can make spheres connect not penetrate"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         n = 10
         print(1)
         ds = IMP.core.create_xyzr_particles(m, n, 2)

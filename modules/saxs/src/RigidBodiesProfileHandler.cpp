@@ -12,12 +12,12 @@
 IMPSAXS_BEGIN_NAMESPACE
 
 RigidBodiesProfileHandler::RigidBodiesProfileHandler(
-    const kernel::Particles& particles, FormFactorType ff_type)
+    const Particles& particles, FormFactorType ff_type)
     : base::Object("RigidBodiesProfileHandler%1%") {
-  boost::unordered_map<kernel::ParticleIndex, kernel::Particles> rigid_bodies;
+  boost::unordered_map<ParticleIndex, Particles> rigid_bodies;
   for (unsigned int i = 0; i < particles.size(); ++i) {
     if (core::RigidMember::get_is_setup(particles[i])) {
-      kernel::ParticleIndex pi =
+      ParticleIndex pi =
           core::RigidMember(particles[i]).get_rigid_body().get_particle_index();
       rigid_bodies[pi].push_back(particles[i]);
     } else {
@@ -29,8 +29,8 @@ RigidBodiesProfileHandler::RigidBodiesProfileHandler(
 
   if (rigid_bodies_.size() > 0) {
     rigid_bodies_profile_ = new Profile();
-    for (boost::unordered_map<kernel::ParticleIndex,
-                              kernel::Particles>::iterator it =
+    for (boost::unordered_map<ParticleIndex,
+                              Particles>::iterator it =
              rigid_bodies.begin();
          it != rigid_bodies.end(); it++) {
       rigid_bodies_.push_back(it->second);
@@ -168,7 +168,7 @@ void RigidBodiesProfileHandler::compute_derivatives(
 }
 
 ModelObjectsTemp RigidBodiesProfileHandler::do_get_inputs() const {
-  kernel::ModelObjectsTemp pts(particles_.begin(), particles_.end());
+  ModelObjectsTemp pts(particles_.begin(), particles_.end());
   unsigned int sz = pts.size();
   for (unsigned int i = 0; i < sz; ++i) {
     pts.push_back(atom::Hierarchy(particles_[i]).get_parent());

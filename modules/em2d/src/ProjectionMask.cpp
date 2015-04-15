@@ -71,7 +71,7 @@ ProjectionMaskPtr MasksManager::find_mask(double radius) {
   return iter->second;
 }
 
-void MasksManager::create_masks(const kernel::ParticlesTemp &ps) {
+void MasksManager::create_masks(const ParticlesTemp &ps) {
   IMP_LOG_TERSE("Creating Projection Masks " << std::endl);
   ProjectionMaskPtr mask;
   unsigned long n_particles = ps.size();

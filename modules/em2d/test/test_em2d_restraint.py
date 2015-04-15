@@ -41,7 +41,7 @@ class Tests(IMP.test.TestCase):
 
     def test_building_an_optimization_problem_with_em2d_restraint(self):
         """Test that an a optimization with em2d restraint is properly built"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         prot = IMP.atom.read_pdb(self.get_input_file_name("1z5s.pdb"),
                                  m, IMP.atom.ATOMPDBSelector())
         # get the chains
@@ -116,7 +116,7 @@ class Tests(IMP.test.TestCase):
         container = IMP.container.ListSingletonContainer(
             IMP.core.get_leaves(prot))
         em2d_restraint.set_particles(container)
-        em2d_restraints_set = IMP.kernel.RestraintSet(m)
+        em2d_restraints_set = IMP.RestraintSet(m)
         em2d_restraints_set.add_restraint(em2d_restraint)
         em2d_restraints_set.set_weight(1000)  # weight for the em2D restraint
         m.add_restraint(em2d_restraints_set)

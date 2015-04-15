@@ -35,11 +35,11 @@ algebra::PrincipalComponentAnalysis get_pca_from_density(DensityMap *dmap,
 }
 }
 
-PCAFitRestraint::PCAFitRestraint(kernel::ParticlesTemp ps, DensityMap *em_map,
+PCAFitRestraint::PCAFitRestraint(ParticlesTemp ps, DensityMap *em_map,
                                  float threshold, float max_pca_size_diff,
                                  float max_angle_diff, float max_centroid_diff,
                                  FloatKey weight_key)
-    : kernel::Restraint(IMP::internal::get_model(ps), "Fit restraint%1%"),
+    : Restraint(IMP::internal::get_model(ps), "Fit restraint%1%"),
       max_angle_diff_(algebra::PI * max_angle_diff / 180.),
       max_pca_size_diff_(max_pca_size_diff * max_pca_size_diff),
       max_centroid_diff_(max_centroid_diff) {
@@ -63,7 +63,7 @@ PCAFitRestraint::PCAFitRestraint(kernel::ParticlesTemp ps, DensityMap *em_map,
 }
 
 IMP_LIST_IMPL(PCAFitRestraint, Particle, particle, Particle *,
-              kernel::Particles);
+              Particles);
 
 double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     const {
@@ -114,12 +114,12 @@ double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 }
 
 ModelObjectsTemp PCAFitRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
+  ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
   return pt;
 }
 
-void PCAFitRestraint::store_particles(kernel::ParticlesTemp ps) {
-  all_ps_ = get_as<kernel::Particles>(ps);
+void PCAFitRestraint::store_particles(ParticlesTemp ps) {
+  all_ps_ = get_as<Particles>(ps);
   add_particles(ps);
 }
 IMPEM_END_NAMESPACE

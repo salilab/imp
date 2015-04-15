@@ -37,7 +37,7 @@ std::string trim_extension(const std::string file_name) {
 
 void read_pdb(const std::string file,
               std::vector<std::string>& pdb_file_names,
-              std::vector<IMP::kernel::Particles>& particles_vec,
+              std::vector<IMP::Particles>& particles_vec,
               bool residue_level, bool heavy_atoms_only, int multi_model_pdb) {
 
   IMP::Model *model = new IMP::Model();
@@ -67,7 +67,7 @@ void read_pdb(const std::string file,
   }
 
   for(unsigned int h_index=0; h_index<mhds.size(); h_index++) {
-    IMP::kernel::ParticlesTemp ps = get_by_type(mhds[h_index], IMP::atom::ATOM_TYPE);
+    IMP::ParticlesTemp ps = get_by_type(mhds[h_index], IMP::atom::ATOM_TYPE);
     if(ps.size() > 0) { // pdb file
       std::string pdb_id = file;
       if(mhds.size() > 1) {
@@ -75,7 +75,7 @@ void read_pdb(const std::string file,
           std::string(boost::lexical_cast<std::string>(h_index+1)) + ".pdb";
       }
       pdb_file_names.push_back(pdb_id);
-      particles_vec.push_back(IMP::get_as<IMP::kernel::Particles>(ps));
+      particles_vec.push_back(IMP::get_as<IMP::Particles>(ps));
       std::cout << ps.size() << " atoms were read from PDB file " << file;
       if(mhds.size() > 1) std::cout << " MODEL " << h_index+1;
       std::cout << std::endl;
@@ -145,7 +145,7 @@ void read_files(const std::vector<std::string>& files,
     }
     // 1. try as pdb
     try {
-      std::vector<IMP::kernel::Particles> particles_vec;
+      std::vector<IMP::Particles> particles_vec;
       std::vector<std::string> curr_pdb_file_names;
       read_pdb(files[i], curr_pdb_file_names, particles_vec, false, true, multi_model_pdb);
       if(particles_vec.size() > 0) { // pdb file

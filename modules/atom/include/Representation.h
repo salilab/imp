@@ -13,8 +13,8 @@
 #include "Hierarchy.h"
 
 #include <IMP/base_types.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
 #include <IMP/Decorator.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -43,7 +43,7 @@ class IMPATOMEXPORT Representation : public Hierarchy {
   static FloatKey get_resolution_key(unsigned int index);
   static FloatKey get_base_resolution_key();
 
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 double resolution = -1);
 
  public:
@@ -53,7 +53,7 @@ class IMPATOMEXPORT Representation : public Hierarchy {
 
   IMP_DECORATOR_METHODS(Representation, Hierarchy);
 
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_base_resolution_key(), pi);
   }
 
@@ -72,7 +72,7 @@ class IMPATOMEXPORT Representation : public Hierarchy {
       of representation may be supported, eg Gaussians or density maps.
      \note The resolution parameter will go away, as, most likely will the type.
    */
-  void add_representation(kernel::ParticleIndexAdaptor rep,
+  void add_representation(ParticleIndexAdaptor rep,
                           RepresentationType type = BALLS,
                           double resolution = -1);
 
@@ -88,9 +88,9 @@ IMP_DECORATORS(Representation, Representations, Hierarchies);
 
     It is currently the inverse average radius of the leaves. */
 
-IMPATOMEXPORT double get_resolution(kernel::Model *m, kernel::ParticleIndex pi);
+IMPATOMEXPORT double get_resolution(Model *m, ParticleIndex pi);
 
-/** \copydoc get_resolution(kernel::Model, kernel::ParticleIndex) */
+/** \copydoc get_resolution(Model, ParticleIndex) */
 inline double get_resolution(Hierarchy h) {
   return get_resolution(h.get_model(), h.get_particle_index());
 }

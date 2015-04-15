@@ -14,14 +14,14 @@ class Tests(IMP.test.TestCase):
     def test_rops(self):
         """Check that LowestRefinedPairScore returns the lowest"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.kernel.Model()
-        pp0 = IMP.kernel.Particle(m)
-        pp1 = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        pp0 = IMP.Particle(m)
+        pp1 = IMP.Particle(m)
         hpp = [IMP.core.Hierarchy.setup_particle(pp0),
                IMP.core.Hierarchy.setup_particle(pp1)]
         ds = [[], []]
         for i in range(0, 10):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZ.setup_particle(p)
             d.set_coordinates(IMP.algebra.get_random_vector_in(
                 IMP.algebra.get_unit_bounding_box_3d()))

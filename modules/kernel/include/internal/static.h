@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_STATIC_H
 #define IMPKERNEL_INTERNAL_STATIC_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include <boost/unordered_map.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE

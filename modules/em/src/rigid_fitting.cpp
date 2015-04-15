@@ -36,13 +36,13 @@ void FittingSolutions::sort(bool reverse) {
 }
 
 namespace {
-kernel::RestraintSet *add_restraints(kernel::Model *model, DensityMap *dmap,
-                                     kernel::Particle *p,
-                                     kernel::Refiner *leaves_ref,
+RestraintSet *add_restraints(Model *model, DensityMap *dmap,
+                                     Particle *p,
+                                     Refiner *leaves_ref,
                                      const FloatKey &wei_key,
                                      bool fast = false) {
-  kernel::RestraintSet *rsrs =
-      new kernel::RestraintSet(model, 1.0, "rigid fitting restraints %1%");
+  RestraintSet *rsrs =
+      new RestraintSet(model, 1.0, "rigid fitting restraints %1%");
   model->add_restraint(rsrs);
   // add fitting restraint
   base::Pointer<FitRestraint> fit_rs;
@@ -58,9 +58,9 @@ kernel::RestraintSet *add_restraints(kernel::Model *model, DensityMap *dmap,
   return rsrs;
 }
 
-core::MonteCarlo *set_optimizer(kernel::Model *model,
+core::MonteCarlo *set_optimizer(Model *model,
                                 OptimizerStates display_log,
-                                kernel::Particle *p, Refiner *refiner,
+                                Particle *p, Refiner *refiner,
                                 Int number_of_cg_steps, Float max_translation,
                                 Float max_rotation) {
   core::RigidBody rb =
@@ -90,9 +90,9 @@ core::MonteCarlo *set_optimizer(kernel::Model *model,
 }
 
 void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
-              const algebra::Vector3D &anchor_centroid, kernel::Particle *p,
+              const algebra::Vector3D &anchor_centroid, Particle *p,
               Refiner *refiner, core::MonteCarlo *opt, FittingSolutions &fr,
-              kernel::Model *) {
+              Model *) {
   Float e;
   core::RigidBody rb =
       core::RigidMember(refiner->get_refined(p)[0]).get_rigid_body();
@@ -128,7 +128,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
 }
 
 FittingSolutions local_rigid_fitting_around_point(
-    kernel::Particle *p, Refiner *refiner, const FloatKey &wei_key,
+    Particle *p, Refiner *refiner, const FloatKey &wei_key,
     DensityMap *dmap, const algebra::Vector3D &anchor_centroid,
     OptimizerStates display_log, Int number_of_optimization_runs,
     Int number_of_mc_steps, Int number_of_cg_steps, Float max_translation,
@@ -146,8 +146,8 @@ FittingSolutions local_rigid_fitting_around_point(
              << "of the density" << std::endl);
   }
   // add restraints
-  kernel::Model *model = p->get_model();
-  kernel::RestraintSet *rsrs =
+  Model *model = p->get_model();
+  RestraintSet *rsrs =
       add_restraints(model, dmap, p, refiner, wei_key, fast);
   // create a rigid body mover and set the optimizer
   base::PointerMember<core::MonteCarlo> opt =
@@ -176,7 +176,7 @@ FittingSolutions local_rigid_fitting_around_point(
 }
 
 FittingSolutions local_rigid_fitting_around_points(
-    kernel::Particle *p, Refiner *refiner, const FloatKey &wei_key,
+    Particle *p, Refiner *refiner, const FloatKey &wei_key,
     DensityMap *dmap, const algebra::Vector3Ds &anchor_centroids,
     OptimizerStates display_log, Int number_of_optimization_runs,
     Int number_of_mc_steps, Int number_of_cg_steps, Float max_translation,
@@ -188,9 +188,9 @@ FittingSolutions local_rigid_fitting_around_points(
                   << " MC optimization runs, each with " << number_of_mc_steps
                   << " Monte Carlo steps , each with " << number_of_cg_steps
                   << " Conjugate Gradients rounds. " << std::endl);
-  kernel::Model *model = p->get_model();
+  Model *model = p->get_model();
 
-  kernel::RestraintSet *rsrs = add_restraints(model, dmap, p, refiner, wei_key);
+  RestraintSet *rsrs = add_restraints(model, dmap, p, refiner, wei_key);
   base::PointerMember<core::MonteCarlo> opt =
       set_optimizer(model, display_log, p, refiner, number_of_cg_steps,
                     max_translation, max_rotation);
@@ -210,7 +210,7 @@ FittingSolutions local_rigid_fitting_around_points(
 }
 
 FittingSolutions local_rigid_fitting_grid_search(
-    const kernel::ParticlesTemp &ps, const FloatKey &wei_key, DensityMap *dmap,
+    const ParticlesTemp &ps, const FloatKey &wei_key, DensityMap *dmap,
     Int max_voxels_translation, Int translation_step,
     Float max_angle_in_radians, Int number_of_rotations) {
   FittingSolutions fr;
@@ -282,7 +282,7 @@ FittingSolutions local_rigid_fitting_grid_search(
 }
 
 FittingSolutions compute_fitting_scores(
-    const kernel::ParticlesTemp &ps, DensityMap *em_map,
+    const ParticlesTemp &ps, DensityMap *em_map,
     const algebra::Transformation3Ds &transformations, bool fast_version,
     bool local, const FloatKey &wei_key) {
   FittingSolutions fr;
@@ -404,7 +404,7 @@ FittingSolutions compute_fitting_scores(
   return fr;
 }
 
-Float compute_fitting_score(const kernel::ParticlesTemp &ps, DensityMap *em_map,
+Float compute_fitting_score(const ParticlesTemp &ps, DensityMap *em_map,
                             FloatKey wei_key) {
   // create a grid that covers both the particles and the map
   algebra::BoundingBox3D em_bb = get_bounding_box(em_map, 0.);

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/DerivativeAccumulator.h
+ *  \file IMP/DerivativeAccumulator.h
  *  \brief Class for adding derivatives from
  *                                         restraints to the model.
  *
@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_DERIVATIVE_ACCUMULATOR_H
 #define IMPKERNEL_DERIVATIVE_ACCUMULATOR_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include <IMP/base/showable_macros.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/value_macros.h>

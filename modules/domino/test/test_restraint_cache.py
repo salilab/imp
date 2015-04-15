@@ -11,9 +11,9 @@ key = IMP.IntKey("assignment")
 class Tests(IMP.test.TestCase):
 
     def _create_stuff(self):
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
-        r = IMP.kernel._ConstRestraint(1, ps)
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(0, 10)]
+        r = IMP._ConstRestraint(1, ps)
         r.set_name("const restraint")
         pst = IMP.domino.ParticleStatesTable()
         ik = IMP.IntKey("key")
@@ -78,7 +78,7 @@ class Tests(IMP.test.TestCase):
     def test_decomposition_4(self):
         """Test cache with decomposition with nested sets"""
         (m, ps, r, pst, ik, cache) = self._create_stuff()
-        rs = IMP.kernel.RestraintSet(m, 1.0, "outer")
+        rs = IMP.RestraintSet(m, 1.0, "outer")
         rs.set_maximum_score(2)
         rs.add_restraint(r)
         r.set_weight(3)
@@ -98,8 +98,8 @@ class Tests(IMP.test.TestCase):
     def test_decomposition_5(self):
         """Test cache with simple restraint"""
         (m, ps, r, pst, ik, cache) = self._create_stuff()
-        rs = IMP.kernel.RestraintSet(m, 1.0, "outer")
-        r = IMP.kernel._ConstRestraint(1, [ps[0]])
+        rs = IMP.RestraintSet(m, 1.0, "outer")
+        r = IMP._ConstRestraint(1, [ps[0]])
         r.set_name("const 2")
         rs.add_restraint(r)
         r.set_maximum_score(.5)

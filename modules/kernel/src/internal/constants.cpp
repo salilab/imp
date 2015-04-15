@@ -5,7 +5,7 @@
  *
  */
 
-#include "IMP/kernel/internal/constants.h"
+#include "IMP/internal/constants.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 

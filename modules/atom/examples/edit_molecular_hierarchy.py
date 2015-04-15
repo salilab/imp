@@ -2,11 +2,10 @@
 # In this example, we read a protein from a PDB file and then add a
 # layer of atom::Fragments below the chain.
 
-import IMP.kernel
 import IMP.core
 import IMP.atom
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 ep = IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)
 
 hchain = IMP.atom.get_by_type(ep, IMP.atom.CHAIN_TYPE)[0]

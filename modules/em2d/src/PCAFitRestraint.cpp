@@ -14,11 +14,11 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-PCAFitRestraint::PCAFitRestraint(kernel::Particles particles,
+PCAFitRestraint::PCAFitRestraint(Particles particles,
                                  const std::vector<std::string>& image_files,
                                  double pixel_size, double resolution,
                                  unsigned int projection_number, bool reuse_direction)
-  : kernel::Restraint(particles[0]->get_model(), "PCAFitRestraint%1%"),
+  : Restraint(particles[0]->get_model(), "PCAFitRestraint%1%"),
     ps_(particles),
     pixel_size_(pixel_size),
     resolution_(resolution),

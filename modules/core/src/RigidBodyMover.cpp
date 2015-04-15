@@ -11,7 +11,7 @@
 #include <IMP/algebra/vector_generators.h>
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyMover::RigidBodyMover(kernel::Model *m, kernel::ParticleIndex pi,
+RigidBodyMover::RigidBodyMover(Model *m, ParticleIndex pi,
                                Float max_translation, Float max_angle)
     : MonteCarloMover(m, m->get_particle(pi)->get_name() + " mover") {
   IMP_USAGE_CHECK(RigidBody(m, pi).get_coordinates_are_optimized(),
@@ -69,7 +69,7 @@ MonteCarloMoverResult RigidBodyMover::do_propose() {
           << " must be set to be optimized. particle: " << d->get_name());
   d.set_reference_frame(algebra::ReferenceFrame3D(t));
 
-  return MonteCarloMoverResult(kernel::ParticleIndexes(1, pi_), 1.0);
+  return MonteCarloMoverResult(ParticleIndexes(1, pi_), 1.0);
 }
 
 void RigidBodyMover::do_reject() {
@@ -78,8 +78,8 @@ void RigidBodyMover::do_reject() {
   last_transformation_ = algebra::Transformation3D();
 }
 
-kernel::ModelObjectsTemp RigidBodyMover::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(1, get_model()->get_particle(pi_));
+ModelObjectsTemp RigidBodyMover::do_get_inputs() const {
+  return ModelObjectsTemp(1, get_model()->get_particle(pi_));
 }
 
 IMPCORE_END_NAMESPACE

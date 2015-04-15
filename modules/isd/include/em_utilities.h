@@ -20,8 +20,8 @@
 IMPISD_BEGIN_NAMESPACE
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-inline Float score_gaussian_overlap(kernel::Model *m,
-                             kernel::ParticleIndexPair pp,
+inline Float score_gaussian_overlap(Model *m,
+                             ParticleIndexPair pp,
                              IMP_Eigen::Vector3d * deriv){
   double determinant;
   bool invertible;

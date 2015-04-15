@@ -12,7 +12,7 @@
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/ScoreState.h>
 #include <IMP/UnaryFunction.h>
 
@@ -30,9 +30,9 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleComplexRestraint.cpp
 
 */
-class IMPEXAMPLEEXPORT ExampleComplexRestraint : public kernel::Restraint {
+class IMPEXAMPLEEXPORT ExampleComplexRestraint : public Restraint {
   base::Pointer<ScoreState> ss_;
-  kernel::ParticleIndex p_;
+  ParticleIndex p_;
   Float diameter_;
   base::Pointer<SingletonContainer> sc_;
   base::Pointer<UnaryFunction> f_;
@@ -46,9 +46,9 @@ class IMPEXAMPLEEXPORT ExampleComplexRestraint : public kernel::Restraint {
                           Float diameter,
                           std::string name = "ExampleComplexRestraint%1%");
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ExampleComplexRestraint);
 };
 

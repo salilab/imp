@@ -10,9 +10,9 @@
 #define IMPCONTAINER_CLASSNAMES_RESTRAINT_H
 
 #include <IMP/container/container_config.h>
-#include <IMP/kernel/internal/ContainerRestraint.h>
-#include <IMP/kernel/ClassnameContainer.h>
-#include <IMP/kernel/ClassnameScore.h>
+#include <IMP/internal/ContainerRestraint.h>
+#include <IMP/ClassnameContainer.h>
+#include <IMP/ClassnameScore.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

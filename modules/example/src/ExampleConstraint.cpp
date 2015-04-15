@@ -11,7 +11,7 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-ExampleConstraint::ExampleConstraint(kernel::Particle *p)
+ExampleConstraint::ExampleConstraint(Particle *p)
     : Constraint(p->get_model(), "ExampleConstraint%1%"),
       p_(p),
       k_(get_key()) {
@@ -28,10 +28,10 @@ void ExampleConstraint::do_update_attributes() {
 }
 void ExampleConstraint::do_update_derivatives(DerivativeAccumulator *) {}
 ModelObjectsTemp ExampleConstraint::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(1, p_);
+  return ModelObjectsTemp(1, p_);
 }
 ModelObjectsTemp ExampleConstraint::do_get_outputs() const {
-  return kernel::ModelObjectsTemp(1, p_);
+  return ModelObjectsTemp(1, p_);
 }
 
 IntKey ExampleConstraint::get_key() {

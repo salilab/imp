@@ -52,11 +52,11 @@ def initiate_configuration(domino_smp, ps):
 sys.exit()
 # REPRESENTATION
 # 1. setting up the representation (6 particles)
-mdl = IMP.kernel.Model()
+mdl = IMP.Model()
 mdl.set_log_level(IMP.base.SILENT)
 ps = []
 for i in range(0, 6):
-    p = IMP.kernel.Particle(mdl)
+    p = IMP.Particle(mdl)
     IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0., 0., 0.))
     ps.append(p)
 

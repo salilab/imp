@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Sampler.h     \brief Base class for all samplers.
+ *  \file IMP/Sampler.h     \brief Base class for all samplers.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_SAMPLER_H
 #define IMPKERNEL_SAMPLER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "Model.h"
 #include <IMP/base/Pointer.h>
 #include <IMP/base/Object.h>
@@ -33,7 +33,7 @@ class IMPKERNELEXPORT Sampler : public IMP::base::Object {
   base::PointerMember<ScoringFunction> sf_;
 
  public:
-  Sampler(kernel::Model *m, std::string name = "Sampler %1%");
+  Sampler(Model *m, std::string name = "Sampler %1%");
   ConfigurationSet *create_sample() const;
 
   ScoringFunction *get_scoring_function() const { return sf_; }

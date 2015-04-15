@@ -29,7 +29,7 @@ class IMPGSLEXPORT Simplex : public GSLOptimizer {
   double max_length_;
 
  public:
-  Simplex(kernel::Model *m);
+  Simplex(Model *m);
 
   /** \name Parameters
 

@@ -25,7 +25,7 @@ class IMPCOREEXPORT RigidBodyHierarchyGeometry
 
  public:
   RigidBodyHierarchyGeometry(RigidBody rb,
-                             const kernel::ParticlesTemp &constituents);
+                             const ParticlesTemp &constituents);
   display::Geometries get_components() const;
   IMP_OBJECT_METHODS(RigidBodyHierarchyGeometry);
 };
@@ -41,12 +41,12 @@ IMP_PARTICLE_GEOMETRY(RigidBodyFrame, core::RigidBody, {
 
 /** Display the torque on a rigid body as a line segment.*/
 class IMPCOREEXPORT RigidBodyTorque : public display::SegmentGeometry {
-  base::WeakPointer<kernel::Particle> p_;
+  base::WeakPointer<Particle> p_;
   mutable algebra::Segment3D cache_;
-  static algebra::Segment3D extract_geometry(kernel::Particle *p);
+  static algebra::Segment3D extract_geometry(Particle *p);
 
  public:
-  RigidBodyTorque(kernel::Particle *p);
+  RigidBodyTorque(Particle *p);
   const algebra::Segment3D &get_geometry() const;
 };
 

@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
       argc, argv, "Create a simplified representation of a pdb",
       "input.pdb output.rmf", 2);
 
-  IMP_NEW(IMP::kernel::Model, m, ());
+  IMP_NEW(IMP::Model, m, ());
   IMP::atom::Hierarchy hr = IMP::atom::read_pdb(args[0], m);
   if (multiresolution) {
     IMP::atom::add_bonds(hr);

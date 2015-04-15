@@ -5,9 +5,9 @@
  *
  */
 
-#include "IMP/kernel/internal/pdb.h"
-#include "IMP/kernel/Particle.h"
-#include "IMP/kernel/Model.h"
+#include "IMP/internal/pdb.h"
+#include "IMP/Particle.h"
+#include "IMP/Model.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>

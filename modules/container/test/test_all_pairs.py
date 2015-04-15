@@ -10,9 +10,9 @@ class Tests(IMP.test.TestCase):
 
     def test_allp(self):
         """Check AllPairContainer"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         for i in range(0, 50):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
         lp = IMP.container.ListSingletonContainer(m.get_particles())
         apc = IMP.container.AllPairContainer(lp)
         #self.assertEqual(lp.get_ref_count(), 2)

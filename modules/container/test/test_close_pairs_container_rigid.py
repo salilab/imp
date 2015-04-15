@@ -1,5 +1,4 @@
 from __future__ import print_function
-import IMP.kernel
 import IMP.test
 import IMP.core
 import IMP.algebra
@@ -11,17 +10,17 @@ class Tests(IMP.test.TestCase):
 
     def test_rigid(self):
         """Test ClosePairContainer with rigid finder"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         m.set_log_level(IMP.base.TERSE)
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(10, 10, 10))
         slack = 1
 
         def create_rb():
-            rbp = IMP.kernel.Particle(m)
+            rbp = IMP.Particle(m)
             ps = []
             for i in range(0, 10):
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 d = IMP.core.XYZR.setup_particle(
                     p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 3))
                 ps.append(p)

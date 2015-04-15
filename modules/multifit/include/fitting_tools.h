@@ -30,7 +30,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
  */
 IMPMULTIFITEXPORT FittingSolutionRecords
     get_close_to_point(const FittingSolutionRecords &fit_sols,
-                       atom::Hierarchy mh, IMP::kernel::Particle *ap,
+                       atom::Hierarchy mh, IMP::Particle *ap,
                        Float dist);
 
 IMPMULTIFIT_END_NAMESPACE

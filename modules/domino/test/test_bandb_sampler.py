@@ -29,14 +29,14 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min1(self):
         """Testing branch and bound sampler"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         m.set_log_level(IMP.base.SILENT)
         IMP.base.set_log_level(IMP.base.VERBOSE)
         ps = []
         ns = 5
         np = 4
         for i in range(0, np):
-            ps.append(IMP.kernel.Particle(m))
+            ps.append(IMP.Particle(m))
         pst = IMP.domino.ParticleStatesTable()
         print(m.get_number_of_score_states())
         print(m.get_number_of_restraints())

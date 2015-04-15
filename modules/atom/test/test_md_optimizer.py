@@ -16,12 +16,12 @@ kcal2mod = 4.1868e-4
 cmass = 12.011
 
 
-class XTransRestraint(IMP.kernel.Restraint):
+class XTransRestraint(IMP.Restraint):
 
     """Attempt to move the whole system along the x axis"""
 
     def __init__(self, m, strength):
-        IMP.kernel.Restraint.__init__(self, m, "XTransRestraint %1%")
+        IMP.Restraint.__init__(self, m, "XTransRestraint %1%")
         self.strength = strength
         self.set_log_level(IMP.base.SILENT)
 
@@ -69,7 +69,7 @@ class Tests(IMP.test.TestCase):
         """Set up particles and optimizer"""
         IMP.test.TestCase.setUp(self)
 
-        self.model = IMP.kernel.Model()
+        self.model = IMP.Model()
         self.particles = []
         self.particles.append(self.create_point_particle(self.model,
                                                          -43.0, 65.0, 93.0))
@@ -141,7 +141,7 @@ class Tests(IMP.test.TestCase):
 
     def test_non_xyz(self):
         """Should skip particles without xyz attributes"""
-        p = IMP.kernel.Particle(self.model)
+        p = IMP.Particle(self.model)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
         self.md.optimize(100)
 

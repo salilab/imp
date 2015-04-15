@@ -22,13 +22,13 @@ em::FittingSolutions pca_based_rigid_fitting(
     core::RigidBody rb, Refiner *rb_refiner, em::DensityMap *em_map,
     Float threshold, FloatKey wei_key,
     algebra::PrincipalComponentAnalysis dens_pca_input) {
-  kernel::ParticlesTemp ps = rb_refiner->get_refined(rb);
+  ParticlesTemp ps = rb_refiner->get_refined(rb);
   return pca_based_rigid_fitting(ps, em_map, threshold, wei_key,
                                  dens_pca_input);
 }
 
 em::FittingSolutions pca_based_rigid_fitting(
-    kernel::ParticlesTemp ps, em::DensityMap *em_map, Float threshold, FloatKey,
+    ParticlesTemp ps, em::DensityMap *em_map, Float threshold, FloatKey,
     algebra::PrincipalComponentAnalysis dens_pca_input) {
 
   // find the pca of the density

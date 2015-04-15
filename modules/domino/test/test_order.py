@@ -13,12 +13,12 @@ class Tests(IMP.test.TestCase):
 
     def _test_global_min2(self):
         """Testing ordering"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         pst = IMP.domino.ParticleStatesTable()
         state = IMP.domino.IndexStates(10)
         for i in range(0, 10):
-            ps.append(IMP.kernel.Particle(m))
+            ps.append(IMP.Particle(m))
             pst.set_particle_states(ps[-1], state)
         eqft = IMP.domino.EquivalenceSubsetFilterTable(pst)
         ps.sort()
@@ -34,13 +34,13 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min4(self):
         """Testing enumeration with ordering"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         IMP.base.set_log_level(IMP.base.SILENT)
         pst = IMP.domino.ParticleStatesTable()
         state = IMP.domino.IndexStates(8)
         for i in range(0, 5):
-            ps.append(IMP.kernel.Particle(m))
+            ps.append(IMP.Particle(m))
             pst.set_particle_states(ps[-1], state)
         eqft = IMP.domino.EquivalenceSubsetFilterTable(pst)
         exft = IMP.domino.ExclusionSubsetFilterTable(pst)
@@ -56,13 +56,13 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min5(self):
         """Testing enumeration with equiv excl ordering"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         IMP.base.set_log_level(IMP.base.SILENT)
         pst = IMP.domino.ParticleStatesTable()
         state = IMP.domino.IndexStates(11)
         for i in range(0, 10):
-            ps.append(IMP.kernel.Particle(m))
+            ps.append(IMP.Particle(m))
             pst.set_particle_states(ps[-1], state)
         eqft = IMP.domino.EquivalenceAndExclusionSubsetFilterTable(pst)
         ps.sort()
@@ -77,15 +77,15 @@ class Tests(IMP.test.TestCase):
 
     def _test_global_min3(self):
         """Testing ordering with other node"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         pst = IMP.domino.ParticleStatesTable()
         state = IMP.domino.IndexStates(10)
         for i in range(0, 4):
-            ps.append(IMP.kernel.Particle(m))
+            ps.append(IMP.Particle(m))
             pst.set_particle_states(ps[-1], state)
         statep = IMP.domino.IndexStates(8)
-        pp = IMP.kernel.Particle(m)
+        pp = IMP.Particle(m)
         pst.set_particle_states(pp, statep)
         eqft = IMP.domino.EquivalenceSubsetFilterTable(pst)
         ps.sort()

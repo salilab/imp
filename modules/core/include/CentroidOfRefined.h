@@ -58,14 +58,14 @@ class IMPCOREEXPORT CentroidOfRefined : public SingletonModifier {
      @param m the model of pi
      @param pi the centroid particle
    */
-  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex pi) const
+  virtual void apply_index(Model *m, ParticleIndex pi) const
       IMP_OVERRIDE;
 
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
 
-  virtual kernel::ModelObjectsTemp do_get_outputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
 
   IMP_SINGLETON_MODIFIER_METHODS(CentroidOfRefined);
 

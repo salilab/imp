@@ -16,10 +16,10 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-FitRestraint::FitRestraint(kernel::ParticlesTemp ps, DensityMap *em_map,
+FitRestraint::FitRestraint(ParticlesTemp ps, DensityMap *em_map,
                            FloatPair norm_factors, FloatKey weight_key,
                            float scale, bool use_rigid_bodies, KernelType kt)
-    : kernel::Restraint(IMP::internal::get_model(ps), "Fit restraint %1%"),
+    : Restraint(IMP::internal::get_model(ps), "Fit restraint %1%"),
       kt_(kt) {
   use_rigid_bodies_ = use_rigid_bodies;
   IMP_LOG_TERSE("Load fit restraint with the following input:"
@@ -45,7 +45,7 @@ FitRestraint::FitRestraint(kernel::ParticlesTemp ps, DensityMap *em_map,
   store_particles(ps);
   IMP_LOG_TERSE("after adding " << all_ps_.size() << " particles" << std::endl);
   model_dens_map_ = new SampledDensityMap(*em_map->get_header(), kt_);
-  model_dens_map_->set_particles(get_as<kernel::ParticlesTemp>(all_ps_),
+  model_dens_map_->set_particles(get_as<ParticlesTemp>(all_ps_),
                                  weight_key);
   kernel_params_ = model_dens_map_->get_kernel_params();
   IMP_LOG_TERSE("going to initialize_model_density_map" << std::endl);
@@ -72,8 +72,8 @@ void FitRestraint::initialize_model_density_map(FloatKey weight_key) {
       core::RigidBody rb = *it;
       IMP_LOG_VERBOSE("working on rigid body:" << (*it)->get_name()
                                                << std::endl);
-      kernel::ParticlesTemp members =
-          get_as<kernel::ParticlesTemp>(member_map_[*it]);
+      ParticlesTemp members =
+          get_as<ParticlesTemp>(member_map_[*it]);
       // The rigid body may be outside of the density. This means
       // that the generated SampledDensityMap will be empty,
       // as it ignores particles outside of the boundaries.
@@ -99,7 +99,7 @@ void FitRestraint::initialize_model_density_map(FloatKey weight_key) {
   }
   // update the none rigid bodies map
   none_rb_model_dens_map_->set_particles(
-      get_as<kernel::ParticlesTemp>(not_part_of_rb_), weight_key);
+      get_as<ParticlesTemp>(not_part_of_rb_), weight_key);
   if (not_part_of_rb_.size() > 0) {
     none_rb_model_dens_map_->resample();
     none_rb_model_dens_map_->calcRMS();
@@ -149,7 +149,7 @@ void FitRestraint::resample() const {
     transformed->set_was_used(true);
   }
 }
-IMP_LIST_IMPL(FitRestraint, Particle, particle, Particle *, kernel::Particles);
+IMP_LIST_IMPL(FitRestraint, Particle, particle, Particle *, Particles);
 
 double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
   Float escore;
@@ -204,7 +204,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
   FloatKeys xyz_keys = IMP::core::XYZR::get_xyz_keys();
   if (calc_deriv) {
     for (unsigned int i = 0; i < all_ps_.size(); i++) {
-      kernel::Particle *p = all_ps_[i];
+      Particle *p = all_ps_[i];
       p->add_to_derivative(xyz_keys[0], dv_[i][0], *accum);
       p->add_to_derivative(xyz_keys[1], dv_[i][1], *accum);
       p->add_to_derivative(xyz_keys[2], dv_[i][2], *accum);
@@ -218,19 +218,19 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
 }
 
 ModelObjectsTemp FitRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
+  ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
   for (int i = 0; i < (int)rbs_.size(); i++) {
     pt.push_back(rbs_[i]);
   }
   return pt;
 }
 
-void FitRestraint::store_particles(kernel::ParticlesTemp ps) {
-  all_ps_ = get_as<kernel::Particles>(ps);
+void FitRestraint::store_particles(ParticlesTemp ps) {
+  all_ps_ = get_as<Particles>(ps);
   add_particles(ps);
   // sort to rigid and not rigid members
   if (use_rigid_bodies_) {
-    for (kernel::Particles::iterator it = all_ps_.begin(); it != all_ps_.end();
+    for (Particles::iterator it = all_ps_.begin(); it != all_ps_.end();
          it++) {
       if (core::RigidMember::get_is_setup(*it)) {
         core::RigidBody rb = core::RigidMember(*it).get_rigid_body();

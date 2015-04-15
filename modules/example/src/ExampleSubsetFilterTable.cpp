@@ -38,7 +38,7 @@ bool ExampleSubsetFilter::get_is_ok(const domino::Assignment& a) const {
 }
 
 ExampleSubsetFilterTable::ExampleSubsetFilterTable(
-    unsigned int max_diff, const kernel::ParticlesTemp& ps)
+    unsigned int max_diff, const ParticlesTemp& ps)
     : domino::SubsetFilterTable("ExampleSubsetFilterTable%1%"),
       max_diff_(max_diff),
       ps_(ps.begin(), ps.end()) {}

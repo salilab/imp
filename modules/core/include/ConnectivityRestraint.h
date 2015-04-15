@@ -15,7 +15,7 @@
 #include "DistanceRestraint.h"
 
 #include <IMP/SingletonContainer.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -35,7 +35,7 @@ IMPCORE_BEGIN_NAMESPACE
     graph connecting all the particles. The edge weights are given by
     the value of the PairScore for the two endpoints of the edge.
  */
-class IMPCOREEXPORT ConnectivityRestraint : public kernel::Restraint {
+class IMPCOREEXPORT ConnectivityRestraint : public Restraint {
   IMP::base::PointerMember<PairScore> ps_;
   IMP::base::PointerMember<SingletonContainer> sc_;
 
@@ -45,7 +45,7 @@ class IMPCOREEXPORT ConnectivityRestraint : public kernel::Restraint {
 
   ConnectivityRestraint(Model *m, PairScore *ps);
 #ifndef IMP_DOXYGEN
-  /** @name kernel::Particles to be connected
+  /** @name Particles to be connected
 
        The following methods are used to manipulate the list of particles
        that are to be connected. Each particle should have all the
@@ -55,9 +55,9 @@ class IMPCOREEXPORT ConnectivityRestraint : public kernel::Restraint {
        can only be used if none is passed.
   */
   /*@{*/
-  void add_particle(kernel::Particle *p);
-  void add_particles(const kernel::ParticlesTemp &ps);
-  void set_particles(const kernel::ParticlesTemp &ps);
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
 /*@}*/
 #endif
 
@@ -66,17 +66,17 @@ class IMPCOREEXPORT ConnectivityRestraint : public kernel::Restraint {
       the get_connected_pairs() call, not the set at the time of the last
       evaluate() call.
   */
-  kernel::ParticlePairsTemp get_connected_pairs() const;
+  ParticlePairsTemp get_connected_pairs() const;
 
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const { return ps_; }
 
-  kernel::Restraints do_create_current_decomposition() const;
+  Restraints do_create_current_decomposition() const;
 
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ConnectivityRestraint);
   ;
 };

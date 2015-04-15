@@ -26,7 +26,7 @@ CADihedralRestraint::CADihedralRestraint(
                       Particle* p4, Particle* p5,
                       Floats phi0,  Floats phi1,
                       Floats score):
-  kernel::Restraint(p1->get_model(), "CADihedralRestraint%1%")
+  Restraint(p1->get_model(), "CADihedralRestraint%1%")
 {
   p_[0] = p1;
   p_[1] = p2;

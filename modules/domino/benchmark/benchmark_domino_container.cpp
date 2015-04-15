@@ -41,10 +41,10 @@ void benchmark_table(AssignmentContainer *ac, std::string name,
 
 int main(int argc, char *argv[]) {
   IMP::base::setup_from_argv(argc, argv, "benchmark domino containers");
-  IMP_NEW(kernel::Model, m, ());
-  kernel::ParticlesTemp ps;
+  IMP_NEW(Model, m, ());
+  ParticlesTemp ps;
   for (unsigned int i = 0; i < 10; ++i) {
-    IMP_NEW(kernel::Particle, p, (m));
+    IMP_NEW(Particle, p, (m));
     ps.push_back(p);
   }
   int number_of_values;

@@ -26,8 +26,8 @@
 #include <IMP/container/MinimumClassnameScore.h>
 #include <IMP/container_macros.h>
 #include <IMP/core/ClassnameRestraint.h>
-#include <IMP/kernel/internal/container_helpers.h>
-#include <IMP/kernel/internal/TupleRestraint.h>
+#include <IMP/internal/container_helpers.h>
+#include <IMP/internal/TupleRestraint.h>
 #include <boost/functional/hash/hash.hpp>
 #include <IMP/Optimizer.h>
 #include <limits>

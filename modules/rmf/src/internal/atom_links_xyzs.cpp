@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/Category.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -20,8 +20,8 @@ HierarchyLoadXYZs::HierarchyLoadXYZs(RMF::FileConstHandle f)
 }
 
 void HierarchyLoadXYZs::setup_particle(
-    RMF::NodeConstHandle n, kernel::Model *m, kernel::ParticleIndex p,
-    const kernel::ParticleIndexes &rigid_bodies) {
+    RMF::NodeConstHandle n, Model *m, ParticleIndex p,
+    const ParticleIndexes &rigid_bodies) {
   if (!ip_factory_.get_is(n)) return;
   if (!core::XYZ::get_is_setup(m, p)) core::XYZ::setup_particle(m, p);
   /* If there is a rigid body parent set up, add this particle as a child
@@ -63,8 +63,8 @@ void HierarchyLoadXYZs::setup_particle(
 }
 
 void HierarchyLoadXYZs::link_particle(
-    RMF::NodeConstHandle n, kernel::Model *m, kernel::ParticleIndex p,
-    const kernel::ParticleIndexes &rigid_bodies) {
+    RMF::NodeConstHandle n, Model *m, ParticleIndex p,
+    const ParticleIndexes &rigid_bodies) {
   if (!ip_factory_.get_is(n)) return;
   if (rigid_bodies.empty()) {
     global_.push_back(std::make_pair(n.get_id(), p));
@@ -99,8 +99,8 @@ void HierarchyLoadXYZs::load(RMF::FileConstHandle fh, Model *m) {
 HierarchySaveXYZs::HierarchySaveXYZs(RMF::FileHandle f) : ip_factory_(f) {}
 
 void HierarchySaveXYZs::setup_node(
-    kernel::Model *m, kernel::ParticleIndex p, RMF::NodeHandle n,
-    const kernel::ParticleIndexes &rigid_bodies) {
+    Model *m, ParticleIndex p, RMF::NodeHandle n,
+    const ParticleIndexes &rigid_bodies) {
   if (!core::XYZ::get_is_setup(m, p)) return;
   if (rigid_bodies.empty()) {
     global_.push_back(std::make_pair(n.get_id(), p));
@@ -121,12 +121,12 @@ void HierarchySaveXYZs::setup_node(
          is that when the RMF is read back in, these particles will become
          "real" nonrigid members. */
       rigid_nonmember_.push_back(std::make_pair(n.get_id(),
-                           kernel::ParticleIndexPair(p, rigid_bodies.back())));
+                           ParticleIndexPair(p, rigid_bodies.back())));
     }
   }
 }
 
-void HierarchySaveXYZs::save(kernel::Model *m, RMF::FileHandle fh) {
+void HierarchySaveXYZs::save(Model *m, RMF::FileHandle fh) {
   IMP_FOREACH(Pair pp, global_) {
     copy_to_frame_particle(core::XYZ(m, pp.second).get_coordinates(),
                            fh.get_node(pp.first), ip_factory_);

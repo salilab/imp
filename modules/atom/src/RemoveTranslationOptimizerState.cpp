@@ -14,9 +14,9 @@
 IMPATOM_BEGIN_NAMESPACE
 
 RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
-    kernel::Model *m, kernel::ParticleIndexesAdaptor pis)
-    : kernel::OptimizerState(m, "RemoveTranslationOptimizerState%1%") {
-  IMP_FOREACH(kernel::ParticleIndex pi, pis) {
+    Model *m, ParticleIndexesAdaptor pis)
+    : OptimizerState(m, "RemoveTranslationOptimizerState%1%") {
+  IMP_FOREACH(ParticleIndex pi, pis) {
     pis_.push_back(m->get_particle(pi));
   }
 }
@@ -27,13 +27,13 @@ void RemoveTranslationOptimizerState::do_update(unsigned int) {
 
 void RemoveTranslationOptimizerState::remove_translation() const {
   set_was_used(true);
-  kernel::Particle *p0 = *pis_.begin();
+  Particle *p0 = *pis_.begin();
   core::XYZ d0(p0);
   algebra::Vector3D coords = d0.get_coordinates();
 
-  for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
+  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
        ++pi) {
-    kernel::Particle *p = *pi;
+    Particle *p = *pi;
     core::XYZ d(p);
     d.set_coordinates(d.get_coordinates() - coords);
   }

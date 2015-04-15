@@ -42,14 +42,14 @@ class IMPEMEXPORT CoarseConvolution {
    */
   /*
   static float evaluate(DensityMap &f, SampledDensityMap &g,
-                        const kernel::Particles &g_ps,
+                        const Particles &g_ps,
                         std::vector<float> &dvx, std::vector<float>&dvy,
                         std::vector<float>&dvz, float scalefac, bool lderiv);
   */
   /*
   static void calc_derivatives(const DensityMap &comp1,
                               SampledDensityMap &comp2,
-                              const kernel::Particles &ps_comp2,
+                              const Particles &ps_comp2,
                               const float &scalefac,
                               std::vector<float> &dvx, std::vector<float>&dvy,
                               std::vector<float>&dvz);

@@ -11,7 +11,7 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/SingletonScore.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -21,8 +21,8 @@ IMPISD_BEGIN_NAMESPACE
     where \f$kappa\f$ is the concentration parameter.
     Default values: \f$R_0=1\f$ and \f$c=10\f$
  */
-class IMPISDEXPORT vonMisesKappaConjugateRestraint : public kernel::Restraint {
-  base::Pointer<kernel::Particle> kappa_;
+class IMPISDEXPORT vonMisesKappaConjugateRestraint : public Restraint {
+  base::Pointer<Particle> kappa_;
   double old_kappaval;
   bool bessel_init_;
   double I0_, I1_;
@@ -30,14 +30,14 @@ class IMPISDEXPORT vonMisesKappaConjugateRestraint : public kernel::Restraint {
 
  public:
   //! Create the restraint.
-  vonMisesKappaConjugateRestraint(kernel::Model *m, kernel::Particle *kappa,
+  vonMisesKappaConjugateRestraint(Model *m, Particle *kappa,
                                   double c = 10.0, double R0 = 0.0);
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(vonMisesKappaConjugateRestraint);
 
   virtual double get_probability() const;

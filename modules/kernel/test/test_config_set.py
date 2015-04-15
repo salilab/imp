@@ -11,9 +11,9 @@ ik2 = IMP.IntKey("i2")
 sk0 = IMP.StringKey("s0")
 sk1 = IMP.StringKey("s1")
 sk2 = IMP.StringKey("s2")
-pk0 = IMP.kernel.ParticleIndexKey("p0")
-pk1 = IMP.kernel.ParticleIndexKey("p1")
-pk2 = IMP.kernel.ParticleIndexKey("p2")
+pk0 = IMP.ParticleIndexKey("p0")
+pk1 = IMP.ParticleIndexKey("p1")
+pk2 = IMP.ParticleIndexKey("p2")
 
 
 class Tests(IMP.test.TestCase):
@@ -96,12 +96,12 @@ class Tests(IMP.test.TestCase):
     def _make_things(self):
         IMP.base.set_log_level(IMP.MEMORY)
         print("starting")
-        m = IMP.kernel.Model("config set")
+        m = IMP.Model("config set")
         print("adding")
-        ps = [IMP.kernel.Particle(
+        ps = [IMP.Particle(
             m),
-            IMP.kernel.Particle(m),
-            IMP.kernel.Particle(m)]
+            IMP.Particle(m),
+            IMP.Particle(m)]
         print("adding attribute")
         self._add_attributes(ps[0], 0, ps[1])
         self._add_attributes(ps[1], 1, ps[1])

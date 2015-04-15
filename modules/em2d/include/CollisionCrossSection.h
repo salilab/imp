@@ -33,10 +33,10 @@ class IMPEM2DEXPORT CollisionCrossSection : public IMP::base::Object {
                         double pixel_size, double projection_image_size);
 
   /**
-   * kernel::Particles used to calculate their collision cross section
+   * Particles used to calculate their collision cross section
    * @param ps The particles
    */
-  void set_model_particles(const kernel::ParticlesTemp &ps);
+  void set_model_particles(const ParticlesTemp &ps);
 
   //! Returns the collision cross section.
   /** Before using this function you need

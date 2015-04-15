@@ -11,10 +11,10 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-DensityFillingRestraint::DensityFillingRestraint(kernel::Particles ps,
+DensityFillingRestraint::DensityFillingRestraint(Particles ps,
                                                  DensityMap *em_map,
                                                  Float threshold)
-    : kernel::Restraint(IMP::internal::get_model(ps),
+    : Restraint(IMP::internal::get_model(ps),
                         "Envelope penetration restraint") {
   IMP_LOG_TERSE("Load envelope penetration with the following input:"
                 << "number of particles:" << ps.size() << "\n");
@@ -49,7 +49,7 @@ double DensityFillingRestraint::unprotected_evaluate(
 }
 
 ModelObjectsTemp DensityFillingRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp pt;
+  ModelObjectsTemp pt;
   for (ParticleConstIterator it = particles_begin(); it != particles_end();
        ++it) {
     pt.push_back(*it);
@@ -58,6 +58,6 @@ ModelObjectsTemp DensityFillingRestraint::do_get_inputs() const {
 }
 
 IMP_LIST_IMPL(DensityFillingRestraint, Particle, particle, Particle *,
-              kernel::Particles);
+              Particles);
 
 IMPEM_END_NAMESPACE

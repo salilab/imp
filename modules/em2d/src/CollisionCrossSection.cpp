@@ -40,9 +40,9 @@ double CollisionCrossSection::get_ccs() const {
 }
 
 void CollisionCrossSection::set_model_particles(
-    const kernel::ParticlesTemp &ps) {
+    const ParticlesTemp &ps) {
 
-  IMP_LOG_TERSE("CollisionCrossSection: kernel::Model particles set"
+  IMP_LOG_TERSE("CollisionCrossSection: Model particles set"
                 << std::endl);
 
   for (unsigned int i = 0; i < ps.size(); ++i) {

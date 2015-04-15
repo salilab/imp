@@ -24,7 +24,7 @@ class IMPATOMEXPORT Domain : public Hierarchy {
     IntKey begin, end;
   };
   static const Data &get_data();
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 IntRange r) {
     m->add_attribute(get_data().begin, pi, r.first);
     m->add_attribute(get_data().end, pi, r.second);
@@ -32,13 +32,13 @@ class IMPATOMEXPORT Domain : public Hierarchy {
       Hierarchy::setup_particle(m, pi);
     }
   }
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 Domain o) {
     do_setup_particle(m, pi, o.get_index_range());
   }
 
  public:
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_data().begin, pi) &&
            m->get_has_attribute(get_data().end, pi) &&
            Hierarchy::get_is_setup(m, pi);

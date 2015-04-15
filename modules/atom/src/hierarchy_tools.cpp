@@ -22,7 +22,7 @@
 #include <IMP/atom/distance.h>
 #include <IMP/atom/estimates.h>
 #include <IMP/base/set_map_macros.h>
-#include <IMP/kernel/constants.h>
+#include <IMP/constants.h>
 #include <IMP/container/AllBipartitePairContainer.h>
 #include <IMP/container/ConnectingPairContainer.h>
 #include <IMP/container/ListSingletonContainer.h>
@@ -37,7 +37,7 @@
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/core/TableRefiner.h>
 #include <IMP/core/rigid_bodies.h>
-#include <IMP/kernel/generic.h>
+#include <IMP/generic.h>
 #include <algorithm>
 IMPATOM_BEGIN_NAMESPACE
 
@@ -112,8 +112,8 @@ double get_volume_measurement(algebra::Sphere3Ds ss, double resolution) {
 #endif
 }
 
-void setup_as_approximation_internal(kernel::Particle *p,
-                                     const kernel::ParticlesTemp &other,
+void setup_as_approximation_internal(Particle *p,
+                                     const ParticlesTemp &other,
                                      double resolution = -1, double volume = -1,
                                      double mass = -1) {
   IMP_USAGE_CHECK(volume == -1 || volume > 0,
@@ -171,7 +171,7 @@ void setup_as_approximation_internal(kernel::Particle *p,
 }
 }
 
-Hierarchy create_protein(kernel::Model *m, std::string name, double resolution,
+Hierarchy create_protein(Model *m, std::string name, double resolution,
                          int number_of_residues, int first_residue_index,
                          double volume, bool ismol) {
   double mass =
@@ -182,7 +182,7 @@ Hierarchy create_protein(kernel::Model *m, std::string name, double resolution,
   // assume a 20% overlap in the beads to make the protein not too bumpy
   double overlap_frac = .2;
   std::pair<int, double> nr = compute_n(volume, resolution, overlap_frac);
-  Hierarchy pd = Hierarchy::setup_particle(new kernel::Particle(m));
+  Hierarchy pd = Hierarchy::setup_particle(new Particle(m));
   Ints residues;
   for (int i = 0; i < number_of_residues; ++i) {
     residues.push_back(i + first_residue_index);
@@ -191,9 +191,9 @@ Hierarchy create_protein(kernel::Model *m, std::string name, double resolution,
   if (ismol) Molecule::setup_particle(pd);
   pd->set_name(name);
   for (int i = 0; i < nr.first; ++i) {
-    kernel::Particle *pc;
+    Particle *pc;
     if (nr.first > 1) {
-      pc = new kernel::Particle(m);
+      pc = new Particle(m);
       std::ostringstream oss;
       oss << name << "-" << i;
       pc->set_name(oss.str());
@@ -219,9 +219,9 @@ Hierarchy create_protein(kernel::Model *m, std::string name, double resolution,
   return pd;
 }
 
-Hierarchy create_protein(kernel::Model *m, std::string name, double resolution,
+Hierarchy create_protein(Model *m, std::string name, double resolution,
                          const Ints db) {
-  Hierarchy root = Hierarchy::setup_particle(new kernel::Particle(m));
+  Hierarchy root = Hierarchy::setup_particle(new Particle(m));
   Domain::setup_particle(root, IntRange(db.front(), db.back()));
   for (unsigned int i = 1; i < db.size(); ++i) {
     std::ostringstream oss;
@@ -269,9 +269,9 @@ Hierarchy create_approximation_of_residues(const Hierarchies &t) {
       v += get_volume_measurement(ss, 5.0);
     }
   }
-  kernel::Model *mm = t[0]->get_model();
-  kernel::Particle *p = new kernel::Particle(mm);
-  kernel::ParticlesTemp children;
+  Model *mm = t[0]->get_model();
+  Particle *p = new Particle(mm);
+  ParticlesTemp children;
   for (unsigned int i = 0; i < t.size(); ++i) {
     Hierarchies cur = t[i].get_children();
     children.insert(children.end(), cur.begin(), cur.end());
@@ -313,7 +313,7 @@ Hierarchy create_simplified_along_backbone(Hierarchy in, int num_res,
   Hierarchies chains = get_by_type(in, CHAIN_TYPE);
   if (chains.size() > 1) {
     Hierarchy root = Hierarchy::setup_particle(
-        new kernel::Particle(in->get_model(), in->get_name()));
+        new Particle(in->get_model(), in->get_name()));
     for (unsigned int i = 0; i < chains.size(); ++i) {
       Chain chain(chains[i].get_particle());
       root.add_child(
@@ -386,7 +386,7 @@ Hierarchy create_simplified_along_backbone(Chain in,
   double ov= get_volume(in);
   double cv= get_volume(root);
   double scale=1;
-  kernel::ParticlesTemp rt= get_by_type(root, XYZR_TYPE);
+  ParticlesTemp rt= get_by_type(root, XYZR_TYPE);
   Floats radii(rt.size());
   for (unsigned int i=0; i< rt.size(); ++i) {
     core::XYZR d(rt[i]);
@@ -414,8 +414,8 @@ Hierarchy create_simplified_along_backbone(Chain in,
   return root;
 }
 
-void setup_as_approximation(kernel::Particle *p,
-                            const kernel::ParticlesTemp &other,
+void setup_as_approximation(Particle *p,
+                            const ParticlesTemp &other,
                             double resolution) {
   setup_as_approximation_internal(p, other, resolution);
 }
@@ -426,22 +426,22 @@ void setup_as_approximation(Hierarchy h, double resolution) {
 
 namespace {
 void transform_impl(
-    kernel::Model *m, kernel::ParticleIndex cur,
+    Model *m, ParticleIndex cur,
     const algebra::Transformation3D &tr,
-    boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+    boost::unordered_map<ParticleIndex, ParticleIndexes> &
         rigid_bodies) {
   if (core::RigidBody::get_is_setup(m, cur)) {
     core::transform(core::RigidBody(m, cur), tr);
     return;
   }
   if (core::RigidBodyMember::get_is_setup(m, cur)) {
-    kernel::ParticleIndex rb =
+    ParticleIndex rb =
         core::RigidBodyMember(m, cur).get_rigid_body().get_particle_index();
     rigid_bodies[rb].push_back(cur);
   } else if (core::XYZ::get_is_setup(m, cur)) {
     core::transform(core::XYZ(m, cur), tr);
   }
-  IMP_FOREACH(kernel::ParticleIndex pi,
+  IMP_FOREACH(ParticleIndex pi,
               atom::Hierarchy(m, cur).get_children_indexes()) {
     transform_impl(m, pi, tr, rigid_bodies);
   }
@@ -449,14 +449,14 @@ void transform_impl(
 }
 
 void transform(atom::Hierarchy h, const algebra::Transformation3D &tr) {
-  kernel::Model *m = h.get_model();
-  typedef std::pair<kernel::ParticleIndex, kernel::ParticleIndexes> RBP;
-  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
+  Model *m = h.get_model();
+  typedef std::pair<ParticleIndex, ParticleIndexes> RBP;
+  boost::unordered_map<ParticleIndex, ParticleIndexes>
       rigid_bodies;
   transform_impl(m, h.get_particle_index(), tr, rigid_bodies);
   IMP_FOREACH(const RBP & rbp, rigid_bodies) {
     core::RigidBody rb(m, rbp.first);
-    kernel::ParticleIndexes members = rb.get_member_indexes();
+    ParticleIndexes members = rb.get_member_indexes();
     if (rbp.second.size() != members.size()) {
       IMP_USAGE_CHECK(
           rbp.second.size() == members.size(),
@@ -563,7 +563,7 @@ Hierarchy create_simplified_from_volume(Hierarchy h, double resolution) {
 
   IMP::atom::Hierarchies leaves;
   IMP_FOREACH(IMP::algebra::Sphere3D s, out_spheres) {
-    IMP::kernel::ParticleIndex cur = m->add_particle("fragment");
+    IMP::ParticleIndex cur = m->add_particle("fragment");
     leaves.push_back(IMP::atom::Hierarchy::setup_particle(m, cur));
     IMP::core::XYZR::setup_particle(m, cur, s);
   }

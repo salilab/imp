@@ -11,7 +11,7 @@
 
 #include "atom_config.h"
 
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/Particle.h>
 #include <IMP/generic.h>
 #include <map>
@@ -26,7 +26,7 @@ IMPATOM_BEGIN_NAMESPACE
     Currently, no splining or other smoothing is done and no derivatives
     are calculated.
  */
-class IMPATOMEXPORT CAAngleRestraint : public kernel::Restraint
+class IMPATOMEXPORT CAAngleRestraint : public Restraint
 {
 public:
   //! Create the angle restraint.
@@ -42,9 +42,9 @@ public:
                    Floats phi0,  Floats score);
 
   virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  unprotected_evaluate(IMP::DerivativeAccumulator *accum)
      const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(CAAngleRestraint);
 
 private:

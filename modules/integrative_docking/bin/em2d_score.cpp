@@ -14,7 +14,7 @@
 
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/Mass.h>
 
@@ -93,7 +93,7 @@ CA atoms only (default = false)")(
             << trans_file << std::endl;
 
   // read pdbs
-  IMP::kernel::Particles particles, rparticles, lparticles;
+  IMP::Particles particles, rparticles, lparticles;
   IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
   if (residue_level) ff_type = IMP::saxs::CA_ATOMS;
   IMP::saxs::FormFactorTable ft;

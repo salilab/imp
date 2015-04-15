@@ -13,7 +13,7 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 IMP::algebra::DenseGrid3D<float> ComplementarityRestraint::get_grid(
-    const kernel::ParticlesTemp &a, double thickness, double value,
+    const ParticlesTemp &a, double thickness, double value,
     double interior_thickness, double voxel) const {
   internal::ComplementarityGridParameters params;
   params.complementarity_thickness = Floats(1, thickness);
@@ -27,7 +27,7 @@ IMP::algebra::DenseGrid3D<float> ComplementarityRestraint::get_grid(
 }
 
 ComplementarityRestraint::GridObject *ComplementarityRestraint::get_grid_object(
-    core::RigidBody rb, const kernel::ParticlesTemp &a, ObjectKey ok,
+    core::RigidBody rb, const ParticlesTemp &a, ObjectKey ok,
     double thickness, double value, double interior_thickness,
     double voxel) const {
   IMP_USAGE_CHECK(!a.empty(), "No particles passed for excluded volume");
@@ -55,9 +55,9 @@ ComplementarityRestraint::GridObject *ComplementarityRestraint::get_grid_object(
   return dynamic_cast<GridObject *>(rb->get_value(ok));
 }
 ComplementarityRestraint::ComplementarityRestraint(
-    const kernel::ParticlesTemp &a, const kernel::ParticlesTemp &b,
+    const ParticlesTemp &a, const ParticlesTemp &b,
     std::string name)
-    : kernel::Restraint(IMP::internal::get_model(a), name),
+    : Restraint(IMP::internal::get_model(a), name),
       a_(a),
       b_(b),
       rba_(core::RigidMember(a[0]).get_rigid_body()),
@@ -156,7 +156,7 @@ void ComplementarityRestraint::update_voxel() {
 }
 
 ModelObjectsTemp ComplementarityRestraint::do_get_inputs() const {
-  kernel::ParticlesTemp ret = a_;
+  ParticlesTemp ret = a_;
   ret.insert(ret.end(), b_.begin(), b_.end());
   ret.push_back(rba_);
   ret.push_back(rbb_);

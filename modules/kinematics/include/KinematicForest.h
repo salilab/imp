@@ -13,7 +13,7 @@
 #define IMPKINEMATICS_KINEMATIC_FOREST_H
 
 #include "kinematics_config.h"
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/kinematics/TransformationJoint.h>
@@ -41,12 +41,12 @@ IMPKINEMATICS_BEGIN_NAMESPACE
    \see Joint
  */
 class IMPKINEMATICSEXPORT KinematicForest
-    : public base::Object  // or kernel::ModelObject?
+    : public base::Object  // or ModelObject?
       {
  public:
   IMP_OBJECT_METHODS(KinematicForest);
 
-  KinematicForest(kernel::Model* m);
+  KinematicForest(Model* m);
 
   //     TODO: think about what foldtree scheme to use (star?),
   /**
@@ -55,7 +55,7 @@ class IMPKINEMATICSEXPORT KinematicForest
      make sure the internal and external coordinates are synced
      before model updating
   */
-  KinematicForest(kernel::Model* m, IMP::atom::Hierarchy hierarchy);
+  KinematicForest(Model* m, IMP::atom::Hierarchy hierarchy);
 
   /**
      Adds a kinematic edge between parent and child,
@@ -96,7 +96,7 @@ class IMPKINEMATICSEXPORT KinematicForest
   }
 
   // rebuild tree (same topology but change directionality)
-  void reset_root(IMP::kernel::Particle* new_root) {
+  void reset_root(IMP::Particle* new_root) {
     // TODO: implement
     IMP_NOT_IMPLEMENTED;
     IMP_UNUSED(new_root);
@@ -207,7 +207,7 @@ class IMPKINEMATICSEXPORT KinematicForest
   /**
    */
   bool get_is_member(IMP::core::RigidBody rb) const {
-    kernel::Particle* p = rb.get_particle();
+    Particle* p = rb.get_particle();
     return KinematicNode::get_is_setup(p) &&
            nodes_.find(KinematicNode(p)) != nodes_.end();
   }
@@ -245,16 +245,16 @@ class IMPKINEMATICSEXPORT KinematicForest
   // TODO: handle derivatives, and safe getting / setting of them
 
  private:
-  IMP::kernel::Particles get_children(IMP::kernel::Particle parent) const;
+  IMP::Particles get_children(IMP::Particle parent) const;
 
-  IMP::kernel::Particle get_parent(IMP::kernel::Particle child) const;
+  IMP::Particle get_parent(IMP::Particle child) const;
 
 #ifndef SWIG
   friend std::ostream& operator<<(std::ostream& s, const KinematicForest& kt);
 #endif
 
  private:
-  kernel::Model* m_;
+  Model* m_;
 
   bool is_internal_coords_updated_;
   bool is_external_coords_updated_;

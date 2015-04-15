@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/container_macros.h
+ *  \file IMP/container_macros.h
  *  \brief Macros to define containers of objects
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONTAINER_MACROS_H
 #define IMPKERNEL_CONTAINER_MACROS_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/internal/Vector.h>
 #include <IMP/base/SetCheckState.h>
@@ -368,8 +368,8 @@
 
     The macros take the name of the container and the operation to
     peform. In operation, _1 is used to refer to the item using its
-    ContainedIndexType (e.g., IMP::kernel::ParticleIndex in SingletonContainer,
-    or IMP::kernel::ParticleIndexPair in PairContainer).
+    ContainedIndexType (e.g., IMP::ParticleIndex in SingletonContainer,
+    or IMP::ParticleIndexPair in PairContainer).
     The location of this item in the container itself is _2.
     Use it like:
     \code

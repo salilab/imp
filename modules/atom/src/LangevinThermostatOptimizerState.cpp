@@ -15,7 +15,7 @@ IMPATOM_BEGIN_NAMESPACE
 LangevinThermostatOptimizerState::LangevinThermostatOptimizerState(
     Model *m, ParticleIndexesAdaptor pis, Float temperature, double gamma)
     : OptimizerState(m, "LangevinThermostatOptimizerState%1%"),
-      pis_(kernel::get_particles(m, pis)),
+      pis_(get_particles(m, pis)),
       temperature_(temperature),
       gamma_(gamma) {
   IMP_LOG_VERBOSE("Thermostat on " << pis_ << std::endl);
@@ -39,7 +39,7 @@ void LangevinThermostatOptimizerState::rescale_velocities() const {
                            boost::normal_distribution<Float> >
       sampler(base::random_number_generator, mrng);
   for (unsigned int i = 0; i < pis_.size(); ++i) {
-    kernel::Particle *p = pis_[i];
+    Particle *p = pis_[i];
     double mass = Mass(p).get_mass();
     LinearVelocity lv(p);
     lv.set_velocity(c1 * lv.get_velocity()

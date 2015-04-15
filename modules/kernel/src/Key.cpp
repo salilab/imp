@@ -5,12 +5,12 @@
  *
  */
 
-#include "IMP/kernel/Key.h"
+#include "IMP/Key.h"
 #include "IMP/base//exception.h"
-#include "IMP/kernel/base_types.h"
+#include "IMP/base_types.h"
 #include "IMP/base//map.h"
-#include "IMP/kernel/Particle.h"
-#include "IMP/kernel/internal/AttributeTable.h"
+#include "IMP/Particle.h"
+#include "IMP/internal/AttributeTable.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 

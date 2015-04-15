@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
 
     def test_weighted_profile(self):
         """Check profile fitting with weights"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read PDB
         mp1 = IMP.atom.read_pdb(self.get_input_file_name('4cln.pdb'), m,

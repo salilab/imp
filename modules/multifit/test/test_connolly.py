@@ -1,4 +1,3 @@
-import IMP.kernel
 import IMP.test
 import IMP.atom
 import IMP.core
@@ -17,10 +16,10 @@ class Tests(IMP.test.TestCase):
 
     def test_single_atom(self):
         """Test generation of Connolly surface around a single atom"""
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         res = IMP.atom.Residue.setup_particle(p, IMP.atom.ALA)
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         center = IMP.algebra.Vector3D(10., 10., 10.)
         IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(center, 2.265))
         a = IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)

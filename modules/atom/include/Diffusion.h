@@ -13,7 +13,7 @@
 
 #include <IMP/core/XYZR.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/kernel/internal/constants.h>
+#include <IMP/internal/constants.h>
 
 #include <vector>
 #include <limits>
@@ -32,18 +32,18 @@ IMPATOM_BEGIN_NAMESPACE
     \see RigidBodyDiffusion
  */
 class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 Float D) {
     IMP_USAGE_CHECK(XYZ::get_is_setup(m, pi),
                     "Particle must already be an XYZ particle");
     m->add_attribute(get_diffusion_coefficient_key(), pi, D);
   }
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 const algebra::Vector3D &v, Float D) {
     XYZ::setup_particle(m, pi, v);
     do_setup_particle(m, pi, D);
   }
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi);
+  static void do_setup_particle(Model *m, ParticleIndex pi);
 
  public:
   IMP_DECORATOR_METHODS(Diffusion, IMP::core::XYZ);
@@ -53,7 +53,7 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   IMP_DECORATOR_SETUP_0(Diffusion);
 
   //! Return true if the particle is an instance of an Diffusion
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex p) {
+  static bool get_is_setup(Model *m, ParticleIndex p) {
     return m->get_has_attribute(get_diffusion_coefficient_key(), p);
   }
   void set_diffusion_coefficient(double d) {
@@ -75,7 +75,7 @@ IMP_DECORATORS(Diffusion, Diffusions, core::XYZs);
     coefficient. The units on the rotational coefficient are
     \f$radians^2/fs\f$.*/
 class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi);
+  static void do_setup_particle(Model *m, ParticleIndex pi);
 
  public:
   IMP_DECORATOR_METHODS(RigidBodyDiffusion, Diffusion);
@@ -93,7 +93,7 @@ class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
   }
 
   //! Return true if the particle is an instance of an Diffusion
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex p) {
+  static bool get_is_setup(Model *m, ParticleIndex p) {
     return m->get_has_attribute(get_rotational_diffusion_coefficient_key(), p);
   }
 

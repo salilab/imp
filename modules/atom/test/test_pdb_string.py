@@ -15,12 +15,12 @@ class Tests(IMP.test.TestCase):
 
     def test_write(self):
         """Simple test of writing a PDB"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         name = "test.pdb"
         f = open(name, "w")
         # create a pdb file of 5 CA atoms
         for i in range(5):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(i, i, i))
             f.write(IMP.atom.get_pdb_string(IMP.core.XYZ(p).get_coordinates(),
                                             i, IMP.atom.AT_CA, IMP.atom.ALA, 'A', i))
@@ -62,7 +62,7 @@ class Tests(IMP.test.TestCase):
             s.write(line.encode('ascii'))
             s.seek(0)
 
-            m = IMP.kernel.Model()
+            m = IMP.Model()
             pdb = IMP.atom.read_pdb(s, m)
 
             s = BytesIO()
@@ -81,7 +81,7 @@ class Tests(IMP.test.TestCase):
                 b'  2.00  6.40           N\n')
         s.seek(0)
 
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pdb = IMP.atom.read_pdb(s, m)
         atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(atoms), 1)
@@ -106,7 +106,7 @@ class Tests(IMP.test.TestCase):
         s = BytesIO()
         s.write(b'ATOM                          3000.0001000.4002000.600\n')
         s.seek(0)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pdb = IMP.atom.read_pdb(s, m)
         atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(atoms), 1)

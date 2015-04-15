@@ -58,12 +58,12 @@ algebra::Vector3Ds DataPointsAssignment::get_cluster_vectors(int cluster_id)
 
 algebra::Vector3Ds DataPointsAssignment::set_cluster(int cluster_ind) {
   // remove outliers
-  base::Pointer<Model> mdl = new kernel::Model();
-  kernel::ParticlesTemp full_set;  // all points of the cluster
+  base::Pointer<Model> mdl = new Model();
+  ParticlesTemp full_set;  // all points of the cluster
   for (int i = 0; i < data_->get_number_of_data_points(); i++) {
     if (cluster_engine_->is_part_of_cluster(i, cluster_ind)) {
       core::XYZR x = core::XYZR::setup_particle(
-          new kernel::Particle(mdl),
+          new Particle(mdl),
           algebra::Sphere3D(data_->get_vector(i), 1));
       atom::Mass::setup_particle(x, 1);
       full_set.push_back(x);
@@ -126,13 +126,13 @@ void DataPointsAssignment::set_edges(double voxel_size) {
   // create projected density maps for each cluster
   std::vector<base::Pointer<em::SampledDensityMap> > dmaps;
   std::vector<algebra::BoundingBox3D> boxes;
-  base::Pointer<Model> mdl = new kernel::Model();
+  base::Pointer<Model> mdl = new Model();
   for (int i = 0; i < cluster_engine_->get_number_of_clusters(); i++) {
     algebra::Vector3Ds vecs = get_cluster_vectors(i);
-    kernel::ParticlesTemp ps(vecs.size());
+    ParticlesTemp ps(vecs.size());
     for (unsigned int j = 0; j < vecs.size(); j++) {
       core::XYZR x = core::XYZR::setup_particle(
-          new kernel::Particle(mdl), algebra::Sphere3D(vecs[j], voxel_size));
+          new Particle(mdl), algebra::Sphere3D(vecs[j], voxel_size));
       atom::Mass::setup_particle(x, 3.);
       ps[j] = x;
     }

@@ -13,17 +13,17 @@ class Tests(IMP.test.TestCase):
     def test_rops(self):
         """Checking refine pairs pair score"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.kernel.Model()
-        pp = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        pp = IMP.Particle(m)
         hpp = IMP.core.Hierarchy.setup_particle(pp)
         c = []
         for i in range(0, 10):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             hp = IMP.core.Hierarchy.setup_particle(p)
             hpp.add_child(hp)
             c.append(p)
         pr = IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())
-        cps = IMP.kernel._ConstPairScore(1)
+        cps = IMP._ConstPairScore(1)
         rps = IMP.core.RefinedPairsPairScore(pr, cps)
         ppp = (pp, pp)
         print(type(rps))

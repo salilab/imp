@@ -9,7 +9,7 @@
 #define IMPISD_UNIVARIATE_FUNCTIONS_H
 
 #include <IMP/isd/isd_config.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/isd/Nuisance.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/Switching.h>
@@ -98,7 +98,7 @@ class IMPISDEXPORT UnivariateFunction : public base::Object {
   virtual unsigned get_number_of_optimized_particles() const = 0;
 
   //! particle manipulation
-  virtual kernel::ParticlesTemp get_input_particles() const = 0;
+  virtual ParticlesTemp get_input_particles() const = 0;
   virtual ContainersTemp get_input_containers() const = 0;
 
   IMP_REF_COUNTED_DESTRUCTOR(UnivariateFunction);
@@ -109,7 +109,7 @@ class IMPISDEXPORT UnivariateFunction : public base::Object {
  */
 class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
  public:
-  Linear1DFunction(kernel::Particle* a, kernel::Particle* b)
+  Linear1DFunction(Particle* a, Particle* b)
       : UnivariateFunction("Linear1DFunction %1%"), a_(a), b_(b) {
     IMP_LOG_TERSE("Linear1DFunction: constructor" << std::endl);
     a_val_ = Nuisance(a).get_nuisance();
@@ -257,8 +257,8 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
     return count;
   }
 
-  kernel::ParticlesTemp get_input_particles() const {
-    kernel::ParticlesTemp ret;
+  ParticlesTemp get_input_particles() const {
+    ParticlesTemp ret;
     ret.push_back(a_);
     ret.push_back(b_);
     return ret;
@@ -274,7 +274,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
   IMP_OBJECT_METHODS(Linear1DFunction);
 
  private:
-  base::Pointer<kernel::Particle> a_, b_;
+  base::Pointer<Particle> a_, b_;
   double a_val_, b_val_;
 };
 
@@ -291,9 +291,9 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
  */
 class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
  public:
-  GeneralizedGuinierPorodFunction(kernel::Particle* G, kernel::Particle* Rg,
-                                  kernel::Particle* d, kernel::Particle* s,
-                                  kernel::Particle* A)
+  GeneralizedGuinierPorodFunction(Particle* G, Particle* Rg,
+                                  Particle* d, Particle* s,
+                                  Particle* A)
       : UnivariateFunction("GeneralizedGuinierPorodFunction %1%"),
         G_(G),
         Rg_(Rg),
@@ -761,8 +761,8 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
     return count;
   }
 
-  kernel::ParticlesTemp get_input_particles() const {
-    kernel::ParticlesTemp ret;
+  ParticlesTemp get_input_particles() const {
+    ParticlesTemp ret;
     ret.push_back(G_);
     ret.push_back(Rg_);
     ret.push_back(d_);
@@ -798,7 +798,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
     return value;
   }
 
-  base::Pointer<kernel::Particle> G_, Rg_, d_, s_, A_;
+  base::Pointer<Particle> G_, Rg_, d_, s_, A_;
   double G_val_, Rg_val_, d_val_, s_val_, A_val_, q1_param_, D_param_;
 };
 

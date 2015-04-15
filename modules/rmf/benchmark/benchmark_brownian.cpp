@@ -75,11 +75,11 @@ void dummy_f_destructor() {}
 struct It {
   base::Pointer<Model> m;
   atom::Hierarchies chains;
-  base::Pointer<kernel::Particle> sp;
+  base::Pointer<Particle> sp;
 
   base::Pointer<ListSingletonContainer> lsc;
   base::Pointer<ClosePairContainer> cpc;
-  kernel::Restraints rss;
+  Restraints rss;
   base::Pointer<PairScore> lb;
   base::Pointer<container::ExclusiveConsecutivePairFilter> filt;
   base::Pointer<BrownianDynamics> bd;
@@ -92,18 +92,18 @@ FloatKey sk("slack");
 
 It create_particles() {
   It ret;
-  ret.m = new kernel::Model();
+  ret.m = new Model();
   Sphere3D perturb(Vector3D(0, 0, 0), pertub_amount);
   for (unsigned int i = 0; i < (IMP::base::run_quick_test ? 2U : num_x); ++i) {
       for (unsigned int j = 0; j < (IMP::base::run_quick_test ? 2U : num_y); ++j) {
       atom::Hierarchy parent =
-          atom::Hierarchy::setup_particle(new kernel::Particle(ret.m));
+          atom::Hierarchy::setup_particle(new Particle(ret.m));
       std::ostringstream oss;
       oss << "chain " << i << " " << j;
       parent->set_name(oss.str());
       ret.chains.push_back(parent);
       for (unsigned int k = 0; k < num_per_chain; ++k) {
-        IMP_NEW(kernel::Particle, p, (ret.m));
+        IMP_NEW(Particle, p, (ret.m));
         std::ostringstream oss;
         oss << "bead " << k;
         p->set_name(oss.str());
@@ -119,7 +119,7 @@ It create_particles() {
       }
     }
   }
-  ret.sp = new kernel::Particle(ret.m);
+  ret.sp = new Particle(ret.m);
   ret.sp->set_name("parameters");
   ret.sp->add_attribute(sk, 4);
   ret.sp->add_attribute(tsk, 50);
@@ -129,9 +129,9 @@ It create_particles() {
 It create_particles(std::string name) {
   RMF::FileConstHandle r = RMF::open_rmf_file_read_only(name);
   It ret;
-  ret.m = new kernel::Model();
+  ret.m = new Model();
   ret.chains = IMP::rmf::create_hierarchies(r, ret.m);
-  kernel::ParticlesTemp ps = IMP::rmf::create_particles(r, ret.m);
+  ParticlesTemp ps = IMP::rmf::create_particles(r, ret.m);
   IMP_USAGE_CHECK(ps.size() == 1, "Wrong number: " << ps);
   IMP::rmf::load_frame(r, RMF::FrameID(r.get_number_of_frames() - 1));
   if (ps.empty()) {
@@ -149,9 +149,9 @@ It create_restraints(PS0 *link, PS1 *lb, SS *bottom, It in) {
   It ret = in;
 
   PairPredicates pfs;
-  kernel::ParticlesTemp all;
+  ParticlesTemp all;
   for (unsigned int i = 0; i < ret.chains.size(); ++i) {
-    kernel::ParticlesTemp cur = ret.chains[i].get_children();
+    ParticlesTemp cur = ret.chains[i].get_children();
     all.insert(all.end(), cur.begin(), cur.end());
     IMP_NEW(ExclusiveConsecutivePairContainer, cpc, (cur));
     // since they all use the same key
@@ -169,7 +169,7 @@ It create_restraints(PS0 *link, PS1 *lb, SS *bottom, It in) {
   // ret.rss.push_back(pr);
   IMP_NEW(SingletonsRestraint, sr, (bottom, ret.lsc));
   ret.rss.push_back(sr);
-  kernel::Restraints all_restraints = ret.rss;
+  Restraints all_restraints = ret.rss;
   all_restraints.push_back(pr);
   ret.bd = new BrownianDynamics(ret.m);
   ret.bd->set_scoring_function(all_restraints);
@@ -189,7 +189,7 @@ double simulate(It it, int ns) {
 
 void update_slack_estimate(It it) {
   std::cout << "Estimating slack " << std::endl;
-  kernel::Restraints rt = it.bd->get_scoring_function()->create_restraints();
+  Restraints rt = it.bd->get_scoring_function()->create_restraints();
   double slack = get_slack_estimate(it.lsc->get_particles(), 20, 1,
                                     get_restraints(rt), true, it.bd, it.cpc);
   it.sp->set_value(FloatKey("slack"), slack);
@@ -216,15 +216,15 @@ void initialize(It it) {
   update_slack_estimate(it);
 }
 
-void rigidify(const kernel::ParticlesTemp &ps, bool no_members) {
-  kernel::Model *m = ps[0]->get_model();
+void rigidify(const ParticlesTemp &ps, bool no_members) {
+  Model *m = ps[0]->get_model();
   for (unsigned int i = 0; i < ps.size(); ++i) {
     XYZR d(ps[i]);
     ReferenceFrame3D rf(Transformation3D(algebra::get_identity_rotation_3d(),
                                          d.get_coordinates()));
     RigidBody rb = RigidBody::setup_particle(ps[i], rf);
     if (!no_members) {
-      IMP_NEW(kernel::Particle, op, (m));
+      IMP_NEW(Particle, op, (m));
       XYZR::setup_particle(op, d.get_sphere());
       rb.add_member(op);
     }
@@ -247,7 +247,7 @@ void do_benchmark(std::string name, PS0 *link, PS1 *lb, SS *bottom, bool rigid,
   It o = create_particles(in);
   if (rigid) {
     for (unsigned int i = 0; i < o.chains.size(); ++i) {
-      rigidify(get_as<kernel::ParticlesTemp>(get_leaves(o.chains[i])),
+      rigidify(get_as<ParticlesTemp>(get_leaves(o.chains[i])),
                no_members);
     }
   }
@@ -287,7 +287,7 @@ int main(int argc, char **argv) {
         std::cout << it.bd->get_scoring_function()->evaluate(false)
                   << " is the score " << std::endl;
         IMP::rmf::save_frame(fh, 0);
-        kernel::Restraints all =
+        Restraints all =
             get_restraints(it.bd->get_scoring_function()->create_restraints());
         for (unsigned int i = 0; i < all.size(); ++i) {
           std::cout << Showable(all[i]) << " " << all[i]->get_last_score()

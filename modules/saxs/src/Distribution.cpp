@@ -170,7 +170,7 @@ void RadialDistributionFunction::read_pr_file(const std::string& file_name) {
 }
 
 DeltaDistributionFunction::DeltaDistributionFunction(
-    const kernel::Particles& particles, Float max_distance, Float bin_size)
+    const Particles& particles, Float max_distance, Float bin_size)
     : Distribution<algebra::Vector3D>(bin_size) {
   get_coordinates(particles, coordinates_);
   get_form_factors(particles, get_default_form_factor_table(), form_factors_,
@@ -181,7 +181,7 @@ DeltaDistributionFunction::DeltaDistributionFunction(
 }
 
 void DeltaDistributionFunction::calculate_derivative_distribution(
-    kernel::Particle* particle) {
+    Particle* particle) {
   init();
 
   algebra::Vector3D particle_coordinate = core::XYZ(particle).get_coordinates();

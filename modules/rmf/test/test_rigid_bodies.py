@@ -11,13 +11,13 @@ class Tests(IMP.test.TestCase):
     def test_navigation(self):
         """Test loading and saving of rigid bodies"""
         for suffix in IMP.rmf.suffixes:
-            m = IMP.kernel.Model()
-            r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            m = IMP.Model()
+            r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             r.set_name("rb")
             rbd = IMP.core.RigidBody.setup_particle(
                 r, IMP.algebra.ReferenceFrame3D())
             for i in range(0, 3):
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 v = IMP.algebra.Vector3D(0, 0, 0)
                 v[i] = 1
                 d = IMP.core.XYZR.setup_particle(p)
@@ -27,7 +27,7 @@ class Tests(IMP.test.TestCase):
                 r.add_child(IMP.atom.Hierarchy.setup_particle(p))
                 rbd.add_member(p)
             for i in range(0, 2):
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 v = IMP.algebra.Vector3D(0, 0, 0)
                 v[i] = 1
                 d = IMP.core.XYZR.setup_particle(p)
@@ -75,8 +75,8 @@ class Tests(IMP.test.TestCase):
     def test_no_match_hierarchy(self):
         """Test rigid body that does not match the hierarchy"""
         for suffix in IMP.rmf.suffixes:
-            m = IMP.kernel.Model()
-            top = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            m = IMP.Model()
+            top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             top.set_name("top")
             tr = IMP.algebra.Transformation3D(
                          IMP.algebra.get_identity_rotation_3d(),
@@ -84,11 +84,11 @@ class Tests(IMP.test.TestCase):
             rbd = IMP.core.RigidBody.setup_particle(IMP.Particle(m),
                                           IMP.algebra.ReferenceFrame3D(tr))
             for child in range(2):
-                r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+                r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
                 r.set_name("r%d" % child)
                 top.add_child(r)
                 for i in range(0, 3):
-                    p = IMP.kernel.Particle(m)
+                    p = IMP.Particle(m)
                     v = IMP.algebra.Vector3D(0, 0, 0)
                     v[i] = 1
                     d = IMP.core.XYZR.setup_particle(p)
@@ -106,8 +106,8 @@ class Tests(IMP.test.TestCase):
     def test_some_rigid(self):
         """Test rigid body where children don't match members"""
         for suffix in IMP.rmf.suffixes:
-            m = IMP.kernel.Model()
-            r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            m = IMP.Model()
+            r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             r.set_name("rb")
             tr = IMP.algebra.Transformation3D(
                          IMP.algebra.get_identity_rotation_3d(),
@@ -116,7 +116,7 @@ class Tests(IMP.test.TestCase):
                                           IMP.algebra.ReferenceFrame3D(tr))
             ps = []
             for i in range(0, 3):
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 ps.append(p)
                 v = IMP.algebra.Vector3D(0, 0, 0)
                 v[i] = 1
@@ -141,8 +141,8 @@ class Tests(IMP.test.TestCase):
     def test_parent_non_rigid(self):
         """Test rigid body where children are rigid but parents are not"""
         for suffix in IMP.rmf.suffixes:
-            m = IMP.kernel.Model()
-            r = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+            m = IMP.Model()
+            r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             r.set_name("rb")
             tr = IMP.algebra.Transformation3D(
                          IMP.algebra.get_identity_rotation_3d(),
@@ -151,7 +151,7 @@ class Tests(IMP.test.TestCase):
                                           IMP.algebra.ReferenceFrame3D(tr))
             hs = []
             for i in range(2):
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 v = IMP.algebra.Vector3D(0, 0, 0)
                 v[i] = 2.
                 d = IMP.core.XYZR.setup_particle(p)

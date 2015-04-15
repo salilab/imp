@@ -20,27 +20,27 @@ class HarmonicLowerBound : public Score {
  public:
   HarmonicLowerBound(double k) : k_(k) {}
   template <unsigned int D>
-  double get_score(kernel::Model *,
-                   const base::Array<D, kernel::ParticleIndex> &,
+  double get_score(Model *,
+                   const base::Array<D, ParticleIndex> &,
                    double distance) const {
     if (distance > 0) return 0;
     return .5 * k_ * algebra::get_squared(distance);
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &p,
+      Model *m, const base::Array<D, ParticleIndex> &p,
       double distance) const {
     if (distance > 0) return DerivativePair(0, 0);
     return DerivativePair(get_score(m, p, distance), k_ * (distance));
   }
   template <unsigned int D>
   double get_maximum_range(
-      kernel::Model *, const base::Array<D, kernel::ParticleIndex> &) const {
+      Model *, const base::Array<D, ParticleIndex> &) const {
     return 0;
   }
   template <unsigned int D>
-  bool get_is_trivially_zero(kernel::Model *,
-                             const base::Array<D, kernel::ParticleIndex> &,
+  bool get_is_trivially_zero(Model *,
+                             const base::Array<D, ParticleIndex> &,
                              double squared_distance) const {
     return squared_distance > 0;
   }

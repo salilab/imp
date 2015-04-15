@@ -20,8 +20,8 @@ class Tests(IMP.test.TestCase):
 
     def test_list_ig(self):
         """Test that interaction graphs of lists decompose"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 3)]
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(0, 3)]
         score = IMP.core.SoftSpherePairScore(1)
         r = IMP.container.PairsRestraint(
             score, [(ps[0], ps[1]), (ps[1], ps[2])])
@@ -33,9 +33,9 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min3(self):
         """Test that showing interaction graphs is fine"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
-        ps = IMP.kernel._create_particles_from_pdb(
+        ps = IMP._create_particles_from_pdb(
             self.get_input_file_name("small_protein.pdb"),
             m)
         # print "radius is ", IMP.core.XYZR(IMP.atom.get_leaves(p)[0]).get_radius()

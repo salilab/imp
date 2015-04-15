@@ -124,7 +124,7 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
                                                       << std::endl);
 }
 
-void ProjectionFinder::set_model_particles(const kernel::ParticlesTemp &ps) {
+void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
   IMP_LOG_TERSE("ProjectionFinder: Setting model particles" << std::endl);
 
   if (parameters_setup_ == false) {
@@ -140,7 +140,7 @@ void ProjectionFinder::set_model_particles(const kernel::ParticlesTemp &ps) {
   }
   masks_manager_->create_masks(model_particles_);
   particles_set_ = true;
-  IMP_LOG_TERSE("ProjectionFinder: kernel::Model particles set" << std::endl);
+  IMP_LOG_TERSE("ProjectionFinder: Model particles set" << std::endl);
 }
 
 void ProjectionFinder::set_fast_mode(unsigned int n) {
@@ -346,7 +346,7 @@ void ProjectionFinder::get_complete_registration() {
   match->set_name("match image");
 
   // Set optimizer
-  IMP_NEW(kernel::Model, scoring_model, ());
+  IMP_NEW(Model, scoring_model, ());
   IMP_NEW(Fine2DRegistrationRestraint, fine2d, (scoring_model));
   IMP_NEW(IMP::gsl::Simplex, simplex_optimizer, (scoring_model));
 

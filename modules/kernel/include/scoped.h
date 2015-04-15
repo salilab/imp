@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/scoped.h
+ *  \file IMP/scoped.h
  *  \brief Various general useful functions for IMP.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_SCOPED_H
 #define IMPKERNEL_SCOPED_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "RestraintSet.h"
 #include "ScoreState.h"
 #include "Model.h"

@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def test_read(self):
         """Check reading a mol2 file containing small molecules"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read Mol2
         root_d = IMP.atom.read_mol2(
@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
 
     def test_write(self):
         """Check that a mol2-created hierarchy can be written to a PDB"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read Mol2
         root_d = IMP.atom.read_mol2(
@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
         print(pdb.getvalue())
         return
 
-        m2 = IMP.kernel.Model()
+        m2 = IMP.Model()
         root_d2 = IMP.atom.read_mol2(
             self.get_input_file_name("1d3d-ligands.mol2"),
             m2, IMP.atom.NonhydrogenMol2Selector())
@@ -63,7 +63,7 @@ class Tests(IMP.test.TestCase):
 
     def test_hao(self):
         """Check that written mol2s look right"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read Mol2
         root_d = IMP.atom.read_mol2(
@@ -81,7 +81,7 @@ class Tests(IMP.test.TestCase):
         # print testout
         self.assertEqual(out.getvalue(), testout)
 
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         root_d = IMP.atom.read_mol2(
             self.get_input_file_name("1d3d-ligands.mol2"),
             m, IMP.atom.NonHydrogenMol2Selector())

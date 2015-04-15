@@ -14,7 +14,7 @@ topology.apply_default_patches()
 
 # Make an IMP Hierarchy (atoms, residues, chains) that corresponds to
 # this topology
-m = IMP.kernel.Model()
+m = IMP.Model()
 h = topology.create_hierarchy(m)
 
 # Generate coordinates for all atoms in the Hierarchy, using CHARMM internal

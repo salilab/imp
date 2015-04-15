@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Refiner.h
+ *  \file IMP/Refiner.h
  *  \brief Refine a particle into a list of particles.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_REFINER_H
 #define IMPKERNEL_REFINER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "Particle.h"
 #include "internal/IndexingIterator.h"

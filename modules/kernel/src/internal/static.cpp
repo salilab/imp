@@ -5,9 +5,9 @@
  *
  */
 
-#include "IMP/kernel/internal/static.h"
-#include "IMP/kernel/Particle.h"
-#include "IMP/kernel/internal/utility.h"
+#include "IMP/internal/static.h"
+#include "IMP/Particle.h"
+#include "IMP/internal/utility.h"
 #include "IMP/base//set.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE

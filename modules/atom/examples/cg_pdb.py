@@ -5,7 +5,7 @@
 from __future__ import print_function
 import IMP.atom
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 full = IMP.atom.read_pdb(IMP.atom.get_example_path("example_protein.pdb"), m)
 chain = IMP.atom.get_by_type(full, IMP.atom.CHAIN_TYPE)[0]
 print(chain)

@@ -13,10 +13,10 @@ IMPCORE_BEGIN_NAMESPACE
 namespace internal {
 
 display::Geometries get_rigid_body_derivative_geometries(
-    kernel::Model *m, kernel::ParticleIndex pi) {
+    Model *m, ParticleIndex pi) {
   RigidBody d(m, pi);
   display::Geometries ret;
-  kernel::Particles ms = get_as<kernel::Particles>(d.get_members());
+  Particles ms = get_as<Particles>(d.get_members());
   algebra::Transformation3D otr =
       d.get_reference_frame().get_transformation_to();
   algebra::VectorD<4> rderiv = d.get_rotational_derivatives();
@@ -71,7 +71,7 @@ RigidBodyHierarchyGeometry::RigidBodyHierarchyGeometry(
 }
 
 RigidBodyHierarchyGeometry::RigidBodyHierarchyGeometry(
-    RigidBody rb, const kernel::ParticlesTemp &constituents)
+    RigidBody rb, const ParticlesTemp &constituents)
     : display::SingletonGeometry(rb) {
   h_ = internal::get_rigid_body_hierarchy(
       rb, IMP::internal::get_index(constituents), ObjectKey());
@@ -100,14 +100,14 @@ display::Geometries RigidBodyHierarchyGeometry::get_components() const {
   return ret;
 }
 
-RigidBodyTorque::RigidBodyTorque(kernel::Particle *p)
+RigidBodyTorque::RigidBodyTorque(Particle *p)
     : display::SegmentGeometry(extract_geometry(p), p->get_name()), p_(p) {}
 const algebra::Segment3D &RigidBodyTorque::get_geometry() const {
   cache_ = extract_geometry(p_);
   return cache_;
 }
 
-algebra::Segment3D RigidBodyTorque::extract_geometry(kernel::Particle *p) {
+algebra::Segment3D RigidBodyTorque::extract_geometry(Particle *p) {
   RigidBody rb(p);
   algebra::Vector3D o = rb.get_coordinates();
   algebra::Vector3D ep = o + rb.get_torque();

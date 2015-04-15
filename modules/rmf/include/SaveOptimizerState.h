@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/SaveOptimizerState.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -14,7 +14,7 @@
 #include "restraint_io.h"
 #include "particle_io.h"
 #include "geometry_io.h"
-#include <IMP/kernel/OptimizerState.h>
+#include <IMP/OptimizerState.h>
 #include <IMP/atom/Simulator.h>
 
 IMPRMF_BEGIN_NAMESPACE
@@ -22,22 +22,22 @@ IMPRMF_BEGIN_NAMESPACE
 /** Periodically call the save_frame() method to save the everything
     associated with the RMF file to file.
 */
-class IMPRMFEXPORT SaveOptimizerState : public kernel::OptimizerState {
+class IMPRMFEXPORT SaveOptimizerState : public OptimizerState {
   RMF::FileHandle fh_;
   base::WeakPointer<atom::Simulator> sim_;
 
  public:
-  SaveOptimizerState(kernel::Model *m, RMF::FileHandle fh);
+  SaveOptimizerState(Model *m, RMF::FileHandle fh);
 #ifndef IMP_DOXYGEN
   IMP_LIST_ACTION(public, Hierarchy, Hierarchies, hierarchy, hierarchies,
-                  kernel::Particle *, kernel::Particles,
+                  Particle *, Particles,
   { rmf::add_hierarchy(fh_, atom::Hierarchy(obj)); }, {}, {});
   IMP_LIST_ACTION(public, Restraint, estraints, restraint, restraints,
-                  kernel::Restraint *, kernel::Restraints,
-  { rmf::add_restraints(fh_, kernel::RestraintsTemp(1, obj)); }, {}, {});
+                  Restraint *, Restraints,
+  { rmf::add_restraints(fh_, RestraintsTemp(1, obj)); }, {}, {});
   IMP_LIST_ACTION(public, Particle, Particles, particle, particles,
-                  kernel::Particle *, kernel::Particles,
-  { rmf::add_particles(fh_, kernel::ParticlesTemp(1, obj)); }, {}, {});
+                  Particle *, Particles,
+  { rmf::add_particles(fh_, ParticlesTemp(1, obj)); }, {}, {});
   IMP_LIST_ACTION(public, Geometry, Geometries, geometry, geometries,
                   display::Geometry *, display::Geometries,
   { rmf::add_geometries(fh_, display::GeometriesTemp(1, obj)); }, {}, {});
@@ -50,7 +50,7 @@ class IMPRMFEXPORT SaveOptimizerState : public kernel::OptimizerState {
   //! Write a frame with a given name
   void update_always(std::string name);
   // to prevent it from being hidden
-  void update_always() { kernel::OptimizerState::update_always(); }
+  void update_always() { OptimizerState::update_always(); }
   virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(SaveOptimizerState);
 };

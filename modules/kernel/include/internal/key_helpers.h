@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_KEY_HELPERS_H
 #define IMPKERNEL_INTERNAL_KEY_HELPERS_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include <IMP/base/exception.h>
 #include <boost/unordered_map.hpp>
 #include <IMP/base/Vector.h>

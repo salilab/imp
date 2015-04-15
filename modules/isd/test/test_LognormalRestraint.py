@@ -22,10 +22,10 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         # IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
-        self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
-        self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.m = IMP.Model()
+        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        self.mu = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.x = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
         self.locations = [self.x, self.mu]
         self.all = self.locations + [self.sigma]
         self.DA = IMP.DerivativeAccumulator()
@@ -137,7 +137,7 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
     def testFail(self):
         "Test failures of LognormalRestraint(3)"
         if IMP.base.get_check_level() >= IMP.base.USAGE:
-            dummy = IMP.kernel.Particle(self.m)
+            dummy = IMP.Particle(self.m)
             self.assertRaises(
                 IMP.base.UsageException, LognormalRestraint, dummy,
                 self.all[1], self.all[2])
@@ -155,10 +155,10 @@ class TestLognormalRestraintSimple21(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         # IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
+        self.m = IMP.Model()
         self.sigma = 2.0
-        self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
-        self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.mu = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.x = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
         self.locations = [self.x, self.mu]
         self.all = self.locations + [self.sigma]
         self.DA = IMP.DerivativeAccumulator()
@@ -265,10 +265,10 @@ class TestLognormalRestraintSimple22(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         # IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.m = IMP.Model()
+        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
         self.mu = 1.0
-        self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.x = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
         self.locations = [self.x, self.mu]
         self.all = self.locations + [self.sigma]
         self.DA = IMP.DerivativeAccumulator()
@@ -376,9 +376,9 @@ class TestLognormalRestraintSimple23(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         # IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
-        self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.m = IMP.Model()
+        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        self.mu = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
         self.x = 2.0
         self.locations = [self.x, self.mu]
         self.all = self.locations + [self.sigma]
@@ -487,8 +487,8 @@ class TestLognormalRestraintSimple11(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         # IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.m = IMP.Model()
+        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
         self.mu = 1.0
         self.x = 2.0
         self.locations = [self.x, self.mu]
@@ -588,9 +588,9 @@ class TestLognormalRestraintSimple12(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         # IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
+        self.m = IMP.Model()
         self.sigma = 2.0
-        self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.mu = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
         self.x = 2.0
         self.locations = [self.x, self.mu]
         self.all = self.locations + [self.sigma]
@@ -680,10 +680,10 @@ class TestLognormalRestraintSimple13(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         # IMP.base.set_log_level(IMP.MEMORY)
         IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
+        self.m = IMP.Model()
         self.sigma = 2.0
         self.mu = 1.0
-        self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.x = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
         self.locations = [self.x, self.mu]
         self.all = self.locations + [self.sigma]
         self.DA = IMP.DerivativeAccumulator()

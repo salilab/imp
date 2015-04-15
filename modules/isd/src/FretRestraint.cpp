@@ -25,10 +25,10 @@ IMPISD_BEGIN_NAMESPACE
 // First constructor, with particles for multiple donors and acceptors
 // Bayesian parameters are: kda, Ida, R0, uncertainty,
 // and photobleaching survival rate
-FretRestraint::FretRestraint(kernel::Particles pd, kernel::Particles pa,
-                             kernel::Particle *kda, kernel::Particle *Ida,
-                             kernel::Particle *R0, kernel::Particle *sigma0,
-                             kernel::Particle *Pbl, double fexp, double m_d,
+FretRestraint::FretRestraint(Particles pd, Particles pa,
+                             Particle *kda, Particle *Ida,
+                             Particle *R0, Particle *sigma0,
+                             Particle *Pbl, double fexp, double m_d,
                              double m_a)
     : Restraint(kda->get_model(), "FretRestraint%1%"),
       pd_(pd),
@@ -57,9 +57,9 @@ FretRestraint::FretRestraint(kernel::Particles pd, kernel::Particles pa,
 // Second constructor, used when feeding ensamble averages of Forster factor
 // Bayesian parameters: kda, Ida, sumFi, uncertainty,
 // and photobleaching survival rate
-FretRestraint::FretRestraint(kernel::Particle *kda, kernel::Particle *Ida,
-                             kernel::Particle *sumFi, kernel::Particle *sigma0,
-                             kernel::Particle *Pbl, double fexp)
+FretRestraint::FretRestraint(Particle *kda, Particle *Ida,
+                             Particle *sumFi, Particle *sigma0,
+                             Particle *Pbl, double fexp)
     : Restraint(kda->get_model(), "FretRestraint%1%"),
       kda_(kda),
       Ida_(Ida),
@@ -72,14 +72,14 @@ FretRestraint::FretRestraint(kernel::Particle *kda, kernel::Particle *Ida,
 // Third constructor, with model for linker noise, only single molecule for now
 // Bayesian parameters: kda, Ida, uncertainty,
 // and photobleaching survival rate
-FretRestraint::FretRestraint(kernel::Particle *prd, algebra::Vector3D GMMterd,
+FretRestraint::FretRestraint(Particle *prd, algebra::Vector3D GMMterd,
                              algebra::Vector3Ds GMMctrd, Floats GMMwd,
-                             Floats GMMsigd, kernel::Particle *pra,
+                             Floats GMMsigd, Particle *pra,
                              algebra::Vector3D GMMtera,
                              algebra::Vector3Ds GMMctra, Floats GMMwa,
-                             Floats GMMsiga, kernel::Particle *kda,
-                             kernel::Particle *Ida, kernel::Particle *sigma0,
-                             kernel::Particle *Pbl, FretData *data, double fexp)
+                             Floats GMMsiga, Particle *kda,
+                             Particle *Ida, Particle *sigma0,
+                             Particle *Pbl, FretData *data, double fexp)
     : Restraint(kda->get_model(), "FretRestraint%1%"),
       prd_(prd),
       GMMterd_(GMMterd),
@@ -245,7 +245,7 @@ double FretRestraint::get_model_fretr_type_0() const {
 }
 
 algebra::Vector3Ds FretRestraint::get_current_centers(
-    kernel::Particle *p, const algebra::Vector3Ds &ctrs) const {
+    Particle *p, const algebra::Vector3Ds &ctrs) const {
 
   algebra::Vector3Ds new_ctrs;
   for (unsigned i = 0; i < ctrs.size(); ++i) {
@@ -255,7 +255,7 @@ algebra::Vector3Ds FretRestraint::get_current_centers(
 }
 
 algebra::Vector3D FretRestraint::get_current_center(
-    kernel::Particle *p, const algebra::Vector3D &ctr) const {
+    Particle *p, const algebra::Vector3D &ctr) const {
 
   algebra::ReferenceFrame3D rf = core::RigidBody(p).get_reference_frame();
   return rf.get_global_coordinates(ctr);
@@ -341,7 +341,7 @@ double FretRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp FretRestraint::do_get_inputs() const {
-  kernel::ParticlesTemp ret;
+  ParticlesTemp ret;
   ret.push_back(Ida_);
   ret.push_back(kda_);
   ret.push_back(sigma0_);

@@ -7,7 +7,7 @@ import IMP.atom
 class PDBReadWriteTest(IMP.test.TestCase):
 
     def _test_round_trip(self, name, selector):
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         p = IMP.atom.read_pdb(self.get_input_file_name(name),
                               m, selector)
         n1 = len(IMP.atom.get_by_type(p, IMP.atom.ATOM_TYPE))
@@ -45,7 +45,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
 
     def test_read_het(self):
         """Check reading a pdb with one protein and a hetatm"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read PDB
         mp = IMP.atom.read_pdb(self.open_input_file("1DQK.pdb"),

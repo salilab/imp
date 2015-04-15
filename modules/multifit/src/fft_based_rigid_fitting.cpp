@@ -314,7 +314,7 @@ FFTFittingOutput *FFTFitting::do_local_fitting(
   // create the sample map
   sampled_map_ = new em::SampledDensityMap(*(low_map_->get_header()));
   sampled_map_->set_was_used(true);
-  kernel::ParticlesTemp mol_ps = core::get_leaves(orig_mol_);
+  ParticlesTemp mol_ps = core::get_leaves(orig_mol_);
   IMP_LOG_TERSE("Projecting probe structure to lattice \n");
   sampled_map_->reset_data();
   sampled_map_->project(core::get_leaves(orig_mol_), margin_ignored_in_conv_[0],
@@ -441,13 +441,13 @@ FFTFittingOutput *FFTFitting::do_local_fitting(
 void FFTFitting::fftw_translational_search(
     const multifit::internal::EulerAngles &rot, int rot_ind) {
   // save original coordinates of the copy mol
-  kernel::ParticlesTemp temp_ps = core::get_leaves(copy_mol_);
+  ParticlesTemp temp_ps = core::get_leaves(copy_mol_);
   algebra::Vector3Ds origs(temp_ps.size());
   for (unsigned int i = 0; i < temp_ps.size(); i++) {
     origs[i] = core::XYZ(temp_ps[i]).get_coordinates();
   }
   internal::rotate_mol(copy_mol_, rot.psi, rot.theta, rot.phi);
-  kernel::ParticlesTemp mol_ps = core::get_leaves(orig_mol_);
+  ParticlesTemp mol_ps = core::get_leaves(orig_mol_);
   sampled_map_->reset_data(0.);
   sampled_map_->project(temp_ps, margin_ignored_in_conv_[0],
                         margin_ignored_in_conv_[1], margin_ignored_in_conv_[2],

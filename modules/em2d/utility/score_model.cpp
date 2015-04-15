@@ -207,10 +207,10 @@ int main(int argc, char **argv) {
 
   // Read model file
   fn_model = vm["mod"].as<str>();
-  IMP_NEW(IMP::kernel::Model, model, ());
+  IMP_NEW(IMP::Model, model, ());
   IMP::base::Pointer<atom::ATOMPDBSelector> sel = new atom::ATOMPDBSelector();
   atom::Hierarchy mh = atom::read_pdb(fn_model, model, sel);
-  IMP::kernel::ParticlesTemp ps = core::get_leaves(mh);
+  IMP::ParticlesTemp ps = core::get_leaves(mh);
 
   // Deal with the generation of projections
   digest_parameter("projs", vm, opt);

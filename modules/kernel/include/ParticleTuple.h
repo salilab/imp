@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/ParticleTuple.h
+ *  \file IMP/ParticleTuple.h
  *  \brief Classes to handle individual model particles.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.

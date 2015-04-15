@@ -14,7 +14,7 @@
 #include "rigid_bodies.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Refiner.h>
 #include "RigidClosePairsFinder.h"
@@ -37,17 +37,17 @@ IMPCORE_BEGIN_NAMESPACE
     \note Changing the set of particles in the SingletonContainer is not
     currently supported after the first evaluate call.
  */
-class IMPCOREEXPORT ExcludedVolumeRestraint : public kernel::Restraint {
+class IMPCOREEXPORT ExcludedVolumeRestraint : public Restraint {
   base::PointerMember<SingletonContainer> sc_;
-  mutable kernel::ParticleIndexPairs cur_list_;
+  mutable ParticleIndexPairs cur_list_;
   mutable bool was_bad_;
   mutable bool initialized_;
   ObjectKey key_;
   IMP::base::PointerMember<SoftSpherePairScore> ssps_;
   // moved stuff
-  mutable kernel::ParticleIndexes rbs_;
-  mutable kernel::ParticleIndexes xyzrs_;
-  mutable boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
+  mutable ParticleIndexes rbs_;
+  mutable ParticleIndexes xyzrs_;
+  mutable boost::unordered_map<ParticleIndex, ParticleIndexes>
       constituents_;
   double slack_;
   mutable algebra::Sphere3Ds rbs_backup_sphere_;
@@ -85,13 +85,13 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public kernel::Restraint {
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ExcludedVolumeRestraint);
   ;
-  kernel::Restraints do_create_decomposition() const;
-  kernel::Restraints do_create_current_decomposition() const;
+  Restraints do_create_decomposition() const;
+  Restraints do_create_current_decomposition() const;
 #ifndef IMP_DOXYGEN
-  const kernel::ParticleIndexPairs &get_indexes() const { return cur_list_; }
+  const ParticleIndexPairs &get_indexes() const { return cur_list_; }
 #endif
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter, pair_filters,
                   PairPredicate *, PairPredicates, , , );

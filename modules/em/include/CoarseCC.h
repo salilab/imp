@@ -70,7 +70,7 @@ class IMPEMEXPORT CoarseCC : public IMP::base::Object {
   */
   static algebra::Vector3Ds calc_derivatives(const DensityMap *em_map,
                                              const DensityMap *model_map,
-                                             const kernel::Particles &model_ps,
+                                             const Particles &model_ps,
                                              const FloatKey &mass_key,
                                              KernelParameters *kernel_params,
                                              const float &scalefac,

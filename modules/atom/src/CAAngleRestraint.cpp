@@ -22,7 +22,7 @@ IMPATOM_BEGIN_NAMESPACE
 CAAngleRestraint::CAAngleRestraint(
                       Particle* p1, Particle* p2, Particle* p3,
                       Floats phi0, Floats score):
-  kernel::Restraint(p1->get_model(), "CAAngleRestraint%1%")
+  Restraint(p1->get_model(), "CAAngleRestraint%1%")
 {
   p_[0] = p1;
   p_[1] = p2;

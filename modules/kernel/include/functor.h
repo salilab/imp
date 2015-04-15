@@ -1,6 +1,6 @@
 /**
- *  \file IMP/kernel/functor.h    \brief Various important functionality
- *                                       for implementing decorators.
+ *  \file IMP/functor.h    \brief Various important functionality
+ *                                for implementing decorators.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_FUNCTOR_H
 #define IMPKERNEL_FUNCTOR_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "internal/functors.h"
 
 IMPKERNEL_BEGIN_NAMESPACE

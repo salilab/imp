@@ -13,10 +13,10 @@ class Tests(IMP.test.TestCase):
     def test_symmetry(self):
         """Test the transform pair score basics"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.kernel.Model()
-        p0 = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p0 = IMP.Particle(m)
         d0 = IMP.core.XYZ.setup_particle(p0)
-        p1 = IMP.kernel.Particle(m)
+        p1 = IMP.Particle(m)
         d1 = IMP.core.XYZ.setup_particle(p1)
         t = IMP.algebra.Vector3D(0, 1, 0)
         tr = IMP.algebra.Transformation3D(
@@ -66,10 +66,10 @@ class Tests(IMP.test.TestCase):
     def test_symmetry2(self):
         """Test the transform pair score optimization"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.kernel.Model()
-        p0 = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p0 = IMP.Particle(m)
         d0 = IMP.core.XYZ.setup_particle(p0)
-        p1 = IMP.kernel.Particle(m)
+        p1 = IMP.Particle(m)
         d1 = IMP.core.XYZ.setup_particle(p1)
         d0.set_coordinates(IMP.algebra.Vector3D(2, 3, 4))
         d1.set_coordinates(IMP.algebra.Vector3D(20, 20, 40))

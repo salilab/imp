@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/ScoringFunction.h
+ *  \file IMP/ScoringFunction.h
  *  \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_SCORING_FUNCTION_H
 #define IMPKERNEL_SCORING_FUNCTION_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "dependency_graph.h"
 #include "Restraint.h"
@@ -25,7 +25,7 @@ class Model;
 
 //! Represents a scoring function on the model.
 /** The Model has a default scoring function
-    (kernel::Model::get_model_scoring_function()), but it can be useful to use
+    (Model::get_model_scoring_function()), but it can be useful to use
     others in different contexts during a sampling process.
 
 A call to the evaluate() method prompts the following events:
@@ -64,7 +64,7 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   }
 
  public:
-  ScoringFunction(kernel::Model *m, std::string name);
+  ScoringFunction(Model *m, std::string name);
 
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     return ModelObjectsTemp();
@@ -126,7 +126,7 @@ class IMPKERNELEXPORT ScoringFunctionAdaptor :
      that always returns 0.
    */
   static ScoringFunction *get(const Restraints &sf);
-  static ScoringFunction *get(kernel::Model *sf);
+  static ScoringFunction *get(Model *sf);
   static ScoringFunction *get(Restraint *sf);
 
  public:
@@ -141,7 +141,7 @@ class IMPKERNELEXPORT ScoringFunctionAdaptor :
   ScoringFunctionAdaptor(const Restraints &sf) : P(get(sf)) {}
   ScoringFunctionAdaptor(Restraint *sf) : P(get(sf)) {}
 #ifndef IMP_DOXYGEN
-  ScoringFunctionAdaptor(kernel::Model *sf) : P(get(sf)) {}
+  ScoringFunctionAdaptor(Model *sf) : P(get(sf)) {}
 #endif
 };
 

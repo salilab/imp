@@ -11,9 +11,9 @@ class Tests(IMP.test.TestCase):
     def test_perturbed(self):
         """Test reading and writing particles"""
         for suffix in IMP.rmf.suffixes:
-            m = IMP.kernel.Model()
-            p0 = IMP.kernel.Particle(m)
-            p1 = IMP.kernel.Particle(m)
+            m = IMP.Model()
+            p0 = IMP.Particle(m)
+            p1 = IMP.Particle(m)
             ik = IMP.IntKey("hi int")
             fk = IMP.FloatKey("hi float")
             p0.add_attribute(ik, 1)
@@ -43,9 +43,9 @@ class Tests(IMP.test.TestCase):
         """Test reading and writing particles with frames"""
         RMF.set_log_level("trace")
         for suffix in IMP.rmf.suffixes:
-            m = IMP.kernel.Model()
-            p0 = IMP.kernel.Particle(m)
-            p1 = IMP.kernel.Particle(m)
+            m = IMP.Model()
+            p0 = IMP.Particle(m)
+            p1 = IMP.Particle(m)
             ik = IMP.IntKey("hi int")
             fk = IMP.FloatKey("hi float")
             p0.add_attribute(ik, 1)

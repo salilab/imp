@@ -16,7 +16,7 @@
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/RegistrationResult.h"
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/base/log.h>
 #include <IMP/SingletonContainer.h>
 
@@ -29,7 +29,7 @@ IMPEM2D_BEGIN_NAMESPACE
  * the radius of its particles. In the case of atoms, the radius is generated
  * automatically. For other particles the radius has to be provided.
 */
-class IMPEM2DEXPORT Em2DRestraint : public kernel::Restraint {
+class IMPEM2DEXPORT Em2DRestraint : public Restraint {
   //! SingletonContainer to store the particles that are restrained
   base::Pointer<SingletonContainer> particles_container_;
   // mutable because it has to change to get projections while evaluating
@@ -49,7 +49,7 @@ class IMPEM2DEXPORT Em2DRestraint : public kernel::Restraint {
    * Creates the restraint. You are not done yet by creating the restraint.
    * After creating it, you need to call the setup() function
    */
-  Em2DRestraint(kernel::Model *m);
+  Em2DRestraint(Model *m);
 
   /**
    * Initializes the restraint
@@ -132,9 +132,9 @@ class IMPEM2DEXPORT Em2DRestraint : public kernel::Restraint {
     return finder_->get_registration_results();
   }
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(Em2DRestraint);
 };
 

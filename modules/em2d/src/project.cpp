@@ -18,7 +18,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-em2d::Images get_projections(const kernel::ParticlesTemp &ps,
+em2d::Images get_projections(const ParticlesTemp &ps,
                              const algebra::SphericalVector3Ds &vs, int rows,
                              int cols, const ProjectingOptions &options,
                              Strings names) {
@@ -35,7 +35,7 @@ em2d::Images get_projections(const kernel::ParticlesTemp &ps,
   return get_projections(ps, registration_values, rows, cols, options, names);
 }
 
-em2d::Images get_projections(const kernel::ParticlesTemp &ps,
+em2d::Images get_projections(const ParticlesTemp &ps,
                              const RegistrationResults &registration_values,
                              int rows, int cols,
                              const ProjectingOptions &options, Strings names) {
@@ -65,7 +65,7 @@ em2d::Images get_projections(const kernel::ParticlesTemp &ps,
   return projections;
 }
 
-void get_projection(em2d::Image *img, const kernel::ParticlesTemp &ps,
+void get_projection(em2d::Image *img, const ParticlesTemp &ps,
                     const RegistrationResult &reg,
                     const ProjectingOptions &options, MasksManagerPtr masks,
                     String name) {
@@ -99,7 +99,7 @@ void get_projection(em2d::Image *img, const kernel::ParticlesTemp &ps,
   }
 }
 
-void do_project_particles(const kernel::ParticlesTemp &ps, cv::Mat &m2,
+void do_project_particles(const ParticlesTemp &ps, cv::Mat &m2,
                           const algebra::Rotation3D &R,
                           const algebra::Vector3D &translation,
                           const ProjectingOptions &options,
@@ -176,13 +176,13 @@ algebra::Vector2Ds do_project_vectors(const algebra::Vector3Ds &ps,
   return vs;
 }
 
-Images create_evenly_distributed_projections(const kernel::ParticlesTemp &ps,
+Images create_evenly_distributed_projections(const ParticlesTemp &ps,
                                              unsigned int n,
                                              const ProjectingOptions &options) {
   IMP_LOG_TERSE("creating evenly distributed projections" << std::endl);
 
   // Sphere that encloses_the_particles
-  IMP_NEW(kernel::Particle, p, (ps[0]->get_model(), "cover kernel::Particle"));
+  IMP_NEW(Particle, p, (ps[0]->get_model(), "cover Particle"));
   core::XYZs xyzs(ps);
   unsigned int size = get_enclosing_image_size(ps, options.pixel_size, 4);
   RegistrationResults regs = get_evenly_distributed_registration_results(n);
@@ -190,9 +190,9 @@ Images create_evenly_distributed_projections(const kernel::ParticlesTemp &ps,
   return projections;
 }
 
-unsigned int get_enclosing_image_size(const kernel::ParticlesTemp &ps,
+unsigned int get_enclosing_image_size(const ParticlesTemp &ps,
                                       double pixel_size, unsigned int slack) {
-  IMP_NEW(kernel::Particle, p, (ps[0]->get_model(), "cover kernel::Particle"));
+  IMP_NEW(Particle, p, (ps[0]->get_model(), "cover Particle"));
   // core::XYZsTemp xyzs(ps);
   core::XYZs xyzs(ps);
   double diameter = 2 * core::get_enclosing_sphere(xyzs).get_radius();

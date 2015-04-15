@@ -66,7 +66,7 @@ class Tests(IMP.test.TestCase):
         asmb = IMP.multifit.read_settings(
             self.get_input_file_name('align.asmb.input'))
         asmb.set_was_used(True)
-        mdl = IMP.kernel.Model()
+        mdl = IMP.Model()
         mhs = []
         mhs.append(IMP.atom.read_pdb(self.get_input_file_name('twoblobsA.pdb'),
                                      mdl))
@@ -78,7 +78,7 @@ class Tests(IMP.test.TestCase):
 
         old_fitr = IMP.em.FitRestraint
         old_ensmb = IMP.multifit.Ensemble
-        old_add_rsr = IMP.kernel.Model.add_restraint
+        old_add_rsr = IMP.Model.add_restraint
 
         class DummyEnsemble(old_ensmb):
 
@@ -102,14 +102,14 @@ class Tests(IMP.test.TestCase):
         try:
             IMP.em.FitRestraint = DummyFitRestraint
             IMP.multifit.Ensemble = DummyEnsemble
-            IMP.kernel.Model.add_restraint = dummy_add_rsr
+            IMP.Model.add_restraint = dummy_add_rsr
 
             align.report_solutions(asmb, mdl, mhs, None, mapping_data, combs,
                                    'test.comb.out', 'test.scores.out', 3)
         finally:
             IMP.em.FitRestraint = old_fitr
             IMP.multifit.Ensemble = old_ensmb
-            IMP.kernel.Model.add_restraint = old_add_rsr
+            IMP.Model.add_restraint = old_add_rsr
         lines = open('test.comb.out').readlines()
         lines = [x.rstrip(' \r\n') for x in lines]
         self.assertEqual(lines, ['2 0', '0 0', '1 0'])

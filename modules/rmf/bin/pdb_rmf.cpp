@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
   try {
     IMP::Strings files = IMP::base::setup_from_argv(
         argc, argv, "Make an RMF file from a PDB.", "input.pdb output.rmf", 2);
-    IMP_NEW(IMP::kernel::Model, m, ());
+    IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchy h = IMP::atom::read_pdb(files[0], m);
     IMP::atom::add_bonds(h);
     RMF::FileHandle out = RMF::create_rmf_file(files[1]);

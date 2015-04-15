@@ -12,7 +12,7 @@
 #include <IMP/atom/atom_config.h>
 #include "Simulator.h"
 #include "atom_macros.h"
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -21,7 +21,7 @@ IMPATOM_BEGIN_NAMESPACE
 /** Typically this is used in combination with the MolecularDynamics optimizer.
  */
 class IMPATOMEXPORT LinearVelocity : public Decorator {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                      const algebra::Vector3D v = algebra::Vector3D(0, 0, 0)) {
     m->add_attribute(get_velocity_key(0), pi, v[0]);
     m->add_attribute(get_velocity_key(1), pi, v[1]);
@@ -36,7 +36,7 @@ public:
     return keys[i];
   }
 
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_velocity_key(0), pi)
            && m->get_has_attribute(get_velocity_key(1), pi)
            && m->get_has_attribute(get_velocity_key(2), pi);
@@ -47,16 +47,16 @@ public:
   IMP_DECORATOR_SETUP_1(LinearVelocity, algebra::Vector3D, v);
 
   void set_velocity(const algebra::Vector3D &v) {
-    kernel::Model *m = get_model();
-    kernel::ParticleIndex pi = get_particle_index();
+    Model *m = get_model();
+    ParticleIndex pi = get_particle_index();
     m->set_attribute(get_velocity_key(0), pi, v[0]);
     m->set_attribute(get_velocity_key(1), pi, v[1]);
     m->set_attribute(get_velocity_key(2), pi, v[2]);
   }
 
   algebra::Vector3D get_velocity() const {
-    kernel::Model *m = get_model();
-    kernel::ParticleIndex pi = get_particle_index();
+    Model *m = get_model();
+    ParticleIndex pi = get_particle_index();
     return algebra::Vector3D(m->get_attribute(get_velocity_key(0), pi),
                              m->get_attribute(get_velocity_key(1), pi),
                              m->get_attribute(get_velocity_key(2), pi));
@@ -69,7 +69,7 @@ public:
     a quaternion.
  */
 class IMPATOMEXPORT AngularVelocity : public Decorator {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                    const algebra::Vector4D v = algebra::Vector4D(0, 0, 0, 0)) {
     m->add_attribute(get_velocity_key(0), pi, v[0]);
     m->add_attribute(get_velocity_key(1), pi, v[1]);
@@ -85,7 +85,7 @@ public:
     return keys[i];
   }
 
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_velocity_key(0), pi)
            && m->get_has_attribute(get_velocity_key(1), pi)
            && m->get_has_attribute(get_velocity_key(2), pi)
@@ -97,8 +97,8 @@ public:
   IMP_DECORATOR_SETUP_1(AngularVelocity, algebra::Vector4D, v);
 
   void set_velocity(const algebra::Vector4D &v) {
-    kernel::Model *m = get_model();
-    kernel::ParticleIndex pi = get_particle_index();
+    Model *m = get_model();
+    ParticleIndex pi = get_particle_index();
     m->set_attribute(get_velocity_key(0), pi, v[0]);
     m->set_attribute(get_velocity_key(1), pi, v[1]);
     m->set_attribute(get_velocity_key(2), pi, v[2]);
@@ -106,8 +106,8 @@ public:
   }
 
   algebra::Vector4D get_velocity() const {
-    kernel::Model *m = get_model();
-    kernel::ParticleIndex pi = get_particle_index();
+    Model *m = get_model();
+    ParticleIndex pi = get_particle_index();
     return algebra::Vector4D(m->get_attribute(get_velocity_key(0), pi),
                              m->get_attribute(get_velocity_key(1), pi),
                              m->get_attribute(get_velocity_key(2), pi),
@@ -123,7 +123,7 @@ public:
 
     \note RigidBody particles are not handled properly.
 
-    kernel::Particles without optimized x,y,z and nonoptimized mass are skipped.
+    Particles without optimized x,y,z and nonoptimized mass are skipped.
     \see VelocityScalingOptimizerState
     \see LangevinThermostatOptimizerState
     \see BerendsenThermostatOptimizerState
@@ -132,7 +132,7 @@ public:
 class IMPATOMEXPORT MolecularDynamics : public Simulator {
  public:
   /** Score based on the provided model */
-  MolecularDynamics(kernel::Model *m);
+  MolecularDynamics(Model *m);
 
   //! Return the current kinetic energy of the system, in kcal/mol
   virtual Float get_kinetic_energy() const;
@@ -156,10 +156,10 @@ class IMPATOMEXPORT MolecularDynamics : public Simulator {
 
   //! Assign velocities representative of the given temperature
   virtual void assign_velocities(Float temperature);
-  virtual void setup(const kernel::ParticleIndexes &ps) IMP_OVERRIDE;
-  virtual double do_step(const kernel::ParticleIndexes &sc,
+  virtual void setup(const ParticleIndexes &ps) IMP_OVERRIDE;
+  virtual double do_step(const ParticleIndexes &sc,
                          double dt) IMP_OVERRIDE;
-  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const
+  virtual bool get_is_simulation_particle(ParticleIndex p) const
       IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(MolecularDynamics);
@@ -167,14 +167,14 @@ class IMPATOMEXPORT MolecularDynamics : public Simulator {
  protected:
   void initialize();
 
-  virtual void setup_degrees_of_freedom(const kernel::ParticleIndexes &ps);
+  virtual void setup_degrees_of_freedom(const ParticleIndexes &ps);
 
   //! First part of velocity Verlet (update coordinates and half-step velocity)
-  virtual void propagate_coordinates(const kernel::ParticleIndexes &ps,
+  virtual void propagate_coordinates(const ParticleIndexes &ps,
                                      double step_size);
 
   //! Second part of velocity Verlet (update velocity)
-  virtual void propagate_velocities(const kernel::ParticleIndexes &ps,
+  virtual void propagate_velocities(const ParticleIndexes &ps,
                                     double step_size);
 
   //! Cap a velocity component to the maximum value.

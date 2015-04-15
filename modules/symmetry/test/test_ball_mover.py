@@ -11,10 +11,10 @@ class Test(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        self.m = IMP.kernel.Model()
+        self.m = IMP.Model()
         self.ps = []
         for i in range(2):
-            p = IMP.kernel.Particle(self.m)
+            p = IMP.Particle(self.m)
             self.ps.append(p)
             IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0, 0, 0))
         self.ctrs = []

@@ -11,9 +11,9 @@
 
 #include <IMP/atom/atom_config.h>
 
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
-#include <IMP/kernel/internal/units.h>
+#include <IMP/internal/units.h>
 #include <IMP/algebra/Vector3D.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -45,7 +45,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
      \see simulate()
    */
-  Simulator(kernel::Model *m, std::string name = "Simulator %1%",
+  Simulator(Model *m, std::string name = "Simulator %1%",
             double wave_factor = 1.0);
 
   //! Simulate for a given time in fs
@@ -115,7 +115,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   /** If a non-empty
       set of particles was provided explicitly by earlier calls to the
       particles list accessor methods, eg, add_particles(), this set
-      it returned. Otherwise, the associated kernel::Model object is
+      it returned. Otherwise, the associated Model object is
       searched for appropriate particles that have a mass and XYZ
       decorators.
 
@@ -126,7 +126,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
       \see set_particles()
       \see set_particles_order()
   */
-  kernel::ParticlesTemp get_simulation_particles() const;
+  ParticlesTemp get_simulation_particles() const;
 
   /**
      Same as get_simulation_particles(), but returns particle
@@ -134,7 +134,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
      \see get_simulation_particles()
    */
-  kernel::ParticleIndexes get_simulation_particle_indexes() const;
+  ParticleIndexes get_simulation_particle_indexes() const;
 
   /** \name Explicitly accessing the particles list
 
@@ -146,7 +146,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
       by child classes.
       @{
   */
-  IMP_LIST(public, Particle, particle, kernel::Particle *, kernel::Particles);
+  IMP_LIST(public, Particle, particle, Particle *, Particles);
 
  protected:
   /** @} */
@@ -154,16 +154,16 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
   /** A Simulator class can perform setup operations before a series
       of simulation steps is taken. */
-  virtual void setup(const kernel::ParticleIndexes &) {};
+  virtual void setup(const ParticleIndexes &) {};
 
   //! Perform a single time step
   /** \param[in] dt maximum time step value
       \return the amount that time should be advanced.
   */
-  virtual double do_step(const kernel::ParticleIndexes &sc, double dt) = 0;
+  virtual double do_step(const ParticleIndexes &sc, double dt) = 0;
 
   //! Return true if the passed particle is appropriate for the simulation.
-  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const = 0;
+  virtual bool get_is_simulation_particle(ParticleIndex p) const = 0;
 
  private:
   // see simulate() documentation

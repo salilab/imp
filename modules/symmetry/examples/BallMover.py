@@ -12,12 +12,12 @@ K_ = 1.0      # intensity harmonic restraint
 KBT_ = 1.0    # temperature
 
 # create model
-m = IMP.kernel.Model()
+m = IMP.Model()
 
 # add 2 particles
 ps = []
 for i in range(2):
-    p = IMP.kernel.Particle(m)
+    p = IMP.Particle(m)
     d = IMP.core.XYZR.setup_particle(p,
                                      IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0., 0., 0.), 1.0))
     d.set_coordinates_are_optimized(True)
@@ -26,7 +26,7 @@ for i in range(2):
 # add harmonic restraint to distance
 h = IMP.core.Harmonic(0.0, K_)
 sps = IMP.core.SphereDistancePairScore(h)
-pr = IMP.core.PairRestraint(sps, IMP.kernel.ParticlePair(ps[0], ps[1]))
+pr = IMP.core.PairRestraint(sps, IMP.ParticlePair(ps[0], ps[1]))
 m.add_restraint(pr)
 
 # define cell centers

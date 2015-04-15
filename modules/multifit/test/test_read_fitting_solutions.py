@@ -27,7 +27,7 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.SILENT)
         self.setup_filenames()
-        self.mdl = IMP.kernel.Model()
+        self.mdl = IMP.Model()
         self.mhs = IMP.atom.Hierarchies()
         self.ca_sel = IMP.atom.CAlphaPDBSelector()
         # load the components

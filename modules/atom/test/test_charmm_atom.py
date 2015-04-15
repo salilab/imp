@@ -11,20 +11,20 @@ class Tests(IMP.test.TestCase):
 
     def test_create(self):
         """Check creation of CHARMMAtom decorators"""
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)
 
         IMP.atom.CHARMMAtom.setup_particle(p, 'CT1')
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         if IMP.base.get_check_level() != IMP.base.NONE:
             self.assertRaises(IMP.base.UsageException,
                               IMP.atom.CHARMMAtom.setup_particle, p, 'CT1')
 
     def test_get_set(self):
         """Check get/set methods of CHARMMAtom decorators"""
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)
         c = IMP.atom.CHARMMAtom.setup_particle(p, 'CT1')
 
@@ -34,8 +34,8 @@ class Tests(IMP.test.TestCase):
 
     def test_show(self):
         """Check show method of CHARMMAtom decorators"""
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)
         c = IMP.atom.CHARMMAtom.setup_particle(p, 'CT1')
 

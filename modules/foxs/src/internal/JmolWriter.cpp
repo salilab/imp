@@ -27,7 +27,7 @@ unsigned int JmolWriter::MAX_DISPLAY_NUM_ = 30;
 
 void JmolWriter::prepare_jmol_script(
     const std::vector<IMP::saxs::FitParameters>& fps,
-    const std::vector<IMP::kernel::Particles>& particles_vec,
+    const std::vector<IMP::Particles>& particles_vec,
     const std::string filename) {
 
   std::string html_filename = filename + ".html";
@@ -101,7 +101,7 @@ void JmolWriter::prepare_jmol_script(
 
 void JmolWriter::prepare_jmol_script(
     const std::vector<std::string>& pdbs,
-    const std::vector<IMP::kernel::Particles>& particles_vec,
+    const std::vector<IMP::Particles>& particles_vec,
     const std::string filename) {
 
   std::string html_filename = filename + ".html";
@@ -169,7 +169,7 @@ void JmolWriter::prepare_jmol_script(
 
 void JmolWriter::prepare_PDB_file(
     const std::vector<IMP::saxs::FitParameters>& fps,
-    const std::vector<IMP::kernel::Particles>& particles_vec,
+    const std::vector<IMP::Particles>& particles_vec,
     const std::string filename) {
   std::ofstream out_file(filename.c_str());
   // center coordinates and join into a single PDB
@@ -206,7 +206,7 @@ void JmolWriter::prepare_PDB_file(
 }
 
 void JmolWriter::prepare_PDB_file(
-    const std::vector<IMP::kernel::Particles>& particles_vec,
+    const std::vector<IMP::Particles>& particles_vec,
     const std::string filename) {
   std::ofstream out_file(filename.c_str());
   // center coordinates and join into a single PDB

@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONTAINER_CONSTRAINT_H
 #define IMPKERNEL_CONTAINER_CONSTRAINT_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "../base_types.h"
 #include "../Constraint.h"
 
@@ -42,7 +42,7 @@ class ContainerConstraint : public Constraint {
     for (unsigned int i = 0; i < ps.size(); ++i) {
       {
         ModelObjectsTemp cur;
-        cur += IMP::kernel::get_particles(get_model(), flatten(ps[i]));
+        cur += IMP::get_particles(get_model(), flatten(ps[i]));
         cur.push_back(c_);
         ret.push_back(cur);
       }

@@ -13,9 +13,9 @@
 #include "Diffusion.h"
 #include "Simulator.h"
 #include "atom_macros.h"
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
-#include <IMP/kernel/internal/units.h>
+#include <IMP/internal/units.h>
 #include <IMP/algebra/Vector3D.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -36,7 +36,7 @@ class SimulationParameters;
     optimizer assumes the scoring function to be energy in kcal/mol, and the xyz
     coordinates to be in angstroms and the diffusion coefficient of
     each particle be in \f$A^2/fs\f$ (or \f$Radian^2/fs\f$ for rotational
-    diffusion coefficient).  kernel::Particles without optimized x,y,z
+    diffusion coefficient).  Particles without optimized x,y,z
     and nonoptimized D are skipped.
 
     The optimizer can either automatically determine which particles
@@ -79,7 +79,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
      @note wave_factor is an advanced feature - if you're not sure, just use
                        its default, see also Simulator::simulate_wave()
   */
-  BrownianDynamics(kernel::Model *m, std::string name = "BrownianDynamics%1%",
+  BrownianDynamics(Model *m, std::string name = "BrownianDynamics%1%",
                    double wave_factor = 1.0);
   void set_maximum_move(double ms) { max_step_ = ms; }
   void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
@@ -87,20 +87,20 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   IMP_OBJECT_METHODS(BrownianDynamics);
 
  private:
-  virtual void setup(const kernel::ParticleIndexes &ps) IMP_OVERRIDE;
-  virtual double do_step(const kernel::ParticleIndexes &sc,
+  virtual void setup(const ParticleIndexes &ps) IMP_OVERRIDE;
+  virtual double do_step(const ParticleIndexes &sc,
                          double dt) IMP_OVERRIDE;
-  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const
+  virtual bool get_is_simulation_particle(ParticleIndex p) const
       IMP_OVERRIDE;
 
  private:
-  void advance_chunk(double dtfs, double ikt, const kernel::ParticleIndexes &ps,
+  void advance_chunk(double dtfs, double ikt, const ParticleIndexes &ps,
                      unsigned int begin, unsigned int end);
-  void advance_coordinates_1(kernel::ParticleIndex pi, unsigned int i,
+  void advance_coordinates_1(ParticleIndex pi, unsigned int i,
                              double dtfs, double ikT);
-  void advance_coordinates_0(kernel::ParticleIndex pi, unsigned int i,
+  void advance_coordinates_0(ParticleIndex pi, unsigned int i,
                              double dtfs, double ikT);
-  void advance_orientation_0(kernel::ParticleIndex pi, double dtfs, double ikT);
+  void advance_orientation_0(ParticleIndex pi, double dtfs, double ikT);
 
   double max_step_;
   bool srk_;

@@ -19,12 +19,12 @@ kcal2mod = 4.1868e-4
 cmass = 12.011
 
 
-class XTransRestraint(IMP.kernel.Restraint):
+class XTransRestraint(IMP.Restraint):
 
     """Attempt to move the whole system along the x axis"""
 
     def __init__(self, m, strength):
-        IMP.kernel.Restraint.__init__(self, m, "XTransRestraint %1%")
+        IMP.Restraint.__init__(self, m, "XTransRestraint %1%")
         self.strength = strength
 
     def unprotected_evaluate(self, accum):
@@ -82,10 +82,10 @@ class Tests(IMP.test.TestCase):
         """Set up particles and optimizer"""
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(0)
-        self.model = IMP.kernel.Model()
+        self.model = IMP.Model()
         self.particles = []
         self.particles.append(IMP.isd.Nuisance.setup_particle(
-            IMP.kernel.Particle(self.model), -43.0))
+            IMP.Particle(self.model), -43.0))
         self.particles[-1].set_nuisance_is_optimized(True)
         self.particles[-1].add_attribute(masskey, cmass, False)
         self.md = IMP.isd.MolecularDynamics(self.model)
@@ -149,7 +149,7 @@ class Tests(IMP.test.TestCase):
 
     def test_non_xyz(self):
         """Should skip nuisance particles without xyz attributes"""
-        p = IMP.kernel.Particle(self.model)
+        p = IMP.Particle(self.model)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
         self.md.optimize(100)
 
@@ -174,7 +174,7 @@ class Tests(IMP.test.TestCase):
         # large number of particles:
         for i in range(500):
             self.particles.append(IMP.isd.Nuisance.setup_particle(
-                IMP.kernel.Particle(self.model), random.uniform(-100, 100)))
+                IMP.Particle(self.model), random.uniform(-100, 100)))
             self.particles[-1].set_nuisance_is_optimized(True)
             self.particles[-1].add_attribute(masskey, cmass, False)
         # Initial temperature should be zero:

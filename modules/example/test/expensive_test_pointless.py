@@ -11,9 +11,9 @@ class DistanceTests(IMP.test.TestCase):
 
     def test_symmetry(self):
         """Test something pointless and slow"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         for i in range(0, 100000):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
 
 if __name__ == '__main__':
     IMP.test.main()

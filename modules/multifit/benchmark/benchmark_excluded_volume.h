@@ -8,7 +8,7 @@
 #include <IMP/core/ExcludedVolumeRestraint.h>
 #include <IMP/container/generic.h>
 #include <IMP/container/ClosePairContainer.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/base/flags.h>
@@ -47,7 +47,7 @@ double get_val(double v) {
 }
 
 template <class Tag>
-void test_one(std::string name, int seed, kernel::Model *, ScoringFunction *sf,
+void test_one(std::string name, int seed, Model *, ScoringFunction *sf,
               XYZ to_move, bool eig) {
   // Take ownership of ScoringFunction object and make sure it's refcounted
   base::PointerMember<ScoringFunction> osf = sf;
@@ -149,7 +149,7 @@ void test_one(std::string name, int seed, kernel::Model *, ScoringFunction *sf,
 }
 
 #define IMP_MULTIFIT_EV_BENCHMARK_SETUP                                \
-  IMP_NEW(kernel::Model, m, ());                                       \
+  IMP_NEW(Model, m, ());                                       \
   int seed = IMP::base::random_number_generator();                     \
   atom::Hierarchy h0 =                                                 \
       read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m); \
@@ -159,8 +159,8 @@ void test_one(std::string name, int seed, kernel::Model *, ScoringFunction *sf,
   RigidBody rb1 = create_rigid_body(h1);                               \
   rb0.set_coordinates(IMP::algebra::Vector3D(0, 0, 0));                \
   rb1.set_coordinates(IMP::algebra::Vector3D(0, 0, 0));                \
-  kernel::ParticlesTemp leaves = get_leaves(h0);                       \
-  kernel::ParticlesTemp leaves1 = get_leaves(h1);                      \
+  ParticlesTemp leaves = get_leaves(h0);                       \
+  ParticlesTemp leaves1 = get_leaves(h1);                      \
   leaves.insert(leaves.end(), leaves1.begin(), leaves1.end());         \
   IMP_NEW(ListSingletonContainer, lsc, (leaves));                      \
   lsc->set_was_used(true);

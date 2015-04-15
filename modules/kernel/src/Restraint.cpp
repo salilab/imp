@@ -7,17 +7,17 @@
 
 #include <cmath>
 
-#include "IMP/kernel/Particle.h"
-#include "IMP/kernel/Model.h"
+#include "IMP/Particle.h"
+#include "IMP/Model.h"
 #include "IMP/base/log_macros.h"
-#include "IMP/kernel/Restraint.h"
-#include "IMP/kernel/container_base.h"
-#include "IMP/kernel/ScoringFunction.h"
-#include "IMP/kernel/internal/utility.h"
+#include "IMP/Restraint.h"
+#include "IMP/container_base.h"
+#include "IMP/ScoringFunction.h"
+#include "IMP/internal/utility.h"
 #include "IMP/base//warning_macros.h"
 #include <IMP/base/thread_macros.h>
-#include "IMP/kernel/input_output.h"
-#include "IMP/kernel/internal/RestraintsScoringFunction.h"
+#include "IMP/input_output.h"
+#include "IMP/internal/RestraintsScoringFunction.h"
 #include "IMP/base/Pointer.h"
 #include "IMP/base/statistics.h"
 #include <IMP/base/check_macros.h>
@@ -27,7 +27,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 const double NO_MAX = std::numeric_limits<double>::max();
 const double BAD_SCORE = NO_MAX;
 
-Restraint::Restraint(kernel::Model *m, std::string name)
+Restraint::Restraint(Model *m, std::string name)
     : ModelObject(m, name), weight_(1), max_(NO_MAX), last_score_(BAD_SCORE) {}
 
 double Restraint::evaluate(bool calc_derivs) const {
@@ -230,10 +230,10 @@ void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   set_was_used(true);
 }
 
-Restraint *RestraintsAdaptor::get(kernel::Model *sf) {
+Restraint *RestraintsAdaptor::get(Model *sf) {
   return sf->get_root_restraint_set();
 }
-RestraintsAdaptor::RestraintsAdaptor(kernel::Model *sf)
+RestraintsAdaptor::RestraintsAdaptor(Model *sf)
     : Restraints(1, sf->get_root_restraint_set()) {}
 RestraintsAdaptor::RestraintsAdaptor(const ModelsTemp &sf)
     : Restraints(1, sf[0]->get_root_restraint_set()) {}

@@ -18,8 +18,8 @@ const HierarchyTraits &Hierarchy::get_default_traits() {
 }
 
 HierarchyTraits::HierarchyTraits(std::string name) {
-  parent_ = kernel::ParticleIndexKey((name + "_parent").c_str());
-  children_ = kernel::ParticleIndexesKey((name + "_children").c_str());
+  parent_ = ParticleIndexKey((name + "_parent").c_str());
+  children_ = ParticleIndexesKey((name + "_children").c_str());
 }
 
 void Hierarchy::show(std::ostream &out) const { out << "Hierarchy"; }
@@ -28,9 +28,9 @@ int Hierarchy::get_child_index() const {
   if (!get_parent())
     return -1;
   else {
-    kernel::ParticleIndex pi = get_model()->get_attribute(
+    ParticleIndex pi = get_model()->get_attribute(
         get_decorator_traits().get_parent_key(), get_particle_index());
-    const kernel::ParticleIndexes &pis = get_model()->get_attribute(
+    const ParticleIndexes &pis = get_model()->get_attribute(
         get_decorator_traits().get_children_key(), pi);
     int ret =
         std::find(pis.begin(), pis.end(), get_particle_index()) - pis.begin();
@@ -46,7 +46,7 @@ namespace {
 struct MHDMatchingLeaves {
   HierarchyTraits traits_;
   MHDMatchingLeaves(HierarchyTraits tr) : traits_(tr) {}
-  bool operator()(kernel::Particle *p) const {
+  bool operator()(Particle *p) const {
     Hierarchy mhd(p, traits_);
     return mhd.get_number_of_children() == 0;
   }
@@ -66,7 +66,7 @@ namespace {
 struct MHDNotMatchingLeaves {
   HierarchyTraits traits_;
   MHDNotMatchingLeaves(HierarchyTraits tr) : traits_(tr) {}
-  bool operator()(kernel::Particle *p) const {
+  bool operator()(Particle *p) const {
     Hierarchy mhd(p, traits_);
     return mhd.get_number_of_children() != 0;
   }
@@ -84,7 +84,7 @@ GenericHierarchies get_internal(Hierarchy mhd) {
 namespace {
 
 struct MHDMatchingAll {
-  bool operator()(kernel::Particle *) const { return true; }
+  bool operator()(Particle *) const { return true; }
 };
 
 }  // namespace

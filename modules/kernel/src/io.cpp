@@ -6,17 +6,17 @@
  *
  */
 
-#include <IMP/kernel/io.h>
+#include <IMP/io.h>
 #include <boost/unordered_map.hpp>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 
 #define IMP_CHECK_MODEL_PARTICLES(m)                               \
-  for (kernel::Model::ParticleIterator pit = m->particles_begin(); \
+  for (Model::ParticleIterator pit = m->particles_begin(); \
        pit != m->particles_end(); ++pit) {                         \
-    IMP::kernel::check_particle(*pit);                             \
+    IMP::check_particle(*pit);                             \
   }
 
 IMPKERNEL_BEGIN_NAMESPACE

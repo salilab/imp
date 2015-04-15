@@ -13,7 +13,7 @@
 
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/kernel/internal/constants.h>
+#include <IMP/internal/constants.h>
 
 #include <vector>
 #include <limits>
@@ -29,12 +29,12 @@ IMPATOM_BEGIN_NAMESPACE
     \see CoulombPairScore
  */
 class IMPATOMEXPORT Charged : public IMP::core::XYZ {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 const algebra::Vector3D &v, Float charge) {
     XYZ::setup_particle(m, pi, v);
     do_setup_particle(m, pi, charge);
   }
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 Float charge = 0) {
     IMP_USAGE_CHECK(XYZ::get_is_setup(m, pi),
                     "Particle must already be an XYZ particle");
@@ -49,7 +49,7 @@ class IMPATOMEXPORT Charged : public IMP::core::XYZ {
   IMP_DECORATOR_GET_SET(charge, get_charge_key(), Float, Float);
 
   //! Return true if the particle is an instance of a Charged
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return XYZ::get_is_setup(m, pi) &&
            m->get_has_attribute(get_charge_key(), pi);
   }

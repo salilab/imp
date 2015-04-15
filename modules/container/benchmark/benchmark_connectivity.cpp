@@ -22,7 +22,7 @@ using namespace IMP::container;
 
 namespace {
 void benchmark_it(std::string name, std::string algorithm,
-                  ListSingletonContainer *lsc, kernel::Model *m) {
+                  ListSingletonContainer *lsc, Model *m) {
   double runtime;
   double value = 0;
   m->evaluate(false);
@@ -43,9 +43,9 @@ int main(int argc, char **argv) {
   unsigned int npart = 1000;
   set_log_level(SILENT);
   // set_check_level(NONE);
-  IMP_NEW(kernel::Model, m, ());
+  IMP_NEW(Model, m, ());
   IMP_NEW(HarmonicUpperBoundSphereDistancePairScore, ss, (0, 1));
-  kernel::ParticlesTemp ps = create_xyzr_particles(m, npart, .1);
+  ParticlesTemp ps = create_xyzr_particles(m, npart, .1);
   IMP_NEW(ListSingletonContainer, lsc, (ps));
   {
     ConnectivityRestraint *r = new ConnectivityRestraint(ss, lsc);
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
     MSConnectivityRestraint *r = new MSConnectivityRestraint(m, ss);
     Ints composite;
     for (unsigned int i = 0; i < ps.size(); ++i) {
-      composite.push_back(r->add_type(kernel::ParticlesTemp(1, ps[i])));
+      composite.push_back(r->add_type(ParticlesTemp(1, ps[i])));
     }
     r->add_composite(composite);
     m->add_restraint(r);
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
   }
   {
     IMP_NEW(ConnectingPairContainer, cpc, (lsc, .1));
-    base::Pointer<kernel::Restraint> pr(
+    base::Pointer<Restraint> pr(
         container::create_restraint(ss.get(), cpc.get()));
     m->add_restraint(pr);
     benchmark_it("connectivity", "fast", lsc, m);

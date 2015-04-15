@@ -13,7 +13,7 @@
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/multifit/proteomics_em_alignment_atomic.h>
 #include <IMP/multifit/merge_tree_utils.h>
-#include <IMP/kernel/internal/graph_utility.h>
+#include <IMP/internal/graph_utility.h>
 #include <IMP/multifit/fitting_states.h>
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
 #include <IMP/domino/particle_states.h>
@@ -29,10 +29,10 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 namespace {
 #if 0
-  kernel::Restraint * add_core_ev_restraint(atom::Hierarchy mh1,
+  Restraint * add_core_ev_restraint(atom::Hierarchy mh1,
                                atom::Hierarchy mh2,
                                const AlignmentParams &params) {
-    kernel::Model *mdl=mh1->get_model();
+    Model *mdl=mh1->get_model();
     IMP_NEW(container::ListSingletonContainer,lsc,(mdl));
     atom::AtomTypes atom_types;
     atom_types.push_back(atom::AtomType("CA"));
@@ -54,10 +54,10 @@ namespace {
 #endif
 
 #if 0
-  kernel::Restraint * add_ev_restraint(atom::Hierarchy mh1,
+  Restraint * add_ev_restraint(atom::Hierarchy mh1,
                                atom::Hierarchy mh2,
                                const AlignmentParams &params) {
-    kernel::Model *mdl=mh1->get_model();
+    Model *mdl=mh1->get_model();
     atom::AtomTypes atom_types;
     atom_types.push_back(atom::AtomType("CA"));
     //make a container of ca atoms of the first molecule
@@ -197,7 +197,7 @@ ProteomicsEMAlignmentAtomic::ProteomicsEMAlignmentAtomic(
   IMP_LOG_TERSE("start" << std::endl);
 
   // initialize everything
-  mdl_ = new kernel::Model();
+  mdl_ = new Model();
   IMP_LOG_VERBOSE("get proteomics data\n");
   prot_data_ = mapping_data_.get_proteomics_data();
   fit_state_key_ = IntKey("fit_state_key");
@@ -269,17 +269,17 @@ ProteomicsEMAlignmentAtomic::set_particle_states_table(
 }
 
 RestraintsTemp ProteomicsEMAlignmentAtomic::get_alignment_restraints() const {
-  kernel::RestraintsTemp ret;
+  RestraintsTemp ret;
   /*
   domino::Subset s(pst_->get_particles());
   domino::Subsets ss;
   domino::RestraintScoreSubsetFilter *rssf=
     all_rs_filt_->get_subset_filter(s,ss);
-  kernel::RestraintsTemp rs = rssf->get_restraints();
+  RestraintsTemp rs = rssf->get_restraints();
   for(int i=0;i<(int)rs.size();i++){
-    kernel::RestraintSet *rset=dynamic_cast<kernel::RestraintSet*>(rs[i]);
+    RestraintSet *rset=dynamic_cast<RestraintSet*>(rs[i]);
     if (rset) {
-      for(kernel::Restraints::iterator it = rset->restraints_begin();
+      for(Restraints::iterator it = rset->restraints_begin();
           it != rset->restraints_end();it++) {
         ret.push_back(*it);
       }
@@ -292,7 +292,7 @@ RestraintsTemp ProteomicsEMAlignmentAtomic::get_alignment_restraints() const {
 }
 
 void ProteomicsEMAlignmentAtomic::show_scores_header(std::ostream &out) const {
-  kernel::RestraintsTemp rs = get_alignment_restraints();
+  RestraintsTemp rs = get_alignment_restraints();
   for (int i = 0; i < (int)rs.size(); i++) {
     out << rs[i]->get_name() << "|";
   }
@@ -306,7 +306,7 @@ void ProteomicsEMAlignmentAtomic::show_scores(const domino::Assignment &a,
   domino::Subsets ss;
   domino::RestraintScoreSubsetFilter *rssf
                     =all_rs_filt_->get_subset_filter(s,ss);
-  kernel::RestraintsTemp rs=get_alignment_restraints();
+  RestraintsTemp rs=get_alignment_restraints();
   Floats scores = rssf->get_scores(a);
   for(int i=0;i<(int)scores.size();i++){
     out<<scores[i]<<"|";
@@ -345,9 +345,9 @@ void ProteomicsEMAlignmentAtomic::align() {
   IMP_LOG_TERSE("=============4" << std::endl);
   //  IMP_NEW(domino::BranchAndBoundSampler,ds,(mdl_,pst));
   IMP_LOG_VERBOSE("going to sample\n");
-  kernel::Particles ps;
+  Particles ps;
   for (int i = 0; i < (int)mhs_.size(); i++) {
-    kernel::ParticlesTemp temp = core::get_leaves(mhs_[i]);
+    ParticlesTemp temp = core::get_leaves(mhs_[i]);
     ps.insert(ps.end(), temp.begin(), temp.end());
   }
   IMP_LOG_TERSE("=============5 number of restraints:" << jt_rs_.size()
@@ -387,7 +387,7 @@ void ProteomicsEMAlignmentAtomic::align() {
   //                            params_.get_domino_params().cache_size_);
   IMP_LOG_TERSE("before get assignments" << std::endl);
   //  IMP_NEW(domino::RestraintCache, rc_, (pst_));
-  kernel::RestraintsTemp mdl_rs;
+  RestraintsTemp mdl_rs;
   for (unsigned i = 0; i < mdl_->get_number_of_restraints(); i++) {
     mdl_rs.push_back(mdl_->get_restraint(i));
   }
@@ -447,7 +447,7 @@ void ProteomicsEMAlignmentAtomic::add_states_and_filters() {
   // filters
   IMP_LOG_VERBOSE("settings filters\n");
   // two particles cannot
-  //    be in the same state if they have the same kernel::ParticleStates,
+  //    be in the same state if they have the same ParticleStates,
   IMP_NEW(domino::ExclusionSubsetFilterTable, dist_filt, (pst_));
   filters_.push_back(dist_filt);
   // IMP_NEW(domino::RestraintScoreSubsetFilterTable,rs_filt,(mdl_,pst_));
@@ -461,21 +461,21 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
       params_.get_fragments_params().frag_len_ == 1,
       "In atomic mode the fragment length can not be higher than one!\n");
   //====== initialize the two restraint sets
-  conn_rs_ = new kernel::RestraintSet(mdl_, 1.0, "connectivity");
+  conn_rs_ = new RestraintSet(mdl_, 1.0, "connectivity");
   mdl_->add_restraint(conn_rs_);
   conn_rs_with_filter_ =
-      new kernel::RestraintSet(mdl_, 1.0, "connectivity_filtered");
+      new RestraintSet(mdl_, 1.0, "connectivity_filtered");
   mdl_->add_restraint(conn_rs_with_filter_);
-  xlink_rs_ = new kernel::RestraintSet(mdl_, 1.0, "xlinks");
+  xlink_rs_ = new RestraintSet(mdl_, 1.0, "xlinks");
   mdl_->add_restraint(xlink_rs_);
   xlink_rs_with_filter_ =
-      new kernel::RestraintSet(mdl_, 1.0, "xlinks_filtered");
+      new RestraintSet(mdl_, 1.0, "xlinks_filtered");
   mdl_->add_restraint(xlink_rs_with_filter_);
-  em_rs_ = new kernel::RestraintSet(mdl_, 1.0, "em");
+  em_rs_ = new RestraintSet(mdl_, 1.0, "em");
   mdl_->add_restraint(em_rs_);
-  ev_rs_ = new kernel::RestraintSet(mdl_, 1.0, "ev");
+  ev_rs_ = new RestraintSet(mdl_, 1.0, "ev");
   mdl_->add_restraint(ev_rs_);
-  dummy_rs_ = new kernel::RestraintSet(mdl_, 1.0, "dummy");
+  dummy_rs_ = new RestraintSet(mdl_, 1.0, "dummy");
   mdl_->add_restraint(dummy_rs_);
   //====== set proteins map
   std::map<int, Particle *> prot_ind_to_particle_map;
@@ -514,7 +514,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
       ss << "." << mh->get_name();
     }
     int k = 1;  // todo - make this a parameter!!
-    kernel::Restraint *r = atom::create_connectivity_restraint(sel, k);
+    Restraint *r = atom::create_connectivity_restraint(sel, k);
     if (r != NULL) {
       r->set_name(ss.str());
       // only allow the particles to penetrate or separate by 1 angstrom
@@ -552,11 +552,11 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
   IMP_LOG_TERSE("Number of xlinks" << prot_data_->get_number_of_cross_links()
                 << std::endl);
   for (int i = 0; i < prot_data_->get_number_of_cross_links(); i++) {
-    base::Pointer<kernel::Restraint> rx;
+    base::Pointer<Restraint> rx;
     // get all of the relevant rigid bodies
     std::pair<IntPair, IntPair> xpair = prot_data_->get_cross_link(i);
     std::stringstream ss1;
-    kernel::Particles pairx(2);
+    Particles pairx(2);
     ss1 << "xlink";
     IMP_LOG_TERSE("First key:" << xpair.first.first
                   << " Second key:" << xpair.second.first << std::endl);
@@ -666,7 +666,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
                params_.get_xlink_params().k_));
 
       rx = IMP::create_restraint(hub_updated.get(),
-                                 kernel::ParticlePair(pairx[0], pairx[1]));
+                                 ParticlePair(pairx[0], pairx[1]));
     } else {  // treat as a connectivity restraint
       IMP_LOG_TERSE("treat as connectivity restraint" << std::endl);
       atom::Selections sel;
@@ -759,16 +759,16 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
     IMP_LOG_TERSE("=====map is:" << std::endl);
     dmap_->get_header()->show();
     IMP_LOG_TERSE("=================" << std::endl);
-    kernel::ParticlesTemp all_leaves, all_ca;
+    ParticlesTemp all_leaves, all_ca;
     atom::AtomTypes atom_types;
     atom_types.push_back(atom::AtomType("CA"));
     for (unsigned int i = 0; i < mhs_.size(); i++) {
-      kernel::ParticlesTemp mol_leaves = atom::get_leaves(mhs_[i]);
+      ParticlesTemp mol_leaves = atom::get_leaves(mhs_[i]);
       all_leaves.insert(all_leaves.end(), mol_leaves.begin(), mol_leaves.end());
       atom::Hierarchies mh_res = atom::get_by_type(mhs_[i], atom::RESIDUE_TYPE);
       atom::Selection s1(mh_res);
       s1.set_atom_types(atom_types);
-      kernel::ParticlesTemp pt = s1.get_selected_particles();
+      ParticlesTemp pt = s1.get_selected_particles();
       all_ca.insert(all_ca.end(), pt.begin(), pt.end());
     }
     IMP_LOG_TERSE("after adding leaves" << std::endl);
@@ -862,7 +862,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
   restraints_set_ = true;
   // add all filters
   IMP_LOG_TERSE("before adding filters" << std::endl);
-  kernel::RestraintsTemp conn_rst;
+  RestraintsTemp conn_rst;
   for (unsigned ii = 0; ii < conn_rs_with_filter_->get_number_of_restraints();
        ii++) {
     conn_rst.push_back(conn_rs_with_filter_->get_restraint(ii));
@@ -887,7 +887,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
   //                          params_.get_domino_params().cache_size_);
   filters_.push_back(conn_filter);
   IMP_LOG_TERSE("========2" << std::endl);
-  kernel::RestraintsTemp xlink_rst;
+  RestraintsTemp xlink_rst;
   for (unsigned ii = 0; ii < xlink_rs_with_filter_->get_number_of_restraints();
        ii++) {
     xlink_rst.push_back(xlink_rs_with_filter_->get_restraint(ii));
@@ -913,7 +913,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
   //                         params_.get_domino_params().cache_size_);
   filters_.push_back(xlink_filter);
 
-  kernel::RestraintsTemp ev_rst;
+  RestraintsTemp ev_rst;
   for (unsigned ii = 0; ii < ev_rs_->get_number_of_restraints(); ii++) {
     ev_rst.push_back(ev_rs_->get_restraint(ii));
   }
@@ -936,8 +936,8 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
   //=====create jt_rs:
   IMP_LOG_TERSE("========4" << std::endl);
   mtb.show();
-  kernel::ParticlePairsTemp pps = mtb.get_mst_dependency();
-  for (kernel::ParticlePairsTemp::iterator it = pps.begin(); it != pps.end();
+  ParticlePairsTemp pps = mtb.get_mst_dependency();
+  for (ParticlePairsTemp::iterator it = pps.begin(); it != pps.end();
        it++) {
     std::stringstream name;
     name << "dummy." << (*it)[0]->get_name() << "." << (*it)[1]->get_name();
@@ -974,14 +974,14 @@ domino::Assignments ProteomicsEMAlignmentAtomic::get_combinations(
   /*
   //set the right order of the assignment.
   IntsList ret(sampled_assignments_.size());
-  std::map<kernel::Particle *,FittingStates*> mps;
+  std::map<Particle *,FittingStates*> mps;
   for (core::RigidBodies::const_iterator it = rbs_.begin();
        it != rbs_.end();it++) {
     mps[*it]=FittingStates::get_from(pst_->get_particle_states(*it));
   }
   std::cout<<"Get sampled assignments for particles:"<<std::endl;
-  kernel::ParticlesTemp ps=pst_->get_particles();
-  std::map<kernel::Particle*,int> ps_order_map;
+  ParticlesTemp ps=pst_->get_particles();
+  std::map<Particle*,int> ps_order_map;
   std::cout<<"Correct order:"<<std::endl;
   for(int i=0;i<(int)rbs_.size();i++) {
     ps_order_map[rbs_[i].get_particle()]=i;

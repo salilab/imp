@@ -9,7 +9,7 @@
 
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/MonteCarlo.h>
-#include <IMP/kernel/SingletonModifier.h>
+#include <IMP/SingletonModifier.h>
 #include <IMP/core/BallMover.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/utility.h>
@@ -28,7 +28,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 class CollectVisitor : public boost::default_dfs_visitor {
-  const std::map<kernel::Particle *, int> &lu_;
+  const std::map<Particle *, int> &lu_;
   boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type vm_;
   Ints &vals_;
 
@@ -39,16 +39,16 @@ class CollectVisitor : public boost::default_dfs_visitor {
     return vals_;
   }
   CollectVisitor(const DependencyGraph &g,
-                 const std::map<kernel::Particle *, int> &lu, Ints &vals)
+                 const std::map<Particle *, int> &lu, Ints &vals)
       : lu_(lu), vm_(boost::get(boost::vertex_name, g)), vals_(vals) {}
   template <class G>
   void discover_vertex(typename boost::graph_traits<G>::vertex_descriptor u,
                        const G &) {
     base::Object *o = vm_[u];
-    kernel::Particle *p = dynamic_cast<kernel::Particle *>(o);
+    Particle *p = dynamic_cast<Particle *>(o);
     if (p) {
       // std::cout << "Checking particle " << p->get_name() << std::endl;
-      typename std::map<kernel::Particle *, int>::const_iterator it =
+      typename std::map<Particle *, int>::const_iterator it =
           lu_.find(p);
       if (it != lu_.end()) {
         vals_.push_back(it->second);
@@ -60,43 +60,43 @@ class CollectVisitor : public boost::default_dfs_visitor {
 namespace {
 class ScoreWeightedIncrementalBallMover : public MonteCarloMover {
  public:
-  ScoreWeightedIncrementalBallMover(const kernel::ParticlesTemp &ps,
+  ScoreWeightedIncrementalBallMover(const ParticlesTemp &ps,
                                     unsigned int n, Float radius);
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ScoreWeightedIncrementalBallMover);
 
  private:
-  const kernel::ParticlesTemp ps_;
+  const ParticlesTemp ps_;
   unsigned int n_;
   Float radius_;
-  kernel::ParticlesTemp moved_;
+  ParticlesTemp moved_;
   algebra::Vector3Ds old_coords_;
-  base::Vector<std::pair<kernel::Restraint *, Ints> > deps_;
+  base::Vector<std::pair<Restraint *, Ints> > deps_;
 };
 
 ScoreWeightedIncrementalBallMover::ScoreWeightedIncrementalBallMover(
-    const kernel::ParticlesTemp &sc, unsigned int n, Float radius)
+    const ParticlesTemp &sc, unsigned int n, Float radius)
     : MonteCarloMover(sc[0]->get_model(), "IncrementalBallMover%1%"),
       ps_(sc),
       n_(n),
       radius_(radius),
       moved_(n_) {
-  kernel::Model *m = sc[0]->get_model();
+  Model *m = sc[0]->get_model();
   const DependencyGraph dg = get_dependency_graph(m);
   typedef boost::graph_traits<DependencyGraph> DGTraits;
   typedef boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type
       DGVMap;
   DGVMap vm = boost::get(boost::vertex_name, dg);
-  std::map<kernel::Particle *, int> index;
+  std::map<Particle *, int> index;
   for (unsigned int i = 0; i < ps_.size(); ++i) {
     index[ps_[i]] = i;
   }
   for (std::pair<DGTraits::vertex_iterator, DGTraits::vertex_iterator> be =
            boost::vertices(dg);
        be.first != be.second; ++be.first) {
-    kernel::Restraint *r = dynamic_cast<kernel::Restraint *>(vm[*be.first]);
+    Restraint *r = dynamic_cast<Restraint *>(vm[*be.first]);
     if (r) {
       boost::vector_property_map<int> color(boost::num_vertices(dg));
       Ints out;
@@ -141,7 +141,7 @@ MonteCarloMoverResult ScoreWeightedIncrementalBallMover::do_propose() {
   moved_.clear();
   old_coords_.clear();
   if (total < .0001) {
-    return MonteCarloMoverResult(kernel::ParticleIndexes(), 1.0);
+    return MonteCarloMoverResult(ParticleIndexes(), 1.0);
   }
   for (unsigned int i = 0; i < weights.size(); ++i) {
     weights[i] /= (total / n_);
@@ -194,9 +194,9 @@ void ScoreWeightedIncrementalBallMover::do_reject() {
   }
 }
 
-kernel::ModelObjectsTemp ScoreWeightedIncrementalBallMover::do_get_inputs()
+ModelObjectsTemp ScoreWeightedIncrementalBallMover::do_get_inputs()
     const {
-  return kernel::ModelObjectsTemp(ps_.begin(), ps_.end());
+  return ModelObjectsTemp(ps_.begin(), ps_.end());
 }
 }
 
@@ -210,7 +210,7 @@ MCCGSampler::Parameters::Parameters() {
   mc_steps_ = 100;
 }
 
-MCCGSampler::MCCGSampler(kernel::Model *m, std::string name)
+MCCGSampler::MCCGSampler(Model *m, std::string name)
     : Sampler(m, name), is_refining_(false) {}
 
 void MCCGSampler::set_bounding_box(const algebra::BoundingBox3D &bb) {
@@ -253,8 +253,8 @@ MCCGSampler::Container *MCCGSampler::set_up_movers(const Parameters &pms,
                   << "Cartesian coordinates",
               ValueException);
   }
-  kernel::ParticlesTemp ps;
-  for (kernel::Model::ParticleIterator pit = mc->get_model()->particles_begin();
+  ParticlesTemp ps;
+  for (Model::ParticleIterator pit = mc->get_model()->particles_begin();
        pit != mc->get_model()->particles_end(); ++pit) {
     if (XYZ::get_is_setup(*pit) && XYZ(*pit).get_coordinates_are_optimized()) {
       ps.push_back(*pit);
@@ -280,7 +280,7 @@ void MCCGSampler::randomize(const Parameters &pms, Container *sc) const {
                         pms.bounds_.find(YK)->second.second,
                         pms.bounds_.find(ZK)->second.second));
   IMP_CONTAINER_FOREACH(Container, sc, {
-    // _1 is the kernel::ParticleIndex for a singleton container
+    // _1 is the ParticleIndex for a singleton container
     IMP::core::XYZ d(get_model(), _1);
     d.set_coordinates(algebra::get_random_vector_in(bb));
   });

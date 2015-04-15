@@ -17,16 +17,16 @@ class Tests(IMP.test.TestCase):
         """Testing execution of derivative display support"""
         # note that there are no actual checks here at this point
         # also, will fail since display.BildWriter no longer exists
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pts = [IMP.algebra.Vector3D(1, 0, 0), IMP.algebra.Vector3D(0, 1, 0),
                IMP.algebra.Vector3D(-1, 0, 0), IMP.algebra.Vector3D(0, -1, 0)]
 
         ps = []
         for i in range(0, 4):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZ.setup_particle(p, pts[i])
             ps.append(p)
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         d = IMP.core.XYZ.setup_particle(p)
         hd = IMP.core.Hierarchy.setup_particle(p, ps)
 

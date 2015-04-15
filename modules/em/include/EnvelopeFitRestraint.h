@@ -16,7 +16,7 @@
 #include <IMP/em/EnvelopeScore.h>
 #include <IMP/base/object_macros.h>
 
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -40,7 +40,7 @@ class IMPEMEXPORT EnvelopeFitRestraint : public IMP::Restraint {
     of particles out of the map envelope (as defined by density_threshold)
     is allowed. Recommended value is approximately map resolution
   */
-  EnvelopeFitRestraint(kernel::Particles particles, DensityMap *em_map,
+  EnvelopeFitRestraint(Particles particles, DensityMap *em_map,
                        double density_threshold, double penetration_threshold);
 
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
@@ -54,11 +54,11 @@ class IMPEMEXPORT EnvelopeFitRestraint : public IMP::Restraint {
   // compute best scoring transformation and apply it on the particles
   void apply_transformation();
 
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const { return ps_; }
+  IMP::ModelObjectsTemp do_get_inputs() const { return ps_; }
   IMP_OBJECT_METHODS(EnvelopeFitRestraint);
 
  private:
-  kernel::Particles ps_;
+  Particles ps_;
   IMP::base::PointerMember<PCAAligner> pca_aligner_;
   double penetration_threshold_;
   IMP::base::PointerMember<MapDistanceTransform> distance_transform_;

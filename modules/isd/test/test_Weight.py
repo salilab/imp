@@ -19,12 +19,12 @@ class TestWeightParam(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         # IMP.set_log_level(IMP.MEMORY)
         IMP.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.w = Weight.setup_particle(IMP.kernel.Particle(self.m))
+        self.m = IMP.Model()
+        self.w = Weight.setup_particle(IMP.Particle(self.m))
 
     def test_Setup_iw(self):
         "Test weight_initial_values"
-        w = Weight.setup_particle(IMP.kernel.Particle(self.m))
+        w = Weight.setup_particle(IMP.Particle(self.m))
         w.add_weight()
         for n in range(19):
             for k in range(n + 1):
@@ -33,7 +33,7 @@ class TestWeightParam(IMP.test.TestCase):
 
     def test_Setup_number(self):
         "Test weights_initial_values"
-        w = Weight.setup_particle(IMP.kernel.Particle(self.m))
+        w = Weight.setup_particle(IMP.Particle(self.m))
         w.add_weight()
         for n in range(19):
             ws = w.get_weights()
@@ -44,7 +44,7 @@ class TestWeightParam(IMP.test.TestCase):
 
     def test_Setup_size(self):
         "Test weights_size"
-        w = Weight.setup_particle(IMP.kernel.Particle(self.m))
+        w = Weight.setup_particle(IMP.Particle(self.m))
         w.add_weight()
         for n in range(19):
             ws = w.get_weights()
@@ -55,7 +55,7 @@ class TestWeightParam(IMP.test.TestCase):
 
     def test_assign_values(self):
         "Test weights_set"
-        w = Weight.setup_particle(IMP.kernel.Particle(self.m))
+        w = Weight.setup_particle(IMP.Particle(self.m))
         w.add_weight()
         ws = [1.0]
         for n in range(19):
@@ -68,7 +68,7 @@ class TestWeightParam(IMP.test.TestCase):
 
     def test_set_optimized(self):
         "Test weights_optimized"
-        w = Weight.setup_particle(IMP.kernel.Particle(self.m))
+        w = Weight.setup_particle(IMP.Particle(self.m))
         w.add_weight()
         for n in range(19):
             w.set_weights_are_optimized(True)

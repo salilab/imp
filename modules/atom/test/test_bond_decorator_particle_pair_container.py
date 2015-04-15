@@ -9,11 +9,11 @@ class Tests(IMP.test.TestCase):
 
     def test_it(self):
         """Test bond decorator pair container"""
-        m = IMP.kernel.Model()
-        p0 = IMP.kernel.Particle(m)
-        p1 = IMP.kernel.Particle(m)
-        p2 = IMP.kernel.Particle(m)
-        p3 = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p0 = IMP.Particle(m)
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        p3 = IMP.Particle(m)
         b0 = IMP.atom.Bonded.setup_particle(p0)
         b1 = IMP.atom.Bonded.setup_particle(p1)
         b3 = IMP.atom.Bonded.setup_particle(p3)

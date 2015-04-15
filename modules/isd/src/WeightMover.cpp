@@ -13,7 +13,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-WeightMover::WeightMover(kernel::Particle *w, double radius)
+WeightMover::WeightMover(Particle *w, double radius)
     : core::MonteCarloMover(w->get_model(), "WeightMover%1%"), radius_(radius) {
   // store decorator. If the particle *w has not been decorated,
   // this line throws and exception
@@ -73,13 +73,13 @@ core::MonteCarloMoverResult WeightMover::do_propose() {
   w_.set_weights(newweights);
 
   return core::MonteCarloMoverResult(
-      kernel::ParticleIndexes(1, w_.get_particle()->get_index()), 1.0);
+      ParticleIndexes(1, w_.get_particle()->get_index()), 1.0);
 }
 
 void WeightMover::do_reject() { w_.set_weights(oldweights_); }
 
-kernel::ModelObjectsTemp WeightMover::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(1, w_.get_particle());
+ModelObjectsTemp WeightMover::do_get_inputs() const {
+  return ModelObjectsTemp(1, w_.get_particle());
 }
 
 IMPISD_END_NAMESPACE

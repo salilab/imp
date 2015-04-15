@@ -71,8 +71,8 @@ void DerivativeCalculator::compute_gaussian_effect_size(
  * precompute sinc_cos function and derivative of distance distribution
  */
 DeltaDistributionFunction DerivativeCalculator::precompute_derivative_helpers(
-    const Profile* resampled_model_profile, const kernel::Particles& particles1,
-    const kernel::Particles& particles2,
+    const Profile* resampled_model_profile, const Particles& particles1,
+    const Particles& particles2,
     std::vector<Floats>& sinc_cos_values) const {
 
   // estimate upper limit on max_distance
@@ -114,8 +114,8 @@ Delta(r) = f_iatom * sum_i f_i delta(r-r_{i,iatom}) (x_iatom-x_i)
   // e_q = exp( -0.23 * q*q )
 */
 void DerivativeCalculator::compute_chisquare_derivative(
-    const Profile* model_profile, const kernel::Particles& particles1,
-    const kernel::Particles& particles2,
+    const Profile* model_profile, const Particles& particles1,
+    const Particles& particles2,
     std::vector<algebra::Vector3D>& derivatives,
     const std::vector<double>& effect_size) const {
 

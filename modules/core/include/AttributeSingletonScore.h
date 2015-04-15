@@ -28,11 +28,11 @@ class GenericAttributeSingletonScore : public SingletonScore {
  public:
   //! Apply function f to attribute k
   GenericAttributeSingletonScore(UnaryFunction *f, FloatKey k);
-  virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
+  virtual double evaluate_index(Model *m, ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE {
-    return IMP::kernel::get_particles(m, pis);
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+    return IMP::get_particles(m, pis);
   }
   IMP_SINGLETON_SCORE_METHODS(GenericAttributeSingletonScore);
   IMP_OBJECT_METHODS(GenericAttributeSingletonScore);
@@ -45,7 +45,7 @@ inline GenericAttributeSingletonScore<UF>::GenericAttributeSingletonScore(
     : f_(f), k_(k) {}
 template <class UF>
 inline Float GenericAttributeSingletonScore<UF>::evaluate_index(
-    kernel::Model *m, kernel::ParticleIndex pi,
+    Model *m, ParticleIndex pi,
     DerivativeAccumulator *da) const {
   if (da) {
     Float v, d;

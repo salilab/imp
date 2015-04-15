@@ -14,7 +14,7 @@
 
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
@@ -106,15 +106,15 @@ IMPEM2DEXPORT
 double compute_max_distance(const IMP::algebra::Vector3Ds& points);
 
 IMPEM2DEXPORT
-void compute_projections(const IMP::kernel::Particles& particles,
+void compute_projections(const IMP::Particles& particles,
                          unsigned int projection_number, double pixel_size,
                          double resolution,
                          boost::ptr_vector<Projection>& projections,
                          int image_size = 0);
 
 IMPEM2DEXPORT
-void compute_projections(const kernel::Particles& all_particles,
-                         const kernel::Particles& lig_particles,
+void compute_projections(const Particles& all_particles,
+                         const Particles& lig_particles,
                          unsigned int projection_number, double pixel_size,
                          double resolution,
                          boost::ptr_vector<Projection>& projections,

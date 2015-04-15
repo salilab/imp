@@ -43,7 +43,7 @@ class IMPEMEXPORT SurfaceShellDensityMap : public SampledDensityMap {
       \note the voxel size and the number of shells determines
             the resolution/accuracy of the surface rasterization.
    */
-  SurfaceShellDensityMap(const kernel::ParticlesTemp &ps, float voxel_size,
+  SurfaceShellDensityMap(const ParticlesTemp &ps, float voxel_size,
                          IMP::FloatKey mass_key =
                              IMP::atom::Mass::get_mass_key(),
                          int num_shells = IMP_DEFAULT_NUM_SHELLS);

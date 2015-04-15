@@ -9,12 +9,12 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min2(self):
         """Test sampling"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         m.set_log_level(IMP.base.SILENT)
         ps = []
         print(1)
         for i in range(0, 3):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZ.setup_particle(p)
             ps.append(p)
             print(2)
@@ -54,11 +54,11 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min3(self):
         """Test sampling with edge scores"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         m.set_log_level(IMP.base.SILENT)
         ps = []
         for i in range(0, 3):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZ.setup_particle(p)
             ps.append(p)
         pts = [IMP.algebra.Vector3D(0, 0, 0),
@@ -69,7 +69,7 @@ class Tests(IMP.test.TestCase):
         pst = IMP.domino.ParticleStatesTable()
         for p in ps:
             pst.set_particle_states(p, particle_state)
-            m.add_restraint(IMP.kernel._ConstRestraint(1, [p]))
+            m.add_restraint(IMP._ConstRestraint(1, [p]))
         m.add_restraint(IMP.core.DistanceRestraint(
             IMP.core.Harmonic(1, 1), ps[0], ps[1]))
         m.add_restraint(IMP.core.DistanceRestraint(

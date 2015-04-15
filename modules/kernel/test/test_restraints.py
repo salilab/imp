@@ -8,9 +8,9 @@ class Tests(IMP.test.TestCase):
 
     def test_printing(self):
         """Test ref counting works with restraints and scoring functions"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         # make sure that sf keeps the restraint alive
-        sf = IMP.kernel._ConstRestraint(m, [], 1).create_scoring_function()
+        sf = IMP._ConstRestraint(m, [], 1).create_scoring_function()
         IMP.base.set_log_level(IMP.base.MEMORY)
         # trigger cleanup
         m.evaluate(False)

@@ -14,9 +14,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyTunneler::RigidBodyTunneler(kernel::Model *m,
-                                     kernel::ParticleIndexes pis,
-                                     kernel::ParticleIndex ref, double k,
+RigidBodyTunneler::RigidBodyTunneler(Model *m,
+                                     ParticleIndexes pis,
+                                     ParticleIndex ref, double k,
                                      double move_probability)
     : MonteCarloMover(m, "RigidBodyTunneler%1%"), pis_(pis),
       ref_(ref), k_(k), move_probability_(move_probability) {
@@ -150,15 +150,15 @@ void RigidBodyTunneler::do_reject() {
   }
 }
 
-Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
-                                                  kernel::ParticleIndex t,
-                                                  kernel::ParticleIndex r) {
-  kernel::ParticleIndexes pis(1, t);
+Floats RigidBodyTunneler::get_reduced_coordinates(Model* m,
+                                                  ParticleIndex t,
+                                                  ParticleIndex r) {
+  ParticleIndexes pis(1, t);
   return internal::get_coordinates_from_rbs(m, pis, r).as_floats();
 }
 
-Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
-                                                  kernel::ParticleIndex pi) {
+Floats RigidBodyTunneler::get_reduced_coordinates(Model* m,
+                                                  ParticleIndex pi) {
   internal::Referential target(m, pi);
   IMP_Eigen::Vector3d com(target.get_centroid());
   IMP_Eigen::Quaterniond rot(target.get_rotation());
@@ -169,14 +169,14 @@ Floats RigidBodyTunneler::get_reduced_coordinates(kernel::Model* m,
   return x.as_floats();
 }
 
-void RigidBodyTunneler::set_reduced_coordinates(kernel::Model* m,
-                                      kernel::ParticleIndex target,
-                                      kernel::ParticleIndex ref,
+void RigidBodyTunneler::set_reduced_coordinates(Model* m,
+                                      ParticleIndex target,
+                                      ParticleIndex ref,
                                       Floats coords) {
   //get local and target coords
   IMP_USAGE_CHECK(coords.size() == 7, "coords have wrong shape");
   internal::Coord target_c(coords);
-  kernel::ParticleIndexes pis(1, target);
+  ParticleIndexes pis(1, target);
   internal::Coord my_c(internal::get_coordinates_from_rbs(m, pis, ref));
   //get translation vector
   IMP_Eigen::Vector3d tr(target_c.coms[0] - my_c.coms[0]);
@@ -190,8 +190,8 @@ void RigidBodyTunneler::set_reduced_coordinates(kernel::Model* m,
 }
 
 
-kernel::ModelObjectsTemp RigidBodyTunneler::do_get_inputs() const {
-  kernel::ModelObjectsTemp retval;
+ModelObjectsTemp RigidBodyTunneler::do_get_inputs() const {
+  ModelObjectsTemp retval;
   for (unsigned i = 0; i < pis_.size(); i++)
     retval.push_back(get_model()->get_particle(pis_[i]));
   return retval;

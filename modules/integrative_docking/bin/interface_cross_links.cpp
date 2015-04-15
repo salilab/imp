@@ -8,7 +8,7 @@
 #include <IMP/integrative_docking/internal/helpers.h>
 #include <IMP/integrative_docking/internal/CrossLink.h>
 
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/atom/hierarchy_tools.h>
@@ -100,20 +100,20 @@ int main(int argc, char** argv) {
   float distance_threshold = atof(files[2].c_str());
 
   // read pdb  files, prepare particles
-  IMP::kernel::Model* model = new IMP::kernel::Model();
+  IMP::Model* model = new IMP::Model();
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       receptor_pdb, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
       true, true);
-  IMP::kernel::Particles residue_particles1 =
+  IMP::Particles residue_particles1 =
       get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
   mhd = IMP::atom::read_pdb(ligand_pdb, model,
                             new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                             true, true);
-  IMP::kernel::Particles residue_particles2 =
+  IMP::Particles residue_particles2 =
       get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
 
   // get CA atoms for residues
-  IMP::kernel::Particles ca_atoms1, ca_atoms2;
+  IMP::Particles ca_atoms1, ca_atoms2;
   for (unsigned int i = 0; i < residue_particles1.size(); i++) {
     IMP::atom::Atom at = IMP::atom::get_atom(
         IMP::atom::Residue(residue_particles1[i]), IMP::atom::AT_CA);

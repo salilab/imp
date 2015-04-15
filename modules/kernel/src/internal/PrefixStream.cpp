@@ -5,7 +5,7 @@
  *
  */
 
-#include "IMP/kernel/internal/PrefixStream.h"
+#include "IMP/internal/PrefixStream.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 

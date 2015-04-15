@@ -32,8 +32,8 @@ class SoapChainSeparation {
     return require_same_chain_ || require_different_chains_;
   }
 
-  bool get_separation_ok(kernel::Model *m,
-                         const kernel::ParticleIndexPair &p) const {
+  bool get_separation_ok(Model *m,
+                         const ParticleIndexPair &p) const {
     if (!enabled()) {
       return true;
     }

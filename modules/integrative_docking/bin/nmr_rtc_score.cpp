@@ -5,7 +5,7 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 
 #include <IMP/integrative_docking/internal/helpers.h>
 #include <IMP/integrative_docking/internal/nmr_helpers.h>
@@ -79,20 +79,20 @@ put '-' if there is no file for one of the molecules.")(
   }
 
   // read pdb  files, prepare particles
-  IMP::kernel::Model *model = new IMP::kernel::Model();
+  IMP::Model *model = new IMP::Model();
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       receptor_pdb, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
       true, true);
-  IMP::kernel::Particles atom_particles1 =
+  IMP::Particles atom_particles1 =
       get_by_type(mhd, IMP::atom::ATOM_TYPE);
-  IMP::kernel::Particles residue_particles1 =
+  IMP::Particles residue_particles1 =
       get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
   mhd = IMP::atom::read_pdb(ligand_pdb, model,
                             new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                             true, true);
-  IMP::kernel::Particles atom_particles2 =
+  IMP::Particles atom_particles2 =
       get_by_type(mhd, IMP::atom::ATOM_TYPE);
-  IMP::kernel::Particles residue_particles2 =
+  IMP::Particles residue_particles2 =
       get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
   std::vector<int> atom_2_residue_map1, atom_2_residue_map2;
   get_atom_2_residue_map(atom_particles1, residue_particles1,

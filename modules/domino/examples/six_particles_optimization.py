@@ -37,7 +37,7 @@ def create_representation(m):
     ps = []
     # create size particles, initial coordinates don't matter.
     for i in range(0, 6):
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(i, 0., 0.))
         ps.append(p)
     return ps
@@ -84,7 +84,7 @@ def create_sampler(m, r, pst):
     return s
 
 IMP.base.set_log_level(IMP.base.TERSE)
-m = IMP.kernel.Model()
+m = IMP.Model()
 # don't print information during Model.evaluate
 m.set_log_level(IMP.base.SILENT)
 

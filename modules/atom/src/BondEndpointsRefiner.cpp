@@ -12,23 +12,23 @@ IMPATOM_BEGIN_NAMESPACE
 
 BondEndpointsRefiner::BondEndpointsRefiner() {}
 
-bool BondEndpointsRefiner::get_can_refine(kernel::Particle *p) const {
+bool BondEndpointsRefiner::get_can_refine(Particle *p) const {
   return atom::Bond::get_is_setup(p);
 }
 
-const kernel::ParticlesTemp BondEndpointsRefiner::get_refined(
-    kernel::Particle *p) const {
+const ParticlesTemp BondEndpointsRefiner::get_refined(
+    Particle *p) const {
   IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
   Bond d(p);
-  kernel::ParticlesTemp ps(2);
+  ParticlesTemp ps(2);
   ps[0] = d.get_bonded(0);
   ps[1] = d.get_bonded(1);
   return ps;
 }
 
 ModelObjectsTemp BondEndpointsRefiner::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  return IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
 }
 
 IMPATOM_END_NAMESPACE

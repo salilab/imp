@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     """Tests for bond refiner"""
 
     def _random_hierarchy(self, m, depth=2, width=4):
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         h = IMP.core.Hierarchy.setup_particle(p)
         if depth == 0:
             d = IMP.core.XYZR.setup_particle(
@@ -34,7 +34,7 @@ class Tests(IMP.test.TestCase):
     def test_rops(self):
         """Checking close pairs pair score"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         threshold = 5.0
         r0 = self._random_hierarchy(m)
         r1 = self._random_hierarchy(m)
@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
         print(ls0)
         print(ls1)
         cpr = IMP.core.LeavesRefiner(r0.get_traits())
-        lps = IMP.kernel._LogPairScore()
+        lps = IMP._LogPairScore()
         cpps = IMP.core.ClosePairsPairScore(lps, cpr, threshold)
         cpps.evaluate((r0, r1), None)
         print(str(len(lps.get_particle_pairs())) + " pairs", "in", threshold)
@@ -67,7 +67,7 @@ class Tests(IMP.test.TestCase):
     def test_rops2(self):
         """Checking k-close pairs pair score"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         threshold = 5.0
         r0 = self._random_hierarchy(m)
         r1 = self._random_hierarchy(m)
@@ -76,7 +76,7 @@ class Tests(IMP.test.TestCase):
         print(ls0)
         print(ls1)
         cpr = IMP.core.LeavesRefiner(r0.get_traits())
-        lps = IMP.kernel._LogPairScore()
+        lps = IMP._LogPairScore()
         k = 1
         cpps = IMP.core.KClosePairsPairScore(lps, cpr, k)
         cpps.evaluate((r0, r1), None)

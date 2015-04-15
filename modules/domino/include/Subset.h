@@ -31,11 +31,11 @@ IMPDOMINO_BEGIN_NAMESPACE
     a constant list in Python.
  */
 class IMPDOMINOEXPORT Subset
-    : public base::ConstVector<base::WeakPointer<kernel::Particle>,
-                               kernel::Particle *> {
-  typedef base::ConstVector<base::WeakPointer<kernel::Particle>,
-                            kernel::Particle *> P;
-  static const kernel::ParticlesTemp &get_sorted(kernel::ParticlesTemp &ps) {
+    : public base::ConstVector<base::WeakPointer<Particle>,
+                               Particle *> {
+  typedef base::ConstVector<base::WeakPointer<Particle>,
+                            Particle *> P;
+  static const ParticlesTemp &get_sorted(ParticlesTemp &ps) {
     std::sort(ps.begin(), ps.end());
     return ps;
   }
@@ -43,7 +43,7 @@ class IMPDOMINOEXPORT Subset
  public:
 #ifndef IMP_DOXYGEN
   // only use this if particles are sorted already
-  Subset(const kernel::ParticlesTemp &ps, bool) : P(ps.begin(), ps.end()) {
+  Subset(const ParticlesTemp &ps, bool) : P(ps.begin(), ps.end()) {
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned int i = 0; i < size(); ++i) {
         IMP_CHECK_OBJECT(ps[i]);
@@ -57,7 +57,7 @@ class IMPDOMINOEXPORT Subset
   Subset() {}
   /** Construct a subset from a non-empty list of particles.
    */
-  explicit Subset(kernel::ParticlesTemp ps) : P(get_sorted(ps)) {
+  explicit Subset(ParticlesTemp ps) : P(get_sorted(ps)) {
     IMP_USAGE_CHECK(!ps.empty(), "Do not create empty subsets");
     IMP_IF_CHECK(USAGE) {
       std::sort(ps.begin(), ps.end());
@@ -68,7 +68,7 @@ class IMPDOMINOEXPORT Subset
       }
     }
   }
-  kernel::Model *get_model() const { return operator[](0)->get_model(); }
+  Model *get_model() const { return operator[](0)->get_model(); }
   std::string get_name() const;
   bool get_contains(const Subset &o) const {
     return std::includes(begin(), end(), o.begin(), o.end());
@@ -79,13 +79,13 @@ IMP_VALUES(Subset, Subsets);
 IMP_SWAP(Subset);
 
 inline Subset get_union(const Subset &a, const Subset &b) {
-  kernel::ParticlesTemp pt;
+  ParticlesTemp pt;
   set_union(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(pt));
   return Subset(pt, true);
 }
 
 inline Subset get_intersection(const Subset &a, const Subset &b) {
-  kernel::ParticlesTemp pt;
+  ParticlesTemp pt;
   set_intersection(a.begin(), a.end(), b.begin(), b.end(),
                    std::back_inserter(pt));
   if (pt.empty()) {
@@ -96,7 +96,7 @@ inline Subset get_intersection(const Subset &a, const Subset &b) {
 }
 
 inline Subset get_difference(const Subset &a, const Subset &b) {
-  kernel::ParticlesTemp rs;
+  ParticlesTemp rs;
   std::set_difference(a.begin(), a.end(), b.begin(), b.end(),
                       std::back_inserter(rs));
   Subset ret(rs, true);

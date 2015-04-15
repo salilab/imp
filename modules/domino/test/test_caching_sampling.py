@@ -9,12 +9,12 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min3(self):
         """Test caching sampling with edge scores"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         m.set_log_level(IMP.base.SILENT)
         ps = []
         ds = []
         for i in range(0, 3):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZ.setup_particle(p)
             print(d)
             ds.append(d)
@@ -27,7 +27,7 @@ class Tests(IMP.test.TestCase):
         pst = IMP.domino.ParticleStatesTable()
         for p in ps:
             pst.set_particle_states(p, particle_state)
-            m.add_restraint(IMP.kernel._ConstRestraint(1, [p]))
+            m.add_restraint(IMP._ConstRestraint(1, [p]))
         sst = IMP.domino.BranchAndBoundAssignmentsTable(pst, [])
         m.add_restraint(IMP.core.DistanceRestraint(
             IMP.core.Harmonic(1, 1), ps[0], ps[1]))

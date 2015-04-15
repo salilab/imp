@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.SILENT)
 
         # init IMP model ( the environment)
-        self.mdl = IMP.kernel.Model()
+        self.mdl = IMP.Model()
         self.sel = IMP.atom.CAlphaPDBSelector()
         self.mhs = IMP.atom.Hierarchies()
         self.mhs.append(

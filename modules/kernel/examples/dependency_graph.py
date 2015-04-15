@@ -126,7 +126,6 @@
 # \enddot
 # }
 
-import IMP.kernel
 import IMP.atom
 import IMP.container
 import IMP.base
@@ -136,8 +135,8 @@ IMP.base.setup_from_argv(sys.argv, "Example of dependency graphs")
 
 
 def create_representation():
-    m = IMP.kernel.Model()
-    all = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+    m = IMP.Model()
+    all = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
     all.set_name("the universe")
 
     def create_protein(name, ds):
@@ -154,7 +153,7 @@ def create_representation():
         def create_from_pdb(file):
             sls = IMP.base.SetLogState(IMP.base.NONE)
             t = IMP.atom.read_pdb(
-                IMP.kernel.get_example_path("data/" + file), m,
+                IMP.get_example_path("data/" + file), m,
                 IMP.atom.ATOMPDBSelector())
             del sls
             # IMP.atom.show_molecular_hierarchy(t)
@@ -171,7 +170,7 @@ def create_representation():
             rb.set_coordinates_are_optimized(True)
             return s
         if len(files) > 1:
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             h = IMP.atom.Hierarchy.setup_particle(p)
             h.set_name(name)
             for i, f in enumerate(files):
@@ -238,10 +237,10 @@ create_restraints(m, all)
 
 # we can get the full dependency graph for the whole model with all the restraints
 # but it is pretty complex
-dg = IMP.kernel.get_dependency_graph(m)
+dg = IMP.get_dependency_graph(m)
 IMP.base.show_graphviz(dg)
 
 # better thing to do is to get the "pruned" graph
-pdg = IMP.kernel.get_pruned_dependency_graph(m)
+pdg = IMP.get_pruned_dependency_graph(m)
 
 IMP.base.show_graphviz(pdg)

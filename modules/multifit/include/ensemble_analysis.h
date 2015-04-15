@@ -32,7 +32,7 @@ class IMPMULTIFITEXPORT Ensemble : public base::Object {
   }
   Ensemble(multifit::SettingsData *sd,
            const ProteinsAnchorsSamplingSpace &mapping_data);
-  std::vector<Floats> score_by_restraints(kernel::Restraints rs,
+  std::vector<Floats> score_by_restraints(Restraints rs,
                                           const IntsList &combinations);
 
   IMP_OBJECT_METHODS(Ensemble);

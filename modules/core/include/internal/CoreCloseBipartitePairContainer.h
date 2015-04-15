@@ -14,11 +14,11 @@
 #include <IMP/core/core_config.h>
 #include "../ClosePairsFinder.h"
 #include "MovedSingletonContainer.h"
-#include <IMP/kernel/PairContainer.h>
-#include <IMP/kernel/PairPredicate.h>
-#include <IMP/kernel/SingletonContainer.h>
-#include <IMP/kernel/internal/ContainerScoreState.h>
-#include <IMP/kernel/internal/ListLikeContainer.h>
+#include <IMP/PairContainer.h>
+#include <IMP/PairPredicate.h>
+#include <IMP/SingletonContainer.h>
+#include <IMP/internal/ContainerScoreState.h>
+#include <IMP/internal/ListLikeContainer.h>
 #include <boost/unordered_map.hpp>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -35,30 +35,30 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     \usesconstraint
  */
 class IMPCOREEXPORT CoreCloseBipartitePairContainer
-    : public IMP::kernel::internal::ListLikeContainer<kernel::PairContainer> {
-  typedef IMP::kernel::internal::ListLikeContainer<kernel::PairContainer> P;
+    : public IMP::internal::ListLikeContainer<PairContainer> {
+  typedef IMP::internal::ListLikeContainer<PairContainer> P;
   IMP::base::PointerMember<SingletonContainer> sc_[2];
   bool were_close_, reset_;
   ObjectKey key_;
   // moved stuff
-  kernel::ParticleIndexes rbs_[2];
-  kernel::ParticleIndexes xyzrs_[2];
-  boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
+  ParticleIndexes rbs_[2];
+  ParticleIndexes xyzrs_[2];
+  boost::unordered_map<ParticleIndex, ParticleIndexes>
       constituents_;
   double slack_, distance_;
   algebra::Sphere3Ds rbs_backup_sphere_[2];
   algebra::Rotation3Ds rbs_backup_rot_[2];
   algebra::Sphere3Ds xyzrs_backup_[2];
   ParticleIndex covers_[2];
-  typedef kernel::internal::ContainerScoreState<CoreCloseBipartitePairContainer>
+  typedef IMP::internal::ContainerScoreState<CoreCloseBipartitePairContainer>
       SS;
   base::PointerMember<SS> score_state_;
   void initialize(SingletonContainer *a, SingletonContainer *b,
-                  kernel::ParticleIndex cover_a, kernel::ParticleIndex cover_b,
+                  ParticleIndex cover_a, ParticleIndex cover_b,
                   double distance, double slack, ObjectKey key);
 
  public:
-  kernel::ModelObjectsTemp get_score_state_inputs() const;
+  ModelObjectsTemp get_score_state_inputs() const;
   //! Get the individual particles from the passed SingletonContainer
   CoreCloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
                                   double distance, double slack = 1,
@@ -67,8 +67,8 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
 
   //! make sure you know what you are doing
   CoreCloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
-                                  kernel::ParticleIndex cover_a,
-                                  kernel::ParticleIndex cover_b, ObjectKey key,
+                                  ParticleIndex cover_a,
+                                  ParticleIndex cover_b, ObjectKey key,
                                   double distance, double slack = 1,
                                   std::string name =
                                       "CoreCloseBipartitePairContainer%1%");
@@ -94,11 +94,11 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
   }, );
   /**@}*/
   void clear_caches() { reset_ = true; }
-  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   void do_score_state_before_evaluate();
   void do_score_state_after_evaluate() {}
-  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(CoreCloseBipartitePairContainer);
 };
 

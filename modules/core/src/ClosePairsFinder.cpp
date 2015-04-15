@@ -26,7 +26,7 @@ ClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
 }
 
 ParticlePairsTemp ClosePairsFinder::get_close_pairs(
-    const kernel::ParticlesTemp &pc) const {
+    const ParticlesTemp &pc) const {
   return IMP::internal::get_particle(
       IMP::internal::get_model(pc),
       get_close_pairs(IMP::internal::get_model(pc),
@@ -34,7 +34,7 @@ ParticlePairsTemp ClosePairsFinder::get_close_pairs(
 }
 
 ParticlePairsTemp ClosePairsFinder::get_close_pairs(
-    const kernel::ParticlesTemp &pca, const kernel::ParticlesTemp &pcb) const {
+    const ParticlesTemp &pca, const ParticlesTemp &pcb) const {
   return IMP::internal::get_particle(
       IMP::internal::get_model(pca),
       get_close_pairs(IMP::internal::get_model(pca),

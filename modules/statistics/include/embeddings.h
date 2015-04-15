@@ -47,24 +47,24 @@ class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding : public Embedding {
     set of attributes can be chosen. When using attributes that
     are not equivalent (for example, angular degrees of freedom),
     it is probably useful to rescale the attributes according
-    to their ranges (see IMP::kernel::Model::get_range()). This is
+    to their ranges (see IMP::Model::get_range()). This is
     done by passing rescale=true to the constructor.
 */
 class IMPSTATISTICSEXPORT ParticleEmbedding : public Embedding {
-  kernel::Particles ps_;
+  Particles ps_;
   FloatKeys ks_;
   bool rescale_;
   base::Vector<FloatRange> ranges_;
 
  public:
-  ParticleEmbedding(const kernel::ParticlesTemp &ps, const FloatKeys &ks
+  ParticleEmbedding(const ParticlesTemp &ps, const FloatKeys &ks
 #if defined(IMP_DOXYGEN)
                                                      = core::XYZ::get_xyz_keys()
 #else
                                                      = FloatKeys(
-                                                         IMP::kernel::internal::
+                                                         IMP::internal::
                                                              xyzr_keys,
-                                                         IMP::kernel::internal::
+                                                         IMP::internal::
                                                                  xyzr_keys +
                                                              3)
 #endif

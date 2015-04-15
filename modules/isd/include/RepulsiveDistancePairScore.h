@@ -32,11 +32,11 @@ class IMPISDEXPORT RepulsiveDistancePairScore : public PairScore {
   double get_rest_length() const { return x0_; }
   double get_stiffness() const { return k_; }
 
-  virtual double evaluate_index(kernel::Model *m,
-                                const kernel::ParticleIndexPair &p,
+  virtual double evaluate_index(Model *m,
+                                const ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(RepulsiveDistancePairScore);
   IMP_OBJECT_METHODS(RepulsiveDistancePairScore);
   ;

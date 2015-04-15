@@ -80,13 +80,13 @@ std::string nicename(std::string name) {
 PDBSelector::~PDBSelector() {}
 
 struct IndexCompare {
-  bool operator()(kernel::Particle* a, kernel::Particle* b) const {
+  bool operator()(Particle* a, Particle* b) const {
     return Residue(a).get_index() < Residue(b).get_index();
   }
 };
 
 struct TypeCompare {
-  bool operator()(kernel::Particle* a, kernel::Particle* b) const {
+  bool operator()(Particle* a, Particle* b) const {
     return Atom(a).get_atom_type() < Atom(b).get_atom_type();
   }
 };
@@ -95,7 +95,7 @@ namespace {
 
 void sort_residues(Chain c) {
   Hierarchies dchildren = c.get_children();
-  kernel::ParticlesTemp children(dchildren.begin(), dchildren.end());
+  ParticlesTemp children(dchildren.begin(), dchildren.end());
   std::sort(children.begin(), children.end(), IndexCompare());
   c.clear_children();
   for (unsigned int i = 0; i < children.size(); ++i) {
@@ -171,7 +171,7 @@ IntKey get_pdb_index_key() {
   return pdb_index_key;
 }
 
-Particle* atom_particle(kernel::Model* m, const std::string& pdb_line) {
+Particle* atom_particle(Model* m, const std::string& pdb_line) {
   AtomType atom_name;
   std::string string_name = internal::atom_type(pdb_line);
   // determine element
@@ -198,7 +198,7 @@ Particle* atom_particle(kernel::Model* m, const std::string& pdb_line) {
     }
   }
   // new particle
-  kernel::Particle* p = new kernel::Particle(m);
+  Particle* p = new Particle(m);
   int index = internal::atom_number(pdb_line);
   p->add_attribute(get_pdb_index_key(), index);
   algebra::Vector3D v(internal::atom_xcoord(pdb_line),
@@ -226,8 +226,8 @@ Particle* atom_particle(kernel::Model* m, const std::string& pdb_line) {
   return p;
 }
 
-Particle* residue_particle(kernel::Model* m, const std::string& pdb_line) {
-  kernel::Particle* p = new kernel::Particle(m);
+Particle* residue_particle(Model* m, const std::string& pdb_line) {
+  Particle* p = new Particle(m);
 
   int residue_index = internal::atom_residue_number(pdb_line);
   char residue_icode = internal::atom_residue_icode(pdb_line);
@@ -244,8 +244,8 @@ Particle* residue_particle(kernel::Model* m, const std::string& pdb_line) {
   return p;
 }
 
-Particle* chain_particle(kernel::Model* m, char chain_id) {
-  kernel::Particle* p = new kernel::Particle(m);
+Particle* chain_particle(Model* m, char chain_id) {
+  Particle* p = new Particle(m);
   Chain::setup_particle(p, chain_id);
   p->set_name(std::string("Chain " + std::string(1, chain_id)));
   Molecule::setup_particle(p);
@@ -275,13 +275,13 @@ void add_pdb_radii(Hierarchy d) {
   ff->add_radii(d);
 
   // We added CHARMM atom types (above) to determine radii, so remove
-  // them again to avoid pollution of the kernel::Particles with unrequested
+  // them again to avoid pollution of the Particles with unrequested
   // attributes
   RemoveCHARMMTypeVisitor visitor;
   IMP::core::visit_depth_first(d, visitor);
 }
 
-Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
+Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
                      PDBSelector* selector, bool select_first_model,
                      bool split_models, bool noradii) {
   IMP_FUNCTION_LOG;
@@ -289,9 +289,9 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
   // hierarchy decorator
   Hierarchies ret;
   std::string root_name;
-  kernel::Particle* root_p = nullptr;
-  kernel::Particle* cp = nullptr;
-  kernel::Particle* rp = nullptr;
+  Particle* root_p = nullptr;
+  Particle* cp = nullptr;
+  Particle* rp = nullptr;
 
   char curr_residue_icode = '-';
   char curr_chain = '-';
@@ -321,9 +321,9 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
     }
 
     // check that line is an HETATM or ATOM rec and that selector accepts line.
-    // if this is the case construct a new kernel::Particle using line and add
+    // if this is the case construct a new Particle using line and add
     // the
-    // kernel::Particle to the kernel::Model
+    // Particle to the Model
     if (internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line)) {
       if (!selector->get_is_selected(line)) {
         IMP_LOG_VERBOSE("Selector rejected line " << line << std::endl);
@@ -334,13 +334,13 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
       char chain = internal::atom_chain_id(line);
 
       // create atom particle
-      kernel::Particle* ap = atom_particle(model, line);
+      Particle* ap = atom_particle(model, line);
       // make sure that all children have coordinates,
       // (no residues without valid atoms)
       if (ap) {
         // check if new chain
         if (root_p == nullptr) {
-          root_p = new kernel::Particle(model);
+          root_p = new Particle(model);
           ret.push_back(Hierarchy::setup_particle(root_p));
           if (!root_name.empty() || !name.empty()) {
             root_p->set_name(name + ": " + root_name);
@@ -404,9 +404,9 @@ Hierarchies read_pdb(std::istream& in, std::string name, kernel::Model* model,
 }
 
 void read_pdb(base::TextInput in, int model, Hierarchy h) {
-  boost::unordered_map<int, kernel::Particle*> atoms_map;
+  boost::unordered_map<int, Particle*> atoms_map;
   atom::Hierarchies atoms = get_by_type(h, ATOM_TYPE);
-  boost::unordered_map<core::RigidBody, kernel::ParticleIndexes> rigid_bodies;
+  boost::unordered_map<core::RigidBody, ParticleIndexes> rigid_bodies;
   for (unsigned int i = 0; i < atoms.size(); ++i) {
     atoms_map[atoms[i]->get_value(get_pdb_index_key())] = atoms[i];
     if (core::RigidMember::get_is_setup(atoms[i])) {
@@ -442,7 +442,7 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
       }
     }
   }
-  for (boost::unordered_map<core::RigidBody, kernel::ParticleIndexes>::iterator
+  for (boost::unordered_map<core::RigidBody, ParticleIndexes>::iterator
            it = rigid_bodies.begin();
        it != rigid_bodies.end(); ++it) {
     core::RigidBody rb = it->first;
@@ -453,7 +453,7 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
   }
 }
 
-Hierarchy read_pdb(base::TextInput in, kernel::Model* model,
+Hierarchy read_pdb(base::TextInput in, Model* model,
                    PDBSelector* selector, bool select_first_model,
                    bool no_radii) {
   IMP::base::PointerMember<PDBSelector> sp(selector);
@@ -465,7 +465,7 @@ Hierarchy read_pdb(base::TextInput in, kernel::Model* model,
   return ret[0];
 }
 
-Hierarchies read_multimodel_pdb(base::TextInput in, kernel::Model* model,
+Hierarchies read_multimodel_pdb(base::TextInput in, Model* model,
                                 PDBSelector* selector, bool noradii) {
   IMP::base::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,
@@ -630,14 +630,14 @@ std::string get_pdb_conect_record_string(int a1_ind, int a2_ind) {
 }
 
 WritePDBOptimizerState::WritePDBOptimizerState(
-    kernel::Model* m, const kernel::ParticleIndexesAdaptor& pis,
+    Model* m, const ParticleIndexesAdaptor& pis,
     std::string filename)
-    : kernel::OptimizerState(m, filename + "Writer"),
+    : OptimizerState(m, filename + "Writer"),
       filename_(filename),
       pis_(pis) {}
 WritePDBOptimizerState::WritePDBOptimizerState(const atom::Hierarchies mh,
                                                std::string filename)
-    : kernel::OptimizerState(mh[0].get_model(), filename + "Writer"),
+    : OptimizerState(mh[0].get_model(), filename + "Writer"),
       filename_(filename) {
   IMP_FOREACH(atom::Hierarchy h, mh) { pis_.push_back(h.get_particle_index()); }
 }
@@ -647,7 +647,7 @@ void WritePDBOptimizerState::do_update(unsigned int call) {
   bool append = (call != 0);
   std::string filename;
   Hierarchies hs;
-  IMP_FOREACH(kernel::ParticleIndex pi, pis_) {
+  IMP_FOREACH(ParticleIndex pi, pis_) {
     hs.push_back(Hierarchy(get_model(), pi));
   }
   try {
@@ -665,8 +665,8 @@ void WritePDBOptimizerState::do_update(unsigned int call) {
 }
 
 ModelObjectsTemp WritePDBOptimizerState::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
-  IMP_FOREACH(kernel::ParticleIndex pi, pis_) {
+  ModelObjectsTemp ret;
+  IMP_FOREACH(ParticleIndex pi, pis_) {
     ret += get_leaves(Hierarchy(get_model(), pi));
   }
   return ret;

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/io.h
+ *  \file IMP/io.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_IO_H
 #define IMPKERNEL_IO_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "OptimizerState.h"
 #include "internal/utility.h"
 #include <boost/format.hpp>

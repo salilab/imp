@@ -11,7 +11,7 @@ import IMP.display
 
 
 # create two lists of random particles for display
-m = IMP.kernel.Model()
+m = IMP.Model()
 n = 10
 radius = 1.0
 bounding_box_size = 10.0

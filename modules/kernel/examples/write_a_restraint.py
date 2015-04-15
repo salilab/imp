@@ -9,11 +9,11 @@ import IMP
 # increasing order on k.
 
 
-class MyRestraint(IMP.kernel.Restraint):
+class MyRestraint(IMP.Restraint):
     # take the list of particles and the key to use
 
     def __init__(self, m, ps, k):
-        IMP.kernel.Restraint.__init__(self, m, "MyRestraint %1%")
+        IMP.Restraint.__init__(self, m, "MyRestraint %1%")
         self.ps = ps
         self.k = k
 
@@ -37,10 +37,10 @@ class MyRestraint(IMP.kernel.Restraint):
 
 # some code to create and evaluate it
 k = IMP.FloatKey("a key")
-m = IMP.kernel.Model()
+m = IMP.Model()
 ps = []
 for i in range(0, 10):
-    p = IMP.kernel.Particle(m)
+    p = IMP.Particle(m)
     p.add_attribute(k, i)
     ps.append(p)
 r = MyRestraint(m, ps, k)

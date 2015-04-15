@@ -16,7 +16,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-double get_resolution(kernel::Model* m, kernel::ParticleIndex pi) {
+double get_resolution(Model* m, ParticleIndex pi) {
   double min = std::numeric_limits<double>::max();
   IMP_FOREACH(Hierarchy l, get_leaves(Hierarchy(m, pi))) {
     double cur = core::XYZR(l).get_radius();
@@ -32,28 +32,28 @@ IntsKey Representation::get_types_key() {
   return k;
 }
 
-kernel::FloatKey Representation::get_resolution_key(unsigned int index) {
-  static boost::unordered_map<unsigned int, kernel::FloatKey> keys;
+FloatKey Representation::get_resolution_key(unsigned int index) {
+  static boost::unordered_map<unsigned int, FloatKey> keys;
   if (keys.find(index) == keys.end()) {
     std::ostringstream oss;
     oss << "representation_resolution_" << index;
-    keys[index] = kernel::FloatKey(oss.str());
+    keys[index] = FloatKey(oss.str());
   }
   return keys.find(index)->second;
 }
 
-kernel::FloatKey Representation::get_base_resolution_key() {
-  static kernel::FloatKey key("base_resolution");
+FloatKey Representation::get_base_resolution_key() {
+  static FloatKey key("base_resolution");
   return key;
 }
 
 ParticleIndexesKey Representation::get_representations_key() {
-  static kernel::ParticleIndexesKey key("representations");
+  static ParticleIndexesKey key("representations");
   return key;
 }
 
-void Representation::do_setup_particle(kernel::Model* m,
-                                       kernel::ParticleIndex pi,
+void Representation::do_setup_particle(Model* m,
+                                       ParticleIndex pi,
                                        double resolution) {
   if (resolution < 0) {
     resolution = get_resolution(m, pi);

@@ -18,12 +18,12 @@ IMPISD_BEGIN_NAMESPACE
 // MarginalHBondRestraint::MarginalHBondRestraint() {}
 
 // add a contribution: simple case
-void MarginalHBondRestraint::add_contribution(kernel::Particle *p1,
-                                              kernel::Particle *p2,
+void MarginalHBondRestraint::add_contribution(Particle *p1,
+                                              Particle *p2,
                                               double Iexp) {
   set_has_dependencies(false);
-  kernel::ParticlePair pc(p1, p2);
-  kernel::ParticlePairsTemp pct(1, pc);
+  ParticlePair pc(p1, p2);
+  ParticlePairsTemp pct(1, pc);
   IMP_NEW(container::ListPairContainer, cont, (pct));
   // container::ListPairContainer cont(pct);
   add_contribution(cont, Iexp);
@@ -93,7 +93,7 @@ double MarginalHBondRestraint::unprotected_evaluate(
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp MarginalHBondRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
+  ModelObjectsTemp ret;
   for (unsigned i = 0; i < volumes_.size(); ++i) {
     ret += IMP::get_particles(get_model(),
                               contribs_[i]->get_all_possible_indexes());

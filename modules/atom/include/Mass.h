@@ -21,13 +21,13 @@ IMPATOM_BEGIN_NAMESPACE
 /** The mass of the particle is assumed to be in Daltons.
  */
 class IMPATOMEXPORT Mass : public Decorator {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 double mass) {
     m->add_attribute(get_mass_key(), pi, mass);
   }
 
  public:
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_mass_key(), pi);
   }
 

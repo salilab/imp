@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/OptimizerState.h   \brief Shared optimizer state.
+ *  \file IMP/OptimizerState.h   \brief Shared optimizer state.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_OPTIMIZER_STATE_H
 #define IMPKERNEL_OPTIMIZER_STATE_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "ModelObject.h"
 #include <IMP/base/WeakPointer.h>
 #include <IMP/base/Object.h>
@@ -56,7 +56,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
       @note An optimizer state may become periodic via its set_period()
             method.
   */
-  OptimizerState(kernel::Model* m, std::string name);
+  OptimizerState(Model* m, std::string name);
 
   //! Called when the Optimizer accepts a new conformation
   /**

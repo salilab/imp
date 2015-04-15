@@ -17,7 +17,7 @@
 #include <IMP/atom/pdb.h>
 
 #include <IMP/constants.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 
 #include <fstream>
 #include <vector>
@@ -32,10 +32,10 @@ using namespace IMP::foxs::internal;
 namespace {
 
 void read_pdb(const std::string file, std::vector<std::string>& pdb_file_names,
-              std::vector<IMP::kernel::Particles>& particles_vec,
+              std::vector<IMP::Particles>& particles_vec,
               bool residue_level, bool heavy_atoms_only, int multi_model_pdb) {
 
-  IMP::kernel::Model* model = new IMP::kernel::Model();
+  IMP::Model* model = new IMP::Model();
 
   IMP::atom::Hierarchies mhds;
   IMP::atom::PDBSelector* selector;
@@ -61,7 +61,7 @@ void read_pdb(const std::string file, std::vector<std::string>& pdb_file_names,
   }
 
   for (unsigned int h_index = 0; h_index < mhds.size(); h_index++) {
-    IMP::kernel::ParticlesTemp ps =
+    IMP::ParticlesTemp ps =
         get_by_type(mhds[h_index], IMP::atom::ATOM_TYPE);
     if (ps.size() > 0) {  // pdb file
       std::string pdb_id = file;
@@ -71,7 +71,7 @@ void read_pdb(const std::string file, std::vector<std::string>& pdb_file_names,
                  ".pdb";
       }
       pdb_file_names.push_back(pdb_id);
-      particles_vec.push_back(IMP::get_as<IMP::kernel::Particles>(ps));
+      particles_vec.push_back(IMP::get_as<IMP::Particles>(ps));
       std::cout << ps.size() << " atoms were read from PDB file " << file;
       if (mhds.size() > 1) std::cout << " MODEL " << h_index + 1;
       std::cout << std::endl;
@@ -82,7 +82,7 @@ void read_pdb(const std::string file, std::vector<std::string>& pdb_file_names,
 void read_files(const std::vector<std::string>& files,
                 std::vector<std::string>& pdb_file_names,
                 std::vector<std::string>& dat_files,
-                std::vector<IMP::kernel::Particles>& particles_vec,
+                std::vector<IMP::Particles>& particles_vec,
                 Profiles& exp_profiles, bool residue_level,
                 bool heavy_atoms_only, int multi_model_pdb) {
 
@@ -284,7 +284,7 @@ constant form factor (default = false)")(
 
 
   // 1. read pdbs and profiles, prepare particles
-  std::vector<IMP::kernel::Particles> particles_vec;
+  std::vector<IMP::Particles> particles_vec;
   Profiles exp_profiles;
 
   read_files(files, pdb_files, dat_files, particles_vec, exp_profiles,

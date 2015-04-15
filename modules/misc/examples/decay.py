@@ -31,13 +31,13 @@ else:
     period = 10
     steps = 10000
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                IMP.algebra.Vector3D(100, 100, 100))
 ps = []
 for i in range(0, np):
-    p = IMP.kernel.Particle(m)
+    p = IMP.Particle(m)
     d = IMP.core.XYZR.setup_particle(p)
     d.set_coordinates(IMP.algebra.Vector3D(10. * (i/10), 10. * (i%10), 10.))
     d.set_radius(10)

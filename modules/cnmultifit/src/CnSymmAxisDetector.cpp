@@ -93,10 +93,10 @@ CnSymmAxisDetector::CnSymmAxisDetector(int symm_deg,
                                        const atom::Hierarchies &mhs)
     : symm_deg_(symm_deg) {
   // create a density map
-  kernel::Particles ps;
+  Particles ps;
   for (atom::Hierarchies::const_iterator it = mhs.begin(); it != mhs.end();
        it++) {
-    kernel::Particles temp_ps = core::get_leaves(*it);
+    Particles temp_ps = core::get_leaves(*it);
     ps.insert(ps.end(), temp_ps.begin(), temp_ps.end());
   }
   // TODO - check the number of particles!!

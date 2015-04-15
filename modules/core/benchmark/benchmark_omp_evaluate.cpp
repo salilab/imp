@@ -15,23 +15,23 @@ namespace {
 std::string get_module_name() { return "benchmark omp"; }
 std::string get_module_version() { return IMP::core::get_module_version(); }
 
-class ExpensiveRestraint : public IMP::kernel::Restraint {
-  IMP::kernel::ParticleIndexes pis_;
+class ExpensiveRestraint : public IMP::Restraint {
+  IMP::ParticleIndexes pis_;
 
  public:
-  ExpensiveRestraint(IMP::kernel::Model *m,
-                     const IMP::kernel::ParticleIndexes &pis)
+  ExpensiveRestraint(IMP::Model *m,
+                     const IMP::ParticleIndexes &pis)
       : Restraint(m, "ExpensiveRestraint%1%"), pis_(pis) {}
-  void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa) const
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
       IMP_OVERRIDE;
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ExpensiveRestraint);
 };
 
 void ExpensiveRestraint::do_add_score_and_derivatives(IMP::ScoreAccumulator sa)
     const {
   double score = 0;
-  IMP::kernel::Model *m = get_model();
+  IMP::Model *m = get_model();
   for (unsigned int i = 0; i < pis_.size(); ++i) {
     IMP::core::XYZ di(m, pis_[i]);
     IMP::algebra::Vector3D vi = di.get_coordinates();
@@ -50,7 +50,7 @@ void ExpensiveRestraint::do_add_score_and_derivatives(IMP::ScoreAccumulator sa)
   sa.add_score(score);
 }
 
-IMP::kernel::ModelObjectsTemp ExpensiveRestraint::do_get_inputs() const {
+IMP::ModelObjectsTemp ExpensiveRestraint::do_get_inputs() const {
   return IMP::get_particles(get_model(), pis_);
 }
 
@@ -91,16 +91,16 @@ void benchmark_serial(IMP::core::RestraintsScoringFunction *sf) {
 int main(int argc, char **argv) {
   IMP::base::setup_from_argv(argc, argv, "Benchmark OpenMP evaluations");
   IMP::algebra::BoundingBox3D bb = IMP::algebra::get_unit_bounding_box_d<3>();
-  IMP_NEW(IMP::kernel::Model, m, ());
+  IMP_NEW(IMP::Model, m, ());
   IMP::Restraints rs;
   const unsigned int num_restraints =
       (IMP::base::run_quick_test || (IMP_BUILD >= IMP_RELEASE)) ? 2 : 15;
   const unsigned int num_particles =
       (IMP::base::run_quick_test || (IMP_BUILD >= IMP_RELEASE)) ? 10 : 5000;
   for (unsigned int i = 0; i < num_restraints; ++i) {
-    IMP::kernel::ParticleIndexes pis;
+    IMP::ParticleIndexes pis;
     for (unsigned int j = 0; j < num_particles; ++j) {
-      IMP_NEW(IMP::kernel::Particle, p, (m));
+      IMP_NEW(IMP::Particle, p, (m));
       IMP::core::XYZ::setup_particle(p, IMP::algebra::get_random_vector_in(bb));
       pis.push_back(p->get_index());
     }

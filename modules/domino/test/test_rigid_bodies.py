@@ -12,20 +12,20 @@ class Tests(IMP.test.TestCase):
     def _create_rb(self, name, m, np=1):
         ps = []
         for i in range(0, np):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             p.set_name(name + "particle" + str(i))
             d = IMP.core.XYZR.setup_particle(p)
             d.set_radius(1)
             d.set_coordinates(get_random_vector_in(get_unit_sphere_3d()))
             ps.append(p)
-        rbp = IMP.kernel.Particle(m)
+        rbp = IMP.Particle(m)
         rbp.set_name(name + "rb")
         rbd = IMP.core.RigidBody.setup_particle(rbp, ps)
         return rbd
 
     def test_global_min2(self):
         """Testing finding minima with rigid bodies"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         rbs = [self._create_rb("1", m), self._create_rb("2", m)]
         trs = [ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
                                                  Vector3D(0, 0, 0))),
@@ -65,7 +65,7 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min1(self):
         """Testing splitting restraints with rigid bodies"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         rbs = [self._create_rb("1", m), self._create_rb("2", m),
                self._create_rb("3", m)]
         trs = [ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
@@ -96,7 +96,7 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min3(self):
         """Testing splitting restraints with rigid bodies and interestings scores"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         rbs = [self._create_rb("1", m, 4), self._create_rb("2", m, 4),
                self._create_rb("3", m, 4)]
         trs = [ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
@@ -130,17 +130,17 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(allr), 3)
 
     def _create_rigid_body(self, m):
-        p = IMP.kernel.Particle(m, "rb")
+        p = IMP.Particle(m, "rb")
         rb = IMP.core.RigidBody.setup_particle(
             p, IMP.algebra.ReferenceFrame3D())
-        pm = IMP.kernel.Particle(m, "m")
+        pm = IMP.Particle(m, "m")
         IMP.core.XYZ.setup_particle(pm)
         rb.add_member(pm)
         return p
 
     def test_interaction_graph(self):
         """Testing the interaction graph with rigid bodies"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         rb0 = self._create_rigid_body(m)
         rb1 = self._create_rigid_body(m)
         rb2 = self._create_rigid_body(m)

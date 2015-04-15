@@ -58,14 +58,14 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
         maxvalue,
             isoptimized=True):
         nuisance = IMP.isd.Scale.setup_particle(
-            IMP.kernel.Particle(m), initialvalue)
+            IMP.Particle(m), initialvalue)
         nuisance.set_lower(minvalue)
         nuisance.set_upper(maxvalue)
         nuisance.set_is_optimized(nuisance.get_nuisance_key(), isoptimized)
         return nuisance
 
     def setup_weight(self, m, isoptimized=True):
-        pw = IMP.kernel.Particle(m)
+        pw = IMP.Particle(m)
         weight = IMP.isd.Weight.setup_particle(pw)
         weight.set_weights_are_optimized(True)
         return weight
@@ -89,23 +89,23 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
 
     def testSetupAndEvaluate(self):
         "test the restraint on precalculated parameter grid"
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         ps = []
         # setting up particles
-        p0 = IMP.kernel.Particle(m)
+        p0 = IMP.Particle(m)
         xyz = IMP.core.XYZR.setup_particle(
             p0, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 3.0))
         xyz.set_coordinates_are_optimized(True)
         ps.append(p0)
 
-        p0 = IMP.kernel.Particle(m)
+        p0 = IMP.Particle(m)
         xyz0 = IMP.core.XYZR.setup_particle(
             p0, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 3.0))
         xyz0.set_coordinates_are_optimized(True)
         ps.append(p0)
 
-        p0 = IMP.kernel.Particle(m)
+        p0 = IMP.Particle(m)
         xyz0 = IMP.core.XYZR.setup_particle(
             p0, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 3.0))
         xyz0.set_coordinates_are_optimized(True)

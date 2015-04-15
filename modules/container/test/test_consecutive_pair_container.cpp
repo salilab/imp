@@ -14,12 +14,12 @@
 #include <IMP/container/generic.h>
 
 int main(int, char * []) {
-  IMP_NEW(IMP::kernel::Model, m, ());
-  IMP::kernel::ParticlesTemp ps;
+  IMP_NEW(IMP::Model, m, ());
+  IMP::ParticlesTemp ps;
   IMP::algebra::BoundingBox3D bb(IMP::algebra::Vector3D(0, 0, 0),
                                  IMP::algebra::Vector3D(10, 10, 10));
   for (unsigned int i = 0; i < 15; ++i) {
-    ps.push_back(new IMP::kernel::Particle(m));
+    ps.push_back(new IMP::Particle(m));
     IMP::core::XYZ::setup_particle(ps.back(),
                                    IMP::algebra::get_random_vector_in(bb));
   }

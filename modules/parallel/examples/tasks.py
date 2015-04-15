@@ -11,10 +11,10 @@ def setup():
     """Create a Model containing two XYZ particles linked by a harmonic
        distance restraint, one fixed at the origin. Return the Model and
        the free XYZ particle."""
-    m = IMP.kernel.Model()
-    p1 = IMP.kernel.Particle(m)
+    m = IMP.Model()
+    p1 = IMP.Particle(m)
     d1 = IMP.core.XYZ.setup_particle(p1)
-    p2 = IMP.kernel.Particle(m)
+    p2 = IMP.Particle(m)
     d2 = IMP.core.XYZ.setup_particle(p2)
     d1.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
     r = IMP.core.DistanceRestraint(IMP.core.Harmonic(0, 1), p1, p2)

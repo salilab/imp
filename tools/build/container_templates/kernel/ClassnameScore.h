@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/ClassnameScore.h
+ *  \file IMP/ClassnameScore.h
  *  \brief Define ClassnameScore.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_CLASSNAME_SCORE_H
 #define IMPKERNEL_CLASSNAME_SCORE_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"

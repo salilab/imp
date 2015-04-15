@@ -5,9 +5,9 @@
  *
  */
 
-#include "IMP/kernel/internal/input_output_exception.h"
-#include "IMP/kernel/ModelObject.h"
-#include "IMP/kernel/Model.h"
+#include "IMP/internal/input_output_exception.h"
+#include "IMP/ModelObject.h"
+#include "IMP/Model.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -29,7 +29,7 @@ InputOutputException::InputOutputException(std::string container_name,
 
 InputOutputException::~InputOutputException() throw() {}
 
-std::string InputOutputException::get_message(kernel::ModelObject *o) const {
+std::string InputOutputException::get_message(ModelObject *o) const {
   std::ostringstream oss;
   switch (get_entity()) {
     case DERIVATIVE:

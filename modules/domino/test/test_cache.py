@@ -6,10 +6,10 @@ import IMP.algebra
 import random
 
 
-class LogRestraint(IMP.kernel.Restraint):
+class LogRestraint(IMP.Restraint):
 
     def __init__(self, m, ps):
-        IMP.kernel.Restraint.__init__(self, m, "LogRestraint%1%")
+        IMP.Restraint.__init__(self, m, "LogRestraint%1%")
         self.count = 0
         self.ps = ps
 
@@ -31,8 +31,8 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min1(self):
         """Test caching of restraint scores"""
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         lr = LogRestraint(m, [p])
         lr.set_maximum_score(0)
@@ -52,8 +52,8 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min2(self):
         """Test non-caching of restraint scores"""
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         lr = LogRestraint(m, [p])
         lr.set_maximum_score(0)
@@ -73,8 +73,8 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min3(self):
         """Test capped caching of restraint scores"""
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         IMP.core.XYZ.setup_particle(p)
         lr = LogRestraint(m, [p])
         lr.set_maximum_score(0)

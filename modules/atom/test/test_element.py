@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def test_element_mass(self):
         """Check assigning elements and masses to pdb with one protein"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         # read PDB, assign elements and masses
         mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                                m, IMP.atom.NonWaterPDBSelector())
@@ -25,12 +25,12 @@ class Tests(IMP.test.TestCase):
 
     def test_element_write(self):
         """Check writing to pdb unknown elements"""
-        m = IMP.kernel.Model()
-        chain = IMP.atom.Chain.setup_particle(IMP.kernel.Particle(m), 'A')
+        m = IMP.Model()
+        chain = IMP.atom.Chain.setup_particle(IMP.Particle(m), 'A')
         residue = IMP.atom.Residue.setup_particle(
-            IMP.kernel.Particle(m), IMP.atom.ALA)
+            IMP.Particle(m), IMP.atom.ALA)
         atom = IMP.atom.Atom.setup_particle(
-            IMP.kernel.Particle(m),
+            IMP.Particle(m),
             IMP.atom.AT_CA)
         xyz = IMP.core.XYZ.setup_particle(
             atom.get_particle(), IMP.algebra.Vector3D(0, 0, 0))
@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
 
     def test_element_assignment(self):
         """Check element assignment based on atom name"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read PDB
         mp = IMP.atom.read_pdb(self.open_input_file("elements.pdb"),

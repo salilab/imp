@@ -12,7 +12,7 @@
 
 #include <IMP/core/core_config.h>
 
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -21,16 +21,16 @@ IMPCORE_BEGIN_NAMESPACE
 /** This restraint is mostly for testing, but can also be used to make
     the total score look nicer.
  */
-class IMPCOREEXPORT ConstantRestraint : public kernel::Restraint {
+class IMPCOREEXPORT ConstantRestraint : public Restraint {
   Float v_;
 
  public:
   //! Add v to the total score.
   ConstantRestraint(Model *m, Float v);
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ConstantRestraint);
 };
 

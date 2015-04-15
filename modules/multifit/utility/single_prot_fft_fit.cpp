@@ -135,7 +135,7 @@ int main(int argc, char **argv) {
   std::cout << "=====================================" << std::endl;
 
   // read protein
-  IMP_NEW(kernel::Model, mdl, ());
+  IMP_NEW(Model, mdl, ());
   atom::Hierarchy mol2fit = atom::read_pdb(protein_filename.c_str(), mdl);
   core::XYZs mh_xyz = core::XYZs(core::get_leaves(mol2fit));
   // create a rigid body

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/ConfigurationSet.h
+ *  \file IMP/ConfigurationSet.h
  *  \brief Store a set of configurations of the model.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONFIGURATION_SET_H
 #define IMPKERNEL_CONFIGURATION_SET_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
 #include "Model.h"
@@ -31,7 +31,7 @@ class IMPKERNELEXPORT ConfigurationSet : public IMP::base::Object {
   base::Vector<base::Pointer<Configuration> > configurations_;
 
  public:
-  ConfigurationSet(kernel::Model *m, std::string name = "ConfigurationSet %1%");
+  ConfigurationSet(Model *m, std::string name = "ConfigurationSet %1%");
   //! Save the current configuration of the Model
   void save_configuration();
   unsigned int get_number_of_configurations() const;

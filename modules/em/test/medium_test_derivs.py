@@ -41,11 +41,11 @@ class Tests(IMP.test.TestCase):
         self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
         # init IMP model ( the environment)
-        self.imp_model = IMP.kernel.Model()
+        self.imp_model = IMP.Model()
         self.particles = []
         # -  create a set of three particles in imp
         for i in range(3):
-            self.particles.append(IMP.kernel.Particle(self.imp_model))
+            self.particles.append(IMP.Particle(self.imp_model))
         # add IMP Restraints into the modeller scoring function
         t = self.env.edat.energy_terms
         t.append(IMP.modeller.IMPRestraints(self.particles))
@@ -127,14 +127,14 @@ class Tests(IMP.test.TestCase):
         self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
         # init IMP model ( the environment)
-        self.imp_model = IMP.kernel.Model()
+        self.imp_model = IMP.Model()
         self.particles = []
 
         # -  create a set of three particles in imp
         for i in range(3):
-            self.particles.append(IMP.kernel.Particle(self.imp_model))
+            self.particles.append(IMP.Particle(self.imp_model))
 
-        # add IMP.kernel.Restraints into the modeller scoring function
+        # add IMP.Restraints into the modeller scoring function
         t = self.env.edat.energy_terms
         t.append(IMP.modeller.IMPRestraints(self.particles))
 
@@ -215,8 +215,8 @@ class Tests(IMP.test.TestCase):
         use_rigid_bodies = True
         bd = 10
         radius = 10
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         IMP.atom.Mass.setup_particle(p, 10000)
         d = IMP.core.XYZR.setup_particle(p)
         d.set_radius(radius)
@@ -238,7 +238,7 @@ class Tests(IMP.test.TestCase):
         dmap.calcRMS()
         print("AFTER calcRMS", dmap.get_rms_calculated())
         IMP.em.write_map(dmap, "map.mrc", IMP.em.MRCReaderWriter())
-        rs = IMP.kernel.RestraintSet(m)
+        rs = IMP.RestraintSet(m)
         m.add_restraint(rs)
 
         r = IMP.em.FitRestraint([fp], dmap)

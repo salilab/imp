@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Particle.h
+ *  \file IMP/Particle.h
  *  \brief Classes to handle individual model particles.
  *         (Note that implementation of inline functions is in internal)
  *
@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_PARTICLE_H
 #define IMPKERNEL_PARTICLE_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "DerivativeAccumulator.h"
 #include "Model.h"
@@ -45,10 +45,10 @@ class IMPKERNELEXPORT Particle : public ModelObject {
 
  public:
   //! Construct a particle and add it to the Model
-  Particle(kernel::Model *m, std::string name);
+  Particle(Model *m, std::string name);
 
   //! Construct a particle and add it to the Model
-  Particle(kernel::Model *m);
+  Particle(Model *m);
 
 #ifndef IMP_DOXYGEN
 

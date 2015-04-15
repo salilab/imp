@@ -10,7 +10,7 @@
 #define IMPEXAMPLE_EXAMPLE_RESTRAINT_H
 
 #include <IMP/example/example_config.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -22,19 +22,19 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleRestraint.h
     \include ExampleRestraint.cpp
 */
-class IMPEXAMPLEEXPORT ExampleRestraint : public kernel::Restraint {
-  kernel::ParticleIndex p_;
+class IMPEXAMPLEEXPORT ExampleRestraint : public Restraint {
+  ParticleIndex p_;
   double k_;
 
  public:
   //! Create the restraint.
-  /** kernel::Restraints should store the particles they are to act on,
+  /** Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  ExampleRestraint(kernel::Model *m, kernel::ParticleIndex p, double k);
-  void do_add_score_and_derivatives(kernel::ScoreAccumulator sa) const
+  ExampleRestraint(Model *m, ParticleIndex p, double k);
+  void do_add_score_and_derivatives(ScoreAccumulator sa) const
       IMP_OVERRIDE;
-  kernel::ModelObjectsTemp do_get_inputs() const;
+  ModelObjectsTemp do_get_inputs() const;
   IMP_OBJECT_METHODS(ExampleRestraint);
 };
 

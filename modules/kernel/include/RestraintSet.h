@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/RestraintSet.h
+ *  \file IMP/RestraintSet.h
  *  \brief Used to hold a set of related restraints.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_RESTRAINT_SET_H
 #define IMPKERNEL_RESTRAINT_SET_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "Restraint.h"
 #include "container_macros.h"
 #include <string>
@@ -41,10 +41,10 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
 
  public:
   //! Create an empty set that is registered with the model
-  RestraintSet(kernel::Model *m, double weight,
+  RestraintSet(Model *m, double weight,
                const std::string &name = "RestraintSet %1%");
   //! Create an empty set that is registered with the model
-  RestraintSet(kernel::Model *m, const std::string &name = "RestraintSet %1%");
+  RestraintSet(Model *m, const std::string &name = "RestraintSet %1%");
   //! Create a set that is registered with the model
   RestraintSet(const RestraintsTemp &rs, double weight,
                const std::string &name = "RestraintSet %1%");

@@ -13,10 +13,10 @@
 
 #include <IMP/Sampler.h>
 #include <IMP/container_macros.h>
-#include <IMP/kernel/SingletonContainer.h>
+#include <IMP/SingletonContainer.h>
 #include <IMP/Optimizer.h>
 #include <IMP/algebra/BoundingBoxD.h>
-#include <IMP/kernel/internal/StaticListContainer.h>
+#include <IMP/internal/StaticListContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -54,7 +54,7 @@ class IMPCOREEXPORT MCCGSampler : public Sampler {
   bool is_refining_;
   base::Pointer<ConfigurationSet> rejected_;
 
-  typedef IMP::kernel::internal::StaticListContainer<kernel::SingletonContainer>
+  typedef IMP::internal::StaticListContainer<SingletonContainer>
       Container;
 
   Parameters fill_in_parameters() const;
@@ -62,7 +62,7 @@ class IMPCOREEXPORT MCCGSampler : public Sampler {
   Container *set_up_movers(const Parameters &pms, MonteCarlo *mc) const;
 
  public:
-  MCCGSampler(kernel::Model *m, std::string name = "MCCG Sampler %1%");
+  MCCGSampler(Model *m, std::string name = "MCCG Sampler %1%");
 
   //! Set the bounding box for randomizing the Cartesian coordinates
   void set_bounding_box(const algebra::BoundingBoxD<3> &bb);

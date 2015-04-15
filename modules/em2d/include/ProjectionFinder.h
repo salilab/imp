@@ -106,7 +106,7 @@ class IMPEM2DEXPORT ProjectionFinder : public IMP::base::Object {
   void set_variance_images(const em2d::Images &variances);
 
   //! Set the particles where the em2D restraint is applied
-  void set_model_particles(const kernel::ParticlesTemp &ps);
+  void set_model_particles(const ParticlesTemp &ps);
 
   //! The projections of the model that best match the subject EM images
   //! are saved.
@@ -185,7 +185,7 @@ class IMPEM2DEXPORT ProjectionFinder : public IMP::base::Object {
   em2d::Images variances_;
   em2d::Images projections_;
   RegistrationResults registration_results_;
-  kernel::ParticlesTemp model_particles_;
+  ParticlesTemp model_particles_;
   Ints n_members_;
   base::Pointer<ScoreFunction> score_function_;
 

@@ -19,10 +19,10 @@ IMPISD_BEGIN_NAMESPACE
 // MarginalNOERestraint::MarginalNOERestraint() {}
 
 // add a contribution: simple case
-void MarginalNOERestraint::add_contribution(kernel::Particle *p1,
-                                            kernel::Particle *p2, double Iexp) {
-  kernel::ParticlePair pc(p1, p2);
-  kernel::ParticlePairsTemp pct(1, pc);
+void MarginalNOERestraint::add_contribution(Particle *p1,
+                                            Particle *p2, double Iexp) {
+  ParticlePair pc(p1, p2);
+  ParticlePairsTemp pct(1, pc);
   IMP_NEW(container::ListPairContainer, cont, (pct));
   // container::ListPairContainer cont(pct);
   add_contribution(cont, Iexp);
@@ -100,7 +100,7 @@ double MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp MarginalNOERestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
+  ModelObjectsTemp ret;
   for (unsigned i = 0; i < volumes_.size(); ++i) {
     ret += IMP::get_particles(get_model(),
                               contribs_[i]->get_all_possible_indexes());

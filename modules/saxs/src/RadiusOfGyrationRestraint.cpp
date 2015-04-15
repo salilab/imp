@@ -13,7 +13,7 @@
 IMPSAXS_BEGIN_NAMESPACE
 
 RadiusOfGyrationRestraint::RadiusOfGyrationRestraint(
-    const kernel::Particles& particles, const Profile* exp_profile,
+    const Particles& particles, const Profile* exp_profile,
     const double end_q_rg)
     : IMP::Restraint(IMP::internal::get_model(particles),
                      "SAXS Radius of Gyration restraint"),
@@ -22,7 +22,7 @@ RadiusOfGyrationRestraint::RadiusOfGyrationRestraint(
 }
 
 ModelObjectsTemp RadiusOfGyrationRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp pts(particles_.begin(), particles_.end());
+  ModelObjectsTemp pts(particles_.begin(), particles_.end());
   return pts;
 }
 

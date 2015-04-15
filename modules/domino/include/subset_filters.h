@@ -20,7 +20,7 @@
 #include <IMP/base/Pointer.h>
 #include <boost/unordered_map.hpp>
 #include <IMP/Configuration.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/macros.h>
 #include <boost/dynamic_bitset.hpp>
 #include <IMP/base/utility_macros.h>
@@ -97,19 +97,19 @@ class IMPDOMINOEXPORT SubsetFilterTable : public IMP::base::Object {
 
 class RestraintScoreSubsetFilterTable;
 
-//! Filter a configuration of the subset using the kernel::Model thresholds
+//! Filter a configuration of the subset using the Model thresholds
 /** This filter table creates filters using the maximum scores
-    set in the kernel::Model for various restraints.
+    set in the Model for various restraints.
  */
 class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable
     : public SubsetFilterTable {
   base::PointerMember<RestraintCache> cache_;
-  mutable kernel::Restraints rs_;
+  mutable Restraints rs_;
 
  public:
   RestraintScoreSubsetFilterTable(RestraintCache *rc);
   /** Create the RestraintCache internally with unbounded size.*/
-  RestraintScoreSubsetFilterTable(kernel::RestraintsAdaptor rs,
+  RestraintScoreSubsetFilterTable(RestraintsAdaptor rs,
                                   ParticleStatesTable *pst);
   virtual IMP::domino::SubsetFilter *get_subset_filter(
       const IMP::domino::Subset &s, const IMP::domino::Subsets &excluded) const
@@ -122,20 +122,20 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable
 
 IMP_OBJECTS(RestraintScoreSubsetFilterTable, RestraintScoreSubsetFilterTables);
 
-//! Filter a configuration of the subset using the kernel::Model thresholds
+//! Filter a configuration of the subset using the Model thresholds
 /** Filter based on an allowed number of failures for the restraints
     in a list passed.
  */
 class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilterTable
     : public SubsetFilterTable {
   base::PointerMember<RestraintCache> rc_;
-  kernel::Restraints rs_;
+  Restraints rs_;
   int max_violated_;
-  kernel::RestraintsTemp get_restraints(const Subset &s,
+  RestraintsTemp get_restraints(const Subset &s,
                                         const Subsets &excluded) const;
 
  public:
-  MinimumRestraintScoreSubsetFilterTable(const kernel::RestraintsTemp &rs,
+  MinimumRestraintScoreSubsetFilterTable(const RestraintsTemp &rs,
                                          RestraintCache *rc,
                                          int max_number_allowed_violations);
   int get_maximum_number_of_violated_restraints() const {
@@ -163,15 +163,15 @@ IMP_OBJECTS(MinimumRestraintScoreSubsetFilterTable,
  */
 class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable : public SubsetFilterTable {
   base::Pointer<ParticleStatesTable> pst_;
-  kernel::ParticlesTemp elements_;
+  ParticlesTemp elements_;
   boost::vector_property_map<int> parent_, rank_;
   mutable boost::disjoint_sets<boost::vector_property_map<int>,
                                boost::vector_property_map<int> > disjoint_sets_;
-  boost::unordered_map<const kernel::Particle *, int> index_;
-  mutable base::Vector<kernel::ParticlesTemp> sets_;
-  mutable boost::unordered_map<const kernel::Particle *, int> set_indexes_;
+  boost::unordered_map<const Particle *, int> index_;
+  mutable base::Vector<ParticlesTemp> sets_;
+  mutable boost::unordered_map<const Particle *, int> set_indexes_;
 
-  int get_index(kernel::Particle *p);
+  int get_index(Particle *p);
 
   void build_sets() const;
 
@@ -180,13 +180,13 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable : public SubsetFilterTable {
     build_sets();
     return sets_.size();
   }
-  kernel::ParticlesTemp get_set(unsigned int i) const { return sets_[i]; }
+  ParticlesTemp get_set(unsigned int i) const { return sets_[i]; }
   DisjointSetsSubsetFilterTable(ParticleStatesTable *pst, std::string name);
   DisjointSetsSubsetFilterTable(std::string name);
 #ifndef IMP_DOXYGEN
   void get_indexes(const Subset &s, const Subsets &excluded,
                    base::Vector<Ints> &ret, int lb, Ints &used) const;
-  int get_index_in_set(kernel::Particle *p) const {
+  int get_index_in_set(Particle *p) const {
     if (set_indexes_.find(p) == set_indexes_.end()) {
       return -1;
     } else {
@@ -196,8 +196,8 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable : public SubsetFilterTable {
 #endif
 
  public:
-  void add_set(const kernel::ParticlesTemp &ps);
-  void add_pair(const kernel::ParticlePair &pp);
+  void add_set(const ParticlesTemp &ps);
+  void add_pair(const ParticlePair &pp);
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
@@ -213,7 +213,7 @@ inline DisjointSetsSubsetFilterTable::DisjointSetsSubsetFilterTable(
 
     If a ParticleStatesTable is passed, then two particles cannot
     be in the same state if they have the same ParticleStates,
-    otherwise, if a kernel::ParticlePairs is passed then pairs found in the
+    otherwise, if a ParticlePairs is passed then pairs found in the
     list are not allowed to have the same state index.
  */
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(Exclusion);
@@ -222,14 +222,14 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(Exclusion);
 
     If a ParticleStatesTable is passed, then two particles must
     be in the same state if they have the same ParticleStates,
-    otherwise, if a kernel::ParticlePairs is passed then pairs found in the
+    otherwise, if a ParticlePairs is passed then pairs found in the
     list must have the same state index.
  */
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(Equality);
 
 /** \brief Define sets of equivalent particles
 
-    kernel::Particles in an equivalency set are assumed to be equivalent under
+    Particles in an equivalency set are assumed to be equivalent under
     exchange. Given that, one should only generate each of the equivalent
     conformations once. More specifically, given equivalent particles
     p0 and p1, if p0 is given state s0 and p1 is given state s1, then
@@ -253,19 +253,19 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(EquivalenceAndExclusion);
 class IMPDOMINOEXPORT ListSubsetFilterTable : public SubsetFilterTable {
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  boost::unordered_map<kernel::Particle *, int> map_;
+  boost::unordered_map<Particle *, int> map_;
   base::Vector<boost::dynamic_bitset<> > states_;
   base::Pointer<ParticleStatesTable> pst_;
   mutable double num_ok_, num_test_;
-  int get_index(kernel::Particle *p) const;
+  int get_index(Particle *p) const;
   void load_indexes(const Subset &s, Ints &indexes) const;
-  void mask_allowed_states(kernel::Particle *p,
+  void mask_allowed_states(Particle *p,
                            const boost::dynamic_bitset<> &bs);
 #endif
  public:
   ListSubsetFilterTable(ParticleStatesTable *pst);
   double get_ok_rate() const { return num_ok_ / num_test_; }
-  unsigned int get_number_of_particle_states(kernel::Particle *p) const {
+  unsigned int get_number_of_particle_states(Particle *p) const {
     int i = get_index(p);
     if (i == -1) {
       return pst_->get_particle_states(p)->get_number_of_particle_states();
@@ -276,7 +276,7 @@ class IMPDOMINOEXPORT ListSubsetFilterTable : public SubsetFilterTable {
                                 << " ParticleStatesTable. Boom.");
     return states_[i].size();
   }
-  void set_allowed_states(kernel::Particle *p, const Ints &states);
+  void set_allowed_states(Particle *p, const Ints &states);
   virtual IMP::domino::SubsetFilter *get_subset_filter(
       const IMP::domino::Subset &s, const IMP::domino::Subsets &excluded) const
       IMP_OVERRIDE;
@@ -296,13 +296,13 @@ IMP_OBJECTS(ListSubsetFilterTable, ListSubsetFilterTables);
     That is, that something else is restricting p0 to only 0 or 3.
 */
 class IMPDOMINOEXPORT PairListSubsetFilterTable : public SubsetFilterTable {
-  boost::unordered_map<kernel::ParticlePair, IntPairs> allowed_;
+  boost::unordered_map<ParticlePair, IntPairs> allowed_;
   void fill(const Subset &s, const Subsets &e, IntPairs &indexes,
             base::Vector<IntPairs> &allowed) const;
 
  public:
   PairListSubsetFilterTable();
-  void set_allowed_states(kernel::ParticlePair p, const IntPairs &states);
+  void set_allowed_states(ParticlePair p, const IntPairs &states);
   virtual IMP::domino::SubsetFilter *get_subset_filter(
       const IMP::domino::Subset &s, const IMP::domino::Subsets &excluded) const
       IMP_OVERRIDE;

@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
                                IMP.em.MRCReaderWriter())
         dmap.get_header_writable().set_resolution(resolution)
 
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         sel = IMP.atom.CAlphaPDBSelector()
         mh = IMP.atom.read_pdb(self.get_input_file_name('3points.pdb'), m, sel)

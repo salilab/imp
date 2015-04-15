@@ -11,7 +11,7 @@
 #include <IMP/container/container_config.h>
 #include <IMP/ClassnameContainer.h>
 #include <IMP/container_macros.h>
-#include <IMP/kernel/internal/container_helpers.h>
+#include <IMP/internal/container_helpers.h>
 #include <IMP/scoped.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE

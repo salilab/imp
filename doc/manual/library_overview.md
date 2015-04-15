@@ -25,7 +25,7 @@ in C++ and
 in Python.
 
 A module contains classes, methods and data which are related.
-The IMP::kernel module (equivalently, the top-level IMP namespace) is a small
+The top-level "%IMP", otherwise known as the %IMP kernel, is a small
 collection of classes that define the storage of information about the system
 and the main interfaces used to interact with that information. However, in
 most cases the kernel does not provide actual implementations of these classes;

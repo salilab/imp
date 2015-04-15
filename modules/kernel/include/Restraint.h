@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Restraint.h
+ *  \file IMP/Restraint.h
  *  \brief Abstract base class for all restraints.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_RESTRAINT_H
 #define IMPKERNEL_RESTRAINT_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "ModelObject.h"
 #include "ScoreAccumulator.h"
 #include "DerivativeAccumulator.h"
@@ -53,7 +53,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
  public:
   /** Create a restraint and register it with the model. The restraint is
       not added to the implicit scoring function in the Model.*/
-  Restraint(kernel::Model *m, std::string name);
+  Restraint(Model *m, std::string name);
 
   /** Compute and return the current score for the restraint.
    */
@@ -243,7 +243,7 @@ class IMPKERNELEXPORT RestraintsAdaptor :
     public base::InputAdaptor
 #endif
     {
-  static Restraint *get(kernel::Model *sf);
+  static Restraint *get(Model *sf);
   static Restraint *get(Restraint *r) { return r; }
 
  public:
@@ -253,7 +253,7 @@ class IMPKERNELEXPORT RestraintsAdaptor :
       : Restraints(sf.begin(), sf.end()) {}
   RestraintsAdaptor(Restraint *sf) : Restraints(1, sf) {}
 #ifndef IMP_DOXYGEN
-  RestraintsAdaptor(kernel::Model *sf);
+  RestraintsAdaptor(Model *sf);
   RestraintsAdaptor(const ModelsTemp &sf);
   template <class T>
   RestraintsAdaptor(base::internal::PointerBase<T> t)

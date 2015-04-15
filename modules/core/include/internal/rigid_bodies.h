@@ -27,9 +27,9 @@ struct RigidBodyData {
   FloatKeys torque_;
   FloatKeys lquaternion_;
   IntKey is_rigid_key_;
-  kernel::ParticleIndexesKey members_;
-  kernel::ParticleIndexesKey body_members_;
-  kernel::ParticleIndexKey body_;
+  ParticleIndexesKey members_;
+  ParticleIndexesKey body_members_;
+  ParticleIndexKey body_;
   ObjectKey refkey_;
   RigidBodyData() {
     child_keys_.resize(3);
@@ -54,9 +54,9 @@ struct RigidBodyData {
     lquaternion_[2] = FloatKey((pre + "local_quaternion_2").c_str());
     lquaternion_[3] = FloatKey((pre + "local_quaternion_3").c_str());
     refkey_ = ObjectKey("rigid body representation");
-    members_ = kernel::ParticleIndexesKey("rigid body members");
-    body_members_ = kernel::ParticleIndexesKey("rigid body body members");
-    body_ = kernel::ParticleIndexKey("rigid body");
+    members_ = ParticleIndexesKey("rigid body members");
+    body_members_ = ParticleIndexesKey("rigid body body members");
+    body_ = ParticleIndexKey("rigid body");
   }
 };
 
@@ -66,7 +66,7 @@ inline const RigidBodyData &rigid_body_data(){
 }
 ;
 
-inline void set_model_ranges(kernel::Model *m) {
+inline void set_model_ranges(Model *m) {
   m->set_range(rigid_body_data().quaternion_[0], FloatRange(0, 1));
   m->set_range(rigid_body_data().quaternion_[1], FloatRange(0, 1));
   m->set_range(rigid_body_data().quaternion_[2], FloatRange(0, 1));
@@ -74,7 +74,7 @@ inline void set_model_ranges(kernel::Model *m) {
 }
 
 inline bool get_has_required_attributes_for_body(
-    kernel::Model *m, kernel::ParticleIndexAdaptor pi) {
+    Model *m, ParticleIndexAdaptor pi) {
   IMP_USAGE_CHECK(
       (m->get_has_attribute(rigid_body_data().quaternion_[0], pi) &&
        m->get_has_attribute(rigid_body_data().quaternion_[1], pi) &&
@@ -90,7 +90,7 @@ inline bool get_has_required_attributes_for_body(
 }
 
 inline bool get_has_required_attributes_for_member(
-    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
+    Model *m, ParticleIndexAdaptor p) {
   if (!m->get_has_attribute(rigid_body_data().body_, p))
     return false;
   else {
@@ -106,7 +106,7 @@ inline bool get_has_required_attributes_for_member(
 }
 
 inline bool get_has_required_attributes_for_rigid_member(
-    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
+    Model *m, ParticleIndexAdaptor p) {
   if (!get_has_required_attributes_for_member(m, p)) return false;
   if (!m->get_has_attribute(rigid_body_data().is_rigid_key_, p)) return false;
   if (m->get_attribute(rigid_body_data().is_rigid_key_, p) != 1) return false;
@@ -114,7 +114,7 @@ inline bool get_has_required_attributes_for_rigid_member(
 }
 
 inline bool get_has_required_attributes_for_non_member(
-    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
+    Model *m, ParticleIndexAdaptor p) {
   if (!get_has_required_attributes_for_member(m, p)) return false;
   if (!m->get_has_attribute(rigid_body_data().is_rigid_key_, p)) return false;
   if (m->get_attribute(rigid_body_data().is_rigid_key_, p) != 0) return false;
@@ -122,7 +122,7 @@ inline bool get_has_required_attributes_for_non_member(
 }
 
 inline bool get_has_required_attributes_for_body_member(
-    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
+    Model *m, ParticleIndexAdaptor p) {
   if (!get_has_required_attributes_for_member(m, p)) return false;
   for (unsigned int i = 0; i < 4; ++i) {
     if (!m->get_has_attribute(rigid_body_data().lquaternion_[i], p)) {
@@ -132,8 +132,8 @@ inline bool get_has_required_attributes_for_body_member(
   return get_has_required_attributes_for_member(m, p);
 }
 
-inline void add_required_attributes_for_body(kernel::Model *m,
-                                             kernel::ParticleIndexAdaptor p) {
+inline void add_required_attributes_for_body(Model *m,
+                                             ParticleIndexAdaptor p) {
   for (unsigned int i = 0; i < 4; ++i) {
     m->add_attribute(rigid_body_data().quaternion_[i], p, 0);
     m->set_range(rigid_body_data().quaternion_[i], FloatRange(0, 1));
@@ -146,7 +146,7 @@ inline void add_required_attributes_for_body(kernel::Model *m,
   }
 }
 inline void remove_required_attributes_for_body(
-    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
+    Model *m, ParticleIndexAdaptor p) {
   for (unsigned int i = 0; i < 4; ++i) {
     m->remove_attribute(rigid_body_data().quaternion_[i], p);
   }
@@ -162,8 +162,8 @@ inline void remove_required_attributes_for_body(
 }
 
 inline void add_required_attributes_for_member(
-    kernel::Model *m, kernel::ParticleIndexAdaptor p,
-    kernel::ParticleIndexAdaptor rb) {
+    Model *m, ParticleIndexAdaptor p,
+    ParticleIndexAdaptor rb) {
   for (unsigned int i = 0; i < 3; ++i) {
     m->add_attribute(rigid_body_data().child_keys_[i], p, 0);
   }
@@ -174,8 +174,8 @@ inline void add_required_attributes_for_member(
 }
 
 inline void add_required_attributes_for_non_member(
-    kernel::Model *m, kernel::ParticleIndexAdaptor p,
-    kernel::ParticleIndexAdaptor rb) {
+    Model *m, ParticleIndexAdaptor p,
+    ParticleIndexAdaptor rb) {
   for (unsigned int i = 0; i < 3; ++i) {
     m->add_attribute(rigid_body_data().child_keys_[i], p, 0);
   }
@@ -186,8 +186,8 @@ inline void add_required_attributes_for_non_member(
 }
 
 inline void add_required_attributes_for_body_member(
-    kernel::Model *m, kernel::ParticleIndexAdaptor p,
-    kernel::ParticleIndexAdaptor rb) {
+    Model *m, ParticleIndexAdaptor p,
+    ParticleIndexAdaptor rb) {
   add_required_attributes_for_member(m, p, rb);
   for (unsigned int i = 0; i < 4; ++i) {
     m->add_attribute(rigid_body_data().lquaternion_[i], p, 0);
@@ -196,7 +196,7 @@ inline void add_required_attributes_for_body_member(
 }
 
 inline void remove_required_attributes_for_member(
-    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
+    Model *m, ParticleIndexAdaptor p) {
   for (unsigned int i = 0; i < 3; ++i) {
     m->remove_attribute(rigid_body_data().child_keys_[i], p);
   }
@@ -205,7 +205,7 @@ inline void remove_required_attributes_for_member(
 }
 
 inline void remove_required_attributes_for_body_member(
-    kernel::Model *m, kernel::ParticleIndexAdaptor p) {
+    Model *m, ParticleIndexAdaptor p) {
   remove_required_attributes_for_member(m, p);
   for (unsigned int i = 0; i < 4; ++i) {
     m->remove_attribute(rigid_body_data().lquaternion_[i], p);
@@ -213,7 +213,7 @@ inline void remove_required_attributes_for_body_member(
 }
 
 IMPCOREEXPORT display::Geometries get_rigid_body_derivative_geometries(
-    kernel::Model *m, kernel::ParticleIndex pi);
+    Model *m, ParticleIndex pi);
 
 IMPCORE_END_INTERNAL_NAMESPACE
 

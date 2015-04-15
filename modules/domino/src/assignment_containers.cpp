@@ -58,7 +58,7 @@ void SampleAssignmentContainer::add_assignment(const Assignment &a) {
 #if IMP_DOMINO_HAS_RMF
 WriteHDF5AssignmentContainer::WriteHDF5AssignmentContainer(
     RMF::HDF5::Group parent, const Subset &s,
-    const kernel::ParticlesTemp &all_particles, std::string name)
+    const ParticlesTemp &all_particles, std::string name)
     : AssignmentContainer(name),
       ds_(parent.add_child_index_data_set_2d(name)),
       order_(s, all_particles),
@@ -71,7 +71,7 @@ WriteHDF5AssignmentContainer::WriteHDF5AssignmentContainer(
 
 WriteHDF5AssignmentContainer::WriteHDF5AssignmentContainer(
     RMF::HDF5::IndexDataSet2D dataset, const Subset &s,
-    const kernel::ParticlesTemp &all_particles, std::string name)
+    const ParticlesTemp &all_particles, std::string name)
     : AssignmentContainer(name),
       ds_(dataset),
       order_(s, all_particles),
@@ -143,7 +143,7 @@ void WriteHDF5AssignmentContainer::add_assignment(const Assignment &a) {
 
 ReadHDF5AssignmentContainer::ReadHDF5AssignmentContainer(
     RMF::HDF5::IndexConstDataSet2D dataset, const Subset &s,
-    const kernel::ParticlesTemp &all_particles, std::string name)
+    const ParticlesTemp &all_particles, std::string name)
     : AssignmentContainer(name),
       ds_(dataset),
       order_(s, all_particles),
@@ -171,7 +171,7 @@ void ReadHDF5AssignmentContainer::add_assignment(const Assignment &) {
 
 WriteAssignmentContainer::WriteAssignmentContainer(
     std::string dataset, const Subset &s,
-    const kernel::ParticlesTemp &all_particles, std::string name)
+    const ParticlesTemp &all_particles, std::string name)
     : AssignmentContainer(name), order_(s, all_particles), max_cache_(10000) {
   cache_.reserve(max_cache_);
   f_ = open(dataset.c_str(), O_WRONLY | O_APPEND | O_CREAT | O_TRUNC
@@ -260,7 +260,7 @@ void CappedAssignmentContainer::add_assignment(const Assignment &a) {
 
 ReadAssignmentContainer::ReadAssignmentContainer(
     std::string dataset, const Subset &s,
-    const kernel::ParticlesTemp &all_particles, std::string name)
+    const ParticlesTemp &all_particles, std::string name)
     : AssignmentContainer(name), order_(s, all_particles) {
   // must be done first to initialize max_cache_
   set_cache_size(100000);
@@ -350,7 +350,7 @@ HeapAssignmentContainer::HeapAssignmentContainer(Subset subset, unsigned int k,
                                                  RestraintCache *rssf,
                                                  std::string name)
     : AssignmentContainer(name), subset_(subset), k_(k), rssf_(rssf) {
-  rs_ = get_as<kernel::Restraints>(rssf_->get_restraints(subset_, Subsets()));
+  rs_ = get_as<Restraints>(rssf_->get_restraints(subset_, Subsets()));
   for (unsigned int i = 0; i < rs_.size(); ++i) {
     slices_.push_back(rssf_->get_slice(rs_[i], subset_));
   }

@@ -32,7 +32,7 @@ class Tests(IMP.test.TestCase):
 
     def test_fft_based_rigid_fitting(self):
         """Test FFT-based rigid fitting"""
-        model = IMP.kernel.Model()
+        model = IMP.Model()
         scene = self.load_density_map()
         # Use an artificial protein and map containing only 3 atoms, for speed
         self.load_protein(model, "3points.pdb")

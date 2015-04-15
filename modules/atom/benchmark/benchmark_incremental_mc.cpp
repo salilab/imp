@@ -2,7 +2,7 @@
  * Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 #include <IMP/core.h>
-#include <IMP/kernel.h>
+#include <IMP.h>
 #include <IMP/atom.h>
 #include <IMP/base/flags.h>
 #include <IMP/container.h>
@@ -20,15 +20,15 @@ const unsigned int nrb = 10;
 const double radius = 4;
 
 RigidBody create_rb(atom::Hierarchy hr) {
-  kernel::Model *m = hr.get_model();
-  Molecule h = Molecule::setup_particle(new kernel::Particle(m));
+  Model *m = hr.get_model();
+  Molecule h = Molecule::setup_particle(new Particle(m));
   XYZRs rbs;
   Sphere3D last(Vector3D(0, 0, 0), radius);
   for (unsigned int i = 0; i < np; ++i) {
-    IMP_NEW(kernel::Particle, p, (m));
+    IMP_NEW(Particle, p, (m));
     p->set_name("residue g");
     Residue r = Residue::setup_particle(p, get_residue_type('G'), i);
-    IMP_NEW(kernel::Particle, p1, (m));
+    IMP_NEW(Particle, p1, (m));
     p1->set_name("atom");
     Atom a = Atom::setup_particle(p1, AT_CA);
     XYZR xyz =
@@ -39,7 +39,7 @@ RigidBody create_rb(atom::Hierarchy hr) {
     h.add_child(r);
   }
   hr.add_child(h);
-  IMP_NEW(kernel::Particle, prb, (m));
+  IMP_NEW(Particle, prb, (m));
   prb->set_name(h->get_name() + " rb");
   RigidBody rb = RigidBody::setup_particle(prb, rbs);
   rb.set_coordinates_are_optimized(true);
@@ -63,7 +63,7 @@ PairScore *create_pair_score(atom::Hierarchy, RigidBodies rbs, double k) {
   return cpps.release();
 }
 
-Restraint *create_diameter_restraint(kernel::Model *, RigidBodies rbs,
+Restraint *create_diameter_restraint(Model *, RigidBodies rbs,
                                      double d) {
   IMP_NEW(ListSingletonContainer, lsc, (rbs));
   IMP_NEW(HarmonicUpperBound, hub, (0, 1.0));
@@ -73,7 +73,7 @@ Restraint *create_diameter_restraint(kernel::Model *, RigidBodies rbs,
 }
 
 #if 0
-Restraint *add_DOPE(kernel::Model *, atom::Hierarchy h) {
+Restraint *add_DOPE(Model *, atom::Hierarchy h) {
   add_dope_score_data(h);
   IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
   IMP_NEW(ClosePairContainer, cpc, (lsc, 15.0));
@@ -86,8 +86,8 @@ Restraint *add_DOPE(kernel::Model *, atom::Hierarchy h) {
 #endif
 
 void benchmark_it(std::string name, bool incr, bool nbl) {
-  IMP_NEW(kernel::Model, m, ());
-  atom::Hierarchy h = atom::Hierarchy::setup_particle(new kernel::Particle(m));
+  IMP_NEW(Model, m, ());
+  atom::Hierarchy h = atom::Hierarchy::setup_particle(new Particle(m));
   h->set_name("root");
   RigidBodies rbs;
   for (unsigned int i = 0; i < nrb; ++i) {
@@ -95,7 +95,7 @@ void benchmark_it(std::string name, bool incr, bool nbl) {
     rbs.back().set_coordinates(algebra::Vector3D(0, 1000 * i, 0));
   }
   IMP_NEW(MonteCarlo, mc, (m));
-  kernel::Restraints rs;
+  Restraints rs;
   if (!incr && nbl) {
     rs.push_back(create_excluded_volume(h, rbs, 1.0));
   }

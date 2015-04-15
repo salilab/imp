@@ -5,15 +5,15 @@
  *
  */
 
-#include "IMP/kernel/particle_index.h"
-#include "IMP/kernel/internal/container_helpers.h"
-#include "IMP/kernel/Decorator.h"
+#include "IMP/particle_index.h"
+#include "IMP/internal/container_helpers.h"
+#include "IMP/Decorator.h"
 IMPKERNEL_BEGIN_NAMESPACE
 ParticleIndexes get_indexes(const ParticlesTemp &ps) {
   return internal::get_index(ps);
 }
 
-ParticlesTemp get_particles(kernel::Model *m, const ParticleIndexes &ps) {
+ParticlesTemp get_particles(Model *m, const ParticleIndexes &ps) {
   return internal::get_particle(m, ps);
 }
 

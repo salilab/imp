@@ -77,7 +77,7 @@ core::MonteCarloMoverResult RelativePositionMover::do_propose() {
     //          << rbA_.get_reference_frame() << std::endl;
   }
   return core::MonteCarloMoverResult(
-      kernel::ParticleIndexes(1, rbA_.get_particle_index()), 1.0);
+      ParticleIndexes(1, rbA_.get_particle_index()), 1.0);
 }
 
 void RelativePositionMover::do_reject() {

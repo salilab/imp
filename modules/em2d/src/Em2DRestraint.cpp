@@ -10,7 +10,7 @@
 #include "IMP/em2d/project.h"
 
 IMPEM2D_BEGIN_NAMESPACE
-Em2DRestraint::Em2DRestraint(kernel::Model *m)
+Em2DRestraint::Em2DRestraint(Model *m)
     : Restraint(m, "Em2DRestraint%1%") {}
 
 void Em2DRestraint::set_images(const em2d::Images em_images) {
@@ -43,7 +43,7 @@ void Em2DRestraint::set_fast_mode(unsigned int n) {
 double Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
   IMP_UNUSED(accum);
   IMP_USAGE_CHECK(!accum, "No derivatives provided");
-  IMP_NEW(kernel::Model, model, ());
+  IMP_NEW(Model, model, ());
   model = get_model();
   // Project the model
   RegistrationResults regs =
@@ -78,7 +78,7 @@ double Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
 // We also need to know which particles are used (as some are
 //   used, but don't create interactions).
 ModelObjectsTemp Em2DRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret = particles_container_->get_particles();
+  ModelObjectsTemp ret = particles_container_->get_particles();
   ret.push_back(particles_container_);
   return ret;
 }

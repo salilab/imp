@@ -22,9 +22,9 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     assembling the residues of a protein from a truncated distance matrix.
 */
 IMPEXAMPLEEXPORT void optimize_assembly(
-    kernel::Model *m, const kernel::ParticlesTemp &components,
-    const kernel::RestraintsTemp &interactions,
-    const kernel::RestraintsTemp &other_restraints,
+    Model *m, const ParticlesTemp &components,
+    const RestraintsTemp &interactions,
+    const RestraintsTemp &other_restraints,
     const algebra::BoundingBox3D &bb, PairScore *ev, double cutoff,
     const PairPredicates &excluded = PairPredicates());
 

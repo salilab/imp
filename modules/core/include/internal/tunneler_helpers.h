@@ -21,8 +21,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
   class Referential {
    private:
-    kernel::Model* m_;
-    kernel::ParticleIndex pi_;
+    Model* m_;
+    ParticleIndex pi_;
     IMP_Eigen::Vector3d centroid_;
     IMP_Eigen::Matrix3d base_;
     IMP_Eigen::Quaterniond q_;
@@ -30,7 +30,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
    public:
     Referential() {}  // undefined behaviour, don't use
-    Referential(kernel::Model* m, kernel::ParticleIndex pi);
+    Referential(Model* m, ParticleIndex pi);
     // return properties of this rigid body
     IMP_Eigen::Vector3d get_centroid() const { return centroid_; }
     IMP_Eigen::Matrix3d get_base() const { return base_; }
@@ -49,17 +49,17 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
   class Transformer {
    private:
-    kernel::Model* m_;
+    Model* m_;
     Referential ref_;
-    kernel::ParticleIndex target_;
+    ParticleIndex target_;
     IMP_Eigen::Vector3d t_;
     IMP_Eigen::Quaterniond q_;
     bool moved_;
 
    public:
     // reorient other by t and q, expressed in this reference frame
-    Transformer(kernel::Model* m, const Referential& ref,
-                kernel::ParticleIndex other, const IMP_Eigen::Vector3d& t,
+    Transformer(Model* m, const Referential& ref,
+                ParticleIndex other, const IMP_Eigen::Vector3d& t,
                 const IMP_Eigen::Quaterniond& q)
         : m_(m), ref_(ref), target_(other), t_(t), q_(q), moved_(true) {
       transform();
@@ -92,8 +92,8 @@ std::ostream& operator<<(std::ostream& out, const Coord& c);
 //helpers
 IMP_Eigen::Quaterniond pick_positive(const IMP_Eigen::Quaterniond& q);
 
-Coord get_coordinates_from_rbs(kernel::Model* m, kernel::ParticleIndexes pis,
-                               kernel::ParticleIndex ref);
+Coord get_coordinates_from_rbs(Model* m, ParticleIndexes pis,
+                               ParticleIndex ref);
 double get_squared_distance(const Coord& x, const Coord& y, double k);
 
 IMPCORE_END_INTERNAL_NAMESPACE

@@ -32,29 +32,29 @@ inline ClosePairsFinder *default_cpf(unsigned int) {
   }*/
 
 template <class C>
-inline void filter_close_pairs(C *c, kernel::ParticleIndexPairs &ps) {
+inline void filter_close_pairs(C *c, ParticleIndexPairs &ps) {
   for (typename C::PairFilterConstIterator it = c->pair_filters_begin();
        it != c->pair_filters_end(); ++it) {
     (*it)->remove_if_not_equal(c->get_model(), ps, 0);
   }
 }
 
-inline void fix_order(kernel::ParticleIndexPairs &pips) {
+inline void fix_order(ParticleIndexPairs &pips) {
   for (unsigned int i = 0; i < pips.size(); ++i) {
     if (pips[i][0] > pips[i][1]) {
-      pips[i] = kernel::ParticleIndexPair(pips[i][1], pips[i][0]);
+      pips[i] = ParticleIndexPair(pips[i][1], pips[i][0]);
     }
   }
 }
 /*
 // Check that they are unique by checking order
 struct SameParticle {
-  kernel::ParticleIndexes ppt_;
-  SameParticle(const kernel::ParticleIndexes &ppt): ppt_(ppt){
+  ParticleIndexes ppt_;
+  SameParticle(const ParticleIndexes &ppt): ppt_(ppt){
     std::sort(ppt_.begin(), ppt_.end());
   }
   SameParticle(){}
-  bool operator()(const kernel::ParticleIndexPair& pp) {
+  bool operator()(const ParticleIndexPair& pp) {
     if (ppt_.empty()) {
       return pp[0] == pp[1];
     } else {
@@ -68,8 +68,8 @@ struct SameParticle {
   }
   };*/
 
-inline bool get_are_close(kernel::Model *m, const PairPredicates &filters,
-                          kernel::ParticleIndex a, kernel::ParticleIndex b,
+inline bool get_are_close(Model *m, const PairPredicates &filters,
+                          ParticleIndex a, ParticleIndex b,
                           double distance) {
   XYZ da(m, a);
   XYZ db(m, b);
@@ -85,28 +85,28 @@ inline bool get_are_close(kernel::Model *m, const PairPredicates &filters,
   return get_interiors_intersect(
              algebra::Sphere3D(da.get_coordinates(), ra + distance),
              algebra::Sphere3D(db.get_coordinates(), rb)) &&
-         !get_filters_contains(m, filters, kernel::ParticleIndexPair(a, b));
+         !get_filters_contains(m, filters, ParticleIndexPair(a, b));
 }
 
 struct FarParticle {
   double d_;
-  kernel::Model *m_;
-  FarParticle(kernel::Model *m, double d) : d_(d), m_(m) {}
-  bool operator()(const kernel::ParticleIndexPair &pp) const {
+  Model *m_;
+  FarParticle(Model *m, double d) : d_(d), m_(m) {}
+  bool operator()(const ParticleIndexPair &pp) const {
     return !get_are_close(m_, PairPredicates(), pp[0], pp[1], d_);
   }
 };
 
-inline void filter_far(kernel::Model *m, kernel::ParticleIndexPairs &c,
+inline void filter_far(Model *m, ParticleIndexPairs &c,
                        double d) {
   c.erase(std::remove_if(c.begin(), c.end(), FarParticle(m, d)), c.end());
 }
 
 struct InList {
   static IntKey key_;
-  const kernel::ParticlesTemp &ps_;
-  InList(const kernel::ParticlesTemp &ps) : ps_(ps) {}
-  static InList create(kernel::ParticlesTemp &ps) {
+  const ParticlesTemp &ps_;
+  InList(const ParticlesTemp &ps) : ps_(ps) {}
+  static InList create(ParticlesTemp &ps) {
     /*for (unsigned int i=0; i< ps.size(); ++i) {
       ps[i]->add_attribute(key_, 1);
       }*/
@@ -118,7 +118,7 @@ struct InList {
       il.ps_[i]->remove_attribute(key_);
       }*/
   }
-  bool operator()(const kernel::ParticlePair &pp) const {
+  bool operator()(const ParticlePair &pp) const {
     if (std::binary_search(ps_.begin(), ps_.end(), pp[0]))
       return true;
     else if (std::binary_search(ps_.begin(), ps_.end(), pp[1]))
@@ -129,10 +129,10 @@ struct InList {
 };
 
 inline void reset_moved(
-    kernel::Model *m, kernel::ParticleIndexes &xyzrs_,
-    kernel::ParticleIndexes &rbs_,
-    boost::unordered_map<kernel::ParticleIndex,
-                         kernel::ParticleIndexes> & /*constituents_*/,
+    Model *m, ParticleIndexes &xyzrs_,
+    ParticleIndexes &rbs_,
+    boost::unordered_map<ParticleIndex,
+                         ParticleIndexes> & /*constituents_*/,
     algebra::Sphere3Ds &rbs_backup_sphere_,
     algebra::Rotation3Ds &rbs_backup_rot_, algebra::Sphere3Ds &xyzrs_backup_) {
   xyzrs_backup_.resize(xyzrs_.size());
@@ -151,22 +151,22 @@ inline void reset_moved(
 }
 
 inline void initialize_particles(
-    SingletonContainer *sc, ObjectKey key, kernel::ParticleIndexes &xyzrs_,
-    kernel::ParticleIndexes &rbs_,
-    boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+    SingletonContainer *sc, ObjectKey key, ParticleIndexes &xyzrs_,
+    ParticleIndexes &rbs_,
+    boost::unordered_map<ParticleIndex, ParticleIndexes> &
         constituents_,
     algebra::Sphere3Ds &rbs_backup_sphere_,
     algebra::Rotation3Ds &rbs_backup_rot_, algebra::Sphere3Ds &xyzrs_backup_,
     bool use_rigid_bodies = true) {
   IMP_IF_CHECK(base::USAGE) {
-    kernel::ParticleIndexes pis = sc->get_indexes();
-    boost::unordered_set<kernel::ParticleIndex> spis(pis.begin(), pis.end());
+    ParticleIndexes pis = sc->get_indexes();
+    boost::unordered_set<ParticleIndex> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(),
                     "Duplicate particle indexes in input");
   }
   IMP_IF_CHECK(base::USAGE) {
-    kernel::ParticlesTemp pis = sc->get();
-    boost::unordered_set<kernel::Particle *> spis(pis.begin(), pis.end());
+    ParticlesTemp pis = sc->get();
+    boost::unordered_set<Particle *> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(), "Duplicate particles in input");
   }
   // constituents_.clear();
@@ -174,24 +174,24 @@ inline void initialize_particles(
   rbs_.clear();
   using IMP::operator<<;
   IMP_CONTAINER_FOREACH(SingletonContainer, sc, {
-    kernel::Model *m = sc->get_model();
+    Model *m = sc->get_model();
     IMP_LOG_VERBOSE("Processing " << m->get_particle_name(_1) << " (" << _1
                                   << ")" << std::endl);
     if (use_rigid_bodies && RigidMember::get_is_setup(m, _1)) {
       RigidBody rb = RigidMember(m, _1).get_rigid_body();
-      kernel::ParticleIndex pi = rb.get_particle_index();
+      ParticleIndex pi = rb.get_particle_index();
       rbs_.push_back(rb.get_particle_index());
       if (constituents_.find(pi) == constituents_.end()) {
         constituents_.insert(
-            std::make_pair(pi, kernel::ParticleIndexes(1, _1)));
+            std::make_pair(pi, ParticleIndexes(1, _1)));
       } else {
         constituents_[pi].push_back(_1);
       }
       IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-        kernel::ParticleIndexes cur = constituents_[pi];
+        ParticleIndexes cur = constituents_[pi];
         IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), pi) == cur.end(),
                         "A rigid body can't be its own constituent.");
-        boost::unordered_set<kernel::ParticleIndex> scur(cur.begin(),
+        boost::unordered_set<ParticleIndex> scur(cur.begin(),
                                                          cur.end());
         IMP_USAGE_CHECK(cur.size() == scur.size(),
                         "Duplicate constituents for "
@@ -214,14 +214,14 @@ inline void initialize_particles(
   rbs_backup_sphere_.clear();
   rbs_backup_rot_.clear();
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-    for (boost::unordered_map<kernel::ParticleIndex,
-                              kernel::ParticleIndexes>::const_iterator it =
+    for (boost::unordered_map<ParticleIndex,
+                              ParticleIndexes>::const_iterator it =
              constituents_.begin();
          it != constituents_.end(); ++it) {
-      kernel::ParticleIndexes cur = it->second;
+      ParticleIndexes cur = it->second;
       IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), it->first) == cur.end(),
                       "A rigid body cann't be its own constituent.");
-      boost::unordered_set<kernel::ParticleIndex> scur(cur.begin(), cur.end());
+      boost::unordered_set<ParticleIndex> scur(cur.begin(), cur.end());
       IMP_USAGE_CHECK(
           cur.size() == scur.size(),
           "Duplicate constituents for "
@@ -232,10 +232,10 @@ inline void initialize_particles(
 }
 
 inline bool get_if_moved(
-    kernel::Model *m, double slack_, const kernel::ParticleIndexes &xyzrs_,
-    const kernel::ParticleIndexes &rbs_,
-    const boost::unordered_map<kernel::ParticleIndex,
-                               kernel::ParticleIndexes> & /*constituents_*/,
+    Model *m, double slack_, const ParticleIndexes &xyzrs_,
+    const ParticleIndexes &rbs_,
+    const boost::unordered_map<ParticleIndex,
+                               ParticleIndexes> & /*constituents_*/,
     const algebra::Sphere3Ds &rbs_backup_sphere_,
     const algebra::Rotation3Ds &rbs_backup_rot_,
     const algebra::Sphere3Ds &xyzrs_backup_) {
@@ -303,12 +303,12 @@ inline bool get_if_moved(
 }
 
 inline void fill_list(
-    kernel::Model *m, const PairPredicates &filters, ObjectKey key_,
-    double slack_, kernel::ParticleIndexes &xyzrs_,
-    kernel::ParticleIndexes &rbs_,
-    boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+    Model *m, const PairPredicates &filters, ObjectKey key_,
+    double slack_, ParticleIndexes &xyzrs_,
+    ParticleIndexes &rbs_,
+    boost::unordered_map<ParticleIndex, ParticleIndexes> &
         constituents_,
-    kernel::ParticleIndexPairs &cur_list_) {
+    ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_ >= 0, "Slack must not be negative");
   /*IMP_LOG_VERBOSE( "filling particle list with slack " << slack_
     << " on " << sc_->get_name());*/
@@ -336,12 +336,12 @@ inline void fill_list(
 }
 
 inline void fill_list(
-    kernel::Model *m, const PairPredicates &filters, ObjectKey key_,
-    double slack_, kernel::ParticleIndexes xyzrs_[],
-    kernel::ParticleIndexes rbs_[],
-    boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes> &
+    Model *m, const PairPredicates &filters, ObjectKey key_,
+    double slack_, ParticleIndexes xyzrs_[],
+    ParticleIndexes rbs_[],
+    boost::unordered_map<ParticleIndex, ParticleIndexes> &
         constituents_,
-    kernel::ParticleIndexPairs &cur_list_) {
+    ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_ >= 0, "Slack must not be negative");
   /*IMP_LOG_VERBOSE( "filling particle list with slack " << slack_
     << " on " << sc_->get_name());*/
@@ -380,13 +380,13 @@ inline void fill_list(
   IMP_LOG_VERBOSE("found " << cur_list_.size() << std::endl);
 }
 
-IMPCOREEXPORT kernel::ParticlesTemp get_input_particles(
-    kernel::Model *, kernel::SingletonContainer *sc_,
-    const kernel::PairPredicates &filters_);
+IMPCOREEXPORT ParticlesTemp get_input_particles(
+    Model *, SingletonContainer *sc_,
+    const PairPredicates &filters_);
 
-IMPCOREEXPORT kernel::ModelObjectsTemp get_inputs(
-    kernel::Model *, kernel::SingletonContainer *sc_,
-    const kernel::PairPredicates &filters_);
+IMPCOREEXPORT ModelObjectsTemp get_inputs(
+    Model *, SingletonContainer *sc_,
+    const PairPredicates &filters_);
 
 IMPCORE_END_INTERNAL_NAMESPACE
 

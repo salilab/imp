@@ -6,8 +6,8 @@
  *
  */
 #include "IMP/core/blame.h"
-#include <IMP/kernel/Restraint.h>
-#include <IMP/kernel/input_output.h>
+#include <IMP/Restraint.h>
+#include <IMP/input_output.h>
 #include <IMP/core/RestraintsScoringFunction.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/display/Color.h>
@@ -15,22 +15,22 @@
 #include <boost/unordered_map.hpp>
 IMPCORE_BEGIN_NAMESPACE
 namespace {
-typedef boost::unordered_map<kernel::Particle *, kernel::Particle *>
+typedef boost::unordered_map<Particle *, Particle *>
     ControlledBy;
-void distribute_blame(kernel::Restraint *r, const ControlledBy &cb, FloatKey fk,
+void distribute_blame(Restraint *r, const ControlledBy &cb, FloatKey fk,
                       double weight) {
-  kernel::RestraintSet *rs = dynamic_cast<kernel::RestraintSet *>(r);
+  RestraintSet *rs = dynamic_cast<RestraintSet *>(r);
   if (rs) {
     weight *= rs->get_weight();
     for (unsigned int i = 0; i < rs->get_number_of_restraints(); ++i) {
       distribute_blame(rs->get_restraint(i), cb, fk, weight);
     }
   } else {
-    kernel::ParticlesTemp ips = IMP::get_input_particles(r->get_inputs());
-    kernel::ParticlesTemp mips;
+    ParticlesTemp ips = IMP::get_input_particles(r->get_inputs());
+    ParticlesTemp mips;
     for (unsigned int i = 0; i < ips.size(); ++i) {
       if (cb.find(ips[i]) != cb.end()) {
-        kernel::Particle *p = cb.find(ips[i])->second;
+        Particle *p = cb.find(ips[i])->second;
         mips.push_back(p);
       }
     }
@@ -46,8 +46,8 @@ void distribute_blame(kernel::Restraint *r, const ControlledBy &cb, FloatKey fk,
 }
 }
 
-void assign_blame(const kernel::RestraintsTemp &rs,
-                  const kernel::ParticlesTemp &ps, kernel::FloatKey attribute) {
+void assign_blame(const RestraintsTemp &rs,
+                  const ParticlesTemp &ps, FloatKey attribute) {
   IMP_FUNCTION_LOG;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     if (ps[i]->has_attribute(attribute)) {
@@ -56,9 +56,9 @@ void assign_blame(const kernel::RestraintsTemp &rs,
       ps[i]->add_attribute(attribute, 0, false);
     }
   }
-  kernel::Restraints drs;
+  Restraints drs;
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    base::Pointer<kernel::Restraint> rd = rs[i]->create_decomposition();
+    base::Pointer<Restraint> rd = rs[i]->create_decomposition();
     if (rd) {
       drs.push_back(rd);
     }
@@ -70,7 +70,7 @@ void assign_blame(const kernel::RestraintsTemp &rs,
   DependencyGraphVertexIndex dgi((IMP::get_vertex_index(dg)));
   ControlledBy controlled_by;
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    kernel::ParticlesTemp cps = get_dependent_particles(ps[i], ps, dg, dgi);
+    ParticlesTemp cps = get_dependent_particles(ps[i], ps, dg, dgi);
     IMP_INTERNAL_CHECK(cps.size() > 0, "No dependent particles for " << ps[i]);
     for (unsigned int j = 0; j < cps.size(); ++j) {
       controlled_by[cps[j]] = ps[i];
@@ -81,8 +81,8 @@ void assign_blame(const kernel::RestraintsTemp &rs,
   }
 }
 
-display::Geometries create_blame_geometries(const kernel::RestraintsTemp &rs,
-                                            const kernel::ParticlesTemp &ps,
+display::Geometries create_blame_geometries(const RestraintsTemp &rs,
+                                            const ParticlesTemp &ps,
                                             double max, std::string name) {
   IMP_FUNCTION_LOG;
   FloatKey key("blame temporary key");

@@ -25,8 +25,8 @@ void CoulombPairScore::calculate_multiplication_factor() {
                            (4.0 * PI * relative_dielectric_);
 }
 
-double CoulombPairScore::evaluate_index(kernel::Model *m,
-                                        const kernel::ParticleIndexPair &p,
+double CoulombPairScore::evaluate_index(Model *m,
+                                        const ParticleIndexPair &p,
                                         DerivativeAccumulator *da) const {
   Charged c0(m, p[0]);
   Charged c1(m, p[1]);
@@ -46,8 +46,8 @@ double CoulombPairScore::evaluate_index(kernel::Model *m,
 }
 
 ModelObjectsTemp CoulombPairScore::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  return IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
 }
 
 IMPATOM_END_NAMESPACE

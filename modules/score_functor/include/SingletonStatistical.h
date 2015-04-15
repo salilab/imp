@@ -56,7 +56,7 @@ class SingletonStatistical {
                                      get_data_path("soap_score_sas.lib"))
       : table_(new Table(data_file, Key())), key_(k) {}
 
-  double get_score(kernel::Model *m, const kernel::ParticleIndex pi,
+  double get_score(Model *m, const ParticleIndex pi,
                    double area) const {
     int table_index = m->get_attribute(key_, pi);
     if (table_index == -1) return 0;

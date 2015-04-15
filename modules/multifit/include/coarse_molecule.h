@@ -26,7 +26,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
  */
 IMPMULTIFITEXPORT
 atom::Hierarchy create_coarse_molecule_from_molecule(
-    const atom::Hierarchy &mh, int num_beads, kernel::Model *mdl,
+    const atom::Hierarchy &mh, int num_beads, Model *mdl,
     float bead_radius, bool add_conn_restraint = false);
 
 //! Coarsen molecules based on atom clustering
@@ -41,7 +41,7 @@ atom::Hierarchy create_coarse_molecule_from_molecule(
  */
 IMPMULTIFITEXPORT
 atom::Hierarchies create_coarse_molecules_from_molecules(
-    const atom::Hierarchies &mhs, int frag_len, kernel::Model *mdl,
+    const atom::Hierarchies &mhs, int frag_len, Model *mdl,
     float bead_radius, bool add_conn_restraint = false);
 
 //! Coarsen a density map based on voxels clustering
@@ -57,7 +57,7 @@ IMPMULTIFITEXPORT
 atom::Hierarchy create_coarse_molecule_from_density(em::DensityMap *dmap,
                                                     float dens_threshold,
                                                     int num_beads,
-                                                    kernel::Model *mdl,
+                                                    Model *mdl,
                                                     float bead_radius);
 
 IMPMULTIFIT_END_NAMESPACE

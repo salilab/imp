@@ -23,11 +23,11 @@ class Tests(IMP.test.TestCase):
 
     def test_it(self):
         """Test cover refined decorator"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         IMP.base.set_log_level(IMP.MEMORY)
         n = random.randrange(1, 10)
         ps = IMP.core.create_xyzr_particles(m, 10, 1)
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         ss = IMP.core.Cover.setup_particle(p,
                                            IMP.core.FixedRefiner(ps))
         m.update()

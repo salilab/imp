@@ -10,7 +10,7 @@
 #define IMPCORE_CLASSNAME_CONSTRAINT_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/kernel/internal/TupleConstraint.h>
+#include <IMP/internal/TupleConstraint.h>
 #include <IMP/ClassnameModifier.h>
 #include <IMP/ClassnameDerivativeModifier.h>
 

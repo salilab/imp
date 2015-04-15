@@ -35,7 +35,10 @@ def make_cpp(options):
         # exists
         pass
     data = {}
-    data["filename"] = "IMP/%s/%s_config.h" % (options.name, options.name)
+    if options.name == 'kernel':
+        data["filename"] = "IMP/%s_config.h" % options.name
+    else:
+        data["filename"] = "IMP/%s/%s_config.h" % (options.name, options.name)
     data["cppprefix"] = "IMP%s" % options.name.upper().replace("_", "")
     data["name"] = options.name
     data["version"] = tools.get_module_version(options.name, options.source)

@@ -20,7 +20,7 @@ using namespace IMP::display;
 namespace {
 int do_benchmark() {
   try {
-    IMP_NEW(kernel::Model, m, ());
+    IMP_NEW(Model, m, ());
     atom::Hierarchy prot =
         read_pdb(IMP::benchmark::get_data_path("extended.pdb"), m);
     // Read in the CHARMM heavy atom topology and parameter files
@@ -73,7 +73,7 @@ int do_benchmark() {
     /* Add a restraint for the Lennard-Jones interaction. This is built from
        a collection of building blocks. First, a
        ClosePairContainer maintains a list
-       of all pairs of kernel::Particles that are close.
+       of all pairs of Particles that are close.
        Next, all 1-2, 1-3 and 1-4 pairs
        from the stereochemistry created above are filtered out.
        Then, a LennardJonesPairScore scores a pair of atoms with the

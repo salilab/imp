@@ -16,7 +16,7 @@ IMPISD_BEGIN_NAMESPACE
 GaussianProcessInterpolation::GaussianProcessInterpolation(
     FloatsList x, Floats sample_mean, Floats sample_std, unsigned n_obs,
     UnivariateFunction *mean_function, BivariateFunction *covariance_function,
-    kernel::Particle *sigma, double sparse_cutoff)
+    Particle *sigma, double sparse_cutoff)
     : Object("GaussianProcessInterpolation%1%"),
       x_(x),
       n_obs_(n_obs),
@@ -706,13 +706,13 @@ GaussianProcessInterpolation::get_posterior_covariance_hessian(
 }
 */
 
-kernel::ParticlesTemp GaussianProcessInterpolation::get_input_particles()
+ParticlesTemp GaussianProcessInterpolation::get_input_particles()
     const {
-  kernel::ParticlesTemp ret;
-  kernel::ParticlesTemp ret1 = mean_function_->get_input_particles();
+  ParticlesTemp ret;
+  ParticlesTemp ret1 = mean_function_->get_input_particles();
   ret.insert(ret.end(), ret1.begin(), ret1.end());
   ret.push_back(sigma_);
-  kernel::ParticlesTemp ret2 = covariance_function_->get_input_particles();
+  ParticlesTemp ret2 = covariance_function_->get_input_particles();
   ret.insert(ret.end(), ret2.begin(), ret2.end());
   return ret;
 }

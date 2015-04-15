@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/base_types.h    \brief Basic types used by IMP.
+ *  \file IMP/base_types.h    \brief Basic types used by IMP.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_BASE_TYPES_H
 #define IMPKERNEL_BASE_TYPES_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "Key.h"
 #include <IMP/base/object_macros.h>
 #include <IMP/base/value_macros.h>
@@ -72,18 +72,18 @@ IMP_VALUES(ObjectsKey, ObjectsKeys);
 
 //! The type used to identify data stored directly in the model.
 typedef Key<8, true> ModelKey;
-IMP_VALUES(kernel::ModelKey, ModelKeys);
+IMP_VALUES(ModelKey, ModelKeys);
 
 /** @} */
 
 class Restraint;
 IMP_OBJECTS(Restraint, Restraints);
 class ModelObject;
-IMP_OBJECTS(kernel::ModelObject, ModelObjects);
+IMP_OBJECTS(ModelObject, ModelObjects);
 typedef base::Vector<ModelObjectsTemp> ModelObjectsTemps;
 
 class Model;
-IMP_OBJECTS(kernel::Model, Models);
+IMP_OBJECTS(Model, Models);
 class RestraintSet;
 IMP_OBJECTS(RestraintSet, RestraintSets);
 class ScoreState;

@@ -4,13 +4,13 @@
 from __future__ import print_function
 import IMP
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 # An undirected graph with an IMP::Object for each node
 g = IMP.DependencyGraph()
 vs = []
 ps = []
 for i in range(0, 10):
-    ps.append(IMP.kernel.Particle(m))
+    ps.append(IMP.Particle(m))
     vs.append(g.add_vertex(ps[-1]))
 g.add_edge(vs[0], vs[1])
 g.add_edge(vs[1], vs[2])

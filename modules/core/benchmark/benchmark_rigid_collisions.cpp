@@ -9,14 +9,14 @@
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
-#include <IMP/kernel/internal/pdb.h>
+#include <IMP/internal/pdb.h>
 
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
 
 namespace {
-void test_one(std::string name, kernel::Model *m, RigidBodies rbs, float side,
+void test_one(std::string name, Model *m, RigidBodies rbs, float side,
               double) {
   Vector3D minc(0, 0, 0), maxc(side, side, side);
   m->evaluate(false);
@@ -52,28 +52,28 @@ void test_one(std::string name, kernel::Model *m, RigidBodies rbs, float side,
 Model *setup(bool rpcpf, RigidBodies &rbs) {
   base::set_log_level(base::SILENT);
   base::set_check_level(base::NONE);
-  kernel::Model *m = new kernel::Model();
-  kernel::Particles atoms;
+  Model *m = new Model();
+  Particles atoms;
   for (int i = 0; i < 5; ++i) {
     std::string path = IMP::benchmark::get_data_path("small_protein.pdb");
-    kernel::ParticlesTemp catoms =
+    ParticlesTemp catoms =
         IMP::internal::create_particles_from_pdb(path, m);
     IMP_INTERNAL_CHECK(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
-    IMP_NEW(kernel::Particle, rbp, (m));
+    IMP_NEW(Particle, rbp, (m));
     RigidBody rbd = RigidBody::setup_particle(rbp, catoms);
     rbs.push_back(rbd);
   }
   for (unsigned int i = 0; i < atoms.size(); ++i) {
     XYZR::setup_particle(atoms[i], 1.0);
   }
-  IMP_NEW(IMP::kernel::internal::StaticListContainer<
-              IMP::kernel::SingletonContainer>,
+  IMP_NEW(IMP::internal::StaticListContainer<
+              IMP::SingletonContainer>,
           lsc, (m, "list"));
 
   PairContainer *cpc;
   if (rpcpf) {
-    kernel::ParticleIndexes rbsp(rbs.size());
+    ParticleIndexes rbsp(rbs.size());
     for (unsigned int i = 0; i < rbs.size(); ++i) {
       rbsp[i] = rbs[i].get_particle()->get_index();
     }
@@ -82,10 +82,10 @@ Model *setup(bool rpcpf, RigidBodies &rbs) {
     cpc = new core::internal::CoreClosePairContainer(lsc, 0.0, rcps);
   } else {
     IMP_NEW(GridClosePairsFinder, cpf, ());
-    lsc->set(IMP::get_indexes(get_as<kernel::ParticlesTemp>(atoms)));
+    lsc->set(IMP::get_indexes(get_as<ParticlesTemp>(atoms)));
     cpc = new core::internal::CoreClosePairContainer(lsc, 0.0, cpf, 1.0);
   }
-  m->add_restraint(IMP::kernel::create_restraint(
+  m->add_restraint(IMP::create_restraint(
       new DistancePairScore(new Linear(1, 0)), cpc));
   return m;
 }

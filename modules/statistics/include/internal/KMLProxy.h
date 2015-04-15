@@ -14,8 +14,8 @@
 #include "KMFilterCenters.h"
 #include "KMLocalSearch.h"
 #include "KMLocalSearchLloyd.h"
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
 #include <vector>
 #include <iostream>
 #include <ctime>
@@ -29,8 +29,8 @@ inline double elapsed_time(clock_t start) {
 }
 #endif
 
-//! Proxy to apply k-means clustering on a set of kernel::Particles
-/** \see kernel::ParticlesEmbedding
+//! Proxy to apply k-means clustering on a set of Particles
+/** \see ParticlesEmbedding
  */
 class IMPSTATISTICSEXPORT KMLProxy {
  public:
@@ -43,19 +43,19 @@ class IMPSTATISTICSEXPORT KMLProxy {
                   participating in the clustering
   \param[in] num_centers  The number of clusters
    */
-  void initialize(kernel::Model *m, const kernel::Particles &ps,
+  void initialize(Model *m, const Particles &ps,
                   const FloatKeys &atts, unsigned int num_centers);
   //! Run the k-means algorithm
   /**
   \param[in] ps a set of particles which are the initial k-means.
                 If non are provided, the initial ones are set randomly.
    */
-  void run(kernel::Particles *ps = nullptr);
+  void run(Particles *ps = nullptr);
   std::string get_cmm_string() const;
   void log_header() const;
-  //  kernel::Particles get_particles_for_center(unsigned int k) const;
-  unsigned int get_particle_assignment(kernel::Particle *p) const;
-  kernel::Particles get_centers() const { return centroids_; }
+  //  Particles get_particles_for_center(unsigned int k) const;
+  unsigned int get_particle_assignment(Particle *p) const;
+  Particles get_centers() const { return centroids_; }
 
  protected:
   void log_summary(KMFilterCentersResults *ctrs, Float run_time,
@@ -91,11 +91,11 @@ class IMPSTATISTICSEXPORT KMLProxy {
   KMTerminationCondition term_;    // termination parameters
 
   // our data
-  kernel::Model *m_;
-  kernel::Particles ps_;         // input particles
-  kernel::Particles centroids_;  // the k means as particles
+  Model *m_;
+  Particles ps_;         // input particles
+  Particles centroids_;  // the k means as particles
   base::Vector<FloatKey> atts_;  // the attributes k-means in minimized on
-  std::map<kernel::Particle *, unsigned int> assignment_;
+  std::map<Particle *, unsigned int> assignment_;
   // the assignment of input data to centers
 };
 IMPSTATISTICS_END_INTERNAL_NAMESPACE

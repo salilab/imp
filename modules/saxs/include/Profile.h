@@ -25,8 +25,8 @@ class RadialDistributionFunction;
 
 /**
    Basic profile class, can be initialized from the input file
-   (experimental or theoretical) or computed from a set of kernel::Model
-   kernel::Particles (theoretical)
+   (experimental or theoretical) or computed from a set of Model
+   Particles (theoretical)
 */
 class IMPSAXSEXPORT Profile : public base::Object {
  public:
@@ -41,7 +41,7 @@ class IMPSAXSEXPORT Profile : public base::Object {
   // Various ways to compute a profile
 
   //! computes theoretical profile
-  void calculate_profile(const kernel::Particles& particles,
+  void calculate_profile(const Particles& particles,
                          FormFactorType ff_type = HEAVY_ATOMS,
                          bool reciprocal = false) {
     if (!reciprocal)
@@ -57,42 +57,42 @@ class IMPSAXSEXPORT Profile : public base::Object {
     given a pair of c1/c2 values by sum_partial_profiles function.
     see FoXS paper for details.
   */
-  void calculate_profile_partial(const kernel::Particles& particles,
+  void calculate_profile_partial(const Particles& particles,
                                  const Floats& surface = Floats(),
                                  FormFactorType ff_type = HEAVY_ATOMS);
 
   //! compute profile for fitting with hydration layer and excluded volume
-  void calculate_profile_partial(const kernel::Particles& particles1,
-                                 const kernel::Particles& particles2,
+  void calculate_profile_partial(const Particles& particles1,
+                                 const Particles& particles2,
                                  const Floats& surface1 = Floats(),
                                  const Floats& surface2 = Floats(),
                                  FormFactorType ff_type = HEAVY_ATOMS);
 
-  void calculate_profile_reciprocal_partial(const kernel::Particles& particles,
+  void calculate_profile_reciprocal_partial(const Particles& particles,
                                             const Floats& surface = Floats(),
                                             FormFactorType ff_type =
                                                 HEAVY_ATOMS);
 
   //! computes theoretical profile contribution from inter-molecular
   //! interactions between the particles
-  void calculate_profile(const kernel::Particles& particles1,
-                         const kernel::Particles& particles2,
+  void calculate_profile(const Particles& particles1,
+                         const Particles& particles2,
                          FormFactorType ff_type = HEAVY_ATOMS) {
     calculate_profile_real(particles1, particles2, ff_type);
   }
 
   //! calculate Intensity at zero (= squared number of electrons)
-  Float calculate_I0(const kernel::Particles& particles,
+  Float calculate_I0(const Particles& particles,
                      FormFactorType ff_type = HEAVY_ATOMS);
 
-  //! calculate profile for any type of kernel::Particles that have coordinates
+  //! calculate profile for any type of Particles that have coordinates
   void calculate_profile_constant_form_factor(
-      const kernel::Particles& particles, Float form_factor = 1.0);
+      const Particles& particles, Float form_factor = 1.0);
 
   // computes theoretical profile faster for cyclically symmetric particles
   // assumes that the units particles are ordered one after another in the
   // input particles vector (n - symmetry order)
-  void calculate_profile_symmetric(const kernel::Particles& particles,
+  void calculate_profile_symmetric(const Particles& particles,
                                    unsigned int n,
                                    FormFactorType ff_type = HEAVY_ATOMS);
 
@@ -240,18 +240,18 @@ class IMPSAXSEXPORT Profile : public base::Object {
   void init();
 
  private:
-  void calculate_profile_reciprocal(const kernel::Particles& particles,
+  void calculate_profile_reciprocal(const Particles& particles,
                                     FormFactorType ff_type = HEAVY_ATOMS);
 
-  void calculate_profile_reciprocal(const kernel::Particles& particles1,
-                                    const kernel::Particles& particles2,
+  void calculate_profile_reciprocal(const Particles& particles1,
+                                    const Particles& particles2,
                                     FormFactorType ff_type = HEAVY_ATOMS);
 
-  void calculate_profile_real(const kernel::Particles& particles,
+  void calculate_profile_real(const Particles& particles,
                               FormFactorType ff_type = HEAVY_ATOMS);
 
-  void calculate_profile_real(const kernel::Particles& particles1,
-                              const kernel::Particles& particles2,
+  void calculate_profile_real(const Particles& particles1,
+                              const Particles& particles2,
                               FormFactorType ff_type = HEAVY_ATOMS);
 
   void squared_distribution_2_profile(const RadialDistributionFunction& r_dist);

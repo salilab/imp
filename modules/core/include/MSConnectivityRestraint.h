@@ -18,7 +18,7 @@
 #include "DistanceRestraint.h"
 
 #include <IMP/SingletonContainer.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -51,7 +51,7 @@ IMPCORE_BEGIN_NAMESPACE
     graph connecting all the particles. The edge weights are given by
     the value of the PairScore for the two endpoints of the edge.
  */
-class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
+class IMPCOREEXPORT MSConnectivityRestraint : public Restraint {
   IMP::base::PointerMember<PairScore> ps_;
   IMP::base::PointerMember<SingletonContainer> sc_;
   double eps_;
@@ -62,7 +62,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
     eps is set to 0.1 by default.
    */
   MSConnectivityRestraint(Model *m, PairScore *ps, double eps = 0.1);
-  /** @name kernel::Particles to be connected
+  /** @name Particles to be connected
 
     The following methods are used to manipulate the list of particles
     that are to be connected. Each particle should have all the
@@ -72,12 +72,12 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
     can only be used if none is passed.
    */
   /*@{*/
-  unsigned int add_type(const kernel::ParticlesTemp &ps);
+  unsigned int add_type(const ParticlesTemp &ps);
   unsigned int add_composite(const Ints &components);
   unsigned int add_composite(const Ints &components, unsigned int parent);
-  // void add_particle(kernel::Particle *p);
-  // void add_particles(const kernel::Particles &ps);
-  // void set_particles(const kernel::Particles &ps);
+  // void add_particle(Particle *p);
+  // void add_particles(const Particles &ps);
+  // void set_particles(const Particles &ps);
   /*@}*/
 
   //! Return the set of pairs which are connected by the restraint
@@ -85,16 +85,16 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
     the get_connected_pairs() call, not the set at the time of the last
     evaluate() call.
    */
-  kernel::ParticlePairsTemp get_connected_pairs() const;
+  ParticlePairsTemp get_connected_pairs() const;
 
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const { return ps_; }
 
-  kernel::Restraints do_create_current_decomposition() const;
+  Restraints do_create_current_decomposition() const;
 
-  double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const;
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
 
-  kernel::ModelObjectsTemp do_get_inputs() const;
+  ModelObjectsTemp do_get_inputs() const;
 
   IMP_OBJECT_METHODS(MSConnectivityRestraint);
 
@@ -107,15 +107,15 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
    public:
     class ParticleData {
      public:
-      ParticleData(kernel::Particle *p, unsigned int id)
+      ParticleData(Particle *p, unsigned int id)
           : particle_(p), id_(id) {}
 
-      kernel::Particle *get_particle() const { return particle_; }
+      Particle *get_particle() const { return particle_; }
 
       unsigned int get_id() const { return id_; }
 
      private:
-      kernel::Particle *particle_;
+      Particle *particle_;
       unsigned int id_;
     };
 
@@ -134,8 +134,8 @@ class IMPCOREEXPORT MSConnectivityRestraint : public kernel::Restraint {
       protein_by_class_.resize(number_of_classes);
     }
 
-    unsigned int add_particle(kernel::Particle *p, unsigned int id);
-    unsigned int add_type(const kernel::ParticlesTemp &ps);
+    unsigned int add_particle(Particle *p, unsigned int id);
+    unsigned int add_type(const ParticlesTemp &ps);
     void create_distance_matrix(const PairScore *ps);
     void clear_particles() {
       particles_.clear();

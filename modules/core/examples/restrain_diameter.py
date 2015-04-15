@@ -11,7 +11,7 @@ import IMP.container
 # than 10
 
 diameter = 10
-m = IMP.kernel.Model()
+m = IMP.Model()
 lc = IMP.container.ListSingletonContainer(
     IMP.core.create_xyzr_particles(m, 50, 1.0))
 h = IMP.core.HarmonicUpperBound(0, 1)

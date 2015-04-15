@@ -6,16 +6,16 @@
  *
  */
 
-#include "IMP/kernel/Model.h"
-#include "IMP/kernel/Particle.h"
+#include "IMP/Model.h"
+#include "IMP/Particle.h"
 #include <IMP/base/log.h>
-#include "IMP/kernel/Restraint.h"
-#include "IMP/kernel/DerivativeAccumulator.h"
-#include "IMP/kernel/ScoreState.h"
-#include "IMP/kernel/generic.h"
-#include "IMP/kernel/internal/input_output_exception.h"
-#include "IMP/kernel/ScoringFunction.h"
-#include "IMP/kernel/internal/evaluate_utility.h"
+#include "IMP/Restraint.h"
+#include "IMP/DerivativeAccumulator.h"
+#include "IMP/ScoreState.h"
+#include "IMP/generic.h"
+#include "IMP/internal/input_output_exception.h"
+#include "IMP/ScoringFunction.h"
+#include "IMP/internal/evaluate_utility.h"
 #include <IMP/base/CreateLogContext.h>
 #include <IMP/base/thread_macros.h>
 #include <boost/timer.hpp>
@@ -56,7 +56,7 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
   IMP_USAGE_CHECK(cur_stage_ == internal::NOT_EVALUATING,
                   "Can only call Model::before_evaluate() when not evaluating");
   base::CreateLogContext clc("update_score_states");
-  internal::SFSetIt<IMP::kernel::internal::Stage> reset(
+  internal::SFSetIt<IMP::internal::Stage> reset(
       &cur_stage_, internal::BEFORE_EVALUATING);
   unsigned int cur_begin = 0;
   while (cur_begin < states.size()) {
@@ -108,7 +108,7 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
   check_order(istates);
   base::CreateLogContext clc("update_derivatives");
   DerivativeAccumulator accum;
-  internal::SFSetIt<IMP::kernel::internal::Stage> reset(
+  internal::SFSetIt<IMP::internal::Stage> reset(
       &cur_stage_, internal::AFTER_EVALUATING);
   unsigned int cur_begin = 0;
   ScoreStatesTemp states = istates;

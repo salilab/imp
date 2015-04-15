@@ -1,7 +1,6 @@
 from __future__ import print_function
 import IMP.atom
-import IMP.kernel
-m = IMP.kernel.Model()
+m = IMP.Model()
 all = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
 all.set_name("the universe")
 h = IMP.atom.create_protein(m, "ProteinA", 300., [0, 820, 1065, 2075])

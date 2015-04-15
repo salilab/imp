@@ -17,8 +17,8 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/core/rigid_bodies.h>
 
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
 
 #include <vector>
 #include <deque>
@@ -209,7 +209,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 
   //! \deprecated_at{2.3} Check explicitly instead. */
   IMPATOM_DEPRECATED_METHOD_DECL(2.3)
-  static Hierarchy decorate_particle(kernel::Particle *p) {
+  static Hierarchy decorate_particle(Particle *p) {
     IMPATOM_DEPRECATED_METHOD_DEF(2.3, "Check explicitly instead");
     if (get_is_setup(p))
       return Hierarchy(p);
@@ -218,8 +218,8 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   }
   /** Setup the particle as a hierarchy and add the passed particles
       as children. */
-  static Hierarchy setup_particle(kernel::Particle *p,
-                                  kernel::ParticleIndexesAdaptor children) {
+  static Hierarchy setup_particle(Particle *p,
+                                  ParticleIndexesAdaptor children) {
     H::setup_particle(p, get_traits());
     Hierarchy ret(p);
     for (unsigned int i = 0; i < children.size(); ++i) {
@@ -231,27 +231,27 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return ret;
   }
 
-  static Hierarchy setup_particle(kernel::Particle *p) {
+  static Hierarchy setup_particle(Particle *p) {
     return setup_particle(p->get_model(), p->get_index());
   }
 
   /** \deprecated_at{2.2} Use get_is_setup() instead. */
-  static bool particle_is_instance(kernel::Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return H::get_is_setup(p, get_traits());
   }
-  static bool get_is_setup(kernel::Particle *p) {
+  static bool get_is_setup(Particle *p) {
     return H::get_is_setup(p, get_traits());
   }
   /** \deprecated_at{2.2} Use get_is_setup() instead. */
-  static bool particle_is_instance(kernel::Model *m, kernel::ParticleIndex p) {
+  static bool particle_is_instance(Model *m, ParticleIndex p) {
     return H::get_is_setup(m->get_particle(p), get_traits());
   }
 #endif
 
-  Hierarchy(kernel::Model *m, kernel::ParticleIndex pi)
+  Hierarchy(Model *m, ParticleIndex pi)
       : H(m, pi, get_traits()) {}
 
-  Hierarchy(kernel::ParticleAdaptor pi)
+  Hierarchy(ParticleAdaptor pi)
       : H(pi.get_model(), pi.get_particle_index(), get_traits()) {}
 
   //! null constructor
@@ -267,9 +267,9 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 
   /** Create a Hierarchy of level t by adding the needed
       attributes. */
-  static Hierarchy setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                  kernel::ParticleIndexesAdaptor children =
-                                      kernel::ParticleIndexesAdaptor()) {
+  static Hierarchy setup_particle(Model *m, ParticleIndex pi,
+                                  ParticleIndexesAdaptor children =
+                                      ParticleIndexesAdaptor()) {
     H::setup_particle(m, pi, get_traits());
     Hierarchy ret(m, pi);
     for (unsigned int i = 0; i < children.size(); ++i) {
@@ -283,7 +283,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex p) {
+  static bool get_is_setup(Model *m, ParticleIndex p) {
     return H::get_is_setup(m->get_particle(p), get_traits());
   }
 
@@ -320,7 +320,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return ret;
   }
 
-  //! Get the children in a container of your choosing, eg kernel::ParticlesTemp
+  //! Get the children in a container of your choosing, eg ParticlesTemp
   template <class C>
   C get_children() const {
     C ret(get_number_of_children());
@@ -436,7 +436,7 @@ inline Hierarchies get_leaves(Hierarchy h) {
 
 /** \see Hierarchy */
 inline Hierarchies get_leaves(const Hierarchies &h) {
-  kernel::ParticlesTemp ret;
+  ParticlesTemp ret;
   for (unsigned int i = 0; i < h.size(); ++i) {
     core::GenericHierarchies cur = IMP::core::get_leaves(h[i]);
     ret.insert(ret.end(), cur.begin(), cur.end());
@@ -516,7 +516,7 @@ IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
 //! Delete the Hierarchy
 /** All bonds connecting to these atoms are destroyed as are
     hierarchy links in the Hierarchy and the particles are
-    removed from the kernel::Model. If this particle has a parent, it is
+    removed from the Model. If this particle has a parent, it is
     removed from the parent.
     \see Hierarchy
 */

@@ -28,7 +28,7 @@ def create_scoring(m, ps):
 def create_representation(m):
     ps = []
     for i in range(0, 6):
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(i, 0., 0.))
         ps.append(p)
     return ps
@@ -122,7 +122,7 @@ def create_sampler(m, ps, rs, pst):
     return s
 
 IMP.base.set_log_level(IMP.base.TERSE)
-m = IMP.kernel.Model()
+m = IMP.Model()
 m.set_log_level(IMP.base.SILENT)
 
 print("creating representation")

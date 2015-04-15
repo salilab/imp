@@ -10,7 +10,7 @@ import IMP.container
 # This example addes a restraint on nonbonded interactions
 # after excluding a set of bonded interactions.
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 # The set of particles
 ps = IMP.container.ListSingletonContainer(
     IMP.core.create_xyzr_particles(m, 20, 1.0))

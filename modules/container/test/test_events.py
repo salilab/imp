@@ -10,10 +10,10 @@ class Tests(IMP.test.TestCase):
 
     def test_allp2(self):
         """Check the event optimizer states"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         for i in range(0, 5):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             ps.append(p)
         ap = IMP.container.ListSingletonContainer(ps)
         cp = IMP.core.ConstantSingletonPredicate(1)

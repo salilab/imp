@@ -25,7 +25,7 @@ def read(m, beyond_file):
         name = IMP.display.get_example_path(
             "ensemble/aligned-" + str(i) + ".pdb")
         h = IMP.atom.read_pdb(name, m, IMP.atom.CAlphaPDBSelector())
-        hr = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+        hr = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         hs.append(hr)
         for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
             simp = IMP.atom.create_simplified_along_backbone(
@@ -104,7 +104,7 @@ def add_skeleton(h, c, r, w, chain_colors):
                 w.add_geometry(g)
 
 IMP.base.set_log_level(IMP.base.TERSE)
-m = IMP.kernel.Model()
+m = IMP.Model()
 
 # change to 46 to display all of them
 hs = read(m, 3)

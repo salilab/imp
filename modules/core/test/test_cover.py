@@ -11,16 +11,16 @@ class Tests(IMP.test.TestCase):
 
     def test_it(self):
         """Test cover refined"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         IMP.base.set_log_level(IMP.MEMORY)
         n = random.randrange(1, 10)
         ps = []
         ds = IMP.core.XYZRs()
-        pp = IMP.kernel.Particle(m)
+        pp = IMP.Particle(m)
         hd = IMP.core.Hierarchy.setup_particle(pp)
         dd = IMP.core.XYZR.setup_particle(pp)
         for i in range(0, n):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZR.setup_particle(p)
             ps.append(p)
             ds.append(d)

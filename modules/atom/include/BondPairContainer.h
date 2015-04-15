@@ -16,13 +16,13 @@
 #include <IMP/PairScore.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/scoped.h>
-#include <IMP/kernel/internal/container_helpers.h>
+#include <IMP/internal/container_helpers.h>
 #include <IMP/core/PairRestraint.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
 //! A container that returns pairs of the endpoints of the bonds.
-/** Turn a container of Bond particles into a container of kernel::ParticlePair
+/** Turn a container of Bond particles into a container of ParticlePair
     objects of the endpoints.
     \ingroup bond
     \see Bonded
@@ -37,9 +37,9 @@ class IMPATOMEXPORT BondPairContainer : public PairContainer {
  public:
   template <class F>
   void apply_generic(F* f) const {
-    IMP_FOREACH(kernel::ParticleIndex pi, sc_->get_contents()) {
+    IMP_FOREACH(ParticleIndex pi, sc_->get_contents()) {
       Bond bp(get_model(), pi);
-      f->apply_index(get_model(), kernel::ParticleIndexPair(
+      f->apply_index(get_model(), ParticleIndexPair(
                                       bp.get_bonded(0).get_particle_index(),
                                       bp.get_bonded(1).get_particle_index()));
     }
@@ -48,12 +48,12 @@ class IMPATOMEXPORT BondPairContainer : public PairContainer {
   //! The container containing the bonds
   BondPairContainer(SingletonContainer* sc);
 
-  virtual kernel::ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
-  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
-    return kernel::ModelObjects(1, sc_);
+  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    return ModelObjects(1, sc_);
   }
-  kernel::ParticleIndexes get_all_possible_indexes() const;
+  ParticleIndexes get_all_possible_indexes() const;
   IMP_PAIR_CONTAINER_METHODS(BondPairContainer);
   IMP_OBJECT_METHODS(BondPairContainer);
 };

@@ -72,8 +72,8 @@ class OrientedSoap : public Score {
 #endif
   }
   template <unsigned int D>
-  double get_score(kernel::Model *m,
-                   const base::Array<D, kernel::ParticleIndex> &pis,
+  double get_score(Model *m,
+                   const base::Array<D, ParticleIndex> &pis,
                    double distance) const {
     double score = 0;
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
@@ -101,29 +101,29 @@ class OrientedSoap : public Score {
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      kernel::Model *m, const base::Array<D, kernel::ParticleIndex> &pis,
+      Model *m, const base::Array<D, ParticleIndex> &pis,
       double distance) const {
     // No derivatives are available
     return DerivativePair(get_score(m, pis, distance), 0.);
   }
   template <unsigned int D>
   double get_maximum_range(
-      kernel::Model *, const base::Array<D, kernel::ParticleIndex> &) const {
+      Model *, const base::Array<D, ParticleIndex> &) const {
     return maxrange_;
   }
 
   double get_distance_threshold() const { return maxrange_; }
 
   template <unsigned int D>
-  bool get_is_trivially_zero(kernel::Model *,
-                             const base::Array<D, kernel::ParticleIndex> &,
+  bool get_is_trivially_zero(Model *,
+                             const base::Array<D, ParticleIndex> &,
                              double squared_distance) const {
     return squared_distance > algebra::get_squared(maxrange_);
   }
 
-  kernel::ModelObjectsTemp get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-    kernel::ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
+  ModelObjectsTemp get_inputs(
+      Model *m, const ParticleIndexes &pis) const {
+    ModelObjectsTemp ret = IMP::get_particles(m, pis);
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
     // We touch the Residue for each Atom, so make sure that's in the list
     // Note that we potentially touch other atoms in the Residue that aren't

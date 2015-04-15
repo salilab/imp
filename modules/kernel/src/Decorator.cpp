@@ -7,8 +7,8 @@
 
 #include <cmath>
 
-#include "IMP/kernel/Decorator.h"
-#include "IMP/kernel/Particle.h"
+#include "IMP/Decorator.h"
+#include "IMP/Particle.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 extern base::Vector<std::pair<ParticleFunction, ParticleFunction> >
@@ -34,7 +34,7 @@ void check_particle(Particle *p) {
   }
 }
 
-Undecorator::Undecorator(kernel::Model *m, std::string name)
+Undecorator::Undecorator(Model *m, std::string name)
     : base::Object(name), m_(m) {}
 
 IMPKERNEL_END_NAMESPACE

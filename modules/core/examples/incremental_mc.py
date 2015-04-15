@@ -18,12 +18,12 @@ else:
     num_balls = 20
     num_mc_steps = 1000
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                IMP.algebra.Vector3D(30, 30, 30))
 ps = []
 for i in range(0, num_balls):
-    ps.append(IMP.kernel.Particle(m))
+    ps.append(IMP.Particle(m))
     d = IMP.core.XYZR.setup_particle(ps[-1])
     d.set_radius(10)
     d.set_coordinates(IMP.algebra.get_random_vector_in(bb))

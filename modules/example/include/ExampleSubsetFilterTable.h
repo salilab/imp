@@ -24,13 +24,13 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 class IMPEXAMPLEEXPORT ExampleSubsetFilterTable
     : public domino::SubsetFilterTable {
   int max_diff_;
-  const kernel::Particles ps_;
+  const Particles ps_;
   Ints get_indexes(const domino::Subset &s,
                    const domino::Subsets &prior_subsets) const;
 
  public:
   ExampleSubsetFilterTable(unsigned int max_diff,
-                           const kernel::ParticlesTemp &pt);
+                           const ParticlesTemp &pt);
 
   virtual IMP::domino::SubsetFilter *get_subset_filter(
       const IMP::domino::Subset &s, const IMP::domino::Subsets &excluded) const

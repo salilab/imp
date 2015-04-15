@@ -14,8 +14,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 RigidBodyAnglePairScore::RigidBodyAnglePairScore(UnaryFunction *f): f_(f) {}
 
-Float RigidBodyAnglePairScore::evaluate_index(kernel::Model *m,
-                                        const kernel::ParticleIndexPair &pi,
+Float RigidBodyAnglePairScore::evaluate_index(Model *m,
+                                        const ParticleIndexPair &pi,
                                         DerivativeAccumulator *da) const {
   // check if derivatives are requested
   IMP_USAGE_CHECK(!da, "Derivatives not available");
@@ -54,8 +54,8 @@ Float RigidBodyAnglePairScore::evaluate_index(kernel::Model *m,
 }
 
 ModelObjectsTemp RigidBodyAnglePairScore::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  return IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
 }
 
 IMPCORE_END_NAMESPACE

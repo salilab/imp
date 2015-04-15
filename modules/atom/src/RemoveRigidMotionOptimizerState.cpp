@@ -14,9 +14,9 @@
 IMPATOM_BEGIN_NAMESPACE
 
 RemoveRigidMotionOptimizerState::RemoveRigidMotionOptimizerState(
-    kernel::Model *m, kernel::ParticleIndexesAdaptor pis)
-    : kernel::OptimizerState(m, "RemoveRigidMotionOptimizerState%1%") {
-  IMP_FOREACH(kernel::ParticleIndex pi, pis) {
+    Model *m, ParticleIndexesAdaptor pis)
+    : OptimizerState(m, "RemoveRigidMotionOptimizerState%1%") {
+  IMP_FOREACH(ParticleIndex pi, pis) {
     pis_.push_back(m->get_particle(pi));
   }
 }
@@ -36,18 +36,18 @@ void RemoveRigidMotionOptimizerState::remove_linear() const {
   algebra::Vector3D cm(0., 0., 0.);
   Float cm_mass = 0.;
 
-  for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
+  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
        ++pi) {
-    kernel::Particle *p = *pi;
+    Particle *p = *pi;
 
     Float mass = Mass(p).get_mass();
     cm_mass += mass;
     cm += mass * LinearVelocity(p).get_velocity();
   }
 
-  for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
+  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
        ++pi) {
-    kernel::Particle *p = *pi;
+    Particle *p = *pi;
 
     LinearVelocity v(p);
     v.set_velocity(v.get_velocity() - cm / cm_mass);
@@ -65,9 +65,9 @@ void RemoveRigidMotionOptimizerState::remove_angular() const {
     }
   }
 
-  for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
+  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
        ++pi) {
-    kernel::Particle *p = *pi;
+    Particle *p = *pi;
 
     Float mass = Mass(p).get_mass();
     LinearVelocity lv(p);
@@ -110,9 +110,9 @@ void RemoveRigidMotionOptimizerState::remove_angular() const {
   oo[1] = (aq_eo - oo[2] * ac_ee) / af_de;
   oo[0] = (o - d * oo[1] - e * oo[2]) / a;
 
-  for (kernel::Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
+  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end();
        ++pi) {
-    kernel::Particle *p = *pi;
+    Particle *p = *pi;
 
     LinearVelocity lv(p);
     algebra::Vector3D x = core::XYZ(p).get_coordinates();

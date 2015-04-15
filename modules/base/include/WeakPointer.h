@@ -16,9 +16,9 @@ IMPBASE_BEGIN_NAMESPACE
 //! A weak pointer to an Object or RefCountedObject.
 /** WeakPointers do not do reference counting and do not claim ownership
         of the pointed object. As a result, they can be used to break cycles
-        in reference counted pointers. For example, since an IMP::kernel::Model
-        contains a reference counted pointer to an IMP::kernel::Particle, the
-        IMP::kernel::Particle has a WeakPointer back to the IMP::kernel::Model.
+        in reference counted pointers. For example, since an IMP::Model
+        contains a reference counted pointer to an IMP::Particle, the
+        IMP::Particle has a WeakPointer back to the IMP::Model.
 
         The UncheckedWeakPointer can act on types that have only been
         partially defined. You probably should use a WeakPointer instead
@@ -61,9 +61,9 @@ struct UncheckedWeakPointer
 
 /** WeakPointers do not do reference counting and do not claim ownership
     of the pointed object. As a result, they can be used to break cycles
-    in reference counted pointers. For example, since an IMP::kernel::Model
-    contains a reference counted pointer to an IMP::kernel::Particle, the
-    IMP::kernel::Particle has a WeakPointer back to the kernel::Model.
+    in reference counted pointers. For example, since an IMP::Model
+    contains a reference counted pointer to an IMP::Particle, the
+    IMP::Particle has a WeakPointer back to the Model.
 
     This version of a WeakPointer only works on complete types, but adds
     additional checks of correct usage (eg that the Object has not bee

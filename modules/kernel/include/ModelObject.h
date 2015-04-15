@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/ModelObject.h    \brief Single variable function.
+ *  \file IMP/ModelObject.h    \brief Single variable function.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
@@ -7,7 +7,7 @@
 #ifndef IMPKERNEL_MODEL_OBJECT_H
 #define IMPKERNEL_MODEL_OBJECT_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/utility_macros.h>
@@ -34,7 +34,7 @@ class IMPKERNELEXPORT ModelObject : public base::Object {
   void validate_outputs() const;
 #endif
 
-  ModelObject(kernel::Model *m, std::string name);
+  ModelObject(Model *m, std::string name);
   ~ModelObject();
 
   Model *get_model() const { return model_; }

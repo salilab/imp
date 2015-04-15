@@ -5,12 +5,12 @@ import io
 import random
 
 
-class DummyRestraint(IMP.kernel.Restraint):
+class DummyRestraint(IMP.Restraint):
 
     """Dummy do-nothing restraint"""
 
     def __init__(self, m, ps=[], cs=[]):
-        IMP.kernel.Restraint.__init__(self, m, "DummyRestraint %1%")
+        IMP.Restraint.__init__(self, m, "DummyRestraint %1%")
         self.ps = ps
         self.cs = cs
 
@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
         """Check that scoring functions are cleaned up"""
         dirchk = IMP.test.RefCountChecker(self)
         IMP.base.set_log_level(IMP.base.MEMORY)
-        m = IMP.kernel.Model("M")
+        m = IMP.Model("M")
         #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
         r = DummyRestraint(m)

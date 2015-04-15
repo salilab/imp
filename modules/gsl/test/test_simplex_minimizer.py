@@ -8,10 +8,10 @@ corners = [[0, 0, 0], [0, 1, 0], [0, 0, 1], [0, 1, 1],
            [1, 0, 0], [1, 1, 0], [1, 0, 1], [1, 1, 1]]
 
 
-class EasyCubeFunc(IMP.kernel.Restraint):
+class EasyCubeFunc(IMP.Restraint):
 
     def __init__(self, model, particles):
-        IMP.kernel.Restraint.__init__(self, "EasyCubeFunc %1%")
+        IMP.Restraint.__init__(self, "EasyCubeFunc %1%")
         self.particles = particles
         self.index = IMP.FloatKey("x")
 
@@ -36,17 +36,17 @@ class EasyCubeFunc(IMP.kernel.Restraint):
         return e
 
     def do_get_inputs(self):
-        return IMP.kernel.ParticlesTemp(self.particles)
+        return IMP.ParticlesTemp(self.particles)
 
 
 class Tests(IMP.test.TestCase):
 
     def _test_it(self):
-        model = IMP.kernel.Model()
+        model = IMP.Model()
         particles = []
 
         for i in range(0, 2):
-            p = IMP.kernel.Particle(model)
+            p = IMP.Particle(model)
             particles.append(p)
             IMP.core.XYZ.setup_particle(
                 p,

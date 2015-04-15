@@ -14,10 +14,10 @@ class Tests(IMP.test.TestCase):
 
     def test_filters(self):
         """Test filters on excluded volume"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         m.set_log_level(IMP.base.SILENT)
         print("pdb")
-        h0s = IMP.kernel._create_particles_from_pdb(
+        h0s = IMP._create_particles_from_pdb(
             self.get_input_file_name("1z5s_A.pdb"),
             m)
         l0 = h0s[0:10]

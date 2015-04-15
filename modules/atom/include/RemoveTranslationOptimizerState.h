@@ -10,7 +10,7 @@
 #define IMPATOM_REMOVE_TRANSLATION_OPTIMIZER_STATE_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
 
@@ -22,11 +22,11 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
  public:
-  RemoveTranslationOptimizerState(kernel::Model *m,
-                                  kernel::ParticleIndexesAdaptor pis);
+  RemoveTranslationOptimizerState(Model *m,
+                                  ParticleIndexesAdaptor pis);
 
   //! Set the particles to use.
-  void set_particles(const kernel::Particles &pis) { pis_ = pis; }
+  void set_particles(const Particles &pis) { pis_ = pis; }
 
   //! Remove translation now
   void remove_translation() const;
@@ -37,7 +37,7 @@ class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
   virtual void do_update(unsigned int call) IMP_OVERRIDE;
 
  private:
-  kernel::Particles pis_;
+  Particles pis_;
 };
 
 IMP_OBJECTS(RemoveTranslationOptimizerState, RemoveTranslationOptimizerStates);

@@ -8,14 +8,14 @@ import IMP.container
 import IMP.algebra
 
 IMP.base.set_log_level(IMP.base.TERSE)
-m = IMP.kernel.Model()
+m = IMP.Model()
 # don't print messages about evaluation
 m.set_log_level(IMP.base.SILENT)
 
 bb = IMP.algebra.BoundingBox3D((0, 0, 0), (10, 10, 10))
 allc = []
 for i in range(0, 7):
-    p = IMP.kernel.Particle(m)
+    p = IMP.Particle(m)
     d = IMP.core.XYZR.setup_particle(
         p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 1))
     allc.append(d.get_coordinates())

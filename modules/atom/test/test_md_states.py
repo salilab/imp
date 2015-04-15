@@ -15,11 +15,11 @@ class Tests(IMP.test.TestCase):
     """Test molecular dynamics optimizer states"""
 
     def setup_particles(self, coords, copies=1):
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         for i in range(copies):
             for c in coords:
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 x = IMP.core.XYZ.setup_particle(p, c[0])
                 x.set_coordinates_are_optimized(True)
                 IMP.atom.Mass.setup_particle(p, 1.0)

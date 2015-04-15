@@ -342,7 +342,7 @@ void Profile::write_partial_profiles(const String& file_name) const {
   out_file.close();
 }
 
-void Profile::calculate_profile_real(const kernel::Particles& particles,
+void Profile::calculate_profile_real(const Particles& particles,
                                      FormFactorType ff_type) {
   IMP_LOG_TERSE("start real profile calculation for "
                 << particles.size() << " particles" << std::endl);
@@ -366,7 +366,7 @@ void Profile::calculate_profile_real(const kernel::Particles& particles,
   squared_distribution_2_profile(r_dist);
 }
 
-Float Profile::calculate_I0(const kernel::Particles& particles,
+Float Profile::calculate_I0(const Particles& particles,
                             FormFactorType ff_type) {
   Float I0 = 0.0;
   for (unsigned int i = 0; i < particles.size(); i++)
@@ -375,7 +375,7 @@ Float Profile::calculate_I0(const kernel::Particles& particles,
 }
 
 void Profile::calculate_profile_constant_form_factor(
-    const kernel::Particles& particles, Float form_factor) {
+    const Particles& particles, Float form_factor) {
   IMP_LOG_TERSE("start real profile calculation for "
                 << particles.size() << " particles" << std::endl);
   RadialDistributionFunction r_dist;
@@ -396,7 +396,7 @@ void Profile::calculate_profile_constant_form_factor(
   squared_distribution_2_profile(r_dist);
 }
 
-void Profile::calculate_profile_partial(const kernel::Particles& particles,
+void Profile::calculate_profile_partial(const Particles& particles,
                                         const Floats& surface,
                                         FormFactorType ff_type) {
   IMP_LOG_TERSE("start real partial profile calculation for "
@@ -465,8 +465,8 @@ void Profile::calculate_profile_partial(const kernel::Particles& particles,
   sum_partial_profiles(1.0, 0.0, false);
 }
 
-void Profile::calculate_profile_partial(const kernel::Particles& particles1,
-                                        const kernel::Particles& particles2,
+void Profile::calculate_profile_partial(const Particles& particles1,
+                                        const Particles& particles2,
                                         const Floats& surface1,
                                         const Floats& surface2,
                                         FormFactorType ff_type) {
@@ -647,7 +647,7 @@ void Profile::downsample(Profile* downsampled_profile,
     downsampled_profile->add_entry(get_q(k), get_intensity(k), get_error(k));
 }
 
-void Profile::calculate_profile_symmetric(const kernel::Particles& particles,
+void Profile::calculate_profile_symmetric(const Particles& particles,
                                           unsigned int n,
                                           FormFactorType ff_type) {
   IMP_USAGE_CHECK(n > 1,
@@ -715,8 +715,8 @@ void Profile::calculate_profile_symmetric(const kernel::Particles& particles,
   squared_distribution_2_profile(r_dist2);
 }
 
-void Profile::calculate_profile_real(const kernel::Particles& particles1,
-                                     const kernel::Particles& particles2,
+void Profile::calculate_profile_real(const Particles& particles1,
+                                     const Particles& particles2,
                                      FormFactorType ff_type) {
   IMP_LOG_TERSE("start real profile calculation for "
                 << particles1.size() << " + " << particles2.size()
@@ -1029,7 +1029,7 @@ void Profile::profile_2_distribution(RadialDistributionFunction& rd,
   }
 }
 
-void Profile::calculate_profile_reciprocal(const kernel::Particles& particles,
+void Profile::calculate_profile_reciprocal(const Particles& particles,
                                            FormFactorType ff_type) {
   if (ff_type == CA_ATOMS) {
     IMP_WARN("Reciprocal space profile calculation is not supported for"
@@ -1069,7 +1069,7 @@ void Profile::calculate_profile_reciprocal(const kernel::Particles& particles,
 }
 
 void Profile::calculate_profile_reciprocal_partial(
-    const kernel::Particles& particles, const Floats& surface,
+    const Particles& particles, const Floats& surface,
     FormFactorType ff_type) {
   if (ff_type == CA_ATOMS) {
     IMP_WARN("Reciprocal space profile calculation is not supported for"

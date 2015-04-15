@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         # Initial values and names of files
-        self.mdl = IMP.kernel.Model()
+        self.mdl = IMP.Model()
         sel = IMP.atom.NonAlternativePDBSelector()
         mh1_fn = self.get_input_file_name('1z5s_A.pdb')
         self.mh1 = IMP.atom.read_pdb(mh1_fn, self.mdl, sel)

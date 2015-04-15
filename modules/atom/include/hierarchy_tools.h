@@ -42,7 +42,7 @@ IMPATOM_BEGIN_NAMESPACE
     \see Hierarchy
  */
 IMPATOMEXPORT Hierarchy
-    create_protein(kernel::Model *m, std::string name, double target_radius,
+    create_protein(Model *m, std::string name, double target_radius,
                    int number_of_residues, int first_residue_index = 0,
                    double volume = -1
 #ifndef IMP_DOXYGEN
@@ -55,7 +55,7 @@ IMPATOMEXPORT Hierarchy
     the start of the first domain, any boundaries, and then one past
     the end of the last domain.
  */
-IMPATOMEXPORT Hierarchy create_protein(kernel::Model *m, std::string name,
+IMPATOMEXPORT Hierarchy create_protein(Model *m, std::string name,
                                        double target_radius,
                                        const Ints domain_boundaries);
 
@@ -137,14 +137,14 @@ IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
     to accelerate the computation.
     \see Hierarchy
  */
-IMPATOMEXPORT kernel::Restraint *create_excluded_volume_restraint(
+IMPATOMEXPORT Restraint *create_excluded_volume_restraint(
     const Hierarchies &hs, double resolution = -1);
 
 /** Set the mass, radius, residues, and coordinates to approximate the passed
     particles.
  */
-IMPATOMEXPORT void setup_as_approximation(kernel::Particle *h,
-                                          const kernel::ParticlesTemp &other
+IMPATOMEXPORT void setup_as_approximation(Particle *h,
+                                          const ParticlesTemp &other
 #ifndef IMP_DOXYGEN
                                           ,
                                           double resolution = -1
@@ -185,7 +185,7 @@ IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
 */
 class HierarchyGeometry : public display::SingletonGeometry {
   double res_;
-  mutable boost::unordered_map<kernel::Particle *,
+  mutable boost::unordered_map<Particle *,
                                base::Pointer<display::Geometry> > components_;
 
  public:
@@ -196,7 +196,7 @@ class HierarchyGeometry : public display::SingletonGeometry {
     atom::Hierarchy d(get_particle());
     atom::Selection sel(d);
     sel.set_resolution(res_);
-    kernel::ParticlesTemp ps = sel.get_selected_particles();
+    ParticlesTemp ps = sel.get_selected_particles();
     for (unsigned int i = 0; i < ps.size(); ++i) {
       if (components_.find(ps[i]) == components_.end()) {
         IMP_NEW(core::XYZRGeometry, g, (core::XYZR(ps[i])));
@@ -210,7 +210,7 @@ class HierarchyGeometry : public display::SingletonGeometry {
 };
 class HierarchiesGeometry : public display::SingletonsGeometry {
   double res_;
-  mutable boost::unordered_map<kernel::ParticleIndex,
+  mutable boost::unordered_map<ParticleIndex,
                                base::Pointer<display::Geometry> > components_;
 
  public:
@@ -218,8 +218,8 @@ class HierarchiesGeometry : public display::SingletonsGeometry {
       : SingletonsGeometry(sc), res_(resolution) {}
   display::Geometries get_components() const {
     display::Geometries ret;
-    IMP_FOREACH(kernel::ParticleIndex pi, get_container()->get_contents()) {
-      kernel::Model *m = get_container()->get_model();
+    IMP_FOREACH(ParticleIndex pi, get_container()->get_contents()) {
+      Model *m = get_container()->get_model();
       if (components_.find(pi) == components_.end()) {
         IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(m, pi), res_));
         components_[pi] = g;

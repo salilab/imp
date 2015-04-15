@@ -27,8 +27,8 @@ IMPISD_BEGIN_NAMESPACE
 
 // first constructor, beta is unmarginalized and need to be sampled
 CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(
-    kernel::Particle *beta, kernel::Particle *sigma, kernel::Particle *epsilon,
-    kernel::Particle *weight, CrossLinkData *data, double fexp)
+    Particle *beta, Particle *sigma, Particle *epsilon,
+    Particle *weight, CrossLinkData *data, double fexp)
     : Restraint(beta->get_model(), "CysteineCrossLinkRestraint%1%"),
       beta_(beta),
       sigma_(sigma),
@@ -42,8 +42,8 @@ CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(
 // second constructor, marginalize the omega on the beat variable
 // using the support of the CysteineCrossLinkData
 CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(
-    kernel::Particle *beta, kernel::Particle *sigma, kernel::Particle *epsilon,
-    kernel::Particle *weight, CrossLinkData *data,
+    Particle *beta, Particle *sigma, Particle *epsilon,
+    Particle *weight, CrossLinkData *data,
     CysteineCrossLinkData *ccldata)
     : Restraint(beta->get_model(), "CysteineCrossLinkRestraint%1%"),
       beta_(beta),
@@ -55,8 +55,8 @@ CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(
   constr_type_ = 1;
 }
 
-void CysteineCrossLinkRestraint::add_contribution(kernel::Particle *p1,
-                                                  kernel::Particle *p2) {
+void CysteineCrossLinkRestraint::add_contribution(Particle *p1,
+                                                  Particle *p2) {
   if (get_number_of_contributions() == 0)
     use_CA_ = true;
   else if (use_CA_ == false) {
@@ -70,8 +70,8 @@ void CysteineCrossLinkRestraint::add_contribution(kernel::Particle *p1,
   }
 }
 
-void CysteineCrossLinkRestraint::add_contribution(kernel::Particles p1,
-                                                  kernel::Particles p2) {
+void CysteineCrossLinkRestraint::add_contribution(Particles p1,
+                                                  Particles p2) {
   if (get_number_of_contributions() == 0)
     use_CA_ = false;
   else if (use_CA_ == true) {
@@ -110,7 +110,7 @@ double CysteineCrossLinkRestraint::get_standard_error() const {
 }
 
 algebra::Vector3D CysteineCrossLinkRestraint::get_CB_coordinates(
-    const kernel::Particles &ps) const {
+    const Particles &ps) const {
   // get coordinates of central CA
   algebra::Vector3D x1 = core::XYZ(ps[1]).get_coordinates();
 
@@ -259,7 +259,7 @@ unsigned CysteineCrossLinkRestraint::get_number_of_contributions() const {
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp CysteineCrossLinkRestraint::do_get_inputs() const {
-  kernel::ParticlesTemp ret;
+  ParticlesTemp ret;
   ret.push_back(beta_);
   ret.push_back(sigma_);
   ret.push_back(epsilon_);

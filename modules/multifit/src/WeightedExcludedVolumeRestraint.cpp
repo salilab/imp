@@ -13,8 +13,8 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 WeightedExcludedVolumeRestraint::WeightedExcludedVolumeRestraint(
     core::RigidBodies rbs, Refiner *refiner, FloatKey weight_key)
-    : kernel::Restraint(IMP::internal::get_model(rbs),
-                        "Weighted Excluded Volume kernel::Restraint") {
+    : Restraint(IMP::internal::get_model(rbs),
+                        "Weighted Excluded Volume Restraint") {
   IMP_LOG_TERSE("Load WeightedExcludedVolumeRestraint \n");
   rb_refiner_ = refiner;
   add_particles(rbs);
@@ -25,7 +25,7 @@ void WeightedExcludedVolumeRestraint::initialize_model_density_map(FloatKey) {
   for (core::RigidBodies::const_iterator it = rbs_.begin(); it != rbs_.end();
        it++) {
     core::RigidBody rb = *it;
-    kernel::ParticlesTemp rb_ps = rb_refiner_->get_refined(rb);
+    ParticlesTemp rb_ps = rb_refiner_->get_refined(rb);
     IMP_LOG_TERSE("Creating a density map for:" << rb_ps.size() << " particles"
                   << std::endl);
     rbs_surface_maps_.push_back(new em::SurfaceShellDensityMap(rb_ps, 1));
@@ -70,7 +70,7 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
   // }
   em::SurfaceShellDensityMaps resampled_surfaces;
   for (unsigned int i = 0; i < rbs_.size(); i++) {
-    kernel::ParticlesTemp rb_ps = rb_refiner_->get_refined(rbs_[i]);
+    ParticlesTemp rb_ps = rb_refiner_->get_refined(rbs_[i]);
     resampled_surfaces.push_back(new em::SurfaceShellDensityMap(rb_ps, 1.));
   }
   for (unsigned int i = 0; i < rbs_.size(); i++) {
@@ -95,18 +95,18 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
 }
 
 ModelObjectsTemp WeightedExcludedVolumeRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret = rb_refiner_->get_inputs(
-      get_model(), IMP::get_indexes(kernel::ParticlesTemp(particles_begin(),
+  ModelObjectsTemp ret = rb_refiner_->get_inputs(
+      get_model(), IMP::get_indexes(ParticlesTemp(particles_begin(),
                                                           particles_end())));
   for (ParticleConstIterator it = particles_begin(); it != particles_end();
        ++it) {
-    kernel::ParticlesTemp curr = rb_refiner_->get_refined(*it);
+    ParticlesTemp curr = rb_refiner_->get_refined(*it);
     ret += curr;
   }
   return ret;
 }
 
 IMP_LIST_IMPL(WeightedExcludedVolumeRestraint, Particle, particle, Particle *,
-              kernel::Particles);
+              Particles);
 
 IMPMULTIFIT_END_NAMESPACE

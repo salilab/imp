@@ -10,7 +10,7 @@
 
 #include <IMP/score_functor/score_functor_config.h>
 #include "Score.h"
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include "internal/PMFTable.h"
 #include <IMP/base/Pointer.h>
 #include <IMP/algebra/utility.h>
@@ -83,7 +83,7 @@ class Statistical : public Score {
   }
 
   // depend on get_is_trivially_zero
-  double get_score(kernel::Model *m, const ParticleIndexPair &pp,
+  double get_score(Model *m, const ParticleIndexPair &pp,
                    double distance) const {
     if (distance >= threshold_ || distance < 0.001) {
       return 0;
@@ -94,7 +94,7 @@ class Statistical : public Score {
     return table_->get_score(pt, lt, distance);
   }
   DerivativePair get_score_and_derivative(
-      kernel::Model *m, const base::Array<2, kernel::ParticleIndex> &pp,
+      Model *m, const base::Array<2, ParticleIndex> &pp,
       double distance) const {
     if (distance >= threshold_ || distance < 0.001) {
       return DerivativePair(0, 0);
@@ -104,10 +104,10 @@ class Statistical : public Score {
     if (pt == -1 || lt == -1) return DerivativePair(0, 0);
     return table_->get_score_with_derivative(pt, lt, distance);
   }
-  double get_maximum_range(kernel::Model *, const ParticleIndexPair &) const {
+  double get_maximum_range(Model *, const ParticleIndexPair &) const {
     return std::min(threshold_, table_->get_max());
   }
-  bool get_is_trivially_zero(kernel::Model *m, const ParticleIndexPair &p,
+  bool get_is_trivially_zero(Model *m, const ParticleIndexPair &p,
                              double squared_distance) const {
     return squared_distance > algebra::get_squared(get_maximum_range(m, p));
   }

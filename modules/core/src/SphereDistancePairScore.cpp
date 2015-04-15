@@ -20,8 +20,8 @@ HarmonicUpperBoundSphereDiameterPairScore::
     : x0_(d0), k_(k) {}
 
 ModelObjectsTemp HarmonicUpperBoundSphereDiameterPairScore::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret;
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret;
   ret += IMP::get_particles(m, pis);
   return ret;
 }
@@ -31,7 +31,7 @@ NormalizedSphereDistancePairScore::NormalizedSphereDistancePairScore(
     : f_(f), radius_(radius) {}
 
 double NormalizedSphereDistancePairScore::evaluate_index(
-    kernel::Model *m, const kernel::ParticleIndexPair &pip,
+    Model *m, const ParticleIndexPair &pip,
     DerivativeAccumulator *da) const {
   Float ra = m->get_attribute(radius_, pip[0]);
   Float rb = m->get_attribute(radius_, pip[1]);
@@ -43,8 +43,8 @@ double NormalizedSphereDistancePairScore::evaluate_index(
 }
 
 ModelObjectsTemp NormalizedSphereDistancePairScore::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  return IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
 }
 
 WeightedSphereDistancePairScore::WeightedSphereDistancePairScore(
@@ -52,7 +52,7 @@ WeightedSphereDistancePairScore::WeightedSphereDistancePairScore(
     : f_(f), radius_(radius), weight_(weight) {}
 
 double WeightedSphereDistancePairScore::evaluate_index(
-    kernel::Model *m, const kernel::ParticleIndexPair &p,
+    Model *m, const ParticleIndexPair &p,
     DerivativeAccumulator *da) const {
   Float ra = m->get_attribute(radius_, p[0]);
   Float rb = m->get_attribute(radius_, p[1]);
@@ -65,8 +65,8 @@ double WeightedSphereDistancePairScore::evaluate_index(
 }
 
 ModelObjectsTemp WeightedSphereDistancePairScore::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  return IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
 }
 
 IMPCORE_END_NAMESPACE

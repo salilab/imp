@@ -10,14 +10,14 @@ class Tests(IMP.test.TestCase):
 
     def test_incr(self):
         """Testing incremental scoring with Monte Carlo"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         mc = IMP.core.MonteCarlo(m)
         mc.set_log_level(IMP.base.SILENT)
         ps = []
         bb = IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0, 10):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZR.setup_particle(p)
             ps.append(d)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
@@ -50,14 +50,14 @@ class Tests(IMP.test.TestCase):
 
     def test_incr_nbl(self):
         """Testing incremental scoring with Monte Carlo and a nbl"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         IMP.base.set_log_level(IMP.base.SILENT)
         mc = IMP.core.MonteCarlo(m)
         mc.set_log_level(IMP.base.SILENT)
         ps = []
         bb = IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0, 10):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZR.setup_particle(p)
             ps.append(d)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))

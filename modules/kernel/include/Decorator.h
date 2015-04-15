@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Decorator.h    \brief The base class for decorators.
+ *  \file IMP/Decorator.h    \brief The base class for decorators.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_DECORATOR_H
 #define IMPKERNEL_DECORATOR_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/WeakPointer.h>
@@ -28,7 +28,7 @@ class ParticleAdaptor;
 Representation of the structure in \imp is via a collection of
 Particle objects. However, since particles are general purpose, they
 provide a basic set of tools for managing the data (e.g.
-IMP::kernel::Model::add_attribute(), IMP::kernel::Model::get_value()
+IMP::Model::add_attribute(), IMP::Model::get_value()
 etc). Decorators wrap (or \quote{decorate}) particles to provide a much
 richer interface. For example, most particles have Cartesian
 coordinates. The class IMP::core::XYZ decorates such a particle to
@@ -44,8 +44,8 @@ print d0.get_coordinates()
 \par Decorator basics
 
 \note The `get_is_setup()` and `setup_particle()` functions mentioned below
-can take any of either an IMP::kernel::Model* and IMP::kernel::ParticleIndex
-pair, an IMP::kernel::Paricle* or another decorator to identify the particle.
+can take any of either an IMP::Model* and IMP::ParticleIndex
+pair, an IMP::Paricle* or another decorator to identify the particle.
 We use various of those below.
 
 Dealing with decorators and particles has two main parts
@@ -103,7 +103,7 @@ Implementors should consult IMP::example::ExampleDecorator,
 IMP_DECORATOR_METHODS(), IMP_DECORATOR_WITH_TRAITS_METHODS(),
 IMP_DECORATOR_GET().
 
-A decorator can be cast to a IMP::kernel::Particle* in C++. You have to
+A decorator can be cast to a IMP::Particle* in C++. You have to
 use the Decorator::get_particle() function in Python.
 
 \note It is undefined behavior to use a decorator constructed on

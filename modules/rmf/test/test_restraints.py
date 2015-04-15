@@ -11,10 +11,10 @@ class Tests(IMP.test.TestCase):
 
     def _write_restraint(self, name):
         f = RMF.create_rmf_file(name)
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         IMP.rmf.add_particles(f, [p])
-        r = IMP.kernel._ConstRestraint(1, [p])
+        r = IMP._ConstRestraint(1, [p])
         r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
         IMP.rmf.save_frame(f, str(0))
@@ -22,11 +22,11 @@ class Tests(IMP.test.TestCase):
     def _read_restraint(self, name):
         IMP.base.add_to_log(IMP.base.TERSE, "Starting reading back\n")
         f = RMF.open_rmf_file_read_only(name)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = IMP.rmf.create_particles(f, m)
         r = IMP.rmf.create_restraints(f, m)[0]
         IMP.rmf.load_frame(f, RMF.FrameID(0))
-        print([IMP.kernel.Particle.get_from(x).get_index() for x in r.get_inputs()])
+        print([IMP.Particle.get_from(x).get_index() for x in r.get_inputs()])
         print([x.get_index() for x in ps])
         self.assertEqual(r.get_inputs(), ps)
 
@@ -46,9 +46,9 @@ class Tests(IMP.test.TestCase):
             nm = self.get_tmp_file_name("restrnp" + suffix)
             print(nm)
             f = RMF.create_rmf_file(nm)
-            m = IMP.kernel.Model()
-            p = IMP.kernel.Particle(m)
-            r = IMP.kernel._ConstRestraint(m, [], 1)
+            m = IMP.Model()
+            p = IMP.Particle(m)
+            r = IMP._ConstRestraint(m, [], 1)
             r.set_name("R")
             r.evaluate(False)
             IMP.rmf.add_restraint(f, r)
@@ -69,8 +69,8 @@ class Tests(IMP.test.TestCase):
             print(path)
             f = RMF.create_rmf_file(path)
             IMP.base.set_log_level(IMP.base.SILENT)
-            m = IMP.kernel.Model()
-            ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
+            m = IMP.Model()
+            ps = [IMP.Particle(m) for i in range(0, 10)]
             ds = [IMP.core.XYZR.setup_particle(p) for p in ps]
             for d in ds:
                 d.set_radius(1)
@@ -113,7 +113,7 @@ class Tests(IMP.test.TestCase):
 
     def test_3(self):
         """Test that simple pair restaints don't generate subnodes"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         def _cp(m, n):
             pi = m.add_particle(n)

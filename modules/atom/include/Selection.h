@@ -61,7 +61,7 @@ IMPATOM_BEGIN_NAMESPACE
 */
 class IMPATOMEXPORT Selection :
 #ifdef SWIG
-    public kernel::ParticleIndexesAdaptor
+    public ParticleIndexesAdaptor
 #else
     public base::InputAdaptor
 #endif
@@ -74,16 +74,16 @@ class IMPATOMEXPORT Selection :
   };
 
  private:
-  kernel::Model *m_;
+  Model *m_;
   double resolution_;
   base::Pointer<internal::ListSelectionPredicate> predicate_, and_predicate_;
 
-  kernel::ParticleIndexes h_;
+  ParticleIndexes h_;
   IMP_NAMED_TUPLE_2(SearchResult, SearchResults, bool, match,
-                    kernel::ParticleIndexes, indexes, );
-  SearchResult search(kernel::Model *m, kernel::ParticleIndex pi,
+                    ParticleIndexes, indexes, );
+  SearchResult search(Model *m, ParticleIndex pi,
                       boost::dynamic_bitset<> parent) const;
-  void set_hierarchies(kernel::Model *m, const kernel::ParticleIndexes &pis);
+  void set_hierarchies(Model *m, const ParticleIndexes &pis);
   void add_predicate(internal::SelectionPredicate *p);
   void init_predicate();
 
@@ -109,12 +109,12 @@ class IMPATOMEXPORT Selection :
 #endif
   Selection();
   Selection(Hierarchy h);
-  Selection(kernel::Particle *h);
-  Selection(kernel::Model *m, const kernel::ParticleIndexes &pis);
+  Selection(Particle *h);
+  Selection(Model *m, const ParticleIndexes &pis);
 #ifndef SWIG
   Selection(const Hierarchies &h);
 #endif
-  Selection(const kernel::ParticlesTemp &h);
+  Selection(const ParticlesTemp &h);
 // for C++
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   Selection(Hierarchy h, std::string molname, int residue_index);
@@ -202,9 +202,9 @@ class IMPATOMEXPORT Selection :
   /** \note both Selections must be on the same Hierarchy or Hierarchies */
   void set_difference(const Selection &s);
   //! Get the selected particles
-  kernel::ParticlesTemp get_selected_particles() const;
+  ParticlesTemp get_selected_particles() const;
   //! Get the indexes of the selected particles
-  kernel::ParticleIndexes get_selected_particle_indexes() const;
+  ParticleIndexes get_selected_particle_indexes() const;
 
 #ifndef SWIG
   operator ParticleIndexes() const { return get_selected_particle_indexes(); }
@@ -226,7 +226,7 @@ IMP_VALUES(Selection, Selections);
     to accelerate the computation.
     \see Selection
  */
-IMPATOMEXPORT kernel::Restraint *create_distance_restraint(const Selection &n0,
+IMPATOMEXPORT Restraint *create_distance_restraint(const Selection &n0,
                                                            const Selection &n1,
                                                            double x0, double k,
                                                            std::string name =
@@ -237,7 +237,7 @@ IMPATOMEXPORT kernel::Restraint *create_distance_restraint(const Selection &n0,
     to accelerate the computation.
     \see Selection
 */
-IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
+IMPATOMEXPORT Restraint *create_connectivity_restraint(
     const Selections &s, double k, std::string name = "Connectivity%1%");
 
 //! Create a restraint connecting the selections.
@@ -247,7 +247,7 @@ IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
     to accelerate the computation.
     \see Selection
 */
-IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
+IMPATOMEXPORT Restraint *create_connectivity_restraint(
     const Selections &s, double x0, double k,
     std::string name = "Connectivity%1%");
 
@@ -257,7 +257,7 @@ IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
 
     \see Selection
 */
-IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
+IMPATOMEXPORT Restraint *create_internal_connectivity_restraint(
     const Selection &s, double k, std::string name = "Connectivity%1%");
 
 //! Create a restraint connecting the selection.
@@ -268,7 +268,7 @@ IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
 
     \see Selection
 */
-IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
+IMPATOMEXPORT Restraint *create_internal_connectivity_restraint(
     const Selection &s, double x0, double k,
     std::string name = "Connectivity%1%");
 
@@ -312,7 +312,7 @@ IMPATOMEXPORT double get_surface_area(const Selection &s);
 IMPATOMEXPORT double get_radius_of_gyration(const Selection &s);
 
 //! Create an excluded volume restraint for a list of selections.
-IMPATOMEXPORT kernel::Restraint *create_excluded_volume_restraint(
+IMPATOMEXPORT Restraint *create_excluded_volume_restraint(
     const Selections &s);
 
 /** \see Hierarchy */
@@ -323,7 +323,7 @@ IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 */
 class IMPATOMEXPORT SelectionGeometry : public display::Geometry {
   atom::Selection res_;
-  mutable boost::unordered_map<kernel::Particle *, base::Pointer<Geometry> >
+  mutable boost::unordered_map<Particle *, base::Pointer<Geometry> >
       components_;
 
  public:

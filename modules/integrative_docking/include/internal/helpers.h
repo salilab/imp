@@ -12,7 +12,7 @@
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/algebra/constants.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/pdb.h>
@@ -27,14 +27,14 @@
 IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
 IMP::atom::Hierarchy read_pdb(const std::string pdb_file_name,
-                              IMP::kernel::Model* model,
-                              IMP::kernel::ParticleIndexes& pis) {
+                              IMP::Model* model,
+                              IMP::ParticleIndexes& pis) {
 
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       pdb_file_name, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
       true, true);
 
-  pis = IMP::get_as<IMP::kernel::ParticleIndexes>(
+  pis = IMP::get_as<IMP::ParticleIndexes>(
       get_by_type(mhd, IMP::atom::ATOM_TYPE));
   std::cout << pis.size() << " atoms read from " << pdb_file_name << std::endl;
   IMP::atom::add_dope_score_data(mhd);
@@ -53,22 +53,22 @@ IMP::ParticlesTemp add_bonds(IMP::atom::Hierarchy mhd) {
 }
 
 void read_pdb_atoms(const std::string file_name,
-                    IMP::kernel::Particles& particles) {
-  IMP::kernel::Model* model = new IMP::kernel::Model();
+                    IMP::Particles& particles) {
+  IMP::Model* model = new IMP::Model();
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       file_name, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(), true,
       true);
-  particles = IMP::get_as<IMP::kernel::Particles>(
+  particles = IMP::get_as<IMP::Particles>(
       get_by_type(mhd, IMP::atom::ATOM_TYPE));
   std::cout << "Number of atom particles " << particles.size() << std::endl;
 }
 
 void read_pdb_ca_atoms(const std::string file_name,
-                       IMP::kernel::Particles& particles) {
-  IMP::kernel::Model* model = new IMP::kernel::Model();
+                       IMP::Particles& particles) {
+  IMP::Model* model = new IMP::Model();
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       file_name, model, new IMP::atom::CAlphaPDBSelector(), true, true);
-  particles = IMP::get_as<IMP::kernel::Particles>(
+  particles = IMP::get_as<IMP::Particles>(
       get_by_type(mhd, IMP::atom::ATOM_TYPE));
   std::cout << "Number of CA atom particles " << particles.size() << std::endl;
 }
@@ -103,7 +103,7 @@ void transform(IMP::Particles& ps, IMP::algebra::Transformation3D& t) {
   }
 }
 
-void transform(IMP::kernel::Model* model, IMP::kernel::ParticleIndexes& pis,
+void transform(IMP::Model* model, IMP::ParticleIndexes& pis,
                const IMP::algebra::Transformation3D& t) {
   for (unsigned int i = 0; i < pis.size(); i++) {
     IMP::core::XYZ d(model, pis[i]);
@@ -127,7 +127,7 @@ void get_atom_2_residue_map(const IMP::Particles& atom_particles,
   }
 }
 
-IMP::algebra::Vector3D get_ca_coordinate(const IMP::kernel::Particles& ca_atoms,
+IMP::algebra::Vector3D get_ca_coordinate(const IMP::Particles& ca_atoms,
                                          int residue_index,
                                          std::string chain_id) {
   IMP::algebra::Vector3D v(0, 0, 0);
@@ -148,7 +148,7 @@ IMP::algebra::Vector3D get_ca_coordinate(const IMP::kernel::Particles& ca_atoms,
 }
 
 void get_residue_solvent_accessibility(
-    const IMP::kernel::Particles& residue_particles,
+    const IMP::Particles& residue_particles,
     IMP::Floats& residue_solvent_accessibility) {
   IMP::saxs::FormFactorTable* ft = IMP::saxs::get_default_form_factor_table();
   IMP::saxs::FormFactorType ff_type = IMP::saxs::CA_ATOMS;

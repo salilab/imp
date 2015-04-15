@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/UnaryFunction.h    \brief Single variable function.
+ *  \file IMP/UnaryFunction.h    \brief Single variable function.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
@@ -7,7 +7,7 @@
 #ifndef IMPKERNEL_UNARY_FUNCTION_H
 #define IMPKERNEL_UNARY_FUNCTION_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include <IMP/base/Object.h>
 

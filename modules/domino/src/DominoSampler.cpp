@@ -11,7 +11,7 @@
 #include <IMP/domino/utility.h>
 #include <IMP/domino/internal/tree_inference.h>
 #include <IMP/base/warning_macros.h>
-#include <IMP/kernel/internal/graph_utility.h>
+#include <IMP/internal/graph_utility.h>
 #include <IMP/base/file.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/unordered_set.hpp>
@@ -19,11 +19,11 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-DominoSampler::DominoSampler(kernel::Model *m, ParticleStatesTable *pst,
+DominoSampler::DominoSampler(Model *m, ParticleStatesTable *pst,
                              std::string name)
     : DiscreteSampler(m, pst, name), has_mt_(false), csf_(false) {}
 
-DominoSampler::DominoSampler(kernel::Model *m, std::string name)
+DominoSampler::DominoSampler(Model *m, std::string name)
     : DiscreteSampler(m, new ParticleStatesTable(), name), csf_(false) {}
 
 template <class G>
@@ -31,7 +31,7 @@ void check_graph(const G &jt, Subset known_particles) {
   IMP_CHECK_VARIABLE(known_particles);
   IMP_CHECK_VARIABLE(jt);
   IMP_IF_CHECK(USAGE) {
-    boost::unordered_set<kernel::Particle *> used;
+    boost::unordered_set<Particle *> used;
     typename boost::property_map<G, boost::vertex_name_t>::const_type
         subset_map = boost::get(boost::vertex_name, jt);
     for (unsigned int i = 0; i < boost::num_vertices(jt); ++i) {
@@ -49,12 +49,12 @@ Assignments DominoSampler::do_get_sample_assignments(
   IMP_LOG_TERSE("Sampling with " << known_particles.size() << " particles as "
                                  << known_particles << std::endl);
   IMP_USAGE_CHECK(known_particles.size() > 0, "No particles to sample");
-  base::Pointer<kernel::RestraintSet> rs =
+  base::Pointer<RestraintSet> rs =
       get_model()->get_root_restraint_set();
-  kernel::ParticlesTemp pt(known_particles.begin(), known_particles.end());
+  ParticlesTemp pt(known_particles.begin(), known_particles.end());
 
   SubsetFilterTables sfts = get_subset_filter_tables_to_use(
-      kernel::RestraintsTemp(1, rs), get_particle_states_table());
+      RestraintsTemp(1, rs), get_particle_states_table());
   IMP_IF_LOG(TERSE) {
     IMP_LOG_TERSE("Filtering with ");
     for (unsigned int i = 0; i < sfts.size(); ++i) {
@@ -78,7 +78,7 @@ Assignments DominoSampler::do_get_sample_assignments(
     } else {
       IMP_LOG_TERSE("DOMINO has junction tree" << std::endl);
       SubsetGraph jt = get_junction_tree(get_interaction_graph(
-          kernel::RestraintsTemp(1, rs), get_particle_states_table()));
+          RestraintsTemp(1, rs), get_particle_states_table()));
       mt = get_merge_tree(jt);
     }
     ListSubsetFilterTable *lsft = nullptr;
@@ -166,12 +166,12 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   typedef boost::graph_traits<MergeTree>::adjacency_iterator NeighborIterator;
   SubsetMap subset_map = boost::get(boost::vertex_name, mt_);
 
-  base::Pointer<kernel::RestraintSet> rs =
+  base::Pointer<RestraintSet> rs =
       get_model()->get_root_restraint_set();
   // ParticlesTemp known_particles=
   // get_particle_states_table()->get_particles();
   SubsetFilterTables sfts = get_subset_filter_tables_to_use(
-      kernel::RestraintsTemp(1, rs), get_particle_states_table());
+      RestraintsTemp(1, rs), get_particle_states_table());
   IMP::base::PointerMember<AssignmentsTable> sst =
       DiscreteSampler::get_assignments_table_to_use(sfts, max_states);
   ListSubsetFilterTable *lsft = nullptr;
@@ -202,13 +202,13 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   typedef boost::graph_traits<MergeTree>::adjacency_iterator NeighborIterator;
   SubsetMap subset_map = boost::get(boost::vertex_name, mt_);
 
-  base::Pointer<kernel::RestraintSet> rs =
+  base::Pointer<RestraintSet> rs =
       get_model()->get_root_restraint_set();
   // ParticlesTemp known_particles=
   // get_particle_states_table()->get_particles();
-  // kernel::ParticlesTemp pt(known_particles.begin(), known_particles.end())
+  // ParticlesTemp pt(known_particles.begin(), known_particles.end())
   SubsetFilterTables sfts = get_subset_filter_tables_to_use(
-      kernel::RestraintsTemp(1, rs), get_particle_states_table());
+      RestraintsTemp(1, rs), get_particle_states_table());
   ListSubsetFilterTable *lsft = nullptr;
   if (csf_) {
     lsft = new ListSubsetFilterTable(get_particle_states_table());

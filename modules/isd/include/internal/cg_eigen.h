@@ -8,7 +8,7 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/algebra/eigen3/Eigen/Dense>
 
 IMPISD_BEGIN_INTERNAL_NAMESPACE

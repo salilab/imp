@@ -13,8 +13,8 @@
 
 #include <IMP/saxs/Profile.h>
 
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Model.h>
+#include <IMP/Restraint.h>
 #include <IMP/base/Object.h>
 
 IMPSAXS_BEGIN_NAMESPACE
@@ -23,7 +23,7 @@ IMPSAXS_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
  */
-class IMPSAXSEXPORT RadiusOfGyrationRestraint : public kernel::Restraint {
+class IMPSAXSEXPORT RadiusOfGyrationRestraint : public Restraint {
  public:
   //! Constructor
   /**
@@ -32,17 +32,17 @@ class IMPSAXSEXPORT RadiusOfGyrationRestraint : public kernel::Restraint {
      \param[in] end_q_rg The range of profile used for approximation:
       i.e. q*rg < end_q_rg. Use 1.3 for globular proteins, 0.8 for elongated
   */
-  RadiusOfGyrationRestraint(const kernel::Particles& particles,
+  RadiusOfGyrationRestraint(const Particles& particles,
                             const Profile* exp_profile,
                             const double end_q_rg = 1.3);
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator* accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RadiusOfGyrationRestraint);
 
  private:
-  kernel::Particles particles_;  // non-rigid bodies particles
+  Particles particles_;  // non-rigid bodies particles
   double exp_rg_;                // radius of gyration from experimental profile
 };
 

@@ -14,7 +14,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-Restraint::Restraint(const kernel::Particles& particles,
+Restraint::Restraint(const Particles& particles,
                      const Profile* exp_profile, FormFactorType ff_type)
     : IMP::Restraint(IMP::internal::get_model(particles), "SAXS restraint") {
 
@@ -35,7 +35,7 @@ ModelObjectsTemp Restraint::do_get_inputs() const {
 */
 double Restraint::unprotected_evaluate(DerivativeAccumulator* acc) const {
 
-  IMP_LOG_TERSE("SAXS kernel::Restraint::evaluate score\n");
+  IMP_LOG_TERSE("SAXS Restraint::evaluate score\n");
 
   IMP_NEW(Profile, model_profile, ());
   handler_->compute_profile(model_profile);
@@ -43,7 +43,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator* acc) const {
   bool calc_deriv = acc ? true : false;
   if (!calc_deriv) return score;
 
-  IMP_LOG_TERSE("SAXS kernel::Restraint::compute derivatives\n");
+  IMP_LOG_TERSE("SAXS Restraint::compute derivatives\n");
 
   // do we need to resample the curve since it's just been created??
   // yes, since it does not correspond to the experimental one
@@ -60,7 +60,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator* acc) const {
   handler_->compute_derivatives(derivative_calculator_, model_profile,
                                 effect_size, acc);
 
-  IMP_LOG_TERSE("SAXS kernel::Restraint::done derivatives, score " << score
+  IMP_LOG_TERSE("SAXS Restraint::done derivatives, score " << score
                                                                    << "\n");
   return score;
 }

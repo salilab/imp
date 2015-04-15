@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/ClassnameContainer.h
+ *  \file IMP/ClassnameContainer.h
  *  \brief A container for Classnames.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_CLASSNAME_CONTAINER_H
 #define IMPKERNEL_CLASSNAME_CONTAINER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "internal/IndexingIterator.h"
 #include "Particle.h"
 #include "container_base.h"

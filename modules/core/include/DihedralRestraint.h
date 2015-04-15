@@ -12,14 +12,14 @@
 #include <IMP/core/core_config.h>
 
 #include <IMP/UnaryFunction.h>
-#include <IMP/kernel/Restraint.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Restraint.h>
+#include <IMP/Particle.h>
 #include <IMP/generic.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
 //! Dihedral restraint between four particles
-class IMPCOREEXPORT DihedralRestraint : public kernel::Restraint {
+class IMPCOREEXPORT DihedralRestraint : public Restraint {
  public:
   //! Create the dihedral restraint.
   /** \param[in] score_func Scoring function for the restraint.
@@ -28,18 +28,18 @@ class IMPCOREEXPORT DihedralRestraint : public kernel::Restraint {
       \param[in] p3 Pointer to third particle in dihedral restraint.
       \param[in] p4 Pointer to fourth particle in dihedral restraint.
    */
-  DihedralRestraint(UnaryFunction* score_func, kernel::Particle* p1,
-                    kernel::Particle* p2, kernel::Particle* p3,
-                    kernel::Particle* p4);
+  DihedralRestraint(UnaryFunction* score_func, Particle* p1,
+                    Particle* p2, Particle* p3,
+                    Particle* p4);
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator* accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DihedralRestraint);
 
  private:
   IMP::base::PointerMember<UnaryFunction> score_func_;
-  IMP::base::PointerMember<kernel::Particle> p_[4];
+  IMP::base::PointerMember<Particle> p_[4];
 };
 
 IMPCORE_END_NAMESPACE

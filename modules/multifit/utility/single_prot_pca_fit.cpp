@@ -187,11 +187,11 @@ int main(int argc, char **argv) {
 
   base::set_log_target(log_file);
 
-  kernel::Model *mdl = new kernel::Model();
+  Model *mdl = new Model();
   atom::Hierarchy mh;
   mh = atom::read_pdb(protein_filename, mdl, new atom::CAlphaPDBSelector());
   core::RigidBody rb = atom::setup_as_rigid_body(mh);
-  kernel::ParticlesTemp mh_ps = core::get_leaves(mh);
+  ParticlesTemp mh_ps = core::get_leaves(mh);
   core::XYZs mh_xyz;
   mh_xyz = core::XYZs(mh_ps);
   // load the reference protein

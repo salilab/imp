@@ -12,10 +12,10 @@
 #include <IMP/OptimizerState.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairContainer.h>
-#include <IMP/kernel/OptimizerState.h>
+#include <IMP/OptimizerState.h>
 #include <IMP/container/DynamicListPairContainer.h>
-#include <IMP/kernel/PairPredicate.h>
-#include <IMP/kernel/PairContainer.h>
+#include <IMP/PairPredicate.h>
+#include <IMP/PairContainer.h>
 #include <IMP/base/Pointer.h>
 
 IMPMISC_BEGIN_NAMESPACE
@@ -27,14 +27,14 @@ IMPMISC_BEGIN_NAMESPACE
     it evaluates to 0 are removed.
  */
 class IMPMISCEXPORT DecayPairContainerOptimizerState
-    : public kernel::OptimizerState {
-  base::PointerMember<kernel::PairPredicate> pred_;
-  base::PointerMember<kernel::PairContainer> input_;
+    : public OptimizerState {
+  base::PointerMember<PairPredicate> pred_;
+  base::PointerMember<PairContainer> input_;
   base::Pointer<container::DynamicListPairContainer> output_;
 
  public:
   DecayPairContainerOptimizerState(
-      PairPredicate *pred, const kernel::ParticlePairsTemp &initial_list,
+      PairPredicate *pred, const ParticlePairsTemp &initial_list,
       std::string name = "DecayPairContainerOptimizerState%1%");
   PairContainer *get_output_container() const { return output_; }
   virtual void do_update(unsigned int call_num) IMP_OVERRIDE;

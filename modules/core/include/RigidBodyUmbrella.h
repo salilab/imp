@@ -15,7 +15,7 @@
 #include "XYZ.h"
 #include <IMP/generic.h>
 
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 
 #include <iostream>
 
@@ -35,7 +35,7 @@ IMPCORE_BEGIN_NAMESPACE
  *
  * \see RigidBodyTunneler
  */
-class IMPCOREEXPORT RigidBodyUmbrella : public kernel::Restraint {
+class IMPCOREEXPORT RigidBodyUmbrella : public Restraint {
  public:
   //! Create the restraint by specifying \f$x_0\f$ directly.
   /** \param[in] pi rigid body particle index to restrain
@@ -46,8 +46,8 @@ class IMPCOREEXPORT RigidBodyUmbrella : public kernel::Restraint {
       restraints
       \param[in] name restraint name
    */
-  RigidBodyUmbrella(kernel::Model* m, kernel::ParticleIndex pi,
-                    kernel::ParticleIndex ref, Floats x0, double alpha,
+  RigidBodyUmbrella(Model* m, ParticleIndex pi,
+                    ParticleIndex ref, Floats x0, double alpha,
                     double k, std::string name = "RigidBodyUmbrella %1%");
 
   //! Create the restraint by specifying \f$x_0\f$ as a linear interpolation.
@@ -66,8 +66,8 @@ class IMPCOREEXPORT RigidBodyUmbrella : public kernel::Restraint {
    * restraints
    * \param[in] name restraint name
    */
-  RigidBodyUmbrella(kernel::Model *m, kernel::ParticleIndex pi,
-                    kernel::ParticleIndex ref, double lambda, Floats x1,
+  RigidBodyUmbrella(Model *m, ParticleIndex pi,
+                    ParticleIndex ref, double lambda, Floats x1,
                     Floats x2, double alpha, double k,
                     std::string name = "RigidBodyUmbrella %1%");
 
@@ -79,7 +79,7 @@ class IMPCOREEXPORT RigidBodyUmbrella : public kernel::Restraint {
       return x0_.as_floats();
   }
   Floats get_x() const {
-      kernel::ParticleIndexes pis(1, pi_);
+      ParticleIndexes pis(1, pi_);
       internal::Coord x(internal::get_coordinates_from_rbs(get_model(), pis,
                     ref_));
       return x.as_floats();
@@ -89,14 +89,14 @@ class IMPCOREEXPORT RigidBodyUmbrella : public kernel::Restraint {
 
  protected:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const;
+  IMP::ModelObjectsTemp do_get_inputs() const;
   IMP_OBJECT_METHODS(RigidBodyUmbrella);
 
  private:
   internal::Coord interpolate(double lambda, Floats x1, Floats x2) const;
 
  private:
-  kernel::ParticleIndex pi_, ref_;
+  ParticleIndex pi_, ref_;
   internal::Coord x0_;
   double alpha_, k_;
 };

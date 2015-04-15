@@ -1,12 +1,11 @@
 ## \example display/display_log.py
 # A simple example of how to use one of the IMP.display.LogOptimizerStates.
 
-import IMP.kernel
 import IMP.display
 import IMP.core
 import IMP.container
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 ps = IMP.core.create_xyzr_particles(m, 20, 5)
 c = IMP.container.ListSingletonContainer(ps)
 

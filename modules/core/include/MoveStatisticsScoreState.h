@@ -10,7 +10,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/ScoreState.h>
-#include <IMP/kernel/internal/utility.h>
+#include <IMP/internal/utility.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/io.h>
 
@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
     of particles during optimization.
  */
 class IMPCOREEXPORT MoveStatisticsScoreState : public ScoreState {
-  kernel::Particles ps_;
+  Particles ps_;
   algebra::Vector3Ds last_;
   double max_move_;
   std::string max_mover_;
@@ -31,13 +31,13 @@ class IMPCOREEXPORT MoveStatisticsScoreState : public ScoreState {
   bool init_;
 
  public:
-  MoveStatisticsScoreState(const kernel::ParticlesTemp& ps);
+  MoveStatisticsScoreState(const ParticlesTemp& ps);
   void show_statistics(std::ostream& out = std::cout) const;
   void reset();
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator* da) IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const;
-  virtual kernel::ModelObjectsTemp do_get_outputs() const;
+  virtual ModelObjectsTemp do_get_inputs() const;
+  virtual ModelObjectsTemp do_get_outputs() const;
   IMP_OBJECT_METHODS(MoveStatisticsScoreState);
 };
 

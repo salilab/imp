@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
 
     def test_dihedral(self):
         """Test dihedral functions"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         p = IMP.atom.get_data_path("top.lib")
         f = open(p, "r")
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),

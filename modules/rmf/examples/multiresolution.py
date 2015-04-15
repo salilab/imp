@@ -13,7 +13,7 @@ IMP.base.setup_from_argv(sys.argv, "Create a multiresolution rmf file")
 
 pdbname = IMP.rmf.get_example_path("big.pdb")
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 h = IMP.atom.read_pdb(pdbname, m)
 IMP.atom.add_bonds(h)
 
@@ -35,7 +35,7 @@ def recursive_approximation(res):
             + recursive_approximation(res[3 * lr // 4: lr])
     else:
         me = res
-    p = IMP.kernel.Particle(m)
+    p = IMP.Particle(m)
     hc = IMP.atom.Hierarchy.setup_particle(p)
     IMP.atom.setup_as_approximation(p, res)
     nm = str(IMP.atom.Residue(res[0]).get_index()) + "-"\

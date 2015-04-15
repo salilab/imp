@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
 
         for i in range(5):
             # sample i populations
-            mdl = IMP.kernel.Model()
+            mdl = IMP.Model()
             ps = []
             for j in range(i + 1):
                 bb = IMP.algebra.BoundingBox3D(
@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
                         -1 * (j + 1)),
                     IMP.algebra.Vector3D(1 * (j + 1), 1 * (j + 1), 1 * (j + 1)))
                 for k in range(10):
-                    p = IMP.kernel.Particle(mdl)
+                    p = IMP.Particle(mdl)
                     IMP.core.XYZR.setup_particle(p,
                                                  IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb) + IMP.algebra.Vector3D(j * 20, j * 20, j * 20), 2))
                     IMP.atom.Mass.setup_particle(p, 1)

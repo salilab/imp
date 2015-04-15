@@ -15,8 +15,8 @@
 IMPKINEMATICS_BEGIN_NAMESPACE
 
 // sets up a node in a kinematic tree
-void KinematicNode::do_setup_particle(kernel::Model* m,
-                                      kernel::ParticleIndex pi,
+void KinematicNode::do_setup_particle(Model* m,
+                                      ParticleIndex pi,
                                       KinematicForest* owner, Joint* in_joint,
                                       Joints out_joints) {
   // Checks:

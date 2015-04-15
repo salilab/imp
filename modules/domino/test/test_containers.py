@@ -27,10 +27,10 @@ key = IMP.IntKey("assignment")
 class Tests(IMP.test.TestCase):
 
     def _setup_round_trip(self):
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         for i in range(0, 8):
-            ps.append(IMP.kernel.Particle(m))
+            ps.append(IMP.Particle(m))
             ps[-1].add_attribute(key, -1)
         assignments = []
         for i in range(0, 20):
@@ -121,11 +121,11 @@ class Tests(IMP.test.TestCase):
         """Testing heap sample container"""
 
         # create particles
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         m.set_log_level(IMP.base.SILENT)
         ps = []
         for i in range(0, 3):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZR.setup_particle(
                 p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 5))
             ps.append(p)

@@ -6,11 +6,11 @@
  */
 
 #include "IMP/base//log.h"
-#include "IMP/kernel/ScoreState.h"
-#include "IMP/kernel/Model.h"
-#include "IMP/kernel/container_base.h"
-#include "IMP/kernel/input_output.h"
-#include "IMP/kernel/internal/utility.h"
+#include "IMP/ScoreState.h"
+#include "IMP/Model.h"
+#include "IMP/container_base.h"
+#include "IMP/input_output.h"
+#include "IMP/internal/utility.h"
 #include <IMP/base/statistics.h>
 #include <algorithm>
 #include <cmath>
@@ -21,7 +21,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 static const std::string str_before_evaluate("before_evaluate");
 static const std::string str_after_evaluate("after_evaluate");
 
-ScoreState::ScoreState(kernel::Model *m, std::string name)
+ScoreState::ScoreState(Model *m, std::string name)
     : ModelObject(m, name), update_order_(-1) {}
 
 void ScoreState::before_evaluate() {

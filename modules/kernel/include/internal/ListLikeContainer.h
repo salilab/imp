@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_INTERNAL_LIST_LIKE_CONTAINER_H
 #define IMPKERNEL_INTERNAL_LIST_LIKE_CONTAINER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "../scoped.h"
 #include "container_helpers.h"
 #include <IMP/base/thread_macros.h>
@@ -33,7 +33,7 @@ class ListLikeContainer : public Base {
     IMP::base::swap(data_, cur);
   }
 
-  ListLikeContainer(kernel::Model *m, std::string name)
+  ListLikeContainer(Model *m, std::string name)
       : Base(m, name), version_(0) {}
 
  public:
@@ -44,7 +44,7 @@ class ListLikeContainer : public Base {
       unsigned int tasks = 2 * base::get_number_of_threads();
       unsigned int chunk_size =
           std::max<unsigned int>(1U, data_.size() / tasks) + 1;
-      kernel::Model *m = Base::get_model();
+      Model *m = Base::get_model();
       for (unsigned int i = 0; i < tasks; ++i) {
         unsigned int lb = i * chunk_size;
         unsigned int ub =

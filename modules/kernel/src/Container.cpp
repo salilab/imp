@@ -5,16 +5,16 @@
  *
  */
 
-#include "IMP/kernel/container_base.h"
-#include "IMP/kernel/internal/utility.h"
-#include "IMP/kernel/Particle.h"
-#include "IMP/kernel/Model.h"
-#include "IMP/kernel/internal/graph_utility.h"
-#include "IMP/kernel/dependency_graph.h"
+#include "IMP/container_base.h"
+#include "IMP/internal/utility.h"
+#include "IMP/Particle.h"
+#include "IMP/Model.h"
+#include "IMP/internal/graph_utility.h"
+#include "IMP/dependency_graph.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-Container::Container(kernel::Model *m, std::string name)
+Container::Container(Model *m, std::string name)
     : ModelObject(m, name) {
   IMP_USAGE_CHECK(m, "Must pass model to container constructor.");
 #if IMP_HAS_CHECKS >= IMP_INTERNAL

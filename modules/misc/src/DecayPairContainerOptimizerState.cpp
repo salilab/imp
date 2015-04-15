@@ -12,7 +12,7 @@
 IMPMISC_BEGIN_NAMESPACE
 
 DecayPairContainerOptimizerState::DecayPairContainerOptimizerState(
-    PairPredicate *pred, const kernel::ParticlePairsTemp &initial_list,
+    PairPredicate *pred, const ParticlePairsTemp &initial_list,
     std::string name)
     : OptimizerState(initial_list[0][0]->get_model(), name),
       pred_(pred),
@@ -23,18 +23,18 @@ DecayPairContainerOptimizerState::DecayPairContainerOptimizerState(
 
 void DecayPairContainerOptimizerState::do_update(unsigned int) {
   IMP_OBJECT_LOG;
-  kernel::ParticleIndexPairs to_remove;
-  IMP_FOREACH(kernel::ParticleIndexPair pip, output_->get_contents()) {
+  ParticleIndexPairs to_remove;
+  IMP_FOREACH(ParticleIndexPair pip, output_->get_contents()) {
     if (pred_->get_value_index(input_->get_model(), pip) == 0) {
       to_remove.push_back(pip);
     }
   }
   if (!to_remove.empty()) {
     IMP_LOG_TERSE("Removing " << to_remove << std::endl);
-    kernel::ParticleIndexPairs old = output_->get_indexes();
+    ParticleIndexPairs old = output_->get_indexes();
     std::sort(old.begin(), old.end());
     std::sort(to_remove.begin(), to_remove.end());
-    kernel::ParticleIndexPairs out;
+    ParticleIndexPairs out;
     std::set_difference(old.begin(), old.end(), to_remove.begin(),
                         to_remove.end(), std::back_inserter(out));
     output_->set(out);

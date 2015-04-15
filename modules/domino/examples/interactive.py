@@ -7,10 +7,10 @@ import IMP.algebra
 import IMP.container
 import IMP
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 
 # create some particles
-ps = [IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m)) for x in range(0, 3)]
+ps = [IMP.core.XYZ.setup_particle(IMP.Particle(m)) for x in range(0, 3)]
 
 s = IMP.core.HarmonicDistancePairScore(1, 1)
 lpc = IMP.container.ListPairContainer(

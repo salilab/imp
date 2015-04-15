@@ -10,7 +10,7 @@
 #include <IMP/atom/mol2.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/particle_index.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
@@ -87,7 +87,7 @@ transformation file.")
   }
   */
 
-  IMP_NEW(IMP::kernel::Model, m, ());
+  IMP_NEW(IMP::Model, m, ());
   IMP::atom::Hierarchy protein, ligand;
   {
     IMP::base::SetLogState ss(IMP::base::SILENT);
@@ -108,12 +108,12 @@ transformation file.")
   IMP_NEW(IMP::core::GridClosePairsFinder, gcpf, ());
   gcpf->set_distance(d);
 
-  IMP::kernel::ParticlesTemp patoms= IMP::atom::get_leaves(protein);
-  IMP::kernel::ParticleIndexes ipatoms= IMP::get_indexes(patoms);
+  IMP::ParticlesTemp patoms= IMP::atom::get_leaves(protein);
+  IMP::ParticleIndexes ipatoms= IMP::get_indexes(patoms);
 
 
-  std::vector<IMP::kernel::ParticlesTemp> latoms(mols.size());
-  std::vector<IMP::kernel::ParticleIndexes> ilatoms(mols.size());
+  std::vector<IMP::ParticlesTemp> latoms(mols.size());
+  std::vector<IMP::ParticleIndexes> ilatoms(mols.size());
   for (unsigned int i=0; i< mols.size(); ++i) {
     latoms[i] = IMP::atom::get_leaves(mols[i]);
     ilatoms[i] = IMP::get_indexes(latoms[i]);
@@ -149,7 +149,7 @@ transformation file.")
       }
 
       //IMP::SetLogState ss(i==0? TERSE: IMP::SILENT);
-      IMP::kernel::ParticleIndexPairs ppt= gcpf->get_close_pairs(m, ipatoms, ilatoms[i]);
+      IMP::ParticleIndexPairs ppt= gcpf->get_close_pairs(m, ipatoms, ilatoms[i]);
       double score=ps->evaluate_indexes(m, ppt, NULL, 0, ppt.size());
       out_file << "Score for " << mols[i]->get_name() << " trans " << t << " is "
 		<< score << std::endl;

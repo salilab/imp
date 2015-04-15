@@ -23,7 +23,7 @@ ExampleComplexRestraint::ExampleComplexRestraint(UnaryFunction *f,
                                                  SingletonContainer *sc,
                                                  Float diameter,
                                                  std::string name)
-    : kernel::Restraint(sc->get_model(), name),
+    : Restraint(sc->get_model(), name),
       diameter_(diameter),
       sc_(sc),
       f_(f) {
@@ -57,7 +57,7 @@ double ExampleComplexRestraint::unprotected_evaluate(DerivativeAccumulator *da)
 }
 
 ModelObjectsTemp ExampleComplexRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret(
+  ModelObjectsTemp ret(
       IMP::get_particles(get_model(), sc_->get_all_possible_indexes()));
   ret.push_back(get_model()->get_particle(p_));
   ret.push_back(sc_);
