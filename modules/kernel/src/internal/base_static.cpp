@@ -17,7 +17,7 @@
 #include "IMP/flags.h"
 #include "IMP/live_objects.h"
 #include "boost/unordered_map.hpp"
-#include "IMP/statistics.h"
+#include "IMP/base_statistics.h"
 #include "IMP/types.h"
 #include <boost/unordered_set.hpp>
 #include <IMP/random.h>

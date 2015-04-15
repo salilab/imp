@@ -1,13 +1,13 @@
 /**
- *  \file IMP/base/statistics.h
+ *  \file IMP/base_statistics.h
  *  \brief Manage statistics on IMP runs.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPKERNEL_STATISTICS_H
-#define IMPKERNEL_STATISTICS_H
+#ifndef IMPKERNEL_BASE_STATISTICS_H
+#define IMPKERNEL_BASE_STATISTICS_H
 
 #include <IMP/base_config.h>
 #include "file.h"
@@ -64,4 +64,4 @@ IMPKERNELEXPORT void set_statistics_level(StatisticsLevel l);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif /* IMPKERNEL_STATISTICS_H */
+#endif /* IMPKERNEL_BASE_STATISTICS_H */

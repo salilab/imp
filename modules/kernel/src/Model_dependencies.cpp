@@ -22,7 +22,7 @@
 #include "boost/unordered_map.hpp"
 #include "IMP/log.h"
 #include "boost/unordered_set.hpp"
-#include "IMP/statistics.h"
+#include "IMP/base_statistics.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 

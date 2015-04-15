@@ -5,7 +5,7 @@
  *
  */
 
-#include "IMP/statistics.h"
+#include "IMP/base_statistics.h"
 #include "internal/base_static.h"
 #include <boost/format.hpp>
 

@@ -11,7 +11,7 @@
 #include "IMP/container_base.h"
 #include "IMP/input_output.h"
 #include "IMP/internal/utility.h"
-#include <IMP/statistics.h>
+#include <IMP/base_statistics.h>
 #include <algorithm>
 #include <cmath>
 #include <limits>

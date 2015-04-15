@@ -19,7 +19,7 @@
 #include "IMP/input_output.h"
 #include "IMP/internal/RestraintsScoringFunction.h"
 #include "IMP/Pointer.h"
-#include "IMP/statistics.h"
+#include "IMP/base_statistics.h"
 #include <IMP/check_macros.h>
 #include <numeric>
 
