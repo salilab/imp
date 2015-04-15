@@ -15,8 +15,8 @@
 #include "DerivativeAccumulator.h"
 #include "constants.h"
 #include "base_types.h"
-#include <IMP/base/InputAdaptor.h>
-#include <IMP/base/deprecation_macros.h>
+#include <IMP/InputAdaptor.h>
+#include <IMP/deprecation_macros.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class DerivativeAccumulator;
@@ -26,7 +26,7 @@ class DerivativeAccumulator;
     To implement a new restraint, just implement the two methods:
     - IMP::Restraint::do_add_score_and_derivatives()
     - IMP::ModelObject::do_get_inputs();
-    and use the macro to handle IMP::base::Object
+    and use the macro to handle IMP::Object
     - IMP_OBJECT_METHODS()
 
     \note When logging is VERBOSE, restraints should print enough information
@@ -227,7 +227,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   double max_;
   mutable double last_score_;
   // cannot be released outside the class
-  mutable base::Pointer<ScoringFunction> cached_internal_scoring_function_;
+  mutable Pointer<ScoringFunction> cached_internal_scoring_function_;
 };
 
 /** This class is to provide a consisted interface for things
@@ -240,7 +240,7 @@ class IMPKERNELEXPORT RestraintsAdaptor :
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
     public Restraints
 #else
-    public base::InputAdaptor
+    public InputAdaptor
 #endif
     {
   static Restraint *get(Model *sf);
@@ -256,7 +256,7 @@ class IMPKERNELEXPORT RestraintsAdaptor :
   RestraintsAdaptor(Model *sf);
   RestraintsAdaptor(const ModelsTemp &sf);
   template <class T>
-  RestraintsAdaptor(base::internal::PointerBase<T> t)
+  RestraintsAdaptor(internal::PointerBase<T> t)
       : Restraints(1, get(t)) {}
 #endif
 };

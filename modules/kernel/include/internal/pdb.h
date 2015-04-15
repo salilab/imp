@@ -11,7 +11,7 @@
 #include <IMP/kernel_config.h>
 #include "../Model.h"
 #include "../container_base.h"
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -21,7 +21,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
     pdb files to make shapes.
 */
 IMPKERNELEXPORT ParticlesTemp
-    create_particles_from_pdb(base::TextInput fname, Model *m);
+    create_particles_from_pdb(TextInput fname, Model *m);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 

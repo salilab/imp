@@ -11,14 +11,14 @@
 #include <IMP/kernel_config.h>
 #include "../Particle.h"
 #include "../Decorator.h"
-#include <IMP/base/internal/graph_utility.h>
+#include <IMP/internal/graph_utility.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 struct IMPKERNELEXPORT AncestorException {
-  base::Object *o;
+  Object *o;
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(AncestorException);
-  AncestorException(base::Object *oi) : o(oi) {};
+  AncestorException(Object *oi) : o(oi) {};
   virtual ~AncestorException();
 };
 
@@ -34,7 +34,7 @@ class AncestorVisitor : public boost::default_dfs_visitor {
       : pst_(pst.begin(), pst.end()), vm_(boost::get(boost::vertex_name, g)) {}
   void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
                        const Graph &) {
-    base::Object *o = vm_[u];
+    Object *o = vm_[u];
     // std::cout << "Visiting " << o->get_name() << std::endl;
     if (pst_.find(dynamic_cast<Particle *>(o)) != pst_.end()) {
       throw AncestorException(o);

@@ -10,7 +10,7 @@
 #include "IMP/Configuration.h"
 #include "IMP/internal/utility.h"
 #include "IMP/dependency_graph.h"
-#include "IMP/base//set.h"
+#include "IMP//set.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -38,7 +38,7 @@ bool are_equal(const T &a, const T &b) {
   return a == b;
 }
 template <class T>
-bool are_not_equal(const base::Vector<T> &a, const base::Vector<T> &b) {
+bool are_not_equal(const Vector<T> &a, const Vector<T> &b) {
   if (a.size() != b.size())
     return true;
   else {

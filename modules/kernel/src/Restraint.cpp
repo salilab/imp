@@ -9,18 +9,18 @@
 
 #include "IMP/Particle.h"
 #include "IMP/Model.h"
-#include "IMP/base/log_macros.h"
+#include "IMP/log_macros.h"
 #include "IMP/Restraint.h"
 #include "IMP/container_base.h"
 #include "IMP/ScoringFunction.h"
 #include "IMP/internal/utility.h"
-#include "IMP/base//warning_macros.h"
-#include <IMP/base/thread_macros.h>
+#include "IMP//warning_macros.h"
+#include <IMP/thread_macros.h>
 #include "IMP/input_output.h"
 #include "IMP/internal/RestraintsScoringFunction.h"
-#include "IMP/base/Pointer.h"
-#include "IMP/base/statistics.h"
-#include <IMP/base/check_macros.h>
+#include "IMP/Pointer.h"
+#include "IMP/statistics.h"
+#include <IMP/check_macros.h>
 #include <numeric>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -32,19 +32,19 @@ Restraint::Restraint(Model *m, std::string name)
 
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  base::Pointer<ScoringFunction> sf = create_internal_scoring_function();
+  Pointer<ScoringFunction> sf = create_internal_scoring_function();
   return sf->evaluate(calc_derivs);
 }
 
 double Restraint::evaluate_if_good(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  base::Pointer<ScoringFunction> sf = create_internal_scoring_function();
+  Pointer<ScoringFunction> sf = create_internal_scoring_function();
   return sf->evaluate_if_good(calc_derivs);
 }
 
 double Restraint::evaluate_if_below(bool calc_derivs, double max) const {
   IMP_OBJECT_LOG;
-  base::Pointer<ScoringFunction> sf = create_internal_scoring_function();
+  Pointer<ScoringFunction> sf = create_internal_scoring_function();
   return sf->evaluate_if_below(calc_derivs, max);
 }
 
@@ -78,11 +78,11 @@ void check_decomposition(Restraint *in, Restraint *out) {
                      "Restraint " << out->get_name() << " produced from "
                                   << in->get_name()
                                   << " is not already part of model.");
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     // be lazy and hope that they behave the same on un updated states
     // otherwise it can be bery, bery slow
     // in->get_model()->update();
-    base::SetLogState sls(base::WARNING);
+    SetLogState sls(WARNING);
     double tin = in->unprotected_evaluate(nullptr);
     double tout = out->unprotected_evaluate(nullptr);
     if (std::abs(tin - tout) > .01 * std::abs(tin + tout) + .1) {
@@ -115,7 +115,7 @@ Restraint *create_decomp_helper(const Restraint *me,
   } else {
     IMP_NEW(RestraintSet, rs, (me->get_model(), me->get_weight(),
                                me->get_name() + " decomposition"));
-    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned int i = 0; i < created.size(); ++i) {
         IMP_INTERNAL_CHECK(created[i],
                            "nullptr restraint returned in decomposition");
@@ -138,7 +138,7 @@ Restraint *create_decomp_helper(const Restraint *me,
 Restraint *Restraint::create_decomposition() const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  base::Pointer<Restraint> ret =
+  Pointer<Restraint> ret =
       create_decomp_helper(this, do_create_decomposition());
   return ret.release();
 }
@@ -162,7 +162,7 @@ Restraint *Restraint::create_current_decomposition() const {
   }
 #endif
   // need pointer to make sure destruction of rs doesn't free anything
-  base::Pointer<Restraint> ret = create_decomp_helper(this, rs);
+  Pointer<Restraint> ret = create_decomp_helper(this, rs);
   rs.clear();  // must be done before release to avoid frees
   return ret.release();
 }
@@ -188,7 +188,7 @@ ScoringFunction *Restraint::create_internal_scoring_function() const {
 Restraints create_decomposition(const RestraintsTemp &rs) {
   Restraints ret;
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    base::Pointer<Restraint> r = rs[i]->create_decomposition();
+    Pointer<Restraint> r = rs[i]->create_decomposition();
     if (r) {
       ret.push_back(r);
     }
@@ -220,7 +220,7 @@ double Restraint::get_score() const { return evaluate(false); }
 
 void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   IMP_OBJECT_LOG;
-  base::Timer t(this, "evaluate");
+  Timer t(this, "evaluate");
   // implement these in macros to avoid extra virtual function call
   ScoreAccumulator nsa(sa, this);
   validate_inputs();

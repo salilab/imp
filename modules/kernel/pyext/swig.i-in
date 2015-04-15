@@ -115,7 +115,7 @@ namespace IMP {
 %warnfilter(403) AttributeOptimizer;
 %warnfilter(403) OptimizerState;
 }
-%warnfilter(403) IMP::base::TrackedObject< IMP::ModelObject,IMP::Model >;
+%warnfilter(403) IMP::TrackedObject< IMP::ModelObject,IMP::Model >;
 
 
 // to avoid extend clash
@@ -168,7 +168,7 @@ IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetOptimizerState, SaveToConfigurationSe
 // IMP_SWIG_VALUE(IMP, DerivativeAccumulator, DerivativeAccumulators);
 IMP_SWIG_VALUE(IMP, EvaluationState, EvaluationStates);
 IMP_SWIG_VALUE(IMP, ScoreAccumulator, ScoreAccumulators);
-IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndex, IMP::base::Index, ParticleIndexes);
+IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndex, IMP::Index, ParticleIndexes);
 IMP_SWIG_VALUE(IMP, FloatIndex, FloatIndexes);
 IMP_SWIG_VALUE_INSTANCE(IMP, FloatKey, Key, FloatKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, IntKey, Key, IntKeys);
@@ -207,7 +207,7 @@ namespace IMP {
   %template(ParticleIndexKey) ::IMP::Key<3, true>;
   %template(ObjectKey) ::IMP::Key<4, true>;
   %template(ParticleIndexesKey) ::IMP::Key<6, true>;
-  %template(ParticleIndex) ::IMP::base::Index<IMP::ParticleIndexTag>;
+  %template(ParticleIndex) ::IMP::Index<IMP::ParticleIndexTag>;
 }
 
 %inline %{

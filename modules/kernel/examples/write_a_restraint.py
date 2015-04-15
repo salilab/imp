@@ -28,7 +28,7 @@ class MyRestraint(IMP.Restraint):
                 p0.add_to_derivative(k, -1, da)
                 p1.add_to_derivative(k, 1, da)
             else:
-                if IMP.get_log_level() >= IMP.base.TERSE:
+                if IMP.get_log_level() >= IMP.TERSE:
                     print(p0.get_name(), "and", p1.get_name(), " are ok")
         return score
 
@@ -44,5 +44,5 @@ for i in range(0, 10):
     p.add_attribute(k, i)
     ps.append(p)
 r = MyRestraint(m, ps, k)
-# IMP.base.set_log_level(IMP.base.TERSE)
+# IMP.set_log_level(IMP.TERSE)
 print(r.evaluate(True))

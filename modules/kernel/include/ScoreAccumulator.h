@@ -12,14 +12,14 @@
 #include <IMP/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "constants.h"
-#include <IMP/base/showable_macros.h>
-#include <IMP/base/value_macros.h>
-#include <IMP/base/thread_macros.h>
-#include <IMP/base/log_macros.h>
-#include <IMP/base/tuple_macros.h>
-#include <IMP/base/math.h>
-#include <IMP/base/nullptr.h>
-#include <IMP/base/exception.h>
+#include <IMP/showable_macros.h>
+#include <IMP/value_macros.h>
+#include <IMP/thread_macros.h>
+#include <IMP/log_macros.h>
+#include <IMP/tuple_macros.h>
+#include <IMP/math.h>
+#include <IMP/nullptr.h>
+#include <IMP/exception.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -43,7 +43,7 @@ IMP_VALUES(EvaluationState, EvaluationStates);
     restraint and derivative weights, keeping track of maximum scores
     and other needed bookkeeping.
 */
-class IMPKERNELEXPORT ScoreAccumulator : public base::Value {
+class IMPKERNELEXPORT ScoreAccumulator : public Value {
   EvaluationState *score_;
   DerivativeAccumulator weight_;
   double global_max_;

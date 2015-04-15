@@ -5,8 +5,8 @@
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
 #include <IMP/Restraint.h>
-#include <IMP/base/threads.h>
-#include <IMP/base/flags.h>
+#include <IMP/threads.h>
+#include <IMP/flags.h>
 
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
 
@@ -41,12 +41,12 @@ IMP::ModelObjectsTemp TouchyRestraint::do_get_inputs() const {
 #endif
 
 int main(int argc, char *argv[]) {
-  IMP::base::setup_from_argv(argc, argv, "Testing protection of particles");
+  IMP::setup_from_argv(argc, argv, "Testing protection of particles");
 // no checks in fast mode
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   IMP_NEW(IMP::Model, m, ());
   IMP_NEW(IMP::Particle, p, (m));
-  IMP::base::SetNumberOfThreads no(1);
+  IMP::SetNumberOfThreads no(1);
   IMP_NEW(TouchyRestraint, r, (p, IMP::FloatKey(0)));
   try {
     r->evaluate(false);

@@ -10,7 +10,7 @@
 #include "IMP/ModelObject.h"
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-void show_dg_node(ModelObject *vertex, base::TextOutput out) {
+void show_dg_node(ModelObject *vertex, TextOutput out) {
   out << vertex->get_name() << "\\n[" << vertex->get_type_name();
   ScoreState *ss = dynamic_cast<ScoreState *>(vertex);
   if (ss && ss->get_has_update_order()) {

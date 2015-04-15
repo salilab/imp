@@ -5,7 +5,7 @@
  *
  */
 
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include "IMP/Optimizer.h"
 #include "IMP/OptimizerState.h"
 #include "IMP/RestraintSet.h"
@@ -14,7 +14,7 @@
 #include "IMP/internal/graph_utility.h"
 #include "IMP/internal/RestraintsScoringFunction.h"
 #include "IMP/internal/container_helpers.h"
-#include <IMP/base/thread_macros.h>
+#include <IMP/thread_macros.h>
 #include "IMP/internal/utility.h"
 #include <boost/tuple/tuple.hpp>
 #include <limits>

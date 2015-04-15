@@ -9,12 +9,12 @@
 #include "IMP/Model.h"
 #include "IMP/Particle.h"
 #include "IMP/internal/scoring_functions.h"
-#include "IMP/base//set.h"
+#include "IMP//set.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
 //! Constructor
-Model::Model(std::string name) : base::Object(name) {
+Model::Model(std::string name) : Object(name) {
   cur_stage_ = internal::NOT_EVALUATING;
   set_was_used(true);
   first_call_ = true;
@@ -159,7 +159,7 @@ void Model::do_add_score_state(ScoreState *obj) {
   if (!obj->get_model()) obj->set_model(this);
   obj->set_was_used(true);
   IMP_LOG_VERBOSE("Added score state " << obj->get_name() << std::endl);
-  IMP_IF_CHECK(base::USAGE) {
+  IMP_IF_CHECK(USAGE) {
     boost::unordered_set<ScoreState *> in(score_states_begin(),
                                           score_states_end());
     IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
@@ -186,7 +186,7 @@ void Model::add_data(ModelKey mk, Object *o) {
   model_data_[mk.get_index()] = o;
 }
 
-base::Object *Model::get_data(ModelKey mk) const {
+Object *Model::get_data(ModelKey mk) const {
   return model_data_[mk.get_index()].get();
 }
 

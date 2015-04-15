@@ -5,7 +5,7 @@
  *
  */
 
-#include "IMP/base//log.h"
+#include "IMP//log.h"
 #include "IMP/OptimizerState.h"
 #include "IMP/internal/utility.h"
 

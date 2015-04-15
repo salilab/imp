@@ -18,10 +18,10 @@
 #include "particle_index.h"
 #include "Key.h"
 #include "internal/AttributeTable.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/utility.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/Object.h>
+#include <IMP/utility.h>
+#include <IMP/Pointer.h>
+#include <IMP/check_macros.h>
 #include <utility>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -144,7 +144,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
 class Decorator;
 
 /** Take Decorator or Particle. */
-class IMPKERNELEXPORT ParticleAdaptor : public base::InputAdaptor {
+class IMPKERNELEXPORT ParticleAdaptor : public InputAdaptor {
   Model *m_;
   ParticleIndex pi_;
 
@@ -153,11 +153,11 @@ class IMPKERNELEXPORT ParticleAdaptor : public base::InputAdaptor {
   ParticleAdaptor(Particle *p) : m_(p->get_model()), pi_(p->get_index()) {}
   ParticleAdaptor(const Decorator &d);
 #ifndef SWIG
-  ParticleAdaptor(IMP::base::Pointer<Particle> p)
+  ParticleAdaptor(IMP::Pointer<Particle> p)
       : m_(p->get_model()), pi_(p->get_index()) {}
-  ParticleAdaptor(IMP::base::WeakPointer<Particle> p)
+  ParticleAdaptor(IMP::WeakPointer<Particle> p)
       : m_(p->get_model()), pi_(p->get_index()) {}
-  ParticleAdaptor(IMP::base::PointerMember<Particle> p)
+  ParticleAdaptor(IMP::PointerMember<Particle> p)
       : m_(p->get_model()), pi_(p->get_index()) {}
 #endif
   Model *get_model() const { return m_; }
@@ -218,8 +218,8 @@ Particle *Particle::get_value(ParticleIndexKey k) const {
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Float, float, Float);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Int, int, Int);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(String, string, String);
-IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Object, object, base::Object *);
-IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(WeakObject, weak_object, base::Object *);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Object, object, Object *);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(WeakObject, weak_object, Object *);
 
 #endif // DOXYGEN
 

@@ -12,7 +12,7 @@
 #include <IMP/kernel_config.h>
 #include "ListLikeContainer.h"
 #include "container_helpers.h"
-#include <IMP/base/object_macros.h>
+#include <IMP/object_macros.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 

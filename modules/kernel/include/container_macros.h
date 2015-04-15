@@ -10,11 +10,11 @@
 #define IMPKERNEL_CONTAINER_MACROS_H
 
 #include <IMP/kernel_config.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/internal/Vector.h>
-#include <IMP/base/SetCheckState.h>
-#include <IMP/base/log_macros.h>
-#include <IMP/base/doxygen_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/internal/Vector.h>
+#include <IMP/SetCheckState.h>
+#include <IMP/log_macros.h>
+#include <IMP/doxygen_macros.h>
 #include <algorithm>
 
 // Swig doesn't do protection right with protected members
@@ -163,14 +163,14 @@
   template <class List>                                                        \
   void remove_##lcnames(List d) {                                              \
     IMP_OBJECT_LOG;                                                            \
-    base::Vector<Data> ds(d.begin(), d.end());                                 \
+    Vector<Data> ds(d.begin(), d.end());                                 \
     std::sort(ds.begin(), ds.end());                                           \
     for (unsigned int i = 0; i < ds.size(); ++i) {                             \
       lcname##_handle_remove(ds[i]);                                           \
     }                                                                          \
     lcname##_vector_.erase(                                                    \
         std::remove_if(lcname##_vector_.begin(), lcname##_vector_.end(),       \
-                       ::IMP::base::internal::list_contains(ds)),              \
+                       ::IMP::internal::list_contains(ds)),              \
         lcname##_vector_.end());                                               \
   }                                                                            \
   /** \brief Set the contents of the container to ps removing all its current

@@ -18,11 +18,11 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-parameter")
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/dynamic_bitset.hpp>
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 //#include <boost/graph/lookup_edge.hpp>
-#include <IMP/base/vector_property_map.h>
+#include <IMP/vector_property_map.h>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/unordered_set.hpp>
 
@@ -197,7 +197,7 @@ void build_outputs_graph(const ModelObjectsTemp mos, DependencyGraph &dg,
     DependencyGraphTraits::vertex_descriptor rv = dgi.find(mos[i])->second;
     {
       ModelObjectsTemp ct =
-          filter(mos[i]->get_outputs(), static_cast<base::Object *>(mos[i]));
+          filter(mos[i]->get_outputs(), static_cast<Object *>(mos[i]));
       for (unsigned int j = 0; j < ct.size(); ++j) {
         DependencyGraphTraits::vertex_descriptor cv =
             get_vertex(dg, dgi, ct[j]);
@@ -220,7 +220,7 @@ DependencyGraph get_dependency_graph(Model *m) {
   }
   build_outputs_graph(mos, ret, index);
   build_inputs_graph(mos, ret, index);
-  base::Vector<std::pair<ModelObject *, ModelObject *> > extra;
+  Vector<std::pair<ModelObject *, ModelObject *> > extra;
   for (unsigned int i = 0; i < extra.size(); ++i) {
     int va = index[extra[i].first];
     int vb = index[extra[i].second];
@@ -321,7 +321,7 @@ DependencyGraph get_pruned_dependency_graph(Model *m) {
 }
 
 struct cycle_detector : public boost::default_dfs_visitor {
-  base::Vector<DependencyGraphVertex> cycle_;
+  Vector<DependencyGraphVertex> cycle_;
   template <class DGEdge>
   void tree_edge(DGEdge e, const DependencyGraph &g) {
     DependencyGraphVertex t = boost::target(e, g);
@@ -338,7 +338,7 @@ struct cycle_detector : public boost::default_dfs_visitor {
   void back_edge(ED e, const DependencyGraph &g) {
     DependencyGraphVertex t = boost::target(e, g);
     // MDGVertex s= boost::source(e, g);
-    base::Vector<DependencyGraphVertex>::iterator it =
+    Vector<DependencyGraphVertex>::iterator it =
         std::find(cycle_.begin(), cycle_.end(), t);
     // std::cout << s << " " << cycle_.back() << std::endl;
     if (it != cycle_.end()) {

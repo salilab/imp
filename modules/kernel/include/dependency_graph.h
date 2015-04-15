@@ -11,7 +11,7 @@
 
 #include <IMP/kernel_config.h>
 #include "base_types.h"
-#include <IMP/base/base_macros.h>
+#include <IMP/base_macros.h>
 #include "internal/utility.h"
 #include <boost/graph/adjacency_list.hpp>
 #include "ModelObject.h"

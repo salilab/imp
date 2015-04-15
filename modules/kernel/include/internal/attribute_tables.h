@@ -14,10 +14,10 @@
 #include "../utility.h"
 #include "../FloatIndex.h"
 #include "input_output_exception.h"
-#include <IMP/base/exception.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/log.h>
-#include <IMP/base/set_map_macros.h>
+#include <IMP/exception.h>
+#include <IMP/check_macros.h>
+#include <IMP/log.h>
+#include <IMP/set_map_macros.h>
 #include <IMP/algebra/Sphere3D.h>
 
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
@@ -25,7 +25,7 @@
   IMP_USAGE_CHECK(!mask || mask->size() > get_as_unsigned_int(particle_index), \
                   "For some reason the mask is too small.");                   \
   if (mask && !(*mask)[get_as_unsigned_int(particle_index)]) {                 \
-    base::handle_error("bad particle read or written");                        \
+    handle_error("bad particle read or written");                        \
     throw InputOutputException(                                                \
         particle_index.get_index(), InputOutputException::operation,           \
         InputOutputException::entity, key.get_string());                       \
@@ -56,11 +56,11 @@ class BasicAttributeTable {
   typedef typename Traits::Key Key;
 
  private:
-  base::Vector<typename Traits::Container> data_;
+  Vector<typename Traits::Container> data_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_;
 #endif
-  IMP_BASE_SMALL_UNORDERED_SET<Key> caches_;
+  IMP_KERNEL_SMALL_UNORDERED_SET<Key> caches_;
 
   void do_add_attribute(Key k, ParticleIndex particle,
                         typename Traits::PassValue value) {
@@ -70,7 +70,7 @@ class BasicAttributeTable {
     if (data_.size() <= k.get_index()) {
       data_.resize(k.get_index() + 1);
     }
-    base::resize_to_fit(data_[k.get_index()], particle, Traits::get_invalid());
+    resize_to_fit(data_[k.get_index()], particle, Traits::get_invalid());
     data_[k.get_index()][particle] = value;
   }
 
@@ -111,7 +111,7 @@ class BasicAttributeTable {
   }
   void clear_caches(ParticleIndex particle) {
     IMP_OMP_PRAGMA(critical(imp_cache))
-    for (typename IMP_BASE_SMALL_UNORDERED_SET<Key>::const_iterator it =
+    for (typename IMP_KERNEL_SMALL_UNORDERED_SET<Key>::const_iterator it =
              caches_.begin();
          it != caches_.end(); ++it) {
       if (data_.size() > it->get_index() &&
@@ -200,8 +200,8 @@ class BasicAttributeTable {
     }
   }
 
-  IMP::base::Vector<Key> get_attribute_keys(ParticleIndex particle) const {
-    base::Vector<Key> ret;
+  IMP::Vector<Key> get_attribute_keys(ParticleIndex particle) const {
+    Vector<Key> ret;
     for (unsigned int i = 0; i < data_.size(); ++i) {
       if (data_[i].size() > get_as_unsigned_int(particle) &&
           Traits::get_is_valid(data_[i][particle])) {
@@ -223,10 +223,10 @@ IMP_SWAP_1(BasicAttributeTable);
 class FloatAttributeTable {
   // vector<algebra::Sphere3D> spheres_;
   // vector<algebra::Sphere3D> sphere_derivatives_;
-  base::IndexVector<ParticleIndexTag, algebra::Sphere3D> spheres_;
-  base::IndexVector<ParticleIndexTag, algebra::Sphere3D> sphere_derivatives_;
-  base::IndexVector<ParticleIndexTag, algebra::Vector3D> internal_coordinates_;
-  base::IndexVector<ParticleIndexTag, algebra::Vector3D>
+  IndexVector<ParticleIndexTag, algebra::Sphere3D> spheres_;
+  IndexVector<ParticleIndexTag, algebra::Sphere3D> sphere_derivatives_;
+  IndexVector<ParticleIndexTag, algebra::Vector3D> internal_coordinates_;
+  IndexVector<ParticleIndexTag, algebra::Vector3D>
       internal_coordinate_derivatives_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;

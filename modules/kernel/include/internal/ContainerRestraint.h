@@ -23,8 +23,8 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 */
 template <class Score, class Container>
 class ContainerRestraint : public Restraint {
-  IMP::base::PointerMember<Container> pc_;
-  IMP::base::Pointer<AccumulatorScoreModifier<Score> > acc_;
+  IMP::PointerMember<Container> pc_;
+  IMP::Pointer<AccumulatorScoreModifier<Score> > acc_;
 
  public:
   ContainerRestraint(Score *ss, Container *pc,

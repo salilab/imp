@@ -13,7 +13,7 @@
 #include <IMP/kernel_config.h>
 #include "../scoped.h"
 #include "container_helpers.h"
-#include <IMP/base/thread_macros.h>
+#include <IMP/thread_macros.h>
 #include <algorithm>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
@@ -30,7 +30,7 @@ class ListLikeContainer : public Base {
  protected:
   void swap(typename Base::ContainedIndexTypes &cur) {
     ++version_;
-    IMP::base::swap(data_, cur);
+    IMP::swap(data_, cur);
   }
 
   ListLikeContainer(Model *m, std::string name)
@@ -40,8 +40,8 @@ class ListLikeContainer : public Base {
   template <class F>
   void apply_generic(const F *f) const {
     Base::validate_readable();
-    if (base::get_number_of_threads() > 1) {
-      unsigned int tasks = 2 * base::get_number_of_threads();
+    if (get_number_of_threads() > 1) {
+      unsigned int tasks = 2 * get_number_of_threads();
       unsigned int chunk_size =
           std::max<unsigned int>(1U, data_.size() / tasks) + 1;
       Model *m = Base::get_model();

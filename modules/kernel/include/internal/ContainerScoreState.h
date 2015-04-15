@@ -11,7 +11,7 @@
 
 #include "../Constraint.h"
 #include "container_helpers.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -19,7 +19,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
     from containers as score states. */
 template <class Container>
 class ContainerScoreState : public ScoreState {
-  base::WeakPointer<Container> back_;
+  WeakPointer<Container> back_;
 
  public:
   ContainerScoreState(Container *back)

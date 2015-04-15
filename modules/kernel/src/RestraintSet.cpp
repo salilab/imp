@@ -7,7 +7,7 @@
 
 #include <IMP/RestraintSet.h>
 #include <IMP/Model.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/internal/utility.h>
 #include <IMP/generic.h>
 #include <IMP/ScoringFunction.h>
@@ -108,7 +108,7 @@ Restraints RestraintSet::do_create_decomposition() const {
   Restraints ret;
   for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
        ++it) {
-    base::Pointer<Restraint> r = (*it)->create_decomposition();
+    Pointer<Restraint> r = (*it)->create_decomposition();
     if (r) {
       ret.push_back(r);
     }
@@ -119,7 +119,7 @@ Restraints RestraintSet::do_create_current_decomposition() const {
   Restraints ret;
   for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
        ++it) {
-    base::Pointer<Restraint> r = (*it)->create_current_decomposition();
+    Pointer<Restraint> r = (*it)->create_current_decomposition();
     if (r) {
       ret.push_back(r);
     }

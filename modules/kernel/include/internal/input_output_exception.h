@@ -10,7 +10,7 @@
 #define IMPKERNEL_INPUT_OUTPUT_EXCEPTION_H
 
 #include <IMP/kernel_config.h>
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 IMPKERNEL_BEGIN_NAMESPACE
 class ModelObject;
 IMPKERNEL_END_NAMESPACE

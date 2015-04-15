@@ -2,7 +2,7 @@
  *   Copyright 2007-2015 IMP Inventors. All rights reserved
  */
 #include <IMP/Model.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/Particle.h>
 #include <IMP/internal/pdb.h>
 #include <sstream>
@@ -22,7 +22,7 @@ const char *data =
     "ATOM    342  CB  LYS    42      31.007   1.987  16.739  \n";
 
 int main(int, char * []) {
-  IMP::base::set_log_level(IMP::base::MEMORY);
+  IMP::set_log_level(IMP::MEMORY);
   IMP_NEW(IMP::Model, m, ());
   std::istringstream in(data);
   IMP::ParticlesTemp ps =

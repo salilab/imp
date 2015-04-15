@@ -15,14 +15,14 @@
 #include "IMP/ScoreState.h"
 #include "IMP/ScoringFunction.h"
 #include "IMP/dependency_graph.h"
-#include "IMP/base/file.h"
+#include "IMP/file.h"
 #include "IMP/internal/evaluate_utility.h"
 #include "IMP/internal/graph_utility.h"
 #include <IMP/utility.h>
 #include "boost/unordered_map.hpp"
-#include "IMP/base/log.h"
+#include "IMP/log.h"
 #include "boost/unordered_set.hpp"
-#include "IMP/base/statistics.h"
+#include "IMP/statistics.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -231,7 +231,7 @@ void Model::do_set_has_all_dependencies(bool tf) {
 }
 
 void Model::set_has_all_dependencies(bool tf) {
-  base::Timer t(this, "set_has_all_dependencies");
+  Timer t(this, "set_has_all_dependencies");
   IMP_USAGE_CHECK(tf, "Only works for true.");
   if (get_has_all_dependencies()) return;
   // check_dependency_invariants();
@@ -348,7 +348,7 @@ void Model::do_clear_dependencies(const ModelObject *cmo) {
   IMP_FOREACH(ModelObject * in, ni.get_inputs()) {
     // for teardown
     if (dependency_graph_.find(in) == dependency_graph_.end()) continue;
-    base::Vector<ModelObject *> &cur =
+    Vector<ModelObject *> &cur =
         dependency_graph_.find(in)->second.access_readers();
     IMP_INTERNAL_CHECK(std::find(cur.begin(), cur.end(), mo) != cur.end(),
                        "Not in list");
@@ -361,7 +361,7 @@ void Model::do_clear_dependencies(const ModelObject *cmo) {
 
   IMP_FOREACH(ModelObject * out, ni.get_outputs()) {
     if (dependency_graph_.find(out) == dependency_graph_.end()) continue;
-    base::Vector<ModelObject *> &cur =
+    Vector<ModelObject *> &cur =
         dependency_graph_.find(out)->second.access_writers();
     IMP_INTERNAL_CHECK(std::find(cur.begin(), cur.end(), mo) != cur.end(),
                        "Not in list");

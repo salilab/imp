@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         p1 = m.get_particle(m.add_particle("p1"))
         s0 = NullConstraint(m, inputs=[p0], outputs=[p1])
         s1 = NullConstraint(m, inputs=[p1], outputs=[p0])
-        self.assertRaises(IMP.base.ModelException, m.update)
+        self.assertRaises(IMP.ModelException, m.update)
 
 if __name__ == '__main__':
     IMP.test.main()

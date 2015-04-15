@@ -24,10 +24,10 @@ ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps) {
 ParticleIndexAdaptor::ParticleIndexAdaptor(Particle *p)
     : ParticleIndex(p->get_index()) {}
 
-ParticleIndexAdaptor::ParticleIndexAdaptor(base::WeakPointer<Particle> p)
+ParticleIndexAdaptor::ParticleIndexAdaptor(WeakPointer<Particle> p)
     : ParticleIndex(p->get_index()) {}
 
-ParticleIndexAdaptor::ParticleIndexAdaptor(base::Pointer<Particle> p)
+ParticleIndexAdaptor::ParticleIndexAdaptor(Pointer<Particle> p)
     : ParticleIndex(p->get_index()) {}
 
 ParticleIndexAdaptor::ParticleIndexAdaptor(const Decorator &d)

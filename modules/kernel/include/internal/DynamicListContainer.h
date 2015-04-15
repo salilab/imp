@@ -14,7 +14,7 @@
 #include "container_helpers.h"
 #include "ListLikeContainer.h"
 #include <IMP/container_base.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <boost/unordered_set.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
@@ -23,7 +23,7 @@ template <class Base>
 class DynamicListContainer : public ListLikeContainer<Base> {
   typedef ListLikeContainer<Base> P;
   // use this to define the set of all possible particles when it is dynamic
-  base::Pointer<Container> scope_;
+  Pointer<Container> scope_;
   bool check_list(const ParticleIndexes &cp) const {
     ParticleIndexes app = scope_->get_all_possible_indexes();
 

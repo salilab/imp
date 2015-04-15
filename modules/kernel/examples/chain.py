@@ -13,16 +13,16 @@ import IMP.rmf
 import IMP.base
 import sys
 
-IMP.base.setup_from_argv(sys.argv, "Chain example")
+IMP.setup_from_argv(sys.argv, "Chain example")
 
 # A trivial example that constructs a set of particles which are restrained
 # to form a chain via bonds between successive particles. In addition
 # the head and the tail of the chain are restrained to be close to one
 # another.
 
-IMP.base.set_log_level(IMP.base.TERSE)
+IMP.set_log_level(IMP.TERSE)
 m = IMP.Model()
-m.set_log_level(IMP.base.SILENT)
+m.set_log_level(IMP.SILENT)
 h = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("root"))
 # The particles in the chain
 ps = IMP.core.create_xyzr_particles(m, 10, 1.0)

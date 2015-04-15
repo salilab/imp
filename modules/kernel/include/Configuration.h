@@ -10,17 +10,17 @@
 #define IMPKERNEL_CONFIGURATION_H
 
 #include <IMP/kernel_config.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Object.h>
+#include <IMP/Pointer.h>
 #include "Model.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
 //! A class to store a configuration of a model
 /** */
-class IMPKERNELEXPORT Configuration : public IMP::base::Object {
-  mutable base::Pointer<Model> model_;
-  base::Pointer<base::Object> base_;
+class IMPKERNELEXPORT Configuration : public IMP::Object {
+  mutable Pointer<Model> model_;
+  Pointer<Object> base_;
   internal::FloatAttributeTable floats_;
   internal::StringAttributeTable strings_;
   internal::IntAttributeTable ints_;

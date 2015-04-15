@@ -6,7 +6,7 @@
  */
 
 #include "IMP/Particle.h"
-#include "IMP/base/log_macros.h"
+#include "IMP/log_macros.h"
 #include "IMP/Model.h"
 #include "IMP/internal/utility.h"
 #include "IMP/internal/PrefixStream.h"
@@ -15,12 +15,12 @@
 IMPKERNEL_BEGIN_NAMESPACE
 
 Particle::Particle(Model *m, std::string name)
-    : ModelObject(m, name), id_(base::get_invalid_index<ParticleIndexTag>()) {
+    : ModelObject(m, name), id_(get_invalid_index<ParticleIndexTag>()) {
   m->add_particle_internal(this);
 }
 
 Particle::Particle(Model *m)
-    : ModelObject(m, "P%1%"), id_(base::get_invalid_index<ParticleIndexTag>()) {
+    : ModelObject(m, "P%1%"), id_(get_invalid_index<ParticleIndexTag>()) {
   m->add_particle_internal(this);
 }
 

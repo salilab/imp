@@ -47,7 +47,7 @@ class Tests(IMP.test.TestCase):
         (model, particles) = self.setup()
         p1 = particles[0]
         self.assertEqual(p1.get_is_active(), True)
-        IMP.base.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(IMP.MEMORY)
         del model
         # Particles left over after a model is deleted should act as if
         # they are inactive

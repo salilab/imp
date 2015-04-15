@@ -34,8 +34,8 @@ class NullScoringFunction : public ScoringFunction {
 };
 
 ScoringFunction *get_null_scoring_function() {
-  static base::PointerMember<Model> m = new Model("NullModel");
-  static base::PointerMember<ScoringFunction> sf =
+  static PointerMember<Model> m = new Model("NullModel");
+  static PointerMember<ScoringFunction> sf =
       new NullScoringFunction(m, "The Null Scoring Function");
   return sf;
 }
@@ -150,7 +150,7 @@ ScoringFunctions create_decomposition_into_scoring_functions(
     const RestraintsTemp &sf) {
   ScoringFunctions ret;
   for (unsigned int i = 0; i < sf.size(); ++i) {
-    base::Pointer<Restraint> r = sf[i]->create_decomposition();
+    Pointer<Restraint> r = sf[i]->create_decomposition();
     ret = ret + create_decomposition(r, 1.0, NO_MAX);
   }
   return ret;

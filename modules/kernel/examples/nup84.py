@@ -16,12 +16,12 @@ import os
 import sys
 
 # not finished
-IMP.base.add_bool_flag("run", "Whether to run the program")
+IMP.add_bool_flag("run", "Whether to run the program")
 
 # parse command line arguments so, eg profiling can be used
-IMP.base.setup_from_argv(sys.argv, "Nup84 example")
+IMP.setup_from_argv(sys.argv, "Nup84 example")
 
-if IMP.base.get_bool_flag("run") != "yes":
+if IMP.get_bool_flag("run") != "yes":
     exit(0)
 
 # First we define some basic parameters for the modeling effort
@@ -268,7 +268,7 @@ configuration_set = get_configurations(model, restraints,
 print("Found", configuration_set.get_number_of_configurations(), "good configurations")
 
 # now lets save them all to a file
-rmf_file_name = IMP.base.create_temporary_file_name("nup84", ".rmf")
+rmf_file_name = IMP.create_temporary_file_name("nup84", ".rmf")
 rmf = RMF.create_rmf_file(rmf_file_name)
 
 # we want to see the scores of the various restraints also

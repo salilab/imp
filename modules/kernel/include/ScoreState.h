@@ -9,14 +9,14 @@
 #define IMPKERNEL_SCORE_STATE_H
 
 #include <IMP/kernel_config.h>
-#include <IMP/base/WeakPointer.h>
+#include <IMP/WeakPointer.h>
 #include "DerivativeAccumulator.h"
 #include "utility.h"
 #include "ModelObject.h"
 #include "base_types.h"
-#include <IMP/base/check_macros.h>
-#include <IMP/base/deprecation_macros.h>
-#include <IMP/base/ref_counted_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/deprecation_macros.h>
+#include <IMP/ref_counted_macros.h>
 #include <iostream>
 
 IMPKERNEL_BEGIN_NAMESPACE

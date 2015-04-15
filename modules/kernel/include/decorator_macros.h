@@ -12,10 +12,10 @@
 #include "particle_index.h"
 #include "Particle.h"
 #include "Decorator.h"
-#include <IMP/base/check_macros.h>
-#include <IMP/base/log_macros.h>
-#include <IMP/base/showable_macros.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/log_macros.h>
+#include <IMP/showable_macros.h>
+#include <IMP/warning_macros.h>
 
 
 
@@ -357,7 +357,7 @@
 
 #define IMP_DECORATORS_DECL(Name, PluralName) \
   class Name;                                 \
-  typedef IMP::base::Vector<Name> PluralName
+  typedef IMP::Vector<Name> PluralName
 
 #ifndef IMP_DOXYGEN
 #define IMP_DECORATORS_DEF(Name, PluralName)                   \
@@ -387,7 +387,7 @@
     n.show(out);                                               \
     return out;                                                \
   }                                                            \
-  typedef IMP::base::Vector<Name> PluralName
+  typedef IMP::Vector<Name> PluralName
 
 
 /**

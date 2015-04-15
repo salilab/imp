@@ -4,7 +4,7 @@
 #include <IMP/base_types.h>
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
-#include <IMP/base/utility_macros.h>
+#include <IMP/utility_macros.h>
 int main(int, char * []) {
   IMP_NEW(IMP::Model, m, ());
   IMP_NEW(IMP::Particle, p, (m));

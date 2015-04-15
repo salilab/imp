@@ -13,10 +13,10 @@
 #include "base_types.h"
 #include "ModelObject.h"
 #include "particle_index.h"
-#include <IMP/base/utility_macros.h>
-#include <IMP/base/ref_counted_macros.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/WeakPointer.h>
+#include <IMP/utility_macros.h>
+#include <IMP/ref_counted_macros.h>
+#include <IMP/Object.h>
+#include <IMP/WeakPointer.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class Particle;

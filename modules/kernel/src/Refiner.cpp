@@ -22,7 +22,7 @@ ParticleIndexes Refiner::get_refined_indexes(Model *m,
       if (ps[i]->get_model() != m) {
         IMP_THROW("Refined particles model does not match parent model - "
                   "this is critical if get_refined_indexes() is used.",
-                  IMP::base::ValueException);
+                  IMP::ValueException);
       }
     }
   }

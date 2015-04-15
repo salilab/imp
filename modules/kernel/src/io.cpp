@@ -41,7 +41,7 @@ void write_particles_to_buffer(const ParticlesTemp &particles,
       }
       in.write(reinterpret_cast<char *>(&value), sizeof(double));
       if (!in) {
-        IMP_THROW("Error reading writing to buffer", base::IOException);
+        IMP_THROW("Error reading writing to buffer", IOException);
       }
     }
   }
@@ -59,7 +59,7 @@ void read_particles_from_buffer(const char *buffer, unsigned int size,
       double value;
       in.read(reinterpret_cast<char *>(&value), sizeof(double));
       if (!in) {
-        IMP_THROW("Error reading from buffer", base::IOException);
+        IMP_THROW("Error reading from buffer", IOException);
       }
       if (particles[i]->has_attribute(keys[j])) {
         particles[i]->set_value(keys[j], value);
@@ -69,17 +69,17 @@ void read_particles_from_buffer(const char *buffer, unsigned int size,
 }
 }
 
-base::Vector<char> write_particles_to_buffer(const ParticlesTemp &particles,
+Vector<char> write_particles_to_buffer(const ParticlesTemp &particles,
                                              const FloatKeys &keys) {
   if (particles.empty() || keys.empty()) {
-    return base::Vector<char>();
+    return Vector<char>();
   }
   unsigned int size = particles.size() * keys.size() * sizeof(double);
-  base::Vector<char> ret(size);
+  Vector<char> ret(size);
   write_particles_to_buffer(particles, keys, &ret.front(), size);
   return ret;
 }
-void read_particles_from_buffer(const base::Vector<char> &buffer,
+void read_particles_from_buffer(const Vector<char> &buffer,
                                 const ParticlesTemp &particles,
                                 const FloatKeys &keys) {
   if (particles.empty() || keys.empty()) {

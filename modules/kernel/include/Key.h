@@ -10,11 +10,11 @@
 
 #include "utility.h"
 #include "internal/key_helpers.h"
-#include <IMP/base/check_macros.h>
-#include <IMP/base/comparison_macros.h>
-#include <IMP/base/hash_macros.h>
-#include <IMP/base/thread_macros.h>
-#include <IMP/base/Value.h>
+#include <IMP/check_macros.h>
+#include <IMP/comparison_macros.h>
+#include <IMP/hash_macros.h>
+#include <IMP/thread_macros.h>
+#include <IMP/Value.h>
 #include <vector>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -43,7 +43,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     otherwise this is an error.
  */
 template <unsigned int ID, bool LazyAdd>
-class Key : public base::Value {
+class Key : public Value {
   int str_;
 
   static const internal::KeyData::Map& get_map() {
@@ -165,7 +165,7 @@ class Key : public base::Value {
   /**
      This can be used to check for typos and similar keys.
    */
-  static base::Vector<std::string> get_all_strings();
+  static Vector<std::string> get_all_strings();
 
   //! Get the total number of keys of this type
   /**
@@ -213,8 +213,8 @@ inline void Key<ID, LA>::show_all(std::ostream& out) {
 }
 
 template <unsigned int ID, bool LA>
-base::Vector<std::string> Key<ID, LA>::get_all_strings() {
-  base::Vector<std::string> str;
+Vector<std::string> Key<ID, LA>::get_all_strings() {
+  Vector<std::string> str;
   IMP_OMP_PRAGMA(critical(imp_key))
   for (internal::KeyData::Map::const_iterator it = get_map().begin();
        it != get_map().end(); ++it) {

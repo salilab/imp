@@ -19,8 +19,8 @@
 #include "../Optimizer.h"
 #include "container_helpers.h"
 #include <boost/unordered_map.hpp>
-#include <IMP/base/internal/swig.h>
-#include <IMP/base/deprecation_macros.h>
+#include <IMP/internal/swig.h>
+#include <IMP/deprecation_macros.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -147,7 +147,7 @@ IMPKERNELEXPORT unsigned int _take_particles(const Particles &ps);
 IMPKERNELEXPORT unsigned int _take_particles(Model *m, const Particles &ps);
 
 IMPKERNELEXPORT unsigned int _take_particles(Model *m, const Particles &ps,
-                                             base::TextOutput out);
+                                             TextOutput out);
 IMPKERNELEXPORT const Particles &_give_particles(Model *m);
 IMPKERNELEXPORT const Particles &_pass_particles(const Particles &ps);
 IMPKERNELEXPORT Particle *_pass_particle(Particle *ps);

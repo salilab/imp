@@ -33,7 +33,7 @@ class IMPKERNELEXPORT ParticleIndexAdaptor
 #ifndef SWIG
     // suppress swig warning that doesn't make sense and I can't make go away
     : public ParticleIndex,
-      base::InputAdaptor
+      InputAdaptor
 #endif
       {
  public:
@@ -41,13 +41,13 @@ class IMPKERNELEXPORT ParticleIndexAdaptor
   ParticleIndexAdaptor(ParticleIndex pi) : ParticleIndex(pi) {}
   ParticleIndexAdaptor(const Decorator &d);
 #if !defined(SWIG) && !defined(IMP_DOXYGEN) && !defined(IMP_SWIG_WRAPPER)
-  ParticleIndexAdaptor(base::WeakPointer<Particle> p);
-  ParticleIndexAdaptor(base::Pointer<Particle> p);
+  ParticleIndexAdaptor(WeakPointer<Particle> p);
+  ParticleIndexAdaptor(Pointer<Particle> p);
 #endif
 };
 
 /** Take Decorator, Particle or ParticleIndex. */
-class IMPKERNELEXPORT ParticleIndexesAdaptor : public base::InputAdaptor {
+class IMPKERNELEXPORT ParticleIndexesAdaptor : public InputAdaptor {
   boost::shared_ptr<ParticleIndexes> tmp_;
   const ParticleIndexes *val_;
 
@@ -88,7 +88,7 @@ class IMPKERNELEXPORT ParticleIndexPairsAdaptor
 #ifndef SWIG
     // suppress swig warning that doesn't make sense and I can't make go away
     : public ParticleIndexPairs,
-      base::InputAdaptor
+      InputAdaptor
 #endif
       {
  public:

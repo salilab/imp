@@ -94,7 +94,7 @@ class Tests(IMP.test.TestCase):
         self._force_set(p, pk2, p)
 
     def _make_things(self):
-        IMP.base.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(IMP.MEMORY)
         print("starting")
         m = IMP.Model("config set")
         print("adding")

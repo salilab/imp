@@ -8,12 +8,12 @@
 #include "IMP/internal/static.h"
 #include "IMP/Particle.h"
 #include "IMP/internal/utility.h"
-#include "IMP/base//set.h"
+#include "IMP//set.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 // particle validation
-base::Vector<std::pair<ParticleFunction, ParticleFunction> >
+Vector<std::pair<ParticleFunction, ParticleFunction> >
     particle_validators;
 
 IMPKERNEL_END_INTERNAL_NAMESPACE

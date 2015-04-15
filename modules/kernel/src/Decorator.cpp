@@ -11,7 +11,7 @@
 #include "IMP/Particle.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
-extern base::Vector<std::pair<ParticleFunction, ParticleFunction> >
+extern Vector<std::pair<ParticleFunction, ParticleFunction> >
     particle_validators;
 
 void add_particle_check(ParticleFunction instance, ParticleFunction check) {
@@ -35,6 +35,6 @@ void check_particle(Particle *p) {
 }
 
 Undecorator::Undecorator(Model *m, std::string name)
-    : base::Object(name), m_(m) {}
+    : Object(name), m_(m) {}
 
 IMPKERNEL_END_NAMESPACE

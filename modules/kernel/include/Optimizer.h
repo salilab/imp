@@ -10,14 +10,14 @@
 
 #include <IMP/kernel_config.h>
 #include "base_types.h"
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include "utility.h"
 #include "Model.h"
 #include "Particle.h"
 #include "ModelObject.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include "OptimizerState.h"
-#include <IMP/base/Vector.h>
+#include <IMP/Vector.h>
 #include <limits>
 #include <cmath>
 
@@ -43,10 +43,10 @@ IMPKERNEL_BEGIN_NAMESPACE
 */
 class IMPKERNELEXPORT Optimizer : public ModelObject {
   mutable Floats widths_;
-  base::Pointer<Model> my_model_;
+  Pointer<Model> my_model_;
   bool stop_on_good_score_;
-  mutable base::Pointer<ScoringFunction> cache_;
-  base::Pointer<ScoringFunction> scoring_function_;
+  mutable Pointer<ScoringFunction> cache_;
+  Pointer<ScoringFunction> scoring_function_;
 
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
 

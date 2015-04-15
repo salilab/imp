@@ -13,7 +13,7 @@
 #include "IMP/internal/input_output_exception.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/timer.hpp>
-#include <IMP/base/threads.h>
+#include <IMP/threads.h>
 #include "IMP/ModelObject.h"
 
 #include "IMP/internal/evaluate_utility.h"
@@ -39,7 +39,7 @@ void after_protected_evaluate(Model *m, const ScoreStatesTemp &states,
                               bool derivative) {
   m->after_evaluate(states, derivative);
   // validate derivatives
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     if (derivative) {
       m->validate_computed_derivatives();
     }
@@ -53,7 +53,7 @@ void do_evaluate_one(IMP::ScoreAccumulator sa, RS *restraint,
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   if (m->first_call_) {
     try {
-      base::SetNumberOfThreads no(1);
+      SetNumberOfThreads no(1);
       internal::SFResetBitset rbr(m->Masks::read_mask_, true);
       internal::SFResetBitset rbw(m->Masks::write_mask_, true);
       internal::SFResetBitset rbar(m->Masks::add_remove_mask_, true);

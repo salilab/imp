@@ -6,7 +6,7 @@ import sys
 class OptionParser(optparse.OptionParser):
     """IMP-specific subclass of optparse.OptionParser.
        This adds options common to all IMP applications
-       (see IMP::base::setup_from_argv()).
+       (see IMP::setup_from_argv()).
     """
 
     _use_boost_parser = True
@@ -74,7 +74,7 @@ class OptionParser(optparse.OptionParser):
            optparse.OptionParser, except that it also processes options common
            to all IMP applications (these are not returned in opts, but can be
            obtained in the usual way, e.g. by calling
-           IMP::base::get_string_flag()).
+           IMP::get_string_flag()).
            @param[in] num_positional If a positive integer, exactly that
                       many positional arguments must be specified on the
                       command line; if a negative integer, that many or

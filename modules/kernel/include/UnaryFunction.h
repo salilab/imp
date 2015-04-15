@@ -9,7 +9,7 @@
 
 #include <IMP/kernel_config.h>
 #include "base_types.h"
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -22,7 +22,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     - virtual DerivativePair evaluate_with_derivative(double feature) const
     also add IMP_OBJECT_METHODS(Name) macro for Object methods
  */
-class IMPKERNELEXPORT UnaryFunction : public IMP::base::Object {
+class IMPKERNELEXPORT UnaryFunction : public IMP::Object {
  public:
   UnaryFunction(std::string name = "UnaryFunction%1%");
 

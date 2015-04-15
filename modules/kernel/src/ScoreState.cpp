@@ -5,13 +5,13 @@
  *
  */
 
-#include "IMP/base//log.h"
+#include "IMP//log.h"
 #include "IMP/ScoreState.h"
 #include "IMP/Model.h"
 #include "IMP/container_base.h"
 #include "IMP/input_output.h"
 #include "IMP/internal/utility.h"
-#include <IMP/base/statistics.h>
+#include <IMP/statistics.h>
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -26,7 +26,7 @@ ScoreState::ScoreState(Model *m, std::string name)
 
 void ScoreState::before_evaluate() {
   IMP_OBJECT_LOG;
-  base::Timer t(this, str_before_evaluate);
+  Timer t(this, str_before_evaluate);
   validate_inputs();
   validate_outputs();
   do_before_evaluate();
@@ -34,7 +34,7 @@ void ScoreState::before_evaluate() {
 
 void ScoreState::after_evaluate(DerivativeAccumulator *da) {
   IMP_OBJECT_LOG;
-  base::Timer t(this, str_after_evaluate);
+  Timer t(this, str_after_evaluate);
   validate_inputs();
   validate_outputs();
   do_after_evaluate(da);

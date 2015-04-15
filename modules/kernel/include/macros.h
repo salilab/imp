@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_MACROS_H
 #define IMPKERNEL_MACROS_H
 #include <IMP/kernel_config.h>
-#include <IMP/base/base_macros.h>
+#include <IMP/base_macros.h>
 #include "decorator_macros.h"
 #include "singleton_macros.h"
 #include "pair_macros.h"

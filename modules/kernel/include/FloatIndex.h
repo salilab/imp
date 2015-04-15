@@ -12,7 +12,7 @@
 #include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "particle_index.h"
-#include <IMP/base/tuple_macros.h>
+#include <IMP/tuple_macros.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 

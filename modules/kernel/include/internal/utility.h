@@ -38,7 +38,7 @@ struct Counter {
 // Note that older g++ is confused by queue.back().get<2>()
 #define IMP_PRINT_TREE(stream, NodeType, start, num_children, get_child, show) \
   {                                                                            \
-    base::Vector<boost::tuple<std::string, std::string, NodeType> > queue;     \
+    Vector<boost::tuple<std::string, std::string, NodeType> > queue;     \
     queue.push_back(boost::make_tuple(std::string(), std::string(), start));   \
     do {                                                                       \
       boost::tuple<std::string, std::string, NodeType> &back = queue.back();   \
@@ -93,7 +93,7 @@ struct SFResetBitset {
   }
 };
 
-IMPKERNELEXPORT void show_dg_node(ModelObject *mo, base::TextOutput to);
+IMPKERNELEXPORT void show_dg_node(ModelObject *mo, TextOutput to);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 

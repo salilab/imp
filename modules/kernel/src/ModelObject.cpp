@@ -17,7 +17,7 @@
 IMPKERNEL_BEGIN_NAMESPACE
 
 ModelObject::ModelObject(Model *m, std::string name)
-    : base::Object(name), model_(m) {
+    : Object(name), model_(m) {
   m->do_add_model_object(this);
 }
 

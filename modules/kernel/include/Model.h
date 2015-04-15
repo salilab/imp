@@ -21,11 +21,11 @@
 #include "Undecorator.h"
 #include "internal/AttributeTable.h"
 #include "internal/attribute_tables.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Object.h>
+#include <IMP/Pointer.h>
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
-#include <IMP/base/tuple_macros.h>
+#include <IMP/tuple_macros.h>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 
@@ -69,7 +69,7 @@ class Model;
 
     \headerfile Model.h "IMP/Model.h"
  */
-class IMPKERNELEXPORT Model : public base::Object
+class IMPKERNELEXPORT Model : public Object
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
                               ,
                               public internal::Masks,
@@ -86,7 +86,7 @@ class IMPKERNELEXPORT Model : public base::Object
                               public internal::ParticlesAttributeTable
 #endif
                               {
-  typedef base::Vector<ModelObject *> Edges;
+  typedef Vector<ModelObject *> Edges;
   // must be up top
   // we don't want any liveness checks
   IMP_NAMED_TUPLE_5(NodeInfo, NodeInfos, Edges, inputs, Edges, input_outputs,
@@ -101,13 +101,13 @@ class IMPKERNELEXPORT Model : public base::Object
   boost::unordered_map<FloatKey, FloatRange> ranges_;
 
   ParticleIndexes free_particles_;
-  base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;
-  base::IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
+  IndexVector<ParticleIndexTag, Pointer<Particle> > particle_index_;
+  IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
 
-  base::Vector<base::PointerMember<base::Object> > model_data_;
+  Vector<PointerMember<Object> > model_data_;
   ////////////// DEPRECATED
   // for old code that uses the model for the scoring function
-  base::PointerMember<RestraintSet> restraints_;
+  PointerMember<RestraintSet> restraints_;
 
   void do_add_dependencies(const ModelObject *mo);
   void do_clear_required_score_states(ModelObject *mo);
@@ -308,9 +308,9 @@ class IMPKERNELEXPORT Model : public base::Object
       to keep a central ScoreState to normalize rigid body rotational variables.
       @{ */
   /** Store a piece of data in the model referenced by the key. */
-  void add_data(ModelKey mk, base::Object *o);
+  void add_data(ModelKey mk, Object *o);
   /** Get back some data stored in the model. */
-  base::Object *get_data(ModelKey mk) const;
+  Object *get_data(ModelKey mk) const;
   /** Remove data stored in the model. */
   void remove_data(ModelKey mk);
   /** Check if the model has a certain piece of data attached. */
@@ -323,10 +323,10 @@ class IMPKERNELEXPORT Model : public base::Object
 // deprecated
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   struct NotNull {
-    bool operator()(const base::Pointer<Particle> &p) { return p; }
+    bool operator()(const Pointer<Particle> &p) { return p; }
   };
   typedef boost::filter_iterator<
-      NotNull, base::Vector<base::Pointer<Particle> >::const_iterator>
+      NotNull, Vector<Pointer<Particle> >::const_iterator>
       ParticleIterator;
 #endif
 

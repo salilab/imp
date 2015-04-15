@@ -10,8 +10,8 @@
 
 #include <IMP/kernel_config.h>
 #include "ModelObject.h"
-#include <IMP/base/WeakPointer.h>
-#include <IMP/base/Object.h>
+#include <IMP/WeakPointer.h>
+#include <IMP/Object.h>
 
 #include <iostream>
 
@@ -128,7 +128,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   }
 
  private:
-  base::UncheckedWeakPointer<Optimizer> optimizer_;
+  UncheckedWeakPointer<Optimizer> optimizer_;
   bool is_optimizing_;
 };
 

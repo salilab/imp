@@ -10,7 +10,7 @@
 
 #include <IMP/kernel_config.h>
 #include "base_types.h"
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include "particle_index.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -22,7 +22,7 @@ class Model;
     have such an invariant (eg an IMP::core::RigidBody) should register
     an Undecorator when setup_particle is called.
 */
-class IMPKERNELEXPORT Undecorator : public base::Object {
+class IMPKERNELEXPORT Undecorator : public Object {
   Model *m_;
 
  public:

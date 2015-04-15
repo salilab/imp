@@ -9,8 +9,8 @@
 
 #include <IMP/kernel_config.h>
 #include "base_types.h"
-#include <IMP/base/ref_counted_macros.h>
-#include <IMP/base/utility_macros.h>
+#include <IMP/ref_counted_macros.h>
+#include <IMP/utility_macros.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -21,9 +21,9 @@ class Model;
     in the model change. This allows them to update internal state
     when that occurs.
  */
-class IMPKERNELEXPORT ModelObject : public base::Object {
+class IMPKERNELEXPORT ModelObject : public Object {
   friend class Model;
-  base::WeakPointer<Model> model_;
+  WeakPointer<Model> model_;
 
   // for cleanup
   void set_model(Model *m);

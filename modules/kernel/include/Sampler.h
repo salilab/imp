@@ -10,11 +10,11 @@
 
 #include <IMP/kernel_config.h>
 #include "Model.h"
-#include <IMP/base/Pointer.h>
-#include <IMP/base/Object.h>
+#include <IMP/Pointer.h>
+#include <IMP/Object.h>
 #include "ConfigurationSet.h"
-#include <IMP/base/deprecation_macros.h>
-#include <IMP/base/ref_counted_macros.h>
+#include <IMP/deprecation_macros.h>
+#include <IMP/ref_counted_macros.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -28,9 +28,9 @@ IMPKERNEL_BEGIN_NAMESPACE
     types to search for configurations which minimize the scoring
     function.
 */
-class IMPKERNELEXPORT Sampler : public IMP::base::Object {
-  base::PointerMember<Model> model_;
-  base::PointerMember<ScoringFunction> sf_;
+class IMPKERNELEXPORT Sampler : public IMP::Object {
+  PointerMember<Model> model_;
+  PointerMember<ScoringFunction> sf_;
 
  public:
   Sampler(Model *m, std::string name = "Sampler %1%");

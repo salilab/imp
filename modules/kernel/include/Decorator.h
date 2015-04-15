@@ -10,16 +10,16 @@
 
 #include <IMP/kernel_config.h>
 #include "base_types.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/WeakPointer.h>
+#include <IMP/Object.h>
+#include <IMP/WeakPointer.h>
 #include "Model.h"
 #include "Particle.h"
 #include "utility.h"
 #include "Constraint.h"
 #include "internal/utility.h"
-#include <IMP/base/utility_macros.h>
-#include <IMP/base/Vector.h>
-#include <IMP/base/Value.h>
+#include <IMP/utility_macros.h>
+#include <IMP/Vector.h>
+#include <IMP/Value.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class ParticleAdaptor;
@@ -113,12 +113,12 @@ and then would not have this problem.
 
 See example::ExampleDecorator to see what a minimal decorator looks like.
 */
-class IMPKERNELEXPORT Decorator : public base::Value {
+class IMPKERNELEXPORT Decorator : public Value {
  private:
-  base::WeakPointer<Model> model_;
+  WeakPointer<Model> model_;
   ParticleIndex pi_;
   bool is_valid_; // false if constructed with default constructor
-  int compare(base::Object* o) const {
+  int compare(Object* o) const {
     if (o < get_particle())
       return -1;
     else if (o > get_particle())
@@ -142,19 +142,19 @@ class IMPKERNELEXPORT Decorator : public base::Value {
   typedef Particle* ParticleP;
 #endif
 #ifndef IMP_DOXYGEN
-  bool __eq__(base::Object* o) const { return operator==(o); }
-  bool __ne__(base::Object* o) const { return operator!=(o); }
-  bool __lt__(base::Object* o) const { return operator<(o); }
-  bool __gt__(base::Object* o) const { return operator>(o); }
-  bool __ge__(base::Object* o) const { return operator>=(o); }
-  bool __le__(base::Object* o) const { return operator<=(o); }
+  bool __eq__(Object* o) const { return operator==(o); }
+  bool __ne__(Object* o) const { return operator!=(o); }
+  bool __lt__(Object* o) const { return operator<(o); }
+  bool __gt__(Object* o) const { return operator>(o); }
+  bool __ge__(Object* o) const { return operator>=(o); }
+  bool __le__(Object* o) const { return operator<=(o); }
 #ifndef SWIG
-  bool operator==(base::Object* o) const { return (compare(o) == 0); }
-  bool operator!=(base::Object* o) const { return (compare(o) != 0); }
-  bool operator<(base::Object* o) const { return (compare(o) < 0); }
-  bool operator>(base::Object* o) const { return (compare(o) > 0); }
-  bool operator>=(base::Object* o) const { return !(compare(o) < 0); }
-  bool operator<=(base::Object* o) const { return !(compare(o) > 0); }
+  bool operator==(Object* o) const { return (compare(o) == 0); }
+  bool operator!=(Object* o) const { return (compare(o) != 0); }
+  bool operator<(Object* o) const { return (compare(o) < 0); }
+  bool operator>(Object* o) const { return (compare(o) > 0); }
+  bool operator>=(Object* o) const { return !(compare(o) < 0); }
+  bool operator<=(Object* o) const { return !(compare(o) > 0); }
 
   bool operator==(Particle* o) const { return (compare(o) == 0); }
   bool operator!=(Particle* o) const { return (compare(o) != 0); }

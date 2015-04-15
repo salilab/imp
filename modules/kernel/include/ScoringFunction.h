@@ -15,8 +15,8 @@
 #include "dependency_graph.h"
 #include "Restraint.h"
 #include "ModelObject.h"
-#include <IMP/base/InputAdaptor.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/InputAdaptor.h>
+#include <IMP/Pointer.h>
 
 #include <limits>
 
@@ -105,12 +105,12 @@ IMPKERNELEXPORT ScoringFunctions create_decomposition(ScoringFunction *sf);
 */
 class IMPKERNELEXPORT ScoringFunctionAdaptor :
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-    public base::PointerMember<ScoringFunction>
+    public PointerMember<ScoringFunction>
 #else
-    public base::InputAdaptor
+    public InputAdaptor
 #endif
     {
-  typedef base::PointerMember<ScoringFunction> P;
+  typedef PointerMember<ScoringFunction> P;
   static ScoringFunction *get(ScoringFunction *sf) { return sf; }
 
   /**
@@ -133,7 +133,7 @@ class IMPKERNELEXPORT ScoringFunctionAdaptor :
   ScoringFunctionAdaptor() {}
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   template <class T>
-  ScoringFunctionAdaptor(base::internal::PointerBase<T> t)
+  ScoringFunctionAdaptor(internal::PointerBase<T> t)
       : P(get(t)) {}
 #endif
   ScoringFunctionAdaptor(ScoringFunction *sf) : P(sf) {}

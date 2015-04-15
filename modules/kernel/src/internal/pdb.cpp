@@ -14,7 +14,7 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-ParticlesTemp create_particles_from_pdb(base::TextInput in, Model *m) {
+ParticlesTemp create_particles_from_pdb(TextInput in, Model *m) {
   ParticlesTemp ret;
   do {
     char buf[1000];

@@ -21,9 +21,9 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 */
 template <class Before, class After, class Container>
 class ContainerConstraint : public Constraint {
-  IMP::base::PointerMember<Before> f_;
-  IMP::base::PointerMember<After> af_;
-  IMP::base::PointerMember<Container> c_;
+  IMP::PointerMember<Before> f_;
+  IMP::PointerMember<After> af_;
+  IMP::PointerMember<Container> c_;
 
  public:
   ContainerConstraint(Before *before, After *after, Container *c,

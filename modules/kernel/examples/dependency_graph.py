@@ -131,7 +131,7 @@ import IMP.container
 import IMP.base
 import sys
 
-IMP.base.setup_from_argv(sys.argv, "Example of dependency graphs")
+IMP.setup_from_argv(sys.argv, "Example of dependency graphs")
 
 
 def create_representation():
@@ -151,7 +151,7 @@ def create_representation():
 
     def create_protein_from_pdbs(name, files):
         def create_from_pdb(file):
-            sls = IMP.base.SetLogState(IMP.base.NONE)
+            sls = IMP.SetLogState(IMP.NONE)
             t = IMP.atom.read_pdb(
                 IMP.get_example_path("data/" + file), m,
                 IMP.atom.ATOMPDBSelector())
@@ -238,9 +238,9 @@ create_restraints(m, all)
 # we can get the full dependency graph for the whole model with all the restraints
 # but it is pretty complex
 dg = IMP.get_dependency_graph(m)
-IMP.base.show_graphviz(dg)
+IMP.show_graphviz(dg)
 
 # better thing to do is to get the "pruned" graph
 pdg = IMP.get_pruned_dependency_graph(m)
 
-IMP.base.show_graphviz(pdg)
+IMP.show_graphviz(pdg)
