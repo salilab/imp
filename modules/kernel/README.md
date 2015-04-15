@@ -4,7 +4,7 @@ For backwards compatibility, the kernel can also be accessed as IMP::kernel.
 
 # Info
 
-_Author(s)_: Daniel Russel
+_Author(s)_: Daniel Russel, Ben Webb
 
 _Maintainer_: `benmwebb`
 
