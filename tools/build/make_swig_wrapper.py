@@ -39,8 +39,8 @@ def run_swig(outputdir, options):
     args.append("-I" + os.path.join("..", "..", "swig"))
     args.extend(["-oh", "wrap.h-in"])
     args.extend(["-o", "wrap.cpp-in"])
-    if options.module == "base":
-        args.append("-DIMP_SWIG_BASE")
+    if options.module == "kernel":
+        args.append("-DIMP_SWIG_KERNEL")
     for p in options.swigpath:
         args.append("-I%s" % tools.from_cmake_path(p))
     for p in options.includepath:
