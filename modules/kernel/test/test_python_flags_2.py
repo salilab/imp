@@ -11,13 +11,13 @@ class Tests(IMP.test.TestCase):
 
     def test_false_bool(self):
         """Test python bool flags are false by default"""
-        IMP.base.add_bool_flag("myboolflag", "Some bool text")
-        extra = IMP.base.setup_from_argv(["python", "zero", "one"],
+        IMP.add_bool_flag("myboolflag", "Some bool text")
+        extra = IMP.setup_from_argv(["python", "zero", "one"],
                                          "test things",
                                          "arg0 arg1", 2)
-        print(IMP.base.get_bool_flag("myboolflag"))
-        print(IMP.base.get_log_level())
+        print(IMP.get_bool_flag("myboolflag"))
+        print(IMP.get_log_level())
         print(extra)
-        self.assertEqual(IMP.base.get_bool_flag("myboolflag"), False)
+        self.assertEqual(IMP.get_bool_flag("myboolflag"), False)
 if __name__ == '__main__':
     IMP.test.main()

@@ -1,5 +1,4 @@
 from __future__ import print_function
-import IMP.base
 import IMP.test
 import io
 import sys
@@ -14,11 +13,11 @@ class Tests(IMP.test.TestCase):
             types = [io.BytesIO]
         for typ in types:
             sio = typ()
-            IMP.base.show_timings(sio)
+            IMP.show_timings(sio)
             print(sio.getvalue())
-            IMP.base.clear_statistics()
+            IMP.clear_statistics()
             sio = typ()
-            IMP.base.show_timings(sio)
+            IMP.show_timings(sio)
             print(sio.getvalue())
 
 if __name__ == '__main__':

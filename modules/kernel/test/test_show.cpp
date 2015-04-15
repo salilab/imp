@@ -5,11 +5,10 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/base/Showable.h>
-#include <IMP/base/VersionInfo.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/Showable.h>
+#include <IMP/VersionInfo.h>
+#include <IMP/check_macros.h>
 namespace IMP {
-namespace base {
 namespace {
 void test() {
   std::cout << Showable(1);
@@ -21,8 +20,7 @@ void test() {
 }
 }
 }
-}
 int main(int, char * []) {
-  IMP_CATCH_AND_TERMINATE(IMP::base::test(););
+  IMP_CATCH_AND_TERMINATE(IMP::test(););
   return 0;
 }

@@ -1,5 +1,4 @@
 from __future__ import print_function
-import IMP.base
 import IMP.test
 import os.path
 
@@ -10,8 +9,8 @@ class Tests(IMP.test.TestCase):
         """get_data_directory should raise an error if it does not exist"""
         print("HI")
         self.assertRaises(
-            IMP.base.IOException,
-            IMP.base.get_data_path,
+            IMP.IOException,
+            IMP.get_data_path,
             "not/exist")
         print("HO")
 

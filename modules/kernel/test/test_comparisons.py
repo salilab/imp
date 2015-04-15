@@ -1,5 +1,4 @@
 from __future__ import print_function
-import IMP.base
 import IMP.test
 import sys
 import random
@@ -14,7 +13,7 @@ class Tests(IMP.test.TestCase):
 
     def test_log_targets(self):
         """Test comparisons in python"""
-        V = IMP.base._TestValue
+        V = IMP._TestValue
         b = V(random.randint(0, 100))
         c = V(b.get())
         cp = cmp(b, c)

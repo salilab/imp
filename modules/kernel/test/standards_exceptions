@@ -1,5 +1,7 @@
-show_exceptions=['Decorator', "ParticlePair", "ParticleTriplet", "ParticleQuad"]
+show_exceptions=['Decorator', "ParticlePair", "ParticleTriplet", "ParticleQuad",
+                 'RandomNumberGenerator',"Timer"]
 function_name_exceptions=[
+    'RandomNumberGenerator.seed', 'setup_from_argv',
     'Particle.has_attribute', 'Model.restore_particle',
     'RandomNumberGenerator.seed',
     'CommandDispatcher.import_module',
@@ -21,7 +23,17 @@ function_name_exceptions=[
     'OptionParser.print_help',
     'OptionParser.print_usage',
     'OptionParser.print_version']
-value_object_exceptions=['Decorator', 'DerivativeAccumulator',
+value_object_exceptions=['Exception',
+                                            'IOException', 'IndexException',
+                                           'InternalException',
+                                            'ModelException',
+                                            'PairFunctor',
+                                           'QuadFunctor',
+                                            'RandomNumberGenerator',
+                                           'ValueException',
+                                           'FailureHandlerBase',
+                                            "TextInput", "TextOutput", "RefCounted", "Timer",
+                       'Decorator', 'DerivativeAccumulator',
                                            # imported
                                            'Object', 'SetLogState',
                                            'SetLogTarget', 'RestraintBase', 'ScoreStateBase']
