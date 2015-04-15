@@ -9,8 +9,7 @@ class PythonExampleUnaryFunction(IMP.UnaryFunction):
         self.center, self.k = center, k
 
     def evaluate_with_derivative(self, feature):
-        return IMP.DerivativePair(self.evaluate(feature),
-                                  self.k * (feature - self.center))
+        return (self.evaluate(feature), self.k * (feature - self.center))
 
     def evaluate(self, feature):
         return .5 * self.k * (feature - self.center) * (feature - self.center)
