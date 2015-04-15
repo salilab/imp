@@ -19,7 +19,7 @@
 #include "../Optimizer.h"
 #include "container_helpers.h"
 #include <boost/unordered_map.hpp>
-#include <IMP/internal/swig.h>
+#include <IMP/internal/swig_base.h>
 #include <IMP/deprecation_macros.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE

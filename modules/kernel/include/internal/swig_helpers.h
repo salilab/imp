@@ -15,7 +15,7 @@
 #include "../Restraint.h"
 #include "../SingletonScore.h"
 #include "../macros.h"
-#include <IMP/internal/swig_helpers.h>
+#include <IMP/internal/swig_helpers_base.h>
 
 using namespace IMP;
 

@@ -19,7 +19,7 @@
 #include "Key.h"
 #include "internal/AttributeTable.h"
 #include <IMP/Object.h>
-#include <IMP/utility.h>
+#include <IMP/base_utility.h>
 #include <IMP/Pointer.h>
 #include <IMP/check_macros.h>
 #include <utility>

@@ -20,7 +20,7 @@
 #include <IMP/thread_macros.h>
 #include <boost/timer.hpp>
 #include "IMP/set.h"
-#include <IMP/internal/static.h>
+#include <IMP/internal/base_static.h>
 #include <numeric>
 
 IMPKERNEL_BEGIN_NAMESPACE

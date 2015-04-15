@@ -11,7 +11,7 @@
 #include <IMP/kernel_config.h>
 #include "../Particle.h"
 #include "../Decorator.h"
-#include <IMP/internal/graph_utility.h>
+#include <IMP/internal/base_graph_utility.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
