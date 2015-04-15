@@ -203,7 +203,7 @@ if __name__ == '__main__':
             exec(open(exceptions, "r").read(), d)
         except IOError:
             pass
-        impmodule = "IMP." + module
+        impmodule = "IMP" if module == 'kernel' else "IMP." + module
         test = template % ({'module': impmodule,
                             'plural_exceptions': str(d['plural_exceptions']),
                             'show_exceptions': str(d['show_exceptions']),
