@@ -3,6 +3,11 @@
 %}
 
 %pythoncode %{
+# Some old code assumes that "import IMP; IMP.kernel.foo()" works.
+# Don't do 'import IMP.kernel' here because that will trigger a deprecation
+# warning every time we import IMP, which is not what we want.
+kernel = __import__('IMP')
+
 import os
 i_m_p="IMP_MODULE_PATH"
 if i_m_p in os.environ.keys():
