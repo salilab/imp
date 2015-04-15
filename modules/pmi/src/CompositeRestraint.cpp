@@ -17,8 +17,8 @@
 
 IMPPMI_BEGIN_NAMESPACE
 
-CompositeRestraint::CompositeRestraint(kernel::Model *m,
-                          kernel::ParticleIndexesAdaptor handle_particle_indexes,
+CompositeRestraint::CompositeRestraint(Model *m,
+                          ParticleIndexesAdaptor handle_particle_indexes,
                           double coffd, double l, bool tabprob, double plateau, std::string name):
                           Restraint(m, name),
                           handle_particle_indexes_(handle_particle_indexes),
@@ -91,8 +91,8 @@ double CompositeRestraint::get_probability_per_particle_excluding(unsigned int i
 
             double onemprob1=1.0;
 
-            kernel::ParticleIndexes ppi=pis_[ipart];
-            kernel::ParticleIndexes ppk=pis_[k];
+            ParticleIndexes ppi=pis_[ipart];
+            ParticleIndexes ppk=pis_[k];
 
             for(unsigned int ii=0;ii<ppi.size();++ii){
               for(unsigned int kk=0;kk<ppk.size();++kk){

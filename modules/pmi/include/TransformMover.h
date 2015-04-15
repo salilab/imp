@@ -28,9 +28,9 @@ class IMPPMIEXPORT TransformMover : public IMP::core::MonteCarloMover {
   algebra::Transformation3D last_transformation_;
   Float max_translation_;
   Float max_angle_;
-  IMP::kernel::ParticleIndexes pixyzs_;
-  IMP::kernel::ParticleIndexes pirbs_;
-  IMP::kernel::ParticleIndexes pis_;
+  IMP::ParticleIndexes pixyzs_;
+  IMP::ParticleIndexes pirbs_;
+  IMP::ParticleIndexes pis_;
   IMP::algebra::Transformation3D t_;
   IMP::algebra::Transformation3D c_;
   IMP::algebra::Transformation3Ds rbts_;
@@ -71,18 +71,18 @@ IMP::algebra::Vector3D get_center(){
 
 
  public:
-  TransformMover(kernel::Model *m, Float max_translation, Float max_rotation);
+  TransformMover(Model *m, Float max_translation, Float max_rotation);
 
-  TransformMover(kernel::Model *m, algebra::Vector3D axis, 
+  TransformMover(Model *m, algebra::Vector3D axis, 
                                    Float max_translation, Float max_rotation);
 
 
-void add_xyz_particle(IMP::kernel::ParticleIndexAdaptor pi){
+void add_xyz_particle(IMP::ParticleIndexAdaptor pi){
 pixyzs_.push_back(pi);
 pis_.push_back(pi);
 }
 
-void add_rigid_body_particle(IMP::kernel::ParticleIndexAdaptor pi){
+void add_rigid_body_particle(IMP::ParticleIndexAdaptor pi){
 pirbs_.push_back(pi);
 pis_.push_back(pi);
 //initializing the last_transformation array
@@ -106,7 +106,7 @@ pis_.push_back(pi);
   Float get_maximum_rotation() const { return max_angle_; }
 
  protected:
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(TransformMover);

@@ -13,10 +13,10 @@ import IMP.pmi.samplers as samplers
 import IMP.pmi.output as output
 
 
-class XTransRestraint(IMP.kernel.Restraint):
+class XTransRestraint(IMP.Restraint):
 
     def __init__(self, m):
-        IMP.kernel.Restraint.__init__(self, m, "XTransRestraint %1%")
+        IMP.Restraint.__init__(self, m, "XTransRestraint %1%")
 
     def unprotected_evaluate(self, accum):
         e = 0

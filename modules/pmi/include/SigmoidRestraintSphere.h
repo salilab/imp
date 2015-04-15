@@ -10,7 +10,7 @@
 #define IMPPMI_SIGMOID_RESTRAINT_SPHERE_H
 #include "pmi_config.h"
 #include <IMP/Restraint.h>
-#include <IMP/kernel/particle_index.h>
+#include <IMP/particle_index.h>
 
 
 IMPPMI_BEGIN_NAMESPACE
@@ -18,8 +18,8 @@ IMPPMI_BEGIN_NAMESPACE
 //! Simple sigmoidal score calculated between sphere surfaces.
 class IMPPMIEXPORT  SigmoidRestraintSphere : public Restraint
 {
-    IMP::kernel::ParticleIndex p1_;
-    IMP::kernel::ParticleIndex p2_;
+    IMP::ParticleIndex p1_;
+    IMP::ParticleIndex p2_;
     double inflection_;
     double slope_;
     double amplitude_;
@@ -31,9 +31,9 @@ public:
 
 
   //! Create the restraint.
-  SigmoidRestraintSphere(IMP::kernel::Model *m, 
-                          IMP::kernel::ParticleIndexAdaptor p1,
-                          IMP::kernel::ParticleIndexAdaptor p2,
+  SigmoidRestraintSphere(IMP::Model *m, 
+                          IMP::ParticleIndexAdaptor p1,
+                          IMP::ParticleIndexAdaptor p2,
                           double inflection, double slope, 
                           double amplitude, double line_slope_=0,
                      std::string name="SigmoidRestraintSphere%1%");
@@ -43,9 +43,9 @@ public:
   double get_amplitude(){return amplitude_;}
 
   virtual double
-  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  unprotected_evaluate(IMP::DerivativeAccumulator *accum)
      const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(SigmoidRestraintSphere);
 
 

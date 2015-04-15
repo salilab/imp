@@ -11,7 +11,7 @@
 #define IMPPMI_COMPOSITE_RESTRAINT_H
 #include "pmi_config.h"
 #include <IMP/Restraint.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/base/tuple_macros.h>
 //#include <IMP/container/CloseBipartitePairContainer.h>
 
@@ -23,8 +23,8 @@ IMPPMI_BEGIN_NAMESPACE
 class IMPPMIEXPORT CompositeRestraint : public Restraint
 {
     //particle indexes in the composite
-    base::Vector<kernel::ParticleIndexes> pis_;
-    kernel::ParticleIndexes handle_particle_indexes_;
+    base::Vector<ParticleIndexes> pis_;
+    ParticleIndexes handle_particle_indexes_;
     double coffd_;
     double l_;
     IMP_NAMED_TUPLE_2(CacheKey, CacheKeys,
@@ -75,12 +75,12 @@ public:
 
 
   //! Create the restraint.
-  CompositeRestraint(kernel::Model *m,
-                     kernel::ParticleIndexesAdaptor handle_particle_indexes,
+  CompositeRestraint(Model *m,
+                     ParticleIndexesAdaptor handle_particle_indexes,
                      double coffd, double l, bool tabprob, double plateau,
                      std::string name="CompositeRestraint%1%");
 
-  void add_composite_particle(kernel::ParticleIndexesAdaptor pi){pis_.push_back(pi);}
+  void add_composite_particle(ParticleIndexesAdaptor pi){pis_.push_back(pi);}
 
 
   unsigned int get_number_of_elements() const {return pis_.size();}
@@ -90,9 +90,9 @@ public:
   //double get_probability() const {return 0.0;}
 
   virtual double
-  unprotected_evaluate(kernel::DerivativeAccumulator *accum)
+  unprotected_evaluate(DerivativeAccumulator *accum)
      const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(CompositeRestraint);
 
   virtual double get_probability() const

@@ -14,9 +14,9 @@
 
 IMPPMI_BEGIN_NAMESPACE
 
-SigmoidRestraintSphere::SigmoidRestraintSphere(IMP::kernel::Model *m, 
-                          IMP::kernel::ParticleIndexAdaptor p1,
-                          IMP::kernel::ParticleIndexAdaptor p2,
+SigmoidRestraintSphere::SigmoidRestraintSphere(IMP::Model *m, 
+                          IMP::ParticleIndexAdaptor p1,
+                          IMP::ParticleIndexAdaptor p2,
                           double inflection, double slope, 
                           double amplitude, double line_slope, std::string name):                  
                           Restraint(m, name), 
