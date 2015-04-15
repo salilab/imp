@@ -102,10 +102,10 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                                           DerivativeAccumulator *da, double max,
                                           unsigned int lower_bound,
                                           unsigned int upper_bound) const;
-  /** Decompose this pair score acting on the pair into a set of
-      restraints. The scoring function and derivatives should
-      be equal to the current score. The defualt implementation
-      just returns this object bound to the pair.*/
+  //! Decompose this pair score acting on the pair into a set of restraints.
+  /** The scoring function and derivatives should
+      be equal to the current score. The default implementation
+      just returns this object bound to the pair. */
   Restraints create_current_decomposition(Model *m,
                                           PASSINDEXTYPE vt) const;
 
