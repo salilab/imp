@@ -14,7 +14,7 @@
 #include "IMP/container_base.h"
 #include "IMP/ScoringFunction.h"
 #include "IMP/internal/utility.h"
-#include "IMP//warning_macros.h"
+#include "IMP/warning_macros.h"
 #include <IMP/thread_macros.h>
 #include "IMP/input_output.h"
 #include "IMP/internal/RestraintsScoringFunction.h"

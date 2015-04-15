@@ -5,7 +5,7 @@
  *
  */
 
-#include "IMP//log.h"
+#include "IMP/log.h"
 #include "IMP/ScoreState.h"
 #include "IMP/Model.h"
 #include "IMP/container_base.h"

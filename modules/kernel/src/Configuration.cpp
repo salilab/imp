@@ -10,7 +10,7 @@
 #include "IMP/Configuration.h"
 #include "IMP/internal/utility.h"
 #include "IMP/dependency_graph.h"
-#include "IMP//set.h"
+#include "IMP/set.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 

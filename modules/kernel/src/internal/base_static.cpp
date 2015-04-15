@@ -9,7 +9,7 @@
 #if !IMP_KERNEL_HAS_LOG4CXX
 #include "IMP/internal/log_stream.h"
 #endif
-#include "IMP//Pointer.h"
+#include "IMP/Pointer.h"
 #include "IMP/Object.h"
 #include "IMP/Showable.h"
 #include "IMP/Vector.h"
