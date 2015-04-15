@@ -15,11 +15,11 @@
 #include <algorithm>
 
 /** Define
-    - IMP::kernel::ClassnameScore::evaluate_indexes()
-    - IMP::kernel::ClassnameScore::evaluate_if_good_indexes()
+    - IMP::ClassnameScore::evaluate_indexes()
+    - IMP::ClassnameScore::evaluate_if_good_indexes()
  */
 #define IMP_CLASSNAME_SCORE_METHODS(Name)                                      \
-  double evaluate_indexes(kernel::Model *m, const PLURALINDEXTYPE &p,          \
+  double evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,                  \
                           DerivativeAccumulator *da, unsigned int lower_bound, \
                           unsigned int upper_bound) const IMP_FINAL {          \
     double ret = 0;                                                            \
@@ -29,7 +29,7 @@
     return ret;                                                                \
   }                                                                            \
   double evaluate_if_good_indexes(                                             \
-      kernel::Model *m, const PLURALINDEXTYPE &p, DerivativeAccumulator *da,   \
+      Model *m, const PLURALINDEXTYPE &p, DerivativeAccumulator *da,           \
       double max, unsigned int lower_bound, unsigned int upper_bound) const {  \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
@@ -42,8 +42,8 @@
 //! Define extra the functions needed for a ClassnamePredicate
 #define IMP_CLASSNAME_PREDICATE_METHODS(Name)                                  \
   int get_value(ARGUMENTTYPE a) const {                                        \
-    return get_value_index(IMP::kernel::internal::get_model(a),                \
-                           IMP::kernel::internal::get_index(a));               \
+    return get_value_index(IMP::internal::get_model(a),                        \
+                           IMP::internal::get_index(a));                       \
   }                                                                            \
   Ints get_value(const PLURALVARIABLETYPE &o) const {                          \
     Ints ret(o.size());                                                        \
@@ -52,7 +52,7 @@
     }                                                                          \
     return ret;                                                                \
   }                                                                            \
-  Ints get_value_index(kernel::Model *m, const PLURALINDEXTYPE &o) const {     \
+  Ints get_value_index(Model *m, const PLURALINDEXTYPE &o) const {             \
     Ints ret(o.size());                                                        \
     for (unsigned int i = 0; i < o.size(); ++i) {                              \
       ret[i] += Name::get_value_index(m, o[i]);                                \
@@ -60,22 +60,22 @@
     return ret;                                                                \
   }                                                                            \
   IMP_IMPLEMENT_INLINE_NO_SWIG(                                                \
-      void remove_if_equal(kernel::Model *m, PLURALINDEXTYPE &ps,              \
+      void remove_if_equal(Model *m, PLURALINDEXTYPE &ps,                      \
                            int value) const,                                   \
   {                                                                            \
         ps.erase(                                                              \
             std::remove_if(ps.begin(), ps.end(),                               \
-                           IMP::kernel::internal::PredicateEquals<Name, true>( \
+                           IMP::internal::PredicateEquals<Name, true>(         \
                                this, m, value)),                               \
             ps.end());                                                         \
       });                                                                      \
-  IMP_IMPLEMENT_INLINE_NO_SWIG(void remove_if_not_equal(kernel::Model *m,      \
+  IMP_IMPLEMENT_INLINE_NO_SWIG(void remove_if_not_equal(Model *m,              \
                                                         PLURALINDEXTYPE &ps,   \
                                                         int value) const,      \
   {                                                                            \
     ps.erase(                                                                  \
         std::remove_if(ps.begin(), ps.end(),                                   \
-                       IMP::kernel::internal::PredicateEquals<Name, false>(    \
+                       IMP::internal::PredicateEquals<Name, false>(            \
                            this, m, value)),                                   \
         ps.end());                                                             \
   });
@@ -84,10 +84,10 @@
 #define IMP_CLASSNAME_DERIVATIVE_MODIFIER(Name) IMP_CLASSNAME_MODIFIER(Name)
 
 /** Define
-    - IMP::kernel::ClassnameModifier::apply_indexes()
+    - IMP::ClassnameModifier::apply_indexes()
 */
 #define IMP_CLASSNAME_MODIFIER_METHODS(Name)                             \
-  virtual void apply_indexes(kernel::Model *m, const PLURALINDEXTYPE &o, \
+  virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,         \
                              unsigned int lower_bound,                   \
                              unsigned int upper_bound) const IMP_FINAL { \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {           \
@@ -108,7 +108,7 @@
 #endif
 
 /** Use this to fill in container methods
-    IMP::kernel::ClassnameContainer::do_apply()
+    IMP::ClassnameContainer::do_apply()
 */
 #define IMP_CLASSNAME_CONTAINER_METHODS(Name) \
   void do_apply(const ClassnameModifier *sm) const { apply_generic(sm); }

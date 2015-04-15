@@ -26,7 +26,7 @@ class ClassnameRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
     public Restraint
 #else
-    public IMP::kernel::internal::TupleRestraint<ClassnameScore>
+    public IMP::internal::TupleRestraint<ClassnameScore>
 #endif
     {
  public:
@@ -36,23 +36,23 @@ class ClassnameRestraint :
    */
   ClassnameRestraint(ClassnameScore *ss, ARGUMENTTYPE vt,
                      std::string name = "ClassnameRestraint %1%")
-      : IMP::kernel::internal::TupleRestraint<ClassnameScore>(
-            ss, IMP::kernel::internal::get_model(vt),
-            IMP::kernel::internal::get_index(vt), name) {}
+      : IMP::internal::TupleRestraint<ClassnameScore>(
+            ss, IMP::internal::get_model(vt),
+            IMP::internal::get_index(vt), name) {}
 
   //! Create the restraint.
   /** This function takes the function to apply to the
       stored Classname and the Classname.
    */
-  ClassnameRestraint(kernel::Model *m, ClassnameScore *ss, PASSINDEXTYPE vt,
+  ClassnameRestraint(Model *m, ClassnameScore *ss, PASSINDEXTYPE vt,
                      std::string name = "ClassnameRestraint %1%")
-      : IMP::kernel::internal::TupleRestraint<ClassnameScore>(ss, m, vt, name) {
+      : IMP::internal::TupleRestraint<ClassnameScore>(ss, m, vt, name) {
   }
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)
  protected:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const;
+  IMP::ModelObjectsTemp do_get_inputs() const;
   IMP_OBJECT_METHODS(ClassnameRestraint)
 #endif
 };

@@ -24,21 +24,19 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \note Changing the contents of the container is a fairly heavy
     weight operation as it resets part of the dependency graph. Use
     a DynamicListClassnameContainer if you want to change the contents
-    frequently (eg via a kernel::ScoreState).
+    frequently (eg via a ScoreState).
  */
 class IMPCONTAINEREXPORT ListClassnameContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public ClassnameContainer
 #else
-    public IMP::kernel::internal::StaticListContainer<
-        kernel::ClassnameContainer>
+    public IMP::internal::StaticListContainer<ClassnameContainer>
 #endif
     {
-  typedef IMP::kernel::internal::StaticListContainer<kernel::ClassnameContainer>
-      P;
+  typedef IMP::internal::StaticListContainer<ClassnameContainer> P;
 
  public:
-  ListClassnameContainer(kernel::Model *m, const PLURALINDEXTYPE &contents,
+  ListClassnameContainer(Model *m, const PLURALINDEXTYPE &contents,
                          std::string name = "ListClassnameContainer%1%");
 
   ListClassnameContainer(const PLURALVARIABLETYPE &ps,
@@ -47,9 +45,9 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
   void set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &ps);
   void set_FUNCTIONNAMEs(const PLURALINDEXTYPE &contents);
 #ifndef IMP_DOXYGEN
-  ListClassnameContainer(kernel::Model *m,
+  ListClassnameContainer(Model *m,
                          std::string name = "ListClassnameContainer %1%");
-  ListClassnameContainer(kernel::Model *m, const char *name);
+  ListClassnameContainer(Model *m, const char *name);
 
   void add_FUNCTIONNAME(ARGUMENTTYPE vt);
   void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
@@ -58,9 +56,9 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
 #ifdef SWIG
   PLURALINDEXTYPE get_indexes() const;
   PLURALINDEXTYPE get_range_indexes() const;
-  kernel::ModelObjectsTemp do_get_inputs() const;
+  ModelObjectsTemp do_get_inputs() const;
   void do_apply(const ClassnameModifier *sm) const;
-  kernel::ParticleIndexes get_all_possible_indexes() const;
+  ParticleIndexes get_all_possible_indexes() const;
 
  private:
   std::size_t do_get_contents_hash() const;

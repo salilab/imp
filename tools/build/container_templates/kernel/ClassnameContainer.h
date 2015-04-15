@@ -78,11 +78,11 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
 #ifndef IMP_DOXYGEN
 
   PLURALVARIABLETYPE get() const {
-    return IMP::kernel::internal::get_particle(get_model(), get_indexes());
+    return IMP::internal::get_particle(get_model(), get_indexes());
   }
 
   VARIABLETYPE get(unsigned int i) const {
-    return IMP::kernel::internal::get_particle(get_model(), get_indexes()[i]);
+    return IMP::internal::get_particle(get_model(), get_indexes()[i]);
   }
   unsigned int get_number() const { return get_indexes().size(); }
 #ifndef SWIG
@@ -116,7 +116,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
 
  protected:
-  ClassnameContainer(kernel::Model *m,
+  ClassnameContainer(Model *m,
                      std::string name = "ClassnameContainer %1%");
 
   virtual void do_apply(const ClassnameModifier *sm) const = 0;

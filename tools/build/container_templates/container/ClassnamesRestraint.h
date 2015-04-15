@@ -29,14 +29,13 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class ClassnamesRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
-    public kernel::Restraint
+    public Restraint
 #else
-    public IMP::kernel::internal::ContainerRestraint<kernel::ClassnameScore,
-                                                     kernel::ClassnameContainer>
+    public IMP::internal::ContainerRestraint<ClassnameScore, ClassnameContainer>
 #endif
     {
-  typedef IMP::kernel::internal::ContainerRestraint<
-      kernel::ClassnameScore, kernel::ClassnameContainer> P;
+  typedef IMP::internal::ContainerRestraint<
+      ClassnameScore, ClassnameContainer> P;
 
  public:
   //! Create the restraint with a shared container
@@ -45,14 +44,13 @@ class ClassnamesRestraint :
       container is not copied.
       \param[in] name The object name
    */
-  ClassnamesRestraint(kernel::ClassnameScore *ss,
-                      kernel::ClassnameContainerAdaptor pc,
+  ClassnamesRestraint(ClassnameScore *ss, ClassnameContainerAdaptor pc,
                       std::string name = "ClassnamesRestraint %1%")
       : P(ss, pc, name) {}
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const;
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  IMP::ModelObjectsTemp do_get_inputs() const;
   IMP_OBJECT_METHODS(ClassnamesRestraint)
 #endif
 };

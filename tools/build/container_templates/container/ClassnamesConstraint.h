@@ -36,11 +36,11 @@ class ClassnamesConstraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
     public Constraint
 #else
-    public IMP::kernel::internal::ContainerConstraint<
+    public IMP::internal::ContainerConstraint<
         ClassnameModifier, ClassnameModifier, ClassnameContainer>
 #endif
     {
-  typedef IMP::kernel::internal::ContainerConstraint<
+  typedef IMP::internal::ContainerConstraint<
       ClassnameModifier, ClassnameModifier, ClassnameContainer> P;
 
  public:
@@ -59,8 +59,8 @@ class ClassnamesConstraint :
  protected:
   void do_update_attributes();
   void do_update_derivatives(DerivativeAccumulator *da);
-  virtual kernel::ModelObjectsTemp do_get_inputs() const;
-  virtual kernel::ModelObjectsTemp do_get_outputs() const;
+  virtual ModelObjectsTemp do_get_inputs() const;
+  virtual ModelObjectsTemp do_get_outputs() const;
   IMP_OBJECT_METHODS(ClassnamesConstraint);
 #endif
 };

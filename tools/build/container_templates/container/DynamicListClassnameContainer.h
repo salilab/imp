@@ -24,12 +24,10 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public ClassnameContainer
 #else
-    public IMP::kernel::internal::DynamicListContainer<
-        kernel::ClassnameContainer>
+    public IMP::internal::DynamicListContainer<ClassnameContainer>
 #endif
     {
-  typedef IMP::kernel::internal::DynamicListContainer<
-      kernel::ClassnameContainer> P;
+  typedef IMP::internal::DynamicListContainer<ClassnameContainer> P;
 
  public:
   /** Constructs the dynamic list
@@ -56,9 +54,9 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
 #ifdef SWIG
   PLURALINDEXTYPE get_indexes() const;
   PLURALINDEXTYPE get_range_indexes() const;
-  kernel::ModelObjectsTemp do_get_inputs() const;
+  ModelObjectsTemp do_get_inputs() const;
   void do_apply(const ClassnameModifier *sm) const;
-  kernel::ParticleIndexes get_all_possible_indexes() const;
+  ParticleIndexes get_all_possible_indexes() const;
 #endif
   IMP_OBJECT_METHODS(DynamicListClassnameContainer);
 };

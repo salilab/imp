@@ -28,7 +28,7 @@ class ClassnameConstraint :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public Constraint
 #else
-    public IMP::kernel::internal::TupleConstraint<ClassnameModifier,
+    public IMP::internal::TupleConstraint<ClassnameModifier,
                                                   ClassnameDerivativeModifier>
 #endif
     {
@@ -39,17 +39,17 @@ class ClassnameConstraint :
   ClassnameConstraint(ClassnameModifier *before,
                       ClassnameDerivativeModifier *after, ARGUMENTTYPE vt,
                       std::string name = "ClassnameConstraint %1%")
-      : IMP::kernel::internal::TupleConstraint<
+      : IMP::internal::TupleConstraint<
             ClassnameModifier, ClassnameDerivativeModifier>(before, after, vt,
                                                             name) {
     IMPCORE_DEPRECATED_METHOD_DEF(2.1, "Use the model/index constructor.");
   }
 
   ClassnameConstraint(ClassnameModifier *before,
-                      ClassnameDerivativeModifier *after, kernel::Model *m,
+                      ClassnameDerivativeModifier *after, Model *m,
                       PASSINDEXTYPE vt,
                       std::string name = "ClassnameConstraint %1%")
-      : IMP::kernel::internal::TupleConstraint<
+      : IMP::internal::TupleConstraint<
             ClassnameModifier, ClassnameDerivativeModifier>(before, after, m,
                                                             vt, name) {}
 
@@ -57,8 +57,8 @@ class ClassnameConstraint :
  protected:
   void do_update_attributes();
   void do_update_derivatives(DerivativeAccumulator *da);
-  virtual kernel::ModelObjectsTemp do_get_inputs() const;
-  virtual kernel::ModelObjectsTemp do_get_outputs() const;
+  virtual ModelObjectsTemp do_get_inputs() const;
+  virtual ModelObjectsTemp do_get_outputs() const;
   IMP_OBJECT_METHODS(ClassnameConstraint);
 #endif
 };

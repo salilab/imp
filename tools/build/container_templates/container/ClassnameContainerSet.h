@@ -31,7 +31,7 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
 
  public:
   //! Construct and empty set
-  ClassnameContainerSet(kernel::Model *m,
+  ClassnameContainerSet(Model *m,
                         std::string name = "ClassnameContainerSet %1%");
 
   ClassnameContainerSet(const ClassnameContainersTemp &pc,
@@ -45,7 +45,7 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
     apply(m);
   }
 
-  kernel::ParticleIndexes get_all_possible_indexes() const;
+  ParticleIndexes get_all_possible_indexes() const;
   IMP_OBJECT_METHODS(ClassnameContainerSet);
 
   /** @name Methods to control the nested container
@@ -67,7 +67,7 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
 #ifndef IMP_DOXYGEN
   PLURALINDEXTYPE get_indexes() const;
   PLURALINDEXTYPE get_range_indexes() const;
-  kernel::ModelObjectsTemp do_get_inputs() const;
+  ModelObjectsTemp do_get_inputs() const;
 #endif
 };
 

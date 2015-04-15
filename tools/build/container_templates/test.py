@@ -13,7 +13,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
     """Tests for ClassnameContainer related objects"""
 
     def create_particle(self, m):
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         d = IMP.core.XYZ.setup_particle(p)
         d.set_coordinates(IMP.algebra.get_random_vector_in(
             IMP.algebra.get_unit_bounding_box_3d()))
@@ -21,8 +21,8 @@ class ClassnameContainerTest(IMP.test.TestCase):
         return p
 
     def create_particle_pair(self, m):
-        p0 = IMP.kernel.Particle(m)
-        p1 = IMP.kernel.Particle(m)
+        p0 = IMP.Particle(m)
+        p1 = IMP.Particle(m)
         d0 = IMP.core.XYZ.setup_particle(p0)
         d1 = IMP.core.XYZ.setup_particle(p1)
         d0.set_coordinates(IMP.algebra.get_random_vector_in(
@@ -47,7 +47,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
 
     def test_restraint(self):
         """Test the ClassnamesRestraint"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         gs = self.create_CLASSFUNCTIONNAME_score()
         c = IMP.container.ListClassnameContainer(m)
         f = 0
@@ -68,7 +68,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
 
     def test_srestraint(self):
         """Test the ClassnameRestraint"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         gs = self.create_CLASSFUNCTIONNAME_score()
         p = self.create_FUNCTIONNAME(m)
         f = gs.evaluate(p, None)
@@ -79,7 +79,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
 
     def test_min_restraint(self):
         """Test the MinimumClassnameRestraint"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         c = IMP.container.ListClassnameContainer(m)
         self.assertEqual(c.get_ref_count(), 1)
         for i in range(0, 10):
@@ -110,10 +110,10 @@ class ClassnameContainerTest(IMP.test.TestCase):
 
     def test_min_score(self):
         """Test the MinimumClassnameScore"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         s = []
         for i in range(0, 5):
-            s.append(IMP.kernel._ConstClassnameScore(i))
+            s.append(IMP._ConstClassnameScore(i))
         ps = IMP.container.MinimumClassnameScore(s, 3)
         p = self.create_FUNCTIONNAME(m)
         ps.set_was_used(True)
@@ -123,7 +123,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
     def test_set(self):
         """Testing ClassnameContainerSet"""
         IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         print("hi")
         c = IMP.container.ClassnameContainerSet(m)
         ls = []

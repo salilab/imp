@@ -54,7 +54,7 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                 computed derivatives. If nullptr, derivatives
                 will not be computed
    */
-  virtual double evaluate_index(kernel::Model *m, PASSINDEXTYPE vt,
+  virtual double evaluate_index(Model *m, PASSINDEXTYPE vt,
                                 DerivativeAccumulator *da) const;
 
   //! Compute the score and the derivative if needed over a set.
@@ -73,7 +73,7 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
       for these are provided by the IMP_CLASSNAME_SCORE()
       macro.
   */
-  virtual double evaluate_indexes(kernel::Model *m, const PLURALINDEXTYPE &o,
+  virtual double evaluate_indexes(Model *m, const PLURALINDEXTYPE &o,
                                   DerivativeAccumulator *da,
                                   unsigned int lower_bound,
                                   unsigned int upper_bound) const;
@@ -84,7 +84,7 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
 
       @return the score if score<= max or some arbitrary value > max otherwise.
   */
-  virtual double evaluate_if_good_index(kernel::Model *m, PASSINDEXTYPE vt,
+  virtual double evaluate_if_good_index(Model *m, PASSINDEXTYPE vt,
                                         DerivativeAccumulator *da,
                                         double max) const;
 
@@ -97,7 +97,7 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
       for these are provided by the IMP_CLASSNAME_SCORE()
       macro.
   */
-  virtual double evaluate_if_good_indexes(kernel::Model *m,
+  virtual double evaluate_if_good_indexes(Model *m,
                                           const PLURALINDEXTYPE &o,
                                           DerivativeAccumulator *da, double max,
                                           unsigned int lower_bound,
@@ -106,12 +106,12 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
       restraints. The scoring function and derivatives should
       be equal to the current score. The defualt implementation
       just returns this object bound to the pair.*/
-  Restraints create_current_decomposition(kernel::Model *m,
+  Restraints create_current_decomposition(Model *m,
                                           PASSINDEXTYPE vt) const;
 
  protected:
   /** Overide this to return your own decomposition.*/
-  virtual Restraints do_create_current_decomposition(kernel::Model *m,
+  virtual Restraints do_create_current_decomposition(Model *m,
                                                      PASSINDEXTYPE vt) const;
 
   IMP_REF_COUNTED_DESTRUCTOR(ClassnameScore);
