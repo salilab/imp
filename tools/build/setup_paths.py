@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Create the paths.cpp file for the base module so IMP can find data once
+"""Create the paths.cpp file for the kernel so IMP can find data once
 it is installed.
 """
 
@@ -8,12 +8,12 @@ from optparse import OptionParser
 import tools
 
 template = """
-#include <IMP/base/base_config.h>
+#include <IMP/kernel_config.h>
 
-IMPBASE_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
  std::string imp_data_path="%(datapath)s";
  std::string imp_example_path="%(examplepath)s";
-IMPBASE_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 """
 
 parser = OptionParser()
