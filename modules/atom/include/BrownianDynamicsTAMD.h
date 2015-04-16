@@ -11,8 +11,8 @@
 
 #include <IMP/atom/atom_config.h>
 #include "Diffusion.h"
-#include "Simulator.h"
 #include "atom_macros.h"
+#include <IMP/atom/BrownianDynamics.h>
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
 #include <IMP/internal/units.h>
