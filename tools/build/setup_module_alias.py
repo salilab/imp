@@ -8,18 +8,20 @@ import tools
 import os
 import glob
 
+def get_header_contents(incdir, fname):
+    return """#include <IMP/kernel_config.h>
+
+IMPKERNEL_DEPRECATED_HEADER(2.5, "Use top-level IMP namespace directly");
+#include <%(incdir)s/%(fname)s>
+""" % locals()
+
 def alias_headers(fromdir, kerneldir, basedir, incdir,
                   kernel_headers, base_renames):
     kernel_headers = dict.fromkeys(kernel_headers)
     for g in glob.glob(os.path.join(fromdir, '*.h')):
         if "Include all non-deprecated headers" not in open(g).read():
             fname = os.path.basename(g)
-            contents = """
-#include <IMP/kernel_config.h>
-
-IMPKERNEL_DEPRECATED_HEADER(2.5, "Use top-level IMP namespace directly");
-#include <%(incdir)s/%(fname)s>
-""" % locals()
+            contents = get_header_contents(incdir, fname)
             if fname in kernel_headers:
                 tools.rewrite(os.path.join(kerneldir, fname), contents)
             else:
@@ -62,6 +64,8 @@ def main():
           'base_static.h': 'static.h',
           'swig_base.h': 'swig.h',
           'swig_helpers_base.h': 'swig_helpers.h'})
+    tools.rewrite(os.path.join('include', 'IMP', 'base', 'base_config.h'),
+                  get_header_contents('IMP', 'kernel_config.h'))
     tools.link(os.path.join('include', 'IMP.h'),
                os.path.join('include', 'IMP', 'kernel.h'))
     tools.link(os.path.join('include', 'IMP.h'),
