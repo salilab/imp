@@ -14,7 +14,7 @@
 #include <IMP/Decorator.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/atom/Diffusion.h>
-#include <IMP/kernel/internal/constants.h>
+#include <IMP/internal/constants.h>
 
 #include <vector>
 #include <limits>
@@ -42,14 +42,14 @@ class IMPATOMEXPORT TAMDParticle : public IMP::Decorator  {
      Setup a TAMD particle with simulation temperature multiplied by a factor
      tsf, and friction coefficient multiplied by a factor fsf
   */
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                kernel::ParticleIndex pi_ref,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                ParticleIndex pi_ref,
                                 float tsf=1.0,
                                 float fsf=1.0);
 
   // just an adaptor for the particle index variety of p_ref
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                kernel::Particle* p_ref,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                Particle* p_ref,
                                 float tsf=1.0,
                                 float fsf=1.0) {
     IMP_USAGE_CHECK(m == p_ref->get_model(),
@@ -75,7 +75,7 @@ class IMPATOMEXPORT TAMDParticle : public IMP::Decorator  {
      @param fsf - friction scale factor
    */
   IMP_DECORATOR_SETUP_3(TAMDParticle,
-                        kernel::ParticleIndex, pi_ref,
+                        ParticleIndex, pi_ref,
                         Float, tsf,
                         Float, fsf);
 
@@ -92,14 +92,14 @@ class IMPATOMEXPORT TAMDParticle : public IMP::Decorator  {
      @param fsf - friction scale factor
    */
   IMP_DECORATOR_SETUP_3(TAMDParticle,
-                        kernel::Particle*, p_ref,
+                        Particle*, p_ref,
                         Float, tsf,
                         Float, fsf);
 
 
 
   //! Return true if the particle is an instance of an TAMDParticle
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex p) {
+  static bool get_is_setup(Model *m, ParticleIndex p) {
     return
       m->get_has_attribute(get_reference_particle_index_key(), p) &&
       m->get_has_attribute(get_temperature_scale_factor_key(), p) &&
@@ -162,7 +162,7 @@ class IMPATOMEXPORT TAMDParticle : public IMP::Decorator  {
 
 };
 
-IMP_DECORATORS(TAMDParticle, TAMDParticles, kernel:ParticlesTemp);
+IMP_DECORATORS(TAMDParticle, TAMDParticles, articlesTemp);
 
 IMPATOM_END_NAMESPACE
 

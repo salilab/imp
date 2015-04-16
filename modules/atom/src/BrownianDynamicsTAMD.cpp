@@ -11,20 +11,20 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/vector_generators.h>
-#include <IMP/base/log.h>
-#include <IMP/base/random.h>
+#include <IMP/log.h>
+#include <IMP/random.h>
 #include <IMP/constants.h>
 #include <IMP/atom/constants.h>
-#include <IMP/base/warning_macros.h>
-#include <IMP/kernel/internal/constants.h>
-#include <IMP/kernel/internal/units.h>
+#include <IMP/warning_macros.h>
+#include <IMP/internal/constants.h>
+#include <IMP/internal/units.h>
 #include <boost/random/normal_distribution.hpp>
 #include <IMP/atom/Diffusion.h>
 #include <IMP/atom/TAMDCentroid.h>
 #include <IMP/atom/TAMDParticle.h>
 #include <IMP/Configuration.h>
 #include <IMP/algebra/LinearFit.h>
-#include <IMP/base/thread_macros.h>
+#include <IMP/thread_macros.h>
 
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/rigid_bodies.h>
@@ -43,12 +43,12 @@ IMPATOM_BEGIN_NAMESPACE
 
 namespace {
 
-typedef boost::variate_generator<base::RandomNumberGenerator &,
+typedef boost::variate_generator<RandomNumberGenerator &,
                                  boost::normal_distribution<double> > RNG;
 }
 
 
-BrownianDynamicsTAMD::BrownianDynamicsTAMD(kernel::Model *m, std::string name,
+BrownianDynamicsTAMD::BrownianDynamicsTAMD(Model *m, std::string name,
                                    double wave_factor)
   : BrownianDynamics(m, name, wave_factor)
 {}
@@ -65,7 +65,7 @@ namespace {
 /** get the force dispacement term in the Ermak-Mccammon equation
     for coordinate i of  particle pi in model m, with time step dt and ikT=1/kT
 */
-inline double get_force_displacement_bdb(kernel::Model *m, kernel::ParticleIndex pi,
+inline double get_force_displacement_bdb(Model *m, ParticleIndex pi,
                         unsigned int i, double dt, double ikT) {
   Diffusion d(m, pi);
   double nforce(-d.get_derivative(i));
@@ -93,7 +93,7 @@ inline double get_force_displacement_bdb(kernel::Model *m, kernel::ParticleIndex
   return force_term;
 }
 // radians
-inline double get_torque_bdb(kernel::Model *m, kernel::ParticleIndex pi,
+inline double get_torque_bdb(Model *m, ParticleIndex pi,
                          unsigned int i, double dt, double ikT) {
   RigidBodyDiffusion d(m, pi);
   core::RigidBody rb(m, pi);
@@ -117,8 +117,8 @@ inline double get_torque_bdb(kernel::Model *m, kernel::ParticleIndex pi,
 }
 
   // returns the std-dev for the random displacement in the Ermak-Mccammon equation
-inline double get_sigma_displacement_bdb(kernel::Model *m,
-                                         kernel::ParticleIndex pi,
+inline double get_sigma_displacement_bdb(Model *m,
+                                         ParticleIndex pi,
                                          double dtfs) {
   // TAMD: 6.0 since 2.0 for each dof so that l2 magnitude of sigma
   // is 2.0 * D * dtfs per dof
@@ -132,8 +132,8 @@ inline double get_sigma_displacement_bdb(kernel::Model *m,
   }
   return sqrt(6.0 * dd * dtfs);
 }
-inline double get_rotational_sigma_bdb(kernel::Model *m,
-                                       kernel::ParticleIndex pi,
+inline double get_rotational_sigma_bdb(Model *m,
+                                       ParticleIndex pi,
                                        double dtfs) {
   double dr = RigidBodyDiffusion(m, pi).get_rotational_diffusion_coefficient();
   // if(TAMDParticle::get_is_setup(m, pi)){
@@ -159,7 +159,7 @@ void check_dX_dbd(algebra::Vector3D &dX, double max_step) {
 }
 }
 
-void BrownianDynamicsTAMD::advance_coordinates_1(kernel::ParticleIndex pi,
+void BrownianDynamicsTAMD::advance_coordinates_1(ParticleIndex pi,
                                              unsigned int i, double dt,
                                              double ikT) {
   Diffusion d(get_model(), pi);
@@ -172,7 +172,7 @@ void BrownianDynamicsTAMD::advance_coordinates_1(kernel::ParticleIndex pi,
   xd.set_coordinates(xd.get_coordinates() + dX);
 }
 
-void BrownianDynamicsTAMD::advance_coordinates_0(kernel::ParticleIndex pi,
+void BrownianDynamicsTAMD::advance_coordinates_0(ParticleIndex pi,
                                              unsigned int i, double dtfs,
                                              double ikT) {
   Model* m = get_model();
@@ -183,7 +183,7 @@ void BrownianDynamicsTAMD::advance_coordinates_0(kernel::ParticleIndex pi,
   core::XYZ xd(m, pi);
   double sigma = get_sigma_displacement_bdb(get_model(), pi, dtfs);
   boost::normal_distribution<double> nd(0, sigma);
-  RNG sampler(base::random_number_generator, nd);
+  RNG sampler(random_number_generator, nd);
   double r = sampler();
   algebra::Vector3D random_dX = r * algebra::get_random_vector_on_unit_sphere();
   algebra::Vector3D force_dX
@@ -214,12 +214,12 @@ void BrownianDynamicsTAMD::advance_coordinates_0(kernel::ParticleIndex pi,
   xd.set_coordinates(xd.get_coordinates() + dX);
 }
 
-void BrownianDynamicsTAMD::advance_orientation_0(kernel::ParticleIndex pi,
+void BrownianDynamicsTAMD::advance_orientation_0(ParticleIndex pi,
                                              double dtfs, double ikT) {
   core::RigidBody rb(get_model(), pi);
   double sigma = get_rotational_sigma_bdb(get_model(), pi, dtfs);
   boost::normal_distribution<double> nd(0, sigma);
-  RNG sampler(base::random_number_generator, nd);
+  RNG sampler(random_number_generator, nd);
   double angle = sampler();
   algebra::Transformation3D nt =
       rb.get_reference_frame().get_transformation_to();
@@ -242,7 +242,7 @@ void BrownianDynamicsTAMD::advance_orientation_0(kernel::ParticleIndex pi,
 }
 
 void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
-                                     const kernel::ParticleIndexes &ps,
+                                     const ParticleIndexes &ps,
                                      unsigned int begin, unsigned int end) {
   IMP_LOG_TERSE("Advancing particles " << begin << " to " << end << std::endl);
   Model* m = get_model();
@@ -254,7 +254,7 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
     }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
     else  {
-      kernel::Particle *p = m->get_particle(ps[i]);
+      Particle *p = m->get_particle(ps[i]);
       IMP_INTERNAL_CHECK(!core::RigidBody::get_is_setup(p),
                          "A rigid body without rigid body diffusion info"
                          << " was found: " << p->get_name());

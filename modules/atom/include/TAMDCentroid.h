@@ -15,7 +15,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/core/CentroidOfRefined.h>
 #include <IMP/atom/Diffusion.h>
-#include <IMP/kernel/internal/constants.h>
+#include <IMP/internal/constants.h>
 
 #include <vector>
 #include <limits>
@@ -37,7 +37,7 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT TAMDCentroid : public IMP::core::Centroid  {
     /** Sets up TAMDCentroid over particles in pis */
-    static void do_setup_particle(kernel::Model *m, ParticleIndex pi,
+    static void do_setup_particle(Model *m, ParticleIndex pi,
                                   const ParticleIndexes &pis) {
       Centroid::setup_particle(m, pi, pis);
       m->add_attribute(get_is_tamd_centroid_key(), pi, true);
@@ -46,7 +46,7 @@ class IMPATOMEXPORT TAMDCentroid : public IMP::core::Centroid  {
     /** Sets up TAMDCentroid over particles passed by applying the refiner
         over the particle pi
     */
-    static void do_setup_particle(kernel::Model *m, ParticleIndex pi,
+    static void do_setup_particle(Model *m, ParticleIndex pi,
                                   Refiner *ref) {
       Centroid::setup_particle(m, pi, ref);
       m->add_attribute(get_is_tamd_centroid_key(), pi, true);
@@ -70,7 +70,7 @@ class IMPATOMEXPORT TAMDCentroid : public IMP::core::Centroid  {
     */
     IMP_DECORATOR_SETUP_1(TAMDCentroid, Refiner *, refiner);
 
-    static bool get_is_setup(kernel::Model *m, ParticleIndex pi) {
+    static bool get_is_setup(Model *m, ParticleIndex pi) {
       return m->get_has_attribute(get_is_tamd_centroid_key(), pi);
     }
 

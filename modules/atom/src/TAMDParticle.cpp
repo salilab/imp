@@ -27,8 +27,8 @@ ParticleIndexKey TAMDParticle::get_reference_particle_index_key() {
 
 // Setup a TAMD particle with simulation temperature elevated by a factor
 // tsf, and friction coefficient elevated by a factor tsf.
-void TAMDParticle::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                     kernel::ParticleIndex pi_ref,
+void TAMDParticle::do_setup_particle(Model *m, ParticleIndex pi,
+                                     ParticleIndex pi_ref,
                                      float tsf,
                                      float fsf) {
   IMP_USAGE_CHECK(Diffusion::get_is_setup(m, pi) &&
@@ -49,7 +49,7 @@ void TAMDParticle::update_coordinates_from_ref(){
     IMP_ALWAYS_CHECK(core::XYZ::get_is_setup(m, get_particle_index()) &&
                      core::XYZ::get_is_setup(m, pi_ref),
                      "either reference particle or TAMD particle lack"
-                     " XYZ coords", base::ValueException);
+                     " XYZ coords", ValueException);
   }
 
   core::XYZ xyz_this(m, pi_this);

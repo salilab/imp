@@ -13,9 +13,9 @@
 #include "Diffusion.h"
 #include "Simulator.h"
 #include "atom_macros.h"
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
-#include <IMP/kernel/internal/units.h>
+#include <IMP/internal/units.h>
 #include <IMP/algebra/Vector3D.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -36,7 +36,7 @@ class SimulationParameters;
     optimizer assumes the scoring function to be energy in kcal/mol, and the xyz
     coordinates to be in angstroms and the diffusion coefficent of
     each particle be in \f$A^2/fs\f$ (or \f$Radian^2/fs\f$ for rotational
-    diffusion coefficient).  kernel::Particles without optimized x,y,z
+    diffusion coefficient).  Particles without optimized x,y,z
     and nonoptimized D are skipped.
 
     The optimizer can either automatically determine which particles
@@ -79,7 +79,7 @@ class IMPATOMEXPORT BrownianDynamicsTAMD : public BrownianDynamics {
      @note wave_factor is an advanced feature - if you're not sure, just use
                        its default, see also Simulator::simulate_wave()
   */
-  BrownianDynamicsTAMD(kernel::Model *m,
+  BrownianDynamicsTAMD(Model *m,
                        std::string name = "BrownianDynamicsTAMD%1%",
                        double wave_factor = 1.0);
 
@@ -93,16 +93,16 @@ class IMPATOMEXPORT BrownianDynamicsTAMD : public BrownianDynamics {
       @param end end index of chunk of ps
   */
   void do_advance_chunk(double dtfs, double ikt,
-                        const kernel::ParticleIndexes &ps,
+                        const ParticleIndexes &ps,
                         unsigned int begin, unsigned int end)
     IMP_OVERRIDE;
 
  private:
-  void advance_coordinates_1(kernel::ParticleIndex pi, unsigned int i,
+  void advance_coordinates_1(ParticleIndex pi, unsigned int i,
                              double dtfs, double ikT);
-  void advance_coordinates_0(kernel::ParticleIndex pi, unsigned int i,
+  void advance_coordinates_0(ParticleIndex pi, unsigned int i,
                              double dtfs, double ikT);
-  void advance_orientation_0(kernel::ParticleIndex pi, double dtfs, double ikT);
+  void advance_orientation_0(ParticleIndex pi, double dtfs, double ikT);
 };
 
 IMPATOM_END_NAMESPACE

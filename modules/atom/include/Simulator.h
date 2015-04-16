@@ -156,7 +156,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
       @note Called by do_simulate() or do_simulate_wave() before iterative
         calls to do_step()
 */
-  virtual void setup(const kernel::ParticleIndexes &) {};
+  virtual void setup(const ParticleIndexes &) {};
 
   //! Perform a single time step
   /** \param[in] dt maximum time step value

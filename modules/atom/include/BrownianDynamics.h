@@ -69,7 +69,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
 
   double max_step_;
   bool srk_;
-  base::Vector<algebra::Vector3D> forces_;
+  IMP::Vector<algebra::Vector3D> forces_;
 
  public:
   //! Create the optimizer
@@ -94,7 +94,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
 
  protected:
   /** a set of setup operations before a series of simulation steps */
-  virtual void setup(const kernel::ParticleIndexes &ps) IMP_OVERRIDE;
+  virtual void setup(const ParticleIndexes &ps) IMP_OVERRIDE;
 
   /** Calls do_advance_chunk() to advance ps in chunks
 
@@ -104,10 +104,10 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
    @return the time step actually simulated (for this class,
            it is always equal to the inut dt)
   */
-  virtual double do_step(const kernel::ParticleIndexes &sc,
+  virtual double do_step(const ParticleIndexes &sc,
                          double dt) IMP_OVERRIDE;
 
-  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const
+  virtual bool get_is_simulation_particle(ParticleIndex p) const
       IMP_OVERRIDE;
 
  protected:
@@ -120,7 +120,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
       @param end end index of chunk of ps
   */
   virtual void do_advance_chunk(double dtfs, double ikt,
-                             const kernel::ParticleIndexes &ps,
+                             const ParticleIndexes &ps,
                              unsigned int begin, unsigned int end);
 
   //! returns the maximal step size allowed in this simulation
@@ -145,12 +145,12 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
     { return forces_[i]; }
 
 private:
-  void advance_coordinates_1(kernel::ParticleIndex pi, unsigned int i,
+  void advance_coordinates_1(ParticleIndex pi, unsigned int i,
 
                              double dtfs, double ikT);
   void advance_coordinates_0(ParticleIndex pi, unsigned int i,
                              double dtfs, double ikT);
-  void advance_orientation_0(kernel::ParticleIndex pi, double dtfs, double ikT);
+  void advance_orientation_0(ParticleIndex pi, double dtfs, double ikT);
 };
 
 /** Repeatedly run the current model with Brownian dynamics at different time
