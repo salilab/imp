@@ -16,7 +16,7 @@
 
 #include <IMP/algebra/Vector2D.h>
 #include <IMP/algebra/eigen_analysis.h>
-#include <IMP/base/utility.h>
+#include <IMP/utility.h>
 #include <boost/unordered_map.hpp>
 #include <IMP/constants.h>
 
@@ -335,11 +335,11 @@ double Image2D<T>::stddev() const {
     T avg_acc = 0, std_acc = 0;
     for (unsigned int i = 0; i < this->num_elements(); i++) {
       avg_acc += this->data()[i];
-      std_acc += IMP::base::square(this->data()[i]);
+      std_acc += IMP::square(this->data()[i]);
     }
     double average = (double)avg_acc / this->num_elements();
     double stddev = (double)std_acc / this->num_elements();
-    stddev -= IMP::base::square(average);
+    stddev -= IMP::square(average);
     Image2D<T>& i = const_cast<Image2D<T>&>(*this);
     i.stddev_ = sqrt(stddev);
     i.stddev_computed_ = true;
@@ -916,7 +916,7 @@ double Image2D<T>::max_distance() const {
         for (int ii = 0; ii < get_height(); ii++)
           for (int jj = 0; jj < get_width(); jj++)
             if ((*this)[ii][jj] > 0 && i != ii && j != jj) {
-              int dist2 = IMP::base::square(i - ii) + IMP::base::square(j - jj);
+              int dist2 = IMP::square(i - ii) + IMP::square(j - jj);
               if (dist2 > max_dist2) max_dist2 = dist2;
             }
       }

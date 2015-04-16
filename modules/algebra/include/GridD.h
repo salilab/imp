@@ -10,15 +10,15 @@
 
 #include <IMP/algebra/algebra_config.h>
 
-#include <IMP/base/types.h>
+#include <IMP/types.h>
 #include "grid_embeddings.h"
 #include "grid_indexes.h"
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include "GeometricPrimitiveD.h"
 #include <boost/iterator/transform_iterator.hpp>
-#include <IMP/base/Vector.h>
-#include <IMP/base/showable_macros.h>
+#include <IMP/Vector.h>
+#include <IMP/showable_macros.h>
 #include <boost/range/iterator_range.hpp>
 
 #include <limits>

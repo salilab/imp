@@ -11,7 +11,7 @@
 
 #include <IMP/rmf/rmf_config.h>
 #include "link_macros.h"
-#include <IMP/base/object_macros.h>
+#include <IMP/object_macros.h>
 #include <IMP/Restraint.h>
 
 IMPRMF_BEGIN_NAMESPACE

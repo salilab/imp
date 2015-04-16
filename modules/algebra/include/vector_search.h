@@ -9,11 +9,11 @@
 #define IMPALGEBRA_VECTOR_SEARCH_H
 
 #include "VectorD.h"
-#include <IMP/base/types.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/log.h>
-#include <IMP/base/log_macros.h>
-#include <IMP/base/SetCheckState.h>
+#include <IMP/types.h>
+#include <IMP/Object.h>
+#include <IMP/log.h>
+#include <IMP/log_macros.h>
+#include <IMP/SetCheckState.h>
 
 #include "grid_storages.h"
 #include "grid_ranges.h"
@@ -51,7 +51,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \uses{class NearestNeighborD, ANN}
  */
 template <int D>
-class NearestNeighborD : public IMP::base::Object {
+class NearestNeighborD : public IMP::Object {
   IMP_KNN_DATA data_;
   double eps_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
@@ -73,7 +73,7 @@ class NearestNeighborD : public IMP::base::Object {
       : Object("NearestNeighbor%1%"), data_(b, e), eps_(epsilon) {
     instantiate(b, e);
   }
-  NearestNeighborD(const base::Vector<VectorD<D> > &vs, double epsilon = 0)
+  NearestNeighborD(const Vector<VectorD<D> > &vs, double epsilon = 0)
       : Object("NearestNeighbor%1%"),
         data_(vs.begin(), vs.end()),
         eps_(epsilon) {
@@ -182,14 +182,14 @@ typedef NearestNeighborD<-1> NearestNeighborKD;
 
     Later this can support balls by copying points multiple times.
 */
-class IMPALGEBRAEXPORT DynamicNearestNeighbor3D : public base::Object {
+class IMPALGEBRAEXPORT DynamicNearestNeighbor3D : public Object {
   typedef GridD<3, SparseGridStorageD<3, Ints, UnboundedGridRangeD<3> >, Ints,
                 DefaultEmbeddingD<3> > Grid;
   Grid grid_;
   typedef Grid::Index Index;
   typedef Grid::ExtendedIndex EIndex;
   Vector3Ds coords_;
-  base::Vector<Index> indexes_;
+  Vector<Index> indexes_;
   void audit() const;
   void set_coordinates_internal(int id, Vector3D nc);
 

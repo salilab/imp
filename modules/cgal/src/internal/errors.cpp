@@ -4,7 +4,7 @@
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include <CGAL/assertions_behaviour.h>
 #include <CGAL/assertions.h>
 
@@ -14,8 +14,8 @@ void my_failure_function(const char *type, const char *expression,
   std::ostringstream oss;
   oss << type << " error in CGAL " << expression << " at " << file << ": "
       << line << ": " << explanation << std::endl;
-  IMP::base::handle_error(oss.str().c_str());
-  throw IMP::base::UsageException(oss.str().c_str());
+  IMP::handle_error(oss.str().c_str());
+  throw IMP::UsageException(oss.str().c_str());
 }
 struct Registrar {
   Registrar() {

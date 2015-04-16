@@ -9,21 +9,21 @@
 #define IMPATOM_SELECTION_PREDICATE_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/base/InputAdaptor.h>
+#include <IMP/InputAdaptor.h>
 #include <boost/dynamic_bitset.hpp>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
 //! Predicates for selecting a subset of a hierarchy.
 /** \see Selection */
-class SelectionPredicate : public ParticleInputs, public base::Object {
+class SelectionPredicate : public ParticleInputs, public Object {
   int bitset_index_;
  public:
 
   IMP_REF_COUNTED_DESTRUCTOR(SelectionPredicate);
 
   SelectionPredicate(std::string name)
-         : base::Object(name), bitset_index_(-1) {}
+         : Object(name), bitset_index_(-1) {}
 
   virtual unsigned get_number_of_children() const {
     return 0;

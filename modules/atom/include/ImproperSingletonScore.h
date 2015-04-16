@@ -12,7 +12,7 @@
 #include "bond_decorators.h"
 #include <IMP/SingletonScore.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -33,7 +33,7 @@ IMPATOM_BEGIN_NAMESPACE
     \see CHARMMTopology::add_impropers(), Dihedral.
  */
 class IMPATOMEXPORT ImproperSingletonScore : public SingletonScore {
-  IMP::base::PointerMember<UnaryFunction> f_;
+  IMP::PointerMember<UnaryFunction> f_;
 
  public:
   //! Use f to penalize deviations in angle

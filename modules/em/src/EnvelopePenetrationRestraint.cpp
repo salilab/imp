@@ -7,7 +7,7 @@
  */
 #include <IMP/em/EnvelopePenetrationRestraint.h>
 #include <IMP/em/envelope_penetration.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 
 IMPEM_BEGIN_NAMESPACE
 

@@ -9,7 +9,7 @@
 #include <IMP/score_functor/Harmonic.h>
 #include <IMP/score_functor/SphereDistance.h>
 #include <IMP/score_functor/HarmonicLowerBound.h>
-#include <IMP/base/object_macros.h>
+#include <IMP/object_macros.h>
 
 int main(int, char * []) {
   using namespace IMP::score_functor;

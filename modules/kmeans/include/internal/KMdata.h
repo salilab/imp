@@ -29,7 +29,7 @@
 #include <IMP/kmeans/kmeans_config.h>
 #include "KMeans.h"  // kmeans includes
 #include "KCtree.h"  // kc-tree includes
-#include "IMP/base/Object.h"
+#include "IMP/Object.h"
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
@@ -55,7 +55,7 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //       (if it exists), and then assign to it a new set of points.
 //----------------------------------------------------------------------
 
-class IMPKMEANSEXPORT KMdata : public base::Object
+class IMPKMEANSEXPORT KMdata : public Object
                                // RefCounted for smart pointers
                                {
  private:

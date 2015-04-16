@@ -14,11 +14,11 @@
 #include "Subset.h"
 #include "Slice.h"
 #include "utility.h"
-#include <IMP/base/log.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/cache.h>
+#include <IMP/log.h>
+#include <IMP/Object.h>
+#include <IMP/cache.h>
 #include <IMP/Restraint.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <boost/unordered_map.hpp>
 
 #if IMP_DOMINO_HAS_RMF
@@ -34,14 +34,14 @@ IMPDOMINO_BEGIN_NAMESPACE
     that will be saved. A least-recently-used eviction policy is used when
     that number is exceeded.
 */
-class IMPDOMINOEXPORT RestraintCache : public base::Object {
-  IMP_NAMED_TUPLE_2(Key, Keys, base::WeakPointer<Restraint>, restraint,
+class IMPDOMINOEXPORT RestraintCache : public Object {
+  IMP_NAMED_TUPLE_2(Key, Keys, WeakPointer<Restraint>, restraint,
                     Assignment, assignment, );
   IMP_NAMED_TUPLE_3(RestraintData, RestraintDatas,
-                    base::PointerMember<ScoringFunction>, scoring_function,
+                    PointerMember<ScoringFunction>, scoring_function,
                     Subset, subset, double, max, );
   IMP_NAMED_TUPLE_2(RestraintSetData, RestraintSetDatas, Slice, slice,
-                    base::WeakPointer<Restraint>, restraint, );
+                    WeakPointer<Restraint>, restraint, );
   IMP_NAMED_TUPLE_2(SetData, SetDatas, RestraintSetDatas, members, double,
                     max, );
 
@@ -51,7 +51,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
     RMap rmap_;
     typedef boost::unordered_map<Restraint *, SetData> SMap;
     SMap sets_;
-    base::PointerMember<ParticleStatesTable> pst_;
+    PointerMember<ParticleStatesTable> pst_;
 
    public:
     Generator(ParticleStatesTable *pst) : pst_(pst) {}
@@ -65,7 +65,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
         load_particle_states(s, k.get_assignment(), pst_);
         double e;
         {
-          base::SetLogState sls(base::SILENT);
+          SetLogState sls(SILENT);
           e = it->second.get_scoring_function()->evaluate_if_below(
               false, it->second.get_max());
         }
@@ -147,14 +147,14 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
   Subset get_subset(Restraint *r, const DepMap &dependencies) const;
 // otherwise doxygen seems to index this for some reason
 #ifndef IMP_DOXYGEN
-  typedef base::LRUCache<Generator, ApproximatelyEqual> Cache;
+  typedef LRUCache<Generator, ApproximatelyEqual> Cache;
   Cache cache_;
 #endif
-  typedef boost::unordered_map<base::Pointer<Restraint>, Subset>
+  typedef boost::unordered_map<Pointer<Restraint>, Subset>
       KnownRestraints;
   KnownRestraints known_restraints_;
   // assign a unique index to each restraint for use with I/O
-  typedef boost::unordered_map<base::Pointer<Restraint>, int>
+  typedef boost::unordered_map<Pointer<Restraint>, int>
       RestraintIndex;
   RestraintIndex restraint_index_;
   unsigned int next_index_;

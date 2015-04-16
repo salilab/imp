@@ -13,8 +13,8 @@
 #include "DOFValues.h"
 #include "directional_DOFs.h"
 #include "DOFsSampler.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Object.h>
+#include <IMP/Pointer.h>
 #include <IMP/Model.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
@@ -22,7 +22,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 /** general interface for planning the motion between two
    configuration nodes, each abstracted as a vector of DoFs
 */
-class IMPKINEMATICSEXPORT LocalPlanner : public IMP::base::Object {
+class IMPKINEMATICSEXPORT LocalPlanner : public IMP::Object {
   IMP_OBJECT_METHODS(LocalPlanner);
 
  public:
@@ -42,9 +42,9 @@ class IMPKINEMATICSEXPORT LocalPlanner : public IMP::base::Object {
   }
 
  protected:
-  base::PointerMember<Model> model_;
+  PointerMember<Model> model_;
   DOFsSampler* dofs_sampler_;
-  base::PointerMember<ScoringFunction> sf_;
+  PointerMember<ScoringFunction> sf_;
 };
 
 /**

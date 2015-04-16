@@ -28,7 +28,7 @@ IMPATOM_BEGIN_NAMESPACE
     \see Bonded
  */
 class IMPATOMEXPORT BondPairContainer : public PairContainer {
-  IMP::base::PointerMember<SingletonContainer> sc_;
+  IMP::PointerMember<SingletonContainer> sc_;
 
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {
     return sc_->get_contents_hash();

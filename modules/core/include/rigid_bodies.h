@@ -573,8 +573,8 @@ IMP_DECORATORS(RigidBody, RigidBodies, XYZs);
 
 /** Show the rigid body hierarchy rooted at passed body. */
 IMPCOREEXPORT void show_rigid_body_hierarchy(RigidBody rb,
-                                             base::TextOutput out =
-                                                 base::TextOutput(std::cout));
+                                             TextOutput out =
+                                                 TextOutput(std::cout));
 
 //! Return the index of the outer-most rigid body containing the member.
 /** Use this to, for example, group particles into rigid bodies. */

@@ -52,7 +52,7 @@ class IMPEMEXPORT EnvelopePenetrationRestraint : public Restraint {
   IMP_LIST(private, Particle, particle, Particle *, Particles);
 #endif
  private:
-  IMP::base::PointerMember<DensityMap> target_dens_map_;
+  IMP::PointerMember<DensityMap> target_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
   IMP::core::XYZs xyz_;

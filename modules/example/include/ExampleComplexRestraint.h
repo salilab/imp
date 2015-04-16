@@ -31,11 +31,11 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 
 */
 class IMPEXAMPLEEXPORT ExampleComplexRestraint : public Restraint {
-  base::Pointer<ScoreState> ss_;
+  Pointer<ScoreState> ss_;
   ParticleIndex p_;
   Float diameter_;
-  base::Pointer<SingletonContainer> sc_;
-  base::Pointer<UnaryFunction> f_;
+  Pointer<SingletonContainer> sc_;
+  Pointer<UnaryFunction> f_;
   FloatKey dr_;
 
  public:

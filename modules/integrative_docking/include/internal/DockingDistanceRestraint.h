@@ -10,7 +10,7 @@
 
 #include <IMP/integrative_docking/integrative_docking_config.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/base/utility.h>
+#include <IMP/utility.h>
 #include <IMP/constants.h>
 
 IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
@@ -58,7 +58,7 @@ class DockingDistanceRestraint {
       float distance = sqrt(squared_distance);
       float score =
           constant *
-          std::exp(-0.5 * IMP::base::square((distance - mean_) / sd_));
+          std::exp(-0.5 * IMP::square((distance - mean_) / sd_));
       return score;
     }
     return 0.0;

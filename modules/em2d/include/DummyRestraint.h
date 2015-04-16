@@ -10,12 +10,12 @@
 #define IMPEM2D_DUMMY_RESTRAINT_H
 
 #include "IMP/em2d/em2d_config.h"
-#include "IMP/base/log.h"
+#include "IMP/log.h"
 #include <IMP/Restraint.h>
-#include "IMP/base/Pointer.h"
+#include "IMP/Pointer.h"
 
 #include <IMP/Restraint.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/SingletonContainer.h>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -31,8 +31,8 @@ IMPEM2D_BEGIN_NAMESPACE
         the works of merge trees.
 */
 class IMPEM2DEXPORT DummyRestraint : public Restraint {
-  base::Pointer<Particle> p0_;
-  base::Pointer<Particle> p1_;
+  Pointer<Particle> p0_;
+  Pointer<Particle> p1_;
 
  public:
   /**
@@ -63,7 +63,7 @@ IMP_OBJECTS(DummyRestraint, DummyRestraints);
 
 //! Dummy restraint for a set of particles. Same use as DummyRestraint
 class IMPEM2DEXPORT ParticlesDummyRestraint : public Restraint {
-  base::Pointer<SingletonContainer> container_;
+  Pointer<SingletonContainer> container_;
 
  public:
   /**

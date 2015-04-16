@@ -29,12 +29,12 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
 // standard constructor
 KMcenters::KMcenters(int k, KMdata& p)
-    : base::Object("KMCenters%1%"), kCtrs(k), pts(&p) {
+    : Object("KMCenters%1%"), kCtrs(k), pts(&p) {
   ctrs = kmAllocPts(kCtrs, p.getDim());
 }
 // copy constructor
 KMcenters::KMcenters(const KMcenters& s)
-    : base::Object("KMCenters%1%"), kCtrs(s.kCtrs), pts(s.pts) {
+    : Object("KMCenters%1%"), kCtrs(s.kCtrs), pts(s.pts) {
   ctrs = kmAllocCopyPts(kCtrs, s.getDim(), s.ctrs);
 }
 // assignment operator

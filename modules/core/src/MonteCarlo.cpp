@@ -7,7 +7,7 @@
 
 #include <IMP/core/MonteCarlo.h>
 
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <IMP/Model.h>
 #include <IMP/ConfigurationSet.h>
 #include <IMP/core/GridClosePairsFinder.h>
@@ -46,7 +46,7 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last,
   } else {
     double diff = score - last;
     double e = std::exp(-diff / temp_);
-    double r = rand_(base::random_number_generator);
+    double r = rand_(random_number_generator);
     IMP_LOG_VERBOSE(diff << " " << temp_ << " " << e << " " << r << std::endl);
     if (e * proposal_ratio > r) {
       ++stat_upward_steps_taken_;
@@ -172,7 +172,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     //<< std::endl;
     best_->swap_configuration();
     IMP_LOG_TERSE("MC Returning energy " << best_energy_ << std::endl);
-    IMP_IF_CHECK(base::USAGE) {
+    IMP_IF_CHECK(USAGE) {
       IMP_LOG_TERSE("MC Got " << do_evaluate(get_movable_particles())
                               << std::endl);
       /*IMP_INTERNAL_CHECK((e >= std::numeric_limits<double>::max()
@@ -205,7 +205,7 @@ void MonteCarloWithLocalOptimization::do_step() {
                 << do_evaluate(moved.get_moved_particles()) << std::endl);
   // non-Mover parts of the model can be moved by the local optimizer
   // make sure they are cleaned up
-  base::PointerMember<Configuration> cs = new Configuration(get_model());
+  PointerMember<Configuration> cs = new Configuration(get_model());
   double ne = opt_->optimize(num_local_);
   if (!do_accept_or_reject_move(ne, moved.get_proposal_ratio())) {
     cs->swap_configuration();
@@ -222,7 +222,7 @@ void MonteCarloWithBasinHopping::do_step() {
   MoverCleanup cleanup(this);
   IMP_LOG_TERSE("MC Performing local optimization from "
                 << do_evaluate(moved.get_moved_particles()) << std::endl);
-  base::Pointer<Configuration> cs = new Configuration(get_model());
+  Pointer<Configuration> cs = new Configuration(get_model());
   double ne = get_local_optimizer()->optimize(get_number_of_steps());
   cs->swap_configuration();
   do_accept_or_reject_move(ne, moved.get_proposal_ratio());

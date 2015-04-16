@@ -28,7 +28,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     CloseBipartitePairContainer for variants on the functionality provided.
  */
 class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
-  IMP::base::PointerMember<SingletonContainer> a_, b_;
+  IMP::PointerMember<SingletonContainer> a_, b_;
 
  protected:
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {

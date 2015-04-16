@@ -20,9 +20,9 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/base/Vector.h>
-#include <IMP/base/InputAdaptor.h>
+#include <IMP/Pointer.h>
+#include <IMP/Vector.h>
+#include <IMP/InputAdaptor.h>
 #include <IMP/algebra/vector_search.h>
 #include <boost/unordered_map.hpp>
 
@@ -34,7 +34,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     n and update_to_state would modify the particle to have the
     coordinates for state i.
  */
-class IMPDOMINOEXPORT ParticleStates : public IMP::base::Object {
+class IMPDOMINOEXPORT ParticleStates : public IMP::Object {
  public:
   ParticleStates(std::string name = "ParticleStates %1%") : Object(name) {}
   virtual unsigned int get_number_of_particle_states() const = 0;
@@ -70,9 +70,9 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
     and gets to all the right places. It is initialized internally
     in the DominoSampler.
  */
-class IMPDOMINOEXPORT ParticleStatesTable : public IMP::base::Object {
+class IMPDOMINOEXPORT ParticleStatesTable : public IMP::Object {
   typedef boost::unordered_map<Particle *,
-                               IMP::base::PointerMember<ParticleStates> > Map;
+                               IMP::PointerMember<ParticleStates> > Map;
   Map enumerators_;
   friend class DominoSampler;
 
@@ -136,7 +136,7 @@ class IMPDOMINOEXPORT IndexStates : public ParticleStates {
 */
 class IMPDOMINOEXPORT XYZStates : public ParticleStates {
   algebra::Vector3Ds states_;
-  base::PointerMember<algebra::NearestNeighbor3D> nn_;
+  PointerMember<algebra::NearestNeighbor3D> nn_;
 
  public:
   XYZStates(const algebra::Vector3Ds &states)
@@ -166,7 +166,7 @@ class IMPDOMINOEXPORT XYZStates : public ParticleStates {
 class IMPDOMINOEXPORT RigidBodyStates : public ParticleStates {
   algebra::ReferenceFrame3Ds states_;
   double scale_;
-  base::PointerMember<algebra::NearestNeighbor6D> nn_;
+  PointerMember<algebra::NearestNeighbor6D> nn_;
 
  public:
   RigidBodyStates(const algebra::ReferenceFrame3Ds &states, double scale = 1);
@@ -188,7 +188,7 @@ class IMPDOMINOEXPORT RigidBodyStates : public ParticleStates {
 class IMPDOMINOEXPORT NestedRigidBodyStates : public ParticleStates {
   algebra::Transformation3Ds states_;  // states of a nested rigid body
   double scale_;
-  base::PointerMember<algebra::NearestNeighbor6D> nn_;
+  PointerMember<algebra::NearestNeighbor6D> nn_;
 
  public:
   /**
@@ -215,7 +215,7 @@ class IMPDOMINOEXPORT NestedRigidBodyStates : public ParticleStates {
     number of states.
 */
 class IMPDOMINOEXPORT CompoundStates : public ParticleStates {
-  IMP::base::PointerMember<ParticleStates> a_, b_;
+  IMP::PointerMember<ParticleStates> a_, b_;
 
  public:
   CompoundStates(ParticleStates *a, ParticleStates *b)
@@ -235,8 +235,8 @@ class IMPDOMINOEXPORT CompoundStates : public ParticleStates {
 class IMPDOMINOEXPORT RecursiveStates : public ParticleStates {
   Subset s_;
   Assignments ss_;
-  IMP::base::PointerMember<ParticleStatesTable> pst_;
-  IMP::base::PointerMember<ScoreState> sss_;
+  IMP::PointerMember<ParticleStatesTable> pst_;
+  IMP::PointerMember<ScoreState> sss_;
 
  public:
   RecursiveStates(Particle *p, Subset s, const Assignments &ss,
@@ -252,8 +252,8 @@ class IMPDOMINOEXPORT RecursiveStates : public ParticleStates {
     it will break many filters, so use with care.
 */
 class IMPDOMINOEXPORT PermutationStates : public ParticleStates {
-  IMP::base::PointerMember<ParticleStates> inner_;
-  IMP::base::Vector<int> permutation_;
+  IMP::PointerMember<ParticleStates> inner_;
+  IMP::Vector<int> permutation_;
 
  public:
   PermutationStates(ParticleStates *inner);
@@ -288,9 +288,9 @@ inline void PermutationStates::load_particle_state(unsigned int i,
 class ParticlesAdaptor :
 #ifndef SWIG
     public ParticlesTemp,
-    public base::InputAdaptor
+    public InputAdaptor
 #else
-    public base::InputAdaptor
+    public InputAdaptor
 #endif
     {
  public:

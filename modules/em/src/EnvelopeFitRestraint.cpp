@@ -8,7 +8,7 @@
  */
 
 #include <IMP/em/EnvelopeFitRestraint.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 
 IMPEM_BEGIN_NAMESPACE
 

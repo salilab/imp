@@ -55,7 +55,7 @@ public:
   IMP_OBJECT_METHODS(CADihedralRestraint);
 
 private:
-  base::PointerMember<Particle> p_[5];
+  PointerMember<Particle> p_[5];
   Floats phi0_;
   Floats phi1_;
   Floats score_;

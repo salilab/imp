@@ -6,8 +6,8 @@
  */
 #include <IMP/integrative_docking/internal/CrossLink.h>
 
-#include <IMP/base/exception.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/exception.h>
+#include <IMP/check_macros.h>
 
 IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
@@ -16,7 +16,7 @@ int read_cross_link_file(const std::string& file_name,
   std::ifstream s(file_name.c_str());
   if (!s) {
     IMP_THROW("Can't find cross links file " << file_name,
-              IMP::base::IOException);
+              IMP::IOException);
   }
   CrossLink cl;
   while (s >> cl) cross_links.push_back(cl);

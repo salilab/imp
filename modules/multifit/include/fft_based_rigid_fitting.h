@@ -25,9 +25,9 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Storage of the results from an FFT fit.
-class IMPMULTIFITEXPORT FFTFittingOutput : public base::Object {
+class IMPMULTIFITEXPORT FFTFittingOutput : public Object {
  public:
-  FFTFittingOutput() : base::Object("FFTFittingOutput%1%") {}
+  FFTFittingOutput() : Object("FFTFittingOutput%1%") {}
 
   IMP_OBJECT_METHODS(FFTFittingOutput);
   /*IMP_OBJECT_INLINE(FFTFittingOutput,
@@ -40,7 +40,7 @@ class IMPMULTIFITEXPORT FFTFittingOutput : public base::Object {
 };
 
 //! Fit a molecule inside its density by local or global FFT.
-class IMPMULTIFITEXPORT FFTFitting : public base::Object {
+class IMPMULTIFITEXPORT FFTFitting : public Object {
   IMP_OBJECT_METHODS(FFTFitting);
 
  protected:
@@ -56,8 +56,8 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
   double spacing_;                            // map voxel size
   double origx_, origy_, origz_;              // map origin
   internal::FFTWGrid<double> low_map_data_;   // low resolution map
-  base::Pointer<em::DensityMap> low_map_;
-  base::Pointer<em::SampledDensityMap> sampled_map_;  // sampled from protein
+  Pointer<em::DensityMap> low_map_;
+  Pointer<em::SampledDensityMap> sampled_map_;  // sampled from protein
   internal::FFTWGrid<double> sampled_map_data_, fftw_r_grid_mol_;
   // high resolution map
   internal::FFTWGrid<double> reversed_fftw_data_;
@@ -125,7 +125,7 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
       double max_clustering_rotation);
 
  public:
-  FFTFitting() : base::Object("FFTFitting%1%") {}
+  FFTFitting() : Object("FFTFitting%1%") {}
   //! Fit a molecule inside its density
   /**
      \param[in] dmap the density map to fit into

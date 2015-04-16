@@ -10,24 +10,24 @@
 #define IMPBENCHMARK_MACROS_H
 
 #include <IMP/benchmark/benchmark_config.h>
-#include <IMP/base/flags.h>
-#include <IMP/base/nullptr_macros.h>
+#include <IMP/flags.h>
+#include <IMP/nullptr_macros.h>
 #include <boost/timer.hpp>
 #include <boost/scoped_ptr.hpp>
 #include "internal/control.h"
 #include "internal/flags.h"
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
 
-#if IMP_BASE_HAS_GPERFTOOLS
+#if IMP_KERNEL_HAS_GPERFTOOLS
 #include <gperftools/profiler.h>
 #endif
-#if IMP_BASE_HAS_TCMALLOC_HEAPPROFILER
+#if IMP_KERNEL_HAS_TCMALLOC_HEAPPROFILER
 #include <gperftools/heap-profiler.h>
 #endif
-#if IMP_BASE_HAS_TCMALLOC_HEAPCHECKER
+#if IMP_KERNEL_HAS_TCMALLOC_HEAPCHECKER
 #include <gperftools/heap-checker.h>
 #endif
 
@@ -38,7 +38,7 @@
         IMP::benchmark::internal::run_only ==      \
             IMP::benchmark::internal::current_benchmark)))
 
-#if IMP_BASE_HAS_GPERFTOOLS
+#if IMP_KERNEL_HAS_GPERFTOOLS
 #define IMP_BENCHMARK_CPU_PROFILING_BEGIN                                     \
   if (IMP::benchmark::internal::cpu_profile_benchmarks) {                     \
     ProfilerStart(IMP::benchmark::internal::get_file_name(".pprof").c_str()); \
@@ -52,7 +52,7 @@
 #define IMP_BENCHMARK_CPU_PROFILING_END
 #endif
 
-#if IMP_BASE_HAS_TCMALLOC_HEAPPROFILER
+#if IMP_KERNEL_HAS_TCMALLOC_HEAPPROFILER
 #define IMP_BENCHMARK_HEAP_PROFILING_BEGIN                          \
   if (IMP::benchmark::internal::heap_profile_benchmarks) {          \
     HeapProfilerStart(                                              \
@@ -67,7 +67,7 @@
 #define IMP_BENCHMARK_HEAP_PROFILING_END
 #endif
 
-#if IMP_BASE_HAS_TCMALLOC_HEAPCHECKER
+#if IMP_KERNEL_HAS_TCMALLOC_HEAPCHECKER
 #define IMP_BENCHMARK_HEAP_CHECKING_BEGIN                      \
   boost::scoped_ptr<HeapLeakChecker> heap_checker;             \
   if (IMP::benchmark::internal::heap_check_benchmarks) {       \
@@ -103,9 +103,9 @@
       do {                                                               \
         block;                                                           \
         ++imp_reps;                                                      \
-      } while (imp_timer.elapsed() < 2.5 && !IMP::base::run_quick_test); \
+      } while (imp_timer.elapsed() < 2.5 && !IMP::run_quick_test); \
     }                                                                    \
-    catch (const IMP::base::Exception& e) {                              \
+    catch (const IMP::Exception& e) {                              \
       std::cerr << "Caught exception " << e.what() << std::endl;         \
     }                                                                    \
     IMP_BENCHMARK_PROFILING_END;                                         \
@@ -128,9 +128,9 @@
         block;                                                            \
         ++imp_reps;                                                       \
       } while (microsec_clock::local_time() - start < seconds(2) &&       \
-               !IMP::base::run_quick_test);                               \
+               !IMP::run_quick_test);                               \
     }                                                                     \
-    catch (const IMP::base::Exception& e) {                               \
+    catch (const IMP::Exception& e) {                               \
       std::cerr << "Caught exception " << e.what() << std::endl;          \
     }                                                                     \
     IMP_BENCHMARK_PROFILING_END;                                          \
@@ -152,11 +152,11 @@
       try {                                                        \
         block;                                                     \
       }                                                            \
-      catch (const IMP::base::Exception& e) {                      \
+      catch (const IMP::Exception& e) {                      \
         std::cerr << "Caught exception " << e.what() << std::endl; \
         break;                                                     \
       }                                                            \
-      if (IMP::base::run_quick_test) break;                        \
+      if (IMP::run_quick_test) break;                        \
     }                                                              \
     IMP_BENCHMARK_PROFILING_END;                                   \
     timev = imp_timer.elapsed() / (N);                             \

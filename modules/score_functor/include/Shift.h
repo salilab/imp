@@ -25,19 +25,19 @@ class Shift : public BaseDistanceScore {
   Shift(double x0, BaseDistanceScore base) : P(base), x0_(x0) {}
   template <unsigned int D>
   double get_score(Model *m,
-                   const base::Array<D, ParticleIndex> &pi,
+                   const Array<D, ParticleIndex> &pi,
                    double distance) const {
     return P::get_score(m, pi, distance - x0_);
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      Model *m, const base::Array<D, ParticleIndex> &p,
+      Model *m, const Array<D, ParticleIndex> &p,
       double distance) const {
     return P::get_score_and_derivative(m, p, distance - x0_);
   }
   template <unsigned int D>
   double get_maximum_range(
-      Model *m, const base::Array<D, ParticleIndex> &pi) const {
+      Model *m, const Array<D, ParticleIndex> &pi) const {
     return P::get_maximum_range(m, pi) - x0_;
   }
   bool get_is_trivially_zero(Model *m,

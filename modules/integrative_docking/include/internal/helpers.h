@@ -44,7 +44,7 @@ IMP::atom::Hierarchy read_pdb(const std::string pdb_file_name,
 IMP::ParticlesTemp add_bonds(IMP::atom::Hierarchy mhd) {
   IMP::atom::CHARMMParameters *ff =
     IMP::atom::get_heavy_atom_CHARMM_parameters();
-  IMP::base::Pointer<IMP::atom::CHARMMTopology> topology =
+  IMP::Pointer<IMP::atom::CHARMMTopology> topology =
     ff->create_topology(mhd);
   topology->add_atom_types(mhd);
 

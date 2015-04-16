@@ -5,8 +5,8 @@
 */
 
 #include "IMP/em2d/FFToperations.h"
-#include "IMP/base/log.h"
-#include "IMP/base/Pointer.h"
+#include "IMP/log.h"
+#include "IMP/Pointer.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 

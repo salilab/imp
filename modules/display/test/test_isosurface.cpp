@@ -13,7 +13,7 @@ int main(int, char * []) {
     g[i] = 100 - m;
   }
   IMP_NEW(IMP::display::IsosurfaceGeometry, gg, (g, 95.0));
-  std::string name = IMP::base::create_temporary_file_name("iso", ".pym");
+  std::string name = IMP::create_temporary_file_name("iso", ".pym");
   std::cout << "Writing " << name << std::endl;
   IMP_NEW(IMP::display::PymolWriter, w, (name));
   w->add_geometry(gg);

@@ -127,7 +127,7 @@ inline double HarmonicUpperBoundSphereDiameterPairScore::evaluate_index(
     \see DistancePairScore
  */
 class IMPCOREEXPORT NormalizedSphereDistancePairScore : public PairScore {
-  IMP::base::PointerMember<UnaryFunction> f_;
+  IMP::PointerMember<UnaryFunction> f_;
   FloatKey radius_;
 
  public:
@@ -151,7 +151,7 @@ class IMPCOREEXPORT NormalizedSphereDistancePairScore : public PairScore {
     \see DistancePairScore
  */
 class IMPCOREEXPORT WeightedSphereDistancePairScore : public PairScore {
-  IMP::base::PointerMember<UnaryFunction> f_;
+  IMP::PointerMember<UnaryFunction> f_;
   FloatKey radius_;
   FloatKey weight_;
 

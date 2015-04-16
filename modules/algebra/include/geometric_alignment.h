@@ -14,9 +14,9 @@
 #include "Rotation3D.h"
 #include "Transformation3D.h"
 #include "Transformation2D.h"
-#include <IMP/base/check_macros.h>
-#include <IMP/base/log.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/log.h>
+#include <IMP/log_macros.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -92,7 +92,7 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
   IMP_LOG_VERBOSE("SVD is " << U << std::endl << V << std::endl);
 
   double det = SV[0] * SV[1] * SV[2];
-  IMP_IF_CHECK(base::USAGE) {
+  IMP_IF_CHECK(USAGE) {
     if (det < .00001) {
       IMP_LOG_TERSE("SOURCE:\n");
       for (unsigned int i = 0; i < source.size(); ++i) {

@@ -29,7 +29,7 @@
 #include "IMP/kmeans/internal/KMeans.h"  // kmeans includes
 #include "IMP/kmeans/internal/KCtree.h"  // kc tree
 #include "IMP/kmeans/internal/KMrand.h"  // random number generators
-#include <IMP/base/log_macros.h>
+#include <IMP/log_macros.h>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
@@ -63,7 +63,7 @@ void kmPrintPt(  // print a point
 }
 
 void kmLogPt(                      // print a point
-    base::LogLevel ll, KMpoint p,  // the point
+    LogLevel ll, KMpoint p,  // the point
     int dim,                       // the dimension
     bool fancy)                    // print plain or fancy?
 {
@@ -92,7 +92,7 @@ void kmPrintPts(        // print points
 }
 
 void kmLogPts(                             // print points
-    base::LogLevel ll, std::string title,  // name of point set
+    LogLevel ll, std::string title,  // name of point set
     KMpointArray pa,                       // the point array
     int n,                                 // number of points
     int dim,                               // the dimension

@@ -59,7 +59,7 @@ class IMPEMEXPORT PCAFitRestraint : public Restraint {
   //! Store particles
   void store_particles(ParticlesTemp ps);
 
-  IMP::base::PointerMember<DensityMap> target_dens_map_;
+  IMP::PointerMember<DensityMap> target_dens_map_;
   float threshold_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment

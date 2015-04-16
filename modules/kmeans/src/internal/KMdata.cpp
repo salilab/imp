@@ -30,7 +30,7 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
 // standard constructor
 KMdata::KMdata(int d, int n)
-    : base::Object("KMdata%1%"), dim(d), maxPts(n), nPts(n) {
+    : Object("KMdata%1%"), dim(d), maxPts(n), nPts(n) {
   pts = kmAllocPts(n, d);
   kcTree = NULL;
 }

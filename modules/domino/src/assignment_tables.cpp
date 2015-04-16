@@ -253,7 +253,7 @@ ParticlesTemp initialize_order(const Subset &s, const SubsetFilterTables &sft) {
 }
 
 Assignment get_next_assignment_base(
-    Ints cur, const Ints &maxs, const base::Vector<SubsetFilters> &filters) {
+    Ints cur, const Ints &maxs, const Vector<SubsetFilters> &filters) {
   unsigned int increment = 1;
   while (true) {
     cur[0] += increment;
@@ -277,9 +277,9 @@ Assignment get_next_assignment_base(
 
 Assignment get_next_assignment(const ParticlesTemp &s,
                                const Subsets &subsets,
-                               const base::Vector<Ints> &orders, Ints cur,
+                               const Vector<Ints> &orders, Ints cur,
                                const Ints &maxs,
-                               const base::Vector<SubsetFilters> &filters) {
+                               const Vector<SubsetFilters> &filters) {
   IMP_INTERNAL_CHECK(s.size() == cur.size(), "Subset and last don't match");
   IMP_INTERNAL_CHECK(s.size() == maxs.size(), "Subset and maxs don't match");
   IMP_INTERNAL_CHECK(s.size() == orders.size(),
@@ -296,15 +296,15 @@ Assignment get_next_assignment(const ParticlesTemp &s,
         inner = get_next_assignment_base(
             Ints(cur.begin(), cur.end() - 1),
             Ints(maxs.begin(), maxs.end() - 1),
-            base::Vector<SubsetFilters>(filters.begin(), filters.end() - 1));
+            Vector<SubsetFilters>(filters.begin(), filters.end() - 1));
       } else {
         inner = get_next_assignment(
             ParticlesTemp(s.begin(), s.end() - 1),
             Subsets(subsets.begin(), subsets.end() - 1),
-            base::Vector<Ints>(orders.begin(), orders.end() - 1),
+            Vector<Ints>(orders.begin(), orders.end() - 1),
             Ints(cur.begin(), cur.end() - 1),
             Ints(maxs.begin(), maxs.end() - 1),
-            base::Vector<SubsetFilters>(filters.begin(), filters.end() - 1));
+            Vector<SubsetFilters>(filters.begin(), filters.end() - 1));
       }
       if (inner.size() == 0) {
         return inner;
@@ -391,8 +391,8 @@ void BranchAndBoundAssignmentsTable::load_assignments(
     maxs[i] =
         pst_->get_particle_states(spt[i])->get_number_of_particle_states();
   }
-  base::Vector<SubsetFilters> filters(maxs.size());
-  base::Vector<Ints> orders(maxs.size());
+  Vector<SubsetFilters> filters(maxs.size());
+  Vector<Ints> orders(maxs.size());
   Subsets subsets(maxs.size());
   for (unsigned int i = 0; i < maxs.size(); ++i) {
     Subsets excluded;

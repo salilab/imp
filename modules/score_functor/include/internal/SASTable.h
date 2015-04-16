@@ -12,19 +12,19 @@
 
 #include <IMP/score_functor/score_functor_config.h>
 #include "RawOpenCubicSpline.h"
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
-#include <IMP/base/exception.h>
-#include <IMP/base/file.h>
+#include <IMP/exception.h>
+#include <IMP/file.h>
 
 #include <vector>
 
 IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 
 template <bool INTERPOLATE>
-class SASTable : public base::Object {
+class SASTable : public Object {
   template <class Key>
-  void initialize(base::TextInput tin) {
+  void initialize(TextInput tin) {
     std::istream &in = tin;
 
     // read header line
@@ -98,8 +98,8 @@ class SASTable : public base::Object {
 
  public:
   template <class Key>
-  SASTable(base::TextInput tin, Key)
-      : base::Object("SASTable:" + tin.get_name()) {
+  SASTable(TextInput tin, Key)
+      : Object("SASTable:" + tin.get_name()) {
     initialize<Key>(tin);
   }
 

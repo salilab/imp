@@ -12,7 +12,7 @@
 #include "bond_decorators.h"
 #include <IMP/SingletonScore.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -25,7 +25,7 @@ IMPATOM_BEGIN_NAMESPACE
     \see Bonded
  */
 class IMPATOMEXPORT BondSingletonScore : public SingletonScore {
-  IMP::base::PointerMember<UnaryFunction> f_;
+  IMP::PointerMember<UnaryFunction> f_;
 
  public:
   //! Use f to penalize deviations in length

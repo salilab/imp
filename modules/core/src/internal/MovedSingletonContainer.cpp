@@ -10,8 +10,8 @@
 #include <IMP/internal/utility.h>
 #include <IMP/internal/ListLikeContainer.h>
 #include <IMP/internal/ContainerScoreState.h>
-#include <IMP/base/log_macros.h>
-#include <IMP/base/utility.h>
+#include <IMP/log_macros.h>
+#include <IMP/utility.h>
 
 #include <algorithm>
 #include <sstream>
@@ -33,7 +33,7 @@ MovedSingletonContainer::MovedSingletonContainer(SingletonContainer *pc,
 
 void MovedSingletonContainer::do_score_state_after_evaluate() {
   IMP_OBJECT_LOG;
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) { validate(); }
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) { validate(); }
 }
 
 void MovedSingletonContainer::do_score_state_before_evaluate() {
@@ -49,7 +49,7 @@ void MovedSingletonContainer::do_score_state_before_evaluate() {
     IMP_LOG_TERSE("Setting moved list: " << Showable(mved) << std::endl);
     swap(mved);
   }
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) { validate(); }
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) { validate(); }
 }
 
 ParticleIndexes MovedSingletonContainer::get_all_possible_indexes() const {

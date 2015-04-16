@@ -26,7 +26,7 @@ IMPISD_BEGIN_NAMESPACE
 //!
 
 class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public Restraint {
-  base::Pointer<Particle> kappa_;
+  Pointer<Particle> kappa_;
   double old_kappaval;
   double I0_, I1_;
 

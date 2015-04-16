@@ -19,7 +19,7 @@ IMPISD_BEGIN_NAMESPACE
 /**
  */
 
-class IMPISDEXPORT CrossLinkData : public base::Object {
+class IMPISDEXPORT CrossLinkData : public Object {
   double lexp_;  // length of the linker
   Floats dist_grid_;
   Floats sigma_grid_;

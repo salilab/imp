@@ -19,7 +19,7 @@ IMPISD_BEGIN_NAMESPACE
 /**
  */
 
-class IMPISDEXPORT FretData : public base::Object {
+class IMPISDEXPORT FretData : public Object {
   Floats d_term_;
   Floats d_center_;
   Floats s_grid_;

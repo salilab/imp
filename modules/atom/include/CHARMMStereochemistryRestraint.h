@@ -10,7 +10,7 @@
 #define IMPATOM_CHARMM_STEREOCHEMISTRY_RESTRAINT_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/Restraint.h>
 #include "StereochemistryPairFilter.h"
 #include "Hierarchy.h"
@@ -40,10 +40,10 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT CHARMMStereochemistryRestraint : public Restraint {
   Particles bonds_, angles_, dihedrals_, impropers_;
   Particles full_bonds_, full_angles_, full_dihedrals_, full_impropers_;
-  IMP::base::PointerMember<BondSingletonScore> bond_score_;
-  IMP::base::PointerMember<AngleSingletonScore> angle_score_;
-  IMP::base::PointerMember<DihedralSingletonScore> dihedral_score_;
-  IMP::base::PointerMember<ImproperSingletonScore> improper_score_;
+  IMP::PointerMember<BondSingletonScore> bond_score_;
+  IMP::PointerMember<AngleSingletonScore> angle_score_;
+  IMP::PointerMember<DihedralSingletonScore> dihedral_score_;
+  IMP::PointerMember<ImproperSingletonScore> improper_score_;
 #ifndef IMP_DOXYGEN
   void init(Hierarchy h, CHARMMTopology *topology);
 #endif

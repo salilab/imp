@@ -34,7 +34,7 @@ class SphereD : public GeometricPrimitiveD<D> {
     IMP_USAGE_CHECK(radius >= 0, "Radius can't be negative");
   }
   double get_radius() const {
-    IMP_INTERNAL_CHECK(!base::isnan(radius_),
+    IMP_INTERNAL_CHECK(!IMP::isnan(radius_),
                        "Attempt to use uninitialized sphere.");
     return radius_;
   }

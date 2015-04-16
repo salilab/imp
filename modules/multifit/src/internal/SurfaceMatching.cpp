@@ -9,7 +9,7 @@
 #include <IMP/multifit/GeometricHash.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/algebra/grid_utility.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <algorithm>
 #include <cmath>
 

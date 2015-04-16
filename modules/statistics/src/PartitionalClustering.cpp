@@ -5,7 +5,7 @@
  *
  */
 #include <IMP/statistics/PartitionalClustering.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/check_macros.h>
 #include <boost/unordered_set.hpp>
 
 IMPSTATISTICS_BEGIN_NAMESPACE

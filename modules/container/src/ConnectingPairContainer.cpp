@@ -14,7 +14,7 @@
 #include <IMP/internal/ContainerScoreState.h>
 #include <IMP/PairModifier.h>
 #include <IMP/algebra/vector_search.h>
-#include <IMP/base/vector_property_map.h>
+#include <IMP/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
 #include <IMP/container_macros.h>
 #include <algorithm>

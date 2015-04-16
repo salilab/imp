@@ -12,11 +12,11 @@
 #include "kinematics_config.h"
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/exception.h>
+#include <IMP/Object.h>
+#include <IMP/exception.h>
 #include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/check_macros.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 

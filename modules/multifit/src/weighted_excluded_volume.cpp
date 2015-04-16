@@ -22,7 +22,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 void add_surface_index(core::Hierarchy mh, Float apix, FloatKey shell_key,
                        FloatKey, FloatKey) {
   ParticlesTemp ps = core::get_leaves(mh);
-  base::Pointer<em::SurfaceShellDensityMap> shell_map =
+  Pointer<em::SurfaceShellDensityMap> shell_map =
       new em::SurfaceShellDensityMap(ps, apix);
 
   for (unsigned int i = 0; i < ps.size(); i++) {

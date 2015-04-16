@@ -4,7 +4,7 @@
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
-#include <IMP/base/compiler_macros.h>
+#include <IMP/compiler_macros.h>
 IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
 #include <CGAL/Cartesian.h>
 #include <CGAL/Min_sphere_of_spheres_d.h>
@@ -22,7 +22,7 @@ algebra::Sphere3D get_enclosing_sphere(const algebra::Sphere3Ds &ss) {
   typedef K::Point_3 Point;
   typedef Traits::Sphere Sphere;
 
-  base::Vector<Sphere> spheres;
+  Vector<Sphere> spheres;
   for (unsigned int i = 0; i < ss.size(); ++i) {
     // need cast to resolve ambiguity
     spheres.push_back(Sphere(Point(ss[i].get_center()[0], ss[i].get_center()[1],

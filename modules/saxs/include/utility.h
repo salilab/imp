@@ -12,7 +12,7 @@
 #include "Profile.h"
 
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include <IMP/core/XYZ.h>
 
 IMPSAXS_BEGIN_NAMESPACE

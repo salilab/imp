@@ -46,12 +46,12 @@ class IMPISDEXPORT CysteineCrossLinkRestraint : public Restraint {
   Particles ps2_;
   std::vector<Particles> pslist1_;
   std::vector<Particles> pslist2_;
-  base::Pointer<Particle> beta_;
-  base::Pointer<Particle> sigma_;
-  base::Pointer<Particle> epsilon_;  // k * t at the exponential
-  base::Pointer<Particle> weight_;
-  base::PointerMember<CrossLinkData> data_;
-  base::PointerMember<CysteineCrossLinkData> ccldata_;
+  Pointer<Particle> beta_;
+  Pointer<Particle> sigma_;
+  Pointer<Particle> epsilon_;  // k * t at the exponential
+  Pointer<Particle> weight_;
+  PointerMember<CrossLinkData> data_;
+  PointerMember<CysteineCrossLinkData> ccldata_;
   int constr_type_;
   double fexp_;
   bool use_CA_;

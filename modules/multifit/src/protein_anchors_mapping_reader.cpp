@@ -12,7 +12,7 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 #include <IMP/multifit/path_reader_writer.h>
 #include <IMP/multifit/anchors_reader.h>
 #include <boost/algorithm/string.hpp>

@@ -134,7 +134,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da)
   if (!initialized_) {
     initialize();
   } else {
-    IMP_IF_CHECK(base::USAGE) {
+    IMP_IF_CHECK(USAGE) {
       Model *m = get_model();
       IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
         if (RigidMember::get_is_setup(m, _1)) {
@@ -227,7 +227,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate_if_good(
   IMP_CHECK_CODE(double check = 0);
   IMP_CHECK_CODE(ParticlesTemp all =
                      IMP::get_particles(get_model(), sc_->get_indexes()));
-  IMP_CHECK_CODE(IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_CHECK_CODE(IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     if (all.size() < 3000) {
       for (unsigned int i = 0; i < all.size(); ++i) {
         for (unsigned int j = 0; j < i; ++j) {
@@ -258,7 +258,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate_if_good(
   }
   if (was_bad_ || get_if_moved()) {
     double ret = fill_list_if_good(max);
-    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       if (ret > max) {
         IMP_INTERNAL_CHECK(
             all.size() >= 3000 || check > max,
@@ -339,7 +339,7 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
 Restraints ExcludedVolumeRestraint::do_create_current_decomposition() const {
   Restraints ret;
   for (unsigned int i = 0; i < cur_list_.size(); ++i) {
-    base::Pointer<Restraint> rc = create_restraint(
+    Pointer<Restraint> rc = create_restraint(
         ssps_.get(), IMP::internal::get_particle(get_model(), cur_list_[i]));
     rc->set_was_used(true);
     double score = rc->unprotected_evaluate(nullptr);

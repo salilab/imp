@@ -76,10 +76,10 @@ class IMPEMEXPORT FitRestraint : public Restraint {
   //! Create density maps: one for each rigid body and one for the rest.
   void initialize_model_density_map(FloatKey weight_key);
 
-  IMP::base::PointerMember<DensityMap> target_dens_map_;
-  mutable IMP::base::PointerMember<SampledDensityMap> model_dens_map_;
+  IMP::PointerMember<DensityMap> target_dens_map_;
+  mutable IMP::PointerMember<SampledDensityMap> model_dens_map_;
   mutable SampledDensityMaps rb_model_dens_map_;
-  mutable IMP::base::PointerMember<SampledDensityMap> none_rb_model_dens_map_;
+  mutable IMP::PointerMember<SampledDensityMap> none_rb_model_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
   float scalefac_;

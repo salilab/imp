@@ -19,8 +19,8 @@ IMPCORE_BEGIN_NAMESPACE
 /** \note This restraint does not support derivatives.
     \note This restraint requires CGAL.*/
 class IMPCOREEXPORT VolumeRestraint : public Restraint {
-  IMP::base::PointerMember<SingletonContainer> sc_;
-  IMP::base::PointerMember<UnaryFunction> f_;
+  IMP::PointerMember<SingletonContainer> sc_;
+  IMP::PointerMember<UnaryFunction> f_;
   double volume_;
 
  public:

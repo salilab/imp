@@ -10,9 +10,9 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/domino/utility.h>
 #include <IMP/domino/internal/tree_inference.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 #include <IMP/internal/graph_utility.h>
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/unordered_set.hpp>
 #include <boost/graph/connected_components.hpp>
@@ -49,7 +49,7 @@ Assignments DominoSampler::do_get_sample_assignments(
   IMP_LOG_TERSE("Sampling with " << known_particles.size() << " particles as "
                                  << known_particles << std::endl);
   IMP_USAGE_CHECK(known_particles.size() > 0, "No particles to sample");
-  base::Pointer<RestraintSet> rs =
+  Pointer<RestraintSet> rs =
       get_model()->get_root_restraint_set();
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
 
@@ -62,7 +62,7 @@ Assignments DominoSampler::do_get_sample_assignments(
     }
     IMP_LOG_TERSE(std::endl);
   }
-  IMP::base::PointerMember<AssignmentsTable> sst =
+  IMP::PointerMember<AssignmentsTable> sst =
       DiscreteSampler::get_assignments_table_to_use(sfts);
 
   Assignments final_solutions;
@@ -166,13 +166,13 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   typedef boost::graph_traits<MergeTree>::adjacency_iterator NeighborIterator;
   SubsetMap subset_map = boost::get(boost::vertex_name, mt_);
 
-  base::Pointer<RestraintSet> rs =
+  Pointer<RestraintSet> rs =
       get_model()->get_root_restraint_set();
   // ParticlesTemp known_particles=
   // get_particle_states_table()->get_particles();
   SubsetFilterTables sfts = get_subset_filter_tables_to_use(
       RestraintsTemp(1, rs), get_particle_states_table());
-  IMP::base::PointerMember<AssignmentsTable> sst =
+  IMP::PointerMember<AssignmentsTable> sst =
       DiscreteSampler::get_assignments_table_to_use(sfts, max_states);
   ListSubsetFilterTable *lsft = nullptr;
   if (csf_) {
@@ -202,7 +202,7 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   typedef boost::graph_traits<MergeTree>::adjacency_iterator NeighborIterator;
   SubsetMap subset_map = boost::get(boost::vertex_name, mt_);
 
-  base::Pointer<RestraintSet> rs =
+  Pointer<RestraintSet> rs =
       get_model()->get_root_restraint_set();
   // ParticlesTemp known_particles=
   // get_particle_states_table()->get_particles();

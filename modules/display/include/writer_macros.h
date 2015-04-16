@@ -16,7 +16,7 @@
     and show, and defines the destructor and get_version_info.
 */
 #define IMP_TEXT_WRITER(Name)                                 \
-  Name(base::TextOutput of) : TextWriter(of) { do_open(); }   \
+  Name(TextOutput of) : TextWriter(of) { do_open(); }   \
   Name(std::string name) : TextWriter(name) {                 \
     if (name.find("%1%") == std::string::npos) {              \
       TextWriter::open();                                     \

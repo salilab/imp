@@ -85,7 +85,7 @@ class ParticleSaveLink : public SimpleSaveLink<Particle> {
   boost::unordered_map<IntKey, RMF::IntKey> int_;
   boost::unordered_map<StringKey, RMF::StringKey> string_;
   template <class IK, class RK>
-  void save_one(Particle *o, const base::Vector<IK> &ks,
+  void save_one(Particle *o, const Vector<IK> &ks,
                 RMF::NodeHandle nh, boost::unordered_map<IK, RK> &map) {
     for (unsigned int i = 0; i < ks.size(); ++i) {
       if (map.find(ks[i]) == map.end()) {

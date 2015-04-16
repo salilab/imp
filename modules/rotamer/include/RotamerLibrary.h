@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 #include <boost/range/iterator_range.hpp>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/rotamer/rotamer_config.h>
 
@@ -66,7 +66,7 @@ class IMPROTAMEREXPORT RotamerAngleTuple {
 IMP_VALUES(RotamerAngleTuple, RotamerAngleTuples);
 
 //! A class storing a whole rotamer library read from a file
-class IMPROTAMEREXPORT RotamerLibrary : public IMP::base::Object {
+class IMPROTAMEREXPORT RotamerLibrary : public IMP::Object {
  public:
   //! constructor. Build an empty library object
   /** \param[in] angle_step bucket size in degrees */

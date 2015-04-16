@@ -12,7 +12,7 @@
 
 #include "XYZR.h"
 #include <IMP/Refiner.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/Decorator.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/SingletonDerivativeModifier.h>
@@ -40,7 +40,7 @@ class XYZR;
  \uses{class CoverRefined, CGAL}
  */
 class IMPCOREEXPORT CoverRefined : public SingletonModifier {
-  IMP::base::PointerMember<Refiner> refiner_;
+  IMP::PointerMember<Refiner> refiner_;
   Float slack_;
 
  public:

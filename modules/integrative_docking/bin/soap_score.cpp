@@ -12,7 +12,7 @@
 #include <IMP/integrative_docking/internal/helpers.h>
 
 #include <IMP/Model.h>
-#include <IMP/base/nullptr_macros.h>
+#include <IMP/nullptr_macros.h>
 
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/pdb.h>

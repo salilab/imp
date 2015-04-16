@@ -52,7 +52,7 @@ int do_benchmark() {
     atom::Hierarchy prot = atom::read_pdb(iss, m);
     // Read in the CHARMM heavy atom topology and parameter files
 
-    base::Pointer<CHARMMTopology> topology =
+    Pointer<CHARMMTopology> topology =
         get_all_atom_CHARMM_parameters()->create_topology(prot);
 
     topology->apply_default_patches();
@@ -69,7 +69,7 @@ int do_benchmark() {
     }
     return 0;
   }
-  catch (IMP::base::Exception e) {
+  catch (IMP::Exception e) {
     std::cerr << "Caught exception " << e.what() << std::endl;
     return 1;
   }
@@ -77,7 +77,7 @@ int do_benchmark() {
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Test optimized patches");
+  IMP::setup_from_argv(argc, argv, "Test optimized patches");
   // disable test for now
 #if 0
   return do_benchmark();

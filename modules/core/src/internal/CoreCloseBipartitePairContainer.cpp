@@ -14,7 +14,7 @@
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 #include <IMP/PairModifier.h>
 #include <algorithm>
 
@@ -30,8 +30,8 @@ CoreCloseBipartitePairContainer::CoreCloseBipartitePairContainer(
   std::ostringstream oss;
   oss << "BCPC " << get_name() << " hierarchy " << this;
   ObjectKey key = ObjectKey(oss.str());
-  initialize(a, b, base::get_invalid_index<ParticleIndexTag>(),
-             base::get_invalid_index<ParticleIndexTag>(), distance,
+  initialize(a, b, IMP::get_invalid_index<ParticleIndexTag>(),
+             IMP::get_invalid_index<ParticleIndexTag>(), distance,
              slack, key);
   // initialize can get called more than once
   score_state_ = new SS(this);
@@ -83,7 +83,7 @@ ModelObjectsTemp CoreCloseBipartitePairContainer::get_score_state_inputs()
   ModelObjectsTemp ret;
   ret += internal::get_inputs(get_model(), sc_[0], access_pair_filters());
   ret += internal::get_inputs(get_model(), sc_[1], access_pair_filters());
-  if (covers_[0] != base::get_invalid_index<ParticleIndexTag>()) {
+  if (covers_[0] != IMP::get_invalid_index<ParticleIndexTag>()) {
     ret.push_back(get_model()->get_particle(covers_[0]));
     ret.push_back(get_model()->get_particle(covers_[1]));
   }
@@ -113,7 +113,7 @@ void CoreCloseBipartitePairContainer::do_score_state_before_evaluate() {
                               << std::endl);
     IMP_LOG_VERBOSE(distances << std::endl);
   }
-  if (covers_[0] == base::get_invalid_index<ParticleIndexTag>() ||
+  if (covers_[0] == IMP::get_invalid_index<ParticleIndexTag>() ||
       algebra::get_distance(get_model()->get_sphere(covers_[0]),
                             get_model()->get_sphere(covers_[1])) < distance_ ||
       reset_) {
@@ -144,7 +144,7 @@ void CoreCloseBipartitePairContainer::do_score_state_before_evaluate() {
       swap(pips);
 
       IMP_LOG_VERBOSE("List is " << get_access() << std::endl);
-      IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
         ParticleIndexes sc0p = sc_[0]->get_indexes();
         ParticleIndexes sc1p = sc_[1]->get_indexes();
         ParticleIndexPairs unfound;
@@ -182,7 +182,7 @@ void CoreCloseBipartitePairContainer::do_score_state_before_evaluate() {
     swap(none);
   }
   IMP_LOG_VERBOSE("List is " << get_access() << std::endl);
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     ParticleIndexes sc0p = sc_[0]->get_indexes();
     ParticleIndexes sc1p = sc_[1]->get_indexes();
     ParticleIndexPairs unfound;

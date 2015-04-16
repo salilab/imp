@@ -11,7 +11,7 @@
 #include <IMP/Model.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/core/TableRefiner.h>
@@ -50,12 +50,12 @@ template <class Tag>
 void test_one(std::string name, int seed, Model *, ScoringFunction *sf,
               XYZ to_move, bool eig) {
   // Take ownership of ScoringFunction object and make sure it's refcounted
-  base::PointerMember<ScoringFunction> osf = sf;
+  PointerMember<ScoringFunction> osf = sf;
   IMP::algebra::BoundingBox3D bb =
       IMP::algebra::BoundingBox3D(IMP::algebra::Vector3D(-100, -100, -100),
                                   IMP::algebra::Vector3D(100, 100, 100));
   unsigned int nreps = onreps;
-  if (IMP::base::run_quick_test) {
+  if (IMP::run_quick_test) {
     nreps = 1;
   }
   {
@@ -63,7 +63,7 @@ void test_one(std::string name, int seed, Model *, ScoringFunction *sf,
     double runtime;
     IMP_TIME(
     {
-      IMP::base::random_number_generator.seed(seed);
+      IMP::random_number_generator.seed(seed);
       for (unsigned int i = 0; i < nreps; ++i) {
         to_move.set_coordinates(IMP::algebra::get_random_vector_in(bb));
         if (eig) {
@@ -85,7 +85,7 @@ void test_one(std::string name, int seed, Model *, ScoringFunction *sf,
     ;
     double runtime;
     IMP_TIME({
-               IMP::base::random_number_generator.seed(seed);
+               IMP::random_number_generator.seed(seed);
                for (unsigned int i = 0; i < nreps; ++i) {
                  to_move.set_x(100.0 * static_cast<double>(i) / nreps);
                  if (eig) {
@@ -107,7 +107,7 @@ void test_one(std::string name, int seed, Model *, ScoringFunction *sf,
     ;
     double runtime;
     IMP_TIME({
-               IMP::base::random_number_generator.seed(seed);
+               IMP::random_number_generator.seed(seed);
                for (unsigned int i = 0; i < nreps; ++i) {
                  to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
                  if (eig) {
@@ -129,7 +129,7 @@ void test_one(std::string name, int seed, Model *, ScoringFunction *sf,
     ;
     double runtime;
     IMP_TIME({
-               IMP::base::random_number_generator.seed(seed);
+               IMP::random_number_generator.seed(seed);
                for (unsigned int i = 0; i < nreps; ++i) {
                  to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
                  if (eig) {
@@ -150,7 +150,7 @@ void test_one(std::string name, int seed, Model *, ScoringFunction *sf,
 
 #define IMP_MULTIFIT_EV_BENCHMARK_SETUP                                \
   IMP_NEW(Model, m, ());                                       \
-  int seed = IMP::base::random_number_generator();                     \
+  int seed = IMP::random_number_generator();                     \
   atom::Hierarchy h0 =                                                 \
       read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m); \
   atom::Hierarchy h1 =                                                 \

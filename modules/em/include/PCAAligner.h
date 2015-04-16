@@ -11,7 +11,7 @@
 #include <IMP/em/em_config.h>
 #include <IMP/em/converters.h>
 #include <IMP/algebra/eigen_analysis.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -23,7 +23,7 @@ IMPEM_BEGIN_NAMESPACE
     Note, that principal components are not well-defined for globular
     objects, so the method may fail in case of symmetric structures
  */
-class IMPEMEXPORT PCAAligner : public IMP::base::Object {
+class IMPEMEXPORT PCAAligner : public IMP::Object {
  public:
   /** init the distance transform
       \param map input density map
@@ -31,7 +31,7 @@ class IMPEMEXPORT PCAAligner : public IMP::base::Object {
                               which voxels belong to the object
   */
   PCAAligner(IMP::em::DensityMap* map, float density_threshold)
-      : base::Object("EM_PCA_Aligner") {
+      : Object("EM_PCA_Aligner") {
     IMP::algebra::Vector3Ds density_points =
         IMP::em::density2vectors(map, density_threshold);
     map_pc_ = IMP::algebra::get_principal_components(density_points);
@@ -46,8 +46,8 @@ class IMPEMEXPORT PCAAligner : public IMP::base::Object {
   algebra::Transformation3Ds align(const algebra::Vector3Ds& points) const;
 
   // methods required by Object
-  IMP::base::VersionInfo get_version_info() const {
-    return IMP::base::VersionInfo(get_module_name(), get_module_version());
+  IMP::VersionInfo get_version_info() const {
+    return IMP::VersionInfo(get_module_name(), get_module_version());
   }
 
   ~PCAAligner() {}

@@ -87,12 +87,12 @@ IMPATOMEXPORT float atom_temp_factor(const String& pdb_line);
 IMPATOMEXPORT String atom_element(const String& pdb_line);
 
 //! Returns the connected atoms from the CONECT record
-IMPATOMEXPORT base::Vector<unsigned short> connected_atoms(
+IMPATOMEXPORT Vector<unsigned short> connected_atoms(
     const String& pdb_line);
 
 //! write particles as ATOMs to PDB (assumes Particles are valid Atoms)
 IMPATOMEXPORT void write_pdb(const ParticlesTemp& ps,
-                             base::TextOutput out);
+                             TextOutput out);
 
 /** ATOM Record Format (from PDB)
     COLUMNS        DATA TYPE       CONTENTS

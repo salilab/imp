@@ -120,7 +120,7 @@ void RestraintCache::add_restraints(const RestraintsAdaptor &rs) {
   }
 
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    base::Pointer<Restraint> r = rs[i]->create_decomposition();
+    Pointer<Restraint> r = rs[i]->create_decomposition();
     IMP_IF_LOG(TERSE) {
       IMP_LOG_TERSE("Before:" << std::endl);
       IMP_LOG_WRITE(TERSE, show_restraint_hierarchy(rs[i]));
@@ -241,7 +241,7 @@ Ints get_ids(const boost::unordered_map<Particle *, int> &map,
   return ret;
 }
 IMP_NAMED_TUPLE_2(RestraintID, RestraintIDs, int, restraint_index,
-                  base::ConstVector<unsigned int>, particle_indexes, );
+                  ConstVector<unsigned int>, particle_indexes, );
 
 typedef boost::unordered_map<Particle *, int> ParticleIndex;
 RestraintID get_restraint_id(const ParticleIndex &map, const Subset &s,
@@ -249,7 +249,7 @@ RestraintID get_restraint_id(const ParticleIndex &map, const Subset &s,
   RestraintID ret;
   ret.set_restraint_index(restraint_index);
   Ints pis = get_ids(map, s);
-  ret.set_particle_indexes(base::ConstVector<unsigned int>(pis));
+  ret.set_particle_indexes(ConstVector<unsigned int>(pis));
   return ret;
 }
 ParticleIndex get_particle_index(
@@ -260,7 +260,7 @@ ParticleIndex get_particle_index(
   }
   return map;
 }
-Orders get_orders(const boost::unordered_map<base::Pointer<Restraint>,
+Orders get_orders(const boost::unordered_map<Pointer<Restraint>,
                                              Subset> &known_restraints,
                   const RestraintsTemp &restraints,
                   const ParticlesTemp &particle_ordering) {
@@ -340,7 +340,7 @@ void RestraintCache::load_cache(const ParticlesTemp &particle_ordering,
     RMF::HDF5::Indexes particle_indexes =
         ch.get_attribute<RMF::HDF5::IndexTraits>("particles");
     RestraintID rid(restraint_index,
-                    base::ConstVector<unsigned int>(Ints(
+                    ConstVector<unsigned int>(Ints(
                         particle_indexes.begin(), particle_indexes.end())));
     Restraint *r = index.find(rid)->second;
     restraints.push_back(r);

@@ -1,5 +1,5 @@
-/** \example base/flags.cpp
-    Show simple usage of the command line flags support in IMP.base in a
+/** \example flags.cpp
+    Show simple usage of the command line flags support in IMP in a
     C++ executable. Run with "--help" to see all available flags.
 */
 #include <IMP/flags.h>

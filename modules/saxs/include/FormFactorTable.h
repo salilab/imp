@@ -273,7 +273,7 @@ class IMPSAXSEXPORT FormFactorTable {
   // min/max q and sampling resolution for form factor computation
   Float min_q_, max_q_, delta_q_;
 
-  base::WarningContext warn_context_;
+  WarningContext warn_context_;
 };
 
 /** Get the default table.*/

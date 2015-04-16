@@ -12,7 +12,7 @@
 #include "Score.h"
 #include <IMP/Model.h>
 #include "internal/PMFTable.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/algebra/utility.h>
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
@@ -52,7 +52,7 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE = false>
 class Statistical : public Score {
   typedef internal::PMFTable<BIPARTITE, INTERPOLATE, SPARSE> Table;
-  base::PointerMember<Table> table_;
+  PointerMember<Table> table_;
   double threshold_;
   IntKey key_;
 
@@ -61,7 +61,7 @@ class Statistical : public Score {
      \param[in] threshold The maximum distance to score
      \param[in] data_file Where to load the file from.
  */
-  Statistical(IntKey k, double threshold, base::TextInput data_file)
+  Statistical(IntKey k, double threshold, TextInput data_file)
       : table_(new Table(data_file, 0, Key())), threshold_(threshold), key_(k) {
     IMP_USAGE_CHECK(!BIPARTITE,
                     "Constructor can only be used for non-bipartite scores.");
@@ -73,7 +73,7 @@ class Statistical : public Score {
       eg, if the score is on protein and ligand atoms, the ligand atom types
       start with the value shift.
   */
-  Statistical(IntKey k, double threshold, base::TextInput data_file,
+  Statistical(IntKey k, double threshold, TextInput data_file,
               unsigned int shift)
       : table_(new Table(data_file, shift, Key())),
         threshold_(threshold),
@@ -94,7 +94,7 @@ class Statistical : public Score {
     return table_->get_score(pt, lt, distance);
   }
   DerivativePair get_score_and_derivative(
-      Model *m, const base::Array<2, ParticleIndex> &pp,
+      Model *m, const Array<2, ParticleIndex> &pp,
       double distance) const {
     if (distance >= threshold_ || distance < 0.001) {
       return DerivativePair(0, 0);

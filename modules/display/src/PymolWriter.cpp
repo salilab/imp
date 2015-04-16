@@ -13,7 +13,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 namespace {
 std::string strip_quotes(std::string in) {
-  base::Vector<char> v(in.begin(), in.end());
+  Vector<char> v(in.begin(), in.end());
   return std::string(v.begin(), std::remove(v.begin(), v.end(), '\''));
 }
 const std::string placeholder_name;

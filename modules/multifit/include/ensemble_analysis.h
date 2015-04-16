@@ -19,7 +19,7 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! An ensemble of fitting solutions
-class IMPMULTIFITEXPORT Ensemble : public base::Object {
+class IMPMULTIFITEXPORT Ensemble : public Object {
  public:
   void load_combination(Ints fit_comb);
   void unload_combination(Ints fit_comb);

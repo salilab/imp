@@ -69,7 +69,7 @@ class TIFFImageReaderWriter : public ImageReaderWriter {
                      const cv::Mat &data) const {
     IMP_UNUSED(header);
     // discard header
-    IMP_LOG(IMP::base::WARNING,
+    IMP_LOG(IMP::WARNING,
             "Writing with TIFFImageReaderWriter "
             "discards image header "
                 << std::endl);

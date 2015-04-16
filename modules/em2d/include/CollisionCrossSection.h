@@ -18,7 +18,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Determine the collision cross section for some projections of particles
-class IMPEM2DEXPORT CollisionCrossSection : public IMP::base::Object {
+class IMPEM2DEXPORT CollisionCrossSection : public IMP::Object {
  public:
   /*!
     \param[in] n_projections Number of projections to use for obtaining the CCS

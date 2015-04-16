@@ -130,7 +130,7 @@ void Projection::calculate_sphere_mask(std::vector<MaskCell>& mask,
       kp.get_params(radius);
 
   int int_radius = symm_round(params.get_kdist() / scale_) + 1;
-  int int_radius2 = IMP::base::square(int_radius);
+  int int_radius2 = IMP::square(int_radius);
 
   double normalization = -scale_ * scale_ * params.get_inv_sigsq();
   double normalization2 = params.get_normfac();

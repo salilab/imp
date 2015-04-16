@@ -12,9 +12,9 @@
 #include <IMP/test/test_macros.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/Model.h>
-#include <IMP/base/ref_counted_macros.h>
-#include <IMP/base/flags.h>
-#include <IMP/base/nullptr_macros.h>
+#include <IMP/ref_counted_macros.h>
+#include <IMP/flags.h>
+#include <IMP/nullptr_macros.h>
 
 namespace {
 
@@ -26,7 +26,7 @@ IMP_FUNCTOR_DISTANCE_PAIR_SCORE(SoftSpherePairScore, SoftSphereDistanceScore,
                                 (IMP::score_functor::HarmonicLowerBound(k)));
 }
 int main(int argc, char *argv[]) {
-  IMP::base::setup_from_argv(argc, argv, "Test soft sphere pair score");
+  IMP::setup_from_argv(argc, argv, "Test soft sphere pair score");
   IMP_NEW(IMP::Model, m, ());
   IMP::ParticleIndex p0 = m->add_particle("p0");
   IMP::ParticleIndex p1 = m->add_particle("p1");

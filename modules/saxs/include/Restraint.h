@@ -19,8 +19,8 @@
 
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Object.h>
+#include <IMP/Pointer.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -61,10 +61,10 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint {
   IMP_OBJECT_METHODS(Restraint);
 
  protected:
-  base::Pointer<RigidBodiesProfileHandler> handler_;
-  base::Pointer<ProfileFitter<ChiScore> > profile_fitter_;  // computes profiles
+  Pointer<RigidBodiesProfileHandler> handler_;
+  Pointer<ProfileFitter<ChiScore> > profile_fitter_;  // computes profiles
   // computes derivatives
-  base::Pointer<DerivativeCalculator> derivative_calculator_;
+  Pointer<DerivativeCalculator> derivative_calculator_;
 };
 
 IMPSAXS_END_NAMESPACE

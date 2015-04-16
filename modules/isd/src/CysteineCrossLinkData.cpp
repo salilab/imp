@@ -6,7 +6,7 @@
 
 #include <IMP/isd/CysteineCrossLinkData.h>
 #include <IMP/macros.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <boost/math/special_functions/erf.hpp>
@@ -17,7 +17,7 @@ IMPISD_BEGIN_NAMESPACE
 CysteineCrossLinkData::CysteineCrossLinkData(double fexp, Floats fmod_grid,
                                              Floats omega_grid,
                                              Floats omega0_grid, int prior_type)
-    : base::Object("Data Structure for CysteineCrossLinkRestraint %1%") {
+    : Object("Data Structure for CysteineCrossLinkRestraint %1%") {
   prior_type_ = prior_type;
   // fexp is the experimental frequency
   // fmod is the model frequency

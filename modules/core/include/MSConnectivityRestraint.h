@@ -52,8 +52,8 @@ IMPCORE_BEGIN_NAMESPACE
     the value of the PairScore for the two endpoints of the edge.
  */
 class IMPCOREEXPORT MSConnectivityRestraint : public Restraint {
-  IMP::base::PointerMember<PairScore> ps_;
-  IMP::base::PointerMember<SingletonContainer> sc_;
+  IMP::PointerMember<PairScore> ps_;
+  IMP::PointerMember<SingletonContainer> sc_;
   double eps_;
 
  public:
@@ -177,10 +177,10 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint {
       unsigned int source_;
     };
 
-    base::Vector<ParticleData> particles_;
+    Vector<ParticleData> particles_;
     Floats dist_matrix_;
-    base::Vector<Ints> order_;
-    base::Vector<Ints> protein_by_class_;
+    Vector<Ints> order_;
+    Vector<Ints> protein_by_class_;
     double min_distance_;
     double max_distance_;
     unsigned int current_id_;
@@ -204,11 +204,11 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint {
       bool is_leaf() const { return get_number_of_children() == 0; }
       unsigned int get_parent(unsigned int idx) const { return parents_[idx]; }
       unsigned int get_child(unsigned int idx) const { return children_[idx]; }
-      typedef base::Vector<std::pair<unsigned int, int> > Label;
+      typedef Vector<std::pair<unsigned int, int> > Label;
       const Label &get_label() const { return label_; }
 
-      base::Vector<unsigned int> parents_;
-      base::Vector<unsigned int> children_;
+      Vector<unsigned int> parents_;
+      Vector<unsigned int> children_;
       Label label_;
       bool visited_;
     };
@@ -221,7 +221,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint {
     unsigned int get_root() const { return root_; }
     void desc_to_label(const Ints &components, Node::Label &label);
 
-    base::Vector<Node> nodes_;
+    Vector<Node> nodes_;
     unsigned int root_;
     bool finalized_;
   };

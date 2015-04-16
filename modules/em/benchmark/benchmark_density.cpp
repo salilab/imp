@@ -5,7 +5,7 @@
 #include <IMP/benchmark.h>
 #include <IMP/em.h>
 #include <IMP/algebra.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 using namespace IMP;
 using namespace IMP::em;
 using namespace IMP::benchmark;
@@ -13,7 +13,7 @@ using namespace IMP::algebra;
 
 namespace {
 void do_benchmark() {
-  base::Pointer<DensityMap> m[3];
+  Pointer<DensityMap> m[3];
   for (unsigned int i = 0; i < 3; ++i) {
     m[i] = new DensityMap();
     unsigned int n[3];
@@ -67,7 +67,7 @@ void do_benchmark() {
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark scanning density maps");
+  IMP::setup_from_argv(argc, argv, "Benchmark scanning density maps");
   do_benchmark();
   return IMP::benchmark::get_return_value();
 }

@@ -12,7 +12,7 @@
 
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/PairScore.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
@@ -53,7 +53,7 @@ IMP::internal::StaticListContainer<SingletonContainer> *get_list(
   if (!ret) {
     IMP_THROW("Can only use the set and add methods when no container"
                   << " was passed on construction of ConnectivityRestraint.",
-              base::ValueException);
+              ValueException);
   }
   return ret;
 }
@@ -95,7 +95,7 @@ typedef Graph::edge_property_type Weight;
 typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
 void compute_mst(Model *m, const ParticleIndexes &pis,
-                 PairScore *ps, Graph &g, base::Vector<Edge> &mst) {
+                 PairScore *ps, Graph &g, Vector<Edge> &mst) {
   try {
     for (unsigned int i = 0; i < pis.size(); ++i) {
       for (unsigned int j = 0; j < i; ++j) {
@@ -130,7 +130,7 @@ void compute_mst(Model *m, const ParticleIndexes &pis,
 ParticleIndexPairs get_edges(const SingletonContainer *a, PairScore *ps) {
   ParticleIndexes pis = a->get_indexes();
   Graph g(pis.size());
-  base::Vector<Edge> mst;
+  Vector<Edge> mst;
   compute_mst(a->get_model(), pis, ps, g, mst);
   ParticleIndexPairs ret(mst.size());
   for (unsigned int index = 0; index < mst.size(); ++index) {
@@ -148,7 +148,7 @@ double ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     const {
   IMP_CHECK_OBJECT(ps_.get());
   IMP_OBJECT_LOG;
-  base::Vector<Edge> mst;
+  Vector<Edge> mst;
   if (!sc_) return 0;
   ParticleIndexPairs edges = get_edges(sc_, ps_);
   return ps_->evaluate_indexes(get_model(), edges, accum, 0, edges.size());

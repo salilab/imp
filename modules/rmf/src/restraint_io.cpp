@@ -13,8 +13,8 @@
 #include <RMF/decorator/feature.h>
 #include <IMP/core/RestraintsScoringFunction.h>
 #include <IMP/input_output.h>
-#include <IMP/base/ConstVector.h>
-#include <IMP/base/WeakPointer.h>
+#include <IMP/ConstVector.h>
+#include <IMP/WeakPointer.h>
 #include <boost/shared_array.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
@@ -60,9 +60,9 @@ Restraints RMFRestraint::do_create_current_decomposition() const {
 RMFRestraint::RMFRestraint(Model *m, std::string name)
     : Restraint(m, name) {}
 
-class Subset : public base::ConstVector<base::WeakPointer<Particle>,
+class Subset : public base::ConstVector<WeakPointer<Particle>,
                                         Particle *> {
-  typedef base::ConstVector<base::WeakPointer<Particle>,
+  typedef base::ConstVector<WeakPointer<Particle>,
                             Particle *> P;
   static ParticlesTemp get_sorted(ParticlesTemp ps) {
     std::sort(ps.begin(), ps.end());
@@ -179,7 +179,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         }
       }
     }
-    base::Pointer<Restraint> ret;
+    Pointer<Restraint> ret;
     if (!childr.empty()) {
       ret = new RestraintSet(childr, 1.0, name.get_name());
     } else {
@@ -213,7 +213,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   RMF::FloatKey weight_key_;
   boost::unordered_map<Restraint *, RestraintSaveData> data_;
   Restraints all_;
-  base::PointerMember<core::RestraintsScoringFunction> rsf_;
+  PointerMember<core::RestraintsScoringFunction> rsf_;
   unsigned int max_terms_;
   boost::unordered_set<Restraint *> no_terms_;
 
@@ -265,7 +265,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
         // too big, do nothing
       } else if (!dynamic_cast<RestraintSet *>(o)) {
         // required to set last score
-        base::Pointer<Restraint> rd = o->create_current_decomposition();
+        Pointer<Restraint> rd = o->create_current_decomposition();
         // set all child scores to 0 for this frame, we will over
         // right below
         /*RMF::NodeHandles chs = nh.get_children();
@@ -338,7 +338,7 @@ void add_restraints_as_bonds(RMF::FileHandle fh, const Restraints &rs) {
   Restraints decomp;
 
   IMP_FOREACH(Restraint * r, rs) {
-    base::Pointer<Restraint> rd = r->create_decomposition();
+    Pointer<Restraint> rd = r->create_decomposition();
     if (rd == r) {
       decomp.push_back(rd);
     } else {

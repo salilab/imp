@@ -8,13 +8,13 @@
 #include <IMP/algebra/io.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark algorithms for surfaces");
+  IMP::setup_from_argv(argc, argv, "Benchmark algorithms for surfaces");
   IMP::algebra::Sphere3Ds sps = IMP::algebra::read_spheres(
       IMP::algebra::get_data_path("benchmark_surface.spheres"));
-  if (IMP::base::run_quick_test) {
+  if (IMP::run_quick_test) {
     while (sps.size() > 100) sps.pop_back();
   }
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL

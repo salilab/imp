@@ -17,13 +17,13 @@
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/kinematics/TransformationJoint.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/Decorator.h>
 #include <boost/unordered_set.hpp>
-#include <IMP/base/exception.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/exception.h>
+#include <IMP/Object.h>
+#include <IMP/check_macros.h>
+#include <IMP/warning_macros.h>
 #include <IMP/atom/Hierarchy.h>
 #include <queue>
 #include <algorithm>
@@ -41,7 +41,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
    \see Joint
  */
 class IMPKINEMATICSEXPORT KinematicForest
-    : public base::Object  // or ModelObject?
+    : public Object  // or ModelObject?
       {
  public:
   IMP_OBJECT_METHODS(KinematicForest);

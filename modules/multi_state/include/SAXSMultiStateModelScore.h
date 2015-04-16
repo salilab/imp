@@ -15,7 +15,7 @@
 
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/WeightedProfileFitter.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
 #include <vector>
 
@@ -70,7 +70,7 @@ private:
 private:
   // input profiles
   const IMP::saxs::Profiles profiles_;
-  IMP::base::PointerMember<const IMP::saxs::Profile> exp_profile_;
+  IMP::PointerMember<const IMP::saxs::Profile> exp_profile_;
 
   // resampled on experimental profile q's
   IMP::saxs::Profiles resampled_profiles_;

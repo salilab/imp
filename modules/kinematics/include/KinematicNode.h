@@ -13,7 +13,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/kinematics/Joint.h>
 
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -92,7 +92,7 @@ Joint* KinematicNode::get_in_joint() {
                                       get_particle_index())) {
     return nullptr;
   }
-  base::Object* obj =
+  Object* obj =
       get_model()->get_attribute(get_in_joint_key(), get_particle_index());
   return static_cast<Joint*>(obj);
 }
@@ -105,10 +105,10 @@ JointsTemp KinematicNode::get_out_joints() {
                                       get_particle_index())) {
     return joints;
   }
-  base::Objects objs =
+  Objects objs =
       get_model()->get_attribute(get_out_joints_key(), get_particle_index());
   for (unsigned int i = 0; i < objs.size(); i++) {
-    base::Object* o = objs[i];
+    Object* o = objs[i];
     Joint* j = static_cast<Joint*>(o);
     joints.push_back(j);
   }

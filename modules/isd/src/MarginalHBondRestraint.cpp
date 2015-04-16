@@ -44,14 +44,14 @@ double MarginalHBondRestraint::unprotected_evaluate(
                       << " before calling evaluate.");
   // compute logsquares
   double logsquares = 0;
-  base::Vector<double> meandists;  // mean distances^-6, length(volumes_)
+  Vector<double> meandists;  // mean distances^-6, length(volumes_)
   // store interparticle distances^-6
-  base::Vector<base::Vector<double> > alldists;
+  Vector<base::Vector<double> > alldists;
   int ncontribs = volumes_.size();
   for (int i = 0; i < ncontribs; ++i)  // loop on all contributions
   {
     double mean = 0;
-    base::Vector<double> dists;
+    Vector<double> dists;
     IMP_CONTAINER_FOREACH(PairContainer, contribs_[i], {
       core::XYZ d0(get_model(), _1[0]);
       core::XYZ d1(get_model(), _1[1]);

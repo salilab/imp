@@ -9,8 +9,8 @@
 #include <IMP/display/internal/utility.h>
 #include <IMP/display/declare_Geometry.h>
 #include <IMP/display/primitive_geometries.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/warning_macros.h>
 #include <algorithm>
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
 #include <IMP/cgal/internal/polygons.h>
@@ -116,7 +116,7 @@ algebra::Vector3Ds get_normals(const Ints &faces,
   for (unsigned int i = 0; i < faces.size() / 3; ++i) {
     algebra::Vector3D n =
         get_normal(faces.begin() + 3 * i, faces.begin() + 3 * i + 3, vertices);
-    IMP_INTERNAL_CHECK(!base::isnan(n[0]), "Nan found");
+    IMP_INTERNAL_CHECK(!IMP::isnan(n[0]), "Nan found");
     for (unsigned int j = 0; j < 3; ++j) {
       int v = faces[3 * i + j];
       sum[v] += n;
@@ -125,7 +125,7 @@ algebra::Vector3Ds get_normals(const Ints &faces,
   }
   for (unsigned int i = 0; i < count.size(); ++i) {
     sum[i] /= count[i];
-    IMP_INTERNAL_CHECK(!base::isnan(sum[i][0]),
+    IMP_INTERNAL_CHECK(!IMP::isnan(sum[i][0]),
                        "Nan found at end:" << count[i] << " on " << i);
   }
   return sum;

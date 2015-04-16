@@ -8,15 +8,15 @@
 
 #ifndef IMPEM_DENSITY_MAP_H
 #define IMPEM_DENSITY_MAP_H
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/em/em_config.h>
 #include "DensityHeader.h"
 #include "MapReaderWriter.h"
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <boost/scoped_array.hpp>
 #include <iostream>
 #include <iomanip>
@@ -91,7 +91,7 @@ IMPEMEXPORT Float approximate_molecular_mass(DensityMap *m, Float threshold);
      for sampling function as well as for functions
      like get_location_in_dim_by_voxel.
  */
-class IMPEMEXPORT DensityMap : public IMP::base::Object {
+class IMPEMEXPORT DensityMap : public IMP::Object {
   typedef IMP::algebra::DenseGrid3D<double> DGrid;
   IMP_NO_SWIG(friend IMPEMEXPORT DensityMap *read_map(std::string filename,
                                                       MapReaderWriter *reader));
@@ -426,7 +426,7 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
      \param[in] dim_len the kernel array
    */
   void convolute_kernel(double *kernel, int dim_len) {
-    base::Pointer<DensityMap> cmap = em::create_density_map(this);
+    Pointer<DensityMap> cmap = em::create_density_map(this);
     cmap->set_was_used(true);
     convolute_kernel(cmap, kernel, dim_len);
     cmap = static_cast<DensityMap *>(nullptr);
@@ -638,7 +638,7 @@ inline DensityMap *create_density_map(
   IMP_USAGE_CHECK(
       std::abs(arg.get_unit_cell()[0] - arg.get_unit_cell()[1]) < .01,
       "The passed grid does not seem to have cubic voxels");
-  base::Pointer<DensityMap> ret = create_density_map(
+  Pointer<DensityMap> ret = create_density_map(
       algebra::get_bounding_box(arg), arg.get_unit_cell()[0]);
   IMP_USAGE_CHECK(arg.get_number_of_voxels(0) ==
                       static_cast<unsigned int>(ret->get_header()->get_nx()),

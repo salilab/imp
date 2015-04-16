@@ -82,7 +82,7 @@ inline IMPEMEXPORT SampledDensityMap *particles2binarized_density(
     int sig_cutoff = 3,
     const FloatKey &weight_key = IMP::atom::Mass::get_mass_key()) {
 
-  base::Pointer<SampledDensityMap> dmap(new SampledDensityMap(
+  Pointer<SampledDensityMap> dmap(new SampledDensityMap(
       ps, resolution, apix, weight_key, sig_cutoff, BINARIZED_SPHERE));
   return dmap.release();
 }

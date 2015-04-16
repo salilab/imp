@@ -15,7 +15,7 @@
 #include "XYZ.h"
 #include <IMP/Refiner.h>
 #include <IMP/singleton_macros.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/SingletonDerivativeModifier.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT WeightedDerivativesToRefined :
 public SingletonDerivativeModifier {
-  IMP::base::PointerMember<Refiner> refiner_;
+  IMP::PointerMember<Refiner> refiner_;
   FloatKey w_; // weights key
   FloatKeys keys_;
 

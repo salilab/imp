@@ -258,7 +258,7 @@ int main(int argc, char **argv)
   if(files.size() > 1) angle_file_name = files[1];
 
   // read in the input protein
-  IMP::base::Pointer<IMP::Model> model = new IMP::Model();
+  IMP::Pointer<IMP::Model> model = new IMP::Model();
   std::cerr << "Starting reading pdb file " << pdb_name << std::endl;
   IMP::atom::Hierarchy mhd =
     IMP::atom::read_pdb(pdb_name, model,
@@ -286,7 +286,7 @@ int main(int argc, char **argv)
 
   IMP::atom::CHARMMParameters* ff =
     new IMP::atom::CHARMMParameters(topology_file_name, parameter_file_name);
-  IMP::base::Pointer<IMP::atom::CHARMMTopology> topology =
+  IMP::Pointer<IMP::atom::CHARMMTopology> topology =
     ff->create_topology(mhd);
 
   // We don't want to add/remove any atoms, so we only add atom types
@@ -347,7 +347,7 @@ int main(int argc, char **argv)
   IMP_NEW(IMP::container::PairsRestraint, pr, (score, cpc));
 
   // TODO: check why not working: should be much faster
-  //IMP::base::Pointer<IMP::Restraint> pr=
+  //IMP::Pointer<IMP::Restraint> pr=
   //   IMP::container::create_restraint(score, cpc);
   model->add_restraint(pr);
 

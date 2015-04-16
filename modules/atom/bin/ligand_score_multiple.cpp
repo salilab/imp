@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
   // print command
   for(int i=0; i<argc; i++) std::cerr << argv[i] << " "; std::cerr << std::endl;
 
-  IMP::base::set_log_level(IMP::base::SILENT);
+  IMP::set_log_level(IMP::SILENT);
   std::string mol2name, pdbname, trans_file, out_file_name;
 
   po::options_description desc("Usage: <pdb> <mol2> [trans file]");
@@ -80,17 +80,17 @@ transformation file.")
   trans_file = files[2];
 
  
-  IMP::base::TextInput lib;
+  IMP::TextInput lib;
   /*
   if (argc==4) {
-    lib= IMP::base::TextInput(argv[3]);
+    lib= IMP::TextInput(argv[3]);
   }
   */
 
   IMP_NEW(IMP::Model, m, ());
   IMP::atom::Hierarchy protein, ligand;
   {
-    IMP::base::SetLogState ss(IMP::base::SILENT);
+    IMP::SetLogState ss(IMP::SILENT);
     protein = IMP::atom::read_pdb(pdbname, m, new IMP::atom::ATOMPDBSelector());
     IMP::atom::add_protein_ligand_score_data(protein);
     ligand = IMP::atom::read_mol2(mol2name, m);
@@ -98,7 +98,7 @@ transformation file.")
   }
   IMP::atom::Hierarchies mols
     = IMP::atom::get_by_type(ligand, IMP::atom::RESIDUE_TYPE);
-  IMP::base::Pointer<IMP::atom::ProteinLigandAtomPairScore> ps;
+  IMP::Pointer<IMP::atom::ProteinLigandAtomPairScore> ps;
   if (lib) {
     ps = new IMP::atom::ProteinLigandAtomPairScore(100000, lib);
   } else {

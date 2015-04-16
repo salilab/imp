@@ -12,7 +12,7 @@
 #include "IMP/em2d/domino_particle_states.h"
 #include "IMP/domino/Subset.h"
 #include "IMP/domino/subset_filters.h"
-#include "IMP/base/log.h"
+#include "IMP/log.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -22,7 +22,7 @@ IMPEM2D_BEGIN_NAMESPACE
 class IMPEM2DEXPORT DistanceFilterTable : public domino::SubsetFilterTable {
  protected:
   domino::Subset my_subset_;
-  base::Pointer<domino::ParticleStatesTable> ps_table_;
+  Pointer<domino::ParticleStatesTable> ps_table_;
   double max_distance_;  // max distance tolerated between the particles
 
  public:

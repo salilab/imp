@@ -8,7 +8,7 @@
 
 #include "IMP/display/ChimeraWriter.h"
 #include "IMP/display/internal/utility.h"
-#include <IMP/base/deprecation_macros.h>
+#include <IMP/deprecation_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 

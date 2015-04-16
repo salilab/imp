@@ -44,10 +44,10 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT LognormalAmbiguousRestraint : public Restraint
 {
-  base::Pointer<Particle> p1_;
-  base::Pointer<Particle> p2_;
-  base::Pointer<Particle> ki_;
-  base::Pointer<Particle> sigmaG_;
+  Pointer<Particle> p1_;
+  Pointer<Particle> p2_;
+  Pointer<Particle> ki_;
+  Pointer<Particle> sigmaG_;
   Particles omegas_;
   Floats lexp_;
 

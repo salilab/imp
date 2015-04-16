@@ -72,7 +72,7 @@ IMP_OBJECTS(ConsecutivePairContainer, ConsecutivePairContainers);
 /** Check for whether the pair is a member of a specific
     ConsecutivePairContainer. */
 class IMPCONTAINEREXPORT ConsecutivePairFilter : public PairPredicate {
-  base::PointerMember<ConsecutivePairContainer> cpc_;
+  PointerMember<ConsecutivePairContainer> cpc_;
 
  public:
   /** @param cpc the consecutive pair container that stores

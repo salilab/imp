@@ -15,7 +15,7 @@
 
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 

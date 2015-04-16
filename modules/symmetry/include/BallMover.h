@@ -37,7 +37,7 @@ class IMPSYMMETRYEXPORT BallMover : public core::MonteCarloMover {
 
  private:
   //! Master particle
-  IMP::base::PointerMember<Particle> p_;
+  IMP::PointerMember<Particle> p_;
   //! List of slave particles
   Particles ps_;
   //! Maximum translation

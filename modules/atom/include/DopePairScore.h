@@ -45,7 +45,7 @@ class DopePairScore
  public:
   DopePairScore(double threshold = std::numeric_limits<double>::max())
       : P(score_functor::Dope(threshold)) {}
-  DopePairScore(double threshold, base::TextInput data_file)
+  DopePairScore(double threshold, TextInput data_file)
       : P(score_functor::Dope(threshold, data_file)) {}
 };
 

@@ -15,7 +15,7 @@
 #include <IMP/decorator_macros.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include <sstream>
 
 IMPISD_BEGIN_NAMESPACE

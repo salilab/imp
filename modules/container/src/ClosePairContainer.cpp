@@ -10,7 +10,7 @@
 
 #include "IMP/container/ClosePairContainer.h"
 #include "IMP/core/internal/close_pairs_helpers.h"
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <algorithm>
 #include <boost/timer.hpp>
 #include <vector>
@@ -54,7 +54,7 @@ double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
     {
       boost::timer imp_timer;
       int count = 0;
-      base::SetLogState sl(opt->get_model(), base::SILENT);
+      SetLogState sl(opt->get_model(), SILENT);
       do {
         cpc->set_slack(slack);
         cpc->update();
@@ -69,7 +69,7 @@ double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
       double score = 0;
       int count = 0;
       int iters = 1;
-      base::SetLogState sl(opt->get_model(), base::SILENT);
+      SetLogState sl(opt->get_model(), SILENT);
       do {
         for (int j = 0; j < iters; ++j) {
           for (unsigned int i = 0; i < restraints.size(); ++i) {
@@ -102,7 +102,7 @@ double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
       dists[i].resize(ns, 0.0);
     }
     pos.resize(ns, std::vector<algebra::Vector3D>(ps.size()));
-    base::SetLogState sl(opt->get_model(), base::SILENT);
+    SetLogState sl(opt->get_model(), SILENT);
     for (int i = last_ns; i < ns; ++i) {
       opt->optimize(1);
       for (unsigned int j = 0; j < ps.size(); ++j) {

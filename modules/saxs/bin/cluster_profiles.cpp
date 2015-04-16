@@ -5,7 +5,7 @@
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/ChiScore.h>
 
-#include <IMP/base/nullptr_macros.h>
+#include <IMP/nullptr_macros.h>
 
 #include <vector>
 #include <string>
@@ -63,7 +63,7 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")(
   // open input file with profile file names - mes format
   std::ifstream in_file(files[0].c_str());
   if (!in_file) {
-    IMP_THROW("Can't find input file " << files[0], IOException);
+    IMP_THROW("Can't find input file " << files[0], IMP::IOException);
   }
   std::string curr_file_name;
   unsigned int profile_counter = 0;
@@ -78,7 +78,7 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")(
     IMP::saxs::Profile *profile =
         new IMP::saxs::Profile(curr_file_name, fit_file);
     if (profile->size() == 0) {
-      IMP_THROW("Can't parse input file " << curr_file_name, IOException);
+      IMP_THROW("Can't parse input file " << curr_file_name, IMP::IOException);
     } else {
       if (profile_counter == 0) {
         exp_profile = profile;
@@ -98,7 +98,7 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")(
         new IMP::saxs::Profile(reference_profile_file, true);
     if (reference_profile->size() == 0) {
       IMP_THROW("Can't parse reference input file " << reference_profile_file,
-                IOException);
+                IMP::IOException);
     }
     reference_profile->copy_errors(exp_profile);
 

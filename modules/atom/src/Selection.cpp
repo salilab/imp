@@ -56,7 +56,7 @@ namespace {
 
   //! Reverse a match
   class NotSelectionPredicate : public internal::SelectionPredicate {
-    base::Pointer<SelectionPredicate> predicate_;
+    Pointer<SelectionPredicate> predicate_;
   public:
     NotSelectionPredicate(SelectionPredicate *predicate,
                           std::string name = "NotSelectionPredicate%1%")
@@ -123,7 +123,7 @@ namespace {
       if (!toplevel && predicates_.size() == 1) {
         return predicates_[0]->clone(false);
       } else {
-        base::Pointer<ListSelectionPredicate> a = new AndSelectionPredicate();
+        Pointer<ListSelectionPredicate> a = new AndSelectionPredicate();
         clone_predicates(a);
         return a.release();
       }
@@ -168,7 +168,7 @@ namespace {
   
     virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
       set_was_used(true);
-      base::Pointer<ListSelectionPredicate> a = new OrSelectionPredicate();
+      Pointer<ListSelectionPredicate> a = new OrSelectionPredicate();
       clone_predicates(a);
       return a.release();
     }
@@ -212,7 +212,7 @@ namespace {
 
     virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
       set_was_used(true);
-      base::Pointer<ListSelectionPredicate> a = new XorSelectionPredicate();
+      Pointer<ListSelectionPredicate> a = new XorSelectionPredicate();
       clone_predicates(a);
       return a.release();
     }
@@ -664,7 +664,7 @@ void Selection::set_intersection(const Selection &s) {
     // Replace top-level predicate with a new AndSelectionPredicate, and make
     // both the existing top-level predicate and the other selection's predicate
     // children of it
-    base::Pointer<internal::ListSelectionPredicate> p
+    Pointer<internal::ListSelectionPredicate> p
                 = new AndSelectionPredicate();
     p->add_predicate(predicate_);
     predicate_ = p;
@@ -679,7 +679,7 @@ void Selection::set_union(const Selection &s) {
     // Replace top-level predicate with a new OrSelectionPredicate, and make
     // both the existing top-level predicate and the other selection's predicate
     // children of it
-    base::Pointer<internal::ListSelectionPredicate> p
+    Pointer<internal::ListSelectionPredicate> p
                 = new OrSelectionPredicate();
     p->add_predicate(predicate_);
     predicate_ = p;
@@ -694,7 +694,7 @@ void Selection::set_symmetric_difference(const Selection &s) {
     // Replace top-level predicate with a new XorSelectionPredicate, and make
     // both the existing top-level predicate and the other selection's predicate
     // children of it
-    base::Pointer<internal::ListSelectionPredicate> p
+    Pointer<internal::ListSelectionPredicate> p
                 = new XorSelectionPredicate();
     p->add_predicate(predicate_);
     predicate_ = p;
@@ -709,7 +709,7 @@ void Selection::set_difference(const Selection &s) {
     // Replace top-level predicate with a new AndSelectionPredicate, and make
     // both the existing top-level predicate and the other selection's predicate
     // (wrapped with a NotSelectionPredicate) children of it
-    base::Pointer<internal::ListSelectionPredicate> p
+    Pointer<internal::ListSelectionPredicate> p
                 = new AndSelectionPredicate();
     p->add_predicate(predicate_);
     predicate_ = p;
@@ -721,7 +721,7 @@ void Selection::set_difference(const Selection &s) {
 void Selection::add_predicate(internal::SelectionPredicate *p)
 {
   // Take a reference to p so it gets freed if the usage check fails
-  base::Pointer<internal::SelectionPredicate> pp(p);
+  Pointer<internal::SelectionPredicate> pp(p);
   IMP_USAGE_CHECK(and_predicate_, "Cannot add predicates to Selection copies");
   and_predicate_->add_predicate(p);
 }
@@ -740,7 +740,7 @@ Restraint *create_distance_restraint(const Selection &n0, const Selection &n1,
     IMP_USAGE_CHECK(all.size() == p0.size() + p1.size(),
                     "The two selections cannot overlap.");
   }
-  base::Pointer<Restraint> ret;
+  Pointer<Restraint> ret;
   IMP_USAGE_CHECK(!p0.empty(),
                   "Selection " << n0 << " does not refer to any particles.");
   IMP_USAGE_CHECK(!p1.empty(),
@@ -758,7 +758,7 @@ Restraint *create_distance_restraint(const Selection &n0, const Selection &n1,
                                          p0, p1, 1,
                                          "Atom k distance restraint %1%");
                                          } else {*/
-    base::Pointer<core::TableRefiner> r = new core::TableRefiner();
+    Pointer<core::TableRefiner> r = new core::TableRefiner();
     r->add_particle(p0[0], p0);
     r->add_particle(p1[0], p1);
     IMP_NEW(core::KClosePairsPairScore, nps, (ps, r, 1));
@@ -813,7 +813,7 @@ Restraint *create_connectivity_restraint(const Selections &s, double x0,
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0, k));
       IMP_NEW(container::ListSingletonContainer, lsc, (particles));
       IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 0));
-      base::Pointer<Restraint> cr =
+      Pointer<Restraint> cr =
           container::create_restraint(hdps.get(), cpc.get(), name);
       return cr.release();
     } else {
@@ -828,7 +828,7 @@ Restraint *create_connectivity_restraint(const Selections &s, double x0,
         rps.push_back(ps[0]);
       }
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0, k));
-      base::Pointer<PairScore> ps;
+      Pointer<PairScore> ps;
       IMP_LOG_TERSE("Using closest pair score." << std::endl);
       ps = new core::KClosePairsPairScore(hdps, tr);
       IMP_NEW(IMP::internal::StaticListContainer<SingletonContainer>,
@@ -860,7 +860,7 @@ Restraint *create_internal_connectivity_restraint(const Selection &ss,
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0, k));
     IMP_NEW(container::ListSingletonContainer, lsc, (s));
     IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 0));
-    base::Pointer<Restraint> cr =
+    Pointer<Restraint> cr =
         container::create_restraint(hdps.get(), cpc.get(), name);
     return cr.release();
   }
@@ -989,7 +989,7 @@ HierarchyTree get_hierarchy_tree(Hierarchy h) {
   HierarchyTree ret;
   typedef boost::property_map<HierarchyTree, boost::vertex_name_t>::type VM;
   VM vm = boost::get(boost::vertex_name, ret);
-  base::Vector<std::pair<int, Hierarchy> > queue;
+  Vector<std::pair<int, Hierarchy> > queue;
   int v = boost::add_vertex(ret);
   vm[v] = h;
   queue.push_back(std::make_pair(v, h));

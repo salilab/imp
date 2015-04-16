@@ -18,7 +18,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** Show the collision detection hierarchy for a rigid body.*/
 class IMPCOREEXPORT RigidBodyHierarchyGeometry
     : public display::SingletonGeometry {
-  base::Pointer<internal::RigidBodyHierarchy> h_;
+  Pointer<internal::RigidBodyHierarchy> h_;
   unsigned int node_, layer_;
   RigidBodyHierarchyGeometry(internal::RigidBodyHierarchy *h, unsigned int node,
                              unsigned int layer);
@@ -41,7 +41,7 @@ IMP_PARTICLE_GEOMETRY(RigidBodyFrame, core::RigidBody, {
 
 /** Display the torque on a rigid body as a line segment.*/
 class IMPCOREEXPORT RigidBodyTorque : public display::SegmentGeometry {
-  base::WeakPointer<Particle> p_;
+  WeakPointer<Particle> p_;
   mutable algebra::Segment3D cache_;
   static algebra::Segment3D extract_geometry(Particle *p);
 

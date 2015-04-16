@@ -16,7 +16,7 @@
 #include <IMP/container/DynamicListPairContainer.h>
 #include <IMP/PairPredicate.h>
 #include <IMP/PairContainer.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPMISC_BEGIN_NAMESPACE
 
@@ -28,9 +28,9 @@ IMPMISC_BEGIN_NAMESPACE
  */
 class IMPMISCEXPORT DecayPairContainerOptimizerState
     : public OptimizerState {
-  base::PointerMember<PairPredicate> pred_;
-  base::PointerMember<PairContainer> input_;
-  base::Pointer<container::DynamicListPairContainer> output_;
+  PointerMember<PairPredicate> pred_;
+  PointerMember<PairContainer> input_;
+  Pointer<container::DynamicListPairContainer> output_;
 
  public:
   DecayPairContainerOptimizerState(

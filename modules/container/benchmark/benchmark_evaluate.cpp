@@ -7,11 +7,10 @@
 #include <IMP/benchmark/utility.h>
 #include <IMP/internal/AccumulatorScoreModifier.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 #include <IMP/container/PairContainerSet.h>
 #include <IMP/container/ListPairContainer.h>
 using namespace IMP;
-using namespace IMP::base;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::container;
@@ -111,7 +110,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   }
   /*{
     double runtime=0, total=0;
-    base::Pointer<IMP::internal::AccumulatorScoreModifier<PairScore> >
+    Pointer<IMP::internal::AccumulatorScoreModifier<PairScore> >
         am= IMP::internal::create_accumulator_score_modifier(ps);
 
     IMP_TIME(
@@ -137,7 +136,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
 }
 
 void test(int n) {
-  set_log_level(IMP::base::SILENT);
+  set_log_level(IMP::SILENT);
   IMP_NEW(Model, m, ());
   ParticlesTemp ps = create_xyzr_particles(m, n, .1);
   IMP_NEW(ListPairContainer, lpc, (m));
@@ -177,7 +176,7 @@ void test_set(int n) {
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark evaluation");
+  IMP::setup_from_argv(argc, argv, "Benchmark evaluation");
   { test(100); }
   { test_set(100); }
   return IMP::benchmark::get_return_value();

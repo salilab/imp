@@ -7,9 +7,9 @@
  */
 
 #include <IMP/em2d/RelativePositionMover.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <IMP/algebra/vector_generators.h>
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/uniform_int.hpp>

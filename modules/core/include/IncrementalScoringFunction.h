@@ -10,7 +10,7 @@
 #define IMPCORE_INCREMENTAL_SCORING_FUNCTION_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/base_types.h>
 #include "RestraintsScoringFunction.h"
 #include <IMP/algebra/vector_search.h>
@@ -37,7 +37,7 @@ class NBLScoring;
 */
 class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   struct Data {
-    base::PointerMember<IMP::internal::RestraintsScoringFunction> sf;
+    PointerMember<IMP::internal::RestraintsScoringFunction> sf;
     Ints indexes;
   };
   /* have to make sure that when the dependencies are reset on destruction,
@@ -59,9 +59,9 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   Restraints flattened_restraints_;
   Floats flattened_restraints_scores_;
   double weight_, max_;
-  base::PointerMember<ScoringFunction> non_incremental_;
+  PointerMember<ScoringFunction> non_incremental_;
   // move the destructor out of the header
-  struct Wrapper : public base::Vector<internal::NBLScoring *> {
+  struct Wrapper : public Vector<internal::NBLScoring *> {
     ~Wrapper();
   };
   Wrapper nbl_;

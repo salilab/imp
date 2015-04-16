@@ -25,13 +25,13 @@ class AddScores : public Score {
   AddScores(BaseDistanceScore0 p0, BaseDistanceScore1 p1) : p0_(p0), p1_(p1) {}
   template <unsigned int D>
   double get_score(Model *m,
-                   const base::Array<D, ParticleIndex> &pi,
+                   const Array<D, ParticleIndex> &pi,
                    double distance) const {
     return p0_.get_score(m, pi, distance) + p1_.get_score(m, pi, distance);
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      Model *m, const base::Array<D, ParticleIndex> &p,
+      Model *m, const Array<D, ParticleIndex> &p,
       double distance) const {
     DerivativePair ret0 = p0_.get_score_and_derivative(m, p, distance);
     DerivativePair ret1 = p1_.get_score_and_derivative(m, p, distance);
@@ -39,7 +39,7 @@ class AddScores : public Score {
   }
   template <unsigned int D>
   bool get_is_trivially_zero(Model *m,
-                             const base::Array<D, ParticleIndex> &p,
+                             const Array<D, ParticleIndex> &p,
                              double squared_distance) const {
     return p0_.get_is_trivially_zero(m, p, squared_distance) &&
            p1_.get_is_trivially_zero(m, p, squared_distance);
@@ -47,7 +47,7 @@ class AddScores : public Score {
   //! Return an upper bound on the distance at which the score can be non-zero.
   template <unsigned int D>
   double get_maximum_range(
-      Model *m, const base::Array<D, ParticleIndex> &p) const {
+      Model *m, const Array<D, ParticleIndex> &p) const {
     return std::max(p0_.get_maximum_range(m, p), p1_.get_maximum_range(m, p));
   }
   ModelObjectsTemp get_inputs(

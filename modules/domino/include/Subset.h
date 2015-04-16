@@ -12,11 +12,11 @@
 #include <IMP/domino/domino_config.h>
 #include "IMP/macros.h"
 #include <IMP/container/ListSingletonContainer.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/base/Value.h>
-#include <IMP/base/ConstVector.h>
+#include <IMP/Pointer.h>
+#include <IMP/Value.h>
+#include <IMP/ConstVector.h>
 #include <algorithm>
-#include <IMP/base/hash.h>
+#include <IMP/hash.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -31,9 +31,9 @@ IMPDOMINO_BEGIN_NAMESPACE
     a constant list in Python.
  */
 class IMPDOMINOEXPORT Subset
-    : public base::ConstVector<base::WeakPointer<Particle>,
+    : public ConstVector<WeakPointer<Particle>,
                                Particle *> {
-  typedef base::ConstVector<base::WeakPointer<Particle>,
+  typedef ConstVector<WeakPointer<Particle>,
                             Particle *> P;
   static const ParticlesTemp &get_sorted(ParticlesTemp &ps) {
     std::sort(ps.begin(), ps.end());

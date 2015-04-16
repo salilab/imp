@@ -6,10 +6,10 @@
 
 #include <IMP/isd/GaussianProcessInterpolation.h>
 #include <IMP/macros.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 
 IMPISD_BEGIN_NAMESPACE
 

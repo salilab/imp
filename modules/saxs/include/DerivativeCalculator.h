@@ -11,7 +11,7 @@
 
 #include "Profile.h"
 #include "Distribution.h"
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -19,7 +19,7 @@ IMPSAXS_BEGIN_NAMESPACE
    A class for computing derivatives with respect to SAXS
    Note: the calculation is expensive, make sure it helps if you use it!
 */
-class IMPSAXSEXPORT DerivativeCalculator : public base::Object {
+class IMPSAXSEXPORT DerivativeCalculator : public Object {
  public:
   DerivativeCalculator(const Profile* exp_profile);
 

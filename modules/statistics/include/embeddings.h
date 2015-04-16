@@ -11,7 +11,7 @@
 
 #include <IMP/statistics/statistics_config.h>
 #include "Embedding.h"
-#include <IMP/base/object_macros.h>
+#include <IMP/object_macros.h>
 #include <IMP/ConfigurationSet.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/VectorD.h>
@@ -26,8 +26,8 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     See ConfigurationSet for more information about the input.
 */
 class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding : public Embedding {
-  mutable base::Pointer<ConfigurationSet> cs_;
-  IMP::base::PointerMember<SingletonContainer> sc_;
+  mutable Pointer<ConfigurationSet> cs_;
+  IMP::PointerMember<SingletonContainer> sc_;
   bool align_;
 
  public:
@@ -54,7 +54,7 @@ class IMPSTATISTICSEXPORT ParticleEmbedding : public Embedding {
   Particles ps_;
   FloatKeys ks_;
   bool rescale_;
-  base::Vector<FloatRange> ranges_;
+  Vector<FloatRange> ranges_;
 
  public:
   ParticleEmbedding(const ParticlesTemp &ps, const FloatKeys &ks
@@ -77,7 +77,7 @@ class IMPSTATISTICSEXPORT ParticleEmbedding : public Embedding {
 
 //! Simply return the coordinates of a VectorD
 class IMPSTATISTICSEXPORT VectorDEmbedding : public Embedding {
-  base::Vector<algebra::VectorKD> vectors_;
+  Vector<algebra::VectorKD> vectors_;
 
  public:
   template <class C>

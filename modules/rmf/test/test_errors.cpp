@@ -6,7 +6,7 @@
  *
  */
 #include <RMF/exceptions.h>
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include <RMF/utility.h>
 
 int main(int, char * []) {

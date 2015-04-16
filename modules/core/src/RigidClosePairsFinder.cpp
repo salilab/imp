@@ -30,7 +30,7 @@ RigidClosePairsFinder::RigidClosePairsFinder(ClosePairsFinder *cpf)
   if (cpf) {
     cpf_ = cpf;
   } else {
-    cpf_ = base::Pointer<ClosePairsFinder>(new GridClosePairsFinder());
+    cpf_ = Pointer<ClosePairsFinder>(new GridClosePairsFinder());
   }
 }
 
@@ -59,7 +59,7 @@ typedef boost::unordered_map<ParticleIndex, ParticleIndexes>
     RBM;
 void divvy_up_particles(Model *m, const ParticleIndexes &ps,
                         ParticleIndexes &out, RBM &members) {
-  IMP_IF_CHECK(base::USAGE) {
+  IMP_IF_CHECK(USAGE) {
     boost::unordered_set<ParticleIndex> ups(ps.begin(), ps.end());
     IMP_USAGE_CHECK(ups.size() == ps.size(),
                     "Duplicate particles in input: " << ups.size()
@@ -76,7 +76,7 @@ void divvy_up_particles(Model *m, const ParticleIndexes &ps,
       out.push_back(ps[i]);
     }
   }
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     ParticleIndexes check_out = out;
     std::sort(check_out.begin(), check_out.end());
     check_out.erase(std::unique(check_out.begin(), check_out.end()),
@@ -92,7 +92,7 @@ void divvy_up_particles(Model *m, const ParticleIndexes &ps,
 }
 
 void check_particles(Model *m, const ParticleIndexes &ps) {
-  IMP_IF_CHECK(base::USAGE) {
+  IMP_IF_CHECK(USAGE) {
     for (ParticleIndexes::const_iterator it = ps.begin();
          it != ps.end(); ++it) {
       if (RigidBody::get_is_setup(m, *it) &&
@@ -152,7 +152,7 @@ ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
   ParticleIndexes fa;
   divvy_up_particles(m, pia, fa, map);
   ParticleIndexPairs ppt = cpf_->get_close_pairs(m, fa);
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i = 0; i < ppt.size(); ++i) {
       IMP_INTERNAL_CHECK(ppt[i][0] != ppt[i][1],
                          "Pair of one returned: " << ppt[i]);

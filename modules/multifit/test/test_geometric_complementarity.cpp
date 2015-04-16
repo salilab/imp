@@ -75,7 +75,7 @@ struct Result {
 }
 
 int main() {
-  IMP::base::set_log_level(IMP::base::VERBOSE);
+  IMP::set_log_level(IMP::VERBOSE);
   std::vector<Result> R;
   for (size_t i = 0; i < compile_time_array_size(Examples); ++i) {
     double radius = Examples[i][0];

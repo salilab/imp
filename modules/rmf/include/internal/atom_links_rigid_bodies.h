@@ -22,7 +22,7 @@ class IMPRMFEXPORT HierarchyLoadRigidBodies {
   RMF::decorator::ReferenceFrameFactory reference_frame_factory_;
   RMF::decorator::IntermediateParticleFactory ip_factory_;
   typedef std::pair<RMF::NodeID, ParticleIndex> Pair;
-  typedef base::Vector<Pair> NodeParticlePairs;
+  typedef Vector<Pair> NodeParticlePairs;
 
   NodeParticlePairs global_, local_;
   RMF::IntKey external_rigid_body_index_;
@@ -70,7 +70,7 @@ class IMPRMFEXPORT HierarchyLoadRigidBodies {
 class IMPRMFEXPORT HierarchySaveRigidBodies {
   RMF::decorator::ReferenceFrameFactory reference_frame_factory_;
   typedef std::pair<RMF::NodeID, ParticleIndex> Pair;
-  typedef base::Vector<Pair> NodeParticlePairs;
+  typedef Vector<Pair> NodeParticlePairs;
   NodeParticlePairs global_, local_;
   RMF::IntKey external_rigid_body_index_;
 

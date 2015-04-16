@@ -9,7 +9,7 @@
 #include <IMP/algebra/eigen_analysis.h>
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/core/internal/grid_close_pairs_impl.h>
-#include <IMP/base/object_cast.h>
+#include <IMP/object_cast.h>
 #include <IMP/utility.h>
 #include <vector>
 
@@ -94,7 +94,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(
     : Object(d->get_name() + " RigidBodyHierarchy %1%"),
       rb_(d),
       constituents_(constituents) {
-  IMP_IF_CHECK(base::USAGE) {
+  IMP_IF_CHECK(USAGE) {
     ParticleIndexes uc = constituents;
     std::sort(uc.begin(), uc.end());
     uc.erase(std::unique(uc.begin(), uc.end()), uc.end());
@@ -110,7 +110,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(
   // they had better be up to date
   // d.update_members();
   std::sort(constituents_.begin(), constituents_.end());
-  IMP_IF_CHECK(base::USAGE) {
+  IMP_IF_CHECK(USAGE) {
     for (unsigned int i = 0; i < constituents_.size(); ++i) {
       for (unsigned int j = 0; j < 4; ++j) {
         IMP_USAGE_CHECK(m->get_has_attribute(FloatKey(j), constituents_[i]),
@@ -139,7 +139,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(
   }
   std::sort(leaves.begin(), leaves.end());
 
-  base::Vector<Node> stack;
+  Vector<Node> stack;
   stack.push_back(Node(0, leaves));
 
   do {
@@ -155,7 +155,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(
 
 void RigidBodyHierarchy::build_tree(Model *m, const Node &cur,
                                     const algebra::Sphere3Ds &spheres,
-                                    base::Vector<Node> &stack) {
+                                    Vector<Node> &stack) {
   IMP_INTERNAL_CHECK(!cur.second.empty(), "Don't call me with no spheres");
   algebra::Sphere3Ds ss(cur.second.size());
   for (unsigned int i = 0; i < cur.second.size(); ++i) {
@@ -165,7 +165,7 @@ void RigidBodyHierarchy::build_tree(Model *m, const Node &cur,
   algebra::Sphere3D bs =
       algebra::Sphere3D(ec.get_center(), ec.get_radius() * EXPANSION + .1);
   set_sphere(cur.first, bs);
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i = 0; i < cur.second.size(); ++i) {
       algebra::Sphere3D bd(bs.get_center(), 1.1 * bs.get_radius());
       IMP_INTERNAL_CHECK(bd.get_contains(spheres[cur.second[i]]),
@@ -179,7 +179,7 @@ void RigidBodyHierarchy::build_tree(Model *m, const Node &cur,
       particles[i] = constituents_[cur.second[i]];
     }
     set_leaf(cur.first, particles);
-    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       validate_internal(m, cur.first, algebra::Sphere3Ds());
     }
   } else {
@@ -293,12 +293,12 @@ algebra::Sphere3Ds RigidBodyHierarchy::get_tree() const {
 Particle *closest_particle(Model *m, const RigidBodyHierarchy *da,
                            XYZR pt, double dist) {
   typedef std::pair<double, int> QP;
-  std::priority_queue<QP, base::Vector<QP>, LessFirst> queue;
+  std::priority_queue<QP, Vector<QP>, LessFirst> queue;
   double d = distance_bound(m, da, 0, pt.get_particle_index());
   queue.push(QP(d, 0));
   double best_d = dist;
   ParticleIndex bp =
-      base::get_invalid_index<ParticleIndexTag>();
+      IMP::get_invalid_index<ParticleIndexTag>();
   do {
     std::pair<double, int> v = queue.top();
     queue.pop();
@@ -343,7 +343,7 @@ ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
                           const RigidBodyHierarchy *db, double dist) {
   typedef std::pair<int, int> IP;
   typedef std::pair<double, IP> QP;
-  std::priority_queue<QP, base::Vector<QP>, LessFirst> queue;
+  std::priority_queue<QP, Vector<QP>, LessFirst> queue;
   double d = distance_bound(m, da, 0, db, 0);
   queue.push(QP(d, IP(0, 0)));
   double best_d = dist;
@@ -432,7 +432,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(
   static ObjectKeys keys;
   if (mykey != ObjectKey() && rb->has_attribute(mykey)) {
     RigidBodyHierarchy *ret =
-        base::object_cast<RigidBodyHierarchy>(rb->get_value(mykey));
+        IMP::object_cast<RigidBodyHierarchy>(rb->get_value(mykey));
     IMP_INTERNAL_CHECK(ret, "No hierarchy found");
     IMP_LOG_VERBOSE("Cached" << std::endl);
     return ret;
@@ -441,8 +441,8 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(
   ObjectKey free;
   for (unsigned int i = 0; i < keys.size(); ++i) {
     if (rb->has_attribute(keys[i])) {
-      base::Pointer<RigidBodyHierarchy> cur =
-          base::object_cast<RigidBodyHierarchy>(rb->get_value(keys[i]));
+      Pointer<RigidBodyHierarchy> cur =
+          IMP::object_cast<RigidBodyHierarchy>(rb->get_value(keys[i]));
       IMP_CHECK_OBJECT(cur);
       if (cur->get_constituents_match(constituents)) {
         if (mykey != ObjectKey()) {
@@ -450,7 +450,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(
                                               cur.get());
         }
         IMP_CHECK_OBJECT(cur);
-        IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
           cur->validate(rb.get_model());
         }
         if (mykey != ObjectKey()) {
@@ -458,7 +458,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(
           rb.get_model()->add_cache_attribute(mykey, rb.get_particle_index(),
                                               cur.get());
         }
-        IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
           cur->validate(rb.get_model());
         }
         return cur;
@@ -475,7 +475,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(
     free = keys.back();
     add_rigid_body_cache_key(keys.back());
   }
-  base::Pointer<RigidBodyHierarchy> h =
+  Pointer<RigidBodyHierarchy> h =
       new RigidBodyHierarchy(rb, constituents);
   if (mykey != ObjectKey()) {
     IMP_LOG_TERSE("Storing tree at " << mykey << std::endl);
@@ -483,7 +483,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(
                                         h.get());
   }
   IMP_CHECK_OBJECT(h);
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) { h->validate(rb.get_model()); }
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) { h->validate(rb.get_model()); }
   return h;
 }
 
@@ -518,7 +518,7 @@ ParticlesTemp close_particles(Model *m, const RigidBodyHierarchy *da,
   ParticlesTemp ret;
   fill_close_particles(m, da, pt.get_particle_index(), dist,
                        ParticleSink(m, ret));
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     std::sort(ret.begin(), ret.end());
     ParticleIndexes ps = da->get_constituents();
     for (unsigned int i = 0; i < ps.size(); ++i) {

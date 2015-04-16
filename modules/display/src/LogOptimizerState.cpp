@@ -7,14 +7,14 @@
  */
 
 #include "IMP/display/LogOptimizerState.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 WriteOptimizerState::WriteOptimizerState(Model *m, WriterAdaptor w)
     : OptimizerState(m, "WriteOptimizerState%1%"), writer_(w) {}
 
 void WriteOptimizerState::write(WriterAdaptor w) const {
-  IMP::base::PointerMember<Writer> wp(w);
+  IMP::PointerMember<Writer> wp(w);
   for (unsigned int i = 0; i < get_number_of_geometries(); ++i) {
     get_geometry(i)->set_was_used(true);
     w->add_geometry(get_geometry(i));

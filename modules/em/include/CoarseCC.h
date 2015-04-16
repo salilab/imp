@@ -25,7 +25,7 @@ IMPEM_BEGIN_NAMESPACE
 //! Responsible for performing coarse fitting between two density objects.
 /** The pixels involved are derived from the positions of N particles.
  */
-class IMPEMEXPORT CoarseCC : public IMP::base::Object {
+class IMPEMEXPORT CoarseCC : public IMP::Object {
 
  public:
   CoarseCC() : Object("CoarseCC%1%") {}

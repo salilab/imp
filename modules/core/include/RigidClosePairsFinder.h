@@ -58,7 +58,7 @@ IMPCORE_BEGIN_NAMESPACE
     \see cover_members()
  */
 class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
-  mutable IMP::base::PointerMember<ClosePairsFinder> cpf_;
+  mutable IMP::PointerMember<ClosePairsFinder> cpf_;
   ObjectKey k_;
 
  public:

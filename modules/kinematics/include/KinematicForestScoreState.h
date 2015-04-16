@@ -11,7 +11,7 @@
 
 #include "kinematics_config.h"
 #include <IMP/ScoreState.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/kinematics/KinematicForest.h>
 

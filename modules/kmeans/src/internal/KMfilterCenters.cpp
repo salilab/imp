@@ -27,8 +27,8 @@
 #include "IMP/kmeans/internal/KMrand.h"
 #include <iostream>
 #include <iomanip>
-#include <IMP/base/log.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/log.h>
+#include <IMP/log_macros.h>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
@@ -256,7 +256,7 @@ std::ostream& KMfilterCenters::print_to_ostream(std::ostream& out,
   return out;
 }
 
-void KMfilterCenters::log(base::LogLevel ll) {
+void KMfilterCenters::log(LogLevel ll) {
   for (int j = 0; j < kCtrs; j++) {
     IMP_LOG(ll, "    " << std::setw(4) << j << "\t");
     kmLogPt(ll, ctrs[j], getDim(), true);

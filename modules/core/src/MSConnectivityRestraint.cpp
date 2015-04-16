@@ -14,7 +14,7 @@
 
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/singleton_macros.h>
 #include <IMP/PairScore.h>
 #include <IMP/core/PairRestraint.h>
@@ -80,7 +80,7 @@ void MSConnectivityRestraint::ExperimentalTree::connect(unsigned int parent,
                                                         unsigned int child) {
   if (finalized_)
     IMP_THROW("Cannot add new edges to finalized tree",
-              IMP::base::ValueException);
+              IMP::ValueException);
   nodes_[parent].children_.push_back(child);
   nodes_[child].parents_.push_back(parent);
 }
@@ -93,17 +93,17 @@ void MSConnectivityRestraint::ExperimentalTree::finalize() {
         root_ = i;
       else
         IMP_THROW("Experimental tree has multiple roots",
-                  IMP::base::ValueException);
+                  IMP::ValueException);
     }
   }
   if (find_cycle(root_))
-    IMP_THROW("Experimental tree has a cycle", IMP::base::ValueException);
+    IMP_THROW("Experimental tree has a cycle", IMP::ValueException);
   for (unsigned int i = 0; i < nodes_.size(); ++i)
     if (!is_consistent(i)) {
       IMP_THROW(
           "Experimental tree is inconsistent: a child has to "
           "have fewer proteins than its parent",
-          IMP::base::ValueException);
+          IMP::ValueException);
     }
   finalized_ = true;
 }
@@ -127,7 +127,7 @@ unsigned int MSConnectivityRestraint::ExperimentalTree::add_composite(
     const Ints &components) {
   if (finalized_)
     IMP_THROW("Cannot add new nodes to finalized tree",
-              IMP::base::ValueException);
+              IMP::ValueException);
   Node node;
   desc_to_label(components, node.label_);
   unsigned int idx = nodes_.size();
@@ -273,7 +273,7 @@ void Tuples::reset() {
 
 class Assignment {
  public:
-  Assignment(base::Vector<Tuples> &tuples) : tuples_(tuples) {}
+  Assignment(Vector<Tuples> &tuples) : tuples_(tuples) {}
 
   Tuples const &operator[](unsigned int i) const { return tuples_[i]; }
 
@@ -288,7 +288,7 @@ class Assignment {
   bool next();
 
  private:
-  base::Vector<Tuples> &tuples_;
+  Vector<Tuples> &tuples_;
 };
 
 bool Assignment::next() {
@@ -383,7 +383,7 @@ void MSConnectivityScore::add_edges_to_set(NNGraph &G,
   Ints components(num_vertices(ng));
   int ncomp = boost::connected_components(ng, &components[0]);
   if (ncomp == 1) return;
-  base::Vector<std::pair<unsigned int, unsigned int> > candidates;
+  Vector<std::pair<unsigned int, unsigned int> > candidates;
   NNGraph::edge_iterator e, end;
   for (boost::tie(e, end) = edges(G); e != end; ++e) {
     unsigned int src = boost::get(vertex_id, source(*e, G));
@@ -486,7 +486,7 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, unsigned int node_handle,
       tree_.get_node(node_handle);
   MSConnectivityRestraint::ExperimentalTree::Node::Label const &lb =
       node->get_label();
-  base::Vector<Tuples> new_tuples;
+  Vector<Tuples> new_tuples;
   Ints empty_vector;
   for (unsigned int i = 0; i < lb.size(); ++i) {
     int prot_count = lb[i].second;
@@ -498,12 +498,12 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, unsigned int node_handle,
         Ints const &configuration = assignment[id].get_tuple();
         if (prot_count > int(configuration.size())) {
           IMP_THROW("Experimental tree is inconsistent",
-                    IMP::base::ValueException);
+                    IMP::ValueException);
         }
         new_tuples.push_back(Tuples(configuration, prot_count));
       } else {
         IMP_THROW("Experimental tree is inconsistent",
-                  IMP::base::ValueException);
+                  IMP::ValueException);
       }
     } else
       new_tuples.push_back(Tuples(empty_vector, 0));
@@ -541,7 +541,7 @@ bool MSConnectivityScore::perform_search(NNGraph &G, EdgeSet &picked) const {
       tree_.get_node(root_handle);
   MSConnectivityRestraint::ExperimentalTree::Node::Label const &lb =
       node->get_label();
-  base::Vector<Tuples> tuples;
+  Vector<Tuples> tuples;
   Ints empty_vector;
   for (unsigned int i = 0; i < lb.size(); ++i) {
     int prot_count = lb[i].second;
@@ -620,7 +620,7 @@ NNGraph MSConnectivityScore::find_threshold() const {
     g = create_nn_graph(max_dist);
     if (!perform_search(g, picked)) {
       IMP_THROW("Cannot build a nearest neighbor graph",
-                IMP::base::ValueException);
+                IMP::ValueException);
     }
   }
   EdgeSet picked;

@@ -12,7 +12,7 @@
 #include <IMP/Model.h>
 #include <IMP/kinematics/KinematicForest.h>
 #include <IMP/atom/Hierarchy.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -50,7 +50,7 @@ void KinematicForest::add_edge(Joint* joint) {
                     << parent_rb << " in the joint " << joint
                     << " was already stored in a different kinematic forest -"
                     << " this IMP version does not support such switching",
-                IMP::base::ValueException);
+                IMP::ValueException);
     }
   }
 
@@ -66,7 +66,7 @@ void KinematicForest::add_edge(Joint* joint) {
                     << child_rb << " in the joint " << joint
                     << " was already stored in a different kinematic forest -"
                     << " this IMP version does not support such switching",
-                IMP::base::ValueException);
+                IMP::ValueException);
     }
 
     if (roots_.find(child_kn) != roots_.end()) {
@@ -74,7 +74,7 @@ void KinematicForest::add_edge(Joint* joint) {
     } else {
       IMP_THROW("IMP currently does not support switching of "
                     << " parents in a kinematic tree",
-                IMP::base::ValueException);
+                IMP::ValueException);
     }
   }
 

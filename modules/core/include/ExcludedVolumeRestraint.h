@@ -38,12 +38,12 @@ IMPCORE_BEGIN_NAMESPACE
     currently supported after the first evaluate call.
  */
 class IMPCOREEXPORT ExcludedVolumeRestraint : public Restraint {
-  base::PointerMember<SingletonContainer> sc_;
+  PointerMember<SingletonContainer> sc_;
   mutable ParticleIndexPairs cur_list_;
   mutable bool was_bad_;
   mutable bool initialized_;
   ObjectKey key_;
-  IMP::base::PointerMember<SoftSpherePairScore> ssps_;
+  IMP::PointerMember<SoftSpherePairScore> ssps_;
   // moved stuff
   mutable ParticleIndexes rbs_;
   mutable ParticleIndexes xyzrs_;

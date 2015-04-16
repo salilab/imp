@@ -10,11 +10,11 @@
 #define IMPEXAMPLE_OPTIMIZING_H
 
 #include <IMP/example/example_config.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/base_types.h>
-#include <IMP/base/enums.h>
+#include <IMP/enums.h>
 #include <IMP/core/MonteCarloMover.h>
-#include <IMP/base/enums.h>
+#include <IMP/enums.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 /** Create a serial mover from a list of core::XYZR particles.
@@ -33,7 +33,7 @@ IMPEXAMPLEEXPORT void optimize_balls(
     const RestraintsTemp &rs = RestraintsTemp(),
     const PairPredicates &excluded = PairPredicates(),
     const OptimizerStates &opt_states = OptimizerStates(),
-    base::LogLevel ll = base::DEFAULT);
+    LogLevel ll = DEFAULT);
 
 IMPEXAMPLE_END_NAMESPACE
 

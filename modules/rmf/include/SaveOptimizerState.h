@@ -24,7 +24,7 @@ IMPRMF_BEGIN_NAMESPACE
 */
 class IMPRMFEXPORT SaveOptimizerState : public OptimizerState {
   RMF::FileHandle fh_;
-  base::WeakPointer<atom::Simulator> sim_;
+  WeakPointer<atom::Simulator> sim_;
 
  public:
   SaveOptimizerState(Model *m, RMF::FileHandle fh);

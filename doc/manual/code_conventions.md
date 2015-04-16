@@ -67,13 +67,13 @@ developers should be aware that
 
 All values must have a `show` method which takes an optional
 `std::ostream` and prints information about the object (see
-IMP::base::Array::show() for an example). Add a `write` method if you
+IMP::Array::show() for an example). Add a `write` method if you
 want to provide output that can be read back in.
 
 # Errors {#codeconv_errors}
 
 Classes and methods should use %IMP exceptions to report errors. See
-IMP::base::Exception for a list of existing exceptions. See
+IMP::Exception for a list of existing exceptions. See
 [checks](exception_8h.html) for more information.
 
 # Namespaces {#codeconv_namespace}
@@ -83,8 +83,8 @@ Use the provided `IMPMODULE_BEGIN_NAMESPACE`,
 `IMPMODULE_END_INTERNAL_NAMESPACE` macros to put declarations in a
 namespace appropriate for module `MODULE`.
 
-Each module has an internal namespace, eg `IMP::base::internal` and an internal
-include directory `IMP/base/internal`. Any function which is
+Each module has an internal namespace, eg `IMP::atom::internal` and an internal
+include directory `IMP/atom/internal`. Any function which is
  - not intended to be part of the API,
  - not documented,
  - liable to change without notice,

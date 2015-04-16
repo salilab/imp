@@ -11,8 +11,8 @@
 
 #include <IMP/statistics/statistics_config.h>
 #include <IMP/algebra/VectorD.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/object_macros.h>
+#include <IMP/Object.h>
+#include <IMP/object_macros.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
@@ -22,7 +22,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     mapping between each item being clustered (named by an integer index)
     and a point in space, as a fixed-length array of floating point numbers.
  */
-class IMPSTATISTICSEXPORT Embedding : public IMP::base::Object {
+class IMPSTATISTICSEXPORT Embedding : public IMP::Object {
  protected:
   Embedding(std::string name);
   //! By default return 1.0

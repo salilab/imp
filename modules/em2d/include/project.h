@@ -18,7 +18,7 @@
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/SphericalVector3D.h"
 #include "IMP/core/XYZR.h"
-#include "IMP/base/Pointer.h"
+#include "IMP/Pointer.h"
 #include "IMP.h"
 #include <complex>
 #include <algorithm>
@@ -70,7 +70,7 @@ class IMPEM2DEXPORT ProjectingOptions : public ProjectingParameters {
 
  public:
 #ifndef SWIG
-  base::Pointer<ImageReaderWriter> srw;  // Writer used to save the images
+  Pointer<ImageReaderWriter> srw;  // Writer used to save the images
 #endif
   bool save_images;  // Save images after projecting
   bool normalize;    // Normalize the projection after generating it

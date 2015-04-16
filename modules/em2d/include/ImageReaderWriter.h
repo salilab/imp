@@ -8,7 +8,7 @@
 #define IMPEM2D_IMAGE_READER_WRITER_H
 
 #include "IMP/em2d/em2d_config.h"
-#include "IMP/base/Object.h"
+#include "IMP/Object.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em/ImageHeader.h"
 #include <iostream>
@@ -16,7 +16,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Virtual class for reader/writers of images
-class ImageReaderWriter : public IMP::base::Object {
+class ImageReaderWriter : public IMP::Object {
  public:
   ImageReaderWriter() : Object("ImageReaderWriter%1%") {}
   virtual void read(const String &filename, em::ImageHeader &header,

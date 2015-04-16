@@ -7,7 +7,7 @@
  */
 
 #include <IMP/isd/GaussianEMRestraint.h>
-#include <IMP/base/math.h>
+#include <IMP/math.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/algebra/eigen3/Eigen/LU>
 #include <IMP/algebra/BoundingBoxD.h>

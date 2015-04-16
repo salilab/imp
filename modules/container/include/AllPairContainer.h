@@ -16,7 +16,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/pair_macros.h>
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -25,7 +25,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     CloseBipartitePairContainer for variants on the functionality provided.
  */
 class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
-  IMP::base::PointerMember<SingletonContainer> c_;
+  IMP::PointerMember<SingletonContainer> c_;
 
  protected:
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {

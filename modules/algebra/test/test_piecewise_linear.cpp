@@ -3,11 +3,11 @@
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
-#include <IMP/base/piecewise_linear_distribution.h>
-#include <IMP/base/exception.h>
-#include <IMP/base/types.h>
-#include <IMP/base/random.h>
-#include <IMP/base/utility.h>
+#include <IMP/piecewise_linear_distribution.h>
+#include <IMP/exception.h>
+#include <IMP/types.h>
+#include <IMP/random.h>
+#include <IMP/utility.h>
 
 namespace {
 template <class RNG>
@@ -15,22 +15,22 @@ void check_one(RNG rng, double mean, double sigma) {
   const int num = 1000;
   IMP::Floats sample(num);
   for (int i = 0; i < num; ++i) {
-    sample[i] = rng(IMP::base::random_number_generator);
+    sample[i] = rng(IMP::random_number_generator);
   }
   double nmean = std::accumulate(sample.begin(), sample.end(), 0.0) / num;
   double ssq = 0;
   for (unsigned int i = 0; i < sample.size(); ++i) {
-    ssq += IMP::base::square(sample[i] - nmean);
+    ssq += IMP::square(sample[i] - nmean);
   }
   double ssd = std::sqrt(ssq / num);
   std::cout << mean << " " << sigma << " " << nmean << " " << ssd << std::endl;
   if (std::abs(mean - nmean) > .1 * (mean + nmean)) {
     IMP_THROW("Means don't match: " << mean << " " << nmean,
-              IMP::base::ValueException);
+              IMP::ValueException);
   }
   if (std::abs(sigma - ssd) > .1 * (sigma + ssd)) {
     IMP_THROW("Stddevs don't match: " << sigma << " " << ssd,
-              IMP::base::ValueException);
+              IMP::ValueException);
   }
 }
 
@@ -45,7 +45,7 @@ void check_gaussian() {
   for (unsigned int i = 0; i < steps.size(); ++i) {
     locs0.push_back(locs0.back() + steps[i]);
   }
-  using IMP::base::operator<<;
+  using IMP::operator<<;
   // std::cout << locs0 << std::endl;
   IMP::Floats locs(locs0.rbegin(), locs0.rend());
   for (unsigned int i = 0; i < locs.size(); ++i) {
@@ -61,9 +61,9 @@ void check_gaussian() {
   IMP::Floats vals(locs.size());
   for (unsigned int i = 0; i < vals.size(); ++i) {
     vals[i] = 1.0 / std::sqrt(2.0 * 3.1415 * s * s) *
-              std::exp(-IMP::base::square(locs[i] - m) / (2 * s * s));
+              std::exp(-IMP::square(locs[i] - m) / (2 * s * s));
   }
-  IMP::base::piecewise_linear_distribution<> pld(locs.begin(), locs.end(),
+  IMP::piecewise_linear_distribution<> pld(locs.begin(), locs.end(),
                                                  vals.begin());
   check_one(pld, m, s);
 }
@@ -71,7 +71,7 @@ void check_gaussian() {
 void check_triangle() {
   double locs[] = {0, 1, 2};
   double weights[] = {0, 1, 0};
-  IMP::base::piecewise_linear_distribution<> pld(locs, locs + 3, weights);
+  IMP::piecewise_linear_distribution<> pld(locs, locs + 3, weights);
   check_one(pld, 1, 1.0 / std::sqrt(6.0));
 }
 }

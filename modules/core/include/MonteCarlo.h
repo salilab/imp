@@ -209,15 +209,15 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   unsigned int stat_num_failures_;
   bool return_best_;
   double min_score_;
-  IMP::base::PointerMember<Configuration> best_;
+  IMP::PointerMember<Configuration> best_;
   ::boost::uniform_real<> rand_;
 
-  base::Pointer<IncrementalScoringFunction> isf_;
+  Pointer<IncrementalScoringFunction> isf_;
 };
 
 //! This variant of Monte Carlo that relaxes after each move
 class IMPCOREEXPORT MonteCarloWithLocalOptimization : public MonteCarlo {
-  IMP::base::PointerMember<Optimizer> opt_;
+  IMP::PointerMember<Optimizer> opt_;
   unsigned int num_local_;
 
  public:

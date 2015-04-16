@@ -9,8 +9,8 @@
 #define IMPALGEBRA_GEOMETRIC_PRIMITIVE_D_H
 
 #include <IMP/algebra/algebra_config.h>
-#include <IMP/base/Vector.h>
-#include <IMP/base/utility_macros.h>
+#include <IMP/Vector.h>
+#include <IMP/utility_macros.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 

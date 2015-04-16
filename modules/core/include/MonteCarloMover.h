@@ -14,7 +14,7 @@
 #include <IMP/ModelObject.h>
 #include <IMP/Model.h>
 #include <IMP/particle_index.h>
-#include <IMP/base/tuple_macros.h>
+#include <IMP/tuple_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

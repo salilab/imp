@@ -13,7 +13,7 @@
 IMPROTAMER_BEGIN_NAMESPACE
 
 RotamerLibrary::RotamerLibrary(unsigned angle_step)
-    : IMP::base::Object("RotamerLibrary%1%"), angle_step_(angle_step) {
+    : IMP::Object("RotamerLibrary%1%"), angle_step_(angle_step) {
   IMP_USAGE_CHECK(angle_step_ > 0 && angle_step_ <= 360,
                   "angle step must be within (0, 360]");
   rotamers_by_backbone_size_ = 2 * 180 / angle_step_ + 1;

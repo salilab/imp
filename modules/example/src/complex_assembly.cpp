@@ -19,7 +19,7 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container/generic.h>
 #include <IMP/core/rigid_bodies.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/log_macros.h>
 #include <IMP/domino/subset_graphs.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <IMP/scoped.h>
@@ -120,9 +120,9 @@ void optimize_assembly(Model *m,
                        const algebra::BoundingBox3D &bb, PairScore *ev,
                        double cutoff, const PairPredicates &excluded) {
   IMP_NEW(core::ConjugateGradients, cg, (m));
-  cg->set_log_level(IMP::base::SILENT);
+  cg->set_log_level(IMP::SILENT);
   IMP_NEW(core::MonteCarlo, mc, (m));
-  mc->set_log_level(IMP::base::SILENT);
+  mc->set_log_level(IMP::SILENT);
   IMP_NEW(core::IncrementalScoringFunction, isf,
           (components, m->get_restraints()));
   mc->set_incremental_scoring_function(isf);
@@ -133,11 +133,11 @@ void optimize_assembly(Model *m,
   IMP_NEW(container::ClosePairContainer, cpc, (active, 0, 4));
   cpc->set_pair_filters(excluded);
   IMP_NEW(core::SoftSpherePairScore, ssps, (10));
-  base::Pointer<Restraint> evr =
+  Pointer<Restraint> evr =
       container::create_restraint(ssps.get(), cpc.get());
   IMP_NEW(core::HarmonicUpperBound, hub, (0, 10));
   IMP_NEW(core::BoundingBox3DSingletonScore, bbss, (hub, bb));
-  base::Pointer<Restraint> bbr =
+  Pointer<Restraint> bbr =
       container::create_restraint(bbss.get(), active.get());
   do {
     Particle *add = ad.get_highest_degree_unused_particle(cur);

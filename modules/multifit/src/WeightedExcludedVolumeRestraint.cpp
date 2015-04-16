@@ -7,7 +7,7 @@
  */
 
 #include <IMP/multifit/WeightedExcludedVolumeRestraint.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 

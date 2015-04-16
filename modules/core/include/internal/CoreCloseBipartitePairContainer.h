@@ -37,7 +37,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT CoreCloseBipartitePairContainer
     : public IMP::internal::ListLikeContainer<PairContainer> {
   typedef IMP::internal::ListLikeContainer<PairContainer> P;
-  IMP::base::PointerMember<SingletonContainer> sc_[2];
+  IMP::PointerMember<SingletonContainer> sc_[2];
   bool were_close_, reset_;
   ObjectKey key_;
   // moved stuff
@@ -52,7 +52,7 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
   ParticleIndex covers_[2];
   typedef IMP::internal::ContainerScoreState<CoreCloseBipartitePairContainer>
       SS;
-  base::PointerMember<SS> score_state_;
+  PointerMember<SS> score_state_;
   void initialize(SingletonContainer *a, SingletonContainer *b,
                   ParticleIndex cover_a, ParticleIndex cover_b,
                   double distance, double slack, ObjectKey key);

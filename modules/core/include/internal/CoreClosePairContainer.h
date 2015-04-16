@@ -18,7 +18,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/PairPredicate.h>
 #include <IMP/generic.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/ContainerScoreState.h>
 #include <IMP/internal/ListLikeContainer.h>
@@ -27,15 +27,15 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT CoreClosePairContainer
     : public IMP::internal::ListLikeContainer<PairContainer> {
-  IMP::base::PointerMember<SingletonContainer> c_;
-  IMP::base::PointerMember<ClosePairsFinder> cpf_;
-  IMP::base::PointerMember<internal::MovedSingletonContainer> moved_;
+  IMP::PointerMember<SingletonContainer> c_;
+  IMP::PointerMember<ClosePairsFinder> cpf_;
+  IMP::PointerMember<internal::MovedSingletonContainer> moved_;
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;
   unsigned int updates_, rebuilds_, partial_rebuilds_;
   typedef IMP::internal::ContainerScoreState<CoreClosePairContainer> SS;
-  base::PointerMember<SS> score_state_;
+  PointerMember<SS> score_state_;
 
   void initialize(SingletonContainer *c, double distance, double slack,
                   ClosePairsFinder *cpf);

@@ -236,8 +236,8 @@ recommended q value is 0.2")("offset,f",
   out_file.precision(3);
 
   // prepare scoring functions
-  IMP::base::Pointer<IMP::saxs::ProfileFitter<> > saxs_score;
-  IMP::base::Pointer<IMP::saxs::WeightedProfileFitter> weighted_score;
+  IMP::Pointer<IMP::saxs::ProfileFitter<> > saxs_score;
+  IMP::Pointer<IMP::saxs::WeightedProfileFitter> weighted_score;
   if (weighted_fit) {
     weighted_score = new IMP::saxs::WeightedProfileFitter(exp_profile);
   } else {

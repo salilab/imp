@@ -145,7 +145,7 @@ Particle* m2_atom_particle(Model* m, const std::string& mol2_atomline) {
   Charged::setup_particle(d, atom_charge);
   // get the element from the Sybyl atom type field
   // split on '.' to get the element
-  base::Vector<std::string> split_results;
+  Vector<std::string> split_results;
   boost::split(split_results, type_field, boost::is_any_of("."));
   Element e = get_element_table().get_element(split_results[0]);
   d.set_element(e);
@@ -258,7 +258,7 @@ void read_atom_mol2(
     Model* model, std::istream& mol2_file, Hierarchy& molecule_d,
     boost::unordered_map<Int, Particle*>& molecule_atoms,
     Mol2Selector* mol2sel) {
-  IMP::base::PointerMember<Mol2Selector> sel(mol2sel);
+  IMP::PointerMember<Mol2Selector> sel(mol2sel);
   std::string line;
   char c;
 
@@ -347,7 +347,7 @@ void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
   // get Bond decorator of the bond particles, output bond section
   // get_mol2bond_line should be in bond_decorators.h, .cpp - to be improved
   Bonds bonds(get_internal_bonds(chd));
-  base::Vector<Bond> bds(bonds.begin(), bonds.end());
+  Vector<Bond> bds(bonds.begin(), bonds.end());
   std::sort(bds.begin(), bds.end(), Less());
   bonds = Bonds(bds.begin(), bds.end());
   mol2_file << "@<TRIPOS>BOND" << std::endl;
@@ -362,7 +362,7 @@ Hierarchy read_mol2(base::TextInput mol2_file, Model* model,
   if (!mol2sel) {
     mol2sel = new AllMol2Selector();
   }
-  IMP::base::PointerMember<Mol2Selector> sel(mol2sel);
+  IMP::PointerMember<Mol2Selector> sel(mol2sel);
   // create a map to save atom_index and atom particle pairs
   boost::unordered_map<Int, Particle*> molecule_atoms;
 
@@ -398,7 +398,7 @@ Hierarchy read_mol2(base::TextInput mol2_file, Model* model,
 }
 
 // argv[1] file_name_type should contain file type e.g. ".mol2"
-void write_mol2(Hierarchy rhd, base::TextOutput file) {
+void write_mol2(Hierarchy rhd, TextOutput file) {
   Hierarchies hs = get_by_type(rhd, RESIDUE_TYPE);
   for (unsigned int i = 0; i < hs.size(); ++i) {
     write_molecule_mol2(hs[i], file);

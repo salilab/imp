@@ -13,8 +13,8 @@
 #include "Assignment.h"
 #include "Order.h"
 #include "subset_scores.h"
-#include <IMP/base/Vector.h>
-#include <IMP/base/hash.h>
+#include <IMP/Vector.h>
+#include <IMP/hash.h>
 #include <boost/unordered_map.hpp>
 #include <IMP/statistics/metric_clustering.h>
 
@@ -40,7 +40,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     in these rather than as Assignments to help increase efficiency as
     well as provide flexibility as to how and where they are stored.
 */
-class IMPDOMINOEXPORT AssignmentContainer : public IMP::base::Object {
+class IMPDOMINOEXPORT AssignmentContainer : public IMP::Object {
  public:
   AssignmentContainer(std::string name = "AssignmentContainer %1%");
   virtual unsigned int get_number_of_assignments() const = 0;
@@ -303,7 +303,7 @@ class IMPDOMINOEXPORT ReadAssignmentContainer : public AssignmentContainer {
  */
 class IMPDOMINOEXPORT RangeViewAssignmentContainer
     : public AssignmentContainer {
-  base::Pointer<AssignmentContainer> inner_;
+  Pointer<AssignmentContainer> inner_;
   int begin_, end_;
 
  public:
@@ -323,13 +323,13 @@ class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
   struct GreaterSecond {
     bool operator()(const AP &a, const AP &b) { return a.second < b.second; }
   };
-  typedef base::Vector<AP> C;
+  typedef Vector<AP> C;
   C d_;
   Subset subset_;
   Slices slices_;
   Restraints rs_;
   unsigned int k_;                      // max number of assignments (heap size)
-  base::Pointer<RestraintCache> rssf_;  // to score candidate assignments
+  Pointer<RestraintCache> rssf_;  // to score candidate assignments
  public:
   HeapAssignmentContainer(Subset subset, unsigned int k, RestraintCache *rssf,
                           std::string name = "HeapAssignmentContainer %1%");
@@ -344,7 +344,7 @@ class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
     if more than a certain number of states are added.*/
 class IMPDOMINOEXPORT CappedAssignmentContainer : public AssignmentContainer {
   typedef AssignmentContainer P;
-  base::Pointer<AssignmentContainer> contained_;
+  Pointer<AssignmentContainer> contained_;
   unsigned int max_;
   void check_number() const;
 

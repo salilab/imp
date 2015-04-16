@@ -85,7 +85,7 @@ bool rotation_is_valid(const TAU::Rotation3 &rot) {
   float sqr_mag = 0.;
   for (int i = 0; i < 4; i++) {
     sqr_mag += rot[i] * rot[i];
-    if (base::isnan(rot[i])) {
+    if (IMP::isnan(rot[i])) {
       return false;
     }
   }
@@ -227,7 +227,7 @@ void do_all_fitting(const std::string param_filename,
   std::cout << "=====================================" << std::endl;
 
   // load the density
-  base::PointerMember<em::DensityMap> dmap =
+  PointerMember<em::DensityMap> dmap =
       em::read_map(density_filename, new em::MRCReaderWriter());
   dmap->get_header_writable()->set_resolution(resolution);
   dmap->update_voxel_size(spacing);

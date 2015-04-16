@@ -7,7 +7,7 @@
 
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/utility.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/Model.h>
 #include <IMP/io.h>
 
@@ -15,7 +15,7 @@
 #include <cmath>
 
 #define IMP_CHECK_VALUE(n)                           \
-  IMP_IF_CHECK(IMP::base::USAGE) {                   \
+  IMP_IF_CHECK(IMP::USAGE) {                   \
     if (!is_good_value(n)) {                         \
       IMP_LOG_TERSE(#n << " is " << n << std::endl); \
       failure();                                     \
@@ -32,7 +32,7 @@ const double cg_eps = 1.2e-7;
 
 template <class NT>
 bool is_good_value(const NT &f) {
-  if (base::isnan(f) ||
+  if (IMP::isnan(f) ||
       std::abs(f) > std::numeric_limits<NT>::max() / 1024.0f) {
     IMP_LOG_VERBOSE("Bad value found in CG: " << f << std::endl);
     return false;
@@ -42,7 +42,7 @@ bool is_good_value(const NT &f) {
 }
 
 void ConjugateGradients::failure() {
-  IMP_THROW("Failure in ConjugateGradients", base::ModelException);
+  IMP_THROW("Failure in ConjugateGradients", ModelException);
 }
 
 //! Get the score for a given model state.
@@ -54,8 +54,8 @@ void ConjugateGradients::failure() {
     \return The model score.
  */
 ConjugateGradients::NT ConjugateGradients::get_score(
-    base::Vector<FloatIndex> float_indices, base::Vector<NT> &x,
-    base::Vector<NT> &dscore) {
+    Vector<FloatIndex> float_indices, Vector<NT> &x,
+    Vector<NT> &dscore) {
   int i, opt_var_cnt = float_indices.size();
   /* set model state */
   for (i = 0; i < opt_var_cnt; i++) {
@@ -84,7 +84,7 @@ ConjugateGradients::NT ConjugateGradients::get_score(
   try {
     score = get_scoring_function()->evaluate(true);
   }
-  catch (base::ModelException) {
+  catch (ModelException) {
     // if we took a bad step, just return a bad score
     return std::numeric_limits<NT>::infinity();
   }
@@ -115,10 +115,10 @@ ConjugateGradients::NT ConjugateGradients::get_score(
             or a minimum could not be found.
  */
 bool ConjugateGradients::line_search(
-    base::Vector<NT> &x, base::Vector<NT> &dx, NT &alpha,
-    const base::Vector<FloatIndex> &float_indices, int &ifun, NT &f, NT &dg,
-    NT &dg1, int max_steps, const base::Vector<NT> &search,
-    const base::Vector<NT> &estimate) {
+    Vector<NT> &x, Vector<NT> &dx, NT &alpha,
+    const Vector<FloatIndex> &float_indices, int &ifun, NT &f, NT &dg,
+    NT &dg1, int max_steps, const Vector<NT> &search,
+    const Vector<NT> &estimate) {
   NT ap, fp, dp, step, minf, u1, u2;
   int i, n, ncalls = ifun;
 
@@ -256,7 +256,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps) {
   IMP_USAGE_CHECK(get_model(),
                   "Must set the model on the optimizer before optimizing");
   clear_range_cache();
-  base::Vector<NT> x, dx;
+  Vector<NT> x, dx;
   int i;
   // ModelData* model_data = get_model()->get_model_data();
 
@@ -277,7 +277,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps) {
     x[i] = get_value(float_indices[i]);            // scaled
 #endif
     IMP_USAGE_CHECK(
-        !base::isnan(x[i]) && std::abs(x[i]) < std::numeric_limits<NT>::max(),
+        !IMP::isnan(x[i]) && std::abs(x[i]) < std::numeric_limits<NT>::max(),
         "Bad input to CG");
   }
 
@@ -294,7 +294,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps) {
   // destimate holds the gradient at the best current estimate
   // resy holds the restart Y vector
   // ressearch holds the restart search vector
-  base::Vector<NT> search, estimate, destimate, resy, ressearch;
+  Vector<NT> search, estimate, destimate, resy, ressearch;
   search.resize(n);
   estimate.resize(n);
   destimate.resize(n);

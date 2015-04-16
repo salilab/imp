@@ -23,8 +23,8 @@
 #include <IMP/algebra/algebra_config.h>
 #include <cstdlib>
 #include <cassert>
-#include <IMP/base/utility.h>
-#include <IMP/base/exception.h>
+#include <IMP/utility.h>
+#include <IMP/exception.h>
 #include "jama_lu.h"
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
@@ -208,7 +208,7 @@ inline Array2D<T> &operator/=(Array2D<T> &A, const Array2D<T> &B) {
 template <class T>
 inline Array2D<T> matmult(const Array2D<T> &A, const Array2D<T> &B) {
   if (A.dim2() != B.dim1()) {
-    IMP_THROW("Bad dimensions", base::ValueException);
+    IMP_THROW("Bad dimensions", ValueException);
   }
   int M = A.dim1();
   int N = A.dim2();
@@ -278,7 +278,7 @@ inline bool is_inversable(const Array2D<T> &M) {
   // check if the values of inv are all numbers
   for (int d1 = 0; d1 < inv.dim1(); d1++) {
     for (int d2 = 0; d2 < inv.dim2(); d2++) {
-      if (IMP::base::isnan(inv[d1][d2])) {
+      if (IMP::isnan(inv[d1][d2])) {
         return false;
       }
     }

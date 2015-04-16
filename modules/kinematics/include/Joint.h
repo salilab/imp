@@ -13,13 +13,13 @@
 
 #include <IMP/kinematics/kinematics_config.h>
 #include <IMP/kinematics/KinematicNode.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 //#include <IMP/nullptr.h>
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/swig_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/swig_macros.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -30,7 +30,7 @@ class KinematicForest;
     Base class for joints between rigid bodies in a kinematic
     tree.
 */
-class IMPKINEMATICSEXPORT Joint : public IMP::base::Object {
+class IMPKINEMATICSEXPORT Joint : public IMP::Object {
   friend class KinematicForest;
   friend class CompositeJoint;
 

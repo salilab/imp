@@ -8,8 +8,8 @@
 
 using namespace IMP;
 int main() {
-  base::set_log_level(base::VERBOSE);
-  base::WeakPointer<kernel::Model> m(new kernel::Model());
+  set_log_level(VERBOSE);
+  WeakPointer<kernel::Model> m(new kernel::Model());
   kernel::Particle* p0 = new kernel::Particle(m);
   core::XYZ d0 = core::XYZ::setup_particle(p0);
   kernel::Particle* p1 = new kernel::Particle(m);

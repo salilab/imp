@@ -14,7 +14,7 @@
 #include <IMP/em/PCAAligner.h>
 #include <IMP/em/MapDistanceTransform.h>
 #include <IMP/em/EnvelopeScore.h>
-#include <IMP/base/object_macros.h>
+#include <IMP/object_macros.h>
 
 #include <IMP/Restraint.h>
 
@@ -59,10 +59,10 @@ class IMPEMEXPORT EnvelopeFitRestraint : public IMP::Restraint {
 
  private:
   Particles ps_;
-  IMP::base::PointerMember<PCAAligner> pca_aligner_;
+  IMP::PointerMember<PCAAligner> pca_aligner_;
   double penetration_threshold_;
-  IMP::base::PointerMember<MapDistanceTransform> distance_transform_;
-  IMP::base::PointerMember<EnvelopeScore> envelope_score_;
+  IMP::PointerMember<MapDistanceTransform> distance_transform_;
+  IMP::PointerMember<EnvelopeScore> envelope_score_;
 
   // best scoring trans from last evaluate
   IMP::algebra::Transformation3D transformation_;

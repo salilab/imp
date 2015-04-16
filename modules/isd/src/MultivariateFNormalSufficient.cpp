@@ -6,7 +6,7 @@
 
 #include <IMP/isd/MultivariateFNormalSufficient.h>
 #include <IMP/macros.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
 
@@ -30,7 +30,7 @@ enum func_names {
 MultivariateFNormalSufficient::MultivariateFNormalSufficient(
     const IMP_Eigen::MatrixXd& FX, double JF, const IMP_Eigen::VectorXd& FM,
     const IMP_Eigen::MatrixXd& Sigma, double factor)
-    : base::Object("Multivariate Normal distribution %1%") {
+    : Object("Multivariate Normal distribution %1%") {
   // O(1)
   reset_flags();
   N_ = FX.rows();
@@ -52,7 +52,7 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(
     const IMP_Eigen::VectorXd& Fbar, double JF, const IMP_Eigen::VectorXd& FM,
     int Nobs, const IMP_Eigen::MatrixXd& W, const IMP_Eigen::MatrixXd& Sigma,
     double factor)
-    : base::Object("Multivariate Normal distribution %1%") {
+    : Object("Multivariate Normal distribution %1%") {
   reset_flags();
   N_ = Nobs;
   M_ = Fbar.rows();

@@ -11,8 +11,8 @@
 #define IMPKINEMATICS_DO_F_H
 
 #include "kinematics_config.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/object_macros.h>
+#include <IMP/Object.h>
+#include <IMP/object_macros.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -27,7 +27,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
   such as normal modes might be supported in principle)
 
  */
-class IMPKINEMATICSEXPORT DOF : public IMP::base::Object {
+class IMPKINEMATICSEXPORT DOF : public IMP::Object {
   IMP_OBJECT_METHODS(DOF);
 
  public:

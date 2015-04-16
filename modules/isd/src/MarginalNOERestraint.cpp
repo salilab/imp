@@ -38,14 +38,14 @@ double MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     const {
   // compute gammahat and store distances
   double loggammahat = 1;
-  base::Vector<double> meandists;  // mean distances^-6, length(volumes_)
+  Vector<double> meandists;  // mean distances^-6, length(volumes_)
   // store interparticle distances^-6
-  base::Vector<base::Vector<double> > alldists;
+  Vector<base::Vector<double> > alldists;
   int ncontribs = volumes_.size();
   for (int i = 0; i < ncontribs; ++i)  // loop on all contributions
   {
     double mean = 0;
-    base::Vector<double> dists;
+    Vector<double> dists;
     IMP_CONTAINER_FOREACH(PairContainer, contribs_[i], {
       core::XYZ d0(get_model(), _1[0]);
       core::XYZ d1(get_model(), _1[1]);
@@ -66,7 +66,7 @@ double MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 
   // compute SS
   double SS = 0;
-  base::Vector<double> logterms;
+  Vector<double> logterms;
   for (int i = 0; i < ncontribs; ++i) {
     double val = log(volumes_[i] / meandists[i]) - loggammahat_;
     SS += square(val);

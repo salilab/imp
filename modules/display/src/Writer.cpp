@@ -27,7 +27,7 @@ void Writer::set_frame(unsigned int i) {
 
 void Writer::add_geometry(Geometry *g) { handle_geometry(g); }
 
-TextWriter::TextWriter(base::TextOutput fn) : Writer(fn.get_name()), out_(fn) {
+TextWriter::TextWriter(TextOutput fn) : Writer(fn.get_name()), out_(fn) {
   set_was_used(true);
 }
 TextWriter::TextWriter(std::string name) : Writer(name), file_name_(name) {
@@ -38,8 +38,8 @@ void TextWriter::open() {
   /*IMP_INTERNAL_CHECK(!(file_name_.find("%1%") != std::string::npos
                        && get_frame() == -1),
                        "Cant open file without a frame.");*/
-  out_ = base::TextOutput();
-  out_ = base::TextOutput(get_current_file_name());
+  out_ = TextOutput();
+  out_ = TextOutput(get_current_file_name());
   do_open();
 }
 
@@ -49,9 +49,9 @@ void TextWriter::do_set_frame() {
   if (file_name_.empty() /* || file_name_.find("%1%")== std::string::npos*/) {
     IMP_FAILURE("Cannot set frame on writer without %1% being in the name.");
   }
-  if (out_ != base::TextOutput()) {
+  if (out_ != TextOutput()) {
     do_close();
-    out_ = base::TextOutput();
+    out_ = TextOutput();
   }
   open();
 }

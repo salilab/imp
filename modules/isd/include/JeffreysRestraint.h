@@ -19,7 +19,7 @@ IMPISD_BEGIN_NAMESPACE
 //! the probability is 1/scale
 
 class IMPISDEXPORT JeffreysRestraint : public Restraint {
-  base::Pointer<Particle> p_;
+  Pointer<Particle> p_;
 
  public:
   //! Create the restraint.

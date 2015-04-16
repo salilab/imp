@@ -13,7 +13,7 @@
 #include <IMP/isd/Weight.h>
 #include <math.h>
 #include <limits.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <iostream>
 
 IMPISD_BEGIN_NAMESPACE

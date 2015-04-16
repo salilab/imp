@@ -54,13 +54,13 @@ class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
   // Handle optimization failing badly
   void failure();
 
-  NT get_score(base::Vector<FloatIndex> float_indices, base::Vector<NT> &x,
-               base::Vector<NT> &dscore);
-  bool line_search(base::Vector<NT> &x, base::Vector<NT> &dx, NT &alpha,
-                   const base::Vector<FloatIndex> &float_indices, int &ifun,
+  NT get_score(Vector<FloatIndex> float_indices, Vector<NT> &x,
+               Vector<NT> &dscore);
+  bool line_search(Vector<NT> &x, Vector<NT> &dx, NT &alpha,
+                   const Vector<FloatIndex> &float_indices, int &ifun,
                    NT &f, NT &dg, NT &dg1, int max_steps,
-                   const base::Vector<NT> &search,
-                   const base::Vector<NT> &estimate);
+                   const Vector<NT> &search,
+                   const Vector<NT> &estimate);
   Float threshold_;
   Float max_change_;
 };

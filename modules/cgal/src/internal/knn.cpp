@@ -10,7 +10,7 @@
 #include <CGAL/K_neighbor_search.h>
 #include <CGAL/Fuzzy_sphere.h>
 #include <boost/static_assert.hpp>
-#include <IMP/base/utility.h>
+#include <IMP/utility.h>
 #include <limits>
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
@@ -41,8 +41,8 @@ struct Distance {
     double distance(0.0);
     for (unsigned int i = 0; i < p.get_dimension(); ++i) {
       double h = p[i];
-      if (h < b.min_coord(i)) distance += base::square(b.min_coord(i) - h);
-      if (h > b.max_coord(i)) distance += base::square(h - b.max_coord(i));
+      if (h < b.min_coord(i)) distance += IMP::square(b.min_coord(i) - h);
+      if (h > b.max_coord(i)) distance += IMP::square(h - b.max_coord(i));
     }
     return distance;
   }
@@ -55,8 +55,8 @@ struct Distance {
     for (unsigned int i = 0; i < p.get_dimension(); ++i) {
       double h = p[i];
       double di = (h >= (b.min_coord(i) + b.max_coord(i)) / 2.0)
-                      ? base::square(h - b.min_coord(i))
-                      : base::square(b.max_coord(i) - h);
+                      ? IMP::square(h - b.min_coord(i))
+                      : IMP::square(b.max_coord(i) - h);
       d += di;
     }
     return d;
@@ -83,7 +83,7 @@ struct RealRCTree : public RCTree {
   }
 };
 
-void KNNData::initialize(const base::Vector<VectorWithIndex>& v) {
+void KNNData::initialize(const Vector<VectorWithIndex>& v) {
   vsi_ = v;
   tree_ = new RealRCTree(v.begin(), v.end());
 }
@@ -93,7 +93,7 @@ void KNNData::fill_nearest_neighbors_v(const algebra::VectorKD& g,
   VectorWithIndex d(std::numeric_limits<int>::max(), g);
   RealRCTree::K_neighbor_search search(
       dynamic_cast<RealRCTree*>(tree_.get())->tree, d, k, eps);
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     int nump =
         std::distance(dynamic_cast<RealRCTree*>(tree_.get())->tree.begin(),
                       dynamic_cast<RealRCTree*>(tree_.get())->tree.end());

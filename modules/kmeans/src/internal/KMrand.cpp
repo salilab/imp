@@ -24,7 +24,7 @@
 //----------------------------------------------------------------------
 
 #include "IMP/kmeans/internal/KMrand.h"  // random generator declarations
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/uniform_real.hpp>
 
@@ -42,7 +42,7 @@ int kmRanInt(int n) {
     return -1;
   } else {
     ::boost::uniform_int<int> randint(0, n - 1);
-    return randint(base::random_number_generator);
+    return randint(random_number_generator);
   }
 }
 
@@ -52,7 +52,7 @@ int kmRanInt(int n) {
 double kmRanUnif(double lo, double hi) {
   /* Modified for IMP: use IMP's random number generator instead */
   ::boost::uniform_real<double> randfloat(lo, hi);
-  return randfloat(base::random_number_generator);
+  return randfloat(random_number_generator);
 }
 
 IMPKMEANS_END_INTERNAL_NAMESPACE

@@ -7,7 +7,7 @@
  */
 #include <IMP/mpi/ReplicaExchange.h>
 #include "mpi.h"
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <boost/scoped_array.hpp>
 #include <boost/random/uniform_01.hpp>
 

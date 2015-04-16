@@ -42,7 +42,7 @@ void ProfileClustering::cluster_profiles() {
 
   // compute Chi values and copy errors
   std::multimap<float, int> scored_profiles;
-  IMP::base::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> > pf =
+  IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> > pf =
           new IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>(exp_profile_);
   IMP::saxs::ChiScore chi_score;
   IMP::saxs::Profiles resampled_profiles(profiles_.size());

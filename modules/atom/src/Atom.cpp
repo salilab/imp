@@ -13,7 +13,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/atom/Mass.h>
 
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 
 #include <sstream>
 #include <vector>
@@ -22,7 +22,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
-base::Vector<Element> added_atom_names;
+Vector<Element> added_atom_names;
 }
 
 #define NAME_DEF(NAME, ELEMENT) \

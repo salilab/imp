@@ -7,10 +7,10 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/atom/Selection.h>
-#include <IMP/base/SetLogState.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/SetLogState.h>
+#include <IMP/log_macros.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/container/ClosePairContainer.h>
 #include <IMP/container/ConsecutivePairContainer.h>
@@ -38,7 +38,6 @@ using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::atom;
-using namespace IMP::base;
 using namespace IMP::container;
 using namespace IMP::benchmark;
 
@@ -73,16 +72,16 @@ void dummy_f_destructor() {}
 }
 
 struct It {
-  base::Pointer<Model> m;
+  Pointer<Model> m;
   atom::Hierarchies chains;
-  base::Pointer<Particle> sp;
+  Pointer<Particle> sp;
 
-  base::Pointer<ListSingletonContainer> lsc;
-  base::Pointer<ClosePairContainer> cpc;
+  Pointer<ListSingletonContainer> lsc;
+  Pointer<ClosePairContainer> cpc;
   Restraints rss;
-  base::Pointer<PairScore> lb;
-  base::Pointer<container::ExclusiveConsecutivePairFilter> filt;
-  base::Pointer<BrownianDynamics> bd;
+  Pointer<PairScore> lb;
+  Pointer<container::ExclusiveConsecutivePairFilter> filt;
+  Pointer<BrownianDynamics> bd;
 };
 
 namespace {
@@ -94,8 +93,8 @@ It create_particles() {
   It ret;
   ret.m = new Model();
   Sphere3D perturb(Vector3D(0, 0, 0), pertub_amount);
-  for (unsigned int i = 0; i < (IMP::base::run_quick_test ? 2U : num_x); ++i) {
-      for (unsigned int j = 0; j < (IMP::base::run_quick_test ? 2U : num_y); ++j) {
+  for (unsigned int i = 0; i < (IMP::run_quick_test ? 2U : num_x); ++i) {
+      for (unsigned int j = 0; j < (IMP::run_quick_test ? 2U : num_y); ++j) {
       atom::Hierarchy parent =
           atom::Hierarchy::setup_particle(new Particle(ret.m));
       std::ostringstream oss;
@@ -180,7 +179,7 @@ It create_restraints(PS0 *link, PS1 *lb, SS *bottom, It in) {
 }
 
 double simulate(It it, int ns) {
-  if (IMP::base::run_quick_test) {
+  if (IMP::run_quick_test) {
     return it.bd->optimize(1);
   } else {
     return it.bd->optimize(ns);
@@ -239,9 +238,9 @@ void do_benchmark(std::string name, PS0 *link, PS1 *lb, SS *bottom,
 template <int I, class PR, class PS0, class PS1, class SS>
 void do_benchmark(std::string name, PS0 *link, PS1 *lb, SS *bottom, bool rigid,
                   bool no_members) {
-  base::Pointer<PS0> rclink(link);
-  base::Pointer<PS1> rclb(lb);
-  base::Pointer<SS> rcbottom(bottom);
+  Pointer<PS0> rclink(link);
+  Pointer<PS1> rclb(lb);
+  Pointer<SS> rcbottom(bottom);
   std::string in;
   IMP_CATCH_AND_TERMINATE(in = IMP::benchmark::get_data_path("brownian.rmf"));
   It o = create_particles(in);
@@ -260,14 +259,14 @@ void do_benchmark(std::string name, PS0 *link, PS1 *lb, SS *bottom, bool rigid,
 // new LowerBound(kk)
 namespace {
 bool FLAGS_initialize = false, FLAGS_setup = false;
-IMP::base::AddBoolFlag ifl("initialize", "Initialize things",
+IMP::AddBoolFlag ifl("initialize", "Initialize things",
                            &FLAGS_initialize);
-IMP::base::AddBoolFlag sfl("setup", "Setup things", &FLAGS_setup);
+IMP::AddBoolFlag sfl("setup", "Setup things", &FLAGS_setup);
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark Brownian dynamics.");
-  if (IMP::base::run_quick_test) {
+  IMP::setup_from_argv(argc, argv, "Benchmark Brownian dynamics.");
+  if (IMP::run_quick_test) {
     std::cout << "Running quick test" << std::endl;
   }
   IMP_NEW(HarmonicLowerBound, hlb, (0, kk));
@@ -344,7 +343,7 @@ int main(int argc, char **argv) {
       }
     }
   }
-  catch (const IMP::base::Exception &e) {
+  catch (const IMP::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   }

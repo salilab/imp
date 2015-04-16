@@ -19,7 +19,7 @@ IMPRMF_BEGIN_INTERNAL_NAMESPACE
 class IMPRMFEXPORT HierarchyLoadGaussians {
   RMF::decorator::GaussianParticleFactory gaussian_factory_;
   typedef std::pair<RMF::NodeID, ParticleIndex> Pair;
-  typedef base::Vector<Pair> NodeParticlePairs;
+  typedef Vector<Pair> NodeParticlePairs;
 
   NodeParticlePairs gaussians_;
 
@@ -37,7 +37,7 @@ class IMPRMFEXPORT HierarchyLoadGaussians {
 class IMPRMFEXPORT HierarchySaveGaussians {
   RMF::decorator::GaussianParticleFactory gaussian_factory_;
   typedef std::pair<RMF::NodeID, ParticleIndex> Pair;
-  typedef base::Vector<Pair> NodeParticlePairs;
+  typedef Vector<Pair> NodeParticlePairs;
   NodeParticlePairs gaussians_;
 
   void handle_xyz(Model *m, ParticleIndex p, RMF::NodeHandle n,

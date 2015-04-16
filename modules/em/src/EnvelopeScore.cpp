@@ -9,7 +9,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 EnvelopeScore::EnvelopeScore(const MapDistanceTransform* mdt)
-    : base::Object("EM_Envelope_Score"), mdt_(mdt) {
+    : Object("EM_Envelope_Score"), mdt_(mdt) {
 
   // TODO: allow for more general weighting mechanism
   // setup distance ranges for scoring

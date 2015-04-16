@@ -54,7 +54,7 @@ class IMPMULTIFITEXPORT RadiusOfGyrationRestraint : public Restraint {
   Model *mdl_;
   Float predicted_rog_;
   Float scale_;
-  base::Pointer<core::HarmonicUpperBound> hub_;
+  Pointer<core::HarmonicUpperBound> hub_;
 };
 
 IMPMULTIFITEXPORT

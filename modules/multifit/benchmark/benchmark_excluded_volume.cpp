@@ -26,13 +26,13 @@ void trim_chain(atom::Hierarchy h) {
 
 void do_it() {
   IMP_NEW(Model, m, ());
-  int seed = IMP::base::random_number_generator();
+  int seed = IMP::random_number_generator();
   atom::Hierarchy h0 =
       read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m);
   atom::Hierarchy h1 =
       read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m);
   // Cut proteins down to 50 residues if a quick test is desired
-  if (IMP::base::run_quick_test) {
+  if (IMP::run_quick_test) {
     trim_chain(h0);
     trim_chain(h1);
   }
@@ -60,7 +60,7 @@ void do_it() {
 }
 
 int main(int argc, char *argv[]) {
-  IMP::base::setup_from_argv(argc, argv,
+  IMP::setup_from_argv(argc, argv,
                              "Benchmark methods for excluded volume");
   IMP_CATCH_AND_TERMINATE(do_it(););
   return IMP::benchmark::get_return_value();

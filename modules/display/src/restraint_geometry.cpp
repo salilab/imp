@@ -11,7 +11,7 @@
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/container/SingletonsRestraint.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/input_output.h>
 #include <IMP/algebra/Segment3D.h>
 
@@ -33,7 +33,7 @@ algebra::Vector3D get_coordinates(Particle *p) {
 
 IMP::display::Geometries RestraintGeometry::get_components() const {
   IMP_CHECK_OBJECT(r_);
-  base::Pointer<Restraint> rd = r_->create_current_decomposition();
+  Pointer<Restraint> rd = r_->create_current_decomposition();
   if (!rd) return IMP::display::Geometries();
   RestraintSet *rs = dynamic_cast<RestraintSet *>(rd.get());
   rd->set_was_used(true);

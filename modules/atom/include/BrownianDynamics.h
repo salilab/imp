@@ -104,7 +104,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
 
   double max_step_;
   bool srk_;
-  base::Vector<algebra::Vector3D> forces_;
+  Vector<algebra::Vector3D> forces_;
 };
 
 /** Repeatedly run the current model with Brownian dynamics at different time

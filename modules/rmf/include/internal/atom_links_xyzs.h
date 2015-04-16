@@ -20,7 +20,7 @@ class IMPRMFEXPORT HierarchyLoadXYZs {
   RMF::decorator::ReferenceFrameFactory reference_frame_factory_;
   RMF::decorator::IntermediateParticleFactory ip_factory_;
   typedef std::pair<RMF::NodeID, ParticleIndex> Pair;
-  typedef base::Vector<Pair> NodeParticlePairs;
+  typedef Vector<Pair> NodeParticlePairs;
 
   NodeParticlePairs global_, local_;
 
@@ -42,8 +42,8 @@ class IMPRMFEXPORT HierarchySaveXYZs {
   RMF::decorator::IntermediateParticleFactory ip_factory_;
   typedef std::pair<RMF::NodeID, ParticleIndex> Pair;
   typedef std::pair<RMF::NodeID, ParticleIndexPair> Triplet;
-  typedef base::Vector<Pair> NodeParticlePairs;
-  typedef base::Vector<Triplet> NodeParticleTriplets;
+  typedef Vector<Pair> NodeParticlePairs;
+  typedef Vector<Triplet> NodeParticleTriplets;
 
   NodeParticlePairs global_, local_;
   NodeParticleTriplets rigid_nonmember_;

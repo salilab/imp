@@ -9,8 +9,8 @@
 #define IMPALGEBRA_INTERNAL_MINIMAL_SET_H
 
 #include <IMP/algebra/algebra_config.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/Vector.h>
+#include <IMP/check_macros.h>
+#include <IMP/Vector.h>
 #include <utility>
 #include <algorithm>
 #include <limits>
@@ -24,7 +24,7 @@ template <class Score, class Data, class Less = std::less<Score> >
 class MinimalSet {
   unsigned int n_;
   typedef std::pair<Score, Data> MP;
-  typedef base::Vector<MP> Vector;
+  typedef IMP::Vector<MP> Vector;
   Vector data_;
 
   struct CompareFirst {

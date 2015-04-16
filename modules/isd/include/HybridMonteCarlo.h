@@ -57,8 +57,8 @@ class IMPISDEXPORT HybridMonteCarlo : public core::MonteCarlo {
  private:
   unsigned num_md_steps_, persistence_;
   unsigned persistence_counter_;
-  IMP::base::PointerMember<MolecularDynamicsMover> mv_;
-  base::Pointer<MolecularDynamics> md_;
+  IMP::PointerMember<MolecularDynamicsMover> mv_;
+  PointerMolecularDynamics> md_;
 };
 
 IMPISD_END_NAMESPACE

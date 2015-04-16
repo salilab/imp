@@ -9,7 +9,7 @@
 #include <IMP/rmf/links.h>
 IMPRMF_BEGIN_NAMESPACE
 
-LoadLink::LoadLink(std::string name) : base::Object(name) {
+LoadLink::LoadLink(std::string name) : Object(name) {
   frame_loaded_ = false;
 }
 LoadLink::~LoadLink() {
@@ -19,7 +19,7 @@ LoadLink::~LoadLink() {
              << std::endl);
   }
 }
-SaveLink::SaveLink(std::string name) : base::Object(name) {
+SaveLink::SaveLink(std::string name) : Object(name) {
   frame_saved_ = false;
 }
 SaveLink::~SaveLink() {

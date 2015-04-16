@@ -6,7 +6,7 @@
  *
  */
 #include <IMP/core/RigidBodyTunneler.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/uniform_01.hpp>
 #include <IMP/core/XYZ.h>
@@ -72,7 +72,7 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
   num_calls_++;
   // see if we are to do the move
   ::boost::uniform_01<double> rand01;
-  if (rand01(base::random_number_generator) <= move_probability_) {
+  if (rand01(random_number_generator) <= move_probability_) {
     IMP_LOG_TERSE("will try to move" << std::endl);
     internal::Coord x(
         internal::get_coordinates_from_rbs(get_model(), pis_, ref_));
@@ -93,7 +93,7 @@ MonteCarloMoverResult RigidBodyTunneler::do_propose() {
       IMP_LOG_TERSE("New iteration, entry_nums.size() == " << entry_nums.size()
                                                            << std::endl);
       ::boost::uniform_int<unsigned> randint(0, entry_nums.size() - 1);
-      unsigned dnum = randint(base::random_number_generator);
+      unsigned dnum = randint(random_number_generator);
       distant = entry_nums[dnum];
       IMP_LOG_TERSE("distant entry point is number " << distant << std::endl);
       IMP_LOG_VERBOSE("with coordinates " << entries_[distant] << std::endl);

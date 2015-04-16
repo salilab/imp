@@ -13,7 +13,7 @@
 #include "Hierarchy.h"
 #include "Atom.h"
 #include "SecondaryStructureResidue.h"
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -22,13 +22,13 @@ IMPATOM_BEGIN_NAMESPACE
     decorates them as SecondaryStructureResidues
 */
 IMPATOMEXPORT SecondaryStructureResidues
-    read_psipred(base::TextInput inf, Model* mdl);
+    read_psipred(TextInput inf, Model* mdl);
 /** @name PSIPRED reading
     Reads in PSIPRED results and decorates particles as
     SecondaryStructureResidues. Currently assuming order of ps matches file.
 */
 IMPATOMEXPORT SecondaryStructureResidues
-    read_psipred(base::TextInput inf, Particles ps);
+    read_psipred(TextInput inf, Particles ps);
 
 IMPATOM_END_NAMESPACE
 

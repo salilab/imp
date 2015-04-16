@@ -92,9 +92,9 @@ class IMPISDEXPORT TALOSRestraint : public Restraint {
   IMP_OBJECT_METHODS(TALOSRestraint);
 
  private:
-  base::Pointer<Particle> p_[4];
-  base::Pointer<Particle> kappa_;
-  base::Pointer<vonMisesSufficient> mises_;
+  Pointer<Particle> p_[4];
+  Pointer<Particle> kappa_;
+  Pointer<vonMisesSufficient> mises_;
 };
 
 IMPISD_END_NAMESPACE

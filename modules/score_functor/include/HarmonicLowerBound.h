@@ -21,26 +21,26 @@ class HarmonicLowerBound : public Score {
   HarmonicLowerBound(double k) : k_(k) {}
   template <unsigned int D>
   double get_score(Model *,
-                   const base::Array<D, ParticleIndex> &,
+                   const Array<D, ParticleIndex> &,
                    double distance) const {
     if (distance > 0) return 0;
     return .5 * k_ * algebra::get_squared(distance);
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      Model *m, const base::Array<D, ParticleIndex> &p,
+      Model *m, const Array<D, ParticleIndex> &p,
       double distance) const {
     if (distance > 0) return DerivativePair(0, 0);
     return DerivativePair(get_score(m, p, distance), k_ * (distance));
   }
   template <unsigned int D>
   double get_maximum_range(
-      Model *, const base::Array<D, ParticleIndex> &) const {
+      Model *, const Array<D, ParticleIndex> &) const {
     return 0;
   }
   template <unsigned int D>
   bool get_is_trivially_zero(Model *,
-                             const base::Array<D, ParticleIndex> &,
+                             const Array<D, ParticleIndex> &,
                              double squared_distance) const {
     return squared_distance > 0;
   }

@@ -38,7 +38,7 @@ void Nuisance::set_nuisance(Float d) {
 }
 
 bool Nuisance::get_has_lower() const {
-  base::Pointer<Particle> p = get_particle();
+  Pointer<Particle> p = get_particle();
   return p->has_attribute(get_lower_key()) ||
          p->has_attribute(get_lower_particle_key());
 }
@@ -77,21 +77,21 @@ ParticleIndexKey Nuisance::get_lower_particle_key() {
   return k;
 }
 void Nuisance::set_lower(Float d) {
-  base::Pointer<Particle> p = get_particle();
+  Pointer<Particle> p = get_particle();
   FloatKey k(get_lower_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
   enforce_bounds();
 }
 void Nuisance::set_lower(Particle *d) {
-  base::Pointer<Particle> p = get_particle();
+  Pointer<Particle> p = get_particle();
   ParticleKey k(get_lower_particle_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
   enforce_bounds();
 }
 void Nuisance::remove_lower() {
-  base::Pointer<Particle> p = get_particle();
+  Pointer<Particle> p = get_particle();
   FloatKey k(get_lower_key());
   if (p->has_attribute(k)) p->remove_attribute(k);
   FloatKey kp(get_lower_key());
@@ -100,7 +100,7 @@ void Nuisance::remove_lower() {
 }
 
 bool Nuisance::get_has_upper() const {
-  base::Pointer<Particle> p = get_particle();
+  Pointer<Particle> p = get_particle();
   return p->has_attribute(get_upper_key()) ||
          p->has_attribute(get_upper_particle_key());
 }
@@ -139,21 +139,21 @@ ParticleIndexKey Nuisance::get_upper_particle_key() {
   return k;
 }
 void Nuisance::set_upper(Float d) {
-  base::Pointer<Particle> p = get_particle();
+  Pointer<Particle> p = get_particle();
   FloatKey k(get_upper_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
   enforce_bounds();
 }
 void Nuisance::set_upper(Particle *d) {
-  base::Pointer<Particle> p = get_particle();
+  Pointer<Particle> p = get_particle();
   ParticleKey k(get_upper_particle_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
   enforce_bounds();
 }
 void Nuisance::remove_upper() {
-  base::Pointer<Particle> p = get_particle();
+  Pointer<Particle> p = get_particle();
   FloatKey k(get_upper_key());
   if (p->has_attribute(k)) p->remove_attribute(k);
   ParticleKey kp(get_upper_particle_key());
@@ -172,17 +172,17 @@ ObjectKey Nuisance::get_ss_key() {
   return k;
 }
 void Nuisance::enforce_bounds() {
-  base::Pointer<Particle> p = get_particle();
+  Pointer<Particle> p = get_particle();
   ObjectKey k(get_ss_key());
   if (p->has_attribute(k)) return;
-  base::Pointer<NuisanceScoreState> ss(new NuisanceScoreState(p));
+  Pointer<NuisanceScoreState> ss(new NuisanceScoreState(p));
   p->add_attribute(k, ss);
 }
 void Nuisance::remove_bounds() {
-  base::Pointer<Particle> p = get_particle();
+  Pointer<Particle> p = get_particle();
   ObjectKey k(get_ss_key());
   if (!p->has_attribute(k)) return;
-  base::Pointer<NuisanceScoreState> ss(
+  Pointer<NuisanceScoreState> ss(
       dynamic_cast<NuisanceScoreState *>(p->get_value(k)));
   p->remove_attribute(k);
 }

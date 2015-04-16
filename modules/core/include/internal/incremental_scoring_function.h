@@ -15,18 +15,18 @@
 #include <IMP/PairPredicate.h>
 #include <boost/unordered_map.hpp>
 #include <IMP/algebra/vector_search.h>
-#include <IMP/base/cache.h>
+#include <IMP/cache.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 struct IMPCOREEXPORT NBGenerator {
-  base::Pointer<Model> m_;
-  base::PointerMember<PairScore> score_;
+  Pointer<Model> m_;
+  PointerMember<PairScore> score_;
   double distance_;
   ParticleIndexes pis_;
   PairPredicates filters_;
   boost::unordered_map<ParticleIndex, int> to_dnn_;
-  base::PointerMember<algebra::DynamicNearestNeighbor3D> dnn_;
+  PointerMember<algebra::DynamicNearestNeighbor3D> dnn_;
 
   NBGenerator(Model *m, const ParticleIndexes &pis,
               PairScore *ps, double distance, const PairPredicates &pfs);
@@ -39,7 +39,7 @@ struct IMPCOREEXPORT NBGenerator {
                         ParticleIndexPair::show(out);
                         out << " " << score;);
   };
-  typedef base::Vector<single_result_type> result_type;
+  typedef Vector<single_result_type> result_type;
   typedef ParticleIndexes argument_type;
   template <class T>
   result_type operator()(const argument_type &a, const T &) const {
@@ -48,9 +48,9 @@ struct IMPCOREEXPORT NBGenerator {
   result_type operator()(argument_type a) const;
 };
 struct IMPCOREEXPORT NBChecker {
-  base::Pointer<Model> m_;
+  Pointer<Model> m_;
   ParticleIndexes pis_;
-  base::Pointer<PairScore> score_;
+  Pointer<PairScore> score_;
   double distance_;
   PairPredicates filt_;
   NBChecker(Model *m, const ParticleIndexes &pis,
@@ -60,8 +60,8 @@ struct IMPCOREEXPORT NBChecker {
 
 class IMPCOREEXPORT NBLScoring {
   ParticleIndexes to_move_;
-  base::PointerMember<Restraint> dummy_restraint_;
-  typedef base::SparseSymmetricPairMemoizer<NBGenerator, NBChecker> Cache;
+  PointerMember<Restraint> dummy_restraint_;
+  typedef SparseSymmetricPairMemoizer<NBGenerator, NBChecker> Cache;
   Cache cache_;
 
   // changes to cache for rollback

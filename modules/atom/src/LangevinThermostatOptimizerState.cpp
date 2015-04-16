@@ -9,7 +9,7 @@
 #include <IMP/atom/LangevinThermostatOptimizerState.h>
 #include <IMP/atom/MolecularDynamics.h>
 #include <IMP/atom/Mass.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 IMPATOM_BEGIN_NAMESPACE
 
 LangevinThermostatOptimizerState::LangevinThermostatOptimizerState(

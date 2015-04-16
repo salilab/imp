@@ -11,7 +11,7 @@
 #include "ChiScore.h"
 #include "FitParameters.h"
 #include "Profile.h"
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
 #include <fstream>
 
@@ -27,20 +27,20 @@ IMPSAXS_BEGIN_NAMESPACE
    ChiScore, ChiScoreLog and ChiFreeScore.
  */
 template <class ScoringFunctionT = ChiScore>
-class ProfileFitter : public base::Object {
+class ProfileFitter : public Object {
  public:
   //! Constructor
   /**
      \param[in] exp_profile Experimental profile we want to fit
   */
   ProfileFitter(const Profile* exp_profile)
-      : base::Object("ProfileFitter%1%"), exp_profile_(exp_profile) {
+      : Object("ProfileFitter%1%"), exp_profile_(exp_profile) {
     set_was_used(true);
     scoring_function_ = new ScoringFunctionT();
   }
 
   ProfileFitter(const Profile* exp_profile, ScoringFunctionT* sf)
-      : base::Object("ProfileFitter%1%"), exp_profile_(exp_profile) {
+      : Object("ProfileFitter%1%"), exp_profile_(exp_profile) {
     set_was_used(true);
     scoring_function_ = sf;
   }
@@ -113,7 +113,7 @@ class ProfileFitter : public base::Object {
 
  protected:
   //  experimental saxs profile
-  base::PointerMember<const Profile> exp_profile_;
+  PointerMember<const Profile> exp_profile_;
   ScoringFunctionT* scoring_function_;
 };
 

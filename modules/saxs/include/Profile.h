@@ -10,8 +10,8 @@
 #define IMPSAXS_PROFILE_H
 
 #include <IMP/saxs/saxs_config.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/Object.h>
+#include <IMP/warning_macros.h>
 
 #include "FormFactorTable.h"
 #include "Distribution.h"
@@ -28,7 +28,7 @@ class RadialDistributionFunction;
    (experimental or theoretical) or computed from a set of Model
    Particles (theoretical)
 */
-class IMPSAXSEXPORT Profile : public base::Object {
+class IMPSAXSEXPORT Profile : public Object {
  public:
   // Constructors
 

@@ -21,7 +21,7 @@
 #include <IMP/atom/pdb.h>
 #include <IMP/multifit/FittingSolutionRecord.h>
 #include <IMP/multifit/fft_based_rigid_fitting.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/em/DensityMap.h>
 
@@ -101,9 +101,9 @@ int main(int argc, char **argv) {
     exit(1);
   }
   // read EM density map
-  base::Pointer<em::DensityMap> dmap = set_map(
+  Pointer<em::DensityMap> dmap = set_map(
       density_filename, resolution, spacing, x_origin, y_origin, z_origin);
-  //  base::Pointer<em::DensityMap> dmap
+  //  Pointer<em::DensityMap> dmap
   // = em::read_map(density_filename.c_str());
   // dmap->get_header_writable()->set_resolution(resolution);
   dmap->set_was_used(true);
@@ -144,7 +144,7 @@ int main(int argc, char **argv) {
   // run the fitting
   IMP_NEW(multifit::FFTFitting, ff, ());
 
-  base::PointerMember<multifit::FFTFittingOutput> fits;
+  PointerMember<multifit::FFTFittingOutput> fits;
   if (!local_fitting) {
     std::cout << "running global fitting" << std::endl;
     fits = ff->do_global_fitting(

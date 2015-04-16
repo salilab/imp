@@ -10,7 +10,7 @@
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/kinematics/Joint.h>
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -22,13 +22,13 @@ void KinematicNode::do_setup_particle(Model* m,
   // Checks:
   if (owner == nullptr) {
     IMP_THROW("Kinematic node must have a valid owner kinematic forest",
-              IMP::base::ValueException);
+              IMP::ValueException);
   }
   if (IMP::core::RigidMember::get_is_setup(m, pi)) {
     // see also RigidBody::add_member
     IMP_THROW("RigidMember cannot be set as KinematicNode at this point,"
                   << " in order to guarantee coherent coordinates update",
-              IMP::base::ValueException);
+              IMP::ValueException);
   }
 
   if (!IMP::core::RigidBody::get_is_setup(m, pi)) {
@@ -45,7 +45,7 @@ void KinematicNode::do_setup_particle(Model* m,
 
 //! returns the kinematic forest associated with this node
 KinematicForest* KinematicNode::get_owner() {
-  base::Object* owner_as_obj =
+  Object* owner_as_obj =
       get_model()->get_attribute(get_owner_key(), get_particle_index());
   // safe downcast cause we upcasted it to Object* to begin with
   KinematicForest* owner = dynamic_cast<KinematicForest*>(owner_as_obj);
@@ -55,7 +55,7 @@ KinematicForest* KinematicNode::get_owner() {
 void KinematicNode::set_out_joints(Joints in) {
   if (in.empty()) {
     IMP_THROW("cannot set an empty list of out_joints",
-              IMP::base::ValueException);
+              IMP::ValueException);
   }
   if (get_model()->get_has_attribute(get_out_joints_key(),
                                      get_particle_index())) {
@@ -68,7 +68,7 @@ void KinematicNode::set_out_joints(Joints in) {
 void KinematicNode::add_out_joint(Joint* j) {
   if (j == nullptr) {
     IMP_THROW("cannot add a NULL out_joint to KinematicNode",
-              IMP::base::ValueException);
+              IMP::ValueException);
   }
   Joints joints;
   if (get_model()->get_has_attribute(get_out_joints_key(),
@@ -82,7 +82,7 @@ void KinematicNode::add_out_joint(Joint* j) {
 void KinematicNode::set_in_joint(Joint* j) {
   if (j == nullptr) {
     IMP_THROW("cannot set a NULL in_joint to KinematicNode",
-              IMP::base::ValueException);
+              IMP::ValueException);
   }
   if (get_model()->get_has_attribute(get_in_joint_key(),
                                      get_particle_index())) {

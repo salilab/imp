@@ -11,7 +11,7 @@
 #include <IMP/core/core_config.h>
 #include <IMP/PairPredicate.h>
 
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/container_helpers.h>
 #include <IMP/model_object_helpers.h>
@@ -33,7 +33,7 @@ class MovedSingletonContainer;
     \see CloseBipartitePairContainer
  */
 class IMPCOREEXPORT ClosePairsFinder : public ParticleInputs,
-                                       public IMP::base::Object {
+                                       public IMP::Object {
   double distance_;
 
  public:

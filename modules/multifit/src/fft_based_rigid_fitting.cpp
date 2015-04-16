@@ -9,7 +9,7 @@
 #include <IMP/multifit/internal/fft_fitting_utils.h>
 #include <IMP/constants.h>
 #include <IMP/atom/pdb.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <algorithm>
 #include <boost/bind.hpp>
@@ -81,7 +81,7 @@ void FFTFitting::pad_resolution_map() {
   }
 
   // pad the map accordingly
-  base::Pointer<em::DensityMap> padded_low_res = low_map_->pad_margin(
+  Pointer<em::DensityMap> padded_low_res = low_map_->pad_margin(
       fftw_zero_padding_extent_[0], fftw_zero_padding_extent_[1],
       fftw_zero_padding_extent_[2]);
   padded_low_res->set_was_used(true);
@@ -680,7 +680,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
   if (cluster_fits) {
     IMP_LOG_TERSE("going to cluster fits" << std::endl);
     // create a smoothed peak map
-    base::Pointer<em::DensityMap> gpeak =
+    Pointer<em::DensityMap> gpeak =
         em::create_density_map(nx_ + 2, ny_ + 2, nz_ + 2, spacing_);
     gpeak->set_was_used(true);
     gpeak->reset_data(0.);
@@ -708,7 +708,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
                   smooth_filter[xx + 1][yy + 1][zz + 1] * curr_cc;
             }
     }
-    base::Pointer<em::DensityMap> lpeak =
+    Pointer<em::DensityMap> lpeak =
         em::create_density_map(nx_ + 2, ny_ + 2, nz_ + 2, spacing_);
     lpeak->set_was_used(true);
     lpeak->reset_data(0.);
@@ -919,7 +919,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
 }
 
 void FFTFitting::prepare_poslist_flipped(em::DensityMap *dmap) {
-  base::Pointer<em::DensityMap> mask_inside2 = em::get_binarized_interior(dmap);
+  Pointer<em::DensityMap> mask_inside2 = em::get_binarized_interior(dmap);
   em::emreal *mdata2 = mask_inside2->get_data();
   inside_num_flipped_ = 0;
   for (long i = 0; i < mask_inside2->get_number_of_voxels(); i++) {
@@ -928,7 +928,7 @@ void FFTFitting::prepare_poslist_flipped(em::DensityMap *dmap) {
     }
   }
   // flip mask
-  base::Pointer<em::DensityMap> mask_inside3 =
+  Pointer<em::DensityMap> mask_inside3 =
       em::create_density_map(mask_inside2);
   mask_inside3->set_was_used(true);
   em::emreal *mdata3 = mask_inside3->get_data();
@@ -1007,7 +1007,7 @@ void FFTFitting::get_unwrapped_index(int wx, int wy, int wz, int &x, int &y,
 }
 
 void FFTFitting::prepare_poslist(em::DensityMap *dmap) {
-  base::Pointer<em::DensityMap> mask_inside2 = em::get_binarized_interior(dmap);
+  Pointer<em::DensityMap> mask_inside2 = em::get_binarized_interior(dmap);
   em::emreal *mdata2 = mask_inside2->get_data();
   inside_num_ = 0;
   for (long i = 0; i < mask_inside2->get_number_of_voxels(); i++) {
@@ -1051,7 +1051,7 @@ FittingSolutionRecords fft_based_rigid_fitting(atom::Hierarchy mol2fit,
   multifit::internal::EulerAnglesList rots =
       internal::get_uniformly_sampled_rotations(angle_sampling_interval);
   IMP_NEW(FFTFitting, ff, ());
-  base::PointerMember<FFTFittingOutput> fits =
+  PointerMember<FFTFittingOutput> fits =
       ff->do_global_fitting(dmap, density_threshold, mol2fit,
                             angle_sampling_interval, number_of_fits_to_report,
                             max_clustering_translation, max_clustering_angle);

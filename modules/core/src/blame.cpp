@@ -58,7 +58,7 @@ void assign_blame(const RestraintsTemp &rs,
   }
   Restraints drs;
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    base::Pointer<Restraint> rd = rs[i]->create_decomposition();
+    Pointer<Restraint> rd = rs[i]->create_decomposition();
     if (rd) {
       drs.push_back(rd);
     }

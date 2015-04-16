@@ -9,7 +9,7 @@
 #define IMPSTATISTICS_INTERNAL_HISTOGRAM_H
 
 #include <IMP/statistics/statistics_config.h>
-#include <IMP/base/utility.h>
+#include <IMP/utility.h>
 #include <IMP/algebra/VectorD.h>
 
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
@@ -48,7 +48,7 @@ struct Sigma2 {
                   const typename G::Vector &v) {
     if (g[index] != 0) {
       for (unsigned int i = 0; i < mn.get_dimension(); ++i) {
-        sigma2[i] += g[index] * base::square(mn[i] - v[i]);
+        sigma2[i] += g[index] * IMP::square(mn[i] - v[i]);
       }
     }
   }

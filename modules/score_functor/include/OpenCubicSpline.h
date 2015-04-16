@@ -51,7 +51,7 @@ class OpenCubicSpline : public Score {
   // depend on get_is_trivially_zero
   template <unsigned int D>
   double get_score(Model *,
-                   const base::Array<D, ParticleIndex> &,
+                   const Array<D, ParticleIndex> &,
                    double distance) const {
     // check for feature in range
     if (distance < minrange_ || distance > maxrange_) {
@@ -68,7 +68,7 @@ class OpenCubicSpline : public Score {
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      Model *, const base::Array<D, ParticleIndex> &,
+      Model *, const Array<D, ParticleIndex> &,
       double distance) const {
     // check for distance in range
     if (distance < minrange_ || distance > maxrange_) {
@@ -86,7 +86,7 @@ class OpenCubicSpline : public Score {
   }
   template <unsigned int D>
   double get_maximum_range(
-      Model *, const base::Array<D, ParticleIndex> &) const {
+      Model *, const Array<D, ParticleIndex> &) const {
     if (!extend_ || spline_.get_last() == 0)
       return maxrange_;
     else
@@ -94,7 +94,7 @@ class OpenCubicSpline : public Score {
   }
   template <unsigned int D>
   bool get_is_trivially_zero(Model *,
-                             const base::Array<D, ParticleIndex> &,
+                             const Array<D, ParticleIndex> &,
                              double squared_distance) const {
     if (!extend_ || spline_.get_last() == 0) {
       return squared_distance > algebra::get_squared(maxrange_);

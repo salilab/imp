@@ -7,7 +7,7 @@
  */
 
 #include "IMP/em2d/CollisionCrossSection.h"
-#include "IMP/base/exception.h"
+#include "IMP/exception.h"
 #include "IMP/atom/Mass.h"
 
 IMPEM2D_BEGIN_NAMESPACE

@@ -14,7 +14,7 @@
 #include <IMP/internal/container_helpers.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/internal/incremental_scoring_function.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/check_macros.h>
 #include <numeric>
 #include <algorithm>
 
@@ -40,7 +40,7 @@ IncrementalScoringFunction::IncrementalScoringFunction(
   IMP_LOG_TERSE("Creating IncrementalScoringFunction with particles "
                 << ps << " and restraints " << rs << std::endl);
   all_ = IMP::internal::get_index(ps);
-  base::Pointer<ScoringFunction> suppress_error(this);
+  Pointer<ScoringFunction> suppress_error(this);
   create_flattened_restraints(rs);
   create_scoring_functions();
   dirty_ = all_;
@@ -113,7 +113,7 @@ void IncrementalScoringFunction::create_scoring_functions() {
     drs.push_back(nbl_[i]->get_dummy_restraint());
   }
 
-  base::Vector<RestraintsTemp> crs;
+  Vector<RestraintsTemp> crs;
   IMP_FOREACH(ParticleIndex pi, all_) {
     crs.push_back(get_dependent_restraints(get_model(), pi));
   }
@@ -127,7 +127,7 @@ void IncrementalScoringFunction::create_flattened_restraints(
     const RestraintsTemp &rs) {
   Restraints decomposed;
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    base::Pointer<Restraint> cur = rs[i]->create_decomposition();
+    Pointer<Restraint> cur = rs[i]->create_decomposition();
     if (cur) {
       decomposed.push_back(cur);
       cur->set_was_used(true);  // suppress message about the score states

@@ -10,9 +10,9 @@
 
 #include <IMP/display/display_config.h>
 #include "Color.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/object_macros.h>
-#include <IMP/base/ref_counted_macros.h>
+#include <IMP/Object.h>
+#include <IMP/object_macros.h>
+#include <IMP/ref_counted_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 class Geometry;
@@ -23,7 +23,7 @@ IMP_OBJECTS(Geometry, Geometries);
 
     \headerfile geometry.h "IMP/display/geometry.h"
  */
-class IMPDISPLAYEXPORT Geometry : public IMP::base::Object {
+class IMPDISPLAYEXPORT Geometry : public IMP::Object {
   bool has_color_;
   Color color_;
 

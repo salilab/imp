@@ -37,7 +37,7 @@ class GeometricHash {
   typedef typename GeomMap::iterator iterator;
   typedef typename GeomMap::const_iterator const_iterator;
   typedef std::vector<const ValueType *> HashResult;
-  typedef IMP::base::Vector<T> HashResultT;
+  typedef IMP::Vector<T> HashResultT;
   typedef std::vector<Bucket> BucketList;
 
   /* Default constructor - all cubes/buckets have the same edge length */

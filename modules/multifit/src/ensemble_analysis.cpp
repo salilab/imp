@@ -8,7 +8,7 @@
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/Selection.h>
 #include <IMP/multifit/RadiusOfGyrationRestraint.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -144,7 +144,7 @@ void Ensemble::add_component_and_fits(
 
 Ensemble::Ensemble(multifit::SettingsData *sd,
                    const ProteinsAnchorsSamplingSpace &mapping_data)
-    : base::Object("Ensemble%1%"), mapping_data_(mapping_data), sd_(sd) {}
+    : Object("Ensemble%1%"), mapping_data_(mapping_data), sd_(sd) {}
 
 std::vector<Floats> Ensemble::score_by_restraints(
     Restraints rs, const IntsList &combinations) {

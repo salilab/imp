@@ -9,7 +9,7 @@
 #define IMPCORE_GRID_CLOSE_PAIRS_FINDER_H
 
 #include "ClosePairsFinder.h"
-#include <IMP/base/object_macros.h>
+#include <IMP/object_macros.h>
 #include <IMP/core/core_config.h>
 
 IMPCORE_BEGIN_NAMESPACE

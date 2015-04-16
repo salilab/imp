@@ -16,7 +16,7 @@
 #include "internal/inference_utility.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 #ifdef SWIG
@@ -30,7 +30,7 @@ class SubsetGraph;
     a lot smaller and faster.
  */
 class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler {
-  base::Pointer<AssignmentsTable> sst_;
+  Pointer<AssignmentsTable> sst_;
   SubsetGraph sg_;
   MergeTree mt_;
   bool has_mt_;

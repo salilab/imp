@@ -17,8 +17,8 @@ IMPDOMINO_BEGIN_NAMESPACE
 namespace {
 
 class ParticleStatesEmbedding : public statistics::Embedding {
-  base::Pointer<Particle> p_;
-  base::Pointer<ParticleStates> ps_;
+  Pointer<Particle> p_;
+  Pointer<ParticleStates> ps_;
   Ints allowed_;
 
  public:
@@ -52,9 +52,9 @@ unsigned int ParticleStatesEmbedding::get_number_of_items() const {
 
 Ints get_state_clusters(Particle *p, ParticleStates *ps,
                         const Ints &allowed_states, double resolution) {
-  IMP::base::PointerMember<ParticleStatesEmbedding> pse =
+  IMP::PointerMember<ParticleStatesEmbedding> pse =
       new ParticleStatesEmbedding(p, ps, allowed_states, "domino embedding");
-  IMP::base::PointerMember<statistics::PartitionalClusteringWithCenter> c =
+  IMP::PointerMember<statistics::PartitionalClusteringWithCenter> c =
       create_connectivity_clustering(pse, resolution);
   Ints ret(ps->get_number_of_particle_states(), -1);
   IMP_LOG_TERSE("For particle " << p->get_name() << " there are "
@@ -72,7 +72,7 @@ Ints get_state_clusters(Particle *p, ParticleStates *ps,
 }
 
 Assignments filter_states(const Subset &, const Assignments &in,
-                          const base::Vector<Ints> &clustering) {
+                          const Vector<Ints> &clustering) {
   Assignments ret;
   for (unsigned int i = 0; i < in.size(); ++i) {
     Ints cur(in[i].size(), -1);
@@ -91,7 +91,7 @@ Assignments filter_states(const Subset &, const Assignments &in,
 }
 Assignments get_state_clusters(const Subset &subset, const Assignments &states,
                                ParticleStatesTable *pst, double resolution) {
-  base::Vector<Ints> rotated(subset.size(), Ints(states.size(), -1));
+  Vector<Ints> rotated(subset.size(), Ints(states.size(), -1));
   for (unsigned int i = 0; i < states.size(); ++i) {
     for (unsigned int j = 0; j < states[i].size(); ++j) {
       rotated[j][i] = states[i][j];
@@ -102,9 +102,9 @@ Assignments get_state_clusters(const Subset &subset, const Assignments &states,
     rotated[i].erase(std::unique(rotated[i].begin(), rotated[i].end()),
                      rotated[i].end());
   }
-  base::Vector<Ints> clustering(states.size());
+  Vector<Ints> clustering(states.size());
   for (unsigned int i = 0; i < subset.size(); ++i) {
-    IMP::base::PointerMember<ParticleStates> ps =
+    IMP::PointerMember<ParticleStates> ps =
         pst->get_particle_states(subset[i]);
     Ints c = get_state_clusters(subset[i], ps, rotated[i], resolution);
     clustering[i] = c;

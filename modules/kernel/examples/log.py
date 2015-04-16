@@ -1,8 +1,7 @@
-## \example base/log.py
+## \example log.py
 # Show various ways to use the log and control it.
 
-import IMP.base
-
+import IMP
 
 class DummyObject(IMP.Object):
 

@@ -7,7 +7,7 @@
  */
 
 #include "IMP/algebra/LinearFit.h"
-#include "IMP/base/utility.h"
+#include "IMP/utility.h"
 IMPALGEBRA_BEGIN_NAMESPACE
 
 LinearFit2D::LinearFit2D(const algebra::Vector2Ds& data, const Floats& errors) {
@@ -28,7 +28,7 @@ void LinearFit2D::find_regression(const algebra::Vector2Ds& data,
   for (unsigned int i = 0; i < data.size(); i++) {
     double wi;
     if (!errors.empty()) {
-      wi = 1.0 / IMP::base::square(errors[i]);
+      wi = 1.0 / IMP::square(errors[i]);
     } else {
       wi = 1.0;
     }

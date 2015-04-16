@@ -16,7 +16,7 @@
 #include <IMP/SingletonModifier.h>
 #include <IMP/internal/ListLikeContainer.h>
 #include <IMP/algebra/Sphere3D.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <boost/unordered_set.hpp>
 #include <boost/unordered_map.hpp>
 #include "../XYZR.h"
@@ -30,9 +30,9 @@ class IMPCOREEXPORT MovedSingletonContainer
     : public IMP::internal::ListLikeContainer<SingletonContainer> {
  private:
   double threshold_;
-  base::Pointer<SingletonContainer> pc_;
+  Pointer<SingletonContainer> pc_;
   std::size_t pc_version_;
-  base::PointerMember<ScoreState> score_state_;
+  PointerMember<ScoreState> score_state_;
   virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual ParticleIndexes get_range_indexes() const IMP_OVERRIDE;
@@ -71,7 +71,7 @@ class IMPCOREEXPORT MovedSingletonContainer
 
 class IMPCOREEXPORT XYZRMovedSingletonContainer
     : public MovedSingletonContainer {
-  base::Vector<algebra::Sphere3D> backup_;
+  Vector<algebra::Sphere3D> backup_;
   boost::unordered_set<int> moved_;
   virtual ParticleIndexes do_get_moved();
   virtual void do_reset_all();
@@ -89,7 +89,7 @@ class IMPCOREEXPORT XYZRMovedSingletonContainer
 
 class IMPCOREEXPORT RigidMovedSingletonContainer
     : public MovedSingletonContainer {
-  base::Vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > backup_;
+  Vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > backup_;
   ParticleIndexes bodies_;
   boost::unordered_set<int> moved_;
   boost::unordered_map<ParticleIndex, ParticleIndexes>

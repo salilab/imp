@@ -29,10 +29,10 @@ IMPISD_BEGIN_NAMESPACE
  *  program will not check for that.
  */
 
-class IMPISDEXPORT FNormal : public base::Object {
+class IMPISDEXPORT FNormal : public Object {
  public:
   FNormal(double FA, double JA, double FM, double sigma)
-      : base::Object("FNormal %1%"), FA_(FA), JA_(JA), FM_(FM), sigma_(sigma) {}
+      : Object("FNormal %1%"), FA_(FA), JA_(JA), FM_(FM), sigma_(sigma) {}
 
   /* energy (score) functions, aka -log(p) */
   virtual double evaluate() const {

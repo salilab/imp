@@ -41,7 +41,7 @@ private:
   void select_representatives();
 
 private:
-  IMP::base::PointerMember<const IMP::saxs::Profile> exp_profile_;
+  IMP::PointerMember<const IMP::saxs::Profile> exp_profile_;
   const IMP::saxs::Profiles profiles_;
   const std::vector<double> scores_;
 

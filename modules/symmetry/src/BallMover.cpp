@@ -7,7 +7,7 @@
  */
 
 #include <IMP/symmetry/BallMover.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/log_macros.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra.h>
 

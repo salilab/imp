@@ -15,7 +15,7 @@
 #include <IMP/core/Transform.h>
 #include <IMP/core/SteepestDescent.h>
 #include <IMP/atom/pdb.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/em/converters.h>
 #include <IMP/algebra/eigen_analysis.h>
@@ -45,7 +45,7 @@ RestraintSet *add_restraints(Model *model, DensityMap *dmap,
       new RestraintSet(model, 1.0, "rigid fitting restraints %1%");
   model->add_restraint(rsrs);
   // add fitting restraint
-  base::Pointer<FitRestraint> fit_rs;
+  Pointer<FitRestraint> fit_rs;
   FloatPair no_norm_factors(0., 0.);
   if (fast) {
     fit_rs = new FitRestraint(leaves_ref->get_refined(p), dmap, no_norm_factors,
@@ -71,7 +71,7 @@ core::MonteCarlo *set_optimizer(Model *model,
   // preform mc search
   //  core::SteepestDescent *lopt = new core::SteepestDescent();
   IMP_NEW(core::ConjugateGradients, lopt, (model));
-  base::Pointer<core::MonteCarloWithLocalOptimization> opt(
+  Pointer<core::MonteCarloWithLocalOptimization> opt(
       new core::MonteCarloWithLocalOptimization(lopt, number_of_cg_steps));
   opt->add_mover(rb_mover);
   opt->set_return_best(true);  // return the lowest energy state visited
@@ -118,7 +118,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
       fr.add_solution(
           rb.get_reference_frame().get_transformation_to() / starting_trans, e);
     }
-    catch (base::ModelException err) {
+    catch (ModelException err) {
       IMP_WARN("Optimization run " << i << " failed to converge." << std::endl);
     }
   }
@@ -150,7 +150,7 @@ FittingSolutions local_rigid_fitting_around_point(
   RestraintSet *rsrs =
       add_restraints(model, dmap, p, refiner, wei_key, fast);
   // create a rigid body mover and set the optimizer
-  base::PointerMember<core::MonteCarlo> opt =
+  PointerMember<core::MonteCarlo> opt =
       set_optimizer(model, display_log, p, refiner, number_of_cg_steps,
                     max_translation, max_rotation);
 
@@ -191,7 +191,7 @@ FittingSolutions local_rigid_fitting_around_points(
   Model *model = p->get_model();
 
   RestraintSet *rsrs = add_restraints(model, dmap, p, refiner, wei_key);
-  base::PointerMember<core::MonteCarlo> opt =
+  PointerMember<core::MonteCarlo> opt =
       set_optimizer(model, display_log, p, refiner, number_of_cg_steps,
                     max_translation, max_rotation);
 
@@ -242,7 +242,7 @@ FittingSolutions local_rigid_fitting_grid_search(
     algebra::Vector3D axis = algebra::get_random_vector_on(
         algebra::Sphere3D(algebra::Vector3D(0.0, 0.0, 0.0), 1.));
     ::boost::uniform_real<> rand(-max_angle_in_radians, max_angle_in_radians);
-    Float angle = rand(base::random_number_generator);
+    Float angle = rand(random_number_generator);
     algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
     rots.push_back(r);
   }
@@ -254,7 +254,7 @@ FittingSolutions local_rigid_fitting_grid_search(
                                          << std::endl);
     algebra::Transformation3D t1 = algebra::get_rotation_about_point(
         core::get_centroid(core::XYZs(ps)), *it);
-    base::Pointer<DensityMap> rotated_sampled_map =
+    Pointer<DensityMap> rotated_sampled_map =
         get_transformed(model_dens_map, t1);
     rotated_sampled_map->calcRMS();
     algebra::Vector3D origin(model_dens_map->get_header()->get_xorigin(),
@@ -370,7 +370,7 @@ FittingSolutions compute_fitting_scores(
                     << std::endl);
     for (algebra::Transformation3Ds::const_iterator it = trans_for_fit.begin();
          it != trans_for_fit.end(); it++) {
-      base::PointerMember<DensityMap> transformed_sampled_map =
+      PointerMember<DensityMap> transformed_sampled_map =
           get_transformed(model_dens_map, *it);
       IMP_INTERNAL_CHECK(
           transformed_sampled_map->same_dimensions(model_dens_map),
@@ -410,7 +410,7 @@ Float compute_fitting_score(const ParticlesTemp &ps, DensityMap *em_map,
   algebra::BoundingBox3D em_bb = get_bounding_box(em_map, 0.);
   algebra::BoundingBox3D union_bb =
       algebra::get_union(em_bb, core::get_bounding_box(core::XYZRs(ps)));
-  base::Pointer<em::DensityMap> union_map =
+  Pointer<em::DensityMap> union_map =
       create_density_map(union_bb, em_map->get_spacing());
   union_map->get_header_writable()->set_resolution(
       em_map->get_header()->get_resolution());

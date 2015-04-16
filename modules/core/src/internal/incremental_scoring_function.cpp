@@ -22,8 +22,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 namespace {
 class DummyPairContainer
     : public IMP::internal::ListLikeContainer<PairContainer> {
-  IMP::base::PointerMember<SingletonContainer> c_;
-  IMP::base::PointerMember<ClosePairsFinder> cpf_;
+  IMP::PointerMember<SingletonContainer> c_;
+  IMP::PointerMember<ClosePairsFinder> cpf_;
 
  public:
   DummyPairContainer(SingletonContainer *c, ClosePairsFinder *cpf);
@@ -191,7 +191,7 @@ Restraint *NBLScoring::create_restraint() const {
   lsc->set(cache_.get_generator().pis_);
   IMP_NEW(DummyPairContainer, cpc, (lsc, default_cpf(1000)));
 
-  base::Pointer<Restraint> ret =
+  Pointer<Restraint> ret =
       IMP::create_restraint(cache_.get_generator().score_.get(), cpc.get());
   return ret.release();
 }
@@ -217,7 +217,7 @@ NBGenerator::NBGenerator(Model *m, const ParticleIndexes &pis,
     to_dnn_[pis_[i]] = i;
   }
   dnn_ = new algebra::DynamicNearestNeighbor3D(vs, distance_);
-  dnn_->set_log_level(IMP::base::SILENT);
+  dnn_->set_log_level(IMP::SILENT);
 }
 
 NBGenerator::result_type NBGenerator::operator()(argument_type a) const {

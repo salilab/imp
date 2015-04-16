@@ -15,10 +15,10 @@
 #include <IMP/atom/force_fields.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
-#include <IMP/base/object_macros.h>
+#include <IMP/object_macros.h>
 #include <IMP/core/XYZR.h>
-#include <IMP/base/flags.h>
-#include <IMP/base/nullptr_macros.h>
+#include <IMP/flags.h>
+#include <IMP/nullptr_macros.h>
 
 namespace {
 const double dope_threshold = 16;
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
   try {
     // do normal IMP initialization of command line arguments
     // Run with --help to see options.
-    IMP::base::setup_from_argv(argc, argv,
+    IMP::setup_from_argv(argc, argv,
                                "Show how to use dope and excluded volume");
 
     typedef IMP::score_functor::HarmonicLowerBound Harmonic;
@@ -73,13 +73,13 @@ int main(int argc, char *argv[]) {
         DopeAndExcludedVolumeDistancePairScore;
 
     // create one
-    IMP::base::PointerMember<DopeAndExcludedVolumeDistancePairScore> score =
+    IMP::PointerMember<DopeAndExcludedVolumeDistancePairScore> score =
         new DopeAndExcludedVolumeDistancePairScore(
             Score(IMP::score_functor::Dope(dope_threshold),
                   SoftSphere(Harmonic(spring_constant))));
 
     // Now let's use it
-    IMP::base::PointerMember<IMP::Model> model =
+    IMP::PointerMember<IMP::Model> model =
         new IMP::Model();
     IMP::ParticleIndexPairs pips = setup_pairs(model);
 

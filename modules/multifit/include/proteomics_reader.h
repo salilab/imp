@@ -13,7 +13,7 @@
 #include <IMP/domino/DominoSampler.h>
 #include <IMP/Model.h>
 #include <IMP/core/Hierarchy.h>
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 #include <IMP/multifit/multifit_config.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 class ProteinRecordData {
@@ -68,7 +68,7 @@ class ProteinRecordData {
 IMP_VALUES(ProteinRecordData, ProteinRecordDataList);
 
 //! Storage of proteomics data.
-class IMPMULTIFITEXPORT ProteomicsData : public base::Object {
+class IMPMULTIFITEXPORT ProteomicsData : public Object {
  protected:
  public:
   ProteomicsData() : Object("ProteomicsData%1%") {}

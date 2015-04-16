@@ -98,7 +98,7 @@ void read_files(const std::vector<std::string>& files,
       read_pdb(files[i], pdb_file_names, particles_vec, residue_level,
                heavy_atoms_only, multi_model_pdb);
     }
-    catch (IMP::base::ValueException e) {  // not a pdb file
+    catch (IMP::ValueException e) {  // not a pdb file
       // 2. try as a dat profile file
       IMP_NEW(Profile, profile, (files[i]));
       if (profile->size() == 0) {
@@ -303,7 +303,7 @@ constant form factor (default = false)")(
   for (unsigned int i = 0; i < particles_vec.size(); i++) {
     std::cerr << "Computing profile for " << pdb_files[i] << " "
               << particles_vec[i].size() << " atoms " << std::endl;
-    IMP::base::Pointer<Profile> profile =
+    IMP::Pointer<Profile> profile =
         compute_profile(particles_vec[i], 0.0, max_q, delta_q, ft, ff_type,
                         water_layer_c2, fit, reciprocal, ab_initio, vacuum,
                         beam_profile_file);

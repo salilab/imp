@@ -43,7 +43,7 @@ class IMPISDEXPORT MolecularDynamicsMover : public core::MonteCarloMover {
   void save_coordinates();
 
   unsigned nsteps_;
-  IMP::base::PointerMember<MolecularDynamics> md_;
+  IMP::PointerMember<MolecularDynamics> md_;
   std::vector<std::vector<double> > coordinates_;
   std::vector<std::vector<double> > velocities_;
 };

@@ -30,11 +30,11 @@ IMPCORE_BEGIN_NAMESPACE
     1.
  */
 class IMPCOREEXPORT DiameterRestraint : public Restraint {
-  IMP::base::PointerMember<ScoreState> ss_;
-  IMP::base::PointerMember<Particle> p_;
+  IMP::PointerMember<ScoreState> ss_;
+  IMP::PointerMember<Particle> p_;
   Float diameter_;
-  IMP::base::PointerMember<SingletonContainer> sc_;
-  IMP::base::PointerMember<UnaryFunction> f_;
+  IMP::PointerMember<SingletonContainer> sc_;
+  IMP::PointerMember<UnaryFunction> f_;
   FloatKey dr_;
   void init();
 

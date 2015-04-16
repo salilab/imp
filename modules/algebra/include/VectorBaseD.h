@@ -10,11 +10,11 @@
 
 #include <IMP/algebra/algebra_config.h>
 #include "GeometricPrimitiveD.h"
-#include <IMP/base/check_macros.h>
-#include <IMP/base/exception.h>
-#include <IMP/base/random.h>
-#include <IMP/base/utility.h>
-#include <IMP/base/types.h>
+#include <IMP/check_macros.h>
+#include <IMP/exception.h>
+#include <IMP/random.h>
+#include <IMP/utility.h>
+#include <IMP/types.h>
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/normal_distribution.hpp>
 #include <boost/range.hpp>
@@ -74,12 +74,12 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   explicit VectorBaseD(const Range &r) {
     if (D != -1 && static_cast<int>(boost::distance(r)) != D) {
       IMP_THROW("Expected " << D << " but got " << boost::distance(r),
-                base::ValueException);
+                ValueException);
     }
     IMP_IF_CHECK(USAGE) {
       IMP_FOREACH(double f, r) {
         IMP_UNUSED(f);
-        IMP_USAGE_CHECK(!base::is_nan(f), "NaN passed to constructor");
+        IMP_USAGE_CHECK(!IMP::is_nan(f), "NaN passed to constructor");
       }
     }
     data_.set_coordinates(boost::begin(r), boost::end(r));
@@ -90,11 +90,11 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
   VectorBaseD<D> &operator=(const R &r) {
     if (D != -1 && static_cast<int>(boost::distance(r)) != D) {
       IMP_THROW("Expected " << D << " but got " << boost::distance(r),
-                base::ValueException);
+                ValueException);
     }
     IMP_IF_CHECK(USAGE) {
       IMP_FOREACH(double f, r) {
-        IMP_USAGE_CHECK(!base::is_nan(f), "NaN passed in equals");
+        IMP_USAGE_CHECK(!IMP::is_nan(f), "NaN passed in equals");
       }
     }
     data_.set_coordinates(boost::begin(r), boost::end(r));
@@ -235,9 +235,9 @@ inline VT get_unit_vector(VT vt) {
     // avoid division by zero - return random unit v
     // NOTE: (1) avoids vector_generators / SphereD to prevent recursiveness
     //       (2) D might be -1, so use get_dimension()
-    boost::variate_generator<base::RandomNumberGenerator,
+    boost::variate_generator<RandomNumberGenerator,
                              boost::normal_distribution<> >
-        generator(IMP::base::random_number_generator,
+        generator(IMP::random_number_generator,
                   ::boost::normal_distribution<>(0, 1.0));
     for (unsigned int i = 0; i < vt.get_dimension(); ++i) {
       vt[i] = generator();

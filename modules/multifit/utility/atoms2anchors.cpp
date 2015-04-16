@@ -75,7 +75,7 @@ int parse_input(int argc, char *argv[], std::string &pdb_filename,
     return 1;
   }
 
-  IMP::base::set_log_level(IMP::base::VERBOSE);
+  IMP::set_log_level(IMP::VERBOSE);
   IMP_LOG_VERBOSE("============= parameters ============" << std::endl);
   IMP_LOG_VERBOSE("pdb_filename : " << pdb_filename << std::endl);
   IMP_LOG_VERBOSE("num_centers : " << num_means << std::endl);

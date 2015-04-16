@@ -11,7 +11,7 @@
 #include <IMP/score_functor/score_functor_config.h>
 #include <IMP/base_types.h>
 #include <IMP/particle_index.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 #include <IMP/Particle.h>
 #include <limits>
 
@@ -29,7 +29,7 @@ struct Score {
   */
   template <unsigned int D>
   double get_score(Model *m,
-                   const base::Array<D, ParticleIndex> &p,
+                   const Array<D, ParticleIndex> &p,
                    double distance) const;
   //! Return the score and derivative at the passed feature size (eg distance).
   /** The derivative is for the feature decreasing.
@@ -39,7 +39,7 @@ struct Score {
   */
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      Model *m, const base::Array<D, ParticleIndex> &p,
+      Model *m, const Array<D, ParticleIndex> &p,
       double distance) const;
 #endif
   /** Return true if the function can be easily determined to be zero at the
@@ -50,7 +50,7 @@ struct Score {
   */
   template <unsigned int D>
   bool get_is_trivially_zero(Model *m,
-                             const base::Array<D, ParticleIndex> &p,
+                             const Array<D, ParticleIndex> &p,
                              double squared_distance) const {
     IMP_UNUSED(m);
     IMP_UNUSED(p);
@@ -61,7 +61,7 @@ struct Score {
       non-zero. The default implementation provided here returns infinity.*/
   template <unsigned int D>
   double get_maximum_range(
-      Model *m, const base::Array<D, ParticleIndex> &p) const {
+      Model *m, const Array<D, ParticleIndex> &p) const {
     IMP_UNUSED(m);
     IMP_UNUSED(p);
     return std::numeric_limits<double>::infinity();

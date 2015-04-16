@@ -68,7 +68,7 @@ class IMPMULTIFITEXPORT WeightedExcludedVolumeRestraint
   //  bool special_treatment_of_particles_outside_of_density_;
   // rigid bodies handling
   std::vector<IMP::algebra::Transformation3D> rbs_orig_trans_;
-  IMP::base::PointerMember<Refiner> rb_refiner_;  // refiner for rigid bodies
+  IMP::PointerMember<Refiner> rb_refiner_;  // refiner for rigid bodies
 };
 
 IMPMULTIFIT_END_NAMESPACE

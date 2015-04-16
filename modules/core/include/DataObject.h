@@ -10,7 +10,7 @@
 #define IMPCORE_DATA_OBJECT_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -20,7 +20,7 @@ IMPCORE_BEGIN_NAMESPACE
     This class is C++ only.
  */
 template <class Data>
-class DataObject : public IMP::base::Object {
+class DataObject : public IMP::Object {
   Data data_;
 
  public:

@@ -10,7 +10,7 @@
 #define IMPCNMULTIFIT_CN_RMSD_H
 
 #include <IMP/cnmultifit/cnmultifit_config.h>
-#include <IMP/base/types.h>
+#include <IMP/types.h>
 #include <string>
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE

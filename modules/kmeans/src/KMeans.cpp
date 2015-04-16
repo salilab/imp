@@ -6,8 +6,8 @@
 */
 
 #include "IMP/kmeans/KMeans.h"
-#include <IMP/base/log.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/log.h>
+#include <IMP/log_macros.h>
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -114,39 +114,39 @@ void KMeans::execute(unsigned int k, KM_ALG_TYPE alg_type, int stages) {
   {
     case KM_LLOYDS: {
       // repeated Lloyd's
-      IMP_LOG(base::PROGRESS, "\nExecuting Clustering Algorithm: Lloyd's\n");
+      IMP_LOG(PROGRESS, "\nExecuting Clustering Algorithm: Lloyd's\n");
       internal::KMlocalLloyds kmLloyds(*pCenters_, terminationConditions_);
       *pCenters_ = kmLloyds.execute();
       is_executed_ = true;
-      print_summary(kmLloyds, base::PROGRESS);
+      print_summary(kmLloyds, PROGRESS);
       break;
     }
     case KM_LOCAL_SWAP: {
       // Swap heuristic
-      IMP_LOG(base::PROGRESS, "\nExecuting Clustering Algorithm: Swap\n");
+      IMP_LOG(PROGRESS, "\nExecuting Clustering Algorithm: Swap\n");
       internal::KMlocalSwap kmSwap(*pCenters_, terminationConditions_);
       *pCenters_ = kmSwap.execute();
       is_executed_ = true;
-      print_summary(kmSwap, base::PROGRESS);
+      print_summary(kmSwap, PROGRESS);
       break;
     }
     case KM_LOCAL_EZ_HYBRID: {
       // EZ-Hybrid heuristic
-      IMP_LOG(base::PROGRESS, "\nExecuting Clustering Algorithm: EZ-Hybrid\n");
+      IMP_LOG(PROGRESS, "\nExecuting Clustering Algorithm: EZ-Hybrid\n");
       internal::KMlocalEZ_Hybrid kmEZ_Hybrid(*pCenters_,
                                              terminationConditions_);
       *pCenters_ = kmEZ_Hybrid.execute();
       is_executed_ = true;
-      print_summary(kmEZ_Hybrid, base::PROGRESS);
+      print_summary(kmEZ_Hybrid, PROGRESS);
       break;
     }
     case KM_HYBRID: {
       // Hybrid heuristic
-      IMP_LOG(base::PROGRESS, "\nExecuting Clustering Algorithm: Hybrid\n");
+      IMP_LOG(PROGRESS, "\nExecuting Clustering Algorithm: Hybrid\n");
       internal::KMlocalHybrid kmHybrid(*pCenters_, terminationConditions_);
       *pCenters_ = kmHybrid.execute();
       is_executed_ = true;
-      print_summary(kmHybrid, base::PROGRESS);
+      print_summary(kmHybrid, PROGRESS);
       break;
     }
   }
@@ -287,7 +287,7 @@ void KMeans::print_pt_to_stream(std::ostream& out, const IMP::Floats& p) {
 //  Print summary of execution
 //------------------------------------------------------------------------
 void KMeans::print_summary(const internal::KMlocal& theAlg,
-                           base::LogLevel ll)  // the algorithm
+                           LogLevel ll)  // the algorithm
 {
   using namespace std;
 
@@ -319,7 +319,7 @@ void KMeans::print_summary(const internal::KMlocal& theAlg,
 }
 
 // print the centers (assuming execute() was applied)
-void KMeans::print_centers(base::LogLevel ll) const {
+void KMeans::print_centers(LogLevel ll) const {
   assert(is_executed_);  // TODO: exception?
   if (pCenters_ && is_executed_) {
     pCenters_->log(ll);

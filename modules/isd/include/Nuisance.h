@@ -93,7 +93,7 @@ IMP_DECORATORS(Nuisance, Nuisances, ParticlesTemp);
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 class IMPISDEXPORT NuisanceScoreState : public ScoreState {
  private:
-  IMP::base::WeakPointer<Particle> p_;
+  IMP::WeakPointer<Particle> p_;
 
  private:
   NuisanceScoreState(Particle *p)

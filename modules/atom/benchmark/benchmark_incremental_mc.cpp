@@ -4,7 +4,7 @@
 #include <IMP/core.h>
 #include <IMP.h>
 #include <IMP/atom.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 #include <IMP/container.h>
 #include <IMP/benchmark.h>
 #include <IMP.h>
@@ -124,7 +124,7 @@ void benchmark_it(std::string name, bool incr, bool nbl) {
   mc->optimize(1);
 
   unsigned int nsteps;
-  if (IMP::base::run_quick_test) {
+  if (IMP::run_quick_test) {
     nsteps = 1;
   } else if (IMP_BUILD == IMP_DEBUG) {
     nsteps = 300;
@@ -140,7 +140,7 @@ void benchmark_it(std::string name, bool incr, bool nbl) {
 }
 
 int main(int argc, char *argv[]) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark incremenal evaluation");
+  IMP::setup_from_argv(argc, argv, "Benchmark incremenal evaluation");
   benchmark_it("incremental nbl", true, true);
   benchmark_it("non incremental", false, false);
   benchmark_it("incremental", true, false);

@@ -24,7 +24,7 @@ void do_it() {
     tr->add_particle(rb0, get_leaves(h0));
     tr->add_particle(rb1, get_leaves(h1));
     IMP_NEW(ClosePairsPairScore, cpps, (ps, tr, 0));
-    base::Pointer<Restraint> sr(
+    Pointer<Restraint> sr(
         create_restraint(cpps.get(), ParticlePair(rb0, rb1)));
     sr->set_maximum_score(.1);
     test_one<ClosePairsPairScore>("close pair score", seed, m,
@@ -36,7 +36,7 @@ void do_it() {
 }
 
 int main(int argc, char *argv[]) {
-  IMP::base::setup_from_argv(argc, argv,
+  IMP::setup_from_argv(argc, argv,
                              "Benchmark methods for excluded volume");
   IMP_CATCH_AND_TERMINATE(do_it(););
   return IMP::benchmark::get_return_value();

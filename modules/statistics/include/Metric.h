@@ -10,9 +10,9 @@
 #define IMPSTATISTICS_METRIC_H
 
 #include <IMP/statistics/statistics_config.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/object_macros.h>
-#include <IMP/base/ref_counted_macros.h>
+#include <IMP/Object.h>
+#include <IMP/object_macros.h>
+#include <IMP/ref_counted_macros.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
@@ -22,7 +22,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     implement this abstract base class provide a way of getting the
     distance between any two items.
  */
-class IMPSTATISTICSEXPORT Metric : public IMP::base::Object {
+class IMPSTATISTICSEXPORT Metric : public IMP::Object {
  protected:
   Metric(std::string name);
   //! By default return 1.0

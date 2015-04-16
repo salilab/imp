@@ -1,6 +1,6 @@
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/grid_indexes.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 namespace {
 template <class T>
 int check(const T &t) {
@@ -31,7 +31,7 @@ int check_type() {
 }
 
 int main(int argc, char *argv[]) {
-  IMP::base::setup_from_argv(argc, argv, "Test D-dim constructors");
+  IMP::setup_from_argv(argc, argv, "Test D-dim constructors");
   int tot = 0;
   tot += check_type<IMP::algebra::VectorD, double>();
   tot += check_type<IMP::algebra::ExtendedGridIndexD, int>();

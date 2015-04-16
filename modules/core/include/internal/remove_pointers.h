@@ -14,13 +14,13 @@
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
 #include <IMP/ScoreState.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 #define IMP_MANAGER(UCName, lcname)              \
   class Manage##UCName : boost::noncopyable {    \
-    typedef IMP::base::PointerMember<UCName> P;  \
+    typedef IMP::PointerMember<UCName> P;  \
     P r_;                                        \
                                                  \
    public:                                       \

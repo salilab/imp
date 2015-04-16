@@ -14,12 +14,12 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/multifit/multifit_config.h>
 #include "FittingSolutionRecord.h"
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Probabilistic anchor graph.
-class IMPMULTIFITEXPORT ProbabilisticAnchorGraph : public IMP::base::Object {
+class IMPMULTIFITEXPORT ProbabilisticAnchorGraph : public IMP::Object {
   // Property types
   typedef boost::property<boost::edge_weight_t, float> EdgeWeightProperty;
   typedef boost::property<boost::vertex_index_t, int> VertexIndexProperty;

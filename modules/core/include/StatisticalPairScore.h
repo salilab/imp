@@ -18,7 +18,7 @@
 #include <IMP/PairScore.h>
 #include <IMP/algebra/Vector3D.h>
 #include "XYZ.h"
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 #include <limits>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -67,7 +67,7 @@ class StatisticalPairScore
       \param[in] threshold The maximum distance to score
       \param[in] data_file Where to load the file from.
   */
-  StatisticalPairScore(IntKey k, double threshold, base::TextInput data_file)
+  StatisticalPairScore(IntKey k, double threshold, TextInput data_file)
       : P(S(k, threshold, data_file)) {}
   /** \param[in] k The attribute to use for determining the particle types
       \param[in] threshold The maximum distance to score
@@ -76,7 +76,7 @@ class StatisticalPairScore
       eg, if the score is on protein and ligand atoms, the ligand atom types
       start with the value shift.
   */
-  StatisticalPairScore(IntKey k, double threshold, base::TextInput data_file,
+  StatisticalPairScore(IntKey k, double threshold, TextInput data_file,
                        unsigned int shift)
       : P(S(k, threshold, data_file, shift)) {}
 };

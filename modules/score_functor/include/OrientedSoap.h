@@ -73,7 +73,7 @@ class OrientedSoap : public Score {
   }
   template <unsigned int D>
   double get_score(Model *m,
-                   const base::Array<D, ParticleIndex> &pis,
+                   const Array<D, ParticleIndex> &pis,
                    double distance) const {
     double score = 0;
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
@@ -101,14 +101,14 @@ class OrientedSoap : public Score {
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(
-      Model *m, const base::Array<D, ParticleIndex> &pis,
+      Model *m, const Array<D, ParticleIndex> &pis,
       double distance) const {
     // No derivatives are available
     return DerivativePair(get_score(m, pis, distance), 0.);
   }
   template <unsigned int D>
   double get_maximum_range(
-      Model *, const base::Array<D, ParticleIndex> &) const {
+      Model *, const Array<D, ParticleIndex> &) const {
     return maxrange_;
   }
 
@@ -116,7 +116,7 @@ class OrientedSoap : public Score {
 
   template <unsigned int D>
   bool get_is_trivially_zero(Model *,
-                             const base::Array<D, ParticleIndex> &,
+                             const Array<D, ParticleIndex> &,
                              double squared_distance) const {
     return squared_distance > algebra::get_squared(maxrange_);
   }

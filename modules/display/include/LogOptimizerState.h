@@ -13,7 +13,7 @@
 #include "Writer.h"
 #include <IMP/OptimizerState.h>
 #include <IMP/display/geometry.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/internal/utility.h>
 #include <vector>
 
@@ -22,7 +22,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /** Write to a Writer periodically.
  */
 class IMPDISPLAYEXPORT WriteOptimizerState : public OptimizerState {
-  IMP::base::PointerMember<Writer> writer_;
+  IMP::PointerMember<Writer> writer_;
 
  public:
   WriteOptimizerState(Model *m, WriterAdaptor w);

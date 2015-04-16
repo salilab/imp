@@ -89,7 +89,7 @@ IMPCOREEXPORT void graph_initialize_edge(Particle *a,
 template <class F>
 inline F graph_traverse(Particle *start, F f, const GraphData &d) {
   std::set<Particle *> visited;
-  base::Vector<Particle *> queue;
+  Vector<Particle *> queue;
   queue.push_back(start);
   visited.insert(start);
   do {

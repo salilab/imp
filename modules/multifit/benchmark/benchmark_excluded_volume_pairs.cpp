@@ -21,7 +21,7 @@ void do_it() {
   {
     IMP_NEW(ClosePairContainer, cpc, (lsc, 0, 5));
     IMP_NEW(SoftSpherePairScore, ps, (1));
-    base::Pointer<Restraint> sr(
+    Pointer<Restraint> sr(
         container::create_restraint(ps.get(), cpc.get()));
     sr->set_maximum_score(.1);
     test_one<ClosePairContainer>("pairs restraint", seed, m,
@@ -33,7 +33,7 @@ void do_it() {
 }
 
 int main(int argc, char *argv[]) {
-  IMP::base::setup_from_argv(argc, argv,
+  IMP::setup_from_argv(argc, argv,
                              "Benchmark methods for excluded volume");
   IMP_CATCH_AND_TERMINATE(do_it(););
   return IMP::benchmark::get_return_value();

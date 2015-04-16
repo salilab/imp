@@ -46,7 +46,7 @@ Vector2Ds get_uniform_surface_cover(const Sphere2D &s,
                                                  unsigned int n);
 Vector3Ds get_uniform_surface_cover(const Sphere3D &s,
                                                  unsigned int n);
-base::Vector<Vector4D > get_uniform_surface_cover(const Sphere4D &s,
+Vector<Vector4D > get_uniform_surface_cover(const Sphere4D &s,
                                                  unsigned int n);
 BoundingBox2D get_bounding_box(const Sphere2D &s);
 BoundingBox3D get_bounding_box(const Sphere3D &s);

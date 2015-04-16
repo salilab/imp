@@ -29,7 +29,7 @@ class GaussianProcessInterpolationScoreState;
  * mean and covariance functions. It outputs the value of the posterior mean and
  * covariance functions at points requested by the user.
  */
-class IMPISDEXPORT GaussianProcessInterpolation : public base::Object {
+class IMPISDEXPORT GaussianProcessInterpolation : public Object {
  public:
   /** Constructor for the gaussian process
    * \param [in] x : a list of coordinates in N-dimensional space
@@ -231,16 +231,16 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object {
   FloatsList x_;    // abscissa
   unsigned n_obs_;  // number of observations
   // pointer to the prior mean function
-  IMP::base::PointerMember<UnivariateFunction> mean_function_;
+  IMP::PointerMember<UnivariateFunction> mean_function_;
   // pointer to the prior covariance function
-  IMP::base::PointerMember<BivariateFunction> covariance_function_;
+  IMP::PointerMember<BivariateFunction> covariance_function_;
   IMP_Eigen::VectorXd I_, m_;
   IMP_Eigen::MatrixXd W_, Omega_, Omi_;  // Omi = Omega^{-1}
   IMP_Eigen::DiagonalMatrix<double, IMP_Eigen::Dynamic> S_;
   IMP_Eigen::VectorXd OmiIm_;  // Omi * (I - m)
   bool flag_m_, flag_m_gpir_, flag_Omi_, flag_OmiIm_, flag_W_, flag_Omega_,
       flag_Omega_gpir_, flag_ldlt_;
-  IMP::base::Pointer<IMP::Particle> sigma_;
+  IMP::Pointer<IMP::Particle> sigma_;
   double cutoff_;
   double sigma_val_;  // to know if an update is needed
   IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> ldlt_;

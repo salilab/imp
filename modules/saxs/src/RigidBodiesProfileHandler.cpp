@@ -13,7 +13,7 @@ IMPSAXS_BEGIN_NAMESPACE
 
 RigidBodiesProfileHandler::RigidBodiesProfileHandler(
     const Particles& particles, FormFactorType ff_type)
-    : base::Object("RigidBodiesProfileHandler%1%") {
+    : Object("RigidBodiesProfileHandler%1%") {
   boost::unordered_map<ParticleIndex, Particles> rigid_bodies;
   for (unsigned int i = 0; i < particles.size(); ++i) {
     if (core::RigidMember::get_is_setup(particles[i])) {

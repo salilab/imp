@@ -1,7 +1,7 @@
 /* Why would we copyright a test?
  */
 #include <boost/unordered_map.hpp>
-#include <IMP/base/Vector.h>
+#include <IMP/Vector.h>
 IMP_COMPILER_DISABLE_WARNINGS
 IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
 #include <CGAL/Origin.h>
@@ -29,7 +29,7 @@ int main(int, char * []) {
   typedef IKernel::Point_3 Bare_point;
   typedef CGAL::Weighted_point<Bare_point, IKernel::RT> Weighted_point;
   unsigned int size = sizeof(pts) / (3 * sizeof(double));
-  IMP::base::Vector<Weighted_point> l;
+  IMP::Vector<Weighted_point> l;
   for (unsigned int i = 0; i < size; ++i) {
     l.push_back(
         Weighted_point(Bare_point(pts[i][0], pts[i][1], pts[i][2]), .9 * .9));

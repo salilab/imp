@@ -10,7 +10,7 @@
 #include <IMP/multi_state/stat_helpers.h>
 #include <IMP/multi_state/SAXSMultiStateModelScore.h>
 
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 
 #include <algorithm>
 #include <boost/tuple/tuple.hpp>

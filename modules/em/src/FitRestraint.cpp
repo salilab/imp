@@ -12,7 +12,7 @@
 #include <IMP/core/HarmonicUpperBound.h>
 #include <IMP/atom/pdb.h>
 #include "IMP/container_macros.h"
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -115,7 +115,7 @@ void FitRestraint::initialize_model_density_map(FloatKey weight_key) {
     algebra::Transformation3D rb_t =
         algebra::get_transformation_from_first_to_second(
             rbs_orig_rf_[rb_i], rbs_[rb_i].get_reference_frame());
-    base::Pointer<DensityMap> transformed =
+    Pointer<DensityMap> transformed =
         get_transformed(rb_model_dens_map_[rb_i], rb_t);
     model_dens_map_->add(transformed);
     transformed->set_was_used(true);
@@ -141,7 +141,7 @@ void FitRestraint::resample() const {
     algebra::Transformation3D rb_t =
         algebra::get_transformation_from_first_to_second(
             rbs_orig_rf_[rb_i], rbs_[rb_i].get_reference_frame());
-    base::Pointer<DensityMap> transformed =
+    Pointer<DensityMap> transformed =
         get_transformed(rb_model_dens_map_[rb_i], rb_t);
     IMP_LOG_VERBOSE("transformed map size:"
                     << get_bounding_box(transformed, -1000.) << std::endl);

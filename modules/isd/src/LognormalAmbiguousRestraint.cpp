@@ -59,7 +59,7 @@ void LognormalAmbiguousRestraint::draw_k_from_posterior(double kt)
   }
 
   boost::uniform_real<> rand(0.0,1.0);
-  double a =rand(IMP::base::random_number_generator);
+  double a =rand(IMP::random_number_generator);
 
   sumi=0.0;
   for(unsigned k=0; k<get_number_of_contributions();++k){

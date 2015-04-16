@@ -38,8 +38,8 @@ void load_merged_assignments_random_order(const Subset &first_subset,
                                           AssignmentContainer *ret) {
   IMP_FUNCTION_LOG;
   SubsetFilterTables ts(filters.begin(), filters.end());
-  base::Pointer<AssignmentContainer> retp(ret);
-  IMP::base::PointerMember<AssignmentContainer> firstp(first), secondp(second);
+  Pointer<AssignmentContainer> retp(ret);
+  IMP::PointerMember<AssignmentContainer> firstp(first), secondp(second);
   internal::EdgeData ed =
       internal::get_edge_data(first_subset, second_subset, filters);
   Ints ii0 = internal::get_index(first_subset, ed.intersection_subset);
@@ -57,8 +57,8 @@ void load_merged_assignments_random_order(const Subset &first_subset,
   IMP_PROGRESS_DISPLAY("Merge " << first_subset << " and " << second_subset,
                        maximum_tries);
   for (unsigned int t = 0; t < maximum_tries; ++t) {
-    unsigned int i = dist0(IMP::base::random_number_generator);
-    unsigned int j = dist1(IMP::base::random_number_generator);
+    unsigned int i = dist0(IMP::random_number_generator);
+    unsigned int j = dist1(IMP::random_number_generator);
     Assignment nd0ae = internal::get_sub_assignment(nd0a[i], ii0);
     Assignment nd1ae = internal::get_sub_assignment(nd1a[j], ii1);
     if (nd1ae == nd0ae) {
@@ -74,7 +74,7 @@ void load_merged_assignments_random_order(const Subset &first_subset,
       }
       if (ok) ret->add_assignment(ss);
     }
-    IMP::base::add_to_progress_display();
+    IMP::add_to_progress_display();
   }
 }
 IMPDOMINO_END_NAMESPACE

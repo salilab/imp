@@ -1,7 +1,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/Model.h>
 #include <IMP/core/MonteCarloMover.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 #include <IMP/core/RigidBodyMover.h>
 #include <IMP/core/RigidClosePairsFinder.h>
 #include <IMP/algebra/vector_generators.h>
@@ -146,7 +146,7 @@ void check_close_pairs(IMP::Model *m,
 
 int main(int argc, char *argv[]) {
   try {
-    IMP::base::setup_from_argv(
+    IMP::setup_from_argv(
         argc, argv,
         "Test non rigid first test in a way that works with valgrind.");
     IMP_NEW(IMP::Model, m, ());
@@ -173,7 +173,7 @@ int main(int argc, char *argv[]) {
       move(movers);
     }
   }
-  catch (IMP::base::Exception e) {
+  catch (IMP::Exception e) {
     std::cerr << "Failed with exception " << e.what() << std::endl;
     return 1;
   }

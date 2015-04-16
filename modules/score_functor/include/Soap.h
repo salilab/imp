@@ -34,7 +34,7 @@ class Soap : public Statistical<DopeType, false, false> {
  public:
   Soap(double threshold = std::numeric_limits<double>::max())
       : P(get_soap_type_key(), threshold, get_data_path("soap_score.lib")) {}
-  Soap(double threshold, base::TextInput data_file)
+  Soap(double threshold, TextInput data_file)
       : P(get_soap_type_key(), threshold, data_file) {}
   static IntKey get_soap_type_key() {
     static const IntKey ik("dope atom type");

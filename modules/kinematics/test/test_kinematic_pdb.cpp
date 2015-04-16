@@ -23,10 +23,10 @@ using namespace IMP::kinematics;
 IMP::core::RigidBody create_rigid_particle(IMP::Model* m, double x,
                                            double y, double z);
 
-IMP::base::Pointer<IMP::Model> build_model_no_pdb(
+IMP::Pointer<IMP::Model> build_model_no_pdb(
     IMP::core::RigidBodies& rbs);
 
-IMP::base::Pointer<IMP::Model> build_model_pdb(
+IMP::Pointer<IMP::Model> build_model_pdb(
     std::string pdb_fname, IMP::core::RigidBodies& rbs,
     IMP::atom::Hierarchy& mhd);
 
@@ -60,7 +60,7 @@ IMP::core::RigidBody create_rigid_particle(IMP::Model* m, double x,
   return IMP::core::RigidBody::setup_particle(p, RF);
 }
 
-IMP::base::Pointer<IMP::Model> build_model_no_pdb(
+IMP::Pointer<IMP::Model> build_model_no_pdb(
     IMP::core::RigidBodies& rbs) {
   IMP_NEW(IMP::Model, m, ());
   IMP_NEW(IMP::Particle, p0, (m));
@@ -75,7 +75,7 @@ IMP::base::Pointer<IMP::Model> build_model_no_pdb(
   return m;
 }
 
-IMP::base::Pointer<IMP::Model> build_model_pdb(
+IMP::Pointer<IMP::Model> build_model_pdb(
     std::string pdb_fname, IMP::core::RigidBodies& rbs,
     IMP::atom::Hierarchy& mhd) {
   // read pdb
@@ -113,7 +113,7 @@ void test_pdb_model(IMP::Model* model, IMP::core::RigidBodies& rbs,
   IMP_ALWAYS_CHECK(rbs.size() >= 5,
                    "Must have at least 5 rigid bodies but only got "
                        << rbs.size(),
-                   ValueException);
+                   IMP::ValueException);
   std::cout << "initial coords residues";
   for (unsigned int i = 0; i < rbs.size(); i++) {
     std::cout << rbs[i].get_coordinates() << ", ";
@@ -184,7 +184,7 @@ void test_model_with_rbs(IMP::Model* model, IMP::core::RigidBodies& rbs,
   IMP_ALWAYS_CHECK(rbs.size() >= 4,
                    "Must have at least 4 rigid bodies but only got "
                        << rbs.size(),
-                   ValueException)
+                   IMP::ValueException)
 
   std::cout << "initial coords " << rbs[0].get_coordinates() << ", "
             << rbs[1].get_coordinates() << std::endl;
@@ -369,7 +369,7 @@ void test_dihedral(IMP::Model* model, IMP::core::RigidBodies& rbs) {
   IMP_ALWAYS_CHECK(rbs.size() >= 5,
                    "Must have at least 5 rigid bodies but only got "
                        << rbs.size(),
-                   ValueException)
+                   IMP::ValueException)
 
   // joints
   IMP_NEW(IMP::kinematics::PrismaticJoint, pj0, (rbs[0], rbs[1]));
@@ -420,13 +420,13 @@ int main(int argc, char** argv) {
   std::cout << fname << std::endl;
 
   IMP::core::RigidBodies rbs1;
-  IMP::base::Pointer<IMP::Model> m1 = build_model_no_pdb(rbs1);
+  IMP::Pointer<IMP::Model> m1 = build_model_no_pdb(rbs1);
   // test_model_with_rbs(m1, rbs1);
   test_dihedral(m1, rbs1);
 
   IMP::core::RigidBodies rbs2;
   IMP::atom::Hierarchy mhd2;
-  IMP::base::Pointer<IMP::Model> m2 =
+  IMP::Pointer<IMP::Model> m2 =
       build_model_pdb(fname, rbs2, mhd2);
   test_pdb_model(m2, rbs2, true, mhd2);
   // test_model_with_rbs(m2, rbs2, true, mhd);

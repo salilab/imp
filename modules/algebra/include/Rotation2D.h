@@ -13,7 +13,7 @@
 #include "Vector2D.h"
 #include "GeometricPrimitiveD.h"
 #include "constants.h"
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <boost/random/uniform_01.hpp>
 #include <cmath>
 //#include <stdlib.h>
@@ -45,21 +45,21 @@ class Rotation2D : public GeometricPrimitiveD<2> {
   * \param[in] o a 2D vector to be rotated
   */
   Vector2D get_rotated(const Vector2D &o) const {
-    IMP_INTERNAL_CHECK(!base::isnan(angle_),
+    IMP_INTERNAL_CHECK(!IMP::isnan(angle_),
                        "Attempting to use uninitialized rotation");
     return get_rotated(o[0], o[1]);
   }
 
   //! rotates a 2D point
   Vector2D get_rotated(const double x, const double y) const {
-    IMP_INTERNAL_CHECK(!base::isnan(angle_),
+    IMP_INTERNAL_CHECK(!IMP::isnan(angle_),
                        "Attempting to use uninitialized rotation");
     return Vector2D(c_ * x - s_ * y, s_ * x + c_ * y);
   }
 
   //! Returns the matrix for the inverse rotation
   Rotation2D get_inverse() const {
-    IMP_INTERNAL_CHECK(!base::isnan(angle_),
+    IMP_INTERNAL_CHECK(!IMP::isnan(angle_),
                        "Attempting to use uninitialized rotation");
     return Rotation2D(-angle_);
   }
@@ -92,7 +92,7 @@ inline Rotation2D get_identity_rotation_2d() { return Rotation2D(0.0); }
 //! Builds an identity rotation in 2D
 inline Rotation2D get_random_rotation_2d() {
   return Rotation2D(2 * PI *
-                    boost::uniform_01<>()(base::random_number_generator));
+                    boost::uniform_01<>()(random_number_generator));
 }
 
 //! Builds the rotation that transforms the vector X of the origin

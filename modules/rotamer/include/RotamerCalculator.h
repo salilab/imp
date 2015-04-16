@@ -92,7 +92,7 @@ class IMPROTAMEREXPORT ResidueRotamer {
 IMP_VALUES(ResidueRotamer, ResidueRotamers);
 
 //! A class performing the rotations of atoms in the residues
-class IMPROTAMEREXPORT RotamerCalculator : public IMP::base::Object {
+class IMPROTAMEREXPORT RotamerCalculator : public IMP::Object {
  public:
   //! constructor
   /** \param[in] rl an instance of RotamerLibrary
@@ -132,7 +132,7 @@ class IMPROTAMEREXPORT RotamerCalculator : public IMP::base::Object {
     std::vector<char> rot_atoms;
   };
 
-  IMP::base::PointerMember<const RotamerLibrary> rl_;
+  IMP::PointerMember<const RotamerLibrary> rl_;
   std::vector<ResidueData> residues_;
 };
 

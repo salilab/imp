@@ -24,7 +24,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 */
 class IMPSTATISTICSEXPORT PartitionalClusteringWithCenter
     : public PartitionalClustering {
-  IMP::base::Vector<Ints> clusters_;
+  IMP::Vector<Ints> clusters_;
   Ints reps_;
   algebra::VectorKDs centers_;
 
@@ -32,8 +32,8 @@ class IMPSTATISTICSEXPORT PartitionalClusteringWithCenter
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   template <int D>
   PartitionalClusteringWithCenter(
-      const IMP::base::Vector<Ints> &clusters,
-      const IMP::base::Vector<algebra::VectorD<D> > &centers, const Ints &reps)
+      const IMP::Vector<Ints> &clusters,
+      const IMP::Vector<algebra::VectorD<D> > &centers, const Ints &reps)
       : PartitionalClustering("k-means"),
         clusters_(clusters),
         reps_(reps),

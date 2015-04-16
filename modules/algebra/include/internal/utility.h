@@ -15,7 +15,7 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 template <int D>
 inline TNT::Array2D<double> get_covariance_matrix(
-    const base::Vector<VectorD<D> >& vs, const VectorD<D>& mean) {
+    const Vector<VectorD<D> >& vs, const VectorD<D>& mean) {
   unsigned int dim = mean.get_dimension();
   internal::TNT::Array2D<double> cov(dim, dim);
   for (unsigned int i = 0; i < dim; ++i) {

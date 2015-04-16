@@ -47,12 +47,12 @@ class IMPCOREEXPORT MCCGSampler : public Sampler {
     Bounds bounds_;
     unsigned int attempts_;
     FloatKeys opt_keys_;
-    IMP::base::PointerMember<Optimizer> local_opt_;
+    IMP::PointerMember<Optimizer> local_opt_;
     Parameters();
   };
   Parameters default_parameters_;
   bool is_refining_;
-  base::Pointer<ConfigurationSet> rejected_;
+  Pointer<ConfigurationSet> rejected_;
 
   typedef IMP::internal::StaticListContainer<SingletonContainer>
       Container;

@@ -13,7 +13,7 @@
 #include "internal/CoreClosePairContainer.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/ScoreState.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <boost/unordered_map.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -27,7 +27,7 @@ IMPCORE_BEGIN_NAMESPACE
     neighbors will be returned.
 */
 class IMPCOREEXPORT NeighborsTable : public ScoreState {
-  base::PointerMember<PairContainer> input_;
+  PointerMember<PairContainer> input_;
   std::size_t input_version_;
   boost::unordered_map<ParticleIndex, ParticleIndexes> data_;
 

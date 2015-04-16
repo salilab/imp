@@ -13,17 +13,17 @@
 #include <IMP/core/BallMover.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/utility.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/dependency_graph.h>
 #include <IMP/algebra/vector_generators.h>
 #include <boost/random/uniform_real.hpp>
 #include <boost/graph/depth_first_search.hpp>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <boost/graph/reverse_graph.hpp>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <IMP/base/vector_property_map.h>
+#include <IMP/vector_property_map.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -44,7 +44,7 @@ class CollectVisitor : public boost::default_dfs_visitor {
   template <class G>
   void discover_vertex(typename boost::graph_traits<G>::vertex_descriptor u,
                        const G &) {
-    base::Object *o = vm_[u];
+    Object *o = vm_[u];
     Particle *p = dynamic_cast<Particle *>(o);
     if (p) {
       // std::cout << "Checking particle " << p->get_name() << std::endl;
@@ -73,7 +73,7 @@ class ScoreWeightedIncrementalBallMover : public MonteCarloMover {
   Float radius_;
   ParticlesTemp moved_;
   algebra::Vector3Ds old_coords_;
-  base::Vector<std::pair<Restraint *, Ints> > deps_;
+  Vector<std::pair<Restraint *, Ints> > deps_;
 };
 
 ScoreWeightedIncrementalBallMover::ScoreWeightedIncrementalBallMover(
@@ -156,7 +156,7 @@ MonteCarloMoverResult ScoreWeightedIncrementalBallMover::do_propose() {
   while (true) {
     ::boost::uniform_real<> rand(0, 1);
     for (unsigned int i = 0; i < weights.size(); ++i) {
-      if (rand(base::random_number_generator) < weights[i]) {
+      if (rand(random_number_generator) < weights[i]) {
         moved_.push_back(ps_[i]);
         XYZ d(ps_[i]);
         old_coords_.push_back(d.get_coordinates());
@@ -334,11 +334,11 @@ ConfigurationSet *MCCGSampler::get_rejected_configurations() const {
 
 ConfigurationSet *MCCGSampler::do_sample() const {
   IMP_OBJECT_LOG;
-  base::LogLevel mll(
-      static_cast<base::LogLevel>(std::max(0, IMP::base::get_log_level() - 1)));
+  LogLevel mll(
+      static_cast<LogLevel>(std::max(0, IMP::get_log_level() - 1)));
   set_was_used(true);
   // get_model()->set_is_incremental(true);
-  base::Pointer<ConfigurationSet> ret = new ConfigurationSet(get_model());
+  Pointer<ConfigurationSet> ret = new ConfigurationSet(get_model());
   Parameters pms = fill_in_parameters();
   IMP_NEW(MonteCarloWithLocalOptimization, mc, (pms.local_opt_, pms.cg_steps_));
   mc->set_scoring_function(get_scoring_function());
@@ -348,8 +348,8 @@ ConfigurationSet *MCCGSampler::do_sample() const {
       OptimizerStatesTemp(optimizer_states_begin(), optimizer_states_end()));
   pms.local_opt_->set_log_level(mll);
   mc->set_return_best(true);
-  base::Pointer<Container> sc = set_up_movers(pms, mc);
-  IMP_IF_CHECK(base::USAGE) {
+  Pointer<Container> sc = set_up_movers(pms, mc);
+  IMP_IF_CHECK(USAGE) {
     if (sc->get_indexes().size() == 0) {
       IMP_WARN("There are no particles with optimized Cartesian coordinates."
                << std::endl);
@@ -359,7 +359,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   IMP_CHECK_OBJECT(sc);
   int failures = 0;
   boost::scoped_ptr<boost::progress_display> progress;
-  if (IMP::base::get_log_level() == base::PROGRESS) {
+  if (IMP::get_log_level() == PROGRESS) {
     progress.reset(new boost::progress_display(pms.attempts_));
   }
   for (unsigned int i = 0; i < pms.attempts_; ++i) {
@@ -371,7 +371,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
     try {
       mc->optimize(pms.mc_steps_);
     }
-    catch (base::ModelException) {
+    catch (ModelException) {
       IMP_LOG_TERSE("Optimization ended by exception" << std::endl);
       ++failures;
       continue;
@@ -380,7 +380,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
       IMP_LOG_TERSE("Found configuration with score "
                     << get_model()->evaluate(false) << std::endl);
       ret->save_configuration();
-      IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
         double oe = get_model()->evaluate(false);
         ret->load_configuration(-1);
         ret->load_configuration(ret->get_number_of_configurations() - 1);

@@ -90,7 +90,8 @@ void read_profiles(const std::string profile_filenames_file,
   // open input file with profile file names
   std::ifstream in_file(profile_filenames_file.c_str());
   if(!in_file) {
-    IMP_THROW("Can't find input file " << profile_filenames_file, IOException);
+    IMP_THROW("Can't find input file " << profile_filenames_file,
+              IMP::IOException);
   }
   std::string curr_file_name;
   unsigned int profile_counter=0;
@@ -112,7 +113,7 @@ void read_profiles(const std::string profile_filenames_file,
     Profile *profile = new Profile();
     profile->read_partial_profiles(curr_file_name);
     if(profile->size() == 0) {
-      IMP_THROW("Can't parse input file " << curr_file_name, IOException);
+      IMP_THROW("Can't parse input file " << curr_file_name, IMP::IOException);
     }
 
     //profile->copy_errors(*exp_profile);
@@ -162,7 +163,7 @@ void read_files(const std::vector<std::string>& files,
         }
       }
     }
-    catch (IMP::base::ValueException e) {  // not a pdb file
+    catch (IMP::ValueException e) {  // not a pdb file
       // 2. try as a dat profile file
       IMP_NEW(Profile, profile, (files[i]));
       if (profile->size() > 0) {

@@ -14,7 +14,7 @@
 #include "Hierarchy.h"
 #include "Residue.h"
 #include <IMP/algebra/algebra_config.h>
-#include <IMP/base/InputAdaptor.h>
+#include <IMP/InputAdaptor.h>
 #include <IMP/core/Typed.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/display/declare_Geometry.h>
@@ -63,7 +63,7 @@ class IMPATOMEXPORT Selection :
 #ifdef SWIG
     public ParticleIndexesAdaptor
 #else
-    public base::InputAdaptor
+    public InputAdaptor
 #endif
     {
  public:
@@ -76,7 +76,7 @@ class IMPATOMEXPORT Selection :
  private:
   Model *m_;
   double resolution_;
-  base::Pointer<internal::ListSelectionPredicate> predicate_, and_predicate_;
+  Pointer<internal::ListSelectionPredicate> predicate_, and_predicate_;
 
   ParticleIndexes h_;
   IMP_NAMED_TUPLE_2(SearchResult, SearchResults, bool, match,
@@ -323,7 +323,7 @@ IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 */
 class IMPATOMEXPORT SelectionGeometry : public display::Geometry {
   atom::Selection res_;
-  mutable boost::unordered_map<Particle *, base::Pointer<Geometry> >
+  mutable boost::unordered_map<Particle *, Pointer<Geometry> >
       components_;
 
  public:

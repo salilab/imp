@@ -16,7 +16,7 @@
 #include "IMP/em2d/scores2D.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/atom/Atom.h"
-#include "IMP/base/Pointer.h"
+#include "IMP/Pointer.h"
 #include "IMP/macros.h"
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -70,10 +70,10 @@ class IMPEM2DEXPORT Fine2DRegistrationRestraint : public Restraint {
   unsigned int get_calls() const { return calls_; }
 
  private:
-  base::Pointer<Image> subject_;
-  mutable base::Pointer<Image> projection_;
+  Pointer<Image> subject_;
+  mutable Pointer<Image> projection_;
   // Subject particle (it is going to be the parameters for the subject)
-  mutable base::Pointer<Particle> subj_params_particle_;
+  mutable Pointer<Particle> subj_params_particle_;
   // Decorator for the subject particle
   ProjectionParameters PP_;
   // Access point for the particles
@@ -81,7 +81,7 @@ class IMPEM2DEXPORT Fine2DRegistrationRestraint : public Restraint {
   // Projection masks for the particles
   MasksManagerPtr masks_;
   double resolution_, pixelsize_;
-  base::Pointer<ScoreFunction> score_function_;
+  Pointer<ScoreFunction> score_function_;
   ProjectingParameters params_;
 
   mutable unsigned int calls_;

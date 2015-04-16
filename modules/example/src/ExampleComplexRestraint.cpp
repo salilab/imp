@@ -36,7 +36,7 @@ ExampleComplexRestraint::ExampleComplexRestraint(UnaryFunction *f,
   p_ = get_model()->add_particle(get_name() + " particle");
   core::XYZR d = core::XYZR::setup_particle(get_model(), p_);
   d.set_coordinates_are_optimized(false);
-  base::Pointer<core::CoverRefined> cr =
+  Pointer<core::CoverRefined> cr =
       new core::CoverRefined(new core::FixedRefiner(IMP::get_particles(
                                  get_model(), sc_->get_indexes())),
                              0);

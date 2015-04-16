@@ -12,10 +12,9 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 
 using namespace IMP;
-using namespace IMP::base;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::container;
@@ -39,7 +38,7 @@ void benchmark_it(std::string name, std::string algorithm,
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark connectivity");
+  IMP::setup_from_argv(argc, argv, "Benchmark connectivity");
   unsigned int npart = 1000;
   set_log_level(SILENT);
   // set_check_level(NONE);
@@ -66,7 +65,7 @@ int main(int argc, char **argv) {
   }
   {
     IMP_NEW(ConnectingPairContainer, cpc, (lsc, .1));
-    base::Pointer<Restraint> pr(
+    Pointer<Restraint> pr(
         container::create_restraint(ss.get(), cpc.get()));
     m->add_restraint(pr);
     benchmark_it("connectivity", "fast", lsc, m);

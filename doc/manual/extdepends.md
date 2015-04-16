@@ -2,8 +2,8 @@ Adding external dependencies {#extdepends}
 ============================
 
 You can have an %IMP module depend on some external library.
-See the files `modules/base/dependencies.py` and
-`modules/base/dependency/Log4CXX.description` for examples.
+See the files `modules/kernel/dependencies.py` and
+`modules/kernel/dependency/Log4CXX.description` for examples.
 
 Think very carefully before introducing a new external dependency. Each
 additional dependency makes it harder for people to use your code.

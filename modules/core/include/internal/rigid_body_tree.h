@@ -16,17 +16,17 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-class IMPCOREEXPORT RigidBodyHierarchy : public IMP::base::Object {
+class IMPCOREEXPORT RigidBodyHierarchy : public IMP::Object {
   RigidBody rb_;
   struct Data {
     Ints children_;
     algebra::Sphere3D s_;
   };
-  base::Vector<Data> tree_;
+  Vector<Data> tree_;
   ParticleIndexes constituents_;
 
-  typedef base::Vector<unsigned int> SphereIndexes;
-  typedef base::Vector<SphereIndexes> SpheresSplit;
+  typedef Vector<unsigned int> SphereIndexes;
+  typedef Vector<SphereIndexes> SpheresSplit;
   SpheresSplit divide_spheres(const algebra::Sphere3Ds &ss,
                               const SphereIndexes &s);
   void set_sphere(unsigned int ni, const algebra::Sphere3D &s);
@@ -36,7 +36,7 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::base::Object {
                                             algebra::Sphere3Ds bounds) const;
   typedef std::pair<unsigned int, SphereIndexes> Node;
   void build_tree(Model *m, const Node &n,
-                  const algebra::Sphere3Ds &spheres, base::Vector<Node> &stack);
+                  const algebra::Sphere3Ds &spheres, Vector<Node> &stack);
 
  public:
   algebra::Sphere3D get_sphere(unsigned int i) const {
@@ -164,13 +164,13 @@ template <class Sink>
 inline void fill_close_pairs(Model *m, const RigidBodyHierarchy *da,
                              const RigidBodyHierarchy *db, double dist,
                              Sink sink) {
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     da->validate(m);
     db->validate(m);
   }
   typedef std::pair<int, int> IP;
   typedef std::pair<double, IP> QP;
-  std::priority_queue<QP, base::Vector<QP>, LessFirst> queue;
+  std::priority_queue<QP, Vector<QP>, LessFirst> queue;
   double d = distance_bound(m, da, 0, db, 0);
   if (d < dist) {
     queue.push(QP(d, IP(0, 0)));
@@ -230,7 +230,7 @@ inline void fill_close_pairs(Model *m, const RigidBodyHierarchy *da,
     }
   }
 
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     if (da->get_constituents().size() * db->get_constituents().size() < 1000) {
       for (unsigned int i = 0; i < da->get_constituents().size(); ++i) {
         XYZR ca(m, da->get_constituents()[i]);
@@ -255,7 +255,7 @@ inline void fill_close_particles(Model *m, const RigidBodyHierarchy *da,
                                  ParticleIndex pt, double dist,
                                  Sink sink) {
   typedef std::pair<double, int> QP;
-  std::priority_queue<QP, base::Vector<QP>, LessFirst> queue;
+  std::priority_queue<QP, Vector<QP>, LessFirst> queue;
   double d = distance_bound(m, da, 0, pt);
   if (d > dist) return;
   queue.push(QP(d, 0));
@@ -283,7 +283,7 @@ inline void fill_close_particles(Model *m, const RigidBodyHierarchy *da,
     }
   } while (!queue.empty());
 
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i = 0; i < da->get_constituents().size(); ++i) {
       XYZR c(m, da->get_constituents()[i]);
       if (get_distance(c, XYZR(m, pt)) < .9 * dist) {

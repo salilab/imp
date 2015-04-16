@@ -104,8 +104,8 @@ String atom_element(const String& pdb_line) {
   return element_name;
 }
 
-base::Vector<unsigned short> connected_atoms(const String& pdb_line) {
-  base::Vector<unsigned short> conn_atoms;
+Vector<unsigned short> connected_atoms(const String& pdb_line) {
+  Vector<unsigned short> conn_atoms;
   if (is_CONECT_rec(pdb_line)) {
     // (1-6) - "CONECT"
     // (7-11), (12-16), ...,(57-61) - serial numbers of connected atoms
@@ -124,7 +124,7 @@ base::Vector<unsigned short> connected_atoms(const String& pdb_line) {
   return conn_atoms;
 }
 
-void write_pdb(const ParticlesTemp& ps, base::TextOutput out) {
+void write_pdb(const ParticlesTemp& ps, TextOutput out) {
   IMP_FUNCTION_LOG;
   int last_index = 0;
   bool use_input_index = true;

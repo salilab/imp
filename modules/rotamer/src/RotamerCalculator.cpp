@@ -122,7 +122,7 @@ double get_phi_angle(IMP::atom::Residue rd) {
 }
 
 RotamerCalculator::RotamerCalculator(const RotamerLibrary *rl)
-    : IMP::base::Object("RotamerCalculator%1%"), rl_(rl) {
+    : IMP::Object("RotamerCalculator%1%"), rl_(rl) {
   IMP_USAGE_CHECK(rl != 0, "RotamerLibrary must be non-null");
   for (int i = 0; i < NRes; ++i) {
     const AngleConfiguration &ac = angle_configurations[i];

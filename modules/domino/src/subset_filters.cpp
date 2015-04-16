@@ -9,10 +9,10 @@
 #include <IMP/domino/DominoSampler.h>
 #include <IMP/domino/assignment_tables.h>
 #include <IMP/domino/particle_states.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/log_macros.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/domino/internal/inference_utility.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <limits>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -26,7 +26,7 @@ namespace {
     See MinimumRestraintScoreSubsetFilterTable.
  */
 class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter : public SubsetFilter {
-  base::Pointer<RestraintCache> rc_;
+  Pointer<RestraintCache> rc_;
   RestraintsTemp rs_;
   Slices slices_;
   unsigned int max_;
@@ -130,10 +130,10 @@ double get_default_strength(const IMP::domino::Subset &s,
 
 template <class Filter, class Next>
 class DisjointSetsSubsetFilter : public SubsetFilter {
-  base::Vector<Ints> sets_;
+  Vector<Ints> sets_;
 
  public:
-  DisjointSetsSubsetFilter(const base::Vector<Ints> &sets)
+  DisjointSetsSubsetFilter(const Vector<Ints> &sets)
       : SubsetFilter("DisjointSetsSubsetFilter%1%"), sets_(sets) {
     IMP_LOG_TERSE("Created disjoint set subset filter with ");
     IMP_IF_LOG(TERSE) {
@@ -168,8 +168,8 @@ class DisjointSetsSubsetFilter : public SubsetFilter {
 
 template <class FF, class Next>
 DisjointSetsSubsetFilter<FF, Next> *get_disjoint_set_filter(
-    std::string name, const Subset &s, base::LogLevel ll,
-    const base::Vector<Ints> &all, const Ints &) {
+    std::string name, const Subset &s, LogLevel ll,
+    const Vector<Ints> &all, const Ints &) {
   if (all.empty()) return nullptr;
   typedef DisjointSetsSubsetFilter<FF, Next> CF;
   IMP_NEW(CF, f, (all));
@@ -183,7 +183,7 @@ DisjointSetsSubsetFilter<FF, Next> *get_disjoint_set_filter(
 template <class SF>
 double get_disjoint_set_strength(const IMP::domino::Subset &s,
                                  const IMP::domino::Subsets &excluded,
-                                 const base::Vector<Ints> &all, const Ints &) {
+                                 const Vector<Ints> &all, const Ints &) {
   double r = 1;
   SF str;
   for (unsigned int i = 0; i < all.size(); ++i) {
@@ -208,7 +208,7 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
   if (pst_) {
     boost::unordered_map<ParticleStates *, int> map;
     ParticlesTemp allps = pst_->get_particles();
-    base::Vector<ParticlesTemp> allsets;
+    Vector<ParticlesTemp> allsets;
     for (unsigned int i = 0; i < allps.size(); ++i) {
       ParticleStates *ps = pst_->get_particle_states(allps[i]);
       if (map.find(ps) == map.end()) {
@@ -224,7 +224,7 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
     }
   }
 
-  base::Vector<ParticlesTemp> all(elements_.size());
+  Vector<ParticlesTemp> all(elements_.size());
   for (unsigned int i = 0; i < elements_.size(); ++i) {
     int set = disjoint_sets_.find_set(i);
     all[set].push_back(elements_[i]);
@@ -251,7 +251,7 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
 
 void DisjointSetsSubsetFilterTable::get_indexes(const Subset &s,
                                                 const Subsets &excluded,
-                                                base::Vector<Ints> &ret, int lb,
+                                                Vector<Ints> &ret, int lb,
                                                 Ints &used) const {
   for (unsigned int i = 0; i < get_number_of_sets(); ++i) {
     Ints index = IMP::domino::get_partial_index(get_set(i), s, excluded);
@@ -467,7 +467,7 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(
 
 namespace {
 class ListSubsetFilter : public SubsetFilter {
-  base::Pointer<const ListSubsetFilterTable> keepalive_;
+  Pointer<const ListSubsetFilterTable> keepalive_;
   Ints indexes_;
 
  public:
@@ -594,10 +594,10 @@ struct CP {
 
 class PairListSubsetFilter : public SubsetFilter {
   IntPairs indexes_;
-  base::Vector<IntPairs> allowed_;
+  Vector<IntPairs> allowed_;
 
  public:
-  PairListSubsetFilter(const IntPairs &i, const base::Vector<IntPairs> &a)
+  PairListSubsetFilter(const IntPairs &i, const Vector<IntPairs> &a)
       : SubsetFilter("Pair list score filter"), indexes_(i), allowed_(a) {}
   virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
       IMP_OVERRIDE;
@@ -617,7 +617,7 @@ bool PairListSubsetFilter::get_is_ok(const Assignment &state) const {
 
 void PairListSubsetFilterTable::fill(const Subset &s, const Subsets &e,
                                      IntPairs &indexes,
-                                     base::Vector<IntPairs> &allowed) const {
+                                     Vector<IntPairs> &allowed) const {
   for (unsigned int i = 0; i < s.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
       ParticlePair pp(s[j], s[i]);
@@ -649,7 +649,7 @@ SubsetFilter *PairListSubsetFilterTable::get_subset_filter(
     const Subset &s, const Subsets &e) const {
   set_was_used(true);
   IntPairs indexes;
-  base::Vector<IntPairs> allowed;
+  Vector<IntPairs> allowed;
   fill(s, e, indexes, allowed);
   if (!indexes.empty()) {
     return new PairListSubsetFilter(indexes, allowed);
@@ -661,7 +661,7 @@ SubsetFilter *PairListSubsetFilterTable::get_subset_filter(
 double PairListSubsetFilterTable::get_strength(const Subset &s,
                                                const Subsets &e) const {
   IntPairs indexes;
-  base::Vector<IntPairs> allowed;
+  Vector<IntPairs> allowed;
   fill(s, e, indexes, allowed);
   return 1 - std::pow(.9, static_cast<double>(indexes.size()));
 }
@@ -693,7 +693,7 @@ class ProbabilisticSubsetFilter : public SubsetFilter {
 };
 
 bool ProbabilisticSubsetFilter::get_is_ok(const Assignment &) const {
-  return r_(base::random_number_generator) < p_;
+  return r_(random_number_generator) < p_;
 }
 }
 
@@ -727,7 +727,7 @@ ProbabilisticSubsetFilterTable::ProbabilisticSubsetFilterTable(double p,
 
 namespace {
 class RestraintScoreSubsetFilter : public SubsetFilter {
-  base::PointerMember<RestraintCache> cache_;
+  PointerMember<RestraintCache> cache_;
   RestraintsTemp rs_;
   Slices slices_;
 

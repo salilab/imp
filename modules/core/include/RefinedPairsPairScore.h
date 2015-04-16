@@ -11,7 +11,7 @@
 #include <IMP/core/core_config.h>
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/Refiner.h>
 #include <IMP/pair_macros.h>
 
@@ -22,8 +22,8 @@ IMPCORE_BEGIN_NAMESPACE
     to all resulting pairs.
  */
 class IMPCOREEXPORT RefinedPairsPairScore : public PairScore {
-  IMP::base::PointerMember<Refiner> r_;
-  IMP::base::PointerMember<PairScore> f_;
+  IMP::PointerMember<Refiner> r_;
+  IMP::PointerMember<PairScore> f_;
 
  public:
   /** \param[in] r The Refiner to call on each particle

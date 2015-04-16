@@ -19,7 +19,7 @@ IMPISD_BEGIN_NAMESPACE
 
 class IMPISDEXPORT UniformPrior : public Restraint
 {
-  base::Pointer<Particle> p_;
+  Pointer<Particle> p_;
   Float upperb_;
   Float lowerb_;
   Float k_;

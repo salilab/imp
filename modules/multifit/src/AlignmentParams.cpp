@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <IMP/multifit/AlignmentParams.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/check_macros.h>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 

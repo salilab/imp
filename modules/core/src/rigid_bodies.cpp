@@ -12,7 +12,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/geometric_alignment.h>
-#include <IMP/base/statistics.h>
+#include <IMP/base_statistics.h>
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/internal/rigid_body_tree.h>
 #include <IMP/internal/ContainerConstraint.h>
@@ -457,14 +457,14 @@ void RigidBody::teardown_constraints(Particle *p) {
   IMP_LOG_TERSE("Tearing down rigid body: " << p->get_name() << std::endl);
   if (p->has_attribute(get_rb_score_state_0_key())) {
     IMP_LOG_TERSE("Remove update coordinates" << std::endl);
-    base::Object *o0 = p->get_value(get_rb_score_state_0_key());
+    Object *o0 = p->get_value(get_rb_score_state_0_key());
     p->get_model()->remove_score_state(dynamic_cast<ScoreState *>(o0));
     p->remove_attribute(get_rb_score_state_0_key());
   }
   ModelKey mk = get_rb_list_key();
   if (p->get_model()->get_has_data(mk)) {
     IMP_LOG_TERSE("Remove from normalize list" << std::endl);
-    base::Object *o = p->get_model()->get_data(mk);
+    Object *o = p->get_model()->get_data(mk);
     IMP::internal::StaticListContainer<SingletonContainer> *list =
         dynamic_cast<IMP::internal::StaticListContainer<
             SingletonContainer> *>(o);
@@ -504,7 +504,7 @@ void RigidBody::do_setup_particle(Model *m, ParticleIndex pi,
   ModelKey mk = get_rb_list_key();
   if (d.get_model()->get_has_data(mk)) {
     // IMP_LOG_TERSE( "Adding particle to list of rigid bodies" << std::endl);
-    base::Object *o = d.get_model()->get_data(mk);
+    Object *o = d.get_model()->get_data(mk);
     IMP::internal::StaticListContainer<SingletonContainer> *list =
         dynamic_cast<IMP::internal::StaticListContainer<
             SingletonContainer> *>(o);
@@ -516,7 +516,7 @@ void RigidBody::do_setup_particle(Model *m, ParticleIndex pi,
     list->set(ParticleIndexes(1, p->get_index()));
     IMP_NEW(NormalizeRotation, nr, ());
     IMP_NEW(NullSDM, null, ());
-    base::Pointer<Constraint> c1 = IMP::internal::create_container_constraint(
+    Pointer<Constraint> c1 = IMP::internal::create_container_constraint(
         nr.get(), null.get(), list.get(), "normalize rigid bodies");
     d.get_model()->add_score_state(c1);
     d.get_model()->add_data(mk, list);
@@ -546,7 +546,7 @@ void RigidBody::teardown_particle(RigidBody rb) {
 
 void RigidBody::set_reference_frame_from_members(
     const ParticleIndexes &rms) {
-  base::Timer t("set_up_rigid_body_reference_frame");
+  Timer t("set_up_rigid_body_reference_frame");
   algebra::Vector3Ds local;
   algebra::Vector3Ds global;
   IMP_USAGE_CHECK(rms.size() >= 3,
@@ -632,7 +632,7 @@ void RigidBody::setup_score_states() {
                                       get_particle_index())) {
     IMP_NEW(UpdateRigidBodyMembers, urbm, ());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
-    base::Pointer<Constraint> c0 = IMP::internal::create_tuple_constraint(
+    Pointer<Constraint> c0 = IMP::internal::create_tuple_constraint(
         urbm.get(), arbd.get(), get_particle(),
         get_particle()->get_name() + " rigid body positions");
     get_model()->add_score_state(c0);
@@ -830,7 +830,7 @@ ModelObjectsTemp RigidMembersRefiner::do_get_inputs(
 
 namespace internal {
 RigidMembersRefiner *get_rigid_members_refiner() {
-  static IMP::base::PointerMember<RigidMembersRefiner> pt =
+  static IMP::PointerMember<RigidMembersRefiner> pt =
       new RigidMembersRefiner("The rigid members refiner");
   return pt;
 }
@@ -923,7 +923,7 @@ ParticlesTemp create_rigid_bodies(Model *m, unsigned int n,
   if (!no_members) {
     IMP_NEW(UpdateRigidBodyMembers, urbm, ());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
-    base::Pointer<Constraint> c0 = IMP::internal::create_container_constraint(
+    Pointer<Constraint> c0 = IMP::internal::create_container_constraint(
         urbm.get(), arbd.get(), list.get(), "rigid body positions %1%");
     m->add_score_state(c0);
     for (unsigned int i = 0; i < ret.size(); ++i) {
@@ -955,9 +955,9 @@ ParticleIndex get_rb_child(Model *m, ParticleIndex pi,
 }
 }
 
-void show_rigid_body_hierarchy(RigidBody rb, base::TextOutput out) {
+void show_rigid_body_hierarchy(RigidBody rb, TextOutput out) {
   Model *m = rb.get_model();
-  base::Vector<boost::tuple<std::string, std::string, ParticleIndex> >
+  Vector<boost::tuple<std::string, std::string, ParticleIndex> >
       queue;
   queue.push_back(
       boost::make_tuple(std::string(), std::string(), rb.get_particle_index()));

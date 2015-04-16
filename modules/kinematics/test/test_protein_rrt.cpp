@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
   if (argc == 3) scale = atof(argv[2]);
 
   // read in the input protein
-  IMP::base::Pointer<IMP::Model> model = new IMP::Model();
+  IMP::Pointer<IMP::Model> model = new IMP::Model();
   std::cerr << "Starting reading pdb file " << fname << std::endl;
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       fname, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
 
   IMP::atom::CHARMMParameters* ff =
       new IMP::atom::CHARMMParameters(topology_file_name, parameter_file_name);
-  IMP::base::Pointer<IMP::atom::CHARMMTopology> topology =
+  IMP::Pointer<IMP::atom::CHARMMTopology> topology =
       ff->create_topology(mhd);
   // topology->apply_default_patches();
   topology->setup_hierarchy(mhd);
@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
   IMP_NEW(IMP::container::PairsRestraint, pr, (score, cpc));
 
   // TODO: check why not working: should be much faster
-  // IMP::base::Pointer<IMP::Restraint> pr=
+  // IMP::Pointer<IMP::Restraint> pr=
   //   IMP::container::create_restraint(score, cpc);
   model->add_restraint(pr);
 

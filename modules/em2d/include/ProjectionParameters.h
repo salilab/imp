@@ -118,7 +118,7 @@ class IMPEM2DEXPORT ProjectionParametersScoreState : public ScoreState {
 
  private:
   // Particle to store the projection params
-  base::Pointer<Particle> proj_params_;
+  Pointer<Particle> proj_params_;
 };
 
 IMPEM2D_END_NAMESPACE

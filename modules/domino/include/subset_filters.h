@@ -16,15 +16,15 @@
 #include "Subset.h"
 #include "domino_macros.h"
 #include "subset_scores.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Object.h>
+#include <IMP/Pointer.h>
 #include <boost/unordered_map.hpp>
 #include <IMP/Configuration.h>
 #include <IMP/Model.h>
 #include <IMP/macros.h>
 #include <boost/dynamic_bitset.hpp>
-#include <IMP/base/utility_macros.h>
-#include <IMP/base/vector_property_map.h>
+#include <IMP/utility_macros.h>
+#include <IMP/vector_property_map.h>
 
 #include <boost/pending/disjoint_sets.hpp>
 
@@ -41,7 +41,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     same order as they were in the Subset that was passed to the
     table in order to create the filter.
 */
-class IMPDOMINOEXPORT SubsetFilter : public IMP::base::Object {
+class IMPDOMINOEXPORT SubsetFilter : public IMP::Object {
  public:
   SubsetFilter(std::string name = "SubsetFilter%1%");
   //! Return true if the given state passes this filter for the Subset
@@ -75,7 +75,7 @@ IMP_OBJECTS(SubsetFilter, SubsetFilters);
     to be checked, as ones involve a and b and b and c have already been
     checked previously.
 */
-class IMPDOMINOEXPORT SubsetFilterTable : public IMP::base::Object {
+class IMPDOMINOEXPORT SubsetFilterTable : public IMP::Object {
  public:
   SubsetFilterTable(std::string name = "SubsetFilterTable%1%") : Object(name) {}
   /** Return a SubsetFilter which acts on the Subset s, given that all
@@ -103,7 +103,7 @@ class RestraintScoreSubsetFilterTable;
  */
 class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable
     : public SubsetFilterTable {
-  base::PointerMember<RestraintCache> cache_;
+  PointerMember<RestraintCache> cache_;
   mutable Restraints rs_;
 
  public:
@@ -128,7 +128,7 @@ IMP_OBJECTS(RestraintScoreSubsetFilterTable, RestraintScoreSubsetFilterTables);
  */
 class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilterTable
     : public SubsetFilterTable {
-  base::PointerMember<RestraintCache> rc_;
+  PointerMember<RestraintCache> rc_;
   Restraints rs_;
   int max_violated_;
   RestraintsTemp get_restraints(const Subset &s,
@@ -162,13 +162,13 @@ IMP_OBJECTS(MinimumRestraintScoreSubsetFilterTable,
     - as a list of disjoint sets of equivalent particles
  */
 class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable : public SubsetFilterTable {
-  base::Pointer<ParticleStatesTable> pst_;
+  Pointer<ParticleStatesTable> pst_;
   ParticlesTemp elements_;
   boost::vector_property_map<int> parent_, rank_;
   mutable boost::disjoint_sets<boost::vector_property_map<int>,
                                boost::vector_property_map<int> > disjoint_sets_;
   boost::unordered_map<const Particle *, int> index_;
-  mutable base::Vector<ParticlesTemp> sets_;
+  mutable Vector<ParticlesTemp> sets_;
   mutable boost::unordered_map<const Particle *, int> set_indexes_;
 
   int get_index(Particle *p);
@@ -185,7 +185,7 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable : public SubsetFilterTable {
   DisjointSetsSubsetFilterTable(std::string name);
 #ifndef IMP_DOXYGEN
   void get_indexes(const Subset &s, const Subsets &excluded,
-                   base::Vector<Ints> &ret, int lb, Ints &used) const;
+                   Vector<Ints> &ret, int lb, Ints &used) const;
   int get_index_in_set(Particle *p) const {
     if (set_indexes_.find(p) == set_indexes_.end()) {
       return -1;
@@ -254,8 +254,8 @@ class IMPDOMINOEXPORT ListSubsetFilterTable : public SubsetFilterTable {
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   boost::unordered_map<Particle *, int> map_;
-  base::Vector<boost::dynamic_bitset<> > states_;
-  base::Pointer<ParticleStatesTable> pst_;
+  Vector<boost::dynamic_bitset<> > states_;
+  Pointer<ParticleStatesTable> pst_;
   mutable double num_ok_, num_test_;
   int get_index(Particle *p) const;
   void load_indexes(const Subset &s, Ints &indexes) const;
@@ -298,7 +298,7 @@ IMP_OBJECTS(ListSubsetFilterTable, ListSubsetFilterTables);
 class IMPDOMINOEXPORT PairListSubsetFilterTable : public SubsetFilterTable {
   boost::unordered_map<ParticlePair, IntPairs> allowed_;
   void fill(const Subset &s, const Subsets &e, IntPairs &indexes,
-            base::Vector<IntPairs> &allowed) const;
+            Vector<IntPairs> &allowed) const;
 
  public:
   PairListSubsetFilterTable();

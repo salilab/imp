@@ -11,7 +11,7 @@
 
 #include <IMP/misc/misc_config.h>
 #include <IMP/core/ClosePairsFinder.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/particle_index.h>
 #include <boost/unordered_map.hpp>
 #include <algorithm>

@@ -48,7 +48,7 @@ public:
   IMP_OBJECT_METHODS(CAAngleRestraint);
 
 private:
-  base::PointerMember<Particle> p_[3];
+  PointerMember<Particle> p_[3];
   Floats phi0_;
   Floats score_;
 

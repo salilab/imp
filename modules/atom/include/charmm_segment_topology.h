@@ -9,7 +9,7 @@
 #ifndef IMPATOM_CHARMM_SEGMENT_TOPOLOGY_H
 #define IMPATOM_CHARMM_SEGMENT_TOPOLOGY_H
 
-#include "IMP/base/Object.h"
+#include "IMP/Object.h"
 #include "Hierarchy.h"
 #include <IMP/atom/atom_config.h>
 #include "charmm_topology.h"
@@ -20,7 +20,7 @@ IMPATOM_BEGIN_NAMESPACE
 //! The topology of a single CHARMM segment in a model.
 /** CHARMM segments typically correspond to IMP::atom::Chain particles.
  */
-class IMPATOMEXPORT CHARMMSegmentTopology : public IMP::base::Object {
+class IMPATOMEXPORT CHARMMSegmentTopology : public IMP::Object {
   /** @name Residues
 
       The segment contains a chain of residues.
@@ -35,7 +35,7 @@ class IMPATOMEXPORT CHARMMSegmentTopology : public IMP::base::Object {
 
  public:
   CHARMMSegmentTopology(std::string name = "CHARMM segment topology %1%")
-      : base::Object(name) {}
+      : Object(name) {}
 
   //! Apply patches to the first and last residue in the segment.
   /** Default patches are defined for each residue type in the topology
@@ -71,12 +71,12 @@ IMP_OBJECTS(CHARMMSegmentTopology, CHARMMSegmentTopologies);
     topology information to an existing Hierarchy (e.g. add_atom_types(),
     add_bonds(), add_charges()).
  */
-class IMPATOMEXPORT CHARMMTopology : public IMP::base::Object {
+class IMPATOMEXPORT CHARMMTopology : public IMP::Object {
 public:
   typedef std::map<const CHARMMResidueTopology *, Hierarchy> ResMap;
 private:
-  base::Pointer<const CHARMMParameters> force_field_;
-  base::WarningContext warn_context_;
+  Pointer<const CHARMMParameters> force_field_;
+  WarningContext warn_context_;
 
   void map_residue_topology_to_hierarchy(Hierarchy hierarchy,
                                          ResMap &resmap) const;

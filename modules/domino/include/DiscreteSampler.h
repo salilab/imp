@@ -13,10 +13,10 @@
 #include "assignment_tables.h"
 #include "particle_states.h"
 #include "subset_filters.h"
-#include <IMP/base/utility_macros.h>
+#include <IMP/utility_macros.h>
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/base_types.h>
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -48,8 +48,8 @@ IMPDOMINO_BEGIN_NAMESPACE
     degrees of freedom).
  */
 class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
-  IMP::base::PointerMember<ParticleStatesTable> pst_;
-  IMP::base::PointerMember<AssignmentsTable> sst_;
+  IMP::PointerMember<ParticleStatesTable> pst_;
+  IMP::PointerMember<AssignmentsTable> sst_;
   unsigned int max_;
 
  protected:

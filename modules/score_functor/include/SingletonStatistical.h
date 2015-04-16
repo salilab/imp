@@ -12,7 +12,7 @@
 #define IMPSCORE_FUNCTOR_SINGLETON_STATISTICAL_H
 
 #include <IMP/score_functor/score_functor_config.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include "internal/SASTable.h"
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
@@ -48,11 +48,11 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 template <class Key, bool INTERPOLATE>
 class SingletonStatistical {
   typedef internal::SASTable<INTERPOLATE> Table;
-  base::PointerMember<Table> table_;
+  PointerMember<Table> table_;
   IntKey key_;
 
  public:
-  SingletonStatistical(IntKey k, base::TextInput data_file =
+  SingletonStatistical(IntKey k, TextInput data_file =
                                      get_data_path("soap_score_sas.lib"))
       : table_(new Table(data_file, Key())), key_(k) {}
 

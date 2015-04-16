@@ -13,10 +13,10 @@
 #include "RawOpenCubicSpline.h"
 #include <IMP/algebra/GridD.h>
 #include <IMP/algebra/grid_storages.h>
-#include <IMP/base/exception.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/Array.h>
-#include <IMP/base/file.h>
+#include <IMP/exception.h>
+#include <IMP/Object.h>
+#include <IMP/Array.h>
+#include <IMP/file.h>
 #include <cmath>
 #include <vector>
 
@@ -35,7 +35,7 @@ struct StorageSelector<true> {
 };
 
 template <bool BIPARTITE, bool INTERPOLATE, bool SPARSE = false>
-struct PMFTable : public base::Object {
+struct PMFTable : public Object {
   unsigned int split_;
   double inverse_bin_width_;
   double bin_width_;
@@ -53,14 +53,14 @@ struct PMFTable : public base::Object {
     j -= split_;
   }
   const RawOpenCubicSpline &get(int i, int j) const {
-    base::Array<2, int> is;
+    Array<2, int> is;
     is[0] = i;
     is[1] = j;
     typename Storage::ExtendedIndex ei(is.begin(), is.end());
     return data_[data_.get_index(ei)];
   }
   template <class Key>
-  void initialize(base::TextInput tin) {
+  void initialize(TextInput tin) {
     std::istream &in = tin;
     double bin;
     std::string line;
@@ -137,7 +137,7 @@ struct PMFTable : public base::Object {
         }
       }
       order(i, j);
-      base::Array<2, int> is;
+      Array<2, int> is;
       is[0] = i;
       is[1] = j;
       typename Storage::ExtendedIndex ei(is.begin(), is.end());
@@ -179,7 +179,7 @@ struct PMFTable : public base::Object {
 
  public:
   template <class Key>
-  PMFTable(base::TextInput name, unsigned int split, Key)
+  PMFTable(TextInput name, unsigned int split, Key)
       : Object("PMFTable-" + name.get_name()), split_(split) {
     initialize<Key>(name);
   }

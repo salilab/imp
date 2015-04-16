@@ -7,7 +7,7 @@
  */
 
 #include <IMP/multifit/SettingsData.h>
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
@@ -61,7 +61,7 @@ ComponentHeader *parse_component_line(const std::string &config,
     }
     return comp.release();
   }
-  catch (IMP::base::Exception &) {
+  catch (IMP::Exception &) {
     IMP_THROW("can not parse line:" << line, IOException);
   }
 }

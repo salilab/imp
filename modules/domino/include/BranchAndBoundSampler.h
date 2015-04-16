@@ -14,7 +14,7 @@
 #include "DiscreteSampler.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 

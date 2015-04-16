@@ -10,15 +10,15 @@
 #include <IMP/saxs/internal/sinc_function.h>
 #include <IMP/saxs/internal/exp_function.h>
 
-#include <IMP/base/math.h>
+#include <IMP/math.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/ParabolicFit.h>
 #include <IMP/algebra/LinearFit.h>
 #include <IMP/constants.h>
-#include <IMP/base/random.h>
-#include <IMP/base/nullptr_macros.h>
+#include <IMP/random.h>
+#include <IMP/nullptr_macros.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/random.hpp>
@@ -35,7 +35,7 @@ IMPSAXS_BEGIN_NAMESPACE
 const Float Profile::modulation_function_parameter_ = 0.23;
 
 Profile::Profile(Float qmin, Float qmax, Float delta)
-    : base::Object("profile%1%"),
+    : Object("profile%1%"),
       min_q_(qmin),
       max_q_(qmax),
       delta_q_(delta),
@@ -51,7 +51,7 @@ Profile::Profile(Float qmin, Float qmax, Float delta)
 }
 
 Profile::Profile(const String& file_name, bool fit_file)
-    : base::Object("profile%1%"),
+    : Object("profile%1%"),
       experimental_(true),
       name_(file_name),
       id_(0),

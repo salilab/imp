@@ -11,14 +11,14 @@
 
 #include <IMP/algebra/algebra_config.h>
 
-#include <IMP/base/types.h>
+#include <IMP/types.h>
 #include "grid_indexes.h"
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include <boost/iterator/transform_iterator.hpp>
-#include <IMP/base/Vector.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/exception.h>
+#include <IMP/Vector.h>
+#include <IMP/check_macros.h>
+#include <IMP/exception.h>
 
 #include <limits>
 
@@ -147,25 +147,25 @@ class DefaultEmbeddingD {
 
 #if !defined(IMP_DOXYGEN)
 typedef DefaultEmbeddingD<1> DefaultEmbedding1D;
-typedef base::Vector<DefaultEmbedding1D> DefaultEmbedding1Ds;
+typedef Vector<DefaultEmbedding1D> DefaultEmbedding1Ds;
 
 typedef DefaultEmbeddingD<2> DefaultEmbedding2D;
-typedef base::Vector<DefaultEmbedding2D> DefaultEmbedding2Ds;
+typedef Vector<DefaultEmbedding2D> DefaultEmbedding2Ds;
 
 typedef DefaultEmbeddingD<3> DefaultEmbedding3D;
-typedef base::Vector<DefaultEmbedding3D> DefaultEmbedding3Ds;
+typedef Vector<DefaultEmbedding3D> DefaultEmbedding3Ds;
 
 typedef DefaultEmbeddingD<4> DefaultEmbedding4D;
-typedef base::Vector<DefaultEmbedding4D> DefaultEmbedding4Ds;
+typedef Vector<DefaultEmbedding4D> DefaultEmbedding4Ds;
 
 typedef DefaultEmbeddingD<5> DefaultEmbedding5D;
-typedef base::Vector<DefaultEmbedding5D> DefaultEmbedding5Ds;
+typedef Vector<DefaultEmbedding5D> DefaultEmbedding5Ds;
 
 typedef DefaultEmbeddingD<6> DefaultEmbedding6D;
-typedef base::Vector<DefaultEmbedding6D> DefaultEmbedding6Ds;
+typedef Vector<DefaultEmbedding6D> DefaultEmbedding6Ds;
 
 typedef DefaultEmbeddingD<-1> DefaultEmbeddingKD;
-typedef base::Vector<DefaultEmbeddingKD> DefaultEmbeddingKDs;
+typedef Vector<DefaultEmbeddingKD> DefaultEmbeddingKDs;
 #endif
 
 /** Embedding of a grid as log-evenly spaced axis aligned grid.*/
@@ -234,7 +234,7 @@ class LogEmbeddingD {
     for (unsigned int i = 0; i < bases.get_dimension(); ++i) {
       IMP_ALWAYS_CHECK(bases[i] > 0,
                        "LogEmbedding base #" << i << " cannot be negative",
-                       IMP::base::ValueException);
+                       IMP::ValueException);
       // cell[i](1-base[i]^counts[i])/(1-base[i])=width[i]
       if (bases[i] != 1) {
         cell[i] = (bb.get_corner(1)[i] - bb.get_corner(0)[i]) * (bases[i] - 1) /
@@ -342,25 +342,25 @@ class LogEmbeddingD {
 
 #if !defined(IMP_DOXYGEN)
 typedef LogEmbeddingD<1> LogEmbedding1D;
-typedef base::Vector<LogEmbedding1D> LogEmbedding1Ds;
+typedef Vector<LogEmbedding1D> LogEmbedding1Ds;
 
 typedef LogEmbeddingD<2> LogEmbedding2D;
-typedef base::Vector<LogEmbedding2D> LogEmbedding2Ds;
+typedef Vector<LogEmbedding2D> LogEmbedding2Ds;
 
 typedef LogEmbeddingD<3> LogEmbedding3D;
-typedef base::Vector<LogEmbedding3D> LogEmbedding3Ds;
+typedef Vector<LogEmbedding3D> LogEmbedding3Ds;
 
 typedef LogEmbeddingD<4> LogEmbedding4D;
-typedef base::Vector<LogEmbedding4D> LogEmbedding4Ds;
+typedef Vector<LogEmbedding4D> LogEmbedding4Ds;
 
 typedef LogEmbeddingD<5> LogEmbedding5D;
-typedef base::Vector<LogEmbedding5D> LogEmbedding5Ds;
+typedef Vector<LogEmbedding5D> LogEmbedding5Ds;
 
 typedef LogEmbeddingD<6> LogEmbedding6D;
-typedef base::Vector<LogEmbedding6D> LogEmbedding6Ds;
+typedef Vector<LogEmbedding6D> LogEmbedding6Ds;
 
 typedef LogEmbeddingD<-1> LogEmbeddingKD;
-typedef base::Vector<LogEmbeddingKD> LogEmbeddingKDs;
+typedef Vector<LogEmbeddingKD> LogEmbeddingKDs;
 #endif
 
 IMPALGEBRA_END_NAMESPACE

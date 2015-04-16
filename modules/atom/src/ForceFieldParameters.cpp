@@ -129,7 +129,7 @@ void ForceFieldParameters::add_bonds(Residue rd) const {
   ResidueType type = rd.get_residue_type();
   if (residue_bonds_.find(type) == residue_bonds_.end()) return;
 
-  const base::Vector<Bond>& bonds = residue_bonds_.find(type)->second;
+  const Vector<Bond>& bonds = residue_bonds_.find(type)->second;
   for (unsigned int i = 0; i < bonds.size(); i++) {
     Atom ad1 = get_atom(rd, bonds[i].type1_);
     Atom ad2 = get_atom(rd, bonds[i].type2_);

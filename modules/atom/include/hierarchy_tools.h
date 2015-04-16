@@ -186,7 +186,7 @@ IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
 class HierarchyGeometry : public display::SingletonGeometry {
   double res_;
   mutable boost::unordered_map<Particle *,
-                               base::Pointer<display::Geometry> > components_;
+                               Pointer<display::Geometry> > components_;
 
  public:
   HierarchyGeometry(core::Hierarchy d, double resolution = 0)
@@ -211,7 +211,7 @@ class HierarchyGeometry : public display::SingletonGeometry {
 class HierarchiesGeometry : public display::SingletonsGeometry {
   double res_;
   mutable boost::unordered_map<ParticleIndex,
-                               base::Pointer<display::Geometry> > components_;
+                               Pointer<display::Geometry> > components_;
 
  public:
   HierarchiesGeometry(SingletonContainer *sc, double resolution = -1)

@@ -24,11 +24,11 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT WriteRestraintScoresOptimizerState
     : public OptimizerState {
   Restraints rs_;
-  base::TextOutput out_;
+  TextOutput out_;
 
  public:
   WriteRestraintScoresOptimizerState(const Restraints &rs,
-                                     base::TextOutput out);
+                                     TextOutput out);
 
  protected:
   virtual void do_update(unsigned int call_num) IMP_OVERRIDE;

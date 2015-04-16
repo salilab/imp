@@ -13,7 +13,7 @@
 #include "XYZ.h"
 #include <IMP/Refiner.h>
 #include <IMP/macros.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/Decorator.h>
 #include <IMP/SingletonModifier.h>
 #include "DerivativesToRefined.h"
@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
     \see DerivativesFromRefined
  */
 class IMPCOREEXPORT CentroidOfRefined : public SingletonModifier {
-  base::PointerMember<Refiner> refiner_;
+  PointerMember<Refiner> refiner_;
   FloatKeys ks_;
   FloatKey w_;
 

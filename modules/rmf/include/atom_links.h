@@ -16,14 +16,14 @@
 #include "internal/atom_links_xyzs.h"
 #include "internal/atom_links_gaussians.h"
 #include <RMF/decorator/alternatives.h>
-#include <IMP/base/object_macros.h>
-#include <IMP/base/utility_macros.h>
+#include <IMP/object_macros.h>
+#include <IMP/utility_macros.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/rmf/links.h>
 #include <IMP/rmf/link_macros.h>
-#include <IMP/base/tuple_macros.h>
+#include <IMP/tuple_macros.h>
 #include <RMF/decorators.h>
 #include <boost/unordered_map.hpp>
 IMPRMF_BEGIN_NAMESPACE

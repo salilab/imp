@@ -88,7 +88,7 @@ void get_projection(em2d::Image *img, const ParticlesTemp &ps,
     if (name.empty()) {
       IMP_THROW("get_projection: File name string is empty ", IOException);
     }
-    if (options.srw == base::Pointer<ImageReaderWriter>()) {
+    if (options.srw == Pointer<ImageReaderWriter>()) {
       IMP_THROW(
           "The options class does not have an "
           "ImageReaderWriter assigned. Create an ImageReaderWriter "
@@ -133,7 +133,7 @@ void do_project_particles(const ParticlesTemp &ps, cv::Mat &m2,
     double pix_x = invp * (R.get_rotated_one_coordinate(p, 0) + translation[0]);
     double pix_y = invp * (R.get_rotated_one_coordinate(p, 1) + translation[1]);
 
-    IMP_USAGE_CHECK(!base::isnan(pix_x) || !base::isnan(pix_y),
+    IMP_USAGE_CHECK(!IMP::isnan(pix_x) || !base::isnan(pix_y),
                     "do_project_particles: "
                         << n_particles << " resolution " << options.resolution
                         << " pixel size " << options.pixel_size << std::endl);

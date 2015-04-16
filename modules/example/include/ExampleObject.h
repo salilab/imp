@@ -10,10 +10,10 @@
 
 #include <IMP/example/example_config.h>
 
-#include <IMP/base/Object.h>
-#include <IMP/base/object_macros.h>
-#include <IMP/base/types.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Object.h>
+#include <IMP/object_macros.h>
+#include <IMP/types.h>
+#include <IMP/Pointer.h>
 #include <vector>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
@@ -26,7 +26,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleObject.h
     \include ExampleObject.cpp
  */
-class IMPEXAMPLEEXPORT ExampleObject : public base::Object {
+class IMPEXAMPLEEXPORT ExampleObject : public Object {
   Floats data_;
 
  public:
@@ -45,8 +45,8 @@ class IMPEXAMPLEEXPORT ExampleObject : public base::Object {
   IMP_OBJECT_METHODS(ExampleObject);
 };
 
-typedef base::Vector<base::Pointer<ExampleObject> > ExampleObjects;
-typedef base::Vector<base::WeakPointer<ExampleObject> > ExampleObjectsTemp;
+typedef Vector<Pointer<ExampleObject> > ExampleObjects;
+typedef Vector<WeakPointer<ExampleObject> > ExampleObjectsTemp;
 
 IMPEXAMPLE_END_NAMESPACE
 

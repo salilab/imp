@@ -5,7 +5,7 @@
  *
  */
 
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/atom/Simulator.h>
 #include <IMP/internal/constants.h>
 #include <IMP/internal/container_helpers.h>

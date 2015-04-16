@@ -6,7 +6,7 @@
  */
 #include <IMP/algebra/Triangle3D.h>
 #include <IMP/algebra/Segment3D.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/log_macros.h>
 IMPALGEBRA_BEGIN_NAMESPACE
 
 namespace {

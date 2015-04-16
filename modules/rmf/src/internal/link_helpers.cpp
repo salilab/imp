@@ -6,11 +6,11 @@
  */
 
 #include <IMP/rmf/internal/link_helpers.h>
-#include <IMP/base/set_map_macros.h>
+#include <IMP/set_map_macros.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 namespace {
-IMP_BASE_SMALL_UNORDERED_MAP<std::string, int> known_load_linkers,
+IMP_KERNEL_SMALL_UNORDERED_MAP<std::string, int> known_load_linkers,
     known_save_linkers;
 }
 

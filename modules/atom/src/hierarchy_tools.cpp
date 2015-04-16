@@ -21,7 +21,7 @@
 #include <IMP/atom/bond_decorators.h>
 #include <IMP/atom/distance.h>
 #include <IMP/atom/estimates.h>
-#include <IMP/base/set_map_macros.h>
+#include <IMP/set_map_macros.h>
 #include <IMP/constants.h>
 #include <IMP/container/AllBipartitePairContainer.h>
 #include <IMP/container/ConnectingPairContainer.h>
@@ -474,8 +474,8 @@ namespace {
 void assign_residues(IMP::atom::Hierarchy in,
                      const IMP::atom::Hierarchies &out) {
   IMP_FUNCTION_LOG;
-  IMP_BASE_LARGE_UNORDERED_MAP<IMP::atom::Hierarchy,
-                               IMP_BASE_SMALL_UNORDERED_SET<int> > indexes;
+  IMP_KERNEL_LARGE_UNORDERED_MAP<IMP::atom::Hierarchy,
+                               IMP_KERNEL_SMALL_UNORDERED_SET<int> > indexes;
   IMP_FOREACH(IMP::atom::Hierarchy l, IMP::atom::get_leaves(in)) {
     IMP::core::XYZR d(l);
     IMP::Ints cur;
@@ -505,7 +505,7 @@ void assign_residues(IMP::atom::Hierarchy in,
     }
     indexes[min].insert(cur.begin(), cur.end());
   }
-  typedef std::pair<IMP::atom::Hierarchy, IMP_BASE_SMALL_UNORDERED_SET<int> >
+  typedef std::pair<IMP::atom::Hierarchy, IMP_KERNEL_SMALL_UNORDERED_SET<int> >
       IP;
   IMP_FOREACH(IP ip, indexes) {
     IMP::atom::Fragment::setup_particle(

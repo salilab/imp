@@ -4,12 +4,12 @@
 
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 
 /** This benchmark does nothing and is here to experiment with
     benchmarking support.*/
 int main(int argc, char** argv) {
-  IMP::base::setup_from_argv(argc, argv, "show what benchmarks look like");
+  IMP::setup_from_argv(argc, argv, "show what benchmarks look like");
 
   {
     double sum = 0, time;

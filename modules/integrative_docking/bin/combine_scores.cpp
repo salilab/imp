@@ -11,8 +11,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <IMP/base/exception.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/exception.h>
+#include <IMP/check_macros.h>
 
 using namespace IMP::integrative_docking::internal;
 
@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
         IMP_THROW("different number of transformations in input files: "
                       << argv[i] << " " << results[i - 1].size() << " vs. "
                       << argv[i + 2] << " " << results[i].size(),
-                  IMP::base::ValueException);
+                  IMP::ValueException);
       }
     }
 
@@ -138,7 +138,7 @@ int main(int argc, char** argv) {
       }
     }
   }
-  catch (IMP::base::Exception& e) {
+  catch (IMP::Exception& e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   }

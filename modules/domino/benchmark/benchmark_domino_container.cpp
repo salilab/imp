@@ -1,7 +1,7 @@
 /**
  * Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 #include <IMP/domino.h>
 #include <IMP/container.h>
 #include <IMP/benchmark.h>
@@ -40,7 +40,7 @@ void benchmark_table(AssignmentContainer *ac, std::string name,
 }
 
 int main(int argc, char *argv[]) {
-  IMP::base::setup_from_argv(argc, argv, "benchmark domino containers");
+  IMP::setup_from_argv(argc, argv, "benchmark domino containers");
   IMP_NEW(Model, m, ());
   ParticlesTemp ps;
   for (unsigned int i = 0; i < 10; ++i) {
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
     ps.push_back(p);
   }
   int number_of_values;
-  if (IMP_BUILD == IMP_DEBUG || IMP::base::run_quick_test) {
+  if (IMP_BUILD == IMP_DEBUG || IMP::run_quick_test) {
     number_of_values = 1000;
   } else {
     number_of_values = 100000;
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 #ifdef IMP_DOMINO_USE_IMP_RMF
   {
     RMF::HDF5::File file = RMF::HDF5::create_file(
-        base::create_temporary_file_name("benchmark", ".hdf5"));
+        IMP::create_temporary_file_name("benchmark", ".hdf5"));
     RMF::HDF5::IndexDataSet2D ds = file.add_child_index_data_set_2d("data");
     IMP_NEW(WriteHDF5AssignmentContainer, ac, (ds, s, ps, "c"));
     ac->set_cache_size(1);
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
   }
   {
     RMF::HDF5::File file = RMF::HDF5::create_file(
-        base::create_temporary_file_name("benchmark", ".hdf5"));
+        IMP::create_temporary_file_name("benchmark", ".hdf5"));
     RMF::HDF5::IndexDataSet2D ds = file.add_child_index_data_set_2d("data");
     IMP_NEW(WriteHDF5AssignmentContainer, ac, (ds, s, ps, "c"));
     ac->set_cache_size(1000000);
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 #endif
   {
     std::string name =
-        base::create_temporary_file_name("benchmark", ".assignments");
+        IMP::create_temporary_file_name("benchmark", ".assignments");
     IMP_NEW(WriteAssignmentContainer, ac, (name, s, ps, "c"));
     ac->set_cache_size(1000000);
     benchmark_table<WriteAssignmentContainer>(ac, "direct", number_of_values);

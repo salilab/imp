@@ -11,40 +11,40 @@
 
 #include <IMP/rmf/rmf_config.h>
 #include "links.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/base/object_macros.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/Object.h>
+#include <IMP/Pointer.h>
+#include <IMP/object_macros.h>
+#include <IMP/log_macros.h>
 #include <RMF/names.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
-typedef base::Object *AssociationType;
+typedef Object *AssociationType;
 
-IMPRMFEXPORT void set_association(RMF::NodeConstHandle nh, base::Object *o,
+IMPRMFEXPORT void set_association(RMF::NodeConstHandle nh, Object *o,
                                   bool overwrite = false);
 
 template <class T>
 inline T *get_association(RMF::NodeConstHandle nh) {
   AssociationType o = nh.get_association<AssociationType>();
-  base::Object *op = o;
+  Object *op = o;
   if (!op) return nullptr;
   return dynamic_cast<T *>(op);
 }
 
 /** \name Associations
     RMF supports tracking associations between an RMF file and native objects.
-    In the \imp case these are IMP::base::Object and we provide some special
+    In the \imp case these are IMP::Object and we provide some special
     methods to aid in this process.
     @{
 */
 IMPRMFEXPORT RMF::NodeConstHandle get_node_from_association(
-    RMF::FileConstHandle nh, base::Object *oi);
+    RMF::FileConstHandle nh, Object *oi);
 
 IMPRMFEXPORT RMF::NodeHandle get_node_from_association(RMF::FileHandle nh,
-                                                       base::Object *oi);
+                                                       Object *oi);
 IMPRMFEXPORT bool get_has_associated_node(RMF::FileConstHandle nh,
-                                          base::Object *oi);
+                                          Object *oi);
 
 /** @} */
 

@@ -73,11 +73,11 @@ int main() {
   std::sort(hash.begin(), hash.end());
 
   if (dist.size() != hash.size()) {
-    IMP_THROW("lists are different sizes", ValueException);
+    IMP_THROW("lists are different sizes", IMP::ValueException);
   }
 
   if (!std::equal(dist.begin(), dist.end(), hash.begin())) {
-    IMP_THROW("lists have differing elements", ValueException);
+    IMP_THROW("lists have differing elements", IMP::ValueException);
   }
 
   return 0;

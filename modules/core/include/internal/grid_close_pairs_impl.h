@@ -110,15 +110,15 @@ struct BBPairSink {
 template <class Traits>
 struct Helper {
   typedef typename Traits::ID ID;
-  struct IDs : public base::Vector<ID> {
+  struct IDs : public Vector<ID> {
     int which_;
     IDs(int which) : which_(which) {}
-    IDs(ID id, int which) : base::Vector<ID>(1, id), which_(which) {}
+    IDs(ID id, int which) : Vector<ID>(1, id), which_(which) {}
     IDs() : which_(-1) {}
   };
 
   typedef typename algebra::SparseGrid3D<IDs> Grid;
-  typedef base::Vector<Grid> Grids;
+  typedef Vector<Grid> Grids;
 
   template <class It>
   struct ParticleSet {
@@ -172,7 +172,7 @@ struct Helper {
 
   template <class It>
   static void partition_points(const ParticleSet<It> &ps, const Traits &tr,
-                               base::Vector<IDs> &bin_contents,
+                               Vector<IDs> &bin_contents,
                                Floats &bin_ubs) {
     bin_contents.push_back(IDs(ps.which_));
     for (It c = ps.b_; c != ps.e_; ++c) {
@@ -194,7 +194,7 @@ struct Helper {
         }
       }
     }
-    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       int total = 0;
       for (unsigned int i = 0; i < bin_contents.size(); ++i) {
         total += bin_contents[i].size();
@@ -227,7 +227,7 @@ struct Helper {
         IMP_INTERNAL_CHECK(it->second.size() > 0, "Empty voxel");
         IMP_LOG_VERBOSE("Voxel " << it->first << " has ");
         for (unsigned int i = 0; i < it->second.size(); ++i) {
-          IMP_LOG_VERBOSE(base::Showable(it->second[i]) << " ");
+          IMP_LOG_VERBOSE(Showable(it->second[i]) << " ");
         }
         IMP_LOG_VERBOSE(std::endl);
       }
@@ -240,8 +240,8 @@ struct Helper {
     for (It c = b; c != e; ++c) {
       for (It cp = b; cp != c; ++cp) {
         if (tr.get_is_close(*c, *cp)) {
-          /*IMP_LOG_VERBOSE( "Found pair " << base::Showable(*c) << " "
-            << base::Showable(*cp) << std::endl);*/
+          /*IMP_LOG_VERBOSE( "Found pair " << Showable(*c) << " "
+            << Showable(*cp) << std::endl);*/
           if (!out(*c, *cp)) {
             return false;
           }
@@ -257,8 +257,8 @@ struct Helper {
     for (ItA c = ab; c != ae; ++c) {
       for (ItB cp = bb; cp != be; ++cp) {
         if (tr.get_is_close(*c, *cp)) {
-          /*IMP_LOG_VERBOSE( "Found pair " << base::Showable(*c) << " "
-            << base::Showable(*cp) << std::endl);*/
+          /*IMP_LOG_VERBOSE( "Found pair " << Showable(*c) << " "
+            << Showable(*cp) << std::endl);*/
           if (!out(*c, *cp)) {
             return false;
           }
@@ -296,8 +296,8 @@ struct Helper {
               IMP::algebra::GridIndexD<3> _1 = gg.get_index(imp_cur);
               IMP_LOG_VERBOSE("Checking pair "
                               << _1 << " " << index << ": "
-                              << base::Showable(gg[_1]) << " and " << index
-                              << " which is " << base::Showable(qps)
+                              << Showable(gg[_1]) << " and " << index
+                              << " which is " << Showable(qps)
                               << std::endl);
               IMP_INTERNAL_CHECK(_1 != index, "Index returned by get nearby");
               if (!do_fill_close_pairs_from_lists(gg[_1].begin(), gg[_1].end(),
@@ -318,8 +318,8 @@ struct Helper {
               IMP::algebra::GridIndexD<3> _1 = gg.get_index(imp_cur);
               IMP_LOG_VERBOSE("Checking pair "
                               << _1 << " " << index << ": "
-                              << base::Showable(gg[_1]) << " and " << index
-                              << " which is " << base::Showable(qps)
+                              << Showable(gg[_1]) << " and " << index
+                              << " which is " << Showable(qps)
                               << std::endl);
               if (!do_fill_close_pairs_from_lists(gg[_1].begin(), gg[_1].end(),
                                                   qps.begin(), qps.end(), tr,
@@ -346,7 +346,7 @@ struct Helper {
                                Out out) {
     if (ps.size() == 0) return true;
     double maxr = get_max_radius(ps, tr);
-    base::Vector<IDs> bin_contents_g;
+    Vector<IDs> bin_contents_g;
     Floats bin_ubs;
     bin_ubs.push_back(maxr);
 
@@ -362,7 +362,7 @@ struct Helper {
                           << bin_contents_g[i].size() << std::endl);
       }
     }
-    base::Vector<algebra::BoundingBox3D> bbs(bin_contents_g.size());
+    Vector<algebra::BoundingBox3D> bbs(bin_contents_g.size());
     for (unsigned int i = 0; i < bin_contents_g.size(); ++i) {
       bbs[i] = get_bb(bin_contents_g[i], tr);
     }
@@ -387,7 +387,7 @@ struct Helper {
         }
       }
 #ifdef IMP_GRID_CPF_CHECKS
-      IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
         for (unsigned int k = 0; k < bin_contents_g[i].size(); ++k) {
           for (unsigned int j = 0; j < k; ++j) {
             if (tr.check_close(bin_contents_g[i][k], bin_contents_g[i][j])) {
@@ -426,7 +426,7 @@ struct Helper {
           }
         }
 #ifdef IMP_GRID_CPF_CHECKS
-        IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
           for (unsigned int k = 0; k < bin_contents_g[i].size(); ++k) {
             for (unsigned int l = 0; l < k; ++l) {
               if (tr.check_close(bin_contents_g[i][k], bin_contents_g[i][l])) {
@@ -439,7 +439,7 @@ struct Helper {
       }
     }
 #ifdef IMP_GRID_CPF_CHECKS
-    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (It it0 = ps.b_; it0 != ps.e_; ++it0) {
         for (It it1 = ps.b_; it1 != it0; ++it1) {
           if (tr.check_close(tr.get_id(*it0, 0), tr.get_id(*it1, 1))) {
@@ -458,7 +458,7 @@ struct Helper {
                                Out out) {
     if (psg.size() == 0 || psq.size() == 0) return true;
     double maxr = std::max(get_max_radius(psg, tr), get_max_radius(psq, tr));
-    base::Vector<IDs> bin_contents_g, bin_contents_q;
+    Vector<IDs> bin_contents_g, bin_contents_q;
     Floats bin_ubs;
     bin_ubs.push_back(maxr);
 
@@ -480,11 +480,11 @@ struct Helper {
                           << bin_contents_q[i].size() << std::endl);
       }
     }
-    base::Vector<algebra::BoundingBox3D> bbs_g(bin_contents_g.size());
+    Vector<algebra::BoundingBox3D> bbs_g(bin_contents_g.size());
     for (unsigned int i = 0; i < bin_contents_g.size(); ++i) {
       bbs_g[i] = get_bb(bin_contents_g[i], tr);
     }
-    base::Vector<algebra::BoundingBox3D> bbs_q(bin_contents_q.size());
+    Vector<algebra::BoundingBox3D> bbs_q(bin_contents_q.size());
     for (unsigned int i = 0; i < bin_contents_q.size(); ++i) {
       bbs_q[i] = get_bb(bin_contents_q[i], tr);
     }
@@ -510,7 +510,7 @@ struct Helper {
           Grid gq = gg;
           fill_grid(bin_contents_g[i], tr, gg);
           fill_grid(bin_contents_q[j], tr, gq);
-          IMP_IF_CHECK(base::USAGE) {
+          IMP_IF_CHECK(USAGE) {
             for (unsigned int i = 0; i < 3; ++i) {
               IMP_USAGE_CHECK(
                   gg.get_number_of_voxels(i) == gq.get_number_of_voxels(i),
@@ -528,7 +528,7 @@ struct Helper {
           }
         }
 #ifdef IMP_GRID_CPF_CHECKS
-        IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
           for (unsigned int k = 0; k < bin_contents_g[i].size(); ++k) {
             for (unsigned int l = 0; l < bin_contents_q[j].size(); ++l) {
               if (tr.check_close(bin_contents_g[i][k], bin_contents_q[j][l])) {
@@ -541,7 +541,7 @@ struct Helper {
       }
     }
 #ifdef IMP_GRID_CPF_CHECKS
-    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (ItG it0 = psg.b_; it0 != psg.e_; ++it0) {
         for (ItQ it1 = psq.b_; it1 != psq.e_; ++it1) {
           if (tr.check_close(tr.get_id(*it0, 0), tr.get_id(*it1, 1))) {

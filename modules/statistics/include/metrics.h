@@ -12,8 +12,8 @@
 #include <IMP/statistics/statistics_config.h>
 #include "Metric.h"
 #include "Embedding.h"
-#include <IMP/base/object_macros.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/object_macros.h>
+#include <IMP/Pointer.h>
 #include <IMP/ConfigurationSet.h>
 #include <IMP/SingletonContainer.h>
 
@@ -21,7 +21,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 
 /** Apply a Euclidean metric to an Embedding. */
 class IMPSTATISTICSEXPORT EuclideanMetric : public Metric {
-  IMP::base::PointerMember<Embedding> em_;
+  IMP::PointerMember<Embedding> em_;
 
  public:
   EuclideanMetric(Embedding *em);
@@ -34,8 +34,8 @@ class IMPSTATISTICSEXPORT EuclideanMetric : public Metric {
     in pairs of configurations, within a configuration set
  */
 class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric : public Metric {
-  IMP::base::PointerMember<ConfigurationSet> cs_;
-  IMP::base::PointerMember<SingletonContainer> sc_;
+  IMP::PointerMember<ConfigurationSet> cs_;
+  IMP::PointerMember<SingletonContainer> sc_;
   bool align_;
 
  public:

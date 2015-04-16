@@ -7,7 +7,7 @@
 
 #include <IMP/isd/WeightMover.h>
 #include <IMP/isd/Weight.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <IMP/algebra/vector_generators.h>
 #include <boost/random/uniform_real.hpp>
 

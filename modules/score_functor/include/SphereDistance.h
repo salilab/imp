@@ -11,7 +11,7 @@
 #include <IMP/score_functor/score_functor_config.h>
 #include <IMP/Model.h>
 #include <IMP/algebra/utility.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/check_macros.h>
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 

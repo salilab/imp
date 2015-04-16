@@ -5,8 +5,8 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 #include <IMP/algebra/shortest_segment.h>
-#include <IMP/base/log.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/log.h>
+#include <IMP/log_macros.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 

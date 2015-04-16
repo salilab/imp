@@ -11,7 +11,7 @@
 #include <vector>
 #include <string>
 #include <IMP/multifit/multifit_config.h>
-#include <IMP/base/value_macros.h>
+#include <IMP/value_macros.h>
 #include <boost/property_tree/ptree.hpp>
 #include <iostream>
 #include <stdio.h>

@@ -38,8 +38,8 @@ class IMPCOREEXPORT DihedralRestraint : public Restraint {
   IMP_OBJECT_METHODS(DihedralRestraint);
 
  private:
-  IMP::base::PointerMember<UnaryFunction> score_func_;
-  IMP::base::PointerMember<Particle> p_[4];
+  IMP::PointerMember<UnaryFunction> score_func_;
+  IMP::PointerMember<Particle> p_[4];
 };
 
 IMPCORE_END_NAMESPACE

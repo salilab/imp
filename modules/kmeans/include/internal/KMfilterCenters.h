@@ -27,7 +27,7 @@
 #define IMPKMEANS_INTERNAL_KMFILTER_CENTERS_H
 
 #include <IMP/kmeans/kmeans_config.h>
-#include <IMP/base/enums.h>
+#include <IMP/enums.h>
 #include "KMcenters.h"  // provides KMcenters
 #include <iostream>
 
@@ -211,9 +211,9 @@ class IMPKMEANSEXPORT KMfilterCenters : public KMcenters {
 
   /**
      print centers to log
-     @param ll log level (e.g. IMP::base::PROGRESS)
+     @param ll log level (e.g. IMP::PROGRESS)
   */
-  void log(base::LogLevel ll);
+  void log(LogLevel ll);
 };
 
 IMPKMEANS_END_INTERNAL_NAMESPACE

@@ -10,7 +10,7 @@
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/container_macros.h"
 #include "IMP/algebra/SphericalVector3D.h"
-#include "IMP/base/log.h"
+#include "IMP/log.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 

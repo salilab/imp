@@ -10,15 +10,15 @@
 #include <IMP/algebra/vector_search.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/statistics/internal/centrality_clustering.h>
-#include <IMP/base/vector_property_map.h>
+#include <IMP/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 PartitionalClustering *create_centrality_clustering(Metric *d, double far,
                                                     int k) {
-  IMP::base::Pointer<Metric> dp(d);  // TODO: nothing is done with dp?
+  IMP::Pointer<Metric> dp(d);  // TODO: nothing is done with dp?
   unsigned int n = d->get_number_of_items();
   internal::CentralityGraph g(n);
   boost::property_map<internal::CentralityGraph, boost::edge_weight_t>::type w =
@@ -38,9 +38,9 @@ PartitionalClustering *create_centrality_clustering(Metric *d, double far,
 }
 
 namespace {
-void fill_distance_matrix(Metric *d, IMP::base::Vector<Floats> &matrix) {
+void fill_distance_matrix(Metric *d, IMP::Vector<Floats> &matrix) {
   IMP_LOG_TERSE("Extracting distance matrix..." << std::endl);
-  matrix = IMP::base::Vector<Floats>(d->get_number_of_items(),
+  matrix = IMP::Vector<Floats>(d->get_number_of_items(),
                                      Floats(d->get_number_of_items(), 0));
   for (unsigned int i = 0; i < matrix.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
@@ -51,8 +51,8 @@ void fill_distance_matrix(Metric *d, IMP::base::Vector<Floats> &matrix) {
   }
   IMP_LOG_TERSE("done" << std::endl);
 }
-double get_min_distance(int cur, const IMP::base::Vector<Ints> &clusters,
-                        const IMP::base::Vector<Floats> &matrix) {
+double get_min_distance(int cur, const IMP::Vector<Ints> &clusters,
+                        const IMP::Vector<Floats> &matrix) {
   double ret = std::numeric_limits<double>::max();
   for (unsigned int i = 0; i < clusters.size(); ++i) {
     for (unsigned int j = 0; j < clusters[i].size(); ++j) {
@@ -62,8 +62,8 @@ double get_min_distance(int cur, const IMP::base::Vector<Ints> &clusters,
   }
   return ret;
 }
-int get_far(const Ints &unclaimed, const IMP::base::Vector<Ints> &clusters,
-            const IMP::base::Vector<Floats> &matrix) {
+int get_far(const Ints &unclaimed, const IMP::Vector<Ints> &clusters,
+            const IMP::Vector<Floats> &matrix) {
   if (clusters.empty()) return unclaimed.size() - 1;
   double mdf = 0;
   int mdi = -1;
@@ -80,9 +80,9 @@ int get_far(const Ints &unclaimed, const IMP::base::Vector<Ints> &clusters,
 
 PartitionalClustering *create_connectivity_clustering(Metric *d,
                                                       double maximum_distance) {
-  IMP::base::PointerMember<Metric> mp(d);
+  IMP::PointerMember<Metric> mp(d);
   IMP_FUNCTION_LOG;
-  IMP::base::Vector<Floats> matrix;
+  IMP::Vector<Floats> matrix;
   fill_distance_matrix(d, matrix);
   typedef boost::vector_property_map<unsigned int> Index;
   typedef Index Parent;
@@ -102,7 +102,7 @@ PartitionalClustering *create_connectivity_clustering(Metric *d,
     }
   }
   std::map<int, int> cluster_map;
-  IMP::base::Vector<Ints> clusters;
+  IMP::Vector<Ints> clusters;
   for (unsigned int i = 0; i < matrix.size(); ++i) {
     int p = uf.find_set(i);
     if (cluster_map.find(p) == cluster_map.end()) {
@@ -119,11 +119,11 @@ PartitionalClustering *create_connectivity_clustering(Metric *d,
 
 PartitionalClustering *create_diameter_clustering(Metric *d,
                                                   double maximum_diameter) {
-  IMP::base::PointerMember<Metric> mp(d);
+  IMP::PointerMember<Metric> mp(d);
   IMP_FUNCTION_LOG;
-  IMP::base::Vector<Floats> matrix;
+  IMP::Vector<Floats> matrix;
   fill_distance_matrix(d, matrix);
-  IMP::base::Vector<Ints> clusters;
+  IMP::Vector<Ints> clusters;
   Ints unclaimed(matrix.size());
   for (unsigned int i = 0; i < matrix.size(); ++i) {
     unclaimed[i] = i;
@@ -150,7 +150,7 @@ PartitionalClustering *create_diameter_clustering(Metric *d,
       }
     }
   }
-  base::Vector<Ints> goodclusters;
+  Vector<Ints> goodclusters;
   std::copy(clusters.begin(), clusters.end(), std::back_inserter(goodclusters));
   IMP_NEW(internal::TrivialPartitionalClustering, ret, (clusters));
   validate_partitional_clustering(ret, d->get_number_of_items());

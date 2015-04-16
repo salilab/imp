@@ -33,7 +33,7 @@ int do_benchmark() {
 
     // Using the CHARMM libraries, determine the ideal topology (atoms and their
     // connectivity) for the PDB file's primary sequence
-    base::Pointer<CHARMMTopology> topology = ff->create_topology(prot);
+    Pointer<CHARMMTopology> topology = ff->create_topology(prot);
 
     // Typically this modifies the C and N termini of each chain in the protein
     // by
@@ -89,7 +89,7 @@ int do_benchmark() {
 
     // Finally, evaluate the score of the whole system (without derivatives)
     IMP_NEW(ConjugateGradients, cg, (m));
-    if (IMP::base::run_quick_test) {
+    if (IMP::run_quick_test) {
       cg->optimize(1);
     } else {
       cg->optimize(1000);
@@ -121,7 +121,7 @@ int do_benchmark() {
             (m, md->get_simulation_particle_indexes(), 300, 500));
     md->add_optimizer_state(therm);
     double time, score = 0;
-    if (IMP::base::run_quick_test) {
+    if (IMP::run_quick_test) {
       time = 0;
       score += md->optimize(2);
     } else {
@@ -138,6 +138,6 @@ int do_benchmark() {
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark md");
+  IMP::setup_from_argv(argc, argv, "Benchmark md");
   return do_benchmark();
 }

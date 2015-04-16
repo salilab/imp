@@ -12,7 +12,7 @@
 
 #include <IMP/PairScore.h>
 #include <IMP/pair_macros.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -20,7 +20,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! Score on the crossing angle between two rigid bodies
 class IMPCOREEXPORT RigidBodyAnglePairScore : public PairScore
 {
-  IMP::base::PointerMember<UnaryFunction> f_;
+  IMP::PointerMember<UnaryFunction> f_;
 public:
   RigidBodyAnglePairScore(UnaryFunction *f);
 

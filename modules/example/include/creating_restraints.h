@@ -40,7 +40,7 @@ inline Restraint *create_chain_restraint(
   // this assumption accelerates certain computations
   IMP_NEW(container::ExclusiveConsecutivePairContainer, cpc,
           (ps, name + " consecutive pairs"));
-  base::Pointer<Restraint> r =
+  Pointer<Restraint> r =
       container::create_restraint(hdps.get(), cpc.get(), "chain restraint %1%");
   // make sure it is not freed
   return r.release();
@@ -58,7 +58,7 @@ inline container::ClosePairContainer *create_excluded_volume(
   // that is proportional to the particle radius
   IMP_NEW(container::ClosePairContainer, cpc, (cores_container, 0, scale * .3));
   IMP_NEW(core::SoftSpherePairScore, hlb, (k));
-  base::Pointer<Restraint> r =
+  Pointer<Restraint> r =
       container::create_restraint(hlb.get(), cpc.get());
   m->add_restraint(r);
   return cpc.release();

@@ -14,7 +14,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/isd/GaussianProcessInterpolation.h>
 #include <IMP/isd/MultivariateFNormalSufficient.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/algebra/eigen3/Eigen/Dense>
 
 #include <IMP/ScoreState.h>
@@ -33,9 +33,9 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
  private:
   // checks and makes necessary updates
   void update_mean_and_covariance();
-  base::Pointer<GaussianProcessInterpolation> gpi_;
-  IMP::base::PointerMember<MultivariateFNormalSufficient> mvn_;
-  IMP::base::PointerMember<GaussianProcessInterpolationScoreState> ss_;
+  Pointer<GaussianProcessInterpolation> gpi_;
+  IMP::PointerMember<MultivariateFNormalSufficient> mvn_;
+  IMP::PointerMember<GaussianProcessInterpolationScoreState> ss_;
   // number of observation points
   unsigned M_;
 
@@ -85,7 +85,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 class IMPISDEXPORT GaussianProcessInterpolationScoreState : public ScoreState {
  private:
-  IMP::base::WeakPointer<GaussianProcessInterpolationRestraint> gpir_;
+  IMP::WeakPointer<GaussianProcessInterpolationRestraint> gpir_;
 
  private:
   GaussianProcessInterpolationScoreState(

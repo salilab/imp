@@ -15,7 +15,7 @@
 IMPSAXS_BEGIN_NAMESPACE
 
 DerivativeCalculator::DerivativeCalculator(const Profile* exp_profile)
-    : base::Object("DerivativeCalculator%1%"), exp_profile_(exp_profile) {}
+    : Object("DerivativeCalculator%1%"), exp_profile_(exp_profile) {}
 
 // tabulates (sin(qr)/qr - cos(qr))/r^2 over the range of qs of the profile
 // and up to max_distance for r.

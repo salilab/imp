@@ -19,7 +19,7 @@
 #include <IMP/atom/Atom.h>
 
 #include <boost/unordered_map.hpp>
-#include <IMP/base/Vector.h>
+#include <IMP/Vector.h>
 #include <vector>
 #include <iostream>
 
@@ -209,7 +209,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
   // mapping between atom ParticleIndex and node number in the graph
   boost::unordered_map<IMP::ParticleIndex, int> particle_index_to_node_map_, rb_particle_index_to_node_map_;
 
-  IMP::base::Vector<IMP::ParticleIndex> node_to_particle_index_map_;
+  IMP::Vector<IMP::ParticleIndex> node_to_particle_index_map_;
 
   // rigid bodies
   IMP::core::RigidBodies rbs_;
@@ -217,7 +217,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
   // joints
   DihedralAngleRevoluteJoints joints_;
 
-  IMP::base::Pointer<IMP::kinematics::KinematicForest> kf_;
+  IMP::Pointer<IMP::kinematics::KinematicForest> kf_;
 
   // map between residue phi/psi/chis and joints
   AngleToJointMap joint_map_;

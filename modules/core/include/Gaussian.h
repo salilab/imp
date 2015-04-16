@@ -9,14 +9,14 @@
 #ifndef IMPCORE_GAUSSIAN_H
 #define IMPCORE_GAUSSIAN_H
 
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/core/core_config.h>
 #include <IMP/algebra/Gaussian3D.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include <IMP/core/rigid_bodies.h>
 #include "internal/rigid_bodies.h"
 #include <IMP/algebra/eigen3/Eigen/Dense>
@@ -26,7 +26,7 @@ IMPCORE_BEGIN_NAMESPACE
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 
 /** little class to store an Eigen::Matrix3d */
-class IMPCOREEXPORT Matrix3D : public IMP::base::Object{
+class IMPCOREEXPORT Matrix3D : public IMP::Object{
   IMP_Eigen::Matrix3d mat_;
  public:
  Matrix3D(IMP_Eigen::Matrix3d mat,

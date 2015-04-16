@@ -11,12 +11,12 @@
 
 #include <IMP/rmf/rmf_config.h>
 #include <RMF/FileHandle.h>
-#include <IMP/base/deprecation_macros.h>
+#include <IMP/deprecation_macros.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
 /** Load the specified frame into the state of the associated
-    IMP::base::Objects with the RMF file.
+    IMP::Objects with the RMF file.
 
     The current frame is left as the passed frame number.
 */

@@ -10,9 +10,9 @@
 #define IMPEM_MAP_READER_WRITER_H
 
 #include <IMP/em/em_config.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include "DensityHeader.h"
-#include <IMP/base/object_macros.h>
+#include <IMP/object_macros.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -21,9 +21,9 @@ IMPEM_BEGIN_NAMESPACE
     They should never be stored, only created immediately and passed to
     the read or write function.
  */
-class IMPEMEXPORT MapReaderWriter : public IMP::base::Object {
+class IMPEMEXPORT MapReaderWriter : public IMP::Object {
  public:
-  MapReaderWriter() : base::Object("MapReaderWriter%1%") {}
+  MapReaderWriter() : Object("MapReaderWriter%1%") {}
 #if !defined(DOXYGEN) && !defined(SWIG)
   // since swig can't see these methods, it wants to create a wrapper
   // for the class

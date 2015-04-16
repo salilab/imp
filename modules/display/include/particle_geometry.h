@@ -12,7 +12,7 @@
 #include "geometry_macros.h"
 #include "declare_Geometry.h"
 #include "Colored.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonScore.h>
@@ -22,7 +22,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 //! A base class for geometry contained in particles
 /** */
 class IMPDISPLAYEXPORT SingletonGeometry : public Geometry {
-  IMP::base::Pointer<Particle> p_;
+  IMP::Pointer<Particle> p_;
 
  public:
   SingletonGeometry(Particle *p);
@@ -48,7 +48,7 @@ class IMPDISPLAYEXPORT SingletonGeometry : public Geometry {
 /**
  */
 class IMPDISPLAYEXPORT SingletonsGeometry : public Geometry {
-  IMP::base::PointerMember<SingletonContainer> sc_;
+  IMP::PointerMember<SingletonContainer> sc_;
 
  public:
   SingletonsGeometry(SingletonContainerAdaptor pc, Color c);
@@ -62,7 +62,7 @@ class IMPDISPLAYEXPORT SingletonsGeometry : public Geometry {
 //! A base class for geometry contained in particles
 /** */
 class IMPDISPLAYEXPORT PairGeometry : public Geometry {
-  IMP::base::Pointer<Particle> p0_, p1_;
+  IMP::Pointer<Particle> p0_, p1_;
 
  public:
   PairGeometry(const ParticlePair &pp);
@@ -92,7 +92,7 @@ class IMPDISPLAYEXPORT PairGeometry : public Geometry {
 /**
  */
 class IMPDISPLAYEXPORT PairsGeometry : public Geometry {
-  IMP::base::PointerMember<PairContainer> sc_;
+  IMP::PointerMember<PairContainer> sc_;
 
  public:
   PairsGeometry(PairContainer *pc, Color c);

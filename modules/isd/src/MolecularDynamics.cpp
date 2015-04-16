@@ -10,8 +10,8 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/atom/Mass.h>
 
-#include <IMP/base/log.h>
-#include <IMP/base/random.h>
+#include <IMP/log.h>
+#include <IMP/random.h>
 #include <boost/random/normal_distribution.hpp>
 
 #include <cmath>

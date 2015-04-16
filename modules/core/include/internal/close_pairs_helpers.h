@@ -15,7 +15,7 @@
 #include "rigid_body_tree.h"
 #include <IMP/container_macros.h>
 #include "../XYZR.h"
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 #include <IMP/SingletonContainer.h>
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
@@ -158,13 +158,13 @@ inline void initialize_particles(
     algebra::Sphere3Ds &rbs_backup_sphere_,
     algebra::Rotation3Ds &rbs_backup_rot_, algebra::Sphere3Ds &xyzrs_backup_,
     bool use_rigid_bodies = true) {
-  IMP_IF_CHECK(base::USAGE) {
+  IMP_IF_CHECK(USAGE) {
     ParticleIndexes pis = sc->get_indexes();
     boost::unordered_set<ParticleIndex> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(),
                     "Duplicate particle indexes in input");
   }
-  IMP_IF_CHECK(base::USAGE) {
+  IMP_IF_CHECK(USAGE) {
     ParticlesTemp pis = sc->get();
     boost::unordered_set<Particle *> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(), "Duplicate particles in input");
@@ -187,7 +187,7 @@ inline void initialize_particles(
       } else {
         constituents_[pi].push_back(_1);
       }
-      IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
         ParticleIndexes cur = constituents_[pi];
         IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), pi) == cur.end(),
                         "A rigid body can't be its own constituent.");
@@ -213,7 +213,7 @@ inline void initialize_particles(
   xyzrs_backup_.clear();
   rbs_backup_sphere_.clear();
   rbs_backup_rot_.clear();
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (boost::unordered_map<ParticleIndex,
                               ParticleIndexes>::const_iterator it =
              constituents_.begin();

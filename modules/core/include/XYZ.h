@@ -158,27 +158,25 @@ inline void set_vector_geometry(Decorator d, const algebra::Vector3D &v) {
   core::XYZ(d).set_coordinates(v);
 }
 
+inline const algebra::Vector3D get_vector_geometry(
+    WeakPointer<Particle> d) {
+  return core::XYZ(d).get_coordinates();
+}
+/** \genericgeometry */
+inline void set_vector_geometry(WeakPointer<Particle> d,
+                                const algebra::Vector3D &v) {
+  core::XYZ(d).set_coordinates(v);
+}
+inline const algebra::Vector3D get_vector_geometry(
+    Pointer<Particle> d) {
+  return core::XYZ(d).get_coordinates();
+}
+/** \genericgeometry */
+inline void set_vector_geometry(Pointer<Particle> d,
+                                const algebra::Vector3D &v) {
+  core::XYZ(d).set_coordinates(v);
+}
 IMPKERNEL_END_NAMESPACE
-IMPBASE_BEGIN_NAMESPACE
-inline const algebra::Vector3D get_vector_geometry(
-    base::WeakPointer<Particle> d) {
-  return core::XYZ(d).get_coordinates();
-}
-/** \genericgeometry */
-inline void set_vector_geometry(base::WeakPointer<Particle> d,
-                                const algebra::Vector3D &v) {
-  core::XYZ(d).set_coordinates(v);
-}
-inline const algebra::Vector3D get_vector_geometry(
-    base::Pointer<Particle> d) {
-  return core::XYZ(d).get_coordinates();
-}
-/** \genericgeometry */
-inline void set_vector_geometry(base::Pointer<Particle> d,
-                                const algebra::Vector3D &v) {
-  core::XYZ(d).set_coordinates(v);
-}
-IMPBASE_END_NAMESPACE
 
 #endif
 

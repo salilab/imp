@@ -4,21 +4,21 @@
  */
 
 #include <IMP/benchmark/Profiler.h>
-#include <IMP/base/base_config.h>
-#if IMP_BASE_HAS_GPERFTOOLS
+#include <IMP/kernel_config.h>
+#if IMP_KERNEL_HAS_GPERFTOOLS
 #include <gperftools/profiler.h>
 #endif
 
 #include <boost/format.hpp>
-#include <IMP/base/log_macros.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/utility.h>
+#include <IMP/log_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/utility.h>
 
 IMPBENCHMARK_BEGIN_NAMESPACE
 
-#if IMP_BASE_HAS_GPERFTOOLS
+#if IMP_KERNEL_HAS_GPERFTOOLS
 void Profiler::start(std::string name) {
-  ProfilerStart(base::get_unique_name(name).c_str());
+  ProfilerStart(IMP::get_unique_name(name).c_str());
 }
 void Profiler::stop() { ProfilerStop(); }
 

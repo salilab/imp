@@ -268,8 +268,8 @@ struct RemoveCHARMMTypeVisitor {
 
 // Add radii to the newly-created hierarchy from the PDB file
 void add_pdb_radii(Hierarchy d) {
-  base::Pointer<CHARMMParameters> ff = get_all_atom_CHARMM_parameters();
-  base::Pointer<CHARMMTopology> top = ff->create_topology(d);
+  Pointer<CHARMMParameters> ff = get_all_atom_CHARMM_parameters();
+  Pointer<CHARMMTopology> top = ff->create_topology(d);
   top->apply_default_patches();
   top->add_atom_types(d);
   ff->add_radii(d);
@@ -285,7 +285,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
                      PDBSelector* selector, bool select_first_model,
                      bool split_models, bool noradii) {
   IMP_FUNCTION_LOG;
-  IMP::base::PointerMember<PDBSelector> sp(selector);
+  IMP::PointerMember<PDBSelector> sp(selector);
   // hierarchy decorator
   Hierarchies ret;
   std::string root_name;
@@ -456,7 +456,7 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
 Hierarchy read_pdb(base::TextInput in, Model* model,
                    PDBSelector* selector, bool select_first_model,
                    bool no_radii) {
-  IMP::base::PointerMember<PDBSelector> sp(selector);
+  IMP::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,
                              select_first_model, false, no_radii);
   if (ret.empty()) {
@@ -467,7 +467,7 @@ Hierarchy read_pdb(base::TextInput in, Model* model,
 
 Hierarchies read_multimodel_pdb(base::TextInput in, Model* model,
                                 PDBSelector* selector, bool noradii) {
-  IMP::base::PointerMember<PDBSelector> sp(selector);
+  IMP::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,
                              false, true, noradii);
   if (ret.empty()) {
@@ -476,13 +476,13 @@ Hierarchies read_multimodel_pdb(base::TextInput in, Model* model,
   return ret;
 }
 
-void write_pdb(const Selection& mhd, base::TextOutput out, unsigned int model) {
+void write_pdb(const Selection& mhd, TextOutput out, unsigned int model) {
   out.get_stream() << boost::format("MODEL%1$9d") % model << std::endl;
   internal::write_pdb(mhd.get_selected_particles(), out);
   out.get_stream() << "ENDMDL" << std::endl;
 }
 
-void write_multimodel_pdb(const Hierarchies& mhd, base::TextOutput out) {
+void write_multimodel_pdb(const Hierarchies& mhd, TextOutput out) {
   for (unsigned int i = 0; i < mhd.size(); ++i) {
     out.get_stream() << boost::format("MODEL%1$9d") % (i + 1) << std::endl;
     internal::write_pdb(get_leaves(mhd[i]), out);
@@ -490,7 +490,7 @@ void write_multimodel_pdb(const Hierarchies& mhd, base::TextOutput out) {
   }
 }
 
-void write_pdb_of_c_alphas(const Selection& mhd, base::TextOutput out,
+void write_pdb_of_c_alphas(const Selection& mhd, TextOutput out,
                            unsigned int model) {
   IMP_FUNCTION_LOG;
   out.get_stream() << boost::format("MODEL%1$9d") % model << std::endl;
@@ -658,9 +658,9 @@ void WritePDBOptimizerState::do_update(unsigned int call) {
   catch (...) {
   }
   if (append) {
-    write_pdb(hs, base::TextOutput(filename, true), call);
+    write_pdb(hs, TextOutput(filename, true), call);
   } else {
-    write_pdb(hs, base::TextOutput(filename, false), 0);
+    write_pdb(hs, TextOutput(filename, false), 0);
   }
 }
 

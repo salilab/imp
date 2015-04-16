@@ -8,7 +8,7 @@
 #ifndef IMPSAXS_CHI_SCORE_LOG_H
 #define IMPSAXS_CHI_SCORE_LOG_H
 
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 
 #include <IMP/saxs/saxs_config.h>
 #include "Profile.h"

@@ -15,7 +15,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Plane3D.h>
-#include <IMP/base/utility_macros.h>
+#include <IMP/utility_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 

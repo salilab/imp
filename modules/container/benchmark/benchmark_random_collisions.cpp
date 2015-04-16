@@ -8,7 +8,7 @@
 #include <IMP/benchmark/utility.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 #include <IMP/container.h>
 
 using namespace IMP;
@@ -61,7 +61,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   ParticleIndexes pis = IMP::internal::get_index(ps);
   ::boost::uniform_real<> rand(rmin, rmax);
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    XYZR(ps[i]).set_radius(rand(base::random_number_generator));
+    XYZR(ps[i]).set_radius(rand(random_number_generator));
   }
   IMP_NEW(ListSingletonContainer, lsc, (ps));
   IMP_NEW(ClosePairContainer, cpc, (lsc, 0.0, cpf, 1.0));
@@ -94,11 +94,11 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark collision detection");
+  IMP::setup_from_argv(argc, argv, "Benchmark collision detection");
   {
     IMP_NEW(QuadraticClosePairsFinder, cpf, ());
     // std::cout << "Quadratic:" << std::endl;
-    if (IMP::base::run_quick_test) {
+    if (IMP::run_quick_test) {
       test_one("quadratic", cpf, 100, 0, .1, 87.210356);
     } else {
       test_one("quadratic", cpf, 10000, 0, .1, 87.210356);
@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
   {
     IMP_NEW(BoxSweepClosePairsFinder, cpf, ());
     // std::cout << "Box:" << std::endl;
-    if (IMP::base::run_quick_test) {
+    if (IMP::run_quick_test) {
       test_one("box", cpf, 100, 0, .1, 23.306047);
     } else {
       test_one("box", cpf, 10000, 0, .1, 23.306047);
@@ -120,7 +120,7 @@ int main(int argc, char **argv) {
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
     // std::cout << "Grid:" << std::endl;
-    if (IMP::base::run_quick_test) {
+    if (IMP::run_quick_test) {
       test_one("grid", cpf, 100, 0, .1, 23.649063);
     } else {
       test_one("grid", cpf, 10000, 0, .1, 23.649063);

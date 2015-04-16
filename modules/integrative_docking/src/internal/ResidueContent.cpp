@@ -7,8 +7,8 @@
 
 #include <IMP/integrative_docking/internal/ResidueContent.h>
 
-#include <IMP/base/exception.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/exception.h>
+#include <IMP/check_macros.h>
 #include <IMP/utility.h>
 #include <fstream>
 
@@ -19,7 +19,7 @@ IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 void ResidueContent::read_content_file(const std::string& file_name) {
   std::ifstream in_file(file_name.c_str());
   if (!in_file) {
-    IMP_THROW("Can't open file " << file_name, IMP::base::IOException);
+    IMP_THROW("Can't open file " << file_name, IMP::IOException);
   }
 
   std::string line;

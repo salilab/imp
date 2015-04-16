@@ -13,7 +13,7 @@
 #include <IMP/macros.h>
 #include <IMP/Model.h>
 #include <IMP/constants.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <math.h>
 #include <IMP/algebra/eigen3/Eigen/Dense>
 #include <IMP/algebra/eigen3/Eigen/Cholesky>
@@ -83,7 +83,7 @@ IMPISD_BEGIN_NAMESPACE
  *
  */
 
-class IMPISDEXPORT MultivariateFNormalSufficient : public base::Object {
+class IMPISDEXPORT MultivariateFNormalSufficient : public Object {
 
  private:
   IMP_Eigen::VectorXd FM_, Fbar_, epsilon_, Peps_;
@@ -101,7 +101,7 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public base::Object {
   bool use_cg_, first_PW_, first_PWP_;
   double cg_tol_;
   double factor_;
-  base::Pointer<internal::ConjugateGradientEigen> cg_;
+  Pointer<internal::ConjugateGradientEigen> cg_;
 
   internal::CallTimer<IMP_MVN_TIMER_NFUNCS> timer_;
 

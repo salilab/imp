@@ -5,13 +5,13 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 
+using namespace IMP;
 using namespace IMP::algebra;
-using namespace IMP::base;
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv,
+  IMP::setup_from_argv(argc, argv,
                              "benchmark rotation with and without caches");
   set_log_level(SILENT);
   set_check_level(NONE);

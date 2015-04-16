@@ -14,9 +14,9 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/graph/copy.hpp>
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 #include <IMP/domino/internal/maximal_cliques.h>
-#include <IMP/base/vector_property_map.h>
+#include <IMP/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/connected_components.hpp>
@@ -125,8 +125,8 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
 
 IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph &cig) {
   InteractionGraphConstVertexName pm = boost::get(boost::vertex_name, cig);
-  typedef base::Vector<InteractionGraphVertex> Clique;
-  base::Vector<Clique> cliques;
+  typedef Vector<InteractionGraphVertex> Clique;
+  Vector<Clique> cliques;
   internal::maximal_cliques(cig, std::back_inserter(cliques));
   for (unsigned int i = 0; i < cliques.size(); ++i) {
     /*std::cout << "Clique is ";
@@ -198,7 +198,7 @@ void triangulate(InteractionGraph &ig) {
       std::cout << boost::num_vertices(mig)
       << " remaining" << std::endl;*/
     AdjacencyRange be = boost::adjacent_vertices(maxv, mig);
-    const base::Vector<unsigned int> neighbors(be.first, be.second);
+    const Vector<unsigned int> neighbors(be.first, be.second);
     /*std::cout << "Neighbors are ";
       for (unsigned int i=0; i < neighbors.size(); ++i) {
       std::cout << neighbors[i] << " ";
@@ -258,7 +258,7 @@ InteractionGraph get_triangulated(const InteractionGraph &ig) {
 }
 
 SubsetGraph get_minimum_spanning_tree(const CliqueGraph &cg) {
-  base::Vector<CliqueGraphEdge> mst;
+  Vector<CliqueGraphEdge> mst;
   boost::kruskal_minimum_spanning_tree(cg, std::back_inserter(mst));
   SubsetGraph jt(boost::num_vertices(cg));
   SubsetGraphVertexName cm = boost::get(boost::vertex_name, jt);
@@ -328,7 +328,7 @@ bool get_has_edge(InteractionGraph &graph, InteractionGraphVertex va,
 
 void add_edges(const ParticlesTemp &ps, ModelObjects pt,
                const boost::unordered_map<ModelObject *, int> &map,
-               base::Object *blame, InteractionGraph &g) {
+               Object *blame, InteractionGraph &g) {
   IMP_LOG_VARIABLE(ps);
   InteractionGraphEdgeName om = boost::get(boost::edge_name, g);
   std::sort(pt.begin(), pt.end());
@@ -617,12 +617,12 @@ typedef boost::adjacency_list<boost::listS, boost::listS, boost::undirectedS,
     StableSubsetGraph;
 typedef boost::graph_traits<StableSubsetGraph>::edge_descriptor SSGED;
 typedef boost::graph_traits<StableSubsetGraph>::vertex_descriptor SSGVD;
-base::Vector<SSGED> get_independent_edge_set(const StableSubsetGraph &sg) {
-  base::Vector<SSGED> ret;
+Vector<SSGED> get_independent_edge_set(const StableSubsetGraph &sg) {
+  Vector<SSGED> ret;
   boost::unordered_set<SSGVD> seen;
   typedef boost::graph_traits<StableSubsetGraph>::edge_iterator EIt;
   std::pair<EIt, EIt> ep = boost::edges(sg);
-  base::Vector<SSGED> edges(ep.first, ep.second);
+  Vector<SSGED> edges(ep.first, ep.second);
   std::reverse(edges.begin(), edges.end());
   for (unsigned int i = 0; i < edges.size(); ++i) {
     SSGVD source = boost::source(edges[i], sg);
@@ -643,7 +643,7 @@ SSGVD merge_edge(SSGED e, StableSubsetGraph &jt) {
       boost::get(boost::vertex_name, jt);
   typedef boost::graph_traits<StableSubsetGraph>::adjacency_iterator AIt;
   std::pair<AIt, AIt> be = boost::adjacent_vertices(target, jt);
-  const base::Vector<SSGVD> neighbors(be.first, be.second);
+  const Vector<SSGVD> neighbors(be.first, be.second);
   for (unsigned int i = 0; i < neighbors.size(); ++i) {
     if (neighbors[i] != source) {
       if (!boost::edge(source, neighbors[i], jt).second) {
@@ -674,7 +674,7 @@ MergeTree get_balanced_merge_tree(const SubsetGraph &jti) {
     vertex_map[vd] = i;
   }
   while (boost::num_vertices(junction_tree) > 1) {
-    base::Vector<SSGED> is = get_independent_edge_set(junction_tree);
+    Vector<SSGED> is = get_independent_edge_set(junction_tree);
     IMP_INTERNAL_CHECK(is.size() > 0, "No edges found");
     for (unsigned int i = 0; i < is.size(); ++i) {
       int mn = boost::add_vertex(ret);

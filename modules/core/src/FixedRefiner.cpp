@@ -7,7 +7,7 @@
  */
 
 #include "IMP/core/FixedRefiner.h"
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

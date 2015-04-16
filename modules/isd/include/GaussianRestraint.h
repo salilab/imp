@@ -19,11 +19,11 @@ IMPISD_BEGIN_NAMESPACE
 //! Normal probability distribution as a restraint
 class IMPISDEXPORT GaussianRestraint : public Restraint {
  private:
-  base::Pointer<Particle> px_;
+  Pointer<Particle> px_;
   double x_;
-  base::Pointer<Particle> pmu_;
+  Pointer<Particle> pmu_;
   double mu_;
-  base::Pointer<Particle> psigma_;
+  Pointer<Particle> psigma_;
   double sigma_;
   bool isx_, ismu_, issigma_;  // true if it's a particle
   double chi_;

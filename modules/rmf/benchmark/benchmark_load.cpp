@@ -7,7 +7,7 @@
 #include <RMF/FileHandle.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/benchmark/utility.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 
 namespace {
 void test_it(std::string file_name, std::string test_name,
@@ -28,19 +28,19 @@ void test_it(std::string file_name, std::string test_name,
 }
 
 int main(int argc, char *argv[]) {
-  IMP::base::setup_from_argv(argc, argv, "benchmark loading rmf files");
+  IMP::setup_from_argv(argc, argv, "benchmark loading rmf files");
   try {
     IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchy h =
         IMP::atom::read_pdb(IMP::rmf::get_data_path("huge.pdb"), m);
-    test_it(IMP::base::create_temporary_file_name("benchmark_load", ".rmf"),
+    test_it(IMP::create_temporary_file_name("benchmark_load", ".rmf"),
             "rmf", h);
 #ifdef RMF_USE_PROTOBUF
-    test_it(IMP::base::create_temporary_file_name("benchmark_load", ".prmf"),
+    test_it(IMP::create_temporary_file_name("benchmark_load", ".prmf"),
             "prmf", h);
 #endif
   }
-  catch (const IMP::base::Exception &e) {
+  catch (const IMP::Exception &e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
   }
   return 0;

@@ -18,7 +18,7 @@
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
 #include <IMP/internal/utility.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 #include <boost/tuple/tuple.hpp>
 
@@ -65,7 +65,7 @@ IMP_VALUES(HierarchyTraits, HierarchyTraitsList);
 class Hierarchy;
 
 #ifndef IMP_DOXYGEN
-typedef IMP::base::Vector<Hierarchy> GenericHierarchies;
+typedef IMP::Vector<Hierarchy> GenericHierarchies;
 #endif
 
 //! A decorator for helping deal with a hierarchy.
@@ -239,7 +239,7 @@ class IMPCOREEXPORT HierarchyVisitor {
     \see Hierarchy
  */
 class IMPCOREEXPORT ModifierVisitor : public HierarchyVisitor {
-  IMP::base::PointerMember<SingletonModifier> sm_;
+  IMP::PointerMember<SingletonModifier> sm_;
 
  public:
   ModifierVisitor(SingletonModifier *sm) : sm_(sm) {}
@@ -306,7 +306,7 @@ inline F visit_breadth_first(HD d, F f) {
  */
 template <class HD, class F>
 inline F visit_depth_first(HD d, F &f) {
-  base::Vector<HD> stack;
+  Vector<HD> stack;
   stack.push_back(d);
   // d.show(std::cerr);
   do {
@@ -373,7 +373,7 @@ inline F visit_breadth_first_with_data(HD d, F f, typename F::result_type i) {
 template <class HD, class F>
 inline F visit_depth_first_with_data(HD d, F f, typename F::result_type i) {
   typedef std::pair<typename F::result_type, HD> DP;
-  base::Vector<DP> stack;
+  Vector<DP> stack;
   stack.push_back(DP(i, d));
   // d.show(std::cerr);
   do {
@@ -488,7 +488,7 @@ inline Out gather_by_attributes(H h, K0 k0, V0 v0, K1 k1, V1 v1, Out out) {
 template <class HD, class F>
 inline HD find_breadth_first(HD h, F f) {
   if (f(h.get_particle())) return h;
-  base::Vector<HD> stack;
+  Vector<HD> stack;
   stack.push_back(h);
   // d.show(std::cerr);
   do {

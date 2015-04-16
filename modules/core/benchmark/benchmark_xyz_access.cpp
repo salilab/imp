@@ -7,7 +7,7 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -255,7 +255,7 @@ void do_benchmark(std::string descr, unsigned int n) {
     IMP::benchmark::report("xyz " + descr, "vector", runtime, dist);
   }
   {
-    IMP::base::Vector<VV> coordinates;
+    IMP::Vector<VV> coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
       coordinates.push_back(VV());
       coordinates.back().x = IMP::core::XYZ(particles[i]).get_x();
@@ -275,7 +275,7 @@ void do_benchmark(std::string descr, unsigned int n) {
   }
   // TEST 4
   {
-    IMP::base::Vector<VectorHolder> coordinates;
+    IMP::Vector<VectorHolder> coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
       coordinates.push_back(VectorHolder());
       coordinates.back().c =
@@ -317,10 +317,10 @@ void do_benchmark(std::string descr, unsigned int n) {
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv,
+  IMP::setup_from_argv(argc, argv,
                              "Benchmark accessing particle attributes");
   do_benchmark("small", 100);
-  if (!IMP::base::run_quick_test) {
+  if (!IMP::run_quick_test) {
     do_benchmark("large", 1000);
     do_benchmark("huge", 10000);
   }

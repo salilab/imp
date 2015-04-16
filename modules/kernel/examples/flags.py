@@ -1,8 +1,8 @@
-## \example base/flags.py
+## \example kernel/flags.py
 # A simple example of how to use IMP flags support in a python
 # executable. Run with "--help" to see all available flags.
 
-import IMP.base
+import IMP
 import sys
 
 IMP.add_string_flag("hello", "Hello world", "How to say hello")

@@ -13,7 +13,7 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-void write_connolly_surface(atom::Atoms atoms, base::TextOutput fn,
+void write_connolly_surface(atom::Atoms atoms, TextOutput fn,
                             float density, float probe_radius) {
 
   algebra::Sphere3Ds spheres;

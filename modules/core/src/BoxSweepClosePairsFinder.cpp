@@ -46,7 +46,7 @@ struct NBLBbox {
 
 void copy_particles_to_boxes(Model *m,
                              const ParticleIndexes &ps, Float distance,
-                             base::Vector<NBLBbox> &boxes) {
+                             Vector<NBLBbox> &boxes) {
   boxes.resize(ps.size());
   for (unsigned int i = 0; i < ps.size(); ++i) {
     Float r = distance / 2.0;
@@ -84,7 +84,7 @@ struct BoxNBLBbox {
 
 void box_copy_particles_to_boxes(const algebra::BoundingBox3Ds &bbx,
                                  Float distance,
-                                 base::Vector<BoxNBLBbox> &boxes) {
+                                 Vector<BoxNBLBbox> &boxes) {
   boxes.resize(bbx.size());
   double r = distance / 2.0;
   for (unsigned int i = 0; i < bbx.size(); ++i) {
@@ -112,7 +112,7 @@ ParticleIndexPairs BoxSweepClosePairsFinder::get_close_pairs(
     Model *m, const ParticleIndexes &ca,
     const ParticleIndexes &cb) const {
   set_was_used(true);
-  base::Vector<NBLBbox> boxes0, boxes1;
+  Vector<NBLBbox> boxes0, boxes1;
   copy_particles_to_boxes(m, ca, get_distance(), boxes0);
   copy_particles_to_boxes(m, cb, get_distance(), boxes1);
 
@@ -127,7 +127,7 @@ ParticleIndexPairs BoxSweepClosePairsFinder::get_close_pairs(
     Model *m, const ParticleIndexes &ca) const {
   set_was_used(true);
   ParticleIndexPairs out;
-  base::Vector<NBLBbox> boxes;
+  Vector<NBLBbox> boxes;
   copy_particles_to_boxes(m, ca, get_distance(), boxes);
 
   CGAL::box_self_intersection_d(boxes.begin(), boxes.end(), AddToList(out));
@@ -138,7 +138,7 @@ IntPairs BoxSweepClosePairsFinder::get_close_pairs(
     const algebra::BoundingBox3Ds &bas,
     const algebra::BoundingBox3Ds &bbs) const {
   set_was_used(true);
-  base::Vector<BoxNBLBbox> boxes0, boxes1;
+  Vector<BoxNBLBbox> boxes0, boxes1;
   box_copy_particles_to_boxes(bas, get_distance(), boxes0);
   box_copy_particles_to_boxes(bbs, get_distance(), boxes1);
 
@@ -153,7 +153,7 @@ IntPairs BoxSweepClosePairsFinder::get_close_pairs(
     const algebra::BoundingBox3Ds &bbs) const {
   set_was_used(true);
   IntPairs out;
-  base::Vector<BoxNBLBbox> boxes;
+  Vector<BoxNBLBbox> boxes;
   box_copy_particles_to_boxes(bbs, get_distance(), boxes);
 
   CGAL::box_self_intersection_d(boxes.begin(), boxes.end(), BoxAddToList(out));

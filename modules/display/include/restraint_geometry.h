@@ -12,7 +12,7 @@
 #include "geometry_macros.h"
 #include "Colored.h"
 #include "declare_Geometry.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/PairContainer.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -25,8 +25,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
     efficiency, it does not update the model.
 */
 class IMPDISPLAYEXPORT RestraintGeometry : public Geometry {
-  IMP::base::PointerMember<Restraint> r_;
-  IMP::base::Pointer<Model> m_;
+  IMP::PointerMember<Restraint> r_;
+  IMP::Pointer<Model> m_;
   //! Use this if the restraint is not part of the model
   RestraintGeometry(Restraint *p, Model *m);
 
@@ -39,7 +39,7 @@ class IMPDISPLAYEXPORT RestraintGeometry : public Geometry {
 
 //! Geometry for a whole set of restraints
 class IMPDISPLAYEXPORT RestraintSetGeometry : public Geometry {
-  IMP::base::Pointer<RestraintSet> r_;
+  IMP::Pointer<RestraintSet> r_;
 
  public:
   RestraintSetGeometry(RestraintSet *p);

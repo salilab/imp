@@ -8,7 +8,7 @@
 #include <IMP/atom/Representation.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Mass.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 
 #include <boost/unordered_map.hpp>
 #include <sstream>

@@ -10,18 +10,18 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/vector_generators.h>
-#include <IMP/base/log.h>
-#include <IMP/base/random.h>
+#include <IMP/log.h>
+#include <IMP/random.h>
 #include <IMP/constants.h>
 #include <IMP/atom/constants.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 #include <IMP/internal/constants.h>
 #include <IMP/internal/units.h>
 #include <boost/random/normal_distribution.hpp>
 #include <IMP/atom/Diffusion.h>
 #include <IMP/Configuration.h>
 #include <IMP/algebra/LinearFit.h>
-#include <IMP/base/thread_macros.h>
+#include <IMP/thread_macros.h>
 
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/rigid_bodies.h>
@@ -327,7 +327,7 @@ bool is_ok_step(BrownianDynamics *bd, Configuration *c, double step) {
                   "In and out don't match " << bd->get_maximum_time_step());
   Floats es;
   unsigned int ns = 100;
-  base::Vector<algebra::Vector3Ds> coords(ns, algebra::Vector3Ds(ps.size()));
+  Vector<algebra::Vector3Ds> coords(ns, algebra::Vector3Ds(ps.size()));
   for (unsigned int i = 0; i < ns; ++i) {
     es.push_back(bd->optimize(1));
     for (unsigned int j = 0; j < coords[i].size(); ++j) {

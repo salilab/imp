@@ -22,7 +22,7 @@ IMPISD_BEGIN_NAMESPACE
     Default values: \f$R_0=1\f$ and \f$c=10\f$
  */
 class IMPISDEXPORT vonMisesKappaConjugateRestraint : public Restraint {
-  base::Pointer<Particle> kappa_;
+  Pointer<Particle> kappa_;
   double old_kappaval;
   bool bessel_init_;
   double I0_, I1_;
