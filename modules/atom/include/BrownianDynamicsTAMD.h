@@ -87,7 +87,7 @@ class IMPATOMEXPORT BrownianDynamicsTAMD : public BrownianDynamics {
   /** advances a chunk of ps from index begin to end
 
       @param dtfs time step in femtoseconds
-      @param ikt invere kT for current chunk step
+      @param ikt inverse kT for current chunk step
       @param ps particle indexes to advance
       @param begin beginning index of chunk of ps
       @param end end index of chunk of ps
