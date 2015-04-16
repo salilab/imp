@@ -5,6 +5,8 @@ ChangeLog {#changelog}
 - Documentation has been revised and updated; the main manual now gives a
   gentler introduction to IMP, with more technical details on the code
   provided in a separate reference guide.
+- The IMP::base and IMP::kernel namespaces are now deprecated. Functionality
+  in both base and kernel now lives in the top-level "IMP" namespace.
 - On platforms that support it, OpenMP is turned on by default. To speed up
   some parts of IMP, call IMP::base::set_number_of_threads(). By default,
   only a single thread is used.
