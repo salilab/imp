@@ -28,7 +28,7 @@ RestraintSet * create_elastic_network(const Particles &ps,
       if (dist<dist_cutoff){
         IMP_NEW(core::HarmonicDistancePairScore,hdist,
                 (dist,strength));
-        base::Pointer<Restraint> rx = IMP::create_restraint(hdist.get(),
+        Pointer<Restraint> rx = IMP::create_restraint(hdist.get(),
                                            ParticlePair(ps[n1],ps[n2]));
         rs->add_restraint(rx);
       }
