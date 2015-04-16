@@ -50,8 +50,8 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
   //! Simulate for a given time in fs
   /**
-     simulate for a given time, by calling the protected
-     method do_step() iteratively.
+     simulate for at least the passed time, by calling do_simulate()
+     with optimizing states turned on
 
      @param time_in_fs time in femtoseconds
    */
@@ -60,10 +60,8 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   //! Simulate for a given time in fs using a wave step function
   //! with maximal time step increased by up to max_time_step_factor
   /**
-     simulate for a given time, by calling the protected
-     method do_step() iteratively, and using a self adjusting time
-     step that can grow up to max_time_step_factor times than
-     the default time step returned by get_maximum_time_step()
+     simulate for at least the passed time, by calling do_simulate_wave()
+     with optimizing states turned on
 
      @param time_in_fs time_in_fs in femtoseconds
      @param max_time_step_factor the maximal factor by which the
@@ -152,9 +150,13 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   /** @} */
   virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE IMP_FINAL;
 
-  /** A Simulator class can perform setup operations before a series
-      of simulation steps is taken. */
-  virtual void setup(const ParticleIndexes &) {};
+  /** Perform any setup operations needed before running a series
+      of simulation steps
+
+      @note Called by do_simulate() or do_simulate_wave() before iterative
+        calls to do_step()
+*/
+  virtual void setup(const kernel::ParticleIndexes &) {};
 
   //! Perform a single time step
   /** \param[in] dt maximum time step value
@@ -165,12 +167,27 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   //! Return true if the passed particle is appropriate for the simulation.
   virtual bool get_is_simulation_particle(ParticleIndex p) const = 0;
 
- private:
-  // see simulate() documentation
-  double do_simulate(double time);
-  // see simulate_wave() documentation
-  double do_simulate_wave(double time_in_fs, double max_time_step_factor = 10.0,
+  /** called by simulate() -
+      calls setup() and then calls do_step() iteratively
+      till given simulation time is completed
+
+      @param time time to simulate
+
+      @return score at end of simulation period
+  */
+  virtual double do_simulate(double time);
+
+  /** Calls the protected method setup() and then calls
+      method do_step() iteratively, and using a self adjusting time
+      step that can grow up to max_time_step_factor times than
+      the default time step returned by get_maximum_time_step()
+
+      \see simulate_wave()
+  */
+  virtual double do_simulate_wave(double time_in_fs, double max_time_step_factor = 10.0,
                           double base = 1.5);
+
+ private:
   double temperature_;
   double max_time_step_;
   double current_time_;

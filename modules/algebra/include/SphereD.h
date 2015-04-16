@@ -55,6 +55,7 @@ class SphereD : public GeometricPrimitiveD<D> {
 #ifndef SWIG
   VectorD<D> &_access_center() { return center_; }
   void _set_radius(double d) { radius_ = d; }
+  void _set_center(const VectorD<D> &center){ center_ = center; }
   double &operator[](unsigned int i) {
     IMP_USAGE_CHECK(i < D + 1, "Out of range");
     if (i < D) {

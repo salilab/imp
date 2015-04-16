@@ -1,21 +1,21 @@
 /**
- *  \file IMP/atom/BrownianDynamics.h
+ *  \file IMP/atom/BrownianDynamicsTAMD.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPATOM_BROWNIAN_DYNAMICS_H
-#define IMPATOM_BROWNIAN_DYNAMICS_H
+#ifndef IMPATOM_BROWNIAN_DYNAMICS_TAMD_H
+#define IMPATOM_BROWNIAN_DYNAMICS_TAMD_H
 
 #include <IMP/atom/atom_config.h>
 #include "Diffusion.h"
 #include "Simulator.h"
 #include "atom_macros.h"
-#include <IMP/Particle.h>
+#include <IMP/kernel/Particle.h>
 #include <IMP/Optimizer.h>
-#include <IMP/internal/units.h>
+#include <IMP/kernel/internal/units.h>
 #include <IMP/algebra/Vector3D.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -34,9 +34,9 @@ class SimulationParameters;
     RigidBodyDiffusion decorator can be used to specify a rotational
     diffusion coefficient for core::RigidBody particles.  The
     optimizer assumes the scoring function to be energy in kcal/mol, and the xyz
-    coordinates to be in angstroms and the diffusion coefficient of
+    coordinates to be in angstroms and the diffusion coefficent of
     each particle be in \f$A^2/fs\f$ (or \f$Radian^2/fs\f$ for rotational
-    diffusion coefficient).  Particles without optimized x,y,z
+    diffusion coefficient).  kernel::Particles without optimized x,y,z
     and nonoptimized D are skipped.
 
     The optimizer can either automatically determine which particles
@@ -58,19 +58,13 @@ class SimulationParameters;
     force field torque, proportionally to the rotational diffusion
     coefficient, the time step size, and inversely proportional kT.
 
-    If the skt (stochastic Runge Kutta) flag is true, the simulation is
+    If the skt (stochastic runge kutta) flag is true, the simulation is
     altered slightly to apply the SKT scheme.
 
     \see Diffusion
     \see RigidBodyDiffusion
   */
-class IMPATOMEXPORT BrownianDynamics : public Simulator {
- private:
-
-  double max_step_;
-  bool srk_;
-  base::Vector<algebra::Vector3D> forces_;
-
+class IMPATOMEXPORT BrownianDynamicsTAMD : public BrownianDynamics {
  public:
   //! Create the optimizer
   /** If sc is not null, that container will be used to find particles
@@ -85,30 +79,9 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
      @note wave_factor is an advanced feature - if you're not sure, just use
                        its default, see also Simulator::simulate_wave()
   */
-  BrownianDynamics(Model *m, std::string name = "BrownianDynamics%1%",
-                   double wave_factor = 1.0);
-  void set_maximum_move(double ms) { max_step_ = ms; }
-  void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
-
-  IMP_OBJECT_METHODS(BrownianDynamics);
-
- protected:
-  /** a set of setup operations before a series of simulation steps */
-  virtual void setup(const kernel::ParticleIndexes &ps) IMP_OVERRIDE;
-
-  /** Calls do_advance_chunk() to advance ps in chunks
-
-   @param sc particles to simulate in this step
-   @param dt maximal step size in femtoseconds
-
-   @return the time step actually simulated (for this class,
-           it is always equal to the inut dt)
-  */
-  virtual double do_step(const kernel::ParticleIndexes &sc,
-                         double dt) IMP_OVERRIDE;
-
-  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const
-      IMP_OVERRIDE;
+  BrownianDynamicsTAMD(kernel::Model *m,
+                       std::string name = "BrownianDynamicsTAMD%1%",
+                       double wave_factor = 1.0);
 
  protected:
   /** advances a chunk of ps from index begin to end
@@ -119,49 +92,19 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
       @param begin beginning index of chunk of ps
       @param end end index of chunk of ps
   */
-  virtual void do_advance_chunk(double dtfs, double ikt,
-                             const kernel::ParticleIndexes &ps,
-                             unsigned int begin, unsigned int end);
+  void do_advance_chunk(double dtfs, double ikt,
+                        const kernel::ParticleIndexes &ps,
+                        unsigned int begin, unsigned int end)
+    IMP_OVERRIDE;
 
-  //! returns the maximal step size allowed in this simulation
-  double get_max_step() const { return max_step_; }
-
-  //! returns true if implementing the Stochastic Runga-Kutta
-  //! Brownian Dynamics variant
-  double get_is_srk() const { return srk_; }
-
-#ifndef SWIG
-  //! set the force felt on particle i to f
-  void set_force(unsigned int i, algebra::Vector3D const& f)
-  { forces_[i]=f; }
-#endif
-
-  //! get the force felt on each particle
-  algebra::Vector3Ds const& get_forces() const
-    { return forces_; }
-
-  //! get the force felt on particle i
-  algebra::Vector3D const& get_force(unsigned int i) const
-    { return forces_[i]; }
-
-private:
+ private:
   void advance_coordinates_1(kernel::ParticleIndex pi, unsigned int i,
-
                              double dtfs, double ikT);
-  void advance_coordinates_0(ParticleIndex pi, unsigned int i,
+  void advance_coordinates_0(kernel::ParticleIndex pi, unsigned int i,
                              double dtfs, double ikT);
   void advance_orientation_0(kernel::ParticleIndex pi, double dtfs, double ikT);
 };
 
-/** Repeatedly run the current model with Brownian dynamics at different time
-    steps to try to find the maximum time step that can be used without
-    the model exploding.
-*/
-IMPATOMEXPORT double get_maximum_time_step_estimate(BrownianDynamics *bd);
-
-#ifndef IMP_DOXYGEN
-IMPATOMEXPORT double get_harmonic_sigma(double D, double f);
-#endif
 IMPATOM_END_NAMESPACE
 
-#endif /* IMPATOM_BROWNIAN_DYNAMICS_H */
+#endif /* IMPATOM_BROWNIAN_DYNAMICS_TAMD_H */
