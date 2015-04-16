@@ -12,7 +12,7 @@
 #ifndef IMPNPC_PROTEIN_LOCALIZATION_RESTRAINT_H
 #define IMPNPC_PROTEIN_LOCALIZATION_RESTRAINT_H
 
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/Restraint.h>
 #include <IMP/npc/npc_config.h>
 #include <IMP/SingletonContainer.h>
@@ -21,7 +21,7 @@ IMPNPC_BEGIN_NAMESPACE
 
 class IMPNPCEXPORT ZAxialPositionLowerRestraint : public Restraint
 {
-  IMP::base::PointerMember<IMP::SingletonContainer> sc_;
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
   double lower_bound_;
   double sigma_;
   bool consider_radius_;
@@ -46,7 +46,7 @@ public:
 
 class IMPNPCEXPORT XYRadialPositionLowerRestraint : public Restraint
 {
-  IMP::base::PointerMember<IMP::SingletonContainer> sc_;
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
   double lower_bound_;
   double sigma_;
   bool consider_radius_;
@@ -71,7 +71,7 @@ public:
 
 class IMPNPCEXPORT XYRadialPositionUpperRestraint : public Restraint
 {
-  IMP::base::PointerMember<IMP::SingletonContainer> sc_;
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
   double upper_bound_;
   double sigma_;
   bool consider_radius_;
@@ -96,7 +96,7 @@ public:
 
 class IMPNPCEXPORT ZAxialPositionUpperRestraint : public Restraint
 {
-  IMP::base::PointerMember<IMP::SingletonContainer> sc_;
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
   double upper_bound_;
   double sigma_;
   bool consider_radius_;
@@ -121,7 +121,7 @@ public:
 
 class IMPNPCEXPORT ProteinContactRestraint : public Restraint
 {
-  IMP::base::PointerMember<IMP::SingletonContainer> sc_;
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
   double tolerance_factor_;
   double sigma_;
 public:
@@ -145,7 +145,7 @@ public:
 
 class IMPNPCEXPORT ProteinChainRestraint : public Restraint
 {
-  IMP::base::PointerMember<IMP::SingletonContainer> sc_;
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
   double sigma_;
 public:
   ProteinChainRestraint(Model *m, SingletonContainerAdaptor sc, 
@@ -168,7 +168,7 @@ public:
 
 class IMPNPCEXPORT MembraneSurfaceLocationRestraint : public Restraint
 {
-  IMP::base::PointerMember<IMP::SingletonContainer> sc_;
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
   double R_;
   double r_;
   double sigma_;
@@ -194,7 +194,7 @@ public:
 
 class IMPNPCEXPORT PoreSideVolumeLocationRestraint : public Restraint
 {
-  IMP::base::PointerMember<IMP::SingletonContainer> sc_;
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
   double R_;
   double r_;
   double sigma_;
@@ -221,7 +221,7 @@ public:
 
 class IMPNPCEXPORT PerinuclearVolumeLocationRestraint : public Restraint
 {
-  IMP::base::PointerMember<IMP::SingletonContainer> sc_;
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
   double R_;
   double r_;
   double sigma_;
@@ -248,7 +248,7 @@ public:
 
 class IMPNPCEXPORT AssemblySymmetryByDistanceRestraint : public Restraint
 {
-  IMP::base::PointerMember<IMP::SingletonContainer> sc_;
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
   double sigma_;
 public:
   AssemblySymmetryByDistanceRestraint(Model *m, SingletonContainerAdaptor sc, 
@@ -272,7 +272,7 @@ public:
 class IMPNPCEXPORT AssemblySymmetryByDihedralRestraint
   : public Restraint
 {
-  IMP::base::PointerMember<IMP::SingletonContainer> sc_;
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
   double sigma_;
 public:
   AssemblySymmetryByDihedralRestraint(Model *m, SingletonContainerAdaptor sc, 
@@ -296,7 +296,7 @@ public:
 class IMPNPCEXPORT ProteinProximityRestraint
   : public Restraint
 {
-  IMP::base::PointerMember<IMP::SingletonContainer> sc_;
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
   double sigma_;
   double max_dist_;
 public:
