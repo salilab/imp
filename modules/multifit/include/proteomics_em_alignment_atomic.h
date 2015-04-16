@@ -76,7 +76,7 @@ class IMPMULTIFITEXPORT ProteomicsEMAlignmentAtomic : public Object {
   double threshold_;
   atom::Hierarchies mhs_;
   core::RigidBodies rbs_;
-  PointerModel> mdl_;
+  Pointer<Model> mdl_;
   AlignmentParams params_;
   IntsLists sampled_solutions_;              // instead of cg
   domino::Assignments sampled_assignments_;  // instead of sampled_solutions
