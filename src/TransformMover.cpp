@@ -7,7 +7,7 @@
  */
 #include <IMP/pmi/TransformMover.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <IMP/algebra/vector_generators.h>
 IMPPMI_BEGIN_NAMESPACE
 
@@ -54,7 +54,7 @@ core::MonteCarloMoverResult TransformMover::do_propose() {
   if (constr_==0){
   axis_=algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());}
   ::boost::uniform_real<> rand(-max_angle_, max_angle_);
-  Float angle = rand(base::random_number_generator);
+  Float angle = rand(random_number_generator);
   algebra::Rotation3D r = algebra::get_rotation_about_axis(axis_, angle);
   algebra::Transformation3D t_(r, translation); 
   

@@ -12,7 +12,7 @@
 #include "pmi_config.h"
 #include <IMP/Restraint.h>
 #include <IMP/Particle.h>
-#include <IMP/base/tuple_macros.h>
+#include <IMP/tuple_macros.h>
 //#include <IMP/container/CloseBipartitePairContainer.h>
 
 IMPPMI_BEGIN_NAMESPACE
@@ -23,7 +23,7 @@ IMPPMI_BEGIN_NAMESPACE
 class IMPPMIEXPORT CompositeRestraint : public Restraint
 {
     //particle indexes in the composite
-    base::Vector<ParticleIndexes> pis_;
+    Vector<ParticleIndexes> pis_;
     ParticleIndexes handle_particle_indexes_;
     double coffd_;
     double l_;
@@ -65,7 +65,7 @@ class IMPPMIEXPORT CompositeRestraint : public Restraint
 
 
     //boost::unordered_map<std::tuple<unsigned int,unsigned int>,
-    //          base::Pointer<container::CloseBipartitePairContainer>> map_cont_;
+    //          Pointer<container::CloseBipartitePairContainer>> map_cont_;
 
   /* call for probability */
   double get_probability_per_particle_excluding(unsigned int ipart,
