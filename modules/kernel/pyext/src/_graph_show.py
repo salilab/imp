@@ -51,8 +51,8 @@ def show_altgraph(g):
 
 
 def show_graphviz(g):
-    tfn = IMP.create_temporary_file_name("graph", ".dot")
-    tfon = IMP.create_temporary_file_name("graph", ".pdf")
+    tfn = create_temporary_file_name("graph", ".dot")
+    tfon = create_temporary_file_name("graph", ".pdf")
     st = g.get_graphviz_string()
     open(tfn, "w").write(st)
     try:
