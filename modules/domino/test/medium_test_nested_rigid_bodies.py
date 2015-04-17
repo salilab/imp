@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)  # TERSE)#VERBOSE)
+        IMP.set_log_level(IMP.SILENT)  # TERSE)#VERBOSE)
 
     def test_docking_solutions(self):
         """Test nested rigid bodies"""
@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
         for i in range(len(rbs) - 1):
             rbs[0].add_member(rbs[i + 1])
         # set ev
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         ls = IMP.container.ListSingletonContainer(aps)
         sev = IMP.core.ExcludedVolumeRestraint(ls)
         mdl.add_restraint(sev)

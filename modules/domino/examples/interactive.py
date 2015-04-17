@@ -26,7 +26,7 @@ pst = IMP.domino.ParticleStatesTable()
 for p in ps:
     pst.set_particle_states(p, space)
 
-m.set_log_level(IMP.base.SILENT)
+m.set_log_level(IMP.SILENT)
 
 # make sure to break up the
 mt = IMP.domino.get_merge_tree([r], pst)
@@ -39,7 +39,7 @@ ds = IMP.domino.DominoSampler(m, pst)
 # use the default setup for filters
 ds.set_scoring_function([r])
 ds.set_merge_tree(mt)
-ds.set_log_level(IMP.base.SILENT)
+ds.set_log_level(IMP.SILENT)
 
 # recurse down the tree getting the assignments and printing them
 

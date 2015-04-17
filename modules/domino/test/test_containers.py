@@ -122,7 +122,7 @@ class Tests(IMP.test.TestCase):
 
         # create particles
         m = IMP.Model()
-        m.set_log_level(IMP.base.SILENT)
+        m.set_log_level(IMP.SILENT)
         ps = []
         for i in range(0, 3):
             p = IMP.Particle(m)

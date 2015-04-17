@@ -64,8 +64,8 @@ class Tests(IMP.test.TestCase):
         """Test that simple interaction graphs are fine"""
         m = IMP.Model()
         ps = []
-        IMP.base.set_log_level(IMP.base.SILENT)
-        m.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.SILENT)
         for i in range(3):
             p = IMP.Particle(m)
             d = IMP.core.XYZ.setup_particle(p)

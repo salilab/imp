@@ -19,7 +19,7 @@ import RMF
 
 resolution = .5
 
-sls = IMP.base.SetLogState(IMP.base.SILENT)
+sls = IMP.SetLogState(IMP.SILENT)
 
 m = IMP.Model()
 
@@ -66,11 +66,11 @@ for p in ps:
 # now create a restraint cache
 # cache the most recently used one million scores
 rc = IMP.domino.RestraintCache(pst, 1000000)
-r.set_log_level(IMP.base.SILENT)
+r.set_log_level(IMP.SILENT)
 rc.add_restraints([r])
 
 s = IMP.domino.DominoSampler(m, pst)
-s.set_check_level(IMP.base.NONE)
+s.set_check_level(IMP.NONE)
 ef = IMP.domino.ExclusionSubsetFilterTable(pst)
 # pass the cache to the restraint score based filter
 # it will use all the restraints in the cache

@@ -52,14 +52,14 @@ class Tests(IMP.test.TestCase):
             [m.get_root_restraint_set()], pst)
         # IMP.show_graphviz(ig)
         print("dg")
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         dg = IMP.get_dependency_graph(m)
         # IMP.show_graphviz(dg)
         print("jt")
         jt = IMP.domino.get_junction_tree(ig)
         # jt.show_dotty()
         s = IMP.domino.DominoSampler(m, pst)
-        s.set_log_level(IMP.base.VERBOSE)
+        s.set_log_level(IMP.VERBOSE)
         cg = s.create_sample()
         self.assertEqual(cg.get_number_of_configurations(), 4)
 
@@ -148,9 +148,9 @@ class Tests(IMP.test.TestCase):
                                    (rb0, rb1))
         m.add_restraint(r)
         dg = IMP.get_dependency_graph(m)
-        # IMP.base.show_graphviz(dg)
+        # IMP.show_graphviz(dg)
         ig = IMP.domino.get_interaction_graph(m, [rb0, rb1, rb2])
-        # IMP.base.show_graphviz(ig)
+        # IMP.show_graphviz(ig)
         for v in ig.get_vertices():
             if ig.get_vertex_name(v) == rb0 or ig.get_vertex_name(v) == rb1:
                 self.assertEqual(len(ig.get_out_neighbors(v)),

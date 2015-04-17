@@ -34,7 +34,7 @@ class Tests(IMP.test.TestCase):
     def test_global_min3(self):
         """Test that showing interaction graphs is fine"""
         m = IMP.Model()
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         ps = IMP._create_particles_from_pdb(
             self.get_input_file_name("small_protein.pdb"),
             m)

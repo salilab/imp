@@ -18,7 +18,7 @@ print("File name is", file_name)
 
 # create a list of assignments
 
-IMP.base.set_log_level(IMP.base.MEMORY)
+IMP.set_log_level(IMP.MEMORY)
 asl = IMP.domino.WriteAssignmentContainer(file_name, ss, ps, "writer")
 written = []
 for i in range(0, 5):

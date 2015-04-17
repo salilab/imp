@@ -41,7 +41,7 @@ class Tests(IMP.test.TestCase):
         ps = IMP.domino.XYZStates(pts)
         pst.set_particle_states(p0, ps)
         pst.set_particle_states(p1, IMP.domino.XYZStates(pts))
-        IMP.base.set_log_level(IMP.base.TERSE)
+        IMP.set_log_level(IMP.TERSE)
         ssl = IMP.domino.get_state_clusters(s, states, pst, 6)
         print("Solutions are")
         for s in ssl:

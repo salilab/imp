@@ -82,7 +82,7 @@ def display(m, helices, name):
         g.set_color(IMP.display.get_display_color(i))
         w.add_geometry(g)
 
-IMP.base.set_log_level(IMP.base.SILENT)
+IMP.set_log_level(IMP.SILENT)
 print("creating representation")
 (m, helices) = create_representation()
 
@@ -94,8 +94,8 @@ pst = create_discrete_states(m, helices)
 
 print("creating sampler")
 s = create_sampler(m, rs, pst)
-m.set_log_level(IMP.base.SILENT)
-IMP.base.set_log_level(IMP.base.VERBOSE)
+m.set_log_level(IMP.SILENT)
+IMP.set_log_level(IMP.VERBOSE)
 print("sampling")
 cs = s.create_sample()
 

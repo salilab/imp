@@ -6,7 +6,7 @@ import IMP.domino
 import IMP.core
 
 m = IMP.Model()
-m.set_log_level(IMP.base.SILENT)
+m.set_log_level(IMP.SILENT)
 ds = [IMP.core.XYZR.setup_particle(IMP.Particle(m))
       for i in range(0, 3)]
 for i, d in enumerate(ds):
@@ -56,7 +56,7 @@ def setup(cover, scale):
           lf]
     sampler = IMP.domino.DominoSampler(m, pst)
     sampler.set_subset_filter_tables(fs)
-    sampler.set_log_level(IMP.base.SILENT)
+    sampler.set_log_level(IMP.SILENT)
     return (sampler, lf, pst)
 
 (sampler, lf, pst) = setup(covers[0], 4.0)
