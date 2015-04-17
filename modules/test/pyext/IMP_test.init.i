@@ -151,16 +151,16 @@ class TestCase(unittest.TestCase):
         self._progname = os.path.abspath(sys.argv[0])
 
     def setUp(self):
-        self.__check_level = IMP.base.get_check_level()
+        self.__check_level = IMP.get_check_level()
         # Turn on expensive runtime checks while running the test suite:
-        IMP.base.set_check_level(IMP.base.USAGE_AND_INTERNAL)
+        IMP.set_check_level(IMP.USAGE_AND_INTERNAL)
         # python ints are bigger than C++ ones, so we need to make sure it fits
         # otherwise python throws fits
-        IMP.base.random_number_generator.seed(hash(time.time())%2**30)
+        IMP.random_number_generator.seed(hash(time.time())%2**30)
 
     def tearDown(self):
         # Restore original check level
-        IMP.base.set_check_level(self.__check_level)
+        IMP.set_check_level(self.__check_level)
 
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
@@ -840,19 +840,19 @@ class RefCountChecker(object):
         # Make sure no director objects are hanging around; otherwise these
         # may be unexpectedly garbage collected later, decreasing the
         # live object count
-        IMP.base._director_objects.cleanup()
+        IMP._director_objects.cleanup()
         self.__testcase = testcase
-        if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
-            self.__basenum = IMP.base.Object.get_number_of_live_objects()
-            self.__names= IMP.base.get_live_object_names()
+        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+            self.__basenum = IMP.Object.get_number_of_live_objects()
+            self.__names= IMP.get_live_object_names()
 
     def assert_number(self, expected):
         "Make sure that the number of references matches the expected value."
         t = self.__testcase
-        IMP.base._director_objects.cleanup()
-        if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
-            newnames=[x for x in IMP.base.get_live_object_names() if x not in self.__names]
-            newnum=IMP.base.Object.get_number_of_live_objects()-self.__basenum
+        IMP._director_objects.cleanup()
+        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+            newnames=[x for x in IMP.get_live_object_names() if x not in self.__names]
+            newnum=IMP.Object.get_number_of_live_objects()-self.__basenum
             t.assertEqual(newnum, expected,
                           "Number of objects don't match: "\
                            +str(newnum)\
@@ -865,9 +865,9 @@ class DirectorObjectChecker(object):
     """Check to make sure the number of director references is as expected"""
 
     def __init__(self, testcase):
-        IMP.base._director_objects.cleanup()
+        IMP._director_objects.cleanup()
         self.__testcase = testcase
-        self.__basenum = IMP.base._director_objects.get_object_count()
+        self.__basenum = IMP._director_objects.get_object_count()
 
     def assert_number(self, expected, force_cleanup=True):
         """Make sure that the number of references matches the expected value.
@@ -876,8 +876,8 @@ class DirectorObjectChecker(object):
         """
         t = self.__testcase
         if force_cleanup:
-            IMP.base._director_objects.cleanup()
-        t.assertEqual(IMP.base._director_objects.get_object_count() \
+            IMP._director_objects.cleanup()
+        t.assertEqual(IMP._director_objects.get_object_count() \
                       - self.__basenum, expected)
 
 # Make sure that the IMP binary directory (build/bin) is in the PATH, if
