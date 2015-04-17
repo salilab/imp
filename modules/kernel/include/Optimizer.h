@@ -38,7 +38,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     - the optimizer calls Model::evaluate() to compute the score
     (and possibly the derivatives) of the
     current conformation of the Model.
-    - the optimizer uses this information to update the optimizeable
+    - the optimizer uses this information to update the optimizable
     parameters of the Particles contained in the Model.
 
     \see Sampler
