@@ -33,6 +33,7 @@
 #include <string>
 
 #ifdef _MSC_VER
+#define NOMINMAX
 
 #ifdef %(cppprefix)s_EXPORTS
 #define %(cppprefix)sEXPORT __declspec(dllexport)
