@@ -115,8 +115,7 @@ struct Pointer
 
 #ifdef IMP_DOXYGEN
   //! Relinquish control of the raw pointer stored in the Pointer
-  /** Relinquish control of the raw pointer stored in the Pointer.
-      Use this to safely return objects allocated within functions.
+  /** Use this to safely return objects allocated within functions.
       The reference count of the object will be decreased by one,
       but even it it becomes 0, the object will not be destroyed.
 
@@ -129,9 +128,8 @@ struct Pointer
 #endif
 };
 
-//! A smart pointer to a ref-counted  Object that is a class member
-/** A smart pointer to a reference counted Object, which is
-    meant to be stored as a class member. This class is identical
+//! A smart pointer to a ref-counted Object that is a class member
+/** This class is identical
     to Pointer, but in addition, Object::set_was_used(true) will be called so
     you don't get warnings about unused objects once the object is stored in the
     owning class.
@@ -176,8 +174,7 @@ struct PointerMember
 
 #ifdef IMP_DOXYGEN
   //! Relinquish control of the raw pointer stored in the PointerMember
-  /** Relinquish control of the raw pointer stored in the PointerMember.
-      Use this to safely return objects allocated within functions.
+  /** Use this to safely return objects allocated within functions.
       The reference count of the object will be decreased by one,
       but even it it becomes 0, the object will not be destroyed.
 
