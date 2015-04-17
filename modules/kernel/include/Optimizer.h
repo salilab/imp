@@ -40,6 +40,8 @@ IMPKERNEL_BEGIN_NAMESPACE
     current conformation of the Model.
     - the optimizer uses this information to update the optimizeable
     parameters of the Particles contained in the Model.
+
+    \see Sampler
 */
 class IMPKERNELEXPORT Optimizer : public ModelObject {
   mutable Floats widths_;
