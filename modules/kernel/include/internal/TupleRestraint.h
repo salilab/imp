@@ -83,7 +83,7 @@ inline Restraint *create_tuple_restraint(Score *s, Model *m,
     oss << s->get_name() << " on " << Showable(t);
     name = oss.str();
   }
-  return new internal::TupleRestraint<Score>(s, m, t, name);
+  return new IMP::internal::TupleRestraint<Score>(s, m, t, name);
 }
 
 template <class Score>
@@ -93,7 +93,7 @@ Restraints create_score_current_decomposition(
   if (score == 0) {
     return Restraints();
   } else {
-    Pointer<Restraint> ret = internal::create_tuple_restraint(
+    Pointer<Restraint> ret = IMP::internal::create_tuple_restraint(
         const_cast<Score *>(s), m, vt, s->get_name());
     ret->set_last_score(score);
     return Restraints(1, ret);

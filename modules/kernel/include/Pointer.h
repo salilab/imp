@@ -144,14 +144,14 @@ struct Pointer
  */
 template <class O>
 struct PointerMember
-    : internal::PointerBase<internal::PointerMemberTraits<O> > {
-  typedef internal::PointerBase<internal::PointerMemberTraits<O> > P;
+    : IMP::internal::PointerBase<IMP::internal::PointerMemberTraits<O> > {
+  typedef IMP::internal::PointerBase<IMP::internal::PointerMemberTraits<O> > P;
   template <class Any>
   PointerMember(const Any& o)
       : P(o) {}
   PointerMember() {}
   template <class OT>
-  PointerMember<O>& operator=(const internal::PointerBase<OT>& o) {
+  PointerMember<O>& operator=(const IMP::internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }

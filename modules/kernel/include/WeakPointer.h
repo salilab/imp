@@ -30,14 +30,14 @@ IMPKERNEL_BEGIN_NAMESPACE
      */
 template <class O>
 struct UncheckedWeakPointer
-    : internal::PointerBase<internal::WeakPointerTraits<O> > {
-  typedef internal::PointerBase<internal::WeakPointerTraits<O> > P;
+    : IMP::internal::PointerBase<IMP::internal::WeakPointerTraits<O> > {
+  typedef IMP::internal::PointerBase<IMP::internal::WeakPointerTraits<O> > P;
   template <class Any>
   UncheckedWeakPointer(const Any& o)
       : P(o) {}
   UncheckedWeakPointer() {}
   template <class OT>
-  UncheckedWeakPointer<O>& operator=(const internal::PointerBase<OT>& o) {
+  UncheckedWeakPointer<O>& operator=(const IMP::internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
@@ -73,14 +73,14 @@ struct UncheckedWeakPointer
  */
 template <class O>
 struct WeakPointer
-    : internal::PointerBase<internal::CheckedWeakPointerTraits<O> > {
-  typedef internal::PointerBase<internal::CheckedWeakPointerTraits<O> > P;
+    : IMP::internal::PointerBase<IMP::internal::CheckedWeakPointerTraits<O> > {
+  typedef IMP::internal::PointerBase<IMP::internal::CheckedWeakPointerTraits<O> > P;
   template <class Any>
   WeakPointer(const Any& o)
       : P(o) {}
   WeakPointer() {}
   template <class OT>
-  WeakPointer<O>& operator=(const internal::PointerBase<OT>& o) {
+  WeakPointer<O>& operator=(const IMP::internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
