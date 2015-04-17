@@ -155,7 +155,7 @@ Hierarchy get_residue(Hierarchy mhd, unsigned int index) {
   IMP_THROW(msg, BadHierarchy)
 
 namespace {
-struct BadHierarchy : public base::Exception {
+struct BadHierarchy : public Exception {
   BadHierarchy(const char *str) : Exception(str) {}
 };
 struct Validator {

@@ -242,7 +242,7 @@ namespace {
 
 // create a particle which approximates the input set
 Hierarchy create_approximation_of_residues(const Hierarchies &t) {
-  static base::WarningContext wc;
+  static WarningContext wc;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i = 0; i < t.size(); ++i) {
       IMP_USAGE_CHECK(Residue::get_is_setup(t[i]),
@@ -258,7 +258,7 @@ Hierarchy create_approximation_of_residues(const Hierarchies &t) {
     try {
       v += get_volume_from_residue_type(rt);
     }
-    catch (base::ValueException) {
+    catch (ValueException) {
       IMP_WARN_ONCE(rt.get_string(),
                     "Computing volume for non-standard residue " << rt, wc);
       algebra::Sphere3Ds ss;
@@ -521,7 +521,7 @@ void add_bonds(const IMP::atom::Hierarchies &out) {
   IMP_FOREACH(IMP::atom::Hierarchy c, out) {
     IMP::atom::Bonded::setup_particle(c);
   }
-  base::set_progress_display("adding bonds", out.size());
+  IMP::set_progress_display("adding bonds", out.size());
   for (unsigned int i = 0; i < out.size(); ++i) {
     IMP::Ints ii = IMP::atom::Fragment(out[i]).get_residue_indexes();
     std::sort(ii.begin(), ii.end());
@@ -541,7 +541,7 @@ void add_bonds(const IMP::atom::Hierarchies &out) {
         }
       }
     }
-    base::add_to_progress_display(1);
+    IMP::add_to_progress_display(1);
   }
 }
 }

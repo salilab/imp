@@ -60,10 +60,8 @@ Restraints RMFRestraint::do_create_current_decomposition() const {
 RMFRestraint::RMFRestraint(Model *m, std::string name)
     : Restraint(m, name) {}
 
-class Subset : public base::ConstVector<WeakPointer<Particle>,
-                                        Particle *> {
-  typedef base::ConstVector<WeakPointer<Particle>,
-                            Particle *> P;
+class Subset : public ConstVector<WeakPointer<Particle>, Particle *> {
+  typedef ConstVector<WeakPointer<Particle>, Particle *> P;
   static ParticlesTemp get_sorted(ParticlesTemp ps) {
     std::sort(ps.begin(), ps.end());
     ps.erase(std::unique(ps.begin(), ps.end()), ps.end());

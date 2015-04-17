@@ -62,15 +62,15 @@ void RegistrationResult::set_random_registration(unsigned int index,
                                                  double maximum_shift) {
   ::boost::uniform_real<> rand(0., 1.);
   // Random point in the sphere, pick to ensure even distribution
-  double u = rand(base::random_number_generator);
-  double v = rand(base::random_number_generator);
-  double w = rand(base::random_number_generator);
+  double u = rand(random_number_generator);
+  double v = rand(random_number_generator);
+  double w = rand(random_number_generator);
   double phi = 2 * PI * u;
   double theta = acos((2 * v - 1)) / 2;
   double psi = 2 * PI * w;
   set_rotation(phi, theta, psi);
-  shift_[0] = maximum_shift * rand(base::random_number_generator);
-  shift_[1] = maximum_shift * rand(base::random_number_generator);
+  shift_[0] = maximum_shift * rand(random_number_generator);
+  shift_[1] = maximum_shift * rand(random_number_generator);
   set_ccc(0.0);
   set_name("");
   set_projection_index(index);

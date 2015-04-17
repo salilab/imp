@@ -18,7 +18,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 namespace {
 
-Strings parse_psipred_file(base::TextInput inf) {
+Strings parse_psipred_file(TextInput inf) {
   std::string line;
   std::vector<std::string> line_split, frag_split, res_split;
   std::string conf = "", pred = "", aa = "";
@@ -71,8 +71,7 @@ SecondaryStructureResidues create_sses_from_strings(Strings ss,
 }
 }
 
-SecondaryStructureResidues read_psipred(base::TextInput inf,
-                                        Model* mdl) {
+SecondaryStructureResidues read_psipred(TextInput inf, Model* mdl) {
   Strings ss = parse_psipred_file(inf);
   int nres = ss[0].size();
   Particles ps;
@@ -83,8 +82,7 @@ SecondaryStructureResidues read_psipred(base::TextInput inf,
   return create_sses_from_strings(ss, ps);
 }
 
-SecondaryStructureResidues read_psipred(base::TextInput inf,
-                                        Particles ps) {
+SecondaryStructureResidues read_psipred(TextInput inf, Particles ps) {
   Strings ss = parse_psipred_file(inf);
   return create_sses_from_strings(ss, ps);
 }

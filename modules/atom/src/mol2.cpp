@@ -357,7 +357,7 @@ void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
 }
 }
 
-Hierarchy read_mol2(base::TextInput mol2_file, Model* model,
+Hierarchy read_mol2(TextInput mol2_file, Model* model,
                     Mol2Selector* mol2sel) {
   if (!mol2sel) {
     mol2sel = new AllMol2Selector();

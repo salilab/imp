@@ -149,11 +149,11 @@ Ensemble::Ensemble(multifit::SettingsData *sd,
 std::vector<Floats> Ensemble::score_by_restraints(
     Restraints rs, const IntsList &combinations) {
   std::vector<Floats> scores(combinations.size());
-  base::set_progress_display("Scoring combinations", combinations.size());
+  IMP::set_progress_display("Scoring combinations", combinations.size());
   for (int i = 0; i < (int)combinations.size(); i++) {
     load_combination(combinations[i]);
     IMP_LOG_TERSE("i:" << i << "  comb:" << combinations[i] << std::endl);
-    base::add_to_progress_display();
+    IMP::add_to_progress_display();
     IMP_LOG_TERSE("===step1" << std::endl);
     Floats comb_scores(rs.size());
     IMP_LOG_TERSE("===step2" << std::endl);

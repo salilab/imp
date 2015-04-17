@@ -130,7 +130,7 @@ int do_benchmark() {
     IMP::benchmark::report("md charmm", time, score);
     return 0;
   }
-  catch (base::Exception e) {
+  catch (Exception e) {
     std::cerr << "Exception " << e.what() << std::endl;
     return 1;
   }

@@ -34,7 +34,7 @@ double BondSingletonScore::evaluate_index(Model *m,
     pa = bd.get_bonded(0).get_particle();
     pb = bd.get_bonded(1).get_particle();
   }
-  catch (const base::IndexException &e) {
+  catch (const IndexException &e) {
     IMP_WARN("Problem processing bond: " << bd << std::endl);
     IMP_WARN(e.what() << std::endl);
     return 0;

@@ -32,9 +32,9 @@ ComponentHeader *parse_component_line(const std::string &config,
         "Wrong format of input line : not enough fields in line:" << line);
     IMP_NEW(ComponentHeader, comp, ());
     comp->set_name(boost::lexical_cast<std::string>(line_split[0]));
-    comp->set_filename(base::get_relative_path(config, line_split[1]));
-    comp->set_surface_fn(base::get_relative_path(config, line_split[2]));
-    comp->set_txt_ap_fn(base::get_relative_path(config, line_split[3]));
+    comp->set_filename(get_relative_path(config, line_split[1]));
+    comp->set_surface_fn(get_relative_path(config, line_split[2]));
+    comp->set_txt_ap_fn(get_relative_path(config, line_split[3]));
     try {
       comp->set_num_ap(boost::lexical_cast<int>(line_split[4]));
     }
@@ -43,7 +43,7 @@ ComponentHeader *parse_component_line(const std::string &config,
       IMP_WARN("Can not cast num_ap field for protein: " << comp->get_name()
                                                          << std::endl);
     }
-    comp->set_txt_fine_ap_fn(base::get_relative_path(config, line_split[5]));
+    comp->set_txt_fine_ap_fn(get_relative_path(config, line_split[5]));
     try {
       comp->set_num_fine_ap(boost::lexical_cast<int>(line_split[6]));
     }
@@ -53,9 +53,9 @@ ComponentHeader *parse_component_line(const std::string &config,
                << comp->get_name() << " setting to 0" << std::endl);
     }
     comp->set_transformations_fn(
-        base::get_relative_path(config, line_split[7]));
+        get_relative_path(config, line_split[7]));
     if (line_split[8].size() > 0) {
-      comp->set_reference_fn(base::get_relative_path(config, line_split[8]));
+      comp->set_reference_fn(get_relative_path(config, line_split[8]));
     } else {
       comp->set_reference_fn("");
     }
@@ -75,7 +75,7 @@ AssemblyHeader *parse_assembly_line(const std::string &config,
                   "Expecting 12 fields in input line, got " << line_split.size()
                                                             << " : " << line);
   IMP_NEW(AssemblyHeader, dens, ());
-  dens->set_dens_fn(base::get_relative_path(config, line_split[0]));
+  dens->set_dens_fn(get_relative_path(config, line_split[0]));
   try {
     dens->set_resolution(boost::lexical_cast<float>(line_split[1]));
   }
@@ -107,12 +107,12 @@ AssemblyHeader *parse_assembly_line(const std::string &config,
     dens->set_origin(algebra::Vector3D(0, 0, 0));
     IMP_WARN("Can not cast origin field, setting to 0\n");
   }
-  dens->set_coarse_ap_fn(base::get_relative_path(config, line_split[7]));
+  dens->set_coarse_ap_fn(get_relative_path(config, line_split[7]));
   dens->set_coarse_over_sampled_ap_fn(
-      base::get_relative_path(config, line_split[8]));
-  dens->set_fine_ap_fn(base::get_relative_path(config, line_split[9]));
+      get_relative_path(config, line_split[8]));
+  dens->set_fine_ap_fn(get_relative_path(config, line_split[9]));
   dens->set_fine_over_sampled_ap_fn(
-      base::get_relative_path(config, line_split[10]));
+      get_relative_path(config, line_split[10]));
   return dens.release();
 }
 }

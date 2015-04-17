@@ -49,7 +49,7 @@ em::DensityMap *set_map(const std::string &density_filename, float resolution,
   try {
     rmap = em::read_map(density_filename.c_str());
   }
-  catch (const base::Exception &err) {
+  catch (const Exception &err) {
     std::cerr << "Problem reading density map:" << density_filename << ": "
               << err.what() << std::endl;
     exit(-1);

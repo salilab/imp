@@ -251,7 +251,7 @@ ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold)
       threshold_(threshold) {}
 
 ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold,
-                                                       base::TextInput file)
+                                                       TextInput file)
     : P(get_protein_ligand_type_key(), threshold, file, ni + 1),
       threshold_(threshold) {}
 
@@ -273,7 +273,7 @@ void ProteinLigandRestraint::initialize(Hierarchy protein, Hierarchy ligand) {
 }
 
 namespace {
-PairScore* create_pair_score(double threshold, base::TextInput data) {
+PairScore* create_pair_score(double threshold, TextInput data) {
   return new ProteinLigandAtomPairScore(threshold, data);
 }
 PairScore* create_pair_score(double threshold) {
@@ -302,7 +302,7 @@ ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
 ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
                                                Hierarchy ligand,
                                                double threshold,
-                                               base::TextInput data)
+                                               TextInput data)
     : container::PairsRestraint(create_pair_score(threshold, data),
                                 create_pair_container(protein, ligand,
                                                       threshold)) {

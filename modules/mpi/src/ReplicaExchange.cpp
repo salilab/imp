@@ -186,7 +186,7 @@ bool ReplicaExchange::get_acceptance(double myscore, double fscore) {
   } else {
     accept = exp(delta);
   }
-  double random = boost::uniform_01<>()(base::random_number_generator);
+  double random = boost::uniform_01<>()(random_number_generator);
 
   if (random <= accept) {
     return true;

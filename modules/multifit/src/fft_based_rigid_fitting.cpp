@@ -361,10 +361,10 @@ FFTFittingOutput *FFTFitting::do_local_fitting(
   fftw_plan_reverse_hi_ = fftw_plan_dft_c2r_3d(
       nz_, ny_, nx_, fftw_grid_hi_, reversed_fftw_data_, FFTW_MEASURE);
   IMP_LOG_TERSE("number of rots_:" << rots_.size() << std::endl);
-  base::set_progress_display("searching rotations", rots_.size());
+  IMP::set_progress_display("searching rotations", rots_.size());
   for (unsigned int kk = 0; kk < rots_.size(); kk++) {
     fftw_translational_search(rots_[kk], kk);
-    base::add_to_progress_display();
+    IMP::add_to_progress_display();
   }
   // clear grids
   fftw_grid_lo_.release();

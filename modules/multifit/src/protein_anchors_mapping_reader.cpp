@@ -90,7 +90,7 @@ boost::tuple<std::string, std::string, IntsList> parse_protein_line(
                               << std::endl);
   }
   if (line_split.size() > 2) {
-    paths_fn = base::get_relative_path(config, line_split[2]);
+    paths_fn = get_relative_path(config, line_split[2]);
     IMP_LOG_TERSE("PATH FN:" << paths_fn << std::endl);
     paths = read_paths(paths_fn.c_str(), max_paths);
   }
@@ -118,7 +118,7 @@ ProteinsAnchorsSamplingSpace read_protein_anchors_mapping(
   // first line should be the anchors line
   getline(in, line);
   std::string anchors_fn =
-      base::get_relative_path(anchors_prot_map_fn, parse_anchors_line(line));
+      get_relative_path(anchors_prot_map_fn, parse_anchors_line(line));
   IMP_LOG_TERSE("FN:" << anchors_fn << std::endl);
   multifit::AnchorsData anchors_data =
       multifit::read_anchors_data(anchors_fn.c_str());

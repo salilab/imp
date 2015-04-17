@@ -65,7 +65,7 @@ Ints get_triangulation_of_face(const Ints &face,
 #else
     IMP_UNUSED(face.size());
     IMP_THROW("Non-triangular face found. Processing those requires CGAL.",
-              base::ValueException);
+              ValueException);
 #endif
   }
 }

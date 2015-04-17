@@ -264,7 +264,7 @@ ParticleIndex HierarchySaveRigidBodies::fill_external(
     ParticleIndex cur = fill_external(m, ch);
     rbs.insert(cur);
   }
-  ParticleIndex ret = base::get_invalid_index<ParticleIndexTag>();
+  ParticleIndex ret = IMP::get_invalid_index<ParticleIndexTag>();
   if (core::RigidBodyMember::get_is_setup(m, p)) {
     ret = core::RigidBodyMember(m, p).get_rigid_body().get_particle_index();
     rbs.insert(ret);
@@ -272,10 +272,10 @@ ParticleIndex HierarchySaveRigidBodies::fill_external(
   // If we are a rigid body, ignore children that are *not* in the rigid
   // body (they will be coerced to nonrigid members elsewhere)
   if (core::RigidBody::get_is_setup(m, p)) {
-    rbs.erase(base::get_invalid_index<ParticleIndexTag>());
+    rbs.erase(IMP::get_invalid_index<ParticleIndexTag>());
   }
   if (rbs.size() == 1 &&
-      *rbs.begin() != base::get_invalid_index<ParticleIndexTag>()) {
+      *rbs.begin() != IMP::get_invalid_index<ParticleIndexTag>()) {
     externals_[p] = *rbs.begin();
     int index = rigid_body_count;
     ++rigid_body_count;

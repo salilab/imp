@@ -165,7 +165,7 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   if (accum){
     for (ParticleIndexes::const_iterator it=model_ps_.begin();
          it!=model_ps_.end();++it){
-      if (base::isinf(log_score) || log_score==0.0) {
+      if (IMP::isinf(log_score) || log_score==0.0) {
         core::XYZ(get_model(),*it).add_to_derivatives(algebra::Vector3D(0,0,0),
                                                       *accum);
       }

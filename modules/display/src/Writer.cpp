@@ -64,7 +64,7 @@ Writer *create_writer(std::string name) {
       return mp.second->create(name);
     }
   }
-  IMP_THROW("No writer found for file " << name, base::ValueException);
+  IMP_THROW("No writer found for file " << name, ValueException);
 }
 
 WriterAdaptor::~WriterAdaptor() {}

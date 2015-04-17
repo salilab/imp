@@ -36,14 +36,14 @@ void RelativePositionMover::add_internal_transformations(
 core::MonteCarloMoverResult RelativePositionMover::do_propose() {
   last_transformation_ = rbA_.get_reference_frame().get_transformation_to();
   ::boost::uniform_real<> zeroone(0., 1.);
-  double p = zeroone(base::random_number_generator);
+  double p = zeroone(random_number_generator);
   if (p < probability_of_random_move_) {
     algebra::Vector3D translation = algebra::get_random_vector_in(
         algebra::Sphere3D(rbA_.get_coordinates(), max_translation_));
     algebra::Vector3D axis = algebra::get_random_vector_on(
         algebra::Sphere3D(algebra::Vector3D(0.0, 0.0, 0.0), 1.));
     ::boost::uniform_real<> rand(-max_angle_, max_angle_);
-    Float angle = rand(base::random_number_generator);
+    Float angle = rand(random_number_generator);
     algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
     algebra::Rotation3D rc =
         r * rbA_.get_reference_frame().get_transformation_to().get_rotation();
@@ -54,10 +54,10 @@ core::MonteCarloMoverResult RelativePositionMover::do_propose() {
     rbA_.set_reference_frame(algebra::ReferenceFrame3D(t));
   } else {
     ::boost::uniform_int<> randi(0, reference_rbs_.size() - 1);
-    unsigned int i = randi(base::random_number_generator);
+    unsigned int i = randi(random_number_generator);
 
     ::boost::uniform_int<> randj(0, transformations_map_[i].size() - 1);
-    unsigned int j = randj(base::random_number_generator);
+    unsigned int j = randj(random_number_generator);
 
     algebra::Transformation3D Tint = transformations_map_[i][j];
     IMP_LOG_TERSE("proposing a relative move. Rigid body "

@@ -393,7 +393,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
         if (!ret[i].get_is_valid(true)) {
           IMP_ERROR("Invalid hierarchy produced ");
           IMP_ERROR_WRITE(IMP::core::show<Hierarchy>(ret[i], IMP_STREAM));
-          throw base::InternalException("Bad hierarchy");
+          throw InternalException("Bad hierarchy");
           // should clean up
         }
       }
@@ -403,7 +403,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
 }
 }
 
-void read_pdb(base::TextInput in, int model, Hierarchy h) {
+void read_pdb(TextInput in, int model, Hierarchy h) {
   boost::unordered_map<int, Particle*> atoms_map;
   atom::Hierarchies atoms = get_by_type(h, ATOM_TYPE);
   boost::unordered_map<core::RigidBody, ParticleIndexes> rigid_bodies;
@@ -453,7 +453,7 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
   }
 }
 
-Hierarchy read_pdb(base::TextInput in, Model* model,
+Hierarchy read_pdb(TextInput in, Model* model,
                    PDBSelector* selector, bool select_first_model,
                    bool no_radii) {
   IMP::PointerMember<PDBSelector> sp(selector);
@@ -465,7 +465,7 @@ Hierarchy read_pdb(base::TextInput in, Model* model,
   return ret[0];
 }
 
-Hierarchies read_multimodel_pdb(base::TextInput in, Model* model,
+Hierarchies read_multimodel_pdb(TextInput in, Model* model,
                                 PDBSelector* selector, bool noradii) {
   IMP::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,

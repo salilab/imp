@@ -313,19 +313,19 @@ Particle *get_other_end_of_bond(Particle *p, Bond bd) {
 }
 }
 
-CHARMMParameters::CHARMMParameters(base::TextInput top_file,
-                                   base::TextInput par_file,
+CHARMMParameters::CHARMMParameters(TextInput top_file,
+                                   TextInput par_file,
                                    bool translate_names_to_pdb) {
   // Parameter objects are not designed to be added into other containers
   set_was_used(true);
   read_topology_file(top_file, translate_names_to_pdb);
 
-  if (par_file != base::TextInput()) {
+  if (par_file != TextInput()) {
     read_parameter_file(par_file);
   }
 }
 
-void CHARMMParameters::read_topology_file(base::TextInput input_file,
+void CHARMMParameters::read_topology_file(TextInput input_file,
                                           bool translate_names_to_pdb) {
   IMP_OBJECT_LOG;
   const String MASS_LINE = "MASS";
@@ -606,7 +606,7 @@ void CHARMMParameters::parse_dihedrals_parameters_line(
       p));
 }
 
-void CHARMMParameters::read_parameter_file(base::TextInput input_file) {
+void CHARMMParameters::read_parameter_file(TextInput input_file) {
   IMP_OBJECT_LOG;
   const String BONDS_LINE = "BOND";
   const String ANGLES_LINE = "ANGL";
@@ -701,10 +701,10 @@ namespace {
   class TopologyInserter {
     CHARMMTopology *topology_;
     const CHARMMParameters *params_;
-    base::WarningContext warn_context_;
+    WarningContext warn_context_;
   public:
     TopologyInserter(CHARMMTopology *topology, const CHARMMParameters *params,
-                     base::WarningContext warn_context)
+                     WarningContext warn_context)
                : topology_(topology), params_(params),
                  warn_context_(warn_context) {}
   
@@ -718,7 +718,7 @@ namespace {
                   (params_->get_residue_topology(restyp)));
           segment->add_residue(residue);
         }
-        catch (base::ValueException) {
+        catch (ValueException) {
           // If residue type is unknown, add empty topology for this residue
           IMP_WARN_ONCE(
               restyp.get_string(),
@@ -825,7 +825,7 @@ void CHARMMParameters::add_angle(Particle *p1, Particle *p2,
     ad.set_ideal(p.ideal / 180.0 * PI);
     ad.set_stiffness(std::sqrt(p.force_constant * 2.0));
   }
-  catch (const base::IndexException &e) {
+  catch (const IndexException &e) {
     // If no parameters, warn only
     IMP_WARN(e.what());
   }
@@ -878,7 +878,7 @@ CHARMMParameters *get_heavy_atom_CHARMM_parameters() {
   if (!heavy_atom_CHARMM_parameters) {
     heavy_atom_CHARMM_parameters = new CHARMMParameters(
         get_data_path("top_heav.lib"), get_data_path("par.lib"));
-    heavy_atom_CHARMM_parameters->set_log_level(base::SILENT);
+    heavy_atom_CHARMM_parameters->set_log_level(SILENT);
   }
   return heavy_atom_CHARMM_parameters;
 }
@@ -887,7 +887,7 @@ CHARMMParameters *get_all_atom_CHARMM_parameters() {
   if (!all_atom_CHARMM_parameters) {
     all_atom_CHARMM_parameters = new CHARMMParameters(get_data_path("top.lib"),
                                                       get_data_path("par.lib"));
-    all_atom_CHARMM_parameters->set_log_level(base::SILENT);
+    all_atom_CHARMM_parameters->set_log_level(SILENT);
   }
   return all_atom_CHARMM_parameters;
 }

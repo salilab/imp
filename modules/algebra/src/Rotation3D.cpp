@@ -22,7 +22,7 @@ Rotation3D get_rotation_from_matrix(IMP_Eigen::Matrix3d m) {
 Rotation3D get_rotation_from_matrix(double m11, double m12, double m13,
                                     double m21, double m22, double m23,
                                     double m31, double m32, double m33) {
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     Vector3D v0(m11, m12, m13);
     Vector3D v1(m21, m22, m23);
     Vector3D v2(m31, m32, m33);
@@ -176,7 +176,7 @@ const Vector3D Rotation3D::get_derivative(const Vector3D &o,
       return Vector3D(-2 * t34 * t10 - 2 * t27 * v_[3], t11 - 2 * t47 * v_[3],
                       t73 - 2 * t65 * v_[3]);
     default:
-      IMP_THROW("Invalid derivative component", base::IndexException);
+      IMP_THROW("Invalid derivative component", IndexException);
   };
   return Vector3D(0, 0, 0);
 }
