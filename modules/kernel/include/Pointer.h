@@ -84,14 +84,15 @@ IMPKERNEL_BEGIN_NAMESPACE
         \see UncheckedWeakPointer
     */
 template <class O>
-struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
-  typedef internal::PointerBase<internal::RefCountedPointerTraits<O> > P;
+struct Pointer
+   : IMP::internal::PointerBase<internal::RefCountedPointerTraits<O> > {
+  typedef IMP::internal::PointerBase<IMP::internal::RefCountedPointerTraits<O> > P;
   template <class Any>
   Pointer(const Any& o)
       : P(o) {}
   Pointer() {}
   template <class OT>
-  Pointer<O>& operator=(const internal::PointerBase<OT>& o) {
+  Pointer<O>& operator=(const IMP::internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
