@@ -1,3 +1,4 @@
+%pythoncode %{
 
 def get_networkx_graph(ig):
     import networkx
@@ -86,3 +87,5 @@ def show_graphviz(g):
     if not success:
         print("Could not display file. It is saved at " + tfon)
     return tfon
+
+%}
