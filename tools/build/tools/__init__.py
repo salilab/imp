@@ -72,6 +72,10 @@ def get_glob(patterns):
 
 
 def rewrite(filename, contents, verbose=True):
+    if os.path.islink(filename):
+        os.unlink(filename)
+        if verbose:
+            print("    Was symlink - now new file: " + filename)
     try:
         old = open(filename, "r").read()
         if old == contents:
