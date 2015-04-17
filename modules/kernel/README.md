@@ -18,7 +18,7 @@ The Boost.Graph interface cannot be easily exported to Python so we instead prov
 # Values and Objects (C++ only) # {#values}
 
 As is conventional in C++, IMP classes are divided into broad, exclusive types
-- *Object classes*: They inherit from IMP::base::Object and are always passed by pointer. They are reference counted and so should only be stored using IMP::base::Pointer (in C++, in Python everything is reference counted). Never allocate these on the stack as very bad things can happen. Objects cannot be duplicated. Equality on objects is defined as identity (eg two different objects are different even if the data they contain is identical).
+- *Object classes*: They inherit from IMP::Object and are always passed by pointer. They are reference counted and so should only be stored using IMP::Pointer (in C++, in Python everything is reference counted). Never allocate these on the stack as very bad things can happen. Objects cannot be duplicated. Equality on objects is defined as identity (eg two different objects are different even if the data they contain is identical).
 
 - *Value classes* which are normal data types. They are passed by value (or `const&`), never by pointer. Equality is defined based on the data stored in the value. Most value types in IMP are always valid, but a few, mostly geometric types (IMP::algebra::Vector3D) are designed for fast, low-level use and are left in an uninitialized state by their default constructor
 
