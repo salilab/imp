@@ -45,7 +45,7 @@ if path:
 # Test compiling and running a C++ program that links against IMP
 testcpp = env.Program('test.cpp', CPPPATH=cpppath, LIBPATH=libpath,
                       CXXFLAGS=cxxflags, LINKFLAGS=linkflags,
-                      LIBS=['imp_base', 'imp_core', 'imp_algebra',
+                      LIBS=['imp_core', 'imp_algebra',
                             'imp_example', 'imp_container', 'imp_kernel'])
 runcpp = env.Command('cpp.out', testcpp, "./$SOURCES > $TARGET")
 
