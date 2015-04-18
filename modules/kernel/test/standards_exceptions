@@ -34,9 +34,7 @@ value_object_exceptions=['Exception',
                                            'FailureHandlerBase',
                                             "TextInput", "TextOutput", "RefCounted", "Timer",
                        'Decorator', 'DerivativeAccumulator',
-                                           # imported
-                                           'Object', 'SetLogState',
-                                           'SetLogTarget', 'RestraintBase', 'ScoreStateBase']
+                                           'RestraintBase', 'ScoreStateBase']
 spelling_exceptions=["undecorator", "undecorate", "altgraph", "networkx",
 
 
