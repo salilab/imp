@@ -103,7 +103,7 @@ class OptionParser(optparse.OptionParser):
             self.usage = self.description = None
             # Pass the rest of the command line to the Boost parser; add the
             # optparse-generated help to that from Boost
-            args = IMP.setup_from_argv([sys.argv[0]] + args,
+            args = setup_from_argv([sys.argv[0]] + args,
                            self.format_help() \
                            + "\nOptions common to all IMP applications:",
                            usage, numpos)
