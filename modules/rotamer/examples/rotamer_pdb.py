@@ -18,7 +18,6 @@
 
 from __future__ import print_function
 import IMP
-import IMP.base
 import IMP.core
 import IMP.atom
 import IMP.algebra
@@ -80,7 +79,7 @@ if __name__ == '__main__':
     P.add_option('--verbose', '-v', action='store_true',
                  help='show more messages')
     opts, args = P.parse_args()
-    if IMP.base.get_bool_flag('run_quick_test') or \
+    if IMP.get_bool_flag('run_quick_test') or \
        not (opts.input_pdb or opts.input_lib or opts.output_pdb):
         quick_test()
         sys.exit(0)
@@ -94,7 +93,7 @@ if __name__ == '__main__':
         print('--input_lib is required')
         sys.exit(1)
     if opts.verbose:
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
     else:
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
     transform(opts.input_pdb, opts.input_lib, opts.output_pdb)
