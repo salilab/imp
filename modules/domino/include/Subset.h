@@ -31,10 +31,8 @@ IMPDOMINO_BEGIN_NAMESPACE
     a constant list in Python.
  */
 class IMPDOMINOEXPORT Subset
-    : public ConstVector<WeakPointer<Particle>,
-                               Particle *> {
-  typedef ConstVector<WeakPointer<Particle>,
-                            Particle *> P;
+    : public IMP::ConstVector<IMP::WeakPointer<Particle>, Particle *> {
+  typedef ConstVector<WeakPointer<Particle>, Particle *> P;
   static const ParticlesTemp &get_sorted(ParticlesTemp &ps) {
     std::sort(ps.begin(), ps.end());
     return ps;
