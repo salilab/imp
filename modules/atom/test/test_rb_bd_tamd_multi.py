@@ -210,7 +210,7 @@ class Tests(IMP.test.TestCase):
                 centroid_coords =  IMP.core.XYZ(centroid).get_coordinates()
                 IMP.core.XYZ(image).set_coordinates( centroid_coords )
 
-        bd.optimize(100000)
+        bd.optimize(100)
 
         # Add seconds restraint
         sf = IMP.core.RestraintsScoringFunction(R + [dr1])
@@ -237,8 +237,8 @@ class Tests(IMP.test.TestCase):
         bd.add_optimizer_state(os)
         os.set_period(2500)
 
-        max_cycles = 1000000000
-        round_cycles = 1000
+        max_cycles = 100
+        round_cycles = 10
         total_cycles = 0
         e_threshold = 2
         for i in range(max_cycles / round_cycles):

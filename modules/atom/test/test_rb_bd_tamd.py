@@ -145,8 +145,8 @@ class Tests(IMP.test.TestCase):
                 centroid =  IMP.core.XYZ(core[0]).get_coordinates()
                 IMP.core.XYZ(core[2]).set_coordinates( centroid )
 
-        max_cycles = 100000
-        round_cycles = 250
+        max_cycles = 100
+        round_cycles = 25
         total_cycles = 0
         e_threshold = 2
         for i in range(max_cycles / round_cycles):
