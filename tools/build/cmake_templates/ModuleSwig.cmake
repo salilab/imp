@@ -65,5 +65,5 @@ INSTALL(TARGETS IMP.%(name)s-python DESTINATION ${CMAKE_INSTALL_PYTHONDIR})
 # Install the original wrapper, since wrap_py is a symlink and install does
 # not dereference symlinks
 INSTALL(FILES ${wrap_py_orig}
-        DESTINATION ${CMAKE_INSTALL_PYTHONDIR}/IMP/%(name)s
+        DESTINATION ${CMAKE_INSTALL_PYTHONDIR}/%(subdir)s
         RENAME __init__.py)
