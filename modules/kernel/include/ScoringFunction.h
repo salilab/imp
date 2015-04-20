@@ -31,12 +31,12 @@ class Model;
 A call to the evaluate() method prompts the following events:
 1. determine set of ScoreState objects needed by the Restraint objects
 being evaluated (this is cached)
-1. call ScoreState::before_evaluate() on each of them to update
+2. call ScoreState::before_evaluate() on each of them to update
     configuration
-2. call Restraint::unprotected_evaluate() to compute scores
-    [and add derivatives in the particles]
-3. [call ScoreState::after_evaluate() on each score state to update derivatives]
-4. score returned
+3. call Restraint::unprotected_evaluate() to compute scores
+    [and add derivatives in the particles, if requested]
+4. [call ScoreState::after_evaluate() on each score state to update derivatives]
+5. return the score
 
     \headerfile ScoringFunction.h "IMP/ScoringFunction.h"
 
