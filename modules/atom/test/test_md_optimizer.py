@@ -101,13 +101,15 @@ class Tests(IMP.test.TestCase):
                 coor[n][0] += (newvx + vx) / 2.0 * timestep
             vx = newvx
 
-    def _optimize_model(self, timestep):
+    def _optimize_model(self, timestep, restraints):
         """Run a short MD optimization on the model."""
         start = [[p.get_value(xkey), p.get_value(ykey), p.get_value(zkey)]
                  for p in self.model.get_particles()]
         # Add starting (step 0) position to the trajectory, with zero velocity
         traj = [[x + [0] for x in start]]
         state = WriteTrajState(self.model, traj)
+        sf = IMP.core.RestraintsScoringFunction(restraints)
+        self.md.set_scoring_function(sf)
         self.md.add_optimizer_state(state)
         self.md.set_maximum_time_step(timestep)
         self.md.optimize(50)
@@ -118,8 +120,7 @@ class Tests(IMP.test.TestCase):
         timestep = 4.0
         strength = 50.0
         r = XTransRestraint(self.model, strength)
-        self.model.add_restraint(r)
-        (start, traj) = self._optimize_model(timestep)
+        (start, traj) = self._optimize_model(timestep, [r])
         delttm = -timestep * kcal2mod / cmass
         self._check_trajectory(start, traj, timestep,
                                lambda a: a + strength * delttm)
@@ -129,9 +130,8 @@ class Tests(IMP.test.TestCase):
         timestep = 4.0
         strength = 5000.0
         r = XTransRestraint(self.model, strength)
-        self.model.add_restraint(r)
         self.md.set_velocity_cap(0.3)
-        (start, traj) = self._optimize_model(timestep)
+        (start, traj) = self._optimize_model(timestep, [r])
         # Strength is so high that velocity should max out at the cap
         for i in range(49):
             oldx = traj[i][0][0]
