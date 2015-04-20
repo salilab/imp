@@ -15,10 +15,6 @@ class IMPInstallTests(unittest.TestCase):
         # Should work without explicit import
         m = IMP.base.get_check_level()
         m = IMP.kernel.Model()
-        import IMP.base
-        import IMP.kernel
-        m = IMP.base.get_check_level()
-        m = IMP.kernel.Model()
 
     def test_modules_installed(self):
         """Check install of basic set of modules"""
