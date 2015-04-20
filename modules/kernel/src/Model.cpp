@@ -220,22 +220,31 @@ void Model::do_destroy() {
 }
 
 /////////////////////////////////////////// NOT YET DEPRECATED STUFF
+RestraintsTemp Model::get_restraints() const {
+  return restraints_->get_restraints();
+}
+
+/////////////////////////////////////////// DEPRECATED STUFF
 ScoringFunction *Model::create_model_scoring_function() {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
+                                  "Use a ScoringFunction instead.");
   return restraints_->create_scoring_function();
 }
 void Model::add_restraint(Restraint *r) {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
+                                  "Add to a ScoringFunction instead.");
   if (!r->get_model()) r->set_model(this);
   restraints_->add_restraint(r);
 }
-void Model::remove_restraint(Restraint *r) { restraints_->remove_restraint(r); }
-RestraintsTemp Model::get_restraints() const {
-  return restraints_->get_restraints();
+void Model::remove_restraint(Restraint *r) {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
+                                  "Use a ScoringFunction instead.");
+  restraints_->remove_restraint(r);
 }
 ScoringFunction *Model::create_scoring_function() {
   return create_model_scoring_function();
 }
 
-/////////////////////////////////////////// DEPRECATED STUFF
 
 double Model::get_maximum_score(Restraint *r) const {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,

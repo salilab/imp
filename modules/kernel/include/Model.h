@@ -330,13 +330,25 @@ class IMPKERNELEXPORT Model : public Object
       ParticleIterator;
 #endif
 
+  /** \deprecated_at{2.1} Use a ScoringFunction instead. */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  ScoringFunction *create_model_scoring_function();
+
+  /** \deprecated_at{2.1} Use a ScoringFunction instead. */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  ScoringFunction *create_scoring_function();
+
+  /** \deprecated_at{2.1} Add to a ScoringFunction instead. */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  void add_restraint(Restraint *r);
+
+  /** \deprecated_at{2.1} Use a ScoringFunction instead. */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
+  void remove_restraint(Restraint *r);
+
 // all deprecated but too used to add warnings about now
 #if !defined(IMP_DOXYGEN)
-  ScoringFunction *create_model_scoring_function();
-  void add_restraint(Restraint *r);
-  void remove_restraint(Restraint *r);
   RestraintsTemp get_restraints() const;
-  ScoringFunction *create_scoring_function();
   virtual void do_destroy() IMP_OVERRIDE;
 #endif
 
