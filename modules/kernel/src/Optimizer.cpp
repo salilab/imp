@@ -57,6 +57,12 @@ void Optimizer::set_is_optimizing_states(bool tf) const {
 
 double Optimizer::optimize(unsigned int max_steps) {
   IMP_OBJECT_LOG;
+  if (!scoring_function_) {
+    IMP_WARN("No scoring function provided - using Model's implicit "
+             "scoring function (deprecated). Recommend you use a "
+             "ScoringFunction object instead." << std::endl);
+  }
+
   set_has_required_score_states(true);
   set_was_used(true);
   set_is_optimizing_states(true);
