@@ -9,9 +9,9 @@ class Tests(IMP.test.TestCase):
     def test_stats(self):
         """Test MonteCarlo stats"""
         m = IMP.Model()
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.base.set_log_level(IMP.base.WARNING)
         mc = IMP.core.MonteCarlo(m)
-        mc.set_log_level(IMP.base.SILENT)
+        mc.set_log_level(IMP.base.WARNING)
         ps = []
         bb = IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0, 10):
@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
         cpc = IMP.container.ConsecutivePairContainer(ps)
         hps = IMP.core.HarmonicDistancePairScore(1, 100)
         r = IMP.container.PairsRestraint(hps, cpc)
-        m.add_restraint(r)
+        mc.set_scoring_function([r])
         ms = [IMP.core.BallMover([x], .1) for x in ps]
         mv = IMP.core.SerialMover(ms)
         mc.add_mover(mv)
