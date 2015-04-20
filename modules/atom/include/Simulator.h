@@ -29,7 +29,7 @@ class SimulationParameters;
 
    The simulation can be invoked directly by calling simulate(fs) for
    a given time in femtoseconds, or by calling Optimizer::optimize(nf)
-   for a give number of frames.
+   for a given number of frames.
  */
 class IMPATOMEXPORT Simulator : public Optimizer {
  public:
