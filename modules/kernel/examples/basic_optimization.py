@@ -10,7 +10,7 @@ import IMP.statistics
 (m, c) = IMP.example.create_model_and_particles()
 ps = IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(1, 1))
 r = IMP.container.PairsRestraint(ps, IMP.container.ClosePairContainer(c, 2.0))
-m.add_restraint(r)
+sf = IMP.core.RestraintsScoringFunction([r])
 # we don't want to see lots of log messages about restraint evaluation
 m.set_log_level(IMP.WARNING)
 
@@ -19,6 +19,7 @@ m.set_log_level(IMP.WARNING)
 xyzrs = c.get_particles()
 
 s = IMP.core.MCCGSampler(m)
+s.set_scoring_function(sf)
 s.set_number_of_attempts(10)
 # but we do want something to watch
 s.set_log_level(IMP.TERSE)
