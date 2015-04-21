@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         self.ds[3].add_attribute(idk, "B")
         self.ds[4].add_attribute(idk, "C")
         self.ds[5].add_attribute(idk, "D")
-        self.m.add_restraint(self.r)
+        self.sf = IMP.core.RestraintsScoringFunction([self.r])
 
         # Setup for example 2
         self.m2 = IMP.Model()
@@ -70,7 +70,7 @@ class Tests(IMP.test.TestCase):
         self.ds2[5].add_attribute(idk, "C")
         self.ds2[6].add_attribute(idk, "C")
         self.ds2[7].add_attribute(idk, "D")
-        self.m2.add_restraint(self.r2)
+        self.sf2 = IMP.core.RestraintsScoringFunction([self.r2])
 
     def test_ms_connectivity_graph_1(self):
         """Test for the correctness of the graph 1."""
@@ -133,10 +133,11 @@ class Tests(IMP.test.TestCase):
 #                if j > i:
 # print "distance from %d to %d is %s" % (i, j,
 # IMP.core.get_distance(self.ds[i], self.ds[j]))
-        score = self.m.evaluate(False)
+        score = self.sf.evaluate(False)
 #        print 'Score = ', score
 
         o = IMP.core.ConjugateGradients(self.m)
+        o.set_scoring_function(self.sf)
         o.set_threshold(1e-4)
         o.optimize(100)
 
@@ -156,7 +157,7 @@ class Tests(IMP.test.TestCase):
                 i_connected = i_connected or ok[i][j]
 #            self.assertTrue(i_connected or i==5, "Point %d is not connected" %(i))
 
-        score = self.m.evaluate(False)
+        score = self.sf.evaluate(False)
         self.assertLess(score, 10, "Score too high")
 #        print 'Score = ', score
         pps = self.r.get_connected_pairs()

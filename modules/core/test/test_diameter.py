@@ -15,11 +15,11 @@ class Tests(IMP.test.TestCase):
             IMP.core.create_xyzr_particles(m, 50, 1.0))
         h = IMP.core.HarmonicUpperBound(0, 1)
         r = IMP.core.DiameterRestraint(h, lc, diameter)
-        m.add_restraint(r)
+        sf = IMP.core.RestraintsScoringFunction([r])
 
         # Set up optimizer
         o = IMP.core.ConjugateGradients(m)
-
+        o.set_scoring_function(sf)
         o.optimize(1000)
 
         max = 0

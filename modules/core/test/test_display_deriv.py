@@ -30,13 +30,15 @@ class Tests(IMP.test.TestCase):
         d = IMP.core.XYZ.setup_particle(p)
         hd = IMP.core.Hierarchy.setup_particle(p, ps)
 
+        rs = []
         for i in range(0, 4):
             u = IMP.core.Harmonic(0, 1)
             s = IMP.core.DistanceToSingletonScore(u, pts[(i + 1) % 4])
             r = IMP.core.SingletonRestraint(s, ps[i])
-            m.add_restraint(r)
+            rs.append(r)
+        sf = IMP.core.RestraintsScoringFunction(rs)
 
-        m.evaluate(True)
+        sf.evaluate(True)
         w = IMP.display.BildWriter(self.get_tmp_file_name("deriv.bild"))
         for i in range(0, 4):
             w.add_geometry(IMP.core.XYZDerivativeGeometry(IMP.core.XYZ(ps[i])))
@@ -45,7 +47,7 @@ class Tests(IMP.test.TestCase):
         rbd = IMP.core.RigidBody.setup_particle(p, IMP.core.XYZs(ps))
         IMP.base.set_log_level(IMP.base.TERSE)
         print("eval")
-        m.evaluate(True)
+        sf.evaluate(True)
         w = IMP.display.BildWriter(self.get_tmp_file_name("qderiv.bild"))
         #oge= display.XYZRGeometryExtractor(FloatKey("hi"))
         for i in range(0, 4):

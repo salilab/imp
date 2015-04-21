@@ -214,7 +214,7 @@ class Tests(IMP.test.TestCase):
         dss = IMP.core.AttributeSingletonScore(
             h, IMP.core.XYZ.get_xyz_keys()[0])
         r = IMP.core.SingletonRestraint(dss, xyzr)
-        m.add_restraint(r)
+        bd.set_scoring_function([r])
         sigma = self._get_sigma_1_free()
         mn, std, nreps = self._measure(m, xyzr, bd)
         self._check(
@@ -236,7 +236,7 @@ class Tests(IMP.test.TestCase):
         dss = IMP.core.AttributeSingletonScore(
             h, IMP.core.XYZ.get_xyz_keys()[0])
         r = IMP.core.SingletonRestraint(dss, xyzr)
-        m.add_restraint(r)
+        bd.set_scoring_function([r])
         mn, std, nreps = self._measure(m, xyzr, bd)
         print("Mean / std / sigma / sigmaf / sigmass")
         print(mn)

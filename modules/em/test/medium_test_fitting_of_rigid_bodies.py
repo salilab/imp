@@ -57,7 +57,7 @@ class Tests(IMP.test.TestCase):
         print(self.leaves_ref.get_can_refine(self.mhs[0]))
         fit_r = IMP.em.FitRestraint(self.ps,
                                     self.scene)
-        self.imp_model.add_restraint(fit_r)
+        sf = IMP.core.RestraintsScoringFunction([fit_r])
         # randomize the position of the protein
 
         for rb in self.rbs:
@@ -71,8 +71,9 @@ class Tests(IMP.test.TestCase):
             IMP.core.transform(rb, rt)
         # see that the derivatives pull it back in place
         opt = IMP.core.ConjugateGradients(self.imp_model)
+        opt.set_scoring_function(sf)
         # opt.add_optimizer_state(self.pdb_opt_state)
-        start_score = self.imp_model.evaluate(False)
+        start_score = sf.evaluate(False)
         print("before optimization")
         end_score = opt.optimize(10)
         print("after optimization")

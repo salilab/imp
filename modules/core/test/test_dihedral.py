@@ -23,20 +23,17 @@ class Tests(IMP.test.TestCase):
                                                     math.sin(system_angle),
                                                     0.0))
         k = IMP.core.Harmonic.get_k_from_standard_deviation(.1)
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1.0, k),
-                                       particles[0], particles[1])
-        model.add_restraint(r)
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1.0, k),
-                                       particles[1], particles[2])
-        model.add_restraint(r)
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1.0, k),
-                                       particles[2], particles[3])
-        model.add_restraint(r)
-        rsr = IMP.core.DihedralRestraint(IMP.core.Harmonic(scored_angle, k),
+        rs = [IMP.core.DistanceRestraint(IMP.core.Harmonic(1.0, k),
+                                         particles[0], particles[1]),
+              IMP.core.DistanceRestraint(IMP.core.Harmonic(1.0, k),
+                                         particles[1], particles[2]),
+              IMP.core.DistanceRestraint(IMP.core.Harmonic(1.0, k),
+                                         particles[2], particles[3]),
+              IMP.core.DihedralRestraint(IMP.core.Harmonic(scored_angle, k),
                                          particles[0], particles[1],
-                                         particles[2], particles[3])
-        model.add_restraint(rsr)
-        return model, rsr
+                                         particles[2], particles[3])]
+        sf = IMP.core.RestraintsScoringFunction(rs)
+        return model, sf
 
     def test_score(self):
         """Check score of dihedral restraints"""
@@ -44,15 +41,16 @@ class Tests(IMP.test.TestCase):
         for i in range(len(angles)):
             # Score of model with the same angle as the scoring function's mean
             # should be zero:
-            model, rsr = self._setup_particles(angles[i], angles[i])
-            self.assertLess(model.evaluate(False), 1e-6)
+            model, sf = self._setup_particles(angles[i], angles[i])
+            self.assertLess(sf.evaluate(False), 1e-6)
             # When the angle is different, score should be far from zero:
-            model, rsr = self._setup_particles(angles[i], angles[-i - 1])
-            self.assertGreater(model.evaluate(False), 10.0)
+            model, sf = self._setup_particles(angles[i], angles[-i - 1])
+            self.assertGreater(sf.evaluate(False), 10.0)
             # Optimizing should reduce the score to zero:
             opt = IMP.core.ConjugateGradients(model)
+            opt.set_scoring_function(sf)
             opt.optimize(50)
             self.assertLess(opt.optimize(50), 1e-6)
-            self.assertLess(model.evaluate(False), 1e-6)
+            self.assertLess(sf.evaluate(False), 1e-6)
 if __name__ == '__main__':
     IMP.test.main()

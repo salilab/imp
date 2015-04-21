@@ -25,7 +25,6 @@ class TestEMRestraint(IMP.test.TestCase):
                 IMP.core.XYZ(pair[1]).get_coordinates())
             ts = IMP.core.Harmonic(distance, strength)
             rs.add_restraint(IMP.core.DistanceRestraint(ts, pair[0], pair[1]))
-        mdl.add_restraint(rs)
         print(rs.evaluate(False))
 
 if __name__ == '__main__':

@@ -53,8 +53,7 @@ class Tests(IMP.test.TestCase):
         self.assertGreater(dmap.get_header().rms, 0)
         # check origin:
         r = IMP.em.FitRestraint(ps, dmap)
-        m.add_restraint(r)
-        score = self.imp_model.evaluate(False)
+        score = r.evaluate(False)
         self.assertLess(score, 0.01)
         print("score:", score, r.evaluate(False))
         # check origin

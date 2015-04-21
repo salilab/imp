@@ -238,15 +238,12 @@ class Tests(IMP.test.TestCase):
         dmap.calcRMS()
         print("AFTER calcRMS", dmap.get_rms_calculated())
         IMP.em.write_map(dmap, "map.mrc", IMP.em.MRCReaderWriter())
-        rs = IMP.RestraintSet(m)
-        m.add_restraint(rs)
-
         r = IMP.em.FitRestraint([fp], dmap)
-        rs.add_restraint(r)
+        sf = IMP.core.RestraintsScoringFunction([r])
         for i in range(0, 10):
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
             self.assertXYZDerivativesInTolerance(
-                m, d, tolerance=.05, percentage=5)
+                sf, d, tolerance=.05, percentage=5)
 
 
 if __name__ == '__main__':

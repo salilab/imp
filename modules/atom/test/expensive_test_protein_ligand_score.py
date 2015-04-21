@@ -41,11 +41,9 @@ class Tests(IMP.test.TestCase):
         print("evaluate")
         # IMP.base.set_log_level(IMP.base.VERBOSE)
         r = IMP.atom.ProteinLigandRestraint(p, l, 15.0)
-        m.add_restraint(r)
-        raw = m.evaluate(False)
-        deriv = m.evaluate(True)
+        raw = r.evaluate(False)
+        deriv = r.evaluate(True)
         self.assertAlmostEqual(raw, deriv, delta=.1 * (raw + deriv))
-        print(r.evaluate(False))
 
     def test_score_2(self):
         """Test protein ligand restraint 2"""
@@ -69,9 +67,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(ls), 2)
         IMP.base.set_log_level(IMP.base.SILENT)
         r0 = IMP.atom.ProteinLigandRestraint(p, ls[0], 6.0)
-        m.add_restraint(r0)
         r1 = IMP.atom.ProteinLigandRestraint(p, ls[1], 6.0)
-        m.add_restraint(r1)
         print(r0.evaluate(False))
         print(r1.evaluate(False))
         self.assertAlmostEqual(r0.evaluate(False), 8.3, delta=1)

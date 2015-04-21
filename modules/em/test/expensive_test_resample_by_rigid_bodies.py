@@ -70,8 +70,6 @@ class Tests(IMP.test.TestCase):
             False)
         self.restr_rb_all_fast = IMP.em.FitRestraint(
             self.all_ps_copy, map, [0., 0.], IMP.atom.Mass.get_mass_key(), 1, True)
-        self.imp_model.add_restraint(self.restr_ps_all)
-        self.imp_model.add_restraint(self.restr_rb_all_fast)
         score1 = self.restr_ps_all.evaluate(False)
         score2 = self.restr_rb_all_fast.evaluate(False)
         self.assertAlmostEqual(score1, score2, delta=0.05)
@@ -119,9 +117,6 @@ class Tests(IMP.test.TestCase):
             self.all_ps_copy, map, [0., 0.], self.weight_key, 1, True)
         self.restr_rb_all_slow = IMP.em.FitRestraint(
             self.all_ps_copy, map, [0., 0.], self.weight_key, 1, False)
-        self.imp_model.add_restraint(self.restr_ps_all)
-        self.imp_model.add_restraint(self.restr_rb_all_fast)
-        self.imp_model.add_restraint(self.restr_rb_all_slow)
         score1 = self.restr_ps_all.evaluate(True)
         score2 = self.restr_rb_all_fast.evaluate(True)
         self.assertAlmostEqual(score1, score2, delta=0.05)

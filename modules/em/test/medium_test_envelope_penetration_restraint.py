@@ -33,11 +33,11 @@ class Tests(IMP.test.TestCase):
         self._create_density_map(10, 1.5)
         self.epr = IMP.em.EnvelopePenetrationRestraint(
             self.ps, self.dmap, self.thr)
-        self.mdl.add_restraint(self.epr)
+        self.sf = IMP.core.RestraintsScoringFunction([self.epr])
 
     def test_evaluate(self):
         """Check the restraint is being evaluated"""
-        score = self.mdl.evaluate(False)
+        score = self.sf.evaluate(False)
         self.assertAlmostEqual(score, 4.0, delta=0.1)
 
     def test_penetration(self):
@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
         xyz = IMP.core.XYZs(self.ps)
         for x in xyz:
             x.set_coordinates(t.get_transformed(x.get_coordinates()))
-        score = self.mdl.evaluate(False)
+        score = self.sf.evaluate(False)
         self.assertAlmostEqual(score, 59.0, delta=0.1)
 
 if __name__ == '__main__':

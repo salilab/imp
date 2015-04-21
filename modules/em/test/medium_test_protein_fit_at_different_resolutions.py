@@ -16,14 +16,12 @@ class Tests(IMP.test.TestCase):
             scene = IMP.em.read_map(self.get_input_file_name(fn), self.mrw)
             scene.get_header_writable().set_resolution(res)
             r = IMP.em.FitRestraint(self.particles, scene)
-            self.imp_model.add_restraint(r)
-            score = self.imp_model.evaluate(False)
+            score = r.evaluate(False)
             print("EM score (1-CC) = " + str(score), " filename:", fn, " res:", res)
             self.assertLess(
                 score,
                 0.05,
                 "the correlation score is not correct")
-            self.imp_model.remove_restraint(r)
 
     def test_compare_fit_score_to_imp_generated_maps(self):
         data = [["1z5s_5.imp.mrc", 5],

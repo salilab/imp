@@ -88,8 +88,7 @@ class Tests(IMP.test.TestCase):
         for p in self.particles:
             print("is rigid body?", IMP.core.RigidBody.get_is_setup(p))
         r = IMP.em.FitRestraint(self.particles, self.scene)
-        self.imp_model.add_restraint(r)
-        score = self.imp_model.evaluate(False)
+        score = r.evaluate(False)
         print("EM score (1-CC) = " + str(score))
         self.assertLess(score, 0.05, "the correlation score is not correct")
 

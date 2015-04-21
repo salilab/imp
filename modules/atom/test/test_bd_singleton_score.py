@@ -46,15 +46,15 @@ class Tests(IMP.test.TestCase):
         b = IMP.atom.create_custom_bond(b0, b1, 1.0, 20.0)
         ss = IMP.atom.BondSingletonScore(IMP.core.Harmonic(0, 1))
         r = IMP.core.SingletonRestraint(ss, b.get_particle())
-        m.add_restraint(r)
+        sf = IMP.core.RestraintsScoringFunction([r])
 
         d0.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
         d1.set_coordinates(
             IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
             * (random.random() * 4.0 + 2.0))
 
-        self.assertXYZDerivativesInTolerance(m, d0, 2.0, 5.0)
-        self.assertXYZDerivativesInTolerance(m, d1, 2.0, 5.0)
+        self.assertXYZDerivativesInTolerance(sf, d0, 2.0, 5.0)
+        self.assertXYZDerivativesInTolerance(sf, d1, 2.0, 5.0)
 
 if __name__ == '__main__':
     IMP.test.main()

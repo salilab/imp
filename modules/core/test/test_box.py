@@ -22,8 +22,10 @@ class Tests(IMP.test.TestCase):
         d.get_coordinates().show()
         d.set_coordinates_are_optimized(True)
         s = IMP.core.BoundingBox3DSingletonScore(IMP.core.Harmonic(0, 1), bbi)
-        m.add_restraint(IMP.core.SingletonRestraint(s, p))
+        r = IMP.core.SingletonRestraint(s, p)
+        sf = IMP.core.RestraintsScoringFunction([r])
         o = IMP.core.ConjugateGradients(m)
+        o.set_scoring_function(sf)
         o.optimize(100)
         for i in range(0, 3):
             self.assertGreater(d.get_coordinate(i), 9.9)

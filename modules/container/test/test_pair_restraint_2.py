@@ -32,9 +32,9 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(
             r2.evaluate(False),
             apc.get_number_of_particle_pairs())
-        m.add_restraint(r2)
-        self.assertEqual(m.evaluate(False), apc.get_number_of_particle_pairs())
-        self.assertEqual(m.evaluate(False), apc.get_number_of_particle_pairs())
+        sf = IMP.core.RestraintsScoringFunction([r2])
+        self.assertEqual(sf.evaluate(False), apc.get_number_of_particle_pairs())
+        self.assertEqual(sf.evaluate(False), apc.get_number_of_particle_pairs())
 
 if __name__ == '__main__':
     IMP.test.main()

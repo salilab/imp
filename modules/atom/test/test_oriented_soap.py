@@ -18,9 +18,8 @@ class Tests(IMP.test.TestCase):
         c.add_pair_filter(sl.get_pair_filter())
 
         r = IMP.container.PairsRestraint(sl, c)
-        m.add_restraint(r)
 
-        score = m.evaluate(False)
+        score = r.evaluate(False)
         self.assertAlmostEqual(score, 1.0, delta=0.01)
 
 if __name__ == '__main__':

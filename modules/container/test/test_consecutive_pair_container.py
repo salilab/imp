@@ -24,7 +24,6 @@ class Tests(IMP.test.TestCase):
         cpc = IMP.container.ConsecutivePairContainer(ps)
         hdps = IMP.core.HarmonicDistancePairScore(0, 1)
         r = IMP.container.PairsRestraint(hdps, cpc)
-        m.add_restraint(r)
         self.assert_(r.evaluate(False) > 0)
         rd = r.create_decomposition()
         rds = IMP.get_restraints([rd])

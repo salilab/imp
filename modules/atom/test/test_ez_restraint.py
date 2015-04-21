@@ -22,7 +22,6 @@ class Test(IMP.test.TestCase):
                                      self.m, IMP.atom.CBetaPDBSelector())
             ps = IMP.atom.get_leaves(prot)
             ez = IMP.atom.EzRestraint(ps)
-            self.m.add_restraint(ez)
             self.rst[pdb] = ez
 
     def test_Ez(self):

@@ -64,7 +64,6 @@ class Tests(IMP.test.TestCase):
             rb.set_coordinates(coord)
 
         # Check that the value is a perfect registration
-        m.add_restraint(rb_fit)
         score = rb_fit.evaluate(False)
         # print "score ...", score
         # It seems that projecting with the masks is slightly less accurate
