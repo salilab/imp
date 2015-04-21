@@ -194,8 +194,8 @@ class TestCase(unittest.TestCase):
                                         percentage=0):
         """Assert that x,y,z analytical derivatives match numerical within
            a tolerance, or a percentage (of the analytical value), whichever
-           is larger. `sf` should be a ScoringFunction, although for backwards
-           compatibility a Model is also accepted."""
+           is larger. `sf` should be a ScoringFunction or Restraint,
+           although for backwards compatibility a Model is also accepted."""
         sf.evaluate(True)
         derivs = xyz.get_derivatives()
         num_derivs = xyz_numerical_derivatives(sf, xyz, 0.01)
