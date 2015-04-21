@@ -39,7 +39,7 @@ def display(i, w, hs):
         w.add_geometry(g)
 
 m = IMP.Model()
-IMP.base.set_log_level(IMP.base.SILENT)
+IMP.set_log_level(IMP.SILENT)
 
 rb0, h0 = create_rigid_body(m, "first")
 rb1, h1 = create_rigid_body(m, "second")
@@ -63,7 +63,7 @@ m.add_restraint(cr)
 bd = IMP.atom.BrownianDynamics(m)
 bd.set_time_step(10000)
 
-nm = IMP.base.create_temporary_file_name("rigid_bd", ".pym")
+nm = IMP.create_temporary_file_name("rigid_bd", ".pym")
 nm = "rigid.pym"
 w = IMP.display.PymolWriter(nm)
 for i in range(0, 100):

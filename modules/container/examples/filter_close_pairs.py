@@ -15,7 +15,7 @@ np = 10
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                IMP.algebra.Vector3D(5, 5, 5))
 ik = IMP.IntKey("num")
-IMP.base.set_log_level(IMP.base.SILENT)
+IMP.set_log_level(IMP.SILENT)
 m = IMP.Model()
 l = []
 for i in range(0, np):

@@ -4,7 +4,6 @@
 
 from __future__ import print_function
 import IMP
-import IMP.base
 import IMP.core
 import IMP.atom
 import IMP.em2d
@@ -38,7 +37,7 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
 
 
 # Get model from PDB file
-IMP.base.set_log_level(IMP.base.TERSE)
+IMP.set_log_level(IMP.TERSE)
 m = IMP.Model()
 prot = IMP.atom.read_pdb(
     IMP.em2d.get_example_path("1z5s.pdb"), m, IMP.atom.ATOMPDBSelector())
@@ -112,7 +111,7 @@ print("model has ", m.get_number_of_restraints(), "restraints")
 # set em2D restraint
 srw = IMP.em2d.SpiderImageReaderWriter()
 selection_file = IMP.em2d.get_example_path("all-1z5s-projections.sel")
-images_to_read_names = [IMP.base.get_relative_path(selection_file, x) for x in
+images_to_read_names = [IMP.get_relative_path(selection_file, x) for x in
                         IMP.em2d.read_selection_file(selection_file)]
 em_images = IMP.em2d.read_images(images_to_read_names, srw)
 print(len(em_images), "images read")

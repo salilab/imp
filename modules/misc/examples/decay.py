@@ -8,17 +8,16 @@ import IMP.container
 import IMP.misc
 import IMP.display
 import IMP.example
-import IMP.base
 import sys
 import IMP.rmf
 #import IMP.benchmark
 import RMF
 import random
 
-IMP.base.setup_from_argv(
+IMP.setup_from_argv(
     sys.argv, "Use the IMP::misc::DecayPairContainerOptimizerState to gradually break the bonds in a bd simulation")
 
-if IMP.base.get_bool_flag("run_quick_test"):
+if IMP.get_bool_flag("run_quick_test"):
     np = 8
     nb = 8
     prob = .5
@@ -57,7 +56,7 @@ for i in range(0, nb):
 cf = IMP.core.CoinFlipPairPredicate(prob)
 dos = IMP.misc.DecayPairContainerOptimizerState(cf, bds, "decay")
 dos.set_period(period)
-dos.set_log_level(IMP.base.SILENT)  # VERBOSE
+dos.set_log_level(IMP.SILENT)  # VERBOSE
 
 # create restraints
 rs = []
@@ -69,7 +68,7 @@ rs.append(IMP.container.PairsRestraint(bond_score,
                                        dos.get_output_container(),
                                        "bonds"))
 ev = IMP.core.ExcludedVolumeRestraint(ps, 10, 10)
-IMP.base.set_log_level(IMP.SILENT)
+IMP.set_log_level(IMP.SILENT)
 
 # set up simulator
 bd = IMP.atom.BrownianDynamics(m)
@@ -78,7 +77,7 @@ bd.set_scoring_function(rs + [ev])
 bd.add_optimizer_state(dos)
 
 # set up display
-fn = IMP.base.create_temporary_file_name("decay", ".rmf")
+fn = IMP.create_temporary_file_name("decay", ".rmf")
 rmf = RMF.create_rmf_file(fn)
 print("setting up file")
 IMP.rmf.add_hierarchies(rmf, ps)

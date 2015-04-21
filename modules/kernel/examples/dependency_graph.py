@@ -128,7 +128,6 @@
 
 import IMP.atom
 import IMP.container
-import IMP.base
 import sys
 
 IMP.setup_from_argv(sys.argv, "Example of dependency graphs")

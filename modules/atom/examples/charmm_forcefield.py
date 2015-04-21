@@ -63,6 +63,6 @@ restraints = [r, IMP.container.PairsRestraint(ps, nbl)]
 scoring_function = IMP.core.RestraintsScoringFunction(restraints)
 
 # it gets awfully slow with internal checks
-IMP.base.set_check_level(IMP.base.USAGE)
+IMP.set_check_level(IMP.USAGE)
 # Finally, evaluate the score of the whole system (without derivatives)
 print(scoring_function.evaluate(False))

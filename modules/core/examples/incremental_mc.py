@@ -9,9 +9,9 @@ import IMP.algebra
 import IMP.display
 import sys
 
-IMP.base.setup_from_argv(sys.argv, "Optimize balls example")
+IMP.setup_from_argv(sys.argv, "Optimize balls example")
 
-if IMP.base.get_is_quick_test():
+if IMP.get_is_quick_test():
     num_balls = 2
     num_mc_steps = 10
 else:
@@ -42,11 +42,11 @@ mc.set_incremental_scoring_function(isf)
 mvs = [IMP.core.BallMover([p], 5) for p in ps]
 sm = IMP.core.SerialMover(mvs)
 mc.add_mover(sm)
-IMP.base.set_log_level(IMP.base.SILENT)
+IMP.set_log_level(IMP.SILENT)
 print("initial", isf.evaluate(False))
 after = mc.optimize(num_mc_steps)
 print("final", after)
-name = IMP.base.create_temporary_file_name("incremental_mc", ".pym")
+name = IMP.create_temporary_file_name("incremental_mc", ".pym")
 w = IMP.display.PymolWriter(name)
 for p in ps:
     g = IMP.core.XYZRGeometry(p)

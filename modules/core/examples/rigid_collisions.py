@@ -42,7 +42,7 @@ done = False
 while not done:
     try:
         o.optimize(1000)
-    except IMP.base.ModelException:
+    except IMP.ModelException:
         for d in [rbss0, rbss1]:
             d.set_transformation(
                 IMP.algebra.Transformation3D(

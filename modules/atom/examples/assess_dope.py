@@ -37,5 +37,5 @@ print("creating representation")
 print("creating DOPE score function")
 add_dope(m, prot)
 
-IMP.base.set_check_level(IMP.base.USAGE)
+IMP.set_check_level(IMP.USAGE)
 print("DOPE SCORE ::", m.evaluate(False))

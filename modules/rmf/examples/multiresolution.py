@@ -4,12 +4,11 @@
 
 from __future__ import print_function, division
 import IMP.atom
-import IMP.base
 import sys
 import RMF
 import IMP.rmf
 
-IMP.base.setup_from_argv(sys.argv, "Create a multiresolution rmf file")
+IMP.setup_from_argv(sys.argv, "Create a multiresolution rmf file")
 
 pdbname = IMP.rmf.get_example_path("big.pdb")
 
@@ -19,7 +18,7 @@ IMP.atom.add_bonds(h)
 
 chains = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
 
-if IMP.base.get_bool_flag("run_quick_test"):
+if IMP.get_bool_flag("run_quick_test"):
     chains = [chains[0]]
 
 
@@ -60,7 +59,7 @@ for c in chains:
         c.add_child(mm)
 
 print("writing")
-fn = IMP.base.create_temporary_file_name("multires", ".rmf")
+fn = IMP.create_temporary_file_name("multires", ".rmf")
 rmf = RMF.create_rmf_file(fn)
 print("adding")
 IMP.rmf.add_hierarchies(rmf, chains)

@@ -22,7 +22,7 @@ g.set_color(IMP.display.Color(1, 0, 0))
 log.add_geometry(g)
 
 r = IMP.core.ExcludedVolumeRestraint(c)
-r.set_log_level(IMP.base.VERBOSE)
+r.set_log_level(IMP.VERBOSE)
 
 o = IMP.core.MonteCarlo(m)
 o.set_scoring_function([r])

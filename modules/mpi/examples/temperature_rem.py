@@ -2,12 +2,11 @@
 # Temperature replica exchange
 
 import IMP
-import IMP.base
 import IMP.mpi
 import IMP.core
 import sys
 
-IMP.base.setup_from_argv(sys.argv, "Temperature MPI example")
+IMP.setup_from_argv(sys.argv, "Temperature MPI example")
 
 # min and max temperature
 TEMPMIN_ = 1.0

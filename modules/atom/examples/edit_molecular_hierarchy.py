@@ -40,4 +40,4 @@ hchain.add_child(f1)
 # create a graph from the hierarchy
 ept = IMP.atom.get_hierarchy_tree(ep)
 
-IMP.base.show_graphviz(ept)
+IMP.show_graphviz(ept)

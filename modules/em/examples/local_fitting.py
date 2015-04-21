@@ -14,8 +14,8 @@ import IMP.atom
 import random
 import math
 
-IMP.base.set_log_level(IMP.base.SILENT)
-IMP.base.set_check_level(IMP.base.NONE)
+IMP.set_log_level(IMP.SILENT)
+IMP.set_check_level(IMP.NONE)
 m = IMP.Model()
 # 1. setup the input protein
 # 1.1 select a selector.

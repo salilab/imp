@@ -30,7 +30,7 @@ for p0 in lc.get_particles():
             max = d
 print("The maximum distance is " + str(max))
 
-IMP.base.set_log_level(IMP.base.SILENT)
+IMP.set_log_level(IMP.SILENT)
 o.optimize(100)
 
 max = 0

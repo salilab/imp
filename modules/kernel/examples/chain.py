@@ -10,7 +10,6 @@ import random
 import RMF
 import IMP.container
 import IMP.rmf
-import IMP.base
 import sys
 
 IMP.setup_from_argv(sys.argv, "Chain example")

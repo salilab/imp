@@ -55,12 +55,12 @@ rs.append(bbr)
 sf = IMP.core.RestraintsScoringFunction(rs, "SF")
 
 bd = IMP.atom.BrownianDynamics(m)
-bd.set_log_level(IMP.base.SILENT)
+bd.set_log_level(IMP.SILENT)
 bd.set_scoring_function(sf)
 
 bd.set_maximum_time_step(10)
 
-name = IMP.base.create_temporary_file_name("brownian", ".rmf")
+name = IMP.create_temporary_file_name("brownian", ".rmf")
 rmf = RMF.create_rmf_file(name)
 rmf.set_description("Brownian dyanmics trajectory with 10fs timestep.\n")
 IMP.rmf.add_hierarchy(rmf, h)
@@ -69,7 +69,7 @@ IMP.rmf.add_geometry(rmf, IMP.display.BoundingBoxGeometry(bb))
 
 os = IMP.rmf.SaveOptimizerState(m, rmf)
 os.update_always("initial conformation")
-os.set_log_level(IMP.base.SILENT)
+os.set_log_level(IMP.SILENT)
 os.set_simulator(bd)
 bd.add_optimizer_state(os)
 

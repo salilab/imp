@@ -7,7 +7,7 @@ from __future__ import print_function
 import IMP.em
 import IMP.core
 import IMP.atom
-IMP.base.set_log_level(IMP.base.SILENT)
+IMP.set_log_level(IMP.SILENT)
 m = IMP.Model()
 # 1. setup the input protein
 # 1.1 select a selector.
