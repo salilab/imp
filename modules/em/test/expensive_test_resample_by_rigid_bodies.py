@@ -99,8 +99,6 @@ class Tests(IMP.test.TestCase):
                 IMP.core.transform(
                     self.rbs_of_copy[i],
                     rand_t[i].get_inverse())
-        self.imp_model.remove_restraint(self.restr_ps_all)
-        self.imp_model.remove_restraint(self.restr_rb_all_fast)
 
     def _test_resampling_derivatives(self):
         """Test derivatives with and without rigid bodies"""
@@ -120,8 +118,6 @@ class Tests(IMP.test.TestCase):
         score1 = self.restr_ps_all.evaluate(True)
         score2 = self.restr_rb_all_fast.evaluate(True)
         self.assertAlmostEqual(score1, score2, delta=0.05)
-        self.imp_model.remove_restraint(self.restr_ps_all)
-        self.imp_model.remove_restraint(self.restr_rb_all_fast)
 
     def _test_fast_local_refinement(self):
         """test that local rigid fitting work well with rigid bodies"""
