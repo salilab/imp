@@ -122,23 +122,23 @@ def numerical_derivative(func, val, step):
     return retval
 
 
-def xyz_numerical_derivatives(model, xyz, step):
-    """Calculate the x,y and z derivatives of `model`'s scoring function
+def xyz_numerical_derivatives(sf, xyz, step):
+    """Calculate the x,y and z derivatives of the scoring function `sf`
        on the `xyz` particle. The derivatives are approximated numerically
        using the numerical_derivatives() function."""
     class _XYZDerivativeFunc(object):
-        def __init__(self, xyz, basis_vector):
+        def __init__(self, sf, xyz, basis_vector):
             self._xyz = xyz
-            self._model = xyz.get_particle().get_model()
+            self._sf = sf
             self._basis_vector = basis_vector
             self._starting_coordinates = xyz.get_coordinates()
 
         def __call__(self, val):
             self._xyz.set_coordinates(self._starting_coordinates + \
                                       self._basis_vector * val)
-            return self._model.evaluate(False)
+            return self._sf.evaluate(False)
 
-    return tuple([IMP.test.numerical_derivative(_XYZDerivativeFunc(xyz,
+    return tuple([IMP.test.numerical_derivative(_XYZDerivativeFunc(sf, xyz,
                                           IMP.algebra.Vector3D(*x)), 0, 0.01) \
                   for x in ((1,0,0), (0,1,0), (0,0,1))])
 
@@ -190,14 +190,15 @@ class TestCase(unittest.TestCase):
     def get_magnitude(self, vector):
         return sum([x*x for x in vector], 0)**.5
 
-    def assertXYZDerivativesInTolerance(self, model, xyz, tolerance=0,
+    def assertXYZDerivativesInTolerance(self, sf, xyz, tolerance=0,
                                         percentage=0):
         """Assert that x,y,z analytical derivatives match numerical within
            a tolerance, or a percentage (of the analytical value), whichever
-           is larger."""
-        model.evaluate(True)
+           is larger. `sf` should be a ScoringFunction, although for backwards
+           compatibility a Model is also accepted."""
+        sf.evaluate(True)
         derivs = xyz.get_derivatives()
-        num_derivs = xyz_numerical_derivatives(model, xyz, 0.01)
+        num_derivs = xyz_numerical_derivatives(sf, xyz, 0.01)
         pct = percentage / 100.0
         self.assertAlmostEqual(self.get_magnitude(derivs-num_derivs),0,
                                delta=tolerance+percentage*self.get_magnitude(num_derivs),
