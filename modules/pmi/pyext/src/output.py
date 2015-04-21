@@ -492,7 +492,7 @@ class Output(object):
     def get_versions_of_relevant_modules(self):
         import IMP
         versions = {}
-        versions["IMP_VERSION"] = IMP.kernel.get_module_version()
+        versions["IMP_VERSION"] = IMP.get_module_version()
         try:
             import IMP.pmi
             versions["PMI_VERSION"] = IMP.pmi.get_module_version()

@@ -12,7 +12,6 @@ import IMP
 import IMP.atom
 import IMP.algebra
 import IMP.pmi
-import IMP.base
 import csv
 import os
 from collections import defaultdict
@@ -81,7 +80,7 @@ class SystemBase(object):
 
     def _create_hierarchy(self):
         """create a new hierarchy"""
-        tmp_part=IMP.kernel.Particle(self.mdl)
+        tmp_part=IMP.Particle(self.mdl)
         return IMP.atom.Hierarchy.setup_particle(tmp_part)
 
     def _create_child(self,parent_hierarchy):
@@ -638,7 +637,7 @@ class TopologyReader(object):
 
     def _make_path(self, dirname, fname):
         "Get the full path to a file, possibly relative to the topology file"
-        dirname = IMP.base.get_relative_path(self.topology_file, dirname)
+        dirname = IMP.get_relative_path(self.topology_file, dirname)
         return os.path.join(dirname, fname)
 
     def create_component_topology(self, component_line, topology_fields, defaults, linenum, color="0.1"):
@@ -802,4 +801,4 @@ class ComponentTopology(object):
 
     def recompute_default_dirs(self, topology):
         pdb_filename=self.pdb_file.split("/")[-1]
-        self.pdb_filename=IMP.base.get_relative_path(topology.topology_file, topology.defaults)
+        self.pdb_filename=IMP.get_relative_path(topology.topology_file, topology.defaults)

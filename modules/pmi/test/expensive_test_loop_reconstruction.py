@@ -10,7 +10,7 @@ import IMP.pmi.tools as tools
 import IMP.pmi.samplers as samplers
 import IMP.pmi.output as output
 
-IMP.base.set_log_level(IMP.base.SILENT)
+IMP.set_log_level(IMP.SILENT)
 
 
 def check_time(stop_watch_object, threshold):

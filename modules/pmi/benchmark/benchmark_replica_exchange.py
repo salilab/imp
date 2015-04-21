@@ -8,7 +8,7 @@ import IMP.pmi.output
 import time
 import sys
 
-IMP.base.set_log_level(IMP.base.SILENT)
+IMP.set_log_level(IMP.SILENT)
 old_stdout = sys.stdout
 class DummyFile(object):
     def write(self, txt):

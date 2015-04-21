@@ -1,6 +1,5 @@
 import IMP
 import IMP.core
-import IMP.base
 import IMP.algebra
 import IMP.atom
 import IMP.container
@@ -16,7 +15,7 @@ import IMP.pmi.tools as tools
 import IMP.pmi.samplers as samplers
 import IMP.pmi.output as output
 
-IMP.base.set_log_level(IMP.base.SILENT)
+IMP.set_log_level(IMP.SILENT)
 # this benchmark should take 5 sec to initialize and 3 sec per MC loop, for a total of 35 sec.
 
 # Redirect chatty PMI output so we can see benchmark output
@@ -123,7 +122,7 @@ log_objects.append(mc)
 
 start_time = time.clock()
 # In debug mode things are way too slow to actually run MC
-if IMP.base.get_check_level() < IMP.base.USAGE_AND_INTERNAL:
+if IMP.get_check_level() < IMP.USAGE_AND_INTERNAL:
     o = output.Output()
     rmf = o.init_rmf("conformations.rmf3", [r.prot])
     o.init_stat2("modeling.stat", log_objects)
@@ -142,6 +141,6 @@ if IMP.base.get_check_level() < IMP.base.USAGE_AND_INTERNAL:
 sys.stdout = old_stdout
 IMP.benchmark.report("pmi loop", time.clock() - start_time, 3*10+5)
 
-if IMP.base.get_check_level() < IMP.base.USAGE_AND_INTERNAL:
+if IMP.get_check_level() < IMP.USAGE_AND_INTERNAL:
     for output in ["conformations.pdb", "conformations.rmf3", "modeling.stat"]:
         os.unlink(output)

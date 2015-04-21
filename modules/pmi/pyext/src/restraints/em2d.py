@@ -4,7 +4,6 @@ Restraints for handling electron microscopy images.
 
 import IMP
 import IMP.core
-import IMP.base
 import IMP.algebra
 import IMP.atom
 import IMP.em2d

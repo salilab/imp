@@ -67,7 +67,7 @@ def build_bead(model,residues,input_coord=None):
         prt.set_name('%i_bead' % (ds_frag[0]))
         try:
             vol = IMP.atom.get_volume_from_residue_type(rt)
-        except IMP.base.ValueException:
+        except IMP.ValueException:
             vol = IMP.atom.get_volume_from_residue_type(
                 IMP.atom.ResidueType("ALA"))
         radius = IMP.algebra.get_ball_radius_from_volume_3d(vol)
@@ -172,7 +172,7 @@ def build_along_backbone(mdl,root,residues,rep_type,ca_centers=True):
                             res1.add_child(IMP.atom.Residue.setup_particle(rp1,residue.hier))
                             try:
                                 vol = IMP.atom.get_volume_from_residue_type(rt)
-                            except IMP.base.ValueException:
+                            except IMP.ValueException:
                                 vol = IMP.atom.get_volume_from_residue_type(
                                     IMP.atom.ResidueType("ALA"))
                             try:

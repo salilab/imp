@@ -7,7 +7,6 @@
 from __future__ import print_function
 import IMP
 import IMP.core
-import IMP.base
 import IMP.algebra
 import IMP.atom
 import IMP.display
@@ -145,7 +144,7 @@ class Representation(object):
 
         self.onetothree = dict((v, k) for k, v in self.threetoone.items())
 
-        self.residuenamekey = IMP.kernel.StringKey("ResidueName")
+        self.residuenamekey = IMP.StringKey("ResidueName")
 
     def set_label(self, label):
         self.label = label
@@ -461,7 +460,7 @@ class Representation(object):
             try:
                 vol = IMP.atom.get_volume_from_residue_type(rt)
                 # mass=IMP.atom.get_mass_from_residue_type(rt)
-            except IMP.base.ValueException:
+            except IMP.ValueException:
                 vol = IMP.atom.get_volume_from_residue_type(
                 IMP.atom.ResidueType("ALA"))
                 # mass=IMP.atom.get_mass_from_residue_type(IMP.atom.ResidueType("ALA"))
@@ -557,7 +556,7 @@ class Representation(object):
             if resolution == 1:
                 try:
                     vol = IMP.atom.get_volume_from_residue_type(rt)
-                except IMP.base.ValueException:
+                except IMP.ValueException:
                     vol = IMP.atom.get_volume_from_residue_type(
                         IMP.atom.ResidueType("ALA"))
                 radius = IMP.algebra.get_ball_radius_from_volume_3d(vol)
@@ -978,7 +977,7 @@ class Representation(object):
                     try:
                         vol = IMP.atom.get_volume_from_residue_type(rt)
                         # mass=IMP.atom.get_mass_from_residue_type(rt)
-                    except IMP.base.ValueException:
+                    except IMP.ValueException:
                         vol = IMP.atom.get_volume_from_residue_type(
                             IMP.atom.ResidueType("ALA"))
                         # mass=IMP.atom.get_mass_from_residue_type(IMP.atom.ResidueType("ALA"))
