@@ -267,11 +267,6 @@ Model::ParticleIterator Model::particles_end() const {
                           particle_index_.end());
 }
 
-void Model::remove_particle(Particle *p) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use the ParticleIndex version.");
-  remove_particle(p->get_index());
-}
-
 RestraintSet *Model::get_root_restraint_set() {
   IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use a scoring function instead of the Model.");

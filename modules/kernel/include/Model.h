@@ -361,9 +361,6 @@ class IMPKERNELEXPORT Model : public Object
   /** \deprecated_at{2.1} Use a ScoringFunction instead.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   double evaluate(bool tf, bool warn = true);
-  /** \deprecated_at{2.1} Use the ParticleIndex version.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void remove_particle(Particle *p);
   /** \deprecated_at{2.1} Use get_particle_indexes(). */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   unsigned int get_number_of_particles() const;
