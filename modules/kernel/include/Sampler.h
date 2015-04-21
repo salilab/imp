@@ -22,7 +22,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 /** A sampler takes a Model and searches for good configurations,
     given the optimizable parameters and the scoring function in
     the Model and extra information that can be provided. Typically,
-    the current configuration of the model is ignore.
+    the current configuration of the model is ignored.
 
     Typically a sampler works by using one or more Optimizer
     types to search for configurations which minimize the scoring
