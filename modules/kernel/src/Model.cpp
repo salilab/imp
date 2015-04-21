@@ -245,12 +245,6 @@ ScoringFunction *Model::create_scoring_function() {
   return create_model_scoring_function();
 }
 
-
-double Model::get_maximum_score(Restraint *r) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                                  "Get the maximum from the restraint itself.");
-  return r->get_maximum_score();
-}
 void Model::set_maximum_score(Restraint *r, double s) {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
                                   "Set the maximum on the restraint itself.");
@@ -259,10 +253,6 @@ void Model::set_maximum_score(Restraint *r, double s) {
 void Model::set_maximum_score(double s) {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use a ScoringFunction.");
   return restraints_->set_maximum_score(s);
-}
-double Model::get_maximum_score() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use a ScoringFunction.");
-  return restraints_->get_maximum_score();
 }
 
 ParticlesTemp Model::get_particles() const {
