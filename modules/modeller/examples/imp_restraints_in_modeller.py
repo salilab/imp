@@ -26,12 +26,12 @@ atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
 r = IMP.core.DistanceRestraint(IMP.core.Harmonic(10.0, 1.0),
                                atoms[0].get_particle(),
                                atoms[-1].get_particle())
-m.add_restraint(r)
+sf = IMP.core.RestraintsScoringFunction([r])
 
-# Use the IMPRestraints class to add all of the IMP restraints to the
+# Use the IMPRestraints class to add this IMP scoring function to the
 # Modeller scoring function
 t = modmodel.env.edat.energy_terms
-t.append(IMP.modeller.IMPRestraints(atoms))
+t.append(IMP.modeller.IMPRestraints(atoms, sf))
 
 # Calculate the Modeller energy (score) for the whole protein
 sel = modeller.selection(modmodel)

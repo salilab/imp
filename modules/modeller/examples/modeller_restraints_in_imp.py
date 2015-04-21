@@ -30,8 +30,8 @@ atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
 
 # Use the ModellerRestraints class to add all of the Modeller restraints to
 # the IMP scoring function
-m.add_restraint(IMP.modeller.ModellerRestraints(m, modmodel,
-                                                atoms))
+r = IMP.modeller.ModellerRestraints(m, modmodel, atoms)
+sf = IMP.core.RestraintsScoringFunction([r])
 
 # Calculate the IMP score
-print(m.evaluate(False))
+print(sf.evaluate(False))
