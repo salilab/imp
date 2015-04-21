@@ -388,7 +388,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
         double ne = get_scoring_function()->evaluate(false);
         if (0) std::cout << oe << ne;
         IMP_INTERNAL_CHECK(std::abs(ne - oe) < (ne + oe) * .1 + .1,
-                           "Energies to not match before and after save."
+                           "Energies do not match before and after save."
                                << "Expected " << oe << " got " << ne
                                << std::endl);
       }
