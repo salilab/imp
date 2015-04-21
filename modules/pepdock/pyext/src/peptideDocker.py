@@ -522,7 +522,7 @@ class PeptideDocker:
             if (self.allFlexibleAtoms(r) == 1):
                 # add the decomposed restraint to the model
                 self.model.add_restraint(r)
-                self.model.set_maximum_score(r, maxForceFieldScore)
+                r.set_maximum_score(maxForceFieldScore)
                 self.addParticlesToGroups(r)
             else:
                 t = 1
@@ -622,7 +622,7 @@ class PeptideDocker:
         # print "Added non-bonded restraint between %s and %s" % (q0, q1)
         self.model.add_restraint(pairRestraint)
         maxNonBondedScore = float(self.getParam("max_non_bonded_score"))
-        self.model.set_maximum_score(pairRestraint, maxNonBondedScore)
+        pairRestraint.set_maximum_score(maxNonBondedScore)
         #initialScore = pairRestraint.evaluate(0)
 
     # add non-bonded restraints across close pairs. At least one atom in each
