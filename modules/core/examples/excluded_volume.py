@@ -12,11 +12,10 @@ h = IMP.core.HarmonicLowerBound(0, 1)
 sd = IMP.core.SphereDistancePairScore(h)
 # use the lower bound on the inter-sphere distance to push the spheres apart
 nbr = IMP.container.PairsRestraint(sd, nbl)
-m.add_restraint(nbr)
 
 # alternatively, one could just do
 r = IMP.core.ExcludedVolumeRestraint(c)
-m.add_restraint(r)
 
 # get the current score
-print(m.evaluate(False))
+sf = IMP.core.RestraintsScoringFunction([nbr, r])
+print(sf.evaluate(False))

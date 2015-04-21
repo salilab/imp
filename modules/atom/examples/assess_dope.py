@@ -29,13 +29,13 @@ def add_dope(m, prot):
     dps = IMP.atom.DopePairScore(15.0)
 #    dps= IMP.membrane.DopePairScore(15.0, IMP.membrane.get_data_path("dope_scorehr.lib"))
     d = IMP.container.PairsRestraint(dps, dpc)
-    m.add_restraint(d)
+    return d
 
 print("creating representation")
 (m, prot) = create_representation()
 
 print("creating DOPE score function")
-add_dope(m, prot)
+d = add_dope(m, prot)
 
 IMP.set_check_level(IMP.USAGE)
-print("DOPE SCORE ::", m.evaluate(False))
+print("DOPE SCORE ::", d.evaluate(False))

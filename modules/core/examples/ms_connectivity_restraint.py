@@ -54,7 +54,5 @@ i6 = r.add_composite([pb, pc], i2)
 i7 = r.add_composite([pa, pa, pb], i3)
 i8 = r.add_composite([pa, pb], i5)
 
-# Add restraint to the model and evaluate the model score
-
-m.add_restraint(r)
-m.evaluate(False)
+# Evaluate the restraint score
+r.evaluate(False)

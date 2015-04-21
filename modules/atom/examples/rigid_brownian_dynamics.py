@@ -50,7 +50,6 @@ ev = IMP.core.ExcludedVolumeRestraint(
     IMP.container.ListSingletonContainer(
         rb0.get_members() + rb1.get_members()),
     1, 3)
-m.add_restraint(ev)
 
 #h= IMP.core.Harmonic(0,1)
 #s= IMP.core.DistanceToSingletonScore(h, IMP.algebra.Vector3D(0,0,0))
@@ -58,9 +57,11 @@ m.add_restraint(ev)
 # m.add_restraint(r)
 cr = IMP.atom.create_distance_restraint(
     IMP.atom.Selection(h0), IMP.atom.Selection(h1), 0, 1)
-m.add_restraint(cr)
+
+sf = IMP.core.RestraintsScoringFunction([ev, cr])
 
 bd = IMP.atom.BrownianDynamics(m)
+bd.set_scoring_function(sf)
 bd.set_time_step(10000)
 
 nm = IMP.create_temporary_file_name("rigid_bd", ".pym")

@@ -37,6 +37,5 @@ lrps = IMP.core.KClosePairsPairScore(ps, cps, 1)
 # connect all 10 molecules together
 cr = IMP.core.ConnectivityRestraint(m, lrps)
 cr.set_particles(hs)
-m.add_restraint(cr)
 
-m.evaluate(False)
+cr.evaluate(False)

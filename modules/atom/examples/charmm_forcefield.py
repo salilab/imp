@@ -34,7 +34,6 @@ topology.setup_hierarchy(prot)
 # Set up and evaluate the stereochemical part (bonds, angles, dihedrals,
 # impropers) of the CHARMM forcefield
 r = IMP.atom.CHARMMStereochemistryRestraint(prot, topology)
-m.add_restraint(r)
 
 # Add non-bonded interaction (in this case, Lennard-Jones). This needs to
 # know the radii and well depths for each atom, so add them from the forcefield

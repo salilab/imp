@@ -27,7 +27,6 @@ for i in range(2):
 h = IMP.core.Harmonic(0.0, K_)
 sps = IMP.core.SphereDistancePairScore(h)
 pr = IMP.core.PairRestraint(sps, IMP.ParticlePair(ps[0], ps[1]))
-m.add_restraint(pr)
 
 # define cell centers
 ctrs = []
@@ -53,6 +52,7 @@ sm = IMP.core.SerialMover(movers)
 
 # sampler
 mc = IMP.core.MonteCarlo(m)
+mc.set_scoring_function([pr])
 mc.set_kt(KBT_)
 mc.set_return_best(False)
 mc.add_mover(sm)

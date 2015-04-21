@@ -102,12 +102,6 @@ r30.set_name("distance 3-0")
 print("Distances in the solution: d01 =", \
     d01, "d12 =", d12, "d23 =", d23, "d30 =", d30)
 
-# set distance restraints
-print("adding distance restraints ")
-for r in [r01, r12, r23, r30]:
-    m.add_restraint(r)
-print("model has ", m.get_number_of_restraints(), "restraints")
-
 # set em2D restraint
 srw = IMP.em2d.SpiderImageReaderWriter()
 selection_file = IMP.em2d.get_example_path("all-1z5s-projections.sel")
@@ -148,14 +142,13 @@ em2d_restraints_set = IMP.RestraintSet(m)
 # em2d_restraints_set.add_restraint(em2d_restraint)
 # em2d_restraints_set.set_weight(1000) # weight for the em2D restraint
 
-print("adding em2d restraint ")
-m.add_restraint(em2d_restraints_set)
-# Add all restraints to a model
-print("model has ", m.get_number_of_restraints(), "restraints")
-
+# Create scoring function using all restraints
+sf = IMP.core.RestraintsScoringFunction([r01, r12, r23, r30,
+                                         em2d_restraints_set])
 
 # MONTECARLO OPTIMIZATION
 s = IMP.core.MonteCarlo(m)
+s.set_scoring_function(sf)
 # Add movers for the rigid bodies
 movers = []
 for rbd in rigid_bodies:

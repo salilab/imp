@@ -33,10 +33,11 @@ nbl = IMP.container.ClosePairContainer(
 # Set up excluded volume
 ps = IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0, 1))
 evr = IMP.container.PairsRestraint(ps, nbl)
-evri = m.add_restraint(evr)
+sf = IMP.core.RestraintsScoringFunction([evr])
 
 # Set up optimizer
 o = IMP.core.ConjugateGradients(m)
+o.set_scoring_function(sf)
 
 done = False
 while not done:

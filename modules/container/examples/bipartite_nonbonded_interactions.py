@@ -22,9 +22,9 @@ nbl = IMP.container.CloseBipartitePairContainer(ps0, ps1, 0, 1)
 # Set up excluded volume
 ps = IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0, 1))
 evr = IMP.container.PairsRestraint(ps, nbl)
-m.add_restraint(evr)
 
 # Set up optimizer
 o = IMP.core.ConjugateGradients(m)
+o.set_scoring_function([evr])
 
 o.optimize(1000)

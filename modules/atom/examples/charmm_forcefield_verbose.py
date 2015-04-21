@@ -64,7 +64,7 @@ impropers = topology.add_impropers(prot)
 cont = IMP.container.ListSingletonContainer(bonds, "bonds")
 bss = IMP.atom.BondSingletonScore(IMP.core.Harmonic(0, 1))
 r = IMP.container.SingletonsRestraint(bss, cont, "bonds")
-m.add_restraint(r)
+rs = [r]
 
 # Score angles, dihedrals, and impropers. In the CHARMM forcefield, angles and
 # impropers are harmonically restrained, so this is the same as for bonds.
@@ -72,16 +72,16 @@ m.add_restraint(r)
 cont = IMP.container.ListSingletonContainer(angles, "angles")
 bss = IMP.atom.AngleSingletonScore(IMP.core.Harmonic(0, 1))
 r = IMP.container.SingletonsRestraint(bss, cont, "angles")
-m.add_restraint(r)
+rs.append(r)
 
 cont = IMP.container.ListSingletonContainer(dihedrals, "dihedrals")
 bss = IMP.atom.DihedralSingletonScore()
 r = IMP.container.SingletonsRestraint(bss, cont, "dihedrals")
-m.add_restraint(r)
+rs.append(r)
 
 cont = IMP.container.ListSingletonContainer(impropers, "impropers")
 bss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0, 1))
-m.add_restraint(IMP.container.SingletonsRestraint(bss, cont, "improppers"))
+rs.append(IMP.container.SingletonsRestraint(bss, cont, "improppers"))
 
 # Add non-bonded interaction (in this case, Lennard-Jones). This needs to
 # know the radii and well depths for each atom, so add them from the forcefield
@@ -111,10 +111,12 @@ nbl.add_pair_filter(pair_filter)
 
 sf = IMP.atom.ForceSwitch(6.0, 7.0)
 ps = IMP.atom.LennardJonesPairScore(sf)
-m.add_restraint(IMP.container.PairsRestraint(ps, nbl))
+rs.append(IMP.container.PairsRestraint(ps, nbl))
+
+score_func = IMP.core.RestraintsScoringFunction(rs)
 
 # it gets awfully slow with internal checks
 IMP.set_check_level(IMP.USAGE)
 
 # Finally, evaluate the score of the whole system (without derivatives)
-print(m.evaluate(False))
+print(score_func.evaluate(False))

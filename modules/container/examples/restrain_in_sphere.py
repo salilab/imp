@@ -14,5 +14,4 @@ ub = IMP.core.HarmonicUpperBound(radius, stiffness)
 ss = IMP.core.DistanceToSingletonScore(ub, center)
 
 r = IMP.container.SingletonsRestraint(ss, c)
-m.add_restraint(r)
-m.evaluate(False)
+r.evaluate(False)

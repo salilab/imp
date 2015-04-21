@@ -21,9 +21,9 @@ d1.set_coordinates_are_optimized(True)
 
 # restrain their distance to be 1
 dist = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 1), d0, d1)
-m.add_restraint(dist)
 
 opt = IMP.gsl.Simplex(m)
+opt.set_scoring_function([dist])
 opt.set_minimum_size(.000001)
 opt.set_initial_length(1)
 

@@ -28,9 +28,9 @@ nbl.add_pair_filter(IMP.atom.BondedPairFilter())
 # Set up excluded volume
 sdps = IMP.core.SoftSpherePairScore(1)
 evr = IMP.container.PairsRestraint(sdps, nbl)
-m.add_restraint(evr)
 
 # Set up optimizer
 o = IMP.core.ConjugateGradients(m)
+o.set_scoring_function([evr])
 
 o.optimize(1000)
