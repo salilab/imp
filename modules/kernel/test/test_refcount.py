@@ -184,7 +184,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model("ref counting and particle removal")
         p = IMP.Particle(m)
         refcnt.assert_number(3)
-        m.remove_particle(p)
+        m.remove_particle(p.get_index())
         # Particle should not disappear yet since Python still has a reference
         refcnt.assert_number(3)
         self.assertFalse(p.get_is_active(), "Removed particle is still active")
@@ -213,7 +213,7 @@ class Tests(IMP.test.TestCase):
         p = IMP.Particle(m)
         ps = m.get_particles()
         self.assertEqual(len(ps), 1, "Should only be 1 particle")
-        m.remove_particle(p)
+        m.remove_particle(p.get_index())
         ps = m.get_particles()
         self.assertEqual(len(ps), 0, "Should be no particles")
 

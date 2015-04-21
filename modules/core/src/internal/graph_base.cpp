@@ -56,7 +56,7 @@ void graph_disconnect(Particle *e, const GraphData &d) {
       e->get_model()->remove_attribute(d.edges_key_, p[i]->get_index());
     }
   }
-  e->get_model()->remove_particle(e);
+  e->get_model()->remove_particle(e->get_index());
 }
 
 Particle *graph_get_edge(Particle *a, int i,

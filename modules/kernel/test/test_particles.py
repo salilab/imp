@@ -108,7 +108,7 @@ class Tests(IMP.test.TestCase):
             model = p.get_model()
         p = particles[0]
         self.assertEqual(p.get_is_active(), True)
-        model.remove_particle(p)
+        model.remove_particle(p.get_index())
         self.assertEqual(p.get_is_active(), False)
 
     def _test_add_remove(self, p, ak, v):
@@ -209,7 +209,7 @@ class Tests(IMP.test.TestCase):
         print("removing")
         for i in range(0, num):
             if i % 1000 == 0:
-                m.remove_particle(m.get_particles()[i])
+                m.remove_particle(m.get_particle_indexes()[i])
             if i % 10000 == 0:
                 print(i)
 

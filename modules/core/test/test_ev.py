@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         l0 = h0s[0:10]
         rm = h0s[10:]
         for r in rm:
-            m.remove_particle(r)
+            m.remove_particle(r.get_index())
         del h0s
         del rm
         print("ev")

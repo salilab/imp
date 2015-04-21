@@ -107,7 +107,7 @@ class Tests(IMP.test.TestCase):
         self._add_attributes(ps[1], 1, ps[1])
         self._add_attributes(ps[2], 2, ps[0])
         print("removing")
-        m.remove_particle(ps[2])
+        m.remove_particle(ps[2].get_index())
         print("returning")
         return (m, ps)
 

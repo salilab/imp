@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         for p in psr:
             ps.remove(p)
         for p in psr:
-            m.remove_particle(p)
+            m.remove_particle(p.get_index())
         print("bye")
         # make sure cleanup goes without error
 
