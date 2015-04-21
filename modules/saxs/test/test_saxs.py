@@ -107,7 +107,6 @@ class Tests(IMP.test.TestCase):
 
         #! define restraint
         saxs_restraint = IMP.saxs.Restraint(particles, exp_profile)
-        m.add_restraint(saxs_restraint)
         score = saxs_restraint.evaluate(False)
         self.assertAlmostEqual(score, 0.54, delta=0.01)
 
@@ -140,7 +139,6 @@ class Tests(IMP.test.TestCase):
             particles,
             exp_profile,
             IMP.saxs.CA_ATOMS)
-        m.add_restraint(saxs_restraint)
         score = saxs_restraint.evaluate(False)
         print('initial score = ' + str(score))
 
