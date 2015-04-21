@@ -40,14 +40,14 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         self.imp_model = IMP.Model()
         self.load_density_map()
         self.load_protein("1z5s_A.pdb")
 
     def test_compute_fitting_scores(self):
         # move the particles to be way outside of the density initially
-        # IMP.base.set_log_level(IMP.base.VERBOSE)
+        # IMP.set_log_level(IMP.VERBOSE)
         mp_xyz = IMP.core.XYZs(IMP.core.get_leaves(self.mp))
         displacement = IMP.algebra.Vector3D(100, 100, 100)
         displacement_t = IMP.algebra.Transformation3D(

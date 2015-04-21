@@ -8,7 +8,7 @@ class MCOptimizerTest(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.base.TERSE)
+        # IMP.set_log_level(IMP.TERSE)
         self.m = IMP.Model()
         # read molecules
         self.m1 = IMP._create_particles_from_pdb(

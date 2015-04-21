@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
 
     def _create_singleton_particle(self, m, name):
         ''' create a particle for simulation fine level'''
-        p = IMP.kernel.Particle(m, name)
+        p = IMP.Particle(m, name)
         d = IMP.core.XYZR.setup_particle(p)
         d.set_coordinates_are_optimized(True)
         bb = IMP.algebra.BoundingBox3D([0,0,0],[50,50,50])
@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
         returns the TAMD image particle
         '''
         # TAMD image of centroid
-        pstar = IMP.kernel.Particle(p.get_model(), name)
+        pstar = IMP.Particle(p.get_model(), name)
         pstarD = IMP.core.XYZR.setup_particle(pstar)
         pD = IMP.core.XYZR(p)
         pstarD.set_coordinates( pD.get_coordinates() )
@@ -72,7 +72,7 @@ class Tests(IMP.test.TestCase):
              image (a list of length nlevels-1)
         """
 
-        #        IMP.base.set_log_level(IMP.MEMORY)
+        #        IMP.set_log_level(IMP.MEMORY)
 
         # build children hierarchies recursively first
         children=[]
@@ -100,7 +100,7 @@ class Tests(IMP.test.TestCase):
             R = R + child_R
 
         # Build centroid of lower hierarchies
-        p = IMP.kernel.Particle(m, "centroid %d" % nlevels)
+        p = IMP.Particle(m, "centroid %d" % nlevels)
         centroids.append(p)
         pH = IMP.core.Hierarchy.setup_particle(p)
         pD = IMP.core.XYZR.setup_particle(p)
@@ -143,7 +143,7 @@ class Tests(IMP.test.TestCase):
 
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         LOCAL_WELLS = True
 #        rmf_fname = self.get_tmp_file_name("bd_rb_no_tamd_multi_lw_50.rmf")
 #        RMF_FNAME = self.get_tmp_file_name("bd_rb_tamd_three_layers.rmf")
@@ -197,9 +197,9 @@ class Tests(IMP.test.TestCase):
 
         bd.set_scoring_function(sf)
 
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
 #        os.update_always("Init position")
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
 
         for i in range(100):
             bd.optimize(10)
@@ -230,9 +230,9 @@ class Tests(IMP.test.TestCase):
         for p in all_images:
             IMP.rmf.add_hierarchies(rmf, [IMP.core.Hierarchy(p)])
 #        IMP.rmf.add_restraints(rmf, R)
-        sf.set_log_level(IMP.base.SILENT)
+        sf.set_log_level(IMP.SILENT)
         os = IMP.rmf.SaveOptimizerState(m, rmf)
-        os.set_log_level(IMP.base.SILENT)
+        os.set_log_level(IMP.SILENT)
         IMP.rmf.add_restraints(rmf, R)
         bd.add_optimizer_state(os)
         os.set_period(2500)

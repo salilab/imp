@@ -57,7 +57,7 @@ class Tests(IMP.test.TestCase):
         """Check that weighted excluded volume restraint works"""
         self.assertEqual(self.mdl.get_number_of_restraints(), 2,
                          "the excluded volume restraint was not added")
-        # IMP.base.set_log_level(IMP.base.VERBOSE)
+        # IMP.set_log_level(IMP.VERBOSE)
         rotations = [[0.960739, 0.177613, -0.196201, 0.0833023],
                      [0.98373, -0.0268444, -0.115434, -0.135015],
                      [0.995413, 0.0545123, -0.0635521, 0.0462946],
@@ -80,7 +80,7 @@ class Tests(IMP.test.TestCase):
                         IMP.algebra.Vector3D(20.1398, 111.715, 60.5263)]
         # move chain A and calculate weighted excluded volume
         ps1 = IMP.core.get_leaves(self.mhs[0])
-        IMP.base.set_log_level(IMP.base.SILENT)  # VERBOSE)
+        IMP.set_log_level(IMP.SILENT)  # VERBOSE)
         for i in range(10):
             t = IMP.algebra.Transformation3D(
                 IMP.algebra.Rotation3D(

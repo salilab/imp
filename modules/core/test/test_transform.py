@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
 
     def test_symmetry(self):
         """Test the transform pair score basics"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
         p0 = IMP.Particle(m)
         d0 = IMP.core.XYZ.setup_particle(p0)
@@ -65,7 +65,7 @@ class Tests(IMP.test.TestCase):
 
     def test_symmetry2(self):
         """Test the transform pair score optimization"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
         p0 = IMP.Particle(m)
         d0 = IMP.core.XYZ.setup_particle(p0)

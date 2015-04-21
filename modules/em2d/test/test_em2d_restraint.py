@@ -1,6 +1,5 @@
 from __future__ import print_function
 import IMP
-import IMP.base
 import IMP.test
 import IMP.core
 import IMP.atom
@@ -95,7 +94,7 @@ class Tests(IMP.test.TestCase):
         # set em2D restraint
         srw = em2d.SpiderImageReaderWriter()
         selection_file = self.get_input_file_name("all-1z5s-projections.sel")
-        images_to_read_names = [IMP.base.get_relative_path(selection_file, x)
+        images_to_read_names = [IMP.get_relative_path(selection_file, x)
                                 for x in em2d.read_selection_file(selection_file)]
         em_images = em2d.read_images(images_to_read_names, srw)
 

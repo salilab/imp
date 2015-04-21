@@ -31,7 +31,7 @@ def main():
     infile, density, rp = parse_args()
     outfile = infile + '.ms'
 
-    m = IMP.kernel.Model()
+    m = IMP.Model()
     h = IMP.atom.read_pdb(infile, m,
                           IMP.atom.NonWaterNonHydrogenPDBSelector())
     IMP.multifit.write_connolly_surface(IMP.atom.get_leaves(h),

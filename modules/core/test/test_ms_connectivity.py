@@ -74,7 +74,7 @@ class Tests(IMP.test.TestCase):
 
     def test_ms_connectivity_graph_1(self):
         """Test for the correctness of the graph 1."""
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
 
         self.ds[0].set_coordinates(IMP.algebra.Vector3D(0.0, 0.0, 0.0))  # A
         self.ds[1].set_coordinates(IMP.algebra.Vector3D(1.0, 1.0, 0.0))  # A
@@ -97,7 +97,7 @@ class Tests(IMP.test.TestCase):
 
     def test_ms_connectivity_graph_2(self):
         """Test for the correctness of the graph 2."""
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
 
         self.ds2[0].set_coordinates(IMP.algebra.Vector3D(1.0, 6.0, 0.0))  # A
         self.ds2[1].set_coordinates(IMP.algebra.Vector3D(3.0, 5.0, 0.0))  # A
@@ -122,7 +122,7 @@ class Tests(IMP.test.TestCase):
 
     def test_ms_connectivity(self):
         """Test for the connectivity restraint."""
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
 
         self.randomize_particles(self.m.get_particles(), 50.0)
         self.ds[5].set_coordinates(IMP.algebra.Vector3D(1000, 1000, 1000))

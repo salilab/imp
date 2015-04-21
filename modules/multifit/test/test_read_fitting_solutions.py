@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         self.setup_filenames()
         self.mdl = IMP.Model()
         self.mhs = IMP.atom.Hierarchies()

@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
         IMP.rmf.save_frame(f, str(0))
 
     def _read_restraint(self, name):
-        IMP.base.add_to_log(IMP.base.TERSE, "Starting reading back\n")
+        IMP.add_to_log(IMP.TERSE, "Starting reading back\n")
         f = RMF.open_rmf_file_read_only(name)
         m = IMP.Model()
         ps = IMP.rmf.create_particles(f, m)
@@ -68,7 +68,7 @@ class Tests(IMP.test.TestCase):
             path = self.get_tmp_file_name("dynamic_restraints" + suffix)
             print(path)
             f = RMF.create_rmf_file(path)
-            IMP.base.set_log_level(IMP.base.SILENT)
+            IMP.set_log_level(IMP.SILENT)
             m = IMP.Model()
             ps = [IMP.Particle(m) for i in range(0, 10)]
             ds = [IMP.core.XYZR.setup_particle(p) for p in ps]

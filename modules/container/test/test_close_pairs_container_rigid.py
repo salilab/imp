@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def test_rigid(self):
         """Test ClosePairContainer with rigid finder"""
         m = IMP.Model()
-        m.set_log_level(IMP.base.TERSE)
+        m.set_log_level(IMP.TERSE)
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(10, 10, 10))
         slack = 1
@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
             0,
             IMP.core.RigidClosePairsFinder(),
             slack)
-        # nbl.set_log_level(IMP.base.VERBOSE)
+        # nbl.set_log_level(IMP.VERBOSE)
         m.update()
         for p in nbl.get_particle_pairs():
             self.assertNotEqual(IMP.core.RigidMember(p[0]).get_rigid_body(),

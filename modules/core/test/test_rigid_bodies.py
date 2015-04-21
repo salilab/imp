@@ -49,7 +49,7 @@ class Tests(IMP.test.TestCase):
         p.set_has_required_score_states(True)
         print(m.get_score_states(), m.get_model_objects())
         dg = IMP.get_dependency_graph(m)
-        # IMP.base.show_graphviz(dg)
+        # IMP.show_graphviz(dg)
         ss = p.get_required_score_states()
         self.assertEqual(len(ss), 1)
         self. _add_rb_restraints(rbd)
@@ -64,7 +64,7 @@ class Tests(IMP.test.TestCase):
         success = 0
         for i in range(0, count):
             m = IMP.Model()
-            IMP.base.set_log_level(IMP.base.SILENT)
+            IMP.set_log_level(IMP.SILENT)
             print("creating")
             p = self._create_hierarchy(m)
             print("created", p)
@@ -158,8 +158,8 @@ class Tests(IMP.test.TestCase):
         rbp1 = IMP.Particle(m)
         rbp1.set_name("rb1")
         try:
-            before = IMP.base.Object.get_number_of_live_objects()
-            names_before = IMP.base.Object.get_live_object_names()
+            before = IMP.Object.get_number_of_live_objects()
+            names_before = IMP.Object.get_live_object_names()
         except:
             pass
         rb0 = IMP.core.RigidBody.setup_particle(rbp0, ps)
@@ -174,8 +174,8 @@ class Tests(IMP.test.TestCase):
         failure = False
         # check cleanup
         try:
-            after = IMP.base.Object.get_number_of_live_objects()
-            names_after = IMP.base.Object.get_live_object_names()
+            after = IMP.Object.get_number_of_live_objects()
+            names_after = IMP.Object.get_live_object_names()
             for n in names_after:
                 if n not in names_before:
                     print("found new object", n)

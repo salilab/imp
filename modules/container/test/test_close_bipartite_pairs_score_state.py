@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
 
     def _compare_lists(self, m, pc0, pc1, out, d):
         print("comparing")
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         m.update()
         print("list is " + str(out.get_number_of_particle_pairs()))
         for a in pc0:
@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
 
     def _test_one(self, rb0, rb1):
         m = IMP.Model()
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         ps0 = self.create_particles_in_box(m, 10)
         ps1 = self.create_particles_in_box(m, 10)
         print("adding a radius")
@@ -49,7 +49,7 @@ class Tests(IMP.test.TestCase):
         pc0 = IMP.container.ListSingletonContainer(ps0)
         pc1 = IMP.container.ListSingletonContainer(ps1)
         print("creat cpss " + str(pc0))
-        # IMP.base.set_log_level(IMP.base.VERBOSE)
+        # IMP.set_log_level(IMP.VERBOSE)
         print(1)
         threshold = .3
 

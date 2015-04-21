@@ -41,8 +41,8 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.base.TERSE)
-        IMP.base.set_log_level(0)
+        # IMP.set_log_level(IMP.TERSE)
+        IMP.set_log_level(0)
         self.m = IMP.Model()
         data = open(self.get_input_file_name('lyzexp_gpir.dat')).readlines()
         data = [list(map(float, d.split())) for d in data]
@@ -155,10 +155,10 @@ class Tests(IMP.test.TestCase):
                          update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 4][pb - 4]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -176,10 +176,10 @@ class Tests(IMP.test.TestCase):
                          update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 4][pb - 4]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -197,10 +197,10 @@ class Tests(IMP.test.TestCase):
                          update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 4][pb - 4]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -218,10 +218,10 @@ class Tests(IMP.test.TestCase):
                          update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 4][pb - 4]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -239,10 +239,10 @@ class Tests(IMP.test.TestCase):
                          update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 4][pb - 4]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -260,10 +260,10 @@ class Tests(IMP.test.TestCase):
                          update=lambda: self.m.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 4][pb - 4]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-3)
 

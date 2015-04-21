@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
         """Test loading and saving of rigid bodies implicitly"""
         for suffix in IMP.rmf.suffixes:
             m = IMP.Model()
-            m.set_log_level(IMP.base.SILENT)
+            m.set_log_level(IMP.SILENT)
             r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             r.set_name("rt")
             rbd = IMP.core.RigidBody.setup_particle(
@@ -87,7 +87,7 @@ class Tests(IMP.test.TestCase):
             del f
 
             f = RMF.open_rmf_file_read_only(fn)
-            IMP.base.set_log_level(IMP.base.VERBOSE)
+            IMP.set_log_level(IMP.VERBOSE)
             r2 = IMP.rmf.create_hierarchies(f, m)[0]
             for pi in m.get_particle_indexes():
                 if IMP.core.RigidBody.get_is_setup(m, pi) and\
@@ -160,7 +160,7 @@ class Tests(IMP.test.TestCase):
         non-rigid members that are also Gaussians (and thus Rigid Bodies)"""
         for suffix in IMP.rmf.suffixes:
             m = IMP.Model()
-            m.set_log_level(IMP.base.SILENT)
+            m.set_log_level(IMP.SILENT)
             r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             r.set_name("rt")
             rbd = IMP.core.RigidBody.setup_particle(
@@ -235,7 +235,7 @@ class Tests(IMP.test.TestCase):
             del f
 
             f = RMF.open_rmf_file_read_only(fn)
-            IMP.base.set_log_level(IMP.base.VERBOSE)
+            IMP.set_log_level(IMP.VERBOSE)
             r2 = IMP.rmf.create_hierarchies(f, m)[0]
             for pi in m.get_particle_indexes():
                 if IMP.core.RigidBody.get_is_setup(m, pi) and\
@@ -272,7 +272,7 @@ class Tests(IMP.test.TestCase):
         """Test create, save, load, link, and save with nested rigid bodies"""
         for suffix in IMP.rmf.suffixes:
             m = IMP.Model()
-            m.set_log_level(IMP.base.SILENT)
+            m.set_log_level(IMP.SILENT)
             r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             r.set_name("rt")
             rbd = IMP.core.RigidBody.setup_particle(
@@ -377,7 +377,7 @@ class Tests(IMP.test.TestCase):
             #####################################
 
 
-            IMP.base.set_log_level(IMP.base.VERBOSE)
+            IMP.set_log_level(IMP.VERBOSE)
             for pi in m.get_particle_indexes():
                 if IMP.core.RigidBody.get_is_setup(m, pi) and\
                         not IMP.core.RigidBodyMember.get_is_setup(m, pi):
@@ -415,7 +415,7 @@ class Tests(IMP.test.TestCase):
         that themselves are rigid bodies"""
         for suffix in IMP.rmf.suffixes:
             m = IMP.Model()
-            m.set_log_level(IMP.base.SILENT)
+            m.set_log_level(IMP.SILENT)
 
             # create rigid body
             r = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
@@ -474,7 +474,7 @@ class Tests(IMP.test.TestCase):
 
             # re-read RMF file
             f = RMF.open_rmf_file_read_only(fn)
-            IMP.base.set_log_level(IMP.base.VERBOSE)
+            IMP.set_log_level(IMP.VERBOSE)
             r2 = IMP.rmf.create_hierarchies(f, m)[0]
             for pi in m.get_particle_indexes():
                 if IMP.core.RigidBody.get_is_setup(m, pi) and\

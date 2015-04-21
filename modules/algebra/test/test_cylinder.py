@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
                                delta=0.1)
         self.assertAlmostEqual(IMP.algebra.get_volume(cyl),
                                math.pi * 8.0 * 25.0, delta=0.1)
-        self.assertRaises(IMP.base.InternalException,
+        self.assertRaises(IMP.InternalException,
                           IMP.algebra.get_bounding_box, cyl)
         g = IMP.algebra.get_cylinder_3d_geometry(cyl)
         self.assertLess(IMP.algebra.get_distance(g.get_segment(),

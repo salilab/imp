@@ -24,7 +24,7 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(0)
+        IMP.set_log_level(0)
         self.m = IMP.Model()
         self.xyzs = []
         self.nuisances = []

@@ -9,9 +9,9 @@ class Tests(IMP.test.TestCase):
     def test_stats(self):
         """Test MonteCarlo stats"""
         m = IMP.Model()
-        IMP.base.set_log_level(IMP.base.WARNING)
+        IMP.set_log_level(IMP.WARNING)
         mc = IMP.core.MonteCarlo(m)
-        mc.set_log_level(IMP.base.WARNING)
+        mc.set_log_level(IMP.WARNING)
         ps = []
         bb = IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0, 10):

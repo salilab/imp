@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
                 cpc)
             r.evaluate(False)
             IMP.rmf.add_restraint(f, r)
-            IMP.base.set_log_level(IMP.base.MEMORY)
+            IMP.set_log_level(IMP.MEMORY)
             sf = IMP.core.RestraintsScoringFunction([r])
             sf.evaluate(False)
             IMP.rmf.save_frame(f, str(0))

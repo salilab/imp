@@ -19,8 +19,8 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
 
     def testEvaluate(self):
         "tests FNormal.evaluate"

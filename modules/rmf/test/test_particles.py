@@ -22,7 +22,7 @@ class Tests(IMP.test.TestCase):
             name = self.get_tmp_file_name("particles" + suffix)
             print(name)
             rmf = RMF.create_rmf_file(name)
-            IMP.base.set_log_level(IMP.base.SILENT)
+            IMP.set_log_level(IMP.SILENT)
             IMP.rmf.add_particles(rmf, [p0, p1])
             IMP.rmf.save_frame(rmf, str(0))
             del rmf
@@ -54,7 +54,7 @@ class Tests(IMP.test.TestCase):
             name = self.get_tmp_file_name("particles" + suffix)
             print(name)
             rmf = RMF.create_rmf_file(name)
-            IMP.base.set_log_level(IMP.base.SILENT)
+            IMP.set_log_level(IMP.SILENT)
             IMP.rmf.add_particles(rmf, [p0, p1])
             IMP.rmf.save_frame(rmf, str(0))
             p1.set_value(ik, 5)

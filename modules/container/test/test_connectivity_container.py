@@ -52,7 +52,7 @@ class Tests(IMP.test.TestCase):
 
     def test_score(self):
         """Test connectivity"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
         ps = IMP.core.create_xyzr_particles(m, 10, .1)
         for p in ps:
@@ -81,7 +81,7 @@ class Tests(IMP.test.TestCase):
             try:
                 print("opt")
                 cg.optimize(100)
-            except IMP.base.ValueException:  # Catch CG failure
+            except IMP.ValueException:  # Catch CG failure
                 pass
             if sf.evaluate(False) <= .0001:
                 break

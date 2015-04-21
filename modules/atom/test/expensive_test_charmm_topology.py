@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
         """Check add/get atom from CHARMM residues"""
         res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
         self.assertEqual(res.get_type(), 'FOO')
-        self.assertRaises(IMP.base.ValueException, res.get_atom, 'CA')
+        self.assertRaises(IMP.ValueException, res.get_atom, 'CA')
         at = _make_test_atom()
         res.add_atom(at)
         self.assertEqual(res.get_atom('CA').get_charmm_type(), 'CT1')
@@ -60,9 +60,9 @@ class Tests(IMP.test.TestCase):
         res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
         at = _make_test_atom()
         res.add_atom(at)
-        self.assertRaises(IMP.base.ValueException, res.remove_atom, 'CB')
+        self.assertRaises(IMP.ValueException, res.remove_atom, 'CB')
         res.remove_atom('CA')
-        self.assertRaises(IMP.base.ValueException, res.get_atom, 'CA')
+        self.assertRaises(IMP.ValueException, res.get_atom, 'CA')
 
     def test_default_patches(self):
         """Check default patches of CHARMM residues"""
@@ -134,10 +134,10 @@ class Tests(IMP.test.TestCase):
         """Test adding/getting patches and residues to/from forcefields"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
         self.assertRaises(
-            IMP.base.ValueException,
+            IMP.ValueException,
             ff.get_residue_topology,
             IMP.atom.ResidueType('FOO'))
-        self.assertRaises(IMP.base.ValueException, ff.get_patch, 'PFOO')
+        self.assertRaises(IMP.ValueException, ff.get_patch, 'PFOO')
         patch = IMP.atom.CHARMMPatch('PFOO')
         res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
         ff.add_patch(patch)
@@ -222,7 +222,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(ic.get_first_angle(), 0.)
         self.assertEqual(ic.get_dihedral(), 180.)
         # Repeated patching should not be possible
-        self.assertRaises(IMP.base.ValueException, patch.apply, res)
+        self.assertRaises(IMP.ValueException, patch.apply, res)
 
         # Patches should delete atoms
         patch = ff.get_patch('TP1A')
@@ -230,7 +230,7 @@ class Tests(IMP.test.TestCase):
             ff.get_residue_topology(IMP.atom.TYR))
         self.assertEqual(res.get_atom('CB').get_charmm_type(), 'CT2')
         patch.apply(res)
-        self.assertRaises(IMP.base.ValueException, res.get_atom, 'CB')
+        self.assertRaises(IMP.ValueException, res.get_atom, 'CB')
 
     def test_double_patching(self):
         """Test application of two-residue patches"""
@@ -251,7 +251,7 @@ class Tests(IMP.test.TestCase):
             # Single-residue patches cannot be applied to two residues
             badpatch = ff.get_patch('CTER')
             self.assertRaises(
-                IMP.base.ValueException,
+                IMP.ValueException,
                 badpatch.apply,
                 res1,
                 res2)
@@ -263,8 +263,8 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(res1.get_patched(), True)
             self.assertEqual(res2.get_patched(), True)
             # Patches should delete atoms
-            self.assertRaises(IMP.base.ValueException, res1.get_atom, 'HG')
-            self.assertRaises(IMP.base.ValueException, res2.get_atom, 'HG')
+            self.assertRaises(IMP.ValueException, res1.get_atom, 'HG')
+            self.assertRaises(IMP.ValueException, res2.get_atom, 'HG')
             # Should add/delete bonds/dihedrals
             self.assertEqual(res1.get_number_of_bonds(), 11)
             self.assertEqual(res1.get_number_of_impropers(), 3)
@@ -493,7 +493,7 @@ class Tests(IMP.test.TestCase):
         segment = topology.get_segment(0)
         self.assertEqual(segment.get_number_of_residues(), 156)
         self.assertRaises(
-            IMP.base.ValueException,
+            IMP.ValueException,
             segment.apply_default_patches,
             ff)
         for typ in (IMP.atom.Charged, IMP.atom.LennardJones):

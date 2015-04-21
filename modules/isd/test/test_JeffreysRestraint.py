@@ -19,8 +19,8 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
         self.m = IMP.Model()
         self.sigma = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.DA = IMP.DerivativeAccumulator()
@@ -61,7 +61,7 @@ class Tests(IMP.test.TestCase):
         "JeffreysRestraint raise ValueError on evaluate with zero scale"
         self.sigma.set_scale(0.0)
         self.assertRaises(
-            IMP.base.ModelException,
+            IMP.ModelException,
             self.J.unprotected_evaluate,
             self.DA)
 
@@ -69,19 +69,19 @@ class Tests(IMP.test.TestCase):
         "JeffreysRestraint raise ValueError on evaluate with negative scale"
         self.sigma.set_scale(-1.0)
         self.assertRaises(
-            IMP.base.ModelException,
+            IMP.ModelException,
             self.J.unprotected_evaluate,
             self.DA)
 
     def testNonzeroP(self):
         "JeffreysRestraint raise ValueError on get_prob with zero scale"
         self.sigma.set_scale(0.0)
-        self.assertRaises(IMP.base.ModelException, self.J.get_probability)
+        self.assertRaises(IMP.ModelException, self.J.get_probability)
 
     def testNegativeP(self):
         "JeffreysRestraint raise ValueError on get_prob with negative scale"
         self.sigma.set_scale(-1.0)
-        self.assertRaises(IMP.base.ModelException, self.J.get_probability)
+        self.assertRaises(IMP.ModelException, self.J.get_probability)
 
     def testSanityEP(self):
         "Test if JeffreysRestraint score is -log(prob)"

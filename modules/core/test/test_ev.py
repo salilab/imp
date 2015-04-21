@@ -15,7 +15,7 @@ class Tests(IMP.test.TestCase):
     def test_filters(self):
         """Test filters on excluded volume"""
         m = IMP.Model()
-        m.set_log_level(IMP.base.SILENT)
+        m.set_log_level(IMP.SILENT)
         print("pdb")
         h0s = IMP._create_particles_from_pdb(
             self.get_input_file_name("1z5s_A.pdb"),
@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
         cpc = IMP.container.ClosePairContainer(l0, 0, 0)
         cr = IMP.container.PairsRestraint(IMP.core.SoftSpherePairScore(1), cpc)
         dg = IMP.get_dependency_graph(m)
-        # IMP.base.show_graphviz(dg)
+        # IMP.show_graphviz(dg)
         idx = IMP.get_vertex_index(dg)
         ss = IMP.get_required_score_states(cr, [], dg, idx)
         print("ss", ss)
@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
         crsf.set_has_required_score_states(True)
         print(crsf.get_required_score_states())
         print(r.evaluate(False))
-        m.set_log_level(IMP.base.VERBOSE)
+        m.set_log_level(IMP.VERBOSE)
         print(cr.evaluate(False))
         pp = cpc.get_particle_pairs()
         print("pairs are", pp)

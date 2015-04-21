@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
         tilt2 = 1.77
         psi2 = 0.0
 
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         r1 = IMP.algebra.get_rotation_from_fixed_zyz(rot1, tilt1, psi1)
         r2 = IMP.algebra.get_rotation_from_fixed_zyz(rot2, tilt2, psi2)
         d = IMP.algebra.get_distance(r1, r2)

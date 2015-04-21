@@ -23,7 +23,7 @@ from IMP.isd.Replica import ReplicaTracker
 
 import _shared_functions as sf
 
-IMP.base.set_log_level(IMP.base.NONE)
+IMP.set_log_level(IMP.NONE)
 
 # simulation settings
 # where to output files
@@ -176,10 +176,10 @@ def main():
     # wait til init is done
     results = grid.gather(requests)
 
-    # turn off verbose noise (works because IMP.base.NONE is picklable, being
+    # turn off verbose noise (works because IMP.NONE is picklable, being
     # an int.
-    grid.gather(grid.broadcast(sfo_id, 'set_checklevel', IMP.base.NONE))
-    grid.gather(grid.broadcast(sfo_id, 'set_loglevel', IMP.base.NONE))
+    grid.gather(grid.broadcast(sfo_id, 'set_checklevel', IMP.NONE))
+    grid.gather(grid.broadcast(sfo_id, 'set_loglevel', IMP.NONE))
 
     # evaluate the score of the whole system (without derivatives, False flag)
     print("initial energy")

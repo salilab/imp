@@ -23,7 +23,7 @@ class XTransRestraint(IMP.Restraint):
     def __init__(self, m, strength):
         IMP.Restraint.__init__(self, m, "XTransRestraint %1%")
         self.strength = strength
-        self.set_log_level(IMP.base.SILENT)
+        self.set_log_level(IMP.SILENT)
 
     def unprotected_evaluate(self, accum):
         e = 0.

@@ -42,8 +42,8 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.base.TERSE)
-        IMP.base.set_log_level(0)
+        # IMP.set_log_level(IMP.TERSE)
+        IMP.set_log_level(0)
         self.m = IMP.Model()
         data = open(self.get_input_file_name('lyzexp_gpir.dat')).readlines()
         data = [list(map(float, d.split())) for d in data]

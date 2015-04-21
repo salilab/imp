@@ -51,7 +51,7 @@ def get_transformations(sol):
 
 
 def run(subunit_fn, symm_deg, sol_fn, num, output_fn):
-    mdl = IMP.kernel.Model()
+    mdl = IMP.Model()
     mhs = []
     for i in range(symm_deg):
         mh = IMP.atom.read_pdb(subunit_fn, mdl)

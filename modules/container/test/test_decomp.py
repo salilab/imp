@@ -22,7 +22,7 @@ class Tests(IMP.test.TestCase):
         dr = r.create_decomposition()
         print(dr.evaluate(False))
         cdr = IMP.RestraintSet.get_from(dr).get_restraints()
-        # IMP.base.set_log_level(IMP.base.VERBOSE)
+        # IMP.set_log_level(IMP.VERBOSE)
         print("deling")
         del dr
         print("eval single")

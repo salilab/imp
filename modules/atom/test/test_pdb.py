@@ -23,13 +23,13 @@ class Tests(IMP.test.TestCase):
     def test_bad_read(self):
         """Check that read_pdb behaves OK on invalid files"""
         m = IMP.Model()
-        self.assertRaises(IMP.base.IOException,
+        self.assertRaises(IMP.IOException,
                           IMP.atom.read_pdb, "notafile.pdb",
                           m)
         # we don't actually check if a file is a pdb or not
         # and can't conclude it is not due to not reading any atoms
         # as the selector may filter them all.
-        self.assertRaises(IMP.base.ValueException,
+        self.assertRaises(IMP.ValueException,
                           IMP.atom.read_pdb,
                           self.open_input_file("notapdb.pdb"),
                           m)
@@ -84,7 +84,7 @@ class Tests(IMP.test.TestCase):
 
     def test_read_non_water(self):
         """Check that the default pdb reader skips waters"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
         mp = IMP.atom.read_pdb(self.open_input_file("protein_water.pdb"),
                                m)
@@ -94,7 +94,7 @@ class Tests(IMP.test.TestCase):
 
     def test_read_non_hydrogen(self):
         """Check that the Hydrogen selector can identify all hydrogens"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
         mp = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
                                m, IMP.atom.HydrogenPDBSelector())
@@ -142,7 +142,7 @@ class Tests(IMP.test.TestCase):
 
     def test_read_non_prob(self):
         """Check that problem lines are read properly"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
         mp = IMP.atom.read_pdb(self.open_input_file("problem_lines.pdb"), m)
         a = IMP.atom.get_leaves(mp)

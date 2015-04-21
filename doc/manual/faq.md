@@ -19,12 +19,12 @@ Frequently asked questions (FAQ) {#faq}
   removes a few more virtual function calls. If you are creating a restraint
   with only a single particle or pair, use IMP::create_restraint() instead.
 * Adjusting slack parameters on non-bonded lists: IMP::container::ClosePairContainer and IMP::core::ExcludedVolumeRestraint have "slack" parameters which adjust how often the non-bonded lists that are used are recomputed. Changing this parameter does not change the computed score, just how often the lists are updated. As a rough guideline, you want the slack to be larger than the total amount any particle moves in, say 20 evaluates (e.g. 20 MD steps). Experiment with changing the parameter to see what yields the  best results or try the IMP::container::get_slack_estimate() function to try to estimate the best value to use automatically.
-* Turn off or turn down logging: call IMP.base.set_log_level(IMP.base.SILENT)
+* Turn off or turn down logging: call IMP.set_log_level(IMP.SILENT)
   or [recompile from the source code](@ref installation_source) passing
   [-DIMP_MAX_LOG=SILENT to cmake](@ref cmake_further) (the latter will be
   more efficient).
-* Turn off runtime checks: call IMP.base.set_check_level(IMP.base.USAGE) or
-  IMP.base.set_check_level(IMP.base.NONE). Proceed very carefully, since with
+* Turn off runtime checks: call IMP.set_check_level(IMP.USAGE) or
+  IMP.set_check_level(IMP.NONE). Proceed very carefully, since with
   runtime checks turned off, %IMP will not warn you if you do something
   foolish - be sure to test your protocol first! Again, this will be more
   efficient if you

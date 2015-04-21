@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
     def test_it(self):
         """Test cover refined"""
         m = IMP.Model()
-        IMP.base.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(IMP.MEMORY)
         n = random.randrange(1, 10)
         ps = []
         ds = IMP.core.XYZRs()

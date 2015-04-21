@@ -27,7 +27,7 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         self.mdl = IMP.Model()
         self._load_particles()
         self._create_density_map(10, 1.5)

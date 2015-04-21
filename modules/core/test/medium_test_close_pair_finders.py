@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.TERSE)
+        IMP.set_log_level(IMP.TERSE)
 
     def get_distance(self, p0, p1):
         d0 = IMP.core.XYZR(p0)
@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         return d
 
     def do_test_points(self, cpf, num, rmin, rmax):
-        # IMP.base.set_log_level(IMP.base.SILENT)
+        # IMP.set_log_level(IMP.SILENT)
         dist = random.uniform(rmin, rmax)
         # cpf.set_distance(dist)
         print('Distance is ' + str(dist))
@@ -41,7 +41,7 @@ class Tests(IMP.test.TestCase):
         print("Done with all test")
 
     def do_test_bi_points(self, cpf, num, rmin, rmax):
-        # IMP.base.set_log_level(IMP.base.SILENT)
+        # IMP.set_log_level(IMP.SILENT)
         dist = random.uniform(0, 2)
         # cpf.set_distance(dist)
         print('Distance is ' + str(dist))
@@ -60,9 +60,9 @@ class Tests(IMP.test.TestCase):
         print("Done with all test")
 
     def do_test_one(self, cpf):
-        # cpf.set_log_level(IMP.base.SILENT);
+        # cpf.set_log_level(IMP.SILENT);
         self.do_test_bi_points(cpf, 100, .01, 1)
-        # cpf.set_log_level(IMP.base.SILENT);
+        # cpf.set_log_level(IMP.SILENT);
         self.do_test_points(cpf, 100, 1, 1)
 
     def _check_close_pairs(self, ps, dist, found):
@@ -137,12 +137,12 @@ class Tests(IMP.test.TestCase):
     def test_grid(self):
         """Testing GridClosePairsFinder"""
         print("grid")
-        # IMP.base.set_log_level(IMP.base.VERBOSE)
+        # IMP.set_log_level(IMP.VERBOSE)
         self.do_test_one(IMP.core.GridClosePairsFinder())
 
     def test_rigid(self):
         "Testing RigidClosePairsFinder"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         IMP.random_number_generator.seed(1)
         dist = random.uniform(0, 2)
         nump = 100

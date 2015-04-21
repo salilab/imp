@@ -21,8 +21,8 @@ class Tests(IMP.test.TestCase):
         IMP.core.XYZ.setup_particle(p, v)
         IMP.atom.Charged.setup_particle(p, -0.5)
         p = IMP.Particle(m)
-        if IMP.base.get_check_level() != IMP.base.NONE:
-            self.assertRaises(IMP.base.UsageException,
+        if IMP.get_check_level() != IMP.NONE:
+            self.assertRaises(IMP.UsageException,
                               IMP.atom.Charged.setup_particle, p, -0.5)
 
     def test_get_set(self):

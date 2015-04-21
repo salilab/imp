@@ -17,8 +17,8 @@ class Tests(IMP.test.TestCase):
 
         IMP.atom.CHARMMAtom.setup_particle(p, 'CT1')
         p = IMP.Particle(m)
-        if IMP.base.get_check_level() != IMP.base.NONE:
-            self.assertRaises(IMP.base.UsageException,
+        if IMP.get_check_level() != IMP.NONE:
+            self.assertRaises(IMP.UsageException,
                               IMP.atom.CHARMMAtom.setup_particle, p, 'CT1')
 
     def test_get_set(self):

@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def _create_fine_particle(self, m, name):
         ''' create a particle for simulation fine level'''
-        p = IMP.kernel.Particle(m, name)
+        p = IMP.Particle(m, name)
         d = IMP.core.XYZR.setup_particle(p)
         d.set_coordinates_are_optimized(True)
         bb = IMP.algebra.BoundingBox3D([0,0,0],[50,50,50])
@@ -26,9 +26,9 @@ class Tests(IMP.test.TestCase):
         """Create a TAMD centroid for a bunch of particles,
         with a real centroid and restrained centroid realization"""
 
-#        IMP.base.set_log_level(IMP.MEMORY)
+#        IMP.set_log_level(IMP.MEMORY)
         n = 3
-        p = IMP.kernel.Particle(m, "body") # "tamd_centroid")
+        p = IMP.Particle(m, "body") # "tamd_centroid")
         pH = IMP.core.Hierarchy.setup_particle(p)
         pD = IMP.core.XYZR.setup_particle(p)
         pD.set_radius(3)
@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
         m.update() # so c is up to date
 
         # TAMD realization of centroid (S for star)
-        pstar = IMP.kernel.Particle(m, "centroid*")
+        pstar = IMP.Particle(m, "centroid*")
         pstarD = IMP.core.XYZR.setup_particle(pstar)
         pstarD.set_coordinates( pD.get_coordinates() )
         pstarD.set_radius( pD.get_radius() )
@@ -66,8 +66,8 @@ class Tests(IMP.test.TestCase):
 
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
-        m = IMP.kernel.Model()
-        m.set_log_level(IMP.base.SILENT)
+        m = IMP.Model()
+        m.set_log_level(IMP.SILENT)
         cores=[]
         for i in range(10):
             cores.append( self._create_tamd_centroid(m) )
@@ -126,16 +126,16 @@ class Tests(IMP.test.TestCase):
             for p in [core[0]] + core[1] + [core[2]]:
                 IMP.rmf.add_hierarchy(rmf, p)
         IMP.rmf.add_restraints(rmf, R)
-        sf.set_log_level(IMP.base.SILENT)
+        sf.set_log_level(IMP.SILENT)
         os = IMP.rmf.SaveOptimizerState(m, rmf)
-        os.set_log_level(IMP.base.SILENT)
+        os.set_log_level(IMP.SILENT)
         os.set_period(10)
         bd.set_scoring_function(sf)
         bd.add_optimizer_state(os)
 
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         os.update_always("Init position")
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
 
         for i in range(100):
             bd.optimize(5)

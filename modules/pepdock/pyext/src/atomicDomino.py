@@ -632,7 +632,7 @@ class AtomicDomino:
 
         if (self.wroteNativeProtein == 0):
             pdbName = self.getParam("native_pdb_input_file")
-            self.nativeModel = IMP.kernel.Model()
+            self.nativeModel = IMP.Model()
             self.nativeProtein = IMP.atom.read_pdb(
                 pdbName,
                 self.nativeModel,
@@ -647,7 +647,7 @@ class AtomicDomino:
         trajectoryFrame,
             flexibleAtoms):
         pdbName = self.getParam("native_pdb_input_file")
-        otherModel = IMP.kernel.Model()
+        otherModel = IMP.Model()
         otherProtein = IMP.atom.read_pdb(
             pdbName,
             self.nativeModel,
@@ -823,7 +823,7 @@ class AtomicDomino:
         mtIndexToNodeInfo,
         mtIndexToSubsetOrder,
             mtIndexToParticles):
-        IMP.base.set_log_level(IMP.WARNING)
+        IMP.set_log_level(IMP.WARNING)
 
         if (("firstChild" in mtIndexToNodeInfo[nodeIndex]) == 0):
             print("writing file for leaf index %s" % nodeIndex)

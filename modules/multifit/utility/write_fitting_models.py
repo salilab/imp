@@ -22,8 +22,8 @@ def usage():
 
 
 def run(mol_fn, trans_fn, first, last, dock_trans, out_dir):
-    IMP.base.set_log_level(IMP.base.SILENT)
-    mdl = IMP.kernel.Model()
+    IMP.set_log_level(IMP.SILENT)
+    mdl = IMP.Model()
     print mol_fn
     mh = IMP.atom.read_pdb(mol_fn, mdl)
     xyz = IMP.core.XYZs(IMP.core.get_leaves(mh))

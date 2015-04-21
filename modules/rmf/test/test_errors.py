@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
         IMP.rmf.save_frame(rmf, "zero")
         print('loading bad')
         self.assertRaises(
-            IMP.base.IOException,
+            IMP.IOException,
             IMP.rmf.load_frame,
             rmf,
             RMF.FrameID(6))

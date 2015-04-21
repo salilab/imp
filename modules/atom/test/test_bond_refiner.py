@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
 
     def test_allp(self):
         """Check that BondRefiner works"""
-        IMP.base.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(IMP.MEMORY)
         m = IMP.Model()
         p0 = IMP.Particle(m)
         b0 = IMP.atom.Bonded.setup_particle(p0)

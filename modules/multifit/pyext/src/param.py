@@ -64,7 +64,7 @@ def get_protein_data(
     sd = IMP.multifit.SettingsData()
     sd.set_was_used(True)
     msg = sd.get_component_header_line()
-    mdl = IMP.kernel.Model()
+    mdl = IMP.Model()
     with open(pdb_list) as fh:
         for i, fnn in enumerate(fh):
             name = fnn[:-1].split()[0]

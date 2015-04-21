@@ -15,7 +15,7 @@ class Tests(IMP.test.TestCase):
 
     def test_large(self):
         """Test multi frame files"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         RMF.set_log_level("trace")
         suffixes = IMP.rmf.suffixes[:]
         if '.rmf' not in suffixes:

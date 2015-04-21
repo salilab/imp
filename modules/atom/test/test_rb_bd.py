@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
         m = IMP.Model()
-        m.set_log_level(IMP.base.SILENT)
+        m.set_log_level(IMP.SILENT)
         pa, ma, ca = self._create_rb(m)
         pb, mb, cb = self._create_rb(m)
         ps0 = IMP.core.HarmonicDistancePairScore(0, 10)
@@ -53,13 +53,13 @@ class Tests(IMP.test.TestCase):
                                                                            tr))
             IMP.core.RigidBody(pa).set_reference_frame(rf)
         sf = IMP.core.RestraintsScoringFunction([r0, r1])
-        sf.set_log_level(IMP.base.SILENT)
+        sf.set_log_level(IMP.SILENT)
         bd.set_scoring_function(sf)
         bd.set_maximum_time_step(10)
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         bd.optimize(10)
         print("going silent")
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         max_cycles = 5000
         round_cycles = 250
         total_cycles = 0

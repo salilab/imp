@@ -30,8 +30,8 @@ class Tests(IMP.test.TestCase):
         bd = IMP.atom.BrownianDynamics(m)
         dt = 10000
         bd.set_maximum_time_step(dt)
-        bd.set_log_level(IMP.base.SILENT)
-        m.set_log_level(IMP.base.SILENT)
+        bd.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.SILENT)
         diffs = []
         for i in range(0, 3000):
             d.set_coordinates(IMP.algebra.get_zero_vector_3d())

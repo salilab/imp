@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """initialize IMP environment create particles"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
 
         # init IMP model ( the environment)
         self.mdl = IMP.Model()

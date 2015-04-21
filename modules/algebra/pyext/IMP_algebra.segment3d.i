@@ -4,7 +4,7 @@ namespace IMP {
   %feature("shadow") Segment3D::get_point %{
     def get_point(self, i):
         if i < 0 or i >= 2:
-            raise IMP.base.UsageException("Invalid point index")
+            raise IMP.UsageException("Invalid point index")
         return $action(self, i)
   %}
  }

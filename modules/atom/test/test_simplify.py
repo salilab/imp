@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
 
     def test_simplify_by_residue(self):
         """Test protein simplification by residues"""
-        IMP.base.set_log_level(IMP.base.SILENT)  # VERBOSE)
+        IMP.set_log_level(IMP.SILENT)  # VERBOSE)
         m = IMP.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name('mini.pdb'), m)
         chains = IMP.atom.get_by_type(mh, IMP.atom.CHAIN_TYPE)
@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
 
     def test_simplify_by_segments(self):
         """Test protein simplification by segments"""
-        IMP.base.set_log_level(IMP.base.SILENT)  # VERBOSE)
+        IMP.set_log_level(IMP.SILENT)  # VERBOSE)
         m = IMP.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name('mini.pdb'), m)
         chains = IMP.atom.get_by_type(mh, IMP.atom.CHAIN_TYPE)
@@ -56,7 +56,7 @@ class Tests(IMP.test.TestCase):
 
     def test_simplify_by_volume(self):
         """Test protein simplification by volume"""
-        IMP.base.set_log_level(IMP.base.SILENT)  # VERBOSE)
+        IMP.set_log_level(IMP.SILENT)  # VERBOSE)
         m = IMP.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name('mini.pdb'), m)
         chains = IMP.atom.get_by_type(mh, IMP.atom.CHAIN_TYPE)

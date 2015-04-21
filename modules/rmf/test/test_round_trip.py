@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
             h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                   IMP.atom.NonAlternativePDBSelector())
             h.get_is_valid(True)
-            IMP.base.set_log_level(IMP.base.SILENT)
+            IMP.set_log_level(IMP.SILENT)
             IMP.atom.add_bonds(h)
             print("done")
             print("writing hierarchy")
@@ -65,10 +65,10 @@ class Tests(IMP.test.TestCase):
             print("reading pdb")
             h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                   IMP.atom.NonAlternativePDBSelector())
-            IMP.base.set_log_level(IMP.base.SILENT)
+            IMP.set_log_level(IMP.SILENT)
             IMP.atom.add_bonds(h)
             print("done")
-            IMP.base.set_log_level(IMP.base.VERBOSE)
+            IMP.set_log_level(IMP.VERBOSE)
             print("writing hierarchy")
             name = self.get_tmp_file_name("test_rt_parts" + suffix)
             f = RMF.create_rmf_file(name)
@@ -99,9 +99,9 @@ class Tests(IMP.test.TestCase):
             chs[0].set_name('simple')
             self.assertEqual(chs[0].get_name(), 'simple')
 
-            IMP.base.set_log_level(IMP.base.SILENT)
+            IMP.set_log_level(IMP.SILENT)
             IMP.atom.add_bonds(h)
-            IMP.base.set_log_level(IMP.base.VERBOSE)
+            IMP.set_log_level(IMP.VERBOSE)
             name = self.get_tmp_file_name("test_rt_parts" + suffix)
             f = RMF.create_rmf_file(name)
             IMP.rmf.add_hierarchy(f, h)

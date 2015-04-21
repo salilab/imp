@@ -57,16 +57,16 @@ class Tests(IMP.test.TestCase):
 
     def test_sanity_checks(self):
         """Test TruncatedHarmonic sanity checks"""
-        if IMP.base.get_check_level() >= IMP.base.USAGE:
+        if IMP.get_check_level() >= IMP.USAGE:
             # Limit too low
-            self.assertRaises(IMP.base.UsageException,
+            self.assertRaises(IMP.UsageException,
                               IMP.core.TruncatedHarmonicBound, 10., 3.0, 3., 1.)
             # Negative spring constant
-            self.assertRaises(IMP.base.UsageException,
+            self.assertRaises(IMP.UsageException,
                               IMP.core.TruncatedHarmonicBound,
                               10., 2.0, -1., 5.)
             # Negative threshold
-            self.assertRaises(IMP.base.UsageException,
+            self.assertRaises(IMP.UsageException,
                               IMP.core.TruncatedHarmonicBound,
                               10., -2.0, 1., 5.)
             # Default value for limit should be reasonable

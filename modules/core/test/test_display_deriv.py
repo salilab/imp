@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.TERSE)
+        IMP.set_log_level(IMP.TERSE)
 
     @IMP.test.expectedFailure
     def test_derivs(self):
@@ -45,7 +45,7 @@ class Tests(IMP.test.TestCase):
         del w
 
         rbd = IMP.core.RigidBody.setup_particle(p, IMP.core.XYZs(ps))
-        IMP.base.set_log_level(IMP.base.TERSE)
+        IMP.set_log_level(IMP.TERSE)
         print("eval")
         sf.evaluate(True)
         w = IMP.display.BildWriter(self.get_tmp_file_name("qderiv.bild"))

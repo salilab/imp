@@ -118,10 +118,10 @@ class Tests(IMP.test.TestCase):
                                    origin[i], delta=1e-4)
         self.assertLess(IMP.algebra.get_distance(origin,
                                          d.get_location_by_voxel(0)), 1e-4)
-        if IMP.base.get_check_level() >= IMP.base.USAGE:
-            self.assertRaises(IMP.base.UsageException,
+        if IMP.get_check_level() >= IMP.USAGE:
+            self.assertRaises(IMP.UsageException,
                               d.get_location_by_voxel, -1)
-            self.assertRaises(IMP.base.UsageException,
+            self.assertRaises(IMP.UsageException,
                               d.get_location_by_voxel, 192)
         # Voxel 2 should be centered at the point (2,2,3)
         self.assertLess(IMP.algebra.get_distance(IMP.algebra.Vector3D(2,2,3),

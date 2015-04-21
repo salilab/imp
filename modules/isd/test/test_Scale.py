@@ -17,8 +17,8 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
         self.m = IMP.Model()
         self.sigma = Scale.setup_particle(IMP.Particle(self.m), 1.0)
 

@@ -15,7 +15,7 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.VERBOSE)  # SILENT)
+        IMP.set_log_level(IMP.VERBOSE)  # SILENT)
 
     def test_connected_components(self):
         """test connected components"""

@@ -36,15 +36,15 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)
-        IMP.base.set_check_level(IMP.base.NONE)
+        IMP.set_log_level(IMP.SILENT)
+        IMP.set_check_level(IMP.NONE)
         self.imp_model = IMP.Model()
         self.load_density_map()
         self.load_protein("1z5s_A.pdb")
 
     def test_cc_after_grid_rotation(self):
         """Check that CC score does not change after grid and protein rotation"""
-        check = IMP.base.get_check_level()
+        check = IMP.get_check_level()
         mrw = IMP.em.MRCReaderWriter()
         # create a rigid body
         rb_p = IMP.Particle(self.imp_model)
@@ -114,7 +114,7 @@ class Tests(IMP.test.TestCase):
 
     def test_cc_with_sampled_grid_rotation(self):
         """CC score does not change after sampled grid and protein rotation"""
-        check = IMP.base.get_check_level()
+        check = IMP.get_check_level()
 
         # set a small random transformation
         translation = IMP.algebra.get_random_vector_in(

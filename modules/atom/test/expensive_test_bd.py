@@ -13,7 +13,7 @@ except:
 
 import math
 nreps = 1000
-if IMP.base.get_check_level() == IMP.base.USAGE_AND_INTERNAL:
+if IMP.get_check_level() == IMP.USAGE_AND_INTERNAL:
     nreps = nreps / 100
 nsteps = 500
 timestep = 1000
@@ -42,14 +42,14 @@ class Tests(IMP.test.TestCase):
 
     def _setup(self):
         m = IMP.Model()
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         p = IMP.Particle(m)
         xyzr = IMP.core.XYZR.setup_particle(p)
         xyzr.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
         xyzr.set_radius(1)
         d = IMP.atom.Diffusion.setup_particle(p)
         d.set_diffusion_coefficient(D)
-        IMP.base.set_check_level(IMP.base.NONE)
+        IMP.set_check_level(IMP.NONE)
         bd = IMP.atom.BrownianDynamics(m)
         bd.set_maximum_time_step(float(timestep))
         bd.set_temperature(temperature)

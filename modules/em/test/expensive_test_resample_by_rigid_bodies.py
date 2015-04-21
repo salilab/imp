@@ -47,7 +47,7 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)  # VERBOSE)
+        IMP.set_log_level(IMP.SILENT)  # VERBOSE)
         self.imp_model = IMP.Model()
         self.load_proteins()
 

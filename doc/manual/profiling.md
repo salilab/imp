@@ -7,7 +7,7 @@ On linux you can use [gperftools](http://code.google.com/p/gperftools/?redir=1) 
 - install `gperftools` (available as a pre-built package on most platforms)
 - make sure debugging symbols are being included in your build by, with `g++` or `clang++` adding `-g` to your `CMAKE_CXX_FLAGS`.
 
-then if you are using a program that used the IMP.base flags support
+then if you are using a program that used the IMP flags support
 - you can add the flag `--cpu-profiling` to profile the whole program
 
 if not 

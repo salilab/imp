@@ -12,14 +12,14 @@ class Tests(IMP.test.TestCase):
     def test_restraint_1(self):
         """Test ClosePairContainer complete list over time"""
         m = IMP.Model()
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         ps = self.create_particles_in_box(m, 10)
         for p in ps:
             IMP.core.XYZR.setup_particle(p, 0)
         # test rebuilding under move, set input and change radius
         pc = IMP.container.ListSingletonContainer(ps)
         print("creat cpss " + str(pc))
-        # IMP.base.set_log_level(IMP.base.VERBOSE)
+        # IMP.set_log_level(IMP.VERBOSE)
         print(1)
         threshold = 1
         cpss = IMP.container.ClosePairContainer(pc, threshold,
@@ -40,7 +40,7 @@ class Tests(IMP.test.TestCase):
 
     def test_cache(self):
         m = IMP.Model()
-        IMP.base.set_log_level(IMP.base.TERSE)
+        IMP.set_log_level(IMP.TERSE)
         ps = self.create_particles_in_box(m, 10)
         for p in ps:
             IMP.core.XYZR.setup_particle(p, 1)

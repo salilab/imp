@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
            All particles in a single protein should be connected, and all
            proteins should be connected, either directly or indirectly
            through other proteins."""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
 
         ps = self.create_particles_in_box(m, 4)

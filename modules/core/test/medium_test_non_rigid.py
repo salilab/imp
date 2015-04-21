@@ -102,7 +102,7 @@ class Tests(IMP.test.TestCase):
 
     def test_deriv(self):
         """Check non-rigid particles"""
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
         r0 = self._create_rigid_body(m, "0")
         r0.set_coordinates_are_optimized(True)
@@ -127,7 +127,7 @@ class Tests(IMP.test.TestCase):
 
     def test_2(self):
         """Check non-rigid particles with ExcludedVolumeRestraint"""
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
         r0 = self._create_rigid_body(m, "0")
         r1 = self._create_rigid_body(m, "1")
@@ -152,7 +152,7 @@ class Tests(IMP.test.TestCase):
 
     def test_3(self):
         """Check that particles can be converted between rigid and non-rigid"""
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
         r0 = self._create_rigid_body(m, "0")
         nr0 = self._add_non_rigid(m, r0, "0")

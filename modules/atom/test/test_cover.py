@@ -60,13 +60,13 @@ class Tests(IMP.test.TestCase):
         """Check cover from rigid selection"""
         m = IMP.Model()
         #! read PDB
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                                m, IMP.atom.CAlphaPDBSelector())
         rb = IMP.atom.create_rigid_body(mp)
-        # IMP.base.set_log_level(IMP.base.VERBOSE)
+        # IMP.set_log_level(IMP.VERBOSE)
         # IMP.atom.show_molecular_hierarchy(mp)
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         s = IMP.atom.Selection(mp, residue_indexes=[26, 30])
 
         print("selected:")
@@ -82,7 +82,7 @@ class Tests(IMP.test.TestCase):
         self._display(mp, "after_rigid", d, s)
         self._check(mp, s, d)
         print("done")
-        IMP.base.set_log_level(IMP.base.MEMORY)
+        IMP.set_log_level(IMP.MEMORY)
 
 if __name__ == '__main__':
     IMP.test.main()

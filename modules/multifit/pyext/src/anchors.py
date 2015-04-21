@@ -33,7 +33,7 @@ def main():
         number_of_means = asmb.get_number_of_component_headers()
     else:
         total_num_residues = 0
-        mdl = IMP.kernel.Model()
+        mdl = IMP.Model()
         for i in range(asmb.get_number_of_component_headers()):
             total_num_residues += len(
                 IMP.atom.get_by_type(

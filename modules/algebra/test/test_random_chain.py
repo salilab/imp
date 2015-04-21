@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
 
     def test_random_chain(self):
         """Testing the creation of a random chain"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         n = 50
         r = 1.2
         chain = IMP.algebra.get_random_chain(n, r)
@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
 
     def test_random_chain_obst(self):
         """Testing the creation of a random chain with obstacles"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         n = 50
         r = 1.2
         v = IMP.algebra.Vector3D(1, 2, 3)

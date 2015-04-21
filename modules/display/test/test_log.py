@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.TERSE)
+        IMP.set_log_level(IMP.TERSE)
 
     def _testopen(self, fname):
         open(fname, "r")
@@ -31,7 +31,7 @@ class Tests(IMP.test.TestCase):
         d1.set_y(1)
         d1.set_z(1)
         d1.set_radius(1)
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         a = IMP.display.WriteOptimizerState(m, writer)
         g = IMP.core.XYZRGeometry(d0)
         #ge= IMP.core.XYZRGeometryExtractor(rk)

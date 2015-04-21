@@ -16,7 +16,6 @@ import IMP.display as display
 import IMP.atom as atom
 import IMP.algebra as alg
 import IMP.em2d as em2d
-import IMP.base
 import IMP.multifit as multifit
 
 import IMP.EMageFit.imp_general.comparisons as comparisons
@@ -42,7 +41,7 @@ class DominoModel:
     """
 
     def __init__(self, name="my model"):
-        self.model = IMP.kernel.Model()
+        self.model = IMP.Model()
         self.model.set_name(name)
         self.configuration_sampling_done = False
         self.assignments_sampling_done = False
@@ -59,7 +58,7 @@ class DominoModel:
     def add_restraint(self, r, name, weight, max_score=False):
         """
             Adds a restraint to the model
-            @param r An IMP.kernel.Restraint object
+            @param r An IMP.Restraint object
             @param name Name for the restraint
             @param weight Weight for the restraint
             @param max_score Maximum score allowed for the restraint. If
@@ -182,7 +181,7 @@ class DominoModel:
         k = core.Harmonic.get_k_from_standard_deviation(stddev)
         score = core.HarmonicUpperBound(xlink.distance, k)
         pair_score = IMP.core.DistancePairScore(score)
-        r = IMP.core.PairRestraint(pair_score, IMP.kernel.ParticlePair(p1, p2))
+        r = IMP.core.PairRestraint(pair_score, IMP.ParticlePair(p1, p2))
         if not max_score:
             error_distance_allowed = 100
             max_score = weight * \
@@ -423,7 +422,7 @@ class DominoModel:
             structure and set the rigid bodies.
         """
         self.measure_models = True
-        self.native_model = IMP.kernel.Model()
+        self.native_model = IMP.Model()
         if hasattr(params.benchmark, "fn_pdb_native"):
             self.native_assembly = \
                 representation.create_assembly_from_pdb(self.native_model,
@@ -533,7 +532,7 @@ class DominoModel:
                              "to setup the sampler")
         log.info("Domino sampler")
         self.sampler = domino.DominoSampler(self.model, self.rb_states_table)
-        self.sampler.set_log_level(IMP.base.TERSE)
+        self.sampler.set_log_level(IMP.TERSE)
         self.sampler.set_merge_tree(self.merge_tree)
         self.add_exclusion_filter_table()
         self.add_restraint_score_filter_table()
@@ -604,12 +603,12 @@ class DominoModel:
         rs = self.model.get_restraints()
         ig = domino.get_interaction_graph(rs, self.rb_states_table)
 #        pruned_dep = IMP.get_pruned_dependency_graph(self.model)
-#        IMP.base.show_graphviz(pruned_dep)
-#        IMP.base.show_graphviz(ig)
+#        IMP.show_graphviz(pruned_dep)
+#        IMP.show_graphviz(ig)
         jt = domino.get_junction_tree(ig)
-#        IMP.base.show_graphviz(jt)
+#        IMP.show_graphviz(jt)
         self.merge_tree = domino.get_balanced_merge_tree(jt)
-#        IMP.base.show_graphviz(self.merge_tree)
+#        IMP.show_graphviz(self.merge_tree)
         log.info("Balanced merge tree created")
         log.info("%s", self.merge_tree.show_graphviz())
 
@@ -756,9 +755,9 @@ class DominoModel:
                     possible_pairs = len(ls1) * len(ls2)
                     n_pairs = possible_pairs * ratio
 
-                    marker1 = IMP.kernel.Particle(
+                    marker1 = IMP.Particle(
                         self.model, "marker1 " + name)
-                    marker2 = IMP.kernel.Particle(
+                    marker2 = IMP.Particle(
                         self.model, "marker2 " + name)
                     table_refiner = core.TableRefiner()
                     table_refiner.add_particle(marker1, ls1)
@@ -769,7 +768,7 @@ class DominoModel:
                                                                 table_refiner,
                                                                 distance)
                     r = core.PairRestraint(close_pair_score,
-                                           IMP.kernel.ParticlePair(marker1, marker2))
+                                           IMP.ParticlePair(marker1, marker2))
 
                     if not max_score:
                         minimum_distance_allowed = 0
@@ -801,11 +800,11 @@ class DominoModel:
         # When the refiner gets a request for marker1, it returns the attached
         # particles
         A = representation.get_component(self.coarse_assembly, name1)
-        marker1 = IMP.kernel.Particle(self.model, "marker1 " + restraint_name)
+        marker1 = IMP.Particle(self.model, "marker1 " + restraint_name)
         table_refiner.add_particle(marker1, atom.get_leaves(A))
         # same for B
         B = representation.get_component(self.coarse_assembly, name2)
-        marker2 = IMP.kernel.Particle(self.model, "marker2 " + restraint_name)
+        marker2 = IMP.Particle(self.model, "marker2 " + restraint_name)
         table_refiner.add_particle(marker2, atom.get_leaves(B))
 
         k = core.Harmonic.get_k_from_standard_deviation(stddev)
@@ -826,7 +825,7 @@ class DominoModel:
                  "= %s, stddev %s", name1, name2, k, max_score, stddev)
         r = core.PairRestraint(
             pair_score,
-            IMP.kernel.ParticlePair(
+            IMP.ParticlePair(
                 marker1,
                 marker2))
         self.add_restraint(r, restraint_name, weight, max_score)

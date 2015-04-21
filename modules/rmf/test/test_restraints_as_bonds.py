@@ -15,7 +15,7 @@ class Tests(IMP.test.TestCase):
             m)
         hs = IMP.atom.create_simplified_along_backbone(
             IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)[0], 1)
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         fname = self.get_tmp_file_name("restraint_bonds.rmf3")
         fh = RMF.create_rmf_file(fname)
         IMP.rmf.add_hierarchy(fh, hs)
