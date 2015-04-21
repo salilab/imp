@@ -25,12 +25,12 @@ class Tests(IMP.test.TestCase):
         r = IMP.core.DistanceRestraint(IMP.core.Harmonic(10.0, 1.0),
                                        atoms[0].get_particle(),
                                        atoms[-1].get_particle())
-        m.add_restraint(r)
+        sf = IMP.core.RestraintsScoringFunction([r])
 
         t = modmodel.env.edat.energy_terms
-        t.append(IMP.modeller.IMPRestraints(atoms))
-        assertSimilarModellerIMPScores(self, modmodel, protein)
-        self.assertAlmostEqual(m.evaluate(False), 9.80, delta=1e-2)
+        t.append(IMP.modeller.IMPRestraints(atoms, sf))
+        assertSimilarModellerIMPScores(self, sf, modmodel, protein)
+        self.assertAlmostEqual(sf.evaluate(False), 9.80, delta=1e-2)
 
 if __name__ == '__main__':
     IMP.test.main()

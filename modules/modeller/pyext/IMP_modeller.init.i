@@ -22,7 +22,7 @@ class _TempDir(object):
 
 
 class IMPRestraints(modeller.terms.energy_term):
-    """A Modeller restraint which evaluates all defined IMP restraints.
+    """A Modeller restraint which evaluates an IMP scoring function.
        This can be used to incorporate IMP Restraints into an existing
        comparative modeling pipeline, or to use Modeller optimizers or
        protocols.
@@ -30,10 +30,12 @@ class IMPRestraints(modeller.terms.energy_term):
 
     _physical_type = modeller.physical.absposition
 
-    def __init__(self, particles):
+    def __init__(self, particles, scoring_function=None):
         """Constructor.
            @param particles A list of the IMP atoms (as Particle objects),
                             same order as the Modeller atoms.
+           @param scoring_function An IMP::ScoringFunction object that will
+                            be incorporated into the Modeller score (molpdf).
            @note since Modeller, unlike IMP, is sensitive to the ordering
                  of atoms, it usually makes sense to create the model in
                  Modeller and then use ModelLoader to load it into IMP,
@@ -41,6 +43,10 @@ class IMPRestraints(modeller.terms.energy_term):
         """
         modeller.terms.energy_term.__init__(self)
         self._particles = particles
+        if scoring_function:
+            self._sf = scoring_function
+        else:
+            self._sf = particle[0].get_model()
 
     def eval(self, mdl, deriv, indats):
         atoms = self.indices_to_atoms(mdl, indats)
@@ -48,7 +54,7 @@ class IMPRestraints(modeller.terms.energy_term):
         if len(self._particles) == 0:
             score = 0.
         else:
-            score = self._particles[0].get_model().evaluate(deriv)
+            score = self._sf.evaluate(deriv)
         if deriv:
             dvx = [0.] * len(indats)
             dvy = [0.] * len(indats)

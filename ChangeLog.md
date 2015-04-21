@@ -23,6 +23,9 @@ ChangeLog {#changelog}
 - New applications of IMP are now available:
   - [Multi-state modeling of the histidine kinase, PhoQ](http://salilab.org/phoq).
   - [Determination of the molecular architecture of the 40S•eIF1•eIF3 translation initiation complex](http://salilab.org/40S-eIF1-eIF3).
+- IMP::modeller::IMPRestraints now transfers an IMP::ScoringFunction into the
+  MODELLER score, not the implicit (and deprecated) score of the
+  entire IMP::Model.
 - Bugfix #775: coordinates of voxels in EM maps were previously inconsistently
   treated (they are supposed to be the centers of the voxels, but in some
   cases they were the lower left edge). The fix may result in maps and their
