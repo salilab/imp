@@ -10,8 +10,8 @@ max_score = .02
 
 class Tests(IMP.test.TestCase):
 
-    def check_model(self, m, sf, lsc, lpc):
-        s = sf.evaluate(False)
+    def check_model(self, m, lsc, lpc):
+        s = m.evaluate(False)
         print("score is ", s)
         for p0 in lsc.get_particles():
             p0.show()
@@ -43,6 +43,7 @@ class Tests(IMP.test.TestCase):
         evr = IMP.container.PairsRestraint(
             IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0, 1)), cpc)
         print(3)
+        m.add_restraint(evr)
         evr.set_log_level(IMP.WARNING)
         print(4)
         lpc = IMP.container.ListPairContainer(m)
@@ -63,9 +64,8 @@ class Tests(IMP.test.TestCase):
         d = IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(0, 1))
         pr = IMP.container.PairsRestraint(d, lpc)
         pr.set_log_level(IMP.WARNING)
-        sf = IMP.core.RestraintsScoringFunction([evr, pr])
+        m.add_restraint(pr)
         s = IMP.core.MCCGSampler(m)
-        s.set_scoring_function(sf)
         #wos=IMP.WriteParticlesOptimizerState(ds, self.get_tmp_file_name("mccg")+".%1%.imp")
         # wos.set_skip_steps(10)
         # s.add_optimizer_state(wos)
@@ -89,7 +89,7 @@ class Tests(IMP.test.TestCase):
                     #    d= IMP.core.XYZR(p)
                     #    g= IMP.core.XYZRGeometry(d)
                     #    w.add_geometry(g)
-                    self.check_model(m, sf, lsc, lpc)
+                    self.check_model(m, lsc, lpc)
                 return
             except:
                 if trial < n_trials:
