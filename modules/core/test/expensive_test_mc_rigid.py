@@ -28,7 +28,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         self.h = IMP.core.HarmonicUpperBound(0, 3.)
 
         self.dr = IMP.core.DistanceRestraint(self.h, self.rb0, self.rb1)
-        self.m.add_restraint(self.dr)
+        self.sf = IMP.core.RestraintsScoringFunction([self.dr])
 
     def randomize(self, mh):
         point1 = IMP.algebra.get_random_vector_in(
@@ -54,13 +54,15 @@ class MCOptimizerTest(IMP.test.TestCase):
             self.randomize(self.rb1)
             print(IMP.core.XYZ(self.rb0).get_coordinates())
             print(IMP.core.XYZ(self.rb1).get_coordinates())
-            score = self.m.evaluate(False)
+            score = self.sf.evaluate(False)
             print(score)
             if score > 0:
                 break
         # optimize
         lopt = IMP.core.ConjugateGradients(self.m)
         opt = IMP.core.MonteCarloWithLocalOptimization(lopt, 100)
+        opt.set_scoring_function(self.sf)
+        lopt.set_scoring_function(self.sf)
         mover1 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.rb0), 5., 15.)
         opt.add_mover(mover1)
         mover2 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.rb1), 5., 15.)
@@ -69,7 +71,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         for i in range(0, 5):
             print("run", i)
             opt.optimize(20)
-            e = self.m.evaluate(False)
+            e = self.sf.evaluate(False)
             if e < .001:
                 break
         self.assertAlmostEqual(e, 0.0, places=2)

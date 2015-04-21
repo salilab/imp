@@ -79,18 +79,21 @@ class MCOptimizerTest(IMP.test.TestCase):
         opt.add_mover(mod)
 
         rsr = WoodsFunc(model)
-        model.add_restraint(rsr)
         # print rsr.evaluate(None)
         # print model.evaluate(False)
         # model.show()
         # print "Restaint TO is "+str(rsr.thisown)
         # opt.show()
+        sf = IMP.core.RestraintsScoringFunction([rsr])
+        lopt.set_scoring_function(sf)
+        opt.set_scoring_function(sf)
         return (model, opt)
 
     def _test_starting_conditions(self, model, opt, starting_values, nrounds):
         """Test the optimizer with given starting conditions"""
 
-        print("Start energy is " + str(model.evaluate(False)))
+        print("Start energy is "
+              + str(opt.get_scoring_function().evaluate(False)))
         for i in range(0, nrounds):
             e = opt.optimize(100)
             print("Energy after step is " + str(e))

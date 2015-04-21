@@ -46,7 +46,6 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         allc = IMP.container.ListSingletonContainer(all)
         r = IMP.core.ExcludedVolumeRestraint(allc, 1)
         r.set_log_level(IMP.base.SILENT)
-        m.add_restraint(r)
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(100, 100, 100))
         bbr = IMP.container.SingletonsRestraint(
@@ -54,8 +53,8 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
                 IMP.core.HarmonicUpperBound(0, 1),
                 bb),
             allc)
-        m.add_restraint(bbr)
-        return (m, r, xyzrs, rbs)
+        sf = IMP.core.RestraintsScoringFunction([r, bbr])
+        return (m, r, sf, xyzrs, rbs)
 
     def _setup_movers(self, xyzrs, rbs):
         mvs = []
@@ -70,9 +69,10 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
 
     def test_ev(self):
         """Testing excluded volume restraint"""
-        (m, r, xyzrs, rbs) = self._setup_ev_restraint()
+        (m, r, sf, xyzrs, rbs) = self._setup_ev_restraint()
         print("mc")
         o = IMP.core.MonteCarlo(m)
+        o.set_scoring_function(sf)
         mvs = self._setup_movers(xyzrs, rbs)
         o.set_movers(mvs)
         print("opt")
@@ -82,9 +82,10 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
 
     def test_evs(self):
         """Testing excluded volume serial restraint"""
-        (m, r, xyzrs, rbs) = self._setup_ev_restraint()
+        (m, r, sf, xyzrs, rbs) = self._setup_ev_restraint()
         print("mc")
         o = IMP.core.MonteCarlo(m)
+        o.set_scoring_function(sf)
         mvs = self._setup_movers(xyzrs, rbs)
         sm = IMP.core.SerialMover(mvs)
         o.set_movers([sm])

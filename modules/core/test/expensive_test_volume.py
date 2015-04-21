@@ -36,19 +36,20 @@ class Volume(IMP.test.TestCase):
                               1),
             sc,
             4 ** 3 * 3.1415 * 4.0 / 3.0 * len(ps))
-        m.add_restraint(vr)
+        sf = IMP.core.RestraintsScoringFunction([vr])
         mc = IMP.core.MonteCarlo(m)
+        mc.set_scoring_function(sf)
         mc.add_mover(IMP.core.BallMover(ps, 4))
         mc.set_score_threshold(.2)
         for i in range(5):
             try:
                 mc.optimize(10)
-                if m.evaluate(False) < .2:
+                if sf.evaluate(False) < .2:
                     break
             except IMP.base.ValueException:
                 # Catch CG failure
                 pass
-        self.assertLess(m.evaluate(False), .2)
+        self.assertLess(sf.evaluate(False), .2)
 
     def _test_volume_2(self):
         """Testing that volume restraint can change radius"""
@@ -69,11 +70,12 @@ class Volume(IMP.test.TestCase):
         sc = ListSingletonContainer(ps)
         vr = VolumeRestraint(
             Harmonic(0, .001), sc, 5 ** 3 * 3.1415 * 4.0 / 3.0 * len(ps))
-        m.add_restraint(vr)
+        sf = IMP.core.RestraintsScoringFunction([vr])
         #c= SteepestDescent()
         # c.set_step_size(.1)
         # c.set_threshold(1)
         c = MonteCarlo(m)
+        c.set_scoring_function(sf)
         c.set_score_threshold(.1)
         c.optimize(20)
         print(d)
