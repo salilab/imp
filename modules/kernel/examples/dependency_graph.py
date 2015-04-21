@@ -137,6 +137,7 @@ def create_representation():
     m = IMP.Model()
     all = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
     all.set_name("the universe")
+    rs = []
 
     def create_protein(name, ds):
         h = IMP.atom.create_protein(m, name, 10, ds)
@@ -146,7 +147,7 @@ def create_representation():
                                                     for c in h.get_children()],
                                                    1)
         if r:
-            m.add_restraint(r)
+            rs.append(r)
 
     def create_protein_from_pdbs(name, files):
         def create_from_pdb(file):
@@ -181,7 +182,7 @@ def create_representation():
                                                         )],
                                                        1)
             if r:
-                m.add_restraint(r)
+                rs.append(r)
         else:
             h = create_from_pdb(files[0])
             h.set_name(name)
@@ -193,19 +194,19 @@ def create_representation():
     create_protein("Nup133", [0, 450, 778, 1160])
     create_protein_from_pdbs("Seh1", ["seh1.pdb"])
     create_protein_from_pdbs("Sec13", ["sec13.pdb"])
-    return (m, all)
+    return (m, rs, all)
 
 
-def create_restraints(m, all):
+def create_restraints(m, rs, all):
     def add_connectivity_restraint(s):
         r = IMP.atom.create_connectivity_restraint(s, 1)
-        m.add_restraint(r)
+        rs.append(r)
 
     def add_distance_restraint(s0, s1):
         r = IMP.atom.create_distance_restraint(s0, s1, 0, 1)
-        m.add_restraint(r)
+        rs.append(r)
     evr = IMP.atom.create_excluded_volume_restraint([all])
-    m.add_restraint(evr)
+    rs.append(evr)
     s0 = IMP.atom.Selection(hierarchy=all, molecule="Nup145C",
                             residue_indexes=range(0, 423))
     s1 = IMP.atom.Selection(hierarchy=all, molecule="Nup84")
@@ -231,8 +232,10 @@ def create_restraints(m, all):
         IMP.atom.Selection(hierarchy=all, molecule="Sec13"))
 
 # now do the actual work
-(m, all) = create_representation()
-create_restraints(m, all)
+(m, rs, all) = create_representation()
+create_restraints(m, rs, all)
+
+sf = IMP.core.RestraintsScoringFunction(rs)
 
 # we can get the full dependency graph for the whole model with all the restraints
 # but it is pretty complex
