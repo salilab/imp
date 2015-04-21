@@ -378,13 +378,14 @@ ConfigurationSet *MCCGSampler::do_sample() const {
     }
     if (mc->get_scoring_function()->get_had_good_score()) {
       IMP_LOG_TERSE("Found configuration with score "
-                    << get_model()->evaluate(false) << std::endl);
+                    << get_scoring_function()->evaluate(false)
+                    << std::endl);
       ret->save_configuration();
       IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-        double oe = get_model()->evaluate(false);
+        double oe = get_scoring_function()->evaluate(false);
         ret->load_configuration(-1);
         ret->load_configuration(ret->get_number_of_configurations() - 1);
-        double ne = get_model()->evaluate(false);
+        double ne = get_scoring_function()->evaluate(false);
         if (0) std::cout << oe << ne;
         IMP_INTERNAL_CHECK(std::abs(ne - oe) < (ne + oe) * .1 + .1,
                            "Energies to not match before and after save."
@@ -393,7 +394,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
       }
     } else {
       IMP_LOG_TERSE("Rejected configuration with score "
-                    << get_model()->evaluate(false) << std::endl);
+                    << get_scoring_function()->evaluate(false) << std::endl);
       if (rejected_) {
         rejected_->save_configuration();
       }
