@@ -86,10 +86,11 @@ class Tests(IMP.test.TestCase):
                                          chains[3],
                                          chains[0])
         r30.set_name("distance 3-0")
+        top_rs = IMP.RestraintSet(m)
         # set distance restraints
         for r in [r01, r12, r23, r30]:
-            m.add_restraint(r)
-        self.assertEqual(m.get_number_of_restraints(), 4,
+            top_rs.add_restraint(r)
+        self.assertEqual(top_rs.get_number_of_restraints(), 4,
                          "Incorrect number of distance restraints")
         # set em2D restraint
         srw = em2d.SpiderImageReaderWriter()
@@ -118,11 +119,12 @@ class Tests(IMP.test.TestCase):
         em2d_restraints_set = IMP.RestraintSet(m)
         em2d_restraints_set.add_restraint(em2d_restraint)
         em2d_restraints_set.set_weight(1000)  # weight for the em2D restraint
-        m.add_restraint(em2d_restraints_set)
-        self.assertEqual(m.get_number_of_restraints(), 5,
+        top_rs.add_restraint(em2d_restraints_set)
+        self.assertEqual(top_rs.get_number_of_restraints(), 5,
                          "Incorrect number of restraints")
         # MONTECARLO OPTIMIZATION
         s = IMP.core.MonteCarlo(m)
+        s.set_scoring_function(top_rs)
         # Add movers for the rigid bodies
         movers = []
         for rbd in rigid_bodies:

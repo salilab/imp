@@ -39,7 +39,6 @@ class Tests(IMP.test.TestCase):
             ps.append(IMP.Particle(m))
         pst = IMP.domino.ParticleStatesTable()
         print(m.get_number_of_score_states())
-        print(m.get_number_of_restraints())
         dsst = IMP.domino.BranchAndBoundSampler(m, pst)
         for p in ps:
             pst.set_particle_states(p, TrivialParticleStates(ns))
