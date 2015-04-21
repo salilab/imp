@@ -30,13 +30,23 @@ IMPKERNEL_BEGIN_NAMESPACE
 */
 class IMPKERNELEXPORT Sampler : public IMP::Object {
   PointerMember<Model> model_;
+  mutable Pointer<ScoringFunction> cache_;
   PointerMember<ScoringFunction> sf_;
 
  public:
   Sampler(Model *m, std::string name = "Sampler %1%");
   ConfigurationSet *create_sample() const;
 
-  ScoringFunction *get_scoring_function() const { return sf_; }
+  ScoringFunction *get_scoring_function() const {
+    if (sf_) {
+      return sf_;
+    } else if (cache_) {
+      return cache_;
+    } else {
+      return cache_ = get_model()->create_model_scoring_function();
+    }
+  }
+
   void set_scoring_function(ScoringFunctionAdaptor sf);
 
   Model *get_model() const { return model_; }

@@ -13,7 +13,6 @@
 IMPKERNEL_BEGIN_NAMESPACE
 
 Sampler::Sampler(Model *m, std::string nm) : Object(nm), model_(m) {
-  sf_ = m->create_model_scoring_function();
 }
 
 ConfigurationSet *Sampler::create_sample() const {
