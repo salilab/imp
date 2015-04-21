@@ -12,29 +12,22 @@ class Tests(IMP.test.TestCase):
         rs = IMP.RestraintSet(m, .5, "RS")
         r0 = IMP._ConstRestraint(m, [], 1)
         rs.add_restraint(r0)
-        m.add_restraint(rs)
         r1 = IMP._ConstRestraint(m, [], 1)
         rs.add_restraint(r1)
         r2 = IMP._ConstRestraint(m, [], 1)
-        m.add_restraint(r2)
         return (m, rs, r0, r1, r2)
 
     def test_weights2(self):
         """Test that sets can be weighted"""
         (m, rs, r0, r1, r2) = self._make_stuff()
-        sf = IMP.core.RestraintsScoringFunction([r0, r1, r2])
-        self.assertEqual(sf.evaluate(False), 2)
+        sf1 = IMP.core.RestraintsScoringFunction([rs, r2])
+        self.assertEqual(sf1.evaluate(False), 2)
         rs.set_weight(1)
-        self.assertEqual(sf.evaluate(False), 3)
+        self.assertEqual(sf1.evaluate(False), 3)
+
+        sf = IMP.core.RestraintsScoringFunction([r0, r1, r2])
         self.assertEqual(sf.evaluate_if_good(False), 3)
         self.assertEqual(rs.evaluate(False), 2)
-        self.assertEqual(m.get_root_restraint_set().evaluate(False), 3)
-        self.assertEqual(
-            m.get_root_restraint_set(
-            ).get_restraint(
-                0).evaluate(
-                False),
-            2)
 
     def test_weights(self):
         """Test that restraints decompose ok"""
