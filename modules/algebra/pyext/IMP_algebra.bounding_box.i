@@ -34,7 +34,7 @@ namespace IMP {
   }
 
   IMP::algebra::VectorD<D> __getitem__(unsigned int index) const {
-    if (index >= 2) throw IMP::base::IndexException("");
+    if (index >= 2) throw IMP::IndexException("");
     return self->get_corner(index);
   }
   /*void __setitem__(unsigned int index, double val) {

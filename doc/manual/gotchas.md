@@ -11,7 +11,7 @@ Below are suggestions prompted by bugs found in code submitted to %IMP.
   variables instead. Preprocessor symbols don't have scope or type
   and so can have unexpected effects.
 
-- Don't expect IMP::base::Object::get_name() names to be unique; they
+- Don't expect IMP::Object::get_name() names to be unique; they
   are there for human viewing. If you need a unique identifier
   associated with an object or non-geometric value, just use the
   object or value itself.

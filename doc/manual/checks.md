@@ -11,7 +11,7 @@ generally recommended to build with only `USAGE` checks, since `INTERNAL`
 checks typically result in much slower code.
 
 Runtime checks can also be turned on and off
-globally at runtime using IMP::base::set_check_level()
+globally at runtime using IMP::set_check_level()
 or for individual objects.
 
 Note that while it is possible to turn off `USAGE` checks it is generally

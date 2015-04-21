@@ -107,7 +107,7 @@ def main():
     make_one(
         source, (
             "particle", "Particle", "Singleton", "Particle*", "Particle*",
-            "Particle*", "base::Pointer<Particle>",
+            "Particle*", "Pointer<Particle>",
             "ParticlesTemp", "ParticlesTemp", "Particles",
             "ParticleIndex", "ParticleIndexes", "ParticleIndex"))
     make_one(

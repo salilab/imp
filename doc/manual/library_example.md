@@ -69,7 +69,7 @@ differences are in the language syntax (eg, the Python
 '<tt>\#include \<IMP/algebra.h\></tt>'
 in C++) and in memory handling (Python handles memory automatically;
 in C++, memory handling must be done explicitly by using the
-IMP::base::Pointer class or the [IMP_NEW](@ref IMP::base::IMP_NEW) macro,
+IMP::Pointer class or the [IMP_NEW](@ref IMP::IMP_NEW) macro,
 which adds reference counting to automatically clean up after %IMP objects
 when they are no longer in use).
 

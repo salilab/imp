@@ -22,7 +22,7 @@ example.
 
 The example should have enough comments that the reasoning behind each line of code is clear to someone who roughly understands how %IMP in general works.
 
-Examples must use methods like IMP::base::get_example_path() to access
+Examples must use methods like IMP::get_example_path() to access
 data in the example directory. This allows them to be run from
 anywhere (when they are run by `ctest` the working directory is *not* the
 directory the example is in).

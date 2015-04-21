@@ -40,7 +40,7 @@ module name and 2.1 is replaced by the release where the code is deprecated):
 
 - classes should have `IMPEXAMPLE_DEPRECATED_OBJECT_DECL(version)` or `IMPEXAMPLE_DEPRECATED_VALUE_DECL(version)` added before their constructor declarations and `IMPEXAMPLE_DEPRECATED_OBJECT_DEF(version, message)` or `IMPEXAMPLE_DEPRECATED_VALUE_DEF(version, message)` added in their constructors.
 
-         class IMPEXAMPLEEXPORT MyDeprecatedClass :: public IMP::base::Object {
+         class IMPEXAMPLEEXPORT MyDeprecatedClass :: public IMP::Object {
          public:
               IMPEXAMPLE_DEPRECATED_OBJECT_DECL(2.1)
               MyDeprecatedClass(args) {

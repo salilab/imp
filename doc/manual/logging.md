@@ -3,7 +3,7 @@ Logging {#logging}
 
 Many operations in IMP can print out log messages as they work, allowing one
 to see what is being done. The amount of logging can be controlled globally
-by using IMP::base::set_log_level() or for individual objects by calling,
+by using IMP::set_log_level() or for individual objects by calling,
 for example `model.set_log_level(IMP.base.VERBOSE)`.
 
 The maximum amount of logging can also be set

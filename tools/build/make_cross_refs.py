@@ -38,7 +38,7 @@ def _cleanup_name(n):
         return "::".join(sp)
     if n == 'IMP_NEW()':
         # Workaround for (unqualified) macro
-        return "IMP::base::" + n
+        return "IMP::" + n
     if n.find(".py") != -1 or n.find(".cpp") != -1:
         m = n.split("/")[0]
         return (

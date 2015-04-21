@@ -1,2 +1,2 @@
 set breakpoint pending on
-b IMP::base::handle_error
+b IMP::handle_error

@@ -7,7 +7,7 @@ The IMP.rmf module acts as a link between RMF files and IMP data structures. Cur
 - IMP::display::Geometry
 
 For each type of data, there are a set of functions declared in `foo_io.h` and defined in `foo_io.cpp`. These functions support four major operations
-- addition of new data to the RMF file: this creates a hierarchy of nodes in the RMF and stores a link between those nodes and the corresponding IMP::base::Objects
+- addition of new data to the RMF file: this creates a hierarchy of nodes in the RMF and stores a link between those nodes and the corresponding IMP::Objects
 - creation of %IMP structures from the RMF: %IMP data structures are created based on corresponding data contained in the RMF file
 - link existing %IMP structures to the RMF: existing %IMP data structures are linked to data stored it the RMF. The two must correspond exactly (eg the RMF must have been created by adding those %IMP data structures to the file).
 and
@@ -45,7 +45,7 @@ Mapping between the sub-restraints created by create_current_decomposition() and
 ## Geometry ##
 Geometry is stored as RMF::SHAPE nodes in the file.
 
-The functionality provided in IMP::display::Geometry doesn't map entirely naturally on to RMF's geometry support. On the %IMP side, things are implemented in terms of an ephemeral decomposition of complex geometric objects into simple ones (eg, a bounding box can be decomposed into edges, but each time you ask for the decomposition, you will get a different set of IMP::base::Objects). The RMF side expects a hierarchy whose structure stays constant across frames. As a result, each type of geometry object has to be special cased in IMP.rmf. Currently there is support for
+The functionality provided in IMP::display::Geometry doesn't map entirely naturally on to RMF's geometry support. On the %IMP side, things are implemented in terms of an ephemeral decomposition of complex geometric objects into simple ones (eg, a bounding box can be decomposed into edges, but each time you ask for the decomposition, you will get a different set of IMP::Objects). The RMF side expects a hierarchy whose structure stays constant across frames. As a result, each type of geometry object has to be special cased in IMP.rmf. Currently there is support for
 - segments
 - balls
 - bounding boxes

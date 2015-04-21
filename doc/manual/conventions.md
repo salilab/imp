@@ -10,17 +10,17 @@ and interface conventions.
 
 - Names in `CamelCase` are class names, for %example IMP::RestraintSet
 - Lower case names separated with underscores (`_`) in them are functions or methods, for example IMP::Model::update() or IMP::Model::add_particle().
-- Collections of data of a certain class, e.g. `ClassName` are passed using type `ClassNames`. This type is a `list` in Python and a IMP::base::Vector<ClassName> (which is roughly equivalent to std::vector<ClassName*>) in C++.
+- Collections of data of a certain class, e.g. `ClassName` are passed using type `ClassNames`. This type is a `list` in Python and a IMP::Vector<ClassName> (which is roughly equivalent to std::vector<ClassName*>) in C++.
 - These function names start with a verb, which indicates what the method does. Methods starting with
    - `set_` change some stored value
    - `get_` create or return a \c value object or
-     return an existing IMP::base::Object class object
-   - `create_`  create a new IMP::base::Object class object
+     return an existing IMP::Object class object
+   - `create_`  create a new IMP::Object class object
    - `add_`, `remove_` or `clear_` manipulate the contents of a collection of data
    - `show_` print things in a human-readable format
    - `load_` and `save_` or `read_` and `write_` move data between files and memory
-   - `link_` create a connection between something and an IMP::base::Object
-   - `update_` change the internal state of an IMP::base::Object
+   - `link_` create a connection between something and an IMP::Object
+   - `update_` change the internal state of an IMP::Object
    - `do_` is a virtual method as part of a \external{http://en.wikipedia.org/wiki/Non-virtual_interface_pattern,non-virtual interface pattern}
    - `handle_` take action when an event occurs
    - `validate_` check the state of data and print messages and throw exceptions if something is corrupted
@@ -40,7 +40,7 @@ The Boost.Graph interface cannot be easily exported to Python so we instead prov
 # Values and Objects (C++ only) {#conventions_values}
 
 As is conventional in C++, IMP classes are divided into broad, exclusive types
-- *Object classes*: They inherit from IMP::base::Object and are always passed by pointer. They are reference counted and so should only be stored using IMP::base::Pointer in C++ (in Python everything is reference counted). Never allocate these on the stack as very bad things can happen. Objects cannot be duplicated. Equality on objects is defined as identity (e.g. two different objects are different even if the data they contain is identical).
+- *Object classes*: They inherit from IMP::Object and are always passed by pointer. They are reference counted and so should only be stored using IMP::Pointer in C++ (in Python everything is reference counted). Never allocate these on the stack as very bad things can happen. Objects cannot be duplicated. Equality on objects is defined as identity (e.g. two different objects are different even if the data they contain is identical).
 
 - *Value classes* which are normal data types. They are passed by value (or `const&`), never by pointer. Equality is defined based on the data stored in the value. Most value types in IMP are always valid, but a few, mostly geometric types (IMP::algebra::Vector3D) are designed for fast, low-level use and are left in an uninitialized state by their default constructor.
 

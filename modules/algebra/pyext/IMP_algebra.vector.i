@@ -36,7 +36,7 @@ namespace IMP {
 
 %extend IMP::algebra::VectorD<D> {
   double __getitem__(unsigned int index) const {
-    if (index >= D) throw IMP::base::IndexException("");
+    if (index >= D) throw IMP::IndexException("");
     return self->operator[](index);
   }
   void __setitem__(unsigned int index, double val) {
@@ -55,12 +55,12 @@ namespace IMP {
   int __cmp__(const IMP::algebra::VectorD<D> &) const {
     IMP_UNUSED(self);
     IMP_THROW("Geometric primitives cannot be compared",
-              IMP::base::ValueException);
+              IMP::ValueException);
   }
   bool __eq__(const IMP::algebra::VectorD<D> &) const {
     IMP_UNUSED(self);
     IMP_THROW("Geometric primitives cannot be compared",
-              IMP::base::ValueException);
+              IMP::ValueException);
   }
   /* Support new-style "true" division */
   %pythoncode %{
