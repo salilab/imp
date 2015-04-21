@@ -196,7 +196,7 @@ def run():
         for r in rs2:
             ps2 = r.get_inputs()
             try:
-                pp = [ps_dict[get_unique_particle_name(IMP.kernel.Particle.get_from(p))] for p in ps2]
+                pp = [ps_dict[get_unique_particle_name(IMP.Particle.get_from(p))] for p in ps2]
             except:
                 print 'the restraint particles',ps2,'could not be found in the new rmf'
                 exit()
@@ -208,7 +208,7 @@ def run():
     else:
         for r in rs:
             ps = r.get_inputs()
-            pp = [IMP.kernel.Particle.get_from(p) for p in ps]
+            pp = [IMP.Particle.get_from(p) for p in ps]
             pairs.append(pp+[True]) #flag for good/bad
 
     ### filter the particles as requested
