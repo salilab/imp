@@ -7,7 +7,6 @@ except ImportError:
     modeller = None
 import IMP
 import IMP.test
-import IMP.base
 import IMP.core
 import IMP.algebra
 import sys
@@ -88,7 +87,7 @@ class Tests(IMP.test.TestCase):
                 xorigin) + " y=" + str(
                 yorigin) + " z=" + str(
                 zorigin)))
-        mapfile = IMP.base.create_temporary_file_name('xxx.em')
+        mapfile = IMP.create_temporary_file_name('xxx.em')
         IMP.em.write_map(model_map, mapfile, erw)
         # EM restraint
         em_map = IMP.em.read_map(mapfile, erw)
@@ -176,7 +175,7 @@ class Tests(IMP.test.TestCase):
                 xorigin) + " y=" + str(
                 yorigin) + " z=" + str(
                 zorigin)))
-        mapfile = IMP.base.create_temporary_file_name('xxx.em')
+        mapfile = IMP.create_temporary_file_name('xxx.em')
         IMP.em.write_map(model_map, mapfile, erw)
         # EM restraint
         em_map = IMP.em.read_map(mapfile, erw)
