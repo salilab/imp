@@ -7,11 +7,10 @@ import os
 
 max_score = .02
 
-
 class Tests(IMP.test.TestCase):
 
-    def check_model(self, m, lsc, lpc):
-        s = m.evaluate(False)
+    def check_model(self, m, sf, lsc, lpc):
+        s = sf.evaluate(False)
         print("score is ", s)
         for p0 in lsc.get_particles():
             p0.show()
@@ -43,7 +42,6 @@ class Tests(IMP.test.TestCase):
         evr = IMP.container.PairsRestraint(
             IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0, 1)), cpc)
         print(3)
-        m.add_restraint(evr)
         evr.set_log_level(IMP.WARNING)
         print(4)
         lpc = IMP.container.ListPairContainer(m)
@@ -64,15 +62,20 @@ class Tests(IMP.test.TestCase):
         d = IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(0, 1))
         pr = IMP.container.PairsRestraint(d, lpc)
         pr.set_log_level(IMP.WARNING)
-        m.add_restraint(pr)
+        rs = IMP.RestraintSet(m)
+        rs.add_restraint(evr)
+        rs.add_restraint(pr)
+        sf = IMP.core.RestraintsScoringFunction([rs])
+
         s = IMP.core.MCCGSampler(m)
+        s.set_scoring_function(sf)
         #wos=IMP.WriteParticlesOptimizerState(ds, self.get_tmp_file_name("mccg")+".%1%.imp")
         # wos.set_skip_steps(10)
         # s.add_optimizer_state(wos)
-        m.set_maximum_score(max_score)
+        rs.set_maximum_score(max_score)
         s.set_number_of_monte_carlo_steps(1000)
         s.set_number_of_conjugate_gradient_steps(100)
-        IMP.base.set_log_level(IMP.base.TERSE)
+        IMP.set_log_level(IMP.TERSE)
         s.set_number_of_attempts(2)
         n_trials = 3
         trial = 1
@@ -89,7 +92,7 @@ class Tests(IMP.test.TestCase):
                     #    d= IMP.core.XYZR(p)
                     #    g= IMP.core.XYZRGeometry(d)
                     #    w.add_geometry(g)
-                    self.check_model(m, lsc, lpc)
+                    self.check_model(m, sf, lsc, lpc)
                 return
             except:
                 if trial < n_trials:
