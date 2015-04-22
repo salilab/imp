@@ -17,6 +17,7 @@ DiscreteSampler::DiscreteSampler(Model *m, ParticleStatesTable *pst,
                                  std::string name)
     : Sampler(m, name),
       pst_(pst),
+      restraints_set_(false),
       max_(std::numeric_limits<unsigned int>::max()) {}
 
 DiscreteSampler::~DiscreteSampler() {}

@@ -50,6 +50,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
   IMP::PointerMember<ParticleStatesTable> pst_;
   IMP::PointerMember<AssignmentsTable> sst_;
+  bool restraints_set_;
   Restraints rs_;
   unsigned int max_;
 
@@ -63,7 +64,7 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
   virtual Assignments do_get_sample_assignments(const Subset &all) const = 0;
 
   RestraintsTemp get_restraints() const {
-    if (rs_) {
+    if (restraints_set_) {
       return rs_;
     } else {
       return RestraintsTemp(1, get_model()->get_root_restraint_set());
@@ -80,7 +81,10 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
       of Restraints, which can be set here. (If not, the deprecated default
       behavior is to use all Restraints in the Model.)
    */
-  void set_restraints(RestraintsAdaptor rs) { rs_ = rs; }
+  void set_restraints(RestraintsAdaptor rs) {
+    rs_ = rs;
+    restraints_set_ = true;
+  }
 
   /** Particle states can be set either using this method,
       or equivalently, by accessing the table itself

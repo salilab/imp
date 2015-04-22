@@ -76,7 +76,7 @@ Assignments DominoSampler::do_get_sample_assignments(
     } else {
       IMP_LOG_TERSE("DOMINO has junction tree" << std::endl);
       SubsetGraph jt = get_junction_tree(get_interaction_graph(
-          RestraintsTemp(1, rs), get_particle_states_table()));
+          get_restraints(), get_particle_states_table()));
       mt = get_merge_tree(jt);
     }
     ListSubsetFilterTable *lsft = nullptr;
