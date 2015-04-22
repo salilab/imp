@@ -59,6 +59,7 @@ struct UncheckedWeakPointer
   }
 };
 
+//! Smart pointer to Object-derived classes that does not refcount.
 /** WeakPointers do not do reference counting and do not claim ownership
     of the pointed object. As a result, they can be used to break cycles
     in reference counted pointers. For example, since an IMP::Model
@@ -66,7 +67,7 @@ struct UncheckedWeakPointer
     IMP::Particle has a WeakPointer back to the Model.
 
     This version of a WeakPointer only works on complete types, but adds
-    additional checks of correct usage (eg that the Object has not bee
+    additional checks of correct usage (eg that the Object has not been
     previously freed) compared to UncheckedWeakPointer.
 
     \see UncheckedWeakPointer
