@@ -23,6 +23,9 @@ ChangeLog {#changelog}
 - New applications of IMP are now available:
   - [Multi-state modeling of the histidine kinase, PhoQ](http://salilab.org/phoq).
   - [Determination of the molecular architecture of the 40S•eIF1•eIF3 translation initiation complex](http://salilab.org/40S-eIF1-eIF3).
+- IMP::domino::DiscreteSampler::set_restraints() now allows the set of
+  restraints used in DOMINO filtering to be controlled (previously, all
+  restraints in the IMP::Model were used).
 - IMP::modeller::IMPRestraints now transfers an IMP::ScoringFunction into the
   MODELLER score, not the implicit (and deprecated) score of the
   entire IMP::Model.

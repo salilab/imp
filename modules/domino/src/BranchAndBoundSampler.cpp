@@ -24,8 +24,7 @@ BranchAndBoundSampler::BranchAndBoundSampler(Model *m, std::string name)
 Assignments BranchAndBoundSampler::do_get_sample_assignments(const Subset &s)
     const {
   SubsetFilterTables sfts = DiscreteSampler::get_subset_filter_tables_to_use(
-      RestraintsTemp(1, get_model()->get_root_restraint_set()),
-      get_particle_states_table());
+      get_restraints(), get_particle_states_table());
   IMP::PointerMember<AssignmentsTable> sst =
       DiscreteSampler::get_assignments_table_to_use(sfts);
   IMP_NEW(PackedAssignmentContainer, pac, ());
