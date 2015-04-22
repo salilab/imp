@@ -73,8 +73,9 @@ want to provide output that can be read back in.
 # Errors {#codeconv_errors}
 
 Classes and methods should use %IMP exceptions to report errors. See
-IMP::Exception for a list of existing exceptions. See
-[checks](exception_8h.html) for more information.
+IMP::Exception for a list of existing exceptions (click on the "Inheritance
+diagram" link on that page). See
+[checks](../ref/exception_8h.html) for more information.
 
 # Namespaces {#codeconv_namespace}
 
