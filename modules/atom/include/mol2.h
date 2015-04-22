@@ -33,16 +33,18 @@ class IMPATOMEXPORT Mol2Selector : public IMP::Object {
 //! Read all atoms
 class AllMol2Selector : public Mol2Selector {
  public:
-  IMP_MOL2_SELECTOR(AllMol2Selector, return (true || mol2_line.empty()),
-                    out << "");
+  bool get_is_selected(const std::string& mol2_line) const IMP_OVERRIDE {
+    return (true || mol2_line.empty());
+  }
 };
 
 //! Defines a selector that will pick only non-hydrogen atoms
 class IMPATOMEXPORT NonHydrogenMol2Selector : public Mol2Selector {
  public:
-  IMP_MOL2_SELECTOR(NonHydrogenMol2Selector,
-                    String atom_type = internal::pick_mol2atom_type(mol2_line);
-                    return (atom_type[0] != 'H'), out << "");
+  bool get_is_selected(const std::string& mol2_line) const IMP_OVERRIDE {
+    String atom_type = internal::pick_mol2atom_type(mol2_line);
+    return (atom_type[0] != 'H');
+  }
 };
 
 /** @name Mol2 IO

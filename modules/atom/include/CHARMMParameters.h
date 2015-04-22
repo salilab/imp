@@ -310,7 +310,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
    */
   Particles create_dihedrals(Particles bonds) const;
 
-  IMP_FORCE_FIELD_PARAMETERS(CHARMMParameters);
+  IMP_OBJECT_METHODS(CHARMMParameters);
 
  private:
   virtual String get_force_field_atom_type(Atom atom) const;

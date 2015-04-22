@@ -681,8 +681,6 @@ void CHARMMParameters::read_parameter_file(TextInput input_file) {
   }
 }
 
-void CHARMMParameters::do_show(std::ostream &) const {}
-
 String CHARMMParameters::get_force_field_atom_type(Atom atom) const {
   IMP_OBJECT_LOG;
   // Override base class to use CHARMMAtom decorator
