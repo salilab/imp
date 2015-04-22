@@ -171,6 +171,7 @@ class ModuleDoxFileGenerator(tools.FileGenerator):
             inputs.append("include/IMP/")
             exclude = ["include/IMP/%s include/IMP/%s.h" % (m, m)
                        for m, g in tools.get_modules(options.source)]
+            exclude.append("include/IMP/base include/IMP/base.h")
             template = template.replace("@EXCLUDE@",
                                " \\\n                         ".join(exclude))
         else:
