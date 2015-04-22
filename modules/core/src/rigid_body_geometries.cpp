@@ -16,7 +16,7 @@ display::Geometries get_rigid_body_derivative_geometries(
     Model *m, ParticleIndex pi) {
   RigidBody d(m, pi);
   display::Geometries ret;
-  Particles ms = get_as<Particles>(d.get_members());
+  Particles ms = get_as<Particles>(d.get_rigid_members());
   algebra::Transformation3D otr =
       d.get_reference_frame().get_transformation_to();
   algebra::VectorD<4> rderiv = d.get_rotational_derivatives();

@@ -94,7 +94,7 @@ void RigidBodiesImageFitRestraint::set_orientations(
   unsigned int j = get_rigid_body_index(rb);
 
   // Get the particles of the rigid body
-  core::RigidMembers rbm = rb.get_members();
+  core::RigidMembers rbm = rb.get_rigid_members();
   ParticlesTemp ps;
 
   for (unsigned int i = 0; i < rbm.size(); ++i) {

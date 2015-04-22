@@ -249,7 +249,7 @@ ModelObjectsTemp RigidClosePairsFinder::do_get_inputs(
   all_pis += get_indexes(rbs);
   ret += rbs;
   for (unsigned int i = 0; i < rbs.size(); ++i) {
-    RigidMembers rms = RigidBody(rbs[i]).get_members();
+    RigidMembers rms = RigidBody(rbs[i]).get_rigid_members();
     for (unsigned i = 0; i < rms.size(); ++i) {
       all_pis.push_back(rms[i].get_particle_index());
     }

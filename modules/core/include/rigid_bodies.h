@@ -110,16 +110,6 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   void add_rigid_body_member(ParticleIndex pi);
 
  public:
-  /** This method does not return non-rigid members.
-
-      \deprecated_at{2.2} Use get_rigid_members() instead.
-    */
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.2)
-  RigidMembers get_members() const {
-    IMPCORE_DEPRECATED_FUNCTION_DEF(2.2, "Use get_rigid_members() instead.");
-    return get_rigid_members();
-  }
-
   RigidMembers get_rigid_members() const;
 
   //! Returns a list of all members that are not themselves decorated as

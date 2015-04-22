@@ -57,7 +57,7 @@ PairScore *create_pair_score(atom::Hierarchy, RigidBodies rbs, double k) {
   IMP_NEW(core::SoftSpherePairScore, ssps, (k));
   IMP_NEW(core::TableRefiner, ref, ());
   for (unsigned int i = 0; i < rbs.size(); ++i) {
-    ref->add_particle(rbs[i], rbs[i].get_members());
+    ref->add_particle(rbs[i], rbs[i].get_rigid_members());
   }
   IMP_NEW(core::ClosePairsPairScore, cpps, (ssps, ref, 0));
   return cpps.release();
