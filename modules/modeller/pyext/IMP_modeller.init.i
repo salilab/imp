@@ -46,7 +46,7 @@ class IMPRestraints(modeller.terms.energy_term):
         if scoring_function:
             self._sf = scoring_function
         else:
-            self._sf = particle[0].get_model()
+            self._sf = particles[0].get_model()
 
     def eval(self, mdl, deriv, indats):
         atoms = self.indices_to_atoms(mdl, indats)
