@@ -47,9 +47,10 @@ class Tests(IMP.test.TestCase):
         # Molecular Dynamics
         md = IMP.atom.MolecularDynamics(m)
         pis = md.get_simulation_particle_indexes()
-        # Atoms added by patching should be marked as optimizable
-        # (see issue #533)
-        self.assertEqual(pis, [x.get_particle_index() for x in atoms])
+        # Any new coordinates added (e.g. by patching)
+        # should be marked as optimizable (see issue #533)
+        self.assertEqual(sorted(pis),
+                         sorted(x.get_particle_index() for x in atoms))
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -768,7 +768,8 @@ void build_cartesian(Atom known1, Atom known2, Atom known3, Atom unknown,
       wt[0] * rjk_unit[0] + wt[1] * cross2[0] + wt[2] * cross[0],
       wt[0] * rjk_unit[1] + wt[1] * cross2[1] + wt[2] * cross[1],
       wt[0] * rjk_unit[2] + wt[1] * cross2[2] + wt[2] * cross[2]);
-  core::XYZ::setup_particle(unknown, newc + v3);
+  core::XYZ::setup_particle(unknown,
+                            newc + v3).set_coordinates_are_optimized(true);
 }
 
 // If exactly 3 out of the 4 atoms in the given internal coordinate have
@@ -841,11 +842,13 @@ bool seed_triplet(Atom i, Atom j, Atom k,
   } else {
     // Convert from degrees to radians
     tijk = tijk * PI / 180.;
-    core::XYZ::setup_particle(i, seed);
-    core::XYZ::setup_particle(j, seed + algebra::Vector3D(rij, 0., 0.));
+    core::XYZ::setup_particle(i, seed).set_coordinates_are_optimized(true);
+    core::XYZ::setup_particle(j, seed + algebra::Vector3D(rij, 0., 0.))
+                                      .set_coordinates_are_optimized(true);
     core::XYZ::setup_particle(
         k, seed + algebra::Vector3D(rij - rjk * std::cos(tijk),
-                                    rjk * std::sin(tijk), 0.));
+                                    rjk * std::sin(tijk), 0.))
+                                      .set_coordinates_are_optimized(true);
     return true;
   }
 }
@@ -905,7 +908,8 @@ unsigned int assign_remaining_coordinates(
           ++assigned;
           algebra::Sphere3D sphere(seed, 0.5);
           core::XYZ::setup_particle(child,
-                                    algebra::get_random_vector_in(sphere));
+                                    algebra::get_random_vector_in(sphere))
+                                       .set_coordinates_are_optimized(true);
         }
       }
     }
