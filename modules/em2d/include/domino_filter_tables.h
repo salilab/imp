@@ -46,7 +46,7 @@ class IMPEM2DEXPORT DistanceFilterTable : public domino::SubsetFilterTable {
                               const IMP::domino::Subsets &excluded) const
       IMP_OVERRIDE;
 
-  IMP_OBJECT_NO_WARNING(DistanceFilterTable);
+  IMP_OBJECT_METHODS(DistanceFilterTable);
 };
 IMP_OBJECTS(DistanceFilterTable, DistanceFilterTables);
 

@@ -31,7 +31,7 @@ class IMPMULTIFITEXPORT FittingStates : public domino::ParticleStates {
   virtual void load_particle_state(unsigned int, Particle *) const
       IMP_OVERRIDE;
 
-  IMP_OBJECT_NO_WARNING(FittingStates);
+  IMP_OBJECT_METHODS(FittingStates);
 };
 
 IMPMULTIFIT_END_NAMESPACE

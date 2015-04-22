@@ -32,8 +32,4 @@ bool DistanceFilter::get_is_ok(const domino::Assignment& assignment) const {
   return false;
 }
 
-void DistanceFilter::do_show(std::ostream& out = std::cout) const {
-  this->show(out);
-}
-
 IMPEM2D_END_NAMESPACE

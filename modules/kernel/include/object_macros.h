@@ -34,16 +34,6 @@
                                                                               \
  public:
 
-//! Only to work around a gcc bug
-#define IMP_OBJECT_NO_WARNING(Name)                                           \
- public:                                                                      \
-  virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; }    \
-  virtual ::IMP::VersionInfo get_version_info() const IMP_OVERRIDE {    \
-    return ::IMP::VersionInfo(get_module_name(), get_module_version()); \
-  }                                                                           \
-  void do_show(std::ostream &out) const;                                      \
-  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::Object::_on_destruction();)
-
 //! Define the types for storing sets of objects
 /** The macro defines the types PluralName and PluralNameTemp.
     PluralName should be Names unless the English spelling is

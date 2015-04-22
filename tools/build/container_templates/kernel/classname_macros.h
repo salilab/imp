@@ -104,7 +104,7 @@
   IMP_IMPLEMENT_INLINE(void do_apply(const ClassnameModifier *sm) const, \
   { apply_generic(sm); });                                               \
   virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE; \
-  IMP_OBJECT_NO_WARNING(Name)
+  IMP_OBJECT_METHODS(Name)
 #endif
 
 /** Use this to fill in container methods

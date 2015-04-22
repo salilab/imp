@@ -32,10 +32,6 @@ Image *ProjectionStates::get_projection(unsigned int i) const {
   return projections_[index];
 }
 
-void ProjectionStates::do_show(std::ostream &out) const {
-  out << "ProjectionStates" << std::endl;
-}
-
 algebra::Vector3D GridStates::get_position(unsigned int i) const {
   IMP_USAGE_CHECK(i < number_of_states_, "GridStates: index out of range ");
   unsigned int index = i / orientations_.size();
@@ -47,10 +43,6 @@ algebra::Rotation3D GridStates::get_orientation(unsigned int i) const {
   unsigned int position_index = i / orientations_.size();
   unsigned int index = i - position_index * orientations_.size();
   return orientations_[index];
-}
-
-void GridStates::do_show(std::ostream &out) const {
-  out << "GridStates" << std::endl;
 }
 
 void GridStates::load_particle_state(unsigned int i,

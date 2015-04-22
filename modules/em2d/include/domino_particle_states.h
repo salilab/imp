@@ -62,7 +62,7 @@ class IMPEM2DEXPORT GridStates : public domino::ParticleStates {
   virtual void load_particle_state(unsigned int, Particle *) const
       IMP_OVERRIDE;
 
-  IMP_OBJECT_NO_WARNING(GridStates);
+  IMP_OBJECT_METHODS(GridStates);
 };
 IMP_OBJECTS(GridStates, GridStatesList);
 
@@ -103,7 +103,7 @@ class IMPEM2DEXPORT ProjectionStates : public GridStates {
   virtual void load_particle_state(unsigned int, Particle *) const
       IMP_OVERRIDE;
 
-  IMP_OBJECT_NO_WARNING(ProjectionStates);
+  IMP_OBJECT_METHODS(ProjectionStates);
 };
 IMP_OBJECTS(ProjectionStates, ProjectionStatesList);
 
