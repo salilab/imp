@@ -5,12 +5,10 @@ IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-function")
 
 IMP_GCC_PRAGMA(diagnostic ignored "-Wstrict-aliasing")
 IMP_GCC_PRAGMA(diagnostic ignored "-Wmissing-prototypes")
-IMP_GCC_PRAGMA(diagnostic ignored "-Wmissing-declarations")
 IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
 IMP_GCC_PRAGMA(diagnostic ignored "-Wsign-compare")
 IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-label")
 IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-but-set-variable")
-IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-parameter")
 
 /* SWIG generates long class names with wrappers that use certain Boost classes,
    longer than the 255 character name length for MSVC. This shouldn't affect

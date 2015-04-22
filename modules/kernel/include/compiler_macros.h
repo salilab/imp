@@ -184,8 +184,12 @@
 #define IMP_GCC_CXX0X_COMPAT        \
   IMP_GCC_PRAGMA(diagnostic ignored \
                  "-Wc++0x-compat")
+#ifdef IMP_SWIG_WRAPPER
+#define IMP_GCC_PROTOTYPES
+#else
 #define IMP_GCC_PROTOTYPES \
   IMP_GCC_PRAGMA(diagnostic warning "-Wmissing-declarations")
+#endif
 
 #define IMP_HELPER_MACRO_PUSH_WARNINGS IMP_GCC_PRAGMA(diagnostic push)
 

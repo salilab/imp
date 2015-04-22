@@ -46,7 +46,7 @@ endif(APPLE)
 # (see modules/kernel/pyext/include/IMP_kernel.compiler_warnings.i)
 # but pragmas seem to be ignored for these particular warnings:
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-  set_target_properties(IMP.%(name)s-python PROPERTIES COMPILE_FLAGS "-Wno-maybe-uninitialized -Wno-unused-function")
+  set_target_properties(IMP.%(name)s-python PROPERTIES COMPILE_FLAGS "-Wno-maybe-uninitialized -Wno-unused-function -Wno-unused-parameter -Wno-missing-declarations")
 endif()
 
 set_target_properties(IMP.%(name)s-python PROPERTIES PREFIX ""
