@@ -41,9 +41,7 @@ RestraintSet *add_restraints(Model *model, DensityMap *dmap,
                                      Refiner *leaves_ref,
                                      const FloatKey &wei_key,
                                      bool fast = false) {
-  RestraintSet *rsrs =
-      new RestraintSet(model, 1.0, "rigid fitting restraints %1%");
-  model->add_restraint(rsrs);
+  IMP_NEW(RestraintSet, rsrs, (model, 1.0, "rigid fitting restraints %1%"));
   // add fitting restraint
   Pointer<FitRestraint> fit_rs;
   FloatPair no_norm_factors(0., 0.);
@@ -55,7 +53,7 @@ RestraintSet *add_restraints(Model *model, DensityMap *dmap,
                               wei_key, 1.0, false);
   }
   rsrs->add_restraint(fit_rs);
-  return rsrs;
+  return rsrs.release();
 }
 
 core::MonteCarlo *set_optimizer(Model *model,
@@ -147,12 +145,13 @@ FittingSolutions local_rigid_fitting_around_point(
   }
   // add restraints
   Model *model = p->get_model();
-  RestraintSet *rsrs =
+  PointerMember<RestraintSet> rsrs =
       add_restraints(model, dmap, p, refiner, wei_key, fast);
   // create a rigid body mover and set the optimizer
   PointerMember<core::MonteCarlo> opt =
       set_optimizer(model, display_log, p, refiner, number_of_cg_steps,
                     max_translation, max_rotation);
+  opt->set_scoring_function(rsrs);
 
   // optimize
 
@@ -170,7 +169,6 @@ FittingSolutions local_rigid_fitting_around_point(
     IMP_LOG_TERSE(std::endl);
   }
   // remove restraints
-  model->remove_restraint(rsrs);
   IMP_LOG_TERSE("end rigid fitting " << std::endl);
   return fr;
 }
@@ -190,10 +188,12 @@ FittingSolutions local_rigid_fitting_around_points(
                   << " Conjugate Gradients rounds. " << std::endl);
   Model *model = p->get_model();
 
-  RestraintSet *rsrs = add_restraints(model, dmap, p, refiner, wei_key);
+  PointerMember<RestraintSet> rsrs =
+      add_restraints(model, dmap, p, refiner, wei_key);
   PointerMember<core::MonteCarlo> opt =
       set_optimizer(model, display_log, p, refiner, number_of_cg_steps,
                     max_translation, max_rotation);
+  opt->set_scoring_function(rsrs);
 
   for (algebra::Vector3Ds::const_iterator it = anchor_centroids.begin();
        it != anchor_centroids.end(); it++) {
@@ -204,7 +204,6 @@ FittingSolutions local_rigid_fitting_around_points(
              opt, fr, model);
   }
   fr.sort();
-  model->remove_restraint(rsrs);
   IMP_LOG_TERSE("end rigid fitting " << std::endl);
   return fr;
 }
