@@ -48,10 +48,10 @@
 
 #else
 //! Use this to label a function with no side effects
-/** \advanced */
+/** \advancedmethod */
 #define IMP_NO_SIDEEFFECTS
 //! Use this to make the compiler (possibly) warn if the result is not used
-/** \advanced */
+/** \advancedmethod */
 #define IMP_WARN_UNUSED_RESULT
 //! restrict means that a variable is not aliased with this function
 #define IMP_RESTRICT
