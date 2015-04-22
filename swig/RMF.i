@@ -30,7 +30,6 @@
 }
 
 %{
-#define RMF_SWIG_WRAPPER
 #include <boost/version.hpp>
 #include <boost/exception/exception.hpp>
 

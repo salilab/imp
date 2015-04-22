@@ -1,6 +1,8 @@
 FIND_PACKAGE(SWIG 1.3.40 REQUIRED)
 INCLUDE(${SWIG_USE_FILE})
 
+add_definitions(-DRMF_SWIG_WRAPPER)
+
 if(NOT DEFINED PYTHON_INCLUDE_DIRS)
 execute_process(COMMAND python -c "import sys; print(sys.executable)"
                 WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
