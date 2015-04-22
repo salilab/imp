@@ -102,6 +102,9 @@ TextInput::TextInput(double) { IMP_THROW("Wrong argument type", IOException); }
 namespace {
 #ifndef __clang__
 void testf(TextInput) {}
+/* Simple test function to make sure that different implicit conversions to
+   TextInput work at compile time */
+void testcall() IMP_UNUSED_FUNCTION;
 void testcall() {
   testf(std::string("filename"));
 

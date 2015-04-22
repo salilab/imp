@@ -48,6 +48,8 @@ ParticleIndexPairsAdaptor::ParticleIndexPairsAdaptor(
     : ParticleIndexPairs(get_indexes(ps)) {}
 
 namespace {
+/* Check to make sure that IMP_FOREACH compiles correctly */
+void foreach_test() IMP_UNUSED_FUNCTION;
 void foreach_test() {
   ParticleIndexes pis;
   ParticleIndexesAdaptor pia(pis);

@@ -37,11 +37,13 @@
 #ifndef IMP_DOXYGEN
 #ifdef __GNUC__
 #define IMP_NO_SIDEEFFECTS __attribute__((pure))
+#define IMP_UNUSED_FUNCTION __attribute__((unused))
 #define IMP_WARN_UNUSED_RESULT __attribute__((warn_unused_result))
 #define IMP_RESTRICT __restrict__
 
 #else
 #define IMP_NO_SIDEEFFECTS
+#define IMP_UNUSED_FUNCTION
 #define IMP_WARN_UNUSED_RESULT
 #define IMP_RESTRICT
 #endif
@@ -53,6 +55,9 @@
 //! Use this to make the compiler (possibly) warn if the result is not used
 /** \advancedmethod */
 #define IMP_WARN_UNUSED_RESULT
+//! Label a function that is never called
+/** \advancedmethod */
+#define IMP_UNUSED_FUNCTION
 //! restrict means that a variable is not aliased with this function
 #define IMP_RESTRICT
 #endif
