@@ -167,7 +167,7 @@ void RigidMovedSingletonContainer::check_estimate(
     core::RigidBody rbs, std::pair<algebra::Sphere3D, algebra::Rotation3D> s,
     double d) const {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-  core::RigidMembers rms = rbs.get_members();
+  core::RigidMembers rms = rbs.get_rigid_members();
   algebra::Transformation3D tr(s.second, s.first.get_center());
   algebra::ReferenceFrame3D old(tr);
   algebra::ReferenceFrame3D cur = rbs.get_reference_frame();
@@ -307,7 +307,7 @@ ModelObjectsTemp RigidMovedSingletonContainer::get_extra_inputs()
       ret.push_back(rb);
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
       // The checks in check_estimate() need to touch *all* members
-      ret += rb.get_members();
+      ret += rb.get_rigid_members();
 #endif
     }
   }
