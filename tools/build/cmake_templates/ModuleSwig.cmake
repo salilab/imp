@@ -1,4 +1,5 @@
 add_definitions(-DIMP_SWIG_WRAPPER)
+add_definitions(-DRMF_SWIG_WRAPPER)
 
 include_directories(%(includepath)s)
 link_directories(%(libpath)s)
