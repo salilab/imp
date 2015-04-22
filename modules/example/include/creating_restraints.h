@@ -47,7 +47,7 @@ inline Restraint *create_chain_restraint(
 }
 
 /** Create an excluded-volume style ClosePairsContainer based score. */
-inline container::ClosePairContainer *create_excluded_volume(
+inline Restraint *create_excluded_volume(
     const ParticlesTemp &ps, double k, std::string name) {
   IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
   Model *m = ps[0]->get_model();
@@ -60,8 +60,7 @@ inline container::ClosePairContainer *create_excluded_volume(
   IMP_NEW(core::SoftSpherePairScore, hlb, (k));
   Pointer<Restraint> r =
       container::create_restraint(hlb.get(), cpc.get());
-  m->add_restraint(r);
-  return cpc.release();
+  return r.release();
 }
 
 IMPEXAMPLE_END_NAMESPACE
