@@ -405,7 +405,7 @@ IMP_SWIG_OBJECT(Namespace, Name, PluralName);
 IMP_SWIG_DIRECTOR(Namespace, Name);
 %{
 namespace {
-#pragma clang diagnostic ignored "-Wunused-function"
+  /* Make sure we cn instantiate plural types */
   void test_##PluralName##s() {
     Namespace::PluralName nm;
   }
