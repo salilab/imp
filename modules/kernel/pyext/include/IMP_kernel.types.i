@@ -405,7 +405,7 @@ IMP_SWIG_OBJECT(Namespace, Name, PluralName);
 IMP_SWIG_DIRECTOR(Namespace, Name);
 %{
 namespace {
-  /* Make sure we cn instantiate plural types */
+  /* Make sure we can instantiate plural types */
   void test_##PluralName##s() {
     Namespace::PluralName nm;
   }
@@ -652,7 +652,7 @@ _value_types.append(#Name)
 %feature("valuewrapper") PluralName;
 %{
   namespace {
-#pragma clang diagnostic ignored "-Wunused-function"
+  /* Make sure we can instantiate plural types */
   void test_##UniqueName() {
     Namespace::PluralName nm;
     //using namespace Namespace;
