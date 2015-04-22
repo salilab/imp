@@ -33,7 +33,7 @@ As an %example, a typical workflow for working with the IMP::pmi module is:
 
  - To incorporate changes from the PMI repository into %IMP, use
 
-    `git subtree pull --squash --prefix=modules/pmi git@github.com:salilab/pmi.git develop`
+    `git subtree pull --squash -m "Get latest PMI." --prefix=modules/pmi git@github.com:salilab/pmi.git develop`
 
  - This will condense all of the PMI changes into a single %IMP
    commit (`--squash`) then merge that into %IMP itself (so you'll always end
