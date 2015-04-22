@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
             rb = IMP.core.RigidBody.setup_particle(p, ps)
             rbs.append(rb)
         cp = IMP.container.ClosePairContainer(
-            IMP.container.ListSingletonContainer(aps),
+            IMP.container.ListSingletonContainer(m, aps),
             1,
             0)
         r = IMP.container.PairsRestraint(

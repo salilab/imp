@@ -14,8 +14,8 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-ParticlesTemp create_particles_from_pdb(TextInput in, Model *m) {
-  ParticlesTemp ret;
+ParticleIndexes create_particles_from_pdb(TextInput in, Model *m) {
+  ParticleIndexes ret;
   do {
     char buf[1000];
     in.get_stream().getline(buf, 1000);
@@ -26,13 +26,12 @@ ParticlesTemp create_particles_from_pdb(TextInput in, Model *m) {
     std::istringstream iss(buf + 31);
     double x, y, z;
     iss >> x >> y >> z;
-    IMP_NEW(Particle, p, (m));
-    m->add_attribute(xyzr_keys[0], p->get_index(), 0);
-    m->add_attribute(xyzr_keys[1], p->get_index(), 0);
-    m->add_attribute(xyzr_keys[2], p->get_index(), 0);
-    m->add_attribute(xyzr_keys[3], p->get_index(), 0);
-    m->get_sphere(p->get_index()) =
-        algebra::Sphere3D(algebra::Vector3D(x, y, z), 2);
+    ParticleIndex p = m->add_particle("atom");
+    m->add_attribute(xyzr_keys[0], p, 0);
+    m->add_attribute(xyzr_keys[1], p, 0);
+    m->add_attribute(xyzr_keys[2], p, 0);
+    m->add_attribute(xyzr_keys[3], p, 0);
+    m->get_sphere(p) = algebra::Sphere3D(algebra::Vector3D(x, y, z), 2);
     ret.push_back(p);
   } while (true);
   return ret;

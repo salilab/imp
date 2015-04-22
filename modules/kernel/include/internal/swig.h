@@ -186,7 +186,7 @@ inline void bad_pass(FloatKeys *) {}
 
 inline FloatRange _get_range(Model *m, FloatKey k) { return m->get_range(k); }
 
-IMPKERNELEXPORT ParticlesTemp
+IMPKERNELEXPORT ParticleIndexes
     _create_particles_from_pdb(std::string name, Model *m);
 
 //! Track the pairs of particles passed.

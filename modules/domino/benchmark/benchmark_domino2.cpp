@@ -19,7 +19,8 @@ int main(int argc, char *argv[]) {
   set_log_level(SILENT);
   m->set_log_level(SILENT);
   std::string path = IMP::benchmark::get_data_path("small_protein.pdb");
-  ParticlesTemp ps = IMP::internal::create_particles_from_pdb(path, m);
+  ParticlesTemp ps = IMP::get_particles(m,
+                           IMP::internal::create_particles_from_pdb(path, m));
   ReferenceFrame3Ds vs;
   unsigned num_rb;
   if (IMP_BUILD == IMP_DEBUG || IMP::run_quick_test) {

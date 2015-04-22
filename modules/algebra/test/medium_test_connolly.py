@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         name = self.get_input_file_name("input.pdb")
         pdb = IMP._create_particles_from_pdb(name, m)
-        spheres = [IMP.core.XYZR(p).get_sphere() for p in pdb]
+        spheres = [IMP.core.XYZR(m, p).get_sphere() for p in pdb]
         sps = IMP.algebra.get_connolly_surface(spheres, 5, 1.8)
 
         sps_area = sum([s.get_area() for s in sps])

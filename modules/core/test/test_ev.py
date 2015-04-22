@@ -17,9 +17,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         m.set_log_level(IMP.SILENT)
         print("pdb")
-        h0s = IMP._create_particles_from_pdb(
-            self.get_input_file_name("1z5s_A.pdb"),
-            m)
+        h0s = IMP.get_particles(m, IMP._create_particles_from_pdb(
+                           self.get_input_file_name("1z5s_A.pdb"), m))
         l0 = h0s[0:10]
         rm = h0s[10:]
         for r in rm:

@@ -56,8 +56,8 @@ Model *setup(bool rpcpf, RigidBodies &rbs) {
   Particles atoms;
   for (int i = 0; i < 5; ++i) {
     std::string path = IMP::benchmark::get_data_path("small_protein.pdb");
-    ParticlesTemp catoms =
-        IMP::internal::create_particles_from_pdb(path, m);
+    ParticlesTemp catoms = IMP::get_particles(m,
+        IMP::internal::create_particles_from_pdb(path, m));
     IMP_INTERNAL_CHECK(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
     IMP_NEW(Particle, rbp, (m));

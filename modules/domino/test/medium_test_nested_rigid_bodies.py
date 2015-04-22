@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
             rbs[0].add_member(rbs[i + 1])
         # set ev
         IMP.set_log_level(IMP.SILENT)
-        ls = IMP.container.ListSingletonContainer(aps)
+        ls = IMP.container.ListSingletonContainer(mdl, aps)
         sev = IMP.core.ExcludedVolumeRestraint(ls)
         mdl.add_restraint(sev)
         mdl.evaluate(False)

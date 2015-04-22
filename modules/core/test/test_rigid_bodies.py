@@ -132,7 +132,7 @@ class Tests(IMP.test.TestCase):
         tr = IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(),
                                           IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0), IMP.algebra.Vector3D(500, 500, 500))))
         for p in keypts:
-            mp = IMP.core.RigidMember(p)
+            mp = IMP.core.RigidMember(m, p)
             ic = mp.get_internal_coordinates()
             nic = tr.get_transformed(ic)
             dt = IMP.core.DistanceToSingletonScore(

@@ -141,7 +141,7 @@ int _test_overload(const Particles &) { return 0; }
 
 int _test_overload(const Restraints &) { return 1; }
 
-ParticlesTemp _create_particles_from_pdb(std::string name, Model *m) {
+ParticleIndexes _create_particles_from_pdb(std::string name, Model *m) {
   return create_particles_from_pdb(name, m);
 }
 
