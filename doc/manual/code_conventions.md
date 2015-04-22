@@ -95,7 +95,7 @@ should be declared in an internal header and placed in the internal namespace.
 
 The functionality in such internal headers is
  - not exported to Python
- - and not part of of documented API
+ - and not part of the documented API
 
 As a result, such functions do not need to obey all the coding conventions
 (but we recommend that they do).
