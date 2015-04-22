@@ -183,8 +183,7 @@
 #define IMP_GCC_PUSH_POP(x) IMP_PRAGMA(x)
 #define IMP_GCC_CXX0X_COMPAT        \
   IMP_GCC_PRAGMA(diagnostic ignored \
-                 "-Wc++0x-compa"    \
-                 "t")
+                 "-Wc++0x-compat")
 #define IMP_GCC_PROTOTYPES \
   IMP_GCC_PRAGMA(diagnostic warning "-Wmissing-declarations")
 
