@@ -933,28 +933,6 @@ ParticlesTemp create_rigid_bodies(Model *m, unsigned int n,
   return ret;
 }
 
-namespace {
-unsigned int get_num_rb_members(Model *m, ParticleIndex pi) {
-  if (core::RigidBody::get_is_setup(m, pi)) {
-    core::RigidBody rb(m, pi);
-    return rb.get_member_particle_indexes().size() +
-           rb.get_body_member_particle_indexes().size();
-  } else {
-    return 0;
-  }
-}
-ParticleIndex get_rb_child(Model *m, ParticleIndex pi,
-                                   unsigned int i) {
-  core::RigidBody rb(m, pi);
-  unsigned int bzs = rb.get_member_particle_indexes().size();
-  if (i < bzs) {
-    return rb.get_member_particle_indexes()[i];
-  } else {
-    return rb.get_body_member_particle_indexes()[i - bzs];
-  }
-}
-}
-
 void show_rigid_body_hierarchy(RigidBody rb, TextOutput out) {
   Model *m = rb.get_model();
   Vector<boost::tuple<std::string, std::string, ParticleIndex> >
