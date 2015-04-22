@@ -59,7 +59,7 @@ developers should be aware that
 - Store collections of IMP::Object-derived
   objects of type `Name` using a `Names`. Declare functions that
   accept them to take a `NamesTemp` (`Names` is a `NamesTemp)`.
-  `Names` are reference counted (see IMP::RefCounted for details);
+  `Names` are reference counted (see IMP::Object for details);
   `NamesTemp` are not. Store collections of particles using a
   `Particles` object, rather than decorators.
 
@@ -84,7 +84,7 @@ Use the provided `IMPMODULE_BEGIN_NAMESPACE`,
 `IMPMODULE_END_INTERNAL_NAMESPACE` macros to put declarations in a
 namespace appropriate for module `MODULE`.
 
-Each module has an internal namespace, eg `IMP::atom::internal` and an internal
+Each module has an internal namespace, eg `IMP::atom::internal`, and an internal
 include directory `IMP/atom/internal`. Any function which is
  - not intended to be part of the API,
  - not documented,
