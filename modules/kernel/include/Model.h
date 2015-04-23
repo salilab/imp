@@ -346,9 +346,6 @@ class IMPKERNELEXPORT Model : public Object
 
   /** \deprecated_at{2.1} Use a RestraintSet instead.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  unsigned int get_number_of_restraints() const;
-  /** \deprecated_at{2.1} Use a RestraintSet instead.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   Restraint *get_restraint(unsigned int i) const;
   /** \deprecated_at{2.1} Use a ScoringFunction instead.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
