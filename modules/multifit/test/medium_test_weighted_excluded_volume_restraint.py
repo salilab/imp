@@ -32,6 +32,7 @@ class Tests(IMP.test.TestCase):
             IMP.multifit.add_surface_index(mh, self.voxel_size)
             IMP.atom.setup_as_rigid_body(mh)
             self.rbs.append(IMP.core.RigidBody(mh.get_particle()))
+        restraints = []
         # set the restraint
         hub = IMP.core.HarmonicUpperBound(0, 1)
         sdps = IMP.core.SphereDistancePairScore(hub)
@@ -41,22 +42,21 @@ class Tests(IMP.test.TestCase):
         for r in self.rbs:
             self.c_r.add_particle(r.get_particle())
 
+        restraints.append(self.c_r)
+        self.sf = IMP.core.RestraintsScoringFunction(restraints)
         print("going to evaluate 2")
-        self.mdl.evaluate(False)
+        self.sf.evaluate(False)
         self.wev_r = IMP.multifit.create_weighted_excluded_volume_restraint(
             self.rbs[0], self.rbs[1])
 
+        restraints.append(self.wev_r)
+        self.sf = IMP.core.RestraintsScoringFunction(restraints)
         print("going to evaluate 1")
-        self.mdl.evaluate(False)
-        self.mdl.add_restraint(self.c_r)
-        print("going to evaluate")
-        self.mdl.evaluate(False)
+        self.sf.evaluate(False)
         print("end setup")
 
     def test_weighted_excluded_volume_restraint(self):
         """Check that weighted excluded volume restraint works"""
-        self.assertEqual(self.mdl.get_number_of_restraints(), 2,
-                         "the excluded volume restraint was not added")
         # IMP.set_log_level(IMP.VERBOSE)
         rotations = [[0.960739, 0.177613, -0.196201, 0.0833023],
                      [0.98373, -0.0268444, -0.115434, -0.135015],
@@ -95,7 +95,7 @@ class Tests(IMP.test.TestCase):
             # restraint is bigger than 0
             start = time.clock()
             # to make sure the coordinates were transformed
-            self.mdl.evaluate(False)
+            self.mdl.update()
             end = time.clock()
             print("Time elapsed for PairRestraint evaluatation = ", end - start, "seconds")
             conn_r = self.c_r.evaluate(False)

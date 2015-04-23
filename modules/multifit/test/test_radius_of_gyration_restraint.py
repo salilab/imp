@@ -25,7 +25,6 @@ class Tests(IMP.test.TestCase):
             ps.append(self.create_point_particle(m, p[0], p[1], p[2]))
         max_radius = math.sqrt(200)
         r1 = IMP.multifit.RadiusOfGyrationRestraint(ps, 50)
-        m.add_restraint(r1)
         self.assertLessEqual(r1.evaluate(False), 0.01)
 
 if __name__ == '__main__':

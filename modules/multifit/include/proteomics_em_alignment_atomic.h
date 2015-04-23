@@ -34,7 +34,16 @@ class IMPMULTIFITEXPORT ProteomicsEMAlignmentAtomic : public Object {
                               multifit::SettingsData *asmb_data,
                               const AlignmentParams &align_param);
   void align();
+
+  //! Set up the restraints that will be used in the alignment.
+  /** These restraints are stored internally in a RestraintSet,
+      which can be obtained by calling get_restraint_set().
+      For example, this allows adding extra restraints to the set. */
   void add_all_restraints();
+
+  //! Get the restraints set up by add_all_restraints().
+  RestraintSet *get_restraint_set() { return restraint_set_; }
+
   void add_states_and_filters();
   void show_domino_merge_tree() const;
   domino::Assignments get_combinations(bool uniques = false) const;
@@ -96,7 +105,8 @@ class IMPMULTIFITEXPORT ProteomicsEMAlignmentAtomic : public Object {
   // Pointer<RestraintSet> fit_rs_;//the other restraints
   PointerMember<domino::RestraintScoreSubsetFilterTable> all_rs_filt_;
   IntKey fit_state_key_, order_key_;
-  bool restraints_set_, states_set_, filters_set_;
+  bool states_set_, filters_set_;
+  Pointer<RestraintSet> restraint_set_;
   PointerMember<domino::ParticleStatesTable> pst_;
   domino::SubsetFilterTables filters_;
   multifit::SettingsData *asmb_data_;

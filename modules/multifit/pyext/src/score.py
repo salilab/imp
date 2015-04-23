@@ -195,9 +195,9 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
 
     align.add_all_restraints()
     print("====1")
-    print("Get number of restraints:", len(mdl.get_restraints()))
-    rs = mdl.get_restraints()
-    for r in mdl.get_restraints():
+    rs = align.get_restraint_set().get_restraints()
+    print("Get number of restraints:", len(rs))
+    for r in rs:
         rr = IMP.RestraintSet.get_from(r)
         for i in range(rr.get_number_of_restraints()):
             print(rr.get_restraint(i).get_name())
@@ -218,7 +218,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
     output.write("\n")
     # add fit restraint
     fitr = IMP.em.FitRestraint(all_leaves, dmap)
-    mdl.add_restraint(fitr)
+    sf = IMP.core.RestraintsScoringFunction(rs + [fitr])
     print("Number of combinations:", len(combs[:max_comb]))
 
     print("native score")
@@ -242,7 +242,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
                     num_violated = num_violated + 1
         IMP.atom.write_pdb(mhs, "model.%d.pdb" % (i))
         print(str(all_leaves[0]) + " :: " + str(all_leaves[-1]))
-        score = mdl.evaluate(False)
+        score = sf.evaluate(False)
         num_violated = 0
         msg = "COMB" + str(i) + "|"
         for r in rs:

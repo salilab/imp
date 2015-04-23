@@ -204,7 +204,6 @@ ProteomicsEMAlignmentAtomic::ProteomicsEMAlignmentAtomic(
   load_atomic_molecules();
   IMP_LOG_VERBOSE("set NULL \n");
   pst_ = nullptr;
-  restraints_set_ = false;
   states_set_ = false;
   filters_set_ = false;
   ev_thr_ = 0.001;  // TODO make a parameter
@@ -332,7 +331,7 @@ void ProteomicsEMAlignmentAtomic::show_domino_merge_tree() const {
 
 void ProteomicsEMAlignmentAtomic::align() {
   IMP_LOG_TERSE("=============1" << std::endl);
-  IMP_USAGE_CHECK(states_set_ && filters_set_ && restraints_set_,
+  IMP_USAGE_CHECK(states_set_ && filters_set_ && restraint_set_,
                   "restraints, filters and states are not set \n");
   algebra::ReferenceFrame3Ds orig_rf;
   IMP_LOG_TERSE("=============2" << std::endl);
@@ -342,6 +341,7 @@ void ProteomicsEMAlignmentAtomic::align() {
   IMP_LOG_TERSE("=============3" << std::endl);
   IMP_NEW(domino::DominoSampler, ds, (mdl_, pst_));
   ds->set_was_used(true);
+  ds->set_restraints(restraint_set_);
   IMP_LOG_TERSE("=============4" << std::endl);
   //  IMP_NEW(domino::BranchAndBoundSampler,ds,(mdl_,pst));
   IMP_LOG_VERBOSE("going to sample\n");
@@ -387,11 +387,7 @@ void ProteomicsEMAlignmentAtomic::align() {
   //                            params_.get_domino_params().cache_size_);
   IMP_LOG_TERSE("before get assignments" << std::endl);
   //  IMP_NEW(domino::RestraintCache, rc_, (pst_));
-  RestraintsTemp mdl_rs;
-  for (unsigned i = 0; i < mdl_->get_number_of_restraints(); i++) {
-    mdl_rs.push_back(mdl_->get_restraint(i));
-  }
-  rc_->add_restraints(mdl_rs);
+  rc_->add_restraints(restraint_set_);
   Pointer<domino::HeapAssignmentContainer> all = get_assignments(
       mt, boost::num_vertices(mt) - 1, ds,
       params_.get_domino_params().heap_size_, rc_, all_rs_filt_);
@@ -460,23 +456,25 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
   IMP_USAGE_CHECK(
       params_.get_fragments_params().frag_len_ == 1,
       "In atomic mode the fragment length can not be higher than one!\n");
+  restraint_set_ = new RestraintSet(mdl_, 1.0,
+                                    "all EMAlignmentAtomic restraints");
   //====== initialize the two restraint sets
   conn_rs_ = new RestraintSet(mdl_, 1.0, "connectivity");
-  mdl_->add_restraint(conn_rs_);
+  restraint_set_->add_restraint(conn_rs_);
   conn_rs_with_filter_ =
       new RestraintSet(mdl_, 1.0, "connectivity_filtered");
-  mdl_->add_restraint(conn_rs_with_filter_);
+  restraint_set_->add_restraint(conn_rs_with_filter_);
   xlink_rs_ = new RestraintSet(mdl_, 1.0, "xlinks");
-  mdl_->add_restraint(xlink_rs_);
+  restraint_set_->add_restraint(xlink_rs_);
   xlink_rs_with_filter_ =
       new RestraintSet(mdl_, 1.0, "xlinks_filtered");
-  mdl_->add_restraint(xlink_rs_with_filter_);
+  restraint_set_->add_restraint(xlink_rs_with_filter_);
   em_rs_ = new RestraintSet(mdl_, 1.0, "em");
-  mdl_->add_restraint(em_rs_);
+  restraint_set_->add_restraint(em_rs_);
   ev_rs_ = new RestraintSet(mdl_, 1.0, "ev");
-  mdl_->add_restraint(ev_rs_);
+  restraint_set_->add_restraint(ev_rs_);
   dummy_rs_ = new RestraintSet(mdl_, 1.0, "dummy");
-  mdl_->add_restraint(dummy_rs_);
+  restraint_set_->add_restraint(dummy_rs_);
   //====== set proteins map
   std::map<int, Particle *> prot_ind_to_particle_map;
   for (int i = 0; i < prot_data_->get_number_of_proteins(); i++) {
@@ -859,7 +857,6 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints() {
       fitr->set_name("fitting");
     }
   }
-  restraints_set_ = true;
   // add all filters
   IMP_LOG_TERSE("before adding filters" << std::endl);
   RestraintsTemp conn_rst;

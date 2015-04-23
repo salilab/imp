@@ -27,7 +27,6 @@ class Tests(IMP.test.TestCase):
         r.set_interior_layer_thickness(5)
         r.set_complementarity_thickness(5)
 
-        m.add_restraint(r)
         return (m, r, rb0, rb1)
 
     def _set_separation(self, rb, separation):
@@ -42,29 +41,29 @@ class Tests(IMP.test.TestCase):
 
         # Score when separation > max should be infinity:
         self._set_separation(rb0, 80.0)
-        self.assertGreater(m.evaluate(False), 1e9)
+        self.assertGreater(r.evaluate(False), 1e9)
 
         # Score when penetration > max should be infinity:
         self._set_separation(rb0, 18.0)
-        self.assertGreater(m.evaluate(False), 1e9)
+        self.assertGreater(r.evaluate(False), 1e9)
 
         # Otherwise, both complementarity and boundary components should
         # fall off with distance
         r.set_complementarity_coefficient(10.0)
         r.set_boundary_coefficient(0.0)
         self._set_separation(rb0, 20.0)
-        self.assertAlmostEqual(m.evaluate(False), -78000., delta=1000.)
+        self.assertAlmostEqual(r.evaluate(False), -78000., delta=1000.)
         # No complementarity contribution when
         # sphere distance > complementarity_thickness
         self._set_separation(rb0, 26.0)
-        self.assertAlmostEqual(m.evaluate(False), 0.0, delta=1e-4)
+        self.assertAlmostEqual(r.evaluate(False), 0.0, delta=1e-4)
 
         r.set_complementarity_coefficient(0.0)
         r.set_boundary_coefficient(10.0)
         self._set_separation(rb0, 20.0)
-        self.assertAlmostEqual(m.evaluate(False), 687000., delta=1000.)
+        self.assertAlmostEqual(r.evaluate(False), 687000., delta=1000.)
         self._set_separation(rb0, 26.0)
-        self.assertAlmostEqual(m.evaluate(False), 390625., delta=1000.)
+        self.assertAlmostEqual(r.evaluate(False), 390625., delta=1000.)
 
 if __name__ == '__main__':
     IMP.test.main()
