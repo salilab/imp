@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
         r = IMP.algebra.get_identity_rotation_3d()
         t = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
         tr = IMP.algebra.Transformation3D(r, t)
-        mbs = rbd.get_members()
+        mbs = rbd.get_rigid_members()
         m = rbd.get_particle().get_model()
         for b in mbs:
             mb = IMP.core.RigidMember(b.get_particle())

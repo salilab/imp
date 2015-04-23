@@ -48,7 +48,7 @@ rb1.set_reference_frame(IMP.algebra.ReferenceFrame3D(
 
 ev = IMP.core.ExcludedVolumeRestraint(
     IMP.container.ListSingletonContainer(
-        rb0.get_members() + rb1.get_members()),
+        rb0.get_rigid_members() + rb1.get_rigid_members()),
     1, 3)
 
 #h= IMP.core.Harmonic(0,1)

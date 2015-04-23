@@ -40,7 +40,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         for i in range(0, 5):
             rb = self._create_rigid_body(m, 10, 1)
             rbs.append(rb)
-            all.extend(rb.get_members())
+            all.extend(rb.get_rigid_members())
         xyzrs = self._create_xyzrs(m, 10, 1)
         all.extend(xyzrs)
         allc = IMP.container.ListSingletonContainer(all)
