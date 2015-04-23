@@ -93,7 +93,7 @@ ScoringFunction *ScoringFunctionAdaptor::get(const Restraints &sf) {
   }
 }
 ScoringFunction *ScoringFunctionAdaptor::get(Model *sf) {
-  return sf->create_scoring_function();
+  return sf->create_model_scoring_function();
 }
 ScoringFunction *ScoringFunctionAdaptor::get(Restraint *sf) {
   return sf->create_scoring_function();
