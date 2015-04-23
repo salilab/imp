@@ -370,9 +370,6 @@ class IMPKERNELEXPORT Model : public Object
   /** \deprecated_at{2.1} Using a ScoringFunction instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   RestraintSet *get_root_restraint_set();
-  /** \deprecated_at{2.1} You should use a ScoringFunction or a RestraintSet.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void set_maximum_score(double s);
 #ifndef SWIG
   /** \deprecated_at{2.1} Use get_particle_indexes(). */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)

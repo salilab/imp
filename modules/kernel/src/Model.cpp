@@ -245,11 +245,6 @@ ScoringFunction *Model::create_scoring_function() {
   return create_model_scoring_function();
 }
 
-void Model::set_maximum_score(double s) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use a ScoringFunction.");
-  return restraints_->set_maximum_score(s);
-}
-
 ParticlesTemp Model::get_particles() const {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes().");
   return ParticlesTemp(particles_begin(), particles_end());
