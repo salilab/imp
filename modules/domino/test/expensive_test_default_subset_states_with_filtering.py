@@ -60,10 +60,9 @@ class Tests(IMP.test.TestCase):
                                        s[2])
         r.set_name("1 2")
         r.set_log_level(IMP.VERBOSE)
-        m.add_restraint(r)
         ds = IMP.domino.DominoSampler(m)
-        m.set_maximum_score(.5)
-        rssft = IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
+        r.set_maximum_score(.5)
+        rssft = IMP.domino.RestraintScoreSubsetFilterTable(r, pst)
         rssft.set_log_level(IMP.SILENT)
         dsst = nm(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
@@ -95,29 +94,30 @@ class Tests(IMP.test.TestCase):
         s = IMP.domino.Subset(lsc)
         all_states = self._get_full_list(pst, lsc)
         print("There are ", len(all_states), "states")
+        rs = IMP.RestraintSet(m)
         r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
                                        s[1],
                                        s[2])
         r.set_name("1 2")
         r.set_log_level(IMP.VERBOSE)
-        m.add_restraint(r)
+        rs.add_restraint(r)
         r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
                                        s[2],
                                        s[3])
         r.set_name("2 3")
         r.set_log_level(IMP.VERBOSE)
-        m.add_restraint(r)
+        rs.add_restraint(r)
         r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
                                        s[0],
                                        s[1])
         r.set_name("0 1")
         r.set_log_level(IMP.VERBOSE)
-        m.add_restraint(r)
-        m.set_maximum_score(.5)
+        rs.add_restraint(r)
+        rs.set_maximum_score(.5)
         rc = IMP.domino.RestraintCache(pst)
-        rc.add_restraints(m.get_restraints())
+        rc.add_restraints(rs.get_restraints())
         rssft = IMP.domino.MinimumRestraintScoreSubsetFilterTable(
-            m.get_restraints(), rc, 1)
+            rs.get_restraints(), rc, 1)
         rssft.set_log_level(IMP.SILENT)
         dsst = nm(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
@@ -148,6 +148,7 @@ class Tests(IMP.test.TestCase):
         print(lsc[1].get_name())
         all_states = self._get_full_list(pst, lsc)
         print("There are ", len(all_states), "states")
+        rs = IMP.RestraintSet(m)
         r0 = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 1),
                                         lsc[1],
                                         lsc[2])
