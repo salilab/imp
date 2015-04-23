@@ -261,45 +261,6 @@ def write_pdb_for_reference_frames(fn_pdbs, refs_texts, fn_output):
         rb.set_reference_frame(r)
     atom.write_pdb(assembly, fn_output)
 
-
-def show_model_info(model, assembly, components_rbs):
-    """ Prints information about the representation
-        Prints the number of components (hierarchies), its children,
-        and information about the chains and rigid bodies
-    """
-    print("##################################################################################")
-    print("Model Info")
-    print("##################################################################################")
-
-    print(model.show())
-    print("#########################")
-    print("Hierarchies in the assembly:")
-    print("#########################")
-    for c in assembly.get_children():
-        print(c.get_name() +  " Is valid? " + c.get_is_valid(True)
-              +  " children " + str(c.get_number_of_children()))
-        print("Child info: " + c.show())
-
-        hchains = IMP.atom.get_by_type(c, IMP.atom.CHAIN_TYPE)
-        print("Number of chains in the hierarchy: %d" % len(hchains))
-        for h in hchains:
-            chain = atom.Chain(h.get_particle())
-            print(chain.get_name() +  " particles %d" % len(atom.get_leaves(chain)))
-    print("#########################")
-    print("Rigid bodies")
-    print("#########################")
-    for r in components_rbs:
-        print("rigid body: Particles: %d coordinates: %s"
-              % (r.get_number_of_members(), r.get_coordinates()))
-
-    print("#########################")
-    print("Restraints")
-    print("#########################")
-    n = model.get_number_of_restraints()
-    for i in range(n):
-        print(model.get_restraint(i))
-
-
 def imp_info(imp_modules=None):
     """
         Returns text with the time and information about the modules employed
