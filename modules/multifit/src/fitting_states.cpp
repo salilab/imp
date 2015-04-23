@@ -20,8 +20,4 @@ void FittingStates::load_particle_state(unsigned int i,
   p->set_value(fit_state_key_, i);
 }
 
-void FittingStates::do_show(std::ostream &out) const {
-  out << fit_state_key_ << " size: " << states_.size() << std::endl;
-}
-
 IMPMULTIFIT_END_NAMESPACE
