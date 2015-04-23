@@ -967,7 +967,6 @@ class PeptideDocker:
                 xyzDecorator.set_coordinates_are_optimized(0)
 
     def writeOutput(self):
-        restraintCount = self.model.get_number_of_restraints()
         leaves = IMP.atom.get_leaves(self.protein)
         flexiblePeptideAtoms = 0
         flexibleProteinAtoms = 0
@@ -989,7 +988,6 @@ class PeptideDocker:
         print("Fixed peptide atoms: %s" % fixedPeptideAtoms)
         print("Flexible protein atoms: %s" % flexibleProteinAtoms)
         print("Fixed protein atoms: %s" % fixedProteinAtoms)
-        print("Total number of restraints: %s" % restraintCount)
 
     def writeOsOutput(self):
 
