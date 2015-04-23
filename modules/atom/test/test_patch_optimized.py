@@ -3,7 +3,7 @@ import IMP.test
 import IMP.atom
 from io import BytesIO
 
-pdb = """
+pdb = b"""
 ATOM      1  HT1 ARG     1       3.836  65.763  35.255  1.00  0.00
 ATOM      2  HT2 ARG     1       2.546  66.040  34.188  1.00  0.00
 ATOM      3  N   ARG     1       3.477  66.382  34.500  1.00 33.79
