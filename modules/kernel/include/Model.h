@@ -334,10 +334,6 @@ class IMPKERNELEXPORT Model : public Object
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ScoringFunction *create_model_scoring_function();
 
-  /** \deprecated_at{2.1} Use a ScoringFunction instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ScoringFunction *create_scoring_function();
-
   /** \deprecated_at{2.1} Add to a ScoringFunction instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void add_restraint(Restraint *r);
