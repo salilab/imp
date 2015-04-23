@@ -353,11 +353,6 @@ class IMPKERNELEXPORT Model : public Object
   /** \deprecated_at{2.1} Using a ScoringFunction instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   RestraintSet *get_root_restraint_set();
-#ifndef SWIG
-  /** \deprecated_at{2.1} Use a ScoringFunction instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  operator Restraint *() const { return restraints_.get(); }
-#endif
 };
 
 IMPKERNEL_END_NAMESPACE
