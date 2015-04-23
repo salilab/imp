@@ -532,6 +532,7 @@ class DominoModel:
                              "to setup the sampler")
         log.info("Domino sampler")
         self.sampler = domino.DominoSampler(self.model, self.rb_states_table)
+        self.sampler.set_restraints(self.restraints.values())
         self.sampler.set_log_level(IMP.TERSE)
         self.sampler.set_merge_tree(self.merge_tree)
         self.add_exclusion_filter_table()
@@ -968,6 +969,10 @@ class DominoModel:
         hierarchy_component = self.assembly.get_child(component_index)
         atom.write_pdb(hierarchy_component, fn_pdb)
 
+    def get_scoring_function(self):
+        """Get a ScoringFunction that includes all restraints."""
+        return IMP.core.RestraintsScoringFunction(self.restraints.values())
+
     def write_monte_carlo_solution(self, fn_database):
         """
             Write the solution of a MonteCarlo run
@@ -977,8 +982,7 @@ class DominoModel:
         total_score = 0
         rnames = []
         scores = []
-        for i in range(self.model.get_number_of_restraints()):
-            r = self.model.get_restraint(i)
+        for r in self.restraints.values():
             score = r.evaluate(False)
             rnames.append(r.get_name())
             scores.append(score)
@@ -997,18 +1001,16 @@ class DominoModel:
         db.save_records()
         db.close()
 
-
-def print_restraints_values(model):
-    print("Restraints: Name, weight, value, maximum_value")
-    total_score = 0
-    for i in range(model.get_number_of_restraints()):
-        r = model.get_restraint(i)
-        score = r.evaluate(False)
-#        print "%20s %18f %18f %18f" % (r.get_name(), r.get_weight(),
-#                                                score, r.get_maximum_score())
-        print("%20s %18f %18f" % (r.get_name(), r.get_weight(), score))
-        total_score += score
-    print("total_score:", total_score)
+    def print_restraints_values(self):
+        print("Restraints: Name, weight, value, maximum_value")
+        total_score = 0
+        for r in self.restraints.values():
+            score = r.evaluate(False)
+    #       print "%20s %18f %18f %18f" % (r.get_name(), r.get_weight(),
+    #                                      score, r.get_maximum_score())
+            print("%20s %18f %18f" % (r.get_name(), r.get_weight(), score))
+            total_score += score
+        print("total_score:", total_score)
 
 
 def anchor_assembly(components_rbs, anchored):
