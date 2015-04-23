@@ -342,10 +342,6 @@ class IMPKERNELEXPORT Model : public Object
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void add_restraint(Restraint *r);
 
-  /** \deprecated_at{2.1} Use a ScoringFunction instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void remove_restraint(Restraint *r);
-
 // all deprecated but too used to add warnings about now
 #if !defined(IMP_DOXYGEN)
   RestraintsTemp get_restraints() const;

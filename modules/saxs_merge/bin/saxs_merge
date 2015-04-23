@@ -410,13 +410,11 @@ class SAXSProfile:
         if self.recompute_hessian is False:
             return self._memoized_hessian
         gpr = IMP.isd.GaussianProcessInterpolationRestraint(self.model, gp)
-        self.model.add_restraint(gpr)
         Hessian = matrix(gpr.get_hessian(False))
         if linalg.det(Hessian) == 0:
             print(Hessian, [(i, j.get_nuisance())
                             for i, j in self.particles.items()
                             if j.get_nuisance_is_optimized()])
-        self.model.remove_restraint(gpr)
         # fl=open('avcov','w')
         # fl.write("#q I err err*lapl lapl det (Hessian= %f )\n"
         #        % linalg.det(Hessian))

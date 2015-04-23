@@ -502,7 +502,6 @@ class PeptideDocker:
         cont.add_particles(ffParticles)
         listBondRestraint = IMP.container.SingletonsRestraint(
             singletonScore, cont, restraintName)
-        self.model.add_restraint(listBondRestraint)
 
         # Restraint decomposition has been a little touchy; a couple
         # workarounds contained
@@ -512,7 +511,7 @@ class PeptideDocker:
         rs_restraints = decomposedRestraints.get_restraints()
 
         # manually remove the full restraint after getting the decomposition
-        self.model.remove_restraint(listBondRestraint)
+        del listBondRestraint
 
         count = decomposedRestraints.get_number_of_restraints()
         for i in range(count):

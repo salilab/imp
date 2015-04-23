@@ -236,11 +236,6 @@ void Model::add_restraint(Restraint *r) {
   if (!r->get_model()) r->set_model(this);
   restraints_->add_restraint(r);
 }
-void Model::remove_restraint(Restraint *r) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                                  "Use a ScoringFunction instead.");
-  restraints_->remove_restraint(r);
-}
 ScoringFunction *Model::create_scoring_function() {
   return create_model_scoring_function();
 }

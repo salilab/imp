@@ -1,5 +1,6 @@
 from __future__ import print_function
 import IMP
+import IMP.core
 import IMP.test
 
 
@@ -12,17 +13,16 @@ class Tests(IMP.test.TestCase):
         rs = IMP.RestraintSet(m, .5, "RS.5")
         r0 = IMP._ConstRestraint(m, [], 1)
         rs.add_restraint(r0)
-        m.add_restraint(rs)
         r1 = IMP._ConstRestraint(m, [], 1)
         rs.add_restraint(r1)
         r2 = IMP._ConstRestraint(m, [], 1)
-        m.add_restraint(r2)
         return (m, rs, r0, r1, r2)
 
     def test_printing(self):
         """Test that sets can be printed"""
         (m, rs, r0, r1, r2) = self._make_stuff()
-        self.assertEqual(m.evaluate(False), 2)
+        sf = IMP.core.RestraintsScoringFunction([rs, r2])
+        self.assertEqual(sf.evaluate(False), 2)
         print(rs)
 
     def test_restraints(self):
@@ -51,14 +51,12 @@ class Tests(IMP.test.TestCase):
     def test_evaluate_2(self):
         """Test restraints added multiple times"""
         (m, rs, r0, r1, r2) = self._make_stuff()
-        m.add_restraint(r0)
-        self.assertEqual(m.evaluate(False), 3)
+        sf = IMP.core.RestraintsScoringFunction([rs, r2, r0])
+        self.assertEqual(sf.evaluate(False), 3)
 
     def test_removed(self):
         """Test that restraints are usable after set is destroyed"""
         (m, rs, r0, r1, r2) = self._make_stuff()
-        m.add_restraint(rs)
-        m.remove_restraint(rs)
         print("print removed", r1.evaluate(False))
         del rs
         print("destroyed", r1.evaluate(False))

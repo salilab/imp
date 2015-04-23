@@ -44,7 +44,6 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         IMP.set_log_level(0)
         self.m = IMP.Model()
         self.rs = XTransRestraint(self.m)
-        self.m.add_restraint(self.rs)
 
     def test_nuisance_get_has_upper(self):
         p = IMP.Particle(self.m)
@@ -70,7 +69,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         Nuisance(n).set_lower(0.5)
         Nuisance(n).set_upper(1.5)
         n.set_value(Nuisance.get_nuisance_key(), 10.0)
-        self.m.evaluate(False)
+        self.rs.evaluate(False)
         self.assertAlmostEqual(n.get_value(Nuisance.get_nuisance_key()),
                                1.5, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 1.5)
@@ -81,7 +80,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         Nuisance(n).set_lower(0.5)
         Nuisance(n).set_upper(1.5)
         n.set_value(Nuisance.get_nuisance_key(), 0.1)
-        self.m.evaluate(False)
+        self.rs.evaluate(False)
         self.assertAlmostEqual(n.get_value(Nuisance.get_nuisance_key()),
                                0.5, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 0.5)
@@ -91,7 +90,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         Scale.setup_particle(n, 1.0)
         Scale(n).set_upper(1.5)
         n.set_value(Scale.get_scale_key(), 10.0)
-        self.m.evaluate(False)
+        self.rs.evaluate(False)
         self.assertAlmostEqual(n.get_value(Scale.get_scale_key()),
                                1.5, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 1.5)
@@ -100,7 +99,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         n = IMP.Particle(self.m)
         Scale.setup_particle(n, 1.0)
         n.set_value(Scale.get_scale_key(), -0.1)
-        self.m.evaluate(False)
+        self.rs.evaluate(False)
         self.assertAlmostEqual(n.get_value(Scale.get_scale_key()),
                                0.0, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 0.0)
@@ -109,7 +108,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         n = IMP.Particle(self.m)
         Switching.setup_particle(n, 0.3)
         n.set_value(Switching.get_switching_key(), 3)
-        self.m.evaluate(False)
+        self.rs.evaluate(False)
         self.assertAlmostEqual(n.get_value(Switching.get_switching_key()),
                                1.0, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 1.0)
@@ -118,7 +117,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         n = IMP.Particle(self.m)
         Switching.setup_particle(n, 0.3)
         n.set_value(Switching.get_switching_key(), -1)
-        self.m.evaluate(False)
+        self.rs.evaluate(False)
         self.assertAlmostEqual(n.get_value(Switching.get_switching_key()),
                                0.0, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 0.0)
@@ -136,6 +135,7 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         nmv = IMP.core.NormalMover([nuis],
                                    IMP.FloatKeys([IMP.FloatKey("nuisance")]), 10.0)
         mc = IMP.core.MonteCarlo(self.m)
+        mc.set_scoring_function([self.rs])
         mc.set_return_best(False)
         mc.set_kt(1.0)
         mc.add_mover(nmv)
@@ -147,7 +147,6 @@ class TestNuisanceScoreState(IMP.test.TestCase):
     @IMP.test.skip("ScoreState won't be called with no restraints that use it")
     def test_NormalMover_MC_fails(self):
         "Test nuisance scorestate with MonteCarlo mover"
-        self.m.remove_restraint(self.rs)
         nuis = Nuisance.setup_particle(IMP.Particle(self.m), 50.0)
         lower = Nuisance.setup_particle(IMP.Particle(self.m), 10.0)
         upper = Nuisance.setup_particle(IMP.Particle(self.m), 90.0)
