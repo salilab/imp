@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -36,14 +37,14 @@ class Tests(IMP.test.TestCase):
         pD.set_coordinates_are_optimized(True) # TODO: very unclear if this is needed or dangerous - to get BD to evaluate on it
         pDiffusion = IMP.atom.Diffusion.setup_particle(p)
 #        pDiffusion.set_diffusion_coefficient(1000000)
-        print pDiffusion
+        print(pDiffusion)
         fine_particles = []
         for i in range(0, n):
             fine_p = self._create_fine_particle(m, "fine particle %d" % i)
             fine_particles.append(fine_p)
             fine_pH = IMP.core.Hierarchy.setup_particle(fine_p)
             pH.add_child( fine_pH )
-        print pH.get_children()
+        print(pH.get_children())
         refiner = IMP.core.ChildrenRefiner(
             IMP.core.Hierarchy.get_default_traits())
         IMP.core.Centroid.setup_particle(p, refiner)
@@ -108,7 +109,7 @@ class Tests(IMP.test.TestCase):
         for core1,core2 in zip(cores[0:-1],cores[1:]):
             r = IMP.core.PairRestraint(attraction, (core1[1][-1], core2[1][0]), "Interchain")
             R.append(r)
-        print R
+        print(R)
 
         # Define BD
         bd = IMP.atom.BrownianDynamicsTAMD(m)
@@ -120,7 +121,7 @@ class Tests(IMP.test.TestCase):
 #        RMF.set_log_level("Off")
         rmf_fname = self.get_tmp_file_name("bd_rb_NOtamd.rmf")
         rmf = RMF.create_rmf_file(rmf_fname)
-        print "RMF: ", rmf_fname
+        print("RMF: ", rmf_fname)
         all_particles=[]
         for core in cores:
             for p in [core[0]] + core[1] + [core[2]]:
@@ -153,8 +154,8 @@ class Tests(IMP.test.TestCase):
             bd.optimize(round_cycles)
             energy = sf.evaluate(False)
             total_cycles += round_cycles
-            print "energy after %d cycles = %.2f" \
-                % (total_cycles, energy)
+            print("energy after %d cycles = %.2f"
+                  % (total_cycles, energy))
 #            if(energy < e_threshold):
 #                break
 #        self.assertLess(energy, e_threshold)

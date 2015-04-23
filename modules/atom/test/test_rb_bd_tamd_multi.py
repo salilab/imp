@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
@@ -110,7 +111,7 @@ class Tests(IMP.test.TestCase):
         pDiffusion = IMP.atom.Diffusion.setup_particle(p)
         for child in children:
             pH.add_child( IMP.core.Hierarchy( child ) )
-        print pH.get_children()
+        print(pH.get_children())
         refiner = IMP.core.ChildrenRefiner(
             IMP.core.Hierarchy.get_default_traits())
         IMP.atom.CenterOfMass.setup_particle(p, refiner)
@@ -177,7 +178,7 @@ class Tests(IMP.test.TestCase):
                                        (leaves[i], leaves[i+1]),
                                        "Chain")
             R.append(r)
-        print R
+        print(R)
 
         # LOCAL WELLS:
         if(LOCAL_WELLS):
@@ -206,7 +207,7 @@ class Tests(IMP.test.TestCase):
             m.update()
 #            os.update_always("Init opt %d" % i)
             for centroid, image in zip(all_centroids, all_images):
-                print centroid, image
+                print(centroid, image)
                 centroid_coords =  IMP.core.XYZ(centroid).get_coordinates()
                 IMP.core.XYZ(image).set_coordinates( centroid_coords )
 
@@ -219,7 +220,7 @@ class Tests(IMP.test.TestCase):
         # Attach RMF
 #        RMF.set_log_level("Off")
         rmf = RMF.create_rmf_file(RMF_FNAME)
-        print "RMF: ", RMF_FNAME
+        print("RMF: ", RMF_FNAME)
         # add all hierarchies
         queue = [rootH]
         while len(queue)>0:
@@ -248,8 +249,8 @@ class Tests(IMP.test.TestCase):
             ter1 = IMP.core.XYZ( leaves[0] )
             ter2 = IMP.core.XYZ( leaves[-1] )
             dTer = IMP.core.get_distance(ter1, ter2)
-            print "energy after %d cycles = %.2f  dTer %.2f" \
-                % (total_cycles, energy, dTer)
+            print("energy after %d cycles = %.2f  dTer %.2f"
+                  % (total_cycles, energy, dTer))
 #            if(energy < e_threshold):
 #                break
 #        self.assertLess(energy, e_threshold)
