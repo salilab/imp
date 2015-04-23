@@ -412,7 +412,7 @@ class DominoModel:
         for rb in self.components_rbs:
             log.debug("rb - %s",
                       rb.get_reference_frame().get_transformation_to())
-        val = self.restraints[name].evaulate(False)
+        val = self.restraints[name].evaluate(False)
         log.debug("restraint %s = %s", restraint.get_name(), val)
         return val
 
