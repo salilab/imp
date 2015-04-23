@@ -1,3 +1,5 @@
+\brief Determine small angle X-ray (SAXS) profiles.
+
 # foxs {#foxs_bin}
 
 Determine small angle X-ray (SAXS) profiles.

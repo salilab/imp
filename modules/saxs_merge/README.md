@@ -1,3 +1,5 @@
+\brief A method for merging SAXS profiles using Gaussian processes.
+
 saxs_merge {#saxs_merge_bin}
 ==========
 

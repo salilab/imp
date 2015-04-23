@@ -1,4 +1,4 @@
-\brief Make CGAL functionality available to IMP.
+\brief Make [CGAL](http://www.cgal.org) functionality available to IMP.
 
 # CGAL # {#CGAL}
 

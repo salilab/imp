@@ -1,3 +1,5 @@
+\brief Pairwise docking incorporating additional data.
+
 # idock {#idock_bin}
 
 Pairwise docking incorporating additional data.
