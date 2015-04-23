@@ -30,9 +30,11 @@ def setup_scoring_function(ps):
     m = ps[0].get_model()
     pairs = [[0, 1], [0, 2], [1, 2], [2, 3], [3, 4], [4, 5], [3, 5]]
     sf = IMP.core.Harmonic(1.0, 1)
+    rs = IMP.RestraintSet(m)
     for pair in pairs:
         r = IMP.core.DistanceRestraint(sf, ps[pair[0]], ps[pair[1]])
-        m.add_restraint(r)
+        rs.add_restraint(r)
+    return rs
 
 # Initiate a set of states for each particle in ps
 
@@ -62,7 +64,7 @@ for i in range(0, 6):
 
 # SCORING
 # 1. setting up the scoring function
-setup_scoring_function(ps)
+rs = setup_scoring_function(ps)
 
 # 1. get the subsets
 subsets = get_subsets(ps)
@@ -82,6 +84,7 @@ sys.exit()
 # OPTIMIZATION
 # 1. load domino sampler and set required properties
 domino_smp = IMP.domino.DominoSampler(m)
+domino_smp.set_restraints([rs])
 domino_smp.set_maximum_score(.2)
 
 # 2. initiate configuration

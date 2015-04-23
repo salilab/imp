@@ -127,6 +127,7 @@ for i in range(n_girls):
     sampler.add_subset_filter_table(list_states_table)
 
 # create restraints
+rs = []
 for z in range(n_edges):
     # pair of friends
     i = random.randrange(0, n_girls)
@@ -134,12 +135,12 @@ for z in range(n_edges):
     friends = IMP.ParticlePair(girls[i], girls[j])
     # restraint
     score = SumPricePairScore()
-    r = IMP.core.PairRestraint(score, friends)
-    model.add_restraint(r)
+    rs.append(IMP.core.PairRestraint(score, friends))
     # Exclusion states. Two girls can't have same dress
     ft = IMP.domino.ExclusionSubsetFilterTable()
     ft.add_pair(friends)
     sampler.add_subset_filter_table(ft)
+sampler.set_restraints(rs)
 
 subset = states_table.get_subset()
 solutions = sampler.get_sample_assignments(subset)
