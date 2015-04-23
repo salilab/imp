@@ -237,11 +237,6 @@ void Model::add_restraint(Restraint *r) {
   restraints_->add_restraint(r);
 }
 
-ParticlesTemp Model::get_particles() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes().");
-  return ParticlesTemp(particles_begin(), particles_end());
-}
-
 Model::ParticleIterator Model::particles_begin() const {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes().");
   return ParticleIterator(NotNull(), particle_index_.begin(),

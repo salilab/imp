@@ -353,9 +353,6 @@ class IMPKERNELEXPORT Model : public Object
   /** \deprecated_at{2.1} Use a ScoringFunction instead.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   double evaluate(bool tf, bool warn = true);
-  /** \deprecated_at{2.1} Use get_particle_indexes(). */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ParticlesTemp get_particles() const;
   /** \deprecated_at{2.1} Using a ScoringFunction instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   RestraintSet *get_root_restraint_set();
