@@ -45,8 +45,7 @@ class Tests(IMP.test.TestCase):
         IMP.set_log_level(IMP.SILENT)
         ls = IMP.container.ListSingletonContainer(mdl, aps)
         sev = IMP.core.ExcludedVolumeRestraint(ls)
-        mdl.add_restraint(sev)
-        mdl.evaluate(False)
+        sev.evaluate(False)
         # set states
         pst = IMP.domino.ParticleStatesTable()
         for i in range(1):
@@ -56,6 +55,7 @@ class Tests(IMP.test.TestCase):
         id_trans.append(rbs[0].get_reference_frame())
         pst.set_particle_states(rbs[0], IMP.domino.RigidBodyStates(id_trans))
         ds = IMP.domino.DominoSampler(mdl, pst)
+        ds.set_restraints([sev])
         cg = ds.create_sample()
         print(cg.get_number_of_configurations())
 

@@ -136,16 +136,17 @@ class Tests(IMP.test.TestCase):
                IMP.algebra.Vector3D(3, 0, 0)]
         particle_state = IMP.domino.XYZStates(pts)
         pst = IMP.domino.ParticleStatesTable()
+        r = IMP.RestraintSet(m)
         for p in ps:
             pst.set_particle_states(p, particle_state)
-        m.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(
             IMP.core.Harmonic(1, 1), ps[0], ps[1]))
-        m.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(
             IMP.core.Harmonic(1, 1), ps[1], ps[2]))
         print(5)
         sampler = IMP.domino.DominoSampler(m, pst)
         rc = IMP.domino.RestraintCache(pst)
-        rc.add_restraints([m])
+        rc.add_restraints([r])
         rssft = IMP.domino.RestraintScoreSubsetFilterTable(rc)
         s = IMP.domino.Subset(pst.get_particles())
         rs = rc.get_restraints(s, [])

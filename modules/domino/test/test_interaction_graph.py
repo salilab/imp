@@ -38,13 +38,13 @@ class Tests(IMP.test.TestCase):
             0)
         r = IMP.container.PairsRestraint(
             IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0, 1)), cp)
-        m.add_restraint(r)
+        rs = IMP.RestraintSet(m)
+        rs.add_restraint(r)
         print("computing graph")
         pst = IMP.domino.ParticleStatesTable()
         for p in rbs:
             pst.set_particle_states(p, NullStates())
-        g = IMP.domino.get_interaction_graph([m.get_root_restraint_set()],
-                                             pst)
+        g = IMP.domino.get_interaction_graph([rs], pst)
         #w = IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
         # for gg in IMP.domino.get_interaction_graph_geometry(g):
         #    w.add_geometry(gg)
@@ -72,16 +72,16 @@ class Tests(IMP.test.TestCase):
             d.set_coordinates(IMP.algebra.Vector3D(0, i, 0))
             ps.append(p)
         h = IMP.core.Harmonic(0, 1)
+        rs = IMP.RestraintSet(m)
         for i in range(3):
             p0 = ps[i]
             p1 = ps[i - 1]
             r = IMP.core.DistanceRestraint(h, p0, p1)
-            m.add_restraint(r)
+            rs.add_restraint(r)
         pst = IMP.domino.ParticleStatesTable()
         for p in ps:
             pst.set_particle_states(p, NullStates())
-        g = IMP.domino.get_interaction_graph([m.get_root_restraint_set()],
-                                             pst)
+        g = IMP.domino.get_interaction_graph([rs], pst)
         #w = IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
         # for gg in IMP.domino.get_interaction_graph_geometry(g):
         #    w.add_geometry(gg)

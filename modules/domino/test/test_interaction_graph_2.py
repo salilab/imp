@@ -45,17 +45,17 @@ class Tests(IMP.test.TestCase):
         cpf.set_distance(0.0)
         print(len(ps), "leaves")
         cp = cpf.get_close_pairs(m, ps)
+        rs = IMP.RestraintSet(m)
         for pr in cp:
             r = IMP.core.PairRestraint(m,
                 IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0, 1)), pr)
-            m.add_restraint(r)
+            rs.add_restraint(r)
             r.set_name("pair")
         print("computing graph")
         pst = IMP.domino.ParticleStatesTable()
         for p in ps:
             pst.set_particle_states(m.get_particle(p), NullStates())
-        g = IMP.domino.get_interaction_graph([m.get_root_restraint_set()],
-                                             pst)
+        g = IMP.domino.get_interaction_graph([rs], pst)
         #w = IMP.display.PymolWriter(self.get_tmp_file_name("ig-large.pym"))
         gs = IMP.domino.get_interaction_graph_geometry(g)
         print("There are ", len(gs))

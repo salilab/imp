@@ -25,20 +25,22 @@ class Tests(IMP.test.TestCase):
                IMP.algebra.Vector3D(3, 0, 0)]
         particle_state = IMP.domino.XYZStates(pts)
         pst = IMP.domino.ParticleStatesTable()
+        r = IMP.RestraintSet(m)
         for p in ps:
             pst.set_particle_states(p, particle_state)
-            m.add_restraint(IMP._ConstRestraint(1, [p]))
+            r.add_restraint(IMP._ConstRestraint(1, [p]))
         sst = IMP.domino.BranchAndBoundAssignmentsTable(pst, [])
-        m.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(
             IMP.core.Harmonic(1, 1), ps[0], ps[1]))
-        m.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(
             IMP.core.Harmonic(1, 1), ps[1], ps[2]))
         #sevt= IMP.domino.ModelSubsetEvaluatorTable(m, pst)
         sampler = IMP.domino.DominoSampler(m, pst)
+        sampler.set_restraints(r)
         # sampler.set_subset_evaluator_table(sevt);
         sampler.set_log_level(IMP.VERBOSE)
         # sampler.set_assignments_table(sst)
-        m.set_maximum_score(3.1)
+        r.set_maximum_score(3.1)
         print("getting sample")
         cs = sampler.create_sample()
         print("done")

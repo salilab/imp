@@ -154,15 +154,15 @@ class Tests(IMP.test.TestCase):
                                         lsc[2])
         r0.set_name("1 2")
         r0.set_log_level(IMP.VERBOSE)
-        m.add_restraint(r0)
+        rs.add_restraint(r0)
         r1 = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 1),
                                         lsc[0],
                                         lsc[1])
         r1.set_name("0 1")
         r1.set_log_level(IMP.VERBOSE)
-        m.add_restraint(r1)
-        m.set_maximum_score(.6)
-        rssft = IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
+        rs.add_restraint(r1)
+        rs.set_maximum_score(.6)
+        rssft = IMP.domino.RestraintScoreSubsetFilterTable(rs, pst)
         dsst = nm(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
         print("setting")
@@ -179,7 +179,7 @@ class Tests(IMP.test.TestCase):
             self.assertIn(s, all_states)
         for s in all_states:
             IMP.domino.load_particle_states(lsc, s, pst)
-            if m.evaluate(False) < .6:
+            if rs.evaluate(False) < .6:
                 # print s
                 self.assertIn(s, found_states)
 
