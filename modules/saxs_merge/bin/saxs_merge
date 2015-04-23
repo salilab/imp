@@ -909,10 +909,11 @@ def ttest_two(mu1, s1, n1, mu2, s2, n2):
 
 def setup_particles():
     """
-    returns: model, dict(*particles), dict(mean, covariance)
+    returns: model, dict(*particles), restraints, dict(mean, covariance)
     """
 
     model = IMP.Model()
+    restraints = []
     # mean function
     G = IMP.isd.Scale.setup_particle(IMP.Particle(model, "G"))
     Rg = IMP.isd.Scale.setup_particle(IMP.Particle(model, "Rg"))
@@ -928,9 +929,9 @@ def setup_particles():
     # sigma
     sigma = IMP.isd.Scale.setup_particle(IMP.Particle(model, "sigma2"))
     # prior on scales
-    model.add_restraint(IMP.isd.JeffreysRestraint(model, tau))
-    model.add_restraint(IMP.isd.JeffreysRestraint(model, sigma))
-    model.add_restraint(IMP.isd.JeffreysRestraint(model, lam))
+    restraints.append(IMP.isd.JeffreysRestraint(model, tau))
+    restraints.append(IMP.isd.JeffreysRestraint(model, sigma))
+    restraints.append(IMP.isd.JeffreysRestraint(model, lam))
     # set upper bounds for s
     s.set_upper(3)
     s.set_upper(d)
@@ -947,11 +948,11 @@ def setup_particles():
     functions = {}
     functions['mean'] = m
     functions['covariance'] = w
-    return model, particles, functions
+    return model, particles, restraints, functions
 
 
 def setup_process(data, subs, maxpoints=-1):
-    model, particles, functions = setup_particles()
+    model, particles, restraints, functions = setup_particles()
     q = [[i] for i in data['q'][::subs]]
     I = data['I'][::subs]
     err = data['err'][::subs]
@@ -961,7 +962,7 @@ def setup_process(data, subs, maxpoints=-1):
                                               data['N'], functions[
                                                   'mean'], functions['covariance'],
                                               particles['sigma2'])
-    return model, particles, functions, gp
+    return model, particles, restraints, functions, gp
 
 
 def _get_guinier_fit_fixed(qs, Is, errs):
@@ -1128,7 +1129,7 @@ def residuals(point, mean, particles, mean_fn, data):
     return retval
 
 
-def target_function(point, mean, particles, model, gpr, M, deriv=False):
+def target_function(point, mean, particles, sf, gpr, M, deriv=False):
     if mean == 'cov':
         cu, cv, cl = point
     elif mean == 'Flat':
@@ -1154,7 +1155,7 @@ def target_function(point, mean, particles, model, gpr, M, deriv=False):
     if mean == 'Full':
         particles['s'].set_scale(untransform(mx, particles['s']))
     #
-    retval = model.evaluate(deriv)
+    retval = sf.evaluate(deriv)
     if not deriv:
         return retval
     dtau = particles['tau'].get_nuisance_derivative()
@@ -1184,10 +1185,11 @@ def target_function(point, mean, particles, model, gpr, M, deriv=False):
 
 
 def find_fit_mean(data, verbose, mean_function):
-    model, particles, functions, gp = \
+    model, particles, restraints, functions, gp = \
         setup_process(data, 1)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(model, gp)
-    model.add_restraint(gpr)
+    restraints.append(gpr)
+    sf = IMP.core.RestraintsScoringFunction(restraints)
     #
     set_defaults_mean(data, particles, mean_function)
     #
@@ -1256,15 +1258,16 @@ def find_fit_mean(data, verbose, mean_function):
     #
     newvals = dict([(k, v.get_nuisance())
                     for (k, v) in particles.items()])
-    ene = model.evaluate(False)
+    ene = sf.evaluate(False)
     return newvals, ene
 
 
 def find_fit_all(data, initvals, verbose, mean_function):
-    model, particles, functions, gp = \
+    model, particles, restraints, functions, gp = \
         setup_process(data, 1)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(model, gp)
-    model.add_restraint(gpr)
+    restraints.append(gpr)
+    sf = IMP.core.RestraintsScoringFunction(restraints)
     set_defaults_mean(data, particles, mean_function)
     for p, v in initvals.items():
         particles[p].set_nuisance(v)
@@ -1279,14 +1282,14 @@ def find_fit_all(data, initvals, verbose, mean_function):
     vals = []
     for lam in logspace(log(particles['lambda'].get_lower()) / log(10), 2, num=100):
         particles['lambda'].set_nuisance(lam)
-        ene = model.evaluate(False)
+        ene = sf.evaluate(False)
         vals.append((ene, particles['lambda'].get_nuisance()))
     vals.sort()
     particles['lambda'].set_nuisance(vals[0][1])
     # then fit covariance particles only
     res = optimize.fmin(target_function,
                         array([cu0, cv0, cl0]),
-                        args=('cov', particles, model, gpr, M, False),
+                        args=('cov', particles, sf, gpr, M, False),
                         maxiter=100, disp=False)
     cuf, cvf, clf = res
     # refine all particles
@@ -1298,7 +1301,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
                                  args=(
                                      mean_function,
                                      particles,
-                                     model,
+                                     sf,
                                      gpr,
                                      M,
                                      True),
@@ -1315,7 +1318,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
                                      args=(
                                          mean_function,
                                          particles,
-                                         model,
+                                         sf,
                                          gpr,
                                          M,
                                          True),
@@ -1338,7 +1341,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
                                          args=(
                                              mean_function,
                                              particles,
-                                             model,
+                                             sf,
                                              gpr,
                                              M,
                                              True),
@@ -1361,7 +1364,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
                                          args=(
                                              mean_function,
                                              particles,
-                                             model,
+                                             sf,
                                              gpr,
                                              M,
                                              True),
@@ -1380,7 +1383,7 @@ def find_fit_all(data, initvals, verbose, mean_function):
     #
     newvals = dict([(k, v.get_nuisance())
                     for (k, v) in particles.items()])
-    ene = model.evaluate(False)
+    ene = sf.evaluate(False)
     # make sure the errors are defined
     if not success:
         ene = inf
@@ -1416,10 +1419,11 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints,
     7 exp(-MP)*sqrt(2Pi)^Np*det(H)^(-1/2) (bayes factor)
     8 MP - Np/2*log(2Pi) + 1/2*log(det(H)) (minus log bayes factor)
     """
-    model, particles, functions, gp = setup_process(
-        data, 1, maxpoints=maxpoints)
+    model, particles, restraints, functions, gp = \
+             setup_process(data, 1, maxpoints=maxpoints)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(model, gp)
-    model.add_restraint(gpr)
+    restraints.append(gpr)
+    sf = IMP.core.RestraintsScoringFunction(restraints)
     set_defaults_mean(data, particles, mean_func)
     set_defaults_cov(data, particles)
     for p, v in initvals.items():
@@ -1427,7 +1431,7 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints,
     #
     H = matrix(gpr.get_hessian(False))
     Np = H.shape[0]
-    MP = model.evaluate(False)
+    MP = sf.evaluate(False)
     ML = gpr.unprotected_evaluate(None)
     try:
         retval = linalg.slogdet(H)
@@ -1958,7 +1962,8 @@ def remove_redundant(profiles, verbose=0):
 def write_fit(data, initvals, outfile, mean_function, npoints=200):
     fl = open(outfile, 'w')
     fl.write("#q I err gp sd gp_mean\n")
-    model, particles, functions, gp = setup_process(data, 1, jitter=0.)
+    model, particles, restraints, functions, gp = \
+              setup_process(data, 1, jitter=0.)
     for p, v in initvals.items():
         particles[p].set_nuisance(v)
     qs, Is, errs = data['q'], data['I'], data['err']
@@ -2086,7 +2091,8 @@ def fitting(profiles, args):
         mean, initvals, bayes = find_fit(data, verbose,
                                          model_comp=model_comp, model_comp_maxpoints=maxpointsH,
                                          mean_function=mean_function)
-        model, particles, functions, gp = setup_process(data, 1)
+        model, particles, restraints, functions, gp = \
+                           setup_process(data, 1)
         for part, v in initvals.items():
             particles[part].set_nuisance(v)
         if bayes:
@@ -2373,7 +2379,7 @@ def merging(profiles, args):
                                      mean_function=mean_function)
     if verbose > 1 and model_comp:
         print("    => " + mean)
-    model, particles, functions, gp = setup_process(data, 1)
+    model, particles, restraints, functions, gp = setup_process(data, 1)
     for part, v in initvals.items():
         particles[part].set_nuisance(v)
     if bayes:

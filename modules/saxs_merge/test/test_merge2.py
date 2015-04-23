@@ -268,7 +268,8 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
             s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
             gp = MockGP(1, 10)
             functions = {'mean': MockFunction(), 'covariance': MockFunction()}
-            return m, {'sigma': s}, functions, gp
+            restraints = []
+            return m, {'sigma': s}, restraints, functions, gp
         self.merge.setup_process = setup_process
         merge, profiles, args = self.merge.merging([p1, p2, p3], args)
         # test
