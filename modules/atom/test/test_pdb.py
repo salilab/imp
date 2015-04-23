@@ -46,7 +46,7 @@ class Tests(IMP.test.TestCase):
         #! read PDB
         mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                                m, IMP.atom.NonWaterPDBSelector())
-        self.assertEqual(m.get_number_of_particles(), 1132)
+        self.assertEqual(len(m.get_particle_indexes()), 1132)
         # IMP.atom.show_molecular_hierarchy(mp)
         IMP.atom.show(mp)
         IMP.atom.add_bonds(mp)
@@ -58,7 +58,7 @@ class Tests(IMP.test.TestCase):
         m2 = IMP.Model()
         mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                                m2, IMP.atom.CAlphaPDBSelector())
-        self.assertEqual(m2.get_number_of_particles(), 260)
+        self.assertEqual(len(m2.get_particle_indexes()), 260)
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 129)
         IMP.atom.add_bonds(mp)

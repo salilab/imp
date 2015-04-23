@@ -34,6 +34,6 @@ class Tests(IMP.test.TestCase):
             num_nodes = self._get_num_nodes(rmf.get_root_node())
             print(num_nodes)
             self.assertEqual(num_nodes,
-                             m.get_number_of_particles() + 1 + 1)
+                             len(m.get_particle_indexes()) + 1 + 1)
 if __name__ == '__main__':
     IMP.test.main()

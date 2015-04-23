@@ -271,9 +271,4 @@ Restraint *Model::get_restraint(unsigned int i) const {
   return restraints_->get_restraint(i);
 }
 
-unsigned int Model::get_number_of_particles() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes() instead.");
-  return get_particles().size();
-}
-
 IMPKERNEL_END_NAMESPACE

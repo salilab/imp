@@ -17,8 +17,6 @@ class Tests(IMP.test.TestCase):
             self.get_input_file_name("1d3d-ligands.mol2"),
             m, IMP.atom.AllMol2Selector())
 
-        print("number of particles")
-        print(m.get_number_of_particles())
         print(len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
         self.assertEqual(
             146, len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
@@ -39,8 +37,6 @@ class Tests(IMP.test.TestCase):
         root_d = IMP.atom.read_mol2(
             self.get_input_file_name("1d3d-ligands.mol2"),
             m, IMP.atom.AllMol2Selector())
-        print("number of particles")
-        print(m.get_number_of_particles())
         print(len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
         self.assertEqual(
             146, len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
@@ -54,9 +50,6 @@ class Tests(IMP.test.TestCase):
         root_d2 = IMP.atom.read_mol2(
             self.get_input_file_name("1d3d-ligands.mol2"),
             m2, IMP.atom.NonhydrogenMol2Selector())
-
-        print("number of particles")
-        print(m2.get_number_of_particles())
 
         IMP.atom.write_file(root_d2, self.get_tmp_file_name("2.mol2"))
         IMP.atom.write_file(root_d2, self.get_tmp_file_name("2.pdb"))
@@ -86,8 +79,6 @@ class Tests(IMP.test.TestCase):
             self.get_input_file_name("1d3d-ligands.mol2"),
             m, IMP.atom.NonHydrogenMol2Selector())
         print("test 2")
-        print("number of particles")
-        print(m.get_number_of_particles())
 
         out = io.BytesIO()
         IMP.atom.write_mol2(root_d, out)

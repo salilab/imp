@@ -234,7 +234,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model("particle methods")
         IMP.set_log_level(IMP.VERBOSE)
         p = IMP.Particle(m)
-        self.assertEqual(m.get_number_of_particles(), 1)
+        self.assertEqual(len(m.get_particle_indexes()), 1)
         for s in m.get_particles():
             s.show()
 

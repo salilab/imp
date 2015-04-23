@@ -355,9 +355,6 @@ class IMPKERNELEXPORT Model : public Object
   double evaluate(bool tf, bool warn = true);
   /** \deprecated_at{2.1} Use get_particle_indexes(). */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  unsigned int get_number_of_particles() const;
-  /** \deprecated_at{2.1} Use get_particle_indexes(). */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ParticlesTemp get_particles() const;
   /** \deprecated_at{2.1} Using a ScoringFunction instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
