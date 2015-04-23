@@ -156,23 +156,18 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
   }
 }
 
-double Model::evaluate(bool tf, bool warn) {
+double Model::evaluate(bool tf, bool) {
   IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use a scoring function or Model::update() instead.");
-  // disable warning for now
-  static bool warned = true;
-  if (!warned && warn) {
+  static bool warned = false;
+  if (!warned) {
     IMP_WARN(
         "Model::evaluate() is probably not really what you want. "
         "Consider using IMP::Model::update() if you just want update"
         " dependencies. "
-        "Or Model::create_model_scoring_function() and calling"
+        "Or create a ScoringFunction and call"
         " evaluate on that if you are repeatedly evaluating"
         " the score.");
-    IMP_WARN(
-        "Pass false as a second argument to IMP::Model::evaluate() "
-        "if you want to "
-        "disable this warning.");
     warned = true;
   }
   update();
