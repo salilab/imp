@@ -237,18 +237,6 @@ void Model::add_restraint(Restraint *r) {
   restraints_->add_restraint(r);
 }
 
-Model::ParticleIterator Model::particles_begin() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes().");
-  return ParticleIterator(NotNull(), particle_index_.begin(),
-                          particle_index_.end());
-}
-
-Model::ParticleIterator Model::particles_end() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes().");
-  return ParticleIterator(NotNull(), particle_index_.end(),
-                          particle_index_.end());
-}
-
 RestraintSet *Model::get_root_restraint_set() {
   IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use a scoring function instead of the Model.");

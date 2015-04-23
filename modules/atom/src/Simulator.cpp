@@ -145,10 +145,12 @@ ParticleIndexes Simulator::get_simulation_particle_indexes() const {
   IMP_OBJECT_LOG;
   ParticleIndexes ps;
   if (get_number_of_particles() == 0) {
-    for (Model::ParticleIterator it = get_model()->particles_begin();
-         it != get_model()->particles_end(); ++it) {
-      if (get_is_simulation_particle((*it)->get_index())) {
-        ps.push_back((*it)->get_index());
+    Model *m = get_model();
+    ParticleIndexes pis = m->get_particle_indexes();
+    for (ParticleIndexes::const_iterator it = pis.begin();
+         it != pis.end(); ++it) {
+      if (get_is_simulation_particle(*it)) {
+        ps.push_back(*it);
       }
     }
   } else {

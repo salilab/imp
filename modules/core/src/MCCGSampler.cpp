@@ -254,10 +254,13 @@ MCCGSampler::Container *MCCGSampler::set_up_movers(const Parameters &pms,
               ValueException);
   }
   ParticlesTemp ps;
-  for (Model::ParticleIterator pit = mc->get_model()->particles_begin();
-       pit != mc->get_model()->particles_end(); ++pit) {
-    if (XYZ::get_is_setup(*pit) && XYZ(*pit).get_coordinates_are_optimized()) {
-      ps.push_back(*pit);
+  Model *m = mc->get_model();
+  ParticleIndexes pis = m->get_particle_indexes();
+  for (ParticleIndexes::const_iterator pit = pis.begin();
+       pit != pis.end(); ++pit) {
+    if (XYZ::get_is_setup(m, *pit)
+        && XYZ(m, *pit).get_coordinates_are_optimized()) {
+      ps.push_back(m->get_particle(*pit));
     }
   }
   IMP_USAGE_CHECK(!ps.empty(), "No optimized particles found");

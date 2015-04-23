@@ -357,12 +357,6 @@ class IMPKERNELEXPORT Model : public Object
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   RestraintSet *get_root_restraint_set();
 #ifndef SWIG
-  /** \deprecated_at{2.1} Use get_particle_indexes(). */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ParticleIterator particles_begin() const;
-  /** \deprecated_at{2.1} Use get_particle_indexes(). */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ParticleIterator particles_end() const;
   /** \deprecated_at{2.1} Use a ScoringFunction instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   operator Restraint *() const { return restraints_.get(); }

@@ -10,19 +10,11 @@
 #include <boost/unordered_map.hpp>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
+#include <IMP/Decorator.h>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 
-#define IMP_CHECK_MODEL_PARTICLES(m)                               \
-  for (Model::ParticleIterator pit = m->particles_begin(); \
-       pit != m->particles_end(); ++pit) {                         \
-    IMP::check_particle(*pit);                             \
-  }
-
 IMPKERNEL_BEGIN_NAMESPACE
-
-// not yet exposed
-void check_particle(Particle *p);
 
 namespace {
 void write_particles_to_buffer(const ParticlesTemp &particles,
@@ -87,7 +79,12 @@ void read_particles_from_buffer(const Vector<char> &buffer,
   }
   read_particles_from_buffer(&buffer.front(), buffer.size() * sizeof(double),
                              particles, keys);
-  IMP_CHECK_MODEL_PARTICLES(particles[0]->get_model());
+  Model *m = particles[0]->get_model();
+  ParticleIndexes pis = m->get_particle_indexes();
+  for (ParticleIndexes::iterator pi = pis.begin(); pi != pis.end();
+       ++pi) {
+    IMP::check_particle(m, *pi);
+  }
 }
 
 IMPKERNEL_END_NAMESPACE

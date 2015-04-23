@@ -25,11 +25,10 @@ IMPKERNEL_BEGIN_NAMESPACE
 Decorator::Decorator(ParticleAdaptor p)
   : model_(p.get_model()), pi_(p.get_particle_index()), is_valid_(true) {}
 
-void check_particle(Particle *p) {
+void check_particle(Model *m, ParticleIndex pi) {
   for (unsigned int i = 0; i < internal::particle_validators.size(); ++i) {
-    if (internal::particle_validators[i]
-            .first(p->get_model(), p->get_index())) {
-      internal::particle_validators[i].second(p->get_model(), p->get_index());
+    if (internal::particle_validators[i].first(m, pi)) {
+      internal::particle_validators[i].second(m, pi);
     }
   }
 }

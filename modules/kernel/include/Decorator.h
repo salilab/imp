@@ -208,7 +208,13 @@ class IMPKERNELEXPORT Decorator : public Value {
 #ifndef IMP_DOXYGEN
 /** Check that the particle satisfies invariants registered by decorators.
  */
-IMPKERNELEXPORT void check_particle(Particle* p);
+IMPKERNELEXPORT void check_particle(Model *m, ParticleIndex pi);
+
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.5)
+inline void check_particle(Particle* p) {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.5, "Use the index version instead");
+  check_particle(p->get_model(), p->get_index());
+}
 #endif
 
 IMPKERNEL_END_NAMESPACE
