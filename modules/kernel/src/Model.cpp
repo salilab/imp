@@ -219,11 +219,6 @@ void Model::do_destroy() {
   }
 }
 
-/////////////////////////////////////////// NOT YET DEPRECATED STUFF
-RestraintsTemp Model::get_restraints() const {
-  return restraints_->get_restraints();
-}
-
 /////////////////////////////////////////// DEPRECATED STUFF
 ScoringFunction *Model::create_model_scoring_function() {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,

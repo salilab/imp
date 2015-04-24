@@ -340,7 +340,6 @@ class IMPKERNELEXPORT Model : public Object
 
 // all deprecated but too used to add warnings about now
 #if !defined(IMP_DOXYGEN)
-  RestraintsTemp get_restraints() const;
   virtual void do_destroy() IMP_OVERRIDE;
 #endif
 
