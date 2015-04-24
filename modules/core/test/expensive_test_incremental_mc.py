@@ -27,6 +27,7 @@ class Tests(IMP.test.TestCase):
         hps = IMP.core.HarmonicDistancePairScore(1, 100)
         # hps.set_log_level(IMP.VERBOSE)
         r = IMP.container.PairsRestraint(hps, cpc)
+        sf = IMP.core.RestraintsScoringFunction([r])
         isf = IMP.core.IncrementalScoringFunction(ps, [r])
         isf.set_log_level(IMP.SILENT)
         mc.set_incremental_scoring_function(isf)
@@ -45,8 +46,8 @@ class Tests(IMP.test.TestCase):
             # for p in ps:
             #    g= IMP.core.XYZRGeometry(p)
             #    w.add_geometry(g);
-        print(m.evaluate(False))
-        self.assertLess(m.evaluate(False), 3)
+        print(sf.evaluate(False))
+        self.assertLess(sf.evaluate(False), 3)
 
     def test_incr_nbl(self):
         """Testing incremental scoring with Monte Carlo and a nbl"""
@@ -68,6 +69,7 @@ class Tests(IMP.test.TestCase):
         # hps.set_log_level(IMP.VERBOSE)
         r = IMP.container.PairsRestraint(hps, cpc)
         # r.set_log_level(IMP.VERBOSE)
+        sf = IMP.core.RestraintsScoringFunction([r])
         isf = IMP.core.IncrementalScoringFunction(ps, [r])
         mc.set_incremental_scoring_function(isf)
         ms = [IMP.core.BallMover([x], 2) for x in ps]
@@ -91,8 +93,8 @@ class Tests(IMP.test.TestCase):
             # for p in ps:
             #    g= IMP.core.XYZRGeometry(p)
             #    w.add_geometry(g);
-        print(m.evaluate(False))
-        self.assert_(m.evaluate(False) < 3)
+        print(sf.evaluate(False))
+        self.assert_(sf.evaluate(False) < 3)
 
 
 if __name__ == '__main__':

@@ -140,8 +140,9 @@ print("sampling")
 cs = s.create_sample()
 
 print("found ", cs.get_number_of_configurations(), "solutions")
+sf = IMP.core.RestraintsScoringFunction(rs)
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
-    print("solution number:", i, " is:", m.evaluate(False))
+    print("solution number:", i, " is:", sf.evaluate(False))
     for p in ps:
         print(IMP.core.XYZ(p).get_x(), IMP.core.XYZ(p).get_y())

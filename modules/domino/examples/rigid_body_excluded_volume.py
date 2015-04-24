@@ -101,9 +101,10 @@ cs = s.create_sample()
 
 print("found ", cs.get_number_of_configurations(), "solutions")
 score = []
+sf = IMP.core.RestraintsScoringFunction(rs)
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
-    ss = m.evaluate(False)
+    ss = sf.evaluate(False)
     score.append(ss)
     print("** solution number:", i, " is:", ss)
     display(m, helices, "sol_" + str(i) + ".pym")

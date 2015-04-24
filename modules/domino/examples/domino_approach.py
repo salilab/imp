@@ -102,4 +102,4 @@ print("Found ", cs.get_number_of_configurations(), "solutions")
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
     # print the configuration:
-    print("solution number:", i, " scored:", m.evaluate(False))
+    print("solution number:", i, " scored:", rs.evaluate(False))

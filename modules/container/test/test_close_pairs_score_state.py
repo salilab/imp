@@ -97,7 +97,7 @@ class Tests(IMP.test.TestCase):
                 d.set_coordinates(d.get_coordinates() + r)
             # make sure internal checks in continer pass
 
-            m.evaluate(False)
+            m.update()
 
     def test_restraint(self):
         """Test ClosePairContainer with a restraint"""

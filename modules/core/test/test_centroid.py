@@ -18,7 +18,6 @@ class Tests(IMP.test.TestCase):
         ps = IMP.core.create_xyzr_particles(m, 10, 1)
         fpr = IMP.core.FixedRefiner(ps)
         p = IMP.core.Centroid.setup_particle(IMP.Particle(m), fpr)
-        print("eval")
-        m.evaluate(True)
+        m.update()
 if __name__ == '__main__':
     IMP.test.main()

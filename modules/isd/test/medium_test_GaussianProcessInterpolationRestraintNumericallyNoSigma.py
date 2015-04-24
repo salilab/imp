@@ -74,7 +74,7 @@ class Tests(IMP.test.TestCase):
                                                         self.err, self.N, self.mean, self.cov, self.sig)
         self.gpr = IMP.isd.GaussianProcessInterpolationRestraint(
             self.m, self.gpi)
-        self.m.add_restraint(self.gpr)
+        self.sf = IMP.core.RestraintsScoringFunction([self.gpr])
         self.particles = [
             self.G,
             self.Rg,
@@ -103,10 +103,10 @@ class Tests(IMP.test.TestCase):
         pnum = 0
         values = linspace(1, 10)
         particle = self.particles[pnum]
-        PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-3)
@@ -118,10 +118,10 @@ class Tests(IMP.test.TestCase):
         pnum = 1
         values = linspace(1, 10)
         particle = self.particles[pnum]
-        PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-1)
@@ -133,10 +133,10 @@ class Tests(IMP.test.TestCase):
         pnum = 5
         values = linspace(.1, .9)
         particle = self.particles[pnum]
-        PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, .01)
             self.assertAlmostEqual(expected, observed, delta=5e-2)
@@ -148,10 +148,10 @@ class Tests(IMP.test.TestCase):
         pnum = 6
         values = linspace(.3, 2)
         particle = self.particles[pnum]
-        PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, .02)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
@@ -167,7 +167,7 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
             # IMP.set_log_level(IMP.TERSE)
@@ -187,7 +187,7 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
             # IMP.set_log_level(IMP.TERSE)
@@ -207,7 +207,7 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
             # IMP.set_log_level(IMP.TERSE)
@@ -227,7 +227,7 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
             # IMP.set_log_level(IMP.TERSE)
@@ -247,7 +247,7 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
             # IMP.set_log_level(IMP.TERSE)
@@ -268,7 +268,7 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
             # IMP.set_log_level(IMP.TERSE)
@@ -289,7 +289,7 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
             # IMP.set_log_level(IMP.TERSE)
@@ -310,7 +310,7 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
             # IMP.set_log_level(IMP.TERSE)
@@ -331,7 +331,7 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
             # IMP.set_log_level(IMP.TERSE)
@@ -352,7 +352,7 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
             # IMP.set_log_level(IMP.TERSE)
@@ -373,7 +373,7 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
             # IMP.set_log_level(IMP.TERSE)
@@ -394,7 +394,7 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
             # IMP.set_log_level(IMP.TERSE)

@@ -78,7 +78,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         print("opt")
         # rely on internal checks
         print(o.optimize(1000))
-        print("inspect", m.evaluate(False))
+        print("inspect", sf.evaluate(False))
 
     def test_evs(self):
         """Testing excluded volume serial restraint"""
@@ -92,6 +92,6 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         print("opt")
         # rely on internal checks
         print(o.optimize(1000))
-        print("inspect", m.evaluate(False))
+        print("inspect", sf.evaluate(False))
 if __name__ == '__main__':
     IMP.test.main()
