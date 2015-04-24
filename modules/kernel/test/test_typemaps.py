@@ -223,9 +223,10 @@ class Tests(IMP.test.TestCase):
     def test_cast(self):
         """Test that casting objects works"""
         m = IMP.Model("object cast")
+        rs = IMP.RestraintSet(m)
         r = IMP._ConstRestraint(m, [], 1)
-        m.add_restraint(r)
-        rb = m.get_restraints()[0]
+        rs.add_restraint(r)
+        rb = rs.get_restraint(0)
         # print rb.get_value()
         rc = IMP._ConstRestraint.get_from(rb)
         print(rc.get_value())
@@ -241,9 +242,10 @@ class Tests(IMP.test.TestCase):
     def test_restraint_cast(self):
         """Test that restraints can be cast"""
         m = IMP.Model("model objets")
+        rs = IMP.RestraintSet(m)
         r = IMP._ConstRestraint(m, [], 1)
-        m.add_restraint(r)
-        rb = m.get_restraints()[0]
+        rs.add_restraint(r)
+        rb = rs.get_restraint(0)
         rbc = IMP._ConstRestraint.get_from(rb)
         self.assertEqual(rbc, rb)
 

@@ -113,16 +113,17 @@ class Tests(IMP.test.TestCase):
         "Python Restraints from vector accessors should survive model deletion"
         refcnt = IMP.test.RefCountChecker(self)
         m = IMP.Model("restraint survival")
-        r = IMP.RestraintSet(m)
-        m.add_restraint(r)
+        rs = IMP.RestraintSet(m)
+        r = IMP._ConstRestraint(m, [], 1)
+        rs.add_restraint(r)
         del r
         # Now create new Python Restraint r from a C++ vector accessor
         # These accessors call specific methods in the SWIG wrapper which
         # are modified by typemaps in our interface.
-        r = m.get_restraints()[0]
+        r = rs.get_restraints()[0]
         # Python reference r plus C++ reference from m
         self.assertEqual(r.get_ref_count(), 2)
-        del m
+        del m, rs
         # Now only the Python reference r should survive
         self.assertEqual(r.get_ref_count(), 1)
         refcnt.assert_number(1)
@@ -163,16 +164,17 @@ class Tests(IMP.test.TestCase):
         """Python Restraints from iterators should survive model deletion"""
         refcnt = IMP.test.RefCountChecker(self)
         m = IMP.Model("python restraint survival")
-        r = IMP.RestraintSet(m)
-        m.add_restraint(r)
+        rs = IMP.RestraintSet(m)
+        r = IMP._ConstRestraint(m, [], 1)
+        rs.add_restraint(r)
         del r
         # Now create new Python Restraint r from C++ iterator
         # This calls swig::from() internally, which is modified by template
         # specialization in our SWIG interface.
-        r = m.get_restraints()[0]
+        r = rs.get_restraints()[0]
         # Python reference r plus C++ reference from m
         self.assertEqual(r.get_ref_count(), 2)
-        del m
+        del m, rs
         # Now only the Python reference r should survive
         self.assertEqual(r.get_ref_count(), 1)
         refcnt.assert_number(1)
