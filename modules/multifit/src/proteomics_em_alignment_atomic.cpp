@@ -379,7 +379,7 @@ void ProteomicsEMAlignmentAtomic::align() {
   //  sampled_assignments_ =
   //    ds->DiscreteSampler::get_sample_assignments(s);//pst_->get_particles());
   all_rs_filt_ =
-      new domino::RestraintScoreSubsetFilterTable(mdl_->get_restraints(), pst_);
+      new domino::RestraintScoreSubsetFilterTable(restraint_set_, pst_);
   IMP_LOG_TERSE("=======2" << std::endl);
   //  all_rs_filt_->set_use_caching(true);
   IMP_LOG_TERSE("============3" << std::endl);
