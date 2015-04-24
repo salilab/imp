@@ -466,7 +466,7 @@ class DominoModel:
         # Restraint Cache is a centralized container of the restraints and
         # their scores
         self.restraint_cache = domino.RestraintCache(self.rb_states_table)
-        self.restraint_cache.add_restraints(self.model.get_restraints())
+        self.restraint_cache.add_restraints(self.restraints.values())
         rssft = domino.RestraintScoreSubsetFilterTable(self.restraint_cache)
         rssft.set_name('myRestraintScoreSubsetFilterTable')
         self.sampler.add_subset_filter_table(rssft)
@@ -601,7 +601,7 @@ class DominoModel:
         """
             Creates a merge tree from the restraints that are set already
         """
-        rs = self.model.get_restraints()
+        rs = self.restraints.values()
         ig = domino.get_interaction_graph(rs, self.rb_states_table)
 #        pruned_dep = IMP.get_pruned_dependency_graph(self.model)
 #        IMP.show_graphviz(pruned_dep)
