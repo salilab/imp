@@ -320,16 +320,6 @@ class IMPKERNELEXPORT Model : public Object
   IMP_OBJECT_METHODS(Model);
 
  public:
-// deprecated
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  struct NotNull {
-    bool operator()(const Pointer<Particle> &p) { return p; }
-  };
-  typedef boost::filter_iterator<
-      NotNull, Vector<Pointer<Particle> >::const_iterator>
-      ParticleIterator;
-#endif
-
   /** \deprecated_at{2.1} Use a ScoringFunction instead. */
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   ScoringFunction *create_model_scoring_function();
