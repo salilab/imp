@@ -243,10 +243,4 @@ RestraintSet *Model::get_root_restraint_set() {
   return restraints_;
 }
 
-Restraint *Model::get_restraint(unsigned int i) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(
-      2.1, "Use a scoring function instead of the Model.");
-  return restraints_->get_restraint(i);
-}
-
 IMPKERNEL_END_NAMESPACE

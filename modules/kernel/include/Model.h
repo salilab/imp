@@ -344,9 +344,6 @@ class IMPKERNELEXPORT Model : public Object
   virtual void do_destroy() IMP_OVERRIDE;
 #endif
 
-  /** \deprecated_at{2.1} Use a RestraintSet instead.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  Restraint *get_restraint(unsigned int i) const;
   /** \deprecated_at{2.1} Use a ScoringFunction instead.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   double evaluate(bool tf, bool warn = true);
