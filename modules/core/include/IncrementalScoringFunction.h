@@ -32,7 +32,7 @@ class NBLScoring;
     sets and such are lost (and so one can't count on information about
     whether the score is good).
 
-    The ensure proper evaluation, the ScoringFunction is divided into a number
+    To ensure proper evaluation, the ScoringFunction is divided into a number
     of sub scoring functions, one for each possibly moved particle.
 */
 class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
