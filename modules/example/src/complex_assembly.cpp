@@ -124,7 +124,7 @@ void optimize_assembly(Model *m,
   IMP_NEW(core::MonteCarlo, mc, (m));
   mc->set_log_level(IMP::SILENT);
   IMP_NEW(core::IncrementalScoringFunction, isf,
-          (components, m->get_restraints()));
+          (components, other_restraints));
   mc->set_incremental_scoring_function(isf);
   AssemblyData ad(components, interactions);
   ParticlesTemp cur;
