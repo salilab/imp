@@ -683,7 +683,6 @@ IMP_SWIG_VALUE_IMPL(Namespace, Name, TemplateName, PluralName, PluralName);
 %typemap(directorin) Namespace::Name * {
   values_like_##Name##_must_be_passed_by_value_or_const_ref_not_non_const_ref;
   }
-//%typemap(out) Namespace::Name const& = SWIGTYPE const &;
 %typemap(out) Namespace::Name & {
   values_like_##Name##_must_be_returned_by_value_or_const_ref_not_non_const_ref;
 }

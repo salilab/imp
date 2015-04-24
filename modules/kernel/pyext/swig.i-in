@@ -57,6 +57,18 @@ IMP_SWIG_NATIVE_VALUE(float);
 IMP_SWIG_NATIVE_VALUE(double);
 IMP_SWIG_NATIVE_VALUE(int);
 IMP_SWIG_NATIVE_VALUE(std::string);
+/* While we try not to return const& of primitive types, it can happen in
+   template or other generated code. Special case this and have it act like
+   simple return-by-value in Python. */
+%typemap(out) IMP::Float const & {
+  $result = SWIG_From_double(*$1);
+}
+%typemap(out) IMP::Int const & {
+  $result = SWIG_From_int(*$1);
+}
+%typemap(out) IMP::String const & {
+  $result = SWIG_From_std_string(*$1);
+}
 
 IMP_SWIG_VALUE_TEMPLATE(IMP, Index);
 IMP_SWIG_VALUE(IMP::internal, _Protection, _Protections);

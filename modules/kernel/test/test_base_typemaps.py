@@ -87,11 +87,17 @@ class Tests(IMP.test.TestCase):
         IMP._pass_overloaded_strings(["a", "b"], 1)
         IMP._pass_overloaded_strings(["a", "b"])
 
-    def test_tuples(self):
-        """Checking that named tuples work in swig"""
+    def test_const_ref_primitive(self):
+        """Checking that return of primitive types by const& works"""
         t = IMP._TestValue(1)
         self.assertEqual(t.get(), 1)
         self.assertAlmostEqual(t.get_float(), 2.0, delta=1e-6)
+        self.assertAlmostEqual(t.get_double(), 2.0, delta=1e-6)
+        self.assertAlmostEqual(t.get_Float(), 2.0, delta=1e-6)
+        self.assertEqual(t.get_int(), 42)
+        self.assertEqual(t.get_Int(), 42)
+        self.assertEqual(t.get_string(), "foobar")
+        self.assertEqual(t.get_String(), "foobar")
 
 if __name__ == '__main__':
     IMP.test.main()

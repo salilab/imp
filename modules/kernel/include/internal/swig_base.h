@@ -199,10 +199,30 @@ class IMPKERNELEXPORT _TestValue {
   IMP_SHOWABLE_INLINE(_TestValue, out << i_;);
   IMP_COMPARISONS_1(_TestValue, i_);
   int get() const { return i_; }
-  const Float &get_float() const {
+  const float &get_float() const {
+    static const float v = 2.0;
+    return v;
+  }
+  const double &get_double() const {
     static const double v = 2.0;
     return v;
   }
+  const Float &get_Float() const {
+    static const double v = 2.0;
+    return v;
+  }
+
+  const int &get_int() const {
+    static const int v = 42;
+    return v;
+  }
+  const Int &get_Int() const { return get_int(); }
+
+  const std::string &get_string() const {
+    static const std::string s = "foobar";
+    return s;
+  }
+  const String &get_String() const { return get_string(); }
 };
 
 IMP_VALUES(_TestValue, _TestValues);
