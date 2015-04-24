@@ -89,8 +89,9 @@ class Tests(IMP.test.TestCase):
 
     def test_tuples(self):
         """Checking that named tuples work in swig"""
-        self.skipTest("Doesn't work, issue #341")
-        t = IMP._TestTuple(1, 4.0)
-        self.assertEqual(t.get_distance(), 4.0)
+        t = IMP._TestValue(1)
+        self.assertEqual(t.get(), 1)
+        self.assertAlmostEqual(t.get_float(), 2.0, delta=1e-6)
+
 if __name__ == '__main__':
     IMP.test.main()
