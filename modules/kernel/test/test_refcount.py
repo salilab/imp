@@ -33,9 +33,9 @@ class Tests(IMP.test.TestCase):
         # These accessors call specific methods in the SWIG wrapper which
         # are modified by typemaps in our interface.
         print("getting particles")
-        ps = m.get_particles()
+        ps = m.get_particle_indexes()
         print("getting particle")
-        p = ps[0]
+        p = m.get_particle(ps[0])
         del ps
         # Python reference p plus C++ reference from m
         self.assertEqual(p.get_ref_count(), 2)
@@ -55,9 +55,10 @@ class Tests(IMP.test.TestCase):
         IMP.set_log_level(IMP.MEMORY)
         refcnt = IMP.test.RefCountChecker(self)
         m = IMP.Model("test model")
+        rs = IMP.RestraintSet(m)
         r = IMP._ConstRestraint(m, [], 1)
         print("adding")
-        m.add_restraint(r)
+        rs.add_restraint(r)
         print(r)
         print(r.__del__)
         # Now create new Python particle p from a C++ vector accessor
@@ -66,7 +67,7 @@ class Tests(IMP.test.TestCase):
         # These accessors call specific methods in the SWIG wrapper which
         # are modified by typemaps in our interface.
         print("getting restraints")
-        ps = m.get_restraints()
+        ps = rs.get_restraints()
         print("getting restraint")
         p = ps[0]
         print(sys.getrefcount(p), len(ps))
@@ -78,7 +79,7 @@ class Tests(IMP.test.TestCase):
         # r, m, p
         self.assertEqual(p.get_ref_count(), 3)
         print("getting it again")
-        rp = m.get_restraint(0)
+        rp = rs.get_restraint(0)
         print("check")
         # Python reference p, m, r, rp
         self.assertEqual(p.get_ref_count(), 4)
@@ -99,7 +100,7 @@ class Tests(IMP.test.TestCase):
         # Python reference m, r
         self.assertEqual(r.get_ref_count(), 2)
         print("deleting model")
-        del m
+        del m, rs
         refcnt.assert_number(1)
         # Now only the Python reference p should survive
         self.assertEqual(r.get_ref_count(), 1)
@@ -211,10 +212,10 @@ class Tests(IMP.test.TestCase):
         """Check that removed particles are skipped"""
         m = IMP.Model("skipping removed particles")
         p = IMP.Particle(m)
-        ps = m.get_particles()
+        ps = m.get_particle_indexes()
         self.assertEqual(len(ps), 1, "Should only be 1 particle")
         m.remove_particle(p.get_index())
-        ps = m.get_particles()
+        ps = m.get_particle_indexes()
         self.assertEqual(len(ps), 0, "Should be no particles")
 
     def test_sequence(self):
@@ -222,7 +223,7 @@ class Tests(IMP.test.TestCase):
         refcnt = IMP.test.RefCountChecker(self)
         m = IMP.Model("sequence ref counting")
         p = IMP.Particle(m)
-        ps = m.get_particles()
+        ps = IMP.get_particles(m, m.get_particle_indexes())
         print(IMP._take_particles(ps))
         del m
         del ps

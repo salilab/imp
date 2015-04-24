@@ -183,21 +183,6 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(CustomError, m.evaluate, False)
         # print "done"
 
-    def test_restraints(self):
-        """Check restraint methods"""
-        m = IMP.Model("restraint methods in model")
-        IMP.set_log_level(IMP.VERBOSE)
-        #self.assertRaises(IndexError, m.get_restraint, 0);
-        self.assertEqual(m.get_number_of_restraints(), 0)
-        r = DummyRestraint(m)
-        m.add_restraint(r)
-        self.assertEqual(m.get_number_of_restraints(), 1)
-        newr = m.get_restraint(0)
-        self.assertIsInstance(newr, IMP.Restraint)
-        #self.assertRaises(IndexError, m.get_restraint,1);
-        for s in m.get_restraints():
-            s.show()
-
     def test_temp_restraints(self):
         """Check free restraint methods"""
         m = IMP.Model("free restraint methods")
@@ -213,20 +198,21 @@ class Tests(IMP.test.TestCase):
     def test_refcount_director_restraints(self):
         """Refcounting should prevent director Restraints from being deleted"""
         dirchk = IMP.test.DirectorObjectChecker(self)
-        m = IMP.Model("ref count dir restraitns")
+        m = IMP.Model("ref count dir restraints")
+        rs = IMP.RestraintSet(m)
         IMP.set_log_level(IMP.VERBOSE)
         r = DummyRestraint(m)
         r.python_member = 'test string'
-        m.add_restraint(r)
+        rs.add_restraint(r)
         # Since C++ now holds a reference to r, it should be safe to delete the
         # Python object (director objects should not be freed while C++ holds
         # a reference)
         del r
-        newr = m.get_restraint(0)
+        newr = rs.get_restraint(0)
         self.assertEqual(newr.python_member, 'test string')
         # Make sure that all director objects are cleaned up
         dirchk.assert_number(1)
-        del newr, m
+        del newr, m, rs
         dirchk.assert_number(0)
 
     def test_particles(self):
@@ -235,8 +221,6 @@ class Tests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         p = IMP.Particle(m)
         self.assertEqual(len(m.get_particle_indexes()), 1)
-        for s in m.get_particles():
-            s.show()
 
     def _select(self, ps, n):
         ret = []

@@ -99,10 +99,11 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.Harmonic(10.0, 0.1)
         r2 = IMP.core.DistanceRestraint(sf, self.particles[0],
                                         self.particles[1])
-        m.add_restraint(r1)
-        m.add_restraint(r2)
-        r1 = m.get_restraint(0)
-        r2 = m.get_restraint(1)
+        rs = IMP.RestraintSet(m)
+        rs.add_restraint(r1)
+        rs.add_restraint(r2)
+        r1 = rs.get_restraint(0)
+        r2 = rs.get_restraint(1)
         self.assertIsInstance(IMP.em.FitRestraint.cast(r1),
                               IMP.em.FitRestraint)
         self.assertIsNone(IMP.em.FitRestraint.cast(r2))
