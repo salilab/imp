@@ -31,10 +31,9 @@ class Tests(IMP.test.TestCase):
         # Restraints
         sf = IMP.core.Harmonic(10.0, 1.0)
         r1 = IMP.core.DistanceRestraint(sf, particles[0], particles[1])
-        m.add_restraint(r1)
         r3 = IMP.core.DistanceRestraint(sf, particles[1], particles[2])
-        m.add_restraint(r3)
-        ig = domino.get_interaction_graph(m.get_restraints(), states_table)
+        all_restraints = [r1, r3]
+        ig = domino.get_interaction_graph(all_restraints, states_table)
         # generate a junction tree from the interaction graph
         jt = domino.get_junction_tree(ig)
         # print jt.show_graphviz()
@@ -58,6 +57,7 @@ class Tests(IMP.test.TestCase):
             domino.BranchAndBoundAssignmentsTable(states_table, filter_tables)
 
         sampler = domino.DominoSampler(m, states_table)
+        sampler.set_restraints(all_restraints)
         sampler.set_assignments_table(assignments_table)
         sampler.set_subset_filter_tables(filter_tables)
 
