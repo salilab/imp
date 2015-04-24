@@ -143,8 +143,8 @@ em2d_restraints_set = IMP.RestraintSet(m)
 # em2d_restraints_set.set_weight(1000) # weight for the em2D restraint
 
 # Create scoring function using all restraints
-sf = IMP.core.RestraintsScoringFunction([r01, r12, r23, r30,
-                                         em2d_restraints_set])
+all_restraints = [r01, r12, r23, r30, em2d_restraints_set]
+sf = IMP.core.RestraintsScoringFunction(all_restraints)
 
 # MONTECARLO OPTIMIZATION
 s = IMP.core.MonteCarlo(m)
@@ -160,7 +160,7 @@ o_state = IMP.atom.WritePDBOptimizerState(chains, "intermediate-step-%1%.pdb")
 o_state.set_period(10)
 s.add_optimizer_state(o_state)
 
-ostate2 = WriteStatisticsOptimizerScore(m, m.get_restraints())
+ostate2 = WriteStatisticsOptimizerScore(m, all_restraints)
 s.add_optimizer_state(ostate2)
 
 # Perform optimization
