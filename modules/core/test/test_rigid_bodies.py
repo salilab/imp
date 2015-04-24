@@ -16,6 +16,7 @@ class Tests(IMP.test.TestCase):
         tr = IMP.algebra.Transformation3D(r, t)
         mbs = rbd.get_rigid_members()
         m = rbd.get_particle().get_model()
+        rs = []
         for b in mbs:
             mb = IMP.core.RigidMember(b.get_particle())
             lc = mb.get_internal_coordinates()
@@ -23,7 +24,8 @@ class Tests(IMP.test.TestCase):
             dt = IMP.core.DistanceToSingletonScore(
                 IMP.core.Harmonic(0, 1), lct)
             r = IMP.core.SingletonRestraint(dt, mb.get_particle())
-            m.add_restraint(r)
+            rs.append(r)
+        return rs
 
     def _create_hierarchy(self, m, n=10):
         rd = IMP.core.XYZ.setup_particle(IMP.Particle(m),
@@ -52,8 +54,7 @@ class Tests(IMP.test.TestCase):
         # IMP.show_graphviz(dg)
         ss = p.get_required_score_states()
         self.assertEqual(len(ss), 1)
-        self. _add_rb_restraints(rbd)
-        rs = m.get_restraints()
+        rs = self._add_rb_restraints(rbd)
         rs[0].set_has_required_score_states(True)
         ss = rs[0].get_required_score_states()
         self.assertEqual(len(ss), 2)
@@ -79,11 +80,13 @@ class Tests(IMP.test.TestCase):
             print("set up")
             p.show()
             rbd.set_coordinates_are_optimized(True)
-            self. _add_rb_restraints(rbd)
+            rs = self._add_rb_restraints(rbd)
+            sf = IMP.core.RestraintsScoringFunction(rs)
             cg = IMP.core.ConjugateGradients(m)
-            print("Initial score is " + str(m.evaluate(False)))
+            cg.set_scoring_function(sf)
+            print("Initial score is " + str(sf.evaluate(False)))
             cg.optimize(1000)
-            if m.evaluate(False) < .1:
+            if sf.evaluate(False) < .1:
                 success = success + 1
         self.assertGreater(success, count / 2)
 
