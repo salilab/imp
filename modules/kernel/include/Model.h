@@ -338,7 +338,6 @@ class IMPKERNELEXPORT Model : public Object
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   void add_restraint(Restraint *r);
 
-// all deprecated but too used to add warnings about now
 #if !defined(IMP_DOXYGEN)
   virtual void do_destroy() IMP_OVERRIDE;
 #endif
