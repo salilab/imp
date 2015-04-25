@@ -12,10 +12,12 @@ class Tests(IMP.test.TestCase):
     def test_allp(self):
         """Checking decomposition of plural restraints"""
         m = IMP.Model()
+        ps = []
         for i in range(0, 10):
             p = IMP.Particle(m)
             IMP.core.XYZR.setup_particle(p)
-        lp = IMP.container.ListSingletonContainer(m.get_particles())
+            ps.append(p)
+        lp = IMP.container.ListSingletonContainer(ps)
         apc = IMP.container.AllPairContainer(lp)
         dps = IMP.core.SoftSpherePairScore(1)
         r = IMP.container.PairsRestraint(dps, apc)

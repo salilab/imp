@@ -22,9 +22,10 @@ class XTransRestraint(IMP.Restraint):
         IMP.Restraint.__init__(self, m, "XTransRestraint %1%")
 
     def unprotected_evaluate(self, accum):
+        m = self.get_model()
         e = 0
-        self.values = [p.get_value(Nuisance.get_nuisance_key())
-                       for p in self.get_model().get_particles()]
+        self.values = [m.get_attribute(Nuisance.get_nuisance_key(), p)
+                       for p in m.get_particle_indexes()]
         return e
 
     def get_version_info(self):
@@ -34,7 +35,8 @@ class XTransRestraint(IMP.Restraint):
         fh.write("Test restraint")
 
     def do_get_inputs(self):
-        return [x for x in self.get_model().get_particles()]
+        m = self.get_model()
+        return IMP.get_particles(m, m.get_particle_indexes())
 
 
 class TestNuisanceScoreState(IMP.test.TestCase):

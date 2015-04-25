@@ -10,16 +10,16 @@ class Tests(IMP.test.TestCase):
         """Check close and destroy Hierarchy """
         m = IMP.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), m)
-        nump = len(m.get_particles())
+        nump = len(m.get_particle_indexes())
         mhc = IMP.atom.create_clone(mh)
-        nnump = len(m.get_particles())
+        nnump = len(m.get_particle_indexes())
         self.assertEqual(nump * 2, nnump)
         IMP.atom.destroy(mhc)
         mhc = None
-        self.assertEqual(nump, len(m.get_particles()))
+        self.assertEqual(nump, len(m.get_particle_indexes()))
         IMP.atom.destroy(mh)
         mh = None
-        self.assertEqual(0, len(m.get_particles()))
+        self.assertEqual(0, len(m.get_particle_indexes()))
 
     def test_destroy_child(self):
         """Destroy of a child should update the parent"""

@@ -187,13 +187,10 @@ class Tests(IMP.test.TestCase):
         """Check free restraint methods"""
         m = IMP.Model("free restraint methods")
         IMP.set_log_level(IMP.VERBOSE)
-        #self.assertRaises(IndexError, m.get_restraint, 0);
-        self.assertEqual(m.get_number_of_restraints(), 0)
         r = DummyRestraint(m)
         r.set_name("dummy")
         print(r.evaluate(False))
         del r
-        m.evaluate(False)
 
     def test_refcount_director_restraints(self):
         """Refcounting should prevent director Restraints from being deleted"""

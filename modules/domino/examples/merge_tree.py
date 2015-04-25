@@ -21,17 +21,17 @@ for i in range(0, 7):
     allc.append(d.get_coordinates())
 pst = IMP.domino.ParticleStatesTable()
 ss = IMP.domino.XYZStates(allc)
-for p in m.get_particles():
-    pst.set_particle_states(p, ss)
+for p in m.get_particle_indexes():
+    pst.set_particle_states(m.get_particle(p), ss)
 # generate a set of restraints based on the close pairs in this randomly
 # chosen configuration
 cp = IMP.core.GridClosePairsFinder()
 cp.set_distance(1)
-cps = cp.get_close_pairs(m.get_particles())
+cps = cp.get_close_pairs(m, m.get_particle_indexes())
 
 if len(cps) > 0:
     # one cannot create a container from an empty list
-    acp = IMP.container.ListPairContainer(cps)
+    acp = IMP.container.ListPairContainer(m, cps)
 else:
     acp = IMP.container.ListPairContainer(m)
 ps = IMP.core.SoftSpherePairScore(1)

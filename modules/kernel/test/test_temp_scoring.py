@@ -32,7 +32,6 @@ class Tests(IMP.test.TestCase):
         IMP.set_log_level(IMP.MEMORY)
         m = IMP.Model("M")
         #self.assertRaises(IndexError, m.get_restraint, 0);
-        self.assertEqual(m.get_number_of_restraints(), 0)
         r = DummyRestraint(m)
         r.set_name("dummy")
         dirchk.assert_number(3)

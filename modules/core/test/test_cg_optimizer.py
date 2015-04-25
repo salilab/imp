@@ -37,7 +37,7 @@ class WoodsFunc(IMP.Restraint):
         return e
 
     def do_get_inputs(self):
-        return [x for x in self.get_model().get_particles()]
+        return self.particles
 
 
 class Tests(IMP.test.TestCase):

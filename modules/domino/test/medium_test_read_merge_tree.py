@@ -18,7 +18,8 @@ class Tests(IMP.test.TestCase):
         closePairDistance = 4.0
         model = IMP.Model()
         protein = IMP.atom.read_pdb(pdbFile, model, IMP.atom.ATOMPDBSelector())
-        for i, p in enumerate(model.get_particles()):
+        for i, pi in enumerate(model.get_particle_indexes()):
+            p = model.get_particle(pi)
             p.set_name(str(i))
         # close pairs
         atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)

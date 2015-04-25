@@ -68,7 +68,7 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(not p0 != p0)
         # Different SWIG proxies for the same underlying Particle should
         # report equality:
-        [m_p0, m_p1] = model.get_particles()[:2]
+        [m_p0, m_p1] = IMP.get_particles(model,model.get_particle_indexes()[:2])
         self.assertTrue(m_p0 == p0)
         self.assertTrue(not m_p0 != p0)
         # Even particles with equal attributes should not count as equal:
@@ -191,7 +191,7 @@ class Tests(IMP.test.TestCase):
         """Test comparisons of particles and decorators"""
         (model, particles) = self.setup()
         p0a = particles[0]
-        p0b = model.get_particles()[0]
+        p0b = model.get_particle(model.get_particle_indexes()[0])
         self.assertEqual(p0a, p0b)
         td0a = IMP._TrivialDecorator.setup_particle(p0a)
         td0b = IMP._TrivialDecorator(p0b)

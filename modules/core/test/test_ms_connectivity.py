@@ -124,7 +124,7 @@ class Tests(IMP.test.TestCase):
         """Test for the connectivity restraint."""
         IMP.set_log_level(IMP.SILENT)
 
-        self.randomize_particles(self.m.get_particles(), 50.0)
+        self.randomize_particles(self.ps, 50.0)
         self.ds[5].set_coordinates(IMP.algebra.Vector3D(1000, 1000, 1000))
 
 #        print 'BEFORE optimization'

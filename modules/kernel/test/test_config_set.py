@@ -155,8 +155,6 @@ class Tests(IMP.test.TestCase):
         cs.load_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[1])
-        for p in m.get_particles():
-            p.show()
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -26,14 +26,14 @@ class XTransRestraint(IMP.Restraint):
         self.set_log_level(IMP.SILENT)
 
     def unprotected_evaluate(self, accum):
+        m = self.get_model()
         e = 0.
-        for p in self.get_model().get_particles():
-            e += p.get_value(xkey) * self.strength
+        for p in m.get_particle_indexes():
+            e += m.get_attribute(xkey, p) * self.strength
         if accum:
-            for p in self.get_model().get_particles():
+            for pi in m.get_particle_indexes():
+                p = m.get_particle(pi)
                 p.add_to_derivative(xkey, self.strength, accum)
-                p.add_to_derivative(ykey, 0.0, accum)
-                p.add_to_derivative(zkey, 0.0, accum)
         return e
 
     def get_version_info(self):
@@ -43,7 +43,8 @@ class XTransRestraint(IMP.Restraint):
         fh.write("Test restraint")
 
     def do_get_inputs(self):
-        return [x for x in self.get_model().get_particles()]
+        m = self.get_model()
+        return IMP.get_particles(m, m.get_particle_indexes())
 
 
 class WriteTrajState(IMP.OptimizerState):
@@ -56,9 +57,11 @@ class WriteTrajState(IMP.OptimizerState):
 
     def do_update(self, call):
         model = self.get_optimizer().get_model()
-        self.traj.append([(p.get_value(xkey), p.get_value(ykey),
-                           p.get_value(zkey), p.get_value(vxkey))
-                          for p in model.get_particles()])
+        self.traj.append([(model.get_attribute(xkey, p),
+                           model.get_attribute(ykey, p),
+                           model.get_attribute(zkey, p),
+                           model.get_attribute(vxkey, p))
+                          for p in model.get_particle_indexes()])
 
 
 class Tests(IMP.test.TestCase):
@@ -103,8 +106,10 @@ class Tests(IMP.test.TestCase):
 
     def _optimize_model(self, timestep, restraints):
         """Run a short MD optimization on the model."""
-        start = [[p.get_value(xkey), p.get_value(ykey), p.get_value(zkey)]
-                 for p in self.model.get_particles()]
+        start = [[self.model.get_attribute(xkey, p),
+                  self.model.get_attribute(ykey, p),
+                  self.model.get_attribute(zkey, p)]
+                 for p in self.model.get_particle_indexes()]
         # Add starting (step 0) position to the trajectory, with zero velocity
         traj = [[x + [0] for x in start]]
         state = WriteTrajState(self.model, traj)
@@ -149,9 +154,9 @@ class Tests(IMP.test.TestCase):
         """Test that MD generates particle velocities"""
         self.md.optimize(0)
         keys = [IMP.FloatKey(x) for x in ("vx", "vy", "vz")]
-        for p in self.model.get_particles():
+        for p in self.model.get_particle_indexes():
             for key in keys:
-                self.assertTrue(p.has_attribute(key))
+                self.assertTrue(self.model.get_has_attribute(key, p))
 
     def _check_temperature(self, desired, tolerance):
         """Check the temperature of the system"""
