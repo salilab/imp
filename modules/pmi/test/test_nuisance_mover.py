@@ -28,7 +28,8 @@ class XTransRestraint(IMP.Restraint):
         fh.write("Test restraint")
 
     def do_get_inputs(self):
-        return [x for x in self.get_model().get_particles()]
+        m = self.get_model()
+        return IMP.get_particles(m, m.get_particle_indexes())
 
 m = IMP.Model()
 sigma = tools.SetupNuisance(m, 0, 0, 10, True).get_particle()
