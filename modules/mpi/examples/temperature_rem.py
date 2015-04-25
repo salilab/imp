@@ -37,7 +37,7 @@ for i in range(2):
 # add harmonic restraint to distance
 h = IMP.core.Harmonic(5.0, 1.0)
 ds = IMP.core.DistanceRestraint(h, ps[0], ps[1])
-m.add_restraint(ds)
+sf = IMP.core.RestraintsScoringFunction([ds])
 
 # movers
 movers = []
@@ -48,6 +48,7 @@ sm = IMP.core.SerialMover(movers)
 
 # sampler
 mc = IMP.core.MonteCarlo(m)
+mc.set_scoring_function(sf)
 mc.set_kt(temp[myindex])
 mc.set_return_best(False)
 mc.add_mover(sm)
