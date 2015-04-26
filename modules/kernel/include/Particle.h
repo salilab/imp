@@ -74,7 +74,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
        them.
 
        All distances are assumed to be in angstroms
-       and derivatives in kcal/mol angstrom. This is not enforced.
+       and derivatives in kcal/mol/angstrom. This is not enforced.
    */
   /*@{*/
   /** add attribute name to the attributes table of this particle
@@ -85,9 +85,9 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   */
   void add_attribute(FloatKey name, const Float initial_value, bool optimized);
 
-  /** adds a derivative value to the derivatives table of this particle
+  /** Adds a derivative value to the derivatives table of this particle
 
-      @param key the attribute key whose derivative is updates
+      @param key the attribute key whose derivative is updated
       @param value the derivative value to be added
       @param da a derivative accumulator for reweighting derivatives
   */
