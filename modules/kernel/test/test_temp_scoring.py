@@ -1,6 +1,7 @@
 from __future__ import print_function
 import IMP
 import IMP.test
+import IMP.core
 import io
 import random
 
@@ -33,15 +34,16 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model("M")
         #self.assertRaises(IndexError, m.get_restraint, 0);
         r = DummyRestraint(m)
+        sf = IMP.core.RestraintsScoringFunction([r])
         r.set_name("dummy")
         dirchk.assert_number(3)
         print(r.evaluate(False))
         dirchk.assert_number(4)
         del r
         dirchk.assert_number(2)
-        m.evaluate(False)
+        sf.evaluate(False)
         dirchk.assert_number(3)
-        del m
+        del m, sf
         dirchk.assert_number(0)
 
 if __name__ == '__main__':

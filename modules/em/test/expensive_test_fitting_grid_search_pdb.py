@@ -56,7 +56,6 @@ class Tests(IMP.test.TestCase):
         # (in rmsd and score)
 
         # second, test that the optimization gets you close.
-        score = self.imp_model.evaluate(False)
         print(fr.get_number_of_solutions())
         self.assertGreaterEqual(fr.get_number_of_solutions(), 2,
                                 "not enough solutions returned")

@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
         sf = IMP._ConstRestraint(m, [], 1).create_scoring_function()
         IMP.set_log_level(IMP.MEMORY)
         # trigger cleanup
-        m.evaluate(False)
+        m.update()
         sf.evaluate(False)
 
 if __name__ == '__main__':

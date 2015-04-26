@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
         ss = TouchSS(m, pi, k)
         m.add_attribute(k, pi, 0)
         m.set_is_optimized(k, pi, True)
-        m.evaluate(False)
+        m.update()
         self.assertEqual(m.get_attribute(k, pi), 1)
 if __name__ == '__main__':
     IMP.test.main()

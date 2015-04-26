@@ -29,7 +29,6 @@ class Tests(IMP.test.TestCase):
                                m, IMP.atom.CAlphaPDBSelector())
         os.unlink(name)
         self.assertEqual(len(IMP.core.get_leaves(mp)), 5)
-        m.evaluate(False)
 
     def test_pad(self):
         """Make sure that atom names are padded correctly in PDB files"""

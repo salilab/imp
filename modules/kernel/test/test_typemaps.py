@@ -1,5 +1,6 @@
 from __future__ import print_function
 import IMP
+import IMP.core
 import IMP.test
 import io
 
@@ -209,8 +210,8 @@ class Tests(IMP.test.TestCase):
         p0 = IMP.Particle(m)
         p1 = IMP.Particle(m)
         r = self._TestRestraint([p0, p1])
-        m.add_restraint(r)
-        m.evaluate(False)
+        sf = IMP.core.RestraintsScoringFunction([r])
+        sf.evaluate(False)
         r.evaluate(False)
 
     def test_dir_tms(self):
