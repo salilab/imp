@@ -43,7 +43,12 @@ class IMPKERNELEXPORT Sampler : public IMP::Object {
     } else if (cache_) {
       return cache_;
     } else {
+/* Don't warn about deprecated model scoring function every time someone
+   includes Sampler.h */
+IMP_HELPER_MACRO_PUSH_WARNINGS
+IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
       return cache_ = get_model()->create_model_scoring_function();
+IMP_HELPER_MACRO_POP_WARNINGS
     }
   }
 

@@ -87,12 +87,18 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
 
   //! Return the scoring function that is being used
   ScoringFunction *get_scoring_function() const {
-    if (scoring_function_)
+    if (scoring_function_) {
       return scoring_function_;
-    else if (cache_)
+    } else if (cache_) {
       return cache_;
-    else
+    } else {
+/* Don't warn about deprecated model scoring function every time someone
+   includes Optimizer.h */
+IMP_HELPER_MACRO_PUSH_WARNINGS
+IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
       return cache_ = get_model()->create_model_scoring_function();
+IMP_HELPER_MACRO_POP_WARNINGS
+    }
   }
 
   /** @name States
