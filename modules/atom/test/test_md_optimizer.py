@@ -32,8 +32,7 @@ class XTransRestraint(IMP.Restraint):
             e += m.get_attribute(xkey, p) * self.strength
         if accum:
             for pi in m.get_particle_indexes():
-                p = m.get_particle(pi)
-                p.add_to_derivative(xkey, self.strength, accum)
+                m.add_to_derivative(xkey, pi, self.strength, accum)
         return e
 
     def get_version_info(self):

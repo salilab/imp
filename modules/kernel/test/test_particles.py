@@ -145,6 +145,8 @@ class Tests(IMP.test.TestCase):
         da = IMP.DerivativeAccumulator(2.0)
         p.add_to_derivative(xkey, 10.0, da)
         self.assertEqual(p.get_derivative(xkey), 30.0)
+        model.add_to_derivative(xkey, p.get_index(), 10.0, da)
+        self.assertEqual(p.get_derivative(xkey), 50.0)
 
     def test_browsing(self):
         """Test browsing of particle attributes"""
