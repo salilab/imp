@@ -140,19 +140,6 @@ ClassnameScore::ClassnameScore(std::string name) : Object(name) {
      symbols are present in the kernel DSO */
 }
 
-double ClassnameScore::evaluate(ARGUMENTTYPE vt,
-                                DerivativeAccumulator *da) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index-based evaluation instead");
-  return evaluate_index(internal::get_model(vt), internal::get_index(vt), da);
-}
-
-// old versions of gcc don't like having the pragma inside the function
-double ClassnameScore::evaluate_index(Model *m, PASSINDEXTYPE vt,
-                                      DerivativeAccumulator *da) const {
-  // see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53469
-  return evaluate(internal::get_particle(m, vt), da);
-}
-
 double ClassnameScore::evaluate_indexes(Model *m,
                                         const PLURALINDEXTYPE &o,
                                         DerivativeAccumulator *da,

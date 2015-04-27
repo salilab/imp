@@ -40,10 +40,6 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
   typedef PASSINDEXTYPE PassIndexArgument;
   typedef ClassnameModifier Modifier;
   ClassnameScore(std::string name = "ClassnameScore %1%");
-  //! Compute the score and the derivative if needed.
-  /** \deprecated_at{2.1} Use the index-based evaluate instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual double evaluate(ARGUMENTTYPE vt, DerivativeAccumulator *da) const;
 
   //! Compute the score and the derivative if needed.
   /** @param m the model of vt
@@ -53,7 +49,7 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                 will not be computed.
    */
   virtual double evaluate_index(Model *m, PASSINDEXTYPE vt,
-                                DerivativeAccumulator *da) const;
+                                DerivativeAccumulator *da) const = 0;
 
   //! Compute the score and the derivative if needed over a set.
   /** @param m the model of o
