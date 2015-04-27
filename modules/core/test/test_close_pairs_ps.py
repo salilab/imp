@@ -45,7 +45,8 @@ class Tests(IMP.test.TestCase):
         cpr = IMP.core.LeavesRefiner(r0.get_traits())
         lps = IMP._LogPairScore()
         cpps = IMP.core.ClosePairsPairScore(lps, cpr, threshold)
-        cpps.evaluate((r0, r1), None)
+        cpps.evaluate_index(m,
+                      (r0.get_particle_index(), r1.get_particle_index()), None)
         print(str(len(lps.get_particle_pairs())) + " pairs", "in", threshold)
         for pp in lps.get_particle_pairs():
             print(pp[0].get_name(), pp[1].get_name())
@@ -79,7 +80,8 @@ class Tests(IMP.test.TestCase):
         lps = IMP._LogPairScore()
         k = 1
         cpps = IMP.core.KClosePairsPairScore(lps, cpr, k)
-        cpps.evaluate((r0, r1), None)
+        cpps.evaluate_index(m, (r0.get_particle_index(),
+                                r1.get_particle_index()), None)
         print(str(len(lps.get_particle_pairs())) + " pairs", "in", k)
         for pp in lps.get_particle_pairs():
             print(pp[0].get_name(), pp[1].get_name())

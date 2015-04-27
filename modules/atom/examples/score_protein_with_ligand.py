@@ -25,5 +25,7 @@ for l in ligands.get_children():
             # check if the atoms are close enough together
             if IMP.core.get_distance(IMP.core.XYZ(pa), IMP.core.XYZ(la)) < 15:
                 # score one pair of atoms
-                score += ps.evaluate((pa, la), None)
+                score += ps.evaluate_index(m,
+                                           (pa.get_particle_index(),
+                                            la.get_particle_index()), None)
     print("score for ", l.get_name(), "is", score)

@@ -14,8 +14,8 @@ class Tests(IMP.test.TestCase):
         """Checking refine pairs pair score"""
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
-        pp = IMP.Particle(m)
-        hpp = IMP.core.Hierarchy.setup_particle(pp)
+        pp = m.add_particle("p")
+        hpp = IMP.core.Hierarchy.setup_particle(m, pp)
         c = []
         for i in range(0, 10):
             p = IMP.Particle(m)
@@ -27,11 +27,11 @@ class Tests(IMP.test.TestCase):
         rps = IMP.core.RefinedPairsPairScore(pr, cps)
         ppp = (pp, pp)
         print(type(rps))
-        print(type(rps.evaluate))
+        print(type(rps.evaluate_index))
         da = IMP.DerivativeAccumulator()
         print(type(pp))
         print(type(ppp))
-        self.assertEqual(rps.evaluate(ppp, da), 100)
+        self.assertEqual(rps.evaluate_index(m, ppp, da), 100)
 
 
 if __name__ == '__main__':

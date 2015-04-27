@@ -81,7 +81,9 @@ def add_skeleton(h, c, r, w, chain_colors):
         for hc1 in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
             if hc1 <= hc0:
                 continue
-            d = ps.evaluate((hc0, hc1), None)
+            d = ps.evaluate_index(h.get_model(),
+                                  (hc0.get_particle_index(),
+                                   hc1.get_particle_index()), None)
             if d < 1:
                 d0 = IMP.core.XYZ(hc0)
                 d1 = IMP.core.XYZ(hc1)

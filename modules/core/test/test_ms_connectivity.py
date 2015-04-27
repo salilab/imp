@@ -163,7 +163,8 @@ class Tests(IMP.test.TestCase):
         pps = self.r.get_connected_pairs()
         lscore = 0
         for p in pps:
-            lscore = lscore + self.ss.evaluate((p[0], p[1]), None)
+            lscore = lscore + self.ss.evaluate_index(self.m,
+                                  (p[0].get_index(), p[1].get_index()), None)
         self.assertAlmostEqual(score, lscore, delta=.1)
 #        self.assertGreaterEqual(sum, 4, "Wrong number of close pairs")
 

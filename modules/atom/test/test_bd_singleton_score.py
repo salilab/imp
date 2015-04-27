@@ -24,15 +24,15 @@ class Tests(IMP.test.TestCase):
 
         d0.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
         d1.set_coordinates(IMP.algebra.Vector3D(0, 0, 3))
-        self.assertEqual(ss.evaluate(b.get_particle(), None), 0)
+        self.assertEqual(ss.evaluate_index(m, b.get_particle_index(), None), 0)
 
         d0.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
         d1.set_coordinates(IMP.algebra.Vector3D(0, 0, 4))
-        self.assertEqual(ss.evaluate(b.get_particle(), None), 2)
+        self.assertEqual(ss.evaluate_index(m, b.get_particle_index(), None), 2)
 
         d0.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
         d1.set_coordinates(IMP.algebra.Vector3D(0, 0, 2))
-        self.assertEqual(ss.evaluate(b.get_particle(), None), -2)
+        self.assertEqual(ss.evaluate_index(m, b.get_particle_index(), None), -2)
 
     def test_bd_deriv(self):
         """Test derivatives of the bond SingletonScore"""

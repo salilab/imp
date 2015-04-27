@@ -29,11 +29,12 @@ class Score(IMP.PairScore):
         self._pred.set_was_used(True)
         IMP.PairScore.__init__(self)
 
-    def evaluate(self, pp, da):
-        if self._pred.get_value(pp) == self._value:
+    def evaluate_index(self, m, pp, da):
+        if self._pred.get_value(IMP.get_particles(m, pp)) == self._value:
             return 0
         else:
-            print("uh oh", pp[0].get_value(tk), pp[1].get_value(tk), self._value)
+            print("uh oh", m.get_attribute(tk, pp[0]),
+                  m.get_attribute(tk, pp[1]), self._value)
             return 1
 
     def do_get_inputs(self, m, pis):

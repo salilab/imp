@@ -15,10 +15,10 @@ class Tests(IMP.test.TestCase):
         """Check that LowestRefinedPairScore returns the lowest"""
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
-        pp0 = IMP.Particle(m)
-        pp1 = IMP.Particle(m)
-        hpp = [IMP.core.Hierarchy.setup_particle(pp0),
-               IMP.core.Hierarchy.setup_particle(pp1)]
+        pp0 = m.add_particle("pp0")
+        pp1 = m.add_particle("pp1")
+        hpp = [IMP.core.Hierarchy.setup_particle(m, pp0),
+               IMP.core.Hierarchy.setup_particle(m, pp1)]
         ds = [[], []]
         for i in range(0, 10):
             p = IMP.Particle(m)
@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         cps = IMP.core.Linear(0, 1)
         dps = IMP.core.DistancePairScore(cps)
         rps = IMP.misc.LowestRefinedPairScore(pr, dps)
-        self.assertAlmostEqual(rps.evaluate((pp0, pp1),
+        self.assertAlmostEqual(rps.evaluate_index(m, (pp0, pp1),
                                             None), .9 * md, delta=1.1 * md)
 
 
