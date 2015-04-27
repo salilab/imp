@@ -50,6 +50,14 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
   void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
   void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
   void clear_FUNCTIONNAMEs();
+#ifdef SWIG
+  //! Add a single PASSINDEXTYPE to the container
+  void add(PASSINDEXTYPE vt);
+
+  //! Add PLURALINDEXTYPE to the container
+  void add(const PLURALINDEXTYPE &c);
+#endif
+
 /**@}*/
 #ifdef SWIG
   PLURALINDEXTYPE get_indexes() const;

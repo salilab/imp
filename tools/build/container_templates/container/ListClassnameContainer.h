@@ -54,6 +54,12 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
   void clear_FUNCTIONNAMEs();
 #endif
 #ifdef SWIG
+  //! Add a single PASSINDEXTYPE to the container
+  void add(PASSINDEXTYPE vt);
+
+  //! Add PLURALINDEXTYPE to the container
+  void add(const PLURALINDEXTYPE &c);
+
   PLURALINDEXTYPE get_indexes() const;
   PLURALINDEXTYPE get_range_indexes() const;
   ModelObjectsTemp do_get_inputs() const;
