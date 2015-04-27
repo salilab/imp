@@ -18,14 +18,14 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-//! Abstract class for scoring object(s) of type TYPENAME.
+//! Abstract class for scoring object(s) of type INDEXTYPE.
 /** ClassnameScore will evaluate the score and derivatives
-    for passed object(s) of type TYPENAME.
+    for passed object(s) of type INDEXTYPE.
 
     Use in conjunction with various
     restraints such as IMP::core::ClassnamesRestraint or
     IMP::core::ClassnameRestraint. The restraints couple the score
-    functions with appropriate lists of object(s) of type TYPENAME.
+    functions with appropriate lists of object(s) of type INDEXTYPE.
 
     Implementers should check out IMP_CLASSNAME_SCORE().
 
