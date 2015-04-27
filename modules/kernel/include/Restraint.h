@@ -62,11 +62,6 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
 #ifndef IMP_DOXYGEN
   //! Return the score for this restraint for the current state of the model.
   /** \return Current score.
-
-      This method is equivalent to calling:
-      \code
-      model->evaluate(RestraintsTemp(1,this), calc_derivs)
-      \endcode
    */
   double evaluate(bool calc_derivs) const;
 
@@ -84,7 +79,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       \note These functions probably should be called \c do_evaluate, but
       were grandfathered in.
       \note Although the returned score is unweighted, the DerivativeAccumulator
-      passed in had better be properly weighted.
+      passed in should be properly weighted.
       @{
   */
   //! Return the unweighted score for the restraint.
@@ -142,7 +137,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       Each restraint's contribution to the model score is weighted. The
       total weight for the restraint is the some over all the paths containing
       it. That is, if a restraint is in a RestraintSet with weight .5 and
-      another with weight 2, and the restaint itself has weight 3, then the
+      another with weight 2, and the restraint itself has weight 3, then the
       total weight of the restraint is \f$.5 \cdot 3 + 2 \cdot 3 = 7.5  \f$.
       @{
   */
@@ -152,7 +147,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   /** \name Filtering
       We are typically only interested in "good" conformations of
       the model. These are described by specifying maximum scores
-      per restraint and for the whole model. Samplers, optimizers
+      per restraint (or RestraintSet). Samplers, optimizers
       etc are free to ignore configurations they encounter which
       go outside these bounds.
 
@@ -194,27 +189,24 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 
  protected:
-  /** A Restraint should override this if they want to decompose themselves
+  /** A Restraint should override this if it wants to decompose itself
       for domino and other purposes. The returned restraints will be made
-      in to a RestraintSet, if needed and the weight and maximum score
-      set for the restraint set.
+      into a RestraintSet if needed, with suitable weight and maximum score.
   */
   virtual Restraints do_create_decomposition() const {
     return Restraints(1, const_cast<Restraint *>(this));
   }
-  /** A Restraint should override this if they want to decompose themselves
+  /** A Restraint should override this if it wants to decompose itself
       for display and other purposes. The returned restraints will be made
-      in to a RestraintSet, if needed and the weight and maximum score
-      set for the restraint set.
+      into a RestraintSet if needed, with suitable weight and maximum score.
 
       The returned restraints should be only the non-zero terms and should
-      have their last scores set appropriately;
+      have their last scores set appropriately.
    */
   virtual Restraints do_create_current_decomposition() const {
     return do_create_decomposition();
   }
-  /** A restraint should override this to compute the score and derivatives.
-  */
+  //! A restraint should override this to compute the score and derivatives.
   virtual void do_add_score_and_derivatives(ScoreAccumulator sa) const;
 
   /** No outputs. */
@@ -230,9 +222,8 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   mutable Pointer<ScoringFunction> cached_internal_scoring_function_;
 };
 
-/** This class is to provide a consisted interface for things
-    that take Restraints as arguments.
-
+//! Provide a consistent interface for things that take Restraints as arguments.
+/**
     \note Passing an empty list of restraints should be supported, but problems
     could arise, so be alert (the problems would not be subtle).
 */
