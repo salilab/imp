@@ -50,9 +50,7 @@ inline FloatsList sample_points_from_density(const em::DensityMap * dmap_orig,
     em::DensityMap * dmap = em::get_threshold_map(dmap_orig,threshold);
     dmap->calcRMS();
     const em::DensityHeader * dhead = dmap->get_header();
-    Float dmin=dhead->dmin;
     Float dmax=dhead->dmax;
-    //Float drange=dhead->dmax-dmin;
     algebra::BoundingBox3D bbox=em::get_bounding_box(dmap,0.00001);
 
     // setup random number generator
