@@ -282,6 +282,8 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_ATTRIBUTE_METHODS(Object, Object *);
   IMP_MODEL_ATTRIBUTE_METHODS(WeakObject, Object *);
   void set_is_optimized(FloatKey, ParticleIndex, bool);
+  void add_to_derivative(FloatKey k, ParticleIndex particle, double v,
+                         const DerivativeAccumulator &da);
 #endif
 
   /** Get the particle from an index. */
