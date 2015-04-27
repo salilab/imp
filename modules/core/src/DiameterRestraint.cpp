@@ -93,14 +93,16 @@ Restraints DiameterRestraint::do_create_decomposition() const {
 
 Restraints DiameterRestraint::do_create_current_decomposition() const {
   Restraints ret;
-  ParticlesTemp ps =
-      get_particles(get_model(), sc_->get_indexes());
+  ParticleIndexes ps = sc_->get_indexes();
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps, (diameter_, 1));
+  Model *m = get_model();
   for (unsigned int i = 0; i < ps.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      if (sps->evaluate(ParticlePair(ps[i], ps[j]), nullptr) > 0) {
+      if (sps->evaluate_index(m,
+                              ParticleIndexPair(ps[i], ps[j]), nullptr) > 0) {
         ret.push_back(IMP::create_restraint(
-            sps.get(), ParticlePair(ps[i], ps[j])));
+            sps.get(), ParticlePair(m->get_particle(ps[i]),
+                                    m->get_particle(ps[j]))));
         ret.back()->set_maximum_score(get_maximum_score());
         std::ostringstream oss;
         oss << get_name() << " " << i << " " << j;

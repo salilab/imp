@@ -225,18 +225,18 @@ double ExcludedVolumeRestraint::unprotected_evaluate_if_good(
   if (!initialized_) initialize();
   IMP_USAGE_CHECK(!da, "Can't do derivatives");
   IMP_CHECK_CODE(double check = 0);
-  IMP_CHECK_CODE(ParticlesTemp all =
-                     IMP::get_particles(get_model(), sc_->get_indexes()));
+  IMP_CHECK_CODE(ParticleIndexes all = sc_->get_indexes());
   IMP_CHECK_CODE(IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     if (all.size() < 3000) {
+      Model *m = get_model();
       for (unsigned int i = 0; i < all.size(); ++i) {
         for (unsigned int j = 0; j < i; ++j) {
-          if (!RigidMember::get_is_setup(all[i]) ||
-              !RigidMember::get_is_setup(all[j]) ||
-              RigidMember(all[i]).get_rigid_body() !=
-                  RigidMember(all[j]).get_rigid_body()) {
-            check +=
-                ssps_->evaluate(ParticlePair(all[i], all[j]), nullptr);
+          if (!RigidMember::get_is_setup(m, all[i]) ||
+              !RigidMember::get_is_setup(m, all[j]) ||
+              RigidMember(m, all[i]).get_rigid_body() !=
+                  RigidMember(m, all[j]).get_rigid_body()) {
+            check += ssps_->evaluate_index(m, ParticleIndexPair(all[i], all[j]),
+                                           nullptr);
           }
         }
       }
