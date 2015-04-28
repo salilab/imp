@@ -46,7 +46,9 @@ class IMPKERNELEXPORT Sampler : public IMP::Object {
 /* Don't warn about deprecated model scoring function every time someone
    includes Sampler.h */
 IMP_HELPER_MACRO_PUSH_WARNINGS
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
 IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
+#endif
       return cache_ = get_model()->create_model_scoring_function();
 IMP_HELPER_MACRO_POP_WARNINGS
     }
