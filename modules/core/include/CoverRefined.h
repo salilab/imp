@@ -69,7 +69,7 @@ class IMPCOREEXPORT CoverRefined : public SingletonModifier {
 
     \usesconstraint
 */
-IMP_SUMMARY_DECORATOR_DECL(Cover, XYZR, XYZs);
+IMP_SUMMARIZE_DECORATOR_DECL(Cover, XYZR, XYZs,);
 
 IMPCORE_END_NAMESPACE
 

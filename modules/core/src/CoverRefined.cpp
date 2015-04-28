@@ -42,6 +42,7 @@ void CoverRefined::apply_index(Model *m,
   set_enclosing_sphere(dp, ps, slack_);
 }
 
-IMP_SUMMARY_DECORATOR_DEF(Cover, XYZR, XYZs,
-                          SingletonModifier *mod = new CoverRefined(ref, 0));
+IMP_SUMMARIZE_DECORATOR_DEF(Cover, XYZR, XYZs,
+                            new CoverRefined(ref, 0),
+                            new DerivativesToRefined(ref));
 IMPCORE_END_NAMESPACE
