@@ -8,7 +8,6 @@
 #include "IMP/internal/static.h"
 #include "IMP/Particle.h"
 #include "IMP/internal/utility.h"
-#include "IMP/set.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 

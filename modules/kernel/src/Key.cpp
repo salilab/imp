@@ -8,7 +8,6 @@
 #include "IMP/Key.h"
 #include "IMP/exception.h"
 #include "IMP/base_types.h"
-#include "IMP/map.h"
 #include "IMP/Particle.h"
 #include "IMP/internal/AttributeTable.h"
 
