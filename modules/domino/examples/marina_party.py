@@ -25,13 +25,13 @@ import random
 
 class SumPricePairScore(IMP.PairScore):
 
-    def evaluate(self, pair, accum):
-        price0 = Price(pair[0]).get_price()
-        price1 = Price(pair[1]).get_price()
+    def evaluate_index(self, m, pair, accum):
+        price0 = Price(m, pair[0]).get_price()
+        price1 = Price(m, pair[1]).get_price()
         return price0 + price1
 
     def do_get_inputs(self, m, pis):
-        return [m.get_particle(i) for i in pis]
+        return IMP.get_particles(m, pis)
 
 
 class PriceStates(IMP.domino.ParticleStates):
