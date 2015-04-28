@@ -21,14 +21,6 @@ class IMPCOREEXPORT NearestNeighborsClosePairsFinder : public ClosePairsFinder {
  public:
   NearestNeighborsClosePairsFinder();
 
-#ifndef SWIG
-  using ClosePairsFinder::get_close_pairs;
-#else
-  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc)
-      const;
-  ParticlePairsTemp get_close_pairs(
-      const ParticlesTemp &pca, const ParticlesTemp &pcb) const;
-#endif
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
       IMP_OVERRIDE;
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,

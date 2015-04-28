@@ -40,14 +40,6 @@ class IMPCOREEXPORT ClosePairsFinder : public ParticleInputs,
   ClosePairsFinder(std::string name);
   ~ClosePairsFinder();
 
-  /** \deprecated_at{2.1} use the index-based one instead. */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc)
-      const;
-  /** \deprecated_at{2.1} use the index-based one instead. */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  ParticlePairsTemp get_close_pairs(
-      const ParticlesTemp &pca, const ParticlesTemp &pcb) const;
   virtual ParticleIndexPairs get_close_pairs(
       Model *m, const ParticleIndexes &pc) const = 0;
   virtual ParticleIndexPairs get_close_pairs(

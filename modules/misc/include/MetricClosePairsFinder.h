@@ -147,14 +147,6 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
   MetricClosePairsFinder(LowerBound lb, UpperBound ub,
                          std::string name = "MetricClosePairsFinder%1%")
       : core::ClosePairsFinder(name), lb_(lb), ub_(ub) {}
-#ifndef SWIG
-  using ClosePairsFinder::get_close_pairs;
-#else
-  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc)
-      const;
-  ParticlePairsTemp get_close_pairs(
-      const ParticlesTemp &pca, const ParticlesTemp &pcb) const;
-#endif
   /** Not supported.*/
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &) const
       IMP_OVERRIDE {
