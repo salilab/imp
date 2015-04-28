@@ -262,16 +262,22 @@ DynamicListClassnameContainer::DynamicListClassnameContainer(Container *m,
     : P(m, name) {}
 
 void DynamicListClassnameContainer::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
   add(IMP::internal::get_index(vt));
 }
 void DynamicListClassnameContainer::add_FUNCTIONNAMEs(
     const PLURALVARIABLETYPE &c) {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
   add(IMP::internal::get_index(c));
 }
 void DynamicListClassnameContainer::set_FUNCTIONNAMEs(PLURALVARIABLETYPE c) {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
   set(IMP::internal::get_index(c));
 }
-void DynamicListClassnameContainer::clear_FUNCTIONNAMEs() { clear(); }
+void DynamicListClassnameContainer::clear_FUNCTIONNAMEs() {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
+  clear();
+}
 IMPCONTAINER_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -338,18 +344,25 @@ ListClassnameContainer::ListClassnameContainer(Model *m,
     : P(m, name) {}
 
 void ListClassnameContainer::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
   add(IMP::internal::get_index(vt));
 }
 void ListClassnameContainer::add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
   add(IMP::internal::get_index(c));
 }
 void ListClassnameContainer::set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
   set(IMP::internal::get_index(c));
 }
 void ListClassnameContainer::set_FUNCTIONNAMEs(const PLURALINDEXTYPE &c) {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
   set(c);
 }
-void ListClassnameContainer::clear_FUNCTIONNAMEs() { clear(); }
+void ListClassnameContainer::clear_FUNCTIONNAMEs() {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
+  clear();
+}
 
 IMPCONTAINER_END_NAMESPACE
 

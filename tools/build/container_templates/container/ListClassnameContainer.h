@@ -1,6 +1,6 @@
 /**
  *  \file IMP/container/ListClassnameContainer.h
- *  \brief Store a list of PLURALVARIABLETYPE
+ *  \brief Store a list of PLURALINDEXTYPE.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
@@ -17,7 +17,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Store a PLURALINDEXTYPE
+//! Store a list of PLURALINDEXTYPE
 /** \note The order may change when particles are inserted
     as the list is maintained in sorted order.
 
@@ -42,24 +42,45 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
   ListClassnameContainer(const PLURALVARIABLETYPE &ps,
                          std::string name = "ListClassnameContainer%1%");
 
+  /** \deprecated_at{2.5} Use set() with indexes instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &ps);
+
+  /** \deprecated_at{2.5} Use set() instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void set_FUNCTIONNAMEs(const PLURALINDEXTYPE &contents);
 #ifndef IMP_DOXYGEN
   ListClassnameContainer(Model *m,
                          std::string name = "ListClassnameContainer %1%");
   ListClassnameContainer(Model *m, const char *name);
 
+  /** \deprecated_at{2.5} Use add() with indexes instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void add_FUNCTIONNAME(ARGUMENTTYPE vt);
+
+  /** \deprecated_at{2.5} Use add() with indexes instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
+
+  /** \deprecated_at{2.5} Use clear() instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void clear_FUNCTIONNAMEs();
 #endif
-#ifdef SWIG
-  //! Add a single PASSINDEXTYPE to the container
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+  //! Add a single PASSINDEXTYPE to the container.
   void add(PASSINDEXTYPE vt);
 
-  //! Add PLURALINDEXTYPE to the container
+  //! Add PLURALINDEXTYPE to the container.
   void add(const PLURALINDEXTYPE &c);
 
+  //! Set the contents of the container to the given PLURALINDEXTYPE.
+  void set(PLURALINDEXTYPE cp);
+
+  //! Clear the contents of the container.
+  void clear();
+#endif
+
+#ifdef SWIG
   PLURALINDEXTYPE get_indexes() const;
   PLURALINDEXTYPE get_range_indexes() const;
   ModelObjectsTemp do_get_inputs() const;

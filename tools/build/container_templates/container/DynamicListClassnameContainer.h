@@ -46,17 +46,34 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
       the list use these methods.
    */
   /**@{*/
-  void add_FUNCTIONNAME(ARGUMENTTYPE vt);
-  void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
-  void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
-  void clear_FUNCTIONNAMEs();
-#ifdef SWIG
-  //! Add a single PASSINDEXTYPE to the container
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+  //! Add a single PASSINDEXTYPE to the container.
   void add(PASSINDEXTYPE vt);
 
-  //! Add PLURALINDEXTYPE to the container
+  //! Add PLURALINDEXTYPE to the container.
   void add(const PLURALINDEXTYPE &c);
+
+  //! Set the contents of the container to the given PLURALINDEXTYPE.
+  void set(PLURALINDEXTYPE cp);
+
+  //! Clear the contents of the container.
+  void clear();
 #endif
+  /** \deprecated_at{2.5} Use add() with indexes instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
+  void add_FUNCTIONNAME(ARGUMENTTYPE vt);
+
+  /** \deprecated_at{2.5} Use add() with indexes instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
+  void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
+
+  /** \deprecated_at{2.5} Use set() instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
+  void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
+
+  /** \deprecated_at{2.5} Use clear() instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
+  void clear_FUNCTIONNAMEs();
 
 /**@}*/
 #ifdef SWIG
