@@ -3,6 +3,9 @@
 
 from __future__ import print_function
 import IMP
+import sys
+
+IMP.setup_from_argv(sys.argv, "Graph interface")
 
 m = IMP.Model()
 # An undirected graph with an IMP::Object for each node

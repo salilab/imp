@@ -4,6 +4,9 @@
 
 from __future__ import print_function
 import IMP
+import sys
+
+IMP.setup_from_argv(sys.argv, "Restraint example")
 
 # a restraint which checks if particles are sorted in
 # increasing order on k.

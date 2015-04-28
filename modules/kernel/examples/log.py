@@ -2,6 +2,9 @@
 # Show various ways to use the log and control it.
 
 import IMP
+import sys
+
+IMP.setup_from_argv(sys.argv, "Log example")
 
 class DummyObject(IMP.Object):
 

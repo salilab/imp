@@ -6,6 +6,9 @@
 from __future__ import print_function
 import IMP.example
 import IMP.statistics
+import sys
+
+IMP.setup_from_argv(sys.argv, "Basic optimization")
 
 (m, c) = IMP.example.create_model_and_particles()
 ps = IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(1, 1))

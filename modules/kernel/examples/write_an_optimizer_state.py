@@ -5,6 +5,9 @@
 
 from __future__ import print_function
 import IMP
+import sys
+
+IMP.setup_from_argv(sys.argv, "Optimizer state")
 
 # an optimizer state which prints out the last scores of some restraints.
 
