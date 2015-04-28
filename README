@@ -1,8 +1,8 @@
 Documentation and an installation guide can be found at
-http://salilab.org/imp/nightly/doc/html/
+http://integrativemodeling.org/nightly/doc/manual/.
 
 Building IMP:
-=====================
+=============
 
 To build IMP source found in `path/to/imp-source` and install it in
 `path_to_install` do:
