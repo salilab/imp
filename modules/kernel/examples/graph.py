@@ -29,7 +29,7 @@ try:
     import matplotlib
     # the engine to be used must be selected before pyplot is imported
     matplotlib.use("macosx")
-    import matplotlib.pyplot as plt
+    import matplotlib.pyplot
 
     # the method below requires the altgraph python package
     xg = IMP.get_networkx_graph(g)
@@ -38,7 +38,7 @@ try:
     #import networkx
     # networkx.draw(xg)
     # networkx.draw_shell(xg)
-    # plt.show()
+    # matplotlib.pyplot.show()
 except:
     print("networkx not fully installed")
 
