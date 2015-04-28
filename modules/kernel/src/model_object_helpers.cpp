@@ -42,28 +42,6 @@ ModelObjectsTemp ParticleOutputs::get_outputs(
   return do_get_outputs(m, pis);
 }
 
-ContainersTemp ParticleOutputs::get_output_containers(Particle *p) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Call get_outputs instead.");
-  return IMP::get_output_containers(
-      get_outputs(p->get_model(), ParticleIndexes(1, p->get_index())));
-}
-
-ParticlesTemp ParticleOutputs::get_output_particles(Particle *p) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Call get_outputs instead.");
-  return IMP::get_output_particles(
-      get_outputs(p->get_model(), ParticleIndexes(1, p->get_index())));
-}
-
-ModelObjectsTemp ParticleOutputs::do_get_outputs(
-    Model *m, const ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
-  for (unsigned int i = 0; i < pis.size(); ++i) {
-    ret += get_output_containers(m->get_particle(pis[i]));
-    ret += get_output_particles(m->get_particle(pis[i]));
-  }
-  return ret;
-}
-
 ScoreStatesTemp get_required_score_states(const ModelObjectsTemp &mos,
                                           ScoreStatesTemp exclude) {
   if (mos.empty()) return ScoreStatesTemp();

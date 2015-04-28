@@ -299,38 +299,6 @@
   }                                                                         \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
-#ifndef SWIG
-/** Report dependencies of the container Name. Add the line
-    deps_(new DependenciesScoreState(this), model) to the constructor
-    initializer list. The input_deps argument should add the input
-    containers to a variable ret.
-*/
-#define IMP_CONTAINER_DEPENDENCIES(Name, input_deps)                       \
-  class DependenciesScoreState : public ScoreState {                       \
-    Name* back_;                                                           \
-                                                                           \
-   public:                                                                 \
-    DependenciesScoreState(Name* n)                                        \
-        : ScoreState(n->get_name() + " dependencies"), back_(n) {}         \
-    ContainersTemp get_input_containers() const {                          \
-      ContainersTemp ret;                                                  \
-      input_deps return ret;                                               \
-    }                                                                      \
-    ContainersTemp get_output_containers() const {                         \
-      return ContainersTemp(1, back_);                                     \
-    }                                                                      \
-    ParticlesTemp get_input_particles() const { return ParticlesTemp(); }  \
-    ParticlesTemp get_output_particles() const { return ParticlesTemp(); } \
-    void do_before_evaluate() {}                                           \
-    void do_after_evaluate(DerivativeAccumulator*) {}                      \
-    IMP_OBJECT_METHODS(                                                    \
-        DependenciesScoreState) friend class DependenciesScoreState;       \
-  ScopedScoreState deps_
-
-#else
-#define IMP_CONTAINER_DEPENDENCIES(Name, input_deps)
-#endif
-
 #define IMP_CONTAINER_FOREACH_LOOP(ContainerType, container, operation, tname) \
   for (unsigned int _2 = 0; _2 < imp_foreach_indexes.size(); ++_2) {           \
     tname ContainerType::ContainedIndexType _1 = imp_foreach_indexes[_2];      \
