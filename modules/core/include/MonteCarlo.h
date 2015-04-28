@@ -80,16 +80,6 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   /** \name Statistics
       @{
    */
-  //! Return how many times the optimizer has succeeded in taking a step
-  /** \deprecated_at{2.2} Use get_number_of_accepted_steps() instead
-    */
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.2)
-  unsigned int get_number_of_forward_steps() const {
-    IMPCORE_DEPRECATED_FUNCTION_DEF(2.2,
-                       "Use get_number_of_accepted_steps() instead.");
-    return get_number_of_accepted_steps();
-  }
-
   //! Return how many times the optimizer has stepped to lower score
   unsigned int get_number_of_downward_steps() const {
     return stat_downward_steps_taken_;
