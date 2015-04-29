@@ -12,15 +12,6 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-double get_rmsd_transforming_first(const IMP::algebra::Transformation3D& tr,
-                                   const core::XYZs& s0, const core::XYZs& s1) {
-  return algebra::get_rmsd_transforming_first(tr, s0, s1);
-}
-
-double get_rmsd(const core::XYZs& s0, const core::XYZs& s1) {
-  return algebra::get_rmsd(s0, s1);
-}
-
 double get_rmsd(const Selection& s0, const Selection& s1) {
   return algebra::get_rmsd(s0.get_selected_particles(),
                            s1.get_selected_particles());
@@ -62,7 +53,7 @@ double get_pairwise_rmsd_score(const core::XYZs& ref1, const core::XYZs& ref2,
     }*/
   algebra::Transformation3D t =
       algebra::get_transformation_aligning_first_to_second(mdl1, ref1);
-  Float rmsd_score = get_rmsd_transforming_first(t, ref2, mdl2);
+  Float rmsd_score = algebra::get_rmsd_transforming_first(t, ref2, mdl2);
   return rmsd_score;
 }
 
