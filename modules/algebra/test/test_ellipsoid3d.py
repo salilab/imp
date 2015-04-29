@@ -25,11 +25,8 @@ class Tests(IMP.test.TestCase):
         newr = e.get_reference_frame()
         self.assertLess((newr.get_transformation_to().get_translation()
                          - tran).get_magnitude(), 1e-5)
-        self.assertLess((e.get_transformation().get_translation()
+        self.assertLess((newr.get_transformation_to().get_translation()
                          - tran).get_magnitude(), 1e-5)
-        self.assertLess((e.get_center() - tran).get_magnitude(), 1e-5)
-        for i in range(3):
-            self.assertAlmostEqual(e.get_radius(i), radii[i], delta=1e-5)
 
     def test_construction(self):
         """Check Ellipsoid construction"""
@@ -38,7 +35,8 @@ class Tests(IMP.test.TestCase):
         e = IMP.algebra.Ellipsoid3D(IMP.algebra.Vector3D(0.0, 1.0, 2.0),
                                     5.0, 8.0, 10.0, r)
         self.assertEqual([x for x in e.get_radii()], [5., 8., 10.])
-        er = r / e.get_rotation()
+        rot = e.get_reference_frame().get_transformation_to().get_rotation()
+        er = r / rot
         for c, exp_c in zip(er.get_quaternion(), [1., 0., 0., 0.]):
             self.assertAlmostEqual(c, exp_c, delta=1e-6)
 

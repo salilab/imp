@@ -120,11 +120,14 @@ bool ChimeraWriter::handle_ellipsoid(EllipsoidGeometry *g, Color,
                                      std::string name) {
   cleanup(name, false, false);
   get_stream() << "try:\n";
-  algebra::VectorD<4> q = g->get_geometry().get_rotation().get_quaternion();
+  algebra::ReferenceFrame3D rf = g->get_geometry().get_reference_frame();
+  algebra::Vector3D radii = g->get_geometry().get_radii();
+  algebra::VectorD<4> q =
+               rf.get_transformation_to().get_rotation().get_quaternion();
   get_stream() << "  chimera.runCommand(\"shape ellipsoid radius "
-               << g->get_geometry().get_radius(0) << ","
-               << g->get_geometry().get_radius(1) << ","
-               << g->get_geometry().get_radius(2) << " qrotation " << q[0]
+               << radii[0] << ","
+               << radii[1] << ","
+               << radii[2] << " qrotation " << q[0]
                << "," << q[1] << "," << q[2] << "," << q[3] << "\")\n";
   get_stream() << "except:\n";
   get_stream() << "  print \"Need Chimera > 1.4 to draw ellipsoids\"\n";
