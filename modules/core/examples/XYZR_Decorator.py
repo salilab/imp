@@ -6,6 +6,9 @@
 import IMP
 import IMP.core
 import IMP.algebra
+import sys
+
+IMP.setup_from_argv(sys.argv, "XYZR decorator example")
 
 m = IMP.Model()
 p0 = IMP.Particle(m)

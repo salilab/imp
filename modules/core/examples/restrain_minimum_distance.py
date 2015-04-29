@@ -5,6 +5,10 @@
 
 import IMP
 import IMP.core
+import sys
+
+IMP.setup_from_argv(sys.argv, "restrain minimum distance")
+
 m = IMP.Model()
 
 # stuff to create some XYZR particles

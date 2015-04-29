@@ -3,6 +3,10 @@
 #
 
 import IMP.example
+import sys
+
+IMP.setup_from_argv(sys.argv, "pair restraint")
+
 (m, c) = IMP.example.create_model_and_particles()
 
 uf = IMP.core.Harmonic(0, 1)

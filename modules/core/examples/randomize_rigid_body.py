@@ -5,6 +5,9 @@
 import IMP.core
 import IMP.algebra
 import IMP
+import sys
+
+IMP.setup_from_argv(sys.argv, "randomize rigid body")
 
 m = IMP.Model()
 p = IMP.Particle(m)

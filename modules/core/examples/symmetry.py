@@ -3,6 +3,9 @@
 
 import IMP.core
 import IMP.container
+import sys
+
+IMP.setup_from_argv(sys.argv, "symmetry example")
 
 m = IMP.Model()
 m.set_log_level(IMP.SILENT)

@@ -6,6 +6,9 @@ import IMP
 import IMP.core
 import IMP.atom
 import IMP.container
+import sys
+
+IMP.setup_from_argv(sys.argv, "rigid collisions")
 
 # This example addes a restraint on nonbonded interactions
 # Since it is between two rigid bodies, internal interactions are ignored

@@ -6,6 +6,9 @@
 import IMP
 import IMP.core
 import IMP.container
+import sys
+
+IMP.setup_from_argv(sys.argv, "restrain diameter")
 
 # This example restraint the diameter of a set of particles to be smaller
 # than 10

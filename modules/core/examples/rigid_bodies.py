@@ -7,6 +7,9 @@ import IMP
 import IMP.core
 import IMP.atom
 import IMP.container
+import sys
+
+IMP.setup_from_argv(sys.argv, "rigid bodies")
 
 m = IMP.Model()
 # create a new IMP.atom.Hierarchy for the pdb file

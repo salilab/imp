@@ -8,6 +8,9 @@ import IMP
 import IMP.core
 import IMP.atom
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "cover particles")
 
 m = IMP.Model()
 prot = IMP.atom.read_pdb(IMP.core.get_example_path('example_protein.pdb'), m)

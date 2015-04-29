@@ -3,6 +3,9 @@
 #
 
 import IMP.example
+import sys
+
+IMP.setup_from_argv(sys.argv, "excluded volume")
 
 (m, c) = IMP.example.create_model_and_particles()
 

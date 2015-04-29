@@ -8,6 +8,9 @@ import IMP
 import IMP.core
 import IMP.algebra
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "Connectivity restraint")
 
 m = IMP.Model()
 

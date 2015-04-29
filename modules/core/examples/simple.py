@@ -5,6 +5,9 @@
 import IMP
 import IMP.algebra
 import IMP.core
+import sys
+
+IMP.setup_from_argv(sys.argv, "simple example")
 
 m = IMP.Model()
 

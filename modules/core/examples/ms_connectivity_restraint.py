@@ -7,6 +7,9 @@
 import IMP
 import IMP.core
 import IMP.algebra
+import sys
+
+IMP.setup_from_argv(sys.argv, "ms connectivity restraint")
 
 # Setup model
 
