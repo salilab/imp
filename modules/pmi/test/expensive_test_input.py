@@ -38,7 +38,7 @@ class InputTest(IMP.test.TestCase):
                       [25.41869354, 63.82009125, -16.76820946]]
 
         for i in range(3):
-            IMP.rmf.load_frame(rh,i)
+            IMP.rmf.load_frame(rh,RMF.FrameID(i))
             psdict = IMP.pmi.analysis.get_particles_at_resolution_one(prots[0])
             coord = IMP.core.XYZ(psdict['med2'][0]).get_coordinates()
             print(coord)

@@ -661,7 +661,7 @@ class TopologyReader(object):
         # Need to find a way to define color
         c.color         = 0.1
 
-        t_chain = fields.index("chain").strip()
+        t_chain = values[fields.index("chain")].strip()
         # PDB Chain
         # Must be one or two characters
         if len(t_chain)==1 or len(t_chain)==2:

@@ -51,7 +51,7 @@ class ExcludedVolumeSphere(object):
             resolution=resolution,
             hierarchies=hierarchies)
 
-        lsa.add_particles(particles)
+        lsa.add(IMP.get_indexes(particles))
 
         if other_hierarchies is None:
             rbcpf = IMP.core.RigidClosePairsFinder()

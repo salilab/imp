@@ -513,7 +513,7 @@ class Precision(object):
         """Read an RMF file and return the particles"""
         rh= RMF.open_rmf_file_read_only(rmf_name)
         prots=IMP.rmf.create_hierarchies(rh, self.model)
-        IMP.rmf.load_frame(rh, rmf_frame_index)
+        IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
         print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
         del rh
 
@@ -566,7 +566,7 @@ class Precision(object):
         # read the particles
         try:
             (particles_resolution_one, prots)=self._get_structure(rmf_frame_index,rmf_name)
-        except:
+        except ValueError:
             print("something wrong with the rmf")
             return 0
 
@@ -1345,15 +1345,15 @@ def get_hier_from_rmf(model, frame_number, rmf_file,state_number=0):
 
     try:
         prots = IMP.rmf.create_hierarchies(rh, model)
-    except:
+    except IOError:
         print("Unable to open rmf file %s" % (rmf_file))
         prot = None
         return prot
     #IMP.rmf.link_hierarchies(rh, prots)
     prot = prots[state_number]
     try:
-        IMP.rmf.load_frame(rh, frame_number)
-    except:
+        IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
+    except IOError:
         print("Unable to open frame %i of file %s" % (frame_number, rmf_file))
         prot = None
     model.update()

@@ -481,7 +481,8 @@ def save_best_models(mdl,
             rh = RMF.open_rmf_file_read_only(
                 os.path.join(root_directory_of_stat_file,all_fields[rmf_file_key][i]))
             IMP.rmf.link_hierarchies(rh,prots)
-            IMP.rmf.load_frame(rh,all_fields[rmf_file_frame_key][i])
+            IMP.rmf.load_frame(rh,
+                               RMF.FrameID(all_fields[rmf_file_frame_key][i]))
             IMP.rmf.save_frame(outf)
             del rh
             stat.write(str(dline)+'\n')

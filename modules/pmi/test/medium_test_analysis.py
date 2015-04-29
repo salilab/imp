@@ -206,13 +206,13 @@ class AnalysisTest(IMP.test.TestCase):
         rmf_file=self.get_input_file_name('output/rmfs/2.rmf3')
         rh = RMF.open_rmf_file_read_only(rmf_file)
         prots = IMP.rmf.create_hierarchies(rh,self.model)
-        IMP.rmf.load_frame(rh,0)
+        IMP.rmf.load_frame(rh,RMF.FrameID(0))
         mdens.add_subunits_density(prots[0])
         self.assertEqual(sorted(mdens.get_density_keys()),['med16','med2'])
         med2_coords=[]
         med16_coords=[]
         for i in range(4):
-            IMP.rmf.load_frame(rh,i)
+            IMP.rmf.load_frame(rh,RMF.FrameID(i))
             s2=[child for child in prots[0].get_children()
                       if child.get_name() == 'med2']
             med2_coords+=[IMP.core.XYZ(p).get_coordinates() for p in
@@ -324,7 +324,7 @@ class PrecisionTest(IMP.test.TestCase):
                     coord.append(random.random()*10-5)
                 ds[i].set_coordinates(IMP.algebra.Vector3D(coord))
                 tmp_coords.append(coord)
-            IMP.rmf.save_frame(f,0)
+            IMP.rmf.save_frame(f)
             all_coords.append(tmp_coords)
         del f
 
