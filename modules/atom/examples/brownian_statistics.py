@@ -5,7 +5,7 @@
 # sizes involved.
 
 from __future__ import print_function
-from IMP.atom import *
+import IMP.atom
 import sys
 
 IMP.setup_from_argv(sys.argv, "brownian statistics")
@@ -18,19 +18,18 @@ minimum_particle_radius = 10
 maximum_spring_constant = 1
 
 maximum_diffusion_coefficient =\
-    get_einstein_diffusion_coefficient(minimum_particle_radius)
-expected_delta = get_diffusion_length(maximum_diffusion_coefficient,
-                                      time_step)
+    IMP.atom.get_einstein_diffusion_coefficient(minimum_particle_radius)
+expected_delta = IMP.atom.get_diffusion_length(maximum_diffusion_coefficient,
+                                               time_step)
 
 expected_rotational_delta =\
-    get_diffusion_angle(maximum_diffusion_coefficient,
-                        time_step) * minimum_particle_radius
+    IMP.atom.get_diffusion_angle(maximum_diffusion_coefficient,
+                                 time_step) * minimum_particle_radius
 
 expected_spring_diffusion_length =\
-    get_diffusion_length(maximum_diffusion_coefficient,
-                         .5 * maximum_spring_constant *
-                         4 * expected_delta ** 2,
-                         time_step)
+    IMP.atom.get_diffusion_length(maximum_diffusion_coefficient,
+                                  .5 * maximum_spring_constant *
+                                  4 * expected_delta ** 2, time_step)
 
 print("with a time step of", time_step, "fs")
 print("an object of radius", minimum_particle_radius, "A will move",\
@@ -39,7 +38,7 @@ print("an object of radius", minimum_particle_radius, "A will move",\
 print("the motion from fluctuations in the spring compression will be",\
     expected_spring_diffusion_length, "A")
 print("and a compression of 10% of the radius will induce a motion of",\
-    get_diffusion_length(maximum_diffusion_coefficient,
+    IMP.atom.get_diffusion_length(maximum_diffusion_coefficient,
                          .5 * maximum_spring_constant *
                          (.1 * minimum_particle_radius) ** 2,
                          time_step), "A")
