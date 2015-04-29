@@ -36,16 +36,16 @@ bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                IMP.algebra.Vector3D(100, 100, 100))
 ps = []
 for i in range(0, np):
-    p = IMP.Particle(m)
-    d = IMP.core.XYZR.setup_particle(p)
+    p = m.add_particle("p")
+    d = IMP.core.XYZR.setup_particle(m, p)
     d.set_coordinates(IMP.algebra.Vector3D(10. * (i/10), 10. * (i%10), 10.))
     d.set_radius(10)
     d.set_coordinates_are_optimized(True)
-    IMP.atom.Hierarchy.setup_particle(p)
-    IMP.atom.Diffusion.setup_particle(p)
-    IMP.atom.Mass.setup_particle(p, 1)
+    IMP.atom.Hierarchy.setup_particle(m, p)
+    IMP.atom.Diffusion.setup_particle(m, p)
+    IMP.atom.Mass.setup_particle(m, p, 1)
     ps.append(p)
-    IMP.display.Colored.setup_particle(p, IMP.display.get_display_color(i))
+    IMP.display.Colored.setup_particle(m, p, IMP.display.get_display_color(i))
 
 bds = []
 for i in range(0, nb):
@@ -54,7 +54,7 @@ for i in range(0, nb):
         bds.append(pp)
 
 cf = IMP.core.CoinFlipPairPredicate(prob)
-dos = IMP.misc.DecayPairContainerOptimizerState(cf, bds, "decay")
+dos = IMP.misc.DecayPairContainerOptimizerState(m, cf, bds, "decay")
 dos.set_period(period)
 dos.set_log_level(IMP.SILENT)  # VERBOSE
 
@@ -62,12 +62,13 @@ dos.set_log_level(IMP.SILENT)  # VERBOSE
 rs = []
 box_score = IMP.core.BoundingBox3DSingletonScore(
     IMP.core.HarmonicUpperBound(0, 10), bb)
-rs.append(IMP.container.SingletonsRestraint(box_score, ps, "box"))
+ps_container = IMP.container.ListSingletonContainer(m, ps)
+rs.append(IMP.container.SingletonsRestraint(box_score, ps_container, "box"))
 bond_score = IMP.core.HarmonicUpperBoundSphereDistancePairScore(0, 10)
 rs.append(IMP.container.PairsRestraint(bond_score,
                                        dos.get_output_container(),
                                        "bonds"))
-ev = IMP.core.ExcludedVolumeRestraint(ps, 10, 10)
+ev = IMP.core.ExcludedVolumeRestraint(ps_container, 10, 10)
 IMP.set_log_level(IMP.SILENT)
 
 # set up simulator
@@ -80,7 +81,7 @@ bd.add_optimizer_state(dos)
 fn = IMP.create_temporary_file_name("decay", ".rmf")
 rmf = RMF.create_rmf_file(fn)
 print("setting up file")
-IMP.rmf.add_hierarchies(rmf, ps)
+IMP.rmf.add_hierarchies(rmf, IMP.get_particles(m, ps))
 IMP.rmf.add_restraints(rmf, rs + [ev])
 g = IMP.display.BoundingBoxGeometry(bb)
 IMP.rmf.add_geometries(rmf, [g])
