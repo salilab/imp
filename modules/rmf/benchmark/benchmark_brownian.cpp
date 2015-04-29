@@ -285,7 +285,7 @@ int main(int argc, char **argv) {
         IMP::rmf::add_particle(fh, it.sp);
         std::cout << it.bd->get_scoring_function()->evaluate(false)
                   << " is the score " << std::endl;
-        IMP::rmf::save_frame(fh, 0);
+        IMP::rmf::save_frame(fh);
         Restraints all =
             get_restraints(it.bd->get_scoring_function()->create_restraints());
         for (unsigned int i = 0; i < all.size(); ++i) {
@@ -301,7 +301,7 @@ int main(int argc, char **argv) {
         IMP::rmf::add_hierarchies(fh, it.chains);
         IMP::rmf::add_restraints(fh, it.rss);
         IMP::rmf::add_particle(fh, it.sp);
-        IMP::rmf::save_frame(fh, 0);
+        IMP::rmf::save_frame(fh);
       }
     } else if (FLAGS_initialize) {
       It cur;
@@ -315,7 +315,7 @@ int main(int argc, char **argv) {
       IMP::rmf::add_hierarchies(fh, it.chains);
       IMP::rmf::add_restraints(fh, it.rss);
       IMP::rmf::add_particle(fh, it.sp);
-      IMP::rmf::save_frame(fh, 0);
+      IMP::rmf::save_frame(fh);
     } else {
       {
         typedef IMP::internal::ContainerRestraint<SoftSpherePairScore,

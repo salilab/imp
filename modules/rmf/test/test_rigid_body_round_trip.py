@@ -142,7 +142,7 @@ class Tests(IMP.test.TestCase):
             fn = self.get_tmp_file_name("gaussian" + suffix)
             f = RMF.create_rmf_file(fn)
             IMP.rmf.add_hierarchies(f, [r])
-            IMP.rmf.save_frame(f, 0)
+            IMP.rmf.save_frame(f)
             del f
             f = RMF.open_rmf_file_read_only(fn)
             prots = IMP.rmf.create_hierarchies(f, m)

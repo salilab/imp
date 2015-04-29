@@ -110,5 +110,5 @@ for i, s in enumerate(sts):
     for r in domino_restraints:
         rc.load_last_score(r, alls, s)
     # save the configuration and scores to the rmf
-    IMP.rmf.save_frame(rmf, i)
+    IMP.rmf.save_frame(rmf)
 print("done")

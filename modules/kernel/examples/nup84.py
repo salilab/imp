@@ -289,6 +289,6 @@ for i in range(0, configuration_set.get_number_of_configurations()):
         IMP.core.transform(optimized_particles, tr)
     # update the restraint scores
     sf.evaluate(False)
-    IMP.rmf.save_frame(rmf, i)
+    IMP.rmf.save_frame(rmf, str(i))
 
 print("You can now open", rmf_file_name, "in chimera")
