@@ -52,13 +52,6 @@ class IMPATOMEXPORT Chain : public Hierarchy {
     return get_model()->get_attribute(get_id_key(), get_particle_index());
   }
 
-  //! Return the chain id
-  /** \deprecated_at{2.2} Use the string version. */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
-  char get_id_char() const {
-    return get_model()->get_attribute(get_id_key(), get_particle_index())[0];
-  }
-
   //! Set the chain id
   void set_id(std::string c) {
     get_model()->set_attribute(get_id_key(), get_particle_index(), c);
