@@ -207,15 +207,6 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 #ifndef IMP_DOXYGEN
   typedef boost::false_type DecoratorHasTraits;
 
-  //! \deprecated_at{2.3} Check explicitly instead. */
-  IMPATOM_DEPRECATED_METHOD_DECL(2.3)
-  static Hierarchy decorate_particle(Particle *p) {
-    IMPATOM_DEPRECATED_METHOD_DEF(2.3, "Check explicitly instead");
-    if (get_is_setup(p))
-      return Hierarchy(p);
-    else
-      return Hierarchy();
-  }
   /** Setup the particle as a hierarchy and add the passed particles
       as children. */
   static Hierarchy setup_particle(Particle *p,
