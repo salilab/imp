@@ -6,6 +6,9 @@
 
 from __future__ import print_function
 from IMP.atom import *
+import sys
+
+IMP.setup_from_argv(sys.argv, "brownian statistics")
 
 # fs
 time_step = 1000

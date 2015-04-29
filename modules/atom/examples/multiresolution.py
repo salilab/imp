@@ -4,6 +4,9 @@
 
 from __future__ import print_function
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "multiresolution")
 
 # Create an IMP model and add a heavy atom-only protein from a PDB file
 m = IMP.Model()

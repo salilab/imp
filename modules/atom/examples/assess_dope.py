@@ -5,7 +5,9 @@ from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.container
+import sys
 
+IMP.setup_from_argv(sys.argv, "assess dope")
 
 def create_representation():
     m = IMP.Model()

@@ -6,6 +6,9 @@
 
 import IMP.atom
 import IMP.display
+import sys
+
+IMP.setup_from_argv(sys.argv, "markers")
 
 m = IMP.Model()
 h = IMP.atom.read_pdb(IMP.atom.get_example_path("example_protein.pdb"),

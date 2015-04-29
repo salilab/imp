@@ -4,6 +4,9 @@
 
 from __future__ import print_function
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "score protein with ligand")
 
 m = IMP.Model()
 IMP.set_check_level(IMP.NONE)

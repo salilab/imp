@@ -8,6 +8,9 @@
 import IMP
 import IMP.core
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "molecular hierarchy")
 
 m = IMP.Model()
 mp0 = IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)

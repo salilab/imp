@@ -5,6 +5,9 @@
 from __future__ import print_function
 import IMP.atom
 import IMP.container
+import sys
+
+IMP.setup_from_argv(sys.argv, "CHARMM forcefield verbose")
 
 # Create an IMP model and add a heavy atom-only protein from a PDB file
 m = IMP.Model()
@@ -61,7 +64,7 @@ impropers = topology.add_impropers(prot)
 #   bond lengths are harmonically restrained.
 # - A SingletonsRestraint simply goes through each of the bonds in the
 #   container and scores each one in turn.
-cont = IMP.container.ListSingletonContainer(bonds, "bonds")
+cont = IMP.container.ListSingletonContainer(m, IMP.get_indexes(bonds), "bonds")
 bss = IMP.atom.BondSingletonScore(IMP.core.Harmonic(0, 1))
 r = IMP.container.SingletonsRestraint(bss, cont, "bonds")
 rs = [r]
@@ -69,17 +72,20 @@ rs = [r]
 # Score angles, dihedrals, and impropers. In the CHARMM forcefield, angles and
 # impropers are harmonically restrained, so this is the same as for bonds.
 # Dihedrals are scored internally by a periodic (cosine) function.
-cont = IMP.container.ListSingletonContainer(angles, "angles")
+cont = IMP.container.ListSingletonContainer(m, IMP.get_indexes(angles),
+                                            "angles")
 bss = IMP.atom.AngleSingletonScore(IMP.core.Harmonic(0, 1))
 r = IMP.container.SingletonsRestraint(bss, cont, "angles")
 rs.append(r)
 
-cont = IMP.container.ListSingletonContainer(dihedrals, "dihedrals")
+cont = IMP.container.ListSingletonContainer(m, IMP.get_indexes(dihedrals),
+                                            "dihedrals")
 bss = IMP.atom.DihedralSingletonScore()
 r = IMP.container.SingletonsRestraint(bss, cont, "dihedrals")
 rs.append(r)
 
-cont = IMP.container.ListSingletonContainer(impropers, "impropers")
+cont = IMP.container.ListSingletonContainer(m, IMP.get_indexes(impropers),
+                                            "impropers")
 bss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0, 1))
 rs.append(IMP.container.SingletonsRestraint(bss, cont, "improppers"))
 
@@ -92,7 +98,7 @@ ff.add_well_depths(prot)
 
 # Get a list of all atoms in the protein, and put it in a container
 atoms = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
-cont = IMP.container.ListSingletonContainer(atoms)
+cont = IMP.container.ListSingletonContainer(m, IMP.get_indexes(atoms))
 
 # Add a restraint for the Lennard-Jones interaction. Again, this is built from
 # a collection of building blocks. First, a ClosePairContainer maintains a list

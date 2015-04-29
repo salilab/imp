@@ -3,6 +3,9 @@
 
 from __future__ import print_function
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "multistate")
 
 m = IMP.Model()
 

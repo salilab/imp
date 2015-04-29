@@ -4,6 +4,9 @@
 
 from __future__ import print_function
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "CG pdb")
 
 m = IMP.Model()
 full = IMP.atom.read_pdb(IMP.atom.get_example_path("example_protein.pdb"), m)

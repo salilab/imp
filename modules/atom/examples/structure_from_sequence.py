@@ -3,6 +3,9 @@
 #
 
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "structure from sequence")
 
 # Use the CHARMM all-atom (i.e. including hydrogens) topology and parameters
 topology = IMP.atom.CHARMMTopology(IMP.atom.get_all_atom_CHARMM_parameters())

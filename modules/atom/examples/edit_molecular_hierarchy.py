@@ -4,6 +4,9 @@
 
 import IMP.core
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "edit molecular hierarchy")
 
 m = IMP.Model()
 ep = IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)
