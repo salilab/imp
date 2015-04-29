@@ -182,7 +182,7 @@ def run():
     prots = IMP.rmf.create_hierarchies(rh, mdl)
     prot=prots[0]
     rs = IMP.rmf.create_restraints(rh, mdl)
-    IMP.rmf.load_frame(rh,int(args.frame_num))
+    IMP.rmf.load_frame(rh, RMF.FrameID(int(args.frame_num)))
     pairs=[]
     if args.model_rs:
         ps_dict={}
@@ -192,7 +192,7 @@ def run():
         rh2 = RMF.open_rmf_file_read_only(args.model_rs)
         prots2 = IMP.rmf.create_hierarchies(rh2, mdl)
         rs2 = IMP.rmf.create_restraints(rh2, mdl)
-        IMP.rmf.load_frame(rh2,0)
+        IMP.rmf.load_frame(rh2, RMF.FrameID(0))
         for r in rs2:
             ps2 = r.get_inputs()
             try:

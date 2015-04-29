@@ -1378,7 +1378,7 @@ def get_hier_and_restraints_from_rmf(model, frame_number, rmf_file, state_number
     #IMP.rmf.link_hierarchies(rh, prots)
     prot = prots[state_number]
     try:
-        IMP.rmf.load_frame(rh, frame_number)
+        IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
     except:
         print("Unable to open frame %i of file %s" % (frame_number, rmf_file))
         prot = None
@@ -1400,7 +1400,7 @@ def get_hiers_from_rmf(model, frame_number, rmf_file):
         return prot
     #IMP.rmf.link_hierarchies(rh, prots)
     try:
-        IMP.rmf.load_frame(rh, frame_number)
+        IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
     except:
         print("Unable to open frame %i of file %s" % (frame_number, rmf_file))
         prots = None
@@ -1491,7 +1491,7 @@ class CrossLinkTable(object):
 
         rh= RMF.open_rmf_file_read_only(rmf_name)
         prots=IMP.rmf.create_hierarchies(rh, self.model)
-        IMP.rmf.load_frame(rh, rmf_frame_index)
+        IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
         print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
         del rh
 

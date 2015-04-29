@@ -1452,7 +1452,7 @@ class Representation(object):
 
         rh = RMF.open_rmf_file_read_only(rmfname)
         IMP.rmf.link_hierarchies(rh, [self.prot])
-        IMP.rmf.load_frame(rh, frameindex)
+        IMP.rmf.load_frame(rh, RMF.FrameID(frameindex))
         del rh
 
     def create_components_from_rmf(self, rmfname, frameindex):
@@ -1466,7 +1466,7 @@ class Representation(object):
         self.prot = IMP.rmf.create_hierarchies(rh, self.m)[0]
         IMP.atom.show_molecular_hierarchy(self.prot)
         IMP.rmf.link_hierarchies(rh, [self.prot])
-        IMP.rmf.load_frame(rh, frameindex)
+        IMP.rmf.load_frame(rh, RMF.FrameID(frameindex))
         del rh
         for p in self.prot.get_children():
             self.add_component_name(p.get_name())

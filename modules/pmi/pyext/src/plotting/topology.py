@@ -54,7 +54,7 @@ class TopologyPlot(object):
         rh = RMF.open_rmf_file_read_only(rmf_fn)
         prots = IMP.rmf.create_hierarchies(rh, self.mdl)
         hier = prots[0]
-        IMP.rmf.load_frame(rh,0)
+        IMP.rmf.load_frame(rh, RMF.FrameID(0))
         ps_per_component=defaultdict(list)
         if self.num_rmf==0:
             self.size_per_component=defaultdict(int)

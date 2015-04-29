@@ -77,7 +77,7 @@ class TopologyReaderTests(IMP.test.TestCase):
         o.close_rmf(rmf_fn)
         f = RMF.open_rmf_file_read_only(rmf_fn)
         r = IMP.rmf.create_hierarchies(f, mdl)[0]
-        IMP.rmf.load_frame(f, 0)
+        IMP.rmf.load_frame(f, RMF.FrameID(0))
         self.assertEqual(len(r.get_children()),2)
         cdict=children_as_dict(r)
         self.assertEqual(set([c.get_name() for c in cdict["Rpb1"].get_children()]),
@@ -113,7 +113,7 @@ class TopologyReaderTests(IMP.test.TestCase):
         o.close_rmf(rmf_fn)
         f = RMF.open_rmf_file_read_only(rmf_fn)
         r = IMP.rmf.create_hierarchies(f, mdl)[0]
-        IMP.rmf.load_frame(f, 0)
+        IMP.rmf.load_frame(f, RMF.FrameID(0))
         self.assertEqual(len(r.get_children()),2)
         cdict=children_as_dict(r)
         self.assertEqual(set([c.get_name() for c in cdict["Rpb1"].get_children()]),
