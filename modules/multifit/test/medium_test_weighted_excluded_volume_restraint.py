@@ -38,9 +38,9 @@ class Tests(IMP.test.TestCase):
         sdps = IMP.core.SphereDistancePairScore(hub)
         rdps = IMP.core.RigidBodyDistancePairScore(sdps,
                                                    IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
-        self.c_r = IMP.core.ConnectivityRestraint(self.mdl, rdps)
-        for r in self.rbs:
-            self.c_r.add_particle(r.get_particle())
+        lsc = IMP.container.ListSingletonContainer(self.mdl,
+                                                   IMP.get_indexes(self.rbs))
+        self.c_r = IMP.core.ConnectivityRestraint(rdps, lsc)
 
         restraints.append(self.c_r)
         self.sf = IMP.core.RestraintsScoringFunction(restraints)

@@ -43,24 +43,6 @@ class IMPCOREEXPORT ConnectivityRestraint : public Restraint {
   //! Use the given PairScore
   ConnectivityRestraint(PairScore *ps, SingletonContainerAdaptor sc);
 
-  ConnectivityRestraint(Model *m, PairScore *ps);
-#ifndef IMP_DOXYGEN
-  /** @name Particles to be connected
-
-       The following methods are used to manipulate the list of particles
-       that are to be connected. Each particle should have all the
-       attributes expected by the PairScore used.
-
-       Ideally, one should pass a singleton container instead. These
-       can only be used if none is passed.
-  */
-  /*@{*/
-  void add_particle(Particle *p);
-  void add_particles(const ParticlesTemp &ps);
-  void set_particles(const ParticlesTemp &ps);
-/*@}*/
-#endif
-
   //! Return the set of pairs which are connected by the restraint
   /** This set of pairs reflects the current configuration at the time of
       the get_connected_pairs() call, not the set at the time of the last

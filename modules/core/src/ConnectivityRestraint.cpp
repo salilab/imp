@@ -37,52 +37,6 @@ ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
   sc_ = sc;
 }
 
-ConnectivityRestraint::ConnectivityRestraint(Model *m,
-                                             PairScore *ps)
-    : Restraint(m, "ConnectivityRestraint %1%"), ps_(ps) {
-  IMPCORE_DEPRECATED_METHOD_DEF(2.1, "Use constructor that takes container.");
-}
-
-namespace {
-IMP::internal::StaticListContainer<SingletonContainer> *get_list(
-    SingletonContainer *sc) {
-  IMP::internal::StaticListContainer<SingletonContainer> *ret =
-      dynamic_cast<
-          IMP::internal::StaticListContainer<SingletonContainer> *>(
-          sc);
-  if (!ret) {
-    IMP_THROW("Can only use the set and add methods when no container"
-                  << " was passed on construction of ConnectivityRestraint.",
-              ValueException);
-  }
-  return ret;
-}
-}
-
-void ConnectivityRestraint::set_particles(const ParticlesTemp &ps) {
-  if (!sc_ && !ps.empty()) {
-    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
-        ps[0]->get_model(), "connectivity list");
-  }
-  get_list(sc_)->set(IMP::internal::get_index(ps));
-}
-
-void ConnectivityRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_ && !ps.empty()) {
-    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
-        ps[0]->get_model(), "connectivity list");
-  }
-  get_list(sc_)->add(IMP::internal::get_index(ps));
-}
-
-void ConnectivityRestraint::add_particle(Particle *ps) {
-  if (!sc_) {
-    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
-        ps->get_model(), "connectivity list");
-  }
-  get_list(sc_)->add(IMP::internal::get_index(ps));
-}
-
 namespace {
 /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
                       boost::undirectedS, boost::no_property,

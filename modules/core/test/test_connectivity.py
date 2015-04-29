@@ -3,6 +3,7 @@ import os
 import IMP
 import IMP.test
 import IMP.core
+import IMP.container
 
 
 class Tests(IMP.test.TestCase):
@@ -27,8 +28,8 @@ class Tests(IMP.test.TestCase):
 
         ub = IMP.core.HarmonicUpperBound(1.0, 0.1)
         ss = IMP.core.DistancePairScore(ub)
-        r = IMP.core.ConnectivityRestraint(m, ss)
-        r.add_particles(ps)
+        lsc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ps))
+        r = IMP.core.ConnectivityRestraint(ss, lsc)
         sf = IMP.core.RestraintsScoringFunction([r])
         o.set_scoring_function(sf)
         o.optimize(1000)
