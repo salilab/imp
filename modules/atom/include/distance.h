@@ -205,8 +205,9 @@ inline double get_drms(const Vector3DsOrXYZs0& m1, const Vector3DsOrXYZs1& m2) {
   return sqrt(drms);
 }
 
-/*! DRMS between to sets of rigid bodies. Points ij belonging to the same
-rigid body are not evaluated, as they are the same in both sets
+//! DRMS between two sets of rigid bodies.
+/** Points ij belonging to the same rigid body are not evaluated, as
+    they are the same in both sets
   \param[in] m1 set of points
   \param[in] m2 set of points
   \param[in] ranges of points considered to be the same rigid body. Eg,
