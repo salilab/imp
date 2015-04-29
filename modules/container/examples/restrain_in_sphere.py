@@ -4,6 +4,10 @@
 # 'center'.
 
 import IMP.example
+import sys
+
+IMP.setup_from_argv(sys.argv, "restrain in sphere")
+
 radius = 10
 stiffness = 2
 center = IMP.algebra.Vector3D(1, 2, 3)

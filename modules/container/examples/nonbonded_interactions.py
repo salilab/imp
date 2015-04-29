@@ -6,18 +6,21 @@ import IMP
 import IMP.core
 import IMP.atom
 import IMP.container
+import sys
+
+IMP.setup_from_argv(sys.argv, "nonbonded interactions")
 
 # This example addes a restraint on nonbonded interactions
 # after excluding a set of bonded interactions.
 
 m = IMP.Model()
 # The set of particles
-ps = IMP.container.ListSingletonContainer(
-    IMP.core.create_xyzr_particles(m, 20, 1.0))
+ps = IMP.container.ListSingletonContainer(m,
+         IMP.get_indexes(IMP.core.create_xyzr_particles(m, 20, 1.0)))
 
 # create a bond between two particles
-bd0 = IMP.atom.Bonded.setup_particle(ps.get_particle(0))
-bd1 = IMP.atom.Bonded.setup_particle(ps.get_particle(1))
+bd0 = IMP.atom.Bonded.setup_particle(m, ps.get_indexes()[0])
+bd1 = IMP.atom.Bonded.setup_particle(m, ps.get_indexes()[1])
 IMP.atom.create_custom_bond(bd0, bd1, 2.0)
 
 # Set up the nonbonded list for all pairs at are touching
