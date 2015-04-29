@@ -19,9 +19,13 @@ Code that is deprecated must produce warnings when used. (You can also force
 usage of deprecated code to trigger an exception by calling
 IMP::set_deprecation_exceptions() or by passing the `--deprecation_exceptions`
 command line flag.)
-To achieve this,
-it should be marked in the following way (where EXAMPLE is replaced by your
-module name and 2.1 is replaced by the release where the code is deprecated):
+
+C++
+---
+
+C++ code should be marked in the following way (where EXAMPLE is replaced by
+your module name and 2.1 is replaced by the release where the code is
+deprecated):
 - macros should have an `IMPEXAMPLE_DEPRECATED_MACRO(version, replacement)` line added within their definition
 
           #define MY_DEPRECATED_MACRO(args)                                                     \
@@ -75,3 +79,21 @@ module name and 2.1 is replaced by the release where the code is deprecated):
           /** \\deprecated_at{2.1} Replaced by my_new_function(). */
 
 These will provide documentation, and runtime and compile time warning messages to users.
+
+Python
+------
+
+For Python code, we provide similar functions and decorators to mark methods,
+classes, methods, or functions as deprecated:
+
+    IMP.deprecated_module("2.1", __name__, "Use my_new_module instead")
+
+    @IMP.deprecated_object("2.1", "Use MyNewClass instead")
+    class MyClass(object):
+        @IMP.deprecated_method("2.1", "Use my_new_method(args) instead")
+        def my_deprecated_method(self):
+            do stuff...
+
+    @IMP.deprecated_function("2.1", "Use my_new_function(args) instead")
+    def my_deprecated_function(args):
+        do stuff...
