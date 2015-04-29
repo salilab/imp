@@ -6,6 +6,9 @@
 
 from __future__ import print_function
 import IMP.algebra
+import sys
+
+IMP.setup_from_argv(sys.argv, "grid space")
 
 # create a unit grid with its origin at 0,0,0
 g = IMP.algebra.SparseUnboundedIntGrid3D(1, IMP.algebra.Vector3D(0, 0, 0))
