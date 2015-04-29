@@ -811,7 +811,8 @@ Restraint *create_connectivity_restraint(const Selections &s, double x0,
         particles.push_back(s[i].get_selected_particles()[0]);
       }
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0, k));
-      IMP_NEW(container::ListSingletonContainer, lsc, (particles));
+      IMP_NEW(container::ListSingletonContainer, lsc,
+              (particles[0]->get_model(), IMP::get_indexes(particles)));
       IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 0));
       Pointer<Restraint> cr =
           container::create_restraint(hdps.get(), cpc.get(), name);
@@ -858,7 +859,8 @@ Restraint *create_internal_connectivity_restraint(const Selection &ss,
     return r.release();
   } else {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0, k));
-    IMP_NEW(container::ListSingletonContainer, lsc, (s));
+    IMP_NEW(container::ListSingletonContainer, lsc,
+            (s[0]->get_model(), IMP::get_indexes(s)));
     IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 0));
     Pointer<Restraint> cr =
         container::create_restraint(hdps.get(), cpc.get(), name);

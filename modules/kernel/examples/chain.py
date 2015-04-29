@@ -30,7 +30,7 @@ for p in ps:
     h.add_child(IMP.atom.Hierarchy.setup_particle(p))
     # things are expected to have mass
     IMP.atom.Mass.setup_particle(p, 1)
-chain = IMP.container.ListSingletonContainer(ps, "chain")
+chain = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ps), "chain")
 
 restraints = []
 # create a spring between successive particles
