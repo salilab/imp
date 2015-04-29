@@ -164,11 +164,6 @@ class IMPATOMEXPORT Selection :
   //! Select a chain with the passed id.
   void set_chain(std::string c) { set_chain_id(c); }
 #endif
-#ifndef SWIG
-  /** \deprecated_at{2.2} Pass a string */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
-  void set_chain(char c) { set_chain(std::string(1, c)); }
-#endif
   //! Select only residues with the passed index.
   void set_residue_index(int i);
   //! Select atoms with only the passed type.
