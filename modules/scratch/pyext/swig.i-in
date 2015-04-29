@@ -1,6 +1,0 @@
-//IMP_SWIG_OBJECT(IMP::example, ExampleRestraint, ExampleRestraints);
-//IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
-//IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD)
-
-
-//%include "IMP/example/ExampleRestraint.h"

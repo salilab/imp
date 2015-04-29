@@ -1,3 +1,0 @@
-headers="gperftools/profiler.h"
-libraries="profiler"
-body="ProfilerStop();"

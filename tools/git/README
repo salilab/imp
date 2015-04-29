@@ -1,6 +1,0 @@
-If your are using git to work with IMP, use the tools in this directory to 
-help you:
-
-Put the files in the subdirectories into the corresponding subdirectories
-in your .git folder in the IMP repository. This will enable checking of
-standards on commits and hide various types of files from git.

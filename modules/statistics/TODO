@@ -1,2 +1,0 @@
-* Merge Embedding and DataPoints (this will require adjustment to multifit::DensityDataPoints as well)
-* Clean statistics::kmeans (which has bugs) and merge with kmeans module?

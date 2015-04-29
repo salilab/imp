@@ -1,6 +1,0 @@
-# the new linker rules require we link HDF5 in directly if we are using it
-# through the RMF interface
-libraries="hdf5"
-headers="hdf5.h:H5Ipublic.h" # Require >= 1.8, which introduced H5I
-extra_libraries="z:m"
-body='H5garbage_collect();'

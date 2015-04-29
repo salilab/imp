@@ -1,6 +1,0 @@
-IMP_SWIG_RAII(IMP::benchmark, Profiler);
-
-
-/* Wrap our own classes */
-%include "IMP/benchmark/utility.h"
-%include "IMP/benchmark/Profiler.h"

@@ -1,5 +1,0 @@
-|anchors|1z5s_15_14_anchors.txt|
-|protein|A|1z5s.A.paths.txt|
-|protein|B|1z5s.B.paths.txt|
-|protein|C|1z5s.C.paths.txt|
-|protein|D|1z5s.D.paths.txt|

@@ -1,4 +1,0 @@
-libraries="hdf5"
-headers="hdf5.h"
-extra_libraries="z:m"
-body='H5garbage_collect();'

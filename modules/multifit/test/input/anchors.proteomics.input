@@ -1,9 +1,0 @@
-|proteins|
-|A|1|160|nn|nn|
-|B|1|70|nn|nn|
-|C|1|160|nn|nn|
-|D|1|60|nn|nn|
-|interactions|
-|1|A|C|5|paper|year|
-|1|A|D|5|paper|year|
-|1|A|B|5|paper|year|

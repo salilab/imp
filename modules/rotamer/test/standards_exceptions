@@ -1,4 +1,0 @@
-value_object_exceptions=[]
-function_name_exceptions=["RotamerCalculator.transform"]
-show_exceptions=[]
-spelling_exceptions=['rotamer', 'rotamers']

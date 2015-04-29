@@ -1,8 +1,0 @@
-<marker_set name="anchor_graph">
-<marker id="0" x="82.0116" y="72.8458" z="-57.4505" radius="8.39025"/>
-<marker id="1" x="95.6588" y="69.8012" z="-62.3483" radius="8.39167"/>
-<marker id="2" x="103.334" y="65.1511" z="-45.0317" radius="11.1587"/>
-<link id1= "0" id2="1" radius="1.0"/>
-<link id1= "0" id2="2" radius="1.0"/>
-<link id1= "1" id2="2" radius="1.0"/>
-</marker_set>

@@ -1,4 +1,0 @@
-#!/bin/sh
-echo `git rev-parse --abbrev-ref HEAD` `git rev-parse --short HEAD` > `git rev-parse --show-toplevel`/VERSION
-
-echo "Version=\""`cat VERSION`"\""

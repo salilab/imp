@@ -1,9 +1,0 @@
-libraries="cv:cxcore:highgui"
-headers="opencv/cv.h:opencv/cvver.h"
-body="""
-#if CV_MAJOR_VERSION==2 && CV_MINOR_VERSION==1
-new cv::Mat();
-#else
-#error "Version is not 2.1"
-#endif
-"""

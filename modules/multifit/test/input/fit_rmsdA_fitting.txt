@@ -1,2 +1,0 @@
-solution index | solution filename | fit rotation | fit translation  | match size | match average distance |  envelope penetration score | fitting score|dock rotation | dock translation | RMSD to reference
-0||1 0 0 0|1.000000 2.000000 1.000000|0|-1|-1|0.453773|1 0 0 0|0 0 0|-1

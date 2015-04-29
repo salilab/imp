@@ -1,7 +1,0 @@
-IMP_SWIG_VALUE(IMP::rotamer, RotamerAngleTuple, RotamerAngleTuples);
-IMP_SWIG_VALUE(IMP::rotamer, ResidueRotamer, ResidueRotamers);
-IMP_SWIG_OBJECT(IMP::rotamer, RotamerLibrary, RotamerLibraries);
-IMP_SWIG_OBJECT(IMP::rotamer, RotamerCalculator, RotamerCalculators);
-
-%include "IMP/rotamer/RotamerLibrary.h"
-%include "IMP/rotamer/RotamerCalculator.h"

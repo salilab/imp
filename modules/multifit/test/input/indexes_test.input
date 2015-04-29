@@ -1,5 +1,0 @@
-name|protein|surface|pdb_anchor_points|number of anchor points|fine pdb_anchor_points|number of fine anchor points|transformations|ref filename|
-A||||15||156|indexes_testA_fitting.txt||
-B||||7||78|indexes_testB_fitting.txt||
-map| resolution| spacing| threshold|x-origin| y-origin| z-origin|coarse anchor points|coarse over sampled anchor points|fine anchor points|fine over sampled anchor points|
-|15.0|2|300|30.0|4.0|-96.0|||||

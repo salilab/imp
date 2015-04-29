@@ -1,3 +1,0 @@
-Add capability in swap for selecting points other than data points.
-
-Allow user to specify initial center points.
