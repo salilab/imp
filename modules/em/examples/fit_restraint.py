@@ -7,6 +7,10 @@ from __future__ import print_function
 import IMP.em
 import IMP.core
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "fit restraint")
+
 IMP.set_log_level(IMP.SILENT)
 m = IMP.Model()
 # 1. setup the input protein

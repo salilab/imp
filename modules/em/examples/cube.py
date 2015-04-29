@@ -8,6 +8,9 @@
 from __future__ import print_function
 import IMP.em
 import IMP.display
+import sys
+
+IMP.setup_from_argv(sys.argv, "cube")
 
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1, 1, 1),
                                IMP.algebra.Vector3D(11, 11, 11))

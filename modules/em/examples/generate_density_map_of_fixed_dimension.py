@@ -6,6 +6,10 @@ from __future__ import print_function
 import IMP
 import IMP.atom
 import IMP.em
+import sys
+
+IMP.setup_from_argv(sys.argv, "generate a density map of fixed dimension")
+
 m = IMP.Model()
 # 1. read a protein and get its bounding box dimension
 sel = IMP.atom.CAlphaPDBSelector()

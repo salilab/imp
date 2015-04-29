@@ -6,6 +6,9 @@
 from __future__ import print_function
 import IMP.display
 import IMP.em
+import sys
+
+IMP.setup_from_argv(sys.argv, "analyze convergence")
 
 use_rigid_bodies = True
 bd = 10

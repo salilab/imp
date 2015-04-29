@@ -6,6 +6,10 @@
 import IMP.em
 import IMP.core
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "pdb2density")
+
 m = IMP.Model()
 # read protein
 sel = IMP.atom.NonWaterPDBSelector()

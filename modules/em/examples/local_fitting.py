@@ -13,6 +13,9 @@ import IMP.core
 import IMP.atom
 import random
 import math
+import sys
+
+IMP.setup_from_argv(sys.argv, "local fitting")
 
 IMP.set_log_level(IMP.SILENT)
 IMP.set_check_level(IMP.NONE)
