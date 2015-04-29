@@ -31,10 +31,10 @@ for i, p in enumerate(ps[1:]):
     sm = IMP.core.TransformationSymmetry(tr)
     # set up a constraint for the one particle, if you have more than one with the same symmetry
     # transform, you should use an IMP.container.SingletonsConstraint.
-    c = IMP.core.SingletonConstraint(sm, None, p)
+    c = IMP.core.SingletonConstraint(sm, None, m, p.get_index())
     m.add_score_state(c)
-r = IMP.core.ExcludedVolumeRestraint(IMP.container.ListSingletonContainer(ps),
-                                     1)
+lsc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ps))
+r = IMP.core.ExcludedVolumeRestraint(lsc, 1)
 sf = IMP.core.RestraintsScoringFunction([r])
 
 d0 = IMP.core.XYZ(ps[0])

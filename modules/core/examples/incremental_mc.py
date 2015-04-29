@@ -29,7 +29,7 @@ for i in range(0, num_balls):
     d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
     d.set_coordinates_are_optimized(True)
 
-psl = IMP.container.ListSingletonContainer(ps)
+psl = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ps))
 r = IMP.core.ExcludedVolumeRestraint(psl, 1)
 rb = IMP.container.SingletonsRestraint(
     IMP.core.BoundingBox3DSingletonScore(

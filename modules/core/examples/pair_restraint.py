@@ -11,5 +11,6 @@ IMP.setup_from_argv(sys.argv, "pair restraint")
 
 uf = IMP.core.Harmonic(0, 1)
 df = IMP.core.DistancePairScore(uf)
-r = IMP.core.PairRestraint(df, (c.get_particle(0), c.get_particle(1)))
+inds = c.get_indexes()
+r = IMP.core.PairRestraint(m, df, (inds[0], inds[1]))
 print(r.evaluate(False))

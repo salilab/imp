@@ -44,7 +44,7 @@ void DiameterRestraint::init() {
   d.set_coordinates_are_optimized(false);
   Pointer<core::CoverRefined> cr =
       new core::CoverRefined(new FixedRefiner(sc_->get_particles()), 0);
-  ss_ = new core::SingletonConstraint(cr, nullptr, p_);
+  ss_ = new core::SingletonConstraint(cr, nullptr, m, p_->get_index());
 
   m->add_score_state(ss_);
 }
