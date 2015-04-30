@@ -105,6 +105,9 @@ Score a single model with EM3D.
 \section em2d_single_score_bin em2d_single_score
 Score a single model with EM2D.
 
+\section GeneratePerfectProjection_bin GeneratePerfectProjection
+Generate Projection of a PDB without Noise.
+
 \section soap_score_bin soap_score
 Score models with SOAP.
 
