@@ -17,28 +17,17 @@
 #include "IMP/base_types.h"
 
 IMPATOM_BEGIN_NAMESPACE
-
-//! Get the rmsd between two lists of particles
-/** \deprecated_at{2.5} Use algebra::get_rmsd_transforming_first() instead.
+/**
+   Get the rmsd between two lists of particles
  */
-template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
-IMPATOM_DEPRECATED_FUNCTION_DECL(2.5) inline double get_rmsd_transforming_first(
-    const IMP::algebra::Transformation3D& tr,
-    const Vector3DsOrXYZs0& m1, const Vector3DsOrXYZs1& m2) {
-  IMPATOM_DEPRECATED_FUNCTION_DEF(2.5,
-                       "Use algebra::get_rmsd_transforming_first() instead");
-  return algebra::get_rmsd_transforming_first(tr, m1, m2);
-}
+IMPATOMEXPORT double get_rmsd_transforming_first(
+    const IMP::algebra::Transformation3D& tr, const core::XYZs& s0,
+    const core::XYZs& s1);
 
-//! Get the rmsd between two lists of particles
-/** \deprecated_at{2.5} Use algebra::get_rmsd() instead.
+/**
+   Get the rmsd between two lists of particles
  */
-template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
-IMPATOM_DEPRECATED_FUNCTION_DECL(2.5) inline double get_rmsd(
-                 const Vector3DsOrXYZs0& m1, const Vector3DsOrXYZs1& m2) {
-  IMPATOM_DEPRECATED_FUNCTION_DEF(2.5, "Use algebra::get_rmsd() instead");
-  return algebra::get_rmsd(m1, m2);
-}
+IMPATOMEXPORT double get_rmsd(const core::XYZs& s0, const core::XYZs& s1);
 
 /** RMSD on a pair of Selections.*/
 IMPATOMEXPORT double get_rmsd(const Selection& s0, const Selection& s1);
