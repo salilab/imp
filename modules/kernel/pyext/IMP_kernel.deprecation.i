@@ -1,5 +1,7 @@
 %pythoncode %{
 
+import functools
+
 def deprecated_module(version, module, help_message):
     handle_use_deprecated(
                 "Module %s is deprecated. %s" % (module, help_message))
@@ -11,6 +13,7 @@ class __deprecation_base(object):
 class deprecated_object(__deprecation_base):
     def __call__(self, obj):
         orig_init = obj.__init__
+        @functools.wraps(orig_init)
         def __init__(obj, *args, **keys):
             handle_use_deprecated("Object %s is deprecated. %s"
                                   % (type(obj), self.help_message))
@@ -21,6 +24,7 @@ class deprecated_object(__deprecation_base):
 
 class deprecated_method(__deprecation_base):
     def __call__(self, obj):
+        @functools.wraps(obj)
         def wrapper(cls, *args, **keys):
             handle_use_deprecated("Method %s in %s is deprecated. %s"
                                % (obj.__name__, type(cls), self.help_message))
@@ -30,6 +34,7 @@ class deprecated_method(__deprecation_base):
 
 class deprecated_function(__deprecation_base):
     def __call__(self, obj):
+        @functools.wraps(obj)
         def wrapper(*args, **keys):
             handle_use_deprecated("Function %s is deprecated. %s"
                                   % (obj.__name__, self.help_message))
