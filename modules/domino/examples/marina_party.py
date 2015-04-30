@@ -26,8 +26,8 @@ import random
 class SumPricePairScore(IMP.PairScore):
 
     def evaluate_index(self, m, pair, accum):
-        price0 = Price(m, pair[0]).get_price()
-        price1 = Price(m, pair[1]).get_price()
+        price0 = Price(m.get_particle(pair[0])).get_price()
+        price1 = Price(m.get_particle(pair[1])).get_price()
         return price0 + price1
 
     def do_get_inputs(self, m, pis):
