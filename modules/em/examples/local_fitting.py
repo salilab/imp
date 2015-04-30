@@ -1,7 +1,7 @@
 ## \example em/local_fitting.py
 # Shows how to locally refine a fit of a protein inside
 # its density using a MC/CG optimization protocol.
-# This example does not necessarily converges to the global minimum
+# This example does not necessarily converge to the global minimum
 # as that may require more optimization steps.
 # If one wishes to use this example as a template for real refinement purposes,
 # please adjust the parameters of the function IMP.em.local_rigid_fitting
@@ -44,7 +44,7 @@ dmap.get_header_writable().set_resolution(resolution)
 
 # 3.1 generate a sampled density map to the same resolution and spacing as
 # the target density map. Note that the function we are going to use
-# (cross_correlation_coefficient) expect to get the same map dimensions as
+# (cross_correlation_coefficient) expects to get the same map dimensions as
 # the target density map.
 sampled_input_density = IMP.em.SampledDensityMap(dmap.get_header())
 sampled_input_density.set_particles(ps)
@@ -56,10 +56,10 @@ best_score = IMP.em.CoarseCC.cross_correlation_coefficient(
     dmap, sampled_input_density, sampled_input_density.get_header().dmin)
 print("The CC score of the native transformation is:", best_score)
 
-# 4. To denostrate local fitting we locally rotate and translate the
+# 4. To demonstrate local fitting we locally rotate and translate the
 # protein and show how we can go back to the correct placement.
 
-# 4.1 define a local transformatione
+# 4.1 define a local transformation
 translation = IMP.algebra.get_random_vector_in(
     IMP.algebra.get_unit_bounding_box_3d())
 axis = IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
@@ -73,7 +73,7 @@ local_trans = IMP.algebra.Transformation3D(r, translation)
 # 4.2 set the protein as a rigid body
 IMP.atom.create_rigid_body(mh)
 prot_rb = IMP.core.RigidMember(IMP.core.get_leaves(mh)[0]).get_rigid_body()
-# 4.3 apply the trasnformation to the protein
+# 4.3 apply the transformation to the protein
 IMP.core.transform(prot_rb, local_trans)
 m.update()  # to make sure the transformation was applied
 # 4.4 print the new correlation score, should be lower than before
@@ -88,7 +88,7 @@ start_rmsd = IMP.atom.get_rmsd(IMP.core.XYZs(ps), IMP.core.XYZs(ps_ref))
 print("The start score is:", start_score, "with rmsd of:", start_rmsd)
 # 5. apply local fitting
 # 5.1 run local fitting
-print("preforming local refinement, may run for 3-4 minutes")
+print("performing local refinement, may run for 3-4 minutes")
 # translate the molecule to the center of the density
 IMP.core.transform(prot_rb, IMP.algebra.Transformation3D(
     IMP.algebra.get_identity_rotation_3d(), dmap.get_centroid() - IMP.core.get_centroid(ps)))
