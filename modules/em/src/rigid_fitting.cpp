@@ -60,7 +60,7 @@ core::MonteCarlo *set_optimizer(Model *model,
                                 OptimizerStates display_log,
                                 Particle *p, Refiner *refiner,
                                 Int number_of_cg_steps, Float max_translation,
-                                Float max_rotation) {
+                                Float max_rotation, RestraintSet *rsrs) {
   core::RigidBody rb =
       core::RigidMember(refiner->get_refined(p)[0]).get_rigid_body();
   // create a rigid body mover
@@ -69,8 +69,10 @@ core::MonteCarlo *set_optimizer(Model *model,
   // preform mc search
   //  core::SteepestDescent *lopt = new core::SteepestDescent();
   IMP_NEW(core::ConjugateGradients, lopt, (model));
+  lopt->set_scoring_function(rsrs);
   Pointer<core::MonteCarloWithLocalOptimization> opt(
       new core::MonteCarloWithLocalOptimization(lopt, number_of_cg_steps));
+  opt->set_scoring_function(rsrs);
   opt->add_mover(rb_mover);
   opt->set_return_best(true);  // return the lowest energy state visited
 
@@ -150,8 +152,7 @@ FittingSolutions local_rigid_fitting_around_point(
   // create a rigid body mover and set the optimizer
   PointerMember<core::MonteCarlo> opt =
       set_optimizer(model, display_log, p, refiner, number_of_cg_steps,
-                    max_translation, max_rotation);
-  opt->set_scoring_function(rsrs);
+                    max_translation, max_rotation, rsrs);
 
   // optimize
 
@@ -192,8 +193,7 @@ FittingSolutions local_rigid_fitting_around_points(
       add_restraints(model, dmap, p, refiner, wei_key);
   PointerMember<core::MonteCarlo> opt =
       set_optimizer(model, display_log, p, refiner, number_of_cg_steps,
-                    max_translation, max_rotation);
-  opt->set_scoring_function(rsrs);
+                    max_translation, max_rotation, rsrs);
 
   for (algebra::Vector3Ds::const_iterator it = anchor_centroids.begin();
        it != anchor_centroids.end(); it++) {
