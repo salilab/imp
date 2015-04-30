@@ -109,6 +109,12 @@ message(STATUS ${m} " is percpp")
 set(IMP_${m}_IS_PER_CPP 1)
 endforeach(m)
 
+string(REGEX MATCHALL "[a-zA-Z]+" cudalist "${IMP_CUDA}")
+foreach(m ${cudalist})
+message(STATUS ${m} " is cuda lib")
+set(IMP_${m}_IS_CUDA 1)
+endforeach(m)
+
 if(NOT DEFINED PYTHON_INCLUDE_DIRS AND NOT IMP_STATIC)
   execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print(sys.executable)"
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
