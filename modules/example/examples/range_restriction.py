@@ -19,7 +19,7 @@ bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
 
 m = IMP.Model()
 ps = IMP.core.create_xyzr_particles(m, 20, 1)
-sc = IMP.container.ListSingletonContainer(ps)
+sc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ps))
 
 # apply the range restriction modifier to each each particle in sc
 ss = IMP.container.SingletonsConstraint(
