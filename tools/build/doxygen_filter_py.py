@@ -143,7 +143,7 @@ def get_deprecation_docstring(node):
        deprecation decorators, add the runtime warning to the docstring too."""
     if hasattr(node, 'decorator_list'):
         for d in node.decorator_list:
-            if d.func.attr.startswith('deprecated_'):
+            if hasattr(d, 'func') and d.func.attr.startswith('deprecated_'):
                 return '\n@deprecated_at %s %s' % (d.args[0].s, d.args[1].s)
     return ''
 
