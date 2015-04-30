@@ -386,6 +386,9 @@ class TestCase(unittest.TestCase):
             if self._get_type(module.__name__, name)==type and not name.startswith("_"):
                 if name.find("SwigPyIterator") != -1:
                     continue
+                if name in ['deprecated_function', 'deprecated_method',
+                            'deprecated_object']:
+                    continue
                 if name.find('_') != -1:
                     bad.append(name)
                 if name.lower== name:

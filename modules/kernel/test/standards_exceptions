@@ -1,6 +1,7 @@
 show_exceptions=['Decorator', "ParticlePair", "ParticleTriplet", "ParticleQuad",
                  'RandomNumberGenerator',"Timer"]
 function_name_exceptions=[
+    'deprecated_module',
     'RandomNumberGenerator.seed', 'setup_from_argv',
     'Particle.has_attribute', 'Model.restore_particle',
     'RandomNumberGenerator.seed',
