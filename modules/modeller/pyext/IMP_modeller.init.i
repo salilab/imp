@@ -299,6 +299,7 @@ def _load_entire_restraints_file(filename, protein):
             raise
 
 
+@IMP.deprecated_function("2.5", "Use ModelLoader instead")
 def load_restraints_file(filename, protein):
     """Convert a Modeller restraints file into IMP::Restraint objects.
 
@@ -619,6 +620,8 @@ class ModelLoader(object):
                 yield IMP.container.PairsRestraint(ps, nbl)
 
 
+@IMP.deprecated_function("2.5", "Use IMP::atom::read_pdb() instead to read "
+                         "a PDB file, or ModelLoader to read a Modeller model.")
 def read_pdb(name, model, special_patches=None):
     """Construct an IMP::atom::Hierarchy from a PDB file.
 
