@@ -12,7 +12,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 void handle_use_deprecated(std::string message) {
-  if (internal::no_print_deprecation_messages) {
+  if (!internal::no_print_deprecation_messages) {
     if (internal::printed_deprecation_messages.find(message) ==
         internal::printed_deprecation_messages.end()) {
       IMP_WARN(message);
