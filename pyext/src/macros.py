@@ -753,6 +753,7 @@ class BuildModel(object):
         return outhier
 
 
+@IMP.deprecated_object("2.5", "Use BuildModel instead")
 class BuildModel1(object):
     """Deprecated building macro - use BuildModel()"""
 

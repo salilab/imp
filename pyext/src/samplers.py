@@ -220,10 +220,8 @@ class MonteCarlo(object):
                         accept = 1.0
                         wmv.set_radius(stepsize * 2 * accept)
 
+    @IMP.deprecated_method("2.5", "Use optimize() instead.")
     def run(self, *args, **kwargs):
-        IMP.pmi.tools.print_deprecation_warning(
-            "MonteCarlo.run",
-            "MonteCarlo.optimize")
         self.optimize(*args, **kwargs)
 
     def get_nuisance_movers(self, nuisances, maxstep):

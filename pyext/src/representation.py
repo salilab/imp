@@ -161,10 +161,8 @@ class Representation(object):
 
     # Deprecation warning
 
+    @IMP.deprecated_method("2.5", "Use create_component() instead.")
     def add_component_name(self, *args, **kwargs):
-        IMP.pmi.tools.print_deprecation_warning(
-            "add_component_name",
-            "create_component")
         self.create_component(*args, **kwargs)
 
     def get_component_names(self):
@@ -292,10 +290,8 @@ class Representation(object):
 
     # Deprecation warning
 
+    @IMP.deprecated_method("2.5", "Use autobuild_model() instead.")
     def autobuild_pdb_and_intervening_beads(self, *args, **kwargs):
-        IMP.pmi.tools.print_deprecation_warning(
-            "autobuild_pdb_and_intervening_beads",
-            "autobuild_model")
         r = self.autobuild_model(*args, **kwargs)
         return r
 
@@ -2207,10 +2203,8 @@ class Representation(object):
 
 # Deprecation warning for the old SimplifiedModel class
 
+@IMP.deprecated_object("2.5", "Use Representation instead.")
 class SimplifiedModel(Representation):
 
     def __init__(self, *args, **kwargs):
         Representation.__init__(self, *args, **kwargs)
-        IMP.pmi.tools.print_deprecation_warning(
-            "SimplifiedModel",
-            "Representation")
