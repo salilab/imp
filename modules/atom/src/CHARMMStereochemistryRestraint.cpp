@@ -114,28 +114,33 @@ double CHARMMStereochemistryRestraint::unprotected_evaluate(
 
 ModelObjectsTemp CHARMMStereochemistryRestraint::do_get_inputs() const {
   ModelObjectsTemp ps;
+  Model *m = get_model();
   for (Particles::const_iterator b = bonds_.begin(); b != bonds_.end();
        ++b) {
     ps.push_back(*b);
-    ParticlesTemp bps = bond_score_->get_input_particles(*b);
+    ModelObjectsTemp bps = bond_score_->get_inputs(m,
+                                ParticleIndexes(1, (*b)->get_index()));
     ps.insert(ps.end(), bps.begin(), bps.end());
   }
   for (Particles::const_iterator a = angles_.begin();
        a != angles_.end(); ++a) {
     ps.push_back(*a);
-    ParticlesTemp bps = angle_score_->get_input_particles(*a);
+    ModelObjectsTemp bps = angle_score_->get_inputs(m,
+                                ParticleIndexes(1, (*a)->get_index()));
     ps.insert(ps.end(), bps.begin(), bps.end());
   }
   for (Particles::const_iterator d = dihedrals_.begin();
        d != dihedrals_.end(); ++d) {
     ps.push_back(*d);
-    ParticlesTemp bps = dihedral_score_->get_input_particles(*d);
+    ModelObjectsTemp bps = dihedral_score_->get_inputs(m,
+                                ParticleIndexes(1, (*d)->get_index()));
     ps.insert(ps.end(), bps.begin(), bps.end());
   }
   for (Particles::const_iterator i = impropers_.begin();
        i != impropers_.end(); ++i) {
     ps.push_back(*i);
-    ParticlesTemp bps = improper_score_->get_input_particles(*i);
+    ModelObjectsTemp bps = improper_score_->get_inputs(m,
+                                ParticleIndexes(1, (*i)->get_index()));
     ps.insert(ps.end(), bps.begin(), bps.end());
   }
   return ps;
