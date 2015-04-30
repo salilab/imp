@@ -138,11 +138,20 @@ def handle_func(f):
                 return
     return f
 
+def get_deprecation_docstring(node):
+    """If the node (class, function or method) is decorated with one of IMP's
+       deprecation decorators, add the runtime warning to the docstring too."""
+    if hasattr(node, 'decorator_list'):
+        for d in node.decorator_list:
+            if d.func.attr.startswith('deprecated_'):
+                return '\n@deprecated_at %s %s' % (d.args[0].s, d.args[1].s)
+    return ''
 
 def get_dump_docstring(node, add_lines=[]):
     lines = []
     doc = ast.get_docstring(node)
     if doc:
+        doc += get_deprecation_docstring(node)
         prefix = "## "
         for line in doc.split('\n') + add_lines:
             lines.append(prefix + line)

@@ -97,3 +97,6 @@ classes, methods, or functions as deprecated:
     @IMP.deprecated_function("2.1", "Use my_new_function(args) instead")
     def my_deprecated_function(args):
         do stuff...
+
+For Python there is no need to use the `\\deprecated_at` macro - the
+warning message from the decorator is automatically added to the documentation.
