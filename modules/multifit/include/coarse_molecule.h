@@ -17,6 +17,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Coarsen a molecule based on atom clustering
 /**
+\deprecated_at{2.5} Unused and will be removed.
 \param[in] mh the molecule to coarsen
 \param[in] num_beads the output number of beads
 \param[in] mdl model to add the new molecule to
@@ -25,12 +26,14 @@ IMPMULTIFIT_BEGIN_NAMESPACE
              between the particles of the new molecule is added
  */
 IMPMULTIFITEXPORT
+IMPMULTIFIT_DEPRECATED_FUNCTION_DECL(2.5)
 atom::Hierarchy create_coarse_molecule_from_molecule(
     const atom::Hierarchy &mh, int num_beads, Model *mdl,
     float bead_radius, bool add_conn_restraint = false);
 
 //! Coarsen molecules based on atom clustering
 /**
+\deprecated_at{2.5} Unused and will be removed.
 \param[in] mhs the molecules to coarsen
 \param[in] frag_len the number of beads for each molecule will be
                     its number of residues / frag_len
@@ -40,6 +43,7 @@ atom::Hierarchy create_coarse_molecule_from_molecule(
            between the particles of the new molecule is added
  */
 IMPMULTIFITEXPORT
+IMPMULTIFIT_DEPRECATED_FUNCTION_DECL(2.5)
 atom::Hierarchies create_coarse_molecules_from_molecules(
     const atom::Hierarchies &mhs, int frag_len, Model *mdl,
     float bead_radius, bool add_conn_restraint = false);
