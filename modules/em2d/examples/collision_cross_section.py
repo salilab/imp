@@ -7,6 +7,9 @@ from __future__ import print_function
 import IMP
 import IMP.em2d
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "collision cross section")
 
 """
 

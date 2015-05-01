@@ -5,6 +5,10 @@
 import IMP
 import IMP.em2d as em2d
 import os
+import sys
+
+IMP.setup_from_argv(sys.argv, "EM images conversion")
+
 """
     Conversion of Electron Microscopy Images.
 
