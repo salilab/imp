@@ -1,13 +1,13 @@
 ## \example domino/marina_party.py
 #
-# This is a not very serious example that shows how to use domino from scratch to
-# solve a problem. It is illustrative of creating your own type of particles,
+# This is a not very serious example that shows how to use domino from scratch
+# to solve a problem. It is illustrative of creating your own type of particles,
 # a pair score, particle states for DOMINO, a decorator, and using subset filter
 # tables with DOMINO.
 #
 # Solution of the Marina Party Problem with DOMINO:
 #
-# - Girls attend to a party
+# - Girls attend a party
 # - Each girl has dresses of different price
 # - There can not be repeated dresses in the party within a group of connected
 # people

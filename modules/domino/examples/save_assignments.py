@@ -1,5 +1,6 @@
 ## \example domino/save_assignments.py
-# It can often be useful to save the assignments to a file. \imp provides support to do this to an a data set in an hdf5 file.
+# It can often be useful to save the assignments to a file. \imp provides
+# support to do this to a data set in an HDF5 file.
 #
 # You can use \c h5dump to view the contents of the created file.
 
@@ -8,7 +9,7 @@ import sys
 
 IMP.setup_from_argv(sys.argv, "save assignments")
 
-# create a model and some particles, they are just used as markers here
+# create a model and some particles; they are just used as markers here
 m = IMP.Model()
 ps = [IMP.Particle(m) for i in range(0, 10)]
 

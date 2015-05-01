@@ -1,8 +1,8 @@
 ## \example domino/interactive_with_containers.py
-# Run domino storing the intermediate and final results in an hdf5
+# Run domino storing the intermediate and final results in an HDF5
 # database. This has the advantage that if you interrupt the run at any
-# point, you have a list of everything computed so far and so can get some
-# more idea of what is going on.
+# point, you have a list of everything computed so far and so can get a
+# better idea of what is going on.
 
 from __future__ import print_function
 import IMP.domino
