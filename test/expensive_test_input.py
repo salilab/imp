@@ -33,17 +33,17 @@ class InputTest(IMP.test.TestCase):
         prots = IMP.rmf.create_hierarchies(rh,self.mdl)
 
         # testing first coordinate of med2 for each frame
-        check_coords=[[17.23349762, 27.99548721,-8.91260719],
-                      [24.54545784, 59.26082993, -3.0899663 ],
-                      [25.41869354, 63.82009125, -16.76820946]]
+        check_coords=[(26.2109, 61.2197, -16.9102),
+                      (20.8669, 42.4836, -4.40971),
+                      (25.741, 60.6429, -11.0356)]
 
         for i in range(3):
             IMP.rmf.load_frame(rh,RMF.FrameID(i))
             psdict = IMP.pmi.analysis.get_particles_at_resolution_one(prots[0])
             coord = IMP.core.XYZ(psdict['med2'][0]).get_coordinates()
             print(coord)
-            self.assertAlmostEqual(IMP.algebra.get_distance(coord,
-                                                            IMP.algebra.Vector3D(check_coords[i])),0.0)
+            self.assertLess(IMP.algebra.get_distance(coord,
+                                   IMP.algebra.Vector3D(check_coords[i])), 1e-3)
         os.unlink('top_3.rmf3')
         os.unlink('top_3.out')
 
