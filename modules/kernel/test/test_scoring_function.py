@@ -29,5 +29,7 @@ class Tests(IMP.test.TestCase):
         r.set_weight(1)
         rs.set_weight(0)
         self.assertEqual(rsf.evaluate(False), 0)
+
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

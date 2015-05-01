@@ -1,6 +1,8 @@
 import IMP
 import sys
 
+IMP.set_deprecation_exceptions(True)
+
 IMP.setup_from_argv(sys.argv, "Test progress bar")
 IMP.set_log_level(IMP.PROGRESS)
 IMP.set_progress_display("Test progress", 110)

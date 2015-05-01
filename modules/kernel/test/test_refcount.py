@@ -138,11 +138,6 @@ class Tests(IMP.test.TestCase):
         r = IMP._ConstRestraint(m, [], 1)
         r.set_name("R")
         s = IMP.RestraintSet(m, 1.0, "S")
-        print("add s to m")
-        m.add_restraint(s)
-        print("add r to m")
-        m.add_restraint(r)
-        print("add r to s")
         s.add_restraint(r)
         """m.evaluate(False)
         refcnt.assert_number(3)
@@ -234,4 +229,5 @@ class Tests(IMP.test.TestCase):
 
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

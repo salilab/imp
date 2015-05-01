@@ -37,7 +37,8 @@ class Tests(IMP.test.TestCase):
             p1.add_attribute(IMP.FloatKey("attr_" + str(i)), 3.5 * i, False)
         # clear derivatives
         print(model.get_ref_count())
-        model.evaluate(True)
+        r = IMP._ConstRestraint(1, particles)
+        r.evaluate(True)
         print(model.get_ref_count())
         return (model, particles)
 
@@ -216,4 +217,5 @@ class Tests(IMP.test.TestCase):
                 print(i)
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

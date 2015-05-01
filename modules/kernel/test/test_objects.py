@@ -23,4 +23,5 @@ class Tests(IMP.test.TestCase):
                             '%s not found in live objects: %s' % (m, allobjs))
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

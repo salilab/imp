@@ -179,8 +179,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model("director exceptions")
         IMP.set_log_level(IMP.VERBOSE)
         r = FailingRestraint(m)
-        m.add_restraint(r)
-        self.assertRaises(CustomError, m.evaluate, False)
+        self.assertRaises(CustomError, r.evaluate, False)
         # print "done"
 
     def test_temp_restraints(self):
@@ -285,4 +284,5 @@ class Tests(IMP.test.TestCase):
             p.set_has_required_score_states(True)
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

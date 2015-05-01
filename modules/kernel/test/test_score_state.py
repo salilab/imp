@@ -48,5 +48,7 @@ class Tests(IMP.test.TestCase):
         ss = LoggingScoreState(m, log)
         m.update()
         self.assertEqual(ss.log, ["update"])
+
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

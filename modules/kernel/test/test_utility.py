@@ -9,4 +9,5 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(ValueError, IMP.get_unique_name, "test%2%")
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

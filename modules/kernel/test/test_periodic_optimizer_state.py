@@ -34,5 +34,7 @@ class Tests(IMP.test.TestCase):
         for i in range(0, 100):
             pos.update()
         self.assertEqual(pos.calls, list(range(0, 100 // period)))
+
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

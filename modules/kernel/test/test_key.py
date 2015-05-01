@@ -16,4 +16,5 @@ class Tests(IMP.test.TestCase):
         self.assertNotEqual(k2, ak1)
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

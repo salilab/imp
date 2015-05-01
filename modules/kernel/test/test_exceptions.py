@@ -28,4 +28,5 @@ class Tests(IMP.test.TestCase):
         IMP.IOException
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

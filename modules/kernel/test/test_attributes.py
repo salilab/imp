@@ -26,5 +26,7 @@ class Tests(IMP.test.TestCase):
         pik = IMP.ParticleIndexKey("hi")
         m.add_attribute(pik, p.get_index(), p.get_index())
         self.assertEqual(m.get_attribute(pik, p.get_index()), p.get_index())
+
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

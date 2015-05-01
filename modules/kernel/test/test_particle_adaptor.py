@@ -1,4 +1,5 @@
 import IMP
+IMP.set_deprecation_exceptions(True)
 
 m = IMP.Model()
 pi = m.add_particle("p")

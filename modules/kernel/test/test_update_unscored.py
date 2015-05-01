@@ -45,5 +45,7 @@ class Tests(IMP.test.TestCase):
         m.set_is_optimized(k, pi, True)
         m.update()
         self.assertEqual(m.get_attribute(k, pi), 1)
+
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

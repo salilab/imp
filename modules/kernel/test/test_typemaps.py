@@ -309,4 +309,5 @@ class Tests(IMP.test.TestCase):
                          "The following methods are not found in decorators: " + str(missing))
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()
