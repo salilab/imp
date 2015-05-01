@@ -32,9 +32,6 @@ class Tests(IMP.test.TestCase):
         pr = p.get_projected(IMP.algebra.Vector3D(5., 0., 0.))
         self.assertLess(IMP.algebra.get_distance(pr,
                                IMP.algebra.Vector3D(5., 5., 0.)), .1)
-        pr = p.get_projection(IMP.algebra.Vector3D(5., 0., 0.))
-        self.assertLess(IMP.algebra.get_distance(pr,
-                               IMP.algebra.Vector3D(5., 5., 0.)), .1)
         self.assertAlmostEqual(p.get_height(IMP.algebra.Vector3D(0., 14., 0.)),
                                9.0, delta=1e-4)
         self.assertTrue(p.get_is_above(IMP.algebra.Vector3D(0., 14., 0.)))
