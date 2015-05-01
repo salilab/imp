@@ -21,7 +21,9 @@ import IMP
 import IMP.domino
 import IMP.core
 import random
+import sys
 
+IMP.setup_from_argv(sys.argv, "marina party")
 
 class SumPricePairScore(IMP.PairScore):
 

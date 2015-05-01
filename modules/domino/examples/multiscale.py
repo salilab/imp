@@ -2,8 +2,12 @@
 # We are interested in applying domino to problems systematically in a
 # multiscale manner. This script experiments with those approaches.
 
+from __future__ import print_function
 import IMP.domino
 import IMP.core
+import sys
+
+IMP.setup_from_argv(sys.argv, "multiscale")
 
 m = IMP.Model()
 m.set_log_level(IMP.SILENT)
@@ -55,6 +59,7 @@ def setup(cover, scale):
     fs = [IMP.domino.RestraintScoreSubsetFilterTable(rc),
           lf]
     sampler = IMP.domino.DominoSampler(m, pst)
+    sampler.set_restraints(rs)
     sampler.set_subset_filter_tables(fs)
     sampler.set_log_level(IMP.SILENT)
     return (sampler, lf, pst)

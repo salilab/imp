@@ -4,6 +4,9 @@
 # You can use \c h5dump to view the contents of the created file.
 
 import IMP.domino
+import sys
+
+IMP.setup_from_argv(sys.argv, "save assignments")
 
 # create a model and some particles, they are just used as markers here
 m = IMP.Model()

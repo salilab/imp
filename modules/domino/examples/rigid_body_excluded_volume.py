@@ -8,6 +8,9 @@ import IMP.algebra
 import IMP.domino
 import IMP.atom
 import math
+import sys
+
+IMP.setup_from_argv(sys.argv, "rigid body excluded volume")
 
 # create a rigid body per helix
 
@@ -30,7 +33,7 @@ def create_excluded_volume(m, helices):
     all = []
     for h in helices:
         all.extend(IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE))
-    lsc = IMP.container.ListSingletonContainer(all)
+    lsc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(all))
     evr = IMP.core.ExcludedVolumeRestraint(lsc, 1)
     evr.set_maximum_score(.01)
     return [evr]
@@ -60,6 +63,7 @@ def create_discrete_states(m, helices):
 
 def create_sampler(m, rs, pst):
     s = IMP.domino.DominoSampler(m, pst)
+    s.set_restraints(rs)
     filters = []
     # do not allow particles with the same ParticleStates object
     # to have the same state index

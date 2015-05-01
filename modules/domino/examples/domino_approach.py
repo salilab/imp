@@ -7,6 +7,7 @@ import IMP.domino
 import IMP.core
 import sys
 
+IMP.setup_from_argv(sys.argv, "domino approach")
 
 def optimize_subsets(subsets):
     pst = IMP.domino.ParticleStatesTable()

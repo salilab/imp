@@ -6,6 +6,9 @@ import IMP.domino
 import IMP.core
 import IMP.container
 import IMP.algebra
+import sys
+
+IMP.setup_from_argv(sys.argv, "merge tree")
 
 IMP.set_log_level(IMP.TERSE)
 m = IMP.Model()

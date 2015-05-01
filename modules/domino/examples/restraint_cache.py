@@ -10,12 +10,16 @@
 # those restraints. You can also extract scores from the table
 # directly, using it to manage the loading of particle states.
 
+from __future__ import print_function
 import IMP.domino
 import IMP.algebra
 import IMP.container
 import IMP.atom
 import IMP.rmf
 import RMF
+import sys
+
+IMP.setup_from_argv(sys.argv, "restraint cache")
 
 resolution = .5
 
@@ -70,6 +74,7 @@ r.set_log_level(IMP.SILENT)
 rc.add_restraints([r])
 
 s = IMP.domino.DominoSampler(m, pst)
+s.set_restraints([r])
 s.set_check_level(IMP.NONE)
 ef = IMP.domino.ExclusionSubsetFilterTable(pst)
 # pass the cache to the restraint score based filter

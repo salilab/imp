@@ -8,6 +8,9 @@ import IMP
 import IMP.domino
 import IMP.core
 import IMP.container
+import sys
+
+IMP.setup_from_argv(sys.argv, "custom filter")
 
 # set restraints
 
@@ -16,7 +19,8 @@ def create_scoring(m, ps):
     pairs = [[0, 1], [0, 2], [1, 3], [2, 3], [3, 4], [4, 5], [1, 5]]
     score = IMP.core.HarmonicDistancePairScore(1, 1)
     # the restraint will be broken apart during optimization
-    pc = IMP.container.ListPairContainer([(ps[p[0]], ps[p[1]]) for p in pairs],
+    pc = IMP.container.ListPairContainer(m,
+                                         [(ps[p[0]], ps[p[1]]) for p in pairs],
                                          "Restrained pairs")
     pr = IMP.container.PairsRestraint(score, pc)
     pr.set_maximum_score(.01)
@@ -28,13 +32,13 @@ def create_scoring(m, ps):
 def create_representation(m):
     ps = []
     for i in range(0, 6):
-        p = IMP.Particle(m)
-        IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(i, 0., 0.))
+        p = m.add_particle("P%d" % i)
+        IMP.core.XYZ.setup_particle(m, p, IMP.algebra.Vector3D(i, 0., 0.))
         ps.append(p)
     return ps
 
 
-def create_discrete_states(ps):
+def create_discrete_states(m, ps):
     pst = IMP.domino.ParticleStatesTable()
     vs = [IMP.algebra.Vector3D(1, 0, 0),
           IMP.algebra.Vector3D(0, 1, 0),
@@ -47,7 +51,7 @@ def create_discrete_states(ps):
     states = IMP.domino.XYZStates(vs)
     # special case ps[0] to remove a sliding degree of freedom
     for p in ps[1:]:
-        pst.set_particle_states(p, states)
+        pst.set_particle_states(m.get_particle(p), states)
     return pst
 
 # force particle p to be in state s
@@ -101,6 +105,7 @@ class MyFilterTable(IMP.domino.SubsetFilterTable):
 
 def create_sampler(m, ps, rs, pst):
     s = IMP.domino.DominoSampler(m, pst)
+    s.set_restraints(rs)
     # s.set_log_level(IMP.VERBOSE)
     # the following lines recreate the defaults and so are optional
     filters = []
@@ -112,7 +117,7 @@ def create_sampler(m, ps, rs, pst):
     # filter states that score worse than the cutoffs in the Model
     filters.append(IMP.domino.RestraintScoreSubsetFilterTable(rc))
     filters[-1].set_log_level(IMP.SILENT)
-    mf = MyFilterTable(ps[1], 0)
+    mf = MyFilterTable(m.get_particle(ps[1]), 0)
     # try with and without this line
     filters.append(mf)
     states = IMP.domino.BranchAndBoundAssignmentsTable(pst, filters)
@@ -128,7 +133,7 @@ m.set_log_level(IMP.SILENT)
 print("creating representation")
 ps = create_representation(m)
 print("creating discrete states")
-pst = create_discrete_states(ps)
+pst = create_discrete_states(m, ps)
 print("creating score function")
 rs = create_scoring(m, ps)
 
@@ -145,4 +150,4 @@ for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
     print("solution number:", i, " is:", sf.evaluate(False))
     for p in ps:
-        print(IMP.core.XYZ(p).get_x(), IMP.core.XYZ(p).get_y())
+        print(IMP.core.XYZ(m, p).get_x(), IMP.core.XYZ(m, p).get_y())

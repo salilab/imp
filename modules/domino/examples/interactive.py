@@ -2,18 +2,23 @@
 # IMP::domino::DominoSampler supports an interactive mode where by each step of the sampling process is called explicitly and all intermediate results are exposed. This usage mode can be used to help understand how domino behaves as well as to distribute a domino computation to multiple cores or multiple machines. For the latter, it is useful to use the IMP::domino::get_assignments() and IMP::domino::set_assignments() functions to save the states to a file.
 #
 
+from __future__ import print_function
 import IMP.domino
 import IMP.algebra
 import IMP.container
 import IMP
+import sys
+
+IMP.setup_from_argv(sys.argv, "interactive")
 
 m = IMP.Model()
 
 # create some particles
-ps = [IMP.core.XYZ.setup_particle(IMP.Particle(m)) for x in range(0, 3)]
+ps = IMP.get_indexes([IMP.core.XYZ.setup_particle(IMP.Particle(m))
+                      for x in range(0, 3)])
 
 s = IMP.core.HarmonicDistancePairScore(1, 1)
-lpc = IMP.container.ListPairContainer(
+lpc = IMP.container.ListPairContainer(m,
     [(ps[i[0]], ps[i[1]]) for i in [(0, 1), (1, 2)]])
 print([(p[0].get_name(), p[1].get_name()) for p in lpc.get_particle_pairs()])
 r = IMP.container.PairsRestraint(s, lpc)
@@ -24,7 +29,7 @@ space = IMP.domino.XYZStates(
 
 pst = IMP.domino.ParticleStatesTable()
 for p in ps:
-    pst.set_particle_states(p, space)
+    pst.set_particle_states(m.get_particle(p), space)
 
 m.set_log_level(IMP.SILENT)
 
@@ -37,6 +42,7 @@ except:
 
 ds = IMP.domino.DominoSampler(m, pst)
 # use the default setup for filters
+ds.set_restraints([r])
 ds.set_scoring_function([r])
 ds.set_merge_tree(mt)
 ds.set_log_level(IMP.SILENT)
