@@ -43,7 +43,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
             all.extend(rb.get_rigid_members())
         xyzrs = self._create_xyzrs(m, 10, 1)
         all.extend(xyzrs)
-        allc = IMP.container.ListSingletonContainer(all)
+        allc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(all))
         r = IMP.core.ExcludedVolumeRestraint(allc, 1)
         r.set_log_level(IMP.SILENT)
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
@@ -93,5 +93,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         # rely on internal checks
         print(o.optimize(1000))
         print("inspect", sf.evaluate(False))
+
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

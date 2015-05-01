@@ -30,7 +30,7 @@ class Volume(IMP.test.TestCase):
             p.set_is_optimized(IMP.FloatKey("x"), True)
             p.set_is_optimized(IMP.FloatKey("y"), True)
             p.set_is_optimized(IMP.FloatKey("z"), True)
-        sc = IMP.container.ListSingletonContainer(ps)
+        sc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ps))
         vr = IMP.core.VolumeRestraint(
             IMP.core.Harmonic(0,
                               1),
@@ -82,4 +82,5 @@ class Volume(IMP.test.TestCase):
         self.assertAlmostEqual(d.get_radius(), 5, delta=.1)
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

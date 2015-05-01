@@ -134,15 +134,17 @@ class Tests(IMP.test.TestCase):
         keypts = [ls[0], ls[-1], ls[len(ls) // 3], ls[len(ls) // 3 * 2]]
         tr = IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(),
                                           IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0), IMP.algebra.Vector3D(500, 500, 500))))
+        restraints = []
         for p in keypts:
             mp = IMP.core.RigidMember(m, p)
             ic = mp.get_internal_coordinates()
             nic = tr.get_transformed(ic)
             dt = IMP.core.DistanceToSingletonScore(
                 IMP.core.Harmonic(0, 1), nic)
-            r = IMP.core.SingletonRestraint(dt, rb)
-            m.add_restraint(r)
+            restraints.append(IMP.core.SingletonRestraint(dt, rb))
         cg = IMP.core.ConjugateGradients(m)
+        sf = IMP.core.RestraintsScoringFunction(restraints)
+        cg.set_scoring_function(sf)
         cg.optimize(600)
         ntr = rb.get_reference_frame().get_transformation_to()
         print(ntr)
@@ -188,5 +190,7 @@ class Tests(IMP.test.TestCase):
         except:
             pass
         self.assertTrue(not failure)
+
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

@@ -52,5 +52,7 @@ class Tests(IMP.test.TestCase):
             opt.optimize(50)
             self.assertLess(opt.optimize(50), 1e-6)
             self.assertLess(sf.evaluate(False), 1e-6)
+
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

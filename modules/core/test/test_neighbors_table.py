@@ -2,6 +2,8 @@ import IMP.test
 import IMP.core
 import IMP.container
 
+IMP.set_deprecation_exceptions(True)
+
 m = IMP.Model()
 pis = [m.add_particle("P%1%") for i in range(0, 10)]
 bb = IMP.algebra.get_unit_bounding_box_3d()

@@ -49,7 +49,8 @@ class Tests(IMP.test.TestCase):
         d1.set_coordinates(IMP.algebra.Vector3D(1, 1, 0))
         # clear derivs
         print("test derivs")
-        m.evaluate(True)
+        const_restraint = IMP._ConstRestraint(m, [p0, p1], 0)
+        const_restraint.evaluate(True)
         tps.evaluate_index(m, (p0, p1), IMP.DerivativeAccumulator(1))
         print(d0.get_derivative(0))
         print(d0.get_derivative(1))
@@ -84,7 +85,7 @@ class Tests(IMP.test.TestCase):
                                                     IMP.algebra.Transformation3D(r, t))
         pl = IMP.container.ListPairContainer(m)
         pr = IMP.container.PairsRestraint(tps, pl)
-        pl.add_particle_pair((p0, p1))
+        pl.add((p0.get_index(), p1.get_index()))
         sf = IMP.core.RestraintsScoringFunction([pr])
         cg = IMP.core.ConjugateGradients(m)
         cg.set_scoring_function(sf)
@@ -104,4 +105,5 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(vt[2], d0.get_coordinate(2), delta=.1)
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

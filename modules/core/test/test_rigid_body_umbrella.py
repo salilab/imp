@@ -91,4 +91,5 @@ class RigidBodyTunnelerTest(IMP.test.TestCase):
         self.assertTrue(allclose(observed, x2))
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

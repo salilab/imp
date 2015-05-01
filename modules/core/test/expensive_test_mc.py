@@ -109,4 +109,5 @@ class MCOptimizerTest(IMP.test.TestCase):
         self.assertAlmostEqual(e, 0.0, delta=.01)
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

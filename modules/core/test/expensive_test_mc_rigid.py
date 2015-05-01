@@ -78,4 +78,5 @@ class MCOptimizerTest(IMP.test.TestCase):
         print("all done")
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

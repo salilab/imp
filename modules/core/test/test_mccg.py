@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
         n = 10
         print(1)
         ds = IMP.core.create_xyzr_particles(m, n, 2)
-        lsc = IMP.container.ListSingletonContainer(ds)
+        lsc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ds))
         print(2)
         cpf = IMP.core.QuadraticClosePairsFinder()
         print(2.1)
@@ -46,19 +46,20 @@ class Tests(IMP.test.TestCase):
         print(4)
         lpc = IMP.container.ListPairContainer(m)
         print("finding pairs")
+        inds = lsc.get_indexes()
         for i in range(0, n // 2):
-            print(lsc.get_particle(2 * i))
-            qp = lsc.get_particle(2 * i)
+            print(m.get_particle(inds[2 * i]))
+            qp = m.get_particle(inds[2 * i])
             print(qp.get_name())
             print(qp)
-            pp = (lsc.get_particle(2 * i),
-                  lsc.get_particle(2 * i + 1))
+            pp = (m.get_particle(inds[2 * i]),
+                  m.get_particle(inds[2 * i + 1]))
             print(pp)
-            pp2 = (lsc.get_particle(2 * i),
-                   lsc.get_particle(2 * i + 1))
+            pp2 = (m.get_particle(inds[2 * i]),
+                   m.get_particle(inds[2 * i + 1]))
             print(pp2)
             print(str(pp2[0]))
-            lpc.add_particle_pair(pp2)
+            lpc.add((inds[2*i], inds[2*i+1]))
         d = IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(0, 1))
         pr = IMP.container.PairsRestraint(d, lpc)
         pr.set_log_level(IMP.WARNING)
@@ -104,4 +105,5 @@ class Tests(IMP.test.TestCase):
 
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

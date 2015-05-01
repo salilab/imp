@@ -28,4 +28,5 @@ class TestEMRestraint(IMP.test.TestCase):
         print(rs.evaluate(False))
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

@@ -1,5 +1,7 @@
 import IMP.core
 
+IMP.set_deprecation_exceptions(True)
+
 m = IMP.Model()
 p0 = IMP.Particle(m)
 p1 = IMP.Particle(m)

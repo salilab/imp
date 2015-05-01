@@ -22,5 +22,7 @@ class NormalMoverTest(IMP.test.TestCase):
         rbmr0 = IMP.core.RigidBodyMover(m, pi, 1, 0)
         rbmr0.propose()
         rbmr0.accept()
+
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

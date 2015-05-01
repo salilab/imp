@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
         # hps.set_log_level(IMP.VERBOSE)
         r = IMP.container.PairsRestraint(hps, cpc)
         r.set_name("chain")
-        ls = IMP.container.ListSingletonContainer(ps)
+        ls = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ps))
         nbl = IMP.container.ClosePairContainer(ls, 0)
         f = IMP.container.InContainerPairFilter(cpc, True)
         nbl.add_pair_filter(f)
@@ -88,7 +88,7 @@ class Tests(IMP.test.TestCase):
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
             d.set_radius(.1)
             d.set_coordinates_are_optimized(True)
-        ls = IMP.container.ListSingletonContainer(ps)
+        ls = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ps))
         nbl = IMP.container.ClosePairContainer(ls, 0)
         nbps = IMP.core.SoftSpherePairScore(1)
         rnb = IMP.container.PairsRestraint(nbps, nbl)
@@ -260,7 +260,7 @@ class Tests(IMP.test.TestCase):
         # hps.set_log_level(IMP.VERBOSE)
         r = IMP.container.PairsRestraint(hps, cpc)
         r.set_name("C")
-        ls = IMP.container.ListSingletonContainer(ps)
+        ls = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ps))
         nbl = IMP.container.ClosePairContainer(ls, 0)
         f = IMP.container.InContainerPairFilter(cpc, True)
         nbl.add_pair_filter(f)
@@ -317,4 +317,5 @@ class Tests(IMP.test.TestCase):
                 self.assertAlmostEqual(iscore,
                                        rscore, delta=.1)
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

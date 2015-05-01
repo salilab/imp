@@ -19,5 +19,7 @@ class Tests(IMP.test.TestCase):
         fpr = IMP.core.FixedRefiner(ps)
         p = IMP.core.Centroid.setup_particle(IMP.Particle(m), fpr)
         m.update()
+
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

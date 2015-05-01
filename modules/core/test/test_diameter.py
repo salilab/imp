@@ -11,8 +11,8 @@ class Tests(IMP.test.TestCase):
     def _test_diameter(self):
         diameter = 10
         m = IMP.Model()
-        lc = IMP.container.ListSingletonContainer(
-            IMP.core.create_xyzr_particles(m, 50, 1.0))
+        lc = IMP.container.ListSingletonContainer(m,
+            IMP.get_indexes(IMP.core.create_xyzr_particles(m, 50, 1.0)))
         h = IMP.core.HarmonicUpperBound(0, 1)
         r = IMP.core.DiameterRestraint(h, lc, diameter)
         sf = IMP.core.RestraintsScoringFunction([r])
@@ -36,4 +36,5 @@ class Tests(IMP.test.TestCase):
         self.probabilistic_test("self._test_diameter()", .002)
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

@@ -37,4 +37,5 @@ class Tests(IMP.test.TestCase):
                          "Number of children is not as expected")
 
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

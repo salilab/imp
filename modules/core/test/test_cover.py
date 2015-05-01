@@ -30,12 +30,14 @@ class Tests(IMP.test.TestCase):
             hd.add_child(IMP.core.Hierarchy.setup_particle(p))
         r = IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())
         c = IMP.core.CentroidOfRefined(r)
-        c.apply(pp)
+        c.apply_index(m, pp.get_index())
         bb = IMP.algebra.BoundingBox3D()
         cd = IMP.core.XYZ(pp)
         for i in range(0, n):
             d = IMP.core.XYZ(hd.get_child(i).get_particle())
             bb += IMP.algebra.BoundingBox3D(d.get_coordinates())
         self.assertTrue(bb.get_contains(cd.get_coordinates()))
+
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

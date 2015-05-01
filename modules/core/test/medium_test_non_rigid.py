@@ -163,5 +163,7 @@ class Tests(IMP.test.TestCase):
         r0.set_is_rigid_member(nr0[0], False)
         assert(not IMP.core.RigidMember.get_is_setup(m, nr0[0]))
         assert(IMP.core.NonRigidMember.get_is_setup(m, nr0[0]))
+
 if __name__ == '__main__':
+    IMP.set_deprecation_exceptions(True)
     IMP.test.main()
