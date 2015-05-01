@@ -32,7 +32,7 @@ deprecated):
                   IMPEXAMPLE_DEPRECATED_MACRO(2.1, "You should use MY_NEW_MACRO(args) instead") \
                   do stuff....
 
-- class methods should have `IMPEXAMPLE_DEPRECATED_METHOD_DECL(version)` added to the end of the definition and `IMPEXAMPLE_DEPRECATED_METHOD_DEF(version, message)` added in their body
+- class methods should have `IMPEXAMPLE_DEPRECATED_METHOD_DECL(version)` added to the end of the declaration and `IMPEXAMPLE_DEPRECATED_METHOD_DEF(version, message)` added in their body
 
          class IMPEXAMPLEEXPORT MyClass {
            IMPEXAMPLE_DEPRECATED_METHOD_DECL(2.1)
@@ -41,7 +41,7 @@ deprecated):
              do stuff....
            }
 
-- functions should have `IMPEXAMPLE_DEPRECATED_FUNCTION_DECL(version)` added to the end of the definition and `IMPEXAMPLE_DEPRECATED_FUNCTION_DEF(version, message)` added in their body
+- functions should have `IMPEXAMPLE_DEPRECATED_FUNCTION_DECL(version)` added to the end of the declaration and `IMPEXAMPLE_DEPRECATED_FUNCTION_DEF(version, message)` added in their body
 
            IMPEXAMPLE_DEPRECATED_FUNCTION_DECL(2.1)
              void my_deprecated_function(args);
@@ -51,7 +51,7 @@ deprecated):
               do stuff....
            }
 
-- classes should have `IMPEXAMPLE_DEPRECATED_OBJECT_DECL(version)` or `IMPEXAMPLE_DEPRECATED_VALUE_DECL(version)` added before their constructor declarations and `IMPEXAMPLE_DEPRECATED_OBJECT_DEF(version, message)` or `IMPEXAMPLE_DEPRECATED_VALUE_DEF(version, message)` added in their constructors.
+- classes should have `IMPEXAMPLE_DEPRECATED_OBJECT_DECL(version)` or `IMPEXAMPLE_DEPRECATED_VALUE_DECL(version)` added before their constructor declarations and `IMPEXAMPLE_DEPRECATED_OBJECT_DEF(version, message)` or `IMPEXAMPLE_DEPRECATED_VALUE_DEF(version, message)` added in their constructor bodies.
 
          class IMPEXAMPLEEXPORT MyDeprecatedClass :: public IMP::Object {
          public:
