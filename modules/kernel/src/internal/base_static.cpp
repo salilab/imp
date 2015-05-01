@@ -219,7 +219,7 @@ AdvancedFlag<boost::int64_t> random_seed("random_seed", "Random seed to use.",
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
 IMPKERNEL_BEGIN_NAMESPACE
-::boost::mt19937_64 random_number_generator(
+::boost::mt19937 random_number_generator(
     static_cast<boost::int64_t>(internal::random_seed));
 
 AdvancedFlag<bool> run_quick_test(

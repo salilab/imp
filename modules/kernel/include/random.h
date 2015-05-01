@@ -13,8 +13,8 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-#ifndef SWIG // SWIG is defined explicitly in pyext/IMP_kernel.random.i
-typedef ::boost::mt19937_64 RandomNumberGenerator;
+#ifndef SWIG // the RNG is defined explicitly in pyext/IMP_kernel.random.i
+typedef ::boost::mt19937 RandomNumberGenerator;
 
 //! A shared non-GPU random number generator
 /** The random number generator is seeded based on command line specified flag.
