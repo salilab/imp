@@ -36,4 +36,8 @@ void set_deprecation_exceptions(bool tf) {
   internal::exceptions_on_deprecation = tf;
 }
 
+bool get_deprecation_exceptions() {
+  return internal::exceptions_on_deprecation;
+}
+
 IMPKERNEL_END_NAMESPACE

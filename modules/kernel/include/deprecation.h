@@ -19,10 +19,11 @@ IMPKERNEL_BEGIN_NAMESPACE
  */
 IMPKERNELEXPORT void set_deprecation_warnings(bool tf);
 
-/** Toggle whether an exception is thrown when a deprecated
-    method is used.
- */
+//! Toggle whether an exception is thrown when a deprecated method is used.
 IMPKERNELEXPORT void set_deprecation_exceptions(bool tf);
+
+//! Get whether an exception is thrown when a deprecated method is used.
+IMPKERNELEXPORT bool get_deprecation_exceptions();
 
 /** Break in this method in gdb to find deprecated uses at runtime. */
 IMPKERNELEXPORT void handle_use_deprecated(std::string message);
