@@ -9,6 +9,7 @@
 #define IMPKERNEL_RANDOM_H
 
 #include <IMP/kernel_config.h>
+#include <IMP/Vector.h>
 #include <boost/random/mersenne_twister.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -34,7 +35,7 @@ IMPKERNELEXPORT boost::uint64_t get_random_seed();
 
 /** fill a pre-allocated array of n double numbers with
     random normally distributed values with specified mean and standard deviation
-    @param p_random_array  preallocated array
+    @param v  vector array that will be resized to n
     @param n  size of array
     @param mean  mean of normal distribution
     @param stddev  standard deviation
@@ -50,12 +51,12 @@ IMPKERNELEXPORT boost::uint64_t get_random_seed();
           changed to std::vector without much thought.
     */
 IMPKERNELEXPORT void
-get_random_doubles_normal(double* p_random_array, unsigned int n,
+get_random_doubles_normal(Vector<double>& v, unsigned int n,
                           double mean=0.0, double stddev=1.0);
 
 /** fill a pre-allocated array of n float numbers with
     random normally distributed values with specified mean and standard deviation
-    @param p_random_array  preallocated array
+    @param v  vector array that will be resized to n
     @param n  size of array
     @param mean  mean of normal distribution
     @param stddev  standard deviation
@@ -71,7 +72,7 @@ get_random_doubles_normal(double* p_random_array, unsigned int n,
           changed to std::vector without much thought.
     */
 IMPKERNELEXPORT void
-get_random_floats_normal(float* p_random_array, unsigned int n,
+get_random_floats_normal(Vector<float>& v, unsigned int n,
                           float mean=0.0, float stddev=1.0);
 
 IMPKERNEL_END_NAMESPACE

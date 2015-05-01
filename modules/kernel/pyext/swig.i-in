@@ -1,6 +1,3 @@
-%include "IMP_kernel.random.i"
-
-
 %extend IMP::Object {
   bool __eq__(const Object *o) const {
      return self ==o;
@@ -442,3 +439,4 @@ if sys.platform == 'win32' and 'IMP_LD_PATH' in os.environ:
 %include "IMP_kernel.optparse.i"
 %include "IMP_kernel.graph_show.i"
 %include "IMP_kernel.deprecation.i"
+%include "IMP_kernel.random.i"

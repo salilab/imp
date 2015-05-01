@@ -19,12 +19,9 @@ namespace IMP {
     int operator()();
   };
   const RandomNumberGenerator random_number_generator;
+
+  %template(DoubleRandoms) ::IMP::Vector<double>;
 }
 
-// support for get_random_numbers_normal, copied from random.h
-// and its use of C array of double numbers
-%include "carrays.i"
- // %array_class(double, doubleArray);
- //%array_class(float, floatArray);
 
 %include "IMP/random.h"
