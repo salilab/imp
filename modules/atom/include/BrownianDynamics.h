@@ -70,6 +70,11 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   double max_step_;
   bool srk_;
   IMP::Vector<algebra::Vector3D> forces_;
+  boost::normal_distribution<double> nd_;
+  boost::variate_generator<RandomNumberGenerator &,
+                                 boost::normal_distribution<double> > sampler_;
+  IMP::Vector<double> random_pool_;
+  unsigned int i_random_pool_; // poistion in pool of random numbers
 
  public:
   //! Create the optimizer
@@ -81,12 +86,16 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
                          if >1.001 or so, creates a wave of time steps
                          that are larger by up to wave_factor from
                          formal maximal time step
+     @param random_pool_size number of random numbers in internal pool
+                             used to accelerate randon number generation.
+                             Memory requirement scales accordingly.
 
      @note wave_factor is an advanced feature - if you're not sure, just use
                        its default, see also Simulator::simulate_wave()
   */
   BrownianDynamics(Model *m, std::string name = "BrownianDynamics%1%",
-                   double wave_factor = 1.0);
+                   double wave_factor = 1.0,
+                   unsigned int random_pool_size=5000000);
   void set_maximum_move(double ms) { max_step_ = ms; }
   void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
 
@@ -123,12 +132,29 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
                              const ParticleIndexes &ps,
                              unsigned int begin, unsigned int end);
 
+
+ protected:
   //! returns the maximal step size allowed in this simulation
   double get_max_step() const { return max_step_; }
 
   //! returns true if implementing the Stochastic Runga-Kutta
   //! Brownian Dynamics variant
   double get_is_srk() const { return srk_; }
+
+
+  //! regenerate internal cached pool of random numbers
+  void reset_random_pool();
+
+  //! returns a normally distributed sample with
+  //! mean zero and std-dev sigma
+  double get_sample(double sigma)
+  {
+    if(i_random_pool_ >= random_pool_.size()){
+      reset_random_pool();
+    }
+    return random_pool_[i_random_pool_++]*sigma;
+  }
+
 
 #ifndef SWIG
   //! set the force felt on particle i to f
@@ -151,6 +177,7 @@ private:
   void advance_coordinates_0(ParticleIndex pi, unsigned int i,
                              double dtfs, double ikT);
   void advance_orientation_0(ParticleIndex pi, double dtfs, double ikT);
+
 };
 
 /** Repeatedly run the current model with Brownian dynamics at different time

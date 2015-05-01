@@ -182,9 +182,7 @@ void BrownianDynamicsTAMD::advance_coordinates_0(ParticleIndex pi,
   }
   core::XYZ xd(m, pi);
   double sigma = get_sigma_displacement_bdb(get_model(), pi, dtfs);
-  boost::normal_distribution<double> nd(0, sigma);
-  RNG sampler(random_number_generator, nd);
-  double r = sampler();
+  double r = get_sample(sigma);
   algebra::Vector3D random_dX = r * algebra::get_random_vector_on_unit_sphere();
   algebra::Vector3D force_dX
     (get_force_displacement_bdb(get_model(), pi, 0, dtfs, ikT),
@@ -218,9 +216,7 @@ void BrownianDynamicsTAMD::advance_orientation_0(ParticleIndex pi,
                                              double dtfs, double ikT) {
   core::RigidBody rb(get_model(), pi);
   double sigma = get_rotational_sigma_bdb(get_model(), pi, dtfs);
-  boost::normal_distribution<double> nd(0, sigma);
-  RNG sampler(random_number_generator, nd);
-  double angle = sampler();
+  double angle = get_sample(sigma);
   algebra::Transformation3D nt =
       rb.get_reference_frame().get_transformation_to();
   algebra::Vector3D axis = algebra::get_random_vector_on_unit_sphere();

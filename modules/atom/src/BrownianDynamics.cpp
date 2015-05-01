@@ -37,17 +37,19 @@ IMPATOM_BEGIN_NAMESPACE
 // static double M = 0.0; // total mass (estimated by 1/D)
 // END DEBUG
 
-namespace {
-
-typedef boost::variate_generator<RandomNumberGenerator &,
-                                 boost::normal_distribution<double> > RNG;
-}
 BrownianDynamics::BrownianDynamics(Model *m, std::string name,
-                                   double wave_factor)
-    : Simulator(m, name, wave_factor),  // nd_(0,1),
-      // sampler_(random_number_generator, nd_),
+                                   double wave_factor,
+                                   unsigned int random_pool_size)
+    : Simulator(m, name, wave_factor),
       max_step_(std::numeric_limits<double>::max()),
-      srk_(false) {}
+      srk_(false),
+      nd_(0,1.0),
+      sampler_(random_number_generator, nd_),
+      random_pool_(random_pool_size),
+      i_random_pool_(0)
+{
+  reset_random_pool();
+}
 
 /*
   radius
@@ -174,9 +176,7 @@ void BrownianDynamics::advance_coordinates_0(ParticleIndex pi,
                                              double ikT) {
   core::XYZ xd(get_model(), pi);
   double sigma = get_sigma_displacement(get_model(), pi, dtfs);
-  boost::normal_distribution<double> nd(0, sigma);
-  RNG sampler(random_number_generator, nd);
-  double r = sampler();
+  double r = get_sample(sigma);
   algebra::Vector3D random_dX = r * algebra::get_random_vector_on_unit_sphere();
   algebra::Vector3D force_dX
     (get_force_displacement(get_model(), pi, 0, dtfs, ikT),
@@ -210,9 +210,7 @@ void BrownianDynamics::advance_orientation_0(ParticleIndex pi,
                                              double dtfs, double ikT) {
   core::RigidBody rb(get_model(), pi);
   double sigma = get_rotational_sigma(get_model(), pi, dtfs);
-  boost::normal_distribution<double> nd(0, sigma);
-  RNG sampler(random_number_generator, nd);
-  double angle = sampler();
+  double angle = get_sample(sigma);
   algebra::Transformation3D nt =
       rb.get_reference_frame().get_transformation_to();
   algebra::Vector3D axis = algebra::get_random_vector_on_unit_sphere();
@@ -233,9 +231,12 @@ void BrownianDynamics::advance_orientation_0(ParticleIndex pi,
                   << std::endl);
 }
 
-void BrownianDynamics::do_advance_chunk(double dtfs, double ikT,
-                                     const ParticleIndexes &ps,
-                                     unsigned int begin, unsigned int end) {
+void
+BrownianDynamics::do_advance_chunk
+(double dtfs, double ikT,
+ const ParticleIndexes &ps,
+ unsigned int begin, unsigned int end)
+{
   IMP_LOG_TERSE("Advancing particles " << begin << " to " << end << std::endl);
   Model* m = get_model();
   for (unsigned int i = begin; i < end; ++i) {
@@ -259,10 +260,23 @@ void BrownianDynamics::do_advance_chunk(double dtfs, double ikT,
   }
 }
 
+//! regenerate pool of random numbers
+void
+BrownianDynamics::reset_random_pool()
+{
+  get_random_doubles_normal(random_pool_, random_pool_.size(),
+                            nd_.mean(), nd_.sigma() );
+  i_random_pool_=0;
+}
+
+
 /**
     dx= D/2kT*(F(x0)+F(x0+D/kTF(x0)dt +R)dt +R
  */
-double BrownianDynamics::do_step(const ParticleIndexes &ps, double dt) {
+double
+BrownianDynamics::do_step
+(const ParticleIndexes &ps, double dt)
+{
   double dtfs(dt);
   double ikT = 1.0 / get_kt();
   get_scoring_function()->evaluate(true);
