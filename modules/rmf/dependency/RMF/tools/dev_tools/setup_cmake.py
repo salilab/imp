@@ -28,15 +28,13 @@ def _get_files(ds, suffix):
 def make_files(d):
     output = os.path.join(d, "Files.cmake")
     cppfiles = _get_files(d, ".cpp")
-    cudafiles = _get_files(d, ".cu")
     pyfiles = _get_files(d, ".py")
     jsonfiles = _get_files(d, ".json")
     out = ["set(pyfiles \"%s\")" % ";".join(pyfiles),
-           "set(cppfiles \"%s\")" % ";".join(cppfiles),
-           "set(cudafiles \"%s\")" % ";".join(cudafiles)]
+           "set(cppfiles \"%s\")" % ";".join(cppfiles)]
     if len(jsonfiles) > 0:
         out.append("set(jsonfiles \"%s\")" % ";".join(jsonfiles))
-    python_tools.rewrite(output, "\n".join(out) + "\n")
+    python_tools.rewrite(output, "\n".join(out))
 
 
 def search_start(d):
