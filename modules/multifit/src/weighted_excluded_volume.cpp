@@ -53,7 +53,6 @@ IMP::Restraint* create_weighted_excluded_volume_restraint(core::RigidBody rb1,
   IMP_NEW(core::HarmonicLowerBound, hlb, (0, 1));
   IMP_NEW(core::SphereDistancePairScore, ps, (hlb));
   IMP_NEW(container::PairsRestraint, evr, (ps, nbl));
-  mdl->add_restraint(evr);
   return evr;
 }
 IMPMULTIFIT_END_NAMESPACE
