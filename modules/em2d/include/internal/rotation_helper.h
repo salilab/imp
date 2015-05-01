@@ -63,13 +63,6 @@ IMPEM2DEXPORT
 algebra::Vector3D get_euler_angles_from_rotation(const algebra::Rotation3D &R,
                                                  int a1, int a2);
 
-int next(int axis);
-int previous(int axis);
-
-//! convert a quaternion to a rotation matrix.
-//! Required by get_euler_angles_from_rotation()
-cv::Mat quaternion_to_matrix(const algebra::VectorD<4> &v);
-
 IMPEM2D_END_INTERNAL_NAMESPACE
 
 #endif /* IMPEM2D_INTERNAL_ROTATION_HELPER_H */

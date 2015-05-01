@@ -10,6 +10,41 @@
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
+namespace {
+int next(int axis) {
+  axis += 1;
+  if (axis > 3) {
+    return 1;
+  } else {
+    return axis;
+  }
+}
+
+int previous(int axis) {
+  axis -= 1;
+  if (axis == 0) {
+    return 3;
+  } else {
+    return axis;
+  }
+}
+
+cv::Mat quaternion_to_matrix(const algebra::VectorD<4> &v) {
+  cv::Mat M(3, 3, CV_64FC1);
+  M.at<double>(0, 0) = v[0] * v[0] + v[1] * v[1] - v[2] * v[2] - v[3] * v[3];
+  M.at<double>(0, 1) = 2 * (v[1] * v[2] - v[0] * v[3]);
+  M.at<double>(0, 2) = 2 * (v[1] * v[3] + v[0] * v[2]);
+  M.at<double>(1, 0) = 2 * (v[1] * v[2] + v[0] * v[3]);
+  M.at<double>(1, 1) = v[0] * v[0] - v[1] * v[1] + v[2] * v[2] - v[3] * v[3];
+  M.at<double>(1, 2) = 2 * (v[2] * v[3] - v[0] * v[1]);
+  M.at<double>(2, 0) = 2 * (v[1] * v[3] - v[0] * v[2]);
+  M.at<double>(2, 1) = 2 * (v[2] * v[3] + v[0] * v[1]);
+  M.at<double>(2, 2) = v[0] * v[0] - v[1] * v[1] - v[2] * v[2] + v[3] * v[3];
+  return M;
+}
+
+} // anonymous namespace
+
 void semispherical_spiral_distribution(const unsigned long N,
                                        algebra::SphericalVector3Ds &vs,
                                        double r) {
@@ -103,20 +138,6 @@ algebra::Rotation3D get_rotation_from_projection_direction(
   return algebra::get_rotation_about_axis(axis, -v[1]);
 }
 
-cv::Mat quaternion_to_matrix(const algebra::VectorD<4> &v) {
-  cv::Mat M(3, 3, CV_64FC1);
-  M.at<double>(0, 0) = v[0] * v[0] + v[1] * v[1] - v[2] * v[2] - v[3] * v[3];
-  M.at<double>(0, 1) = 2 * (v[1] * v[2] - v[0] * v[3]);
-  M.at<double>(0, 2) = 2 * (v[1] * v[3] + v[0] * v[2]);
-  M.at<double>(1, 0) = 2 * (v[1] * v[2] + v[0] * v[3]);
-  M.at<double>(1, 1) = v[0] * v[0] - v[1] * v[1] + v[2] * v[2] - v[3] * v[3];
-  M.at<double>(1, 2) = 2 * (v[2] * v[3] - v[0] * v[1]);
-  M.at<double>(2, 0) = 2 * (v[1] * v[3] - v[0] * v[2]);
-  M.at<double>(2, 1) = 2 * (v[2] * v[3] + v[0] * v[1]);
-  M.at<double>(2, 2) = v[0] * v[0] - v[1] * v[1] - v[2] * v[2] + v[3] * v[3];
-  return M;
-}
-
 // Herter, T. Computers & Graphics Volume 17, Issue 5, September-October 1993
 algebra::Vector3D get_euler_angles_from_rotation(const algebra::Rotation3D &R,
                                                  int a1, int a2) {
@@ -163,24 +184,6 @@ algebra::Vector3D get_euler_angles_from_rotation(const algebra::Rotation3D &R,
   psi = atan2(sin_auxiliar_angle, cos_auxiliar_angle);
   algebra::Vector3D euler_angles(phi, theta, psi);
   return euler_angles;
-}
-
-int next(int axis) {
-  axis += 1;
-  if (axis > 3) {
-    return 1;
-  } else {
-    return axis;
-  }
-}
-
-int previous(int axis) {
-  axis -= 1;
-  if (axis == 0) {
-    return 3;
-  } else {
-    return axis;
-  }
 }
 
 IMPEM2D_END_INTERNAL_NAMESPACE
