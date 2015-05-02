@@ -310,7 +310,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   void set_is_rigid_member(ParticleIndex pi, bool tf);
 };
 
-
+#ifndef IMP_DOXYGEN
 // inline implementation
 void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &deriv_global,
@@ -336,7 +336,6 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
   }
 }
 
-#ifndef IMP_DOXYGEN
 // inline implementation
 void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &local,
