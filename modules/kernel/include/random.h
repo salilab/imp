@@ -147,7 +147,8 @@ get_random_double_uniform(double min, double max);
 
 /************ implementation of inline functions *******/
 
-float get_random_float_uniform()
+inline float
+get_random_float_uniform()
 {
 #ifdef CUDA_LIB
   const static unsigned int cache_n=20000000;
@@ -164,7 +165,7 @@ float get_random_float_uniform()
 #endif
 }
 
-float
+inline float
 get_random_float_uniform(float min, float max)
 {
 #ifdef CUDA_LIB
@@ -176,7 +177,8 @@ get_random_float_uniform(float min, float max)
 }
 
 
-double get_random_double_uniform()
+inline double
+get_random_double_uniform()
 {
 #ifdef CUDA_LIB
   const static unsigned int cache_n=20000000;
@@ -193,7 +195,7 @@ double get_random_double_uniform()
 #endif
 }
 
-double
+inline double
 get_random_double_uniform(double min, double max)
 {
 #ifdef CUDA_LIB
