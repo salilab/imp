@@ -38,7 +38,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT RigidBodyUmbrella : public Restraint {
  public:
   //! Create the restraint by specifying \f$x_0\f$ directly.
-  /** \param[in] pi rigid body particle index to restrain
+  /** \param[in] m Model containing the ParticleIndexes.
+      \param[in] pi rigid body particle index to restrain
       \param[in] ref rigid body particle index of reference
       \param[in] x0 \f$x_0\f$ the restraint center
       \param[in] alpha \f$\alpha\f$ restraint stiffness
@@ -56,6 +57,7 @@ class IMPCOREEXPORT RigidBodyUmbrella : public Restraint {
    * \f$\lambda\in [0,1]\f$ such that the restraint center is at
    * \f[ x_0 = (1-\lambda) x_1 + \lambda x_2 \f]
    *
+   * \param[in] m Model containing the ParticleIndexes.
    * \param[in] pi rigid body particle index to restrain
    * \param[in] ref rigid body particle index of reference
    * \param[in] lambda \f$\lambda\f$ the restraint center
