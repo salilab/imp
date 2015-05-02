@@ -59,10 +59,10 @@ Particles density2particles(DensityMap *dmap, Float threshold, Model *m,
 
 SampledDensityMap *particles2density(const ParticlesTemp &ps,
                                      Float resolution, Float apix,
-                                     int sig_cuttoff,
+                                     int sig_cutoff,
                                      const FloatKey &weight_key) {
   Pointer<SampledDensityMap> dmap(
-      new SampledDensityMap(ps, resolution, apix, weight_key, sig_cuttoff));
+      new SampledDensityMap(ps, resolution, apix, weight_key, sig_cutoff));
   return dmap.release();
 }
 

@@ -43,17 +43,19 @@ class IMPEMEXPORT SampledDensityMap : public DensityMap {
   //! Generate a sampled density map from the particles.
   /** \param[in] ps     particles with XYZ, radius and weight attributes
       \param[in] resolution   half width the Gaussian
-      \param[in] voxel_size
+      \param[in] voxel_size  voxel size in angstroms
+      \param[in] mass_key key to use to weight particles
       \param[in] sig_cutoff   Choose what should be the sigma cutoff for
                  accurate sampling. It is used in two functions;
                  (i)  to determine the size of the grid dimensions
                  (ii) to determine the voxels around the coords participating
                       in the sampling procedure.
+      \param[in] kt Type of kernel to use.
    */
   SampledDensityMap(const ParticlesTemp &ps, emreal resolution,
                     emreal voxel_size,
                     IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key(),
-                    int sig_cuttoff = 3, KernelType kt = GAUSSIAN);
+                    int sig_cutoff = 3, KernelType kt = GAUSSIAN);
 
   //! Resample beads on an EM grid
   /**
