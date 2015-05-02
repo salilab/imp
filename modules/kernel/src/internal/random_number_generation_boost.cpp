@@ -15,7 +15,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 void get_random_numbers_normal_boost(double* p_random_array, unsigned int n,
                                   double mean, double stddev)
 {
-  boost::random::normal_distribution<double> nd(mean, stddev);
+  boost::normal_distribution<double> nd(mean, stddev);
   for(unsigned int i=0; i<n; i++)
     {
       *(p_random_array++) = nd(IMP::random_number_generator);
@@ -25,7 +25,7 @@ void get_random_numbers_normal_boost(double* p_random_array, unsigned int n,
 void get_random_numbers_normal_boost(float* p_random_array, unsigned int n,
                                   float mean, float stddev)
 {
-  boost::random::normal_distribution<float> nd(mean, stddev);
+  boost::normal_distribution<float> nd(mean, stddev);
   for(unsigned int i=0; i<n; i++)
     {
       *(p_random_array++) = nd(IMP::random_number_generator);
