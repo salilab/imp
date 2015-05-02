@@ -19,8 +19,6 @@ namespace IMP {
     int operator()();
   };
   const RandomNumberGenerator random_number_generator;
-
-  %template(DoubleRandoms) ::IMP::Vector<double>;
 }
 
 
