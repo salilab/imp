@@ -9,6 +9,9 @@ parser.add_option("-w", "--warnings", dest="warnings",
 suppress_strings = ["not generated, too many nodes",
                     "introduction_values",
                     "impligand_score",
+                    "Duplicate anchor graphs found",
+                    "Duplicate anchor values found",
+                    "Duplicate anchor perf found",
                     "impmultifit_tools"]
 
 
