@@ -149,7 +149,7 @@ class Tests(IMP.test.TestCase):
         refcnt.assert_number(4)
         print(s.get_ref_count(), m.get_ref_count())
         del s
-        refcnt.assert_number(4)
+        refcnt.assert_number(2)
         print(m.get_ref_count())
         del m
         print("check")
