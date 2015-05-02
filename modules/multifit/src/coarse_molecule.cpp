@@ -39,7 +39,7 @@ atom::Hierarchy create_coarse_molecule_from_molecule(const atom::Hierarchy &mh,
                                                      Model *mdl,
                                                      float bead_radius,
                                                      bool add_conn_restraint) {
-  IMPMULTIFIT_DEPRECATED_FUNCTION_DECL(2.5, "Unused and will be removed");
+  IMPMULTIFIT_DEPRECATED_FUNCTION_DEF(2.5, "Unused and will be removed");
 
   IMP_NEW(IMP::statistics::internal::ParticlesDataPoints, ddp,
           (core::get_leaves(mh)));
@@ -72,7 +72,7 @@ atom::Hierarchy create_coarse_molecule_from_molecule(const atom::Hierarchy &mh,
 atom::Hierarchies create_coarse_molecules_from_molecules(
     const atom::Hierarchies &mhs, int frag_len, Model *mdl,
     float bead_radius, bool add_conn_restraint) {
-  IMPMULTIFIT_DEPRECATED_FUNCTION_DECL(2.5, "Unused and will be removed");
+  IMPMULTIFIT_DEPRECATED_FUNCTION_DEF(2.5, "Unused and will be removed");
   atom::Hierarchies ret;
   for (int i = 0; i < (int)mhs.size(); i++) {
     // decide the number of beads for the molecule
