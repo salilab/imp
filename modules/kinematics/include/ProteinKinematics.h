@@ -36,7 +36,7 @@ public:
   MyDFSVisitor(std::vector<int>& dfs_order) : dfs_order_(dfs_order), counter_(0) {}
 
   template < typename Vertex, typename Graph >
-  void discover_vertex(Vertex v, const Graph& g) {
+  void discover_vertex(Vertex v, const Graph& ) {
     dfs_order_[v] = counter_;
     counter_++;
   }
