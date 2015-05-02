@@ -32,8 +32,9 @@ IMPcuda::kernel::internal::get_random_numbers_normal_cuda
 {
   double *d_Rand;
   IMP_checkCudaErrors(cudaMalloc((void **)&d_Rand, n * sizeof(double)));
-  IMP_checkCudaErrors(curandGenerateNormalDouble(prngGPU, d_Rand, n, mean, stddev)); // debug prng
-  IMP_checkCudaErrors(cudaMemcpy(p_random_array, d_Rand, n * sizeof(double), cudaMemcpyDeviceToHost));
+  IMP_checkCudaErrors(curandGenerateNormalDouble(prngGPU, d_Rand, n, mean, stddev));
+  IMP_checkCudaErrors(cudaMemcpy(p_random_array, d_Rand,
+                                 n * sizeof(double), cudaMemcpyDeviceToHost));
   IMP_checkCudaErrors(cudaFree(d_Rand));
 }
 
@@ -44,11 +45,36 @@ IMPcuda::kernel::internal::get_random_numbers_normal_cuda
 {
   float *d_Rand;
   IMP_checkCudaErrors(cudaMalloc((void **)&d_Rand, n * sizeof(float)));
-  IMP_checkCudaErrors(curandGenerateNormal(prngGPU, d_Rand, n, mean, stddev)); // debug prng
-  IMP_checkCudaErrors(cudaMemcpy(p_random_array, d_Rand, n * sizeof(float), cudaMemcpyDeviceToHost));
+  IMP_checkCudaErrors(curandGenerateNormal(prngGPU, d_Rand, n, mean, stddev));
+  IMP_checkCudaErrors(cudaMemcpy(p_random_array, d_Rand,
+                                 n * sizeof(float), cudaMemcpyDeviceToHost));
   IMP_checkCudaErrors(cudaFree(d_Rand));
 }
 
+void
+IMPcuda::kernel::internal::get_random_numbers_uniform_cuda
+(float* p_random_array, unsigned int n)
+{
+  float *d_Rand;
+  IMP_checkCudaErrors(cudaMalloc((void **)&d_Rand, n * sizeof(float)));
+  IMP_checkCudaErrors(curandGenerateUniform(prngGPU, d_Rand, n));
+  IMP_checkCudaErrors(cudaMemcpy(p_random_array, d_Rand,
+                                 n * sizeof(float), cudaMemcpyDeviceToHost));
+  IMP_checkCudaErrors(cudaFree(d_Rand));
+}
+
+void
+IMPcuda::kernel::internal::get_random_numbers_uniform_cuda
+(double* p_random_array, unsigned int n)
+{
+  double *d_Rand;
+  IMP_checkCudaErrors(cudaMalloc((void **)&d_Rand, n * sizeof(double)));
+  IMP_checkCudaErrors(curandGenerateUniformDouble(prngGPU, d_Rand, n));
+  IMP_checkCudaErrors(cudaMemcpy
+                      (p_random_array, d_Rand,
+                       n * sizeof(double), cudaMemcpyDeviceToHost));
+  IMP_checkCudaErrors(cudaFree(d_Rand));
+}
 
 bool IMPcuda::kernel::internal::init_gpu_rng_once
 (unsigned long long seed)
@@ -56,7 +82,8 @@ bool IMPcuda::kernel::internal::init_gpu_rng_once
   static bool initialized(false); // is prngGPU initialized
   if(!initialized)
     {
-      IMP_checkCudaErrors(curandCreateGenerator(&prngGPU, CURAND_RNG_PSEUDO_MTGP32));
+      IMP_checkCudaErrors(curandCreateGenerator
+                          (&prngGPU, CURAND_RNG_PSEUDO_MTGP32));
       IMP_checkCudaErrors(curandSetPseudoRandomGeneratorSeed(prngGPU, seed));
       initialized=true;
       return true; // success

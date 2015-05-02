@@ -12,12 +12,13 @@
 #include "../SphericalVector3D.h"
 #include "../utility.h"
 #include "utility.h"
-#include <boost/random/uniform_int.hpp>
-#include <boost/random/uniform_01.hpp>
-#include <boost/random/uniform_real.hpp>
+#include <IMP/random.h>
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/sphere_cover.h>
 #endif
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_01.hpp>
+#include <boost/random/uniform_real.hpp>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 template <int D>
@@ -66,10 +67,12 @@ inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
 //! returns a random vector on a sphere of radius 1
 //! with implementation optimized for the 3D + unit vector case
 inline VectorD<3> get_random_vector_on_unit_sphere() {
-  ::boost::uniform_real<> rand(-1, 1);
+  //  ::boost::uniform_real<> rand(-1, 1);
   do {
-    double x1 = rand(random_number_generator);
-    double x2 = rand(random_number_generator);
+    //    double x1 = rand(random_number_generator);
+    //    double x2 = rand(random_number_generator);
+    double x1 = IMP::get_random_double_uniform(-1,1);
+    double x2 = IMP::get_random_double_uniform(-1,1);
     double ssq = get_squared(x1) + get_squared(x2);
     if (ssq <= 1) {
       VectorD<3> ret;

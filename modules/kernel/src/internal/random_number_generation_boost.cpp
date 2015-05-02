@@ -9,6 +9,7 @@
 #include "IMP/internal/random_number_generation_boost.h"
 #include "IMP/random.h"
 #include <boost/random/normal_distribution.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -32,5 +33,22 @@ void get_random_numbers_normal_boost(float* p_random_array, unsigned int n,
     }
 }
 
+void get_random_numbers_uniform_boost(float* p_random_array, unsigned int n)
+{
+  boost::random::uniform_real_distribution<float> ud(0.0, 1.0);
+  for(unsigned int i=0; i<n; i++)
+    {
+      *(p_random_array++) = ud(IMP::random_number_generator);
+    }
+}
+
+void get_random_numbers_uniform_boost(double* p_random_array, unsigned int n)
+{
+  boost::random::uniform_real_distribution<double> ud(0.0, 1.0);
+  for(unsigned int i=0; i<n; i++)
+    {
+      *(p_random_array++) = ud(IMP::random_number_generator);
+    }
+}
 
 IMPKERNEL_END_INTERNAL_NAMESPACE

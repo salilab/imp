@@ -20,8 +20,6 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
         @param n  size of array
         @param mean  mean of normal distribution
         @param stddev  standard deviation
-
-        @note Assumes RNG is preinitialized with init_gpu_rng
     */
     void get_random_numbers_normal_boost(double* p_random_array,
                                          unsigned int n,
@@ -35,14 +33,29 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
         @param n  size of array
         @param mean  mean of normal distribution
         @param stddev  standard deviation
-
-        @note Assumes RNG is preinitialized with init_gpu_rng
     */
     void get_random_numbers_normal_boost(float* p_random_array,
                                          unsigned int n,
                                          float mean=0.0,
                                          float stddev=1.0);
 
+    /** fill a pre-allocated array of n float numbers with random
+        uniformly distributed values within the [0..1) range
+
+        @param p_random_array  preallocated array
+        @param n  size of array
+    */
+    void get_random_numbers_uniform_boost(float* p_random_array,
+                                          unsigned int n);
+
+    /** fill a pre-allocated array of n float numbers with random
+        uniformly distributed values within the [0..1) range
+
+        @param p_random_array  preallocated array
+        @param n  size of array
+    */
+    void get_random_numbers_uniform_boost(double* p_random_array,
+                                          unsigned int n);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
