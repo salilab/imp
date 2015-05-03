@@ -11,7 +11,7 @@
 #include <IMP/kernel_config.h>
 #include <IMP/Vector.h>
 #include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_real_distribution.hpp>
+#include <boost/random/uniform_real.hpp>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -160,7 +160,7 @@ get_random_float_uniform()
   }
   return cache[i++];
 #else
-  static boost::random::uniform_real_distribution<float> rand(0.0, 1.0);
+  static boost::uniform_real<float> rand(0.0, 1.0);
   return rand(random_number_generator);
 #endif
 }
@@ -171,7 +171,7 @@ get_random_float_uniform(float min, float max)
 #ifdef CUDA_LIB
   return get_random_float_uniform()*(max-min)+min;
 #else
-  ::boost::random::uniform_real_distribution<float> rand(min, max);
+  ::boost::uniform_real<float> rand(min, max);
   return rand(random_number_generator);
 #endif
 }
@@ -190,7 +190,7 @@ get_random_double_uniform()
   }
   return cache[i++];
 #else
-  static boost::random::uniform_real_distribution<double> rand(0.0, 1.0);
+  static boost::uniform_real<double> rand(0.0, 1.0);
   return rand(random_number_generator);
 #endif
 }
@@ -201,7 +201,7 @@ get_random_double_uniform(double min, double max)
 #ifdef CUDA_LIB
   return get_random_double_uniform()*(max-min)+min;
 #else
-  ::boost::random::uniform_real_distribution<double> rand(min, max);
+  ::boost::uniform_real<double> rand(min, max);
   return rand(random_number_generator);
 #endif
 }
