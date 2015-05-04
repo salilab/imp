@@ -20,7 +20,11 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Add shell index to leaves
 /**
-    \param[in] apix sets the resolution of the surface
+    \param[in] mhd the Hierarchy to modify
+    \param[in] apix the resolution of the surface
+    \param[in] shell_key the Key used to store the shell index
+    \param[in] radius_key the Key used for particle radius
+    \param[in] weight_key the Key used for particle weight (e.g. mass)
     \note we assume that the leaves are xyz particles
  */
 IMPMULTIFITEXPORT void add_surface_index(
