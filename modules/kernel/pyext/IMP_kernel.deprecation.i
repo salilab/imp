@@ -44,8 +44,8 @@ class deprecated_function(__deprecation_base):
 
 @contextlib.contextmanager
 def allow_deprecated(allow=True):
-    old = IMP.get_deprecation_exceptions()
-    IMP.set_deprecation_exceptions(not allow)
+    old = get_deprecation_exceptions()
+    set_deprecation_exceptions(not allow)
     yield
-    IMP.set_deprecation_exceptions(old)
+    set_deprecation_exceptions(old)
 %}
