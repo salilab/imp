@@ -25,6 +25,7 @@ class Tests(IMP.test.TestCase):
         # print dd.get_rotational_diffusion_coefficient(),
         # dd.get_diffusion_coefficient()
         bd = IMP.atom.BrownianDynamics(m)
+        bd.set_scoring_function([])
         bd.set_maximum_time_step(dt)
         angles = []
         rots = []
