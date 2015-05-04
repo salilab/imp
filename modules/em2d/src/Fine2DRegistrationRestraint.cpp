@@ -50,8 +50,6 @@ void Fine2DRegistrationRestraint::setup(
   subj_params_particle_ = new Particle(scoring_model);
   PP_ = ProjectionParameters::setup_particle(subj_params_particle_);
   PP_.set_parameters_optimized(true);
-  // add the restraint to the model
-  scoring_model->add_restraint(this);
   // Add an score state to the model
 
   IMP_NEW(ProjectionParametersScoreState, pp_score_state,

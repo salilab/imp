@@ -356,6 +356,7 @@ void ProjectionFinder::get_complete_registration() {
   fine2d->setup(model_particles_, pp, scoring_model, score_function_,
                 masks_manager_);
 
+  simplex_optimizer->set_scoring_function(fine2d);
   simplex_optimizer->set_initial_length(params_.simplex_initial_length);
   simplex_optimizer->set_minimum_size(params_.simplex_minimum_size);
 
