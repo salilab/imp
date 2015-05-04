@@ -189,6 +189,8 @@ class Tests(IMP.test.TestCase):
         (m, xyzr, d, bd) = self._setup()
         sigma = self._get_sigma_1_free()
         print("free sigma is", sigma)
+        r = IMP.RestraintSet(m) # "Empty" restraint
+        bd.set_scoring_function([r])
         (mn, std, nreps) = self._measure(m, xyzr, bd)
         print(mn, std)
         self._check(
