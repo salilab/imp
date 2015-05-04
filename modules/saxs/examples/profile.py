@@ -12,7 +12,9 @@ import IMP.atom
 import IMP.core
 import IMP.saxs
 import os
+import sys
 
+IMP.setup_from_argv(sys.argv, "profile")
 
 m = IMP.Model()
 

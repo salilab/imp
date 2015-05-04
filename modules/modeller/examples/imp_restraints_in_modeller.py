@@ -8,6 +8,9 @@ import modeller
 import IMP
 import IMP.core
 import IMP.modeller
+import sys
+
+IMP.setup_from_argv(sys.argv, "IMP restraints in Modeller")
 
 # Set up Modeller and build a model from the GGCC primary sequence
 e = modeller.environ()

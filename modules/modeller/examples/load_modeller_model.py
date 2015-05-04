@@ -7,6 +7,9 @@ from __future__ import print_function
 import modeller
 import IMP
 import IMP.modeller
+import sys
+
+IMP.setup_from_argv(sys.argv, "Load Modeller model")
 
 # Set up Modeller and build a model from the GGCC primary sequence
 e = modeller.environ()

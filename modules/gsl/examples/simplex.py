@@ -7,7 +7,9 @@ import IMP.test
 import IMP.core
 import IMP.gsl
 import IMP.algebra
+import sys
 
+IMP.setup_from_argv(sys.argv, "simplex")
 
 m = IMP.Model()
 

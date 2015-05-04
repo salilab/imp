@@ -4,6 +4,9 @@
 import IMP.statistics
 import math
 import random
+import sys
+
+IMP.setup_from_argv(sys.argv, "write a metric")
 
 
 class MyMetric(IMP.statistics.Metric):

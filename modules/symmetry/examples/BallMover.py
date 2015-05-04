@@ -4,6 +4,9 @@
 import IMP
 import IMP.symmetry
 import IMP.core
+import sys
+
+IMP.setup_from_argv(sys.argv, "ball mover")
 
 
 # parameters

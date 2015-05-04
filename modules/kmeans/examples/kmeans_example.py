@@ -5,6 +5,9 @@
 from __future__ import print_function
 import IMP
 import IMP.kmeans
+import sys
+
+IMP.setup_from_argv(sys.argv, "kmeans example")
 
 
 def add_points(km):

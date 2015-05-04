@@ -6,6 +6,9 @@
 
 import IMP.parallel
 import tasks
+import sys
+
+IMP.setup_from_argv(sys.argv, "local distance")
 
 # Set up a Manager to keep track of slaves and our tasks
 m = IMP.parallel.Manager()

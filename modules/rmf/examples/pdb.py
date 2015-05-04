@@ -6,6 +6,10 @@ from __future__ import print_function
 import IMP.atom
 import IMP.rmf
 import RMF
+import sys
+
+IMP.setup_from_argv(sys.argv, "pdb")
+
 m = IMP.Model()
 
 # Create a new IMP.atom.Hierarchy from the contents of the pdb file

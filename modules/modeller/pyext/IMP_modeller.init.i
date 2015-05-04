@@ -580,8 +580,9 @@ class ModelLoader(object):
             raise ValueError("Call load_atoms() first.")
         edat = self._modeller_model.env.edat
         libs = self._modeller_model.env.libs
-        atoms = IMP.container.ListSingletonContainer(
-                                  IMP.atom.get_leaves(self._modeller_hierarchy))
+        atoms = IMP.atom.get_leaves(self._modeller_hierarchy)
+        m = atoms[0].get_model()
+        atoms = IMP.container.ListSingletonContainer(m, IMP.get_indexes(atoms))
         
         if edat.dynamic_sphere:
             # Note: cannot use Modeller's cutoff distance, as that is

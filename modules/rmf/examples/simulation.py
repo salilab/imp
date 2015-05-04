@@ -8,6 +8,9 @@ import IMP.rmf
 import RMF
 import IMP.container
 import IMP.display
+import sys
+
+IMP.setup_from_argv(sys.argv, "simulation")
 
 k = 10.0
 np = 10
