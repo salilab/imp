@@ -239,7 +239,8 @@ class sfo_common:
                     bj = IMP.atom.Bonded.setup_particle(j)
                 bond = IMP.atom.create_custom_bond(bi, bj, 3.78, 10)  # stiff
                 bonds.append(bond)
-            bonds_container = IMP.container.ListSingletonContainer(bonds)
+            bonds_container = IMP.container.ListSingletonContainer(self._m,
+                                                    IMP.get_indexes(bonds))
             hdps = IMP.core.Harmonic(0, 1)
             bs = IMP.atom.BondSingletonScore(hdps)
             br = IMP.container.SingletonsRestraint(bs, bonds_container)
@@ -295,7 +296,8 @@ class sfo_common:
             nonbonded_pair_filter = r.get_pair_filter()
         # Get a list of all atoms in the protein, and put it in a container
         atoms = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
-        cont = IMP.container.ListSingletonContainer(atoms)
+        cont = IMP.container.ListSingletonContainer(self._m,
+                                                 IMP.get_indexes(atoms))
         # Add a restraint for the Lennard-Jones interaction. This is built from
         # a collection of building blocks. First, a ClosePairContainer maintains a list
         # of all pairs of Particles that are close. Next, all 1-2, 1-3 and 1-4 pairs
@@ -752,7 +754,7 @@ class sfo_common:
         Returns: mover instance.
         """
         cont = IMP.container.ListSingletonContainer(self._m)
-        cont.add_particles(particles)
+        cont.add(IMP.get_indexes(particles))
         return IMP.atom.MDMover(cont, md, temperature, n_md_steps)
 
     def _setup_mc(self, mover, temperature=300.0, mc_restraints=None):
@@ -837,7 +839,7 @@ class sfo_common:
                                 md_restraints=md_restraints)
         particles = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         cont = IMP.container.ListSingletonContainer(self._m)
-        cont.add_particles(particles)
+        cont.add(IMP.get_indexes(particles))
         mdmover = PyMDMover(cont, md, n_md_steps)
         mdmover.m = self._m
         #mdmover = IMP.atom.MDMover(cont, md, temperature, n_md_steps)
