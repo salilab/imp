@@ -43,8 +43,8 @@ IMP::Restraint* create_weighted_excluded_volume_restraint(core::RigidBody rb1,
   IMP_NEW(core::LeavesRefiner, leaves_refiner, (atom::Hierarchy::get_traits()));
   ParticlesTemp ps1 = leaves_refiner->get_refined(rb1),
                         ps2 = leaves_refiner->get_refined(rb2);
-  IMP_NEW(container::ListSingletonContainer, ls1, (ps1));
-  IMP_NEW(container::ListSingletonContainer, ls2, (ps2));
+  IMP_NEW(container::ListSingletonContainer, ls1, (mdl, IMP::get_indexes(ps1)));
+  IMP_NEW(container::ListSingletonContainer, ls2, (mdl, IMP::get_indexes(ps2)));
   // set up the nonbonded list
   IMP_NEW(core::RigidClosePairsFinder, close_pair_finder, ());
   IMP_NEW(container::CloseBipartitePairContainer, nbl,
