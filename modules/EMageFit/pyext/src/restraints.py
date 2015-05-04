@@ -55,7 +55,7 @@ def get_em2d_restraint(assembly,
     r.set_images(imgs)
 
     ps = atom.get_leaves(assembly)
-    lsc = container.ListSingletonContainer(ps)
+    lsc = container.ListSingletonContainer(model, IMP.get_indexes(ps))
     r.set_particles(lsc)
 
     if (mode == "coarse"):

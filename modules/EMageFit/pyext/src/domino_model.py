@@ -74,7 +74,6 @@ class DominoModel:
             r.set_maximum_score(max_score)
         r.set_weight(weight)
         self.restraints[name] = r
-        self.model.add_restraint(r)
 
     def align_rigid_bodies_states(self):
         """

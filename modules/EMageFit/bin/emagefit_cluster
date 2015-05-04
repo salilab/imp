@@ -79,7 +79,7 @@ class AlignmentClustering:
             representation.set_reference_frames(rbs, RFs)
             configuration_set.save_configuration()
         particles_container = container.ListSingletonContainer(model)
-        particles_container.add_particles(atom.get_leaves(assembly))
+        particles_container.add(IMP.get_indexes(atom.get_leaves(assembly)))
         metric = stats.ConfigurationSetRMSDMetric(
             configuration_set, particles_container, True)
         log.info("Clustering ... ")
