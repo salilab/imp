@@ -246,7 +246,6 @@ class sfo_common:
             rsb = IMP.RestraintSet("bonded")
             rsb.add_restraint(br)
             rsb.set_weight(1.0 / (kB * ff_temp))
-            m.add_restraint(rsb)
             nonbonded_pair_filter = IMP.atom.StereochemistryPairFilter()
             nonbonded_pair_filter.set_bonds(bonds)
             ff = None
@@ -286,7 +285,6 @@ class sfo_common:
             r = IMP.atom.CHARMMStereochemistryRestraint(prot, topology)
             rsb = IMP.RestraintSet(m, 1.0, "bonded")
             rsb.add_restraint(r)
-            m.add_restraint(rsb)
             #
             # Add non-bonded interaction (in this case, Lennard-Jones). This needs to
             # know the radii and well depths for each atom, so add them from the forcefield
@@ -311,7 +309,6 @@ class sfo_common:
         pr = IMP.container.PairsRestraint(pairscore, nbl)
         rs = IMP.RestraintSet(m, 1.0 / (kB * ff_temp), 'phys')
         rs.add_restraint(pr)
-        m.add_restraint(rs)
         return prot, ff, rsb, rs
 
     def init_model_setup_scale(self, default, lower=None, upper=None):
@@ -334,7 +331,6 @@ class sfo_common:
         """
         if not prior_rs:
             prior_rs = IMP.RestraintSet('prior')
-            self._m.add_restraint(prior_rs)
             prior_rs.set_weight(1.0)
         for i in scales:
             prior_rs.add_restraint(IMP.isd.vonMisesKappaJeffreysRestraint(i))
@@ -347,7 +343,6 @@ class sfo_common:
         """
         if not prior_rs:
             prior_rs = IMP.RestraintSet(self._m, 1.0, 'prior')
-            self._m.add_restraint(prior_rs)
         for i in scales:
             jr = IMP.isd.JeffreysRestraint(self._m, i)
             prior_rs.add_restraint(jr)
@@ -363,7 +358,6 @@ class sfo_common:
             raise ValueError("parameters R and c should satisfy 0 <= R <= c")
         if not prior_rs:
             prior_rs = IMP.RestraintSet(self._m, 1.0, 'prior')
-            self._m.add_restraint(prior_rs)
         for i in scales:
             prior_rs.add_restraint(
                 IMP.isd.vonMisesKappaConjugateRestraint(i, c, R))
@@ -498,9 +492,8 @@ class sfo_common:
             rs.add_restraint(ln)
         if verbose:
             print("\r%d NOE restraints read" % i)
-        # set weight of rs and add to model.
+        # set weight of rs.
         # Weight is 1.0 cause sigma particle already has this role.
-        self._m.add_restraint(rs)
         return rs, prior_rs, sigma, gamma
 
     def init_model_NOEs_marginal(self, prot, seqfile, tblfile, name='NOE',
@@ -540,7 +533,6 @@ class sfo_common:
         rs.add_restraint(ln)
         if verbose:
             print("\r%d NOE contributions added" % (len(restraints)))
-        self._m.add_restraint(rs)
         return rs
 
     def init_model_HBonds_marginal(self, prot, seqfile, tblfile, name='NOE',
@@ -577,7 +569,6 @@ class sfo_common:
         rs.add_restraint(ln)
         if verbose:
             print("\r%d Hbond contributions added" % (len(restraints)))
-        self._m.add_restraint(rs)
         return rs
 
     def init_model_TALOS(self, prot, seqfile, talos_data, fulldata=True,
@@ -678,7 +669,6 @@ class sfo_common:
         if verbose:
             print("%s Restraints created. Average R0: %f" % \
                 (len(avgR), sum(avgR) / float(len(avgR))))
-        self._m.add_restraint(rs)
         return rs, prior_rs, kappa
 
     def init_model_standard_SAXS_restraint(
@@ -693,7 +683,6 @@ class sfo_common:
         particles = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         saxs_restraint = IMP.saxs.Restraint(particles, saxs_profile, ff_type)
         rs.add_restraint(saxs_restraint)
-        self._m.add_restraint(rs)
         return rs, saxs_profile
 
     def _setup_md(self, prot, temperature=300.0, thermostat='berendsen',
