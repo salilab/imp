@@ -284,5 +284,4 @@ class Tests(IMP.test.TestCase):
             p.set_has_required_score_states(True)
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

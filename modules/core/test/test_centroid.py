@@ -21,5 +21,4 @@ class Tests(IMP.test.TestCase):
         m.update()
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

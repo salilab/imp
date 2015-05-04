@@ -95,5 +95,4 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         print("inspect", sf.evaluate(False))
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

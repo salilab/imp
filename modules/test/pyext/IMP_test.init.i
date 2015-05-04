@@ -692,10 +692,14 @@ class _TestRunner(unittest.TextTestRunner):
 
 
 def main(*args, **keys):
-    """Run a set of tests; essentially the same as unittest.main(). Obviates
-       the need to separately import the 'unittest' module, and ensures that
-       main() is from the same unittest module that the IMP.test testcases
-       are."""
+    """Run a set of tests; similar to unittest.main().
+       Obviates the need to separately import the 'unittest' module, and
+       ensures that main() is from the same unittest module that the
+       IMP.test testcases are. In addition, turns on some extra checks
+       (e.g. trying to use deprecated code will cause an exception
+       to be thrown)."""
+    import IMP
+    IMP.set_deprecation_exceptions(True)
     return unittest.main(testRunner=_TestRunner, *args, **keys)
 
 import subprocess

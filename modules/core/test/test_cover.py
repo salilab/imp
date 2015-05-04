@@ -39,5 +39,4 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(bb.get_contains(cd.get_coordinates()))
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

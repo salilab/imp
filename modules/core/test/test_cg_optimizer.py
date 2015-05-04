@@ -72,5 +72,4 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(e, 0.0, places=2)
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

@@ -44,5 +44,4 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(ValueError, ps2.evaluate_index, m, (pa, pb), da)
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

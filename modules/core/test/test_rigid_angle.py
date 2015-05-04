@@ -46,5 +46,4 @@ class Tests(IMP.test.TestCase):
         ps.show()
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

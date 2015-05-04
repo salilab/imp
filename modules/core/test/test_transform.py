@@ -105,5 +105,4 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(vt[2], d0.get_coordinate(2), delta=.1)
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

@@ -37,5 +37,4 @@ class NormalMoverTest(IMP.test.TestCase):
         self.assertAlmostEqual(new, old)
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

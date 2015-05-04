@@ -127,5 +127,4 @@ class TestGaussian(IMP.test.TestCase):
         self.assertEqual(IMP.core.Gaussian.get_is_setup(p),True)
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

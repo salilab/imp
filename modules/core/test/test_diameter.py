@@ -36,5 +36,4 @@ class Tests(IMP.test.TestCase):
         self.probabilistic_test("self._test_diameter()", .002)
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

@@ -165,5 +165,4 @@ class Tests(IMP.test.TestCase):
         assert(IMP.core.NonRigidMember.get_is_setup(m, nr0[0]))
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

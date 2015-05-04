@@ -75,5 +75,4 @@ class Tests(IMP.test.TestCase):
         IMP._test_ifile_overloaded(s, "hi")
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()

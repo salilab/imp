@@ -93,5 +93,4 @@ class Tests(IMP.test.TestCase):
         self._check_separated(ps[1], ps[2])
 
 if __name__ == '__main__':
-    IMP.set_deprecation_exceptions(True)
     IMP.test.main()
