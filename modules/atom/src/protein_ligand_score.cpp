@@ -281,10 +281,13 @@ PairScore* create_pair_score(double threshold) {
 }
 PairContainer* create_pair_container(Hierarchy a, Hierarchy b,
                                      double threshold) {
-  ParticlesTemp aa = get_by_type(a, ATOM_TYPE);
-  ParticlesTemp ba = get_by_type(b, ATOM_TYPE);
-  IMP_NEW(container::ListSingletonContainer, lsca, (aa));
-  IMP_NEW(container::ListSingletonContainer, lscb, (ba));
+  Model *m = a->get_model();
+  ParticlesTemp aap = get_by_type(a, ATOM_TYPE);
+  ParticleIndexes aa = IMP::get_indexes(aap);
+  ParticlesTemp bap = get_by_type(b, ATOM_TYPE);
+  ParticleIndexes ba = IMP::get_indexes(bap);
+  IMP_NEW(container::ListSingletonContainer, lsca, (m, aa));
+  IMP_NEW(container::ListSingletonContainer, lscb, (m, ba));
   IMP_NEW(container::CloseBipartitePairContainer, ret, (lsca, lscb, threshold));
   return ret.release();
 }
