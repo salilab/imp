@@ -100,3 +100,22 @@ classes, methods, or functions as deprecated:
 
 For Python there is no need to use the `\\deprecated_at` macro - the
 warning message from the decorator is automatically added to the documentation.
+
+Tests and examples
+------------------
+
+Any code that demonstrates the use of %IMP should not rely on deprecated
+functionality. This includes tests, examples, and benchmarks.
+
+All examples run as part of the %IMP test suite get passed the
+`--deprecation_exceptions` command line flag. Thus, any example that calls
+IMP.setup_from_argv() or uses IMP.OptionParser will fail if it tries to
+call deprecated code. It is highly recommended that all examples do this.
+
+All unit tests that call IMP.test.main() will also trigger exceptions if they
+try to call deprecated code. If for some reason you need to test a deprecated
+code pathway, use the IMP.allow_deprecated()
+[context manager](http://eigenhombre.com/2013/04/20/introduction-to-context-managers/) as follows:
+
+    with IMP.allow_deprecated():
+       my_deprecated_function()

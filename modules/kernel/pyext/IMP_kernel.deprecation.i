@@ -1,6 +1,7 @@
 %pythoncode %{
 
 import functools
+import contextlib
 
 def deprecated_module(version, module, help_message):
     handle_use_deprecated(
@@ -40,4 +41,11 @@ class deprecated_function(__deprecation_base):
                                   % (obj.__name__, self.help_message))
             return obj(*args, **keys)
         return wrapper
+
+@contextlib.contextmanager
+def allow_deprecated(allow=True):
+    old = IMP.get_deprecation_exceptions()
+    IMP.set_deprecation_exceptions(not allow)
+    yield
+    IMP.set_deprecation_exceptions(old)
 %}
