@@ -26,10 +26,10 @@ class Tests(IMP.test.TestCase):
         fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
 
         m = IMP.Model()
-        simo = IMP.pmi.representation.SimplifiedModel(m)
+        simo = IMP.pmi.representation.Representation(m)
 
 
-        simo.add_component_name("Rpb1", color=colors[0])
+        simo.create_component("Rpb1", color=colors[0])
         simo.add_component_sequence("Rpb1", fastafile, id=fastids[0])
         simo.autobuild_model("Rpb1", pdbfile, "A",
                              resolutions=[1], missingbeadsize=beadsize)
