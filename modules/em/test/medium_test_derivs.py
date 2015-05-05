@@ -45,9 +45,6 @@ class Tests(IMP.test.TestCase):
         # -  create a set of three particles in imp
         for i in range(3):
             self.particles.append(IMP.Particle(self.imp_model))
-        # add IMP Restraints into the modeller scoring function
-        t = self.env.edat.energy_terms
-        t.append(IMP.modeller.IMPRestraints(self.particles))
 
         # Load the same model into Modeller
         self.modeller_model = copy_to_modeller(self.env, self.particles)
@@ -105,7 +102,12 @@ class Tests(IMP.test.TestCase):
                                              [0., 0.],
                                              wei_key,
                                              1.0))
-        self.imp_model.add_restraint(ind_emrsr[0])
+        sf = IMP.core.RestraintsScoringFunction(ind_emrsr)
+
+        # add IMP Restraints into the modeller scoring function
+        t = self.modeller_model.env.edat.energy_terms
+        t.append(IMP.modeller.IMPRestraints(self.particles, sf))
+
         print(("EM-score score: " + str(self.atmsel.energy())))
         self.atmsel.randomize_xyz(1.0)
         nviol = self.atmsel.debug_function(
@@ -132,10 +134,6 @@ class Tests(IMP.test.TestCase):
         # -  create a set of three particles in imp
         for i in range(3):
             self.particles.append(IMP.Particle(self.imp_model))
-
-        # add IMP.Restraints into the modeller scoring function
-        t = self.env.edat.energy_terms
-        t.append(IMP.modeller.IMPRestraints(self.particles))
 
         # Load the same model into Modeller
         self.modeller_model = copy_to_modeller(self.env, self.particles)
@@ -190,7 +188,12 @@ class Tests(IMP.test.TestCase):
                                              [0, 0],
                                              wei_key,
                                              1.0))
-        self.imp_model.add_restraint(ind_emrsr[0])
+        sf = IMP.core.RestraintsScoringFunction(ind_emrsr)
+
+        # add IMP.Restraints into the modeller scoring function
+        t = self.modeller_model.env.edat.energy_terms
+        t.append(IMP.modeller.IMPRestraints(self.particles, sf))
+
         # move the particles outside of the density
         for p in self.particles:
             xyz = IMP.core.XYZ(p)
