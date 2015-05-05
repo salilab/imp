@@ -158,7 +158,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
 
     def testDerivativeX(self):
         "Test NOERestraint derivative w/r to X"
-        self.m.add_restraint(self.noe)
+        sf = IMP.core.RestraintsScoringFunction([self.noe])
         for i in range(100):
             pos0 = [uniform(0.1, 100) for i in range(3)]
             self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
@@ -169,7 +169,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             self.sigma.set_scale(sigma)
             gamma = uniform(0.1, 100)
             self.gamma.set_scale(gamma)
-            self.m.evaluate(True)
+            sf.evaluate(True)
             for coord in range(3):
                 self.assertAlmostEqual(self.p0.get_derivative(coord),
                                        (pos0[coord] - pos1[coord]) / dist * (
@@ -184,7 +184,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
 
     def testDerivativeSigma(self):
         "Test NOERestraint derivative w/r to sigma"
-        self.m.add_restraint(self.noe)
+        sf = IMP.core.RestraintsScoringFunction([self.noe])
         for i in range(100):
             pos0 = [uniform(0.1, 100) for i in range(3)]
             self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
@@ -195,7 +195,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             self.sigma.set_scale(sigma)
             gamma = uniform(0.1, 100)
             self.gamma.set_scale(gamma)
-            self.m.evaluate(True)
+            sf.evaluate(True)
             self.assertAlmostEqual(self.sigma.get_scale_derivative(),
                                    1 / sigma - 1 / sigma ** 3 *
                                    log(self.V_obs / (gamma * dist ** -6)) ** 2,
@@ -203,7 +203,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
 
     def testDerivativeGamma(self):
         "Test NOERestraint derivative w/r to gamma"
-        self.m.add_restraint(self.noe)
+        sf = IMP.core.RestraintsScoringFunction([self.noe])
         for i in range(100):
             pos0 = [uniform(0.1, 100) for i in range(3)]
             self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
@@ -214,7 +214,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             self.sigma.set_scale(sigma)
             gamma = uniform(0.1, 100)
             self.gamma.set_scale(gamma)
-            self.m.evaluate(True)
+            sf.evaluate(True)
             self.assertAlmostEqual(self.gamma.get_scale_derivative(),
                                    1 / gamma *
                                    (-1 / sigma ** 2 * log(
@@ -264,10 +264,12 @@ class TestNOERestraintApplied(IMP.test.TestCase):
         "Tests to satisfy an NOERestraint between two points"
         m = self.m
         self.gamma.set_scale(3.0)
-        m.add_restraint(self.noe)  # this leads to a target distance of 1.0
+        sf = IMP.core.RestraintsScoringFunction([self.noe])
+        # this leads to a target distance of 1.0
         self.p1.set_coordinates_are_optimized(True)
         # set the conjugate gradient minimization
         opt = IMP.core.ConjugateGradients(m)
+        opt.set_scoring_function(sf)
         # perform the minimization with 100 steps
         opt.optimize(100)
         self.assertAlmostEqual(IMP.core.get_distance(self.p0, self.p1),

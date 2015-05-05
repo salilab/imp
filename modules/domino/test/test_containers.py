@@ -145,6 +145,7 @@ class Tests(IMP.test.TestCase):
             IMP.core.Harmonic(1, 1), ps[1], ps[2]))
         print(5)
         sampler = IMP.domino.DominoSampler(m, pst)
+        sampler.set_restraints([r])
         rc = IMP.domino.RestraintCache(pst)
         rc.add_restraints([r])
         rssft = IMP.domino.RestraintScoreSubsetFilterTable(rc)

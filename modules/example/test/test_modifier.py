@@ -34,9 +34,10 @@ class Tests(IMP.test.TestCase):
             m = IMP.Model()
             bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                            IMP.algebra.Vector3D(10, 10, 10))
-            p = IMP.Particle(m)
-            d = IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(-4, 13, 28))
-            c = IMP.core.SingletonConstraint(typ(bb), None, p)
+            p = m.add_particle("p")
+            d = IMP.core.XYZ.setup_particle(m, p,
+                                            IMP.algebra.Vector3D(-4, 13, 28))
+            c = IMP.core.SingletonConstraint(typ(bb), None, m, p)
             m.add_score_state(c)
             m.update()
             self.assertLess(IMP.algebra.get_distance(d.get_coordinates(),

@@ -147,10 +147,14 @@ class Tests(IMP.test.TestCase):
         """Should skip particles without xyz attributes"""
         p = IMP.Particle(self.model)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
+        r = IMP.RestraintSet(self.model)
+        self.md.set_scoring_function(r)
         self.md.optimize(100)
 
     def test_make_velocities(self):
         """Test that MD generates particle velocities"""
+        r = IMP.RestraintSet(self.model)
+        self.md.set_scoring_function(r)
         self.md.optimize(0)
         keys = [IMP.FloatKey(x) for x in ("vx", "vy", "vz")]
         for p in self.model.get_particle_indexes():
@@ -219,6 +223,8 @@ class Tests(IMP.test.TestCase):
                                                         self.particles, 298.0)
         scaler.set_period(10)
         self.md.add_optimizer_state(scaler)
+        r = IMP.RestraintSet(self.model)
+        self.md.set_scoring_function(r)
         self.md.optimize(10)
         # Temperature should have been rescaled to 298.0 at some point:
         self._check_temperature(298.0, 0.1)

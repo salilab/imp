@@ -40,6 +40,7 @@ class Tests(IMP.test.TestCase):
         pst = IMP.domino.ParticleStatesTable()
         print(m.get_number_of_score_states())
         dsst = IMP.domino.BranchAndBoundSampler(m, pst)
+        dsst.set_restraints([])
         for p in ps:
             pst.set_particle_states(p, TrivialParticleStates(ns))
         cs = dsst.create_sample()

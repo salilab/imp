@@ -13,9 +13,9 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         ps = []
         for i in range(0, 5):
-            p = IMP.Particle(m)
+            p = m.add_particle("P%d" % i)
             ps.append(p)
-        ap = IMP.container.ListSingletonContainer(ps)
+        ap = IMP.container.ListSingletonContainer(m, ps)
         cp = IMP.core.ConstantSingletonPredicate(1)
         os = IMP.container.EventSingletonsOptimizerState(cp, ap,
                                                          1, 1, 10)

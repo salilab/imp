@@ -27,6 +27,7 @@ class TestWeightMover(IMP.test.TestCase):
         self.w.add_weight()
         self.wm = WeightMover(self.w, 0.1)
         self.mc = IMP.core.MonteCarlo(self.m)
+        self.mc.set_scoring_function([])
         self.mc.set_return_best(False)
         self.mc.set_kt(1.0)
         self.mc.add_mover(self.wm)

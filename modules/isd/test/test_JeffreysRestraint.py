@@ -44,11 +44,11 @@ class Tests(IMP.test.TestCase):
 
     def testDerivative(self):
         "Test the derivative of JeffreysRestraint"
-        self.m.add_restraint(self.J)
+        sf = IMP.core.RestraintsScoringFunction([self.J])
         for i in range(100):
             no = uniform(0.1, 100)
             self.sigma.set_scale(no)
-            self.m.evaluate(True)
+            sf.evaluate(True)
             self.assertAlmostEqual(self.sigma.get_scale_derivative(),
                                    1.0 / no, delta=0.001)
 

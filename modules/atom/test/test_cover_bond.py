@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
                                         5, 1)
         IMP.core.XYZR.setup_particle(b.get_particle())
         c = IMP.atom.CoverBond()
-        c.apply(b.get_particle())
+        c.apply_index(m, b.get_particle_index())
         self.check_cover(b.get_particle(), ps)
 
 if __name__ == '__main__':

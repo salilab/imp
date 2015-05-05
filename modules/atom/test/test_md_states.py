@@ -87,6 +87,7 @@ class Tests(IMP.test.TestCase):
                 ps, 298.0, coupling)
             md = IMP.atom.MolecularDynamics(m)
             md.set_maximum_time_step(4.0)
+            md.set_scoring_function([])
             md.optimize(0)  # ick
             md.add_optimizer_state(scaler)
             ts = []
@@ -112,6 +113,7 @@ class Tests(IMP.test.TestCase):
         md = IMP.atom.MolecularDynamics(m)
         md.set_maximum_time_step(4.0)
         md.add_optimizer_state(scaler)
+        md.set_scoring_function([])
         md.optimize(0)
         ts = []
         for i in range(140):

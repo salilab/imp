@@ -133,7 +133,7 @@ class Tests(IMP.test.TestCase):
         timestep = 4.0
         strength = 50.0
         r = XTransRestraint(self.model, strength)
-        self.model.add_restraint(r)
+        self.md.set_scoring_function(r)
         (start, traj) = self._optimize_model(timestep)
         delttm = -timestep * kcal2mod / cmass
         self._check_trajectory(start, traj, timestep,
@@ -144,7 +144,7 @@ class Tests(IMP.test.TestCase):
         timestep = 4.0
         strength = 5000.0
         r = XTransRestraint(self.model, strength)
-        self.model.add_restraint(r)
+        self.md.set_scoring_function(r)
         self.md.set_velocity_cap(0.3)
         (start, traj) = self._optimize_model(timestep)
         # Strength is so high that velocity should max out at the cap
@@ -158,10 +158,14 @@ class Tests(IMP.test.TestCase):
         """Should skip nuisance particles without xyz attributes"""
         p = IMP.Particle(self.model)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
+        r = IMP.RestraintSet(self.model)
+        self.md.set_scoring_function(r)
         self.md.optimize(100)
 
     def test_make_velocities(self):
         """Test that MD on nuisances generates particle velocities"""
+        r = IMP.RestraintSet(self.model)
+        self.md.set_scoring_function(r)
         self.md.optimize(0)
         for p in self.model.get_particle_indexes():
             self.assertTrue(self.model.get_has_attribute(vnkey, p))

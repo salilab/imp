@@ -82,7 +82,6 @@ class ClassnameContainerTest(IMP.test.TestCase):
         self.assertEqual(c.get_ref_count(), 1)
         for i in range(0, 10):
             c.add(self.create_FUNCTIONNAME(m))
-        print(c.get_number_of_FUNCTIONNAMEs())
         d = self.create_CLASSFUNCTIONNAME_score()
         self.assertEqual(d.get_ref_count(), 1)
         r = IMP.container.MinimumClassnameRestraint(d, c)
@@ -92,7 +91,6 @@ class ClassnameContainerTest(IMP.test.TestCase):
         f = r.evaluate(False)
         print(f)
         ms = []
-        print(c.get_number_of_FUNCTIONNAMEs())
         indexes = c.get_indexes()
         for i in range(0, 10):
             ps = indexes[i]

@@ -69,7 +69,7 @@ class Tests(IMP.test.TestCase):
                                                         self.err, self.N, self.mean, self.cov, self.sig)
         self.gpr = IMP.isd.GaussianProcessInterpolationRestraint(
             self.m, self.gpi)
-        self.m.add_restraint(self.gpr)
+        self.sf = IMP.core.RestraintsScoringFunction([self.gpr])
         self.particles = [self.alpha, self.beta, self.sig, self.tau, self.lam]
 
     def get_Omega(self):
@@ -200,7 +200,7 @@ class Tests(IMP.test.TestCase):
         "Test GPI restraint energy terms"
         for i in range(10):
             self.shuffle_particle_values()
-            expected = self.m.evaluate(False)
+            expected = self.sf.evaluate(False)
             U = self.gpr.get_minus_exponent()
             V = self.gpr.get_minus_log_normalization()
             if expected != 0:
@@ -307,7 +307,7 @@ class Tests(IMP.test.TestCase):
         skipped = 0
         for a in logspace(-1, 2, num=100):
             self.sig.set_nuisance(a)
-            self.m.evaluate(False)
+            self.sf.evaluate(False)
             observed = self.gpr.get_probability()
             expected = self.get_probability()
             if isnan(expected):
@@ -332,7 +332,7 @@ class Tests(IMP.test.TestCase):
         skipped = 0
         for a in linspace(-10, 10, num=20):
             self.alpha.set_nuisance(a)
-            observed = self.m.evaluate(False)
+            observed = self.sf.evaluate(False)
             expected = self.get_energy()
             if isnan(expected):
                 skipped += 1
@@ -356,7 +356,7 @@ class Tests(IMP.test.TestCase):
         skipped = 0
         for a in linspace(-10, 10, num=100):
             self.beta.set_nuisance(a)
-            observed = self.m.evaluate(False)
+            observed = self.sf.evaluate(False)
             expected = self.get_energy()
             if isnan(expected):
                 skipped += 1
@@ -380,7 +380,7 @@ class Tests(IMP.test.TestCase):
         skipped = 0
         for a in logspace(-1, 2, num=100):
             self.tau.set_nuisance(a)
-            observed = self.m.evaluate(False)
+            observed = self.sf.evaluate(False)
             expected = self.get_energy()
             if isnan(expected):
                 skipped += 1
@@ -404,7 +404,7 @@ class Tests(IMP.test.TestCase):
         skipped = 0
         for a in logspace(-1, 2, num=100):
             self.lam.set_nuisance(a)
-            observed = self.m.evaluate(False)
+            observed = self.sf.evaluate(False)
             expected = self.get_energy()
             if isnan(expected):
                 skipped += 1
@@ -444,7 +444,7 @@ class Tests(IMP.test.TestCase):
         # return
         for a in logspace(-1, 2, num=100):
             self.sig.set_nuisance(a)
-            observed = self.m.evaluate(False)
+            observed = self.sf.evaluate(False)
             expected = self.get_energy()
             if isnan(expected):
                 skipped += 1
@@ -468,7 +468,7 @@ class Tests(IMP.test.TestCase):
         skipped = 0
         for rep in range(100):
             self.shuffle_particle_values()
-            observed = self.m.evaluate(False)
+            observed = self.sf.evaluate(False)
             expected = self.get_energy()
             if isnan(expected):
                 skipped += 1
@@ -491,7 +491,7 @@ class Tests(IMP.test.TestCase):
         """Test GPI restraint derivatives by varying alpha"""
         for a in linspace(-10, 10, num=11):
             self.alpha.set_nuisance(a)
-            self.m.evaluate(True)
+            self.sf.evaluate(True)
             # alpha
             observed = self.alpha.get_nuisance_derivative()
             expected = self.get_derivative_alpha()
@@ -570,7 +570,7 @@ class Tests(IMP.test.TestCase):
         """Test GPI restraint derivatives by varying beta"""
         for a in linspace(-10, 10, num=100):
             self.beta.set_nuisance(a)
-            self.m.evaluate(True)
+            self.sf.evaluate(True)
             # alpha
             observed = self.alpha.get_nuisance_derivative()
             expected = self.get_derivative_alpha()
@@ -632,7 +632,7 @@ class Tests(IMP.test.TestCase):
         """Test GPI restraint derivatives by varying tau"""
         for a in logspace(-3, 2, num=100):
             self.tau.set_nuisance(a)
-            self.m.evaluate(True)
+            self.sf.evaluate(True)
             # alpha
             observed = self.alpha.get_nuisance_derivative()
             expected = self.get_derivative_alpha()
@@ -695,7 +695,7 @@ class Tests(IMP.test.TestCase):
         skipped = 0
         for a in logspace(-0, 2, num=100):
             self.lam.set_nuisance(a)
-            self.m.evaluate(True)
+            self.sf.evaluate(True)
             # alpha
             observed = self.alpha.get_nuisance_derivative()
             expected = self.get_derivative_alpha()
@@ -763,7 +763,7 @@ class Tests(IMP.test.TestCase):
         skipped = 0
         for a in logspace(-0, 2, num=100):
             self.sig.set_nuisance(a)
-            self.m.evaluate(True)
+            self.sf.evaluate(True)
             # alpha
             observed = self.alpha.get_nuisance_derivative()
             expected = self.get_derivative_alpha()
@@ -831,7 +831,7 @@ class Tests(IMP.test.TestCase):
         skipped = 0
         for rep in range(100):
             self.shuffle_particle_values()
-            observed = self.m.evaluate(True)
+            observed = self.sf.evaluate(True)
             expected = self.get_energy()
             if isnan(expected):
                 skipped += 1
@@ -900,12 +900,12 @@ class Tests(IMP.test.TestCase):
         pnum = 0
         values = range(1, 10)
         particle = self.particles[pnum]
-        #PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        #PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         PFunc = MockFunc(particle.set_nuisance, lambda a: self.get_energy(),
                          False, update=self.mean.update)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, 1.)
             self.assertAlmostEqual(expected, observed, delta=1e-3)
@@ -915,12 +915,12 @@ class Tests(IMP.test.TestCase):
         pnum = 1
         values = range(1, 10)
         particle = self.particles[pnum]
-        #PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        #PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         PFunc = MockFunc(particle.set_nuisance, lambda a: self.get_energy(),
                          False, update=self.mean.update)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, 1.)
             self.assertAlmostEqual(expected, observed, delta=1e-3)
@@ -930,12 +930,12 @@ class Tests(IMP.test.TestCase):
         pnum = 3
         values = linspace(.1, .9)
         particle = self.particles[pnum]
-        PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         # PFunc = MockFunc(particle.set_nuisance, lambda a:self.get_energy(),
         #        False, update=self.cov.update)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, .01)
             # print val,observed,expected,ene
@@ -947,12 +947,12 @@ class Tests(IMP.test.TestCase):
         pnum = 4
         values = linspace(.3, 2)
         particle = self.particles[pnum]
-        #PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        #PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         PFunc = MockFunc(particle.set_nuisance, lambda a: self.get_energy(),
                          False, update=self.cov.update)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, .2)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
@@ -962,12 +962,12 @@ class Tests(IMP.test.TestCase):
         pnum = 2
         values = range(1, 10)
         particle = self.particles[pnum]
-        #PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        #PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         PFunc = MockFunc(particle.set_nuisance, lambda a: self.get_energy(),
                          False, update=self.cov.update)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, 1.)
             self.assertAlmostEqual(expected, observed, delta=1e-3)

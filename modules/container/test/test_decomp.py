@@ -14,10 +14,10 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         ps = []
         for i in range(0, 10):
-            p = IMP.Particle(m)
-            IMP.core.XYZR.setup_particle(p)
+            p = m.add_particle("P%d" % i)
+            IMP.core.XYZR.setup_particle(m, p)
             ps.append(p)
-        lp = IMP.container.ListSingletonContainer(ps)
+        lp = IMP.container.ListSingletonContainer(m, ps)
         apc = IMP.container.AllPairContainer(lp)
         dps = IMP.core.SoftSpherePairScore(1)
         r = IMP.container.PairsRestraint(dps, apc)

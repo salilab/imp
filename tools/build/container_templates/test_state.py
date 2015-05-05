@@ -93,11 +93,11 @@ class Tests(IMP.test.TestCase):
     def same(self, a, b):
         return a.get_name() == b.get_name()
 
-    def create_singleton_score_state(self, f, a, t):
-        return IMP.core.SingletonConstraint(f, a, t)
+    def create_singleton_score_state(self, f, a, m, t):
+        return IMP.core.SingletonConstraint(f, a, m, [x.get_index() for x in t])
 
-    def create_pair_score_state(self, f, a, t):
-        return IMP.core.PairConstraint(f, a, t)
+    def create_pair_score_state(self, f, a, m, t):
+        return IMP.core.PairConstraint(f, a, m, [x.get_index() for x in t])
 
     def create_particle_score(self):
         uf = IMP.core.Linear(0, 1)
@@ -119,7 +119,7 @@ class Tests(IMP.test.TestCase):
         cs = []
         for i in range(0, 30):
             t = self.create_FUNCTIONNAME(m)
-            c.add_FUNCTIONNAME(t)
+            c.add([x.get_index() for x in t])
             cs.append(t)
         print("dl")
         k = IMP.IntKey("thevalue")
@@ -146,7 +146,7 @@ class Tests(IMP.test.TestCase):
         k = IMP.IntKey("thevalue")
         f = ClassnameTestModifier(k)
         print("apply")
-        s = self.create_CLASSFUNCTIONNAME_score_state(f, None, t)
+        s = self.create_CLASSFUNCTIONNAME_score_state(f, None, m, t)
         m.add_score_state(s)
         print("add")
         m.update()

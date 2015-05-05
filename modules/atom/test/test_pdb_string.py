@@ -66,7 +66,7 @@ class Tests(IMP.test.TestCase):
 
             s = BytesIO()
             IMP.atom.write_pdb(pdb, s)
-            m.evaluate(False)
+            m.update()
             print(s.getvalue())
             self.assertEqual(s.getvalue()[15 + 12:15 + 16].strip(),
                              atom.encode('ascii'))

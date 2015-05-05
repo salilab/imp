@@ -24,7 +24,6 @@ class Tests(IMP.test.TestCase):
         self.kappa = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.DA = IMP.DerivativeAccumulator()
         self.J = IMP.isd.vonMisesKappaJeffreysRestraint(self.m, self.kappa)
-        self.m.add_restraint(self.J)
 
     def testValueP(self):
         "Test vonMisesKappaJeffreys probability"
@@ -64,10 +63,11 @@ class Tests(IMP.test.TestCase):
             from scipy.special import i0, i1
         except ImportError:
             self.skipTest("this test requires the scipy Python module")
+        sf = IMP.core.RestraintsScoringFunction([self.J])
         for i in range(100):
             no = uniform(0.1, 100)
             self.kappa.set_scale(no)
-            self.m.evaluate(True)
+            sf.evaluate(True)
             ratio = i1(no) / i0(no)
             self.assertAlmostEqual(self.kappa.get_scale_derivative(),
                                    0.5 *

@@ -18,6 +18,7 @@ class Tests(IMP.test.TestCase):
         pst.set_particle_states(p, s)
         #rft= IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
         sampler = IMP.domino.DominoSampler(m, pst)
+        sampler.set_restraints([])
         sample = sampler.create_sample()
         self.assertEqual(sample.get_number_of_configurations(), 1)
 if __name__ == '__main__':

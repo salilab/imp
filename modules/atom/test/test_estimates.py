@@ -28,6 +28,8 @@ class Tests(IMP.test.TestCase):
         d.set_radius(10)
         dd = IMP.atom.Diffusion.setup_particle(p)
         bd = IMP.atom.BrownianDynamics(m)
+        rs = IMP.RestraintSet(m)
+        bd.set_scoring_function(rs)
         dt = 10000
         bd.set_maximum_time_step(dt)
         bd.set_log_level(IMP.SILENT)

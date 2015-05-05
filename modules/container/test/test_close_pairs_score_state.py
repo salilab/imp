@@ -9,9 +9,9 @@ import random
 
 class Tests(IMP.test.TestCase):
 
-    def _are_close(self, a, b, d):
-        da = IMP.core.XYZR(a)
-        db = IMP.core.XYZR(b)
+    def _are_close(self, m, a, b, d):
+        da = IMP.core.XYZR(m, a)
+        db = IMP.core.XYZR(m, b)
         cd = IMP.core.get_distance(da, db)
         return (cd <= d)
 
@@ -19,29 +19,24 @@ class Tests(IMP.test.TestCase):
         print("comparing")
         print(m.get_number_of_score_states())
         m.update()
-        print("list is " + str(out.get_number_of_particle_pairs()))
-        print([(p[0].get_name(), p[1].get_name()) for p in out.get_particle_pairs()])
-        print([(p[0].get_index(), p[1].get_index()) for p in out.get_particle_pairs()])
-        all = out.get_particle_pairs()
-        for i in range(0, pc.get_number_of_particles()):
+        all = out.get_indexes()
+        indexes = pc.get_indexes()
+        for i in range(0, len(indexes)):
             for j in range(0, i):
-                a = pc.get_particle(i)
-                b = pc.get_particle(j)
+                a = indexes[i]
+                b = indexes[j]
                 pp = (a, b)
-                if self._are_close(a, b, d):
+                if self._are_close(m, a, b, d):
                     print("expecting " + str(pp))
-                    print(IMP.core.XYZR(a))
-                    print(IMP.core.XYZR(b))
-                    print(IMP.core.get_distance(IMP.core.XYZR(a), IMP.core.XYZR(b)))
                     self.assertTrue((a, b) in all or (b, a) in all)
 
     def test_it(self):
         """Test ClosePairContainer"""
         m = IMP.Model()
         IMP.set_log_level(IMP.SILENT)
-        ps = self.create_particles_in_box(m, 20)
+        ps = IMP.get_indexes(self.create_particles_in_box(m, 20))
         # test rebuilding under move, set input and change radius
-        pc = IMP.container.ListSingletonContainer(ps)
+        pc = IMP.container.ListSingletonContainer(m, ps)
         print("creat cpss " + str(pc))
         # IMP.set_log_level(IMP.VERBOSE)
         print(1)
@@ -52,13 +47,13 @@ class Tests(IMP.test.TestCase):
                                                 1)
         cpss.set_was_used(True)
         for p in ps:
-            d = IMP.core.XYZR.setup_particle(p)
+            d = IMP.core.XYZR.setup_particle(m, p)
             d.set_radius(random.uniform(0, 2))
         self._compare_lists(m, pc, threshold, cpss)
 
         # move things a little
         for p in ps:
-            d = IMP.core.XYZ(p)
+            d = IMP.core.XYZ(m, p)
             d.set_coordinates(d.get_coordinates()
                               + IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), .55)))
         print("first time")
@@ -67,7 +62,7 @@ class Tests(IMP.test.TestCase):
         for i in range(0, 10):
             print("moving " + str(i))
             for p in ps:
-                d = IMP.core.XYZ(p)
+                d = IMP.core.XYZ(m, p)
                 d.set_coordinates(d.get_coordinates()
                                   + IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), .7 * (i + 1))))
             self._compare_lists(m, pc, threshold, cpss)
@@ -76,11 +71,11 @@ class Tests(IMP.test.TestCase):
         """Test ClosePairContainer over time"""
         m = IMP.Model()
         IMP.set_log_level(IMP.SILENT)
-        ps = self.create_particles_in_box(m, 10)
+        ps = IMP.get_indexes(self.create_particles_in_box(m, 10))
         for p in ps:
-            IMP.core.XYZR.setup_particle(p, 0)
+            IMP.core.XYZR.setup_particle(m, p, 0)
         # test rebuilding under move, set input and change radius
-        pc = IMP.container.ListSingletonContainer(ps)
+        pc = IMP.container.ListSingletonContainer(m, ps)
         print("creat cpss " + str(pc))
         # IMP.set_log_level(IMP.VERBOSE)
         print(1)
@@ -93,7 +88,7 @@ class Tests(IMP.test.TestCase):
             for p in ps:
                 r = IMP.algebra.get_random_vector_in(
                     IMP.algebra.get_unit_sphere_3d())
-                d = IMP.core.XYZ(p)
+                d = IMP.core.XYZ(m, p)
                 d.set_coordinates(d.get_coordinates() + r)
             # make sure internal checks in continer pass
 
@@ -103,9 +98,9 @@ class Tests(IMP.test.TestCase):
         """Test ClosePairContainer with a restraint"""
         m = IMP.Model()
         IMP.set_log_level(IMP.VERBOSE)
-        ps = self.create_particles_in_box(m, 10)
+        ps = IMP.get_indexes(self.create_particles_in_box(m, 10))
         # test rebuilding under move, set input and change radius
-        pc = IMP.container.ListSingletonContainer(ps)
+        pc = IMP.container.ListSingletonContainer(m, ps)
         print("creat cpss " + str(pc))
         # IMP.set_log_level(IMP.VERBOSE)
         print(1)
@@ -116,15 +111,14 @@ class Tests(IMP.test.TestCase):
                                                 1)
         r = IMP.container.PairsRestraint(
             IMP.core.DistancePairScore(IMP.core.Harmonic(3, 1)), cpss)
-        m.add_restraint(r)
         for p in ps:
-            d = IMP.core.XYZR.setup_particle(p)
+            d = IMP.core.XYZR.setup_particle(m, p)
             d.set_radius(random.uniform(0, 2))
         self._compare_lists(m, pc, threshold, cpss)
 
         # move things a little
         for p in ps:
-            d = IMP.core.XYZ(p)
+            d = IMP.core.XYZ(m, p)
             d.set_coordinates(d.get_coordinates()
                               + IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), .55)))
         print("first time")
@@ -136,8 +130,7 @@ class Tests(IMP.test.TestCase):
             for p in ps:
                 j = j + 1
                 if ((i + j) % 2) == 0:
-                    print("Moving particle " + str(p.get_name()))
-                    d = IMP.core.XYZ(p)
+                    d = IMP.core.XYZ(m, p)
                     d.set_coordinates(d.get_coordinates()
                                       + IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), .7 * (i + 1))))
             self._compare_lists(m, pc, threshold, cpss)

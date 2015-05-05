@@ -21,14 +21,14 @@ class Tests(IMP.test.TestCase):
     def test_connectivity_zero_set(self):
         """Test connectivity zero set"""
         m = IMP.Model()
-        ps = [IMP.Particle(m) for i in range(0, 15)]
-        ds = [IMP.core.XYZR.setup_particle(p) for p in ps]
+        ps = [m.add_particle("P%d" % i) for i in range(0, 15)]
+        ds = [IMP.core.XYZR.setup_particle(m, p) for p in ps]
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(10, 10, 10))
         for d in ds:
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
             d.set_radius(4)
-        lsc = IMP.container.ListSingletonContainer(ps)
+        lsc = IMP.container.ListSingletonContainer(m, ps)
         cpc = IMP.container.ConnectingPairContainer(lsc, 0)
         hub = IMP.core.HarmonicUpperBound(0, 1)
         sdps = IMP.core.SphereDistancePairScore(hub)
@@ -57,7 +57,7 @@ class Tests(IMP.test.TestCase):
         ps = IMP.core.create_xyzr_particles(m, 10, .1)
         for p in ps:
             p.set_coordinates_are_optimized(True)
-        lsc = IMP.container.ListSingletonContainer(ps)
+        lsc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ps))
         cpc = IMP.container.ConnectingPairContainer(lsc, .1)
         for pp in cpc.get_particle_pairs():
             print(pp)

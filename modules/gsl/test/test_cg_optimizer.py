@@ -59,8 +59,8 @@ class Tests(IMP.test.TestCase):
             particles.append(p)
             p.add_attribute(IMP.FloatKey("x"), value, True)
         rsr = WoodsFunc(model, particles)
-        model.add_restraint(rsr)
         opt = IMP.gsl.ConjugateGradients(model)
+        opt.set_scoring_function(rsr)
         # opt.set_threshold(1e-5)
         e = opt.optimize(500)
         for p in particles:
