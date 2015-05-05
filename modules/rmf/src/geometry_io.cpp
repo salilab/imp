@@ -303,7 +303,13 @@ void divide(const display::GeometriesTemp &r, display::SphereGeometries &sgs,
     } else if (dynamic_cast<display::BoundingBoxGeometry *>(g)) {
       bgs.push_back(dynamic_cast<display::BoundingBoxGeometry *>(g));
     } else {
-      IMP_FAILURE("Geometry " << g->get_name() << " not supported");
+      // if primitives didn't work, try decompose to components
+      display::Geometries comp = g->get_components();
+      if (comp.size() == 1 && comp[0] == g) {
+        IMP_FAILURE("Geometry " << g->get_name() << " not supported");
+      } else {
+        divide(comp, sgs, cgs, ssgs, bgs);
+      }
     }
   }
 }
