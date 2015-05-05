@@ -16,7 +16,6 @@
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/core/ChildrenRefiner.h>
 #include <IMP/display/particle_geometry.h>
-#include <IMP/display/ChimeraWriter.h>
 #include <IMP/em/Voxel.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/core/LeavesRefiner.h>
@@ -305,21 +304,5 @@ algebra::Vector3Ds DataPointsAssignment::get_cluster_xyz(int cluster_ind)
   }
   return xyz;
 }
-
-// Float DataPointsAssignment::get_cluster_xyz_diameter(int cluster_ind) const {
-//     return get_diameter(get_cluster_xyz(cluster_ind));
-// }
-
-// void write_chimera(
-//      const std::string &chimera_filename,
-//      const DataPointsAssignment &dpa) {
-//   std::vector<display::SphereGeometry *> gs =
-//     display_helper(dpa);
-//   IMP_NEW(display::ChimeraWriter,w,(chimera_filename));
-//   for( int i=0;i<gs.size();i++){
-//     w->add_geometry(gs[i]);
-//   }
-//   w=nullptr;
-// }
 
 IMPMULTIFIT_END_NAMESPACE
