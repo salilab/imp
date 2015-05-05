@@ -4,6 +4,9 @@ import functools
 import contextlib
 
 def deprecated_module(version, module, help_message):
+    """Mark a Python module as deprecated.
+       @note The `module` argument would normally be `__name__`.
+       @see [deprecation support](@ref deprecation).
     handle_use_deprecated(
                 "Module %s is deprecated. %s" % (module, help_message))
 
@@ -12,6 +15,8 @@ class __deprecation_base(object):
         self.version, self.help_message = version, help_message
 
 class deprecated_object(__deprecation_base):
+    """Decorator to mark a Python class as deprecated.
+       @see [deprecation support](@ref deprecation)."""
     def __call__(self, obj):
         orig_init = obj.__init__
         @functools.wraps(orig_init)
@@ -24,6 +29,8 @@ class deprecated_object(__deprecation_base):
 
 
 class deprecated_method(__deprecation_base):
+    """Decorator to mark a Python method as deprecated.
+       @see [deprecation support](@ref deprecation)."""
     def __call__(self, obj):
         @functools.wraps(obj)
         def wrapper(cls, *args, **keys):
@@ -34,6 +41,8 @@ class deprecated_method(__deprecation_base):
 
 
 class deprecated_function(__deprecation_base):
+    """Decorator to mark a Python function as deprecated.
+       @see [deprecation support](@ref deprecation)."""
     def __call__(self, obj):
         @functools.wraps(obj)
         def wrapper(*args, **keys):
@@ -44,6 +53,8 @@ class deprecated_function(__deprecation_base):
 
 @contextlib.contextmanager
 def allow_deprecated(allow=True):
+    """Context manager to temporarily allow (or disallow) deprecated code.
+       @see [deprecation support](@ref deprecation)."""
     old = get_deprecation_exceptions()
     set_deprecation_exceptions(not allow)
     yield
