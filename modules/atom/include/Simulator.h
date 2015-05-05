@@ -159,7 +159,8 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   virtual void setup(const ParticleIndexes &) {};
 
   //! Perform a single time step
-  /** \param[in] dt maximum time step value
+  /** \param[in] sc the particles that should be moved
+      \param[in] dt maximum time step value
       \return the amount that time should be advanced.
   */
   virtual double do_step(const ParticleIndexes &sc, double dt) = 0;

@@ -80,6 +80,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
  public:
   //! Setup the GaussianEMRestraint
   /**
+     \param[in] mdl the Model object to operate on
      \param[in] model_ps particles for the model GMM
      \param[in] density_ps particles for the density GMM
      \param[in] global_sigma Particle to modulate the uncertainty
