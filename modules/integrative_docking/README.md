@@ -30,7 +30,7 @@ docking, followed by
 clustering and composite scoring.
 
 _Examples_:
- - [Docking of PCSK9](@idock_pcsk9)
+ - [Docking of PCSK9](@ref idock_pcsk9)
 
 # Info
 
