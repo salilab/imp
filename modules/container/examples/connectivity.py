@@ -3,7 +3,8 @@
 
 from __future__ import print_function
 import IMP.container
-import IMP.display
+import IMP.rmf
+import RMF
 import sys
 
 IMP.setup_from_argv(sys.argv, "connectivity")
@@ -14,7 +15,8 @@ sc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ds))
 cpc = IMP.container.ConnectingPairContainer(sc, .1)
 m.update()
 pg = IMP.core.EdgePairsGeometry(cpc)
-w = IMP.display.ChimeraWriter("pairs.py")
-w.add_geometry(pg)
+w = RMF.create_rmf_file("pairs.rmf")
+IMP.rmf.add_geometry(w, pg)
+IMP.rmf.save_frame(w, "zero")
 print(pg.get_name())
 del w
