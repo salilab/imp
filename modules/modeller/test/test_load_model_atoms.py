@@ -44,9 +44,7 @@ class Tests(IMP.test.TestCase):
                                                  self.get_input_file_name('single_protein.pdb'))
         loader = IMP.modeller.ModelLoader(modmodel)
 
-        for mp in (loader.load_atoms(m),
-                   IMP.modeller.read_pdb(
-                       self.get_input_file_name('single_protein.pdb'), m)):
+        def test_mp(mp):
             desc = IMP.core.get_all_descendants(mp)
             f_num_res_type = IMP.atom.ResidueType.get_number_unique()
             f_num_atom_type = IMP.atom.AtomType.get_number_unique()
@@ -70,6 +68,11 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(IMP.atom.Charged(at).get_charge(),
                                    0.16, delta=1e-5)
             self.assertEqual(IMP.atom.CHARMMAtom(at).get_charmm_type(), 'CT1')
+        test_mp(loader.load_atoms(m))
+        with IMP.allow_deprecated():
+            mp = IMP.modeller.read_pdb(
+                           self.get_input_file_name('single_protein.pdb'), m)
+        test_mp(mp)
 
     def test_bonds(self):
         """Check that Modeller bonds and angles are loaded"""

@@ -147,7 +147,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
-        r = IMP.modeller.load_restraints_file('test.rsr', protein)
+        with IMP.allow_deprecated():
+            r = IMP.modeller.load_restraints_file('test.rsr', protein)
         self.assertIsInstance(r, list)
         sf = IMP.core.RestraintsScoringFunction(r)
         assertSimilarModellerIMPScores(self, sf, modmodel, protein)
