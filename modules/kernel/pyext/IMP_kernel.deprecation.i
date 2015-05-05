@@ -6,7 +6,7 @@ import contextlib
 def deprecated_module(version, module, help_message):
     """Mark a Python module as deprecated.
        @note The `module` argument would normally be `__name__`.
-       @see [deprecation support](@ref deprecation).
+       @see [deprecation support](@ref deprecation)."""
     handle_use_deprecated(
                 "Module %s is deprecated. %s" % (module, help_message))
 
