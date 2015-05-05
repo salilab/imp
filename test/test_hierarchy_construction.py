@@ -22,12 +22,12 @@ class Tests(IMP.test.TestCase):
         fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
 
         m = IMP.Model()
-        simo = IMP.pmi.representation.SimplifiedModel(m)
+        simo = IMP.pmi.representation.Representation(m)
 
         for n in range(len(components)):
-            simo.add_component_name(components[n], color=colors[n])
+            simo.create_component(components[n], color=colors[n])
             simo.add_component_sequence(components[n], fastafile, id=fastids[n])
-            simo.autobuild_pdb_and_intervening_beads(
+            simo.autobuild_model(
                                components[n], pdbfile, chains[n],
                                resolutions=[1, 10], beadsize=beadsize)
             simo.setup_component_sequence_connectivity(components[n], 1)
