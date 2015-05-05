@@ -1,13 +1,15 @@
 ## \example em/cube.py
 # The example creates a simple mrc file that is filled uniformly with 1s.
-# In addition, a chimera file is written with a marker at each corner of
-# the density. When both files are opened, the density should be centered
-# among the markers. This can be used for testing for registration errors
-# when reading and writing density maps.
+# In addition, an RMF file is written with a marker at each corner of the
+# density. When both files are opened (e.g. in Chimera), the density should
+# be centered among the markers. This can be used for testing for
+# registration errors when reading and writing density maps.
 
 from __future__ import print_function
 import IMP.em
 import IMP.display
+import IMP.rmf
+import RMF
 import sys
 
 IMP.setup_from_argv(sys.argv, "cube")
@@ -25,10 +27,11 @@ nm = IMP.create_temporary_file_name("cube", ".mrc")
 print(nm)
 IMP.em.write_map(dm, nm)
 
-nm = IMP.create_temporary_file_name("cube", ".py")
+nm = IMP.create_temporary_file_name("cube", ".rmf")
 print(nm)
-w = IMP.display.ChimeraWriter(nm)
+w = RMF.create_rmf_file(nm)
 
 for v in IMP.algebra.get_vertices(bb):
     g = IMP.display.SphereGeometry(IMP.algebra.Sphere3D(v, 1))
-    w.add_geometry(g)
+    IMP.rmf.add_geometry(w, g)
+IMP.rmf.save_frame(w, "zero")
