@@ -214,20 +214,16 @@ class DominoModel:
                   max_sep_distance, max_penetration)
         self.add_restraint(restraint, rname, weight, max_score)
 
-    def create_coarse_assembly(self, n_residues, write=False):
+    def create_coarse_assembly(self, n_residues):
         """
             Simplify the assembly with a coarse representation
             @param n_residues Number of residues used for a coarse particle
-            @param write If True, write the coarse assembly to a
-                format that Chimera can display
         """
         if self.create_coarse:
             log.info("Creating simplified assembly")
             self.coarse_assembly = \
                 representation.create_simplified_assembly(self.assembly,
                                                           self.components_rbs, n_residues)
-        if write:
-            io.write_hierarchy_to_chimera(self.assembly, "coarse_assembly.py")
         self.create_coarse = False
 
     def do_sampling(self, mode="assignments_heap_container", params=None):

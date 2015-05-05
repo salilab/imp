@@ -78,64 +78,6 @@ def write_particles_as_text(leaves, fn_output):
     f_output.close()
 
 
-def write_hierarchy_to_chimera(h, fn):
-    """ Writes a hierarchy contained in h to the file fn """
-    chw = display.ChimeraWriter(fn)
-    g = display.HierarchyGeometry(h)
-    chw.add_geometry(g)
-    g.set_name(fn)
-
-
-def write_particles_to_chimera(ps, fn, name="particles"):
-    """ Writes a bunch o particles to the file fn
-        It is assumed that the particles can be decorated with XYZR
-    """
-    chw = display.ChimeraWriter(fn)
-    lsc = container.ListSingletonContainer(ps, name)
-    g = display.XYZRsGeometry(lsc)
-    chw.add_geometry(g)
-    g.set_name(fn)
-
-
-def write_xyzrs_to_chimera(xyzrs, fn):
-    """ Writes a bunch o particles to the file fn
-        It is assumed that the particles can be decorated with XYZR
-    """
-    ps = [a.get_particle() for a in xyzrs]
-    write_particles_to_chimera(ps, fn)
-
-
-def write_points_to_chimera(points, radius, fn, name="points"):
-    """ Writes a bunch o particles to the file fn
-        It is assumed that the particles can be decorated with XYZR
-    """
-    m = IMP.Model()
-    ps = []
-    for p in points:
-        pa = IMP.Particle(m)
-        xyzr = core.XYZR.setup_particle(pa)
-        xyzr.set_radius(radius)
-        xyzr.set_coordinates(alg.Vector3D(p[0], p[1], p[2]))
-        ps.append(pa)
-    write_particles_to_chimera(ps, fn, name)
-
-
-def write_vectors_to_chimera(vs, radius, fn, name="vectors"):
-    """
-        Writes vectors as points in chimera
-    """
-
-    m = IMP.Model()
-    ps = []
-    for v in vs:
-        pa = IMP.Particle(m)
-        xyzr = core.XYZR.setup_particle(pa)
-        xyzr.set_radius(radius)
-        xyzr.set_coordinates(v)
-        ps.append(pa)
-    write_particles_to_chimera(ps, fn, name)
-
-
 def write_vectors_in_multifit2_format(vs, fn_output):
     """ writes a text files in the format required
         for point alignment in multifit2
