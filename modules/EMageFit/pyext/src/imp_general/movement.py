@@ -44,8 +44,9 @@ def apply_transformation_to_hierarchy(prot, T, fn_write=False):
 def get_random_transformation(max_distance, max_angle, seed=-1):
     """
         Return a random transformation
-        @param distance Maximum translation allowed
+        @param max_distance Maximum translation allowed
         @param max_angle Maximum rotation angle allowed
+        @param seed If specified, seed for random number generator
     """
 
     if seed == -1:

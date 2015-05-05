@@ -344,7 +344,7 @@ def get_residue_coordinates(h, chain_id=False, res=1):
     """
         Get the coordinates of a residue (the coordinates of the first particle)
         @param h Hierarchy
-        @param chain See help for get_residue_particle()
+        @param chain_id See help for get_residue_particle()
         @param res See help for get_residue_particle()
     """
     p = get_residue_particle(h, chain_id, res)

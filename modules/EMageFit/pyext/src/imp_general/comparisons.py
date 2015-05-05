@@ -29,7 +29,7 @@ def get_coordinates(hierarchy):
 def get_assembly_placement_score(assembly, native_assembly, align=False):
     """
         Computes the placement score of an assembly respect to the native_assembly.
-        @param assembly.  An atom.Molecule object
+        @param assembly  An atom.Molecule object
         @param native_assembly  An atom.Molecule object
         @param align If True, assembly is aligned to native_assembly before
                     calculating the placement score
@@ -49,6 +49,8 @@ def get_components_placement_scores(assembly, native_assembly, align=False):
         @param native_assembly An atom.Molecule object with the native conformation
                                 Obviously the atoms in assembly and native assembly
                                 must be the same
+        @param align If True, assembly is aligned to native_assembly before
+                    calculating the placement score
         @return The function returns 2 lists. The first list contains the
                 placement distances of the children. The second list contains the
                 placnement angles
