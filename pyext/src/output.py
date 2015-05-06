@@ -449,7 +449,6 @@ class Output(object):
         flstat.close()
 
     def test(self, name, listofobjects):
-        from numpy.testing import assert_approx_equal as aae
         output = self.initoutput
         for l in listofobjects:
             if not "get_test_output" in dir(l) and not "get_output" in dir(l):
@@ -472,8 +471,20 @@ class Output(object):
             if k in output:
                 old_value = str(test_dict[k])
                 new_value = str(output[k])
+                try:
+                    float(old_value)
+                    is_float = True
+                except ValueError:
+                    is_float = False
 
-                if test_dict[k] != output[k]:
+                if is_float:
+                    fold = float(old_value)
+                    fnew = float(new_value)
+                    diff = abs(fold - fnew)
+                    if diff > 1e-6:
+                        print(str(k) + ": test failed, old value: " + old_value + " new value " + new_value)
+                        passed=False
+                elif test_dict[k] != output[k]:
                     if len(old_value) < 50 and len(new_value) < 50:
                         print(str(k) + ": test failed, old value: " + old_value + " new value " + new_value)
                         passed=False
@@ -662,11 +673,13 @@ class ProcessOutput(object):
         '''
         Get the desired field names, and return a dictionary.
 
+        @param fields desired field names
         @param filterout specify if you want to "grep" out something from
                          the file, so that it is faster
         @param filtertuple a tuple that contains
                      ("TheKeyToBeFiltered",relationship,value)
                      where relationship = "<", "==", or ">"
+        @param get_every only read every Nth line from the file
         '''
 
         outdict = {}
@@ -733,6 +746,110 @@ class ProcessOutput(object):
         f.close()
         return outdict
 
+
+
+class CrossLinkIdentifierDatabase(object):
+    def __init__(self):
+        self.clidb=dict()
+
+    def check_key(self,key):
+        if key not in self.clidb:
+            self.clidb[key]={}
+
+    def set_unique_id(self,key,value):
+        self.check_key(key)
+        self.clidb[key]["XLUniqueID"]=str(value)
+
+    def set_protein1(self,key,value):
+        self.check_key(key)
+        self.clidb[key]["Protein1"]=str(value)
+
+    def set_protein2(self,key,value):
+        self.check_key(key)
+        self.clidb[key]["Protein2"]=str(value)
+
+    def set_residue1(self,key,value):
+        self.check_key(key)
+        self.clidb[key]["Residue1"]=int(value)
+
+    def set_residue2(self,key,value):
+        self.check_key(key)
+        self.clidb[key]["Residue2"]=int(value)
+
+    def set_idscore(self,key,value):
+        self.check_key(key)
+        self.clidb[key]["IDScore"]=float(value)
+
+    def set_state(self,key,value):
+        self.check_key(key)
+        self.clidb[key]["State"]=int(value)
+
+    def set_sigma1(self,key,value):
+        self.check_key(key)
+        self.clidb[key]["Sigma1"]=str(value)
+
+    def set_sigma2(self,key,value):
+        self.check_key(key)
+        self.clidb[key]["Sigma2"]=str(value)
+
+    def set_psi(self,key,value):
+        self.check_key(key)
+        self.clidb[key]["Psi"]=str(value)
+
+    def get_unique_id(self,key):
+        return self.clidb[key]["XLUniqueID"]
+
+    def get_protein1(self,key):
+        return self.clidb[key]["Protein1"]
+
+    def get_protein2(self,key):
+        return self.clidb[key]["Protein2"]
+
+    def get_residue1(self,key):
+        return self.clidb[key]["Residue1"]
+
+    def get_residue2(self,key):
+        return self.clidb[key]["Residue2"]
+
+    def get_idscore(self,key):
+        return self.clidb[key]["IDScore"]
+
+    def get_state(self,key):
+        return self.clidb[key]["State"]
+
+    def get_sigma1(self,key):
+        return self.clidb[key]["Sigma1"]
+
+    def get_sigma2(self,key):
+        return self.clidb[key]["Sigma2"]
+
+    def get_psi(self,key):
+        return self.clidb[key]["Psi"]
+
+    def set_float_feature(self,key,value,feature_name):
+        self.check_key(key)
+        self.clidb[key][feature_name]=float(value)
+
+    def set_int_feature(self,key,value,feature_name):
+        self.check_key(key)
+        self.clidb[key][feature_name]=int(value)
+
+    def set_string_feature(self,key,value,feature_name):
+        self.check_key(key)
+        self.clidb[key][feature_name]=str(value)
+
+    def get_feature(self,key,feature_name):
+        return self.clidb[key][feature_name]
+
+    def write(self,filename):
+        import pickle
+        with open(filename, 'wb') as handle:
+            pickle.dump(self.clidb,handle)
+
+    def load(self,filename):
+        import pickle
+        with open(filename, 'rb') as handle:
+            self.clidb=pickle.load(handle)
 
 def plot_fields(fields, framemin=None, framemax=None):
     import matplotlib as mpl
@@ -833,24 +950,25 @@ def plot_field_histogram(
 
 
 def plot_fields_box_plots(name, values, positions, frequencies=None,
-                          valuename="None", positionname="None", xlabels=None):
+                          valuename="None", positionname="None", xlabels=None,scale_plot_length=1.0):
     '''
     Plot time series as boxplots.
     fields is a list of time series, positions are the x-values
     valuename is the y-label, positionname is the x-label
     '''
+
     import matplotlib as mpl
     mpl.use('Agg')
     import matplotlib.pyplot as plt
     from matplotlib.patches import Polygon
 
     bps = []
-    fig = plt.figure(figsize=(float(len(positions)) / 2, 5.0))
+    fig = plt.figure(figsize=(float(len(positions))*scale_plot_length, 5.0))
     fig.canvas.set_window_title(name)
 
     ax1 = fig.add_subplot(111)
 
-    plt.subplots_adjust(left=0.2, right=0.990, top=0.95, bottom=0.4)
+    plt.subplots_adjust(left=0.1, right=0.990, top=0.95, bottom=0.4)
 
     bps.append(plt.boxplot(values, notch=0, sym='', vert=1,
                            whis=1.5, positions=positions))
@@ -859,7 +977,9 @@ def plot_fields_box_plots(name, values, positions, frequencies=None,
     plt.setp(bps[-1]['whiskers'], color='black', ls=":", lw=1.5)
 
     if frequencies is not None:
-        ax1.plot(positions, frequencies, 'k.', alpha=0.5, markersize=20)
+        for n,v in enumerate(values):
+            plist=[positions[n]]*len(v)
+            ax1.plot(plist, v, 'gx', alpha=0.7, markersize=7)
 
     # print ax1.xaxis.get_majorticklocs()
     if not xlabels is None:
@@ -868,7 +988,7 @@ def plot_fields_box_plots(name, values, positions, frequencies=None,
     plt.xlabel(positionname)
     plt.ylabel(valuename)
 
-    plt.savefig(name,dpi=150)
+    plt.savefig(name+".pdf",dpi=150)
     plt.show()
 
 

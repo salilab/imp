@@ -551,6 +551,8 @@ class Precision(object):
         @param rmf_frame_index The frame to read
         @param structure_set_name Name for the set that includes this structure
                                   (e.g. "cluster 1")
+        @param setup_index_map if requested, set up a dictionary to help
+               find residue indexes
         """
 
         # decide where to put this structure

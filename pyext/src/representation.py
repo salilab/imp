@@ -739,7 +739,6 @@ class Representation(object):
         @param selection_tuples (list of tuples) example (first_residue,last_residue,component_name)
         @param particles set up GMM for particles directly
         @param resolution usual PMI resolution for selecting particles from the hierarchies
-        @param intermediate_map_fn for debugging, this will write the itermediate (simulated) map
         '''
 
         import IMP.em

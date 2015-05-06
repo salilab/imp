@@ -265,10 +265,10 @@ class ResidueAngleRestraint(object):
 class ResidueDihedralRestraint(object):
 
     '''
-    add dihedral restraints between quatruplet of consecutive
+    Add dihedral restraints between quadruplet of consecutive
     residues/beads to enforce the stereochemistry.
     Give as input a string of "C" and "T", meaning cys (0+-40) or trans (180+-40)
-    dihedral. The length of the string mush be #residue-3.
+    dihedral. The length of the string must be \#residue-3.
     Without the string, the dihedral will be assumed trans.
     '''
     import IMP.pmi.tools

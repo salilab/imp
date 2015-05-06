@@ -19,8 +19,6 @@ class ConnectivityRestraint(object):
     cr=restraints.ConnectivityRestraint(simo,["CCC",(1,100,"TTT"),(100,150,"AAA")])
     cr.add_to_model()
     cr.set_label("CR1")
-
-
     Multistate support =No
     Selection type=selection tuple
     Resolution=Yes
@@ -86,7 +84,6 @@ class ConnectivityRestraint(object):
         output["ConnectivityRestraint_" + self.label] = str(score)
         return output
 
-
 #
 class CompositeRestraint(object):
 
@@ -112,27 +109,30 @@ class CompositeRestraint(object):
         self.m = representation.prot.get_model()
         self.rs = IMP.RestraintSet(self.m, 'cr')
 
-        handleparticles = []
+        self.handleparticles = []
         for s in handleparticles_tuples:
-            handleparticles += IMP.pmi.tools.select_by_tuple(representation, s,
+            self.handleparticles += IMP.pmi.tools.select_by_tuple(representation, s,
                                                              resolution=resolution, name_is_ambiguous=True)
-
+        self.compositeparticles=[]
         compositeparticle_list = []
         for list in compositeparticles_tuple_list:
-            compositeparticles = []
+            tmplist = []
             for s in list:
-                compositeparticles += IMP.pmi.tools.select_by_tuple(
+                tmplist += IMP.pmi.tools.select_by_tuple(
                     representation, s,
                     resolution=resolution, name_is_ambiguous=True)
-            compositeparticle_list.append(compositeparticles)
+            compositeparticle_list.append(tmplist)
+            self.compositeparticles+=tmplist
+
 
         ln = IMP.pmi.CompositeRestraint(
             self.m,
-            handleparticles,
+            self.handleparticles,
             cut_off,
             lam,
             True,
             plateau)
+
         for ps in compositeparticle_list:
             # composite particles is a list of list of particles
             ln.add_composite_particle(ps)
@@ -141,6 +141,15 @@ class CompositeRestraint(object):
 
     def set_label(self, label):
         self.label = label
+
+    def get_handle_particles(self):
+        return self.handleparticles
+
+    def get_composite_particles(self):
+        return self.compositeparticles
+
+    def get_restraint(self):
+        return self.rs
 
     def add_to_model(self):
         IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
@@ -519,3 +528,155 @@ class SimplifiedPEMAP(object):
                    label] = str(IMP.core.get_distance(d0, d1))
 
         return output
+
+
+class ConnectivityNetworkRestraint(object):
+
+    '''
+    generates and wraps a IMP.pmi.ConnectivityRestraint between domains
+    example:
+    cr=restraints.ConnectivityNetworkRestraint(simo,["CCC",(1,100,"TTT"),(100,150,"AAA")])
+    cr.add_to_model()
+    cr.set_label("CR1")
+
+    Multistate support =No
+    Selection type=selection tuple
+    Resolution=Yes
+    '''
+
+    def __init__(
+        self,
+        representation,
+        selection_tuples,
+        kappa=10.0,
+        resolution=1.0,
+            label="None"):
+
+        self.weight = 1.0
+        self.kappa = kappa
+        self.label = label
+        if self.label == "None":
+            self.label = str(selection_tuples)
+
+        self.m = representation.m
+        self.rs = IMP.RestraintSet(self.m, label)
+
+        cr=CompositeNetworkRestraint(self.m)
+
+        for s in selection_tuples:
+            particles = IMP.pmi.tools.select_by_tuple(representation, s,
+                                                      resolution=resolution,
+                                                      name_is_ambiguous=False)
+
+            cr.add_particles([p.get_particle() for p in particles])
+
+        self.rs.add_restraint(cr)
+
+    def set_label(self, label):
+        self.label = label
+        self.rs.set_name(label)
+        for r in self.rs.get_restraints():
+            r.set_name(label)
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+
+    def get_restraint(self):
+        return self.rs
+
+    def get_restraints(self):
+        rlist = []
+        for r in self.rs.get_restraints():
+            rlist.append(IMP.core.PairRestraint.get_from(r))
+        return rlist
+
+    def set_weight(self, weight):
+        self.weight = weight
+        self.rs.set_weight(weight)
+
+    def get_output(self):
+        self.m.update()
+        output = {}
+        score = self.weight * self.rs.unprotected_evaluate(None)
+        output["_TotalScore"] = str(score)
+        output["ConnectivityNetworkRestraint_" + self.label] = str(score)
+        return output
+
+
+
+
+class ConnectivityNetworkRestraint(IMP.kernel.Restraint):
+    '''
+    a python restraint that computes the score for a composite of proteins
+    Authors: G. Bouvier, R. Pellarin. Pasteur Institute.
+    '''
+
+    import networkx
+    import sklearn
+    import scipy.spatial
+    import numpy
+    import math
+
+    def __init__(self,m,slope=1.0,theta=5.0,plateau=0.01,linear_slope=0.01):
+        '''
+        input a list of particles, the slope and theta of the sigmoid potential
+        theta is the cutoff distance for a protein-protein contact
+        '''
+        IMP.kernel.Restraint.__init__(self, m, "ConnectivityNetworkRestraint %1%")
+        self.slope=slope
+        self.theta=theta
+        self.linear_slope=linear_slope
+        self.plateau=plateau
+        self.particles_blocks=[]
+        self.particle_list=[]
+
+    def get_number_of_particle_blocks(self):
+        return len(self.particles_blocks)
+
+    def get_number_of_particles_for_block(self,block_index):
+        return len(self.particles_blocks[block_index])
+
+    def add_particles(self,particles):
+        self.particles_blocks.append(particles)
+        self.particle_list+=particles
+
+    def get_full_graph(self):
+        '''
+        get the full graph of distances between every particle pair
+        '''
+
+        pdist_array = self.numpy.array(IMP.pmi.get_list_of_bipartite_minimum_sphere_distance(self.particles_blocks))
+        pdist_mat=self.scipy.spatial.distance.squareform(pdist_array)
+        pdist_mat[pdist_mat < 0] = 0
+        graph = self.networkx.Graph(pdist_mat)
+        return graph
+
+    def get_minimum_spanning_tree(self):
+        """
+        return the minimum spanning tree
+        """
+        graph = self.get_full_graph()
+        graph = self.networkx.minimum_spanning_tree(graph)
+        return graph
+
+    def sigmoid(self,x):
+        '''
+        a sigmoid function that scores the probability of a contact
+        between two proteins
+        '''
+        #return 1 - (x)**self.slope/ float(((x)**self.slope + self.theta**self.slope))
+        argvalue=(x-self.theta)/self.slope
+        return 1.0-(1.0-self.plateau)/(1.0+self.math.exp(-argvalue))
+
+    def unprotected_evaluate(self,da):
+        graph = self.get_minimum_spanning_tree()
+        score = 0.0
+        for e in graph.edges():
+            dist=graph.get_edge_data(*e)['weight']
+            prob=self.sigmoid(dist)
+            score+=-self.numpy.log(prob)
+            score+=self.linear_slope*dist
+        return score
+
+    def do_get_inputs(self):
+        return self.particle_list
