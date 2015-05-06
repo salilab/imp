@@ -168,16 +168,17 @@ class ModuleDoxFileGenerator(tools.FileGenerator):
         # include lib and doxygen in imput
         inputs = []
         if options.name == "kernel":
+            inputs.append("lib/IMP/")
             inputs.append("include/IMP/")
-            exclude = ["include/IMP/%s include/IMP/%s.h" % (m, m)
+            exclude = ["include/IMP/%s include/IMP/%s.h lib/IMP/%s" % (m, m, m)
                        for m, g in tools.get_modules(options.source)]
-            exclude.append("include/IMP/base include/IMP/base.h")
+            exclude.append("include/IMP/base include/IMP/base.h lib/IMP/base")
             template = template.replace("@EXCLUDE@",
                                " \\\n                         ".join(exclude))
         else:
             template = template.replace("@EXCLUDE@", "")
             inputs.append("include/IMP/" + options.name)
-        inputs.append("lib/IMP/" + options.name)
+            inputs.append("lib/IMP/" + options.name)
         inputs.append("examples/" + options.name)
         # suppress a warning since git removes empty dirs and doxygen
         # gets confused if the input path doesn't exist
