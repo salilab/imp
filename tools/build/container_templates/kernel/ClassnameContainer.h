@@ -105,11 +105,6 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
    */
   PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
 
-  /** \deprecated_at{2.1} This can be very slow and is probably not useful
-   */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  unsigned int get_number_of_FUNCTIONNAMEs() const;
-
   /** \deprecated_at{2.1}Use get_indexes() instead and thing about using the
       IMP_CONTAINER_FOREACH() macro.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
