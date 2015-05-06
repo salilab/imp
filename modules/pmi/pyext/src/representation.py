@@ -1334,8 +1334,8 @@ class Representation(object):
             self.connected_intra_pairs.append((pt0, pt1))
             self.connected_intra_pairs.append((pt1, pt0))
 
-        self.m.add_restraint(sortedsegments_cr)
-        self.m.add_restraint(unmodeledregions_cr)
+        IMP.pmi.tools.add_restraint_to_model(self.m, sortedsegments_cr)
+        IMP.pmi.tools.add_restraint_to_model(self.m, unmodeledregions_cr)
         self.linker_restraints.add_restraint(sortedsegments_cr)
         self.linker_restraints.add_restraint(unmodeledregions_cr)
         self.sortedsegments_cr_dict[name] = sortedsegments_cr
@@ -2027,12 +2027,17 @@ class Representation(object):
     def set_output_level(self, level):
         self.output_level = level
 
+    def _evaluate(self, deriv):
+        """Evaluate the total score of all added restraints"""
+        r = IMP.pmi.tools.get_restraint_set(self.m)
+        return r.evaluate(deriv)
+
     def get_output(self):
         output = {}
         score = 0.0
 
         output["SimplifiedModel_Total_Score_" +
-               self.label] = str(self.m.evaluate(False))
+               self.label] = str(self._evaluate(False))
         output["SimplifiedModel_Linker_Score_" +
                self.label] = str(self.linker_restraints.unprotected_evaluate(None))
         for name in self.sortedsegments_cr_dict:

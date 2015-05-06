@@ -5,7 +5,7 @@ import IMP.algebra
 import IMP.atom
 import IMP.container
 import IMP.isd
-
+import IMP.pmi.tools
 
 class WeightRestraint(object):
 
@@ -29,7 +29,7 @@ class WeightRestraint(object):
         return self.rs
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def set_label(self, label):
         self.label = label
@@ -54,7 +54,7 @@ class JeffreysPrior(object):
         self.rs.add_restraint(jp)
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def set_label(self, label):
         self.label = label

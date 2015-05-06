@@ -10,6 +10,7 @@ import IMP.atom
 import IMP.container
 import itertools
 import sys
+import IMP.pmi.tools
 try:
     import IMP.isd2
     noisd2 = False
@@ -77,7 +78,7 @@ class ExcludedVolumeSphere(object):
     def add_excluded_particle_pairs(self, excluded_particle_pairs):
         # add pairs to be filtered when calculating  the score
         lpc = IMP.container.ListPairContainer(self.m)
-        lpc.add_particle_pairs(excluded_particle_pairs)
+        lpc.add(IMP.get_indexes(excluded_particle_pairs))
         icpf = IMP.container.InContainerPairFilter(lpc)
         self.cpc.add_pair_filter(icpf)
 
@@ -85,7 +86,7 @@ class ExcludedVolumeSphere(object):
         self.label = label
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -162,7 +163,7 @@ class ResidueBondRestraint(object):
             r.set_name(label)
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -240,7 +241,7 @@ class ResidueAngleRestraint(object):
             r.set_name(label)
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -339,7 +340,7 @@ class ResidueDihedralRestraint(object):
             r.set_name(label)
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -417,9 +418,9 @@ class SecondaryStructure(object):
         self.label = label
 
     def add_to_model(self):
-        self.m.add_restraint(self.anglrs)
-        self.m.add_restraint(self.dihers)
-        self.m.add_restraint(self.bondrs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.anglrs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.dihers)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.bondrs)
 
     def get_CA_force_field(self):
         bondrslist = []
@@ -661,7 +662,7 @@ class ElasticNetworkRestraint(object):
             r.set_name(label)
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -737,8 +738,8 @@ class CharmmForceFieldRestraint(object):
             r.set_name(label)
 
     def add_to_model(self):
-        self.m.add_restraint(self.bonds_rs)
-        self.m.add_restraint(self.nonbonded_rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.bonds_rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.nonbonded_rs)
 
     def get_restraint(self):
         return self.rs
@@ -891,7 +892,7 @@ class PseudoAtomicRestraint(object):
             r.set_name(label)
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs

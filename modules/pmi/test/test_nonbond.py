@@ -38,7 +38,9 @@ class Tests(IMP.test.TestCase):
                                                     resolution=10.0)
         ev.add_excluded_particle_pairs(listofexcludedpairs)
         ev.add_to_model()
-        m.evaluate(False)
+        sf = IMP.core.RestraintsScoringFunction(
+                                   IMP.pmi.tools.get_restraint_set(m))
+        sf.evaluate(False)
 
     def test_is_rigid(self):
         """Test violation of is_rigid flag.
@@ -50,7 +52,9 @@ class Tests(IMP.test.TestCase):
         ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(
                                   r, resolution=10.0)
         ev.add_to_model()
-        m.evaluate(False)
+        sf = IMP.core.RestraintsScoringFunction(
+                                   IMP.pmi.tools.get_restraint_set(m))
+        sf.evaluate(False)
 
 if __name__ == '__main__':
     IMP.test.main()

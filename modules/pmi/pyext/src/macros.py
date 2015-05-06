@@ -363,7 +363,7 @@ class ReplicaExchange0(object):
                     sampler_md.optimize(self.vars["molecular_dynamics_steps"])
                 if sampler_mc is not None:
                     sampler_mc.optimize(self.vars["monte_carlo_steps"])
-            score = self.model.evaluate(False)
+            score = IMP.pmi.tools.get_restraint_set(self.model).evaluate(False)
             output.set_output_entry("score", score)
 
             my_temp_index = int(rex.get_my_temp() * temp_index_factor)

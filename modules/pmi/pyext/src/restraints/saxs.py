@@ -8,7 +8,7 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.container
-
+import IMP.pmi.tools
 
 class SAXSISDRestraint(object):
 
@@ -162,8 +162,8 @@ class SAXSISDRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
-        self.m.add_restraint(self.rs2)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs2)
 
     def set_taumaxtrans(self, taumaxtrans):
         self.taumaxtrans = taumaxtrans

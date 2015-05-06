@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
                              resolutions=[1], missingbeadsize=beadsize)
         simo.setup_component_sequence_connectivity("Rpb1", 1)
 
-        simo.add_component_name("Rpb2", color=colors[1])
+        simo.create_component("Rpb2", color=colors[1])
         simo.add_component_sequence("Rpb2", fastafile, id=fastids[1])
         simo.autobuild_model("Rpb2", pdbfile, "B",
                              resolutions=[10], beadsize=beadsize)

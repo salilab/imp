@@ -8,7 +8,7 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.container
-
+import IMP.pmi.tools
 
 class ExternalBarrier(object):
 
@@ -41,7 +41,7 @@ class ExternalBarrier(object):
         self.label = label
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -114,7 +114,7 @@ class DistanceRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs

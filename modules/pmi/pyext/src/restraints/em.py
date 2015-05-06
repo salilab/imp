@@ -9,7 +9,7 @@ import IMP.algebra
 import IMP.atom
 import IMP.container
 import IMP.isd
-
+import IMP.pmi.tools
 
 class GaussianEMRestraint(object):
 
@@ -204,7 +204,7 @@ class GaussianEMRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_particles_to_sample(self):
         ps = {}
@@ -268,7 +268,7 @@ class ElectronMicroscopy2D(object):
         self.label = label
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs

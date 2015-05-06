@@ -9,6 +9,32 @@ import IMP
 import IMP.algebra
 import collections
 
+def _get_restraint_set_key():
+    if not hasattr(_get_restraint_set_key, 'pmi_rs_key'):
+        _get_restraint_set_key.pmi_rs_key = IMP.ModelKey("PMI restraints")
+    return _get_restraint_set_key.pmi_rs_key
+
+def add_restraint_to_model(model, restraint):
+    """Add a PMI restraint to the model.
+       Since Model.add_restraint() no longer exists (in modern IMP restraints
+       should be added to a ScoringFunction instead) store them instead in
+       a RestraintSet, and keep a reference to it in the Model."""
+    mk = _get_restraint_set_key()
+    if model.get_has_data(mk):
+        rs = IMP.RestraintSet.get_from(model.get_data(mk))
+    else:
+        rs = IMP.RestraintSet(model, "All PMI restraints")
+        model.add_data(mk, rs)
+    rs.add_restraint(restraint)
+
+def get_restraint_set(model):
+    """Get a RestraintSet containing all PMI restraints added to the model"""
+    mk = _get_restraint_set_key()
+    if model.get_has_data(mk):
+        return IMP.RestraintSet.get_from(model.get_data(mk))
+    else:
+        raise ValueError("No restraints added to model")
+
 
 class Stopwatch(object):
 

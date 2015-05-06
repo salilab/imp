@@ -8,6 +8,7 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.container
+import IMP.pmi.tools
 
 class _NuisancesBase(object):
     ''' This base class is used to provide nuisance setup and interface
@@ -219,7 +220,7 @@ class ConnectivityCrossLinkMS(object):
             r.set_name(label)
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint_sets(self):
         return self.rs
@@ -401,7 +402,7 @@ class SimplifiedCrossLinkMS(object):
         self.label = label
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint_sets(self):
         return self.rs
@@ -638,7 +639,7 @@ class SigmoidalCrossLinkMS(object):
         self.label = label
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint_sets(self):
         return self.rs
@@ -1111,12 +1112,12 @@ class ISDCrossLinkMS(_NuisancesBase):
         self.label = label
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
         if not self.marginal:
-            self.m.add_restraint(self.rspsi)
-        self.m.add_restraint(self.rssig)
-        self.m.add_restraint(self.rslen)
-        self.m.add_restraint(self.rslin)
+            IMP.pmi.tools.add_restraint_to_model(self.m, self.rspsi)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rssig)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rslen)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rslin)
 
     def get_hierarchies(self):
         return self.prot
@@ -1438,7 +1439,7 @@ class CysteineCrossLinkRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        self.m.add_restraint(self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_particles_to_sample(self):
         ps = {}
