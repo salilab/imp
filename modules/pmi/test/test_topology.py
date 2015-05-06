@@ -257,5 +257,38 @@ class RepresentationNewTest(IMP.test.TestCase):
         self.assertEquals(set(sel11+sel21),set(sel31))
 
 
+    def test_create_clones_hybrid_representation(self):
+        '''Test creation of Copies when you have atomic and non-atomic representations'''
+        s=topology.System()
+        seqs=topology.Sequences(self.get_input_file_name('seqs.fasta'),
+                         name_map={'Protein_1':'Prot1',
+                                   'Protein_2':'Prot2',
+                                   'Protein_3':'Prot3'})
+
+        # create a molecule and add a copy
+        st1=s.create_state()
+        m1=st1.create_molecule("Prot1",sequence=seqs["Prot1"],chain_id='A')
+        atomic_res=m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                    chain_id='A',res_range=(1,10),offset=-54)
+        m1.add_clone(new_chain_id='G')
+        m1.add_representation(atomic_res,resolutions=[1,10])
+        m1.add_representation(m1.get_non_atomic_residues(),resolutions=[10])
+        # build
+        hier = s.build(merge_type="backbone")
+
+        # check that all resolutions created correctly for both copies
+        sel1=IMP.atom.Selection(hier,molecule='Prot1',resolution=1,copy_index=0).get_selected_particles()
+        sel2=IMP.atom.Selection(hier,molecule='Prot1',resolution=1,copy_index=1).get_selected_particles()
+        sel3=IMP.atom.Selection(hier,molecule='Prot1',resolution=1).get_selected_particles()
+        self.assertEquals(len(sel1),len(sel2))
+        self.assertEquals(set(sel1+sel2),set(sel3))
+
+        sel11=IMP.atom.Selection(hier,molecule='Prot1',resolution=10,copy_index=0).get_selected_particles()
+        sel21=IMP.atom.Selection(hier,molecule='Prot1',resolution=10,copy_index=1).get_selected_particles()
+        sel31=IMP.atom.Selection(hier,molecule='Prot1',resolution=10).get_selected_particles()
+        self.assertEquals(len(sel11),len(sel21))
+        self.assertEquals(set(sel11+sel21),set(sel31))
+
+
 if __name__ == '__main__':
     IMP.test.main()

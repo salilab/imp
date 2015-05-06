@@ -311,7 +311,28 @@ class _Molecule(SystemBase):
         for orig,new in zip(self.residues,mol.residues):
             new.representations=orig.representations
 
-    def add_structure(self,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_only=False):
+    def add_clone(self,new_chain_id,transformation=None):
+        """Create a Molecule clone (same structure and representation of the original)
+        setting the new coordinates optionally.
+        @param new_chain_id If you want to set the chain ID of the copy to something
+                            (defaults to what you extract from the PDB file)
+        @param transformation Apply transformation after reading/cloning structure
+        """
+        if new_chain_id is None:
+            new_chain_id=chain_id
+        mol=_Molecule(self.state,self.get_hierarchy().get_name(),
+                      self.sequence,new_chain_id,copy_num=len(self.copies)+1)
+        self.copies.append(mol)
+        for nr,r in enumerate(self.residues):
+            mol.residues[nr].set_structure(IMP.atom.Residue(IMP.atom.create_clone(r.hier)))
+        if transformation is not None:
+            for r in mol.residues:
+                IMP.atom.transform(r.hier,transformation)
+        for orig,new in zip(self.residues,mol.residues):
+            new.representations=orig.representations
+
+
+    def add_structure(self,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_only=False,soft_check=False):
         """Read a structure and store the coordinates.
         Returns the atomic residues (as a set)
         @param pdb_fn    The file to read
@@ -319,6 +340,8 @@ class _Molecule(SystemBase):
         @param res_range Add only a specific set of residues
         @param offset    Apply an offset to the residue indexes of the PDB file
         @param model_num Read multi-model PDB and return that model
+        @param soft_check If True, it only warns if there are sequence mismatches between the pdb and the Molecules sequence
+                          If False (Default), it raises and exit when there are sequence mismatches.
         \note After offset, we expect the PDB residue numbering to match the FASTA file
         """
         # get IMP.atom.Residues from the pdb file
@@ -333,10 +356,15 @@ class _Molecule(SystemBase):
             idx=rh.get_index()
             internal_res=self.residues[idx-1]
             if internal_res.get_code()!=IMP.atom.get_one_letter_code(rh.get_residue_type()):
-                raise StructureError('ERROR: PDB residue index',idx,'is',
+                if not soft_check:
+                    raise StructureError('ERROR: PDB residue index',idx,'is',
                                      IMP.atom.get_one_letter_code(rh.get_residue_type()),
                                      'and sequence residue is',internal_res.get_code())
-            internal_res.set_structure(rh)
+                else:
+                    print('WARNING: PDB residue index',idx,'is',
+                                     IMP.atom.get_one_letter_code(rh.get_residue_type()),
+                                     'and sequence residue is',internal_res.get_code())
+            internal_res.set_structure(rh,soft_check)
             atomic_res.add(internal_res)
         return atomic_res
 
@@ -474,9 +502,10 @@ class _Residue(object):
             return True
         else:
             return False
-    def set_structure(self,res):
+    def set_structure(self,res,soft_check=False):
         if res.get_residue_type()!=self.hier.get_residue_type():
-            raise StructureError("Adding structure to this residue, but it's the wrong type!")
+            if not soft_check:
+                raise StructureError("Adding structure to this residue, but it's the wrong type!")
         for a in res.get_children():
             self.hier.add_child(a)
             atype=IMP.atom.Atom(a).get_atom_type()
@@ -748,7 +777,6 @@ class TopologyReader(object):
                     c.rmf_file=f
         else:
             c.rmf_frame_number=defaults["rmf_frame_number"]
-
 
         if errors:
             raise ValueError("Fix Topology File syntax errors and rerun: " \

@@ -70,7 +70,6 @@ class DistanceRestraint(object):
         self.rs = IMP.RestraintSet(self.m, 'distance')
         self.weight=1.0
         self.label="None"
-
         #ts = IMP.core.Harmonic(distance,kappa)
 
         ts1 = IMP.core.HarmonicUpperBound(distancemax, kappa)

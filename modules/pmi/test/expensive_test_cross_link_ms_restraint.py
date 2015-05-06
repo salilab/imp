@@ -183,7 +183,7 @@ class ISDCrossMSTest(IMP.test.TestCase):
         o=IMP.pmi.output.Output()
         o.write_test("expensive_test_cross_link_ms_restraint.dat", [xlc])
 
-        passed=o.test(IMP.pmi.get_data_path("expensive_test_cross_link_ms_restraint.dat"), [xlc])
+        passed=o.test(self.get_input_file_name("expensive_test_cross_link_ms_restraint.dat"), [xlc])
         self.assertEqual(passed, True)
         rs=xlc.get_restraint()
 

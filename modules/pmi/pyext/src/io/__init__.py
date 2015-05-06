@@ -111,7 +111,6 @@ def parse_xlinks_davis(data_fn,
                        use_chains={}):
     """ Format from Trisha Davis. Lines are:
     ignore ignore seq1 seq2 >Name(res) >Name(res) score
-    @param model         An IMP model
     @param data_fn       The data file name
     @param max_num       Maximum number of XL to read (-1 is all)
     @param name_map      Dictionary mapping text file names to the molecule name
@@ -272,7 +271,7 @@ class CrossLink(object):
         @param r1 A dictionary of selection keywords for the first residue
         @param r2 A dictionary of selection keywards for the second residue
         @param score A score that might be used later for filtering
-        @Note The dictionaries can contain any Selection argument like
+        @note The dictionaries can contain any Selection argument like
               molecule or residue_index
         """
         self.unique_id = unique_id
@@ -293,7 +292,7 @@ class CrossLink(object):
         """Return a list of atom pairs (particles) for this crosslink.
         Found by selecting everything with r1 and r2 then returning the
          cartesian product.
-        @Note you may want to provide some atom specifiers like
+        @note you may want to provide some atom specifiers like
          atom_type=IMP.atom.AtomType("CA")
         @param mh The hierarchy to select from
         @param kwargs Any additional selection arguments
@@ -340,10 +339,10 @@ class CrossLinkData(object):
     def add_cross_link(self,unique_id,kws1,kws2,score):
         """Add a crosslink. They are organized by their unique_ids.
         @param unique_id The id is used to group crosslinks that are alternatives
-        @param r1 A dictionary of selection keywords for the first residue
-        @param r2 A dictionary of selection keywards for the second residue
+        @param kws1 A dictionary of selection keywords for the first residue
+        @param kws2 A dictionary of selection keywards for the second residue
         @param score A score that might be used later for filtering
-        @Note The dictionaries can contain any Selection argument like
+        @note The dictionaries can contain any Selection argument like
               molecule or residue_index
         """
         self.data[unique_id].append(CrossLink(unique_id,kws1,kws2,score))

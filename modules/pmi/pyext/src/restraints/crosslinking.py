@@ -93,8 +93,6 @@ class _NuisancesBase(object):
         return self.psi_dictionary[value]
 
 
-
-
 class ConnectivityCrossLinkMS(object):
 
     '''
@@ -951,6 +949,7 @@ class ISDCrossLinkMS(_NuisancesBase):
 
             for nstate, r in enumerate(representations):
                 # loop over every state
+
                 ps1 = IMP.pmi.tools.select(
                     r,
                     resolution=resolution,
@@ -1099,7 +1098,9 @@ class ISDCrossLinkMS(_NuisancesBase):
                      mappedr1,
                      mappedr2,
                      psival,
-                     xlid))
+                     xlid,
+                     nstate,
+                     ids))
 
         lw = IMP.isd.LogWrapper(restraints,1.0)
         self.rs.add_restraint(lw)
@@ -1155,6 +1156,55 @@ class ISDCrossLinkMS(_NuisancesBase):
     def set_sigma_is_sampled(self, is_sampled=True):
         self.sigma_is_sampled = is_sampled
 
+    def get_label(self,pairs_index):
+
+
+        resid1 = self.pairs[pairs_index][3]
+        chain1 = self.pairs[pairs_index][4]
+        resid2 = self.pairs[pairs_index][5]
+        chain2 = self.pairs[pairs_index][6]
+        attribute = self.pairs[pairs_index][7]
+        rad1 = self.pairs[pairs_index][8]
+        rad2 = self.pairs[pairs_index][9]
+        psi = self.pairs[pairs_index][10]
+        xlid= self.pairs[pairs_index][11]
+        label = attribute + "-" + \
+            str(resid1) + ":" + chain1 + "_" + str(resid2) + ":" + \
+            chain2 + "-" + str(rad1) + "-" + str(rad2) + "-" + str(psi)
+        return label
+
+    def write_db(self,filename):
+        import IMP.pmi.output
+        cldb=IMP.pmi.output.CrossLinkIdentifierDatabase()
+
+        for pairs_index in range(len(self.pairs)):
+
+            resid1 = self.pairs[pairs_index][3]
+            chain1 = self.pairs[pairs_index][4]
+            resid2 = self.pairs[pairs_index][5]
+            chain2 = self.pairs[pairs_index][6]
+            attribute = self.pairs[pairs_index][7]
+            rad1 = self.pairs[pairs_index][8]
+            rad2 = self.pairs[pairs_index][9]
+            psi = self.pairs[pairs_index][10]
+            xlid= self.pairs[pairs_index][11]
+            nstate=self.pairs[pairs_index][12]
+            ids=self.pairs[pairs_index][13]
+
+            label=self.get_label(pairs_index)
+            cldb.set_unique_id(label,xlid)
+            cldb.set_protein1(label,chain1)
+            cldb.set_protein2(label,chain2)
+            cldb.set_residue1(label,resid1)
+            cldb.set_residue2(label,resid2)
+            cldb.set_idscore(label,ids)
+            cldb.set_state(label,nstate)
+            cldb.set_sigma1(label,rad1)
+            cldb.set_sigma2(label,rad2)
+            cldb.set_psi(label,psi)
+            cldb.write(filename)
+
+
     def get_output(self):
         # content of the crosslink database pairs
         # self.pairs.append((p1,p2,dr,r1,c1,r2,c2))
@@ -1173,24 +1223,13 @@ class ISDCrossLinkMS(_NuisancesBase):
                self.label] = self.rslin.unprotected_evaluate(None)
         for i in range(len(self.pairs)):
 
+            label=self.get_label(i)
+            ln = self.pairs[i][2]
             p0 = self.pairs[i][0]
             p1 = self.pairs[i][1]
-            ln = self.pairs[i][2]
-            resid1 = self.pairs[i][3]
-            chain1 = self.pairs[i][4]
-            resid2 = self.pairs[i][5]
-            chain2 = self.pairs[i][6]
-            attribute = self.pairs[i][7]
-            rad1 = self.pairs[i][8]
-            rad2 = self.pairs[i][9]
-            psi = self.pairs[i][10]
-            xlid= self.pairs[i][11]
-
-            label = attribute + "-" + \
-                str(resid1) + ":" + chain1 + "_" + str(resid2) + ":" + \
-                chain2 + "-" + str(rad1) + "-" + str(rad2) + "-" + str(psi)
             output["ISDCrossLinkMS_Score_" +
                    label + "_" + self.label] = str(-self.log(ln.unprotected_evaluate(None)))
+
             d0 = IMP.core.XYZ(p0)
             d1 = IMP.core.XYZ(p1)
             output["ISDCrossLinkMS_Distance_" +

@@ -37,7 +37,7 @@ pts = tools.ParticleToSampleList()
 pts.add_particle(sigma, "Nuisances", 1.0, "Sigma")
 
 rs = XTransRestraint(m)
-m.add_restraint(rs)
+IMP.pmi.tools.add_restraint_to_model(m, rs)
 
 mc = samplers.MonteCarlo(m, [pts], 1.0)
 for i in range(100):
