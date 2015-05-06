@@ -50,6 +50,7 @@ class DoxConfigFileGenerator(tools.FileGenerator):
             doxygen = doxygen.replace("@EXAMPLE_PATH@", ".")
             doxygen = doxygen.replace("@TAGS@", "doxygen/ref-tags.xml=../ref")
             doxygen = doxygen.replace("@XML_OUTPUT@", "doxygen/manual/xml/")
+            doxygen = doxygen.replace("@EXCLUDE@", "")
         else:
             doxygen = doxygen.replace("@PROJECT_NAME@", '"IMP Reference Guide"')
             doxygen = doxygen.replace("@PROJECT_BRIEF@",
@@ -69,10 +70,11 @@ class DoxConfigFileGenerator(tools.FileGenerator):
             doxygen = doxygen.replace("@TAGS@",
                                       "doxygen/manual-tags.xml=../manual")
             doxygen = doxygen.replace("@XML_OUTPUT@", "doxygen/ref/xml/")
+            doxygen = doxygen.replace("@EXCLUDE@",
+                                      "lib/IMP/kernel lib/IMP/base")
         doxygen = doxygen.replace("@NAME@", "IMP")
         doxygen = doxygen.replace("@IMP_SOURCE_PATH@", source) \
                          .replace("@VERSION@", version)
-        doxygen = doxygen.replace("@EXCLUDE@", "")
         doxygen = doxygen.replace("@INCLUDE_PATH@", "include")
         doxygen = doxygen.replace("@FILE_PATTERNS@",
                                   "*.cpp *.h *.py *.md *.dox")
@@ -92,10 +94,9 @@ class DoxConfigFileGenerator(tools.FileGenerator):
                        source + "/ChangeLog.md"]
         else:
             inputsh = ["doxygen/generated", source + "/doc/ref",
-                       "include", "doc/examples"]
+                       "include", "doc/examples", "lib/IMP"]
             for m, p in tools.get_modules(source):
                 doc = os.path.join(p, "doc")
-                inputsh.append(os.path.join("lib", "IMP", m))
                 if os.path.exists(doc):
                     inputsh.append(doc + "/")
         doxygen = doxygen.replace("@INPUT_PATH@", " ".join(inputsh))
