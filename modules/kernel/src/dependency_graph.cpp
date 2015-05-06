@@ -96,19 +96,6 @@ ParticlesTemp get_dependent_particles(ModelObject *p,
       ModelObjectsTemp(1, p), all, dg, index);
 }
 
-RestraintsTemp get_dependent_restraints(
-    ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
-    const DependencyGraphVertexIndex &index) {
-  return get_dependent<RestraintsTemp, Restraint, false>(
-      ModelObjectsTemp(1, p), all, dg, index);
-}
-ScoreStatesTemp get_dependent_score_states(
-    ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
-    const DependencyGraphVertexIndex &index) {
-  return get_dependent<ScoreStatesTemp, ScoreState, false>(
-      ModelObjectsTemp(1, p), all, dg, index);
-}
-
 ScoreStatesTemp get_required_score_states(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
     const DependencyGraphVertexIndex &index) {

@@ -68,20 +68,6 @@ IMPKERNELEXPORT ParticlesTemp
                             const DependencyGraph &dg,
                             const DependencyGraphVertexIndex &index);
 
-/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
-IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-IMPKERNELEXPORT RestraintsTemp
-    get_dependent_restraints(ModelObject *p, const ModelObjectsTemp &all,
-                             const DependencyGraph &dg,
-                             const DependencyGraphVertexIndex &index);
-
-/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
-IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-IMPKERNELEXPORT ScoreStatesTemp
-    get_dependent_score_states(ModelObject *p, const ModelObjectsTemp &all,
-                               const DependencyGraph &dg,
-                               const DependencyGraphVertexIndex &index);
-
 #ifndef IMP_DOXYGEN
 /** Return all Restraints that depend on this Particle.
     Model::set_has_all_dependencies() must be called first.*/
