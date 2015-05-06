@@ -165,7 +165,7 @@ class ModuleDoxFileGenerator(tools.FileGenerator):
         template = template.replace("@FILE_PATTERNS@",
                                     "*.cpp *.h *.py *.md *.dox")
         template = template.replace("@WARNINGS@", "warnings.txt")
-        # include lib and doxygen in imput
+        # include lib and doxygen in input
         inputs = []
         if options.name == "kernel":
             inputs.append("lib/IMP/")
