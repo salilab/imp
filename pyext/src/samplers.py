@@ -5,6 +5,7 @@
 from __future__ import print_function
 import IMP
 import IMP.core
+from IMP.pmi.tools import get_restraint_set
 
 class _SerialReplicaExchange(object):
     """Dummy replica exchange class used in non-MPI builds.
@@ -121,6 +122,7 @@ class MonteCarlo(object):
         self.smv = IMP.core.SerialMover(self.mvs)
 
         self.mc = IMP.core.MonteCarlo(self.m)
+        self.mc.set_scoring_function(get_restraint_set(self.m))
         self.mc.set_return_best(False)
         self.mc.set_kt(self.temp)
         self.mc.add_mover(self.smv)
@@ -395,6 +397,7 @@ class ConjugateGradients(object):
         self.m = m
         self.nframe = -1
         self.cg = IMP.core.ConjugateGradients(self.m)
+        self.cg.set_scoring_function(get_restraint_set(self.m))
 
     def set_label(self, label):
         self.label = label

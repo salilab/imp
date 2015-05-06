@@ -9,6 +9,7 @@ import IMP.algebra
 import IMP.atom
 import IMP.container
 import IMP.isd
+import IMP.pmi.tools
 import IMP.pmi.sampling_tools as sampling_tools
 from collections import defaultdict
 import os.path
@@ -290,11 +291,12 @@ class AtomicCrossLinkMSRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        self.mdl.add_restraint(self.rs)
-        self.mdl.add_restraint(self.rs_nuis)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs_nuis)
         if self.create_nz:
-            self.mdl.add_restraint(self.rset_bonds)
-            self.mdl.add_restraint(self.rset_angles)
+            IMP.pmi.tools.add_restraint_to_model(self.m, self.rset_bonds)
+            IMP.pmi.tools.add_restraint_to_model(self.m, self.rset_angles)
+
     def get_hierarchy(self):
         return self.prot
 
