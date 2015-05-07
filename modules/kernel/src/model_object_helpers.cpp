@@ -15,28 +15,6 @@ ModelObjectsTemp ParticleInputs::get_inputs(Model *m,
   return do_get_inputs(m, pis);
 }
 
-ContainersTemp ParticleInputs::get_input_containers(Particle *p) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Call get_inputs instead.");
-  return IMP::get_input_containers(
-      get_inputs(p->get_model(), ParticleIndexes(1, p->get_index())));
-}
-
-ParticlesTemp ParticleInputs::get_input_particles(Particle *p) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Call get_inputs instead.");
-  return IMP::get_input_particles(
-      get_inputs(p->get_model(), ParticleIndexes(1, p->get_index())));
-}
-
-ModelObjectsTemp ParticleInputs::do_get_inputs(
-    Model *m, const ParticleIndexes &pis) const {
-  ModelObjectsTemp ret;
-  for (unsigned int i = 0; i < pis.size(); ++i) {
-    ret += get_input_containers(m->get_particle(pis[i]));
-    ret += get_input_particles(m->get_particle(pis[i]));
-  }
-  return ret;
-}
-
 ModelObjectsTemp ParticleOutputs::get_outputs(
     Model *m, const ParticleIndexes &pis) const {
   return do_get_outputs(m, pis);
