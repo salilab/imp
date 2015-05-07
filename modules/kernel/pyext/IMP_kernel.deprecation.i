@@ -15,7 +15,9 @@ def deprecated_object(version, help_message):
        @see [deprecation support](@ref deprecation)."""
     def wrapper(obj):
         orig_init = obj.__init__
-        @functools.wraps(orig_init)
+        # Don't try to copy __module__ since __init__ may not have it
+        # (e.g. if we subclassed object but didn't override __init__)
+        @functools.wraps(orig_init, ('__name__', '__doc__'))
         def __init__(obj, *args, **keys):
             handle_use_deprecated("Object %s is deprecated. %s"
                                   % (type(obj), help_message))
