@@ -159,8 +159,12 @@ def get_dump_docstring(node, add_lines=[]):
     return lines
 
 
-def dump_function(func, indent, printer):
-    d = get_dump_docstring(func)
+def dump_function(func, indent, printer, method=False):
+    if method:
+        add_lines = []
+    else:
+        add_lines = ['', '@pythononlyfunction']
+    d = get_dump_docstring(func, add_lines)
     printer.output_lines(indent, d + [get_function_signature(func)],
                          func.lineno)
     printer.output_line(indent + 4, "pass")
@@ -170,13 +174,13 @@ def dump_class(cls, meths, indent, printer):
     if cls.swig:
         add_lines = []
     else:
-        add_lines = ['', '\\pythononlyclass']
+        add_lines = ['', '@pythononlyclass']
     d = get_dump_docstring(cls, add_lines)
     printer.output_lines(indent, d + [get_class_signature(cls)], cls.lineno)
     if len(meths) == 0:
         printer.output_line(indent + 4, "pass")
     for m in meths:
-        dump_function(m, indent + 4, printer)
+        dump_function(m, indent + 4, printer, method=True)
 
 
 def handle_class(c, indent, printer):
