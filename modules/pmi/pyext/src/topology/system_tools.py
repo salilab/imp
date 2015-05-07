@@ -215,9 +215,11 @@ def build_along_backbone(mdl,root,residues,rep_type,ca_centers=True):
             this_resolutions=frag_res[0].representations['balls']
             # check that we have only one resolution for now
             if len(this_resolutions) > 1 :
-                print("build_along_backbone Error: residues with missing atomic coordinate should be associated with only one resolution")
+                raise ValueError("build_along_backbone Error: residues with missing atomic coordinate should be associated with only one resolution")
+            if len(this_resolutions) == 0 :
+                print("build_along_backbone Error: no resolution associated with that residue")
                 exit()
-            this_resolution=this_resolutions.pop()
+            this_resolution=list(this_resolutions)[0]
             # create a root hierarchy node for the beads
             frag = IMP.atom.Fragment.setup_particle(mdl,mdl.add_particle(name),res_nums)
             root.add_child(frag)
