@@ -111,8 +111,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object {
   FloatsList get_posterior_covariance_hessian(Floats x, bool) const;
 
   // needed for restraints using gpi
-  ParticlesTemp get_input_particles() const;
-  ContainersTemp get_input_containers() const;
+  ModelObjectsTemp get_inputs() const;
 
   // call these if you called update() on the mean or covariance function.
   // it will force update any internal variables dependent on these functions.

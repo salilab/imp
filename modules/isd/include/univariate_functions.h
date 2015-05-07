@@ -98,8 +98,7 @@ class IMPISDEXPORT UnivariateFunction : public Object {
   virtual unsigned get_number_of_optimized_particles() const = 0;
 
   //! particle manipulation
-  virtual ParticlesTemp get_input_particles() const = 0;
-  virtual ContainersTemp get_input_containers() const = 0;
+  virtual ModelObjectsTemp get_inputs() const = 0;
 
   IMP_REF_COUNTED_DESTRUCTOR(UnivariateFunction);
 };
@@ -257,15 +256,10 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
     return count;
   }
 
-  ParticlesTemp get_input_particles() const {
-    ParticlesTemp ret;
+  ModelObjectsTemp get_inputs() const {
+    ModelObjectsTemp ret;
     ret.push_back(a_);
     ret.push_back(b_);
-    return ret;
-  }
-
-  ContainersTemp get_input_containers() const {
-    ContainersTemp ret;
     return ret;
   }
 
@@ -761,18 +755,13 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
     return count;
   }
 
-  ParticlesTemp get_input_particles() const {
-    ParticlesTemp ret;
+  ModelObjectsTemp get_inputs() const {
+    ModelObjectsTemp ret;
     ret.push_back(G_);
     ret.push_back(Rg_);
     ret.push_back(d_);
     ret.push_back(s_);
     ret.push_back(A_);
-    return ret;
-  }
-
-  ContainersTemp get_input_containers() const {
-    ContainersTemp ret;
     return ret;
   }
 

@@ -706,22 +706,13 @@ GaussianProcessInterpolation::get_posterior_covariance_hessian(
 }
 */
 
-ParticlesTemp GaussianProcessInterpolation::get_input_particles()
+ModelObjectsTemp GaussianProcessInterpolation::get_inputs()
     const {
-  ParticlesTemp ret;
-  ParticlesTemp ret1 = mean_function_->get_input_particles();
+  ModelObjectsTemp ret;
+  ModelObjectsTemp ret1 = mean_function_->get_inputs();
   ret.insert(ret.end(), ret1.begin(), ret1.end());
   ret.push_back(sigma_);
-  ParticlesTemp ret2 = covariance_function_->get_input_particles();
-  ret.insert(ret.end(), ret2.begin(), ret2.end());
-  return ret;
-}
-
-ContainersTemp GaussianProcessInterpolation::get_input_containers() const {
-  ContainersTemp ret;
-  ContainersTemp ret1 = mean_function_->get_input_containers();
-  ret.insert(ret.end(), ret1.begin(), ret1.end());
-  ContainersTemp ret2 = covariance_function_->get_input_containers();
+  ModelObjectsTemp ret2 = covariance_function_->get_inputs();
   ret.insert(ret.end(), ret2.begin(), ret2.end());
   return ret;
 }

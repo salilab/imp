@@ -41,8 +41,7 @@ void GaussianProcessInterpolationRestraint::create_score_state() {
 ModelObjectsTemp GaussianProcessInterpolationRestraint::do_get_inputs() const {
   // call the existing implementation
   ModelObjectsTemp ret;
-  ret += gpi_->get_input_particles();
-  ret += gpi_->get_input_containers();
+  ret += gpi_->get_inputs();
   // add the score state
   if (ss_) {
     ret.push_back(ss_);
@@ -281,9 +280,7 @@ void GaussianProcessInterpolationScoreState::do_after_evaluate(
     DerivativeAccumulator *) {}
 
 ModelObjectsTemp GaussianProcessInterpolationScoreState::do_get_inputs() const {
-  ModelObjectsTemp ret = gpir_->gpi_->get_input_particles();
-  ret += gpir_->gpi_->get_input_containers();
-  return ret;
+  return gpir_->gpi_->get_inputs();
 }
 
 ModelObjectsTemp GaussianProcessInterpolationScoreState::do_get_outputs()

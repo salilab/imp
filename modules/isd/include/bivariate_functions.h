@@ -98,8 +98,7 @@ class IMPISDEXPORT BivariateFunction : public Object {
   virtual unsigned get_number_of_optimized_particles() const = 0;
 
   //! particle manipulation
-  virtual ParticlesTemp get_input_particles() const = 0;
-  virtual ContainersTemp get_input_containers() const = 0;
+  virtual ModelObjectsTemp get_inputs() const = 0;
 
   IMP_REF_COUNTED_DESTRUCTOR(BivariateFunction);
 };
@@ -408,15 +407,10 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
     return count;
   }
 
-  ParticlesTemp get_input_particles() const {
-    ParticlesTemp ret;
+  ModelObjectsTemp get_inputs() const {
+    ModelObjectsTemp ret;
     ret.push_back(tau_);
     ret.push_back(lambda_);
-    return ret;
-  }
-
-  ContainersTemp get_input_containers() const {
-    ContainersTemp ret;
     return ret;
   }
 
