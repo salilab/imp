@@ -153,7 +153,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
  private:
   RRTNode* get_q_near(const DOFValues& q_rand) const;
 
-  void check_initial_configuration() const;
+  void check_initial_configuration(ScoringFunction *sf) const;
 
   void add_nodes(RRTNode* q_near, const std::vector<DOFValues>& new_nodes);
 

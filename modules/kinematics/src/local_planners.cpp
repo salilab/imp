@@ -17,7 +17,6 @@ LocalPlanner::LocalPlanner(Model* model, DOFsSampler* dofs_sampler)
     : Object("IMP_KINEMATICS_LOCALPLANNER"),
       model_(model),
       dofs_sampler_(dofs_sampler) {
-  sf_ = model_->create_model_scoring_function();
 }
 
 /***************** PathLocalPlanner **************/
@@ -32,7 +31,8 @@ PathLocalPlanner::PathLocalPlanner(Model* model,
       save_step_interval_(save_step_interval) {}
 
 std::vector<DOFValues> PathLocalPlanner::plan(DOFValues q_from,
-                                              DOFValues q_rand) {
+                                              DOFValues q_rand,
+                                              ScoringFunction *sf) {
   std::vector<DOFValues> dofs_list;
   d_->set_end_points(q_from, q_rand);
   int step = 0;
@@ -41,7 +41,7 @@ std::vector<DOFValues> PathLocalPlanner::plan(DOFValues q_from,
   // iterate path nodes and check validity
   while (d_->get_value() < 1.0) {
     (*d_)++;
-    if (!is_valid(d_->get_dofs_values())) {  // TODO
+    if (!is_valid(d_->get_dofs_values(), sf)) {  // TODO
       is_collision_detected = true;
       (*d_)--;  // re-validate d to point to valid node
       break;
@@ -54,7 +54,7 @@ std::vector<DOFValues> PathLocalPlanner::plan(DOFValues q_from,
   }
   // handle q_rand separately to avoid floating point errors
   if (!is_collision_detected) {
-    if (is_valid(q_rand)) {
+    if (is_valid(q_rand, sf)) {
       dofs_list.push_back(q_rand);
     }
   }

@@ -118,7 +118,6 @@ int main(int argc, char** argv) {
   // TODO: check why not working: should be much faster
   // IMP::Pointer<IMP::Restraint> pr=
   //   IMP::container::create_restraint(score, cpc);
-  model->add_restraint(pr);
 
   // create phi/psi joints
   ProteinKinematics pk(mhd, true, false);
@@ -144,6 +143,7 @@ int main(int argc, char** argv) {
   PathLocalPlanner planner(model, &sampler, &dd, 10);
   std::cerr << "Start RRT" << std::endl;
   IMP_NEW(RRT, rrt, (model, &sampler, &planner, dofs));
+  rrt->set_scoring_function(pr);
   std::cerr << "Start RRT run" << std::endl;
   rrt->run();
   std::cerr << "Done RRT" << std::endl;

@@ -31,11 +31,12 @@ class IMPKINEMATICSEXPORT LocalPlanner : public IMP::Object {
   // plan a path of valid intermediate nodes
   // from existing node q_from until the valid node that is
   // somewhat close to q_rand
-  virtual std::vector<DOFValues> plan(DOFValues q_near, DOFValues q_rand) = 0;
+  virtual std::vector<DOFValues> plan(DOFValues q_near, DOFValues q_rand,
+                                      ScoringFunction *sf) = 0;
 
-  bool is_valid(const DOFValues& values) {
+  bool is_valid(const DOFValues& values, ScoringFunction *sf) {
     dofs_sampler_->apply(values);
-    double score = sf_->evaluate_if_below(false, 0.0);  // TODO: what here?
+    double score = sf->evaluate_if_below(false, 0.0);  // TODO: what here?
     // std::cerr << "score = " << score << std::endl;
     if (score <= 0.000001) return true;
     return false;
@@ -44,7 +45,6 @@ class IMPKINEMATICSEXPORT LocalPlanner : public IMP::Object {
  protected:
   PointerMember<Model> model_;
   DOFsSampler* dofs_sampler_;
-  PointerMember<ScoringFunction> sf_;
 };
 
 /**
@@ -73,7 +73,8 @@ class IMPKINEMATICSEXPORT PathLocalPlanner : public LocalPlanner {
       step size from existing node q_from until the valid node that is
       found closest to q_rand (inclusive)
   */
-  virtual std::vector<DOFValues> plan(DOFValues q_from, DOFValues q_rand);
+  virtual std::vector<DOFValues> plan(DOFValues q_from, DOFValues q_rand,
+                                      ScoringFunction *sf);
 
  private:
   DirectionalDOF* d_;

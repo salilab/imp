@@ -349,7 +349,6 @@ int main(int argc, char **argv)
   // TODO: check why not working: should be much faster
   //IMP::Pointer<IMP::Restraint> pr=
   //   IMP::container::create_restraint(score, cpc);
-  model->add_restraint(pr);
 
   ProteinKinematics pk(mhd, flexible_residues, dihedral_angles);
   std::cerr << "ProteinKinematics done" << std::endl;
@@ -387,6 +386,7 @@ int main(int argc, char **argv)
   std::cerr << "Init  RRT" << std::endl;
   RRT *rrt = new RRT(model, ub_sampler, planner, dofs,
                      number_of_iterations, number_of_nodes, number_of_active_dofs);
+  rrt->set_scoring_function(pr);
 
 
   std::cerr << "Start RRT run" << std::endl;
