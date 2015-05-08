@@ -8,8 +8,8 @@
 
 #include <IMP/kinematics/RevoluteJointMover.h>
 #include <IMP/macros.h>
-#include <IMP/base/random.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/random.h>
+#include <IMP/warning_macros.h>
 #include <IMP/core/rigid_bodies.h>
 #include <boost/random/normal_distribution.hpp>
 
@@ -27,9 +27,9 @@ IMP_GCC_DISABLE_WARNING(-Wuninitialized)
 core::MonteCarloMoverResult RevoluteJointMover::do_propose() {
   IMP_OBJECT_LOG;
   boost::normal_distribution<double> mrng(0, stddev_);
-  boost::variate_generator<base::RandomNumberGenerator &,
+  boost::variate_generator<RandomNumberGenerator &,
                            boost::normal_distribution<double> >
-      sampler(base::random_number_generator, mrng);
+      sampler(random_number_generator, mrng);
 
   for (unsigned int i = 0; i < joints_.size(); ++i) {
     originals_[i] = joints_[i]->get_angle();
