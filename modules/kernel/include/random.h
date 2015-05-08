@@ -34,116 +34,99 @@ extern IMPKERNELEXPORT RandomNumberGenerator random_number_generator;
 //! Return the initial random seed.
 IMPKERNELEXPORT boost::uint64_t get_random_seed();
 
-/** fill a pre-allocated array of n double numbers with
-    random normally distributed values with specified mean and standard deviation
+//! Fill the double array with random normally distributed values.
+/** The pre-allocated array is filled with n double numbers with
+    random normally distributed values with specified mean and
+    standard deviation.
+
     @param v  vector array that will be resized to n
     @param n  size of array
     @param mean  mean of normal distribution
     @param stddev  standard deviation
 
-    @note Implelmentation relies on random_number_generator (a boost
+    @note Implementation relies on random_number_generator (a boost
           random number generator), or on the CUDA random number generator
           if kernel is built with CUDA flag. Either is initially seeded with
           get_random_seed().
-    @note To the advanced developer: this function defyies standard IMP
-          conventions, and uses a C double array rather than the
-          std::vector class. The is more efficient for copying very large
-          arrays of random numbers from eg GPU - hence this should not be
-          changed to std::vector without much thought.
     */
 IMPKERNELEXPORT void
 get_random_doubles_normal(Vector<double>& v, unsigned int n,
                           double mean=0.0, double stddev=1.0);
 
-/** fill a pre-allocated array of n float numbers with
-    random normally distributed values with specified mean and standard deviation
+//! Fill the float array with random normally distributed values.
+/** Fill a pre-allocated array of n float numbers with random normally
+    distributed values with specified mean and standard deviation.
+
     @param v  vector array that will be resized to n
     @param n  size of array
     @param mean  mean of normal distribution
     @param stddev  standard deviation
 
-    @note Implelmentation relies on random_number_generator (a boost
+    @note Implementation relies on random_number_generator (a boost
           random number generator), or on the CUDA random number generator
           if kernel is built with CUDA flag. Either is initially seeded with
           get_random_seed().
-    @note To the advanced developer: this function defyies standard IMP
-          conventions, and uses a C float array rather than the
-          std::vector class. The is more efficient for copying very large
-          arrays of random numbers from eg GPU - hence this should not be
-          changed to std::vector without much thought.
     */
 IMPKERNELEXPORT void
 get_random_floats_normal(Vector<float>& v, unsigned int n,
                           float mean=0.0, float stddev=1.0);
 
 
-/** fill a pre-allocated array of n float numbers with
-    random uniformly distributed values within [0..1)
+//! Fill the float array with random uniformly distributed values within [0..1)
+/** Fill a pre-allocated array of n float numbers with
+    random uniformly distributed values within [0..1).
     @param v  vector array that will be resized to n
     @param n  size of array
 
-    @note Implelmentation relies on random_number_generator (a boost
+    @note Implementation relies on random_number_generator (a boost
           random number generator), or on the CUDA random number generator
           if kernel is built with CUDA flag. Either is initially seeded with
           get_random_seed().
-    @note To the advanced developer: this function defyies standard IMP
-          conventions, and uses a C float array rather than the
-          std::vector class. The is more efficient for copying very large
-          arrays of random numbers from eg GPU - hence this should not be
-          changed to std::vector without much thought.
     */
 IMPKERNELEXPORT void
 get_random_floats_uniform(Vector<float>& v, unsigned int n);
 
-/** fill a pre-allocated array of n double numbers with
+//! Fill the double array with random uniformly distributed values within [0..1)
+/** Fill a pre-allocated array of n double numbers with
     random uniformly distributed values within [0..1)
     @param v  vector array that will be resized to n
     @param n  size of array
 
-    @note Implelmentation relies on random_number_generator (a boost
+    @note Implementation relies on random_number_generator (a boost
           random number generator), or on the CUDA random number generator
           if kernel is built with CUDA flag. Either is initially seeded with
           get_random_seed().
-    @note To the advanced developer: this function defyies standard IMP
-          conventions, and uses a C double array rather than the
-          std::vector class. The is more efficient for copying very large
-          arrays of random numbers from eg GPU - hence this should not be
-          changed to std::vector without much thought.
     */
 IMPKERNELEXPORT void
 get_random_doubles_uniform(Vector<double>& v, unsigned int n);
 
-//! return a uniformly distributed floatOB number in range [0..1)
-//!
-//! @note the random number is retrieved from a cache of random
-//! numbers generated using GPU if compiled with CUDA, or from boost
-//! without a cache otherwise.
-inline float
-get_random_float_uniform();
+//! Return a uniformly distributed float number in range [0..1)
+/** @note the random number is retrieved from a cache of random
+    numbers generated using GPU if compiled with CUDA, or from boost
+    without a cache otherwise.
+ */
+inline float get_random_float_uniform();
 
-//! return a uniformly distributed float number in range [min..max)
-//!
-//! @note the random number is retrieved from a cache of random
-//! numbers generated using GPU if compiled with CUDA, or from boost
-//! without a cache otherwise.
-inline float
-get_random_float_uniform(float min, float max);
+//! Return a uniformly distributed float number in range [min..max)
+/** @note the random number is retrieved from a cache of random
+    numbers generated using GPU if compiled with CUDA, or from boost
+    without a cache otherwise.
+ */
+inline float get_random_float_uniform(float min, float max);
 
-//! return a uniformly distributed double number in range [0..1)
-//!
-//! @note the random number is retrieved from a cache of random
-//! numbers generated using GPU if compiled with CUDA, or from boost
-//! without a cache otherwise.
-inline double
-get_random_double_uniform();
+//! Return a uniformly distributed double number in range [0..1)
+/** @note the random number is retrieved from a cache of random
+    numbers generated using GPU if compiled with CUDA, or from boost
+    without a cache otherwise.
+ */
+inline double get_random_double_uniform();
 
-//! return a uniformly distributed double number in range [min..max)
-//!
-//! @note the random number is retrieved from a cache of random
-//! numbers generated using GPU if compiled with CUDA, or from boost
-//! without a cache otherwise.
-inline double
-get_random_double_uniform(double min, double max);
+//! Return a uniformly distributed double number in range [min..max)
+/** @note the random number is retrieved from a cache of random
+    numbers generated using GPU if compiled with CUDA, or from boost
+    without a cache otherwise.
+ */
+inline double get_random_double_uniform(double min, double max);
 
 /************ implementation of inline functions *******/
 
