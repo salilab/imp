@@ -9,6 +9,7 @@ import IMP.core
 import IMP.pmi
 import IMP.pmi.tools
 import os
+import sys
 import RMF
 import numpy as np
 import operator
@@ -448,7 +449,7 @@ class Output(object):
         flstat.write("%s \n" % output)
         flstat.close()
 
-    def test(self, name, listofobjects):
+    def test(self, name, listofobjects, tolerance=1e-5):
         output = self.initoutput
         for l in listofobjects:
             if not "get_test_output" in dir(l) and not "get_output" in dir(l):
@@ -481,19 +482,25 @@ class Output(object):
                     fold = float(old_value)
                     fnew = float(new_value)
                     diff = abs(fold - fnew)
-                    if diff > 1e-6:
-                        print(str(k) + ": test failed, old value: " + old_value + " new value " + new_value)
+                    if diff > tolerance:
+                        print("%s: test failed, old value: %s new value %s; "
+                              "diff %f > %f" % (str(k), str(old_value),
+                                                str(new_value), diff,
+                                                tolerance), file=sys.stderr)
                         passed=False
                 elif test_dict[k] != output[k]:
                     if len(old_value) < 50 and len(new_value) < 50:
-                        print(str(k) + ": test failed, old value: " + old_value + " new value " + new_value)
+                        print("%s: test failed, old value: %s new value %s"
+                              % (str(k), old_value, new_value), file=sys.stderr)
                         passed=False
                     else:
-                        print(str(k) + ": test failed, omitting results (too long)")
+                        print("%s: test failed, omitting results (too long)"
+                              % str(k), file=sys.stderr)
                         passed=False
 
             else:
-                print(str(k) + " from old objects (file " + str(name) + ") not in new objects")
+                print("%s from old objects (file %s) not in new objects"
+                      % (str(k), str(name)), file=sys.stderr)
         return passed
 
     def get_environment_variables(self):
