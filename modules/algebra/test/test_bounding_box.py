@@ -108,9 +108,7 @@ class Tests(IMP.test.TestCase):
 
     def test_default_kd(self):
         """Test default KD constructor"""
-        if IMP.get_check_level() >= IMP.USAGE:
-            self.assertRaises(IMP.UsageException,
-                              IMP.algebra.BoundingBoxKD)
+        self.assertRaisesUsageException(IMP.algebra.BoundingBoxKD)
 
     def test_bounding_box_nd(self):
         """Test BoundingBox<N> operations for unusual N"""

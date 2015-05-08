@@ -28,8 +28,7 @@ class Tests(IMP.test.TestCase):
         IMP.core.XYZR.setup_particle(p, s)
         IMP.atom.LennardJones.setup_particle(p, 0.5)
         p = IMP.Particle(m)
-        if IMP.get_check_level() != IMP.NONE:
-            self.assertRaises(IMP.UsageException,
+        self.assertRaisesUsageException(
                               IMP.atom.LennardJones.setup_particle, p, 0.5)
 
     def test_get_set(self):

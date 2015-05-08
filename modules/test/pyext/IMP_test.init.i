@@ -190,6 +190,13 @@ class TestCase(unittest.TestCase):
     def get_magnitude(self, vector):
         return sum([x*x for x in vector], 0)**.5
 
+    def assertRaisesUsageException(self, c, *args, **keys):
+        """Assert that the given callable object raises UsageException.
+           This differs from unittest's assertRaises in that the test
+           is skipped in fast mode (where usage checks are turned off)."""
+        if IMP.get_check_level() >= IMP.USAGE:
+            return self.assertRaises(IMP.UsageException, c, *args, **keys)
+
     def assertXYZDerivativesInTolerance(self, sf, xyz, tolerance=0,
                                         percentage=0):
         """Assert that x,y,z analytical derivatives match numerical within

@@ -97,8 +97,7 @@ class Tests(IMP.test.TestCase):
         y2 = R.get_rotated(x2) + shift_applied
         set1 = [x1, x2]
         set2 = [y1, y2]
-        if IMP.get_check_level() >= IMP.USAGE:
-            self.assertRaises(IMP.UsageException,
+        self.assertRaisesUsageException(
                               IMP.algebra.get_transformation_aligning_pair,
                               set1, [y1])
         T = IMP.algebra.get_transformation_aligning_pair(set1, set2)

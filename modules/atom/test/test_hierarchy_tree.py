@@ -34,8 +34,7 @@ class Tests(IMP.test.TestCase):
                          t.get_graphviz_string().encode('ascii'))
         t.remove_vertex(desc1)
         self.assertEqual(t.get_vertices(), [desc0])
-        if IMP.get_check_level() != IMP.NONE:
-            self.assertRaises(IMP.UsageException, t.remove_vertex, desc1)
+        self.assertRaisesUsageException(t.remove_vertex, desc1)
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -143,15 +143,13 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
 
     def testFail(self):
         "Test failures of GaussianRestraint(3)"
-        if IMP.get_check_level() >= IMP.USAGE:
-            dummy = IMP.Particle(self.m)
-            self.assertRaises(
-                IMP.UsageException, GaussianRestraint, dummy,
-                self.all[1], self.all[2])
-            self.assertRaises(IMP.UsageException, GaussianRestraint,
-                              self.all[0], dummy, self.all[2])
-            self.assertRaises(IMP.UsageException, GaussianRestraint,
-                              self.all[0], self.all[1], dummy)
+        dummy = IMP.Particle(self.m)
+        self.assertRaisesUsageException(GaussianRestraint, dummy,
+                                        self.all[1], self.all[2])
+        self.assertRaisesUsageException(GaussianRestraint,
+                                        self.all[0], dummy, self.all[2])
+        self.assertRaisesUsageException(GaussianRestraint,
+                                        self.all[0], self.all[1], dummy)
 
 
 class TestGaussianRestraintSimple21(IMP.test.TestCase):

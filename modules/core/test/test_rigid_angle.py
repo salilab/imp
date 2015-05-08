@@ -23,9 +23,8 @@ class Tests(IMP.test.TestCase):
         m, p1, p2, b1, b2, ps, rs = self.make_system()
         # At setup, angle should be zero
         self.assertAlmostEqual(rs.evaluate(False), 0., delta=1e-5)
-        if IMP.get_check_level() >= IMP.USAGE:
-            # No derivative support yet
-            self.assertRaises(IMP.UsageException, rs.evaluate, True)
+        # No derivative support yet
+        self.assertRaisesUsageException(rs.evaluate, True)
         # Rotate one rigid body
         for v in (IMP.algebra.Vector3D(0,0,1),
                   IMP.algebra.Vector3D(0,1,0)):

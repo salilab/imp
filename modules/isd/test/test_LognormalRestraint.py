@@ -130,15 +130,13 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
 
     def testFail(self):
         "Test failures of LognormalRestraint(3)"
-        if IMP.get_check_level() >= IMP.USAGE:
-            dummy = IMP.Particle(self.m)
-            self.assertRaises(
-                IMP.UsageException, LognormalRestraint, dummy,
-                self.all[1], self.all[2])
-            self.assertRaises(IMP.UsageException, LognormalRestraint,
-                              self.all[0], dummy, self.all[2])
-            self.assertRaises(IMP.UsageException, LognormalRestraint,
-                              self.all[0], self.all[1], dummy)
+        dummy = IMP.Particle(self.m)
+        self.assertRaisesUsageException(LognormalRestraint, dummy,
+                                        self.all[1], self.all[2])
+        self.assertRaisesUsageException(LognormalRestraint,
+                                        self.all[0], dummy, self.all[2])
+        self.assertRaisesUsageException(LognormalRestraint,
+                                        self.all[0], self.all[1], dummy)
 
 
 class TestLognormalRestraintSimple21(IMP.test.TestCase):

@@ -12,8 +12,7 @@ class Tests(IMP.test.TestCase):
                         1e-4)
         self.assertLess(IMP.algebra.get_distance(s.get_point(1), V(4,5,6)),
                         1e-4)
-        if IMP.get_check_level() >= IMP.USAGE:
-            self.assertRaises(IMP.UsageException, s.get_point, 2)
+        self.assertRaisesUsageException(s.get_point, 2)
         self.assertLess(IMP.algebra.get_distance(s.get_middle_point(),
                                     V(2.5,3.5,4.5)), 1e-4)
         self.assertLess(IMP.algebra.get_distance(s.get_direction(),
