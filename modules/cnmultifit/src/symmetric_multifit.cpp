@@ -151,14 +151,12 @@ multifit::FittingSolutionRecords fit_models_to_density(
   // calculate the density map PCA
   AlignSymmetric aligner(dmap, params.get_density_map_threshold(), cn_symm_deg);
   core::XYZs mhs_particles_xyz = core::XYZs(mhs_particles);
-  int i = -1;
   int j = 0;
   int recs_size = recs.size();
   multifit::FittingSolutionRecords return_sols;
   float max_allowed_diff = params.get_pca_matching_threshold();
   boost::progress_display show_progress(num_sols_to_fit + 1);
-  while ((i < recs_size) && (j < num_sols_to_fit)) {
-    ++i;
+  for (int i = 0; i < recs_size && j < num_sols_to_fit; ++i) {
     if (!(is_valid_transformation(recs[i].get_dock_transformation()) &&
           is_valid_transformation(recs[i].get_fit_transformation())))
       continue;
