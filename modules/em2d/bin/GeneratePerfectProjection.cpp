@@ -18,8 +18,7 @@
 #include <IMP/em2d/image_processing.h>
 #include <IMP/em2d/SpiderImageReaderWriter.h>
 
-#include <IMP/integrative_docking/internal/helpers.h>
-
+#include <IMP/rmf/atom_io.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/Mass.h>
@@ -30,6 +29,9 @@
 #include <IMP/algebra/SphericalVector3D.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/em/KernelParameters.h>
+#include <IMP/rmf/restraint_io.h>
+#include <IMP/rmf/frames.h>
+#include <IMP/rmf/particle_io.h>
 
 #include <IMP/core/XYZ.h>
 #include <IMP/core/Gaussian.h>
@@ -41,7 +43,6 @@
 #include <IMP/Model.h>
 
 namespace po = boost::program_options;
-using namespace IMP::integrative_docking::internal;
 using namespace IMP::em2d::internal;
 
 const char* const DELIMITER = "|";
