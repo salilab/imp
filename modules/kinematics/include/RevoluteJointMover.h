@@ -25,7 +25,7 @@ class IMPKINEMATICSEXPORT RevoluteJointMover : public core::MonteCarloMover {
     Floats originals_;
 
  public:
-  RevoluteJointMover(kernel::Model *m,
+  RevoluteJointMover(Model *m,
           const kinematics::RevoluteJoints& joints,
           const double stddev=0.01);
 
@@ -37,7 +37,7 @@ class IMPKINEMATICSEXPORT RevoluteJointMover : public core::MonteCarloMover {
   Float get_sigma() const { return stddev_; }
 
  protected:
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RevoluteJointMover);

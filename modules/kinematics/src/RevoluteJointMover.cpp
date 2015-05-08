@@ -15,7 +15,7 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-RevoluteJointMover::RevoluteJointMover(kernel::Model *m,
+RevoluteJointMover::RevoluteJointMover(Model *m,
         const kinematics::RevoluteJoints& joints,
         const double stddev)
     : MonteCarloMover(m, "RevoluteJointMover%1%"),
@@ -36,7 +36,7 @@ core::MonteCarloMoverResult RevoluteJointMover::do_propose() {
     joints_[i]->set_angle(originals_[i] + sampler());
   }
   //get changed particles' coordinates
-  kernel::ParticleIndexes idx;
+  ParticleIndexes idx;
   core::RigidMembers tmp(joints_[0]->get_parent_node().get_rigid_members());
   for (unsigned int i = 0; i < tmp.size(); ++i)
       idx.push_back(tmp[i]->get_index());
@@ -55,8 +55,8 @@ void RevoluteJointMover::do_reject() {
   }
 }
 
-kernel::ModelObjectsTemp RevoluteJointMover::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
+ModelObjectsTemp RevoluteJointMover::do_get_inputs() const {
+  ModelObjectsTemp ret;
   core::RigidMembers tmp(joints_[0]->get_parent_node().get_rigid_members());
   for (unsigned int i = 0; i < tmp.size(); ++i)
       ret.push_back(tmp[i]); //->get_particle());
