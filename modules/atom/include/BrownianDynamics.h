@@ -13,12 +13,19 @@
 #include "Diffusion.h"
 #include "Simulator.h"
 #include "atom_macros.h"
-#include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
+#include <IMP/Particle.h>
+#include <IMP/utility.h>
 #include <IMP/internal/units.h>
 #include <IMP/algebra/Vector3D.h>
 
 IMPATOM_BEGIN_NAMESPACE
+
+#ifdef KERNEL_CUDA_LIB
+#define IMP_ATOM_DEFAULT_BD_RANDOM_POOL_SIZE 5000000
+#else
+#define IMP_ATOM_DEFAULT_BD_RANDOM_POOL_SIZE 500
+#endif
 
 // for swig
 class SimulationParameters;
@@ -77,6 +84,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   unsigned int i_random_pool_; // poistion in pool of random numbers
 
  public:
+
   //! Create the optimizer
   /** If sc is not null, that container will be used to find particles
       to move, otherwise the model will be searched.
@@ -95,7 +103,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   */
   BrownianDynamics(Model *m, std::string name = "BrownianDynamics%1%",
                    double wave_factor = 1.0,
-                   unsigned int random_pool_size=5000000);
+                   unsigned int random_pool_size=IMP_ATOM_DEFAULT_BD_RANDOM_POOL_SIZE);
   void set_maximum_move(double ms) { max_step_ = ms; }
   void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
 
