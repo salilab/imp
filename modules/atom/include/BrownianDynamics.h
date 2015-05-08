@@ -15,7 +15,7 @@
 #include "atom_macros.h"
 #include <IMP/Optimizer.h>
 #include <IMP/Particle.h>
-#include <IMP/utility.h>
+//#include <IMP/utility.h>
 #include <IMP/internal/units.h>
 #include <IMP/algebra/Vector3D.h>
 
@@ -77,9 +77,6 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   double max_step_;
   bool srk_;
   IMP::Vector<algebra::Vector3D> forces_;
-  boost::normal_distribution<double> nd_;
-  boost::variate_generator<RandomNumberGenerator &,
-                                 boost::normal_distribution<double> > sampler_;
   IMP::Vector<double> random_pool_;
   unsigned int i_random_pool_; // poistion in pool of random numbers
 

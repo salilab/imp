@@ -23,5 +23,8 @@ class Tests(IMP.test.TestCase):
         self.assertNotEqual(a1, a5)
         self.assertNotEqual(a2, a6)
 
+    def test_cached_random_number_generator(self):
+        """Test the cached random number generator"""
+
 if __name__ == '__main__':
     IMP.test.main()

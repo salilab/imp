@@ -43,8 +43,6 @@ BrownianDynamics::BrownianDynamics(Model *m, std::string name,
     : Simulator(m, name, wave_factor),
       max_step_(std::numeric_limits<double>::max()),
       srk_(false),
-      nd_(0,1.0),
-      sampler_(random_number_generator, nd_),
       random_pool_(random_pool_size),
       i_random_pool_(0)
 {
