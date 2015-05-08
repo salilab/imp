@@ -61,7 +61,9 @@ class TestUtilities(IMP.test.TestCase):
             xyzrs2.append(d)
 
         dist=IMP.pmi.get_bipartite_minimum_sphere_distance(xyzrs1,xyzrs2)
-        self.assertEqual(dist,self.python_version_min_distance(xyzrs1,xyzrs2))
+        self.assertAlmostEqual(dist,
+                               self.python_version_min_distance(xyzrs1,xyzrs2),
+                               delta=1e-5)
 
     def test_multiple_composite(self):
         import random
