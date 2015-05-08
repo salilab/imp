@@ -381,11 +381,12 @@ int main(int argc, char **argv)
 
   DirectionalDOF dd(dofs);
 
-  UniformBackboneSampler *ub_sampler = new UniformBackboneSampler(joints, dofs);
-  PathLocalPlanner *planner = new PathLocalPlanner(model, ub_sampler, &dd, save_configuration_number);
+  IMP_NEW(UniformBackboneSampler, ub_sampler, (joints, dofs));
+  IMP_NEW(PathLocalPlanner, planner, (model, ub_sampler, &dd,
+                                      save_configuration_number));
   std::cerr << "Init  RRT" << std::endl;
-  RRT *rrt = new RRT(model, ub_sampler, planner, dofs,
-                     number_of_iterations, number_of_nodes, number_of_active_dofs);
+  IMP_NEW(RRT, rrt, (model, ub_sampler, planner, dofs, number_of_iterations,
+                     number_of_nodes, number_of_active_dofs));
   rrt->set_scoring_function(pr);
 
 
