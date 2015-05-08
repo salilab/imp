@@ -77,7 +77,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   double max_step_;
   bool srk_;
   IMP::Vector<algebra::Vector3D> forces_;
-  IMP::Vector<double> random_pool_;
+  IMP::Vector<double> random_pool_; // pool of random doubles ~N(0.0,1.0)
   unsigned int i_random_pool_; // poistion in pool of random numbers
 
  public:

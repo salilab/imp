@@ -263,7 +263,7 @@ void
 BrownianDynamics::reset_random_pool()
 {
   get_random_doubles_normal(random_pool_, random_pool_.size(),
-                            nd_.mean(), nd_.sigma() );
+                            0.0, 1.0 );
   i_random_pool_=0;
 }
 
