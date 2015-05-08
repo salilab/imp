@@ -43,6 +43,13 @@ RRT::RRT(Model* m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
       cspace_dofs_(cspace_dofs),
       default_parameters_(iteration_number, tree_size, tree_size),
       number_of_sampled_dofs_(number_of_sampled_dofs) {
+  // add q_init to the RRT tree
+  DOFValues q_init(cspace_dofs_);
+  RRTNodePtr new_node(new RRTNode(q_init));
+  tree_.push_back(new_node);
+}
+
+void RRT::check_initial_configuration() const {
   // define q_init and check if it is a valid configuration
   DOFValues q_init(cspace_dofs_);
   if (!local_planner_->is_valid(q_init)) {  // TODO throw IMP exception
@@ -50,10 +57,6 @@ RRT::RRT(Model* m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
     std::cerr << "Try to decrease radii scaling parameter" << std::endl;
     exit(1);
   }
-
-  // add q_init to the RRT tree
-  RRTNodePtr new_node(new RRTNode(q_init));
-  tree_.push_back(new_node);
 }
 
 RRT::RRTNode* RRT::get_q_near(const DOFValues& q_rand) const {
@@ -83,6 +86,7 @@ void RRT::add_nodes(RRTNode* q_near, const std::vector<DOFValues>& new_nodes) {
 }
 
 void RRT::run() {
+  check_initial_configuration();
   Parameters current_counters;
   while (!is_stop_condition(default_parameters_, current_counters)) {
     DOFValues q_rand = dofs_sampler_->get_sample();
