@@ -18,24 +18,28 @@ class Tests(IMP.test.TestCase):
     def test_deprecated_function(self):
         """Test deprecated_function decorator"""
         with IMP.allow_deprecated(False):
-            self.assertRaises(IMP.UsageException, my_deprecated_function)
+            if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+                self.assertRaises(IMP.UsageException, my_deprecated_function)
 
     def test_deprecated_object(self):
         """Test deprecated_object decorator"""
         with IMP.allow_deprecated(False):
-            self.assertRaises(IMP.UsageException, MyClass)
+            if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+                self.assertRaises(IMP.UsageException, MyClass)
 
     def test_deprecated_method(self):
         """Test deprecated_method decorator"""
         with IMP.allow_deprecated(False):
             t = TestClass()
-            self.assertRaises(IMP.UsageException, t.my_deprecated_method)
+            if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+                self.assertRaises(IMP.UsageException, t.my_deprecated_method)
 
     def test_deprecated_module(self):
         """Test deprecated_module function"""
         with IMP.allow_deprecated(False):
-            self.assertRaises(IMP.UsageException, __import__,
-                              'deprecated_module')
+            if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+                self.assertRaises(IMP.UsageException, __import__,
+                                  'deprecated_module')
 
 if __name__ == '__main__':
     IMP.test.main()
