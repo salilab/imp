@@ -52,7 +52,7 @@ RRT::RRT(Model* m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
   }
 
   // add q_init to the RRT tree
-  RRTNode* new_node = new RRTNode(q_init);
+  RRTNodePtr new_node(new RRTNode(q_init));
   tree_.push_back(new_node);
 }
 
@@ -64,7 +64,7 @@ RRT::RRTNode* RRT::get_q_near(const DOFValues& q_rand) const {
     //double curr_distance = q_rand.get_distance(tree_[i]->get_DOFValues());
     if (curr_distance < shortest_distance) {
       shortest_distance = curr_distance;
-      q_near = tree_[i];
+      q_near = tree_[i].get();
     }
   }
   return q_near;
@@ -73,12 +73,12 @@ RRT::RRTNode* RRT::get_q_near(const DOFValues& q_rand) const {
 void RRT::add_nodes(RRTNode* q_near, const std::vector<DOFValues>& new_nodes) {
   RRTNode* prev_node = q_near;
   for (unsigned int i = 0; i < new_nodes.size(); i++) {
-    RRTNode* new_node = new RRTNode(new_nodes[i]);
+    RRTNodePtr new_node(new RRTNode(new_nodes[i]));
     tree_.push_back(new_node);
     // add edge
     double distance = prev_node->get_DOFValues().get_distance(new_nodes[i]);
-    prev_node->add_edge(new_node, distance);
-    prev_node = new_node;
+    prev_node->add_edge(new_node.get(), distance);
+    prev_node = new_node.get();
   }
 }
 

@@ -19,6 +19,8 @@
 #include <IMP/Sampler.h>
 #include <IMP/ConfigurationSet.h>
 
+#include <boost/shared_ptr.hpp>
+
 IMPKINEMATICS_BEGIN_NAMESPACE
 
 // TODO: should move out of kinematics, or be in kinematic_algorithms
@@ -165,7 +167,8 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
  private:
   DOFsSampler* dofs_sampler_;
   LocalPlanner* local_planner_;
-  typedef std::vector<RRTNode*> RRTTree;
+  typedef boost::shared_ptr<RRTNode> RRTNodePtr;
+  typedef std::vector<RRTNodePtr> RRTTree;
   RRTTree tree_;
   DOFs cspace_dofs_;               // configuration space dofs
   Parameters default_parameters_;  // limits for stop condition
