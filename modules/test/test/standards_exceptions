@@ -21,6 +21,7 @@ exceptions = ["TestCase." + x for x in standard_unittest_attributes] \
 exceptions.extend([
    'ApplicationTestCase.assertApplicationExitedCleanly',
    'ApplicationTestCase.assertValueObjects',
+   'ApplicationTestCase.assertRaisesUsageException',
    'ApplicationTestCase.assertXYZDerivativesInTolerance',
    'ApplicationTestCase.check_runnable_python_module',
    'ApplicationTestCase.check_unary_function_deriv',
@@ -42,6 +43,7 @@ exceptions.extend([
    'DirectorObjectChecker.assert_number',
    'RefCountChecker.assert_number',
    'TestCase.assertValueObjects',
+   'TestCase.assertRaisesUsageException',
    'TestCase.assertXYZDerivativesInTolerance',
    'TestCase.check_runnable_python_module',
    'TestCase.check_unary_function_deriv',
