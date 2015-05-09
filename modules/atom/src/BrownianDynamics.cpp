@@ -11,13 +11,12 @@
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/log.h>
-#include <IMP/random.h>
+#include <IMP/random_utils.h>
 #include <IMP/constants.h>
 #include <IMP/atom/constants.h>
 #include <IMP/warning_macros.h>
 #include <IMP/internal/constants.h>
 #include <IMP/internal/units.h>
-#include <boost/random/normal_distribution.hpp>
 #include <IMP/atom/Diffusion.h>
 #include <IMP/Configuration.h>
 #include <IMP/algebra/LinearFit.h>
@@ -262,7 +261,7 @@ BrownianDynamics::do_advance_chunk
 void
 BrownianDynamics::reset_random_pool()
 {
-  get_random_doubles_normal(random_pool_, random_pool_.size(),
+  get_random_numbers_normal(random_pool_, random_pool_.size(),
                             0.0, 1.0 );
   i_random_pool_=0;
 }

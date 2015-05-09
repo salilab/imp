@@ -12,7 +12,7 @@
 #include "../SphericalVector3D.h"
 #include "../utility.h"
 #include "utility.h"
-#include <IMP/random.h>
+#include <IMP/random_utils.h>
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/sphere_cover.h>
 #endif

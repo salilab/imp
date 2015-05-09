@@ -10,6 +10,10 @@
 #define IMPKERNEL_INTERNAL_RANDOM_NUMBER_GENERATION_BOOST_H
 
 #include <IMP/kernel_config.h>
+#include <IMP/random.h>
+#include <boost/random/normal_distribution.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <iostream>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -21,41 +25,38 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
         @param mean  mean of normal distribution
         @param stddev  standard deviation
     */
-    void get_random_numbers_normal_boost(double* p_random_array,
-                                         unsigned int n,
-                                         double mean=0.0,
-                                         double stddev=1.0);
+template<typename RealType>
+void get_random_numbers_normal_boost(RealType* p_random_array, unsigned int n,
+                                  RealType mean, RealType stddev)
+{
+  typedef boost::variate_generator<RandomNumberGenerator &,
+                                     boost::normal_distribution<RealType> > RNG;
+  boost::normal_distribution<RealType> nd(mean, stddev);
+  RNG sampler(IMP::random_number_generator, nd);
+  for(unsigned int i=0; i<n; i++)
+    {
+      *(p_random_array++) = sampler();
+      //      std::cout << "Rand #" << i << " " << *(p_random_array-1) << std::endl;
+    }
+}
 
-    /** fill a pre-allocated array of n float numbers with random normally distributed values
-        with specified mean and standard deviation
 
-        @param p_random_array  preallocated array
-        @param n  size of array
-        @param mean  mean of normal distribution
-        @param stddev  standard deviation
-    */
-    void get_random_numbers_normal_boost(float* p_random_array,
-                                         unsigned int n,
-                                         float mean=0.0,
-                                         float stddev=1.0);
+/** fill a pre-allocated array of n float numbers with random
+    uniformly distributed values within the [0..1) range
 
-    /** fill a pre-allocated array of n float numbers with random
-        uniformly distributed values within the [0..1) range
-
-        @param p_random_array  preallocated array
-        @param n  size of array
-    */
-    void get_random_numbers_uniform_boost(float* p_random_array,
-                                          unsigned int n);
-
-    /** fill a pre-allocated array of n float numbers with random
-        uniformly distributed values within the [0..1) range
-
-        @param p_random_array  preallocated array
-        @param n  size of array
-    */
-    void get_random_numbers_uniform_boost(double* p_random_array,
-                                          unsigned int n);
+    @param p_random_array  preallocated array
+    @param n  size of array
+*/
+template<typename RealType>
+void get_random_numbers_uniform_boost(RealType* p_random_array,
+                                          unsigned int n)
+{
+  boost::uniform_real<RealType> ud(0.0, 1.0);
+  for(unsigned int i=0; i<n; i++)
+    {
+      *(p_random_array++) = ud(IMP::random_number_generator);
+    }
+}
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
