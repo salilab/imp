@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP.test
 import numpy as np
 import math
@@ -32,7 +33,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual( np.mean(npR), 0.0, delta=0.1)
         self.assertAlmostEqual( np.median(npR), 0.0, delta=0.1)
         self.assertAlmostEqual( np.std(npR), 1.0, delta=0.1)
-        print "Normal(0,1) - mean/median/min/max/std:", np.mean(npR), np.median(npR), np.min(npR), np.max(npR), np.std(npR)
+        print("Normal(0,1) - mean/median/min/max/std:", np.mean(npR), np.median(npR), np.min(npR), np.max(npR), np.std(npR))
 
 
     def test_cached_random_number_generator_uniform(self):
@@ -45,7 +46,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual( np.min(npR), 0.04, delta=0.05)
         self.assertAlmostEqual( np.max(npR), 0.96, delta=0.05)
         self.assertAlmostEqual( np.std(npR), 1.0/math.sqrt(12.0), delta=0.1)
-        print "Uniform(0,1) - mean/median/min/max/std:", np.mean(npR), np.median(npR), np.min(npR), np.max(npR), np.std(npR)
+        print("Uniform(0,1) - mean/median/min/max/std:", np.mean(npR), np.median(npR), np.min(npR), np.max(npR), np.std(npR))
 
 
 if __name__ == '__main__':
