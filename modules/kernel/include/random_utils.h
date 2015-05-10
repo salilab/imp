@@ -93,32 +93,28 @@ void get_random_numbers_uniform
 //! @note the random number is retrieved from a cache of random
 //! numbers generated using GPU if compiled with CUDA, or from boost
 //! without a cache otherwise.
-IMPKERNELEXPORT float
-get_random_float_uniform();
+float get_random_float_uniform();
 
 //! return a uniformly distributed float number in range [min..max)
 //!
 //! @note the random number is retrieved from a cache of random
 //! numbers generated using GPU if compiled with CUDA, or from boost
 //! without a cache otherwise.
-IMPKERNELEXPORT float
-get_random_float_uniform(float min, float max);
+float get_random_float_uniform(float min, float max);
 
 //! return a uniformly distributed double number in range [0..1)
 //!
 //! @note the random number is retrieved from a cache of random
 //! numbers generated using GPU if compiled with CUDA, or from boost
 //! without a cache otherwise.
-IMPKERNELEXPORT double
-get_random_double_uniform();
+double get_random_double_uniform();
 
 //! return a uniformly distributed double number in range [min..max)
 //!
 //! @note the random number is retrieved from a cache of random
 //! numbers generated using GPU if compiled with CUDA, or from boost
 //! without a cache otherwise.
-IMPKERNELEXPORT double
-get_random_double_uniform(double min, double max);
+double get_random_double_uniform(double min, double max);
 
 /************ implementation of inline functions *******/
 
