@@ -27,8 +27,7 @@ class Tests(IMP.test.TestCase):
 
     def test_cached_random_number_generator_normal(self):
         """Test the cached random number generator for normal dist"""
-        R=IMP.VectorOfDoubles(5000)
-        IMP.get_random_doubles_normal(R, len(R), 0.0, 1.0)
+        R = IMP.get_random_doubles_normal(5000, 0.0, 1.0)
         npR = np.array(R)
         self.assertAlmostEqual( np.mean(npR), 0.0, delta=0.1)
         self.assertAlmostEqual( np.median(npR), 0.0, delta=0.1)
@@ -38,8 +37,7 @@ class Tests(IMP.test.TestCase):
 
     def test_cached_random_number_generator_uniform(self):
         """Test the cached random number generator for uniform dist"""
-        R=IMP.VectorOfDoubles(5000)
-        IMP.get_random_doubles_uniform(R, len(R))
+        R = IMP.get_random_doubles_uniform(5000)
         npR = np.array(R)
         self.assertAlmostEqual( np.mean(npR), 0.5, delta=0.1)
         self.assertAlmostEqual( np.median(npR), 0.5, delta=0.1)
