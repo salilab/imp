@@ -181,7 +181,7 @@ Flag<LogLevel, IMP_HAS_LOG != IMP_SILENT> log_level("log_level",
                                                     "\"SILENT\", \"WARNING\", "
                                                     "\"PROGRESS\", \"TERSE\", "
                                                     "\"VERBOSE\"",
-                                                    LogLevel(SILENT));
+                                                    LogLevel(WARNING));
 
 AdvancedFlag<StatisticsLevel> stats_level(
     "statistics_level",

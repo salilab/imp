@@ -15,6 +15,7 @@ ChangeLog {#changelog}
   with the mpich library.
 - We now provide packages for both of the currently-supported Ubuntu LTS
   releases: Ubuntu 12.04 (Precise Pangolin) and Ubuntu 14.04 (Trusty Tahr).
+- The default log level has changed from NONE to WARNING.
 - A new command line tool, `multi_foxs`, allows for enumeration and scoring
   of multi-state models against SAXS profiles.
 - A new command line tool, `ligand_score_multiple`, acts similarly to the
