@@ -114,7 +114,7 @@ foreach(m ${cudalist})
   string(TOUPPER ${m} M)
   message(STATUS ${m} " is cuda lib")
   set(IMP_${m}_IS_CUDA 1)
-  add_definitions( -D${M}_CUDA_LIB )
+  add_definitions( -DIMP_${M}_CUDA_LIB )
 endforeach(m)
 
 if(NOT DEFINED PYTHON_INCLUDE_DIRS AND NOT IMP_STATIC)

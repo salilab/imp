@@ -11,9 +11,11 @@
 #include <IMP/kernel_config.h>
 #include <IMP/Vector.h>
 #include <IMP/random.h>
-#ifdef CUDA_LIB
+#ifdef IMP_KERNEL_CUDA_LIB
+//  #warning "random_utils - kernel CUDA_LIB!"
 #include "IMP/internal/random_number_generation_cuda.h"
 #else
+//  #warning "random_utils - kernel CUDA_BOOST!"
 #include "IMP/internal/random_number_generation_boost.h"
 #endif
 
@@ -34,7 +36,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 
     @note Implementation relies on random_number_generator (a boost
           random number generator), or on the CUDA random number
-          generator if kernel is built with CUDA_LIB cmake
+          generator if kernel is built with IMP_KERNEL_CUDA_LIB cmake
           flag. Either is initially seeded with get_random_seed().
 */
 template<typename RealType>
@@ -45,7 +47,7 @@ void get_random_numbers_normal
   if(n==0) return;
   if(n>v.size())
     v.resize(n);
-#ifdef CUDA_LIB
+#ifdef IMP_KERNEL_CUDA_LIB
   IMPcuda::kernel::internal::init_gpu_rng_once(get_random_seed());
   IMPcuda::kernel::internal::get_random_numbers_normal_cuda
     (&v[0], n, mean, stddev);
@@ -73,7 +75,7 @@ void get_random_numbers_uniform
   if(n==0) return;
   if(n>v.size())
     v.resize(n);
-#ifdef CUDA_LIB
+#ifdef IMP_KERNEL_CUDA_LIB
   IMPcuda::kernel::internal::init_gpu_rng_once(get_random_seed());
   IMPcuda::kernel::internal::get_random_numbers_uniform_cuda (&v[0], n);
 #else
@@ -115,7 +117,7 @@ inline float
 get_random_float_uniform()
 {
   // use cache only with cuda
-#ifdef CUDA_LIB
+#ifdef IMP_KERNEL_CUDA_LIB
   const static unsigned int cache_n=20000000;
   static IMP::Vector<float> cache;
   static unsigned int i=0;
@@ -134,7 +136,7 @@ inline float
 get_random_float_uniform(float min, float max)
 {
   // use cache only with cuda
-#ifdef CUDA_LIB
+#ifdef IMP_KERNEL_CUDA_LIB
   return get_random_float_uniform()*(max-min)+min;
 #else
   ::boost::uniform_real<float> rand(min, max);
@@ -146,7 +148,7 @@ get_random_float_uniform(float min, float max)
 inline double
 get_random_double_uniform()
 {
-#ifdef CUDA_LIB
+#ifdef IMP_KERNEL_CUDA_LIB
   const static unsigned int cache_n=20000000;
   static IMP::Vector<double> cache;
   static unsigned int i=0;
@@ -164,7 +166,7 @@ get_random_double_uniform()
 inline double
 get_random_double_uniform(double min, double max)
 {
-#ifdef CUDA_LIB
+#ifdef IMP_KERNEL_CUDA_LIB
   return get_random_double_uniform()*(max-min)+min;
 #else
   ::boost::uniform_real<double> rand(min, max);

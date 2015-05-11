@@ -30,7 +30,6 @@ if(DEFINED IMP_%(name)s_IS_CUDA)
   LIST(APPEND CUDA_NVCC_FLAGS -gencode arch=compute_20,code=sm_20)
   LIST(APPEND CUDA_NVCC_FLAGS -gencode arch=compute_30,code=sm_30)
   LIST(APPEND CUDA_NVCC_FLAGS -gencode arch=compute_35,code=sm_35)
-  add_definitions( -DCUDA_LIB )
   set(sources ${cppfiles} ${cudafiles} )
   CUDA_ADD_LIBRARY(IMP.%(name)s-lib ${gensources} ${genheaders}
     ${headers} ${sources} ${cudasources}
