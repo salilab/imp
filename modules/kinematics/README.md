@@ -21,7 +21,7 @@ For an example of using the `rrt_sample` command line tool, see
 
 # Info
 
-_Author(s)_: Dina Schneidman, Barak Raveh
+_Author(s)_: Dina Schneidman, Barak Raveh, Yannick Spill
 
 _Maintainer_: `duhovka`, `barakr`
 
