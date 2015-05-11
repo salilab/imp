@@ -1,5 +1,3 @@
-%template(VectorOfDoubles) ::std::vector< double >;
-
 /* Tell swig how to treat various types when moving them to and from python. Among other
    things, they tell swig how to convert collections of C++ objects (eg ExampleRestraints)
    into python lists and back.
