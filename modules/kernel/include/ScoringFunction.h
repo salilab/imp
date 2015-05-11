@@ -141,7 +141,10 @@ class IMPKERNELEXPORT ScoringFunctionAdaptor :
   ScoringFunctionAdaptor(const Restraints &sf) : P(get(sf)) {}
   ScoringFunctionAdaptor(Restraint *sf) : P(get(sf)) {}
 #ifndef IMP_DOXYGEN
-  ScoringFunctionAdaptor(Model *sf) : P(get(sf)) {}
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.5)
+  ScoringFunctionAdaptor(Model *sf) : P(get(sf)) {
+    IMPKERNEL_DEPRECATED_METHOD_DEF(2.5, "Use a ScoringFunction instead");
+  }
 #endif
 };
 
