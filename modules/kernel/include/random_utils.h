@@ -42,8 +42,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 */
 template<typename RealType>
 void get_random_numbers_normal
-//(Vector<RealType>& v, unsigned int n,
-(std::vector<RealType>& v, unsigned int n,
+(Vector<RealType>& v, unsigned int n,
  RealType mean=0.0, RealType stddev=1.0)
 {
   if(n==0) return;
@@ -75,7 +74,7 @@ void get_random_numbers_normal
     */
 template<typename RealType>
 void get_random_numbers_uniform
-(std::vector<RealType>& v, unsigned int n)
+(Vector<RealType>& v, unsigned int n)
 {
   if(n==0) return;
   if(n>v.size())
