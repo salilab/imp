@@ -204,12 +204,14 @@ _unary_func_generators = {
 # Generators to make IMP Restraint objects from Modeller features
 def _DistanceRestraintGenerator(form, modalities, atoms, parameters):
     unary_func_gen = _unary_func_generators[form]
-    return IMP.core.DistanceRestraint(unary_func_gen(parameters, modalities),
+    return IMP.core.DistanceRestraint(atoms[0].get_model(),
+                                      unary_func_gen(parameters, modalities),
                                       atoms[0], atoms[1])
 
 def _AngleRestraintGenerator(form, modalities, atoms, parameters):
     unary_func_gen = _unary_func_generators[form]
-    return IMP.core.AngleRestraint(unary_func_gen(parameters, modalities),
+    return IMP.core.AngleRestraint(atoms[0].get_model(),
+                                   unary_func_gen(parameters, modalities),
                                    atoms[0], atoms[1], atoms[2])
 
 def _MultiBinormalGenerator(form, modalities, atoms, parameters):
@@ -235,7 +237,8 @@ def _DihedralRestraintGenerator(form, modalities, atoms, parameters):
     if form == 9:
         return _MultiBinormalGenerator(form, modalities, atoms, parameters)
     unary_func_gen = _unary_func_generators[form]
-    return IMP.core.DihedralRestraint(unary_func_gen(parameters, modalities),
+    return IMP.core.DihedralRestraint(atoms[0].get_model(),
+                                      unary_func_gen(parameters, modalities),
                                       atoms[0], atoms[1], atoms[2], atoms[3])
 
 def _get_protein_atom_particles(protein):
