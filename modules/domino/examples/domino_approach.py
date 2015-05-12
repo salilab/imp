@@ -33,7 +33,7 @@ def setup_scoring_function(ps):
     sf = IMP.core.Harmonic(1.0, 1)
     rs = IMP.RestraintSet(m)
     for pair in pairs:
-        r = IMP.core.DistanceRestraint(sf, ps[pair[0]], ps[pair[1]])
+        r = IMP.core.DistanceRestraint(m, sf, ps[pair[0]], ps[pair[1]])
         rs.add_restraint(r)
     return rs
 

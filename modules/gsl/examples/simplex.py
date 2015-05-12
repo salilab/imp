@@ -22,7 +22,7 @@ d0.set_coordinates_are_optimized(True)
 d1.set_coordinates_are_optimized(True)
 
 # restrain their distance to be 1
-dist = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 1), d0, d1)
+dist = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 1), d0, d1)
 
 opt = IMP.gsl.Simplex(m)
 opt.set_scoring_function([dist])

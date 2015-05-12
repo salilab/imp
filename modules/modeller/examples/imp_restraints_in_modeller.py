@@ -26,7 +26,7 @@ protein = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
 
 # Create a simple IMP distance restraint between the first and last atoms
 atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
-r = IMP.core.DistanceRestraint(IMP.core.Harmonic(10.0, 1.0),
+r = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(10.0, 1.0),
                                atoms[0].get_particle(),
                                atoms[-1].get_particle())
 sf = IMP.core.RestraintsScoringFunction([r])

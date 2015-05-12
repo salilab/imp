@@ -36,7 +36,7 @@ for i in range(2):
 
 # add harmonic restraint to distance
 h = IMP.core.Harmonic(5.0, 1.0)
-ds = IMP.core.DistanceRestraint(h, ps[0], ps[1])
+ds = IMP.core.DistanceRestraint(m, h, ps[0], ps[1])
 sf = IMP.core.RestraintsScoringFunction([ds])
 
 # movers

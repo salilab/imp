@@ -17,7 +17,7 @@ def setup():
     p2 = IMP.Particle(m)
     d2 = IMP.core.XYZ.setup_particle(p2)
     d1.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
-    r = IMP.core.DistanceRestraint(IMP.core.Harmonic(0, 1), p1, p2)
+    r = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(0, 1), p1, p2)
     sf = IMP.core.RestraintsScoringFunction([r])
     return m, sf, d2
 
