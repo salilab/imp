@@ -50,7 +50,7 @@ class IMPCOREEXPORT DistanceRestraint :
                     std::string name = "DistanceRestraint %1%");
 
 #ifndef IMP_DOXYGEN
-  IMPCORE_DEPRECATED_METHOD_DEF(2.5)
+  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
   DistanceRestraint(UnaryFunction *score_func,
                     Particle *a,
                     Particle *b,

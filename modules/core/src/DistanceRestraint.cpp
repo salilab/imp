@@ -30,8 +30,8 @@ DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
           new DistancePairScore(score_func), p1->get_model(),
           ParticleIndexPair( p1->get_index(), p2->get_index() ),
           name) {
-  IMPCORE_DEPRECATED_METHOD_DECL(2.5,
-                                 "Use the index-based constructor instead.");
+  IMPCORE_DEPRECATED_METHOD_DEF(2.5,
+                                "Use the index-based constructor instead.");
 }
 
 IMPCORE_END_NAMESPACE
