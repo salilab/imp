@@ -24,8 +24,9 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT EzRestraint : public Restraint {
 
-  Particles ps_;
+  ParticleIndexes ps_;
   UnaryFunctions ufs_;
+  void setup();
   Floats get_parameters(std::string restype);
 
  protected:
@@ -34,7 +35,12 @@ class IMPATOMEXPORT EzRestraint : public Restraint {
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
  public:
+  EzRestraint(Model *m, ParticleIndexesAdaptor ps);
+
+#ifndef IMP_DOXYGEN
+  IMPATOM_DEPRECATED_METHOD_DECL(2.5)
   EzRestraint(Particles ps);
+#endif
 
   IMP_OBJECT_METHODS(EzRestraint);
 };

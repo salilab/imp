@@ -21,7 +21,7 @@ class Test(IMP.test.TestCase):
             prot = IMP.atom.read_pdb(self.get_input_file_name(pdb),
                                      self.m, IMP.atom.CBetaPDBSelector())
             ps = IMP.atom.get_leaves(prot)
-            ez = IMP.atom.EzRestraint(ps)
+            ez = IMP.atom.EzRestraint(self.m, ps)
             self.rst[pdb] = ez
 
     def test_Ez(self):
