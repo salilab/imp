@@ -27,7 +27,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         # add restraints
         self.h = IMP.core.HarmonicUpperBound(0, 3.)
 
-        self.dr = IMP.core.DistanceRestraint(self.h, self.rb0, self.rb1)
+        self.dr = IMP.core.DistanceRestraint(self.m, self.h, self.rb0, self.rb1)
         self.sf = IMP.core.RestraintsScoringFunction([self.dr])
 
     def randomize(self, mh):

@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
             p2 = self.particles[pairs[1]]
             mean = p1.get_value(radkey) + p2.get_value(radkey)
             sf = IMP.core.Harmonic(mean, 0.1)
-            rsr = IMP.core.DistanceRestraint(sf, p1, p2)
+            rsr = IMP.core.DistanceRestraint(self.imp_model, sf, p1, p2)
             self.rsrs.append(rsr)
 
         # add restraints

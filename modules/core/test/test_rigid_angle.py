@@ -9,13 +9,13 @@ class Tests(IMP.test.TestCase):
     def make_system(self):
         rf = IMP.algebra.ReferenceFrame3D()
         m = IMP.Model()
-        p1 = IMP.Particle(m)
-        p2 = IMP.Particle(m)
-        b1 = IMP.core.RigidBody.setup_particle(p1, rf)
-        b2 = IMP.core.RigidBody.setup_particle(p2, rf)
+        p1 = m.add_particle("p1")
+        p2 = m.add_particle("p2")
+        b1 = IMP.core.RigidBody.setup_particle(m, p1, rf)
+        b2 = IMP.core.RigidBody.setup_particle(m, p2, rf)
         uf = IMP.core.Linear(0., 1.)
         ps = IMP.core.RigidBodyAnglePairScore(uf)
-        rs = IMP.core.PairRestraint(ps, (p1, p2))
+        rs = IMP.core.PairRestraint(m, ps, (p1, p2))
         return m, p1, p2, b1, b2, ps, rs
 
     def test_angle(self):

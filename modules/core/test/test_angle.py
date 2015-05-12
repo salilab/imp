@@ -22,11 +22,11 @@ class Tests(IMP.test.TestCase):
                                                     math.sin(system_angle),
                                                     0.0))
         k = IMP.core.Harmonic.get_k_from_standard_deviation(0.1)
-        rs = [IMP.core.DistanceRestraint(IMP.core.Harmonic(1.0, k),
+        rs = [IMP.core.DistanceRestraint(model, IMP.core.Harmonic(1.0, k),
                                          particles[0], particles[1]),
-              IMP.core.DistanceRestraint(IMP.core.Harmonic(1.0, k),
+              IMP.core.DistanceRestraint(model, IMP.core.Harmonic(1.0, k),
                                          particles[1], particles[2]),
-              IMP.core.AngleRestraint(IMP.core.Harmonic(scored_angle, k),
+              IMP.core.AngleRestraint(model, IMP.core.Harmonic(scored_angle, k),
                                       particles[0], particles[1], particles[2])]
         sf = IMP.core.RestraintsScoringFunction(rs)
         return model, rs[2], sf, particles

@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         for sf in (IMP.core.HarmonicUpperBound(mean, 0.1),
                    IMP.core.HarmonicLowerBound(mean, 0.1),
                    IMP.core.Harmonic(mean, 0.1)):
-            r = IMP.core.DistanceRestraint(sf, p1, p2)
+            r = IMP.core.DistanceRestraint(self.imp_model, sf, p1, p2)
             self.rsrs.append(r)
 
     def _make_restraints(self):
@@ -58,7 +58,8 @@ class Tests(IMP.test.TestCase):
         for fs in (IMP.core.HarmonicUpperBound(3.0, 0.1),
                    IMP.core.HarmonicLowerBound(3.0, 0.1),
                    IMP.core.Harmonic(3.0, 0.1)):
-            r = IMP.core.DistanceRestraint(fs, self.particles[1],
+            r = IMP.core.DistanceRestraint(self.imp_model,
+                                           fs, self.particles[1],
                                            self.particles[0])
             self.rsrs.append(r)
 
@@ -66,7 +67,8 @@ class Tests(IMP.test.TestCase):
         for fs in (IMP.core.HarmonicUpperBound(5.0, 0.1),
                    IMP.core.HarmonicLowerBound(5.0, 0.1),
                    IMP.core.Harmonic(5.0, 0.1)):
-            r = IMP.core.DistanceRestraint(fs, self.particles[1],
+            r = IMP.core.DistanceRestraint(self.imp_model,
+                                           fs, self.particles[1],
                                            self.particles[2])
             self.rsrs.append(r)
 
@@ -74,7 +76,8 @@ class Tests(IMP.test.TestCase):
         for fs in (IMP.core.HarmonicUpperBound(4.0, 0.1),
                    IMP.core.HarmonicLowerBound(4.0, 0.1),
                    IMP.core.Harmonic(4.0, 0.1)):
-            r = IMP.core.DistanceRestraint(fs, self.particles[0],
+            r = IMP.core.DistanceRestraint(self.imp_model,
+                                           fs, self.particles[0],
                                            self.particles[2])
             self.rsrs.append(r)
 
