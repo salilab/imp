@@ -15,13 +15,23 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+DistanceRestraint::DistanceRestraint(Model *m, UnaryFunction* score_func,
+                                     ParticleIndexAdaptor p1,
+                                     ParticleIndexAdaptor p2,
+                                     std::string name)
+    : IMP::internal::TupleRestraint<DistancePairScore>(
+          new DistancePairScore(score_func), m,
+          ParticleIndexPair(p1, p2), name) {}
+
 DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
                                      Particle* p1, Particle* p2,
-                                     std::string name
-)
+                                     std::string name)
     : IMP::internal::TupleRestraint<DistancePairScore>(
           new DistancePairScore(score_func), p1->get_model(),
           ParticleIndexPair( p1->get_index(), p2->get_index() ),
-          name) {}
+          name) {
+  IMPCORE_DEPRECATED_METHOD_DECL(2.5,
+                                 "Use the index-based constructor instead.");
+}
 
 IMPCORE_END_NAMESPACE

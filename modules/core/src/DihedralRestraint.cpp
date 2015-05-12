@@ -19,14 +19,28 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-DihedralRestraint::DihedralRestraint(UnaryFunction* score_func,
-                                     Particle* p1, Particle* p2,
-                                     Particle* p3, Particle* p4)
-    : Restraint(p1->get_model(), "DihedralRestraint%1%") {
+DihedralRestraint::DihedralRestraint(Model *m, UnaryFunction* score_func,
+                    ParticleIndexAdaptor p1,
+                    ParticleIndexAdaptor p2,
+                    ParticleIndexAdaptor p3,
+                    ParticleIndexAdaptor p4)
+    : Restraint(m, "DihedralRestraint%1%"), score_func_(score_func) {
   p_[0] = p1;
   p_[1] = p2;
   p_[2] = p3;
   p_[3] = p4;
+}
+
+DihedralRestraint::DihedralRestraint(UnaryFunction* score_func,
+                                     Particle* p1, Particle* p2,
+                                     Particle* p3, Particle* p4)
+    : Restraint(p1->get_model(), "DihedralRestraint%1%") {
+  IMPCORE_DEPRECATED_METHOD_DEF(2.5,
+                                "Use the index-based constructor instead.");
+  p_[0] = p1->get_index();
+  p_[1] = p2->get_index();
+  p_[2] = p3->get_index();
+  p_[3] = p4->get_index();
 
   score_func_ = score_func;
 }
@@ -39,10 +53,11 @@ DihedralRestraint::DihedralRestraint(UnaryFunction* score_func,
 double DihedralRestraint::unprotected_evaluate(DerivativeAccumulator* accum)
     const {
   IMP_CHECK_OBJECT(score_func_);
-  XYZ d0(p_[0]);
-  XYZ d1(p_[1]);
-  XYZ d2(p_[2]);
-  XYZ d3(p_[3]);
+  Model *m = get_model();
+  XYZ d0(m, p_[0]);
+  XYZ d1(m, p_[1]);
+  XYZ d2(m, p_[2]);
+  XYZ d3(m, p_[3]);
 
   Float score;
 
@@ -67,7 +82,10 @@ double DihedralRestraint::unprotected_evaluate(DerivativeAccumulator* accum)
 }
 
 ModelObjectsTemp DihedralRestraint::do_get_inputs() const {
-  ModelObjectsTemp ret(p_, p_ + 4);
+  ModelObjectsTemp ret(4);
+  for (unsigned i = 0; i < 4; ++i) {
+    ret[i] = get_model()->get_particle(p_[i]);
+  }
   return ret;
 }
 
