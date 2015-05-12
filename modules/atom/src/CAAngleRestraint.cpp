@@ -19,10 +19,10 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-CAAngleRestraint::CAAngleRestraint(
-                      Particle* p1, Particle* p2, Particle* p3,
+CAAngleRestraint::CAAngleRestraint(Model *m, ParticleIndexAdaptor p1,
+                      ParticleIndexAdaptor p2, ParticleIndexAdaptor p3,
                       Floats phi0, Floats score):
-  Restraint(p1->get_model(), "CAAngleRestraint%1%")
+  Restraint(m, "CAAngleRestraint%1%")
 {
   p_[0] = p1;
   p_[1] = p2;
@@ -58,9 +58,10 @@ int CAAngleRestraint::get_closest
 double
 CAAngleRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 {
-  core::XYZ d0(p_[0]);
-  core::XYZ d1(p_[1]);
-  core::XYZ d2(p_[2]);
+  Model *m = get_model();
+  core::XYZ d0(m, p_[0]);
+  core::XYZ d1(m, p_[1]);
+  core::XYZ d2(m, p_[2]);
 
   double phi0 = core::internal::angle(d0, d1, d2, NULL,NULL,NULL);
 
@@ -70,7 +71,10 @@ CAAngleRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 }
 
 ModelObjectsTemp CAAngleRestraint::do_get_inputs() const {
-  ParticlesTemp ret(p_, p_+3);
+  ParticlesTemp ret(3);
+  for (unsigned i = 0; i < 3; ++i) {
+    ret[i] = get_model()->get_particle(p_[i]);
+  }
   return ret;
 }
 

@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         p1, p2, p3 = self.make_angle(m, 1.0)
 
-        r = IMP.atom.CAAngleRestraint(p1, p2, p3, [0.8, 1.1, 1.3],
+        r = IMP.atom.CAAngleRestraint(m, p1, p2, p3, [0.8, 1.1, 1.3],
                                       [100., 200., 300.])
         self.assertAlmostEqual(r.evaluate(False), 200., delta=1e-4)
 
@@ -49,7 +49,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         p1, p2, p3, p4, p5 = self.make_dihedral(m, 0.5)
 
-        r = IMP.atom.CADihedralRestraint(p1, p2, p3, p4, p5,
+        r = IMP.atom.CADihedralRestraint(m, p1, p2, p3, p4, p5,
                    [0.3, 0.6, 0.8],
                    [-1.4, -1.6, -1.8],
                    [0, 0, 0,

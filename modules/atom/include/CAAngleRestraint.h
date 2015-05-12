@@ -32,14 +32,15 @@ public:
   //! Create the angle restraint.
   /** The value of the restraint is simply score[n] where phi0[n]
       is the closest angle in phi0 to that between p1-p2-p3.
+      \param[in] m Model
       \param[in] p1 First CA atom (in previous residue)
       \param[in] p2 Second CA atom (in current residue)
       \param[in] p3 Third CA atom (in next residue)
       \param[in] phi0 List of angles for which scores are available
       \param[in] score List of scores that correspond to phi0
    */
-  CAAngleRestraint(Particle* p1, Particle* p2, Particle* p3,
-                   Floats phi0,  Floats score);
+  CAAngleRestraint(Model *m, ParticleIndexAdaptor p1, ParticleIndexAdaptor p2,
+                   ParticleIndexAdaptor p3, Floats phi0,  Floats score);
 
   virtual double
   unprotected_evaluate(IMP::DerivativeAccumulator *accum)
@@ -48,7 +49,7 @@ public:
   IMP_OBJECT_METHODS(CAAngleRestraint);
 
 private:
-  PointerMember<Particle> p_[3];
+  ParticleIndex p_[3];
   Floats phi0_;
   Floats score_;
 

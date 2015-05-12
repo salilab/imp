@@ -21,12 +21,12 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-CADihedralRestraint::CADihedralRestraint(
-                      Particle* p1, Particle* p2, Particle* p3,
-                      Particle* p4, Particle* p5,
-                      Floats phi0,  Floats phi1,
+CADihedralRestraint::CADihedralRestraint(Model *m,
+                      ParticleIndexAdaptor p1, ParticleIndexAdaptor p2,
+                      ParticleIndexAdaptor p3, ParticleIndexAdaptor p4,
+                      ParticleIndexAdaptor p5, Floats phi0, Floats phi1,
                       Floats score):
-  Restraint(p1->get_model(), "CADihedralRestraint%1%")
+  Restraint(m, "CADihedralRestraint%1%")
 {
   p_[0] = p1;
   p_[1] = p2;
@@ -65,11 +65,12 @@ int CADihedralRestraint::get_closest
 double
 CADihedralRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 {
-  core::XYZ d0(p_[0]);
-  core::XYZ d1(p_[1]);
-  core::XYZ d2(p_[2]);
-  core::XYZ d3(p_[3]);
-  core::XYZ d4(p_[4]);
+  Model *m = get_model();
+  core::XYZ d0(m, p_[0]);
+  core::XYZ d1(m, p_[1]);
+  core::XYZ d2(m, p_[2]);
+  core::XYZ d3(m, p_[3]);
+  core::XYZ d4(m, p_[4]);
 
   double phi0 = core::internal::dihedral(d0, d1, d2, d3, NULL,NULL,NULL,NULL);
 
@@ -83,7 +84,10 @@ CADihedralRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 }
 
 ModelObjectsTemp CADihedralRestraint::do_get_inputs() const {
-  ParticlesTemp ret(p_, p_+5);
+  ParticlesTemp ret(5);
+  for (unsigned i = 0; i < 5; ++i) {
+    ret[i] = get_model()->get_particle(p_[i]);
+  }
   return ret;
 }
 

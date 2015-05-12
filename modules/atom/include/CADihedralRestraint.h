@@ -34,6 +34,7 @@ public:
       is the closest angle in phi0 to that between p1-p2-p3-p4,
       phi1[j] is the closest angle in phi1 to that between p2-p3-p4-p5,
       and N is the number of elements in phi0.
+      \param[in] m Model
       \param[in] p1 First CA atom
       \param[in] p2 Second CA atom
       \param[in] p3 Third CA atom
@@ -43,8 +44,9 @@ public:
       \param[in] phi1 Second list of angles for which scores are available
       \param[in] score List of scores that correspond to phi0*phi1
    */
-  CADihedralRestraint(Particle* p1, Particle* p2, Particle* p3,
-                      Particle* p4, Particle* p5,
+  CADihedralRestraint(Model *m, ParticleIndexAdaptor p1,
+                      ParticleIndexAdaptor p2, ParticleIndexAdaptor p3,
+                      ParticleIndexAdaptor p4, ParticleIndexAdaptor p5,
                       Floats phi0,  Floats phi1,
                       Floats score);
 
@@ -55,7 +57,7 @@ public:
   IMP_OBJECT_METHODS(CADihedralRestraint);
 
 private:
-  PointerMember<Particle> p_[5];
+  ParticleIndex p_[5];
   Floats phi0_;
   Floats phi1_;
   Floats score_;
