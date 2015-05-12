@@ -47,9 +47,11 @@ void EzRestraint::setup() {
     // create Sigmoid of Gaussian
     if (restype != "TYR" && restype != "TRP") {
       IMP_NEW(atom::internal::Sigmoid, ptr, (param[0], param[1], param[2]));
+      ptr->set_was_used(true);
       ufs_.push_back(ptr);
     } else {
       IMP_NEW(atom::internal::Gaussian, ptr, (param[0], param[1], param[2]));
+      ptr->set_was_used(true);
       ufs_.push_back(ptr);
     }
   }
