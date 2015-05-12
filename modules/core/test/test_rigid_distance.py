@@ -29,13 +29,12 @@ class Tests(IMP.test.TestCase):
         tr.add_particle(p0[0], p0)
         tr.add_particle(p1[0], p1)
         rdps = IMP.core.RigidBodyDistancePairScore(sdps, tr)
-        v = rdps.evaluate_index(m, (p0[0].get_index(), p1[0].get_index()), None)
+        v = rdps.evaluate_index(m, (p0[0], p1[0]), None)
         dm = 1000000
         bp = None
         for l0 in p0:
             for l1 in p1:
-                d = sdps.evaluate_index(m, (l0.get_index(), l1.get_index()),
-                                        None)
+                d = sdps.evaluate_index(m, (l0, l1), None)
                 if d < dm:
                     print("found ", l0.get_name(), l1.get_name(), d)
                     dm = d
@@ -57,11 +56,11 @@ class Tests(IMP.test.TestCase):
         tr = IMP.core.TableRefiner()
         tr.add_particle(p0[0], p0)
         rdps = IMP.core.RigidBodyDistancePairScore(sdps, tr)
-        v = rdps.evaluate_index(m, (p0[0].get_index(), p1), None)
+        v = rdps.evaluate_index(m, (p0[0], p1), None)
         dm = 1000000
         bp = None
         for l0 in p0:
-            d = sdps.evaluate_index(m, (l0.get_index(), p1), None)
+            d = sdps.evaluate_index(m, (l0, p1), None)
             if d < dm:
                 dm = d
         self.assertAlmostEqual(v, dm, delta=.1)

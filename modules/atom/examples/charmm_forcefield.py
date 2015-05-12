@@ -47,7 +47,7 @@ ff.add_well_depths(prot)
 
 # Get a list of all atoms in the protein, and put it in a container
 atoms = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
-cont = IMP.container.ListSingletonContainer(m, IMP.get_indexes(atoms))
+cont = IMP.container.ListSingletonContainer(m, atoms)
 
 # Add a restraint for the Lennard-Jones interaction. This is built from
 # a collection of building blocks. First, a ClosePairContainer maintains a list

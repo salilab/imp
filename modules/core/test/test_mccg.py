@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
         n = 10
         print(1)
         ds = IMP.core.create_xyzr_particles(m, n, 2)
-        lsc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ds))
+        lsc = IMP.container.ListSingletonContainer(m, ds)
         print(2)
         cpf = IMP.core.QuadraticClosePairsFinder()
         print(2.1)

@@ -51,8 +51,7 @@ rb1.set_reference_frame(IMP.algebra.ReferenceFrame3D(
 
 ev = IMP.core.ExcludedVolumeRestraint(
     IMP.container.ListSingletonContainer(
-        m, IMP.get_indexes(rb0.get_rigid_members() + rb1.get_rigid_members())),
-        1, 3)
+        m, rb0.get_rigid_members() + rb1.get_rigid_members()), 1, 3)
 
 #h= IMP.core.Harmonic(0,1)
 #s= IMP.core.DistanceToSingletonScore(h, IMP.algebra.Vector3D(0,0,0))

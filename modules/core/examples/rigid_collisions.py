@@ -26,8 +26,8 @@ rbss0 = IMP.core.RigidBody.setup_particle(rbp0, IMP.core.XYZs(rbps0))
 rbss1 = IMP.core.RigidBody.setup_particle(rbp1, IMP.core.XYZs(rbps1))
 
 lsc = IMP.container.ListSingletonContainer(m)
-lsc.add(IMP.get_indexes(rbps0))
-lsc.add(IMP.get_indexes(rbps1))
+lsc.add(rbps0)
+lsc.add(rbps1)
 
 # Set up the nonbonded list
 nbl = IMP.container.ClosePairContainer(

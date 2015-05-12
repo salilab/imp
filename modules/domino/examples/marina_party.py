@@ -137,8 +137,7 @@ for z in range(n_edges):
     friends = IMP.ParticlePair(girls[i], girls[j])
     # restraint
     score = SumPricePairScore()
-    rs.append(IMP.core.PairRestraint(model, score, (girls[i].get_index(),
-                                                    girls[j].get_index())))
+    rs.append(IMP.core.PairRestraint(model, score, friends))
     # Exclusion states. Two girls can't have same dress
     ft = IMP.domino.ExclusionSubsetFilterTable()
     ft.add_pair(friends)

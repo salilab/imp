@@ -39,7 +39,7 @@ cps = IMP.core.ChildrenRefiner(IMP.atom.Hierarchy.get_traits())
 # score based on the one closest particle from each set of balls
 lrps = IMP.core.KClosePairsPairScore(ps, cps, 1)
 # connect all 10 molecules together
-lsc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(hs))
+lsc = IMP.container.ListSingletonContainer(m, hs)
 cr = IMP.core.ConnectivityRestraint(lrps, lsc)
 
 cr.evaluate(False)

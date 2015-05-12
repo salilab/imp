@@ -135,8 +135,7 @@ em2d_restraint = IMP.em2d.Em2DRestraint(m)
 em2d_restraint.setup(score_function, params)
 em2d_restraint.set_images(em_images)
 em2d_restraint.set_name("em2d restraint")
-container = IMP.container.ListSingletonContainer(m,
-                                  IMP.get_indexes(IMP.core.get_leaves(prot)))
+container = IMP.container.ListSingletonContainer(m, IMP.core.get_leaves(prot))
 em2d_restraint.set_particles(container)
 em2d_restraints_set = IMP.RestraintSet(m)
 

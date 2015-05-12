@@ -33,7 +33,7 @@ def create_excluded_volume(m, helices):
     all = []
     for h in helices:
         all.extend(IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE))
-    lsc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(all))
+    lsc = IMP.container.ListSingletonContainer(m, all)
     evr = IMP.core.ExcludedVolumeRestraint(lsc, 1)
     evr.set_maximum_score(.01)
     return [evr]
