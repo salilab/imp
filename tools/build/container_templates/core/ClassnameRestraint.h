@@ -44,14 +44,14 @@ class ClassnameRestraint :
       stored Classname and the Classname.
       \deprecated_at(2.5) Use the index-based constructor instead.
    */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
+  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
   ClassnameRestraint(ClassnameScore *ss, ARGUMENTTYPE vt,
                      std::string name = "ClassnameRestraint %1%")
       : IMP::internal::TupleRestraint<ClassnameScore>(
             ss, IMP::internal::get_model(vt),
             IMP::internal::get_index(vt), name) {
-    IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5,
-                                   "Use the index-based constructor instead.");
+    IMPCORE_DEPRECATED_METHOD_DEF(2.5,
+                                  "Use the index-based constructor instead.");
   }
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)
