@@ -76,7 +76,7 @@ class Tests(IMP.test.TestCase):
         for i in range(3):
             p0 = ps[i]
             p1 = ps[i - 1]
-            r = IMP.core.DistanceRestraint(h, p0, p1)
+            r = IMP.core.DistanceRestraint(m, h, p0, p1)
             rs.add_restraint(r)
         pst = IMP.domino.ParticleStatesTable()
         for p in ps:

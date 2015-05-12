@@ -29,9 +29,9 @@ class Tests(IMP.test.TestCase):
             pst.set_particle_states(p, particle_state)
         print(4)
         r = IMP.RestraintSet(m)
-        r.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[0], ps[1]))
-        r.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[1], ps[2]))
         print(5)
         sampler = IMP.domino.DominoSampler(m, pst)
@@ -73,9 +73,9 @@ class Tests(IMP.test.TestCase):
         for p in ps:
             pst.set_particle_states(p, particle_state)
             r.add_restraint(IMP._ConstRestraint(1, [p]))
-        r.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[0], ps[1]))
-        r.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[1], ps[2]))
 
         r.set_maximum_score(3.1)

@@ -55,9 +55,8 @@ class Tests(IMP.test.TestCase):
         s = IMP.domino.Subset(lsc)
         all_states = self._get_full_list(pst, lsc)
         print("There are ", len(all_states), "states")
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
-                                       s[1],
-                                       s[2])
+        r = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 2),
+                                       s[1], s[2])
         r.set_name("1 2")
         r.set_log_level(IMP.VERBOSE)
         ds = IMP.domino.DominoSampler(m)
@@ -95,21 +94,15 @@ class Tests(IMP.test.TestCase):
         all_states = self._get_full_list(pst, lsc)
         print("There are ", len(all_states), "states")
         rs = IMP.RestraintSet(m)
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
-                                       s[1],
-                                       s[2])
+        r = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 2), s[1], s[2])
         r.set_name("1 2")
         r.set_log_level(IMP.VERBOSE)
         rs.add_restraint(r)
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
-                                       s[2],
-                                       s[3])
+        r = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 2), s[2], s[3])
         r.set_name("2 3")
         r.set_log_level(IMP.VERBOSE)
         rs.add_restraint(r)
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
-                                       s[0],
-                                       s[1])
+        r = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 2), s[0], s[1])
         r.set_name("0 1")
         r.set_log_level(IMP.VERBOSE)
         rs.add_restraint(r)
@@ -149,15 +142,13 @@ class Tests(IMP.test.TestCase):
         all_states = self._get_full_list(pst, lsc)
         print("There are ", len(all_states), "states")
         rs = IMP.RestraintSet(m)
-        r0 = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 1),
-                                        lsc[1],
-                                        lsc[2])
+        r0 = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 1),
+                                        lsc[1], lsc[2])
         r0.set_name("1 2")
         r0.set_log_level(IMP.VERBOSE)
         rs.add_restraint(r0)
-        r1 = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 1),
-                                        lsc[0],
-                                        lsc[1])
+        r1 = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 1),
+                                        lsc[0], lsc[1])
         r1.set_name("0 1")
         r1.set_log_level(IMP.VERBOSE)
         rs.add_restraint(r1)

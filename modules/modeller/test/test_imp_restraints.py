@@ -22,9 +22,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         protein = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
         atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(10.0, 1.0),
-                                       atoms[0].get_particle(),
-                                       atoms[-1].get_particle())
+        r = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(10.0, 1.0),
+                                       atoms[0], atoms[-1])
         sf = IMP.core.RestraintsScoringFunction([r])
 
         t = modmodel.env.edat.energy_terms

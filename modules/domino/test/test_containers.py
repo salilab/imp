@@ -139,9 +139,9 @@ class Tests(IMP.test.TestCase):
         r = IMP.RestraintSet(m)
         for p in ps:
             pst.set_particle_states(p, particle_state)
-        r.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[0], ps[1]))
-        r.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[1], ps[2]))
         print(5)
         sampler = IMP.domino.DominoSampler(m, pst)

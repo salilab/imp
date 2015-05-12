@@ -30,9 +30,9 @@ class Tests(IMP.test.TestCase):
             pst.set_particle_states(p, particle_state)
             r.add_restraint(IMP._ConstRestraint(1, [p]))
         sst = IMP.domino.BranchAndBoundAssignmentsTable(pst, [])
-        r.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[0], ps[1]))
-        r.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[1], ps[2]))
         #sevt= IMP.domino.ModelSubsetEvaluatorTable(m, pst)
         sampler = IMP.domino.DominoSampler(m, pst)

@@ -64,27 +64,23 @@ class Tests(IMP.test.TestCase):
         # set distance restraints
         d01 = IMP.algebra.get_distance(native_chain_centers[0],
                                        native_chain_centers[1])
-        r01 = IMP.core.DistanceRestraint(IMP.core.Harmonic(d01, 1),
-                                         chains[0],
-                                         chains[1])
+        r01 = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(d01, 1),
+                                         chains[0], chains[1])
         r01.set_name("distance 0-1")
         d12 = IMP.algebra.get_distance(native_chain_centers[1],
                                        native_chain_centers[2])
-        r12 = IMP.core.DistanceRestraint(IMP.core.Harmonic(d12, 1),
-                                         chains[1],
-                                         chains[2])
+        r12 = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(d12, 1),
+                                         chains[1], chains[2])
         r12.set_name("distance 1-2")
         d23 = IMP.algebra.get_distance(native_chain_centers[2],
                                        native_chain_centers[3])
-        r23 = IMP.core.DistanceRestraint(IMP.core.Harmonic(d23, 1),
-                                         chains[2],
-                                         chains[3])
+        r23 = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(d23, 1),
+                                         chains[2], chains[3])
         r23.set_name("distance 2-3")
         d30 = IMP.algebra.get_distance(native_chain_centers[3],
                                        native_chain_centers[0])
-        r30 = IMP.core.DistanceRestraint(IMP.core.Harmonic(d30, 1),
-                                         chains[3],
-                                         chains[0])
+        r30 = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(d30, 1),
+                                         chains[3], chains[0])
         r30.set_name("distance 3-0")
         top_rs = IMP.RestraintSet(m)
         # set distance restraints

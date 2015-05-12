@@ -124,7 +124,7 @@ class Tests(IMP.test.TestCase):
                                           F_factors[0] )
         images.append(pstar)
         spring = IMP.core.HarmonicDistancePairScore(0, Ks[0])
-        r=IMP.core.PairRestraint(spring, (p, pstar))
+        r=IMP.core.PairRestraint(m, spring, (p.get_index(), pstar.get_index()))
         R.append(r)
 
         return p, centroids, images, R
@@ -174,8 +174,9 @@ class Tests(IMP.test.TestCase):
         R.append( r )
         # Attraction between consecutive leaves
         for i in range(len(leaves)-1):
-            r = IMP.core.PairRestraint(attraction,
-                                       (leaves[i], leaves[i+1]),
+            r = IMP.core.PairRestraint(m, attraction,
+                                       (leaves[i].get_index(),
+                                        leaves[i+1].get_index()),
                                        "Chain")
             R.append(r)
         print(R)
@@ -184,9 +185,9 @@ class Tests(IMP.test.TestCase):
         if(LOCAL_WELLS):
             thb1 = IMP.core.TruncatedHarmonicBound(27.5, 0.175, 8, 20)
             thb2 = IMP.core.TruncatedHarmonicBound(52.5, 0.175, 8, 20)
-            dr1 = IMP.core.DistanceRestraint(thb1, leaves[0], leaves[-1])
+            dr1 = IMP.core.DistanceRestraint(m, thb1, leaves[0], leaves[-1])
             #                                        "local_well_1")
-            dr2 = IMP.core.DistanceRestraint(thb2, leaves[0], leaves[-1])
+            dr2 = IMP.core.DistanceRestraint(m, thb2, leaves[0], leaves[-1])
             #                                        "local_well_2")
             R = R + [dr2] #, dr1]
 

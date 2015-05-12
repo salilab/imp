@@ -30,8 +30,8 @@ class Tests(IMP.test.TestCase):
             print(p)
         # Restraints
         sf = IMP.core.Harmonic(10.0, 1.0)
-        r1 = IMP.core.DistanceRestraint(sf, particles[0], particles[1])
-        r3 = IMP.core.DistanceRestraint(sf, particles[1], particles[2])
+        r1 = IMP.core.DistanceRestraint(m, sf, particles[0], particles[1])
+        r3 = IMP.core.DistanceRestraint(m, sf, particles[1], particles[2])
         all_restraints = [r1, r3]
         ig = domino.get_interaction_graph(all_restraints, states_table)
         # generate a junction tree from the interaction graph

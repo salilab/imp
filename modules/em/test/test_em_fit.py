@@ -97,7 +97,7 @@ class Tests(IMP.test.TestCase):
         m = self.imp_model
         r1 = IMP.em.FitRestraint(self.particles, self.scene)
         sf = IMP.core.Harmonic(10.0, 0.1)
-        r2 = IMP.core.DistanceRestraint(sf, self.particles[0],
+        r2 = IMP.core.DistanceRestraint(m, sf, self.particles[0],
                                         self.particles[1])
         rs = IMP.RestraintSet(m)
         rs.add_restraint(r1)
