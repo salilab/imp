@@ -103,9 +103,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         self.psi = setupnuisance(m, 0.1, 0.0, 0.5, False)
 
         dr = IMP.isd.CrossLinkMSRestraint(m, self.length, self.slope)
-        dr.add_contribution((p1.get_index(), p2.get_index()),
-                            (self.sigma1.get_particle_index(), self.sigma2.get_particle_index()),
-                            self.psi.get_particle_index())
+        dr.add_contribution((p1, p2), (self.sigma1, self.sigma2), self.psi)
 
         self.testdr= CrossLinkMS(self.length, self.slope)
         self.testdr.add_contribution(self.xyz1,self.xyz2,self.sigma1,self.sigma2,self.psi)
@@ -161,12 +159,8 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         self.psi = setupnuisance(m, 0.1, 0.0, 0.5, False)
 
         dr = IMP.isd.CrossLinkMSRestraint(m, self.length, self.slope)
-        dr.add_contribution((p1.get_index(), p2.get_index()),
-                            (self.sigma1.get_particle_index(), self.sigma2.get_particle_index()),
-                            self.psi.get_particle_index())
-        dr.add_contribution((p3.get_index(), p2.get_index()),
-                            (self.sigma3.get_particle_index(), self.sigma2.get_particle_index()),
-                            self.psi.get_particle_index())
+        dr.add_contribution((p1, p2), (self.sigma1, self.sigma2), self.psi)
+        dr.add_contribution((p3, p2), (self.sigma3, self.sigma2), self.psi)
 
         self.testdr= CrossLinkMS(self.length, self.slope)
         self.testdr.add_contribution(self.xyz1,self.xyz2,self.sigma1,self.sigma2,self.psi)

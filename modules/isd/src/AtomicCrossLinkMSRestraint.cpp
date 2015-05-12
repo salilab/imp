@@ -25,7 +25,7 @@ namespace {
 }
 AtomicCrossLinkMSRestraint::AtomicCrossLinkMSRestraint(Model* m,
                                                        double xlen,
-                                                       const ParticleIndex& psi,
+                                                       ParticleIndex psi,
                                                        Float slope,
                                                        bool part_of_log_score,
                                                        std::string name):

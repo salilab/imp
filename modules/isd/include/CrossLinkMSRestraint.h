@@ -49,7 +49,7 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
 
     void add_contribution(const IMP::ParticleIndexPair& pps,
                           const IMP::ParticleIndexPair& sigmas,
-                          const IMP::ParticleIndex& psi) {
+                          IMP::ParticleIndex psi) {
         ppis_.push_back(pps);
         sigmass_.push_back(sigmas);
         psis_.push_back(psi);
