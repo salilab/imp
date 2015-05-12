@@ -42,7 +42,7 @@ class ClassnameRestraint :
   //! Create the restraint.
   /** This function takes the function to apply to the
       stored Classname and the Classname.
-      \deprecated_at(2.5) Use the index-based constructor instead.
+      \deprecated_at{2.5} Use the index-based constructor instead.
    */
   IMPCORE_DEPRECATED_METHOD_DECL(2.5)
   ClassnameRestraint(ClassnameScore *ss, ARGUMENTTYPE vt,
