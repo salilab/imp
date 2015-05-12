@@ -64,6 +64,40 @@ struct Convert<Particle> : public ConvertObjectBase<Particle> {
   }
 };
 
+template <>
+struct Convert<ParticleIndex> : public ConvertValueBase<ParticleIndex> {
+  typedef Convert<Particle> Helper;
+  static const int converter = 40;
+  template <class SwigData>
+  static ParticleIndex get_cpp_object(PyObject *o, SwigData index_st,
+                                      SwigData particle_st,
+                                      SwigData decorator_st) {
+    void *vp;
+    int res = SWIG_ConvertPtr(o, &vp, index_st, 0);
+    if (SWIG_IsOK(res)) {
+      ParticleIndex *temp = reinterpret_cast<ParticleIndex *>(vp);
+      ParticleIndex ret = *temp;
+      if (SWIG_IsNewObj(res)) delete temp;
+      return ret;
+    } else {
+      Particle *p = Helper::get_cpp_object(o, index_st, particle_st,
+                                           decorator_st);
+      return p->get_index();
+    }
+  }
+  template <class SwigData>
+  static bool get_is_cpp_object(PyObject *o, SwigData st, SwigData particle_st,
+                                SwigData decorator_st) {
+    try {
+      get_cpp_object(o, st, particle_st, decorator_st);
+    }
+    catch (...) {
+      return 0;
+    }
+    return 1;
+  }
+};
+
 template <class T>
 struct Convert<
     T, typename enable_if<and_<boost::is_base_of<Decorator, T>,

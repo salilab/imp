@@ -66,6 +66,28 @@
     $1=0;
   }
  }
+
+/* Allow passing Particle or Decorator where ParticleIndex is required */
+%typemap(in) IMP::ParticleIndex {
+  try {
+    $1 = Convert<IMP::ParticleIndex >::get_cpp_object($input,
+                $descriptor(IMP::ParticleIndex*), $descriptor(IMP::Particle*),
+                $descriptor(IMP::Decorator*));
+  } catch (const IMP::Exception &e) {
+    PyErr_SetString(PyExc_TypeError, e.what());
+    return NULL;
+  }
+}
+%typecheck(SWIG_TYPECHECK_POINTER) IMP::ParticleIndex {
+  try {
+    Convert<IMP::ParticleIndex >::get_cpp_object($input,
+            $descriptor(IMP::ParticleIndex*), $descriptor(IMP::Particle*),
+            $descriptor(IMP::Decorator*));
+    $1=1;
+  } catch (...) {
+    $1=0;
+  }
+}
 /*%{
   BOOST_STATIC_ASSERT(Convert<IMP::Particle>::converter ==2);
   BOOST_STATIC_ASSERT(Convert<IMP::internal::_TrivialDecorator>::converter ==3);
