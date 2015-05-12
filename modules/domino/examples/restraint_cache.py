@@ -51,7 +51,7 @@ for i, p in enumerate(order):
 
 r = IMP.container.PairsRestraint(
     IMP.core.HarmonicUpperBoundSphereDistancePairScore(0, 1),
-    IMP.container.ConsecutivePairContainer(order))
+    IMP.container.ConsecutivePairContainer(m, order))
 # allow a maximum distance of 2
 r.set_maximum_score(0.01)
 

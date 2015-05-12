@@ -19,7 +19,7 @@ class Tests(IMP.test.TestCase):
             for d in ds:
                 d.set_radius(1)
             IMP.rmf.add_particles(f, ds)
-            cpc = IMP.container.ConsecutivePairContainer(ps)
+            cpc = IMP.container.ConsecutivePairContainer(m, ps)
             r = IMP.container.PairsRestraint(
                 IMP.core.SoftSpherePairScore(1),
                 cpc)

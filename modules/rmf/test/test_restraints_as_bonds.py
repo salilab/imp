@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
         fh = RMF.create_rmf_file(fname)
         IMP.rmf.add_hierarchy(fh, hs)
         leaves = IMP.atom.get_leaves(hs)
-        cpc = IMP.container.ConsecutivePairContainer(leaves)
+        cpc = IMP.container.ConsecutivePairContainer(m, leaves)
         br = IMP.container.PairsRestraint(
             IMP.core.HarmonicSphereDistancePairScore(0, 1), cpc)
         IMP.rmf.add_restraints_as_bonds(fh, [br])

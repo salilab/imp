@@ -34,7 +34,7 @@ chain = IMP.container.ListSingletonContainer(m, ps, "chain")
 
 restraints = []
 # create a spring between successive particles
-bonds = IMP.container.ConsecutivePairContainer(ps)
+bonds = IMP.container.ConsecutivePairContainer(m, ps)
 hdps = IMP.core.HarmonicDistancePairScore(2, 1)
 chainr = IMP.container.PairsRestraint(hdps, bonds)
 chainr.set_name("The chain restraint")

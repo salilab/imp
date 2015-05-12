@@ -68,7 +68,7 @@ for i in range(0, ni):
             chain.append(p)
             aps.append(p)
         # set up a chain of bonds
-        cpc = IMP.container.ExclusiveConsecutivePairContainer(chain)
+        cpc = IMP.container.ExclusiveConsecutivePairContainer(m, chain)
         r = IMP.container.PairsRestraint(lps, cpc)
         restraints.append(r)
 

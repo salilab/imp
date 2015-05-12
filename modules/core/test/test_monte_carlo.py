@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
             d.set_radius(.1)
             d.set_coordinates_are_optimized(True)
-        cpc = IMP.container.ConsecutivePairContainer(ps)
+        cpc = IMP.container.ConsecutivePairContainer(m, ps)
         hps = IMP.core.HarmonicDistancePairScore(1, 100)
         r = IMP.container.PairsRestraint(hps, cpc)
         mc.set_scoring_function([r])

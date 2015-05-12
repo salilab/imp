@@ -13,9 +13,9 @@ class Tests(IMP.test.TestCase):
         """Test exclusive consecutive pair filter"""
         m = IMP.Model()
         ps0 = [IMP.Particle(m) for i in range(0, 15)]
-        cpc0 = IMP.container.ExclusiveConsecutivePairContainer(ps0)
+        cpc0 = IMP.container.ExclusiveConsecutivePairContainer(m, ps0)
         ps1 = [IMP.Particle(m) for i in range(0, 15)]
-        cpc1 = IMP.container.ExclusiveConsecutivePairContainer(ps1)
+        cpc1 = IMP.container.ExclusiveConsecutivePairContainer(m, ps1)
         cpc0.set_was_used(True)
         cpc1.set_was_used(True)
         flt = IMP.container.ExclusiveConsecutivePairFilter()
