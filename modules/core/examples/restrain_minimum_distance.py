@@ -27,7 +27,9 @@ hps = IMP.core.HarmonicSphereDistancePairScore(0, 1)
 ps = IMP.core.KClosePairsPairScore(hps, tref, 1)
 
 # create a restraint by binding the pair score to the sentinal particles
-r = IMP.core.PairRestraint(ps, (ds0[0], ds1[0]), "distance")
+r = IMP.core.PairRestraint(m, ps, (ds0[0].get_particle_index(),
+                                   ds1[0].get_particle_index()),
+                           "distance")
 
 mc = IMP.core.MonteCarlo(m)
 bm = IMP.core.BallMover(ds0 + ds1, 1)

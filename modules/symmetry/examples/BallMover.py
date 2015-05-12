@@ -20,8 +20,8 @@ m = IMP.Model()
 # add 2 particles
 ps = []
 for i in range(2):
-    p = IMP.Particle(m)
-    d = IMP.core.XYZR.setup_particle(p,
+    p = m.add_particle("P%d" % i)
+    d = IMP.core.XYZR.setup_particle(m, p,
                                      IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0., 0., 0.), 1.0))
     d.set_coordinates_are_optimized(True)
     ps.append(p)
@@ -29,7 +29,7 @@ for i in range(2):
 # add harmonic restraint to distance
 h = IMP.core.Harmonic(0.0, K_)
 sps = IMP.core.SphereDistancePairScore(h)
-pr = IMP.core.PairRestraint(sps, IMP.ParticlePair(ps[0], ps[1]))
+pr = IMP.core.PairRestraint(m, sps, (ps[0], ps[1]))
 
 # define cell centers
 ctrs = []
@@ -47,9 +47,10 @@ for ctr in ctrs:
 # movers
 movers = []
 # symmetry mover with ps[0] being the master particle
-movers.append(IMP.symmetry.BallMover(ps[0], [ps[1]], 1.0, ctrs, trs))
+movers.append(IMP.symmetry.BallMover(m.get_particle(ps[0]),
+                              [m.get_particle(ps[1])], 1.0, ctrs, trs))
 # normal BallMover for the other particle
-movers.append(IMP.core.BallMover([ps[1]], 1.0))
+movers.append(IMP.core.BallMover(m, ps[1], 1.0))
 # serial mover
 sm = IMP.core.SerialMover(movers)
 
@@ -69,8 +70,8 @@ for istep in range(0, 5000):
     mc.optimize(10)
 
     # coordinates
-    xyz0 = IMP.core.XYZR(ps[0]).get_coordinates()
-    xyz1 = IMP.core.XYZR(ps[1]).get_coordinates()
+    xyz0 = IMP.core.XYZR(m, ps[0]).get_coordinates()
+    xyz1 = IMP.core.XYZR(m, ps[1]).get_coordinates()
 
     # print
     log.write("\n2\n")

@@ -49,8 +49,9 @@ lr = IMP.container.PairsRestraint(IMP.core.SoftSpherePairScore(1), nbl,
 restraints.append(lr)
 
 # Tie the ends of the chain
-tie = IMP.core.PairRestraint(IMP.core.HarmonicDistancePairScore(3, 1),
-                             (ps[0], ps[-1]))
+tie = IMP.core.PairRestraint(m, IMP.core.HarmonicDistancePairScore(3, 1),
+                             (ps[0].get_particle_index(),
+                              ps[-1].get_particle_index()))
 tie.set_name("tie ends")
 restraints.append(tie)
 

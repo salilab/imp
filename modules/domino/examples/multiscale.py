@@ -19,20 +19,22 @@ for i, d in enumerate(ds):
 
 k = 1
 h = IMP.core.Harmonic(0, k)
-r0 = IMP.core.SingletonRestraint(
+r0 = IMP.core.SingletonRestraint(m,
     IMP.core.DistanceToSingletonScore(h, IMP.algebra.Vector3D(0, 0, 0)),
-    ds[0], "0 at origin")
+    ds[0].get_particle_index(), "0 at origin")
 
-r1 = IMP.core.SingletonRestraint(IMP.core.AttributeSingletonScore(h,
+r1 = IMP.core.SingletonRestraint(m, IMP.core.AttributeSingletonScore(h,
                                                                   IMP.core.XYZ.get_xyz_keys(
                                                                   )[0]),
-                                 ds[1], "1 on axis")
+                                 ds[1].get_particle_index(), "1 on axis")
 
 rs = [r0, r1]
 for pr in [(0, 1), (1, 2), (0, 2)]:
-    r = IMP.core.PairRestraint(IMP.core.HarmonicSphereDistancePairScore(0, k),
-                               (ds[pr[0]], ds[pr[1]]),
-                               "R for " + str(pr))
+    r = IMP.core.PairRestraint(m,
+                 IMP.core.HarmonicSphereDistancePairScore(0, k),
+                 (ds[pr[0]].get_particle_index(),
+                  ds[pr[1]].get_particle_index()),
+                 "R for " + str(pr))
     rs.append(r)
 
 
