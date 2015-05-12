@@ -44,18 +44,29 @@ double BinormalTerm::evaluate(const double dihedral[2], double &sin1,
 }
 
 MultipleBinormalRestraint::MultipleBinormalRestraint(
-    const ParticleQuad &q1, const ParticleQuad &q2)
-    : Restraint(q1[0]->get_model(), "MultipleBinormalRestraint%1%"),
+    Model *m, const ParticleIndexQuad &q1, const ParticleIndexQuad &q2)
+    : Restraint(m, "MultipleBinormalRestraint%1%"),
       terms_(),
       q1_(q1),
       q2_(q2) {}
 
+MultipleBinormalRestraint::MultipleBinormalRestraint(
+    const ParticleQuad &q1, const ParticleQuad &q2)
+    : Restraint(q1[0]->get_model(), "MultipleBinormalRestraint%1%"),
+      terms_(),
+      q1_(IMP::internal::get_index(q1)),
+      q2_(IMP::internal::get_index(q2)) {
+  IMPMODELLER_DEPRECATED_METHOD_DEF(2.5,
+                           "Use the index-based constructor instead.");
+}
+
 double MultipleBinormalRestraint::unprotected_evaluate(
     DerivativeAccumulator *accum) const {
+  Model *m = get_model();
   core::XYZ d0[4], d1[4];
   for (int i = 0; i < 4; ++i) {
-    d0[i] = core::XYZ(q1_[i]);
-    d1[i] = core::XYZ(q2_[i]);
+    d0[i] = core::XYZ(m, q1_[i]);
+    d1[i] = core::XYZ(m, q2_[i]);
   }
 
   double all_terms = 0.;
@@ -109,14 +120,11 @@ double MultipleBinormalRestraint::unprotected_evaluate(
 
 ModelObjectsTemp MultipleBinormalRestraint::do_get_inputs() const {
   ModelObjectsTemp r(8);
-  r[0] = q1_[0];
-  r[1] = q1_[1];
-  r[2] = q1_[2];
-  r[3] = q1_[3];
-  r[4] = q2_[0];
-  r[5] = q2_[1];
-  r[6] = q2_[2];
-  r[7] = q2_[3];
+  Model *m = get_model();
+  for (unsigned i = 0; i < 4; ++i) {
+    r[i] = m->get_particle(q1_[i]);
+    r[i + 4] = m->get_particle(q2_[i]);
+  }
   return r;
 }
 

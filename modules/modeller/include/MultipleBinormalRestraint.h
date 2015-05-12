@@ -31,17 +31,24 @@ class BinormalTerm;
  */
 class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint {
   std::vector<BinormalTerm> terms_;
-  ParticleQuad q1_, q2_;
+  ParticleIndexQuad q1_, q2_;
 
  public:
   //! Create the multiple binormal restraint.
   /** After creating the restraint, call add_term one or more times to add
       BinormalTerms to the restraint.
+      \param[in] m Model.
       \param[in] q1 First quad of particles.
       \param[in] q2 Second quad of particles.
    */
+  MultipleBinormalRestraint(Model *m, const ParticleIndexQuad &q1,
+                            const ParticleIndexQuad &q2);
+
+#ifndef IMP_DOXYGEN
+  IMPMODELLER_DEPRECATED_METHOD_DECL(2.5)
   MultipleBinormalRestraint(const ParticleQuad &q1,
                             const ParticleQuad &q2);
+#endif
 
   //! Add a single BinormalTerm to the restraint.
   void add_term(const BinormalTerm &term) { terms_.push_back(term); }
