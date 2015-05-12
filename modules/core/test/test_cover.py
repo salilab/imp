@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
             hd.add_child(IMP.core.Hierarchy.setup_particle(p))
         r = IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())
         c = IMP.core.CentroidOfRefined(r)
-        c.apply_index(m, pp.get_index())
+        c.apply_index(m, pp)
         bb = IMP.algebra.BoundingBox3D()
         cd = IMP.core.XYZ(pp)
         for i in range(0, n):

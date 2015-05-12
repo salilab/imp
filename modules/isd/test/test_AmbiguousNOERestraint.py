@@ -36,8 +36,7 @@ class Tests(IMP.test.TestCase):
         self.V_obs = 3.0
         self.ls = \
             IMP.container.ListPairContainer(self.m,
-                [(self.p0.get_particle_index(), self.p1.get_particle_index()),
-                 (self.p0.get_particle_index(), self.p2.get_particle_index())])
+                [(self.p0, self.p1), (self.p0, self.p2)])
         self.noe = IMP.isd.AmbiguousNOERestraint(self.m, self.ls, self.sigma,
                                                  self.gamma, self.V_obs)
 

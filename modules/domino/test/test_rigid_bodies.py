@@ -34,8 +34,7 @@ class Tests(IMP.test.TestCase):
                ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
                                                  Vector3D(4, 0, 0)))]
         ps = IMP.core.HarmonicSphereDistancePairScore(0, 1)
-        r = IMP.core.PairRestraint(
-            ps,
+        r = IMP.core.PairRestraint(m, ps,
             (rbs[0].get_rigid_members()[0],
              rbs[1].get_rigid_members()[0]))
         r.set_name("restraint")
@@ -111,8 +110,7 @@ class Tests(IMP.test.TestCase):
             IMP.core.HarmonicUpperBound(0, 1))
         ps = IMP.core.KClosePairsPairScore(lps, IMP.core.RigidMembersRefiner())
         pl = IMP.container.ListPairContainer(m,
-            [(rbs[0].get_particle_index(), rbs[1].get_particle_index()),
-             (rbs[1].get_particle_index(), rbs[2].get_particle_index())])
+                               [(rbs[0], rbs[1]), (rbs[1], rbs[2])])
         r = IMP.container.PairsRestraint(ps, pl)
         r.set_name("restraint")
         rs = IMP.RestraintSet(m)
@@ -148,7 +146,7 @@ class Tests(IMP.test.TestCase):
         rb0 = self._create_rigid_body(m)
         rb1 = self._create_rigid_body(m)
         rb2 = self._create_rigid_body(m)
-        r = IMP.core.PairRestraint(IMP.core.HarmonicDistancePairScore(0, 1),
+        r = IMP.core.PairRestraint(m, IMP.core.HarmonicDistancePairScore(0, 1),
                                    (rb0, rb1))
         rs = IMP.RestraintSet(m)
         rs.add_restraint(r)

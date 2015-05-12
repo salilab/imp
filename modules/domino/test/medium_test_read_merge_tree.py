@@ -23,8 +23,7 @@ class Tests(IMP.test.TestCase):
             p.set_name(str(i))
         # close pairs
         atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
-        cont = IMP.container.ListSingletonContainer(model,
-                                                    IMP.get_indexes(atoms))
+        cont = IMP.container.ListSingletonContainer(model, atoms)
 
         nbl = IMP.container.ClosePairContainer(cont, closePairDistance, 0.0)
         model.update()

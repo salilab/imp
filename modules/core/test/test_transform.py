@@ -85,7 +85,7 @@ class Tests(IMP.test.TestCase):
                                                     IMP.algebra.Transformation3D(r, t))
         pl = IMP.container.ListPairContainer(m)
         pr = IMP.container.PairsRestraint(tps, pl)
-        pl.add((p0.get_index(), p1.get_index()))
+        pl.add((p0, p1))
         sf = IMP.core.RestraintsScoringFunction([pr])
         cg = IMP.core.ConjugateGradients(m)
         cg.set_scoring_function(sf)

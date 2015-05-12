@@ -57,7 +57,7 @@ class Tests(IMP.test.TestCase):
         ps = IMP.core.create_xyzr_particles(m, 10, .1)
         for p in ps:
             p.set_coordinates_are_optimized(True)
-        lsc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ps))
+        lsc = IMP.container.ListSingletonContainer(m, ps)
         cpc = IMP.container.ConnectingPairContainer(lsc, .1)
         for pp in cpc.get_particle_pairs():
             print(pp)

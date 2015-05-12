@@ -105,9 +105,9 @@ class Tests(IMP.test.TestCase):
             IMP.core.XYZR.setup_particle(
                 ps[i], IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 2))
         lsc1 = IMP.container.ListSingletonContainer(m)
-        lsc1.add([ps[0].get_index()])
+        lsc1.add([ps[0]])
         lsc2 = IMP.container.ListSingletonContainer(m)
-        lsc2.add([ps[1].get_index(), ps[2].get_index()])
+        lsc2.add([ps[1], ps[2]])
         nbl = IMP.container.CloseBipartitePairContainer(lsc1, lsc2, 2)
         h = IMP.core.HarmonicLowerBound(0, 1)
         sd = IMP.core.SphereDistancePairScore(h)

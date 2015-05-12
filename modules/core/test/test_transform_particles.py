@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         tf.set_was_used(True)
         for p in particles:
             print("applying to " + str(p))
-            r = tf.apply_index(imp_model, p.get_particle_index())
+            r = tf.apply_index(imp_model, p)
         for i in range(0, len(particles)):
             v = particles[i].get_coordinates()
             self.assertAlmostEqual(

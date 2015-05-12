@@ -14,19 +14,19 @@ class RigidBodyTunnelerTest(IMP.test.TestCase):
         self.oricom = oricom
         orivecs = array([[0, 0, 0], [1, 0, 0], [0, 1, 0]])
         self.partori = self.make_rb(oricom, *orivecs)
-        self.iori = self.partori[-1].get_index()
+        self.iori = self.partori[-1]
         # reference rb : rotation of pi/2 around z and translation to (1,0,0)
         refcom = array([1, 0, 0])
         self.refcom = refcom
         refvecs = array([[0, 0, 0], [0, 1, 0], [-1, 0, 0]])
         self.partref = self.make_rb(refcom, *refvecs)
-        self.iref = self.partref[-1].get_index()
+        self.iref = self.partref[-1]
         # other rb : rotation of pi/2 around y and translation to (2,0,0)
         othcom = array([2, 0, 0])
         self.othcom = othcom
         othvecs = array([[0, 0, 0], [0, 0, -1], [0, 1, 0]])
         self.partoth = self.make_rb(othcom, *othvecs)
-        self.ioth = self.partoth[-1].get_index()
+        self.ioth = self.partoth[-1]
         # rbt
         self.k = 0.5
         self.rbt = IMP.core.RigidBodyTunneler(self.m, [self.ioth], self.iref,

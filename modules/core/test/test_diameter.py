@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
         diameter = 10
         m = IMP.Model()
         lc = IMP.container.ListSingletonContainer(m,
-            IMP.get_indexes(IMP.core.create_xyzr_particles(m, 50, 1.0)))
+                           IMP.core.create_xyzr_particles(m, 50, 1.0))
         h = IMP.core.HarmonicUpperBound(0, 1)
         r = IMP.core.DiameterRestraint(h, lc, diameter)
         sf = IMP.core.RestraintsScoringFunction([r])

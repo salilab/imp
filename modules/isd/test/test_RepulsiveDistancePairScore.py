@@ -31,8 +31,7 @@ class Tests(IMP.test.TestCase):
         self.DA = IMP.DerivativeAccumulator()
         self.ps = RepulsiveDistancePairScore(0.0, 1.0)
         self.pc = IMP.container.ListPairContainer(self.m)
-        self.pc.add((self.p0.get_particle_index(),
-                     self.p1.get_particle_index()))
+        self.pc.add((self.p0, self.p1))
         r = IMP.container.PairsRestraint(self.ps, self.pc)
         self.sf = IMP.core.RestraintsScoringFunction([r])
 

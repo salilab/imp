@@ -171,7 +171,7 @@ class Tests(IMP.test.TestCase):
         fps = fps + rbb.get_rigid_members()
         cpf = IMP.core.RigidClosePairsFinder()
         cpf.set_distance(dist)
-        cps = cpf.get_close_pairs(m, IMP.get_indexes(fps))
+        cps = cpf.get_close_pairs(m, fps)
         self._check_abiclose_pairs(m, free_ps, free_ps, dist, cps)
         self._check_abiclose_pairs(m, free_ps, rbpsa, dist, cps)
         self._check_abiclose_pairs(m, free_ps, rbpsb, dist, cps)
@@ -202,7 +202,7 @@ class Tests(IMP.test.TestCase):
         rba2.get_particle().set_name("rba2")
         rbb2.get_particle().set_name("rbb2")
 
-        cps = cpf.get_close_pairs(m, IMP.get_indexes(fps), IMP.get_indexes(ps2))
+        cps = cpf.get_close_pairs(m, fps, ps2)
         print("done bipartite " + str(len(cps)))
         print(ps)
         self._check_biclose_pairs(m, IMP.get_indexes(ps), IMP.get_indexes(ps2),

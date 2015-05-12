@@ -114,8 +114,8 @@ class Tests(IMP.test.TestCase):
             [p for p in IMP.get_particles(m, m.get_particle_indexes())
              if not IMP.core.RigidBody.get_is_setup(p)],
             0, IMP.core.RigidClosePairsFinder(), 0)
-        movers = [IMP.core.RigidBodyMover(m, r0.get_particle_index(), 1, 1),
-                  IMP.core.RigidBodyMover(m, r1.get_particle_index(), 1, 1)]\
+        movers = [IMP.core.RigidBodyMover(m, r0, 1, 1),
+                  IMP.core.RigidBodyMover(m, r1, 1, 1)]\
             + [ICMover(m, x, 1) for x in nr0 + nr1]
         cpc.set_was_used(True)
         for i in range(0, 100):
@@ -134,8 +134,8 @@ class Tests(IMP.test.TestCase):
         nr1 = self._add_non_rigid(m, r1, "1")
         evr = IMP.core.ExcludedVolumeRestraint(
             IMP.get_particles(m, [p for p in m.get_particle_indexes() if not IMP.core.RigidBody.get_is_setup(m, p)]))
-        movers = [IMP.core.RigidBodyMover(m, r0.get_particle_index(), 1, 1),
-                  IMP.core.RigidBodyMover(m, r1.get_particle_index(), 1, 1)]\
+        movers = [IMP.core.RigidBodyMover(m, r0, 1, 1),
+                  IMP.core.RigidBodyMover(m, r1, 1, 1)]\
             + [ICMover(m, x, 1) for x in nr0 + nr1]
         for i in range(0, 20):
             pis = []

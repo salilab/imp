@@ -119,8 +119,8 @@ class TestGaussianEM(IMP.test.TestCase):
         model_cutoff_dist=1e8
         density_cutoff_dist=1e8
         update_model=True
-        self.gem=IMP.isd.GaussianEMRestraint(self.m,IMP.get_indexes(self.model_ps),
-                                             IMP.get_indexes(self.density_ps),psigma.get_index(),
+        self.gem=IMP.isd.GaussianEMRestraint(self.m,self.model_ps,
+                                             self.density_ps,psigma,
                                              model_cutoff_dist,density_cutoff_dist,
                                              slope,
                                              update_model,False)

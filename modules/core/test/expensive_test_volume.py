@@ -30,7 +30,7 @@ class Volume(IMP.test.TestCase):
             p.set_is_optimized(IMP.FloatKey("x"), True)
             p.set_is_optimized(IMP.FloatKey("y"), True)
             p.set_is_optimized(IMP.FloatKey("z"), True)
-        sc = IMP.container.ListSingletonContainer(m, IMP.get_indexes(ps))
+        sc = IMP.container.ListSingletonContainer(m, ps)
         vr = IMP.core.VolumeRestraint(
             IMP.core.Harmonic(0,
                               1),
