@@ -51,17 +51,18 @@ developers should be aware that
   as well as allows functions to be overloaded (so there can be an
   IMP::core::transform() which takes IMP::core::RigidBody particles instead).
 
-
 - IMP::Restraint and IMP::ScoreState classes should generally use a
   IMP::SingletonContainer (or other type of Container) to store the set of
-  IMP::Particle objects that they act on.
+  IMP::Particle objects that they act on. Alternatively, take and store one
+  or more IMP::ParticleIndex objects (or related types, such as
+  IMP::ParticleIndexPair).
 
 - Store collections of IMP::Object-derived
   objects of type `Name` using a `Names`. Declare functions that
   accept them to take a `NamesTemp` (`Names` is a `NamesTemp)`.
   `Names` are reference counted (see IMP::Object for details);
-  `NamesTemp` are not. Store collections of particles using a
-  `Particles` object, rather than decorators.
+  `NamesTemp` are not. Store collections of particles using
+  IMP::ParticleIndexes, rather than using IMP::Particles or decorators.
 
 - To handle floating-point data, use the standard C++ `double` type. (In most
   cases on modern 64-bit systems, `float` isn't any more efficient.) Use the
