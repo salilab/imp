@@ -153,7 +153,7 @@ void optimize_assembly(Model *m,
     mc->set_scoring_function(rs);
     cg->set_scoring_function(rs + RestraintsTemp(1, evr.get()) +
                              RestraintsTemp(1, bbr.get()));
-    active->set_particles(cur);
+    active->set(IMP::get_indexes(cur));
     double e;
     for (int j = 0; j < 5; ++j) {
       mc->set_kt(100.0 / (3 * j + 1));
