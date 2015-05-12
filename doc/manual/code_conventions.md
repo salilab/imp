@@ -63,6 +63,18 @@ developers should be aware that
   `NamesTemp` are not. Store collections of particles using a
   `Particles` object, rather than decorators.
 
+- To handle floating-point data, use the standard C++ `double` type. (In most
+  cases on modern 64-bit systems, `float` isn't any more efficient.) Use the
+  IMP::Float type (and derived types, such as IMP::FloatPair) *only* to work
+  with floating-point attributes of IMP::Model objects. (Similarly, use `int`
+  and `std::string` for integer and string data, except for accessing
+  IMP::Model attributes where the IMP::Int and IMP::String types should
+  be utilized.)
+
+- To work with vectors of data, use IMP::Vector. It performs similarly to
+  `std::vector` but adds extra functionality, and turns on bounds checks when
+  %IMP is built in debug mode.
+
 # Display {#codeconv_display}
 
 All values must have a `show` method which takes an optional
