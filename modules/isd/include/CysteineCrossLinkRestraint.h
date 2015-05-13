@@ -104,27 +104,6 @@ class IMPISDEXPORT CysteineCrossLinkRestraint : public Restraint {
 
   algebra::Vector3D get_CB_coordinates(const ParticleIndexes &ps) const;
 
-#ifndef IMP_DOXYGEN
-  IMPISD_DEPRECATED_METHOD_DECL(2.5)
-  void add_contribution(Particle *p1, Particle *p2) {
-    IMPISD_DEPRECATED_METHOD_DEF(2.5, "Use the index-based method instead.");
-    add_contribution(p1->get_index(), p2->get_index());
-  }
-
-  IMPISD_DEPRECATED_METHOD_DECL(2.5)
-  void add_contribution(Particles p1, Particles p2) {
-    IMPISD_DEPRECATED_METHOD_DEF(2.5, "Use the index-based method instead.");
-    add_contribution(IMP::internal::get_index(p1),
-                     IMP::internal::get_index(p2));
-  }
-
-  IMPISD_DEPRECATED_METHOD_DECL(2.5)
-  algebra::Vector3D get_CB_coordinates(const Particles &ps) const {
-    IMPISD_DEPRECATED_METHOD_DEF(2.5, "Use the index-based method instead.");
-    return get_CB_coordinates(IMP::internal::get_index(ps));
-  }
-#endif
-
   unsigned get_number_of_contributions() const;
 
   /** This macro declares the basic needed methods: evaluate and show
