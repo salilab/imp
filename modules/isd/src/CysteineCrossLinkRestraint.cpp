@@ -26,10 +26,11 @@
 IMPISD_BEGIN_NAMESPACE
 
 // first constructor, beta is unmarginalized and need to be sampled
-CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(
-    Particle *beta, Particle *sigma, Particle *epsilon,
-    Particle *weight, CrossLinkData *data, double fexp)
-    : Restraint(beta->get_model(), "CysteineCrossLinkRestraint%1%"),
+CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(Model *m,
+    ParticleIndexAdaptor beta, ParticleIndexAdaptor sigma,
+    ParticleIndexAdaptor epsilon, ParticleIndexAdaptor weight,
+    CrossLinkData *data, double fexp)
+    : Restraint(m, "CysteineCrossLinkRestraint%1%"),
       beta_(beta),
       sigma_(sigma),
       epsilon_(epsilon),
@@ -41,6 +42,34 @@ CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(
 
 // second constructor, marginalize the omega on the beat variable
 // using the support of the CysteineCrossLinkData
+CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(Model *m,
+    ParticleIndexAdaptor beta, ParticleIndexAdaptor sigma,
+    ParticleIndexAdaptor epsilon, ParticleIndexAdaptor weight,
+    CrossLinkData *data, CysteineCrossLinkData *ccldata)
+    : Restraint(m, "CysteineCrossLinkRestraint%1%"),
+      beta_(beta),
+      sigma_(sigma),
+      epsilon_(epsilon),
+      weight_(weight),
+      data_(data),
+      ccldata_(ccldata) {
+  constr_type_ = 1;
+}
+
+CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(
+    Particle *beta, Particle *sigma, Particle *epsilon,
+    Particle *weight, CrossLinkData *data, double fexp)
+    : Restraint(beta->get_model(), "CysteineCrossLinkRestraint%1%"),
+      beta_(beta),
+      sigma_(sigma),
+      epsilon_(epsilon),
+      weight_(weight),
+      data_(data),
+      fexp_(fexp) {
+  IMPISD_DEPRECATED_METHOD_DEF(2.5, "Use an index-based constructor instead.");
+  constr_type_ = 0;
+}
+
 CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(
     Particle *beta, Particle *sigma, Particle *epsilon,
     Particle *weight, CrossLinkData *data,
@@ -52,26 +81,28 @@ CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(
       weight_(weight),
       data_(data),
       ccldata_(ccldata) {
+  IMPISD_DEPRECATED_METHOD_DEF(2.5, "Use an index-based constructor instead.");
   constr_type_ = 1;
 }
 
-void CysteineCrossLinkRestraint::add_contribution(Particle *p1,
-                                                  Particle *p2) {
+void CysteineCrossLinkRestraint::add_contribution(ParticleIndexAdaptor p1,
+                                                  ParticleIndexAdaptor p2) {
   if (get_number_of_contributions() == 0)
     use_CA_ = true;
   else if (use_CA_ == false) {
     IMP_THROW("Use either CA or CB, not both!", ModelException);
   }
+  Model *m = get_model();
   ps1_.push_back(p1);
   ps2_.push_back(p2);
-  if (Weight(weight_).get_number_of_states() <
+  if (Weight(m, weight_).get_number_of_states() <
       static_cast<int>(get_number_of_contributions())) {
-    Weight(weight_).add_weight();
+    Weight(m, weight_).add_weight();
   }
 }
 
-void CysteineCrossLinkRestraint::add_contribution(Particles p1,
-                                                  Particles p2) {
+void CysteineCrossLinkRestraint::add_contribution(ParticleIndexes p1,
+                                                  ParticleIndexes p2) {
   if (get_number_of_contributions() == 0)
     use_CA_ = false;
   else if (use_CA_ == true) {
@@ -82,17 +113,19 @@ void CysteineCrossLinkRestraint::add_contribution(Particles p1,
   }
   pslist1_.push_back(p1);
   pslist2_.push_back(p2);
-  if (Weight(weight_).get_number_of_states() <
+  Model *m = get_model();
+  if (Weight(m, weight_).get_number_of_states() <
       static_cast<int>(get_number_of_contributions())) {
-    Weight(weight_).add_weight();
+    Weight(m, weight_).add_weight();
   }
 }
 
 // truncated normal standard error (according to Wikipedia)
 double CysteineCrossLinkRestraint::get_standard_error() const {
 
+  Model *m = get_model();
   double freq = get_model_frequency();
-  double beta = Scale(beta_).get_scale();
+  double beta = Scale(m, beta_).get_scale();
 
   // using constructor type 1 beta corresponds to omega0
   if (constr_type_ == 1) {
@@ -110,17 +143,18 @@ double CysteineCrossLinkRestraint::get_standard_error() const {
 }
 
 algebra::Vector3D CysteineCrossLinkRestraint::get_CB_coordinates(
-    const Particles &ps) const {
+    const ParticleIndexes &ps) const {
+  Model *m = get_model();
   // get coordinates of central CA
-  algebra::Vector3D x1 = core::XYZ(ps[1]).get_coordinates();
+  algebra::Vector3D x1 = core::XYZ(m, ps[1]).get_coordinates();
 
   // first versor
   algebra::Vector3D a =
-      (core::XYZ(ps[0]).get_coordinates() - x1).get_unit_vector();
+      (core::XYZ(m, ps[0]).get_coordinates() - x1).get_unit_vector();
 
   // auxiliary vector
   algebra::Vector3D b =
-      (core::XYZ(ps[2]).get_coordinates() - x1).get_unit_vector();
+      (core::XYZ(m, ps[2]).get_coordinates() - x1).get_unit_vector();
 
   // second versor
   algebra::Vector3D k = (algebra::get_vector_product(a, b)).get_unit_vector();
@@ -143,10 +177,11 @@ algebra::Vector3D CysteineCrossLinkRestraint::get_CB_coordinates(
 
 Floats CysteineCrossLinkRestraint::get_distances() const {
   Floats dists;
+  Model *m = get_model();
   for (unsigned n = 0; n < get_number_of_contributions(); ++n) {
     double dist;
     if (use_CA_) {
-      core::XYZ d1(ps1_[n]), d2(ps2_[n]);
+      core::XYZ d1(m, ps1_[n]), d2(m, ps2_[n]);
       dist = core::get_distance(d1, d2);
     } else {
       algebra::Vector3D cb1 = get_CB_coordinates(pslist1_[n]);
@@ -168,13 +203,14 @@ double CysteineCrossLinkRestraint::get_model_frequency() const {
 
 Floats CysteineCrossLinkRestraint::get_frequencies() const {
   // list of marginal probabilities
+  Model *m = get_model();
   Floats dists = get_distances();
 
-  double sigma = Scale(sigma_).get_scale();
+  double sigma = Scale(m, sigma_).get_scale();
 
   Floats nus = data_->get_marginal_elements(sigma, dists);
 
-  double epsilon = Scale(epsilon_).get_scale();
+  double epsilon = Scale(m, epsilon_).get_scale();
 
   double numax = data_->get_marginal_maximum(sigma);
 
@@ -182,7 +218,7 @@ Floats CysteineCrossLinkRestraint::get_frequencies() const {
 
   for (unsigned i = 0; i < get_number_of_contributions(); ++i) {
 
-    double ww = Weight(weight_).get_weight(i);
+    double ww = Weight(m, weight_).get_weight(i);
 
     double fi = (1.0 - pow(epsilon, nus[i] / numax)) * ww;
     frequencies.push_back(fi);
@@ -212,9 +248,10 @@ double CysteineCrossLinkRestraint::get_truncated_normalization(
 
 // this is to use with truncated normal distribution
 double CysteineCrossLinkRestraint::get_probability() const {
+  Model *m = get_model();
   double freq = get_model_frequency();
 
-  double beta = Scale(beta_).get_scale();
+  double beta = Scale(m, beta_).get_scale();
 
   double prob = 1.0;
 
@@ -260,18 +297,19 @@ unsigned CysteineCrossLinkRestraint::get_number_of_contributions() const {
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp CysteineCrossLinkRestraint::do_get_inputs() const {
   ParticlesTemp ret;
-  ret.push_back(beta_);
-  ret.push_back(sigma_);
-  ret.push_back(epsilon_);
-  ret.push_back(weight_);
+  Model *m = get_model();
+  ret.push_back(m->get_particle(beta_));
+  ret.push_back(m->get_particle(sigma_));
+  ret.push_back(m->get_particle(epsilon_));
+  ret.push_back(m->get_particle(weight_));
   for (unsigned i = 0; i < ps1_.size(); ++i) {
-    ret.push_back(ps1_[i]);
-    ret.push_back(ps2_[i]);
+    ret.push_back(m->get_particle(ps1_[i]));
+    ret.push_back(m->get_particle(ps2_[i]));
   }
   for (unsigned i = 0; i < pslist1_.size(); ++i) {
     for (unsigned j = 0; j < pslist1_[i].size(); ++j) {
-      ret.push_back(pslist1_[i][j]);
-      ret.push_back(pslist2_[i][j]);
+      ret.push_back(m->get_particle(pslist1_[i][j]));
+      ret.push_back(m->get_particle(pslist2_[i][j]));
     }
   }
   return ret;

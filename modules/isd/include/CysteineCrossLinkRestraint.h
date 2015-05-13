@@ -42,14 +42,14 @@ IMPISD_BEGIN_NAMESPACE
  */
 
 class IMPISDEXPORT CysteineCrossLinkRestraint : public Restraint {
-  Particles ps1_;
-  Particles ps2_;
-  std::vector<Particles> pslist1_;
-  std::vector<Particles> pslist2_;
-  Pointer<Particle> beta_;
-  Pointer<Particle> sigma_;
-  Pointer<Particle> epsilon_;  // k * t at the exponential
-  Pointer<Particle> weight_;
+  ParticleIndexes ps1_;
+  ParticleIndexes ps2_;
+  std::vector<ParticleIndexes> pslist1_;
+  std::vector<ParticleIndexes> pslist2_;
+  ParticleIndex beta_;
+  ParticleIndex sigma_;
+  ParticleIndex epsilon_;  // k * t at the exponential
+  ParticleIndex weight_;
   PointerMember<CrossLinkData> data_;
   PointerMember<CysteineCrossLinkData> ccldata_;
   int constr_type_;
@@ -58,18 +58,31 @@ class IMPISDEXPORT CysteineCrossLinkRestraint : public Restraint {
 
  public:
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
-      preferably in a Singleton or PairContainer as appropriate.
-   */
+  CysteineCrossLinkRestraint(Model *m, ParticleIndexAdaptor beta,
+                             ParticleIndexAdaptor sigma,
+                             ParticleIndexAdaptor epsilon,
+                             ParticleIndexAdaptor weight, CrossLinkData *data,
+                             double fexp);
+
+  CysteineCrossLinkRestraint(Model *m, ParticleIndexAdaptor beta,
+                             ParticleIndexAdaptor sigma,
+                             ParticleIndexAdaptor epsilon,
+                             ParticleIndexAdaptor weight, CrossLinkData *data,
+                             CysteineCrossLinkData *ccldata);
+
+#ifndef IMP_DOXYGEN
+  IMPISD_DEPRECATED_METHOD_DECL(2.5)
   CysteineCrossLinkRestraint(Particle *beta, Particle *sigma,
                              Particle *epsilon,
                              Particle *weight, CrossLinkData *data,
                              double fexp);
 
+  IMPISD_DEPRECATED_METHOD_DECL(2.5)
   CysteineCrossLinkRestraint(Particle *beta, Particle *sigma,
                              Particle *epsilon,
                              Particle *weight, CrossLinkData *data,
                              CysteineCrossLinkData *ccldata);
+#endif
 
   /* call for probability */
   double get_probability() const;
@@ -86,10 +99,31 @@ class IMPISDEXPORT CysteineCrossLinkRestraint : public Restraint {
 
   double get_normal_pdf(double mean, double sigma, double x) const;
 
-  void add_contribution(Particle *p1, Particle *p2);
-  void add_contribution(Particles p1, Particles p2);
+  void add_contribution(ParticleIndexAdaptor p1, ParticleIndexAdaptor p2);
+  void add_contribution(ParticleIndexes p1, ParticleIndexes p2);
 
-  algebra::Vector3D get_CB_coordinates(const Particles &ps) const;
+  algebra::Vector3D get_CB_coordinates(const ParticleIndexes &ps) const;
+
+#ifndef IMP_DOXYGEN
+  IMPISD_DEPRECATED_METHOD_DECL(2.5)
+  void add_contribution(Particle *p1, Particle *p2) {
+    IMPISD_DEPRECATED_METHOD_DEF(2.5, "Use the index-based method instead.");
+    add_contribution(p1->get_index(), p2->get_index());
+  }
+
+  IMPISD_DEPRECATED_METHOD_DECL(2.5)
+  void add_contribution(Particles p1, Particles p2) {
+    IMPISD_DEPRECATED_METHOD_DEF(2.5, "Use the index-based method instead.");
+    add_contribution(IMP::internal::get_index(p1),
+                     IMP::internal::get_index(p2));
+  }
+
+  IMPISD_DEPRECATED_METHOD_DECL(2.5)
+  algebra::Vector3D get_CB_coordinates(const Particles &ps) const {
+    IMPISD_DEPRECATED_METHOD_DEF(2.5, "Use the index-based method instead.");
+    return get_CB_coordinates(IMP::internal::get_index(ps));
+  }
+#endif
 
   unsigned get_number_of_contributions() const;
 
