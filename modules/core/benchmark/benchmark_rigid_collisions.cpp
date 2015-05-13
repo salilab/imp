@@ -5,6 +5,7 @@
 #include <IMP.h>
 #include <IMP/core.h>
 #include <IMP/algebra.h>
+#include <IMP/flags.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
@@ -91,7 +92,8 @@ Model *setup(bool rpcpf, RigidBodies &rbs) {
 }
 }
 
-int main(int, char **) {
+int main(int argc, char **argv) {
+  IMP::setup_from_argv(argc, argv, "Benchmark rigid collisions");
   {
     RigidBodies rbs;
     IMP::PointerMember<Model> m = setup(false, rbs);
