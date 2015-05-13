@@ -110,9 +110,11 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
   Pointer<GridObject> gb =
       get_grid_object(rbb_, b_, ok_, complementarity_thickness_,
                       complementarity_value_, interior_thickness_, voxel_size_);
+  ga->set_was_used(true);
   algebra::Transformation3D tra =
       ga->get_data().first *
       rba_.get_reference_frame().get_transformation_from();
+  gb->set_was_used(true);
   algebra::Transformation3D trb =
       rbb_.get_reference_frame().get_transformation_to() / gb->get_data().first;
   // transform a by tra and b by trb
