@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
   IMP_NEW(Model, m, ());
   IMP_NEW(HarmonicUpperBoundSphereDistancePairScore, ss, (0, 1));
   ParticlesTemp ps = create_xyzr_particles(m, npart, .1);
-  IMP_NEW(ListSingletonContainer, lsc, (ps));
+  IMP_NEW(ListSingletonContainer, lsc, (m, IMP::internal::get_index(ps)));
   {
     IMP_NEW(ConnectivityRestraint, r, (ss, lsc));
     benchmark_it("connectivity", "slow", lsc, r);

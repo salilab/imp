@@ -47,7 +47,8 @@ RigidBody create_rb(atom::Hierarchy hr) {
 }
 
 Restraint *create_excluded_volume(atom::Hierarchy h, RigidBodies, double k) {
-  IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
+  IMP_NEW(ListSingletonContainer, lsc,
+          (h->get_model(), IMP::internal::get_index(atom::get_leaves(h))));
   IMP_NEW(ExcludedVolumeRestraint, evr, (lsc, k, 10));
   evr->set_name("excluded volume");
   // evr->set_log_level(VERBOSE);
@@ -65,7 +66,8 @@ PairScore *create_pair_score(atom::Hierarchy, RigidBodies rbs, double k) {
 
 Restraint *create_diameter_restraint(Model *, RigidBodies rbs,
                                      double d) {
-  IMP_NEW(ListSingletonContainer, lsc, (rbs));
+  IMP_NEW(ListSingletonContainer, lsc, (rbs[0].get_model(),
+                                        IMP::internal::get_index(rbs)));
   IMP_NEW(HarmonicUpperBound, hub, (0, 1.0));
   IMP_NEW(DiameterRestraint, dr, (hub, lsc, d));
   dr->set_name("diameter");

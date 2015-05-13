@@ -17,10 +17,10 @@ using namespace IMP::core;
 using namespace IMP::algebra;
 
 namespace {
-void test_one(std::string name, Model *m, RigidBodies rbs, float side,
-              double) {
+void test_one(std::string name, Model *m, Restraint *r, RigidBodies rbs,
+              float side, double) {
   Vector3D minc(0, 0, 0), maxc(side, side, side);
-  m->evaluate(false);
+  r->evaluate(false);
   double runtime, inittime;
   IMP_TIME({
              for (unsigned int i = 0; i < rbs.size(); ++i) {
@@ -39,7 +39,7 @@ void test_one(std::string name, Model *m, RigidBodies rbs, float side,
                Transformation3D tr(r, t);
                rbs[i].set_reference_frame(ReferenceFrame3D(tr));
              }
-             value += m->evaluate(false);
+             value += r->evaluate(false);
            },
            runtime);
 
@@ -50,10 +50,9 @@ void test_one(std::string name, Model *m, RigidBodies rbs, float side,
   IMP::benchmark::report(oss.str(), name, runtime - inittime, value);
 }
 
-Model *setup(bool rpcpf, RigidBodies &rbs) {
+Restraint *setup(Model *m, bool rpcpf, RigidBodies &rbs) {
   set_log_level(SILENT);
   set_check_level(NONE);
-  Model *m = new Model();
   Particles atoms;
   for (int i = 0; i < 5; ++i) {
     std::string path = IMP::benchmark::get_data_path("small_protein.pdb");
@@ -86,9 +85,7 @@ Model *setup(bool rpcpf, RigidBodies &rbs) {
     lsc->set(IMP::get_indexes(get_as<ParticlesTemp>(atoms)));
     cpc = new core::internal::CoreClosePairContainer(lsc, 0.0, cpf, 1.0);
   }
-  m->add_restraint(IMP::create_restraint(
-      new DistancePairScore(new Linear(1, 0)), cpc));
-  return m;
+  return IMP::create_restraint(new DistancePairScore(new Linear(1, 0)), cpc);
 }
 }
 
@@ -96,17 +93,19 @@ int main(int argc, char **argv) {
   IMP::setup_from_argv(argc, argv, "Benchmark rigid collisions");
   {
     RigidBodies rbs;
-    IMP::PointerMember<Model> m = setup(false, rbs);
+    IMP::PointerMember<Model> m(new IMP::Model());
+    IMP::PointerMember<Restraint> r = setup(m, false, rbs);
     // std::cout << "Quadratic:" << std::endl;
-    test_one("quadratic", m, rbs, 10, 2.578245);
-    test_one("quadratic", m, rbs, 30, 1.919732);
+    test_one("quadratic", m, r, rbs, 10, 2.578245);
+    test_one("quadratic", m, r, rbs, 30, 1.919732);
   }
   {
     RigidBodies rbs;
-    IMP::PointerMember<Model> m = setup(true, rbs);
+    IMP::PointerMember<Model> m(new IMP::Model());
+    IMP::PointerMember<Restraint> r = setup(m, true, rbs);
     // std::cout << "Hierarchy:" << std::endl;
-    test_one("hierarchy", m, rbs, 10, 11.549620);
-    test_one("hierarchy", m, rbs, 30, 5.830277);
+    test_one("hierarchy", m, r, rbs, 10, 11.549620);
+    test_one("hierarchy", m, r, rbs, 30, 5.830277);
   }
   return IMP::benchmark::get_return_value();
 }

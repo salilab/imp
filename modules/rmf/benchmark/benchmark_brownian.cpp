@@ -152,13 +152,15 @@ It create_restraints(PS0 *link, PS1 *lb, SS *bottom, It in) {
   for (unsigned int i = 0; i < ret.chains.size(); ++i) {
     ParticlesTemp cur = ret.chains[i].get_children();
     all.insert(all.end(), cur.begin(), cur.end());
-    IMP_NEW(ExclusiveConsecutivePairContainer, cpc, (cur));
+    IMP_NEW(ExclusiveConsecutivePairContainer, cpc,
+            (ret.m, IMP::internal::get_index(cur)));
     // since they all use the same key
     ret.rss.push_back(container::create_restraint(link, cpc.get(), "link %1%"));
   }
   ret.filt = new container::ExclusiveConsecutivePairFilter();
   pfs.push_back(ret.filt);
-  ret.lsc = new ListSingletonContainer(all);
+  ret.lsc = new ListSingletonContainer(ret.m,
+                                       IMP::internal::get_index(all));
   IMP_NEW(ClosePairContainer, cpc, (ret.lsc, 0, ret.sp->get_value(sk)));
 
   cpc->add_pair_filters(pfs);

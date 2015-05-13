@@ -142,7 +142,7 @@ void test(int n) {
   IMP_NEW(ListPairContainer, lpc, (m));
   for (unsigned int i = 0; i < ps.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      lpc->add_particle_pair(ParticlePair(ps[i], ps[j]));
+      lpc->add(ParticleIndexPair(ps[i]->get_index(), ps[j]->get_index()));
     }
   }
   IMP_NEW(SoftSpherePairScore, dps, (1));
@@ -156,14 +156,14 @@ void test_set(int n) {
   IMP_NEW(ListPairContainer, lpc0, (m));
   for (unsigned int i = 0; i < ps.size() / 2; ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      lpc0->add_particle_pair(ParticlePair(ps[i], ps[j]));
+      lpc0->add(ParticleIndexPair(ps[i]->get_index(), ps[j]->get_index()));
     }
   }
 
   IMP_NEW(ListPairContainer, lpc1, (m));
   for (unsigned int i = ps.size() / 2; i < ps.size(); ++i) {
     for (unsigned int j = ps.size() / 2; j < i; ++j) {
-      lpc1->add_particle_pair(ParticlePair(ps[i], ps[j]));
+      lpc1->add(ParticleIndexPair(ps[i]->get_index(), ps[j]->get_index()));
     }
   }
   IMP_NEW(PairContainerSet, pcs, (m));

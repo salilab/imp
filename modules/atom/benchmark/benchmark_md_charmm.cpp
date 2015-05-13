@@ -50,10 +50,11 @@ int do_benchmark() {
        information.*/
     topology->setup_hierarchy(prot);
 
+    IMP_NEW(RestraintSet, rs, (m, "All restraints"));
     // Set up and evaluate the stereochemical part (bonds, angles, dihedrals,
     // impropers) of the CHARMM forcefield
     IMP_NEW(CHARMMStereochemistryRestraint, r, (prot, topology));
-    m->add_restraint(r);
+    rs->add_restraint(r);
 
     /* Add non-bonded interaction (in this case, Lennard-Jones). This needs to
        know the radii and well depths for each atom, so add them from the
@@ -68,7 +69,7 @@ int do_benchmark() {
     IMP_FOREACH(atom::Hierarchy atom, atoms) {
       core::XYZ(atom).set_coordinates_are_optimized(true);
     }
-    IMP_NEW(ListSingletonContainer, cont, (atoms));
+    IMP_NEW(ListSingletonContainer, cont, (m, IMP::internal::get_index(atoms)));
 
     /* Add a restraint for the Lennard-Jones interaction. This is built from
        a collection of building blocks. First, a
@@ -85,10 +86,11 @@ int do_benchmark() {
 
     IMP_NEW(ForceSwitch, sf, (6.0, 7.0));
     IMP_NEW(LennardJonesPairScore, ps, (sf));
-    m->add_restraint(new PairsRestraint(ps, nbl));
+    rs->add_restraint(new PairsRestraint(ps, nbl));
 
     // Finally, evaluate the score of the whole system (without derivatives)
     IMP_NEW(ConjugateGradients, cg, (m));
+    cg->set_scoring_function(rs);
     if (IMP::run_quick_test) {
       cg->optimize(1);
     } else {
@@ -97,6 +99,7 @@ int do_benchmark() {
 
     //## Molecular Dynamics
     IMP_NEW(MolecularDynamics, md, (m));
+    md->set_scoring_function(rs);
     md->assign_velocities(300);
     md->set_maximum_time_step(2.0);
     /*## therm legend

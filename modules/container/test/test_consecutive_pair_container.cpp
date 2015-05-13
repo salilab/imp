@@ -18,15 +18,15 @@ int main(int argc, char *argv[]) {
   IMP::setup_from_argv(argc, argv, "Test ConsecutivePairContainer.");
 
   IMP_NEW(IMP::Model, m, ());
-  IMP::ParticlesTemp ps;
+  IMP::ParticleIndexes ps;
   IMP::algebra::BoundingBox3D bb(IMP::algebra::Vector3D(0, 0, 0),
                                  IMP::algebra::Vector3D(10, 10, 10));
   for (unsigned int i = 0; i < 15; ++i) {
-    ps.push_back(new IMP::Particle(m));
-    IMP::core::XYZ::setup_particle(ps.back(),
+    ps.push_back(m->add_particle("P"));
+    IMP::core::XYZ::setup_particle(m, ps.back(),
                                    IMP::algebra::get_random_vector_in(bb));
   }
-  IMP_NEW(IMP::container::ConsecutivePairContainer, cpc, (ps));
+  IMP_NEW(IMP::container::ConsecutivePairContainer, cpc, (m, ps));
   IMP_NEW(IMP::core::HarmonicDistancePairScore, hdps, (0, 1));
   IMP::Pointer<IMP::Restraint> r =
       IMP::container::create_restraint(hdps.get(), cpc.get());
@@ -37,12 +37,9 @@ int main(int argc, char *argv[]) {
                   "Bad lengths: " << rds.size() << " vs " << ps.size() - 1);
   double re = r->evaluate(false);
   double rde = rd->evaluate(false);
-  double rdae = m->evaluate(false);
   IMP_CHECK_VARIABLE(re);
   IMP_CHECK_VARIABLE(rde);
-  IMP_CHECK_VARIABLE(rdae);
   IMP_USAGE_CHECK(std::abs(rde - re) < .1,
-                  "Invalid decomposed score: " << re << " vs " << rde << " vs "
-                                               << rdae);
+                  "Invalid decomposed score: " << re << " vs " << rde);
   return 0;
 }

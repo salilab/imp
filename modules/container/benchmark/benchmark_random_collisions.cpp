@@ -63,11 +63,10 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   for (unsigned int i = 0; i < ps.size(); ++i) {
     XYZR(ps[i]).set_radius(rand(random_number_generator));
   }
-  IMP_NEW(ListSingletonContainer, lsc, (ps));
+  IMP_NEW(ListSingletonContainer, lsc, (m, IMP::internal::get_index(ps)));
   IMP_NEW(ClosePairContainer, cpc, (lsc, 0.0, cpf, 1.0));
   IMP_NEW(ConstPairScore, cps, ());
   IMP_NEW(PairsRestraint, pr, (cps, cpc));
-  m->add_restraint(pr);
   double setuptime;
   IMP_TIME({
              for (unsigned int i = 0; i < pis.size(); ++i) {
@@ -83,7 +82,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
                XYZ(m, pis[i]).set_coordinates(
                    get_random_vector_in(BoundingBox3D(minc, maxc)));
              }
-             result += m->evaluate(false);
+             result += pr->evaluate(false);
            },
            runtime);
   std::ostringstream oss;
