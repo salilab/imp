@@ -17,12 +17,13 @@ class Tests(IMP.test.TestCase):
         for subclass in (IMP.InternalException, IMP.ModelException,
                          IMP.UsageException, IMP.IndexException,
                          IMP.IOException, IMP.ValueException,
-                         IMP.EventException):
+                         IMP.EventException, IMP.TypeException):
             self.assertSubclass(subclass, IMP.Exception)
         # Check for exceptions that also should derive from Python types
         self.assertSubclass(IMP.IndexException, IndexError)
         self.assertSubclass(IMP.IOException, IOError)
         self.assertSubclass(IMP.ValueException, ValueError)
+        self.assertSubclass(IMP.TypeException, TypeError)
 
 if __name__ == '__main__':
     IMP.test.main()

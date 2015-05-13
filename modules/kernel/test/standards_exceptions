@@ -28,7 +28,7 @@ function_name_exceptions=[
     'OptionParser.print_help',
     'OptionParser.print_usage',
     'OptionParser.print_version']
-value_object_exceptions=['Exception',
+value_object_exceptions=['Exception', 'TypeException',
                                             'IOException', 'IndexException',
                                            'InternalException',
                                             'ModelException',

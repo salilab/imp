@@ -67,6 +67,8 @@ do {
     CREATE_EXCEPTION_CLASS_PYTHON(imp_io_exception, IOException, IOError);
     CREATE_EXCEPTION_CLASS_PYTHON(imp_value_exception, ValueException,
                                   ValueError);
+    CREATE_EXCEPTION_CLASS_PYTHON(imp_type_exception, TypeException,
+                                  TypeError);
 
 #ifndef IMP_SWIG_KERNEL
     Py_DECREF(base);
@@ -79,13 +81,14 @@ do {
 %pythoncode %{
 from _IMP_kernel import Exception, InternalException, ModelException, EventException
 from _IMP_kernel import UsageException, IndexException, IOException, ValueException
+from _IMP_kernel import TypeException
 %}
 #endif
 
 %{
 static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
                 *imp_usage_exception, *imp_index_exception, *imp_io_exception,
-    *imp_value_exception, *imp_event_exception;
+    *imp_value_exception, *imp_event_exception, *imp_type_exception;
 %}
 
 %{
@@ -128,6 +131,8 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
       PyErr_SetString(imp_value_exception, e.what());
     } catch (const IMP::InternalException &e) {
       PyErr_SetString(imp_internal_exception, e.what());
+    } catch (const IMP::TypeException &e) {
+      PyErr_SetString(imp_type_exception, e.what());
     } catch (const IMP::ModelException &e) {
       PyErr_SetString(imp_model_exception, e.what());
     } catch (const IMP::UsageException &e) {

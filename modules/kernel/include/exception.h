@@ -141,6 +141,16 @@ class IMPKERNELEXPORT ValueException : public Exception {
   ~ValueException() IMP_NOEXCEPT;
 };
 
+//! An exception for an invalid type being passed to \imp
+/** The equivalent Python type also derives from Python's TypeError.
+ */
+class IMPKERNELEXPORT TypeException : public Exception {
+ public:
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(TypeException);
+  TypeException(const char *t) : Exception(t) {}
+  ~TypeException() IMP_NOEXCEPT;
+};
+
 //! An exception for a request for an invalid member of a container
 /** The equivalent Python type also derives from Python's IndexError.
  */

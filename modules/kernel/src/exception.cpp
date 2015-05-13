@@ -32,4 +32,6 @@ EventException::~EventException() throw() {}
 
 IOException::~IOException() throw() {}
 
+TypeException::~TypeException() throw() {}
+
 IMPKERNEL_END_NAMESPACE
