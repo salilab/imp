@@ -64,7 +64,7 @@ def perform_benchmark(model, tr_list, r1, r2, rb1, rb2, maxiter):
         IMP.benchmark.report("ComplementarityRestraint %d" % i, "",
                              elapsed, pct_error)
 
-
+IMP.setup_from_argv(sys.argv, "Geometric complementarity benchmark.")
 IMP.set_log_level(IMP.SILENT)
 tr_list = read_transformations()
 model = IMP.Model()
