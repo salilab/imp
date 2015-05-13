@@ -60,10 +60,10 @@ CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(
     Particle *beta, Particle *sigma, Particle *epsilon,
     Particle *weight, CrossLinkData *data, double fexp)
     : Restraint(beta->get_model(), "CysteineCrossLinkRestraint%1%"),
-      beta_(beta),
-      sigma_(sigma),
-      epsilon_(epsilon),
-      weight_(weight),
+      beta_(beta->get_index()),
+      sigma_(sigma->get_index()),
+      epsilon_(epsilon->get_index()),
+      weight_(weight->get_index()),
       data_(data),
       fexp_(fexp) {
   IMPISD_DEPRECATED_METHOD_DEF(2.5, "Use an index-based constructor instead.");
@@ -75,10 +75,10 @@ CysteineCrossLinkRestraint::CysteineCrossLinkRestraint(
     Particle *weight, CrossLinkData *data,
     CysteineCrossLinkData *ccldata)
     : Restraint(beta->get_model(), "CysteineCrossLinkRestraint%1%"),
-      beta_(beta),
-      sigma_(sigma),
-      epsilon_(epsilon),
-      weight_(weight),
+      beta_(beta->get_index()),
+      sigma_(sigma->get_index()),
+      epsilon_(epsilon->get_index()),
+      weight_(weight->get_index()),
       data_(data),
       ccldata_(ccldata) {
   IMPISD_DEPRECATED_METHOD_DEF(2.5, "Use an index-based constructor instead.");
