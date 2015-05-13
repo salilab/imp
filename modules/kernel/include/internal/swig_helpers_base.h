@@ -161,6 +161,14 @@ struct ValueOrObject<UncheckedWeakPointer<T>,
   typedef T* store_type;
 };
 
+inline std::string get_convert_error(const char *err, const char *symname,
+                                     int argnum, const char *argtype) {
+  std::ostringstream msg;
+  msg << err << " in '" << symname << "', argument " << argnum
+      << " of type '" << argtype << "'";
+  return msg.str();
+}
+
 template <class T>
 struct ConvertAllBase {
   BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
@@ -183,10 +191,12 @@ struct ConvertValueBase : public ConvertAllBase<T> {
     void* vp;
     int res = SWIG_ConvertPtr(o, &vp, st, 0);
     if (!SWIG_IsOK(res)) {
-      IMP_THROW("Wrong type.", ValueException);
+      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
+                ValueException);
     }
     if (!vp) {
-      IMP_THROW("Wrong type.", ValueException);
+      IMP_THROW(get_convert_error("NULL value", symname, argnum, argtype),
+                ValueException);
     }
     return *reinterpret_cast<T*>(vp);
   }
@@ -210,10 +220,12 @@ struct ConvertObjectBase : public ConvertAllBase<T> {
     void* vp;
     int res = SWIG_ConvertPtr(o, &vp, st, 0);
     if (!SWIG_IsOK(res)) {
-      IMP_THROW("Wrong type.", ValueException);
+      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
+                ValueException);
     }
     if (!vp) {
-      IMP_THROW("Wrong type.", ValueException);
+      IMP_THROW(get_convert_error("NULL value", symname, argnum, argtype),
+                ValueException);
     }
     T* p = reinterpret_cast<T*>(vp);
     IMP_CHECK_OBJECT(static_cast<Object*>(p));
@@ -239,10 +251,12 @@ struct ConvertRAII : public ConvertAllBase<T> {
     void* vp;
     int res = SWIG_ConvertPtr(o, &vp, st, 0);
     if (!SWIG_IsOK(res)) {
-      IMP_THROW("Wrong type.", ValueException);
+      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
+                ValueException);
     }
     if (!vp) {
-      IMP_THROW("Wrong type.", ValueException);
+      IMP_THROW(get_convert_error("NULL value", symname, argnum, argtype),
+                ValueException);
     }
     T* p = reinterpret_cast<T*>(vp);
     return p;
@@ -355,7 +369,8 @@ struct ConvertSequence<std::pair<T, T>, ConvertT> {
                                         SwigData particle_st,
                                         SwigData decorator_st) {
     if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
-      IMP_THROW("Argument not of correct type", ValueException);
+      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
+                ValueException);
     }
     Intermediate im;
     Helper::fill(o, symname, argnum, argtype, st, particle_st,
@@ -395,7 +410,8 @@ struct ConvertVectorBase {
                           SwigData particle_st,
                           SwigData decorator_st) {
     if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
-      IMP_THROW("Argument not of correct type", ValueException);
+      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
+                ValueException);
     }
     T ret(PySequence_Size(o));
     Helper::fill(o, symname, argnum, argtype, st, particle_st,
@@ -436,11 +452,14 @@ struct ConvertSequence<Array<D, T, TS>, ConvertT> {
                                         SwigData st, SwigData particle_st,
                                         SwigData decorator_st) {
     if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
-      IMP_THROW("Argument not of correct type", ValueException);
+      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
+                ValueException);
     }
     if (PySequence_Size(o) != D) {
-      IMP_THROW("Expected tuple of size " << D << " but got one of size "
-                                          << PySequence_Size(o),
+      std::ostringstream msg;
+      msg << "Expected tuple of size " << D << " but got one of size "
+          << PySequence_Size(o);
+      IMP_THROW(get_convert_error(msg.str().c_str(), symname, argnum, argtype),
                 ValueException);
     }
     Array<D, T, TS> ret;
@@ -483,11 +502,14 @@ struct Convert<std::string> {
                                     SwigData, SwigData) {
 #if PY_VERSION_HEX>=0x03000000
     if (!o || !PyUnicode_Check(o)) {
-      IMP_THROW("Not all objects in list have correct type.", ValueException);
+      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
+                ValueException);
     } else {
       PyObject *obj = PyUnicode_AsUTF8String(o);
       if (!obj) {
-        IMP_THROW("Invalid unicode", ValueException);
+        IMP_THROW(get_convert_error("Invalid Unicode", symname, argnum,
+                                    argtype),
+                  ValueException);
       }
       std::string s(PyString_AsString(obj));
       Py_DECREF(obj);
@@ -495,7 +517,8 @@ struct Convert<std::string> {
     }
 #else
     if (!o || !PyString_Check(o)) {
-      IMP_THROW("Not all objects in list have correct type.", ValueException);
+      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
+                ValueException);
     } else {
       return std::string(PyString_AsString(o));
     }
@@ -525,7 +548,8 @@ struct ConvertFloatBase {
                                const char *argtype, SwigData, SwigData,
                                SwigData) {
     if (!o || !PyNumber_Check(o)) {
-      IMP_THROW("Not all objects in list have correct type.", ValueException);
+      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
+                ValueException);
     } else {
       return PyFloat_AsDouble(o);
     }
@@ -562,7 +586,7 @@ struct Convert<int> {
     } else if (PyLong_Check(o)) {
       return PyLong_AsLong(o);
     } else {
-      IMP_THROW("Not all objects in list have correct number type.",
+      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
                 ValueException);
     }
   }

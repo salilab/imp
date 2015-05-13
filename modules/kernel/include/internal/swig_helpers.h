@@ -34,7 +34,7 @@ struct Convert<Particle> : public ConvertObjectBase<Particle> {
     if (!SWIG_IsOK(res)) {
       int res = SWIG_ConvertPtr(o, &vp, decorator_st, 0);
       if (!SWIG_IsOK(res)) {
-        IMP_THROW("Not all objects in list have correct object type.",
+        IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
                   ValueException);
       } else {
         Decorator *d = reinterpret_cast<Decorator *>(vp);
@@ -116,9 +116,11 @@ struct Convert<
                                                     argtype, particle_st,
                                                     particle_st, decorator_st);
     if (!T::get_is_setup(p)) {
-      IMP_THROW(
-          "Not all objects in list have correct object type: " << p->get_name(),
-          ValueException);
+      std::ostringstream msg;
+      msg << "Particle " << p->get_name()
+          << " is not of correct decorator type";
+      IMP_THROW(get_convert_error(msg.str().c_str(), symname, argnum, argtype),
+                ValueException);
     }
     return T(p);
   }
@@ -152,8 +154,11 @@ struct Convert<
       Particle *p = Convert<Particle>::get_cpp_object(
           o, symname, argnum, argtype, particle_st, particle_st, decorator_st);
       if (!T::get_is_setup(p)) {
-        IMP_THROW("Not all objects in list have correct object type: "
-                      << p->get_name(),
+        std::ostringstream msg;
+        msg << "Particle " << p->get_name()
+            << " is not of correct decorator type";
+        IMP_THROW(get_convert_error(msg.str().c_str(), symname, argnum,
+                                    argtype),
                   ValueException);
       }
       return T(p);
