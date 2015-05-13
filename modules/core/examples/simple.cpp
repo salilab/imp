@@ -10,8 +10,12 @@
 #include <IMP.h>
 #include <IMP/algebra.h>
 #include <IMP/core.h>
+#include <IMP/flags.h>
 
-int main() {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv,
+                       "Simple example of using the IMP C++ library.");
+
   IMP_NEW(IMP::Model, m, ());
 
   // Create two "untyped" particles

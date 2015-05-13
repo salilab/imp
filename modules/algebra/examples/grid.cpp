@@ -8,10 +8,14 @@
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/algebra/grid_utility.h>
+#include <IMP/flags.h>
 
 #include <algorithm>
 
-int main(int, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv,
+                       "Show some of the basics of using a grid from C++.");
+
   IMP::algebra::BoundingBox3D bb(IMP::algebra::Vector3D(0, 0, 0),
                                  IMP::algebra::Vector3D(10, 10, 10));
   // declare a grid covering the space 0 to 100 with a cell size of 1 and
