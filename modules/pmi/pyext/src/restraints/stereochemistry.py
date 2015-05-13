@@ -227,7 +227,7 @@ class ResidueAngleRestraint(object):
                     triplet.append(p)
             print("ResidueAngleRestraint: adding a restraint between %s %s %s" % (triplet[0].get_name(), triplet[1].get_name(), triplet[2].get_name()))
             self.rs.add_restraint(
-                IMP.core.AngleRestraint(ts,
+                IMP.core.AngleRestraint(triplet[0].get_model(), ts,
                                         triplet[0],
                                         triplet[1],
                                         triplet[2]))

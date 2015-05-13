@@ -97,11 +97,11 @@ class DistanceRestraint(object):
             raise ValueError("more than one particle selected")
 
         self.rs.add_restraint(
-            IMP.core.DistanceRestraint(ts1,
+            IMP.core.DistanceRestraint(self.m, ts1,
                                        particles1[0],
                                        particles2[0]))
         self.rs.add_restraint(
-            IMP.core.DistanceRestraint(ts2,
+            IMP.core.DistanceRestraint(self.m, ts2,
                                        particles1[0],
                                        particles2[0]))
 

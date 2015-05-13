@@ -8,6 +8,7 @@ import IMP.pmi.output
 import time
 import sys
 
+IMP.setup_from_argv(sys.argv, "Replica exchange benchmark.")
 IMP.set_log_level(IMP.SILENT)
 old_stdout = sys.stdout
 class DummyFile(object):

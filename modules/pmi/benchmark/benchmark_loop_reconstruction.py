@@ -15,6 +15,7 @@ import IMP.pmi.tools as tools
 import IMP.pmi.samplers as samplers
 import IMP.pmi.output as output
 
+IMP.setup_from_argv(sys.argv, "Loop reconstruction benchmark.")
 IMP.set_log_level(IMP.SILENT)
 # this benchmark should take 5 sec to initialize and 3 sec per MC loop, for a total of 35 sec.
 
