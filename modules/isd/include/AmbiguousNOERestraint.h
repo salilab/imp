@@ -22,8 +22,8 @@ IMPISD_BEGIN_NAMESPACE
 //! Ambiguous NOE distance restraint between a number of pairs of particles.
 class IMPISDEXPORT AmbiguousNOERestraint : public Restraint {
   Pointer<PairContainer> pc_;
-  Pointer<Particle> sigma_;
-  Pointer<Particle> gamma_;
+  ParticleIndex sigma_;
+  ParticleIndex gamma_;
   double Vexp_;
   double chi_;
   void set_chi(double chi) { chi_ = chi; }
@@ -34,7 +34,7 @@ class IMPISDEXPORT AmbiguousNOERestraint : public Restraint {
       preferably in a Singleton or PairContainer as appropriate.
    */
   AmbiguousNOERestraint(Model *m, PairContainer *pc,
-                        Particle *sigma, Particle *gamma,
+                        ParticleIndexAdaptor sigma, ParticleIndexAdaptor gamma,
                         double Iexp);
 
   /* call for probability */
