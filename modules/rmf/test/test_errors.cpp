@@ -8,8 +8,11 @@
 #include <RMF/exceptions.h>
 #include <IMP/exception.h>
 #include <RMF/utility.h>
+#include <IMP/flags.h>
 
-int main(int, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test error handling.");
+
   try {
     RMF::test_throw_exception();
   }

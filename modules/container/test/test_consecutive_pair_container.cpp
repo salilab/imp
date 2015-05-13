@@ -10,10 +10,13 @@
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/RestraintSet.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/flags.h>
 #include <algorithm>
 #include <IMP/container/generic.h>
 
-int main(int, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test ConsecutivePairContainer.");
+
   IMP_NEW(IMP::Model, m, ());
   IMP::ParticlesTemp ps;
   IMP::algebra::BoundingBox3D bb(IMP::algebra::Vector3D(0, 0, 0),

@@ -8,6 +8,7 @@
 #include <IMP/types.h>
 #include <IMP/random.h>
 #include <IMP/utility.h>
+#include <IMP/flags.h>
 
 namespace {
 template <class RNG>
@@ -76,7 +77,8 @@ void check_triangle() {
 }
 }
 
-int main(int, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test piecewise linear.");
   check_triangle();
   check_gaussian();
   return 0;

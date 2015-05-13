@@ -5,7 +5,11 @@
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
 #include <IMP/utility_macros.h>
-int main(int, char * []) {
+#include <IMP/flags.h>
+
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test set internal coordinates.");
+
   IMP_NEW(IMP::Model, m, ());
   IMP_NEW(IMP::Particle, p, (m));
   // special cased FloatKey

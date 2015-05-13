@@ -6,11 +6,13 @@
  */
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/vector_generators.h>
+#include <IMP/flags.h>
 #include <algorithm>
 
 using namespace IMP::algebra;
 
-int main(int, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test grid storage.");
   {
     typedef UnboundedGridRangeD<4> UBGS;
     UBGS ubgs;

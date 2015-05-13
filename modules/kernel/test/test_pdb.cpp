@@ -5,6 +5,7 @@
 #include <IMP/log.h>
 #include <IMP/Particle.h>
 #include <IMP/internal/pdb.h>
+#include <IMP/flags.h>
 #include <sstream>
 
 const char *data =
@@ -21,7 +22,9 @@ const char *data =
     "ATOM    341  O   LYS    42      33.661   0.750  17.787  \n"
     "ATOM    342  CB  LYS    42      31.007   1.987  16.739  \n";
 
-int main(int, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test PDB.");
+
   IMP::set_log_level(IMP::MEMORY);
   IMP_NEW(IMP::Model, m, ());
   std::istringstream in(data);

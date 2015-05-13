@@ -8,6 +8,8 @@
 #include <IMP/Showable.h>
 #include <IMP/VersionInfo.h>
 #include <IMP/check_macros.h>
+#include <IMP/flags.h>
+
 namespace IMP {
 namespace {
 void test() {
@@ -20,7 +22,9 @@ void test() {
 }
 }
 }
-int main(int, char * []) {
+
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test showable.");
   IMP_CATCH_AND_TERMINATE(IMP::test(););
   return 0;
 }

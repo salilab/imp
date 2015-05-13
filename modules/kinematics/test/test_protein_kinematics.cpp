@@ -8,6 +8,7 @@
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/flags.h>
 
 #include <IMP/kinematics/ProteinKinematics.h>
 #include <string>
@@ -16,7 +17,8 @@
 
 using namespace IMP::kinematics;
 
-int main(int argc, char** argv) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test protein kinematics.");
   return 0;
 
   // output arguments

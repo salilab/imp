@@ -16,6 +16,7 @@
 #include "IMP/Model.h"
 #include "IMP/atom/Atom.h"
 #include "IMP/core/XYZR.h"
+#include <IMP/flags.h>
 #include "IMP/multifit/internal/GeometricComplementarity.h"
 
 namespace {
@@ -74,7 +75,8 @@ struct Result {
 };
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test geometric complementarity");
   IMP::set_log_level(IMP::VERBOSE);
   std::vector<Result> R;
   for (size_t i = 0; i < compile_time_array_size(Examples); ++i) {

@@ -6,6 +6,7 @@
 
 #include <IMP/algebra/constants.h>
 #include <IMP/multifit/GeometricHash.h>
+#include <IMP/flags.h>
 
 typedef IMP::multifit::GeometricHash<int, 2> Hash2;
 typedef std::vector<Hash2::Point> Points;
@@ -62,7 +63,9 @@ Points gen_points(int N) {
   return points;
 }
 }
-int main() {
+
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test geometric hash.");
   Points points = gen_points(200);
   Hash2::Point cnt(1., 1.);
   double rd = 0.45;

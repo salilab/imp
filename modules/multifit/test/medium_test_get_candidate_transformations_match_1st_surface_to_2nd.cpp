@@ -6,6 +6,7 @@
 #include "IMP/algebra/VectorD.h"
 #include <IMP/log.h>
 #include <IMP/log_macros.h>
+#include <IMP/flags.h>
 #include "IMP/algebra/BoundingBoxD.h"
 #include "IMP/algebra/grid_utility.h"
 #include "IMP/algebra/standard_grids.h"
@@ -50,7 +51,9 @@ void lower_knob_box(IMP::algebra::DenseGrid3D<float> &map,
 }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv,
+            "Test get_candidate_transformations_match_1st_surface_to_2nd");
   IMP::set_log_level(IMP::TERSE);
   IMP::algebra::BoundingBox3D bb1(IMP::algebra::VectorD<3>(-20, 0, 0),
                                   IMP::algebra::VectorD<3>(20, 40, 25));

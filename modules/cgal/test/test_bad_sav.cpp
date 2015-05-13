@@ -2,9 +2,13 @@
  */
 
 #include <IMP/cgal/internal/union_of_balls.h>
+#include <IMP/flags.h>
+
 typedef IMP::algebra::Sphere3D S;
 typedef IMP::algebra::Vector3D V;
-int main(int, char * []) {
+
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test bad sav");
   //
   // test computation for two non intersecting balls
   //

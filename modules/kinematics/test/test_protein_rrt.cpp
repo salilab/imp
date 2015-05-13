@@ -27,6 +27,7 @@
 #include <IMP/kinematics/directional_DOFs.h>
 #include <IMP/kinematics/UniformBackboneSampler.h>
 #include <IMP/kinematics/KinematicForestScoreState.h>
+#include <IMP/flags.h>
 
 #include <string>
 #include <boost/lexical_cast.hpp>
@@ -42,7 +43,8 @@ void scale_radii(IMP::ParticlesTemp& particles, double scale) {
 
 using namespace IMP::kinematics;
 
-int main(int argc, char** argv) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test protein RRT.");
   return 0;
   // output arguments
   for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";

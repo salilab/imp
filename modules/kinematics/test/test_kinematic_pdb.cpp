@@ -14,6 +14,7 @@
 #include <IMP/kinematics/PrismaticJoint.h>
 #include <IMP/kinematics/TransformationJoint.h>
 #include <IMP/kinematics/revolute_joints.h>
+#include <IMP/flags.h>
 #include <string>
 
 using namespace IMP::kinematics;
@@ -404,7 +405,8 @@ void test_dihedral(IMP::Model* model, IMP::core::RigidBodies& rbs) {
   print_info(kf, rbs, pj0, dj1, dj2, pj3, "set_angle 180 deg");
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test kinematic PDB.");
   return 0;
   // TODO: fix this test
 

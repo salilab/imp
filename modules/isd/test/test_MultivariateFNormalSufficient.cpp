@@ -14,6 +14,7 @@
 #include <IMP/random.h>
 #include <boost/random/uniform_real.hpp>
 #include <IMP/algebra/eigen3/Eigen/Dense>
+#include <IMP/flags.h>
 
 namespace {
 
@@ -943,7 +944,8 @@ bool test_degenerate_N(int N){
 */
 }
 
-int main(int, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test multivariate FNormal.");
   try {
     // test_mu(20);
     // return 0;
