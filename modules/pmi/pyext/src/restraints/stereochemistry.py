@@ -152,7 +152,7 @@ class ResidueBondRestraint(object):
                     pair.append(p)
             print("ResidueBondRestraint: adding a restraint between %s %s" % (pair[0].get_name(), pair[1].get_name()))
             self.rs.add_restraint(
-                IMP.core.DistanceRestraint(ts, pair[0], pair[1]))
+                IMP.core.DistanceRestraint(self.m, ts, pair[0], pair[1]))
             self.pairslist.append(IMP.ParticlePair(pair[0], pair[1]))
             self.pairslist.append(IMP.ParticlePair(pair[1], pair[0]))
 
@@ -574,7 +574,7 @@ class SecondaryStructure(object):
     def get_distance_restraint(self, p0, p1, d0, kappa):
         h = IMP.core.Harmonic(d0, kappa)
         dps = IMP.core.DistancePairScore(h)
-        pr = IMP.core.PairRestraint(dps, IMP.ParticlePair(p0, p1))
+        pr = IMP.core.PairRestraint(self.m, dps, IMP.ParticlePair(p0, p1))
         return pr
 
     def get_output(self):
@@ -650,7 +650,7 @@ class ElasticNetworkRestraint(object):
 
             ts=IMP.core.HarmonicDistancePairScore(distance,strength)
             print("ElasticNetworkConstraint: adding a restraint between %s and %s with distance %.3f" % (p1.get_name(),p2.get_name(),distance))
-            self.rs.add_restraint(IMP.core.PairRestraint(ts,IMP.ParticlePair(p1, p2)))
+            self.rs.add_restraint(IMP.core.PairRestraint(self.m, ts, (p1, p2)))
             self.pairslist.append(IMP.ParticlePair(p1, p2))
             self.pairslist.append(IMP.ParticlePair(p1, p2))
         print('created',self.rs.get_number_of_restraints(),'restraints')
