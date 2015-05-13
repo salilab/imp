@@ -25,8 +25,9 @@ template <>
 struct Convert<Particle> : public ConvertObjectBase<Particle> {
   static const int converter = 2;
   template <class SwigData>
-  static Particle *get_cpp_object(PyObject *o, SwigData, SwigData particle_st,
-                                  SwigData decorator_st) {
+  static Particle *get_cpp_object(PyObject *o, const char *symname, int argnum,
+                                  const char *argtype, SwigData,
+                                  SwigData particle_st, SwigData decorator_st) {
     void *vp;
     int res = SWIG_ConvertPtr(o, &vp, particle_st, 0);
     Particle *p = nullptr;
@@ -55,7 +56,7 @@ struct Convert<Particle> : public ConvertObjectBase<Particle> {
   static bool get_is_cpp_object(PyObject *o, SwigData st, SwigData particle_st,
                                 SwigData decorator_st) {
     try {
-      get_cpp_object(o, st, particle_st, decorator_st);
+      get_cpp_object(o, "", 0, "", st, particle_st, decorator_st);
     }
     catch (...) {
       return 0;
@@ -69,7 +70,9 @@ struct Convert<ParticleIndex> : public ConvertValueBase<ParticleIndex> {
   typedef Convert<Particle> Helper;
   static const int converter = 40;
   template <class SwigData>
-  static ParticleIndex get_cpp_object(PyObject *o, SwigData index_st,
+  static ParticleIndex get_cpp_object(PyObject *o, const char *symname,
+                                      int argnum, const char *argtype,
+                                      SwigData index_st,
                                       SwigData particle_st,
                                       SwigData decorator_st) {
     void *vp;
@@ -80,7 +83,8 @@ struct Convert<ParticleIndex> : public ConvertValueBase<ParticleIndex> {
       if (SWIG_IsNewObj(res)) delete temp;
       return ret;
     } else {
-      Particle *p = Helper::get_cpp_object(o, index_st, particle_st,
+      Particle *p = Helper::get_cpp_object(o, symname, argnum, argtype,
+                                           index_st, particle_st,
                                            decorator_st);
       return p->get_index();
     }
@@ -89,7 +93,7 @@ struct Convert<ParticleIndex> : public ConvertValueBase<ParticleIndex> {
   static bool get_is_cpp_object(PyObject *o, SwigData st, SwigData particle_st,
                                 SwigData decorator_st) {
     try {
-      get_cpp_object(o, st, particle_st, decorator_st);
+      get_cpp_object(o, "", 0, "", st, particle_st, decorator_st);
     }
     catch (...) {
       return 0;
@@ -105,10 +109,12 @@ struct Convert<
            type> : public ConvertValueBase<T> {
   static const int converter = 3;
   template <class SwigData>
-  static T get_cpp_object(PyObject *o, SwigData, SwigData particle_st,
+  static T get_cpp_object(PyObject *o, const char *symname, int argnum,
+                          const char *argtype, SwigData, SwigData particle_st,
                           SwigData decorator_st) {
-    Particle *p = Convert<Particle>::get_cpp_object(o, particle_st, particle_st,
-                                                    decorator_st);
+    Particle *p = Convert<Particle>::get_cpp_object(o, symname, argnum,
+                                                    argtype, particle_st,
+                                                    particle_st, decorator_st);
     if (!T::get_is_setup(p)) {
       IMP_THROW(
           "Not all objects in list have correct object type: " << p->get_name(),
@@ -120,7 +126,7 @@ struct Convert<
   static bool get_is_cpp_object(PyObject *o, SwigData st, SwigData particle_st,
                                 SwigData decorator_st) {
     try {
-      get_cpp_object(o, st, particle_st, decorator_st);
+      get_cpp_object(o, "", 0, "", st, particle_st, decorator_st);
     }
     catch (...) {
       return 0;
@@ -135,15 +141,16 @@ struct Convert<
            typename T::DecoratorHasTraits>::type> : public ConvertValueBase<T> {
   static const int converter = 4;
   template <class SwigData>
-  static T get_cpp_object(PyObject *o, SwigData st, SwigData particle_st,
-                          SwigData decorator_st) {
+  static T get_cpp_object(PyObject *o, const char *symname, int argnum,
+                          const char *argtype, SwigData st,
+                          SwigData particle_st, SwigData decorator_st) {
     try {
-      return ConvertValueBase<T>::get_cpp_object(o, st, particle_st,
-                                                 decorator_st);
+      return ConvertValueBase<T>::get_cpp_object(o, symname, argnum, argtype,
+                                                 st, particle_st, decorator_st);
     }
     catch (ValueException) {
       Particle *p = Convert<Particle>::get_cpp_object(
-          o, particle_st, particle_st, decorator_st);
+          o, symname, argnum, argtype, particle_st, particle_st, decorator_st);
       if (!T::get_is_setup(p)) {
         IMP_THROW("Not all objects in list have correct object type: "
                       << p->get_name(),
@@ -156,7 +163,7 @@ struct Convert<
   static bool get_is_cpp_object(PyObject *o, SwigData st, SwigData particle_st,
                                 SwigData decorator_st) {
     try {
-      get_cpp_object(o, st, particle_st, decorator_st);
+      get_cpp_object(o, "", 0, "", st, particle_st, decorator_st);
     }
     catch (...) {
       return 0;

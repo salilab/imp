@@ -177,7 +177,9 @@ struct ConvertValueBase : public ConvertAllBase<T> {
   BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
   BOOST_STATIC_ASSERT(!(boost::is_base_of<Object, T>::value));
   template <class SwigData>
-  static const T& get_cpp_object(PyObject* o, SwigData st, SwigData, SwigData) {
+  static const T& get_cpp_object(PyObject* o, const char *symname, int argnum,
+                                 const char *argtype, SwigData st, SwigData,
+                                 SwigData) {
     void* vp;
     int res = SWIG_ConvertPtr(o, &vp, st, 0);
     if (!SWIG_IsOK(res)) {
@@ -202,7 +204,9 @@ struct ConvertObjectBase : public ConvertAllBase<T> {
   BOOST_STATIC_ASSERT((boost::is_base_of<Object, T>::value) ||
                       (boost::is_same<Object, T>::value));
   template <class SwigData>
-  static T* get_cpp_object(PyObject* o, SwigData st, SwigData, SwigData) {
+  static T* get_cpp_object(PyObject* o, const char *symname, int argnum,
+                           const char *argtype, SwigData st, SwigData,
+                           SwigData) {
     void* vp;
     int res = SWIG_ConvertPtr(o, &vp, st, 0);
     if (!SWIG_IsOK(res)) {
@@ -229,7 +233,9 @@ template <class T>
 struct ConvertRAII : public ConvertAllBase<T> {
   BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
   template <class SwigData>
-  static T* get_cpp_object(PyObject* o, SwigData st, SwigData, SwigData) {
+  static T* get_cpp_object(PyObject* o, const char *symname, int argnum,
+                           const char *argtype, SwigData st, SwigData,
+                           SwigData) {
     void* vp;
     int res = SWIG_ConvertPtr(o, &vp, st, 0);
     if (!SWIG_IsOK(res)) {
@@ -311,7 +317,8 @@ struct ConvertSequenceHelper {
     return true;
   }
   template <class SwigData, class C>
-  static void fill(PyObject* in, SwigData st, SwigData particle_st,
+  static void fill(PyObject* in, const char *symname, int argnum,
+                   const char *argtype, SwigData st, SwigData particle_st,
                    SwigData decorator_st, C& t) {
     if (!in || !PySequence_Check(in)) {
       PyErr_SetString(PyExc_ValueError, "Expected a sequence");
@@ -321,7 +328,8 @@ struct ConvertSequenceHelper {
     for (unsigned int i = 0; i < l; ++i) {
       PyReceivePointer o(PySequence_GetItem(in, i));
       typename ValueOrObject<V>::store_type vs =
-          ConvertVT::get_cpp_object(o, st, particle_st, decorator_st);
+          ConvertVT::get_cpp_object(o, symname, argnum, argtype, st,
+                                    particle_st, decorator_st);
       Assign<C, VT>::assign(t, i, vs);
     }
   }
@@ -341,14 +349,17 @@ struct ConvertSequence<std::pair<T, T>, ConvertT> {
   typedef ConvertSequenceHelper<Intermediate, T, ConvertT> Helper;
   typedef typename ValueOrObject<T>::type VT;
   template <class SwigData>
-  static std::pair<T, T> get_cpp_object(PyObject* o, SwigData st,
+  static std::pair<T, T> get_cpp_object(PyObject* o, const char *symname,
+                                        int argnum, const char *argtype,
+                                        SwigData st,
                                         SwigData particle_st,
                                         SwigData decorator_st) {
     if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
       IMP_THROW("Argument not of correct type", ValueException);
     }
     Intermediate im;
-    Helper::fill(o, st, particle_st, decorator_st, im);
+    Helper::fill(o, symname, argnum, argtype, st, particle_st,
+                 decorator_st, im);
     std::pair<T, T> ret;
     ret.first = im[0];
     ret.second = im[1];
@@ -379,13 +390,16 @@ struct ConvertVectorBase {
   typedef ConvertSequenceHelper<T, typename T::value_type, ConvertT> Helper;
   typedef typename ValueOrObject<typename T::value_type>::type VT;
   template <class SwigData>
-  static T get_cpp_object(PyObject* o, SwigData st, SwigData particle_st,
+  static T get_cpp_object(PyObject* o, const char *symname, int argnum,
+                          const char *argtype, SwigData st,
+                          SwigData particle_st,
                           SwigData decorator_st) {
     if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
       IMP_THROW("Argument not of correct type", ValueException);
     }
     T ret(PySequence_Size(o));
-    Helper::fill(o, st, particle_st, decorator_st, ret);
+    Helper::fill(o, symname, argnum, argtype, st, particle_st,
+                 decorator_st, ret);
     return ret;
   }
   template <class SwigData>
@@ -417,9 +431,10 @@ struct ConvertSequence<Array<D, T, TS>, ConvertT> {
   typedef ConvertSequenceHelper<T, TS, ConvertT> Helper;
   typedef TS VT;
   template <class SwigData>
-  static Array<D, T, TS> get_cpp_object(PyObject* o, SwigData st,
-                                              SwigData particle_st,
-                                              SwigData decorator_st) {
+  static Array<D, T, TS> get_cpp_object(PyObject* o, const char *symname,
+                                        int argnum, const char *argtype,
+                                        SwigData st, SwigData particle_st,
+                                        SwigData decorator_st) {
     if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
       IMP_THROW("Argument not of correct type", ValueException);
     }
@@ -429,7 +444,8 @@ struct ConvertSequence<Array<D, T, TS>, ConvertT> {
                 ValueException);
     }
     Array<D, T, TS> ret;
-    Helper::fill(o, st, particle_st, decorator_st, ret);
+    Helper::fill(o, symname, argnum, argtype, st, particle_st,
+                 decorator_st, ret);
     return ret;
   }
   template <class SwigData>
@@ -462,7 +478,9 @@ template <>
 struct Convert<std::string> {
   static const int converter = 10;
   template <class SwigData>
-  static std::string get_cpp_object(PyObject* o, SwigData, SwigData, SwigData) {
+  static std::string get_cpp_object(PyObject* o, const char *symname,
+                                    int argnum, const char *argtype, SwigData,
+                                    SwigData, SwigData) {
 #if PY_VERSION_HEX>=0x03000000
     if (!o || !PyUnicode_Check(o)) {
       IMP_THROW("Not all objects in list have correct type.", ValueException);
@@ -503,7 +521,9 @@ struct Convert<std::string> {
 
 struct ConvertFloatBase {
   template <class SwigData>
-  static double get_cpp_object(PyObject* o, SwigData, SwigData, SwigData) {
+  static double get_cpp_object(PyObject* o, const char *symname, int argnum,
+                               const char *argtype, SwigData, SwigData,
+                               SwigData) {
     if (!o || !PyNumber_Check(o)) {
       IMP_THROW("Not all objects in list have correct type.", ValueException);
     } else {
@@ -535,7 +555,8 @@ template <>
 struct Convert<int> {
   static const int converter = 13;
   template <class SwigData>
-  static int get_cpp_object(PyObject* o, SwigData, SwigData, SwigData) {
+  static int get_cpp_object(PyObject* o, const char *symname, int argnum,
+                            const char *argtype, SwigData, SwigData, SwigData) {
     if (PyInt_Check(o)) {
       return PyInt_AsLong(o);
     } else if (PyLong_Check(o)) {
