@@ -8,7 +8,7 @@ File(GLOB runtimepytests "${CMAKE_BINARY_DIR}/test/%(name)s/test_*.py" "${CMAKE_
 
 include(Files.cmake)
 
-set(IMP_TEST_ARGUMENTS)
+set(IMP_TEST_ARGUMENTS "--deprecation_exceptions")
 set(IMP_TEST_SETUP ${IMP_TEST_SETUP};${%(NAME)s_TEST_SETUP})
 set(IMP_LINK_LIBRARIES IMP.%(name)s-lib
     %(modules)s
