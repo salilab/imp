@@ -35,7 +35,7 @@ struct Convert<Particle> : public ConvertObjectBase<Particle> {
       int res = SWIG_ConvertPtr(o, &vp, decorator_st, 0);
       if (!SWIG_IsOK(res)) {
         IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
-                  ValueException);
+                  TypeException);
       } else {
         Decorator *d = reinterpret_cast<Decorator *>(vp);
         if (*d) {
