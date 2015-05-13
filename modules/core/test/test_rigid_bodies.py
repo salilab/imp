@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
             lct = tr.get_transformed(lc)
             dt = IMP.core.DistanceToSingletonScore(
                 IMP.core.Harmonic(0, 1), lct)
-            r = IMP.core.SingletonRestraint(dt, mb.get_particle())
+            r = IMP.core.SingletonRestraint(m, dt, mb.get_particle())
             rs.append(r)
         return rs
 
@@ -141,7 +141,7 @@ class Tests(IMP.test.TestCase):
             nic = tr.get_transformed(ic)
             dt = IMP.core.DistanceToSingletonScore(
                 IMP.core.Harmonic(0, 1), nic)
-            restraints.append(IMP.core.SingletonRestraint(dt, rb))
+            restraints.append(IMP.core.SingletonRestraint(m, dt, rb))
         cg = IMP.core.ConjugateGradients(m)
         sf = IMP.core.RestraintsScoringFunction(restraints)
         cg.set_scoring_function(sf)

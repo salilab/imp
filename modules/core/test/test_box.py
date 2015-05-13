@@ -22,7 +22,7 @@ class Tests(IMP.test.TestCase):
         d.get_coordinates().show()
         d.set_coordinates_are_optimized(True)
         s = IMP.core.BoundingBox3DSingletonScore(IMP.core.Harmonic(0, 1), bbi)
-        r = IMP.core.SingletonRestraint(s, p)
+        r = IMP.core.SingletonRestraint(m, s, p)
         sf = IMP.core.RestraintsScoringFunction([r])
         o = IMP.core.ConjugateGradients(m)
         o.set_scoring_function(sf)

@@ -93,9 +93,9 @@ class Tests(IMP.test.TestCase):
         # constrain particles to a fixed "bondlength" of 1
         uf = IMP.core.Harmonic(1, 100)
         df = IMP.core.DistancePairScore(uf)
-        rs.append(IMP.core.PairRestraint(df, (self.p0, self.p1)))
-        rs.append(IMP.core.PairRestraint(df, (self.p1, self.p2)))
-        rs.append(IMP.core.PairRestraint(df, (self.p2, self.p3)))
+        rs.append(IMP.core.PairRestraint(self.m, df, (self.p0, self.p1)))
+        rs.append(IMP.core.PairRestraint(self.m, df, (self.p1, self.p2)))
+        rs.append(IMP.core.PairRestraint(self.m, df, (self.p2, self.p3)))
         self.p3.set_coordinates_are_optimized(True)
         self.p2.set_coordinates_are_optimized(False)
         self.p1.set_coordinates_are_optimized(False)

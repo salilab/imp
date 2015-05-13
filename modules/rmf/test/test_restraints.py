@@ -132,7 +132,7 @@ class Tests(IMP.test.TestCase):
         rh = RMF.create_rmf_file(path)
         particles = [m.get_particle(pi0), m.get_particle(pi1)]
         IMP.rmf.add_hierarchies(rh, particles)
-        r = IMP.core.PairRestraint(ps, particles)
+        r = IMP.core.PairRestraint(m, ps, particles)
         IMP.rmf.add_restraint(rh, r)
         IMP.rmf.save_frame(rh, "frame")
         rn = rh.get_root_node().get_children()[2]

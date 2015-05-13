@@ -40,10 +40,10 @@ class Tests(IMP.test.TestCase):
         pb, mb, cb = self._create_rb(m)
         ps0 = IMP.core.HarmonicDistancePairScore(0, 10)
         ps1 = IMP.core.SoftSpherePairScore(100)
-        r0 = IMP.core.PairRestraint(ps0, (ma, mb))
+        r0 = IMP.core.PairRestraint(m, ps0, (ma, mb))
         IMP.display.Colored.setup_particle(ma, IMP.display.Color(1, 0, 0))
         IMP.display.Colored.setup_particle(mb, IMP.display.Color(1, 0, 0))
-        r1 = IMP.core.PairRestraint(ps1, (ca, cb))
+        r1 = IMP.core.PairRestraint(m, ps1, (ca, cb))
         bd = IMP.atom.BrownianDynamics(m)
         bb = IMP.algebra.get_unit_bounding_box_3d()
         for p in (pa, pb):

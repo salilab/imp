@@ -11,16 +11,16 @@ from test_coulomb import place_xyzs
 
 def make_test_pair_score(min_distance=9.0, max_distance=10.0):
     m = IMP.Model()
-    p0 = IMP.Particle(m)
+    p0 = m.add_particle("p0")
     sph = IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 1.0)
-    IMP.core.XYZR.setup_particle(p0, sph)
-    d0 = IMP.atom.LennardJones.setup_particle(p0, 1.0)
-    p1 = IMP.Particle(m)
-    IMP.core.XYZR.setup_particle(p1, sph)
-    d1 = IMP.atom.LennardJones.setup_particle(p1, 1.0)
+    IMP.core.XYZR.setup_particle(m, p0, sph)
+    d0 = IMP.atom.LennardJones.setup_particle(m, p0, 1.0)
+    p1 = m.add_particle("p1")
+    IMP.core.XYZR.setup_particle(m, p1, sph)
+    d1 = IMP.atom.LennardJones.setup_particle(m, p1, 1.0)
     sm = IMP.atom.ForceSwitch(min_distance, max_distance)
     c = IMP.atom.LennardJonesPairScore(sm)
-    r = IMP.core.PairRestraint(c, (p0, p1))
+    r = IMP.core.PairRestraint(m, c, (p0, p1))
     sf = IMP.core.RestraintsScoringFunction([r])
     return m, sf, d0, d1, c
 

@@ -91,7 +91,7 @@ class Tests(IMP.test.TestCase):
         R=[] # restraints
         # TAMD:
         for core in cores:
-            r=IMP.core.PairRestraint(spring, (core[0], core[2]))
+            r=IMP.core.PairRestraint(m, spring, (core[0], core[2]))
             R.append(r)
         # Repulsion between fine particles
         for core1 in cores:
@@ -99,15 +99,17 @@ class Tests(IMP.test.TestCase):
                 for core2 in cores:
                     for p2 in core2[1]:
                         if(p1 == p2): continue
-                        r = IMP.core.PairRestraint(excluded_vol, (p1, p2), "Excluded_vol")
+                        r = IMP.core.PairRestraint(m, excluded_vol,
+                                                   (p1, p2), "Excluded_vol")
                         R.append(r)
         # Attraction between consecutive particles (within or between cores)
         for core in cores:
             for p1,p2 in zip(core[1][0:-1],core[1][1:]):
-                r = IMP.core.PairRestraint(attraction, (p1, p2), "Chain")
+                r = IMP.core.PairRestraint(m, attraction, (p1, p2), "Chain")
                 R.append(r)
         for core1,core2 in zip(cores[0:-1],cores[1:]):
-            r = IMP.core.PairRestraint(attraction, (core1[1][-1], core2[1][0]), "Interchain")
+            r = IMP.core.PairRestraint(m, attraction,
+                                   (core1[1][-1], core2[1][0]), "Interchain")
             R.append(r)
         print(R)
 
