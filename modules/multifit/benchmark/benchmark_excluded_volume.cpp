@@ -41,10 +41,10 @@ void do_it() {
   RigidBody rb1 = create_rigid_body(h1);
   rb0.set_coordinates(IMP::algebra::Vector3D(0, 0, 0));
   rb1.set_coordinates(IMP::algebra::Vector3D(0, 0, 0));
-  ParticlesTemp leaves = get_leaves(h0);
-  ParticlesTemp leaves1 = get_leaves(h1);
+  ParticleIndexes leaves = IMP::internal::get_index(get_leaves(h0));
+  ParticleIndexes leaves1 = IMP::internal::get_index(get_leaves(h1));
   leaves.insert(leaves.end(), leaves1.begin(), leaves1.end());
-  IMP_NEW(ListSingletonContainer, lsc, (leaves));
+  IMP_NEW(ListSingletonContainer, lsc, (m, leaves));
   lsc->set_was_used(true);
 
   {
