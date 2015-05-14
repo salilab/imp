@@ -89,6 +89,10 @@ class ID {
     ++i_;
     return *this;
   }
+  // Needed to use std::distance or boost::distance
+  int operator-(const ID& other) const {
+    return i_ - other.i_;
+  }
 #endif
 };
 

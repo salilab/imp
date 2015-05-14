@@ -19,7 +19,7 @@ you to open models from the command line. You have to launch VMD and then do
 
 ## Building on Mac OS ##
 VMD doesn't seem to support 64 bit builds on MacOS (at least no usable
-pre-built ones are provided). By default, RMF is build 64 bit, and so
+pre-built ones are provided). By default, RMF is built 64 bit, and so
 the plugin will not work. To build a 32 bit version with
 [HomeBrew](http://brew.sh) do
 - build `szip`, `hdf5`, `log4cxx` and `boost` with the `--universal` flag
@@ -37,4 +37,4 @@ the plugin will not work. To build a 32 bit version with
   atoms) that change with each frame. So no moving cylinders. Balls
   are mapped to atoms.
 - the plugin is linked against `libRMF` and `Avro` in the build directory
-- it is not been tested on windows
+- it has not been tested on Windows

@@ -5,7 +5,7 @@ Executables {#executables}
 
 [TOC]
 
-RMF provides a number of useful executables in the `bin` directory.
+%RMF provides a number of useful executables in the `bin` directory.
 
 # rmf_show # {#rmf_show}
 `rmf_show` out the hierarchy in the file, optionally showing decorators and data.
@@ -27,8 +27,8 @@ RMF provides a number of useful executables in the `bin` directory.
 
 # rmf_info # {#rmf_info}
 
-`rmf_info` displays information about the attributes found in the RMF and how
-much they are used.
+`rmf_info` displays information about the attributes found in the %RMF file
+and how much they are used.
 
     Print out information about categories and keys.
     Usage: ./bin/rmf_info rmf
@@ -38,7 +38,7 @@ much they are used.
 
 # rmf_slice # {#rmf_slice}
 
-`rmf_slice` creates a new rmf from frames selected from an existing one.
+`rmf_slice` creates a new %RMF file from frames selected from an existing one.
 
     Grab frames from an rmf file
     Usage: ./bin/rmf_slice input_rmf output_rmf
@@ -48,7 +48,7 @@ much they are used.
 
 # rmf_cat # {#rmf_cat}
 
-`rmf_cat` creates a new rmf by concatenating several. Each file must have the same hierarchical structure.
+`rmf_cat` creates a new %RMF file by concatenating several. Each file must have the same hierarchical structure.
 
     Combine two or more rmf files.
     Usage: ./bin/rmf_cat input_1.rmf input_2.rmf ... output.rmf
@@ -59,14 +59,14 @@ much they are used.
 
 
 # rmf_xml # {#rmf_xml}
-`rmf_xml` prints out the hierarchy and data to an XML files that can be opened in an XML viewer
+`rmf_xml` prints out the hierarchy and data to an XML file that can be opened in an XML viewer
    (eg Google Chrome or Firefox). These viewers support collapsing of subtrees, which
    makes it much easier to get around large hierarchies.
 
 
 # rmf_validate # {#rmf_validate}
 
-`rmf_validate` checks for errors in an RMF file, it currently isn't very powerful.
+`rmf_validate` checks for errors in an RMF file. It currently isn't very powerful.
 
 # rmf3_dump # {#rmf3_dump}
 
