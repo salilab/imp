@@ -55,9 +55,9 @@ class Tests(IMP.test.TestCase):
 
         #! resample model profiles into a weighted profile
         resampled_profile1 = IMP.saxs.Profile()
-        model_profile1.resample(weighted_profile, resampled_profile1, True)
+        model_profile1.resample(weighted_profile, resampled_profile1)
         resampled_profile2 = IMP.saxs.Profile()
-        model_profile2.resample(weighted_profile, resampled_profile2, True)
+        model_profile2.resample(weighted_profile, resampled_profile2)
 
         saxs_score = IMP.saxs.WeightedProfileFitter(weighted_profile)
 

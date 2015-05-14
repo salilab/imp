@@ -207,13 +207,11 @@ recommended q value is 0.2")("offset,f",
   IMP::saxs::Profile *resampled_rigid_part1_profile =
       new IMP::saxs::Profile(exp_profile->get_min_q(), exp_profile->get_max_q(),
                              exp_profile->get_delta_q());
-  rigid_part1_profile->resample(exp_profile, resampled_rigid_part1_profile,
-                                true);
+  rigid_part1_profile->resample(exp_profile, resampled_rigid_part1_profile);
   IMP::saxs::Profile *resampled_rigid_part2_profile =
       new IMP::saxs::Profile(exp_profile->get_min_q(), exp_profile->get_max_q(),
                              exp_profile->get_delta_q());
-  rigid_part2_profile->resample(exp_profile, resampled_rigid_part2_profile,
-                                true);
+  rigid_part2_profile->resample(exp_profile, resampled_rigid_part2_profile);
 
   // save particles2 coordinates (they are going to move)
   std::vector<IMP::algebra::Vector3D> coordinates2;
@@ -296,7 +294,7 @@ recommended q value is 0.2")("offset,f",
         IMP::saxs::Profile *resampled_profile = new IMP::saxs::Profile(
             exp_profile->get_min_q(), exp_profile->get_max_q(),
             exp_profile->get_delta_q());
-        complex_profile->resample(exp_profile, resampled_profile, true);
+        complex_profile->resample(exp_profile, resampled_profile);
         profiles.push_back(resampled_rigid_part1_profile);
         profiles.push_back(resampled_rigid_part2_profile);
         profiles.push_back(resampled_profile);

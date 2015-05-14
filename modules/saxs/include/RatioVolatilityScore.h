@@ -30,7 +30,12 @@ class IMPSAXSEXPORT RatioVolatilityScore {
                               double offset = 0.0) const;
 
   double compute_offset(const Profile* exp_profile,
-                        const Profile* model_profile) const;
+                        const Profile* model_profile) const {
+    // not implemented for now
+    IMP_UNUSED(exp_profile);
+    IMP_UNUSED(model_profile);
+    return 0.0;
+  }
 
  private:
   double dmax_;

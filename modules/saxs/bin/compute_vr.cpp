@@ -24,18 +24,16 @@ int main(int argc, char **argv) {
 
   po::options_description desc(
       "Usage: <experimental_profile> <profile_file1> <profile_file2> ...");
-  desc.add_options()("help",
-                     "Any number of input profiles is supported. \
-The chi value is computed relative to the first profile using its error column")(
-      "input-files", po::value<std::vector<std::string> >(),
-      "input profile files")("offset,o",
-                             "use offset in fitting (default = false)");
+  desc.add_options()
+    ("help", "Any number of input profiles is supported. \
+The chi value is computed relative to the first profile using its error column")
+    ("input-files", po::value<std::vector<std::string> >(),
+     "input profile files")
+    ("offset,o", "use offset in fitting (default = false)");
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
-  po::store(
-      po::command_line_parser(argc, argv).options(desc).positional(p).run(),
-      vm);
+  po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
   po::notify(vm);
 
   std::vector<std::string> files, dat_files;

@@ -16,6 +16,7 @@ IMPSAXS_BEGIN_NAMESPACE
 double RatioVolatilityScore::compute_score(const Profile* exp_profile,
                                            const Profile* model_profile,
                                            bool use_offset) const {
+  IMP_UNUSED(use_offset);
   if (model_profile->size() != exp_profile->size()) {
     IMP_THROW("RatioVolatilityScore::compute_score is supported "
               << "only for profiles with the same q values!",
@@ -23,7 +24,7 @@ double RatioVolatilityScore::compute_score(const Profile* exp_profile,
   }
 
   double bin_size = PI / dmax_; // default dmax = 400
-  unsigned int number_of_bins = exp_profile->size(); //std::floor(exp_profile->get_max_q()/bin_size);
+  unsigned int number_of_bins = std::floor(exp_profile->get_max_q()/bin_size);
   // number of profile points in each bin
   double number_of_points_in_bin = exp_profile->size()/number_of_bins;
 
@@ -68,11 +69,6 @@ double RatioVolatilityScore::compute_scale_factor(const Profile* exp_profile,
   //double m1 = exp_profile->mean_intensity();
   //double m2 = model_profile->mean_intensity();
   //return m1 / m2;
-}
-
-double RatioVolatilityScore::compute_offset(const Profile* exp_profile,
-                                            const Profile* model_profile) const {
-  return 0;
 }
 
 IMPSAXS_END_NAMESPACE

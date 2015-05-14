@@ -40,6 +40,21 @@ class SAXSToolsTest(IMP.test.ApplicationTestCase):
             msg="chi value output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.537, delta=0.1)
 
+    def test_compute_vr(self):
+        """Simple test of Chi calculation"""
+        print(self.get_input_file_name('6lyz.pdb'))
+        print(self.get_input_file_name('lyzexp.dat'))
+        p = self.run_application('compute_vr',
+                                 [self.get_input_file_name('lyzexp.dat'),
+                                  self.get_input_file_name('6lyz.pdb.dat')])
+        out, err = p.communicate()
+        sys.stderr.write(err)
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        m = re.search('6lyz.pdb.dat vr=([\d\.]+)', out)
+        self.assertIsNotNone(
+            m,
+            msg="vr value output not found in " + str(out))
+        self.assertAlmostEqual(float(m.group(1)), 5.78, delta=0.1)
 
 if __name__ == '__main__':
     IMP.test.main()
