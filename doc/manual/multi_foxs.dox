@@ -4,11 +4,11 @@
 
 \section multi_foxs_intro Introduction
 
-In many cases our data comes from heterogeneous sample. Heterogeneity can be both compositional and conformational. Interpretation of data collected on heterogeneous sample requires a <tt> multi-state model </tt>. A multi-state model is a model that specifies two or more co-existing structural states and values for other parameters, such as the weights of each state.
+In many cases our data comes from heterogeneous sample. Heterogeneity can be both compositional and conformational. Interpretation of data collected on heterogeneous sample requires a <i>multi-state model</i>. A multi-state model is a model that specifies two or more co-existing structural states and values for other parameters, such as the weights of each state.
 
 %IMP includes a command line tool <tt>multi_foxs</tt> for enumeration and scoring of multi-state models against SAXS profiles. There is also a \salilab{foxs/,web interface} available, which functions similarly.
 
-In this example, we will demonstrate how to use it using PDB structures of replication protein A and simulated SAXS profile.
+In this example, we will demonstrate how to use it using PDB structures of replication protein A and a simulated SAXS profile.
 
 For full help on the <tt>multi_foxs</tt> tool, run from a command line:
 
@@ -38,9 +38,10 @@ The structure of the RPA in complex with ssDNA is available in the
 (file <tt>1jmc.pdb</tt>), the unbound RPA structures are availble as code
 \external{http://www.pdb.org/pdb/explore/explore.do?structureId=1FGU,1fgu}
 (file <tt>1fguA.pdb</tt>, <tt>1fguB.pdb</tt>), while the SAXS profile is given in the <tt>weighted.dat</tt> file. The SAXS profile was simulated from the 3 structures with the following weights:
-<tt>1jmc.pdb 0.5</tt>
-<tt>1fguA.pdb 0.25</tt>
-<tt>1fguB.pdb 0.25</tt>
+<br>
+<tt>1jmc.pdb 0.5</tt><br>
+<tt>1fguA.pdb 0.25</tt><br>
+<tt>1fguB.pdb 0.25</tt><br>
 3% Gaussian noise was added to the simulated profile.
 
 
@@ -59,16 +60,16 @@ respectively. It also generates <tt>multi_state_model_x_x_x.dat</tt>
 files, containing the computed theoretical profile for the multi-state
 model and its fit against the experimental profile.
 
-In this example, the best fit is obtained using 3-state model
-(Chi=1.74) <tt>ensembles_size_3.txt</tt>, with the weights of 0.53, 0.197, and 0.27, showing a
+In this example, the best fit is obtained using a 3-state model
+(Chi=1.74) <tt>ensembles_size_3.txt</tt>, with weights of 0.53, 0.197, and 0.27, showing a
 maximal deviation of 7% compared to the weights that were used to
 simulate the profile:
 
-
+<pre>
 1 |  1.74 | x1 1.74 (1.03, 0.53)
     0   | 0.533 (0.533, 1.000) | 1jmc.pdb (0.333)
     1   | 0.197 (0.197, 1.000) | 1fguA.pdb (0.333)
     2   | 0.270 (0.270, 1.000) | 1fguB.pdb (0.333)
-
+</pre>
 
 */
