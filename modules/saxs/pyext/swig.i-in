@@ -12,8 +12,6 @@ namespace std {
 //%template(_Vector3Ds) ::std::vector< ::IMP::algebra::Vector3D>;
 
 IMP_SWIG_OBJECT(IMP::saxs, Profile, Profiles);
-IMP_SWIG_OBJECT(IMP::saxs, DerivativeCalculator, DerivativeCalculators);
-
 
 /* Wrap our own classes */
 %include "IMP/saxs/FormFactorTable.h"
@@ -25,7 +23,6 @@ IMP_SWIG_OBJECT(IMP::saxs, DerivativeCalculator, DerivativeCalculators);
 %include "IMP/saxs/ProfileFitter.h"
 %template(ProfileFitterChi) IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>;
 %include "IMP/saxs/WeightedProfileFitter.h"
-%include "IMP/saxs/DerivativeCalculator.h"
 %include "IMP/saxs/Restraint.h"
 %include "IMP/saxs/RadiusOfGyrationRestraint.h"
 %include "IMP/saxs/Distribution.h"
