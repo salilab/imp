@@ -20,6 +20,9 @@ Cluster SAXS profiles.
 # compute_chi {#compute_chi_bin}
 Calculate chi value for SAXS profiles.
 
+# compute_vr {#compute_vr_bin}
+Calculate volatility ratio for SAXS profiles.
+
 # rg {#rg_bin}
 Compute radius of gyration from SAXS profiles.
 
