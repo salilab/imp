@@ -148,7 +148,7 @@ IMP::atom::Bond create_bond(IMP::atom::Atoms& as) {
 
 void add_missing_bonds(IMP::ParticlesTemp& atoms, IMP::ParticlesTemp& bonds) {
   float thr2 = 2.0*2.0;
-  std::vector<IMP::algebra::Vector3D> coordinates;
+  IMP::Vector<IMP::algebra::Vector3D> coordinates;
   IMP::saxs::get_coordinates(atoms, coordinates);
   int counter = 0;
   for(unsigned int i=0; i<atoms.size(); i++) {
