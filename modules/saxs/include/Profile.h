@@ -126,7 +126,7 @@ class IMPSAXSEXPORT Profile : public Object {
   /**
      \param[in] file_name profile file name
      \param[in] fit_file if true, intensities are read from column 3
-     \param[in] stop reading after q = max_q
+     \param[in] max_q read till maximal q value = max_q, or all if max_q<=0
    */
   void read_SAXS_file(const std::string& file_name, bool fit_file = false, double max_q = 0.0);
 
