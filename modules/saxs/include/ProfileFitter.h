@@ -46,12 +46,12 @@ class ProfileFitter : public Object {
   }
 
   //! compute fit score
-  Float compute_score(const Profile* model_profile, bool use_offset = false,
-                      const std::string fit_file_name = "") const;
+  double compute_score(const Profile* model_profile, bool use_offset = false,
+                       const std::string fit_file_name = "") const;
 
   //! compute fit score in the interval
-  Float compute_score(const Profile* model_profile, Float min_q,
-                      Float max_q) const;
+  double compute_score(const Profile* model_profile, double min_q,
+                       double max_q) const;
 
   //! fit experimental profile through optimization of c1 and c2 parameters
   /**
@@ -67,9 +67,9 @@ class ProfileFitter : public Object {
                 nothing is written if empty
      \return FitParameters (score, c1, c2)
   */
-  FitParameters fit_profile(Profile* partial_profile, float min_c1 = 0.95,
-                            float max_c1 = 1.05, float min_c2 = -2.0,
-                            float max_c2 = 4.0, bool use_offset = false,
+  FitParameters fit_profile(Profile* partial_profile, double min_c1 = 0.95,
+                            double max_c1 = 1.05, double min_c2 = -2.0,
+                            double max_c2 = 4.0, bool use_offset = false,
                             const std::string fit_file_name = "") const;
 
   //! computes the scaling factor needed for fitting the modeled profile
@@ -78,8 +78,8 @@ class ProfileFitter : public Object {
       to this function, in order to match the q values of the exp. profile.
       this is not done by default to minimize the number of calls to resample.
    */
-  Float compute_scale_factor(const Profile* model_profile,
-                             Float offset = 0.0) const {
+  double compute_scale_factor(const Profile* model_profile,
+                              double offset = 0.0) const {
     return scoring_function_->compute_scale_factor(exp_profile_, model_profile,
                                                    offset);
   }
@@ -90,7 +90,7 @@ class ProfileFitter : public Object {
       to this function, in order to match the q values of the exp. profile.
       this is not done by default to minimize the number of calls to resample.
   */
-  Float compute_offset(const Profile* model_profile) const {
+  double compute_offset(const Profile* model_profile) const {
     return scoring_function_->compute_offset(exp_profile_, model_profile);
   }
 
@@ -100,13 +100,13 @@ class ProfileFitter : public Object {
 
   // writes 3 column fit file, given scale factor c, offset and chi square
   void write_SAXS_fit_file(const std::string& file_name,
-                           const Profile* model_profile, const Float chi_square,
-                           const Float c = 1, const Float offset = 0) const;
+                           const Profile* model_profile, const double chi_square,
+                           const double c = 1, const double offset = 0) const;
 
  private:
-  FitParameters search_fit_parameters(Profile* partial_profile, float min_c1,
-                                      float max_c1, float min_c2, float max_c2,
-                                      bool use_offset, float old_chi) const;
+  FitParameters search_fit_parameters(Profile* partial_profile, double min_c1,
+                                      double max_c1, double min_c2, double max_c2,
+                                      bool use_offset, double old_chi) const;
 
   IMP_REF_COUNTED_DESTRUCTOR(ProfileFitter);
   friend class DerivativeCalculator;
@@ -125,17 +125,17 @@ void ProfileFitter<ScoringFunctionT>::resample(
 
 template <class ScoringFunctionT>
 FitParameters ProfileFitter<ScoringFunctionT>::search_fit_parameters(
-    Profile* partial_profile, float min_c1, float max_c1, float min_c2,
-    float max_c2, bool use_offset, float old_chi) const {
+    Profile* partial_profile, double min_c1, double max_c1, double min_c2,
+    double max_c2, bool use_offset, double old_chi) const {
   int c1_cells = 10;
   int c2_cells = 10;
-  if (old_chi < (std::numeric_limits<float>::max() - 1)) {  // second iteration
+  if (old_chi < (std::numeric_limits<double>::max() - 1)) {  // second iteration
     c1_cells = 5;
     c2_cells = 5;
   }
 
-  float delta_c1 = (max_c1 - min_c1) / c1_cells;
-  float delta_c2 = (max_c2 - min_c2) / c2_cells;
+  double delta_c1 = (max_c1 - min_c1) / c1_cells;
+  double delta_c2 = (max_c2 - min_c2) / c2_cells;
 
   bool last_c1 = false;
   bool last_c2 = false;
@@ -149,15 +149,15 @@ FitParameters ProfileFitter<ScoringFunctionT>::search_fit_parameters(
     delta_c2 = max_c2 - min_c2;
     last_c2 = true;
   }
-  float best_c1(1.0), best_c2(0.0), best_chi(old_chi);
+  double best_c1(1.0), best_c2(0.0), best_chi(old_chi);
   bool best_set = false;
 
-  float c1(min_c1);
+  double c1(min_c1);
   for (int i = 0; i <= c1_cells; i++, c1 += delta_c1) {
-    float c2 = min_c2;
+    double c2 = min_c2;
     for (int j = 0; j <= c2_cells; j++, c2 += delta_c2) {
       partial_profile->sum_partial_profiles(c1, c2);
-      float curr_chi = compute_score(partial_profile, use_offset);
+      double curr_chi = compute_score(partial_profile, use_offset);
       if (!best_set || curr_chi < best_chi) {
         best_set = true;
         best_chi = curr_chi;
@@ -181,19 +181,19 @@ FitParameters ProfileFitter<ScoringFunctionT>::search_fit_parameters(
 
 template <class ScoringFunctionT>
 FitParameters ProfileFitter<ScoringFunctionT>::fit_profile(
-    Profile* partial_profile, float min_c1, float max_c1, float min_c2,
-    float max_c2, bool use_offset, const std::string fit_file_name) const {
+    Profile* partial_profile, double min_c1, double max_c1, double min_c2,
+    double max_c2, bool use_offset, const std::string fit_file_name) const {
 
   // compute chi value for default c1/c1 (remove?)
-  float default_c1 = 1.0, default_c2 = 0.0;
+  double default_c1 = 1.0, default_c2 = 0.0;
   partial_profile->sum_partial_profiles(default_c1, default_c2);
-  float default_chi = compute_score(partial_profile, use_offset);
+  double default_chi = compute_score(partial_profile, use_offset);
 
   FitParameters fp =
       search_fit_parameters(partial_profile, min_c1, max_c1, min_c2, max_c2,
-                            use_offset, std::numeric_limits<float>::max());
-  float best_c1 = fp.get_c1();
-  float best_c2 = fp.get_c2();
+                            use_offset, std::numeric_limits<double>::max());
+  double best_c1 = fp.get_c1();
+  double best_c2 = fp.get_c2();
   fp.set_default_chi(default_chi);
 
   // compute a profile for best c1/c2 combination
@@ -206,20 +206,20 @@ FitParameters ProfileFitter<ScoringFunctionT>::fit_profile(
 }
 
 template <class ScoringFunctionT>
-Float ProfileFitter<ScoringFunctionT>::compute_score(
-    const Profile* model_profile, Float min_q, Float max_q) const {
+double ProfileFitter<ScoringFunctionT>::compute_score(
+    const Profile* model_profile, double min_q, double max_q) const {
   IMP_NEW(Profile, resampled_profile,
           (exp_profile_->get_min_q(), exp_profile_->get_max_q(),
            exp_profile_->get_delta_q()));
   model_profile->resample(exp_profile_, resampled_profile);
 
-  Float score = scoring_function_->compute_score(
+  double score = scoring_function_->compute_score(
       exp_profile_, resampled_profile, min_q, max_q);
   return score;
 }
 
 template <class ScoringFunctionT>
-Float ProfileFitter<ScoringFunctionT>::compute_score(
+double ProfileFitter<ScoringFunctionT>::compute_score(
     const Profile* model_profile, bool use_offset,
     const std::string fit_file_name) const {
   IMP_NEW(Profile, resampled_profile,
@@ -227,15 +227,15 @@ Float ProfileFitter<ScoringFunctionT>::compute_score(
            exp_profile_->get_delta_q()));
   model_profile->resample(exp_profile_, resampled_profile);
 
-  Float score = scoring_function_->compute_score(exp_profile_,
+  double score = scoring_function_->compute_score(exp_profile_,
                                                  resampled_profile, use_offset);
 
   if (fit_file_name.length() > 0) {
-    Float offset = 0.0;
+    double offset = 0.0;
     if (use_offset)
       offset =
           scoring_function_->compute_offset(exp_profile_, resampled_profile);
-    Float c = scoring_function_->compute_scale_factor(
+    double c = scoring_function_->compute_scale_factor(
         exp_profile_, resampled_profile, offset);
     write_SAXS_fit_file(fit_file_name, resampled_profile, score, c, offset);
   }
@@ -245,7 +245,7 @@ Float ProfileFitter<ScoringFunctionT>::compute_score(
 template <class ScoringFunctionT>
 void ProfileFitter<ScoringFunctionT>::write_SAXS_fit_file(
     const std::string& file_name, const Profile* model_profile,
-    const Float score, const Float c, const Float offset) const {
+    const double score, const double c, const double offset) const {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
     IMP_THROW("Can't open file " << file_name, IOException);

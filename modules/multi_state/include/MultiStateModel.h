@@ -12,7 +12,8 @@
 
 #include <IMP/multi_state/multi_state_config.h>
 
-#include <vector>
+#include <IMP/Vector.h>
+
 #include <iostream>
 #include <iomanip>
 
@@ -42,7 +43,7 @@ public:
 
   /* Access */
 
-  const std::vector<unsigned int>& get_states() const { return states_; }
+  const Vector<unsigned int>& get_states() const { return states_; }
 
   double get_score() const { return score_; }
 
@@ -60,7 +61,7 @@ public:
   }
 
 private:
-  std::vector<unsigned int> states_;
+  Vector<unsigned int> states_;
   double score_;
   double zscore_;
 };

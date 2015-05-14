@@ -39,7 +39,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator* acc) const {
 
   IMP_NEW(Profile, model_profile, ());
   handler_->compute_profile(model_profile);
-  Float score = profile_fitter_->compute_score(model_profile);
+  double score = profile_fitter_->compute_score(model_profile);
   bool calc_deriv = acc ? true : false;
   if (!calc_deriv) return score;
 
@@ -50,10 +50,9 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator* acc) const {
   IMP_NEW(Profile, resampled_profile, ());
   profile_fitter_->resample(model_profile, resampled_profile);
 
-  std::vector<double> effect_size;  // Gaussian model-specific derivative
-                                    // weights
-  Float offset = 0.0;
-  Float c = profile_fitter_->compute_scale_factor(model_profile);
+  Vector<double> effect_size;  // Gaussian model-specific derivative weights
+  double offset = 0.0;
+  double c = profile_fitter_->compute_scale_factor(model_profile);
   derivative_calculator_->compute_gaussian_effect_size(model_profile, c, offset,
                                                        effect_size);
 

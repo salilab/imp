@@ -17,52 +17,51 @@
 #include <IMP/Particle.h>
 
 #include <iostream>
-#include <vector>
 
 IMPSAXS_BEGIN_NAMESPACE
 
 namespace {  // anonymous
-static const Float pr_resolution = 0.5;
+static const double pr_resolution = 0.5;
 }
 
 /**
 base class for distribution classes
 */
 template <class ValueT>
-class Distribution : public std::vector<ValueT> {
+class Distribution : public Vector<ValueT> {
  public:
   //! Constructor
-  Distribution(Float bin_size = pr_resolution) { init(bin_size); }
+  Distribution(double bin_size = pr_resolution) { init(bin_size); }
 
   //! returns maximal distance value of distribution
-  Float get_max_distance() const { return max_distance_; }
+  double get_max_distance() const { return max_distance_; }
 
   //! returns bin size
-  Float get_bin_size() const { return bin_size_; }
+  double get_bin_size() const { return bin_size_; }
 
-  unsigned int get_index_from_distance(Float dist) const {
+  unsigned int get_index_from_distance(double dist) const {
     return algebra::get_rounded(dist * one_over_bin_size_);
   }
-  Float get_distance_from_index(unsigned int index) const {
+  double get_distance_from_index(unsigned int index) const {
     return index * bin_size_;
   }
 
  protected:
-  void init(Float bin_size) {
+  void init(double bin_size) {
     //  clear();
     bin_size_ = bin_size;
     one_over_bin_size_ = 1.0 / bin_size_;  // for faster calculation
     max_distance_ = 50.0;                  // start with ~50A (by default)
-    std::vector<ValueT>::reserve(get_index_from_distance(max_distance_) + 1);
+    Vector<ValueT>::reserve(get_index_from_distance(max_distance_) + 1);
   }
 
  protected:
-  Float bin_size_, one_over_bin_size_;  // resolution of discretization
-  Float max_distance_;  // parameter for maximum r value for p(r) function
+  double bin_size_, one_over_bin_size_;  // resolution of discretization
+  double max_distance_;  // parameter for maximum r value for p(r) function
 };
 
 #ifdef SWIG
-%template(FloatDistribution) Distribution<Float>;
+%template(FloatDistribution) Distribution<double>;
 %template(VectorDistribution) Distribution<algebra::Vector3D>;
 #endif
 
@@ -70,17 +69,17 @@ class Distribution : public std::vector<ValueT> {
  Radial Distribution class for calculating SAXS Profile
  this is distance distribution multiplied by form factors of atoms
 */
-class IMPSAXSEXPORT RadialDistributionFunction : public Distribution<Float> {
+class IMPSAXSEXPORT RadialDistributionFunction : public Distribution<double> {
 
  public:
   //! Constructor (default)
-  RadialDistributionFunction(Float bin_size = pr_resolution);
+  RadialDistributionFunction(double bin_size = pr_resolution);
 
   //! Constructor from gnom file
   RadialDistributionFunction(const std::string& file_name);
 
   //! scale distribution by a constant
-  void scale(Float c);
+  void scale(double c);
 
   //! add another distribution
   void add(const RadialDistributionFunction& model_pr);
@@ -89,20 +88,20 @@ class IMPSAXSEXPORT RadialDistributionFunction : public Distribution<Float> {
   void show(std::ostream& out = std::cout) const;
 
   //! analogy crystallographic R-factor score
-  Float R_factor_score(const RadialDistributionFunction& model_pr,
-                       const std::string& file_name = "") const;
+  double R_factor_score(const RadialDistributionFunction& model_pr,
+                        const std::string& file_name = "") const;
 
   // //! analogy to chi score \untested{chi_score}
-  // Float chi_score(const RadialDistributionFunction& model_pr) const;
+  // double chi_score(const RadialDistributionFunction& model_pr) const;
 
   //! fit the distributions by scaling according to maximum
-  Float fit(const RadialDistributionFunction& model_pr,
-            const std::string& file_name = "") const;
+  double fit(const RadialDistributionFunction& model_pr,
+             const std::string& file_name = "") const;
 
   //! normalize to area = 1.0
   void normalize();
 
-  void add_to_distribution(Float dist, Float value) {
+  void add_to_distribution(double dist, double value) {
     unsigned int index = get_index_from_distance(dist);
     if (index >= size()) {
       if (capacity() <= index)
@@ -118,7 +117,7 @@ class IMPSAXSEXPORT RadialDistributionFunction : public Distribution<Float> {
   void read_pr_file(const std::string& file_name);
 
   //! write fit file for the two distributions
-  void write_fit_file(const RadialDistributionFunction& model_pr, Float c = 1.0,
+  void write_fit_file(const RadialDistributionFunction& model_pr, double c = 1.0,
                       const std::string& file_name = "") const;
 };
 
@@ -134,8 +133,8 @@ class IMPSAXSEXPORT DeltaDistributionFunction
  public:
   //! Constructor
   DeltaDistributionFunction(const Particles& particles,
-                            Float max_distance = 0.0,
-                            Float bin_size = pr_resolution);
+                            double max_distance = 0.0,
+                            double bin_size = pr_resolution);
 
   //! calculates distribution for an atom defined by particle
   void calculate_derivative_distribution(Particle* particle);
@@ -144,7 +143,7 @@ class IMPSAXSEXPORT DeltaDistributionFunction
   void show(std::ostream& out = std::cout, std::string prefix = "") const;
 
  private:
-  void add_to_distribution(Float dist, const algebra::Vector3D& value) {
+  void add_to_distribution(double dist, const algebra::Vector3D& value) {
     unsigned int index = get_index_from_distance(dist);
     if (index >= size()) {
       if (capacity() <= index)
@@ -162,8 +161,8 @@ class IMPSAXSEXPORT DeltaDistributionFunction
   }
 
  protected:
-  std::vector<algebra::Vector3D> coordinates_;
-  Floats form_factors_;
+  Vector<algebra::Vector3D> coordinates_;
+  Vector<double> form_factors_;
 };
 
 IMPSAXS_END_NAMESPACE

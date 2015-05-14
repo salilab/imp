@@ -105,9 +105,9 @@ void RigidBodiesProfileHandler::compute_profile_partial(Profile* model_profile)
 
 void RigidBodiesProfileHandler::compute_derivatives(
     const DerivativeCalculator* dc, const Profile* model_profile,
-    const std::vector<double>& effect_size, DerivativeAccumulator* acc) const {
+    const Vector<double>& effect_size, DerivativeAccumulator* acc) const {
 
-  std::vector<IMP::algebra::Vector3D> derivatives;
+  Vector<algebra::Vector3D> derivatives;
   const FloatKeys keys = IMP::core::XYZ::get_xyz_keys();
 
   // 1. compute derivatives for each rigid body

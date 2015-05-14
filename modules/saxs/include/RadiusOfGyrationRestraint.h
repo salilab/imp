@@ -36,9 +36,9 @@ class IMPSAXSEXPORT RadiusOfGyrationRestraint : public Restraint {
                             const Profile* exp_profile,
                             const double end_q_rg = 1.3);
 
-  virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum)
+  virtual double unprotected_evaluate(DerivativeAccumulator* accum)
       const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RadiusOfGyrationRestraint);
 
  private:

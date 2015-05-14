@@ -30,29 +30,29 @@ class IMPSAXSEXPORT SolventAccessibleSurface {
      \return a value between 0 to 1, for surface accessibility,
      where 0 means buried and 1 means fully accessible to the water
   */
-  IMP::Floats get_solvent_accessibility(const core::XYZRs& points,
-                                        float probe_radius = 1.8,
-                                        float density = 5.0);
+  Vector<double> get_solvent_accessibility(const core::XYZRs& points,
+                                           double probe_radius = 1.8,
+                                           double density = 5.0);
 
  private:
   bool is_intersecting(const algebra::Vector3D& sphere_center1,
                        const algebra::Vector3D& sphere_center2,
-                       const float radius1, const float radius2) {
-    float squared_radius_sum = (radius1 + radius2) * (radius1 + radius2);
-    float squared_dist =
+                       const double radius1, const double radius2) {
+    double squared_radius_sum = (radius1 + radius2) * (radius1 + radius2);
+    double squared_dist =
         algebra::get_squared_distance(sphere_center1, sphere_center2);
     if (fabs(squared_radius_sum - squared_dist) < 0.0001) return false;
     if (squared_radius_sum > squared_dist) return true;
     return false;
   }
 
-  algebra::Vector3Ds create_sphere_dots(float radius, float density);
+  algebra::Vector3Ds create_sphere_dots(double radius, double density);
 
   // generate and save sphere dots for radii present in the ps set
-  void create_sphere_dots(const core::XYZRs& ps, float density);
+  void create_sphere_dots(const core::XYZRs& ps, double density);
 
-  const algebra::Vector3Ds& get_sphere_dots(float r) const {
-    boost::unordered_map<float, int>::const_iterator it = radii2type_.find(r);
+  const algebra::Vector3Ds& get_sphere_dots(double r) const {
+    boost::unordered_map<double, int>::const_iterator it = radii2type_.find(r);
     if (it == radii2type_.end()) {
       IMP_THROW("SolventAccessibleSurface: can't find sphere dots for radius "
                     << r,
@@ -62,9 +62,9 @@ class IMPSAXSEXPORT SolventAccessibleSurface {
   }
 
  private:
-  boost::unordered_map<float, int> radii2type_;
-  std::vector<algebra::Vector3Ds> sphere_dots_;
-  float density_;
+  boost::unordered_map<double, int> radii2type_;
+  Vector<algebra::Vector3Ds> sphere_dots_;
+  double density_;
 };
 
 IMPSAXS_END_NAMESPACE

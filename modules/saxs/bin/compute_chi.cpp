@@ -3,6 +3,7 @@
  */
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/ProfileFitter.h>
+#include <IMP/Vector.h>
 
 #include <fstream>
 #include <vector>
@@ -45,7 +46,7 @@ The chi value is computed relative to the first profile using its error column")
   }
   if (vm.count("offset")) use_offset = true;
 
-  std::vector<IMP::saxs::Profile *> exp_profiles;
+  IMP::Vector<IMP::saxs::Profile *> exp_profiles;
   for (unsigned int i = 0; i < files.size(); i++) {
     // check if file exists
     std::ifstream in_file(files[i].c_str());
@@ -67,13 +68,12 @@ The chi value is computed relative to the first profile using its error column")
   }
 
   IMP::saxs::Profile *exp_saxs_profile = exp_profiles[0];
-  IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> >
-      saxs_score =
+  IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> > saxs_score =
           new IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>(exp_saxs_profile);
   for (unsigned int i = 1; i < exp_profiles.size(); i++) {
     std::string fit_file =
         "fit" + std::string(boost::lexical_cast<std::string>(i)) + ".dat";
-    float chi = saxs_score->compute_score(exp_profiles[i], use_offset, fit_file);
+    double chi = saxs_score->compute_score(exp_profiles[i], use_offset, fit_file);
     std::cout << "File " << files[i] << " chi=" << chi << std::endl;
   }
   return 0;

@@ -25,7 +25,7 @@ std::map<atom::Element, FormFactorTable::FormFactorAtomType>
 std::map<atom::ResidueType, FormFactorTable::FormFactor>
     FormFactorTable::residue_type_form_factor_map_;
 
-Float FormFactorTable::zero_form_factors_[] = {
+double FormFactorTable::zero_form_factors_[] = {
     -0.720147, -0.720228,
     //   H       He
     1.591,     2.591,     3.591,   0.50824,  6.16294, 4.94998, 7.591,   6.993,
@@ -44,7 +44,7 @@ Float FormFactorTable::zero_form_factors_[] = {
     // SH
 };
 
-Float FormFactorTable::vacuum_zero_form_factors_[] = {
+double FormFactorTable::vacuum_zero_form_factors_[] = {
     0.999953, 0.999872, 2.99,    3.99,    4.99,    5.9992,  6.9946,  7.9994,
     8.99,     9.999,
     //   H       He      Li     Be     B    C       N       O      F     Ne
@@ -60,7 +60,7 @@ Float FormFactorTable::vacuum_zero_form_factors_[] = {
     //  CH      CH2     CH3     NH       NH2       NH3     OH      OH2      SH
 };
 
-Float FormFactorTable::dummy_zero_form_factors_[] = {
+double FormFactorTable::dummy_zero_form_factors_[] = {
     1.7201,  1.7201,  1.399,   1.399,   1.399,   5.49096, 0.83166, 3.04942,
     1.399,   3.006,
     //  H     He     Li?    Be?    B?       C        N        O      F?     Ne
@@ -77,7 +77,7 @@ Float FormFactorTable::dummy_zero_form_factors_[] = {
 };
 
 // electron density of solvent - default=0.334 e/A^3 (H2O)
-Float FormFactorTable::rho_ = 0.334;
+double FormFactorTable::rho_ = 0.334;
 
 std::istream& operator>>(
     std::istream& s,
@@ -115,8 +115,8 @@ FormFactorTable::FormFactorTable() {
   init_residue_type_form_factor_map();
 }
 
-FormFactorTable::FormFactorTable(const String& table_name, Float min_q,
-                                 Float max_q, Float delta_q)
+FormFactorTable::FormFactorTable(const std::string& table_name, double min_q,
+                                 double max_q, double delta_q)
     : min_q_(min_q), max_q_(max_q), delta_q_(delta_q) {
   init_element_form_factor_map();
   init_residue_type_form_factor_map();
@@ -134,12 +134,13 @@ FormFactorTable::FormFactorTable(const String& table_name, Float min_q,
     // init all the tables
     unsigned int number_of_q_entries =
         algebra::get_rounded((max_q_ - min_q_) / delta_q_) + 1;
-    Floats form_factor_template(number_of_q_entries, 0.0);
-    form_factors_ = std::vector<Floats>(HEAVY_ATOM_SIZE, form_factor_template);
+    Vector<double> form_factor_template(number_of_q_entries, 0.0);
+    form_factors_ =
+        Vector<Vector<double> >(HEAVY_ATOM_SIZE, form_factor_template);
     vacuum_form_factors_ =
-        std::vector<Floats>(HEAVY_ATOM_SIZE, form_factor_template);
+        Vector<Vector<double> >(HEAVY_ATOM_SIZE, form_factor_template);
     dummy_form_factors_ =
-        std::vector<Floats>(HEAVY_ATOM_SIZE, form_factor_template);
+        Vector<Vector<double> >(HEAVY_ATOM_SIZE, form_factor_template);
 
     // compute all the form factors
     compute_form_factors_all_atoms();
@@ -208,7 +209,7 @@ void FormFactorTable::init_residue_type_form_factor_map() {
   residue_type_form_factor_map_[atom::UNK] = FormFactor(9.037, 37.991, 28.954);
 }
 
-int FormFactorTable::read_form_factor_table(const String& table_name) {
+int FormFactorTable::read_form_factor_table(const std::string& table_name) {
   std::ifstream s(table_name.c_str());
   if (!s) {
     IMP_THROW("Can't find form factor table file " << table_name, IOException);
@@ -217,8 +218,7 @@ int FormFactorTable::read_form_factor_table(const String& table_name) {
   atom::ElementTable e_table = atom::get_element_table();
 
   // init coefficients table
-  form_factors_coefficients_ =
-      std::vector<AtomFactorCoefficients>(ALL_ATOM_SIZE);
+  form_factors_coefficients_ = Vector<AtomFactorCoefficients>(ALL_ATOM_SIZE);
 
   // skip the comment lines
   char c;
@@ -276,14 +276,14 @@ void FormFactorTable::compute_form_factors_all_atoms() {
   for (unsigned int i = 0; i < ALL_ATOM_SIZE; i++) {
     // form factors for all the q range
     // volr_coeff = - v_i^(2/3) / 4PI
-    Float volr_coeff =
+    double volr_coeff =
         -std::pow(form_factors_coefficients_[i].excl_vol_, (2.0 / 3.0)) /
         (16 * PI);
 
     // iterate over q
     for (int iq = 0; iq < number_of_q_entries; iq++) {
-      Float q = min_q_ + (Float)iq * delta_q_;
-      Float s = q / (4 * PI);
+      double q = min_q_ + (double)iq * delta_q_;
+      double s = q / (4 * PI);
 
       // c
       vacuum_form_factors_[i][iq] = form_factors_coefficients_[i].c_;
@@ -708,7 +708,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
     return UNK;
 }
 
-float FormFactorTable::get_form_factor(atom::ResidueType rt) const {
+double FormFactorTable::get_form_factor(atom::ResidueType rt) const {
   std::map<atom::ResidueType, FormFactor>::const_iterator i =
       residue_type_form_factor_map_.find(rt);
   if (i != residue_type_form_factor_map_.end())
@@ -720,7 +720,7 @@ float FormFactorTable::get_form_factor(atom::ResidueType rt) const {
   }
 }
 
-float FormFactorTable::get_vacuum_form_factor(atom::ResidueType rt) const {
+double FormFactorTable::get_vacuum_form_factor(atom::ResidueType rt) const {
   std::map<atom::ResidueType, FormFactor>::const_iterator i =
       residue_type_form_factor_map_.find(rt);
   if (i != residue_type_form_factor_map_.end())
@@ -732,7 +732,7 @@ float FormFactorTable::get_vacuum_form_factor(atom::ResidueType rt) const {
   }
 }
 
-float FormFactorTable::get_dummy_form_factor(atom::ResidueType rt) const {
+double FormFactorTable::get_dummy_form_factor(atom::ResidueType rt) const {
   std::map<atom::ResidueType, FormFactor>::const_iterator i =
       residue_type_form_factor_map_.find(rt);
   if (i != residue_type_form_factor_map_.end())
@@ -744,8 +744,8 @@ float FormFactorTable::get_dummy_form_factor(atom::ResidueType rt) const {
   }
 }
 
-Float FormFactorTable::get_form_factor(Particle* p,
-                                       FormFactorType ff_type) const {
+double FormFactorTable::get_form_factor(Particle* p,
+                                        FormFactorType ff_type) const {
   if (ff_type == CA_ATOMS) {  // residue level form factors
     atom::ResidueType residue_type;
     if (p->has_attribute(atom::Residue::get_residue_type_key()))
@@ -767,13 +767,13 @@ Float FormFactorTable::get_form_factor(Particle* p,
              << std::endl);
     ff_atom_type = N;
   }
-  Float form_factor = zero_form_factors_[ff_atom_type];
+  double form_factor = zero_form_factors_[ff_atom_type];
   p->add_cache_attribute(form_factor_type_key_, ff_atom_type);
   return form_factor;
 }
 
-Float FormFactorTable::get_vacuum_form_factor(Particle* p,
-                                              FormFactorType ff_type) const {
+double FormFactorTable::get_vacuum_form_factor(Particle* p,
+                                               FormFactorType ff_type) const {
   if (ff_type == CA_ATOMS) {  // residue level form factors
     atom::ResidueType residue_type;
     if (p->has_attribute(atom::Residue::get_residue_type_key()))
@@ -789,13 +789,13 @@ Float FormFactorTable::get_vacuum_form_factor(Particle* p,
   }
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
-  Float form_factor = vacuum_zero_form_factors_[ff_atom_type];
+  double form_factor = vacuum_zero_form_factors_[ff_atom_type];
   p->add_attribute(form_factor_type_key_, ff_atom_type);
   return form_factor;
 }
 
-Float FormFactorTable::get_dummy_form_factor(Particle* p,
-                                             FormFactorType ff_type) const {
+double FormFactorTable::get_dummy_form_factor(Particle* p,
+                                              FormFactorType ff_type) const {
   if (ff_type == CA_ATOMS) {  // residue level form factors
     atom::ResidueType residue_type;
     if (p->has_attribute(atom::Residue::get_residue_type_key()))
@@ -811,30 +811,28 @@ Float FormFactorTable::get_dummy_form_factor(Particle* p,
   }
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
-  Float form_factor = dummy_zero_form_factors_[ff_atom_type];
+  double form_factor = dummy_zero_form_factors_[ff_atom_type];
   p->add_attribute(form_factor_type_key_, ff_atom_type);
   return form_factor;
 }
 
-Float FormFactorTable::get_radius(Particle* p,
-                                  FormFactorType ff_type) const {
+double FormFactorTable::get_radius(Particle* p, FormFactorType ff_type) const {
   // dummy_zero_form_factor = volume * rho
   // volume = 4/3 * pi * r^3
   // r^3 = 3*dummy_zero_form_factor / 4*pi*rho
-  static Float one_third = 1.0 / 3;
-  static Float c = 3.0 / (4 * PI * rho_);
-  Float form_factor = get_dummy_form_factor(p, ff_type);
+  static double one_third = 1.0 / 3;
+  static double c = 3.0 / (4 * PI * rho_);
+  double form_factor = get_dummy_form_factor(p, ff_type);
   return std::pow(c * form_factor, one_third);
 }
 
-Float FormFactorTable::get_volume(Particle* p,
-                                  FormFactorType ff_type) const {
+double FormFactorTable::get_volume(Particle* p, FormFactorType ff_type) const {
   // dummy_zero_form_factor = volume * rho
-  Float form_factor = get_dummy_form_factor(p, ff_type);
+  double form_factor = get_dummy_form_factor(p, ff_type);
   return form_factor / rho_;
 }
 
-const Floats& FormFactorTable::get_form_factors(Particle* p,
+const Vector<double>& FormFactorTable::get_form_factors(Particle* p,
                                                 FormFactorType ff_type) const {
   // initialization by request
   // store the index of the form factors in the particle
@@ -846,8 +844,8 @@ const Floats& FormFactorTable::get_form_factors(Particle* p,
   return form_factors_[ff_atom_type];
 }
 
-const Floats& FormFactorTable::get_vacuum_form_factors(
-    Particle* p, FormFactorType ff_type) const {
+const Vector<double>& FormFactorTable::get_vacuum_form_factors(Particle* p,
+                                                FormFactorType ff_type) const {
   // initialization by request
   // store the index of the form factors in the particle
   if (p->has_attribute(form_factor_type_key_))
@@ -858,8 +856,9 @@ const Floats& FormFactorTable::get_vacuum_form_factors(
   return vacuum_form_factors_[ff_atom_type];
 }
 
-const Floats& FormFactorTable::get_dummy_form_factors(
-    Particle* p, FormFactorType ff_type) const {
+
+const Vector<double>& FormFactorTable::get_dummy_form_factors(Particle* p,
+                                                FormFactorType ff_type) const {
   // initialization by request
   // store the index of the form factors in the particle
   if (p->has_attribute(form_factor_type_key_))

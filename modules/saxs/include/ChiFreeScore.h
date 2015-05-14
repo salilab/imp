@@ -24,20 +24,20 @@ class IMPSAXSEXPORT ChiFreeScore {
     last_scale_updated_ = false;
   }
 
-  Float compute_score(const Profile* exp_profile, const Profile* model_profile,
-                      bool use_offset = false) const;
+  double compute_score(const Profile* exp_profile, const Profile* model_profile,
+                       bool use_offset = false) const;
 
-  Float compute_scale_factor(const Profile* exp_profile,
-                             const Profile* model_profile,
-                             Float offset = 0.0) const;
+  double compute_scale_factor(const Profile* exp_profile,
+                              const Profile* model_profile,
+                              double offset = 0.0) const;
 
-  Float compute_offset(const Profile* exp_profile,
-                       const Profile* model_profile) const;
+  double compute_offset(const Profile* exp_profile,
+                        const Profile* model_profile) const;
 
  private:
   unsigned int ns_;  // number of Shannon channels
   unsigned int K_;
-  Float last_scale_;
+  double last_scale_;
   bool last_scale_updated_;
 };
 

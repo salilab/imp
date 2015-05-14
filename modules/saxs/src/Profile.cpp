@@ -32,9 +32,9 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-const Float Profile::modulation_function_parameter_ = 0.23;
+const double Profile::modulation_function_parameter_ = 0.23;
 
-Profile::Profile(Float qmin, Float qmax, Float delta)
+Profile::Profile(double qmin, double qmax, double delta)
     : Object("profile%1%"),
       min_q_(qmin),
       max_q_(qmax),
@@ -50,7 +50,7 @@ Profile::Profile(Float qmin, Float qmax, Float delta)
   ff_table_ = get_default_form_factor_table();
 }
 
-Profile::Profile(const String& file_name, bool fit_file)
+Profile::Profile(const std::string& file_name, bool fit_file, double max_q)
     : Object("profile%1%"),
       experimental_(true),
       name_(file_name),
@@ -58,7 +58,7 @@ Profile::Profile(const String& file_name, bool fit_file)
       beam_profile_(IMP_NULLPTR) {
   set_was_used(true);
   if (fit_file) experimental_ = false;
-  read_SAXS_file(file_name, fit_file);
+  read_SAXS_file(file_name, fit_file, max_q);
 }
 
 void Profile::init() {
@@ -75,7 +75,7 @@ void Profile::init() {
   }
 }
 
-void Profile::read_SAXS_file(const String& file_name, bool fit_file) {
+void Profile::read_SAXS_file(const std::string& file_name, bool fit_file, double max_q) {
   std::ifstream in_file(file_name.c_str());
   if (!in_file) {
     IMP_THROW("Can't open file " << file_name, IOException);
@@ -99,6 +99,8 @@ void Profile::read_SAXS_file(const String& file_name, bool fit_file) {
 
     q = atof(split_results[0].c_str());
 
+    if(max_q > 0.0 && q > max_q) break; // stop reading after max_q
+
     if (fit_file) {
       if (split_results.size() != 3) continue;
       intensity = atof(split_results[2].c_str());
@@ -112,10 +114,10 @@ void Profile::read_SAXS_file(const String& file_name, bool fit_file) {
     if (intensity < 0.0) {  // negative intensity
       IMP_WARN("Negative intensity value: "
                << line << " skipping remaining profile points" << std::endl);
-      break;
+      //break;
     }
     error = 1.0;
-    if (split_results.size() >= 3) {
+    if (split_results.size() >= 3 && !fit_file) {
       error = atof(split_results[2].c_str());
       if (fabs(error) < IMP_SAXS_DELTA_LIMIT) {
         error = 0.05 * intensity;
@@ -134,7 +136,7 @@ void Profile::read_SAXS_file(const String& file_name, bool fit_file) {
 
     if (is_uniform_sampling()) {
       // To minimize rounding errors, by averaging differences of q
-      Float diff = 0.0;
+      double diff = 0.0;
       for (unsigned int i = 1; i < size(); i++) diff += q_[i] - q_[i - 1];
       delta_q_ = diff / (size() - 1);
     } else {
@@ -177,7 +179,7 @@ void Profile::add_errors() {
   experimental_ = true;
 }
 
-void Profile::add_noise(Float percentage) {
+void Profile::add_noise(double percentage) {
   // init random number generator
   typedef boost::mt19937 base_generator_type;
   base_generator_type rng;
@@ -199,16 +201,16 @@ void Profile::add_noise(Float percentage) {
 bool Profile::is_uniform_sampling() const {
   if (size() <= 1) return false;
 
-  Float curr_diff = q_[1] - q_[0];
-  Float epsilon = curr_diff / 10;
+  double curr_diff = q_[1] - q_[0];
+  double epsilon = curr_diff / 10;
   for (unsigned int i = 2; i < size(); i++) {
-    Float diff = q_[i] - q_[i - 1];
+    double diff = q_[i] - q_[i - 1];
     if (fabs(curr_diff - diff) > epsilon) return false;
   }
   return true;
 }
 
-void Profile::write_SAXS_file(const String& file_name, Float max_q) const {
+void Profile::write_SAXS_file(const std::string& file_name, double max_q) const {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
     IMP_THROW("Can't open file " << file_name, IOException);
@@ -251,7 +253,7 @@ void Profile::write_SAXS_file(const String& file_name, Float max_q) const {
   out_file.close();
 }
 
-void Profile::read_partial_profiles(const String& file_name) {
+void Profile::read_partial_profiles(const std::string& file_name) {
   std::ifstream in_file(file_name.c_str());
   if (!in_file) {
     IMP_THROW("Can't open file " << file_name, IOException);
@@ -259,8 +261,7 @@ void Profile::read_partial_profiles(const String& file_name) {
 
   unsigned int psize = 6;
   // init
-  partial_profiles_.insert(partial_profiles_.begin(), psize,
-                           std::vector<double>());
+  partial_profiles_.insert(partial_profiles_.begin(), psize, Vector<double>());
   std::string line;
   while (!in_file.eof()) {
     getline(in_file, line);
@@ -289,7 +290,7 @@ void Profile::read_partial_profiles(const String& file_name) {
 
     if (is_uniform_sampling()) {
       // To minimize rounding errors, by averaging differences of q
-      Float diff = 0.0;
+      double diff = 0.0;
       for (unsigned int i = 1; i < size(); i++) diff += q_[i] - q_[i - 1];
       delta_q_ = diff / (size() - 1);
     } else {
@@ -302,7 +303,7 @@ void Profile::read_partial_profiles(const String& file_name) {
                 << " min_q= " << min_q_ << " max_q= " << max_q_ << std::endl);
 }
 
-void Profile::write_partial_profiles(const String& file_name) const {
+void Profile::write_partial_profiles(const std::string& file_name) const {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
     IMP_THROW("Can't open file " << file_name, IOException);
@@ -348,15 +349,15 @@ void Profile::calculate_profile_real(const Particles& particles,
                 << particles.size() << " particles" << std::endl);
   RadialDistributionFunction r_dist;  // fi(0) fj(0)
   // prepare coordinates and form factors in advance, for faster access
-  std::vector<algebra::Vector3D> coordinates;
+  Vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
-  Floats form_factors;
+  Vector<double> form_factors;
   get_form_factors(particles, ff_table_, form_factors, ff_type);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      Float dist = get_squared_distance(coordinates[i], coordinates[j]);
+      double dist = get_squared_distance(coordinates[i], coordinates[j]);
       double prod = form_factors[i] * form_factors[j];
       r_dist.add_to_distribution(dist, 2 * prod);
     }
@@ -366,28 +367,28 @@ void Profile::calculate_profile_real(const Particles& particles,
   squared_distribution_2_profile(r_dist);
 }
 
-Float Profile::calculate_I0(const Particles& particles,
-                            FormFactorType ff_type) {
-  Float I0 = 0.0;
+double Profile::calculate_I0(const Particles& particles,
+                             FormFactorType ff_type) {
+  double I0 = 0.0;
   for (unsigned int i = 0; i < particles.size(); i++)
     I0 += ff_table_->get_vacuum_form_factor(particles[i], ff_type);
   return square(I0);
 }
 
-void Profile::calculate_profile_constant_form_factor(
-    const Particles& particles, Float form_factor) {
+void Profile::calculate_profile_constant_form_factor(const Particles& particles,
+                                                     double form_factor) {
   IMP_LOG_TERSE("start real profile calculation for "
                 << particles.size() << " particles" << std::endl);
   RadialDistributionFunction r_dist;
   // prepare coordinates and form factors in advance, for faster access
-  std::vector<algebra::Vector3D> coordinates;
+  Vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
-  Float ff = square(form_factor);
+  double ff = square(form_factor);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      Float dist = get_squared_distance(coordinates[i], coordinates[j]);
+      double dist = get_squared_distance(coordinates[i], coordinates[j]);
       r_dist.add_to_distribution(dist, 2 * ff);
     }
     // add autocorrelation part
@@ -396,24 +397,25 @@ void Profile::calculate_profile_constant_form_factor(
   squared_distribution_2_profile(r_dist);
 }
 
+
 void Profile::calculate_profile_partial(const Particles& particles,
-                                        const Floats& surface,
+                                        const Vector<double>& surface,
                                         FormFactorType ff_type) {
   IMP_LOG_TERSE("start real partial profile calculation for "
                 << particles.size() << " particles " << std::endl);
 
   // copy coordinates and form factors in advance, to avoid n^2 copy
   // operations
-  std::vector<algebra::Vector3D> coordinates;
+  Vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
-  Floats vacuum_ff(particles.size()), dummy_ff(particles.size()), water_ff;
+  Vector<double> vacuum_ff(particles.size()), dummy_ff(particles.size()), water_ff;
   for (unsigned int i = 0; i < particles.size(); i++) {
     vacuum_ff[i] = ff_table_->get_vacuum_form_factor(particles[i], ff_type);
     dummy_ff[i] = ff_table_->get_dummy_form_factor(particles[i], ff_type);
   }
   if (surface.size() == particles.size()) {
     water_ff.resize(particles.size());
-    Float ff_water = ff_table_->get_water_form_factor();
+    double ff_water = ff_table_->get_water_form_factor();
     for (unsigned int i = 0; i < particles.size(); i++) {
       water_ff[i] = surface[i] * ff_water;
     }
@@ -421,12 +423,12 @@ void Profile::calculate_profile_partial(const Particles& particles,
 
   int r_size = 3;
   if (surface.size() == particles.size()) r_size = 6;
-  std::vector<RadialDistributionFunction> r_dist(r_size);
+  Vector<RadialDistributionFunction> r_dist(r_size);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      Float dist = get_squared_distance(coordinates[i], coordinates[j]);
+      double dist = get_squared_distance(coordinates[i], coordinates[j]);
       r_dist[0].add_to_distribution(
           dist, 2 * vacuum_ff[i] * vacuum_ff[j]);  // constant
       r_dist[1]
@@ -457,8 +459,7 @@ void Profile::calculate_profile_partial(const Particles& particles,
   }
 
   // convert to reciprocal space
-  partial_profiles_.insert(partial_profiles_.begin(), r_size,
-                           std::vector<double>());
+  partial_profiles_.insert(partial_profiles_.begin(), r_size, Vector<double>());
   squared_distributions_2_partial_profiles(r_dist);
 
   // compute default profile c1 = 1, c2 = 0
@@ -467,25 +468,25 @@ void Profile::calculate_profile_partial(const Particles& particles,
 
 void Profile::calculate_profile_partial(const Particles& particles1,
                                         const Particles& particles2,
-                                        const Floats& surface1,
-                                        const Floats& surface2,
+                                        const Vector<double>& surface1,
+                                        const Vector<double>& surface2,
                                         FormFactorType ff_type) {
   IMP_LOG_TERSE("start real partial profile calculation for "
                 << particles1.size() << " particles + " << particles2.size()
                 << std::endl);
 
   // store coordinates
-  std::vector<algebra::Vector3D> coordinates1, coordinates2;
+  Vector<algebra::Vector3D> coordinates1, coordinates2;
   get_coordinates(particles1, coordinates1);
   get_coordinates(particles2, coordinates2);
   int r_size = 3;
   // get form factors
-  Floats vacuum_ff1(particles1.size()), dummy_ff1(particles1.size()), water_ff1;
+  Vector<double> vacuum_ff1(particles1.size()), dummy_ff1(particles1.size()), water_ff1;
   for (unsigned int i = 0; i < particles1.size(); i++) {
     vacuum_ff1[i] = ff_table_->get_vacuum_form_factor(particles1[i], ff_type);
     dummy_ff1[i] = ff_table_->get_dummy_form_factor(particles1[i], ff_type);
   }
-  Floats vacuum_ff2(particles2.size()), dummy_ff2(particles2.size()), water_ff2;
+  Vector<double> vacuum_ff2(particles2.size()), dummy_ff2(particles2.size()), water_ff2;
   for (unsigned int i = 0; i < particles2.size(); i++) {
     vacuum_ff2[i] = ff_table_->get_vacuum_form_factor(particles2[i], ff_type);
     dummy_ff2[i] = ff_table_->get_dummy_form_factor(particles2[i], ff_type);
@@ -494,7 +495,7 @@ void Profile::calculate_profile_partial(const Particles& particles1,
   if (surface1.size() > 0 && surface2.size() > 0 &&
       surface1.size() == particles1.size() &&
       surface2.size() == particles2.size()) {
-    Float ff_water = ff_table_->get_water_form_factor();
+    double ff_water = ff_table_->get_water_form_factor();
     water_ff1.resize(particles1.size());
     water_ff2.resize(particles2.size());
     for (unsigned int i = 0; i < particles1.size(); i++) {
@@ -506,12 +507,12 @@ void Profile::calculate_profile_partial(const Particles& particles1,
     r_size = 6;
   }
 
-  std::vector<RadialDistributionFunction> r_dist(r_size);
+  Vector<RadialDistributionFunction> r_dist(r_size);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates1.size(); i++) {
     for (unsigned int j = 0; j < coordinates2.size(); j++) {
-      Float dist = get_squared_distance(coordinates1[i], coordinates2[j]);
+      double dist = get_squared_distance(coordinates1[i], coordinates2[j]);
       r_dist[0].add_to_distribution(
           dist, 2 * vacuum_ff1[i] * vacuum_ff2[j]);  // constant
       r_dist[1]
@@ -533,15 +534,14 @@ void Profile::calculate_profile_partial(const Particles& particles1,
   }
 
   // convert to reciprocal space
-  partial_profiles_.insert(partial_profiles_.begin(), r_size,
-                           std::vector<double>());
+  partial_profiles_.insert(partial_profiles_.begin(), r_size, Vector<double>());
   squared_distributions_2_partial_profiles(r_dist);
 
   // compute default profile c1 = 1, c2 = 0
   sum_partial_profiles(1.0, 0.0, false);
 }
 
-void Profile::sum_partial_profiles(Float c1, Float c2, bool check_cashed) {
+void Profile::sum_partial_profiles(double c1, double c2, bool check_cashed) {
   // precomputed exp function
   static internal::ExpFunction ef(square(get_max_q()) * 0.3, 0.00001);
 
@@ -553,26 +553,26 @@ void Profile::sum_partial_profiles(Float c1, Float c2, bool check_cashed) {
 
   // implements volume fitting function G(s) as described
   // in crysol paper eq. 13
-  Float rm = average_radius_;
+  double rm = average_radius_;
   // this exponent should match the exponent of g(s) which doesn't have
   // (4pi/3)^3/2 part so it seems that this part is not needed here too.
-  // Float coefficient =
+  // double coefficient =
   // - std::pow((4.0*PI/3.0), 3.0/2.0) * square(rm) * (c1*c1-1.0) /
   // (4*PI);
-  Float coefficient = -square(rm) * (c1 * c1 - 1.0) / (4 * PI);
-  Float square_c2 = c2 * c2;
-  Float cube_c1 = c1 * c1 * c1;
+  double coefficient = -square(rm) * (c1 * c1 - 1.0) / (4 * PI);
+  double square_c2 = c2 * c2;
+  double cube_c1 = c1 * c1 * c1;
 
   if (size() != partial_profiles_[0].size()) init();
 
   for (unsigned int k = 0; k < size(); k++) {
-    Float q = get_q(k);
-    Float x = coefficient * square(q);
-    Float G_q = cube_c1;
+    double q = get_q(k);
+    double x = coefficient * square(q);
+    double G_q = cube_c1;
     if (std::abs(x) > 1.0e-8) G_q *= ef.exp(x);
-    // Float G_q = cube_c1 * std::exp(coefficient*square(q));
+    // double G_q = cube_c1 * std::exp(coefficient*square(q));
 
-    Float intensity = partial_profiles_[0][k];
+    double intensity = partial_profiles_[0][k];
     intensity += square(G_q) * partial_profiles_[1][k];
     intensity -= G_q * partial_profiles_[2][k];
 
@@ -588,31 +588,32 @@ void Profile::sum_partial_profiles(Float c1, Float c2, bool check_cashed) {
   c2_ = c2;
 }
 
-void Profile::resample(const Profile* exp_profile, Profile* resampled_profile,
-                       bool partial_profiles) const {
+void Profile::resample(const Profile* exp_profile,
+                       Profile* resampled_profile) const {
   if (q_mapping_.size() == 0)
     for (unsigned int k = 0; k < size(); k++)
       const_cast<Profile*>(this)->q_mapping_[q_[k]] = k;
 
-  if (partial_profiles) {
+  if (partial_profiles_.size() > 0) {
     // init
     resampled_profile->partial_profiles_.insert(
-        resampled_profile->partial_profiles_.begin(), partial_profiles_.size(),
-        std::vector<double>());
+                                  resampled_profile->partial_profiles_.begin(),
+                                  partial_profiles_.size(),
+                                  Vector<double>());
   }
 
   for (unsigned int k = 0; k < exp_profile->size(); k++) {
-    Float q = exp_profile->get_q(k);
+    double q = exp_profile->get_q(k);
     if (q > max_q_) break;
 
-    std::map<float, unsigned int>::const_iterator it =
+    std::map<double, unsigned int>::const_iterator it =
         q_mapping_.lower_bound(q);
     if (it == q_mapping_.end()) break;
 
     unsigned int i = it->second;
-    Float delta_q = 1.0;
+    double delta_q = 1.0;
     if (i == 0 || (delta_q = get_q(i) - get_q(i - 1)) <= 1.0e-16) {
-      if (partial_profiles) {
+      if (partial_profiles_.size() > 0) {
         for (unsigned int r = 0; r < partial_profiles_.size(); r++) {
           resampled_profile->partial_profiles_[r]
               .push_back(partial_profiles_[r][i]);
@@ -621,18 +622,18 @@ void Profile::resample(const Profile* exp_profile, Profile* resampled_profile,
       resampled_profile->add_entry(q, get_intensity(i));
     } else {
       // interpolate
-      Float alpha = (q - get_q(i - 1)) / delta_q;
+      double alpha = (q - get_q(i - 1)) / delta_q;
       if (alpha > 1.0) alpha = 1.0;  // handle rounding errors
 
-      if (partial_profiles) {
+      if (partial_profiles_.size() > 0) {
         for (unsigned int r = 0; r < partial_profiles_.size(); r++) {
-          Float intensity =
+          double intensity =
               partial_profiles_[r][i - 1] +
               alpha * (partial_profiles_[r][i] - partial_profiles_[r][i - 1]);
           resampled_profile->partial_profiles_[r].push_back(intensity);
         }
       }
-      Float intensity = get_intensity(i - 1) +
+      double intensity = get_intensity(i - 1) +
                         alpha * (get_intensity(i) - get_intensity(i - 1));
       resampled_profile->add_entry(q, intensity);
     }
@@ -642,7 +643,7 @@ void Profile::resample(const Profile* exp_profile, Profile* resampled_profile,
 void Profile::downsample(Profile* downsampled_profile,
                          unsigned int point_number) const {
 
-  unsigned int points_delta = (int)std::ceil(size() / (float)point_number);
+  unsigned int points_delta = (int)std::ceil(size() / (double)point_number);
   for (unsigned int k = 0; k < size(); k += points_delta)
     downsampled_profile->add_entry(get_q(k), get_intensity(k), get_error(k));
 }
@@ -660,14 +661,14 @@ void Profile::calculate_profile_symmetric(const Particles& particles,
   unsigned int number_of_distances = n / 2;
   unsigned int unit_size = particles.size() / n;
   // coordinates
-  std::vector<std::vector<algebra::Vector3D> > units(
-      number_of_distances + 1, std::vector<algebra::Vector3D>(unit_size));
+  Vector<Vector<algebra::Vector3D> > units(number_of_distances + 1,
+                                           Vector<algebra::Vector3D>(unit_size));
   for (unsigned int i = 0; i <= number_of_distances; i++) {
     for (unsigned int j = 0; j < unit_size; j++) {
       units[i][j] = core::XYZ(particles[i * unit_size + j]).get_coordinates();
     }
   }
-  Floats form_factors(unit_size);
+  Vector<double> form_factors(unit_size);
   for (unsigned int i = 0; i < unit_size; i++) {
     form_factors[i] = ff_table_->get_form_factor(particles[i], ff_type);
   }
@@ -676,7 +677,7 @@ void Profile::calculate_profile_symmetric(const Particles& particles,
   // distribution within unit
   for (unsigned int i = 0; i < unit_size; i++) {
     for (unsigned int j = i + 1; j < unit_size; j++) {
-      Float dist2 = get_squared_distance(units[0][i], units[0][j]);
+      double dist2 = get_squared_distance(units[0][i], units[0][j]);
       r_dist.add_to_distribution(dist2, 2 * form_factors[i] * form_factors[j]);
     }
     r_dist.add_to_distribution(0.0, square(form_factors[i]));
@@ -686,7 +687,7 @@ void Profile::calculate_profile_symmetric(const Particles& particles,
   for (unsigned int in = 1; in < number_of_distances; in++) {
     for (unsigned int i = 0; i < unit_size; i++) {
       for (unsigned int j = 0; j < unit_size; j++) {
-        Float dist2 = get_squared_distance(units[0][i], units[in][j]);
+        double dist2 = get_squared_distance(units[0][i], units[in][j]);
         r_dist.add_to_distribution(dist2,
                                    2 * form_factors[i] * form_factors[j]);
       }
@@ -698,7 +699,7 @@ void Profile::calculate_profile_symmetric(const Particles& particles,
   RadialDistributionFunction r_dist2;
   for (unsigned int i = 0; i < unit_size; i++) {
     for (unsigned int j = 0; j < unit_size; j++) {
-      Float dist2 =
+      double dist2 =
           get_squared_distance(units[0][i], units[number_of_distances][j]);
       r_dist2.add_to_distribution(dist2, 2 * form_factors[i] * form_factors[j]);
     }
@@ -725,17 +726,17 @@ void Profile::calculate_profile_real(const Particles& particles1,
 
   // copy coordinates and form factors in advance, to avoid n^2 copy
   // operations
-  std::vector<algebra::Vector3D> coordinates1, coordinates2;
+  Vector<algebra::Vector3D> coordinates1, coordinates2;
   get_coordinates(particles1, coordinates1);
   get_coordinates(particles2, coordinates2);
-  Floats form_factors1, form_factors2;
+  Vector<double> form_factors1, form_factors2;
   get_form_factors(particles1, ff_table_, form_factors1, ff_type);
   get_form_factors(particles2, ff_table_, form_factors2, ff_type);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates1.size(); i++) {
     for (unsigned int j = 0; j < coordinates2.size(); j++) {
-      Float dist = get_squared_distance(coordinates1[i], coordinates2[j]);
+      double dist = get_squared_distance(coordinates1[i], coordinates2[j]);
       double prod = form_factors1[i] * form_factors2[j];
       r_dist.add_to_distribution(dist, 2 * prod);
     }
@@ -749,8 +750,8 @@ void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist) {
   for (unsigned int k = 0; k < size(); k++) {
     // iterate over radial distribution
     for (unsigned int r = 0; r < r_dist.size(); r++) {
-      Float dist = r_dist.get_distance_from_index(r);
-      Float x = dist * q_[k];
+      double dist = r_dist.get_distance_from_index(r);
+      double x = dist * q_[k];
       x = boost::math::sinc_pi(x);
       intensity_[k] += r_dist[r] * x;
     }
@@ -765,7 +766,7 @@ void Profile::squared_distribution_2_profile(
       sqrt(r_dist.get_max_distance()) * get_max_q(), 0.0001);
 
   // precompute square roots of distances
-  std::vector<float> distances(r_dist.size(), 0.0);
+  Vector<double> distances(r_dist.size(), 0.0);
   for (unsigned int r = 0; r < r_dist.size(); r++) {
     if (r_dist[r] != 0.0) {
       distances[r] = sqrt(r_dist.get_distance_from_index(r));
@@ -781,13 +782,13 @@ void Profile::squared_distribution_2_profile(
     // iterate over radial distribution
     for (unsigned int r = 0; r < r_dist.size(); r++) {
       if (r_dist[r] != 0.0) {
-        Float dist = distances[r];
-        Float x = 0.0;
+        double dist = distances[r];
+        double x = 0.0;
         if(use_beam_profile) {
           // iterate over beam profile
           for (unsigned int t = 0; t < beam_profile_->size(); t++) {
             // x = 2*I(t)*sinc(sqrt(q^2+t^2)) multiply by 2 because of the symmetry of the beam
-            float x1 = dist * sqrt((q_[k]*q_[k] + beam_profile_->q_[t]*beam_profile_->q_[t]));
+            double x1 = dist * sqrt((q_[k]*q_[k] + beam_profile_->q_[t]*beam_profile_->q_[t]));
             x += 2 * beam_profile_->intensity_[t] * sf.sinc(x1);
           }
         } else {
@@ -806,7 +807,7 @@ void Profile::squared_distribution_2_profile(
 }
 
 void Profile::squared_distributions_2_partial_profiles(
-    const std::vector<RadialDistributionFunction>& r_dist) {
+                           const Vector<RadialDistributionFunction>& r_dist) {
   int r_size = r_dist.size();
 
   // init
@@ -819,7 +820,7 @@ void Profile::squared_distributions_2_partial_profiles(
       sqrt(r_dist[0].get_max_distance()) * get_max_q(), 0.0001);
 
   // precompute square roots of distances
-  std::vector<float> distances(r_dist[0].size(), 0.0);
+  Vector<double> distances(r_dist[0].size(), 0.0);
   for (unsigned int r = 0; r < r_dist[0].size(); r++) {
     if (r_dist[0][r] > 0.0) {
       distances[r] = sqrt(r_dist[0].get_distance_from_index(r));
@@ -835,13 +836,13 @@ void Profile::squared_distributions_2_partial_profiles(
     // iterate over radial distribution
     for (unsigned int r = 0; r < r_dist[0].size(); r++) {
       if (r_dist[0][r] > 0.0) {
-        Float dist = distances[r];
-        Float x = 0.0;
+        double dist = distances[r];
+        double x = 0.0;
         if(use_beam_profile) {
           // iterate over beam profile
           for (unsigned int t = 0; t < beam_profile_->size(); t++) {
             // x = 2*I(t)*sinc(sqrt(q^2+t^2)) multiply by 2 because of the symmetry of the beam
-            float x1 = dist * sqrt((q_[k]*q_[k] + beam_profile_->q_[t]*beam_profile_->q_[t]));
+            double x1 = dist * sqrt((q_[k]*q_[k] + beam_profile_->q_[t]*beam_profile_->q_[t]));
             x += 2 * beam_profile_->intensity_[t] * sf.sinc(x1);
           }
         } else {
@@ -858,12 +859,12 @@ void Profile::squared_distributions_2_partial_profiles(
     }
     // this correction is required since we approximate the form factor
     // as f(q) = f(0) * exp(-b*q^2)
-    Float corr = std::exp(-modulation_function_parameter_ * square(q_[k]));
+    double corr = std::exp(-modulation_function_parameter_ * square(q_[k]));
     for (int i = 0; i < r_size; i++) partial_profiles_[i][k] *= corr;
   }
 }
 
-void Profile::add(const Profile* other_profile, Float weight) {
+void Profile::add(const Profile* other_profile, double weight) {
   if (size() == 0 && other_profile->size() != 0) {
     min_q_ = other_profile->get_min_q();
     max_q_ = other_profile->get_max_q();
@@ -876,21 +877,21 @@ void Profile::add(const Profile* other_profile, Float weight) {
   }
 }
 
-void Profile::add(const std::vector<Profile*>& profiles,
-                  const std::vector<Float>& weights) {
+void Profile::add(const Vector<Profile*>& profiles,
+                  const Vector<double>& weights) {
   for (unsigned int i = 0; i < profiles.size(); i++) {
-    Float weight = 1.0;
+    double weight = 1.0;
     if (weights.size() > i) weight = weights[i];
     add(profiles[i], weight);
   }
 }
 
-void Profile::add_partial_profiles(const Profile* other_profile, Float weight) {
+void Profile::add_partial_profiles(const Profile* other_profile, double weight) {
   if (other_profile->partial_profiles_.size() > 0 &&
       partial_profiles_.size() == 0) {
     partial_profiles_.insert(partial_profiles_.begin(),
                              other_profile->partial_profiles_.size(),
-                             std::vector<double>());
+                             Vector<double>());
   }
   if (partial_profiles_.size() != other_profile->partial_profiles_.size()) {
     IMP_WARN("Can't add different partial profile sizes "
@@ -906,18 +907,18 @@ void Profile::add_partial_profiles(const Profile* other_profile, Float weight) {
   }
 }
 
-void Profile::add_partial_profiles(const std::vector<Profile*>& profiles,
-                                   const std::vector<Float>& weights) {
+void Profile::add_partial_profiles(const Vector<Profile*>& profiles,
+                                   const Vector<double>& weights) {
   for (unsigned int i = 0; i < profiles.size(); i++) {
-    Float weight = 1.0;
+    double weight = 1.0;
     if (weights.size() > i) weight = weights[i];
     add_partial_profiles(profiles[i], weight);
   }
 }
 
 double Profile::radius_of_gyration_fixed_q(double end_q) const {
-  IMP::algebra::Vector2Ds data;  // x=q^2, y=logI(q)) z=error(q)/I(q)
-  Floats errors;
+  algebra::Vector2Ds data;  // x=q^2, y=logI(q)) z=error(q)/I(q)
+  Vector<double> errors;
   for (unsigned int i = 0; i < size(); i++) {
     double q = q_[i];
     double Iq = intensity_[i];
@@ -951,6 +952,15 @@ double Profile::radius_of_gyration(double end_q_rg) const {
   return rg;
 }
 
+double Profile::mean_intensity() const {
+  double mean = 0;
+  for (unsigned int i = 0; i < size(); i++) {
+    mean += intensity_[i];
+  }
+  mean /= size();
+  return mean;
+}
+
 void Profile::background_adjust(double start_q) {
   algebra::Vector2Ds data;  // x=q^2, y=sum(q^2xI(q))
   double sum = 0.0;
@@ -982,11 +992,11 @@ void Profile::background_adjust(double start_q) {
   }
 }
 
-void Profile::scale(Float c) {
+void Profile::scale(double c) {
   for (unsigned int k = 0; k < size(); k++) intensity_[k] *= c;
 }
 
-void Profile::offset(Float c) {
+void Profile::offset(double c) {
   for (unsigned int k = 0; k < size(); k++) intensity_[k] -= c;
 }
 
@@ -1002,12 +1012,12 @@ void Profile::copy_errors(const Profile* exp_profile) {
 }
 
 void Profile::profile_2_distribution(RadialDistributionFunction& rd,
-                                     Float max_distance) const {
-  float scale = 1.0 / (2 * PI * PI);
+                                     double max_distance) const {
+  double scale = 1.0 / (2 * PI * PI);
   unsigned int distribution_size = rd.get_index_from_distance(max_distance) + 1;
 
   // offset profile so that minimal i(q) is zero
-  float min_value = intensity_[0];
+  double min_value = intensity_[0];
   for (unsigned int k = 0; k < size(); k++) {
     if (intensity_[k] < min_value) min_value = intensity_[k];
   }
@@ -1019,8 +1029,8 @@ void Profile::profile_2_distribution(RadialDistributionFunction& rd,
 
   // iterate over r
   for (unsigned int i = 0; i < distribution_size; i++) {
-    Float r = rd.get_distance_from_index(i);
-    Float sum = 0.0;
+    double r = rd.get_distance_from_index(i);
+    double sum = 0.0;
     // sum over q: SUM (I(q)*q*sin(qr))
     for (unsigned int k = 0; k < p.size(); k++) {
       sum += p.intensity_[k] * p.q_[k] * std::sin(p.q_[k] * r);
@@ -1040,22 +1050,22 @@ void Profile::calculate_profile_reciprocal(const Particles& particles,
   IMP_LOG_TERSE("start reciprocal profile calculation for "
                 << particles.size() << " particles" << std::endl);
   init();
-  std::vector<algebra::Vector3D> coordinates;
+  Vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
 
   // iterate over pairs of atoms
   // loop1
   for (unsigned int i = 0; i < coordinates.size(); i++) {
-    const Floats& factors1 = ff_table_->get_form_factors(particles[i], ff_type);
+    const Vector<double>& factors1 = ff_table_->get_form_factors(particles[i], ff_type);
     // loop2
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      const Floats& factors2 =
+      const Vector<double>& factors2 =
           ff_table_->get_form_factors(particles[j], ff_type);
-      Float dist = get_distance(coordinates[i], coordinates[j]);
+      double dist = get_distance(coordinates[i], coordinates[j]);
       // loop 3
       // iterate over intensity profile
       for (unsigned int k = 0; k < size(); k++) {
-        Float x = dist * q_[k];
+        double x = dist * q_[k];
         x = boost::math::sinc_pi(x);
         intensity_[k] += 2 * x * factors1[k] * factors2[k];
       }  // end of loop 3
@@ -1068,9 +1078,9 @@ void Profile::calculate_profile_reciprocal(const Particles& particles,
   }  // end of loop1
 }
 
-void Profile::calculate_profile_reciprocal_partial(
-    const Particles& particles, const Floats& surface,
-    FormFactorType ff_type) {
+void Profile::calculate_profile_reciprocal_partial(const Particles& particles,
+                                                   const Vector<double>& surface,
+                                                   FormFactorType ff_type) {
   if (ff_type == CA_ATOMS) {
     IMP_WARN("Reciprocal space profile calculation is not supported for"
              << "residue level" << std::endl);
@@ -1081,37 +1091,36 @@ void Profile::calculate_profile_reciprocal_partial(
                 << particles.size() << " particles" << std::endl);
 
   init();
-  std::vector<algebra::Vector3D> coordinates;
+  Vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
 
   // allocate partial profiles
   int r_size = 3;
   if (surface.size() == particles.size()) r_size = 6;
-  const Floats& water_ff = ff_table_->get_water_form_factors();
-  partial_profiles_.insert(partial_profiles_.begin(), r_size,
-                           std::vector<double>());
+  const Vector<double>& water_ff = ff_table_->get_water_form_factors();
+  partial_profiles_.insert(partial_profiles_.begin(), r_size, Vector<double>());
   for (int i = 0; i < r_size; i++)
     partial_profiles_[i].resize(intensity_.size());
 
   // iterate over pairs of atoms
   // loop1
   for (unsigned int i = 0; i < coordinates.size(); i++) {
-    const Floats& vacuum_ff1 =
+    const Vector<double>& vacuum_ff1 =
         ff_table_->get_vacuum_form_factors(particles[i], ff_type);
-    const Floats& dummy_ff1 =
+    const Vector<double>& dummy_ff1 =
         ff_table_->get_dummy_form_factors(particles[i], ff_type);
     // loop2
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      const Floats& vacuum_ff2 =
+      const Vector<double>& vacuum_ff2 =
           ff_table_->get_vacuum_form_factors(particles[j], ff_type);
-      const Floats& dummy_ff2 =
+      const Vector<double>& dummy_ff2 =
           ff_table_->get_dummy_form_factors(particles[j], ff_type);
-      Float dist = get_distance(coordinates[i], coordinates[j]);
+      double dist = get_distance(coordinates[i], coordinates[j]);
 
       // loop 3
       // iterate over intensity profile
       for (unsigned int k = 0; k < size(); k++) {
-        Float x = dist * q_[k];
+        double x = dist * q_[k];
         x = 2 * boost::math::sinc_pi(x);
         partial_profiles_[0][k] += x * vacuum_ff1[k] * vacuum_ff2[k];
         partial_profiles_[1][k] += x * dummy_ff1[k] * dummy_ff2[k];

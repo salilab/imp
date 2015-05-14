@@ -40,8 +40,8 @@ class IMPSAXSEXPORT WeightedProfileFitter : public ProfileFitter<ChiScore> {
      if(NNLS = true, solve non-negative least squares, otherwise solve just
      least squares, that may return negative weights to be discarded later
   */
-  Float compute_score(const ProfilesTemp& profiles,
-                      std::vector<double>& weights, bool NNLS = true) const;
+  double compute_score(const ProfilesTemp& profiles,
+                       Vector<double>& weights, bool NNLS = true) const;
 
   //! fit profiles by optimization of c1/c2 and weights
   /**
@@ -49,9 +49,9 @@ class IMPSAXSEXPORT WeightedProfileFitter : public ProfileFitter<ChiScore> {
      the q values of the experimental profile. Use Profile::resample to resample
   */
   WeightedFitParameters fit_profile(ProfilesTemp partial_profiles,
-                                    float min_c1 = 0.95, float max_c1 = 1.05,
-                                    float min_c2 = -2.0,
-                                    float max_c2 = 4.0) const;
+                                    double min_c1 = 0.95, double max_c1 = 1.05,
+                                    double min_c2 = -2.0,
+                                    double max_c2 = 4.0) const;
 
   //! write a fit file
   void write_fit_file(ProfilesTemp partial_profiles,
@@ -60,8 +60,8 @@ class IMPSAXSEXPORT WeightedProfileFitter : public ProfileFitter<ChiScore> {
 
  private:
   WeightedFitParameters search_fit_parameters(
-      ProfilesTemp& partial_profiles, float min_c1, float max_c1, float min_c2,
-      float max_c2, float old_chi, std::vector<double>& weights) const;
+      ProfilesTemp& partial_profiles, double min_c1, double max_c1, double min_c2,
+      double max_c2, double old_chi, Vector<double>& weights) const;
 
  private:
   IMP_Eigen::MatrixXf W_;  // weights matrix

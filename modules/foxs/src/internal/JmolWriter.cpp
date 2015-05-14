@@ -177,11 +177,11 @@ void JmolWriter::prepare_PDB_file(
     int mol_index = fps[i].get_mol_index();
 
     // compute mean
-    std::vector<IMP::algebra::Vector3D> coordinates;
-    IMP::saxs::get_coordinates(particles_vec[mol_index], coordinates);
-    IMP::algebra::Vector3D m =
-        std::accumulate(coordinates.begin(), coordinates.end(),
-                        IMP::algebra::Vector3D(0.0, 0.0, 0.0));
+    Vector<IMP::algebra::Vector3D> coordinates;
+    saxs::get_coordinates(particles_vec[mol_index], coordinates);
+    algebra::Vector3D m = std::accumulate(coordinates.begin(),
+                                          coordinates.end(),
+                                          algebra::Vector3D(0.0, 0.0, 0.0));
     m /= particles_vec[mol_index].size();
 
     // output file
@@ -214,11 +214,11 @@ void JmolWriter::prepare_PDB_file(
        i++) {
 
     // compute mean
-    std::vector<IMP::algebra::Vector3D> coordinates;
-    IMP::saxs::get_coordinates(particles_vec[i], coordinates);
-    IMP::algebra::Vector3D m =
-        std::accumulate(coordinates.begin(), coordinates.end(),
-                        IMP::algebra::Vector3D(0.0, 0.0, 0.0));
+    Vector<IMP::algebra::Vector3D> coordinates;
+    saxs::get_coordinates(particles_vec[i], coordinates);
+    algebra::Vector3D m = std::accumulate(coordinates.begin(),
+                                          coordinates.end(),
+                                          algebra::Vector3D(0.0, 0.0, 0.0));
     m /= particles_vec[i].size();
 
     // output file

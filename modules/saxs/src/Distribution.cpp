@@ -18,16 +18,16 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-RadialDistributionFunction::RadialDistributionFunction(Float bin_size)
-    : Distribution<Float>(bin_size) {}
+RadialDistributionFunction::RadialDistributionFunction(double bin_size)
+    : Distribution<double>(bin_size) {}
 
 RadialDistributionFunction::RadialDistributionFunction(
     const std::string& file_name)
-    : Distribution<Float>(pr_resolution) {
+    : Distribution<double>(pr_resolution) {
   read_pr_file(file_name);
 }
 
-void RadialDistributionFunction::scale(Float c) {
+void RadialDistributionFunction::scale(double c) {
   for (unsigned int i = 0; i < size(); i++) (*this)[i] *= c;
 }
 
@@ -38,10 +38,10 @@ void RadialDistributionFunction::add(
   }
 }
 
-Float RadialDistributionFunction::R_factor_score(
+double RadialDistributionFunction::R_factor_score(
     const RadialDistributionFunction& model_pr,
     const std::string& file_name) const {
-  Float sum1 = 0.0, sum2 = 0.0;
+  double sum1 = 0.0, sum2 = 0.0;
   unsigned int distribution_size = std::min(size(), model_pr.size());
 
   for (unsigned int i = 0; i < distribution_size; i++) {
@@ -54,10 +54,10 @@ Float RadialDistributionFunction::R_factor_score(
   return sum1 / sum2;
 }
 
-Float RadialDistributionFunction::fit(
+double RadialDistributionFunction::fit(
     const RadialDistributionFunction& model_pr,
     const std::string& file_name) const {
-  Float max_value = 0.0;
+  double max_value = 0.0;
   unsigned int max_index = 0;
   for (unsigned int i = 0; i < size(); i++) {
     if ((*this)[i] > max_value) {
@@ -65,9 +65,9 @@ Float RadialDistributionFunction::fit(
       max_index = i;
     }
   }
-  Float c = max_value / model_pr[max_index];
+  double c = max_value / model_pr[max_index];
 
-  Float sum1 = 0.0, sum2 = 0.0;
+  double sum1 = 0.0, sum2 = 0.0;
   unsigned int distribution_size = std::min(size(), model_pr.size());
   for (unsigned int i = 0; i < distribution_size; i++) {
     sum1 += std::abs((*this)[i] - c * model_pr[i]);
@@ -79,10 +79,10 @@ Float RadialDistributionFunction::fit(
   return sum1 / sum2;
 }
 
-// Float RadialDistributionFunction::
+// double RadialDistributionFunction::
 // chi_score(const RadialDistributionFunction& model_pr) const
 // {
-//   Float chi_square = 0.0;
+//   double chi_square = 0.0;
 //   unsigned int distribution_size = std::min(size(), model_pr.size());
 
 //   // compute chi
@@ -94,7 +94,7 @@ Float RadialDistributionFunction::fit(
 // }
 
 void RadialDistributionFunction::write_fit_file(
-    const RadialDistributionFunction& model_pr, Float c,
+    const RadialDistributionFunction& model_pr, double c,
     const std::string& file_name) const {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
@@ -119,7 +119,7 @@ void RadialDistributionFunction::show(std::ostream& out) const {
 
 void RadialDistributionFunction::normalize() {
   // calculate area
-  Float sum = 0.0;
+  double sum = 0.0;
   for (unsigned int i = 0; i < size(); i++) sum += (*this)[i];
 
   // normalize
@@ -154,8 +154,8 @@ void RadialDistributionFunction::read_pr_file(const std::string& file_name) {
     boost::split(split_results, line, boost::is_any_of("\t "),
                  boost::token_compress_on);
     if (split_results.size() < 2) continue;
-    Float r = atof(split_results[0].c_str());
-    Float pr = atof(split_results[1].c_str());
+    double r = atof(split_results[0].c_str());
+    double pr = atof(split_results[1].c_str());
     if (!bin_size_set && r > 0.0) {
       init(r);
       bin_size_set = true;
@@ -170,7 +170,7 @@ void RadialDistributionFunction::read_pr_file(const std::string& file_name) {
 }
 
 DeltaDistributionFunction::DeltaDistributionFunction(
-    const Particles& particles, Float max_distance, Float bin_size)
+    const Particles& particles, double max_distance, double bin_size)
     : Distribution<algebra::Vector3D>(bin_size) {
   get_coordinates(particles, coordinates_);
   get_form_factors(particles, get_default_form_factor_table(), form_factors_,
@@ -181,14 +181,14 @@ DeltaDistributionFunction::DeltaDistributionFunction(
 }
 
 void DeltaDistributionFunction::calculate_derivative_distribution(
-    Particle* particle) {
+                                                       Particle* particle) {
   init();
 
   algebra::Vector3D particle_coordinate = core::XYZ(particle).get_coordinates();
-  Float particle_form_factor =
+  double particle_form_factor =
       get_default_form_factor_table()->get_form_factor(particle);
   for (unsigned int i = 0; i < coordinates_.size(); i++) {
-    Float dist = get_distance(coordinates_[i], particle_coordinate);
+    double dist = get_distance(coordinates_[i], particle_coordinate);
     algebra::Vector3D diff_vector = particle_coordinate - coordinates_[i];
     diff_vector *= particle_form_factor * form_factors_[i];
     add_to_distribution(dist, diff_vector);

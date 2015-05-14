@@ -33,10 +33,10 @@ class IMPSAXSEXPORT Profile : public Object {
   // Constructors
 
   //! init from file
-  Profile(const String& file_name, bool fit_file = false);
+  Profile(const std::string& file_name, bool fit_file = false, double max_q = 0.0);
 
   //! init for theoretical profile
-  Profile(Float qmin = 0.0, Float qmax = 0.5, Float delta = 0.005);
+  Profile(double qmin = 0.0, double qmax = 0.5, double delta = 0.005);
 
   // Various ways to compute a profile
 
@@ -58,20 +58,20 @@ class IMPSAXSEXPORT Profile : public Object {
     see FoXS paper for details.
   */
   void calculate_profile_partial(const Particles& particles,
-                                 const Floats& surface = Floats(),
+                                 const Vector<double>& surface = Vector<double>(),
                                  FormFactorType ff_type = HEAVY_ATOMS);
 
   //! compute profile for fitting with hydration layer and excluded volume
   void calculate_profile_partial(const Particles& particles1,
                                  const Particles& particles2,
-                                 const Floats& surface1 = Floats(),
-                                 const Floats& surface2 = Floats(),
+                                 const Vector<double>& surface1 = Vector<double>(),
+                                 const Vector<double>& surface2 = Vector<double>(),
                                  FormFactorType ff_type = HEAVY_ATOMS);
 
   void calculate_profile_reciprocal_partial(const Particles& particles,
-                                            const Floats& surface = Floats(),
-                                            FormFactorType ff_type =
-                                                HEAVY_ATOMS);
+                                 const Vector<double>& surface = Vector<double>(),
+                                 FormFactorType ff_type = HEAVY_ATOMS);
+
 
   //! computes theoretical profile contribution from inter-molecular
   //! interactions between the particles
@@ -82,12 +82,13 @@ class IMPSAXSEXPORT Profile : public Object {
   }
 
   //! calculate Intensity at zero (= squared number of electrons)
-  Float calculate_I0(const Particles& particles,
-                     FormFactorType ff_type = HEAVY_ATOMS);
+  double calculate_I0(const Particles& particles,
+                      FormFactorType ff_type = HEAVY_ATOMS);
 
   //! calculate profile for any type of Particles that have coordinates
-  void calculate_profile_constant_form_factor(
-      const Particles& particles, Float form_factor = 1.0);
+  void calculate_profile_constant_form_factor(const Particles& particles,
+                                              double form_factor = 1.0);
+
 
   // computes theoretical profile faster for cyclically symmetric particles
   // assumes that the units particles are ordered one after another in the
@@ -98,14 +99,13 @@ class IMPSAXSEXPORT Profile : public Object {
 
   //! convert to real space P(r) function P(r) = 1/2PI^2 Sum(I(q)*qr*sin(qr))
   void profile_2_distribution(RadialDistributionFunction& rd,
-                              Float max_distance) const;
+                              double max_distance) const;
 
   //! convert to reciprocal space I(q) = Sum(P(r)*sin(qr)/qr)
   void distribution_2_profile(const RadialDistributionFunction& r_dist);
 
   //! return a profile that is sampled on the q values of the exp_profile
-  void resample(const Profile* exp_profile, Profile* resampled_profile,
-                bool partial_profiles = false) const;
+  void resample(const Profile* exp_profile, Profile* resampled_profile) const;
 
   //! downsample the profile to a given number of points
   void downsample(Profile* downsampled_profile,
@@ -118,46 +118,49 @@ class IMPSAXSEXPORT Profile : public Object {
   */
   double radius_of_gyration(double end_q_rg = 1.3) const;
 
-  // IO functions
+  //! calculate mean intensity
+  double mean_intensity() const;
+
 
   //! reads SAXS profile from file
   /**
      \param[in] file_name profile file name
      \param[in] fit_file if true, intensities are read from column 3
+     \param[in] stop reading after q = max_q
    */
-  void read_SAXS_file(const String& file_name, bool fit_file = false);
+  void read_SAXS_file(const std::string& file_name, bool fit_file = false, double max_q = 0.0);
 
   //! print to file
   /** \param[in] file_name output file name
       \param[in] max_q output till maximal q value = max_q, or all if max_q<=0
   */
-  void write_SAXS_file(const String& file_name, Float max_q = 0.0) const;
+  void write_SAXS_file(const std::string& file_name, double max_q = 0.0) const;
 
   //! read a partial profile from file (7 columns)
-  void read_partial_profiles(const String& file_name);
+  void read_partial_profiles(const std::string& file_name);
 
   //! write a partial profile to file
-  void write_partial_profiles(const String& file_name) const;
+  void write_partial_profiles(const std::string& file_name) const;
 
   // Access functions
 
   //! return sampling resolution
-  Float get_delta_q() const { return delta_q_; }
+  double get_delta_q() const { return delta_q_; }
 
   //! return minimal sampling point
-  Float get_min_q() const { return min_q_; }
+  double get_min_q() const { return min_q_; }
 
   //! return maximal sampling point
-  Float get_max_q() const { return max_q_; }
+  double get_max_q() const { return max_q_; }
 
-  Float get_intensity(unsigned int i) const { return intensity_[i]; }
-  Float get_q(unsigned int i) const { return q_[i]; }
-  Float get_error(unsigned int i) const { return error_[i]; }
-  Float get_weight(unsigned int i) const {
+  double get_intensity(unsigned int i) const { return intensity_[i]; }
+  double get_q(unsigned int i) const { return q_[i]; }
+  double get_error(unsigned int i) const { return error_[i]; }
+  double get_weight(unsigned int i) const {
     IMP_UNUSED(i);
     return 1.0;
   }
-  Float get_average_radius() const { return average_radius_; }
+  double get_average_radius() const { return average_radius_; }
 
   //! return number of entries in SAXS profile
   unsigned int size() const { return q_.size(); }
@@ -165,20 +168,22 @@ class IMPSAXSEXPORT Profile : public Object {
   //! checks the sampling of experimental profile
   bool is_uniform_sampling() const;
 
+  bool is_partial_profile() const { return (partial_profiles_.size()>0); }
+
   std::string get_name() const { return name_; }
 
   unsigned int get_id() const { return id_; }
 
   // Modifiers
 
-  void set_intensity(unsigned int i, Float iq) { intensity_[i] = iq; }
+  void set_intensity(unsigned int i, double iq) { intensity_[i] = iq; }
 
   //! required for reciprocal space calculation
   void set_ff_table(FormFactorTable* ff_table) { ff_table_ = ff_table; }
 
-  void set_average_radius(Float r) { average_radius_ = r; }
+  void set_average_radius(double r) { average_radius_ = r; }
 
-  void set_average_volume(Float v) { average_volume_ = v; }
+  void set_average_volume(double v) { average_volume_ = v; }
 
   void set_name(std::string name) { name_ = name; }
 
@@ -189,7 +194,7 @@ class IMPSAXSEXPORT Profile : public Object {
   }
 
   //! add intensity entry to profile
-  void add_entry(Float q, Float intensity, Float error = 1.0) {
+  void add_entry(double q, double intensity, double error = 1.0) {
     q_.push_back(q);
     intensity_.push_back(intensity);
     error_.push_back(error);
@@ -199,40 +204,39 @@ class IMPSAXSEXPORT Profile : public Object {
   void add_errors();
 
   //! add simulated noise
-  void add_noise(Float percentage = 0.03);
+  void add_noise(double percentage = 0.03);
 
   //! computes full profile for given fitting parameters
-  void sum_partial_profiles(Float c1, Float c2, bool check_cashed = true);
+  void sum_partial_profiles(double c1, double c2, bool check_cashed = true);
 
   //! add another profile - useful for rigid bodies
-  void add(const Profile* other_profile, Float weight = 1.0);
+  void add(const Profile* other_profile, double weight = 1.0);
 
   //! add partial profiles
-  void add_partial_profiles(const Profile* other_profile, Float weight = 1.0);
+  void add_partial_profiles(const Profile* other_profile, double weight = 1.0);
 
   //! add other profiles - useful for weighted ensembles
-  void add(const std::vector<Profile*>& profiles,
-           const std::vector<Float>& weights = std::vector<Float>());
+  void add(const Vector<Profile*>& profiles,
+           const Vector<double>& weights = Vector<double>());
 
   //! add other partial profiles
-  void add_partial_profiles(const std::vector<Profile*>& profiles,
-                            const std::vector<Float>& weights =
-                                std::vector<Float>());
+  void add_partial_profiles(const Vector<Profile*>& profiles,
+                            const Vector<double>& weights = Vector<double>());
 
   //! background adjustment option
   void background_adjust(double start_q);
 
   //! scale
-  void scale(Float c);
+  void scale(double c);
 
   //! offset profile by c, I(q) = I(q) - c
-  void offset(Float c);
+  void offset(double c);
 
   // copy error bars from the matching experimental profile
   void copy_errors(const Profile* exp_profile);
 
   // parameter for E^2(q), used in faster calculation
-  static const Float modulation_function_parameter_;
+  static const double modulation_function_parameter_;
 
   IMP_OBJECT_METHODS(Profile);
 
@@ -257,29 +261,29 @@ class IMPSAXSEXPORT Profile : public Object {
   void squared_distribution_2_profile(const RadialDistributionFunction& r_dist);
 
   void squared_distributions_2_partial_profiles(
-      const std::vector<RadialDistributionFunction>& r_dist);
+      const Vector<RadialDistributionFunction>& r_dist);
 
   double radius_of_gyration_fixed_q(double end_q) const;
 
  protected:
-  std::vector<double> q_;  // q sampling points
-  std::vector<double> intensity_;
-  std::vector<double> error_;  // error bar of each point
+  Vector<double> q_;  // q sampling points
+  Vector<double> intensity_;
+  Vector<double> error_;  // error bar of each point
 
-  Float min_q_, max_q_;        // minimal and maximal s values  in the profile
-  Float delta_q_;              // profile sampling resolution
+  double min_q_, max_q_;        // minimal and maximal s values  in the profile
+  double delta_q_;              // profile sampling resolution
   FormFactorTable* ff_table_;  // pointer to form factors table
 
   // stores the intensity split into 6 for c1/c2 enumeration
-  std::vector<std::vector<double> > partial_profiles_;
-  Float c1_, c2_;
+  Vector<Vector<double> > partial_profiles_;
+  double c1_, c2_;
 
   bool experimental_;     // experimental profile read from file
-  Float average_radius_;  // average radius of the particles
-  Float average_volume_;  // average volume
+  double average_radius_;  // average radius of the particles
+  double average_volume_;  // average volume
 
   // mapping from q values to vector index for fast profile resampling
-  std::map<float, unsigned int> q_mapping_;
+  std::map<double, unsigned int> q_mapping_;
 
   std::string name_;  // file name
   unsigned int id_;   // identifier

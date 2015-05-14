@@ -16,24 +16,24 @@ class IMPSAXSEXPORT FitParameters {
  public:
   FitParameters()
       : chi_(0.0), c1_(0.0), c2_(0.0), c_(0.0), o_(0.0), default_chi_(0.0) {}
-  FitParameters(float chi, float c1, float c2, float c, float o)
+  FitParameters(double chi, double c1, double c2, double c, double o)
       : chi_(chi), c1_(c1), c2_(c2), c_(c), o_(o), default_chi_(0.0) {}
-  FitParameters(float chi, float c1, float c2)
+  FitParameters(double chi, double c1, double c2)
       : chi_(chi), c1_(c1), c2_(c2), c_(0.0), o_(0.0), default_chi_(0.0) {}
 
-  float get_score() const { return chi_; }
-  float get_chi() const { return chi_; }
-  float get_c1() const { return c1_; }
-  float get_c2() const { return c2_; }
-  float get_scale() const { return c_; }
-  float get_offset() const { return o_; }
-  float get_default_chi() const { return default_chi_; }
+  double get_score() const { return chi_; }
+  double get_chi() const { return chi_; }
+  double get_c1() const { return c1_; }
+  double get_c2() const { return c2_; }
+  double get_scale() const { return c_; }
+  double get_offset() const { return o_; }
+  double get_default_chi() const { return default_chi_; }
   std::string get_pdb_file_name() const { return pdb_file_name_; }
   std::string get_profile_file_name() const { return profile_file_name_; }
   int get_mol_index() const { return mol_index_; }
 
-  void set_chi(float chi) { chi_ = chi; }
-  void set_default_chi(float chi) { default_chi_ = chi; }
+  void set_chi(double chi) { chi_ = chi; }
+  void set_default_chi(double chi) { default_chi_ = chi; }
   void set_profile_file_name(std::string file_name) {
     profile_file_name_ = file_name;
   }
@@ -53,12 +53,12 @@ class IMPSAXSEXPORT FitParameters {
 #endif
 
  protected:
-  float chi_;          // fit score
-  float c1_;           // excluded volume fit
-  float c2_;           // water layer fit
-  float c_;            // scaling
-  float o_;            // offset
-  float default_chi_;  // default chi value without fitting c1/c2
+  double chi_;          // fit score
+  double c1_;           // excluded volume fit
+  double c2_;           // water layer fit
+  double c_;            // scaling
+  double o_;            // offset
+  double default_chi_;  // default chi value without fitting c1/c2
   std::string profile_file_name_;
   std::string pdb_file_name_;
   int mol_index_;  // unique mol index

@@ -36,7 +36,7 @@ class IMPSAXSEXPORT RigidBodiesProfileHandler : public Object {
 
   void compute_derivatives(const DerivativeCalculator* dc,
                            const Profile* model_profile,
-                           const std::vector<double>& effect_size,
+                           const Vector<double>& effect_size,
                            DerivativeAccumulator* acc) const;
 
   ModelObjectsTemp do_get_inputs() const;
@@ -45,8 +45,8 @@ class IMPSAXSEXPORT RigidBodiesProfileHandler : public Object {
 
  protected:
   Particles particles_;  // non-rigid bodies particles
-  std::vector<core::RigidBody> rigid_bodies_decorators_;  // rigid bodies
-  std::vector<Particles> rigid_bodies_;  // rigid bodies particles
+  Vector<core::RigidBody> rigid_bodies_decorators_;  // rigid bodies
+  Vector<Particles> rigid_bodies_;  // rigid bodies particles
   // non-changing part of the profile
   PointerMember<Profile> rigid_bodies_profile_;
   FormFactorType ff_type_;  // type of the form factors to use
