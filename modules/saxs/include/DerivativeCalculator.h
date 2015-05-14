@@ -23,6 +23,7 @@ class IMPSAXSEXPORT DerivativeCalculator : public Object {
  public:
   DerivativeCalculator(const Profile* exp_profile);
 
+#ifndef SWIG
   //! compute derivatives for particles1 with respect to particles2
   /**
      This method is needed for rigid bodies when particles1 and particles2
@@ -58,6 +59,7 @@ class IMPSAXSEXPORT DerivativeCalculator : public Object {
   void compute_gaussian_effect_size(const Profile* model_profile, const double c,
                                     const double offset,
                                     Vector<double>& effect_size) const;
+#endif
 
  protected:
   /*
