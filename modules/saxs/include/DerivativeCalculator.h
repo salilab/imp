@@ -66,7 +66,7 @@ class IMPSAXSEXPORT DerivativeCalculator : public Object {
   DeltaDistributionFunction precompute_derivative_helpers(
       const Profile* resampled_model_profile,
       const Particles& particles1, const Particles& particles2,
-      Vector<Vector<double>>& sinc_cos_values) const;
+      Vector<Vector<double> >& sinc_cos_values) const;
 
   /* compute dI(q)/dx_k for given q and k
   * dI(q)/dx_k = - 2 E^2(q) \sum_l (x_k-x_l)/d_{kl}^2 f_l f_k (sinc(q*d_{kl}) -
