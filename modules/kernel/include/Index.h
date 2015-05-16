@@ -14,15 +14,13 @@
 #include "Value.h"
 #include <IMP/Vector.h>
 
-IMPKERNEL_BEGIN_NAMESPACE /** Define a typed index. This can help disambiguate
-                            different
-                            integer based indexes floating around to help avoid
-                            bugs caused by mixing them up. Care has been taken
-                            so
-                            that it can be replaced by an integer everywhere, if
-                            needed.
-                        */
-    template <class Tag>
+IMPKERNEL_BEGIN_NAMESPACE
+
+//! A typed index.
+/** This can help disambiguate different integer based indexes floating
+    around to help avoid bugs caused by mixing them up. Care has been taken
+    so that it can be replaced by an integer everywhere, if needed. */
+template <class Tag>
 class Index : public Value {
   int i_;
 
