@@ -18,7 +18,7 @@
 IMPSAXS_BEGIN_NAMESPACE
 
 inline void get_coordinates(const Particles& particles,
-                            Vector<algebra::Vector3D>& coordinates) {
+                            std::vector<algebra::Vector3D>& coordinates) {
   // copy everything in advance for fast access
   coordinates.resize(particles.size());
   for (unsigned int i = 0; i < particles.size(); i++) {
@@ -39,7 +39,7 @@ inline void get_form_factors(const Particles& particles,
 //! compute max distance
 inline double compute_max_distance(const Particles& particles) {
   double max_dist2 = 0;
-  Vector<algebra::Vector3D> coordinates(particles.size());
+  std::vector<algebra::Vector3D> coordinates(particles.size());
   get_coordinates(particles, coordinates);
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
@@ -56,7 +56,7 @@ inline double compute_max_distance(const Particles& particles) {
 inline double compute_max_distance(const Particles& particles1,
                                   const Particles& particles2) {
   double max_dist2 = 0;
-  Vector<algebra::Vector3D> coordinates1, coordinates2;
+  std::vector<algebra::Vector3D> coordinates1, coordinates2;
   get_coordinates(particles1, coordinates1);
   get_coordinates(particles2, coordinates2);
 
@@ -73,7 +73,7 @@ inline double compute_max_distance(const Particles& particles1,
 //! compute radius_of_gyration
 inline double radius_of_gyration(const Particles& particles) {
   algebra::Vector3D centroid(0.0, 0.0, 0.0);
-  Vector<algebra::Vector3D> coordinates(particles.size());
+  std::vector<algebra::Vector3D> coordinates(particles.size());
   get_coordinates(particles, coordinates);
   for (unsigned int i = 0; i < particles.size(); i++) {
     centroid += coordinates[i];

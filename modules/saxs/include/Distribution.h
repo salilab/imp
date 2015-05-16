@@ -28,7 +28,7 @@ static const double pr_resolution = 0.5;
 base class for distribution classes
 */
 template <class ValueT>
-class Distribution : public Vector<ValueT> {
+class Distribution : public std::vector<ValueT> {
  public:
   //! Constructor
   Distribution(double bin_size = pr_resolution) { init(bin_size); }
@@ -52,7 +52,7 @@ class Distribution : public Vector<ValueT> {
     bin_size_ = bin_size;
     one_over_bin_size_ = 1.0 / bin_size_;  // for faster calculation
     max_distance_ = 50.0;                  // start with ~50A (by default)
-    Vector<ValueT>::reserve(get_index_from_distance(max_distance_) + 1);
+    std::vector<ValueT>::reserve(get_index_from_distance(max_distance_) + 1);
   }
 
  protected:
@@ -161,7 +161,7 @@ class IMPSAXSEXPORT DeltaDistributionFunction
   }
 
  protected:
-  Vector<algebra::Vector3D> coordinates_;
+  std::vector<algebra::Vector3D> coordinates_;
   Vector<double> form_factors_;
 };
 
