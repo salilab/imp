@@ -605,7 +605,8 @@ def get_trajectory_models(stat_files,
 def read_coordinates_of_rmfs(model,
                              rmf_tuples,
                              alignment_components=None,
-                             rmsd_calculation_components=None):
+                             rmsd_calculation_components=None,
+                             state_number=0):
     """ Read in coordinates of a set of RMF tuples.
     Returns the coordinates split as requested (all, alignment only, rmsd only) as well as
     RMF file names (as keys in a dictionary, with values being the rank number) and just a plain list
@@ -624,12 +625,17 @@ def read_coordinates_of_rmfs(model,
         rmf_file = tpl[1]
         frame_number = tpl[2]
 
-        prot = IMP.pmi.analysis.get_hier_from_rmf(model,
-                                                  frame_number,
-                                                  rmf_file)
-        if not prot:
+        if cnt==0:
+            prots = IMP.pmi.analysis.get_hiers_from_rmf(model,
+                                                   frame_number,
+                                                   rmf_file)
+        else:
+            IMP.pmi.analysis.link_hiers_to_rmf(model,prots,frame_number,rmf_file)
+
+        if not prots:
             continue
 
+        prot=prots[state_number]
         # getting the particles
         part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)
         all_particles=[pp for key in part_dict for pp in part_dict[key]]
@@ -680,7 +686,7 @@ def read_coordinates_of_rmfs(model,
         rmf_file_name_index_dict[frame_name] = tpl[4]
     return all_coordinates,alignment_coordinates,rmsd_coordinates,rmf_file_name_index_dict,all_rmf_file_names
 
-def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None):
+def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number=0):
     '''
     @param model      The IMP model
     @param rmf_tuple  score,filename,frame number,original order number, rank
@@ -689,9 +695,11 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None):
     rmf_file = rmf_tuple[1]
     frame_number = rmf_tuple[2]
 
-    prot = IMP.pmi.analysis.get_hier_from_rmf(model,
+    prots = IMP.pmi.analysis.get_hiers_from_rmf(model,
                                               frame_number,
                                               rmf_file)
+
+    prot=prots[state_number]
 
     # getting the particles
     part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)

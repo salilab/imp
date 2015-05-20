@@ -33,7 +33,7 @@ class ExternalBarrier(object):
             representation,
             resolution=resolution,
             hierarchies=hierarchies)
-        lsc.add_particles(particles)
+        lsc.add(particles)
         r3 = IMP.container.SingletonsRestraint(ss3, lsc)
         self.rs.add_restraint(r3)
 

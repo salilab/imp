@@ -1265,13 +1265,15 @@ class AnalysisReplicaExchange0(object):
 # ------------------------------------------------------------
             rmsd_weights = IMP.pmi.io.get_bead_sizes(self.model,
                                                      my_best_score_rmf_tuples[0],
-                                                     rmsd_calculation_components)
+                                                     rmsd_calculation_components,
+                                                     state_number=state_number)
             got_coords = IMP.pmi.io.read_coordinates_of_rmfs(self.model,
                                                              my_best_score_rmf_tuples,
                                                              alignment_components,
-                                                             rmsd_calculation_components)
+                                                             rmsd_calculation_components,
+                                                             state_number=state_number)
 
-            # note! the coordinates are simple float tuples, NOT decorators, NOT Vector3D,
+            # note! the coordinates are simply float tuples, NOT decorators, NOT Vector3D,
             # NOR particles, because these object cannot be serialized. We need serialization
             # for the parallel computation based on mpi.
             all_coordinates=got_coords[0]          # dict:key=component name,val=coords per hit
@@ -1307,15 +1309,23 @@ class AnalysisReplicaExchange0(object):
                     for key in best_score_feature_keyword_list_dict:
                         tmp_dict[key]=best_score_feature_keyword_list_dict[key][index]
 
+                    if cnt==0:
+                        prots,rs = IMP.pmi.analysis.get_hiers_and_restraints_from_rmf(
+                          self.model,
+                          rmf_frame_number,
+                          rmf_name)
+                    else:
+                        IMP.pmi.analysis.link_hiers_and_restraints_to_rmf(
+                            self.model,
+                            prots,
+                            rs,
+                            rmf_frame_number,
+                            rmf_name)
 
-                    prot,rs = IMP.pmi.analysis.get_hier_and_restraints_from_rmf(
-                        self.model,
-                        rmf_frame_number,
-                        rmf_name,
-                        state_number)
-
-                    if not prot:
+                    if not prots:
                         continue
+
+                    prot=prots[state_number]
 
                     if cnt==0:
                         coords_f1=alignment_coordinates[cnt]
@@ -1480,13 +1490,24 @@ class AnalysisReplicaExchange0(object):
                     rmf_frame_number = int(structure_name.split("|")[1])
 
                     clusstat.write(str(tmp_dict) + "\n")
-                    prot,rs = IMP.pmi.analysis.get_hier_and_restraints_from_rmf(
-                        self.model,
-                        rmf_frame_number,
-                        rmf_name,
-                        state_number)
-                    if not prot:
+
+                    if k==0:
+                        prots,rs = IMP.pmi.analysis.get_hiers_and_restraints_from_rmf(
+                          self.model,
+                          rmf_frame_number,
+                          rmf_name)
+                    else:
+                        IMP.pmi.analysis.link_hiers_and_restraints_to_rmf(
+                            self.model,
+                            prots,
+                            rs,
+                            rmf_frame_number,
+                            rmf_name)
+
+                    if not prots:
                         continue
+
+                    prot=prots[state_number]
 
                     if k > 0:
                         model_index = Clusters.get_model_index_from_name(

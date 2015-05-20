@@ -405,7 +405,11 @@ class ConjugateGradients(object):
     def get_frame_number(self):
         return self.nframe
 
-    def run(self, nstep):
+    @IMP.deprecated_method("2.5", "Use optimize() instead.")
+    def run(self, *args, **kwargs):
+        self.optimize(*args, **kwargs)
+
+    def optimize(self, nstep):
         self.nframe += 1
         self.cg.optimize(nstep)
 

@@ -1080,7 +1080,7 @@ class ISDCrossLinkMS(_NuisancesBase):
                 dr.set_name(
                     xlattribute + "-" + c1 + ":" + str(r1) + "-" + c2 + ":" + str(r2) + "_" + self.label)
 
-                pr = IMP.core.PairRestraint(dps2, IMP.ParticlePair(p1, p2))
+                pr = IMP.core.PairRestraint(self.m, dps2, (p1, p2))
                 pr.set_name(
                     xlattribute + "-" + c1 + ":" + str(r1) + "-" + c2 + ":" + str(r2) + "_" + self.label)
                 self.rslin.add_restraint(pr)
