@@ -109,32 +109,33 @@ IMP_COMPILER_DISABLE_WARNINGS
     inline std::string get_module_name() { return "%(namespace)s"; }
 #endif
 
-    //! Return the full path to installed data
-    /** Each module has its own data directory, so be sure to use
-        the version of this function in the correct module. To read
-        the data file "data_library" that was placed in the \c data
-        directory of module "mymodule", do something like
+    //! Return the full path to one of this module's data files
+    /** To read the data file "data_library" that was placed in the \c data
+        directory of this module, do something like
         \code
-        std::ifstream in(IMP::mymodule::get_data_path("data_library"));
+        std::ifstream in(%(namespace)s::get_data_path("data_library"));
         \endcode
-        This will ensure that the code works when \imp is installed or
-        used via the \c setup_environment.sh script.
+        This will ensure that the code works both when %%IMP is installed or
+        if used via the \c setup_environment.sh script.
+
+        \note Each module has its own data directory, so be sure to use
+              this function from the correct module.
     */
 #if !defined(SWIG)
     %(cppprefix)sEXPORT std::string get_data_path(std::string file_name);
 #endif
 
-    //! Return the path to installed example data for this module
-    /** Each module has its own example directory, so be sure to use
-        the version of this function in the correct module.  For example
-        to read the file \c example_protein.pdb located in the
-        \c examples directory of the IMP::atom module, do
+    //! Return the full path to one of this module's example files
+    /** To read the example file "example_protein.pdb" that was placed
+        in the \c examples directory of this module, do something like
         \code
-        IMP::atom::read_pdb(IMP::atom::get_example_path("example_protein.pdb",
-       model));
+        std::ifstream in(%(namespace)s::get_example_path("example_protein.pdb"));
         \endcode
-        This will ensure that the code works when \imp is installed or
-        used via the \c setup_environment.sh script.
+        This will ensure that the code works both when %%IMP is installed or
+        if used via the \c setup_environment.sh script.
+
+        \note Each module has its own example directory, so be sure to use
+              this function from the correct module.
     */
 #if !defined(SWIG)
     %(cppprefix)sEXPORT std::string get_example_path(std::string file_name);
