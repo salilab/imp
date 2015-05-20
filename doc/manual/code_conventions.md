@@ -35,6 +35,13 @@ developers should be aware that
   `SpecialVector.h` and `SpecialVector.cpp`
 - files that provide free functions or macros should be given names
   `separated_by_underscores`, for %example `%container_macros.h`
+- [command line tools](@ref cmdline) should also be given names
+  `separated_by_underscores` and should not have a file extension
+  (such as `.py`). (Note also that since tools are installed, care should be
+  taken to give them non-generic names so they don't conflict with other
+  programs users may have installed on their system. Also consider using
+  IMP::CommandDispatcher to provide a single command line interface to many
+  individual Python scripts, rather than making each one a command line tool.)
 - Functions which take a parameter which has [units](@ref units) should have the
   unit as part of the function name, for %example
   IMP::atom::SimulationParameters::set_maximum_time_step_in_femtoseconds().
