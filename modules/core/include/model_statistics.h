@@ -1,6 +1,6 @@
 /**
  *  \file IMP/core/model_statistics.h
- *  \brief Log the restraint scores and things.
+ *  \brief Write the scores of the passed restraints to a file.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
@@ -15,8 +15,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-/** Periodically call write the scores of the passed restraints
-    to a file. The file starts with a line whose first character
+//! Write the scores of the passed restraints to a file during optimization.
+/** The file starts with a line whose first character
     is a # with the names of the restraints separated by commas
     and then has one line per periodic update with comma
     separated scores for each restraint.
