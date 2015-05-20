@@ -12,6 +12,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+//! Parameters of a fit, from ProfileFitter.
 class IMPSAXSEXPORT FitParameters {
  public:
   FitParameters()

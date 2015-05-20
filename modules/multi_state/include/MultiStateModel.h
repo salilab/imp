@@ -67,6 +67,7 @@ private:
   double zscore_;
 };
 
+//! Utility class to help sort MultiStateModel objects
 class CompareMultiStateModels {
 public:
   bool operator()(const MultiStateModel& e1, const MultiStateModel& e2) const {
