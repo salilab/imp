@@ -140,7 +140,7 @@ void read_profiles(const std::string profile_filenames_file,
   std::cout << profile_counter << " profiles were read" << std::endl;
 }
 
-void read_files(const IMP::Vector<std::string>& files,
+void read_files(const std::vector<std::string>& files,
                 IMP::Vector<std::string>& pdb_file_names,
                 IMP::Vector<std::string>& dat_files,
                 Profiles& computed_profiles,
@@ -250,9 +250,9 @@ recommended q value is 0.2")
       po::command_line_parser(argc,argv).options(desc).positional(p).run(), vm);
   po::notify(vm);
 
-  IMP::Vector<std::string> files;
+  std::vector<std::string> files;
   if(vm.count("input-files")) {
-    files = vm["input-files"].as< IMP::Vector<std::string> >();
+    files = vm["input-files"].as< std::vector<std::string> >();
   }
   if(vm.count("help") || files.size() == 0) {
     std::cout << desc << "\n";
