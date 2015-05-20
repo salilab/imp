@@ -2,7 +2,7 @@
 
 The em2d module includes a number of tools (only for now):
 
-\section GeneratePerfectProjection_bin GeneratePerfectProjection
+\section generate_perfect_projection_bin generate_perfect_projection
 Create N-Evenly projection from a model PDB.
 
 

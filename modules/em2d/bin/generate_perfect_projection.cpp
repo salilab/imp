@@ -1,5 +1,5 @@
 /**
- *  \file  GeneratePerfectProjection.cpp
+ *  \file  generate_perfect_projection.cpp
  *  \brief Generation of projections from models or density maps
  *  Copyright 2007-2014 IMP Inventors. All rights reserved. 
 */
