@@ -1,6 +1,6 @@
 /**
  * \file IMP/multi_state/EnsembleGenerator.h
- * \brief implements branch&bound enumeration of an ensemble of good scoring MultiStateModels
+ * \brief Enumeration of an ensemble of good scoring MultiStateModels
  *
  * \authors Dina Schneidman
  * Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -18,6 +18,7 @@ IMPMULTISTATE_BEGIN_NAMESPACE
 // Ensemble is a set of multi-state models
 typedef Vector<MultiStateModel> Ensemble;
 
+//! Enumeration of an ensemble of good scoring MultiStateModels
 class IMPMULTISTATEEXPORT EnsembleGenerator {
 public:
   EnsembleGenerator(unsigned int population_size,

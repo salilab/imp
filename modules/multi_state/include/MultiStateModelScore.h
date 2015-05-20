@@ -1,7 +1,6 @@
 /**
  * \file IMP/multi_state/MultiStateModelScore.h
- * base class for MultiStateModel scoring classes
- * \brief
+ * \brief base class for MultiStateModel scoring classes
  *
  * \authors Dina Schneidman
  * Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -17,6 +16,7 @@
 
 IMPMULTISTATE_BEGIN_NAMESPACE
 
+//! Base class for MultiStateModel scoring classes
 class MultiStateModelScore {
 public:
   // multi_state_model score

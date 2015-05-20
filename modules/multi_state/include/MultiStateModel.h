@@ -1,6 +1,6 @@
 /**
  * \file IMP/multi_state/MultiStateModel.h
- * \brief base class for MultiStateModel
+ * \brief Keep track of multiple states
  *
  * \authors Dina Schneidman
  * Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -19,6 +19,7 @@
 
 IMPMULTISTATE_BEGIN_NAMESPACE
 
+//! Keep track of multiple states
 class MultiStateModel {
 public:
   MultiStateModel(unsigned int size) : score_(0.0), zscore_(0.0) {

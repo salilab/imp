@@ -1,5 +1,5 @@
 /**
- * \file IMP/saxs/WeightedFitParameters.h \brief
+ * \file IMP/saxs/WeightedFitParameters.h
  *
  * Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -17,6 +17,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+//! Parameters of a weighted fit, from WeightedProfileFitter.
 class IMPSAXSEXPORT WeightedFitParameters : public FitParameters {
  public:
   WeightedFitParameters(double chi, double c1, double c2,
