@@ -8,16 +8,19 @@ class CommandDispatcher(object):
        Typically, an IMP comand line tool will use an instance of this class
        to provide a consistent interface to multiple distinct commands
        from a single binary, rather than providing a potentially large
-       number of binaries.
+       number of binaries. This is similar to the way a number of common
+       command line tools outside of %IMP function (e.g. Git provides a single
+       `git` tool which implements multiple commands - `git add`, `git commit`,
+       `git push` and so on).
 
        Each command is implemented with a Python module of the same name
        that can be imported from the module (for example, if `module_name`
        is `IMP.foo`, the `bar` command is provided by the `IMP.foo.bar` Python
        module, which would usually be found as `modules/foo/pyext/src/bar.py`).
-       Each such module should have a docstring and a `main()` method
-       that takes no arguments (the module should also call its `main()` method
+       Each such module should have a docstring and a `%main()` method
+       that takes no arguments (the module should also call its `%main()` method
        if it is run directly, i.e. with something like
-       `if __name__=="__main__": main()`). The encompassing module
+       `if __name__=="__main__": %main()`). The encompassing module
        (`IMP.foo` in the example) should define `_all_commands` as a Python
        list of all valid commands.
 
