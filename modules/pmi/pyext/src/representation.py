@@ -486,10 +486,12 @@ class Representation(object):
 
     def add_component_beads(self, name, ds, colors=None, incoord=None):
         """ add beads to the representation
-        @name the component name
-        @ds a list of tuples corresponding to the residue ranges of the beads
-        @colors a list of colors associated to the beads
-        @incoord the coordinate tuple correspoding to the position of the beads
+        @param name the component name
+        @param ds a list of tuples corresponding to the residue ranges
+                  of the beads
+        @param colors a list of colors associated to the beads
+        @param incoord the coordinate tuple correspoding to the position
+                  of the beads
         """
 
         from math import pi
@@ -611,7 +613,7 @@ class Representation(object):
         '''
         Sets up a Gaussian Mixture Model for this component.
         Can specify input GMM file or it will be computed.
-        @parm name component name
+        @param name component name
         @param hierarchies set up GMM for some hierarchies
         @param selection_tuples (list of tuples) example (first_residue,last_residue,component_name)
         @param particles set up GMM for particles directly
@@ -826,7 +828,10 @@ class Representation(object):
         return outhier
 
     def set_coordinates_from_rmf(self, component_name, rmf_file_name,
-                                 rmf_frame_number, rmf_component_name=None,check_number_particles=True):
+                                 rmf_frame_number,
+                                 rmf_component_name=None,
+                                 check_number_particles=True,
+                                 state_number=0):
         '''Read and replace coordinates from an RMF file.
         Replace the coordinates of particles with the same name.
         It assumes that the RMF and the representation have the particles
@@ -834,17 +839,21 @@ class Representation(object):
         @param component_name Component name
         @param rmf_component_name Name of the component in the RMF file
                 (if not specified, use `component_name`)
+
         '''
 
         import IMP.pmi.analysis
 
-        prot = IMP.pmi.analysis.get_hier_from_rmf(
+        prots = IMP.pmi.analysis.get_hiers_from_rmf(
             self.m,
             rmf_frame_number,
             rmf_file_name)
 
-        if not prot:
+        if not prots:
             raise ValueError("cannot read hiearchy from rmf")
+
+        prot=prots[0]
+
         # if len(self.rigid_bodies)!=0:
         #   print "set_coordinates_from_rmf: cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies"
         #   exit()
@@ -1477,7 +1486,7 @@ class Representation(object):
         Construct a rigid body from hierarchies (and optionally particles).
 
         @param hiers list of hierarchies to make rigid
-        @parm particles list of particles to add to the rigid body
+        @param particles list of particles to add to the rigid body
         '''
 
         if particles is None:

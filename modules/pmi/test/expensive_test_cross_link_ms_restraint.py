@@ -222,12 +222,68 @@ class ISDCrossMSTest(IMP.test.TestCase):
                        'included.None.xl.db', 'missing.None.xl.db']:
             os.unlink(output)
 
+    def test_restraint_ambiguity(self):
+        m=IMP.Model()
+        r = IMP.pmi.representation.Representation(m)
+        r.create_component("ProtA",color=1.0)
+        r.add_component_beads("ProtA", [(1,10)],incoord=(0,0,0))
+        r.create_component("ProtB",color=1.0)
+        r.add_component_beads("ProtB", [(1,10)],incoord=(0,10,0))
+        r.add_component_beads("ProtB", [(11,20)],incoord=(10,10,0))
+        r.add_component_beads("ProtB", [(21,30)],incoord=(20,10,0))
+        r.set_floppy_bodies()
+
+        restraints_beads='''#
+ProtA ProtB 1 1  94.81973271 1
+ProtA ProtB 1 11 52.4259605298 1
+ProtA ProtB 1 21 87.4778223289 1'''
+
+
+        ids_map=IMP.pmi.tools.map()
+        ids_map.set_map_element(25.0,0.1)
+        ids_map.set_map_element(75,0.01)
+
+        xl = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(
+            r,
+            restraints_beads,
+            21,
+            label="XL",
+            slope=0.0,
+            ids_map=ids_map,
+            resolution=1,
+            inner_slope=0.01)
+
+        sig = xl.get_sigma(1.0)[0]
+        psi1 = xl.get_psi(25.0)[0]
+        psi2 = xl.get_psi(75.0)[0]
+        sig.set_scale(10.0)
+        psi1.set_scale(0.1)
+        psi2.set_scale(0.01)
+
+
+        for i in range(100):
+            r.shuffle_configuration(max_translation=10)
+            for p in xl.pairs:
+                p0 = p[0]
+                p1 = p[1]
+                ln = p[2]
+                resid1 = p[3]
+                chain1 = p[4]
+                resid2 = p[5]
+                chain2 = p[6]
+                attribute = p[7]
+                xlid=p[11]
+                d0 = IMP.core.XYZ(p0)
+                d1 = IMP.core.XYZ(p1)
+                sig1 = xl.get_sigma(p[8])[0]
+                sig2 = xl.get_sigma(p[9])[0]
+                psi =  xl.get_psi(p[10])[0]
+                self.assertEqual(-log(ln.get_probability()),xl.rs.unprotected_evaluate(None))
+
     def test_restraint_probability_beads(self):
         m = IMP.Model()
         rbeads=init_representation_beads(m)
         xlb,restraints_beads=setup_crosslinks_beads(rbeads,"single_category")
-
-        print(restraints_beads)
 
         # check internal data structure
         ds=xlb.pairs
@@ -243,13 +299,11 @@ class ISDCrossMSTest(IMP.test.TestCase):
             res2 =  int(t[3])
             ids =   float(t[4])
             xlid =  int(t[5])
-            print(nxl,chain1,chain2,res1,res2,ids,xlid)
             dsres1 = ds[nxl][3]
             dschain1 = ds[nxl][4]
             dsres2 = ds[nxl][5]
             dschain2 = ds[nxl][6]
             dsxlid=    int(ds[nxl][11])
-            print(nxl,len(ds),dschain1, dschain2, dsres1, dsres2, dsxlid)
             '''
             self.assertEqual(chain1,dschain1)
             self.assertEqual(chain2,dschain2)

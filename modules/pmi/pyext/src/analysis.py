@@ -33,6 +33,7 @@ class Alignment(object):
         """Constructor.
            @param query {'p1':coords(L,3), 'p2':coords(L,3)}
            @param template {'p1':coords(L,3), 'p2':coords(L,3)}
+           @param weights optional weights for each set of coordinates
         """
         self.query = query
         self.template = template

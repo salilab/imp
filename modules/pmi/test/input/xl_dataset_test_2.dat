@@ -1,0 +1,13 @@
+prot1,prot2,res1,res2,id,sample,score
+AAA,AAA,1,10,1,yeast,10
+AAA,AAA,15,30,1,yeast,9
+BBB,AAA,5,21,1,yeast,8
+BBB,BBB,2,10,2,bacteria,11
+AAA,BBB,30,40,3,bacteria,12
+BBB,AAA,40,50,4,human,11
+AAA,AAA,10,30,5,yeast,10
+CCC,AAA,30,50,6,yeast,7
+CCC,CCC,1,4,7,yeast,6
+BBB,AAA,40,50,8,human,13
+AAA,BBB,50,40,9,human,15
+AAA,AAA,1,10,10,yeast,9

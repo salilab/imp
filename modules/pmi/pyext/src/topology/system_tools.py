@@ -22,6 +22,7 @@ def get_structure(mdl,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_on
     @param res_range Add only a specific set of residues
     @param offset    Apply an offset to the residue indexes of the PDB file
     @param model_num Read multi-model PDB and return that model
+    @param ca_only Read only CA atoms (by default, all non-waters are read)
     """
     sel = IMP.atom.get_default_pdb_selector()
     if ca_only:

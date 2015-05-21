@@ -96,6 +96,7 @@ class TopologyPlot(object):
         @param groups is the list of groups of domains, eg,
                       [["protA_1-10","prot1A_11-100"],["protB"]....]
                       it will plot a space between different groups
+        @param out_fn name of the plot file
         @param quantitative_proteomic_data plot the quantitative proteomic data
         '''
         import numpy as np
