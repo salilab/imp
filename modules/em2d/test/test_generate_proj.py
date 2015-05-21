@@ -18,7 +18,7 @@ class Tests(IMP.test.IMP.test.ApplicationTestCase):
 
     def test_even_projections(self):
         """ Evenly distributed em2d image projections from a PDB file"""
-        p = self.run_application('GeneratePerfectProjection',
+        p = self.run_application('generate_perfect_projection',
                                  [self.get_input_file_name('complex-2d.pdb'),
                                   '5',
                                   self.get_input_file_name('image_1.pgm'),
