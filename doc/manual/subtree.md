@@ -41,6 +41,7 @@ As an %example, a typical workflow for working with the IMP::pmi module is:
    *IMPORTANT*: check the squashed commit with `git show` before you push;
    sometimes `subtree` gets confused and makes an enormous commit that touches
    every file in %IMP. If this happens, squash the PMI commits manually
-   (e.g. with `git cherry-pick` and `git rebase -i`) and make sure your final
+   (e.g. with `git cherry-pick --strategy=recursive -Xsubtree=modules/pmi/`
+   and `git rebase -i`) and make sure your final
    commit message looks like the standard `subtree` one (notably, that it
    includes a `git-subtree-split:` line).
