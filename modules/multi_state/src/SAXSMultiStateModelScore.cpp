@@ -100,7 +100,7 @@ double SAXSMultiStateModelScore::get_score(const MultiStateModel& m,
   }
 
   double chi;
-  if(c1_c2_approximate_ && c1_c2_no_fitting_) { // just score calculation
+  if(c1_c2_approximate_ || c1_c2_no_fitting_) { // just score calculation
     chi = score_->compute_score(profiles, weights);
   } else { // optimize c1/c2 fit and score
     saxs::WeightedFitParameters fp =
