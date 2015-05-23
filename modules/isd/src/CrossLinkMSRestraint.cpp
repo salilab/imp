@@ -11,6 +11,7 @@
 
 #include <IMP/isd/CrossLinkMSRestraint.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/Restraint.h>
 #include <math.h>
@@ -50,9 +51,21 @@ double CrossLinkMSRestraint::get_probability() const {
 
     for (unsigned int k = 0; k < get_number_of_contributions(); ++k) {
         IMP::ParticleIndexPair ppi = ppis_[k];
-        core::XYZ d0(get_model(), ppi[0]), d1(get_model(), ppi[1]);
-        double dist =
+        double dist ;
+        if (ppi[0] != ppi[1]) {
+            core::XYZ d0(get_model(), ppi[0]), d1(get_model(), ppi[1]);
+            dist =
             (d0.get_coordinates() - d1.get_coordinates()).get_magnitude();
+        } else {
+            // If the residues are assigned to the same particle-domain
+            // get the distance as if the residues positions 
+            // where randomly taken from the 
+            // within the sphere representing the domain
+            // Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
+            double R=core::XYZR(get_model(), ppi[0]).get_radius();
+            dist=36.0/35.0*R;
+        }
+        if (dist<0.0001){dist=0.0001;}
         IMP::ParticleIndexPair sigmas = sigmass_[k];
         IMP::ParticleIndex psii = psis_[k];
         double psi = isd::Scale(get_model(), psii).get_scale();
