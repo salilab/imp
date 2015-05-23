@@ -70,7 +70,7 @@ class Tests(IMP.test.TestCase):
 
         xl.add_to_model()
         rset = IMP.pmi.tools.get_restraint_set(m)
-        self.assertAlmostEqual(rset.evaluate(False), -2.09227, delta=1e-2)
+        self.assertAlmostEqual(rset.evaluate(False), -2.197418, delta=1e-2)
 
         print(xyz11.get_coordinates())
 
