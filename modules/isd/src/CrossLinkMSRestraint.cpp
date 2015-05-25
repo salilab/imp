@@ -157,10 +157,18 @@ double CrossLinkMSRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 ModelObjectsTemp CrossLinkMSRestraint::do_get_inputs() const {
     ParticlesTemp ret;
     for (unsigned int k = 0; k < get_number_of_contributions(); ++k) {
-        ret.push_back(get_model()->get_particle(ppis_[k][0]));
-        ret.push_back(get_model()->get_particle(ppis_[k][1]));
-        ret.push_back(get_model()->get_particle(sigmass_[k][0]));
-        ret.push_back(get_model()->get_particle(sigmass_[k][1]));
+        if (ppis_[k][0] == ppis_[k][1]) {
+            ret.push_back(get_model()->get_particle(ppis_[k][0]));
+        } else {
+            ret.push_back(get_model()->get_particle(ppis_[k][0]));
+            ret.push_back(get_model()->get_particle(ppis_[k][1]));
+        }
+        if ( sigmass_[k][0] == sigmass_[k][1]) {
+            ret.push_back(get_model()->get_particle(sigmass_[k][0]));
+        } else {
+            ret.push_back(get_model()->get_particle(sigmass_[k][0]));
+            ret.push_back(get_model()->get_particle(sigmass_[k][1]));
+        }
         ret.push_back(get_model()->get_particle(psis_[k]));
     }
     return ret;
