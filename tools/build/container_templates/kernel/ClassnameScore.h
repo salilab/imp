@@ -23,7 +23,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     for passed object(s) of type INDEXTYPE.
 
     Use in conjunction with various
-    restraints such as IMP::core::ClassnamesRestraint or
+    restraints such as IMP::container::ClassnamesRestraint or
     IMP::core::ClassnameRestraint. The restraints couple the score
     functions with appropriate lists of object(s) of type INDEXTYPE.
 
