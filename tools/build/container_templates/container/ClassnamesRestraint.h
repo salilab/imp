@@ -17,7 +17,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Applies a ClassnameScore to each Classname in a list.
-/** This restraint stores the used particles in a PLURALVARIABLETYPE.
+/** This restraint stores the used particle indexes in a PLURALINDEXTYPE.
     The container used can be set so that the list can be shared
     with other containers (or a nonbonded list can be used).
 
