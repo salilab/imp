@@ -54,18 +54,7 @@ const unsigned int ALIGN2D_PREPROCESSING = 1;
 #include <time.h>
 #include <iostream>
 
-
-double maxi3(double x, double y, double z) {
-  int max = x;
-  if (y > max) {
-    max = y;
-  }
-  if (z > max) {
-    max = z;
-  }
-  return max;
-}
-
+namespace {
 void quasi_evenly_spherical_distribution(unsigned long N,
                                          IMP::algebra::SphericalVector3Ds& vs,
                                          double r) {
@@ -87,6 +76,7 @@ void quasi_evenly_spherical_distribution(unsigned long N,
     vs[k - 1][2] = psi;
   }
 }
+} // namespace
 
 int main(int argc, char *argv[]){
   ///Command Line argument. some of them may not be necessary right now. 
@@ -115,7 +105,7 @@ int main(int argc, char *argv[]){
   IMP::em2d::RegistrationResults results;
   
   
-  for (unsigned int i = 0; i < NoP; ++i) {
+  for (int i = 0; i < NoP; ++i) {
     IMP::algebra::Rotation3D R = IMP::em2d::internal::get_rotation_from_projection_direction(vs[i]);
     IMP::algebra::Vector2D shift(0.0, 0.0);
     results.push_back(IMP::em2d::RegistrationResult(R, shift, i, 0));
