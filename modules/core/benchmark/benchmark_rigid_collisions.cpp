@@ -17,7 +17,7 @@ using namespace IMP::core;
 using namespace IMP::algebra;
 
 namespace {
-void test_one(std::string name, Model *m, Restraint *r, RigidBodies rbs,
+void test_one(std::string name, Restraint *r, RigidBodies rbs,
               float side, double) {
   Vector3D minc(0, 0, 0), maxc(side, side, side);
   r->evaluate(false);
@@ -96,16 +96,16 @@ int main(int argc, char **argv) {
     IMP::PointerMember<Model> m(new IMP::Model());
     IMP::PointerMember<Restraint> r = setup(m, false, rbs);
     // std::cout << "Quadratic:" << std::endl;
-    test_one("quadratic", m, r, rbs, 10, 2.578245);
-    test_one("quadratic", m, r, rbs, 30, 1.919732);
+    test_one("quadratic", r, rbs, 10, 2.578245);
+    test_one("quadratic", r, rbs, 30, 1.919732);
   }
   {
     RigidBodies rbs;
     IMP::PointerMember<Model> m(new IMP::Model());
     IMP::PointerMember<Restraint> r = setup(m, true, rbs);
     // std::cout << "Hierarchy:" << std::endl;
-    test_one("hierarchy", m, r, rbs, 10, 11.549620);
-    test_one("hierarchy", m, r, rbs, 30, 5.830277);
+    test_one("hierarchy", r, rbs, 10, 11.549620);
+    test_one("hierarchy", r, rbs, 30, 5.830277);
   }
   return IMP::benchmark::get_return_value();
 }
