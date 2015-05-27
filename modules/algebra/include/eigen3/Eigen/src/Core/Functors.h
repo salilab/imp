@@ -7,6 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include <IMP/compiler_macros.h>
+
 #ifndef IMP_EIGEN_FUNCTORS_H
 #define IMP_EIGEN_FUNCTORS_H
 
@@ -928,6 +930,11 @@ template<typename T>
 struct functor_traits<std::not_equal_to<T> >
 { enum { Cost = 1, PacketAccess = false }; };
 
+IMP_HELPER_MACRO_PUSH_WARNINGS
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
+IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
+#endif
+
 template<typename T>
 struct functor_traits<std::binder2nd<T> >
 { enum { Cost = functor_traits<T>::Cost, PacketAccess = false }; };
@@ -935,6 +942,8 @@ struct functor_traits<std::binder2nd<T> >
 template<typename T>
 struct functor_traits<std::binder1st<T> >
 { enum { Cost = functor_traits<T>::Cost, PacketAccess = false }; };
+
+IMP_HELPER_MACRO_POP_WARNINGS
 
 template<typename T>
 struct functor_traits<std::unary_negate<T> >
