@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.isd
@@ -185,7 +186,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                     scoretest = - \
                         log(self.testdr.get_probability())
                     score = self.lw.unprotected_evaluate(None)
-                    print radius,score
+                    print(radius,score)
                     self.assertAlmostEqual(score,scoretest,places=4)
 
 
