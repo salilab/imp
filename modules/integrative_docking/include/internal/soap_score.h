@@ -22,16 +22,19 @@
 
 IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
+IMPINTEGRATIVEDOCKINGEXPORT
 double soap_score(const IMP::score_functor::Soap* soap_score,
                   IMP::Model* model, IMP::ParticleIndexes& pis1,
                   IMP::ParticleIndexes& pis2,
                   float distance_threshold);
 
+IMPINTEGRATIVEDOCKINGEXPORT
 double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
                            IMP::Model* model,
                            IMP::ParticleIndexes& pis1,
                            IMP::ParticleIndexes& pis2);
 
+IMPINTEGRATIVEDOCKINGEXPORT
 double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
                            IMP::Model* model,
                            IMP::ParticleIndexes& pis,
