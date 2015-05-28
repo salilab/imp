@@ -115,13 +115,6 @@ class Image2D : public boost::multi_array<T, 2> {
   double ncc_score(const Image2D<T>& other_image, T thr) const;
   void compute_PCA();
 
-  // image operations.h
-  void spherical_mask(Image2D<T>& out_image) const;
-  void spherical_mask();
-  void add_gaussian_noise(float mean, float std);
-  void enhance(double weight);
-  void normalize();
-
   void add(const Image2D<T>& image, double weight = 0.5);
   void convert_to_int(Image2D<int>& out_image) const;
 
@@ -130,10 +123,6 @@ class Image2D : public boost::multi_array<T, 2> {
   void get_connected_components(Image2D<int>& out_image) const;
   void get_largest_connected_component(Image2D<int>& out_image) const;
   void get_largest_connected_component();
-
-  // image_filters.h
-  void gaussian_blur(Image2D<T>& out_image, int sigma) const;
-  void gaussian_blur(int sigma);
 
   ImageTransform pca_align(const Image2D<T>& other_image) const;
   double max_distance() const;
