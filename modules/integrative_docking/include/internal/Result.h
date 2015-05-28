@@ -75,6 +75,7 @@ class Result {
   IMP::algebra::Transformation3D transformation_;
 };
 
+IMPINTEGRATIVEDOCKINGEXPORT
 int read_results_file(const std::string file_name,
                       std::vector<Result>& results);
 
