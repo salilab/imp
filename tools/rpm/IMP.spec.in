@@ -98,10 +98,10 @@ BuildRequires: opencv-nogui-devel, CGAL-nogui-devel
 %define extralib \\|libmpfr\\.so
 %else
 # On 32-bit RHEL5, sometimes 'file' misidentifies libimp_domino.so or
-# libimp_isd.so as a core file (not as a shared object) and doesn't add
+# other DSOs as a core file (not as a shared object) and doesn't add
 # it to the Provides - this results in a broken dependency. Work around
 # this by excluding it from the Requires too.
-%define extralib \\|libimp_domino\\.so\\|libimp_isd\\.so
+%define extralib \\|libimp_domino\\.so\\|libimp_isd\\.so\\|libimp_integrative_docking\\.so
 %endif
 %else
 %define extralib %{nil}
