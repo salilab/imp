@@ -99,7 +99,10 @@ class HDF5SharedData : public backends::BackwardsIOBase {
     int type_index;
   };
 
-  typedef RMF_LARGE_UNORDERED_MAP<unsigned int, KeyData> KeyDataMap;
+  // Using unordered_map here causes segfaults on Ubuntu 12.04; possibly
+  // a boost or HDF5 bug
+  typedef RMF_LARGE_ORDERED_MAP<unsigned int, KeyData> KeyDataMap;
+
   KeyDataMap key_data_map_;
   typedef RMF_LARGE_UNORDERED_MAP<std::string, unsigned int> NameKeyInnerMap;
   typedef RMF_LARGE_UNORDERED_MAP<Category, NameKeyInnerMap> NameKeyMap;
