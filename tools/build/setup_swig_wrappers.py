@@ -131,6 +131,7 @@ std::string get_data_path(std::string fname);
     contents.append("""%pythoncode %{
 from . import _version_check
 _version_check.check_version(get_module_version())
+__version__ = get_module_version()
 %}
 """)
     g = tools.SWIGFileGenerator()
