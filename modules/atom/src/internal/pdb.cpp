@@ -161,6 +161,40 @@ void write_pdb(const ParticlesTemp& ps, TextOutput out) {
         IMP_THROW("Error writing to file in write_pdb", IOException);
       }
     }
+    else if (Residue::get_is_setup(ps[i])) {    // if C-alpha residue is available
+      Residue rd = IMP::atom::Residue(ps[i]);
+      // comment 1 by SJ - TODO: How to retrieve the correct chain information without an hierarchy?
+      char chain;
+      Chain c = get_chain(rd);
+      if (c) {
+        chain = c.get_id()[0];
+      } else {
+        chain = ' ';
+      }
+
+      // comment 2 by SJ - TODO: The C-alpha residues are not sorted yet. We need to sort the residues similarly to what PMI does.
+      out.get_stream() << get_pdb_string(
+                              core::XYZ(ps[i]).get_coordinates(),
+                              static_cast<int>(i + 1),
+                              IMP::atom::AT_CA, rd.get_residue_type(), chain,
+                              rd.get_index(), ' ',
+                              1.0, IMP::core::XYZR(ps[i]).get_radius());
+    }
+    else {  // if a coarse-grained BEAD is available
+      Ints resindexes = IMP::atom::Fragment(ps[i]).get_residue_indexes();
+      int resindex = (int)resindexes.front() + (int)(resindexes.size()/2);
+      // comment 1 by SJ - TODO: How to retrieve the correct chain information without an hierarchy?
+      char chain = ' ';
+
+      // comment 3 by SJ - TODO: The BEADs are not sorted yet. We need to sort the residues similarly to what PMI does.
+      // comment 4 by SJ - TODO: currently IMP does not allow "BEA" as a residue name, while PMI allows it. Thus "UNK" was used instead.
+      out.get_stream() << get_pdb_string(
+                              core::XYZ(ps[i]).get_coordinates(),
+                              static_cast<int>(i + 1),
+                              IMP::atom::AT_CA, IMP::atom::UNK, chain,
+                              (int)resindex, ' ',
+                              1.0, IMP::core::XYZR(ps[i]).get_radius());
+    }
   }
 }
 
