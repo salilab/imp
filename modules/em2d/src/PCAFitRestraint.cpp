@@ -25,14 +25,14 @@ PCAFitRestraint::PCAFitRestraint(Particles particles,
     projection_number_(projection_number),
     projector_(ps_, projection_number, pixel_size, resolution),
     reuse_direction_(reuse_direction),
-    counter_(0.0)
+    counter_(0)
 {
-
+  std::cerr << "PCAFitRestraint::Number of Particles: " << particles.size() << std::endl;   // by SJ & Dina (05/18/2015)
   // read and process the images
   for (unsigned int i = 0; i < image_files.size(); i++) {
     internal::Image2D<> image(image_files[i]);
     image.get_largest_connected_component();
-    image.pad((int)(image.get_width() * 1.4), (int)(image.get_height() * 1.4));
+    image.pad((int)(image.get_width() * 1.7), (int)(image.get_height() * 1.7));
     image.center();
     image.average();
     image.stddev();
@@ -51,7 +51,7 @@ double PCAFitRestraint::unprotected_evaluate(
 
   // generate projections
   boost::ptr_vector<internal::Projection> projections;
-  if(reuse_direction_ && counter_ % 100 != 0 &&
+  if(reuse_direction_ && counter_ != 500 &&
      best_projections_axis_.size() == images_.size()) {
     projector_.compute_projections(best_projections_axis_,
                                    IMP_DEG_2_RAD(20),  // 20 degrees for now
@@ -59,6 +59,7 @@ double PCAFitRestraint::unprotected_evaluate(
                                    images_[0].get_height());
   } else {
     projector_.compute_projections(projections, images_[0].get_height());
+    counter_ = 0;
   }
   IMP_LOG_VERBOSE(projections.size() << " projections were created"
                   << std::endl);
@@ -73,14 +74,14 @@ double PCAFitRestraint::unprotected_evaluate(
   }
 
   // score each image against projections
-  double total_score = 0;
+  double total_score = 0.0;
   double area_threshold = 0.4;
   PCAFitRestraint* non_const_this = const_cast<PCAFitRestraint *>(this);
   non_const_this->best_projections_.clear();
   non_const_this->best_projections_axis_.clear();
   for (unsigned int i = 0; i < images_.size(); i++) {
     internal::ImageTransform best_transform;
-    best_transform.set_score(0.0);
+    best_transform.set_score(0.000000001);
     int best_projection_id = 0;
     for (unsigned int j = 0; j < projections.size(); j++) {
       // do not align images with more than X% area difference
