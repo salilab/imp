@@ -692,7 +692,7 @@ class Precision(object):
             distance=IMP.atom.get_drmsd_Q(coordinates1,coordinates2,self.threshold)
 
         if self.style=='pairwise_rmsd':
-            distance=IMP.atom.get_rmsd(coordinates1,coordinates2)
+            distance=IMP.algebra.get_rmsd(coordinates1,coordinates2)
         return distance
 
     def _get_particle_distances(self,structure_set_name1,structure_set_name2,

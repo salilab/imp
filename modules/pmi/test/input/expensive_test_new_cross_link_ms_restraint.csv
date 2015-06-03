@@ -1,0 +1,6 @@
+Unique ID,Protein 1,Protein 2,Residue 1,Residue 2,ID Score
+1,ProtA,ProtB,1,1,80
+1,ProtA,ProtA,1,11,80
+2,ProtB,ProtA,1,11,80
+3,ProtA,ProtB,11,1,80
+4,ProtA,ProtB,11,30,80

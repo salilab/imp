@@ -1333,7 +1333,7 @@ class Representation(object):
 
             pt0 = last.get_particle()
             pt1 = first.get_particle()
-            r = IMP.core.PairRestraint(self.m, dps, (pt0, pt1))
+            r = IMP.core.PairRestraint(self.m, dps, (pt0.get_index(), pt1.get_index()))
 
             print("Adding sequence connectivity restraint between", pt0.get_name(), " and ", pt1.get_name(), 'of distance', optdist)
             sortedsegments_cr.add_restraint(r)

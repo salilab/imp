@@ -23,6 +23,10 @@ class _CrossLinkDataBaseStandardKeys(object):
         self.type[self.unique_sub_index_key]=int
         self.unique_sub_id_key="XLUniqueSubID"
         self.type[self.unique_sub_id_key]=str
+        self.data_set_name_key="DataSetName"
+        self.type[self.data_set_name_key]=str
+        self.cross_linker_chemical_key="CrossLinkerChemical"
+        self.type[self.cross_linker_chemical_key]=str
         self.id_score_key="IDScore"
         self.type[self.id_score_key]=float
         self.quantitation_key="Quantitation"
@@ -40,13 +44,15 @@ class _CrossLinkDataBaseStandardKeys(object):
         self.psi_key="Psi"
         self.type[self.psi_key]=float
 
-        self.ordered_key_list =[self.unique_id_key,
+        self.ordered_key_list =[self.data_set_name_key,
+                        self.unique_id_key,
                         self.unique_sub_index_key,
                         self.unique_sub_id_key,
                         self.protein1_key,
                         self.protein2_key,
                         self.residue1_key,
                         self.residue2_key,
+                        self.cross_linker_chemical_key,
                         self.id_score_key,
                         self.quantitation_key,
                         self.redundancy_key,
@@ -260,6 +266,13 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             for xl in self.data_base[k]:
                 yield xl
 
+    def xlid_iterator(self):
+        for xlid in self.data_base.keys():
+            yield xlid
+
+    def __getitem__(self,xlid):
+        return self.data_base[xlid]
+
     def __len__(self):
         return len([xl for xl in self])
 
@@ -326,6 +339,25 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
         return string
 
+    def get_short_cross_link_string(self,xl):
+
+        string='|'
+        list_of_keys=[self.data_set_name_key,
+                      self.unique_sub_id_key,
+                      self.protein1_key,
+                      self.residue1_key,
+                      self.protein2_key,
+                      self.residue2_key,
+                      self.state_key,
+                      self.psi_key]
+
+        for k in list_of_keys:
+            try:
+                string+=str(xl[k])+"|"
+            except KeyError:
+                continue
+
+        return string
 
     def filter(self,FilterOperator):
         new_xl_dict={}
@@ -366,94 +398,15 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         self.data_base=new_data_base
         self.__update__()
 
-    '''
-    def select(self,protein1=None,protein2=None,residue1=None,residue2=None):
-        if protein1 is None:
-            protein1=[]
-        elif type(protein1)!=list and protein1 is not None:
-            protein1=[protein1]
-        if protein2 is None:
-            protein2=[]
-        elif type(protein2)!=list and protein2 is not None:
-            protein2=[protein2]
-        if residue1 is None:
-            residue1=[]
-        elif type(residue1)!=list and residue1 is not None:
-            residue1=[residue1]
-        if residue2 is None:
-            residue2=[]
-        elif type(residue2)!=list and residue2 is not None:
-            residue2=[residue2]
-        new_xl_dict={}
-        for id in self.data_base.keys():
-            new_xl_list=[]
-            for xl in self.data_base[id]:
-                if xl[self.protein1_key] in protein1
-            if len(new_xl_list)>0: new_xl_dict[id]=new_xl_list
-        return CrossLinkDataBase(self.cldbkc,new_xl_dict)
-    '''
-    def __or__(self,other):
-        xl_list_1=self.data_base
-        xl_list_2=other.data_base
-        new_xl_set=set(xl_list_1)+set(xl_list_2)
-        return CrossLinkDataBase(self.cldbkc,list(new_xl_set))
-
-    def __xor__(self,other):
-        xl_list_1=self.data_base
-        xl_list_2=other.data_base
-        new_xl_set=set(xl_list_1)^set(xl_list_2)
-        return CrossLinkDataBase(self.cldbkc,list(new_xl_set))
-
-    def __and__(self,other):
-        xl_list_1=self.data_base
-        xl_list_2=other.data_base
-        new_xl_set=set(xl_list_1) & set(xl_list_2)
-        return CrossLinkDataBase(self.cldbkc,list(new_xl_set))
-
-    def __add__(self,other):
-        xl_list_1=self.data_base
-        xl_list_2=other.data_base
-        new_xl_set=xl_list_1+xl_list_2
-        return CrossLinkDataBase(self.cldbkc,new_xl_set)
-
     def change_value(self,key,old_value,new_value):
-        filtered=self.filter(key,old_value)
-        xor=filtered^self
-        for xl in filtered.data_base:
-            xl[key]=new_value
-        return filtered+xor
+        pass
 
     def clone_protein(self,origin_set_name,new_set_name,protein_name,new_protein_name):
-        filtered1=self.filter(self.protein1,protein_name)
-        filtered2=self.filter(self.protein2,protein_name)
-        intersection=new_xl_set1 & new_xl_set2
-        f1=filtered1.change_value(self.protein1,protein_name,new_protein_name)
-        f2=filtered2.change_value(self.protein2,protein_name,new_protein_name)
-        i1=intersection.change_value(self.protein1,protein_name,new_protein_name)
-        i2=i1.change_value(self.protein2,protein_name,new_protein_name)
-        return self+f1+f2+i2
-        '''
-        for xl in xl_list:
-            if xl[self.protein1]==protein_name and xl[self.protein2]!=protein_name:
-                new_xl=xl
-                new_xl[self.protein1]==new_protein_name
-                new_xl_list.append(new_xl)
-            if xl[self.protein1]!=protein_name and xl[self.protein2]==protein_name:
-                new_xl=xl
-                new_xl[self.protein2]==new_protein_name
-                new_xl_list.append(new_xl)
-            if xl[self.protein1]==protein_name and xl[self.protein2]==protein_name:
-                new_xl1=xl
-                new_xl2=xl
-                new_xl12=xl
-                new_xl1[self.protein1]==new_protein_name
-                new_xl2[self.protein2]==new_protein_name
-                new_xl12[self.protein1]==new_protein_name
-                new_xl12[self.protein2]==new_protein_name
-                new_xl_list.append(new_xl1)
-                new_xl_list.append(new_xl2)
-                new_xl_list.append(new_xl12)
-        '''
+        pass
+
+    def jackknife(self,percentage):
+        pass
+
     def __str__(self):
         outstr=''
         sorted_ids=sorted(self.data_base.keys())

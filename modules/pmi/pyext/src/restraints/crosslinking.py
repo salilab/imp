@@ -10,89 +10,6 @@ import IMP.atom
 import IMP.container
 import IMP.pmi.tools
 
-class _NuisancesBase(object):
-    ''' This base class is used to provide nuisance setup and interface
-    for the ISD cross-link restraints '''
-
-    def create_length(self):
-        ''' a nuisance on the length of the cross-link '''
-        self.lengthinit = 10.0
-        self.lengthissampled = True
-        self.lengthminnuis = 0.0000001
-        self.lengthmaxnuis = 1000.0
-        self.lengthmin = 6.0
-        self.lengthmax = 30.0
-        self.lengthtrans = 0.2
-        self.length = IMP.pmi.tools.SetupNuisance(self.m, self.lengthinit,
-                                                  self.lengthminnuis, self.lengthmaxnuis, self.lengthissampled).get_particle()
-        self.rslen.add_restraint(
-            IMP.isd.UniformPrior(
-                self.m,
-                self.length,
-                1000000000.0,
-                self.lengthmax,
-                self.lengthmin))
-
-    def create_sigma(self, resolution):
-        ''' a nuisance on the structural uncertainty '''
-        self.sigmainit = resolution + 2.0
-        self.sigmaissampled = True
-        self.sigmaminnuis = 0.0000001
-        self.sigmamaxnuis = 1000.0
-        self.sigmamin = 0.01
-        self.sigmamax = 100.0
-        self.sigmatrans = 0.5
-        self.sigma = IMP.pmi.tools.SetupNuisance(self.m, self.sigmainit,
-                                                 self.sigmaminnuis, self.sigmamaxnuis, self.sigmaissampled).get_particle()
-        self.sigma_dictionary[resolution] = (
-            self.sigma,
-            self.sigmatrans,
-            self.sigmaissampled)
-        self.rssig.add_restraint(
-            IMP.isd.UniformPrior(
-                self.m,
-                self.sigma,
-                1000000000.0,
-                self.sigmamax,
-                self.sigmamin))
-        # self.rssig.add_restraint(IMP.isd.JeffreysRestraint(self.sigma))
-
-    def get_sigma(self, resolution):
-        if not resolution in self.sigma_dictionary:
-            self.create_sigma(resolution)
-        return self.sigma_dictionary[resolution]
-
-    def create_psi(self, value):
-        ''' a nuisance on the inconsistency '''
-        self.psiinit = value
-        self.psiissampled = True
-        self.psiminnuis = 0.0000001
-        self.psimaxnuis = 0.4999999
-        self.psimin = 0.01
-        self.psimax = 0.49
-        self.psitrans = 0.1
-        self.psi = IMP.pmi.tools.SetupNuisance(self.m, self.psiinit,
-                                               self.psiminnuis, self.psimaxnuis,
-                                               self.psiissampled).get_particle()
-        self.psi_dictionary[value] = (
-            self.psi,
-            self.psitrans,
-            self.psiissampled)
-        self.rspsi.add_restraint(
-            IMP.isd.UniformPrior(
-                self.m,
-                self.psi,
-                1000000000.0,
-                self.psimax,
-                self.psimin))
-        self.rspsi.add_restraint(IMP.isd.JeffreysRestraint(self.m, self.psi))
-
-    def get_psi(self, value):
-        if not value in self.psi_dictionary:
-            self.create_psi(value)
-        return self.psi_dictionary[value]
-
-
 class ConnectivityCrossLinkMS(object):
 
     '''
@@ -725,7 +642,7 @@ class SigmoidalCrossLinkMS(object):
         return output
 
 
-class ISDCrossLinkMS(_NuisancesBase):
+class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
     import IMP.isd
     try:
         import IMP.isd_emxl
@@ -1038,10 +955,11 @@ class ISDCrossLinkMS(_NuisancesBase):
                 dr.set_name(
                     xlattribute + "-" + c1 + ":" + str(r1) + "-" + c2 + ":" + str(r2) + "_" + self.label)
 
-                pr = IMP.core.PairRestraint(self.m, dps2, (p1, p2))
-                pr.set_name(
-                    xlattribute + "-" + c1 + ":" + str(r1) + "-" + c2 + ":" + str(r2) + "_" + self.label)
-                self.rslin.add_restraint(pr)
+                if p1i != p2i:
+                    pr = IMP.core.PairRestraint(self.m, dps2, (p1i, p2i))
+                    pr.set_name(
+                        xlattribute + "-" + c1 + ":" + str(r1) + "-" + c2 + ":" + str(r2) + "_" + self.label)
+                    self.rslin.add_restraint(pr)
 
 
                 self.pairs.append(

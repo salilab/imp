@@ -14,6 +14,11 @@ def _get_restraint_set_key():
         _get_restraint_set_key.pmi_rs_key = IMP.ModelKey("PMI restraints")
     return _get_restraint_set_key.pmi_rs_key
 
+def _add_restraint_set(model, mk):
+    rs = IMP.RestraintSet(model, "All PMI restraints")
+    model.add_data(mk, rs)
+    return rs
+
 def add_restraint_to_model(model, restraint):
     """Add a PMI restraint to the model.
        Since Model.add_restraint() no longer exists (in modern IMP restraints
@@ -23,18 +28,16 @@ def add_restraint_to_model(model, restraint):
     if model.get_has_data(mk):
         rs = IMP.RestraintSet.get_from(model.get_data(mk))
     else:
-        rs = IMP.RestraintSet(model, "All PMI restraints")
-        model.add_data(mk, rs)
+        rs = _add_restraint_set(model, mk)
     rs.add_restraint(restraint)
 
 def get_restraint_set(model):
     """Get a RestraintSet containing all PMI restraints added to the model"""
     mk = _get_restraint_set_key()
-    if model.get_has_data(mk):
-        return IMP.RestraintSet.get_from(model.get_data(mk))
-    else:
-        raise ValueError("No restraints added to model")
-
+    if not model.get_has_data(mk):
+        print("WARNING: no restraints added to model yet")
+        _add_restraint_set(model, mk)
+    return IMP.RestraintSet.get_from(model.get_data(mk))
 
 class Stopwatch(object):
 
