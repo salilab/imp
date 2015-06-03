@@ -1,7 +1,6 @@
 /**
  *  \file IMP/ScoringFunction.h
- *  \brief Storage of a model, its restraints,
- *                         constraints and particles.
+ *  \brief Represents a scoring function on the model.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -24,10 +23,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 class Model;
 
 //! Represents a scoring function on the model.
-/** The Model has a default scoring function
-    (Model::get_model_scoring_function()), but it can be useful to use
-    others in different contexts during a sampling process.
-
+/**
 A call to the evaluate() method prompts the following events:
 1. determine set of ScoreState objects needed by the Restraint objects
 being evaluated (this is cached)
