@@ -10,6 +10,7 @@
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Chain.h>
 #include <IMP/atom/Residue.h>
+#include <IMP/atom/Fragment.h>
 #include <IMP/atom/pdb.h>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
