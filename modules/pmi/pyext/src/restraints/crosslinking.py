@@ -891,15 +891,15 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
                 p1 = ps1[0]
                 p2 = ps2[0]
 
-                # remove in the future!!!
-                #if p1 == p2:
-                #    continue
+                if (p1 == p2) and (r1 == r2) :
+                    print("ISDCrossLinkMS Restraint: WARNING> on the identical bead particles and the identical residues, thus skipping this cross-link.")
+                    continue
 
                 if xlid in uniqueid_restraints_map:
-                    print("getting a crosslink restraint from id %s" % str(xlid))
+                    print("Appending a crosslink restraint into the uniqueID %s" % str(xlid))
                     dr = uniqueid_restraints_map[xlid]
                 else:
-                    print("generating a new crosslink restraint")
+                    print("Generating a NEW crosslink restraint with an uniqueID %s" % str(xlid))
                     dr = IMP.isd.CrossLinkMSRestraint(
                         self.m,
                         length,
