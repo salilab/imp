@@ -194,9 +194,9 @@ for lib in ${BUNDLED_LIBS}; do
   install_name_tool -id ${BUNDLED_LIB_DIR}/$base \
                         ${DESTDIR}/${BUNDLED_LIB_DIR}/$base || exit 1
 
-  # If the library contains any links to the homebrew Cellar or use of
-  # @loader_path, remap them to /usr/local/lib/
-  deps=`otool -L $lib |awk '/@loader_path|\/local\/Cellar\// {print $1}'`
+  # If the library contains any links to the homebrew Cellar, /usr/local/opt,
+  # or use of @loader_path, remap them to /usr/local/lib/
+  deps=`otool -L $lib |awk '/@loader_path|\/local\/Cellar\/|\/local\/opt\// {print $1}'`
   for dep in $deps; do
     depbase=`basename $dep`
     install_name_tool -change $dep /usr/local/lib/$depbase \
