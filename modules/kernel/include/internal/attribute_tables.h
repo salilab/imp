@@ -1,5 +1,6 @@
 /**
- *  \file interna/constants.h    \brief Various useful constants.
+ *  \file internal/attribute_tables.h
+ *  \brief Access to particle attributes.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
