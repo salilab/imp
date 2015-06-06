@@ -176,6 +176,7 @@ void Nuisance::enforce_bounds() {
   ObjectKey k(get_ss_key());
   if (p->has_attribute(k)) return;
   Pointer<NuisanceScoreState> ss(new NuisanceScoreState(p));
+  ss->set_was_used(true);
   p->add_attribute(k, ss);
 }
 void Nuisance::remove_bounds() {

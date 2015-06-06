@@ -33,7 +33,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
  private:
   // checks and makes necessary updates
   void update_mean_and_covariance();
-  Pointer<GaussianProcessInterpolation> gpi_;
+  IMP::PointerMember<GaussianProcessInterpolation> gpi_;
   IMP::PointerMember<MultivariateFNormalSufficient> mvn_;
   IMP::PointerMember<GaussianProcessInterpolationScoreState> ss_;
   // number of observation points
