@@ -156,17 +156,11 @@ class BasicAttributeTable {
     if (checked) {
       IMP_CHECK_MASK(read_mask_, particle, k, GET, ATTRIBUTE);
     }
-    IMP_USAGE_CHECK(get_has_attribute(k, particle),
-                    "Requested invalid attribute: " << k << " of particle "
-                                                    << particle);
     return data_[k.get_index()][particle];
   }
   typename Traits::Container::reference access_attribute(
       Key k, ParticleIndex particle) {
     IMP_CHECK_MASK(write_mask_, particle, k, SET, ATTRIBUTE);
-    IMP_USAGE_CHECK(get_has_attribute(k, particle),
-                    "Requested invalid attribute: " << k << " of particle "
-                                                    << particle);
     return data_[k.get_index()][particle];
   }
   std::pair<typename Traits::Value, typename Traits::Value> get_range_internal(
