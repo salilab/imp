@@ -913,7 +913,7 @@ class Precision(object):
                 if self.style=='pairwise_drmsd_Q':
                     distance=IMP.atom.get_drmsd_Q(coordinates1,coordinates2,self.threshold)
                 if self.style=='pairwise_rmsd':
-                    distance=IMP.atom.get_rmsd(coordinates1,coordinates2)
+                    distance=IMP.algebra.get_rmsd(coordinates1,coordinates2)
                 distances.append(distance)
 
             print(selection_name,"average distance",sum(distances)/len(distances),"minimum distance",min(distances))
