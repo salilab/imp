@@ -22,8 +22,8 @@ set the required environment variables. For example, to run `ligand_score`, do
 `./setup_environment.sh $SHELL` and then `ligand_score arguments...` in the
 new shell.
 
-See https://github.com/salilab/imp/wiki/Cmake for more information on building
-with cmake.
+See http://integrativemodeling.org/nightly/doc/manual/cmake_config.html
+for more information on building with cmake.
 
 Copyright and License information
 =================================
