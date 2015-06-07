@@ -120,6 +120,15 @@ for lib in *.dylib; do
                               ${PREFIX}/lib/$lib $bin || exit 1
     install_name_tool -change $lib ${PREFIX}/lib/$lib $bin || exit 1
   done
+
+  # If the library contains any links to the homebrew Cellar or /usr/local/opt,
+  # remap them to /usr/local/lib/
+  deps=`otool -L $lib |awk '/\/local\/Cellar\/|\/local\/opt\// {print $1}'`
+  for dep in $deps; do
+    depbase=`basename $dep`
+    install_name_tool -change $dep /usr/local/lib/$depbase $lib || exit 1
+  done
+
 done
 
 # Bundle non-standard library dependencies (e.g. boost) and make IMP libraries
