@@ -83,7 +83,7 @@ for PYTHON in ${PYTHONS}; do
 done
 
 # Determine current library install name path
-LIBNAMEPATH=$( dirname `otool -L ${DESTDIR}/${PREFIX}/lib/libimp_kernel.dylib |grep libimp_base|cut -d\( -f 1` )
+LIBNAMEPATH=$( dirname `otool -L ${DESTDIR}/${PREFIX}/lib/libimp_core.dylib |grep libimp_kernel|cut -d\( -f 1` )
 
 echo "Setting library name paths and IDs..."
 cd ${DESTDIR}/${PREFIX}/lib
