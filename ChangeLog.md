@@ -7,6 +7,24 @@ ChangeLog {#changelog}
   provided in a separate reference guide.
 - The IMP::base and IMP::kernel namespaces are now deprecated. Functionality
   in both base and kernel now lives in the top-level "IMP" namespace.
+- Several long-deprecated functions have been removed. These include:
+  - Several Restraint constructors that take Particles. Use equivalent
+    constructors that take an IMP::Model pointer and ParticleIndexes instead.
+  - IMP::core::MonteCarlo::get_number_of_forward_steps() (use
+    get_number_of_accepted_steps() instead).
+  - IMP::Model::remove_restraint(), IMP::Model::get_restraints(),
+    IMP::Model::get_number_of_restraints(), IMP::Model::get_restraints().
+    Store your restraints in an IMP::RestraintSet or use an
+    IMP::core::RestraintsScoringFunction. Related methods such as
+    IMP::Model::evaluate() will be removed in the next IMP release.
+  - IMP::Model::set_maximum_score() and related methods. Set the maximum
+    scores on the IMP::Restraint or IMP::RestraintSet directly, using
+    IMP::Restraint::set_maximum_score().
+  - IMP::Restraint::get_input_containers() and
+    IMP::Restraint::get_input_particles(). Use IMP::Restraint::get_inputs()
+    instead (similarly for get_outputs()).
+  - IMP::rmf::save_frame() no longer takes a frame index argument (it was
+    previously ignored anyway).
 - On platforms that support it, OpenMP is turned on by default. To speed up
   some parts of IMP, call IMP::base::set_number_of_threads(). By default,
   only a single thread is used.
