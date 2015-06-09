@@ -768,8 +768,9 @@ class BuildModel1(object):
 
     def set_gmm_models_directory(self,directory_name):
         self.gmm_models_directory=directory_name
-
-    def build_model(self,data_structure,sequence_connectivity_scale=4.0,rmf_file=None,rmf_frame_number=0):
+                
+    def build_model(self,data_structure,sequence_connectivity_scale=4.0,
+                         sequence_connectivity_resolution=10,rmf_file=None,rmf_frame_number=0):
         """Create model.
         @param data_structure List of lists containing these entries:
              comp_name, hier_name, color, fasta_file, fasta_id, pdb_name, chain_id,
@@ -863,7 +864,7 @@ class BuildModel1(object):
                     rf=self.rmf_file[c]
                     rfn=self.rmf_frame_number[c]
                     self.simo.set_coordinates_from_rmf(c, rf,rfn)
-            self.simo.setup_component_sequence_connectivity(c,scale=sequence_connectivity_scale)
+            self.simo.setup_component_sequence_connectivity(c,resolution=sequence_connectivity_resolution,scale=sequence_connectivity_scale)
             self.simo.setup_component_geometry(c)
 
         for rb in rigid_bodies:
@@ -1029,6 +1030,15 @@ class BuildModel1(object):
                                   length=beadsize)
 
         return outhier
+
+    def set_coordinates(self,hier_name,xyz_tuple):
+        hier=self.domain_dict[hier_name]
+        for h in IMP.atom.get_leaves(hier):
+            p=h.get_particle()            
+            if IMP.core.NonRigidMember.get_is_setup(p):
+                pass
+            else:
+                IMP.core.XYZ(p).set_coordinates(xyz_tuple)
 
     def save_rmf(self,rmfname):
 

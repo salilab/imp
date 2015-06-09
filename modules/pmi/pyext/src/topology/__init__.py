@@ -68,7 +68,7 @@ class StructureError(Exception):
 #------------------------
 
 class SystemBase(object):
-    """This is the base class for System, _State and _Molecule
+    """The base class for System, State and Molecule
     classes. It contains shared functions in common to these classes
     """
 
@@ -110,9 +110,9 @@ class System(SystemBase):
         self.hier.set_name(name)
 
     def create_state(self):
-        """returns a new IMP.pmi.representation_new._State(), increment the state index"""
+        """returns a new IMP.pmi.representation_new.State(), increment the state index"""
         self._number_of_states+=1
-        state = _State(self,self._number_of_states-1)
+        state = State(self,self._number_of_states-1)
         self.states.append(state)
         return state
 
@@ -136,7 +136,7 @@ class System(SystemBase):
 
 #------------------------
 
-class _State(SystemBase):
+class State(SystemBase):
     """This private class is constructed from within the System class.
     It wraps an IMP.atom.State
     """
@@ -159,21 +159,16 @@ class _State(SystemBase):
     def create_molecule(self,name,sequence=None,chain_id='',molecule_to_copy=None):
         """Create a new Molecule within this State
         @param name                the name of the molecule (string) it must not
-                                   contain underscores characters "_" and must not
                                    be already used
         @param sequence            sequence (string)
         @param chain_id            Chain id to assign to this molecule
         @param molecule_to_copy    Copy everything from an existing molecule. NOT IMPLEMENTED
         """
-        # check the presence of underscores
-        if "_" in name:
-            raise WrongMoleculeName('A molecule name should not contain underscores characters')
-
         # check whether the molecule name is already assigned
         if name in [mol.get_name() for mol in self.molecules]:
             raise WrongMoleculeName('Cannot use a molecule name already used')
 
-        mol = _Molecule(self,name,sequence,chain_id,copy_num=0)
+        mol = Molecule(self,name,sequence,chain_id,copy_num=0)
         self.molecules.append(mol)
         return mol
 
@@ -190,8 +185,8 @@ class _State(SystemBase):
 
 #------------------------
 
-class _Molecule(SystemBase):
-    """This private class is constructed from within the State class.
+class Molecule(SystemBase):
+    """This class is constructed from within the State class.
     It wraps an IMP.atom.Molecule and IMP.atom.Copy
     Structure is read using this class
     Resolutions and copies can be registered, but are only created when build() is called
@@ -292,7 +287,7 @@ class _Molecule(SystemBase):
         """
         if new_chain_id is None:
             new_chain_id=chain_id
-        mol=_Molecule(self.state,self.get_hierarchy().get_name(),
+        mol=Molecule(self.state,self.get_hierarchy().get_name(),
                       self.sequence,new_chain_id,copy_num=len(self.copies)+1)
         self.copies.append(mol)
         if pdb_fn is None:
@@ -320,7 +315,7 @@ class _Molecule(SystemBase):
         """
         if new_chain_id is None:
             new_chain_id=chain_id
-        mol=_Molecule(self.state,self.get_hierarchy().get_name(),
+        mol=Molecule(self.state,self.get_hierarchy().get_name(),
                       self.sequence,new_chain_id,copy_num=len(self.copies)+1)
         self.copies.append(mol)
         for nr,r in enumerate(self.residues):

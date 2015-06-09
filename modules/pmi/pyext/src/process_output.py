@@ -3,7 +3,6 @@
 # This application works with either argparse (python 2.7) or optparse
 # (python 2.6)
 
-from __future__ import print_function
 
 argparse = None
 try:
@@ -302,7 +301,7 @@ if (not result.search_field is None) and (not result.search_value is None):
                 for key in klist:
                     print(key, d[key])
         elif isstat2:
-            if linenumber == 1:
+            if line_number == 1:
                 continue
             if (str(d[invstat2_dict[corrected_field]]) == result.search_value):
                 for key in klist:

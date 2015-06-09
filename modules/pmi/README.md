@@ -12,7 +12,7 @@ _This module is still under heavy development, and should be considered experime
 
 See also the [PMI changelog](@ref pmi_changelog).
 
-_Author(s)_: Riccardo Pellarin, Peter Cimermancic, Daniel Russel, Charles Greenberg, Ben Webb, Elina Tjioe, Seung Joong Kim, Max Bonomi, Yannick Spill
+_Author(s)_: Riccardo Pellarin, Charles Greenberg, Daniel Saltzberg, Peter Cimermancic,  Ben Webb, Daniel Russel,  Elina Tjioe, Seung Joong Kim, Max Bonomi, Yannick Spill
 
 _Maintainer_: Riccardo Pellarin
 

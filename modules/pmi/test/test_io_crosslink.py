@@ -196,6 +196,28 @@ class TestIOCrosslink(IMP.test.TestCase):
         nentry=len([xl for xl in cldb if (xl[cldb.protein1_key]=="AAA")])
         self.assertEqual(len(cldb1),nentry)
 
+    def test_clone_protein(self):
+        cldb=self.setup_cldb("xl_dataset_test.dat")
+        expected_crosslinks=[]
+        for xl in cldb:
+            array=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
+            if array[0] == "AAA" and array[1] != "AAA":
+                expected_crosslinks.append(IMP.pmi.io.crosslink._ProteinsResiduesArray(("AAC",array[1],array[2],array[3])))
+            elif array[0] != "AAA" and array[1] == "AAA":
+                expected_crosslinks.append(IMP.pmi.io.crosslink._ProteinsResiduesArray((array[0],"AAC",array[2],array[3])))
+            elif array[0] == "AAA" and array[1] == "AAA":
+                expected_crosslinks.append(IMP.pmi.io.crosslink._ProteinsResiduesArray((array[0],"AAC",array[2],array[3])))
+                expected_crosslinks.append(IMP.pmi.io.crosslink._ProteinsResiduesArray(("AAC",array[1],array[2],array[3])))
+                expected_crosslinks.append(IMP.pmi.io.crosslink._ProteinsResiduesArray(("AAC","AAC",array[2],array[3])))
+            expected_crosslinks.append(array)
+
+        cldb.clone_protein("AAA","AAC")
+
+        for xl in cldb:
+            array=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
+            expected_crosslinks.remove(array)
+
+        self.assertEqual(len(expected_crosslinks),0)
 
     def test_redundancy(self):
         cldb=self.setup_cldb("xl_dataset_test.dat")

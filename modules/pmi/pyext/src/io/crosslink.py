@@ -75,11 +75,11 @@ class _ProteinsResiduesArray(tuple):
         @input_data can be a dict or a tuple
         '''
         if type(input_data) is dict:
-            cldbsk=_CrossLinkDataBaseStandardKeys()
-            p1=input_data[cldbsk.protein1_key]
-            p2=input_data[cldbsk.protein2_key]
-            r1=input_data[cldbsk.residue1_key]
-            r2=input_data[cldbsk.residue2_key]
+            self.cldbsk=_CrossLinkDataBaseStandardKeys()
+            p1=input_data[self.cldbsk.protein1_key]
+            p2=input_data[self.cldbsk.protein2_key]
+            r1=input_data[self.cldbsk.residue1_key]
+            r2=input_data[self.cldbsk.residue2_key]
             t=(p1,p2,r1,r2)
         elif type(input_data) is tuple:
             if len(input_data)>4:
@@ -103,6 +103,12 @@ class _ProteinsResiduesArray(tuple):
         '''
         return _ProteinsResiduesArray((self[1],self[0],self[3],self[2]))
 
+    def __str__(self):
+        outstr=self.cldbsk.protein1_key+" "+str(self[0])
+        outstr+=" "+self.cldbsk.protein2_key+" "+str(self[1])
+        outstr+=" "+self.cldbsk.residue1_key+" "+str(self[2])
+        outstr+=" "+self.cldbsk.residue2_key+" "+str(self[3])
+        return outstr
 
 class FilterOperator(object):
     '''
@@ -401,8 +407,34 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
     def change_value(self,key,old_value,new_value):
         pass
 
-    def clone_protein(self,origin_set_name,new_set_name,protein_name,new_protein_name):
-        pass
+    def clone_protein(self,protein_name,new_protein_name):
+        new_xl_dict={}
+        for id in self.data_base.keys():
+            new_data_base=[]
+            for xl in self.data_base[id]:
+                new_data_base.append(xl)
+                if xl[self.protein1_key]==protein_name and xl[self.protein2_key]!=protein_name:
+                    new_xl=dict(xl)
+                    new_xl[self.protein1_key]=new_protein_name
+                    new_data_base.append(new_xl)
+                elif xl[self.protein1_key]!=protein_name and xl[self.protein2_key]==protein_name:
+                    new_xl=dict(xl)
+                    new_xl[self.protein2_key]=new_protein_name
+                    new_data_base.append(new_xl)
+                elif xl[self.protein1_key]==protein_name and xl[self.protein2_key]==protein_name:
+                    new_xl=dict(xl)
+                    new_xl[self.protein1_key]=new_protein_name
+                    new_data_base.append(new_xl)
+                    new_xl=dict(xl)
+                    new_xl[self.protein2_key]=new_protein_name
+                    new_data_base.append(new_xl)
+                    new_xl=dict(xl)
+                    new_xl[self.protein1_key]=new_protein_name
+                    new_xl[self.protein2_key]=new_protein_name
+                    new_data_base.append(new_xl)
+            self.data_base[id]=new_data_base
+        self.__update__()
+
 
     def jackknife(self,percentage):
         pass
