@@ -144,7 +144,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
 
   //! returns true if implementing the Stochastic Runga-Kutta
   //! Brownian Dynamics variant
-  double get_is_srk() const { return srk_; }
+  bool get_is_srk() const { return srk_; }
 
 
   //! regenerate internal cached pool of random numbers
