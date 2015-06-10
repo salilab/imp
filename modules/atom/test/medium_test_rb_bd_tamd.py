@@ -67,6 +67,8 @@ class Tests(IMP.test.TestCase):
 
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
+        # Disable internal checks, since they make the test take way too long
+        IMP.set_check_level(IMP.USAGE)
         m = IMP.Model()
         m.set_log_level(IMP.SILENT)
         cores=[]
