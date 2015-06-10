@@ -63,12 +63,12 @@ BrownianDynamicsTAMD::BrownianDynamicsTAMD(Model *m, std::string name,
 
 namespace {
 /** get the force dispacement term in the Ermak-Mccammon equation
-    for coordinate i of  particle pi in model m, with time step dt and ikT=1/kT
+    for particle pi in model m, with time step dt and ikT=1/kT
 */
-inline double get_force_displacement_bdb(Model *m, ParticleIndex pi,
-                        unsigned int i, double dt, double ikT) {
+inline algebra::Vector3D get_force_displacement_bdb(Model *m, ParticleIndex pi,
+                                                    double dt, double ikT) {
   Diffusion d(m, pi);
-  double nforce(-d.get_derivative(i));
+  algebra::Vector3D nforce(-d.get_derivatives());
   // unit::Angstrom R(sampler_());
   double dd = d.get_diffusion_coefficient();
   if(TAMDParticle::get_is_setup(m, pi)){
@@ -80,17 +80,7 @@ inline double get_force_displacement_bdb(Model *m, ParticleIndex pi,
     // dd *= tamd.get_temperature_scale_factor();
     // ikT /= tamd.get_temperature_scale_factor();
   }
-  double force_term(nforce * dd * dt * ikT);
-  /*if (force_term > unit::Angstrom(.5)) {
-    std::cout << "Forces on " << _1->get_name() << " are "
-    << force << " and " << nforce
-    << " and " << force_term <<
-    " vs " << dX[j] << ", " << sigma << std::endl;
-    }
-  std::cout << "Force " << i << " is " << force_term
-            << "= " << nforce << "*" << dd << "*" << dt << "*" << ikT
-            << std::endl;*/
-  return force_term;
+  return nforce * dd * dt * ikT;
 }
 // radians
 inline double get_torque_bdb(Model *m, ParticleIndex pi,
@@ -164,9 +154,7 @@ void BrownianDynamicsTAMD::advance_coordinates_1(ParticleIndex pi,
                                              double ikT) {
   Diffusion d(get_model(), pi);
   core::XYZ xd(get_model(), pi);
-  algebra::Vector3D force(get_force_displacement_bdb(get_model(), pi, 0, dt, ikT),
-                          get_force_displacement_bdb(get_model(), pi, 1, dt, ikT),
-                          get_force_displacement_bdb(get_model(), pi, 2, dt, ikT));
+  algebra::Vector3D force(get_force_displacement_bdb(get_model(), pi, dt, ikT));
   algebra::Vector3D dX = (force - get_force(i)) / 2.0;
   check_dX_dbd(dX, get_max_step());
   xd.set_coordinates(xd.get_coordinates() + dX);
@@ -185,9 +173,7 @@ void BrownianDynamicsTAMD::advance_coordinates_0(ParticleIndex pi,
   double r = get_sample(sigma);
   algebra::Vector3D random_dX = r * algebra::get_random_vector_on_unit_sphere();
   algebra::Vector3D force_dX
-    (get_force_displacement_bdb(get_model(), pi, 0, dtfs, ikT),
-     get_force_displacement_bdb(get_model(), pi, 1, dtfs, ikT),
-     get_force_displacement_bdb(get_model(), pi, 2, dtfs, ikT));
+    (get_force_displacement_bdb(m, pi, dtfs, ikT));
   if (get_is_srk()) {
     set_force(i, force_dX);
   }
