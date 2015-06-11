@@ -142,5 +142,6 @@ int do_benchmark() {
 
 int main(int argc, char **argv) {
   IMP::setup_from_argv(argc, argv, "Benchmark md");
+  IMP::set_log_level(IMP::SILENT);
   return do_benchmark();
 }
