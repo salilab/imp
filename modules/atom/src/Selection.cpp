@@ -49,9 +49,9 @@ namespace {
     return out;
   }
 
-  int get_match_return(bool v) {
-    if (v) return 1;
-    else return -1;
+  internal::SelectionPredicate::MatchType get_match_return(bool v) {
+    if (v) return internal::SelectionPredicate::MATCH_WITH_CHILDREN;
+    else return internal::SelectionPredicate::MISMATCH;
   }
 
   //! Reverse a match
@@ -87,23 +87,23 @@ namespace {
       return IMP::get_particles(m, pis);
     }
 
-    virtual int do_get_value_index(Model *m,
-                                   ParticleIndex pi,
-                                   boost::dynamic_bitset<> &bs)
-                                       const IMP_OVERRIDE {
-      int v = predicate_->get_value_index(m, pi, bs);
+    virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
+                                         boost::dynamic_bitset<> &bs)
+                                             const IMP_OVERRIDE {
+      MatchType v = predicate_->get_value_index(m, pi, bs);
       switch(v) {
-      case 0:
+      case NO_MATCH:
         /* If the subpredicate doesn't match, we do... but we don't want to
            cache this result, since child particles may match */
-        return 2;
-      case 1:
-        return -1;
-      case -1:
-        return 1;
+        return MATCH_SELF_ONLY;
+      case MATCH_WITH_CHILDREN:
+        return MISMATCH;
+      case MISMATCH:
+        return MATCH_WITH_CHILDREN;
       default:
-        /* The opposite of a non-cached match (2) is a "no match" */
-        return 0;
+        /* The opposite of a non-cached match (MATCH_SELF_ONLY)
+           is a "no match" */
+        return NO_MATCH;
       }
     }
 
@@ -129,31 +129,30 @@ namespace {
       }
     }
   
-    virtual int do_get_value_index(Model *m,
-                                   ParticleIndex pi,
-                                   boost::dynamic_bitset<> &bs)
-                                       const IMP_OVERRIDE {
+    virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
+                                         boost::dynamic_bitset<> &bs)
+                                             const IMP_OVERRIDE {
       // Empty list matches everything
       if (predicates_.size() == 0) {
-        return 1;
+        return MATCH_WITH_CHILDREN;
       }
       bool no_match = false, cached_match = true;
       IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
-        int v = p->get_value_index(m, pi, bs);
-        if (v == -1) {
-          return -1;
-        } else if (v == 0) {
+        MatchType v = p->get_value_index(m, pi, bs);
+        if (v == MISMATCH) {
+          return MISMATCH;
+        } else if (v == NO_MATCH) {
           no_match = true;
-        } else if (v == 2) {
+        } else if (v == MATCH_SELF_ONLY) {
           cached_match = false;
         }
       }
       if (no_match) {
-        return 0;
+        return NO_MATCH;
       } else if (cached_match) {
-        return 1;
+        return MATCH_WITH_CHILDREN;
       } else {
-        return 2;
+        return MATCH_SELF_ONLY;
       }
     }
   
@@ -173,31 +172,30 @@ namespace {
       return a.release();
     }
 
-    virtual int do_get_value_index(Model *m,
-                                   ParticleIndex pi,
-                                   boost::dynamic_bitset<> &bs)
-                                       const IMP_OVERRIDE {
+    virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
+                                         boost::dynamic_bitset<> &bs)
+                                             const IMP_OVERRIDE {
       // Empty list matches everything
       if (predicates_.size() == 0) {
-        return 1;
+        return MATCH_WITH_CHILDREN;
       }
       bool no_match = false, no_cached_match = false;
       IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
-        int v = p->get_value_index(m, pi, bs);
-        if (v == 1) {
-          return 1;
-        } else if (v == 0) {
+        MatchType v = p->get_value_index(m, pi, bs);
+        if (v == MATCH_WITH_CHILDREN) {
+          return MATCH_WITH_CHILDREN;
+        } else if (v == NO_MATCH) {
           no_match = true;
-        } else if (v == 2) {
+        } else if (v == MATCH_SELF_ONLY) {
           no_cached_match = true;
         }
       }
       if (no_cached_match) {
-        return 2;
+        return MATCH_SELF_ONLY;
       } else if (no_match) {
-        return 0;
+        return NO_MATCH;
       } else {
-        return -1;
+        return MISMATCH;
       }
     }
   
@@ -217,21 +215,20 @@ namespace {
       return a.release();
     }
 
-    virtual int do_get_value_index(Model *m,
-                                   ParticleIndex pi,
-                                   boost::dynamic_bitset<> &bs)
-                                       const IMP_OVERRIDE {
+    virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
+                                         boost::dynamic_bitset<> &bs)
+                                             const IMP_OVERRIDE {
       // Empty list matches everything
       if (predicates_.size() == 0) {
-        return 1;
+        return MATCH_WITH_CHILDREN;
       }
       bool no_match = false, match = false;
       IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
-        int v = p->get_value_index(m, pi, bs);
-        if (v >= 1) {
+        MatchType v = p->get_value_index(m, pi, bs);
+        if (v == MATCH_WITH_CHILDREN || v == MATCH_SELF_ONLY) {
           match = !match;
         }
-        if (v == 0 || v == 2) {
+        if (v == NO_MATCH || v == MATCH_SELF_ONLY) {
           no_match = true;
         }
       }
@@ -239,11 +236,11 @@ namespace {
         /* Note that we *don't* want to cache matches from this predicate,
            since a child might match another subpredicate and so flip this
            predicate's match bit */
-        return 2;
+        return MATCH_SELF_ONLY;
       } else if (no_match) {
-        return 0;
+        return NO_MATCH;
       } else {
-        return -1;
+        return MISMATCH;
       }
     }
 
@@ -335,8 +332,8 @@ namespace {
     Name##SelectionPredicate(const DataType &data,                             \
                              std::string name = #Name "SelectionPredicate%1%") \
         : internal::SelectionPredicate(name), data_(data) {}                   \
-    virtual int do_get_value_index(Model *m,                           \
-                                   ParticleIndex pi,                   \
+    virtual MatchType do_get_value_index(Model *m,                             \
+                                   ParticleIndex pi,                           \
                                    boost::dynamic_bitset<> &)                  \
                                             const IMP_OVERRIDE {               \
       check;                                                                   \
@@ -372,7 +369,7 @@ bool get_is_residue_index_match(const Ints &data, Model *m,
 IMP_ATOM_SELECTION_PRED(ResidueIndex, Ints, {
   bool this_matches = get_is_residue_index_match(data_, m, pi);
   if (!this_matches)
-    return 0;
+    return NO_MATCH;
   if (Hierarchy(m, pi).get_number_of_children() > 0) {
     // if any children match, push it until then
     for (unsigned int i = 0; i < Hierarchy(m, pi).get_number_of_children();
@@ -381,25 +378,25 @@ IMP_ATOM_SELECTION_PRED(ResidueIndex, Ints, {
           Hierarchy(m, pi).get_child(i).get_particle_index();
       bool cur = get_is_residue_index_match(data_, m, cpi);
       if (cur) {
-        return 0;
+        return NO_MATCH;
       }
     }
   }
-  return 1;
+  return MATCH_WITH_CHILDREN;
 });
 IMP_ATOM_SELECTION_PRED(MoleculeName, Strings, {
   if (Molecule::get_is_setup(m, pi)) {
     return get_match_return(std::binary_search(data_.begin(), data_.end(),
                                                m->get_particle_name(pi)));
   }
-  return 0;
+  return NO_MATCH;
 });
 IMP_ATOM_SELECTION_PRED(ResidueType, ResidueTypes, {
   if (Residue::get_is_setup(m, pi)) {
     return get_match_return(std::binary_search(
         data_.begin(), data_.end(), Residue(m, pi).get_residue_type()));
   }
-  return 0;
+  return NO_MATCH;
 });
 
 IMP_ATOM_SELECTION_PRED(ChainID, Strings, {
@@ -407,54 +404,56 @@ IMP_ATOM_SELECTION_PRED(ChainID, Strings, {
     return get_match_return(
         std::binary_search(data_.begin(), data_.end(), Chain(m, pi).get_id()));
   }
-  return 0;
+  return NO_MATCH;
 });
 IMP_ATOM_SELECTION_PRED(AtomType, AtomTypes, {
   if (Atom::get_is_setup(m, pi)) {
     return get_match_return(std::binary_search(data_.begin(), data_.end(),
                                                Atom(m, pi).get_atom_type()));
   }
-  return 0;
+  return NO_MATCH;
 });
 IMP_ATOM_SELECTION_PRED(DomainName, Strings, {
   if (Domain::get_is_setup(m, pi)) {
     return get_match_return(std::binary_search(data_.begin(), data_.end(),
                                                m->get_particle_name(pi)));
   }
-  return 0;
+  return NO_MATCH;
 });
 IMP_ATOM_SELECTION_PRED(CopyIndex, Ints, {
   if (Copy::get_is_setup(m, pi)) {
     return get_match_return(std::binary_search(data_.begin(), data_.end(),
                                                Copy(m, pi).get_copy_index()));
   }
-  return 0;
+  return NO_MATCH;
 });
 IMP_ATOM_SELECTION_PRED(StateIndex, Ints, {
   if (State::get_is_setup(m, pi)) {
     return get_match_return(std::binary_search(data_.begin(), data_.end(),
                                                State(m, pi).get_state_index()));
   }
-  return 0;
+  return NO_MATCH;
 });
 IMP_ATOM_SELECTION_PRED(Type, core::ParticleTypes, {
   if (core::Typed::get_is_setup(m, pi)) {
     if( std::binary_search(data_.begin(), data_.end(),
-                           core::Typed(m, pi).get_type())) return 1;
+                           core::Typed(m, pi).get_type())) {
+      return MATCH_WITH_CHILDREN;
+    }
   }
-  return 0;
+  return NO_MATCH;
 });
 #define IMP_ATOM_SELECTION_MATCH_TYPE(Type, type, UCTYPE)       \
   if (Type::get_is_setup(m, pi)) {                              \
     if (std::binary_search(data_.begin(), data_.end(), UCTYPE)) \
-      return 1;                                                 \
+      return MATCH_WITH_CHILDREN;                               \
     else                                                        \
-      return 0;                                                 \
+      return NO_MATCH;                                          \
   }
 
 IMP_ATOM_SELECTION_PRED(HierarchyType, Ints, {
   IMP_ATOM_FOREACH_HIERARCHY_TYPE_STATEMENTS(IMP_ATOM_SELECTION_MATCH_TYPE);
-  return 0;
+  return NO_MATCH;
 });
 
 bool get_is_terminus(Model *m, ParticleIndex pi, int t) {
@@ -488,10 +487,13 @@ bool get_is_terminus(Model *m, ParticleIndex pi, int t) {
 
 IMP_ATOM_SELECTION_PRED(Terminus, Int, {
   Hierarchy cur(m, pi);
-  if (cur.get_number_of_children() > 0)
-    return 0;
-  else
-    return get_is_terminus(m, pi, data_);
+  if (cur.get_number_of_children() > 0) {
+    return NO_MATCH;
+  } else if (get_is_terminus(m, pi, data_)) {
+    return MATCH_WITH_CHILDREN;
+  } else {
+    return NO_MATCH;
+  }
 });
 
 ParticleIndexes expand_search(Model *m,
@@ -529,8 +531,9 @@ Selection::SearchResult Selection::search(
     boost::dynamic_bitset<> parent) const {
   IMP_FUNCTION_LOG;
   IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << std::endl);
-  int val = predicate_->get_value_index(m, pi, parent);
-  if (val == -1) {
+  internal::SelectionPredicate::MatchType val
+                 = predicate_->get_value_index(m, pi, parent);
+  if (val == internal::SelectionPredicate::MISMATCH) {
     // nothing can match in this subtree
     return SearchResult(false, ParticleIndexes());
   }
@@ -539,7 +542,8 @@ Selection::SearchResult Selection::search(
   ParticleIndexes cur_children =
       expand_children_search(m, pi, resolution_);
   bool children_covered = true;
-  bool matched = (val > 0);
+  bool matched = (val == internal::SelectionPredicate::MATCH_WITH_CHILDREN
+                  || val == internal::SelectionPredicate::MATCH_SELF_ONLY);
   IMP_FOREACH(ParticleIndex ch, cur_children) {
     SearchResult curr = search(m, ch, parent);
     matched |= curr.get_match();
