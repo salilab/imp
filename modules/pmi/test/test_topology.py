@@ -22,7 +22,7 @@ class RepresentationNewTest(IMP.test.TestCase):
         self.assertEqual(len(seqs0),3)
         self.assertEqual(seqs0['Protein_1'],'QEALVVKDLL')
         self.assertEqual(seqs0['Protein_2'],'PEEDILKYVSYTL')
-        self.assertEqual(seqs0['Protein_3'],'NVLIGLEGTY')
+        self.assertEqual(seqs0['Protein_3'],'QEALVVKDLL')
 
         # test with name map
         seqs=topology.Sequences(self.get_input_file_name('seqs.fasta'),
@@ -32,7 +32,7 @@ class RepresentationNewTest(IMP.test.TestCase):
         self.assertEqual(len(seqs),3)
         self.assertEqual(seqs['Prot1'],'QEALVVKDLL')
         self.assertEqual(seqs['Prot2'],'PEEDILKYVSYTL')
-        self.assertEqual(seqs['Prot3'],'NVLIGLEGTY')
+        self.assertEqual(seqs['Prot3'],'QEALVVKDLL')
 
     def test_system_base(self):
         '''Test systembase functions like create hierarchy and create child'''
