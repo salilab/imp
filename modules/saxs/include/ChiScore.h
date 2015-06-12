@@ -21,9 +21,6 @@ class IMPSAXSEXPORT ChiScore {
   double compute_score(const Profile* exp_profile, const Profile* model_profile,
                        bool use_offset = false) const;
 
-  double compute_score(const Profile* exp_profile, const Profile* model_profile,
-                      double min_q, double max_q) const;
-
   double compute_scale_factor(const Profile* exp_profile,
                               const Profile* model_profile,
                               double offset = 0.0) const;

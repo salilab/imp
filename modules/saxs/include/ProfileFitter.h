@@ -25,7 +25,7 @@ IMPSAXS_BEGIN_NAMESPACE
     Currently four scoring functions are implemented:
     ChiScore, ChiScoreLog, ChiFreeScore, and RatioVolatilityScore
  */
-template <class ScoringFunctionT = ChiScore>
+template <typename ScoringFunctionT = ChiScore>
 class ProfileFitter : public Object {
  public:
   //! Constructor
@@ -112,13 +112,13 @@ class ProfileFitter : public Object {
   ScoringFunctionT* scoring_function_;
 };
 
-template <class ScoringFunctionT>
+template <typename ScoringFunctionT>
 void ProfileFitter<ScoringFunctionT>::resample(
     const Profile* model_profile, Profile* resampled_profile) const {
   model_profile->resample(exp_profile_, resampled_profile);
 }
 
-template <class ScoringFunctionT>
+template <typename ScoringFunctionT>
 FitParameters ProfileFitter<ScoringFunctionT>::search_fit_parameters(
     Profile* partial_profile, double min_c1, double max_c1, double min_c2,
     double max_c2, bool use_offset, double old_chi) const {
@@ -174,7 +174,7 @@ FitParameters ProfileFitter<ScoringFunctionT>::search_fit_parameters(
   return FitParameters(best_chi, best_c1, best_c2);
 }
 
-template <class ScoringFunctionT>
+template <typename ScoringFunctionT>
 FitParameters ProfileFitter<ScoringFunctionT>::fit_profile(
     Profile* partial_profile, double min_c1, double max_c1, double min_c2,
     double max_c2, bool use_offset, const std::string fit_file_name) const {
@@ -198,7 +198,7 @@ FitParameters ProfileFitter<ScoringFunctionT>::fit_profile(
   return fp;
 }
 
-template <class ScoringFunctionT>
+template <typename ScoringFunctionT>
 double ProfileFitter<ScoringFunctionT>::compute_score(
     const Profile* model_profile, bool use_offset,
     const std::string fit_file_name) const {
@@ -223,7 +223,7 @@ double ProfileFitter<ScoringFunctionT>::compute_score(
   return score;
 }
 
-template <class ScoringFunctionT>
+template <typename ScoringFunctionT>
 void ProfileFitter<ScoringFunctionT>::write_SAXS_fit_file(
     const std::string& file_name, const Profile* model_profile,
     const double score, const double c, const double offset) const {

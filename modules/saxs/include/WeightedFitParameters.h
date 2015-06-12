@@ -20,6 +20,8 @@ IMPSAXS_BEGIN_NAMESPACE
 //! Parameters of a weighted fit, from WeightedProfileFitter.
 class IMPSAXSEXPORT WeightedFitParameters : public FitParameters {
  public:
+  WeightedFitParameters() : FitParameters() {}
+
   WeightedFitParameters(double chi, double c1, double c2,
                         const Vector<double>& weights)
       : FitParameters(chi, c1, c2), weights_(weights) {}

@@ -12,12 +12,14 @@
 
 #include <IMP/saxs/ProfileClustering.h>
 #include <IMP/saxs/utility.h>
+#include <IMP/saxs/ChiScore.h>
+#include <IMP/saxs/RatioVolatilityScore.h>
 
 #include <IMP/atom/pdb.h>
 
 #include <IMP/Vector.h>
 
-//#include <IMP/benchmark/Profiler.h>
+#include <IMP/benchmark/Profiler.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/program_options.hpp>
@@ -212,6 +214,7 @@ int main(int argc, char* argv[]) {
   double min_c2 = -0.5;
   double max_c2 = 2.0;
   bool partial_profiles = true;
+  bool vr_score = false;
 
   po::options_description
     desc("Usage: <experimental_profile> <pdb_file1> <pdb_file2> ...");
@@ -241,6 +244,7 @@ recommended q value is 0.2")
     ("min_c2", po::value<double>(&min_c2)->default_value(-0.5), "min c2 value")
     ("max_c2", po::value<double>(&max_c2)->default_value(2.0), "max c2 value")
     ("partial_profiles,p", "use precomputed partial profiles (default = true)")
+    ("volatility_ratio,v","calculate volatility ratio score (default = false)")
     ;
 
   po::positional_options_description p;
@@ -261,6 +265,7 @@ recommended q value is 0.2")
   if(vm.count("nnls")) nnls = true;
   if(vm.count("fixed_c1_c2_score")) fixed_c1_c2_score = false;
   if(vm.count("partial_profiles")) partial_profiles = false;
+  if (vm.count("volatility_ratio")) vr_score = true;
 
   Profiles exp_profiles;
   Profiles computed_profiles;
@@ -285,7 +290,7 @@ recommended q value is 0.2")
   }
 
 
-  //IMP::benchmark::Profiler pp("prof");
+  IMP::benchmark::Profiler pp("prof");
 
   Profiles& clustered_profiles = computed_profiles;
   ProfileClustering profile_clustering(exp_profiles[0], computed_profiles, scores,
@@ -302,13 +307,23 @@ recommended q value is 0.2")
   }
 
   IMP::Vector<MultiStateModelScore*> scorers;
-
+  RatioVolatilityScore rv;
   for (unsigned int i=0; i<exp_profiles.size(); i++) {
-    SAXSMultiStateModelScore *saxs_ensemble_score =
-      new SAXSMultiStateModelScore(clustered_profiles, exp_profiles[i],
-                                   fixed_c1_c2_score,
-                                   min_c1, max_c1, min_c2, max_c2);
-    scorers.push_back(saxs_ensemble_score);
+    if(!vr_score) {
+      SAXSMultiStateModelScore<ChiScore> *saxs_chi_score =
+        new SAXSMultiStateModelScore<ChiScore>(clustered_profiles, exp_profiles[i],
+                                               fixed_c1_c2_score,
+                                               min_c1, max_c1, min_c2, max_c2);
+      scorers.push_back(saxs_chi_score);
+    } else {
+      SAXSMultiStateModelScore<RatioVolatilityScore> *saxs_vr_score =
+        new SAXSMultiStateModelScore<RatioVolatilityScore>(clustered_profiles,
+                                                           exp_profiles[i],
+                                                           fixed_c1_c2_score,
+                                                           min_c1, max_c1,
+                                                           min_c2, max_c2);
+      scorers.push_back(saxs_vr_score);
+    }
   }
 
   // TODO: move as function to EnsembleGenerator

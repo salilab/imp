@@ -92,8 +92,8 @@ void EnsembleGenerator::generate(unsigned int multi_state_model_size) {
 
       if(rescored_ensemble.size() > 0) {
         for(unsigned int j = 0; j < scorers_.size(); j++) {
-          SAXSMultiStateModelScore *s =
-            dynamic_cast<SAXSMultiStateModelScore*>(scorers_[j]);
+          SAXSMultiStateModelScore<saxs::ChiScore> *s =
+            dynamic_cast<SAXSMultiStateModelScore<saxs::ChiScore>*>(scorers_[j]);
           if(s != NULL) s->set_average_c1_c2(rescored_fps[j]);
         }
       }

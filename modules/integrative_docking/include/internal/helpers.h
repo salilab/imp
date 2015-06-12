@@ -69,6 +69,13 @@ void get_residue_solvent_accessibility(
     IMP::Floats& residue_solvent_accessibility);
 
 IMPINTEGRATIVEDOCKINGEXPORT
+void get_residue_solvent_accessibility(
+    const IMP::Particles& atom_particles,
+    const IMP::Particles& residue_particles,
+    const std::vector<int>& atom_2_residue_map,
+    std::vector<float>& residue_solvent_accessibility);
+
+IMPINTEGRATIVEDOCKINGEXPORT
 IMP::atom::Residue find_residue(const IMP::ParticlesTemp& residues,
                                 int res_index, std::string chain);
 

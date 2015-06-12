@@ -15,6 +15,8 @@
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/saxs/utility.h>
 
+#include <IMP/benchmark/Profiler.h>
+
 #include <IMP/atom/pdb.h>
 
 #include <IMP/constants.h>
@@ -205,8 +207,7 @@ constant form factor (default = false)")(
   cmdline_options.add(desc).add(hidden);
 
   po::options_description visible(
-      "Usage: <pdb_file1> <pdb_file2> \
-... <profile_file1> <profile_file2> ... ");
+      "Usage: <pdb_file1> <pdb_file2> ... <profile_file1> <profile_file2> ... ");
   visible.add(desc);
 
   po::positional_options_description p;
@@ -259,6 +260,8 @@ constant form factor (default = false)")(
     multi_model_pdb = 1;
   }
   float delta_q = max_q / profile_size;
+
+  //IMP::benchmark::Profiler pp("prof_out");
 
   // read in or use default form factor table
   bool reciprocal = false;

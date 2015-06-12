@@ -1,4 +1,3 @@
-/**
  * \file IMP/integrative_docking/Result.cpp
  * \brief
  *
