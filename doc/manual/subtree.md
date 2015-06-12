@@ -34,22 +34,19 @@ As an %example, a typical workflow for working with the IMP::pmi module is:
    - `git subtree push` is very slow, since it has to examine every commit
      in the %IMP repository.
    - If this fails with `fatal: bad object`, then it needs you to do a
-     `git subtree pull` first.
+     `tools/git/update-pmi.sh` or `git subtree pull` (see below) first.
 
- - To incorporate changes from the PMI repository into %IMP, use
+ - To incorporate changes from the PMI repository into %IMP, use the utility
+   script
 
-    `git subtree pull --squash -m "Get latest PMI." --prefix=modules/pmi git@github.com:salilab/pmi.git develop`
+    `tools/git/update-pmi.sh`
 
-   - This will condense all of the PMI changes into a single %IMP
-     commit (`--squash`) then merge that into %IMP itself (so you'll always end
-     up with two commits in %IMP, regardless of how many were made to PMI).
-     *IMPORTANT*: check the squashed commit with `git show` before you push;
-     sometimes `subtree` gets confused and makes an enormous commit that touches
-     every file in %IMP. If this happens, squash the PMI commits manually
-     (e.g. with `git cherry-pick --strategy=recursive -Xsubtree=modules/pmi/`
-     and `git rebase -i`) and make sure your final
-     commit message looks like the standard `subtree` one (notably, that it
-     includes a `git-subtree-split:` line).
+   - This will squash all of the PMI changes into a single %IMP
+     commit, which you can then `git push` into the %IMP repository in the
+     normal way. (There is a `git subtree pull` command which is supposed to
+     achieve the same thing, but the syntax is more complicated, and we find
+     that often the commits it generates are enormous and touch
+     every file in %IMP.)
 
 Note that since `git subtree` commands can be very slow, if you will be working
 a lot with a subtree it is probably faster to checkout its own repository
@@ -57,5 +54,5 @@ directly and then use regular `git push` and `git pull` to work inside it.
 (For example, you could checkout the PMI repository into `~/pmi`, then
 temporarily replace the subtree in %IMP with a symlink to the real repository
 with something like `cd ~/imp/imp/modules; mv pmi pmi.old; ln -sf ~/pmi pmi`.
-Move back `pmi.old` when you're done, then use `git subtree pull` to incorporate
+Move back `pmi.old` when you're done, then use `update-pmi.sh` to incorporate
 the PMI changes into %IMP.)
