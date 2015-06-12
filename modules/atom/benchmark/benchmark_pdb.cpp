@@ -40,6 +40,7 @@ void do_benchmark(Model *m) {
 
 int main(int argc, char **argv) {
   IMP::setup_from_argv(argc, argv, "Benchmark pdb reading");
+  IMP::set_log_level(IMP::SILENT);
   IMP_NEW(Model, m, ());
   do_benchmark(m);
   return IMP::benchmark::get_return_value();
