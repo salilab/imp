@@ -22,8 +22,8 @@ IMPSAXS_BEGIN_NAMESPACE
     The scoring function template parameter class has to implement three
     basic functions: compute_score, compute_scale_factor and compute_offset.
     see ChiScore for example.
-    Currently three scoring functions are implemented:
-    ChiScore, ChiScoreLog and ChiFreeScore.
+    Currently four scoring functions are implemented:
+    ChiScore, ChiScoreLog, ChiFreeScore, and RatioVolatilityScore
  */
 template <class ScoringFunctionT = ChiScore>
 class ProfileFitter : public Object {
@@ -47,10 +47,6 @@ class ProfileFitter : public Object {
   //! compute fit score
   double compute_score(const Profile* model_profile, bool use_offset = false,
                        const std::string fit_file_name = "") const;
-
-  //! compute fit score in the interval
-  double compute_score(const Profile* model_profile, double min_q,
-                       double max_q) const;
 
   //! fit experimental profile through optimization of c1 and c2 parameters
   /**
@@ -199,22 +195,7 @@ FitParameters ProfileFitter<ScoringFunctionT>::fit_profile(
   partial_profile->sum_partial_profiles(best_c1, best_c2);
   compute_score(partial_profile, use_offset, fit_file_name);
 
-  // std::cout << " Chi = " << best_chi << " c1 = " << best_c1 << " c2 = "
-  //          << best_c2 << " default chi = " << default_chi << std::endl;
   return fp;
-}
-
-template <class ScoringFunctionT>
-double ProfileFitter<ScoringFunctionT>::compute_score(
-    const Profile* model_profile, double min_q, double max_q) const {
-  IMP_NEW(Profile, resampled_profile,
-          (exp_profile_->get_min_q(), exp_profile_->get_max_q(),
-           exp_profile_->get_delta_q()));
-  model_profile->resample(exp_profile_, resampled_profile);
-
-  double score = scoring_function_->compute_score(
-      exp_profile_, resampled_profile, min_q, max_q);
-  return score;
 }
 
 template <class ScoringFunctionT>
@@ -227,15 +208,16 @@ double ProfileFitter<ScoringFunctionT>::compute_score(
   model_profile->resample(exp_profile_, resampled_profile);
 
   double score = scoring_function_->compute_score(exp_profile_,
-                                                 resampled_profile, use_offset);
-
+                                                  resampled_profile,
+                                                  use_offset);
   if (fit_file_name.length() > 0) {
     double offset = 0.0;
     if (use_offset)
       offset =
-          scoring_function_->compute_offset(exp_profile_, resampled_profile);
-    double c = scoring_function_->compute_scale_factor(
-        exp_profile_, resampled_profile, offset);
+        scoring_function_->compute_offset(exp_profile_, resampled_profile);
+    double c = scoring_function_->compute_scale_factor(exp_profile_,
+                                                       resampled_profile,
+                                                       offset);
     write_SAXS_fit_file(fit_file_name, resampled_profile, score, c, offset);
   }
   return score;

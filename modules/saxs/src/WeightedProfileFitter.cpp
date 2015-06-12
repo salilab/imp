@@ -135,9 +135,8 @@ double WeightedProfileFitter::compute_score(const ProfilesTemp& profiles,
           (exp_profile_->get_min_q(), exp_profile_->get_max_q(),
            exp_profile_->get_delta_q()));
   IMP_Eigen::VectorXf wp = A_ * w;
-  for (unsigned int k = 0; k < profiles[0]->size(); k++)
-    weighted_profile->add_entry(profiles[0]->get_q(k), wp[k]);
-
+  weighted_profile->set_qs(profiles[0]->get_qs());
+  weighted_profile->set_intensities(wp);
   weights.resize(w.size());
   for (int i = 0; i < w.size(); i++) weights[i] = w[i];
 

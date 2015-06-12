@@ -39,26 +39,32 @@ double ChiFreeScore::compute_score(const Profile* exp_profile,
   Vector<std::pair<double, double> > chis(K_);
   unsigned int bin_size = std::floor((double)exp_profile->size()) / ns_;
 
+
+  IMP_NEW(Profile, exp_profile_selection, ());
+  IMP_NEW(Profile, model_profile_selection, ());
+  IMP_Eigen::VectorXf qs(ns_), errors(ns_);
+  IMP_Eigen::VectorXf exp_intensities(ns_), model_intensities(ns_);
+
   // repeat K_ times
   for (unsigned int k = 0; k < K_; k++) {
-    IMP_NEW(Profile, exp_profile_selection, ());
-    IMP_NEW(Profile, model_profile_selection, ());
     // select a point in each interval
     for (unsigned int i = 0; i < ns_; i++) {
       double prob = uni();
       unsigned int profile_index =
           algebra::get_rounded((double)i * bin_size + prob * bin_size);
-      // std::cerr << "profile_index = " << profile_index << " ";
       if (profile_index < exp_profile->size()) {
-        exp_profile_selection->add_entry(
-            exp_profile->get_q(profile_index),
-            exp_profile->get_intensity(profile_index),
-            exp_profile->get_error(profile_index));
-        model_profile_selection->add_entry(
-            model_profile->get_q(profile_index),
-            model_profile->get_intensity(profile_index));
+        qs(i) = exp_profile->get_q(profile_index);
+        errors(i) = exp_profile->get_error(profile_index);
+        exp_intensities(i) = exp_profile->get_intensity(profile_index);
+        model_intensities(i) = model_profile->get_intensity(profile_index);
       }
     }
+    exp_profile_selection->set_qs(qs);
+    exp_profile_selection->set_intensities(exp_intensities);
+    exp_profile_selection->set_errors(errors);
+    model_profile_selection->set_qs(qs);
+    model_profile_selection->set_intensities(model_intensities);
+
     // compute chi
     double offset = 0.0;
     if (use_offset)
@@ -82,17 +88,11 @@ double ChiFreeScore::compute_score(const Profile* exp_profile,
     }
     chi_square /= profile_size;
     chis[k] = std::make_pair(chi_square, c);
-
-    // std::cerr << "scale " << c << " chi " << sqrt(chi_square) << std::endl;
   }
   unsigned int n = K_ / 2;
   std::nth_element(chis.begin(), chis.begin() + n, chis.end(), comp_function);
-
-  // std::sort(chis.begin(), chis.end(),comp_function);
   const_cast<ChiFreeScore*>(this)->last_scale_updated_ = true;
   const_cast<ChiFreeScore*>(this)->last_scale_ = chis[n].second;
-  // std::cerr << "median " << sqrt(chis[n].first)
-  //<< " " << chis[n].second << std::endl;
   return sqrt(chis[n].first);
 }
 

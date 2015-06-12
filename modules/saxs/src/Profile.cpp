@@ -61,19 +61,29 @@ Profile::Profile(const std::string& file_name, bool fit_file, double max_q)
   read_SAXS_file(file_name, fit_file, max_q);
 }
 
-void Profile::init() {
-  q_.clear();
-  intensity_.clear();
-  error_.clear();
-  int number_of_q_entries = (int)std::ceil((max_q_ - min_q_) / delta_q_) + 1;
-  q_.resize(number_of_q_entries);
-  intensity_.resize(number_of_q_entries);
-  error_.resize(number_of_q_entries);
+void Profile::init(unsigned int size, unsigned int partial_profiles_size) {
+  int number_of_q_entries = size;
+  if(size == 0) {
+    number_of_q_entries = (int)std::ceil((max_q_ - min_q_) / delta_q_) + 1;
+  }
 
-  for (int i = 0; i < number_of_q_entries; i++) {
-    q_[i] = min_q_ + i * delta_q_;
+  q_ = IMP_Eigen::VectorXf::Zero(number_of_q_entries);
+  intensity_ = IMP_Eigen::VectorXf::Zero(number_of_q_entries);
+  error_ = IMP_Eigen::VectorXf::Zero(number_of_q_entries);
+
+  if(size == 0) {
+    for (int i = 0; i < number_of_q_entries; i++) {
+      q_[i] = min_q_ + i * delta_q_;
+    }
+  }
+
+  if(partial_profiles_size > 0) {
+    partial_profiles_.insert(partial_profiles_.begin(),
+                             partial_profiles_size,
+                             IMP_Eigen::VectorXf::Zero(number_of_q_entries));
   }
 }
+
 
 void Profile::read_SAXS_file(const std::string& file_name, bool fit_file, double max_q) {
   std::ifstream in_file(file_name.c_str());
@@ -83,7 +93,8 @@ void Profile::read_SAXS_file(const std::string& file_name, bool fit_file, double
 
   bool with_error = false;
   std::string line;
-  double q, intensity, error;
+  float q, intensity, error;
+  std::vector<float> qs, intensities, errors;
   while (!in_file.eof()) {
     getline(in_file, line);
     boost::trim(line);  // remove all spaces
@@ -125,9 +136,18 @@ void Profile::read_SAXS_file(const std::string& file_name, bool fit_file, double
       }
       with_error = true;
     }
-    add_entry(q, intensity, error);
+    qs.push_back(q);
+    intensities.push_back(intensity);
+    errors.push_back(error);
   }
   in_file.close();
+
+  if(qs.size() > 0) init(qs.size());
+  for(unsigned int i=0; i<qs.size(); i++) {
+    q_(i) = qs[i];
+    intensity_(i) = intensities[i];
+    error_(i) = errors[i];
+  }
 
   // determine qmin, qmax and delta
   if (size() > 1) {
@@ -259,9 +279,11 @@ void Profile::read_partial_profiles(const std::string& file_name) {
     IMP_THROW("Can't open file " << file_name, IOException);
   }
 
+  std::vector<double> qs;
+  std::vector<std::vector<double> > partial_profiles;
   unsigned int psize = 6;
   // init
-  partial_profiles_.insert(partial_profiles_.begin(), psize, Vector<double>());
+  partial_profiles.insert(partial_profiles.begin(), psize, Vector<double>());
   std::string line;
   while (!in_file.eof()) {
     getline(in_file, line);
@@ -272,14 +294,22 @@ void Profile::read_partial_profiles(const std::string& file_name) {
     boost::split(split_results, line, boost::is_any_of("\t "),
                  boost::token_compress_on);
     if (split_results.size() != 7) continue;
-    double q = atof(split_results[0].c_str());
+    qs.push_back(atof(split_results[0].c_str()));
     for (unsigned int i = 0; i < 6; i++) {
-      partial_profiles_[i].push_back(atof(split_results[i + 1].c_str()));
+      partial_profiles[i].push_back(atof(split_results[i + 1].c_str()));
     }
-    // just add value for intensity. will be updated by sum_partial_profiles
-    add_entry(q, 1.0);
   }
   in_file.close();
+
+  if(qs.size() > 0) init(qs.size(), psize);
+  for(unsigned int i = 0; i < qs.size(); i++) {
+    q_(i) = qs[i];
+    intensity_(i) = 1; //will be updated by sum_partial_profiles
+    error_(i) = 1;
+    for (unsigned int j = 0; j < 6; j++) {
+      partial_profiles_[j](i) = partial_profiles[j][i];
+    }
+  }
 
   sum_partial_profiles(1.0, 0.0, false);
 
@@ -321,21 +351,21 @@ void Profile::write_partial_profiles(const std::string& file_name) const {
     out_file.setf(std::ios::left);
     out_file.width(10);
     out_file.precision(5);
-    out_file << q_[i] << " ";
+    out_file << q_(i) << " ";
     if (partial_profiles_.size() > 0) {
       for (unsigned int j = 0; j < partial_profiles_.size(); j++) {
         out_file.setf(std::ios::left);
         out_file.width(15);
         out_file.precision(8);
-        out_file << partial_profiles_[j][i] << " ";
+        out_file << partial_profiles_[j](i) << " ";
       }
     } else {  // not a partial profile
-      out_file << intensity_[i] << " ";
+      out_file << intensity_(i) << " ";
       if (experimental_) {  // do not print error for theoretical profiles
         out_file.setf(std::ios::left);
         out_file.width(10);
         out_file.precision(8);
-        out_file << error_[i];
+        out_file << error_(i);
       }
     }
     out_file << std::endl;
@@ -459,7 +489,6 @@ void Profile::calculate_profile_partial(const Particles& particles,
   }
 
   // convert to reciprocal space
-  partial_profiles_.insert(partial_profiles_.begin(), r_size, Vector<double>());
   squared_distributions_2_partial_profiles(r_dist);
 
   // compute default profile c1 = 1, c2 = 0
@@ -534,7 +563,6 @@ void Profile::calculate_profile_partial(const Particles& particles1,
   }
 
   // convert to reciprocal space
-  partial_profiles_.insert(partial_profiles_.begin(), r_size, Vector<double>());
   squared_distributions_2_partial_profiles(r_dist);
 
   // compute default profile c1 = 1, c2 = 0
@@ -563,7 +591,11 @@ void Profile::sum_partial_profiles(double c1, double c2, bool check_cashed) {
   double square_c2 = c2 * c2;
   double cube_c1 = c1 * c1 * c1;
 
-  if (size() != partial_profiles_[0].size()) init();
+  intensity_ = partial_profiles_[0];
+  if (partial_profiles_.size() > 3) {
+    intensity_ += square_c2 * partial_profiles_[3];
+    intensity_ += c2 * partial_profiles_[4];
+  }
 
   for (unsigned int k = 0; k < size(); k++) {
     double q = get_q(k);
@@ -572,16 +604,12 @@ void Profile::sum_partial_profiles(double c1, double c2, bool check_cashed) {
     if (std::abs(x) > 1.0e-8) G_q *= ef.exp(x);
     // double G_q = cube_c1 * std::exp(coefficient*square(q));
 
-    double intensity = partial_profiles_[0][k];
-    intensity += square(G_q) * partial_profiles_[1][k];
-    intensity -= G_q * partial_profiles_[2][k];
+    intensity_(k) += square(G_q) * partial_profiles_[1](k);
+    intensity_(k) -= G_q * partial_profiles_[2](k);
 
     if (partial_profiles_.size() > 3) {
-      intensity += square_c2 * partial_profiles_[3][k];
-      intensity += c2 * partial_profiles_[4][k];
-      intensity -= G_q * c2 * partial_profiles_[5][k];
+      intensity_(k) -= G_q * c2 * partial_profiles_[5](k);
     }
-    set_intensity(k, intensity);
   }
   // cache new c1/c2 values
   c1_ = c1;
@@ -594,32 +622,32 @@ void Profile::resample(const Profile* exp_profile,
     for (unsigned int k = 0; k < size(); k++)
       const_cast<Profile*>(this)->q_mapping_[q_[k]] = k;
 
-  if (partial_profiles_.size() > 0) {
-    // init
-    resampled_profile->partial_profiles_.insert(
-                                  resampled_profile->partial_profiles_.begin(),
-                                  partial_profiles_.size(),
-                                  Vector<double>());
-  }
+  // init
+  resampled_profile->init(exp_profile->size(), partial_profiles_.size());
 
   for (unsigned int k = 0; k < exp_profile->size(); k++) {
     double q = exp_profile->get_q(k);
-    if (q > max_q_) break;
+    //if (q > max_q_) break;
 
     std::map<double, unsigned int>::const_iterator it =
         q_mapping_.lower_bound(q);
-    if (it == q_mapping_.end()) break;
+    //if (it == q_mapping_.end()) break;
+
+    if (q > max_q_ || it == q_mapping_.end()) {
+      std::cerr << "No sampling for q = " << q << std::endl;
+      break;
+    }
 
     unsigned int i = it->second;
     double delta_q = 1.0;
     if (i == 0 || (delta_q = get_q(i) - get_q(i - 1)) <= 1.0e-16) {
       if (partial_profiles_.size() > 0) {
         for (unsigned int r = 0; r < partial_profiles_.size(); r++) {
-          resampled_profile->partial_profiles_[r]
-              .push_back(partial_profiles_[r][i]);
+          resampled_profile->partial_profiles_[r](i) = partial_profiles_[r](i);
         }
       }
-      resampled_profile->add_entry(q, get_intensity(i));
+      resampled_profile->q_(k) = q;
+      resampled_profile->intensity_(k) = intensity_(i);
     } else {
       // interpolate
       double alpha = (q - get_q(i - 1)) / delta_q;
@@ -627,15 +655,14 @@ void Profile::resample(const Profile* exp_profile,
 
       if (partial_profiles_.size() > 0) {
         for (unsigned int r = 0; r < partial_profiles_.size(); r++) {
-          double intensity =
-              partial_profiles_[r][i - 1] +
-              alpha * (partial_profiles_[r][i] - partial_profiles_[r][i - 1]);
-          resampled_profile->partial_profiles_[r].push_back(intensity);
+          double intensity = partial_profiles_[r](i - 1) +
+            alpha * (partial_profiles_[r](i) - partial_profiles_[r](i - 1));
+          resampled_profile->partial_profiles_[r](k) = intensity;
         }
       }
-      double intensity = get_intensity(i - 1) +
-                        alpha * (get_intensity(i) - get_intensity(i - 1));
-      resampled_profile->add_entry(q, intensity);
+      double intensity = intensity_(i-1) +  alpha*(intensity_(i) - intensity_(i-1));
+      resampled_profile->q_(k) = q;
+      resampled_profile->intensity_(k) = intensity;
     }
   }
 }
@@ -643,9 +670,14 @@ void Profile::resample(const Profile* exp_profile,
 void Profile::downsample(Profile* downsampled_profile,
                          unsigned int point_number) const {
 
-  unsigned int points_delta = (int)std::ceil(size() / (double)point_number);
-  for (unsigned int k = 0; k < size(); k += points_delta)
-    downsampled_profile->add_entry(get_q(k), get_intensity(k), get_error(k));
+  unsigned int points_delta = std::floor(size() / (double)point_number);
+  downsampled_profile->init(point_number);
+  for (unsigned int k = 0; k < point_number; k++) {
+    unsigned int index = k*points_delta;
+    downsampled_profile->q_(k) = q_(index);
+    downsampled_profile->intensity_(k) = intensity_(index);
+    downsampled_profile->error_(k) = error_(index);
+  }
 }
 
 void Profile::calculate_profile_symmetric(const Particles& particles,
@@ -809,11 +841,7 @@ void Profile::squared_distribution_2_profile(
 void Profile::squared_distributions_2_partial_profiles(
                            const Vector<RadialDistributionFunction>& r_dist) {
   int r_size = r_dist.size();
-
-  // init
-  init();
-  for (int i = 0; i < r_size; i++)
-    partial_profiles_[i].resize(intensity_.size());
+  init(q_.size(), r_size);
 
   // precomputed sin(x)/x function
   static internal::SincFunction sf(
@@ -847,20 +875,20 @@ void Profile::squared_distributions_2_partial_profiles(
           }
         } else {
           // x = sin(dq)/dq
-          x = dist * q_[k];
+          x = dist * q_(k);
           x = sf.sinc(x);
         }
         // iterate over partial profiles
         for (int i = 0; i < r_size; i++) {
           // multiply by the value from distribution
-          partial_profiles_[i][k] += r_dist[i][r] * x;
+          partial_profiles_[i](k) += r_dist[i][r] * x;
         }
       }
     }
     // this correction is required since we approximate the form factor
     // as f(q) = f(0) * exp(-b*q^2)
-    double corr = std::exp(-modulation_function_parameter_ * square(q_[k]));
-    for (int i = 0; i < r_size; i++) partial_profiles_[i][k] *= corr;
+    double corr = std::exp(-modulation_function_parameter_ * square(q_(k)));
+    for (int i = 0; i < r_size; i++) partial_profiles_[i](k) *= corr;
   }
 }
 
@@ -872,9 +900,7 @@ void Profile::add(const Profile* other_profile, double weight) {
     init();
   }
   // assumes same q values!!!
-  for (unsigned int k = 0; k < size(); k++) {
-    intensity_[k] += weight * other_profile->intensity_[k];
-  }
+  intensity_ += weight * other_profile->intensity_;
 }
 
 void Profile::add(const Vector<Profile*>& profiles,
@@ -891,7 +917,7 @@ void Profile::add_partial_profiles(const Profile* other_profile, double weight) 
       partial_profiles_.size() == 0) {
     partial_profiles_.insert(partial_profiles_.begin(),
                              other_profile->partial_profiles_.size(),
-                             Vector<double>());
+                             IMP_Eigen::VectorXf::Zero(q_.size()));
   }
   if (partial_profiles_.size() != other_profile->partial_profiles_.size()) {
     IMP_WARN("Can't add different partial profile sizes "
@@ -900,10 +926,7 @@ void Profile::add_partial_profiles(const Profile* other_profile, double weight) 
     return;
   }
   for (unsigned int i = 0; i < partial_profiles_.size(); i++) {
-    for (unsigned int j = 0; j < partial_profiles_[i].size(); j++) {
-      partial_profiles_[i][j] +=
-          weight * other_profile->partial_profiles_[i][j];
-    }
+    partial_profiles_[i]  += weight * other_profile->partial_profiles_[i];
   }
 }
 
@@ -1090,7 +1113,7 @@ void Profile::calculate_profile_reciprocal_partial(const Particles& particles,
   IMP_LOG_TERSE("start partial reciprocal profile calculation for "
                 << particles.size() << " particles" << std::endl);
 
-  init();
+  //init();
   Vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
 
@@ -1098,9 +1121,7 @@ void Profile::calculate_profile_reciprocal_partial(const Particles& particles,
   int r_size = 3;
   if (surface.size() == particles.size()) r_size = 6;
   const Vector<double>& water_ff = ff_table_->get_water_form_factors();
-  partial_profiles_.insert(partial_profiles_.begin(), r_size, Vector<double>());
-  for (int i = 0; i < r_size; i++)
-    partial_profiles_[i].resize(intensity_.size());
+  init(0, r_size);
 
   // iterate over pairs of atoms
   // loop1

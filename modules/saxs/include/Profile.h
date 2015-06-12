@@ -153,13 +153,18 @@ class IMPSAXSEXPORT Profile : public Object {
   //! return maximal sampling point
   double get_max_q() const { return max_q_; }
 
-  double get_intensity(unsigned int i) const { return intensity_[i]; }
-  double get_q(unsigned int i) const { return q_[i]; }
-  double get_error(unsigned int i) const { return error_[i]; }
+  double get_intensity(unsigned int i) const { return intensity_(i); }
+  double get_q(unsigned int i) const { return q_(i); }
+  double get_error(unsigned int i) const { return error_(i); }
   double get_weight(unsigned int i) const {
     IMP_UNUSED(i);
     return 1.0;
   }
+
+  const IMP_Eigen::VectorXf& get_qs() const { return q_; }
+  const IMP_Eigen::VectorXf& get_intensities() const { return intensity_; }
+  const IMP_Eigen::VectorXf& get_errors() const { return error_; }
+
   double get_average_radius() const { return average_radius_; }
 
   //! return number of entries in SAXS profile
@@ -175,8 +180,11 @@ class IMPSAXSEXPORT Profile : public Object {
   unsigned int get_id() const { return id_; }
 
   // Modifiers
+  void set_qs(const IMP_Eigen::VectorXf& q) { q_ = q; }
+  void set_intensities(const IMP_Eigen::VectorXf& i) { intensity_ = i; }
+  void set_errors(const IMP_Eigen::VectorXf& e) { error_ = e; }
 
-  void set_intensity(unsigned int i, double iq) { intensity_[i] = iq; }
+  void set_intensity(unsigned int i, double iq) { intensity_(i) = iq; }
 
   //! required for reciprocal space calculation
   void set_ff_table(FormFactorTable* ff_table) { ff_table_ = ff_table; }
@@ -191,13 +199,6 @@ class IMPSAXSEXPORT Profile : public Object {
 
   void set_beam_profile(std::string beam_profile_file) {
     beam_profile_ = new Profile(beam_profile_file);
-  }
-
-  //! add intensity entry to profile
-  void add_entry(double q, double intensity, double error = 1.0) {
-    q_.push_back(q);
-    intensity_.push_back(intensity);
-    error_.push_back(error);
   }
 
   //! add simulated error
@@ -241,7 +242,7 @@ class IMPSAXSEXPORT Profile : public Object {
   IMP_OBJECT_METHODS(Profile);
 
  protected:
-  void init();
+  void init(unsigned int size = 0, unsigned int partial_profiles_size = 0);
 
  private:
   void calculate_profile_reciprocal(const Particles& particles,
@@ -266,16 +267,16 @@ class IMPSAXSEXPORT Profile : public Object {
   double radius_of_gyration_fixed_q(double end_q) const;
 
  protected:
-  Vector<double> q_;  // q sampling points
-  Vector<double> intensity_;
-  Vector<double> error_;  // error bar of each point
+  IMP_Eigen::VectorXf q_;  // q sampling points
+  IMP_Eigen::VectorXf intensity_;
+  IMP_Eigen::VectorXf error_;  // error bar of each point
 
-  double min_q_, max_q_;        // minimal and maximal s values  in the profile
+  double min_q_, max_q_;        // minimal and maximal q values in the profile
   double delta_q_;              // profile sampling resolution
   FormFactorTable* ff_table_;  // pointer to form factors table
 
   // stores the intensity split into 6 for c1/c2 enumeration
-  Vector<Vector<double> > partial_profiles_;
+  std::vector<IMP_Eigen::VectorXf> partial_profiles_;
   double c1_, c2_;
 
   bool experimental_;     // experimental profile read from file

@@ -6,6 +6,7 @@
  */
 
 #include <IMP/saxs/RatioVolatilityScore.h>
+#include <IMP/saxs/ChiScore.h>
 #include <boost/random/uniform_real.hpp>
 #include <algorithm>
 
@@ -54,18 +55,8 @@ double RatioVolatilityScore::compute_score(const Profile* exp_profile,
 double RatioVolatilityScore::compute_scale_factor(const Profile* exp_profile,
                                                   const Profile* model_profile,
                                                   const double offset) const {
-  double sum1 = 0.0, sum2 = 0.0;
-  unsigned int profile_size =
-    std::min(model_profile->size(), exp_profile->size());
-  for (unsigned int k = 0; k < profile_size; k++) {
-    double square_error = square(exp_profile->get_error(k));
-    double weight_tilda = model_profile->get_weight(k) / square_error;
-
-    sum1 += weight_tilda * model_profile->get_intensity(k) *
-            (exp_profile->get_intensity(k) - offset);
-    sum2 += weight_tilda * square(model_profile->get_intensity(k));
-  }
-  return sum1 / sum2;
+  ChiScore cs;
+  return cs.compute_scale_factor(exp_profile, model_profile, offset);
   //double m1 = exp_profile->mean_intensity();
   //double m2 = model_profile->mean_intensity();
   //return m1 / m2;
