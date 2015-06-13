@@ -52,8 +52,7 @@ def get_structure(mdl,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_on
     return ret
 
 def build_bead(model,residues,input_coord=None):
-    """Generates a single bead
-    """
+    """Generates a single bead"""
 
     ds_frag = (residues[0].get_index(), residues[-1].get_index())
     prt = IMP.Particle(model)
@@ -92,20 +91,18 @@ def build_bead(model,residues,input_coord=None):
     return h
 
 def build_necklace(model,residues, resolution, input_coord=None):
-    '''
-    Generates a string of beads with given length
-    '''
-    outhiers = []
+    """Generates a string of beads with given length"""
+    out_hiers = []
     for chunk in list(list_chunks_iterator(residues, resolution)):
-        outhiers.append(build_bead(model,chunk, input_coord=input_coord))
-    return outhiers
+        out_hiers.append(build_bead(model,chunk, input_coord=input_coord))
+    return out_hiers
 
 
 
 def build_along_backbone(mdl,root,residues,rep_type,ca_centers=True):
     """Group residues along the backbone, adding beads as needed.
     Currently this first groups into contiguous fragment regions ('folders')
-    with identical sets of resolutions. However this behavior may
+    with identical sets of resolutions. However this behavior may change.
     The current resolutions used are 0 for atomic, and N for N residues
     per ball (see @ref pmi_resolution).
     @param mdl        the model
@@ -138,7 +135,6 @@ def build_along_backbone(mdl,root,residues,rep_type,ca_centers=True):
     fragments.append(cur_fragment)
 
     # build the representations within each fragment
-
     for frag_res in fragments:
         if len(frag_res[0].representations)==0:
             continue
@@ -212,15 +208,16 @@ def build_along_backbone(mdl,root,residues,rep_type,ca_centers=True):
 
 
         else:
-            # frag_res is a continuous list of non-atomic residues with the same resolutions
+            # here frag_res is a continuous list of non-atomic residues with the same resolutions
             this_resolutions=frag_res[0].representations['balls']
             # check that we have only one resolution for now
             if len(this_resolutions) > 1 :
                 raise ValueError("build_along_backbone Error: residues with missing atomic coordinate should be associated with only one resolution")
             if len(this_resolutions) == 0 :
-                print("build_along_backbone Error: no resolution associated with that residue")
+                print("build_along_backbone Error: no structure but trying to build resolution 0")
                 exit()
             this_resolution=list(this_resolutions)[0]
+
             # create a root hierarchy node for the beads
             frag = IMP.atom.Fragment.setup_particle(mdl,mdl.add_particle(name),res_nums)
             root.add_child(frag)
@@ -232,8 +229,8 @@ def build_along_backbone(mdl,root,residues,rep_type,ca_centers=True):
 def show_representation(node):
     print(node)
     if IMP.atom.Representation.get_is_setup(node):
-        repr=IMP.atom.Representation(node)
-        resolutions=repr.get_resolutions()
+        repr = IMP.atom.Representation(node)
+        resolutions = repr.get_resolutions()
         for r in resolutions:
             print('---- resolution %i ----' %r)
             IMP.atom.show_molecular_hierarchy(repr.get_representation(r))

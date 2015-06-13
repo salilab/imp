@@ -68,7 +68,7 @@ class ReplicaExchange0(object):
            @param monte_carlo_sample_objects Objects for MC sampling; a list of
                   structural components (generally the representation) that will
                   be moved and restraints with parameters that need to
-                  be sampled
+                  be sampled. OR a DegreesOfFreedom object!
            @param molecular_dynamics_sample_objects Objects for MD sampling
            @param output_objects A list of structural objects and restraints
                   that will be included in output (statistics files). Any object
@@ -768,7 +768,7 @@ class BuildModel1(object):
 
     def set_gmm_models_directory(self,directory_name):
         self.gmm_models_directory=directory_name
-                
+
     def build_model(self,data_structure,sequence_connectivity_scale=4.0,
                          sequence_connectivity_resolution=10,rmf_file=None,rmf_frame_number=0):
         """Create model.
@@ -1034,7 +1034,7 @@ class BuildModel1(object):
     def set_coordinates(self,hier_name,xyz_tuple):
         hier=self.domain_dict[hier_name]
         for h in IMP.atom.get_leaves(hier):
-            p=h.get_particle()            
+            p=h.get_particle()
             if IMP.core.NonRigidMember.get_is_setup(p):
                 pass
             else:

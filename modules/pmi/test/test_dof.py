@@ -46,30 +46,6 @@ class TestDOF(IMP.test.TestCase):
         m3.add_representation(resolutions=[1])
         hier = s.build()
         return m1,m2,m3
-    '''
-    def test_constraint_symmetry(self):
-        hierarchy=self.init_topology()
-        dof=IMP.pmi.dof.DegreesOfFreedom()
-        selections=[]
-        s0=IMP.atom.Selection(hierarchy,molecule=?,copy=0)
-        s1=IMP.atom.Selection(hierarchy,molecule=?,copy=1)
-        dof.create_symmetry_contraint([s0,s1],IMP.core.Transformation)
-    '''
-    '''
-    def test_mc_compound_body(self):
-        # compund body is a mix of rigid and flexible parts
-        # Do we use System???? Do we need a new decorator that says
-        # where the structure is coming from????
-        # IMP.atom.Source(p)
-        # IMP.atom.Source.get_pdb_id()
-        # IMP.atom.Source.get_pdb_id()
-        # source can be Modeller, PDB, emdb, Coarse-grained, No-source
-        # Invent StringKeys
-        hierarchy=self.init_topology()
-        dof=IMP.pmi.dof.DegreesOfFreedom()
-        s=IMP.atom.Selection(hierarchy,molecule=?,resid=range(1,10))
-        structured_handle,unstructures_handle=dof.create_compound_body(s)
-    '''
 
     def test_mc_rigid_body(self):
         """Test creation of rigid body and nonrigid members"""
@@ -96,10 +72,42 @@ class TestDOF(IMP.test.TestCase):
         h3 = m1.get_hierarchy()
         srb = dof.create_super_rigid_body([h1,h2,h3],chain_min_length=2,chain_max_length=2)
         self.assertEqual(len(srb.get_movers()),2)
-        print(srb.get_movers())
 
     def test_mc_flexible_beads(self):
-        pass
+        mdl = IMP.Model()
+        molecule = self.init_topology1(mdl)
+        hier = molecule.get_hierarchy()
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        sel_nonrigid = IMP.atom.Selection(hier,residue_indexes=[3,4,10])
+        fbs = dof.create_flexible_beads(sel_nonrigid,max_trans=1.0)
+        mvs = fbs.get_movers()
+        self.assertEqual(len(mvs),3)
+
+
+    '''
+    def test_constraint_symmetry(self):
+        hierarchy=self.init_topology()
+        dof=IMP.pmi.dof.DegreesOfFreedom()
+        selections=[]
+        s0=IMP.atom.Selection(hierarchy,molecule=?,copy=0)
+        s1=IMP.atom.Selection(hierarchy,molecule=?,copy=1)
+        dof.create_symmetry_contraint([s0,s1],IMP.core.Transformation)
+    '''
+    '''
+    def test_mc_compound_body(self):
+        # compund body is a mix of rigid and flexible parts
+        # Do we use System???? Do we need a new decorator that says
+        # where the structure is coming from????
+        # IMP.atom.Source(p)
+        # IMP.atom.Source.get_pdb_id()
+        # IMP.atom.Source.get_pdb_id()
+        # source can be Modeller, PDB, emdb, Coarse-grained, No-source
+        # Invent StringKeys
+        hierarchy=self.init_topology()
+        dof=IMP.pmi.dof.DegreesOfFreedom()
+        s=IMP.atom.Selection(hierarchy,molecule=?,resid=range(1,10))
+        structured_handle,unstructures_handle=dof.create_compound_body(s)
+    '''
 
     def test_mc_kinematic(self):
         pass

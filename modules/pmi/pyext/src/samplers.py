@@ -6,6 +6,7 @@ from __future__ import print_function
 import IMP
 import IMP.core
 from IMP.pmi.tools import get_restraint_set
+import IMP.pmi.dof
 
 class _SerialReplicaExchange(object):
     """Dummy replica exchange class used in non-MPI builds.
@@ -41,7 +42,14 @@ class MonteCarlo(object):
     except ImportError:
         isd_available = False
 
-    def __init__(self, m, objects, temp, filterbyname=None):
+    def __init__(self, m, objects, temp, filterbyname=None,dof=None):
+        """Setup Monte Carlo sampling
+        @param m             The IMP Model
+        @param objects       Sample Objects. Alternatively pass the degrees of freedom object
+        @param temp          The initial MC temperature
+        @param filterbyname  Not implemented
+        @param dof           DegreesOfFreedom object (replaces "objects")
+        """
         # check that the objects containts get_particles_to_sample methods
         # and the particle type is supported
         # list of particles to sample self.losp
@@ -62,61 +70,65 @@ class MonteCarlo(object):
         self.label = "None"
         self.m = m
 
-        for ob in objects:
-            try:
-                ob.get_particles_to_sample()
-            except:
-                print("MonteCarlo: object ", ob, " doesn't have get_particles_to_sample() method")
+        if dof is not None:
+            self.mvs = dof.get_all_movers()
 
-            pts = ob.get_particles_to_sample()
-            for k in pts.keys():
+        else:
+            for ob in objects:
+                try:
+                    ob.get_particles_to_sample()
+                except:
+                    print("MonteCarlo: object ", ob, " doesn't have get_particles_to_sample() method")
 
-                if "Rigid_Bodies" in k:
-                    mvs = self.get_rigid_body_movers(
-                        pts[k][0],
-                        pts[k][1],
-                        pts[k][2])
-                    for mv in mvs:
-                        mv.set_name(k)
-                    self.mvs += mvs
+                pts = ob.get_particles_to_sample()
+                for k in pts.keys():
 
-                if "SR_Bodies" in k:
-                    print(len(pts[k]))
-                    mvs = self.get_super_rigid_body_movers(
-                        pts[k][0],
-                        pts[k][1],
-                        pts[k][2])
-                    for mv in mvs:
-                        mv.set_name(k)
-                    self.mvs += mvs
+                    if "Rigid_Bodies" in k:
+                        mvs = self.get_rigid_body_movers(
+                            pts[k][0],
+                            pts[k][1],
+                            pts[k][2])
+                        for mv in mvs:
+                            mv.set_name(k)
+                        self.mvs += mvs
 
-                if "Floppy_Bodies" in k:
-                    mvs = self.get_floppy_body_movers(pts[k][0], pts[k][1])
-                    for mv in mvs:
-                        mv.set_name(k)
-                    self.mvs += mvs
+                    if "SR_Bodies" in k:
+                        print(len(pts[k]))
+                        mvs = self.get_super_rigid_body_movers(
+                            pts[k][0],
+                            pts[k][1],
+                            pts[k][2])
+                        for mv in mvs:
+                            mv.set_name(k)
+                        self.mvs += mvs
 
-                if "X_coord" in k:
-                    mvs = self.get_X_movers(pts[k][0], pts[k][1])
-                    for mv in mvs:
-                        mv.set_name(k)
-                    self.mvs += mvs
+                    if "Floppy_Bodies" in k:
+                        mvs = self.get_floppy_body_movers(pts[k][0], pts[k][1])
+                        for mv in mvs:
+                            mv.set_name(k)
+                        self.mvs += mvs
 
-                if "Nuisances" in k:
-                    if not self.isd_available:
-                        raise ValueError("isd module needed to use nuisances")
-                    mvs = self.get_nuisance_movers(pts[k][0], pts[k][1])
-                    for mv in mvs:
-                        mv.set_name(k)
-                    self.mvs += mvs
+                    if "X_coord" in k:
+                        mvs = self.get_X_movers(pts[k][0], pts[k][1])
+                        for mv in mvs:
+                            mv.set_name(k)
+                        self.mvs += mvs
 
-                if "Weights" in k:
-                    if not self.isd_available:
-                        raise ValueError("isd module needed to use weights")
-                    mvs = self.get_weight_movers(pts[k][0], pts[k][1])
-                    for mv in mvs:
-                        mv.set_name(k)
-                    self.mvs += mvs
+                    if "Nuisances" in k:
+                        if not self.isd_available:
+                            raise ValueError("isd module needed to use nuisances")
+                        mvs = self.get_nuisance_movers(pts[k][0], pts[k][1])
+                        for mv in mvs:
+                            mv.set_name(k)
+                        self.mvs += mvs
+
+                    if "Weights" in k:
+                        if not self.isd_available:
+                            raise ValueError("isd module needed to use weights")
+                        mvs = self.get_weight_movers(pts[k][0], pts[k][1])
+                        for mv in mvs:
+                            mv.set_name(k)
+                        self.mvs += mvs
 
         # SerialMover
         self.smv = IMP.core.SerialMover(self.mvs)

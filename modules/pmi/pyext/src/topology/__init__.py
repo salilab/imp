@@ -149,37 +149,46 @@ class State(SystemBase):
         self.system = system
         self.hier = self._create_child(system.get_hierarchy())
         self.hier.set_name("State_"+str(state_index))
-        self.molecules = []
+        self.molecules = defaultdict(list) # key is molecule name. value are the molecule copies!
         IMP.atom.State.setup_particle(self.hier,state_index)
         self.built=False
 
     def __repr__(self):
         return self.system.__repr__()+'.'+self.hier.get_name()
 
-    def create_molecule(self,name,sequence=None,chain_id='',molecule_to_copy=None):
+    def create_molecule(self,name,sequence=None,chain_id=''):
         """Create a new Molecule within this State
         @param name                the name of the molecule (string) it must not
                                    be already used
         @param sequence            sequence (string)
         @param chain_id            Chain id to assign to this molecule
-        @param molecule_to_copy    Copy everything from an existing molecule. NOT IMPLEMENTED
         """
         # check whether the molecule name is already assigned
-        if name in [mol.get_name() for mol in self.molecules]:
+        if name in self.molecules:
             raise WrongMoleculeName('Cannot use a molecule name already used')
 
         mol = Molecule(self,name,sequence,chain_id,copy_num=0)
-        self.molecules.append(mol)
+        self.molecules[name].append(mol)
         return mol
 
     def get_hierarchy(self):
         return self.hier
 
+    def get_number_of_copies(self,molname):
+        return len(self.molecules[molname])
+
+    def _register_copy(self,molecule):
+        molname = molecule.get_hierarchy().get_name()
+        if molname not in self.molecules:
+            raise StructureError("Trying to add a copy when the original doesn't exist!")
+        self.molecules[molname].append(molecule)
+
     def build(self,**kwargs):
-        """call build on all molecules (automatically makes copies)"""
+        """call build on all molecules (automatically makes clones)"""
         if not self.built:
-            for mol in self.molecules:
-                mol.build(**kwargs)
+            for molname in self.molecules:
+                for mol in self.molecules[molname]:
+                    mol.build(**kwargs)
             self.built=True
         return self.hier
 
@@ -192,19 +201,21 @@ class Molecule(SystemBase):
     Resolutions and copies can be registered, but are only created when build() is called
     """
 
-    def __init__(self,state,name,sequence,chain_id,copy_num):
-        """Create copy 0 of this molecule.
-        Arguments:
-        @param state      the parent PMI State
-        @param name       the name of the molecule (string)
-        @param sequence   sequence (string)
+    def __init__(self,state,name,sequence,chain_id,copy_num,mol_to_clone=None,transformation=None):
+        """The user should not call this direclty, instead call State::create_molecule()
+        @param state           The parent PMI State
+        @param name            The name of the molecule (string)
+        @param sequence        Sequence (string)
+        @param mol_to_clone    The original molecule (for cloning ONLY)
+        @param transformation  A transform to apply during building (primarily for cloning)
         """
         # internal data storage
-        self.mdl=state.get_hierarchy().get_model()
-        self.state=state
-        self.sequence=sequence
-        self.copies=[]
-        self.built=False
+        self.mdl = state.get_hierarchy().get_model()
+        self.state = state
+        self.sequence = sequence
+        self.built = False
+        self.mol_to_clone = mol_to_clone
+        self.transformation = transformation
 
         # create root node and set it as child to passed parent hierarchy
         self.hier = self._create_child(self.state.get_hierarchy())
@@ -219,7 +230,7 @@ class Molecule(SystemBase):
             self.residues.append(r)
 
     def __repr__(self):
-        return self.state.__repr__()+'.'+self.hier.get_name()+'.'+ \
+        return self.state.__repr__()+'.'+self.get_name()+'.'+ \
             str(IMP.atom.Copy(self.hier).get_copy_index())
 
 
@@ -259,7 +270,7 @@ class Molecule(SystemBase):
         """ Return a set of Residues that have associated structure coordinates """
         atomic_res=set()
         for res in self.residues:
-            if len(res.hier.get_children())>0:
+            if res.get_has_coordinates():
                 atomic_res.add(res)
         return atomic_res
 
@@ -267,65 +278,29 @@ class Molecule(SystemBase):
         """ Return a set of Residues that don't have associated structure coordinates """
         non_atomic_res=set()
         for res in self.residues:
-            if len(res.hier.get_children())==0:
+            if not res.get_has_coordinates():
                 non_atomic_res.add(res)
         return non_atomic_res
 
-    def add_copy(self,pdb_fn=None,chain_id='',res_range=[],offset=0,new_chain_id=None,
-                 transformation=None,ca_only=False):
-        """Create a new Molecule storing the new coordinates.
-        Ensures that representations are identical to original molecule
-        Will verify that the sequence is the same as that of the first structure.
-        @param pdb_fn       The file to read. If None, will just clone
-                            coordinates from original
-        @param chain_id     Chain ID for reading. Or, if copying, this will be the new chain id.
-        @param res_range    Add only a specific set of residues
-        @param offset       Apply an offset to the residue indexes of the PDB file
-        @param new_chain_id If you want to set the chain ID of the copy to something
-                            (defaults to what you extract from the PDB file)
-        @param transformation Apply transformation after reading/cloning structure
+    def create_copy(self,chain_id):
+        """Create a new Molecule with the same name and sequence but a higher copy number.
+        Returns the Molecule. No structure or representation will be copied!
+        @param chain_id  Chain ID of the new molecule
         """
-        if new_chain_id is None:
-            new_chain_id=chain_id
-        mol=Molecule(self.state,self.get_hierarchy().get_name(),
-                      self.sequence,new_chain_id,copy_num=len(self.copies)+1)
-        self.copies.append(mol)
-        if pdb_fn is None:
-            for nr,r in enumerate(self.residues):
-                mol.residues[nr].set_structure(IMP.atom.Residue(IMP.atom.create_clone(r.hier)))
-        else:
-            new_atomic_res = mol.add_structure(pdb_fn,chain_id,res_range,offset,ca_only=ca_only)
-            new_idxs = set([r.get_index() for r in new_atomic_res])
-            orig_idxs = set([r.get_index() for r in self.get_atomic_residues()])
-            if new_idxs!=orig_idxs:
-                raise Exception("You added a structure for the copy with different residues")
+        mol = Molecule(self.state,self.get_name(),self.sequence,chain_id,
+                       copy_num=self.state.get_number_of_copies(self.get_name()))
+        self.state._register_copy(mol)
+        return mol
 
-        if transformation is not None:
-            for r in mol.residues:
-                IMP.atom.transform(r.hier,transformation)
-        for orig,new in zip(self.residues,mol.residues):
-            new.representations=orig.representations
-
-    def add_clone(self,new_chain_id,transformation=None):
-        """Create a Molecule clone (same structure and representation of the original)
-        setting the new coordinates optionally.
-        @param new_chain_id If you want to set the chain ID of the copy to something
-                            (defaults to what you extract from the PDB file)
-        @param transformation Apply transformation after reading/cloning structure
+    def create_clone(self,chain_id,transformation=None):
+        """Create a Molecule clone (automatically builds same structure and representation)
+        @param chain_id If you want to set the chain ID of the copy to something
+        @param transformation Apply transformation after building (at the end)
         """
-        if new_chain_id is None:
-            new_chain_id=chain_id
-        mol=Molecule(self.state,self.get_hierarchy().get_name(),
-                      self.sequence,new_chain_id,copy_num=len(self.copies)+1)
-        self.copies.append(mol)
-        for nr,r in enumerate(self.residues):
-            mol.residues[nr].set_structure(IMP.atom.Residue(IMP.atom.create_clone(r.hier)))
-        if transformation is not None:
-            for r in mol.residues:
-                IMP.atom.transform(r.hier,transformation)
-        for orig,new in zip(self.residues,mol.residues):
-            new.representations=orig.representations
-
+        mol = Molecule(self.state,self.get_name(),self.sequence,chain_id,
+                       copy_num=self.state.get_number_of_copies(self.get_name()),
+                       mol_to_clone=self,transformation=transformation)
+        self.state._register_copy(mol)
 
     def add_structure(self,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_only=False,soft_check=False):
         """Read a structure and store the coordinates.
@@ -399,19 +374,25 @@ class Molecule(SystemBase):
             return
         if not self.built:
 
+            # if this is a clone, first copy all representations and structure
+            if self.mol_to_clone is not None:
+                for nr,r in enumerate(self.mol_to_clone.residues):
+                    self.residues[nr].set_structure(IMP.atom.Residue(IMP.atom.create_clone(r.hier)))
+                if self.transformation is not None:
+                    for r in self.residues:
+                        IMP.atom.transform(r.hier,transformation)
+                for orig,new in zip(self.mol_to_clone.residues,self.residues):
+                    new.representations=orig.representations
+
+
             # group into Fragments along backbone
             if merge_type=="backbone":
                 system_tools.build_along_backbone(self.mdl,self.hier,self.residues,
                                                      IMP.atom.BALLS,ca_centers)
 
-
             # group into Fragments by volume
             elif merge_type=="volume":
                 pass
-
-            # build copies
-            for copy in self.copies:
-                copy.build()
 
             self.built=True
 
