@@ -1,6 +1,10 @@
 #!/bin/sh
 
 # Update the copy of PMI inside the IMP repository.
+
+# See http://integrativemodeling.org/nightly/doc/manual/subtree.html
+# for more details.
+
 # This is similar to 'git subtree pull' but makes the commit a little
 # differently (subtree uses git commit-tree followed by merge; we just
 # cherry-pick and squash the commits). git subtree results in two commits,
