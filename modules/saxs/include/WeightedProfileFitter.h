@@ -25,7 +25,7 @@ IMPSAXS_BEGIN_NAMESPACE
     non-negative least squares fitting (NNLS).
 */
 template <typename ScoringFunctionT = ChiScore>
-class IMPSAXSEXPORT WeightedProfileFitter : public ProfileFitter<ScoringFunctionT> {
+class WeightedProfileFitter : public ProfileFitter<ScoringFunctionT> {
 
  public:
   //! Constructor
