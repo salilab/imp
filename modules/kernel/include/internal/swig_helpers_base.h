@@ -443,14 +443,14 @@ struct ConvertSequence<Vector<T>, ConvertT> : public ConvertVectorBase<
 };
 
 template <unsigned int D, class T, class TS, class ConvertT>
-struct ConvertSequence<Array<D, T, TS>, ConvertT> {
+struct ConvertSequence<IMP::Array<D, T, TS>, ConvertT> {
   typedef ConvertSequenceHelper<T, TS, ConvertT> Helper;
   typedef TS VT;
   template <class SwigData>
-  static Array<D, T, TS> get_cpp_object(PyObject* o, const char *symname,
-                                        int argnum, const char *argtype,
-                                        SwigData st, SwigData particle_st,
-                                        SwigData decorator_st) {
+  static IMP::Array<D, T, TS> get_cpp_object(PyObject* o, const char *symname,
+                                             int argnum, const char *argtype,
+                                             SwigData st, SwigData particle_st,
+                                             SwigData decorator_st) {
     if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
       IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
                 TypeException);
@@ -462,7 +462,7 @@ struct ConvertSequence<Array<D, T, TS>, ConvertT> {
       IMP_THROW(get_convert_error(msg.str().c_str(), symname, argnum, argtype),
                 ValueException);
     }
-    Array<D, T, TS> ret;
+    IMP::Array<D, T, TS> ret;
     Helper::fill(o, symname, argnum, argtype, st, particle_st,
                  decorator_st, ret);
     return ret;
@@ -473,7 +473,7 @@ struct ConvertSequence<Array<D, T, TS>, ConvertT> {
     return Helper::get_is_cpp_object(in, st, particle_st, decorator_st);
   }
   template <class SwigData>
-  static PyObject* create_python_object(const Array<D, T, TS>& t,
+  static PyObject* create_python_object(const IMP::Array<D, T, TS>& t,
                                         SwigData st, int OWN) {
     PyReceivePointer ret(PyTuple_New(D));
     for (unsigned int i = 0; i < t.size(); ++i) {
