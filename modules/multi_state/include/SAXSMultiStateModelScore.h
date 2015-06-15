@@ -23,8 +23,7 @@ IMPMULTISTATE_BEGIN_NAMESPACE
 
 /** Score multi-state models against SAXS profiles */
 template <typename ScoringFunctionT>
-class IMPMULTISTATEEXPORT SAXSMultiStateModelScore :
-  public MultiStateModelScore {
+class SAXSMultiStateModelScore : public MultiStateModelScore {
 public:
 
   /* if c1_c2_approximate=true, get_score will return approximate score
