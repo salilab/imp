@@ -18,7 +18,7 @@
 IMPSAXS_BEGIN_NAMESPACE
 
 //! Parameters of a weighted fit, from WeightedProfileFitter.
-class IMPSAXSEXPORT WeightedFitParameters : public FitParameters {
+class WeightedFitParameters : public FitParameters {
  public:
   WeightedFitParameters() : FitParameters() {}
 
