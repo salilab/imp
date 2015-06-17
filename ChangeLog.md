@@ -7,6 +7,12 @@ ChangeLog {#changelog}
   provided in a separate reference guide.
 - The IMP::base and IMP::kernel namespaces are now deprecated. Functionality
   in both base and kernel now lives in the top-level "IMP" namespace.
+- IMP::atom::Selection::get_selected_particle_indexes() has a new
+  'with_representation' parameter. If turned on (the default), Selection
+  returns all representational (XYZ) particles that match the request -
+  for example, selecting a residue will typically return all of its atoms.
+  If turned off, Selection returns the highest matching particle instead -
+  so, in this case, the residue particle itself.
 - Several long-deprecated functions have been removed. These include:
   - Several Restraint constructors that take Particles. Use equivalent
     constructors that take an IMP::Model pointer and ParticleIndexes instead.

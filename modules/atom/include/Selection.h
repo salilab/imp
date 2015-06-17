@@ -33,7 +33,7 @@ IMPATOM_BEGIN_NAMESPACE
     Selection(hierarchy=h, molecule="myprotein", residue_index=133)
     Selection(hierarchy=h, molecule="myprotein", residue_indexes=range(133,138))
     \endcode
-    each get the C-terminus of the protein "myprotein" (assuming the last
+    each select the C-terminus of the protein "myprotein" (assuming the last
     residue index is 133, and the residues are leaves, containing no atoms).
     (In C++, use one of the other constructors, then call one or more of the
     `set_*` methods.)
@@ -53,8 +53,10 @@ IMPATOM_BEGIN_NAMESPACE
     The resulting Selection makes a copy of the Selections it was combined from,
     so changing the original Selections does not change that Selection.
 
-    \note Only representational particles are selected - that is, those
-    with x,y,z coordinates. The highest resolution representation
+    To actually get the selected particles, call get_selected_particle_indexes()
+    or get_selected_particles().
+
+    \note The highest resolution representation
     that fits is returned. If you want lower resolution, use the
     resolution parameter to select the desired resolution (pass a very large
     number to get the coarsest representation).
@@ -82,7 +84,8 @@ class IMPATOMEXPORT Selection :
   IMP_NAMED_TUPLE_2(SearchResult, SearchResults, bool, match,
                     ParticleIndexes, indexes, );
   SearchResult search(Model *m, ParticleIndex pi,
-                      boost::dynamic_bitset<> parent) const;
+                      boost::dynamic_bitset<> parent,
+                      bool include_children) const;
   void set_hierarchies(Model *m, const ParticleIndexes &pis);
   void add_predicate(internal::SelectionPredicate *p);
   void init_predicate();
@@ -197,9 +200,23 @@ class IMPATOMEXPORT Selection :
   /** \note both Selections must be on the same Hierarchy or Hierarchies */
   void set_difference(const Selection &s);
   //! Get the selected particles
-  ParticlesTemp get_selected_particles() const;
+  /** \see get_selected_particle_indexes().
+   */
+  ParticlesTemp get_selected_particles(bool with_representation=true) const;
   //! Get the indexes of the selected particles
-  ParticleIndexes get_selected_particle_indexes() const;
+  /** \note The particles are those selected at the time this method is called,
+            not when the Selection object was created.
+      \param with_representation If true (the default) then extend the search
+             down the hierarchy to find all representational particles that
+             match - that is, those with x,y,z coordinates. For example,
+             selecting a residue name will typically return all of the Atom
+             particles in that residue (not the Residue particle itself).
+             If false, stop the search at the highest level of the hierarchy
+             that matches (so, in the case above, return the Residue particle).
+      \return the indexes of the selected particles.
+   */
+  ParticleIndexes
+  get_selected_particle_indexes(bool with_representation=true) const;
 
 #ifndef SWIG
   operator ParticleIndexes() const { return get_selected_particle_indexes(); }

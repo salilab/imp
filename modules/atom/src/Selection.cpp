@@ -528,7 +528,7 @@ ParticleIndexes expand_children_search(Model *m,
 
 Selection::SearchResult Selection::search(
     Model *m, ParticleIndex pi,
-    boost::dynamic_bitset<> parent) const {
+    boost::dynamic_bitset<> parent, bool with_representation) const {
   IMP_FUNCTION_LOG;
   IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << std::endl);
   internal::SelectionPredicate::MatchType val
@@ -536,6 +536,10 @@ Selection::SearchResult Selection::search(
   if (val == internal::SelectionPredicate::MISMATCH) {
     // nothing can match in this subtree
     return SearchResult(false, ParticleIndexes());
+  } else if (val == internal::SelectionPredicate::MATCH_WITH_CHILDREN
+             && !with_representation) {
+    // terminate search without considering children, if we got a sure match
+    return SearchResult(true, ParticleIndexes(1, pi));
   }
   Hierarchy cur(m, pi);
   ParticleIndexes children;
@@ -545,7 +549,7 @@ Selection::SearchResult Selection::search(
   bool matched = (val == internal::SelectionPredicate::MATCH_WITH_CHILDREN
                   || val == internal::SelectionPredicate::MATCH_SELF_ONLY);
   IMP_FOREACH(ParticleIndex ch, cur_children) {
-    SearchResult curr = search(m, ch, parent);
+    SearchResult curr = search(m, ch, parent, with_representation);
     matched |= curr.get_match();
     if (curr.get_match()) {
       if (curr.get_indexes().empty()) {
@@ -568,11 +572,14 @@ Selection::SearchResult Selection::search(
   return SearchResult(false, ParticleIndexes());
 }
 
-ParticlesTemp Selection::get_selected_particles() const {
-  return IMP::get_particles(m_, get_selected_particle_indexes());
+ParticlesTemp
+Selection::get_selected_particles(bool with_representation) const {
+  return IMP::get_particles(m_,
+                            get_selected_particle_indexes(with_representation));
 }
 
-ParticleIndexes Selection::get_selected_particle_indexes() const {
+ParticleIndexes
+Selection::get_selected_particle_indexes(bool with_representation) const {
   if (h_.empty()) return ParticleIndexes();
   ParticleIndexes ret;
   // Dynamic bitsets support .none(), but not .all(), so start with all
@@ -585,7 +592,7 @@ ParticleIndexes Selection::get_selected_particle_indexes() const {
   IMP_LOG_WRITE(VERBOSE, show_predicate(predicate_, IMP_STREAM));
   IMP_FOREACH(ParticleIndex pi, h_) {
     IMP_FOREACH(ParticleIndex rpi, expand_search(m_, pi, resolution_)) {
-      ret += search(m_, rpi, base).get_indexes();
+      ret += search(m_, rpi, base, with_representation).get_indexes();
     }
   }
   return ret;

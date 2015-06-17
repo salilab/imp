@@ -228,6 +228,14 @@ class Tests(IMP.test.TestCase):
         h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         s = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.ATOM_TYPE])
         self.assertEqual(len(s.get_selected_particle_indexes()), 68)
+        s = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.RESIDUE_TYPE])
+        # By default, will give us all leaves in residues (i.e. atoms, so same
+        # as the ATOM_TYPE search)
+        self.assertEqual(len(s.get_selected_particle_indexes()), 68)
+        self.assertEqual(len(s.get_selected_particles()), 68)
+        # Should give just the residues themselves
+        self.assertEqual(len(s.get_selected_particle_indexes(False)), 9)
+        self.assertEqual(len(s.get_selected_particles(False)), 9)
 
 if __name__ == '__main__':
     IMP.test.main()
