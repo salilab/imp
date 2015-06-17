@@ -16,11 +16,13 @@ class AtomicXLTest(IMP.test.TestCase):
         # build state 1
         st1=s.create_state()
         m1=st1.create_molecule("Prot1",sequence=seqs["Prot1"],chain_id='A')
-        atomic_res=m1.add_structure(self.get_input_file_name('multi.pdb'),
-                                    chain_id='A',offset=-54,
-                                    model_num=0)
-        m1.add_copy(self.get_input_file_name('multi.pdb'),chain_id='G',offset=-54)
+        atomic_res = m1.add_structure(self.get_input_file_name('multi.pdb'),
+                                      chain_id='A',offset=-54,
+                                      model_num=0)
+        m1a = m1.create_copy(chain_id='G')
+        m1a_res = m1a.add_structure(self.get_input_file_name('multi.pdb'),chain_id='G',offset=-54)
         m1.add_representation(atomic_res,resolutions=[0])
+        m1a.add_representation(m1a_res,resolutions=[0])
 
         # build state 2
         st2=s.create_state()
@@ -28,8 +30,10 @@ class AtomicXLTest(IMP.test.TestCase):
         atomic_res=m2.add_structure(self.get_input_file_name('multi.pdb'),
                                     chain_id='A',offset=-54,
                                     model_num=1)
-        m2.add_copy(self.get_input_file_name('multi.pdb'),chain_id='G',offset=-54)
+        m2a = m2.create_copy(chain_id='G')
+        m2a_res = m2a.add_structure(self.get_input_file_name('multi.pdb'),chain_id='G',offset=-54)
         m2.add_representation(atomic_res,resolutions=[0])
+        m2.add_representation(m2a_res,resolutions=[0])
         hier = s.build(merge_type="backbone")
 
         # pass hierarchy and fake data to the restraint
