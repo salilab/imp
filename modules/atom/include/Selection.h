@@ -96,15 +96,15 @@ class IMPATOMEXPORT Selection :
   */
   Selection(Hierarchy hierarchy = None, Hierarchies hierarchies = [],
             Strings molecules = [], Ints residue_indexes = [],
-            Strings chains = [], AtomTypes atom_types = [],
+            Strings chain_ids = [], AtomTypes atom_types = [],
             ResidueTypes residue_types = [], Strings domains = [],
             double resolution = 0, std::string molecule = None,
-            int residue_index = None, std::string chain = None,
+            int residue_index = None, std::string chain_id = None,
             AtomType atom_type = None, ResidueType residue_type = None,
-            HierarchyType hierarchy_type = None, Terminus terminus = None,
+            Ints hierarchy_types = None, Terminus terminus = None,
             std::string domain = None, core::ParticleType particle_type = None,
             core::ParticleTypes particle_types = [], int copy_index = -1,
-            Ints copy_indexs = [], int state_index = -1,
+            Ints copy_indexes = [], int state_index = -1,
             Ints state_indexes = []);
 #endif
   Selection();
