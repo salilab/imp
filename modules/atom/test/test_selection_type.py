@@ -51,6 +51,11 @@ class Tests(IMP.test.TestCase):
             ci,
             IMP.algebra.get_unit_sphere_3d())
         cm = IMP.atom.Mass.setup_particle(m, ci, 1)
+        # Cannot specify both hierarchy and hierarchies
+        self.assertRaises(RuntimeError, IMP.atom.Selection,
+                          hierarchy=rh, hierarchies=[rh])
+        # Must specify either hierarchy or hierarchies
+        self.assertRaises(ValueError, IMP.atom.Selection)
         s = IMP.atom.Selection([rh])
         self.assertEqual(s.get_selected_particle_indexes(), [ci])
 
