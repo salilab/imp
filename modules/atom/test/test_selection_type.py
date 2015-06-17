@@ -216,5 +216,13 @@ class Tests(IMP.test.TestCase):
         for s in s145:
             assert(s not in s85)
 
+    def test_hierarchy_type(self):
+        """Test selection of hierarchy types"""
+        IMP.set_log_level(IMP.SILENT)
+        m = IMP.Model()
+        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        s = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.ATOM_TYPE])
+        self.assertEqual(len(s.get_selected_particle_indexes()), 68)
+
 if __name__ == '__main__':
     IMP.test.main()
