@@ -12,24 +12,27 @@ class DummyObject(IMP.Object):
         IMP.Object.__init__(self, "DummyObject%1%")
 
     def add_log(self):
+        # Temporarily (for the duration of the 'with' block) set the
+        # log level and context.
         # these are done by the IMP_OBJECT_LOG macro in C++
-        with IMP.SetLogState(self.get_log_level()) as state:
-            context = IMP.CreateLogContext(self.get_name() + "::add_log")
-            self.set_was_used(True)
-            IMP.add_to_log(IMP.VERBOSE,
-                            "A verbose message in the object\n")
+        with IMP.SetLogState(self.get_log_level()):
+            with IMP.CreateLogContext(self.get_name() + "::add_log"):
+                self.set_was_used(True)
+                IMP.add_to_log(IMP.VERBOSE,
+                               "A verbose message in the object\n")
+
 # we can set the log level for all of IMP
 IMP.set_log_level(IMP.TERSE)
 
-# we can tell it to print the time each even occurs
+# we can tell it to print the time each event occurs
 IMP.set_log_timer(True)
 
-# we can create a log context
-lc = IMP.CreateLogContext("my context")
+# we can create a log context (valid for the duration of the 'with' block)
+with IMP.CreateLogContext("my context"):
 
-# we can print a message
-IMP.add_to_log(IMP.TERSE, "This is my log message\n")
+    # we can print a message
+    IMP.add_to_log(IMP.TERSE, "This is my log message\n")
 
-o = DummyObject()
-o.set_log_level(IMP.VERBOSE)
-o.add_log()
+    o = DummyObject()
+    o.set_log_level(IMP.VERBOSE)
+    o.add_log()

@@ -175,11 +175,11 @@ class Tests(IMP.test.TestCase):
 
     def test_director_python_exceptions(self):
         """Check that exceptions raised in directors are handled"""
-        no = IMP.SetNumberOfThreads(1)
-        m = IMP.Model("director exceptions")
-        IMP.set_log_level(IMP.VERBOSE)
-        r = FailingRestraint(m)
-        self.assertRaises(CustomError, r.evaluate, False)
+        with IMP.SetNumberOfThreads(1):
+            m = IMP.Model("director exceptions")
+            IMP.set_log_level(IMP.VERBOSE)
+            r = FailingRestraint(m)
+            self.assertRaises(CustomError, r.evaluate, False)
         # print "done"
 
     def test_temp_restraints(self):

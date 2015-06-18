@@ -19,6 +19,9 @@ IMPKERNEL_BEGIN_NAMESPACE
     is destroyed. Examples include reference counting and changing the log level
     where you want to do something (increase the amount of logging), but ensure
     that when your function exits, things are put back to how they were before.
+
+    In Python, all RAII objects also support the context manager protocol
+    (the 'with' statement), and its use is strongly encouraged.
  */
 class RAII : public NonCopyable {
  protected:

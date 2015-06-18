@@ -16,20 +16,19 @@ class Tests(IMP.test.TestCase):
         if not IMP.get_log_level():
             self.skipTest("Logging is disabled")
         s = BytesIO()
-        t = IMP.SetLogTarget(s)
-        IMP.add_to_log(IMP.VERBOSE, "Hey there\n")
-        IMP.add_to_log(IMP.VERBOSE, "Big guy")
-        del t
+        with IMP.SetLogTarget(s):
+            IMP.add_to_log(IMP.VERBOSE, "Hey there\n")
+            IMP.add_to_log(IMP.VERBOSE, "Big guy")
         print('testing')
         self.assertEqual(s.getvalue(), b"Hey there\nBig guy")
         del s
         IMP.add_to_log(IMP.VERBOSE, "what's up")
         s = BytesIO()
-        t = IMP.SetLogTarget(s)
-        IMP.add_to_log(IMP.VERBOSE, "Hey there\n")
-        del s
-        IMP.add_to_log(IMP.VERBOSE, "Big guy")
-        IMP.set_log_level(log_level)
+        with IMP.SetLogTarget(s):
+            IMP.add_to_log(IMP.VERBOSE, "Hey there\n")
+            del s
+            IMP.add_to_log(IMP.VERBOSE, "Big guy")
+            IMP.set_log_level(log_level)
 
     def test_log_targets_memory(self):
         """Test log targets at MEMORY log level"""

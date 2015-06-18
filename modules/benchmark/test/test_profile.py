@@ -11,8 +11,8 @@ class Tests(IMP.test.TestCase):
             self.skipTest("profiling not available")
 
         nm = self.get_tmp_file_name("prof.pprof")
-        prof = IMP.benchmark.Profiler(nm)
-        del prof
+        with IMP.benchmark.Profiler(nm):
+            pass
         os.unlink(nm)
 
 if __name__ == '__main__':
