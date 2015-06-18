@@ -380,7 +380,7 @@ class Molecule(SystemBase):
                     self.residues[nr].set_structure(IMP.atom.Residue(IMP.atom.create_clone(r.hier)))
                 if self.transformation is not None:
                     for r in self.residues:
-                        IMP.atom.transform(r.hier,transformation)
+                        IMP.atom.transform(r.hier,self.transformation)
                 for orig,new in zip(self.mol_to_clone.residues,self.residues):
                     new.representations=orig.representations
 

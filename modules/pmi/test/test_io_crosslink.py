@@ -219,6 +219,34 @@ class TestIOCrosslink(IMP.test.TestCase):
 
         self.assertEqual(len(expected_crosslinks),0)
 
+    def test_jackknife(self):
+        cldb=self.setup_cldb("xl_dataset_test.dat")
+        # assess size
+        cldb100=cldb.jackknife(1.0)
+        self.assertEqual(cldb.get_number_of_xlid(),cldb100.get_number_of_xlid())
+        cldb75=cldb.jackknife(0.75)
+        self.assertEqual(int(cldb.get_number_of_xlid()*0.75),cldb75.get_number_of_xlid())
+        cldb50=cldb.jackknife(0.5)
+        self.assertEqual(int(cldb.get_number_of_xlid()*0.5),cldb50.get_number_of_xlid())
+        cldb25=cldb.jackknife(0.25)
+        self.assertEqual(int(cldb.get_number_of_xlid()*0.25),cldb25.get_number_of_xlid())
+        # assess randomness
+        cldb50_1=cldb.jackknife(0.5)
+        cldb50_1_set=set([xlid for xlid in cldb50_1.xlid_iterator()])
+        cldb50_2=cldb.jackknife(0.5)
+        cldb50_2_set=set([xlid for xlid in cldb50_2.xlid_iterator()])
+        self.assertNotEqual(cldb50_1_set,cldb50_2_set)
+        # content of new databases must be identical for jackknifed crosslinks
+        for xlid in cldb50_1.xlid_iterator():
+            for n,xl in enumerate(cldb50_1[xlid]):
+                for key in xl:
+                    self.assertEqual(xl[key],cldb.data_base[xlid][n][key])
+        for xlid in cldb50_2.xlid_iterator():
+            for n,xl in enumerate(cldb50_2[xlid]):
+                for key in xl:
+                    self.assertEqual(xl[key],cldb.data_base[xlid][n][key])
+
+
     def test_redundancy(self):
         cldb=self.setup_cldb("xl_dataset_test.dat")
         pass

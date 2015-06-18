@@ -262,7 +262,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
     def __update__(self):
         '''
-
+        Update the whole dataset after changes
         '''
         self.update_cross_link_unique_sub_index()
         self.update_cross_link_redundancy()
@@ -287,6 +287,10 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
     def set_name(self,name):
         self.name=name
+
+    def get_number_of_xlid(self):
+        return len(self.data_base)
+
 
     def create_set_from_file(self,csv_file_name):
         xl_list=IMP.pmi.tools.get_db_from_csv(csv_file_name)
@@ -437,7 +441,22 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
 
     def jackknife(self,percentage):
-        pass
+        '''
+        this method returns a CrossLinkDataBase class containing
+        a random subsample of the original cross-link database.
+        @param percentage float between 0 and 1, is the percentage of
+                          of spectra taken from the original list
+        '''
+        import random
+        if percentage > 1.0 or percentage < 0.0:
+            raise ValueError('the percentage of random cross-link spectra should be between 0 and 1')
+        nspectra=self.get_number_of_xlid()
+        nrandom_spectra=int(nspectra*percentage)
+        random_keys=random.sample(self.data_base.keys(),nrandom_spectra)
+        new_data_base={}
+        for k in random_keys:
+            new_data_base[k]=self.data_base[k]
+        return CrossLinkDataBase(self.cldbkc,new_data_base)
 
     def __str__(self):
         outstr=''

@@ -128,3 +128,47 @@ class DistanceRestraint(object):
 
     def evaluate(self):
         return self.weight * self.rs.unprotected_evaluate(None)
+
+
+
+
+class BiStableDistanceRestraint(IMP.Restraint):
+    '''
+    a python restraint with bistable potential
+    Authors: G. Bouvier, R. Pellarin. Pasteur Institute.
+    '''
+    import numpy as np
+    import math
+
+    def __init__(self,m,p1,p2,dist1,dist2,sigma1,sigma2,weight1,weight2):
+        '''
+        input twp particles, the two equilibrium distances, their amplitudes, and their weights (populations)
+        '''
+        IMP.Restraint.__init__(self, m, "BiStableDistanceRestraint %1%")
+        self.dist1=dist1
+        self.dist2=dist2
+
+        self.sigma1=sigma1
+        self.sigma2=sigma2
+
+        self.weight1=weight1
+        self.weight2=weight2
+
+        if self.weight1+self.weight2 != 1:
+            raise ValueError("The sum of the weights must be one")
+
+        self.d1=IMP.core.XYZ(p1)
+        self.d2=IMP.core.XYZ(p2)
+        self.particle_list=[p1,p2]
+
+    def gaussian(self,x, mu, sig, w):
+        return w*self.np.exp(-self.np.power(x - mu, 2.) / (2 * self.np.power(sig, 2.)))
+
+    def unprotected_evaluate(self,da):
+        dist=IMP.core.get_distance(self.d1,self.d2)
+        prob=self.gaussian(dist,self.dist1,self.sigma1,self.weight1)+\
+             self.gaussian(dist,self.dist2,self.sigma2,self.weight2)
+        return -self.math.log(prob)
+
+    def do_get_inputs(self):
+        return self.particle_list
