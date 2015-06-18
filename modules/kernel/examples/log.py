@@ -13,10 +13,10 @@ class DummyObject(IMP.Object):
 
     def add_log(self):
         # these are done by the IMP_OBJECT_LOG macro in C++
-        state = IMP.SetLogState(self.get_log_level())
-        context = IMP.CreateLogContext(self.get_name() + "::add_log")
-        self.set_was_used(True)
-        IMP.add_to_log(IMP.VERBOSE,
+        with IMP.SetLogState(self.get_log_level()) as state:
+            context = IMP.CreateLogContext(self.get_name() + "::add_log")
+            self.set_was_used(True)
+            IMP.add_to_log(IMP.VERBOSE,
                             "A verbose message in the object\n")
 # we can set the log level for all of IMP
 IMP.set_log_level(IMP.TERSE)

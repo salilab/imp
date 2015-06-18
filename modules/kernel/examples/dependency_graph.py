@@ -151,11 +151,10 @@ def create_representation():
 
     def create_protein_from_pdbs(name, files):
         def create_from_pdb(file):
-            sls = IMP.SetLogState(IMP.NONE)
-            t = IMP.atom.read_pdb(
-                IMP.get_example_path("data/" + file), m,
-                IMP.atom.ATOMPDBSelector())
-            del sls
+            with IMP.SetLogState(IMP.NONE):
+                t = IMP.atom.read_pdb(
+                      IMP.get_example_path("data/" + file), m,
+                      IMP.atom.ATOMPDBSelector())
             # IMP.atom.show_molecular_hierarchy(t)
             c = IMP.atom.Chain(IMP.atom.get_by_type(t, IMP.atom.CHAIN_TYPE)[0])
             if c.get_number_of_children() == 0:
