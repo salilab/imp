@@ -36,6 +36,7 @@ IMP_SWIG_DECORATOR(IMP::atom, Representation, Representations);
 IMP_SWIG_DECORATOR(IMP::atom, State, States);
 IMP_SWIG_DECORATOR(IMP::atom, Copy, Copies);
 IMP_SWIG_DECORATOR(IMP::atom, SecondaryStructureResidue, SecondaryStructureResidues);
+IMP_SWIG_DECORATOR(IMP::atom, StructureSource, StructureSources);
 IMP_SWIG_BASE_OBJECT(IMP::atom, Simulator, Simulators);
 IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);
 IMP_SWIG_OBJECT(IMP::atom, ATOMPDBSelector, ATOMPDBSelectors);
@@ -268,6 +269,7 @@ namespace IMP {
 %include "IMP/atom/constants.h"
 %include "IMP/atom/CAAngleRestraint.h"
 %include "IMP/atom/CADihedralRestraint.h"
+%include "IMP/atom/StructureSource.h"
 
 namespace IMP {
   namespace atom {
