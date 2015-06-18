@@ -68,13 +68,21 @@ class Tests(IMP.test.TestCase):
         IMP._test_log()
         print("done")
 
-    def test_log_state(self):
-        """Test SetLogState"""
+    def test_log_state_obj(self):
+        """Test SetLogState (used as regular Python object)"""
         s = IMP.SetLogState()
         s.set(IMP.DEFAULT)
         s.set(IMP.VERBOSE)
         sio = BytesIO()
         s.show(sio)
+
+    def test_log_state_context(self):
+        """Test SetLogState (used as context manager)"""
+        with IMP.SetLogState() as s:
+            s.set(IMP.DEFAULT)
+            s.set(IMP.VERBOSE)
+            sio = BytesIO()
+            s.show(sio)
 
 if __name__ == '__main__':
     IMP.test.main()

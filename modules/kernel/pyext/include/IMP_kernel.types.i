@@ -844,6 +844,15 @@ try {
  }
 %typemap(out) Namespace::Name {
  }
+%extend Namespace::Name {
+  %pythoncode %{
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.reset()
+        return False
+  %}
+ }
 %pythoncode %{
   _raii_types.append(#Name)
 %}

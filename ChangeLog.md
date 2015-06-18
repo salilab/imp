@@ -13,6 +13,8 @@ ChangeLog {#changelog}
   for example, selecting a residue will typically return all of its atoms.
   If turned off, Selection returns the highest matching particle instead -
   so, in this case, the residue particle itself.
+- All IMP::RAII objects (e.g. IMP::SetLogState) now support the context
+  manager protocol in Python (e.g. "with IMP.SetLogState() as s:")
 - Several long-deprecated functions have been removed. These include:
   - Several Restraint constructors that take Particles. Use equivalent
     constructors that take an IMP::Model pointer and ParticleIndexes instead.
