@@ -3,10 +3,6 @@
 #define IMP_SWIG_CPP_WARNING(string) IMP_WARN_PREPROCESS(string)
   %}
 
-/*%pythonprepend Namespace::Name::~Name %{
-  print "bye"
-  %}*/
-
 /* SWIG's default behavior for functions that return a reference to an object
    is to create a Python object that points to that object. This doesn't work
    well if the IMP object is not refcounted and the C++ object is deleted before
