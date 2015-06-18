@@ -38,7 +38,7 @@ class SetNumberOfThreads : public RAII {
     set_number_of_threads(n);
   },
   {
-    set_number_of_threads(num_);
+    if (num_) set_number_of_threads(num_);
     num_ = 0;
   }, );
 };

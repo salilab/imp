@@ -58,17 +58,21 @@ class CreateLogContext : public RAII {
   CreateLogContext(std::string name) : ndc0_(name) {}
   IMP_SHOWABLE_INLINE(CreateLogContext, IMP_UNUSED(out));
 #else
+  bool pushed_;
   std::string name_;
 
  public:
   CreateLogContext(std::string fname, const Object* object = nullptr)
-      : name_(fname) {
+      : pushed_(true), name_(fname) {
     // push log context does not copy the string, so we need to save it.
     push_log_context(name_.c_str(), object);
   }
   IMP_RAII(CreateLogContext,
            (const char* fname, const Object* object = nullptr), ,
-           push_log_context(fname, object), pop_log_context(), );
+           { push_log_context(fname, object);
+             pushed_ = true; },
+           { if (pushed_) pop_log_context();
+             pushed_ = false; }, );
 #endif
 };
 
