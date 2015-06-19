@@ -8,13 +8,13 @@ import IMP.pmi
 import IMP.pmi.representation
 import IMP.pmi.io
 import IMP.pmi.io.crosslink
-import IMP.pmi.io.xltable
 import IMP.pmi.output
-
-
-
-
-
+try:
+    import matplotlib
+except ImportError:
+    matplotlib = None
+if matplotlib is not None:
+    import IMP.pmi.io.xltable
 
 
 class ISDCrossMSTest(IMP.test.TestCase):
@@ -59,6 +59,8 @@ class ISDCrossMSTest(IMP.test.TestCase):
         o.close_rmf("expensive_test_io_xtable.rmf")
 
     def test_init_table(self):
+        if matplotlib is None:
+            self.skipTest("no matplotlib module")
         cldb=self.init_crosslink_db()
         self.init_representation_complex()
         xlt=IMP.pmi.io.xltable.XLTable(35)

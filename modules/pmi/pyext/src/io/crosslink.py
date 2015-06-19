@@ -1,7 +1,9 @@
-'''
-This module handles cross-link data sets and helps the analysis
-of models that contains cross-links
-'''
+"""@namespace IMP.pmi.io.crosslink
+   Handles cross-link data sets.
+
+   Utilities are also provided to help in the analysis of models that
+   contain cross-links.
+"""
 
 import IMP
 import IMP.pmi

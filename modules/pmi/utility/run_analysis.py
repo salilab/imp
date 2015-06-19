@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.em
 import IMP.pmi
@@ -101,9 +102,9 @@ def run():
         rmsd_sels[s]=s
 
     if args[0]=="cluster":
-        print '\nRUNNING CLUSTERING WITH THESE OPTIONS'
+        print('\nRUNNING CLUSTERING WITH THESE OPTIONS')
         for k in info:
-            print k,':',info[k]
+            print(k,':',info[k])
 
         mc=IMP.pmi.macros.AnalysisReplicaExchange0(mdl,
                                                    stat_file_name_suffix="stat",
@@ -132,11 +133,11 @@ def run():
                       density_custom_ranges=density_sels)
 
     elif args[0]=='precision':
-        print '\nRUNNING PRECISION WITH THESE OPTIONS'
+        print('\nRUNNING PRECISION WITH THESE OPTIONS')
         for k in info:
-            print k,':',info[k]
+            print(k,':',info[k])
         for cldir in glob.glob(os.path.join(info['output_dir'],'cluster.*')):
-            print 'precision in dir',cldir
+            print('precision in dir',cldir)
             rmfs=glob.glob(cldir+'/*.rmf3')
             frames=[0]*len(rmfs)
             pr=IMP.pmi.analysis.Precision(mdl,'one',selection_dictionary=density_sels)
@@ -145,9 +146,9 @@ def run():
             pr.get_precision(cldir+"/precision.out",is_mpi=options.use_mpi,skip=1)
 
     elif args[0]=='rmsf':
-        print '\nRUNNING RMSF WITH THESE OPTIONS'
+        print('\nRUNNING RMSF WITH THESE OPTIONS')
         for k in info:
-            print k,':',info[k]
+            print(k,':',info[k])
         for cldir in glob.glob(os.path.join(info['output_dir'],'cluster.*')):
             rmfs=glob.glob(cldir+'/*.rmf3')
             frames=[0]*len(rmfs)
@@ -157,7 +158,7 @@ def run():
             pr.get_rmsf(cldir+"/",is_mpi=options.use_mpi,skip=1)
 
     else:
-        print 'ERROR: the only analysis options are cluster, precision, and rmsf'
+        print('ERROR: the only analysis options are cluster, precision, and rmsf')
 
 if __name__=="__main__":
     run()

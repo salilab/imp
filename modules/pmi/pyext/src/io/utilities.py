@@ -1,3 +1,7 @@
+"""@namespace IMP.pmi.io.utilities
+   Utility classes and functions for IO.
+"""
+
 import collections
 import csv
 

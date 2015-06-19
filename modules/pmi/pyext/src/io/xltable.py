@@ -1,8 +1,8 @@
-'''
-This module works jointly with IMP.pmi.io.crosslink
-and it is used to plot a contact map overlaid with the cross-links
-'''
+"""@namespace IMP.pmi.io.xltable
+   Tools to plot a contact map overlaid with cross-links.
+"""
 
+from __future__ import print_function
 from math import sqrt
 from Bio import SeqIO
 from Bio.PDB.PDBParser import PDBParser
@@ -51,13 +51,13 @@ class XLTable():
 
     def _colormap_satisfaction(self, sat, threshold=0.5, tolerance=0.1):
         if sat >=  threshold + tolerance:
-            print sat, "green"
+            print(sat, "green")
             return "Green"
         elif sat < threshold + tolerance and sat >= threshold - tolerance :
-            print sat, "orange"
+            print(sat, "orange")
             return "Orange"
         else:
-            print sat, "orange"
+            print(sat, "orange")
             return "Orange"
 
     def _get_percentage_satisfaction(self,r1,c1,r2,c2,threshold=35):
@@ -115,7 +115,7 @@ class XLTable():
         try:
             length = len(record_dict[id_in_fasta_file].seq)
         except KeyError:
-            print "add_component_sequence: id %s not found in fasta file" % id_in_fasta_file
+            print("add_component_sequence: id %s not found in fasta file" % id_in_fasta_file)
             exit()
         self.sequence_dict[protein_name] = str(record_dict[id_in_fasta_file].seq).replace("*", "")
 
@@ -134,7 +134,7 @@ class XLTable():
             for cid in chain_to_name_map:
                 cname=chain_to_name_map[cid]
                 if cname not in self.sequence_dict:
-                    print "ERROR: chain",cname,'has not been read or has a naming mismatch'
+                    print("ERROR: chain",cname,'has not been read or has a naming mismatch')
                     return
                 if self._first:
                     self.index_dict[cname]=range(prev_stop,prev_stop+len(self.sequence_dict[cname]))
@@ -181,7 +181,7 @@ class XLTable():
         coords = np.ones((total_len,3)) * 1e5 #default to coords "very far away"
         prev_stop=0
         sorted_particles=IMP.pmi.tools.sort_by_residues(particles_resolution_one)
-        print chain_names
+        print(chain_names)
         for cname in chain_names:
             if self._first:
                 self.index_dict[cname]=range(prev_stop,prev_stop+len(self.sequence_dict[cname]))
@@ -218,7 +218,7 @@ class XLTable():
         rh= RMF.open_rmf_file_read_only(rmf_name)
         prots=IMP.rmf.create_hierarchies(rh, self.imp_model)
         IMP.rmf.load_frame(rh, rmf_frame_index)
-        print "getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name)
+        print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
         del rh
 
         particle_dict=IMP.pmi.analysis.get_particles_at_resolution_one(prots[0])
@@ -286,7 +286,7 @@ class XLTable():
         idx1,av1,contact1=self._internal_load_maps(maps_fn1)
         idx2,av2,contact2=self._internal_load_maps(maps_fn2)
         if idx1!=idx2:
-            print "UH OH: index dictionaries do not match!"
+            print("UH OH: index dictionaries do not match!")
             exit()
         self.index_dict=idx1
         self.av_dist_map=av1 # should we store both somehow? only needed for XL
@@ -301,9 +301,9 @@ class XLTable():
             else:                           # green
                 return 3
         f = np.vectorize(logic,otypes=[np.int])
-        print 'computing contact map'
+        print('computing contact map')
         self.contact_freqs = f(contact1,contact2)
-        print 'done'
+        print('done')
 
 
     def plot_table(self, prot_listx=None,
@@ -349,7 +349,7 @@ class XLTable():
 
         if cbar_labels is not None:
             if len(cbar_labels)!=4:
-                print "to provide cbar labels, give 3 fields (first=first input file, last=last input) in oppose order of input contact maps"
+                print("to provide cbar labels, give 3 fields (first=first input file, last=last input) in oppose order of input contact maps")
                 exit()
         # set the list of proteins on the x axis
         if prot_listx is None:
@@ -527,7 +527,7 @@ class XLTable():
                     continue
 
                 if dist<=40.0:
-                    print rp
+                    print(rp)
                     try:
                         pos1 = r1 + resoffsetx[c1]
                     except:

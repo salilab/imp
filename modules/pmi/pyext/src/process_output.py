@@ -4,6 +4,7 @@
 # (python 2.6)
 
 
+from __future__ import print_function
 argparse = None
 try:
     import argparse

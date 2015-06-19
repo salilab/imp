@@ -1,3 +1,4 @@
+from __future__ import print_function
 import RMF
 import IMP
 import IMP.rmf
@@ -102,7 +103,7 @@ def get_particle_indices_as_set(p):
     elif IMP.atom.Residue.get_is_setup(p):
         s = set([IMP.atom.Residue(p).get_index()])
     else:
-        print 'ALERT!',p,'is neither fragment nor residue!'
+        print('ALERT!',p,'is neither fragment nor residue!')
         exit()
     return s
 
@@ -198,7 +199,7 @@ def run():
             try:
                 pp = [ps_dict[get_unique_particle_name(IMP.Particle.get_from(p))] for p in ps2]
             except:
-                print 'the restraint particles',ps2,'could not be found in the new rmf'
+                print('the restraint particles',ps2,'could not be found in the new rmf')
                 exit()
             #n1 = get_molecule_name(pp[0])
             #n2 = get_molecule_name(pp[1])
@@ -234,10 +235,10 @@ def run():
         if not flag:
             continue
         if args.topology_fn:
-            print 'writing XL between %s(%s) and %s(%s)'%(get_molecule_name(p1),get_module_name(p1,topology_dict),
-                                                          get_molecule_name(p2),get_module_name(p2,topology_dict))
+            print('writing XL between %s(%s) and %s(%s)'%(get_molecule_name(p1),get_module_name(p1,topology_dict),
+                                                          get_molecule_name(p2),get_module_name(p2,topology_dict)))
         else:
-            print 'writing XL between %s and %s'%(get_molecule_name(p1),get_molecule_name(p2))
+            print('writing XL between %s and %s'%(get_molecule_name(p1),get_molecule_name(p2)))
         c1 = IMP.core.XYZ(p1).get_coordinates()
         c2 = IMP.core.XYZ(p2).get_coordinates()
         dist = IMP.algebra.get_distance(c1,c2)
@@ -254,7 +255,7 @@ def run():
         nv+=2
     outf.write('</marker_set>\n')
     outf.close()
-    print 'wrote',nv/2,'XLs to',out_fn
+    print('wrote',nv/2,'XLs to',out_fn)
 
 if __name__=="__main__":
     run()
