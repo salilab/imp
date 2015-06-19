@@ -89,8 +89,8 @@ new_squash_commit()
     newsub="$4"
     oldhead=$(git rev-parse HEAD)
     # Get all subtree commits, in the order they were made
-    # (this is the reverse of the log order)
-    revs=$(git log --pretty=tformat:'%H' "$oldsub..$newsub"|tac)
+    # (this is the reverse of the normal log order)
+    revs=$(git log --reverse --pretty=tformat:'%H' "$oldsub..$newsub")
     # Cherry-pick into the subtree directory, but don't make a commit (-n)
     git cherry-pick -n --strategy=recursive -Xsubtree="$dir" $revs || exit $?
     # Commit the combination of all the cherry-picked changes
