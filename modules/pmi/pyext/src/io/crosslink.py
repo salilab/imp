@@ -1,3 +1,8 @@
+'''
+This module handles cross-link data sets and helps the analysis
+of models that contains cross-links
+'''
+
 import IMP
 import IMP.pmi
 import operator
@@ -5,7 +10,7 @@ import operator
 class _CrossLinkDataBaseStandardKeys(object):
     '''
     This class setup all the standard keys needed to
-    identify the crosslink features from the data base
+    identify the crosslink features from the data sets
     '''
     def __init__(self):
         self.type={}
@@ -476,121 +481,3 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                         outstr+="--- "+str(k)+" "+str(xl[k])+"\n"
                 outstr+="-------------\n"
         return outstr
-
-
-class CrossLinkIdentifierDatabase(_CrossLinkDataBaseStandardKeys):
-    '''
-    this class is used to store cross-link information
-    based on their identifiers (key). Is it used jointly with the
-    stat.out to retrieve info.
-    '''
-
-    def __init__(self):
-        self.clidb=dict()
-        _CrossLinkDataBaseStandardKeys.__init__(self)
-
-    def check_key(self,key):
-        if key not in self.clidb:
-            self.clidb[key]={}
-
-    def set_unique_id(self,key,value):
-        self.check_key(key)
-        self.clidb[key][self.unique_id_key]=str(value)
-
-    def set_protein1(self,key,value):
-        self.check_key(key)
-        self.clidb[key][self.protein1_key]=str(value)
-
-    def set_protein2(self,key,value):
-        self.check_key(key)
-        self.clidb[key][self.protein2_key]=str(value)
-
-    def set_residue1(self,key,value):
-        self.check_key(key)
-        self.clidb[key][self.residue1_key]=int(value)
-
-    def set_residue2(self,key,value):
-        self.check_key(key)
-        self.clidb[key][self.residue2_key]=int(value)
-
-    def set_id_score(self,key,value):
-        self.check_key(key)
-        self.clidb[key][self.id_score_key]=float(value)
-
-    def set_quantitation(self,key,value):
-        self.check_key(key)
-        self.clidb[key][self.quantitation_key]=float(value)
-
-    def set_state(self,key,value):
-        self.check_key(key)
-        self.clidb[key][self.state_key]=int(value)
-
-    def set_sigma1(self,key,value):
-        self.check_key(key)
-        self.clidb[key][self.sigma1_key]=str(value)
-
-    def set_sigma2(self,key,value):
-        self.check_key(key)
-        self.clidb[key][self.sigma2_key]=str(value)
-
-    def set_psi(self,key,value):
-        self.check_key(key)
-        self.clidb[key][self.psi_key]=str(value)
-
-    def get_unique_id(self,key):
-        return self.clidb[key][self.unique_id_key]
-
-    def get_protein1(self,key):
-        return self.clidb[key][self.protein1_key]
-
-    def get_protein2(self,key):
-        return self.clidb[key][self.protein2_key]
-
-    def get_residue1(self,key):
-        return self.clidb[key][self.residue1_key]
-
-    def get_residue2(self,key):
-        return self.clidb[key][self.residue2_key]
-
-    def get_id_score(self,key):
-        return self.clidb[key][self.id_score_key]
-
-    def get_state(self,key):
-        return self.clidb[key][self.state_key]
-
-    def get_sigma1(self,key):
-        return self.clidb[key][self.sigma1_key]
-
-    def get_sigma2(self,key):
-        return self.clidb[key][self.sigma2_key]
-
-    def get_psi(self,key):
-        return self.clidb[key][self.psi_key]
-
-    def get_quantitation(self,key):
-        return self.clidb[key][self.quantitation_key]
-
-    def set_float_feature(self,key,value,feature_name):
-        self.check_key(key)
-        self.clidb[key][feature_name]=float(value)
-
-    def set_int_feature(self,key,value,feature_name):
-        self.check_key(key)
-        self.clidb[key][feature_name]=int(value)
-
-    def set_string_feature(self,key,value,feature_name):
-        self.check_key(key)
-        self.clidb[key][feature_name]=str(value)
-
-    def get_feature(self,key,feature_name):
-        return self.clidb[key][feature_name]
-
-    def write(self,filename):
-        import pickle
-        with open(filename, 'wb') as handle:
-            pickle.dump(self.clidb,handle)
-
-    def load(self,filename):
-        import pickle
-        with open(filename, 'rb') as handle:
-            self.clidb=pickle.load(handle)
