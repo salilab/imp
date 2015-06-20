@@ -103,7 +103,7 @@ void read_files(const std::vector<std::string>& files,
     }
     catch (IMP::ValueException e) {  // not a pdb file
       // 2. try as a dat profile file
-      IMP_NEW(Profile, profile, (files[i], false, max_q);
+      IMP_NEW(Profile, profile, (files[i], false, max_q));
       if (profile->size() == 0) {
         std::cerr << "can't parse input file " << files[i] << std::endl;
         return;
