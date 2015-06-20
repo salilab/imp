@@ -103,7 +103,7 @@ void read_files(const std::vector<std::string>& files,
     }
     catch (IMP::ValueException e) {  // not a pdb file
       // 2. try as a dat profile file
-      IMP_NEW(Profile, profile, (files[i], false, max_q));
+      IMP_NEW(Profile, profile, (files[i], false, max_q);
       if (profile->size() == 0) {
         std::cerr << "can't parse input file " << files[i] << std::endl;
         return;
@@ -139,44 +139,40 @@ int main(int argc, char** argv) {
   bool score_log = false;
   int multi_model_pdb = 1;
   po::options_description desc("Options");
-  desc.add_options()("help",
-                     "Any number of input PDBs and profiles is supported. \
-Each PDB will be fitted against each profile.")(
-      "version",
-      "FoXS (IMP applications)\nCopyright 2007-2015 IMP Inventors.\n\
+  desc.add_options()
+    ("help", "Any number of input PDBs and profiles is supported. \
+Each PDB will be fitted against each profile.")
+    ("version", "FoXS (IMP applications)\nCopyright 2007-2015 IMP Inventors.\n\
 All rights reserved. \nLicense: GNU LGPL version 2.1 or later\n\
 <http://gnu.org/licenses/lgpl.html>.\n\
-Written by Dina Schneidman.")("max_q,q",
-                              po::value<float>(&max_q)->default_value(0.5),
-                              "maximal q value (default = 0.5)")(
-      "profile_size,s", po::value<int>(&profile_size)->default_value(500),
-      "number of points in the profile (default = 500)")(
-      "water_layer_c2,w",
-      po::value<float>(&water_layer_c2)->default_value(MAX_C2),
-      "set hydration layer density. \
-Valid range: -2.0 < c2 < 4.0 (default = 0.0)")(
-      "hydrogens,h",
-      "explicitly consider hydrogens in PDB files \
-(default = false)")("residues,r",
-                    "perform fast coarse grained profile calculation using \
-CA atoms only (default = false)")(
-      "excluded_volume,e",
-      po::value<float>(&excluded_volume_c1)->default_value(0.0),
-      "excluded volume parameter, enumerated by default. \
-Valid range: 0.95 < c1 < 1.05")(
-      "background_q,b",
-      po::value<float>(&background_adjustment_q)->default_value(0.0),
-      "background adjustment, not used by default. if enabled, \
-recommended q value is 0.2")("offset,o",
-                             "use offset in fitting (default = false)")(
-      "write-partial-profile,p",
-      "write partial profile file (default = false)")(
-      "multi-model-pdb,m", po::value<int>(&multi_model_pdb)->default_value(1),
-      "1 - read the first MODEL only (default), \
+Written by Dina Schneidman.")
+    ("max_q,q", po::value<float>(&max_q)->default_value(0.5),
+     "maximal q value (default = 0.5)")
+    ("profile_size,s", po::value<int>(&profile_size)->default_value(500),
+     "number of points in the profile (default = 500)")
+    ("water_layer_c2,w",
+     po::value<float>(&water_layer_c2)->default_value(MAX_C2),
+     "set hydration layer density. Valid range: -2.0 < c2 < 4.0 (default = 0)")
+    ("hydrogens,h", "explicitly consider hydrogens in PDB files \
+(default = false)")
+    ("residues,r", "perform fast coarse grained profile calculation using \
+CA atoms only (default = false)")
+    ("excluded_volume,e",
+     po::value<float>(&excluded_volume_c1)->default_value(0.0),
+     "excluded volume parameter, enumerated by default. \
+Valid range: 0.95 < c1 < 1.05")
+    ("background_q,b",
+     po::value<float>(&background_adjustment_q)->default_value(0.0),
+     "background adjustment, not used by default. if enabled, \
+recommended q value is 0.2")
+    ("offset,o", "use offset in fitting (default = false)")
+    ("write-partial-profile,p", "write partial profile file (default = false)")
+    ("multi-model-pdb,m", po::value<int>(&multi_model_pdb)->default_value(1),
+     "1 - read the first MODEL only (default), \
 2 - read each MODEL into a separate structure, \
-3 - read all models into a single structure")(
-      "score_log,l",
-      "use log(intensity) in fitting and scoring \
+3 - read all models into a single structure")
+    ("volatility_ratio,v","calculate volatility ratio score (default = false)")
+    ("score_log,l", "use log(intensity) in fitting and scoring \
 (default = false)");
 
   std::string form_factor_table_file;
@@ -187,21 +183,21 @@ recommended q value is 0.2")("offset,o",
   int chi_free = 0;
   bool vr_score = false;
   po::options_description hidden("Hidden options");
-  hidden.add_options()("input-files", po::value<std::vector<std::string> >(),
-                       "input PDB and profile files")(
-      "form_factor_table,f", po::value<std::string>(&form_factor_table_file),
-      "ff table name")(
-      "beam_profile", po::value<std::string>(&beam_profile_file),
-      "beam profile file name for desmearing")(
-      "ab_initio,a", "compute profile for a bead model with \
-constant form factor (default = false)")(
-      "vacuum", "compute profile in vacuum (default = false)")(
-      "javascript,j",
-      "output javascript for browser viewing of the results (default = false)")(
-      "volatility_ratio,v","calculate volatility ratio score (default = false)")(
-      "chi_free,x", po::value<int>(&chi_free)->default_value(0),
-      "compute chi-free instead of chi, specify iteration number "
-      "(default = 0)");
+  hidden.add_options()
+    ("input-files", po::value<std::vector<std::string> >(),
+     "input PDB and profile files")
+    ("form_factor_table,f", po::value<std::string>(&form_factor_table_file),
+     "ff table name")
+    ("beam_profile", po::value<std::string>(&beam_profile_file),
+     "beam profile file name for desmearing")
+    ("ab_initio,a", "compute profile for a bead model with \
+constant form factor (default = false)")
+    ("vacuum", "compute profile in vacuum (default = false)")
+    ("javascript,j",
+     "output javascript for browser viewing of the results (default = false)")
+    ("chi_free,x", po::value<int>(&chi_free)->default_value(0),
+     "compute chi-free instead of chi, specify iteration number "
+     "(default = 0)");
 
   po::options_description cmdline_options;
   cmdline_options.add(desc).add(hidden);

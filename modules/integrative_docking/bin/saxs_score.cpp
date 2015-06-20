@@ -194,7 +194,7 @@ recommended q value is 0.2")("offset,f",
   }
 
   // read experimental profiles
-  IMP_NEW(Profile, exp_profile, (dat_file));
+  IMP_NEW(Profile, exp_profile, (dat_file, false, max_q));
   std::cerr << "Profile read from file " << dat_file
             << " min = " << exp_profile->get_min_q()
             << " max = " << exp_profile->get_max_q()

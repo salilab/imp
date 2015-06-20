@@ -627,15 +627,16 @@ void Profile::resample(const Profile* exp_profile,
 
   for (unsigned int k = 0; k < exp_profile->size(); k++) {
     double q = exp_profile->get_q(k);
-    //if (q > max_q_) break;
-
     std::map<double, unsigned int>::const_iterator it =
         q_mapping_.lower_bound(q);
-    //if (it == q_mapping_.end()) break;
 
+    // in case experimental profile is longer than the computed one
     if (q > max_q_ || it == q_mapping_.end()) {
-      std::cerr << "No sampling for q = " << q << std::endl;
-      break;
+      IMP_THROW("Profile " << name_ << " is not sampled for q = " << q
+                << ", q_max = " <<  max_q_ << "\nYou can remove points with q > "
+                << max_q_ << " from the experimental profile or recompute the \
+profile with higher max_q",
+                IOException);
     }
 
     unsigned int i = it->second;
@@ -643,7 +644,7 @@ void Profile::resample(const Profile* exp_profile,
     if (i == 0 || (delta_q = get_q(i) - get_q(i - 1)) <= 1.0e-16) {
       if (partial_profiles_.size() > 0) {
         for (unsigned int r = 0; r < partial_profiles_.size(); r++) {
-          resampled_profile->partial_profiles_[r](i) = partial_profiles_[r](i);
+          resampled_profile->partial_profiles_[r](k) = partial_profiles_[r](i);
         }
       }
       resampled_profile->q_(k) = q;

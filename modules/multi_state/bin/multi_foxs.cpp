@@ -149,7 +149,7 @@ void read_files(const std::vector<std::string>& files,
                 IMP::Vector<double> scores,
                 Profiles& exp_profiles,
                 int multi_model_pdb,
-                bool partial_profiles) {
+                bool partial_profiles, double max_q) {
 
   for (unsigned int i = 0; i < files.size(); i++) {
     // check if file exists
@@ -179,7 +179,7 @@ void read_files(const std::vector<std::string>& files,
     }
     catch (IMP::ValueException e) {  // not a pdb file
       // 2. try as a dat profile file
-      IMP_NEW(Profile, profile, (files[i]));
+      IMP_NEW(Profile, profile, (files[i], false, max_q));
       if (profile->size() > 0) {
         dat_files.push_back(files[i]);
         exp_profiles.push_back(profile);
@@ -209,6 +209,7 @@ int main(int argc, char* argv[]) {
   double weight_thr = 0.05;
   bool nnls = false;
   bool fixed_c1_c2_score = true;
+  double max_q = 0.5;
   double min_c1 = 0.99;
   double max_c1 = 1.05;
   double min_c2 = -0.5;
@@ -216,14 +217,15 @@ int main(int argc, char* argv[]) {
   bool partial_profiles = true;
   bool vr_score = false;
 
-  po::options_description
-    desc("Usage: <experimental_profile> <pdb_file1> <pdb_file2> ...");
+  po::options_description desc("Options");
   desc.add_options()
     ("help", "Any number of input profiles is supported. \
 The weights are computed to minimize the chi between the first profile \
 and a weighted average of the rest.")
-    ("input-files", po::value< std::vector<std::string> >(),
-     "input profile files")
+    ("version", "MultiFoXS (IMP applications)\n \
+Copyright 2007-2015 IMP Inventors.\nAll rights reserved. \n \
+License: GNU LGPL version 2.1 or later<http://gnu.org/licenses/lgpl.html>.\n\
+Written by Dina Schneidman.")
     ("number-of-states,s", po::value<int>(&number_of_states)->default_value(10),
      "maximal ensemble size (default = 10)")
     ("bestK,k", po::value<int>(&best_k)->default_value(1000), "bestK (default = 1000)")
@@ -233,25 +235,38 @@ and a weighted average of the rest.")
      "chi based threshold")
     ("weight_threshold,w", po::value<double>(&weight_thr)->default_value(0.05),
      "minimal weight threshold for a profile to contribute to the ensemble")
-    ("background_q,b",
-     po::value<double>(&background_adjustment_q)->default_value(0.0),
-     "background adjustment, not used by default. if enabled, \
-recommended q value is 0.2")
-    ("nnls,n", "run Non negative least square on all profiles (default = false)")
-    ("fixed_c1_c2_score,f", "fix c1/c2 for fast scoring, optimize for output only (default = true)")
+    ("max_q,q", po::value<double>(&max_q)->default_value(0.5),
+     "maximal q value (default = 0.5)")
     ("min_c1", po::value<double>(&min_c1)->default_value(0.99), "min c1 value")
     ("max_c1", po::value<double>(&max_c1)->default_value(1.05), "max c1 value")
     ("min_c2", po::value<double>(&min_c2)->default_value(-0.5), "min c2 value")
     ("max_c2", po::value<double>(&max_c2)->default_value(2.0), "max c2 value")
     ("partial_profiles,p", "use precomputed partial profiles (default = true)")
     ("volatility_ratio,v","calculate volatility ratio score (default = false)")
+    ("background_q,b",
+     po::value<double>(&background_adjustment_q)->default_value(0.0),
+     "background adjustment, not used by default. if enabled, \
+recommended q value is 0.2")
+    ("nnls,n", "run Non negative least square on all profiles (default = false)")
+    ("fixed_c1_c2_score,f", "fix c1/c2 for fast scoring, optimize for output only (default = true)")
     ;
+
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+    ("input-files", po::value< std::vector<std::string> >(),
+     "input profile files");
+
+  po::options_description cmdline_options;
+  cmdline_options.add(desc).add(hidden);
+  po::options_description visible("Usage: <experimental_profile> \
+<pdb_file1> <pdb_file2> ... or <profiles_filename>");
+  visible.add(desc);
 
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
-  po::store(
-      po::command_line_parser(argc,argv).options(desc).positional(p).run(), vm);
+  po::store(po::command_line_parser(argc,argv)
+            .options(cmdline_options).positional(p).run(), vm);
   po::notify(vm);
 
   std::vector<std::string> files;
@@ -259,7 +274,7 @@ recommended q value is 0.2")
     files = vm["input-files"].as< std::vector<std::string> >();
   }
   if(vm.count("help") || files.size() == 0) {
-    std::cout << desc << "\n";
+    std::cout << visible << "\n";
     return 0;
   }
   if(vm.count("nnls")) nnls = true;
@@ -273,7 +288,7 @@ recommended q value is 0.2")
   IMP::Vector<std::string> dat_file_names;
   IMP::Vector<double> scores;
 
-  read_files(files, pdb_file_names, dat_file_names, computed_profiles, scores, exp_profiles, false, partial_profiles);
+  read_files(files, pdb_file_names, dat_file_names, computed_profiles, scores, exp_profiles, false, partial_profiles, max_q);
 
   if(exp_profiles.size() == 0) {
     std::cerr << "Please provide at least one exp. profile" << std::endl;
