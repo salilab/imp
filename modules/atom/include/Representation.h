@@ -21,11 +21,10 @@ IMPATOM_BEGIN_NAMESPACE
 
 IMPATOMEXPORT extern const double ALL_RESOLUTIONS;
 
-/** Eventually, other types of representation will be supported, eg Gaussians or
- * density maps. */
+/** Eventually, other types of representation will be supported */
 enum RepresentationType {
   BALLS = 0,
-  GAUSSIANS = 1
+  DENSITIES = 1
 };
 
 //! A decorator for a representation.
@@ -68,8 +67,8 @@ class IMPATOMEXPORT Representation : public Hierarchy {
   //! Add the representation for the given resolution.
   /** If the resolution is
       not given it is computed using get_resolution().
-      Currently only a type of 'BALLS' is supported; eventually, other types
-      of representation may be supported, eg Gaussians or density maps.
+      Currently only 'BALLS' and 'DENSITIES' are supported; eventually, other types
+      of representation may be supported.
      \note The resolution parameter will go away, as, most likely will the type.
    */
   void add_representation(ParticleIndexAdaptor rep,

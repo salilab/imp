@@ -8,6 +8,7 @@
 #include <IMP/atom/Representation.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Mass.h>
+#include <IMP/core/Gaussian.h>
 #include <IMP/log.h>
 
 #include <boost/unordered_map.hpp>
@@ -90,7 +91,7 @@ Hierarchy Representation::get_representation(double resolution,
     }
   }
   if (closest_index == -1) {
-    IMP_USAGE_CHECK(type == BALLS, "No matching types found");
+    IMP_USAGE_CHECK(type == BALLS || type == DENSITIES, "No matching types found");
     IMP_LOG_VERBOSE("Returning highest resolution children" << std::endl);
     return *this;
   } else {
@@ -125,6 +126,8 @@ void Representation::add_representation(ParticleIndexAdaptor rep,
   if (resolution < 0) {
     resolution = get_resolution(get_model(), rep);
   }
+  IMP_USAGE_CHECK( type!=DENSITIES || core::Gaussian::get_is_setup(get_model(),rep),
+                   "DENSITY representations must be Gaussian");
   // fake the parent
   if (get_model()->get_has_attribute(Hierarchy::get_traits().get_parent_key(),
                                      get_particle_index())) {
@@ -132,6 +135,7 @@ void Representation::add_representation(ParticleIndexAdaptor rep,
                                get_parent().get_particle_index());
   }
   if (get_model()->get_has_attribute(get_types_key(), get_particle_index())) {
+    // if this particle already has this representation type setup, just add this resolution
     int index = get_model()
                     ->get_attribute(get_types_key(), get_particle_index())
                     .size();
@@ -144,6 +148,7 @@ void Representation::add_representation(ParticleIndexAdaptor rep,
     get_model()->add_attribute(get_resolution_key(index), get_particle_index(),
                                resolution);
   } else {
+    // otherwise initiate a new list of resolutions for this type
     int index = 0;
     get_model()->add_attribute(get_types_key(), get_particle_index(),
                                Ints(1, type));
