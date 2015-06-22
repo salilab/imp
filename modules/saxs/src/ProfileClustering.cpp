@@ -43,7 +43,8 @@ void ProfileClustering::cluster_profiles() {
   // compute Chi values and copy errors
   std::multimap<double, int> scored_profiles;
   Pointer<ProfileFitter<ChiScore> > pf = new ProfileFitter<ChiScore>(exp_profile_);
-  ChiScore chi_score;
+  IMP_NEW(ChiScore, chi_score, ());
+  chi_score->set_was_used(true);
   Profiles resampled_profiles(profiles_.size());
   for(unsigned int i=0; i<profiles_.size(); i++) {
     // resample all models profiles
@@ -55,7 +56,7 @@ void ProfileClustering::cluster_profiles() {
     scored_profiles.insert(std::make_pair(fp.get_chi(), i));
     chi_scores_.push_back(fp.get_chi());
     resampled_profile->copy_errors(exp_profile_);
-    resampled_profile->scale(chi_score.compute_scale_factor(exp_profile_,
+    resampled_profile->scale(chi_score->compute_scale_factor(exp_profile_,
                                                             resampled_profile));
     profiles_[i]->set_id(i);
     resampled_profiles[i] = resampled_profile;
@@ -81,7 +82,7 @@ void ProfileClustering::cluster_profiles() {
     while(it != temp_profiles.end()) {
       int curr_profile_id = it->second;
       Profile *curr_profile = resampled_profiles[curr_profile_id];
-      double score = chi_score.compute_score(cluster_profile, curr_profile);
+      double score = chi_score->compute_score(cluster_profile, curr_profile);
       if(score < threshold) {
         curr_cluster.push_back(profiles_[curr_profile_id]);
         temp_profiles.erase(it++);

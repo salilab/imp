@@ -55,8 +55,9 @@ double RatioVolatilityScore::compute_score(const Profile* exp_profile,
 double RatioVolatilityScore::compute_scale_factor(const Profile* exp_profile,
                                                   const Profile* model_profile,
                                                   const double offset) const {
-  ChiScore cs;
-  return cs.compute_scale_factor(exp_profile, model_profile, offset);
+  IMP_NEW(ChiScore, cs, ());
+  cs->set_was_used(true);
+  return cs->compute_scale_factor(exp_profile, model_profile, offset);
   //double m1 = exp_profile->mean_intensity();
   //double m2 = model_profile->mean_intensity();
   //return m1 / m2;

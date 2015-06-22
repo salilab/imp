@@ -109,7 +109,7 @@ class ProfileFitter : public Object {
  protected:
   //  experimental saxs profile
   PointerMember<const Profile> exp_profile_;
-  ScoringFunctionT* scoring_function_;
+  PointerMember<ScoringFunctionT> scoring_function_;
 };
 
 template <typename ScoringFunctionT>

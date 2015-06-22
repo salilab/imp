@@ -16,8 +16,10 @@ IMPSAXS_BEGIN_NAMESPACE
 /**
    Basic implementation of Chi scoring
 */
-class IMPSAXSEXPORT ChiScore {
+class IMPSAXSEXPORT ChiScore : public IMP::Object {
  public:
+  ChiScore() : IMP::Object("ChiScore%1%") {}
+
   double compute_score(const Profile* exp_profile, const Profile* model_profile,
                        bool use_offset = false) const;
 
@@ -27,6 +29,8 @@ class IMPSAXSEXPORT ChiScore {
 
   double compute_offset(const Profile* exp_profile,
                         const Profile* model_profile) const;
+
+  IMP_OBJECT_METHODS(ChiScore);
 };
 
 IMPSAXS_END_NAMESPACE

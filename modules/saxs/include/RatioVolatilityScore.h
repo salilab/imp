@@ -18,9 +18,10 @@ IMPSAXS_BEGIN_NAMESPACE
 /**
    Basic implementation of RatioVolatility scoring
 */
-class IMPSAXSEXPORT RatioVolatilityScore {
+class IMPSAXSEXPORT RatioVolatilityScore : public IMP::Object {
  public:
-  RatioVolatilityScore(double dmax = 400) : dmax_(dmax) {}
+  RatioVolatilityScore(double dmax = 400)
+       : IMP::Object("RatioVolatilityScore%1%"), dmax_(dmax) {}
 
   double compute_score(const Profile* exp_profile, const Profile* model_profile,
                        bool use_offset = false) const;
@@ -36,6 +37,7 @@ class IMPSAXSEXPORT RatioVolatilityScore {
     IMP_UNUSED(model_profile);
     return 0.0;
   }
+  IMP_OBJECT_METHODS(RatioVolatilityScore);
 
  private:
   double dmax_;

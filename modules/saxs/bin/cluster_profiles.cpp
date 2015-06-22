@@ -103,12 +103,13 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")(
     reference_profile->copy_errors(exp_profile);
 
     // compare to other profiles
-    IMP::saxs::ChiScore chi_score;
+    IMP_NEW(IMP::saxs::ChiScore, chi_score, ());
+    chi_score->set_was_used(true);
     std::map<int, std::pair<std::string, IMP::saxs::Profile *> >::iterator it;
     for (it = fit_profiles.begin(); it != fit_profiles.end(); it++) {
       IMP::saxs::Profile *curr_profile = it->second.second;
       std::string curr_file_name = it->second.first;
-      double score = chi_score.compute_score(reference_profile, curr_profile);
+      double score = chi_score->compute_score(reference_profile, curr_profile);
       if (score < threshold) {
         std::cerr << it->first << " score " << score << " file "
                   << curr_file_name << std::endl;
@@ -117,11 +118,12 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")(
   } else {
     // compute Chi values
     std::multimap<double, int> scored_profiles;
-    IMP::saxs::ChiScore chi_score;
+    IMP_NEW(IMP::saxs::ChiScore, chi_score, ());
+    chi_score->set_was_used(true);
     std::map<int, std::pair<std::string, IMP::saxs::Profile *> >::iterator it;
     for (it = fit_profiles.begin(); it != fit_profiles.end(); it++) {
       IMP::saxs::Profile *curr_profile = it->second.second;
-      double score = chi_score.compute_score(exp_profile, curr_profile);
+      double score = chi_score->compute_score(exp_profile, curr_profile);
       scored_profiles.insert(std::make_pair(score, it->first));
     }
 
@@ -148,7 +150,7 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")(
         IMP::saxs::Profile *curr_profile = fit_profiles[curr_profile_id].second;
         std::string curr_file_name = fit_profiles[curr_profile_id].first;
 
-        double score = chi_score.compute_score(cluster_profile, curr_profile);
+        double score = chi_score->compute_score(cluster_profile, curr_profile);
         if (score < threshold) {
           std::cerr << curr_profile_id << " score " << score << " file "
                     << curr_file_name << std::endl;

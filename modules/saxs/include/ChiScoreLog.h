@@ -18,8 +18,10 @@ IMPSAXS_BEGIN_NAMESPACE
 /**
    chi scoring on log intensities
 */
-class IMPSAXSEXPORT ChiScoreLog {
+class IMPSAXSEXPORT ChiScoreLog : public IMP::Object {
  public:
+  ChiScoreLog() : IMP::Object("ChiScoreLog%1%") {}
+
   double compute_score(const Profile* exp_profile, const Profile* model_profile,
                        bool use_offset = false) const;
 
@@ -37,6 +39,8 @@ class IMPSAXSEXPORT ChiScoreLog {
     IMP_UNUSED(model_profile);
     return 0.0;
   }
+
+  IMP_OBJECT_METHODS(ChiScoreLog);
 };
 
 IMPSAXS_END_NAMESPACE

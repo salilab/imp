@@ -17,9 +17,10 @@ IMPSAXS_BEGIN_NAMESPACE
    Accurate assessment of mass, models and resolution by small-angle scattering.
    Rambo RP, Tainer JA. Nature. 2013
 */
-class IMPSAXSEXPORT ChiFreeScore {
+class IMPSAXSEXPORT ChiFreeScore : public IMP::Object {
  public:
-  ChiFreeScore(unsigned int ns, unsigned int k) : ns_(ns), K_(k) {
+  ChiFreeScore(unsigned int ns, unsigned int k) :
+            IMP::Object("ChiFreeScore%1%"), ns_(ns), K_(k) {
     if (K_ % 2 == 0) K_++;  // make sure it is odd for median
     last_scale_updated_ = false;
   }
