@@ -13,6 +13,7 @@ def bead2gaussian(center,radius,mdl):
 class DensityRepresentationTest(IMP.test.TestCase):
 
     def test_simple_density(self):
+        """Test representing a particle with a Gaussian"""
         # create single bead
         mdl = IMP.Model()
         center = IMP.algebra.Vector3D(1,1,1)
@@ -29,6 +30,7 @@ class DensityRepresentationTest(IMP.test.TestCase):
         self.assertEqual(rep.get_representation(1,IMP.atom.DENSITIES),g2.get_particle())
 
     def test_multi_density(self):
+        """Test representing a group of residues with a single Gaussian"""
         # read in system
         mdl = IMP.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'),mdl)
