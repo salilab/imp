@@ -128,7 +128,7 @@ void HierarchyLoadLink::create_recursive(Model *m,
 
   i = 0;
   RMF_FOREACH(ParticleIndex r, greps) {
-    atom::Representation(m, cur).add_representation(r, atom::GAUSSIANS,
+    atom::Representation(m, cur).add_representation(r, atom::DENSITIES,
                                                     gresols[i++]);
   }
 }
@@ -179,7 +179,7 @@ void HierarchyLoadLink::add_link_recursive(Model *m,
     }
     {
       RMF::NodeConstHandles alts = ad.get_alternatives(RMF::GAUSSIAN_PARTICLE);
-      atom::Hierarchies reps = rd.get_representations(atom::GAUSSIANS);
+      atom::Hierarchies reps = rd.get_representations(atom::DENSITIES);
       if (alts.size() != reps.size()) {
         IMP_THROW("Number of alternate representations doesn't match: "
                       << alts.size() << " vs " << reps.size(),
@@ -295,8 +295,8 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
       }
     }
     {
-      atom::Hierarchies reps = rep.get_representations(atom::GAUSSIANS);
-      Floats gresols = rep.get_resolutions(atom::GAUSSIANS);
+      atom::Hierarchies reps = rep.get_representations(atom::DENSITIES);
+      Floats gresols = rep.get_resolutions(atom::DENSITIES);
       int i = -1;
       IMP_FOREACH(atom::Hierarchy cr, reps) {
         i++;
