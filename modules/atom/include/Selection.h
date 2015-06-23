@@ -13,6 +13,7 @@
 #include "Atom.h"
 #include "Hierarchy.h"
 #include "Residue.h"
+#include "Representation.h"
 #include <IMP/algebra/algebra_config.h>
 #include <IMP/InputAdaptor.h>
 #include <IMP/core/Typed.h>
@@ -78,6 +79,7 @@ class IMPATOMEXPORT Selection :
  private:
   Model *m_;
   double resolution_;
+  RepresentationType representation_type_;
   Pointer<internal::ListSelectionPredicate> predicate_, and_predicate_;
 
   ParticleIndexes h_;
@@ -101,7 +103,9 @@ class IMPATOMEXPORT Selection :
             Strings molecules = [], Ints residue_indexes = [],
             Strings chain_ids = [], AtomTypes atom_types = [],
             ResidueTypes residue_types = [], Strings domains = [],
-            double resolution = 0, std::string molecule = None,
+            double resolution = 0,
+            RepresentationType representation_type = IMP.atom.BALLS,
+            std::string molecule = None,
             int residue_index = None, std::string chain_id = None,
             AtomType atom_type = None, ResidueType residue_type = None,
             Ints hierarchy_types = None, Terminus terminus = None,
@@ -137,6 +141,9 @@ class IMPATOMEXPORT Selection :
 
   //! Select at a Representation node with a resolution close to r.
   void set_resolution(double r) { resolution_ = r; }
+  //! Try to find this representation type
+  void set_representation_type(RepresentationType t)
+  { representation_type_ = t; }
   //! Select State with the passed index.
   void set_state_index(int state) { set_state_indexes(Ints(1, state)); }
   //! Select State with the passed indexes.

@@ -128,7 +128,7 @@ namespace {
         return a.release();
       }
     }
-  
+
     virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
                                          boost::dynamic_bitset<> &bs)
                                              const IMP_OVERRIDE {
@@ -155,16 +155,16 @@ namespace {
         return MATCH_SELF_ONLY;
       }
     }
-  
+
     IMP_OBJECT_METHODS(AndSelectionPredicate);
   };
-  
+
   //! Match if any subpredicate matches (or there are no subpredicates)
   class OrSelectionPredicate : public internal::ListSelectionPredicate {
   public:
     OrSelectionPredicate(std::string name = "OrSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
-  
+
     virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
       set_was_used(true);
       Pointer<ListSelectionPredicate> a = new OrSelectionPredicate();
@@ -198,7 +198,7 @@ namespace {
         return MISMATCH;
       }
     }
-  
+
     IMP_OBJECT_METHODS(OrSelectionPredicate);
   };
 
@@ -253,7 +253,7 @@ void Selection::init_predicate() {
   predicate_ = and_predicate_;
 }
 
-Selection::Selection() : resolution_(0) {
+Selection::Selection() : resolution_(0),representation_type_(BALLS) {
   init_predicate();
   m_ = nullptr;
 }
@@ -263,6 +263,7 @@ Selection Selection::create_clone() {
   s.m_ = m_;
   s.h_ = h_;
   s.resolution_ = resolution_;
+  s.representation_type_ = representation_type_;
   s.predicate_ = dynamic_cast<internal::ListSelectionPredicate*>
                          (predicate_->clone(true));
   IMP_INTERNAL_CHECK(s.predicate_, "Clone failed");
@@ -270,21 +271,22 @@ Selection Selection::create_clone() {
   return s;
 }
 
-Selection::Selection(Particle *h) : resolution_(0) {
+Selection::Selection(Particle *h) : resolution_(0),representation_type_(BALLS) {
   init_predicate();
   set_hierarchies(h->get_model(), ParticleIndexes(1, h->get_index()));
 }
-Selection::Selection(Hierarchy h) : resolution_(0) {
+Selection::Selection(Hierarchy h) : resolution_(0),representation_type_(BALLS) {
   init_predicate();
   set_hierarchies(h.get_model(),
                   ParticleIndexes(1, h.get_particle_index()));
 }
 Selection::Selection(Model *m, const ParticleIndexes &pis)
-    : resolution_(0) {
+    : resolution_(0),representation_type_(BALLS) {
   init_predicate();
   set_hierarchies(m, pis);
 }
-Selection::Selection(const Hierarchies &h) : resolution_(0) {
+Selection::Selection(const Hierarchies &h) :
+  resolution_(0),representation_type_(BALLS) {
   init_predicate();
   if (h.empty()) {
     m_ = nullptr;
@@ -293,7 +295,8 @@ Selection::Selection(const Hierarchies &h) : resolution_(0) {
     set_hierarchies(h[0].get_model(), IMP::internal::get_index(h));
   }
 }
-Selection::Selection(const ParticlesTemp &h) : resolution_(0) {
+Selection::Selection(const ParticlesTemp &h) :
+  resolution_(0),representation_type_(BALLS) {
   init_predicate();
   if (h.empty()) {
     m_ = nullptr;
@@ -304,7 +307,7 @@ Selection::Selection(const ParticlesTemp &h) : resolution_(0) {
 }
 // for C++
 Selection::Selection(Hierarchy h, std::string molname, int residue_index)
-    : resolution_(0) {
+    : resolution_(0),representation_type_(BALLS) {
   init_predicate();
   set_hierarchies(h.get_model(),
                   ParticleIndexes(1, h.get_particle_index()));
@@ -497,16 +500,18 @@ IMP_ATOM_SELECTION_PRED(Terminus, Int, {
 });
 
 ParticleIndexes expand_search(Model *m,
-                                      ParticleIndex pi,
-                                      double resolution) {
+                              ParticleIndex pi,
+                              double resolution,
+                              RepresentationType representation_type) {
   // to handle representations
   ParticleIndexes ret;
   if (Representation::get_is_setup(m, pi)) {
     if (resolution == ALL_RESOLUTIONS) {
-      ret = Representation(m, pi).get_representations(BALLS);
+      ret = Representation(m, pi).get_representations(representation_type);
     } else {
       ret.push_back(
-          Representation(m, pi).get_representation(resolution, BALLS));
+          Representation(m, pi).get_representation(resolution,
+                                                   representation_type));
     }
   } else {
     ret.push_back(pi);
@@ -515,12 +520,13 @@ ParticleIndexes expand_search(Model *m,
 }
 
 ParticleIndexes expand_children_search(Model *m,
-                                               ParticleIndex pi,
-                                               double resolution) {
+                                       ParticleIndex pi,
+                                       double resolution,
+                                       RepresentationType representation_type) {
   Hierarchy h(m, pi);
   ParticleIndexes ret;
   IMP_FOREACH(Hierarchy c, h.get_children()) {
-    ret += expand_search(m, c, resolution);
+    ret += expand_search(m, c, resolution, representation_type);
   }
   return ret;
 }
@@ -544,7 +550,7 @@ Selection::SearchResult Selection::search(
   Hierarchy cur(m, pi);
   ParticleIndexes children;
   ParticleIndexes cur_children =
-      expand_children_search(m, pi, resolution_);
+    expand_children_search(m, pi, resolution_, representation_type_);
   bool children_covered = true;
   bool matched = (val == internal::SelectionPredicate::MATCH_WITH_CHILDREN
                   || val == internal::SelectionPredicate::MATCH_SELF_ONLY);
@@ -591,7 +597,8 @@ Selection::get_selected_particle_indexes(bool with_representation) const {
                 << std::endl);
   IMP_LOG_WRITE(VERBOSE, show_predicate(predicate_, IMP_STREAM));
   IMP_FOREACH(ParticleIndex pi, h_) {
-    IMP_FOREACH(ParticleIndex rpi, expand_search(m_, pi, resolution_)) {
+    IMP_FOREACH(ParticleIndex rpi, expand_search(m_, pi, resolution_,
+                                                 representation_type_)) {
       ret += search(m_, rpi, base, with_representation).get_indexes();
     }
   }
