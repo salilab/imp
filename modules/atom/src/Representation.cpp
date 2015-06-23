@@ -126,7 +126,12 @@ void Representation::add_representation(ParticleIndexAdaptor rep,
   if (resolution < 0) {
     resolution = get_resolution(get_model(), rep);
   }
-  IMP_USAGE_CHECK( type!=DENSITIES || core::Gaussian::get_is_setup(get_model(),rep),
+  int ct = 0;
+  Hierarchies lvs = core::get_leaves(Hierarchy(get_model(),rep));
+  for (int i=0;i<lvs.size();i++) {
+    ct += int(!core::Gaussian::get_is_setup(lvs[i]));
+  }
+  IMP_USAGE_CHECK( type!=DENSITIES || ct==0,
                    "DENSITY representations must be Gaussian");
   // fake the parent
   if (get_model()->get_has_attribute(Hierarchy::get_traits().get_parent_key(),
