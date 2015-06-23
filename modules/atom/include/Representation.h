@@ -47,7 +47,6 @@ class IMPATOMEXPORT Representation : public Hierarchy {
 
  public:
   IMP_DECORATOR_SETUP_0(Representation);
-  /** For testing only. Will go away. */
   IMP_DECORATOR_SETUP_1(Representation, double, resolution);
 
   IMP_DECORATOR_METHODS(Representation, Hierarchy);
@@ -56,8 +55,7 @@ class IMPATOMEXPORT Representation : public Hierarchy {
     return m->get_has_attribute(get_base_resolution_key(), pi);
   }
 
-  /** Return the children at the resolution closest to `resolution` of the
-   * passed type. */
+  //! Get children at the resolution closest to `resolution` of the passed type.
   Hierarchy get_representation(double resolution,
                                RepresentationType type = BALLS);
 
@@ -67,26 +65,22 @@ class IMPATOMEXPORT Representation : public Hierarchy {
   //! Add the representation for the given resolution.
   /** If the resolution is
       not given it is computed using get_resolution().
-      Currently only 'BALLS' and 'DENSITIES' are supported; eventually, other types
-      of representation may be supported.
-     \note The resolution parameter will go away, as, most likely will the type.
+      Currently only 'BALLS' and 'DENSITIES' are supported; eventually,
+      other types of representation may be supported.
    */
   void add_representation(ParticleIndexAdaptor rep,
                           RepresentationType type = BALLS,
                           double resolution = -1);
 
-  /** Return a list of all resolutions that are available for a specific
-   * RepresentationType. */
+  //! Get all resolutions that are available for a specific RepresentationType.
   Floats get_resolutions(RepresentationType type = BALLS) const;
 };
 
 IMP_DECORATORS(Representation, Representations, Hierarchies);
 
-/** Return an estimate of the resolution of the hierarchy as used by
-   Representation.
-
-    It is currently the inverse average radius of the leaves. */
-
+//! Estimate the resolution of the hierarchy as used by Representation.
+/** It is currently the inverse average radius of the leaves.
+ */
 IMPATOMEXPORT double get_resolution(Model *m, ParticleIndex pi);
 
 /** \copydoc get_resolution(Model, ParticleIndex) */
