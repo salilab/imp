@@ -322,7 +322,6 @@ recommended q value is 0.2")
   }
 
   IMP::Vector<MultiStateModelScore*> scorers;
-  RatioVolatilityScore rv;
   for (unsigned int i=0; i<exp_profiles.size(); i++) {
     if(!vr_score) {
       SAXSMultiStateModelScore<ChiScore> *saxs_chi_score =
