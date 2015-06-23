@@ -225,15 +225,17 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return setup_particle(p->get_model(), p->get_index());
   }
 
-  /** \deprecated_at{2.2} Use get_is_setup() instead. */
+  IMPATOM_DEPRECATED_METHOD_DECL(2.2)
   static bool particle_is_instance(Particle *p) {
+    IMPATOM_DEPRECATED_METHOD_DEF(2.2, "Use get_is_setup() instead");
     return H::get_is_setup(p, get_traits());
   }
   static bool get_is_setup(Particle *p) {
     return H::get_is_setup(p, get_traits());
   }
-  /** \deprecated_at{2.2} Use get_is_setup() instead. */
+  IMPATOM_DEPRECATED_METHOD_DECL(2.2)
   static bool particle_is_instance(Model *m, ParticleIndex p) {
+    IMPATOM_DEPRECATED_METHOD_DEF(2.2, "Use get_is_setup() instead");
     return H::get_is_setup(m->get_particle(p), get_traits());
   }
 #endif
