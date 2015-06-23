@@ -128,7 +128,7 @@ void Representation::add_representation(ParticleIndexAdaptor rep,
   }
   int ct = 0;
   Hierarchies lvs = core::get_leaves(Hierarchy(get_model(),rep));
-  for (int i=0;i<lvs.size();i++) {
+  for (unsigned i=0;i<lvs.size();i++) {
     ct += int(!core::Gaussian::get_is_setup(lvs[i]));
   }
   IMP_USAGE_CHECK( type!=DENSITIES || ct==0,
