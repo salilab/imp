@@ -354,14 +354,15 @@ constant form factor (default = false)")
             //                exp_saxs_profile->get_max_q() * dmax / IMP::PI);
             // int K = chi_free;
             // ChiFreeScore cfs(ns, K);
-            RatioVolatilityScore rvs;
+            IMP_NEW(RatioVolatilityScore, rvs, ());
+            rvs->set_was_used(true);
             // resample the profile
             IMP_NEW(Profile, resampled_profile,
                     (exp_saxs_profile->get_min_q(), exp_saxs_profile->get_max_q(),
                      exp_saxs_profile->get_delta_q()));
             pf->resample(profile, resampled_profile);
             double chi_free =
-              rvs.compute_score(exp_saxs_profile, resampled_profile);
+              rvs->compute_score(exp_saxs_profile, resampled_profile);
             fp.set_chi(chi_free);
           }
         }
