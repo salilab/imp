@@ -33,14 +33,14 @@ The following prerequisites are _optional_; without them some parts of %IMP
 will not build, and some will not function optimally.
 
 - [Doxygen](http://www.doxygen.org/) (only exactly version 1.8.6 is supported)
-  and [Graphviz](http://www.graphviz.org/): Required for building
+  and [Graphviz](http://www.graphviz.org/): required for building
   documentation.
-- [Modeller](\ref modeller): needed to use the IMP.modeller module
+- [Modeller](\ref modeller): needed to use the IMP.modeller module.
 - [CGAL](\ref CGAL): enables faster geometric operations, such as
   nonbonded lists.
 - [Google perf tools](\ref perf): needed only for profiling %IMP code.
 - [ANN](\ref ANN): certain data structures will be faster if it is available.
-- [GSL](\ref GSL): needed to use the IMP.gsl module
+- [GSL](\ref GSL): needed to use the IMP.gsl module.
 - [OpenCV](\ref OpenCV): needed to use the IMP.em2d module or the
   [idock](@ref idock_pcsk9) and [emagefit](@ref emagefit_3sfd) command
   line tools.
@@ -56,7 +56,7 @@ will not build, and some will not function optimally.
   [biopython](http://biopython.org/wiki/Download) Python libraries are also
   recommended.
 - [Chimera](https://www.cgl.ucsf.edu/chimera/download.html) is recommended
-  for visualization of results
+  for visualization of results.
 
 ### Getting prerequisites on Linux {#installation_prereqs_linux}
 All of the prerequisites should be available as pre-built packages for
