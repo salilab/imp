@@ -217,6 +217,7 @@ float CnSymmAxisDetector::calc_symm_score(int symm_axis_ind) const {
 
 Float CnSymmAxisDetector::symm_avg(const algebra::Vector3D &start_p,
                                    const algebra::Vector3D &symm_vec) const {
+  IMP_UNUSED(symm_vec);
   Float val = 0.;
   algebra::Vector3D p = start_p;
   algebra::Transformation3D symm_op;
