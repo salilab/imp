@@ -44,12 +44,6 @@ class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint {
   MultipleBinormalRestraint(Model *m, const ParticleIndexQuad &q1,
                             const ParticleIndexQuad &q2);
 
-#ifndef IMP_DOXYGEN
-  IMPMODELLER_DEPRECATED_METHOD_DECL(2.5)
-  MultipleBinormalRestraint(const ParticleQuad &q1,
-                            const ParticleQuad &q2);
-#endif
-
   //! Add a single BinormalTerm to the restraint.
   void add_term(const BinormalTerm &term) { terms_.push_back(term); }
 
