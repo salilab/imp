@@ -304,9 +304,6 @@ foreach(mod ${enabled_modules})
   ${IMP_${mod}_DOC})
 endforeach(mod)
 
-imp_execute_process("setup_module_alias for kernel" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py)
-
 list(INSERT IMP_PYTHONPATH 0 "${CMAKE_BINARY_DIR}/lib")
 list(INSERT IMP_LDPATH 0 "${CMAKE_BINARY_DIR}/lib")
 list(INSERT IMP_PATH 0 "${CMAKE_BINARY_DIR}/bin")

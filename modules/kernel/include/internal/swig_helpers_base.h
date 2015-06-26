@@ -23,7 +23,6 @@
 #include <cstdio>
 
 // using namespace IMP;
-using namespace IMP::base;
 using namespace IMP;
 #ifndef SWIG
 template <bool REFED>

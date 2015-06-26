@@ -2,6 +2,8 @@ ChangeLog {#changelog}
 =========
 
 # For next stable IMP release #
+- The IMP::base and IMP::kernel namespaces have been removed (use the top-level
+  IMP namespace instead).
 
 # 2.5.0 - 2015-06-30 # {#changelog_2_5_0}
 - Documentation has been revised and updated; the main manual now gives a
