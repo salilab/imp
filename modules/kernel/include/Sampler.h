@@ -30,27 +30,22 @@ IMPKERNEL_BEGIN_NAMESPACE
 */
 class IMPKERNELEXPORT Sampler : public IMP::Object {
   PointerMember<Model> model_;
-  mutable Pointer<ScoringFunction> cache_;
   PointerMember<ScoringFunction> sf_;
 
  public:
   Sampler(Model *m, std::string name = "Sampler %1%");
   ConfigurationSet *create_sample() const;
 
+  //! Return the scoring function that is being used
+  /** \throws ValueException if no scoring function was set
+   */
   ScoringFunction *get_scoring_function() const {
     if (sf_) {
       return sf_;
-    } else if (cache_) {
-      return cache_;
     } else {
-/* Don't warn about deprecated model scoring function every time someone
-   includes Sampler.h */
-IMP_HELPER_MACRO_PUSH_WARNINGS
-#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
-IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
-#endif
-      return cache_ = get_model()->create_model_scoring_function();
-IMP_HELPER_MACRO_POP_WARNINGS
+      IMP_THROW("No scoring function was set. "
+                "Use Sampler::set_scoring_function() to set one.",
+                ValueException);
     }
   }
 
