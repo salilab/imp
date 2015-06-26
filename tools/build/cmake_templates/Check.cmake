@@ -1,5 +1,7 @@
 INCLUDE (CheckCXXSourceCompiles)
 
+set(CMAKE_REQUIRED_FLAGS ${IMP_CXX11_FLAGS})
+
 CHECK_CXX_SOURCE_COMPILES("%(cppsource)s
 "
  %(macro)s)
