@@ -1,6 +1,8 @@
 ChangeLog {#changelog}
 =========
 
+# For next stable IMP release #
+
 # 2.5.0 - 2015-06-30 # {#changelog_2_5_0}
 - Documentation has been revised and updated; the main manual now gives a
   gentler introduction to IMP, with more technical details on the code
