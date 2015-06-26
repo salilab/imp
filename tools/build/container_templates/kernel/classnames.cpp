@@ -81,15 +81,6 @@ void ClassnameContainerAdaptor::set_name_if_default(std::string name) {
 
 ClassnameModifier::ClassnameModifier(std::string name) : Object(name) {}
 
-void ClassnameModifier::apply_index(Model *m, PASSINDEXTYPE v) const {
-  apply(internal::get_particle(m, v));
-}
-
-void ClassnameModifier::apply(ARGUMENTTYPE vt) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
-  return apply_index(internal::get_model(vt), internal::get_index(vt));
-}
-
 ClassnamePredicate::ClassnamePredicate(std::string name) : Object(name) {
   /* Implemented here rather than in the header so that PairPredicate
      symbols are present in the kernel DSO */

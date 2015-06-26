@@ -33,12 +33,8 @@ class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
   typedef INDEXTYPE IndexArgument;
   ClassnameModifier(std::string name = "ClassnameModifier %1%");
 
-  /** \deprecated_at{2.1} use the index version instead*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual void apply(ARGUMENTTYPE vt) const;
-
   /** Apply the function to a single value*/
-  virtual void apply_index(Model *m, PASSINDEXTYPE v) const;
+  virtual void apply_index(Model *m, PASSINDEXTYPE v) const = 0;
 
   /** Apply the function to a collection of PLURALVARIABLETYPE */
   /** If bounds are passed, only apply to ones between the upper and
