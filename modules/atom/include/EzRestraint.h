@@ -37,11 +37,6 @@ class IMPATOMEXPORT EzRestraint : public Restraint {
  public:
   EzRestraint(Model *m, ParticleIndexesAdaptor ps);
 
-#ifndef IMP_DOXYGEN
-  IMPATOM_DEPRECATED_METHOD_DECL(2.5)
-  EzRestraint(Particles ps);
-#endif
-
   IMP_OBJECT_METHODS(EzRestraint);
 };
 

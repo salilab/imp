@@ -31,20 +31,6 @@ DihedralRestraint::DihedralRestraint(Model *m, UnaryFunction* score_func,
   p_[3] = p4;
 }
 
-DihedralRestraint::DihedralRestraint(UnaryFunction* score_func,
-                                     Particle* p1, Particle* p2,
-                                     Particle* p3, Particle* p4)
-    : Restraint(p1->get_model(), "DihedralRestraint%1%") {
-  IMPCORE_DEPRECATED_METHOD_DEF(2.5,
-                                "Use the index-based constructor instead.");
-  p_[0] = p1->get_index();
-  p_[1] = p2->get_index();
-  p_[2] = p3->get_index();
-  p_[3] = p4->get_index();
-
-  score_func_ = score_func;
-}
-
 //! Calculate the score for this dihedral restraint.
 /** \param[in] accum If not nullptr, use this object to accumulate partial first
                      derivatives.

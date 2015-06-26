@@ -33,15 +33,6 @@ class IMPCOREEXPORT AngleRestraint : public TripletRestraint {
   AngleRestraint(Model *m, UnaryFunction* score_func, ParticleIndexAdaptor p1,
                  ParticleIndexAdaptor p2, ParticleIndexAdaptor p3);
 
-#ifndef IMP_DOXYGEN
-  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
-  AngleRestraint(UnaryFunction* score_func, Particle* p1,
-                 Particle* p2, Particle* p3);
-
-  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
-  AngleRestraint(UnaryFunction* score_func, XYZ p0, XYZ p1, XYZ p2);
-#endif
-
   IMP_OBJECT_METHODS(AngleRestraint);
 };
 

@@ -35,13 +35,6 @@ class IMPCOREEXPORT DihedralRestraint : public Restraint {
                     ParticleIndexAdaptor p3,
                     ParticleIndexAdaptor p4);
 
-#ifndef IMP_DOXYGEN
-  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
-  DihedralRestraint(UnaryFunction* score_func, Particle* p1,
-                    Particle* p2, Particle* p3,
-                    Particle* p4);
-#endif
-
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum)
       const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

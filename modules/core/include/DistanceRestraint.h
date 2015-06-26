@@ -49,14 +49,6 @@ class IMPCOREEXPORT DistanceRestraint :
                     ParticleIndexAdaptor b,
                     std::string name = "DistanceRestraint %1%");
 
-#ifndef IMP_DOXYGEN
-  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
-  DistanceRestraint(UnaryFunction *score_func,
-                    Particle *a,
-                    Particle *b,
-                    std::string name = "DistanceRestraint %1%");
-#endif
-
 #ifdef SWIG
  protected:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;

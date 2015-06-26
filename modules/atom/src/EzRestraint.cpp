@@ -27,14 +27,6 @@ EzRestraint::EzRestraint(Model *m, ParticleIndexesAdaptor ps)
   setup();
 }
 
-EzRestraint::EzRestraint(Particles ps)
-    : Restraint(ps[0]->get_model(), "Ez Potential") {
-  IMPATOM_DEPRECATED_METHOD_DEF(2.5,
-                                "Use the index-based constructor instead.");
-  ps_ = IMP::internal::get_index(ps);
-  setup();
-}
-
 void EzRestraint::setup() {
   Model *m = get_model();
   for (unsigned i = 0; i < ps_.size(); ++i) {
