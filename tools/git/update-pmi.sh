@@ -4,6 +4,6 @@
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
-source "${SCRIPT_DIR}/subtree-utils.sh"
+source "${SCRIPT_DIR}/../dev_tools/git/subtree-utils.sh"
 
 pull modules/pmi git@github.com:salilab/pmi.git develop
