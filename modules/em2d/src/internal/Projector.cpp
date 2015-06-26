@@ -73,9 +73,9 @@ void Projector::compute_projections(boost::ptr_vector<Projection>& projections,
       rotated_points[point_index] = rotations[i] * points[point_index];
     }
     // project
-    std::auto_ptr<Projection> p(new Projection(rotated_points, radii_, mass_,
-                                               pixel_size_, resolution_,
-                                               axis_size));
+    IMP_UNIQUE_PTR<Projection> p(new Projection(rotated_points, radii_, mass_,
+                                                pixel_size_, resolution_,
+                                                axis_size));
     p->set_rotation(rotations[i]);
     p->set_axis(axes[i]);
     p->set_id(i);
@@ -110,9 +110,9 @@ void Projector::compute_projections(const algebra::Vector3Ds& axis,
       rotated_points[point_index] = rotations[i] * points[point_index];
     }
     // project
-    std::auto_ptr<Projection> p(new Projection(rotated_points, radii_, mass_,
-                                               pixel_size_, resolution_,
-                                               axis_size));
+    IMP_UNIQUE_PTR<Projection> p(new Projection(rotated_points, radii_, mass_,
+                                                pixel_size_, resolution_,
+                                                axis_size));
     p->set_rotation(rotations[i]);
     p->set_axis(axes[i]);
     p->set_id(i);

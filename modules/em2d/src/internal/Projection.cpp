@@ -256,9 +256,9 @@ void compute_projections(const Particles& particles,
       rotated_points[point_index] = r * points[point_index];
     }
     // project
-    std::auto_ptr<Projection> p(new Projection(rotated_points, radii, mass,
-                                               pixel_size, resolution,
-                                               axis_size));
+    IMP_UNIQUE_PTR<Projection> p(new Projection(rotated_points, radii, mass,
+                                                pixel_size, resolution,
+                                                axis_size));
     p->set_rotation(r);
     p->set_axis(IMP::algebra::Vector3D(v.get_cartesian_coordinates()));
     p->set_id(i);
@@ -341,7 +341,7 @@ void compute_projections(const Particles& all_particles,
       rotated_ligand_points[p_index] = r * lig_points[p_index];
 
     // project
-    std::auto_ptr<Projection> p(
+    IMP_UNIQUE_PTR<Projection> p(
         new Projection(rotated_points, rotated_ligand_points, lig_radii,
                        lig_mass, pixel_size, resolution, axis_size));
     p->set_rotation(r);
