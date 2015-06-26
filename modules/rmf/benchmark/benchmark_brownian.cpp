@@ -65,12 +65,6 @@ const unsinged int number_of_steps = 50;
 #define ATTRIBUTES
 #endif
 
-namespace {
-#ifndef __clang__
-void dummy_f_destructor() {}
-#endif
-}
-
 struct It {
   Pointer<Model> m;
   atom::Hierarchies chains;
