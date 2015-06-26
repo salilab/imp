@@ -68,7 +68,7 @@ The chi value is computed relative to the first profile using its error column")
   }
 
   IMP::saxs::Profile *exp_saxs_profile = exp_profiles[0];
-  IMP::base::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::RatioVolatilityScore> >
+  IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::RatioVolatilityScore> >
       saxs_score =
           new IMP::saxs::ProfileFitter<IMP::saxs::RatioVolatilityScore>(exp_saxs_profile);
   for (unsigned int i = 1; i < exp_profiles.size(); i++) {
