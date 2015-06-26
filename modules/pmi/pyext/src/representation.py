@@ -776,8 +776,7 @@ class Representation(object):
             center=IMP.core.XYZ(p).get_coordinates()
             rad=IMP.core.XYZR(p).get_radius()
             mass=IMP.atom.Mass(p).get_mass()
-            trans=IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
-                                                                                                                          center)
+            trans=IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),center)
             shape=IMP.algebra.Gaussian3D(IMP.algebra.ReferenceFrame3D(trans),[rad]*3)
             IMP.core.Gaussian.setup_particle(p,shape)
             print('setting up particle',p.get_name(), " as individual gaussian particle")

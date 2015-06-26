@@ -10,6 +10,8 @@ import IMP.pmi.output
 import IMP.pmi.analysis
 import IMP.pmi.io
 import IMP.rmf
+import IMP.isd
+import IMP.pmi.dof
 import RMF
 import os
 import glob
@@ -1576,3 +1578,48 @@ class AnalysisReplicaExchange0(object):
         objects = pickle.load(inputf)
         inputf.close()
         return objects
+
+class DensitySetup(object):
+    """A macro to make it easy to setup electron density representation
+    Primary use case: As part of the GaussianEMRestraint"""
+    def __init__(self,
+                 density_dir=''):
+        """Initialize DensitySetup.
+        @param density_dir Optionally provide a root directory for the densities
+        """
+        self.density_dir = density_dir
+    def create_density(self,
+                       hspec,
+                       num_components=10,
+                       fname=None,
+                       force_recreate=False,
+                       write_map=False):
+        """Create one or more Gaussians to represent the electron density.
+        Important: if num_components is not 0, will sample gaussians and write to file.
+        Or if the file is already created, will just read and decorate.
+        @param hspec            Can be one of the following inputs:
+                                IMP Selection, Hierarchy,
+                                PMI Molecule, Residue, or a list/set of these
+        @param num_components   If positive, will create this number PER RESIDUE
+                                If negative, will create this exact number
+                                If 0, will setup each leaf as a Gaussian w/same size
+        @param name             Output file name. Defaults to density_dir/hier_name
+        @param force_recreate   Even if Gaussians file exists, will recreate
+        @param write_map        If sampling, optionally write an .mrc file
+        """
+    def create_all_densities_from_dof(self,
+                                      dof,
+                                      num_components=10,
+                                      force_recreate=False,
+                                      write_maps=False):
+        """Automatically create all densities based on the DegreesOfFreedom.
+        Rigid Bodies will each have a set of Gaussians sampled to represent them.
+        Flexible components (including non rigid members) will be set up as individual gaussians
+        File names will be density_dir/rigid_body_name
+        @param dof            The DegreesOfFreedom object
+        @param num_components If positive, will create this number PER RESIDUE (for each rigid body)
+                              If negative, will create this exact number (for each rigid body)
+                              If 0, will setup each leaf as a Gaussian w/same size
+        @param force_recreate Even if Gaussians file exists, will recreate
+        @param write_map      If sampling, optionally write a .mrc files
+        """

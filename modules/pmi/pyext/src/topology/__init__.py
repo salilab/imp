@@ -270,7 +270,7 @@ class Molecule(SystemBase):
         """ Return a set of Residues that have associated structure coordinates """
         atomic_res=set()
         for res in self.residues:
-            if res.get_has_coordinates():
+            if res.get_has_structure_source():
                 atomic_res.add(res)
         return atomic_res
 
@@ -278,7 +278,7 @@ class Molecule(SystemBase):
         """ Return a set of Residues that don't have associated structure coordinates """
         non_atomic_res=set()
         for res in self.residues:
-            if not res.get_has_coordinates():
+            if not res.get_has_structure_source():
                 non_atomic_res.add(res)
         return non_atomic_res
 
@@ -302,7 +302,7 @@ class Molecule(SystemBase):
                        mol_to_clone=self,transformation=transformation)
         self.state._register_copy(mol)
 
-    def add_structure(self,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_only=False,soft_check=False):
+    def add_structure(self,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_only=False,soft_check=False,pdb_code=None):
         """Read a structure and store the coordinates.
         Returns the atomic residues (as a set)
         @param pdb_fn    The file to read
@@ -312,10 +312,11 @@ class Molecule(SystemBase):
         @param model_num Read multi-model PDB and return that model
         @param soft_check If True, it only warns if there are sequence mismatches between the pdb and the Molecules sequence
                           If False (Default), it raises and exit when there are sequence mismatches.
+        @param pdb_code  Use if you want to store the PDB code (otherwise will extract from filename)
         \note After offset, we expect the PDB residue numbering to match the FASTA file
         """
         # get IMP.atom.Residues from the pdb file
-        rhs=system_tools.get_structure(self.mdl,pdb_fn,chain_id,res_range,offset,ca_only=ca_only)
+        rhs = system_tools.get_structure(self.mdl,pdb_fn,chain_id,res_range,offset,ca_only=ca_only)
         if len(rhs)>len(self.residues):
             print('ERROR: You are loading',len(rhs), \
                 'pdb residues for a sequence of length',len(self.residues),'(too many)')
@@ -323,18 +324,12 @@ class Molecule(SystemBase):
         # load those into the existing pmi Residue objects, and return contiguous regions
         atomic_res=set() # collect integer indexes of atomic residues!
         for nrh,rh in enumerate(rhs):
-            idx=rh.get_index()
-            internal_res=self.residues[idx-1]
-            if internal_res.get_code()!=IMP.atom.get_one_letter_code(rh.get_residue_type()):
-                if not soft_check:
-                    raise StructureError('ERROR: PDB residue index',idx,'is',
-                                     IMP.atom.get_one_letter_code(rh.get_residue_type()),
-                                     'and sequence residue is',internal_res.get_code())
-                else:
-                    print('WARNING: PDB residue index',idx,'is',
-                                     IMP.atom.get_one_letter_code(rh.get_residue_type()),
-                                     'and sequence residue is',internal_res.get_code())
+            idx = rh.get_index()
+            internal_res = self.residues[idx-1]
+            if pdb_code is None:
+                pdb_code = os.path.splitext(os.path.basename(pdb_fn))[0]
             internal_res.set_structure(rh,soft_check)
+            internal_res.set_structure_source(pdb_code,chain_id)
             atomic_res.add(internal_res)
         return atomic_res
 
@@ -377,7 +372,9 @@ class Molecule(SystemBase):
             # if this is a clone, first copy all representations and structure
             if self.mol_to_clone is not None:
                 for nr,r in enumerate(self.mol_to_clone.residues):
-                    self.residues[nr].set_structure(IMP.atom.Residue(IMP.atom.create_clone(r.hier)))
+                    self.residues[nr].set_structure(IMP.atom.Residue(IMP.atom.create_clone(r.get_hierarchy())))
+                    if r.get_structure_source() is not None:
+                        self.residues[nr].set_structure_source(*r.get_structure_source())
                 if self.transformation is not None:
                     for r in self.residues:
                         IMP.atom.transform(r.hier,self.transformation)
@@ -441,7 +438,7 @@ class Sequences(object):
 
 
 class _Residue(object):
-    """Stores basic residue information, even without structure available."""
+    """Temporarily stores residue information, even without structure available."""
     # Consider implementing __hash__ so you can select.
     def __init__(self,molecule,code,index):
         """setup a Residue
@@ -454,6 +451,7 @@ class _Residue(object):
                                 get_residue_type_from_one_letter_code(code),
                                 index)
         self.representations = defaultdict(set)
+        self.structure_source = None
     def __str__(self):
         return self.get_code()+str(self.get_index())
     def __repr__(self):
@@ -473,20 +471,32 @@ class _Residue(object):
         return self.hier.get_residue_type()
     def get_hierarchy(self):
         return self.hier
-    def get_has_coordinates(self):
-        if len(self.hier.get_children())>0:
-            return True
-        else:
-            return False
+    def get_has_structure_source(self):
+        return (self.structure_source is not None)
+
     def set_structure(self,res,soft_check=False):
         if res.get_residue_type()!=self.hier.get_residue_type():
-            if not soft_check:
-                raise StructureError("Adding structure to this residue, but it's the wrong type!")
+            if soft_check:
+                self.hier.set_residue_type((res.get_residue_type()))
+                print('WARNING: PDB residue index',self.get_index(),'is',
+                      IMP.atom.get_one_letter_code(res.get_residue_type()),
+                      'and sequence residue is',self.get_code())
+            else:
+                raise StructureError('ERROR: PDB residue index',self.get_index(),'is',
+                                     IMP.atom.get_one_letter_code(res.get_residue_type()),
+                                     'and sequence residue is',self.get_code())
+
         for a in res.get_children():
             self.hier.add_child(a)
             atype=IMP.atom.Atom(a).get_atom_type()
             a.get_particle().set_name('Atom %s of residue %i'%(atype.__str__().strip('"'),
                                                                self.hier.get_index()))
+    def set_structure_source(self,pdb_code,chain_id):
+        self.structure_source = (pdb_code,chain_id)
+
+    def get_structure_source(self):
+        return self.structure_source
+
     def add_representation(self,rep_type,resolutions):
         self.representations[rep_type] |= set(resolutions)
 

@@ -77,7 +77,7 @@ class TestIOCrosslink(IMP.test.TestCase):
         except KeyError:
             errorstatus=True
         self.assertFalse(errorstatus)
-        cldbkc.set_quantification_key("Quantification")
+        cldbkc.set_quantitation_key("Quantification")
         errorstatus=False
         try:
             cldbkc.check_keys()
@@ -260,6 +260,55 @@ class TestIOCrosslink(IMP.test.TestCase):
         cldb1.append(cldb2)
         pass
 
+    def test_set_value(self):
+        import operator
+        from IMP.pmi.io.crosslink import FilterOperator as FO
+        cldb1=self.setup_cldb("xl_dataset_test.dat")
+        cldb2=self.setup_cldb("xl_dataset_test.dat")
+        cldb1.set_value(cldb1.protein1_key,'FFF',FO(cldb1.protein1_key,operator.eq,"AAA"))
+        cldb1.set_value(cldb1.protein2_key,'HHH',FO(cldb1.protein2_key,operator.eq,"AAA"))
+
+        protein_names_1=[]
+        for xl in cldb1:
+            protein_names_1.append((xl[cldb1.protein1_key],xl[cldb1.protein2_key]))
+
+        protein_names_2=[]
+        for xl in cldb2:
+            protein_names_2.append((xl[cldb1.protein1_key],xl[cldb1.protein2_key]))
+
+        new_protein_names=[]
+        for n,p in enumerate(protein_names_2):
+
+            p1=p[0]
+            p2=p[1]
+            if p1 == 'AAA':
+                p1 = 'FFF'
+            if p2 == 'AAA':
+                p2 = 'HHH'
+            new_protein_names.append((p1,p2))
+
+        self.assertEqual(protein_names_1,new_protein_names)
+
+    def test_offset_residue(self):
+        import operator
+        from IMP.pmi.io.crosslink import FilterOperator as FO
+        cldb1=self.setup_cldb("xl_dataset_test.dat")
+        cldb2=self.setup_cldb("xl_dataset_test.dat")
+        cldb1.offset_residue_index('AAA',100)
+
+        records_1=[]
+        for xl in cldb1:
+            records_1.append(IMP.pmi.io.crosslink._ProteinsResiduesArray(xl))
+
+        records_2=[]
+        for xl in cldb2:
+            records_2.append(IMP.pmi.io.crosslink._ProteinsResiduesArray(xl))
+
+        for n,r in enumerate(records_1):
+            if r[0]=='AAA':
+                self.assertEqual(r[2],records_2[n][2]+100)
+            if r[1]=='AAA':
+                self.assertEqual(r[3],records_2[n][3]+100)
 
 
 if __name__ == '__main__':

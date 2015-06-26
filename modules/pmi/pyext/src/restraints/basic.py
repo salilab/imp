@@ -118,6 +118,9 @@ class DistanceRestraint(object):
     def get_restraint(self):
         return self.rs
 
+    def get_restraint_for_rmf(self):
+        return self.rs
+
     def get_output(self):
         self.m.update()
         output = {}

@@ -18,7 +18,7 @@ class DisulfideCrossLinkRestraint(object):
                  length=6.5,
                  resolution=1,
                  slope=0.01,
-                 label="None"):    
+                 label="None"):
 
         self.m = representation.prot.get_model()
         self.rs = IMP.RestraintSet(self.m, 'likelihood')
@@ -84,7 +84,7 @@ class DisulfideCrossLinkRestraint(object):
         self.xl["Particle2"]=p2
         self.xl["Sigma"]=sigma
         self.xl["Psi"]=psi
-        
+
     def add_to_model(self):
         IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
         IMP.pmi.tools.add_restraint_to_model(self.m, self.rslin)
@@ -265,7 +265,7 @@ class CrossLinkingMassSpectrometryRestraint(object):
                     p2 = ps2[0]
 
                     if p1 == p2 and r1 == r2:
-                        print("CrossLinkingMassSpectrometryRestraint: WARNING> same particle and same residue, skippin cross-link")
+                        print("CrossLinkingMassSpectrometryRestraint: WARNING> same particle and same residue, skipping cross-link")
                         continue
 
                     if new_contribution:
@@ -297,6 +297,7 @@ class CrossLinkingMassSpectrometryRestraint(object):
                         xl[self.CrossLinkDataBase.psi_key]=psiname
                     else:
                         psiname=xl[self.CrossLinkDataBase.psi_key]
+
                     psi=self.create_psi(psiname)
 
 
@@ -310,8 +311,6 @@ class CrossLinkingMassSpectrometryRestraint(object):
                     xl["Particle_sigma2"]=sigma2
                     psii = psi.get_particle().get_index()
                     xl["Particle_psi"]=psi
-
-                    print("B",(p1i, p2i), (s1i, s2i), psii,dr)
 
                     dr.add_contribution((p1i, p2i), (s1i, s2i), psii)
                     xl["Restraint"]=dr
@@ -495,14 +494,14 @@ class CrossLinkingMassSpectrometryRestraint(object):
         ps = {}
         if self.sigma_is_sampled:
             for sigmaname in self.sigma_dictionary:
-                ps["Nuisances_ISDCrossLinkMS_Sigma_" + str(sigmaname) + "_" + self.label] =\
+                ps["Nuisances_CrossLinkingMassSpectrometryRestraint_Sigma_" + str(sigmaname) + "_" + self.label] =\
                     ([self.sigma_dictionary[sigmaname][0]],
                      self.sigma_dictionary[sigmaname][1])
 
         if self.psi_is_sampled:
             for psiname in self.psi_dictionary:
-                    ps["Nuisances_ISDCrossLinkMS_Psi_" +
-                        str(psiname) + "_" + self.label] =\
-                       ([self.psi_dictionary[psiname][0]], self.psi_dictionary[psiname][1])
+                ps["Nuisances_CrossLinkingMassSpectrometryRestraint_Psi_" +
+                    str(psiname) + "_" + self.label] =\
+                   ([self.psi_dictionary[psiname][0]], self.psi_dictionary[psiname][1])
 
         return ps

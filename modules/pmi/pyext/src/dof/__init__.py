@@ -9,33 +9,8 @@ import IMP.algebra
 import IMP.pmi
 import IMP.pmi.topology
 import IMP.pmi.samplers
+import IMP.pmi.tools
 import itertools
-
-def get_hierarchies(spec):
-    """ given PMI Molecule/Residue or IMP objects, return hierarchies """
-    def get_h(s):
-        if type(s) is IMP.atom.Selection:
-            hs = [IMP.atom.Hierarchy(p) for p in s.get_selected_particles()]
-        elif type(s) is IMP.atom.Hierarchy:
-            hs = [s]
-        elif type(s) is IMP.pmi.topology.Molecule:
-            hs = [s.get_hierarchy()]
-        elif type(s) is IMP.pmi.topology._Residue:
-            hs = [s.get_hierarchy()]
-        else:
-            raise Exception("Cannot process type "+str(type(s)))
-        return hs
-
-    if hasattr(spec,'__iter__'):
-        hhs = list(itertools.chain.from_iterable(get_h(item) for item in spec))
-    else:
-        hhs = get_h(spec)
-    return hhs
-
-def get_all_leaves(list_of_hs):
-    """ Just get the leaves from a list of hierarchies """
-    lvs = list(itertools.chain.from_iterable(IMP.atom.get_leaves(item) for item in list_of_hs))
-    return lvs
 
 class DegreesOfFreedom(object):
     """A class to simplify create of constraints and movers for an IMP Hierarchy.
@@ -47,16 +22,18 @@ class DegreesOfFreedom(object):
     def create_rigid_body(self,
                           hspec,
                           max_trans=1.0,
-                          max_rot=0.1):
+                          max_rot=0.1,
+                          name=None):
         """Create rigid body constraint and mover
         @param hspec          Can be one of the following inputs:
                               IMP Selection, Hierarchy,
                               PMI Molecule, Residue, or a list/set
         @param max_trans     Maximum rigid body translation
         @param max_rot       Maximum rigid body rotation
+        @param name          Rigid body name (if None, use IMP default)
         """
-        hs = get_hierarchies(hspec)
-        setup_rb = SetupRigidBody(hs,max_trans,max_rot)
+        hs = IMP.pmi.tools.get_hierarchies_from_spec(hspec)
+        setup_rb = SetupRigidBody(hs,max_trans,max_rot,name)
         self.movers.append(setup_rb)
         return setup_rb
 
@@ -76,7 +53,7 @@ class DegreesOfFreedom(object):
                                  This parameter is the minimum chain length.
         @param chain_max_length  max chain length
         """
-        hiers = get_hierarchies(hspec)
+        hiers = IMP.pmi.tools.get_hierarchies_from_spec(hspec)
         setup_srb = SetupSuperRigidBody(hiers,max_trans,max_rot,chain_min_length,chain_max_length)
         self.movers.append(setup_srb)
         return setup_srb
@@ -90,7 +67,7 @@ class DegreesOfFreedom(object):
                                  PMI Molecule, Residue, or a list/set
         @param max_trans         Maximum flexible bead translation
         """
-        hiers = get_hierarchies(hspec)
+        hiers = IMP.pmi.tools.get_hierarchies_from_spec(hspec)
         setup_fb = SetupFlexibleBeads(hiers,max_trans)
         self.movers.append(setup_fb)
         return setup_fb
@@ -107,13 +84,16 @@ class DegreesOfFreedom(object):
 
 class SetupRigidBody(object):
     """Sets up and stores RigidBodyMover and BallMovers for NonRigidMembers"""
-    def __init__(self,hiers,max_trans,max_rot):
-        self.rb = IMP.atom.create_rigid_body(hiers) #should we check first?
+    def __init__(self,hiers,max_trans,max_rot,name):
+        self.rb = IMP.atom.create_rigid_body(hiers)
+        self.rb.set_coordinates_are_optimized(True)
         self.rb_mover = IMP.core.RigidBodyMover(self.rb,max_trans,max_rot)
         self.flexible_movers = []
+        if name is not None:
+            self.rb.set_name(name)
 
     def create_non_rigid_members(self,spec,max_trans=1.0):
-        hiers = get_hierarchies(spec)
+        hiers = IMP.pmi.tools.get_hierarchies_from_spec(spec)
         floatkeys = [IMP.FloatKey(4), IMP.FloatKey(5), IMP.FloatKey(6)]
         idxs = set(self.rb.get_member_indexes())
         for h in hiers:
@@ -150,7 +130,7 @@ class SetupSuperRigidBody(object):
 
     def _setup_srb(self,hiers,max_trans,max_rot):
         srbm = IMP.pmi.TransformMover(hiers[0].get_model(), max_trans, max_rot)
-        for p in get_all_leaves(hiers):
+        for p in IMP.pmi.tools.get_all_leaves(hiers):
             if IMP.core.RigidMember.get_is_setup(p) or IMP.core.NonRigidMember.get_is_setup(p):
                 srbm.add_rigid_body_particle(p)
             else:
@@ -163,7 +143,7 @@ class SetupSuperRigidBody(object):
 class SetupFlexibleBeads(object):
     def __init__(self,hiers,max_trans):
         self.movers = []
-        for p in get_all_leaves(hiers):
+        for p in IMP.pmi.tools.get_all_leaves(hiers):
             if IMP.core.RigidMember.get_is_setup(p) or IMP.core.NonRigidMember.get_is_setup(p):
                 raise Exception("Cannot create flexible beads from members of rigid body")
             self.movers.append(IMP.core.BallMover([p],max_trans))

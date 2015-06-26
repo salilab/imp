@@ -12,7 +12,7 @@
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/DistanceRestraint.h>
 #include <IMP/core/XYZR.h>
-#include <IMP/base/Vector.h>
+#include <IMP/Vector.h>
 
 IMPPMI_BEGIN_NAMESPACE
 

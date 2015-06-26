@@ -83,7 +83,13 @@ class TestDOF(IMP.test.TestCase):
         mvs = fbs.get_movers()
         self.assertEqual(len(mvs),3)
 
-
+    def test_multi_select(self):
+        mdl = IMP.Model()
+        molecule = self.init_topology1(mdl)
+        hier = molecule.get_hierarchy()
+        res = IMP.pmi.tools.select_at_all_resolutions(hier,residue_index=1)
+        self.assertEqual(len(res['BEADS'][0]),9)
+        self.assertEqual(len(res['BEADS'][1]),1)
     '''
     def test_constraint_symmetry(self):
         hierarchy=self.init_topology()
