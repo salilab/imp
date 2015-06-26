@@ -11,7 +11,6 @@
 // Python.h must be included first
 #include <IMP/kernel_config.h>
 #include "../Particle.h"
-#include "../ParticleTuple.h"
 #include "../Restraint.h"
 #include "../SingletonScore.h"
 #include "../macros.h"

@@ -11,7 +11,6 @@
 #include <IMP/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
-#include "ParticleTuple.h"
 #include "internal/container_helpers.h"
 #include "model_object_helpers.h"
 

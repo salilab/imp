@@ -14,7 +14,7 @@
 #include "container_base.h"
 #include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
-#include "ParticleTuple.h"
+#include "base_types.h"
 #include <IMP/ref_counted_macros.h>
 #include <IMP/check_macros.h>
 #include <IMP/Pointer.h>

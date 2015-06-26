@@ -11,7 +11,6 @@
 
 #include "../base_types.h"
 #include "../Particle.h"
-#include "../ParticleTuple.h"
 #include "../particle_index.h"
 #include "../Model.h"
 #include "../ModelObject.h"
