@@ -105,9 +105,6 @@ class IMPKERNELEXPORT Model : public Object
   IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
 
   Vector<PointerMember<Object> > model_data_;
-  ////////////// DEPRECATED
-  // for old code that uses the model for the scoring function
-  PointerMember<RestraintSet> restraints_;
 
   void do_add_dependencies(const ModelObject *mo);
   void do_clear_required_score_states(ModelObject *mo);
@@ -322,24 +319,9 @@ class IMPKERNELEXPORT Model : public Object
   IMP_OBJECT_METHODS(Model);
 
  public:
-  /** \deprecated_at{2.1} Use a ScoringFunction instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  ScoringFunction *create_model_scoring_function();
-
-  /** \deprecated_at{2.1} Add to a ScoringFunction instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  void add_restraint(Restraint *r);
-
 #if !defined(IMP_DOXYGEN)
   virtual void do_destroy() IMP_OVERRIDE;
 #endif
-
-  /** \deprecated_at{2.1} Use a ScoringFunction instead.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  double evaluate(bool tf, bool warn = true);
-  /** \deprecated_at{2.1} Using a ScoringFunction instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  RestraintSet *get_root_restraint_set();
 };
 
 IMPKERNEL_END_NAMESPACE

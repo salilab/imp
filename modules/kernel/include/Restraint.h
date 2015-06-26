@@ -234,7 +234,6 @@ class IMPKERNELEXPORT RestraintsAdaptor :
     public InputAdaptor
 #endif
     {
-  static Restraint *get(Model *sf);
   static Restraint *get(Restraint *r) { return r; }
 
  public:
@@ -244,8 +243,6 @@ class IMPKERNELEXPORT RestraintsAdaptor :
       : Restraints(sf.begin(), sf.end()) {}
   RestraintsAdaptor(Restraint *sf) : Restraints(1, sf) {}
 #ifndef IMP_DOXYGEN
-  RestraintsAdaptor(Model *sf);
-  RestraintsAdaptor(const ModelsTemp &sf);
   template <class T>
   RestraintsAdaptor(internal::PointerBase<T> t)
       : Restraints(1, get(t)) {}

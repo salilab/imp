@@ -4,9 +4,10 @@ ChangeLog {#changelog}
 # For next stable IMP release #
 - The IMP::base and IMP::kernel namespaces have been removed (use the top-level
   IMP namespace instead).
-- IMP::Optimizer and IMP::Sampler now require an IMP::ScoringFunction to be set
-  before they are used (since IMP::Model no longer has an implicit scoring
-  function).
+- IMP::Model no longer has an implicit scoring function. This means that
+  Model::evaluate() and Model::add_restraint() have been removed (use an
+  IMP::ScoringFunction instead). IMP::Optimizer and IMP::Sampler now also
+  require an IMP::ScoringFunction to be explicitly set before they are used.
 
 # 2.5.0 - 2015-06-30 # {#changelog_2_5_0}
 - Documentation has been revised and updated; the main manual now gives a

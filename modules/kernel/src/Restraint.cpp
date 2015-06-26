@@ -230,12 +230,4 @@ void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   set_was_used(true);
 }
 
-Restraint *RestraintsAdaptor::get(Model *sf) {
-  return sf->get_root_restraint_set();
-}
-RestraintsAdaptor::RestraintsAdaptor(Model *sf)
-    : Restraints(1, sf->get_root_restraint_set()) {}
-RestraintsAdaptor::RestraintsAdaptor(const ModelsTemp &sf)
-    : Restraints(1, sf[0]->get_root_restraint_set()) {}
-
 IMPKERNEL_END_NAMESPACE
