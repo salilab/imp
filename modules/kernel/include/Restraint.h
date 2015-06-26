@@ -244,8 +244,12 @@ class IMPKERNELEXPORT RestraintsAdaptor :
       : Restraints(sf.begin(), sf.end()) {}
   RestraintsAdaptor(Restraint *sf) : Restraints(1, sf) {}
 #ifndef IMP_DOXYGEN
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.5)
   RestraintsAdaptor(Model *sf);
+
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.5)
   RestraintsAdaptor(const ModelsTemp &sf);
+
   template <class T>
   RestraintsAdaptor(internal::PointerBase<T> t)
       : Restraints(1, get(t)) {}

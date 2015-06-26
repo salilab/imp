@@ -233,9 +233,15 @@ void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
 Restraint *RestraintsAdaptor::get(Model *sf) {
   return sf->get_root_restraint_set();
 }
+
 RestraintsAdaptor::RestraintsAdaptor(Model *sf)
-    : Restraints(1, sf->get_root_restraint_set()) {}
+    : Restraints(1, sf->get_root_restraint_set()) {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.5, "Use a ScoringFunction instead");
+}
+
 RestraintsAdaptor::RestraintsAdaptor(const ModelsTemp &sf)
-    : Restraints(1, sf[0]->get_root_restraint_set()) {}
+    : Restraints(1, sf[0]->get_root_restraint_set()) {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.5, "Use a ScoringFunction instead");
+}
 
 IMPKERNEL_END_NAMESPACE
