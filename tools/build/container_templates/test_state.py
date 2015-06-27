@@ -15,11 +15,11 @@ class SingletonTestModifier(IMP.SingletonModifier):
     def do_show(self, fh):
         fh.write("Test Particle")
 
-    def apply(self, a0, da=None):
-        if a0.has_attribute(self.k):
+    def apply_index(self, a0, da=None):
+        if m.get_has_attribute(self.k, a0):
             pass
         else:
-            a0.add_attribute(self.k, 1)
+            m.add_attribute(self.k, a0, 1)
 
     def get_version_info(self):
         return 1
