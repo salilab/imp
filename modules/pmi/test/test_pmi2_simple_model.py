@@ -2,6 +2,8 @@ import IMP
 import IMP.pmi
 import IMP.pmi.topology
 import IMP.test
+import IMP.pmi.macros
+import IMP.pmi.dof
 
 class TestPMI2SimpleModel(IMP.test.TestCase):
     def test_it(self):
@@ -34,7 +36,6 @@ class TestPMI2SimpleModel(IMP.test.TestCase):
         m3.add_representation(resolutions=[1])
 
 
-        import IMP.pmi.dof
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
 
         rb1 = dof.create_rigid_body(m1)
@@ -45,8 +46,6 @@ class TestPMI2SimpleModel(IMP.test.TestCase):
         rb3.create_non_rigid_members(m3.get_non_atomic_residues())
 
         srb = dof.create_super_rigid_body([m1,m2,m3])
-
-        import IMP.pmi.macros
 
         rex=IMP.pmi.macros.ReplicaExchange0(mdl,root_hier=st1.get_hierarchy(),monte_carlo_sample_objects=dof)
         rex.execute_macro()
