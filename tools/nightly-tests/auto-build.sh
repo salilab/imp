@@ -61,15 +61,20 @@ fi
 SORTDATE=`date -u "+%Y%m%d"`
 DATE=`date -u +'%Y/%m/%d'`
 IMPINSTALL=${IMPTOP}/${SORTDATE}-${shortrev}
-# Make sure VERSION file is reasonable
-(cd imp && rm -f VERSION && tools/build/make_version.py --source=.)
-if [ ${BRANCH} = "develop" ]; then
-  # For nightly builds, prepend the date so the packages are upgradeable
-  IMPVERSION="${SORTDATE}.develop.${shortrev}"
-else
+if [ -e imp/VERSION ]; then
+  # If VERSION file is present, use it
   IMPVERSION="`cat imp/VERSION | sed -e 's/[ /-]/./g'`"
-  # For stable releases, assign submodules the same version as IMP itself
-  rm -f imp/modules/*/VERSION
+else
+  # Make sure VERSION file is reasonable
+  (cd imp && tools/build/make_version.py --source=.)
+  if [ ${BRANCH} = "develop" ]; then
+    # For nightly builds, prepend the date so the packages are upgradeable
+    IMPVERSION="${SORTDATE}.develop.${shortrev}"
+  else
+    IMPVERSION="`cat imp/VERSION | sed -e 's/[ /-]/./g'`"
+    # For stable releases, assign submodules the same version as IMP itself
+    rm -f imp/modules/*/VERSION
+  fi
 fi
 IMPSRCTGZ=${IMPINSTALL}/build/sources/imp-${IMPVERSION}.tar.gz
 rm -rf ${IMPINSTALL}
