@@ -50,11 +50,6 @@ class AccumulatorScoreModifier : public Score::Modifier {
     score_ = 0;
   }
 
-  virtual void apply(typename Score::PassArgument a) const IMP_OVERRIDE {
-    apply_index(IMP::internal::get_model(a),
-                IMP::internal::get_index(a));
-  }
-
   virtual void apply_index(Model *m, typename Score::PassIndexArgument a) const
       IMP_OVERRIDE {
     double score =
