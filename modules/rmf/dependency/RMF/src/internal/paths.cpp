@@ -10,6 +10,9 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/version.hpp>
 #include <string>
+#if BOOST_VERSION <= 104100
+#include <cstdio> // for tmpnam()
+#endif
 
 #include "RMF/compiler_macros.h"
 #include "RMF/internal/paths.h"
