@@ -2,7 +2,7 @@
 
 # Update the copy of PMI inside the IMP repository.
 
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+SCRIPT_DIR="$(dirname "$0")"
 
 source "${SCRIPT_DIR}/../dev_tools/git/subtree-utils.sh"
 
