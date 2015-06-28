@@ -37,12 +37,6 @@ class IMPMISCEXPORT DecayPairContainerOptimizerState
       PairPredicate *pred, const ParticleIndexPairs &initial_list,
       std::string name = "DecayPairContainerOptimizerState%1%");
 
-  //! \deprecated_at{2.5} Use the index-based constructor instead
-  IMPMISC_DEPRECATED_METHOD_DECL(2.5)
-  DecayPairContainerOptimizerState(
-      PairPredicate *pred, const ParticlePairsTemp &initial_list,
-      std::string name = "DecayPairContainerOptimizerState%1%");
-
   PairContainer *get_output_container() const { return output_; }
   virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DecayPairContainerOptimizerState);
