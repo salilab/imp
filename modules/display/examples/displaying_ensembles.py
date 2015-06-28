@@ -1,6 +1,6 @@
 ## \example display/displaying_ensembles.py
 # The script shows a couple experiments with trying to visualize an
-# ensembe of structures. The ensemble is fairly tight on the assembly
+# ensemble of structures. The ensemble is fairly tight on the assembly
 # scale, but there is significant variation between the location and
 # orientation of the individual proteins (which were modeled as rigid
 # bodies). To save space, the models have had their sidechain atoms
@@ -9,6 +9,10 @@
 from __future__ import print_function
 import IMP.display
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv,
+    "Experiments with trying to visualize an ensemble of structures")
 
 Segment = IMP.algebra.Segment3D
 Cylinder = IMP.algebra.Cylinder3D
