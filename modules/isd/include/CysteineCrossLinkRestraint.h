@@ -70,20 +70,6 @@ class IMPISDEXPORT CysteineCrossLinkRestraint : public Restraint {
                              ParticleIndexAdaptor weight, CrossLinkData *data,
                              CysteineCrossLinkData *ccldata);
 
-#ifndef IMP_DOXYGEN
-  IMPISD_DEPRECATED_METHOD_DECL(2.5)
-  CysteineCrossLinkRestraint(Particle *beta, Particle *sigma,
-                             Particle *epsilon,
-                             Particle *weight, CrossLinkData *data,
-                             double fexp);
-
-  IMPISD_DEPRECATED_METHOD_DECL(2.5)
-  CysteineCrossLinkRestraint(Particle *beta, Particle *sigma,
-                             Particle *epsilon,
-                             Particle *weight, CrossLinkData *data,
-                             CysteineCrossLinkData *ccldata);
-#endif
-
   /* call for probability */
   double get_probability() const;
 
