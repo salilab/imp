@@ -23,15 +23,6 @@ ConsecutivePairContainer::ConsecutivePairContainer(
   init();
 }
 
-ConsecutivePairContainer::ConsecutivePairContainer(
-    const ParticlesTemp &ps, std::string name)
-    : PairContainer(ps[0]->get_model(), name),
-      ps_(IMP::internal::get_index(ps)) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5,
-                                 "Use the index-based constructor instead.");
-  init();
-}
-
 // add key of this container as attribute to all particles
 // if there might be overlaps - create a different keys for each instance
 void ConsecutivePairContainer::init() {
@@ -74,15 +65,6 @@ ConsecutivePairFilter::ConsecutivePairFilter(ConsecutivePairContainer *cpc)
 ExclusiveConsecutivePairContainer::ExclusiveConsecutivePairContainer(
     Model *m, const ParticleIndexes &ps, std::string name)
     : PairContainer(m, name), ps_(ps) {
-  init();
-}
-
-ExclusiveConsecutivePairContainer::ExclusiveConsecutivePairContainer(
-    const ParticlesTemp &ps, std::string name)
-    : PairContainer(ps[0]->get_model(), name),
-      ps_(IMP::internal::get_index(ps)) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5,
-                                 "Use the index-based constructor instead.");
   init();
 }
 
