@@ -5,9 +5,6 @@
 from __future__ import print_function
 import IMP.display
 
-# or IMP.display.ChimeraWriter
-# if using chimera, make sure there is a %1% in the name to support
-# multiple frames
 name = IMP.create_temporary_file_name("example", ".py")
 print("File name is", name)
 w = IMP.display.PymolWriter(name)
