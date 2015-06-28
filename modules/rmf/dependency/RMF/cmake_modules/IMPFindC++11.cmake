@@ -2,15 +2,15 @@ if(NOT DEFINED IMP_CXX11)
 set(IMP_CXX11 1 CACHE BOOL "Whether to use C++11 if possible")
 endif()
 
+# Put flags in a cmake variable so we can set them before running compiler
+# checks (elsewhere in the build)
+set(IMP_CXX11_FLAGS "" CACHE INTERNAL "Flags to enable C++11 support" FORCE)
+
 if(IMP_CXX11)
 if (APPLE)
   execute_process(COMMAND uname -v OUTPUT_VARIABLE DARWIN_VERSION)
   string(REGEX MATCH "[0-9]+" DARWIN_VERSION ${DARWIN_VERSION})
 endif()
-
-# Put flags in a cmake variable so we can set them before running compiler
-# checks (elsewhere in the build)
-set(IMP_CXX11_FLAGS "" CACHE INTERNAL "Flags to enable C++11 support" FORCE)
 
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
 execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE
@@ -41,6 +41,6 @@ else()
 endif()
 endif()
 
-if(DEFINED ${IMP_CXX11_FLAGS})
+if(IMP_CXX11_FLAGS)
   add_definitions(${IMP_CXX11_FLAGS})
 endif()
