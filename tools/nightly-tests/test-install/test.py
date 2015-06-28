@@ -10,12 +10,6 @@ import os
 
 class IMPInstallTests(unittest.TestCase):
 
-    def test_compat_modules(self):
-        """Check that IMP.base and IMP.kernel compatibility works"""
-        # Should work without explicit import
-        m = IMP.base.get_check_level()
-        m = IMP.kernel.Model()
-
     def test_modules_installed(self):
         """Check install of basic set of modules"""
         IMP.set_log_level(IMP.VERBOSE)
