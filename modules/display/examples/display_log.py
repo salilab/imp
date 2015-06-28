@@ -11,13 +11,11 @@ IMP.setup_from_argv(sys.argv,
 
 m = IMP.Model()
 ps = IMP.core.create_xyzr_particles(m, 20, 5)
-c = IMP.container.ListSingletonContainer(ps)
+c = IMP.container.ListSingletonContainer(m, ps)
 
-# write it to a series of files, if the file name did not contain %1%, then
-# it would concatenate the outputs into a single file instead. Concatenating the
-# output can be quite useful with Pymol as that makes it less likely to crash.
+# Write outputs into a single file.
 log = IMP.display.WriteOptimizerState(
-    m, IMP.display.ChimeraWriter("log_file.%1%.pym"))
+    m, IMP.display.PymolWriter("log_file.pym"))
 # the logging occurs ever two frames
 log.set_period(2)
 g = IMP.core.XYZRsGeometry(c)
