@@ -10,7 +10,6 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <IMP/display/writer_macros.h>
 #include <IMP/display/PymolWriter.h>
-#include <IMP/display/ChimeraWriter.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -70,7 +69,5 @@ Writer *create_writer(std::string name) {
 WriterAdaptor::~WriterAdaptor() {}
 
 IMP_REGISTER_WRITER(PymolWriter, ".pym")
-
-IMP_REGISTER_WRITER(ChimeraWriter, ".py")
 
 IMPDISPLAY_END_NAMESPACE

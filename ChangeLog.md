@@ -4,6 +4,7 @@ ChangeLog {#changelog}
 # For next stable IMP release #
 - The IMP::base and IMP::kernel namespaces have been removed (use the top-level
   IMP namespace instead).
+- The IMP::display::ChimeraWriter class has been removed (use IMP::rmf instead).
 - IMP::Model no longer has an implicit scoring function. This means that
   Model::evaluate() and Model::add_restraint() have been removed (use an
   IMP::ScoringFunction instead). IMP::Optimizer and IMP::Sampler now also
