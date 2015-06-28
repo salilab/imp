@@ -15,7 +15,7 @@ class SingletonTestModifier(IMP.SingletonModifier):
     def do_show(self, fh):
         fh.write("Test Particle")
 
-    def apply_index(self, a0, da=None):
+    def apply_index(self, m, a0, da=None):
         if m.get_has_attribute(self.k, a0):
             pass
         else:
@@ -41,9 +41,9 @@ class PairTestModifier(IMP.PairModifier):
     def do_show(self, fh):
         fh.write("Test Particle")
 
-    def apply(self, a0, da=None):
-        self.sm.apply(a0[0])
-        self.sm.apply(a0[1])
+    def apply_index(self, m, a0, da=None):
+        self.sm.apply_index(m, a0[0])
+        self.sm.apply_index(m, a0[1])
 
     def get_version_info(self):
         return 1
