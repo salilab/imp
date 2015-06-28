@@ -4,6 +4,10 @@
 
 from __future__ import print_function
 import IMP.display
+import sys
+
+IMP.setup_from_argv(sys.argv,
+    "Write basic geometric primitives to a file with color and name.")
 
 name = IMP.create_temporary_file_name("example", ".py")
 print("File name is", name)

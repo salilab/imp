@@ -1,5 +1,5 @@
 ## \example display/show_particles_as_spheres.py
-# Write two colored set of random IMP::core::XYZR particles to a Pymol
+# Write two colored sets of random IMP::core::XYZR particles to a Pymol
 # input file.
 
 import IMP
@@ -7,7 +7,10 @@ import IMP.algebra
 import IMP.container
 import IMP.core
 import IMP.display
+import sys
 
+IMP.setup_from_argv(sys.argv,
+    "Write two colored sets of random XYZR particles to a Pymol input file")
 
 # create two lists of random particles for display
 m = IMP.Model()
