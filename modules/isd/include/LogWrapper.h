@@ -10,13 +10,13 @@
 #define IMPISD_LOG_WRAPPER_H
 
 #include "isd_config.h"
-#include <IMP/kernel/container_macros.h>
+#include <IMP/container_macros.h>
 #include <IMP/Restraint.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 //! Calculate the -Log of a list of restraints.
-class IMPISDEXPORT LogWrapper : public kernel::Restraint {
+class IMPISDEXPORT LogWrapper : public Restraint {
   void on_add(Restraint *r);
   void on_change();
   static void on_remove(LogWrapper *container, Restraint *r);
@@ -24,16 +24,16 @@ class IMPISDEXPORT LogWrapper : public kernel::Restraint {
 
    public:
     //! Create an empty set that is registered with the model
-    LogWrapper(kernel::Model *m, double weight, const std::string &name = "LogWrapper %1%");
+    LogWrapper(Model *m, double weight, const std::string &name = "LogWrapper %1%");
     //! Create an empty set that is registered with the model
-    LogWrapper(kernel::Model *m, const std::string &name = "LogWrapper %1%");
+    LogWrapper(Model *m, const std::string &name = "LogWrapper %1%");
     //! Create a set that is registered with the model
     LogWrapper(const RestraintsTemp &rs, double weight,
                const std::string &name = "LogWrapper %1%");
 
     virtual double unprotected_evaluate(
-        IMP::kernel::DerivativeAccumulator* accum) const IMP_OVERRIDE;
-    virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+        IMP::DerivativeAccumulator* accum) const IMP_OVERRIDE;
+    virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
     IMP_OBJECT_METHODS(LogWrapper);
 
     IMP_LIST_ACTION(public, Restraint, Restraints, restraint, restraints,

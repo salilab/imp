@@ -5,13 +5,13 @@
  *
  */
 
-#include <IMP/kernel/RestraintSet.h>
-#include <IMP/kernel/Model.h>
-#include <IMP/base/log.h>
-#include <IMP/kernel/internal/utility.h>
-#include <IMP/kernel/generic.h>
-#include <IMP/kernel/ScoringFunction.h>
-#include <IMP/kernel/internal/restraint_evaluation.h>
+#include <IMP/RestraintSet.h>
+#include <IMP/Model.h>
+#include <IMP/log.h>
+#include <IMP/internal/utility.h>
+#include <IMP/generic.h>
+#include <IMP/ScoringFunction.h>
+#include <IMP/internal/restraint_evaluation.h>
 #include <boost/tuple/tuple.hpp>
 #include <memory>
 #include <utility>
@@ -19,13 +19,13 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-RestraintSet::RestraintSet(kernel::Model *m, double weight,
+RestraintSet::RestraintSet(Model *m, double weight,
                            const std::string &name)
     : Restraint(m, name) {
   set_weight(weight);
 }
 
-RestraintSet::RestraintSet(kernel::Model *m, const std::string &name)
+RestraintSet::RestraintSet(Model *m, const std::string &name)
     : Restraint(m, name) {
   set_weight(1.0);
 }
@@ -108,7 +108,7 @@ Restraints RestraintSet::do_create_decomposition() const {
   Restraints ret;
   for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
        ++it) {
-    base::Pointer<Restraint> r = (*it)->create_decomposition();
+    Pointer<Restraint> r = (*it)->create_decomposition();
     if (r) {
       ret.push_back(r);
     }
@@ -119,7 +119,7 @@ Restraints RestraintSet::do_create_current_decomposition() const {
   Restraints ret;
   for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
        ++it) {
-    base::Pointer<Restraint> r = (*it)->create_current_decomposition();
+    Pointer<Restraint> r = (*it)->create_current_decomposition();
     if (r) {
       ret.push_back(r);
     }
@@ -129,7 +129,7 @@ Restraints RestraintSet::do_create_current_decomposition() const {
 
 ScoringFunction *RestraintSet::create_scoring_function(double weight,
                                                        double max) const {
-  return IMP::kernel::create_scoring_function(
+  return IMP::create_scoring_function(
       const_cast<RestraintSet *>(this), weight, max, get_name() + " scoring");
 }
 

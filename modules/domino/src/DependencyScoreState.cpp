@@ -7,7 +7,7 @@
  */
 
 #include <IMP/domino/DependencyScoreState.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 DependencyScoreState::DependencyScoreState(Model *m)
@@ -17,7 +17,7 @@ void DependencyScoreState::do_before_evaluate() {}
 void DependencyScoreState::do_after_evaluate(DerivativeAccumulator *) {}
 
 ModelObjectsTemp DependencyScoreState::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
+  ModelObjectsTemp ret;
   ret += inputp_;
   for (unsigned int i = 0; i < inputc_.size(); ++i) {
     ret +=
@@ -28,7 +28,7 @@ ModelObjectsTemp DependencyScoreState::do_get_inputs() const {
 }
 
 ModelObjectsTemp DependencyScoreState::do_get_outputs() const {
-  kernel::ModelObjectsTemp ret;
+  ModelObjectsTemp ret;
   ret += outputp_;
   for (unsigned int i = 0; i < outputc_.size(); ++i) {
     ret += IMP::get_particles(get_model(),

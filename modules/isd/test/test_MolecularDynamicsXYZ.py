@@ -19,29 +19,29 @@ kcal2mod = 4.1868e-4
 cmass = 12.011
 
 
-class XTransRestraint(IMP.kernel.Restraint):
+class XTransRestraint(IMP.Restraint):
 
     """Attempt to move the whole system along the x axis"""
 
     def __init__(self, m, strength):
-        IMP.kernel.Restraint.__init__(self, m, "XTransRestraint %1%")
+        IMP.Restraint.__init__(self, m, "XTransRestraint %1%")
         self.strength = strength
 
     def unprotected_evaluate(self, accum):
+        m = self.get_model()
         e = 0.
-        for p in self.get_model().get_particles():
-            if IMP.isd.Nuisance.get_is_setup(p):
-                e += p.get_value(nkey) * self.strength
+        for p in m.get_particle_indexes():
+            if IMP.isd.Nuisance.get_is_setup(m, p):
+                e += m.get_attribute(nkey, p) * self.strength
             else:
-                e += p.get_value(xkey) * self.strength
+                e += m.get_attribute(xkey, p) * self.strength
         if accum:
-            for p in self.get_model().get_particles():
+            for pi in m.get_particle_indexes():
+                p = m.get_particle(pi)
                 if IMP.isd.Nuisance.get_is_setup(p):
                     p.add_to_derivative(nkey, self.strength, accum)
                 else:
                     p.add_to_derivative(xkey, self.strength, accum)
-                    p.add_to_derivative(ykey, 0.0, accum)
-                    p.add_to_derivative(zkey, 0.0, accum)
         return e
 
     def get_version_info(self):
@@ -51,7 +51,8 @@ class XTransRestraint(IMP.kernel.Restraint):
         fh.write("Test restraint")
 
     def do_get_inputs(self):
-        return [x for x in self.get_model().get_particles()]
+        m = self.get_model()
+        return IMP.get_particles(m, m.get_particle_indexes())
 
 
 class WriteTrajState(IMP.OptimizerState):
@@ -63,14 +64,16 @@ class WriteTrajState(IMP.OptimizerState):
         self.traj = traj
 
     def update(self):
-        model = self.get_optimizer().get_model()
+        m = self.get_optimizer().get_model()
         step = []
-        for p in model.get_particles():
-            if IMP.isd.Nuisance.get_is_setup(p):
-                step.append((p.get_value(nkey), p.get_value(vnkey)))
+        for p in m.get_particle_indexes():
+            if IMP.isd.Nuisance.get_is_setup(m, p):
+                step.append((m.get_attribute(nkey, p),
+                             m.get_attribute(vnkey, p)))
             else:
-                step.append((p.get_value(xkey), p.get_value(ykey),
-                             p.get_value(zkey), p.get_value(vxkey)))
+                step.append((m.get_attribute(xkey, p), m.get_attribute(ykey, p),
+                             m.get_attribute(zkey, p),
+                             m.get_attribute(vxkey, p)))
         self.traj.append(step)
 
 
@@ -81,8 +84,8 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """Set up particles and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(0)
-        self.model = IMP.kernel.Model()
+        IMP.set_log_level(0)
+        self.model = IMP.Model()
         self.particles = []
         self.particles.append(self.create_point_particle(self.model,
                                                          -43.0, 65.0, 93.0))
@@ -111,8 +114,10 @@ class Tests(IMP.test.TestCase):
 
     def _optimize_model(self, timestep):
         """Run a short MD optimization on the model."""
-        start = [[p.get_value(xkey), p.get_value(ykey), p.get_value(zkey)]
-                 for p in self.model.get_particles()]
+        start = [[self.model.get_attribute(xkey, p),
+                  self.model.get_attribute(ykey, p),
+                  self.model.get_attribute(zkey, p)]
+                 for p in self.model.get_particle_indexes()]
         # Add starting (step 0) position to the trajectory, with zero velocity
         traj = [[x + [0] for x in start]]
         state = WriteTrajState(self.model, traj)
@@ -126,7 +131,7 @@ class Tests(IMP.test.TestCase):
         timestep = 4.0
         strength = 50.0
         r = XTransRestraint(self.model, strength)
-        self.model.add_restraint(r)
+        self.md.set_scoring_function(r)
         (start, traj) = self._optimize_model(timestep)
         delttm = -timestep * kcal2mod / cmass
         self._check_trajectory(start, traj, timestep,
@@ -137,7 +142,7 @@ class Tests(IMP.test.TestCase):
         timestep = 4.0
         strength = 5000.0
         r = XTransRestraint(self.model, strength)
-        self.model.add_restraint(r)
+        self.md.set_scoring_function(r)
         self.md.set_velocity_cap(0.3)
         (start, traj) = self._optimize_model(timestep)
         # Strength is so high that velocity should max out at the cap
@@ -149,17 +154,21 @@ class Tests(IMP.test.TestCase):
 
     def test_non_xyz(self):
         """Should skip XYZ particles without xyz attributes"""
-        p = IMP.kernel.Particle(self.model)
+        p = IMP.Particle(self.model)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
+        r = IMP.RestraintSet(self.model)
+        self.md.set_scoring_function(r)
         self.md.optimize(100)
 
     def test_make_velocities(self):
         """Test that MD generates particle velocities on XYZs"""
+        r = IMP.RestraintSet(self.model)
+        self.md.set_scoring_function(r)
         self.md.optimize(0)
         keys = [IMP.FloatKey(x) for x in ("vx", "vy", "vz")]
-        for p in self.model.get_particles():
+        for p in self.model.get_particle_indexes():
             for key in keys:
-                self.assertTrue(p.has_attribute(key))
+                self.assertTrue(self.model.get_has_attribute(key, p))
 
     def _check_temperature(self, desired, tolerance):
         """Check the temperature of the system"""
@@ -223,6 +232,8 @@ class Tests(IMP.test.TestCase):
                                                         self.particles, 298.0)
         scaler.set_period(10)
         self.md.add_optimizer_state(scaler)
+        r = IMP.RestraintSet(self.model)
+        self.md.set_scoring_function(r)
         self.md.optimize(10)
         # Temperature should have been rescaled to 298.0 at some point:
         self._check_temperature(298.0, 0.1)

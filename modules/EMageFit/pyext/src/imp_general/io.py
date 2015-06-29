@@ -32,7 +32,7 @@ def get_particles_from_points(points, model):
     """
     particles = []
     for x in points:
-        p = IMP.kernel.Particle(model)
+        p = IMP.Particle(model)
         d = IMP.core.XYZR.setup_particle(p)
         d.set_coordinates(alg.Vector3D(x[0], x[1], x[2]))
         d.set_radius(2)
@@ -46,7 +46,7 @@ def get_particles_from_points(points, model):
     """
     particles = []
     for x in points:
-        p = IMP.kernel.Particle(model)
+        p = IMP.Particle(model)
         d = IMP.core.XYZR.setup_particle(p)
         d.set_coordinates(alg.Vector3D(x[0], x[1], x[2]))
         d.set_radius(2)
@@ -57,7 +57,7 @@ def get_particles_from_points(points, model):
 def get_particles_from_vector3ds(vs, model):
     particles = []
     for v in vs:
-        p = IMP.kernel.Particle(model)
+        p = IMP.Particle(model)
         d = IMP.core.XYZR.setup_particle(p)
         d.set_coordinates(v)
         d.set_radius(2)
@@ -76,64 +76,6 @@ def write_particles_as_text(leaves, fn_output):
         x, y, z = xyz.get_coordinates()
         f_output.write("%8.3f %8.3f %8.3f\n" % (x, y, z))
     f_output.close()
-
-
-def write_hierarchy_to_chimera(h, fn):
-    """ Writes a hierarchy contained in h to the file fn """
-    chw = display.ChimeraWriter(fn)
-    g = display.HierarchyGeometry(h)
-    chw.add_geometry(g)
-    g.set_name(fn)
-
-
-def write_particles_to_chimera(ps, fn, name="particles"):
-    """ Writes a bunch o particles to the file fn
-        It is assumed that the particles can be decorated with XYZR
-    """
-    chw = display.ChimeraWriter(fn)
-    lsc = container.ListSingletonContainer(ps, name)
-    g = display.XYZRsGeometry(lsc)
-    chw.add_geometry(g)
-    g.set_name(fn)
-
-
-def write_xyzrs_to_chimera(xyzrs, fn):
-    """ Writes a bunch o particles to the file fn
-        It is assumed that the particles can be decorated with XYZR
-    """
-    ps = [a.get_particle() for a in xyzrs]
-    write_particles_to_chimera(ps, fn)
-
-
-def write_points_to_chimera(points, radius, fn, name="points"):
-    """ Writes a bunch o particles to the file fn
-        It is assumed that the particles can be decorated with XYZR
-    """
-    m = IMP.kernel.Model()
-    ps = []
-    for p in points:
-        pa = IMP.kernel.Particle(m)
-        xyzr = core.XYZR.setup_particle(pa)
-        xyzr.set_radius(radius)
-        xyzr.set_coordinates(alg.Vector3D(p[0], p[1], p[2]))
-        ps.append(pa)
-    write_particles_to_chimera(ps, fn, name)
-
-
-def write_vectors_to_chimera(vs, radius, fn, name="vectors"):
-    """
-        Writes vectors as points in chimera
-    """
-
-    m = IMP.kernel.Model()
-    ps = []
-    for v in vs:
-        pa = IMP.kernel.Particle(m)
-        xyzr = core.XYZR.setup_particle(pa)
-        xyzr.set_radius(radius)
-        xyzr.set_coordinates(v)
-        ps.append(pa)
-    write_particles_to_chimera(ps, fn, name)
 
 
 def write_vectors_in_multifit2_format(vs, fn_output):
@@ -253,52 +195,13 @@ def write_pdb_for_reference_frames(fn_pdbs, refs_texts, fn_output):
     """
         Read the PDB files, apply reference frames to them, and write a pdb
     """
-    model = IMP.kernel.Model()
+    model = IMP.Model()
     assembly = representation.create_assembly(model, fn_pdbs)
     rbs = representation.create_rigid_bodies(assembly)
     for t, rb in zip(refs_texts, rbs):
         r = TextToReferenceFrame(t).get_reference_frame()
         rb.set_reference_frame(r)
     atom.write_pdb(assembly, fn_output)
-
-
-def show_model_info(model, assembly, components_rbs):
-    """ Prints information about the representation
-        Prints the number of components (hierarchies), its children,
-        and information about the chains and rigid bodies
-    """
-    print("##################################################################################")
-    print("Model Info")
-    print("##################################################################################")
-
-    print(model.show())
-    print("#########################")
-    print("Hierarchies in the assembly:")
-    print("#########################")
-    for c in assembly.get_children():
-        print(c.get_name() +  " Is valid? " + c.get_is_valid(True)
-              +  " children " + str(c.get_number_of_children()))
-        print("Child info: " + c.show())
-
-        hchains = IMP.atom.get_by_type(c, IMP.atom.CHAIN_TYPE)
-        print("Number of chains in the hierarchy: %d" % len(hchains))
-        for h in hchains:
-            chain = atom.Chain(h.get_particle())
-            print(chain.get_name() +  " particles %d" % len(atom.get_leaves(chain)))
-    print("#########################")
-    print("Rigid bodies")
-    print("#########################")
-    for r in components_rbs:
-        print("rigid body: Particles: %d coordinates: %s"
-              % (r.get_number_of_members(), r.get_coordinates()))
-
-    print("#########################")
-    print("Restraints")
-    print("#########################")
-    n = model.get_number_of_restraints()
-    for i in range(n):
-        print(model.get_restraint(i))
-
 
 def imp_info(imp_modules=None):
     """

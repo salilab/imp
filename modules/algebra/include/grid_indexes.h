@@ -9,14 +9,14 @@
 #define IMPALGEBRA_GRID_INDEXES_H
 
 #include <IMP/algebra/algebra_config.h>
-#include <IMP/base/bracket_macros.h>
+#include <IMP/bracket_macros.h>
 #include "internal/vector.h"
 #include "internal/grid_internal.h"
-#include <IMP/base/types.h>
-#include <IMP/base/Value.h>
-#include <IMP/base/exception.h>
+#include <IMP/types.h>
+#include <IMP/Value.h>
+#include <IMP/exception.h>
 // for swig wrappers
-#include <IMP/base/internal/range.h>
+#include <IMP/internal/range.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -27,7 +27,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
    \see Grid3D
 */
 template <int D>
-class ExtendedGridIndexD : public base::Value {
+class ExtendedGridIndexD : public Value {
   internal::VectorData<int, D, true> data_;
   int compare(const ExtendedGridIndexD<D>& o) const {
     if (D == -1) {
@@ -159,7 +159,7 @@ inline std::size_t hash_value(const ExtendedGridIndexD<D>& ind) {
    \see Grid3D
 */
 template <int D>
-class GridIndexD : public base::Value {
+class GridIndexD : public Value {
   internal::VectorData<int, D, true> data_;
   int compare(const GridIndexD<D>& o) const {
     if (D == -1) {
@@ -268,38 +268,38 @@ inline std::size_t hash_value(const GridIndexD<D>& ind) {
 #if !defined(IMP_DOXYGEN)
 typedef GridIndexD<1> GridIndex1D;
 typedef ExtendedGridIndexD<1> ExtendedGridIndex1D;
-typedef base::Vector<GridIndex1D> GridIndex1Ds;
-typedef base::Vector<ExtendedGridIndex1D> ExtendedGridIndex1Ds;
+typedef Vector<GridIndex1D> GridIndex1Ds;
+typedef Vector<ExtendedGridIndex1D> ExtendedGridIndex1Ds;
 
 typedef GridIndexD<2> GridIndex2D;
 typedef ExtendedGridIndexD<2> ExtendedGridIndex2D;
-typedef base::Vector<GridIndex2D> GridIndex2Ds;
-typedef base::Vector<ExtendedGridIndex2D> ExtendedGridIndex2Ds;
+typedef Vector<GridIndex2D> GridIndex2Ds;
+typedef Vector<ExtendedGridIndex2D> ExtendedGridIndex2Ds;
 
 typedef GridIndexD<3> GridIndex3D;
 typedef ExtendedGridIndexD<3> ExtendedGridIndex3D;
-typedef base::Vector<GridIndex3D> GridIndex3Ds;
-typedef base::Vector<ExtendedGridIndex3D> ExtendedGridIndex3Ds;
+typedef Vector<GridIndex3D> GridIndex3Ds;
+typedef Vector<ExtendedGridIndex3D> ExtendedGridIndex3Ds;
 
 typedef GridIndexD<4> GridIndex4D;
 typedef ExtendedGridIndexD<4> ExtendedGridIndex4D;
-typedef base::Vector<GridIndex4D> GridIndex4Ds;
-typedef base::Vector<ExtendedGridIndex4D> ExtendedGridIndex4Ds;
+typedef Vector<GridIndex4D> GridIndex4Ds;
+typedef Vector<ExtendedGridIndex4D> ExtendedGridIndex4Ds;
 
 typedef GridIndexD<5> GridIndex5D;
 typedef ExtendedGridIndexD<5> ExtendedGridIndex5D;
-typedef base::Vector<GridIndex5D> GridIndex5Ds;
-typedef base::Vector<ExtendedGridIndex5D> ExtendedGridIndex5Ds;
+typedef Vector<GridIndex5D> GridIndex5Ds;
+typedef Vector<ExtendedGridIndex5D> ExtendedGridIndex5Ds;
 
 typedef GridIndexD<6> GridIndex6D;
 typedef ExtendedGridIndexD<6> ExtendedGridIndex6D;
-typedef base::Vector<GridIndex6D> GridIndex6Ds;
-typedef base::Vector<ExtendedGridIndex6D> ExtendedGridIndex6Ds;
+typedef Vector<GridIndex6D> GridIndex6Ds;
+typedef Vector<ExtendedGridIndex6D> ExtendedGridIndex6Ds;
 
 typedef GridIndexD<-1> GridIndexKD;
 typedef ExtendedGridIndexD<-1> ExtendedGridIndexKD;
-typedef base::Vector<GridIndexKD> GridIndexKDs;
-typedef base::Vector<ExtendedGridIndexKD> ExtendedGridIndexKDs;
+typedef Vector<GridIndexKD> GridIndexKDs;
+typedef Vector<ExtendedGridIndexKD> ExtendedGridIndexKDs;
 #endif
 
 IMPALGEBRA_END_NAMESPACE

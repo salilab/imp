@@ -11,7 +11,7 @@
 #define IMPATOM_BERENDSEN_THERMOSTAT_OPTIMIZER_STATE_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
 
@@ -35,11 +35,11 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState {
  public:
-  BerendsenThermostatOptimizerState(const kernel::Particles &pis,
+  BerendsenThermostatOptimizerState(const Particles &pis,
                                     double temperature, double tau);
 
   //! Set the particles to use.
-  void set_particles(const kernel::Particles &pis) { pis_ = pis; }
+  void set_particles(const Particles &pis) { pis_ = pis; }
 
   double get_temperature() { return temperature_; }
 
@@ -58,7 +58,7 @@ class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState {
   virtual void do_update(unsigned int) IMP_OVERRIDE;
 
  private:
-  kernel::Particles pis_;
+  Particles pis_;
   double temperature_;
   double tau_;
 };

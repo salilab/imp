@@ -25,11 +25,11 @@ namespace {
 }
 AtomicCrossLinkMSRestraint::AtomicCrossLinkMSRestraint(Model* m,
                                                        double xlen,
-                                                       const ParticleIndex& psi,
+                                                       ParticleIndex psi,
                                                        Float slope,
                                                        bool part_of_log_score,
                                                        std::string name):
-  kernel::Restraint(m,name),
+  Restraint(m,name),
   xlen_(xlen),
   psi_(psi),
   slope_(slope),
@@ -38,8 +38,8 @@ AtomicCrossLinkMSRestraint::AtomicCrossLinkMSRestraint(Model* m,
 }
 
 void AtomicCrossLinkMSRestraint::add_contribution(
-                      const kernel::ParticleIndexPair& ppi,
-                      const kernel::ParticleIndexPair& sigmas){
+                      const ParticleIndexPair& ppi,
+                      const ParticleIndexPair& sigmas){
 
   ppis_.push_back(ppi);
   sigmass_.push_back(sigmas);

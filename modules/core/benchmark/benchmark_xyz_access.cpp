@@ -7,7 +7,7 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -25,10 +25,10 @@ namespace {
 
 // TEST 1
 double compute_distances_decorator_access(
-    const IMP::kernel::ParticlesTemp &particles) ATTRIBUTES;
+    const IMP::ParticlesTemp &particles) ATTRIBUTES;
 
 double compute_distances_decorator_access(
-    const IMP::kernel::ParticlesTemp &particles) {
+    const IMP::ParticlesTemp &particles) {
   double tdist = 0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     IMP::core::XYZ d1(particles[i]);
@@ -44,10 +44,10 @@ double compute_distances_decorator_access(
 
 // TEST 1.1
 double compute_distances_particle_access(
-    const IMP::kernel::ParticlesTemp &particles) ATTRIBUTES;
+    const IMP::ParticlesTemp &particles) ATTRIBUTES;
 
 double compute_distances_particle_access(
-    const IMP::kernel::ParticlesTemp &particles) {
+    const IMP::ParticlesTemp &particles) {
   FloatKey xk("x");
   FloatKey yk("y");
   FloatKey zk("z");
@@ -68,10 +68,10 @@ double compute_distances_particle_access(
 
 // TEST 2
 double compute_distances_no_particle_access(
-    kernel::Model *m, const IMP::kernel::ParticleIndexes &particles) ATTRIBUTES;
+    Model *m, const IMP::ParticleIndexes &particles) ATTRIBUTES;
 
 double compute_distances_no_particle_access(
-    kernel::Model *m, const IMP::kernel::ParticleIndexes &particles) {
+    Model *m, const IMP::ParticleIndexes &particles) {
   double tdist = 0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     IMP::core::XYZ d1(m, particles[i]);
@@ -140,11 +140,11 @@ double compute_distances_direct_access_space(
 
 void do_benchmark(std::string descr, unsigned int n) {
   // read pdb, prepare particles
-  kernel::Model *model = new IMP::kernel::Model();
-  kernel::ParticlesTemp particles;
+  Model *model = new IMP::Model();
+  ParticlesTemp particles;
   algebra::BoundingBox3D bb = algebra::get_cube_d<3>(100);
   for (unsigned int i = 0; i < n; ++i) {
-    particles.push_back(new kernel::Particle(model));
+    particles.push_back(new Particle(model));
     core::XYZ::setup_particle(particles.back(),
                               algebra::get_random_vector_in(bb));
   }
@@ -178,7 +178,7 @@ void do_benchmark(std::string descr, unsigned int n) {
   {
     double runtime, dist = 0;
     // measure time
-    kernel::ParticleIndexes pis(particles.size());
+    ParticleIndexes pis(particles.size());
     for (unsigned int i = 0; i < pis.size(); ++i) {
       pis[i] = particles[i]->get_index();
     }
@@ -255,7 +255,7 @@ void do_benchmark(std::string descr, unsigned int n) {
     IMP::benchmark::report("xyz " + descr, "vector", runtime, dist);
   }
   {
-    IMP::base::Vector<VV> coordinates;
+    IMP::Vector<VV> coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
       coordinates.push_back(VV());
       coordinates.back().x = IMP::core::XYZ(particles[i]).get_x();
@@ -275,7 +275,7 @@ void do_benchmark(std::string descr, unsigned int n) {
   }
   // TEST 4
   {
-    IMP::base::Vector<VectorHolder> coordinates;
+    IMP::Vector<VectorHolder> coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
       coordinates.push_back(VectorHolder());
       coordinates.back().c =
@@ -317,10 +317,10 @@ void do_benchmark(std::string descr, unsigned int n) {
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv,
+  IMP::setup_from_argv(argc, argv,
                              "Benchmark accessing particle attributes");
   do_benchmark("small", 100);
-  if (!IMP::base::run_quick_test) {
+  if (!IMP::run_quick_test) {
     do_benchmark("large", 1000);
     do_benchmark("huge", 10000);
   }

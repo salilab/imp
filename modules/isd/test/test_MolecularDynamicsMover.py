@@ -22,8 +22,8 @@ class TestMolecularDynamicsMover(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
         self.xyzs = []
         self.nuisances = []
         self.restraints = []
@@ -31,14 +31,14 @@ class TestMolecularDynamicsMover(IMP.test.TestCase):
         self.setup_mover()
 
     def setup_xyz(self, coords, mass):
-        a = IMP.kernel.Particle(self.m)
+        a = IMP.Particle(self.m)
         IMP.core.XYZ.setup_particle(a, coords)
         IMP.core.XYZ(a).set_coordinates_are_optimized(True)
         IMP.atom.Mass.setup_particle(a, mass)
         return a
 
     def setup_scale(self, coords, mass):
-        a = IMP.kernel.Particle(self.m)
+        a = IMP.Particle(self.m)
         IMP.isd.Scale.setup_particle(a, coords)
         IMP.isd.Scale(a).set_scale_is_optimized(True)
         IMP.atom.Mass.setup_particle(a, mass)
@@ -51,7 +51,6 @@ class TestMolecularDynamicsMover(IMP.test.TestCase):
         si = self.setup_scale(1.0, 1.0)
         ga = self.setup_scale(1.0, 1.0)
         ln = IMP.isd.NOERestraint(self.m, a, b, si, ga, 1.0)
-        self.m.add_restraint(ln)
         self.xyzs.append(a)
         self.xyzs.append(b)
         self.nuisances.append(si)
@@ -62,6 +61,7 @@ class TestMolecularDynamicsMover(IMP.test.TestCase):
         self.mv = IMP.isd.MolecularDynamicsMover(self.m, nsteps, tstep)
         self.mv.set_was_used(True)
         self.mv.get_md().assign_velocities(300.)
+        self.mv.get_md().set_scoring_function(self.restraints)
 
     def get_nuisance_coordinates(self):
         a = [i.get_value(IMP.isd.Scale.get_scale_key())

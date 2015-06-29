@@ -8,10 +8,10 @@
 #ifndef IMPKERNEL_INTERNAL_PDB_H
 #define IMPKERNEL_INTERNAL_PDB_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "../Model.h"
 #include "../container_base.h"
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -20,8 +20,8 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
     benchmarks that don't require the atom module for input, yet can use
     pdb files to make shapes.
 */
-IMPKERNELEXPORT ParticlesTemp
-    create_particles_from_pdb(base::TextInput fname, Model *m);
+IMPKERNELEXPORT ParticleIndexes
+    create_particles_from_pdb(TextInput fname, Model *m);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 

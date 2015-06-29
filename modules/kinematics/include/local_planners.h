@@ -13,38 +13,38 @@
 #include "DOFValues.h"
 #include "directional_DOFs.h"
 #include "DOFsSampler.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Object.h>
+#include <IMP/Pointer.h>
+#include <IMP/Model.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
 /** general interface for planning the motion between two
    configuration nodes, each abstracted as a vector of DoFs
 */
-class IMPKINEMATICSEXPORT LocalPlanner : public IMP::base::Object {
+class IMPKINEMATICSEXPORT LocalPlanner : public IMP::Object {
   IMP_OBJECT_METHODS(LocalPlanner);
 
  public:
-  LocalPlanner(kernel::Model* model, DOFsSampler* dofs_sampler);
+  LocalPlanner(Model* model, DOFsSampler* dofs_sampler);
 
   // plan a path of valid intermediate nodes
   // from existing node q_from until the valid node that is
   // somewhat close to q_rand
-  virtual std::vector<DOFValues> plan(DOFValues q_near, DOFValues q_rand) = 0;
+  virtual std::vector<DOFValues> plan(DOFValues q_near, DOFValues q_rand,
+                                      ScoringFunction *sf) = 0;
 
-  bool is_valid(const DOFValues& values) {
+  bool is_valid(const DOFValues& values, ScoringFunction *sf) {
     dofs_sampler_->apply(values);
-    double score = sf_->evaluate_if_below(false, 0.0);  // TODO: what here?
+    double score = sf->evaluate_if_below(false, 0.0);  // TODO: what here?
     // std::cerr << "score = " << score << std::endl;
     if (score <= 0.000001) return true;
     return false;
   }
 
  protected:
-  base::PointerMember<kernel::Model> model_;
+  PointerMember<Model> model_;
   DOFsSampler* dofs_sampler_;
-  base::PointerMember<kernel::ScoringFunction> sf_;
 };
 
 /**
@@ -65,7 +65,7 @@ class IMPKINEMATICSEXPORT PathLocalPlanner : public LocalPlanner {
                                For instance, 2 would mean save every second node
                                in the local plan.
    */
-  PathLocalPlanner(kernel::Model* model, DOFsSampler* dofs_sampler,
+  PathLocalPlanner(Model* model, DOFsSampler* dofs_sampler,
                    DirectionalDOF* directional_dof, int save_step_interval = 1);
 
  protected:
@@ -73,7 +73,8 @@ class IMPKINEMATICSEXPORT PathLocalPlanner : public LocalPlanner {
       step size from existing node q_from until the valid node that is
       found closest to q_rand (inclusive)
   */
-  virtual std::vector<DOFValues> plan(DOFValues q_from, DOFValues q_rand);
+  virtual std::vector<DOFValues> plan(DOFValues q_from, DOFValues q_rand,
+                                      ScoringFunction *sf);
 
  private:
   DirectionalDOF* d_;

@@ -5,18 +5,19 @@ import IMP.core
 import IMP.container
 
 
-class WoodsFunc(IMP.kernel.Restraint):
+class WoodsFunc(IMP.Restraint):
 
     """Woods function for four input values, defined as an IMP restraint"""
 
     def __init__(self, m):
-        IMP.kernel.Restraint.__init__(self, m, "WoodsFunc%1%")
+        IMP.Restraint.__init__(self, m, "WoodsFunc%1%")
         self.index = IMP.FloatKey("x")
 
     def unprotected_evaluate(self, accum):
+        m = self.get_model()
         # print "Evaluating in python\n"
-        (x1, x2, x3, x4) = [p.get_value(self.index)
-                            for p in self.get_model().get_particles()]
+        (x1, x2, x3, x4) = [m.get_attribute(self.index, p)
+                            for p in m.get_particle_indexes()]
         # print "Evaluating at " +str(x1) + " " + str(x2) + " " \
         #    + str(x3) + " " + str(x4)
         a = x2 - x1 * x1
@@ -29,7 +30,8 @@ class WoodsFunc(IMP.kernel.Restraint):
                   2.0 * (100.0 * a + 10.1 * (x2 - 1.0) + 9.9 * (x4 - 1.0)),
                   -2.0 * (180.0 * x3 * b + 1.0 - x3),
                   2.0 * (90.0 * b + 10.1 * (x4 - 1.0) + 9.9 * (x2 - 1.0))]
-            for (p, d) in zip(self.get_model().get_particles(), dx):
+            for (pi, d) in zip(m.get_particle_indexes(), dx):
+                p = m.get_particle(pi)
                 p.add_to_derivative(self.index, d, accum)
         return e
 
@@ -40,20 +42,21 @@ class WoodsFunc(IMP.kernel.Restraint):
         fh.write("WoodsFunc")
 
     def do_get_inputs(self):
-        return [x for x in self.get_model().get_particles()]
+        m = self.get_model()
+        return IMP.get_particles(m, m.get_particle_indexes())
 
 
 class MCOptimizerTest(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.TERSE)
+        IMP.set_log_level(IMP.TERSE)
         self.xkey = IMP.FloatKey("x")
 
     def test_c1(self):
         """Test montecarlo from starting position 1"""
         (model, opt) = self._setup_opt()
-        opt.set_log_level(IMP.base.VERBOSE)
+        opt.set_log_level(IMP.VERBOSE)
         self._test_starting_conditions(model, opt, (-3.0, -1.0, -3.0, -1.0), 5)
 
     def test_c2(self):
@@ -67,40 +70,41 @@ class MCOptimizerTest(IMP.test.TestCase):
         self._test_starting_conditions(model, opt, (2.0, 3.0, 8.0, -5.0), 5)
 
     def _setup_opt(self):
-        model = IMP.kernel.Model()
+        model = IMP.Model()
         lopt = IMP.core.ConjugateGradients(model)
         opt = IMP.core.MonteCarloWithLocalOptimization(lopt, 1000)
         opt.set_score_threshold(.01)
+        ps = []
         for value in (-3.0, -1.0, -3.0, -1.0):
-            p = IMP.kernel.Particle(model)
+            p = IMP.Particle(model)
             p.add_attribute(self.xkey, value, True)
+            ps.append(p)
         fk = IMP.FloatKeys([self.xkey])
-        mod = IMP.core.BallMover(model.get_particles(), fk, .25)
+        mod = IMP.core.BallMover(ps, fk, .25)
         opt.add_mover(mod)
 
         rsr = WoodsFunc(model)
-        model.add_restraint(rsr)
         # print rsr.evaluate(None)
         # print model.evaluate(False)
         # model.show()
         # print "Restaint TO is "+str(rsr.thisown)
         # opt.show()
+        sf = IMP.core.RestraintsScoringFunction([rsr])
+        lopt.set_scoring_function(sf)
+        opt.set_scoring_function(sf)
         return (model, opt)
 
     def _test_starting_conditions(self, model, opt, starting_values, nrounds):
         """Test the optimizer with given starting conditions"""
 
-        print("Start energy is " + str(model.evaluate(False)))
+        print("Start energy is "
+              + str(opt.get_scoring_function().evaluate(False)))
         for i in range(0, nrounds):
             e = opt.optimize(100)
             print("Energy after step is " + str(e))
-            for p in model.get_particles():
-                val = p.get_value(self.xkey)
-                # print "Particle " + str(p.get_name()) +\
-                #    " is at " + str(val)
 
-        for p in model.get_particles():
-            val = p.get_value(self.xkey)
+        for p in model.get_particle_indexes():
+            val = model.get_attribute(self.xkey, p)
             self.assertAlmostEqual(val, 1.0, delta=.1)
         self.assertAlmostEqual(e, 0.0, delta=.01)
 

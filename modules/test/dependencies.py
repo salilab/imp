@@ -1,3 +1,3 @@
-required_modules = 'base'
+required_modules = 'kernel'
 required_dependencies = ""
 optional_dependencies = ""

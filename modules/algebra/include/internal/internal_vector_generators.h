@@ -12,12 +12,13 @@
 #include "../SphericalVector3D.h"
 #include "../utility.h"
 #include "utility.h"
-#include <boost/random/uniform_int.hpp>
-#include <boost/random/uniform_01.hpp>
-#include <boost/random/uniform_real.hpp>
+#include <IMP/random_utils.h>
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/sphere_cover.h>
 #endif
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_01.hpp>
+#include <boost/random/uniform_real.hpp>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 template <int D>
@@ -25,7 +26,7 @@ inline VectorD<D> get_random_vector_in(const BoundingBoxD<D> &bb) {
   VectorD<D> ret = bb.get_corner(0);  // some appropriate vector
   for (unsigned int i = 0; i < bb.get_dimension(); ++i) {
     ::boost::uniform_real<> rand(bb.get_corner(0)[i], bb.get_corner(1)[i]);
-    ret[i] = rand(base::random_number_generator);
+    ret[i] = rand(random_number_generator);
   }
   return ret;
 }
@@ -58,7 +59,7 @@ inline VectorD<-1> get_random_vector_on(const SphereD<-1> &s) {
 
 inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
   ::boost::uniform_real<> rand(0, 2 * PI);
-  double angle = rand(base::random_number_generator);
+  double angle = rand(random_number_generator);
   VectorD<2> ret(s.get_radius() * sin(angle), s.get_radius() * cos(angle));
   return ret + s.get_center();
 }
@@ -66,10 +67,12 @@ inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
 //! returns a random vector on a sphere of radius 1
 //! with implementation optimized for the 3D + unit vector case
 inline VectorD<3> get_random_vector_on_unit_sphere() {
-  ::boost::uniform_real<> rand(-1, 1);
+  //  ::boost::uniform_real<> rand(-1, 1);
   do {
-    double x1 = rand(base::random_number_generator);
-    double x2 = rand(base::random_number_generator);
+    //    double x1 = rand(random_number_generator);
+    //    double x2 = rand(random_number_generator);
+    double x1 = IMP::get_random_double_uniform(-1,1);
+    double x2 = IMP::get_random_double_uniform(-1,1);
     double ssq = get_squared(x1) + get_squared(x2);
     if (ssq <= 1) {
       VectorD<3> ret;
@@ -94,13 +97,13 @@ inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
   for (unsigned int i=s.get_dimension()-1; i>0; --i) {
     double r= std::sqrt(cur_radius2);
     ::boost::uniform_real<> rand(-r, r);
-    up[i]= rand(base::random_number_generator);
+    up[i]= rand(random_number_generator);
     // radius of circle
     cur_radius2= cur_radius2-get_squared(up[i]);
   }
   ::boost::uniform_int<> rand(0, 1);
   double x= std::sqrt(cur_radius2);
-  if (rand(base::random_number_generator)) {
+  if (rand(random_number_generator)) {
     x=-x;
   }
   up[0]=x;
@@ -127,10 +130,10 @@ inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
   }*/
 
 template <int D>
-inline base::Vector<VectorD<D> > native_uniform_cover_unit_sphere(
+inline Vector<VectorD<D> > native_uniform_cover_unit_sphere(
     unsigned int d, unsigned int n, bool ALL) {
   BOOST_STATIC_ASSERT(D != 3);
-  base::Vector<VectorD<D> > ret(n);
+  Vector<VectorD<D> > ret(n);
   for (unsigned int i = 0; i < std::min(d, n / (ALL ? 2 : 1)); ++i) {
     VectorD<D> v = get_basis_vector_kd(d, i);
     if (ALL) {
@@ -151,10 +154,10 @@ inline base::Vector<VectorD<D> > native_uniform_cover_unit_sphere(
 /*If all is true, cover the whole sphere.
  */
 template <int D>
-inline base::Vector<VectorD<D> > uniform_cover_sphere(unsigned int n,
+inline Vector<VectorD<D> > uniform_cover_sphere(unsigned int n,
                                                       const VectorD<D> &center,
                                                       double radius, bool ALL) {
-  base::Vector<VectorD<D> > ret =
+  Vector<VectorD<D> > ret =
       native_uniform_cover_unit_sphere<D>(center.get_dimension(), n, ALL);
   for (unsigned int i = 0; i < ret.size(); ++i) {
     if (!ALL && ret[i][center.get_dimension() - 1] < 0) {
@@ -168,10 +171,10 @@ inline base::Vector<VectorD<D> > uniform_cover_sphere(unsigned int n,
 
 /*If all is true, cover the whole sphere.
  */
-inline base::Vector<VectorD<4> > uniform_cover_sphere(unsigned int n,
+inline Vector<VectorD<4> > uniform_cover_sphere(unsigned int n,
                                                       const VectorD<4> &center,
                                                       double radius, bool ALL) {
-  base::Vector<VectorD<4> > ret =
+  Vector<VectorD<4> > ret =
       native_uniform_cover_unit_sphere<4>(center.get_dimension(), n, ALL);
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
   IMP::cgal::internal::refine_unit_sphere_cover_4d(ret, ALL);
@@ -266,7 +269,7 @@ struct RandomVectorOnBB {
       std::cout << areas[i] << " ";
       }*/
     ::boost::uniform_real<> rand(0, areas[2 * bb.get_dimension() - 1]);
-    double a = rand(base::random_number_generator);
+    double a = rand(random_number_generator);
     // std::cout << ": " << a << std::endl;
     unsigned int side;
     for (side = 0; side < 2 * bb.get_dimension(); ++side) {
@@ -308,7 +311,7 @@ template <>
 struct RandomVectorOnBB<1> {
   static VectorD<1> get(BoundingBoxD<1> bb) {
     ::boost::uniform_int<> rand(0, 1);
-    return bb.get_corner(rand(base::random_number_generator));
+    return bb.get_corner(rand(random_number_generator));
   }
 };
 

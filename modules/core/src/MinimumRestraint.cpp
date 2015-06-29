@@ -7,22 +7,22 @@
 
 #include <IMP/core/MinimumRestraint.h>
 #include <IMP/algebra/internal/MinimalSet.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
 MinimumRestraint::MinimumRestraint(unsigned int num,
-                                   const kernel::Restraints &rs,
+                                   const Restraints &rs,
                                    std::string name)
-    : kernel::Restraint(rs[0]->get_model(), name), k_(num) {
+    : Restraint(rs[0]->get_model(), name), k_(num) {
   set_restraints(rs);
 }
 
-IMP_LIST_IMPL(MinimumRestraint, Restraint, restraint, kernel::Restraint *,
-              kernel::Restraints);
+IMP_LIST_IMPL(MinimumRestraint, Restraint, restraint, Restraint *,
+              Restraints);
 
 double MinimumRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
-  algebra::internal::MinimalSet<double, kernel::Restraint *> ms(k_);
+  algebra::internal::MinimalSet<double, Restraint *> ms(k_);
   for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
        ++it) {
     ms.insert((*it)->unprotected_evaluate(nullptr), *it);
@@ -43,7 +43,7 @@ double MinimumRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
 }
 
 ModelObjectsTemp MinimumRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
+  ModelObjectsTemp ret;
   for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
     ret += get_restraint(i)->get_inputs();
   }

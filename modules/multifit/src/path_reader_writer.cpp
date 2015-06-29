@@ -11,7 +11,7 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <boost/algorithm/string.hpp>
 
 IMPMULTIFIT_BEGIN_NAMESPACE

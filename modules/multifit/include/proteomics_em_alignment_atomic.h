@@ -28,13 +28,22 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 //! Align proteomics graph to EM density map
 /** The alignment is from the em anchors to the proteomics graph
  */
-class IMPMULTIFITEXPORT ProteomicsEMAlignmentAtomic : public base::Object {
+class IMPMULTIFITEXPORT ProteomicsEMAlignmentAtomic : public Object {
  public:
   ProteomicsEMAlignmentAtomic(const ProteinsAnchorsSamplingSpace &mapping_data,
                               multifit::SettingsData *asmb_data,
                               const AlignmentParams &align_param);
   void align();
+
+  //! Set up the restraints that will be used in the alignment.
+  /** These restraints are stored internally in a RestraintSet,
+      which can be obtained by calling get_restraint_set().
+      For example, this allows adding extra restraints to the set. */
   void add_all_restraints();
+
+  //! Get the restraints set up by add_all_restraints().
+  RestraintSet *get_restraint_set() { return restraint_set_; }
+
   void add_states_and_filters();
   void show_domino_merge_tree() const;
   domino::Assignments get_combinations(bool uniques = false) const;
@@ -55,7 +64,7 @@ class IMPMULTIFITEXPORT ProteomicsEMAlignmentAtomic : public base::Object {
   /*  void show_scores(const domino::Assignment &a,
                    std::ostream& out=std::cout) const;
   */
-  kernel::Model *get_model() { return mdl_; }
+  Model *get_model() { return mdl_; }
   //! If set to fast EV is calculated as penetration score and Fit
   //! restraint is decomposed
   void set_fast_scoring(bool state) { fast_scoring_ = state; }
@@ -63,41 +72,42 @@ class IMPMULTIFITEXPORT ProteomicsEMAlignmentAtomic : public base::Object {
   IMP_OBJECT_METHODS(ProteomicsEMAlignmentAtomic);
 
  protected:
-  kernel::RestraintsTemp get_alignment_restraints() const;
-  base::Pointer<domino::RestraintCache> rc_;
+  RestraintsTemp get_alignment_restraints() const;
+  Pointer<domino::RestraintCache> rc_;
   bool fast_scoring_;
   domino::ParticleStatesTable *set_particle_states_table(
       domino::SubsetFilterTables &filters);
   void load_atomic_molecules();
   //  void sort_configurations();
   ProteinsAnchorsSamplingSpace mapping_data_;
-  base::PointerMember<multifit::ProteomicsData> prot_data_;
-  base::Pointer<em::DensityMap> dmap_;
+  PointerMember<multifit::ProteomicsData> prot_data_;
+  Pointer<em::DensityMap> dmap_;
   double threshold_;
   atom::Hierarchies mhs_;
   core::RigidBodies rbs_;
-  base::Pointer<Model> mdl_;
+  Pointer<Model> mdl_;
   AlignmentParams params_;
   IntsLists sampled_solutions_;              // instead of cg
   domino::Assignments sampled_assignments_;  // instead of sampled_solutions
   // configurations sorted by score
   std::vector<std::pair<int, float> > cg_sorted_;
-  base::Pointer<kernel::RestraintSet> conn_rs_;
-  base::Pointer<kernel::RestraintSet> conn_rs_with_filter_;
-  base::Pointer<kernel::RestraintSet> xlink_rs_;
-  base::Pointer<kernel::RestraintSet> xlink_rs_with_filter_;
-  base::Pointer<kernel::RestraintSet> dummy_rs_;
-  base::Pointer<kernel::RestraintSet> em_rs_;
-  base::Pointer<kernel::RestraintSet> ev_rs_;
-  kernel::RestraintsTemp jt_rs_;
-  // base::Pointer<kernel::RestraintSet> ev_pruned_rs_;
-  // base::Pointer<kernel::RestraintSet> rog_rs_;
-  // Pointer<kernel::RestraintSet> other_rs_;//the other restraints
-  // Pointer<kernel::RestraintSet> fit_rs_;//the other restraints
-  base::PointerMember<domino::RestraintScoreSubsetFilterTable> all_rs_filt_;
+  Pointer<RestraintSet> conn_rs_;
+  Pointer<RestraintSet> conn_rs_with_filter_;
+  Pointer<RestraintSet> xlink_rs_;
+  Pointer<RestraintSet> xlink_rs_with_filter_;
+  Pointer<RestraintSet> dummy_rs_;
+  Pointer<RestraintSet> em_rs_;
+  Pointer<RestraintSet> ev_rs_;
+  RestraintsTemp jt_rs_;
+  // Pointer<RestraintSet> ev_pruned_rs_;
+  // Pointer<RestraintSet> rog_rs_;
+  // Pointer<RestraintSet> other_rs_;//the other restraints
+  // Pointer<RestraintSet> fit_rs_;//the other restraints
+  PointerMember<domino::RestraintScoreSubsetFilterTable> all_rs_filt_;
   IntKey fit_state_key_, order_key_;
-  bool restraints_set_, states_set_, filters_set_;
-  base::PointerMember<domino::ParticleStatesTable> pst_;
+  bool states_set_, filters_set_;
+  Pointer<RestraintSet> restraint_set_;
+  PointerMember<domino::ParticleStatesTable> pst_;
   domino::SubsetFilterTables filters_;
   multifit::SettingsData *asmb_data_;
   IntPairs post_sampling_ev_pairs_;

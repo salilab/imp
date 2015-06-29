@@ -8,34 +8,8 @@ import tempfile
 import shutil
 import IMP.atom
 import IMP.container
-
-def _import_modeller_scripts_optimizers():
-    """Do the equivalent of "import modeller.scripts, modeller.optimizers".
-       (We can't do the regular import because Python tries a relative import
-       first, and that would load the modeller module in IMP.) This is an
-       absolute import. Once we can require that everybody uses Python 2.6,
-       this should no longer be required."""
-    modeller = _import_module("modeller", "modeller", None)
-    scripts = _import_module("scripts", "modeller.scripts", modeller)
-    optimizers = _import_module("optimizers", "modeller.optimizers", modeller)
-    modeller.scripts = scripts
-    modeller.optimizers = optimizers
-    return modeller
-
-def _import_module(partname, fqname, parent):
-    """Import a single Python module, possibly from a parent."""
-    fp, pathname, description = imp.find_module(partname,
-                                                parent and parent.__path__)
-    try:
-        m = imp.load_module(fqname, fp, pathname, description)
-    finally:
-        # imp module requires that we explicitly close fp, even on exception
-        if fp:
-            fp.close()
-    return m
-
-modeller = _import_modeller_scripts_optimizers()
-
+import modeller.scripts
+import modeller.optimizers
 
 class _TempDir(object):
     """Make a temporary directory that is deleted when the object is."""
@@ -48,7 +22,7 @@ class _TempDir(object):
 
 
 class IMPRestraints(modeller.terms.energy_term):
-    """A Modeller restraint which evaluates all defined IMP restraints.
+    """A Modeller restraint which evaluates an IMP scoring function.
        This can be used to incorporate IMP Restraints into an existing
        comparative modeling pipeline, or to use Modeller optimizers or
        protocols.
@@ -56,10 +30,12 @@ class IMPRestraints(modeller.terms.energy_term):
 
     _physical_type = modeller.physical.absposition
 
-    def __init__(self, particles):
+    def __init__(self, particles, scoring_function=None):
         """Constructor.
            @param particles A list of the IMP atoms (as Particle objects),
                             same order as the Modeller atoms.
+           @param scoring_function An IMP::ScoringFunction object that will
+                            be incorporated into the Modeller score (molpdf).
            @note since Modeller, unlike IMP, is sensitive to the ordering
                  of atoms, it usually makes sense to create the model in
                  Modeller and then use ModelLoader to load it into IMP,
@@ -67,6 +43,10 @@ class IMPRestraints(modeller.terms.energy_term):
         """
         modeller.terms.energy_term.__init__(self)
         self._particles = particles
+        if scoring_function:
+            self._sf = scoring_function
+        else:
+            self._sf = particles[0].get_model()
 
     def eval(self, mdl, deriv, indats):
         atoms = self.indices_to_atoms(mdl, indats)
@@ -74,7 +54,7 @@ class IMPRestraints(modeller.terms.energy_term):
         if len(self._particles) == 0:
             score = 0.
         else:
-            score = self._particles[0].get_model().evaluate(deriv)
+            score = self._sf.evaluate(deriv)
         if deriv:
             dvx = [0.] * len(indats)
             dvy = [0.] * len(indats)
@@ -224,12 +204,14 @@ _unary_func_generators = {
 # Generators to make IMP Restraint objects from Modeller features
 def _DistanceRestraintGenerator(form, modalities, atoms, parameters):
     unary_func_gen = _unary_func_generators[form]
-    return IMP.core.DistanceRestraint(unary_func_gen(parameters, modalities),
+    return IMP.core.DistanceRestraint(atoms[0].get_model(),
+                                      unary_func_gen(parameters, modalities),
                                       atoms[0], atoms[1])
 
 def _AngleRestraintGenerator(form, modalities, atoms, parameters):
     unary_func_gen = _unary_func_generators[form]
-    return IMP.core.AngleRestraint(unary_func_gen(parameters, modalities),
+    return IMP.core.AngleRestraint(atoms[0].get_model(),
+                                   unary_func_gen(parameters, modalities),
                                    atoms[0], atoms[1], atoms[2])
 
 def _MultiBinormalGenerator(form, modalities, atoms, parameters):
@@ -238,8 +220,8 @@ def _MultiBinormalGenerator(form, modalities, atoms, parameters):
         raise ValueError("Incorrect number of parameters (%d) for multiple "
                          "binormal restraint - expecting %d (%d terms * 6)" \
                          % (len(parameters), nterms * 6, nterms))
-    r = IMP.modeller.MultipleBinormalRestraint(IMP.ParticleQuad(*atoms[:4]),
-                                               IMP.ParticleQuad(*atoms[4:8]))
+    r = IMP.modeller.MultipleBinormalRestraint(atoms[0].get_model(),
+                                               atoms[:4], atoms[4:8])
     for i in range(nterms):
         t = IMP.modeller.BinormalTerm()
         t.set_weight(parameters[i])
@@ -255,13 +237,13 @@ def _DihedralRestraintGenerator(form, modalities, atoms, parameters):
     if form == 9:
         return _MultiBinormalGenerator(form, modalities, atoms, parameters)
     unary_func_gen = _unary_func_generators[form]
-    return IMP.core.DihedralRestraint(unary_func_gen(parameters, modalities),
+    return IMP.core.DihedralRestraint(atoms[0].get_model(),
+                                      unary_func_gen(parameters, modalities),
                                       atoms[0], atoms[1], atoms[2], atoms[3])
 
 def _get_protein_atom_particles(protein):
     """Given a protein particle, get the flattened list of all child atoms"""
     atom_particles = []
-    #protein = IMP.core.Hierarchy.decorate_particle(protein)
     for ichain in range(protein.get_number_of_children()):
         chain = protein.get_child(ichain)
         for ires in range(chain.get_number_of_children()):
@@ -320,10 +302,9 @@ def _load_entire_restraints_file(filename, protein):
             raise
 
 
+@IMP.deprecated_function("2.5", "Use ModelLoader instead.")
 def load_restraints_file(filename, protein):
     """Convert a Modeller restraints file into IMP::Restraint objects.
-
-       @deprecated Use ModelLoader instead.
 
        @param filename Name of the Modeller restraints file.
        @param protein An IMP::atom::Hierarchy containing the protein atoms
@@ -440,11 +421,11 @@ class ModelLoader(object):
             hpp.add_child(hcp)
             for residue in chain.residues:
                 rp = _copy_residue(residue, model)
-                hrp = IMP.atom.Hierarchy.decorate_particle(rp)
+                hrp = IMP.atom.Hierarchy(rp)
                 hcp.add_child(hrp)
                 for atom in residue.atoms:
                     ap = _copy_atom(atom, model)
-                    hap = IMP.atom.Hierarchy.decorate_particle(ap)
+                    hap = IMP.atom.Hierarchy(ap)
                     hrp.add_child(hap)
                     self._atoms[atom.index] = ap
                 lastres = hrp
@@ -602,8 +583,9 @@ class ModelLoader(object):
             raise ValueError("Call load_atoms() first.")
         edat = self._modeller_model.env.edat
         libs = self._modeller_model.env.libs
-        atoms = IMP.container.ListSingletonContainer(
-                                  IMP.atom.get_leaves(self._modeller_hierarchy))
+        atoms = IMP.atom.get_leaves(self._modeller_hierarchy)
+        m = atoms[0].get_model()
+        atoms = IMP.container.ListSingletonContainer(m, IMP.get_indexes(atoms))
         
         if edat.dynamic_sphere:
             # Note: cannot use Modeller's cutoff distance, as that is
@@ -640,11 +622,10 @@ class ModelLoader(object):
                 yield IMP.container.PairsRestraint(ps, nbl)
 
 
+@IMP.deprecated_function("2.5", "Use IMP::atom::read_pdb() instead to read "
+                         "a PDB file, or ModelLoader to read a Modeller model.")
 def read_pdb(name, model, special_patches=None):
     """Construct an IMP::atom::Hierarchy from a PDB file.
-
-       @deprecated Use IMP::atom::read_pdb() instead to read a PDB file,
-                   or ModelLoader to read a Modeller model.
 
        @param name The name of the PDB file to read.
        @param model The IMP::Model object in which the hierarchy will be

@@ -1,7 +1,7 @@
 /**
- *  \file IMP/kernel/Particle.h
+ *  \file IMP/Particle.h
  *  \brief Classes to handle individual model particles.
- *         (Note that implementation of inline functions in in internal)
+ *         (Note that implementation of inline functions is in internal)
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_PARTICLE_H
 #define IMPKERNEL_PARTICLE_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "DerivativeAccumulator.h"
 #include "Model.h"
@@ -18,10 +18,10 @@
 #include "particle_index.h"
 #include "Key.h"
 #include "internal/AttributeTable.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/utility.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/Object.h>
+#include <IMP/base_utility.h>
+#include <IMP/Pointer.h>
+#include <IMP/check_macros.h>
 #include <utility>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -45,10 +45,10 @@ class IMPKERNELEXPORT Particle : public ModelObject {
 
  public:
   //! Construct a particle and add it to the Model
-  Particle(kernel::Model *m, std::string name);
+  Particle(Model *m, std::string name);
 
   //! Construct a particle and add it to the Model
-  Particle(kernel::Model *m);
+  Particle(Model *m);
 
 #ifndef IMP_DOXYGEN
 
@@ -74,7 +74,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
        them.
 
        All distances are assumed to be in angstroms
-       and derivatives in kcal/mol angstrom. This is not enforced.
+       and derivatives in kcal/mol/angstrom. This is not enforced.
    */
   /*@{*/
   /** add attribute name to the attributes table of this particle
@@ -85,9 +85,9 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   */
   void add_attribute(FloatKey name, const Float initial_value, bool optimized);
 
-  /** adds a derivative value to the derivatives table of this particle
+  /** Adds a derivative value to the derivatives table of this particle
 
-      @param key the attribute key whose derivative is updates
+      @param key the attribute key whose derivative is updated
       @param value the derivative value to be added
       @param da a derivative accumulator for reweighting derivatives
   */
@@ -144,7 +144,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
 class Decorator;
 
 /** Take Decorator or Particle. */
-class IMPKERNELEXPORT ParticleAdaptor : public base::InputAdaptor {
+class IMPKERNELEXPORT ParticleAdaptor : public InputAdaptor {
   Model *m_;
   ParticleIndex pi_;
 
@@ -153,11 +153,11 @@ class IMPKERNELEXPORT ParticleAdaptor : public base::InputAdaptor {
   ParticleAdaptor(Particle *p) : m_(p->get_model()), pi_(p->get_index()) {}
   ParticleAdaptor(const Decorator &d);
 #ifndef SWIG
-  ParticleAdaptor(IMP::base::Pointer<Particle> p)
+  ParticleAdaptor(IMP::Pointer<Particle> p)
       : m_(p->get_model()), pi_(p->get_index()) {}
-  ParticleAdaptor(IMP::base::WeakPointer<Particle> p)
+  ParticleAdaptor(IMP::WeakPointer<Particle> p)
       : m_(p->get_model()), pi_(p->get_index()) {}
-  ParticleAdaptor(IMP::base::PointerMember<Particle> p)
+  ParticleAdaptor(IMP::PointerMember<Particle> p)
       : m_(p->get_model()), pi_(p->get_index()) {}
 #endif
   Model *get_model() const { return m_; }
@@ -218,8 +218,8 @@ Particle *Particle::get_value(ParticleIndexKey k) const {
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Float, float, Float);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Int, int, Int);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(String, string, String);
-IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Object, object, base::Object *);
-IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(WeakObject, weak_object, base::Object *);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Object, object, Object *);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(WeakObject, weak_object, Object *);
 
 #endif // DOXYGEN
 

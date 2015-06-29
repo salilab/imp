@@ -12,8 +12,8 @@
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/RestraintSet.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
 #include "DensityMap.h"
 #include "FitRestraint.h"
 #include <IMP/em/em_config.h>
@@ -51,7 +51,7 @@ class IMPEMEXPORT FittingSolutions {
   inline algebra::Transformation3D get_transformation(unsigned int i) const {
     IMP_USAGE_CHECK(i < fs_.size(),
                     "The index requested ("
-                        << i << ") in get_transformation is our of range ("
+                        << i << ") in get_transformation is out of range ("
                         << fs_.size() << ")" << std::endl);
     return fs_[i].first;
   }
@@ -131,7 +131,7 @@ IMP_VALUES(FittingSolutions, FittingSolutionsList);
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
-    kernel::Particle *p, Refiner *refiner, const FloatKey &weight_key,
+    Particle *p, Refiner *refiner, const FloatKey &weight_key,
     DensityMap *dmap, const algebra::Vector3D &anchor_centroid,
     OptimizerStates display_log, Int number_of_optimization_runs = 5,
     Int number_of_mc_steps = 10, Int number_of_cg_steps = 100,
@@ -166,7 +166,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
 */
 
 inline FittingSolutions local_rigid_fitting(
-    kernel::Particle *p, Refiner *refiner, const FloatKey &weight_key,
+    Particle *p, Refiner *refiner, const FloatKey &weight_key,
     DensityMap *dmap, OptimizerStates display_log,
     Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
     Int number_of_cg_steps = 100, Float max_translation = 2.,
@@ -202,7 +202,7 @@ inline FittingSolutions local_rigid_fitting(
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
-    kernel::Particle *p, Refiner *refiner, const FloatKey &wei_key,
+    Particle *p, Refiner *refiner, const FloatKey &wei_key,
     DensityMap *dmap, const algebra::Vector3Ds &anchor_centroids,
     OptimizerStates display_log, Int number_of_optimization_runs = 5,
     Int number_of_mc_steps = 10, Int number_of_cg_steps = 100,
@@ -229,7 +229,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
-    const kernel::ParticlesTemp &ps, const FloatKey &wei_key, DensityMap *dmap,
+    const ParticlesTemp &ps, const FloatKey &wei_key, DensityMap *dmap,
     Int max_voxels_translation = 2, Int translation_step = 1,
     Float max_angle_in_radians = 0.174, Int number_of_rotations = 100);
 
@@ -253,7 +253,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
 \note the function assumes the density map holds its density
  */
 IMPEMEXPORT FittingSolutions
-    compute_fitting_scores(const kernel::ParticlesTemp &ps, DensityMap *em_map,
+    compute_fitting_scores(const ParticlesTemp &ps, DensityMap *em_map,
                            const algebra::Transformation3Ds &transformations,
                            bool fast_version = false, bool local_score = false,
                            const FloatKey &wei_key =
@@ -285,7 +285,7 @@ inline FittingSolutions compute_fitting_scores(
 \note the function assumes the density map holds its density
  */
 IMPEMEXPORT Float
-    compute_fitting_score(const kernel::ParticlesTemp &ps, DensityMap *em_map,
+    compute_fitting_score(const ParticlesTemp &ps, DensityMap *em_map,
                           FloatKey wei_key = atom::Mass::get_mass_key());
 
 IMPEM_END_NAMESPACE

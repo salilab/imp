@@ -13,14 +13,14 @@
 #include <IMP/isd/Weight.h>
 #include <math.h>
 #include <limits.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <iostream>
 
 IMPISD_BEGIN_NAMESPACE
 
-WeightRestraint::WeightRestraint(kernel::Particle *w, Float wmin, Float wmax,
+WeightRestraint::WeightRestraint(Particle *w, Float wmin, Float wmax,
                                  Float kappa)
-    : kernel::Restraint(w->get_model(), "WeightRestraint%1%"),
+    : Restraint(w->get_model(), "WeightRestraint%1%"),
       w_(w),
       wmin_(wmin),
       wmax_(wmax),
@@ -49,7 +49,7 @@ double WeightRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp WeightRestraint::do_get_inputs() const {
-  kernel::ParticlesTemp ret;
+  ParticlesTemp ret;
   ret.push_back(w_);
   return ret;
 }

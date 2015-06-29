@@ -1,6 +1,5 @@
 from __future__ import print_function
 import IMP
-import IMP.base
 import IMP.test
 import IMP.core
 import IMP.atom
@@ -41,7 +40,7 @@ class Tests(IMP.test.TestCase):
 
     def test_building_an_optimization_problem_with_em2d_restraint(self):
         """Test that an a optimization with em2d restraint is properly built"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         prot = IMP.atom.read_pdb(self.get_input_file_name("1z5s.pdb"),
                                  m, IMP.atom.ATOMPDBSelector())
         # get the chains
@@ -65,37 +64,34 @@ class Tests(IMP.test.TestCase):
         # set distance restraints
         d01 = IMP.algebra.get_distance(native_chain_centers[0],
                                        native_chain_centers[1])
-        r01 = IMP.core.DistanceRestraint(IMP.core.Harmonic(d01, 1),
-                                         chains[0],
-                                         chains[1])
+        r01 = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(d01, 1),
+                                         chains[0], chains[1])
         r01.set_name("distance 0-1")
         d12 = IMP.algebra.get_distance(native_chain_centers[1],
                                        native_chain_centers[2])
-        r12 = IMP.core.DistanceRestraint(IMP.core.Harmonic(d12, 1),
-                                         chains[1],
-                                         chains[2])
+        r12 = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(d12, 1),
+                                         chains[1], chains[2])
         r12.set_name("distance 1-2")
         d23 = IMP.algebra.get_distance(native_chain_centers[2],
                                        native_chain_centers[3])
-        r23 = IMP.core.DistanceRestraint(IMP.core.Harmonic(d23, 1),
-                                         chains[2],
-                                         chains[3])
+        r23 = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(d23, 1),
+                                         chains[2], chains[3])
         r23.set_name("distance 2-3")
         d30 = IMP.algebra.get_distance(native_chain_centers[3],
                                        native_chain_centers[0])
-        r30 = IMP.core.DistanceRestraint(IMP.core.Harmonic(d30, 1),
-                                         chains[3],
-                                         chains[0])
+        r30 = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(d30, 1),
+                                         chains[3], chains[0])
         r30.set_name("distance 3-0")
+        top_rs = IMP.RestraintSet(m)
         # set distance restraints
         for r in [r01, r12, r23, r30]:
-            m.add_restraint(r)
-        self.assertEqual(m.get_number_of_restraints(), 4,
+            top_rs.add_restraint(r)
+        self.assertEqual(top_rs.get_number_of_restraints(), 4,
                          "Incorrect number of distance restraints")
         # set em2D restraint
         srw = em2d.SpiderImageReaderWriter()
         selection_file = self.get_input_file_name("all-1z5s-projections.sel")
-        images_to_read_names = [IMP.base.get_relative_path(selection_file, x)
+        images_to_read_names = [IMP.get_relative_path(selection_file, x)
                                 for x in em2d.read_selection_file(selection_file)]
         em_images = em2d.read_images(images_to_read_names, srw)
 
@@ -113,17 +109,18 @@ class Tests(IMP.test.TestCase):
         em2d_restraint.setup(score_function, params)
         em2d_restraint.set_images(em_images)
         em2d_restraint.set_name("em2d restraint")
-        container = IMP.container.ListSingletonContainer(
-            IMP.core.get_leaves(prot))
+        container = IMP.container.ListSingletonContainer(m,
+                                            IMP.core.get_leaves(prot))
         em2d_restraint.set_particles(container)
-        em2d_restraints_set = IMP.kernel.RestraintSet(m)
+        em2d_restraints_set = IMP.RestraintSet(m)
         em2d_restraints_set.add_restraint(em2d_restraint)
         em2d_restraints_set.set_weight(1000)  # weight for the em2D restraint
-        m.add_restraint(em2d_restraints_set)
-        self.assertEqual(m.get_number_of_restraints(), 5,
+        top_rs.add_restraint(em2d_restraints_set)
+        self.assertEqual(top_rs.get_number_of_restraints(), 5,
                          "Incorrect number of restraints")
         # MONTECARLO OPTIMIZATION
         s = IMP.core.MonteCarlo(m)
+        s.set_scoring_function(top_rs)
         # Add movers for the rigid bodies
         movers = []
         for rbd in rigid_bodies:

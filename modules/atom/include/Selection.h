@@ -13,8 +13,9 @@
 #include "Atom.h"
 #include "Hierarchy.h"
 #include "Residue.h"
+#include "Representation.h"
 #include <IMP/algebra/algebra_config.h>
-#include <IMP/base/InputAdaptor.h>
+#include <IMP/InputAdaptor.h>
 #include <IMP/core/Typed.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/display/declare_Geometry.h>
@@ -33,7 +34,7 @@ IMPATOM_BEGIN_NAMESPACE
     Selection(hierarchy=h, molecule="myprotein", residue_index=133)
     Selection(hierarchy=h, molecule="myprotein", residue_indexes=range(133,138))
     \endcode
-    each get the C-terminus of the protein "myprotein" (assuming the last
+    each select the C-terminus of the protein "myprotein" (assuming the last
     residue index is 133, and the residues are leaves, containing no atoms).
     (In C++, use one of the other constructors, then call one or more of the
     `set_*` methods.)
@@ -53,17 +54,19 @@ IMPATOM_BEGIN_NAMESPACE
     The resulting Selection makes a copy of the Selections it was combined from,
     so changing the original Selections does not change that Selection.
 
-    \note Only representational particles are selected - that is, those
-    with x,y,z coordinates. The highest resolution representation
+    To actually get the selected particles, call get_selected_particle_indexes()
+    or get_selected_particles().
+
+    \note The highest resolution representation
     that fits is returned. If you want lower resolution, use the
     resolution parameter to select the desired resolution (pass a very large
     number to get the coarsest representation).
 */
 class IMPATOMEXPORT Selection :
 #ifdef SWIG
-    public kernel::ParticleIndexesAdaptor
+    public ParticleIndexesAdaptor
 #else
-    public base::InputAdaptor
+    public InputAdaptor
 #endif
     {
  public:
@@ -74,16 +77,18 @@ class IMPATOMEXPORT Selection :
   };
 
  private:
-  kernel::Model *m_;
+  Model *m_;
   double resolution_;
-  base::Pointer<internal::ListSelectionPredicate> predicate_, and_predicate_;
+  RepresentationType representation_type_;
+  Pointer<internal::ListSelectionPredicate> predicate_, and_predicate_;
 
-  kernel::ParticleIndexes h_;
+  ParticleIndexes h_;
   IMP_NAMED_TUPLE_2(SearchResult, SearchResults, bool, match,
-                    kernel::ParticleIndexes, indexes, );
-  SearchResult search(kernel::Model *m, kernel::ParticleIndex pi,
-                      boost::dynamic_bitset<> parent) const;
-  void set_hierarchies(kernel::Model *m, const kernel::ParticleIndexes &pis);
+                    ParticleIndexes, indexes, );
+  SearchResult search(Model *m, ParticleIndex pi,
+                      boost::dynamic_bitset<> parent,
+                      bool include_children) const;
+  void set_hierarchies(Model *m, const ParticleIndexes &pis);
   void add_predicate(internal::SelectionPredicate *p);
   void init_predicate();
 
@@ -96,25 +101,27 @@ class IMPATOMEXPORT Selection :
   */
   Selection(Hierarchy hierarchy = None, Hierarchies hierarchies = [],
             Strings molecules = [], Ints residue_indexes = [],
-            Strings chains = [], AtomTypes atom_types = [],
+            Strings chain_ids = [], AtomTypes atom_types = [],
             ResidueTypes residue_types = [], Strings domains = [],
-            double resolution = 0, std::string molecule = None,
-            int residue_index = None, std::string chain = None,
+            double resolution = 0,
+            RepresentationType representation_type = IMP.atom.BALLS,
+            std::string molecule = None,
+            int residue_index = None, std::string chain_id = None,
             AtomType atom_type = None, ResidueType residue_type = None,
-            HierarchyType hierarchy_type = None, Terminus terminus = None,
+            Ints hierarchy_types = None, Terminus terminus = None,
             std::string domain = None, core::ParticleType particle_type = None,
             core::ParticleTypes particle_types = [], int copy_index = -1,
-            Ints copy_indexs = [], int state_index = -1,
+            Ints copy_indexes = [], int state_index = -1,
             Ints state_indexes = []);
 #endif
   Selection();
   Selection(Hierarchy h);
-  Selection(kernel::Particle *h);
-  Selection(kernel::Model *m, const kernel::ParticleIndexes &pis);
+  Selection(Particle *h);
+  Selection(Model *m, const ParticleIndexes &pis);
 #ifndef SWIG
   Selection(const Hierarchies &h);
 #endif
-  Selection(const kernel::ParticlesTemp &h);
+  Selection(const ParticlesTemp &h);
 // for C++
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   Selection(Hierarchy h, std::string molname, int residue_index);
@@ -134,6 +141,9 @@ class IMPATOMEXPORT Selection :
 
   //! Select at a Representation node with a resolution close to r.
   void set_resolution(double r) { resolution_ = r; }
+  //! Try to find this representation type
+  void set_representation_type(RepresentationType t)
+  { representation_type_ = t; }
   //! Select State with the passed index.
   void set_state_index(int state) { set_state_indexes(Ints(1, state)); }
   //! Select State with the passed indexes.
@@ -163,11 +173,6 @@ class IMPATOMEXPORT Selection :
 #ifndef IMP_DOXYGEN
   //! Select a chain with the passed id.
   void set_chain(std::string c) { set_chain_id(c); }
-#endif
-#ifndef SWIG
-  /** \deprecated_at{2.2} Pass a string */
-  IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
-  void set_chain(char c) { set_chain(std::string(1, c)); }
 #endif
   //! Select only residues with the passed index.
   void set_residue_index(int i);
@@ -202,9 +207,23 @@ class IMPATOMEXPORT Selection :
   /** \note both Selections must be on the same Hierarchy or Hierarchies */
   void set_difference(const Selection &s);
   //! Get the selected particles
-  kernel::ParticlesTemp get_selected_particles() const;
+  /** \see get_selected_particle_indexes().
+   */
+  ParticlesTemp get_selected_particles(bool with_representation=true) const;
   //! Get the indexes of the selected particles
-  kernel::ParticleIndexes get_selected_particle_indexes() const;
+  /** \note The particles are those selected at the time this method is called,
+            not when the Selection object was created.
+      \param with_representation If true (the default) then extend the search
+             down the hierarchy to find all representational particles that
+             match - that is, those with x,y,z coordinates. For example,
+             selecting a residue name will typically return all of the Atom
+             particles in that residue (not the Residue particle itself).
+             If false, stop the search at the highest level of the hierarchy
+             that matches (so, in the case above, return the Residue particle).
+      \return the indexes of the selected particles.
+   */
+  ParticleIndexes
+  get_selected_particle_indexes(bool with_representation=true) const;
 
 #ifndef SWIG
   operator ParticleIndexes() const { return get_selected_particle_indexes(); }
@@ -226,7 +245,7 @@ IMP_VALUES(Selection, Selections);
     to accelerate the computation.
     \see Selection
  */
-IMPATOMEXPORT kernel::Restraint *create_distance_restraint(const Selection &n0,
+IMPATOMEXPORT Restraint *create_distance_restraint(const Selection &n0,
                                                            const Selection &n1,
                                                            double x0, double k,
                                                            std::string name =
@@ -237,7 +256,7 @@ IMPATOMEXPORT kernel::Restraint *create_distance_restraint(const Selection &n0,
     to accelerate the computation.
     \see Selection
 */
-IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
+IMPATOMEXPORT Restraint *create_connectivity_restraint(
     const Selections &s, double k, std::string name = "Connectivity%1%");
 
 //! Create a restraint connecting the selections.
@@ -247,7 +266,7 @@ IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
     to accelerate the computation.
     \see Selection
 */
-IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
+IMPATOMEXPORT Restraint *create_connectivity_restraint(
     const Selections &s, double x0, double k,
     std::string name = "Connectivity%1%");
 
@@ -257,7 +276,7 @@ IMPATOMEXPORT kernel::Restraint *create_connectivity_restraint(
 
     \see Selection
 */
-IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
+IMPATOMEXPORT Restraint *create_internal_connectivity_restraint(
     const Selection &s, double k, std::string name = "Connectivity%1%");
 
 //! Create a restraint connecting the selection.
@@ -268,7 +287,7 @@ IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
 
     \see Selection
 */
-IMPATOMEXPORT kernel::Restraint *create_internal_connectivity_restraint(
+IMPATOMEXPORT Restraint *create_internal_connectivity_restraint(
     const Selection &s, double x0, double k,
     std::string name = "Connectivity%1%");
 
@@ -312,7 +331,7 @@ IMPATOMEXPORT double get_surface_area(const Selection &s);
 IMPATOMEXPORT double get_radius_of_gyration(const Selection &s);
 
 //! Create an excluded volume restraint for a list of selections.
-IMPATOMEXPORT kernel::Restraint *create_excluded_volume_restraint(
+IMPATOMEXPORT Restraint *create_excluded_volume_restraint(
     const Selections &s);
 
 /** \see Hierarchy */
@@ -323,7 +342,7 @@ IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 */
 class IMPATOMEXPORT SelectionGeometry : public display::Geometry {
   atom::Selection res_;
-  mutable boost::unordered_map<kernel::Particle *, base::Pointer<Geometry> >
+  mutable boost::unordered_map<Particle *, Pointer<Geometry> >
       components_;
 
  public:

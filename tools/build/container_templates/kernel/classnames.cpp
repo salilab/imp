@@ -1,47 +1,40 @@
 /**
  *  \file ClassnameContainer.cpp   \brief Container for classname.
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 
-#include "IMP/kernel/classname_macros.h"
-#include "IMP/kernel/ClassnameContainer.h"
-#include "IMP/kernel/ClassnameModifier.h"
-#include "IMP/kernel/internal/container_helpers.h"
-#include "IMP/kernel/internal/DynamicListContainer.h"
-#include "IMP/kernel/internal/StaticListContainer.h"
-#include "IMP/kernel/internal/utility.h"
-#include "IMP/kernel/ModelObject.h"
+#include "IMP/classname_macros.h"
+#include "IMP/ClassnameContainer.h"
+#include "IMP/ClassnameModifier.h"
+#include "IMP/internal/container_helpers.h"
+#include "IMP/internal/DynamicListContainer.h"
+#include "IMP/internal/StaticListContainer.h"
+#include "IMP/internal/utility.h"
+#include "IMP/ModelObject.h"
 #include <algorithm>
-#include <IMP/base/check_macros.h>
+#include <IMP/check_macros.h>
 #include <boost/unordered_set.hpp>
-#include <IMP/kernel/classname_macros.h>
-#include <IMP/kernel/ClassnameModifier.h>
-#include <IMP/kernel/ClassnamePredicate.h>
-#include <IMP/kernel/ClassnameScore.h>
-#include <IMP/kernel/functor.h>
-#include <IMP/kernel/internal/TupleRestraint.h>
-#include <IMP/kernel/internal/utility.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/classname_macros.h>
+#include <IMP/ClassnameModifier.h>
+#include <IMP/ClassnamePredicate.h>
+#include <IMP/ClassnameScore.h>
+#include <IMP/functor.h>
+#include <IMP/internal/TupleRestraint.h>
+#include <IMP/internal/utility.h>
+#include <IMP/Restraint.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ClassnameContainer::ClassnameContainer(kernel::Model *m, std::string name)
+ClassnameContainer::ClassnameContainer(Model *m, std::string name)
     : Container(m, name), contents_hash_(-1), cache_initialized_(false) {}
 
 // here for gcc
 ClassnameContainer::~ClassnameContainer() {}
 
 PLURALVARIABLETYPE ClassnameContainer::get_FUNCTIONNAMEs() const {
-  return IMP::kernel::internal::get_particle(get_model(), get_indexes());
-}
-
-unsigned int ClassnameContainer::get_number_of_FUNCTIONNAMEs() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_indexes()");
-  return get_number();
+  return IMP::internal::get_particle(get_model(), get_indexes());
 }
 
 VARIABLETYPE ClassnameContainer::get_FUNCTIONNAME(unsigned int i) const {
@@ -71,16 +64,16 @@ ClassnameContainerAdaptor::ClassnameContainerAdaptor(
   IMP_USAGE_CHECK(t.size() > 0,
                   "An Empty PLURALVARIABLETYPE list cannot be adapted to "
                   "container since it lacks model info");
-  kernel::Model *m = internal::get_model(t);
+  Model *m = internal::get_model(t);
   IMP_NEW(internal::StaticListContainer<ClassnameContainer>, c,
           (m, "ClassnameContainerInput%1%"));
-  c->set(IMP::kernel::internal::get_index(t));
+  c->set(IMP::internal::get_index(t));
   P::operator=(c);
 }
 
 void ClassnameContainerAdaptor::set_name_if_default(std::string name) {
   IMP_USAGE_CHECK(*this, "NULL passed as input");
-  base::Object *o = *this;
+  Object *o = *this;
   if (o->get_name().find("ClassnameContainerInput") == 0) {
     o->set_name(name);
   }
@@ -88,7 +81,7 @@ void ClassnameContainerAdaptor::set_name_if_default(std::string name) {
 
 ClassnameModifier::ClassnameModifier(std::string name) : Object(name) {}
 
-void ClassnameModifier::apply_index(kernel::Model *m, PASSINDEXTYPE v) const {
+void ClassnameModifier::apply_index(Model *m, PASSINDEXTYPE v) const {
   apply(internal::get_particle(m, v));
 }
 
@@ -102,7 +95,7 @@ ClassnamePredicate::ClassnamePredicate(std::string name) : Object(name) {
      symbols are present in the kernel DSO */
 }
 
-void ClassnamePredicate::remove_if_equal(kernel::Model *m, PLURALINDEXTYPE &ps,
+void ClassnamePredicate::remove_if_equal(Model *m, PLURALINDEXTYPE &ps,
                                          int value) const {
   ps.erase(std::remove_if(ps.begin(), ps.end(),
                           make_predicate_equal(this, m, value)),
@@ -112,19 +105,19 @@ Ints ClassnamePredicate::get_value(const PLURALVARIABLETYPE &o) const {
   IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
   if (o.empty()) return Ints();
   Ints ret(o.size());
-  kernel::Model *m = internal::get_model(o[0]);
+  Model *m = internal::get_model(o[0]);
   for (unsigned int i = 0; i < o.size(); ++i) {
     ret[i] += get_value_index(m, internal::get_index(o[i]));
   }
   return ret;
 }
 
-int ClassnamePredicate::get_value_index(kernel::Model *m,
+int ClassnamePredicate::get_value_index(Model *m,
                                         PASSINDEXTYPE vt) const {
   return get_value(internal::get_particle(m, vt));
 }
 
-void ClassnamePredicate::remove_if_not_equal(kernel::Model *m,
+void ClassnamePredicate::remove_if_not_equal(Model *m,
                                              PLURALINDEXTYPE &ps,
                                              int value) const {
   ps.erase(std::remove_if(ps.begin(), ps.end(),
@@ -142,20 +135,7 @@ ClassnameScore::ClassnameScore(std::string name) : Object(name) {
      symbols are present in the kernel DSO */
 }
 
-double ClassnameScore::evaluate(ARGUMENTTYPE vt,
-                                DerivativeAccumulator *da) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index-based evaluation instead");
-  return evaluate_index(internal::get_model(vt), internal::get_index(vt), da);
-}
-
-// old versions of gcc don't like having the pragma inside the function
-double ClassnameScore::evaluate_index(kernel::Model *m, PASSINDEXTYPE vt,
-                                      DerivativeAccumulator *da) const {
-  // see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53469
-  return evaluate(internal::get_particle(m, vt), da);
-}
-
-double ClassnameScore::evaluate_indexes(kernel::Model *m,
+double ClassnameScore::evaluate_indexes(Model *m,
                                         const PLURALINDEXTYPE &o,
                                         DerivativeAccumulator *da,
                                         unsigned int lower_bound,
@@ -167,7 +147,7 @@ double ClassnameScore::evaluate_indexes(kernel::Model *m,
   return ret;
 }
 
-double ClassnameScore::evaluate_if_good_index(kernel::Model *m,
+double ClassnameScore::evaluate_if_good_index(Model *m,
                                               PASSINDEXTYPE vt,
                                               DerivativeAccumulator *da,
                                               double max) const {
@@ -176,7 +156,7 @@ double ClassnameScore::evaluate_if_good_index(kernel::Model *m,
 }
 
 double ClassnameScore::evaluate_if_good_indexes(
-    kernel::Model *m, const PLURALINDEXTYPE &o, DerivativeAccumulator *da,
+    Model *m, const PLURALINDEXTYPE &o, DerivativeAccumulator *da,
     double max, unsigned int lower_bound, unsigned int upper_bound) const {
   double ret = 0;
   for (unsigned int i = lower_bound; i < upper_bound; ++i) {
@@ -189,18 +169,18 @@ double ClassnameScore::evaluate_if_good_indexes(
 }
 
 Restraints ClassnameScore::do_create_current_decomposition(
-    kernel::Model *m, PASSINDEXTYPE vt) const {
+    Model *m, PASSINDEXTYPE vt) const {
   double score = evaluate_index(m, vt, nullptr);
   if (score == 0) {
     return Restraints();
   } else {
-    return Restraints(1, IMP::kernel::internal::create_tuple_restraint(
+    return Restraints(1, IMP::internal::create_tuple_restraint(
                              this, m, vt, get_name()));
   }
 }
 
 Restraints ClassnameScore::create_current_decomposition(
-    kernel::Model *m, PASSINDEXTYPE vt) const {
+    Model *m, PASSINDEXTYPE vt) const {
   return do_create_current_decomposition(m, vt);
 }
 

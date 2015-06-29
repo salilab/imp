@@ -12,8 +12,8 @@ class Tests(IMP.test.TestCase):
 
     def test_connectivity_zero_set(self):
         """Test consecutive pair container decomposition"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 15)]
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(0, 15)]
         ds = [IMP.core.XYZR.setup_particle(p) for p in ps]
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                        IMP.algebra.Vector3D(10, 10, 10))
@@ -21,10 +21,9 @@ class Tests(IMP.test.TestCase):
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
             print(d)
             d.set_radius(4)
-        cpc = IMP.container.ConsecutivePairContainer(ps)
+        cpc = IMP.container.ConsecutivePairContainer(m, ps)
         hdps = IMP.core.HarmonicDistancePairScore(0, 1)
         r = IMP.container.PairsRestraint(hdps, cpc)
-        m.add_restraint(r)
         self.assert_(r.evaluate(False) > 0)
         rd = r.create_decomposition()
         rds = IMP.get_restraints([rd])
@@ -38,9 +37,9 @@ class Tests(IMP.test.TestCase):
 
     def test_pair_filter(self):
         """Test consecutive pair filter"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 15)]
-        ecpc = IMP.container.ExclusiveConsecutivePairContainer(ps)
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(0, 15)]
+        ecpc = IMP.container.ExclusiveConsecutivePairContainer(m, ps)
         ef = IMP.container.ExclusiveConsecutivePairFilter()
         for i in range(1, len(ps)):
             self.assertEquals(ef.get_value((ps[i - 1], ps[i])), 1)

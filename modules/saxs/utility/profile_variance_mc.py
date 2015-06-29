@@ -10,7 +10,7 @@ from numpy import *
 tau = 0.1
 niter = 100
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 
 #! read PDB
 mp = IMP.atom.read_pdb('6lyz.pdb', m,

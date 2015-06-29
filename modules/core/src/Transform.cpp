@@ -15,7 +15,7 @@ Transform::Transform(const algebra::Transformation3D &t, bool ignore_non_xyz) {
   ignore_non_xyz_ = ignore_non_xyz;
 }
 
-void Transform::apply_index(kernel::Model *m, kernel::ParticleIndex pi) const {
+void Transform::apply_index(Model *m, ParticleIndex pi) const {
   if (!XYZ::get_is_setup(m, pi)) {
     IMP_INTERNAL_CHECK(ignore_non_xyz_,
                        "The particle does not have XYZ attributes");
@@ -26,13 +26,13 @@ void Transform::apply_index(kernel::Model *m, kernel::ParticleIndex pi) const {
 }
 
 ModelObjectsTemp Transform::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  return IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
 }
 
 ModelObjectsTemp Transform::do_get_outputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  return IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
 }
 
 IMPCORE_END_NAMESPACE

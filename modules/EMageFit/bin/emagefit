@@ -175,7 +175,7 @@ def print_restraints(params):
     set_pairs_excluded_restraint(params, m)
     set_em2d_restraints(params, m)
     log.debug("RESTRAINTS FOR THE INPUT CONFIGURATION")
-    domino_model.print_restraints_values(m.model)
+    m.print_restraints_values()
 
 
 def set_pair_score_restraints(params, model):
@@ -272,6 +272,7 @@ def generate_monte_carlo_model(params, fn_database, seed,
     mc.set_temperature_pattern(params.monte_carlo.temperatures,
                                params.monte_carlo.iterations,
                                params.monte_carlo.cycles)
+    mc.set_scoring_function(m.get_scoring_function())
     mc.set_moving_parameters(params.monte_carlo.max_translations,
                              params.monte_carlo.max_rotations)
     if not hasattr(params, "dock_transforms"):
@@ -353,7 +354,7 @@ def create_dockings_from_xlinks(params):
                          fn_initial_docking, fn_transforms, fn_docked, False)
 
         sel = atom.ATOMPDBSelector()
-        new_m = IMP.kernel.Model()
+        new_m = IMP.Model()
         # After reading the file with the initial solution, the reference frame
         # for the rigid body of the ligand is not necessarily the  same one
         # that it had when saved.

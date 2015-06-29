@@ -12,24 +12,24 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-AmbiguousRestraint::AmbiguousRestraint(kernel::Model *m, int d,
-                                       kernel::Restraint *r0,
-                                       kernel::Restraint *r1)
+AmbiguousRestraint::AmbiguousRestraint(Model *m, int d,
+                                       Restraint *r0,
+                                       Restraint *r1)
     : Restraint(m, "AmbiguousRestraint%1%"), d_(d) {
   rs_.push_back(r0);
   rs_.push_back(r1);
 }
 
-AmbiguousRestraint::AmbiguousRestraint(kernel::Model *m, int d,
-                                       kernel::Restraints rs)
+AmbiguousRestraint::AmbiguousRestraint(Model *m, int d,
+                                       Restraints rs)
     : Restraint(m, "AmbiguousRestraint%1%"), d_(d), rs_(rs) {}
 
 /* Apply the restraint by computing the d-norm
  */
 double AmbiguousRestraint::unprotected_evaluate(
-                               kernel::DerivativeAccumulator *accum)
+                               DerivativeAccumulator *accum)
     const {
-  base::Vector<double> enes;
+  Vector<double> enes;
   double ene = 0;
   for (unsigned int i = 0; i < rs_.size(); ++i) {
     enes.push_back(rs_[i]->unprotected_evaluate(nullptr));
@@ -38,7 +38,7 @@ double AmbiguousRestraint::unprotected_evaluate(
   ene = pow(ene, 1.0 / d_);
   if (accum) {
     for (unsigned int i = 0; i < rs_.size(); ++i) {
-      kernel::DerivativeAccumulator a0(*accum,
+      DerivativeAccumulator a0(*accum,
                                        pow(enes[i], d_ - 1) * pow(ene, 1 - d_));
       rs_[i]->unprotected_evaluate(&a0);
     }
@@ -48,8 +48,8 @@ double AmbiguousRestraint::unprotected_evaluate(
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-kernel::ModelObjectsTemp AmbiguousRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
+ModelObjectsTemp AmbiguousRestraint::do_get_inputs() const {
+  ModelObjectsTemp ret;
   for (unsigned int i = 0; i < rs_.size(); ++i) {
     ret += rs_[i]->get_inputs();
   }

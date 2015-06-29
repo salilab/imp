@@ -2,8 +2,6 @@
  *  \file IMP/container/ClassnameContainerStatistics.h
  *  \brief A container for Classnames.
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
@@ -22,7 +20,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     statistics can be added on request, but we probably want to
     restrict it to ones that are cheap to gather. */
 class IMPCONTAINEREXPORT ClassnameContainerStatistics : public ScoreState {
-  base::Pointer<ClassnameContainer> container_;
+  Pointer<ClassnameContainer> container_;
   unsigned int total_;
   unsigned int checks_;
   unsigned int max_;
@@ -39,8 +37,8 @@ class IMPCONTAINEREXPORT ClassnameContainerStatistics : public ScoreState {
   void set_track_unique(bool tf);
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ClassnameContainerStatistics);
 };
 

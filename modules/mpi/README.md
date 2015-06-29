@@ -4,7 +4,7 @@ To enable this module, you must build IMP with your MPI library's MPI compiler
 rather than the default C++ compiler (e.g. `mpic++` rather than `g++`). To do
 this, first set up your MPI library so that `mpic++` is in your PATH (on some
 systems by using something like `module load mpi/openmpi-x86_64`) and then
-run [cmake](https://github.com/salilab/imp/wiki/Cmake) with the
+run [cmake](@ref cmake_config) with the
 `-DCMAKE_CXX_COMPILER=mpic++` option.
 
 If you want to use [OpenMPI](http://www.open-mpi.org/), note that the default

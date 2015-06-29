@@ -6,7 +6,7 @@
  *
  */
 
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/vonMisesKappaJeffreysRestraint.h>
 #include <math.h>
@@ -15,7 +15,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 vonMisesKappaJeffreysRestraint::vonMisesKappaJeffreysRestraint(
-    kernel::Model *m, kernel::Particle *p)
+    Model *m, Particle *p)
     : Restraint(m, "vonMisesKappaJeffreysRestraint%1%"), kappa_(p) {}
 
 void vonMisesKappaJeffreysRestraint::update_bessel(double kappaval) {
@@ -63,7 +63,7 @@ double vonMisesKappaJeffreysRestraint::unprotected_evaluate(
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp vonMisesKappaJeffreysRestraint::do_get_inputs() const {
-  return kernel::ParticlesTemp(1, kappa_);
+  return ParticlesTemp(1, kappa_);
 }
 
 IMPISD_END_NAMESPACE

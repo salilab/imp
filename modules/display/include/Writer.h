@@ -12,8 +12,8 @@
 #include "declare_Geometry.h"
 #include "internal/writers.h"
 #include "GeometryProcessor.h"
-#include <IMP/base/Pointer.h>
-#include <IMP/base/InputAdaptor.h>
+#include <IMP/Pointer.h>
+#include <IMP/InputAdaptor.h>
 
 #include <boost/format.hpp>
 
@@ -26,7 +26,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     IMP::display::Writer::set_file_name() method.
  */
 class IMPDISPLAYEXPORT Writer : public GeometryProcessor,
-                                public IMP::base::Object {
+                                public IMP::Object {
   int frame_;
 
  public:
@@ -63,7 +63,7 @@ class IMPDISPLAYEXPORT Writer : public GeometryProcessor,
   void add_geometry(const Geometries& g) {
     for (unsigned int i = 0; i < g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
-      IMP::base::PointerMember<Geometry> gp(g[i]);
+      IMP::PointerMember<Geometry> gp(g[i]);
       add_geometry(gp);
     }
   }
@@ -91,7 +91,7 @@ class IMPDISPLAYEXPORT Writer : public GeometryProcessor,
  */
 class IMPDISPLAYEXPORT TextWriter : public Writer {
   std::string file_name_;
-  base::TextOutput out_;
+  TextOutput out_;
 
  protected:
   void open();
@@ -106,7 +106,7 @@ class IMPDISPLAYEXPORT TextWriter : public Writer {
       such as CMM or Chimera that writes multiple frames to different
       files.
   */
-  TextWriter(base::TextOutput fn);
+  TextWriter(TextOutput fn);
   //! Create a write for a file or files with the passed name or pattern
   /** The name should contain %1% if you want to write different frames
       to separate files. Otherwise, it will either write all frames to the
@@ -140,8 +140,8 @@ IMP_OBJECTS(TextWriter, TextWriters);
     It can be implicitly constructed from either a Writer or a string.
     In the later case it determines what type of writer is needed from
     the file suffix. */
-class IMPDISPLAYEXPORT WriterAdaptor : public base::InputAdaptor {
-  IMP::base::PointerMember<Writer> writer_;
+class IMPDISPLAYEXPORT WriterAdaptor : public InputAdaptor {
+  IMP::PointerMember<Writer> writer_;
 
  public:
   WriterAdaptor(std::string name) : writer_(create_writer(name)) {}

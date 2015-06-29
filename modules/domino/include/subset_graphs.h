@@ -23,13 +23,13 @@ IMPDOMINO_BEGIN_NAMESPACE
 IMP_GRAPH(SubsetGraph, undirected, Subset, int, out << vertex);
 
 /** An undirected graph with one vertex per particle of interest.
-    Two particles are connected by an edge if a kernel::Restraint
+    Two particles are connected by an edge if a Restraint
     or ScoreState creates an interaction between the two particles.
 
     See \ref graphs "Graphs in IMP" for more information.
  */
-IMP_GRAPH(InteractionGraph, undirected, kernel::Particle *,
-          base::Pointer<base::Object>,
+IMP_GRAPH(InteractionGraph, undirected, Particle *,
+          Pointer<Object>,
           out << vertex->get_name() << "\n[" << vertex->get_index() << "]");
 
 //! Gets all of the Subsets of a SubsetGraph
@@ -96,7 +96,7 @@ IMPDOMINOEXPORT InteractionGraph
 
 IMPDOMINOEXPORT InteractionGraph
     get_interaction_graph(ScoringFunctionAdaptor rs,
-                          const kernel::ParticlesTemp &pst);
+                          const ParticlesTemp &pst);
 
 /** Assuming that all the particles have Cartesian coordinates,
     output edges corresponding to the edges in the interaction graph.
@@ -125,7 +125,7 @@ IMP_GRAPH(MergeTree, bidirectional, Subset, int, out << vertex);
 IMPDOMINOEXPORT MergeTree get_merge_tree(ScoringFunctionAdaptor input,
                                          const ParticleStatesTable *pst);
 
-/** \see get_merge_tree(kernel::RestraintSet*,const ParticleStatesTable*)
+/** \see get_merge_tree(RestraintSet*,const ParticleStatesTable*)
 
     Compute the merge tree from a junction tree.
 
@@ -134,7 +134,7 @@ IMPDOMINOEXPORT MergeTree get_merge_tree(ScoringFunctionAdaptor input,
  */
 IMPDOMINOEXPORT MergeTree get_merge_tree(const SubsetGraph &junction_tree);
 
-/** \see get_merge_tree(kernel::RestraintSet*,const ParticleStatesTable*)
+/** \see get_merge_tree(RestraintSet*,const ParticleStatesTable*)
 
     Compute the merge tree from a junction tree, attempting to keep it fairly
     balanced.
@@ -156,10 +156,10 @@ IMPDOMINOEXPORT bool get_is_merge_tree(const MergeTree &tree, Subset all,
 */
 
 IMPDOMINOEXPORT void write_merge_tree(const MergeTree &tree,
-                                      const kernel::ParticlesTemp &ps,
+                                      const ParticlesTemp &ps,
                                       std::ostream &out);
 IMPDOMINOEXPORT MergeTree
-    read_merge_tree(std::istream &input, const kernel::ParticlesTemp &ps);
+    read_merge_tree(std::istream &input, const ParticlesTemp &ps);
 /** @} */
 
 IMPDOMINO_END_NAMESPACE

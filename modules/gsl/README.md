@@ -1,4 +1,4 @@
-\brief Several general purpose optimizers from the GNU Scientific Library (GSL).
+\brief Several general purpose optimizers from the GNU Scientific Library ([GSL](http://www.gnu.org/software/gsl/)).
 
 The most useful is probably the IMP::gsl::Simplex optimizer. Note that GSL is licensed under the GPLv3, which requires that all other software linked with it also be licensed under a GPL-compatible license.
 

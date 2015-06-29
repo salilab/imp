@@ -11,10 +11,10 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """initialize IMP environment create particles"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
 
         # init IMP model ( the environment)
-        self.mdl = IMP.kernel.Model()
+        self.mdl = IMP.Model()
         self.sel = IMP.atom.CAlphaPDBSelector()
         self.mhs = IMP.atom.Hierarchies()
         self.mhs.append(
@@ -62,14 +62,13 @@ class Tests(IMP.test.TestCase):
         leaves_ref = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
         fit_r = IMP.multifit.WeightedExcludedVolumeRestraint(self.rbs,
                                                              leaves_ref)
-        self.mdl.add_restraint(fit_r)
         for i, t in enumerate(self.trans):
             IMP.core.transform(self.rbs[1], t)
             mh2_surface = IMP.em.particles2surface(
                 IMP.core.get_leaves(self.mhs[1]), 1.)
             val = IMP.em.calculate_intersection_score(mh1_surface, mh2_surface)
             scores.append(val)
-            scores_by_restraint.append(self.mdl.evaluate(False))
+            scores_by_restraint.append(fit_r.evaluate(False))
             IMP.core.transform(self.rbs[1], t.get_inverse())
         # test that score makes sense
         for i in range(2):

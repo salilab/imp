@@ -14,11 +14,11 @@
 #include "Subset.h"
 #include "Slice.h"
 #include "utility.h"
-#include <IMP/base/log.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/cache.h>
-#include <IMP/kernel/Restraint.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
+#include <IMP/Object.h>
+#include <IMP/cache.h>
+#include <IMP/Restraint.h>
+#include <IMP/log.h>
 #include <boost/unordered_map.hpp>
 
 #if IMP_DOMINO_HAS_RMF
@@ -34,24 +34,24 @@ IMPDOMINO_BEGIN_NAMESPACE
     that will be saved. A least-recently-used eviction policy is used when
     that number is exceeded.
 */
-class IMPDOMINOEXPORT RestraintCache : public base::Object {
-  IMP_NAMED_TUPLE_2(Key, Keys, base::WeakPointer<kernel::Restraint>, restraint,
+class IMPDOMINOEXPORT RestraintCache : public Object {
+  IMP_NAMED_TUPLE_2(Key, Keys, WeakPointer<Restraint>, restraint,
                     Assignment, assignment, );
   IMP_NAMED_TUPLE_3(RestraintData, RestraintDatas,
-                    base::PointerMember<ScoringFunction>, scoring_function,
+                    PointerMember<ScoringFunction>, scoring_function,
                     Subset, subset, double, max, );
   IMP_NAMED_TUPLE_2(RestraintSetData, RestraintSetDatas, Slice, slice,
-                    base::WeakPointer<kernel::Restraint>, restraint, );
+                    WeakPointer<Restraint>, restraint, );
   IMP_NAMED_TUPLE_2(SetData, SetDatas, RestraintSetDatas, members, double,
                     max, );
 
 #ifndef IMP_DOXYGEN
   class Generator {
-    typedef boost::unordered_map<kernel::Restraint *, RestraintData> RMap;
+    typedef boost::unordered_map<Restraint *, RestraintData> RMap;
     RMap rmap_;
-    typedef boost::unordered_map<kernel::Restraint *, SetData> SMap;
+    typedef boost::unordered_map<Restraint *, SetData> SMap;
     SMap sets_;
-    base::PointerMember<ParticleStatesTable> pst_;
+    PointerMember<ParticleStatesTable> pst_;
 
    public:
     Generator(ParticleStatesTable *pst) : pst_(pst) {}
@@ -65,7 +65,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
         load_particle_states(s, k.get_assignment(), pst_);
         double e;
         {
-          base::SetLogState sls(base::SILENT);
+          SetLogState sls(SILENT);
           e = it->second.get_scoring_function()->evaluate_if_below(
               false, it->second.get_max());
         }
@@ -103,15 +103,15 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
         }
       }
     }
-    void add_to_set(kernel::RestraintSet *rs, kernel::Restraint *r, Slice slice,
+    void add_to_set(RestraintSet *rs, Restraint *r, Slice slice,
                     double max) {
-      IMP_USAGE_CHECK(!dynamic_cast<kernel::RestraintSet *>(r),
+      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet *>(r),
                       "don't pass restraint sets here as second arg");
       sets_[rs].access_members().push_back(RestraintSetData(slice, r));
       sets_[rs].set_max(max);
     }
-    void add_restraint(kernel::Restraint *e, Subset s, double max) {
-      IMP_USAGE_CHECK(!dynamic_cast<kernel::RestraintSet *>(e),
+    void add_restraint(Restraint *e, Subset s, double max) {
+      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet *>(e),
                       "don't pass restraint sets here");
       if (rmap_.find(e) == rmap_.end()) {
         rmap_[e] = RestraintData(e->create_scoring_function(1.0, max), s, max);
@@ -131,30 +131,30 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
       return std::abs(a - b) < .1 * (a + b) + .1;
     }
   };
-  typedef boost::unordered_map<kernel::Particle *, kernel::ParticlesTemp>
+  typedef boost::unordered_map<Particle *, ParticlesTemp>
       DepMap;
-  void add_restraint_internal(kernel::Restraint *r, unsigned int index,
-                              kernel::RestraintSet *parent, double max,
+  void add_restraint_internal(Restraint *r, unsigned int index,
+                              RestraintSet *parent, double max,
                               Subset parent_subset, const DepMap &dependencies);
-  void add_restraint_set_child_internal(kernel::Restraint *r,
+  void add_restraint_set_child_internal(Restraint *r,
                                         const Subset &cur_subset,
-                                        kernel::RestraintSet *parent,
+                                        RestraintSet *parent,
                                         double parent_max,
                                         Subset parent_subset);
-  void add_restraint_set_internal(kernel::RestraintSet *rs, unsigned int index,
+  void add_restraint_set_internal(RestraintSet *rs, unsigned int index,
                                   const Subset &cur_subset, double cur_max,
                                   const DepMap &dependencies);
-  Subset get_subset(kernel::Restraint *r, const DepMap &dependencies) const;
+  Subset get_subset(Restraint *r, const DepMap &dependencies) const;
 // otherwise doxygen seems to index this for some reason
 #ifndef IMP_DOXYGEN
-  typedef base::LRUCache<Generator, ApproximatelyEqual> Cache;
+  typedef LRUCache<Generator, ApproximatelyEqual> Cache;
   Cache cache_;
 #endif
-  typedef boost::unordered_map<base::Pointer<kernel::Restraint>, Subset>
+  typedef boost::unordered_map<Pointer<Restraint>, Subset>
       KnownRestraints;
   KnownRestraints known_restraints_;
   // assign a unique index to each restraint for use with I/O
-  typedef boost::unordered_map<base::Pointer<kernel::Restraint>, int>
+  typedef boost::unordered_map<Pointer<Restraint>, int>
       RestraintIndex;
   RestraintIndex restraint_index_;
   unsigned int next_index_;
@@ -164,7 +164,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
                  unsigned int size = std::numeric_limits<unsigned int>::max());
   /** Recursively process the passed restraints (and sets) so all contained
       restraints and sets that have maximum are known.*/
-  void add_restraints(const kernel::RestraintsAdaptor &rs);
+  void add_restraints(const RestraintsAdaptor &rs);
   //! Get the score of a set or restraint
   /** The returned score will be std::numeric_limits<double>::max()
       if any of the limits are violated.
@@ -173,7 +173,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
       restraint, not that for some whole subset. See the other get_score()
       function for a perhaps more useful one.
   */
-  double get_score(kernel::Restraint *r, const Assignment &a) const {
+  double get_score(Restraint *r, const Assignment &a) const {
     set_was_used(true);
     double s = cache_.get(Key(r, a));
     return s;
@@ -181,21 +181,21 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
   /** Get the score for a restraint given a subset and assignment on
       that subset.
    */
-  double get_score(kernel::Restraint *r, const Subset &s,
+  double get_score(Restraint *r, const Subset &s,
                    const Assignment &a) const;
 
-  //! Make it so kernel::Restraint::get_last_score() returns the score
+  //! Make it so Restraint::get_last_score() returns the score
   /** This is useful when writing the restraints to disk, as that
       code often goes off the last score to avoid recomputing the
       restraints.*/
-  void load_last_score(kernel::Restraint *r, const Subset &s,
+  void load_last_score(Restraint *r, const Subset &s,
                        const Assignment &a);
   /** Return the restraints that should be evaluated for the subset,
       given the exclusions.*/
-  kernel::RestraintsTemp get_restraints(const Subset &s,
+  RestraintsTemp get_restraints(const Subset &s,
                                         const Subsets &exclusions) const;
 
-  kernel::RestraintsTemp get_restraints() const;
+  RestraintsTemp get_restraints() const;
 
 #if IMP_DOMINO_HAS_RMF || defined(IMP_DOXYGEN)
   /** This assumes that restraints are always added to the cache
@@ -206,14 +206,14 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
       \param[in] max_entries How many entries to write out at most.
       \param[in] group Where to put the entries.
   */
-  void save_cache(const kernel::ParticlesTemp &particle_ordering,
-                  const kernel::RestraintsTemp &restraints,
+  void save_cache(const ParticlesTemp &particle_ordering,
+                  const RestraintsTemp &restraints,
                   RMF::HDF5::Group group, unsigned int max_entries);
-  void load_cache(const kernel::ParticlesTemp &ps, RMF::HDF5::ConstGroup group);
+  void load_cache(const ParticlesTemp &ps, RMF::HDF5::ConstGroup group);
 #endif
 
   //! Return the slice for that restraint given the subset.
-  Slice get_slice(kernel::Restraint *r, const Subset &s) const;
+  Slice get_slice(Restraint *r, const Subset &s) const;
 
   //! Return the number of entries currently in the cache.
   unsigned int get_number_of_entries() const { return cache_.size(); }

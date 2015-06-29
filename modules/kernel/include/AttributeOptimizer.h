@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/AttributeOptimizer.h
+ *  \file IMP/AttributeOptimizer.h
  *   \brief Base class for all optimizers.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_ATTRIBUTE_OPTIMIZER_H
 #define IMPKERNEL_ATTRIBUTE_OPTIMIZER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "Optimizer.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -21,7 +21,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 */
 class IMPKERNELEXPORT AttributeOptimizer : public Optimizer {
  public:
-  AttributeOptimizer(kernel::Model *m, std::string name = "Optimizer %1%");
+  AttributeOptimizer(Model *m, std::string name = "Optimizer %1%");
 
  protected:
   /** @name Methods for getting and setting optimized attributes

@@ -10,11 +10,11 @@
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/container_macros.h"
 #include "IMP/algebra/SphericalVector3D.h"
-#include "IMP/base/log.h"
+#include "IMP/log.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
-Fine2DRegistrationRestraint::Fine2DRegistrationRestraint(kernel::Model *m)
+Fine2DRegistrationRestraint::Fine2DRegistrationRestraint(Model *m)
     : Restraint(m, "File2DRegistrationRestraint%1%"), calls_(0) {
   projection_ = new Image();
   projection_->set_was_used(true);
@@ -25,8 +25,8 @@ Fine2DRegistrationRestraint::Fine2DRegistrationRestraint(kernel::Model *m)
 };
 
 void Fine2DRegistrationRestraint::setup(
-    kernel::ParticlesTemp &ps, const ProjectingParameters &params,
-    kernel::Model *scoring_model,
+    ParticlesTemp &ps, const ProjectingParameters &params,
+    Model *scoring_model,
     //                       ScoreFunctionPtr score_function,
     ScoreFunction *score_function, MasksManagerPtr masks) {
 
@@ -47,11 +47,9 @@ void Fine2DRegistrationRestraint::setup(
     IMP_LOG_VERBOSE("masks given to Fine2DRegistrationRestraint " << std::endl);
   }
   // Create a particle for the projection parameters to be optimized
-  subj_params_particle_ = new kernel::Particle(scoring_model);
+  subj_params_particle_ = new Particle(scoring_model);
   PP_ = ProjectionParameters::setup_particle(subj_params_particle_);
   PP_.set_parameters_optimized(true);
-  // add the restraint to the model
-  scoring_model->add_restraint(this);
   // Add an score state to the model
 
   IMP_NEW(ProjectionParametersScoreState, pp_score_state,
@@ -119,7 +117,7 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
 }
 
 ModelObjectsTemp Fine2DRegistrationRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ps_subjects(1);
+  ModelObjectsTemp ps_subjects(1);
   ps_subjects[0] = subj_params_particle_;
   return ps_subjects;
 }

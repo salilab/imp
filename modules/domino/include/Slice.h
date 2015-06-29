@@ -14,9 +14,9 @@
 #include "domino_macros.h"
 #include "Subset.h"
 #include "Assignment.h"
-#include <IMP/base/Value.h>
+#include <IMP/Value.h>
 #include <IMP/container/ListSingletonContainer.h>
-#include <IMP/base/ConstVector.h>
+#include <IMP/ConstVector.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -24,8 +24,8 @@ IMPDOMINO_BEGIN_NAMESPACE
 /** This class stores a particular slice through a subset. The entire
     inner Subset must be contained in the outer one.
 */
-class IMPDOMINOEXPORT Slice : public base::ConstVector<unsigned int> {
-  typedef base::ConstVector<unsigned int> P;
+class IMPDOMINOEXPORT Slice : public ConstVector<unsigned int> {
+  typedef ConstVector<unsigned int> P;
   static Ints get_slice(Subset outer, Subset inner) {
     Ints ret(inner.size());
     for (unsigned int i = 0; i < inner.size(); ++i) {
@@ -49,7 +49,7 @@ class IMPDOMINOEXPORT Slice : public base::ConstVector<unsigned int> {
     return Assignment(ret);
   }
   Subset get_sliced(const Subset& a) const {
-    kernel::ParticlesTemp ret(size());
+    ParticlesTemp ret(size());
     for (unsigned int i = 0; i < size(); ++i) {
       ret[i] = a[operator[](i)];
     }

@@ -30,24 +30,24 @@ RigidClosePairsFinder::RigidClosePairsFinder(ClosePairsFinder *cpf)
   if (cpf) {
     cpf_ = cpf;
   } else {
-    cpf_ = base::Pointer<ClosePairsFinder>(new GridClosePairsFinder());
+    cpf_ = Pointer<ClosePairsFinder>(new GridClosePairsFinder());
   }
 }
 
 namespace {
-ParticlesTemp get_rigid_bodies(kernel::Model *m,
-                               const kernel::ParticleIndexes &pis) {
-  boost::unordered_set<kernel::Particle *> rets;
+ParticlesTemp get_rigid_bodies(Model *m,
+                               const ParticleIndexes &pis) {
+  boost::unordered_set<Particle *> rets;
   for (unsigned int i = 0; i < pis.size(); ++i) {
     if (RigidMember::get_is_setup(m, pis[i])) {
       rets.insert(RigidMember(m, pis[i]).get_rigid_body());
     }
   };
-  return kernel::ParticlesTemp(rets.begin(), rets.end());
+  return ParticlesTemp(rets.begin(), rets.end());
 }
 
 /*ParticlesTemp get_non_rigid(SingletonContainer *sc) {
-  kernel::ParticlesTemp ret;
+  ParticlesTemp ret;
   IMP_FOREACH_SINGLETON(sc, {
       if (!RigidMember::get_is_setup(_1)) {
         ret.push_back(_1);
@@ -55,12 +55,12 @@ ParticlesTemp get_rigid_bodies(kernel::Model *m,
     });
   return ret;
   }*/
-typedef boost::unordered_map<kernel::ParticleIndex, kernel::ParticleIndexes>
+typedef boost::unordered_map<ParticleIndex, ParticleIndexes>
     RBM;
-void divvy_up_particles(kernel::Model *m, const kernel::ParticleIndexes &ps,
-                        kernel::ParticleIndexes &out, RBM &members) {
-  IMP_IF_CHECK(base::USAGE) {
-    boost::unordered_set<kernel::ParticleIndex> ups(ps.begin(), ps.end());
+void divvy_up_particles(Model *m, const ParticleIndexes &ps,
+                        ParticleIndexes &out, RBM &members) {
+  IMP_IF_CHECK(USAGE) {
+    boost::unordered_set<ParticleIndex> ups(ps.begin(), ps.end());
     IMP_USAGE_CHECK(ups.size() == ps.size(),
                     "Duplicate particles in input: " << ups.size()
                                                      << "!= " << ps.size());
@@ -76,8 +76,8 @@ void divvy_up_particles(kernel::Model *m, const kernel::ParticleIndexes &ps,
       out.push_back(ps[i]);
     }
   }
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-    kernel::ParticleIndexes check_out = out;
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    ParticleIndexes check_out = out;
     std::sort(check_out.begin(), check_out.end());
     check_out.erase(std::unique(check_out.begin(), check_out.end()),
                     check_out.end());
@@ -91,9 +91,9 @@ void divvy_up_particles(kernel::Model *m, const kernel::ParticleIndexes &ps,
             << " total particles" << std::endl;*/
 }
 
-void check_particles(kernel::Model *m, const kernel::ParticleIndexes &ps) {
-  IMP_IF_CHECK(base::USAGE) {
-    for (kernel::ParticleIndexes::const_iterator it = ps.begin();
+void check_particles(Model *m, const ParticleIndexes &ps) {
+  IMP_IF_CHECK(USAGE) {
+    for (ParticleIndexes::const_iterator it = ps.begin();
          it != ps.end(); ++it) {
       if (RigidBody::get_is_setup(m, *it) &&
           !m->get_has_attribute(XYZR::get_radius_key(), *it)) {
@@ -108,8 +108,8 @@ void check_particles(kernel::Model *m, const kernel::ParticleIndexes &ps) {
 }
 
 ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
-    kernel::Model *m, const kernel::ParticleIndexes &pia,
-    const kernel::ParticleIndexes &pib) const {
+    Model *m, const ParticleIndexes &pia,
+    const ParticleIndexes &pib) const {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Rigid add_close_pairs called with "
                 << pia.size() << " and " << pib.size() << " and distance "
@@ -117,16 +117,16 @@ ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
   check_particles(m, pia);
   check_particles(m, pib);
   RBM ma, mb;
-  kernel::ParticleIndexes fa, fb;
+  ParticleIndexes fa, fb;
   divvy_up_particles(m, pia, fa, ma);
   divvy_up_particles(m, pib, fb, mb);
-  kernel::ParticleIndexPairs ppt = cpf_->get_close_pairs(m, fa, fb);
-  kernel::ParticleIndexPairs ret;
-  for (kernel::ParticleIndexPairs::const_iterator it = ppt.begin();
+  ParticleIndexPairs ppt = cpf_->get_close_pairs(m, fa, fb);
+  ParticleIndexPairs ret;
+  for (ParticleIndexPairs::const_iterator it = ppt.begin();
        it != ppt.end(); ++it) {
     // skip within one rigid body
     if (it->get(0) == it->get(1)) continue;
-    kernel::ParticleIndexes ps0, ps1;
+    ParticleIndexes ps0, ps1;
     if (ma.find(it->get(0)) != ma.end()) {
       ps0 = ma.find(it->get(0))->second;
     }
@@ -143,25 +143,25 @@ ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
 }
 
 ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
-    kernel::Model *m, const kernel::ParticleIndexes &pia) const {
+    Model *m, const ParticleIndexes &pia) const {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Adding close pairs from " << pia.size() << " particles."
                                            << std::endl);
   check_particles(m, pia);
   RBM map;
-  kernel::ParticleIndexes fa;
+  ParticleIndexes fa;
   divvy_up_particles(m, pia, fa, map);
-  kernel::ParticleIndexPairs ppt = cpf_->get_close_pairs(m, fa);
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  ParticleIndexPairs ppt = cpf_->get_close_pairs(m, fa);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i = 0; i < ppt.size(); ++i) {
       IMP_INTERNAL_CHECK(ppt[i][0] != ppt[i][1],
                          "Pair of one returned: " << ppt[i]);
     }
   }
-  kernel::ParticleIndexPairs ret;
-  for (kernel::ParticleIndexPairs::const_iterator it = ppt.begin();
+  ParticleIndexPairs ret;
+  for (ParticleIndexPairs::const_iterator it = ppt.begin();
        it != ppt.end(); ++it) {
-    kernel::ParticleIndexes ps0, ps1;
+    ParticleIndexes ps0, ps1;
     IMP_LOG_VERBOSE("Processing close pair " << *it << std::endl);
     if (map.find(it->get(0)) != map.end()) {
       ps0 = map.find(it->get(0))->second;
@@ -179,12 +179,12 @@ ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
 }
 
 ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
-    kernel::Model *m, kernel::ParticleIndex a, kernel::ParticleIndex b,
-    const kernel::ParticleIndexes &ma,
-    const kernel::ParticleIndexes &mb) const {
+    Model *m, ParticleIndex a, ParticleIndex b,
+    const ParticleIndexes &ma,
+    const ParticleIndexes &mb) const {
   IMP_INTERNAL_CHECK(a != b, "Can't pass equal particles");
   internal::RigidBodyHierarchy *da = nullptr, *db = nullptr;
-  kernel::ParticleIndexPairs out;
+  ParticleIndexPairs out;
   if (ma.size() > 0) {
     da = internal::get_rigid_body_hierarchy(RigidBody(m, a), ma, k_);
     IMP_INTERNAL_CHECK(da, "No hierarchy gotten");
@@ -200,18 +200,18 @@ ParticleIndexPairs RigidClosePairsFinder::get_close_pairs(
   if (da && db) {
     out = IMP::get_indexes(internal::close_pairs(m, da, db, get_distance()));
   } else if (da) {
-    kernel::ParticlesTemp pt =
+    ParticlesTemp pt =
         internal::close_particles(m, da, XYZR(m, b), get_distance());
     out.resize(pt.size());
     for (unsigned int i = 0; i < pt.size(); ++i) {
-      out[i] = kernel::ParticleIndexPair(pt[i]->get_index(), b);
+      out[i] = ParticleIndexPair(pt[i]->get_index(), b);
     }
   } else if (db) {
-    kernel::ParticlesTemp pt =
+    ParticlesTemp pt =
         internal::close_particles(m, db, XYZR(m, a), get_distance());
     out.resize(pt.size());
     for (unsigned int i = 0; i < pt.size(); ++i) {
-      out[i] = kernel::ParticleIndexPair(a, pt[i]->get_index());
+      out[i] = ParticleIndexPair(a, pt[i]->get_index());
     }
   }
   return out;
@@ -236,20 +236,20 @@ IntPairs RigidClosePairsFinder::get_close_pairs(
 
 /*
 std::pair<algebra::Sphere3D, algebra::Sphere3D>
-RigidClosePairsFinder::get_close_sphere_pair(kernel::Particle *a,
-kernel::Particle *b) const {
+RigidClosePairsFinder::get_close_sphere_pair(Particle *a,
+Particle *b) const {
 
 }*/
 
 ModelObjectsTemp RigidClosePairsFinder::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret = IMP::get_particles(m, pis);
-  kernel::ParticlesTemp rbs = get_rigid_bodies(m, pis);
-  kernel::ParticleIndexes all_pis = pis;
-  all_pis += kernel::get_indexes(rbs);
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret = IMP::get_particles(m, pis);
+  ParticlesTemp rbs = get_rigid_bodies(m, pis);
+  ParticleIndexes all_pis = pis;
+  all_pis += get_indexes(rbs);
   ret += rbs;
   for (unsigned int i = 0; i < rbs.size(); ++i) {
-    RigidMembers rms = RigidBody(rbs[i]).get_members();
+    RigidMembers rms = RigidBody(rbs[i]).get_rigid_members();
     for (unsigned i = 0; i < rms.size(); ++i) {
       all_pis.push_back(rms[i].get_particle_index());
     }

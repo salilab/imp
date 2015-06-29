@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def test_component_placement_score(self):
         """Testing that component placement score returns the same transformation if called twice"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         # read PDB
         mp1_ref = atom.read_pdb(self.open_input_file("1z5s_A.pdb"),
                                 m, atom.NonWaterPDBSelector())

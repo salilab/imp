@@ -14,7 +14,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 BerendsenThermostatOptimizerState::BerendsenThermostatOptimizerState(
-    const kernel::Particles &pis, double temperature, double tau)
+    const Particles &pis, double temperature, double tau)
     : OptimizerState(pis[0]->get_model(),
                      "BerendsenThermostatOptimizerState%1%"),
       pis_(pis),
@@ -39,7 +39,7 @@ void BerendsenThermostatOptimizerState::rescale_velocities() const {
                                        (temperature_ / kinetic_temp - 1.0));
 
   for (unsigned int i = 0; i < pis_.size(); ++i) {
-    kernel::Particle *p = pis_[i];
+    Particle *p = pis_[i];
     LinearVelocity v(p);
     v.set_velocity(v.get_velocity() * rescale);
   }

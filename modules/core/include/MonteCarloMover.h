@@ -12,9 +12,9 @@
 #include <IMP/core/core_config.h>
 
 #include <IMP/ModelObject.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/particle_index.h>
-#include <IMP/base/tuple_macros.h>
+#include <IMP/tuple_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -25,7 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
     many or most move sets this is 1.0).
 */
 IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
-                  kernel::ParticleIndexes, moved_particles, double,
+                  ParticleIndexes, moved_particles, double,
                   proposal_ratio, );
 
 //! A base class for classes which perturb particles.
@@ -35,16 +35,16 @@ IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
     All changed attributes should be optimizable, it is undefined behavior to
     try to optimize an attribute which is not.
 
-    The output particles (kernel::ModelObject::do_get_outputs()) are assumed
-    to be equal to the inputs (kernel::ModelObject::do_get_inputs()).
+    The output particles (ModelObject::do_get_outputs()) are assumed
+    to be equal to the inputs (ModelObject::do_get_inputs()).
  */
-class IMPCOREEXPORT MonteCarloMover : public kernel::ModelObject {
+class IMPCOREEXPORT MonteCarloMover : public ModelObject {
   unsigned int num_proposed_;
   unsigned int num_rejected_;
   bool has_move_;
 
  public:
-  MonteCarloMover(kernel::Model *m, std::string name);
+  MonteCarloMover(Model *m, std::string name);
 
   //! propose a modification
   /** The method should return the list of all particles that were
@@ -64,7 +64,7 @@ class IMPCOREEXPORT MonteCarloMover : public kernel::ModelObject {
     return do_propose();
   }
 
-  //! Roll back any changes made to the kernel::Particles
+  //! Roll back any changes made to the Particles
   void reject() {
     IMP_OBJECT_LOG;
     ++num_rejected_;
@@ -72,7 +72,7 @@ class IMPCOREEXPORT MonteCarloMover : public kernel::ModelObject {
     do_reject();
   }
 
-  //! Roll back any changes made to the kernel::Particles
+  //! Roll back any changes made to the Particles
   void accept() {
     IMP_OBJECT_LOG;
     has_move_ = false;
@@ -100,7 +100,7 @@ class IMPCOREEXPORT MonteCarloMover : public kernel::ModelObject {
   //! Implement accept_proposed_move(), default implementation is empty
   virtual void do_accept() {}
 
-  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     return get_inputs();
   }
 };

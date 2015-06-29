@@ -12,10 +12,10 @@
 #define IMPMULTIFIT_RADIUS_OF_GYRATION_RESTRAINT_H
 
 #include <IMP/multifit/multifit_config.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/core/HarmonicUpperBound.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/container_macros.h>
+#include <IMP/Particle.h>
+#include <IMP/container_macros.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -24,7 +24,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 /note a harmonic upper bound is applied between
       the predicted radius and the actual radius
  */
-class IMPMULTIFITEXPORT RadiusOfGyrationRestraint : public kernel::Restraint {
+class IMPMULTIFITEXPORT RadiusOfGyrationRestraint : public Restraint {
  public:
   //! Constructor
   /**
@@ -33,11 +33,11 @@ class IMPMULTIFITEXPORT RadiusOfGyrationRestraint : public kernel::Restraint {
     \param[in] scale allow the radius of gyration of the particles
                       to be at most scale times the predicted one
    */
-  RadiusOfGyrationRestraint(kernel::Particles ps, int num_residues,
+  RadiusOfGyrationRestraint(Particles ps, int num_residues,
                             Float scale = 1.);
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RadiusOfGyrationRestraint);
   //! Set the predicted radius of gyration used in the restraint
   void set_radius_of_gyration(Float r) {
@@ -48,19 +48,19 @@ class IMPMULTIFITEXPORT RadiusOfGyrationRestraint : public kernel::Restraint {
   inline Float get_radius_of_gyration() { return predicted_rog_; }
 
 #ifndef SWIG
-  IMP_LIST(private, Particle, particle, kernel::Particle *, kernel::Particles);
+  IMP_LIST(private, Particle, particle, Particle *, Particles);
 #endif
  protected:
-  kernel::Model *mdl_;
+  Model *mdl_;
   Float predicted_rog_;
   Float scale_;
-  base::Pointer<core::HarmonicUpperBound> hub_;
+  Pointer<core::HarmonicUpperBound> hub_;
 };
 
 IMPMULTIFITEXPORT
 float get_approximated_radius_of_gyration(int len);
 IMPMULTIFITEXPORT
-float get_actual_radius_of_gyration(kernel::ParticlesTemp ps);
+float get_actual_radius_of_gyration(ParticlesTemp ps);
 IMPMULTIFITEXPORT
 float get_approximated_radius(int len);
 IMPMULTIFIT_END_NAMESPACE

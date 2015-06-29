@@ -8,15 +8,16 @@
 
 #include <IMP/domino/DiscreteSampler.h>
 #include <IMP/domino/subset_scores.h>
-#include <IMP/base/enums.h>
+#include <IMP/enums.h>
 #include <limits>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-DiscreteSampler::DiscreteSampler(kernel::Model *m, ParticleStatesTable *pst,
+DiscreteSampler::DiscreteSampler(Model *m, ParticleStatesTable *pst,
                                  std::string name)
     : Sampler(m, name),
       pst_(pst),
+      restraints_set_(false),
       max_(std::numeric_limits<unsigned int>::max()) {}
 
 DiscreteSampler::~DiscreteSampler() {}
@@ -25,7 +26,7 @@ IMP_LIST_IMPL(DiscreteSampler, SubsetFilterTable, subset_filter_table,
               SubsetFilterTable *, SubsetFilterTables);
 
 SubsetFilterTables DiscreteSampler::get_subset_filter_tables_to_use(
-    const kernel::RestraintsTemp &rs, ParticleStatesTable *pst) const {
+    const RestraintsTemp &rs, ParticleStatesTable *pst) const {
   if (get_number_of_subset_filter_tables() > 0) {
     for (unsigned int i = 0; i < get_number_of_subset_filter_tables(); ++i) {
       get_subset_filter_table(i)->set_was_used(true);
@@ -61,8 +62,8 @@ Assignments DiscreteSampler::get_sample_assignments(
 }
 
 ConfigurationSet *DiscreteSampler::do_sample() const {
-  base::Pointer<ConfigurationSet> ret = new ConfigurationSet(get_model());
-  ret->set_log_level(base::SILENT);
+  Pointer<ConfigurationSet> ret = new ConfigurationSet(get_model());
+  ret->set_log_level(SILENT);
   Subset known_particles = get_particle_states_table()->get_subset();
   Assignments final_solutions = do_get_sample_assignments(known_particles);
   // TODO - remove
@@ -76,8 +77,8 @@ ConfigurationSet *DiscreteSampler::do_sample() const {
                            << " != " << known_particles.size());
     ret->load_configuration(-1);
     for (unsigned int j = 0; j < known_particles.size(); ++j) {
-      kernel::Particle *p = known_particles[j];
-      base::Pointer<ParticleStates> ps =
+      Particle *p = known_particles[j];
+      Pointer<ParticleStates> ps =
           get_particle_states_table()->get_particle_states(p);
       ps->load_particle_state(final_solutions[i][j], p);
     }

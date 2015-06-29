@@ -7,11 +7,11 @@
  */
 
 #include "IMP/core/FixedRefiner.h"
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
-FixedRefiner::FixedRefiner(const kernel::ParticlesTemp &ps)
+FixedRefiner::FixedRefiner(const ParticlesTemp &ps)
   : Refiner("FixedRefiner%d", true) {
   IMP_USAGE_CHECK(ps.size()>0, "cannot refine with empty particle list");
   IMP_LOG_VERBOSE("Created fixed particle refiner with "
@@ -24,14 +24,14 @@ FixedRefiner::FixedRefiner(const kernel::ParticlesTemp &ps)
   }
 }
 
-FixedRefiner::FixedRefiner(Model* m, const kernel::ParticleIndexes &pis)
+FixedRefiner::FixedRefiner(Model* m, const ParticleIndexes &pis)
   : Refiner("FixedRefiner%d", true), m_(m), pis_(pis) {
   IMP_LOG_VERBOSE("Created fixed particle refiner with "
                   << pis_.size() << " particles" << std::endl);
 }
 
-const kernel::ParticlesTemp
-FixedRefiner::get_refined(kernel::Particle *) const
+const ParticlesTemp
+FixedRefiner::get_refined(Particle *) const
 {
   ParticlesTemp ps;
   for(unsigned int i=0; i < pis_.size(); i++){
@@ -42,8 +42,8 @@ FixedRefiner::get_refined(kernel::Particle *) const
 
 
 ModelObjectsTemp FixedRefiner::do_get_inputs(
-    kernel::Model *, const kernel::ParticleIndexes &) const {
-  return kernel::ModelObjectsTemp();
+    Model *, const ParticleIndexes &) const {
+  return ModelObjectsTemp();
 }
 
 IMPCORE_END_NAMESPACE

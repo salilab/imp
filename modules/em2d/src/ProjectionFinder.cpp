@@ -13,14 +13,15 @@
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/Fine2DRegistrationRestraint.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
+#include "IMP/em2d/TIFFImageReaderWriter.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/atom/Mass.h"
 #include "IMP/gsl/Simplex.h"
-#include "IMP/base/log.h"
-#include "IMP/base/Pointer.h"
-#include "IMP/base/exception.h"
+#include "IMP/log.h"
+#include "IMP/Pointer.h"
+#include "IMP/exception.h"
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>
 #include <algorithm>
@@ -123,7 +124,7 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
                                                       << std::endl);
 }
 
-void ProjectionFinder::set_model_particles(const kernel::ParticlesTemp &ps) {
+void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
   IMP_LOG_TERSE("ProjectionFinder: Setting model particles" << std::endl);
 
   if (parameters_setup_ == false) {
@@ -139,7 +140,7 @@ void ProjectionFinder::set_model_particles(const kernel::ParticlesTemp &ps) {
   }
   masks_manager_->create_masks(model_particles_);
   particles_set_ = true;
-  IMP_LOG_TERSE("ProjectionFinder: kernel::Model particles set" << std::endl);
+  IMP_LOG_TERSE("ProjectionFinder: Model particles set" << std::endl);
 }
 
 void ProjectionFinder::set_fast_mode(unsigned int n) {
@@ -284,6 +285,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     match->set_name(strm.str());  ////
     match->set_was_used(true);
     match->write(strm.str(), srw);
+
   }
 }
 
@@ -344,7 +346,7 @@ void ProjectionFinder::get_complete_registration() {
   match->set_name("match image");
 
   // Set optimizer
-  IMP_NEW(kernel::Model, scoring_model, ());
+  IMP_NEW(Model, scoring_model, ());
   IMP_NEW(Fine2DRegistrationRestraint, fine2d, (scoring_model));
   IMP_NEW(IMP::gsl::Simplex, simplex_optimizer, (scoring_model));
 
@@ -354,6 +356,7 @@ void ProjectionFinder::get_complete_registration() {
   fine2d->setup(model_particles_, pp, scoring_model, score_function_,
                 masks_manager_);
 
+  simplex_optimizer->set_scoring_function(fine2d);
   simplex_optimizer->set_initial_length(params_.simplex_initial_length);
   simplex_optimizer->set_minimum_size(params_.simplex_minimum_size);
 
@@ -421,7 +424,9 @@ void ProjectionFinder::get_complete_registration() {
     // save if requested
     if (params_.save_match_images) {
       IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());
+      IMP_NEW(em2d::TIFFImageReaderWriter, srx, ());
       srw->set_was_used(true);
+      srx->set_was_used(true);
       ProjectingOptions options(params_.pixel_size, params_.resolution);
       options.normalize = true;
       get_projection(match, model_particles_, registration_results_[i], options,
@@ -432,9 +437,18 @@ void ProjectionFinder::get_complete_registration() {
       strm.width(4);
       strm << i << ".spi";
 
+      std::ostringstream strn;
+      strn << "fine_match-";
+      strn.fill('0');
+      strn.width(4);
+      strn << i << ".tif";
+
       registration_results_[i].set_in_image(match->get_header());
       match->set_name(strm.str());  //
       match->write(strm.str(), srw);
+      match->write(strn.str(), srx);
+      
+     
     }
     // ++show_progress;
   }

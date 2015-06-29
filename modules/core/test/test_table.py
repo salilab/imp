@@ -10,10 +10,10 @@ class Tests(IMP.test.TestCase):
 
     def test_set_position(self):
         """Make sure the Table PR works"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         print("hello")
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         tpr = IMP.core.TableRefiner()
         ps = []
         ps.append(p)

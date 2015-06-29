@@ -26,7 +26,7 @@ Mol2Selector::~Mol2Selector() {}
 namespace {
 
 struct Less {
-  bool operator()(kernel::Particle* pa, kernel::Particle* pb) const {
+  bool operator()(Particle* pa, Particle* pb) const {
     Bond a(pa), b(pb);
     int a0 = Atom(a.get_bonded(0)).get_input_index();
     int a1 = Atom(a.get_bonded(1)).get_input_index();
@@ -67,8 +67,8 @@ std::string mol2_string(Bond b, unsigned int count) {
   std::ostringstream oss;
   oss.setf(std::ios::right, std::ios::adjustfield);
   oss << std::setw(6) << (count + 1);
-  kernel::Particle* pa = b.get_bonded(0).get_particle();
-  kernel::Particle* pb = b.get_bonded(1).get_particle();
+  Particle* pa = b.get_bonded(0).get_particle();
+  Particle* pb = b.get_bonded(1).get_particle();
   if (Atom::get_is_setup(pa) && Atom::get_is_setup(pb)) {
     Atom da(pa);
     Atom db(pb);
@@ -118,12 +118,12 @@ std::string mol2_string(Residue r) {
   return oss.str();
 }
 
-Particle* m2_atom_particle(kernel::Model* m, const std::string& mol2_atomline) {
+Particle* m2_atom_particle(Model* m, const std::string& mol2_atomline) {
   Int atom_number, molecule_number;
   std::string atom_name_field, type_field, molecule_name_field;
   Float x_coord, y_coord, z_coord, atom_charge;
 
-  kernel::Particle* p = new kernel::Particle(m);
+  Particle* p = new Particle(m);
 
   std::istringstream ins;
   ins.str(mol2_atomline);
@@ -145,7 +145,7 @@ Particle* m2_atom_particle(kernel::Model* m, const std::string& mol2_atomline) {
   Charged::setup_particle(d, atom_charge);
   // get the element from the Sybyl atom type field
   // split on '.' to get the element
-  base::Vector<std::string> split_results;
+  Vector<std::string> split_results;
   boost::split(split_results, type_field, boost::is_any_of("."));
   Element e = get_element_table().get_element(split_results[0]);
   d.set_element(e);
@@ -154,9 +154,9 @@ Particle* m2_atom_particle(kernel::Model* m, const std::string& mol2_atomline) {
 }
 
 void bond_particle(
-    kernel::Model*, const String& mol2_bondline,
-    const boost::unordered_map<Int, kernel::Particle*>& molecule_atoms) {
-  //  kernel::Particle* p = new kernel::Particle(m);
+    Model*, const String& mol2_bondline,
+    const boost::unordered_map<Int, Particle*>& molecule_atoms) {
+  //  Particle* p = new Particle(m);
   std::istringstream ins(mol2_bondline);
 
   Int bond_number, atom_a_id, atom_b_id;
@@ -183,8 +183,8 @@ void bond_particle(
   }
 
   // get atom particles back
-  kernel::Particle* ap = molecule_atoms.find(atom_a_id)->second;
-  kernel::Particle* bp = molecule_atoms.find(atom_b_id)->second;
+  Particle* ap = molecule_atoms.find(atom_a_id)->second;
+  Particle* bp = molecule_atoms.find(atom_b_id)->second;
 
   Bonded ad, bd;
 
@@ -205,17 +205,17 @@ void bond_particle(
   /*Bond ab_d =*/create_bond(ad, bd, type);
 }
 
-Hierarchy molecule_particle(kernel::Model* m, const std::string& molecule_name,
+Hierarchy molecule_particle(Model* m, const std::string& molecule_name,
                             const std::string& molecule_type) {
-  kernel::Particle* p = new kernel::Particle(m);
+  Particle* p = new Particle(m);
   ResidueType rt(molecule_type);
   Residue r = Residue::setup_particle(p, rt);
   r->set_name(molecule_name);
   return r;
 }
 
-Hierarchy root_particle(kernel::Model* m, const String& mol2_file_name) {
-  kernel::Particle* p = new kernel::Particle(m);
+Hierarchy root_particle(Model* m, const String& mol2_file_name) {
+  Particle* p = new Particle(m);
 
   p->set_name(mol2_file_name);
 
@@ -224,7 +224,7 @@ Hierarchy root_particle(kernel::Model* m, const String& mol2_file_name) {
   return hd;
 }
 
-Hierarchy read_molecule_mol2(kernel::Model* model, std::istream& mol2_file,
+Hierarchy read_molecule_mol2(Model* model, std::istream& mol2_file,
                              Hierarchy& root_d) {
   std::string line;
   std::string molecule_name, molecule_type;
@@ -255,10 +255,10 @@ Hierarchy read_molecule_mol2(kernel::Model* model, std::istream& mol2_file,
 }
 
 void read_atom_mol2(
-    kernel::Model* model, std::istream& mol2_file, Hierarchy& molecule_d,
-    boost::unordered_map<Int, kernel::Particle*>& molecule_atoms,
+    Model* model, std::istream& mol2_file, Hierarchy& molecule_d,
+    boost::unordered_map<Int, Particle*>& molecule_atoms,
     Mol2Selector* mol2sel) {
-  IMP::base::PointerMember<Mol2Selector> sel(mol2sel);
+  IMP::PointerMember<Mol2Selector> sel(mol2sel);
   std::string line;
   char c;
 
@@ -269,7 +269,7 @@ void read_atom_mol2(
       break;
     } else {
       if (mol2sel->get_is_selected(line)) {
-        kernel::Particle* atom_p = m2_atom_particle(model, line);
+        Particle* atom_p = m2_atom_particle(model, line);
         Hierarchy atom_d = Hierarchy(atom_p);
         molecule_d.add_child(atom_d);
         Atom ad = Atom(atom_p);
@@ -286,8 +286,8 @@ void read_atom_mol2(
 }
 
 void read_bond_mol2(
-    kernel::Model* m, std::istream& mol2_file, Hierarchy& /*molecule_d*/,
-    const boost::unordered_map<Int, kernel::Particle*>& molecule_atoms) {
+    Model* m, std::istream& mol2_file, Hierarchy& /*molecule_d*/,
+    const boost::unordered_map<Int, Particle*>& molecule_atoms) {
   std::string line;
   char c;
   Int count = 0;
@@ -323,7 +323,7 @@ void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
   }
 
   // get current molecule particle
-  kernel::Particle* molecule = chd.get_particle();
+  Particle* molecule = chd.get_particle();
 
   // get the MoleculeDecorator of the molecule particle, output mol2 head
   // lines
@@ -335,7 +335,7 @@ void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
 
   // get Atom decorator of the atom particles, output atom section
   // get_mol2atom_line should be in Atom.h, .cpp - to be improved
-  kernel::ParticlesTemp atoms = get_leaves(chd);
+  ParticlesTemp atoms = get_leaves(chd);
   mol2_file << "@<TRIPOS>ATOM" << std::endl;
   for (unsigned int i = 0; i < atoms.size(); i++) {
     if (Atom::get_is_setup(atoms[i])) {
@@ -347,7 +347,7 @@ void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
   // get Bond decorator of the bond particles, output bond section
   // get_mol2bond_line should be in bond_decorators.h, .cpp - to be improved
   Bonds bonds(get_internal_bonds(chd));
-  base::Vector<Bond> bds(bonds.begin(), bonds.end());
+  Vector<Bond> bds(bonds.begin(), bonds.end());
   std::sort(bds.begin(), bds.end(), Less());
   bonds = Bonds(bds.begin(), bds.end());
   mol2_file << "@<TRIPOS>BOND" << std::endl;
@@ -357,14 +357,14 @@ void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
 }
 }
 
-Hierarchy read_mol2(base::TextInput mol2_file, kernel::Model* model,
+Hierarchy read_mol2(TextInput mol2_file, Model* model,
                     Mol2Selector* mol2sel) {
   if (!mol2sel) {
     mol2sel = new AllMol2Selector();
   }
-  IMP::base::PointerMember<Mol2Selector> sel(mol2sel);
+  IMP::PointerMember<Mol2Selector> sel(mol2sel);
   // create a map to save atom_index and atom particle pairs
-  boost::unordered_map<Int, kernel::Particle*> molecule_atoms;
+  boost::unordered_map<Int, Particle*> molecule_atoms;
 
   // create root particle
   Hierarchy root_d = root_particle(model, mol2_file.get_name());
@@ -398,7 +398,7 @@ Hierarchy read_mol2(base::TextInput mol2_file, kernel::Model* model,
 }
 
 // argv[1] file_name_type should contain file type e.g. ".mol2"
-void write_mol2(Hierarchy rhd, base::TextOutput file) {
+void write_mol2(Hierarchy rhd, TextOutput file) {
   Hierarchies hs = get_by_type(rhd, RESIDUE_TYPE);
   for (unsigned int i = 0; i < hs.size(); ++i) {
     write_molecule_mol2(hs[i], file);

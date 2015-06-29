@@ -7,7 +7,7 @@
 #include <IMP/algebra.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 #include <IMP/container.h>
 
 using namespace IMP;
@@ -21,14 +21,14 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax, bool nobi = false) {
   {
     Vector3D minc(0, 0, 0), maxc(10, 10, 10);
-    IMP_NEW(kernel::Model, m, ());
-    kernel::ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
-    kernel::ParticleIndexes psi = IMP::internal::get_index(ps);
+    IMP_NEW(Model, m, ());
+    ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
+    ParticleIndexes psi = IMP::internal::get_index(ps);
     ::boost::uniform_real<> rand(rmin, rmax);
     for (unsigned int i = 0; i < ps.size(); ++i) {
       XYZ(ps[i])
           .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-      XYZR(ps[i]).set_radius(rand(base::random_number_generator));
+      XYZR(ps[i]).set_radius(rand(random_number_generator));
     }
     cpf->set_distance(0);
     double result = 0;
@@ -38,41 +38,23 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
     oss << "cpf index " << name << " " << n << " " << rmax;
     report(oss.str(), runtime, result);
   }
-  {
-    Vector3D minc(0, 0, 0), maxc(10, 10, 10);
-    IMP_NEW(kernel::Model, m, ());
-    kernel::ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
-    ::boost::uniform_real<> rand(rmin, rmax);
-    for (unsigned int i = 0; i < ps.size(); ++i) {
-      XYZ(ps[i])
-          .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-      XYZR(ps[i]).set_radius(rand(base::random_number_generator));
-    }
-    cpf->set_distance(0);
-    double result = 0;
-    double runtime;
-    IMP_TIME({ result += cpf->get_close_pairs(ps).size(); }, runtime);
-    std::ostringstream oss;
-    oss << "cpf " << name << " " << n << " " << rmax;
-    report(oss.str(), runtime, result);
-  }
   if (!nobi) {
     Vector3D minc(0, 0, 0), maxc(10, 10, 10);
-    IMP_NEW(kernel::Model, m, ());
-    kernel::ParticlesTemp ps0 = create_xyzr_particles(m, n, rmin);
-    kernel::ParticlesTemp ps1 = create_xyzr_particles(m, n, rmin);
-    kernel::ParticleIndexes ps0i = IMP::internal::get_index(ps0);
-    kernel::ParticleIndexes ps1i = IMP::internal::get_index(ps1);
+    IMP_NEW(Model, m, ());
+    ParticlesTemp ps0 = create_xyzr_particles(m, n, rmin);
+    ParticlesTemp ps1 = create_xyzr_particles(m, n, rmin);
+    ParticleIndexes ps0i = IMP::internal::get_index(ps0);
+    ParticleIndexes ps1i = IMP::internal::get_index(ps1);
     ::boost::uniform_real<> rand(rmin, rmax);
     for (unsigned int i = 0; i < ps0.size(); ++i) {
       XYZ(ps0[i])
           .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-      XYZR(ps0[i]).set_radius(rand(base::random_number_generator));
+      XYZR(ps0[i]).set_radius(rand(random_number_generator));
     }
     for (unsigned int i = 0; i < ps1.size(); ++i) {
       XYZ(ps1[i])
           .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-      XYZR(ps1[i]).set_radius(rand(base::random_number_generator));
+      XYZR(ps1[i]).set_radius(rand(random_number_generator));
     }
     cpf->set_distance(0);
     double result = 0;
@@ -87,14 +69,14 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark finding close pairs");
+  IMP::setup_from_argv(argc, argv, "Benchmark finding close pairs");
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
     std::string name = "grid";
     test_one(name, cpf, 10, 0, .1, true);
     test_one(name, cpf, 100, 0, .1, true);
     test_one(name, cpf, 1000, 0, .1, true);
-    if (!IMP::base::run_quick_test) {
+    if (!IMP::run_quick_test) {
       test_one(name, cpf, 1000, 0, .5, true);
       test_one(name, cpf, 1000, 0, 5, true);
       test_one(name, cpf, 10000, 0, .1, true);
@@ -109,7 +91,7 @@ int main(int argc, char **argv) {
     IMP_NEW(NearestNeighborsClosePairsFinder, cpf, ());
     std::string name = "nn";
     test_one(name, cpf, 1000, 0, .1);
-    if (!IMP::base::run_quick_test) {
+    if (!IMP::run_quick_test) {
       test_one(name, cpf, 1000, 0, .5);
       test_one(name, cpf, 1000, 0, 5);
       test_one(name, cpf, 10000, 0, .1);
@@ -126,7 +108,7 @@ int main(int argc, char **argv) {
     std::string name = "box";
     // bi takes twice as long as non-bi
     test_one(name, cpf, 1000, 0, .1);
-    if (!IMP::base::run_quick_test) {
+    if (!IMP::run_quick_test) {
       test_one(name, cpf, 1000, 0, .5);
       test_one(name, cpf, 1000, 0, 5);
       test_one(name, cpf, 10000, 0, .1);
@@ -144,7 +126,7 @@ int main(int argc, char **argv) {
     // bi also twice as as slow
     test_one("quadratic", cpf, 10, 0, .1);
     test_one("quadratic", cpf, 100, 0, .1);
-    if (!IMP::base::run_quick_test) {
+    if (!IMP::run_quick_test) {
       test_one("quadratic", cpf, 1000, 0, .1);
       test_one("quadratic", cpf, 1000, 0, .5);
       test_one("quadratic", cpf, 1000, 0, 5);

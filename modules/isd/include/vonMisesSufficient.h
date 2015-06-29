@@ -9,7 +9,7 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <boost/math/special_functions/bessel.hpp>
@@ -33,7 +33,7 @@ IMPISD_BEGIN_NAMESPACE
     \note derivative with respect to the mean \f$\chi_{exp}\f$ is not provided.
  */
 
-class vonMisesSufficient : public base::Object {
+class vonMisesSufficient : public Object {
  public:
   /** compute von Mises given the sufficient statistics
     \param[in] chi
@@ -44,7 +44,7 @@ class vonMisesSufficient : public base::Object {
   */
   vonMisesSufficient(double chi, unsigned N, double R0, double chiexp,
                      double kappa)
-      : base::Object("von Mises sufficient %1%"),
+      : Object("von Mises sufficient %1%"),
         x_(chi),
         R0_(R0),
         chiexp_(chiexp) {
@@ -60,7 +60,7 @@ class vonMisesSufficient : public base::Object {
     \param[in] kappa concentration
   */
   vonMisesSufficient(double chi, Floats obs, double kappa)
-      : base::Object("von Mises sufficient %1%"), x_(chi) {
+      : Object("von Mises sufficient %1%"), x_(chi) {
     Floats stats = get_sufficient_statistics(obs);
     N_ = (unsigned)stats[0];
     R0_ = stats[1];

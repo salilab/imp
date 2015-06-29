@@ -36,11 +36,11 @@ More detail on the functioning of EMageFit can be found on the
 utilities are documented on the \ref emagefit_scripts "scripts page".
 
 _Examples_:
- - [Modeling of 3sfd](../tutorial/emagefit_3sfd.html)
+ - [Modeling of 3sfd](@ref emagefit_3sfd)
 
 # Info
 
-_Author(s)_: Javier Velazquez-Muriel
+_Author(s)_: Javier Velázquez-Muriel
 
 _Maintainer_: `benmwebb`
 
@@ -51,4 +51,4 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - Javier A. Velazquez-Muriel, Keren Lasker, Daniel Russel, Jeremy Phillips, Benjamin M. Webb, Dina Scheidmann, Andrej Sali, \quote{Assembly of macromolecular complexes by satisfaciton of spatial restraints from electron microscopy images}, <em>Proc Natl Acad Sci USA 109(46), 18821-18826</em>, 2012.
+ - Javier A. Velázquez-Muriel, Keren Lasker, Daniel Russel, Jeremy Phillips, Benjamin M. Webb, Dina Scheidmann, Andrej Sali, \quote{Assembly of macromolecular complexes by satisfaciton of spatial restraints from electron microscopy images}, <em>Proc Natl Acad Sci USA 109(46), 18821-18826</em>, 2012.

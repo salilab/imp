@@ -144,6 +144,10 @@ class MonteCarloRelativeMoves:
         log.debug("Maximum translations %s", self.max_translations)
         log.debug("Maximum rotations %s", self.max_rotations)
 
+    def set_scoring_function(self, scoring_function):
+        """Set the scoring function to be used by MonteCarlo."""
+        self._scoring_function = scoring_function
+
     def run_monte_carlo(self):
         """
             Run MonteCarlo sampling to generate possible states for DOMINO
@@ -151,6 +155,7 @@ class MonteCarloRelativeMoves:
         t0 = time.time()
         log.info("Running MonteCarlo")
         mc = core.MonteCarlo(self.model)
+        mc.set_scoring_function(self._scoring_function)
         mc.set_return_best(True)
         for i in range(self.cycles):
             log.info("Cycle: %s", i)
@@ -175,6 +180,7 @@ class MonteCarloRelativeMoves:
         t0 = time.time()
         log.info("Running MonteCarlo")
         mc = core.MonteCarlo(self.model)
+        mc.set_scoring_function(self._scoring_function)
         mc.set_return_best(True)
 
         for i in range(self.cycles):

@@ -11,7 +11,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 ParticleIndexKey Reference::get_reference_key() {
-  static kernel::ParticleIndexKey k("reference particle");
+  static ParticleIndexKey k("reference particle");
   return k;
 }
 
@@ -25,8 +25,8 @@ TransformationSymmetry::TransformationSymmetry(
   t_ = t;
 }
 
-void TransformationSymmetry::apply_index(kernel::Model *m,
-                                         kernel::ParticleIndex pi) const {
+void TransformationSymmetry::apply_index(Model *m,
+                                         ParticleIndex pi) const {
   set_was_used(true);
   if (RigidBody::get_is_setup(m, pi)) {
     RigidBody rrb(Reference(m, pi).get_reference_particle());
@@ -44,8 +44,8 @@ void TransformationSymmetry::apply_index(kernel::Model *m,
 }
 
 ModelObjectsTemp TransformationSymmetry::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret = IMP::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret.push_back(Reference(m, pis[i]).get_reference_particle());
   }
@@ -53,8 +53,8 @@ ModelObjectsTemp TransformationSymmetry::do_get_inputs(
 }
 
 ModelObjectsTemp TransformationSymmetry::do_get_outputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  return IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
 }
 
 TransformationAndReflectionSymmetry::TransformationAndReflectionSymmetry(
@@ -64,7 +64,7 @@ TransformationAndReflectionSymmetry::TransformationAndReflectionSymmetry(
 }
 
 void TransformationAndReflectionSymmetry::apply_index(
-    kernel::Model *m, kernel::ParticleIndex pi) const {
+    Model *m, ParticleIndex pi) const {
   IMP_USAGE_CHECK(!RigidBody::get_is_setup(m, pi),
                   "Particle must not be a rigid body particle");
   set_was_used(true);
@@ -74,8 +74,8 @@ void TransformationAndReflectionSymmetry::apply_index(
 }
 
 ModelObjectsTemp TransformationAndReflectionSymmetry::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret(2 * pis.size());
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret(2 * pis.size());
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret[2 * i + 0] = m->get_particle(pis[i]);
     ret[2 * i + 0] = Reference(m, pis[i]).get_reference_particle();
@@ -84,8 +84,8 @@ ModelObjectsTemp TransformationAndReflectionSymmetry::do_get_inputs(
 }
 
 ModelObjectsTemp TransformationAndReflectionSymmetry::do_get_outputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  return IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
 }
 
 IMPCORE_END_NAMESPACE

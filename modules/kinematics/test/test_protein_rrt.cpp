@@ -2,8 +2,8 @@
    This is the program for creating a simple kinematic tree from a protein
    and running rrt on phi psi angle
 */
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Model.h>
+#include <IMP/Particle.h>
 
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/container/generic.h>
@@ -27,13 +27,14 @@
 #include <IMP/kinematics/directional_DOFs.h>
 #include <IMP/kinematics/UniformBackboneSampler.h>
 #include <IMP/kinematics/KinematicForestScoreState.h>
+#include <IMP/flags.h>
 
 #include <string>
 #include <boost/lexical_cast.hpp>
 
-void scale_radii(IMP::kernel::ParticlesTemp& particles, double scale);
+void scale_radii(IMP::ParticlesTemp& particles, double scale);
 
-void scale_radii(IMP::kernel::ParticlesTemp& particles, double scale) {
+void scale_radii(IMP::ParticlesTemp& particles, double scale) {
   for (unsigned int i = 0; i < particles.size(); i++) {
     IMP::core::XYZR xyzr(particles[i]);
     xyzr.set_radius(xyzr.get_radius() * scale);
@@ -42,7 +43,8 @@ void scale_radii(IMP::kernel::ParticlesTemp& particles, double scale) {
 
 using namespace IMP::kinematics;
 
-int main(int argc, char** argv) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test protein RRT.");
   return 0;
   // output arguments
   for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
@@ -58,7 +60,7 @@ int main(int argc, char** argv) {
   if (argc == 3) scale = atof(argv[2]);
 
   // read in the input protein
-  IMP::base::Pointer<IMP::kernel::Model> model = new IMP::kernel::Model();
+  IMP::Pointer<IMP::Model> model = new IMP::Model();
   std::cerr << "Starting reading pdb file " << fname << std::endl;
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       fname, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
@@ -82,18 +84,18 @@ int main(int argc, char** argv) {
 
   IMP::atom::CHARMMParameters* ff =
       new IMP::atom::CHARMMParameters(topology_file_name, parameter_file_name);
-  IMP::base::Pointer<IMP::atom::CHARMMTopology> topology =
+  IMP::Pointer<IMP::atom::CHARMMTopology> topology =
       ff->create_topology(mhd);
   // topology->apply_default_patches();
   topology->setup_hierarchy(mhd);
   // IMP::atom::CHARMMStereochemistryRestraint* r =
   //  new IMP::atom::CHARMMStereochemistryRestraint(mhd, topology);
 
-  IMP::kernel::ParticlesTemp atoms =
+  IMP::ParticlesTemp atoms =
       IMP::atom::get_by_type(mhd, IMP::atom::ATOM_TYPE);
-  IMP::kernel::ParticlesTemp bonds = topology->add_bonds(mhd);
-  IMP::kernel::ParticlesTemp angles = ff->create_angles(bonds);
-  IMP::kernel::ParticlesTemp dihedrals = ff->create_dihedrals(bonds);
+  IMP::ParticlesTemp bonds = topology->add_bonds(mhd);
+  IMP::ParticlesTemp angles = ff->create_angles(bonds);
+  IMP::ParticlesTemp dihedrals = ff->create_dihedrals(bonds);
   std::cerr << "# bonds " << bonds.size() << " # angles " << angles.size()
             << " # dihedrals " << dihedrals.size() << std::endl;
 
@@ -116,9 +118,8 @@ int main(int argc, char** argv) {
   IMP_NEW(IMP::container::PairsRestraint, pr, (score, cpc));
 
   // TODO: check why not working: should be much faster
-  // IMP::base::Pointer<IMP::Restraint> pr=
+  // IMP::Pointer<IMP::Restraint> pr=
   //   IMP::container::create_restraint(score, cpc);
-  model->add_restraint(pr);
 
   // create phi/psi joints
   ProteinKinematics pk(mhd, true, false);
@@ -144,6 +145,7 @@ int main(int argc, char** argv) {
   PathLocalPlanner planner(model, &sampler, &dd, 10);
   std::cerr << "Start RRT" << std::endl;
   IMP_NEW(RRT, rrt, (model, &sampler, &planner, dofs));
+  rrt->set_scoring_function(pr);
   std::cerr << "Start RRT run" << std::endl;
   rrt->run();
   std::cerr << "Done RRT" << std::endl;

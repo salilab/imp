@@ -2,8 +2,6 @@
  *  \file IMP/core/ClassnameRestraint.h
  *  \brief Apply a ClassnameScore to a Classname.
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
@@ -13,7 +11,7 @@
 
 #include <IMP/core/core_config.h>
 
-#include <IMP/kernel/internal/TupleRestraint.h>
+#include <IMP/internal/TupleRestraint.h>
 #include <IMP/ClassnameScore.h>
 
 #include <iostream>
@@ -28,7 +26,7 @@ class ClassnameRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
     public Restraint
 #else
-    public IMP::kernel::internal::TupleRestraint<ClassnameScore>
+    public IMP::internal::TupleRestraint<ClassnameScore>
 #endif
     {
  public:
@@ -36,25 +34,30 @@ class ClassnameRestraint :
   /** This function takes the function to apply to the
       stored Classname and the Classname.
    */
-  ClassnameRestraint(ClassnameScore *ss, ARGUMENTTYPE vt,
+  ClassnameRestraint(Model *m, ClassnameScore *ss, PASSINDEXTYPE vt,
                      std::string name = "ClassnameRestraint %1%")
-      : IMP::kernel::internal::TupleRestraint<ClassnameScore>(
-            ss, IMP::kernel::internal::get_model(vt),
-            IMP::kernel::internal::get_index(vt), name) {}
+      : IMP::internal::TupleRestraint<ClassnameScore>(ss, m, vt, name) {
+  }
 
   //! Create the restraint.
   /** This function takes the function to apply to the
       stored Classname and the Classname.
+      \deprecated_at{2.5} Use the index-based constructor instead.
    */
-  ClassnameRestraint(kernel::Model *m, ClassnameScore *ss, PASSINDEXTYPE vt,
+  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
+  ClassnameRestraint(ClassnameScore *ss, ARGUMENTTYPE vt,
                      std::string name = "ClassnameRestraint %1%")
-      : IMP::kernel::internal::TupleRestraint<ClassnameScore>(ss, m, vt, name) {
+      : IMP::internal::TupleRestraint<ClassnameScore>(
+            ss, IMP::internal::get_model(vt),
+            IMP::internal::get_index(vt), name) {
+    IMPCORE_DEPRECATED_METHOD_DEF(2.5,
+                                  "Use the index-based constructor instead.");
   }
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)
  protected:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const;
+  IMP::ModelObjectsTemp do_get_inputs() const;
   IMP_OBJECT_METHODS(ClassnameRestraint)
 #endif
 };

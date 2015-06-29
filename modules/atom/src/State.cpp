@@ -14,7 +14,7 @@ IntKey State::get_index_key() {
   return k;
 }
 
-void State::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+void State::do_setup_particle(Model *m, ParticleIndex pi,
                               unsigned int state) {
   m->add_attribute(get_index_key(), pi, state);
 }

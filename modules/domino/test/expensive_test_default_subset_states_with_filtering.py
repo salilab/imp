@@ -29,14 +29,14 @@ class Tests(IMP.test.TestCase):
         return vs
 
     def _get_stuff(self):
-        IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
-        m.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
+        m = IMP.Model()
+        m.set_log_level(IMP.SILENT)
         ps = []
         ns = 5
         np = 4
         for i in range(0, np):
-            ps.append(IMP.kernel.Particle(m))
+            ps.append(IMP.Particle(m))
             IMP.core.XYZ.setup_particle(ps[-1])
         pst = IMP.domino.ParticleStatesTable()
         print("creating subset")
@@ -55,18 +55,16 @@ class Tests(IMP.test.TestCase):
         s = IMP.domino.Subset(lsc)
         all_states = self._get_full_list(pst, lsc)
         print("There are ", len(all_states), "states")
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
-                                       s[1],
-                                       s[2])
+        r = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 2),
+                                       s[1], s[2])
         r.set_name("1 2")
-        r.set_log_level(IMP.base.VERBOSE)
-        m.add_restraint(r)
+        r.set_log_level(IMP.VERBOSE)
         ds = IMP.domino.DominoSampler(m)
-        m.set_maximum_score(.5)
-        rssft = IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
-        rssft.set_log_level(IMP.base.SILENT)
+        r.set_maximum_score(.5)
+        rssft = IMP.domino.RestraintScoreSubsetFilterTable(r, pst)
+        rssft.set_log_level(IMP.SILENT)
         dsst = nm(pst, [rssft])
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         print("setting")
         pss = IMP.domino.PackedAssignmentContainer()
         dsst.load_assignments(lsc, pss)
@@ -95,32 +93,27 @@ class Tests(IMP.test.TestCase):
         s = IMP.domino.Subset(lsc)
         all_states = self._get_full_list(pst, lsc)
         print("There are ", len(all_states), "states")
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
-                                       s[1],
-                                       s[2])
+        rs = IMP.RestraintSet(m)
+        r = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 2), s[1], s[2])
         r.set_name("1 2")
-        r.set_log_level(IMP.base.VERBOSE)
-        m.add_restraint(r)
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
-                                       s[2],
-                                       s[3])
+        r.set_log_level(IMP.VERBOSE)
+        rs.add_restraint(r)
+        r = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 2), s[2], s[3])
         r.set_name("2 3")
-        r.set_log_level(IMP.base.VERBOSE)
-        m.add_restraint(r)
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 2),
-                                       s[0],
-                                       s[1])
+        r.set_log_level(IMP.VERBOSE)
+        rs.add_restraint(r)
+        r = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 2), s[0], s[1])
         r.set_name("0 1")
-        r.set_log_level(IMP.base.VERBOSE)
-        m.add_restraint(r)
-        m.set_maximum_score(.5)
+        r.set_log_level(IMP.VERBOSE)
+        rs.add_restraint(r)
+        rs.set_maximum_score(.5)
         rc = IMP.domino.RestraintCache(pst)
-        rc.add_restraints(m.get_restraints())
+        rc.add_restraints(rs.get_restraints())
         rssft = IMP.domino.MinimumRestraintScoreSubsetFilterTable(
-            m.get_restraints(), rc, 1)
-        rssft.set_log_level(IMP.base.SILENT)
+            rs.get_restraints(), rc, 1)
+        rssft.set_log_level(IMP.SILENT)
         dsst = nm(pst, [rssft])
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         print("setting")
         pss = IMP.domino.PackedAssignmentContainer()
         dsst.load_assignments(lsc, pss)
@@ -148,22 +141,21 @@ class Tests(IMP.test.TestCase):
         print(lsc[1].get_name())
         all_states = self._get_full_list(pst, lsc)
         print("There are ", len(all_states), "states")
-        r0 = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 1),
-                                        lsc[1],
-                                        lsc[2])
+        rs = IMP.RestraintSet(m)
+        r0 = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 1),
+                                        lsc[1], lsc[2])
         r0.set_name("1 2")
-        r0.set_log_level(IMP.base.VERBOSE)
-        m.add_restraint(r0)
-        r1 = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 1),
-                                        lsc[0],
-                                        lsc[1])
+        r0.set_log_level(IMP.VERBOSE)
+        rs.add_restraint(r0)
+        r1 = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 1),
+                                        lsc[0], lsc[1])
         r1.set_name("0 1")
-        r1.set_log_level(IMP.base.VERBOSE)
-        m.add_restraint(r1)
-        m.set_maximum_score(.6)
-        rssft = IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
+        r1.set_log_level(IMP.VERBOSE)
+        rs.add_restraint(r1)
+        rs.set_maximum_score(.6)
+        rssft = IMP.domino.RestraintScoreSubsetFilterTable(rs, pst)
         dsst = nm(pst, [rssft])
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         print("setting")
         pss = IMP.domino.PackedAssignmentContainer()
         dsst.load_assignments(lsc, pss)
@@ -178,7 +170,7 @@ class Tests(IMP.test.TestCase):
             self.assertIn(s, all_states)
         for s in all_states:
             IMP.domino.load_particle_states(lsc, s, pst)
-            if m.evaluate(False) < .6:
+            if rs.evaluate(False) < .6:
                 # print s
                 self.assertIn(s, found_states)
 

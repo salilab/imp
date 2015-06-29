@@ -7,8 +7,12 @@ from __future__ import print_function
 import IMP.em
 import IMP.core
 import IMP.atom
-IMP.base.set_log_level(IMP.base.SILENT)
-m = IMP.kernel.Model()
+import sys
+
+IMP.setup_from_argv(sys.argv, "fit restraint")
+
+IMP.set_log_level(IMP.SILENT)
+m = IMP.Model()
 # 1. setup the input protein
 # 1.1 select a selector.
 sel = IMP.atom.NonWaterPDBSelector()
@@ -26,5 +30,4 @@ dmap.get_header_writable().set_resolution(resolution)
 print("The cross-correlation score is:", 1. - IMP.em.compute_fitting_score(ps, dmap))
 # 4. add a fitting restraint
 r = IMP.em.FitRestraint(ps, dmap)
-m.add_restraint(r)
 print("The fit of the particles in the density is:", r.evaluate(False))

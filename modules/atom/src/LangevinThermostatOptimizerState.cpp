@@ -9,13 +9,13 @@
 #include <IMP/atom/LangevinThermostatOptimizerState.h>
 #include <IMP/atom/MolecularDynamics.h>
 #include <IMP/atom/Mass.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 IMPATOM_BEGIN_NAMESPACE
 
 LangevinThermostatOptimizerState::LangevinThermostatOptimizerState(
     Model *m, ParticleIndexesAdaptor pis, Float temperature, double gamma)
     : OptimizerState(m, "LangevinThermostatOptimizerState%1%"),
-      pis_(kernel::get_particles(m, pis)),
+      pis_(get_particles(m, pis)),
       temperature_(temperature),
       gamma_(gamma) {
   IMP_LOG_VERBOSE("Thermostat on " << pis_ << std::endl);
@@ -35,11 +35,11 @@ void LangevinThermostatOptimizerState::rescale_velocities() const {
                      "Can only use velocity scaling with "
                      "the molecular dynamics optimizer.");
   boost::normal_distribution<Float> mrng(0., 1.);
-  boost::variate_generator<base::RandomNumberGenerator &,
+  boost::variate_generator<RandomNumberGenerator &,
                            boost::normal_distribution<Float> >
-      sampler(base::random_number_generator, mrng);
+      sampler(random_number_generator, mrng);
   for (unsigned int i = 0; i < pis_.size(); ++i) {
-    kernel::Particle *p = pis_[i];
+    Particle *p = pis_[i];
     double mass = Mass(p).get_mass();
     LinearVelocity lv(p);
     lv.set_velocity(c1 * lv.get_velocity()

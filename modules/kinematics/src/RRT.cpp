@@ -34,7 +34,7 @@ std::vector<bool> select_k_out_of_n_dofs(unsigned int k, unsigned int n) {
 
 }
 
-RRT::RRT(kernel::Model* m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
+RRT::RRT(Model* m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
          const DOFs& cspace_dofs, unsigned int iteration_number,
          unsigned int tree_size, unsigned int number_of_sampled_dofs)
     : Sampler(m, "rrt_sampler"),
@@ -43,17 +43,20 @@ RRT::RRT(kernel::Model* m, DOFsSampler* dofs_sampler, LocalPlanner* planner,
       cspace_dofs_(cspace_dofs),
       default_parameters_(iteration_number, tree_size, tree_size),
       number_of_sampled_dofs_(number_of_sampled_dofs) {
+  // add q_init to the RRT tree
+  DOFValues q_init(cspace_dofs_);
+  RRTNodePtr new_node(new RRTNode(q_init));
+  tree_.push_back(new_node);
+}
+
+void RRT::check_initial_configuration(ScoringFunction *sf) const {
   // define q_init and check if it is a valid configuration
   DOFValues q_init(cspace_dofs_);
-  if (!local_planner_->is_valid(q_init)) {  // TODO throw IMP exception
+  if (!local_planner_->is_valid(q_init, sf)) {  // TODO throw IMP exception
     std::cerr << "Initial configuration in the forbidden space!!!" << std::endl;
     std::cerr << "Try to decrease radii scaling parameter" << std::endl;
     exit(1);
   }
-
-  // add q_init to the RRT tree
-  RRTNode* new_node = new RRTNode(q_init);
-  tree_.push_back(new_node);
 }
 
 RRT::RRTNode* RRT::get_q_near(const DOFValues& q_rand) const {
@@ -64,7 +67,7 @@ RRT::RRTNode* RRT::get_q_near(const DOFValues& q_rand) const {
     //double curr_distance = q_rand.get_distance(tree_[i]->get_DOFValues());
     if (curr_distance < shortest_distance) {
       shortest_distance = curr_distance;
-      q_near = tree_[i];
+      q_near = tree_[i].get();
     }
   }
   return q_near;
@@ -73,16 +76,18 @@ RRT::RRTNode* RRT::get_q_near(const DOFValues& q_rand) const {
 void RRT::add_nodes(RRTNode* q_near, const std::vector<DOFValues>& new_nodes) {
   RRTNode* prev_node = q_near;
   for (unsigned int i = 0; i < new_nodes.size(); i++) {
-    RRTNode* new_node = new RRTNode(new_nodes[i]);
+    RRTNodePtr new_node(new RRTNode(new_nodes[i]));
     tree_.push_back(new_node);
     // add edge
     double distance = prev_node->get_DOFValues().get_distance(new_nodes[i]);
-    prev_node->add_edge(new_node, distance);
-    prev_node = new_node;
+    prev_node->add_edge(new_node.get(), distance);
+    prev_node = new_node.get();
   }
 }
 
 void RRT::run() {
+  ScoringFunction *sf = get_scoring_function();
+  check_initial_configuration(sf);
   Parameters current_counters;
   while (!is_stop_condition(default_parameters_, current_counters)) {
     DOFValues q_rand = dofs_sampler_->get_sample();
@@ -102,7 +107,7 @@ void RRT::run() {
     }
 
     std::vector<DOFValues> new_nodes =
-        local_planner_->plan(q_near_node->get_DOFValues(), q_rand);
+        local_planner_->plan(q_near_node->get_DOFValues(), q_rand, sf);
     add_nodes(q_near_node, new_nodes);
     // update counters
     current_counters.number_of_iterations_++;

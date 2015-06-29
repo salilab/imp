@@ -7,8 +7,8 @@
 
 #include <IMP/core/MonteCarlo.h>
 
-#include <IMP/base/random.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/random.h>
+#include <IMP/Model.h>
 #include <IMP/ConfigurationSet.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/dependency_graph.h>
@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 IMP_LIST_IMPL(MonteCarlo, Mover, mover, MonteCarloMover *, MonteCarloMovers);
 
-MonteCarlo::MonteCarlo(kernel::Model *m)
+MonteCarlo::MonteCarlo(Model *m)
     : Optimizer(m, "MonteCarlo%1%"),
       temp_(1),
       max_difference_(std::numeric_limits<double>::max()),
@@ -46,7 +46,7 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last,
   } else {
     double diff = score - last;
     double e = std::exp(-diff / temp_);
-    double r = rand_(base::random_number_generator);
+    double r = rand_(random_number_generator);
     IMP_LOG_VERBOSE(diff << " " << temp_ << " " << e << " " << r << std::endl);
     if (e * proposal_ratio > r) {
       ++stat_upward_steps_taken_;
@@ -79,7 +79,7 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last,
 }
 
 MonteCarloMoverResult MonteCarlo::do_move() {
-  kernel::ParticleIndexes ret;
+  ParticleIndexes ret;
   double prob = 1.0;
   for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
     IMP_LOG_VERBOSE("Moving using " << (*it)->get_name() << std::endl);
@@ -122,13 +122,13 @@ void MonteCarlo::do_step() {
 }
 
 ParticleIndexes MonteCarlo::get_movable_particles() const {
-  kernel::ParticleIndexes movable;
+  ParticleIndexes movable;
   for (unsigned int i = 0; i < get_number_of_movers(); ++i) {
-    kernel::ModelObjectsTemp t = get_mover(i)->get_outputs();
+    ModelObjectsTemp t = get_mover(i)->get_outputs();
     for (unsigned int j = 0; j < t.size(); ++j) {
-      kernel::ModelObject *mo = t[j];
-      if (dynamic_cast<kernel::Particle *>(mo)) {
-        movable.push_back(dynamic_cast<kernel::Particle *>(mo)->get_index());
+      ModelObject *mo = t[j];
+      if (dynamic_cast<Particle *>(mo)) {
+        movable.push_back(dynamic_cast<Particle *>(mo)->get_index());
       }
     }
   }
@@ -144,7 +144,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
               ValueException);
   }
 
-  kernel::ParticleIndexes movable = get_movable_particles();
+  ParticleIndexes movable = get_movable_particles();
 
   // provide a way of feeding in this value
   last_energy_ = do_evaluate(movable);
@@ -172,7 +172,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     //<< std::endl;
     best_->swap_configuration();
     IMP_LOG_TERSE("MC Returning energy " << best_energy_ << std::endl);
-    IMP_IF_CHECK(base::USAGE) {
+    IMP_IF_CHECK(USAGE) {
       IMP_LOG_TERSE("MC Got " << do_evaluate(get_movable_particles())
                               << std::endl);
       /*IMP_INTERNAL_CHECK((e >= std::numeric_limits<double>::max()
@@ -205,7 +205,7 @@ void MonteCarloWithLocalOptimization::do_step() {
                 << do_evaluate(moved.get_moved_particles()) << std::endl);
   // non-Mover parts of the model can be moved by the local optimizer
   // make sure they are cleaned up
-  base::PointerMember<Configuration> cs = new Configuration(get_model());
+  PointerMember<Configuration> cs = new Configuration(get_model());
   double ne = opt_->optimize(num_local_);
   if (!do_accept_or_reject_move(ne, moved.get_proposal_ratio())) {
     cs->swap_configuration();
@@ -222,7 +222,7 @@ void MonteCarloWithBasinHopping::do_step() {
   MoverCleanup cleanup(this);
   IMP_LOG_TERSE("MC Performing local optimization from "
                 << do_evaluate(moved.get_moved_particles()) << std::endl);
-  base::Pointer<Configuration> cs = new Configuration(get_model());
+  Pointer<Configuration> cs = new Configuration(get_model());
   double ne = get_local_optimizer()->optimize(get_number_of_steps());
   cs->swap_configuration();
   do_accept_or_reject_move(ne, moved.get_proposal_ratio());

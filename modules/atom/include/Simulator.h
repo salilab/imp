@@ -11,9 +11,9 @@
 
 #include <IMP/atom/atom_config.h>
 
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
-#include <IMP/kernel/internal/units.h>
+#include <IMP/internal/units.h>
 #include <IMP/algebra/Vector3D.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -29,7 +29,7 @@ class SimulationParameters;
 
    The simulation can be invoked directly by calling simulate(fs) for
    a given time in femtoseconds, or by calling Optimizer::optimize(nf)
-   for a give number of frames.
+   for a given number of frames.
  */
 class IMPATOMEXPORT Simulator : public Optimizer {
  public:
@@ -45,13 +45,13 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
      \see simulate()
    */
-  Simulator(kernel::Model *m, std::string name = "Simulator %1%",
+  Simulator(Model *m, std::string name = "Simulator %1%",
             double wave_factor = 1.0);
 
   //! Simulate for a given time in fs
   /**
-     simulate for a given time, by calling the protected
-     method do_step() iteratively.
+     simulate for at least the passed time, by calling do_simulate()
+     with optimizing states turned on
 
      @param time_in_fs time in femtoseconds
    */
@@ -60,10 +60,8 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   //! Simulate for a given time in fs using a wave step function
   //! with maximal time step increased by up to max_time_step_factor
   /**
-     simulate for a given time, by calling the protected
-     method do_step() iteratively, and using a self adjusting time
-     step that can grow up to max_time_step_factor times than
-     the default time step returned by get_maximum_time_step()
+     simulate for at least the passed time, by calling do_simulate_wave()
+     with optimizing states turned on
 
      @param time_in_fs time_in_fs in femtoseconds
      @param max_time_step_factor the maximal factor by which the
@@ -115,7 +113,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   /** If a non-empty
       set of particles was provided explicitly by earlier calls to the
       particles list accessor methods, eg, add_particles(), this set
-      it returned. Otherwise, the associated kernel::Model object is
+      it returned. Otherwise, the associated Model object is
       searched for appropriate particles that have a mass and XYZ
       decorators.
 
@@ -126,7 +124,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
       \see set_particles()
       \see set_particles_order()
   */
-  kernel::ParticlesTemp get_simulation_particles() const;
+  ParticlesTemp get_simulation_particles() const;
 
   /**
      Same as get_simulation_particles(), but returns particle
@@ -134,7 +132,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
      \see get_simulation_particles()
    */
-  kernel::ParticleIndexes get_simulation_particle_indexes() const;
+  ParticleIndexes get_simulation_particle_indexes() const;
 
   /** \name Explicitly accessing the particles list
 
@@ -146,31 +144,51 @@ class IMPATOMEXPORT Simulator : public Optimizer {
       by child classes.
       @{
   */
-  IMP_LIST(public, Particle, particle, kernel::Particle *, kernel::Particles);
+  IMP_LIST(public, Particle, particle, Particle *, Particles);
 
  protected:
   /** @} */
   virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE IMP_FINAL;
 
-  /** A Simulator class can perform setup operations before a series
-      of simulation steps is taken. */
-  virtual void setup(const kernel::ParticleIndexes &) {};
+  /** Perform any setup operations needed before running a series
+      of simulation steps
+
+      @note Called by do_simulate() or do_simulate_wave() before iterative
+        calls to do_step()
+*/
+  virtual void setup(const ParticleIndexes &) {};
 
   //! Perform a single time step
-  /** \param[in] dt maximum time step value
+  /** \param[in] sc the particles that should be moved
+      \param[in] dt maximum time step value
       \return the amount that time should be advanced.
   */
-  virtual double do_step(const kernel::ParticleIndexes &sc, double dt) = 0;
+  virtual double do_step(const ParticleIndexes &sc, double dt) = 0;
 
   //! Return true if the passed particle is appropriate for the simulation.
-  virtual bool get_is_simulation_particle(kernel::ParticleIndex p) const = 0;
+  virtual bool get_is_simulation_particle(ParticleIndex p) const = 0;
+
+  /** called by simulate() -
+      calls setup() and then calls do_step() iteratively
+      till given simulation time is completed
+
+      @param time time to simulate
+
+      @return score at end of simulation period
+  */
+  virtual double do_simulate(double time);
+
+  /** Calls the protected method setup() and then calls
+      method do_step() iteratively, and using a self adjusting time
+      step that can grow up to max_time_step_factor times than
+      the default time step returned by get_maximum_time_step()
+
+      \see simulate_wave()
+  */
+  virtual double do_simulate_wave(double time_in_fs, double max_time_step_factor = 10.0,
+                          double base = 1.5);
 
  private:
-  // see simulate() documentation
-  double do_simulate(double time);
-  // see simulate_wave() documentation
-  double do_simulate_wave(double time_in_fs, double max_time_step_factor = 10.0,
-                          double base = 1.5);
   double temperature_;
   double max_time_step_;
   double current_time_;

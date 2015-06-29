@@ -16,13 +16,14 @@ class Tests(IMP.test.TestCase):
         pdbFile = self.get_input_file_name("grb.flex.pdb")
         outputFile = self.get_tmp_file_name("mergeTreeOut.txt")
         closePairDistance = 4.0
-        model = IMP.kernel.Model()
+        model = IMP.Model()
         protein = IMP.atom.read_pdb(pdbFile, model, IMP.atom.ATOMPDBSelector())
-        for i, p in enumerate(model.get_particles()):
+        for i, pi in enumerate(model.get_particle_indexes()):
+            p = model.get_particle(pi)
             p.set_name(str(i))
         # close pairs
         atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
-        cont = IMP.container.ListSingletonContainer(atoms)
+        cont = IMP.container.ListSingletonContainer(model, atoms)
 
         nbl = IMP.container.ClosePairContainer(cont, closePairDistance, 0.0)
         model.update()

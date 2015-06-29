@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
 
     def test_transformation(self):
         """Test the TransformationFunction class"""
-        imp_model = IMP.kernel.Model()
+        imp_model = IMP.Model()
         particles = IMP.core.create_xyzr_particles(imp_model, 4, 1.0)
 
         coords = [x.get_coordinates() for x in particles]
@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         tf.set_was_used(True)
         for p in particles:
             print("applying to " + str(p))
-            r = tf.apply(p.get_particle())
+            r = tf.apply_index(imp_model, p)
         for i in range(0, len(particles)):
             v = particles[i].get_coordinates()
             self.assertAlmostEqual(

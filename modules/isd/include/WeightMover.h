@@ -1,6 +1,6 @@
 /**
  *  \file IMP/isd/WeightMover.h
- *  \brief A mover that transforms a rigid body
+ *  \brief A mover that perturbs a Weight particle.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -16,23 +16,19 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Modify the transformation of a rigid body
-/** The transformation of a rigid body is moved in a ball of given
-    size. The probability distribution is uniform over the ball.
-    \see MonteCarlo
- */
+//! A mover that perturbs a Weight particle.
 class IMPISDEXPORT WeightMover : public core::MonteCarloMover {
  public:
   /** Mover for weight decorator
       \param[in] w particle
       \param[in] radius maximum radius of displacement
    */
-  WeightMover(kernel::Particle *w, Float radius);
+  WeightMover(Particle *w, Float radius);
   void set_radius(Float radius) { radius_ = radius; }
   Float get_radius() { return radius_; }
 
  protected:
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(WeightMover);

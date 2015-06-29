@@ -10,19 +10,16 @@ import copy
 import tools
 from optparse import OptionParser
 
-
-imp_init = """try:
-    from IMP.kernel import *
-except:
-    import traceback
-    print("no kernel")
-    traceback.print_exc()
-"""
-
-
 def write_module_cpp(m, contents, datapath):
     info = tools.get_module_info(m, datapath)
-    contents.append("""%%{
+    if m == 'kernel':
+        contents.append("""%{
+#include "IMP.h"
+#include "IMP/kernel_config.h"
+%}
+""")
+    else:
+        contents.append("""%%{
 #include "IMP/%(module)s.h"
 #include "IMP/%(module)s/%(module)s_config.h"
 %%}
@@ -35,7 +32,10 @@ def write_module_cpp(m, contents, datapath):
 
 def write_module_swig(m, source, contents, datapath, skip_import=False):
     info = tools.get_module_info(m, datapath)
-    contents.append("""%%include "IMP/%s/%s_config.h" """ % (m, m))
+    if m == 'kernel':
+        contents.append("""%%include "IMP/%s_config.h" """ % m)
+    else:
+        contents.append("""%%include "IMP/%s/%s_config.h" """ % (m, m))
     for macro in info["swig_includes"]:
         contents.append("%%include \"%s\"" % (macro))
     if not skip_import:
@@ -47,20 +47,12 @@ def build_wrapper(module, module_path, source, sorted, info, target, datapath):
     if not info["ok"]:
         return
     contents = []
-    swig_module_name = "IMP." + module
+    swig_module_name = "IMP" if module == 'kernel' else "IMP." + module
 
     contents.append("""%%module(directors="1", allprotected="1") "%s"
 %%feature("autodoc", 1);
 // Warning 314: 'lambda' is a python keyword, renaming to '_lambda'
 %%warnfilter(321,302,314);
-
-%%inline %%{
-namespace IMP {
-namespace kernel {
-}
-using namespace kernel;
-}
-%%}
 
 %%{
 #include <boost/version.hpp>
@@ -129,20 +121,21 @@ _plural_types=[]
     #contents.append(open(os.path.join(module_path, "pyext", "swig.i-in"), "r").read())
 
     contents.append("""
-namespace IMP {
-namespace %s {
+namespace IMP { %s
 const std::string get_module_version();
 std::string get_example_path(std::string fname);
 std::string get_data_path(std::string fname);
-}
-}
-""" % module)
+%s }
+""" % ('' if module == 'kernel' else 'namespace %s {' % module,
+       '' if module == 'kernel' else '}'))
     contents.append("""%pythoncode %{
 from . import _version_check
 _version_check.check_version(get_module_version())
+__version__ = get_module_version()
 %}
 """)
-    tools.rewrite(target, "\n".join(contents))
+    g = tools.SWIGFileGenerator()
+    g.write(target, "\n".join(contents))
 
 
 parser = OptionParser()
@@ -158,8 +151,6 @@ def main():
     (options, args) = parser.parse_args()
     sorted_order = tools.get_sorted_order()
     if options.module != "":
-        if options.module == "kernel":
-            tools.rewrite("lib/IMP/__init__.py", imp_init)
         build_wrapper(
             options.module, os.path.join(
                 options.source, "modules", options.module),
@@ -170,16 +161,6 @@ def main():
                 options.datapath),
             os.path.join("swig", "IMP_" + options.module + ".i"),
             options.datapath)
-    else:
-        tools.rewrite("lib/IMP/__init__.py", imp_init)
-        for m, path in tools.get_modules(options.source):
-            build_wrapper(m, path, options.source, sorted_order,
-                          tools.get_module_description(
-                              options.source,
-                              m,
-                              options.datapath),
-                          os.path.join("swig", "IMP_" + m + ".i"),
-                          options.datapath)
 
 if __name__ == '__main__':
     main()

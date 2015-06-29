@@ -14,8 +14,8 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-GaussianRestraint::GaussianRestraint(kernel::Particle *x, kernel::Particle *mu,
-                                     kernel::Particle *sigma)
+GaussianRestraint::GaussianRestraint(Particle *x, Particle *mu,
+                                     Particle *sigma)
     : Restraint(sigma->get_model(), "GaussianRestraint%1%"),
       px_(x),
       pmu_(mu),
@@ -26,8 +26,8 @@ GaussianRestraint::GaussianRestraint(kernel::Particle *x, kernel::Particle *mu,
   check_particles();
 }
 
-GaussianRestraint::GaussianRestraint(double x, kernel::Particle *mu,
-                                     kernel::Particle *sigma)
+GaussianRestraint::GaussianRestraint(double x, Particle *mu,
+                                     Particle *sigma)
     : Restraint(sigma->get_model(), "GaussianRestraint%1%"),
       x_(x),
       pmu_(mu),
@@ -38,8 +38,8 @@ GaussianRestraint::GaussianRestraint(double x, kernel::Particle *mu,
   check_particles();
 }
 
-GaussianRestraint::GaussianRestraint(kernel::Particle *x, double mu,
-                                     kernel::Particle *sigma)
+GaussianRestraint::GaussianRestraint(Particle *x, double mu,
+                                     Particle *sigma)
     : Restraint(sigma->get_model(), "GaussianRestraint%1%"),
       px_(x),
       mu_(mu),
@@ -50,7 +50,7 @@ GaussianRestraint::GaussianRestraint(kernel::Particle *x, double mu,
   check_particles();
 }
 
-GaussianRestraint::GaussianRestraint(kernel::Particle *x, kernel::Particle *mu,
+GaussianRestraint::GaussianRestraint(Particle *x, Particle *mu,
                                      double sigma)
     : Restraint(x->get_model(), "GaussianRestraint%1%"),
       px_(x),
@@ -62,7 +62,7 @@ GaussianRestraint::GaussianRestraint(kernel::Particle *x, kernel::Particle *mu,
   check_particles();
 }
 
-GaussianRestraint::GaussianRestraint(kernel::Particle *x, double mu,
+GaussianRestraint::GaussianRestraint(Particle *x, double mu,
                                      double sigma)
     : Restraint(x->get_model(), "GaussianRestraint%1%"),
       px_(x),
@@ -75,7 +75,7 @@ GaussianRestraint::GaussianRestraint(kernel::Particle *x, double mu,
 }
 
 GaussianRestraint::GaussianRestraint(double x, double mu,
-                                     kernel::Particle *sigma)
+                                     Particle *sigma)
     : Restraint(sigma->get_model(), "GaussianRestraint%1%"),
       x_(x),
       mu_(mu),
@@ -86,7 +86,7 @@ GaussianRestraint::GaussianRestraint(double x, double mu,
   check_particles();
 }
 
-GaussianRestraint::GaussianRestraint(double x, kernel::Particle *mu,
+GaussianRestraint::GaussianRestraint(double x, Particle *mu,
                                      double sigma)
     : Restraint(mu->get_model(), "GaussianRestraint%1%"),
       x_(x),
@@ -147,7 +147,7 @@ double GaussianRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp GaussianRestraint::do_get_inputs() const {
-  kernel::ParticlesTemp ret;
+  ParticlesTemp ret;
   if (isx_) ret.push_back(px_);
   if (ismu_) ret.push_back(pmu_);
   if (issigma_) ret.push_back(psigma_);

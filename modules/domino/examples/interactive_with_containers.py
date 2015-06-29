@@ -1,22 +1,27 @@
 ## \example domino/interactive_with_containers.py
-# Run domino storing the intermediate and final results in an hdf5
+# Run domino storing the intermediate and final results in an HDF5
 # database. This has the advantage that if you interrupt the run at any
-# point, you have a list of everything computed so far and so can get some
-# more idea of what is going on.
+# point, you have a list of everything computed so far and so can get a
+# better idea of what is going on.
 
+from __future__ import print_function
 import IMP.domino
 import IMP.algebra
 import IMP.container
 import IMP
 import RMF
+import sys
 
-m = IMP.kernel.Model()
+IMP.setup_from_argv(sys.argv, "interactive with containers")
+
+m = IMP.Model()
 
 # create some particles
-ps = [IMP.core.XYZ.setup_particle(IMP.kernel.Particle(m)) for x in range(0, 3)]
+ps = IMP.get_indexes([IMP.core.XYZ.setup_particle(IMP.Particle(m))
+                      for x in range(0, 3)])
 
 s = IMP.core.HarmonicDistancePairScore(1, 1)
-lpc = IMP.container.ListPairContainer(
+lpc = IMP.container.ListPairContainer(m,
     [(ps[i[0]], ps[i[1]]) for i in [(0, 1), (1, 2)]])
 print([(p[0].get_name(), p[1].get_name()) for p in lpc.get_particle_pairs()])
 r = IMP.container.PairsRestraint(s, lpc)
@@ -27,9 +32,9 @@ space = IMP.domino.XYZStates(
 
 pst = IMP.domino.ParticleStatesTable()
 for p in ps:
-    pst.set_particle_states(p, space)
+    pst.set_particle_states(m.get_particle(p), space)
 
-m.set_log_level(IMP.base.SILENT)
+m.set_log_level(IMP.SILENT)
 
 # make sure to break up the
 mt = IMP.domino.get_merge_tree([r], pst)

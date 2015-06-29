@@ -11,16 +11,16 @@ class Tests(IMP.test.TestCase):
 
     def test_it(self):
         """Test cover refined"""
-        m = IMP.kernel.Model()
-        IMP.base.set_log_level(IMP.MEMORY)
+        m = IMP.Model()
+        IMP.set_log_level(IMP.MEMORY)
         n = random.randrange(1, 10)
         ps = []
         ds = IMP.core.XYZRs()
-        pp = IMP.kernel.Particle(m)
+        pp = IMP.Particle(m)
         hd = IMP.core.Hierarchy.setup_particle(pp)
         dd = IMP.core.XYZR.setup_particle(pp)
         for i in range(0, n):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZR.setup_particle(p)
             ps.append(p)
             ds.append(d)
@@ -30,12 +30,13 @@ class Tests(IMP.test.TestCase):
             hd.add_child(IMP.core.Hierarchy.setup_particle(p))
         r = IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())
         c = IMP.core.CentroidOfRefined(r)
-        c.apply(pp)
+        c.apply_index(m, pp)
         bb = IMP.algebra.BoundingBox3D()
         cd = IMP.core.XYZ(pp)
         for i in range(0, n):
             d = IMP.core.XYZ(hd.get_child(i).get_particle())
             bb += IMP.algebra.BoundingBox3D(d.get_coordinates())
         self.assertTrue(bb.get_contains(cd.get_coordinates()))
+
 if __name__ == '__main__':
     IMP.test.main()

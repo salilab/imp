@@ -16,12 +16,12 @@ import os
 import sys
 
 # not finished
-IMP.base.add_bool_flag("run", "Whether to run the program")
+IMP.add_bool_flag("run", "Whether to run the program")
 
 # parse command line arguments so, eg profiling can be used
-IMP.base.setup_from_argv(sys.argv, "Nup84 example")
+IMP.setup_from_argv(sys.argv, "Nup84 example")
 
-if IMP.base.get_bool_flag("run") != "yes":
+if IMP.get_bool_flag("run") != "yes":
     exit(0)
 
 # First we define some basic parameters for the modeling effort
@@ -92,7 +92,7 @@ def add_protein_from_pdb(model, name, file, parent, restraints,
 # Create protein as a rigid body from several pdb file
 def add_protein_from_pdbs(model, name, files, parent, restraints,
                           excluded_volume_particles, optimized_particles):
-    h = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(model, name))
+    h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(model, name))
     for i, f in enumerate(files):
         add_protein_from_pdb(model, name + str(i), f, h, restraints,
                              excluded_volume_particles, optimized_particles)
@@ -111,7 +111,7 @@ def create_representation(model):
     optimized_particles = []
     excluded_volume_particles = []
     universe = IMP.atom.Hierarchy.setup_particle(
-        IMP.kernel.Particle(model, "the universe"))
+        IMP.Particle(model, "the universe"))
 
     add_protein_from_length(model, "Nup85", 570, universe, restraints,
                             excluded_volume_particles, optimized_particles)
@@ -256,7 +256,7 @@ def get_configurations(
     return configuration_set
 
 
-model = IMP.kernel.Model()
+model = IMP.Model()
 universe, restraints, excluded_volume_particles, optimized_particles = create_representation(
     model)
 encode_data_as_restraints(universe, restraints)
@@ -268,7 +268,7 @@ configuration_set = get_configurations(model, restraints,
 print("Found", configuration_set.get_number_of_configurations(), "good configurations")
 
 # now lets save them all to a file
-rmf_file_name = IMP.base.create_temporary_file_name("nup84", ".rmf")
+rmf_file_name = IMP.create_temporary_file_name("nup84", ".rmf")
 rmf = RMF.create_rmf_file(rmf_file_name)
 
 # we want to see the scores of the various restraints also
@@ -289,6 +289,6 @@ for i in range(0, configuration_set.get_number_of_configurations()):
         IMP.core.transform(optimized_particles, tr)
     # update the restraint scores
     sf.evaluate(False)
-    IMP.rmf.save_frame(rmf, i)
+    IMP.rmf.save_frame(rmf, str(i))
 
 print("You can now open", rmf_file_name, "in chimera")

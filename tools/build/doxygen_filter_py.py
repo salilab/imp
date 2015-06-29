@@ -138,11 +138,20 @@ def handle_func(f):
                 return
     return f
 
+def get_deprecation_docstring(node):
+    """If the node (class, function or method) is decorated with one of IMP's
+       deprecation decorators, add the runtime warning to the docstring too."""
+    if hasattr(node, 'decorator_list'):
+        for d in node.decorator_list:
+            if hasattr(d, 'func') and d.func.attr.startswith('deprecated_'):
+                return '\n@deprecated_at{%s} %s' % (d.args[0].s, d.args[1].s)
+    return ''
 
 def get_dump_docstring(node, add_lines=[]):
     lines = []
     doc = ast.get_docstring(node)
     if doc:
+        doc += get_deprecation_docstring(node)
         prefix = "## "
         for line in doc.split('\n') + add_lines:
             lines.append(prefix + line)
@@ -150,8 +159,12 @@ def get_dump_docstring(node, add_lines=[]):
     return lines
 
 
-def dump_function(func, indent, printer):
-    d = get_dump_docstring(func)
+def dump_function(func, indent, printer, method=False):
+    if method:
+        add_lines = []
+    else:
+        add_lines = ['', '@pythononlyfunction']
+    d = get_dump_docstring(func, add_lines)
     printer.output_lines(indent, d + [get_function_signature(func)],
                          func.lineno)
     printer.output_line(indent + 4, "pass")
@@ -161,13 +174,13 @@ def dump_class(cls, meths, indent, printer):
     if cls.swig:
         add_lines = []
     else:
-        add_lines = ['', '\\pythononlyclass']
+        add_lines = ['', '@pythononlyclass']
     d = get_dump_docstring(cls, add_lines)
     printer.output_lines(indent, d + [get_class_signature(cls)], cls.lineno)
     if len(meths) == 0:
         printer.output_line(indent + 4, "pass")
     for m in meths:
-        dump_function(m, indent + 4, printer)
+        dump_function(m, indent + 4, printer, method=True)
 
 
 def handle_class(c, indent, printer):

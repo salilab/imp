@@ -10,7 +10,7 @@
 #include <math.h>
 IMPCORE_BEGIN_NAMESPACE
 
-void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+void Gaussian::do_setup_particle(Model *m, ParticleIndex pi,
                                  const algebra::Gaussian3D &g) {
   if (!RigidBody::get_is_setup(m, pi)) {
     RigidBody::setup_particle(m, pi, g.get_reference_frame());
@@ -24,7 +24,7 @@ void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
   core::Gaussian(m,pi).update_global_covariance();
 }
 
-void Gaussian::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi) {
+void Gaussian::do_setup_particle(Model *m, ParticleIndex pi) {
   do_setup_particle(m,pi,algebra::Gaussian3D());
 }
 

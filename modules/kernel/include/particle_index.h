@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/particle_index.h
+ *  \file IMP/particle_index.h
  *  \brief Various general useful functions for IMP.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_PARTICLE_INDEX_H
 #define IMPKERNEL_PARTICLE_INDEX_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include <boost/shared_ptr.hpp>
 
@@ -23,7 +23,7 @@ IMPKERNELEXPORT ParticleIndexes get_indexes(const ParticlesTemp &ps);
 
 /** Get the particles from a list of indexes.*/
 IMPKERNELEXPORT ParticlesTemp
-    get_particles(kernel::Model *m, const ParticleIndexes &ps);
+    get_particles(Model *m, const ParticleIndexes &ps);
 
 /** Get the indexes from a list of particle pairs. */
 IMPKERNELEXPORT ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps);
@@ -33,7 +33,7 @@ class IMPKERNELEXPORT ParticleIndexAdaptor
 #ifndef SWIG
     // suppress swig warning that doesn't make sense and I can't make go away
     : public ParticleIndex,
-      base::InputAdaptor
+      InputAdaptor
 #endif
       {
  public:
@@ -41,13 +41,13 @@ class IMPKERNELEXPORT ParticleIndexAdaptor
   ParticleIndexAdaptor(ParticleIndex pi) : ParticleIndex(pi) {}
   ParticleIndexAdaptor(const Decorator &d);
 #if !defined(SWIG) && !defined(IMP_DOXYGEN) && !defined(IMP_SWIG_WRAPPER)
-  ParticleIndexAdaptor(base::WeakPointer<Particle> p);
-  ParticleIndexAdaptor(base::Pointer<Particle> p);
+  ParticleIndexAdaptor(WeakPointer<Particle> p);
+  ParticleIndexAdaptor(Pointer<Particle> p);
 #endif
 };
 
 /** Take Decorator, Particle or ParticleIndex. */
-class IMPKERNELEXPORT ParticleIndexesAdaptor : public base::InputAdaptor {
+class IMPKERNELEXPORT ParticleIndexesAdaptor : public InputAdaptor {
   boost::shared_ptr<ParticleIndexes> tmp_;
   const ParticleIndexes *val_;
 
@@ -88,7 +88,7 @@ class IMPKERNELEXPORT ParticleIndexPairsAdaptor
 #ifndef SWIG
     // suppress swig warning that doesn't make sense and I can't make go away
     : public ParticleIndexPairs,
-      base::InputAdaptor
+      InputAdaptor
 #endif
       {
  public:

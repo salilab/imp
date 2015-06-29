@@ -15,8 +15,8 @@
 #include "Subset.h"
 #include "Assignment.h"
 #include <IMP/container/ListSingletonContainer.h>
-#include <IMP/base/Value.h>
-#include <IMP/base/ConstVector.h>
+#include <IMP/Value.h>
+#include <IMP/ConstVector.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -26,12 +26,12 @@ IMPDOMINO_BEGIN_NAMESPACE
     This order can be used to write s to disk, as the order in s can
     change between domino runs.
 */
-class IMPDOMINOEXPORT Order : public base::ConstVector<unsigned int> {
-  typedef base::ConstVector<unsigned int> P;
+class IMPDOMINOEXPORT Order : public ConstVector<unsigned int> {
+  typedef ConstVector<unsigned int> P;
 
  public:
   Order() {}
-  Order(Subset outer, const kernel::ParticlesTemp &order);
+  Order(Subset outer, const ParticlesTemp &order);
   template <class It>
   Ints get_list_ordered(It b, It e) const {
     IMP_USAGE_CHECK(static_cast<unsigned int>(std::distance(b, e)) == size(),

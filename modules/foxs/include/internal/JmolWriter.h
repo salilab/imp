@@ -11,7 +11,7 @@
 #include <IMP/foxs/foxs_config.h>
 #include <IMP/saxs/FitParameters.h>
 
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 
 #include <string>
 #include <vector>
@@ -22,21 +22,21 @@ class IMPFOXSEXPORT JmolWriter {
  public:
   static void prepare_jmol_script(
       const std::vector<IMP::saxs::FitParameters>& fps,
-      const std::vector<IMP::kernel::Particles>& particles_vec,
+      const std::vector<IMP::Particles>& particles_vec,
       const std::string filename);
   static void prepare_jmol_script(
       const std::vector<std::string>& pdbs,
-      const std::vector<IMP::kernel::Particles>& particles_vec,
+      const std::vector<IMP::Particles>& particles_vec,
       const std::string filename);
 
  private:
   static void prepare_PDB_file(
       const std::vector<IMP::saxs::FitParameters>& fps,
-      const std::vector<IMP::kernel::Particles>& particles_vec,
+      const std::vector<IMP::Particles>& particles_vec,
       const std::string filename);
 
   static void prepare_PDB_file(
-      const std::vector<IMP::kernel::Particles>& particles_vec,
+      const std::vector<IMP::Particles>& particles_vec,
       const std::string filename);
 
   static std::string jmol_script(std::string jmol_path);

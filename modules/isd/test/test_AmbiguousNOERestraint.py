@@ -21,21 +21,21 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
-        self.gamma = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
-        self.p0 = IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
+        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        self.gamma = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.p0 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
                                               IMP.algebra.Vector3D(0, 0, 0))
-        self.p1 = IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
+        self.p1 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
                                               IMP.algebra.Vector3D(1, 1, 1))
-        self.p2 = IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
+        self.p2 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
                                               IMP.algebra.Vector3D(1, 0, 0))
         self.DA = IMP.DerivativeAccumulator()
         self.V_obs = 3.0
         self.ls = \
-            IMP.container.ListPairContainer(
+            IMP.container.ListPairContainer(self.m,
                 [(self.p0, self.p1), (self.p0, self.p2)])
         self.noe = IMP.isd.AmbiguousNOERestraint(self.m, self.ls, self.sigma,
                                                  self.gamma, self.V_obs)
@@ -195,7 +195,7 @@ class Tests(IMP.test.TestCase):
 
     def testDerivativeX(self):
         "Test AmbiguousNOERestraint derivative w/r to X"
-        self.m.add_restraint(self.noe)
+        sf = IMP.core.RestraintsScoringFunction([self.noe])
         for i in range(100):
             pos0 = [uniform(0.1, 100) for i in range(3)]
             self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
@@ -213,7 +213,7 @@ class Tests(IMP.test.TestCase):
             self.sigma.set_scale(sigma)
             gamma = uniform(0.1, 100)
             self.gamma.set_scale(gamma)
-            self.m.evaluate(True)
+            sf.evaluate(True)
             for coord in range(3):
                 self.assertAlmostEqual(self.p0.get_derivative(coord),
                                        ((pos0[coord] - pos1[coord]) * 6 * dist1 ** (-8)
@@ -233,7 +233,7 @@ class Tests(IMP.test.TestCase):
 
     def testDerivativeSigma(self):
         "Test AmbiguousNOERestraint derivative w/r to sigma"
-        self.m.add_restraint(self.noe)
+        sf = IMP.core.RestraintsScoringFunction([self.noe])
         for i in range(100):
             pos0 = [uniform(0.1, 100) for i in range(3)]
             self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
@@ -251,7 +251,7 @@ class Tests(IMP.test.TestCase):
             self.sigma.set_scale(sigma)
             gamma = uniform(0.1, 100)
             self.gamma.set_scale(gamma)
-            self.m.evaluate(True)
+            sf.evaluate(True)
             self.assertAlmostEqual(self.sigma.get_scale_derivative(),
                                    1 / sigma - 1 / sigma ** 3 *
                                    log(self.V_obs / (gamma * dist ** -6)) ** 2,
@@ -259,7 +259,7 @@ class Tests(IMP.test.TestCase):
 
     def testDerivativeGamma(self):
         "Test AmbiguousNOERestraint derivative w/r to gamma"
-        self.m.add_restraint(self.noe)
+        sf = IMP.core.RestraintsScoringFunction([self.noe])
         for i in range(100):
             pos0 = [uniform(0.1, 100) for i in range(3)]
             self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
@@ -277,7 +277,7 @@ class Tests(IMP.test.TestCase):
             self.sigma.set_scale(sigma)
             gamma = uniform(0.1, 100)
             self.gamma.set_scale(gamma)
-            self.m.evaluate(True)
+            sf.evaluate(True)
             self.assertAlmostEqual(self.gamma.get_scale_derivative(),
                                    1 / gamma *
                                    (-1 / sigma ** 2 * log(

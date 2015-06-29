@@ -16,20 +16,21 @@ IMPSAXS_BEGIN_NAMESPACE
 /**
    Basic implementation of Chi scoring
 */
-class IMPSAXSEXPORT ChiScore {
+class IMPSAXSEXPORT ChiScore : public IMP::Object {
  public:
-  Float compute_score(const Profile* exp_profile, const Profile* model_profile,
-                      bool use_offset = false) const;
+  ChiScore() : IMP::Object("ChiScore%1%") {}
 
-  Float compute_score(const Profile* exp_profile, const Profile* model_profile,
-                      Float min_q, Float max_q) const;
+  double compute_score(const Profile* exp_profile, const Profile* model_profile,
+                       bool use_offset = false) const;
 
-  Float compute_scale_factor(const Profile* exp_profile,
-                             const Profile* model_profile,
-                             Float offset = 0.0) const;
+  double compute_scale_factor(const Profile* exp_profile,
+                              const Profile* model_profile,
+                              double offset = 0.0) const;
 
-  Float compute_offset(const Profile* exp_profile,
-                       const Profile* model_profile) const;
+  double compute_offset(const Profile* exp_profile,
+                        const Profile* model_profile) const;
+
+  IMP_OBJECT_METHODS(ChiScore);
 };
 
 IMPSAXS_END_NAMESPACE

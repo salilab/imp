@@ -16,8 +16,8 @@
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/Transformation3D.h"
 #include "IMP/atom/Mass.h"
-#include <IMP/base/log.h>
-#include "IMP/base/exception.h"
+#include <IMP/log.h>
+#include "IMP/exception.h"
 #include "IMP/Particle.h"
 #include <IMP/SingletonContainer.h>
 #include "IMP/container.h"
@@ -28,7 +28,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 RigidBodiesImageFitRestraint::RigidBodiesImageFitRestraint(
     ScoreFunction *scf, const core::RigidBodies &rbs, Image *img)
-    : kernel::Restraint(rbs[0]->get_model(), "RigidBodiesImageFitRestraint%1%"),
+    : Restraint(rbs[0]->get_model(), "RigidBodiesImageFitRestraint%1%"),
       score_function_(scf),
       rigid_bodies_(rbs),
       image_(img),
@@ -94,8 +94,8 @@ void RigidBodiesImageFitRestraint::set_orientations(
   unsigned int j = get_rigid_body_index(rb);
 
   // Get the particles of the rigid body
-  core::RigidMembers rbm = rb.get_members();
-  kernel::ParticlesTemp ps;
+  core::RigidMembers rbm = rb.get_rigid_members();
+  ParticlesTemp ps;
 
   for (unsigned int i = 0; i < rbm.size(); ++i) {
     // Discard particles that do not have mass
@@ -157,7 +157,7 @@ void RigidBodiesImageFitRestraint::set_projecting_parameters(
 }
 
 ModelObjectsTemp RigidBodiesImageFitRestraint::do_get_inputs() const {
-  kernel::ParticlesTemp ret;
+  ParticlesTemp ret;
   for (unsigned int i = 0; i < rigid_bodies_.size(); ++i) {
     ret.push_back(rigid_bodies_[i].get_particle());
   }

@@ -20,6 +20,8 @@ IMP_SWIG_DECORATOR(IMP::atom, CenterOfMass, CenterOfMasses);
 IMP_SWIG_DECORATOR(IMP::atom, Charged, Chargeds);
 IMP_SWIG_DECORATOR(IMP::atom, Diffusion, Diffusions);
 IMP_SWIG_DECORATOR(IMP::atom, RigidBodyDiffusion, RigidBodyDiffusions);
+IMP_SWIG_DECORATOR(IMP::atom, TAMDParticle, TAMDParticles);
+IMP_SWIG_DECORATOR(IMP::atom, TAMDCentroid, TAMDCentroids);
 IMP_SWIG_DECORATOR(IMP::atom, Dihedral, Dihedrals);
 IMP_SWIG_DECORATOR(IMP::atom, Domain, Domains);
 IMP_SWIG_DECORATOR(IMP::atom, Fragment, Fragments);
@@ -34,6 +36,7 @@ IMP_SWIG_DECORATOR(IMP::atom, Representation, Representations);
 IMP_SWIG_DECORATOR(IMP::atom, State, States);
 IMP_SWIG_DECORATOR(IMP::atom, Copy, Copies);
 IMP_SWIG_DECORATOR(IMP::atom, SecondaryStructureResidue, SecondaryStructureResidues);
+IMP_SWIG_DECORATOR(IMP::atom, StructureSource, StructureSources);
 IMP_SWIG_BASE_OBJECT(IMP::atom, Simulator, Simulators);
 IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);
 IMP_SWIG_OBJECT(IMP::atom, ATOMPDBSelector, ATOMPDBSelectors);
@@ -46,6 +49,7 @@ IMP_SWIG_OBJECT(IMP::atom, BondPairContainer, BondPairContainers);
 IMP_SWIG_OBJECT(IMP::atom, BondSingletonScore, BondSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, BondedPairFilter, BondedPairFilters);
 IMP_SWIG_OBJECT(IMP::atom, BrownianDynamics, BrownianDynamicsList);
+IMP_SWIG_OBJECT(IMP::atom, BrownianDynamicsTAMD, BrownianDynamicsTAMDList);
 IMP_SWIG_OBJECT(IMP::atom, CAlphaPDBSelector, CAlphaPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, CBetaPDBSelector, CBetaPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, BackbonePDBSelector, BackbonePDBSelectors);
@@ -105,6 +109,8 @@ IMP_SWIG_OBJECT(IMP::atom, HierarchyGeometry, HierarchyGeometries);
 IMP_SWIG_OBJECT(IMP::atom, HierarchiesGeometry, HierarchiesGeometries);
 IMP_SWIG_OBJECT(IMP::atom, BondGeometry, BondGeometries);
 IMP_SWIG_OBJECT(IMP::atom, BondsGeometry, BondsGeometries);
+IMP_SWIG_OBJECT(IMP::atom, CAAngleRestraint, CAAngleRestraints);
+IMP_SWIG_OBJECT(IMP::atom, CADihedralRestraint, CADihedralRestraints);
 
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMDihedral, CHARMMConnection, CHARMMDihedrals);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMBond, CHARMMConnection, CHARMMBonds);
@@ -124,10 +130,12 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
         this = _IMP_atom.new_Selection(hierarchy)
         try: self.this.append(this)
         except: self.this = this
-      else:
+      elif hierarchies:
         this = _IMP_atom.new_Selection(hierarchies)
         try: self.this.append(this)
         except: self.this = this
+      else:
+        raise ValueError("Either hierarchy or hierarchies must be provided.")
       for k in params.keys():
         eval("self.set_%s(params[k])"%k)
 
@@ -192,7 +200,9 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 %include "IMP/atom/CoverBond.h"
 %include "IMP/atom/Simulator.h"
 %include "IMP/atom/BrownianDynamics.h"
+%include "IMP/atom/BrownianDynamicsTAMD.h"
 %include "IMP/atom/Diffusion.h"
+%include "IMP/atom/TAMDParticle.h"
 %include "IMP/atom/Chain.h"
 %include "IMP/atom/Charged.h"
 %include "IMP/atom/CoulombPairScore.h"
@@ -257,17 +267,20 @@ namespace IMP {
 %include "IMP/atom/LangevinThermostatOptimizerState.h"
 %include "IMP/atom/pdb.h"
 %include "IMP/atom/constants.h"
+%include "IMP/atom/CAAngleRestraint.h"
+%include "IMP/atom/CADihedralRestraint.h"
+%include "IMP/atom/StructureSource.h"
 
 namespace IMP {
   namespace atom {
    %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
    %template(CHARMMBond) CHARMMConnection<2>;
    %template(CHARMMAngle) CHARMMConnection<3>;
-   %template(_get_native_overlap_cpp) get_native_overlap<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
-   %template(_get_drmsd_cpp) get_drmsd<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
-   %template(_get_drmsd_Q_cpp) get_drmsd_Q<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
-   %template(_get_drms_cpp) get_drms<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
-   %template(_get_rigid_bodies_drms_cpp) get_rigid_bodies_drms<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
+   %template(_get_native_overlap_cpp) get_native_overlap<IMP::Vector<algebra::VectorD<3> >, IMP::Vector<algebra::VectorD<3> > >;
+   %template(_get_drmsd_cpp) get_drmsd<IMP::Vector<algebra::VectorD<3> >, IMP::Vector<algebra::VectorD<3> > >;
+   %template(_get_drmsd_Q_cpp) get_drmsd_Q<IMP::Vector<algebra::VectorD<3> >, IMP::Vector<algebra::VectorD<3> > >;
+   %template(_get_drms_cpp) get_drms<IMP::Vector<algebra::VectorD<3> >, IMP::Vector<algebra::VectorD<3> > >;
+   %template(_get_rigid_bodies_drms_cpp) get_rigid_bodies_drms<IMP::Vector<algebra::VectorD<3> >, IMP::Vector<algebra::VectorD<3> > >;
 
   }
 }

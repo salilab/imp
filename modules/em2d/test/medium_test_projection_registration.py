@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
     def test_registration(self):
         """Test the registration of 3 subjects from 1gyt.pdb at 0.5 SNR"""
         # Get model from PDB file
-        smodel = IMP.kernel.Model()
+        smodel = IMP.Model()
         ssel = IMP.atom.ATOMPDBSelector()
         fn_model = self.get_input_file_name("1gyt.pdb")
         prot = IMP.atom.read_pdb(fn_model, smodel, ssel)
@@ -44,7 +44,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(projections), n_projections,
                          "Problem generating projections")
         # Prepare registration
-        # IMP.base.set_log_level(IMP.base.VERBOSE)
+        # IMP.set_log_level(IMP.VERBOSE)
         finder = em2d.ProjectionFinder()
         score_function = em2d.EM2DScore()
 

@@ -1,8 +1,6 @@
 /**
  *  \file IMP/container/ListClassnameContainer.h
- *  \brief Store a list of PLURALVARIABLETYPE
- *
- *  BLURB
+ *  \brief Store a list of PLURALINDEXTYPE.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
@@ -11,58 +9,83 @@
 #define IMPCONTAINER_LIST_CLASSNAME_CONTAINER_H
 
 #include <IMP/container/container_config.h>
-#include <IMP/base/object_macros.h>
-#include <IMP/kernel/internal/StaticListContainer.h>
-#include <IMP/kernel/ClassnameContainer.h>
-#include <IMP/kernel/ClassnameModifier.h>
-#include <IMP/kernel/base_types.h>
+#include <IMP/object_macros.h>
+#include <IMP/internal/StaticListContainer.h>
+#include <IMP/ClassnameContainer.h>
+#include <IMP/ClassnameModifier.h>
+#include <IMP/base_types.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Store a PLURALINDEXTYPE
+//! Store a list of PLURALINDEXTYPE
 /** \note The order may change when particles are inserted
     as the list is maintained in sorted order.
 
     \note Changing the contents of the container is a fairly heavy
     weight operation as it resets part of the dependency graph. Use
     a DynamicListClassnameContainer if you want to change the contents
-    frequently (eg via a kernel::ScoreState).
+    frequently (eg via a ScoreState).
  */
 class IMPCONTAINEREXPORT ListClassnameContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public ClassnameContainer
 #else
-    public IMP::kernel::internal::StaticListContainer<
-        kernel::ClassnameContainer>
+    public IMP::internal::StaticListContainer<ClassnameContainer>
 #endif
     {
-  typedef IMP::kernel::internal::StaticListContainer<kernel::ClassnameContainer>
-      P;
+  typedef IMP::internal::StaticListContainer<ClassnameContainer> P;
 
  public:
-  ListClassnameContainer(kernel::Model *m, const PLURALINDEXTYPE &contents,
+  ListClassnameContainer(Model *m, const PLURALINDEXTYPE &contents,
                          std::string name = "ListClassnameContainer%1%");
 
   ListClassnameContainer(const PLURALVARIABLETYPE &ps,
                          std::string name = "ListClassnameContainer%1%");
 
+  /** \deprecated_at{2.5} Use set() with indexes instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &ps);
+
+  /** \deprecated_at{2.5} Use set() instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void set_FUNCTIONNAMEs(const PLURALINDEXTYPE &contents);
 #ifndef IMP_DOXYGEN
-  ListClassnameContainer(kernel::Model *m,
+  ListClassnameContainer(Model *m,
                          std::string name = "ListClassnameContainer %1%");
-  ListClassnameContainer(kernel::Model *m, const char *name);
+  ListClassnameContainer(Model *m, const char *name);
 
+  /** \deprecated_at{2.5} Use add() with indexes instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void add_FUNCTIONNAME(ARGUMENTTYPE vt);
+
+  /** \deprecated_at{2.5} Use add() with indexes instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
+
+  /** \deprecated_at{2.5} Use clear() instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void clear_FUNCTIONNAMEs();
 #endif
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+  //! Add a single PASSINDEXTYPE to the container.
+  void add(PASSINDEXTYPE vt);
+
+  //! Add PLURALINDEXTYPE to the container.
+  void add(const PLURALINDEXTYPE &c);
+
+  //! Set the contents of the container to the given PLURALINDEXTYPE.
+  void set(PLURALINDEXTYPE cp);
+
+  //! Clear the contents of the container.
+  void clear();
+#endif
+
 #ifdef SWIG
   PLURALINDEXTYPE get_indexes() const;
   PLURALINDEXTYPE get_range_indexes() const;
-  kernel::ModelObjectsTemp do_get_inputs() const;
+  ModelObjectsTemp do_get_inputs() const;
   void do_apply(const ClassnameModifier *sm) const;
-  kernel::ParticleIndexes get_all_possible_indexes() const;
+  ParticleIndexes get_all_possible_indexes() const;
 
  private:
   std::size_t do_get_contents_hash() const;

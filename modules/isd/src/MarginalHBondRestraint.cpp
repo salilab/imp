@@ -18,14 +18,13 @@ IMPISD_BEGIN_NAMESPACE
 // MarginalHBondRestraint::MarginalHBondRestraint() {}
 
 // add a contribution: simple case
-void MarginalHBondRestraint::add_contribution(kernel::Particle *p1,
-                                              kernel::Particle *p2,
+void MarginalHBondRestraint::add_contribution(Particle *p1,
+                                              Particle *p2,
                                               double Iexp) {
   set_has_dependencies(false);
-  kernel::ParticlePair pc(p1, p2);
-  kernel::ParticlePairsTemp pct(1, pc);
-  IMP_NEW(container::ListPairContainer, cont, (pct));
-  // container::ListPairContainer cont(pct);
+  ParticleIndexPair pc(p1->get_index(), p2->get_index());
+  ParticleIndexPairs pct(1, pc);
+  IMP_NEW(container::ListPairContainer, cont, (get_model(), pct));
   add_contribution(cont, Iexp);
 }
 
@@ -44,14 +43,14 @@ double MarginalHBondRestraint::unprotected_evaluate(
                       << " before calling evaluate.");
   // compute logsquares
   double logsquares = 0;
-  base::Vector<double> meandists;  // mean distances^-6, length(volumes_)
+  Vector<double> meandists;  // mean distances^-6, length(volumes_)
   // store interparticle distances^-6
-  base::Vector<base::Vector<double> > alldists;
+  Vector<Vector<double> > alldists;
   int ncontribs = volumes_.size();
   for (int i = 0; i < ncontribs; ++i)  // loop on all contributions
   {
     double mean = 0;
-    base::Vector<double> dists;
+    Vector<double> dists;
     IMP_CONTAINER_FOREACH(PairContainer, contribs_[i], {
       core::XYZ d0(get_model(), _1[0]);
       core::XYZ d1(get_model(), _1[1]);
@@ -93,7 +92,7 @@ double MarginalHBondRestraint::unprotected_evaluate(
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp MarginalHBondRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
+  ModelObjectsTemp ret;
   for (unsigned i = 0; i < volumes_.size(); ++i) {
     ret += IMP::get_particles(get_model(),
                               contribs_[i]->get_all_possible_indexes());

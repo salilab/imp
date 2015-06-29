@@ -9,26 +9,26 @@
 
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/MonteCarlo.h>
-#include <IMP/kernel/SingletonModifier.h>
+#include <IMP/SingletonModifier.h>
 #include <IMP/core/BallMover.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/utility.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/dependency_graph.h>
 #include <IMP/algebra/vector_generators.h>
 #include <boost/random/uniform_real.hpp>
 #include <boost/graph/depth_first_search.hpp>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <boost/graph/reverse_graph.hpp>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <IMP/base/vector_property_map.h>
+#include <IMP/vector_property_map.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
 class CollectVisitor : public boost::default_dfs_visitor {
-  const std::map<kernel::Particle *, int> &lu_;
+  const std::map<Particle *, int> &lu_;
   boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type vm_;
   Ints &vals_;
 
@@ -39,16 +39,16 @@ class CollectVisitor : public boost::default_dfs_visitor {
     return vals_;
   }
   CollectVisitor(const DependencyGraph &g,
-                 const std::map<kernel::Particle *, int> &lu, Ints &vals)
+                 const std::map<Particle *, int> &lu, Ints &vals)
       : lu_(lu), vm_(boost::get(boost::vertex_name, g)), vals_(vals) {}
   template <class G>
   void discover_vertex(typename boost::graph_traits<G>::vertex_descriptor u,
                        const G &) {
-    base::Object *o = vm_[u];
-    kernel::Particle *p = dynamic_cast<kernel::Particle *>(o);
+    Object *o = vm_[u];
+    Particle *p = dynamic_cast<Particle *>(o);
     if (p) {
       // std::cout << "Checking particle " << p->get_name() << std::endl;
-      typename std::map<kernel::Particle *, int>::const_iterator it =
+      typename std::map<Particle *, int>::const_iterator it =
           lu_.find(p);
       if (it != lu_.end()) {
         vals_.push_back(it->second);
@@ -60,43 +60,43 @@ class CollectVisitor : public boost::default_dfs_visitor {
 namespace {
 class ScoreWeightedIncrementalBallMover : public MonteCarloMover {
  public:
-  ScoreWeightedIncrementalBallMover(const kernel::ParticlesTemp &ps,
+  ScoreWeightedIncrementalBallMover(const ParticlesTemp &ps,
                                     unsigned int n, Float radius);
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ScoreWeightedIncrementalBallMover);
 
  private:
-  const kernel::ParticlesTemp ps_;
+  const ParticlesTemp ps_;
   unsigned int n_;
   Float radius_;
-  kernel::ParticlesTemp moved_;
+  ParticlesTemp moved_;
   algebra::Vector3Ds old_coords_;
-  base::Vector<std::pair<kernel::Restraint *, Ints> > deps_;
+  Vector<std::pair<Restraint *, Ints> > deps_;
 };
 
 ScoreWeightedIncrementalBallMover::ScoreWeightedIncrementalBallMover(
-    const kernel::ParticlesTemp &sc, unsigned int n, Float radius)
+    const ParticlesTemp &sc, unsigned int n, Float radius)
     : MonteCarloMover(sc[0]->get_model(), "IncrementalBallMover%1%"),
       ps_(sc),
       n_(n),
       radius_(radius),
       moved_(n_) {
-  kernel::Model *m = sc[0]->get_model();
+  Model *m = sc[0]->get_model();
   const DependencyGraph dg = get_dependency_graph(m);
   typedef boost::graph_traits<DependencyGraph> DGTraits;
   typedef boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type
       DGVMap;
   DGVMap vm = boost::get(boost::vertex_name, dg);
-  std::map<kernel::Particle *, int> index;
+  std::map<Particle *, int> index;
   for (unsigned int i = 0; i < ps_.size(); ++i) {
     index[ps_[i]] = i;
   }
   for (std::pair<DGTraits::vertex_iterator, DGTraits::vertex_iterator> be =
            boost::vertices(dg);
        be.first != be.second; ++be.first) {
-    kernel::Restraint *r = dynamic_cast<kernel::Restraint *>(vm[*be.first]);
+    Restraint *r = dynamic_cast<Restraint *>(vm[*be.first]);
     if (r) {
       boost::vector_property_map<int> color(boost::num_vertices(dg));
       Ints out;
@@ -141,7 +141,7 @@ MonteCarloMoverResult ScoreWeightedIncrementalBallMover::do_propose() {
   moved_.clear();
   old_coords_.clear();
   if (total < .0001) {
-    return MonteCarloMoverResult(kernel::ParticleIndexes(), 1.0);
+    return MonteCarloMoverResult(ParticleIndexes(), 1.0);
   }
   for (unsigned int i = 0; i < weights.size(); ++i) {
     weights[i] /= (total / n_);
@@ -156,7 +156,7 @@ MonteCarloMoverResult ScoreWeightedIncrementalBallMover::do_propose() {
   while (true) {
     ::boost::uniform_real<> rand(0, 1);
     for (unsigned int i = 0; i < weights.size(); ++i) {
-      if (rand(base::random_number_generator) < weights[i]) {
+      if (rand(random_number_generator) < weights[i]) {
         moved_.push_back(ps_[i]);
         XYZ d(ps_[i]);
         old_coords_.push_back(d.get_coordinates());
@@ -194,9 +194,9 @@ void ScoreWeightedIncrementalBallMover::do_reject() {
   }
 }
 
-kernel::ModelObjectsTemp ScoreWeightedIncrementalBallMover::do_get_inputs()
+ModelObjectsTemp ScoreWeightedIncrementalBallMover::do_get_inputs()
     const {
-  return kernel::ModelObjectsTemp(ps_.begin(), ps_.end());
+  return ModelObjectsTemp(ps_.begin(), ps_.end());
 }
 }
 
@@ -210,7 +210,7 @@ MCCGSampler::Parameters::Parameters() {
   mc_steps_ = 100;
 }
 
-MCCGSampler::MCCGSampler(kernel::Model *m, std::string name)
+MCCGSampler::MCCGSampler(Model *m, std::string name)
     : Sampler(m, name), is_refining_(false) {}
 
 void MCCGSampler::set_bounding_box(const algebra::BoundingBox3D &bb) {
@@ -253,11 +253,14 @@ MCCGSampler::Container *MCCGSampler::set_up_movers(const Parameters &pms,
                   << "Cartesian coordinates",
               ValueException);
   }
-  kernel::ParticlesTemp ps;
-  for (kernel::Model::ParticleIterator pit = mc->get_model()->particles_begin();
-       pit != mc->get_model()->particles_end(); ++pit) {
-    if (XYZ::get_is_setup(*pit) && XYZ(*pit).get_coordinates_are_optimized()) {
-      ps.push_back(*pit);
+  ParticlesTemp ps;
+  Model *m = mc->get_model();
+  ParticleIndexes pis = m->get_particle_indexes();
+  for (ParticleIndexes::const_iterator pit = pis.begin();
+       pit != pis.end(); ++pit) {
+    if (XYZ::get_is_setup(m, *pit)
+        && XYZ(m, *pit).get_coordinates_are_optimized()) {
+      ps.push_back(m->get_particle(*pit));
     }
   }
   IMP_USAGE_CHECK(!ps.empty(), "No optimized particles found");
@@ -280,7 +283,7 @@ void MCCGSampler::randomize(const Parameters &pms, Container *sc) const {
                         pms.bounds_.find(YK)->second.second,
                         pms.bounds_.find(ZK)->second.second));
   IMP_CONTAINER_FOREACH(Container, sc, {
-    // _1 is the kernel::ParticleIndex for a singleton container
+    // _1 is the ParticleIndex for a singleton container
     IMP::core::XYZ d(get_model(), _1);
     d.set_coordinates(algebra::get_random_vector_in(bb));
   });
@@ -334,11 +337,11 @@ ConfigurationSet *MCCGSampler::get_rejected_configurations() const {
 
 ConfigurationSet *MCCGSampler::do_sample() const {
   IMP_OBJECT_LOG;
-  base::LogLevel mll(
-      static_cast<base::LogLevel>(std::max(0, IMP::base::get_log_level() - 1)));
+  LogLevel mll(
+      static_cast<LogLevel>(std::max(0, IMP::get_log_level() - 1)));
   set_was_used(true);
   // get_model()->set_is_incremental(true);
-  base::Pointer<ConfigurationSet> ret = new ConfigurationSet(get_model());
+  Pointer<ConfigurationSet> ret = new ConfigurationSet(get_model());
   Parameters pms = fill_in_parameters();
   IMP_NEW(MonteCarloWithLocalOptimization, mc, (pms.local_opt_, pms.cg_steps_));
   mc->set_scoring_function(get_scoring_function());
@@ -348,8 +351,8 @@ ConfigurationSet *MCCGSampler::do_sample() const {
       OptimizerStatesTemp(optimizer_states_begin(), optimizer_states_end()));
   pms.local_opt_->set_log_level(mll);
   mc->set_return_best(true);
-  base::Pointer<Container> sc = set_up_movers(pms, mc);
-  IMP_IF_CHECK(base::USAGE) {
+  Pointer<Container> sc = set_up_movers(pms, mc);
+  IMP_IF_CHECK(USAGE) {
     if (sc->get_indexes().size() == 0) {
       IMP_WARN("There are no particles with optimized Cartesian coordinates."
                << std::endl);
@@ -359,7 +362,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   IMP_CHECK_OBJECT(sc);
   int failures = 0;
   boost::scoped_ptr<boost::progress_display> progress;
-  if (IMP::base::get_log_level() == base::PROGRESS) {
+  if (IMP::get_log_level() == PROGRESS) {
     progress.reset(new boost::progress_display(pms.attempts_));
   }
   for (unsigned int i = 0; i < pms.attempts_; ++i) {
@@ -371,29 +374,30 @@ ConfigurationSet *MCCGSampler::do_sample() const {
     try {
       mc->optimize(pms.mc_steps_);
     }
-    catch (base::ModelException) {
+    catch (ModelException) {
       IMP_LOG_TERSE("Optimization ended by exception" << std::endl);
       ++failures;
       continue;
     }
     if (mc->get_scoring_function()->get_had_good_score()) {
       IMP_LOG_TERSE("Found configuration with score "
-                    << get_model()->evaluate(false) << std::endl);
+                    << get_scoring_function()->evaluate(false)
+                    << std::endl);
       ret->save_configuration();
-      IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-        double oe = get_model()->evaluate(false);
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        double oe = get_scoring_function()->evaluate(false);
         ret->load_configuration(-1);
         ret->load_configuration(ret->get_number_of_configurations() - 1);
-        double ne = get_model()->evaluate(false);
+        double ne = get_scoring_function()->evaluate(false);
         if (0) std::cout << oe << ne;
         IMP_INTERNAL_CHECK(std::abs(ne - oe) < (ne + oe) * .1 + .1,
-                           "Energies to not match before and after save."
+                           "Energies do not match before and after save."
                                << "Expected " << oe << " got " << ne
                                << std::endl);
       }
     } else {
       IMP_LOG_TERSE("Rejected configuration with score "
-                    << get_model()->evaluate(false) << std::endl);
+                    << get_scoring_function()->evaluate(false) << std::endl);
       if (rejected_) {
         rejected_->save_configuration();
       }

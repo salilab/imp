@@ -32,7 +32,7 @@ class Tests(IMP.test.TestCase):
         id_key = IMP.FloatKey("id")
 
         self.particles = []
-        origin = 3.0
+        origin = 2.5
         self.particles.append(self.create_point_particle(self.imp_model,
                                                          9. + origin, 9. +
                                                          origin,
@@ -66,8 +66,8 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.VERBOSE)
-        self.imp_model = IMP.kernel.Model()
+        IMP.set_log_level(IMP.VERBOSE)
+        self.imp_model = IMP.Model()
 
         self.restraint_sets = []
         self.rsrs = []
@@ -88,8 +88,7 @@ class Tests(IMP.test.TestCase):
         for p in self.particles:
             print("is rigid body?", IMP.core.RigidBody.get_is_setup(p))
         r = IMP.em.FitRestraint(self.particles, self.scene)
-        self.imp_model.add_restraint(r)
-        score = self.imp_model.evaluate(False)
+        score = r.evaluate(False)
         print("EM score (1-CC) = " + str(score))
         self.assertLess(score, 0.05, "the correlation score is not correct")
 
@@ -98,12 +97,13 @@ class Tests(IMP.test.TestCase):
         m = self.imp_model
         r1 = IMP.em.FitRestraint(self.particles, self.scene)
         sf = IMP.core.Harmonic(10.0, 0.1)
-        r2 = IMP.core.DistanceRestraint(sf, self.particles[0],
+        r2 = IMP.core.DistanceRestraint(m, sf, self.particles[0],
                                         self.particles[1])
-        m.add_restraint(r1)
-        m.add_restraint(r2)
-        r1 = m.get_restraint(0)
-        r2 = m.get_restraint(1)
+        rs = IMP.RestraintSet(m)
+        rs.add_restraint(r1)
+        rs.add_restraint(r2)
+        r1 = rs.get_restraint(0)
+        r2 = rs.get_restraint(1)
         self.assertIsInstance(IMP.em.FitRestraint.cast(r1),
                               IMP.em.FitRestraint)
         self.assertIsNone(IMP.em.FitRestraint.cast(r2))

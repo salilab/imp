@@ -47,8 +47,8 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)  # VERBOSE)
-        self.imp_model = IMP.kernel.Model()
+        IMP.set_log_level(IMP.SILENT)  # VERBOSE)
+        self.imp_model = IMP.Model()
         self.load_proteins()
 
     def test_resample(self):
@@ -70,8 +70,6 @@ class Tests(IMP.test.TestCase):
             False)
         self.restr_rb_all_fast = IMP.em.FitRestraint(
             self.all_ps_copy, map, [0., 0.], IMP.atom.Mass.get_mass_key(), 1, True)
-        self.imp_model.add_restraint(self.restr_ps_all)
-        self.imp_model.add_restraint(self.restr_rb_all_fast)
         score1 = self.restr_ps_all.evaluate(False)
         score2 = self.restr_rb_all_fast.evaluate(False)
         self.assertAlmostEqual(score1, score2, delta=0.05)
@@ -101,8 +99,6 @@ class Tests(IMP.test.TestCase):
                 IMP.core.transform(
                     self.rbs_of_copy[i],
                     rand_t[i].get_inverse())
-        self.imp_model.remove_restraint(self.restr_ps_all)
-        self.imp_model.remove_restraint(self.restr_rb_all_fast)
 
     def _test_resampling_derivatives(self):
         """Test derivatives with and without rigid bodies"""
@@ -119,14 +115,9 @@ class Tests(IMP.test.TestCase):
             self.all_ps_copy, map, [0., 0.], self.weight_key, 1, True)
         self.restr_rb_all_slow = IMP.em.FitRestraint(
             self.all_ps_copy, map, [0., 0.], self.weight_key, 1, False)
-        self.imp_model.add_restraint(self.restr_ps_all)
-        self.imp_model.add_restraint(self.restr_rb_all_fast)
-        self.imp_model.add_restraint(self.restr_rb_all_slow)
         score1 = self.restr_ps_all.evaluate(True)
         score2 = self.restr_rb_all_fast.evaluate(True)
         self.assertAlmostEqual(score1, score2, delta=0.05)
-        self.imp_model.remove_restraint(self.restr_ps_all)
-        self.imp_model.remove_restraint(self.restr_rb_all_fast)
 
     def _test_fast_local_refinement(self):
         """test that local rigid fitting work well with rigid bodies"""
@@ -149,7 +140,7 @@ class Tests(IMP.test.TestCase):
             sel)
         IMP.atom.add_radii(mh)
         rb = IMP.atom.setup_as_rigid_body(mh)
-        ps = IMP.kernel.Particles(IMP.core.get_leaves(IMP.atom.Hierarchy(mh)))
+        ps = IMP.Particles(IMP.core.get_leaves(IMP.atom.Hierarchy(mh)))
         score_before = IMP.em.compute_fitting_score(ps, d_map)
         rand_t = IMP.algebra.Transformation3D(
             IMP.algebra.get_random_rotation_3d(),

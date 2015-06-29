@@ -10,12 +10,12 @@
 
 #include <IMP/algebra/algebra_config.h>
 #include "VectorBaseD.h"
-#include <IMP/base/types.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/exception.h>
-#include <IMP/base/utility.h>
-#include <IMP/base/InputAdaptor.h>
-#include <IMP/base/random.h>
+#include <IMP/types.h>
+#include <IMP/check_macros.h>
+#include <IMP/exception.h>
+#include <IMP/utility.h>
+#include <IMP/InputAdaptor.h>
+#include <IMP/random.h>
 #include "algebra_macros.h"
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/normal_distribution.hpp>
@@ -386,31 +386,31 @@ inline CommasIO<D> commas_io(const VectorD<D> &v) {
 /** 1D vector typedef for swig */
 typedef VectorD<1> Vector1D;
 /** 1D vectors typedef for swig */
-typedef base::Vector<VectorD<1> > Vector1Ds;
+typedef Vector<VectorD<1> > Vector1Ds;
 /** 2D vector typedef for swig */
 typedef VectorD<2> Vector2D;
 /** 2D vectors typedef for swig */
-typedef base::Vector<VectorD<2> > Vector2Ds;
+typedef Vector<VectorD<2> > Vector2Ds;
 /** 3D vector typedef for swig */
 typedef VectorD<3> Vector3D;
 /** 3D vectors typedef for swig */
-typedef base::Vector<VectorD<3> > Vector3Ds;
+typedef Vector<VectorD<3> > Vector3Ds;
 /** 4D vector typedef for swig */
 typedef VectorD<4> Vector4D;
 /** 4D vectors typedef for swig */
-typedef base::Vector<VectorD<4> > Vector4Ds;
+typedef Vector<VectorD<4> > Vector4Ds;
 /** 5D vector typedef for swig */
 typedef VectorD<5> Vector5D;
 /** 5D vectors typedef for swig */
-typedef base::Vector<VectorD<5> > Vector5Ds;
+typedef Vector<VectorD<5> > Vector5Ds;
 /** 6D vector typedef for swig */
 typedef VectorD<6> Vector6D;
 /** 6D vector typedef for swig */
-typedef base::Vector<VectorD<6> > Vector6Ds;
+typedef Vector<VectorD<6> > Vector6Ds;
 /** KD vector typedef for swig */
 typedef VectorD<-1> VectorKD;
 /** KD vectors typedef for swig */
-typedef base::Vector<VectorD<-1> > VectorKDs;
+typedef Vector<VectorD<-1> > VectorKDs;
 
 #ifndef SWIG
 /** \see VectorD \genericgeometry */

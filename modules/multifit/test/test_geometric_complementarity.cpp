@@ -13,9 +13,10 @@
 #include "IMP/algebra/constants.h"
 #include "IMP/algebra/Transformation3D.h"
 #include "IMP/Particle.h"
-#include "IMP/kernel/Model.h"
+#include "IMP/Model.h"
 #include "IMP/atom/Atom.h"
 #include "IMP/core/XYZR.h"
+#include <IMP/flags.h>
 #include "IMP/multifit/internal/GeometricComplementarity.h"
 
 namespace {
@@ -27,12 +28,12 @@ double sphere_intersection(double radius, double dist) {
     return 0;
 }
 
-IMP::kernel::ParticlesTemp create_balls(
-    IMP::kernel::Model *m, const std::vector<double> &radii,
+IMP::ParticlesTemp create_balls(
+    IMP::Model *m, const std::vector<double> &radii,
     const std::vector<IMP::algebra::Vector3D> &coords) {
-  IMP::kernel::ParticlesTemp res;
+  IMP::ParticlesTemp res;
   for (size_t i = 0; i < radii.size(); ++i) {
-    IMP::kernel::Particle *p = new IMP::kernel::Particle(m);
+    IMP::Particle *p = new IMP::Particle(m);
     IMP::core::XYZR d = IMP::core::XYZR::setup_particle(p);
     d.set_radius(radii[i]);
     d.set_coordinates(coords[i]);
@@ -47,8 +48,8 @@ double approx_sphere_intersection(double radius, double dist) {
   radii.push_back(radius);
   std::vector<IMP::algebra::Vector3D> coords;
   coords.push_back(IMP::algebra::Vector3D(0, 0, 0));
-  IMP_NEW(IMP::kernel::Model, m, ());
-  IMP::kernel::ParticlesTemp particles0 = create_balls(m, radii, coords);
+  IMP_NEW(IMP::Model, m, ());
+  IMP::ParticlesTemp particles0 = create_balls(m, radii, coords);
   IMP::multifit::internal::ComplementarityGridParameters cgpar;
   cgpar.voxel_size = 1;
   cgpar.interior_thickness = radius;
@@ -74,8 +75,9 @@ struct Result {
 };
 }
 
-int main() {
-  IMP::base::set_log_level(IMP::base::VERBOSE);
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test geometric complementarity");
+  IMP::set_log_level(IMP::VERBOSE);
   std::vector<Result> R;
   for (size_t i = 0; i < compile_time_array_size(Examples); ++i) {
     double radius = Examples[i][0];

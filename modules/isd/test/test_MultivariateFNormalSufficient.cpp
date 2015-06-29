@@ -8,12 +8,13 @@
 #include <IMP/isd/MultivariateFNormalSufficient.h>
 #include <IMP/isd/FNormal.h>
 #include <IMP/macros.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/base/exception.h>
+#include <IMP/Pointer.h>
+#include <IMP/exception.h>
 #include <math.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <boost/random/uniform_real.hpp>
 #include <IMP/algebra/eigen3/Eigen/Dense>
+#include <IMP/flags.h>
 
 namespace {
 
@@ -21,7 +22,7 @@ using namespace IMP::isd;
 
 boost::uniform_real<> uniform(0, 1);
 
-#define rand() uniform(IMP::base::random_number_generator)
+#define rand() uniform(IMP::random_number_generator)
 
 #define FAIL(str)                  \
   {                                \
@@ -716,8 +717,8 @@ bool test_degenerate_2(int N){
 
     IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,P));
     //mv->set_was_used(true);
-    base::Pointer<IMP::isd::MultivariateFNormalSufficient> * fn;
-    fn = new base::Pointer<IMP::isd::MultivariateFNormalSufficient> (N);
+    Pointer<IMP::isd::MultivariateFNormalSufficient> * fn;
+    fn = new Pointer<IMP::isd::MultivariateFNormalSufficient> (N);
     for (int i=0; i< N; i++){
         IMP_Eigen::MatrixXd a(1,1,FA(i,0));
         IMP_Eigen::VectorXd m(1,FM(i));
@@ -784,10 +785,10 @@ bool test_mu(int N){
 
     IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,P));
     //mv->set_was_used(true);
-    base::Pointer<IMP::isd::MultivariateFNormalSufficient> * fn;
-    base::Pointer<IMP::isd::FNormal> * fn2;
-    fn = new base::Pointer<IMP::isd::MultivariateFNormalSufficient> (N);
-    fn2 = new base::Pointer<IMP::isd::FNormal> (N);
+    Pointer<IMP::isd::MultivariateFNormalSufficient> * fn;
+    Pointer<IMP::isd::FNormal> * fn2;
+    fn = new Pointer<IMP::isd::MultivariateFNormalSufficient> (N);
+    fn2 = new Pointer<IMP::isd::FNormal> (N);
     for (int i=0; i< N; i++){
         IMP_Eigen::MatrixXd a(1,1,FA(i,0));
         IMP_Eigen::VectorXd m(1,FM(i));
@@ -840,10 +841,10 @@ bool test_test(int N){
 
     IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,P));
     //mv->set_was_used(true);
-    base::Pointer<IMP::isd::MultivariateFNormalSufficient> * fn;
-    base::Pointer<IMP::isd::FNormal> * fn2;
-    fn = new base::Pointer<IMP::isd::MultivariateFNormalSufficient> (N);
-    fn2 = new base::Pointer<IMP::isd::FNormal> (N);
+    Pointer<IMP::isd::MultivariateFNormalSufficient> * fn;
+    Pointer<IMP::isd::FNormal> * fn2;
+    fn = new Pointer<IMP::isd::MultivariateFNormalSufficient> (N);
+    fn2 = new Pointer<IMP::isd::FNormal> (N);
     for (int i=0; i< N; i++){
         IMP_Eigen::MatrixXd a(1,1,FA(i,0));
         IMP_Eigen::VectorXd m(1,FM(i));
@@ -891,8 +892,8 @@ bool test_degenerate_N(int N){
 
     IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,P));
     //mv->set_was_used(true);
-    base::Pointer<IMP::isd::FNormal> * fn;
-    fn = new base::Pointer<IMP::isd::FNormal> (N);
+    Pointer<IMP::isd::FNormal> * fn;
+    fn = new Pointer<IMP::isd::FNormal> (N);
     for (int i=0; i< N; i++){
         fn(i) = new IMP::isd::FNormal(FA(i,0),JA,FM(i),sqrt(1.0/P(0,0)));
         //fn(i)->set_was_used(true);
@@ -943,7 +944,8 @@ bool test_degenerate_N(int N){
 */
 }
 
-int main(int, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test multivariate FNormal.");
   try {
     // test_mu(20);
     // return 0;
@@ -987,7 +989,7 @@ int main(int, char * []) {
     // RUNTEST(test_setval,1);
     return 0;
   }
-  catch (const IMP::base::ExceptionBase &e) {
+  catch (const IMP::ExceptionBase &e) {
     std::cerr << e.what() << std::endl;
   }
 }

@@ -19,7 +19,7 @@ class Tests(IMP.test.TestCase):
     """Test CHARMM stereochemistry restraint"""
 
     def setup_restraint(self):
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pdb = IMP.atom.read_pdb(
             self.get_input_file_name('charmm_type_test.pdb'), m)
         ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
@@ -27,7 +27,6 @@ class Tests(IMP.test.TestCase):
         topology.apply_default_patches()
         topology.setup_hierarchy(pdb)
         r = IMP.atom.CHARMMStereochemistryRestraint(pdb, topology)
-        m.add_restraint(r)
         return r, m, pdb
 
     def assertContainsPair(self, pf, atoms, a1, a2):
@@ -37,7 +36,7 @@ class Tests(IMP.test.TestCase):
     def test_score(self):
         """Test CHARMMStereochemistryRestraint::evaluate()"""
         r, m, pdb = self.setup_restraint()
-        score = pdb.get_model().evaluate(False)
+        score = r.evaluate(False)
         self.assertAlmostEqual(score, 2.90562, delta=0.02)
 
     def test_pair_filter(self):
@@ -65,7 +64,7 @@ class SelectionTests(IMP.test.TestCase):
     """Test CHARMM stereochemistry restraint with seletion"""
 
     def setup_restraint(self):
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pdb = IMP.atom.read_pdb(
             self.get_input_file_name('charmm_type_test.pdb'), m)
         ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
@@ -77,7 +76,6 @@ class SelectionTests(IMP.test.TestCase):
         sel = IMP.atom.Selection(pdb,residue_index=2)
         r = IMP.atom.CHARMMStereochemistryRestraint(pdb, topology,
                                                     sel.get_selected_particles())
-        m.add_restraint(r)
         return r, m, pdb
 
     def assertContainsPair(self, pf, atoms, a1, a2):

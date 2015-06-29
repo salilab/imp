@@ -5,8 +5,8 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 #include "IMP/algebra/Sphere3D.h"
-#include <IMP/base/Index.h>
-#include <IMP/base/exception.h>
+#include <IMP/Index.h>
+#include <IMP/exception.h>
 #include <utility>
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/bounding_sphere.h>
@@ -15,7 +15,7 @@
 
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/algebra/vector_search.h>
-#include <IMP/base/set_map_macros.h>
+#include <IMP/set_map_macros.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -59,12 +59,12 @@ namespace {
 
 struct SphereTag {};
 struct SPTag {};
-typedef IMP::base::Index<SphereTag> SphereIndex;
-typedef IMP::base::Index<SPTag> SPIndex;
-typedef IMP::base::Vector<SphereIndex> SphereIndexes;
-typedef IMP::base::Vector<SPIndex> SPIndexes;
-typedef IMP_BASE_SMALL_UNORDERED_SET<SphereIndex> SphereIndexSet;
-typedef IMP_BASE_SMALL_UNORDERED_SET<SPIndex> SPIndexSet;
+typedef IMP::Index<SphereTag> SphereIndex;
+typedef IMP::Index<SPTag> SPIndex;
+typedef IMP::Vector<SphereIndex> SphereIndexes;
+typedef IMP::Vector<SPIndex> SPIndexes;
+typedef IMP_KERNEL_SMALL_UNORDERED_SET<SphereIndex> SphereIndexSet;
+typedef IMP_KERNEL_SMALL_UNORDERED_SET<SPIndex> SPIndexSet;
 }
 
 Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
@@ -80,15 +80,15 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
   Vector3Ds sps = get_uniform_surface_cover(in, get_squared(resolution));
 
   // which surface points support each sphere
-  IMP_BASE_LARGE_UNORDERED_MAP<SphereIndex, SPIndexSet> supports;
-  IMP_BASE_LARGE_UNORDERED_MAP<SphereIndex, double> radii;
+  IMP_KERNEL_LARGE_UNORDERED_MAP<SphereIndex, SPIndexSet> supports;
+  IMP_KERNEL_LARGE_UNORDERED_MAP<SphereIndex, double> radii;
   IMP_LOG_TERSE("Creating NN search structure." << std::endl);
   IMP_NEW(NearestNeighborD<3>, nns, (sps));
 
   IMP_LOG_TERSE("Searching for nearest neighbors." << std::endl);
   {
     // std::ofstream cpout("/tmp/balls.bild");
-    base::set_progress_display("computing nearest neighbors", in.size());
+    IMP::set_progress_display("computing nearest neighbors", in.size());
     for (unsigned int i = 0; i < in.size(); ++i) {
       SphereIndex si(i);
       unsigned int nn = nns->get_nearest_neighbor(in[i].get_center());
@@ -108,7 +108,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
       /*cpout << ".sphere " << in[i].get_center()[0] << " "
             << in[i].get_center()[1] << " " << in[i].get_center()[2] << " " << r
             << std::endl;*/
-      base::add_to_progress_display(1);
+      IMP::add_to_progress_display(1);
     }
   }
 
@@ -116,7 +116,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
   // which spheres are supported by each point
   typedef std::pair<SPIndex, SphereIndexSet> SupportedPair;
   if (0) SupportedPair();  // suppress warning
-  IMP_BASE_LARGE_UNORDERED_MAP<SPIndex, SphereIndexSet> supported;
+  IMP_KERNEL_LARGE_UNORDERED_MAP<SPIndex, SphereIndexSet> supported;
   typedef std::pair<SphereIndex, SPIndexSet> SupportsPair;
   IMP_FOREACH(const SupportsPair & ps, supports) {
     IMP_FOREACH(SPIndex spi, ps.second) { supported[spi].insert(ps.first); }
@@ -124,7 +124,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
 
   IMP_LOG_TERSE("Generating output." << std::endl);
   Sphere3Ds ret;
-  base::set_progress_display("building representation", supported.size());
+  IMP::set_progress_display("building representation", supported.size());
   while (!supported.empty()) {
     IMP_USAGE_CHECK(!supports.empty(), "Out of spheres");
     SphereIndex max;
@@ -145,7 +145,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
         }
       }
       supported.erase(spi);
-      base::add_to_progress_display(1);
+      IMP::add_to_progress_display(1);
     }
     supports.erase(max);
     ret.push_back(Sphere3D(in[max.get_index()].get_center(),

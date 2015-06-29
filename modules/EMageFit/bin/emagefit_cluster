@@ -71,7 +71,7 @@ class AlignmentClustering:
                 of one component of the assembly
             @param max_rmsd Maximum RMSD tolerated when clustering
         """
-        model = IMP.kernel.Model()
+        model = IMP.Model()
         assembly = representation.create_assembly(model, self.exp.fn_pdbs)
         rbs = representation.create_rigid_bodies(assembly)
         configuration_set = IMP.ConfigurationSet(model)
@@ -79,7 +79,7 @@ class AlignmentClustering:
             representation.set_reference_frames(rbs, RFs)
             configuration_set.save_configuration()
         particles_container = container.ListSingletonContainer(model)
-        particles_container.add_particles(atom.get_leaves(assembly))
+        particles_container.add(IMP.get_indexes(atom.get_leaves(assembly)))
         metric = stats.ConfigurationSetRMSDMetric(
             configuration_set, particles_container, True)
         log.info("Clustering ... ")

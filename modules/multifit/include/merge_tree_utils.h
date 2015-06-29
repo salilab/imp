@@ -27,24 +27,24 @@ typedef boost::adjacency_matrix<boost::undirectedS, boost::no_property,
 typedef boost::graph_traits<DependencyGraph>::edge_descriptor DGEdge;
 typedef DependencyGraph::edge_property_type DGWeight;
 typedef boost::graph_traits<DependencyGraph>::vertex_descriptor DGVertex;
-typedef boost::unordered_map<kernel::Particle *, DGVertex> PVMAP;
+typedef boost::unordered_map<Particle *, DGVertex> PVMAP;
 typedef boost::unordered_map<DGVertex, Particle *> VPMAP;
 };
 
 //! A simple Restraint that always returns a score of zero.
-class IMPMULTIFITEXPORT DummyRestraint : public kernel::Restraint {
+class IMPMULTIFITEXPORT DummyRestraint : public Restraint {
  public:
-  DummyRestraint(kernel::Particle *a, kernel::Particle *b)
-      : kernel::Restraint(a->get_model(), "DummyRestraint%1%"),
+  DummyRestraint(Particle *a, Particle *b)
+      : Restraint(a->get_model(), "DummyRestraint%1%"),
         p1_(a),
         p2_(b) {}
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DummyRestraint);
 
  protected:
-  kernel::Particle *p1_, *p2_;
+  Particle *p1_, *p2_;
 };
 
 //! Utility class for building merge trees.
@@ -99,13 +99,13 @@ class IMPMULTIFITEXPORT MergeTreeBuilder {
           << boost::get(boost::edge_weight_t(), g_, *ei) << ")" << std::endl;
     out << std::endl;
   }
-  kernel::ParticlePairsTemp get_mst_dependency() const {
+  ParticlePairsTemp get_mst_dependency() const {
     std::vector<MTU::DGEdge> mst;
     boost::kruskal_minimum_spanning_tree(g_, std::back_inserter(mst));
     // go over the edges and get the pairs
-    kernel::ParticlePairsTemp ret;
+    ParticlePairsTemp ret;
     for (int i = 0; i < (int)mst.size(); i++) {
-      kernel::ParticlePair pp;
+      ParticlePair pp;
       pp[0] = node2mol_.find(boost::source(mst[i], g_))->second;
       pp[1] = node2mol_.find(boost::target(mst[i], g_))->second;
       ret.push_back(pp);

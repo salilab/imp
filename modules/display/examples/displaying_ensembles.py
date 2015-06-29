@@ -1,6 +1,6 @@
 ## \example display/displaying_ensembles.py
 # The script shows a couple experiments with trying to visualize an
-# ensembe of structures. The ensemble is fairly tight on the assembly
+# ensemble of structures. The ensemble is fairly tight on the assembly
 # scale, but there is significant variation between the location and
 # orientation of the individual proteins (which were modeled as rigid
 # bodies). To save space, the models have had their sidechain atoms
@@ -9,12 +9,16 @@
 from __future__ import print_function
 import IMP.display
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv,
+    "Experiments with trying to visualize an ensemble of structures")
 
 Segment = IMP.algebra.Segment3D
 Cylinder = IMP.algebra.Cylinder3D
 
 # turn off internal checks to speed things up
-IMP.base.set_check_level(IMP.base.USAGE)
+IMP.set_check_level(IMP.USAGE)
 
 
 def read(m, beyond_file):
@@ -25,7 +29,7 @@ def read(m, beyond_file):
         name = IMP.display.get_example_path(
             "ensemble/aligned-" + str(i) + ".pdb")
         h = IMP.atom.read_pdb(name, m, IMP.atom.CAlphaPDBSelector())
-        hr = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+        hr = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         hs.append(hr)
         for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
             simp = IMP.atom.create_simplified_along_backbone(
@@ -81,7 +85,9 @@ def add_skeleton(h, c, r, w, chain_colors):
         for hc1 in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
             if hc1 <= hc0:
                 continue
-            d = ps.evaluate((hc0, hc1), None)
+            d = ps.evaluate_index(h.get_model(),
+                                  (hc0.get_particle_index(),
+                                   hc1.get_particle_index()), None)
             if d < 1:
                 d0 = IMP.core.XYZ(hc0)
                 d1 = IMP.core.XYZ(hc1)
@@ -103,8 +109,8 @@ def add_skeleton(h, c, r, w, chain_colors):
                 g.set_name(get_nice_name(h) + "_skel")
                 w.add_geometry(g)
 
-IMP.base.set_log_level(IMP.base.TERSE)
-m = IMP.kernel.Model()
+IMP.set_log_level(IMP.TERSE)
+m = IMP.Model()
 
 # change to 46 to display all of them
 hs = read(m, 3)
@@ -113,7 +119,7 @@ hs = read(m, 3)
 ps = IMP.core.KClosePairsPairScore(
     IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(10, 1)),
     IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
-ps.set_log_level(IMP.base.SILENT)
+ps.set_log_level(IMP.SILENT)
 
 
 print("creating rigid bodies")

@@ -1,5 +1,5 @@
 /**
- * \file IMP/saxs/WeightedFitParameters.h \brief
+ * \file IMP/saxs/WeightedFitParameters.h
  *
  * Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -11,21 +11,24 @@
 #include <IMP/saxs/saxs_config.h>
 
 #include "FitParameters.h"
-
-#include <IMP/base_types.h>
+#include <IMP/Vector.h>
 
 #include <iostream>
 
 IMPSAXS_BEGIN_NAMESPACE
 
-class IMPSAXSEXPORT WeightedFitParameters : public FitParameters {
+//! Parameters of a weighted fit, from WeightedProfileFitter.
+class WeightedFitParameters : public FitParameters {
  public:
-  WeightedFitParameters(float chi, float c1, float c2, Floats weights)
+  WeightedFitParameters() : FitParameters() {}
+
+  WeightedFitParameters(double chi, double c1, double c2,
+                        const Vector<double>& weights)
       : FitParameters(chi, c1, c2), weights_(weights) {}
 
-  const Floats& get_weights() const { return weights_; }
+  const Vector<double>& get_weights() const { return weights_; }
 
-  void set_weights(const Floats& weights) { weights_ = weights; }
+  void set_weights(const Vector<double>& weights) { weights_ = weights; }
 
   void show(std::ostream& s) const {
     s << "Chi = " << chi_ << " c1 = " << c1_ << " c2 = " << c2_
@@ -33,7 +36,7 @@ class IMPSAXSEXPORT WeightedFitParameters : public FitParameters {
   }
 
  private:
-  Floats weights_;
+  Vector<double> weights_;
 };
 
 IMPSAXS_END_NAMESPACE

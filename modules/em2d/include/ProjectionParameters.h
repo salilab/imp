@@ -21,7 +21,7 @@ IMPEM2D_BEGIN_NAMESPACE
 //! Rotation and translation. In this cases, the translation is the translation
 //! to apply to the model in 3D, in order to perform the registration
 class IMPEM2DEXPORT ProjectionParameters : public Decorator {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi);
+  static void do_setup_particle(Model *m, ParticleIndex pi);
 
  public:
   IMP_DECORATOR_METHODS(ProjectionParameters, Decorator);
@@ -36,11 +36,11 @@ class IMPEM2DEXPORT ProjectionParameters : public Decorator {
   //! ranges for the keys. Only adjust the translations, the rotations are
   //! self adjusted
   void set_proper_ranges_for_keys(
-      kernel::Model *m, const algebra::Vector3D &min_translation_values,
+      Model *m, const algebra::Vector3D &min_translation_values,
       const algebra::Vector3D &max_translation_values);
 
   //! Return true if the particle is a set of projection parameters
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi);
+  static bool get_is_setup(Model *m, ParticleIndex pi);
 
   //! Get whether the parameters are optimized
   /** \return true only if all of them are optimized.
@@ -100,25 +100,25 @@ class IMPEM2DEXPORT ProjectionParameters : public Decorator {
 };
 
 IMP_DECORATORS(ProjectionParameters, ProjectionParametersList,
-               kernel::Particles);
+               Particles);
 
 //! Score state to give information about the values of a ProjectionParameters
 //! Decorator
 class IMPEM2DEXPORT ProjectionParametersScoreState : public ScoreState {
  public:
-  ProjectionParametersScoreState(kernel::Particle *p)
+  ProjectionParametersScoreState(Particle *p)
       : ScoreState(p->get_model(), "ProjectionParametersScoreState%1%") {
     proj_params_ = p;
   }
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ProjectionParametersScoreState);
 
  private:
-  // kernel::Particle to store the projection params
-  base::Pointer<kernel::Particle> proj_params_;
+  // Particle to store the projection params
+  Pointer<Particle> proj_params_;
 };
 
 IMPEM2D_END_NAMESPACE

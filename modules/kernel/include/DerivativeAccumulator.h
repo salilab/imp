@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/DerivativeAccumulator.h
+ *  \file IMP/DerivativeAccumulator.h
  *  \brief Class for adding derivatives from
  *                                         restraints to the model.
  *
@@ -10,12 +10,12 @@
 #ifndef IMPKERNEL_DERIVATIVE_ACCUMULATOR_H
 #define IMPKERNEL_DERIVATIVE_ACCUMULATOR_H
 
-#include <IMP/kernel/kernel_config.h>
-#include <IMP/base/showable_macros.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/value_macros.h>
-#include <IMP/base/math.h>
-#include <IMP/base/exception.h>
+#include <IMP/kernel_config.h>
+#include <IMP/showable_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/value_macros.h>
+#include <IMP/math.h>
+#include <IMP/exception.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -36,7 +36,7 @@ class IMPKERNELEXPORT DerivativeAccumulator {
   /** \param[in] value Value to add to the float attribute derivative.
    */
   double operator()(const double value) const {
-    IMP_INTERNAL_CHECK(!base::isnan(value), "Can't set derivative to NaN.");
+    IMP_INTERNAL_CHECK(!isnan(value), "Can't set derivative to NaN.");
     return value * weight_;
   }
   double get_weight() const { return weight_; }

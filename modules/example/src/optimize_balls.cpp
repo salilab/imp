@@ -14,7 +14,7 @@
 #include <IMP/container/ClosePairContainer.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/core/SphereDistancePairScore.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/log_macros.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <IMP/scoped.h>
@@ -27,7 +27,7 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-core::MonteCarloMover *create_serial_mover(const kernel::ParticlesTemp &ps) {
+core::MonteCarloMover *create_serial_mover(const ParticlesTemp &ps) {
   core::MonteCarloMovers movers;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     double scale = core::XYZR(ps[i]).get_radius();
@@ -41,16 +41,16 @@ core::MonteCarloMover *create_serial_mover(const kernel::ParticlesTemp &ps) {
 /** Take a set of core::XYZR particles and relax them relative to a set of
     restraints. Excluded volume is handle separately, so don't include it
 in the passed list of restraints. */
-void optimize_balls(const kernel::ParticlesTemp &ps,
-                    const kernel::RestraintsTemp &rs,
+void optimize_balls(const ParticlesTemp &ps,
+                    const RestraintsTemp &rs,
                     const PairPredicates &excluded,
-                    const OptimizerStates &opt_states, base::LogLevel ll) {
+                    const OptimizerStates &opt_states, LogLevel ll) {
   // make sure that errors and log messages are marked as coming from this
   // function
   IMP_FUNCTION_LOG;
-  base::SetLogState sls(ll);
-  IMP_ALWAYS_CHECK(!ps.empty(), "No kernel::Particles passed.", ValueException);
-  kernel::Model *m = ps[0]->get_model();
+  SetLogState sls(ll);
+  IMP_ALWAYS_CHECK(!ps.empty(), "No Particles passed.", ValueException);
+  Model *m = ps[0]->get_model();
   // double scale = core::XYZR(ps[0]).get_radius();
 
   IMP_NEW(core::SoftSpherePairScore, ssps, (10));
@@ -62,9 +62,9 @@ void optimize_balls(const kernel::ParticlesTemp &ps,
     IMP_NEW(container::ClosePairContainer, cpc,
             (lsc, 0, core::XYZR(ps[0]).get_radius()));
     cpc->add_pair_filters(excluded);
-    base::Pointer<kernel::Restraint> r =
+    Pointer<Restraint> r =
         container::create_restraint(ssps.get(), cpc.get());
-    cg->set_scoring_function(rs + kernel::RestraintsTemp(1, r.get()));
+    cg->set_scoring_function(rs + RestraintsTemp(1, r.get()));
     cg->set_optimizer_states(opt_states);
   }
   IMP_NEW(core::MonteCarlo, mc, (m));

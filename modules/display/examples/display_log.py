@@ -1,20 +1,21 @@
 ## \example display/display_log.py
 # A simple example of how to use one of the IMP.display.LogOptimizerStates.
 
-import IMP.kernel
 import IMP.display
 import IMP.core
 import IMP.container
+import sys
 
-m = IMP.kernel.Model()
+IMP.setup_from_argv(sys.argv,
+    "Example of how to use one of the IMP.display.LogOptimizerStates")
+
+m = IMP.Model()
 ps = IMP.core.create_xyzr_particles(m, 20, 5)
-c = IMP.container.ListSingletonContainer(ps)
+c = IMP.container.ListSingletonContainer(m, ps)
 
-# write it to a series of files, if the file name did not contain %1%, then
-# it would concatenate the outputs into a single file instead. Concatenating the
-# output can be quite useful with Pymol as that makes it less likely to crash.
+# Write outputs into a single file.
 log = IMP.display.WriteOptimizerState(
-    m, IMP.display.ChimeraWriter("log_file.%1%.pym"))
+    m, IMP.display.PymolWriter("log_file.pym"))
 # the logging occurs ever two frames
 log.set_period(2)
 g = IMP.core.XYZRsGeometry(c)
@@ -23,7 +24,7 @@ g.set_color(IMP.display.Color(1, 0, 0))
 log.add_geometry(g)
 
 r = IMP.core.ExcludedVolumeRestraint(c)
-r.set_log_level(IMP.base.VERBOSE)
+r.set_log_level(IMP.VERBOSE)
 
 o = IMP.core.MonteCarlo(m)
 o.set_scoring_function([r])

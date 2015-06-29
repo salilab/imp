@@ -7,7 +7,7 @@
  */
 
 #include <IMP/isd/GaussianEMRestraint.h>
-#include <IMP/base/math.h>
+#include <IMP/math.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/algebra/eigen3/Eigen/LU>
 #include <IMP/algebra/BoundingBoxD.h>
@@ -82,7 +82,7 @@ void GaussianEMRestraint::compute_initial_scores() {
   for (int i1=0;i1<dsize_;i1++){
     for (int i2=0;i2<dsize_;i2++){
       Float score = score_gaussian_overlap(get_model(),
-                    kernel::ParticleIndexPair(density_ps_[i1],density_ps_[i2]),
+                    ParticleIndexPair(density_ps_[i1],density_ps_[i2]),
                     &deriv);
       dd_score_+=score;
     }
@@ -91,7 +91,7 @@ void GaussianEMRestraint::compute_initial_scores() {
   // precalculate the self-mm score and initialize
   for (int i=0;i<msize_;i++){
     Float score = score_gaussian_overlap(get_model(),
-                    kernel::ParticleIndexPair(model_ps_[i],model_ps_[i]),
+                    ParticleIndexPair(model_ps_[i],model_ps_[i]),
                     &deriv);
     self_mm_score_+=score;
   }
@@ -165,7 +165,7 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   if (accum){
     for (ParticleIndexes::const_iterator it=model_ps_.begin();
          it!=model_ps_.end();++it){
-      if (base::isinf(log_score) || log_score==0.0) {
+      if (IMP::isinf(log_score) || log_score==0.0) {
         core::XYZ(get_model(),*it).add_to_derivatives(algebra::Vector3D(0,0,0),
                                                       *accum);
       }

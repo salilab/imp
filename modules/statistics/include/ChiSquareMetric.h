@@ -10,9 +10,9 @@
 
 #include <IMP/statistics/statistics_config.h>
 #include <IMP/statistics/Metric.h>
-#include <IMP/base/object_macros.h>
-#include <IMP/base/types.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/object_macros.h>
+#include <IMP/types.h>
+#include <IMP/Pointer.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 

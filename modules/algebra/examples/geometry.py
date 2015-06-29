@@ -4,6 +4,9 @@
 
 from __future__ import print_function
 import IMP.algebra
+import sys
+
+IMP.setup_from_argv(sys.argv, "geometry")
 
 # we can create some spheres
 s = []

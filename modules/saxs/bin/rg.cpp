@@ -1,7 +1,8 @@
 /**
    This is the program for computation of radius of gyration from SAXS profiles.
  */
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
+#include <IMP/Vector.h>
 #include <IMP/atom/pdb.h>
 
 #include <IMP/saxs/Profile.h>
@@ -19,7 +20,7 @@ int main(int argc, char **argv) {
   for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
   std::cerr << std::endl;
 
-  float end_q_rg = 1.3;
+  double end_q_rg = 1.3;
   po::options_description desc(
       "Usage: <pdb_file1> <pdb_file2> \
 ... <profile_file1> <profile_file2> ...");
@@ -28,7 +29,7 @@ int main(int argc, char **argv) {
 Each PDB will be fitted against each profile.")(
       "input-files", po::value<std::vector<std::string> >(),
       "input PDB and profile files")(
-      "end_q_rg,q*rg", po::value<float>(&end_q_rg)->default_value(1.3),
+      "end_q_rg,q*rg", po::value<double>(&end_q_rg)->default_value(1.3),
       "end q*rg value for rg computation, q*rg<end_q_rg (default = 1.3), \
 use 0.8 for elongated proteins");
   po::positional_options_description p;
@@ -49,9 +50,9 @@ use 0.8 for elongated proteins");
   }
 
   // 1. read pdbs and profiles, prepare particles
-  IMP::kernel::Model *model = new IMP::kernel::Model();
-  std::vector<IMP::kernel::Particles> particles_vec;
-  std::vector<IMP::saxs::Profile *> exp_profiles;
+  IMP::Model *model = new IMP::Model();
+  IMP::Vector<IMP::Particles> particles_vec;
+  IMP::Vector<IMP::saxs::Profile *> exp_profiles;
   for (unsigned int i = 0; i < files.size(); i++) {
     // check if file exists
     std::ifstream in_file(files[i].c_str());
@@ -65,8 +66,9 @@ use 0.8 for elongated proteins");
           files[i], model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
           // don't add radii
           true, true);
-      IMP::kernel::Particles particles = IMP::get_as<IMP::kernel::Particles>(
-          get_by_type(mhd, IMP::atom::ATOM_TYPE));
+      IMP::Particles particles =
+        IMP::get_as<IMP::Particles>(get_by_type(mhd,
+                                                IMP::atom::ATOM_TYPE));
       if (particles.size() > 0) {  // pdb file
         pdb_files.push_back(files[i]);
         particles_vec.push_back(particles);
@@ -74,7 +76,7 @@ use 0.8 for elongated proteins");
                   << files[i] << std::endl;
       }
     }
-    catch (IMP::base::ValueException e) {  // not a pdb file
+    catch (IMP::ValueException e) {  // not a pdb file
       // B. try as dat file
       IMP::saxs::Profile *profile = new IMP::saxs::Profile(files[i]);
       if (profile->size() == 0) {

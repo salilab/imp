@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/geometry_io.cpp
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -11,8 +11,8 @@
 #include <IMP/rmf/link_macros.h>
 #include "IMP/display/internal/utility.h"
 #include <IMP/display/primitive_geometries.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/check_macros.h>
+#include <IMP/Pointer.h>
 #include <RMF/types.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
@@ -303,7 +303,13 @@ void divide(const display::GeometriesTemp &r, display::SphereGeometries &sgs,
     } else if (dynamic_cast<display::BoundingBoxGeometry *>(g)) {
       bgs.push_back(dynamic_cast<display::BoundingBoxGeometry *>(g));
     } else {
-      IMP_FAILURE("Geometry " << g->get_name() << " not supported");
+      // if primitives didn't work, try decompose to components
+      display::Geometries comp = g->get_components();
+      if (comp.size() == 1 && comp[0] == g) {
+        IMP_FAILURE("Geometry " << g->get_name() << " not supported");
+      } else {
+        divide(comp, sgs, cgs, ssgs, bgs);
+      }
     }
   }
 }
@@ -316,13 +322,13 @@ void add_geometries(RMF::NodeHandle rh, const display::GeometriesTemp &r) {
   display::SegmentGeometries ssgs;
   display::BoundingBoxGeometries bgs;
   divide(r, sgs, cgs, ssgs, bgs);
-  base::Pointer<SphereSaveLink> sll =
+  Pointer<SphereSaveLink> sll =
       internal::get_save_link<SphereSaveLink>(fh);
-  base::Pointer<CylinderSaveLink> cll =
+  Pointer<CylinderSaveLink> cll =
       internal::get_save_link<CylinderSaveLink>(fh);
-  base::Pointer<SegmentSaveLink> sgll =
+  Pointer<SegmentSaveLink> sgll =
       internal::get_save_link<SegmentSaveLink>(fh);
-  base::Pointer<BoxSaveLink> bll = internal::get_save_link<BoxSaveLink>(fh);
+  Pointer<BoxSaveLink> bll = internal::get_save_link<BoxSaveLink>(fh);
   {
     RMF::RestoreCurrentFrame sf(rh.get_file());
     sll->add(rh, sgs);
@@ -395,13 +401,13 @@ void add_geometry(RMF::FileHandle parent, display::Geometry *r) {
 }
 
 display::Geometries create_geometries(RMF::FileConstHandle fh) {
-  base::Pointer<SphereLoadLink> sll =
+  Pointer<SphereLoadLink> sll =
       internal::get_load_link<SphereLoadLink>(fh);
-  base::Pointer<CylinderLoadLink> cll =
+  Pointer<CylinderLoadLink> cll =
       internal::get_load_link<CylinderLoadLink>(fh);
-  base::Pointer<SegmentLoadLink> sgll =
+  Pointer<SegmentLoadLink> sgll =
       internal::get_load_link<SegmentLoadLink>(fh);
-  base::Pointer<BoxLoadLink> bll = internal::get_load_link<BoxLoadLink>(fh);
+  Pointer<BoxLoadLink> bll = internal::get_load_link<BoxLoadLink>(fh);
   display::GeometriesTemp ret;
   {
     RMF::SetCurrentFrame scf(fh, RMF::FrameID(0));
@@ -419,13 +425,13 @@ display::Geometries create_geometries(RMF::FileConstHandle fh) {
 
 void link_geometries(RMF::FileConstHandle fh,
                      const display::GeometriesTemp &gt) {
-  base::Pointer<SphereLoadLink> sll =
+  Pointer<SphereLoadLink> sll =
       internal::get_load_link<SphereLoadLink>(fh);
-  base::Pointer<CylinderLoadLink> cll =
+  Pointer<CylinderLoadLink> cll =
       internal::get_load_link<CylinderLoadLink>(fh);
-  base::Pointer<SegmentLoadLink> sgll =
+  Pointer<SegmentLoadLink> sgll =
       internal::get_load_link<SegmentLoadLink>(fh);
-  base::Pointer<BoxLoadLink> bll = internal::get_load_link<BoxLoadLink>(fh);
+  Pointer<BoxLoadLink> bll = internal::get_load_link<BoxLoadLink>(fh);
   display::SphereGeometries sgs;
   display::CylinderGeometries cgs;
   display::SegmentGeometries ssgs;

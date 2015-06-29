@@ -22,7 +22,7 @@ class IMPGSLEXPORT ConjugateGradients : public GSLOptimizer {
 
  public:
   //!
-  ConjugateGradients(kernel::Model *m);
+  ConjugateGradients(Model *m);
 
   //! Set the gradient threshold
   void set_threshold(double mg) { min_gradient_ = mg; }

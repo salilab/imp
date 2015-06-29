@@ -16,7 +16,6 @@ import IMP.display as display
 import IMP.atom as atom
 import IMP.algebra as alg
 import IMP.em2d as em2d
-import IMP.base
 import IMP.multifit as multifit
 
 import IMP.EMageFit.imp_general.comparisons as comparisons
@@ -42,7 +41,7 @@ class DominoModel:
     """
 
     def __init__(self, name="my model"):
-        self.model = IMP.kernel.Model()
+        self.model = IMP.Model()
         self.model.set_name(name)
         self.configuration_sampling_done = False
         self.assignments_sampling_done = False
@@ -59,7 +58,7 @@ class DominoModel:
     def add_restraint(self, r, name, weight, max_score=False):
         """
             Adds a restraint to the model
-            @param r An IMP.kernel.Restraint object
+            @param r An IMP.Restraint object
             @param name Name for the restraint
             @param weight Weight for the restraint
             @param max_score Maximum score allowed for the restraint. If
@@ -75,7 +74,6 @@ class DominoModel:
             r.set_maximum_score(max_score)
         r.set_weight(weight)
         self.restraints[name] = r
-        self.model.add_restraint(r)
 
     def align_rigid_bodies_states(self):
         """
@@ -182,7 +180,7 @@ class DominoModel:
         k = core.Harmonic.get_k_from_standard_deviation(stddev)
         score = core.HarmonicUpperBound(xlink.distance, k)
         pair_score = IMP.core.DistancePairScore(score)
-        r = IMP.core.PairRestraint(pair_score, IMP.kernel.ParticlePair(p1, p2))
+        r = IMP.core.PairRestraint(pair_score, IMP.ParticlePair(p1, p2))
         if not max_score:
             error_distance_allowed = 100
             max_score = weight * \
@@ -216,20 +214,16 @@ class DominoModel:
                   max_sep_distance, max_penetration)
         self.add_restraint(restraint, rname, weight, max_score)
 
-    def create_coarse_assembly(self, n_residues, write=False):
+    def create_coarse_assembly(self, n_residues):
         """
             Simplify the assembly with a coarse representation
             @param n_residues Number of residues used for a coarse particle
-            @param write If True, write the coarse assembly to a
-                format that Chimera can display
         """
         if self.create_coarse:
             log.info("Creating simplified assembly")
             self.coarse_assembly = \
                 representation.create_simplified_assembly(self.assembly,
                                                           self.components_rbs, n_residues)
-        if write:
-            io.write_hierarchy_to_chimera(self.assembly, "coarse_assembly.py")
         self.create_coarse = False
 
     def do_sampling(self, mode="assignments_heap_container", params=None):
@@ -413,7 +407,7 @@ class DominoModel:
         for rb in self.components_rbs:
             log.debug("rb - %s",
                       rb.get_reference_frame().get_transformation_to())
-        val = self.restraints[name].evaulate(False)
+        val = self.restraints[name].evaluate(False)
         log.debug("restraint %s = %s", restraint.get_name(), val)
         return val
 
@@ -423,7 +417,7 @@ class DominoModel:
             structure and set the rigid bodies.
         """
         self.measure_models = True
-        self.native_model = IMP.kernel.Model()
+        self.native_model = IMP.Model()
         if hasattr(params.benchmark, "fn_pdb_native"):
             self.native_assembly = \
                 representation.create_assembly_from_pdb(self.native_model,
@@ -467,7 +461,7 @@ class DominoModel:
         # Restraint Cache is a centralized container of the restraints and
         # their scores
         self.restraint_cache = domino.RestraintCache(self.rb_states_table)
-        self.restraint_cache.add_restraints(self.model.get_restraints())
+        self.restraint_cache.add_restraints(self.restraints.values())
         rssft = domino.RestraintScoreSubsetFilterTable(self.restraint_cache)
         rssft.set_name('myRestraintScoreSubsetFilterTable')
         self.sampler.add_subset_filter_table(rssft)
@@ -533,7 +527,8 @@ class DominoModel:
                              "to setup the sampler")
         log.info("Domino sampler")
         self.sampler = domino.DominoSampler(self.model, self.rb_states_table)
-        self.sampler.set_log_level(IMP.base.TERSE)
+        self.sampler.set_restraints(self.restraints.values())
+        self.sampler.set_log_level(IMP.TERSE)
         self.sampler.set_merge_tree(self.merge_tree)
         self.add_exclusion_filter_table()
         self.add_restraint_score_filter_table()
@@ -601,15 +596,15 @@ class DominoModel:
         """
             Creates a merge tree from the restraints that are set already
         """
-        rs = self.model.get_restraints()
+        rs = self.restraints.values()
         ig = domino.get_interaction_graph(rs, self.rb_states_table)
 #        pruned_dep = IMP.get_pruned_dependency_graph(self.model)
-#        IMP.base.show_graphviz(pruned_dep)
-#        IMP.base.show_graphviz(ig)
+#        IMP.show_graphviz(pruned_dep)
+#        IMP.show_graphviz(ig)
         jt = domino.get_junction_tree(ig)
-#        IMP.base.show_graphviz(jt)
+#        IMP.show_graphviz(jt)
         self.merge_tree = domino.get_balanced_merge_tree(jt)
-#        IMP.base.show_graphviz(self.merge_tree)
+#        IMP.show_graphviz(self.merge_tree)
         log.info("Balanced merge tree created")
         log.info("%s", self.merge_tree.show_graphviz())
 
@@ -756,9 +751,9 @@ class DominoModel:
                     possible_pairs = len(ls1) * len(ls2)
                     n_pairs = possible_pairs * ratio
 
-                    marker1 = IMP.kernel.Particle(
+                    marker1 = IMP.Particle(
                         self.model, "marker1 " + name)
-                    marker2 = IMP.kernel.Particle(
+                    marker2 = IMP.Particle(
                         self.model, "marker2 " + name)
                     table_refiner = core.TableRefiner()
                     table_refiner.add_particle(marker1, ls1)
@@ -769,7 +764,7 @@ class DominoModel:
                                                                 table_refiner,
                                                                 distance)
                     r = core.PairRestraint(close_pair_score,
-                                           IMP.kernel.ParticlePair(marker1, marker2))
+                                           IMP.ParticlePair(marker1, marker2))
 
                     if not max_score:
                         minimum_distance_allowed = 0
@@ -801,11 +796,11 @@ class DominoModel:
         # When the refiner gets a request for marker1, it returns the attached
         # particles
         A = representation.get_component(self.coarse_assembly, name1)
-        marker1 = IMP.kernel.Particle(self.model, "marker1 " + restraint_name)
+        marker1 = IMP.Particle(self.model, "marker1 " + restraint_name)
         table_refiner.add_particle(marker1, atom.get_leaves(A))
         # same for B
         B = representation.get_component(self.coarse_assembly, name2)
-        marker2 = IMP.kernel.Particle(self.model, "marker2 " + restraint_name)
+        marker2 = IMP.Particle(self.model, "marker2 " + restraint_name)
         table_refiner.add_particle(marker2, atom.get_leaves(B))
 
         k = core.Harmonic.get_k_from_standard_deviation(stddev)
@@ -826,7 +821,7 @@ class DominoModel:
                  "= %s, stddev %s", name1, name2, k, max_score, stddev)
         r = core.PairRestraint(
             pair_score,
-            IMP.kernel.ParticlePair(
+            IMP.ParticlePair(
                 marker1,
                 marker2))
         self.add_restraint(r, restraint_name, weight, max_score)
@@ -969,6 +964,10 @@ class DominoModel:
         hierarchy_component = self.assembly.get_child(component_index)
         atom.write_pdb(hierarchy_component, fn_pdb)
 
+    def get_scoring_function(self):
+        """Get a ScoringFunction that includes all restraints."""
+        return IMP.core.RestraintsScoringFunction(self.restraints.values())
+
     def write_monte_carlo_solution(self, fn_database):
         """
             Write the solution of a MonteCarlo run
@@ -978,8 +977,7 @@ class DominoModel:
         total_score = 0
         rnames = []
         scores = []
-        for i in range(self.model.get_number_of_restraints()):
-            r = self.model.get_restraint(i)
+        for r in self.restraints.values():
             score = r.evaluate(False)
             rnames.append(r.get_name())
             scores.append(score)
@@ -998,18 +996,16 @@ class DominoModel:
         db.save_records()
         db.close()
 
-
-def print_restraints_values(model):
-    print("Restraints: Name, weight, value, maximum_value")
-    total_score = 0
-    for i in range(model.get_number_of_restraints()):
-        r = model.get_restraint(i)
-        score = r.evaluate(False)
-#        print "%20s %18f %18f %18f" % (r.get_name(), r.get_weight(),
-#                                                score, r.get_maximum_score())
-        print("%20s %18f %18f" % (r.get_name(), r.get_weight(), score))
-        total_score += score
-    print("total_score:", total_score)
+    def print_restraints_values(self):
+        print("Restraints: Name, weight, value, maximum_value")
+        total_score = 0
+        for r in self.restraints.values():
+            score = r.evaluate(False)
+    #       print "%20s %18f %18f %18f" % (r.get_name(), r.get_weight(),
+    #                                      score, r.get_maximum_score())
+            print("%20s %18f %18f" % (r.get_name(), r.get_weight(), score))
+            total_score += score
+        print("total_score:", total_score)
 
 
 def anchor_assembly(components_rbs, anchored):

@@ -21,16 +21,16 @@
 IMPATOM_BEGIN_NAMESPACE
 
 
-void CenterOfMass::do_setup_particle(kernel::Model *m,
+void CenterOfMass::do_setup_particle(Model *m,
                                        ParticleIndex pi,
                                        const ParticleIndexes &pis)
 {
-  Refiner *refiner = new core::FixedRefiner(IMP::kernel::get_particles(m, pis));
+  Refiner *refiner = new core::FixedRefiner(IMP::get_particles(m, pis));
   do_setup_particle(m, pi, refiner);
 }
 
 
-void CenterOfMass::do_setup_particle(kernel::Model *m, ParticleIndex pi,
+void CenterOfMass::do_setup_particle(Model *m, ParticleIndex pi,
                                      Refiner *refiner) {
   SingletonModifier* pre_mod =
     new core::CentroidOfRefined( refiner,

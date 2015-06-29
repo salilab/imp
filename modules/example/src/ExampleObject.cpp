@@ -7,12 +7,12 @@
  */
 
 #include "IMP/example/ExampleObject.h"
-#include "IMP/base/Pointer.h"
+#include "IMP/Pointer.h"
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
 ExampleObject::ExampleObject(const Floats &data)
-    : base::Object("ExampleObject%1%"), data_(data) {}
+    : Object("ExampleObject%1%"), data_(data) {}
 namespace {
 
 #ifdef __clang__
@@ -39,10 +39,10 @@ void usage_example() {
   // reference count is 1
 
   // another object with another copy of the data
-  base::Pointer<ExampleObject> rc_other = new ExampleObject(data);
+  Pointer<ExampleObject> rc_other = new ExampleObject(data);
 
   // have two pointers point to the object
-  base::Pointer<ExampleObject> rc2 = rc;
+  Pointer<ExampleObject> rc2 = rc;
   // reference count is 2
 
   // the object is still around since rc2 points to it

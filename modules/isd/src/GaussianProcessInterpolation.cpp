@@ -6,17 +6,17 @@
 
 #include <IMP/isd/GaussianProcessInterpolation.h>
 #include <IMP/macros.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 GaussianProcessInterpolation::GaussianProcessInterpolation(
     FloatsList x, Floats sample_mean, Floats sample_std, unsigned n_obs,
     UnivariateFunction *mean_function, BivariateFunction *covariance_function,
-    kernel::Particle *sigma, double sparse_cutoff)
+    Particle *sigma, double sparse_cutoff)
     : Object("GaussianProcessInterpolation%1%"),
       x_(x),
       n_obs_(n_obs),
@@ -706,22 +706,13 @@ GaussianProcessInterpolation::get_posterior_covariance_hessian(
 }
 */
 
-kernel::ParticlesTemp GaussianProcessInterpolation::get_input_particles()
+ModelObjectsTemp GaussianProcessInterpolation::get_inputs()
     const {
-  kernel::ParticlesTemp ret;
-  kernel::ParticlesTemp ret1 = mean_function_->get_input_particles();
+  ModelObjectsTemp ret;
+  ModelObjectsTemp ret1 = mean_function_->get_inputs();
   ret.insert(ret.end(), ret1.begin(), ret1.end());
   ret.push_back(sigma_);
-  kernel::ParticlesTemp ret2 = covariance_function_->get_input_particles();
-  ret.insert(ret.end(), ret2.begin(), ret2.end());
-  return ret;
-}
-
-ContainersTemp GaussianProcessInterpolation::get_input_containers() const {
-  ContainersTemp ret;
-  ContainersTemp ret1 = mean_function_->get_input_containers();
-  ret.insert(ret.end(), ret1.begin(), ret1.end());
-  ContainersTemp ret2 = covariance_function_->get_input_containers();
+  ModelObjectsTemp ret2 = covariance_function_->get_inputs();
   ret.insert(ret.end(), ret2.begin(), ret2.end());
   return ret;
 }

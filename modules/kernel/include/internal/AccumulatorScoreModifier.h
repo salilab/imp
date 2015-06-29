@@ -12,7 +12,7 @@
 #include "../Constraint.h"
 #include "../Restraint.h"
 #include "container_helpers.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include "../constants.h"
 #include "../SingletonModifier.h"
 #include "../PairModifier.h"
@@ -23,7 +23,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Score>
 class AccumulatorScoreModifier : public Score::Modifier {
-  IMP::base::PointerMember<Score> ss_;
+  IMP::PointerMember<Score> ss_;
   mutable ScoreAccumulator sa_;
   mutable double score_;
 
@@ -51,8 +51,8 @@ class AccumulatorScoreModifier : public Score::Modifier {
   }
 
   virtual void apply(typename Score::PassArgument a) const IMP_OVERRIDE {
-    apply_index(IMP::kernel::internal::get_model(a),
-                IMP::kernel::internal::get_index(a));
+    apply_index(IMP::internal::get_model(a),
+                IMP::internal::get_index(a));
   }
 
   virtual void apply_index(Model *m, typename Score::PassIndexArgument a) const
@@ -65,7 +65,7 @@ class AccumulatorScoreModifier : public Score::Modifier {
   }
 
   virtual void apply_indexes(
-      Model *m, const base::Vector<typename Score::IndexArgument> &a,
+      Model *m, const Vector<typename Score::IndexArgument> &a,
       unsigned int lower_bound, unsigned int upper_bound) const IMP_OVERRIDE {
     double score = ss_->evaluate_indexes(m, a, sa_.get_derivative_accumulator(),
                                          lower_bound, upper_bound);

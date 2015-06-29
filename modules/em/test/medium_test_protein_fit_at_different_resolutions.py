@@ -16,14 +16,12 @@ class Tests(IMP.test.TestCase):
             scene = IMP.em.read_map(self.get_input_file_name(fn), self.mrw)
             scene.get_header_writable().set_resolution(res)
             r = IMP.em.FitRestraint(self.particles, scene)
-            self.imp_model.add_restraint(r)
-            score = self.imp_model.evaluate(False)
+            score = r.evaluate(False)
             print("EM score (1-CC) = " + str(score), " filename:", fn, " res:", res)
             self.assertLess(
                 score,
                 0.05,
                 "the correlation score is not correct")
-            self.imp_model.remove_restraint(r)
 
     def test_compare_fit_score_to_imp_generated_maps(self):
         data = [["1z5s_5.imp.mrc", 5],
@@ -34,14 +32,14 @@ class Tests(IMP.test.TestCase):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
         self.mrw = IMP.em.MRCReaderWriter()
-        self.imp_model = IMP.kernel.Model()
+        self.imp_model = IMP.Model()
         name = self.get_input_file_name("1z5s.pdb")
         print(name)
         self.mh = IMP.atom.read_pdb(name,
                                     self.imp_model, IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(self.mh)
         IMP.atom.create_rigid_body(self.mh)
-        #self.particles = IMP.kernel.Particles(IMP.core.get_leaves(self.mh))
+        #self.particles = IMP.Particles(IMP.core.get_leaves(self.mh))
         self.particles = []
         self.particles += IMP.core.get_leaves(self.mh)
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Key.h    \brief Keys to cache lookup of attribute strings.
+ *  \file IMP/Key.h    \brief Keys to cache lookup of attribute strings.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -10,11 +10,11 @@
 
 #include "utility.h"
 #include "internal/key_helpers.h"
-#include <IMP/base/check_macros.h>
-#include <IMP/base/comparison_macros.h>
-#include <IMP/base/hash_macros.h>
-#include <IMP/base/thread_macros.h>
-#include <IMP/base/Value.h>
+#include <IMP/check_macros.h>
+#include <IMP/comparison_macros.h>
+#include <IMP/hash_macros.h>
+#include <IMP/thread_macros.h>
+#include <IMP/Value.h>
 #include <vector>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -43,14 +43,14 @@ IMPKERNEL_BEGIN_NAMESPACE
     otherwise this is an error.
  */
 template <unsigned int ID, bool LazyAdd>
-class Key : public base::Value {
+class Key : public Value {
   int str_;
 
   static const internal::KeyData::Map& get_map() {
-    return IMP::kernel::internal::get_key_data(ID).get_map();
+    return IMP::internal::get_key_data(ID).get_map();
   }
   static const internal::KeyData::RMap& get_rmap() {
-    return IMP::kernel::internal::get_key_data(ID).get_rmap();
+    return IMP::internal::get_key_data(ID).get_rmap();
   }
 
   static unsigned int find_index(std::string sc) {
@@ -60,7 +60,7 @@ class Key : public base::Value {
       if (get_map().find(sc) == get_map().end()) {
         IMP_INTERNAL_CHECK(LazyAdd, "You must explicitly create the type"
                                         << " first: " << sc);
-        val = IMP::kernel::internal::get_key_data(ID).add_key(sc);
+        val = IMP::internal::get_key_data(ID).add_key(sc);
       } else {
         val = get_map().find(sc)->second;
       }
@@ -108,7 +108,7 @@ class Key : public base::Value {
     IMP_USAGE_CHECK(!sc.empty(), "Can't create a key with an empty name");
     unsigned int val;
     IMP_OMP_PRAGMA(critical(imp_key))
-    val = IMP::kernel::internal::get_key_data(ID).add_key(sc);
+    val = IMP::internal::get_key_data(ID).add_key(sc);
     return val;
   }
 
@@ -145,7 +145,7 @@ class Key : public base::Value {
     IMP_INTERNAL_CHECK(
         get_map().find(new_name) == get_map().end(),
         "The name is already taken with an existing key or alias");
-    IMP::kernel::internal::get_key_data(ID)
+    IMP::internal::get_key_data(ID)
         .add_alias(new_name, old_key.get_index());
     return Key<ID, LazyAdd>(new_name.c_str());
   }
@@ -165,7 +165,7 @@ class Key : public base::Value {
   /**
      This can be used to check for typos and similar keys.
    */
-  static base::Vector<std::string> get_all_strings();
+  static Vector<std::string> get_all_strings();
 
   //! Get the total number of keys of this type
   /**
@@ -213,8 +213,8 @@ inline void Key<ID, LA>::show_all(std::ostream& out) {
 }
 
 template <unsigned int ID, bool LA>
-base::Vector<std::string> Key<ID, LA>::get_all_strings() {
-  base::Vector<std::string> str;
+Vector<std::string> Key<ID, LA>::get_all_strings() {
+  Vector<std::string> str;
   IMP_OMP_PRAGMA(critical(imp_key))
   for (internal::KeyData::Map::const_iterator it = get_map().begin();
        it != get_map().end(); ++it) {

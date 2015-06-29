@@ -5,10 +5,10 @@
  *
  */
 
-#include "IMP/kernel/AttributeOptimizer.h"
+#include "IMP/AttributeOptimizer.h"
 IMPKERNEL_BEGIN_NAMESPACE
 
-AttributeOptimizer::AttributeOptimizer(kernel::Model *m, std::string name)
+AttributeOptimizer::AttributeOptimizer(Model *m, std::string name)
     : Optimizer(m, name) {}
 
 IMPKERNEL_END_NAMESPACE

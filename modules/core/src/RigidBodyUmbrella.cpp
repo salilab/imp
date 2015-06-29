@@ -8,24 +8,24 @@
 #include <IMP/core/RigidBodyUmbrella.h>
 #include <IMP/core/XYZ.h>
 
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
-#include <IMP/base/log.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
+#include <IMP/log.h>
 #include <IMP/algebra/eigen3/Eigen/Dense>
 #include <IMP/algebra/eigen3/Eigen/Geometry>
 
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyUmbrella::RigidBodyUmbrella(kernel::Model *m, kernel::ParticleIndex pi,
-                                     kernel::ParticleIndex ref, Floats x0,
+RigidBodyUmbrella::RigidBodyUmbrella(Model *m, ParticleIndex pi,
+                                     ParticleIndex ref, Floats x0,
                                      double alpha, double k, std::string name)
     : Restraint(m, name), pi_(pi), ref_(ref), x0_(x0), alpha_(alpha),
       k_(k) {
   IMP_USAGE_CHECK(x0.size() == 7, "Wrong size for x0, should be 7");
 }
 
-RigidBodyUmbrella::RigidBodyUmbrella(kernel::Model *m, kernel::ParticleIndex pi,
-                                     kernel::ParticleIndex ref, double lambda,
+RigidBodyUmbrella::RigidBodyUmbrella(Model *m, ParticleIndex pi,
+                                     ParticleIndex ref, double lambda,
                                      Floats x1, Floats x2, double alpha,
                                      double k, std::string name)
     : Restraint(m, name), pi_(pi), ref_(ref),
@@ -58,7 +58,7 @@ internal::Coord RigidBodyUmbrella::interpolate(double lambda, Floats x1,
 double RigidBodyUmbrella::unprotected_evaluate(DerivativeAccumulator
                                                * accum) const {
     if (accum) IMP_THROW("Derivatives not implemented", ModelException);
-    kernel::ParticleIndexes pis(1, pi_);
+    ParticleIndexes pis(1, pi_);
     internal::Coord x(internal::get_coordinates_from_rbs(get_model(), pis,
                 ref_));
     double d2 = internal::get_squared_distance(x, x0_, k_);
@@ -66,18 +66,18 @@ double RigidBodyUmbrella::unprotected_evaluate(DerivativeAccumulator
     return score;
 }
 
-kernel::ModelObjectsTemp RigidBodyUmbrella::do_get_inputs() const {
-    kernel::Model *m = get_model();
+ModelObjectsTemp RigidBodyUmbrella::do_get_inputs() const {
+    Model *m = get_model();
     ModelObjectsTemp ret;
     //reference rb
     ret.push_back(m->get_particle(ref_));
-    kernel::ParticleIndexes pref(
+    ParticleIndexes pref(
         RigidBody(m, ref_).get_member_indexes());
     for (unsigned i=0; i<pref.size(); i++)
         ret.push_back(m->get_particle(pref[i]));
     //target rb
     ret.push_back(m->get_particle(pi_));
-    kernel::ParticleIndexes iref(
+    ParticleIndexes iref(
         RigidBody(m, pi_).get_member_indexes());
     for (unsigned i=0; i<iref.size(); i++)
         ret.push_back(m->get_particle(iref[i]));

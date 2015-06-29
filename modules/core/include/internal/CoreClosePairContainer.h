@@ -15,27 +15,27 @@
 #include "../ClosePairsFinder.h"
 #include "MovedSingletonContainer.h"
 #include "../PairRestraint.h"
-#include <IMP/kernel/PairContainer.h>
-#include <IMP/kernel/PairPredicate.h>
-#include <IMP/kernel/generic.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/kernel/SingletonContainer.h>
-#include <IMP/kernel/internal/ContainerScoreState.h>
-#include <IMP/kernel/internal/ListLikeContainer.h>
+#include <IMP/PairContainer.h>
+#include <IMP/PairPredicate.h>
+#include <IMP/generic.h>
+#include <IMP/Pointer.h>
+#include <IMP/SingletonContainer.h>
+#include <IMP/internal/ContainerScoreState.h>
+#include <IMP/internal/ListLikeContainer.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT CoreClosePairContainer
-    : public IMP::kernel::internal::ListLikeContainer<kernel::PairContainer> {
-  IMP::base::PointerMember<SingletonContainer> c_;
-  IMP::base::PointerMember<ClosePairsFinder> cpf_;
-  IMP::base::PointerMember<internal::MovedSingletonContainer> moved_;
+    : public IMP::internal::ListLikeContainer<PairContainer> {
+  IMP::PointerMember<SingletonContainer> c_;
+  IMP::PointerMember<ClosePairsFinder> cpf_;
+  IMP::PointerMember<internal::MovedSingletonContainer> moved_;
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;
   unsigned int updates_, rebuilds_, partial_rebuilds_;
-  typedef kernel::internal::ContainerScoreState<CoreClosePairContainer> SS;
-  base::PointerMember<SS> score_state_;
+  typedef IMP::internal::ContainerScoreState<CoreClosePairContainer> SS;
+  PointerMember<SS> score_state_;
 
   void initialize(SingletonContainer *c, double distance, double slack,
                   ClosePairsFinder *cpf);
@@ -47,10 +47,10 @@ class IMPCOREEXPORT CoreClosePairContainer
   void do_rebuild();
 
  public:
-  kernel::ModelObjectsTemp get_score_state_inputs() const;
-  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  ModelObjectsTemp get_score_state_inputs() const;
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   void do_score_state_before_evaluate();
   void do_score_state_after_evaluate() {}
 
@@ -73,19 +73,18 @@ class IMPCOREEXPORT CoreClosePairContainer
   SingletonContainer *get_singleton_container() const { return c_; }
   ClosePairsFinder *get_close_pairs_finder() const { return cpf_; }
   void set_slack(double d);
-  kernel::Restraints create_decomposition(kernel::PairScore *ps) const {
-    kernel::ParticleIndexPairs all = get_range_indexes();
-    kernel::Restraints ret(all.size());
+  Restraints create_decomposition(PairScore *ps) const {
+    ParticleIndexPairs all = get_range_indexes();
+    Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
-      ret[i] = new PairRestraint(
-          ps, IMP::internal::get_particle(get_model(), all[i]));
+      ret[i] = new PairRestraint(get_model(), ps, all[i]);
     }
     return ret;
   }
   template <class PS>
-  kernel::Restraints create_decomposition_t(PS *ps) const {
-    kernel::ParticleIndexPairs all = get_range_indexes();
-    kernel::Restraints ret(all.size());
+  Restraints create_decomposition_t(PS *ps) const {
+    ParticleIndexPairs all = get_range_indexes();
+    Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
       ret[i] = IMP::create_restraint(
           ps, IMP::internal::get_particle(get_model(), all[i]));

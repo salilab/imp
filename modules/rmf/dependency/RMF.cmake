@@ -7,11 +7,11 @@ else(IMP_STATIC)
 
   set(RMF_BINARY_DIR ${CMAKE_BINARY_DIR}/src/dependency/RMF CACHE INTERNAL "" FORCE)
 
-  add_subdirectory(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source ${RMF_BINARY_DIR})
+  add_subdirectory(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF ${RMF_BINARY_DIR})
 
-  set(RMF_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/include ${RMF_BINARY_DIR}/include ${RMF_INCLUDE_PATH} CACHE INTERNAL "" FORCE)
+  set(RMF_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/include ${RMF_BINARY_DIR}/include ${RMF_INCLUDE_PATH} CACHE INTERNAL "" FORCE)
   list(REMOVE_DUPLICATES RMF_INCLUDE_PATH)
-  set(RMF_SWIG_PATH ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/swig CACHE INTERNAL "" FORCE)
+  set(RMF_SWIG_PATH ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE INTERNAL "" FORCE)
 
   set(RMF_LIBRARIES RMF-lib  CACHE INTERNAL "" FORCE)
 

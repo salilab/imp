@@ -10,15 +10,13 @@ class Tests(IMP.test.TestCase):
 
     def test_read(self):
         """Check reading a mol2 file containing small molecules"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read Mol2
         root_d = IMP.atom.read_mol2(
             self.get_input_file_name("1d3d-ligands.mol2"),
             m, IMP.atom.AllMol2Selector())
 
-        print("number of particles")
-        print(m.get_number_of_particles())
         print(len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
         self.assertEqual(
             146, len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
@@ -33,14 +31,12 @@ class Tests(IMP.test.TestCase):
 
     def test_write(self):
         """Check that a mol2-created hierarchy can be written to a PDB"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read Mol2
         root_d = IMP.atom.read_mol2(
             self.get_input_file_name("1d3d-ligands.mol2"),
             m, IMP.atom.AllMol2Selector())
-        print("number of particles")
-        print(m.get_number_of_particles())
         print(len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
         self.assertEqual(
             146, len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
@@ -50,20 +46,17 @@ class Tests(IMP.test.TestCase):
         print(pdb.getvalue())
         return
 
-        m2 = IMP.kernel.Model()
+        m2 = IMP.Model()
         root_d2 = IMP.atom.read_mol2(
             self.get_input_file_name("1d3d-ligands.mol2"),
             m2, IMP.atom.NonhydrogenMol2Selector())
-
-        print("number of particles")
-        print(m2.get_number_of_particles())
 
         IMP.atom.write_file(root_d2, self.get_tmp_file_name("2.mol2"))
         IMP.atom.write_file(root_d2, self.get_tmp_file_name("2.pdb"))
 
     def test_hao(self):
         """Check that written mol2s look right"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read Mol2
         root_d = IMP.atom.read_mol2(
@@ -81,13 +74,11 @@ class Tests(IMP.test.TestCase):
         # print testout
         self.assertEqual(out.getvalue(), testout)
 
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         root_d = IMP.atom.read_mol2(
             self.get_input_file_name("1d3d-ligands.mol2"),
             m, IMP.atom.NonHydrogenMol2Selector())
         print("test 2")
-        print("number of particles")
-        print(m.get_number_of_particles())
 
         out = io.BytesIO()
         IMP.atom.write_mol2(root_d, out)

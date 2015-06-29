@@ -18,8 +18,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 AngleTripletScore::AngleTripletScore(UnaryFunction *f) : f_(f) {}
 
-Float AngleTripletScore::evaluate_index(kernel::Model *m,
-                                        const kernel::ParticleIndexTriplet &pi,
+Float AngleTripletScore::evaluate_index(Model *m,
+                                        const ParticleIndexTriplet &pi,
                                         DerivativeAccumulator *da) const {
   IMP_CHECK_OBJECT(f_.get());
   XYZ d0 = XYZ(m, pi[0]);
@@ -45,8 +45,8 @@ Float AngleTripletScore::evaluate_index(kernel::Model *m,
 }
 
 ModelObjectsTemp AngleTripletScore::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  return IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
 }
 
 IMPCORE_END_NAMESPACE

@@ -16,8 +16,8 @@
 
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/core/XYZR.h>
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Model.h>
+#include <IMP/Restraint.h>
 #include <IMP/Refiner.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
@@ -27,14 +27,14 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
  */
 class IMPMULTIFITEXPORT WeightedExcludedVolumeRestraint
-    : public kernel::Restraint {
+    : public Restraint {
  public:
   //! Constructor
   /**
     \param[in] rbs Excluded volume will be calculated between these Rigid bodies
     \param[in] refiner rigid body refiner
     \param[in] weight_key the name of the weight attribute of the particles
-    \note kernel::Particles that are rigid-bodies are interpolated and
+    \note Particles that are rigid-bodies are interpolated and
     not resampled. This significantly reduces the running time but is less
     accurate.
    */
@@ -42,13 +42,13 @@ class IMPMULTIFITEXPORT WeightedExcludedVolumeRestraint
                                   FloatKey weight_key =
                                       IMP::atom::Mass::get_mass_key());
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(WeightedExcludedVolumeRestraint);
 
 #ifndef SWIG
-  IMP_LIST(private, Particle, particle, kernel::Particle *, kernel::Particles);
+  IMP_LIST(private, Particle, particle, Particle *, Particles);
 #endif
 
  private:
@@ -68,7 +68,7 @@ class IMPMULTIFITEXPORT WeightedExcludedVolumeRestraint
   //  bool special_treatment_of_particles_outside_of_density_;
   // rigid bodies handling
   std::vector<IMP::algebra::Transformation3D> rbs_orig_trans_;
-  IMP::base::PointerMember<Refiner> rb_refiner_;  // refiner for rigid bodies
+  IMP::PointerMember<Refiner> rb_refiner_;  // refiner for rigid bodies
 };
 
 IMPMULTIFIT_END_NAMESPACE

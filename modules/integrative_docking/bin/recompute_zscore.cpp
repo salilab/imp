@@ -10,8 +10,8 @@
 #include <fstream>
 #include <vector>
 
-#include <IMP/base/exception.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/exception.h>
+#include <IMP/check_macros.h>
 #include <boost/algorithm/string.hpp>
 
 class Result {
@@ -62,7 +62,7 @@ int read_results_file(const std::string file_name,
                       std::vector<Result>& results) {
   std::ifstream in_file(file_name.c_str());
   if (!in_file) {
-    IMP_THROW("Can't open file " << file_name, IMP::base::IOException);
+    IMP_THROW("Can't open file " << file_name, IMP::IOException);
   }
 
   std::string line;
@@ -167,7 +167,7 @@ int main(int argc, char** argv) {
                 << std::endl;
     }
   }
-  catch (IMP::base::Exception& e) {
+  catch (IMP::Exception& e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   }

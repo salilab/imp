@@ -6,23 +6,15 @@
  *
  */
 
-#include <IMP/kernel/io.h>
+#include <IMP/io.h>
 #include <boost/unordered_map.hpp>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
+#include <IMP/Decorator.h>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 
-#define IMP_CHECK_MODEL_PARTICLES(m)                               \
-  for (kernel::Model::ParticleIterator pit = m->particles_begin(); \
-       pit != m->particles_end(); ++pit) {                         \
-    IMP::kernel::check_particle(*pit);                             \
-  }
-
 IMPKERNEL_BEGIN_NAMESPACE
-
-// not yet exposed
-void check_particle(Particle *p);
 
 namespace {
 void write_particles_to_buffer(const ParticlesTemp &particles,
@@ -41,7 +33,7 @@ void write_particles_to_buffer(const ParticlesTemp &particles,
       }
       in.write(reinterpret_cast<char *>(&value), sizeof(double));
       if (!in) {
-        IMP_THROW("Error reading writing to buffer", base::IOException);
+        IMP_THROW("Error reading writing to buffer", IOException);
       }
     }
   }
@@ -59,7 +51,7 @@ void read_particles_from_buffer(const char *buffer, unsigned int size,
       double value;
       in.read(reinterpret_cast<char *>(&value), sizeof(double));
       if (!in) {
-        IMP_THROW("Error reading from buffer", base::IOException);
+        IMP_THROW("Error reading from buffer", IOException);
       }
       if (particles[i]->has_attribute(keys[j])) {
         particles[i]->set_value(keys[j], value);
@@ -69,17 +61,17 @@ void read_particles_from_buffer(const char *buffer, unsigned int size,
 }
 }
 
-base::Vector<char> write_particles_to_buffer(const ParticlesTemp &particles,
+Vector<char> write_particles_to_buffer(const ParticlesTemp &particles,
                                              const FloatKeys &keys) {
   if (particles.empty() || keys.empty()) {
-    return base::Vector<char>();
+    return Vector<char>();
   }
   unsigned int size = particles.size() * keys.size() * sizeof(double);
-  base::Vector<char> ret(size);
+  Vector<char> ret(size);
   write_particles_to_buffer(particles, keys, &ret.front(), size);
   return ret;
 }
-void read_particles_from_buffer(const base::Vector<char> &buffer,
+void read_particles_from_buffer(const Vector<char> &buffer,
                                 const ParticlesTemp &particles,
                                 const FloatKeys &keys) {
   if (particles.empty() || keys.empty()) {
@@ -87,7 +79,12 @@ void read_particles_from_buffer(const base::Vector<char> &buffer,
   }
   read_particles_from_buffer(&buffer.front(), buffer.size() * sizeof(double),
                              particles, keys);
-  IMP_CHECK_MODEL_PARTICLES(particles[0]->get_model());
+  Model *m = particles[0]->get_model();
+  ParticleIndexes pis = m->get_particle_indexes();
+  for (ParticleIndexes::iterator pi = pis.begin(); pi != pis.end();
+       ++pi) {
+    IMP::check_particle(m, *pi);
+  }
 }
 
 IMPKERNEL_END_NAMESPACE

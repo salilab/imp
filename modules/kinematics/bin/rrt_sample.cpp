@@ -148,7 +148,7 @@ IMP::atom::Bond create_bond(IMP::atom::Atoms& as) {
 
 void add_missing_bonds(IMP::ParticlesTemp& atoms, IMP::ParticlesTemp& bonds) {
   float thr2 = 2.0*2.0;
-  std::vector<IMP::algebra::Vector3D> coordinates;
+  IMP::Vector<IMP::algebra::Vector3D> coordinates;
   IMP::saxs::get_coordinates(atoms, coordinates);
   int counter = 0;
   for(unsigned int i=0; i<atoms.size(); i++) {
@@ -258,7 +258,7 @@ int main(int argc, char **argv)
   if(files.size() > 1) angle_file_name = files[1];
 
   // read in the input protein
-  IMP::base::Pointer<IMP::Model> model = new IMP::Model();
+  IMP::Pointer<IMP::Model> model = new IMP::Model();
   std::cerr << "Starting reading pdb file " << pdb_name << std::endl;
   IMP::atom::Hierarchy mhd =
     IMP::atom::read_pdb(pdb_name, model,
@@ -286,7 +286,7 @@ int main(int argc, char **argv)
 
   IMP::atom::CHARMMParameters* ff =
     new IMP::atom::CHARMMParameters(topology_file_name, parameter_file_name);
-  IMP::base::Pointer<IMP::atom::CHARMMTopology> topology =
+  IMP::Pointer<IMP::atom::CHARMMTopology> topology =
     ff->create_topology(mhd);
 
   // We don't want to add/remove any atoms, so we only add atom types
@@ -347,9 +347,8 @@ int main(int argc, char **argv)
   IMP_NEW(IMP::container::PairsRestraint, pr, (score, cpc));
 
   // TODO: check why not working: should be much faster
-  //IMP::base::Pointer<IMP::Restraint> pr=
+  //IMP::Pointer<IMP::Restraint> pr=
   //   IMP::container::create_restraint(score, cpc);
-  model->add_restraint(pr);
 
   ProteinKinematics pk(mhd, flexible_residues, dihedral_angles);
   std::cerr << "ProteinKinematics done" << std::endl;
@@ -382,11 +381,13 @@ int main(int argc, char **argv)
 
   DirectionalDOF dd(dofs);
 
-  UniformBackboneSampler *ub_sampler = new UniformBackboneSampler(joints, dofs);
-  PathLocalPlanner *planner = new PathLocalPlanner(model, ub_sampler, &dd, save_configuration_number);
+  IMP_NEW(UniformBackboneSampler, ub_sampler, (joints, dofs));
+  IMP_NEW(PathLocalPlanner, planner, (model, ub_sampler, &dd,
+                                      save_configuration_number));
   std::cerr << "Init  RRT" << std::endl;
-  RRT *rrt = new RRT(model, ub_sampler, planner, dofs,
-                     number_of_iterations, number_of_nodes, number_of_active_dofs);
+  IMP_NEW(RRT, rrt, (model, ub_sampler, planner, dofs, number_of_iterations,
+                     number_of_nodes, number_of_active_dofs));
+  rrt->set_scoring_function(pr);
 
 
   std::cerr << "Start RRT run" << std::endl;

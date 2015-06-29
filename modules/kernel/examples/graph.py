@@ -3,14 +3,17 @@
 
 from __future__ import print_function
 import IMP
+import sys
 
-m = IMP.kernel.Model()
+IMP.setup_from_argv(sys.argv, "Graph interface")
+
+m = IMP.Model()
 # An undirected graph with an IMP::Object for each node
 g = IMP.DependencyGraph()
 vs = []
 ps = []
 for i in range(0, 10):
-    ps.append(IMP.kernel.Particle(m))
+    ps.append(IMP.Particle(m))
     vs.append(g.add_vertex(ps[-1]))
 g.add_edge(vs[0], vs[1])
 g.add_edge(vs[1], vs[2])
@@ -26,7 +29,7 @@ try:
     import matplotlib
     # the engine to be used must be selected before pyplot is imported
     matplotlib.use("macosx")
-    import matplotlib.pyplot as plt
+    import matplotlib.pyplot
 
     # the method below requires the altgraph python package
     xg = IMP.get_networkx_graph(g)
@@ -35,7 +38,7 @@ try:
     #import networkx
     # networkx.draw(xg)
     # networkx.draw_shell(xg)
-    # plt.show()
+    # matplotlib.pyplot.show()
 except:
     print("networkx not fully installed")
 

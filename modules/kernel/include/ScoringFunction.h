@@ -1,7 +1,6 @@
 /**
- *  \file IMP/kernel/ScoringFunction.h
- *  \brief Storage of a model, its restraints,
- *                         constraints and particles.
+ *  \file IMP/ScoringFunction.h
+ *  \brief Represents a scoring function on the model.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -10,13 +9,13 @@
 #ifndef IMPKERNEL_SCORING_FUNCTION_H
 #define IMPKERNEL_SCORING_FUNCTION_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "dependency_graph.h"
 #include "Restraint.h"
 #include "ModelObject.h"
-#include <IMP/base/InputAdaptor.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/InputAdaptor.h>
+#include <IMP/Pointer.h>
 
 #include <limits>
 
@@ -24,19 +23,16 @@ IMPKERNEL_BEGIN_NAMESPACE
 class Model;
 
 //! Represents a scoring function on the model.
-/** The Model has a default scoring function
-    (kernel::Model::get_model_scoring_function()), but it can be useful to use
-    others in different contexts during a sampling process.
-
+/**
 A call to the evaluate() method prompts the following events:
 1. determine set of ScoreState objects needed by the Restraint objects
 being evaluated (this is cached)
-1. call ScoreState::before_evaluate() on each of them to update
+2. call ScoreState::before_evaluate() on each of them to update
     configuration
-1. call Restraint::unprotected_evaluate() to compute scores
-    [and add derivatives in the particles]
-1. [call ScoreState::after_evaluate() on each score state to update derivatives]
-1. score returned
+3. call Restraint::unprotected_evaluate() to compute scores
+    [and add derivatives in the particles, if requested]
+4. [call ScoreState::after_evaluate() on each score state to update derivatives]
+5. return the score
 
     \headerfile ScoringFunction.h "IMP/ScoringFunction.h"
 
@@ -64,7 +60,7 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   }
 
  public:
-  ScoringFunction(kernel::Model *m, std::string name);
+  ScoringFunction(Model *m, std::string name);
 
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     return ModelObjectsTemp();
@@ -105,12 +101,12 @@ IMPKERNELEXPORT ScoringFunctions create_decomposition(ScoringFunction *sf);
 */
 class IMPKERNELEXPORT ScoringFunctionAdaptor :
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-    public base::PointerMember<ScoringFunction>
+    public PointerMember<ScoringFunction>
 #else
-    public base::InputAdaptor
+    public InputAdaptor
 #endif
     {
-  typedef base::PointerMember<ScoringFunction> P;
+  typedef PointerMember<ScoringFunction> P;
   static ScoringFunction *get(ScoringFunction *sf) { return sf; }
 
   /**
@@ -126,14 +122,14 @@ class IMPKERNELEXPORT ScoringFunctionAdaptor :
      that always returns 0.
    */
   static ScoringFunction *get(const Restraints &sf);
-  static ScoringFunction *get(kernel::Model *sf);
+  static ScoringFunction *get(Model *sf);
   static ScoringFunction *get(Restraint *sf);
 
  public:
   ScoringFunctionAdaptor() {}
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   template <class T>
-  ScoringFunctionAdaptor(base::internal::PointerBase<T> t)
+  ScoringFunctionAdaptor(internal::PointerBase<T> t)
       : P(get(t)) {}
 #endif
   ScoringFunctionAdaptor(ScoringFunction *sf) : P(sf) {}
@@ -141,7 +137,10 @@ class IMPKERNELEXPORT ScoringFunctionAdaptor :
   ScoringFunctionAdaptor(const Restraints &sf) : P(get(sf)) {}
   ScoringFunctionAdaptor(Restraint *sf) : P(get(sf)) {}
 #ifndef IMP_DOXYGEN
-  ScoringFunctionAdaptor(kernel::Model *sf) : P(get(sf)) {}
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.5)
+  ScoringFunctionAdaptor(Model *sf) : P(get(sf)) {
+    IMPKERNEL_DEPRECATED_METHOD_DEF(2.5, "Use a ScoringFunction instead");
+  }
 #endif
 };
 

@@ -21,7 +21,7 @@ SurfaceShellDensityMap::SurfaceShellDensityMap(const DensityHeader &header)
   set_neighbor_mask();
 }
 
-SurfaceShellDensityMap::SurfaceShellDensityMap(const kernel::ParticlesTemp &ps,
+SurfaceShellDensityMap::SurfaceShellDensityMap(const ParticlesTemp &ps,
                                                float voxel_size,
                                                IMP::FloatKey mass_key,
                                                int num_shells)

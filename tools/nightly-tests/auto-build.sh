@@ -21,34 +21,11 @@ TMPDIR=/var/tmp/imp-build-$$
 IMPTOP=/salilab/diva1/home/imp/$BRANCH
 mkdir -p ${IMPTOP}
 
-cd ${GIT_TOP}/imp
-# Switch to the branch we're interested in
-git checkout ${BRANCH} -f -q >& /tmp/$$.out
-# Squash chatty output from git checkout
-grep -v "Version=" /tmp/$$.out
-# Clean up untracked or modified files in each submodule
-git submodule foreach --quiet --recursive 'git reset --hard --quiet; git clean -f -q -x -d'
+cd ${GIT_TOP}/imp.git
 
-# Make sure we're up to date with the remote
-git merge --ff-only -q origin/${BRANCH} || exit 1
-# Remove any untracked files
-git clean -q -f -d -x
-
-# Run checkout again just to be sure everything is consistent
-git checkout ${BRANCH} -f -q >& /tmp/$$.out
-grep -v "Version=" /tmp/$$.out
-rm -f /tmp/$$.out
-
-# Update any submodules, etc. if necessary
-git submodule update --recursive
-./setup_git.py > /dev/null || exit 1
-
-# Get top-most revision
-rev=`git rev-parse HEAD`
-shortrev=`git rev-parse --short HEAD`
-
-# Get submodule revisions
-RMF_rev=`(cd modules/rmf/dependency/RMF_source && git rev-parse HEAD)`
+# Get top-most revision of branch we're interested in
+rev=`git rev-parse ${BRANCH}`
+shortrev=`git rev-parse --short ${BRANCH}`
 
 # Get old revision
 oldrev_file=${IMPTOP}/.SVN-new/build/imp-gitrev
@@ -61,24 +38,31 @@ if [ ${BRANCH} != "develop" -a "${oldrev}" = "${rev}" ]; then
   exit 0
 fi
 
-GIT_DIR=${GIT_TOP}/imp/.git
-export GIT_DIR
-
 rm -rf ${TMPDIR}
 mkdir ${TMPDIR}
 cd ${TMPDIR}
 
 # Get IMP code from git
-tar -C ${GIT_TOP} --exclude .git -cf - imp | tar -xf -
+git clone -b ${BRANCH} -q ${GIT_TOP}/imp.git
+
+# Update any submodules, etc. if necessary
+(cd imp && git submodule --quiet update --init --recursive) > /dev/null
+(cd imp && ./setup_git.py) > /dev/null || exit 1
+
+if [ -d imp/modules/rmf/dependency/RMF_source ]; then
+  # Get submodule revision
+  RMF_rev=`(cd imp/modules/rmf/dependency/RMF_source && git rev-parse HEAD)`
+else
+  # Harder to do for subtree; parse the specially-formatted log message
+  RMF_rev=`(cd imp && git log --grep='git\-subtree\-dir: modules\/rmf\/dependency\/RMF' -n 1|grep git-subtree-split|cut -d: -f 2|cut -b2-)`
+fi
 
 # Get date and revision-specific install directories
 SORTDATE=`date -u "+%Y%m%d"`
 DATE=`date -u +'%Y/%m/%d'`
 IMPINSTALL=${IMPTOP}/${SORTDATE}-${shortrev}
 # Make sure VERSION file is reasonable
-export -n GIT_DIR
-(cd imp && rm -f VERSION && tools/build/make_version.py --source=${GIT_TOP}/imp)
-export GIT_DIR
+(cd imp && rm -f VERSION && tools/build/make_version.py --source=.)
 if [ ${BRANCH} = "develop" ]; then
   # For nightly builds, prepend the date so the packages are upgradeable
   IMPVERSION="${SORTDATE}.develop.${shortrev}"
@@ -113,7 +97,7 @@ echo "${RMF_rev}" > $RMF_revfile
 # Write out log from previous build to this one
 logfile="${IMPINSTALL}/build/imp-gitlog"
 if [ -n "${oldrev}" ]; then
-  git log ${oldrev}..${rev} --format="%H%x00%an%x00%ae%x00%s" > ${logfile}
+  (cd imp && git log ${oldrev}..${rev} --format="%H%x00%an%x00%ae%x00%s") > ${logfile}
 fi
 
 # Write out list of all components
@@ -132,7 +116,7 @@ if hasattr(tools, 'get_applications'):
 END
 
 # Write out a tarball:
-mv imp imp-${IMPVERSION} && tar -czf ${IMPSRCTGZ} imp-${IMPVERSION}
+mv imp imp-${IMPVERSION} && tar --exclude .git -czf ${IMPSRCTGZ} imp-${IMPVERSION}
 
 # Cleanup
 cd /

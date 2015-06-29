@@ -11,11 +11,11 @@
 #include <IMP/isd/MolecularDynamics.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/Nuisance.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 
 IMPISD_BEGIN_NAMESPACE
 
-MolecularDynamicsMover::MolecularDynamicsMover(kernel::Model *m,
+MolecularDynamicsMover::MolecularDynamicsMover(Model *m,
                                                unsigned nsteps, Float timestep)
     : core::MonteCarloMover(m, "MolecularDynamicsMover%1%"), nsteps_(nsteps) {
   md_ = new MolecularDynamics(m);
@@ -32,7 +32,7 @@ core::MonteCarloMoverResult MolecularDynamicsMover::do_propose() {
 
 void MolecularDynamicsMover::save_coordinates() {
   IMP_OBJECT_LOG;
-  kernel::ParticlesTemp ps = md_->get_simulation_particles();
+  ParticlesTemp ps = md_->get_simulation_particles();
   unsigned nparts = ps.size();
   coordinates_.clear();
   coordinates_.reserve(nparts);
@@ -67,7 +67,7 @@ void MolecularDynamicsMover::save_coordinates() {
 
 void MolecularDynamicsMover::do_reject() {
   IMP_OBJECT_LOG;
-  kernel::ParticlesTemp ps = md_->get_simulation_particles();
+  ParticlesTemp ps = md_->get_simulation_particles();
   unsigned nparts = ps.size();
   IMP_USAGE_CHECK(coordinates_.size() == ps.size(),
                   "The list of particles that move has been changed!");
@@ -101,9 +101,9 @@ void MolecularDynamicsMover::do_reject() {
   }
 }
 
-kernel::ModelObjectsTemp MolecularDynamicsMover::do_get_inputs() const {
-  kernel::ParticleIndexes pis(md_->get_simulation_particle_indexes());
-  kernel::ModelObjectsTemp ret(pis.size());
+ModelObjectsTemp MolecularDynamicsMover::do_get_inputs() const {
+  ParticleIndexes pis(md_->get_simulation_particle_indexes());
+  ModelObjectsTemp ret(pis.size());
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret[i] = get_model()->get_particle(pis[i]);
   }

@@ -12,11 +12,11 @@
 #include <IMP/OptimizerState.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairContainer.h>
-#include <IMP/kernel/OptimizerState.h>
+#include <IMP/OptimizerState.h>
 #include <IMP/container/DynamicListPairContainer.h>
-#include <IMP/kernel/PairPredicate.h>
-#include <IMP/kernel/PairContainer.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/PairPredicate.h>
+#include <IMP/PairContainer.h>
+#include <IMP/Pointer.h>
 
 IMPMISC_BEGIN_NAMESPACE
 
@@ -27,15 +27,22 @@ IMPMISC_BEGIN_NAMESPACE
     it evaluates to 0 are removed.
  */
 class IMPMISCEXPORT DecayPairContainerOptimizerState
-    : public kernel::OptimizerState {
-  base::PointerMember<kernel::PairPredicate> pred_;
-  base::PointerMember<kernel::PairContainer> input_;
-  base::Pointer<container::DynamicListPairContainer> output_;
+    : public OptimizerState {
+  PointerMember<PairPredicate> pred_;
+  PointerMember<PairContainer> input_;
+  Pointer<container::DynamicListPairContainer> output_;
 
  public:
-  DecayPairContainerOptimizerState(
-      PairPredicate *pred, const kernel::ParticlePairsTemp &initial_list,
+  DecayPairContainerOptimizerState(Model *m,
+      PairPredicate *pred, const ParticleIndexPairs &initial_list,
       std::string name = "DecayPairContainerOptimizerState%1%");
+
+  //! \deprecated_at{2.5} Use the index-based constructor instead
+  IMPMISC_DEPRECATED_METHOD_DECL(2.5)
+  DecayPairContainerOptimizerState(
+      PairPredicate *pred, const ParticlePairsTemp &initial_list,
+      std::string name = "DecayPairContainerOptimizerState%1%");
+
   PairContainer *get_output_container() const { return output_; }
   virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DecayPairContainerOptimizerState);

@@ -19,15 +19,15 @@ IMPMISC_BEGIN_NAMESPACE
 /** You can have up to two, one for before, and one for after.
  */
 class IMPMISCEXPORT StateAdaptor : public ScoreState {
-  IMP::base::PointerMember<OptimizerState> before_, after_;
+  IMP::PointerMember<OptimizerState> before_, after_;
 
  public:
   //! set the before and after states
-  StateAdaptor(kernel::Model *m, OptimizerState *before, OptimizerState *after);
+  StateAdaptor(Model *m, OptimizerState *before, OptimizerState *after);
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(StateAdaptor);
 };
 

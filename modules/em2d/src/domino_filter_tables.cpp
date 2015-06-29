@@ -12,8 +12,6 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-void DistanceFilterTable::do_show(std::ostream &out) const { this->show(out); }
-
 domino::SubsetFilter *DistanceFilterTable::get_subset_filter(
     const domino::Subset &subset, const domino::Subsets &prior_subsets) const {
   IMP_UNUSED(prior_subsets.size());

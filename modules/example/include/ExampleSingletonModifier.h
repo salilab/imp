@@ -17,18 +17,18 @@
 IMPEXAMPLE_BEGIN_NAMESPACE
 
 //! An example singleton modifer
-/**  A simple singleton modifier which restrains the x,y,z
-     coordinates to a box by wrapping them.
+/** A simple singleton modifier which ensures the x,y,z coordinates
+    stay in a box by wrapping them.
 
-     Such a class could be coupled with an IMP::core::SingletonRestraint
-     or IMP::core::SingletonsRestraint to keep a set of particles
-     in a box.
+    Such a class could be coupled with an IMP::core::SingletonConstraint
+    or IMP::container::SingletonsConstraint to keep a set of particles
+    in a box.
 
-     \include range_restriction.py
+    \include range_restriction.py
 
-     The source code is as follows:
-     \include ExampleRestraint.h
-     \include ExampleRestraint.cpp
+    The source code is as follows:
+    \include ExampleRestraint.h
+    \include ExampleRestraint.cpp
  */
 class IMPEXAMPLEEXPORT ExampleSingletonModifier : public SingletonModifier {
   algebra::BoundingBoxD<3> bb_;
@@ -37,12 +37,12 @@ class IMPEXAMPLEEXPORT ExampleSingletonModifier : public SingletonModifier {
   ExampleSingletonModifier(const algebra::BoundingBoxD<3> &bb);
 
   // note, Doxygen wants a semicolon at the end of macro lines
-  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex p) const
+  virtual void apply_index(Model *m, ParticleIndex p) const
       IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(ExampleSingletonModifier);
   IMP_OBJECT_METHODS(ExampleSingletonModifier);
 };

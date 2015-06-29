@@ -1,0 +1,9 @@
+/** \page em2d_progs Short Explanation of the functionality of programs in em2d
+
+The em2d module includes a number of tools (only for now):
+
+\section generate_perfect_projection_bin generate_perfect_projection
+Create N-Evenly projection from a model PDB.
+
+
+*/

@@ -8,15 +8,15 @@
  */
 
 #include <IMP/em/EnvelopeFitRestraint.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 
 IMPEM_BEGIN_NAMESPACE
 
-EnvelopeFitRestraint::EnvelopeFitRestraint(kernel::Particles ps,
+EnvelopeFitRestraint::EnvelopeFitRestraint(Particles ps,
                                            DensityMap *em_map,
                                            double density_threshold,
                                            double penetration_threshold)
-    : kernel::Restraint(ps[0]->get_model(), "EnvelopeFitRestraint%1%"),
+    : Restraint(ps[0]->get_model(), "EnvelopeFitRestraint%1%"),
       ps_(ps),
       pca_aligner_(new PCAAligner(em_map, density_threshold)),
       penetration_threshold_(penetration_threshold),

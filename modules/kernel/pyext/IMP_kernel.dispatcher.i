@@ -4,30 +4,35 @@ import sys
 import os
 
 class CommandDispatcher(object):
-    """Allow applications to easily implement commmands.
-       Typically, an IMP application will use an instance of this class
+    """Allow command line tools to easily implement multiple commmands.
+       Typically, an IMP comand line tool will use an instance of this class
        to provide a consistent interface to multiple distinct commands
        from a single binary, rather than providing a potentially large
-       number of binaries.
+       number of binaries. This is similar to the way a number of common
+       command line tools outside of %IMP function (e.g. Git provides a single
+       `git` tool which implements multiple commands - `git add`, `git commit`,
+       `git push` and so on).
 
        Each command is implemented with a Python module of the same name
-       that can be imported from the module (for example, if module_name
-       is 'IMP.foo', the 'bar' command is provided by the IMP.foo.bar Python
-       module, which would usually be found as modules/foo/pyext/src/bar.py).
-       Each such module should have a docstring (__doc__) and a main() method
-       that takes no arguments (the module should also call its main() method
+       that can be imported from the module (for example, if `module_name`
+       is `IMP.foo`, the `bar` command is provided by the `IMP.foo.bar` Python
+       module, which would usually be found as `modules/foo/pyext/src/bar.py`).
+       Each such module should have a docstring and a `%main()` method
+       that takes no arguments (the module should also call its `%main()` method
        if it is run directly, i.e. with something like
-       'if __name__=="__main__": main()'). The encompassing module
-       ('IMP.foo' in the example) should define _all_commands as a Python
+       `if __name__=="__main__": %main()`). The encompassing module
+       (`IMP.foo` in the example) should define `_all_commands` as a Python
        list of all valid commands.
 
+       See the `multifit` and `cnmultifit` command line tools for example
+       usage.
     """
 
     def __init__(self, short_help, long_help, module_name):
         """Constructor.
-           @param short_help A few words that describe the application.
-           @param long_help Longer text, used in the 'help' command.
-           @param module_name Name of the module (e.g. 'IMP.foo') that
+           @param short_help A few words that describe the command line tool.
+           @param long_help Longer text, used in the `help` command.
+           @param module_name Name of the module (e.g. `IMP.foo`) that
                   implements the commands.
         """
         self.short_help = short_help
@@ -37,6 +42,7 @@ class CommandDispatcher(object):
         self._progname = os.path.basename(sys.argv[0])
 
     def main(self):
+        """Call this method to act upon the user-provided command line"""
         if len(sys.argv) <= 1:
             print(self.short_help + " Use '%s help' for help." % self._progname)
         else:

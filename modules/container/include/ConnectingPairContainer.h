@@ -10,7 +10,7 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/core/internal/MovedSingletonContainer.h>
-#include <IMP/kernel/internal/ListLikeContainer.h>
+#include <IMP/internal/ListLikeContainer.h>
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/macros.h>
@@ -41,13 +41,13 @@ class IMPCONTAINEREXPORT ConnectingPairContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public PairContainer
 #else
-    public kernel::internal::ListLikeContainer<kernel::PairContainer>
+    public IMP::internal::ListLikeContainer<PairContainer>
 #endif
     {
-  IMP::base::PointerMember<kernel::SingletonContainer> sc_;
-  IMP::base::PointerMember<core::internal::MovedSingletonContainer> mv_;
-  base::PointerMember<ScoreState> score_state_;
-  kernel::ParticlePairsTemp data_;
+  IMP::PointerMember<SingletonContainer> sc_;
+  IMP::PointerMember<core::internal::MovedSingletonContainer> mv_;
+  PointerMember<ScoreState> score_state_;
+  ParticlePairsTemp data_;
   double error_bound_;
   bool mst_;
   void initialize(SingletonContainer *sc);
@@ -56,25 +56,25 @@ class IMPCONTAINEREXPORT ConnectingPairContainer :
   /** For efficiency, the set of edges is only updated occasionally. The
    error parameter determines how far particles need to move before
    the set of edges is updated.*/
-  ConnectingPairContainer(kernel::SingletonContainer *sc, double error);
+  ConnectingPairContainer(SingletonContainer *sc, double error);
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  kernel::ParticleIndexPairs get_indexes() const;
-  kernel::ParticleIndexPairs get_range_indexes() const;
-  kernel::ModelObjectsTemp do_get_inputs() const;
+  ParticleIndexPairs get_indexes() const;
+  ParticleIndexPairs get_range_indexes() const;
+  ModelObjectsTemp do_get_inputs() const;
   void do_apply(const PairModifier *sm) const;
-  kernel::ParticleIndexes get_all_possible_indexes() const;
+  ParticleIndexes get_all_possible_indexes() const;
   IMP_OBJECT_METHODS(ConnectingPairContainer);
 
  private:
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;
 #else
-  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  kernel::ModelObjectsTemp get_score_state_inputs() const;
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  ModelObjectsTemp get_score_state_inputs() const;
   void do_score_state_before_evaluate();
   void do_score_state_after_evaluate() {}
-  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ConnectingPairContainer);
   bool get_is_decomposable() const { return false; }
 #endif

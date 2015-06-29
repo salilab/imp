@@ -10,11 +10,11 @@ class Tests(IMP.test.TestCase):
 
     def test_symmetry(self):
         """Test setting internal coordinates through float keys"""
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         rb = IMP.core.RigidBody.setup_particle(
             p, IMP.algebra.ReferenceFrame3D())
-        pm = IMP.kernel.Particle(m)
+        pm = IMP.Particle(m)
         IMP.core.XYZ.setup_particle(pm)
         rb.add_member(pm)
 
@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
         mv = IMP.core.BallMover([pm],
                                 keys, 1)
 
-        mv.set_log_level(IMP.base.VERBOSE)
+        mv.set_log_level(IMP.VERBOSE)
         print(IMP.core.XYZ(pm).get_coordinates(), end=' ')
         print(IMP.core.RigidMember(pm).get_internal_coordinates())
         old = IMP.core.RigidMember(pm).get_internal_coordinates()

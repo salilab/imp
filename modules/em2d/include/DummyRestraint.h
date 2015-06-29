@@ -10,12 +10,12 @@
 #define IMPEM2D_DUMMY_RESTRAINT_H
 
 #include "IMP/em2d/em2d_config.h"
-#include "IMP/base/log.h"
-#include <IMP/kernel/Restraint.h>
-#include "IMP/base/Pointer.h"
+#include "IMP/log.h"
+#include <IMP/Restraint.h>
+#include "IMP/Pointer.h"
 
-#include <IMP/kernel/Restraint.h>
-#include <IMP/base/log.h>
+#include <IMP/Restraint.h>
+#include <IMP/log.h>
 #include <IMP/SingletonContainer.h>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -30,9 +30,9 @@ IMPEM2D_BEGIN_NAMESPACE
     NOTE: Using this restraint for DOMINO requires a fairly good knowledge of
         the works of merge trees.
 */
-class IMPEM2DEXPORT DummyRestraint : public kernel::Restraint {
-  base::Pointer<kernel::Particle> p0_;
-  base::Pointer<kernel::Particle> p1_;
+class IMPEM2DEXPORT DummyRestraint : public Restraint {
+  Pointer<Particle> p0_;
+  Pointer<Particle> p1_;
 
  public:
   /**
@@ -40,8 +40,8 @@ class IMPEM2DEXPORT DummyRestraint : public kernel::Restraint {
    * @param p First particle
    * @param q Second particle
    */
-  DummyRestraint(IMP::kernel::Particle *p, IMP::kernel::Particle *q)
-      : kernel::Restraint(p->get_model(), "DummyRestraint%1%") {
+  DummyRestraint(IMP::Particle *p, IMP::Particle *q)
+      : Restraint(p->get_model(), "DummyRestraint%1%") {
     p0_ = p;
     p1_ = q;
   }
@@ -51,19 +51,19 @@ class IMPEM2DEXPORT DummyRestraint : public kernel::Restraint {
    * @param out Stream used to show the information
    */
   void show(std::ostream &out = std::cout) const {
-    out << "Dummy kernel::Restraint" << std::endl;
+    out << "Dummy Restraint" << std::endl;
   }
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DummyRestraint);
 };
 IMP_OBJECTS(DummyRestraint, DummyRestraints);
 
 //! Dummy restraint for a set of particles. Same use as DummyRestraint
-class IMPEM2DEXPORT ParticlesDummyRestraint : public kernel::Restraint {
-  base::Pointer<SingletonContainer> container_;
+class IMPEM2DEXPORT ParticlesDummyRestraint : public Restraint {
+  Pointer<SingletonContainer> container_;
 
  public:
   /**
@@ -71,7 +71,7 @@ class IMPEM2DEXPORT ParticlesDummyRestraint : public kernel::Restraint {
    * @param sc Must contain all the particles that are going to be restrained
    */
   ParticlesDummyRestraint(SingletonContainer *sc)
-      : kernel::Restraint(sc->get_model(), "ParticlesDummyRestraint%1%") {
+      : Restraint(sc->get_model(), "ParticlesDummyRestraint%1%") {
     container_ = sc;
   }
 
@@ -83,9 +83,9 @@ class IMPEM2DEXPORT ParticlesDummyRestraint : public kernel::Restraint {
     out << "ParticlesDummyRestraint" << std::endl;
   }
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ParticlesDummyRestraint);
 };
 IMP_OBJECTS(ParticlesDummyRestraint, ParticlesDummyRestraints);

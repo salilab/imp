@@ -6,9 +6,12 @@
 from __future__ import print_function
 import IMP.atom
 import IMP.container
+import sys
+
+IMP.setup_from_argv(sys.argv, "CHARMM forcefield")
 
 # Create an IMP model and add a heavy atom-only protein from a PDB file
-m = IMP.kernel.Model()
+m = IMP.Model()
 prot = IMP.atom.read_pdb(IMP.atom.get_example_path("example_protein.pdb"), m,
                          IMP.atom.NonWaterNonHydrogenPDBSelector())
 
@@ -34,7 +37,6 @@ topology.setup_hierarchy(prot)
 # Set up and evaluate the stereochemical part (bonds, angles, dihedrals,
 # impropers) of the CHARMM forcefield
 r = IMP.atom.CHARMMStereochemistryRestraint(prot, topology)
-m.add_restraint(r)
 
 # Add non-bonded interaction (in this case, Lennard-Jones). This needs to
 # know the radii and well depths for each atom, so add them from the forcefield
@@ -45,7 +47,7 @@ ff.add_well_depths(prot)
 
 # Get a list of all atoms in the protein, and put it in a container
 atoms = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
-cont = IMP.container.ListSingletonContainer(atoms)
+cont = IMP.container.ListSingletonContainer(m, atoms)
 
 # Add a restraint for the Lennard-Jones interaction. This is built from
 # a collection of building blocks. First, a ClosePairContainer maintains a list
@@ -63,6 +65,6 @@ restraints = [r, IMP.container.PairsRestraint(ps, nbl)]
 scoring_function = IMP.core.RestraintsScoringFunction(restraints)
 
 # it gets awfully slow with internal checks
-IMP.base.set_check_level(IMP.base.USAGE)
+IMP.set_check_level(IMP.USAGE)
 # Finally, evaluate the score of the whole system (without derivatives)
 print(scoring_function.evaluate(False))

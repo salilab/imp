@@ -8,22 +8,7 @@ function_name_exceptions=['DOFValues.append','DOFValues.assign', 'DOFValues.back
                      'KinematicForest.mark_external_coordinates_changed',
                      'KinematicForest.mark_internal_coordinates_changed',
                      'UniformBackboneSampler.sample_and_apply',
-                     'VectorOfDoubles.append',
-                     'VectorOfDoubles.assign',
-                     'VectorOfDoubles.back',
-                     'VectorOfDoubles.begin',
-                     'VectorOfDoubles.capacity',
-                     'VectorOfDoubles.empty',
-                     'VectorOfDoubles.end',
-                     'VectorOfDoubles.erase',
-                     'VectorOfDoubles.front',
-                     'VectorOfDoubles.insert',
-                     'VectorOfDoubles.iterator',
-                     'VectorOfDoubles.rbegin',
-                     'VectorOfDoubles.rend',
-                     'VectorOfDoubles.resize',
-                     'VectorOfDoubles.size',
                      'DOFsSampler.get_dof',
                      'UniformBackboneSampler.get_dof' ]
-show_exceptions=['VectorOfDoubles']
-value_object_exceptions=['VectorOfDoubles']
+show_exceptions=[]
+value_object_exceptions=[]

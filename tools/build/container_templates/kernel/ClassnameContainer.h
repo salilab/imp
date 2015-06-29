@@ -1,8 +1,6 @@
 /**
- *  \file IMP/kernel/ClassnameContainer.h
+ *  \file IMP/ClassnameContainer.h
  *  \brief A container for Classnames.
- *
- *  BLURB
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
@@ -10,19 +8,19 @@
 #ifndef IMPKERNEL_CLASSNAME_CONTAINER_H
 #define IMPKERNEL_CLASSNAME_CONTAINER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "internal/IndexingIterator.h"
 #include "Particle.h"
 #include "container_base.h"
 #include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
 #include "ParticleTuple.h"
-#include <IMP/base/ref_counted_macros.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/base/InputAdaptor.h>
-#include <IMP/base/utility_macros.h>
-#include <IMP/base/deprecation_macros.h>
+#include <IMP/ref_counted_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/Pointer.h>
+#include <IMP/InputAdaptor.h>
+#include <IMP/utility_macros.h>
+#include <IMP/deprecation_macros.h>
 #include <algorithm>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -80,17 +78,17 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
 #ifndef IMP_DOXYGEN
 
   PLURALVARIABLETYPE get() const {
-    return IMP::kernel::internal::get_particle(get_model(), get_indexes());
+    return IMP::internal::get_particle(get_model(), get_indexes());
   }
 
   VARIABLETYPE get(unsigned int i) const {
-    return IMP::kernel::internal::get_particle(get_model(), get_indexes()[i]);
+    return IMP::internal::get_particle(get_model(), get_indexes()[i]);
   }
   unsigned int get_number() const { return get_indexes().size(); }
 #ifndef SWIG
   bool get_provides_access() const;
   virtual const PLURALINDEXTYPE &get_access() const {
-    IMP_THROW("Object not implemented properly.", base::IndexException);
+    IMP_THROW("Object not implemented properly.", IndexException);
   }
 
   template <class Functor>
@@ -107,18 +105,13 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
    */
   PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
 
-  /** \deprecated_at{2.1} This can be very slow and is probably not useful
-   */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  unsigned int get_number_of_FUNCTIONNAMEs() const;
-
   /** \deprecated_at{2.1}Use get_indexes() instead and thing about using the
       IMP_CONTAINER_FOREACH() macro.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
 
  protected:
-  ClassnameContainer(kernel::Model *m,
+  ClassnameContainer(Model *m,
                      std::string name = "ClassnameContainer %1%");
 
   virtual void do_apply(const ClassnameModifier *sm) const = 0;
@@ -137,12 +130,12 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
 */
 class IMPKERNELEXPORT ClassnameContainerAdaptor :
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-    public base::Pointer<ClassnameContainer>
+    public Pointer<ClassnameContainer>
 #else
-    public base::InputAdaptor
+    public InputAdaptor
 #endif
     {
-  typedef base::Pointer<ClassnameContainer> P;
+  typedef Pointer<ClassnameContainer> P;
 
  public:
   ClassnameContainerAdaptor() {}
@@ -158,7 +151,7 @@ class IMPKERNELEXPORT ClassnameContainerAdaptor :
      dynamically, so do the contents of the adaptor, and vice versa)
    */
   template <class C>
-  ClassnameContainerAdaptor(base::internal::PointerBase<C> c)
+  ClassnameContainerAdaptor(IMP::internal::PointerBase<C> c)
       : P(c) {}
 
   /**

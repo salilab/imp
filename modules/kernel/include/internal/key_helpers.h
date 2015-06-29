@@ -8,17 +8,17 @@
 #ifndef IMPKERNEL_INTERNAL_KEY_HELPERS_H
 #define IMPKERNEL_INTERNAL_KEY_HELPERS_H
 
-#include <IMP/kernel/kernel_config.h>
-#include <IMP/base/exception.h>
+#include <IMP/kernel_config.h>
+#include <IMP/exception.h>
 #include <boost/unordered_map.hpp>
-#include <IMP/base/Vector.h>
+#include <IMP/Vector.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 /** \internal The data concerning keys.
   */
 struct IMPKERNELEXPORT KeyData {
   typedef boost::unordered_map<std::string, int> Map;
-  typedef IMP::base::Vector<std::string> RMap;
+  typedef IMP::Vector<std::string> RMap;
 
   void show(std::ostream &out = std::cout) const;
   KeyData();

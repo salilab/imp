@@ -1,106 +1,85 @@
 #!/usr/bin/env python
 
 """
-Create stub headers and __init__.py that creates a module that aliases an
-existing one. This is used to create the IMP/foo.h headers from IMP.kernel,
-for backwards compatibility.
+   Make aliases for the kernel and base module headers and Python code.
 """
 
-from __future__ import print_function
 import tools
-from optparse import OptionParser
+import os
 import glob
-import os.path
 
-header_template = """/** \\file IMP%(slashalias)s/%(file)s
- \\brief Import IMP/%(module)s/%(file)s in the namespace.
-*/
-#include <IMP/%(module)s/%(file)s>
+def get_header_contents(incdir, fname):
+    return """#include <IMP/kernel_config.h>
 
-%(deprecate)s
+IMPKERNEL_DEPRECATED_HEADER(2.5, "Use top-level IMP namespace directly");
+#include <%(incdir)s/%(fname)s>
+""" % locals()
 
-%(namespacebegin)s
-using namespace ::IMP::%(module)s;
-%(namespaceend)s
-"""
-
-internal_header_template = """#include <IMP/%(module)s/internal/%(file)s>
-
-%(deprecate)s
-
-%(namespacebegin)s
-using namespace ::IMP::%(module)s;
-%(namespaceend)s
-"""
-
-allh_template = """#include <IMP/%(module)s.h>
-
-%(deprecate)s
-
-%(namespacebegin)s
-using namespace ::IMP::%(module)s;
-%(namespaceend)s
-"""
-
-parser = OptionParser()
-parser.add_option("-m", "--module", dest="module", default="",
-                  help="Name of the source module.")
-parser.add_option("-a", "--alias",
-                  dest="alias", help="The name of the module alias.")
-parser.add_option("-s", "--source",
-                  dest="source", help="IMP source directory.")
-parser.add_option("-d", "--deprecate", dest="deprecate", default="",
-                  help="Deprecate the generated headers")
-
+def alias_headers(fromdir, kerneldir, basedir, incdir,
+                  kernel_headers, base_renames):
+    kernel_headers = dict.fromkeys(kernel_headers)
+    for g in glob.glob(os.path.join(fromdir, '*.h')):
+        if "Include all non-deprecated headers" not in open(g).read():
+            fname = os.path.basename(g)
+            contents = get_header_contents(incdir, fname)
+            if fname in kernel_headers:
+                tools.rewrite(os.path.join(kerneldir, fname), contents)
+            else:
+                to_name = base_renames.get(fname, fname)
+                tools.rewrite(os.path.join(basedir, to_name), contents)
 
 def main():
-    (options, args) = parser.parse_args()
-    if not os.path.exists(os.path.join(options.source, "modules", options.module)):
-        print("Skipping alias as original module not found")
-        return
-    print("Setting up alias for module", options.module, "as", options.alias)
-    tools.mkdir("include/IMP/%s" % options.alias)
-    tools.mkdir("include/IMP/%s/internal" % options.alias)
-    var = {"module": options.module}
-    if options.deprecate != "":
-        var["deprecate"] = "IMP%s_DEPRECATED_HEADER(%s, \"%s\")" % (options.module.upper(),
-                                                                    options.deprecate,
-                                                                    "Use the one in IMP/%s instead." % options.module)
-    else:
-        var["deprecate"] = ""
-    if options.alias == "":
-        var["namespacebegin"] = "namespace IMP {"
-        var["namespaceend"] = "}"
-        var["slashalias"] = ""
-    else:
-        var["namespacebegin"] = "namespace IMP { namespace %s {" % options.alias
-        var["namespaceend"] = "} }"
-        var["slashalias"] = "/" + options.alias
-    for h in tools.get_glob([os.path.join("include", "IMP", options.module, "*.h")]):
-        if h.endswith("_config.h"):
-            continue
-        filename = os.path.split(h)[1]
-        var["file"] = filename
-        header = header_template % var
-        tools.rewrite(
-            "include/IMP%s/%s" %
-            (var["slashalias"], filename), header)
-    # Remove aliased header if the source header is gone
-    for h in glob.glob("include/IMP%s/*.h" % var["slashalias"]):
-        filename = os.path.split(h)[1]
-        orig_filename = os.path.join("include", "IMP", options.module, filename)
-        if not os.path.exists(orig_filename) \
-           and not os.path.exists(h[:-2]): # Exclude all-module headers
-            os.unlink(h)
-    for h in tools.get_glob([os.path.join("include", "IMP", options.module, "internal", "*.h")]):
-        filename = os.path.split(h)[1]
-        var["file"] = filename
-        header = internal_header_template % var
-        tools.rewrite(
-            "include/IMP/%s/internal/%s" %
-            (options.alias, filename), header)
-    allh = allh_template % var
-    tools.rewrite("include/IMP%s.h" % var["slashalias"], allh)
+    alias_headers(os.path.join('include', 'IMP'),
+                  os.path.join('include', 'IMP', 'kernel'),
+                  os.path.join('include', 'IMP', 'base'),
+                  'IMP', [ 'AttributeOptimizer.h', 'base_types.h',
+         'Configuration.h', 'ConfigurationSet.h', 'constants.h',
+         'Constraint.h', 'container_base.h', 'container_macros.h',
+         'Decorator.h', 'decorator_macros.h', 'dependency_graph.h',
+         'DerivativeAccumulator.h', 'doxygen.h', 'FloatIndex.h',
+         'functor.h', 'generic.h', 'input_output.h', 'io.h', 'Key.h',
+         'macros.h', 'Model.h', 'ModelObject.h', 'model_object_helpers.h',
+         'Optimizer.h', 'OptimizerState.h', 'Particle.h', 'particle_index.h',
+         'ParticleTuple.h', 'python_only.h', 'Refiner.h', 'Restraint.h',
+         'RestraintSet.h', 'Sampler.h', 'scoped.h', 'ScoreAccumulator.h',
+         'ScoreState.h', 'ScoringFunction.h', 'UnaryFunction.h',
+         'Undecorator.h', 'utility.h' ],
+         {'base_utility.h': 'utility.h' })
+    alias_headers(os.path.join('include', 'IMP', 'internal'),
+                  os.path.join('include', 'IMP', 'kernel', 'internal'),
+                  os.path.join('include', 'IMP', 'base', 'internal'),
+                 'IMP/internal', [ 'AccumulatorScoreModifier.h',
+         'AttributeTable.h', 'attribute_tables.h', 'constants.h',
+         'ContainerConstraint.h', 'container_helpers.h', 'ContainerRestraint.h',
+         'ContainerScoreState.h', 'create_decomposition.h',
+         'DynamicListContainer.h', 'evaluate_utility.h', 'ExponentialNumber.h',
+         'functors.h', 'graph_utility.h', 'IndexingIterator.h',
+         'input_output_exception.h', 'key_helpers.h', 'ListLikeContainer.h',
+         'NestedIterator.h', 'pdb.h', 'PrefixStream.h',
+         'restraint_evaluation.h', 'RestraintsScoringFunction.h',
+         'scoring_functions.h', 'static.h', 'StaticListContainer.h', 'swig.h',
+         'swig_helpers.h', 'TupleConstraint.h', 'TupleRestraint.h',
+         'Unit.h', 'units.h', 'utility.h' ],
+         {'base_graph_utility.h': 'graph_utility.h',
+          'base_static.h': 'static.h',
+          'swig_base.h': 'swig.h',
+          'swig_helpers_base.h': 'swig_helpers.h'})
+    tools.rewrite(os.path.join('include', 'IMP', 'base', 'base_config.h'),
+                  get_header_contents('IMP', 'kernel_config.h'))
+    tools.link(os.path.join('include', 'IMP.h'),
+               os.path.join('include', 'IMP', 'kernel.h'))
+    tools.link(os.path.join('include', 'IMP.h'),
+               os.path.join('include', 'IMP', 'base.h'))
+    for mod in ('base', 'kernel'):
+        subdir = os.path.join('lib', 'IMP', mod)
+        if not os.path.exists(subdir):
+            os.mkdir(subdir)
+        pymod = os.path.join(subdir, '__init__.py')
+        with open(pymod, 'w') as fh:
+            fh.write("""import sys
+sys.stderr.write('IMP.%s is deprecated - use "import IMP" instead\\n')
+from IMP import *
+""" % mod)
 
 if __name__ == '__main__':
     main()

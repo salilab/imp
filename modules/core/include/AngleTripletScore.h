@@ -12,7 +12,7 @@
 #include <IMP/generic.h>
 #include <IMP/TripletScore.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/triplet_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -20,16 +20,16 @@ IMPCORE_BEGIN_NAMESPACE
 //! Apply a function to the angle between three particles.
 /** */
 class IMPCOREEXPORT AngleTripletScore : public TripletScore {
-  IMP::base::PointerMember<UnaryFunction> f_;
+  IMP::PointerMember<UnaryFunction> f_;
 
  public:
   //! Score the angle (in radians) using f
   AngleTripletScore(UnaryFunction *f);
-  virtual double evaluate_index(kernel::Model *m,
-                                const kernel::ParticleIndexTriplet &pi,
+  virtual double evaluate_index(Model *m,
+                                const ParticleIndexTriplet &pi,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_TRIPLET_SCORE_METHODS(AngleTripletScore);
   IMP_OBJECT_METHODS(AngleTripletScore);
 };

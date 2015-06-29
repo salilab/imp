@@ -22,8 +22,8 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)
-        self.imp_model = IMP.kernel.Model()
+        IMP.set_log_level(IMP.SILENT)
+        self.imp_model = IMP.Model()
         self.apix = 1.0
         self.surf_key = IMP.FloatKey("surf_ind")
         self.load_protein("1z5s_A.pdb")

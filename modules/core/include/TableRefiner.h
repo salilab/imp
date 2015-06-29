@@ -19,29 +19,29 @@ IMPCORE_BEGIN_NAMESPACE
     of particles stored for it in a table.
  */
 class IMPCOREEXPORT TableRefiner : public Refiner {
-  boost::unordered_map<kernel::Particle *, kernel::Particles> map_;
+  boost::unordered_map<Particle *, Particles> map_;
 
  public:
   //! Initialize it with an empty table
   TableRefiner();
 
   //! Add a mapping to the table
-  void add_particle(kernel::Particle *p, const kernel::ParticlesTemp &ps);
+  void add_particle(Particle *p, const ParticlesTemp &ps);
 
   //! Remove a mapping from the table
-  void remove_particle(kernel::Particle *p);
+  void remove_particle(Particle *p);
 
   //! Set the mapping for a particular particle
-  void set_particle(kernel::Particle *p, const kernel::ParticlesTemp &ps);
+  void set_particle(Particle *p, const ParticlesTemp &ps);
 
-  virtual bool get_can_refine(kernel::Particle *) const IMP_OVERRIDE;
-  virtual const kernel::ParticlesTemp get_refined(kernel::Particle *) const
+  virtual bool get_can_refine(Particle *) const IMP_OVERRIDE;
+  virtual const ParticlesTemp get_refined(Particle *) const
       IMP_OVERRIDE;
 #ifndef SWIG
   using Refiner::get_refined;
 #endif
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(TableRefiner);
 };
 

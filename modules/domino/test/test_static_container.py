@@ -8,10 +8,10 @@ class Tests(IMP.test.TestCase):
 
     def _test_global_min2(self):
         """Testing static container"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         for i in range(0, 20):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             IMP.core.XYZ.setup_particle(p)
             ps.append(p)
         lsc = IMP.container.ListSingletonContainer(ps)

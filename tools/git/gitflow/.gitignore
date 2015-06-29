@@ -1,0 +1,7 @@
+debian/files
+debian/*.substvars
+debian/*.debhelper.log
+debian/*/*
+shFlags/bin/Files.cmake
+shFlags/src/Files.cmake
+shFlags/examples/Files.cmake

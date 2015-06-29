@@ -1,3 +1,5 @@
+\brief A method for merging SAXS profiles using Gaussian processes.
+
 saxs_merge {#saxs_merge_bin}
 ==========
 
@@ -12,11 +14,12 @@ using Gaussian processes. This method requires only the buffer-subtracted
 profile files in a specific order. At the heart of its formulation is
 nonlinear interpolation using Gaussian Processes, which provide a statement
 of the problem that accounts for correlation in the data.
+The method is [benchmarked](http://salilab.org/saxsmerge/benchmark).
 
 A [webserver](http://salilab.org/saxsmerge) is also available.
 
 _Examples_:
- - [Merging of SAXS profiles](../tutorial/saxs_merge.html)
+ - [Merging of SAXS profiles](@ref saxs_merge)
 
 # Info
 

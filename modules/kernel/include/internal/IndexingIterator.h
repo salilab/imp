@@ -8,8 +8,8 @@
 #ifndef IMPKERNEL_INDEXING_ITERATOR_H
 #define IMPKERNEL_INDEXING_ITERATOR_H
 
-#include <IMP/kernel/kernel_config.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/kernel_config.h>
+#include <IMP/check_macros.h>
 #include <iterator>
 #include <limits>
 

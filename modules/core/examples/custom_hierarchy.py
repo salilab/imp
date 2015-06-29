@@ -3,7 +3,9 @@
 
 import IMP
 import IMP.core
+import sys
 
+IMP.setup_from_argv(sys.argv, "custom hierarchy")
 
 def custom_hierarchy(parent_particle, children_particles):
     tr = IMP.core.HierarchyTraits("my hierarchy")
@@ -13,8 +15,8 @@ def custom_hierarchy(parent_particle, children_particles):
         pd.add_child(cd)
     pd.show()
 
-m = IMP.kernel.Model()
-p1 = IMP.kernel.Particle(m)
-p2 = IMP.kernel.Particle(m)
-p3 = IMP.kernel.Particle(m)
+m = IMP.Model()
+p1 = IMP.Particle(m)
+p2 = IMP.Particle(m)
+p3 = IMP.Particle(m)
 custom_hierarchy(p1, (p2, p3))

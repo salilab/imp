@@ -15,7 +15,7 @@ class Tests(IMP.test.TestCase):
     def test_round_trip(self):
         """Test that restraints with a zillion terms are squashed"""
         for suffix in IMP.rmf.suffixes:
-            m = IMP.kernel.Model()
+            m = IMP.Model()
             l0 = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m)
             l1 = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m)
             cpc = IMP.container.CloseBipartitePairContainer(
@@ -34,6 +34,6 @@ class Tests(IMP.test.TestCase):
             num_nodes = self._get_num_nodes(rmf.get_root_node())
             print(num_nodes)
             self.assertEqual(num_nodes,
-                             m.get_number_of_particles() + 1 + 1)
+                             len(m.get_particle_indexes()) + 1 + 1)
 if __name__ == '__main__':
     IMP.test.main()

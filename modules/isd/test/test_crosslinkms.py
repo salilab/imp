@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.isd
@@ -33,7 +34,13 @@ class CrossLinkMS(object):
         onemprob = 1.0
 
         for (xyz1,xyz2,sigma1,sigma2,psi) in self.pairs:
-            dist = IMP.core.get_distance(xyz1, xyz2)
+            if xyz1 is not xyz2:
+                dist = IMP.core.get_distance(xyz1, xyz2)
+            else:
+                p=xyz1.get_particle()
+                R=IMP.core.XYZR(p).get_radius()
+                dist=36.0/35.0*R
+            if dist <= 0.001: dist = 0.001
             psi = psi.get_scale()
             sigmai = sigma1.get_scale()
             sigmaj = sigma2.get_scale()
@@ -84,9 +91,9 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
 
         m = IMP.Model()
-        p1 = IMP.kernel.Particle(m)
-        p2 = IMP.kernel.Particle(m)
-        #p3 = IMP.kernel.Particle(m)
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        #p3 = IMP.Particle(m)
 
         self.slope = 0.01
         self.length = 10
@@ -103,9 +110,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         self.psi = setupnuisance(m, 0.1, 0.0, 0.5, False)
 
         dr = IMP.isd.CrossLinkMSRestraint(m, self.length, self.slope)
-        dr.add_contribution((p1.get_index(), p2.get_index()),
-                            (self.sigma1.get_particle_index(), self.sigma2.get_particle_index()),
-                            self.psi.get_particle_index())
+        dr.add_contribution((p1, p2), (self.sigma1, self.sigma2), self.psi)
 
         self.testdr= CrossLinkMS(self.length, self.slope)
         self.testdr.add_contribution(self.xyz1,self.xyz2,self.sigma1,self.sigma2,self.psi)
@@ -133,15 +138,65 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                         scoretest = - \
                             log(self.testdr.get_probability())
                         score = self.lw.unprotected_evaluate(None)
-                        self.assertAlmostEqual(score,scoretest,places=5)
+                        self.assertAlmostEqual(score,scoretest,places=4)
+
+    def test_score_same_bead(self):
+        '''
+        This test checks when the cross-linked residues are assigned
+        to the same particle
+        '''
+        IMP.test.TestCase.setUp(self)
+
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+
+        self.slope = 0.01
+        self.length = 10
+
+        self.xyz1 = IMP.core.XYZR.setup_particle(p1)
+
+        self.xyz1.set_coordinates((0, 0, 0))
+
+
+        self.sigma1 = setupnuisance(m, 5, 0, 100, False)
+        self.psi = setupnuisance(m, 0.1, 0.0, 0.5, False)
+
+        dr = IMP.isd.CrossLinkMSRestraint(m, self.length, self.slope)
+        dr.add_contribution((p1, p1), (self.sigma1, self.sigma1), self.psi)
+
+        self.testdr= CrossLinkMS(self.length, self.slope)
+        self.testdr.add_contribution(self.xyz1,self.xyz1,self.sigma1,self.sigma1,self.psi)
+
+        self.lw = IMP.isd.LogWrapper([dr],1.0)
+
+
+        maxradius = 40.0
+        npoints = 100
+
+        sigmas1=sample([0.01,0.1,0.5,1.0,5.0,10.0,50.0,100.0],5)
+        psis=sample([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.49],5)
+
+        for s1 in sigmas1:
+            self.sigma1.set_scale(s1)
+            for p1 in psis:
+                self.psi.set_scale(p1)
+                for i in range(npoints):
+                    radius=maxradius / npoints * float(i)
+                    self.xyz1.set_radius(radius)
+                    scoretest = - \
+                        log(self.testdr.get_probability())
+                    score = self.lw.unprotected_evaluate(None)
+                    print(radius,score)
+                    self.assertAlmostEqual(score,scoretest,places=4)
+
 
     def test_score_two_fold_ambiguity(self):
         IMP.test.TestCase.setUp(self)
 
         m = IMP.Model()
-        p1 = IMP.kernel.Particle(m)
-        p2 = IMP.kernel.Particle(m)
-        p3 = IMP.kernel.Particle(m)
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        p3 = IMP.Particle(m)
 
         self.slope = 0.01
         self.length = 10
@@ -161,12 +216,8 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         self.psi = setupnuisance(m, 0.1, 0.0, 0.5, False)
 
         dr = IMP.isd.CrossLinkMSRestraint(m, self.length, self.slope)
-        dr.add_contribution((p1.get_index(), p2.get_index()),
-                            (self.sigma1.get_particle_index(), self.sigma2.get_particle_index()),
-                            self.psi.get_particle_index())
-        dr.add_contribution((p3.get_index(), p2.get_index()),
-                            (self.sigma3.get_particle_index(), self.sigma2.get_particle_index()),
-                            self.psi.get_particle_index())
+        dr.add_contribution((p1, p2), (self.sigma1, self.sigma2), self.psi)
+        dr.add_contribution((p3, p2), (self.sigma3, self.sigma2), self.psi)
 
         self.testdr= CrossLinkMS(self.length, self.slope)
         self.testdr.add_contribution(self.xyz1,self.xyz2,self.sigma1,self.sigma2,self.psi)
@@ -198,7 +249,7 @@ class TestXLRestraintSimple(IMP.test.TestCase):
                             scoretest = - \
                                 log(self.testdr.get_probability())
                             score = self.lw.unprotected_evaluate(None)
-                            self.assertAlmostEqual(score,scoretest,delta=1.e-5)
+                            self.assertAlmostEqual(score,scoretest,places=4)
 
 
 if __name__ == '__main__':

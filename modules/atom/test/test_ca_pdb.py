@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
 
     def test_one(self):
         """Test that writing hierarchies to pdb as cas works"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.open_input_file("input.pdb"), m)
         hs = IMP.atom.create_simplified_along_backbone(h, 1)
         o = io.BytesIO()

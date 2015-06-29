@@ -29,7 +29,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT XYZ : public Decorator {
   static void do_setup_particle(
-      kernel::Model *m, kernel::ParticleIndex pi,
+      Model *m, ParticleIndex pi,
       // This method and the next one need to take a vector (not a ref)
       // as otherwise, you can pass the vector from one and use it to
       // create another. But this would resize the vector and so invalidate
@@ -115,7 +115,7 @@ class IMPCOREEXPORT XYZ : public Decorator {
     return get_model()->get_coordinate_derivatives(get_particle_index());
   }
 
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_coordinate_key(2), pi);
   }
 
@@ -158,27 +158,25 @@ inline void set_vector_geometry(Decorator d, const algebra::Vector3D &v) {
   core::XYZ(d).set_coordinates(v);
 }
 
+inline const algebra::Vector3D get_vector_geometry(
+    WeakPointer<Particle> d) {
+  return core::XYZ(d).get_coordinates();
+}
+/** \genericgeometry */
+inline void set_vector_geometry(WeakPointer<Particle> d,
+                                const algebra::Vector3D &v) {
+  core::XYZ(d).set_coordinates(v);
+}
+inline const algebra::Vector3D get_vector_geometry(
+    Pointer<Particle> d) {
+  return core::XYZ(d).get_coordinates();
+}
+/** \genericgeometry */
+inline void set_vector_geometry(Pointer<Particle> d,
+                                const algebra::Vector3D &v) {
+  core::XYZ(d).set_coordinates(v);
+}
 IMPKERNEL_END_NAMESPACE
-IMPBASE_BEGIN_NAMESPACE
-inline const algebra::Vector3D get_vector_geometry(
-    base::WeakPointer<kernel::Particle> d) {
-  return core::XYZ(d).get_coordinates();
-}
-/** \genericgeometry */
-inline void set_vector_geometry(base::WeakPointer<kernel::Particle> d,
-                                const algebra::Vector3D &v) {
-  core::XYZ(d).set_coordinates(v);
-}
-inline const algebra::Vector3D get_vector_geometry(
-    base::Pointer<kernel::Particle> d) {
-  return core::XYZ(d).get_coordinates();
-}
-/** \genericgeometry */
-inline void set_vector_geometry(base::Pointer<kernel::Particle> d,
-                                const algebra::Vector3D &v) {
-  core::XYZ(d).set_coordinates(v);
-}
-IMPBASE_END_NAMESPACE
 
 #endif
 
@@ -205,7 +203,7 @@ IMPCOREEXPORT double get_dihedral(XYZ a, XYZ b, XYZ c, XYZ d);
 */
 IMPCOREEXPORT void transform(XYZ a, const algebra::Transformation3D &tr);
 
-IMP_DECORATORS(XYZ, XYZs, kernel::ParticlesTemp);
+IMP_DECORATORS(XYZ, XYZs, ParticlesTemp);
 
 IMPCORE_END_NAMESPACE
 

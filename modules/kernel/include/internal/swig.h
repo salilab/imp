@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_SWIG_H
 #define IMPKERNEL_INTERNAL_SWIG_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "../Particle.h"
 #include "../ParticleTuple.h"
 #include "../Restraint.h"
@@ -19,8 +19,8 @@
 #include "../Optimizer.h"
 #include "container_helpers.h"
 #include <boost/unordered_map.hpp>
-#include <IMP/base/internal/swig.h>
-#include <IMP/base/deprecation_macros.h>
+#include <IMP/internal/swig_base.h>
+#include <IMP/deprecation_macros.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
@@ -40,7 +40,7 @@ class IMPKERNELEXPORT _ConstRestraint : public Restraint {
       : Restraint(m, "ConstRestraint%1%"), v_(v), ps_(get_particles(m, pis)) {}
   double get_value() const { return v_; }
   Restraints do_create_decomposition() const;
-  double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
   ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(_ConstRestraint);
@@ -147,7 +147,7 @@ IMPKERNELEXPORT unsigned int _take_particles(const Particles &ps);
 IMPKERNELEXPORT unsigned int _take_particles(Model *m, const Particles &ps);
 
 IMPKERNELEXPORT unsigned int _take_particles(Model *m, const Particles &ps,
-                                             base::TextOutput out);
+                                             TextOutput out);
 IMPKERNELEXPORT const Particles &_give_particles(Model *m);
 IMPKERNELEXPORT const Particles &_pass_particles(const Particles &ps);
 IMPKERNELEXPORT Particle *_pass_particle(Particle *ps);
@@ -186,7 +186,7 @@ inline void bad_pass(FloatKeys *) {}
 
 inline FloatRange _get_range(Model *m, FloatKey k) { return m->get_range(k); }
 
-IMPKERNELEXPORT ParticlesTemp
+IMPKERNELEXPORT ParticleIndexes
     _create_particles_from_pdb(std::string name, Model *m);
 
 //! Track the pairs of particles passed.

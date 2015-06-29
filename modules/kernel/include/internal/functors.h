@@ -9,16 +9,16 @@
 #ifndef IMPKERNEL_INTERNAL_FUNCTORS_H
 #define IMPKERNEL_INTERNAL_FUNCTORS_H
 
-#include <IMP/kernel/kernel_config.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/kernel_config.h>
+#include <IMP/Pointer.h>
 #include "../Model.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Pred, bool Sense>
 class PredicateEquals {
-  base::PointerMember<const Pred> p_;
-  base::Pointer<Model> m_;
+  PointerMember<const Pred> p_;
+  Pointer<Model> m_;
   int v_;
 
  public:

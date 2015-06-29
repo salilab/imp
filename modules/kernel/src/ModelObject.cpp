@@ -4,20 +4,20 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/kernel/ModelObject.h>
-#include <IMP/kernel/container_base.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/container_base.h>
+#include <IMP/ModelObject.h>
+#include <IMP/container_base.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
+#include <IMP/container_base.h>
 // should move to own .cpp
-#include <IMP/kernel/input_output.h>
+#include <IMP/input_output.h>
 
 #include <algorithm>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ModelObject::ModelObject(kernel::Model *m, std::string name)
-    : base::Object(name), model_(m) {
+ModelObject::ModelObject(Model *m, std::string name)
+    : Object(name), model_(m) {
   m->do_add_model_object(this);
 }
 

@@ -10,7 +10,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 FittingSolutionRecords get_close_to_point(
     const FittingSolutionRecords &fit_sols, atom::Hierarchy mh,
-    IMP::kernel::Particle *ap, Float dist) {
+    IMP::Particle *ap, Float dist) {
   FittingSolutionRecords pruned_fit_sols;
   Float dist2 = dist * dist;
   IMP::algebra::Vector3D ap_centroid = IMP::core::XYZ(ap).get_coordinates();

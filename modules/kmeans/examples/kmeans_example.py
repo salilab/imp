@@ -5,6 +5,9 @@
 from __future__ import print_function
 import IMP
 import IMP.kmeans
+import sys
+
+IMP.setup_from_argv(sys.argv, "kmeans example")
 
 
 def add_points(km):
@@ -19,7 +22,7 @@ def add_points(km):
     km.add_data_pt([9.2, 11])
     km.add_data_pt([0, 0])
 
-IMP.base.set_log_level(IMP.base.PROGRESS)
+IMP.set_log_level(IMP.PROGRESS)
 km = IMP.kmeans.KMeans()
 add_points(km)
 # cluster data

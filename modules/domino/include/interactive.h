@@ -13,10 +13,10 @@
 #include "Subset.h"
 #include "subset_filters.h"
 #include "assignment_containers.h"
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/RestraintSet.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/display/Writer.h>
 #include <IMP/dependency_graph.h>

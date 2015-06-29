@@ -6,7 +6,7 @@ import IMP.multifit
 
 
 def main():
-    IMP.base.set_log_level(IMP.base.SILENT)
+    IMP.set_log_level(IMP.SILENT)
     usage = "usage: %prog [options] <complex.pdb> <output: anchor_graph.cmm>\n Description: The script gets as input a PDB file of a complex and calculates an anchor graph,\n such that nodes corresponds to the centroids of its chains and \n edges are between chains that are close in space."
     parser = OptionParser(usage)
     (options, args) = parser.parse_args()
@@ -15,7 +15,7 @@ def main():
     pdb_fn = args[0]
     cmm_fn = args[1]
     # read the protein
-    mdl = IMP.kernel.Model()
+    mdl = IMP.Model()
     mh = IMP.atom.read_pdb(pdb_fn, mdl, IMP.atom.CAlphaPDBSelector())
     IMP.atom.add_radii(mh)
     # find the centers of the individual chains

@@ -1,5 +1,5 @@
 /**
- *  \file kernel::RestraintGraph.cpp
+ *  \file RestraintGraph.cpp
  *  \brief creates a MRF from a set of particles and restraints
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,8 +9,8 @@
 #include <IMP/domino/internal/inference_utility.h>
 #include <IMP/domino/internal/tree_inference.h>
 #include <IMP/domino/assignment_tables.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/base/log.h>
+#include <IMP/Particle.h>
+#include <IMP/log.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
@@ -23,8 +23,8 @@ void load_merged_assignments(
     const Subset &second_subset, AssignmentContainer *second,
     const SubsetFilterTables &filters, ListSubsetFilterTable *lsft,
     InferenceStatistics *stats, size_t max_states, AssignmentContainer *out) {
-  base::Pointer<AssignmentContainer> outp(out);
-  IMP::base::PointerMember<AssignmentContainer> firstp(first), secondp(second);
+  Pointer<AssignmentContainer> outp(out);
+  IMP::PointerMember<AssignmentContainer> firstp(first), secondp(second);
   IMP_FUNCTION_LOG;
   EdgeData ed = get_edge_data(first_subset, second_subset, filters);
   load_union(first_subset, second_subset, first, second, ed, max_states, out);
@@ -39,7 +39,7 @@ void load_leaf_assignments(const Subset &merged_subset,
                            ListSubsetFilterTable *lsft,
                            InferenceStatistics *stats,
                            AssignmentContainer *out) {
-  base::Pointer<AssignmentContainer> outp(out);
+  Pointer<AssignmentContainer> outp(out);
   IMP_FUNCTION_LOG;
   IMP_LOG_VERBOSE("Looking at leaf " << merged_subset << std::endl);
   states->load_assignments(merged_subset, out);
@@ -54,7 +54,7 @@ void load_best_conformations_internal(
     const AssignmentsTable *states, const SubsetFilterTables &filters,
     ListSubsetFilterTable *lsft, InferenceStatistics *stats, unsigned int max,
     boost::progress_display *progress, AssignmentContainer *out) {
-  base::Pointer<AssignmentContainer> outp(out);
+  Pointer<AssignmentContainer> outp(out);
   typedef boost::property_map<MergeTree, boost::vertex_name_t>::const_type
       SubsetMap;
   typedef boost::graph_traits<MergeTree>::adjacency_iterator NeighborIterator;
@@ -95,9 +95,9 @@ void load_best_conformations(const MergeTree &mt, int root,
                              ListSubsetFilterTable *lsft,
                              InferenceStatistics *stats, unsigned int max,
                              AssignmentContainer *out) {
-  base::Pointer<AssignmentContainer> outp(out);
+  Pointer<AssignmentContainer> outp(out);
   boost::scoped_ptr<boost::progress_display> progress;
-  if (base::get_log_level() == base::PROGRESS) {
+  if (get_log_level() == PROGRESS) {
     progress.reset(new boost::progress_display(boost::num_vertices(mt)));
   }
   return load_best_conformations_internal(mt, root, all_particles, states,

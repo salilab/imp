@@ -1,8 +1,6 @@
 /**
- *  \file IMP/kernel/ClassnamePredicate.h
+ *  \file IMP/ClassnamePredicate.h
  *  \brief Define ClassnamePredicate.
- *
- *  BLURB
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
@@ -10,7 +8,7 @@
 #ifndef IMPKERNEL_CLASSNAME_PREDICATE_H
 #define IMPKERNEL_CLASSNAME_PREDICATE_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
@@ -28,7 +26,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     Implementers should check out IMP_CLASSNAME_PREDICATE().
 */
 class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
-                                           public base::Object {
+                                           public Object {
  public:
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;
@@ -42,23 +40,23 @@ class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
   virtual Ints get_value(const PLURALVARIABLETYPE &o) const;
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  virtual void remove_if_equal(kernel::Model *m, PLURALINDEXTYPE &ps,
+  virtual void remove_if_equal(Model *m, PLURALINDEXTYPE &ps,
                                int v) const;
-  virtual void remove_if_not_equal(kernel::Model *m, PLURALINDEXTYPE &ps,
+  virtual void remove_if_not_equal(Model *m, PLURALINDEXTYPE &ps,
                                    int v) const;
 #endif
 
   //! Compute the predicate and the derivative if needed.
-  virtual int get_value_index(kernel::Model *m, PASSINDEXTYPE vt) const;
+  virtual int get_value_index(Model *m, PASSINDEXTYPE vt) const;
 
   //! Enable them to be use as functors
   /** But beware of slicing.
    */
-  int operator()(kernel::Model *m, PASSINDEXTYPE vt) const {
+  int operator()(Model *m, PASSINDEXTYPE vt) const {
     return get_value_index(m, vt);
   }
 
-  virtual Ints get_value_index(kernel::Model *m,
+  virtual Ints get_value_index(Model *m,
                                const PLURALINDEXTYPE &o) const {
     Ints ret(o.size());
     for (unsigned int i = 0; i < o.size(); ++i) {

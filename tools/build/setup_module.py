@@ -42,17 +42,13 @@ def add_list_to_defines(cppdefines, data, sym, val, names):
 
 
 def make_header(options):
-    dir = os.path.join("include", "IMP", options.name)
+    if options.name == 'kernel':
+        dir = os.path.join("include", "IMP")
+    else:
+        dir = os.path.join("include", "IMP", options.name)
     file = os.path.join(dir, "%s_config.h" % options.name)
-    header_template = open(
-        os.path.join(
-            options.source,
-            "tools",
-            "build",
-            "config_templates",
-            "header.h"),
-        "r").read(
-    )
+    header_template = tools.CPPFileGenerator(os.path.join(options.source,
+                            "tools", "build", "config_templates", "header.h"))
     try:
         os.makedirs(dir)
     except:
@@ -61,29 +57,43 @@ def make_header(options):
 
     data = {}
     data["name"] = options.name
-    data["filename"] = "IMP/%s/%s_config.h" % (options.name, options.name)
+    if options.name == 'kernel':
+        data["namespace"] = "IMP"
+        data["begin_ns"] = "namespace IMP{"
+        data["end_ns"] = "}"
+        data["filename"] = "IMP/%s_config.h" % options.name
+    else:
+        data["namespace"] = "IMP::%s" % options.name
+        data["begin_ns"] = "namespace IMP{ namespace %s {" % options.name
+        data["end_ns"] = "} }"
+        data["filename"] = "IMP/%s/%s_config.h" % (options.name, options.name)
     data["cppprefix"] = "IMP%s" % options.name.upper().replace("_", "")
-    if data["name"] != "base":
+    if data["name"] != "kernel":
         data["showable"] = """#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 
-#include <IMP/base/Showable.h>
-#include <IMP/base/hash.h>
+#include <IMP/Showable.h>
+#include <IMP/hash.h>
 
-namespace IMP { namespace %(name)s {
-using ::IMP::base::Showable;
-using ::IMP::base::operator<<;
-using ::IMP::base::hash_value;
-} } // namespace
-namespace IMP { namespace %(name)s { namespace internal {
-using ::IMP::base::Showable;
-using ::IMP::base::operator<<;
-using ::IMP::base::hash_value;
-} } } // namespace
+%(begin_ns)s
+using ::IMP::Showable;
+using ::IMP::operator<<;
+using ::IMP::hash_value;
+%(end_ns)s // namespace
+%(begin_ns)s namespace internal {
+using ::IMP::Showable;
+using ::IMP::operator<<;
+using ::IMP::hash_value;
+} %(end_ns)s // namespace
 
 #endif // !defined(SWIG) && !defined(IMP_DOXYGEN)
 """ % data
     else:
         data["showable"] = ""
+    # Hack: add module alias for IMP::kernel and IMP::base
+    if data["name"] == "kernel":
+        data["showable"] = "namespace IMP{ namespace kernel = IMP; " \
+                           "namespace base = IMP; }\n" \
+                           + data["showable"]
 
     cppdefines = []
     if options.defines != "":
@@ -123,78 +133,83 @@ using ::IMP::base::hash_value;
         0,
         info["unfound_dependencies"])
     data["cppdefines"] = "\n".join(cppdefines)
-    tools.rewrite(file, header_template % data)
+    header_template.write(file, data)
 
+class ModuleDoxFileGenerator(tools.FileGenerator):
+    def __init__(self, template_file, modules):
+        self.modules = modules
+        tools.FileGenerator.__init__(self, template_file, '#')
+
+    def get_output_file_contents(self, options):
+        template = self.template
+        name = options.name
+        modules = self.modules
+        template = template.replace("@IMP_SOURCE_PATH@", options.source)
+        template = template.replace("@VERSION@", "NONE")
+        template = template.replace("@NAME@", name)
+        template = template.replace("@PROJECT_BRIEF@",
+                                    '"The Integrative Modeling Platform"')
+        template = template.replace("@RECURSIVE@", "YES")
+        template = template.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
+        template = template.replace("@IS_HTML@", "NO")
+        template = template.replace("@IS_XML@", "YES")
+        template = template.replace("@PROJECT_NAME@", "IMP." + name)
+        template = template.replace("@HTML_OUTPUT@", "../../doc/html/" + name)
+        template = template.replace("@XML_OUTPUT@", "xml")
+        template = template.replace("@TREEVIEW@", "NO")
+        template = template.replace("@GENERATE_TAGFILE@", "tags")
+        template = template.replace("@LAYOUT_FILE@",
+                          "%s/doc/doxygen/module_layout.xml" % options.source)
+        template = template.replace("@MAINPAGE@", "README.md")
+        template = template.replace("@INCLUDE_PATH@", "include")
+        template = template.replace("@FILE_PATTERNS@",
+                                    "*.cpp *.h *.py *.md *.dox")
+        template = template.replace("@WARNINGS@", "warnings.txt")
+        # include lib and doxygen in input
+        inputs = []
+        if options.name == "kernel":
+            inputs.append("lib/IMP/")
+            inputs.append("include/IMP/")
+            exclude = ["include/IMP/%s include/IMP/%s.h lib/IMP/%s" % (m, m, m)
+                       for m, g in tools.get_modules(options.source)]
+            exclude.append("include/IMP/base include/IMP/base.h lib/IMP/base")
+            template = template.replace("@EXCLUDE@",
+                               " \\\n                         ".join(exclude))
+        else:
+            template = template.replace("@EXCLUDE@", "")
+            inputs.append("include/IMP/" + options.name)
+            inputs.append("lib/IMP/" + options.name)
+        inputs.append("examples/" + options.name)
+        # suppress a warning since git removes empty dirs and doxygen
+        # gets confused if the input path doesn't exist
+        docpath = os.path.join(options.source, "modules", options.name, "doc")
+        if os.path.exists(docpath):
+            inputs.append(docpath)
+        # overview for module
+        inputs.append("../generated/IMP_%s.dox" % options.name)
+        template = template.replace("@INPUT_PATH@",
+                                " \\\n                         ".join(inputs))
+        tags = [os.path.join(options.source, 'doc', 'doxygen',
+                             'dummy_module_tags.xml')]
+        for m in modules:
+            tags.append(os.path.join("../", m, "tags") + "=" + "../" + m)
+        template = template.replace("@TAGS@",
+                                 " \\\n                         ".join(tags))
+        if options.name == "example":
+            template = template.replace("@EXAMPLE_PATH@",
+                         "examples/example %s/modules/example" % options.source)
+        else:
+            template = template.replace("@EXAMPLE_PATH@",
+                                       "examples/" + options.name)
+        return template
 
 def make_doxygen(options, modules):
     file = os.path.join("doxygen", options.name, "Doxyfile")
     name = options.name
-    template_file = os.path.join(
-        options.source,
-        "tools",
-        "build",
-        "doxygen_templates",
-        "Doxyfile.in")
-    template = open(template_file, "r").read()
-    template = template.replace("@IMP_SOURCE_PATH@", options.source)
-    template = template.replace("@VERSION@", "NONE")
-    template = template.replace("@NAME@", name)
-    template = template.replace("@PROJECT_BRIEF@",
-                                '"The Integrative Modeling Platform"')
-    template = template.replace("@RECURSIVE@", "YES")
-    template = template.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
-    template = template.replace("@IS_HTML@", "NO")
-    template = template.replace("@IS_XML@", "YES")
-    template = template.replace("@PROJECT_NAME@", "IMP." + name)
-    template = template.replace("@HTML_OUTPUT@", "../../doc/html/" + name)
-    template = template.replace("@XML_OUTPUT@", "xml")
-    template = template.replace("@TREEVIEW@", "NO")
-    template = template.replace("@GENERATE_TAGFILE@", "tags")
-    template = template.replace("@LAYOUT_FILE@",
-                                "%s/doc/doxygen/module_layout.xml" % options.source)
-    template = template.replace("@MAINPAGE@", "README.md")
-    template = template.replace("@INCLUDE_PATH@", "include")
-    template = template.replace("@FILE_PATTERNS@", "*.cpp *.h *.py *.md *.dox")
-    template = template.replace("@WARNINGS@", "warnings.txt")
-    # include lib and doxygen in imput
-    inputs = []
-    if options.name == "kernel":
-        inputs.append("include/IMP/")
-        exclude = ["include/IMP/%s include/IMP/%s.h" % (m, m)
-                   for m, g in tools.get_modules(options.source) if m != "kernel"]
-        template = template.replace(
-            "@EXCLUDE@",
-            " \\\n                         ".join(exclude))
-    else:
-        template = template.replace("@EXCLUDE@", "")
-    inputs.append("include/IMP/" + options.name)
-    inputs.append("lib/IMP/" + options.name)
-    inputs.append("examples/" + options.name)
-    # suppress a warning since git removes empty dirs and doxygen gets confused
-    # if the input path doesn't exist
-    docpath = os.path.join(options.source, "modules", options.name, "doc")
-    if os.path.exists(docpath):
-        inputs.append(docpath)
-    # overview for module
-    inputs.append("../generated/IMP_%s.dox" % options.name)
-    template = template.replace(
-        "@INPUT_PATH@",
-        " \\\n                         ".join(inputs))
-    tags = []
-    for m in modules:
-        tags.append(os.path.join("../", m, "tags") + "=" + "../" + m)
-    template = template.replace(
-        "@TAGS@",
-        " \\\n                         ".join(tags))
-    if options.name == "example":
-        template = template.replace("@EXAMPLE_PATH@",
-                                    "examples/example %s/modules/example" % options.source)
-    else:
-        template = template.replace(
-            "@EXAMPLE_PATH@",
-            "examples/" + options.name)
-    tools.rewrite(file, template)
-
+    g = ModuleDoxFileGenerator(os.path.join(options.source, "tools", "build",
+                                            "doxygen_templates", "Doxyfile.in"),
+                               modules)
+    g.write(file, options)
 
 def write_no_ok(module):
     new_order = [x for x in tools.get_sorted_order() if x != module]
@@ -272,12 +287,13 @@ def setup_module(module, source, datapath):
         else:
             unfound_modules.append(d)
     all_modules = tools.get_dependent_modules(modules, datapath)
+    moddir = os.path.join('IMP', '' if module == 'kernel' else module)
     swig_includes = [os.path.split(x)[1] for x
                      in tools.get_glob([os.path.join(source, "modules", module,
                                                      "pyext", "include", "*.i")])]\
-        + ["IMP/" + module + "/" + os.path.split(x)[1] for x
-           in tools.get_glob([os.path.join("include", "IMP", module, "*_macros.h")])]
-    swig_wrapper_includes = ["IMP/" + module + "/internal/" + os.path.split(x)[1] for x
+        + [os.path.join(moddir, os.path.split(x)[1]) for x
+           in tools.get_glob([os.path.join("include", moddir, "*_macros.h")])]
+    swig_wrapper_includes = [os.path.join(moddir, "internal", os.path.split(x)[1]) for x
                              in tools.get_glob([os.path.join(source, "modules", module, "include", "internal", "swig*.h")])]
     tools.mkdir(os.path.join("src", module))
     tools.mkdir(os.path.join("src", module + "_swig"))
@@ -413,12 +429,12 @@ def make_overview(options, cmdline_tools):
     )
     tools.rewrite(
         os.path.join("doxygen", "generated", "IMP_%s.dox" % options.name),
-                  """/** \\namespace IMP::%s
+                  """/** \\namespace %s
 \\tableofcontents
 
 %s
 */
-""" % (options.name, rmd))
+""" % ('IMP' if options.name == 'kernel' else 'IMP::' + options.name, rmd))
 
 
 def main():

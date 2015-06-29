@@ -10,18 +10,18 @@ class Tests(IMP.test.TestCase):
 
     def test_allp2(self):
         """Check the event optimizer states"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         for i in range(0, 5):
-            p = IMP.kernel.Particle(m)
+            p = m.add_particle("P%d" % i)
             ps.append(p)
-        ap = IMP.container.ListSingletonContainer(ps)
+        ap = IMP.container.ListSingletonContainer(m, ps)
         cp = IMP.core.ConstantSingletonPredicate(1)
         os = IMP.container.EventSingletonsOptimizerState(cp, ap,
                                                          1, 1, 10)
         opt = IMP.core.MonteCarlo(m)
         opt.add_optimizer_state(os)
-        self.assertRaises(IMP.base.EventException, os.update)
+        self.assertRaises(IMP.EventException, os.update)
 
 
 if __name__ == '__main__':

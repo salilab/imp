@@ -13,12 +13,12 @@
 #include "internal/bond_helpers.h"
 #include <IMP/display/particle_geometry.h>
 #include <IMP/display/primitive_geometries.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
 #include <IMP/Decorator.h>
 #include <IMP/core/XYZ.h>
 
-#include <IMP/kernel/internal/IndexingIterator.h>
+#include <IMP/internal/IndexingIterator.h>
 IMPATOM_BEGIN_NAMESPACE
 
 class Bond;
@@ -43,7 +43,7 @@ class IMPATOMEXPORT Bond : public Decorator {
  public:
   IMP_DECORATOR_METHODS(Bond, Decorator);
 
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return IMP::core::internal::graph_is_edge(m->get_particle(pi),
                                               internal::get_bond_data().graph_);
   }
@@ -89,21 +89,21 @@ class IMPATOMEXPORT Bond : public Decorator {
 class IMPATOMEXPORT Bonded : public Decorator {
   struct GetBond {
     typedef Bond result_type;
-    kernel::Particle *d_;
+    Particle *d_;
     GetBond() : d_(nullptr) {}
-    GetBond(kernel::Particle *d) : d_(d) {}
+    GetBond(Particle *d) : d_(d) {}
     Bond operator()(unsigned int i) const;
     bool operator==(const GetBond &o) const { return d_ == o.d_; }
   };
   struct GetBonded {
     typedef Bonded result_type;
-    kernel::Particle *d_;
+    Particle *d_;
     GetBonded() : d_(nullptr) {}
-    GetBonded(kernel::Particle *d) : d_(d) {}
+    GetBonded(Particle *d) : d_(d) {}
     Bonded operator()(unsigned int i) const;
     bool operator==(const GetBonded &o) const { return d_ == o.d_; }
   };
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi) {
+  static void do_setup_particle(Model *m, ParticleIndex pi) {
     graph_initialize_node(m->get_particle(pi),
                           internal::get_bond_data().graph_);
   }
@@ -112,7 +112,7 @@ class IMPATOMEXPORT Bonded : public Decorator {
   IMP_DECORATOR_METHODS(Bonded, Decorator);
   IMP_DECORATOR_SETUP_0(Bonded);
 
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return IMP::core::internal::graph_is_node(m->get_particle(pi),
                                               internal::get_bond_data().graph_);
   }
@@ -123,7 +123,7 @@ class IMPATOMEXPORT Bonded : public Decorator {
                                      internal::get_bond_data().graph_);
   }
 
-  kernel::ParticleIndexes get_bond_indexes() const {
+  ParticleIndexes get_bond_indexes() const {
     return graph_get_edges(get_particle(), internal::get_bond_data().graph_);
   }
 
@@ -132,7 +132,7 @@ class IMPATOMEXPORT Bonded : public Decorator {
               is no such bond
   */
   Bond get_bond(unsigned int i) const {
-    kernel::Particle *p =
+    Particle *p =
         graph_get_edge(get_particle(), i, internal::get_bond_data().graph_);
     return Bond(p);
   }
@@ -148,7 +148,7 @@ class IMPATOMEXPORT Bonded : public Decorator {
       desired.
   */
   Bonded get_bonded(unsigned int i) const {
-    kernel::Particle *p =
+    Particle *p =
         graph_get_edge(get_particle(), i, internal::get_bond_data().graph_);
     Bond bd(p);
     if (bd.get_bonded(0) == *this)
@@ -193,11 +193,11 @@ class IMPATOMEXPORT Bonded : public Decorator {
   /** @} */
 };
 
-IMP_DECORATORS(Bonded, Bondeds, kernel::ParticlesTemp);
-IMP_DECORATORS(Bond, Bonds, kernel::ParticlesTemp);
+IMP_DECORATORS(Bonded, Bondeds, ParticlesTemp);
+IMP_DECORATORS(Bond, Bonds, ParticlesTemp);
 
 inline Bonded Bond::get_bonded(unsigned int i) const {
-  kernel::Particle *p =
+  Particle *p =
       graph_get_node(get_particle(), i, internal::get_bond_data().graph_);
   return Bonded(p);
 }
@@ -212,10 +212,10 @@ inline Bonded Bonded::GetBonded::operator()(unsigned int i) const {
 #endif
 
 //! Connect the two wrapped particles by a bond.
-/** \param[in] a The first kernel::Particle as a Bonded
-    \param[in] b The second kernel::Particle as a Bonded
+/** \param[in] a The first Particle as a Bonded
+    \param[in] b The second Particle as a Bonded
     \param[in] t The type to use for the bond
-    \return Bond of the bond kernel::Particle.
+    \return Bond of the bond Particle.
 
     \ingroup bond
     \see Bond
@@ -224,11 +224,11 @@ inline Bonded Bonded::GetBonded::operator()(unsigned int i) const {
 IMPATOMEXPORT Bond create_bond(Bonded a, Bonded b, Int t);
 
 //! Connect the two wrapped particles by a custom bond.
-/** \param[in] a The first kernel::Particle as a Bonded
-    \param[in] b The second kernel::Particle as a Bonded
+/** \param[in] a The first Particle as a Bonded
+    \param[in] b The second Particle as a Bonded
     \param[in] length The length of the bond.
     \param[in] stiffness The stiffness of the bond.
-    \return Bond of the bond kernel::Particle.
+    \return Bond of the bond Particle.
 
     \ingroup bond
     \see Bond

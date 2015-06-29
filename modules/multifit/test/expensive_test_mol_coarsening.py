@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        self.mdl = IMP.kernel.Model()
+        self.mdl = IMP.Model()
         self.mhs = []
         self.mhs.append(IMP.atom.read_pdb(
             self.get_input_file_name("1z5s_A.pdb"),
@@ -18,11 +18,12 @@ class Tests(IMP.test.TestCase):
             self.get_input_file_name("1z5s_B.pdb"),
             self.mdl))
 
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
 
     def test_coarsening(self):
-        cmhs = IMP.multifit.create_coarse_molecules_from_molecules(
-            self.mhs, 30, self.mdl, 5)
+        with IMP.allow_deprecated():
+            cmhs = IMP.multifit.create_coarse_molecules_from_molecules(
+                                                   self.mhs, 30, self.mdl, 5)
         print(len(IMP.core.get_leaves(cmhs[0])), len(IMP.atom.get_by_type(self.mhs[0], IMP.atom.RESIDUE_TYPE)))
         print(len(IMP.core.get_leaves(cmhs[1])), len(IMP.atom.get_by_type(self.mhs[1], IMP.atom.RESIDUE_TYPE)))
         self.assertEqual(len(IMP.core.get_leaves(cmhs[0])), 5)

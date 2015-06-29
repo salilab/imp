@@ -11,15 +11,15 @@ class Tests(IMP.test.TestCase):
 
     def test_restraint_1(self):
         """Test ClosePairContainer complete list over time"""
-        m = IMP.kernel.Model()
-        IMP.base.set_log_level(IMP.base.SILENT)
-        ps = self.create_particles_in_box(m, 10)
+        m = IMP.Model()
+        IMP.set_log_level(IMP.SILENT)
+        ps = IMP.get_indexes(self.create_particles_in_box(m, 10))
         for p in ps:
-            IMP.core.XYZR.setup_particle(p, 0)
+            IMP.core.XYZR.setup_particle(m, p, 0)
         # test rebuilding under move, set input and change radius
-        pc = IMP.container.ListSingletonContainer(ps)
+        pc = IMP.container.ListSingletonContainer(m, ps)
         print("creat cpss " + str(pc))
-        # IMP.base.set_log_level(IMP.base.VERBOSE)
+        # IMP.set_log_level(IMP.VERBOSE)
         print(1)
         threshold = 1
         cpss = IMP.container.ClosePairContainer(pc, threshold,
@@ -27,35 +27,35 @@ class Tests(IMP.test.TestCase):
                                                 ),
                                                 100)
         m.update()
-        n = cpss.get_number_of_particle_pairs()
+        n = len(cpss.get_indexes())
         for i in range(0, 100):
             for p in ps:
                 r = IMP.algebra.get_random_vector_in(
                     IMP.algebra.Sphere3D(IMP.algebra.get_zero_vector_3d(), 5))
-                d = IMP.core.XYZ(p)
+                d = IMP.core.XYZ(m, p)
                 d.set_coordinates(d.get_coordinates() + r)
             # make sure internal checks in continer pass
             m.update()
-            self.assertEqual(n, cpss.get_number_of_particle_pairs())
+            self.assertEqual(n, len(cpss.get_indexes()))
 
     def test_cache(self):
-        m = IMP.kernel.Model()
-        IMP.base.set_log_level(IMP.base.TERSE)
-        ps = self.create_particles_in_box(m, 10)
+        m = IMP.Model()
+        IMP.set_log_level(IMP.TERSE)
+        ps = IMP.get_indexes(self.create_particles_in_box(m, 10))
         for p in ps:
-            IMP.core.XYZR.setup_particle(p, 1)
-        pc = IMP.container.ListSingletonContainer(ps)
+            IMP.core.XYZR.setup_particle(m, p, 1)
+        pc = IMP.container.ListSingletonContainer(m, ps)
         threshold = 1
         cpss = IMP.container.ClosePairContainer(pc, threshold,
                                                 IMP.core.GridClosePairsFinder(
                                                 ),
                                                 .01)
         m.update()
-        n = cpss.get_number_of_particle_pairs()
+        n = len(cpss.get_indexes())
         for p in ps:
             r = IMP.algebra.get_random_vector_in(
                 IMP.algebra.Sphere3D(IMP.algebra.get_zero_vector_3d(), 10))
-            d = IMP.core.XYZ(p)
+            d = IMP.core.XYZ(m, p)
             d.set_coordinates(d.get_coordinates() + r)
         print(cpss.get_number_of_full_rebuilds(), cpss.get_number_of_partial_rebuilds())
         m.update()

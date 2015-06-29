@@ -19,10 +19,10 @@ IMPISD_BEGIN_NAMESPACE
 // MarginalNOERestraint::MarginalNOERestraint() {}
 
 // add a contribution: simple case
-void MarginalNOERestraint::add_contribution(kernel::Particle *p1,
-                                            kernel::Particle *p2, double Iexp) {
-  kernel::ParticlePair pc(p1, p2);
-  kernel::ParticlePairsTemp pct(1, pc);
+void MarginalNOERestraint::add_contribution(Particle *p1,
+                                            Particle *p2, double Iexp) {
+  ParticlePair pc(p1, p2);
+  ParticlePairsTemp pct(1, pc);
   IMP_NEW(container::ListPairContainer, cont, (pct));
   // container::ListPairContainer cont(pct);
   add_contribution(cont, Iexp);
@@ -38,14 +38,14 @@ double MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     const {
   // compute gammahat and store distances
   double loggammahat = 1;
-  base::Vector<double> meandists;  // mean distances^-6, length(volumes_)
+  Vector<double> meandists;  // mean distances^-6, length(volumes_)
   // store interparticle distances^-6
-  base::Vector<base::Vector<double> > alldists;
+  Vector<Vector<double> > alldists;
   int ncontribs = volumes_.size();
   for (int i = 0; i < ncontribs; ++i)  // loop on all contributions
   {
     double mean = 0;
-    base::Vector<double> dists;
+    Vector<double> dists;
     IMP_CONTAINER_FOREACH(PairContainer, contribs_[i], {
       core::XYZ d0(get_model(), _1[0]);
       core::XYZ d1(get_model(), _1[1]);
@@ -66,7 +66,7 @@ double MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 
   // compute SS
   double SS = 0;
-  base::Vector<double> logterms;
+  Vector<double> logterms;
   for (int i = 0; i < ncontribs; ++i) {
     double val = log(volumes_[i] / meandists[i]) - loggammahat_;
     SS += square(val);
@@ -100,7 +100,7 @@ double MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp MarginalNOERestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
+  ModelObjectsTemp ret;
   for (unsigned i = 0; i < volumes_.size(); ++i) {
     ret += IMP::get_particles(get_model(),
                               contribs_[i]->get_all_possible_indexes());

@@ -13,11 +13,11 @@ IMPCORE_BEGIN_NAMESPACE
 DerivativesToRefined::DerivativesToRefined(Refiner *r, FloatKeys ks)
     : refiner_(r), ks_(ks) {}
 
-void DerivativesToRefined::apply_index(kernel::Model *m,
-                                       kernel::ParticleIndex pi) const {
-  kernel::Particle *p = m->get_particle(pi);
+void DerivativesToRefined::apply_index(Model *m,
+                                       ParticleIndex pi) const {
+  Particle *p = m->get_particle(pi);
   DerivativeAccumulator da;
-  kernel::ParticlesTemp ps = refiner_->get_refined(p);
+  ParticlesTemp ps = refiner_->get_refined(p);
 
   for (unsigned int i = 0; i < ps.size(); ++i) {
     for (unsigned int j = 0; j < ks_.size(); ++j) {
@@ -28,22 +28,22 @@ void DerivativesToRefined::apply_index(kernel::Model *m,
 }
 
 ModelObjectsTemp DerivativesToRefined::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret = refiner_->get_inputs(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret = refiner_->get_inputs(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret +=
-        IMP::kernel::get_particles(m, refiner_->get_refined_indexes(m, pis[i]));
+        IMP::get_particles(m, refiner_->get_refined_indexes(m, pis[i]));
   }
-  ret += IMP::kernel::get_particles(m, pis);
+  ret += IMP::get_particles(m, pis);
   return ret;
 }
 
 ModelObjectsTemp DerivativesToRefined::do_get_outputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret;
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret;
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret +=
-        IMP::kernel::get_particles(m, refiner_->get_refined_indexes(m, pis[i]));
+        IMP::get_particles(m, refiner_->get_refined_indexes(m, pis[i]));
   }
   return ret;
 }

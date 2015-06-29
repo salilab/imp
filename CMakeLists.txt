@@ -32,9 +32,9 @@ if(IS_DIRECTORY "${PROJECT_SOURCE_DIR}/.git")
   endif()
 endif()
 
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPExecuteProcess.cmake)
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPAddTests.cmake)
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/CheckCompiles.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPExecuteProcess.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPAddTests.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/CheckCompiles.cmake)
 
 imp_execute_process("check_common_problems" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/check_common_problems.py)
 
@@ -42,12 +42,12 @@ imp_execute_process("clean_build_dir" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE
 
 imp_execute_process("setup_cmake" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_cmake.py)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules)
 
 enable_testing()
 
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPFindC++11.cmake)
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF_source/cmake_modules/IMPFindCompilerFlags.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindC++11.cmake)
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindCompilerFlags.cmake)
 
 if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
@@ -57,8 +57,6 @@ endif(POLICY CMP0017)
 if(POLICY CMP0042)
 cmake_policy(SET CMP0042 OLD)
 endif(POLICY CMP0042)
-
-set(IMP_TEST_SETUP ${PROJECT_BINARY_DIR}/setup_imp.py)
 
 set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")
@@ -107,8 +105,16 @@ endif()
 
 string(REGEX MATCHALL "[a-zA-Z]+" percpplist "${IMP_PER_CPP_COMPILATION}")
 foreach(m ${percpplist})
-message(STATUS ${m} " is percpp")
-set(IMP_${m}_IS_PER_CPP 1)
+  message(STATUS ${m} " is percpp")
+  set(IMP_${m}_IS_PER_CPP 1)
+endforeach(m)
+
+string(REGEX MATCHALL "[a-zA-Z]+" cudalist "${IMP_CUDA}")
+foreach(m ${cudalist})
+  string(TOUPPER ${m} M)
+  message(STATUS ${m} " is cuda lib")
+  set(IMP_${m}_IS_CUDA 1)
+  add_definitions( -DIMP_${M}_CUDA_LIB )
 endforeach(m)
 
 if(NOT DEFINED PYTHON_INCLUDE_DIRS AND NOT IMP_STATIC)
@@ -177,17 +183,10 @@ imp_execute_process("setup_all" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_all.py
                     --source=${CMAKE_SOURCE_DIR})
 
-include(${PROJECT_SOURCE_DIR}/tools/build/cmake_files/MakeContainers.cmake)
-
 imp_execute_process("making containers" ${CMAKE_BINARY_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_containers.py)
 
-imp_execute_process("setup_module_alias for kernel" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py
-                    --source=${CMAKE_SOURCE_DIR} --module=kernel "--alias=")
-
-
-
+include(${PROJECT_SOURCE_DIR}/tools/build/cmake_files/MakeContainers.cmake)
 
 # Don't link in libpython (that prevents the extension from being used in
 # later compatible versions of Python), except on Windows where all DLL
@@ -257,6 +256,11 @@ file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.FileSystem" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.ProgramOptions" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
 
+if(NOT IMP_STATIC)
+  # Automatically enable OpenMP if available and at least version 3
+  find_package(OpenMP3)
+endif()
+
 add_custom_target("IMP-version"
                   COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_version.py --source=${CMAKE_SOURCE_DIR}
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -292,12 +296,16 @@ foreach(mod ${enabled_modules})
   add_custom_target(IMP.${mod} DEPENDS
   IMP.${mod}-lib
   ${IMP_${mod}_BINS}
+  ${IMP_${mod}_UTILS}
   ${IMP_${mod}_TESTS}
   ${IMP_${mod}_BENCHMARKS}
   ${IMP_${mod}_PYTHON}
   ${IMP_${mod}_EXAMPLES}
   ${IMP_${mod}_DOC})
 endforeach(mod)
+
+imp_execute_process("setup_module_alias for kernel" ${CMAKE_BINARY_DIR}
+                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py)
 
 list(INSERT IMP_PYTHONPATH 0 "${CMAKE_BINARY_DIR}/lib")
 list(INSERT IMP_LDPATH 0 "${CMAKE_BINARY_DIR}/lib")
@@ -323,26 +331,30 @@ imp_execute_process("setup_imppy" ${CMAKE_BINARY_DIR}
 
 if(IMP_DOXYGEN_FOUND)
 
- file(GLOB docs ${CMAKE_SOURCE_DIR}/doc/*.dox
-   ${CMAKE_SOURCE_DIR}/doc/*.md)
+ file(GLOB docs ${CMAKE_SOURCE_DIR}/doc/*/*.dox
+   ${CMAKE_SOURCE_DIR}/doc/*/*.md)
 
   add_custom_target(IMP-doc
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${CMAKE_SOURCE_DIR}"
-    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
+    # Generate manual's tag file so we can link from the refguide to it
+    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual.xml
+    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/ref.xml
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_cross_refs.py
-    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/warnings.txt
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_links.py ${CMAKE_BINARY_DIR}/doc/html
-    COMMAND ${CMAKE_SOURCE_DIR}/doc/tutorial/setup.py
-    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/tutorial
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/tutorial-warnings.txt
+    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/ref.html
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/ref-warnings.txt
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_links.py ${CMAKE_BINARY_DIR}/doc/ref
+    # Rebuild manual so that it can link to the refguide tags
+    COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual.html
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/manual-warnings.txt
+    COMMAND patch -p1 < ${CMAKE_SOURCE_DIR}/doc/doxygen/search.patch
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_add_nav.py
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS ${IMP_DOC_DEPENDS} ${docs} ${IMP_DOXYGEN_FETCH} IMP-version
     COMMENT "Building documentation")
 
   add_custom_target(IMP-doc-install
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/html" "${CMAKE_INSTALL_FULL_DOCDIR}/html"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/tutorial" "${CMAKE_INSTALL_FULL_DOCDIR}/tutorial"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/manual" "${CMAKE_INSTALL_FULL_DOCDIR}/manual"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/ref" "${CMAKE_INSTALL_FULL_DOCDIR}/ref"
     DEPENDS "IMP-doc"
     COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}")
 else()

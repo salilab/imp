@@ -11,7 +11,7 @@
 #include <IMP/core/core_config.h>
 #include <IMP/generic.h>
 #include <IMP/SingletonScore.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/singleton_macros.h>
 
@@ -22,17 +22,17 @@ IMPCORE_BEGIN_NAMESPACE
     to a unary function.*/
 template <class UF>
 class GenericAttributeSingletonScore : public SingletonScore {
-  IMP::base::PointerMember<UF> f_;
+  IMP::PointerMember<UF> f_;
   FloatKey k_;
 
  public:
   //! Apply function f to attribute k
   GenericAttributeSingletonScore(UnaryFunction *f, FloatKey k);
-  virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
+  virtual double evaluate_index(Model *m, ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE {
-    return IMP::kernel::get_particles(m, pis);
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+    return IMP::get_particles(m, pis);
   }
   IMP_SINGLETON_SCORE_METHODS(GenericAttributeSingletonScore);
   IMP_OBJECT_METHODS(GenericAttributeSingletonScore);
@@ -45,7 +45,7 @@ inline GenericAttributeSingletonScore<UF>::GenericAttributeSingletonScore(
     : f_(f), k_(k) {}
 template <class UF>
 inline Float GenericAttributeSingletonScore<UF>::evaluate_index(
-    kernel::Model *m, kernel::ParticleIndex pi,
+    Model *m, ParticleIndex pi,
     DerivativeAccumulator *da) const {
   if (da) {
     Float v, d;

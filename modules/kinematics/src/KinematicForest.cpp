@@ -9,21 +9,21 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/kinematics/KinematicForest.h>
 #include <IMP/atom/Hierarchy.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-KinematicForest::KinematicForest(kernel::Model* m)
+KinematicForest::KinematicForest(Model* m)
     : Object("IMP_KINEMATICS_KINEMATIC_FOREST"),
       m_(m),
       is_internal_coords_updated_(true),
       is_external_coords_updated_(true) {}
 
 // build an entire tree from an existing hierarchy
-KinematicForest::KinematicForest(kernel::Model* m,
+KinematicForest::KinematicForest(Model* m,
                                  IMP::atom::Hierarchy hierarchy)
     : Object("IMP_KINEMATICS_KINEMATIC_FOREST"), m_(m) {
   // TODO: implement
@@ -38,7 +38,7 @@ void KinematicForest::add_edge(Joint* joint) {
   KinematicNode parent_kn, child_kn;
 
   // decorate parent and store here
-  kernel::Particle* parent_p = parent_rb.get_particle();
+  Particle* parent_p = parent_rb.get_particle();
   if (!KinematicNode::get_is_setup(parent_p)) {
     parent_kn = KinematicNode::setup_particle(parent_p, this);
     nodes_.insert(parent_kn);
@@ -50,12 +50,12 @@ void KinematicForest::add_edge(Joint* joint) {
                     << parent_rb << " in the joint " << joint
                     << " was already stored in a different kinematic forest -"
                     << " this IMP version does not support such switching",
-                IMP::base::ValueException);
+                IMP::ValueException);
     }
   }
 
   // decorate child and store here
-  kernel::Particle* child_p = child_rb.get_particle();
+  Particle* child_p = child_rb.get_particle();
   if (!KinematicNode::get_is_setup(child_p)) {
     child_kn = KinematicNode::setup_particle(child_p, this, joint);
     nodes_.insert(child_kn);
@@ -66,7 +66,7 @@ void KinematicForest::add_edge(Joint* joint) {
                     << child_rb << " in the joint " << joint
                     << " was already stored in a different kinematic forest -"
                     << " this IMP version does not support such switching",
-                IMP::base::ValueException);
+                IMP::ValueException);
     }
 
     if (roots_.find(child_kn) != roots_.end()) {
@@ -74,7 +74,7 @@ void KinematicForest::add_edge(Joint* joint) {
     } else {
       IMP_THROW("IMP currently does not support switching of "
                     << " parents in a kinematic tree",
-                IMP::base::ValueException);
+                IMP::ValueException);
     }
   }
 

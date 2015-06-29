@@ -17,8 +17,8 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/core/rigid_bodies.h>
 
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
 
 #include <vector>
 #include <deque>
@@ -90,14 +90,14 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     hierarchy (or tree) where the resolution of the representation increases
     as you move further from the root. That is, if a parent has
     some particular property (eg, marks out a volume by having
-    a x,y,z coordinates and a radius), then the children should have
+    x,y,z coordinates and a radius), then the children should have
     a higher resolution form of that information (eg, mark out a more
-    detailed excluded volume by defining a set of balls which having
+    detailed excluded volume by defining a set of balls which have
     approximately the same total volume).
 
     \section tree_basics Tree Basics
     In a tree you have a set of nodes, represented by Hierarchy particles.
-    Each node can have a node can have at most one parent. The node with no
+    Each node can have at most one parent. The node with no
     parent is known as the root of the tree.
 
     Here is a simple example with a protein with three residues. Two of the
@@ -167,7 +167,7 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     - all particles in the hierarchy are from the same model
     - all Atoms have a Residue as the parent
     - any Atom with a non-heterogen atom type is part of a protein,
-    DNA or RNA molecule.
+    DNA or RNA molecule
     - all Residue children of a particle appear in order based
       on their index
     - all Atom children of a particle appear in order of their
@@ -207,19 +207,9 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 #ifndef IMP_DOXYGEN
   typedef boost::false_type DecoratorHasTraits;
 
-  //! \deprecated_at{2.3} Check explicitly instead. */
-  IMPATOM_DEPRECATED_METHOD_DECL(2.3)
-  static Hierarchy decorate_particle(kernel::Particle *p) {
-    IMPATOM_DEPRECATED_METHOD_DEF(2.3, "Check explicitly instead");
-    if (get_is_setup(p))
-      return Hierarchy(p);
-    else
-      return Hierarchy();
-  }
-  /** Setup the particle as a hierarchy and add the passed particles
-      as children. */
-  static Hierarchy setup_particle(kernel::Particle *p,
-                                  kernel::ParticleIndexesAdaptor children) {
+  //! Setup the particle as a hierarchy; add the passed particles as children.
+  static Hierarchy setup_particle(Particle *p,
+                                  ParticleIndexesAdaptor children) {
     H::setup_particle(p, get_traits());
     Hierarchy ret(p);
     for (unsigned int i = 0; i < children.size(); ++i) {
@@ -231,30 +221,32 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return ret;
   }
 
-  static Hierarchy setup_particle(kernel::Particle *p) {
+  static Hierarchy setup_particle(Particle *p) {
     return setup_particle(p->get_model(), p->get_index());
   }
 
-  /** \deprecated_at{2.2} Use get_is_setup() instead. */
-  static bool particle_is_instance(kernel::Particle *p) {
+  IMPATOM_DEPRECATED_METHOD_DECL(2.2)
+  static bool particle_is_instance(Particle *p) {
+    IMPATOM_DEPRECATED_METHOD_DEF(2.2, "Use get_is_setup() instead");
     return H::get_is_setup(p, get_traits());
   }
-  static bool get_is_setup(kernel::Particle *p) {
+  static bool get_is_setup(Particle *p) {
     return H::get_is_setup(p, get_traits());
   }
-  /** \deprecated_at{2.2} Use get_is_setup() instead. */
-  static bool particle_is_instance(kernel::Model *m, kernel::ParticleIndex p) {
+  IMPATOM_DEPRECATED_METHOD_DECL(2.2)
+  static bool particle_is_instance(Model *m, ParticleIndex p) {
+    IMPATOM_DEPRECATED_METHOD_DEF(2.2, "Use get_is_setup() instead");
     return H::get_is_setup(m->get_particle(p), get_traits());
   }
 #endif
 
-  Hierarchy(kernel::Model *m, kernel::ParticleIndex pi)
+  Hierarchy(Model *m, ParticleIndex pi)
       : H(m, pi, get_traits()) {}
 
-  Hierarchy(kernel::ParticleAdaptor pi)
+  Hierarchy(ParticleAdaptor pi)
       : H(pi.get_model(), pi.get_particle_index(), get_traits()) {}
 
-  //! null constructor
+  //! Null constructor
   Hierarchy() {}
 
   //! The traits must match
@@ -265,11 +257,10 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
         " IMP.core.Hierarchy");
   }
 
-  /** Create a Hierarchy of level t by adding the needed
-      attributes. */
-  static Hierarchy setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                  kernel::ParticleIndexesAdaptor children =
-                                      kernel::ParticleIndexesAdaptor()) {
+  //! Create a Hierarchy of level t by adding the needed attributes.
+  static Hierarchy setup_particle(Model *m, ParticleIndex pi,
+                                  ParticleIndexesAdaptor children =
+                                      ParticleIndexesAdaptor()) {
     H::setup_particle(m, pi, get_traits());
     Hierarchy ret(m, pi);
     for (unsigned int i = 0; i < children.size(); ++i) {
@@ -281,9 +272,8 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return ret;
   }
 
-  /** Check if the particle has the needed attributes for a
-   cast to succeed */
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex p) {
+  //! Check if the particle has the needed attributes for a cast to succeed
+  static bool get_is_setup(Model *m, ParticleIndex p) {
     return H::get_is_setup(m->get_particle(p), get_traits());
   }
 
@@ -291,8 +281,9 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   /** Print information about the hierarchy if print_info is
       true and things are invalid.
       \note Returning true only means that no problems were
-      found, it can't check everything.*/
+      found; it can't check everything.*/
   bool get_is_valid(bool print_info) const;
+
   //! Add a child and check that the types are appropriate
   /** A child must have a type that is listed before the parent in the
       Type enum list.
@@ -306,7 +297,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   void show(std::ostream &out, std::string delimiter) const;
 #endif
 
-  /** Get the ith child based on the order they were added. */
+  //! Get the ith child based on the order they were added.
   Hierarchy get_child(unsigned int i) const {
     H hd = H::get_child(i);
     return Hierarchy(hd);
@@ -320,7 +311,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return ret;
   }
 
-  //! Get the children in a container of your choosing, eg kernel::ParticlesTemp
+  //! Get the children in a container of your choosing, eg ParticlesTemp
   template <class C>
   C get_children() const {
     C ret(get_number_of_children());
@@ -330,7 +321,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return ret;
   }
 
-  /** Get the parent particle. */
+  //! Get the parent particle.
   Hierarchy get_parent() const {
     H hd = H::get_parent();
     if (hd == H()) {
@@ -346,7 +337,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
       decorators for the current node in the hierarchy. As an
       example, if the particle decorated by this decorator is
       a Residue particle, then get_as_residue() returns
-      Residue(get_particle()), if not it returns Residue().
+      Residue(get_particle()); if not it returns Residue().
       @{
    */
   IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_ATOM_GET_AS_DECL);
@@ -362,8 +353,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 IMP_DECORATORS_DEF(Hierarchy, Hierarchies);
 
 #ifdef IMP_DOXYGEN
-/** The different types which can be passed to get_by_type()
- */
+//! The different types which can be passed to get_by_type()
 enum GetByType {
   ATOM_TYPE,
   RESIDUE_TYPE,
@@ -382,10 +372,7 @@ enum GetByType {
 };
 #endif
 
-/**
-   Gather all the molecular particles of a certain level
-   in the molecular hierarchy.
-*/
+//! Gather all the molecular particles of a certain level in the hierarchy.
 IMPATOMEXPORT Hierarchies get_by_type(Hierarchy mhd, GetByType t);
 
 //! Get the residue with the specified index
@@ -436,7 +423,7 @@ inline Hierarchies get_leaves(Hierarchy h) {
 
 /** \see Hierarchy */
 inline Hierarchies get_leaves(const Hierarchies &h) {
-  kernel::ParticlesTemp ret;
+  ParticlesTemp ret;
   for (unsigned int i = 0; i < h.size(); ++i) {
     core::GenericHierarchies cur = IMP::core::get_leaves(h[i]);
     ret.insert(ret.end(), cur.begin(), cur.end());
@@ -516,7 +503,7 @@ IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
 //! Delete the Hierarchy
 /** All bonds connecting to these atoms are destroyed as are
     hierarchy links in the Hierarchy and the particles are
-    removed from the kernel::Model. If this particle has a parent, it is
+    removed from the Model. If this particle has a parent, it is
     removed from the parent.
     \see Hierarchy
 */

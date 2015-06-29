@@ -9,7 +9,7 @@
 #include <IMP/domino/particle_states.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/rigid_bodies.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <algorithm>
 #include <boost/random/uniform_int.hpp>
 
@@ -18,14 +18,14 @@ ParticleStates::~ParticleStates() {}
 
 unsigned IndexStates::get_number_of_particle_states() const { return n_; }
 void IndexStates::load_particle_state(unsigned int i,
-                                      kernel::Particle *p) const {
+                                      Particle *p) const {
   p->set_value(k_, i);
 }
 
 unsigned int XYZStates::get_number_of_particle_states() const {
   return states_.size();
 }
-void XYZStates::load_particle_state(unsigned int i, kernel::Particle *p) const {
+void XYZStates::load_particle_state(unsigned int i, Particle *p) const {
   IMP_USAGE_CHECK(i < states_.size(), "XYZStates::load_particle_state "
                                           << "Out of range " << i
                                           << ">= " << states_.size());
@@ -36,7 +36,7 @@ unsigned int RigidBodyStates::get_number_of_particle_states() const {
   return states_.size();
 }
 void RigidBodyStates::load_particle_state(unsigned int i,
-                                          kernel::Particle *p) const {
+                                          Particle *p) const {
   IMP_USAGE_CHECK(i < states_.size(), "Out of range " << i);
   core::RigidBody(p).set_reference_frame(states_[i]);
 }
@@ -101,7 +101,7 @@ unsigned int NestedRigidBodyStates::get_number_of_particle_states() const {
   return states_.size();
 }
 void NestedRigidBodyStates::load_particle_state(unsigned int i,
-                                                kernel::Particle *p) const {
+                                                Particle *p) const {
   core::RigidMember(p).set_internal_transformation(states_[i]);
 }
 algebra::VectorKD NestedRigidBodyStates::get_embedding(unsigned int i) const {
@@ -122,52 +122,52 @@ unsigned int CompoundStates::get_number_of_particle_states() const {
   return a_->get_number_of_particle_states();
 }
 void CompoundStates::load_particle_state(unsigned int i,
-                                         kernel::Particle *p) const {
+                                         Particle *p) const {
   a_->load_particle_state(i, p);
   b_->load_particle_state(i, p);
 }
 
 namespace {
 class DummyConstraint : public Constraint {
-  kernel::Particle *in_;
-  kernel::ParticlesTemp out_;
+  Particle *in_;
+  ParticlesTemp out_;
 
  public:
-  DummyConstraint(kernel::Particle *in, const kernel::ParticlesTemp &out)
+  DummyConstraint(Particle *in, const ParticlesTemp &out)
       : Constraint(in->get_model(), "DummyConstraint%1%"), in_(in), out_(out) {}
   virtual void do_update_attributes() IMP_OVERRIDE;
   virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const;
-  virtual kernel::ModelObjectsTemp do_get_outputs() const;
+  virtual ModelObjectsTemp do_get_inputs() const;
+  virtual ModelObjectsTemp do_get_outputs() const;
   IMP_OBJECT_METHODS(DummyConstraint);
 };
 void DummyConstraint::do_update_attributes() {}
 void DummyConstraint::do_update_derivatives(DerivativeAccumulator *) {}
 ModelObjectsTemp DummyConstraint::do_get_outputs() const {
-  return kernel::ModelObjectsTemp(out_.begin(), out_.end());
+  return ModelObjectsTemp(out_.begin(), out_.end());
 }
 ModelObjectsTemp DummyConstraint::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(1, in_);
+  return ModelObjectsTemp(1, in_);
 }
 }
 
-RecursiveStates::RecursiveStates(kernel::Particle *p, Subset s,
+RecursiveStates::RecursiveStates(Particle *p, Subset s,
                                  const Assignments &ss,
                                  ParticleStatesTable *pst)
     : ParticleStates("RecursiveStates %1%"),
       s_(s),
       ss_(ss),
       pst_(pst),
-      sss_(new DummyConstraint(p, kernel::ParticlesTemp(s.begin(), s.end()))) {}
+      sss_(new DummyConstraint(p, ParticlesTemp(s.begin(), s.end()))) {}
 
 unsigned int RecursiveStates::get_number_of_particle_states() const {
   return ss_.size();
 }
 void RecursiveStates::load_particle_state(unsigned int i,
-                                          kernel::Particle *) const {
+                                          Particle *) const {
   IMP_USAGE_CHECK(i < get_number_of_particle_states(), "Out of range");
   for (unsigned int j = 0; j < s_.size(); ++j) {
-    IMP::base::PointerMember<ParticleStates> ps =
+    IMP::PointerMember<ParticleStates> ps =
         pst_->get_particle_states(s_[j]);
     ps->load_particle_state(ss_[i][j], s_[j]);
   }
@@ -178,7 +178,7 @@ struct RandomWrapper {
   int operator()(int i) {
     IMP_INTERNAL_CHECK(i > 0, "Zero i");
     boost::uniform_int<unsigned int> ri(0, i - i);
-    unsigned int ret = ri(base::random_number_generator);
+    unsigned int ret = ri(random_number_generator);
     return ret;
   }
 };

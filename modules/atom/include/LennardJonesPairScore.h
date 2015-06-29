@@ -11,7 +11,7 @@
 #include <IMP/atom/atom_config.h>
 #include <IMP/generic.h>
 #include <IMP/PairScore.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/atom/LennardJones.h>
 #include <IMP/atom/smoothing_functions.h>
 
@@ -39,7 +39,7 @@ IMPATOM_BEGIN_NAMESPACE
     particles.
  */
 class IMPATOMEXPORT LennardJonesPairScore : public PairScore {
-  IMP::base::PointerMember<SmoothingFunction> smoothing_function_;
+  IMP::PointerMember<SmoothingFunction> smoothing_function_;
   double repulsive_weight_, attractive_weight_;
 
   // Calculate A, B factors from particle well depths and radii
@@ -76,11 +76,11 @@ class IMPATOMEXPORT LennardJonesPairScore : public PairScore {
 
   double get_attractive_weight() const { return attractive_weight_; }
 
-  virtual double evaluate_index(kernel::Model *m,
-                                const kernel::ParticleIndexPair &p,
+  virtual double evaluate_index(Model *m,
+                                const ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(LennardJonesPairScore);
   IMP_OBJECT_METHODS(LennardJonesPairScore);
   ;

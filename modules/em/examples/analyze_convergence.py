@@ -6,20 +6,23 @@
 from __future__ import print_function
 import IMP.display
 import IMP.em
+import sys
+
+IMP.setup_from_argv(sys.argv, "analyze convergence")
 
 use_rigid_bodies = True
 bd = 10
 radius = 10
 
-m = IMP.kernel.Model()
-p = IMP.kernel.Particle(m)
+m = IMP.Model()
+p = IMP.Particle(m)
 IMP.atom.Mass.setup_particle(p, 10000)
 d = IMP.core.XYZR.setup_particle(p)
 d.set_radius(radius)
 
 # Set up the particle as either a rigid body or a simple ball
 if use_rigid_bodies:
-    prb = IMP.kernel.Particle(m)
+    prb = IMP.Particle(m)
     prb.set_name("rigid body")
     d.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
     drb = IMP.core.RigidBody.setup_particle(
@@ -53,23 +56,22 @@ dmap.resample()
 # computes statistic stuff about the map and insert it in the header
 dmap.calcRMS()
 IMP.em.write_map(dmap, "map.mrc", IMP.em.MRCReaderWriter())
-rs = IMP.kernel.RestraintSet(m)
-m.add_restraint(rs)
+rs = IMP.RestraintSet(m)
 # rs.set_weight(.003)
 
 # if rigid bodies are used, we need to define a refiner as
 # FitRestraint doesn't support just passing all the geometry
 r = IMP.em.FitRestraint([fp], dmap)
-rs.add_restraint(r)
+sf = IMP.core.RestraintsScoringFunction([rs, r])
 g = IMP.core.XYZDerivativeGeometry(d)
 g.set_name("deriv")
 w = IMP.display.PymolWriter("derivatives.pym")
 # kind of abusive
 steps = 4
-m.set_log_level(IMP.base.SILENT)
+m.set_log_level(IMP.SILENT)
 
 opt = IMP.core.ConjugateGradients(m)
-
+opt.set_scoring_function(sf)
 
 def try_point(i, j, k):
     print("trying", i, j, k)
@@ -78,7 +80,7 @@ def try_point(i, j, k):
     # display the score at this position
     cg = IMP.display.SphereGeometry(IMP.algebra.Sphere3D(vc, 1))
     cg.set_name("score")
-    v = m.evaluate(True)
+    v = sf.evaluate(True)
     cg.set_color(IMP.display.get_hot_color(v))
     w.add_geometry(cg)
     print("score and derivatives", v, to_move.get_derivatives())

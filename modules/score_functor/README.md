@@ -1,6 +1,6 @@
 \brief Composable functors to implement scores via compile-time composition.
 
-Currently, there is support for distance based IMP::PairScore types generated from the IMP::scoring_function::DistanceScore and IMP::scoring_function::DistancePairScore. Angles and others can be added if desired.
+Currently, there is support for distance based IMP::PairScore types generated from the IMP::score_functor::DistanceScore and IMP::score_functor::DistancePairScore. Angles and others can be added if desired.
 
 No functionality is exported to Python. It can be done with some work, but it
 is not clear that it would be very useful.

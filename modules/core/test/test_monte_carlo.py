@@ -8,23 +8,23 @@ class Tests(IMP.test.TestCase):
 
     def test_stats(self):
         """Test MonteCarlo stats"""
-        m = IMP.kernel.Model()
-        IMP.base.set_log_level(IMP.base.SILENT)
+        m = IMP.Model()
+        IMP.set_log_level(IMP.WARNING)
         mc = IMP.core.MonteCarlo(m)
-        mc.set_log_level(IMP.base.SILENT)
+        mc.set_log_level(IMP.WARNING)
         ps = []
         bb = IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0, 10):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZR.setup_particle(p)
             ps.append(d)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
             d.set_radius(.1)
             d.set_coordinates_are_optimized(True)
-        cpc = IMP.container.ConsecutivePairContainer(ps)
+        cpc = IMP.container.ConsecutivePairContainer(m, ps)
         hps = IMP.core.HarmonicDistancePairScore(1, 100)
         r = IMP.container.PairsRestraint(hps, cpc)
-        m.add_restraint(r)
+        mc.set_scoring_function([r])
         ms = [IMP.core.BallMover([x], .1) for x in ps]
         mv = IMP.core.SerialMover(ms)
         mc.add_mover(mv)

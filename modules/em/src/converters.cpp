@@ -29,9 +29,9 @@ algebra::Vector3Ds density2vectors(DensityMap *dmap, Float threshold) {
   return vecs;
 }
 
-Particles density2particles(DensityMap *dmap, Float threshold, kernel::Model *m,
+Particles density2particles(DensityMap *dmap, Float threshold, Model *m,
                             int step) {
-  kernel::Particles ps;
+  Particles ps;
   Float x, y, z, val;
   Float voxel_size = dmap->get_header()->get_spacing();
   Float r = sqrt(3. * voxel_size * voxel_size);
@@ -43,7 +43,7 @@ Particles density2particles(DensityMap *dmap, Float threshold, kernel::Model *m,
         ind = dmap->xyz_ind2voxel(i, j, k);
         val = dmap->get_value(ind);
         if (val > threshold) {
-          IMP_NEW(kernel::Particle, p, (m));
+          IMP_NEW(Particle, p, (m));
           x = dmap->get_location_in_dim_by_voxel(ind, 0);
           y = dmap->get_location_in_dim_by_voxel(ind, 1);
           z = dmap->get_location_in_dim_by_voxel(ind, 2);
@@ -57,19 +57,19 @@ Particles density2particles(DensityMap *dmap, Float threshold, kernel::Model *m,
   return ps;
 }
 
-SampledDensityMap *particles2density(const kernel::ParticlesTemp &ps,
+SampledDensityMap *particles2density(const ParticlesTemp &ps,
                                      Float resolution, Float apix,
-                                     int sig_cuttoff,
+                                     int sig_cutoff,
                                      const FloatKey &weight_key) {
-  base::Pointer<SampledDensityMap> dmap(
-      new SampledDensityMap(ps, resolution, apix, weight_key, sig_cuttoff));
+  Pointer<SampledDensityMap> dmap(
+      new SampledDensityMap(ps, resolution, apix, weight_key, sig_cutoff));
   return dmap.release();
 }
 
-SurfaceShellDensityMap *particles2surface(const kernel::ParticlesTemp &ps,
+SurfaceShellDensityMap *particles2surface(const ParticlesTemp &ps,
                                           Float apix,
                                           const FloatKey &weight_key) {
-  base::Pointer<SurfaceShellDensityMap> dmap(
+  Pointer<SurfaceShellDensityMap> dmap(
       new SurfaceShellDensityMap(ps, apix, weight_key));
   return dmap.release();
 }

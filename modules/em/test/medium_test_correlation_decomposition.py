@@ -43,9 +43,9 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)
-        IMP.base.set_check_level(IMP.base.NONE)
-        self.imp_model = IMP.kernel.Model()
+        IMP.set_log_level(IMP.SILENT)
+        IMP.set_check_level(IMP.NONE)
+        self.imp_model = IMP.Model()
         self.load_density_map("1z5s_10.mrc")
         self.load_proteins(["1z5s_A_fitted.pdb", "1z5s_B_fitted.pdb",
                             "1z5s_C_fitted.pdb", "1z5s_D_fitted.pdb", ])
@@ -147,14 +147,12 @@ class Tests(IMP.test.TestCase):
                 IMP.atom.Mass.get_mass_key(),
                 1., False)
             print("finish set fit restraint")
-            self.imp_model.add_restraint(r)
             print("add rstraint")
             decomposed_score += r.evaluate(False)
             print("after evaluate")
         full_r = IMP.em.FitRestraint(self.all_ps, self.scene, [0, 0],
                                      IMP.atom.Mass.get_mass_key(),
                                      1., False)
-        self.imp_model.add_restraint(full_r)
         full_score = full_r.evaluate(False)
         print("decomposed score:", decomposed_score - (len(self.mhs) - 1))
         print("decomposed score normalized:", full_score)

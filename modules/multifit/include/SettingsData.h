@@ -11,15 +11,15 @@
 #include <IMP/multifit/multifit_config.h>
 #include <IMP/base_types.h>
 #include <IMP/container_macros.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/kernel/Model.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
+#include <IMP/Model.h>
+#include <IMP/Pointer.h>
 #include <IMP/algebra/Transformation3D.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Holds data about a component needed for optimization
-class IMPMULTIFITEXPORT ComponentHeader : public IMP::base::Object {
+class IMPMULTIFITEXPORT ComponentHeader : public IMP::Object {
  public:
   ComponentHeader() : Object("ComponentHeader%1%") {
     name_ = "";
@@ -73,7 +73,7 @@ class IMPMULTIFITEXPORT ComponentHeader : public IMP::base::Object {
 IMP_OBJECTS(ComponentHeader, ComponentHeaders);
 
 //! Holds data about the assembly density needed for optimization
-class IMPMULTIFITEXPORT AssemblyHeader : public IMP::base::Object {
+class IMPMULTIFITEXPORT AssemblyHeader : public IMP::Object {
  public:
   AssemblyHeader() : Object("AssemblyHeader%1%") {
     dens_fn_ = "";
@@ -132,7 +132,7 @@ class IMPMULTIFITEXPORT AssemblyHeader : public IMP::base::Object {
 };
 
 //! Holds header data for optimization
-class IMPMULTIFITEXPORT SettingsData : public IMP::base::Object {
+class IMPMULTIFITEXPORT SettingsData : public IMP::Object {
  public:
   SettingsData() : Object("SettingsData%1%") { data_path_ = "./"; }
   static void show_component_header_line(std::ostream &out = std::cout) {
@@ -170,7 +170,7 @@ class IMPMULTIFITEXPORT SettingsData : public IMP::base::Object {
                   , , );
 
  protected:
-  IMP::base::PointerMember<AssemblyHeader> dens_data_;
+  IMP::PointerMember<AssemblyHeader> dens_data_;
   std::string asmb_fn_;
   std::string data_path_;
 };

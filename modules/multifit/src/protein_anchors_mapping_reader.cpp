@@ -12,7 +12,7 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 #include <IMP/multifit/path_reader_writer.h>
 #include <IMP/multifit/anchors_reader.h>
 #include <boost/algorithm/string.hpp>
@@ -82,7 +82,7 @@ boost::tuple<std::string, std::string, IntsList> parse_protein_line(
                   "wrong format, should look like |protein|| or "
                   "|protein|paths|"
                       << std::endl);
-  std::cout << "===== Line split size:" << line_split.size() << std::endl;
+  IMP_LOG_TERSE("===== Line split size:" << line_split.size() << std::endl);
   IntsList paths;
   std::string paths_fn;
   if (line_split.size() == 2) {
@@ -90,8 +90,8 @@ boost::tuple<std::string, std::string, IntsList> parse_protein_line(
                               << std::endl);
   }
   if (line_split.size() > 2) {
-    paths_fn = base::get_relative_path(config, line_split[2]);
-    std::cout << "PATH FN:" << paths_fn << std::endl;
+    paths_fn = get_relative_path(config, line_split[2]);
+    IMP_LOG_TERSE("PATH FN:" << paths_fn << std::endl);
     paths = read_paths(paths_fn.c_str(), max_paths);
   }
   return boost::make_tuple(boost::lexical_cast<std::string>(line_split[1]),
@@ -104,7 +104,7 @@ ProteinsAnchorsSamplingSpace read_protein_anchors_mapping(
     int max_paths) {
   ProteinsAnchorsSamplingSpace ret(prots);
   std::fstream in;
-  std::cout << "FN:" << anchors_prot_map_fn << std::endl;
+  IMP_LOG_TERSE("FN:" << anchors_prot_map_fn << std::endl);
   in.open(anchors_prot_map_fn.c_str(), std::fstream::in);
   if (!in.good()) {
     IMP_WARN(
@@ -118,8 +118,8 @@ ProteinsAnchorsSamplingSpace read_protein_anchors_mapping(
   // first line should be the anchors line
   getline(in, line);
   std::string anchors_fn =
-      base::get_relative_path(anchors_prot_map_fn, parse_anchors_line(line));
-  std::cout << "FN:" << anchors_fn << std::endl;
+      get_relative_path(anchors_prot_map_fn, parse_anchors_line(line));
+  IMP_LOG_TERSE("FN:" << anchors_fn << std::endl);
   multifit::AnchorsData anchors_data =
       multifit::read_anchors_data(anchors_fn.c_str());
   ret.set_anchors(anchors_data);

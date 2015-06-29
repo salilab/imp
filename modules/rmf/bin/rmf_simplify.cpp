@@ -4,8 +4,8 @@
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/atom/Chain.h>
 #include <IMP/atom/pdb.h>
-#include <IMP/base/flags.h>
-#include <IMP/base/Flag.h>
+#include <IMP/flags.h>
+#include <IMP/Flag.h>
 #include <IMP/rmf/atom_io.h>
 #include <IMP/atom/force_fields.h>
 #include <IMP/atom/Representation.h>
@@ -13,16 +13,16 @@
 #include <RMF/FileHandle.h>
 
 int main(int argc, char *argv[]) {
-  IMP::base::Flag<double> resolution("resolution", "The resolution to use in 1/A.",
+  IMP::Flag<double> resolution("resolution", "The resolution to use in 1/A.",
                                      1.0);
-  IMP::base::Flag<bool> multiresolution(
+  IMP::Flag<bool> multiresolution(
       "multiresolution", "Whether to create a multiresolution representation.");
 
-  IMP::Strings args = IMP::base::setup_from_argv(
+  IMP::Strings args = IMP::setup_from_argv(
       argc, argv, "Create a simplified representation of a pdb",
       "input.pdb output.rmf", 2);
 
-  IMP_NEW(IMP::kernel::Model, m, ());
+  IMP_NEW(IMP::Model, m, ());
   IMP::atom::Hierarchy hr = IMP::atom::read_pdb(args[0], m);
   if (multiresolution) {
     IMP::atom::add_bonds(hr);

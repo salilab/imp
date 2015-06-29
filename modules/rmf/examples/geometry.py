@@ -6,6 +6,9 @@ from __future__ import print_function
 import IMP.display
 import IMP.rmf
 import RMF
+import sys
+
+IMP.setup_from_argv(sys.argv, "geometry")
 
 # create a temporary file
 tfn = IMP.create_temporary_file_name("rmf_geometry", ".rmf")

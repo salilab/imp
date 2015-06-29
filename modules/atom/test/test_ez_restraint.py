@@ -9,7 +9,7 @@ class Test(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        self.m = IMP.kernel.Model()
+        self.m = IMP.Model()
         self.ref_scores = {}
         self.ref_scores["1h68.pdb"] = -36.4341363762
         self.ref_scores["1ors.pdb"] = -13.1726910037
@@ -21,8 +21,7 @@ class Test(IMP.test.TestCase):
             prot = IMP.atom.read_pdb(self.get_input_file_name(pdb),
                                      self.m, IMP.atom.CBetaPDBSelector())
             ps = IMP.atom.get_leaves(prot)
-            ez = IMP.atom.EzRestraint(ps)
-            self.m.add_restraint(ez)
+            ez = IMP.atom.EzRestraint(self.m, ps)
             self.rst[pdb] = ez
 
     def test_Ez(self):

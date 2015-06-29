@@ -6,21 +6,25 @@
 
 import IMP
 import IMP.core
+import IMP.container
 import IMP.algebra
 import IMP.atom
+import sys
 
-m = IMP.kernel.Model()
+IMP.setup_from_argv(sys.argv, "Connectivity restraint")
+
+m = IMP.Model()
 
 # Put the parent particles for each molecule
 hs = []
 
 # create the molecules, with 5 particles for each of 10 molecules
 for i in range(0, 10):
-    pr = IMP.kernel.Particle(m)
+    pr = IMP.Particle(m)
     pr.set_name("root " + str(i))
     d = IMP.atom.Hierarchy.setup_particle(pr)
     for j in range(0, 5):
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         p.set_name("fragment " + str(i) + " " + str(j))
         cd = IMP.atom.Fragment.setup_particle(p)
         d.add_child(cd)
@@ -35,8 +39,7 @@ cps = IMP.core.ChildrenRefiner(IMP.atom.Hierarchy.get_traits())
 # score based on the one closest particle from each set of balls
 lrps = IMP.core.KClosePairsPairScore(ps, cps, 1)
 # connect all 10 molecules together
-cr = IMP.core.ConnectivityRestraint(m, lrps)
-cr.set_particles(hs)
-m.add_restraint(cr)
+lsc = IMP.container.ListSingletonContainer(m, hs)
+cr = IMP.core.ConnectivityRestraint(lrps, lsc)
 
-m.evaluate(False)
+cr.evaluate(False)

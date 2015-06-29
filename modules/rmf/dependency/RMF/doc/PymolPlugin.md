@@ -1,0 +1,1 @@
+../plugins/pymol/README.md

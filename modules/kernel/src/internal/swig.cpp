@@ -4,9 +4,9 @@
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
-#include <IMP/kernel/internal/swig.h>
-#include <IMP/kernel/internal/pdb.h>
-#include <IMP/base/log.h>
+#include <IMP/internal/swig.h>
+#include <IMP/internal/pdb.h>
+#include <IMP/log.h>
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 double _ConstRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
@@ -70,7 +70,7 @@ unsigned int _take_particles(Model *, const Particles &ps) {
   return ps.size();
 }
 
-unsigned int _take_particles(Model *, const Particles &ps, base::TextOutput) {
+unsigned int _take_particles(Model *, const Particles &ps, TextOutput) {
   for (unsigned int i = 0; i < ps.size(); ++i) {
     IMP_CHECK_OBJECT(ps[i]);
   }
@@ -141,7 +141,7 @@ int _test_overload(const Particles &) { return 0; }
 
 int _test_overload(const Restraints &) { return 1; }
 
-ParticlesTemp _create_particles_from_pdb(std::string name, Model *m) {
+ParticleIndexes _create_particles_from_pdb(std::string name, Model *m) {
   return create_particles_from_pdb(name, m);
 }
 

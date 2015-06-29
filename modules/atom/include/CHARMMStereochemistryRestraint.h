@@ -10,8 +10,8 @@
 #define IMPATOM_CHARMM_STEREOCHEMISTRY_RESTRAINT_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Pointer.h>
+#include <IMP/Restraint.h>
 #include "StereochemistryPairFilter.h"
 #include "Hierarchy.h"
 #include "charmm_segment_topology.h"
@@ -37,13 +37,13 @@ IMPATOM_BEGIN_NAMESPACE
           and then evaluated using an AngleSingletonScore in combination
           with a container::SingletonsRestraint.
  */
-class IMPATOMEXPORT CHARMMStereochemistryRestraint : public kernel::Restraint {
-  kernel::Particles bonds_, angles_, dihedrals_, impropers_;
-  kernel::Particles full_bonds_, full_angles_, full_dihedrals_, full_impropers_;
-  IMP::base::PointerMember<BondSingletonScore> bond_score_;
-  IMP::base::PointerMember<AngleSingletonScore> angle_score_;
-  IMP::base::PointerMember<DihedralSingletonScore> dihedral_score_;
-  IMP::base::PointerMember<ImproperSingletonScore> improper_score_;
+class IMPATOMEXPORT CHARMMStereochemistryRestraint : public Restraint {
+  Particles bonds_, angles_, dihedrals_, impropers_;
+  Particles full_bonds_, full_angles_, full_dihedrals_, full_impropers_;
+  IMP::PointerMember<BondSingletonScore> bond_score_;
+  IMP::PointerMember<AngleSingletonScore> angle_score_;
+  IMP::PointerMember<DihedralSingletonScore> dihedral_score_;
+  IMP::PointerMember<ImproperSingletonScore> improper_score_;
 #ifndef IMP_DOXYGEN
   void init(Hierarchy h, CHARMMTopology *topology);
 #endif
@@ -69,9 +69,9 @@ class IMPATOMEXPORT CHARMMStereochemistryRestraint : public kernel::Restraint {
    */
   StereochemistryPairFilter *get_full_pair_filter();
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(CHARMMStereochemistryRestraint);
 };
 

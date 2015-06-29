@@ -20,7 +20,7 @@ using namespace IMP::display;
 namespace {
 int do_benchmark() {
   try {
-    IMP_NEW(kernel::Model, m, ());
+    IMP_NEW(Model, m, ());
     atom::Hierarchy prot =
         read_pdb(IMP::benchmark::get_data_path("extended.pdb"), m);
     // Read in the CHARMM heavy atom topology and parameter files
@@ -33,7 +33,7 @@ int do_benchmark() {
 
     // Using the CHARMM libraries, determine the ideal topology (atoms and their
     // connectivity) for the PDB file's primary sequence
-    base::Pointer<CHARMMTopology> topology = ff->create_topology(prot);
+    Pointer<CHARMMTopology> topology = ff->create_topology(prot);
 
     // Typically this modifies the C and N termini of each chain in the protein
     // by
@@ -50,10 +50,11 @@ int do_benchmark() {
        information.*/
     topology->setup_hierarchy(prot);
 
+    IMP_NEW(RestraintSet, rs, (m, "All restraints"));
     // Set up and evaluate the stereochemical part (bonds, angles, dihedrals,
     // impropers) of the CHARMM forcefield
     IMP_NEW(CHARMMStereochemistryRestraint, r, (prot, topology));
-    m->add_restraint(r);
+    rs->add_restraint(r);
 
     /* Add non-bonded interaction (in this case, Lennard-Jones). This needs to
        know the radii and well depths for each atom, so add them from the
@@ -68,12 +69,12 @@ int do_benchmark() {
     IMP_FOREACH(atom::Hierarchy atom, atoms) {
       core::XYZ(atom).set_coordinates_are_optimized(true);
     }
-    IMP_NEW(ListSingletonContainer, cont, (atoms));
+    IMP_NEW(ListSingletonContainer, cont, (m, IMP::internal::get_index(atoms)));
 
     /* Add a restraint for the Lennard-Jones interaction. This is built from
        a collection of building blocks. First, a
        ClosePairContainer maintains a list
-       of all pairs of kernel::Particles that are close.
+       of all pairs of Particles that are close.
        Next, all 1-2, 1-3 and 1-4 pairs
        from the stereochemistry created above are filtered out.
        Then, a LennardJonesPairScore scores a pair of atoms with the
@@ -85,11 +86,12 @@ int do_benchmark() {
 
     IMP_NEW(ForceSwitch, sf, (6.0, 7.0));
     IMP_NEW(LennardJonesPairScore, ps, (sf));
-    m->add_restraint(new PairsRestraint(ps, nbl));
+    rs->add_restraint(new PairsRestraint(ps, nbl));
 
     // Finally, evaluate the score of the whole system (without derivatives)
     IMP_NEW(ConjugateGradients, cg, (m));
-    if (IMP::base::run_quick_test) {
+    cg->set_scoring_function(rs);
+    if (IMP::run_quick_test) {
       cg->optimize(1);
     } else {
       cg->optimize(1000);
@@ -97,6 +99,7 @@ int do_benchmark() {
 
     //## Molecular Dynamics
     IMP_NEW(MolecularDynamics, md, (m));
+    md->set_scoring_function(rs);
     md->assign_velocities(300);
     md->set_maximum_time_step(2.0);
     /*## therm legend
@@ -121,7 +124,7 @@ int do_benchmark() {
             (m, md->get_simulation_particle_indexes(), 300, 500));
     md->add_optimizer_state(therm);
     double time, score = 0;
-    if (IMP::base::run_quick_test) {
+    if (IMP::run_quick_test) {
       time = 0;
       score += md->optimize(2);
     } else {
@@ -130,7 +133,7 @@ int do_benchmark() {
     IMP::benchmark::report("md charmm", time, score);
     return 0;
   }
-  catch (base::Exception e) {
+  catch (Exception e) {
     std::cerr << "Exception " << e.what() << std::endl;
     return 1;
   }
@@ -138,6 +141,7 @@ int do_benchmark() {
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark md");
+  IMP::setup_from_argv(argc, argv, "Benchmark md");
+  IMP::set_log_level(IMP::SILENT);
   return do_benchmark();
 }

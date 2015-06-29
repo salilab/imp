@@ -24,15 +24,23 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT AngleRestraint : public TripletRestraint {
  public:
   //! Create the angle restraint.
-  /** \param[in] score_func Scoring function for the restraint.
-      \param[in] p1 Pointer to first particle in angle restraint.
-      \param[in] p2 Pointer to second particle in angle restraint.
-      \param[in] p3 Pointer to third particle in angle restraint.
+  /** \param[in] m Model.
+      \param[in] score_func Scoring function for the restraint.
+      \param[in] p1 First particle in angle restraint.
+      \param[in] p2 Second particle in angle restraint.
+      \param[in] p3 Third particle in angle restraint.
    */
-  AngleRestraint(UnaryFunction* score_func, kernel::Particle* p1,
-                 kernel::Particle* p2, kernel::Particle* p3);
+  AngleRestraint(Model *m, UnaryFunction* score_func, ParticleIndexAdaptor p1,
+                 ParticleIndexAdaptor p2, ParticleIndexAdaptor p3);
 
+#ifndef IMP_DOXYGEN
+  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
+  AngleRestraint(UnaryFunction* score_func, Particle* p1,
+                 Particle* p2, Particle* p3);
+
+  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
   AngleRestraint(UnaryFunction* score_func, XYZ p0, XYZ p1, XYZ p2);
+#endif
 
   IMP_OBJECT_METHODS(AngleRestraint);
 };

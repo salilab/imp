@@ -8,6 +8,7 @@
 #include <IMP/algebra/vector_generators.h>
 #include <boost/unordered_set.hpp>
 #include <IMP/test/test_macros.h>
+#include <IMP/flags.h>
 #include <algorithm>
 
 using namespace IMP::algebra;
@@ -35,7 +36,8 @@ struct Count {
   int get_count() const { return seen_.size(); }
 };
 
-int main(int, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test grid apply");
   {
     BoundingBox3D bb(Vector3D(0, 0, 0), Vector3D(100, 100, 100));
     BoundingBox3D gbb(get_random_vector_in(bb));

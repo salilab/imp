@@ -19,7 +19,7 @@
 #include "IMP/em/KernelParameters.h"
 #include "IMP/core/XYZR.h"
 #include "IMP/Particle.h"
-#include "IMP/base/exception.h"
+#include "IMP/exception.h"
 #include <complex>
 #include <boost/shared_ptr.hpp>
 
@@ -151,7 +151,7 @@ class IMPEM2DEXPORT MasksManager {
 
   //! Generates all the masks for a set of particles. This is the function
   //! you typically want to use
-  void create_masks(const kernel::ParticlesTemp &ps);
+  void create_masks(const ParticlesTemp &ps);
 
   //! Creates the adequate mask for a particle of given radius
   /*!

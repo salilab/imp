@@ -1,5 +1,5 @@
 
-%extend IMP::kernel::Decorator {
+%extend IMP::Decorator {
   bool __eq__(Decorator o) {
     return *self == o;
   }

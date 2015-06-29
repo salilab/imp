@@ -4,9 +4,12 @@
 
 from __future__ import print_function
 import IMP.atom
+import sys
 
-m = IMP.kernel.Model()
-IMP.base.set_check_level(IMP.base.NONE)
+IMP.setup_from_argv(sys.argv, "score protein with ligand")
+
+m = IMP.Model()
+IMP.set_check_level(IMP.NONE)
 protein = IMP.atom.read_pdb(IMP.atom.get_example_path('1d3d-protein.pdb'), m)
 protein_atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
 ligands = IMP.atom.read_mol2(IMP.atom.get_example_path('1d3d-ligands.mol2'), m)
@@ -25,5 +28,7 @@ for l in ligands.get_children():
             # check if the atoms are close enough together
             if IMP.core.get_distance(IMP.core.XYZ(pa), IMP.core.XYZ(la)) < 15:
                 # score one pair of atoms
-                score += ps.evaluate((pa, la), None)
+                score += ps.evaluate_index(m,
+                                           (pa.get_particle_index(),
+                                            la.get_particle_index()), None)
     print("score for ", l.get_name(), "is", score)

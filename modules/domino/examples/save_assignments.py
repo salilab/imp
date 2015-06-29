@@ -1,13 +1,17 @@
 ## \example domino/save_assignments.py
-# It can often be useful to save the assignments to a file. \imp provides support to do this to an a data set in an hdf5 file.
+# It can often be useful to save the assignments to a file. \imp provides
+# support to do this to a data set in an HDF5 file.
 #
 # You can use \c h5dump to view the contents of the created file.
 
 import IMP.domino
+import sys
 
-# create a model and some particles, they are just used as markers here
-m = IMP.kernel.Model()
-ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
+IMP.setup_from_argv(sys.argv, "save assignments")
+
+# create a model and some particles; they are just used as markers here
+m = IMP.Model()
+ps = [IMP.Particle(m) for i in range(0, 10)]
 
 # create a subset with a few of the particles
 ss = IMP.domino.Subset([ps[3], ps[5], ps[7]])
@@ -18,7 +22,7 @@ print("File name is", file_name)
 
 # create a list of assignments
 
-IMP.base.set_log_level(IMP.base.MEMORY)
+IMP.set_log_level(IMP.MEMORY)
 asl = IMP.domino.WriteAssignmentContainer(file_name, ss, ps, "writer")
 written = []
 for i in range(0, 5):
@@ -44,8 +48,8 @@ else:
 
 # More interestingly, we can create a new model and read back the
 # assignments for that
-mp = IMP.kernel.Model()
-psp = [IMP.kernel.Particle(mp) for i in range(0, 10)]
+mp = IMP.Model()
+psp = [IMP.Particle(mp) for i in range(0, 10)]
 
 # create a subset with a few of the particles
 ssp = IMP.domino.Subset([psp[3], psp[5], psp[7]])

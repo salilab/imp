@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
 
     def test_0(self):
         """Test writing mult resolutions"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = self._create(m)
         IMP.atom.show_molecular_hierarchy(h)
         resolutions = IMP.atom.Representation(h).get_resolutions()
@@ -57,7 +57,7 @@ class Tests(IMP.test.TestCase):
 
     def test_custom_resolutions(self):
         """Test writing RMF file w/ explicit resolutions is read correctly"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = self._create_custom(m)
         IMP.atom.show_molecular_hierarchy(h)
         resolutions = IMP.atom.Representation(h).get_resolutions()

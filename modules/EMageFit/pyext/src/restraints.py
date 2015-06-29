@@ -9,7 +9,6 @@ import IMP.container as container
 import IMP.em2d as em2d
 import IMP.EMageFit.imp_general.representation as representation
 import IMP.atom as atom
-import IMP.base as base
 import os
 
 import logging
@@ -49,14 +48,14 @@ def get_em2d_restraint(assembly,
     r = em2d.Em2DRestraint(model)
     r.setup(sc, restraint_params)
     names = em2d.read_selection_file(images_selection_file)
-    names = [base.get_relative_path(images_selection_file, x) for x in names]
+    names = [IMP.get_relative_path(images_selection_file, x) for x in names]
     log.debug("names of the images %s", names)
     srw = em2d.SpiderImageReaderWriter()
     imgs = em2d.read_images(names, srw)
     r.set_images(imgs)
 
     ps = atom.get_leaves(assembly)
-    lsc = container.ListSingletonContainer(ps)
+    lsc = container.ListSingletonContainer(model, IMP.get_indexes(ps))
     r.set_particles(lsc)
 
     if (mode == "coarse"):

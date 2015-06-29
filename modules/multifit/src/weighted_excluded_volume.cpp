@@ -21,8 +21,8 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 void add_surface_index(core::Hierarchy mh, Float apix, FloatKey shell_key,
                        FloatKey, FloatKey) {
-  kernel::ParticlesTemp ps = core::get_leaves(mh);
-  base::Pointer<em::SurfaceShellDensityMap> shell_map =
+  ParticlesTemp ps = core::get_leaves(mh);
+  Pointer<em::SurfaceShellDensityMap> shell_map =
       new em::SurfaceShellDensityMap(ps, apix);
 
   for (unsigned int i = 0; i < ps.size(); i++) {
@@ -38,13 +38,13 @@ void add_surface_index(core::Hierarchy mh, Float apix, FloatKey shell_key,
 IMP::Restraint* create_weighted_excluded_volume_restraint(core::RigidBody rb1,
                                                           core::RigidBody rb2,
                                                           FloatKey) {
-  IMP::kernel::Model* mdl = rb1.get_particle()->get_model();
+  IMP::Model* mdl = rb1.get_particle()->get_model();
   // generate the list singleton containers
   IMP_NEW(core::LeavesRefiner, leaves_refiner, (atom::Hierarchy::get_traits()));
-  kernel::ParticlesTemp ps1 = leaves_refiner->get_refined(rb1),
+  ParticlesTemp ps1 = leaves_refiner->get_refined(rb1),
                         ps2 = leaves_refiner->get_refined(rb2);
-  IMP_NEW(container::ListSingletonContainer, ls1, (ps1));
-  IMP_NEW(container::ListSingletonContainer, ls2, (ps2));
+  IMP_NEW(container::ListSingletonContainer, ls1, (mdl, IMP::get_indexes(ps1)));
+  IMP_NEW(container::ListSingletonContainer, ls2, (mdl, IMP::get_indexes(ps2)));
   // set up the nonbonded list
   IMP_NEW(core::RigidClosePairsFinder, close_pair_finder, ());
   IMP_NEW(container::CloseBipartitePairContainer, nbl,
@@ -53,7 +53,6 @@ IMP::Restraint* create_weighted_excluded_volume_restraint(core::RigidBody rb1,
   IMP_NEW(core::HarmonicLowerBound, hlb, (0, 1));
   IMP_NEW(core::SphereDistancePairScore, ps, (hlb));
   IMP_NEW(container::PairsRestraint, evr, (ps, nbl));
-  mdl->add_restraint(evr);
-  return evr;
+  return evr.release();
 }
 IMPMULTIFIT_END_NAMESPACE

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/dependency_graph.h
+ *  \file IMP/dependency_graph.h
  *  \brief Build dependency graphs on models.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,9 +9,9 @@
 #ifndef IMPKERNEL_DEPENDENCY_GRAPH_H
 #define IMPKERNEL_DEPENDENCY_GRAPH_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
-#include <IMP/base/base_macros.h>
+#include <IMP/base_macros.h>
 #include "internal/utility.h"
 #include <boost/graph/adjacency_list.hpp>
 #include "ModelObject.h"
@@ -46,12 +46,12 @@ class Model;
     its particles from the Container.
     \see get_pruned_dependency_graph()
 */
-IMPKERNELEXPORT DependencyGraph get_dependency_graph(kernel::Model *m);
+IMPKERNELEXPORT DependencyGraph get_dependency_graph(Model *m);
 
 /** The pruned dependency graph merges all particles which have the
     same dependencies to produce a simpler graph.
 */
-IMPKERNELEXPORT DependencyGraph get_pruned_dependency_graph(kernel::Model *m);
+IMPKERNELEXPORT DependencyGraph get_pruned_dependency_graph(Model *m);
 
 /** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
 IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
@@ -68,25 +68,11 @@ IMPKERNELEXPORT ParticlesTemp
                             const DependencyGraph &dg,
                             const DependencyGraphVertexIndex &index);
 
-/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
-IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-IMPKERNELEXPORT RestraintsTemp
-    get_dependent_restraints(ModelObject *p, const ModelObjectsTemp &all,
-                             const DependencyGraph &dg,
-                             const DependencyGraphVertexIndex &index);
-
-/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
-IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-IMPKERNELEXPORT ScoreStatesTemp
-    get_dependent_score_states(ModelObject *p, const ModelObjectsTemp &all,
-                               const DependencyGraph &dg,
-                               const DependencyGraphVertexIndex &index);
-
 #ifndef IMP_DOXYGEN
 /** Return all Restraints that depend on this Particle.
     Model::set_has_all_dependencies() must be called first.*/
 IMPKERNELEXPORT RestraintsTemp
-    get_dependent_restraints(kernel::Model *m, ParticleIndex pi);
+    get_dependent_restraints(Model *m, ParticleIndex pi);
 #endif
 
 IMPKERNEL_END_NAMESPACE

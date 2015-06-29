@@ -8,7 +8,8 @@
 #include <IMP/atom/Representation.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Mass.h>
-#include <IMP/base/log.h>
+#include <IMP/core/Gaussian.h>
+#include <IMP/log.h>
 
 #include <boost/unordered_map.hpp>
 #include <sstream>
@@ -16,7 +17,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-double get_resolution(kernel::Model* m, kernel::ParticleIndex pi) {
+double get_resolution(Model* m, ParticleIndex pi) {
   double min = std::numeric_limits<double>::max();
   IMP_FOREACH(Hierarchy l, get_leaves(Hierarchy(m, pi))) {
     double cur = core::XYZR(l).get_radius();
@@ -32,28 +33,28 @@ IntsKey Representation::get_types_key() {
   return k;
 }
 
-kernel::FloatKey Representation::get_resolution_key(unsigned int index) {
-  static boost::unordered_map<unsigned int, kernel::FloatKey> keys;
+FloatKey Representation::get_resolution_key(unsigned int index) {
+  static boost::unordered_map<unsigned int, FloatKey> keys;
   if (keys.find(index) == keys.end()) {
     std::ostringstream oss;
     oss << "representation_resolution_" << index;
-    keys[index] = kernel::FloatKey(oss.str());
+    keys[index] = FloatKey(oss.str());
   }
   return keys.find(index)->second;
 }
 
-kernel::FloatKey Representation::get_base_resolution_key() {
-  static kernel::FloatKey key("base_resolution");
+FloatKey Representation::get_base_resolution_key() {
+  static FloatKey key("base_resolution");
   return key;
 }
 
 ParticleIndexesKey Representation::get_representations_key() {
-  static kernel::ParticleIndexesKey key("representations");
+  static ParticleIndexesKey key("representations");
   return key;
 }
 
-void Representation::do_setup_particle(kernel::Model* m,
-                                       kernel::ParticleIndex pi,
+void Representation::do_setup_particle(Model* m,
+                                       ParticleIndex pi,
                                        double resolution) {
   if (resolution < 0) {
     resolution = get_resolution(m, pi);
@@ -90,7 +91,7 @@ Hierarchy Representation::get_representation(double resolution,
     }
   }
   if (closest_index == -1) {
-    IMP_USAGE_CHECK(type == BALLS, "No matching types found");
+    IMP_USAGE_CHECK(type == BALLS || type == DENSITIES, "No matching types found");
     IMP_LOG_VERBOSE("Returning highest resolution children" << std::endl);
     return *this;
   } else {
@@ -125,6 +126,13 @@ void Representation::add_representation(ParticleIndexAdaptor rep,
   if (resolution < 0) {
     resolution = get_resolution(get_model(), rep);
   }
+  int ct = 0;
+  Hierarchies lvs = core::get_leaves(Hierarchy(get_model(),rep));
+  for (unsigned i=0;i<lvs.size();i++) {
+    ct += int(!core::Gaussian::get_is_setup(lvs[i]));
+  }
+  IMP_USAGE_CHECK( type!=DENSITIES || ct==0,
+                   "DENSITY representations must be Gaussian");
   // fake the parent
   if (get_model()->get_has_attribute(Hierarchy::get_traits().get_parent_key(),
                                      get_particle_index())) {
@@ -132,6 +140,7 @@ void Representation::add_representation(ParticleIndexAdaptor rep,
                                get_parent().get_particle_index());
   }
   if (get_model()->get_has_attribute(get_types_key(), get_particle_index())) {
+    // if this particle already has this representation type setup, just add this resolution
     int index = get_model()
                     ->get_attribute(get_types_key(), get_particle_index())
                     .size();
@@ -144,6 +153,7 @@ void Representation::add_representation(ParticleIndexAdaptor rep,
     get_model()->add_attribute(get_resolution_key(index), get_particle_index(),
                                resolution);
   } else {
+    // otherwise initiate a new list of resolutions for this type
     int index = 0;
     get_model()->add_attribute(get_types_key(), get_particle_index(),
                                Ints(1, type));

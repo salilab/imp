@@ -13,8 +13,8 @@
 #include "domino_macros.h"
 #include "Subset.h"
 #include <IMP/container/ListSingletonContainer.h>
-#include <IMP/base/Value.h>
-#include <IMP/base/ConstVector.h>
+#include <IMP/Value.h>
+#include <IMP/ConstVector.h>
 #include <IMP/macros.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -29,8 +29,8 @@ IMPDOMINO_BEGIN_NAMESPACE
     modified and provide a vector/Python list like
     interface.
 */
-class IMPDOMINOEXPORT Assignment : public base::ConstVector<int> {
-  typedef base::ConstVector<int> P;
+class IMPDOMINOEXPORT Assignment : public ConstVector<int> {
+  typedef ConstVector<int> P;
 
  public:
   Assignment() {}

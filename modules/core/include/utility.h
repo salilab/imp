@@ -14,8 +14,8 @@
 #include <IMP/base_types.h>
 #include <IMP/algebra/Segment3D.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Model.h>
+#include <IMP/Particle.h>
 
 IMPCORE_BEGIN_NAMESPACE
 //! Get the centroid

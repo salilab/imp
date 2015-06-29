@@ -8,7 +8,7 @@
 #define IMPALGEBRA_INTERNAL_VECTOR_H
 #include <IMP/algebra/algebra_config.h>
 #include <boost/scoped_array.hpp>
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include <limits>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE

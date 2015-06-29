@@ -68,9 +68,9 @@ IMP_SWIG_VALUE(IMP::domino, Subset, Subsets);
 IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
 IMP_SWIG_VALUE(IMP::domino, Slice, Slices);
 IMP_SWIG_VALUE(IMP::domino, Order, Orders);
-%template(_IntArray) IMP::base::ConstVector<int>;
-%template(_UIntArray) IMP::base::ConstVector<unsigned int>;
-%template(_ParticleArray) IMP::base::ConstVector<IMP::base::WeakPointer<Particle>, Particle* >;
+%template(_IntArray) IMP::ConstVector<int>;
+%template(_UIntArray) IMP::ConstVector<unsigned int>;
+%template(_ParticleArray) IMP::ConstVector<IMP::WeakPointer<Particle>, Particle* >;
 
 %include "IMP/domino/Subset.h"
 %include "IMP/domino/Assignment.h"

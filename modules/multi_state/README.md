@@ -1,4 +1,6 @@
-Functionality for handling multi-state models. These are used in IMP to
+\brief Functionality for handling multi-state models.
+
+These are used in IMP to
 model systems that are found simultaneously in multiple states. For example,
 a hinge protein may be found in both 'open' and 'closed' forms, and so some
 experiments conducted on a sample of the protein will return data from both

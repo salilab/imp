@@ -1,9 +1,8 @@
 /**
    This is the program for validation of SAXS profiles.
  */
-#include <IMP/kernel/Model.h>
-#include <IMP/atom/pdb.h>
 
+#include <IMP/Vector.h>
 #include <IMP/saxs/Profile.h>
 
 #include <fstream>
@@ -40,12 +39,12 @@ int main(int argc, char **argv) {
   // output arguments
   for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
   std::cerr << std::endl;
-  float max_q = 0.0;
+  double max_q = 0.0;
   po::options_description desc("Usage: <profile_file1> <profile_file2> ...");
   desc.add_options()("help",
                      "Any number of input profiles is supported. \
 Each profile is read and written back, with simulated error added if necessary")(
-      "max_q,q", po::value<float>(&max_q)->default_value(0.0),
+      "max_q,q", po::value<double>(&max_q)->default_value(0.0),
       "maximal q value")("input-files", po::value<std::vector<std::string> >(),
                          "input PDB and profile files");
   po::positional_options_description p;
@@ -65,7 +64,7 @@ Each profile is read and written back, with simulated error added if necessary")
     return 0;
   }
 
-  std::vector<IMP::saxs::Profile *> exp_profiles;
+  IMP::Vector<IMP::saxs::Profile *> exp_profiles;
   for (unsigned int i = 0; i < files.size(); i++) {
     // check if file exists
     std::ifstream in_file(files[i].c_str());

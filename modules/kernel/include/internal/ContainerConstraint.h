@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONTAINER_CONSTRAINT_H
 #define IMPKERNEL_CONTAINER_CONSTRAINT_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "../base_types.h"
 #include "../Constraint.h"
 
@@ -21,9 +21,9 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 */
 template <class Before, class After, class Container>
 class ContainerConstraint : public Constraint {
-  IMP::base::PointerMember<Before> f_;
-  IMP::base::PointerMember<After> af_;
-  IMP::base::PointerMember<Container> c_;
+  IMP::PointerMember<Before> f_;
+  IMP::PointerMember<After> af_;
+  IMP::PointerMember<Container> c_;
 
  public:
   ContainerConstraint(Before *before, After *after, Container *c,
@@ -42,7 +42,7 @@ class ContainerConstraint : public Constraint {
     for (unsigned int i = 0; i < ps.size(); ++i) {
       {
         ModelObjectsTemp cur;
-        cur += IMP::kernel::get_particles(get_model(), flatten(ps[i]));
+        cur += IMP::get_particles(get_model(), flatten(ps[i]));
         cur.push_back(c_);
         ret.push_back(cur);
       }

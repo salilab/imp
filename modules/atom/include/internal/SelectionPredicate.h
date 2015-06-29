@@ -9,21 +9,25 @@
 #define IMPATOM_SELECTION_PREDICATE_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/base/InputAdaptor.h>
+#include <IMP/InputAdaptor.h>
 #include <boost/dynamic_bitset.hpp>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
 //! Predicates for selecting a subset of a hierarchy.
 /** \see Selection */
-class SelectionPredicate : public ParticleInputs, public base::Object {
+class SelectionPredicate : public ParticleInputs, public Object {
   int bitset_index_;
  public:
+  enum MatchType { MISMATCH = -1,
+                   NO_MATCH = 0,
+                   MATCH_WITH_CHILDREN = 1,
+                   MATCH_SELF_ONLY = 2 };
 
   IMP_REF_COUNTED_DESTRUCTOR(SelectionPredicate);
 
   SelectionPredicate(std::string name)
-         : base::Object(name), bitset_index_(-1) {}
+         : Object(name), bitset_index_(-1) {}
 
   virtual unsigned get_number_of_children() const {
     return 0;
@@ -58,28 +62,28 @@ class SelectionPredicate : public ParticleInputs, public base::Object {
   //! Get match value for the given particle index.
   /** Calls do_get_value_index() or uses a cached result.
       Should return:
-      - 1:  particle matches (e.g. it is a Residue of the given type); all
-            child particles will also automatically match (the result will be
-            cached)
-      - 2:  particle matches (e.g. it is a Residue of the given type) but
-            child particles should still be examined, since they might not
-            match (the result will not be cached)
-      - -1: particle mismatches (e.g. it is a Residue but is of the wrong type);
-            the search will be terminated here
-      - 0:  no match (e.g. the particle is not a Residue, so a match
+      - MATCH_WITH_CHILDREN: particle matches (e.g. it is a Residue of the
+            given type); all child particles will also automatically match
+            against this predicate (the result will be cached)
+      - MATCH_SELF_ONLY: particle matches (e.g. it is a Residue of the given
+            type) but child particles should still be examined, since they
+            might not match (the result will not be cached)
+      - MISMATCH: particle mismatches (e.g. it is a Residue but is of the
+            wrong type); the search will be terminated here
+      - NO_MATCH: no match (e.g. the particle is not a Residue, so a match
             cannot be attempted); the search will continue to child particles
      \see do_get_value_index
    */
-  int get_value_index(kernel::Model *m, kernel::ParticleIndex vt,
-                      boost::dynamic_bitset<> &bs) const {
+  MatchType get_value_index(Model *m, ParticleIndex vt,
+                            boost::dynamic_bitset<> &bs) const {
     /* If a parent particle already matched sucessfully, no need to
        check this one */
     if (!bs[bitset_index_]) {
-      return 1;
+      return MATCH_WITH_CHILDREN;
     } else {
-      int v = do_get_value_index(m, vt, bs);
+      MatchType v = do_get_value_index(m, vt, bs);
       /* Cache a successful match */
-      if (v == 1) {
+      if (v == MATCH_WITH_CHILDREN) {
         bs.reset(bitset_index_);
       }
       return v;
@@ -89,9 +93,8 @@ class SelectionPredicate : public ParticleInputs, public base::Object {
  protected:
   //! Do the actual match for get_value_index()
   /** Should be overridden in subclasses */
-  virtual int do_get_value_index(kernel::Model *m,
-                                 kernel::ParticleIndex vt,
-                                 boost::dynamic_bitset<> &bs) const = 0;
+  virtual MatchType do_get_value_index(Model *m, ParticleIndex vt,
+                                       boost::dynamic_bitset<> &bs) const = 0;
 };
 IMP_OBJECTS(SelectionPredicate, SelectionPredicates);
 
@@ -131,8 +134,8 @@ public:
     return index;
   }
 
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-        kernel::Model *m, const kernel::ParticleIndexes &pis) const
+  virtual ModelObjectsTemp do_get_inputs(
+        Model *m, const ParticleIndexes &pis) const
         IMP_OVERRIDE {
     return IMP::get_particles(m, pis);
   }

@@ -122,23 +122,23 @@ def numerical_derivative(func, val, step):
     return retval
 
 
-def xyz_numerical_derivatives(model, xyz, step):
-    """Calculate the x,y and z derivatives of `model`'s scoring function
+def xyz_numerical_derivatives(sf, xyz, step):
+    """Calculate the x,y and z derivatives of the scoring function `sf`
        on the `xyz` particle. The derivatives are approximated numerically
        using the numerical_derivatives() function."""
     class _XYZDerivativeFunc(object):
-        def __init__(self, xyz, basis_vector):
+        def __init__(self, sf, xyz, basis_vector):
             self._xyz = xyz
-            self._model = xyz.get_particle().get_model()
+            self._sf = sf
             self._basis_vector = basis_vector
             self._starting_coordinates = xyz.get_coordinates()
 
         def __call__(self, val):
             self._xyz.set_coordinates(self._starting_coordinates + \
                                       self._basis_vector * val)
-            return self._model.evaluate(False)
+            return self._sf.evaluate(False)
 
-    return tuple([IMP.test.numerical_derivative(_XYZDerivativeFunc(xyz,
+    return tuple([IMP.test.numerical_derivative(_XYZDerivativeFunc(sf, xyz,
                                           IMP.algebra.Vector3D(*x)), 0, 0.01) \
                   for x in ((1,0,0), (0,1,0), (0,0,1))])
 
@@ -151,16 +151,16 @@ class TestCase(unittest.TestCase):
         self._progname = os.path.abspath(sys.argv[0])
 
     def setUp(self):
-        self.__check_level = IMP.base.get_check_level()
+        self.__check_level = IMP.get_check_level()
         # Turn on expensive runtime checks while running the test suite:
-        IMP.base.set_check_level(IMP.base.USAGE_AND_INTERNAL)
+        IMP.set_check_level(IMP.USAGE_AND_INTERNAL)
         # python ints are bigger than C++ ones, so we need to make sure it fits
         # otherwise python throws fits
-        IMP.base.random_number_generator.seed(hash(time.time())%2**30)
+        IMP.random_number_generator.seed(hash(time.time())%2**30)
 
     def tearDown(self):
         # Restore original check level
-        IMP.base.set_check_level(self.__check_level)
+        IMP.set_check_level(self.__check_level)
 
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
@@ -190,14 +190,22 @@ class TestCase(unittest.TestCase):
     def get_magnitude(self, vector):
         return sum([x*x for x in vector], 0)**.5
 
-    def assertXYZDerivativesInTolerance(self, model, xyz, tolerance=0,
+    def assertRaisesUsageException(self, c, *args, **keys):
+        """Assert that the given callable object raises UsageException.
+           This differs from unittest's assertRaises in that the test
+           is skipped in fast mode (where usage checks are turned off)."""
+        if IMP.get_check_level() >= IMP.USAGE:
+            return self.assertRaises(IMP.UsageException, c, *args, **keys)
+
+    def assertXYZDerivativesInTolerance(self, sf, xyz, tolerance=0,
                                         percentage=0):
         """Assert that x,y,z analytical derivatives match numerical within
            a tolerance, or a percentage (of the analytical value), whichever
-           is larger."""
-        model.evaluate(True)
+           is larger. `sf` should be a ScoringFunction or Restraint,
+           although for backwards compatibility a Model is also accepted."""
+        sf.evaluate(True)
         derivs = xyz.get_derivatives()
-        num_derivs = xyz_numerical_derivatives(model, xyz, 0.01)
+        num_derivs = xyz_numerical_derivatives(sf, xyz, 0.01)
         pct = percentage / 100.0
         self.assertAlmostEqual(self.get_magnitude(derivs-num_derivs),0,
                                delta=tolerance+percentage*self.get_magnitude(num_derivs),
@@ -556,7 +564,6 @@ class TestCase(unittest.TestCase):
            a subprocess.Popen-like object containing the child stdin,
            stdout and stderr.
         """
-        import IMP.kernel
         if type(module) == type(os):
             mod = module
         else:
@@ -567,12 +574,12 @@ class TestCase(unittest.TestCase):
         if type(module) == type(os):
             old_sys_argv = sys.argv
             # boost parser doesn't like being called multiple times per process
-            IMP.kernel.OptionParser._use_boost_parser = False
+            IMP.OptionParser._use_boost_parser = False
             try:
                 sys.argv = [modpath] + args
                 return module.main()
             finally:
-                IMP.kernel.OptionParser._use_boost_parser = True
+                IMP.OptionParser._use_boost_parser = True
                 sys.argv = old_sys_argv
         else:
             return _SubprocessWrapper(sys.executable, [modpath] + args)
@@ -689,10 +696,14 @@ class _TestRunner(unittest.TextTestRunner):
 
 
 def main(*args, **keys):
-    """Run a set of tests; essentially the same as unittest.main(). Obviates
-       the need to separately import the 'unittest' module, and ensures that
-       main() is from the same unittest module that the IMP.test testcases
-       are."""
+    """Run a set of tests; similar to unittest.main().
+       Obviates the need to separately import the 'unittest' module, and
+       ensures that main() is from the same unittest module that the
+       IMP.test testcases are. In addition, turns on some extra checks
+       (e.g. trying to use deprecated code will cause an exception
+       to be thrown)."""
+    import IMP
+    IMP.set_deprecation_exceptions(True)
     return unittest.main(testRunner=_TestRunner, *args, **keys)
 
 import subprocess
@@ -840,19 +851,19 @@ class RefCountChecker(object):
         # Make sure no director objects are hanging around; otherwise these
         # may be unexpectedly garbage collected later, decreasing the
         # live object count
-        IMP.base._director_objects.cleanup()
+        IMP._director_objects.cleanup()
         self.__testcase = testcase
-        if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
-            self.__basenum = IMP.base.Object.get_number_of_live_objects()
-            self.__names= IMP.base.get_live_object_names()
+        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+            self.__basenum = IMP.Object.get_number_of_live_objects()
+            self.__names= IMP.get_live_object_names()
 
     def assert_number(self, expected):
         "Make sure that the number of references matches the expected value."
         t = self.__testcase
-        IMP.base._director_objects.cleanup()
-        if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
-            newnames=[x for x in IMP.base.get_live_object_names() if x not in self.__names]
-            newnum=IMP.base.Object.get_number_of_live_objects()-self.__basenum
+        IMP._director_objects.cleanup()
+        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+            newnames=[x for x in IMP.get_live_object_names() if x not in self.__names]
+            newnum=IMP.Object.get_number_of_live_objects()-self.__basenum
             t.assertEqual(newnum, expected,
                           "Number of objects don't match: "\
                            +str(newnum)\
@@ -865,9 +876,9 @@ class DirectorObjectChecker(object):
     """Check to make sure the number of director references is as expected"""
 
     def __init__(self, testcase):
-        IMP.base._director_objects.cleanup()
+        IMP._director_objects.cleanup()
         self.__testcase = testcase
-        self.__basenum = IMP.base._director_objects.get_object_count()
+        self.__basenum = IMP._director_objects.get_object_count()
 
     def assert_number(self, expected, force_cleanup=True):
         """Make sure that the number of references matches the expected value.
@@ -876,8 +887,8 @@ class DirectorObjectChecker(object):
         """
         t = self.__testcase
         if force_cleanup:
-            IMP.base._director_objects.cleanup()
-        t.assertEqual(IMP.base._director_objects.get_object_count() \
+            IMP._director_objects.cleanup()
+        t.assertEqual(IMP._director_objects.get_object_count() \
                       - self.__basenum, expected)
 
 # Make sure that the IMP binary directory (build/bin) is in the PATH, if

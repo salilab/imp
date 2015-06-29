@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
             i = s.get_selected_particle_indexes()
             self.assertEqual(len(i), 1)
             self.assertEqual(i[0], ai) # should match the atom particle
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ri = m.add_particle("domain")
         rh = IMP.atom.Hierarchy.setup_particle(m, ri)
         d = IMP.atom.Domain.setup_particle(m, ri, [100, 200])
@@ -40,7 +40,7 @@ class Tests(IMP.test.TestCase):
 
     def test_trivial(self):
         """Trivial selection test"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ri = m.add_particle("root")
         rh = IMP.atom.Hierarchy.setup_particle(m, ri)
         ci = m.add_particle("child")
@@ -51,13 +51,18 @@ class Tests(IMP.test.TestCase):
             ci,
             IMP.algebra.get_unit_sphere_3d())
         cm = IMP.atom.Mass.setup_particle(m, ci, 1)
+        # Cannot specify both hierarchy and hierarchies
+        self.assertRaises(RuntimeError, IMP.atom.Selection,
+                          hierarchy=rh, hierarchies=[rh])
+        # Must specify either hierarchy or hierarchies
+        self.assertRaises(ValueError, IMP.atom.Selection)
         s = IMP.atom.Selection([rh])
         self.assertEqual(s.get_selected_particle_indexes(), [ci])
 
     def test_one(self):
         """Test selection of N and C termini"""
-        IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        IMP.set_log_level(IMP.SILENT)
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         cterm = IMP.atom.Selection(h, terminus=IMP.atom.Selection.C)
         nterm = IMP.atom.Selection(h, terminus=IMP.atom.Selection.N)
@@ -70,8 +75,8 @@ class Tests(IMP.test.TestCase):
 
     def test_atom_type(self):
         """Test selection of CA atoms and indexes"""
-        IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        IMP.set_log_level(IMP.SILENT)
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         ca = IMP.atom.Selection(h, atom_type=IMP.atom.AT_CA)
         cas = ca.get_selected_particle_indexes()
@@ -91,8 +96,8 @@ class Tests(IMP.test.TestCase):
 
     def test_residue_type(self):
         """Test selection of residue type"""
-        IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        IMP.set_log_level(IMP.SILENT)
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         v = IMP.atom.Selection(h, residue_type=IMP.atom.VAL)
         ps = v.get_selected_particle_indexes()
@@ -104,8 +109,8 @@ class Tests(IMP.test.TestCase):
 
     def test_two(self):
         """Test simple selection of N and C termini"""
-        IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        IMP.set_log_level(IMP.SILENT)
+        m = IMP.Model()
         ri = m.add_particle("root")
         rh = IMP.atom.Hierarchy.setup_particle(m, ri)
         ci = m.add_particle("chain")
@@ -134,8 +139,8 @@ class Tests(IMP.test.TestCase):
 
     def test_mixed_coordinates(self):
         """Test a selection when only some have coordinates"""
-        IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        IMP.set_log_level(IMP.SILENT)
+        m = IMP.Model()
         h = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("root"))
         c0 = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("child0"))
         c1 = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("child1"))
@@ -155,8 +160,8 @@ class Tests(IMP.test.TestCase):
 
     def test_mol(self):
         """Test selecting molecules"""
-        IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
+        IMP.set_log_level(IMP.SILENT)
+        m = IMP.Model()
         r = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("root"))
         h0 = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         h0.set_name("mini0")
@@ -178,8 +183,8 @@ class Tests(IMP.test.TestCase):
 
     def test_residues_rb(self):
         """Test selecting residues from rigid bodies"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.kernel.Model()
+        IMP.set_log_level(IMP.VERBOSE)
+        m = IMP.Model()
         r = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
         IMP.atom.setup_as_rigid_body(r)
         s = IMP.atom.Selection([r], residue_indexes=[436, 437])
@@ -191,9 +196,9 @@ class Tests(IMP.test.TestCase):
 
     def test_disjoint_selections(self):
         """Test that two selections are disjoint"""
-        IMP.base.set_log_level(IMP.base.SILENT)
-        m = IMP.kernel.Model()
-        all = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+        IMP.set_log_level(IMP.SILENT)
+        m = IMP.Model()
+        all = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         all.set_name("the universe")
 
         def create_protein(name, ds):
@@ -203,7 +208,7 @@ class Tests(IMP.test.TestCase):
         create_protein("Nup85", 570)
         create_protein("Nup145C", 442)
 
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         print("145")
         s145 = IMP.atom.Selection(hierarchy=all, molecule="Nup145C",
                                   residue_indexes=range(0, 423)).get_selected_particle_indexes()
@@ -215,6 +220,22 @@ class Tests(IMP.test.TestCase):
         print(s85)
         for s in s145:
             assert(s not in s85)
+
+    def test_hierarchy_type(self):
+        """Test selection of hierarchy types"""
+        IMP.set_log_level(IMP.SILENT)
+        m = IMP.Model()
+        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        s = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.ATOM_TYPE])
+        self.assertEqual(len(s.get_selected_particle_indexes()), 68)
+        s = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.RESIDUE_TYPE])
+        # By default, will give us all leaves in residues (i.e. atoms, so same
+        # as the ATOM_TYPE search)
+        self.assertEqual(len(s.get_selected_particle_indexes()), 68)
+        self.assertEqual(len(s.get_selected_particles()), 68)
+        # Should give just the residues themselves
+        self.assertEqual(len(s.get_selected_particle_indexes(False)), 9)
+        self.assertEqual(len(s.get_selected_particles(False)), 9)
 
 if __name__ == '__main__':
     IMP.test.main()

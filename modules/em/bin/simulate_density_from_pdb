@@ -4,7 +4,7 @@ import IMP.em
 
 
 def main():
-    IMP.base.set_log_level(IMP.base.SILENT)
+    IMP.set_log_level(IMP.SILENT)
     usage = """%prog [options] <complex.pdb>
            <output: density.mrc> <resolution> <a/pix>
 
@@ -18,7 +18,7 @@ Samples a protein into a simulated 3D density map."""
     resolution = float(args[2])
     apix = float(args[3])
     # read the protein
-    mdl = IMP.kernel.Model()
+    mdl = IMP.Model()
     mh = IMP.atom.read_pdb(
         pdb_fn,
         mdl,

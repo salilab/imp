@@ -2,16 +2,15 @@
  * Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 #include <IMP/core/SphereDistancePairScore.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
-#include <IMP/kernel/internal/AccumulatorScoreModifier.h>
+#include <IMP/internal/AccumulatorScoreModifier.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 #include <IMP/container/PairContainerSet.h>
 #include <IMP/container/ListPairContainer.h>
 using namespace IMP;
-using namespace IMP::base;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::container;
@@ -20,7 +19,7 @@ namespace {
 
 #define IMP_GET_EVALUATE(Class)                           \
   static_cast<double (Class::*)(                          \
-      kernel::Model *, const kernel::ParticleIndexPair &, \
+      Model *, const ParticleIndexPair &, \
       DerivativeAccumulator *) const>(&Class::evaluate_index)
 
 template <class It, class F>
@@ -36,7 +35,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   std::ostringstream ossc;
   ossc << "container " << pc->get_indexes().size();
   {
-    const kernel::ParticleIndexPairs pps = pc->get_indexes();
+    const ParticleIndexPairs pps = pc->get_indexes();
     double runtime = 0, total = 0;
     IMP_TIME({
                for (unsigned int i = 0; i < pps.size(); ++i) {
@@ -50,7 +49,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   }
   {
     SoftSpherePairScore *ssps = dynamic_cast<SoftSpherePairScore *>(ps);
-    const kernel::ParticleIndexPairs pps = pc->get_indexes();
+    const ParticleIndexPairs pps = pc->get_indexes();
     double runtime = 0, total = 0;
     IMP_TIME({
                for (unsigned int i = 0; i < pps.size(); ++i) {
@@ -65,7 +64,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   }
   {
     SoftSpherePairScore *ssps = dynamic_cast<SoftSpherePairScore *>(ps);
-    const kernel::ParticleIndexPairs pps = pc->get_indexes();
+    const ParticleIndexPairs pps = pc->get_indexes();
     double runtime = 0, total = 0;
     IMP_TIME({
                for (unsigned int i = 0; i < pps.size(); ++i) {
@@ -80,7 +79,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   }
   {
     SoftSpherePairScore *ssps = dynamic_cast<SoftSpherePairScore *>(ps);
-    const kernel::ParticleIndexPairs pps = pc->get_indexes();
+    const ParticleIndexPairs pps = pc->get_indexes();
     double runtime = 0, total = 0;
     IMP_TIME({
                total += apply_and_accumulate(
@@ -95,7 +94,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   }
   {
     SoftSpherePairScore *ssps = dynamic_cast<SoftSpherePairScore *>(ps);
-    const kernel::ParticleIndexPairs pps = pc->get_indexes();
+    const ParticleIndexPairs pps = pc->get_indexes();
     double runtime = 0, total = 0;
     IMP_TIME(
     {
@@ -111,7 +110,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   }
   /*{
     double runtime=0, total=0;
-    base::Pointer<IMP::internal::AccumulatorScoreModifier<PairScore> >
+    Pointer<IMP::internal::AccumulatorScoreModifier<PairScore> >
         am= IMP::internal::create_accumulator_score_modifier(ps);
 
     IMP_TIME(
@@ -137,13 +136,13 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
 }
 
 void test(int n) {
-  set_log_level(IMP::base::SILENT);
-  IMP_NEW(kernel::Model, m, ());
-  kernel::ParticlesTemp ps = create_xyzr_particles(m, n, .1);
+  set_log_level(IMP::SILENT);
+  IMP_NEW(Model, m, ());
+  ParticlesTemp ps = create_xyzr_particles(m, n, .1);
   IMP_NEW(ListPairContainer, lpc, (m));
   for (unsigned int i = 0; i < ps.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      lpc->add_particle_pair(kernel::ParticlePair(ps[i], ps[j]));
+      lpc->add(ParticleIndexPair(ps[i]->get_index(), ps[j]->get_index()));
     }
   }
   IMP_NEW(SoftSpherePairScore, dps, (1));
@@ -152,19 +151,19 @@ void test(int n) {
 
 void test_set(int n) {
   set_log_level(SILENT);
-  IMP_NEW(kernel::Model, m, ());
-  kernel::ParticlesTemp ps = create_xyzr_particles(m, n, .1);
+  IMP_NEW(Model, m, ());
+  ParticlesTemp ps = create_xyzr_particles(m, n, .1);
   IMP_NEW(ListPairContainer, lpc0, (m));
   for (unsigned int i = 0; i < ps.size() / 2; ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      lpc0->add_particle_pair(kernel::ParticlePair(ps[i], ps[j]));
+      lpc0->add(ParticleIndexPair(ps[i]->get_index(), ps[j]->get_index()));
     }
   }
 
   IMP_NEW(ListPairContainer, lpc1, (m));
   for (unsigned int i = ps.size() / 2; i < ps.size(); ++i) {
     for (unsigned int j = ps.size() / 2; j < i; ++j) {
-      lpc1->add_particle_pair(kernel::ParticlePair(ps[i], ps[j]));
+      lpc1->add(ParticleIndexPair(ps[i]->get_index(), ps[j]->get_index()));
     }
   }
   IMP_NEW(PairContainerSet, pcs, (m));
@@ -177,7 +176,7 @@ void test_set(int n) {
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark evaluation");
+  IMP::setup_from_argv(argc, argv, "Benchmark evaluation");
   { test(100); }
   { test_set(100); }
   return IMP::benchmark::get_return_value();

@@ -10,8 +10,8 @@
 
 #include <IMP/core/XYZR.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/rigid_fitting.h>
 #include <IMP/multifit/multifit_config.h>
@@ -52,7 +52,7 @@ IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
 \note the function assumes the density map holds its density
 */
 IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
-    kernel::ParticlesTemp ps, em::DensityMap *em_map, Float threshold,
+    ParticlesTemp ps, em::DensityMap *em_map, Float threshold,
     FloatKey wei_key = atom::Mass::get_mass_key(),
     algebra::PrincipalComponentAnalysis dens_pca_input =
         algebra::PrincipalComponentAnalysis());

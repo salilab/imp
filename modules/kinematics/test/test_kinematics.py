@@ -12,13 +12,13 @@ class Test(IMP.test.TestCase):
     """Tests for kinematic structure"""
 
     def create_rigidbody(self, model, coords):
-        p = IMP.kernel.Particle(model)
+        p = IMP.Particle(model)
         tr = IMP.algebra.Transformation3D(coords)
         rf = IMP.algebra.ReferenceFrame3D(tr)
         return IMP.core.RigidBody.setup_particle(p, rf)
 
     def create_model_with_rbs(self, coords_list):
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         rbs = []
         for coords in coords_list:
             rbs.append(self.create_rigidbody(m, coords))

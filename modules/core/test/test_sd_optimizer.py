@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
         """set up distance restraints and create optimizer """
         IMP.test.TestCase.setUp(self)
 
-        self.imp_model = IMP.kernel.Model()
+        self.imp_model = IMP.Model()
         self.particles = []
         self.restraint_sets = []
         self.rsrs = []
@@ -38,17 +38,17 @@ class Tests(IMP.test.TestCase):
             p2 = self.particles[pairs[1]]
             mean = p1.get_value(radkey) + p2.get_value(radkey)
             sf = IMP.core.Harmonic(mean, 0.1)
-            rsr = IMP.core.DistanceRestraint(sf, p1, p2)
+            rsr = IMP.core.DistanceRestraint(self.imp_model, sf, p1, p2)
             self.rsrs.append(rsr)
 
         # add restraints
-        rs = IMP.kernel.RestraintSet(self.imp_model, 1.0, "distance_rsrs")
-        self.imp_model.add_restraint(rs)
+        rs = IMP.RestraintSet(self.imp_model, 1.0, "distance_rsrs")
         self.restraint_sets.append(rs)
         for i in range(len(self.rsrs)):
             rs.add_restraint(self.rsrs[i])
 
         self.steepest_descent = IMP.core.SteepestDescent(self.imp_model)
+        self.steepest_descent.set_scoring_function([rs])
 
     def test_sd_optimizer1(self):
         """Test that steepest descent optimizer brings particles together"""

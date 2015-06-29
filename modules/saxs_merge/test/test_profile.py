@@ -435,20 +435,20 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
     def test_set_interpolant(self):
         gp = MockGP(1, 2)
         p = self.SAXSProfile()
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         self.assertRaises(TypeError, p.set_interpolant, gp)
         self.assertRaises(TypeError, p.set_interpolant, gp, [])
         self.assertRaises(TypeError, p.set_interpolant, gp, {'test': 1.0})
         self.assertEqual(p.set_interpolant(gp, {'sigma': s},
-                                           {'mean': None, 'covariance': None}, 'test', IMP.kernel.Model(), None), None)
+                                           {'mean': None, 'covariance': None}, 'test', IMP.Model(), None), None)
 
     def test_get_params(self):
         "get_params should return a dict"
         gp = MockGP(1, 2)
         p = self.SAXSProfile()
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -457,7 +457,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         self.assertEqual(p.get_params(), {'sigma': 3.0})
 
@@ -467,8 +467,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -477,7 +477,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         test = p.get_mean()
         expected_q = numpy.linspace(0, 0.02, num=200)
@@ -501,8 +501,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -511,7 +511,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         test = p.get_mean(colwise=True)
         expected_q = numpy.linspace(0, 0.02, num=200)
@@ -539,8 +539,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gamma = 21.5
         p.set_gamma(gamma)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -549,7 +549,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         test = p.get_mean()
         expected_q = numpy.linspace(0, 0.02, num=200)
@@ -576,8 +576,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -586,7 +586,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         test = p.get_mean(num=100)
         expected_q = numpy.linspace(0, 0.02, num=100)
@@ -605,8 +605,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -615,7 +615,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         test = p.get_mean(num=100, qmin=1.5, qmax=1.67)
         expected_q = numpy.linspace(1.5, 1.67, num=100)
@@ -634,8 +634,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -644,7 +644,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         expected_q = sorted(numpy.random.uniform(0, [1] * 10))
         test = p.get_mean(qvalues=expected_q)
@@ -679,8 +679,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -689,7 +689,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         expected_q = sorted(numpy.random.uniform(0, [1] * 10))
         p.new_flag("test", bool)
@@ -715,8 +715,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -725,7 +725,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         expected_q = sorted(numpy.random.uniform(0, [1] * 10))
         p.new_flag("test", bool)
@@ -751,8 +751,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -761,7 +761,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         expected_q = sorted(numpy.random.uniform(0, [1] * 10))
         p.new_flag("test", bool)
@@ -787,8 +787,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -797,7 +797,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         expected_q = sorted(numpy.random.uniform(0, [1] * 10))
         p.new_flag("test", bool)
@@ -824,8 +824,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -834,7 +834,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         expected_q = sorted(numpy.random.uniform(0, [1] * 10))
         p.new_flag("test", bool)
@@ -913,8 +913,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -923,7 +923,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         expected_q = sorted(numpy.random.uniform(0, [1] * 10))
         p.new_flag("test", bool)
@@ -944,8 +944,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -954,7 +954,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         expected_q = sorted(numpy.random.uniform(0, [1] * 10))
         p.new_flag("test", bool)
@@ -975,8 +975,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -985,7 +985,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         expected_q = sorted(numpy.random.uniform(0, [1] * 10))
         p.new_flag("test", bool)
@@ -1008,8 +1008,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p = self.SAXSProfile()
         p.add_data(data)
         gp = MockGP(1, 2)
-        m = IMP.kernel.Model()
-        s = IMP.isd.Scale.setup_particle(IMP.kernel.Particle(m), 3.0)
+        m = IMP.Model()
+        s = IMP.isd.Scale.setup_particle(IMP.Particle(m), 3.0)
         functions = {}
         functions['mean'] = MockFunction()
         functions['covariance'] = MockFunction()
@@ -1018,7 +1018,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             {'sigma': s},
             functions,
             'test',
-            IMP.kernel.Model(),
+            IMP.Model(),
             None)
         expected_q = sorted(numpy.random.uniform(0, [1] * 10))
         p.new_flag("test", bool)

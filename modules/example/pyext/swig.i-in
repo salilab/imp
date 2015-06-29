@@ -1,11 +1,11 @@
-/* Tell swig how to treat various types when moving them to and from python. Among other
-   things, they tell swig how to convert collections of C++ objects (eg ExampleRestraints)
-   into python lists and back.
+/* Tell SWIG how to treat various types when moving them to and from Python.
+   Among other things, they tell SWIG how to convert collections of C++ objects
+   (eg ExampleRestraints) to and from Python lists.
 
-   IMP_SWIG_OBJECT, IMP_SWIG_VALUE and IMP_SWIG_DECORATOR lines need to appear before any
-   %include lines as well as any inline C++ code (or at least any such code which uses
-   the types in question).
-  */
+   IMP_SWIG_OBJECT, IMP_SWIG_VALUE and IMP_SWIG_DECORATOR lines need to appear
+   before any %include lines as well as any inline C++ code (or at least
+   any such code which uses the types in question).
+ */
 %import "RMF.i"
 %{
 #include "RMF.h"
@@ -22,24 +22,40 @@ IMP_SWIG_VALUE_INSTANCE(IMP::example, ExampleTemplateClass3D, ExampleTemplateCla
 IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD);
 
 
-/* One can add python methods to your module by putting code in %pythoncode blocks
-   This function can be called as IMP.examples.say_hello(). */
+/* One can add Python functions to your module by putting code in
+   %pythoncode blocks.
+
+   This function can be called as IMP.example.create_model_and_particles().
+
+   (Alternatively, functions and classes can be placed in subpackages by
+   putting them in the pyext/src directory.)
+ */
 %pythoncode %{
 def create_model_and_particles():
-  m= IMP.Model()
-  sc= IMP.container.ListSingletonContainer(m)
-  b= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
-                               IMP.algebra.Vector3D(10,10,10))
-  for i in range(0,100):
-     p= IMP.Particle(m)
-     sc.add_particle(p)
-     d=IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(b), 1))
-     d.set_coordinates_are_optimized(True)
-  return (m, sc)
+    m = IMP.Model()
+    sc = IMP.container.ListSingletonContainer(m)
+    b = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                                 IMP.algebra.Vector3D(10,10,10))
+    for i in range(0,100):
+        p = m.add_particle("p")
+        sc.add(p)
+        d = IMP.core.XYZR.setup_particle(m, p,
+                  IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(b), 1))
+        d.set_coordinates_are_optimized(True)
+    return (m, sc)
 %}
 
+/* If you have lots of Python code, you can use SWIG's
+   %include directive and put it in a separate file.
+ */
+%include "IMP_example.restraint.i"
+%include "IMP_example.pairscore.i"
+%include "IMP_example.unaryfunc.i"
+%include "IMP_example.constraint.i"
+%include "IMP_example.modifier.i"
+
 /* Wrap our own classes. Each header in the module should be listed here with a
-   %include line.*/
+   %include line. */
 %include "IMP/example/ExampleRestraint.h"
 %include "IMP/example/ExampleDecorator.h"
 %include "IMP/example/ExampleUnaryFunction.h"
@@ -64,8 +80,3 @@ namespace IMP {
    %template(ExampleTemplateClass3D) ExampleTemplateClassD<3>;
   }
 }
-
-/* Import the function from _randomize.py */
-%pythoncode %{
-from ._randomize import *
-%}

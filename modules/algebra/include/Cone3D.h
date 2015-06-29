@@ -14,8 +14,8 @@
 #include "Plane3D.h"
 #include "Segment3D.h"
 #include "GeometricPrimitiveD.h"
-#include <IMP/base/showable_macros.h>
-#include <IMP/base/warning_macros.h>
+#include <IMP/showable_macros.h>
+#include <IMP/warning_macros.h>
 #include <iostream>
 #include "constants.h"
 

@@ -10,7 +10,7 @@
 
 #include <IMP/score_functor/score_functor_config.h>
 #include "Score.h"
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 #include "Statistical.h"
 #include <IMP/algebra/utility.h>
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
@@ -39,7 +39,7 @@ class Dope : public Statistical<DopeType, false, true> {
  public:
   Dope(double threshold = std::numeric_limits<double>::max())
       : P(get_dope_type_key(), threshold, get_data_path("dope_score.lib")) {}
-  Dope(double threshold, base::TextInput data_file)
+  Dope(double threshold, TextInput data_file)
       : P(get_dope_type_key(), threshold, data_file) {}
   static IntKey get_dope_type_key() {
     static const IntKey ik("dope atom type");

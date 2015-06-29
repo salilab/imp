@@ -13,8 +13,9 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min1(self):
         """Test close pairs list generation"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(0, 10)]
+        psi = IMP.get_indexes(ps)
         ds = [IMP.core.XYZR.setup_particle(p) for p in ps]
         for d in ds:
             d.set_radius(6)
@@ -37,9 +38,10 @@ class Tests(IMP.test.TestCase):
             for p in ps:
                 st = pst.get_particle_states(p)
                 st.load_particle_state(random.sample(range(0, ns), 1)[0], p)
-            curp = cpf.get_close_pairs(ps)
+            curp = cpf.get_close_pairs(m, psi)
             print(len(curp))
-            for p in curp:
+            for pi in curp:
+                p = tuple(IMP.get_particles(m, pi))
                 self.assertTrue(p in allp or (p[1], p[0]) in allp)
 if __name__ == '__main__':
     IMP.test.main()

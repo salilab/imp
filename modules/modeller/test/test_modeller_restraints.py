@@ -25,14 +25,14 @@ class Tests(IMP.test.TestCase):
                                     group=modeller.physical.xy_distance)
         modmodel.restraints.add(r)
 
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         protein = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
         atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
-        m.add_restraint(IMP.modeller.ModellerRestraints(m, modmodel,
-                                                        atoms))
+        r = IMP.modeller.ModellerRestraints(m, modmodel, atoms)
+        sf = IMP.core.RestraintsScoringFunction([r])
 
-        assertSimilarModellerIMPScores(self, modmodel, protein)
-        self.assertAlmostEqual(m.evaluate(False), 5.7837, delta=1e-3)
+        assertSimilarModellerIMPScores(self, sf, modmodel, protein)
+        self.assertAlmostEqual(sf.evaluate(False), 5.7837, delta=1e-3)
 
 if __name__ == '__main__':
     IMP.test.main()

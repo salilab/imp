@@ -25,19 +25,23 @@ IMPEM2D_BEGIN_INTERNAL_NAMESPACE
    \param[in] r radius of the sphere
    \note Saff, The Mathematical Intelligencer (1997)
 **/
+IMPEM2DEXPORT
 void semispherical_spiral_distribution(const unsigned long N,
                                        algebra::SphericalVector3Ds &vs,
                                        double r = 1.0);
 
+IMPEM2DEXPORT
 void spherical_spiral_distribution(const unsigned long N,
                                    algebra::SphericalVector3Ds &vs,
                                    double r = 1.0);
 
 //! Distributes N points into a sphere evenly. Fast algorithm that almost
 //! guarantees similar distance from one point to the nearest one
+IMPEM2DEXPORT
 void spherical_even_distribution(const unsigned long N,
                                  algebra::SphericalVector3Ds &vs);
 
+IMPEM2DEXPORT
 void semispherical_even_distribution(const unsigned long N,
                                      algebra::SphericalVector3Ds &vs);
 
@@ -46,6 +50,7 @@ void semispherical_even_distribution(const unsigned long N,
 /**
   \param v is the spherical vector with radius,zenith and azimut
 **/
+IMPEM2DEXPORT
 algebra::Rotation3D get_rotation_from_projection_direction(
     const algebra::SphericalVector3D &v);
 
@@ -54,15 +59,9 @@ algebra::Rotation3D get_rotation_from_projection_direction(
   This code assumes than the 1st and 3rd axes are the same
   a1 is the 1st and 3rd axis and a2 is the 2nd. x=0, y=1, z=2.
 **/
+IMPEM2DEXPORT
 algebra::Vector3D get_euler_angles_from_rotation(const algebra::Rotation3D &R,
                                                  int a1, int a2);
-
-int next(int axis);
-int previous(int axis);
-
-//! convert a quaternion to a rotation matrix.
-//! Required by get_euler_angles_from_rotation()
-cv::Mat quaternion_to_matrix(const algebra::VectorD<4> &v);
 
 IMPEM2D_END_INTERNAL_NAMESPACE
 

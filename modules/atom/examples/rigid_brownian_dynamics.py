@@ -5,19 +5,22 @@ import IMP.atom
 import IMP.core
 import IMP.algebra
 import IMP.display
+import sys
+
+IMP.setup_from_argv(sys.argv, "rigid brownian dynamics")
 
 
 def create_rigid_body(m, name):
     prb = IMP.core.RigidBody.setup_particle(
-        IMP.kernel.Particle(m), IMP.algebra.ReferenceFrame3D())
+        IMP.Particle(m), IMP.algebra.ReferenceFrame3D())
     prb.set_coordinates_are_optimized(True)
     prb.set_name(name + " rb")
-    ph = IMP.atom.Molecule.setup_particle(IMP.kernel.Particle(m))
+    ph = IMP.atom.Molecule.setup_particle(IMP.Particle(m))
     ph.set_name(name)
     for i in range(0, 2):
         for j in range(0, 2):
             for k in range(0, 2):
-                d = IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m),
+                d = IMP.core.XYZR.setup_particle(IMP.Particle(m),
                                                  IMP.algebra.Sphere3D(
                                                      IMP.algebra.Vector3D(
                                                          i, j, k) * 10.0,
@@ -38,8 +41,8 @@ def display(i, w, hs):
         g = IMP.atom.HierarchyGeometry(h)
         w.add_geometry(g)
 
-m = IMP.kernel.Model()
-IMP.base.set_log_level(IMP.base.SILENT)
+m = IMP.Model()
+IMP.set_log_level(IMP.SILENT)
 
 rb0, h0 = create_rigid_body(m, "first")
 rb1, h1 = create_rigid_body(m, "second")
@@ -48,9 +51,7 @@ rb1.set_reference_frame(IMP.algebra.ReferenceFrame3D(
 
 ev = IMP.core.ExcludedVolumeRestraint(
     IMP.container.ListSingletonContainer(
-        rb0.get_members() + rb1.get_members()),
-    1, 3)
-m.add_restraint(ev)
+        m, rb0.get_rigid_members() + rb1.get_rigid_members()), 1, 3)
 
 #h= IMP.core.Harmonic(0,1)
 #s= IMP.core.DistanceToSingletonScore(h, IMP.algebra.Vector3D(0,0,0))
@@ -58,12 +59,14 @@ m.add_restraint(ev)
 # m.add_restraint(r)
 cr = IMP.atom.create_distance_restraint(
     IMP.atom.Selection(h0), IMP.atom.Selection(h1), 0, 1)
-m.add_restraint(cr)
+
+sf = IMP.core.RestraintsScoringFunction([ev, cr])
 
 bd = IMP.atom.BrownianDynamics(m)
+bd.set_scoring_function(sf)
 bd.set_time_step(10000)
 
-nm = IMP.base.create_temporary_file_name("rigid_bd", ".pym")
+nm = IMP.create_temporary_file_name("rigid_bd", ".pym")
 nm = "rigid.pym"
 w = IMP.display.PymolWriter(nm)
 for i in range(0, 100):

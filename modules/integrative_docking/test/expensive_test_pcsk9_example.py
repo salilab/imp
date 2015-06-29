@@ -46,7 +46,7 @@ for n, line in enumerate(open(trans_in)):
         if sys.platform == 'win32':
             self.skipTest("does not work on Windows")
         cmds = self.read_shell_commands(
-            '../../../doc/tutorial/idock_pcsk9.dox')
+            '../../../doc/manual/idock_pcsk9.dox')
         input_docking = self.get_input_file_name('docking.res.pcsk9')
         d = IMP.test.RunInTempDir()
         self.make_dummy_patch_dock(input_docking)

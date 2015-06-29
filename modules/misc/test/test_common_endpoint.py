@@ -11,12 +11,12 @@ class Tests(IMP.test.TestCase):
 
     def test_score(self):
         """Test common endpoints container"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         lbp = None
         bonds = []
         ps = []
         for i in range(0, 4):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             bp = IMP.atom.Bonded.setup_particle(p)
             if lbp is not None:
                 bonds.append(IMP.atom.create_custom_bond(lbp, bp, 1, 1))

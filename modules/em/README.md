@@ -43,7 +43,7 @@ Display the header information for a density map.
 
 # Info
 
-_Author(s)_: Keren Lasker, Javier Velazquez-Muriel, Friedrich Foerster, Daniel Russel, Dina Schneidman
+_Author(s)_: Keren Lasker, Javier Velázquez-Muriel, Friedrich Förster, Daniel Russel, Dina Schneidman
 
 _Maintainer_: `benmwebb`
 

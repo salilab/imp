@@ -13,7 +13,7 @@
 #include <IMP/generic.h>
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/pair_macros.h>
 
 #include <IMP/algebra/Transformation3D.h>
@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
     second. This can be used to implement symmetry restraints.
  */
 class IMPCOREEXPORT TransformedDistancePairScore : public PairScore {
-  IMP::base::PointerMember<UnaryFunction> f_;
+  IMP::PointerMember<UnaryFunction> f_;
   algebra::Transformation3D t_;
   algebra::Rotation3D ri_;
 
@@ -38,11 +38,11 @@ class IMPCOREEXPORT TransformedDistancePairScore : public PairScore {
 
   /** Set the transformation object.*/
   void set_transformation(const algebra::Transformation3D &rot);
-  virtual double evaluate_index(kernel::Model *m,
-                                const kernel::ParticleIndexPair &p,
+  virtual double evaluate_index(Model *m,
+                                const ParticleIndexPair &p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_PAIR_SCORE_METHODS(TransformedDistancePairScore);
   IMP_OBJECT_METHODS(TransformedDistancePairScore);
   ;

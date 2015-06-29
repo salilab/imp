@@ -7,14 +7,14 @@
 
 #include <IMP/core/IncrementalScoringFunction.h>
 #include <IMP/RestraintSet.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/dependency_graph.h>
 #include <boost/unordered_set.hpp>
 #include <IMP/core/XYZ.h>
-#include <IMP/kernel/internal/container_helpers.h>
+#include <IMP/internal/container_helpers.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/internal/incremental_scoring_function.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/check_macros.h>
 #include <numeric>
 #include <algorithm>
 
@@ -25,7 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 namespace {
 // TODO: this can be made a general library function at some point
-IMP::kernel::Model *extract_model(const kernel::ParticlesTemp &ps) {
+IMP::Model *extract_model(const ParticlesTemp &ps) {
   IMP_USAGE_CHECK(ps.size() > 0,
                   "needs at least one particle to extract a model");
   return ps[0]->get_model();
@@ -33,14 +33,14 @@ IMP::kernel::Model *extract_model(const kernel::ParticlesTemp &ps) {
 }
 
 IncrementalScoringFunction::IncrementalScoringFunction(
-    const kernel::ParticlesTemp &ps, const kernel::RestraintsTemp &rs,
+    const ParticlesTemp &ps, const RestraintsTemp &rs,
     double weight, double max, std::string name)
     : ScoringFunction(extract_model(ps), name), weight_(weight), max_(max) {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Creating IncrementalScoringFunction with particles "
                 << ps << " and restraints " << rs << std::endl);
   all_ = IMP::internal::get_index(ps);
-  base::Pointer<ScoringFunction> suppress_error(this);
+  Pointer<ScoringFunction> suppress_error(this);
   create_flattened_restraints(rs);
   create_scoring_functions();
   dirty_ = all_;
@@ -53,21 +53,21 @@ class IncrementalRestraintsScoringFunction
     : public IMP::internal::RestraintsScoringFunction {
  public:
   IncrementalRestraintsScoringFunction(
-      const kernel::RestraintsTemp &rs, double weight = 1.0,
+      const RestraintsTemp &rs, double weight = 1.0,
       double max = NO_MAX,
       std::string name = "IncrementalRestraintsScoringFunction%1%")
       : IMP::internal::RestraintsScoringFunction(rs, weight, max, name) {}
   // don't depend on optimized particles
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     return get_restraints();
   }
 };
 }
 
 IncrementalScoringFunction::Data IncrementalScoringFunction::create_data(
-    kernel::ParticleIndex pi, kernel::RestraintsTemp cr,
+    ParticleIndex pi, RestraintsTemp cr,
     const boost::unordered_map<Restraint *, int> &all,
-    const kernel::Restraints &dummies) const {
+    const Restraints &dummies) const {
   IMP_LOG_TERSE("Dependent restraints for particle "
                 << get_model()->get_particle_name(pi) << " are " << cr
                 << std::endl);
@@ -82,7 +82,7 @@ IncrementalScoringFunction::Data IncrementalScoringFunction::create_data(
       ret.indexes.push_back(index);
     }
   }
-  cr += kernel::RestraintsTemp(dummies.begin(), dummies.end());
+  cr += RestraintsTemp(dummies.begin(), dummies.end());
   ret.sf = new IncrementalRestraintsScoringFunction(
       cr, 1.0, NO_MAX, get_model()->get_particle_name(pi) + " restraints");
   return ret;
@@ -101,20 +101,20 @@ void IncrementalScoringFunction::create_scoring_functions() {
   IMP_LOG_TERSE("Creating scoring functions" << std::endl);
   if (flattened_restraints_.empty()) return;
 
-  boost::unordered_map<kernel::Restraint *, int> mp;
+  boost::unordered_map<Restraint *, int> mp;
   IMP_LOG_TERSE("All restraints are " << flattened_restraints_ << std::endl);
   for (unsigned int i = 0; i < flattened_restraints_.size(); ++i) {
     mp[flattened_restraints_[i]] = i;
   }
 
-  kernel::Restraints drs;
+  Restraints drs;
   for (unsigned int i = 0; i < nbl_.size(); ++i) {
     // This ensures that the score states needed for the non-bonded terms
     drs.push_back(nbl_[i]->get_dummy_restraint());
   }
 
-  base::Vector<kernel::RestraintsTemp> crs;
-  IMP_FOREACH(kernel::ParticleIndex pi, all_) {
+  Vector<RestraintsTemp> crs;
+  IMP_FOREACH(ParticleIndex pi, all_) {
     crs.push_back(get_dependent_restraints(get_model(), pi));
   }
 
@@ -124,10 +124,10 @@ void IncrementalScoringFunction::create_scoring_functions() {
 }
 
 void IncrementalScoringFunction::create_flattened_restraints(
-    const kernel::RestraintsTemp &rs) {
-  kernel::Restraints decomposed;
+    const RestraintsTemp &rs) {
+  Restraints decomposed;
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    base::Pointer<kernel::Restraint> cur = rs[i]->create_decomposition();
+    Pointer<Restraint> cur = rs[i]->create_decomposition();
     if (cur) {
       decomposed.push_back(cur);
       cur->set_was_used(true);  // suppress message about the score states
@@ -146,7 +146,7 @@ void IncrementalScoringFunction::reset_moved_particles() {
   last_move_.clear();
 }
 void IncrementalScoringFunction::set_moved_particles(
-    const kernel::ParticleIndexes &p) {
+    const ParticleIndexes &p) {
   IMP_OBJECT_LOG;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i = 0; i < p.size(); ++i) {
@@ -164,12 +164,12 @@ void IncrementalScoringFunction::set_moved_particles(
 }
 
 void IncrementalScoringFunction::add_close_pair_score(
-    PairScore *ps, double distance, const kernel::ParticlesTemp &particles) {
+    PairScore *ps, double distance, const ParticlesTemp &particles) {
   add_close_pair_score(ps, distance, particles, PairPredicates());
 }
 
 void IncrementalScoringFunction::add_close_pair_score(
-    PairScore *ps, double distance, const kernel::ParticlesTemp &particles,
+    PairScore *ps, double distance, const ParticlesTemp &particles,
     const PairPredicates &filters) {
   IMP_OBJECT_LOG;
   for (unsigned int i = 0; i < filters.size(); ++i) {
@@ -274,7 +274,7 @@ void IncrementalScoringFunction::do_add_score_and_derivatives(
 }
 
 Restraints IncrementalScoringFunction::create_restraints() const {
-  kernel::Restraints ret;
+  Restraints ret;
   for (ScoringFunctionsMap::const_iterator it = scoring_functions_.begin();
        it != scoring_functions_.end(); ++it) {
     ret += it->second.sf->create_restraints();
@@ -293,12 +293,12 @@ IncrementalScoringFunction::Wrapper::~Wrapper() {
 
 //! all real work is passed off to other ScoringFunctions
 ModelObjectsTemp IncrementalScoringFunction::do_get_inputs() const {
-  return kernel::ModelObjectsTemp();
+  return ModelObjectsTemp();
 }
 
 IncrementalScoringFunction::ScoringFunctionsMap::~ScoringFunctionsMap() {
   // move it to a temp so a second attempt to destroy it succeeds
-  boost::unordered_map<kernel::ParticleIndex, Data> t;
-  std::swap<boost::unordered_map<kernel::ParticleIndex, Data> >(*this, t);
+  boost::unordered_map<ParticleIndex, Data> t;
+  std::swap<boost::unordered_map<ParticleIndex, Data> >(*this, t);
 }
 IMPCORE_END_NAMESPACE

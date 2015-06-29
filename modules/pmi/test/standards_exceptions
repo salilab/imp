@@ -1,0 +1,4 @@
+value_object_exceptions=[]
+function_name_exceptions=['SigmoidRestraintSphere.increment_amplitude']
+show_exceptions=[]
+spelling_exceptions=[]

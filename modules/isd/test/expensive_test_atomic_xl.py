@@ -29,29 +29,24 @@ class TestAtomicXL_1State(IMP.test.TestCase):
         # create restraint
         xlen = 10
         slope = 0.0
-        self.xl = IMP.isd.AtomicCrossLinkMSRestraint(self.m,
-                                                     xlen,
-                                                     psip.get_index(),
-                                                     slope)
-        self.xl.add_contribution([p0.get_index(), p1.get_index()],
-                                 [self.sig0.get_index(), self.sig1.get_index()])
-
-        self.m.add_restraint(self.xl)
+        self.xl = IMP.isd.AtomicCrossLinkMSRestraint(self.m, xlen, psip, slope)
+        self.xl.add_contribution([p0, p1], [self.sig0, self.sig1])
+        self.sf = IMP.core.RestraintsScoringFunction([self.xl])
 
     def test_atomic_xl_derivatives(self):
         """Test single-contribution derivs with no slope"""
         for i in range(10):
             self.randomize_particles([self.d0, self.d1], 2)
-            self.m.evaluate(True)
+            self.sf.evaluate(True)
             #print 'n', IMP.test.xyz_numerical_derivatives(self.m, self.d0, 0.01), 'a', self.d0.get_derivatives()
             self.assertXYZDerivativesInTolerance(
-                self.m,
+                self.sf,
                 self.d0,
                 tolerance=1e-2,
                 percentage=3.0)
 
             self.assertXYZDerivativesInTolerance(
-                self.m,
+                self.sf,
                 self.d1,
                 tolerance=1e-2,
                 percentage=3.0)
@@ -62,14 +57,14 @@ class TestAtomicXL_1State(IMP.test.TestCase):
         self.xl.set_slope(0.1)
         for i in range(10):
             self.randomize_particles([self.d0, self.d1], 2)
-            self.m.evaluate(True)
+            self.sf.evaluate(True)
             self.assertXYZDerivativesInTolerance(
-                self.m,
+                self.sf,
                 self.d0,
                 tolerance=1e-2,
                 percentage=3.0)
             self.assertXYZDerivativesInTolerance(
-                self.m,
+                self.sf,
                 self.d1,
                 tolerance=1e-2,
                 percentage=3.0)
@@ -98,29 +93,24 @@ class TestAtomicXL_ManyState(IMP.test.TestCase):
         slope = 0.01
         psip = IMP.Particle(self.m)
         IMP.isd.Scale.setup_particle(psip, 1)
-        self.xl = IMP.isd.AtomicCrossLinkMSRestraint(self.m,
-                                                     xlen,
-                                                     psip.get_index(),
-                                                     slope,
+        self.xl = IMP.isd.AtomicCrossLinkMSRestraint(self.m, xlen, psip, slope,
                                                      False)
 
         # make pairs and add contributions
         pairs = [[i, i + 1] for i in range(9)]
         for pp in pairs:
             self.xl.add_contribution(
-                [ps[pp[0]].get_index(), ps[pp[1]].get_index()],
-                [psigs[pp[0]].get_index(),
-                 psigs[pp[1]].get_index()])
+                [ps[pp[0]], ps[pp[1]]], [psigs[pp[0]], psigs[pp[1]]])
 
     def test_atomic_xl_derivatives_many(self):
         """ test the atomix XL restraint derivatives"""
-        self.m.add_restraint(self.xl)
+        self.sf = IMP.core.RestraintsScoringFunction([self.xl])
         for i in range(10):
             self.randomize_particles(self.xyzs, 6)
-            self.m.evaluate(True)
+            self.sf.evaluate(True)
             for d in self.xyzs:
                 self.assertXYZDerivativesInTolerance(
-                    self.m,
+                    self.sf,
                     d,
                     tolerance=1e-2,
                     percentage=5.)
@@ -129,14 +119,14 @@ class TestAtomicXL_ManyState(IMP.test.TestCase):
         """ test the atomix XL restraint derivatives when in a LogWrapper"""
         self.xl.set_part_of_log_score(True)
         log_wrapper = IMP.isd.LogWrapper([self.xl], 1.0)
-        self.m.add_restraint(log_wrapper)
+        self.sf = IMP.core.RestraintsScoringFunction([log_wrapper])
         for i in range(10):
             self.randomize_particles(self.xyzs, 6)
-            self.m.evaluate(True)
+            self.sf.evaluate(True)
             for d in self.xyzs:
                 #print 'n', IMP.test.xyz_numerical_derivatives(self.m, d, 0.01), 'a', d.get_derivatives()
                 self.assertXYZDerivativesInTolerance(
-                    self.m,
+                    self.sf,
                     d,
                     tolerance=1e-2,
                     percentage=5.)

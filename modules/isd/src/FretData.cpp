@@ -7,7 +7,7 @@
  */
 #include <IMP/isd/FretData.h>
 #include <IMP/macros.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <iostream>
@@ -16,7 +16,7 @@ IMPISD_BEGIN_NAMESPACE
 
 FretData::FretData(Floats d_term, Floats d_center, Floats d_int, Floats s_grid,
                    Float R0, Float Rmin, Float Rmax, bool do_limit)
-    : base::Object("Data Structure for FretRestraint %1%") {
+    : Object("Data Structure for FretRestraint %1%") {
   // store grids
   d_center_ = d_center;
   s_grid_ = s_grid;

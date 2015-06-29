@@ -1,0 +1,29 @@
+import IMP.test
+import os.path
+
+
+class Tests(IMP.test.TestCase):
+
+    """Check IMP exceptions"""
+
+    def assertSubclass(self, derived, base):
+        self.assertTrue(issubclass(derived, base),
+                        "%s is not a subclass of %s" % (derived, base))
+
+    def test_hierarchy(self):
+        """Test class hierarchy of IMP exceptions"""
+        self.assertSubclass(IMP.Exception, Exception)
+        # Make sure that all exceptions derive from IMP.Exception
+        for subclass in (IMP.InternalException, IMP.ModelException,
+                         IMP.UsageException, IMP.IndexException,
+                         IMP.IOException, IMP.ValueException,
+                         IMP.EventException, IMP.TypeException):
+            self.assertSubclass(subclass, IMP.Exception)
+        # Check for exceptions that also should derive from Python types
+        self.assertSubclass(IMP.IndexException, IndexError)
+        self.assertSubclass(IMP.IOException, IOError)
+        self.assertSubclass(IMP.ValueException, ValueError)
+        self.assertSubclass(IMP.TypeException, TypeError)
+
+if __name__ == '__main__':
+    IMP.test.main()

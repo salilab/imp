@@ -6,7 +6,7 @@
  *
  */
 
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/vonMisesKappaConjugateRestraint.h>
 #include <math.h>
@@ -15,7 +15,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 vonMisesKappaConjugateRestraint::vonMisesKappaConjugateRestraint(
-    kernel::Model *m, kernel::Particle *p, double c, double R0)
+    Model *m, Particle *p, double c, double R0)
     : Restraint(m, "vonMisesKappaConjugateRestraint%1%"),
       kappa_(p),
       bessel_init_(false),
@@ -80,7 +80,7 @@ double vonMisesKappaConjugateRestraint::unprotected_evaluate(
 }
 
 ModelObjectsTemp vonMisesKappaConjugateRestraint::do_get_inputs() const {
-  return kernel::ParticlesTemp(1, kappa_);
+  return ParticlesTemp(1, kappa_);
 }
 
 IMPISD_END_NAMESPACE

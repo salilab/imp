@@ -12,7 +12,7 @@
 
 #include "XYZR.h"
 #include <IMP/Refiner.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/Decorator.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/SingletonDerivativeModifier.h>
@@ -40,7 +40,7 @@ class XYZR;
  \uses{class CoverRefined, CGAL}
  */
 class IMPCOREEXPORT CoverRefined : public SingletonModifier {
-  IMP::base::PointerMember<Refiner> refiner_;
+  IMP::PointerMember<Refiner> refiner_;
   Float slack_;
 
  public:
@@ -51,12 +51,12 @@ class IMPCOREEXPORT CoverRefined : public SingletonModifier {
   //! Set how much extra to add to the radius.
   void set_slack(Float slack) { slack_ = slack; }
 
-  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex a) const
+  virtual void apply_index(Model *m, ParticleIndex a) const
       IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_MODIFIER_METHODS(CoverRefined);
   IMP_OBJECT_METHODS(CoverRefined);
 };
@@ -69,7 +69,7 @@ class IMPCOREEXPORT CoverRefined : public SingletonModifier {
 
     \usesconstraint
 */
-IMP_SUMMARY_DECORATOR_DECL(Cover, XYZR, XYZs);
+IMP_SUMMARIZE_DECORATOR_DECL(Cover, XYZR, XYZs,);
 
 IMPCORE_END_NAMESPACE
 

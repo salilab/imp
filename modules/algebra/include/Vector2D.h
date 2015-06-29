@@ -8,9 +8,9 @@
 #ifndef IMPALGEBRA_VECTOR_2D_H
 #define IMPALGEBRA_VECTOR_2D_H
 
-#include <IMP/base/types.h>
-#include <IMP/base/base_macros.h>
-#include <IMP/base/exception.h>
+#include <IMP/types.h>
+#include <IMP/base_macros.h>
+#include <IMP/exception.h>
 
 #include <cmath>
 

@@ -8,7 +8,7 @@
 #include <string>
 #include "IMP/em/DensityMap.h"
 #include "IMP/em/MRCReaderWriter.h"
-#include "IMP/kernel/Model.h"
+#include "IMP/Model.h"
 #include "IMP/atom/Hierarchy.h"
 #include "IMP/atom/pdb.h"
 #include "IMP/atom/force_fields.h"
@@ -75,7 +75,7 @@ int parse_input(int argc, char *argv[], std::string &pdb_filename,
     return 1;
   }
 
-  IMP::base::set_log_level(IMP::base::VERBOSE);
+  IMP::set_log_level(IMP::VERBOSE);
   IMP_LOG_VERBOSE("============= parameters ============" << std::endl);
   IMP_LOG_VERBOSE("pdb_filename : " << pdb_filename << std::endl);
   IMP_LOG_VERBOSE("num_centers : " << num_means << std::endl);
@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
   }
 
   // read the pdb
-  kernel::Model *m = new kernel::Model();
+  Model *m = new Model();
   atom::Hierarchy mh;
   mh = atom::read_pdb(pdb_filename, m);
   IMP_NEW(IMP::statistics::internal::ParticlesDataPoints, ddp,

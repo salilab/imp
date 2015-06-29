@@ -9,32 +9,38 @@
 #define IMPATOM_EZ_RESTRAINT_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/kernel/Restraint.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Restraint.h>
+#include <IMP/Particle.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/base_types.h>
 #include <string>
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! Ez Potential kernel::Restraint
+//! Ez Potential restraint
 /** Ez, a Depth-dependent Potential for Assessing the Energies of
     Insertion of Amino Acid Side-chains into Membranes.
     Senes et al. J. Mol. Biol. (2007) 366, 436–448
  */
-class IMPATOMEXPORT EzRestraint : public kernel::Restraint {
+class IMPATOMEXPORT EzRestraint : public Restraint {
 
-  kernel::Particles ps_;
+  ParticleIndexes ps_;
   UnaryFunctions ufs_;
+  void setup();
   Floats get_parameters(std::string restype);
 
  protected:
   virtual double unprotected_evaluate(DerivativeAccumulator *da) const
       IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
  public:
-  EzRestraint(kernel::Particles ps);
+  EzRestraint(Model *m, ParticleIndexesAdaptor ps);
+
+#ifndef IMP_DOXYGEN
+  IMPATOM_DEPRECATED_METHOD_DECL(2.5)
+  EzRestraint(Particles ps);
+#endif
 
   IMP_OBJECT_METHODS(EzRestraint);
 };

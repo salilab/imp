@@ -11,21 +11,21 @@
 #include <IMP/display/display_config.h>
 #include "declare_Geometry.h"
 #include "Writer.h"
-#include <IMP/kernel/OptimizerState.h>
+#include <IMP/OptimizerState.h>
 #include <IMP/display/geometry.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/kernel/internal/utility.h>
+#include <IMP/Pointer.h>
+#include <IMP/internal/utility.h>
 #include <vector>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
 /** Write to a Writer periodically.
  */
-class IMPDISPLAYEXPORT WriteOptimizerState : public kernel::OptimizerState {
-  IMP::base::PointerMember<Writer> writer_;
+class IMPDISPLAYEXPORT WriteOptimizerState : public OptimizerState {
+  IMP::PointerMember<Writer> writer_;
 
  public:
-  WriteOptimizerState(kernel::Model *m, WriterAdaptor w);
+  WriteOptimizerState(Model *m, WriterAdaptor w);
   void write(WriterAdaptor w) const;
   IMP_LIST_ACTION(public, Geometry, Geometries, geometry, geometries,
                   Geometry *, Geometries, , , );

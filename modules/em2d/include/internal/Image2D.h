@@ -16,7 +16,7 @@
 
 #include <IMP/algebra/Vector2D.h>
 #include <IMP/algebra/eigen_analysis.h>
-#include <IMP/base/utility.h>
+#include <IMP/utility.h>
 #include <boost/unordered_map.hpp>
 #include <IMP/constants.h>
 
@@ -115,13 +115,6 @@ class Image2D : public boost::multi_array<T, 2> {
   double ncc_score(const Image2D<T>& other_image, T thr) const;
   void compute_PCA();
 
-  // image operations.h
-  void spherical_mask(Image2D<T>& out_image) const;
-  void spherical_mask();
-  void add_gaussian_noise(float mean, float std);
-  void enhance(double weight);
-  void normalize();
-
   void add(const Image2D<T>& image, double weight = 0.5);
   void convert_to_int(Image2D<int>& out_image) const;
 
@@ -130,10 +123,6 @@ class Image2D : public boost::multi_array<T, 2> {
   void get_connected_components(Image2D<int>& out_image) const;
   void get_largest_connected_component(Image2D<int>& out_image) const;
   void get_largest_connected_component();
-
-  // image_filters.h
-  void gaussian_blur(Image2D<T>& out_image, int sigma) const;
-  void gaussian_blur(int sigma);
 
   ImageTransform pca_align(const Image2D<T>& other_image) const;
   double max_distance() const;
@@ -335,11 +324,11 @@ double Image2D<T>::stddev() const {
     T avg_acc = 0, std_acc = 0;
     for (unsigned int i = 0; i < this->num_elements(); i++) {
       avg_acc += this->data()[i];
-      std_acc += IMP::base::square(this->data()[i]);
+      std_acc += IMP::square(this->data()[i]);
     }
     double average = (double)avg_acc / this->num_elements();
     double stddev = (double)std_acc / this->num_elements();
-    stddev -= IMP::base::square(average);
+    stddev -= IMP::square(average);
     Image2D<T>& i = const_cast<Image2D<T>&>(*this);
     i.stddev_ = sqrt(stddev);
     i.stddev_computed_ = true;
@@ -916,7 +905,7 @@ double Image2D<T>::max_distance() const {
         for (int ii = 0; ii < get_height(); ii++)
           for (int jj = 0; jj < get_width(); jj++)
             if ((*this)[ii][jj] > 0 && i != ii && j != jj) {
-              int dist2 = IMP::base::square(i - ii) + IMP::base::square(j - jj);
+              int dist2 = IMP::square(i - ii) + IMP::square(j - jj);
               if (dist2 > max_dist2) max_dist2 = dist2;
             }
       }

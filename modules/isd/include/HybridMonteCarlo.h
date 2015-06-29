@@ -23,7 +23,7 @@ IMPISD_BEGIN_NAMESPACE
 class IMPISDEXPORT HybridMonteCarlo : public core::MonteCarlo {
 
  public:
-  HybridMonteCarlo(kernel::Model *m, Float kT = 1.0, unsigned steps = 100,
+  HybridMonteCarlo(Model *m, Float kT = 1.0, unsigned steps = 100,
                    Float timestep = 1.0, unsigned persistence = 1);
 
   Float get_kinetic_energy() const;
@@ -49,7 +49,7 @@ class IMPISDEXPORT HybridMonteCarlo : public core::MonteCarlo {
   MolecularDynamics *get_md() const;
 
   // evaluate should return the total energy
-  double do_evaluate(const kernel::ParticleIndexes &) const;
+  double do_evaluate(const ParticleIndexes &) const;
 
   virtual void do_step();
   IMP_OBJECT_METHODS(HybridMonteCarlo);
@@ -57,8 +57,8 @@ class IMPISDEXPORT HybridMonteCarlo : public core::MonteCarlo {
  private:
   unsigned num_md_steps_, persistence_;
   unsigned persistence_counter_;
-  IMP::base::PointerMember<MolecularDynamicsMover> mv_;
-  base::Pointer<MolecularDynamics> md_;
+  IMP::PointerMember<MolecularDynamicsMover> mv_;
+  Pointer<MolecularDynamics> md_;
 };
 
 IMPISD_END_NAMESPACE

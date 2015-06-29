@@ -3,8 +3,6 @@
  *  \brief Use a ClassnameModifier applied to a PLURALVARIABLETYPE to
  *  maintain an invariant
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
@@ -15,7 +13,7 @@
 #include <IMP/ClassnameContainer.h>
 #include <IMP/ClassnameModifier.h>
 #include <IMP/OptimizerState.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 // for swig
@@ -29,8 +27,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \see ClassnameOptimizerState
  */
 class IMPCONTAINEREXPORT ClassnamesOptimizerState : public OptimizerState {
-  IMP::base::PointerMember<ClassnameModifier> f_;
-  IMP::base::PointerMember<ClassnameContainer> c_;
+  IMP::PointerMember<ClassnameModifier> f_;
+  IMP::PointerMember<ClassnameContainer> c_;
 
  public:
   /** \param[in] c The Container to hold the elements to process

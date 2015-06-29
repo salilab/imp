@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
     """Tests copying derivatives to and from refined"""
 
     def _create_particle(self, m, ks):
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         for k in ks:
             p.add_attribute(k, 0.0)
         return p
@@ -19,7 +19,7 @@ class Tests(IMP.test.TestCase):
         ks = IMP.FloatKeys()
         ks.append(k0)
         ks.append(k1)
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         p0 = self._create_particle(m, ks)
         p1 = self._create_particle(m, ks)
         p2 = self._create_particle(m, ks)
@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         p0.add_to_derivative(ks[1], 2, da)
         prop = IMP.core.DerivativesToRefined(r, ks)
         da = IMP.DerivativeAccumulator()
-        prop.apply(p0)
+        prop.apply_index(m, p0)
         self.assertEqual(p1.get_derivative(ks[0]), 1)
         self.assertEqual(p1.get_derivative(ks[1]), 2)
         self.assertEqual(p2.get_derivative(ks[0]), 1)
@@ -55,7 +55,7 @@ class Tests(IMP.test.TestCase):
         p2.add_to_derivative(ks[1], 8, da)
         prop = IMP.core.DerivativesFromRefined(r, ks)
         da = IMP.DerivativeAccumulator()
-        prop.apply(p0)
+        prop.apply_index(m, p0)
         self.assertEqual(p0.get_derivative(ks[0]), 5)
         self.assertEqual(p0.get_derivative(ks[1]), 10)
 

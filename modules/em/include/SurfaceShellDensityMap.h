@@ -40,10 +40,12 @@ class IMPEMEXPORT SurfaceShellDensityMap : public SampledDensityMap {
   //! Generate a surface shell density map from the input particles.
   /** \param[in] ps    particles with XYZ, radius and weight attributes
       \param[in] voxel_size   the voxel size.
+      \param[in] mass_key key to use to weight particles
+      \param[in] num_shells number of shells
       \note the voxel size and the number of shells determines
             the resolution/accuracy of the surface rasterization.
    */
-  SurfaceShellDensityMap(const kernel::ParticlesTemp &ps, float voxel_size,
+  SurfaceShellDensityMap(const ParticlesTemp &ps, float voxel_size,
                          IMP::FloatKey mass_key =
                              IMP::atom::Mass::get_mass_key(),
                          int num_shells = IMP_DEFAULT_NUM_SHELLS);

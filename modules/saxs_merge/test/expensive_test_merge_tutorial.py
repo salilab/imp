@@ -6,7 +6,7 @@ class Tests(IMP.test.ApplicationTestCase):
     def test_merge(self):
         """Test the simple merge example"""
         cmds = self.read_shell_commands(
-            '../../../doc/tutorial/saxs_merge.dox')
+            '../../../doc/manual/saxs_merge.dox')
         d = IMP.test.RunInTempDir()
         for c in cmds:
             self.run_shell_command(c)

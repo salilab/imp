@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     """Class to test hit map generation"""
 
     def read_data(self):
-        model = IMP.kernel.Model()
+        model = IMP.Model()
         mrw = IMP.em.MRCReaderWriter()
         scene = IMP.em.read_map(self.get_input_file_name("3points.mrc"), mrw)
         scene.get_header_writable().set_resolution(8.)

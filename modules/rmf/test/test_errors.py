@@ -14,9 +14,9 @@ class Tests(IMP.test.TestCase):
 
     def test_round_trip(self):
         """Test that exceptions are transformed"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         rmf = RMF.create_rmf_file(self.get_tmp_file_name("zillion.rmf"))
-        h = IMP.atom.Fragment.setup_particle(IMP.kernel.Particle(m))
+        h = IMP.atom.Fragment.setup_particle(IMP.Particle(m))
         IMP.core.XYZR.setup_particle(h)
         IMP.atom.Mass.setup_particle(h, 1)
         IMP.rmf.add_hierarchies(rmf, [h])
@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
         IMP.rmf.save_frame(rmf, "zero")
         print('loading bad')
         self.assertRaises(
-            IMP.base.IOException,
+            IMP.IOException,
             IMP.rmf.load_frame,
             rmf,
             RMF.FrameID(6))

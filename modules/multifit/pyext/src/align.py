@@ -73,7 +73,7 @@ Align proteomics graph with the EM map.
     return options, args
 
 
-def report_solutions(asmb, mdl, mhs, dmap, mapping_data, combs,
+def report_solutions(asmb, mdl, mhs, restraint_set, dmap, mapping_data, combs,
                      combs_fn_output_fn, scored_comb_output_fn, max_comb):
     ensmb = IMP.multifit.Ensemble(asmb, mapping_data)
     # report scores
@@ -88,10 +88,9 @@ def report_solutions(asmb, mdl, mhs, dmap, mapping_data, combs,
         s1.set_atom_types([IMP.atom.AtomType("CA")])
         all_leaves = all_leaves + s1.get_selected_particles()
     print("number of leaves:", len(all_leaves))
-    print("Get number of restraints:", len(mdl.get_restraints()))
+    print("Get number of restraints:", len(restraint_set.get_restraints()))
     pb = progressBar(0, len(combs))
     fitr = IMP.em.FitRestraint(all_leaves, dmap)
-    mdl.add_restraint(fitr)
     ranked_combs = []
     sorted_combs = []
     print("going to calculate fits for:", len(combs))
@@ -136,7 +135,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn,
     print(params_fn)
     alignment_params = IMP.multifit.AlignmentParams(params_fn)
     alignment_params.show()
-    IMP.base.set_log_level(IMP.WARNING)
+    IMP.set_log_level(IMP.WARNING)
     prot_data = IMP.multifit.read_proteomics_data(proteomics_fn)
     print("=========3")
     mapping_data = IMP.multifit.read_protein_anchors_mapping(prot_data,
@@ -164,7 +163,8 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn,
         f.close()
         sys.exit(0)
 
-    report_solutions(asmb, align.get_model(), align.get_molecules(), dmap,
+    report_solutions(asmb, align.get_model(), align.get_molecules(),
+                     align.get_restraint_set(), dmap,
                      mapping_data, combs, combs_fn_output_fn,
                      scored_comb_output_fn, max_comb)
 

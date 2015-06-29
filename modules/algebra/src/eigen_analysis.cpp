@@ -6,7 +6,7 @@
  */
 
 #include "IMP/algebra/eigen_analysis.h"
-#include <IMP/base/log_macros.h>
+#include <IMP/log_macros.h>
 IMPALGEBRA_BEGIN_NAMESPACE
 
 Transformation3Ds get_alignments_from_first_to_second(

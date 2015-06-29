@@ -10,7 +10,7 @@
 #define IMPBENCHMARK_INTERNAL_CONTROL_H
 
 #include <IMP/benchmark/benchmark_config.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 #include <string>
 
 IMPBENCHMARK_BEGIN_INTERNAL_NAMESPACE

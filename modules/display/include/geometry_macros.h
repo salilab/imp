@@ -132,7 +132,7 @@
   /** Display a particle.*/                                                \
   class Name##Geometry : public display::SingletonGeometry {               \
    public:                                                                 \
-    Name##Geometry(kernel::Particle *p) : display::SingletonGeometry(p) {} \
+    Name##Geometry(Particle *p) : display::SingletonGeometry(p) {} \
     Name##Geometry(Decorator d) : display::SingletonGeometry(d) {}         \
     IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, {     \
       display::Geometries ret;                                             \
@@ -162,7 +162,7 @@
   /** Display a pair of particles.*/                                   \
   class Name##Geometry : public display::PairGeometry {                \
    public:                                                             \
-    Name##Geometry(const kernel::ParticlePair &pp)                     \
+    Name##Geometry(const ParticlePair &pp)                     \
         : display::PairGeometry(pp) {}                                 \
     display::Geometries get_components() const {                       \
       display::Geometries ret;                                         \
@@ -179,7 +179,7 @@
     Name##sGeometry(PairContainer *sc) : display::PairsGeometry(sc) {} \
     display::Geometries get_components() const {                       \
       display::Geometries ret;                                         \
-      IMP_FOREACH(kernel::ParticleIndexPair pip,                       \
+      IMP_FOREACH(ParticleIndexPair pip,                       \
                   get_container()->get_contents()) {                   \
         Decorator d0(get_container()->get_model(), pip[0]);            \
         Decorator d1(get_container()->get_model(), pip[1]);            \

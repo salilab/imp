@@ -10,13 +10,13 @@
 #include <IMP/domino/internal/inference_utility.h>
 #include <IMP/domino/utility.h>
 #include <IMP/domino/particle_states.h>
-#include <IMP/kernel/internal/graph_utility.h>
+#include <IMP/internal/graph_utility.h>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/graph/copy.hpp>
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 #include <IMP/domino/internal/maximal_cliques.h>
-#include <IMP/base/vector_property_map.h>
+#include <IMP/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/connected_components.hpp>
@@ -47,13 +47,13 @@ Subsets get_subsets(const SubsetGraph &g) {
 
 SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
                                 const ParticleStatesTable *pst) {
-  kernel::RestraintsTemp rs =
+  RestraintsTemp rs =
       IMP::create_decomposition(in->create_restraints());
   // ScoreStatesTemp ss= get_required_score_states(rs);
   SubsetGraph ret(rs.size());  // + ss.size());
   IMP_LOG_TERSE("Creating restraint graph on " << rs.size() << " restraints."
                                                << std::endl);
-  boost::unordered_map<kernel::Particle *, int> map;
+  boost::unordered_map<Particle *, int> map;
   SubsetGraphVertexName pm = boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(rs[0]->get_model());
   DependencyGraphVertexIndex index = IMP::get_vertex_index(dg);
@@ -63,14 +63,14 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
     }*/
   Subset ps = pst->get_subset();
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    kernel::ParticlesTemp t = get_dependent_particles(
-        ps[i], kernel::ParticlesTemp(ps.begin(), ps.end()), dg, index);
+    ParticlesTemp t = get_dependent_particles(
+        ps[i], ParticlesTemp(ps.begin(), ps.end()), dg, index);
     for (unsigned int j = 0; j < t.size(); ++j) {
       IMP_USAGE_CHECK(map.find(t[j]) == map.end(),
                       "Currently particles which depend on more "
                           << "than one particle "
                           << "from the input set are not supported."
-                          << "  kernel::Particle \"" << t[j]->get_name()
+                          << "  Particle \"" << t[j]->get_name()
                           << "\" depends on \"" << ps[i]->get_name()
                           << "\" and \""
                           << ps[map.find(t[j])->second]->get_name() << "\"");
@@ -85,7 +85,7 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
     }
   }
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    kernel::ParticlesTemp pl = IMP::get_input_particles(rs[i]->get_inputs());
+    ParticlesTemp pl = IMP::get_input_particles(rs[i]->get_inputs());
     std::sort(pl.begin(), pl.end());
     pl.erase(std::unique(pl.begin(), pl.end()), pl.end());
     Subset os(pl);
@@ -102,9 +102,9 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
   /*ScoreStatesTemp ss= get_required_score_states(rs);
     for (ScoreStatesTemp::const_iterator it= ss.begin();
     it != ss.end(); ++it) {
-    kernel::ParticlesTemp pl= (*it)->get_input_particles();
+    ParticlesTemp pl= (*it)->get_input_particles();
     add_edges(ps, pl, map, *it, ret);
-    kernel::ParticlesTemp opl= (*it)->get_output_particles();
+    ParticlesTemp opl= (*it)->get_output_particles();
     add_edges(ps, opl, map, *it, ret);
     }
     IMP_INTERNAL_CHECK(boost::num_vertices(ret) == ps.size(),
@@ -125,8 +125,8 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
 
 IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph &cig) {
   InteractionGraphConstVertexName pm = boost::get(boost::vertex_name, cig);
-  typedef base::Vector<InteractionGraphVertex> Clique;
-  base::Vector<Clique> cliques;
+  typedef Vector<InteractionGraphVertex> Clique;
+  Vector<Clique> cliques;
   internal::maximal_cliques(cig, std::back_inserter(cliques));
   for (unsigned int i = 0; i < cliques.size(); ++i) {
     /*std::cout << "Clique is ";
@@ -138,7 +138,7 @@ IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph &cig) {
   CliqueGraph cg(cliques.size());
   CliqueGraphVertexName cm = boost::get(boost::vertex_name, cg);
   for (unsigned int i = 0; i < cliques.size(); ++i) {
-    kernel::ParticlesTemp cur;
+    ParticlesTemp cur;
     for (unsigned int j = 0; j < cliques[i].size(); ++j) {
       cur.push_back(pm[cliques[i][j]]);
     }
@@ -171,7 +171,7 @@ void triangulate(InteractionGraph &ig) {
                     InteractionGraphTraits::out_edge_iterator> EdgeRange;
   InteractionGraph mig;
   boost::copy_graph(ig, mig);
-  boost::unordered_map<kernel::Particle *, int> vmap;
+  boost::unordered_map<Particle *, int> vmap;
   InteractionGraphVertexName mpm = boost::get(boost::vertex_name, mig);
   for (VertexRange be = boost::vertices(ig); be.first != be.second;
        ++be.first) {
@@ -198,7 +198,7 @@ void triangulate(InteractionGraph &ig) {
       std::cout << boost::num_vertices(mig)
       << " remaining" << std::endl;*/
     AdjacencyRange be = boost::adjacent_vertices(maxv, mig);
-    const base::Vector<unsigned int> neighbors(be.first, be.second);
+    const Vector<unsigned int> neighbors(be.first, be.second);
     /*std::cout << "Neighbors are ";
       for (unsigned int i=0; i < neighbors.size(); ++i) {
       std::cout << neighbors[i] << " ";
@@ -258,7 +258,7 @@ InteractionGraph get_triangulated(const InteractionGraph &ig) {
 }
 
 SubsetGraph get_minimum_spanning_tree(const CliqueGraph &cg) {
-  base::Vector<CliqueGraphEdge> mst;
+  Vector<CliqueGraphEdge> mst;
   boost::kruskal_minimum_spanning_tree(cg, std::back_inserter(mst));
   SubsetGraph jt(boost::num_vertices(cg));
   SubsetGraphVertexName cm = boost::get(boost::vertex_name, jt);
@@ -326,9 +326,9 @@ bool get_has_edge(InteractionGraph &graph, InteractionGraphVertex va,
   return false;
 }
 
-void add_edges(const kernel::ParticlesTemp &ps, kernel::ModelObjects pt,
+void add_edges(const ParticlesTemp &ps, ModelObjects pt,
                const boost::unordered_map<ModelObject *, int> &map,
-               base::Object *blame, InteractionGraph &g) {
+               Object *blame, InteractionGraph &g) {
   IMP_LOG_VARIABLE(ps);
   InteractionGraphEdgeName om = boost::get(boost::edge_name, g);
   std::sort(pt.begin(), pt.end());
@@ -358,17 +358,17 @@ void add_edges(const kernel::ParticlesTemp &ps, kernel::ModelObjects pt,
 
 InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
                                        const ParticleStatesTable *pst) {
-  kernel::ParticlesTemp ps = get_as<kernel::ParticlesTemp>(pst->get_subset());
+  ParticlesTemp ps = get_as<ParticlesTemp>(pst->get_subset());
   return get_interaction_graph(rsi, ps);
 }
 
 InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
-                                       const kernel::ParticlesTemp &ps) {
+                                       const ParticlesTemp &ps) {
   if (ps.empty()) return InteractionGraph();
   InteractionGraph ret(ps.size());
-  kernel::Restraints rs =
-      kernel::create_decomposition(rsi->create_restraints());
-  // kernel::Model *m= ps[0]->get_model();
+  Restraints rs =
+      create_decomposition(rsi->create_restraints());
+  // Model *m= ps[0]->get_model();
   boost::unordered_map<ModelObject *, int> map;
   InteractionGraphVertexName pm = boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(ps[0]->get_model());
@@ -378,14 +378,14 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
     IMP::internal::show_as_graphviz(dg, std::cout);
     }*/
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    kernel::ParticlesTemp t = get_dependent_particles(
-        ps[i], kernel::ParticlesTemp(ps.begin(), ps.end()), dg, index);
+    ParticlesTemp t = get_dependent_particles(
+        ps[i], ParticlesTemp(ps.begin(), ps.end()), dg, index);
     for (unsigned int j = 0; j < t.size(); ++j) {
       IMP_USAGE_CHECK(map.find(t[j]) == map.end(),
                       "Currently particles which depend on more "
                           << "than one particle "
                           << "from the input set are not supported."
-                          << "  kernel::Particle \"" << t[j]->get_name()
+                          << "  Particle \"" << t[j]->get_name()
                           << "\" depends on \"" << ps[i]->get_name()
                           << "\" and \""
                           << ps[map.find(t[j])->second]->get_name() << "\"");
@@ -401,9 +401,9 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
     pm[i] = ps[i];
   }
   IMP::Restraints all_rs = IMP::get_restraints(rs);
-  for (kernel::Restraints::const_iterator it = all_rs.begin();
+  for (Restraints::const_iterator it = all_rs.begin();
        it != all_rs.end(); ++it) {
-    kernel::ModelObjectsTemp pl = (*it)->get_inputs();
+    ModelObjectsTemp pl = (*it)->get_inputs();
     add_edges(ps, pl, map, *it, ret);
   }
   /* Make sure that composite score states (eg the normalizer for
@@ -411,7 +411,7 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
      particles.*/
   ScoreStatesTemp ss = get_required_score_states(rs);
   for (ScoreStatesTemp::const_iterator it = ss.begin(); it != ss.end(); ++it) {
-    kernel::ModelObjectsTemps interactions = (*it)->get_interactions();
+    ModelObjectsTemps interactions = (*it)->get_interactions();
     for (unsigned int i = 0; i < interactions.size(); ++i) {
       add_edges(ps, interactions[i], map, *it, ret);
     }
@@ -431,7 +431,7 @@ display::Geometries get_interaction_graph_geometry(const InteractionGraph &ig) {
                  InteractionGraphTraits::vertex_iterator> be =
            boost::vertices(ig);
        be.first != be.second; ++be.first) {
-    kernel::Particle *p = dynamic_cast<kernel::Particle *>(vm[*be.first]);
+    Particle *p = dynamic_cast<Particle *>(vm[*be.first]);
     core::XYZ pd(p);
     for (std::pair<InteractionGraphTraits::out_edge_iterator,
                    InteractionGraphTraits::out_edge_iterator> ebe =
@@ -439,7 +439,7 @@ display::Geometries get_interaction_graph_geometry(const InteractionGraph &ig) {
          ebe.first != ebe.second; ++ebe.first) {
       unsigned int target = boost::target(*ebe.first, ig);
       if (target > *be.first) continue;
-      kernel::Particle *op = dynamic_cast<kernel::Particle *>(vm[target]);
+      Particle *op = dynamic_cast<Particle *>(vm[target]);
       core::XYZ od(op);
       std::string on = em[*ebe.first]->get_name();
       IMP_NEW(display::SegmentGeometry, cg,
@@ -617,12 +617,12 @@ typedef boost::adjacency_list<boost::listS, boost::listS, boost::undirectedS,
     StableSubsetGraph;
 typedef boost::graph_traits<StableSubsetGraph>::edge_descriptor SSGED;
 typedef boost::graph_traits<StableSubsetGraph>::vertex_descriptor SSGVD;
-base::Vector<SSGED> get_independent_edge_set(const StableSubsetGraph &sg) {
-  base::Vector<SSGED> ret;
+Vector<SSGED> get_independent_edge_set(const StableSubsetGraph &sg) {
+  Vector<SSGED> ret;
   boost::unordered_set<SSGVD> seen;
   typedef boost::graph_traits<StableSubsetGraph>::edge_iterator EIt;
   std::pair<EIt, EIt> ep = boost::edges(sg);
-  base::Vector<SSGED> edges(ep.first, ep.second);
+  Vector<SSGED> edges(ep.first, ep.second);
   std::reverse(edges.begin(), edges.end());
   for (unsigned int i = 0; i < edges.size(); ++i) {
     SSGVD source = boost::source(edges[i], sg);
@@ -643,7 +643,7 @@ SSGVD merge_edge(SSGED e, StableSubsetGraph &jt) {
       boost::get(boost::vertex_name, jt);
   typedef boost::graph_traits<StableSubsetGraph>::adjacency_iterator AIt;
   std::pair<AIt, AIt> be = boost::adjacent_vertices(target, jt);
-  const base::Vector<SSGVD> neighbors(be.first, be.second);
+  const Vector<SSGVD> neighbors(be.first, be.second);
   for (unsigned int i = 0; i < neighbors.size(); ++i) {
     if (neighbors[i] != source) {
       if (!boost::edge(source, neighbors[i], jt).second) {
@@ -674,7 +674,7 @@ MergeTree get_balanced_merge_tree(const SubsetGraph &jti) {
     vertex_map[vd] = i;
   }
   while (boost::num_vertices(junction_tree) > 1) {
-    base::Vector<SSGED> is = get_independent_edge_set(junction_tree);
+    Vector<SSGED> is = get_independent_edge_set(junction_tree);
     IMP_INTERNAL_CHECK(is.size() > 0, "No edges found");
     for (unsigned int i = 0; i < is.size(); ++i) {
       int mn = boost::add_vertex(ret);
@@ -706,9 +706,9 @@ MergeTree get_balanced_merge_tree(const SubsetGraph &jti) {
 
 namespace {
 struct NameWriter {
-  const boost::unordered_map<kernel::Particle *, int> &index_;
+  const boost::unordered_map<Particle *, int> &index_;
   MergeTreeConstVertexName vm_;
-  NameWriter(const boost::unordered_map<kernel::Particle *, int> &index,
+  NameWriter(const boost::unordered_map<Particle *, int> &index,
              const MergeTreeConstVertexName &vm)
       : index_(index), vm_(vm) {}
   void operator()(std::ostream &out, int v) const {
@@ -724,9 +724,9 @@ struct NameWriter {
 };
 }
 
-void write_merge_tree(const MergeTree &tree, const kernel::ParticlesTemp &ps,
+void write_merge_tree(const MergeTree &tree, const ParticlesTemp &ps,
                       std::ostream &out) {
-  boost::unordered_map<kernel::Particle *, int> index;
+  boost::unordered_map<Particle *, int> index;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     index[ps[i]] = i;
   }
@@ -756,7 +756,7 @@ MergeTree get_fixed_order(const MergeTree &mt,
 }
 }
 
-MergeTree read_merge_tree(std::istream &in, const kernel::ParticlesTemp &ps) {
+MergeTree read_merge_tree(std::istream &in, const ParticlesTemp &ps) {
 
   boost::dynamic_properties dp;
   MergeTree graph;
@@ -791,7 +791,7 @@ MergeTree read_merge_tree(std::istream &in, const kernel::ParticlesTemp &ps) {
   for (unsigned int i = 0; i < boost::num_vertices(graph); ++i) {
     std::string cnm = name[i];
     std::istringstream iss(cnm);
-    kernel::ParticlesTemp cur;
+    ParticlesTemp cur;
     do {
       int c;
       iss >> c;

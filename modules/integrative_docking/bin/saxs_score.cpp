@@ -12,6 +12,8 @@
 #include <IMP/saxs/WeightedProfileFitter.h>
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/utility.h>
+#include <IMP/saxs/RatioVolatilityScore.h>
+#include <IMP/saxs/ChiScore.h>
 
 #include <IMP/algebra/Transformation3D.h>
 
@@ -24,6 +26,7 @@
 namespace po = boost::program_options;
 
 using namespace IMP::integrative_docking::internal;
+using namespace IMP::saxs;
 
 int main(int argc, char **argv) {
   // print command
@@ -48,6 +51,7 @@ int main(int argc, char **argv) {
   bool water_layer = true;
   bool weighted_fit = false;
   bool accurate_water_layer = false;
+  bool vr_score = false;
 
   po::options_description desc(
       "Usage: <pdb1> <pdb2> <trans file> <exp profile file> ");
@@ -81,6 +85,7 @@ recommended q value is 0.2")("offset,f",
       "accurate_slow,a",
       "accurate water layer, slower run time (default = false)")(
       "no_filtering_by_rg", "do not filter by rg, compute chi score for all (default = false)")(
+      "volatility_ratio,v","calculate volatility ratio score (default = false)")(
       "output_file,o",
       po::value<std::string>(&out_file_name)->default_value("saxs_score.res"),
       "output file name, default name saxs_score.res");
@@ -116,16 +121,17 @@ recommended q value is 0.2")("offset,f",
   if (vm.count("offset")) use_offset = true;
   if (vm.count("weighted_fit")) weighted_fit = true;
   if (vm.count("accurate_slow")) accurate_water_layer = true;
+  if (vm.count("volatility_ratio")) vr_score = true;
 
-  IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
-  if (residue_level) ff_type = IMP::saxs::CA_ATOMS;
+  FormFactorType ff_type = HEAVY_ATOMS;
+  if (residue_level) ff_type = CA_ATOMS;
 
   if (excluded_volume_c1 == 1.0 && !water_layer) fit = false;
 
   float delta_q = max_q / profile_size;
 
   // read pdb  files, prepare particles
-  IMP::kernel::Particles particles1, particles2;
+  IMP::Particles particles1, particles2;
   if (!residue_level) {
     read_pdb_atoms(static_pdb, particles1);
     read_pdb_atoms(transformed_pdb, particles2);
@@ -136,10 +142,10 @@ recommended q value is 0.2")("offset,f",
 
   // compute surface accessibility
   IMP::Floats surface_area1, surface_area2, surface_area;
-  IMP::saxs::SolventAccessibleSurface s;
+  SolventAccessibleSurface s;
   if (water_layer) {
     // add radius first
-    IMP::saxs::FormFactorTable *ft = IMP::saxs::get_default_form_factor_table();
+    FormFactorTable *ft = get_default_form_factor_table();
     for (unsigned int p_index = 0; p_index < particles1.size(); p_index++) {
       float radius = ft->get_radius(particles1[p_index], ff_type);
       IMP::core::XYZR::setup_particle(particles1[p_index], radius);
@@ -158,7 +164,7 @@ recommended q value is 0.2")("offset,f",
   read_trans_file(trans_file, transforms);
 
   // compute non-changing profile
-  IMP_NEW(IMP::saxs::Profile, rigid_part1_profile, (0.0, max_q, delta_q));
+  IMP_NEW(Profile, rigid_part1_profile, (0.0, max_q, delta_q));
   std::cerr << "Computing profile for " << static_pdb
             << " min = 0.0 max = " << max_q << " delta=" << delta_q
             << std::endl;
@@ -169,7 +175,7 @@ recommended q value is 0.2")("offset,f",
     rigid_part1_profile->calculate_profile(particles1, ff_type);
   }
 
-  IMP_NEW(IMP::saxs::Profile, rigid_part2_profile, (0.0, max_q, delta_q));
+  IMP_NEW(Profile, rigid_part2_profile, (0.0, max_q, delta_q));
   std::cerr << "Computing profile for " << transformed_pdb
             << " min = 0.0 max = " << max_q << " delta=" << delta_q
             << std::endl;
@@ -188,7 +194,7 @@ recommended q value is 0.2")("offset,f",
   }
 
   // read experimental profiles
-  IMP_NEW(IMP::saxs::Profile, exp_profile, (dat_file));
+  IMP_NEW(Profile, exp_profile, (dat_file, false, max_q));
   std::cerr << "Profile read from file " << dat_file
             << " min = " << exp_profile->get_min_q()
             << " max = " << exp_profile->get_max_q()
@@ -204,16 +210,14 @@ recommended q value is 0.2")("offset,f",
   std::cerr << dat_file << " Rg= " << rg << " range " << min_rg << "-" << max_rg
             << std::endl;
 
-  IMP::saxs::Profile *resampled_rigid_part1_profile =
-      new IMP::saxs::Profile(exp_profile->get_min_q(), exp_profile->get_max_q(),
+  Profile *resampled_rigid_part1_profile =
+      new Profile(exp_profile->get_min_q(), exp_profile->get_max_q(),
                              exp_profile->get_delta_q());
-  rigid_part1_profile->resample(exp_profile, resampled_rigid_part1_profile,
-                                true);
-  IMP::saxs::Profile *resampled_rigid_part2_profile =
-      new IMP::saxs::Profile(exp_profile->get_min_q(), exp_profile->get_max_q(),
+  rigid_part1_profile->resample(exp_profile, resampled_rigid_part1_profile);
+  Profile *resampled_rigid_part2_profile =
+      new Profile(exp_profile->get_min_q(), exp_profile->get_max_q(),
                              exp_profile->get_delta_q());
-  rigid_part2_profile->resample(exp_profile, resampled_rigid_part2_profile,
-                                true);
+  rigid_part2_profile->resample(exp_profile, resampled_rigid_part2_profile);
 
   // save particles2 coordinates (they are going to move)
   std::vector<IMP::algebra::Vector3D> coordinates2;
@@ -222,7 +226,7 @@ recommended q value is 0.2")("offset,f",
   }
 
   // prepare vec with all particles for d_max/rg computation
-  IMP::kernel::Particles particles(particles1);
+  IMP::Particles particles(particles1);
   particles.insert(particles.end(), particles2.begin(), particles2.end());
 
   // output file header
@@ -236,12 +240,22 @@ recommended q value is 0.2")("offset,f",
   out_file.precision(3);
 
   // prepare scoring functions
-  IMP::base::Pointer<IMP::saxs::ProfileFitter<> > saxs_score;
-  IMP::base::Pointer<IMP::saxs::WeightedProfileFitter> weighted_score;
+  IMP::Pointer<ProfileFitter<ChiScore> > saxs_chi_score;
+  IMP::Pointer<ProfileFitter<RatioVolatilityScore> > saxs_vr_score;
+  IMP::Pointer<WeightedProfileFitter<ChiScore> > weighted_chi_score;
+  IMP::Pointer<WeightedProfileFitter<RatioVolatilityScore> > weighted_vr_score;
+
   if (weighted_fit) {
-    weighted_score = new IMP::saxs::WeightedProfileFitter(exp_profile);
+    if(vr_score)
+      weighted_vr_score = new WeightedProfileFitter<RatioVolatilityScore>(exp_profile);
+    else
+      weighted_chi_score = new WeightedProfileFitter<ChiScore>(exp_profile);
   } else {
-    saxs_score = new IMP::saxs::ProfileFitter<>(exp_profile);
+    if(vr_score) {
+      saxs_vr_score = new ProfileFitter<RatioVolatilityScore>(exp_profile);
+    } else {
+      saxs_chi_score = new ProfileFitter<ChiScore>(exp_profile);
+    }
   }
   float min_c1 = 1.00;
   float max_c1 = 1.05;
@@ -262,7 +276,7 @@ recommended q value is 0.2")("offset,f",
 
     // 1. compute rg
     bool filtered = true;
-    float rg = IMP::saxs::radius_of_gyration(particles);
+    float rg = radius_of_gyration(particles);
     if ((rg >= min_rg && rg <= max_rg) || no_filtering_by_rg) filtered = false;
 
     // 2. compute chi
@@ -272,7 +286,7 @@ recommended q value is 0.2")("offset,f",
 
     if (!rg_only && !filtered) {
       // compute contribution of inter-parts distances to profile
-      IMP_NEW(IMP::saxs::Profile, complex_profile, (0.0, max_q, delta_q));
+      IMP_NEW(Profile, complex_profile, (0.0, max_q, delta_q));
 
       if (accurate_water_layer) {
         surface_area = s.get_solvent_accessibility(IMP::core::XYZRs(particles));
@@ -292,22 +306,39 @@ recommended q value is 0.2")("offset,f",
       // fit to exp profile and compute chi
       if (weighted_fit) {
         // monomer profiles are also fitted to account for a possible mixture
-        IMP::saxs::ProfilesTemp profiles;
-        IMP::saxs::Profile *resampled_profile = new IMP::saxs::Profile(
-            exp_profile->get_min_q(), exp_profile->get_max_q(),
-            exp_profile->get_delta_q());
-        complex_profile->resample(exp_profile, resampled_profile, true);
+        ProfilesTemp profiles;
+        Profile *resampled_profile = new Profile(exp_profile->get_min_q(),
+                                                 exp_profile->get_max_q(),
+                                                 exp_profile->get_delta_q());
+        complex_profile->resample(exp_profile, resampled_profile);
         profiles.push_back(resampled_rigid_part1_profile);
         profiles.push_back(resampled_rigid_part2_profile);
         profiles.push_back(resampled_profile);
-        IMP::saxs::WeightedFitParameters wfp = weighted_score->fit_profile(
-            profiles, min_c1, max_c1, min_c2, max_c2);
+        WeightedFitParameters wfp;
+        if(vr_score)
+          wfp = weighted_vr_score->fit_profile(profiles, min_c1, max_c1, min_c2, max_c2);
+        else
+          wfp = weighted_chi_score->fit_profile(profiles, min_c1, max_c1, min_c2, max_c2);
         chi = wfp.get_chi();
         c1 = wfp.get_c1();
         c2 = wfp.get_c2();
       } else {  // just complex is fitted
-        IMP::saxs::FitParameters fp = saxs_score->fit_profile(
+        FitParameters fp;
+        if(vr_score) {
+          fp = saxs_vr_score->fit_profile(
             complex_profile, min_c1, max_c1, min_c2, max_c2, use_offset);
+        } else {
+          fp = saxs_chi_score->fit_profile(
+            complex_profile, min_c1, max_c1, min_c2, max_c2, use_offset);
+          // // compute vr after chi optimization
+          // RatioVolatilityScore rvs;
+          // Profile *resampled_profile = new Profile(exp_profile->get_min_q(),
+          //                                          exp_profile->get_max_q(),
+          //                                          exp_profile->get_delta_q());
+          // complex_profile->resample(exp_profile, resampled_profile);
+          // fp.set_chi(rvs.compute_score(exp_profile, resampled_profile));
+          // // end compute vr
+        }
         chi = fp.get_chi();
         c1 = fp.get_c1();
         c2 = fp.get_c2();

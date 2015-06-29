@@ -11,7 +11,7 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
 
     def test_simple(self):
         """Simple test of EM2D single PDB score application"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         #! read PDB
         mp = IMP.atom.read_pdb(self.get_input_file_name('complex-2d.pdb'), m,
                                IMP.atom.NonWaterNonHydrogenPDBSelector())

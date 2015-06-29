@@ -10,21 +10,24 @@ import IMP
 import IMP.container
 import IMP.core
 import IMP.algebra
+import sys
+
+IMP.setup_from_argv(sys.argv, "filter close pairs")
 
 np = 10
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                IMP.algebra.Vector3D(5, 5, 5))
 ik = IMP.IntKey("num")
-IMP.base.set_log_level(IMP.base.SILENT)
-m = IMP.kernel.Model()
+IMP.set_log_level(IMP.SILENT)
+m = IMP.Model()
 l = []
 for i in range(0, np):
-    p = IMP.kernel.Particle(m)
-    p.add_attribute(ik, i)
-    IMP.core.XYZR.setup_particle(
+    p = m.add_particle("p%d" % i)
+    m.add_attribute(ik, p, i)
+    IMP.core.XYZR.setup_particle(m,
         p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 1))
     l.append(p)
-lsc = IMP.container.ListSingletonContainer(l)
+lsc = IMP.container.ListSingletonContainer(m, l)
 cpc = IMP.container.ClosePairContainer(lsc, 0.0)
 
 m.update()

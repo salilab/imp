@@ -1,0 +1,97 @@
+/** \page rnapolii_stalk Modeling of complexes using IMP::pmi
+
+\tableofcontents
+
+The _Python Modeling Interface_ (PMI) is a powerful set of tools designed
+to handle all [steps of the modeling protocol](@ref procedure) for
+typical modeling problems. It is designed to be used by writing a set of
+Python scripts.
+
+\section rnapolii_intro Introduction
+
+We will illustrate the use of PMI by determining the localization of two
+subunits of RNA Polymerase II, utilizing chemical cross-linking coupled with
+mass spectrometry, negative-stain electron microscopy (EM), and x-ray
+crystallography data. We will try
+to reconstruct the stalk of the complex, comprising of subunits Rpb4 and Rpb7,
+hypothesizing that we know already the structure of the remaining 10-subunit
+complex. The example can be easily generalized to any other set of subunits.
+
+To work through the example on your own system, you will need the following
+packages installed in addition to [IMP itself](@ref installation):
+
+- [numpy and scipy](http://www.scipy.org/scipylib/download.html)
+  for matrix and linear algebra
+
+- [scikit-learn](http://scikit-learn.org/stable/install.html)
+  for k-means clustering
+
+- [matplotlib](http://matplotlib.org/downloads.html)
+  for plotting results
+
+- [biopython](http://biopython.org/wiki/Download)
+  for reading FASTA sequence files
+
+- [Chimera](https://www.cgl.ucsf.edu/chimera/download.html)
+  for visualization of results
+
+(On a Mac you can get the Python packages above using the
+[pip](https://pypi.python.org/pypi/pip) tool, e.g. by running a command like
+`sudo easy_install pip`, then install the packages with something like
+`sudo pip install scikit-learn; sudo pip install matplotlib; sudo pip install biopython`. `numpy` and `scipy` are already installed on modern Macs. Something
+similar may also work on a Linux box, although it's probably better to install
+the packages using the distribution's package manager, such as `yum` or
+`apt-get`.)
+
+Then download the input files, either by 
+[cloning the github repository](https://github.com/salilab/imp_tutorial/)
+or by [downloading the zip file](https://github.com/salilab/imp_tutorial/archive/master.zip).
+
+The rnapolii example contains three directories: `analysis`, `data` and
+`modeling`.
+
+\section rnapolii_background Background of RNA Polymerase II
+
+[RNA Pol II](http://en.wikipedia.org/wiki/RNA_polymerase_II) is a eukaryotic complex that catalyzes DNA transcription to synthesize mRNA strands.  Eukaryotic RNA polymerase II contains 12 subunits, Rpb1 to Rpb12. The yeast RNA Pol II dissociates into a 10-subunit core and a Rpb4/Rpb7 heterodimer. Rpb4 and Rpb7 are conserved from yeast to humans, and form a stalk-like protrusion extending from the main body of the RNA Pol II complex.
+
+
+\section rnapolii_imp Integrative Modeling using IMP
+
+This example will use data from chemical cross linking, EM and x-ray crystallography to localize the two subunits of the RNA Polymerase II stalk (Rpb4, Rpb7) to a static core of the remaining ten subunits.  
+
+<img src="rnapolii_integrative.png" width="600px" />
+
+\section rnapolii_stages The four stages of Integrative Modeling
+
+Structural modeling using IMP is divided into [four stages](@ref procedure).
+
+Click the links below to see a breakdown of all the modeling steps.
+
+- \subpage rnapolii_1
+  Collect biophysical data that can be used as structural restraints and constraints
+- \subpage rnapolii_2
+  Define representations for the RNA Poly II structural model and define each data point as a scoring function.
+- \subpage rnapolii_3
+  Run a sampling protocol to find good scoring conformations.  
+- \subpage rnapolii_4
+  and
+  \subpage rnapolii_4_2
+  Analysis of the good scoring conformations.  Clustering; uncertainty; precision; etc...
+
+\section rnapolii_script Running the script
+
+The first three modeling stages are all contained within one script, `modeling.py`. You can get started by simply changing into the `rnapolii/modeling` directory and then running the script with Python:
+
+\code{.sh}
+python modeling.py
+\endcode
+
+It will take a very long time to complete the sampling; to get an idea of what's going on you can run it with only 50 output frames by adding the `--test` option:
+
+\code{.sh}
+python modeling.py --test
+\endcode
+
+[On to stage 1...](@ref rnapolii_1)
+
+*/

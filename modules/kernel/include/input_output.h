@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/input_output.h
+ *  \file IMP/input_output.h
  *  \brief Single variable function.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INPUT_OUTPUT_H
 #define IMPKERNEL_INPUT_OUTPUT_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "container_base.h"
 #include "Particle.h"

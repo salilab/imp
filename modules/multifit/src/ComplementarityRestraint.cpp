@@ -9,11 +9,11 @@
 #include <IMP/multifit/ComplementarityRestraint.h>
 #include <IMP/multifit/internal/GeometricComplementarity.h>
 #include <IMP/core/DataObject.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 IMP::algebra::DenseGrid3D<float> ComplementarityRestraint::get_grid(
-    const kernel::ParticlesTemp &a, double thickness, double value,
+    const ParticlesTemp &a, double thickness, double value,
     double interior_thickness, double voxel) const {
   internal::ComplementarityGridParameters params;
   params.complementarity_thickness = Floats(1, thickness);
@@ -27,7 +27,7 @@ IMP::algebra::DenseGrid3D<float> ComplementarityRestraint::get_grid(
 }
 
 ComplementarityRestraint::GridObject *ComplementarityRestraint::get_grid_object(
-    core::RigidBody rb, const kernel::ParticlesTemp &a, ObjectKey ok,
+    core::RigidBody rb, const ParticlesTemp &a, ObjectKey ok,
     double thickness, double value, double interior_thickness,
     double voxel) const {
   IMP_USAGE_CHECK(!a.empty(), "No particles passed for excluded volume");
@@ -45,7 +45,7 @@ ComplementarityRestraint::GridObject *ComplementarityRestraint::get_grid_object(
                                    << grid.get_number_of_voxels(1) << ", "
                                    << grid.get_number_of_voxels(2)
                                    << std::endl);
-    base::Pointer<GridObject> n(new GridObject(
+    Pointer<GridObject> n(new GridObject(
         GridPair(rb.get_reference_frame().get_transformation_to(), grid)));
     rb->add_cache_attribute(ok, n);
   }
@@ -55,9 +55,9 @@ ComplementarityRestraint::GridObject *ComplementarityRestraint::get_grid_object(
   return dynamic_cast<GridObject *>(rb->get_value(ok));
 }
 ComplementarityRestraint::ComplementarityRestraint(
-    const kernel::ParticlesTemp &a, const kernel::ParticlesTemp &b,
+    const ParticlesTemp &a, const ParticlesTemp &b,
     std::string name)
-    : kernel::Restraint(IMP::internal::get_model(a), name),
+    : Restraint(IMP::internal::get_model(a), name),
       a_(a),
       b_(b),
       rba_(core::RigidMember(a[0]).get_rigid_body()),
@@ -104,15 +104,17 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
       std::min(maximum_penetration_score_ / vol, max);
   // std::cout<<"max penet score:"<<params.maximum_penetration_score<<"(" <<
   // maximum_penetration_score_<<","<<vol<<","<<max<<")"<<std::endl;
-  base::Pointer<GridObject> ga =
+  Pointer<GridObject> ga =
       get_grid_object(rba_, a_, ok_, complementarity_thickness_,
                       complementarity_value_, interior_thickness_, voxel_size_);
-  base::Pointer<GridObject> gb =
+  Pointer<GridObject> gb =
       get_grid_object(rbb_, b_, ok_, complementarity_thickness_,
                       complementarity_value_, interior_thickness_, voxel_size_);
+  ga->set_was_used(true);
   algebra::Transformation3D tra =
       ga->get_data().first *
       rba_.get_reference_frame().get_transformation_from();
+  gb->set_was_used(true);
   algebra::Transformation3D trb =
       rbb_.get_reference_frame().get_transformation_to() / gb->get_data().first;
   // transform a by tra and b by trb
@@ -156,7 +158,7 @@ void ComplementarityRestraint::update_voxel() {
 }
 
 ModelObjectsTemp ComplementarityRestraint::do_get_inputs() const {
-  kernel::ParticlesTemp ret = a_;
+  ParticlesTemp ret = a_;
   ret.insert(ret.end(), b_.begin(), b_.end());
   ret.push_back(rba_);
   ret.push_back(rbb_);

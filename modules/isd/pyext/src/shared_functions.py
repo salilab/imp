@@ -145,10 +145,10 @@ class sfo_common:
         return "hello world"
 
     def set_checklevel(self, value):
-        IMP.base.set_check_level(value)
+        IMP.set_check_level(value)
 
     def set_loglevel(self, value):
-        IMP.base.set_log_level(value)
+        IMP.set_log_level(value)
 
     def m(self, name, *args, **kw):
         "wrapper to call methods of m"
@@ -239,14 +239,14 @@ class sfo_common:
                     bj = IMP.atom.Bonded.setup_particle(j)
                 bond = IMP.atom.create_custom_bond(bi, bj, 3.78, 10)  # stiff
                 bonds.append(bond)
-            bonds_container = IMP.container.ListSingletonContainer(bonds)
+            bonds_container = IMP.container.ListSingletonContainer(self._m,
+                                                    IMP.get_indexes(bonds))
             hdps = IMP.core.Harmonic(0, 1)
             bs = IMP.atom.BondSingletonScore(hdps)
             br = IMP.container.SingletonsRestraint(bs, bonds_container)
             rsb = IMP.RestraintSet("bonded")
             rsb.add_restraint(br)
             rsb.set_weight(1.0 / (kB * ff_temp))
-            m.add_restraint(rsb)
             nonbonded_pair_filter = IMP.atom.StereochemistryPairFilter()
             nonbonded_pair_filter.set_bonds(bonds)
             ff = None
@@ -286,7 +286,6 @@ class sfo_common:
             r = IMP.atom.CHARMMStereochemistryRestraint(prot, topology)
             rsb = IMP.RestraintSet(m, 1.0, "bonded")
             rsb.add_restraint(r)
-            m.add_restraint(rsb)
             #
             # Add non-bonded interaction (in this case, Lennard-Jones). This needs to
             # know the radii and well depths for each atom, so add them from the forcefield
@@ -297,7 +296,8 @@ class sfo_common:
             nonbonded_pair_filter = r.get_pair_filter()
         # Get a list of all atoms in the protein, and put it in a container
         atoms = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
-        cont = IMP.container.ListSingletonContainer(atoms)
+        cont = IMP.container.ListSingletonContainer(self._m,
+                                                 IMP.get_indexes(atoms))
         # Add a restraint for the Lennard-Jones interaction. This is built from
         # a collection of building blocks. First, a ClosePairContainer maintains a list
         # of all pairs of Particles that are close. Next, all 1-2, 1-3 and 1-4 pairs
@@ -311,7 +311,6 @@ class sfo_common:
         pr = IMP.container.PairsRestraint(pairscore, nbl)
         rs = IMP.RestraintSet(m, 1.0 / (kB * ff_temp), 'phys')
         rs.add_restraint(pr)
-        m.add_restraint(rs)
         return prot, ff, rsb, rs
 
     def init_model_setup_scale(self, default, lower=None, upper=None):
@@ -334,7 +333,6 @@ class sfo_common:
         """
         if not prior_rs:
             prior_rs = IMP.RestraintSet('prior')
-            self._m.add_restraint(prior_rs)
             prior_rs.set_weight(1.0)
         for i in scales:
             prior_rs.add_restraint(IMP.isd.vonMisesKappaJeffreysRestraint(i))
@@ -347,7 +345,6 @@ class sfo_common:
         """
         if not prior_rs:
             prior_rs = IMP.RestraintSet(self._m, 1.0, 'prior')
-            self._m.add_restraint(prior_rs)
         for i in scales:
             jr = IMP.isd.JeffreysRestraint(self._m, i)
             prior_rs.add_restraint(jr)
@@ -363,7 +360,6 @@ class sfo_common:
             raise ValueError("parameters R and c should satisfy 0 <= R <= c")
         if not prior_rs:
             prior_rs = IMP.RestraintSet(self._m, 1.0, 'prior')
-            self._m.add_restraint(prior_rs)
         for i in scales:
             prior_rs.add_restraint(
                 IMP.isd.vonMisesKappaConjugateRestraint(i, c, R))
@@ -498,9 +494,8 @@ class sfo_common:
             rs.add_restraint(ln)
         if verbose:
             print("\r%d NOE restraints read" % i)
-        # set weight of rs and add to model.
+        # set weight of rs.
         # Weight is 1.0 cause sigma particle already has this role.
-        self._m.add_restraint(rs)
         return rs, prior_rs, sigma, gamma
 
     def init_model_NOEs_marginal(self, prot, seqfile, tblfile, name='NOE',
@@ -540,7 +535,6 @@ class sfo_common:
         rs.add_restraint(ln)
         if verbose:
             print("\r%d NOE contributions added" % (len(restraints)))
-        self._m.add_restraint(rs)
         return rs
 
     def init_model_HBonds_marginal(self, prot, seqfile, tblfile, name='NOE',
@@ -577,7 +571,6 @@ class sfo_common:
         rs.add_restraint(ln)
         if verbose:
             print("\r%d Hbond contributions added" % (len(restraints)))
-        self._m.add_restraint(rs)
         return rs
 
     def init_model_TALOS(self, prot, seqfile, talos_data, fulldata=True,
@@ -678,7 +671,6 @@ class sfo_common:
         if verbose:
             print("%s Restraints created. Average R0: %f" % \
                 (len(avgR), sum(avgR) / float(len(avgR))))
-        self._m.add_restraint(rs)
         return rs, prior_rs, kappa
 
     def init_model_standard_SAXS_restraint(
@@ -693,7 +685,6 @@ class sfo_common:
         particles = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         saxs_restraint = IMP.saxs.Restraint(particles, saxs_profile, ff_type)
         rs.add_restraint(saxs_restraint)
-        self._m.add_restraint(rs)
         return rs, saxs_profile
 
     def _setup_md(self, prot, temperature=300.0, thermostat='berendsen',
@@ -763,7 +754,7 @@ class sfo_common:
         Returns: mover instance.
         """
         cont = IMP.container.ListSingletonContainer(self._m)
-        cont.add_particles(particles)
+        cont.add(IMP.get_indexes(particles))
         return IMP.atom.MDMover(cont, md, temperature, n_md_steps)
 
     def _setup_mc(self, mover, temperature=300.0, mc_restraints=None):
@@ -848,7 +839,7 @@ class sfo_common:
                                 md_restraints=md_restraints)
         particles = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         cont = IMP.container.ListSingletonContainer(self._m)
-        cont.add_particles(particles)
+        cont.add(IMP.get_indexes(particles))
         mdmover = PyMDMover(cont, md, n_md_steps)
         mdmover.m = self._m
         #mdmover = IMP.atom.MDMover(cont, md, temperature, n_md_steps)

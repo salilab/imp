@@ -10,7 +10,7 @@
 #include <IMP/atom/Chain.h>
 
 #include <IMP/base_types.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <boost/unordered_map.hpp>
 
 #include <sstream>
@@ -178,7 +178,7 @@ double get_mass(ResidueType c) {
 
 
 namespace {
-bool check_residue(kernel::Model *m, kernel::ParticleIndex pi) {
+bool check_residue(Model *m, ParticleIndex pi) {
   unsigned int t = m->get_attribute(Residue::get_residue_type_key(), pi);
   if (t >= ResidueType::get_number_unique()) {
     IMP_THROW("Invalid residue type: " << t, ValueException);

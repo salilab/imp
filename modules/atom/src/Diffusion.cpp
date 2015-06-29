@@ -16,7 +16,7 @@ FloatKey Diffusion::get_diffusion_coefficient_key() {
   return k;
 }
 
-void Diffusion::do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi) {
+void Diffusion::do_setup_particle(Model *m, ParticleIndex pi) {
   IMP_USAGE_CHECK(core::XYZR::get_is_setup(m, pi),
                   "Particle must already be an XYZR particle");
   double r = core::XYZR(m, pi).get_radius();
@@ -35,8 +35,8 @@ double get_diffusion_coefficient_from_cm2_per_second(double din) {
   return ret.get_value();
 }
 
-void RigidBodyDiffusion::do_setup_particle(kernel::Model *m,
-                                           kernel::ParticleIndex pi) {
+void RigidBodyDiffusion::do_setup_particle(Model *m,
+                                           ParticleIndex pi) {
   if (!Diffusion::get_is_setup(m, pi)) {
     Diffusion::setup_particle(m, pi);
   }

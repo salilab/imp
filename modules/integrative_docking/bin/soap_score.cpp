@@ -11,8 +11,8 @@
 #include <IMP/integrative_docking/internal/Normalization.h>
 #include <IMP/integrative_docking/internal/helpers.h>
 
-#include <IMP/kernel/Model.h>
-#include <IMP/base/nullptr_macros.h>
+#include <IMP/Model.h>
+#include <IMP/nullptr_macros.h>
 
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/pdb.h>
@@ -135,8 +135,8 @@ each pair of PDB file names in the input file filenames.txt.")
   }
 
   // init model
-  IMP::kernel::Model* model = new IMP::kernel::Model();
-  IMP::kernel::ParticleIndexes pis1, pis2;
+  IMP::Model* model = new IMP::Model();
+  IMP::ParticleIndexes pis1, pis2;
   std::vector<SOAPResult> results;                // scored complexes
   std::ofstream out_file(out_file_name.c_str());  // open output file
 
@@ -168,8 +168,8 @@ each pair of PDB file names in the input file filenames.txt.")
 
       // meanwhile we only normalize ligand, eg. peptide
       if (normalize) {
-        IMP::kernel::ParticleIndexes res_pis =
-          IMP::get_as<IMP::kernel::ParticleIndexes>(get_by_type(mhd2, IMP::atom::RESIDUE_TYPE));
+        IMP::ParticleIndexes res_pis =
+          IMP::get_as<IMP::ParticleIndexes>(get_by_type(mhd2, IMP::atom::RESIDUE_TYPE));
         std::map<IMP::atom::ResidueType, int> residue_content;
         for (unsigned int k = 0; k<res_pis.size(); k++) {
           IMP::atom::ResidueType rt =

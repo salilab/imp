@@ -13,8 +13,8 @@
 #include "Hierarchy.h"
 
 #include <IMP/base_types.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
 #include <IMP/Decorator.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -23,7 +23,7 @@ IMPATOM_BEGIN_NAMESPACE
 /** */
 class IMPATOMEXPORT Molecule : public Hierarchy {
   static IntKey key();
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 Molecule = Molecule()) {
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
@@ -37,7 +37,7 @@ class IMPATOMEXPORT Molecule : public Hierarchy {
   IMP_DECORATOR_SETUP_0(Molecule);
   IMP_DECORATOR_SETUP_1(Molecule, Molecule, other);
 
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(key(), pi);
   }
 };

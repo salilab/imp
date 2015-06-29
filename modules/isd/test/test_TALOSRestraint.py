@@ -21,20 +21,20 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
         # setup dihedral angle of pi/2
-        self.p0 = IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
+        self.p0 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
                                               IMP.algebra.Vector3D(1, 0, 0))
-        self.p1 = IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
+        self.p1 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
                                               IMP.algebra.Vector3D(0, 0, 0))
-        self.p2 = IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
+        self.p2 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
                                               IMP.algebra.Vector3D(0, 1, 0))
-        self.p3 = IMP.core.XYZ.setup_particle(IMP.kernel.Particle(self.m),
+        self.p3 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
                                               IMP.algebra.Vector3D(0, 1, 1))
         # scale particle
-        self.kappa = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.kappa = Scale.setup_particle(IMP.Particle(self.m), 2.0)
         self.DA = IMP.DerivativeAccumulator()
 
     def setup_restraint(self):
@@ -52,7 +52,6 @@ class Tests(IMP.test.TestCase):
             self.chiexp = -self.chiexp
         self.talos = IMP.isd.TALOSRestraint(self.m, self.p0, self.p1, self.p2,
                                             self.p3, self.obs, self.kappa)
-        self.m.add_restraint(self.talos)
 
     def testAlternatives(self):
         "Test make TALOSRestraint with particle list and sufficient stats"
@@ -60,7 +59,6 @@ class Tests(IMP.test.TestCase):
         talos1 = IMP.isd.TALOSRestraint(self.m,
                                         [self.p0, self.p1, self.p2, self.p3],
                                         self.N, self.R, self.chiexp, self.kappa)
-        self.m.add_restraint(talos1)
         self.assertAlmostEqual(
             self.talos.evaluate(False), talos1.evaluate(False),
             delta=1e-5)
@@ -70,7 +68,6 @@ class Tests(IMP.test.TestCase):
         self.setup_restraint()
         talos1 = IMP.isd.TALOSRestraint(self.m, self.p0, self.p1, self.p2,
                                         self.p3, self.obs, self.kappa)
-        self.m.add_restraint(talos1)
         self.assertAlmostEqual(
             self.talos.evaluate(False), talos1.evaluate(False),
             delta=1e-5)
@@ -81,7 +78,6 @@ class Tests(IMP.test.TestCase):
         talos1 = IMP.isd.TALOSRestraint(self.m,
                                         [self.p0, self.p1, self.p2, self.p3],
                                         self.obs, self.kappa)
-        self.m.add_restraint(talos1)
         self.assertAlmostEqual(
             self.talos.evaluate(False), talos1.evaluate(False),
             delta=1e-5)
@@ -93,21 +89,19 @@ class Tests(IMP.test.TestCase):
         self.chiexp = pi / 3
         self.talos = IMP.isd.TALOSRestraint(self.m, self.p0, self.p1,
                                             self.p2, self.p3, self.N, self.R, self.chiexp, self.kappa)
-        self.m.add_restraint(self.talos)
+        rs = [self.talos]
         # constrain particles to a fixed "bondlength" of 1
         uf = IMP.core.Harmonic(1, 100)
         df = IMP.core.DistancePairScore(uf)
-        self.m.add_restraint(
-            IMP.core.PairRestraint(df, (self.p0, self.p1)))
-        self.m.add_restraint(
-            IMP.core.PairRestraint(df, (self.p1, self.p2)))
-        self.m.add_restraint(
-            IMP.core.PairRestraint(df, (self.p2, self.p3)))
+        rs.append(IMP.core.PairRestraint(self.m, df, (self.p0, self.p1)))
+        rs.append(IMP.core.PairRestraint(self.m, df, (self.p1, self.p2)))
+        rs.append(IMP.core.PairRestraint(self.m, df, (self.p2, self.p3)))
         self.p3.set_coordinates_are_optimized(True)
         self.p2.set_coordinates_are_optimized(False)
         self.p1.set_coordinates_are_optimized(False)
         self.p0.set_coordinates_are_optimized(False)
         cg = IMP.core.ConjugateGradients(self.m)
+        cg.set_scoring_function(rs)
         for i in range(10):
             x = i / (2 * pi)
             self.p3.set_coordinates(IMP.algebra.Vector3D(
@@ -239,18 +233,19 @@ class Tests(IMP.test.TestCase):
         self.chiexp = -pi / 2
         self.talos = IMP.isd.TALOSRestraint(self.m, self.p0, self.p1, self.p2,
                                             self.p3, self.N, self.R, self.chiexp, self.kappa)
-        self.m.add_restraint(self.talos)
         # constrain particles to a fixed "bondlength" of 1
         self.p3.set_coordinates_are_optimized(False)
         self.p2.set_coordinates_are_optimized(False)
         self.p1.set_coordinates_are_optimized(False)
         self.p0.set_coordinates_are_optimized(False)
         self.kappa.set_is_optimized(self.kappa.get_scale_key(), True)
+        sf = IMP.core.RestraintsScoringFunction([self.talos])
         cg = IMP.core.ConjugateGradients(self.m)
+        cg.set_scoring_function(sf)
         self.kappa.set_scale(3)
         cg.optimize(100)
         kappa = self.kappa.get_scale()
-        E = self.m.evaluate(False)
+        E = sf.evaluate(False)
         expE = -10.125165226189658481
         expkappa = 5.3046890629577175140
         self.assertAlmostEqual(kappa, expkappa, delta=1e-6)

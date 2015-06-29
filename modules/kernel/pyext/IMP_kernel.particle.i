@@ -8,4 +8,4 @@ def _check_particle(p, a):
       raise IndexError("Particle does not have attribute")
 %}
 
-%include "IMP/kernel/Particle.h"
+%include "IMP/Particle.h"

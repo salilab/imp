@@ -18,9 +18,9 @@ bool comp_function(std::pair<double, double> a, std::pair<double, double> b) {
 }  // anonymous namespace
 
 // TODO: currently assumes uniform sampling of experimental profile
-Float ChiFreeScore::compute_score(const Profile* exp_profile,
-                                  const Profile* model_profile,
-                                  bool use_offset) const {
+double ChiFreeScore::compute_score(const Profile* exp_profile,
+                                   const Profile* model_profile,
+                                   bool use_offset) const {
   if (model_profile->size() != exp_profile->size()) {
     IMP_THROW("ChiFreeScore::compute_score is supported "
                   << "only for profiles with the same q values!",
@@ -36,45 +36,51 @@ Float ChiFreeScore::compute_score(const Profile* exp_profile,
   boost::variate_generator<base_generator_type&, boost::uniform_real<> > uni(
       rng, uni_dist);
 
-  std::vector<std::pair<Float, Float> > chis(K_);
-  unsigned int bin_size = std::floor((Float)exp_profile->size()) / ns_;
+  Vector<std::pair<double, double> > chis(K_);
+  unsigned int bin_size = std::floor((double)exp_profile->size()) / ns_;
+
+
+  IMP_NEW(Profile, exp_profile_selection, ());
+  IMP_NEW(Profile, model_profile_selection, ());
+  IMP_Eigen::VectorXf qs(ns_), errors(ns_);
+  IMP_Eigen::VectorXf exp_intensities(ns_), model_intensities(ns_);
 
   // repeat K_ times
   for (unsigned int k = 0; k < K_; k++) {
-    IMP_NEW(Profile, exp_profile_selection, ());
-    IMP_NEW(Profile, model_profile_selection, ());
     // select a point in each interval
     for (unsigned int i = 0; i < ns_; i++) {
-      Float prob = uni();
+      double prob = uni();
       unsigned int profile_index =
-          algebra::get_rounded((Float)i * bin_size + prob * bin_size);
-      // std::cerr << "profile_index = " << profile_index << " ";
+          algebra::get_rounded((double)i * bin_size + prob * bin_size);
       if (profile_index < exp_profile->size()) {
-        exp_profile_selection->add_entry(
-            exp_profile->get_q(profile_index),
-            exp_profile->get_intensity(profile_index),
-            exp_profile->get_error(profile_index));
-        model_profile_selection->add_entry(
-            model_profile->get_q(profile_index),
-            model_profile->get_intensity(profile_index));
+        qs(i) = exp_profile->get_q(profile_index);
+        errors(i) = exp_profile->get_error(profile_index);
+        exp_intensities(i) = exp_profile->get_intensity(profile_index);
+        model_intensities(i) = model_profile->get_intensity(profile_index);
       }
     }
+    exp_profile_selection->set_qs(qs);
+    exp_profile_selection->set_intensities(exp_intensities);
+    exp_profile_selection->set_errors(errors);
+    model_profile_selection->set_qs(qs);
+    model_profile_selection->set_intensities(model_intensities);
+
     // compute chi
-    Float offset = 0.0;
+    double offset = 0.0;
     if (use_offset)
       offset = compute_offset(exp_profile_selection, model_profile_selection);
-    Float c = compute_scale_factor(exp_profile_selection,
+    double c = compute_scale_factor(exp_profile_selection,
                                    model_profile_selection, offset);
-    Float chi_square = 0.0;
+    double chi_square = 0.0;
     unsigned int profile_size = std::min(model_profile_selection->size(),
                                          exp_profile_selection->size());
     // compute chi square
     for (unsigned int i = 0; i < profile_size; i++) {
       // in the theoretical profile the error equals to 1
-      Float square_error = square(exp_profile_selection->get_error(i));
-      Float weight_tilda =
+      double square_error = square(exp_profile_selection->get_error(i));
+      double weight_tilda =
           model_profile_selection->get_weight(i) / square_error;
-      Float delta = exp_profile_selection->get_intensity(i) - offset -
+      double delta = exp_profile_selection->get_intensity(i) - offset -
                     c * model_profile_selection->get_intensity(i);
       // Exclude the uncertainty originated from limitation of floating number
       if (fabs(delta / exp_profile_selection->get_intensity(k)) >= 1.0e-15)
@@ -82,30 +88,24 @@ Float ChiFreeScore::compute_score(const Profile* exp_profile,
     }
     chi_square /= profile_size;
     chis[k] = std::make_pair(chi_square, c);
-
-    // std::cerr << "scale " << c << " chi " << sqrt(chi_square) << std::endl;
   }
   unsigned int n = K_ / 2;
   std::nth_element(chis.begin(), chis.begin() + n, chis.end(), comp_function);
-
-  // std::sort(chis.begin(), chis.end(),comp_function);
   const_cast<ChiFreeScore*>(this)->last_scale_updated_ = true;
   const_cast<ChiFreeScore*>(this)->last_scale_ = chis[n].second;
-  // std::cerr << "median " << sqrt(chis[n].first)
-  //<< " " << chis[n].second << std::endl;
   return sqrt(chis[n].first);
 }
 
-Float ChiFreeScore::compute_scale_factor(const Profile* exp_profile,
-                                         const Profile* model_profile,
-                                         const Float offset) const {
+double ChiFreeScore::compute_scale_factor(const Profile* exp_profile,
+                                          const Profile* model_profile,
+                                          const double offset) const {
   if (last_scale_updated_) return last_scale_;
-  Float sum1 = 0.0, sum2 = 0.0;
+  double sum1 = 0.0, sum2 = 0.0;
   unsigned int profile_size =
       std::min(model_profile->size(), exp_profile->size());
   for (unsigned int k = 0; k < profile_size; k++) {
-    Float square_error = square(exp_profile->get_error(k));
-    Float weight_tilda = model_profile->get_weight(k) / square_error;
+    double square_error = square(exp_profile->get_error(k));
+    double weight_tilda = model_profile->get_weight(k) / square_error;
 
     sum1 += weight_tilda * model_profile->get_intensity(k) *
             (exp_profile->get_intensity(k) - offset);
@@ -114,15 +114,15 @@ Float ChiFreeScore::compute_scale_factor(const Profile* exp_profile,
   return sum1 / sum2;
 }
 
-Float ChiFreeScore::compute_offset(const Profile* exp_profile,
-                                   const Profile* model_profile) const {
-  Float sum_iexp_imod = 0.0, sum_imod = 0.0, sum_iexp = 0.0, sum_imod2 = 0.0;
-  Float sum_weight = 0.0;
+double ChiFreeScore::compute_offset(const Profile* exp_profile,
+                                    const Profile* model_profile) const {
+  double sum_iexp_imod = 0.0, sum_imod = 0.0, sum_iexp = 0.0, sum_imod2 = 0.0;
+  double sum_weight = 0.0;
   unsigned int profile_size =
       std::min(model_profile->size(), exp_profile->size());
   for (unsigned int k = 0; k < profile_size; k++) {
-    Float square_error = square(exp_profile->get_error(k));
-    Float weight_tilda = model_profile->get_weight(k) / square_error;
+    double square_error = square(exp_profile->get_error(k));
+    double weight_tilda = model_profile->get_weight(k) / square_error;
 
     sum_iexp_imod += weight_tilda * model_profile->get_intensity(k) *
                      exp_profile->get_intensity(k);
@@ -131,7 +131,7 @@ Float ChiFreeScore::compute_offset(const Profile* exp_profile,
     sum_imod2 += weight_tilda * square(model_profile->get_intensity(k));
     sum_weight += weight_tilda;
   }
-  Float offset = sum_iexp_imod / sum_imod2 * sum_imod - sum_iexp;
+  double offset = sum_iexp_imod / sum_imod2 * sum_imod - sum_iexp;
   offset /= (sum_weight - sum_imod * sum_imod / sum_imod2);
   return offset;
 }

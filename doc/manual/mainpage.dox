@@ -1,0 +1,98 @@
+/**
+\mainpage Contents
+
+This manual covers the installation of the Integrative Modeling Platform (%IMP)
+software and its basic usage. It is targeted mainly at _users_, i.e. people
+that want to use existing %IMP functionality. Those that want to modify the
+%IMP source code to develop new methods (_developers_) may also want to refer
+to the [Reference Guide](../ref/).
+
+\note This documentation is for version IMPVERSION of %IMP. For documentation for other versions, please see the [documentation page at the IMP website](http://integrativemodeling.org/doc.html).
+
+ - [Installation](@ref installation)
+
+ - [Introduction to integrative modeling](@ref intro)
+
+ - [Design of IMP](@ref design)
+
+ - [Chimera tools and web services](@ref web_services)
+
+ - [Using command line tools](@ref cmdline)
+   - [FoXS: fitting structures against SAXS data](@ref foxs_nup133)
+
+   - [MultiFoXS: determination of multi-state models](@ref multi_foxs)
+
+   - [Integrative docking: combining experimental data with computational pairwise docking](@ref idock_pcsk9)
+
+   - [Conformational sampling: sampling antibody conformations using the rapidly exploring random tree (RRT) algorithm](@ref kinematics_rrt)
+
+   - [EMageFit: solution of a complex structure using subunit structures and EM class averages](@ref emagefit_3sfd)
+
+   - [MultiFit: solution of a complex structure using subunit structures and a cryo-EM density map](@ref multifit_3sfd)
+
+   - [CNMultiFit: solution of symmetric complexes using a cryo-EM density map](@ref cnmultifit_groel)
+
+   - [SAXSMerge: merging multiple SAXS profiles](@ref saxs_merge)
+
+ - [Modeling of complexes using IMP::pmi](@ref rnapolii_stalk)
+   - [Stage 1: Gathering of data](@ref rnapolii_1)
+   - [Stage 2: Representation of the system](@ref rnapolii_2)
+   - [Stage 3: Sampling](@ref rnapolii_3)
+   - [Stage 4a: Analysis part 1](@ref rnapolii_4)
+   - [Stage 4b: Analysis part 2](@ref rnapolii_4_2)
+
+ - [The IMP C++/Python library](@ref library_intro)
+   - [Overview](@ref library_overview)
+   - [Example of using the library](@ref library_example)
+   - [Logging](@ref logging)
+   - [Runtime checks](@ref checks)
+   - [Units](@ref units)
+   - [Naming and interface conventions](@ref conventions)
+   - [Parallelization](@ref parallel)
+
+ - [Frequently asked questions (FAQ)](@ref faq)
+
+ - [Contributing to IMP](@ref contributing)
+
+ - [Bug reports](@ref bugs)
+
+ - [Applying IMP to a new biological system](@ref biosystem)
+
+ - [Developing the IMP source code](@ref developing)
+   - [Developer setup](@ref devsetup)
+   - [Directory structure](@ref directories)
+   - [Coding conventions](@ref code_conventions)
+   - [Good programming practices](@ref good_practice)
+   - [IMP gotchas](@ref gotchas)
+   - [Writing new code](@ref new_code)
+   - [Working with source control](@ref scm)
+   - [Adding external dependencies](@ref extdepends)
+   - [Design example](@ref design_example)
+   - [Tools for developers](@ref dev_tools)
+   - [Documenting your code](@ref documenting)
+   - [Debugging and testing your code](@ref testing)
+   - [Writing examples](@ref write_examples)
+   - [Exporting C++ code to Python](@ref swig)
+   - [Code coverage](@ref coverage)
+   - [Profiling your code](@ref profiling)
+   - [Deprecation](@ref deprecation)
+   - [Cross platform compatibility](@ref cross_platform)
+   - [Contributing code back to IMP](@ref cont_back)
+   - [Supporting your code](@ref supporting)
+
+ - [Internals](@ref internals)
+   - [Dependencies](@ref internal_dependencies)
+   - [Evaluation](@ref evaluation)
+   - [Close pairs lists](@ref close_pairs)
+   - [RMF](@ref rmf)
+   - [Building](@ref building)
+   - [Eigen](@ref eigen)
+   - [git submodules and subtrees](@ref subtree)
+
+ - [Copyright and licenses](@ref licenses)
+
+ - [Change history](@ref changelog)
+
+ - [Publications](@ref publications)
+
+*/

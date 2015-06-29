@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/atom_links.cpp
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -29,7 +29,7 @@ IMPRMF_BEGIN_NAMESPACE
 
 namespace {
 
-std::string get_good_name(kernel::Model *m, kernel::ParticleIndex h) {
+std::string get_good_name(Model *m, ParticleIndex h) {
   if (atom::Atom::get_is_setup(m, h)) {
     return atom::Atom(m, h).get_atom_type().get_string();
   } else if (atom::Residue::get_is_setup(m, h)) {
@@ -43,7 +43,7 @@ std::string get_good_name(kernel::Model *m, kernel::ParticleIndex h) {
 }
 
 void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh,
-                                    kernel::Particle *o) {
+                                    Particle *o) {
   data_.find(o->get_index())
       ->second->load_rigid_bodies.load(nh.get_file(), o->get_model());
   data_.find(o->get_index())
@@ -55,20 +55,20 @@ void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh,
   do_load_hierarchy(nh, o->get_model(), o->get_index());
 }
 
-void HierarchyLoadLink::create_recursive(kernel::Model *m,
-                                         kernel::ParticleIndex root,
-                                         kernel::ParticleIndex cur,
+void HierarchyLoadLink::create_recursive(Model *m,
+                                         ParticleIndex root,
+                                         ParticleIndex cur,
                                          RMF::NodeConstHandle name,
-                                         kernel::ParticleIndexes rigid_bodies,
+                                         ParticleIndexes rigid_bodies,
                                          Data &data) {
   set_association(name, m->get_particle(cur));
-  kernel::ParticleIndexes breps, greps;
+  ParticleIndexes breps, greps;
   Floats bresols, gresols;
   if (af_.get_is(name)) {
     IMP_FOREACH(RMF::NodeConstHandle alt,
                 af_.get(name).get_alternatives(RMF::PARTICLE)) {
       if (alt == name) continue;
-      kernel::ParticleIndex cur_rep = m->add_particle(alt.get_name());
+      ParticleIndex cur_rep = m->add_particle(alt.get_name());
       create_recursive(m, root, cur_rep, alt, rigid_bodies, data);
       breps.push_back(cur_rep);
       if (explicit_resolution_factory_.get_is(alt)) {
@@ -82,7 +82,7 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
     IMP_FOREACH(RMF::NodeConstHandle alt,
                 af_.get(name).get_alternatives(RMF::GAUSSIAN_PARTICLE)) {
       if (alt == name) continue;
-      kernel::ParticleIndex cur_rep = m->add_particle(alt.get_name());
+      ParticleIndex cur_rep = m->add_particle(alt.get_name());
       create_recursive(m, root, cur_rep, alt, rigid_bodies, data);
       greps.push_back(cur_rep);
       if (explicit_resolution_factory_.get_is(alt)) {
@@ -104,7 +104,7 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
 
   IMP_FOREACH(RMF::NodeConstHandle ch, name.get_children()) {
     if (ch.get_type() == RMF::REPRESENTATION) {
-      kernel::ParticleIndex child = m->add_particle(ch.get_name());
+      ParticleIndex child = m->add_particle(ch.get_name());
       atom::Hierarchy(m, cur)
           .add_child(atom::Hierarchy::setup_particle(m, child));
       create_recursive(m, root, child, ch, rigid_bodies, data);
@@ -121,24 +121,24 @@ void HierarchyLoadLink::create_recursive(kernel::Model *m,
   }
 
   int i = 0;
-  RMF_FOREACH(kernel::ParticleIndex r, breps) {
+  RMF_FOREACH(ParticleIndex r, breps) {
     atom::Representation(m, cur).add_representation(r, atom::BALLS,
                                                     bresols[i++]);
   }
 
   i = 0;
-  RMF_FOREACH(kernel::ParticleIndex r, greps) {
-    atom::Representation(m, cur).add_representation(r, atom::GAUSSIANS,
+  RMF_FOREACH(ParticleIndex r, greps) {
+    atom::Representation(m, cur).add_representation(r, atom::DENSITIES,
                                                     gresols[i++]);
   }
 }
 
 Particle *HierarchyLoadLink::do_create(RMF::NodeConstHandle node,
-                                       kernel::Model *m) {
+                                       Model *m) {
   IMP_FUNCTION_LOG;
-  kernel::ParticleIndex ret = m->add_particle(node.get_name());
+  ParticleIndex ret = m->add_particle(node.get_name());
   data_.insert(std::make_pair(ret, boost::make_shared<Data>(node.get_file())));
-  create_recursive(m, ret, ret, node, kernel::ParticleIndexes(), *data_[ret]);
+  create_recursive(m, ret, ret, node, ParticleIndexes(), *data_[ret]);
   data_.find(ret)->second->load_bonds.setup_bonds(node, m, ret);
   if (!atom::Hierarchy(m, ret).get_is_valid(true)) {
     IMP_WARN("Invalid hierarchy created.");
@@ -146,11 +146,11 @@ Particle *HierarchyLoadLink::do_create(RMF::NodeConstHandle node,
   return m->get_particle(ret);
 }
 
-void HierarchyLoadLink::add_link_recursive(kernel::Model *m,
-                                           kernel::ParticleIndex root,
-                                           kernel::ParticleIndex cur,
+void HierarchyLoadLink::add_link_recursive(Model *m,
+                                           ParticleIndex root,
+                                           ParticleIndex cur,
                                            RMF::NodeConstHandle node,
-                                           kernel::ParticleIndexes rigid_bodies,
+                                           ParticleIndexes rigid_bodies,
                                            Data &data) {
   IMP_USAGE_CHECK(get_good_name(m, cur) == node.get_name(),
                   "Names don't match: " << get_good_name(m, cur) << " vs "
@@ -179,7 +179,7 @@ void HierarchyLoadLink::add_link_recursive(kernel::Model *m,
     }
     {
       RMF::NodeConstHandles alts = ad.get_alternatives(RMF::GAUSSIAN_PARTICLE);
-      atom::Hierarchies reps = rd.get_representations(atom::GAUSSIANS);
+      atom::Hierarchies reps = rd.get_representations(atom::DENSITIES);
       if (alts.size() != reps.size()) {
         IMP_THROW("Number of alternate representations doesn't match: "
                       << alts.size() << " vs " << reps.size(),
@@ -206,7 +206,7 @@ void HierarchyLoadLink::add_link_recursive(kernel::Model *m,
       nchs.push_back(ch);
     }
   }
-  kernel::ParticleIndexes pchs = atom::Hierarchy(m, cur).get_children_indexes();
+  ParticleIndexes pchs = atom::Hierarchy(m, cur).get_children_indexes();
   if (nchs.size() != pchs.size()) {
     IMP_THROW(
         "Number of children doesn't match the number of representation nodes "
@@ -223,13 +223,13 @@ void HierarchyLoadLink::add_link_recursive(kernel::Model *m,
   }
 }
 
-void HierarchyLoadLink::do_add_link(kernel::Particle *o,
+void HierarchyLoadLink::do_add_link(Particle *o,
                                     RMF::NodeConstHandle node) {
   IMP_FUNCTION_LOG;
   data_.insert(std::make_pair(o->get_index(),
                               boost::make_shared<Data>(node.get_file())));
   add_link_recursive(o->get_model(), o->get_index(), o->get_index(), node,
-                     kernel::ParticleIndexes(),
+                     ParticleIndexes(),
                      *data_.find(o->get_index())->second);
 }
 
@@ -244,7 +244,7 @@ HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh)
       fh.get_key(imp_cat, "external frame", RMF::IntTraits());
 }
 
-void HierarchySaveLink::do_add(kernel::Particle *p, RMF::NodeHandle cur) {
+void HierarchySaveLink::do_add(Particle *p, RMF::NodeHandle cur) {
   IMP_USAGE_CHECK(atom::Hierarchy(p).get_is_valid(true),
                   "Invalid hierarchy passed.");
   data_.insert(
@@ -256,7 +256,7 @@ void HierarchySaveLink::do_add(kernel::Particle *p, RMF::NodeHandle cur) {
       ->save_bonds.setup_bonds(p->get_model(), p->get_index(), cur);
 }
 
-void HierarchySaveLink::do_save_one(kernel::Particle *o, RMF::NodeHandle nh) {
+void HierarchySaveLink::do_save_one(Particle *o, RMF::NodeHandle nh) {
   RMF::FileHandle fh = nh.get_file();
   DM::iterator it = data_.find(o->get_index());
   IMP_USAGE_CHECK(it != data_.end(), "I don't know that node");
@@ -266,9 +266,9 @@ void HierarchySaveLink::do_save_one(kernel::Particle *o, RMF::NodeHandle nh) {
   do_save_hierarchy(o->get_model(), o->get_index(), nh);
 }
 
-void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
-                                      kernel::ParticleIndex p,
-                                      kernel::ParticleIndexes rigid_bodies,
+void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
+                                      ParticleIndex p,
+                                      ParticleIndexes rigid_bodies,
                                       RMF::NodeHandle cur, Data &data) {
   IMP_LOG_VERBOSE("Adding " << atom::Hierarchy(m, p) << std::endl);
   // make sure not to double add
@@ -295,8 +295,8 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
       }
     }
     {
-      atom::Hierarchies reps = rep.get_representations(atom::GAUSSIANS);
-      Floats gresols = rep.get_resolutions(atom::GAUSSIANS);
+      atom::Hierarchies reps = rep.get_representations(atom::DENSITIES);
+      Floats gresols = rep.get_resolutions(atom::DENSITIES);
       int i = -1;
       IMP_FOREACH(atom::Hierarchy cr, reps) {
         i++;
@@ -323,7 +323,7 @@ void HierarchySaveLink::add_recursive(Model *m, kernel::ParticleIndex root,
   }
   for (unsigned int i = 0; i < atom::Hierarchy(m, p).get_number_of_children();
        ++i) {
-    kernel::ParticleIndex pc = atom::Hierarchy(m, p).get_child_index(i);
+    ParticleIndex pc = atom::Hierarchy(m, p).get_child_index(i);
     RMF::NodeHandle curc =
         cur.add_child(get_good_name(m, pc), RMF::REPRESENTATION);
     add_recursive(m, root, pc, rigid_bodies, curc, data);

@@ -1,7 +1,8 @@
 /* Why would we copyright a test?
  */
 #include <boost/unordered_map.hpp>
-#include <IMP/base/Vector.h>
+#include <IMP/Vector.h>
+#include <IMP/flags.h>
 IMP_COMPILER_DISABLE_WARNINGS
 IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
 #include <CGAL/Origin.h>
@@ -14,7 +15,9 @@ IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
 #include <CGAL/Union_of_balls_3.h>
 #include <CGAL/Gmpq.h>
 IMP_COMPILER_ENABLE_WARNINGS
-int main(int, char * []) {
+
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test skin failure.");
   double pts[][3] = {{3.3874, 3.3577, 2.86547},
                      {4.20832, 3.04325, 3.05838},
                      {3.63033, 2.62921, 2.50657},
@@ -29,7 +32,7 @@ int main(int, char * []) {
   typedef IKernel::Point_3 Bare_point;
   typedef CGAL::Weighted_point<Bare_point, IKernel::RT> Weighted_point;
   unsigned int size = sizeof(pts) / (3 * sizeof(double));
-  IMP::base::Vector<Weighted_point> l;
+  IMP::Vector<Weighted_point> l;
   for (unsigned int i = 0; i < size; ++i) {
     l.push_back(
         Weighted_point(Bare_point(pts[i][0], pts[i][1], pts[i][2]), .9 * .9));

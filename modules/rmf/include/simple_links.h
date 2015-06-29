@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/simple_links.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -12,11 +12,11 @@
 #include <IMP/rmf/rmf_config.h>
 #include "links.h"
 #include "associations.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/base/object_macros.h>
-#include <IMP/base/log_macros.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Object.h>
+#include <IMP/Pointer.h>
+#include <IMP/object_macros.h>
+#include <IMP/log_macros.h>
+#include <IMP/Model.h>
 #include <RMF/RestoreCurrentFrame.h>
 #include <RMF/SetCurrentFrame.h>
 #include <RMF/names.h>
@@ -30,7 +30,7 @@ IMPRMF_BEGIN_NAMESPACE
 */
 template <class O>
 class SimpleLoadLink : public LoadLink {
-  base::Vector<base::Pointer<O> > os_;
+  Vector<Pointer<O> > os_;
   RMF::NodeIDs nhs_;
 
  protected:
@@ -50,24 +50,24 @@ class SimpleLoadLink : public LoadLink {
   }
   virtual bool get_is(RMF::NodeConstHandle nh) const = 0;
   virtual O *do_create(RMF::NodeConstHandle) { IMP_FAILURE("Wrong create"); }
-  virtual O *do_create(RMF::NodeConstHandle, kernel::Model *) {
+  virtual O *do_create(RMF::NodeConstHandle, Model *) {
     IMP_FAILURE("Wrong create");
   }
   SimpleLoadLink(std::string name) : LoadLink(name) {}
 
  public:
   /** Create all the entities under the passed root.*/
-  base::Vector<base::Pointer<O> > create(RMF::NodeConstHandle rt) {
+  Vector<Pointer<O> > create(RMF::NodeConstHandle rt) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Creating IMP objects from " << rt << std::endl);
     RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
     RMF::NodeConstHandles ch = rt.get_children();
-    base::Vector<base::Pointer<O> > ret;
+    Vector<Pointer<O> > ret;
     for (unsigned int i = 0; i < ch.size(); ++i) {
       IMP_LOG_VERBOSE("Checking " << ch[i] << std::endl);
       if (get_is(ch[i])) {
         IMP_LOG_VERBOSE("Adding " << ch[i] << std::endl);
-        base::Pointer<O> o = do_create(ch[i]);
+        Pointer<O> o = do_create(ch[i]);
         add_link(o, ch[i]);
         ret.push_back(o);
         o->set_was_used(true);
@@ -77,18 +77,18 @@ class SimpleLoadLink : public LoadLink {
   }
 
   /** Create all the entities under the passed root.*/
-  base::Vector<base::Pointer<O> > create(RMF::NodeConstHandle rt,
-                                         kernel::Model *m) {
+  Vector<Pointer<O> > create(RMF::NodeConstHandle rt,
+                                         Model *m) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Creating Model objects from " << rt << std::endl);
     RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
     RMF::NodeConstHandles ch = rt.get_children();
-    base::Vector<base::Pointer<O> > ret;
+    Vector<Pointer<O> > ret;
     for (unsigned int i = 0; i < ch.size(); ++i) {
       IMP_LOG_VERBOSE("Checking " << ch[i] << std::endl);
       if (get_is(ch[i])) {
         IMP_LOG_VERBOSE("Adding " << ch[i] << std::endl);
-        base::Pointer<O> o = do_create(ch[i], m);
+        Pointer<O> o = do_create(ch[i], m);
         add_link(o, ch[i]);
         ret.push_back(o);
         o->set_was_used(true);
@@ -98,7 +98,7 @@ class SimpleLoadLink : public LoadLink {
   }
 
   void link(RMF::NodeConstHandle rt,
-            const base::Vector<base::Pointer<O> > &ps) {
+            const Vector<Pointer<O> > &ps) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Linking " << rt << " to " << ps << std::endl);
 
@@ -130,7 +130,7 @@ class SimpleLoadLink : public LoadLink {
 */
 template <class O>
 class SimpleSaveLink : public SaveLink {
-  base::Vector<base::Pointer<O> > os_;
+  Vector<Pointer<O> > os_;
   RMF::NodeIDs nhs_;
 
  protected:
@@ -154,7 +154,7 @@ class SimpleSaveLink : public SaveLink {
   SimpleSaveLink(std::string name) : SaveLink(name) {}
 
  public:
-  void add(RMF::NodeHandle parent, const base::Vector<base::Pointer<O> > &os) {
+  void add(RMF::NodeHandle parent, const Vector<Pointer<O> > &os) {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Adding " << os << " to rmf" << std::endl);
     RMF::FileHandle file = parent.get_file();

@@ -5,7 +5,7 @@
  *
  */
 
-#include "IMP/kernel/utility.h"
+#include "IMP/utility.h"
 IMPKERNEL_BEGIN_NAMESPACE
 
 IMPKERNEL_END_NAMESPACE

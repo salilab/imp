@@ -19,7 +19,7 @@ double get_interpolation_value(const GridD<D, Storage, Value, Embedding> &g,
   VectorD<D> bblb = pt - .5 * g.get_unit_cell(),
              bbub = pt + .5 * g.get_unit_cell();
   BoundingBoxD<D> bb(bblb, bbub);
-  base::Vector<VectorD<D> > vertices = get_vertices(bb);
+  Vector<VectorD<D> > vertices = get_vertices(bb);
   Floats values(vertices.size());
   // suppress incorrect warning
   VectorD<D> lb = get_zero_vector_d<D>();

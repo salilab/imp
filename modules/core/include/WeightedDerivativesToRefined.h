@@ -15,7 +15,7 @@
 #include "XYZ.h"
 #include <IMP/Refiner.h>
 #include <IMP/singleton_macros.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/SingletonDerivativeModifier.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT WeightedDerivativesToRefined :
 public SingletonDerivativeModifier {
-  IMP::base::PointerMember<Refiner> refiner_;
+  IMP::PointerMember<Refiner> refiner_;
   FloatKey w_; // weights key
   FloatKeys keys_;
 
@@ -61,14 +61,14 @@ public SingletonDerivativeModifier {
      @param m the model
      @param pi the coarse grained particle
   */
-  virtual void apply_index(kernel::Model *m, kernel::ParticleIndex pi) const
+  virtual void apply_index(Model *m, ParticleIndex pi) const
       IMP_OVERRIDE;
 
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
 
-  virtual kernel::ModelObjectsTemp do_get_outputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
 
   IMP_SINGLETON_MODIFIER_METHODS(WeightedDerivativesToRefined);
 

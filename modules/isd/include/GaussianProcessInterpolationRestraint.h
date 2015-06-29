@@ -1,6 +1,6 @@
 /**
  *  \file IMP/isd/GaussianProcessInterpolationRestraint.h
- *  \brief kernel::Restraint and ScoreState for GaussianProcessInterpolation
+ *  \brief Restraint and ScoreState for GaussianProcessInterpolation
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
@@ -11,10 +11,10 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
 #include <boost/scoped_ptr.hpp>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/isd/GaussianProcessInterpolation.h>
 #include <IMP/isd/MultivariateFNormalSufficient.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/algebra/eigen3/Eigen/Dense>
 
 #include <IMP/ScoreState.h>
@@ -29,13 +29,13 @@ class GaussianProcessInterpolationScoreState;
 * gaussian process.
 */
 class IMPISDEXPORT GaussianProcessInterpolationRestraint
-    : public kernel::Restraint {
+    : public Restraint {
  private:
   // checks and makes necessary updates
   void update_mean_and_covariance();
-  base::Pointer<GaussianProcessInterpolation> gpi_;
-  IMP::base::PointerMember<MultivariateFNormalSufficient> mvn_;
-  IMP::base::PointerMember<GaussianProcessInterpolationScoreState> ss_;
+  IMP::PointerMember<GaussianProcessInterpolation> gpi_;
+  IMP::PointerMember<MultivariateFNormalSufficient> mvn_;
+  IMP::PointerMember<GaussianProcessInterpolationScoreState> ss_;
   // number of observation points
   unsigned M_;
 
@@ -47,7 +47,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
      multivariate normal distribution around it. Upon evaluation, it
      checks if parameters have changed, reconstructs the matrix if
      necessary, changes the DA weight and passes it to the functions. */
-  GaussianProcessInterpolationRestraint(kernel::Model *m,
+  GaussianProcessInterpolationRestraint(Model *m,
                                         GaussianProcessInterpolation *gpi);
 
   /** To call this, you need to update the scorestate before.
@@ -75,7 +75,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(GaussianProcessInterpolationRestraint);
 
   // to allow the scorestate to get the restraint's objects
@@ -85,7 +85,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 class IMPISDEXPORT GaussianProcessInterpolationScoreState : public ScoreState {
  private:
-  IMP::base::WeakPointer<GaussianProcessInterpolationRestraint> gpir_;
+  IMP::WeakPointer<GaussianProcessInterpolationRestraint> gpir_;
 
  private:
   GaussianProcessInterpolationScoreState(
@@ -99,8 +99,8 @@ class IMPISDEXPORT GaussianProcessInterpolationScoreState : public ScoreState {
   friend class GaussianProcessInterpolationRestraint;
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(GaussianProcessInterpolationScoreState);
 };
 #endif

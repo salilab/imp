@@ -8,7 +8,7 @@
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/Selection.h>
 #include <IMP/multifit/RadiusOfGyrationRestraint.h>
-#include <boost/progress.hpp>
+#include <IMP/log.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -25,7 +25,7 @@ atom::Hierarchy create_protein(
                 <<std::endl);
   std::cout<<"create protein "<<name<<" with "<<num_beads<<" beads"<<std::endl;
   atom::Hierarchy prot=
-    atom::Hierarchy::setup_particle(new kernel::Particle(mdl));
+    atom::Hierarchy::setup_particle(new Particle(mdl));
   prot->set_name(name);
   prot->add_attribute(order_key,prot_ind);
   prot->add_attribute(path_ind_key,-1);
@@ -34,7 +34,7 @@ atom::Hierarchy create_protein(
   std::cout<<"number of children "<<num_beads<<std::endl;
   for (int i=0;i<num_beads;i++){
     core::XYZR bead_child=core::XYZR::setup_particle(
-             new kernel::Particle(mdl),
+             new Particle(mdl),
              algebra::Sphere3D(algebra::Vector3D(0,0,0),
                                bead_radius));
     atom::Mass::setup_particle(bead_child,3);
@@ -51,7 +51,7 @@ atom::Hierarchy create_protein(
   // //TODO - do we need this restraint
    if (sel.size()>1){
 
-     kernel::Restraint *r = atom::create_connectivity_restraint(sel,k);
+     Restraint *r = atom::create_connectivity_restraint(sel,k);
      IMP_INTERNAL_CHECK(r!=NULL,
                         "Create connectivity failed for protein:"<<name
                         <<" failed \n");
@@ -133,7 +133,7 @@ void Ensemble::unload_combination(Ints fit_comb) {
 void Ensemble::add_component_and_fits(
     atom::Hierarchy mh, const multifit::FittingSolutionRecords &fits) {
   mhs_.push_back(mh);
-  std::cout << "Adding molecule:" << mh->get_name() << std::endl;
+  IMP_LOG_TERSE("Adding molecule:" << mh->get_name() << std::endl);
   core::XYZs mh_xyz = core::XYZs(core::get_leaves(mh));
   xyz_.insert(xyz_.end(), mh_xyz.begin(), mh_xyz.end());
   core::RigidBody rb = core::RigidMember(mh_xyz[0]).get_rigid_body();
@@ -144,28 +144,28 @@ void Ensemble::add_component_and_fits(
 
 Ensemble::Ensemble(multifit::SettingsData *sd,
                    const ProteinsAnchorsSamplingSpace &mapping_data)
-    : base::Object("Ensemble%1%"), mapping_data_(mapping_data), sd_(sd) {}
+    : Object("Ensemble%1%"), mapping_data_(mapping_data), sd_(sd) {}
 
 std::vector<Floats> Ensemble::score_by_restraints(
-    kernel::Restraints rs, const IntsList &combinations) {
+    Restraints rs, const IntsList &combinations) {
   std::vector<Floats> scores(combinations.size());
-  boost::progress_display show_progress(combinations.size());
+  IMP::set_progress_display("Scoring combinations", combinations.size());
   for (int i = 0; i < (int)combinations.size(); i++) {
     load_combination(combinations[i]);
-    std::cout << "i:" << i << "  comb:" << combinations[i] << std::endl;
-    ++show_progress;
-    std::cout << "===step1" << std::endl;
+    IMP_LOG_TERSE("i:" << i << "  comb:" << combinations[i] << std::endl);
+    IMP::add_to_progress_display();
+    IMP_LOG_TERSE("===step1" << std::endl);
     Floats comb_scores(rs.size());
-    std::cout << "===step2" << std::endl;
+    IMP_LOG_TERSE("===step2" << std::endl);
     for (int j = 0; j < (int)rs.size(); j++) {
-      std::cout << "j is:" << rs[j]->get_name() << std::endl;
+      IMP_LOG_TERSE("j is:" << rs[j]->get_name() << std::endl);
       comb_scores[j] = rs[j]->evaluate(false);
     }
-    std::cout << "===step3" << std::endl;
+    IMP_LOG_TERSE("===step3" << std::endl);
     scores[i] = comb_scores;
-    std::cout << "===step4" << std::endl;
+    IMP_LOG_TERSE("===step4" << std::endl);
     unload_combination(combinations[i]);
-    std::cout << "===step5" << std::endl;
+    IMP_LOG_TERSE("===step5" << std::endl);
   }
   return scores;
 }

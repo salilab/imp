@@ -6,13 +6,13 @@
  *
  */
 
-#include "IMP/kernel/ScoringFunction.h"
-#include "IMP/kernel/Model.h"
-#include "IMP/kernel/internal/evaluate_utility.h"
-#include "IMP/kernel/internal/scoring_functions.h"
-#include "IMP/kernel/internal/utility.h"
-#include "IMP/kernel/generic.h"
-#include "IMP/kernel/utility.h"
+#include "IMP/ScoringFunction.h"
+#include "IMP/Model.h"
+#include "IMP/internal/evaluate_utility.h"
+#include "IMP/internal/scoring_functions.h"
+#include "IMP/internal/utility.h"
+#include "IMP/generic.h"
+#include "IMP/utility.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -21,10 +21,10 @@ namespace {
 // in namespace so it can be made a friend.
 class NullScoringFunction : public ScoringFunction {
  public:
-  NullScoringFunction(kernel::Model *m,
+  NullScoringFunction(Model *m,
                       std::string name = "NullScoringFunction%1%")
       : ScoringFunction(m, name) {}
-  void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator,
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator,
                                     const ScoreStatesTemp &) IMP_OVERRIDE {}
   Restraints create_restraints() const IMP_OVERRIDE { return Restraints(); }
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
@@ -34,14 +34,14 @@ class NullScoringFunction : public ScoringFunction {
 };
 
 ScoringFunction *get_null_scoring_function() {
-  static base::PointerMember<Model> m = new Model("NullModel");
-  static base::PointerMember<ScoringFunction> sf =
+  static PointerMember<Model> m = new Model("NullModel");
+  static PointerMember<ScoringFunction> sf =
       new NullScoringFunction(m, "The Null Scoring Function");
   return sf;
 }
 }
 
-ScoringFunction::ScoringFunction(kernel::Model *m, std::string name)
+ScoringFunction::ScoringFunction(Model *m, std::string name)
     : ModelObject(m, name) {}
 
 double ScoringFunction::evaluate_if_good(bool derivatives) {
@@ -92,8 +92,8 @@ ScoringFunction *ScoringFunctionAdaptor::get(const Restraints &sf) {
     return get_null_scoring_function();
   }
 }
-ScoringFunction *ScoringFunctionAdaptor::get(kernel::Model *sf) {
-  return sf->create_scoring_function();
+ScoringFunction *ScoringFunctionAdaptor::get(Model *sf) {
+  return sf->create_model_scoring_function();
 }
 ScoringFunction *ScoringFunctionAdaptor::get(Restraint *sf) {
   return sf->create_scoring_function();
@@ -150,7 +150,7 @@ ScoringFunctions create_decomposition_into_scoring_functions(
     const RestraintsTemp &sf) {
   ScoringFunctions ret;
   for (unsigned int i = 0; i < sf.size(); ++i) {
-    base::Pointer<Restraint> r = sf[i]->create_decomposition();
+    Pointer<Restraint> r = sf[i]->create_decomposition();
     ret = ret + create_decomposition(r, 1.0, NO_MAX);
   }
   return ret;

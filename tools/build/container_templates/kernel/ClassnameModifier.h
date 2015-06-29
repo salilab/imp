@@ -1,8 +1,6 @@
 /**
- *  \file IMP/kernel/ClassnameModifier.h
+ *  \file IMP/ClassnameModifier.h
  *  \brief A Modifier on PLURALVARIABLETYPE
- *
- *  BLURB
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
@@ -10,7 +8,7 @@
 #ifndef IMPKERNEL_CLASSNAME_MODIFIER_H
 #define IMPKERNEL_CLASSNAME_MODIFIER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "ParticleTuple.h"
@@ -30,7 +28,7 @@ IMPKERNEL_BEGIN_NAMESPACE
  */
 class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
                                           public ParticleOutputs,
-                                          public base::Object {
+                                          public Object {
  public:
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;
@@ -41,12 +39,12 @@ class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
   virtual void apply(ARGUMENTTYPE vt) const;
 
   /** Apply the function to a single value*/
-  virtual void apply_index(kernel::Model *m, PASSINDEXTYPE v) const;
+  virtual void apply_index(Model *m, PASSINDEXTYPE v) const;
 
   /** Apply the function to a collection of PLURALVARIABLETYPE */
   /** If bounds are passed, only apply to ones between the upper and
       lower bounds.*/
-  virtual void apply_indexes(kernel::Model *m, const PLURALINDEXTYPE &o,
+  virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,
                              unsigned int lower_bound,
                              unsigned int upper_bound) const {
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {

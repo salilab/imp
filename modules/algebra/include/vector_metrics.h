@@ -10,11 +10,11 @@
 
 #include "VectorD.h"
 #include "BoundingBoxD.h"
-#include <IMP/base/types.h>
-#include <IMP/base/Object.h>
+#include <IMP/types.h>
+#include <IMP/Object.h>
 #include <iostream>
-#include <IMP/base/Pointer.h>
-#include <IMP/base/WeakPointer.h>
+#include <IMP/Pointer.h>
+#include <IMP/WeakPointer.h>
 #include <algorithm>
 #include <numeric>
 
@@ -22,7 +22,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 /** The base class for a metric on VectorKDs.
  */
-class IMPALGEBRAEXPORT VectorKDMetric : public base::Object {
+class IMPALGEBRAEXPORT VectorKDMetric : public Object {
  public:
   VectorKDMetric(std::string name);
   virtual double get_distance(const VectorKD &a, const VectorKD &b) const = 0;

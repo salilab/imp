@@ -12,7 +12,7 @@
 
 IMPSYMMETRY_BEGIN_NAMESPACE
 
-RigidBodyMover::RigidBodyMover(core::RigidBody d, kernel::Particles ps,
+RigidBodyMover::RigidBodyMover(core::RigidBody d, Particles ps,
                                Float max_tr, Float max_ang,
                                algebra::Vector3Ds ctrs,
                                algebra::Transformation3Ds trs)
@@ -35,8 +35,8 @@ RigidBodyMover::RigidBodyMover(core::RigidBody d, kernel::Particles ps,
   trs_ = trs;
 }
 
-Particles RigidBodyMover::get_particles(kernel::Particles ps) {
-  kernel::Particles ps_norb;
+Particles RigidBodyMover::get_particles(Particles ps) {
+  Particles ps_norb;
   for (unsigned i = 0; i < ps.size(); ++i) {
     if (!core::RigidMember::get_is_setup(ps[i])) {
       ps_norb.push_back(ps[i]);
@@ -46,7 +46,7 @@ Particles RigidBodyMover::get_particles(kernel::Particles ps) {
 }
 
 std::vector<core::RigidBody> RigidBodyMover::get_rigid_bodies(
-    kernel::Particles ps) {
+    Particles ps) {
   std::vector<core::RigidBody> rbs;
   for (unsigned i = 0; i < ps.size(); ++i) {
     if (core::RigidMember::get_is_setup(ps[i])) {
@@ -92,7 +92,7 @@ core::MonteCarloMoverResult RigidBodyMover::do_propose() {
       algebra::Sphere3D(algebra::VectorD<3>(0.0, 0.0, 0.0), 1.));
 
   ::boost::uniform_real<> rand(-max_ang_, max_ang_);
-  Float angle = rand(base::random_number_generator);
+  Float angle = rand(random_number_generator);
   algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
 
   // ri: composing rotation of reference frame transformation and
@@ -134,10 +134,10 @@ core::MonteCarloMoverResult RigidBodyMover::do_propose() {
         algebra::ReferenceFrame3D(algebra::Transformation3D(rr, tt)));
   }
 
-  kernel::ParticlesTemp ret = ParticlesTemp(1, d_);
+  ParticlesTemp ret = ParticlesTemp(1, d_);
   ret.insert(ret.end(), ps_.begin(), ps_.end());
 
-  return core::MonteCarloMoverResult(kernel::get_indexes(ret), 1.0);
+  return core::MonteCarloMoverResult(get_indexes(ret), 1.0);
 }
 
 void RigidBodyMover::do_reject() {
@@ -155,7 +155,7 @@ void RigidBodyMover::do_reject() {
 }
 
 ModelObjectsTemp RigidBodyMover::do_get_inputs() const {
-  kernel::ParticlesTemp ret = ParticlesTemp(1, d_);
+  ParticlesTemp ret = ParticlesTemp(1, d_);
   ret.insert(ret.end(), ps_.begin(), ps_.end());
   return ret;
 }

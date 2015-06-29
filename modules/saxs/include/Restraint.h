@@ -17,10 +17,10 @@
 
 #include <IMP/saxs/RigidBodiesProfileHandler.h>
 
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/Restraint.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Model.h>
+#include <IMP/Restraint.h>
+#include <IMP/Object.h>
+#include <IMP/Pointer.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -39,7 +39,7 @@ IMPSAXS_BEGIN_NAMESPACE
     The distances between the atoms of rigid body do not change, therefore
     their contribution to the profile is pre-computed and stored.
  */
-class IMPSAXSEXPORT Restraint : public kernel::Restraint {
+class IMPSAXSEXPORT Restraint : public IMP::Restraint {
  public:
   //! Constructor
   /**
@@ -50,21 +50,21 @@ class IMPSAXSEXPORT Restraint : public kernel::Restraint {
                 HEAVY_ATOMS - no hydrogens, all other atoms included
                 CA_ATOMS - residue level, residue represented by CA
   */
-  Restraint(const kernel::Particles& particles, const Profile* exp_profile,
+  Restraint(const Particles& particles, const Profile* exp_profile,
             FormFactorType ff_type = HEAVY_ATOMS);
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator* accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum)
       const IMP_OVERRIDE;
 
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(Restraint);
 
  protected:
-  base::Pointer<RigidBodiesProfileHandler> handler_;
-  base::Pointer<ProfileFitter<ChiScore> > profile_fitter_;  // computes profiles
+  Pointer<RigidBodiesProfileHandler> handler_;
+  Pointer<ProfileFitter<ChiScore> > profile_fitter_;  // computes profiles
   // computes derivatives
-  base::Pointer<DerivativeCalculator> derivative_calculator_;
+  Pointer<DerivativeCalculator> derivative_calculator_;
 };
 
 IMPSAXS_END_NAMESPACE

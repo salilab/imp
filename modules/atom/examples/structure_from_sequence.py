@@ -3,6 +3,9 @@
 #
 
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "structure from sequence")
 
 # Use the CHARMM all-atom (i.e. including hydrogens) topology and parameters
 topology = IMP.atom.CHARMMTopology(IMP.atom.get_all_atom_CHARMM_parameters())
@@ -14,7 +17,7 @@ topology.apply_default_patches()
 
 # Make an IMP Hierarchy (atoms, residues, chains) that corresponds to
 # this topology
-m = IMP.kernel.Model()
+m = IMP.Model()
 h = topology.create_hierarchy(m)
 
 # Generate coordinates for all atoms in the Hierarchy, using CHARMM internal

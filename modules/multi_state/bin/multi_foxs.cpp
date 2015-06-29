@@ -12,10 +12,14 @@
 
 #include <IMP/saxs/ProfileClustering.h>
 #include <IMP/saxs/utility.h>
+#include <IMP/saxs/ChiScore.h>
+#include <IMP/saxs/RatioVolatilityScore.h>
 
 #include <IMP/atom/pdb.h>
 
-//#include <IMP/benchmark/Profiler.h>
+#include <IMP/Vector.h>
+
+#include <IMP/benchmark/Profiler.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/program_options.hpp>
@@ -36,8 +40,8 @@ std::string trim_extension(const std::string file_name) {
 }
 
 void read_pdb(const std::string file,
-              std::vector<std::string>& pdb_file_names,
-              std::vector<IMP::kernel::Particles>& particles_vec,
+              IMP::Vector<std::string>& pdb_file_names,
+              IMP::Vector<IMP::Particles>& particles_vec,
               bool residue_level, bool heavy_atoms_only, int multi_model_pdb) {
 
   IMP::Model *model = new IMP::Model();
@@ -67,7 +71,7 @@ void read_pdb(const std::string file,
   }
 
   for(unsigned int h_index=0; h_index<mhds.size(); h_index++) {
-    IMP::kernel::ParticlesTemp ps = get_by_type(mhds[h_index], IMP::atom::ATOM_TYPE);
+    IMP::ParticlesTemp ps = get_by_type(mhds[h_index], IMP::atom::ATOM_TYPE);
     if(ps.size() > 0) { // pdb file
       std::string pdb_id = file;
       if(mhds.size() > 1) {
@@ -75,7 +79,7 @@ void read_pdb(const std::string file,
           std::string(boost::lexical_cast<std::string>(h_index+1)) + ".pdb";
       }
       pdb_file_names.push_back(pdb_id);
-      particles_vec.push_back(IMP::get_as<IMP::kernel::Particles>(ps));
+      particles_vec.push_back(IMP::get_as<IMP::Particles>(ps));
       std::cout << ps.size() << " atoms were read from PDB file " << file;
       if(mhds.size() > 1) std::cout << " MODEL " << h_index+1;
       std::cout << std::endl;
@@ -85,12 +89,14 @@ void read_pdb(const std::string file,
 
 void read_profiles(const std::string profile_filenames_file,
                    Profiles& profiles,
-                   std::vector<std::string>& file_names,
-                   std::vector<double>& scores) {
+                   IMP::Vector<std::string>& file_names,
+                   IMP::Vector<double>& scores,
+                   bool partial_profiles) {
   // open input file with profile file names
   std::ifstream in_file(profile_filenames_file.c_str());
   if(!in_file) {
-    IMP_THROW("Can't find input file " << profile_filenames_file, IOException);
+    IMP_THROW("Can't find input file " << profile_filenames_file,
+              IMP::IOException);
   }
   std::string curr_file_name;
   unsigned int profile_counter=0;
@@ -109,10 +115,18 @@ void read_profiles(const std::string profile_filenames_file,
     }
 
     // read a profile from current file
-    Profile *profile = new Profile();
-    profile->read_partial_profiles(curr_file_name);
-    if(profile->size() == 0) {
-      IMP_THROW("Can't parse input file " << curr_file_name, IOException);
+    Profile *profile;
+    if(partial_profiles) {
+      profile = new Profile();
+      profile->read_partial_profiles(curr_file_name);
+      if(profile->size() == 0) {
+        IMP_THROW("Can't parse input file, please make sure your file contains 7 columns " << curr_file_name, IMP::IOException);
+      }
+    } else {
+      profile = new Profile(curr_file_name, true);
+      if(profile->size() == 0) {
+        IMP_THROW("Can't parse input file, please make sure your file contains 3 columns " << curr_file_name, IMP::IOException);
+      }
     }
 
     //profile->copy_errors(*exp_profile);
@@ -129,12 +143,13 @@ void read_profiles(const std::string profile_filenames_file,
 }
 
 void read_files(const std::vector<std::string>& files,
-                std::vector<std::string>& pdb_file_names,
-                std::vector<std::string>& dat_files,
+                IMP::Vector<std::string>& pdb_file_names,
+                IMP::Vector<std::string>& dat_files,
                 Profiles& computed_profiles,
-                std::vector<double> scores,
+                IMP::Vector<double> scores,
                 Profiles& exp_profiles,
-                int multi_model_pdb) {
+                int multi_model_pdb,
+                bool partial_profiles, double max_q) {
 
   for (unsigned int i = 0; i < files.size(); i++) {
     // check if file exists
@@ -145,8 +160,8 @@ void read_files(const std::vector<std::string>& files,
     }
     // 1. try as pdb
     try {
-      std::vector<IMP::kernel::Particles> particles_vec;
-      std::vector<std::string> curr_pdb_file_names;
+      IMP::Vector<IMP::Particles> particles_vec;
+      IMP::Vector<std::string> curr_pdb_file_names;
       read_pdb(files[i], curr_pdb_file_names, particles_vec, false, true, multi_model_pdb);
       if(particles_vec.size() > 0) { // pdb file
         for(unsigned int j=0; j<particles_vec.size(); j++) {
@@ -162,9 +177,9 @@ void read_files(const std::vector<std::string>& files,
         }
       }
     }
-    catch (IMP::base::ValueException e) {  // not a pdb file
+    catch (IMP::ValueException e) {  // not a pdb file
       // 2. try as a dat profile file
-      IMP_NEW(Profile, profile, (files[i]));
+      IMP_NEW(Profile, profile, (files[i], false, max_q));
       if (profile->size() > 0) {
         dat_files.push_back(files[i]);
         exp_profiles.push_back(profile);
@@ -173,7 +188,7 @@ void read_files(const std::vector<std::string>& files,
       } else {
         // 3. try as profile filenames file
         // read precomputed partial profiles
-        read_profiles(files[i], computed_profiles, pdb_file_names, scores);
+        read_profiles(files[i], computed_profiles, pdb_file_names, scores, partial_profiles);
       }
     }
   }
@@ -188,51 +203,70 @@ int main(int argc, char* argv[]) {
 
   int number_of_states = 10;
   int best_k = 1000;
-  float background_adjustment_q = 0.0;
-  float chi_percentage_cluster_thr = 0.3;
-  float chi_thr = 0.0;
-  float weight_thr = 0.05;
+  double background_adjustment_q = 0.0;
+  double chi_percentage_cluster_thr = 0.3;
+  double chi_thr = 0.0;
+  double weight_thr = 0.05;
   bool nnls = false;
   bool fixed_c1_c2_score = true;
-  float min_c1 = 0.99;
-  float max_c1 = 1.05;
-  float min_c2 = -0.5;
-  float max_c2 = 2.0;
+  double max_q = 0.5;
+  double min_c1 = 0.99;
+  double max_c1 = 1.05;
+  double min_c2 = -0.5;
+  double max_c2 = 2.0;
+  bool partial_profiles = true;
+  bool vr_score = false;
 
-  po::options_description
-    desc("Usage: <experimental_profile> <pdb_file1> <pdb_file2> ...");
+  po::options_description desc("Options");
   desc.add_options()
     ("help", "Any number of input profiles is supported. \
 The weights are computed to minimize the chi between the first profile \
 and a weighted average of the rest.")
-    ("input-files", po::value< std::vector<std::string> >(),
-     "input profile files")
+    ("version", "MultiFoXS (IMP applications)\n \
+Copyright 2007-2015 IMP Inventors.\nAll rights reserved. \n \
+License: GNU LGPL version 2.1 or later<http://gnu.org/licenses/lgpl.html>.\n\
+Written by Dina Schneidman.")
     ("number-of-states,s", po::value<int>(&number_of_states)->default_value(10),
      "maximal ensemble size (default = 10)")
     ("bestK,k", po::value<int>(&best_k)->default_value(1000), "bestK (default = 1000)")
-    ("threshold,t", po::value<float>(&chi_percentage_cluster_thr)->default_value(0.3),
+    ("threshold,t", po::value<double>(&chi_percentage_cluster_thr)->default_value(0.3),
      "chi value percentage threshold for profile similarity (default = 0.3)")
-    ("chi_threshold,c", po::value<float>(&chi_thr)->default_value(0.0),
+    ("chi_threshold,c", po::value<double>(&chi_thr)->default_value(0.0),
      "chi based threshold")
-    ("weight_threshold,w", po::value<float>(&weight_thr)->default_value(0.05),
+    ("weight_threshold,w", po::value<double>(&weight_thr)->default_value(0.05),
      "minimal weight threshold for a profile to contribute to the ensemble")
+    ("max_q,q", po::value<double>(&max_q)->default_value(0.5),
+     "maximal q value (default = 0.5)")
+    ("min_c1", po::value<double>(&min_c1)->default_value(0.99), "min c1 value")
+    ("max_c1", po::value<double>(&max_c1)->default_value(1.05), "max c1 value")
+    ("min_c2", po::value<double>(&min_c2)->default_value(-0.5), "min c2 value")
+    ("max_c2", po::value<double>(&max_c2)->default_value(2.0), "max c2 value")
+    ("partial_profiles,p", "use precomputed partial profiles (default = true)")
+    ("volatility_ratio,v","calculate volatility ratio score (default = false)")
     ("background_q,b",
-     po::value<float>(&background_adjustment_q)->default_value(0.0),
+     po::value<double>(&background_adjustment_q)->default_value(0.0),
      "background adjustment, not used by default. if enabled, \
 recommended q value is 0.2")
     ("nnls,n", "run Non negative least square on all profiles (default = false)")
     ("fixed_c1_c2_score,f", "fix c1/c2 for fast scoring, optimize for output only (default = true)")
-    ("min_c1", po::value<float>(&min_c1)->default_value(0.99), "min c1 value")
-    ("max_c1", po::value<float>(&max_c1)->default_value(1.05), "max c1 value")
-    ("min_c2", po::value<float>(&min_c2)->default_value(-0.5), "min c2 value")
-    ("max_c2", po::value<float>(&max_c2)->default_value(2.0), "max c2 value")
     ;
+
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+    ("input-files", po::value< std::vector<std::string> >(),
+     "input profile files");
+
+  po::options_description cmdline_options;
+  cmdline_options.add(desc).add(hidden);
+  po::options_description visible("Usage: <experimental_profile> \
+<pdb_file1> <pdb_file2> ... or <profiles_filename>");
+  visible.add(desc);
 
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
-  po::store(
-      po::command_line_parser(argc,argv).options(desc).positional(p).run(), vm);
+  po::store(po::command_line_parser(argc,argv)
+            .options(cmdline_options).positional(p).run(), vm);
   po::notify(vm);
 
   std::vector<std::string> files;
@@ -240,19 +274,21 @@ recommended q value is 0.2")
     files = vm["input-files"].as< std::vector<std::string> >();
   }
   if(vm.count("help") || files.size() == 0) {
-    std::cout << desc << "\n";
+    std::cout << visible << "\n";
     return 0;
   }
   if(vm.count("nnls")) nnls = true;
   if(vm.count("fixed_c1_c2_score")) fixed_c1_c2_score = false;
+  if(vm.count("partial_profiles")) partial_profiles = false;
+  if (vm.count("volatility_ratio")) vr_score = true;
 
   Profiles exp_profiles;
   Profiles computed_profiles;
-  std::vector<std::string> pdb_file_names;
-  std::vector<std::string> dat_file_names;
-  std::vector<double> scores;
+  IMP::Vector<std::string> pdb_file_names;
+  IMP::Vector<std::string> dat_file_names;
+  IMP::Vector<double> scores;
 
-  read_files(files, pdb_file_names, dat_file_names, computed_profiles, scores, exp_profiles, false);
+  read_files(files, pdb_file_names, dat_file_names, computed_profiles, scores, exp_profiles, false, partial_profiles, max_q);
 
   if(exp_profiles.size() == 0) {
     std::cerr << "Please provide at least one exp. profile" << std::endl;
@@ -269,7 +305,7 @@ recommended q value is 0.2")
   }
 
 
-  //IMP::benchmark::Profiler pp("prof");
+  IMP::benchmark::Profiler pp("prof");
 
   Profiles& clustered_profiles = computed_profiles;
   ProfileClustering profile_clustering(exp_profiles[0], computed_profiles, scores,
@@ -285,14 +321,23 @@ recommended q value is 0.2")
     clusters_file.close();
   }
 
-  std::vector<MultiStateModelScore*> scorers;
-
+  IMP::Vector<MultiStateModelScore*> scorers;
   for (unsigned int i=0; i<exp_profiles.size(); i++) {
-    SAXSMultiStateModelScore *saxs_ensemble_score =
-      new SAXSMultiStateModelScore(clustered_profiles, exp_profiles[i],
-                                   fixed_c1_c2_score,
-                                   min_c1, max_c1, min_c2, max_c2);
-    scorers.push_back(saxs_ensemble_score);
+    if(!vr_score) {
+      SAXSMultiStateModelScore<ChiScore> *saxs_chi_score =
+        new SAXSMultiStateModelScore<ChiScore>(clustered_profiles, exp_profiles[i],
+                                               fixed_c1_c2_score,
+                                               min_c1, max_c1, min_c2, max_c2);
+      scorers.push_back(saxs_chi_score);
+    } else {
+      SAXSMultiStateModelScore<RatioVolatilityScore> *saxs_vr_score =
+        new SAXSMultiStateModelScore<RatioVolatilityScore>(clustered_profiles,
+                                                           exp_profiles[i],
+                                                           fixed_c1_c2_score,
+                                                           min_c1, max_c1,
+                                                           min_c2, max_c2);
+      scorers.push_back(saxs_vr_score);
+    }
   }
 
   // TODO: move as function to EnsembleGenerator

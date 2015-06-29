@@ -10,7 +10,7 @@
 #define IMPBENCHMARK_PROFILER_H
 
 #include <IMP/benchmark/benchmark_config.h>
-#include <IMP/base/raii_macros.h>
+#include <IMP/raii_macros.h>
 #include <string>
 
 IMPBENCHMARK_BEGIN_NAMESPACE
@@ -20,7 +20,7 @@ IMPBENCHMARK_BEGIN_NAMESPACE
     to profile code. On a Mac, you should
     use the Instruments program instead (part of the Mac OS X Developer Tools).
 */
-class IMPBENCHMARKEXPORT Profiler : public base::RAII {
+class IMPBENCHMARKEXPORT Profiler : public RAII {
   void start(std::string name);
   void stop();
 

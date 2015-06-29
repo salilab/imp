@@ -10,13 +10,13 @@ class Tests(IMP.test.TestCase):
 
     def test_set_ssres(self):
         """Test if you can assign ssres to anchors"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         # read in anchors data and set the secondary structure
         anchors_data = IMP.multifit.read_anchors_data(
             self.get_input_file_name("anchors.input"))
         anchors_data.setup_secondary_structure(m)
-        anchor_ssres_ps = [IMP.kernel.Particle(m), IMP.kernel.Particle(m)]
+        anchor_ssres_ps = [IMP.Particle(m), IMP.Particle(m)]
         IMP.atom.SecondaryStructureResidue.setup_particle(
             anchor_ssres_ps[0], 1.0, 0.0, 0.0)
         IMP.atom.SecondaryStructureResidue.setup_particle(
@@ -48,13 +48,13 @@ class Tests(IMP.test.TestCase):
 
     def test_query_ssres(self):
         """Test if you can query anchors ssres"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         # read in anchors data and set the secondary structure
         anchors_data = IMP.multifit.read_anchors_data(
             self.get_input_file_name("anchors.input"))
         anchors_data.setup_secondary_structure(m)
-        anchor_ssres_ps = [IMP.kernel.Particle(m), IMP.kernel.Particle(m)]
+        anchor_ssres_ps = [IMP.Particle(m), IMP.Particle(m)]
         IMP.atom.SecondaryStructureResidue.setup_particle(
             anchor_ssres_ps[0], 1.0, 0.0, 0.0)
         IMP.atom.SecondaryStructureResidue.setup_particle(
@@ -65,7 +65,7 @@ class Tests(IMP.test.TestCase):
                         anchors_data.get_secondary_structure_particles())
 
         # make query ssres and check match
-        query_ps = [IMP.kernel.Particle(m), IMP.kernel.Particle(m)]
+        query_ps = [IMP.Particle(m), IMP.Particle(m)]
         IMP.atom.SecondaryStructureResidue.setup_particle(
             query_ps[0], 1.0, 0.0, 0.0)
         IMP.atom.SecondaryStructureResidue.setup_particle(

@@ -1,5 +1,5 @@
 /**
- *  \file kernel::RestraintGraph.cpp
+ *  \file RestraintGraph.cpp
  *  \brief creates a MRF from a set of particles and restraints
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -10,8 +10,8 @@
 #include <IMP/domino/assignment_tables.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>
-#include <IMP/base/random.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/random.h>
+#include <IMP/log_macros.h>
 #include <boost/pending/indirect_cmp.hpp>
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
@@ -32,8 +32,8 @@ InferenceStatistics::Data InferenceStatistics::get_data(
       sample.push_back(i);
     } else {
       double prob = static_cast<double>(sample_size) / i;
-      if (select_(base::random_number_generator) < prob) {
-        int replace = place_(base::random_number_generator);
+      if (select_(random_number_generator) < prob) {
+        int replace = place_(random_number_generator);
         sample[replace] = i;
       }
     }
@@ -139,7 +139,7 @@ void load_union(const Subset &s0, const Subset &s1, AssignmentContainer *nd0,
           }
         }
       }
-      IMP::base::add_to_progress_display(1);
+      IMP::add_to_progress_display(1);
     }
   }
 }

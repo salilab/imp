@@ -12,7 +12,7 @@
 #include <IMP/statistics/statistics_config.h>
 #include "Metric.h"
 #include "PartitionalClustering.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
@@ -23,8 +23,8 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     clustering of the original elements using create_full_clustering().
 */
 class IMPSTATISTICSEXPORT RecursivePartitionalClusteringMetric : public Metric {
-  IMP::base::PointerMember<Metric> metric_;
-  IMP::base::PointerMember<PartitionalClustering> clustering_;
+  IMP::PointerMember<Metric> metric_;
+  IMP::PointerMember<PartitionalClustering> clustering_;
 
  public:
   RecursivePartitionalClusteringMetric(Metric *metric,

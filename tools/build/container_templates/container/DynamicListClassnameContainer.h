@@ -2,8 +2,6 @@
  *  \file IMP/container/DynamicListClassnameContainer.h
  *  \brief Store a list of PLURALVARIABLETYPE
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
@@ -11,8 +9,8 @@
 #define IMPCONTAINER_DYNAMIC_LIST_CLASSNAME_CONTAINER_H
 
 #include <IMP/container/container_config.h>
-#include <IMP/base/object_macros.h>
-#include <IMP/kernel/internal/DynamicListContainer.h>
+#include <IMP/object_macros.h>
+#include <IMP/internal/DynamicListContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -26,12 +24,10 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public ClassnameContainer
 #else
-    public IMP::kernel::internal::DynamicListContainer<
-        kernel::ClassnameContainer>
+    public IMP::internal::DynamicListContainer<ClassnameContainer>
 #endif
     {
-  typedef IMP::kernel::internal::DynamicListContainer<
-      kernel::ClassnameContainer> P;
+  typedef IMP::internal::DynamicListContainer<ClassnameContainer> P;
 
  public:
   /** Constructs the dynamic list
@@ -50,17 +46,42 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
       the list use these methods.
    */
   /**@{*/
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+  //! Add a single PASSINDEXTYPE to the container.
+  void add(PASSINDEXTYPE vt);
+
+  //! Add PLURALINDEXTYPE to the container.
+  void add(const PLURALINDEXTYPE &c);
+
+  //! Set the contents of the container to the given PLURALINDEXTYPE.
+  void set(PLURALINDEXTYPE cp);
+
+  //! Clear the contents of the container.
+  void clear();
+#endif
+  /** \deprecated_at{2.5} Use add() with indexes instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void add_FUNCTIONNAME(ARGUMENTTYPE vt);
+
+  /** \deprecated_at{2.5} Use add() with indexes instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
+
+  /** \deprecated_at{2.5} Use set() instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
+
+  /** \deprecated_at{2.5} Use clear() instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void clear_FUNCTIONNAMEs();
+
 /**@}*/
 #ifdef SWIG
   PLURALINDEXTYPE get_indexes() const;
   PLURALINDEXTYPE get_range_indexes() const;
-  kernel::ModelObjectsTemp do_get_inputs() const;
+  ModelObjectsTemp do_get_inputs() const;
   void do_apply(const ClassnameModifier *sm) const;
-  kernel::ParticleIndexes get_all_possible_indexes() const;
+  ParticleIndexes get_all_possible_indexes() const;
 #endif
   IMP_OBJECT_METHODS(DynamicListClassnameContainer);
 };

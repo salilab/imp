@@ -9,12 +9,12 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min2(self):
         """Test sampling"""
-        m = IMP.kernel.Model()
-        m.set_log_level(IMP.base.SILENT)
+        m = IMP.Model()
+        m.set_log_level(IMP.SILENT)
         ps = []
         print(1)
         for i in range(0, 3):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZ.setup_particle(p)
             ps.append(p)
             print(2)
@@ -28,15 +28,17 @@ class Tests(IMP.test.TestCase):
         for p in ps:
             pst.set_particle_states(p, particle_state)
         print(4)
-        m.add_restraint(IMP.core.DistanceRestraint(
+        r = IMP.RestraintSet(m)
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[0], ps[1]))
-        m.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[1], ps[2]))
         print(5)
         sampler = IMP.domino.DominoSampler(m, pst)
+        sampler.set_restraints([r])
         sampler.set_use_cross_subset_filtering(True)
-        sampler.set_log_level(IMP.base.VERBOSE)
-        m.set_maximum_score(.1)
+        sampler.set_log_level(IMP.VERBOSE)
+        r.set_maximum_score(.1)
         cs = sampler.create_sample()
         print(6)
         self.assertGreater(cs.get_number_of_configurations(), 0)
@@ -54,11 +56,11 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min3(self):
         """Test sampling with edge scores"""
-        m = IMP.kernel.Model()
-        m.set_log_level(IMP.base.SILENT)
+        m = IMP.Model()
+        m.set_log_level(IMP.SILENT)
         ps = []
         for i in range(0, 3):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZ.setup_particle(p)
             ps.append(p)
         pts = [IMP.algebra.Vector3D(0, 0, 0),
@@ -67,17 +69,19 @@ class Tests(IMP.test.TestCase):
                IMP.algebra.Vector3D(3, 0, 0)]
         particle_state = IMP.domino.XYZStates(pts)
         pst = IMP.domino.ParticleStatesTable()
+        r = IMP.RestraintSet(m)
         for p in ps:
             pst.set_particle_states(p, particle_state)
-            m.add_restraint(IMP.kernel._ConstRestraint(1, [p]))
-        m.add_restraint(IMP.core.DistanceRestraint(
+            r.add_restraint(IMP._ConstRestraint(1, [p]))
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[0], ps[1]))
-        m.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[1], ps[2]))
 
-        m.set_maximum_score(3.1)
+        r.set_maximum_score(3.1)
         sampler = IMP.domino.DominoSampler(m, pst)
-        sampler.set_log_level(IMP.base.VERBOSE)
+        sampler.set_restraints([r])
+        sampler.set_log_level(IMP.VERBOSE)
         cs = sampler.create_sample()
         self.assertGreater(cs.get_number_of_configurations(), 0)
         for i in range(0, cs.get_number_of_configurations()):

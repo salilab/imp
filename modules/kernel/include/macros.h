@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/macros.h    \brief Various general useful macros for IMP.
+ *  \file IMP/macros.h    \brief Various general useful macros for IMP.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -7,8 +7,8 @@
 
 #ifndef IMPKERNEL_MACROS_H
 #define IMPKERNEL_MACROS_H
-#include <IMP/kernel/kernel_config.h>
-#include <IMP/base/base_macros.h>
+#include <IMP/kernel_config.h>
+#include <IMP/base_macros.h>
 #include "decorator_macros.h"
 #include "singleton_macros.h"
 #include "pair_macros.h"

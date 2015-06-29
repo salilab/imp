@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Restraint.h
+ *  \file IMP/Restraint.h
  *  \brief Abstract base class for all restraints.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,14 +9,14 @@
 #ifndef IMPKERNEL_RESTRAINT_H
 #define IMPKERNEL_RESTRAINT_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "ModelObject.h"
 #include "ScoreAccumulator.h"
 #include "DerivativeAccumulator.h"
 #include "constants.h"
 #include "base_types.h"
-#include <IMP/base/InputAdaptor.h>
-#include <IMP/base/deprecation_macros.h>
+#include <IMP/InputAdaptor.h>
+#include <IMP/deprecation_macros.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class DerivativeAccumulator;
@@ -26,7 +26,7 @@ class DerivativeAccumulator;
     To implement a new restraint, just implement the two methods:
     - IMP::Restraint::do_add_score_and_derivatives()
     - IMP::ModelObject::do_get_inputs();
-    and use the macro to handle IMP::base::Object
+    and use the macro to handle IMP::Object
     - IMP_OBJECT_METHODS()
 
     \note When logging is VERBOSE, restraints should print enough information
@@ -53,7 +53,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
  public:
   /** Create a restraint and register it with the model. The restraint is
       not added to the implicit scoring function in the Model.*/
-  Restraint(kernel::Model *m, std::string name);
+  Restraint(Model *m, std::string name);
 
   /** Compute and return the current score for the restraint.
    */
@@ -62,11 +62,6 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
 #ifndef IMP_DOXYGEN
   //! Return the score for this restraint for the current state of the model.
   /** \return Current score.
-
-      This method is equivalent to calling:
-      \code
-      model->evaluate(RestraintsTemp(1,this), calc_derivs)
-      \endcode
    */
   double evaluate(bool calc_derivs) const;
 
@@ -84,7 +79,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       \note These functions probably should be called \c do_evaluate, but
       were grandfathered in.
       \note Although the returned score is unweighted, the DerivativeAccumulator
-      passed in had better be properly weighted.
+      passed in should be properly weighted.
       @{
   */
   //! Return the unweighted score for the restraint.
@@ -142,7 +137,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       Each restraint's contribution to the model score is weighted. The
       total weight for the restraint is the some over all the paths containing
       it. That is, if a restraint is in a RestraintSet with weight .5 and
-      another with weight 2, and the restaint itself has weight 3, then the
+      another with weight 2, and the restraint itself has weight 3, then the
       total weight of the restraint is \f$.5 \cdot 3 + 2 \cdot 3 = 7.5  \f$.
       @{
   */
@@ -152,7 +147,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   /** \name Filtering
       We are typically only interested in "good" conformations of
       the model. These are described by specifying maximum scores
-      per restraint and for the whole model. Samplers, optimizers
+      per restraint (or RestraintSet). Samplers, optimizers
       etc are free to ignore configurations they encounter which
       go outside these bounds.
 
@@ -194,27 +189,24 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 
  protected:
-  /** A Restraint should override this if they want to decompose themselves
+  /** A Restraint should override this if it wants to decompose itself
       for domino and other purposes. The returned restraints will be made
-      in to a RestraintSet, if needed and the weight and maximum score
-      set for the restraint set.
+      into a RestraintSet if needed, with suitable weight and maximum score.
   */
   virtual Restraints do_create_decomposition() const {
     return Restraints(1, const_cast<Restraint *>(this));
   }
-  /** A Restraint should override this if they want to decompose themselves
+  /** A Restraint should override this if it wants to decompose itself
       for display and other purposes. The returned restraints will be made
-      in to a RestraintSet, if needed and the weight and maximum score
-      set for the restraint set.
+      into a RestraintSet if needed, with suitable weight and maximum score.
 
       The returned restraints should be only the non-zero terms and should
-      have their last scores set appropriately;
+      have their last scores set appropriately.
    */
   virtual Restraints do_create_current_decomposition() const {
     return do_create_decomposition();
   }
-  /** A restraint should override this to compute the score and derivatives.
-  */
+  //! A restraint should override this to compute the score and derivatives.
   virtual void do_add_score_and_derivatives(ScoreAccumulator sa) const;
 
   /** No outputs. */
@@ -227,12 +219,11 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   double max_;
   mutable double last_score_;
   // cannot be released outside the class
-  mutable base::Pointer<ScoringFunction> cached_internal_scoring_function_;
+  mutable Pointer<ScoringFunction> cached_internal_scoring_function_;
 };
 
-/** This class is to provide a consisted interface for things
-    that take Restraints as arguments.
-
+//! Provide a consistent interface for things that take Restraints as arguments.
+/**
     \note Passing an empty list of restraints should be supported, but problems
     could arise, so be alert (the problems would not be subtle).
 */
@@ -240,10 +231,10 @@ class IMPKERNELEXPORT RestraintsAdaptor :
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
     public Restraints
 #else
-    public base::InputAdaptor
+    public InputAdaptor
 #endif
     {
-  static Restraint *get(kernel::Model *sf);
+  static Restraint *get(Model *sf);
   static Restraint *get(Restraint *r) { return r; }
 
  public:
@@ -253,10 +244,14 @@ class IMPKERNELEXPORT RestraintsAdaptor :
       : Restraints(sf.begin(), sf.end()) {}
   RestraintsAdaptor(Restraint *sf) : Restraints(1, sf) {}
 #ifndef IMP_DOXYGEN
-  RestraintsAdaptor(kernel::Model *sf);
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.5)
+  RestraintsAdaptor(Model *sf);
+
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.5)
   RestraintsAdaptor(const ModelsTemp &sf);
+
   template <class T>
-  RestraintsAdaptor(base::internal::PointerBase<T> t)
+  RestraintsAdaptor(internal::PointerBase<T> t)
       : Restraints(1, get(t)) {}
 #endif
 };

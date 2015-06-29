@@ -11,13 +11,13 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-ExampleRestraint::ExampleRestraint(kernel::Model *m, kernel::ParticleIndex p,
+ExampleRestraint::ExampleRestraint(Model *m, ParticleIndex p,
                                    double k)
-    : kernel::Restraint(m, "ExampleRestraint%1%"), p_(p), k_(k) {}
+    : Restraint(m, "ExampleRestraint%1%"), p_(p), k_(k) {}
 
 /* Apply the pair score to each particle pair listed in the container.
  */
-void ExampleRestraint::do_add_score_and_derivatives(kernel::ScoreAccumulator sa)
+void ExampleRestraint::do_add_score_and_derivatives(ScoreAccumulator sa)
     const {
   IMP_OBJECT_LOG;
   core::XYZ d(get_model(), p_);
@@ -33,8 +33,8 @@ void ExampleRestraint::do_add_score_and_derivatives(kernel::ScoreAccumulator sa)
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-kernel::ModelObjectsTemp ExampleRestraint::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(1, get_model()->get_particle(p_));
+ModelObjectsTemp ExampleRestraint::do_get_inputs() const {
+  return ModelObjectsTemp(1, get_model()->get_particle(p_));
 }
 
 IMPEXAMPLE_END_NAMESPACE

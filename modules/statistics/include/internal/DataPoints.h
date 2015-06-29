@@ -31,7 +31,7 @@ typedef std::vector<Array1DD> Array1DD_VEC;
 // density grid (to remove once DensityMap is grid3d)
 //! Holds the data points to be used in the clustering procedure
 /** \unstable{DataPoints} */
-class IMPSTATISTICSEXPORT DataPoints : public IMP::base::Object {
+class IMPSTATISTICSEXPORT DataPoints : public IMP::Object {
  public:
   DataPoints() : Object("DataPoints%1%") { data_ = Array1DD_VEC(); }
   // TODO - change to get_random_point
@@ -69,17 +69,17 @@ class IMPSTATISTICSEXPORT ParticlesDataPoints : public XYZDataPoints {
  public:
   ParticlesDataPoints() : XYZDataPoints() {}
 
-  ParticlesDataPoints(kernel::ParticlesTemp ps) : XYZDataPoints() {
+  ParticlesDataPoints(ParticlesTemp ps) : XYZDataPoints() {
     populate_data_points(ps);
   }
-  void populate_data_points(kernel::ParticlesTemp ps);
-  kernel::Particle *get_particle(int i) const { return ps_[i]; }
-  const kernel::Particles &get_particles() const { return ps_; }
+  void populate_data_points(ParticlesTemp ps);
+  Particle *get_particle(int i) const { return ps_[i]; }
+  const Particles &get_particles() const { return ps_; }
 
   IMP_OBJECT_METHODS(ParticlesDataPoints);
 
  protected:
-  kernel::Particles ps_;
+  Particles ps_;
 };
 IMP_OBJECTS(ParticlesDataPoints, ParticlesDataPointsList);
 

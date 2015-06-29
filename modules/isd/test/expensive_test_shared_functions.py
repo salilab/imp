@@ -52,7 +52,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.expectedFailure
     def test_init_model_base(self):
         self.sfo.init_model_base('./')
-        self.assertIsInstance(self._m, IMP.kernel.Model)
+        self.assertIsInstance(self._m, IMP.Model)
 
     @IMP.test.expectedFailure
     def test_init_model_charmm_protein_and_ff(self):
@@ -60,7 +60,7 @@ class Tests(IMP.test.TestCase):
         self.init_protein('1G6J_MODEL1.pdb')
         self.assertIsInstance(ff, IMP.atom.CHARMMParameters)
         self.assertIsInstance(prot, IMP.atom.Hierarchy)
-        self.assertIsInstance(rsb, IMP.kernel.RestraintSet)
+        self.assertIsInstance(rsb, IMP.RestraintSet)
         #self.assertEqual(rsb.get_type_name(), 'phys_bonded')
         self.assertTrue(prot.get_is_valid(False))
 
@@ -79,16 +79,16 @@ class Tests(IMP.test.TestCase):
         self.sfo.init_model_base('./')
         s = self.sfo.init_model_setup_scale(3.0, 1.0, 5.0)
         rs = self.sfo.init_model_jeffreys([s])
-        self.assertIsInstance(rs, IMP.kernel.RestraintSet)
+        self.assertIsInstance(rs, IMP.RestraintSet)
         #self.assertEqual(rs.get_type_name(), 'prior')
         self.assertEqual(rs.get_number_of_restraints(), 1)
         #self.assertIsInstance(rs.get_restraint(0), IMP.isd.JeffreysRestraint)
         self.assertAlmostEqual(rs.get_weight(), 1.0)
         self.assertTrue(rs.get_model())
-        rs = IMP.kernel.RestraintSet('test')
+        rs = IMP.RestraintSet('test')
         rs.add_restraint(IMP.isd.JeffreysRestraint(self.m, s))
         rs = self.sfo.init_model_jeffreys([s], rs)
-        self.assertIsInstance(rs, IMP.kernel.RestraintSet)
+        self.assertIsInstance(rs, IMP.RestraintSet)
         #self.assertEqual(rs.get_type_name(), 'test')
         self.assertEqual(rs.get_number_of_restraints(), 2)
         #self.assertIsInstance(rs.get_restraint(0), IMP.isd.JeffreysRestraint)
@@ -108,9 +108,9 @@ class Tests(IMP.test.TestCase):
     def test_init_model_NOE_restraint(self):
         prot, ff, rsb, rs = self.init_protein('1G6J_MODEL1.pdb')
         sigma = IMP.isd.Scale.setup_particle(
-            IMP.kernel.Particle(self.sfo._m), 1.0)
+            IMP.Particle(self.sfo._m), 1.0)
         gamma = IMP.isd.Scale.setup_particle(
-            IMP.kernel.Particle(self.sfo._m), 1.0)
+            IMP.Particle(self.sfo._m), 1.0)
         ln = self.sfo.init_model_NOE_restraint(prot, ((1, 'HE22'), (2, 'O')),
                                                1.0, sigma, gamma)
         self.assertIsInstance(ln, IMP.isd.NOERestraint)
@@ -137,7 +137,7 @@ class Tests(IMP.test.TestCase):
             self.sfo.init_model_NOEs(prot, seqfile,
                                      tblfile, name='test')
         # check data restraintset
-        self.assertIsInstance(data_rs, IMP.kernel.RestraintSet)
+        self.assertIsInstance(data_rs, IMP.RestraintSet)
         #self.assertEqual(data_rs.get_type_name(), 'test')
         self.assertEqual(data_rs.get_number_of_restraints(), 2)
         # self.assertIsInstance(data_rs.get_restraint(0),
@@ -147,7 +147,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(data_rs.get_weight(), 1.0)
         self.assertTrue(data_rs.get_model())
         # check prior restraintset
-        self.assertIsInstance(prior_rs, IMP.kernel.RestraintSet)
+        self.assertIsInstance(prior_rs, IMP.RestraintSet)
         #self.assertEqual(prior_rs.get_type_name(), 'prior')
         self.assertEqual(prior_rs.get_number_of_restraints(), 2)
         # self.assertIsInstance(prior_rs.get_restraint(0),
@@ -166,7 +166,7 @@ class Tests(IMP.test.TestCase):
         profile = self.get_input_file_name('lyzexp.dat')
         rs = self.init_model_standard_SAXS_restraint(
             prot, profile, name='test')
-        self.assertIsInstance(rs, IMP.kernel.RestraintSet)
+        self.assertIsInstance(rs, IMP.RestraintSet)
         #self.assertEqual(rs.get_type_name(), 'test')
         self.assertEqual(rs.get_number_of_restraints(), 1)
         self.assertIsInstance(prior_rs.get_restraint(0),
@@ -252,7 +252,7 @@ class Tests(IMP.test.TestCase):
     def test__setup_normal_mover(self):
         self.sfo.init_model_base('./')
         p0 = IMP.isd.Scale.setup_particle(
-            IMP.kernel.Particle(self.sfo._m),
+            IMP.Particle(self.sfo._m),
             1.0)
         nm = self.sfo._setup_normal_mover(p0, IMP.FloatKey("scale"), 0.1)
         self.assertIsInstance(nm, IMP.core.NormalMover)
@@ -265,7 +265,7 @@ class Tests(IMP.test.TestCase):
     def test__setup_md_mover(self):
         prot, ff, rsb, rs = self.init_protein('1G6J_MODEL1.pdb')
         p0 = IMP.isd.Scale.setup_particle(
-            IMP.kernel.Particle(self.sfo._m),
+            IMP.Particle(self.sfo._m),
             1.0)
         md, os = self.sfo._setup_md(prot)
         mdmv = self.sfo._setup_md_mover(md, IMP.atom.get_leaves(prot),
@@ -278,7 +278,7 @@ class Tests(IMP.test.TestCase):
     def test__setup_mc(self):
         self.sfo.init_model_base('./')
         p0 = IMP.isd.Scale.setup_particle(
-            IMP.kernel.Particle(self.sfo._m),
+            IMP.Particle(self.sfo._m),
             1.0)
         nm = self.sfo._setup_normal_mover(p0, IMP.FloatKey("scale"), 0.1)
         mc = self.sfo._setup_mc(nm, temperature=200.0)
@@ -293,7 +293,7 @@ class Tests(IMP.test.TestCase):
     def test__setup_mc_restraints(self):
         self.sfo.init_model_base('./')
         p0 = IMP.isd.Scale.setup_particle(
-            IMP.kernel.Particle(self.sfo._m),
+            IMP.Particle(self.sfo._m),
             1.0)
         prior_rs = self.sfo.init_model_jeffreys([p0])
         nm = self.sfo._setup_normal_mover(p0, IMP.FloatKey("scale"), 0.1)

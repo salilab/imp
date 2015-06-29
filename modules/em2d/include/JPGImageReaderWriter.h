@@ -68,7 +68,7 @@ class JPGImageReaderWriter : public ImageReaderWriter {
                      const cv::Mat &data) const {
     IMP_UNUSED(header);
     // discard header
-    IMP_LOG(IMP::base::WARNING,
+    IMP_LOG(IMP::WARNING,
             "Writing with JPGImageReaderWriter "
             "discards image header "
                 << std::endl);

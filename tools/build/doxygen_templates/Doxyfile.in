@@ -47,7 +47,7 @@ PROJECT_BRIEF          = @PROJECT_BRIEF@
 # exceed 55 pixels and the maximum width should not exceed 200 pixels.
 # Doxygen will copy the logo to the output directory.
 
-PROJECT_LOGO           = @IMP_SOURCE_PATH@/doc/doxygen/the_imp_small.png
+PROJECT_LOGO           =
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute)
 # base path where the generated documentation will be put.
@@ -217,9 +217,10 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "untested{1}=\warning \1 has not been well tested yet\n  Use with caution and please report any bugs found." \
                          "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself." \
                          "dotgraph{1}=\1" \
-                         "deprecated_at{1}=\deprecated As of IMP release \1. See the [IMP Deprecation Policy](https://github.com/salilab/imp/wiki/Deprecation) for more information about deprecation in IMP."\
+                         "deprecated_at{1}=\deprecated As of IMP release \1. See the [IMP Deprecation Policy](@ref deprecation) for more information about deprecation in %IMP."\
                          "geometry=See \ref geometricprimitives \"geometric primitives\" for more information." \
                          "pythononlyclass=\note This class is only available in Python." \
+                         "pythononlyfunction=\note This function is only available in Python." \
                          "quote{1}=&ldquo;\1&rdquo;" \
                          "uses{2}=The \1 uses \ref \2 \"\2\" in order to improve its functionality. It will fall back on less good code without it." \
                          "requires{2}=The \1 requires \ref \2 \"\2\" in order to function."
@@ -938,13 +939,13 @@ HTML_FILE_EXTENSION    = .html
 # have to redo this when upgrading to a newer version of doxygen or when
 # changing the value of configuration settings such as GENERATE_TREEVIEW!
 
-HTML_HEADER            =
+HTML_HEADER            = @IMP_SOURCE_PATH@/doc/doxygen/header.html
 
 # The HTML_FOOTER tag can be used to specify a personal HTML footer for
 # each generated HTML page. If it is left blank doxygen will generate a
 # standard footer.
 
-HTML_FOOTER            = @IMP_SOURCE_PATH@/doc/footer.html
+HTML_FOOTER            = @IMP_SOURCE_PATH@/doc/doxygen/footer.html
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading
 # style sheet that is used by each HTML page. It can be used to
@@ -1253,7 +1254,7 @@ MATHJAX_FORMAT         = HTML-CSS
 # However, it is strongly recommended to install a local
 # copy of MathJax from http://www.mathjax.org before deployment.
 
-MATHJAX_RELPATH        = http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+MATHJAX_RELPATH        = http://integrativemodeling.org/mathjax
 
 # The MATHJAX_EXTENSIONS tag can be used to specify one or MathJax extension
 # names that should be enabled during MathJax rendering.
@@ -1516,18 +1517,6 @@ GENERATE_XML           = @IS_XML@
 # put in front of it. If left blank `xml' will be used as the default path.
 
 XML_OUTPUT             = @XML_OUTPUT@
-
-# The XML_SCHEMA tag can be used to specify an XML schema,
-# which can be used by a validating XML parser to check the
-# syntax of the XML files.
-
-XML_SCHEMA             =
-
-# The XML_DTD tag can be used to specify an XML DTD,
-# which can be used by a validating XML parser to check the
-# syntax of the XML files.
-
-XML_DTD                =
 
 # If the XML_PROGRAMLISTING tag is set to YES Doxygen will
 # dump the program listings (including syntax highlighting

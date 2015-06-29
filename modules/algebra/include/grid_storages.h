@@ -10,8 +10,8 @@
 #define IMPALGEBRA_GRID_STORAGES_H
 
 #include <IMP/algebra/algebra_config.h>
-#include <IMP/base/bracket_macros.h>
-#include <IMP/base/types.h>
+#include <IMP/bracket_macros.h>
+#include <IMP/types.h>
 #include "internal/grid_apply.h"
 #include "grid_indexes.h"
 #include "grid_ranges.h"
@@ -19,7 +19,7 @@
 #include "BoundingBoxD.h"
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/unordered_map.hpp>
-#include <IMP/base/Vector.h>
+#include <IMP/Vector.h>
 
 #include <limits>
 
@@ -51,7 +51,7 @@ class DenseGridStorageD : public BoundedGridRangeD<D> {
       }
       ii += cur;
     }
-    IMP_IF_CHECK(base::USAGE) {
+    IMP_IF_CHECK(USAGE) {
       if (D == 3) {
         unsigned int check =
             i[2] * BoundedGridRangeD<D>::get_number_of_voxels(0) *
@@ -150,8 +150,8 @@ class DenseGridStorageD : public BoundedGridRangeD<D> {
     return data_.get() + get_extent();
   }
 #endif
-  base::Vector<VT> get_all_voxels() const {
-    return base::Vector<VT>(all_voxels_begin(), all_voxels_end());
+  Vector<VT> get_all_voxels() const {
+    return Vector<VT>(all_voxels_begin(), all_voxels_end());
   }
   /** @} */
   template <class Functor, class Grid>
@@ -332,9 +332,9 @@ class SparseGridStorageD : public Base {
   }
 #endif
 
-  base::Vector<GridIndexD<D> > get_indexes(
+  Vector<GridIndexD<D> > get_indexes(
       const ExtendedGridIndexD<D> &lb, const ExtendedGridIndexD<D> &ub) const {
-    return base::Vector<GridIndexD<D> >(indexes_begin(lb, ub),
+    return Vector<GridIndexD<D> >(indexes_begin(lb, ub),
                                         indexes_end(lb, ub));
   }
   /** @} */

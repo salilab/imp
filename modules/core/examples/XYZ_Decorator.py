@@ -5,8 +5,11 @@
 import IMP
 import IMP.core
 import IMP.algebra
+import sys
 
-m = IMP.kernel.Model()
+IMP.setup_from_argv(sys.argv, "XYZ decorator example")
+
+m = IMP.Model()
 p0 = m.add_particle("xyz0")
 # add x,y,z coordinates to the particle
 d0 = IMP.core.XYZ.setup_particle(m, p0, IMP.algebra.Vector3D(0, 1, 2))

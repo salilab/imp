@@ -12,7 +12,7 @@
 #include <IMP/statistics/statistics_config.h>
 #include <IMP/macros.h>
 #include <IMP/base_types.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
@@ -22,7 +22,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     to the index used in the Metric or Embedding used to generate the
     clustering.
 */
-class IMPSTATISTICSEXPORT PartitionalClustering : public IMP::base::Object {
+class IMPSTATISTICSEXPORT PartitionalClustering : public IMP::Object {
  public:
   PartitionalClustering(std::string name) : Object(name) {}
   virtual unsigned int get_number_of_clusters() const = 0;

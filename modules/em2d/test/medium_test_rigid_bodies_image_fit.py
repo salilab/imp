@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
 
     def test_rigid_body_image_fit_restraint(self):
         """Test scoring with RigidBodiesImageFitRestraint"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         # read full complex
         fn = self.get_input_file_name("1z5s.pdb")
@@ -64,7 +64,6 @@ class Tests(IMP.test.TestCase):
             rb.set_coordinates(coord)
 
         # Check that the value is a perfect registration
-        m.add_restraint(rb_fit)
         score = rb_fit.evaluate(False)
         # print "score ...", score
         # It seems that projecting with the masks is slightly less accurate

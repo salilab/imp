@@ -11,9 +11,9 @@
 #include <IMP/core/core_config.h>
 #include <IMP/PairPredicate.h>
 
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/kernel/internal/container_helpers.h>
+#include <IMP/internal/container_helpers.h>
 #include <IMP/model_object_helpers.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -32,27 +32,19 @@ class MovedSingletonContainer;
     \see ClosePairContainer
     \see CloseBipartitePairContainer
  */
-class IMPCOREEXPORT ClosePairsFinder : public kernel::ParticleInputs,
-                                       public IMP::base::Object {
+class IMPCOREEXPORT ClosePairsFinder : public ParticleInputs,
+                                       public IMP::Object {
   double distance_;
 
  public:
   ClosePairsFinder(std::string name);
   ~ClosePairsFinder();
 
-  /** \deprecated_at{2.1} use the index-based one instead. */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  kernel::ParticlePairsTemp get_close_pairs(const kernel::ParticlesTemp &pc)
-      const;
-  /** \deprecated_at{2.1} use the index-based one instead. */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.1)
-  kernel::ParticlePairsTemp get_close_pairs(
-      const kernel::ParticlesTemp &pca, const kernel::ParticlesTemp &pcb) const;
-  virtual kernel::ParticleIndexPairs get_close_pairs(
-      kernel::Model *m, const kernel::ParticleIndexes &pc) const = 0;
-  virtual kernel::ParticleIndexPairs get_close_pairs(
-      kernel::Model *m, const kernel::ParticleIndexes &pca,
-      const kernel::ParticleIndexes &pcb) const = 0;
+  virtual ParticleIndexPairs get_close_pairs(
+      Model *m, const ParticleIndexes &pc) const = 0;
+  virtual ParticleIndexPairs get_close_pairs(
+      Model *m, const ParticleIndexes &pca,
+      const ParticleIndexes &pcb) const = 0;
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs)
       const = 0;
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,

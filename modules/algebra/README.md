@@ -25,7 +25,7 @@ In the python side, the different dimensions are named explicitly instead. That
 means, a 2-D point is IMP::algebra::VectorD<2> in C++, and IMP::algbra::Vector2D in python
 and the function IMP::algebra::get_basis_vector_d<3>() in C++ becomes `IMP.algebra.get_basis_vector_3d()` in Python.
 Similarly, a collection of 2D points is
-IMP::base::Vector<IMP::algebra::VectorD<2> > in C++ and IMP.algebra.Vector2Ds in python, which
+IMP::Vector<IMP::algebra::VectorD<2> > in C++ and IMP.algebra.Vector2Ds in python, which
 as with all collections, look like python lists.
 For convenience, we provide typedefs in C++ to the IMP::algbra::Vector2D and
 IMP::algebra::Vector2Ds style names.
@@ -63,7 +63,7 @@ We ship a copy of Eigen as part of IMP as Eigen support varies quite considerabl
 
 # Info
 
-_Author(s)_: Daniel Russel, Keren Lasker, Ben Webb, Javier Angel Velazquez-Muriel
+_Author(s)_: Daniel Russel, Keren Lasker, Ben Webb, Javier Angel Velázquez-Muriel
 
 _Maintainer_: `benmwebb`
 

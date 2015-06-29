@@ -10,11 +10,11 @@
 #ifndef IMPKERNEL_INTERNAL_DYNAMIC_LIST_CONTAINER_H
 #define IMPKERNEL_INTERNAL_DYNAMIC_LIST_CONTAINER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "container_helpers.h"
 #include "ListLikeContainer.h"
-#include <IMP/kernel/container_base.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/container_base.h>
+#include <IMP/Pointer.h>
 #include <boost/unordered_set.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
@@ -23,7 +23,7 @@ template <class Base>
 class DynamicListContainer : public ListLikeContainer<Base> {
   typedef ListLikeContainer<Base> P;
   // use this to define the set of all possible particles when it is dynamic
-  base::Pointer<Container> scope_;
+  Pointer<Container> scope_;
   bool check_list(const ParticleIndexes &cp) const {
     ParticleIndexes app = scope_->get_all_possible_indexes();
 
@@ -61,8 +61,8 @@ class DynamicListContainer : public ListLikeContainer<Base> {
   virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE {
     return scope_->get_all_possible_indexes();
   }
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
-    return kernel::ModelObjectsTemp(1, scope_);
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp(1, scope_);
   }
   virtual typename Base::ContainedIndexTypes get_range_indexes() const
       IMP_OVERRIDE {

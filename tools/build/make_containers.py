@@ -25,9 +25,6 @@ def filter(xxx_todo_changeme,
     header_guard_class_name = class_name.upper()
     helpername = class_name.lower()
     return infile\
-        .replace("BLURB", """WARNING This file was generated from %s
- *  in %s
- *  by tools/build/make_containers.py.""" % (os.path.split(file_name)[1], os.path.split(file_name)[0]))\
         .replace("HELPERNAME", helpername)\
         .replace("CLASSFUNCTIONNAME", helpername)\
         .replace("FUNCTIONNAME", function_name)\
@@ -46,6 +43,16 @@ def filter(xxx_todo_changeme,
         .replace("ARGUMENTTYPE", argument_type)\
         .replace("STORAGETYPE", storage_type)\
         .replace("FILESOURCE", file_name)
+
+class ContainerFileGenerator(tools.FileGenerator):
+    def __init__(self, template_file):
+        if template_file.endswith('.py'):
+            tools.FileGenerator.__init__(self, template_file, '#')
+        else:
+            tools.FileGenerator.__init__(self, template_file, '//')
+
+    def get_output_file_contents(self, output):
+        return filter(output, self.template, self.template_file)
 
 
 def make_one(path, params, test=True):
@@ -71,7 +78,8 @@ def make_one(path, params, test=True):
             rest = os.path.join("internal", rest)
         name = filter(params, rest, rest)
         if p.endswith(".h"):
-            out_path = os.path.join("include", "IMP", module, name)
+            out_path = os.path.join("include", "IMP",
+                                    '' if module == 'kernel' else module, name)
         else:
             out_path = os.path.join("src", module, name)
         files.append((out_path, ip))
@@ -82,8 +90,8 @@ def make_one(path, params, test=True):
         files.append(("test/container/test_" + cname + "_state.py",
                       path + "/test_state.py"))
     for p in files:
-        contents = filter(params, open(p[1], 'r').read(), p[1])
-        tools.rewrite(p[0], contents)
+        g = ContainerFileGenerator(p[1])
+        g.write(p[0], params)
         all_outputs.append(p[0])
         all_inputs.append(p[1])
 
@@ -98,28 +106,28 @@ def main():
     tools.mkdir(os.path.join("src", "kernel"), clean=False)
     make_one(
         source, (
-            "particle", "Particle", "Singleton", "kernel::Particle*", "kernel::Particle*",
-            "kernel::Particle*", "base::Pointer<kernel::Particle>",
-            "kernel::ParticlesTemp", "kernel::ParticlesTemp", "kernel::Particles",
-            "kernel::ParticleIndex", "kernel::ParticleIndexes", "kernel::ParticleIndex"))
+            "particle", "Particle", "Singleton", "Particle*", "Particle*",
+            "Particle*", "Pointer<Particle>",
+            "ParticlesTemp", "ParticlesTemp", "Particles",
+            "ParticleIndex", "ParticleIndexes", "ParticleIndex"))
     make_one(
         source, (
-            "particle_pair", "ParticlePair", "Pair", "kernel::ParticlePair", "const kernel::ParticlePair&",
-            "const kernel::ParticlePair", "kernel::ParticlePair",
-            "kernel::ParticlePairsTemp", "kernel::ParticlePairsTemp", "kernel::ParticlePairs",
-            "kernel::ParticleIndexPair", "kernel::ParticleIndexPairs", "const kernel::ParticleIndexPair&"))
+            "particle_pair", "ParticlePair", "Pair", "ParticlePair", "const ParticlePair&",
+            "const ParticlePair", "ParticlePair",
+            "ParticlePairsTemp", "ParticlePairsTemp", "ParticlePairs",
+            "ParticleIndexPair", "ParticleIndexPairs", "const ParticleIndexPair&"))
     make_one(
         source, (
-            "particle_triplet", "ParticleTriplet", "Triplet", "kernel::ParticleTriplet", "const kernel::ParticleTriplet&",
-            "const kernel::ParticleTriplet", "kernel::ParticleTriplet",
-            "kernel::ParticleTripletsTemp", "kernel::ParticleTripletsTemp", "kernel::ParticleTriplets",
-            "kernel::ParticleIndexTriplet", "kernel::ParticleIndexTriplets", "const kernel::ParticleIndexTriplet&"), test=False)
+            "particle_triplet", "ParticleTriplet", "Triplet", "ParticleTriplet", "const ParticleTriplet&",
+            "const ParticleTriplet", "ParticleTriplet",
+            "ParticleTripletsTemp", "ParticleTripletsTemp", "ParticleTriplets",
+            "ParticleIndexTriplet", "ParticleIndexTriplets", "const ParticleIndexTriplet&"), test=False)
     make_one(
         source, (
-            "particle_quad", "ParticleQuad", "Quad", "kernel::ParticleQuad", "const kernel::ParticleQuad&",
-            "const kernel::ParticleQuad", "kernel::ParticleQuad",
-            "kernel::ParticleQuadsTemp", "kernel::ParticleQuadsTemp", "kernel::ParticleQuads",
-            "kernel::ParticleIndexQuad", "kernel::ParticleIndexQuads", "const kernel::ParticleIndexQuad&"), test=False)
+            "particle_quad", "ParticleQuad", "Quad", "ParticleQuad", "const ParticleQuad&",
+            "const ParticleQuad", "ParticleQuad",
+            "ParticleQuadsTemp", "ParticleQuadsTemp", "ParticleQuads",
+            "ParticleIndexQuad", "ParticleIndexQuads", "const ParticleIndexQuad&"), test=False)
     if True:
         deps = ["${PROJECT_SOURCE_DIR}/tools/build/%s" %
                 x[x.find("container_templates"):] for x in all_inputs]
@@ -174,14 +182,13 @@ set( IMP_container_EXTRA_HEADERS ${IMP_container_EXTRA_HEADERS} %s)
                           ".cpp",
                           "${CMAKE_BINARY_DIR}/src/container/",
                           targets)),
-            "\n   ".join(get_files("kernel", ".h", "", targets)),
+            "\n   ".join(get_files("IMP", ".h", "", targets)),
             "\n   ".join(get_files("core", ".h", "", targets)),
             "\n   ".join(get_files("container", ".h", "", targets)))
 
-        tools.rewrite(
-            os.path.join(os.path.split(sys.argv[0])[0],
-                         "cmake_files",
-                         "MakeContainers.cmake"), out)
+        g = tools.CMakeFileGenerator()
+        g.write(os.path.join(os.path.split(sys.argv[0])[0],
+                             "cmake_files", "MakeContainers.cmake"), out)
     # make_one("particle tuple", "ParticlesTemp", "const ParticlesTemp&", "Particles",
     #         "Tuple", "particle tuples", "ParticlesList", "Tuples", test=False)
 

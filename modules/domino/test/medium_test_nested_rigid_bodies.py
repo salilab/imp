@@ -10,22 +10,22 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)  # TERSE)#VERBOSE)
+        IMP.set_log_level(IMP.SILENT)  # TERSE)#VERBOSE)
 
     def test_docking_solutions(self):
         """Test nested rigid bodies"""
         # load components
-        mdl = IMP.kernel.Model()
+        mdl = IMP.Model()
         mhs = []
         rbs = []
         aps = []
         for i in range(3):
             fn = "small_protein.pdb"
-            ps = IMP.kernel._create_particles_from_pdb(
+            ps = IMP._create_particles_from_pdb(
                 self.get_input_file_name(fn),
                 mdl)
             aps.extend(ps)
-            p = IMP.kernel.Particle(mdl)
+            p = IMP.Particle(mdl)
             rb = IMP.core.RigidBody.setup_particle(p, ps)
             mhs.append(rb)
             mhs[-1].set_name("molecule" + str(i))
@@ -42,11 +42,10 @@ class Tests(IMP.test.TestCase):
         for i in range(len(rbs) - 1):
             rbs[0].add_member(rbs[i + 1])
         # set ev
-        IMP.base.set_log_level(IMP.base.SILENT)
-        ls = IMP.container.ListSingletonContainer(aps)
+        IMP.set_log_level(IMP.SILENT)
+        ls = IMP.container.ListSingletonContainer(mdl, aps)
         sev = IMP.core.ExcludedVolumeRestraint(ls)
-        mdl.add_restraint(sev)
-        mdl.evaluate(False)
+        sev.evaluate(False)
         # set states
         pst = IMP.domino.ParticleStatesTable()
         for i in range(1):
@@ -56,6 +55,7 @@ class Tests(IMP.test.TestCase):
         id_trans.append(rbs[0].get_reference_frame())
         pst.set_particle_states(rbs[0], IMP.domino.RigidBodyStates(id_trans))
         ds = IMP.domino.DominoSampler(mdl, pst)
+        ds.set_restraints([sev])
         cg = ds.create_sample()
         print(cg.get_number_of_configurations())
 

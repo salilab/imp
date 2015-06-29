@@ -19,7 +19,7 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! An ensemble of fitting solutions
-class IMPMULTIFITEXPORT Ensemble : public base::Object {
+class IMPMULTIFITEXPORT Ensemble : public Object {
  public:
   void load_combination(Ints fit_comb);
   void unload_combination(Ints fit_comb);
@@ -32,7 +32,7 @@ class IMPMULTIFITEXPORT Ensemble : public base::Object {
   }
   Ensemble(multifit::SettingsData *sd,
            const ProteinsAnchorsSamplingSpace &mapping_data);
-  std::vector<Floats> score_by_restraints(kernel::Restraints rs,
+  std::vector<Floats> score_by_restraints(Restraints rs,
                                           const IntsList &combinations);
 
   IMP_OBJECT_METHODS(Ensemble);

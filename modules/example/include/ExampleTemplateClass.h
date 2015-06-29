@@ -52,7 +52,7 @@ class ExampleTemplateClassD {
 };
 
 typedef ExampleTemplateClassD<3> ExampleTemplateClass3D;
-typedef base::Vector<ExampleTemplateClassD<3> > ExampleTemplateClass3Ds;
+typedef Vector<ExampleTemplateClassD<3> > ExampleTemplateClass3Ds;
 
 IMPEXAMPLE_END_NAMESPACE
 

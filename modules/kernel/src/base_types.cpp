@@ -5,7 +5,7 @@
  *
  */
 
-#include "IMP/kernel/base_types.h"
+#include "IMP/base_types.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 

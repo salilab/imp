@@ -4,7 +4,7 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/kernel/UnaryFunction.h>
+#include <IMP/UnaryFunction.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 

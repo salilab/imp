@@ -59,7 +59,7 @@ class Tests(IMP.test.TestCase):
         fn_selection = self.get_input_file_name(
             "clustering/all-models-1z5s.sel")
         # Load models
-        model = IMP.kernel.Model()
+        model = IMP.Model()
         ssel = IMP.atom.ATOMPDBSelector()
         coords = []
         fn_models = IMP.em2d.read_selection_file(fn_selection)

@@ -5,24 +5,24 @@
  *
  */
 
-#include <IMP/base/log.h>
-#include "IMP/kernel/Optimizer.h"
-#include "IMP/kernel/OptimizerState.h"
-#include "IMP/kernel/RestraintSet.h"
-#include "IMP/kernel/generic.h"
-#include "IMP/kernel/dependency_graph.h"
-#include "IMP/kernel/internal/graph_utility.h"
-#include "IMP/kernel/internal/RestraintsScoringFunction.h"
-#include "IMP/kernel/internal/container_helpers.h"
-#include <IMP/base/thread_macros.h>
-#include "IMP/kernel/internal/utility.h"
+#include <IMP/log.h>
+#include "IMP/Optimizer.h"
+#include "IMP/OptimizerState.h"
+#include "IMP/RestraintSet.h"
+#include "IMP/generic.h"
+#include "IMP/dependency_graph.h"
+#include "IMP/internal/graph_utility.h"
+#include "IMP/internal/RestraintsScoringFunction.h"
+#include "IMP/internal/container_helpers.h"
+#include <IMP/thread_macros.h>
+#include "IMP/internal/utility.h"
 #include <boost/tuple/tuple.hpp>
 #include <limits>
 #include <algorithm>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-Optimizer::Optimizer(kernel::Model *m, std::string name)
+Optimizer::Optimizer(Model *m, std::string name)
     : ModelObject(m, name) {
   set_was_used(true);
   stop_on_good_score_ = false;
@@ -57,11 +57,19 @@ void Optimizer::set_is_optimizing_states(bool tf) const {
 
 double Optimizer::optimize(unsigned int max_steps) {
   IMP_OBJECT_LOG;
+  if (!scoring_function_) {
+    IMP_WARN("No scoring function provided - using Model's implicit "
+             "scoring function (deprecated). Recommend you use a "
+             "ScoringFunction object instead." << std::endl);
+  }
+
   set_has_required_score_states(true);
   set_was_used(true);
   set_is_optimizing_states(true);
   double ret;
-  IMP_THREADS((ret, max_steps), ret = do_optimize(max_steps););
+  IMP_THREADS((ret, max_steps), {
+    ret = do_optimize(max_steps);
+  });
   set_is_optimizing_states(false);
   return ret;
 }

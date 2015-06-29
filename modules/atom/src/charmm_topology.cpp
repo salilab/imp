@@ -4,7 +4,7 @@
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include <IMP/constants.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/vector_generators.h>
@@ -14,8 +14,8 @@
 #include <IMP/atom/CHARMMAtom.h>
 #include <IMP/atom/Charged.h>
 #include <IMP/atom/angle_decorators.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/log_macros.h>
 
 #include <boost/algorithm/string.hpp>
 #include <set>
@@ -61,7 +61,7 @@ void add_residue_bonds(
     const CHARMMResidueTopology *previous_residue,
     const CHARMMResidueTopology *next_residue,
     const std::map<const CHARMMResidueTopology *, Hierarchy> &resmap,
-    const CHARMMParameters *ff, kernel::Particles &ps) {
+    const CHARMMParameters *ff, Particles &ps) {
   for (unsigned int nbond = 0; nbond < current_residue->get_number_of_bonds();
        ++nbond) {
     Atoms as = current_residue->get_bond(nbond).get_atoms(
@@ -87,7 +87,7 @@ void add_residue_bonds(
         // incorporated into x, so is the sqrt of the force constant
         bd.set_stiffness(std::sqrt(p.force_constant * 2.0));
       }
-      catch (const base::IndexException &e) {
+      catch (const IndexException &e) {
         // If no parameters, warn only
         IMP_WARN(e.what());
       }
@@ -101,7 +101,7 @@ void add_residue_dihedrals(
     const CHARMMResidueTopology *previous_residue,
     const CHARMMResidueTopology *next_residue,
     const std::map<const CHARMMResidueTopology *, Hierarchy> &resmap,
-    const CHARMMParameters *ff, kernel::Particles &ps) {
+    const CHARMMParameters *ff, Particles &ps) {
   for (unsigned int ndih = 0; ndih < current_residue->get_number_of_dihedrals();
        ++ndih) {
     Atoms as = current_residue->get_dihedral(ndih).get_atoms(
@@ -117,7 +117,7 @@ void add_residue_impropers(
     const CHARMMResidueTopology *previous_residue,
     const CHARMMResidueTopology *next_residue,
     const std::map<const CHARMMResidueTopology *, Hierarchy> &resmap,
-    const CHARMMParameters *ff, kernel::Particles &ps) {
+    const CHARMMParameters *ff, Particles &ps) {
   for (unsigned int nimpr = 0;
        nimpr < current_residue->get_number_of_impropers(); ++nimpr) {
     Atoms as = current_residue->get_improper(nimpr).get_atoms(
@@ -130,7 +130,7 @@ void add_residue_impropers(
                                         CHARMMAtom(as[2]).get_charmm_type(),
                                         CHARMMAtom(as[3]).get_charmm_type());
         Dihedral id = Dihedral::setup_particle(
-            new kernel::Particle(as[0]->get_model()), core::XYZ(as[0]),
+            new Particle(as[0]->get_model()), core::XYZ(as[0]),
             core::XYZ(as[1]), core::XYZ(as[2]), core::XYZ(as[3]));
         // CHARMM ideal value is in angles; convert to radians
         id.set_ideal(p.ideal / 180.0 * PI);
@@ -138,7 +138,7 @@ void add_residue_impropers(
         id.set_stiffness(std::sqrt(p.force_constant * 2.0));
         ps.push_back(id);
       }
-      catch (const base::IndexException &) {
+      catch (const IndexException &) {
         // if no parameters, simply swallow the exception; do not
         // create an improper
       }
@@ -193,10 +193,10 @@ CHARMMResidueTopology *get_two_patch_residue_for_bond(
 }
 
 template <unsigned int D>
-base::Vector<CHARMMBondEndpoint> handle_two_patch_bond(
+Vector<CHARMMBondEndpoint> handle_two_patch_bond(
     const CHARMMConnection<D> &bond, CHARMMResidueTopology *res1,
     CHARMMResidueTopology *res2, CHARMMResidueTopology *first_res) {
-  base::Vector<CHARMMBondEndpoint> endpoints;
+  Vector<CHARMMBondEndpoint> endpoints;
   for (unsigned int i = 0; i < D; ++i) {
     std::string name = bond.get_endpoint(i).get_atom_name();
     CHARMMResidueTopology *res = get_two_patch_residue(name, res1, res2);
@@ -266,7 +266,7 @@ void CHARMMResidueTopologyBase::add_atom(const CHARMMAtomTopology &atom) {
 CHARMMAtomTopology &CHARMMResidueTopologyBase::get_atom(std::string name) {
   // A map would be more elegant here (avoid linear lookup time) but
   // a) atoms need to be ordered and b) residues rarely have more than ~30 atoms
-  base::Vector<CHARMMAtomTopology>::iterator it =
+  Vector<CHARMMAtomTopology>::iterator it =
       std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
   if (it != atoms_.end()) {
     return *it;
@@ -278,7 +278,7 @@ CHARMMAtomTopology &CHARMMResidueTopologyBase::get_atom(std::string name) {
 
 const CHARMMAtomTopology &CHARMMResidueTopologyBase::get_atom(std::string name)
     const {
-  base::Vector<CHARMMAtomTopology>::const_iterator it =
+  Vector<CHARMMAtomTopology>::const_iterator it =
       std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
   if (it != atoms_.end()) {
     return *it;
@@ -289,7 +289,7 @@ const CHARMMAtomTopology &CHARMMResidueTopologyBase::get_atom(std::string name)
 }
 
 void CHARMMIdealResidueTopology::remove_atom(std::string name) {
-  base::Vector<CHARMMAtomTopology>::iterator it =
+  Vector<CHARMMAtomTopology>::iterator it =
       std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
   if (it != atoms_.end()) {
     atoms_.erase(it);
@@ -333,23 +333,23 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res) const {
   check_empty_patch(this);
 
   // Copy or update atoms
-  for (base::Vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
+  for (Vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
        it != atoms_.end(); ++it) {
     try {
       res->get_atom(it->get_name()) = *it;
     }
-    catch (base::ValueException &) {
+    catch (ValueException &) {
       res->add_atom(*it);
     }
   }
 
   // Delete atoms
-  for (base::Vector<std::string>::const_iterator it = deleted_atoms_.begin();
+  for (Vector<std::string>::const_iterator it = deleted_atoms_.begin();
        it != deleted_atoms_.end(); ++it) {
     try {
       res->remove_atom(*it);
     }
-    catch (base::ValueException &) {
+    catch (ValueException &) {
       // ignore atoms that don't exist to start with
     }
   }
@@ -397,27 +397,27 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
   }
 
   // Copy or update atoms
-  for (base::Vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
+  for (Vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
        it != atoms_.end(); ++it) {
     std::pair<CHARMMResidueTopology *, CHARMMAtomTopology> resatom =
         handle_two_patch_atom(*it, res1, res2);
     try {
       resatom.first->get_atom(resatom.second.get_name()) = resatom.second;
     }
-    catch (base::ValueException &) {
+    catch (ValueException &) {
       resatom.first->add_atom(resatom.second);
     }
   }
 
   // Delete atoms
-  for (base::Vector<std::string>::const_iterator it = deleted_atoms_.begin();
+  for (Vector<std::string>::const_iterator it = deleted_atoms_.begin();
        it != deleted_atoms_.end(); ++it) {
     std::pair<CHARMMResidueTopology *, CHARMMAtomTopology> resatom =
         handle_two_patch_atom(*it, res1, res2);
     try {
       resatom.first->remove_atom(resatom.second.get_name());
     }
-    catch (base::ValueException &) {
+    catch (ValueException &) {
       // ignore atoms that don't exist to start with
     }
   }
@@ -549,7 +549,7 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const {
           CHARMMAtom::setup_particle(
               *atit, it->first->get_atom(typ).get_charmm_type());
         }
-        catch (base::ValueException &) {
+        catch (ValueException &) {
           IMP_WARN_ONCE(typ.get_string() +
                             Residue(it->second).get_residue_type().get_string(),
                         "Could not determine CHARMM atom type for atom "
@@ -574,7 +574,7 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const {
 }
 
 void CHARMMTopology::add_missing_atoms(Hierarchy hierarchy) const {
-  kernel::Model *model = hierarchy.get_particle()->get_model();
+  Model *model = hierarchy.get_particle()->get_model();
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
 
@@ -600,7 +600,7 @@ void CHARMMTopology::add_missing_atoms(Hierarchy hierarchy) const {
           name = "HET:" + name;
         }
         AtomType typ = AtomType(name);
-        Atom atm = Atom::setup_particle(new kernel::Particle(model), typ);
+        Atom atm = Atom::setup_particle(new Particle(model), typ);
         CHARMMAtom::setup_particle(atm, atomtop.get_charmm_type());
         it->second.add_child(atm);
       }
@@ -660,7 +660,7 @@ struct ModelInternalCoordinate {
 void build_internal_coordinates(
     const CHARMMSegmentTopology *seg,
     const std::map<const CHARMMResidueTopology *, Hierarchy> &resmap,
-    base::Vector<ModelInternalCoordinate> &ics) {
+    Vector<ModelInternalCoordinate> &ics) {
   const CHARMMResidueTopology *prev = nullptr;
   for (unsigned int nres = 0; nres < seg->get_number_of_residues(); ++nres) {
     const CHARMMResidueTopology *cur = seg->get_residue(nres);
@@ -685,7 +685,7 @@ float fill_distance(Atom i, Atom j, const CHARMMParameters *ff) {
       return ff->get_bond_parameters(CHARMMAtom(i).get_charmm_type(),
                                      CHARMMAtom(j).get_charmm_type()).ideal;
     }
-    catch (base::IndexException &) {
+    catch (IndexException &) {
     }
   }
   return 0.;
@@ -699,7 +699,7 @@ float fill_angle(Atom i, Atom j, Atom k, const CHARMMParameters *ff) {
                                       CHARMMAtom(j).get_charmm_type(),
                                       CHARMMAtom(k).get_charmm_type()).ideal;
     }
-    catch (base::IndexException &) {
+    catch (IndexException &) {
     }
   }
   return 0.;
@@ -708,9 +708,9 @@ float fill_angle(Atom i, Atom j, Atom k, const CHARMMParameters *ff) {
 // CHARMM format allows for distances or angles (but not dihedrals) to
 // be zero; fill in these missing values using atom types and
 // parameter file information if available.
-void fill_internal_coordinates(base::Vector<ModelInternalCoordinate> &ics,
+void fill_internal_coordinates(Vector<ModelInternalCoordinate> &ics,
                                const CHARMMParameters *ff) {
-  for (base::Vector<ModelInternalCoordinate>::iterator it = ics.begin();
+  for (Vector<ModelInternalCoordinate>::iterator it = ics.begin();
        it != ics.end(); ++it) {
     if (it->first_distance == 0.) {
       if (it->improper) {
@@ -768,7 +768,8 @@ void build_cartesian(Atom known1, Atom known2, Atom known3, Atom unknown,
       wt[0] * rjk_unit[0] + wt[1] * cross2[0] + wt[2] * cross[0],
       wt[0] * rjk_unit[1] + wt[1] * cross2[1] + wt[2] * cross[1],
       wt[0] * rjk_unit[2] + wt[1] * cross2[2] + wt[2] * cross[2]);
-  core::XYZ::setup_particle(unknown, newc + v3);
+  core::XYZ::setup_particle(unknown,
+                            newc + v3).set_coordinates_are_optimized(true);
 }
 
 // If exactly 3 out of the 4 atoms in the given internal coordinate have
@@ -809,8 +810,8 @@ bool build_cartesian_from_internal(const ModelInternalCoordinate &ic) {
 }
 
 unsigned build_cartesians_from_internal(
-    base::Vector<ModelInternalCoordinate> &ics) {
-  base::Vector<ModelInternalCoordinate>::iterator newend =
+    Vector<ModelInternalCoordinate> &ics) {
+  Vector<ModelInternalCoordinate>::iterator newend =
       std::remove_if(ics.begin(), ics.end(), build_cartesian_from_internal);
   unsigned numbuilt = ics.end() - newend;
   // Any internal coordinate used to build Cartesian coordinates must
@@ -821,10 +822,10 @@ unsigned build_cartesians_from_internal(
 }
 
 bool seed_triplet(Atom i, Atom j, Atom k,
-                  const base::Vector<ModelInternalCoordinate> &ics,
+                  const Vector<ModelInternalCoordinate> &ics,
                   const algebra::Vector3D &seed) {
   double rij = 0., rjk = 0., tijk = 0.;
-  for (base::Vector<ModelInternalCoordinate>::const_iterator it = ics.begin();
+  for (Vector<ModelInternalCoordinate>::const_iterator it = ics.begin();
        it != ics.end() && (rij == 0. || rjk == 0. || tijk == 0.); ++it) {
     if (rij == 0.) {
       rij = it->get_distance(i, j);
@@ -841,11 +842,13 @@ bool seed_triplet(Atom i, Atom j, Atom k,
   } else {
     // Convert from degrees to radians
     tijk = tijk * PI / 180.;
-    core::XYZ::setup_particle(i, seed);
-    core::XYZ::setup_particle(j, seed + algebra::Vector3D(rij, 0., 0.));
+    core::XYZ::setup_particle(i, seed).set_coordinates_are_optimized(true);
+    core::XYZ::setup_particle(j, seed + algebra::Vector3D(rij, 0., 0.))
+                                      .set_coordinates_are_optimized(true);
     core::XYZ::setup_particle(
         k, seed + algebra::Vector3D(rij - rjk * std::cos(tijk),
-                                    rjk * std::sin(tijk), 0.));
+                                    rjk * std::sin(tijk), 0.))
+                                      .set_coordinates_are_optimized(true);
     return true;
   }
 }
@@ -855,9 +858,9 @@ bool seed_triplet(Atom i, Atom j, Atom k,
 // The first atom is placed at the seed, the second Rij along the x axis,
 // and the third at an angle Tijk on the xy plane, Rjk from the second.
 // Returns true only if a triplet was found.
-bool seed_coordinates(const base::Vector<ModelInternalCoordinate> &ics,
+bool seed_coordinates(const Vector<ModelInternalCoordinate> &ics,
                       const algebra::Vector3D &seed) {
-  for (base::Vector<ModelInternalCoordinate>::const_iterator it = ics.begin();
+  for (Vector<ModelInternalCoordinate>::const_iterator it = ics.begin();
        it != ics.end(); ++it) {
     if (!it->improper) {
       if (seed_triplet(it->atoms[0], it->atoms[1], it->atoms[2], ics, seed) ||
@@ -905,7 +908,8 @@ unsigned int assign_remaining_coordinates(
           ++assigned;
           algebra::Sphere3D sphere(seed, 0.5);
           core::XYZ::setup_particle(child,
-                                    algebra::get_random_vector_in(sphere));
+                                    algebra::get_random_vector_in(sphere))
+                                       .set_coordinates_are_optimized(true);
         }
       }
     }
@@ -921,7 +925,7 @@ void CHARMMTopology::add_coordinates(Hierarchy hierarchy) const {
   algebra::Vector3D seed(0., 0., 0.);
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
-    base::Vector<ModelInternalCoordinate> ics;
+    Vector<ModelInternalCoordinate> ics;
     build_internal_coordinates(*segit, resmap, ics);
 
     fill_internal_coordinates(ics, force_field_);
@@ -964,7 +968,7 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const {
       try {
         Charged::setup_particle(*atit, it->first->get_atom(typ).get_charge());
       }
-      catch (base::ValueException &) {
+      catch (ValueException &) {
         IMP_WARN_ONCE(typ.get_string(), "Could not determine charge for atom "
                                             << typ << " in residue "
                                             << Residue(it->second),
@@ -986,7 +990,7 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const {
 Particles CHARMMTopology::add_bonds(Hierarchy hierarchy) const {
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
-  kernel::Particles ps;
+  Particles ps;
 
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
@@ -1007,7 +1011,7 @@ Particles CHARMMTopology::add_bonds(Hierarchy hierarchy) const {
 Particles CHARMMTopology::add_impropers(Hierarchy hierarchy) const {
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
-  kernel::Particles ps;
+  Particles ps;
 
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
@@ -1028,7 +1032,7 @@ Particles CHARMMTopology::add_impropers(Hierarchy hierarchy) const {
 Particles CHARMMTopology::add_dihedrals(Hierarchy hierarchy) const {
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
-  kernel::Particles ps;
+  Particles ps;
 
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
@@ -1046,20 +1050,20 @@ Particles CHARMMTopology::add_dihedrals(Hierarchy hierarchy) const {
   return ps;
 }
 
-Hierarchy CHARMMTopology::create_hierarchy(kernel::Model *model) const {
+Hierarchy CHARMMTopology::create_hierarchy(Model *model) const {
   char chain_id = 'A';
-  Hierarchy root = Hierarchy::setup_particle(new kernel::Particle(model));
+  Hierarchy root = Hierarchy::setup_particle(new Particle(model));
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
     int residue_index = 1;
     const CHARMMSegmentTopology *seg = *segit;
     Chain chain =
-        Chain::setup_particle(new kernel::Particle(model), chain_id++);
+        Chain::setup_particle(new Particle(model), chain_id++);
     root.add_child(chain);
     for (unsigned int nres = 0; nres < seg->get_number_of_residues(); ++nres) {
       const CHARMMResidueTopology *res = seg->get_residue(nres);
       ResidueType restyp = ResidueType(res->get_type());
-      Residue residue = Residue::setup_particle(new kernel::Particle(model),
+      Residue residue = Residue::setup_particle(new Particle(model),
                                                 restyp, residue_index++);
       chain.add_child(residue);
       bool is_ligand = !(residue.get_is_protein() || residue.get_is_rna() ||
@@ -1071,7 +1075,7 @@ Hierarchy CHARMMTopology::create_hierarchy(kernel::Model *model) const {
           name = "HET:" + name;
         }
         AtomType atmtyp = AtomType(name);
-        Atom atm = Atom::setup_particle(new kernel::Particle(model), atmtyp);
+        Atom atm = Atom::setup_particle(new Particle(model), atmtyp);
         residue.add_child(atm);
       }
     }

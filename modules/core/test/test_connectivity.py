@@ -3,6 +3,7 @@ import os
 import IMP
 import IMP.test
 import IMP.core
+import IMP.container
 
 
 class Tests(IMP.test.TestCase):
@@ -14,22 +15,23 @@ class Tests(IMP.test.TestCase):
            All particles in a single protein should be connected, and all
            proteins should be connected, either directly or indirectly
            through other proteins."""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
-        m = IMP.kernel.Model()
+        IMP.set_log_level(IMP.VERBOSE)
+        m = IMP.Model()
 
         ps = self.create_particles_in_box(m, 4)
         ds = [IMP.core.XYZ(p) for p in ps]
         o = IMP.core.ConjugateGradients(m)
         o.set_threshold(1e-4)
-        self.randomize_particles(m.get_particles(), 50.0)
+        self.randomize_particles(ps, 50.0)
 
         # add connectivity restraints
 
         ub = IMP.core.HarmonicUpperBound(1.0, 0.1)
         ss = IMP.core.DistancePairScore(ub)
-        r = IMP.core.ConnectivityRestraint(m, ss)
-        m.add_restraint(r)
-        r.add_particles(ps)
+        lsc = IMP.container.ListSingletonContainer(m, ps)
+        r = IMP.core.ConnectivityRestraint(ss, lsc)
+        sf = IMP.core.RestraintsScoringFunction([r])
+        o.set_scoring_function(sf)
         o.optimize(1000)
         d01 = IMP.core.get_distance(ds[0], ds[1])
         d02 = IMP.core.get_distance(ds[0], ds[2])
@@ -58,7 +60,7 @@ class Tests(IMP.test.TestCase):
         print(d03)
         print(d13)
         print(d23)
-        score = m.evaluate(False)
+        score = sf.evaluate(False)
         self.assertGreaterEqual(sum, 3, "Wrong number of close pairs")
         self.assertTrue(ok01 or ok02 or ok03,
                         "Point 0 is not connected")
@@ -72,7 +74,7 @@ class Tests(IMP.test.TestCase):
         pps = r.get_connected_pairs()
         lscore = 0
         for p in pps:
-            lscore = lscore + ss.evaluate((p[0], p[1]), None)
+            lscore = lscore + ss.evaluate_index(m, (p[0], p[1]), None)
         self.assertAlmostEqual(score, lscore, delta=.1)
 
 if __name__ == '__main__':

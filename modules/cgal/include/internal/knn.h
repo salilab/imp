@@ -8,11 +8,11 @@
 #define IMPCGAL_INTERNAL_KNN_H
 
 #include <IMP/cgal/cgal_config.h>
-#include <IMP/base/types.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/types.h>
+#include <IMP/Pointer.h>
 #include <IMP/algebra/VectorD.h>
 #include <boost/static_assert.hpp>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 struct VectorWithIndex : public algebra::VectorKD {
@@ -25,8 +25,8 @@ struct VectorWithIndex : public algebra::VectorKD {
 };
 
 template <class It>
-base::Vector<VectorWithIndex> create_vectors_with_index(It b, It e) {
-  base::Vector<VectorWithIndex> v(std::distance(b, e));
+Vector<VectorWithIndex> create_vectors_with_index(It b, It e) {
+  Vector<VectorWithIndex> v(std::distance(b, e));
   It c = b;
   for (unsigned int i = 0; i < v.size(); ++i) {
     v[i] = VectorWithIndex(i, get_vector_geometry(*c));
@@ -35,19 +35,19 @@ base::Vector<VectorWithIndex> create_vectors_with_index(It b, It e) {
   return v;
 }
 
-struct IMPCGALEXPORT RCTree : public base::Object {
+struct IMPCGALEXPORT RCTree : public Object {
   RCTree() : Object("RCTree%1%") {}
   virtual ~RCTree();
 };
 
 struct IMPCGALEXPORT KNNData {
-  mutable base::Pointer<RCTree> tree_;
-  base::Vector<VectorWithIndex> vsi_;
+  mutable Pointer<RCTree> tree_;
+  Vector<VectorWithIndex> vsi_;
   template <class It>
   KNNData(It b, It e) {
     initialize(create_vectors_with_index(b, e));
   }
-  void initialize(const base::Vector<VectorWithIndex> &v);
+  void initialize(const Vector<VectorWithIndex> &v);
   void fill_nearest_neighbors_v(const algebra::VectorKD &g, unsigned int k,
                                 double eps, Ints &ret) const;
   void fill_nearest_neighbors_v(const algebra::VectorKD &g, double dist,

@@ -10,7 +10,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-HybridMonteCarlo::HybridMonteCarlo(kernel::Model *m, Float kT, unsigned steps,
+HybridMonteCarlo::HybridMonteCarlo(Model *m, Float kT, unsigned steps,
                                    Float timestep, unsigned persistence)
     : MonteCarlo(m) {
 
@@ -25,7 +25,7 @@ HybridMonteCarlo::HybridMonteCarlo(kernel::Model *m, Float kT, unsigned steps,
   persistence_counter_ = 0;
 }
 
-double HybridMonteCarlo::do_evaluate(const kernel::ParticleIndexes &) const {
+double HybridMonteCarlo::do_evaluate(const ParticleIndexes &) const {
   if (get_use_incremental_scoring_function())
     IMP_THROW("Incremental scoring not supported", ModelException);
   double ekin = md_->get_kinetic_energy();
@@ -49,7 +49,7 @@ void HybridMonteCarlo::do_step() {
     static const double kB = 8.31441 / 4186.6;
     md_->assign_velocities(get_kt() / kB);
   }
-  kernel::ParticleIndexes unused;
+  ParticleIndexes unused;
   double last = do_evaluate(unused);
   core::MonteCarloMoverResult moved = do_move();
 

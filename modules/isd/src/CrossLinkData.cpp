@@ -6,7 +6,7 @@
 
 #include <IMP/isd/CrossLinkData.h>
 #include <IMP/macros.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <boost/math/special_functions/erf.hpp>
@@ -17,7 +17,7 @@ IMPISD_BEGIN_NAMESPACE
 CrossLinkData::CrossLinkData(Floats dist_grid, Floats omega_grid,
                              Floats sigma_grid, double lexp, double don,
                              double doff, int prior_type)
-    : base::Object("Data Structure for CrossLinkMSRestraint %1%") {
+    : Object("Data Structure for CrossLinkMSRestraint %1%") {
   prior_type_ = prior_type;
   lexp_ = lexp;
   bias_ = false;
@@ -85,7 +85,7 @@ CrossLinkData::CrossLinkData(Floats dist_grid, Floats omega_grid,
                              Floats sigma_grid, Floats pot_x_grid,
                              Floats pot_value_grid, double don, double doff,
                              int prior_type)
-    : base::Object("Data Structure for CrossLinkMSRestraint %1%") {
+    : Object("Data Structure for CrossLinkMSRestraint %1%") {
   prior_type_ = prior_type;
   bias_ = true;
   // this constructor calculates the marginal likelihood using a biasing

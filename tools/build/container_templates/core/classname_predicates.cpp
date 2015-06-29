@@ -1,13 +1,11 @@
 /**
  *  \file ClassnamePredicate.cpp  \brief Define ClassnamePredicate
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/core/HELPERNAME_predicates.h>
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

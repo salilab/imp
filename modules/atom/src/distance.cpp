@@ -32,25 +32,6 @@ double get_rmsd_transforming_first(const IMP::algebra::Transformation3D& tr,
                                               s1.get_selected_particles());
 }
 
-double get_rmsd(const Selection& s0, const Selection& s1,
-                const algebra::Transformation3D& tr_for_second) {
-  IMPATOM_DEPRECATED_FUNCTION_DEF(
-      2.2, "Use IMP::atom::get_rmsd_transforming_first()");
-  return get_rmsd_transforming_first(tr_for_second, s1, s0);
-}
-
-double get_rmsd(const algebra::Vector3Ds& s0, const algebra::Vector3Ds& s1,
-                const IMP::algebra::Transformation3D& tr_for_second) {
-  IMPATOM_DEPRECATED_FUNCTION_DEF(2.2, "Use IMP::algebra::get_rmsds()");
-  return algebra::get_rmsd_transforming_first(tr_for_second, s1, s0);
-}
-
-double get_rmsd(const core::XYZs& s0, const core::XYZs& s1,
-                const IMP::algebra::Transformation3D& tr_for_second) {
-  IMPATOM_DEPRECATED_FUNCTION_DEF(2.2, "Use IMP::algebra::get_rmsds()");
-  return algebra::get_rmsd_transforming_first(tr_for_second, s1, s0);
-}
-
 std::pair<double, double> get_placement_score(const core::XYZs& from,
                                               const core::XYZs& to) {
   // calculate the best fit between the two placements
@@ -81,7 +62,7 @@ double get_pairwise_rmsd_score(const core::XYZs& ref1, const core::XYZs& ref2,
     }*/
   algebra::Transformation3D t =
       algebra::get_transformation_aligning_first_to_second(mdl1, ref1);
-  Float rmsd_score = get_rmsd(ref2, mdl2, t);
+  Float rmsd_score = get_rmsd_transforming_first(t, ref2, mdl2);
   return rmsd_score;
 }
 
@@ -121,7 +102,7 @@ std::pair<double, double> get_component_placement_score(
 }
 
 namespace {
-double get_weight(bool mass, bool radii, kernel::Particle* p) {
+double get_weight(bool mass, bool radii, Particle* p) {
   if (mass) {
     return Mass(p).get_mass();
   } else if (radii) {
@@ -132,7 +113,7 @@ double get_weight(bool mass, bool radii, kernel::Particle* p) {
 }
 }
 
-double get_radius_of_gyration(const kernel::ParticlesTemp& ps) {
+double get_radius_of_gyration(const ParticlesTemp& ps) {
   IMP_USAGE_CHECK(ps.size() > 0, "No particles provided");
   bool mass = Mass::get_is_setup(ps[0]);
   bool radii = core::XYZR::get_is_setup(ps[0]);

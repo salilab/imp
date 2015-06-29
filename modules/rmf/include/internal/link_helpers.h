@@ -9,14 +9,14 @@
 #define IMPRMF_LINK_HELPERS_H
 #include <IMP/rmf/rmf_config.h>
 #include "../links.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <RMF/FileHandle.h>
 #include <RMF/RestoreCurrentFrame.h>
 #include <RMF/SetCurrentFrame.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
-typedef base::Pointer<SaveLink> SaveLinkAssociationType;
-typedef base::Pointer<LoadLink> LoadLinkAssociationType;
+typedef Pointer<SaveLink> SaveLinkAssociationType;
+typedef Pointer<LoadLink> LoadLinkAssociationType;
 
 IMPRMFEXPORT unsigned int get_load_linker_index(std::string st);
 IMPRMFEXPORT unsigned int get_save_linker_index(std::string st);
@@ -72,7 +72,7 @@ void add_helper(RMF::FileHandle fh, const OutTypes& hs) {
 template <class LinkType, class InTypes>
 void link_helper(RMF::FileConstHandle fh, const InTypes& hs) {
   if (hs.empty()) return;
-  base::Pointer<LinkType> pll = get_load_link<LinkType>(fh);
+  Pointer<LinkType> pll = get_load_link<LinkType>(fh);
   RMF::RestoreCurrentFrame scf(fh);
   pll->link(fh.get_root_node(), hs);
 }

@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 DiameterRestraint::DiameterRestraint(UnaryFunction *f, SingletonContainer *sc,
                                      Float diameter)
-    : kernel::Restraint(sc->get_model(), "DiameterRestraint%1%"),
+    : Restraint(sc->get_model(), "DiameterRestraint%1%"),
       diameter_(diameter),
       sc_(sc),
       f_(f) {
@@ -35,16 +35,16 @@ DiameterRestraint::DiameterRestraint(UnaryFunction *f, SingletonContainer *sc,
 
 void DiameterRestraint::init() {
   IMP_LOG_TERSE("Creating components of DiameterRestraint" << std::endl);
-  kernel::Model *m = sc_->get_model();
+  Model *m = sc_->get_model();
 
   // make pairs from special generator
-  p_ = new kernel::Particle(m);
+  p_ = new Particle(m);
   XYZR d = XYZR::setup_particle(p_);
   p_->set_name("DiameterRestraint center");
   d.set_coordinates_are_optimized(false);
-  base::Pointer<core::CoverRefined> cr =
+  Pointer<core::CoverRefined> cr =
       new core::CoverRefined(new FixedRefiner(sc_->get_particles()), 0);
-  ss_ = new core::SingletonConstraint(cr, nullptr, p_);
+  ss_ = new core::SingletonConstraint(cr, nullptr, m, p_->get_index());
 
   m->add_score_state(ss_);
 }
@@ -55,7 +55,7 @@ double DiameterRestraint::unprotected_evaluate(DerivativeAccumulator *da)
   double v = 0;
   XYZ dp(p_);
   double radius = diameter_ / 2.0;
-  kernel::Model *m = get_model();
+  Model *m = get_model();
   IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
     double dc = XYZR(m, _1).get_radius();
     v += internal::evaluate_distance_pair_score(
@@ -65,23 +65,23 @@ double DiameterRestraint::unprotected_evaluate(DerivativeAccumulator *da)
 }
 
 ModelObjectsTemp DiameterRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp t =
+  ModelObjectsTemp t =
       IMP::get_particles(get_model(), sc_->get_indexes());
   t.push_back(p_);
   t.push_back(sc_);
   return t;
 }
 
-kernel::Restraints DiameterRestraint::do_create_decomposition() const {
-  kernel::Restraints ret;
-  kernel::ParticlesTemp ps =
-      kernel::get_particles(get_model(), sc_->get_indexes());
+Restraints DiameterRestraint::do_create_decomposition() const {
+  Restraints ret;
+  ParticlesTemp ps =
+      get_particles(get_model(), sc_->get_indexes());
   // since we are adding two deviations before squaring, make k=.25
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps, (diameter_, .25));
   for (unsigned int i = 0; i < ps.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
       ret.push_back(
-          IMP::create_restraint(sps.get(), kernel::ParticlePair(ps[i], ps[j])));
+          IMP::create_restraint(sps.get(), ParticlePair(ps[i], ps[j])));
       ret.back()->set_maximum_score(get_maximum_score());
       std::ostringstream oss;
       oss << get_name() << " " << i << " " << j;
@@ -91,16 +91,18 @@ kernel::Restraints DiameterRestraint::do_create_decomposition() const {
   return ret;
 }
 
-kernel::Restraints DiameterRestraint::do_create_current_decomposition() const {
-  kernel::Restraints ret;
-  kernel::ParticlesTemp ps =
-      kernel::get_particles(get_model(), sc_->get_indexes());
+Restraints DiameterRestraint::do_create_current_decomposition() const {
+  Restraints ret;
+  ParticleIndexes ps = sc_->get_indexes();
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps, (diameter_, 1));
+  Model *m = get_model();
   for (unsigned int i = 0; i < ps.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      if (sps->evaluate(kernel::ParticlePair(ps[i], ps[j]), nullptr) > 0) {
+      if (sps->evaluate_index(m,
+                              ParticleIndexPair(ps[i], ps[j]), nullptr) > 0) {
         ret.push_back(IMP::create_restraint(
-            sps.get(), kernel::ParticlePair(ps[i], ps[j])));
+            sps.get(), ParticlePair(m->get_particle(ps[i]),
+                                    m->get_particle(ps[j]))));
         ret.back()->set_maximum_score(get_maximum_score());
         std::ostringstream oss;
         oss << get_name() << " " << i << " " << j;

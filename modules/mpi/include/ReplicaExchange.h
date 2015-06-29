@@ -9,8 +9,8 @@
 #define IMPMPI_REPLICA_EXCHANGE_H
 
 #include "mpi_config.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/types.h>
+#include <IMP/Object.h>
+#include <IMP/types.h>
 #include "mpi.h"
 #include <string>
 
@@ -20,7 +20,7 @@ IMPMPI_BEGIN_NAMESPACE
 /** Any model parameter can be used as exchange parameter:
     temperature, restraint intensity, ...
 */
-class IMPMPIEXPORT ReplicaExchange : public base::Object {
+class IMPMPIEXPORT ReplicaExchange : public Object {
   //! MPI rank
   int myrank_;
   //! Number of replicas

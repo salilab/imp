@@ -70,7 +70,7 @@ class PeptideDocker:
 
         pdbName = self.getParam("native_pdb_input_file")
 
-        self.model = IMP.kernel.Model()
+        self.model = IMP.Model()
 
         self.protein = IMP.atom.read_pdb(
             pdbName,
@@ -351,7 +351,7 @@ class PeptideDocker:
 
             initialPositionFile = self.getParam("saved_initial_atom_positions")
             print("reading initial positions from %s" % initialPositionFile)
-            initialModel = IMP.kernel.Model()
+            initialModel = IMP.Model()
             initialProtein = IMP.atom.read_pdb(
                 initialPositionFile,
                 initialModel,
@@ -502,17 +502,16 @@ class PeptideDocker:
         cont.add_particles(ffParticles)
         listBondRestraint = IMP.container.SingletonsRestraint(
             singletonScore, cont, restraintName)
-        self.model.add_restraint(listBondRestraint)
 
         # Restraint decomposition has been a little touchy; a couple
         # workarounds contained
         decomposedRestraintTemp = listBondRestraint.create_decomposition()
-        decomposedRestraints = IMP.kernel.RestraintSet.get_from(
+        decomposedRestraints = IMP.RestraintSet.get_from(
             decomposedRestraintTemp)
         rs_restraints = decomposedRestraints.get_restraints()
 
         # manually remove the full restraint after getting the decomposition
-        self.model.remove_restraint(listBondRestraint)
+        del listBondRestraint
 
         count = decomposedRestraints.get_number_of_restraints()
         for i in range(count):
@@ -522,7 +521,7 @@ class PeptideDocker:
             if (self.allFlexibleAtoms(r) == 1):
                 # add the decomposed restraint to the model
                 self.model.add_restraint(r)
-                self.model.set_maximum_score(r, maxForceFieldScore)
+                r.set_maximum_score(maxForceFieldScore)
                 self.addParticlesToGroups(r)
             else:
                 t = 1
@@ -622,7 +621,7 @@ class PeptideDocker:
         # print "Added non-bonded restraint between %s and %s" % (q0, q1)
         self.model.add_restraint(pairRestraint)
         maxNonBondedScore = float(self.getParam("max_non_bonded_score"))
-        self.model.set_maximum_score(pairRestraint, maxNonBondedScore)
+        pairRestraint.set_maximum_score(maxNonBondedScore)
         #initialScore = pairRestraint.evaluate(0)
 
     # add non-bonded restraints across close pairs. At least one atom in each
@@ -858,7 +857,7 @@ class PeptideDocker:
 
         if (self.wroteNativeProtein == 0):
             pdbName = self.getParam("native_pdb_input_file")
-            self.nativeModel = IMP.kernel.Model()
+            self.nativeModel = IMP.Model()
             self.nativeProtein = IMP.atom.read_pdb(
                 pdbName,
                 self.nativeModel,
@@ -968,7 +967,6 @@ class PeptideDocker:
                 xyzDecorator.set_coordinates_are_optimized(0)
 
     def writeOutput(self):
-        restraintCount = self.model.get_number_of_restraints()
         leaves = IMP.atom.get_leaves(self.protein)
         flexiblePeptideAtoms = 0
         flexibleProteinAtoms = 0
@@ -990,7 +988,6 @@ class PeptideDocker:
         print("Fixed peptide atoms: %s" % fixedPeptideAtoms)
         print("Flexible protein atoms: %s" % flexibleProteinAtoms)
         print("Fixed protein atoms: %s" % fixedProteinAtoms)
-        print("Total number of restraints: %s" % restraintCount)
 
     def writeOsOutput(self):
 

@@ -13,12 +13,12 @@
 #include "internal/hierarchy_helpers.h"
 
 #include <IMP/SingletonModifier.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
-#include <IMP/kernel/internal/utility.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/internal/utility.h>
+#include <IMP/Pointer.h>
 
 #include <boost/tuple/tuple.hpp>
 
@@ -45,15 +45,15 @@ class Hierarchy;
     \see Hierarchy
 */
 class IMPCOREEXPORT HierarchyTraits {
-  kernel::ParticleIndexesKey children_;
-  kernel::ParticleIndexKey parent_;
+  ParticleIndexesKey children_;
+  ParticleIndexKey parent_;
 
  public:
   HierarchyTraits() {}
   //! Create a HierarchyTraits with the given name
   HierarchyTraits(std::string name);
-  kernel::ParticleIndexesKey get_children_key() const { return children_; }
-  kernel::ParticleIndexKey get_parent_key() const { return parent_; }
+  ParticleIndexesKey get_children_key() const { return children_; }
+  ParticleIndexKey get_parent_key() const { return parent_; }
   bool operator==(const HierarchyTraits &o) const {
     return parent_ == o.parent_;
   }
@@ -65,7 +65,7 @@ IMP_VALUES(HierarchyTraits, HierarchyTraitsList);
 class Hierarchy;
 
 #ifndef IMP_DOXYGEN
-typedef IMP::base::Vector<Hierarchy> GenericHierarchies;
+typedef IMP::Vector<Hierarchy> GenericHierarchies;
 #endif
 
 //! A decorator for helping deal with a hierarchy.
@@ -76,20 +76,20 @@ typedef IMP::base::Vector<Hierarchy> GenericHierarchies;
     \see HierarchyTraits
  */
 class IMPCOREEXPORT Hierarchy : public Decorator {
-  static void do_setup_particle(kernel::Model *, kernel::ParticleIndex,
+  static void do_setup_particle(Model *, ParticleIndex,
                                 HierarchyTraits) {}
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                const kernel::ParticleIndexes &children,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                const ParticleIndexes &children,
                                 HierarchyTraits traits) {
     for (unsigned int i = 0; i < children.size(); ++i) {
       m->add_attribute(traits.get_parent_key(), children[i], pi);
     }
     m->add_attribute(traits.get_children_key(), pi, children);
   }
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
-                                const kernel::ParticlesTemp &children,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                const ParticlesTemp &children,
                                 HierarchyTraits traits) {
-    do_setup_particle(m, pi, kernel::get_indexes(children), traits);
+    do_setup_particle(m, pi, get_indexes(children), traits);
   }
 
  public:
@@ -97,12 +97,12 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
                                     traits, get_default_traits());
   IMP_DECORATOR_TRAITS_SETUP_0(Hierarchy);
   /** Setup the particle and add children. */
-  IMP_DECORATOR_TRAITS_SETUP_1(Hierarchy, kernel::ParticleIndexes, children);
-  IMP_DECORATOR_TRAITS_SETUP_1(Hierarchy, kernel::ParticlesTemp, children);
+  IMP_DECORATOR_TRAITS_SETUP_1(Hierarchy, ParticleIndexes, children);
+  IMP_DECORATOR_TRAITS_SETUP_1(Hierarchy, ParticlesTemp, children);
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
-  static bool get_is_setup(kernel::Model *, kernel::ParticleIndex,
+  static bool get_is_setup(Model *, ParticleIndex,
                            HierarchyTraits = Hierarchy::get_default_traits()) {
     return true;
   }
@@ -112,7 +112,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
   Hierarchy get_parent() const {
     if (get_model()->get_has_attribute(get_decorator_traits().get_parent_key(),
                                        get_particle_index())) {
-      kernel::ParticleIndex VALUE = get_model()->get_attribute(
+      ParticleIndex VALUE = get_model()->get_attribute(
           get_decorator_traits().get_parent_key(), get_particle_index());
       return Hierarchy(get_model(), VALUE, get_decorator_traits());
     } else {
@@ -138,18 +138,18 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
                                       get_particle_index())[i],
                      get_decorator_traits());
   }
-  kernel::ParticleIndex get_child_index(unsigned int i) const {
+  ParticleIndex get_child_index(unsigned int i) const {
     IMP_USAGE_CHECK(i < get_number_of_children(), "Invalid child requested");
     return get_model()->get_attribute(get_decorator_traits().get_children_key(),
                                       get_particle_index())[i];
   }
-  kernel::ParticleIndexes get_children_indexes() const {
+  ParticleIndexes get_children_indexes() const {
     if (get_model()->get_has_attribute(
             get_decorator_traits().get_children_key(), get_particle_index())) {
       return get_model()->get_attribute(
           get_decorator_traits().get_children_key(), get_particle_index());
     } else {
-      return kernel::ParticleIndexes();
+      return ParticleIndexes();
     }
   }
   GenericHierarchies get_children() const {
@@ -162,7 +162,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
   void remove_child(unsigned int i) {
     IMP_USAGE_CHECK(i < get_number_of_children(), "Invalid child requested");
     Hierarchy c = get_child(i);
-    kernel::ParticleIndexes &pis = get_model()->access_attribute(
+    ParticleIndexes &pis = get_model()->access_attribute(
         get_decorator_traits().get_children_key(), get_particle_index());
     pis.erase(pis.begin() + i);
     get_model()->remove_attribute(get_decorator_traits().get_parent_key(),
@@ -170,7 +170,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
   }
   void remove_child(Hierarchy h) { remove_child(h.get_child_index()); }
   void clear_children() {
-    kernel::ParticleIndexes &pis = get_model()->access_attribute(
+    ParticleIndexes &pis = get_model()->access_attribute(
         get_decorator_traits().get_children_key(), get_particle_index());
     for (unsigned int i = 0; i < pis.size(); ++i) {
       get_model()->remove_attribute(get_decorator_traits().get_parent_key(),
@@ -189,7 +189,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
     } else {
       get_model()->add_attribute(
           get_decorator_traits().get_children_key(), get_particle_index(),
-          kernel::ParticleIndexes(1, h.get_particle_index()));
+          ParticleIndexes(1, h.get_particle_index()));
     }
     get_model()->add_attribute(get_decorator_traits().get_parent_key(),
                                h.get_particle_index(), get_particle_index());
@@ -198,13 +198,13 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
     IMP_USAGE_CHECK(get_number_of_children() >= pos, "Invalid position");
     if (get_model()->get_has_attribute(
             get_decorator_traits().get_children_key(), get_particle_index())) {
-      kernel::ParticleIndexes &pis = get_model()->access_attribute(
+      ParticleIndexes &pis = get_model()->access_attribute(
           get_decorator_traits().get_children_key(), get_particle_index());
       pis.insert(pis.begin() + pos, h.get_particle_index());
     } else {
       get_model()->add_attribute(
           get_decorator_traits().get_children_key(), get_particle_index(),
-          kernel::ParticleIndexes(1, h.get_particle_index()));
+          ParticleIndexes(1, h.get_particle_index()));
     }
     get_model()->add_attribute(get_decorator_traits().get_parent_key(),
                                h.get_particle_index(), get_particle_index());
@@ -231,7 +231,7 @@ class IMPCOREEXPORT HierarchyVisitor {
   virtual ~HierarchyVisitor() {}
 };
 
-//! A visitor which applies a modifier to each kernel::Particle in a hierarchy
+//! A visitor which applies a modifier to each Particle in a hierarchy
 /** This works from both C++ and Python
     \ingroup hierarchy
     \ingroup decorators
@@ -239,7 +239,7 @@ class IMPCOREEXPORT HierarchyVisitor {
     \see Hierarchy
  */
 class IMPCOREEXPORT ModifierVisitor : public HierarchyVisitor {
-  IMP::base::PointerMember<SingletonModifier> sm_;
+  IMP::PointerMember<SingletonModifier> sm_;
 
  public:
   ModifierVisitor(SingletonModifier *sm) : sm_(sm) {}
@@ -306,7 +306,7 @@ inline F visit_breadth_first(HD d, F f) {
  */
 template <class HD, class F>
 inline F visit_depth_first(HD d, F &f) {
-  base::Vector<HD> stack;
+  Vector<HD> stack;
   stack.push_back(d);
   // d.show(std::cerr);
   do {
@@ -333,7 +333,7 @@ inline F visit_depth_first(HD d, F &f) {
     to the operator() of the child. e.g.
     struct DepthVisitor {
       typedef int result_type;
-      result_type operator()(kernel::Particle *p, int i) const
+      result_type operator()(Particle *p, int i) const
       {
         if (p==nullptr) return 0;
         else return i+1;
@@ -373,7 +373,7 @@ inline F visit_breadth_first_with_data(HD d, F f, typename F::result_type i) {
 template <class HD, class F>
 inline F visit_depth_first_with_data(HD d, F f, typename F::result_type i) {
   typedef std::pair<typename F::result_type, HD> DP;
-  base::Vector<DP> stack;
+  Vector<DP> stack;
   stack.push_back(DP(i, d));
   // d.show(std::cerr);
   do {
@@ -488,7 +488,7 @@ inline Out gather_by_attributes(H h, K0 k0, V0 v0, K1 k1, V1 v1, Out out) {
 template <class HD, class F>
 inline HD find_breadth_first(HD h, F f) {
   if (f(h.get_particle())) return h;
-  base::Vector<HD> stack;
+  Vector<HD> stack;
   stack.push_back(h);
   // d.show(std::cerr);
   do {

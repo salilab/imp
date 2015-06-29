@@ -24,8 +24,8 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
         self.xyzs = []
         self.nuisances = []
         self.restraints = []
@@ -33,14 +33,14 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         self.setup_HMC(temp=1 / kB)
 
     def setup_xyz(self, coords, mass):
-        a = IMP.kernel.Particle(self.m)
+        a = IMP.Particle(self.m)
         IMP.core.XYZ.setup_particle(a, coords)
         IMP.core.XYZ(a).set_coordinates_are_optimized(True)
         IMP.atom.Mass.setup_particle(a, mass)
         return a
 
     def setup_scale(self, coords, mass):
-        a = IMP.kernel.Particle(self.m)
+        a = IMP.Particle(self.m)
         IMP.isd.Scale.setup_particle(a, coords)
         IMP.isd.Scale(a).set_scale_is_optimized(True)
         IMP.atom.Mass.setup_particle(a, mass)
@@ -53,7 +53,6 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         si = self.setup_scale(1.0, 1.0)
         ga = self.setup_scale(1.0, 1.0)
         ln = IMP.isd.NOERestraint(self.m, a, b, si, ga, 1.0)
-        self.m.add_restraint(ln)
         self.xyzs.append(a)
         self.xyzs.append(b)
         self.nuisances.append(si)
@@ -64,6 +63,9 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         self.hmc = IMP.isd.HybridMonteCarlo(self.m, kB * temp, nsteps, tstep,
                                             persistence)
         self.hmc.set_was_used(True)
+        self.sf = IMP.core.RestraintsScoringFunction(self.restraints)
+        self.hmc.set_scoring_function(self.sf)
+        self.hmc.get_md().set_scoring_function(self.sf)
 
     def get_nuisance_coordinates(self):
         a = [i.get_value(IMP.isd.Scale.get_scale_key())
@@ -105,7 +107,7 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         for i in range(2000):
             self.hmc.optimize(1)
             pos.append(IMP.core.XYZ(self.xyzs[1]).get_coordinates())
-            ene.append(self.m.evaluate(False))
+            ene.append(self.sf.evaluate(False))
         dist = [i.get_magnitude() for i in pos]
         # mean should be exp(s^2/24) g^(1/6)
         #e.g. exp(1/24)
@@ -139,10 +141,11 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         for i in range(1000):
             self.hmc.optimize(1)
             pos.append(IMP.core.XYZ(self.xyzs[1]).get_coordinates())
-            ene.append(self.m.evaluate(False))
+            ene.append(self.sf.evaluate(False))
         dist = [i.get_magnitude() for i in pos]
         # standard MC
         mc = IMP.core.MonteCarlo(self.m)
+        mc.set_scoring_function(self.sf)
         mv = IMP.core.NormalMover([self.xyzs[1]], IMP.core.XYZ.get_xyz_keys(),
                                   0.1)
         mc.add_mover(mv)
@@ -153,7 +156,7 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         for i in range(2000):
             mc.optimize(1)
             pos2.append(IMP.core.XYZ(self.xyzs[1]).get_coordinates())
-            ene2.append(self.m.evaluate(False))
+            ene2.append(self.sf.evaluate(False))
         dist2 = [i.get_magnitude() for i in pos2]
         self.assertAlmostEqual(mean(dist), mean(dist2), delta=1e-1)
         self.assertAlmostEqual(var(dist), var(dist2), delta=1e-1)

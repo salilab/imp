@@ -10,9 +10,9 @@
 IMPEM_BEGIN_NAMESPACE
 
 long get_number_of_particles_outside_of_the_density(
-    DensityMap *dmap, const kernel::Particles &ps,
+    DensityMap *dmap, const Particles &ps,
     const IMP::algebra::Transformation3D &t, float thr) {
-  IMP_LOG_VERBOSE("start calculating the how many particles out of "
+  IMP_LOG_VERBOSE("start calculating how many particles out of "
                   << ps.size() << " in density" << std::endl);
   long out_of_dens = 0;
   core::XYZs xyz = core::XYZs(ps);
@@ -38,7 +38,7 @@ long get_number_of_particles_outside_of_the_density(
 }
 
 Ints get_numbers_of_particles_outside_of_the_density(
-    DensityMap *dmap, const kernel::Particles &ps,
+    DensityMap *dmap, const Particles &ps,
     const IMP::algebra::Transformation3Ds &transforms, float thr) {
   IMP_LOG_VERBOSE("start calculating the how many particles out of "
                   << ps.size() << " in density" << std::endl);
@@ -52,7 +52,7 @@ Ints get_numbers_of_particles_outside_of_the_density(
 }
 
 double get_percentage_of_voxels_covered_by_particles(
-    DensityMap *dmap, const kernel::Particles &ps, float smoothing_radius,
+    DensityMap *dmap, const Particles &ps, float smoothing_radius,
     const IMP::algebra::Transformation3D &t, float thr) {
   IMP_NEW(DensityMap, dmap_ind, (*(dmap->get_header())));
   dmap_ind->reset_data();

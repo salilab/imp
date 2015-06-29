@@ -27,10 +27,10 @@ key = IMP.IntKey("assignment")
 class Tests(IMP.test.TestCase):
 
     def _setup_round_trip(self):
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         for i in range(0, 8):
-            ps.append(IMP.kernel.Particle(m))
+            ps.append(IMP.Particle(m))
             ps[-1].add_attribute(key, -1)
         assignments = []
         for i in range(0, 20):
@@ -121,11 +121,11 @@ class Tests(IMP.test.TestCase):
         """Testing heap sample container"""
 
         # create particles
-        m = IMP.kernel.Model()
-        m.set_log_level(IMP.base.SILENT)
+        m = IMP.Model()
+        m.set_log_level(IMP.SILENT)
         ps = []
         for i in range(0, 3):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZR.setup_particle(
                 p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 5))
             ps.append(p)
@@ -136,16 +136,18 @@ class Tests(IMP.test.TestCase):
                IMP.algebra.Vector3D(3, 0, 0)]
         particle_state = IMP.domino.XYZStates(pts)
         pst = IMP.domino.ParticleStatesTable()
+        r = IMP.RestraintSet(m)
         for p in ps:
             pst.set_particle_states(p, particle_state)
-        m.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[0], ps[1]))
-        m.add_restraint(IMP.core.DistanceRestraint(
+        r.add_restraint(IMP.core.DistanceRestraint(m,
             IMP.core.Harmonic(1, 1), ps[1], ps[2]))
         print(5)
         sampler = IMP.domino.DominoSampler(m, pst)
+        sampler.set_restraints([r])
         rc = IMP.domino.RestraintCache(pst)
-        rc.add_restraints([m])
+        rc.add_restraints([r])
         rssft = IMP.domino.RestraintScoreSubsetFilterTable(rc)
         s = IMP.domino.Subset(pst.get_particles())
         rs = rc.get_restraints(s, [])

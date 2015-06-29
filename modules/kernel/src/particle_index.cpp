@@ -5,15 +5,15 @@
  *
  */
 
-#include "IMP/kernel/particle_index.h"
-#include "IMP/kernel/internal/container_helpers.h"
-#include "IMP/kernel/Decorator.h"
+#include "IMP/particle_index.h"
+#include "IMP/internal/container_helpers.h"
+#include "IMP/Decorator.h"
 IMPKERNEL_BEGIN_NAMESPACE
 ParticleIndexes get_indexes(const ParticlesTemp &ps) {
   return internal::get_index(ps);
 }
 
-ParticlesTemp get_particles(kernel::Model *m, const ParticleIndexes &ps) {
+ParticlesTemp get_particles(Model *m, const ParticleIndexes &ps) {
   return internal::get_particle(m, ps);
 }
 
@@ -24,10 +24,10 @@ ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps) {
 ParticleIndexAdaptor::ParticleIndexAdaptor(Particle *p)
     : ParticleIndex(p->get_index()) {}
 
-ParticleIndexAdaptor::ParticleIndexAdaptor(base::WeakPointer<Particle> p)
+ParticleIndexAdaptor::ParticleIndexAdaptor(WeakPointer<Particle> p)
     : ParticleIndex(p->get_index()) {}
 
-ParticleIndexAdaptor::ParticleIndexAdaptor(base::Pointer<Particle> p)
+ParticleIndexAdaptor::ParticleIndexAdaptor(Pointer<Particle> p)
     : ParticleIndex(p->get_index()) {}
 
 ParticleIndexAdaptor::ParticleIndexAdaptor(const Decorator &d)
@@ -48,6 +48,8 @@ ParticleIndexPairsAdaptor::ParticleIndexPairsAdaptor(
     : ParticleIndexPairs(get_indexes(ps)) {}
 
 namespace {
+/* Check to make sure that IMP_FOREACH compiles correctly */
+void foreach_test() IMP_UNUSED_FUNCTION;
 void foreach_test() {
   ParticleIndexes pis;
   ParticleIndexesAdaptor pia(pis);

@@ -80,6 +80,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
  public:
   //! Setup the GaussianEMRestraint
   /**
+     \param[in] mdl the Model object to operate on
      \param[in] model_ps particles for the model GMM
      \param[in] density_ps particles for the density GMM
      \param[in] global_sigma Particle to modulate the uncertainty
@@ -115,9 +116,9 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   //! Get restraint slope
   Float get_slope(){return slope_;}
   virtual double
-    unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+    unprotected_evaluate(IMP::DerivativeAccumulator *accum)
     const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   void show(std::ostream &out) const { out << "GEM restraint"; }
   IMP_OBJECT_METHODS(GaussianEMRestraint);
 
@@ -131,8 +132,8 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   Float normalization_;
   Float dd_score_;
   Float self_mm_score_;
-  base::PointerMember<container::CloseBipartitePairContainer> md_container_;
-  base::Pointer<container::ClosePairContainer> mm_container_;
+  PointerMember<container::CloseBipartitePairContainer> md_container_;
+  Pointer<container::ClosePairContainer> mm_container_;
   ParticleIndexes slope_ps_; //experiment
 
   //variables needed to tabulate the exponential

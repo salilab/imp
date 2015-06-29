@@ -18,7 +18,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 namespace {
 
-Strings parse_psipred_file(base::TextInput inf) {
+Strings parse_psipred_file(TextInput inf) {
   std::string line;
   std::vector<std::string> line_split, frag_split, res_split;
   std::string conf = "", pred = "", aa = "";
@@ -48,7 +48,7 @@ Strings parse_psipred_file(base::TextInput inf) {
 }
 
 SecondaryStructureResidues create_sses_from_strings(Strings ss,
-                                                    kernel::Particles ps) {
+                                                    Particles ps) {
   SecondaryStructureResidues ssrs;
   std::string conf = ss[0], pred = ss[1], aa = ss[2];
   for (int nres = 0; nres < (int)ss[0].length(); nres++) {
@@ -71,20 +71,18 @@ SecondaryStructureResidues create_sses_from_strings(Strings ss,
 }
 }
 
-SecondaryStructureResidues read_psipred(base::TextInput inf,
-                                        kernel::Model* mdl) {
+SecondaryStructureResidues read_psipred(TextInput inf, Model* mdl) {
   Strings ss = parse_psipred_file(inf);
   int nres = ss[0].size();
-  kernel::Particles ps;
+  Particles ps;
   for (int nr = 0; nr < nres; nr++) {
-    IMP_NEW(kernel::Particle, p, (mdl));
+    IMP_NEW(Particle, p, (mdl));
     ps.push_back(p);
   }
   return create_sses_from_strings(ss, ps);
 }
 
-SecondaryStructureResidues read_psipred(base::TextInput inf,
-                                        kernel::Particles ps) {
+SecondaryStructureResidues read_psipred(TextInput inf, Particles ps) {
   Strings ss = parse_psipred_file(inf);
   return create_sses_from_strings(ss, ps);
 }

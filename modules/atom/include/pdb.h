@@ -15,12 +15,12 @@
 #include "element.h"
 #include "internal/pdb.h"
 #include "atom_macros.h"
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 #include "Selection.h"
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/OptimizerState.h>
-#include <IMP/kernel/internal/utility.h>
+#include <IMP/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/OptimizerState.h>
+#include <IMP/internal/utility.h>
 #include <boost/format.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -36,7 +36,7 @@ IMPATOM_BEGIN_NAMESPACE
 
     \see read_pdb
 */
-class IMPATOMEXPORT PDBSelector : public IMP::base::Object {
+class IMPATOMEXPORT PDBSelector : public IMP::Object {
  public:
   PDBSelector(std::string name) : Object(name) {}
   //! Return true if the line should be processed
@@ -195,7 +195,7 @@ class IMPATOMEXPORT HydrogenPDBSelector : public NonAlternativePDBSelector {
 
 //! Select non water and non hydrogen atoms
 class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
-  IMP::base::PointerMember<PDBSelector> ws_, hs_;
+  IMP::PointerMember<PDBSelector> ws_, hs_;
 
  public:
   bool get_is_selected(const std::string &pdb_line) const {
@@ -217,7 +217,7 @@ class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
 
 //! Select all non-water non-alternative ATOM and HETATM records
 class NonWaterPDBSelector : public NonAlternativePDBSelector {
-  IMP::base::PointerMember<PDBSelector> ws_;
+  IMP::PointerMember<PDBSelector> ws_;
 
  public:
   bool get_is_selected(const std::string &pdb_line) const {
@@ -273,7 +273,7 @@ class PPDBSelector : public NonAlternativePDBSelector {
     \endcode
  */
 class AndPDBSelector : public PDBSelector {
-  const IMP::base::PointerMember<PDBSelector> a_, b_;
+  const IMP::PointerMember<PDBSelector> a_, b_;
 
  public:
   bool get_is_selected(const std::string &pdb_line) const {
@@ -291,7 +291,7 @@ class AndPDBSelector : public PDBSelector {
     \endcode
  */
 class OrPDBSelector : public PDBSelector {
-  const IMP::base::PointerMember<PDBSelector> a_, b_;
+  const IMP::PointerMember<PDBSelector> a_, b_;
 
  public:
   bool get_is_selected(const std::string &pdb_line) const {
@@ -309,7 +309,7 @@ class OrPDBSelector : public PDBSelector {
     \endcode
  */
 class NotPDBSelector : public PDBSelector {
-  const IMP::base::PointerMember<PDBSelector> a_;
+  const IMP::PointerMember<PDBSelector> a_;
 
  public:
   bool get_is_selected(const std::string &pdb_line) const {
@@ -349,7 +349,7 @@ inline PDBSelector *get_default_pdb_selector() {
     PDB file.
  */
 IMPATOMEXPORT Hierarchy
-    read_pdb(base::TextInput input, kernel::Model *model,
+    read_pdb(TextInput input, Model *model,
              PDBSelector *selector = get_default_pdb_selector(),
              bool select_first_model = true
 #ifndef IMP_DOXYGEN
@@ -373,12 +373,12 @@ IMPATOMEXPORT Hierarchy
     loaded particles. Bad things will happen if the loaded coordinates
     are not a rigid transform of the prior coordinates.
  */
-IMPATOMEXPORT void read_pdb(base::TextInput input, int model, Hierarchy h);
+IMPATOMEXPORT void read_pdb(TextInput input, int model, Hierarchy h);
 
 /** Read all models from the PDB file.
  */
 IMPATOMEXPORT Hierarchies
-    read_multimodel_pdb(base::TextInput input, kernel::Model *model,
+    read_multimodel_pdb(TextInput input, Model *model,
                         PDBSelector *selector = get_default_pdb_selector()
 #ifndef IMP_DOXYGEN
                         ,
@@ -405,7 +405,7 @@ IMPATOMEXPORT Hierarchies
 
 /** Write some atoms to a PDB.
 */
-IMPATOMEXPORT void write_pdb(const Selection &mhd, base::TextOutput out,
+IMPATOMEXPORT void write_pdb(const Selection &mhd, TextOutput out,
                              unsigned int model = 1);
 
 /** \brief Write a hierarchy to a PDB as C_alpha atoms.
@@ -416,13 +416,13 @@ IMPATOMEXPORT void write_pdb(const Selection &mhd, base::TextOutput out,
     values will be used so that each leaf ends up in a separate residue.
 */
 IMPATOMEXPORT void write_pdb_of_c_alphas(const Selection &mhd,
-                                         base::TextOutput out,
+                                         TextOutput out,
                                          unsigned int model = 1);
 
 /** Write the hierarchies one per frame.
 */
 IMPATOMEXPORT void write_multimodel_pdb(const Hierarchies &mhd,
-                                        base::TextOutput out);
+                                        TextOutput out);
 /** @} */
 
 #ifndef IMP_DOXYGEN
@@ -452,19 +452,19 @@ IMPATOMEXPORT std::string get_pdb_conect_record_string(int, int);
     with the %1% replaced by the index. Otherwise a new model is written
     each time to the same file.
 */
-class IMPATOMEXPORT WritePDBOptimizerState : public kernel::OptimizerState {
+class IMPATOMEXPORT WritePDBOptimizerState : public OptimizerState {
   std::string filename_;
-  kernel::ParticleIndexes pis_;
+  ParticleIndexes pis_;
 
  public:
-  WritePDBOptimizerState(kernel::Model *m,
-                         const kernel::ParticleIndexesAdaptor &pis,
+  WritePDBOptimizerState(Model *m,
+                         const ParticleIndexesAdaptor &pis,
                          std::string filename);
   WritePDBOptimizerState(const atom::Hierarchies mh, std::string filename);
 
  protected:
   virtual void do_update(unsigned int call) IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(WritePDBOptimizerState);
 };
 

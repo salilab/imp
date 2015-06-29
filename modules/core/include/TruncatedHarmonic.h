@@ -10,7 +10,7 @@
 #include <IMP/core/core_config.h>
 #include "internal/truncated_harmonic.h"
 #include <IMP/UnaryFunction.h>
-#include <IMP/base/object_macros.h>
+#include <IMP/object_macros.h>
 #include <IMP/utility.h>
 
 IMPCORE_BEGIN_NAMESPACE

@@ -26,20 +26,20 @@ class IMPSYMMETRYEXPORT BallMover : public core::MonteCarloMover {
       \param[in] ctrs is a list of all cell centers
       \param[in] trs is the list of transformations from primitive to all cells
    */
-  BallMover(kernel::Particle *p, kernel::Particles ps, Float max_tr,
+  BallMover(Particle *p, Particles ps, Float max_tr,
             algebra::Vector3Ds ctrs, algebra::Transformation3Ds trs);
 
  protected:
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(BallMover);
 
  private:
   //! Master particle
-  IMP::base::PointerMember<kernel::Particle> p_;
+  IMP::PointerMember<Particle> p_;
   //! List of slave particles
-  kernel::Particles ps_;
+  Particles ps_;
   //! Maximum translation
   Float max_tr_;
   //! List of centers of all (including primitive) cells

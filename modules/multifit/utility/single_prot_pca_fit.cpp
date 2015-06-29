@@ -14,7 +14,7 @@
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>
 // imp
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/rigid_fitting.h>
 #include <IMP/em/MRCReaderWriter.h>
@@ -25,7 +25,7 @@
 #include <IMP/em/converters.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/atom/pdb.h>
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/atom/force_fields.h>
 #include <IMP/atom/distance.h>
 #include <IMP/core/rigid_bodies.h>
@@ -43,7 +43,7 @@ em::DensityMap *set_map(const std::string &density_filename, float resolution,
   try {
     rmap = em::read_map(density_filename.c_str(), mrw);
   }
-  catch (const base::Exception &err) {
+  catch (const Exception &err) {
     std::cerr << "Problem reading density map:" << density_filename << ": "
               << err.what() << std::endl;
     exit(-1);
@@ -139,7 +139,7 @@ int parse_input(int argc, char *argv[], std::string &density_filename,
 }
 
 int main(int argc, char **argv) {
-  base::set_log_level(base::VERBOSE);
+  set_log_level(VERBOSE);
   std::string density_filename;
   float spacing, x_origin, y_origin, z_origin, resolution, threshold;
   std::string protein_filename, ref_filename, output_filename, sol_filename,
@@ -170,8 +170,8 @@ int main(int argc, char **argv) {
   log_file << "solution filename : " << sol_filename << std::endl;
   log_file << "individual fits : " << pdb_fit_filename << std::endl;
 
-  base::set_log_target(log_file);
-  base::set_log_level(base::VERBOSE);  // SILENT);//VERBOSE
+  set_log_target(log_file);
+  set_log_level(VERBOSE);  // SILENT);//VERBOSE
 
   std::cout << "============= parameters ============" << std::endl;
   std::cout << "density filename : " << density_filename << std::endl;
@@ -185,13 +185,13 @@ int main(int argc, char **argv) {
   std::cout << "solution filename : " << sol_filename << std::endl;
   std::cout << "individual fits : " << pdb_fit_filename << std::endl;
 
-  base::set_log_target(log_file);
+  set_log_target(log_file);
 
-  kernel::Model *mdl = new kernel::Model();
+  Model *mdl = new Model();
   atom::Hierarchy mh;
   mh = atom::read_pdb(protein_filename, mdl, new atom::CAlphaPDBSelector());
   core::RigidBody rb = atom::setup_as_rigid_body(mh);
-  kernel::ParticlesTemp mh_ps = core::get_leaves(mh);
+  ParticlesTemp mh_ps = core::get_leaves(mh);
   core::XYZs mh_xyz;
   mh_xyz = core::XYZs(mh_ps);
   // load the reference protein

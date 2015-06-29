@@ -43,39 +43,39 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.base.TERSE)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
+        # IMP.set_log_level(IMP.TERSE)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
         data = open(self.get_input_file_name('lyzexp_gpir.dat')).readlines()
         data = [list(map(float, d.split())) for d in data]
         self.q = [[i[0]] for i in data]
         self.I = [i[1] for i in data]
         self.err = [i[2] for i in data]
         self.N = 10
-        self.G = Scale.setup_particle(IMP.kernel.Particle(self.m), 3.0)
+        self.G = Scale.setup_particle(IMP.Particle(self.m), 3.0)
         self.G.set_nuisance_is_optimized(True)
-        self.Rg = Scale.setup_particle(IMP.kernel.Particle(self.m), 10.0)
+        self.Rg = Scale.setup_particle(IMP.Particle(self.m), 10.0)
         self.Rg.set_nuisance_is_optimized(True)
-        self.d = Scale.setup_particle(IMP.kernel.Particle(self.m), 4.0)
+        self.d = Scale.setup_particle(IMP.Particle(self.m), 4.0)
         self.d.set_nuisance_is_optimized(False)
-        self.s = Scale.setup_particle(IMP.kernel.Particle(self.m), 0.0)
+        self.s = Scale.setup_particle(IMP.Particle(self.m), 0.0)
         self.s.set_nuisance_is_optimized(False)
-        self.A = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.A = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.A.set_nuisance_is_optimized(False)
         self.mean = GeneralizedGuinierPorodFunction(
             self.G, self.Rg, self.d, self.s, self.A)
-        self.tau = Switching.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.tau = Switching.setup_particle(IMP.Particle(self.m), 1.0)
         self.tau.set_nuisance_is_optimized(True)
-        self.lam = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.lam.set_nuisance_is_optimized(True)
-        self.sig = Scale.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.sig = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.sig.set_nuisance_is_optimized(True)
         self.cov = Covariance1DFunction(self.tau, self.lam, 2.0)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
                                                         self.err, self.N, self.mean, self.cov, self.sig)
         self.gpr = IMP.isd.GaussianProcessInterpolationRestraint(
             self.m, self.gpi)
-        self.m.add_restraint(self.gpr)
+        self.sf = IMP.core.RestraintsScoringFunction([self.gpr])
         self.particles = [
             self.G,
             self.Rg,
@@ -105,10 +105,10 @@ class Tests(IMP.test.TestCase):
         pnum = 0
         values = linspace(1, 10, num=30)
         particle = self.particles[pnum]
-        PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-3)
@@ -120,10 +120,10 @@ class Tests(IMP.test.TestCase):
         pnum = 1
         values = linspace(1, 10, num=30)
         particle = self.particles[pnum]
-        PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-1)
@@ -135,10 +135,10 @@ class Tests(IMP.test.TestCase):
         pnum = 4
         values = range(1, 10)
         particle = self.particles[pnum]
-        PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, .1)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
@@ -150,10 +150,10 @@ class Tests(IMP.test.TestCase):
         pnum = 5
         values = linspace(.1, .9, num=30)
         particle = self.particles[pnum]
-        PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, .01)
             self.assertAlmostEqual(expected, observed, delta=5e-2)
@@ -165,10 +165,10 @@ class Tests(IMP.test.TestCase):
         pnum = 6
         values = linspace(.3, 2, num=30)
         particle = self.particles[pnum]
-        PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, self.sf.evaluate, False)
         for val in values:
             particle.set_nuisance(val)
-            ene = self.m.evaluate(True)
+            ene = self.sf.evaluate(True)
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, .02)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
@@ -184,12 +184,12 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             observed = self.gpr.get_hessian(False)[pa][pb]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-3)
 
@@ -204,12 +204,12 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             observed = self.gpr.get_hessian(False)[pa][pb]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-3)
 
@@ -224,12 +224,12 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             observed = self.gpr.get_hessian(False)[pa][pb]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-3)
 
@@ -244,12 +244,12 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             observed = self.gpr.get_hessian(False)[pa][pb]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-3)
 
@@ -264,13 +264,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 2][pb - 2]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -285,13 +285,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 2][pb - 2]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -306,13 +306,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 2][pb - 2]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -327,13 +327,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 2][pb - 2]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -348,13 +348,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 2][pb - 2]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -369,13 +369,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 2][pb - 2]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-3)
 
@@ -390,13 +390,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa][pb - 2]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -411,13 +411,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa][pb - 2]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -432,13 +432,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa][pb - 2]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -453,13 +453,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa][pb - 2]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -474,13 +474,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa][pb - 2]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -495,13 +495,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa][pb - 2]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -516,13 +516,13 @@ class Tests(IMP.test.TestCase):
         ppb = self.particles[pb]
         PFunc = MockFunc(ppb.set_nuisance,
                          lambda a: ppa.get_nuisance_derivative(), None,
-                         update=lambda: self.m.evaluate(True))
+                         update=lambda: self.sf.evaluate(True))
         for val in values:
             ppb.set_nuisance(val)
-            # IMP.base.set_log_level(IMP.base.TERSE)
+            # IMP.set_log_level(IMP.TERSE)
             # s and d not opt
             observed = self.gpr.get_hessian(False)[pa - 2][pb]
-            # IMP.base.set_log_level(0)
+            # IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected, observed, delta=1e-2)
 
@@ -584,10 +584,9 @@ class Tests(IMP.test.TestCase):
         self.sig.set_nuisance_is_optimized(False)
         target = 14.7
         # energy should lower if I move A closer to its minimum
-        # model.evaluate()
-        ene = self.m.evaluate(False)
+        ene = self.sf.evaluate(False)
         self.A.set_nuisance(target / 2.)
-        newene = self.m.evaluate(False)
+        newene = self.sf.evaluate(False)
         self.assertTrue(newene < ene)
         # gpr.evaluate()
         self.A.set_nuisance(0.)
@@ -597,10 +596,12 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(newene < ene)
         # an optimizer should be able to find the minimum
         cg = IMP.core.ConjugateGradients(self.m)
+        cg.set_scoring_function(self.sf)
         cg.optimize(100)
         self.assertAlmostEqual(self.A.get_nuisance(), target, delta=1e-1)
         # an optimizer should be able to find the minimum
         cg = IMP.gsl.ConjugateGradients(self.m)
+        cg.set_scoring_function(self.sf)
         cg.optimize(100)
         self.assertAlmostEqual(self.A.get_nuisance(), target, delta=1e-1)
 

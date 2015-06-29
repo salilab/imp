@@ -28,8 +28,8 @@ void SerialMover::do_reject() { movers_[imov_]->reject(); }
 
 void SerialMover::do_accept() { movers_[imov_]->accept(); }
 
-kernel::ModelObjectsTemp SerialMover::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
+ModelObjectsTemp SerialMover::do_get_inputs() const {
+  ModelObjectsTemp ret;
   for (unsigned int i = 0; i < movers_.size(); ++i) {
     ret += movers_[i]->get_inputs();
   }

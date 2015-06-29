@@ -19,6 +19,8 @@
 #include <IMP/Sampler.h>
 #include <IMP/ConfigurationSet.h>
 
+#include <boost/shared_ptr.hpp>
+
 IMPKINEMATICS_BEGIN_NAMESPACE
 
 // TODO: should move out of kinematics, or be in kinematic_algorithms
@@ -111,7 +113,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
 
  public:
   // Constructor
-  RRT(kernel::Model* m, DOFsSampler* sampler, LocalPlanner* planner,
+  RRT(Model* m, DOFsSampler* sampler, LocalPlanner* planner,
       const DOFs& cspace_dofs, unsigned int iteration_number = 1000,
       unsigned int tree_size = 100,
       unsigned int number_of_sampled_dofs = 0); // 0 for all dofs
@@ -151,6 +153,8 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
  private:
   RRTNode* get_q_near(const DOFValues& q_rand) const;
 
+  void check_initial_configuration(ScoringFunction *sf) const;
+
   void add_nodes(RRTNode* q_near, const std::vector<DOFValues>& new_nodes);
 
   // TODO: make it more general
@@ -165,7 +169,8 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
  private:
   DOFsSampler* dofs_sampler_;
   LocalPlanner* local_planner_;
-  typedef std::vector<RRTNode*> RRTTree;
+  typedef boost::shared_ptr<RRTNode> RRTNodePtr;
+  typedef std::vector<RRTNodePtr> RRTTree;
   RRTTree tree_;
   DOFs cspace_dofs_;               // configuration space dofs
   Parameters default_parameters_;  // limits for stop condition

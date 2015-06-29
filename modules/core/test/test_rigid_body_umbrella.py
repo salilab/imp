@@ -1,4 +1,3 @@
-import IMP.kernel
 import IMP.test
 import IMP.core
 
@@ -15,13 +14,13 @@ class RigidBodyTunnelerTest(IMP.test.TestCase):
         self.refcom = refcom
         refvecs = array([[0, 0, 0], [0, 1, 0], [-1, 0, 0]])
         self.partref = self.make_rb(refcom, *refvecs)
-        self.iref = self.partref[-1].get_index()
+        self.iref = self.partref[-1]
         # other rb : rotation of pi/2 around y and translation to (2,0,0)
         othcom = array([2, 0, 0])
         self.othcom = othcom
         othvecs = array([[0, 0, 0], [0, 0, -1], [0, 1, 0]])
         self.partoth = self.make_rb(othcom, *othvecs)
-        self.ioth = self.partoth[-1].get_index()
+        self.ioth = self.partoth[-1]
         # rbt
         self.k = 0.5
         self.alpha = 50

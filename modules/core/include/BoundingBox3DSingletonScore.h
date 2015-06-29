@@ -28,17 +28,17 @@ IMPCORE_BEGIN_NAMESPACE
  */
 template <class UF>
 class GenericBoundingBox3DSingletonScore : public SingletonScore {
-  IMP::base::PointerMember<UF> f_;
+  IMP::PointerMember<UF> f_;
   algebra::BoundingBoxD<3> bb_;
 
  public:
   GenericBoundingBox3DSingletonScore(UF *f, const algebra::BoundingBoxD<3> &bb);
 
-  virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
+  virtual double evaluate_index(Model *m, ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE {
-    return IMP::kernel::get_particles(m, pis);
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+    return IMP::get_particles(m, pis);
   }
   IMP_SINGLETON_SCORE_METHODS(GenericBoundingBox3DSingletonScore);
   IMP_OBJECT_METHODS(GenericBoundingBox3DSingletonScore);
@@ -57,7 +57,7 @@ GenericBoundingBox3DSingletonScore<UF>::GenericBoundingBox3DSingletonScore(
 }
 template <class UF>
 double GenericBoundingBox3DSingletonScore<UF>::evaluate_index(
-    kernel::Model *m, kernel::ParticleIndex pi,
+    Model *m, ParticleIndex pi,
     DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   core::XYZ d(m, pi);

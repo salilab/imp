@@ -4,9 +4,12 @@
 
 from __future__ import print_function
 import IMP.atom
+import sys
+
+IMP.setup_from_argv(sys.argv, "multiresolution")
 
 # Create an IMP model and add a heavy atom-only protein from a PDB file
-m = IMP.kernel.Model()
+m = IMP.Model()
 
 root = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("root"))
 rigid_body = IMP.core.RigidBody.setup_particle(

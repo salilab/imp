@@ -6,32 +6,35 @@ import IMP.domino
 import IMP.core
 import IMP.container
 import IMP.algebra
+import sys
 
-IMP.base.set_log_level(IMP.base.TERSE)
-m = IMP.kernel.Model()
+IMP.setup_from_argv(sys.argv, "merge tree")
+
+IMP.set_log_level(IMP.TERSE)
+m = IMP.Model()
 # don't print messages about evaluation
-m.set_log_level(IMP.base.SILENT)
+m.set_log_level(IMP.SILENT)
 
 bb = IMP.algebra.BoundingBox3D((0, 0, 0), (10, 10, 10))
 allc = []
 for i in range(0, 7):
-    p = IMP.kernel.Particle(m)
+    p = IMP.Particle(m)
     d = IMP.core.XYZR.setup_particle(
         p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 1))
     allc.append(d.get_coordinates())
 pst = IMP.domino.ParticleStatesTable()
 ss = IMP.domino.XYZStates(allc)
-for p in m.get_particles():
-    pst.set_particle_states(p, ss)
+for p in m.get_particle_indexes():
+    pst.set_particle_states(m.get_particle(p), ss)
 # generate a set of restraints based on the close pairs in this randomly
 # chosen configuration
 cp = IMP.core.GridClosePairsFinder()
 cp.set_distance(1)
-cps = cp.get_close_pairs(m.get_particles())
+cps = cp.get_close_pairs(m, m.get_particle_indexes())
 
 if len(cps) > 0:
     # one cannot create a container from an empty list
-    acp = IMP.container.ListPairContainer(cps)
+    acp = IMP.container.ListPairContainer(m, cps)
 else:
     acp = IMP.container.ListPairContainer(m)
 ps = IMP.core.SoftSpherePairScore(1)

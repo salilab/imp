@@ -11,7 +11,7 @@
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/rmf/restraint_io.h>
 #include <IMP/rmf/frames.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 
 namespace {
 bool recolor = false;
@@ -19,27 +19,27 @@ double score = std::numeric_limits<double>::max();
 std::string file_type = "auto";
 boost::int64_t frame = 0;
 boost::int64_t frame_step = 0;
-IMP::base::AddBoolFlag abf("recolor",
+IMP::AddBoolFlag abf("recolor",
                            "Recolor the hierarchies using the display colors",
                            &recolor);
-IMP::base::AddFloatFlag aff("score",
+IMP::AddFloatFlag aff("score",
                             "The upper bound for the restraints scores to"
                             " color the "
                             "restraints by score.",
                             &score);
-IMP::base::AddStringFlag asf("type", "pymol, chimera or auto (to use suffix)",
+IMP::AddStringFlag asf("type", "pymol, chimera or auto (to use suffix)",
                              &file_type);
-IMP::base::AddIntFlag aif("frame",
+IMP::AddIntFlag aif("frame",
                           "The frame index or a negative number for every"
                           " f frames",
                           &frame);
-IMP::base::AddIntFlag aiff("frame_step", "If non-zero output every n frames",
+IMP::AddIntFlag aiff("frame_step", "If non-zero output every n frames",
                            &frame_step);
 }
 
 int main(int argc, char **argv) {
   try {
-    IMP::Strings io = IMP::base::setup_from_argv(
+    IMP::Strings io = IMP::setup_from_argv(
         argc, argv, "Export an RMF file to a viewer", "input.rmf [output]", -1);
     std::string output;
     if (io.size() > 1) {
@@ -51,34 +51,34 @@ int main(int argc, char **argv) {
       return 1;
     }
     if (frame < 0) {
-      IMP::base::write_help();
+      IMP::write_help();
       return 1;
     }
     bool exec = false;
     if (output.empty()) {
       exec = true;
       if (file_type == "auto") {
-        IMP::base::write_help();
+        IMP::write_help();
         return 1;
       }
       if (file_type == "pymol") {
-        output = IMP::base::create_temporary_file_name("display", ".pym");
+        output = IMP::create_temporary_file_name("display", ".pym");
       } else if (file_type == "chimera") {
-        output = IMP::base::create_temporary_file_name("display", ".py");
+        output = IMP::create_temporary_file_name("display", ".py");
       } else {
-        IMP::base::write_help();
+        IMP::write_help();
         return 1;
       }
     }
     std::cout << "writing to file " << output << std::endl;
     RMF::FileConstHandle rh = RMF::open_rmf_file_read_only(io[0]);
-    IMP_NEW(IMP::kernel::Model, m, ());
+    IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchies hs = IMP::rmf::create_hierarchies(rh, m);
-    IMP::kernel::ParticlesTemp ps = IMP::rmf::create_particles(rh, m);
+    IMP::ParticlesTemp ps = IMP::rmf::create_particles(rh, m);
     IMP::Restraints rs = IMP::rmf::create_restraints(rh, m);
     IMP::display::Geometries gs = IMP::rmf::create_geometries(rh);
 
-    IMP::base::Pointer<IMP::display::Writer> w =
+    IMP::Pointer<IMP::display::Writer> w =
         IMP::display::create_writer(output);
     if (frame_step == 0) frame_step = std::numeric_limits<int>::max();
     int cur_frame = 0;
@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
       return 0;
     }
   }
-  catch (const IMP::base::Exception &e) {
+  catch (const IMP::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   }

@@ -48,7 +48,7 @@ the `distance_cutoff`.
 
 \note As with any invariant in \imp, the contents of the container will
 only be valid during restraint evaluation, or immediately following
-a call to kernel::Model::update().
+a call to Model::update().
 
 \note The ClosePairContainer is strongly associated with the
       SingletonContainerAdaptor provided to it in the constructor.
@@ -105,11 +105,11 @@ class IMPCONTAINEREXPORT ClosePairContainer :
   /**@}*/
   void set_slack(double s);
   double get_slack() const;
-  kernel::ParticleIndexPairs get_indexes() const;
-  kernel::ParticleIndexPairs get_range_indexes() const;
-  kernel::ModelObjectsTemp do_get_inputs() const;
+  ParticleIndexPairs get_indexes() const;
+  ParticleIndexPairs get_range_indexes() const;
+  ModelObjectsTemp do_get_inputs() const;
   void do_apply(const PairModifier *sm) const;
-  kernel::ParticleIndexes get_all_possible_indexes() const;
+  ParticleIndexes get_all_possible_indexes() const;
 
   /** Get the number of times this container has been asked to update its
       contents. */
@@ -141,8 +141,8 @@ IMP_OBJECTS(ClosePairContainer, ClosePairContainers);
     that is "typical" for the optimization.
 */
 IMPCONTAINEREXPORT double get_slack_estimate(
-    const kernel::ParticlesTemp &ps, double upper_bound, double step,
-    const kernel::RestraintsTemp &restraints, bool derivatives, Optimizer *opt,
+    const ParticlesTemp &ps, double upper_bound, double step,
+    const RestraintsTemp &restraints, bool derivatives, Optimizer *opt,
     ClosePairContainer *cpc);
 
 IMPCONTAINER_END_NAMESPACE

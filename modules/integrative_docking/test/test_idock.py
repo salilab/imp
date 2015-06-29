@@ -1,5 +1,4 @@
 import IMP.test
-import IMP.kernel
 import os
 import sys
 import shutil
@@ -275,7 +274,7 @@ Program parameters
         old_sys_argv = sys.argv
         try:
             # Boost parser cannot be called multiple times, so skip it
-            IMP.kernel.OptionParser._use_boost_parser = False
+            IMP.OptionParser._use_boost_parser = False
             # Instantiate all scorers
             sys.argv = [sys.argv[0], '--cxms', 'cxms.txt',
                         '--em2d', 'em2d_1.pgm', '--em2d', 'em2d_2.pgm',
@@ -291,7 +290,7 @@ Program parameters
             scorers = idock.parse_args()
             self.assertEqual(len(scorers), 6)
         finally:
-            IMP.kernel.OptionParser._use_boost_parser = True
+            IMP.OptionParser._use_boost_parser = True
             sys.argv = old_sys_argv
 
     def test_get_scorers(self):

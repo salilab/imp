@@ -1,6 +1,3 @@
-# NOTE: This file is generated from modules/core/tools/container_tempates/test.py
-# do not edit.
-
 from __future__ import print_function
 import IMP
 import IMP.test
@@ -80,13 +77,13 @@ class Tests(IMP.test.TestCase):
     """Tests for ClassnameContainer related objects"""
 
     def create_particle(self, m):
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         p.add_attribute(IMP.FloatKey("thekey"), float(1))
         return p
 
     def create_particle_pair(self, m):
-        p0 = IMP.kernel.Particle(m)
-        p1 = IMP.kernel.Particle(m)
+        p0 = IMP.Particle(m)
+        p1 = IMP.Particle(m)
         d0 = IMP.core.XYZ.setup_particle(p0)
         d1 = IMP.core.XYZ.setup_particle(p1)
         d0.set_coordinates(IMP.algebra.Vector3D(0, 0, 1))
@@ -96,11 +93,11 @@ class Tests(IMP.test.TestCase):
     def same(self, a, b):
         return a.get_name() == b.get_name()
 
-    def create_singleton_score_state(self, f, a, t):
-        return IMP.core.SingletonConstraint(f, a, t)
+    def create_singleton_score_state(self, f, a, m, t):
+        return IMP.core.SingletonConstraint(f, a, m, t.get_index())
 
-    def create_pair_score_state(self, f, a, t):
-        return IMP.core.PairConstraint(f, a, t)
+    def create_pair_score_state(self, f, a, m, t):
+        return IMP.core.PairConstraint(f, a, m, [x.get_index() for x in t])
 
     def create_particle_score(self):
         uf = IMP.core.Linear(0, 1)
@@ -114,15 +111,18 @@ class Tests(IMP.test.TestCase):
         """Testing ClassnamesConstraint"""
         # write increment an int field
         # call evaluate and check that it is incremented
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         print("start")
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         print("hi")
         c = IMP.container.ListClassnameContainer(m)
         cs = []
         for i in range(0, 30):
             t = self.create_FUNCTIONNAME(m)
-            c.add_FUNCTIONNAME(t)
+            if 'FUNCTIONNAME' == 'particle':
+                c.add(t.get_index())
+            else:
+                c.add([x.get_index() for x in t])
             cs.append(t)
         print("dl")
         k = IMP.IntKey("thevalue")
@@ -140,16 +140,16 @@ class Tests(IMP.test.TestCase):
         """Testing ClassnameConstraint"""
         # write increment an int field
         # call evaluate and check that it is incremented
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         print("start")
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         print("hi")
         t = self.create_FUNCTIONNAME(m)
         print("dl")
         k = IMP.IntKey("thevalue")
         f = ClassnameTestModifier(k)
         print("apply")
-        s = self.create_CLASSFUNCTIONNAME_score_state(f, None, t)
+        s = self.create_CLASSFUNCTIONNAME_score_state(f, None, m, t)
         m.add_score_state(s)
         print("add")
         m.update()

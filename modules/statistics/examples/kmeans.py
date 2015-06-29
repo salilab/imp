@@ -9,6 +9,9 @@
 
 import IMP.algebra
 import IMP.statistics
+import sys
+
+IMP.setup_from_argv(sys.argv, "kmeans")
 
 # generate some clusters of points
 vs = []

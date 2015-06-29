@@ -19,8 +19,8 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)
-        self.imp_model = IMP.kernel.Model()
+        IMP.set_log_level(IMP.SILENT)
+        self.imp_model = IMP.Model()
         self.load_data()
 
     def test_anchor_graph_formation(self):
@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(4, self.anchor_graph.get_number_of_edges())
 
     def test_probability_calculation(self):
-        p = IMP.kernel.Particle(self.imp_model)
+        p = IMP.Particle(self.imp_model)
         IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0, 0, 0))
         sols = IMP.multifit.read_fitting_solutions(
             self.get_input_file_name("1z5s_A_fitting_solutions.txt"))

@@ -6,8 +6,11 @@
 
 import IMP.atom
 import IMP.display
+import sys
 
-m = IMP.kernel.Model()
+IMP.setup_from_argv(sys.argv, "markers")
+
+m = IMP.Model()
 h = IMP.atom.read_pdb(IMP.atom.get_example_path("example_protein.pdb"),
                       m)
 # residues 100 and 153 are two residues that are close together

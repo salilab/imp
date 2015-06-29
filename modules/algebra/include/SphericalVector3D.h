@@ -10,9 +10,9 @@
 
 #include <IMP/algebra/algebra_config.h>
 #include "Vector3D.h"
-#include "IMP/base/exception.h"
+#include "IMP/exception.h"
 #include "constants.h"
-#include <IMP/base/showable_macros.h>
+#include <IMP/showable_macros.h>
 #include "GeometricPrimitiveD.h"
 #include <cmath>
 
@@ -46,7 +46,7 @@ class IMPALGEBRAEXPORT SphericalVector3D : public GeometricPrimitiveD<3> {
     if (apply_check) {
       if (!check(r, theta, psi)) {
         String msg = "SphericalCoords:: wrong SphericalCoords coordinates.";
-        throw base::ValueException(msg.c_str());
+        throw ValueException(msg.c_str());
       }
     }
     v_[0] = r;

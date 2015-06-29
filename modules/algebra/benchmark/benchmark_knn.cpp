@@ -5,9 +5,8 @@
 #include <IMP/algebra.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 using namespace IMP;
-using namespace IMP::base;
 using namespace IMP::algebra;
 using namespace IMP::benchmark;
 
@@ -60,7 +59,7 @@ void test_all(std::string name) {
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark nearest neighbor algos");
+  IMP::setup_from_argv(argc, argv, "Benchmark nearest neighbor algos");
 #ifdef IMP_BENCHMARK_USE_ANN
   {
     std::string name("ann");

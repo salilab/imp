@@ -9,15 +9,15 @@ class Tests(IMP.test.TestCase):
 
     def test_wlc(self):
         """Test that decay has the right halflife"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 100)]
+        m = IMP.Model()
+        ps = [m.add_particle("P%d" % i) for i in range(0, 100)]
         ap = []
         for i in range(0, len(ps)):
             for j in range(0, i):
                 ap.append((ps[i], ps[j]))
         cf = IMP.core.CoinFlipPairPredicate(.9)
-        dos = IMP.misc.DecayPairContainerOptimizerState(cf, ap, "decay")
-        dos.set_log_level(IMP.base.TERSE)
+        dos = IMP.misc.DecayPairContainerOptimizerState(m, cf, ap, "decay")
+        dos.set_log_level(IMP.TERSE)
         np = len(ap)
         dos.set_period(1)
         for i in range(0, 6):

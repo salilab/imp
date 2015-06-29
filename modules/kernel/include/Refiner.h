@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Refiner.h
+ *  \file IMP/Refiner.h
  *  \brief Refine a particle into a list of particles.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -8,12 +8,12 @@
 #ifndef IMPKERNEL_REFINER_H
 #define IMPKERNEL_REFINER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "Particle.h"
 #include "internal/IndexingIterator.h"
-#include <IMP/base/deprecation_macros.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/deprecation_macros.h>
+#include <IMP/check_macros.h>
 #include "model_object_helpers.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -31,7 +31,7 @@ class DerivativeAccumulator;
     @note it is assumed that refined particles belong to the same model
           as the coarse particle
 */
-class IMPKERNELEXPORT Refiner : public ParticleInputs, public base::Object {
+class IMPKERNELEXPORT Refiner : public ParticleInputs, public Object {
   struct Accessor;
   bool is_by_ref_;
 
@@ -83,7 +83,7 @@ class IMPKERNELEXPORT Refiner : public ParticleInputs, public base::Object {
     IMP_ALWAYS_CHECK(false,
                     "This refiner does not support"
                      " get_refined_indexes_by_ref()",
-                     base::ValueException);
+                     ValueException);
     IMP_UNUSED(m);
     IMP_UNUSED(pi);
   }

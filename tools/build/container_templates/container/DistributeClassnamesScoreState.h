@@ -2,8 +2,6 @@
  *  \file IMP/container/DistributeClassnamesScoreState.h
  *  \brief Apply a ClassnameScore to each Classname in a list.
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
@@ -16,7 +14,7 @@
 #include "DynamicListClassnameContainer.h"
 #include <IMP/ClassnamePredicate.h>
 #include <IMP/ClassnameContainer.h>
-#include <IMP/base/Vector.h>
+#include <IMP/Vector.h>
 #include <IMP/classname_macros.h>
 #include <boost/tuple/tuple.hpp>
 
@@ -32,10 +30,10 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \note The output containers contents are not necessarily disjoint.
 */
 class IMPCONTAINEREXPORT DistributeClassnamesScoreState : public ScoreState {
-  base::PointerMember<ClassnameContainer> input_;
-  typedef boost::tuple<base::Pointer<DynamicListClassnameContainer>,
-                       base::PointerMember<ClassnamePredicate>, int> Data;
-  base::Vector<Data> data_;
+  PointerMember<ClassnameContainer> input_;
+  typedef boost::tuple<Pointer<DynamicListClassnameContainer>,
+                       PointerMember<ClassnamePredicate>, int> Data;
+  Vector<Data> data_;
   mutable std::size_t input_version_;
   void update_lists_if_necessary() const;
 
@@ -55,8 +53,8 @@ class IMPCONTAINEREXPORT DistributeClassnamesScoreState : public ScoreState {
   }
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DistributeClassnamesScoreState);
 };
 

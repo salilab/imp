@@ -6,7 +6,7 @@
  *
  */
 #include <IMP/statistics/PartitionalClusteringWithCenter.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/check_macros.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 

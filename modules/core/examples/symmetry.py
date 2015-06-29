@@ -3,13 +3,16 @@
 
 import IMP.core
 import IMP.container
+import sys
 
-m = IMP.kernel.Model()
-m.set_log_level(IMP.base.SILENT)
+IMP.setup_from_argv(sys.argv, "symmetry example")
+
+m = IMP.Model()
+m.set_log_level(IMP.SILENT)
 ps = []
 # create 4 xyz particles
 for i in range(0, 4):
-    p = IMP.kernel.Particle(m)
+    p = IMP.Particle(m)
     ps.append(p)
     d = IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(.5, 0, 0))
     IMP.core.XYZR.setup_particle(p, 1)
@@ -28,18 +31,19 @@ for i, p in enumerate(ps[1:]):
     sm = IMP.core.TransformationSymmetry(tr)
     # set up a constraint for the one particle, if you have more than one with the same symmetry
     # transform, you should use an IMP.container.SingletonsConstraint.
-    c = IMP.core.SingletonConstraint(sm, None, p)
+    c = IMP.core.SingletonConstraint(sm, None, m, p)
     m.add_score_state(c)
-r = IMP.core.ExcludedVolumeRestraint(IMP.container.ListSingletonContainer(ps),
-                                     1)
-m.add_restraint(r)
+lsc = IMP.container.ListSingletonContainer(m, ps)
+r = IMP.core.ExcludedVolumeRestraint(lsc, 1)
+sf = IMP.core.RestraintsScoringFunction([r])
 
 d0 = IMP.core.XYZ(ps[0])
 # print only optimize the main particle
 d0.set_coordinates_are_optimized(True)
 
 opt = IMP.core.ConjugateGradients(m)
+opt.set_scoring_function(sf)
 opt.optimize(10)
-print("score is ", m.evaluate(False))
+print("score is ", sf.evaluate(False))
 for p in ps:
     print(p.get_name(), IMP.core.XYZ(p).get_coordinates())

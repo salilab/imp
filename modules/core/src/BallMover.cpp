@@ -7,7 +7,7 @@
 
 #include <IMP/core/BallMover.h>
 
-#include <IMP/base/random.h>
+#include <IMP/random.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/vector_generators.h>
 #include <boost/random/uniform_real.hpp>
@@ -15,12 +15,12 @@
 IMPCORE_BEGIN_NAMESPACE
 
 namespace {
-std::string get_ball_mover_name(kernel::Model *m, kernel::ParticleIndex pi) {
+std::string get_ball_mover_name(Model *m, ParticleIndex pi) {
   return "BallMover-" + m->get_particle(pi)->get_name();
 }
 }
 
-void BallMover::initialize(kernel::ParticleIndexes pis, FloatKeys keys,
+void BallMover::initialize(ParticleIndexes pis, FloatKeys keys,
                            double radius) {
   pis_ = pis;
   keys_ = keys;
@@ -28,28 +28,28 @@ void BallMover::initialize(kernel::ParticleIndexes pis, FloatKeys keys,
   originals_.resize(pis.size(), algebra::get_zero_vector_kd(keys.size()));
 }
 
-BallMover::BallMover(kernel::Model *m, kernel::ParticleIndex pi,
+BallMover::BallMover(Model *m, ParticleIndex pi,
                      const FloatKeys &keys, double radius)
     : MonteCarloMover(m, get_ball_mover_name(m, pi)) {
-  initialize(kernel::ParticleIndexes(1, pi), keys, radius);
+  initialize(ParticleIndexes(1, pi), keys, radius);
 }
 
-BallMover::BallMover(kernel::Model *m, kernel::ParticleIndex pi, double radius)
+BallMover::BallMover(Model *m, ParticleIndex pi, double radius)
     : MonteCarloMover(m, get_ball_mover_name(m, pi)) {
-  initialize(kernel::ParticleIndexes(1, pi), XYZ::get_xyz_keys(), radius);
+  initialize(ParticleIndexes(1, pi), XYZ::get_xyz_keys(), radius);
 }
 
 // backwards compat
-BallMover::BallMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars,
+BallMover::BallMover(const ParticlesTemp &sc, const FloatKeys &vars,
                      double max)
     : MonteCarloMover(sc[0]->get_model(), "BallMover%1%") {
-  initialize(kernel::get_indexes(sc), vars, max);
+  initialize(get_indexes(sc), vars, max);
 }
 
 // backwards compat
-BallMover::BallMover(const kernel::ParticlesTemp &sc, double max)
+BallMover::BallMover(const ParticlesTemp &sc, double max)
     : MonteCarloMover(sc[0]->get_model(), "XYZBallMover%1%") {
-  initialize(kernel::get_indexes(sc), XYZ::get_xyz_keys(), max);
+  initialize(get_indexes(sc), XYZ::get_xyz_keys(), max);
 }
 
 MonteCarloMoverResult BallMover::do_propose() {
@@ -82,8 +82,8 @@ void BallMover::do_reject() {
   }
 }
 
-kernel::ModelObjectsTemp BallMover::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret(pis_.size());
+ModelObjectsTemp BallMover::do_get_inputs() const {
+  ModelObjectsTemp ret(pis_.size());
   for (unsigned int i = 0; i < pis_.size(); ++i) {
     ret[i] = get_model()->get_particle(pis_[i]);
   }

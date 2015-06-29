@@ -21,7 +21,7 @@ class IMPGSLEXPORT QuasiNewton : public GSLOptimizer {
   double initial_step_, line_step_, min_gradient_;
 
  public:
-  QuasiNewton(kernel::Model *m);
+  QuasiNewton(Model *m);
 
   // default 0.01
   void set_initial_step(double length) {

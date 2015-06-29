@@ -2,8 +2,6 @@
  *  \file IMP/container/PredicateClassnamesRestraint.h
  *  \brief Apply a ClassnameScore to each Classname in a list.
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
@@ -30,10 +28,10 @@ IMPCONTAINER_BEGIN_NAMESPACE
     different predicate values for different orderings.
 */
 class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
-  base::PointerMember<kernel::ClassnamePredicate> predicate_;
-  base::PointerMember<kernel::ClassnameContainer> input_;
+  PointerMember<ClassnamePredicate> predicate_;
+  PointerMember<ClassnameContainer> input_;
   mutable boost::unordered_map<int, PLURALINDEXTYPE> lists_;
-  boost::unordered_map<int, base::PointerMember<ClassnameScore> > scores_;
+  boost::unordered_map<int, PointerMember<ClassnameScore> > scores_;
   mutable std::size_t input_version_;
   bool error_on_unknown_;
   void update_lists_if_necessary() const;
@@ -46,11 +44,11 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
 
   /** Apply the passed score to all pairs whose predicate values match
       the passed value.*/
-  void set_score(int predicate_value, kernel::ClassnameScore *score);
+  void set_score(int predicate_value, ClassnameScore *score);
 
   /** Apply this score to any pair whose predicate value does not match
       one passed to set_score().*/
-  void set_unknown_score(kernel::ClassnameScore *score);
+  void set_unknown_score(ClassnameScore *score);
 
   /** By default, it is an error if the predicate returns a value that is
       not known. If this is false, then they are silently skipped.
@@ -65,7 +63,7 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
  public:
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
       IMP_OVERRIDE;
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(PredicateClassnamesRestraint);
 
  private:

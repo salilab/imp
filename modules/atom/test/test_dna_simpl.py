@@ -10,7 +10,7 @@ class Tests(IMP.test.TestCase):
 
     def test_bonded(self):
         """Test simplifying DNA"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.get_input_file_name("dna.pdb"), m)
 
         hs = IMP.atom.create_simplified_along_backbone(
@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
 
     def test_bonded2(self):
         """Test simplifying DNA 2"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = IMP.atom.read_pdb(self.get_input_file_name("dna.pdb"), m)
 
         hs = IMP.atom.create_simplified_along_backbone(

@@ -9,7 +9,7 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <boost/math/special_functions/bessel.hpp>
@@ -25,10 +25,10 @@ IMPISD_BEGIN_NAMESPACE
     and \f$\kappa = 1/\sigma^2\f$.
  */
 
-class vonMises : public base::Object {
+class vonMises : public Object {
  public:
   vonMises(double x, double mu, double kappa)
-      : base::Object("von Mises %1%"), x_(x), mu_(mu) {
+      : Object("von Mises %1%"), x_(x), mu_(mu) {
     force_set_kappa(kappa);
   }
 

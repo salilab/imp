@@ -3,6 +3,8 @@ value_object_exceptions=['ElementTable']
 function_name_exceptions=['transform',
                           'BrownianDynamics.simulate',
                           'BrownianDynamics.simulate_wave',
+                          'BrownianDynamicsTAMD.simulate',
+                          'BrownianDynamicsTAMD.simulate_wave',
                           'MolecularDynamics.assign_velocities',
                           'VelocityScalingOptimizerState.rescale_velocities',
                           'Simulator.simulate',

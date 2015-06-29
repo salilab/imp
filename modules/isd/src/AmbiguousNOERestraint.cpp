@@ -18,10 +18,10 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-AmbiguousNOERestraint::AmbiguousNOERestraint(kernel::Model *m,
+AmbiguousNOERestraint::AmbiguousNOERestraint(Model *m,
                                              PairContainer *pc,
-                                             kernel::Particle *sigma,
-                                             kernel::Particle *gamma,
+                                             ParticleIndexAdaptor sigma,
+                                             ParticleIndexAdaptor gamma,
                                              double Vexp)
     : Restraint(m, "AmbiguousNOERestraint%1%"),
       pc_(pc),
@@ -51,8 +51,8 @@ double AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     vols.push_back(IMP::cube(tmp));  // store di^-6
     vol += vols.back();
   });
-  Scale gamma_scale(gamma_);
-  Scale sigma_scale(sigma_);
+  Scale gamma_scale(get_model(), gamma_);
+  Scale sigma_scale(get_model(), sigma_);
   double gamma_val = gamma_scale.get_scale();
   double sigma_val = sigma_scale.get_scale();
   double Icalc = gamma_val * vol;
@@ -91,10 +91,10 @@ double AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp AmbiguousNOERestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
+  ModelObjectsTemp ret;
   ret += IMP::get_particles(get_model(), pc_->get_all_possible_indexes());
-  ret.push_back(sigma_);
-  ret.push_back(gamma_);
+  ret.push_back(get_model()->get_particle(sigma_));
+  ret.push_back(get_model()->get_particle(gamma_));
 
   ret.push_back(pc_);
   return ret;

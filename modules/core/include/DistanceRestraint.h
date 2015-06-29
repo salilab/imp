@@ -14,7 +14,7 @@
 #include "XYZ.h"
 #include <IMP/generic.h>
 
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 
 #include <iostream>
 
@@ -31,27 +31,36 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT DistanceRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
-    public kernel::Restraint
+    public Restraint
 #else
     public IMP::internal::TupleRestraint<DistancePairScore>
 #endif
     {
  public:
   //! Create the distance restraint.
-  /** \param[in] score_func Scoring function for the restraint.
-      \param[in] a Pointer to first particle in distance restraint.
-      \param[in] b Pointer to second particle in distance restraint.
+  /** \param[in] m Model.
+      \param[in] score_func Scoring function for the restraint.
+      \param[in] a First particle in distance restraint.
+      \param[in] b Second particle in distance restraint.
       \param[in] name restraint name
    */
-  DistanceRestraint(UnaryFunction *score_func,
-                    kernel::Particle *a,
-                    kernel::Particle *b,
+  DistanceRestraint(Model *m, UnaryFunction *score_func,
+                    ParticleIndexAdaptor a,
+                    ParticleIndexAdaptor b,
                     std::string name = "DistanceRestraint %1%");
+
+#ifndef IMP_DOXYGEN
+  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
+  DistanceRestraint(UnaryFunction *score_func,
+                    Particle *a,
+                    Particle *b,
+                    std::string name = "DistanceRestraint %1%");
+#endif
 
 #ifdef SWIG
  protected:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const;
+  IMP::ModelObjectsTemp do_get_inputs() const;
   IMP_OBJECT_METHODS(DistanceRestraint);
 #endif
 };

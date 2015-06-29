@@ -29,7 +29,7 @@ class GaussianProcessInterpolationScoreState;
  * mean and covariance functions. It outputs the value of the posterior mean and
  * covariance functions at points requested by the user.
  */
-class IMPISDEXPORT GaussianProcessInterpolation : public base::Object {
+class IMPISDEXPORT GaussianProcessInterpolation : public Object {
  public:
   /** Constructor for the gaussian process
    * \param [in] x : a list of coordinates in N-dimensional space
@@ -51,7 +51,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object {
                                Floats sample_std, unsigned n_obs,
                                UnivariateFunction *mean_function,
                                BivariateFunction *covariance_function,
-                               kernel::Particle *sigma,
+                               Particle *sigma,
                                double sparse_cutoff = 1e-7);
 
   /** Get posterior mean and covariance functions, at the points requested
@@ -111,8 +111,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object {
   FloatsList get_posterior_covariance_hessian(Floats x, bool) const;
 
   // needed for restraints using gpi
-  kernel::ParticlesTemp get_input_particles() const;
-  ContainersTemp get_input_containers() const;
+  ModelObjectsTemp get_inputs() const;
 
   // call these if you called update() on the mean or covariance function.
   // it will force update any internal variables dependent on these functions.
@@ -231,16 +230,16 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object {
   FloatsList x_;    // abscissa
   unsigned n_obs_;  // number of observations
   // pointer to the prior mean function
-  IMP::base::PointerMember<UnivariateFunction> mean_function_;
+  IMP::PointerMember<UnivariateFunction> mean_function_;
   // pointer to the prior covariance function
-  IMP::base::PointerMember<BivariateFunction> covariance_function_;
+  IMP::PointerMember<BivariateFunction> covariance_function_;
   IMP_Eigen::VectorXd I_, m_;
   IMP_Eigen::MatrixXd W_, Omega_, Omi_;  // Omi = Omega^{-1}
   IMP_Eigen::DiagonalMatrix<double, IMP_Eigen::Dynamic> S_;
   IMP_Eigen::VectorXd OmiIm_;  // Omi * (I - m)
   bool flag_m_, flag_m_gpir_, flag_Omi_, flag_OmiIm_, flag_W_, flag_Omega_,
       flag_Omega_gpir_, flag_ldlt_;
-  IMP::base::Pointer<IMP::kernel::Particle> sigma_;
+  IMP::Pointer<IMP::Particle> sigma_;
   double cutoff_;
   double sigma_val_;  // to know if an update is needed
   IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> ldlt_;

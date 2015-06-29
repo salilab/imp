@@ -364,8 +364,8 @@ class SoapBondSeparation {
   }
 
   // Determine the number of bonds between the two atoms (or -1 if unconnected)
-  int get_bond_separation(kernel::Model *m,
-                          const kernel::ParticleIndexPair &p) const {
+  int get_bond_separation(Model *m,
+                          const ParticleIndexPair &p) const {
     Atom a1(m, p[0]);
     Atom a2(m, p[1]);
     Residue r1 = get_residue(a1);
@@ -407,8 +407,8 @@ class SoapBondSeparation {
     return bond_span_range_[0] != -1 || bond_span_range_[1] != -1;
   }
 
-  bool get_separation_ok(kernel::Model *m,
-                         const kernel::ParticleIndexPair &p) const {
+  bool get_separation_ok(Model *m,
+                         const ParticleIndexPair &p) const {
     if (!enabled()) {
       return true;
     } else {

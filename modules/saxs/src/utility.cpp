@@ -9,26 +9,26 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-Profile* compute_profile(IMP::kernel::Particles particles, float min_q,
-                         float max_q, float delta_q, FormFactorTable* ft,
-                         FormFactorType ff_type, float water_layer_c2, bool fit,
+Profile* compute_profile(Particles particles, double min_q,
+                         double max_q, double delta_q, FormFactorTable* ft,
+                         FormFactorType ff_type, double water_layer_c2, bool fit,
                          bool reciprocal, bool ab_initio, bool vacuum, std::string beam_profile_file) {
   IMP_NEW(Profile, profile, (min_q, max_q, delta_q));
   if (reciprocal) profile->set_ff_table(ft);
   if (beam_profile_file.size() > 0) profile->set_beam_profile(beam_profile_file);
 
   // compute surface accessibility and average radius
-  IMP::Floats surface_area;
+  Vector<double> surface_area;
   SolventAccessibleSurface s;
-  float average_radius = 0.0;
+  double average_radius = 0.0;
   if (water_layer_c2 != 0.0) {
     // add radius
     for (unsigned int i = 0; i < particles.size(); i++) {
-      float radius = ft->get_radius(particles[i], ff_type);
-      IMP::core::XYZR::setup_particle(particles[i], radius);
+      double radius = ft->get_radius(particles[i], ff_type);
+      core::XYZR::setup_particle(particles[i], radius);
       average_radius += radius;
     }
-    surface_area = s.get_solvent_accessibility(IMP::core::XYZRs(particles));
+    surface_area = s.get_solvent_accessibility(core::XYZRs(particles));
     average_radius /= particles.size();
     profile->set_average_radius(average_radius);
   }

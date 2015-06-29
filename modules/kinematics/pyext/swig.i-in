@@ -1,5 +1,3 @@
-%template(VectorOfDoubles) ::std::vector< double >;
-
 /* Tell swig how to treat various types when moving them to and from python. Among other
    things, they tell swig how to convert collections of C++ objects (eg ExampleRestraints)
    into python lists and back.
@@ -16,7 +14,9 @@ IMP_SWIG_OBJECT( IMP::kinematics, DihedralAngleRevoluteJoint, DihedralAngleRevol
 IMP_SWIG_OBJECT( IMP::kinematics, BondAngleRevoluteJoint, BondAngleRevoluteJoints);
 IMP_SWIG_OBJECT( IMP::kinematics, PrismaticJoint, PrismaticJoints);
 IMP_SWIG_OBJECT( IMP::kinematics, KinematicForest, KinematicForests);
+IMP_SWIG_OBJECT( IMP::kinematics, KinematicForestScoreState, KinematicForestScoreStates);
 IMP_SWIG_OBJECT( IMP::kinematics, CompositeJoint, CompositeJoints);
+IMP_SWIG_OBJECT( IMP::kinematics, RevoluteJointMover, RevoluteJointMovers);
 IMP_SWIG_OBJECT( IMP::kinematics, DOF, DOFs);
 IMP_SWIG_VALUE( IMP::kinematics, DOFValues, DOFValuesList);
 IMP_SWIG_VALUE( IMP::kinematics, DirectionalDOF, DirectionalDOFs);
@@ -34,7 +34,9 @@ IMP_SWIG_OBJECT( IMP::kinematics, UniformBackboneSampler, UniformBackboneSampler
 %include "IMP/kinematics/PrismaticJoint.h"
 %include "IMP/kinematics/CompositeJoint.h"
 %include "IMP/kinematics/revolute_joints.h"
+%include "IMP/kinematics/RevoluteJointMover.h"
 %include "IMP/kinematics/KinematicForest.h"
+%include "IMP/kinematics/KinematicForestScoreState.h"
 %include "IMP/kinematics/DOF.h"
 %include "IMP/kinematics/DOFValues.h"
 %include "IMP/kinematics/directional_DOFs.h"

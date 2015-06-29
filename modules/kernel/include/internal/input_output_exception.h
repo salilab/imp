@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base/exception.h
+ *  \file IMP/exception.h
  *  \brief Exception definitions and assertions.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,8 +9,8 @@
 #ifndef IMPKERNEL_INPUT_OUTPUT_EXCEPTION_H
 #define IMPKERNEL_INPUT_OUTPUT_EXCEPTION_H
 
-#include <IMP/kernel/kernel_config.h>
-#include <IMP/base/exception.h>
+#include <IMP/kernel_config.h>
+#include <IMP/exception.h>
 IMPKERNEL_BEGIN_NAMESPACE
 class ModelObject;
 IMPKERNEL_END_NAMESPACE
@@ -45,7 +45,7 @@ struct IMPKERNELEXPORT InputOutputException : public std::runtime_error {
   int get_operation() const { return operation_; }
   int get_entity() const { return entity_; }
   std::string get_key_name() const { return key_name_; }
-  std::string get_message(kernel::ModelObject *o) const;
+  std::string get_message(ModelObject *o) const;
 
  private:
   int particle_index_;

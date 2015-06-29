@@ -25,11 +25,11 @@ class Tests(IMP.test.TestCase):
 
     def test_it(self):
         """Test cover bond"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         ds = IMP.core.XYZRs()
         for i in range(0, 2):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZR.setup_particle(p)
             ps.append(p)
             ds.append(d)
@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
                                         5, 1)
         IMP.core.XYZR.setup_particle(b.get_particle())
         c = IMP.atom.CoverBond()
-        c.apply(b.get_particle())
+        c.apply_index(m, b)
         self.check_cover(b.get_particle(), ps)
 
 if __name__ == '__main__':

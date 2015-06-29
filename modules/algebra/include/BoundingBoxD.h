@@ -12,7 +12,7 @@
 #include "VectorD.h"
 #include "internal/utility.h"
 #include "algebra_macros.h"
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -72,7 +72,7 @@ class BoundingBoxD {
   BoundingBoxD(const VectorD<D> &lb, const VectorD<D> &ub) {
     b_[0] = lb;
     b_[1] = ub;
-    IMP_IF_CHECK(IMP::base::USAGE) {
+    IMP_IF_CHECK(IMP::USAGE) {
       for (unsigned int i = 0; i < lb.get_dimension(); ++i) {
         IMP_USAGE_CHECK(lb[i] <= ub[i], "Invalid bounding box");
       }
@@ -85,7 +85,7 @@ class BoundingBoxD {
   }
 
   //! Creating a bounding box from a set of points
-  BoundingBoxD(const base::Vector<VectorD<D> > &points) {
+  BoundingBoxD(const Vector<VectorD<D> > &points) {
     make_empty();
     for (unsigned int j = 0; j < points.size(); j++) {
       operator+=(points[j]);
@@ -271,9 +271,9 @@ inline double get_maximum_length(const BoundingBoxD<D> &a) {
 //! Return a list of the 2^D bounding points for the bounding box
 /** \see BoundingBoxD */
 template <int D>
-inline base::Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
+inline Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
   if (D == 1) {
-    base::Vector<VectorD<D> > ret(2);
+    Vector<VectorD<D> > ret(2);
     ret[0] = bb.get_corner(0);
     ret[1] = bb.get_corner(1);
     return ret;
@@ -287,8 +287,8 @@ inline base::Vector<VectorD<D> > get_vertices(const BoundingBoxD<D> &bb) {
     c1[i] = bb.get_corner(1)[i];
   }
   BoundingBoxD<internal::DMinus1<D>::D> bbm1(c0, c1);
-  base::Vector<VectorD<internal::DMinus1<D>::D> > recurse = get_vertices(bbm1);
-  base::Vector<VectorD<D> > ret;
+  Vector<VectorD<internal::DMinus1<D>::D> > recurse = get_vertices(bbm1);
+  Vector<VectorD<D> > ret;
   for (unsigned int i = 0; i < recurse.size(); ++i) {
     VectorD<D> cur;
     for (int j = 0; j < D - 1; ++j) {

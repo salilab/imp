@@ -20,12 +20,12 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
-        self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
-        self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
+        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        self.mu = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.x = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
         self.locations = [self.x, self.mu]
         self.all = self.locations + [self.sigma]
         self.DA = IMP.DerivativeAccumulator()
@@ -76,39 +76,35 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
     def testE(self):
         "Test LognormalRestraint(3) score"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            e = self.m.evaluate(False)
+            e = gr.evaluate(False)
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdx(self):
         "Test LognormalRestraint(3) x derivative"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            self.m.evaluate(True)
+            gr.evaluate(True)
             self.assertAlmostEqual(Nuisance(self.x).get_nuisance_derivative(),
                                    self.deriv_x(*self.all))
 
     def testdmu(self):
         "Test LognormalRestraint(3) mu derivative"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            self.m.evaluate(True)
+            gr.evaluate(True)
             self.assertAlmostEqual(Nuisance(self.mu).get_nuisance_derivative(),
                                    self.deriv_mu(*self.all))
 
     def testdsigma(self):
         "Test LognormalRestraint(3) sigma derivative"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            self.m.evaluate(True)
+            gr.evaluate(True)
             self.assertAlmostEqual(
                 Nuisance(self.sigma).get_nuisance_derivative(),
                 self.deriv_sigma(*self.all))
@@ -116,35 +112,31 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
     def testSanityPE(self):
         "Test if LognormalRestraint(3) prob is exp(-score)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             self.assertAlmostEqual(gr.get_probability(),
-                                   exp(-self.m.evaluate(False)), delta=0.001)
+                                   exp(-gr.evaluate(False)), delta=0.001)
 
     def testSanityEP(self):
         "Test if LognormalRestraint(3) score is -log(prob)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             expected = gr.get_probability()
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                                   self.m.evaluate(False), delta=0.001)
+                                   gr.evaluate(False), delta=0.001)
 
     def testFail(self):
         "Test failures of LognormalRestraint(3)"
-        if IMP.base.get_check_level() >= IMP.base.USAGE:
-            dummy = IMP.kernel.Particle(self.m)
-            self.assertRaises(
-                IMP.base.UsageException, LognormalRestraint, dummy,
-                self.all[1], self.all[2])
-            self.assertRaises(IMP.base.UsageException, LognormalRestraint,
-                              self.all[0], dummy, self.all[2])
-            self.assertRaises(IMP.base.UsageException, LognormalRestraint,
-                              self.all[0], self.all[1], dummy)
+        dummy = IMP.Particle(self.m)
+        self.assertRaisesUsageException(LognormalRestraint, dummy,
+                                        self.all[1], self.all[2])
+        self.assertRaisesUsageException(LognormalRestraint,
+                                        self.all[0], dummy, self.all[2])
+        self.assertRaisesUsageException(LognormalRestraint,
+                                        self.all[0], self.all[1], dummy)
 
 
 class TestLognormalRestraintSimple21(IMP.test.TestCase):
@@ -153,12 +145,12 @@ class TestLognormalRestraintSimple21(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
         self.sigma = 2.0
-        self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
-        self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.mu = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.x = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
         self.locations = [self.x, self.mu]
         self.all = self.locations + [self.sigma]
         self.DA = IMP.DerivativeAccumulator()
@@ -209,52 +201,47 @@ class TestLognormalRestraintSimple21(IMP.test.TestCase):
     def testE(self):
         "Test LognormalRestraint(21) score"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            e = self.m.evaluate(False)
+            e = gr.evaluate(False)
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdx(self):
         "Test LognormalRestraint(21) x derivative"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            self.m.evaluate(True)
+            gr.evaluate(True)
             self.assertAlmostEqual(Nuisance(self.x).get_nuisance_derivative(),
                                    self.deriv_x(*self.all))
 
     def testdmu(self):
         "Test LognormalRestraint(21) mu derivative"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            self.m.evaluate(True)
+            gr.evaluate(True)
             self.assertAlmostEqual(Nuisance(self.mu).get_nuisance_derivative(),
                                    self.deriv_mu(*self.all))
 
     def testSanityPE(self):
         "Test if LognormalRestraint(21) prob is exp(-score)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             self.assertAlmostEqual(gr.get_probability(),
-                                   exp(-self.m.evaluate(False)), delta=0.001)
+                                   exp(-gr.evaluate(False)), delta=0.001)
 
     def testSanityEP(self):
         "Test if LognormalRestraint(21) score is -log(prob)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             expected = gr.get_probability()
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                                   self.m.evaluate(False), delta=0.001)
+                                   gr.evaluate(False), delta=0.001)
 
 
 class TestLognormalRestraintSimple22(IMP.test.TestCase):
@@ -263,12 +250,12 @@ class TestLognormalRestraintSimple22(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
+        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
         self.mu = 1.0
-        self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.x = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
         self.locations = [self.x, self.mu]
         self.all = self.locations + [self.sigma]
         self.DA = IMP.DerivativeAccumulator()
@@ -319,29 +306,26 @@ class TestLognormalRestraintSimple22(IMP.test.TestCase):
     def testE(self):
         "Test LognormalRestraint(22) score"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            e = self.m.evaluate(False)
+            e = gr.evaluate(False)
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdx(self):
         "Test LognormalRestraint(22) x derivative"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            self.m.evaluate(True)
+            gr.evaluate(True)
             self.assertAlmostEqual(Nuisance(self.x).get_nuisance_derivative(),
                                    self.deriv_x(*self.all))
 
     def testdsigma(self):
         "Test LognormalRestraint(22) sigma derivative"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            self.m.evaluate(True)
+            gr.evaluate(True)
             self.assertAlmostEqual(
                 Nuisance(self.sigma).get_nuisance_derivative(),
                 self.deriv_sigma(*self.all))
@@ -349,23 +333,21 @@ class TestLognormalRestraintSimple22(IMP.test.TestCase):
     def testSanityPE(self):
         "Test if LognormalRestraint(22) prob is exp(-score)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             self.assertAlmostEqual(gr.get_probability(),
-                                   exp(-self.m.evaluate(False)), delta=0.001)
+                                   exp(-gr.evaluate(False)), delta=0.001)
 
     def testSanityEP(self):
         "Test if LognormalRestraint(22) score is -log(prob)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             expected = gr.get_probability()
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                                   self.m.evaluate(False), delta=0.001)
+                                   gr.evaluate(False), delta=0.001)
 
 
 class TestLognormalRestraintSimple23(IMP.test.TestCase):
@@ -374,11 +356,11 @@ class TestLognormalRestraintSimple23(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
-        self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
+        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        self.mu = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
         self.x = 2.0
         self.locations = [self.x, self.mu]
         self.all = self.locations + [self.sigma]
@@ -430,29 +412,26 @@ class TestLognormalRestraintSimple23(IMP.test.TestCase):
     def testE(self):
         "Test LognormalRestraint(23) score"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            e = self.m.evaluate(False)
+            e = gr.evaluate(False)
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdmu(self):
         "Test LognormalRestraint(23) mu derivative"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            self.m.evaluate(True)
+            gr.evaluate(True)
             self.assertAlmostEqual(Nuisance(self.mu).get_nuisance_derivative(),
                                    self.deriv_mu(*self.all))
 
     def testdsigma(self):
         "Test LognormalRestraint(23) sigma derivative"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            self.m.evaluate(True)
+            gr.evaluate(True)
             self.assertAlmostEqual(
                 Nuisance(self.sigma).get_nuisance_derivative(),
                 self.deriv_sigma(*self.all))
@@ -460,23 +439,21 @@ class TestLognormalRestraintSimple23(IMP.test.TestCase):
     def testSanityPE(self):
         "Test if LognormalRestraint(23) prob is exp(-score)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             self.assertAlmostEqual(gr.get_probability(),
-                                   exp(-self.m.evaluate(False)), delta=0.001)
+                                   exp(-gr.evaluate(False)), delta=0.001)
 
     def testSanityEP(self):
         "Test if LognormalRestraint(23) score is -log(prob)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             expected = gr.get_probability()
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                                   self.m.evaluate(False), delta=0.001)
+                                   gr.evaluate(False), delta=0.001)
 
 
 class TestLognormalRestraintSimple11(IMP.test.TestCase):
@@ -485,10 +462,10 @@ class TestLognormalRestraintSimple11(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.sigma = Scale.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
+        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
         self.mu = 1.0
         self.x = 2.0
         self.locations = [self.x, self.mu]
@@ -541,19 +518,17 @@ class TestLognormalRestraintSimple11(IMP.test.TestCase):
     def testE(self):
         "Test LognormalRestraint(11) score"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            e = self.m.evaluate(False)
+            e = gr.evaluate(False)
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdsigma(self):
         "Test LognormalRestraint(11) sigma derivative"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            self.m.evaluate(True)
+            gr.evaluate(True)
             self.assertAlmostEqual(
                 Nuisance(self.sigma).get_nuisance_derivative(),
                 self.deriv_sigma(*self.all))
@@ -561,23 +536,21 @@ class TestLognormalRestraintSimple11(IMP.test.TestCase):
     def testSanityPE(self):
         "Test if LognormalRestraint(11) prob is exp(-score)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             self.assertAlmostEqual(gr.get_probability(),
-                                   exp(-self.m.evaluate(False)), delta=0.001)
+                                   exp(-gr.evaluate(False)), delta=0.001)
 
     def testSanityEP(self):
         "Test if LognormalRestraint(11) score is -log(prob)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             expected = gr.get_probability()
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                                   self.m.evaluate(False), delta=0.001)
+                                   gr.evaluate(False), delta=0.001)
 
 
 class TestLognormalRestraintSimple12(IMP.test.TestCase):
@@ -586,11 +559,11 @@ class TestLognormalRestraintSimple12(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
         self.sigma = 2.0
-        self.mu = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        self.mu = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
         self.x = 2.0
         self.locations = [self.x, self.mu]
         self.all = self.locations + [self.sigma]
@@ -634,42 +607,38 @@ class TestLognormalRestraintSimple12(IMP.test.TestCase):
     def testE(self):
         "Test LognormalRestraint(12) score"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            e = self.m.evaluate(False)
+            e = gr.evaluate(False)
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdmu(self):
         "Test LognormalRestraint(12) mu derivative"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            self.m.evaluate(True)
+            gr.evaluate(True)
             self.assertAlmostEqual(Nuisance(self.mu).get_nuisance_derivative(),
                                    self.deriv_mu(*self.all))
 
     def testSanityPE(self):
         "Test if LognormalRestraint(12) prob is exp(-score)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             self.assertAlmostEqual(gr.get_probability(),
-                                   exp(-self.m.evaluate(False)), delta=0.001)
+                                   exp(-gr.evaluate(False)), delta=0.001)
 
     def testSanityEP(self):
         "Test if LognormalRestraint(12) score is -log(prob)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             expected = gr.get_probability()
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                                   self.m.evaluate(False), delta=0.001)
+                                   gr.evaluate(False), delta=0.001)
 
 
 class TestLognormalRestraintSimple13(IMP.test.TestCase):
@@ -678,12 +647,12 @@ class TestLognormalRestraintSimple13(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
         self.sigma = 2.0
         self.mu = 1.0
-        self.x = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 2.0)
+        self.x = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
         self.locations = [self.x, self.mu]
         self.all = self.locations + [self.sigma]
         self.DA = IMP.DerivativeAccumulator()
@@ -726,42 +695,38 @@ class TestLognormalRestraintSimple13(IMP.test.TestCase):
     def testE(self):
         "Test LognormalRestraint(13) score"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            e = self.m.evaluate(False)
+            e = gr.evaluate(False)
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdx(self):
         "Test LognormalRestraint(13) x derivative"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
-            self.m.evaluate(True)
+            gr.evaluate(True)
             self.assertAlmostEqual(Nuisance(self.x).get_nuisance_derivative(),
                                    self.deriv_x(*self.all))
 
     def testSanityPE(self):
         "Test if LognormalRestraint(13) prob is exp(-score)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             self.assertAlmostEqual(gr.get_probability(),
-                                   exp(-self.m.evaluate(False)), delta=0.001)
+                                   exp(-gr.evaluate(False)), delta=0.001)
 
     def testSanityEP(self):
         "Test if LognormalRestraint(13) score is -log(prob)"
         gr = LognormalRestraint(*self.all)
-        self.m.add_restraint(gr)
         for i in range(100):
             map(self.change_value, self.all)
             expected = gr.get_probability()
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                                   self.m.evaluate(False), delta=0.001)
+                                   gr.evaluate(False), delta=0.001)
 
 if __name__ == '__main__':
     IMP.test.main()

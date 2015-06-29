@@ -13,7 +13,7 @@
 #include <IMP/algebra/Vector2D.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/endian.h>
-#include <IMP/base/showable_macros.h>
+#include <IMP/showable_macros.h>
 #include <cstdio>
 #include <iostream>
 #include <fstream>

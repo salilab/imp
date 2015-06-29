@@ -25,7 +25,7 @@ Write output models.
 
 def run(asmb_fn, proteomics_fn, mapping_fn, combs_fn, model_output, max_comb):
     # get rmsd for subunits
-    mdl = IMP.kernel.Model()
+    mdl = IMP.Model()
     combs = IMP.multifit.read_paths(combs_fn)
     sd = IMP.multifit.read_settings(asmb_fn)
     sd.set_was_used(True)

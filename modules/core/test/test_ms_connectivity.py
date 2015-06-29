@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
 
         # Setup for example 1
-        self.m = IMP.kernel.Model()
+        self.m = IMP.Model()
         self.ps = self.create_particles_in_box(self.m, 6)
         self.ds = [IMP.core.XYZ(p) for p in self.ps]
         ub = IMP.core.HarmonicUpperBound(1.0, 0.1)
@@ -39,10 +39,10 @@ class Tests(IMP.test.TestCase):
         self.ds[3].add_attribute(idk, "B")
         self.ds[4].add_attribute(idk, "C")
         self.ds[5].add_attribute(idk, "D")
-        self.m.add_restraint(self.r)
+        self.sf = IMP.core.RestraintsScoringFunction([self.r])
 
         # Setup for example 2
-        self.m2 = IMP.kernel.Model()
+        self.m2 = IMP.Model()
         self.ps2 = self.create_particles_in_box(self.m2, 8)
         self.ds2 = [IMP.core.XYZ(p) for p in self.ps2]
         self.r2 = IMP.core.MSConnectivityRestraint(self.m2, self.ss)
@@ -70,11 +70,11 @@ class Tests(IMP.test.TestCase):
         self.ds2[5].add_attribute(idk, "C")
         self.ds2[6].add_attribute(idk, "C")
         self.ds2[7].add_attribute(idk, "D")
-        self.m2.add_restraint(self.r2)
+        self.sf2 = IMP.core.RestraintsScoringFunction([self.r2])
 
     def test_ms_connectivity_graph_1(self):
         """Test for the correctness of the graph 1."""
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
 
         self.ds[0].set_coordinates(IMP.algebra.Vector3D(0.0, 0.0, 0.0))  # A
         self.ds[1].set_coordinates(IMP.algebra.Vector3D(1.0, 1.0, 0.0))  # A
@@ -97,7 +97,7 @@ class Tests(IMP.test.TestCase):
 
     def test_ms_connectivity_graph_2(self):
         """Test for the correctness of the graph 2."""
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
 
         self.ds2[0].set_coordinates(IMP.algebra.Vector3D(1.0, 6.0, 0.0))  # A
         self.ds2[1].set_coordinates(IMP.algebra.Vector3D(3.0, 5.0, 0.0))  # A
@@ -122,9 +122,9 @@ class Tests(IMP.test.TestCase):
 
     def test_ms_connectivity(self):
         """Test for the connectivity restraint."""
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
 
-        self.randomize_particles(self.m.get_particles(), 50.0)
+        self.randomize_particles(self.ps, 50.0)
         self.ds[5].set_coordinates(IMP.algebra.Vector3D(1000, 1000, 1000))
 
 #        print 'BEFORE optimization'
@@ -133,10 +133,11 @@ class Tests(IMP.test.TestCase):
 #                if j > i:
 # print "distance from %d to %d is %s" % (i, j,
 # IMP.core.get_distance(self.ds[i], self.ds[j]))
-        score = self.m.evaluate(False)
+        score = self.sf.evaluate(False)
 #        print 'Score = ', score
 
         o = IMP.core.ConjugateGradients(self.m)
+        o.set_scoring_function(self.sf)
         o.set_threshold(1e-4)
         o.optimize(100)
 
@@ -156,13 +157,13 @@ class Tests(IMP.test.TestCase):
                 i_connected = i_connected or ok[i][j]
 #            self.assertTrue(i_connected or i==5, "Point %d is not connected" %(i))
 
-        score = self.m.evaluate(False)
+        score = self.sf.evaluate(False)
         self.assertLess(score, 10, "Score too high")
 #        print 'Score = ', score
         pps = self.r.get_connected_pairs()
         lscore = 0
         for p in pps:
-            lscore = lscore + self.ss.evaluate((p[0], p[1]), None)
+            lscore = lscore + self.ss.evaluate_index(self.m, (p[0], p[1]), None)
         self.assertAlmostEqual(score, lscore, delta=.1)
 #        self.assertGreaterEqual(sum, 4, "Wrong number of close pairs")
 

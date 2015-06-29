@@ -26,7 +26,7 @@ for line in sys.stdin.readlines():
             self.skipTest("does not work on Windows")
         input_file_dir = os.path.dirname(self.get_input_file_name('3sfdA.pdb'))
         cmds = self.read_shell_commands(
-            '../../../doc/tutorial/emagefit_3sfd.dox')
+            '../../../doc/manual/emagefit_3sfd.dox')
         d = IMP.test.RunInTempDir()
         self.make_dummy_hex(input_file_dir)
         for c in cmds:

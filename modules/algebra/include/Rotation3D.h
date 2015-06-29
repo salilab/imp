@@ -15,7 +15,7 @@
 #include "GeometricPrimitiveD.h"
 #include <IMP/algebra/eigen3/Eigen/Dense>
 
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <cmath>
 #include <iostream>
 #include <algorithm>
@@ -85,7 +85,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   //! Create an invalid rotation
   Rotation3D() : v_(0, 0, 0, 0), has_cache_(false) {}
   //! Create a rotation from a quaternion
-  /** \throw base::ValueException if the rotation is not a unit vector.
+  /** \throw ValueException if the rotation is not a unit vector.
    */
   Rotation3D(double a, double b, double c, double d)
       : v_(a, b, c, d), has_cache_(false) {
@@ -146,7 +146,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
                    o[2];
         break;
       default:
-        IMP_THROW("Out of range coordinate " << coord, base::IndexException);
+        IMP_THROW("Out of range coordinate " << coord, IndexException);
     }
   }
 #endif
@@ -479,7 +479,7 @@ IMPALGEBRAEXPORT std::pair<Vector3D, double> get_axis_and_angle(
 
 typedef std::pair<Vector3D, double> AxisAnglePair;
 #ifndef IMP_DOXYGEN
-typedef base::Vector<AxisAnglePair> AxisAnglePairs;
+typedef Vector<AxisAnglePair> AxisAnglePairs;
 #endif
 
 IMPALGEBRA_END_NAMESPACE

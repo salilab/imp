@@ -11,8 +11,8 @@
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/RegistrationResult.h"
-#include "IMP/base/Object.h"
-#include <IMP/base/warning_macros.h>
+#include "IMP/Object.h"
+#include <IMP/warning_macros.h>
 #include <functional>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -52,7 +52,7 @@ g        depends on the function selected. Eg. EM2DScore.
 IMPEM2DEXPORT double get_global_score(const RegistrationResults &RRs);
 
 //! Base class for all scoring functions related to em2d
-class IMPEM2DEXPORT ScoreFunction : public IMP::base::Object {
+class IMPEM2DEXPORT ScoreFunction : public IMP::Object {
  public:
   ScoreFunction() : Object("ScoreFunction%1%") {}
 
@@ -84,7 +84,7 @@ class IMPEM2DEXPORT ChiSquaredScore : public ScoreFunction {
   ChiSquaredScore() : ScoreFunction() {}
 
  private:
-  mutable base::Pointer<Image> variance_;
+  mutable Pointer<Image> variance_;
   double get_private_score(Image *, Image *) const;
   void set_variance_imag_private(Image *var) { variance_ = var; }
 };

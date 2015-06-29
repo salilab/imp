@@ -12,7 +12,7 @@
 #include "bond_decorators.h"
 #include <IMP/SingletonScore.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -25,16 +25,16 @@ IMPATOM_BEGIN_NAMESPACE
     \see Bonded
  */
 class IMPATOMEXPORT BondSingletonScore : public SingletonScore {
-  IMP::base::PointerMember<UnaryFunction> f_;
+  IMP::PointerMember<UnaryFunction> f_;
 
  public:
   //! Use f to penalize deviations in length
   BondSingletonScore(UnaryFunction *f);
   UnaryFunction *get_unary_function() const { return f_; }
-  virtual double evaluate_index(kernel::Model *m, kernel::ParticleIndex p,
+  virtual double evaluate_index(Model *m, ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
   IMP_SINGLETON_SCORE_METHODS(BondSingletonScore);
   IMP_OBJECT_METHODS(BondSingletonScore);
 };

@@ -43,17 +43,19 @@ class IMPEMEXPORT SampledDensityMap : public DensityMap {
   //! Generate a sampled density map from the particles.
   /** \param[in] ps     particles with XYZ, radius and weight attributes
       \param[in] resolution   half width the Gaussian
-      \param[in] voxel_size
+      \param[in] voxel_size  voxel size in angstroms
+      \param[in] mass_key key to use to weight particles
       \param[in] sig_cutoff   Choose what should be the sigma cutoff for
                  accurate sampling. It is used in two functions;
                  (i)  to determine the size of the grid dimensions
                  (ii) to determine the voxels around the coords participating
                       in the sampling procedure.
+      \param[in] kt Type of kernel to use.
    */
-  SampledDensityMap(const kernel::ParticlesTemp &ps, emreal resolution,
+  SampledDensityMap(const ParticlesTemp &ps, emreal resolution,
                     emreal voxel_size,
                     IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key(),
-                    int sig_cuttoff = 3, KernelType kt = GAUSSIAN);
+                    int sig_cutoff = 3, KernelType kt = GAUSSIAN);
 
   //! Resample beads on an EM grid
   /**
@@ -76,13 +78,13 @@ class IMPEMEXPORT SampledDensityMap : public DensityMap {
                    this value before projection
   \param[in] mass_key key to obtain particle mass
   */
-  void project(const kernel::ParticlesTemp &ps, int x_margin, int y_margin,
+  void project(const ParticlesTemp &ps, int x_margin, int y_margin,
                int z_margin,
                algebra::Vector3D shift = algebra::Vector3D(0., 0., 0.),
                FloatKey mass_key = atom::Mass::get_mass_key());
 
   //! setting particles in case they were not set by the constructor
-  void set_particles(const kernel::ParticlesTemp &ps,
+  void set_particles(const ParticlesTemp &ps,
                      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
 
 #if !defined(DOXYGEN) && !defined(SWIG)
@@ -91,7 +93,7 @@ class IMPEMEXPORT SampledDensityMap : public DensityMap {
 
   inline const core::XYZRs &get_xyzr_particles() const { return xyzr_; }
   // would go away once we have a XYZRW decorator and the next function as well
-  inline const kernel::Particles &get_sampled_particles() const { return ps_; }
+  inline const Particles &get_sampled_particles() const { return ps_; }
   inline FloatKey get_weight_key() const { return weight_key_; }
 
   //! Get minimum density value between voxels that correspond to particles
@@ -105,7 +107,7 @@ class IMPEMEXPORT SampledDensityMap : public DensityMap {
       \return the particles bounding box
    */
   IMP::algebra::BoundingBoxD<3> calculate_particles_bounding_box(
-      const kernel::Particles &ps);
+      const Particles &ps);
 
   //! Determine the size of the grid as a function of the particles
   //! and the resolution.
@@ -122,7 +124,7 @@ class IMPEMEXPORT SampledDensityMap : public DensityMap {
   //! kernel handling
   KernelParameters kernel_params_;
   //  DistanceMask distance_mask_;
-  kernel::Particles ps_;
+  Particles ps_;
   core::XYZRs xyzr_;  // each voxel decorator would contain X,Y,Z,R
   FloatKey weight_key_;
   FloatKey x_key_, y_key_, z_key_;

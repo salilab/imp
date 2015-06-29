@@ -21,7 +21,7 @@
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <IMP/core/internal/grid_close_pairs_impl.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
-#include <IMP/kernel/generic.h>
+#include <IMP/generic.h>
 #include <IMP/algebra/eigen_analysis.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -29,7 +29,7 @@ IMPCORE_BEGIN_NAMESPACE
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
                                                  double k, double s,
                                                  std::string name)
-    : kernel::Restraint(sc->get_model(), name),
+    : Restraint(sc->get_model(), name),
       sc_(sc),
       initialized_(false),
       ssps_(new SoftSpherePairScore(k)) {
@@ -43,7 +43,7 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
                                                  SoftSpherePairScore *ssps,
                                                  ObjectKey ok, double s)
-    : kernel::Restraint(sc->get_model(), "ExcludedVolumeRestraint %1%"),
+    : Restraint(sc->get_model(), "ExcludedVolumeRestraint %1%"),
       sc_(sc),
       initialized_(false),
       ssps_(ssps) {
@@ -134,8 +134,8 @@ double ExcludedVolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da)
   if (!initialized_) {
     initialize();
   } else {
-    IMP_IF_CHECK(base::USAGE) {
-      kernel::Model *m = get_model();
+    IMP_IF_CHECK(USAGE) {
+      Model *m = get_model();
       IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
         if (RigidMember::get_is_setup(m, _1)) {
           RigidBody rb = RigidMember(m, _1).get_rigid_body();
@@ -166,11 +166,11 @@ double ExcludedVolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da)
   }
   IMP_UNUSED(recomputed);
   double ret = 0;
-  IMP_FOREACH(kernel::ParticleIndexPair pi, cur_list_) {
+  IMP_FOREACH(ParticleIndexPair pi, cur_list_) {
     ret += ssps_->evaluate_index(get_model(), pi, da);
   }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-  kernel::ParticleIndexes all = sc_->get_indexes();
+  ParticleIndexes all = sc_->get_indexes();
   if (all.size() < 3000) {
     double check = 0;
     int found = 0;
@@ -180,9 +180,9 @@ double ExcludedVolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da)
             !RigidMember::get_is_setup(get_model(), all[j]) ||
             RigidMember(get_model(), all[i]).get_rigid_body() !=
                 RigidMember(get_model(), all[j]).get_rigid_body()) {
-          kernel::ParticleIndexPair curp(all[i], all[j]);
+          ParticleIndexPair curp(all[i], all[j]);
           if (internal::get_filters_contains(
-                  get_model(), kernel::PairPredicates(pair_filters_begin(),
+                  get_model(), PairPredicates(pair_filters_begin(),
                                                       pair_filters_end()),
                   curp))
             continue;
@@ -194,7 +194,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da)
               std::find(cur_list_.begin(), cur_list_.end(), curp) !=
                   cur_list_.end() ||
               std::find(cur_list_.begin(), cur_list_.end(),
-                        kernel::ParticleIndexPair(all[j], all[i])) !=
+                        ParticleIndexPair(all[j], all[i])) !=
                   cur_list_.end();
           IMP_CHECK_VARIABLE(cur_found);
           IMP_INTERNAL_CHECK(
@@ -225,18 +225,18 @@ double ExcludedVolumeRestraint::unprotected_evaluate_if_good(
   if (!initialized_) initialize();
   IMP_USAGE_CHECK(!da, "Can't do derivatives");
   IMP_CHECK_CODE(double check = 0);
-  IMP_CHECK_CODE(kernel::ParticlesTemp all =
-                     IMP::get_particles(get_model(), sc_->get_indexes()));
-  IMP_CHECK_CODE(IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+  IMP_CHECK_CODE(ParticleIndexes all = sc_->get_indexes());
+  IMP_CHECK_CODE(IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     if (all.size() < 3000) {
+      Model *m = get_model();
       for (unsigned int i = 0; i < all.size(); ++i) {
         for (unsigned int j = 0; j < i; ++j) {
-          if (!RigidMember::get_is_setup(all[i]) ||
-              !RigidMember::get_is_setup(all[j]) ||
-              RigidMember(all[i]).get_rigid_body() !=
-                  RigidMember(all[j]).get_rigid_body()) {
-            check +=
-                ssps_->evaluate(kernel::ParticlePair(all[i], all[j]), nullptr);
+          if (!RigidMember::get_is_setup(m, all[i]) ||
+              !RigidMember::get_is_setup(m, all[j]) ||
+              RigidMember(m, all[i]).get_rigid_body() !=
+                  RigidMember(m, all[j]).get_rigid_body()) {
+            check += ssps_->evaluate_index(m, ParticleIndexPair(all[i], all[j]),
+                                           nullptr);
           }
         }
       }
@@ -246,7 +246,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate_if_good(
   for (unsigned int i = 0; i < cur_list_.size(); ++i) {
     double c = ssps_->evaluate_index(
         get_model(),
-        kernel::ParticleIndexPair(cur_list_[i][0], cur_list_[i][1]), da);
+        ParticleIndexPair(cur_list_[i][0], cur_list_[i][1]), da);
     cur += c;
     max -= c;
     if (max < 0) {
@@ -258,7 +258,7 @@ double ExcludedVolumeRestraint::unprotected_evaluate_if_good(
   }
   if (was_bad_ || get_if_moved()) {
     double ret = fill_list_if_good(max);
-    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       if (ret > max) {
         IMP_INTERNAL_CHECK(
             all.size() >= 3000 || check > max,
@@ -284,14 +284,14 @@ ModelObjectsTemp ExcludedVolumeRestraint::do_get_inputs() const {
 
 Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
   if (!initialized_) initialize();
-  kernel::Restraints ret;
+  Restraints ret;
   for (unsigned int i = 0; i < xyzrs_.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      ret.push_back(kernel::create_restraint(
+      ret.push_back(create_restraint(
           ssps_.get(),
-          kernel::ParticlePair(
-              kernel::internal::get_particle(get_model(), xyzrs_[i]),
-              kernel::internal::get_particle(get_model(), xyzrs_[j]))));
+          ParticlePair(
+              IMP::internal::get_particle(get_model(), xyzrs_[i]),
+              IMP::internal::get_particle(get_model(), xyzrs_[j]))));
       ret.back()->set_maximum_score(get_maximum_score());
       std::ostringstream oss;
       oss << get_name() << " " << i << " " << j;
@@ -299,21 +299,21 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
     }
   }
   IMP_NEW(TableRefiner, tr, ());
-  for (boost::unordered_map<kernel::ParticleIndex,
-                            kernel::ParticleIndexes>::const_iterator it =
+  for (boost::unordered_map<ParticleIndex,
+                            ParticleIndexes>::const_iterator it =
            constituents_.begin();
        it != constituents_.end(); ++it) {
-    tr->add_particle(kernel::internal::get_particle(get_model(), it->first),
-                     kernel::internal::get_particle(get_model(), it->second));
+    tr->add_particle(IMP::internal::get_particle(get_model(), it->first),
+                     IMP::internal::get_particle(get_model(), it->second));
   }
   IMP_NEW(ClosePairsPairScore, cpps, (ssps_, tr, 0));
   for (unsigned int i = 0; i < xyzrs_.size(); ++i) {
     for (unsigned int j = 0; j < rbs_.size(); ++j) {
       ret.push_back(IMP::create_restraint(
           cpps.get(),
-          kernel::ParticlePair(
-              kernel::internal::get_particle(get_model(), xyzrs_[i]),
-              kernel::internal::get_particle(get_model(), rbs_[j]))));
+          ParticlePair(
+              IMP::internal::get_particle(get_model(), xyzrs_[i]),
+              IMP::internal::get_particle(get_model(), rbs_[j]))));
       ret.back()->set_maximum_score(get_maximum_score());
       std::ostringstream oss;
       oss << get_name() << " " << i << " " << j;
@@ -322,11 +322,11 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
   }
   for (unsigned int i = 0; i < rbs_.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      ret.push_back(kernel::create_restraint(
+      ret.push_back(create_restraint(
           cpps.get(),
-          kernel::ParticlePair(
-              kernel::internal::get_particle(get_model(), rbs_[i]),
-              kernel::internal::get_particle(get_model(), rbs_[j]))));
+          ParticlePair(
+              IMP::internal::get_particle(get_model(), rbs_[i]),
+              IMP::internal::get_particle(get_model(), rbs_[j]))));
       ret.back()->set_maximum_score(get_maximum_score());
       std::ostringstream oss;
       oss << get_name() << " " << i << " " << j;
@@ -337,10 +337,10 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
 }
 
 Restraints ExcludedVolumeRestraint::do_create_current_decomposition() const {
-  kernel::Restraints ret;
+  Restraints ret;
   for (unsigned int i = 0; i < cur_list_.size(); ++i) {
-    base::Pointer<kernel::Restraint> rc = kernel::create_restraint(
-        ssps_.get(), kernel::internal::get_particle(get_model(), cur_list_[i]));
+    Pointer<Restraint> rc = create_restraint(
+        ssps_.get(), IMP::internal::get_particle(get_model(), cur_list_[i]));
     rc->set_was_used(true);
     double score = rc->unprotected_evaluate(nullptr);
     if (score != 0) {

@@ -29,20 +29,6 @@ IMPATOMEXPORT double get_rmsd_transforming_first(
  */
 IMPATOMEXPORT double get_rmsd(const core::XYZs& s0, const core::XYZs& s1);
 
-/**
-   Get the rmsd between two lists of particles.
-
-   \deprecated_at{2.2} Use get_rmsd_transforming_first()
- */
-template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
-IMPATOM_DEPRECATED_FUNCTION_DECL(2.2) inline double get_rmsd(
-    const Vector3DsOrXYZs0& m1, const Vector3DsOrXYZs1& m2,
-    const algebra::Transformation3D& tr_for_second =
-        algebra::get_identity_transformation_3d()) {
-  IMPATOM_DEPRECATED_FUNCTION_DEF(2.2, "Use it in IMP::algebra");
-  return algebra::get_rmsd_transforming_first(tr_for_second, m2, m1);
-}
-
 /** RMSD on a pair of Selections.*/
 IMPATOMEXPORT double get_rmsd(const Selection& s0, const Selection& s1);
 
@@ -50,31 +36,6 @@ IMPATOMEXPORT double get_rmsd(const Selection& s0, const Selection& s1);
 IMPATOMEXPORT double get_rmsd_transforming_first(
     const algebra::Transformation3D& tr, const Selection& s0,
     const Selection& s1);
-
-/**
-   \deprecated_at{2.2} Use get_rmsd_transforming_first()
- */
-IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
-IMPATOMEXPORT double get_rmsd(const Selection& s0, const Selection& s1,
-                              const algebra::Transformation3D& tr_for_second);
-
-/**
-   \deprecated_at{2.2} Use IMP::algebra::get_rmsd_transforming_first() or
-   IMP::algebra::get_rmsd()
- */
-IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
-IMPATOMEXPORT double get_rmsd(const algebra::Vector3Ds& s0,
-                              const algebra::Vector3Ds& s1,
-                              const algebra::Transformation3D& tr_for_second);
-
-/**
-   \deprecated_at{2.2} Use IMP::algebra::get_rmsd_transforming_first() or
-   IMP::algebra::get_rmsd()
- */
-IMPATOM_DEPRECATED_FUNCTION_DECL(2.2)
-IMPATOMEXPORT double get_rmsd(
-    const core::XYZs& s0, const core::XYZs& s1,
-    const IMP::algebra::Transformation3D& tr_for_second);
 
 //! Calculate distance the root mean square deviation between two sets of 3D points.
 /**
@@ -205,8 +166,9 @@ inline double get_drms(const Vector3DsOrXYZs0& m1, const Vector3DsOrXYZs1& m2) {
   return sqrt(drms);
 }
 
-/*! DRMS between to sets of rigid bodies. Points ij belonging to the same
-rigid body are not evaluated, as they are the same in both sets
+//! DRMS between two sets of rigid bodies.
+/** Points ij belonging to the same rigid body are not evaluated, as
+    they are the same in both sets
   \param[in] m1 set of points
   \param[in] m2 set of points
   \param[in] ranges of points considered to be the same rigid body. Eg,
@@ -328,7 +290,7 @@ IMPATOMEXPORT double get_pairwise_rmsd_score(const core::XYZs& ref1,
     radii and mass and (non-optional) coordinates. Either all particles
     must have mass or none of them.
 */
-IMPATOMEXPORT double get_radius_of_gyration(const kernel::ParticlesTemp& ps);
+IMPATOMEXPORT double get_radius_of_gyration(const ParticlesTemp& ps);
 
 IMPATOM_END_NAMESPACE
 

@@ -10,42 +10,44 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.TERSE)
+        IMP.set_log_level(IMP.TERSE)
 
     @IMP.test.expectedFailure
     def test_derivs(self):
         """Testing execution of derivative display support"""
         # note that there are no actual checks here at this point
         # also, will fail since display.BildWriter no longer exists
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         pts = [IMP.algebra.Vector3D(1, 0, 0), IMP.algebra.Vector3D(0, 1, 0),
                IMP.algebra.Vector3D(-1, 0, 0), IMP.algebra.Vector3D(0, -1, 0)]
 
         ps = []
         for i in range(0, 4):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             d = IMP.core.XYZ.setup_particle(p, pts[i])
             ps.append(p)
-        p = IMP.kernel.Particle(m)
+        p = IMP.Particle(m)
         d = IMP.core.XYZ.setup_particle(p)
         hd = IMP.core.Hierarchy.setup_particle(p, ps)
 
+        rs = []
         for i in range(0, 4):
             u = IMP.core.Harmonic(0, 1)
             s = IMP.core.DistanceToSingletonScore(u, pts[(i + 1) % 4])
             r = IMP.core.SingletonRestraint(s, ps[i])
-            m.add_restraint(r)
+            rs.append(r)
+        sf = IMP.core.RestraintsScoringFunction(rs)
 
-        m.evaluate(True)
+        sf.evaluate(True)
         w = IMP.display.BildWriter(self.get_tmp_file_name("deriv.bild"))
         for i in range(0, 4):
             w.add_geometry(IMP.core.XYZDerivativeGeometry(IMP.core.XYZ(ps[i])))
         del w
 
         rbd = IMP.core.RigidBody.setup_particle(p, IMP.core.XYZs(ps))
-        IMP.base.set_log_level(IMP.base.TERSE)
+        IMP.set_log_level(IMP.TERSE)
         print("eval")
-        m.evaluate(True)
+        sf.evaluate(True)
         w = IMP.display.BildWriter(self.get_tmp_file_name("qderiv.bild"))
         #oge= display.XYZRGeometryExtractor(FloatKey("hi"))
         for i in range(0, 4):

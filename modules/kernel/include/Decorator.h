@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Decorator.h    \brief The base class for decorators.
+ *  \file IMP/Decorator.h    \brief The base class for decorators.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -8,18 +8,18 @@
 #ifndef IMPKERNEL_DECORATOR_H
 #define IMPKERNEL_DECORATOR_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/WeakPointer.h>
+#include <IMP/Object.h>
+#include <IMP/WeakPointer.h>
 #include "Model.h"
 #include "Particle.h"
 #include "utility.h"
 #include "Constraint.h"
 #include "internal/utility.h"
-#include <IMP/base/utility_macros.h>
-#include <IMP/base/Vector.h>
-#include <IMP/base/Value.h>
+#include <IMP/utility_macros.h>
+#include <IMP/Vector.h>
+#include <IMP/Value.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class ParticleAdaptor;
@@ -28,7 +28,7 @@ class ParticleAdaptor;
 Representation of the structure in \imp is via a collection of
 Particle objects. However, since particles are general purpose, they
 provide a basic set of tools for managing the data (e.g.
-IMP::kernel::Model::add_attribute(), IMP::kernel::Model::get_value()
+IMP::Model::add_attribute(), IMP::Model::get_value()
 etc). Decorators wrap (or \quote{decorate}) particles to provide a much
 richer interface. For example, most particles have Cartesian
 coordinates. The class IMP::core::XYZ decorates such a particle to
@@ -44,8 +44,8 @@ print d0.get_coordinates()
 \par Decorator basics
 
 \note The `get_is_setup()` and `setup_particle()` functions mentioned below
-can take any of either an IMP::kernel::Model* and IMP::kernel::ParticleIndex
-pair, an IMP::kernel::Paricle* or another decorator to identify the particle.
+can take any of either an IMP::Model* and IMP::ParticleIndex
+pair, an IMP::Paricle* or another decorator to identify the particle.
 We use various of those below.
 
 Dealing with decorators and particles has two main parts
@@ -103,7 +103,7 @@ Implementors should consult IMP::example::ExampleDecorator,
 IMP_DECORATOR_METHODS(), IMP_DECORATOR_WITH_TRAITS_METHODS(),
 IMP_DECORATOR_GET().
 
-A decorator can be cast to a IMP::kernel::Particle* in C++. You have to
+A decorator can be cast to a IMP::Particle* in C++. You have to
 use the Decorator::get_particle() function in Python.
 
 \note It is undefined behavior to use a decorator constructed on
@@ -113,12 +113,12 @@ and then would not have this problem.
 
 See example::ExampleDecorator to see what a minimal decorator looks like.
 */
-class IMPKERNELEXPORT Decorator : public base::Value {
+class IMPKERNELEXPORT Decorator : public Value {
  private:
-  base::WeakPointer<Model> model_;
+  WeakPointer<Model> model_;
   ParticleIndex pi_;
   bool is_valid_; // false if constructed with default constructor
-  int compare(base::Object* o) const {
+  int compare(Object* o) const {
     if (o < get_particle())
       return -1;
     else if (o > get_particle())
@@ -142,19 +142,19 @@ class IMPKERNELEXPORT Decorator : public base::Value {
   typedef Particle* ParticleP;
 #endif
 #ifndef IMP_DOXYGEN
-  bool __eq__(base::Object* o) const { return operator==(o); }
-  bool __ne__(base::Object* o) const { return operator!=(o); }
-  bool __lt__(base::Object* o) const { return operator<(o); }
-  bool __gt__(base::Object* o) const { return operator>(o); }
-  bool __ge__(base::Object* o) const { return operator>=(o); }
-  bool __le__(base::Object* o) const { return operator<=(o); }
+  bool __eq__(Object* o) const { return operator==(o); }
+  bool __ne__(Object* o) const { return operator!=(o); }
+  bool __lt__(Object* o) const { return operator<(o); }
+  bool __gt__(Object* o) const { return operator>(o); }
+  bool __ge__(Object* o) const { return operator>=(o); }
+  bool __le__(Object* o) const { return operator<=(o); }
 #ifndef SWIG
-  bool operator==(base::Object* o) const { return (compare(o) == 0); }
-  bool operator!=(base::Object* o) const { return (compare(o) != 0); }
-  bool operator<(base::Object* o) const { return (compare(o) < 0); }
-  bool operator>(base::Object* o) const { return (compare(o) > 0); }
-  bool operator>=(base::Object* o) const { return !(compare(o) < 0); }
-  bool operator<=(base::Object* o) const { return !(compare(o) > 0); }
+  bool operator==(Object* o) const { return (compare(o) == 0); }
+  bool operator!=(Object* o) const { return (compare(o) != 0); }
+  bool operator<(Object* o) const { return (compare(o) < 0); }
+  bool operator>(Object* o) const { return (compare(o) > 0); }
+  bool operator>=(Object* o) const { return !(compare(o) < 0); }
+  bool operator<=(Object* o) const { return !(compare(o) > 0); }
 
   bool operator==(Particle* o) const { return (compare(o) == 0); }
   bool operator!=(Particle* o) const { return (compare(o) != 0); }
@@ -208,7 +208,13 @@ class IMPKERNELEXPORT Decorator : public base::Value {
 #ifndef IMP_DOXYGEN
 /** Check that the particle satisfies invariants registered by decorators.
  */
-IMPKERNELEXPORT void check_particle(Particle* p);
+IMPKERNELEXPORT void check_particle(Model *m, ParticleIndex pi);
+
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.5)
+inline void check_particle(Particle* p) {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.5, "Use the index version instead");
+  check_particle(p->get_model(), p->get_index());
+}
 #endif
 
 IMPKERNEL_END_NAMESPACE

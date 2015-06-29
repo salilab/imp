@@ -8,12 +8,15 @@ import IMP.algebra
 import IMP.domino
 import IMP.atom
 import math
+import sys
+
+IMP.setup_from_argv(sys.argv, "rigid body excluded volume")
 
 # create a rigid body per helix
 
 
 def create_representation():
-    m = IMP.kernel.Model()
+    m = IMP.Model()
     h0 = IMP.atom.read_pdb(IMP.domino.get_example_path(
         'helix_0.pdb'), m, IMP.atom.CAlphaPDBSelector())
     h1 = IMP.atom.read_pdb(IMP.domino.get_example_path(
@@ -30,7 +33,7 @@ def create_excluded_volume(m, helices):
     all = []
     for h in helices:
         all.extend(IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE))
-    lsc = IMP.container.ListSingletonContainer(all)
+    lsc = IMP.container.ListSingletonContainer(m, all)
     evr = IMP.core.ExcludedVolumeRestraint(lsc, 1)
     evr.set_maximum_score(.01)
     return [evr]
@@ -60,6 +63,7 @@ def create_discrete_states(m, helices):
 
 def create_sampler(m, rs, pst):
     s = IMP.domino.DominoSampler(m, pst)
+    s.set_restraints(rs)
     filters = []
     # do not allow particles with the same ParticleStates object
     # to have the same state index
@@ -82,7 +86,7 @@ def display(m, helices, name):
         g.set_color(IMP.display.get_display_color(i))
         w.add_geometry(g)
 
-IMP.base.set_log_level(IMP.base.SILENT)
+IMP.set_log_level(IMP.SILENT)
 print("creating representation")
 (m, helices) = create_representation()
 
@@ -94,16 +98,17 @@ pst = create_discrete_states(m, helices)
 
 print("creating sampler")
 s = create_sampler(m, rs, pst)
-m.set_log_level(IMP.base.SILENT)
-IMP.base.set_log_level(IMP.base.VERBOSE)
+m.set_log_level(IMP.SILENT)
+IMP.set_log_level(IMP.VERBOSE)
 print("sampling")
 cs = s.create_sample()
 
 print("found ", cs.get_number_of_configurations(), "solutions")
 score = []
+sf = IMP.core.RestraintsScoringFunction(rs)
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
-    ss = m.evaluate(False)
+    ss = sf.evaluate(False)
     score.append(ss)
     print("** solution number:", i, " is:", ss)
     display(m, helices, "sol_" + str(i) + ".pym")

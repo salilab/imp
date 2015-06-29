@@ -61,7 +61,7 @@ class IMPDISPLAYEXPORT GeometryProcessor {
                                 std::string);
 };
 #ifndef IMP_DOXYGEN
-typedef base::Vector<GeometryProcessor> GeometryProcessors;
+typedef Vector<GeometryProcessor> GeometryProcessors;
 #endif
 IMPDISPLAY_END_NAMESPACE
 

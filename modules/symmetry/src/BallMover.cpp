@@ -7,13 +7,13 @@
  */
 
 #include <IMP/symmetry/BallMover.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/log_macros.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra.h>
 
 IMPSYMMETRY_BEGIN_NAMESPACE
 
-BallMover::BallMover(kernel::Particle *p, kernel::Particles ps, Float max_tr,
+BallMover::BallMover(Particle *p, Particles ps, Float max_tr,
                      algebra::Vector3Ds ctrs, algebra::Transformation3Ds trs)
     : MonteCarloMover(p->get_model(), "BallMover%1%"),
       p_(p),
@@ -68,15 +68,15 @@ core::MonteCarloMoverResult BallMover::do_propose() {
     xyz.set_coordinates(nc);
   }
 
-  kernel::ParticlesTemp ret;
+  ParticlesTemp ret;
   ret.push_back(p_);
   ret.insert(ret.end(), ps_.begin(), ps_.end());
 
-  return core::MonteCarloMoverResult(kernel::get_indexes(ret), 1.0);
+  return core::MonteCarloMoverResult(get_indexes(ret), 1.0);
 }
 
 ModelObjectsTemp BallMover::do_get_inputs() const {
-  kernel::ParticlesTemp ret;
+  ParticlesTemp ret;
   ret.push_back(p_);
   ret.insert(ret.end(), ps_.begin(), ps_.end());
   return ret;

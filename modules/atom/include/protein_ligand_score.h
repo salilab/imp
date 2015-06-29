@@ -12,13 +12,13 @@
 #include <IMP/atom/atom_config.h>
 #include "Hierarchy.h"
 #include <IMP/core/StatisticalPairScore.h>
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 #include <limits>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -58,7 +58,7 @@ class IMPATOMEXPORT ProteinLigandAtomPairScore
  public:
   ProteinLigandAtomPairScore(double threshold =
                                  std::numeric_limits<double>::max());
-  ProteinLigandAtomPairScore(double threshold, base::TextInput data_file);
+  ProteinLigandAtomPairScore(double threshold, TextInput data_file);
   double get_maximum_distance() const { return threshold_; }
 };
 
@@ -74,7 +74,7 @@ class IMPATOMEXPORT ProteinLigandRestraint : public container::PairsRestraint {
   ProteinLigandRestraint(Hierarchy protein, Hierarchy ligand,
                          double threshold = std::numeric_limits<double>::max());
   ProteinLigandRestraint(Hierarchy protein, Hierarchy ligand, double threshold,
-                         base::TextInput data_file);
+                         TextInput data_file);
 };
 
 IMP_OBJECTS(ProteinLigandRestraint, ProteinLigandRestraints);

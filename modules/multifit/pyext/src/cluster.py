@@ -355,7 +355,7 @@ http://math.stanford.edu/~muellner/fastcluster.html
 
 
 def main():
-    IMP.base.set_log_level(IMP.WARNING)
+    IMP.set_log_level(IMP.WARNING)
     options, args = usage()
     asmb_fn = args[0]
     prot_fn = args[1]

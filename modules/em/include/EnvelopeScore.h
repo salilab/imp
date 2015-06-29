@@ -11,14 +11,14 @@
 
 #include <IMP/em/em_config.h>
 #include <IMP/em/MapDistanceTransform.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
 #include <vector>
 
 IMPEM_BEGIN_NAMESPACE
 
 //! class for envelope based scoring using MapDistanceTransform
-class IMPEMEXPORT EnvelopeScore : public IMP::base::Object {
+class IMPEMEXPORT EnvelopeScore : public IMP::Object {
  public:
   // init with MapDistanceTransform
   EnvelopeScore(const MapDistanceTransform* mdt);
@@ -60,8 +60,8 @@ class IMPEMEXPORT EnvelopeScore : public IMP::base::Object {
                const IMP::algebra::Transformation3D& trans) const;
 
   // methods required by Object
-  IMP::base::VersionInfo get_version_info() const {
-    return IMP::base::VersionInfo(get_module_name(), get_module_version());
+  IMP::VersionInfo get_version_info() const {
+    return IMP::VersionInfo(get_module_name(), get_module_version());
   }
 
   ~EnvelopeScore() {}

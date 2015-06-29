@@ -37,7 +37,7 @@ double JeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-kernel::ModelObjectsTemp JeffreysRestraint::do_get_inputs() const {
+ModelObjectsTemp JeffreysRestraint::do_get_inputs() const {
   return ParticlesTemp(1, p_);
 }
 

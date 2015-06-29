@@ -8,18 +8,18 @@ class Tests(IMP.test.TestCase):
 
     def add_residues(self, model, parent, num):
         for i in range(num):
-            r = IMP.atom.Residue.setup_particle(IMP.kernel.Particle(model),
+            r = IMP.atom.Residue.setup_particle(IMP.Particle(model),
                                                 IMP.atom.ALA)
             parent.add_child(r)
 
     def setup_hierarchy(self):
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
-        h = IMP.atom.Hierarchy.setup_particle(IMP.kernel.Particle(m))
+        h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         return m, ff, h
 
     def make_fragment(self, m, indexes):
-        f = IMP.atom.Fragment.setup_particle(IMP.kernel.Particle(m))
+        f = IMP.atom.Fragment.setup_particle(IMP.Particle(m))
         self.add_residues(m, f, len(indexes))
         f.set_residue_indexes(indexes)
         return f

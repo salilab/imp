@@ -251,7 +251,7 @@ ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold)
       threshold_(threshold) {}
 
 ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold,
-                                                       base::TextInput file)
+                                                       TextInput file)
     : P(get_protein_ligand_type_key(), threshold, file, ni + 1),
       threshold_(threshold) {}
 
@@ -273,7 +273,7 @@ void ProteinLigandRestraint::initialize(Hierarchy protein, Hierarchy ligand) {
 }
 
 namespace {
-PairScore* create_pair_score(double threshold, base::TextInput data) {
+PairScore* create_pair_score(double threshold, TextInput data) {
   return new ProteinLigandAtomPairScore(threshold, data);
 }
 PairScore* create_pair_score(double threshold) {
@@ -281,10 +281,13 @@ PairScore* create_pair_score(double threshold) {
 }
 PairContainer* create_pair_container(Hierarchy a, Hierarchy b,
                                      double threshold) {
-  kernel::ParticlesTemp aa = get_by_type(a, ATOM_TYPE);
-  kernel::ParticlesTemp ba = get_by_type(b, ATOM_TYPE);
-  IMP_NEW(container::ListSingletonContainer, lsca, (aa));
-  IMP_NEW(container::ListSingletonContainer, lscb, (ba));
+  Model *m = a->get_model();
+  ParticlesTemp aap = get_by_type(a, ATOM_TYPE);
+  ParticleIndexes aa = IMP::get_indexes(aap);
+  ParticlesTemp bap = get_by_type(b, ATOM_TYPE);
+  ParticleIndexes ba = IMP::get_indexes(bap);
+  IMP_NEW(container::ListSingletonContainer, lsca, (m, aa));
+  IMP_NEW(container::ListSingletonContainer, lscb, (m, ba));
   IMP_NEW(container::CloseBipartitePairContainer, ret, (lsca, lscb, threshold));
   return ret.release();
 }
@@ -302,7 +305,7 @@ ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
 ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
                                                Hierarchy ligand,
                                                double threshold,
-                                               base::TextInput data)
+                                               TextInput data)
     : container::PairsRestraint(create_pair_score(threshold, data),
                                 create_pair_container(protein, ligand,
                                                       threshold)) {

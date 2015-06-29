@@ -12,14 +12,14 @@
 #include "../Constraint.h"
 #include "../Restraint.h"
 #include "container_helpers.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include "../constants.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Score>
 class TupleRestraint : public Restraint {
-  IMP::base::PointerMember<Score> ss_;
+  IMP::PointerMember<Score> ss_;
   typename Score::IndexArgument v_;
 
  public:
@@ -83,7 +83,7 @@ inline Restraint *create_tuple_restraint(Score *s, Model *m,
     oss << s->get_name() << " on " << Showable(t);
     name = oss.str();
   }
-  return new internal::TupleRestraint<Score>(s, m, t, name);
+  return new IMP::internal::TupleRestraint<Score>(s, m, t, name);
 }
 
 template <class Score>
@@ -93,7 +93,7 @@ Restraints create_score_current_decomposition(
   if (score == 0) {
     return Restraints();
   } else {
-    base::Pointer<Restraint> ret = internal::create_tuple_restraint(
+    Pointer<Restraint> ret = IMP::internal::create_tuple_restraint(
         const_cast<Score *>(s), m, vt, s->get_name());
     ret->set_last_score(score);
     return Restraints(1, ret);

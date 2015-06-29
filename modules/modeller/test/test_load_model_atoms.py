@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
         m.build_sequence('C')
         a = modeller.alignment(env)
         a.append_model(m, align_codes='test', atom_files='test')
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         loader = IMP.modeller.ModelLoader(a[0])
         mp = loader.load_atoms(m)
         all_atoms = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
@@ -38,15 +38,13 @@ class Tests(IMP.test.TestCase):
         """Check reading a Modeller model with one protein"""
         i_num_res_type = IMP.atom.ResidueType.get_number_unique()
         i_num_atom_type = IMP.atom.AtomType.get_number_unique()
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         # Test both ModelLoader class and deprecated read_pdb function
         modmodel = modeller.scripts.complete_pdb(self.get_environ(),
                                                  self.get_input_file_name('single_protein.pdb'))
         loader = IMP.modeller.ModelLoader(modmodel)
 
-        for mp in (loader.load_atoms(m),
-                   IMP.modeller.read_pdb(
-                       self.get_input_file_name('single_protein.pdb'), m)):
+        def test_mp(mp):
             desc = IMP.core.get_all_descendants(mp)
             f_num_res_type = IMP.atom.ResidueType.get_number_unique()
             f_num_atom_type = IMP.atom.AtomType.get_number_unique()
@@ -70,12 +68,17 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(IMP.atom.Charged(at).get_charge(),
                                    0.16, delta=1e-5)
             self.assertEqual(IMP.atom.CHARMMAtom(at).get_charmm_type(), 'CT1')
+        test_mp(loader.load_atoms(m))
+        with IMP.allow_deprecated():
+            mp = IMP.modeller.read_pdb(
+                           self.get_input_file_name('single_protein.pdb'), m)
+        test_mp(mp)
 
     def test_bonds(self):
         """Check that Modeller bonds and angles are loaded"""
         modmodel = modeller.scripts.complete_pdb(self.get_environ(),
                                                  self.get_input_file_name('single_protein.pdb'))
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         mp = loader.load_atoms(m)
         all_atoms = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
@@ -95,7 +98,7 @@ class Tests(IMP.test.TestCase):
             """Nucleic acid terminal patches."""
             mdl.patch('5TER', mdl.residues[0])
             mdl.patch('3TER', mdl.residues[-1])
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         modmodel = modeller.scripts.complete_pdb(self.get_environ(),
                                                  self.get_input_file_name(
                                                      'single_dna.pdb'),

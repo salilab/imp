@@ -5,6 +5,9 @@
 
 from __future__ import print_function
 import IMP
+import sys
+
+IMP.setup_from_argv(sys.argv, "Optimizer state")
 
 # an optimizer state which prints out the last scores of some restraints.
 
@@ -22,21 +25,21 @@ class MyOptimizerState(IMP.OptimizerState):
 
 # some code to create and evaluate it
 k = IMP.FloatKey("a key")
-m = IMP.kernel.Model()
+m = IMP.Model()
 # we don't have any real restraints in the kernel
-r0 = IMP.kernel._ConstRestraint(m, [], 1)
+r0 = IMP._ConstRestraint(m, [], 1)
 r0.set_name("restraint 0")
 
-r1 = IMP.kernel._ConstRestraint(m, [], 2)
+r1 = IMP._ConstRestraint(m, [], 2)
 r1.set_name("restraint 1")
 
-rs = IMP.kernel.RestraintSet([r0, r1], 1.0)
+rs = IMP.RestraintSet([r0, r1], 1.0)
 sf = rs.create_scoring_function()
 
 os = MyOptimizerState([r0, r1])
 os.set_name("python optimizer state")
 # we don't have any optimizers either
-co = IMP.kernel._ConstOptimizer(m)
+co = IMP._ConstOptimizer(m)
 co.set_scoring_function(sf)
 co.add_optimizer_state(os)
 print(co.optimize(100))

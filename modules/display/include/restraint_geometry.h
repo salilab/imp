@@ -12,7 +12,7 @@
 #include "geometry_macros.h"
 #include "Colored.h"
 #include "declare_Geometry.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/PairContainer.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -25,25 +25,25 @@ IMPDISPLAY_BEGIN_NAMESPACE
     efficiency, it does not update the model.
 */
 class IMPDISPLAYEXPORT RestraintGeometry : public Geometry {
-  IMP::base::PointerMember<kernel::Restraint> r_;
-  IMP::base::Pointer<Model> m_;
+  IMP::PointerMember<Restraint> r_;
+  IMP::Pointer<Model> m_;
   //! Use this if the restraint is not part of the model
-  RestraintGeometry(kernel::Restraint *p, kernel::Model *m);
+  RestraintGeometry(Restraint *p, Model *m);
 
  public:
-  RestraintGeometry(kernel::Restraint *p);
-  kernel::Restraint *get_restraint() const { return r_; }
+  RestraintGeometry(Restraint *p);
+  Restraint *get_restraint() const { return r_; }
   virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RestraintGeometry);
 };
 
 //! Geometry for a whole set of restraints
 class IMPDISPLAYEXPORT RestraintSetGeometry : public Geometry {
-  IMP::base::Pointer<kernel::RestraintSet> r_;
+  IMP::Pointer<RestraintSet> r_;
 
  public:
-  RestraintSetGeometry(kernel::RestraintSet *p);
-  kernel::RestraintSet *get_restraint_set() const { return r_; }
+  RestraintSetGeometry(RestraintSet *p);
+  RestraintSet *get_restraint_set() const { return r_; }
   virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RestraintSetGeometry);
 };

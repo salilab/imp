@@ -27,10 +27,10 @@ class IMPCOREEXPORT RigidBodyMover : public MonteCarloMover {
   algebra::Transformation3D last_transformation_;
   Float max_translation_;
   Float max_angle_;
-  kernel::ParticleIndex pi_;
+  ParticleIndex pi_;
 
  public:
-  RigidBodyMover(kernel::Model *m, kernel::ParticleIndex pi,
+  RigidBodyMover(Model *m, ParticleIndex pi,
                  Float max_translation, Float max_rotation);
 
 #ifndef IMP_DOXYGEN
@@ -57,7 +57,7 @@ class IMPCOREEXPORT RigidBodyMover : public MonteCarloMover {
   Float get_maximum_rotation() const { return max_angle_; }
 
  protected:
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RigidBodyMover);

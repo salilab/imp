@@ -7,7 +7,6 @@ except ImportError:
     modeller = None
 import IMP
 import IMP.test
-import IMP.base
 import IMP.core
 import IMP.algebra
 import sys
@@ -41,14 +40,11 @@ class Tests(IMP.test.TestCase):
         self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
         # init IMP model ( the environment)
-        self.imp_model = IMP.kernel.Model()
+        self.imp_model = IMP.Model()
         self.particles = []
         # -  create a set of three particles in imp
         for i in range(3):
-            self.particles.append(IMP.kernel.Particle(self.imp_model))
-        # add IMP Restraints into the modeller scoring function
-        t = self.env.edat.energy_terms
-        t.append(IMP.modeller.IMPRestraints(self.particles))
+            self.particles.append(IMP.Particle(self.imp_model))
 
         # Load the same model into Modeller
         self.modeller_model = copy_to_modeller(self.env, self.particles)
@@ -88,7 +84,7 @@ class Tests(IMP.test.TestCase):
                 xorigin) + " y=" + str(
                 yorigin) + " z=" + str(
                 zorigin)))
-        mapfile = IMP.base.create_temporary_file_name('xxx.em')
+        mapfile = IMP.create_temporary_file_name('xxx.em')
         IMP.em.write_map(model_map, mapfile, erw)
         # EM restraint
         em_map = IMP.em.read_map(mapfile, erw)
@@ -106,7 +102,12 @@ class Tests(IMP.test.TestCase):
                                              [0., 0.],
                                              wei_key,
                                              1.0))
-        self.imp_model.add_restraint(ind_emrsr[0])
+        sf = IMP.core.RestraintsScoringFunction(ind_emrsr)
+
+        # add IMP Restraints into the modeller scoring function
+        t = self.modeller_model.env.edat.energy_terms
+        t.append(IMP.modeller.IMPRestraints(self.particles, sf))
+
         print(("EM-score score: " + str(self.atmsel.energy())))
         self.atmsel.randomize_xyz(1.0)
         nviol = self.atmsel.debug_function(
@@ -127,16 +128,12 @@ class Tests(IMP.test.TestCase):
         self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
         # init IMP model ( the environment)
-        self.imp_model = IMP.kernel.Model()
+        self.imp_model = IMP.Model()
         self.particles = []
 
         # -  create a set of three particles in imp
         for i in range(3):
-            self.particles.append(IMP.kernel.Particle(self.imp_model))
-
-        # add IMP.kernel.Restraints into the modeller scoring function
-        t = self.env.edat.energy_terms
-        t.append(IMP.modeller.IMPRestraints(self.particles))
+            self.particles.append(IMP.Particle(self.imp_model))
 
         # Load the same model into Modeller
         self.modeller_model = copy_to_modeller(self.env, self.particles)
@@ -176,7 +173,7 @@ class Tests(IMP.test.TestCase):
                 xorigin) + " y=" + str(
                 yorigin) + " z=" + str(
                 zorigin)))
-        mapfile = IMP.base.create_temporary_file_name('xxx.em')
+        mapfile = IMP.create_temporary_file_name('xxx.em')
         IMP.em.write_map(model_map, mapfile, erw)
         # EM restraint
         em_map = IMP.em.read_map(mapfile, erw)
@@ -191,7 +188,12 @@ class Tests(IMP.test.TestCase):
                                              [0, 0],
                                              wei_key,
                                              1.0))
-        self.imp_model.add_restraint(ind_emrsr[0])
+        sf = IMP.core.RestraintsScoringFunction(ind_emrsr)
+
+        # add IMP.Restraints into the modeller scoring function
+        t = self.modeller_model.env.edat.energy_terms
+        t.append(IMP.modeller.IMPRestraints(self.particles, sf))
+
         # move the particles outside of the density
         for p in self.particles:
             xyz = IMP.core.XYZ(p)
@@ -215,8 +217,8 @@ class Tests(IMP.test.TestCase):
         use_rigid_bodies = True
         bd = 10
         radius = 10
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         IMP.atom.Mass.setup_particle(p, 10000)
         d = IMP.core.XYZR.setup_particle(p)
         d.set_radius(radius)
@@ -238,15 +240,12 @@ class Tests(IMP.test.TestCase):
         dmap.calcRMS()
         print("AFTER calcRMS", dmap.get_rms_calculated())
         IMP.em.write_map(dmap, "map.mrc", IMP.em.MRCReaderWriter())
-        rs = IMP.kernel.RestraintSet(m)
-        m.add_restraint(rs)
-
         r = IMP.em.FitRestraint([fp], dmap)
-        rs.add_restraint(r)
+        sf = IMP.core.RestraintsScoringFunction([r])
         for i in range(0, 10):
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
             self.assertXYZDerivativesInTolerance(
-                m, d, tolerance=.05, percentage=5)
+                sf, d, tolerance=.05, percentage=5)
 
 
 if __name__ == '__main__':

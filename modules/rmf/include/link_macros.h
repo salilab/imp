@@ -10,7 +10,7 @@
 #include "links.h"
 #include "associations.h"
 #include "internal/link_helpers.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <RMF/FileHandle.h>
 
 // TODO: is there any good reason for the difference between InType(s)

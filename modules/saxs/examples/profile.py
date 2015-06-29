@@ -12,9 +12,11 @@ import IMP.atom
 import IMP.core
 import IMP.saxs
 import os
+import sys
 
+IMP.setup_from_argv(sys.argv, "profile")
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 
 #! read PDB
 mp = IMP.atom.read_pdb(IMP.saxs.get_example_path('6lyz.pdb'), m,

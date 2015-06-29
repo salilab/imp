@@ -1,6 +1,6 @@
 /**
  * \file IMP/multi_state/MultiStateModel.h
- * \brief base class for MultiStateModel
+ * \brief Keep track of multiple states
  *
  * \authors Dina Schneidman
  * Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -12,12 +12,14 @@
 
 #include <IMP/multi_state/multi_state_config.h>
 
-#include <vector>
+#include <IMP/Vector.h>
+
 #include <iostream>
 #include <iomanip>
 
 IMPMULTISTATE_BEGIN_NAMESPACE
 
+//! Keep track of multiple states
 class MultiStateModel {
 public:
   MultiStateModel(unsigned int size) : score_(0.0), zscore_(0.0) {
@@ -42,7 +44,7 @@ public:
 
   /* Access */
 
-  const std::vector<unsigned int>& get_states() const { return states_; }
+  const Vector<unsigned int>& get_states() const { return states_; }
 
   double get_score() const { return score_; }
 
@@ -60,11 +62,12 @@ public:
   }
 
 private:
-  std::vector<unsigned int> states_;
+  Vector<unsigned int> states_;
   double score_;
   double zscore_;
 };
 
+//! Utility class to help sort MultiStateModel objects
 class CompareMultiStateModels {
 public:
   bool operator()(const MultiStateModel& e1, const MultiStateModel& e2) const {

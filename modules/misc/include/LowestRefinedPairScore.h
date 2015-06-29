@@ -11,7 +11,7 @@
 #include <IMP/misc/misc_config.h>
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/Refiner.h>
 #include <IMP/pair_macros.h>
 
@@ -21,18 +21,18 @@ IMPMISC_BEGIN_NAMESPACE
 /** Score on the lowest of the pairs defined by refining the two particles.
  */
 class IMPMISCEXPORT LowestRefinedPairScore : public PairScore {
-  IMP::base::PointerMember<Refiner> r_;
-  IMP::base::PointerMember<PairScore> f_;
+  IMP::PointerMember<Refiner> r_;
+  IMP::PointerMember<PairScore> f_;
 
  public:
   /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs
    */
   LowestRefinedPairScore(Refiner *r, PairScore *f);
-  double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
+  double evaluate_index(Model *m, const ParticleIndexPair &p,
                         DerivativeAccumulator *da) const IMP_OVERRIDE;
-  kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const;
+  ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const;
   IMP_PAIR_SCORE_METHODS(LowestRefinedPairScore);
   IMP_OBJECT_METHODS(LowestRefinedPairScore);
   ;

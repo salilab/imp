@@ -1,7 +1,7 @@
 ## \example em/local_fitting.py
 # Shows how to locally refine a fit of a protein inside
 # its density using a MC/CG optimization protocol.
-# This example does not necessarily converges to the global minimum
+# This example does not necessarily converge to the global minimum
 # as that may require more optimization steps.
 # If one wishes to use this example as a template for real refinement purposes,
 # please adjust the parameters of the function IMP.em.local_rigid_fitting
@@ -13,10 +13,13 @@ import IMP.core
 import IMP.atom
 import random
 import math
+import sys
 
-IMP.base.set_log_level(IMP.base.SILENT)
-IMP.base.set_check_level(IMP.base.NONE)
-m = IMP.kernel.Model()
+IMP.setup_from_argv(sys.argv, "local fitting")
+
+IMP.set_log_level(IMP.SILENT)
+IMP.set_check_level(IMP.NONE)
+m = IMP.Model()
 # 1. setup the input protein
 # 1.1 select a selector.
 # using NonWater selector is more accurate but slower
@@ -41,7 +44,7 @@ dmap.get_header_writable().set_resolution(resolution)
 
 # 3.1 generate a sampled density map to the same resolution and spacing as
 # the target density map. Note that the function we are going to use
-# (cross_correlation_coefficient) expect to get the same map dimensions as
+# (cross_correlation_coefficient) expects to get the same map dimensions as
 # the target density map.
 sampled_input_density = IMP.em.SampledDensityMap(dmap.get_header())
 sampled_input_density.set_particles(ps)
@@ -53,10 +56,10 @@ best_score = IMP.em.CoarseCC.cross_correlation_coefficient(
     dmap, sampled_input_density, sampled_input_density.get_header().dmin)
 print("The CC score of the native transformation is:", best_score)
 
-# 4. To denostrate local fitting we locally rotate and translate the
+# 4. To demonstrate local fitting we locally rotate and translate the
 # protein and show how we can go back to the correct placement.
 
-# 4.1 define a local transformatione
+# 4.1 define a local transformation
 translation = IMP.algebra.get_random_vector_in(
     IMP.algebra.get_unit_bounding_box_3d())
 axis = IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
@@ -70,9 +73,9 @@ local_trans = IMP.algebra.Transformation3D(r, translation)
 # 4.2 set the protein as a rigid body
 IMP.atom.create_rigid_body(mh)
 prot_rb = IMP.core.RigidMember(IMP.core.get_leaves(mh)[0]).get_rigid_body()
-# 4.3 apply the trasnformation to the protein
+# 4.3 apply the transformation to the protein
 IMP.core.transform(prot_rb, local_trans)
-m.evaluate(False)  # to make sure the transformation was applied
+m.update()  # to make sure the transformation was applied
 # 4.4 print the new correlation score, should be lower than before
 print(len(IMP.core.get_leaves(mh)))
 IMP.atom.write_pdb(mh, "input2.pdb")
@@ -85,11 +88,11 @@ start_rmsd = IMP.atom.get_rmsd(IMP.core.XYZs(ps), IMP.core.XYZs(ps_ref))
 print("The start score is:", start_score, "with rmsd of:", start_rmsd)
 # 5. apply local fitting
 # 5.1 run local fitting
-print("preforming local refinement, may run for 3-4 minutes")
+print("performing local refinement, may run for 3-4 minutes")
 # translate the molecule to the center of the density
 IMP.core.transform(prot_rb, IMP.algebra.Transformation3D(
     IMP.algebra.get_identity_rotation_3d(), dmap.get_centroid() - IMP.core.get_centroid(ps)))
-m.evaluate(False)  # to make sure the transformation was applied
+m.update()  # to make sure the transformation was applied
 sampled_input_density.resample()
 sampled_input_density.calcRMS()
 rmsd = IMP.atom.get_rmsd(IMP.core.XYZs(ps), IMP.core.XYZs(ps_ref))
@@ -113,7 +116,7 @@ print("The start score is:", start_score, "with rmsd of:", start_rmsd)
 for i in range(fitting_sols.get_number_of_solutions()):
     IMP.core.transform(prot_rb, fitting_sols.get_transformation(i))
     # prot_rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(fitting_sols.get_transformation(i)))
-    m.evaluate(False)  # to make sure the transformation was applied
+    m.update()  # to make sure the transformation was applied
 # 5.2.2 calc rmsd to native configuration
     rmsd = IMP.atom.get_rmsd(
         IMP.core.XYZs(ps), IMP.core.XYZs(IMP.core.get_leaves(mh_ref)))

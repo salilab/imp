@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/model_object_helpers.h    \brief Single variable function.
+ *  \file IMP/model_object_helpers.h    \brief Single variable function.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
@@ -7,7 +7,7 @@
 #ifndef IMPKERNEL_MODEL_OBJECT_HELPERS_H
 #define IMPKERNEL_MODEL_OBJECT_HELPERS_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "ModelObject.h"
 #include "particle_index.h"
 #include "ScoreState.h"
@@ -19,20 +19,13 @@ class IMPKERNELEXPORT ParticleInputs {
  public:
   /** Get the list of ModelObjects read when passed the given list of particles
       is used.*/
-  ModelObjectsTemp get_inputs(kernel::Model *m,
+  ModelObjectsTemp get_inputs(Model *m,
                               const ParticleIndexes &pis) const;
-
-  /** \deprecated_at{2.1} Use get_inputs instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual ContainersTemp get_input_containers(Particle *p) const;
-  /** \deprecated_at{2.1} Use get_inputs instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual ParticlesTemp get_input_particles(Particle *p) const;
 
  protected:
   /** Overload this method to specify the inputs.*/
-  virtual ModelObjectsTemp do_get_inputs(kernel::Model *m,
-                                         const ParticleIndexes &pis) const;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis) const = 0;
   virtual ~ParticleInputs() {}
 };
 
@@ -42,20 +35,13 @@ class IMPKERNELEXPORT ParticleOutputs {
  public:
   /** Get the list of ModelObjects changed when passed the given list of
       particles is used.*/
-  ModelObjectsTemp get_outputs(kernel::Model *m,
+  ModelObjectsTemp get_outputs(Model *m,
                                const ParticleIndexes &pis) const;
-
-  /** \deprecated_at{2.1} Use get_inputs instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual ContainersTemp get_output_containers(Particle *p) const;
-  /** \deprecated_at{2.1} Use get_inputs instead. */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual ParticlesTemp get_output_particles(Particle *p) const;
 
  protected:
   /** Overload this method to specify the outputs.*/
-  virtual ModelObjectsTemp do_get_outputs(kernel::Model *m,
-                                          const ParticleIndexes &pis) const;
+  virtual ModelObjectsTemp do_get_outputs(Model *m,
+                                          const ParticleIndexes &pis) const = 0;
   virtual ~ParticleOutputs() {}
 };
 

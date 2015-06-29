@@ -5,13 +5,13 @@
  *
  */
 
-#include "IMP/base//log.h"
-#include "IMP/kernel/OptimizerState.h"
-#include "IMP/kernel/internal/utility.h"
+#include "IMP/log.h"
+#include "IMP/OptimizerState.h"
+#include "IMP/internal/utility.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-OptimizerState::OptimizerState(kernel::Model* m, std::string name)
+OptimizerState::OptimizerState(Model* m, std::string name)
     : ModelObject(m, name) {
   is_optimizing_ = false;
   reset();

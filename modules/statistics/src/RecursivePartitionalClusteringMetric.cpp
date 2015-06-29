@@ -27,7 +27,7 @@ unsigned int RecursivePartitionalClusteringMetric::get_number_of_items() const {
 PartitionalClustering *
 RecursivePartitionalClusteringMetric::create_full_clustering(
     PartitionalClustering *center_cluster) {
-  IMP::base::Vector<Ints> clusters(center_cluster->get_number_of_clusters());
+  IMP::Vector<Ints> clusters(center_cluster->get_number_of_clusters());
   Ints reps(clusters.size());
   for (unsigned int i = 0; i < clusters.size(); ++i) {
     Ints outer = center_cluster->get_cluster(i);

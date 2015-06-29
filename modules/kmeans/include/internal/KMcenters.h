@@ -2,7 +2,6 @@
  *  \file KMcenters.h
  *  \brief
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
 //----------------------------------------------------------------------
 //      File:           KMCenters.h
 //      Programmer:     David Mount
@@ -30,7 +29,7 @@
 #include <IMP/kmeans/kmeans_config.h>
 #include "KMeans.h"  // kmeans includes
 #include "KMdata.h"  // provides KMdata
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
@@ -43,7 +42,7 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //      points, but we just copy the pointer to the data set.
 //----------------------------------------------------------------------
 
-class IMPKMEANSEXPORT KMcenters : public base::Object {
+class IMPKMEANSEXPORT KMcenters : public Object {
  protected:
   int kCtrs;                      // number of centers
   KMdata* pts;                    // the data points

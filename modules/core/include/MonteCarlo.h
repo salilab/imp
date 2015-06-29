@@ -13,7 +13,7 @@
 #include "IncrementalScoringFunction.h"
 #include <IMP/Optimizer.h>
 #include <IMP/container_macros.h>
-#include <IMP/kernel/internal/container_helpers.h>
+#include <IMP/internal/container_helpers.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/Configuration.h>
 
@@ -44,7 +44,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT MonteCarlo : public Optimizer {
  public:
-  MonteCarlo(kernel::Model *m);
+  MonteCarlo(Model *m);
 
  protected:
   virtual Float do_optimize(unsigned int max_steps);
@@ -80,16 +80,6 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   /** \name Statistics
       @{
    */
-  //! Return how many times the optimizer has succeeded in taking a step
-  /** \deprecated_at{2.2} Use get_number_of_accepted_steps() instead
-    */
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.2)
-  unsigned int get_number_of_forward_steps() const {
-    IMPCORE_DEPRECATED_FUNCTION_DEF(2.2,
-                       "Use get_number_of_accepted_steps() instead.");
-    return get_number_of_accepted_steps();
-  }
-
   //! Return how many times the optimizer has stepped to lower score
   unsigned int get_number_of_downward_steps() const {
     return stat_downward_steps_taken_;
@@ -158,7 +148,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
  protected:
   /** Get all movable particles (those that can be moved by the current
       movers.*/
-  kernel::ParticleIndexes get_movable_particles() const;
+  ParticleIndexes get_movable_particles() const;
   /** Note that if return best is true, this will save the current
       state of the model. Also, if the move is accepted, the
       optimizer states will be updated.
@@ -186,7 +176,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
 
       The list of moved particles is passed.
    */
-  virtual double do_evaluate(const kernel::ParticleIndexes &moved) const {
+  virtual double do_evaluate(const ParticleIndexes &moved) const {
     IMP_UNUSED(moved);
     if (isf_) {
       isf_->set_moved_particles(moved);
@@ -209,15 +199,15 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   unsigned int stat_num_failures_;
   bool return_best_;
   double min_score_;
-  IMP::base::PointerMember<Configuration> best_;
+  IMP::PointerMember<Configuration> best_;
   ::boost::uniform_real<> rand_;
 
-  base::Pointer<IncrementalScoringFunction> isf_;
+  Pointer<IncrementalScoringFunction> isf_;
 };
 
 //! This variant of Monte Carlo that relaxes after each move
 class IMPCOREEXPORT MonteCarloWithLocalOptimization : public MonteCarlo {
-  IMP::base::PointerMember<Optimizer> opt_;
+  IMP::PointerMember<Optimizer> opt_;
   unsigned int num_local_;
 
  public:

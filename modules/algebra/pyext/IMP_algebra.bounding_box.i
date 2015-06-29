@@ -34,7 +34,7 @@ namespace IMP {
   }
 
   IMP::algebra::VectorD<D> __getitem__(unsigned int index) const {
-    if (index >= 2) throw IMP::base::IndexException("");
+    if (index >= 2) throw IMP::IndexException("");
     return self->get_corner(index);
   }
   /*void __setitem__(unsigned int index, double val) {
@@ -47,8 +47,8 @@ namespace IMP {
   void __iadd__(double o) { self->operator+=(o); }
   unsigned int __len__() {return 2;}
   /* Provide support for operator+ */
-  const IMP::algebra::BoundingBoxD<D> & __add__(const IMP::algebra::BoundingBoxD<D> &o) { return self->operator+(o); }
-  const IMP::algebra::BoundingBoxD<D> & __add__(const IMP::algebra::VectorD<D> &o) { return self->operator+(o); }
-  const IMP::algebra::BoundingBoxD<D> & __add__(double o) { return self->operator+(o); }
+  IMP::algebra::BoundingBoxD<D> __add__(const IMP::algebra::BoundingBoxD<D> &o) { return self->operator+(o); }
+  IMP::algebra::BoundingBoxD<D> __add__(const IMP::algebra::VectorD<D> &o) { return self->operator+(o); }
+  IMP::algebra::BoundingBoxD<D> __add__(double o) { return self->operator+(o); }
 };
 %ignore IMP::algebra::BoundingBoxD::BoundingBoxD();

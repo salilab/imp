@@ -91,8 +91,8 @@ void recursive_load_assignments(const Subset &s, ParticleStatesTable *pst,
     sat->load_assignments(s, pac);
   } else {
     int mp = s.size() / 2;
-    Subset s0(kernel::ParticlesTemp(s.begin(), s.begin() + mp));
-    Subset s1(kernel::ParticlesTemp(s.begin() + mp, s.end()));
+    Subset s0(ParticlesTemp(s.begin(), s.begin() + mp));
+    Subset s1(ParticlesTemp(s.begin() + mp, s.end()));
     IMP_NEW(PackedAssignmentContainer, pac0, ());
     pac0->set_was_used(true);
     IMP_NEW(PackedAssignmentContainer, pac1, ());
@@ -154,22 +154,22 @@ void RecursiveAssignmentsTable::load_assignments(
 
 namespace {
 
-typedef boost::unordered_map<kernel::Particle *, kernel::Particle *> IParent;
-typedef boost::unordered_map<kernel::Particle *, int> IRank;
+typedef boost::unordered_map<Particle *, Particle *> IParent;
+typedef boost::unordered_map<Particle *, int> IRank;
 typedef boost::associative_property_map<IParent> Parent;
 typedef boost::associative_property_map<IRank> Rank;
 typedef boost::disjoint_sets<Rank, Parent> UF;
 
 template <class It>
 ParticlesTemp get_sub_particles(const Subset &s, It b, It e) {
-  if (b == e) return kernel::ParticlesTemp();
-  return kernel::ParticlesTemp(boost::make_permutation_iterator(s.begin(), b),
+  if (b == e) return ParticlesTemp();
+  return ParticlesTemp(boost::make_permutation_iterator(s.begin(), b),
                                boost::make_permutation_iterator(s.end(), e));
 }
 
 template <class It>
 Subset get_sub_subset(const Subset &s, It b, It e) {
-  kernel::ParticlesTemp pt = get_sub_particles(s, b, e);
+  ParticlesTemp pt = get_sub_particles(s, b, e);
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (int i = 0; i < std::distance(b, e); ++i) {
       IMP_INTERNAL_CHECK(pt[i] == s[*(b + i)],
@@ -197,7 +197,7 @@ Assignment get_sub_assignment(const Subset &s, const Ints &ss,
 
 double evaluate_order(const Ints &order, const Subset &s,
                       const SubsetFilterTables &sft) {
-  kernel::ParticlesTemp sorted =
+  ParticlesTemp sorted =
       get_sub_particles(s, order.begin(), order.end());
   Subset sc(sorted);
   sorted.pop_back();
@@ -246,14 +246,14 @@ ParticlesTemp initialize_order(const Subset &s, const SubsetFilterTables &sft) {
   }
   IMP_IF_LOG(TERSE) {
     IMP_LOG_TERSE("Order for " << s << " is ");
-    kernel::ParticlesTemp ps(get_sub_particles(s, order.begin(), order.end()));
+    ParticlesTemp ps(get_sub_particles(s, order.begin(), order.end()));
     IMP_LOG_TERSE(ps << std::endl);
   }
   return get_sub_particles(s, order.begin(), order.end());
 }
 
 Assignment get_next_assignment_base(
-    Ints cur, const Ints &maxs, const base::Vector<SubsetFilters> &filters) {
+    Ints cur, const Ints &maxs, const Vector<SubsetFilters> &filters) {
   unsigned int increment = 1;
   while (true) {
     cur[0] += increment;
@@ -275,11 +275,11 @@ Assignment get_next_assignment_base(
   }
 }
 
-Assignment get_next_assignment(const kernel::ParticlesTemp &s,
+Assignment get_next_assignment(const ParticlesTemp &s,
                                const Subsets &subsets,
-                               const base::Vector<Ints> &orders, Ints cur,
+                               const Vector<Ints> &orders, Ints cur,
                                const Ints &maxs,
-                               const base::Vector<SubsetFilters> &filters) {
+                               const Vector<SubsetFilters> &filters) {
   IMP_INTERNAL_CHECK(s.size() == cur.size(), "Subset and last don't match");
   IMP_INTERNAL_CHECK(s.size() == maxs.size(), "Subset and maxs don't match");
   IMP_INTERNAL_CHECK(s.size() == orders.size(),
@@ -296,15 +296,15 @@ Assignment get_next_assignment(const kernel::ParticlesTemp &s,
         inner = get_next_assignment_base(
             Ints(cur.begin(), cur.end() - 1),
             Ints(maxs.begin(), maxs.end() - 1),
-            base::Vector<SubsetFilters>(filters.begin(), filters.end() - 1));
+            Vector<SubsetFilters>(filters.begin(), filters.end() - 1));
       } else {
         inner = get_next_assignment(
-            kernel::ParticlesTemp(s.begin(), s.end() - 1),
+            ParticlesTemp(s.begin(), s.end() - 1),
             Subsets(subsets.begin(), subsets.end() - 1),
-            base::Vector<Ints>(orders.begin(), orders.end() - 1),
+            Vector<Ints>(orders.begin(), orders.end() - 1),
             Ints(cur.begin(), cur.end() - 1),
             Ints(maxs.begin(), maxs.end() - 1),
-            base::Vector<SubsetFilters>(filters.begin(), filters.end() - 1));
+            Vector<SubsetFilters>(filters.begin(), filters.end() - 1));
       }
       if (inner.size() == 0) {
         return inner;
@@ -382,7 +382,7 @@ void BranchAndBoundAssignmentsTable::load_assignments(
     const Subset &s, AssignmentContainer *pac) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  kernel::ParticlesTemp spt = initialize_order(s, sft_);
+  ParticlesTemp spt = initialize_order(s, sft_);
   // std::reverse(spt.begin(), spt.end());
   Ints cur(s.size(), std::numeric_limits<int>::max() - 3);
   cur.front() = -1;
@@ -391,16 +391,16 @@ void BranchAndBoundAssignmentsTable::load_assignments(
     maxs[i] =
         pst_->get_particle_states(spt[i])->get_number_of_particle_states();
   }
-  base::Vector<SubsetFilters> filters(maxs.size());
-  base::Vector<Ints> orders(maxs.size());
+  Vector<SubsetFilters> filters(maxs.size());
+  Vector<Ints> orders(maxs.size());
   Subsets subsets(maxs.size());
   for (unsigned int i = 0; i < maxs.size(); ++i) {
     Subsets excluded;
     if (i > 0) {
       excluded.push_back(
-          Subset(kernel::ParticlesTemp(spt.begin(), spt.begin() + i)));
+          Subset(ParticlesTemp(spt.begin(), spt.begin() + i)));
     }
-    Subset cur(kernel::ParticlesTemp(spt.begin(), spt.begin() + i + 1));
+    Subset cur(ParticlesTemp(spt.begin(), spt.begin() + i + 1));
     Ints order(cur.size());
     for (unsigned int j = 0; j < cur.size(); ++j) {
       for (unsigned int k = 0; k < cur.size(); ++k) {
@@ -501,7 +501,7 @@ void ListAssignmentsTable::load_assignments(const Subset &s,
 }
 
 ParticlesTemp get_order(const Subset &s, const SubsetFilterTables &sft) {
-  kernel::ParticlesTemp order = initialize_order(s, sft);
+  ParticlesTemp order = initialize_order(s, sft);
   return order;
 }
 

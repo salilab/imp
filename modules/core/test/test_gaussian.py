@@ -123,7 +123,7 @@ class TestGaussian(IMP.test.TestCase):
         IMP.core.Gaussian.setup_particle(p,IMP.algebra.Gaussian3D(
             IMP.algebra.ReferenceFrame3D(),[1,1,1]))
         self.assertEqual(IMP.core.Gaussian.get_is_setup(p),True)
-        rbd.add_non_rigid_member(p.get_index())
+        rbd.add_non_rigid_member(p)
         self.assertEqual(IMP.core.Gaussian.get_is_setup(p),True)
 
 if __name__ == '__main__':

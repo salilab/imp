@@ -11,8 +11,8 @@ class Tests(IMP.test.TestCase):
 
     def test_symmetry(self):
         """Test example filter"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(10)]
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(10)]
         sft = IMP.example.ExampleSubsetFilterTable(3, [ps[0], ps[4]])
         self.assertEqual(
             sft.get_subset_filter(

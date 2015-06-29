@@ -6,6 +6,7 @@
  */
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/vector_generators.h>
+#include <IMP/flags.h>
 #include <algorithm>
 
 using namespace IMP::algebra;
@@ -40,7 +41,8 @@ bool test_marked(const Grid &g, BoundingBox3D bb) {
 }
 }
 
-int main(int, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test grid");
   BoundingBox3D bb(Vector3D(0, 0, 0), Vector3D(100, 100, 100));
   BoundingBox3D gbb(get_random_vector_in(bb));
   gbb += get_random_vector_in(bb);

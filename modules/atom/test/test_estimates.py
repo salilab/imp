@@ -21,17 +21,19 @@ class Tests(IMP.test.TestCase):
 
     def test_d(self):
         """Testing the diffusion coeff estimate"""
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         d = IMP.core.XYZR.setup_particle(p)
         d.set_coordinates_are_optimized(True)
         d.set_radius(10)
         dd = IMP.atom.Diffusion.setup_particle(p)
         bd = IMP.atom.BrownianDynamics(m)
+        rs = IMP.RestraintSet(m)
+        bd.set_scoring_function(rs)
         dt = 10000
         bd.set_maximum_time_step(dt)
-        bd.set_log_level(IMP.base.SILENT)
-        m.set_log_level(IMP.base.SILENT)
+        bd.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.SILENT)
         diffs = []
         for i in range(0, 3000):
             d.set_coordinates(IMP.algebra.get_zero_vector_3d())

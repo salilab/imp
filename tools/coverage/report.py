@@ -39,8 +39,11 @@ def report_python_component(cov, morfs, name, typ, reldir, outdir):
 
 
 def report_python_module(cov, modname, srcdir, outdir):
-    mods = glob.glob('lib/IMP/%s/*.py' % modname) \
-           + glob.glob('lib/IMP/%s/*/*.py' % modname)
+    if modname == 'kernel':
+        mods = glob.glob('lib/IMP/*.py')
+    else:
+        mods = glob.glob('lib/IMP/%s/*.py' % modname) \
+               + glob.glob('lib/IMP/%s/*/*.py' % modname)
     mods = [x for x in mods if not x.endswith('_version_check.py')]
     bins = tools.get_glob([os.path.join(srcdir, 'modules', modname, 'bin',
                                         '*')])
@@ -133,7 +136,7 @@ def report_cpp_module(module, srcdir, outdir):
 def report_cpp_dependency(dep, srcdir, outdir):
     # Currently works only for RMF
     report_cpp_component(dep, "dependency",
-                         ['/rmf/dependency/%s_source/' % dep], [],
+                         ['/rmf/dependency/%s/' % dep], [],
                          os.path.join(srcdir, 'modules', 'rmf', 'dependency'),
                          outdir)
 
@@ -184,7 +187,7 @@ Generate HTML coverage reports for IMP C++/Python code in the given directory.
     if len(args) != 1:
         parser.error("wrong number of arguments")
     if opts.exclude:
-        exclude = pickle.load(open(opts.exclude))
+        exclude = pickle.load(open(opts.exclude, 'rb'))
     else:
         exclude = {}
     opts.modules = _get_components(opts.modules, tools.get_sorted_order(),

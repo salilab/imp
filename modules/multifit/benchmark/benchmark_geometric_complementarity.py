@@ -52,7 +52,6 @@ def perform_benchmark(model, tr_list, r1, r2, rb1, rb2, maxiter):
     rest.set_complementarity_value(-1)
     rest.set_complementarity_thickness(1)
     rest.set_interior_layer_thickness(1)
-    model.add_restraint(rest)
     maxiter = min(maxiter, len(tr_list))
     for i in xrange(maxiter):
         start = time.time()
@@ -65,9 +64,9 @@ def perform_benchmark(model, tr_list, r1, r2, rb1, rb2, maxiter):
         IMP.benchmark.report("ComplementarityRestraint %d" % i, "",
                              elapsed, pct_error)
 
-
-IMP.base.set_log_level(IMP.base.SILENT)
+IMP.setup_from_argv(sys.argv, "Geometric complementarity benchmark.")
+IMP.set_log_level(IMP.SILENT)
 tr_list = read_transformations()
-model = IMP.kernel.Model()
+model = IMP.Model()
 r1, r2, rb1, rb2 = load_proteins(model)
 perform_benchmark(model, tr_list, r1, r2, rb1, rb2, 4)

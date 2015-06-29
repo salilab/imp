@@ -22,7 +22,7 @@ IMPISD_BEGIN_NAMESPACE
 /** This is just syntactic sugar for a Nuisance bounded to be positive.
  */
 class IMPISDEXPORT Scale : public Nuisance {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 double scale = 1.0);
 
  public:
@@ -30,7 +30,7 @@ class IMPISDEXPORT Scale : public Nuisance {
   IMP_DECORATOR_SETUP_0(Scale);
   IMP_DECORATOR_SETUP_1(Scale, double, scale);
 
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return Nuisance::get_is_setup(m, pi) && Nuisance(m, pi).get_lower() >= 0;
   }
 

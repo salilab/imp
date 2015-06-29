@@ -65,6 +65,7 @@ IMP_SWIG_OBJECT( IMP::core, RefinedPairsPairScore, RefinedPairsPairScores);
 IMP_SWIG_OBJECT(IMP::core, RestraintsScoringFunction, RestraintsScoringFunctions);
 
 IMP_SWIG_OBJECT( IMP::core, RigidBodyDistancePairScore, RigidBodyDistancePairScores);
+IMP_SWIG_OBJECT( IMP::core, RigidBodyAnglePairScore, RigidBodyAnglePairScores);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyMover, RigidBodyMovers);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyTunneler, RigidBodyTunnelers);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyUmbrella, RigidBodyUmbrellas);
@@ -235,7 +236,7 @@ void visit_breadth_first(Hierarchy d, HierarchyVisitor *f)
 
 void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 {
-  IMP::base::Vector<Hierarchy> stack;
+  IMP::Vector<Hierarchy> stack;
   stack.push_back(d);
   do {
     Hierarchy cur= stack.back();
@@ -270,6 +271,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/TransformedDistancePairScore.h"
 %include "IMP/core/TypedPairScore.h"
 %include "IMP/core/RigidBodyDistancePairScore.h"
+%include "IMP/core/RigidBodyAnglePairScore.h"
 %include "IMP/core/TableRefiner.h"
 %include "IMP/core/TruncatedHarmonic.h"
 %include "IMP/core/MCCGSampler.h"
@@ -310,17 +312,17 @@ namespace core {
 algebra::Transformation3D get_transformation_aligning_first_to_second(const ParticlesTemp &a, const ParticlesTemp &b) {
 return IMP::algebra::get_transformation_aligning_first_to_second(XYZs(a),XYZs(b));
 }
-algebra::Transformation3D get_transformation_aligning_first_to_second(const ParticlesTemp &a, const IMP::base::Vector<algebra::VectorD<3> > &b) {
+algebra::Transformation3D get_transformation_aligning_first_to_second(const ParticlesTemp &a, const IMP::Vector<algebra::VectorD<3> > &b) {
 return IMP::algebra::get_transformation_aligning_first_to_second(XYZs(a), b);
 }
-algebra::Transformation3D get_transformation_aligning_first_to_second(const IMP::base::Vector<algebra::VectorD<3> > &a, const ParticlesTemp &b) {
+algebra::Transformation3D get_transformation_aligning_first_to_second(const IMP::Vector<algebra::VectorD<3> > &a, const ParticlesTemp &b) {
 return algebra::get_transformation_aligning_first_to_second(a, XYZs(b));
 }
 }
 }
 
-IMP::kernel::Restraint *create_restraint(IMP::kernel::PairScore *ps, IMP::kernel::ParticlePair pp) {
-   return IMP::kernel::create_restraint(ps, pp);
+IMP::Restraint *create_restraint(IMP::PairScore *ps, IMP::ParticlePair pp) {
+   return IMP::create_restraint(ps, pp);
 }
 %}
 

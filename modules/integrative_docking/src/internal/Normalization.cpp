@@ -9,7 +9,7 @@
 
 #include <IMP/integrative_docking/internal/Normalization.h>
 
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include <boost/algorithm/string.hpp>
 
 IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
@@ -17,7 +17,7 @@ IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 void Normalization::read_table_file(const std::string& file_name) {
   std::ifstream in_file(file_name.c_str());
   if (!in_file) {
-    IMP_THROW("Can't open file " << file_name, IMP::base::IOException);
+    IMP_THROW("Can't open file " << file_name, IMP::IOException);
   }
   std::string line;
   while (!in_file.eof()) {

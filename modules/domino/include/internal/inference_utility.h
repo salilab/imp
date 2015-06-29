@@ -1,5 +1,5 @@
 /**
- *  \file kernel::RestraintGraph.h
+ *  \file RestraintGraph.h
  *  \brief creates a MRF from a set of particles and restraints
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -15,9 +15,9 @@
 #include "../assignment_tables.h"
 #include "../subset_graphs.h"
 
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/ScoreState.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 
 #include <vector>
 #include <boost/unordered_map.hpp>
@@ -64,7 +64,7 @@ struct AsIndexes {
 };
 IMP_VALUES(AsIndexes, AsIndexesList);
 
-typedef boost::unordered_map<kernel::Particle *, int> ParticleIndex;
+typedef boost::unordered_map<Particle *, int> ParticleIndex;
 
 inline ParticleIndex get_index(const Subset &s) {
   ParticleIndex ret;
@@ -96,7 +96,7 @@ struct EdgeData {
   Subset union_subset;
   SubsetFilters filters;
 };
-typedef base::Vector<EdgeData> EdgeDatas;
+typedef Vector<EdgeData> EdgeDatas;
 
 inline std::ostream &operator<<(std::ostream &out, const EdgeData &nd) {
   out << nd.intersection_subset << " " << nd.union_subset << std::endl;

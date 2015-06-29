@@ -31,7 +31,7 @@ typedef enum {      // distributions
   N_DISTRIBS} DistributionType;
 
 typedef Floats KMPoint;
-typedef base::Vector<KMPoint *> KMPointArray;
+typedef Vector<KMPoint *> KMPointArray;
 //! Holds the data points to cluster
 /**
    \unstable{KMData}

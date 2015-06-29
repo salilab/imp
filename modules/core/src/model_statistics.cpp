@@ -6,11 +6,11 @@
  */
 
 #include <IMP/core/model_statistics.h>
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 IMPCORE_BEGIN_NAMESPACE
 WriteRestraintScoresOptimizerState::WriteRestraintScoresOptimizerState(
-    const kernel::Restraints &rs, base::TextOutput out)
-    : kernel::OptimizerState(rs[0]->get_model(),
+    const Restraints &rs, TextOutput out)
+    : OptimizerState(rs[0]->get_model(),
                              "WriteRestraintScoresOptimizerState%1%"),
       rs_(rs),
       out_(out) {

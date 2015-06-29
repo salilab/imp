@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
         """initialize IMP environment create particles"""
         IMP.test.TestCase.setUp(self)
         # init IMP model ( the environment)
-        self.mdl = IMP.kernel.Model()
+        self.mdl = IMP.Model()
         self.mh = IMP.atom.read_pdb(self.get_input_file_name("1z5s_A.pdb"),
                                     self.mdl, IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(self.mh)
@@ -22,7 +22,7 @@ class Tests(IMP.test.TestCase):
 
     def test_add_surface_attribute(self):
         """Check that reading a map back in preserves the stdevs"""
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         voxel_size = 1.
         IMP.multifit.add_surface_index(self.mh, voxel_size)
         shell_key = IMP.FloatKey("surf_ind")

@@ -17,6 +17,9 @@ import IMP.em2d
 import os
 import sys
 import csv
+
+IMP.setup_from_argv(sys.argv, "clustering of PDB models")
+
 """
     Clustering of pdb models.
     This script clusters pdb models of an structure, chosen from a
@@ -74,7 +77,7 @@ fn_selection = IMP.em2d.get_example_path("all-models-1z5s.sel")
 fn_em2d_scores = IMP.em2d.get_example_path("em2d_scores_for_clustering.data")
 # Load models
 print("Reading models ...")
-model = IMP.kernel.Model()
+model = IMP.Model()
 ssel = IMP.atom.ATOMPDBSelector()
 coords = []
 fn_models = IMP.em2d.read_selection_file(fn_selection)
@@ -140,7 +143,7 @@ for c in clusters:
             T = IMP.core.Transform(transformations[i][min_elem_id])
             ps = IMP.atom.get_leaves(hierarchies[i])
             for p in ps:
-                T.apply(p)
+                T.apply_index(model, p.get_particle_index())
         else:
             print("Writing representative element", min_elem_id, ":", pdb_name)
         IMP.atom.write_pdb(hierarchies[i], pdb_name)

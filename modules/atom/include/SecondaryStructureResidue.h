@@ -13,8 +13,8 @@
 #include "Hierarchy.h"
 
 #include <IMP/base_types.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
 #include <IMP/Decorator.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -24,7 +24,7 @@ IMPATOM_BEGIN_NAMESPACE
    Contains probabilities for each sse type (helix, strand, coil)
  */
 class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 Float prob_helix, Float prob_strand,
                                 Float prob_coil) {
     m->add_attribute(get_prob_helix_key(), pi, prob_helix);
@@ -46,7 +46,7 @@ class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
                         prob_strand, Float, prob_coil);
 
   //! Set up SecondaryStructureResidue with default probabilities
-  static SecondaryStructureResidue setup_particle(kernel::Particle *res_p) {
+  static SecondaryStructureResidue setup_particle(Particle *res_p) {
     Float prob_helix = 1.0 / 3.0, prob_strand = 1.0 / 3.0,
           prob_coil = 1.0 / 3.0;
     SecondaryStructureResidue ssr =
@@ -55,7 +55,7 @@ class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
   }
 
   //! Return true if the particle is a secondary structure residue
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     if (m->get_has_attribute(get_prob_helix_key(), pi) &&
         (m->get_has_attribute(get_prob_strand_key(), pi)) &&
         (m->get_has_attribute(get_prob_coil_key(), pi)))
@@ -63,7 +63,7 @@ class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
     return false;
   }
 
-  kernel::Particle *get_particle() const { return Decorator::get_particle(); }
+  Particle *get_particle() const { return Decorator::get_particle(); }
 
   //! Return all probabilities in one vector
   Floats get_all_probabilities() {
@@ -86,27 +86,27 @@ class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
   static FloatKey get_prob_coil_key();
 };
 IMP_DECORATORS(SecondaryStructureResidue, SecondaryStructureResidues,
-               kernel::ParticlesTemp);
+               ParticlesTemp);
 
 //! Coarsen some SecondaryStructureResidues.
 /** \returns a SecondaryStructureResidue whose probabilities reflect those
     of the underlying residues. Useful if you want to represent the secondary
     structure contents at a coarser level.
     \param[in] ssr_ps The SSR-decorated particles to be combined
-    \param[in] mdl The IMP kernel::Model
+    \param[in] mdl The IMP Model
     \param[in] winner_takes_all_per_res Whether to set prob=1.0 for top
                scoring secondary structure type
  */
 IMPATOMEXPORT SecondaryStructureResidue
-    setup_coarse_secondary_structure_residue(const kernel::Particles &ssr_ps,
-                                             kernel::Model *mdl,
+    setup_coarse_secondary_structure_residue(const Particles &ssr_ps,
+                                             Model *mdl,
                                              bool winner_takes_all_per_res =
                                                  false);
 
 /** Groups SecondaryStructureResidues into segments and then coarsens them.
     Useful if you have a long sequence and want to make several coarse nodes.
     \param[in] ssr_ps The SSR-decorated particles to be combined
-    \param[in] mdl The IMP kernel::Model
+    \param[in] mdl The IMP Model
     \param[in] coarse_factor Group size
     \param[in] start_res_num Starting residue number for the provided sequence
     \param[in] winner_takes_all_per_res Whether to set prob=1.0 for top
@@ -114,7 +114,7 @@ IMPATOMEXPORT SecondaryStructureResidue
  */
 IMPATOMEXPORT SecondaryStructureResidues
     setup_coarse_secondary_structure_residues(
-        const kernel::Particles &ssr_ps, kernel::Model *mdl, int coarse_factor,
+        const Particles &ssr_ps, Model *mdl, int coarse_factor,
         int start_res_num, bool winner_takes_all_per_res = false);
 
 //! Compares the secondary structure probabilities of two residues.

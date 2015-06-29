@@ -7,7 +7,7 @@
  */
 
 #include <IMP/score_functor/internal/soap_hdf5.h>
-#include <IMP/base/check_macros.h>
+#include <IMP/check_macros.h>
 
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
 

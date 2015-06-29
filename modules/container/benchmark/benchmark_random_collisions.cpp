@@ -8,7 +8,7 @@
 #include <IMP/benchmark/utility.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/base/flags.h>
+#include <IMP/flags.h>
 #include <IMP/container.h>
 
 using namespace IMP;
@@ -28,24 +28,24 @@ std::string get_module_version() {
 class ConstPairScore : public PairScore {
  public:
   ConstPairScore() {}
-  double evaluate_index(kernel::Model *m, const kernel::ParticleIndexPair &p,
+  double evaluate_index(Model *m, const ParticleIndexPair &p,
                         DerivativeAccumulator *da) const IMP_OVERRIDE;
-  kernel::ModelObjectsTemp do_get_inputs(
-      kernel::Model *m, const kernel::ParticleIndexes &pis) const;
+  ModelObjectsTemp do_get_inputs(
+      Model *m, const ParticleIndexes &pis) const;
   IMP_PAIR_SCORE_METHODS(ConstPairScore);
   IMP_OBJECT_METHODS(ConstPairScore);
   ;
 };
 
-double ConstPairScore::evaluate_index(kernel::Model *,
-                                      const kernel::ParticleIndexPair &,
+double ConstPairScore::evaluate_index(Model *,
+                                      const ParticleIndexPair &,
                                       DerivativeAccumulator *) const {
   return 1;
 }
 
 ModelObjectsTemp ConstPairScore::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret;
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret;
   ret += IMP::get_particles(m, pis);
   return ret;
 }
@@ -56,18 +56,17 @@ namespace {
 void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax, double) {
   Vector3D minc(0, 0, 0), maxc(10, 10, 10);
-  IMP_NEW(kernel::Model, m, ());
-  kernel::ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
-  kernel::ParticleIndexes pis = IMP::internal::get_index(ps);
+  IMP_NEW(Model, m, ());
+  ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
+  ParticleIndexes pis = IMP::internal::get_index(ps);
   ::boost::uniform_real<> rand(rmin, rmax);
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    XYZR(ps[i]).set_radius(rand(base::random_number_generator));
+    XYZR(ps[i]).set_radius(rand(random_number_generator));
   }
-  IMP_NEW(ListSingletonContainer, lsc, (ps));
+  IMP_NEW(ListSingletonContainer, lsc, (m, IMP::internal::get_index(ps)));
   IMP_NEW(ClosePairContainer, cpc, (lsc, 0.0, cpf, 1.0));
   IMP_NEW(ConstPairScore, cps, ());
   IMP_NEW(PairsRestraint, pr, (cps, cpc));
-  m->add_restraint(pr);
   double setuptime;
   IMP_TIME({
              for (unsigned int i = 0; i < pis.size(); ++i) {
@@ -83,7 +82,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
                XYZ(m, pis[i]).set_coordinates(
                    get_random_vector_in(BoundingBox3D(minc, maxc)));
              }
-             result += m->evaluate(false);
+             result += pr->evaluate(false);
            },
            runtime);
   std::ostringstream oss;
@@ -94,11 +93,11 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark collision detection");
+  IMP::setup_from_argv(argc, argv, "Benchmark collision detection");
   {
     IMP_NEW(QuadraticClosePairsFinder, cpf, ());
     // std::cout << "Quadratic:" << std::endl;
-    if (IMP::base::run_quick_test) {
+    if (IMP::run_quick_test) {
       test_one("quadratic", cpf, 100, 0, .1, 87.210356);
     } else {
       test_one("quadratic", cpf, 10000, 0, .1, 87.210356);
@@ -109,7 +108,7 @@ int main(int argc, char **argv) {
   {
     IMP_NEW(BoxSweepClosePairsFinder, cpf, ());
     // std::cout << "Box:" << std::endl;
-    if (IMP::base::run_quick_test) {
+    if (IMP::run_quick_test) {
       test_one("box", cpf, 100, 0, .1, 23.306047);
     } else {
       test_one("box", cpf, 10000, 0, .1, 23.306047);
@@ -120,7 +119,7 @@ int main(int argc, char **argv) {
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
     // std::cout << "Grid:" << std::endl;
-    if (IMP::base::run_quick_test) {
+    if (IMP::run_quick_test) {
       test_one("grid", cpf, 100, 0, .1, 23.649063);
     } else {
       test_one("grid", cpf, 10000, 0, .1, 23.649063);

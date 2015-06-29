@@ -12,13 +12,13 @@
 #include "IMP/kmeans/internal/KMlocal.h"  // k-means algorithms
 #include "IMP/kmeans/internal/KMdata.h"   // k-means algorithms
 #include "IMP/kmeans/internal/KMterm.h"
-#include <IMP/base/Pointer.h>
-#include <IMP/base/doxygen_macros.h>
-#include <IMP/base/object_macros.h>
-#include <IMP/base/warning_macros.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/types.h>
-#include <IMP/base/enums.h>
+#include <IMP/Pointer.h>
+#include <IMP/doxygen_macros.h>
+#include <IMP/object_macros.h>
+#include <IMP/warning_macros.h>
+#include <IMP/Object.h>
+#include <IMP/types.h>
+#include <IMP/enums.h>
 #include <cstdlib>   // C standard includes
 #include <iostream>  // C++ I/O
 #include <string>    // C++ strings
@@ -69,7 +69,7 @@ enum KM_ALG_TYPE {
     \untested{KMeans}
     \unstable{KMeans}
  */
-class IMPKMEANSEXPORT KMeans : public IMP::base::Object {
+class IMPKMEANSEXPORT KMeans : public IMP::Object {
 
   /***********************  Constructors  **************************/
  public:
@@ -136,7 +136,7 @@ class IMPKMEANSEXPORT KMeans : public IMP::base::Object {
   /**
       @param ll the log level for printout
    */
-  void print_centers(base::LogLevel ll = base::PROGRESS) const;
+  void print_centers(LogLevel ll = PROGRESS) const;
 
   //! Returns the i'th center
   /** Must be called only following a successful execute() invocation
@@ -211,7 +211,7 @@ class IMPKMEANSEXPORT KMeans : public IMP::base::Object {
      @param ll the log level in which to print the summary
   */
   void print_summary(const internal::KMlocal& theAlg,
-                     base::LogLevel ll = base::PROGRESS);  // the algorithm
+                     LogLevel ll = PROGRESS);  // the algorithm
 
   /*********************** Private Variables **************************/
  private:
@@ -223,13 +223,13 @@ class IMPKMEANSEXPORT KMeans : public IMP::base::Object {
 
   // data points in wrapped internal::KMdata structure
   // (should be synced from STLDataPts_ before usage)
-  base::Pointer<internal::KMdata> pKMDataPts_;
+  Pointer<internal::KMdata> pKMDataPts_;
 
   // was STL data updated to wrapped internal::KMdata points
   bool is_KM_data_synced_;
 
   // the center points from a clustering execution
-  base::Pointer<internal::KMfilterCenters> pCenters_;
+  Pointer<internal::KMfilterCenters> pCenters_;
 
   // cluster of each point
   IMP::Ints centerAssignments_;

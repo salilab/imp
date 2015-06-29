@@ -1,8 +1,6 @@
 /**
  *  \file ClassnameContainerStatistics.cpp   \brief Container for classname.
  *
- *  BLURB
- *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
@@ -28,8 +26,8 @@
 #include <IMP/container/MinimumClassnameScore.h>
 #include <IMP/container_macros.h>
 #include <IMP/core/ClassnameRestraint.h>
-#include <IMP/kernel/internal/container_helpers.h>
-#include <IMP/kernel/internal/TupleRestraint.h>
+#include <IMP/internal/container_helpers.h>
+#include <IMP/internal/TupleRestraint.h>
 #include <boost/functional/hash/hash.hpp>
 #include <IMP/Optimizer.h>
 #include <limits>
@@ -49,7 +47,7 @@ ClassnameContainerIndex::ClassnameContainerIndex(ClassnameContainerAdaptor c,
 void ClassnameContainerIndex::build() {
   contents_.clear();
   IMP_FOREACH(INDEXTYPE it, container_->get_contents()) {
-    contents_.insert(IMP::kernel::internal::get_canonical(it));
+    contents_.insert(IMP::internal::get_canonical(it));
   }
 }
 
@@ -63,28 +61,28 @@ void ClassnameContainerIndex::do_before_evaluate() {
 
 void ClassnameContainerIndex::do_after_evaluate(DerivativeAccumulator *) {}
 ModelObjectsTemp ClassnameContainerIndex::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(1, container_);
+  return ModelObjectsTemp(1, container_);
 }
 ModelObjectsTemp ClassnameContainerIndex::do_get_outputs() const {
-  return kernel::ModelObjectsTemp();
+  return ModelObjectsTemp();
 }
 
 IMPCONTAINER_END_INTERNAL_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-ClassnameContainerSet::ClassnameContainerSet(kernel::Model *m, std::string name)
+ClassnameContainerSet::ClassnameContainerSet(Model *m, std::string name)
     : ClassnameContainer(m, name) {}
 
 ClassnameContainerSet::ClassnameContainerSet(const ClassnameContainersTemp &in,
                                              std::string name)
-    : ClassnameContainer(IMP::kernel::internal::get_model(in), name) {
+    : ClassnameContainer(IMP::internal::get_model(in), name) {
   set_CLASSFUNCTIONNAME_containers(in);
 }
 
 PLURALINDEXTYPE ClassnameContainerSet::get_indexes() const {
   PLURALINDEXTYPE sum;
-  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
     PLURALINDEXTYPE cur = c->get_indexes();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
@@ -93,7 +91,7 @@ PLURALINDEXTYPE ClassnameContainerSet::get_indexes() const {
 
 PLURALINDEXTYPE ClassnameContainerSet::get_range_indexes() const {
   PLURALINDEXTYPE sum;
-  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
     PLURALINDEXTYPE cur = c->get_range_indexes();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
@@ -105,27 +103,27 @@ IMP_LIST_IMPL(ClassnameContainerSet, ClassnameContainer,
               ClassnameContainers);
 
 void ClassnameContainerSet::do_apply(const ClassnameModifier *sm) const {
-  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
     c->apply(sm);
   }
 }
 
 ParticleIndexes ClassnameContainerSet::get_all_possible_indexes() const {
-  kernel::ParticleIndexes ret;
-  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+  ParticleIndexes ret;
+  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
     ret += c->get_all_possible_indexes();
   }
   return ret;
 }
 
 ModelObjectsTemp ClassnameContainerSet::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(CLASSFUNCTIONNAME_containers_begin(),
+  return ModelObjectsTemp(CLASSFUNCTIONNAME_containers_begin(),
                                   CLASSFUNCTIONNAME_containers_end());
 }
 
 std::size_t ClassnameContainerSet::do_get_contents_hash() const {
   std::size_t ret = 0;
-  IMP_FOREACH(kernel::ClassnameContainer * c, get_classname_containers()) {
+  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
     boost::hash_combine(ret, c->get_contents_hash());
   }
   return ret;
@@ -174,10 +172,10 @@ void ClassnameContainerStatistics::do_before_evaluate() {
 void ClassnameContainerStatistics::do_after_evaluate(DerivativeAccumulator *) {}
 
 ModelObjectsTemp ClassnameContainerStatistics::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(1, container_);
+  return ModelObjectsTemp(1, container_);
 }
 ModelObjectsTemp ClassnameContainerStatistics::do_get_outputs() const {
-  return kernel::ModelObjectsTemp();
+  return ModelObjectsTemp();
 }
 
 IMPCONTAINER_END_NAMESPACE
@@ -213,7 +211,7 @@ DistributeClassnamesScoreState::DistributeClassnamesScoreState(
 }
 
 ModelObjectsTemp DistributeClassnamesScoreState::do_get_outputs() const {
-  kernel::ModelObjectsTemp ret;
+  ModelObjectsTemp ret;
   for (unsigned int i = 0; i < data_.size(); ++i) {
     ret.push_back(data_[i].get<0>());
   }
@@ -221,8 +219,8 @@ ModelObjectsTemp DistributeClassnamesScoreState::do_get_outputs() const {
 }
 
 ModelObjectsTemp DistributeClassnamesScoreState::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
-  kernel::ParticleIndexes pis = input_->get_all_possible_indexes();
+  ModelObjectsTemp ret;
+  ParticleIndexes pis = input_->get_all_possible_indexes();
   for (unsigned int i = 0; i < data_.size(); ++i) {
     ret += data_[i].get<1>()->get_inputs(get_model(), pis);
   }
@@ -241,7 +239,7 @@ void DistributeClassnamesScoreState::update_lists_if_necessary() const {
   if (h == input_version_) return;
   input_version_ = h;
 
-  base::Vector<PLURALINDEXTYPE> output(data_.size());
+  Vector<PLURALINDEXTYPE> output(data_.size());
   IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
     for (unsigned int i = 0; i < data_.size(); ++i) {
       if (data_[i].get<1>()->get_value_index(get_model(), it) ==
@@ -264,16 +262,22 @@ DynamicListClassnameContainer::DynamicListClassnameContainer(Container *m,
     : P(m, name) {}
 
 void DynamicListClassnameContainer::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
-  add(IMP::kernel::internal::get_index(vt));
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
+  add(IMP::internal::get_index(vt));
 }
 void DynamicListClassnameContainer::add_FUNCTIONNAMEs(
     const PLURALVARIABLETYPE &c) {
-  add(IMP::kernel::internal::get_index(c));
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
+  add(IMP::internal::get_index(c));
 }
 void DynamicListClassnameContainer::set_FUNCTIONNAMEs(PLURALVARIABLETYPE c) {
-  set(IMP::kernel::internal::get_index(c));
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
+  set(IMP::internal::get_index(c));
 }
-void DynamicListClassnameContainer::clear_FUNCTIONNAMEs() { clear(); }
+void DynamicListClassnameContainer::clear_FUNCTIONNAMEs() {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
+  clear();
+}
 IMPCONTAINER_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -289,12 +293,12 @@ EventClassnamesOptimizerState::EventClassnamesOptimizerState(
 
 void EventClassnamesOptimizerState::update() {
   int met = 0;
-  kernel::Model *m = get_optimizer()->get_model();
+  Model *m = get_optimizer()->get_model();
   IMP_FOREACH(INDEXTYPE it, container_->get_contents()) {
     if (pred_->get_value_index(m, it) == v_) ++met;
   }
   if (met >= min_ && met < max_) {
-    throw IMP::base::EventException("an event occurred");
+    throw IMP::EventException("an event occurred");
   }
 }
 IMPCONTAINER_END_NAMESPACE
@@ -320,38 +324,45 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 ListClassnameContainer::ListClassnameContainer(const PLURALVARIABLETYPE &ps,
                                                std::string name)
-    : P(IMP::kernel::internal::get_model(ps[0]), name) {
+    : P(IMP::internal::get_model(ps[0]), name) {
   set_FUNCTIONNAMEs(ps);
 }
 
-ListClassnameContainer::ListClassnameContainer(kernel::Model *m,
+ListClassnameContainer::ListClassnameContainer(Model *m,
                                                const PLURALINDEXTYPE &ps,
                                                std::string name)
     : P(m, name) {
   set(ps);
 }
 
-ListClassnameContainer::ListClassnameContainer(kernel::Model *m,
+ListClassnameContainer::ListClassnameContainer(Model *m,
                                                std::string name)
     : P(m, name) {}
 
-ListClassnameContainer::ListClassnameContainer(kernel::Model *m,
+ListClassnameContainer::ListClassnameContainer(Model *m,
                                                const char *name)
     : P(m, name) {}
 
 void ListClassnameContainer::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
-  add(IMP::kernel::internal::get_index(vt));
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
+  add(IMP::internal::get_index(vt));
 }
 void ListClassnameContainer::add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
-  add(IMP::kernel::internal::get_index(c));
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
+  add(IMP::internal::get_index(c));
 }
 void ListClassnameContainer::set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
-  set(IMP::kernel::internal::get_index(c));
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
+  set(IMP::internal::get_index(c));
 }
 void ListClassnameContainer::set_FUNCTIONNAMEs(const PLURALINDEXTYPE &c) {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
   set(c);
 }
-void ListClassnameContainer::clear_FUNCTIONNAMEs() { clear(); }
+void ListClassnameContainer::clear_FUNCTIONNAMEs() {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
+  clear();
+}
 
 IMPCONTAINER_END_NAMESPACE
 
@@ -421,7 +432,7 @@ Restraints MinimumClassnameRestraint::do_create_current_decomposition() const {
       find_minimal_set_ClassnameMinimum(c_.get(), f_.get(), n_);
   Restraints ret;
   for (unsigned int i = 0; i < bestn.size(); ++i) {
-    ret.push_back(IMP::kernel::internal::create_tuple_restraint(
+    ret.push_back(IMP::internal::create_tuple_restraint(
         f_.get(), get_model(), bestn[i].second, get_name()));
     ret.back()->set_last_score(bestn[i].first);
   }
@@ -429,7 +440,7 @@ Restraints MinimumClassnameRestraint::do_create_current_decomposition() const {
 }
 
 ModelObjectsTemp MinimumClassnameRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
+  ModelObjectsTemp ret;
   ret += f_->get_inputs(get_model(), c_->get_all_possible_indexes());
   ret.push_back(c_);
   return ret;
@@ -448,7 +459,7 @@ typedef algebra::internal::MinimalSet<
     double, ClassnameScore *, std::less<double> > MinimumClassnameScoreMS;
 template <class It>
 MinimumClassnameScoreMS find_minimal_set_MinimumClassnameScore(It b, It e,
-                                                               kernel::Model *m,
+                                                               Model *m,
                                                                PASSINDEXTYPE v,
                                                                unsigned int n) {
   IMP_LOG_TERSE("Finding Minimum " << n << " of " << std::distance(b, e)
@@ -462,7 +473,7 @@ MinimumClassnameScoreMS find_minimal_set_MinimumClassnameScore(It b, It e,
 }
 }
 
-double MinimumClassnameScore::evaluate_index(kernel::Model *m, PASSINDEXTYPE v,
+double MinimumClassnameScore::evaluate_index(Model *m, PASSINDEXTYPE v,
                                              DerivativeAccumulator *da) const {
   MinimumClassnameScoreMS bestn = find_minimal_set_MinimumClassnameScore(
       scores_.begin(), scores_.end(), m, v, n_);
@@ -478,8 +489,8 @@ double MinimumClassnameScore::evaluate_index(kernel::Model *m, PASSINDEXTYPE v,
 }
 
 ModelObjectsTemp MinimumClassnameScore::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret;
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret;
   for (unsigned int i = 0; i < scores_.size(); ++i) {
     ret += scores_[i]->get_inputs(m, pis);
   }
@@ -487,13 +498,13 @@ ModelObjectsTemp MinimumClassnameScore::do_get_inputs(
 }
 
 Restraints MinimumClassnameScore::do_create_current_decomposition(
-    kernel::Model *m, PASSINDEXTYPE vt) const {
+    Model *m, PASSINDEXTYPE vt) const {
   Restraints ret;
   MinimumClassnameScoreMS bestn = find_minimal_set_MinimumClassnameScore(
       scores_.begin(), scores_.end(), m, vt, n_);
   for (unsigned int i = 0; i < bestn.size(); ++i) {
     ret.push_back(
-        IMP::kernel::internal::create_tuple_restraint(bestn[i].second, m, vt));
+        IMP::internal::create_tuple_restraint(bestn[i].second, m, vt));
     ret.back()->set_last_score(bestn[i].first);
   }
   return ret;
@@ -520,7 +531,7 @@ void PredicateClassnamesRestraint::do_add_score_and_derivatives(
   IMP_FOREACH(const LP & lp, lists_) {
     IMP_LOG_VERBOSE("Evaluating score for predicate value " << lp.first
                                                             << std::endl);
-    kernel::ClassnameScore *score = scores_.find(lp.first)->second;
+    ClassnameScore *score = scores_.find(lp.first)->second;
     double cur_score = score->evaluate_indexes(get_model(), lp.second,
                                                sa.get_derivative_accumulator(),
                                                0, lp.second.size());
@@ -529,10 +540,10 @@ void PredicateClassnamesRestraint::do_add_score_and_derivatives(
 }
 
 ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
-  kernel::ModelObjectsTemp ret;
-  kernel::ParticleIndexes all = input_->get_all_possible_indexes();
+  ModelObjectsTemp ret;
+  ParticleIndexes all = input_->get_all_possible_indexes();
   ret += predicate_->get_inputs(get_model(), all);
-  typedef std::pair<int, base::PointerMember<ClassnameScore> > SP;
+  typedef std::pair<int, PointerMember<ClassnameScore> > SP;
   IMP_FOREACH(const SP & sp, scores_) {
     ret += sp.second->get_inputs(get_model(), all);
   }
@@ -545,9 +556,9 @@ Restraints PredicateClassnamesRestraint::do_create_current_decomposition()
   Restraints ret;
   typedef std::pair<int, PLURALINDEXTYPE> LP;
   IMP_FOREACH(const LP & lp, lists_) {
-    kernel::ClassnameScore *score = scores_.find(lp.first)->second;
+    ClassnameScore *score = scores_.find(lp.first)->second;
     IMP_FOREACH(PASSINDEXTYPE it, lp.second) {
-      kernel::Restraints r =
+      Restraints r =
           score->create_current_decomposition(get_model(), it);
       ret += r;
     }
@@ -587,7 +598,7 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
 }
 
 void PredicateClassnamesRestraint::set_score(int predicate_value,
-                                             kernel::ClassnameScore *score) {
+                                             ClassnameScore *score) {
   IMP_USAGE_CHECK(predicate_value != std::numeric_limits<int>::max(),
                   "The predicate value of " << std::numeric_limits<int>::max()
                                             << " is reserved.");
@@ -595,8 +606,7 @@ void PredicateClassnamesRestraint::set_score(int predicate_value,
   score->set_was_used(true);
 }
 
-void PredicateClassnamesRestraint::set_unknown_score(
-    kernel::ClassnameScore *score) {
+void PredicateClassnamesRestraint::set_unknown_score(ClassnameScore *score) {
   error_on_unknown_ = false;
   scores_[std::numeric_limits<int>::max()] = score;
   score->set_was_used(true);

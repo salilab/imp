@@ -12,8 +12,8 @@ class Tests(IMP.test.TestCase):
 
     def _do_test_rot(self, dt):
         """Check rigid body brownian dynamics correlation time"""
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        p = IMP.Particle(m)
         d = IMP.core.XYZR.setup_particle(p)
         d.set_radius(10)
         rb = IMP.core.RigidBody.setup_particle(
@@ -25,6 +25,7 @@ class Tests(IMP.test.TestCase):
         # print dd.get_rotational_diffusion_coefficient(),
         # dd.get_diffusion_coefficient()
         bd = IMP.atom.BrownianDynamics(m)
+        bd.set_scoring_function([])
         bd.set_maximum_time_step(dt)
         angles = []
         rots = []

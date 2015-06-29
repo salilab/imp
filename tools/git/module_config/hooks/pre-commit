@@ -20,7 +20,7 @@ exec 1>&2
 files=`git diff-index --name-only $against`
 if test -n "$files"
 then
-  if python `git rev-parse --show-toplevel`/.git/hooks/check-standards.py `git diff-index --name-only $against`
+  if python `git rev-parse --show-toplevel`/.git/hooks/check_standards.py `git diff-index --name-only $against`
   then
     echo "Format checks OK."
   else

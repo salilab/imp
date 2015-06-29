@@ -4,16 +4,19 @@
 
 from __future__ import print_function
 import IMP
+import sys
+
+IMP.setup_from_argv(sys.argv, "Restraint example")
 
 # a restraint which checks if particles are sorted in
 # increasing order on k.
 
 
-class MyRestraint(IMP.kernel.Restraint):
+class MyRestraint(IMP.Restraint):
     # take the list of particles and the key to use
 
     def __init__(self, m, ps, k):
-        IMP.kernel.Restraint.__init__(self, m, "MyRestraint %1%")
+        IMP.Restraint.__init__(self, m, "MyRestraint %1%")
         self.ps = ps
         self.k = k
 
@@ -28,7 +31,7 @@ class MyRestraint(IMP.kernel.Restraint):
                 p0.add_to_derivative(k, -1, da)
                 p1.add_to_derivative(k, 1, da)
             else:
-                if IMP.get_log_level() >= IMP.base.TERSE:
+                if IMP.get_log_level() >= IMP.TERSE:
                     print(p0.get_name(), "and", p1.get_name(), " are ok")
         return score
 
@@ -37,12 +40,12 @@ class MyRestraint(IMP.kernel.Restraint):
 
 # some code to create and evaluate it
 k = IMP.FloatKey("a key")
-m = IMP.kernel.Model()
+m = IMP.Model()
 ps = []
 for i in range(0, 10):
-    p = IMP.kernel.Particle(m)
+    p = IMP.Particle(m)
     p.add_attribute(k, i)
     ps.append(p)
 r = MyRestraint(m, ps, k)
-# IMP.base.set_log_level(IMP.base.TERSE)
+# IMP.set_log_level(IMP.TERSE)
 print(r.evaluate(True))

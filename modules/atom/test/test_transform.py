@@ -8,7 +8,7 @@ class Tests(IMP.test.TestCase):
 
     def test_bonded(self):
         """Check close and destroy Hierarchy """
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         rt = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("root"))
         mh = IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), m)
         rt.add_child(mh)

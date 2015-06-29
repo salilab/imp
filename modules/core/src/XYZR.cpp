@@ -53,11 +53,11 @@ void set_enclosing_radius(XYZR out, const XYZs &v) {
   out.set_radius(r);
 }
 
-XYZRs create_xyzr_particles(kernel::Model *m, unsigned int num, Float radius,
+XYZRs create_xyzr_particles(Model *m, unsigned int num, Float radius,
                             Float box_side) {
   XYZRs ret;
   for (unsigned int i = 0; i < num; ++i) {
-    kernel::Particle *p = new kernel::Particle(m);
+    Particle *p = new Particle(m);
     XYZR d = XYZR::setup_particle(p);
     d.set_coordinates(algebra::get_random_vector_in(
         algebra::BoundingBox3D(algebra::get_ones_vector_d<3>(-box_side),
@@ -70,7 +70,7 @@ XYZRs create_xyzr_particles(kernel::Model *m, unsigned int num, Float radius,
 }
 
 namespace {
-bool check_radius(kernel::Model *m, kernel::ParticleIndex pi) {
+bool check_radius(Model *m, ParticleIndex pi) {
   XYZR d(m, pi);
   if (d.get_radius() < 0) {
     IMP_THROW("Invalid radius: " << d.get_radius(), ValueException);

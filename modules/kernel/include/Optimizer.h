@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/Optimizer.h     \brief Base class for all optimizers.
+ *  \file IMP/Optimizer.h     \brief Base class for all optimizers.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -8,16 +8,16 @@
 #ifndef IMPKERNEL_OPTIMIZER_H
 #define IMPKERNEL_OPTIMIZER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include "utility.h"
 #include "Model.h"
 #include "Particle.h"
 #include "ModelObject.h"
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include "OptimizerState.h"
-#include <IMP/base/Vector.h>
+#include <IMP/Vector.h>
 #include <limits>
 #include <cmath>
 
@@ -38,15 +38,17 @@ IMPKERNEL_BEGIN_NAMESPACE
     - the optimizer calls Model::evaluate() to compute the score
     (and possibly the derivatives) of the
     current conformation of the Model.
-    - the optimizer uses this information to update the optimizeable
+    - the optimizer uses this information to update the optimizable
     parameters of the Particles contained in the Model.
+
+    \see Sampler
 */
 class IMPKERNELEXPORT Optimizer : public ModelObject {
   mutable Floats widths_;
-  base::Pointer<Model> my_model_;
+  Pointer<Model> my_model_;
   bool stop_on_good_score_;
-  mutable base::Pointer<ScoringFunction> cache_;
-  base::Pointer<ScoringFunction> scoring_function_;
+  mutable Pointer<ScoringFunction> cache_;
+  Pointer<ScoringFunction> scoring_function_;
 
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
 
@@ -62,7 +64,7 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
   virtual ModelObjectsTemp do_get_outputs() const { return ModelObjectsTemp(); }
 
  public:
-  Optimizer(kernel::Model *m, std::string name = "Optimizer %1%");
+  Optimizer(Model *m, std::string name = "Optimizer %1%");
 
   //! Optimize the model for up to max_steps iterations
   /** Optimize the model
@@ -85,12 +87,20 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
 
   //! Return the scoring function that is being used
   ScoringFunction *get_scoring_function() const {
-    if (scoring_function_)
+    if (scoring_function_) {
       return scoring_function_;
-    else if (cache_)
+    } else if (cache_) {
       return cache_;
-    else
+    } else {
+/* Don't warn about deprecated model scoring function every time someone
+   includes Optimizer.h */
+IMP_HELPER_MACRO_PUSH_WARNINGS
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
+IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
+#endif
       return cache_ = get_model()->create_model_scoring_function();
+IMP_HELPER_MACRO_POP_WARNINGS
+    }
   }
 
   /** @name States

@@ -1,8 +1,6 @@
 /**
- *  \file IMP/kernel/ClassnameDerivativeModifier.h
+ *  \file IMP/ClassnameDerivativeModifier.h
  *  \brief A Modifier on PLURALVARIABLETYPE
- *
- *  BLURB
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  */
@@ -10,7 +8,7 @@
 #ifndef IMPKERNEL_CLASSNAME_DERIVATIVE_MODIFIER_H
 #define IMPKERNEL_CLASSNAME_DERIVATIVE_MODIFIER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "ParticleTuple.h"

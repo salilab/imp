@@ -17,15 +17,15 @@ class Tests(IMP.test.TestCase):
         modmodel = model(e)
         modmodel.build_sequence('GGCC')
 
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
 
-        for r in loader.load_dynamic_restraints():
-            m.add_restraint(r)
+        sf = IMP.core.RestraintsScoringFunction(list(
+                                       loader.load_dynamic_restraints()))
 
         modenergy = selection(modmodel).energy()[0]
-        imp_score = m.evaluate(True)
+        imp_score = sf.evaluate(True)
         self.assertAlmostEqual(imp_score, modenergy, delta=1e-3)
 
     def test_lennard_jones(self):
@@ -39,15 +39,15 @@ class Tests(IMP.test.TestCase):
         modmodel = model(e)
         modmodel.build_sequence('GGCC')
 
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
 
-        for r in loader.load_dynamic_restraints():
-            m.add_restraint(r)
+        sf = IMP.core.RestraintsScoringFunction(list(
+                                       loader.load_dynamic_restraints()))
 
         modenergy = selection(modmodel).energy()[0]
-        imp_score = m.evaluate(True)
+        imp_score = sf.evaluate(True)
         self.assertAlmostEqual(imp_score, modenergy, delta=1e-3)
 
     def test_coulomb(self):
@@ -61,15 +61,15 @@ class Tests(IMP.test.TestCase):
         modmodel = model(e)
         modmodel.build_sequence('GGC')
 
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
 
-        for r in loader.load_dynamic_restraints():
-            m.add_restraint(r)
+        sf = IMP.core.RestraintsScoringFunction(list(
+                                       loader.load_dynamic_restraints()))
 
         modenergy = selection(modmodel).energy()[0]
-        imp_score = m.evaluate(True)
+        imp_score = sf.evaluate(True)
         self.assertAlmostEqual(imp_score, modenergy, delta=1e-3)
 
 if __name__ == '__main__':

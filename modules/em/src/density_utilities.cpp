@@ -6,7 +6,7 @@
  *
  */
 #include <IMP/em/density_utilities.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 IMPEM_BEGIN_NAMESPACE
 DensityMap *mask_and_norm(em::DensityMap *dmap, em::DensityMap *mask) {
   em::emreal *dmap_data = dmap->get_data();
@@ -17,7 +17,7 @@ DensityMap *mask_and_norm(em::DensityMap *dmap, em::DensityMap *mask) {
                   "The maps should be of the same voxel size\n");
   // create a new map
   const em::DensityHeader *h = dmap->get_header();
-  base::Pointer<DensityMap> ret(new DensityMap(*h));
+  Pointer<DensityMap> ret(new DensityMap(*h));
   em::emreal *ret_data = ret->get_data();
   float meanval = 0.;
   float stdval = 0.;

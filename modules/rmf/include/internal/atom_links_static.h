@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/atom_links.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -17,7 +17,7 @@
 #include <RMF/decorator/shape.h>
 #include <RMF/decorator/labels.h>
 #include <RMF/decorator/bond.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
@@ -43,12 +43,12 @@ class IMPRMFEXPORT HierarchyLoadStatic {
 
  public:
   HierarchyLoadStatic(RMF::FileConstHandle f);
-  void setup_particle(RMF::NodeConstHandle n, kernel::Model *m,
-                      kernel::ParticleIndex p,
-                      const kernel::ParticleIndexes &rigid_bodies);
-  void link_particle(RMF::NodeConstHandle n, kernel::Model *m,
-                     kernel::ParticleIndex p,
-                     const kernel::ParticleIndexes &rigid_bodies);
+  void setup_particle(RMF::NodeConstHandle n, Model *m,
+                      ParticleIndex p,
+                      const ParticleIndexes &rigid_bodies);
+  void link_particle(RMF::NodeConstHandle n, Model *m,
+                     ParticleIndex p,
+                     const ParticleIndexes &rigid_bodies);
 };
 
 /** Save things that are assumed to be unchanging, excluding coordinates. */
@@ -69,7 +69,7 @@ class IMPRMFEXPORT HierarchySaveStatic {
 
  public:
   HierarchySaveStatic(RMF::FileHandle f);
-  void setup_node(kernel::Model *m, kernel::ParticleIndex p, RMF::NodeHandle n);
+  void setup_node(Model *m, ParticleIndex p, RMF::NodeHandle n);
 };
 
 class IMPRMFEXPORT HierarchyLoadBonds {
@@ -77,8 +77,8 @@ class IMPRMFEXPORT HierarchyLoadBonds {
 
  public:
   HierarchyLoadBonds(RMF::FileConstHandle f) : af_(f) {}
-  void setup_bonds(RMF::NodeConstHandle n, kernel::Model *m,
-                   kernel::ParticleIndex p);
+  void setup_bonds(RMF::NodeConstHandle n, Model *m,
+                   ParticleIndex p);
 };
 
 class IMPRMFEXPORT HierarchySaveBonds {
@@ -86,7 +86,7 @@ class IMPRMFEXPORT HierarchySaveBonds {
 
  public:
   HierarchySaveBonds(RMF::FileHandle f) : af_(f) {}
-  void setup_bonds(kernel::Model *m, kernel::ParticleIndex p,
+  void setup_bonds(Model *m, ParticleIndex p,
                    RMF::NodeHandle n);
 };
 

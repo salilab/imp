@@ -18,12 +18,12 @@ atom::Hierarchy create_molecule(const algebra::Vector3Ds vecs,
                                 float bead_radius, float bead_mass,
                                 Model *mdl) {
   atom::Hierarchy ret_prot =
-      atom::Hierarchy::setup_particle(new kernel::Particle(mdl));
+      atom::Hierarchy::setup_particle(new Particle(mdl));
   for (unsigned int i = 0; i < vecs.size(); i++) {
     core::XYZR bead_child = core::XYZR::setup_particle(
-        new kernel::Particle(mdl), algebra::Sphere3D(vecs[i], bead_radius));
+        new Particle(mdl), algebra::Sphere3D(vecs[i], bead_radius));
     atom::Residue residue_child =
-        atom::Residue::setup_particle(new kernel::Particle(mdl), atom::ALA, i);
+        atom::Residue::setup_particle(new Particle(mdl), atom::ALA, i);
     atom::Hierarchy::setup_particle(bead_child);
     atom::Atom::setup_particle(bead_child, atom::AT_CA);
     atom::Mass(bead_child).set_mass(bead_mass);
@@ -36,9 +36,11 @@ atom::Hierarchy create_molecule(const algebra::Vector3Ds vecs,
 }
 atom::Hierarchy create_coarse_molecule_from_molecule(const atom::Hierarchy &mh,
                                                      int num_beads,
-                                                     kernel::Model *mdl,
+                                                     Model *mdl,
                                                      float bead_radius,
                                                      bool add_conn_restraint) {
+  IMPMULTIFIT_DEPRECATED_FUNCTION_DEF(2.5, "Unused and will be removed");
+
   IMP_NEW(IMP::statistics::internal::ParticlesDataPoints, ddp,
           (core::get_leaves(mh)));
   IMP::statistics::internal::VQClustering vq(ddp, num_beads);
@@ -53,14 +55,14 @@ atom::Hierarchy create_coarse_molecule_from_molecule(const atom::Hierarchy &mh,
   }
   // todo - mass should be a parameter
   atom::Hierarchy ret_prot = create_molecule(vecs, bead_radius, 3, mdl);
-  kernel::ParticlesTemp leaves = core::get_leaves(ret_prot);
-  for (kernel::ParticlesTemp::iterator it = leaves.begin(); it != leaves.end();
+  ParticlesTemp leaves = core::get_leaves(ret_prot);
+  for (ParticlesTemp::iterator it = leaves.begin(); it != leaves.end();
        it++) {
     sel.push_back(atom::Selection(atom::Hierarchy(*it)));
   }
   if (add_conn_restraint) {
     int k = 1;  // todo - make this a parameter
-    kernel::Restraint *r = atom::create_connectivity_restraint(sel, k);
+    Restraint *r = atom::create_connectivity_restraint(sel, k);
     if (r != nullptr) {
       mdl->add_restraint(r);
     }
@@ -68,8 +70,9 @@ atom::Hierarchy create_coarse_molecule_from_molecule(const atom::Hierarchy &mh,
   return ret_prot;
 }
 atom::Hierarchies create_coarse_molecules_from_molecules(
-    const atom::Hierarchies &mhs, int frag_len, kernel::Model *mdl,
+    const atom::Hierarchies &mhs, int frag_len, Model *mdl,
     float bead_radius, bool add_conn_restraint) {
+  IMPMULTIFIT_DEPRECATED_FUNCTION_DEF(2.5, "Unused and will be removed");
   atom::Hierarchies ret;
   for (int i = 0; i < (int)mhs.size(); i++) {
     // decide the number of beads for the molecule
@@ -84,7 +87,7 @@ atom::Hierarchies create_coarse_molecules_from_molecules(
 atom::Hierarchy create_coarse_molecule_from_density(em::DensityMap *dmap,
                                                     float dens_threshold,
                                                     int num_beads,
-                                                    kernel::Model *mdl,
+                                                    Model *mdl,
                                                     float bead_radius) {
 
   IMP_NEW(DensityDataPoints, ddp, (dmap, dens_threshold));

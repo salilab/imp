@@ -18,4 +18,5 @@ modules/*/dependency/CMakeLists.txt
 modules/*/test/CMakeLists.txt
 modules/*/examples/CMakeLists.txt
 applications/*/CMakeLists.txt
+tools/build/cmake_files/MakeContainers.cmake
 Files.cmake

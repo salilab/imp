@@ -6,7 +6,7 @@ import sys
 class OptionParser(optparse.OptionParser):
     """IMP-specific subclass of optparse.OptionParser.
        This adds options common to all IMP applications
-       (see IMP::base::setup_from_argv()).
+       (see IMP::setup_from_argv()).
     """
 
     _use_boost_parser = True
@@ -74,7 +74,7 @@ class OptionParser(optparse.OptionParser):
            optparse.OptionParser, except that it also processes options common
            to all IMP applications (these are not returned in opts, but can be
            obtained in the usual way, e.g. by calling
-           IMP::base::get_string_flag()).
+           IMP::get_string_flag()).
            @param[in] num_positional If a positive integer, exactly that
                       many positional arguments must be specified on the
                       command line; if a negative integer, that many or
@@ -82,7 +82,6 @@ class OptionParser(optparse.OptionParser):
                       arguments can be given.
            @returns   opts, args
         """
-        import IMP.base
         # First, parse the command line with optparse
         opts, args = optparse.OptionParser.parse_args(self)
         if not self._use_boost_parser:
@@ -104,7 +103,7 @@ class OptionParser(optparse.OptionParser):
             self.usage = self.description = None
             # Pass the rest of the command line to the Boost parser; add the
             # optparse-generated help to that from Boost
-            args = IMP.base.setup_from_argv([sys.argv[0]] + args,
+            args = setup_from_argv([sys.argv[0]] + args,
                            self.format_help() \
                            + "\nOptions common to all IMP applications:",
                            usage, numpos)

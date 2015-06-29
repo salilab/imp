@@ -11,9 +11,9 @@
 
 #include <IMP/modeller/modeller_config.h>
 
-#include <IMP/kernel/Restraint.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/ParticleTuple.h>
+#include <IMP/Restraint.h>
+#include <IMP/Particle.h>
+#include <IMP/ParticleTuple.h>
 #include <IMP/generic.h>
 
 IMPMODELLER_BEGIN_NAMESPACE
@@ -22,33 +22,40 @@ class BinormalTerm;
 
 //! Modeller-style multiple binormal (phi/psi) restraint.
 /** This implements a multiple binormal restraint on the two dihedral angles
-    between the two quads of kernel::Particles passed to the restraint, by
+    between the two quads of Particles passed to the restraint, by
    implementing
     equation A.76 in the
     \external{http://salilab.org/modeller/9v7/manual/node441.html,
    Modeller manual}.
     The two angles are typically the phi and psi dihedrals of a residue.
  */
-class IMPMODELLEREXPORT MultipleBinormalRestraint : public kernel::Restraint {
+class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint {
   std::vector<BinormalTerm> terms_;
-  kernel::ParticleQuad q1_, q2_;
+  ParticleIndexQuad q1_, q2_;
 
  public:
   //! Create the multiple binormal restraint.
   /** After creating the restraint, call add_term one or more times to add
       BinormalTerms to the restraint.
+      \param[in] m Model.
       \param[in] q1 First quad of particles.
       \param[in] q2 Second quad of particles.
    */
-  MultipleBinormalRestraint(const kernel::ParticleQuad &q1,
-                            const kernel::ParticleQuad &q2);
+  MultipleBinormalRestraint(Model *m, const ParticleIndexQuad &q1,
+                            const ParticleIndexQuad &q2);
+
+#ifndef IMP_DOXYGEN
+  IMPMODELLER_DEPRECATED_METHOD_DECL(2.5)
+  MultipleBinormalRestraint(const ParticleQuad &q1,
+                            const ParticleQuad &q2);
+#endif
 
   //! Add a single BinormalTerm to the restraint.
   void add_term(const BinormalTerm &term) { terms_.push_back(term); }
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(MultipleBinormalRestraint);
 };
 

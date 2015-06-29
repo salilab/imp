@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/python_only.h   \brief Build dependency graphs on models.
+ *  \file IMP/python_only.h   \brief Build dependency graphs on models.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_PYTHON_ONLY_H
 #define IMPKERNEL_PYTHON_ONLY_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "Model.h"
 #include <boost/graph/adjacency_list.hpp>
 

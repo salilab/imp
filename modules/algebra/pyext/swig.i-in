@@ -1,5 +1,5 @@
 %{
-#include <IMP/base/internal/range.h>
+#include <IMP/internal/range.h>
 %}
 
 %include "IMP/algebra/geometric_primitive_macros.h"
@@ -217,7 +217,7 @@ namespace IMP {
  namespace algebra {
    %template(_AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
 
-   %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<IMP::base::Vector<IMP::algebra::VectorD<3> >, IMP::base::Vector<IMP::algebra::VectorD<3> > >;
+   %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<IMP::Vector<IMP::algebra::VectorD<3> >, IMP::Vector<IMP::algebra::VectorD<3> > >;
    // rotation operations
  }
 }

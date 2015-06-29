@@ -11,18 +11,20 @@ class Tests(IMP.test.TestCase):
 
     def test_allp(self):
         """Checking decomposition of plural restraints"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
+        ps = []
         for i in range(0, 10):
-            p = IMP.kernel.Particle(m)
-            IMP.core.XYZR.setup_particle(p)
-        lp = IMP.container.ListSingletonContainer(m.get_particles())
+            p = m.add_particle("P%d" % i)
+            IMP.core.XYZR.setup_particle(m, p)
+            ps.append(p)
+        lp = IMP.container.ListSingletonContainer(m, ps)
         apc = IMP.container.AllPairContainer(lp)
         dps = IMP.core.SoftSpherePairScore(1)
         r = IMP.container.PairsRestraint(dps, apc)
         dr = r.create_decomposition()
         print(dr.evaluate(False))
-        cdr = IMP.kernel.RestraintSet.get_from(dr).get_restraints()
-        # IMP.base.set_log_level(IMP.base.VERBOSE)
+        cdr = IMP.RestraintSet.get_from(dr).get_restraints()
+        # IMP.set_log_level(IMP.VERBOSE)
         print("deling")
         del dr
         print("eval single")

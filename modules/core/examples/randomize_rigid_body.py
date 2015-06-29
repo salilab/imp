@@ -5,9 +5,12 @@
 import IMP.core
 import IMP.algebra
 import IMP
+import sys
 
-m = IMP.kernel.Model()
-p = IMP.kernel.Particle(m)
+IMP.setup_from_argv(sys.argv, "randomize rigid body")
+
+m = IMP.Model()
+p = IMP.Particle(m)
 rbd = IMP.core.RigidBody.setup_particle(p, IMP.algebra.ReferenceFrame3D())
 translation = IMP.algebra.get_random_vector_in(
     IMP.algebra.get_unit_bounding_box_3d())

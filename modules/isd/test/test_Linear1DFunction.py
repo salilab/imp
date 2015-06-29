@@ -38,11 +38,11 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.alpha = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
-        self.beta = Nuisance.setup_particle(IMP.kernel.Particle(self.m), 1.0)
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
+        self.alpha = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.beta = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
         self.mean = Linear1DFunction(self.alpha, self.beta)
         self.DA = IMP.DerivativeAccumulator()
 

@@ -21,7 +21,7 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT MolecularDynamicsMover : public core::MonteCarloMover {
  public:
-  MolecularDynamicsMover(kernel::Model *m, unsigned nsteps = 100,
+  MolecularDynamicsMover(Model *m, unsigned nsteps = 100,
                          Float timestep = 1.);
 
   MolecularDynamics *get_md() const { return md_; }
@@ -34,7 +34,7 @@ class IMPISDEXPORT MolecularDynamicsMover : public core::MonteCarloMover {
 
  protected:
   // mover-specific function calls
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(MolecularDynamicsMover);
@@ -43,7 +43,7 @@ class IMPISDEXPORT MolecularDynamicsMover : public core::MonteCarloMover {
   void save_coordinates();
 
   unsigned nsteps_;
-  IMP::base::PointerMember<MolecularDynamics> md_;
+  IMP::PointerMember<MolecularDynamics> md_;
   std::vector<std::vector<double> > coordinates_;
   std::vector<std::vector<double> > velocities_;
 };

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/em2d/domino_particle_states.h
- *  \brief kernel::Particles states for a rigid body that is going to be
+ *  \brief Particles states for a rigid body that is going to be
  *projected
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -16,13 +16,13 @@
 #include "IMP/core/rigid_bodies.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Rotation3D.h"
-#include "IMP/base/Pointer.h"
+#include "IMP/Pointer.h"
 #include "IMP/base_types.h"
 #include "IMP/Particle.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
-/** States that a set of kernel::Particles can have according to their positions
+/** States that a set of Particles can have according to their positions
     and orientations in a grid. The orientations also determine the orientation
     of the projections of the particles.
 */
@@ -59,14 +59,14 @@ class IMPEM2DEXPORT GridStates : public domino::ParticleStates {
   algebra::Rotation3D get_orientation(unsigned int i) const;
 
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+  virtual void load_particle_state(unsigned int, Particle *) const
       IMP_OVERRIDE;
 
-  IMP_OBJECT_NO_WARNING(GridStates);
+  IMP_OBJECT_METHODS(GridStates);
 };
 IMP_OBJECTS(GridStates, GridStatesList);
 
-/** States that a set of kernel::Particles can have according to their positions
+/** States that a set of Particles can have according to their positions
     and orientations in a grid. The orientations also determine the orientation
     of the projections of the particles.
 */
@@ -100,10 +100,10 @@ class IMPEM2DEXPORT ProjectionStates : public GridStates {
   Image *get_projection(unsigned int i) const;
 
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
-  virtual void load_particle_state(unsigned int, kernel::Particle *) const
+  virtual void load_particle_state(unsigned int, Particle *) const
       IMP_OVERRIDE;
 
-  IMP_OBJECT_NO_WARNING(ProjectionStates);
+  IMP_OBJECT_METHODS(ProjectionStates);
 };
 IMP_OBJECTS(ProjectionStates, ProjectionStatesList);
 

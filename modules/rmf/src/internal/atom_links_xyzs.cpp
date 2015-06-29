@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/Category.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -20,8 +20,8 @@ HierarchyLoadXYZs::HierarchyLoadXYZs(RMF::FileConstHandle f)
 }
 
 void HierarchyLoadXYZs::setup_particle(
-    RMF::NodeConstHandle n, kernel::Model *m, kernel::ParticleIndex p,
-    const kernel::ParticleIndexes &rigid_bodies) {
+    RMF::NodeConstHandle n, Model *m, ParticleIndex p,
+    const ParticleIndexes &rigid_bodies) {
   if (!ip_factory_.get_is(n)) return;
   if (!core::XYZ::get_is_setup(m, p)) core::XYZ::setup_particle(m, p);
   /* If there is a rigid body parent set up, add this particle as a child
@@ -63,8 +63,8 @@ void HierarchyLoadXYZs::setup_particle(
 }
 
 void HierarchyLoadXYZs::link_particle(
-    RMF::NodeConstHandle n, kernel::Model *m, kernel::ParticleIndex p,
-    const kernel::ParticleIndexes &rigid_bodies) {
+    RMF::NodeConstHandle n, Model *m, ParticleIndex p,
+    const ParticleIndexes &rigid_bodies) {
   if (!ip_factory_.get_is(n)) return;
   if (rigid_bodies.empty()) {
     global_.push_back(std::make_pair(n.get_id(), p));
@@ -99,8 +99,8 @@ void HierarchyLoadXYZs::load(RMF::FileConstHandle fh, Model *m) {
 HierarchySaveXYZs::HierarchySaveXYZs(RMF::FileHandle f) : ip_factory_(f) {}
 
 void HierarchySaveXYZs::setup_node(
-    kernel::Model *m, kernel::ParticleIndex p, RMF::NodeHandle n,
-    const kernel::ParticleIndexes &rigid_bodies) {
+    Model *m, ParticleIndex p, RMF::NodeHandle n,
+    const ParticleIndexes &rigid_bodies) {
   if (!core::XYZ::get_is_setup(m, p)) return;
   if (rigid_bodies.empty()) {
     global_.push_back(std::make_pair(n.get_id(), p));
@@ -114,15 +114,33 @@ void HierarchySaveXYZs::setup_node(
     } else if (core::NonRigidMember::get_is_setup(m, p)) {
       local_.push_back(std::make_pair(n.get_id(), p));
     } else {
-      IMP_FAILURE("not sure why I am here");
+      /* Treat a particle that is a child of a rigid body but not a member
+         as a nonrigid member. This results in tidier RMF files than using the
+         external rigid body mechanism (which duplicates the rigid body's
+         reference frame for every particle in the body). The (minor) drawback
+         is that when the RMF is read back in, these particles will become
+         "real" nonrigid members. */
+      rigid_nonmember_.push_back(std::make_pair(n.get_id(),
+                           ParticleIndexPair(p, rigid_bodies.back())));
     }
   }
 }
 
-void HierarchySaveXYZs::save(kernel::Model *m, RMF::FileHandle fh) {
+void HierarchySaveXYZs::save(Model *m, RMF::FileHandle fh) {
   IMP_FOREACH(Pair pp, global_) {
     copy_to_frame_particle(core::XYZ(m, pp.second).get_coordinates(),
                            fh.get_node(pp.first), ip_factory_);
+  }
+  IMP_FOREACH(Triplet pp, rigid_nonmember_) {
+    /* Transform global coordinates to those relative to the "parent"
+       rigid body */
+    algebra::Vector3D global_coord
+                          = core::XYZ(m, pp.second[0]).get_coordinates();
+    algebra::ReferenceFrame3D rf
+                      = core::RigidBody(m, pp.second[1]).get_reference_frame();
+    copy_to_frame_particle(
+                   rf.get_transformation_from().get_transformed(global_coord),
+                   fh.get_node(pp.first), ip_factory_);
   }
   IMP_FOREACH(Pair pp, local_) {
     copy_to_frame_particle(

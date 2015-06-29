@@ -8,7 +8,7 @@
 
 #include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/algebra/eigen3/Eigen/Dense>
 
 IMPISD_BEGIN_INTERNAL_NAMESPACE
@@ -16,7 +16,7 @@ IMPISD_BEGIN_INTERNAL_NAMESPACE
 /** Simple implementation of the conjugate gradient method for matrices
  * This version is for Eigen dense matrices
  * */
-class ConjugateGradientEigen : public base::Object {
+class ConjugateGradientEigen : public Object {
 
  private:
   IMP_Eigen::MatrixXd A_, B_, X0_, R_;

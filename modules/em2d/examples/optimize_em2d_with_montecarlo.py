@@ -4,13 +4,15 @@
 
 from __future__ import print_function
 import IMP
-import IMP.base
 import IMP.core
 import IMP.atom
 import IMP.em2d
 import IMP.algebra
 import IMP.container
 import random
+import sys
+
+IMP.setup_from_argv(sys.argv, "optimize EM2D with MonteCarlo")
 
 
 # An Optimizer score to get the values of the statistics after a given set
@@ -38,8 +40,8 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
 
 
 # Get model from PDB file
-IMP.base.set_log_level(IMP.base.TERSE)
-m = IMP.kernel.Model()
+IMP.set_log_level(IMP.TERSE)
+m = IMP.Model()
 prot = IMP.atom.read_pdb(
     IMP.em2d.get_example_path("1z5s.pdb"), m, IMP.atom.ATOMPDBSelector())
 IMP.atom.add_radii(prot)
@@ -82,37 +84,31 @@ IMP.atom.write_pdb(prot, "1z5s-transformed.pdb")
 # for the solution.
 d01 = IMP.algebra.get_distance(
     native_chain_centers[0], native_chain_centers[1])
-r01 = IMP.core.DistanceRestraint(
+r01 = IMP.core.DistanceRestraint(m,
     IMP.core.Harmonic(d01, 1), chains[0], chains[1])
 r01.set_name("distance 0-1")
 d12 = IMP.algebra.get_distance(
     native_chain_centers[1], native_chain_centers[2])
-r12 = IMP.core.DistanceRestraint(
+r12 = IMP.core.DistanceRestraint(m,
     IMP.core.Harmonic(d12, 1), chains[1], chains[2])
 r12.set_name("distance 1-2")
 d23 = IMP.algebra.get_distance(
     native_chain_centers[2], native_chain_centers[3])
-r23 = IMP.core.DistanceRestraint(
+r23 = IMP.core.DistanceRestraint(m,
     IMP.core.Harmonic(d23, 1), chains[2], chains[3])
 r23.set_name("distance 2-3")
 d30 = IMP.algebra.get_distance(
     native_chain_centers[3], native_chain_centers[0])
-r30 = IMP.core.DistanceRestraint(
+r30 = IMP.core.DistanceRestraint(m,
     IMP.core.Harmonic(d30, 1), chains[3], chains[0])
 r30.set_name("distance 3-0")
 print("Distances in the solution: d01 =", \
     d01, "d12 =", d12, "d23 =", d23, "d30 =", d30)
 
-# set distance restraints
-print("adding distance restraints ")
-for r in [r01, r12, r23, r30]:
-    m.add_restraint(r)
-print("model has ", m.get_number_of_restraints(), "restraints")
-
 # set em2D restraint
 srw = IMP.em2d.SpiderImageReaderWriter()
 selection_file = IMP.em2d.get_example_path("all-1z5s-projections.sel")
-images_to_read_names = [IMP.base.get_relative_path(selection_file, x) for x in
+images_to_read_names = [IMP.get_relative_path(selection_file, x) for x in
                         IMP.em2d.read_selection_file(selection_file)]
 em_images = IMP.em2d.read_images(images_to_read_names, srw)
 print(len(em_images), "images read")
@@ -139,9 +135,9 @@ em2d_restraint = IMP.em2d.Em2DRestraint(m)
 em2d_restraint.setup(score_function, params)
 em2d_restraint.set_images(em_images)
 em2d_restraint.set_name("em2d restraint")
-container = IMP.container.ListSingletonContainer(IMP.core.get_leaves(prot))
+container = IMP.container.ListSingletonContainer(m, IMP.core.get_leaves(prot))
 em2d_restraint.set_particles(container)
-em2d_restraints_set = IMP.kernel.RestraintSet(m)
+em2d_restraints_set = IMP.RestraintSet(m)
 
 # The next two lines are commented, because the optimization of the example
 # is expensive. To run the full example, uncomment them (It can take a few
@@ -149,14 +145,13 @@ em2d_restraints_set = IMP.kernel.RestraintSet(m)
 # em2d_restraints_set.add_restraint(em2d_restraint)
 # em2d_restraints_set.set_weight(1000) # weight for the em2D restraint
 
-print("adding em2d restraint ")
-m.add_restraint(em2d_restraints_set)
-# Add all restraints to a model
-print("model has ", m.get_number_of_restraints(), "restraints")
-
+# Create scoring function using all restraints
+all_restraints = [r01, r12, r23, r30, em2d_restraints_set]
+sf = IMP.core.RestraintsScoringFunction(all_restraints)
 
 # MONTECARLO OPTIMIZATION
 s = IMP.core.MonteCarlo(m)
+s.set_scoring_function(sf)
 # Add movers for the rigid bodies
 movers = []
 for rbd in rigid_bodies:
@@ -168,7 +163,7 @@ o_state = IMP.atom.WritePDBOptimizerState(chains, "intermediate-step-%1%.pdb")
 o_state.set_period(10)
 s.add_optimizer_state(o_state)
 
-ostate2 = WriteStatisticsOptimizerScore(m, m.get_restraints())
+ostate2 = WriteStatisticsOptimizerScore(m, all_restraints)
 s.add_optimizer_state(ostate2)
 
 # Perform optimization

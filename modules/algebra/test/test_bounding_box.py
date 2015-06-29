@@ -108,9 +108,7 @@ class Tests(IMP.test.TestCase):
 
     def test_default_kd(self):
         """Test default KD constructor"""
-        if IMP.base.get_check_level() >= IMP.base.USAGE:
-            self.assertRaises(IMP.base.UsageException,
-                              IMP.algebra.BoundingBoxKD)
+        self.assertRaisesUsageException(IMP.algebra.BoundingBoxKD)
 
     def test_bounding_box_nd(self):
         """Test BoundingBox<N> operations for unusual N"""
@@ -129,7 +127,7 @@ class Tests(IMP.test.TestCase):
             if N == -1:
                 c = IMP.algebra.get_cube_kd(5, 1.0)
                 ub = IMP.algebra.get_unit_bounding_box_kd(5)
-                self.assertRaises(IMP.base.InternalException,
+                self.assertRaises(IMP.InternalException,
                                   IMP.algebra.get_vertices, b)
             else:
                 c = getattr(IMP.algebra, "get_cube_%sd" % clsdim)(1.0)

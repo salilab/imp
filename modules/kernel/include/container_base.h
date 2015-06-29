@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/container_base.h
+ *  \file IMP/container_base.h
  *  \brief Abstract base class for containers of particles.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,14 +9,14 @@
 #ifndef IMPKERNEL_CONTAINER_BASE_H
 #define IMPKERNEL_CONTAINER_BASE_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "ModelObject.h"
 #include "particle_index.h"
-#include <IMP/base/utility_macros.h>
-#include <IMP/base/ref_counted_macros.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/WeakPointer.h>
+#include <IMP/utility_macros.h>
+#include <IMP/ref_counted_macros.h>
+#include <IMP/Object.h>
+#include <IMP/WeakPointer.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class Particle;
@@ -47,7 +47,7 @@ class IMPKERNELEXPORT Container : public ModelObject {
   bool writeable_;
 #endif
  protected:
-  Container(kernel::Model *m, std::string name = "Container %1%");
+  Container(Model *m, std::string name = "Container %1%");
 
   virtual std::size_t do_get_contents_hash() const = 0;
 

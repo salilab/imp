@@ -9,7 +9,7 @@
 #define IMPMULTIFIT_GEOMETRIC_COMPLEMENTARITY_H
 
 #include <vector>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include "IMP/algebra/standard_grids.h"
 #include <IMP/multifit/multifit_config.h>
 #include <IMP/algebra/Transformation3D.h>
@@ -39,7 +39,7 @@ struct IMPMULTIFITEXPORT ComplementarityGridParameters {
 };
 
 IMPMULTIFITEXPORT IMP::algebra::DenseGrid3D<float> get_complementarity_grid(
-    const IMP::kernel::ParticlesTemp &ps,
+    const IMP::ParticlesTemp &ps,
     const ComplementarityGridParameters &params =
         ComplementarityGridParameters());
 

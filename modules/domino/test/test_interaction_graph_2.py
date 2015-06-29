@@ -20,8 +20,8 @@ class Tests(IMP.test.TestCase):
 
     def test_list_ig(self):
         """Test that interaction graphs of lists decompose"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 3)]
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(0, 3)]
         score = IMP.core.SoftSpherePairScore(1)
         r = IMP.container.PairsRestraint(
             score, [(ps[0], ps[1]), (ps[1], ps[2])])
@@ -33,9 +33,9 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min3(self):
         """Test that showing interaction graphs is fine"""
-        m = IMP.kernel.Model()
-        IMP.base.set_log_level(IMP.base.SILENT)
-        ps = IMP.kernel._create_particles_from_pdb(
+        m = IMP.Model()
+        IMP.set_log_level(IMP.SILENT)
+        ps = IMP._create_particles_from_pdb(
             self.get_input_file_name("small_protein.pdb"),
             m)
         # print "radius is ", IMP.core.XYZR(IMP.atom.get_leaves(p)[0]).get_radius()
@@ -44,18 +44,18 @@ class Tests(IMP.test.TestCase):
         cpf = IMP.core.QuadraticClosePairsFinder()
         cpf.set_distance(0.0)
         print(len(ps), "leaves")
-        cp = cpf.get_close_pairs(ps)
+        cp = cpf.get_close_pairs(m, ps)
+        rs = IMP.RestraintSet(m)
         for pr in cp:
-            r = IMP.core.PairRestraint(
+            r = IMP.core.PairRestraint(m,
                 IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0, 1)), pr)
-            m.add_restraint(r)
+            rs.add_restraint(r)
             r.set_name("pair")
         print("computing graph")
         pst = IMP.domino.ParticleStatesTable()
         for p in ps:
-            pst.set_particle_states(p, NullStates())
-        g = IMP.domino.get_interaction_graph([m.get_root_restraint_set()],
-                                             pst)
+            pst.set_particle_states(m.get_particle(p), NullStates())
+        g = IMP.domino.get_interaction_graph([rs], pst)
         #w = IMP.display.PymolWriter(self.get_tmp_file_name("ig-large.pym"))
         gs = IMP.domino.get_interaction_graph_geometry(g)
         print("There are ", len(gs))

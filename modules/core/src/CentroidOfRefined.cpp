@@ -18,22 +18,22 @@ CentroidOfRefined::CentroidOfRefined(Refiner *r, FloatKey weight, FloatKeys ks)
     : refiner_(r), ks_(ks), w_(weight) {}
 
 // compute centroid from refined particles
-void CentroidOfRefined::apply_index(kernel::Model *m,
-                                    kernel::ParticleIndex pi) const {
+void CentroidOfRefined::apply_index(Model *m,
+                                    ParticleIndex pi) const {
   IMP_LOG_PROGRESS("BEGIN - updating centroid pi" << pi << " coords " <<
                    IMP::core::XYZ(m, pi).get_coordinates());
   // retrieving pis by ref if possible is cumbersome but is required for speed
-  kernel::ParticleIndexes pis_if_not_byref;
-  kernel::ParticleIndexes const* pPis;
+  ParticleIndexes pis_if_not_byref;
+  ParticleIndexes const* pPis;
   if(refiner_->get_is_by_ref_supported()){
-    kernel::ParticleIndexes const& pis =
+    ParticleIndexes const& pis =
       refiner_->get_refined_indexes_by_ref(m, pi);
     pPis = &pis;
   } else{
     pis_if_not_byref = refiner_->get_refined_indexes(m, pi);
     pPis = &pis_if_not_byref;
   }
-  kernel::ParticleIndexes const& pis = *pPis;
+  ParticleIndexes const& pis = *pPis;
   unsigned int n = pis.size();
   double tw = 0;
   if (w_ != FloatKey()) {
@@ -69,18 +69,18 @@ void CentroidOfRefined::apply_index(kernel::Model *m,
 }
 
 ModelObjectsTemp CentroidOfRefined::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret = refiner_->get_inputs(m, pis);
-  ret += IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret = refiner_->get_inputs(m, pis);
+  ret += IMP::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret +=
-        IMP::kernel::get_particles(m, refiner_->get_refined_indexes(m, pis[i]));
+        IMP::get_particles(m, refiner_->get_refined_indexes(m, pis[i]));
   }
   return ret;
 }
 ModelObjectsTemp CentroidOfRefined::do_get_outputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret = IMP::get_particles(m, pis);
   return ret;
 }
 

@@ -14,7 +14,7 @@
 #include <IMP/em2d/internal/Image2D.h>
 #include <IMP/em2d/internal/Projector.h>
 
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -34,14 +34,16 @@ public:
   /**
     \param[in] particles The particles participating in the score,
     need to have XYZ, radius and mass
-    \param[in] image_file_names 2D class averages filenames in PGM text format
+    \param[in] image_files 2D class averages filenames in PGM text format
     \param[in] pixel_size Pixel size in Angstrom
     \param[in] resolution Estimated resolution of the images
     \param[in] projection_number Number of projections to generate and fit to
     images. The lower the number, the faster the evaluation, but also less
     accurate.
+    \param[in] reuse_direction speed up evaluation by only periodically
+               recalculating projections
   */
-  PCAFitRestraint(kernel::Particles particles,
+  PCAFitRestraint(Particles particles,
                   const std::vector<std::string>& image_files,
                   double pixel_size, double resolution = 10.0,
                   unsigned int projection_number = 100,
@@ -57,12 +59,12 @@ public:
   // best projections will be recalculated
   void write_best_projections(std::string file_name, bool evaluate=false);
 
-  IMP::kernel::ModelObjectsTemp do_get_inputs() const { return ps_; }
+  IMP::ModelObjectsTemp do_get_inputs() const { return ps_; }
   IMP_OBJECT_METHODS(PCAFitRestraint);
 
  private:
   // particles to fit to the images
-  kernel::Particles ps_;
+  Particles ps_;
 
   // EM2D images
   std::vector<internal::Image2D<> > images_;

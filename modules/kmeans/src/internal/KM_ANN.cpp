@@ -1,8 +1,6 @@
 /**
  *  \file KM_ANN.cpp
  *  \brief
- *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
 */
 
 //----------------------------------------------------------------------

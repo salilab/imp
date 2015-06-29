@@ -4,7 +4,7 @@ import IMP.em
 
 
 def main():
-    IMP.base.set_log_level(IMP.base.SILENT)
+    IMP.set_log_level(IMP.SILENT)
     usage = """%prog [options] <in_protein> <out_pca.cmm>
 
 Calculates the protein principal components and writes them in cmm format.
@@ -16,7 +16,7 @@ with density above the input threshold."""
         parser.error("incorrect number of arguments")
     in_prot_fn = args[0]
     out_pca_fn = args[1]
-    mdl = IMP.kernel.Model()
+    mdl = IMP.Model()
     mol = IMP.atom.read_pdb(in_prot_fn, mdl)
     vecs = []
     for xyz in IMP.core.XYZs(IMP.core.get_leaves(mol)):

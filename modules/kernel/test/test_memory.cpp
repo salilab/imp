@@ -1,14 +1,17 @@
 /**
  *   Copyright 2007-2015 IMP Inventors. All rights reserved
  */
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/base/log.h>
-int main(int, char * []) {
-  IMP::base::set_log_level(IMP::base::MEMORY);
-  IMP_NEW(IMP::kernel::Model, m, ());
+#include <IMP/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/log.h>
+#include <IMP/flags.h>
+
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test memory.");
+  IMP::set_log_level(IMP::MEMORY);
+  IMP_NEW(IMP::Model, m, ());
   for (unsigned int i = 0; i < 10; ++i) {
-    new IMP::kernel::Particle(m);
+    new IMP::Particle(m);
   }
   return 0;
 }

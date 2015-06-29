@@ -36,7 +36,7 @@ class IMPEM2DEXPORT RelativePositionMover : public core::RigidBodyMover {
   algebra::Transformation3D last_transformation_;
   Float max_translation_;
   Float max_angle_;
-  Float probabily_of_random_move_;
+  Float probability_of_random_move_;
 
  public:
   RelativePositionMover(core::RigidBody d, Float max_translation,
@@ -55,7 +55,7 @@ class IMPEM2DEXPORT RelativePositionMover : public core::RigidBodyMover {
     \param[in] p Probability of a random move instead of a relative one.
                  default is 0.
   */
-  void set_random_move_probability(Float p) { probabily_of_random_move_ = p; }
+  void set_random_move_probability(Float p) { probability_of_random_move_ = p; }
 
  protected:
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;

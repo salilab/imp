@@ -24,7 +24,7 @@ class TestDominoModeling(IMP.test.ApplicationTestCase):
         except ImportError as detail:
             self.skipTest(str(detail))
         domino_model = self.import_python_application('emagefit')
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         fn = self.get_input_file_name("config.py")
         exp = utility.get_experiment_params(fn)
         fn_output_db = "domino_solutions_temp.db"

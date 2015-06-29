@@ -8,7 +8,7 @@
 
 #include "IMP/display/GeometryProcessor.h"
 #include <boost/algorithm/string/predicate.hpp>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -24,7 +24,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 void GeometryProcessor::handle_geometry_internal(Geometry *g, bool has_color,
                                                  Color c, std::string name) {
-  IMP::base::PointerMember<Geometry> pg(g);
+  IMP::PointerMember<Geometry> pg(g);
   // use own color instead of default whenever it is specified
   if (g->get_has_color()) {
     c = g->get_color();
@@ -48,7 +48,7 @@ void GeometryProcessor::handle_geometry_internal(Geometry *g, bool has_color,
   // if primitives didn't work, try decompose to components
   Geometries comp = g->get_components();
   if (comp.size() == 1 && comp[0] == g) {
-    IMP_THROW("Couldn't handle " << Showable(g), base::ValueException);
+    IMP_THROW("Couldn't handle " << Showable(g), ValueException);
   } else {
     for (unsigned int i = 0; i < comp.size(); ++i) {
       handle_geometry_internal(comp[i], has_color, c, name);

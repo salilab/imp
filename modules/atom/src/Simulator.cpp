@@ -5,18 +5,18 @@
  *
  */
 
-#include <IMP/base/log.h>
+#include <IMP/log.h>
 #include <IMP/atom/Simulator.h>
-#include <IMP/kernel/internal/constants.h>
-#include <IMP/kernel/internal/container_helpers.h>
-#include <IMP/kernel/internal/units.h>
+#include <IMP/internal/constants.h>
+#include <IMP/internal/container_helpers.h>
+#include <IMP/internal/units.h>
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/atom/constants.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
-Simulator::Simulator(kernel::Model *m, std::string name, double wave_factor)
+Simulator::Simulator(Model *m, std::string name, double wave_factor)
     : Optimizer(m, name), wave_factor_(wave_factor) {
   temperature_ = strip_units(IMP::internal::DEFAULT_TEMPERATURE);
   max_time_step_ = 2;
@@ -44,19 +44,19 @@ double Simulator::simulate_wave(double time, double max_time_step_factor,
 double Simulator::do_simulate(double time) {
   IMP_FUNCTION_LOG;
   set_was_used(true);
-  kernel::ParticleIndexes ps = get_simulation_particle_indexes();
+  ParticleIndexes ps = get_simulation_particle_indexes();
 
   setup(ps);
   double target = current_time_ + time;
   boost::scoped_ptr<boost::progress_display> pgs;
-  if (get_log_level() == base::PROGRESS) {
+  if (get_log_level() == PROGRESS) {
     pgs.reset(new boost::progress_display(time / max_time_step_));
   }
   while (current_time_ < target) {
     last_time_step_ = do_step(ps, max_time_step_);
     current_time_ += last_time_step_;
     update_states();
-    if (get_log_level() == base::PROGRESS) {
+    if (get_log_level() == PROGRESS) {
       ++(*pgs);
     }
   }
@@ -67,7 +67,7 @@ double Simulator::do_simulate_wave(double time, double max_time_step_factor,
                                    double base) {
   IMP_FUNCTION_LOG;
   set_was_used(true);
-  kernel::ParticleIndexes ps = get_simulation_particle_indexes();
+  ParticleIndexes ps = get_simulation_particle_indexes();
 
   setup(ps);
   double target = current_time_ + time;
@@ -143,23 +143,25 @@ double Simulator::do_simulate_wave(double time, double max_time_step_factor,
 
 ParticleIndexes Simulator::get_simulation_particle_indexes() const {
   IMP_OBJECT_LOG;
-  kernel::ParticleIndexes ps;
+  ParticleIndexes ps;
   if (get_number_of_particles() == 0) {
-    for (kernel::Model::ParticleIterator it = get_model()->particles_begin();
-         it != get_model()->particles_end(); ++it) {
-      if (get_is_simulation_particle((*it)->get_index())) {
-        ps.push_back((*it)->get_index());
+    Model *m = get_model();
+    ParticleIndexes pis = m->get_particle_indexes();
+    for (ParticleIndexes::const_iterator it = pis.begin();
+         it != pis.end(); ++it) {
+      if (get_is_simulation_particle(*it)) {
+        ps.push_back(*it);
       }
     }
   } else {
     ps = IMP::internal::get_index(
-        kernel::ParticlesTemp(particles_begin(), particles_end()));
+        ParticlesTemp(particles_begin(), particles_end()));
   }
   return ps;
 }
 
 ParticlesTemp Simulator::get_simulation_particles() const {
-  kernel::ParticleIndexes p = get_simulation_particle_indexes();
+  ParticleIndexes p = get_simulation_particle_indexes();
   return IMP::internal::get_particle(get_model(), p);
 }
 
@@ -175,8 +177,8 @@ double Simulator::get_kt() const {
   return IMP::atom::get_kt(get_temperature());
 }
 
-IMP_LIST_IMPL(Simulator, Particle, particle, kernel::Particle *,
-              kernel::Particles);
+IMP_LIST_IMPL(Simulator, Particle, particle, Particle *,
+              Particles);
 
 double get_energy_in_femto_joules(double energy_in_kcal_per_mol) {
   unit::KilocaloriePerMol cforce(energy_in_kcal_per_mol);

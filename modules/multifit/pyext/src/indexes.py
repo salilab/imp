@@ -19,7 +19,7 @@ Generate indexes of fitting solutions.
 
 
 def run(assembly_name, asmb_fn, num_fits, mapping_fn=""):
-    IMP.base.set_log_level(IMP.WARNING)
+    IMP.set_log_level(IMP.WARNING)
     asmb_input = IMP.multifit.read_settings(asmb_fn)
     asmb_input.set_was_used(True)
     ap_em_fn = asmb_input.get_assembly_header().get_coarse_over_sampled_ap_fn()

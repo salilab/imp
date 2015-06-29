@@ -59,8 +59,8 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
    * \param move_probability the prior probability to actually
    * move somewhere else
    */
-  RigidBodyTunneler(kernel::Model *m, kernel::ParticleIndexes pis,
-                    kernel::ParticleIndex ref, double k,
+  RigidBodyTunneler(Model *m, ParticleIndexes pis,
+                    ParticleIndex ref, double k,
                     double move_probability = 1.);
 
   //! add entry point
@@ -85,22 +85,22 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
   unsigned get_number_of_calls() const { return num_calls_; }
 
   //! returns center of mass and quaternion of rotation wrt ref
-  static Floats get_reduced_coordinates(kernel::Model* m,
-                                        kernel::ParticleIndex target,
-                                        kernel::ParticleIndex ref);
+  static Floats get_reduced_coordinates(Model* m,
+                                        ParticleIndex target,
+                                        ParticleIndex ref);
 
   //! returns center of mass and quaternion of rotation of pi
-  static Floats get_reduced_coordinates(kernel::Model* m,
-                                        kernel::ParticleIndex pi);
+  static Floats get_reduced_coordinates(Model* m,
+                                        ParticleIndex pi);
 
   /// sets rigid body coordinates in the reference frame of ref
-  static void set_reduced_coordinates(kernel::Model* m,
-                                      kernel::ParticleIndex target,
-                                      kernel::ParticleIndex ref,
+  static void set_reduced_coordinates(Model* m,
+                                      ParticleIndex target,
+                                      ParticleIndex ref,
                                       Floats coords);
 
  protected:
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RigidBodyTunneler);
@@ -109,8 +109,8 @@ class IMPCOREEXPORT RigidBodyTunneler : public MonteCarloMover {
   unsigned get_closest_entry_point(const internal::Coord& x) const;
 
  private:
-  kernel::ParticleIndexes pis_;
-  kernel::ParticleIndex ref_;
+  ParticleIndexes pis_;
+  ParticleIndex ref_;
   double k_, move_probability_;
   unsigned num_calls_, num_proposed_, num_rejected_, num_impossible_;
   boost::ptr_vector<internal::Transformer> last_transformations_;

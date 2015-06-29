@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/constants.h    \brief Various useful constants.
+ *  \file IMP/constants.h    \brief Various useful constants.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_CONSTANTS_H
 #define IMPKERNEL_CONSTANTS_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include <IMP/algebra/constants.h>
 #include <cmath>
 

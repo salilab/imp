@@ -9,7 +9,7 @@
 
 #include "isd_config.h"
 #include <IMP/macros.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
 
@@ -19,7 +19,7 @@ IMPISD_BEGIN_NAMESPACE
 /**
  */
 
-class IMPISDEXPORT CysteineCrossLinkData : public base::Object {
+class IMPISDEXPORT CysteineCrossLinkData : public Object {
   Floats omega0_grid_;  // the typical uncertainty, it goes in the prior
   Floats fmod_grid_;
   double fexp_;

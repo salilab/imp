@@ -11,7 +11,7 @@
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
-Projector::Projector(const kernel::Particles& particles,
+Projector::Projector(const Particles& particles,
                      unsigned int projection_number,
                      double pixel_size,
                      double resolution) :

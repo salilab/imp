@@ -37,10 +37,10 @@ IMPMULTIFIT_BEGIN_NAMESPACE
     returns infinity for many cases. Monte Carlo might make sense with certain
     parameters.
 */
-class IMPMULTIFITEXPORT ComplementarityRestraint : public kernel::Restraint {
+class IMPMULTIFITEXPORT ComplementarityRestraint : public Restraint {
  public:
-  ComplementarityRestraint(const kernel::ParticlesTemp &a,
-                           const kernel::ParticlesTemp &b,
+  ComplementarityRestraint(const ParticlesTemp &a,
+                           const ParticlesTemp &b,
                            std::string name = "ComplementarityRestraint %1%");
   /** If the two molecules have a penetration score of more than this,
       infinity is returned as the score. This score is roughly the number of
@@ -78,9 +78,9 @@ class IMPMULTIFITEXPORT ComplementarityRestraint : public kernel::Restraint {
 
   void set_boundary_coefficient(double bc) { boundary_coef_ = bc; }
   float get_voxel_size() const { return voxel_size_; }
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
-  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ComplementarityRestraint);
 #ifndef IMP_DOXYGEN
   double unprotected_evaluate_if_good(DerivativeAccumulator *accum,
@@ -91,15 +91,15 @@ class IMPMULTIFITEXPORT ComplementarityRestraint : public kernel::Restraint {
       GridPair;
   typedef core::DataObject<GridPair> GridObject;
   GridObject *get_grid_object(core::RigidBody rb,
-                              const kernel::ParticlesTemp &a, ObjectKey ok,
+                              const ParticlesTemp &a, ObjectKey ok,
                               double thickness, double value,
                               double interior_thickness, double voxel) const;
-  IMP::algebra::DenseGrid3D<float> get_grid(const kernel::ParticlesTemp &a,
+  IMP::algebra::DenseGrid3D<float> get_grid(const ParticlesTemp &a,
                                             double thickness, double value,
                                             double interior_thickness,
                                             double voxel) const;
   void update_voxel();
-  kernel::ParticlesTemp a_, b_;
+  ParticlesTemp a_, b_;
   core::RigidBody rba_, rbb_;
   ObjectKey ok_;
   // parameters

@@ -4,6 +4,16 @@
 %define with_python3 0
 %endif
 
+%if 0%{?rhel} == 5
+%define with_mpich 0
+%else
+%define with_mpich 1
+%endif
+
+# Change '#' to '%' in the line below if you want to build to install
+# somewhere other than the default /usr
+#define _prefix /usr/local
+
 Name:          IMP
 Version:       @IMP_VERSION@
 Release:       1%{?dist}
@@ -20,7 +30,8 @@ BuildRequires: python3-devel, symlinks
 # RHEL 5 ships with Python 2.4. We need Python 2.6 or later, so pull in that
 # from EPEL (note we need to tell the build later on where to find this python)
 # The HDF5 package in EPEL is too old though - we need a newer version
-# (which can be obtained from http://integrativemodeling.org/nightly/download/)
+# (which can be obtained from
+# http://integrativemodeling.org/build-extras/RHEL5/)
 %if 0%{?rhel} == 5
 BuildRequires: python26-devel
 BuildRequires: hdf518-devel
@@ -33,21 +44,20 @@ BuildRequires: hdf5-devel >= 1.8
 %endif
 # Note that RHEL 5 doesn't have a new enough swig to build IMP. If you must
 # use RHEL 5 (we recommend RHEL 6) you will need to build a newer SWIG package
-# before building IMP.
+# before building IMP (or use ours, available at
+# http://integrativemodeling.org/build-extras/RHEL5/)
 BuildRequires: swig >= 1.3.40
 BuildRequires: gsl-devel, fftw-devel
 BuildRequires: zlib-devel, perl
-# EPEL 7 doesn't have ANN yet
-%if 0%{?rhel} != 7
 BuildRequires: ann-devel
-%endif
 # Needed to build the cnmultifit module; obtain
 # from http://salilab.org/imp/libTAU.html
 # (Or, if you don't need cnmultifit, you can comment out this line)
 BuildRequires: libTAU-devel
 
 # The cmake included with RHEL 6 is too old; use cmake28 from EPEL instead.
-# RHEL 5 doesn't have cmake28; you will need to build this package yourself.
+# RHEL 5 doesn't have cmake28; you will need to build this package yourself
+# (or use ours, available at http://integrativemodeling.org/build-extras/RHEL5/)
 %if 0%{?rhel} == 5 || 0%{?rhel} == 6
 BuildRequires: cmake28
 %define cmake cmake28
@@ -78,6 +88,8 @@ BuildRequires: CGAL-devel, opencv-devel
 # If building in the Sali lab, pass '-D "RHEL_SALI_LAB 1"' to your rpmbuild
 # invocation. This will pull in our custom OpenCV and CGAL packages
 # and bundle the libraries with IMP.
+# If building outside of the lab and you still want these packages, get them
+# from http://integrativemodeling.org/build-extras/
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 BuildRequires: opencv-nogui-devel, CGAL-nogui-devel
 %if 0%{?rhel} == 5
@@ -85,11 +97,11 @@ BuildRequires: opencv-nogui-devel, CGAL-nogui-devel
 # Also bundle mpfr on 64-bit RHEL5
 %define extralib \\|libmpfr\\.so
 %else
-# On 32-bit RHEL5, sometimes 'file' misidentifies libimp_domino.so as a core
-# file (not as a shared object) and doesn't add it to the Provides - this
-# results in a broken dependency. Work around this by excluding it from the
-# Requires too.
-%define extralib \\|libimp_domino\\.so
+# On 32-bit RHEL5, sometimes 'file' misidentifies libimp_domino.so or
+# other DSOs as a core file (not as a shared object) and doesn't add
+# it to the Provides - this results in a broken dependency. Work around
+# this by excluding it from the Requires too.
+%define extralib \\|libimp_domino\\.so\\|libimp_isd\\.so\\|libimp_integrative_docking\\.so
 %endif
 %else
 %define extralib %{nil}
@@ -99,17 +111,21 @@ BuildRequires: opencv-nogui-devel, CGAL-nogui-devel
 %define bundled 'libTAU\\.so'
 %endif
 
-# Many modules use Python's numpy module, so pull that in (at build time
-# for tests; at install time for using the modules)
-%if 0%{?rhel} == 5
-BuildRequires: python26-numpy
-Requires: python26-numpy
-%else
-BuildRequires: numpy
-Requires: numpy
+# Many modules use Python's numpy and scipy modules, so pull those in
+# (at build time for tests; at install time for using the modules).
+# Note that the python26-numpy package in EPEL5 has been retired.
+%if 0%{?rhel} != 5
+BuildRequires: numpy, scipy
+Requires: numpy, scipy
 %endif
 
 %define cmake_opts %{boost} -DCMAKE_INSTALL_RPATH=%{_libdir}/IMP
+
+%if 0%{?rhel} == 6
+%define mpiprefix %{nil}
+%else
+%define mpiprefix mpi/
+%endif
 
 %description
 IMP's broad goal is to contribute to a comprehensive structural
@@ -142,9 +158,7 @@ Group:         Applications/Engineering
 Summary:       Development package for IMP developers.
 Requires:      %{name} = %{version}-%{release}
 Requires:      gsl-devel, fftw-devel, zlib-devel
-%if 0%{?rhel} != 7
 Requires:      ann-devel
-%endif
 %if 0%{?rhel} == 5
 Requires:      boost141-devel, python26-devel, hdf518-devel
 %else
@@ -168,6 +182,28 @@ Requires:      python3
 %description python3
 This package contains wrappers for Python 3 (the base package already
 includes Python 2 wrappers).
+%endif
+
+%if 0%{?with_mpich}
+%package mpich
+Group:         Applications/Engineering
+Summary:       MPI module, for mpich
+Requires:      %{name} = %{version}-%{release}
+Requires:      mpich
+BuildRequires: mpich-devel
+
+%description mpich
+This package contains an IMP.mpi module to add MPI support,
+using the mpich library.
+
+%package mpich-devel
+Group:         Applications/Engineering
+Summary:       MPI module development files, for mpich
+Requires:      %{name}-mpich = %{version}-%{release}
+Requires:      mpich
+
+%description mpich-devel
+Development files for IMP.mpi module with mpich.
 %endif
 
 %define reqprog %{_builddir}/find-requires-%{name}
@@ -204,8 +240,12 @@ ln -sf /usr/bin/python26 python-bin/python
 PATH="`pwd`/python-bin:$PATH"
 %endif
 mkdir build && cd build
-%{cmake} ../imp -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
-                -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/%{name}-%{version} \
+%if 0%{?with_mpich}
+module load %{mpiprefix}mpich-%{_arch}
+%endif
+%{cmake} ../imp -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_INSTALL_PREFIX=%{_prefix} \
+                -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
                 -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
 
 # Normally make will stop at the first error. Since an RPM cannot be built
@@ -219,8 +259,14 @@ mkdir logs
 %else
 make
 %endif
+%if 0%{?with_mpich}
+module purge
+%endif
 
 %install
+%if 0%{?rhel} == 5
+PATH="`pwd`/python-bin:$PATH"
+%endif
 cd build
 make DESTDIR=${RPM_BUILD_ROOT} install
 
@@ -230,13 +276,24 @@ py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py3_lib=`echo %{_libdir}/libpython3.*.so`
 py3_inc=`echo /usr/include/python3.*`
+%if 0%{?with_mpich}
+module load %{mpiprefix}mpich-%{_arch}
+%endif
 %{cmake} ../imp \
+         -DCMAKE_INSTALL_PREFIX=%{_prefix} \
          -DCMAKE_INSTALL_PYTHONDIR=%{_libdir}/python${py3_ver}/site-packages \
          -DSWIG_PYTHON_LIBRARIES=${py3_lib} \
          -DPYTHON_INCLUDE_DIRS=${py3_inc} \
          -DPYTHON_INCLUDE_PATH=${py3_inc} \
          -DPYTHON_LIBRARIES=${py3_lib}
 make DESTDIR=${RPM_BUILD_ROOT} install
+%if 0%{?with_mpich}
+module purge
+%endif
+
+# Don't build Python 3 MPI for now
+rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/IMP/mpi
+rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/_IMP_mpi.so
 
 # Replace .py files with symlinks to Python 2 files (since they are the same)
 (cd ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver} \
@@ -252,52 +309,54 @@ make DESTDIR=${RPM_BUILD_ROOT} install
 #  and d) only certain versions of doxygen work correctly
 # You can build the documentation by running "make IMP-doc"
 # on the IMP source code.
-README=${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}/README
+README=${RPM_BUILD_ROOT}%{_prefix}/share/doc/%{name}-%{version}/README
 echo "For full IMP documentation, please go to" > ${README}
 # Direct nightly build users to most recent nightly build docs
 if echo ${version} | grep -q git; then
-  echo "http://salilab.org/imp/nightly/doc/html/" >> ${README}
+  echo "http://integrativemodeling.org/nightly/doc/manual/" >> ${README}
 else
-  echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
+  echo "http://integrativemodeling.org/%{version}/doc/manual/" >> ${README}
 fi
 # Bundle libTAU from build machine so users don't have to get it separately
+# (can't use %_libdir here since that is dependent on whatever we redefined
+# %_prefix to be, but dependent libraries are always in /usr)
 mkdir ${RPM_BUILD_ROOT}%{_libdir}/IMP
-cp %{_libdir}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+cp /usr/%{_lib}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 # Bundle OpenCV and CGAL libraries
 for cvlib in cv cxcore highgui; do
-  cp %{_libdir}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+  cp /usr/%{_lib}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 done
-cp %{_libdir}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 # Also bundle mpfr on 64-bit RHEL5
 %if 0%{?rhel} == 5
 %ifarch x86_64
-cp %{_libdir}/libmpfr.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+cp /usr/%{_lib}/libmpfr.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 %endif
 %endif
 %endif
 
 # Don't distribute example application, dependency, or system
 pydir=${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages
-rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
+rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/example \
        ${RPM_BUILD_ROOT}%{_libdir}/libimp_example_system* \
        ${RPM_BUILD_ROOT}%{_libdir}/libexample* \
-       ${RPM_BUILD_ROOT}/usr/include/example* \
+       ${RPM_BUILD_ROOT}%{_prefix}/include/example* \
        ${pydir}/IMP/example_system_local \
        ${pydir}/_IMP_example_system_local.so
 
 # Make sure all Python applications use the same Python we built with
-perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}/usr/bin/*
+perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
 
 %files
 %defattr(-,root,root)
-%doc /usr/share/doc/%{name}-%{version}
-/usr/share/IMP
-/usr/bin/*
+%doc %{_prefix}/share/doc/%{name}-%{version}
+%{_prefix}/share/IMP
+%{_prefix}/bin/*
 %{_libdir}/libimp*.so.*
 %{_libdir}/libRMF*.so
 %{_libdir}/IMP
@@ -305,6 +364,15 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}/usr/bin/*
 %{_libdir}/python2*/site-packages/_IMP*so
 %{_libdir}/python2*/site-packages/RMF*
 %{_libdir}/python2*/site-packages/_RMF*so
+%if 0%{?with_mpich}
+%exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
+%exclude %{_prefix}/share/IMP/swig/IMP_mpi.*
+%exclude %{_prefix}/share/IMP/build_info/IMP.mpi
+%exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
+%exclude %{_libdir}/python2*/site-packages/IMP/mpi
+%exclude %{_libdir}/python2*/site-packages/_IMP_mpi.so
+%exclude %{_libdir}/libimp_mpi.so.*
+%endif
 
 %if 0%{?with_python3}
 %files python3
@@ -316,14 +384,38 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}/usr/bin/*
 %{_libdir}/python3*/site-packages/__pycache__
 %endif
 
+%if 0%{?with_mpich}
+%files mpich
+%defattr(-,root,root)
+%doc %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
+%{_prefix}/share/IMP/swig/IMP_mpi.*
+%{_prefix}/share/IMP/build_info/IMP.mpi
+%{_prefix}/share/IMP/build_info/IMP_mpi.pck
+%{_libdir}/python2*/site-packages/IMP/mpi
+%{_libdir}/python2*/site-packages/_IMP_mpi.so
+%{_libdir}/libimp_mpi.so.*
+
+%files mpich-devel
+%defattr(-,root,root)
+%{_libdir}/libimp_mpi.so
+%{_prefix}/include/IMP/mpi
+%endif
+
 %files devel
 %defattr(-,root,root)
-/usr/include/IMP
-/usr/include/IMP.h
-/usr/include/RMF
+%{_prefix}/include/IMP
+%{_prefix}/include/IMP.h
+%{_prefix}/include/RMF
 %{_libdir}/libimp*.so
+%if 0%{?with_mpich}
+%exclude %{_prefix}/include/IMP/mpi
+%exclude %{_libdir}/libimp_mpi.so
+%endif
 
 %changelog
+* Tue Jun 30 2015 Ben Webb <ben@salilab.org>   2.5.0-1
+- 2.5.0 release.
+
 * Fri Feb 27 2015 Ben Webb <ben@salilab.org>   2.4.0-1
 - 2.4.0 release.
 

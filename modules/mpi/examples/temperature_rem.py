@@ -2,12 +2,11 @@
 # Temperature replica exchange
 
 import IMP
-import IMP.base
 import IMP.mpi
 import IMP.core
 import sys
 
-IMP.base.setup_from_argv(sys.argv, "Temperature MPI example")
+IMP.setup_from_argv(sys.argv, "Temperature MPI example")
 
 # min and max temperature
 TEMPMIN_ = 1.0
@@ -25,20 +24,20 @@ myindex = rem.get_my_index()
 rem.set_my_parameter("temp", [temp[myindex]])
 
 # create model
-m = IMP.kernel.Model()
+m = IMP.Model()
 
 # add 2 particles
 ps = []
 for i in range(2):
-    p = IMP.kernel.Particle(m)
+    p = IMP.Particle(m)
     d = IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0.0, 0.0, 0.0))
     d.set_coordinates_are_optimized(True)
     ps.append(p)
 
 # add harmonic restraint to distance
 h = IMP.core.Harmonic(5.0, 1.0)
-ds = IMP.core.DistanceRestraint(h, ps[0], ps[1])
-m.add_restraint(ds)
+ds = IMP.core.DistanceRestraint(m, h, ps[0], ps[1])
+sf = IMP.core.RestraintsScoringFunction([ds])
 
 # movers
 movers = []
@@ -49,6 +48,7 @@ sm = IMP.core.SerialMover(movers)
 
 # sampler
 mc = IMP.core.MonteCarlo(m)
+mc.set_scoring_function(sf)
 mc.set_kt(temp[myindex])
 mc.set_return_best(False)
 mc.add_mover(sm)

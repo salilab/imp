@@ -12,27 +12,25 @@
 
 #include <IMP/saxs/Profile.h>
 
-#include <vector>
-
 IMPSAXS_BEGIN_NAMESPACE
 
 /** Class for profile clustering */
 class IMPSAXSEXPORT ProfileClustering {
 public:
-  ProfileClustering(IMP::saxs::Profile* exp_profile,
-                    const IMP::saxs::Profiles& profiles,
-                    float chi_percentage = 0.3, float chi_threshold = 0.0);
+  ProfileClustering(Profile* exp_profile,
+                    const Profiles& profiles,
+                    double chi_percentage = 0.3, double chi_threshold = 0.0);
 
-  ProfileClustering(IMP::saxs::Profile* exp_profile,
-                    const IMP::saxs::Profiles& profiles,
-                    const std::vector<double>& scores,
-                    float chi_percentage = 0.3, float chi_threshold = 0.0);
+  ProfileClustering(Profile* exp_profile,
+                    const Profiles& profiles,
+                    const Vector<double>& scores,
+                    double chi_percentage = 0.3, double chi_threshold = 0.0);
 
-  const std::vector<IMP::saxs::Profiles>& get_clusters() const {
+  const Vector<Profiles>& get_clusters() const {
     return clusters_;
   }
 
-  const IMP::saxs::Profiles& get_representatives() const {
+  const Profiles& get_representatives() const {
     return clustered_profiles_;
   }
 
@@ -41,15 +39,15 @@ private:
   void select_representatives();
 
 private:
-  IMP::base::PointerMember<const IMP::saxs::Profile> exp_profile_;
-  const IMP::saxs::Profiles profiles_;
-  const std::vector<double> scores_;
+  PointerMember<const Profile> exp_profile_;
+  const Profiles profiles_;
+  const Vector<double> scores_;
 
-  std::vector<double> chi_scores_;
-  IMP::saxs::Profiles clustered_profiles_;
-  std::vector<IMP::saxs::Profiles> clusters_;
-  float chi_percentage_;
-  float chi_threshold_;
+  Vector<double> chi_scores_;
+  Profiles clustered_profiles_;
+  Vector<Profiles> clusters_;
+  double chi_percentage_;
+  double chi_threshold_;
 };
 
 IMPSAXS_END_NAMESPACE

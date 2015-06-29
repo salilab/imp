@@ -119,19 +119,19 @@ class TestGaussianEM(IMP.test.TestCase):
         model_cutoff_dist=1e8
         density_cutoff_dist=1e8
         update_model=True
-        self.gem=IMP.isd.GaussianEMRestraint(self.m,IMP.get_indexes(self.model_ps),
-                                             IMP.get_indexes(self.density_ps),psigma.get_index(),
+        self.gem=IMP.isd.GaussianEMRestraint(self.m,self.model_ps,
+                                             self.density_ps,psigma,
                                              model_cutoff_dist,density_cutoff_dist,
                                              slope,
                                              update_model,False)
-        self.m.add_restraint(self.gem)
+        self.sf = IMP.core.RestraintsScoringFunction([self.gem])
         self.orig_coords=[IMP.core.XYZ(p).get_coordinates() for p in self.model_ps]
 
     def test_gem_score(self):
         """test accuracy of GMM score"""
         for nt in range(10):
             shuffle_particles(self.model_ps)
-            score = self.m.evaluate(False)
+            score = self.sf.evaluate(False)
             pyscore = gem_score(self.model_ps, self.density_ps)
             self.assertAlmostEqual(score, pyscore, delta=0.02)
 
@@ -142,7 +142,7 @@ class TestGaussianEM(IMP.test.TestCase):
         self.gem.set_slope(slope)
         for nt in range(10):
             shuffle_particles(self.model_ps)
-            score = self.m.evaluate(False)
+            score = self.sf.evaluate(False)
             pyscore = gem_score(self.model_ps, self.density_ps,slope=slope)
             self.assertAlmostEqual(score, pyscore, delta=0.02)
         self.gem.set_slope(0.0)
@@ -157,7 +157,7 @@ class TestGaussianEM(IMP.test.TestCase):
             for np, p in enumerate(self.model_ps):
                 d = IMP.core.XYZ(p)
                 #print 'n', IMP.test.xyz_numerical_derivatives(self.m, d, 0.01), 'a', d.get_derivatives()
-                self.assertXYZDerivativesInTolerance(self.m, d, tolerance = 1e-2,percentage=10.0)
+                self.assertXYZDerivativesInTolerance(self.sf, d, tolerance = 1e-2,percentage=10.0)
     def test_gem_derivatives_with_slope(self):
         """test accuracy of GMM derivatives"""
         self.gem.set_slope(0.1)
@@ -168,7 +168,7 @@ class TestGaussianEM(IMP.test.TestCase):
             for np, p in enumerate(self.model_ps):
                 d = IMP.core.XYZ(p)
                 #print 'n', IMP.test.xyz_numerical_derivatives(self.m, d, 0.01), 'a', d.get_derivatives()
-                self.assertXYZDerivativesInTolerance(self.m, d, tolerance = 1e-2,percentage=10.0)
+                self.assertXYZDerivativesInTolerance(self.sf, d, tolerance = 1e-2,percentage=10.0)
         self.gem.set_slope(0.0)
 
 

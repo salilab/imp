@@ -11,11 +11,11 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
-    const core::XYZRs& ps, float probe_radius, float density) {
-  IMP::Floats res;
+Vector<double> SolventAccessibleSurface::get_solvent_accessibility(
+    const core::XYZRs& ps, double probe_radius, double density) {
+  Vector<double> res;
   algebra::Vector3Ds coordinates(ps.size());
-  IMP::Floats radii(ps.size());
+  Vector<double> radii(ps.size());
   for (unsigned int i = 0; i < ps.size(); i++) {
     coordinates[i] = ps[i].get_coordinates();
     radii[i] = ps[i].get_radius();
@@ -25,8 +25,8 @@ IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
   create_sphere_dots(ps, density);
 
   // init grid
-  typedef IMP::algebra::DenseGrid3D<IMP::Ints> Grid;
-  IMP::algebra::BoundingBox3D bb(coordinates);
+  typedef algebra::DenseGrid3D<Ints> Grid;
+  algebra::BoundingBox3D bb(coordinates);
   Grid grid(2.0, bb);
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     Grid::Index grid_index = grid.get_nearest_index(coordinates[i]);
@@ -34,23 +34,23 @@ IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
   }
 
   // compute surface
-  static float max_radius = 3.0;
+  static double max_radius = 3.0;
   for (unsigned int i = 0; i < ps.size(); i++) {
-    const float atom_radius = radii[i];
-    float radius = atom_radius + 2 * probe_radius + max_radius;
+    const double atom_radius = radii[i];
+    double radius = atom_radius + 2 * probe_radius + max_radius;
     // query
-    IMP::algebra::BoundingBox3D bb(coordinates[i]);
+    algebra::BoundingBox3D bb(coordinates[i]);
     bb += radius;
     Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner(0)),
                         ub = grid.get_extended_index(bb.get_corner(1));
-    std::vector<int> neighbours1, neighbours2;
+    Vector<int> neighbours1, neighbours2;
     for (Grid::IndexIterator it = grid.indexes_begin(lb, ub);
          it != grid.indexes_end(lb, ub); ++it) {
       for (unsigned int vIndex = 0; vIndex < grid[*it].size(); vIndex++) {
         int mol_index = grid[*it][vIndex];
-        float radius_sum1 = atom_radius + radii[mol_index];
-        float radius_sum2 = radius_sum1 + 2 * probe_radius;
-        float dist2 = algebra::get_squared_distance(coordinates[i],
+        double radius_sum1 = atom_radius + radii[mol_index];
+        double radius_sum2 = radius_sum1 + 2 * probe_radius;
+        double dist2 = algebra::get_squared_distance(coordinates[i],
                                                     coordinates[mol_index]);
 
         if (dist2 < radius_sum1 * radius_sum1)
@@ -60,13 +60,12 @@ IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
       }
     }
 
-    float ratio = (atom_radius + probe_radius) / atom_radius;
+    double ratio = (atom_radius + probe_radius) / atom_radius;
     const algebra::Vector3Ds& spoints = get_sphere_dots(atom_radius);
 
     int dotNum = 0;
     for (unsigned int s_index = 0; s_index < spoints.size(); s_index++) {
-      IMP::algebra::Vector3D probe_center =
-          coordinates[i] + ratio * spoints[s_index];
+      algebra::Vector3D probe_center = coordinates[i] + ratio*spoints[s_index];
       // check for intersection with neighbors1
       bool collides = false;
       for (unsigned int n_index = 0; n_index < neighbours1.size(); n_index++) {
@@ -88,26 +87,26 @@ IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
       }
       if (!collides) dotNum++;
     }
-    res.push_back((float)dotNum / spoints.size());
+    res.push_back((double)dotNum / spoints.size());
   }
   return res;
 }
 
-algebra::Vector3Ds SolventAccessibleSurface::create_sphere_dots(float radius,
-                                                                float density) {
+algebra::Vector3Ds SolventAccessibleSurface::create_sphere_dots(double radius,
+                                                                double density) {
   algebra::Vector3Ds res;
-  float num_equat = 2 * PI * radius * sqrt(density);
-  float vert_count = 0.5 * num_equat;
+  double num_equat = 2 * PI * radius * sqrt(density);
+  double vert_count = 0.5 * num_equat;
 
   for (int i = 0; i < vert_count; i++) {
-    float phi = (PI * i) / vert_count;
-    float z = cos(phi);
-    float xy = sin(phi);
-    float horz_count = xy * num_equat;
+    double phi = (PI * i) / vert_count;
+    double z = cos(phi);
+    double xy = sin(phi);
+    double horz_count = xy * num_equat;
     for (int j = 0; j < horz_count - 1; j++) {
-      float teta = (2 * PI * j) / horz_count;
-      float x = xy * cos(teta);
-      float y = xy * sin(teta);
+      double teta = (2 * PI * j) / horz_count;
+      double x = xy * cos(teta);
+      double y = xy * sin(teta);
       res.push_back(algebra::Vector3D(radius * x, radius * y, radius * z));
     }
   }
@@ -115,7 +114,7 @@ algebra::Vector3Ds SolventAccessibleSurface::create_sphere_dots(float radius,
 }
 
 void SolventAccessibleSurface::create_sphere_dots(const core::XYZRs& ps,
-                                                  float density) {
+                                                  double density) {
 
   if (radii2type_.size() > 0 && density_ != density) {
     radii2type_.clear();
@@ -123,8 +122,8 @@ void SolventAccessibleSurface::create_sphere_dots(const core::XYZRs& ps,
     density_ = density;
   }
   for (unsigned int i = 0; i < ps.size(); i++) {
-    float r = ps[i].get_radius();
-    boost::unordered_map<float, int>::const_iterator it = radii2type_.find(r);
+    double r = ps[i].get_radius();
+    boost::unordered_map<double, int>::const_iterator it = radii2type_.find(r);
     if (it == radii2type_.end()) {
       int type = radii2type_.size();
       radii2type_[r] = type;

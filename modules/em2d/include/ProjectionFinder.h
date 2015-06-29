@@ -21,7 +21,7 @@
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/Rotation2D.h"
-#include "IMP/base/Pointer.h"
+#include "IMP/Pointer.h"
 #include "IMP/Particle.h"
 #include <string>
 
@@ -73,7 +73,7 @@ class IMPEM2DEXPORT Em2DRestraintParameters : public ProjectingParameters {
 IMP_VALUES(Em2DRestraintParameters, Em2DRestraintParametersList);
 
 //! Class to perform registration of model projections to images
-class IMPEM2DEXPORT ProjectionFinder : public IMP::base::Object {
+class IMPEM2DEXPORT ProjectionFinder : public IMP::Object {
  public:
   ProjectionFinder()
       : Object("ProjectionFinder%1%"),
@@ -106,7 +106,7 @@ class IMPEM2DEXPORT ProjectionFinder : public IMP::base::Object {
   void set_variance_images(const em2d::Images &variances);
 
   //! Set the particles where the em2D restraint is applied
-  void set_model_particles(const kernel::ParticlesTemp &ps);
+  void set_model_particles(const ParticlesTemp &ps);
 
   //! The projections of the model that best match the subject EM images
   //! are saved.
@@ -185,9 +185,9 @@ class IMPEM2DEXPORT ProjectionFinder : public IMP::base::Object {
   em2d::Images variances_;
   em2d::Images projections_;
   RegistrationResults registration_results_;
-  kernel::ParticlesTemp model_particles_;
+  ParticlesTemp model_particles_;
   Ints n_members_;
-  base::Pointer<ScoreFunction> score_function_;
+  Pointer<ScoreFunction> score_function_;
 
   bool particles_set_, parameters_setup_, registration_done_,
       fast_optimization_mode_;

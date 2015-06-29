@@ -6,15 +6,14 @@
  *
  */
 
-#include "IMP/kernel/Model.h"
-#include "IMP/kernel/Particle.h"
-#include "IMP/kernel/internal/scoring_functions.h"
-#include "IMP/base//set.h"
+#include "IMP/Model.h"
+#include "IMP/Particle.h"
+#include "IMP/internal/scoring_functions.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
 //! Constructor
-Model::Model(std::string name) : base::Object(name) {
+Model::Model(std::string name) : Object(name) {
   cur_stage_ = internal::NOT_EVALUATING;
   set_was_used(true);
   first_call_ = true;
@@ -52,7 +51,7 @@ Model::Model(std::string name) : base::Object(name) {
   restraints_ = new RestraintSet(this, 1.0, "Model Restraints");
 }
 
-IMP_LIST_ACTION_IMPL(kernel::Model, ScoreState, ScoreStates, score_state,
+IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
                      score_states, ScoreState *, ScoreStates);
 
 ParticleIndex Model::add_particle_internal(Particle *p) {
@@ -159,7 +158,7 @@ void Model::do_add_score_state(ScoreState *obj) {
   if (!obj->get_model()) obj->set_model(this);
   obj->set_was_used(true);
   IMP_LOG_VERBOSE("Added score state " << obj->get_name() << std::endl);
-  IMP_IF_CHECK(base::USAGE) {
+  IMP_IF_CHECK(USAGE) {
     boost::unordered_set<ScoreState *> in(score_states_begin(),
                                           score_states_end());
     IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
@@ -181,20 +180,20 @@ void Model::clear_particle_caches(ParticleIndex pi) {
   internal::ParticlesAttributeTable::clear_caches(pi);
 }
 
-void Model::add_data(kernel::ModelKey mk, Object *o) {
+void Model::add_data(ModelKey mk, Object *o) {
   model_data_.resize(std::max<int>(mk.get_index() + 1, model_data_.size()));
   model_data_[mk.get_index()] = o;
 }
 
-base::Object *Model::get_data(kernel::ModelKey mk) const {
+Object *Model::get_data(ModelKey mk) const {
   return model_data_[mk.get_index()].get();
 }
 
-void Model::remove_data(kernel::ModelKey mk) {
+void Model::remove_data(ModelKey mk) {
   model_data_[mk.get_index()] = nullptr;
 }
 
-bool Model::get_has_data(kernel::ModelKey mk) const {
+bool Model::get_has_data(ModelKey mk) const {
   if (model_data_.size() > mk.get_index()) {
     return model_data_[mk.get_index()];
   } else {
@@ -219,85 +218,23 @@ void Model::do_destroy() {
   }
 }
 
-/////////////////////////////////////////// NOT YET DEPRECATED STUFF
+/////////////////////////////////////////// DEPRECATED STUFF
 ScoringFunction *Model::create_model_scoring_function() {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
+                                  "Use a ScoringFunction instead.");
   return restraints_->create_scoring_function();
 }
 void Model::add_restraint(Restraint *r) {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
+                                  "Add to a ScoringFunction instead.");
   if (!r->get_model()) r->set_model(this);
   restraints_->add_restraint(r);
-}
-void Model::remove_restraint(Restraint *r) { restraints_->remove_restraint(r); }
-RestraintsTemp Model::get_restraints() const {
-  return restraints_->get_restraints();
-}
-ScoringFunction *Model::create_scoring_function() {
-  return create_model_scoring_function();
-}
-
-/////////////////////////////////////////// DEPRECATED STUFF
-
-double Model::get_maximum_score(Restraint *r) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                                  "Get the maximum from the restraint itself.");
-  return r->get_maximum_score();
-}
-void Model::set_maximum_score(Restraint *r, double s) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                                  "Set the maximum on the restraint itself.");
-  r->set_maximum_score(s);
-}
-void Model::set_maximum_score(double s) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use a ScoringFunction.");
-  return restraints_->set_maximum_score(s);
-}
-double Model::get_maximum_score() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use a ScoringFunction.");
-  return restraints_->get_maximum_score();
-}
-
-ParticlesTemp Model::get_particles() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes().");
-  return ParticlesTemp(particles_begin(), particles_end());
-}
-
-Model::ParticleIterator Model::particles_begin() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes().");
-  return ParticleIterator(NotNull(), particle_index_.begin(),
-                          particle_index_.end());
-}
-
-Model::ParticleIterator Model::particles_end() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes().");
-  return ParticleIterator(NotNull(), particle_index_.end(),
-                          particle_index_.end());
-}
-
-void Model::remove_particle(Particle *p) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use the ParticleIndex version.");
-  remove_particle(p->get_index());
 }
 
 RestraintSet *Model::get_root_restraint_set() {
   IMPKERNEL_DEPRECATED_METHOD_DEF(
       2.1, "Use a scoring function instead of the Model.");
   return restraints_;
-}
-unsigned int Model::get_number_of_restraints() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(
-      2.1, "Use a scoring function instead of the Model.");
-  return restraints_->get_number_of_restraints();
-}
-
-Restraint *Model::get_restraint(unsigned int i) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(
-      2.1, "Use a scoring function instead of the Model.");
-  return restraints_->get_restraint(i);
-}
-
-unsigned int Model::get_number_of_particles() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_particle_indexes() instead.");
-  return get_particles().size();
 }
 
 IMPKERNEL_END_NAMESPACE

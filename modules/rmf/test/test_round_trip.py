@@ -15,13 +15,13 @@ class Tests(IMP.test.TestCase):
     def test_rt(self):
         """Test round trip"""
         for suffix in [".rmfz", ".rmf3"]:
-            m = IMP.kernel.Model()
+            m = IMP.Model()
             print("reading pdb")
             name = self.get_tmp_file_name("test_round_trip" + suffix)
             h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                   IMP.atom.NonAlternativePDBSelector())
             h.get_is_valid(True)
-            IMP.base.set_log_level(IMP.base.SILENT)
+            IMP.set_log_level(IMP.SILENT)
             IMP.atom.add_bonds(h)
             print("done")
             print("writing hierarchy")
@@ -61,14 +61,14 @@ class Tests(IMP.test.TestCase):
     def test_part1(self):
         """Test round trip 1"""
         for suffix in [".rmfz", ".rmf3"]:
-            m = IMP.kernel.Model()
+            m = IMP.Model()
             print("reading pdb")
             h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                   IMP.atom.NonAlternativePDBSelector())
-            IMP.base.set_log_level(IMP.base.SILENT)
+            IMP.set_log_level(IMP.SILENT)
             IMP.atom.add_bonds(h)
             print("done")
-            IMP.base.set_log_level(IMP.base.VERBOSE)
+            IMP.set_log_level(IMP.VERBOSE)
             print("writing hierarchy")
             name = self.get_tmp_file_name("test_rt_parts" + suffix)
             f = RMF.create_rmf_file(name)
@@ -83,7 +83,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(len(h2), 1)
             del f
 
-            m = IMP.kernel.Model()
+            m = IMP.Model()
             print("reopening")
             f = RMF.open_rmf_file_read_only(name)
             print("reading")
@@ -92,16 +92,16 @@ class Tests(IMP.test.TestCase):
     def test_names(self):
         """Test if RMF can recall the molecule name and chain ID"""
         for suffix in [".rmfz", ".rmf3"]:
-            m = IMP.kernel.Model()
+            m = IMP.Model()
             h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                   IMP.atom.NonAlternativePDBSelector())
             chs = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
             chs[0].set_name('simple')
             self.assertEqual(chs[0].get_name(), 'simple')
 
-            IMP.base.set_log_level(IMP.base.SILENT)
+            IMP.set_log_level(IMP.SILENT)
             IMP.atom.add_bonds(h)
-            IMP.base.set_log_level(IMP.base.VERBOSE)
+            IMP.set_log_level(IMP.VERBOSE)
             name = self.get_tmp_file_name("test_rt_parts" + suffix)
             f = RMF.create_rmf_file(name)
             IMP.rmf.add_hierarchy(f, h)

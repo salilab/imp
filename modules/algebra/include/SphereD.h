@@ -34,7 +34,7 @@ class SphereD : public GeometricPrimitiveD<D> {
     IMP_USAGE_CHECK(radius >= 0, "Radius can't be negative");
   }
   double get_radius() const {
-    IMP_INTERNAL_CHECK(!base::isnan(radius_),
+    IMP_INTERNAL_CHECK(!IMP::isnan(radius_),
                        "Attempt to use uninitialized sphere.");
     return radius_;
   }
@@ -55,6 +55,7 @@ class SphereD : public GeometricPrimitiveD<D> {
 #ifndef SWIG
   VectorD<D> &_access_center() { return center_; }
   void _set_radius(double d) { radius_ = d; }
+  void _set_center(const VectorD<D> &center){ center_ = center; }
   double &operator[](unsigned int i) {
     IMP_USAGE_CHECK(i < D + 1, "Out of range");
     if (i < D) {

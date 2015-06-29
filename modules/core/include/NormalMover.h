@@ -18,27 +18,27 @@ IMPCORE_BEGIN_NAMESPACE
 /** \see MonteCarlo
  */
 class IMPCOREEXPORT NormalMover : public MonteCarloMover {
-  kernel::ParticleIndexes pis_;
+  ParticleIndexes pis_;
   FloatKeys keys_;
   Float stddev_;
   algebra::VectorKDs originals_;
 
-  void initialize(kernel::ParticleIndexes pis, FloatKeys keys, double radius);
+  void initialize(ParticleIndexes pis, FloatKeys keys, double radius);
 
  public:
-  NormalMover(kernel::Model *m, kernel::ParticleIndex pi, const FloatKeys &vars,
+  NormalMover(Model *m, ParticleIndex pi, const FloatKeys &vars,
               double stddev);
   //! Move the x,y,z coordinates
-  NormalMover(kernel::Model *m, kernel::ParticleIndex pi, double stddev);
+  NormalMover(Model *m, ParticleIndex pi, double stddev);
 #ifndef IMP_DOXYGEN
   /**  \param[in] sc The set of particles to perturb.
        \param[in] vars The variables to use (normally the keys for x,y,z)
        \param[in] sigma The standard deviation to use.
    */
-  NormalMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars,
+  NormalMover(const ParticlesTemp &sc, const FloatKeys &vars,
               Float sigma);
 
-  NormalMover(const kernel::ParticlesTemp &sc, Float radius);
+  NormalMover(const ParticlesTemp &sc, Float radius);
 #endif
 
   void set_sigma(Float sigma) {
@@ -49,7 +49,7 @@ class IMPCOREEXPORT NormalMover : public MonteCarloMover {
   Float get_sigma() const { return stddev_; }
 
  protected:
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(NormalMover);

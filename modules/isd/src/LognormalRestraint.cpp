@@ -15,9 +15,9 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-LognormalRestraint::LognormalRestraint(kernel::Particle *x,
-                                       kernel::Particle *mu,
-                                       kernel::Particle *sigma)
+LognormalRestraint::LognormalRestraint(Particle *x,
+                                       Particle *mu,
+                                       Particle *sigma)
     : Restraint(sigma->get_model(), "LognormalRestraint%1%"),
       px_(x),
       pmu_(mu),
@@ -28,8 +28,8 @@ LognormalRestraint::LognormalRestraint(kernel::Particle *x,
   check_particles();
 }
 
-LognormalRestraint::LognormalRestraint(double x, kernel::Particle *mu,
-                                       kernel::Particle *sigma)
+LognormalRestraint::LognormalRestraint(double x, Particle *mu,
+                                       Particle *sigma)
     : Restraint(sigma->get_model(), "LognormalRestraint%1%"),
       x_(x),
       pmu_(mu),
@@ -40,8 +40,8 @@ LognormalRestraint::LognormalRestraint(double x, kernel::Particle *mu,
   check_particles();
 }
 
-LognormalRestraint::LognormalRestraint(kernel::Particle *x, double mu,
-                                       kernel::Particle *sigma)
+LognormalRestraint::LognormalRestraint(Particle *x, double mu,
+                                       Particle *sigma)
     : Restraint(sigma->get_model(), "LognormalRestraint%1%"),
       px_(x),
       mu_(mu),
@@ -52,8 +52,8 @@ LognormalRestraint::LognormalRestraint(kernel::Particle *x, double mu,
   check_particles();
 }
 
-LognormalRestraint::LognormalRestraint(kernel::Particle *x,
-                                       kernel::Particle *mu, double sigma)
+LognormalRestraint::LognormalRestraint(Particle *x,
+                                       Particle *mu, double sigma)
     : Restraint(x->get_model(), "LognormalRestraint%1%"),
       px_(x),
       pmu_(mu),
@@ -64,7 +64,7 @@ LognormalRestraint::LognormalRestraint(kernel::Particle *x,
   check_particles();
 }
 
-LognormalRestraint::LognormalRestraint(kernel::Particle *x, double mu,
+LognormalRestraint::LognormalRestraint(Particle *x, double mu,
                                        double sigma)
     : Restraint(x->get_model(), "LognormalRestraint%1%"),
       px_(x),
@@ -77,7 +77,7 @@ LognormalRestraint::LognormalRestraint(kernel::Particle *x, double mu,
 }
 
 LognormalRestraint::LognormalRestraint(double x, double mu,
-                                       kernel::Particle *sigma)
+                                       Particle *sigma)
     : Restraint(sigma->get_model(), "LognormalRestraint%1%"),
       x_(x),
       mu_(mu),
@@ -88,7 +88,7 @@ LognormalRestraint::LognormalRestraint(double x, double mu,
   check_particles();
 }
 
-LognormalRestraint::LognormalRestraint(double x, kernel::Particle *mu,
+LognormalRestraint::LognormalRestraint(double x, Particle *mu,
                                        double sigma)
     : Restraint(mu->get_model(), "LognormalRestraint%1%"),
       x_(x),
@@ -152,7 +152,7 @@ double LognormalRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp LognormalRestraint::do_get_inputs() const {
-  kernel::ParticlesTemp ret;
+  ParticlesTemp ret;
   if (isx_) ret.push_back(px_);
   if (ismu_) ret.push_back(pmu_);
   if (issigma_) ret.push_back(psigma_);

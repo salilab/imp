@@ -28,7 +28,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     CloseBipartitePairContainer for variants on the functionality provided.
  */
 class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
-  IMP::base::PointerMember<SingletonContainer> a_, b_;
+  IMP::PointerMember<SingletonContainer> a_, b_;
 
  protected:
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {
@@ -43,17 +43,17 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
     validate_readable();
     IMP_FOREACH(ParticleIndex pa, a_->get_contents()) {
       IMP_FOREACH(ParticleIndex pb, b_->get_contents()) {
-        f->apply_index(get_model(), kernel::ParticleIndexPair(pa, pb));
+        f->apply_index(get_model(), ParticleIndexPair(pa, pb));
       }
     }
   }
   AllBipartitePairContainer(SingletonContainerAdaptor a,
                             SingletonContainerAdaptor b,
                             std::string name = "AllBipartitePairContainer%1%");
-  virtual kernel::ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
-  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   IMP_PAIR_CONTAINER_METHODS(AllBipartitePairContainer);
   IMP_OBJECT_METHODS(AllBipartitePairContainer);
 };

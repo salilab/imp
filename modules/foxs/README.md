@@ -1,3 +1,5 @@
+\brief Determine small angle X-ray (SAXS) profiles.
+
 # foxs {#foxs_bin}
 
 Determine small angle X-ray (SAXS) profiles.
@@ -9,7 +11,7 @@ files and/or SAXS profiles. There is also a \salilab{foxs/,web server}
 available.
 
 _Examples_:
- - [Determination of a Nup133 structure](../tutorial/foxs_nup133.html)
+ - [Determination of a Nup133 structure](@ref foxs_nup133)
 
 # Info
 

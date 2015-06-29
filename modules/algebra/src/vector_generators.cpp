@@ -7,7 +7,7 @@
  */
 
 #include <IMP/algebra/vector_generators.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/log_macros.h>
 #include <IMP/algebra/standard_grids.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -22,10 +22,10 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 VectorD<2> get_random_vector_in(const SphereD<2> &s) {
   ::boost::uniform_real<> rand(0, 1);
-  double angle = 2 * PI * rand(base::random_number_generator);
+  double angle = 2 * PI * rand(random_number_generator);
   // sample the radius uniformly with respect to the circle area PI * R^2
   double R2 = std::pow(s.get_radius(), 2);
-  double r = std::sqrt(R2 * rand(base::random_number_generator));
+  double r = std::sqrt(R2 * rand(random_number_generator));
   VectorD<2> ret(r * sin(angle), r * cos(angle));
   return ret + s.get_center();
 }
@@ -37,10 +37,10 @@ VectorD<2> get_random_vector_in(const SphereD<2> &s) {
 Vector3D get_random_vector_in(const Cylinder3D &c) {
   ::boost::uniform_real<> rand(0, 1);
   // relative height and radius are between 0 (0%) and 1 (100%):
-  double relative_h = rand(base::random_number_generator);
+  double relative_h = rand(random_number_generator);
   // sqrt[rand(0,1)] is uniform with respect to the circle area PI*r^2
-  double relative_r = std::sqrt(rand(base::random_number_generator));
-  double angle = 2 * PI * rand(base::random_number_generator);
+  double relative_r = std::sqrt(rand(random_number_generator));
+  double angle = 2 * PI * rand(random_number_generator);
   return c.get_inner_point_at(relative_h, relative_r, angle);
 }
 
@@ -149,7 +149,7 @@ Vector3Ds get_random_chain(unsigned int n, double r, const Vector3D &start,
                   "If r is too small, it won't succeed in placing the spheres");
   unsigned int max_failures = 30;
   Vector3Ds ret;
-  base::Vector<unsigned int> failures;
+  Vector<unsigned int> failures;
   ret.push_back(start);
   failures.push_back(0);
   while (ret.size() != n) {

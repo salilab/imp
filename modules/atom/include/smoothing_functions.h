@@ -11,8 +11,8 @@
 #include <IMP/atom/atom_config.h>
 
 #include <IMP/base_types.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/object_macros.h>
+#include <IMP/Object.h>
+#include <IMP/object_macros.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -30,7 +30,7 @@ IMPATOM_BEGIN_NAMESPACE
     (a shift function) or smooth it from its normal value to zero over
     a defined range (a switch function, such as ForceSwitch).
  */
-class IMPATOMEXPORT SmoothingFunction : public IMP::base::Object {
+class IMPATOMEXPORT SmoothingFunction : public IMP::Object {
  public:
   SmoothingFunction();
 

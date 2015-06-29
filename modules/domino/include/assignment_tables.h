@@ -33,7 +33,7 @@ class DominoSampler;
     subset. The main method of interest is load_assignments()
     which enumerates the assignments and loads them into an AssignmentContainer.
 */
-class IMPDOMINOEXPORT AssignmentsTable : public IMP::base::Object {
+class IMPDOMINOEXPORT AssignmentsTable : public IMP::Object {
  public:
   AssignmentsTable(std::string name = "AssignmentsTable %1%") : Object(name) {}
   virtual void load_assignments(const Subset &s,
@@ -48,7 +48,7 @@ IMP_OBJECTS(AssignmentsTable, AssignmentsTables);
     and filtered in a straight forward manner.
 */
 class IMPDOMINOEXPORT SimpleAssignmentsTable : public AssignmentsTable {
-  base::Pointer<ParticleStatesTable> pst_;
+  Pointer<ParticleStatesTable> pst_;
   SubsetFilterTables sft_;
   unsigned int max_;
 
@@ -67,7 +67,7 @@ class IMPDOMINOEXPORT SimpleAssignmentsTable : public AssignmentsTable {
     and filtered by recursively dividing the subset in half.
 */
 class IMPDOMINOEXPORT RecursiveAssignmentsTable : public AssignmentsTable {
-  base::Pointer<ParticleStatesTable> pst_;
+  Pointer<ParticleStatesTable> pst_;
   SubsetFilterTables sft_;
   unsigned int max_;
 
@@ -97,11 +97,11 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
   /* MSVC/Sun gcc appears confused by a friend class in the anonymous namespace
    */
  public:
-  base::Pointer<ParticleStatesTable> pst_;
+  Pointer<ParticleStatesTable> pst_;
   SubsetFilterTables sft_;
   unsigned int max_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-  boost::unordered_map<kernel::Particle *, kernel::ParticlesTemp> rls_;
+  boost::unordered_map<Particle *, ParticlesTemp> rls_;
 #endif
 #endif
  public:
@@ -121,7 +121,7 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
     in to domino.
 */
 class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
-  boost::unordered_map<Subset, IMP::base::PointerMember<AssignmentContainer> >
+  boost::unordered_map<Subset, IMP::PointerMember<AssignmentContainer> >
       states_;
 
  public:
@@ -139,7 +139,7 @@ class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
     enumeration. This function is there in order to expose internal
     functionality for easier testing and should not be depended upon.
 */
-IMPDOMINOEXPORT kernel::ParticlesTemp get_order(const Subset &s,
+IMPDOMINOEXPORT ParticlesTemp get_order(const Subset &s,
                                                 const SubsetFilterTables &sft);
 
 IMPDOMINO_END_NAMESPACE

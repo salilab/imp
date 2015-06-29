@@ -85,7 +85,7 @@ bool rotation_is_valid(const TAU::Rotation3 &rot) {
   float sqr_mag = 0.;
   for (int i = 0; i < 4; i++) {
     sqr_mag += rot[i] * rot[i];
-    if (base::isnan(rot[i])) {
+    if (IMP::isnan(rot[i])) {
       return false;
     }
   }
@@ -142,23 +142,21 @@ multifit::FittingSolutionRecords fit_models_to_density(
 
   int cn_symm_deg = params.get_cn_symm();
   int dn_symm_deg = params.get_dn_symm();
-  kernel::Particles mhs_particles;
+  Particles mhs_particles;
   for (atom::Hierarchies::const_iterator it = mhs.begin(); it != mhs.end();
        it++) {
-    kernel::Particles temp = core::get_leaves(*it);
+    Particles temp = core::get_leaves(*it);
     mhs_particles.insert(mhs_particles.end(), temp.begin(), temp.end());
   }
   // calculate the density map PCA
   AlignSymmetric aligner(dmap, params.get_density_map_threshold(), cn_symm_deg);
   core::XYZs mhs_particles_xyz = core::XYZs(mhs_particles);
-  int i = -1;
   int j = 0;
   int recs_size = recs.size();
   multifit::FittingSolutionRecords return_sols;
   float max_allowed_diff = params.get_pca_matching_threshold();
   boost::progress_display show_progress(num_sols_to_fit + 1);
-  while ((i < recs_size) && (j < num_sols_to_fit)) {
-    ++i;
+  for (int i = 0; i < recs_size && j < num_sols_to_fit; ++i) {
     if (!(is_valid_transformation(recs[i].get_dock_transformation()) &&
           is_valid_transformation(recs[i].get_fit_transformation())))
       continue;
@@ -227,7 +225,7 @@ void do_all_fitting(const std::string param_filename,
   std::cout << "=====================================" << std::endl;
 
   // load the density
-  base::PointerMember<em::DensityMap> dmap =
+  PointerMember<em::DensityMap> dmap =
       em::read_map(density_filename, new em::MRCReaderWriter());
   dmap->get_header_writable()->set_resolution(resolution);
   dmap->update_voxel_size(spacing);
@@ -253,7 +251,7 @@ void do_all_fitting(const std::string param_filename,
   //                                   pca_pruned_asmb_sols);
 
   // load the protein
-  IMP_NEW(kernel::Model, mdl, ());
+  IMP_NEW(Model, mdl, ());
   atom::Hierarchy asmb;
   atom::Hierarchies mhs;
   // atom::CAlphaPDBSelector sel;

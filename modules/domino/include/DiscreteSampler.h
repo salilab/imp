@@ -13,10 +13,10 @@
 #include "assignment_tables.h"
 #include "particle_states.h"
 #include "subset_filters.h"
-#include <IMP/base/utility_macros.h>
+#include <IMP/utility_macros.h>
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/base_types.h>
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -32,7 +32,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     Defaults are provided for all the parameters:
     - if no SubsetFilterTables are provided, then the
     ExclusionSubsetFilterTable and the
-    kernel::RestraintScoreSubsetFilterTable are used.
+    RestraintScoreSubsetFilterTable are used.
 
     \note the restraint scores must be non-negative in general.
     If you are using restraints which can produce negative values,
@@ -48,30 +48,57 @@ IMPDOMINO_BEGIN_NAMESPACE
     degrees of freedom).
  */
 class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
-  IMP::base::PointerMember<ParticleStatesTable> pst_;
-  IMP::base::PointerMember<AssignmentsTable> sst_;
+  IMP::PointerMember<ParticleStatesTable> pst_;
+  IMP::PointerMember<AssignmentsTable> sst_;
+  bool restraints_set_;
+  Restraints rs_;
   unsigned int max_;
 
  protected:
   SubsetFilterTables get_subset_filter_tables_to_use(
-      const kernel::RestraintsTemp &rs, ParticleStatesTable *pst) const;
+      const RestraintsTemp &rs, ParticleStatesTable *pst) const;
   AssignmentsTable *get_assignments_table_to_use(
       const SubsetFilterTables &sfts,
       unsigned int max = std::numeric_limits<int>::max()) const;
   virtual ConfigurationSet *do_sample() const IMP_OVERRIDE;
   virtual Assignments do_get_sample_assignments(const Subset &all) const = 0;
 
+  RestraintsTemp get_restraints() const {
+    if (restraints_set_) {
+      return rs_;
+    } else {
+/* Don't warn about deprecated get_root_restraint_set() every time someone
+   includes this header */
+IMP_HELPER_MACRO_PUSH_WARNINGS
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
+IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
+#endif
+      return RestraintsTemp(1, get_model()->get_root_restraint_set());
+IMP_HELPER_MACRO_POP_WARNINGS
+    }
+  }
+
  public:
-  DiscreteSampler(kernel::Model *m, ParticleStatesTable *pst, std::string name);
+  DiscreteSampler(Model *m, ParticleStatesTable *pst, std::string name);
 
   ~DiscreteSampler();
 
-  /** kernel::Particle states can be set either using this method,
+  //! Set the Restraints to use in the RestraintScoreSubsetFilterTable.
+  /** The default RestraintScoreSubsetFilterTable filters based on a set
+      of Restraints, which can be set here. (If not, the deprecated default
+      behavior is to use all Restraints in the Model.)
+   */
+  void set_restraints(RestraintsAdaptor rs) {
+    rs_ = rs;
+    restraints_set_ = true;
+  }
+
+  /** Particle states can be set either using this method,
       or equivalently, by accessing the table itself
       using get_particle_states_table(). This method
       is provided for users who want to use the default values
       and want a simple interface.*/
-  void set_particle_states(kernel::Particle *p, ParticleStates *se) {
+  void set_particle_states(Particle *p, ParticleStates *se) {
     pst_->set_particle_states(p, se);
   }
 

@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_CREATE_DECOMPOSITION_H
 #define IMPKERNEL_INTERNAL_CREATE_DECOMPOSITION_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/kernel_config.h>
 #include "TupleRestraint.h"
 #include "container_helpers.h"
 #include "../container_macros.h"
@@ -17,7 +17,7 @@
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Container, class Score>
-Restraints create_current_decomposition(kernel::Model *m, Score *score,
+Restraints create_current_decomposition(Model *m, Score *score,
                                         Container *c, std::string name) {
   IMP_CHECK_VARIABLE(m);
   IMP_USAGE_CHECK(m, "nullptr passed for the Model.");
@@ -28,8 +28,8 @@ Restraints create_current_decomposition(kernel::Model *m, Score *score,
     if (cscore != 0) {
       std::ostringstream oss;
       oss << name << " " << Showable(i);
-      base::Pointer<Restraint> r =
-          IMP::kernel::internal::create_tuple_restraint(score, m, i, oss.str());
+      Pointer<Restraint> r =
+          IMP::internal::create_tuple_restraint(score, m, i, oss.str());
       r->set_last_score(cscore);
       ret.push_back(r);
     }
@@ -38,7 +38,7 @@ Restraints create_current_decomposition(kernel::Model *m, Score *score,
 }
 
 template <class Container, class Score>
-Restraints create_decomposition(kernel::Model *m, Score *score, Container *c,
+Restraints create_decomposition(Model *m, Score *score, Container *c,
                                 std::string name) {
   IMP_USAGE_CHECK(m, "nullptr passed for the Model.");
   IMP_USAGE_CHECK(score, "nullptr passed for the Score.");
@@ -47,7 +47,7 @@ Restraints create_decomposition(kernel::Model *m, Score *score, Container *c,
   for (unsigned int i = 0; i < all.size(); ++i) {
     std::ostringstream oss;
     oss << name << " " << Showable(all[i]);
-    ret[i] = IMP::kernel::internal::create_tuple_restraint(score, m, all[i],
+    ret[i] = IMP::internal::create_tuple_restraint(score, m, all[i],
                                                            oss.str());
   }
   return ret;

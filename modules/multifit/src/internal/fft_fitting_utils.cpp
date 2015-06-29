@@ -71,7 +71,7 @@ EulerAnglesList get_uniformly_sampled_rotations(
 
 void convolve_kernel_inside_erode(em::DensityMap *dmap, double *kernel,
                                   unsigned kernel_size) {
-  base::Pointer<em::DensityMap> copy_map = em::create_density_map(dmap);
+  Pointer<em::DensityMap> copy_map = em::create_density_map(dmap);
   copy_map->set_was_used(true);
   int nx = dmap->get_header()->get_nx();
   int ny = dmap->get_header()->get_ny();
@@ -162,7 +162,7 @@ void relax_laplacian(em::DensityMap *dmap, unsigned ignored[3], double radius) {
   norm /= (double)threscount;  // average density for thresholded volume
   norm *= maskcount;
   // iterate on original lattice, no focusing
-  base::Pointer<em::DensityMap> copy_map = em::create_density_map(dmap);
+  Pointer<em::DensityMap> copy_map = em::create_density_map(dmap);
   copy_map->set_was_used(true);
   double diff;
   em::emreal *copy_data = copy_map->get_data();

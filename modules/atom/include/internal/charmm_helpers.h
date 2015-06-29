@@ -15,7 +15,7 @@
 #include <IMP/atom/Residue.h>
 
 #include <IMP/base_types.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 
 IMPATOM_BEGIN_NAMESPACE
 class CHARMMParameters;
@@ -94,10 +94,10 @@ class CHARMMDihedralNames {
   }
 };
 
-//! Create a Dihedral on the given kernel::Particles, and add it to the list
+//! Create a Dihedral on the given Particles, and add it to the list
 IMPATOMEXPORT void add_dihedral_to_list(
-    const CHARMMParameters *param, kernel::Particle *p1, kernel::Particle *p2,
-    kernel::Particle *p3, kernel::Particle *p4, kernel::Particles &ps);
+    const CHARMMParameters *param, Particle *p1, Particle *p2,
+    Particle *p3, Particle *p4, Particles &ps);
 
 //! A visitor to get chains of connected residues from a Hierarchy
 /** When called via visit_depth_first(), it calls the given functor

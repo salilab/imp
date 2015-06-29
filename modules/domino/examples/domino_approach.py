@@ -7,6 +7,7 @@ import IMP.domino
 import IMP.core
 import sys
 
+IMP.setup_from_argv(sys.argv, "domino approach")
 
 def optimize_subsets(subsets):
     pst = IMP.domino.ParticleStatesTable()
@@ -30,9 +31,11 @@ def setup_scoring_function(ps):
     m = ps[0].get_model()
     pairs = [[0, 1], [0, 2], [1, 2], [2, 3], [3, 4], [4, 5], [3, 5]]
     sf = IMP.core.Harmonic(1.0, 1)
+    rs = IMP.RestraintSet(m)
     for pair in pairs:
-        r = IMP.core.DistanceRestraint(sf, ps[pair[0]], ps[pair[1]])
-        m.add_restraint(r)
+        r = IMP.core.DistanceRestraint(m, sf, ps[pair[0]], ps[pair[1]])
+        rs.add_restraint(r)
+    return rs
 
 # Initiate a set of states for each particle in ps
 
@@ -52,17 +55,17 @@ def initiate_configuration(domino_smp, ps):
 sys.exit()
 # REPRESENTATION
 # 1. setting up the representation (6 particles)
-mdl = IMP.kernel.Model()
-mdl.set_log_level(IMP.base.SILENT)
+mdl = IMP.Model()
+mdl.set_log_level(IMP.SILENT)
 ps = []
 for i in range(0, 6):
-    p = IMP.kernel.Particle(mdl)
+    p = IMP.Particle(mdl)
     IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0., 0., 0.))
     ps.append(p)
 
 # SCORING
 # 1. setting up the scoring function
-setup_scoring_function(ps)
+rs = setup_scoring_function(ps)
 
 # 1. get the subsets
 subsets = get_subsets(ps)
@@ -82,6 +85,7 @@ sys.exit()
 # OPTIMIZATION
 # 1. load domino sampler and set required properties
 domino_smp = IMP.domino.DominoSampler(m)
+domino_smp.set_restraints([rs])
 domino_smp.set_maximum_score(.2)
 
 # 2. initiate configuration
@@ -99,4 +103,4 @@ print("Found ", cs.get_number_of_configurations(), "solutions")
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
     # print the configuration:
-    print("solution number:", i, " scored:", m.evaluate(False))
+    print("solution number:", i, " scored:", rs.evaluate(False))

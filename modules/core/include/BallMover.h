@@ -11,7 +11,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/base_types.h>
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include "MonteCarloMover.h"
 
 IMPCORE_BEGIN_NAMESPACE
@@ -22,18 +22,18 @@ IMPCORE_BEGIN_NAMESPACE
     \see MonteCarlo
  */
 class IMPCOREEXPORT BallMover : public MonteCarloMover {
-  kernel::ParticleIndexes pis_;
+  ParticleIndexes pis_;
   FloatKeys keys_;
   double radius_;
   algebra::VectorKDs originals_;
 
-  void initialize(kernel::ParticleIndexes pis, FloatKeys keys, double radius);
+  void initialize(ParticleIndexes pis, FloatKeys keys, double radius);
 
  public:
-  BallMover(kernel::Model *m, kernel::ParticleIndex pi, const FloatKeys &vars,
+  BallMover(Model *m, ParticleIndex pi, const FloatKeys &vars,
             double radius);
   //! Move the x,y,z coordinates
-  BallMover(kernel::Model *m, kernel::ParticleIndex pi, double radius);
+  BallMover(Model *m, ParticleIndex pi, double radius);
 
 #ifndef IMP_DOXYGEN
   /** The attributes are perturbed within a ball whose dimensionality is
@@ -42,26 +42,26 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
       \param[in] vars The variables to use (normally the keys for x,y,z)
       \param[in] radius The radius deviation to use.
    */
-  BallMover(const kernel::ParticlesTemp &sc, const FloatKeys &vars,
+  BallMover(const ParticlesTemp &sc, const FloatKeys &vars,
             Float radius);
 
   /** The x,y,z coordinates are perturbed within a ball.
       \param[in] sc The set of particles to perturb.
       \param[in] radius The radius deviation to use.
    */
-  BallMover(const kernel::ParticlesTemp &sc, Float radius);
+  BallMover(const ParticlesTemp &sc, Float radius);
 #endif
 
   void set_radius(Float radius) {
     IMP_ALWAYS_CHECK(radius > 0, "The radius must be positive",
-                     IMP::base::ValueException);
+                     IMP::ValueException);
     radius_ = radius;
   }
 
   Float get_radius() const { return radius_; }
 
  protected:
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(BallMover);

@@ -13,7 +13,7 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container_macros.h>
 #include <IMP/PairContainer.h>
-#include <IMP/kernel/Restraint.h>
+#include <IMP/Restraint.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -31,10 +31,8 @@ public:
      \param[in] name The restraint name
 
    */
-  AtomicCrossLinkMSRestraint(IMP::Model* m,
-                             double length,
-                             const ParticleIndex& psi,
-                             Float slope = 0.0,
+  AtomicCrossLinkMSRestraint(IMP::Model* m, double length,
+                             ParticleIndex psi, Float slope = 0.0,
                              bool part_of_log_score=false,
                              std::string name = "AtomicCrossLinkMSRestraint%1%");
 

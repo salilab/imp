@@ -28,8 +28,8 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min2(self):
         """Test exclusion filtering pairs"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(0, 10)]
         ss = IMP.domino.Subset(ps)
         print(ps, ss)
         ft = IMP.domino.ExclusionSubsetFilterTable()
@@ -55,8 +55,8 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min3(self):
         """Test exclusion filtering all"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(0, 10)]
         ss = IMP.domino.Subset(ps)
         print([x.get_name() for x in ps], ss)
         ft = IMP.domino.ExclusionSubsetFilterTable()
@@ -78,8 +78,8 @@ class Tests(IMP.test.TestCase):
 
     def test_global_min4(self):
         """Test equivalence filtering"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 10)]
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(0, 10)]
         ss = IMP.domino.Subset(ps)
         print([x.get_name() for x in ps], ss)
         ft = IMP.domino.EquivalenceSubsetFilterTable()
@@ -99,15 +99,15 @@ class Tests(IMP.test.TestCase):
 
     def test_min_filter(self):
         """Test minimum filtering"""
-        m = IMP.kernel.Model()
-        ps = [IMP.kernel.Particle(m) for i in range(0, 3)]
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(0, 3)]
         for i in range(0, 3):
             IMP.core.XYZR.setup_particle(
                 ps[i], IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 2))
         lsc1 = IMP.container.ListSingletonContainer(m)
-        lsc1.add_particles([ps[0]])
+        lsc1.add([ps[0]])
         lsc2 = IMP.container.ListSingletonContainer(m)
-        lsc2.add_particles([ps[1], ps[2]])
+        lsc2.add([ps[1], ps[2]])
         nbl = IMP.container.CloseBipartitePairContainer(lsc1, lsc2, 2)
         h = IMP.core.HarmonicLowerBound(0, 1)
         sd = IMP.core.SphereDistancePairScore(h)
@@ -116,7 +116,7 @@ class Tests(IMP.test.TestCase):
         pr.set_maximum_score(max_score)
         prd = pr.create_decomposition()
         IMP.show_restraint_hierarchy(prd)
-        rs = IMP.kernel.RestraintSet.get_from(prd)
+        rs = IMP.RestraintSet.get_from(prd)
         # create particles state table
         pst = IMP.domino.ParticleStatesTable()
         states = IMP.domino.XYZStates(
@@ -130,6 +130,7 @@ class Tests(IMP.test.TestCase):
             rs.get_restraints(),
             rc, max_violations)
         samp = IMP.domino.DominoSampler(m, pst)
+        samp.set_restraints([prd])
         samp.set_subset_filter_tables([ft])
         cs = samp.create_sample()
         # print "number of solutions",cs.get_number_of_configurations()

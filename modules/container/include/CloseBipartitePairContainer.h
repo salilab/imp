@@ -19,7 +19,7 @@
 #include <IMP/PairPredicate.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
-#include <IMP/kernel/container_macros.h>
+#include <IMP/container_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -73,11 +73,11 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer :
                   obj->set_was_used(true);
                   , , );
   /**@}*/
-  kernel::ParticleIndexPairs get_indexes() const;
-  kernel::ParticleIndexPairs get_range_indexes() const;
-  kernel::ModelObjectsTemp do_get_inputs() const;
+  ParticleIndexPairs get_indexes() const;
+  ParticleIndexPairs get_range_indexes() const;
+  ModelObjectsTemp do_get_inputs() const;
   void do_apply(const PairModifier *sm) const;
-  kernel::ParticleIndexes get_all_possible_indexes() const;
+  ParticleIndexes get_all_possible_indexes() const;
 
  private:
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;

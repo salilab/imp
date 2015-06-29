@@ -1,15 +1,18 @@
 /**
  *  \file IMP/rmf/Category.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
  */
 #include <RMF/exceptions.h>
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include <RMF/utility.h>
+#include <IMP/flags.h>
 
-int main(int, char * []) {
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test error handling.");
+
   try {
     RMF::test_throw_exception();
   }

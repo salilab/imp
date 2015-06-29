@@ -37,22 +37,16 @@ def link_headers(source):
     tools.mkdir(root)
     for (module, g) in tools.get_modules(source):
         # print g, module
+        modroot = os.path.join(root, '' if module == 'kernel' else module)
         if module == "SConscript":
             continue
-        tools.link_dir(
-            os.path.join(g,
-                         "include"),
-            os.path.join(root,
-                         module),
-            match=["*.h"])
-        tools.link_dir(
-            os.path.join(g, "include", "internal"), os.path.join(
-                root, module, "internal"),
-            match=["*.h"])
+        tools.link_dir(os.path.join(g, "include"), modroot, match=["*.h"])
+        tools.link_dir(os.path.join(g, "include", "internal"),
+                       os.path.join(modroot, "internal"), match=["*.h"])
         # ick
         if os.path.exists(os.path.join(g, "include", "eigen3")):
             tools.link_dir(os.path.join(g, "include", "eigen3"),
-                           os.path.join(root, module, "eigen3"),
+                           os.path.join(modroot, "eigen3"),
                            match=["*"])
 
 # link example scripts and data from the source dirs into the build tree
@@ -114,7 +108,7 @@ def link_python(source):
     target = os.path.join("lib")
     tools.mkdir(target, clean=False)
     for module, g in tools.get_modules(source):
-        path = os.path.join(target, "IMP", module)
+        path = os.path.join(target, "IMP", '' if module == 'kernel' else module)
         tools.mkdir(path, clean=False)
         for old in tools.get_glob([os.path.join(path, "*.py")]):
             # don't unlink the generated file
@@ -209,7 +203,7 @@ if __name__ == '__main__':
             exec(open(exceptions, "r").read(), d)
         except IOError:
             pass
-        impmodule = "IMP." + module
+        impmodule = "IMP" if module == 'kernel' else "IMP." + module
         test = template % ({'module': impmodule,
                             'plural_exceptions': str(d['plural_exceptions']),
                             'show_exceptions': str(d['show_exceptions']),
@@ -221,11 +215,9 @@ if __name__ == '__main__':
                                 str(d['class_name_exceptions']),
                             'spelling_exceptions':
                                 str(d['spelling_exceptions'])})
-        open(
-            os.path.join("test",
-                         module,
-                         "medium_test_standards.py"),
-            "w").write(test)
+        gen = tools.PythonFileGenerator()
+        gen.write(os.path.join("test", module, "medium_test_standards.py"),
+                  test, show_diff=False)
 
         cpptests = tools.get_glob([os.path.join(g, "test", "test_*.cpp")])
         ecpptests = tools.get_glob(

@@ -15,7 +15,7 @@
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/Rotation2D.h"
 #include "IMP/algebra/Transformation2D.h"
-#include "IMP/base/Pointer.h"
+#include "IMP/Pointer.h"
 #include <string>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -179,7 +179,9 @@ IMPEM2DEXPORT RegistrationResults
 IMPEM2DEXPORT RegistrationResults
     get_evenly_distributed_registration_results(unsigned int n_projections);
 
+IMPEM2D_DEPRECATED_FUNCTION_DECL(2.5)
 inline double get_random_between_zero_and_one() {
+  IMPEM2D_DEPRECATED_FUNCTION_DEF(2.5, "Use Boost::random instead");
   return (static_cast<double>(rand()) / (static_cast<double>(RAND_MAX) + 1));
 }
 

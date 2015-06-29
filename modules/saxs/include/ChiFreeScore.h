@@ -17,27 +17,28 @@ IMPSAXS_BEGIN_NAMESPACE
    Accurate assessment of mass, models and resolution by small-angle scattering.
    Rambo RP, Tainer JA. Nature. 2013
 */
-class IMPSAXSEXPORT ChiFreeScore {
+class IMPSAXSEXPORT ChiFreeScore : public IMP::Object {
  public:
-  ChiFreeScore(unsigned int ns, unsigned int k) : ns_(ns), K_(k) {
+  ChiFreeScore(unsigned int ns, unsigned int k) :
+            IMP::Object("ChiFreeScore%1%"), ns_(ns), K_(k) {
     if (K_ % 2 == 0) K_++;  // make sure it is odd for median
     last_scale_updated_ = false;
   }
 
-  Float compute_score(const Profile* exp_profile, const Profile* model_profile,
-                      bool use_offset = false) const;
+  double compute_score(const Profile* exp_profile, const Profile* model_profile,
+                       bool use_offset = false) const;
 
-  Float compute_scale_factor(const Profile* exp_profile,
-                             const Profile* model_profile,
-                             Float offset = 0.0) const;
+  double compute_scale_factor(const Profile* exp_profile,
+                              const Profile* model_profile,
+                              double offset = 0.0) const;
 
-  Float compute_offset(const Profile* exp_profile,
-                       const Profile* model_profile) const;
+  double compute_offset(const Profile* exp_profile,
+                        const Profile* model_profile) const;
 
  private:
   unsigned int ns_;  // number of Shannon channels
   unsigned int K_;
-  Float last_scale_;
+  double last_scale_;
   bool last_scale_updated_;
 };
 

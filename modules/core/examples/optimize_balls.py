@@ -6,14 +6,13 @@
 import IMP.core
 import IMP.display
 import IMP.container
-import IMP.base
 import sys
 
-IMP.base.setup_from_argv(sys.argv, "Optimize balls example")
+IMP.setup_from_argv(sys.argv, "Optimize balls example")
 
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
                                IMP.algebra.Vector3D(10, 10, 10))
-if IMP.base.get_is_quick_test():
+if IMP.get_is_quick_test():
     ni = 2
     nj = 2
     np = 2
@@ -34,15 +33,15 @@ else:
     ninner = 5
     nouter = 11
 
-print(IMP.base.get_is_quick_test(), ni, nj, np, ninner, nouter)
+print(IMP.get_is_quick_test(), ni, nj, np, ninner, nouter)
 # using a HarmonicDistancePairScore for fixed length links is more
 # efficient than using a HarmonicSphereDistnacePairScore and works
 # better with the optimizer
 lps = IMP.core.HarmonicDistancePairScore(1.5 * radius, k)
 sps = IMP.core.SoftSpherePairScore(k)
 
-m = IMP.kernel.Model()
-# IMP.base.set_log_level(IMP.base.SILENT)
+m = IMP.Model()
+# IMP.set_log_level(IMP.SILENT)
 aps = []
 filters = []
 movers = []
@@ -52,7 +51,7 @@ for i in range(0, ni):
         base = IMP.algebra.Vector3D(i, j, 0)
         chain = []
         for k in range(0, np):
-            p = IMP.kernel.Particle(m)
+            p = IMP.Particle(m)
             p.set_name("P" + str(i) + " " + str(j) + " " + str(k))
             s = IMP.algebra.Sphere3D(
                 IMP.algebra.get_random_vector_in(bb), radius)
@@ -69,7 +68,7 @@ for i in range(0, ni):
             chain.append(p)
             aps.append(p)
         # set up a chain of bonds
-        cpc = IMP.container.ExclusiveConsecutivePairContainer(chain)
+        cpc = IMP.container.ExclusiveConsecutivePairContainer(m, chain)
         r = IMP.container.PairsRestraint(lps, cpc)
         restraints.append(r)
 

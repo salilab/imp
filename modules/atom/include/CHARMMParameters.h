@@ -13,7 +13,7 @@
 #include "ForceFieldParameters.h"
 #include "charmm_topology.h"
 #include "atom_macros.h"
-#include <IMP/base/file.h>
+#include <IMP/file.h>
 
 #include <string>
 // swig is being dumb
@@ -70,13 +70,13 @@ class CHARMMTopology;
  */
 class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   std::map<std::string, Element> atom_type_to_element_;
-  std::map<ResidueType, base::Pointer<CHARMMIdealResidueTopology> >
+  std::map<ResidueType, Pointer<CHARMMIdealResidueTopology> >
       residue_topologies_;
-  std::map<std::string, base::Pointer<CHARMMPatch> > patches_;
+  std::map<std::string, Pointer<CHARMMPatch> > patches_;
   std::map<internal::CHARMMBondNames, CHARMMBondParameters> bond_parameters_;
   std::map<internal::CHARMMAngleNames, CHARMMBondParameters> angle_parameters_;
 
-  typedef base::Vector<std::pair<internal::CHARMMDihedralNames,
+  typedef Vector<std::pair<internal::CHARMMDihedralNames,
                                  CHARMMDihedralParameters> > DihedralParameters;
   DihedralParameters dihedral_parameters_;
   DihedralParameters improper_parameters_;
@@ -107,8 +107,8 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
         removing the HN, HN and O atoms respectively, and adding excess bonds
         to these atoms.
    */
-  CHARMMParameters(base::TextInput topology_file_name,
-                   base::TextInput par_file_name = base::TextInput(),
+  CHARMMParameters(TextInput topology_file_name,
+                   TextInput par_file_name = TextInput(),
                    bool translate_names_to_pdb = false);
 
   /** \name Residue topology
@@ -125,7 +125,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
 
   CHARMMIdealResidueTopology *get_residue_topology(ResidueType type) const {
     std::map<ResidueType,
-             base::Pointer<CHARMMIdealResidueTopology> >::const_iterator it =
+             Pointer<CHARMMIdealResidueTopology> >::const_iterator it =
         residue_topologies_.find(type);
     if (it != residue_topologies_.end()) {
       return it->second;
@@ -157,7 +157,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
 #endif
 
   CHARMMPatch *get_patch(std::string name) const {
-    std::map<std::string, base::Pointer<CHARMMPatch> >::const_iterator it =
+    std::map<std::string, Pointer<CHARMMPatch> >::const_iterator it =
         patches_.find(name);
     if (it != patches_.end()) {
       return it->second;
@@ -287,7 +287,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
 
       \see CHARMMTopology::add_bonds().
    */
-  kernel::Particles create_angles(kernel::Particles bonds) const;
+  Particles create_angles(Particles bonds) const;
 
   //! Auto-generate Dihedral particles from the passed list of Bond particles.
   /** The dihedrals consist of all unique triples of bonds which form
@@ -308,23 +308,23 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
 
       \see CHARMMTopology::add_bonds().
    */
-  kernel::Particles create_dihedrals(kernel::Particles bonds) const;
+  Particles create_dihedrals(Particles bonds) const;
 
-  IMP_FORCE_FIELD_PARAMETERS(CHARMMParameters);
+  IMP_OBJECT_METHODS(CHARMMParameters);
 
  private:
   virtual String get_force_field_atom_type(Atom atom) const;
 
-  void read_parameter_file(base::TextInput input_file);
+  void read_parameter_file(TextInput input_file);
   // read topology file
-  void read_topology_file(base::TextInput input_file,
+  void read_topology_file(TextInput input_file,
                           bool translate_names_to_pdb);
 
-  void add_angle(kernel::Particle *p1, kernel::Particle *p2,
-                 kernel::Particle *p3, kernel::Particles &ps) const;
-  void add_dihedral(kernel::Particle *p1, kernel::Particle *p2,
-                    kernel::Particle *p3, kernel::Particle *p4,
-                    kernel::Particles &ps) const;
+  void add_angle(Particle *p1, Particle *p2,
+                 Particle *p3, Particles &ps) const;
+  void add_dihedral(Particle *p1, Particle *p2,
+                    Particle *p3, Particle *p4,
+                    Particles &ps) const;
 
   ResidueType parse_residue_line(const String &line,
                                  bool translate_names_to_pdb);
@@ -339,7 +339,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   void parse_bonds_parameters_line(String line);
   void parse_angles_parameters_line(String line);
   void parse_dihedrals_parameters_line(String line, DihedralParameters &param);
-  base::WarningContext warn_context_;
+  WarningContext warn_context_;
 };
 
 IMP_OBJECTS(CHARMMParameters, CHARMMParametersList);

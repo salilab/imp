@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/links.h
- *  \brief Handle read/write of kernel::Model data from/to files.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -12,10 +12,10 @@
 #include <IMP/rmf/rmf_config.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/base/object_macros.h>
-#include <IMP/base/log_macros.h>
+#include <IMP/Object.h>
+#include <IMP/Pointer.h>
+#include <IMP/object_macros.h>
+#include <IMP/log_macros.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
@@ -33,7 +33,7 @@ IMP_OBJECTS(LoadLink, LoadLinks);
 
     \unstable{LoadLink}
 */
-class IMPRMFEXPORT LoadLink : public base::Object {
+class IMPRMFEXPORT LoadLink : public Object {
   bool frame_loaded_;
 
  protected:
@@ -57,7 +57,7 @@ class IMPRMFEXPORT LoadLink : public base::Object {
 
     \unstable{SaveLink}
 */
-class IMPRMFEXPORT SaveLink : public base::Object {
+class IMPRMFEXPORT SaveLink : public Object {
   bool frame_saved_;
 
  protected:

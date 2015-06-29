@@ -7,10 +7,9 @@
  *
  */
 
-#include "IMP/kernel/Configuration.h"
-#include "IMP/kernel/internal/utility.h"
-#include "IMP/kernel/dependency_graph.h"
-#include "IMP/base//set.h"
+#include "IMP/Configuration.h"
+#include "IMP/internal/utility.h"
+#include "IMP/dependency_graph.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -25,7 +24,7 @@ IMPKERNEL_BEGIN_NAMESPACE
   OPERATION(particles, Particle);      \
   OPERATION(particle_lists, Particles)
 
-Configuration::Configuration(kernel::Model *m, std::string name)
+Configuration::Configuration(Model *m, std::string name)
     : Object(name), model_(m) {
 #define IMP_CONFIG_COPY(name, Name) name##_ = *m;
 
@@ -38,7 +37,7 @@ bool are_equal(const T &a, const T &b) {
   return a == b;
 }
 template <class T>
-bool are_not_equal(const base::Vector<T> &a, const base::Vector<T> &b) {
+bool are_not_equal(const Vector<T> &a, const Vector<T> &b) {
   if (a.size() != b.size())
     return true;
   else {
@@ -75,7 +74,7 @@ bool are_not_equal(const base::Vector<T> &a, const base::Vector<T> &b) {
     }                                                                          \
   }
 
-Configuration::Configuration(kernel::Model *m, Configuration *base,
+Configuration::Configuration(Model *m, Configuration *base,
                              std::string name)
     : Object(name), model_(m), base_(base) {
   bool add_remove_found = false;

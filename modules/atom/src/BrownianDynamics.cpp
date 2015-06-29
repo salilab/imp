@@ -10,18 +10,17 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/vector_generators.h>
-#include <IMP/base/log.h>
-#include <IMP/base/random.h>
+#include <IMP/log.h>
+#include <IMP/random_utils.h>
 #include <IMP/constants.h>
 #include <IMP/atom/constants.h>
-#include <IMP/base/warning_macros.h>
-#include <IMP/kernel/internal/constants.h>
-#include <IMP/kernel/internal/units.h>
-#include <boost/random/normal_distribution.hpp>
+#include <IMP/warning_macros.h>
+#include <IMP/internal/constants.h>
+#include <IMP/internal/units.h>
 #include <IMP/atom/Diffusion.h>
 #include <IMP/Configuration.h>
 #include <IMP/algebra/LinearFit.h>
-#include <IMP/base/thread_macros.h>
+#include <IMP/thread_macros.h>
 
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/rigid_bodies.h>
@@ -37,17 +36,17 @@ IMPATOM_BEGIN_NAMESPACE
 // static double M = 0.0; // total mass (estimated by 1/D)
 // END DEBUG
 
-namespace {
-
-typedef boost::variate_generator<base::RandomNumberGenerator &,
-                                 boost::normal_distribution<double> > RNG;
-}
-BrownianDynamics::BrownianDynamics(kernel::Model *m, std::string name,
-                                   double wave_factor)
-    : Simulator(m, name, wave_factor),  // nd_(0,1),
-      // sampler_(base::random_number_generator, nd_),
+BrownianDynamics::BrownianDynamics(Model *m, std::string name,
+                                   double wave_factor,
+                                   unsigned int random_pool_size)
+    : Simulator(m, name, wave_factor),
       max_step_(std::numeric_limits<double>::max()),
-      srk_(false) {}
+      srk_(false),
+      random_pool_(random_pool_size),
+      i_random_pool_(0)
+{
+  reset_random_pool();
+}
 
 /*
   radius
@@ -57,7 +56,7 @@ BrownianDynamics::BrownianDynamics(kernel::Model *m, std::string name,
   T* is
  */
 
-bool BrownianDynamics::get_is_simulation_particle(kernel::ParticleIndex pi)
+bool BrownianDynamics::get_is_simulation_particle(ParticleIndex pi)
     const {
   return (Diffusion::get_is_setup(get_model(), pi) &&
           IMP::core::XYZ(get_model(), pi).get_coordinates_are_optimized());
@@ -67,7 +66,7 @@ namespace {
 /** get the force displacement term in the Ermak-Mccammon equation
     for coordinate i of  particle pi in model m, with time step dt and ikT=1/kT
 */
-inline double get_force_displacement(kernel::Model *m, kernel::ParticleIndex pi,
+inline double get_force_displacement(Model *m, ParticleIndex pi,
                         unsigned int i, double dt, double ikT) {
   Diffusion d(m, pi);
   double nforce(-d.get_derivative(i));
@@ -86,7 +85,7 @@ inline double get_force_displacement(kernel::Model *m, kernel::ParticleIndex pi,
   return force_term;
 }
 // radians
-inline double get_torque(kernel::Model *m, kernel::ParticleIndex p,
+inline double get_torque(Model *m, ParticleIndex p,
                          unsigned int i, double dt, double ikT) {
   RigidBodyDiffusion d(m, p);
   core::RigidBody rb(m, p);
@@ -105,33 +104,34 @@ inline double get_torque(kernel::Model *m, kernel::ParticleIndex p,
 }
 
   // returns the std-dev for the random displacement in the Ermak-Mccammon equation
-inline double get_sigma_displacement(kernel::Model *m, kernel::ParticleIndex p,
+inline double get_sigma_displacement(Model *m, ParticleIndex p,
                         double dtfs) {
   // 6.0 is 2.0 for each dof (Barak)
   // 6.0 since we are picking radius rather than the coordinates (Daniel)
   double dd = Diffusion(m, p).get_diffusion_coefficient();
   return sqrt(6.0 * dd * dtfs);
 }
-inline double get_rotational_sigma(kernel::Model *m, kernel::ParticleIndex p,
+inline double get_rotational_sigma(Model *m, ParticleIndex p,
                                    double dtfs) {
   double dr = RigidBodyDiffusion(m, p).get_rotational_diffusion_coefficient();
   return sqrt(6.0 * dr * dtfs);
 }
 }
 
-void BrownianDynamics::setup(const kernel::ParticleIndexes &ips) {
+void BrownianDynamics::setup(const ParticleIndexes &ips) {
   IMP_IF_LOG(TERSE) {
-    kernel::ParticlesTemp ps = IMP::internal::get_particle(get_model(), ips);
+    ParticlesTemp ps = IMP::internal::get_particle(get_model(), ips);
     double dtfs = get_maximum_time_step();
     double ikT = 1.0 / get_kt();
     double ms = 0;
     double mf = 0;
+    Model* m = get_model();
     get_scoring_function()->evaluate(true);
     for (unsigned int i = 0; i < ps.size(); ++i) {
-      double c = get_sigma_displacement(get_model(), ips[i], dtfs);
+      double c = get_sigma_displacement(m, ips[i], dtfs);
       ms = std::max(ms, c);
       for (unsigned int j = 0; j < 3; ++j) {
-        double f = get_force_displacement(get_model(), ips[i], j, dtfs, ikT);
+        double f = get_force_displacement(m, ips[i], j, dtfs, ikT);
         mf = std::max(mf, f);
       }
     }
@@ -155,7 +155,7 @@ void check_dX(algebra::Vector3D &dX, double max_step) {
 }
 }
 
-void BrownianDynamics::advance_coordinates_1(kernel::ParticleIndex pi,
+void BrownianDynamics::advance_coordinates_1(ParticleIndex pi,
                                              unsigned int i, double dt,
                                              double ikT) {
   Diffusion d(get_model(), pi);
@@ -168,14 +168,12 @@ void BrownianDynamics::advance_coordinates_1(kernel::ParticleIndex pi,
   xd.set_coordinates(xd.get_coordinates() + dX);
 }
 
-void BrownianDynamics::advance_coordinates_0(kernel::ParticleIndex pi,
+void BrownianDynamics::advance_coordinates_0(ParticleIndex pi,
                                              unsigned int i, double dtfs,
                                              double ikT) {
   core::XYZ xd(get_model(), pi);
   double sigma = get_sigma_displacement(get_model(), pi, dtfs);
-  boost::normal_distribution<double> nd(0, sigma);
-  RNG sampler(base::random_number_generator, nd);
-  double r = sampler();
+  double r = get_sample(sigma);
   algebra::Vector3D random_dX = r * algebra::get_random_vector_on_unit_sphere();
   algebra::Vector3D force_dX
     (get_force_displacement(get_model(), pi, 0, dtfs, ikT),
@@ -205,13 +203,11 @@ void BrownianDynamics::advance_coordinates_0(kernel::ParticleIndex pi,
   xd.set_coordinates(xd.get_coordinates() + dX);
 }
 
-void BrownianDynamics::advance_orientation_0(kernel::ParticleIndex pi,
+void BrownianDynamics::advance_orientation_0(ParticleIndex pi,
                                              double dtfs, double ikT) {
   core::RigidBody rb(get_model(), pi);
   double sigma = get_rotational_sigma(get_model(), pi, dtfs);
-  boost::normal_distribution<double> nd(0, sigma);
-  RNG sampler(base::random_number_generator, nd);
-  double angle = sampler();
+  double angle = get_sample(sigma);
   algebra::Transformation3D nt =
       rb.get_reference_frame().get_transformation_to();
   algebra::Vector3D axis = algebra::get_random_vector_on_unit_sphere();
@@ -232,33 +228,52 @@ void BrownianDynamics::advance_orientation_0(kernel::ParticleIndex pi,
                   << std::endl);
 }
 
-void BrownianDynamics::advance_chunk(double dtfs, double ikT,
-                                     const kernel::ParticleIndexes &ps,
-                                     unsigned int begin, unsigned int end) {
+void
+BrownianDynamics::do_advance_chunk
+(double dtfs, double ikT,
+ const ParticleIndexes &ps,
+ unsigned int begin, unsigned int end)
+{
   IMP_LOG_TERSE("Advancing particles " << begin << " to " << end << std::endl);
+  Model* m = get_model();
   for (unsigned int i = begin; i < end; ++i) {
-    if (RigidBodyDiffusion::get_is_setup(get_model(), ps[i])) {
+    ParticleIndex pi = ps[i];
+    if (RigidBodyDiffusion::get_is_setup(m, pi)) {
       // std::cout << "rb" << std::endl;
-      advance_orientation_0(ps[i], dtfs, ikT);
-    } else {
+      advance_orientation_0(pi, dtfs, ikT);
+    }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-      kernel::Particle *p = get_model()->get_particle(ps[i]);
+    else {
+      Particle *p = get_model()->get_particle(pi);
       IMP_INTERNAL_CHECK(!core::RigidBody::get_is_setup(p),
                          "A rigid body without rigid body diffusion info"
                              << " was found: " << p->get_name());
       IMP_INTERNAL_CHECK(!core::RigidMember::get_is_setup(p),
                          "A rigid member with diffusion info"
                              << " was found: " << p->get_name());
-#endif
     }
-    advance_coordinates_0(ps[i], i, dtfs, ikT);
+#endif
+    advance_coordinates_0(pi, i, dtfs, ikT);
   }
 }
+
+//! regenerate pool of random numbers
+void
+BrownianDynamics::reset_random_pool()
+{
+  get_random_numbers_normal(random_pool_, random_pool_.size(),
+                            0.0, 1.0 );
+  i_random_pool_=0;
+}
+
 
 /**
     dx= D/2kT*(F(x0)+F(x0+D/kTF(x0)dt +R)dt +R
  */
-double BrownianDynamics::do_step(const kernel::ParticleIndexes &ps, double dt) {
+double
+BrownianDynamics::do_step
+(const ParticleIndexes &ps, double dt)
+{
   double dtfs(dt);
   double ikT = 1.0 / get_kt();
   get_scoring_function()->evaluate(true);
@@ -268,8 +283,8 @@ double BrownianDynamics::do_step(const kernel::ParticleIndexes &ps, double dt) {
   for (unsigned int b = 0; b < ps.size(); b += chunk_size) {
     IMP_TASK_SHARED(
         (dtfs, ikT, b), (ps),
-        advance_chunk(dtfs, ikT, ps, b,
-                      std::min<unsigned int>(b + chunk_size, ps.size()));
+        do_advance_chunk(dtfs, ikT, ps, b,
+                         std::min<unsigned int>(b + chunk_size, ps.size()));
         , "brownian");
   }
   IMP_OMP_PRAGMA(taskwait)
@@ -317,7 +332,7 @@ bool is_constant(It b, It e) {
 
 bool is_ok_step(BrownianDynamics *bd, Configuration *c, double step) {
   // std::cout << "Trying time step " << step << std::endl;
-  kernel::ParticlesTemp ps = bd->get_simulation_particles();
+  ParticlesTemp ps = bd->get_simulation_particles();
   c->load_configuration();
   bd->set_maximum_time_step(step);
   IMP_LOG_TERSE("Trying step " << step << "(" << bd->get_maximum_time_step()
@@ -327,7 +342,7 @@ bool is_ok_step(BrownianDynamics *bd, Configuration *c, double step) {
                   "In and out don't match " << bd->get_maximum_time_step());
   Floats es;
   unsigned int ns = 100;
-  base::Vector<algebra::Vector3Ds> coords(ns, algebra::Vector3Ds(ps.size()));
+  Vector<algebra::Vector3Ds> coords(ns, algebra::Vector3Ds(ps.size()));
   for (unsigned int i = 0; i < ns; ++i) {
     es.push_back(bd->optimize(1));
     for (unsigned int j = 0; j < coords[i].size(); ++j) {

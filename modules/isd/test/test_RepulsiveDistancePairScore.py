@@ -21,18 +21,19 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
-        self.m = IMP.kernel.Model()
-        self.p0 = IMP.core.XYZR.setup_particle(IMP.kernel.Particle(self.m),
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
+        self.p0 = IMP.core.XYZR.setup_particle(IMP.Particle(self.m),
                                                IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 0, 0), 1))
-        self.p1 = IMP.core.XYZR.setup_particle(IMP.kernel.Particle(self.m),
+        self.p1 = IMP.core.XYZR.setup_particle(IMP.Particle(self.m),
                                                IMP.algebra.Sphere3D(IMP.algebra.Vector3D(5, 1, 1), 2))
         self.DA = IMP.DerivativeAccumulator()
         self.ps = RepulsiveDistancePairScore(0.0, 1.0)
         self.pc = IMP.container.ListPairContainer(self.m)
-        self.pc.add_particle_pair((self.p0, self.p1))
-        self.m.add_restraint(IMP.container.PairsRestraint(self.ps, self.pc))
+        self.pc.add((self.p0, self.p1))
+        r = IMP.container.PairsRestraint(self.ps, self.pc)
+        self.sf = IMP.core.RestraintsScoringFunction([r])
 
     def testValue(self):
         """tests if energy is a repulsive quadric with zero at van der waals
@@ -52,7 +53,7 @@ class Tests(IMP.test.TestCase):
             else:
                 expected = 0.5 * dist ** 4
             self.assertAlmostEqual(
-                self.m.evaluate(False),
+                self.sf.evaluate(False),
                 expected,
                 delta=0.001)
 
@@ -73,7 +74,7 @@ class Tests(IMP.test.TestCase):
                 expected = 2 * dist ** 3
             delta = p0.get_coordinates() - p1.get_coordinates()
             delta = delta / delta.get_magnitude()
-            self.m.evaluate(True)
+            self.sf.evaluate(True)
             for i in range(3):
                 self.assertAlmostEqual(p0.get_derivatives()[i],
                                        expected * delta[i], delta=0.001)

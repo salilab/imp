@@ -38,7 +38,7 @@ def _cleanup_name(n):
         return "::".join(sp)
     if n == 'IMP_NEW()':
         # Workaround for (unqualified) macro
-        return "IMP::base::" + n
+        return "IMP::" + n
     if n.find(".py") != -1 or n.find(".cpp") != -1:
         m = n.split("/")[0]
         return (
@@ -248,7 +248,7 @@ def main():
     if len(sys.argv) > 1:
         files = sys.argv[1:]
     else:
-        files = tools.get_glob([os.path.join("doxygen", "xml", "*.xml")])
+        files = tools.get_glob([os.path.join("doxygen", "ref", "xml", "*.xml")])
     for f in files:
     # for f in ["doxygen/xml/classIMP_1_1atom_1_1LennardJones.xml"]:
         #["doxygen/xml/namespacetiny.xml",

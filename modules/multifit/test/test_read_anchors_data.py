@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.TERSE)
+        IMP.set_log_level(IMP.TERSE)
         self.data_file = self.get_input_file_name("anchors.input")
 
     def test_run(self):

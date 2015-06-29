@@ -4,22 +4,21 @@
 
 from __future__ import print_function, division
 import IMP.atom
-import IMP.base
 import sys
 import RMF
 import IMP.rmf
 
-IMP.base.setup_from_argv(sys.argv, "Create a multiresolution rmf file")
+IMP.setup_from_argv(sys.argv, "Create a multiresolution rmf file")
 
 pdbname = IMP.rmf.get_example_path("big.pdb")
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 h = IMP.atom.read_pdb(pdbname, m)
 IMP.atom.add_bonds(h)
 
 chains = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
 
-if IMP.base.get_bool_flag("run_quick_test"):
+if IMP.get_bool_flag("run_quick_test"):
     chains = [chains[0]]
 
 
@@ -35,7 +34,7 @@ def recursive_approximation(res):
             + recursive_approximation(res[3 * lr // 4: lr])
     else:
         me = res
-    p = IMP.kernel.Particle(m)
+    p = IMP.Particle(m)
     hc = IMP.atom.Hierarchy.setup_particle(p)
     IMP.atom.setup_as_approximation(p, res)
     nm = str(IMP.atom.Residue(res[0]).get_index()) + "-"\
@@ -60,7 +59,7 @@ for c in chains:
         c.add_child(mm)
 
 print("writing")
-fn = IMP.base.create_temporary_file_name("multires", ".rmf")
+fn = IMP.create_temporary_file_name("multires", ".rmf")
 rmf = RMF.create_rmf_file(fn)
 print("adding")
 IMP.rmf.add_hierarchies(rmf, chains)

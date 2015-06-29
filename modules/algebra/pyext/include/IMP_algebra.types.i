@@ -12,29 +12,29 @@ IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<4>, Namebase##D, Namebase##test##4,Na
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<5>, Namebase##D, Namebase##test##5,Namebase##5Ds);
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<6>, Namebase##D, Namebase##test##6,Namebase##6Ds);
 
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<1>, IMP::base::Vector<Namespace::Namebase##D< 1 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<1>, IMP::base::Vector<Namespace::Namebase##D< 1 > >,const&);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<2>, IMP::base::Vector<Namespace::Namebase##D< 2 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<2>, IMP::base::Vector<Namespace::Namebase##D< 2 > >,const&);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<3>, IMP::base::Vector<Namespace::Namebase##D< 3 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<3>, IMP::base::Vector<Namespace::Namebase##D< 3 > >,const&);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<4>, IMP::base::Vector<Namespace::Namebase##D< 4 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<4>, IMP::base::Vector<Namespace::Namebase##D< 4 > >,const&);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::base::Vector<Namespace::Namebase##D< 5 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::base::Vector<Namespace::Namebase##D< 5 > >,const&);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::base::Vector<Namespace::Namebase##D< 6 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::base::Vector<Namespace::Namebase##D< 6 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<1>, IMP::Vector<Namespace::Namebase##D< 1 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<1>, IMP::Vector<Namespace::Namebase##D< 1 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<2>, IMP::Vector<Namespace::Namebase##D< 2 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<2>, IMP::Vector<Namespace::Namebase##D< 2 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<3>, IMP::Vector<Namespace::Namebase##D< 3 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<3>, IMP::Vector<Namespace::Namebase##D< 3 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<4>, IMP::Vector<Namespace::Namebase##D< 4 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<4>, IMP::Vector<Namespace::Namebase##D< 4 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::Vector<Namespace::Namebase##D< 5 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::Vector<Namespace::Namebase##D< 5 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::Vector<Namespace::Namebase##D< 6 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::Vector<Namespace::Namebase##D< 6 > >,const&);
 IMP_SWIG_VALUE_TEMPLATE(Namespace, Namebase##D);
 %extend Namespace::Namebase##D {
   int __cmp__(const Namebase##D<D> &) const {
     IMP_UNUSED(self);
     IMP_THROW("Geometric primitives cannot be compared",
-              IMP::base::ValueException);
+              IMP::ValueException);
   }
   bool __eq__(const Namebase##D<D> &) const {
     IMP_UNUSED(self);
     IMP_THROW("Geometric primitives cannot be compared",
-              IMP::base::ValueException);
+              IMP::ValueException);
   }
 }
 %enddef
@@ -45,8 +45,8 @@ IMP_SWIG_ALGEBRA_VALUE_D_NOKD(Namespace, Namebase);
 IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##KD, Namebase##D, Namebase##KDs);
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<-1>, Namebase##D, Namebase##test##k, Namebase##KDs);
 
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::base::Vector<Namespace::Namebase##D< -1 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::base::Vector<Namespace::Namebase##D< -1 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::Vector<Namespace::Namebase##D< -1 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::Vector<Namespace::Namebase##D< -1 > >,const&);
 %enddef
 
 %define IMP_SWIG_ALGEBRA_VALUE(Namespace, Name, PluralName)
@@ -142,25 +142,25 @@ ReturnType##KD function_name(const Argument0##KD& a) {
 %inline %{
   namespace IMP {
     namespace algebra {
-      base::Vector<ReturnType##1D> function_name(const Argument0##1D& a) {
+      IMP::Vector<ReturnType##1D> function_name(const Argument0##1D& a) {
   return function_name<1>(a);
 }
-  base::Vector<ReturnType##2D> function_name(const Argument0##2D& a) {
+  IMP::Vector<ReturnType##2D> function_name(const Argument0##2D& a) {
   return function_name<2>(a);
 }
-base::Vector<ReturnType##3D> function_name(const Argument0##3D& a) {
+IMP::Vector<ReturnType##3D> function_name(const Argument0##3D& a) {
   return function_name<3>(a);
 }
-base::Vector<ReturnType##4D> function_name(const Argument0##4D& a) {
+IMP::Vector<ReturnType##4D> function_name(const Argument0##4D& a) {
   return function_name<4>(a);
 }
-base::Vector<ReturnType##5D> function_name(const Argument0##5D& a) {
+IMP::Vector<ReturnType##5D> function_name(const Argument0##5D& a) {
   return function_name<5>(a);
 }
-base::Vector<ReturnType##6D> function_name(const Argument0##6D& a) {
+IMP::Vector<ReturnType##6D> function_name(const Argument0##6D& a) {
   return function_name<6>(a);
 }
-base::Vector<ReturnType##KD> function_name(const Argument0##KD& a) {
+IMP::Vector<ReturnType##KD> function_name(const Argument0##KD& a) {
   return function_name<-1>(a);
 }
     }
@@ -172,25 +172,25 @@ base::Vector<ReturnType##KD> function_name(const Argument0##KD& a) {
 %inline %{
   namespace IMP {
     namespace algebra {
-  ReturnType##1D function_name(const IMP::base::Vector<Argument0##1D >& a) {
+  ReturnType##1D function_name(const IMP::Vector<Argument0##1D >& a) {
   return function_name<1>(a);
 }
-  ReturnType##2D function_name(const IMP::base::Vector<Argument0##2D >& a) {
+  ReturnType##2D function_name(const IMP::Vector<Argument0##2D >& a) {
   return function_name<2>(a);
 }
-ReturnType##3D function_name(const IMP::base::Vector<Argument0##3D >& a) {
+ReturnType##3D function_name(const IMP::Vector<Argument0##3D >& a) {
   return function_name<3>(a);
 }
-ReturnType##4D function_name(const IMP::base::Vector<Argument0##4D >& a) {
+ReturnType##4D function_name(const IMP::Vector<Argument0##4D >& a) {
   return function_name<4>(a);
 }
-ReturnType##5D function_name(const IMP::base::Vector<Argument0##5D >& a) {
+ReturnType##5D function_name(const IMP::Vector<Argument0##5D >& a) {
   return function_name<5>(a);
 }
-ReturnType##6D function_name(const IMP::base::Vector<Argument0##6D >& a) {
+ReturnType##6D function_name(const IMP::Vector<Argument0##6D >& a) {
   return function_name<6>(a);
 }
-ReturnType##KD function_name(const IMP::base::Vector<Argument0##KD >& a) {
+ReturnType##KD function_name(const IMP::Vector<Argument0##KD >& a) {
   return function_name<-1>(a);
 }
     }
@@ -414,7 +414,7 @@ struct ConvertEigenVector {
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertEigenMatrix<IMP_Eigen::Name>::get_cpp_object($input, $descriptor(IMP_Eigen::Name*)));
-  } catch (const IMP::base::Exception &e) {
+  } catch (const IMP::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -458,7 +458,7 @@ struct ConvertEigenVector {
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertEigenVector<IMP_Eigen::Name>::get_cpp_object($input, $descriptor(IMP_Eigen::Name*)));
-  } catch (const IMP::base::Exception &e) {
+  } catch (const IMP::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -500,29 +500,29 @@ struct ConvertEigenVector {
 
 %define IMP_ALGEBRA_SWIG_GRID(Name, D)
 %extend Name {
-  IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_indexes(IMP::algebra::BoundingBoxD<D> bb) {
-     IMP::base::Vector<IMP::algebra::GridIndexD<D> > ret;
-     IMP::base::internal::copy(self->get_indexes(bb), std::back_inserter(ret));
+  IMP::Vector<IMP::algebra::GridIndexD<D> > get_indexes(IMP::algebra::BoundingBoxD<D> bb) {
+     IMP::Vector<IMP::algebra::GridIndexD<D> > ret;
+     IMP::internal::copy(self->get_indexes(bb), std::back_inserter(ret));
      return ret;
   }
-  IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_indexes(IMP::algebra::ExtendedGridIndexD<D> lb, IMP::algebra::ExtendedGridIndexD<D> ub) {
-     IMP::base::Vector<IMP::algebra::GridIndexD<D> > ret;
-     IMP::base::internal::copy(self->get_indexes(lb, ub), std::back_inserter(ret));
+  IMP::Vector<IMP::algebra::GridIndexD<D> > get_indexes(IMP::algebra::ExtendedGridIndexD<D> lb, IMP::algebra::ExtendedGridIndexD<D> ub) {
+     IMP::Vector<IMP::algebra::GridIndexD<D> > ret;
+     IMP::internal::copy(self->get_indexes(lb, ub), std::back_inserter(ret));
      return ret;
   }
-  IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > get_extended_indexes(IMP::algebra::ExtendedGridIndexD<D> lb, IMP::algebra::ExtendedGridIndexD<D> ub) {
-     IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > ret;
-     IMP::base::internal::copy(self->get_extended_indexes(lb, ub), std::back_inserter(ret));
+  IMP::Vector<IMP::algebra::ExtendedGridIndexD<D> > get_extended_indexes(IMP::algebra::ExtendedGridIndexD<D> lb, IMP::algebra::ExtendedGridIndexD<D> ub) {
+     IMP::Vector<IMP::algebra::ExtendedGridIndexD<D> > ret;
+     IMP::internal::copy(self->get_extended_indexes(lb, ub), std::back_inserter(ret));
      return ret;
   }
-  IMP::base::Vector<IMP::algebra::GridIndexD<D> > get_all_indexes() const {
-     IMP::base::Vector<IMP::algebra::GridIndexD<D> > ret;
-     IMP::base::internal::copy(self->get_all_indexes(), std::back_inserter(ret));
+  IMP::Vector<IMP::algebra::GridIndexD<D> > get_all_indexes() const {
+     IMP::Vector<IMP::algebra::GridIndexD<D> > ret;
+     IMP::internal::copy(self->get_all_indexes(), std::back_inserter(ret));
      return ret;
   }
-  IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > get_extended_indexes(IMP::algebra::BoundingBoxD<D> bb) {
-     IMP::base::Vector<IMP::algebra::ExtendedGridIndexD<D> > ret;
-     IMP::base::internal::copy(self->get_extended_indexes(bb), std::back_inserter(ret));
+  IMP::Vector<IMP::algebra::ExtendedGridIndexD<D> > get_extended_indexes(IMP::algebra::BoundingBoxD<D> bb) {
+     IMP::Vector<IMP::algebra::ExtendedGridIndexD<D> > ret;
+     IMP::internal::copy(self->get_extended_indexes(bb), std::back_inserter(ret));
      return ret;
   }
   IMP::algebra::VectorD<D> get_center(ExtendedGridIndexD<D> ei) const {

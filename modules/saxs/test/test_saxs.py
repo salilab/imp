@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
 
     def test_saxs_profile(self):
         """Check protein profile computation"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read PDB
         mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
@@ -70,20 +70,22 @@ class Tests(IMP.test.TestCase):
         fp.show(sio)
         self.assertAlmostEqual(chi, 0.45, delta=0.01)
 
-        #! test interval chi
-        chi = saxs_score.compute_score(model_profile, 0.0, 0.2)
-        print('Chi interval [0.0:0.2] = ' + str(chi))
-        self.assertAlmostEqual(chi, 0.482, delta=0.01)
-
         #! test chi with log intensities
         chi = (saxs_score_log.fit_profile(model_profile,
                                           0.95, 1.12, -2.0, 4.0, False, "chilog_fit.dat")).get_chi()
         print('ChiLog after adjustment of excluded volume and water layer parameters = ' + str(chi))
         self.assertAlmostEqual(chi, 0.0323, delta=0.001)
 
+        #! test RatioVolatilityScore
+        vr_score = IMP.saxs.ProfileFitterRatioVolatility(exp_profile);
+        vr = (vr_score.fit_profile(model_profile,
+                                   0.95, 1.12, -2.0, 4.0, False, "vr_fit.dat")).get_chi()
+        print('RatioVolatilityScore after adjustment of excluded volume and water layer parameters = ' + str(vr))
+        self.assertAlmostEqual(vr, 5.70, delta=0.01)
+
     def test_saxs_restraint(self):
         """Check saxs restraint"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read PDB
         mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
@@ -107,13 +109,12 @@ class Tests(IMP.test.TestCase):
 
         #! define restraint
         saxs_restraint = IMP.saxs.Restraint(particles, exp_profile)
-        m.add_restraint(saxs_restraint)
         score = saxs_restraint.evaluate(False)
         self.assertAlmostEqual(score, 0.54, delta=0.01)
 
     def test_saxs_residue_level_restraint(self):
         """Check residue level saxs restraint"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read PDB
         mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
@@ -140,7 +141,6 @@ class Tests(IMP.test.TestCase):
             particles,
             exp_profile,
             IMP.saxs.CA_ATOMS)
-        m.add_restraint(saxs_restraint)
         score = saxs_restraint.evaluate(False)
         print('initial score = ' + str(score))
 

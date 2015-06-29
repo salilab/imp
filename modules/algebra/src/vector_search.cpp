@@ -7,10 +7,10 @@
  */
 
 #include <IMP/algebra/vector_search.h>
-#include <IMP/base/utility.h>
+#include <IMP/utility.h>
 #include <IMP/algebra/utility.h>
-#include <IMP/base/log.h>
-#include <IMP/base/exception.h>
+#include <IMP/log.h>
+#include <IMP/exception.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -29,7 +29,7 @@ DynamicNearestNeighbor3D::DynamicNearestNeighbor3D(const Vector3Ds &vs,
 Ints DynamicNearestNeighbor3D::get_in_ball(int id, double distance) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) { audit(); }
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) { audit(); }
   // Index i= indexes_[id];
   BoundingBox3D bb(coords_[id]);
   bb += distance;
@@ -44,7 +44,7 @@ Ints DynamicNearestNeighbor3D::get_in_ball(int id, double distance) const {
        it != grid_.indexes_end(bb); ++it) {
     Grid::Index ind = *it;
     const Ints cur = grid_[ind];
-    using base::operator<<;
+    using IMP::operator<<;
     IMP_LOG_VERBOSE("Investigating " << ind << ": " << cur << std::endl);
     for (unsigned int j = 0; j < cur.size(); ++j) {
       if (get_squared_distance(coords_[cur[j]], coords_[id]) < distance2) {
@@ -96,7 +96,7 @@ void DynamicNearestNeighbor3D::audit() const {
        ++it) {
     found.insert(found.end(), it->second.begin(), it->second.end());
   }
-  using base::operator<<;
+  using IMP::operator<<;
   for (unsigned int i = 0; i < coords_.size(); ++i) {
     IMP_INTERNAL_CHECK(
         std::find(grid_[indexes_[i]].begin(), grid_[indexes_[i]].end(), i) !=

@@ -5,30 +5,28 @@ import IMP.atom
 
 
 def setup_filter():
-    m = IMP.kernel.Model()
+    m = IMP.Model()
     ps = []
     for i in range(10):
-        p = IMP.kernel.Particle(m)
-        IMP.core.XYZ.setup_particle(p)
+        p = m.add_particle("P%d" % i)
+        IMP.core.XYZ.setup_particle(m, p)
         ps.append(p)
-    bd1 = IMP.atom.Bonded.setup_particle(ps[0])
-    bd2 = IMP.atom.Bonded.setup_particle(ps[1])
+    bd1 = IMP.atom.Bonded.setup_particle(m, ps[0])
+    bd2 = IMP.atom.Bonded.setup_particle(m, ps[1])
     bonds = []
     bonds.append(IMP.atom.create_bond(bd1, bd2,
                                       IMP.atom.Bond.SINGLE).get_particle())
     angles = []
-    angles.append(IMP.atom.Angle.setup_particle(IMP.kernel.Particle(m),
-                                                IMP.core.XYZ(
-                                                    ps[1]), IMP.core.XYZ(
-                                                    ps[2]),
-                                                IMP.core.XYZ(ps[3])).get_particle())
+    angles.append(IMP.atom.Angle.setup_particle(IMP.Particle(m),
+                                                IMP.core.XYZ(m, ps[1]),
+                                                IMP.core.XYZ(m, ps[2]),
+                                                IMP.core.XYZ(m, ps[3])).get_particle())
     dihedrals = []
-    dihedrals.append(IMP.atom.Dihedral.setup_particle(IMP.kernel.Particle(m),
-                                                      IMP.core.XYZ(
-                                                          ps[4]), IMP.core.XYZ(
-                                                          ps[5]),
-                                                      IMP.core.XYZ(ps[6]),
-                                                      IMP.core.XYZ(ps[7])).get_particle())
+    dihedrals.append(IMP.atom.Dihedral.setup_particle(IMP.Particle(m),
+                                                      IMP.core.XYZ(m, ps[4]),
+                                                      IMP.core.XYZ(m, ps[5]),
+                                                      IMP.core.XYZ(m, ps[6]),
+                                                      IMP.core.XYZ(m, ps[7])).get_particle())
 
     pf = IMP.atom.StereochemistryPairFilter()
     return m, pf, ps, bonds, angles, dihedrals
@@ -42,6 +40,7 @@ class Tests(IMP.test.TestCase):
         """Check the StereochemistryPairFilter exclusions"""
         m, pf, ps, bonds, angles, dihedrals = setup_filter()
 
+        ps = IMP.get_particles(m, ps)
         self.assertEquals(pf.get_value(
             (ps[0], ps[1])), False)
         self.assertEquals(pf.get_value(
@@ -70,7 +69,7 @@ class Tests(IMP.test.TestCase):
         pf.set_dihedrals(dihedrals)
         # Inputs should always be empty
         for p in ps:
-            self.assertEqual(pf.get_input_particles(p), [])
+            self.assertEqual(pf.get_inputs(m, [p]), [])
 
 
 if __name__ == '__main__':

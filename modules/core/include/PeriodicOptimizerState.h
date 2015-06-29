@@ -10,11 +10,11 @@
 #define IMPCORE_PERIODIC_OPTIMIZER_STATE_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/kernel/OptimizerState.h>
+#include <IMP/OptimizerState.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
-typedef kernel::OptimizerState PeriodicOptimizerState;
+typedef OptimizerState PeriodicOptimizerState;
 
 IMPCORE_END_NAMESPACE
 

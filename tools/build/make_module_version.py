@@ -27,30 +27,27 @@ parser.add_option("-d", "--datapath",
 def make_cpp(options):
     dir = os.path.join("src")
     file = os.path.join(dir, "%s_config.cpp" % options.name)
-    cpp_template = open(
-        os.path.join(
-            options.source,
-            "tools",
-            "build",
-            "config_templates",
-            "src.cpp"),
-        "r").read(
-    )
+    cpp_template = tools.CPPFileGenerator(os.path.join(options.source,
+                             "tools", "build", "config_templates", "src.cpp"))
     try:
         os.makedirs(dir)
     except:
         # exists
         pass
     data = {}
-    data["filename"] = "IMP/%s/%s_config.h" % (options.name, options.name)
+    if options.name == 'kernel':
+        data["filename"] = "IMP/%s_config.h" % options.name
+    else:
+        data["filename"] = "IMP/%s/%s_config.h" % (options.name, options.name)
     data["cppprefix"] = "IMP%s" % options.name.upper().replace("_", "")
     data["name"] = options.name
     data["version"] = tools.get_module_version(options.name, options.source)
-    tools.rewrite(file, cpp_template % data)
+    cpp_template.write(file, data)
 
 
 def make_version_check(options):
-    dir = os.path.join("lib", "IMP", options.name)
+    dir = os.path.join("lib", "IMP",
+                       "" if options.name == 'kernel' else options.name)
     tools.mkdir(dir, clean=False)
     version = tools.get_module_version(options.name, options.source)
     outf = os.path.join(dir, "_version_check.py")
@@ -62,7 +59,8 @@ def make_version_check(options):
   version = '%s'
   _check_one('%s', version, myversion)
   """
-    tools.rewrite(outf, template % (version, version))
+    g = tools.PythonFileGenerator()
+    g.write(outf, template % (version, version))
 
 
 def main():

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/ConfigurationSet.h
+ *  \file IMP/ConfigurationSet.h
  *  \brief Store a set of configurations of the model.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
@@ -9,14 +9,14 @@
 #ifndef IMPKERNEL_CONFIGURATION_SET_H
 #define IMPKERNEL_CONFIGURATION_SET_H
 
-#include <IMP/kernel/kernel_config.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/kernel_config.h>
+#include <IMP/Object.h>
+#include <IMP/Pointer.h>
 #include "Model.h"
 #include "Configuration.h"
 #include "OptimizerState.h"
 #include "internal/utility.h"
-#include <IMP/base/warning_macros.h>
+#include <IMP/warning_macros.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -25,13 +25,13 @@ IMPKERNEL_BEGIN_NAMESPACE
     protocol and allows them to be queried and loaded and saved.
     \include basic_optimization.py
 */
-class IMPKERNELEXPORT ConfigurationSet : public IMP::base::Object {
-  mutable base::Pointer<Model> model_;
-  base::Pointer<Configuration> base_;
-  base::Vector<base::Pointer<Configuration> > configurations_;
+class IMPKERNELEXPORT ConfigurationSet : public IMP::Object {
+  mutable Pointer<Model> model_;
+  Pointer<Configuration> base_;
+  Vector<Pointer<Configuration> > configurations_;
 
  public:
-  ConfigurationSet(kernel::Model *m, std::string name = "ConfigurationSet %1%");
+  ConfigurationSet(Model *m, std::string name = "ConfigurationSet %1%");
   //! Save the current configuration of the Model
   void save_configuration();
   unsigned int get_number_of_configurations() const;
@@ -48,7 +48,7 @@ IMP_OBJECTS(ConfigurationSet, ConfigurationSets);
 /** Save the model to a ConfigurationSet. */
 class IMPKERNELEXPORT SaveToConfigurationSetOptimizerState
     : public OptimizerState {
-  base::PointerMember<ConfigurationSet> cs_;
+  PointerMember<ConfigurationSet> cs_;
 
  public:
   SaveToConfigurationSetOptimizerState(ConfigurationSet *cs);

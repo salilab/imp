@@ -1,10 +1,11 @@
 /**
  *   Copyright 2007-2015 IMP Inventors. All rights reserved
  */
-#include <IMP/kernel/Model.h>
-#include <IMP/base/log.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/internal/pdb.h>
+#include <IMP/Model.h>
+#include <IMP/log.h>
+#include <IMP/Particle.h>
+#include <IMP/internal/pdb.h>
+#include <IMP/flags.h>
 #include <sstream>
 
 const char *data =
@@ -21,14 +22,16 @@ const char *data =
     "ATOM    341  O   LYS    42      33.661   0.750  17.787  \n"
     "ATOM    342  CB  LYS    42      31.007   1.987  16.739  \n";
 
-int main(int, char * []) {
-  IMP::base::set_log_level(IMP::base::MEMORY);
-  IMP_NEW(IMP::kernel::Model, m, ());
+int main(int argc, char *argv[]) {
+  IMP::setup_from_argv(argc, argv, "Test PDB.");
+
+  IMP::set_log_level(IMP::MEMORY);
+  IMP_NEW(IMP::Model, m, ());
   std::istringstream in(data);
-  IMP::kernel::ParticlesTemp ps =
-      IMP::kernel::internal::create_particles_from_pdb(in, m);
-  IMP_USAGE_CHECK(std::abs(m->get_sphere(ps[3]->get_index()).get_center()[2] -
+  IMP::ParticleIndexes ps =
+      IMP::internal::create_particles_from_pdb(in, m);
+  IMP_USAGE_CHECK(std::abs(m->get_sphere(ps[3]).get_center()[2] -
                            22.678) < .002,
-                  "Bad coordinates: " << m->get_sphere(ps[3]->get_index()));
+                  "Bad coordinates: " << m->get_sphere(ps[3]));
   return 0;
 }

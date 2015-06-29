@@ -1,3 +1,5 @@
+\brief Pairwise docking incorporating additional data.
+
 # idock {#idock_bin}
 
 Pairwise docking incorporating additional data.
@@ -28,7 +30,7 @@ docking, followed by
 clustering and composite scoring.
 
 _Examples_:
- - [Docking of PCSK9](../tutorial/idock_pcsk9.html)
+ - [Docking of PCSK9](@ref idock_pcsk9)
 
 # Info
 

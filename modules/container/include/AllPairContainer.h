@@ -16,7 +16,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/pair_macros.h>
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -25,7 +25,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     CloseBipartitePairContainer for variants on the functionality provided.
  */
 class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
-  IMP::base::PointerMember<SingletonContainer> c_;
+  IMP::PointerMember<SingletonContainer> c_;
 
  protected:
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {
@@ -36,20 +36,20 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
   template <class F>
   void apply_generic(F* f) const {
     validate_readable();
-    const kernel::ParticleIndexes& pis = c_->get_contents();
+    const ParticleIndexes& pis = c_->get_contents();
     for (unsigned int i = 0; i < pis.size(); ++i) {
       for (unsigned int j = 0; j < i; ++j) {
-        f->apply_index(get_model(), kernel::ParticleIndexPair(pis[i], pis[j]));
+        f->apply_index(get_model(), ParticleIndexPair(pis[i], pis[j]));
       }
     }
   }
   //! Get the individual particles from the passed SingletonContainer
   AllPairContainer(SingletonContainerAdaptor c,
                    std::string name = "AllPairContainer%1%");
-  virtual kernel::ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
-  virtual kernel::ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual kernel::ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   IMP_PAIR_CONTAINER_METHODS(AllPairContainer);
   IMP_OBJECT_METHODS(AllPairContainer);
 };

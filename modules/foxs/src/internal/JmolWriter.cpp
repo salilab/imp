@@ -27,7 +27,7 @@ unsigned int JmolWriter::MAX_DISPLAY_NUM_ = 30;
 
 void JmolWriter::prepare_jmol_script(
     const std::vector<IMP::saxs::FitParameters>& fps,
-    const std::vector<IMP::kernel::Particles>& particles_vec,
+    const std::vector<IMP::Particles>& particles_vec,
     const std::string filename) {
 
   std::string html_filename = filename + ".html";
@@ -101,7 +101,7 @@ void JmolWriter::prepare_jmol_script(
 
 void JmolWriter::prepare_jmol_script(
     const std::vector<std::string>& pdbs,
-    const std::vector<IMP::kernel::Particles>& particles_vec,
+    const std::vector<IMP::Particles>& particles_vec,
     const std::string filename) {
 
   std::string html_filename = filename + ".html";
@@ -169,7 +169,7 @@ void JmolWriter::prepare_jmol_script(
 
 void JmolWriter::prepare_PDB_file(
     const std::vector<IMP::saxs::FitParameters>& fps,
-    const std::vector<IMP::kernel::Particles>& particles_vec,
+    const std::vector<IMP::Particles>& particles_vec,
     const std::string filename) {
   std::ofstream out_file(filename.c_str());
   // center coordinates and join into a single PDB
@@ -177,11 +177,11 @@ void JmolWriter::prepare_PDB_file(
     int mol_index = fps[i].get_mol_index();
 
     // compute mean
-    std::vector<IMP::algebra::Vector3D> coordinates;
-    IMP::saxs::get_coordinates(particles_vec[mol_index], coordinates);
-    IMP::algebra::Vector3D m =
-        std::accumulate(coordinates.begin(), coordinates.end(),
-                        IMP::algebra::Vector3D(0.0, 0.0, 0.0));
+    Vector<IMP::algebra::Vector3D> coordinates;
+    saxs::get_coordinates(particles_vec[mol_index], coordinates);
+    algebra::Vector3D m = std::accumulate(coordinates.begin(),
+                                          coordinates.end(),
+                                          algebra::Vector3D(0.0, 0.0, 0.0));
     m /= particles_vec[mol_index].size();
 
     // output file
@@ -206,7 +206,7 @@ void JmolWriter::prepare_PDB_file(
 }
 
 void JmolWriter::prepare_PDB_file(
-    const std::vector<IMP::kernel::Particles>& particles_vec,
+    const std::vector<IMP::Particles>& particles_vec,
     const std::string filename) {
   std::ofstream out_file(filename.c_str());
   // center coordinates and join into a single PDB
@@ -214,11 +214,11 @@ void JmolWriter::prepare_PDB_file(
        i++) {
 
     // compute mean
-    std::vector<IMP::algebra::Vector3D> coordinates;
-    IMP::saxs::get_coordinates(particles_vec[i], coordinates);
-    IMP::algebra::Vector3D m =
-        std::accumulate(coordinates.begin(), coordinates.end(),
-                        IMP::algebra::Vector3D(0.0, 0.0, 0.0));
+    Vector<IMP::algebra::Vector3D> coordinates;
+    saxs::get_coordinates(particles_vec[i], coordinates);
+    algebra::Vector3D m = std::accumulate(coordinates.begin(),
+                                          coordinates.end(),
+                                          algebra::Vector3D(0.0, 0.0, 0.0));
     m /= particles_vec[i].size();
 
     // output file

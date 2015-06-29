@@ -23,7 +23,7 @@ using namespace IMP::atom;
 #endif
 
 namespace {
-void do_benchmark(kernel::Model *m) {
+void do_benchmark(Model *m) {
   // measure time
   double runtime;
   double total = 0;
@@ -39,8 +39,9 @@ void do_benchmark(kernel::Model *m) {
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, "Benchmark pdb reading");
-  IMP_NEW(kernel::Model, m, ());
+  IMP::setup_from_argv(argc, argv, "Benchmark pdb reading");
+  IMP::set_log_level(IMP::SILENT);
+  IMP_NEW(Model, m, ());
   do_benchmark(m);
   return IMP::benchmark::get_return_value();
 }

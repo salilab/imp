@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
 
     def test_weighted_profile(self):
         """Check profile fitting with weights"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
 
         #! read PDB
         mp1 = IMP.atom.read_pdb(self.get_input_file_name('4cln.pdb'), m,
@@ -55,11 +55,11 @@ class Tests(IMP.test.TestCase):
 
         #! resample model profiles into a weighted profile
         resampled_profile1 = IMP.saxs.Profile()
-        model_profile1.resample(weighted_profile, resampled_profile1, True)
+        model_profile1.resample(weighted_profile, resampled_profile1)
         resampled_profile2 = IMP.saxs.Profile()
-        model_profile2.resample(weighted_profile, resampled_profile2, True)
+        model_profile2.resample(weighted_profile, resampled_profile2)
 
-        saxs_score = IMP.saxs.WeightedProfileFitter(weighted_profile)
+        saxs_score = IMP.saxs.WeightedProfileFitterChi(weighted_profile)
 
         profile_list = [resampled_profile1, resampled_profile2]
 

@@ -13,8 +13,8 @@
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/revolute_joints.h>
 #include <IMP/core/internal/angle_helpers.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/exception.h>
+#include <IMP/Object.h>
+#include <IMP/exception.h>
 #include <IMP/algebra/Transformation3D.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE

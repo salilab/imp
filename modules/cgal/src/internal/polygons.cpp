@@ -51,7 +51,7 @@ algebra::Vector3Ds get_intersection(const algebra::Vector3D &normal, double d,
   std::cout << "plane " << plane << std::endl;
   algebra::Vector3Ds corners = algebra::get_vertices(bb);
   IntPairs edges = algebra::get_edges(bb);
-  base::Vector<Point_2> intersections;
+  Vector<Point_2> intersections;
   for (unsigned int i = 0; i < edges.size(); ++i) {
     Segment_3 s(tr<Point_3>(corners[edges[i].first]),
                 tr<Point_3>(corners[edges[i].second]));
@@ -61,7 +61,7 @@ algebra::Vector3Ds get_intersection(const algebra::Vector3D &normal, double d,
       intersections.push_back(plane.to_2d(*ip));
     }
   }
-  base::Vector<Point_2> ch;
+  Vector<Point_2> ch;
   CGAL::ch_graham_andrew(intersections.begin(), intersections.end(),
                          std::back_inserter(ch));
   algebra::Vector3Ds ret;
@@ -75,7 +75,7 @@ algebra::Vector3Ds get_intersection(const algebra::Vector3D &normal, double d,
 Ints get_convex_polygons(const Ints &indexes,
                          const algebra::Vector3Ds &vertices) {
   if (indexes.size() < 3) {
-    IMP_THROW("Polygon must at least be a triangle", base::ValueException);
+    IMP_THROW("Polygon must at least be a triangle", ValueException);
   }
   // std::cout << "Splitting polygon " << poly.size() << std::endl;
   typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
@@ -84,7 +84,7 @@ Ints get_convex_polygons(const Ints &indexes,
   typedef Kernel::Point_3 Point_3;
   typedef Kernel::Plane_3 Plane_3;
   typedef CGAL::Partition_traits_2<Kernel>::Polygon_2 Polygon_2;
-  base::Vector<Point_3> poly_3(indexes.size());
+  Vector<Point_3> poly_3(indexes.size());
   for (unsigned int i = 0; i < indexes.size(); ++i) {
     poly_3[i] = Point_3(vertices.at(indexes[i])[0], vertices.at(indexes[i])[1],
                         vertices.at(indexes[i])[2]);
@@ -98,7 +98,7 @@ Ints get_convex_polygons(const Ints &indexes,
                                        dt);
   // plane= CGAL::object_cast<Plane_3>(out);
   // project points
-  base::Vector<Point_2> points_2(indexes.size());
+  Vector<Point_2> points_2(indexes.size());
   std::map<Point_2, int, PointLess> index;
   for (unsigned int i = 0; i < indexes.size(); ++i) {
     points_2[i] = plane.to_2d(poly_3[i]);
@@ -112,14 +112,14 @@ Ints get_convex_polygons(const Ints &indexes,
     reverse = true;
   }
   // decompose
-  base::Vector<Polygon_2> polys2;
+  Vector<Polygon_2> polys2;
   try {
     CGAL::approx_convex_partition_2(poly2.vertices_begin(),
                                     poly2.vertices_end(),
                                     std::back_inserter(polys2));
   }
   catch (...) {
-    IMP_THROW("Polygon is not simple", base::ValueException);
+    IMP_THROW("Polygon is not simple", ValueException);
   }
   // std::cout << "Got " << polys2.size() << std::endl;
   // unproject decomposition

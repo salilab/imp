@@ -2,12 +2,16 @@
 # We are interested in applying domino to problems systematically in a
 # multiscale manner. This script experiments with those approaches.
 
+from __future__ import print_function
 import IMP.domino
 import IMP.core
+import sys
 
-m = IMP.kernel.Model()
-m.set_log_level(IMP.base.SILENT)
-ds = [IMP.core.XYZR.setup_particle(IMP.kernel.Particle(m))
+IMP.setup_from_argv(sys.argv, "multiscale")
+
+m = IMP.Model()
+m.set_log_level(IMP.SILENT)
+ds = [IMP.core.XYZR.setup_particle(IMP.Particle(m))
       for i in range(0, 3)]
 for i, d in enumerate(ds):
     d.set_radius(1)
@@ -15,20 +19,22 @@ for i, d in enumerate(ds):
 
 k = 1
 h = IMP.core.Harmonic(0, k)
-r0 = IMP.core.SingletonRestraint(
+r0 = IMP.core.SingletonRestraint(m,
     IMP.core.DistanceToSingletonScore(h, IMP.algebra.Vector3D(0, 0, 0)),
-    ds[0], "0 at origin")
+    ds[0].get_particle_index(), "0 at origin")
 
-r1 = IMP.core.SingletonRestraint(IMP.core.AttributeSingletonScore(h,
+r1 = IMP.core.SingletonRestraint(m, IMP.core.AttributeSingletonScore(h,
                                                                   IMP.core.XYZ.get_xyz_keys(
                                                                   )[0]),
-                                 ds[1], "1 on axis")
+                                 ds[1].get_particle_index(), "1 on axis")
 
 rs = [r0, r1]
 for pr in [(0, 1), (1, 2), (0, 2)]:
-    r = IMP.core.PairRestraint(IMP.core.HarmonicSphereDistancePairScore(0, k),
-                               (ds[pr[0]], ds[pr[1]]),
-                               "R for " + str(pr))
+    r = IMP.core.PairRestraint(m,
+                 IMP.core.HarmonicSphereDistancePairScore(0, k),
+                 (ds[pr[0]].get_particle_index(),
+                  ds[pr[1]].get_particle_index()),
+                 "R for " + str(pr))
     rs.append(r)
 
 
@@ -55,8 +61,9 @@ def setup(cover, scale):
     fs = [IMP.domino.RestraintScoreSubsetFilterTable(rc),
           lf]
     sampler = IMP.domino.DominoSampler(m, pst)
+    sampler.set_restraints(rs)
     sampler.set_subset_filter_tables(fs)
-    sampler.set_log_level(IMP.base.SILENT)
+    sampler.set_log_level(IMP.SILENT)
     return (sampler, lf, pst)
 
 (sampler, lf, pst) = setup(covers[0], 4.0)

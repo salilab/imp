@@ -17,7 +17,7 @@ unsigned int ProjectionStates::get_number_of_particle_states() const {
 }
 
 void ProjectionStates::load_particle_state(unsigned int i,
-                                           kernel::Particle *p) const {
+                                           Particle *p) const {
   GridStates::load_particle_state(i, p);
 }
 
@@ -30,10 +30,6 @@ Image *ProjectionStates::get_projection(unsigned int i) const {
   unsigned int position_index = i / projections_.size();
   unsigned int index = i - position_index * projections_.size();
   return projections_[index];
-}
-
-void ProjectionStates::do_show(std::ostream &out) const {
-  out << "ProjectionStates" << std::endl;
 }
 
 algebra::Vector3D GridStates::get_position(unsigned int i) const {
@@ -49,12 +45,8 @@ algebra::Rotation3D GridStates::get_orientation(unsigned int i) const {
   return orientations_[index];
 }
 
-void GridStates::do_show(std::ostream &out) const {
-  out << "GridStates" << std::endl;
-}
-
 void GridStates::load_particle_state(unsigned int i,
-                                     kernel::Particle *p) const {
+                                     Particle *p) const {
   algebra::Transformation3D T(get_orientation(i), get_position(i));
   core::XYZ xyz(p);
   core::transform(xyz, T);

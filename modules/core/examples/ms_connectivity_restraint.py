@@ -7,11 +7,14 @@
 import IMP
 import IMP.core
 import IMP.algebra
+import sys
+
+IMP.setup_from_argv(sys.argv, "ms connectivity restraint")
 
 # Setup model
 
-m = IMP.kernel.Model()
-ps = [IMP.kernel.Particle(m) for x in range(6)]
+m = IMP.Model()
+ps = [IMP.Particle(m) for x in range(6)]
 ds = []
 ds.append(IMP.core.XYZ.setup_particle(
     ps[0], IMP.algebra.Vector3D(0.0, 0.0, 0.0)))
@@ -54,7 +57,5 @@ i6 = r.add_composite([pb, pc], i2)
 i7 = r.add_composite([pa, pa, pb], i3)
 i8 = r.add_composite([pa, pb], i5)
 
-# Add restraint to the model and evaluate the model score
-
-m.add_restraint(r)
-m.evaluate(False)
+# Evaluate the restraint score
+r.evaluate(False)

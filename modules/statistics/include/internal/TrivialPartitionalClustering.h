@@ -10,16 +10,16 @@
 
 #include <IMP/statistics/statistics_config.h>
 #include "../PartitionalClustering.h"
-#include <IMP/base/check_macros.h>
+#include <IMP/check_macros.h>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 class TrivialPartitionalClustering : public PartitionalClustering {
-  IMP::base::Vector<Ints> clusters_;
+  IMP::Vector<Ints> clusters_;
   Ints reps_;
 
  public:
-  TrivialPartitionalClustering(const IMP::base::Vector<Ints> &clusters,
+  TrivialPartitionalClustering(const IMP::Vector<Ints> &clusters,
                                const Ints &reps = Ints())
       : PartitionalClustering("trivial"), clusters_(clusters), reps_(reps) {
     if (reps.empty()) {

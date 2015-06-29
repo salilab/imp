@@ -13,7 +13,7 @@ IMPATOM_BEGIN_NAMESPACE
 BondedPairFilter::BondedPairFilter() : PairPredicate("BondedPairFilter%1%") {}
 
 int BondedPairFilter::get_value_index(
-    kernel::Model *m, const kernel::ParticleIndexPair &pip) const {
+    Model *m, const ParticleIndexPair &pip) const {
   if (!Bonded::get_is_setup(m, pip[0]) || !Bonded::get_is_setup(m, pip[1])) {
     return false;
   }
@@ -24,8 +24,8 @@ int BondedPairFilter::get_value_index(
 }
 
 ModelObjectsTemp BondedPairFilter::do_get_inputs(
-    kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  kernel::ModelObjectsTemp ret = IMP::kernel::get_particles(m, pis);
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret = IMP::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     if (Bonded::get_is_setup(m, pis[i])) {
       Bonded b(m, pis[i]);

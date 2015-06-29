@@ -12,10 +12,10 @@
 IMPATOM_BEGIN_NAMESPACE
 
 VelocityScalingOptimizerState::VelocityScalingOptimizerState(
-    kernel::Model *m, kernel::ParticleIndexesAdaptor pis, double temp)
-    : kernel::OptimizerState(m, "VelocityScalingOptimizerState%1%"),
+    Model *m, ParticleIndexesAdaptor pis, double temp)
+    : OptimizerState(m, "VelocityScalingOptimizerState%1%"),
       temperature_(temp) {
-  IMP_FOREACH(kernel::ParticleIndex pi, pis) {
+  IMP_FOREACH(ParticleIndex pi, pis) {
     pis_.push_back(m->get_particle(pi));
   }
 }

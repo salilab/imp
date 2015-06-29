@@ -130,7 +130,7 @@ void Projection::calculate_sphere_mask(std::vector<MaskCell>& mask,
       kp.get_params(radius);
 
   int int_radius = symm_round(params.get_kdist() / scale_) + 1;
-  int int_radius2 = IMP::base::square(int_radius);
+  int int_radius2 = IMP::square(int_radius);
 
   double normalization = -scale_ * scale_ * params.get_inv_sigsq();
   double normalization2 = params.get_normfac();
@@ -206,7 +206,7 @@ void quasi_evenly_spherical_distribution(unsigned long N,
 }
 }
 
-void compute_projections(const kernel::Particles& particles,
+void compute_projections(const Particles& particles,
                          unsigned int projection_number, double pixel_size,
                          double resolution,
                          boost::ptr_vector<Projection>& projections,
@@ -278,8 +278,8 @@ void compute_projections(const kernel::Particles& particles,
   }
 }
 
-void compute_projections(const kernel::Particles& all_particles,
-                         const kernel::Particles& lig_particles,
+void compute_projections(const Particles& all_particles,
+                         const Particles& lig_particles,
                          unsigned int projection_number,
                          double pixel_size, double resolution,
                          boost::ptr_vector<Projection>& projections,

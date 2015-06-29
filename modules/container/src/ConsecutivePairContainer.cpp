@@ -1,5 +1,5 @@
 /**
- *  \file AllPairContainer.cpp   \brief A list of kernel::ParticlePairs.
+ *  \file AllPairContainer.cpp   \brief A list of ParticlePairs.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -7,7 +7,7 @@
 
 #include "IMP/container/ConsecutivePairContainer.h"
 #include <IMP/PairModifier.h>
-#include <IMP/kernel/internal/container_helpers.h>
+#include <IMP/internal/container_helpers.h>
 #include <algorithm>
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -16,10 +16,19 @@ namespace {
 // TODO: why not a static class variable?
 unsigned int key_count = 0;
 }
+
 ConsecutivePairContainer::ConsecutivePairContainer(
-    const kernel::ParticlesTemp &ps, std::string name)
+    Model *m, const ParticleIndexes &ps, std::string name)
+    : PairContainer(m, name), ps_(ps) {
+  init();
+}
+
+ConsecutivePairContainer::ConsecutivePairContainer(
+    const ParticlesTemp &ps, std::string name)
     : PairContainer(ps[0]->get_model(), name),
       ps_(IMP::internal::get_index(ps)) {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5,
+                                 "Use the index-based constructor instead.");
   init();
 }
 
@@ -40,13 +49,13 @@ void ConsecutivePairContainer::init() {
 }
 
 ModelObjectsTemp ConsecutivePairContainer::do_get_inputs() const {
-  return kernel::ParticlesTemp();
+  return ParticlesTemp();
 }
 
 ParticleIndexPairs ConsecutivePairContainer::get_indexes() const {
-  kernel::ParticleIndexPairs ret(ps_.size() - 1);
+  ParticleIndexPairs ret(ps_.size() - 1);
   for (unsigned int i = 1; i < ps_.size(); ++i) {
-    ret[i - 1] = kernel::ParticleIndexPair(ps_[i - 1], ps_[i]);
+    ret[i - 1] = ParticleIndexPair(ps_[i - 1], ps_[i]);
   }
   return ret;
 }
@@ -63,9 +72,17 @@ ConsecutivePairFilter::ConsecutivePairFilter(ConsecutivePairContainer *cpc)
     : PairPredicate("ConsecutivePairFilter %1%"), cpc_(cpc) {}
 
 ExclusiveConsecutivePairContainer::ExclusiveConsecutivePairContainer(
-    const kernel::ParticlesTemp &ps, std::string name)
+    Model *m, const ParticleIndexes &ps, std::string name)
+    : PairContainer(m, name), ps_(ps) {
+  init();
+}
+
+ExclusiveConsecutivePairContainer::ExclusiveConsecutivePairContainer(
+    const ParticlesTemp &ps, std::string name)
     : PairContainer(ps[0]->get_model(), name),
       ps_(IMP::internal::get_index(ps)) {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5,
+                                 "Use the index-based constructor instead.");
   init();
 }
 
@@ -102,13 +119,13 @@ void ExclusiveConsecutivePairContainer::do_destroy() {
 }
 
 ModelObjectsTemp ExclusiveConsecutivePairContainer::do_get_inputs() const {
-  return kernel::ParticlesTemp();
+  return ParticlesTemp();
 }
 
 ParticleIndexPairs ExclusiveConsecutivePairContainer::get_indexes() const {
-  kernel::ParticleIndexPairs ret(ps_.size() - 1);
+  ParticleIndexPairs ret(ps_.size() - 1);
   for (unsigned int i = 1; i < ps_.size(); ++i) {
-    ret[i - 1] = kernel::ParticleIndexPair(ps_[i - 1], ps_[i]);
+    ret[i - 1] = ParticleIndexPair(ps_[i - 1], ps_[i]);
   }
   return ret;
 }

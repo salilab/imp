@@ -3,7 +3,6 @@ import IMP
 import IMP.test
 import sys
 import IMP.em
-import IMP.base
 import os
 
 
@@ -14,10 +13,10 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         """initialize IMP environment create particles"""
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)
-        IMP.base.set_check_level(IMP.base.NONE)
+        IMP.set_log_level(IMP.SILENT)
+        IMP.set_check_level(IMP.NONE)
         # init IMP model ( the environment)
-        self.imp_model = IMP.kernel.Model()
+        self.imp_model = IMP.Model()
         self.particles = []
         # -  create a set of three particles in imp
         npart = 3
@@ -54,7 +53,7 @@ class Tests(IMP.test.TestCase):
             self.assertGreater(model_map.get_value(v), 0.6,
                                "map was not sampled correctly")
         model_map.calcRMS()
-        mapfile = IMP.base.create_temporary_file_name("xxx.em")
+        mapfile = IMP.create_temporary_file_name("xxx.em")
         IMP.em.write_map(model_map, mapfile, erw)
         em_map = IMP.em.DensityMap()
         em_map = IMP.em.read_map(mapfile, erw)

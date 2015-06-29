@@ -6,7 +6,11 @@
 import IMP.em
 import IMP.core
 import IMP.atom
-m = IMP.kernel.Model()
+import sys
+
+IMP.setup_from_argv(sys.argv, "pdb2density")
+
+m = IMP.Model()
 # read protein
 sel = IMP.atom.NonWaterPDBSelector()
 mh = IMP.atom.read_pdb(IMP.em.get_example_path("input.pdb"), m, sel)

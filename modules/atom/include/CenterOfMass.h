@@ -38,7 +38,7 @@ class IMPATOMEXPORT CenterOfMass : public IMP::Decorator {
       coordinates are set to the current center of mass of pis, and
       its mass is set to the sum of their masses.
    */
-  static void do_setup_particle(kernel::Model *m, ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 const ParticleIndexes &pis);
 
   /** Sets up CenterOfMass over particles passed by applying the refiner
@@ -47,7 +47,7 @@ class IMPATOMEXPORT CenterOfMass : public IMP::Decorator {
       mass of ref->get_refined_indexes(m, pi), and its mass is set to
       the sum of their masses.
   */
-  static void do_setup_particle(kernel::Model *m, ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 Refiner *ref);
 
  public:
@@ -92,7 +92,7 @@ class IMPATOMEXPORT CenterOfMass : public IMP::Decorator {
     */
     IMP_DECORATOR_SETUP_1(CenterOfMass, Refiner *, refiner);
 
-    static bool get_is_setup(kernel::Model *m, ParticleIndex pi) {
+    static bool get_is_setup(Model *m, ParticleIndex pi) {
       return m->get_has_attribute(get_constraint_key(), pi) &&
         IMP::atom::Mass::get_is_setup(m, pi) &&
         IMP::core::XYZ::get_is_setup(m, pi);    }

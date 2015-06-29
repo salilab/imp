@@ -8,20 +8,20 @@
 
 #ifndef IMPEM_DENSITY_MAP_H
 #define IMPEM_DENSITY_MAP_H
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/em/em_config.h>
 #include "DensityHeader.h"
 #include "MapReaderWriter.h"
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <boost/scoped_array.hpp>
 #include <iostream>
 #include <iomanip>
 #include <IMP/algebra/standard_grids.h>
-#include <IMP/kernel/base_types.h>
+#include <IMP/base_types.h>
 //#include <IMP/statistics/Histogram.h>
 
 IMPEM_BEGIN_NAMESPACE
@@ -91,7 +91,7 @@ IMPEMEXPORT Float approximate_molecular_mass(DensityMap *m, Float threshold);
      for sampling function as well as for functions
      like get_location_in_dim_by_voxel.
  */
-class IMPEMEXPORT DensityMap : public IMP::base::Object {
+class IMPEMEXPORT DensityMap : public IMP::Object {
   typedef IMP::algebra::DenseGrid3D<double> DGrid;
   IMP_NO_SWIG(friend IMPEMEXPORT DensityMap *read_map(std::string filename,
                                                       MapReaderWriter *reader));
@@ -199,6 +199,8 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
       \param[in] z The position ( in angstroms) of the z coordinate
       \return the value of the voxel located at (x,y,z)
       \exception IndexException The point is not covered by the grid.
+      \note the value is not interpolated between this and neighboring
+            voxels. For that, see get_density().
    */
   emreal get_value(float x, float y, float z) const;
   emreal get_value(const algebra::Vector3D &point) const {
@@ -424,7 +426,7 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
      \param[in] dim_len the kernel array
    */
   void convolute_kernel(double *kernel, int dim_len) {
-    base::Pointer<DensityMap> cmap = em::create_density_map(this);
+    Pointer<DensityMap> cmap = em::create_density_map(this);
     cmap->set_was_used(true);
     convolute_kernel(cmap, kernel, dim_len);
     cmap = static_cast<DensityMap *>(nullptr);
@@ -448,8 +450,9 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
   boost::scoped_array<emreal> data_;  // the order is ZYX (Z-slowest)
   bool data_allocated_;
 
-  //! Locations for each of the voxels of the map (they are precomputed and
-  //! each one is of size nvox, being nvox the size of the map)
+  //! Locations (centers) for each of the voxels of the map (they are
+  //! precomputed and each one is of size nvox, where nvox is the
+  //! size of the map)
   boost::scoped_array<float> x_loc_, y_loc_, z_loc_;
   //! true if the locations have already been computed
   bool loc_calculated_;
@@ -460,11 +463,14 @@ class IMPEMEXPORT DensityMap : public IMP::base::Object {
 
 inline algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m) {
   const DensityHeader *h = m->get_header();
+  float hspace = m->get_spacing() / 2.0;
+  algebra::Vector3D lb = m->get_origin()
+                         - algebra::Vector3D(hspace, hspace, hspace);
   return algebra::BoundingBoxD<3>(
-      m->get_origin(),
-      m->get_origin() + algebra::Vector3D(m->get_spacing() * h->get_nx(),
-                                          m->get_spacing() * h->get_ny(),
-                                          m->get_spacing() * h->get_nz()));
+      lb,
+      lb + algebra::Vector3D(m->get_spacing() * h->get_nx(),
+                             m->get_spacing() * h->get_ny(),
+                             m->get_spacing() * h->get_nz()));
 }
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
@@ -632,7 +638,7 @@ inline DensityMap *create_density_map(
   IMP_USAGE_CHECK(
       std::abs(arg.get_unit_cell()[0] - arg.get_unit_cell()[1]) < .01,
       "The passed grid does not seem to have cubic voxels");
-  base::Pointer<DensityMap> ret = create_density_map(
+  Pointer<DensityMap> ret = create_density_map(
       algebra::get_bounding_box(arg), arg.get_unit_cell()[0]);
   IMP_USAGE_CHECK(arg.get_number_of_voxels(0) ==
                       static_cast<unsigned int>(ret->get_header()->get_nx()),
@@ -663,7 +669,7 @@ DensityMap *get_binarized_interior(DensityMap *dmap);
 
 /** Rasterize the particles into an existing density map. */
 IMPEMEXPORT
-void add_to_map(DensityMap *dm, const kernel::Particles &pis);  // defined in
+void add_to_map(DensityMap *dm, const Particles &pis);  // defined in
 // SampledDensityMap.cpp
 IMPEM_END_NAMESPACE
 

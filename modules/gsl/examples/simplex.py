@@ -7,23 +7,25 @@ import IMP.test
 import IMP.core
 import IMP.gsl
 import IMP.algebra
+import sys
 
+IMP.setup_from_argv(sys.argv, "simplex")
 
-m = IMP.kernel.Model()
+m = IMP.Model()
 
 # create two particles to optimize
 d0 = IMP.core.XYZ.setup_particle(
-    IMP.kernel.Particle(m), IMP.algebra.Vector3D(0, 0, 0))
+    IMP.Particle(m), IMP.algebra.Vector3D(0, 0, 0))
 d1 = IMP.core.XYZ.setup_particle(
-    IMP.kernel.Particle(m), IMP.algebra.Vector3D(3, 4, 5))
+    IMP.Particle(m), IMP.algebra.Vector3D(3, 4, 5))
 d0.set_coordinates_are_optimized(True)
 d1.set_coordinates_are_optimized(True)
 
 # restrain their distance to be 1
-dist = IMP.core.DistanceRestraint(IMP.core.Harmonic(1, 1), d0, d1)
-m.add_restraint(dist)
+dist = IMP.core.DistanceRestraint(m, IMP.core.Harmonic(1, 1), d0, d1)
 
 opt = IMP.gsl.Simplex(m)
+opt.set_scoring_function([dist])
 opt.set_minimum_size(.000001)
 opt.set_initial_length(1)
 

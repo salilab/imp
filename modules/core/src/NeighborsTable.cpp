@@ -6,8 +6,8 @@
  */
 
 #include <IMP/core/NeighborsTable.h>
-#include <IMP/kernel/PairModifier.h>
-#include <IMP/kernel/container_macros.h>
+#include <IMP/PairModifier.h>
+#include <IMP/container_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -24,7 +24,7 @@ void NeighborsTable::do_before_evaluate() {
   });
 }
 
-NeighborsTable::NeighborsTable(kernel::PairContainer *input, std::string name)
+NeighborsTable::NeighborsTable(PairContainer *input, std::string name)
     : ScoreState(input->get_model(), name),
       input_(input),
       input_version_(input->get_contents_hash()) {}

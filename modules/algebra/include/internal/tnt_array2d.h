@@ -26,7 +26,7 @@
 #ifdef TNT_BOUNDS_CHECK
 #include <cassert>
 #endif
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 
 #include "tnt_array1d.h"
 

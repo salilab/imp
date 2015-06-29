@@ -22,7 +22,7 @@ IMPCORE_BEGIN_NAMESPACE
 */
 class IMPCOREEXPORT SteepestDescent : public AttributeOptimizer {
  public:
-  SteepestDescent(kernel::Model *m, std::string name = "SteepestDescent%1%");
+  SteepestDescent(Model *m, std::string name = "SteepestDescent%1%");
 
   virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(SteepestDescent);

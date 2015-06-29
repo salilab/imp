@@ -13,19 +13,19 @@ class Tests(IMP.test.TestCase):
         for suffix in IMP.rmf.suffixes:
             f = RMF.create_rmf_file(
                 self.get_tmp_file_name("restrnp2" + suffix))
-            m = IMP.kernel.Model()
-            ps = [IMP.kernel.Particle(m) for i in range(0, 3)]
+            m = IMP.Model()
+            ps = [IMP.Particle(m) for i in range(0, 3)]
             ds = [IMP.core.XYZR.setup_particle(p) for p in ps]
             for d in ds:
                 d.set_radius(1)
             IMP.rmf.add_particles(f, ds)
-            cpc = IMP.container.ConsecutivePairContainer(ps)
+            cpc = IMP.container.ConsecutivePairContainer(m, ps)
             r = IMP.container.PairsRestraint(
                 IMP.core.SoftSpherePairScore(1),
                 cpc)
             r.evaluate(False)
             IMP.rmf.add_restraint(f, r)
-            IMP.base.set_log_level(IMP.base.MEMORY)
+            IMP.set_log_level(IMP.MEMORY)
             sf = IMP.core.RestraintsScoringFunction([r])
             sf.evaluate(False)
             IMP.rmf.save_frame(f, str(0))

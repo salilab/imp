@@ -16,7 +16,6 @@
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/core/ChildrenRefiner.h>
 #include <IMP/display/particle_geometry.h>
-#include <IMP/display/ChimeraWriter.h>
 #include <IMP/em/Voxel.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/core/LeavesRefiner.h>
@@ -58,18 +57,18 @@ algebra::Vector3Ds DataPointsAssignment::get_cluster_vectors(int cluster_id)
 
 algebra::Vector3Ds DataPointsAssignment::set_cluster(int cluster_ind) {
   // remove outliers
-  base::Pointer<Model> mdl = new kernel::Model();
-  kernel::ParticlesTemp full_set;  // all points of the cluster
+  Pointer<Model> mdl = new Model();
+  ParticlesTemp full_set;  // all points of the cluster
   for (int i = 0; i < data_->get_number_of_data_points(); i++) {
     if (cluster_engine_->is_part_of_cluster(i, cluster_ind)) {
       core::XYZR x = core::XYZR::setup_particle(
-          new kernel::Particle(mdl),
+          new Particle(mdl),
           algebra::Sphere3D(data_->get_vector(i), 1));
       atom::Mass::setup_particle(x, 1);
       full_set.push_back(x);
     }
   }
-  base::Pointer<em::DensityMap> full_map =
+  Pointer<em::DensityMap> full_map =
       em::particles2density(full_set, 3, 1.5);
   // map the particles to their voxels
   std::map<long, algebra::Vector3D> voxel_particle_map;
@@ -124,20 +123,20 @@ void DataPointsAssignment::set_clusters() {
 
 void DataPointsAssignment::set_edges(double voxel_size) {
   // create projected density maps for each cluster
-  std::vector<base::Pointer<em::SampledDensityMap> > dmaps;
+  std::vector<Pointer<em::SampledDensityMap> > dmaps;
   std::vector<algebra::BoundingBox3D> boxes;
-  base::Pointer<Model> mdl = new kernel::Model();
+  Pointer<Model> mdl = new Model();
   for (int i = 0; i < cluster_engine_->get_number_of_clusters(); i++) {
     algebra::Vector3Ds vecs = get_cluster_vectors(i);
-    kernel::ParticlesTemp ps(vecs.size());
+    ParticlesTemp ps(vecs.size());
     for (unsigned int j = 0; j < vecs.size(); j++) {
       core::XYZR x = core::XYZR::setup_particle(
-          new kernel::Particle(mdl), algebra::Sphere3D(vecs[j], voxel_size));
+          new Particle(mdl), algebra::Sphere3D(vecs[j], voxel_size));
       atom::Mass::setup_particle(x, 3.);
       ps[j] = x;
     }
     boxes.push_back(core::get_bounding_box(core::XYZRs(ps)));
-    base::Pointer<em::SampledDensityMap> segment_map =
+    Pointer<em::SampledDensityMap> segment_map =
         em::particles2density(ps, voxel_size * 1.5, voxel_size);
     segment_map->set_was_used(true);
     dmaps.push_back(segment_map);
@@ -194,7 +193,7 @@ void write_segment_as_pdb(const DataPointsAssignment &dpa, int segment_id,
 void write_segment_as_mrc(em::DensityMap *dmap, const DataPointsAssignment &dpa,
                           int segment_id, Float, Float,
                           const std::string &filename) {
-  base::Pointer<em::DensityMap> segment_map(
+  Pointer<em::DensityMap> segment_map(
       new em::DensityMap(*(dmap->get_header())));
   segment_map->reset_data(0.);
   //  segment_map->update_voxel_size(apix);
@@ -305,21 +304,5 @@ algebra::Vector3Ds DataPointsAssignment::get_cluster_xyz(int cluster_ind)
   }
   return xyz;
 }
-
-// Float DataPointsAssignment::get_cluster_xyz_diameter(int cluster_ind) const {
-//     return get_diameter(get_cluster_xyz(cluster_ind));
-// }
-
-// void write_chimera(
-//      const std::string &chimera_filename,
-//      const DataPointsAssignment &dpa) {
-//   std::vector<display::SphereGeometry *> gs =
-//     display_helper(dpa);
-//   IMP_NEW(display::ChimeraWriter,w,(chimera_filename));
-//   for( int i=0;i<gs.size();i++){
-//     w->add_geometry(gs[i]);
-//   }
-//   w=nullptr;
-// }
 
 IMPMULTIFIT_END_NAMESPACE

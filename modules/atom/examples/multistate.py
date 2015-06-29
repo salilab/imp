@@ -3,9 +3,11 @@
 
 from __future__ import print_function
 import IMP.atom
-import IMP.kernel
+import sys
 
-m = IMP.kernel.Model()
+IMP.setup_from_argv(sys.argv, "multistate")
+
+m = IMP.Model()
 
 rt = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("root"))
 

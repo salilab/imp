@@ -10,8 +10,8 @@
 #include <IMP/kinematics/KinematicForest.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/PrismaticJoint.h>
-#include <IMP/base/Object.h>
-#include <IMP/base/exception.h>
+#include <IMP/Object.h>
+#include <IMP/exception.h>
 #include <IMP/algebra/Transformation3D.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE

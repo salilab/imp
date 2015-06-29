@@ -23,8 +23,8 @@ class Test(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.MEMORY)
-        IMP.base.set_log_level(0)
+        # IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
 
     def testSetGetMyParameters(self):
         "Test Replica Exchange set and get my parameters"

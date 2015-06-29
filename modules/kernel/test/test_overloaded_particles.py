@@ -9,20 +9,20 @@ class Tests(IMP.test.TestCase):
 
     def test_simple(self):
         """Check overloading of particle methods works"""
-        m = IMP.kernel.Model()
-        p = IMP.kernel.Particle(m)
-        IMP.kernel._overloaded_particles(m, [p.get_index()])
-        IMP.kernel._overloaded_particles(p)
-        IMP.kernel._overloaded_particles([p])
-        td = IMP.kernel._TrivialDecorator.setup_particle(p)
-        IMP.kernel._overloaded_particles([td])
-        IMP.kernel._overloaded_particles(IMP.kernel._TrivialDecorator(p))
-        IMP.kernel._implicit_particles(
-            IMP.kernel._ImplicitParticles(m, [p.get_index()]))
-        IMP.kernel._implicit_particles(p)
-        IMP.kernel._implicit_particles([p])
-        IMP.kernel._implicit_particles([td])
-        IMP.kernel._implicit_particles(IMP.kernel._TrivialDecorator(p))
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        IMP._overloaded_particles(m, [p.get_index()])
+        IMP._overloaded_particles(p)
+        IMP._overloaded_particles([p])
+        td = IMP._TrivialDecorator.setup_particle(p)
+        IMP._overloaded_particles([td])
+        IMP._overloaded_particles(IMP._TrivialDecorator(p))
+        IMP._implicit_particles(
+            IMP._ImplicitParticles(m, [p.get_index()]))
+        IMP._implicit_particles(p)
+        IMP._implicit_particles([p])
+        IMP._implicit_particles([td])
+        IMP._implicit_particles(IMP._TrivialDecorator(p))
 
 
 if __name__ == '__main__':

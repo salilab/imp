@@ -10,7 +10,7 @@
 #include <IMP/multi_state/stat_helpers.h>
 #include <IMP/multi_state/SAXSMultiStateModelScore.h>
 
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 
 #include <algorithm>
 #include <boost/tuple/tuple.hpp>
@@ -22,8 +22,8 @@ IMPMULTISTATE_BEGIN_NAMESPACE
 
 EnsembleGenerator::EnsembleGenerator(unsigned int population_size,
                                      unsigned int best_k,
-                                     std::vector<MultiStateModelScore*>& scorers,
-                                     float min_weight_threshold = 0.05) :
+                                     Vector<MultiStateModelScore*>& scorers,
+                                     double min_weight_threshold = 0.05) :
   N_(population_size), K_(best_k), scorers_(scorers),
   min_weight_threshold_(min_weight_threshold) {
 }
@@ -48,9 +48,9 @@ void EnsembleGenerator::init() {
     m.add_state(i);
     //m.set_score(get_score(e));
 
-    float min_score = std::numeric_limits<float>::max();
+    double min_score = std::numeric_limits<double>::max();
     for (unsigned int j=0; j<scorers_.size(); j++) {
-      float score = scorers_[j]->get_score(m);
+      double score = scorers_[j]->get_score(m);
       if(score < min_score) min_score = score;
     }
     m.set_score(min_score);
@@ -67,7 +67,7 @@ void EnsembleGenerator::init() {
   }
 
   Ensemble rescored_ensemble;
-  std::vector<std::vector<IMP::saxs::WeightedFitParameters> > rescored_fps;
+  Vector<Vector<saxs::WeightedFitParameters> > rescored_fps;
   rescore(ensembles_[0], rescored_ensemble, rescored_fps);
   output(rescored_ensemble, rescored_fps);
 }
@@ -84,7 +84,7 @@ void EnsembleGenerator::generate(unsigned int multi_state_model_size) {
       add_one_state(ensembles_[i-1], ensembles_[i]);
 
       Ensemble rescored_ensemble;
-      std::vector<std::vector<IMP::saxs::WeightedFitParameters> > rescored_fps;
+      Vector<Vector<saxs::WeightedFitParameters> > rescored_fps;
       rescore(ensembles_[i], rescored_ensemble, rescored_fps);
       std::cout << "initial size " << ensembles_[i].size() << " after rescoring "
                 << rescored_ensemble.size() << std::endl;
@@ -92,8 +92,8 @@ void EnsembleGenerator::generate(unsigned int multi_state_model_size) {
 
       if(rescored_ensemble.size() > 0) {
         for(unsigned int j = 0; j < scorers_.size(); j++) {
-          SAXSMultiStateModelScore *s =
-            dynamic_cast<SAXSMultiStateModelScore*>(scorers_[j]);
+          SAXSMultiStateModelScore<saxs::ChiScore> *s =
+            dynamic_cast<SAXSMultiStateModelScore<saxs::ChiScore>*>(scorers_[j]);
           if(s != NULL) s->set_average_c1_c2(rescored_fps[j]);
         }
       }
@@ -103,13 +103,14 @@ void EnsembleGenerator::generate(unsigned int multi_state_model_size) {
 
 void EnsembleGenerator::rescore(Ensemble& ensemble,
                                 Ensemble& rescored_ensemble,
-      std::vector<std::vector<IMP::saxs::WeightedFitParameters> >& rescored_fps)
+                     Vector<Vector<saxs::WeightedFitParameters> >& rescored_fps)
   const {
 
   unsigned int print_num = std::min((unsigned int)ensemble.size(), K_);
 
-  std::vector<std::vector<IMP::saxs::WeightedFitParameters> > fps(scorers_.size()), sorted_fps(scorers_.size());
-  std::multimap<float, unsigned int> scores;
+  Vector<Vector<saxs::WeightedFitParameters> > fps(scorers_.size()),
+    sorted_fps(scorers_.size());
+  std::multimap<double, unsigned int> scores;
   unsigned int counter = 0;
 
   // re-score
@@ -118,11 +119,10 @@ void EnsembleGenerator::rescore(Ensemble& ensemble,
       std::cerr << "Rescoring ensemble " << i << " out of " << ensemble.size() << std::endl;
     }
     // iterate scorers and record max weight for each state
-    std::vector<double> max_weights(ensemble[i].size(), 0.0);
+    Vector<double> max_weights(ensemble[i].size(), 0.0);
     double score = 0;
     for(unsigned int k = 0; k < scorers_.size(); k++) {
-      IMP::saxs::WeightedFitParameters p =
-        scorers_[k]->get_fit_parameters(ensemble[i]);
+      saxs::WeightedFitParameters p = scorers_[k]->get_fit_parameters(ensemble[i]);
       score += p.get_score();
       // find the max weight contribution of each state
       for(unsigned int wi = 0; wi < p.get_weights().size(); wi++) {
@@ -152,7 +152,7 @@ void EnsembleGenerator::rescore(Ensemble& ensemble,
   // sort
   Ensemble sorted_ensemble;
   sorted_ensemble.reserve(print_num);
-  std::multimap<float, unsigned int>::iterator it, end_it = scores.end();
+  std::multimap<double, unsigned int>::iterator it, end_it = scores.end();
   for(it = scores.begin(); it != end_it; it++) {
     //std::cerr << "score = " << it->first << std::endl;
     sorted_ensemble.push_back(ensemble[it->second]);
@@ -165,25 +165,26 @@ void EnsembleGenerator::rescore(Ensemble& ensemble,
 }
 
 void EnsembleGenerator::output(Ensemble& ensemble,
-       const std::vector<std::vector<IMP::saxs::WeightedFitParameters> >& fps) const {
+       const Vector<Vector<saxs::WeightedFitParameters> >& fps) const {
 
   if(ensemble.size() == 0) return;
 
   // calculate z-score
-  std::vector<double> scores(ensemble.size());
+  Vector<double> scores(ensemble.size());
   for(unsigned int i=0; i<ensemble.size(); i++) scores[i] = ensemble[i].get_score();
   std::pair<double, double> average_and_std = get_average_and_stdev(scores);
   for(unsigned int i=0; i<ensemble.size(); i++) {
-    double zscore = (ensemble[i].get_score()-average_and_std.first)/average_and_std.second;
+    double zscore = (ensemble[i].get_score()-average_and_std.first) /
+      average_and_std.second;
     ensemble[i].set_zscore(zscore);
   }
 
   // calculate frequency of each state
-  std::vector<double> state_prob;
+  Vector<double> state_prob;
   get_state_probabilities(ensemble, state_prob);
 
   // calculate weights average and variance
-  std::vector<std::vector<double> > weights_average(scorers_.size()),
+  Vector<Vector<double> > weights_average(scorers_.size()),
     weights_variance(scorers_.size());
   for(unsigned int i=0; i<scorers_.size(); i++) {
     get_weights_average_and_std(ensemble, fps[i], weights_average[i],
@@ -195,7 +196,8 @@ void EnsembleGenerator::output(Ensemble& ensemble,
   std::string out_file_name = "ensembles_size_" +
     std::string(boost::lexical_cast<std::string>(number_of_states)) + ".txt";
   std::ofstream s(out_file_name.c_str());
-  std::cout << "multi_state_model_size " << ensemble.size () << " number_of_states " << number_of_states << std::endl;
+  std::cout << "multi_state_model_size " << ensemble.size ()
+            << " number_of_states " << number_of_states << std::endl;
 
   for(unsigned int i=0; i<ensemble.size(); i++) {
     // output ensemble scores
@@ -205,7 +207,7 @@ void EnsembleGenerator::output(Ensemble& ensemble,
 
     // output scores for each scorer
     for(unsigned int j=0; j<scorers_.size(); j++) {
-      const IMP::saxs::WeightedFitParameters& p = fps[j][i];
+      const saxs::WeightedFitParameters& p = fps[j][i];
       s << " | x" << std::string(boost::lexical_cast<std::string>(j+1))
         //scorers_[j]->get_dataset_name() << ": "
         << " " << std::setprecision(2) << p.get_chi()
@@ -214,13 +216,13 @@ void EnsembleGenerator::output(Ensemble& ensemble,
     s << std::endl;
 
     // output states and their probabilities
-    const std::vector<unsigned int>& states = ensemble[i].get_states();
+    const Vector<unsigned int>& states = ensemble[i].get_states();
     for(unsigned int k=0; k<states.size(); k++) {
       s << std::setw(5) << states[k];
 
       // output weights
       for(unsigned int j=0; j<scorers_.size(); j++) {
-        const IMP::saxs::WeightedFitParameters& p = fps[j][i];
+        const saxs::WeightedFitParameters& p = fps[j][i];
         if(p.get_weights().size() > k) {
           s << std::setw(5) << std::setprecision(3) << " | "
             << p.get_weights()[k] << " ("
@@ -253,7 +255,7 @@ void EnsembleGenerator::add_one_state(const Ensemble& init_ensemble,
                                       Ensemble& new_ensemble) {
 
   std::priority_queue<boost::tuple<double, int, int>,
-                      std::vector<boost::tuple<double, int, int> >,
+                      Vector<boost::tuple<double, int, int> >,
                       Comparator> bestK;
 
   // iterate over all init MultiStateModels and try to add a new state to each
@@ -303,15 +305,15 @@ void EnsembleGenerator::add_one_state(const Ensemble& init_ensemble,
 }
 
 void EnsembleGenerator::get_state_probabilities(const Ensemble& ensemble,
-                                         std::vector<double>& state_prob) const {
+                                         Vector<double>& state_prob) const {
 
-  std::vector<unsigned int> states_counters(N_, 0);
+  Vector<unsigned int> states_counters(N_, 0);
   unsigned int total_state_num = 0;
 
   // count the number of occurences of each state in MultiStateModels
   // in the entire Ensemble (states_counters)
   for(unsigned int i=0; i<ensemble.size(); i++) {
-    const std::vector<unsigned int>& states = ensemble[i].get_states();
+    const Vector<unsigned int>& states = ensemble[i].get_states();
     for(unsigned int k=0; k<states.size(); k++) {
       states_counters[states[k]]++;
       total_state_num++;
@@ -335,18 +337,18 @@ void EnsembleGenerator::get_state_probabilities(const Ensemble& ensemble,
 }
 
 void EnsembleGenerator::get_weights_average_and_std(const Ensemble& ensemble,
-                    const std::vector<IMP::saxs::WeightedFitParameters>& fps,
-                    std::vector<double>& weights_average,
-                    std::vector<double>& weights_variance) const {
+                    const Vector<saxs::WeightedFitParameters>& fps,
+                    Vector<double>& weights_average,
+                    Vector<double>& weights_variance) const {
 
-  std::vector<unsigned int> states_counters(N_, 0);
-  std::vector<std::vector<double> > states_weights(N_);
+  Vector<unsigned int> states_counters(N_, 0);
+  Vector<Vector<double> > states_weights(N_);
 
   // count the number of occurences of each state in MultiStateModels
   // (states_counters) and store the weights (states_weights)
   for(unsigned int i=0; i<ensemble.size(); i++) {
-    const std::vector<unsigned int>& states = ensemble[i].get_states();
-    const std::vector<double>& weights = fps[i].get_weights();
+    const Vector<unsigned int>& states = ensemble[i].get_states();
+    const Vector<double>& weights = fps[i].get_weights();
     for(unsigned int k=0; k<states.size(); k++) {
       states_counters[states[k]]++;
       states_weights[states[k]].push_back(weights[k]);

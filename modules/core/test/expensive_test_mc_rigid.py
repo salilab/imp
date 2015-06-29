@@ -8,27 +8,27 @@ class MCOptimizerTest(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        # IMP.base.set_log_level(IMP.base.TERSE)
-        self.m = IMP.kernel.Model()
+        # IMP.set_log_level(IMP.TERSE)
+        self.m = IMP.Model()
         # read molecules
-        self.m1 = IMP.kernel._create_particles_from_pdb(
+        self.m1 = IMP._create_particles_from_pdb(
             self.get_input_file_name("1z5s_A.pdb"),
             self.m)
-        self.m2 = IMP.kernel._create_particles_from_pdb(
+        self.m2 = IMP._create_particles_from_pdb(
             self.get_input_file_name("1z5s_C.pdb"),
             self.m)
         # create rigid bodies
         self.rb0 = IMP.core.RigidBody.setup_particle(
-            IMP.kernel.Particle(self.m), self.m1)
+            IMP.Particle(self.m), self.m1)
         self.rb0.set_coordinates_are_optimized(True)
         self.rb1 = IMP.core.RigidBody.setup_particle(
-            IMP.kernel.Particle(self.m), self.m2)
+            IMP.Particle(self.m), self.m2)
         self.rb1.set_coordinates_are_optimized(True)
         # add restraints
         self.h = IMP.core.HarmonicUpperBound(0, 3.)
 
-        self.dr = IMP.core.DistanceRestraint(self.h, self.rb0, self.rb1)
-        self.m.add_restraint(self.dr)
+        self.dr = IMP.core.DistanceRestraint(self.m, self.h, self.rb0, self.rb1)
+        self.sf = IMP.core.RestraintsScoringFunction([self.dr])
 
     def randomize(self, mh):
         point1 = IMP.algebra.get_random_vector_in(
@@ -54,13 +54,15 @@ class MCOptimizerTest(IMP.test.TestCase):
             self.randomize(self.rb1)
             print(IMP.core.XYZ(self.rb0).get_coordinates())
             print(IMP.core.XYZ(self.rb1).get_coordinates())
-            score = self.m.evaluate(False)
+            score = self.sf.evaluate(False)
             print(score)
             if score > 0:
                 break
         # optimize
         lopt = IMP.core.ConjugateGradients(self.m)
         opt = IMP.core.MonteCarloWithLocalOptimization(lopt, 100)
+        opt.set_scoring_function(self.sf)
+        lopt.set_scoring_function(self.sf)
         mover1 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.rb0), 5., 15.)
         opt.add_mover(mover1)
         mover2 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.rb1), 5., 15.)
@@ -69,7 +71,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         for i in range(0, 5):
             print("run", i)
             opt.optimize(20)
-            e = self.m.evaluate(False)
+            e = self.sf.evaluate(False)
             if e < .001:
                 break
         self.assertAlmostEqual(e, 0.0, places=2)

@@ -13,7 +13,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/kinematics/Joint.h>
 
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -29,7 +29,7 @@ class KinematicForest;
 class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody {
   friend class KinematicForest;
 
-  static void do_setup_particle(kernel::Model* m, kernel::ParticleIndex p,
+  static void do_setup_particle(Model* m, ParticleIndex p,
                                 KinematicForest* owner,
                                 Joint* in_joint = nullptr,
                                 Joints out_joints = Joints());
@@ -46,7 +46,7 @@ class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody {
      @brief Return true if the particle is a kinematic node (has the
      appropriate properties).
   */
-  inline static bool get_is_setup(kernel::Model* m, kernel::ParticleIndex pi);
+  inline static bool get_is_setup(Model* m, ParticleIndex pi);
 
  private:
   //! returns the kinematic forest associated with this node
@@ -82,7 +82,7 @@ class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody {
 
 /************** inlines ***********/
 
-bool KinematicNode::get_is_setup(kernel::Model* m, kernel::ParticleIndex pi) {
+bool KinematicNode::get_is_setup(Model* m, ParticleIndex pi) {
   return m->get_has_attribute(get_owner_key(), pi);
 }
 
@@ -92,7 +92,7 @@ Joint* KinematicNode::get_in_joint() {
                                       get_particle_index())) {
     return nullptr;
   }
-  base::Object* obj =
+  Object* obj =
       get_model()->get_attribute(get_in_joint_key(), get_particle_index());
   return static_cast<Joint*>(obj);
 }
@@ -105,10 +105,10 @@ JointsTemp KinematicNode::get_out_joints() {
                                       get_particle_index())) {
     return joints;
   }
-  base::Objects objs =
+  Objects objs =
       get_model()->get_attribute(get_out_joints_key(), get_particle_index());
   for (unsigned int i = 0; i < objs.size(); i++) {
-    base::Object* o = objs[i];
+    Object* o = objs[i];
     Joint* j = static_cast<Joint*>(o);
     joints.push_back(j);
   }

@@ -9,11 +9,11 @@
 #define IMPDISPLAY_COLOR_H
 
 #include <IMP/display/display_config.h>
-#include <IMP/base/Value.h>
-#include <IMP/base/showable_macros.h>
-#include <IMP/base/comparison_macros.h>
-#include <IMP/base/check_macros.h>
-#include <IMP/base/value_macros.h>
+#include <IMP/Value.h>
+#include <IMP/showable_macros.h>
+#include <IMP/comparison_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/value_macros.h>
 #include <boost/array.hpp>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -21,7 +21,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 //! Represent an RGB color
 /**
  */
-class IMPDISPLAYEXPORT Color : public base::Value {
+class IMPDISPLAYEXPORT Color : public Value {
   boost::array<double, 3> c_;
   int compare(double a, double b) const {
     if (a < b)

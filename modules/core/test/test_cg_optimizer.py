@@ -3,12 +3,12 @@ import IMP.test
 import IMP.core
 
 
-class WoodsFunc(IMP.kernel.Restraint):
+class WoodsFunc(IMP.Restraint):
 
     """Woods function for four input values, defined as an IMP restraint"""
 
     def __init__(self, model, particles):
-        IMP.kernel.Restraint.__init__(self, model, "WoodsFunc %1%")
+        IMP.Restraint.__init__(self, model, "WoodsFunc %1%")
         self.particles = particles
         self.index = IMP.FloatKey("x")
 
@@ -19,7 +19,9 @@ class WoodsFunc(IMP.kernel.Restraint):
         return IMP.VersionInfo("Daniel Russel", "0.5")
 
     def unprotected_evaluate(self, accum):
-        (x1, x2, x3, x4) = [p.get_value(self.index) for p in self.particles]
+        m = self.get_model()
+        (x1, x2, x3, x4) = [m.get_attribute(self.index, p)
+                            for p in self.particles]
         a = x2 - x1 * x1
         b = x4 - x3 * x3
         e = 100.0 * a * a + (1.0 - x1) ** 2 + 90.0 * b * b + (1.0 - x3) ** 2 \
@@ -31,13 +33,14 @@ class WoodsFunc(IMP.kernel.Restraint):
                   -2.0 * (180.0 * x3 * b + 1.0 - x3),
                   2.0 * (90.0 * b + 10.1 * (x4 - 1.0) + 9.9 * (x2 - 1.0))]
             for (p, d) in zip(self.particles, dx):
-                p.add_to_derivative(self.index, d, accum)
+                m.add_to_derivative(self.index, p, d, accum)
             # for (i, d) in zip(self.indices, dx):
             #    accum.add_to_deriv(i, d)
         return e
 
     def do_get_inputs(self):
-        return [x for x in self.get_model().get_particles()]
+        m = self.get_model()
+        return IMP.get_particles(m, self.particles)
 
 
 class Tests(IMP.test.TestCase):
@@ -49,20 +52,22 @@ class Tests(IMP.test.TestCase):
 
     def _test_starting_conditions(self, starting_values):
         """Test the optimizer with given starting conditions"""
-        model = IMP.kernel.Model()
+        model = IMP.Model()
         particles = []
+        xkey = IMP.FloatKey("x")
 
         for value in starting_values:
-            p = IMP.kernel.Particle(model)
+            p = model.add_particle("p")
             particles.append(p)
-            p.add_attribute(IMP.FloatKey("x"), value, True)
+            model.add_attribute(xkey, p, value)
+            model.set_is_optimized(xkey, p, True)
         rsr = WoodsFunc(model, particles)
-        model.add_restraint(rsr)
         opt = IMP.core.ConjugateGradients(model)
+        opt.set_scoring_function([rsr])
         opt.set_threshold(1e-5)
         e = opt.optimize(100)
         for p in particles:
-            val = p.get_value(IMP.FloatKey("x"))
+            val = model.get_attribute(xkey, p)
             self.assertAlmostEqual(val, 1.0, places=1)
         self.assertAlmostEqual(e, 0.0, places=2)
 

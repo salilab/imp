@@ -9,14 +9,14 @@
 #ifndef IMPCORE_GAUSSIAN_H
 #define IMPCORE_GAUSSIAN_H
 
-#include <IMP/base/Object.h>
+#include <IMP/Object.h>
 #include <IMP/core/core_config.h>
 #include <IMP/algebra/Gaussian3D.h>
-#include <IMP/kernel/Particle.h>
-#include <IMP/kernel/Model.h>
+#include <IMP/Particle.h>
+#include <IMP/Model.h>
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
-#include <IMP/base/exception.h>
+#include <IMP/exception.h>
 #include <IMP/core/rigid_bodies.h>
 #include "internal/rigid_bodies.h"
 #include <IMP/algebra/eigen3/Eigen/Dense>
@@ -26,7 +26,7 @@ IMPCORE_BEGIN_NAMESPACE
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 
 /** little class to store an Eigen::Matrix3d */
-class IMPCOREEXPORT Matrix3D : public IMP::base::Object{
+class IMPCOREEXPORT Matrix3D : public IMP::Object{
   IMP_Eigen::Matrix3d mat_;
  public:
  Matrix3D(IMP_Eigen::Matrix3d mat,
@@ -39,8 +39,8 @@ class IMPCOREEXPORT Matrix3D : public IMP::base::Object{
 /** A decorator for a particle storing a Gaussian. */
 class IMPCOREEXPORT Gaussian : public RigidBody {
   // define variance and covariance keys
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi);
-  static void do_setup_particle(kernel::Model *m, kernel::ParticleIndex pi,
+  static void do_setup_particle(Model *m, ParticleIndex pi);
+  static void do_setup_particle(Model *m, ParticleIndex pi,
                                 const algebra::Gaussian3D &g);
 
  public:
@@ -50,7 +50,7 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
 
   static ObjectKey get_local_covariance_key();
   static ObjectKey get_global_covariance_key();
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex pi) {
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_local_covariance_key(), pi);
   }
 
@@ -124,7 +124,7 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   ////! Evaluate the Gaussian at a point?
   //Float get_probability_at_point(const algebra::Vector3D &point) const;
 };
-IMP_DECORATORS(Gaussian, Gaussians, kernel::Particles);
+IMP_DECORATORS(Gaussian, Gaussians, Particles);
 
 IMPCORE_END_NAMESPACE
 

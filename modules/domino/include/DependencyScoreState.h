@@ -22,17 +22,17 @@ IMPDOMINO_BEGIN_NAMESPACE
     and be replaced by adding dependencies to the SubsetFilterTable.
  */
 class IMPDOMINOEXPORT DependencyScoreState : public ScoreState {
-  kernel::ParticlesTemp inputp_, outputp_;
+  ParticlesTemp inputp_, outputp_;
   ContainersTemp inputc_, outputc_;
 
  public:
   DependencyScoreState(Model *m);
-  void set_input_particles(const kernel::ParticlesTemp &pt) {
+  void set_input_particles(const ParticlesTemp &pt) {
     IMP_USAGE_CHECK(!get_model(),
                     "Must set dependencies before adding to model.");
     inputp_ = pt;
   }
-  void set_output_particles(const kernel::ParticlesTemp &pt) {
+  void set_output_particles(const ParticlesTemp &pt) {
     IMP_USAGE_CHECK(!get_model(),
                     "Must set dependencies before adding to model.");
     outputp_ = pt;
@@ -51,8 +51,8 @@ class IMPDOMINOEXPORT DependencyScoreState : public ScoreState {
  protected:
   virtual void do_before_evaluate() IMP_OVERRIDE;
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DependencyScoreState);
   ;
 };

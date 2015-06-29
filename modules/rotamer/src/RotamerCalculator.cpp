@@ -11,8 +11,8 @@
 //#include <iostream>
 #include <boost/algorithm/string.hpp>
 #include <IMP/constants.h>
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Model.h>
+#include <IMP/Particle.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
@@ -122,7 +122,7 @@ double get_phi_angle(IMP::atom::Residue rd) {
 }
 
 RotamerCalculator::RotamerCalculator(const RotamerLibrary *rl)
-    : IMP::base::Object("RotamerCalculator%1%"), rl_(rl) {
+    : IMP::Object("RotamerCalculator%1%"), rl_(rl) {
   IMP_USAGE_CHECK(rl != 0, "RotamerLibrary must be non-null");
   for (int i = 0; i < NRes; ++i) {
     const AngleConfiguration &ac = angle_configurations[i];
@@ -243,11 +243,11 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
 
   // we need to create fake particles representing rotated atoms
   // (for get_dihedral)
-  IMP_NEW(IMP::kernel::Model, model, ());
-  IMP_NEW(IMP::kernel::Particle, p_a, (model));
-  IMP_NEW(IMP::kernel::Particle, p_b, (model));
-  IMP_NEW(IMP::kernel::Particle, p_c, (model));
-  IMP_NEW(IMP::kernel::Particle, p_d, (model));
+  IMP_NEW(IMP::Model, model, ());
+  IMP_NEW(IMP::Particle, p_a, (model));
+  IMP_NEW(IMP::Particle, p_b, (model));
+  IMP_NEW(IMP::Particle, p_c, (model));
+  IMP_NEW(IMP::Particle, p_d, (model));
   IMP::core::XYZ xyz_a = IMP::core::XYZ::setup_particle(p_a);
   IMP::core::XYZ xyz_b = IMP::core::XYZ::setup_particle(p_b);
   IMP::core::XYZ xyz_c = IMP::core::XYZ::setup_particle(p_c);
@@ -466,7 +466,7 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
               IMP::atom::Atom at_ln = at_l[n].get_as_atom();
               if (!is_backbone(at_ln.get_atom_type().get_index())) continue;
               E_bb[i][j] += score->evaluate_index(
-                  protein->get_model(), IMP::kernel::ParticleIndexPair(
+                  protein->get_model(), IMP::ParticleIndexPair(
                                             at_ik.get_particle()->get_index(),
                                             at_ln.get_particle()->get_index()),
                   nullptr);
@@ -518,7 +518,7 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
                   if (is_backbone(at_ln.get_atom_type().get_index())) continue;
                   E_SC += score->evaluate_index(
                       protein->get_model(),
-                      IMP::kernel::ParticleIndexPair(
+                      IMP::ParticleIndexPair(
                           at_ik.get_particle()->get_index(),
                           at_ln.get_particle()->get_index()),
                       nullptr);

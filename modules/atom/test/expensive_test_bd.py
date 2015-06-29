@@ -13,7 +13,7 @@ except:
 
 import math
 nreps = 1000
-if IMP.base.get_check_level() == IMP.base.USAGE_AND_INTERNAL:
+if IMP.get_check_level() == IMP.USAGE_AND_INTERNAL:
     nreps = nreps / 100
 nsteps = 500
 timestep = 1000
@@ -41,15 +41,15 @@ else:
 class Tests(IMP.test.TestCase):
 
     def _setup(self):
-        m = IMP.kernel.Model()
-        IMP.base.set_log_level(IMP.base.SILENT)
-        p = IMP.kernel.Particle(m)
+        m = IMP.Model()
+        IMP.set_log_level(IMP.SILENT)
+        p = IMP.Particle(m)
         xyzr = IMP.core.XYZR.setup_particle(p)
         xyzr.set_coordinates(IMP.algebra.Vector3D(0, 0, 0))
         xyzr.set_radius(1)
         d = IMP.atom.Diffusion.setup_particle(p)
         d.set_diffusion_coefficient(D)
-        IMP.base.set_check_level(IMP.base.NONE)
+        IMP.set_check_level(IMP.NONE)
         bd = IMP.atom.BrownianDynamics(m)
         bd.set_maximum_time_step(float(timestep))
         bd.set_temperature(temperature)
@@ -189,6 +189,8 @@ class Tests(IMP.test.TestCase):
         (m, xyzr, d, bd) = self._setup()
         sigma = self._get_sigma_1_free()
         print("free sigma is", sigma)
+        r = IMP.RestraintSet(m) # "Empty" restraint
+        bd.set_scoring_function([r])
         (mn, std, nreps) = self._measure(m, xyzr, bd)
         print(mn, std)
         self._check(
@@ -214,7 +216,7 @@ class Tests(IMP.test.TestCase):
         dss = IMP.core.AttributeSingletonScore(
             h, IMP.core.XYZ.get_xyz_keys()[0])
         r = IMP.core.SingletonRestraint(dss, xyzr)
-        m.add_restraint(r)
+        bd.set_scoring_function([r])
         sigma = self._get_sigma_1_free()
         mn, std, nreps = self._measure(m, xyzr, bd)
         self._check(
@@ -236,7 +238,7 @@ class Tests(IMP.test.TestCase):
         dss = IMP.core.AttributeSingletonScore(
             h, IMP.core.XYZ.get_xyz_keys()[0])
         r = IMP.core.SingletonRestraint(dss, xyzr)
-        m.add_restraint(r)
+        bd.set_scoring_function([r])
         mn, std, nreps = self._measure(m, xyzr, bd)
         print("Mean / std / sigma / sigmaf / sigmass")
         print(mn)

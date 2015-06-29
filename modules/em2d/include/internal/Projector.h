@@ -15,14 +15,14 @@
 #include "Projection.h"
 #include "ProjectionSphere.h"
 
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
 class IMPEM2DEXPORT Projector {
 public:
-  Projector(const kernel::Particles& particles,
+  Projector(const Particles& particles,
             unsigned int projection_number,
             double pixel_size,
             double resolution);
@@ -40,7 +40,7 @@ private:
   int estimate_image_size(const IMP::algebra::Vector3Ds& points) const;
 
 private:
-  kernel::Particles particles_;
+  Particles particles_;
   unsigned int projection_number_;
   double pixel_size_;
   double resolution_;

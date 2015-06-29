@@ -7,7 +7,7 @@ class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         # Initial values and names of files
         self.fn_in = self.get_input_file_name('1tdx_sampled.mrc')
         self.resolution = 6.0
@@ -18,7 +18,7 @@ class Tests(IMP.test.TestCase):
         self.EM_map = IMP.em.read_map(self.fn_in, self.mrc_rw)
         self.EM_map.std_normalize()
         self.EM_map.get_header_writable().compute_xyz_top()
-        self.mdl = IMP.kernel.Model()
+        self.mdl = IMP.Model()
         mh = IMP.atom.read_pdb(
             self.fn_coords,
             self.mdl,

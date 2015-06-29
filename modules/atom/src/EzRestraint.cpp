@@ -9,7 +9,7 @@
 #include <IMP/atom/EzRestraint.h>
 #include <numeric>
 #include <IMP/core/XYZ.h>
-#include <IMP/kernel/Particle.h>
+#include <IMP/Particle.h>
 #include <IMP/atom/internal/Sigmoid.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Atom.h>
@@ -22,12 +22,24 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-EzRestraint::EzRestraint(kernel::Particles ps)
-    : kernel::Restraint(ps[0]->get_model(), "Ez Potential") {
-  ps_ = ps;
+EzRestraint::EzRestraint(Model *m, ParticleIndexesAdaptor ps)
+    : Restraint(m, "Ez Potential"), ps_(ps) {
+  setup();
+}
+
+EzRestraint::EzRestraint(Particles ps)
+    : Restraint(ps[0]->get_model(), "Ez Potential") {
+  IMPATOM_DEPRECATED_METHOD_DEF(2.5,
+                                "Use the index-based constructor instead.");
+  ps_ = IMP::internal::get_index(ps);
+  setup();
+}
+
+void EzRestraint::setup() {
+  Model *m = get_model();
   for (unsigned i = 0; i < ps_.size(); ++i) {
     // get residue type
-    std::string restype = atom::Residue(atom::Atom(ps[i]).get_parent())
+    std::string restype = atom::Residue(atom::Atom(m, ps_[i]).get_parent())
                               .get_residue_type()
                               .get_string();
     // get parameters from residue type
@@ -35,9 +47,11 @@ EzRestraint::EzRestraint(kernel::Particles ps)
     // create Sigmoid of Gaussian
     if (restype != "TYR" && restype != "TRP") {
       IMP_NEW(atom::internal::Sigmoid, ptr, (param[0], param[1], param[2]));
+      ptr->set_was_used(true);
       ufs_.push_back(ptr);
     } else {
       IMP_NEW(atom::internal::Gaussian, ptr, (param[0], param[1], param[2]));
+      ptr->set_was_used(true);
       ufs_.push_back(ptr);
     }
   }
@@ -129,6 +143,7 @@ Floats EzRestraint::get_parameters(std::string restype) {
 
 double EzRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_UNUSED(da);
+  Model *m = get_model();
   // check if derivatives are requested
   IMP_USAGE_CHECK(!da, "Derivatives not available");
 
@@ -141,16 +156,14 @@ double EzRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
     //    score += score_der.first;
     //    core::XYZ(ps_[i]).add_to_derivative(2,score_der.second,*da);
     //   }else{
-    score += ufs_[i]->evaluate(fabs(core::XYZ(ps_[i]).get_coordinate(2)));
+    score += ufs_[i]->evaluate(fabs(core::XYZ(m, ps_[i]).get_coordinate(2)));
     //   }
   }
   return score;
 }
 
 ModelObjectsTemp EzRestraint::do_get_inputs() const {
-  kernel::ParticlesTemp ret;
-  ret.insert(ret.end(), ps_.begin(), ps_.end());
-  return ret;
+  return IMP::get_particles(get_model(), ps_);
 }
 
 IMPATOM_END_NAMESPACE

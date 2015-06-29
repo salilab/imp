@@ -147,7 +147,7 @@ Geometries SurfaceMeshGeometry::get_components() const {
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
 
 Geometries PlaneGeometry::get_components() const {
-  base::Vector<algebra::Vector3D> poly = cgal::internal::get_intersection(
+  Vector<algebra::Vector3D> poly = cgal::internal::get_intersection(
       plane_.get_normal(), plane_.get_distance_from_origin(), bb_);
   return Geometries(1, new PolygonGeometry(poly));
 }

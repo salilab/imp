@@ -178,12 +178,12 @@ double CoarseCC::cross_correlation_coefficient(const DensityMap *grid1,
     }
     algebra::BoundingBox3D merged_bb =
         get_bounding_box(grid1) + get_bounding_box(grid2);
-    base::PointerMember<DensityMap> padded_grid1 =
+    PointerMember<DensityMap> padded_grid1 =
         create_density_map(merged_bb, grid1_header->get_spacing());
     padded_grid1->add(grid1);
     padded_grid1->get_header_writable()->set_resolution(
         grid1->get_header()->get_resolution());
-    base::PointerMember<DensityMap> padded_grid2 =
+    PointerMember<DensityMap> padded_grid2 =
         create_density_map(merged_bb, grid2_header->get_spacing());
     padded_grid2->add(grid2);
     padded_grid2->get_header_writable()->set_resolution(
@@ -303,7 +303,7 @@ float CoarseCC::local_cross_correlation_coefficient(
 
 algebra::Vector3Ds CoarseCC::calc_derivatives(const DensityMap *em_map,
                                               const DensityMap *model_map,
-                                              const kernel::Particles &model_ps,
+                                              const Particles &model_ps,
                                               const FloatKey &w_key,
                                               KernelParameters *kernel_params,
                                               const float &scalefac,

@@ -14,9 +14,9 @@
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/FFToperations.h"
 #include "IMP/em/ImageHeader.h"
-#include <IMP/base/Pointer.h>
-#include <IMP/base/Object.h>
-#include "IMP/base/Object.h"
+#include <IMP/Pointer.h>
+#include <IMP/Object.h>
+#include "IMP/Object.h"
 #include "IMP/base_types.h"
 #include <limits>
 #include <typeinfo>
@@ -24,7 +24,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! 2D Electron Microscopy images in IMP
-class IMPEM2DEXPORT Image : public IMP::base::Object {
+class IMPEM2DEXPORT Image : public IMP::Object {
  public:
   Image();
 
@@ -123,7 +123,7 @@ class IMPEM2DEXPORT Image : public IMP::base::Object {
    * @param reader The image reader to use
    */
   void read(String filename, const ImageReaderWriter *reader) {
-    base::Pointer<const ImageReaderWriter> ptr(reader);
+    Pointer<const ImageReaderWriter> ptr(reader);
     reader->read(filename, header_, data_);
   }
 

@@ -15,11 +15,11 @@ class Tests(IMP.test.TestCase):
     """Test molecular dynamics optimizer states"""
 
     def setup_particles(self, coords, copies=1):
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         ps = []
         for i in range(copies):
             for c in coords:
-                p = IMP.kernel.Particle(m)
+                p = IMP.Particle(m)
                 x = IMP.core.XYZ.setup_particle(p, c[0])
                 x.set_coordinates_are_optimized(True)
                 IMP.atom.Mass.setup_particle(p, 1.0)
@@ -87,6 +87,7 @@ class Tests(IMP.test.TestCase):
                 ps, 298.0, coupling)
             md = IMP.atom.MolecularDynamics(m)
             md.set_maximum_time_step(4.0)
+            md.set_scoring_function([])
             md.optimize(0)  # ick
             md.add_optimizer_state(scaler)
             ts = []
@@ -112,6 +113,7 @@ class Tests(IMP.test.TestCase):
         md = IMP.atom.MolecularDynamics(m)
         md.set_maximum_time_step(4.0)
         md.add_optimizer_state(scaler)
+        md.set_scoring_function([])
         md.optimize(0)
         ts = []
         for i in range(140):

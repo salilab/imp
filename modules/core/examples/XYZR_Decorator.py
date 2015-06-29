@@ -6,13 +6,16 @@
 import IMP
 import IMP.core
 import IMP.algebra
+import sys
 
-m = IMP.kernel.Model()
-p0 = IMP.kernel.Particle(m)
+IMP.setup_from_argv(sys.argv, "XYZR decorator example")
+
+m = IMP.Model()
+p0 = IMP.Particle(m)
 d0 = IMP.core.XYZR.setup_particle(
     p0, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0, 1, 2),
                              1.0))
-p1 = IMP.kernel.Particle(m)
+p1 = IMP.Particle(m)
 d1 = IMP.core.XYZR.setup_particle(p1)
 d1.set_coordinates(IMP.algebra.Vector3D(3, 4, 5))
 d1.set_radius(2.0)

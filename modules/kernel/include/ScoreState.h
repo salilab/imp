@@ -1,5 +1,5 @@
 /**
- *  \file IMP/kernel/ScoreState.h   \brief Shared score state.
+ *  \file IMP/ScoreState.h   \brief Shared score state.
  *
  *  Copyright 2007-2015 IMP Inventors. All rights reserved.
  *
@@ -8,15 +8,15 @@
 #ifndef IMPKERNEL_SCORE_STATE_H
 #define IMPKERNEL_SCORE_STATE_H
 
-#include <IMP/kernel/kernel_config.h>
-#include <IMP/base/WeakPointer.h>
+#include <IMP/kernel_config.h>
+#include <IMP/WeakPointer.h>
 #include "DerivativeAccumulator.h"
 #include "utility.h"
 #include "ModelObject.h"
 #include "base_types.h"
-#include <IMP/base/check_macros.h>
-#include <IMP/base/deprecation_macros.h>
-#include <IMP/base/ref_counted_macros.h>
+#include <IMP/check_macros.h>
+#include <IMP/deprecation_macros.h>
+#include <IMP/ref_counted_macros.h>
 #include <iostream>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -54,7 +54,7 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   int update_order_;
 
  public:
-  ScoreState(kernel::Model *m, std::string name);
+  ScoreState(Model *m, std::string name);
   //! Force update of the structure.
   void before_evaluate();
 

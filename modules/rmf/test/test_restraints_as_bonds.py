@@ -9,18 +9,18 @@ class Tests(IMP.test.TestCase):
 
     def test_perturbed(self):
         """Test writing a simple hierarchy"""
-        m = IMP.kernel.Model()
+        m = IMP.Model()
         h = IMP.atom.read_pdb(
             self.get_input_file_name("small_protein.pdb"),
             m)
         hs = IMP.atom.create_simplified_along_backbone(
             IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)[0], 1)
-        IMP.base.set_log_level(IMP.base.SILENT)
+        IMP.set_log_level(IMP.SILENT)
         fname = self.get_tmp_file_name("restraint_bonds.rmf3")
         fh = RMF.create_rmf_file(fname)
         IMP.rmf.add_hierarchy(fh, hs)
         leaves = IMP.atom.get_leaves(hs)
-        cpc = IMP.container.ConsecutivePairContainer(leaves)
+        cpc = IMP.container.ConsecutivePairContainer(m, leaves)
         br = IMP.container.PairsRestraint(
             IMP.core.HarmonicSphereDistancePairScore(0, 1), cpc)
         IMP.rmf.add_restraints_as_bonds(fh, [br])
