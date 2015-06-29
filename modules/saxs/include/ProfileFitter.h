@@ -262,7 +262,12 @@ void ProfileFitter<ScoringFunctionT>::write_SAXS_fit_file(
     out_file.setf(std::ios::left);
     out_file.width(15);
     out_file.precision(8);
-    out_file << model_profile->get_intensity(i) * c - offset << std::endl;
+    out_file << model_profile->get_intensity(i) * c - offset << " ";
+
+    out_file.setf(std::ios::left);
+    out_file.width(10);
+    out_file.precision(5);
+    out_file << exp_profile_->get_error(i)  << std::endl;
   }
   out_file.close();
 }
