@@ -34,6 +34,10 @@ class DensityRepresentationTest(IMP.test.TestCase):
         self.assertEqual(rep.get_representation(1,IMP.atom.DENSITIES),
                          g2.get_particle())
 
+        # should get correct representation type even with incorrect resolution
+        self.assertEqual(rep.get_representation(0,IMP.atom.DENSITIES),
+                         g2.get_particle())
+
 
     def test_self_density(self):
         """Test representing a particle with itself as the Gaussian"""
@@ -78,8 +82,8 @@ class DensityRepresentationTest(IMP.test.TestCase):
         self.assertEqual(rep.get_representation(10,IMP.atom.DENSITIES),
                          density_frag.get_particle())
 
-        # check selection
-        sel = IMP.atom.Selection(mh,residue_index=idxs[5],resolution=10,
+        # check selection - should work even without resolution
+        sel = IMP.atom.Selection(mh,residue_index=idxs[5],
                                  representation_type = IMP.atom.DENSITIES)
         self.assertEqual(sel.get_selected_particles(),
                          [h.get_particle() for h in density_frag.get_children()])
