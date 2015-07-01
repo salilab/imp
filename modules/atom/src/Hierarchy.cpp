@@ -267,6 +267,10 @@ struct Validator {
 }
 
 bool Hierarchy::get_is_valid(bool print_info) const {
+  //! Don't fail if we were default constructed
+  if (!IMP::Decorator::get_is_valid()) {
+    return false;
+  }
   try {
     IMP::core::visit_depth_first_with_data(*this, Validator(print_info), false);
   }
