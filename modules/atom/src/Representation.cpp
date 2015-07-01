@@ -71,30 +71,40 @@ double get_resolution_distance(double a, double b) {
 
 Hierarchy Representation::get_representation(double resolution,
                                              RepresentationType type) {
+  IMP_USAGE_CHECK(type == BALLS || type == DENSITIES, "No matching types found");
+
   double closest_resolution = get_model()->get_attribute(
-      get_base_resolution_key(), get_particle_index());
+     get_base_resolution_key(), get_particle_index());
   int closest_index = -1;
+  bool type_match_but_cant_beat_base_res = false;
   if (get_model()->get_has_attribute(get_types_key(), get_particle_index())) {
     Ints types =
         get_model()->get_attribute(get_types_key(), get_particle_index());
     IMP_LOG_VERBOSE("Found " << types.size() << " resolution levels"
                              << std::endl);
     for (unsigned int i = 0; i < types.size(); ++i) {
-      double cur_resolution = get_model()->get_attribute(get_resolution_key(i),
-                                                         get_particle_index());
-      if (get_resolution_distance(resolution, cur_resolution) <
-              get_resolution_distance(resolution, closest_resolution) &&
-          types[i] == type) {
-        closest_index = i;
-        closest_resolution = cur_resolution;
+      if (types[i]==type) {
+        double cur_resolution = get_model()->get_attribute(get_resolution_key(i),
+                                                           get_particle_index());
+
+        if (closest_index==-1 || get_resolution_distance(resolution, cur_resolution) <
+            get_resolution_distance(resolution, closest_resolution)) {
+          closest_index = i;
+          closest_resolution = cur_resolution;
+        }
+        else type_match_but_cant_beat_base_res = true;
       }
     }
   }
-  if (closest_index == -1) {
-    IMP_USAGE_CHECK(type == BALLS || type == DENSITIES, "No matching types found");
+  if (closest_index == -1 && type_match_but_cant_beat_base_res) {
     IMP_LOG_VERBOSE("Returning highest resolution children" << std::endl);
     return *this;
-  } else {
+  }
+  else if (closest_index == -1) {
+    IMP_LOG_VERBOSE("The requested representation type was not found" << std::endl);
+    return Hierarchy();
+  }
+  else {
     IMP_LOG_VERBOSE("Returning children with resolution " << closest_resolution
                                                           << std::endl);
     return Hierarchy(get_model(), get_model()->get_attribute(

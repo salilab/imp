@@ -25,12 +25,16 @@ class DensityRepresentationTest(IMP.test.TestCase):
         p1 = IMP.Particle(mdl)
         xyz1 = IMP.core.XYZ.setup_particle(p1, center)
 
-        # create Gaussian representation
-        g2 = bead2gaussian(center,rad,mdl)
+        # create representation
         rep = IMP.atom.Representation.setup_particle(p1,0)
-        rep.add_representation(g2.get_particle(),IMP.atom.DENSITIES,1)
 
-        # check get_representation
+        # check no density exists yet
+        ht = rep.get_representation(1,IMP.atom.DENSITIES)
+        #self.assertTrue(not rep.get_representation(1,IMP.atom.DENSITIES))
+
+        # create Gaussian representation and check again
+        g2 = bead2gaussian(center,rad,mdl)
+        rep.add_representation(g2.get_particle(),IMP.atom.DENSITIES,1)
         self.assertEqual(rep.get_representation(1,IMP.atom.DENSITIES),
                          g2.get_particle())
 
@@ -82,7 +86,7 @@ class DensityRepresentationTest(IMP.test.TestCase):
         self.assertEqual(rep.get_representation(10,IMP.atom.DENSITIES),
                          density_frag.get_particle())
 
-        # check selection - should work even without resolution
+        ## check selection - should work even without resolution
         sel = IMP.atom.Selection(mh,residue_index=idxs[5],
                                  representation_type = IMP.atom.DENSITIES)
         self.assertEqual(sel.get_selected_particles(),
