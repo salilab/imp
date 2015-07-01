@@ -33,17 +33,17 @@
 */
 #define IMP_RAII(Name, args, Initialize, Set, Reset, Show)                     \
   IMP_HELPER_MACRO_PUSH_WARNINGS Name() { Initialize; }                        \
-  /** explicit constructor that sets the properties of Name */                 \
+  //! Explicit constructor that sets the properties of Name                    \
   explicit Name args {                                                         \
     Initialize;                                                                \
     Set;                                                                       \
   }                                                                            \
-  /** sets the properties of the class to new ones */                          \
+  //! Set the properties of the class to new ones                              \
   void set args {                                                              \
     reset();                                                                   \
     Set;                                                                       \
   }                                                                            \
-  /** resets the properties previously set for this class */                   \
+  //! Reset the properties previously set for this class                       \
   void reset() { Reset; }                                                      \
   ~Name() { reset(); }                                                         \
   IMP_HELPER_MACRO_POP_WARNINGS IMP_SHOWABLE_INLINE(Name, out << #Name << '('; \
