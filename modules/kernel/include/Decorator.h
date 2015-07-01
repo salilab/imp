@@ -24,6 +24,7 @@
 IMPKERNEL_BEGIN_NAMESPACE
 class ParticleAdaptor;
 
+//! Interface to specialized Particle types (e.g. atoms)
 /**
 Representation of the structure in \imp is via a collection of
 Particle objects. However, since particles are general purpose, they
@@ -103,8 +104,9 @@ Implementors should consult IMP::example::ExampleDecorator,
 IMP_DECORATOR_METHODS(), IMP_DECORATOR_WITH_TRAITS_METHODS(),
 IMP_DECORATOR_GET().
 
-A decorator can be cast to a IMP::Particle* in C++. You have to
-use the Decorator::get_particle() function in Python.
+A decorator can be cast to a IMP::Particle* in C++. In Python Decorator objects
+can be used anywhere where Particle or ParticleIndex objects are expected
+(use the get_particle() method to get the Particle itself).
 
 \note It is undefined behavior to use a decorator constructed on
 a particle that is no longer part of a model. Since constructing
@@ -188,14 +190,13 @@ class IMPKERNELEXPORT Decorator : public Value {
   //! Returns the Model containing the particle.
   Model* get_model() const { return model_; }
 
-  /** Returns true if the decorator was constructued with a non-default
-      constructor.
-
+  //! Returns true if constructed with a non-default constructor.
+  /**
       @note It is guaranteed that this is a very fast method.
             However, this method might return false if the particle itself
             was invalidated after construction - use check_particle()
             in that case.
-  */
+   */
   bool get_is_valid() const { return is_valid_; }
 
   IMP_HASHABLE_INLINE(Decorator, return boost::hash_value(get_particle()););
@@ -206,8 +207,7 @@ class IMPKERNELEXPORT Decorator : public Value {
 };
 
 #ifndef IMP_DOXYGEN
-/** Check that the particle satisfies invariants registered by decorators.
- */
+//! Check that the particle satisfies invariants registered by decorators.
 IMPKERNELEXPORT void check_particle(Model *m, ParticleIndex pi);
 #endif
 
