@@ -23,10 +23,12 @@ class Tests(IMP.test.TestCase):
         IMP.core.XYZR.setup_particle(p, 1.0)
         IMP.atom.Mass.setup_particle(p, 1.0)
         self.assertTrue(h.get_is_valid())
+        self.assertTrue(h)
 
         # Default constructed Hierarchy is not valid
         nullh = IMP.atom.Hierarchy()
         self.assertFalse(nullh.get_is_valid())
+        self.assertFalse(nullh)
 
 if __name__ == '__main__':
     IMP.test.main()
