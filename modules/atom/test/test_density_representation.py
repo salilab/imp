@@ -30,7 +30,7 @@ class DensityRepresentationTest(IMP.test.TestCase):
 
         # check no density exists yet
         ht = rep.get_representation(1,IMP.atom.DENSITIES)
-        #self.assertTrue(not rep.get_representation(1,IMP.atom.DENSITIES))
+        self.assertTrue(not rep.get_representation(1,IMP.atom.DENSITIES))
 
         # create Gaussian representation and check again
         g2 = bead2gaussian(center,rad,mdl)
