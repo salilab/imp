@@ -272,7 +272,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
       true and things are invalid.
       \note Returning true only means that no problems were
       found; it can't check everything.*/
-  bool get_is_valid(bool print_info) const;
+  bool get_is_valid(bool print_info=false) const;
 
   //! Add a child and check that the types are appropriate
   /** A child must have a type that is listed before the parent in the
