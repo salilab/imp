@@ -3,9 +3,14 @@
 
 This manual covers the installation of the Integrative Modeling Platform (%IMP)
 software and its basic usage. It is targeted mainly at _users_, i.e. people
-that want to use existing %IMP functionality. Those that want to modify the
-%IMP source code to develop new methods (_developers_) may also want to refer
-to the [Reference Guide](../ref/).
+that want to use existing %IMP functionality. Later sections of this manual
+introduce more technical details to those that want to modify the
+%IMP source code to develop new methods (_developers_). The
+[Reference Guide](../ref/) may also be useful for such developers.
+
+Users that want to get started quickly with modeling a real biological
+complex might want to skip ahead to
+[Modeling of complexes using IMP::pmi](@ref rnapolii_stalk).
 
 \note This documentation is for version IMPVERSION of %IMP. For documentation for other versions, please see the [documentation page at the IMP website](http://integrativemodeling.org/doc.html).
 
