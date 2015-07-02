@@ -42,7 +42,7 @@ class MonteCarlo(object):
     except ImportError:
         isd_available = False
 
-    def __init__(self, m, objects, temp, filterbyname=None,dof=None):
+    def __init__(self, m, objects=None, temp=1.0, filterbyname=None,dof=None):
         """Setup Monte Carlo sampling
         @param m             The IMP Model
         @param objects       Sample Objects. Alternatively pass the degrees of freedom object
@@ -70,9 +70,10 @@ class MonteCarlo(object):
         self.label = "None"
         self.m = m
 
-        if dof is not None:
+        if dof is not None and objects is None:
             self.mvs = dof.get_all_movers()
-
+        elif dof is not None and objects is not None:
+            raise Exception("Cannot pass DOF and MC objects")
         else:
             for ob in objects:
                 try:

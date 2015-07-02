@@ -10,6 +10,7 @@ import IMP.pmi
 import IMP.pmi.topology
 import IMP.pmi.samplers
 import IMP.pmi.tools
+
 import itertools
 
 class DegreesOfFreedom(object):
@@ -31,6 +32,8 @@ class DegreesOfFreedom(object):
         @param max_trans     Maximum rigid body translation
         @param max_rot       Maximum rigid body rotation
         @param name          Rigid body name (if None, use IMP default)
+        \note if you pass a PMI::Molecule, Residue, or list/set of them,
+              will automatically get all representations and resolutions
         """
         hs = IMP.pmi.tools.get_hierarchies_from_spec(hspec)
         setup_rb = SetupRigidBody(hs,max_trans,max_rot,name)
@@ -52,8 +55,15 @@ class DegreesOfFreedom(object):
         @param chain_min_length  Create a CHAIN of super rigid bodies - must provide list
                                  This parameter is the minimum chain length.
         @param chain_max_length  max chain length
+        \note if you pass a PMI::Molecule, Residue, or list/set of them,
+              will automatically get all representations and resolutions
         """
-        hiers = IMP.pmi.tools.get_hierarchies_from_spec(hspec)
+        if chain_min_length is None and chain_max_length is None:
+            hiers = [IMP.pmi.tools.get_hierarchies_from_spec(hspec)]
+        else:
+            if not hasattr(hspec,'__iter__'):
+                raise Exception("You tried to make a chain without a list!")
+            hiers = [IMP.pmi.tools.get_hierarchies_from_spec(h) for h in hspec]
         setup_srb = SetupSuperRigidBody(hiers,max_trans,max_rot,chain_min_length,chain_max_length)
         self.movers.append(setup_srb)
         return setup_srb
@@ -81,6 +91,7 @@ class DegreesOfFreedom(object):
         all_movers = []
         for m in self.movers:
             all_movers+=m.get_movers()
+        return all_movers
 
 class SetupRigidBody(object):
     """Sets up and stores RigidBodyMover and BallMovers for NonRigidMembers"""
@@ -119,6 +130,7 @@ class SetupDiscreteRigidBody(SetupRigidBody):
 
 class SetupSuperRigidBody(object):
     def __init__(self,hiers,max_trans,max_rot,chain_min_length,chain_max_length):
+        """Expecting a list of lists of hiers"""
         self.movers = []
         if chain_min_length is None and chain_max_length is None:
             self._setup_srb(hiers,max_trans,max_rot)
@@ -129,12 +141,22 @@ class SetupSuperRigidBody(object):
             raise Exception("DegreesOfFreedom: SetupSuperRigidBody: if you want chain, specify min AND max")
 
     def _setup_srb(self,hiers,max_trans,max_rot):
-        srbm = IMP.pmi.TransformMover(hiers[0].get_model(), max_trans, max_rot)
+        srbm = IMP.pmi.TransformMover(hiers[0][0].get_model(), max_trans, max_rot)
+        super_rigid_xyzs = set()
+        super_rigid_rbs = set()
+
         for p in IMP.pmi.tools.get_all_leaves(hiers):
-            if IMP.core.RigidMember.get_is_setup(p) or IMP.core.NonRigidMember.get_is_setup(p):
-                srbm.add_rigid_body_particle(p)
+            if IMP.core.RigidMember.get_is_setup(p):
+                super_rigid_rbs.add(IMP.core.RigidMember(p).get_rigid_body())
+            elif IMP.core.NonRigidMember.get_is_setup(p):
+                super_rigid_rbs.add(IMP.core.NonRigidMember(p).get_rigid_body())
             else:
-                srbm.add_xyz_particle(p)
+                super_rigid_xyzs.add(p)
+
+        for xyz in super_rigid_xyzs:
+            srbm.add_xyz_particle(xyz)
+        for rb in super_rigid_rbs:
+            srbm.add_rigid_body_particle(rb)
         self.movers.append(srbm)
 
     def get_movers(self):

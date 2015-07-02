@@ -1305,8 +1305,6 @@ beta  : [ [ ['A',1,3] , ['A',100,102] ] , ...] one sheet: A:1-3 & A:100-102
 loop  : same format as helix, it's the contiguous loops
 '''
 
-    from collections import defaultdict
-
     # setup
     sses = {'helix': [],
             'beta': [],
@@ -1325,7 +1323,7 @@ loop  : same format as helix, it's the contiguous loops
     # read file and parse
     start = False
     # temporary beta dictionary indexed by DSSP's ID
-    beta_dict = defaultdict(list)
+    beta_dict = collections.defaultdict(list)
     prev_sstype = None
     cur_sse = []
     prev_beta_id = None
@@ -1483,36 +1481,56 @@ class OrderedSet(collections.MutableSet):
 # -------------- PMI2 Tools --------------- #
 
 def get_hierarchies_from_spec(spec):
-    """ Given PMI Molecule/Residue or IMP object or a list of them, return IMP hierarchies """
-    def get_h(s):
-        if type(s) is IMP.atom.Selection:
-            hs = [IMP.atom.Hierarchy(p) for p in s.get_selected_particles()]
-        elif type(s) is IMP.atom.Hierarchy:
-            hs = [s]
-        elif type(s) is IMP.pmi.topology.Molecule:
-            hs = [s.get_hierarchy()]
-        elif type(s) is IMP.pmi.topology._Residue:
-            hs = [s.get_hierarchy()]
-        else:
-            raise Exception("Cannot process type "+str(type(s)))
-        return hs
+    """ Given PMI Molecule/Residue or IMP object or a list of (one type) of them, return IMP hierarchies.
+    @param spec Can be one of the following inputs:
+                              IMP Selection, Hierarchy,
+                              PMI Molecule, Residue, or a list/set
+    /note if passed PMI objects like Molecules or Residues, will return ALL resolutions!
+    """
 
+    # check for consistent type, make into list
     if hasattr(spec,'__iter__'):
-        hhs = list(itertools.chain.from_iterable(get_h(item) for item in spec))
+        type_set = set(type(a) for a in spec)
+        if len(type_set)!=1:
+            raise Exception('get_hierarchies_from_spec: can only pass one type of object at a time')
+        tp = type_set.pop()
+        spec = list(spec)
     else:
-        hhs = get_h(spec)
-    return hhs
+        tp = type(spec)
+        spec = [spec]
+
+    ret = []
+
+    # if PMI object, get all resolutions. otherwise just return the hiers
+    if tp==IMP.pmi.topology.Residue:
+        mol_map = collections.defaultdict(list)
+        for res in spec:
+            mol = res.get_molecule()
+            mol_map[mol].append(res.get_index())
+        for mol in mol_map:
+            ret += [IMP.atom.Hierarchy(p) for p in mol.get_particles_at_all_resolutions(mol_map[mol])]
+    elif tp==IMP.pmi.topology.Molecule:
+        for mol in spec:
+            ret += [IMP.atom.Hierarchy(p) for p in mol.get_particles_at_all_resolutions()]
+    elif tp==IMP.atom.Selection:
+        for sel in spec:
+            ret += [IMP.atom.Hierarchy(p) for p in sel.get_selected_particles()]
+    elif tp==IMP.atom.Hierarchy:
+        ret = spec
+    else:
+        raise Exception('get_hierarchies_from_spec: passed an unknown object')
+    return ret
 
 def get_all_leaves(list_of_hs):
     """ Just get the leaves from a list of hierarchies """
     lvs = list(itertools.chain.from_iterable(IMP.atom.get_leaves(item) for item in list_of_hs))
     return lvs
 
+
 def select_at_all_resolutions(hier,
                               **kwargs):
     """Perform selection using the usual keywords but return ALL resolutions (BEADS and GAUSSIANS).
-    Returns dictionary with "BEADS" and "GAUSSIANS"
-    Each of those is a dictionary where keys are resolutions and values are lists of particles
+    Returns in flat list!
     """
     if 'resolution' in kwargs or 'representation_type' in kwargs:
         raise Exception("don't pass resolution or representation_type to this function")
@@ -1528,7 +1546,7 @@ def select_at_all_resolutions(hier,
 
     # gather resolutions
     init_sel = IMP.atom.Selection(hier,**kwargs)
-    init_ps = init_sel.get_selected_particles(False) # gets highest nodes
+    init_ps = init_sel.get_selected_particles()
     all_bead_res = set()
     all_density_res = set()
     for p in init_ps:
@@ -1537,11 +1555,13 @@ def select_at_all_resolutions(hier,
         all_density_res |= set(d)
 
     # final selection
-    ret = {"BEADS":{},"DENSITIES":{}}
+    ret = set() #{"BEADS":{},"DENSITIES":{}}
     for res in all_bead_res:
         sel = IMP.atom.Selection(hier,resolution=res,representation_type=IMP.atom.BALLS,**kwargs)
-        ret["BEADS"][res] = sel.get_selected_particles()
+        #ret["BEADS"][res] = sel.get_selected_particles()
+        ret|=set(sel.get_selected_particles())
     for res in all_density_res:
         sel = IMP.atom.Selection(hier,resolution=res,representation_type=IMP.atom.DENSITIES,**kwargs)
-        ret["DENSITIES"][res] = sel.get_selected_particles()
-    return ret
+        #ret["DENSITIES"][res] = sel.get_selected_particles()
+        ret|=set(sel.get_selected_particles())
+    return list(ret)

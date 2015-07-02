@@ -31,7 +31,8 @@ class ReplicaExchange0(object):
                  sample_objects=None, # DEPRECATED
                  monte_carlo_sample_objects=None,
                  molecular_dynamics_sample_objects=None,
-                 output_objects=None,
+                 degrees_of_freedom=None,
+                 output_objects=[],
                  crosslink_restraints=None,
                  monte_carlo_temperature=1.0,
                  simulated_annealing=False,
@@ -72,6 +73,7 @@ class ReplicaExchange0(object):
                   be moved and restraints with parameters that need to
                   be sampled. OR a DegreesOfFreedom object!
            @param molecular_dynamics_sample_objects Objects for MD sampling
+           @param degrees_of_freedom A PMI DOF object. Use instead of MC/MD objects
            @param output_objects A list of structural objects and restraints
                   that will be included in output (statistics files). Any object
                   that provides a get_output() method can be used here.
@@ -135,6 +137,7 @@ class ReplicaExchange0(object):
         if sample_objects is not None:
             self.monte_carlo_sample_objects+=sample_objects
         self.molecular_dynamics_sample_objects=molecular_dynamics_sample_objects
+        self.degrees_of_freedom = degrees_of_freedom
         self.output_objects = output_objects
         self.replica_exchange_object = replica_exchange_object
         self.molecular_dynamics_max_time_step = molecular_dynamics_max_time_step
@@ -193,9 +196,14 @@ class ReplicaExchange0(object):
         samplers=[]
         sampler_mc=None
         sampler_md=None
-        if self.monte_carlo_sample_objects is not None:
+        if self.monte_carlo_sample_objects is not None or self.degrees_of_freedom is not None:
             print("Setting up MonteCarlo")
-            sampler_mc = IMP.pmi.samplers.MonteCarlo(self.model,
+            if self.degrees_of_freedom is not None:
+                sampler_mc = IMP.pmi.samplers.MonteCarlo(self.model,
+                                                         temp=self.vars["monte_carlo_temperature"],
+                                                         dof=self.degrees_of_freedom)
+            else:
+                sampler_mc = IMP.pmi.samplers.MonteCarlo(self.model,
                                                  self.monte_carlo_sample_objects,
                                                  self.vars["monte_carlo_temperature"])
             if self.vars["simulated_annealing"]:

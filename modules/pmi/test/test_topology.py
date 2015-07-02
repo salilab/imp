@@ -3,6 +3,8 @@ import IMP.atom
 import IMP.pmi
 import IMP.pmi.topology as topology
 import IMP.test
+import RMF
+import IMP.rmf
 
 def get_atomic_residue_list(residues):
     r1=[]
@@ -15,6 +17,7 @@ def get_atomic_residue_list(residues):
     return ''.join(r1)
 
 class RepresentationNewTest(IMP.test.TestCase):
+
     def test_read_sequences(self):
         '''Test if the sequence reader returns correct strings'''
         # test without name map
@@ -275,6 +278,45 @@ class RepresentationNewTest(IMP.test.TestCase):
         self.assertEquals(len(sel11),len(sel21))
         self.assertEquals(set(sel11+sel21),set(sel31))
 
+    def test_round_trip(self):
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='A',res_range=(1,10),offset=-54)
+        m1.add_representation(a1,resolutions=[0])
+        m1.add_representation(resolutions=[1])
+        s.build()
+        orig_hier = s.get_hierarchy()
+
+        fname = self.get_tmp_file_name('test_round_trip.rmf3')
+
+        rh = RMF.create_rmf_file(fname)
+        IMP.rmf.add_hierarchy(rh, orig_hier)
+        IMP.rmf.save_frame(rh)
+        del rh
+
+        rh2 = RMF.open_rmf_file_read_only(fname)
+        h2 = IMP.rmf.create_hierarchies(rh2,mdl)[0]
+        IMP.rmf.load_frame(rh2,0)
+
+        self.assertEqual(len(IMP.atom.get_leaves(orig_hier)),
+                         len(IMP.atom.get_leaves(h2)))
+
+        # check all coordinates
+        selA0 = IMP.atom.Selection(orig_hier,resolution=0).get_selected_particles()
+        coordsA0 = [map(float,IMP.core.XYZ(p).get_coordinates()) for p in selA0]
+        selB0 = IMP.atom.Selection(h2,resolution=0).get_selected_particles()
+        coordsB0 = [map(float,IMP.core.XYZ(p).get_coordinates()) for p in selB0]
+        self.assertEqual(coordsA0,coordsB0)
+
+        selA1 = IMP.atom.Selection(orig_hier,resolution=1).get_selected_particles()
+        coordsA1 = [map(float,IMP.core.XYZ(p).get_coordinates()) for p in selA1]
+        selB1 = IMP.atom.Selection(h2,resolution=1).get_selected_particles()
+        coordsB1 = [map(float,IMP.core.XYZ(p).get_coordinates()) for p in selB1]
+        self.assertEqual(coordsA1,coordsB1)
 
 if __name__ == '__main__':
     IMP.test.main()

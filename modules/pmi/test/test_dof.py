@@ -54,25 +54,21 @@ class TestDOF(IMP.test.TestCase):
         hier = molecule.get_hierarchy()
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
 
-        sel_nonrigid = IMP.atom.Selection(hier,residue_indexes=[3,4,10])
-        rigid_body = dof.create_rigid_body(hier)
-        rigid_body.create_non_rigid_members(sel_nonrigid)
+        setup_rb = dof.create_rigid_body(molecule)
+        setup_rb.create_non_rigid_members(molecule.get_non_atomic_residues())
 
-        rb = rigid_body.get_rigid_body()
-        mvs = rigid_body.get_movers()
+        mvs = setup_rb.get_movers()
         self.assertEqual(len(mvs),4)
 
     def test_mc_super_rigid_body(self):
         mdl = IMP.Model()
-        m1,m2,m3 = self.init_topology3(mdl)
+        mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
 
-        h1 = m1.get_hierarchy()
-        h2 = m1.get_hierarchy()
-        h3 = m1.get_hierarchy()
-        srb = dof.create_super_rigid_body([h1,h2,h3],chain_min_length=2,chain_max_length=2)
+        srb = dof.create_super_rigid_body(mols,chain_min_length=2,chain_max_length=2)
         self.assertEqual(len(srb.get_movers()),2)
 
+    '''
     def test_mc_flexible_beads(self):
         mdl = IMP.Model()
         molecule = self.init_topology1(mdl)
@@ -90,6 +86,10 @@ class TestDOF(IMP.test.TestCase):
         res = IMP.pmi.tools.select_at_all_resolutions(hier,residue_index=1)
         self.assertEqual(len(res['BEADS'][0]),9)
         self.assertEqual(len(res['BEADS'][1]),1)
+
+        ps = molecule.get_particles_at_all_resolutions()
+        self.assertEqual(len(ps),70)
+    '''
     '''
     def test_constraint_symmetry(self):
         hierarchy=self.init_topology()

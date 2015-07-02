@@ -226,7 +226,7 @@ class Molecule(SystemBase):
         # create Residues from the sequence
         self.residues=[]
         for ns,s in enumerate(sequence):
-            r=_Residue(self,s,ns+1)
+            r=Residue(self,s,ns+1)
             self.residues.append(r)
 
     def __repr__(self):
@@ -395,6 +395,17 @@ class Molecule(SystemBase):
 
         return self.hier
 
+    def get_particles_at_all_resolutions(self,residue_indexes=None):
+        """Helpful utility for getting particles at all resolutions from this molecule.
+        Can optionally pass a set of residue indexes"""
+        if not self.built:
+            raise Exception("Cannot get all resolutions until you build the Molecule")
+        if residue_indexes is None:
+            residue_indexes = [r.get_index() for r in self.get_residues()]
+        ps = IMP.pmi.tools.select_at_all_resolutions(self.get_hierarchy(),
+                                                      residue_indexes=residue_indexes)
+        return ps
+
 
 #------------------------
 
@@ -437,7 +448,7 @@ class Sequences(object):
 #------------------------
 
 
-class _Residue(object):
+class Residue(object):
     """Temporarily stores residue information, even without structure available."""
     # Consider implementing __hash__ so you can select.
     def __init__(self,molecule,code,index):
@@ -471,9 +482,11 @@ class _Residue(object):
         return self.hier.get_residue_type()
     def get_hierarchy(self):
         return self.hier
+    def get_molecule(self):
+        return self.molecule
+
     def get_has_structure_source(self):
         return (self.structure_source is not None)
-
     def set_structure(self,res,soft_check=False):
         if res.get_residue_type()!=self.hier.get_residue_type():
             if soft_check:

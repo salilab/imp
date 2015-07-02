@@ -150,6 +150,7 @@ def build_along_backbone(mdl,root,residues,rep_type,ca_centers=True):
 
             fp = IMP.Particle(mdl)
             frag = IMP.atom.Fragment.setup_particle(fp,res_nums)
+            frag.set_name(name)
             source = IMP.atom.StructureSource.setup_particle(fp,this_source[0],this_source[1])
             root.add_child(frag)
 
@@ -161,7 +162,7 @@ def build_along_backbone(mdl,root,residues,rep_type,ca_centers=True):
                     f = IMP.atom.Fragment.setup_particle(mdl,mdl.add_particle("resolution 0"),
                                                        res_nums)
                     for residue in frag_res:
-                        f.add_child(residue.hier)
+                        f.add_child(residue.get_hierarchy())
                     frag.add_child(f)
 
                 # add one-residue-per-bead
