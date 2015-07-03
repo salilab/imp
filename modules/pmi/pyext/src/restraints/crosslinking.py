@@ -1257,6 +1257,7 @@ class CysteineCrossLinkRestraint(object):
                 beta_grid)
 
             ccl = IMP.isd.CysteineCrossLinkRestraint(
+                self.m,
                 self.beta,
                 self.sigma,
                 self.epsilons[epslabel],
