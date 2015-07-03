@@ -8,6 +8,7 @@
  */
 
 #include <IMP/em2d/internal/Projector.h>
+#include <IMP/utility_macros.h>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 

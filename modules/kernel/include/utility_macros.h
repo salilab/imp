@@ -31,4 +31,22 @@
 
 #define IMP_EXPAND_AND_STRINGIFY(x) IMP_STRINGIFY(x)
 
+#ifdef IMP_DOXYGEN
+//! Smart pointer to retain sole ownership of an object through a pointer
+/** In C++11 mode, this is std::unique_ptr; otherwise, it is std::auto_ptr.
+    Note that these two classes do not have exactly the same interfaces, so
+    you must be careful to use IMP_UNIQUE_PTR only in cases where the two
+    classes behave in the same way (e.g. you cannot copy a unique_ptr, but
+    you can copy an auto_ptr; unique_ptr works with arrays and can
+    be stored in STL containers, unlike auto_ptr).
+ */
+#define IMP_UNIQUE_PTR
+#else
+#if IMP_COMPILER_HAS_UNIQUE_PTR
+#define IMP_UNIQUE_PTR std::unique_ptr
+#else
+#define IMP_UNIQUE_PTR std::auto_ptr
+#endif
+#endif
+
 #endif /* IMPKERNEL_UTILITY_MACROS_H */

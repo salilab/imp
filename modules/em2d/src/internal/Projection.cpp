@@ -14,6 +14,7 @@
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/constants.h>
+#include <IMP/utility_macros.h>
 #include <boost/scoped_ptr.hpp>
 
 #include <algorithm>
