@@ -10,6 +10,6 @@
     return self->get_is_valid();
   }
   %pythoncode %{
-    __nonzero__ == __bool__
+    __nonzero__ = __bool__
   %}
 }
