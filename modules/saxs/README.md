@@ -29,6 +29,9 @@ Compute radius of gyration from SAXS profiles.
 # validate_profile {#validate_profile_bin}
 Validate SAXS profiles.
 
+# weight_profiles {#weight_profiles_bin}
+Weighting of the profiles.
+
 # Info
 
 _Author(s)_: Dina Schneidman, Seung Joong Kim, Yannick Spill
