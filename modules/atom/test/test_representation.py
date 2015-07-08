@@ -14,7 +14,55 @@ def bead2gaussian(center,radius,mdl,p=None):
     else:
         return IMP.core.Gaussian.setup_particle(p,shape)
 
-class DensityRepresentationTest(IMP.test.TestCase):
+class RepresentationTest(IMP.test.TestCase):
+    def test_named_representation(self):
+        """Test representation when you manually set resolutions"""
+        #IMP.set_log_level(IMP.VERBOSE)
+        mdl = IMP.Model()
+        mh = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'),mdl)
+        mh.set_name("res0")
+
+
+        res1 = IMP.atom.create_simplified_along_backbone(mh,1)
+        res1.set_name('res1')
+        res10 = IMP.atom.create_simplified_along_backbone(mh,10)
+        res10.set_name('res10')
+        root = IMP.atom.Hierarchy.setup_particle(IMP.Particle(mdl))
+        root.add_child(mh)
+        rep = IMP.atom.Representation.setup_particle(root,0)
+
+        # should get res0 when it's the only resolution
+        self.assertEqual(rep.get_representation(0),root)
+        sel0 = IMP.atom.Selection(root,resolution=0,residue_index=432)
+        self.assertEqual(set(sel0.get_selected_particles()),
+                         set(mh.get_children()[0].get_children()[0].get_children()))
+
+        # ... and when it's not
+        rep.add_representation(res1,IMP.atom.BALLS,1)
+        rep.add_representation(res10,IMP.atom.BALLS,10)
+        self.assertEqual(rep.get_representation(0),root)
+        sel0 = IMP.atom.Selection(root,resolution=0,residue_index=432)
+        self.assertEqual(set(sel0.get_selected_particles()),
+                         set(mh.get_children()[0].get_children()[0].get_children()))
+
+        # checking other reps
+        self.assertEqual(rep.get_representation(1),res1)
+        self.assertEqual(rep.get_representation(10),res10)
+
+        # should get nothing when requesting a type that isn't there
+        print(rep.get_representation(0,IMP.atom.DENSITIES))
+        self.assertTrue(not rep.get_representation(0,IMP.atom.DENSITIES))
+        self.assertTrue(not rep.get_representation(1,IMP.atom.DENSITIES))
+        self.assertTrue(not rep.get_representation(10,IMP.atom.DENSITIES))
+
+        # now test selection
+        sel1 = IMP.atom.Selection(root,resolution=1,residue_index=432)
+        self.assertEqual(IMP.atom.Fragment(sel1.get_selected_particles()[0]).get_residue_indexes(),
+                         [432])
+        sel10 = IMP.atom.Selection(root,resolution=10,residue_index=432)
+        self.assertEqual(IMP.atom.Fragment(sel10.get_selected_particles()[0]).get_residue_indexes(),
+                         range(432,442))
+
 
     def test_simple_density(self):
         """Test representing a particle with a Gaussian"""
@@ -60,6 +108,7 @@ class DensityRepresentationTest(IMP.test.TestCase):
         # check get_representation
         self.assertEqual(rep.get_representation(1,IMP.atom.DENSITIES),
                          g1.get_particle())
+
 
     def test_multi_density(self):
         """Test representing a group of residues with group of Gaussians"""
