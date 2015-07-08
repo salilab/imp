@@ -508,12 +508,14 @@ ParticleIndexes expand_search(Model *m,
   if (Representation::get_is_setup(m, pi)) {
     if (resolution == ALL_RESOLUTIONS) {
       ret = Representation(m, pi).get_representations(representation_type);
-    } else {
-      ret.push_back(
-          Representation(m, pi).get_representation(resolution,
-                                                   representation_type));
     }
-  } else {
+    else {
+      Hierarchy tmp = Representation(m, pi).get_representation(resolution,
+                                                               representation_type);
+      if (tmp) ret.push_back(tmp);
+    }
+  }
+  else {
     ret.push_back(pi);
   }
   return ret;
