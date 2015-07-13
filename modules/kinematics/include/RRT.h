@@ -126,7 +126,11 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
     return nullptr;
   }
 
-  void run();
+  // run the specified number of iterations
+  // if zero, will run for default iteration number
+  // this option allows to output the already sampled
+  // configurations during the sampling run
+  bool run(unsigned int number_of_iterations = 0);
 
   std::vector<DOFValues> get_DOFValues();
 
@@ -174,6 +178,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
   RRTTree tree_;
   DOFs cspace_dofs_;               // configuration space dofs
   Parameters default_parameters_;  // limits for stop condition
+  Parameters current_counters_;
 
   // for sampling subsets of dofs
   unsigned int number_of_sampled_dofs_;

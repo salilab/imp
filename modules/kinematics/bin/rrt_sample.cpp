@@ -246,16 +246,41 @@ int main(int argc, char **argv)
   std::cerr << "Start RRT run" << std::endl;
   std::string filename = "node_begin.pdb";
   IMP::atom::write_pdb(mhd, filename);
-  rrt->run();
-  std::cerr << "Done RRT " << rrt->get_DOFValues().size() << std::endl;
+  //rrt->run();
+  //  std::cerr << "Done RRT " << rrt->get_DOFValues().size() << std::endl;
 
   // output PDBs
   std::ofstream *out = NULL;
   int file_counter = 1;
   int model_counter = 0;
+  int last_model_written = 0;
+
+  while(rrt->run(100)) { // output every 100 iterations
+    std::vector<DOFValues> dof_values = rrt->get_DOFValues();
+    for(unsigned int i = last_model_written; i<dof_values.size(); i++) {
+      ub_sampler->apply(dof_values[i]);
+      kfss->do_before_evaluate();
+
+      // open new file if needed
+      if(model_counter % number_of_models_in_pdb == 0) { // open new file
+        if(out !=NULL) out->close();
+        std::string file_name = "nodes" + std::string(boost::lexical_cast<std::string>(file_counter)) + ".pdb";
+        out = new std::ofstream(file_name.c_str());
+        file_counter++;
+        model_counter=0;
+      }
+
+      IMP::atom::write_pdb(mhd, *out, model_counter+1);
+      model_counter++;
+    }
+    last_model_written = dof_values.size() - 1;
+  }
 
   std::vector<DOFValues> dof_values = rrt->get_DOFValues();
-  for(unsigned int i = 0; i<dof_values.size(); i++) {
+  std::cerr << "Done RRT " << dof_values.size() << std::endl;
+
+  // write remaining nodes
+  for(unsigned int i = last_model_written; i<dof_values.size(); i++) {
     ub_sampler->apply(dof_values[i]);
     kfss->do_before_evaluate();
 
@@ -272,5 +297,6 @@ int main(int argc, char **argv)
     model_counter++;
   }
   out->close();
+
   return 0;
 }
