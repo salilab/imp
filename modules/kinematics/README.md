@@ -16,6 +16,9 @@ The name "Joint" is used to refer to a kinematic pair between two rigid bodies.
 # rrt_sample {#rrt_sample_bin}
 Sample protein conformations using rapidly exploring random tree (RRT).
 
+# rrt_ccd {#rrt_ccd_bin}
+Sample protein loop conformations using rapidly exploring random tree (RRT).
+
 For an example of using the `rrt_sample` command line tool, see
 [the manual](@ref kinematics_rrt).
 

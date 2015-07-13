@@ -191,6 +191,11 @@ class IMPKINEMATICSEXPORT DihedralAngleRevoluteJoint : public RevoluteJoint {
                              IMP::core::XYZ b, IMP::core::XYZ c,
                              IMP::core::XYZ d);
 
+  IMP::core::XYZ get_a() const { return a_; }
+  IMP::core::XYZ get_b() const { return b_; }
+  IMP::core::XYZ get_c() const { return c_; }
+  IMP::core::XYZ get_d() const { return d_; }
+
  protected:
   /**
       updates the rot_axis_unit_vector_ and rot_axis_origin_ variables
