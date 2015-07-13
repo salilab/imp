@@ -25,31 +25,22 @@ CCDLoopClosure::CCDLoopClosure(DihedralAngleRevoluteJoints joints,
 bool CCDLoopClosure::close_loop() {
   double S = distance_function_S();
   const double minimized_S = 0.1; // threshold for closed loop
-  //std::cerr << "distance_function_S: " << S << std::endl;
   if(S<minimized_S) return true; // the loop is closed
 
   unsigned int iteration_number = 0;
   const unsigned int max_iteration_number = 200;// seems good approximation
 
   while(S > minimized_S && iteration_number < max_iteration_number) {
-    // iterate all joints and minimize angles
+    // iterate all joints to minimize the distance_function_S
     double curr_S = S;
     for(unsigned int i=joints_.size()-1; i>0; i--) {
       optimize_joint(i);
       curr_S = distance_function_S();
-      if(curr_S < minimized_S) {
-        //std::cerr << "Closed in iteration " << iteration_number << " S = " << curr_S << std::endl;
-        return true;
-      }
+      if(curr_S < minimized_S) return true; // the loop is closed
     }
 
     S = curr_S;
     iteration_number++;
-
-    if(iteration_number % 10 == 0 ||
-       (S <= minimized_S ||
-        iteration_number > max_iteration_number))
-      //std::cerr << "After iteration " << iteration_number << " S = " << S << std::endl;
   }
 
   return false;
