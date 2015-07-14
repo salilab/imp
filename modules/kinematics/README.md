@@ -19,6 +19,9 @@ Sample protein conformations using rapidly exploring random tree (RRT).
 # rrt_ccd {#rrt_ccd_bin}
 Sample protein loop conformations using rapidly exploring random tree (RRT).
 
+# cluster {#cluster_bin}
+RMSD based clustering of conformations
+
 For an example of using the `rrt_sample` command line tool, see
 [the manual](@ref kinematics_rrt).
 
