@@ -12,7 +12,8 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         print(self.get_input_file_name('6lyz.pdb'))
         print(self.get_input_file_name('lyzexp.dat'))
         p = self.run_application('foxs',
-                                 [self.get_input_file_name('6lyz.pdb'),
+                                 ['-g',
+                                  self.get_input_file_name('6lyz.pdb'),
                                   self.get_input_file_name('lyzexp.dat')])
         out, err = p.communicate()
         sys.stderr.write(err)
@@ -28,7 +29,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         print(self.get_input_file_name('6lyz.pdb'))
         print(self.get_input_file_name('lyzexp.dat'))
         p = self.run_application('foxs',
-                                 ['-e', '1.0', '-w', '0.0',
+                                 ['--min_c1', '1.0', '--max_c1', '1.0', '--min_c2', '0.0', '--max_c2', '0.0',
                                   self.get_input_file_name('6lyz.pdb'),
                                   self.get_input_file_name('lyzexp.dat')])
         out, err = p.communicate()
@@ -37,7 +38,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         m = re.search('Chi\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.53, delta=0.01)
-        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt', '6lyz.plt'):
+        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat'):
             os.unlink(self.get_input_file_name(out))
 
     def test_simple_residue(self):
@@ -54,7 +55,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         m = re.search('Chi\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.82, delta=0.01)
-        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt', '6lyz.plt'):
+        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat'):
             os.unlink(self.get_input_file_name(out))
 
     def test_simple_js(self):
@@ -71,7 +72,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         m = re.search('Chi\s+=\s+([\d\.]+)\r?', out)
         self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.44, delta=0.01)
-        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt', '6lyz.plt'):
+        for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat'):
             os.unlink(self.get_input_file_name(out))
 
         for out in ('jmoltable.pdb', 'jmoltable.html', 'canvas.plt'):

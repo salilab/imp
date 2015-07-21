@@ -58,9 +58,6 @@ class IMPFOXSEXPORT Gnuplot {
       const std::vector<IMP::saxs::FitParameters>& fps, int max_num);
 };
 
-IMPFOXSEXPORT
-std::string trim_extension(const std::string file_name);
-
 IMPFOXS_END_INTERNAL_NAMESPACE
 
 #endif /* IMPFOXS_GNUPLOT_H */

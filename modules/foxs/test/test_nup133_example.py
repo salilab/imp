@@ -19,7 +19,7 @@ class Tests(IMP.test.ApplicationTestCase):
                 self.run_shell_command(c)
         with open('3KFO_23922_merge.dat') as fh:
             lines = fh.readlines()
-        self.assertIn('Chi = 2.96', lines[1])
+        self.assertIn('Chi = 2.9', lines[1])
         with open('3KFO-fill.B99990005_23922_merge.dat') as fh:
             lines = fh.readlines()
         self.assertIn('Chi = 1.14', lines[1])

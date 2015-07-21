@@ -94,12 +94,37 @@ Profile* compute_profile(Particles particles,
                          double delta_q = 0.001,
                          FormFactorTable* ft = get_default_form_factor_table(),
                          FormFactorType ff_type = HEAVY_ATOMS,
-                         double water_layer_c2 = 4.0,
+                         bool hydration_layer = true,
                          bool fit = true,
                          bool reciprocal = false,
                          bool ab_initio = false,
                          bool vacuum = false,
                          std::string beam_profile_file = "");
+
+//! read pdb files
+IMPSAXSEXPORT
+void read_pdb(const std::string file,
+              std::vector<std::string>& pdb_file_names,
+              std::vector<IMP::Particles>& particles_vec,
+              bool residue_level = false,
+              bool heavy_atoms_only = true,
+              int multi_model_pdb = 2);
+
+//! parse PDB and profile files
+IMPSAXSEXPORT
+void read_files(const std::vector<std::string>& files,
+                std::vector<std::string>& pdb_file_names,
+                std::vector<std::string>& dat_files,
+                std::vector<IMP::Particles>& particles_vec,
+                Profiles& exp_profiles,
+                bool residue_level = false,
+                bool heavy_atoms_only = true,
+                int multi_model_pdb = 2,
+                float max_q = 0.0);
+
+IMPSAXSEXPORT
+std::string trim_extension(const std::string file_name);
+
 
 IMPSAXS_END_NAMESPACE
 

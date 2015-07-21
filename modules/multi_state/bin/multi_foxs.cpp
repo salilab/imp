@@ -15,8 +15,6 @@
 #include <IMP/saxs/ChiScore.h>
 #include <IMP/saxs/RatioVolatilityScore.h>
 
-#include <IMP/atom/pdb.h>
-
 #include <IMP/Vector.h>
 
 #include <IMP/benchmark/Profiler.h>
@@ -33,59 +31,6 @@ using namespace IMP::saxs;
 using namespace IMP::multi_state;
 
 namespace {
-std::string trim_extension(const std::string file_name) {
-  if(file_name[file_name.size()-4] == '.')
-    return file_name.substr(0, file_name.size() - 4);
-  return file_name;
-}
-
-void read_pdb(const std::string file,
-              IMP::Vector<std::string>& pdb_file_names,
-              IMP::Vector<IMP::Particles>& particles_vec,
-              bool residue_level, bool heavy_atoms_only, int multi_model_pdb) {
-
-  IMP::Model *model = new IMP::Model();
-
-  IMP::atom::Hierarchies mhds;
-  IMP::atom::PDBSelector* selector;
-  if(residue_level) // read CA only
-    selector = new IMP::atom::CAlphaPDBSelector();
-  else
-    if(heavy_atoms_only) // read without hydrogens
-      selector =  new IMP::atom::NonWaterNonHydrogenPDBSelector();
-    else // read with hydrogens
-      selector = new IMP::atom::NonWaterPDBSelector();
-
-  if(multi_model_pdb == 2) {
-    mhds = read_multimodel_pdb(file, model, selector, true);
-  } else {
-    if(multi_model_pdb == 3) {
-      IMP::atom::Hierarchy mhd =
-        IMP::atom::read_pdb(file, model, selector, false, true);
-      mhds.push_back(mhd);
-    } else {
-      IMP::atom::Hierarchy mhd =
-        IMP::atom::read_pdb(file, model, selector, true, true);
-      mhds.push_back(mhd);
-    }
-  }
-
-  for(unsigned int h_index=0; h_index<mhds.size(); h_index++) {
-    IMP::ParticlesTemp ps = get_by_type(mhds[h_index], IMP::atom::ATOM_TYPE);
-    if(ps.size() > 0) { // pdb file
-      std::string pdb_id = file;
-      if(mhds.size() > 1) {
-        pdb_id = trim_extension(file) + "_m" +
-          std::string(boost::lexical_cast<std::string>(h_index+1)) + ".pdb";
-      }
-      pdb_file_names.push_back(pdb_id);
-      particles_vec.push_back(IMP::get_as<IMP::Particles>(ps));
-      std::cout << ps.size() << " atoms were read from PDB file " << file;
-      if(mhds.size() > 1) std::cout << " MODEL " << h_index+1;
-      std::cout << std::endl;
-    }
-  }
-}
 
 void read_profiles(const std::string profile_filenames_file,
                    Profiles& profiles,

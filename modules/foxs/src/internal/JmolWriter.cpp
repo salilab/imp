@@ -7,10 +7,9 @@
 
 #include <IMP/foxs/internal/JmolWriter.h>
 #include <IMP/foxs/internal/ColorCoder.h>
-#include <IMP/foxs/internal/Gnuplot.h>
+#include <IMP/saxs/utility.h>
 
 #include <IMP/atom/pdb.h>
-#include <IMP/saxs/utility.h>
 
 #include <fstream>
 #include <boost/lexical_cast.hpp>
@@ -69,8 +68,8 @@ void JmolWriter::prepare_jmol_script(
             << "<th><center> # atoms </th> <th> fit file </th></tr>\n";
   for (unsigned int i = 0; i < fps.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
-    std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
-    std::string profile_name = trim_extension(
+    std::string pdb_name = saxs::trim_extension(fps[i].get_pdb_file_name());
+    std::string profile_name = saxs::trim_extension(
         basename(const_cast<char*>(fps[i].get_profile_file_name().c_str())));
     std::string fit_file_name = pdb_name + "_" + profile_name + ".dat";
     float rg =
@@ -144,7 +143,7 @@ void JmolWriter::prepare_jmol_script(
             << "<th><center> # atoms </th> <th> Profile file</th></tr>\n";
   for (unsigned int i = 0; i < pdbs.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
-    std::string pdb_name = trim_extension(pdbs[i]);
+    std::string pdb_name = saxs::trim_extension(pdbs[i]);
     std::string profile_name = pdbs[i] + ".dat";
     float rg = IMP::saxs::radius_of_gyration(particles_vec[i]);
     outstream << "<tr><td>";

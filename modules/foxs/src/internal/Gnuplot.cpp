@@ -8,6 +8,7 @@
 
 #include <IMP/foxs/internal/Gnuplot.h>
 #include <IMP/foxs/internal/ColorCoder.h>
+#include <IMP/saxs/utility.h>
 
 #include <fstream>
 
@@ -16,8 +17,8 @@ IMPFOXS_BEGIN_INTERNAL_NAMESPACE
 void Gnuplot::print_profile_script(const std::string pdb) {
   // file names
   std::string profile_file_name = pdb + ".dat";
-  std::string plt_file_name = trim_extension(pdb) + ".plt";
-  std::string png_file_name = trim_extension(pdb) + ".png";
+  std::string plt_file_name = saxs::trim_extension(pdb) + ".plt";
+  std::string png_file_name = saxs::trim_extension(pdb) + ".png";
   // output script
   std::ofstream plt_file(plt_file_name.c_str());
   plt_file << "set terminal png enhanced;set output \"" << png_file_name
@@ -47,7 +48,7 @@ void Gnuplot::print_profile_script(const std::vector<std::string>& pdbs) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string profile_file_name = pdbs[i] + ".dat";
     plt_file << "'" << profile_file_name << "' u 1:(log($2)) t \""
-             << trim_extension(pdbs[i]) << "\" w lines lw 2 lt " << i + 2;
+             << saxs::trim_extension(pdbs[i]) << "\" w lines lw 2 lt " << i + 2;
     if (i == pdbs.size() - 1)
       plt_file << std::endl;
     else
@@ -89,8 +90,8 @@ void Gnuplot::print_canvas_script(const std::vector<std::string>& pdbs,
 
 void Gnuplot::print_fit_script(const IMP::saxs::FitParameters& fp) {
   // file names
-  std::string pdb_name = trim_extension(fp.get_pdb_file_name());
-  std::string profile_name = trim_extension(
+  std::string pdb_name = saxs::trim_extension(fp.get_pdb_file_name());
+  std::string profile_name = saxs::trim_extension(
       basename(const_cast<char*>(fp.get_profile_file_name().c_str())));
   std::string plt_file_name = pdb_name + "_" + profile_name + ".plt";
   std::string png_file_name = pdb_name + "_" + profile_name + ".png";
@@ -176,8 +177,8 @@ void Gnuplot::print_fit_script(
            << "plot f(x) notitle lc rgb '#333333'";
   for (unsigned int i = 0; i < fps.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
-    std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
-    std::string profile_name = trim_extension(
+    std::string pdb_name = saxs::trim_extension(fps[i].get_pdb_file_name());
+    std::string profile_name = saxs::trim_extension(
         basename(const_cast<char*>(fps[i].get_profile_file_name().c_str())));
     std::string fit_file_name = pdb_name + "_" + profile_name + ".dat";
     plt_file << ", '" << fit_file_name
@@ -190,8 +191,8 @@ void Gnuplot::print_fit_script(
            << "set xlabel ''; set format x ''; set ylabel '';\n";
   for (unsigned int i = 0; i < fps.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
-    std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
-    std::string profile_name = trim_extension(
+    std::string pdb_name = saxs::trim_extension(fps[i].get_pdb_file_name());
+    std::string profile_name = saxs::trim_extension(
         basename(const_cast<char*>(fps[i].get_profile_file_name().c_str())));
     std::string fit_file_name = pdb_name + "_" + profile_name + ".dat";
     if (i == 0) {
@@ -228,8 +229,8 @@ void Gnuplot::print_canvas_script(
            << "plot f(x) lc rgb '#333333'";
   for (int i = 0; i < (int)fps.size() && i < max_num; i++) {
     ColorCoder::html_hex_color(hex_color, i);
-    std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
-    std::string profile_name = trim_extension(
+    std::string pdb_name = saxs::trim_extension(fps[i].get_pdb_file_name());
+    std::string profile_name = saxs::trim_extension(
         basename(const_cast<char*>(fps[i].get_profile_file_name().c_str())));
     std::string fit_file_name = pdb_name + "_" + profile_name + ".dat";
     plt_file << ", '" << fit_file_name
@@ -241,8 +242,8 @@ void Gnuplot::print_canvas_script(
            << "set xlabel ''; set format x ''; set ylabel 'log intensity';\n";
   for (int i = 0; i < (int)fps.size() && i < max_num; i++) {
     ColorCoder::html_hex_color(hex_color, i);
-    std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
-    std::string profile_name = trim_extension(
+    std::string pdb_name = saxs::trim_extension(fps[i].get_pdb_file_name());
+    std::string profile_name = saxs::trim_extension(
         basename(const_cast<char*>(fps[i].get_profile_file_name().c_str())));
     std::string fit_file_name = pdb_name + "_" + profile_name + ".dat";
     if (i == 0) {
@@ -255,12 +256,6 @@ void Gnuplot::print_canvas_script(
   plt_file << std::endl;
   plt_file << "unset multiplot;reset" << std::endl;
   plt_file.close();
-}
-
-std::string trim_extension(const std::string file_name) {
-  if (file_name[file_name.size() - 4] == '.')
-    return file_name.substr(0, file_name.size() - 4);
-  return file_name;
 }
 
 IMPFOXS_END_INTERNAL_NAMESPACE
