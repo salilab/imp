@@ -78,7 +78,7 @@ Each profile is read and written back, with simulated error added if necessary")
                 << " size = " << profile->size() << std::endl;
       // write back
       std::string profile_name =
-        saxs::trim_extension(basename(const_cast<char *>(files[i].c_str())));
+        IMP::saxs::trim_extension(basename(const_cast<char *>(files[i].c_str())));
       std::string file_name = profile_name + "_v.dat";
       profile->write_SAXS_file(file_name, max_q);
       std::cout << "Profile written to file " << file_name << std::endl;
