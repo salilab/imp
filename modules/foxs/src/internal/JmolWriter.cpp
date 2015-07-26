@@ -5,6 +5,7 @@
  *
  */
 
+#include <IMP/foxs/internal/Gnuplot.h>
 #include <IMP/foxs/internal/JmolWriter.h>
 #include <IMP/foxs/internal/ColorCoder.h>
 #include <IMP/saxs/utility.h>
