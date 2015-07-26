@@ -61,7 +61,7 @@ class RepresentationTest(IMP.test.TestCase):
                          [432])
         sel10 = IMP.atom.Selection(root,resolution=10,residue_index=432)
         self.assertEqual(IMP.atom.Fragment(sel10.get_selected_particles()[0]).get_residue_indexes(),
-                         range(432,442))
+                         list(range(432,442)))
 
 
     def test_simple_density(self):
