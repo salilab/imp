@@ -301,6 +301,7 @@ class Molecule(SystemBase):
                        copy_num=self.state.get_number_of_copies(self.get_name()),
                        mol_to_clone=self,transformation=transformation)
         self.state._register_copy(mol)
+        return mol
 
     def add_structure(self,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_only=False,soft_check=False,pdb_code=None):
         """Read a structure and store the coordinates.

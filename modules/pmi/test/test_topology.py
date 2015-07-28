@@ -307,15 +307,19 @@ class RepresentationNewTest(IMP.test.TestCase):
 
         # check all coordinates
         selA0 = IMP.atom.Selection(orig_hier,resolution=0).get_selected_particles()
-        coordsA0 = [map(float,IMP.core.XYZ(p).get_coordinates()) for p in selA0]
+        coordsA0 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
+                    for p in selA0]
         selB0 = IMP.atom.Selection(h2,resolution=0).get_selected_particles()
-        coordsB0 = [map(float,IMP.core.XYZ(p).get_coordinates()) for p in selB0]
+        coordsB0 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
+                    for p in selB0]
         self.assertEqual(coordsA0,coordsB0)
 
         selA1 = IMP.atom.Selection(orig_hier,resolution=1).get_selected_particles()
-        coordsA1 = [map(float,IMP.core.XYZ(p).get_coordinates()) for p in selA1]
+        coordsA1 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
+                    for p in selA1]
         selB1 = IMP.atom.Selection(h2,resolution=1).get_selected_particles()
-        coordsB1 = [map(float,IMP.core.XYZ(p).get_coordinates()) for p in selB1]
+        coordsB1 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
+                    for p in selB1]
         self.assertEqual(coordsA1,coordsB1)
 
 if __name__ == '__main__':
