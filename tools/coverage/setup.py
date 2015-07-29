@@ -22,7 +22,8 @@ import os
 
 def _our_abs_file(self, filename):
     return os.path.normcase(os.path.abspath(filename))
-coverage.files.FileLocator.abs_file = _our_abs_file
+if hasattr(coverage.files, 'FileLocator'):
+    coverage.files.FileLocator.abs_file = _our_abs_file
 
 _cov = coverage.coverage(branch=True, data_suffix=True, auto_data=True,
                          data_file='%s')

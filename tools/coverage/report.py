@@ -66,7 +66,8 @@ def report_python(opts, outdir):
 
     def _our_abs_file(self, filename):
         return os.path.normcase(os.path.abspath(filename))
-    coverage.files.FileLocator.abs_file = _our_abs_file
+    if hasattr(coverage.files, 'FileLocator'):
+        coverage.files.FileLocator.abs_file = _our_abs_file
     cov = coverage.coverage(data_file='coverage/.coverage')
     setup_excludes(cov)
     cov.load()
