@@ -33,7 +33,10 @@ def report_python_component(cov, morfs, name, typ, reldir, outdir):
     if len(morfs) > 0:
         print("Generating HTML report for %s %s Python coverage" % (name, typ))
         sys.stdout.flush()
-        cov.file_locator.relative_dir = reldir
+        if hasattr(coverage.files, 'RELATIVE_DIR'):
+            coverage.files.RELATIVE_DIR = reldir
+        else:
+            cov.file_locator.relative_dir = reldir
         cov.html_report(morfs=morfs, directory=os.path.join(outdir, 'python',
                                                             name))
 
