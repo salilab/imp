@@ -478,14 +478,14 @@
    public:                                                            \
     IMP_DECORATOR_METHODS(Name, Parent);                              \
     /** Sets up Name over members, and constrains Name to be
-        computed before model evaluation and to propogate derivatives
-        folllowing model evaulation.
+        computed before model evaluation and to propagate derivatives
+        following model evaluation.
         SetupDoc
     */                                                                \
     IMP_DECORATOR_SETUP_1(Name, ParticleIndexesAdaptor, members);     \
     /** Sets up Name over particles passed by applying the refiner
         over the particle pi, and constrains Name to be computed before
-        model evaluation and to propogate derivatives following model
+        model evaluation and to propagate derivatives following model
         evaluation.
         SetupDoc
     */                                                                  \
