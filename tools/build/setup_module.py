@@ -346,7 +346,7 @@ def find_cmdline_links(mod, docdir, cmdline_tools):
     for g in [os.path.join(docdir, "README.md")] \
              + glob.glob(os.path.join(docdir, "doc", "*.dox")) \
              + glob.glob(os.path.join(docdir, "doc", "*.md")):
-        for line in open(g):
+        for line in tools.open_utf8(g):
             if todo and len(line.rstrip('\r\n ')) > 0 \
                and line[0] not in " =-\\":
                 (k, v) = todo.popitem()
@@ -413,14 +413,8 @@ def make_overview(options, cmdline_tools):
     pickle.dump(cmdline_links,
                 open(os.path.join("data", "build_info",
                                   "IMP_%s.pck" % options.name), 'wb'), -1)
-    rmd = open(
-        os.path.join(
-            options.source,
-            "modules",
-            options.name,
-            "README.md"),
-        "r").read(
-    )
+    rmd = tools.open_utf8(os.path.join(options.source, "modules", options.name,
+                                       "README.md"), "r").read()
     tools.rewrite(
         os.path.join("doxygen", "generated", "IMP_%s.dox" % options.name),
                   """/** \\namespace %s

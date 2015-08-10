@@ -546,6 +546,12 @@ def get_disabled_modules(extra_data_path, root="."):
             x, extra_data_path, root)["ok"]]
     )
 
+# Treat an open file as UTF8-encoded, regardless of the locale
+if sys.version_info[0] >= 3:
+    def open_utf8(fname):
+        return open(fname, encoding='UTF8')
+else:
+    open_utf8 = open
 
 _subprocesses = []
 
