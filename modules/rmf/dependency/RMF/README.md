@@ -1,6 +1,6 @@
 # RMF #
 
-[![Build Status](https://travis-ci.org/salilab/rmf.png?branch=develop)](https://travis-ci.org/salilab/rmf)
+[![Build Status](https://travis-ci.org/salilab/rmf.svg?branch=develop)](https://travis-ci.org/salilab/rmf)
 
 The library provides support for the RMF file format for
 storing hierarchical molecular data (such as atomic or coarse grained

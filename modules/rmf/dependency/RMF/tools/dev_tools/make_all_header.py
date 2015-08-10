@@ -11,6 +11,13 @@ import os
 sys.path.append(os.path.split(sys.argv[0])[0])
 import python_tools
 
+# Treat an open file as UTF8-encoded, regardless of the locale
+if sys.version_info[0] >= 3:
+    def open_utf8(fname):
+        return open(fname, encoding='UTF8')
+else:
+    open_utf8 = open
+
 includepath = sys.argv[1][sys.argv[1].find("include") + len("include") + 1:]
 
 output = ["""/**
@@ -35,7 +42,7 @@ for h in sys.argv[3:]:
         allh = []
         deprecated_allh = []
         for h in orig_h:
-            if 'DEPRECATED_HEADER' in open(h).read():
+            if 'DEPRECATED_HEADER' in open_utf8(h).read():
                 deprecated_allh.append(h)
             else:
                 allh.append(h)
