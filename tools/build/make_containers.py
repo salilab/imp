@@ -92,8 +92,8 @@ def make_one(path, params, test=True):
     for p in files:
         g = ContainerFileGenerator(p[1])
         g.write(p[0], params)
-        all_outputs.append(p[0])
-        all_inputs.append(p[1])
+        all_outputs.append(tools.to_cmake_path(p[0]))
+        all_inputs.append(tools.to_cmake_path(p[1]))
 
 
 def main():
@@ -137,7 +137,8 @@ def main():
             ret = []
             for h in allh:
                 if h.endswith(suffix) and os.path.split(os.path.split(h)[0])[1] == module:
-                    ret.append(prefix + os.path.split(h)[1])
+                    fname = prefix + os.path.split(h)[1]
+                    ret.append(tools.to_cmake_path(fname))
             return ret
 
         out = """
