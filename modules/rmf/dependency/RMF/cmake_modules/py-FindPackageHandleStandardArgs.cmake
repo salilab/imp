@@ -239,7 +239,7 @@ function(FIND_PACKAGE_HANDLE_STANDARD_ARGS _NAME _FIRST_ARG)
 
       if(${_NAME}_FIND_VERSION_EXACT)       # exact version required
         if (NOT "${${_NAME}_FIND_VERSION}" VERSION_EQUAL "${VERSION}")
-          set(VERSION_MSG "Found unsuitable version \"${VERSION}\", but required is exact version \"${${_NAME}_FIND_VERSION}\"")
+          set(VERSION_MSG "Found unsuitable version \"${VERSION}\" in \"${PYTHON_INCLUDE_DIR}\", but required is exact version \"${${_NAME}_FIND_VERSION}\"")
           set(VERSION_OK FALSE)
         else ()
           set(VERSION_MSG "(found suitable exact version \"${VERSION}\")")
