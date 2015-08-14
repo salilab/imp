@@ -58,6 +58,11 @@ if(POLICY CMP0042)
 cmake_policy(SET CMP0042 OLD)
 endif(POLICY CMP0042)
 
+# Quiet warning from cmake 3.1 or later about quoted variables in if()
+if(POLICY CMP0054)
+cmake_policy(SET CMP0054 NEW)
+endif(POLICY CMP0054)
+
 set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")
 set(SWIG_EXECUTABLE swig CACHE STRING "Swig program")
