@@ -562,9 +562,9 @@ def run_subprocess(command, **kwargs):
     #    kwargs["stdout"] = subprocess.PIPE
     # if not kwargs.has_key("stderr"):
     #    kwargs["stderr"] = subprocess.PIPE
-    pro = subprocess.Popen(
-        command, preexec_fn=os.setsid, stderr=subprocess.PIPE,
-        stdout=subprocess.PIPE, universal_newlines=True, **kwargs)
+    pro = subprocess.Popen(command, stderr=subprocess.PIPE,
+                           stdout=subprocess.PIPE, universal_newlines=True,
+                           **kwargs)
     _subprocesses.append(pro)
     output, error = pro.communicate()
     ret = pro.returncode
