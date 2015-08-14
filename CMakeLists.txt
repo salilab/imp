@@ -32,6 +32,11 @@ if(IS_DIRECTORY "${PROJECT_SOURCE_DIR}/.git")
   endif()
 endif()
 
+# Quiet warning from cmake 3.1 or later about quoted variables in if()
+if(POLICY CMP0054)
+cmake_policy(SET CMP0054 NEW)
+endif(POLICY CMP0054)
+
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPExecuteProcess.cmake)
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPAddTests.cmake)
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/CheckCompiles.cmake)
@@ -57,11 +62,6 @@ endif(POLICY CMP0017)
 if(POLICY CMP0042)
 cmake_policy(SET CMP0042 OLD)
 endif(POLICY CMP0042)
-
-# Quiet warning from cmake 3.1 or later about quoted variables in if()
-if(POLICY CMP0054)
-cmake_policy(SET CMP0054 NEW)
-endif(POLICY CMP0054)
 
 set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")
