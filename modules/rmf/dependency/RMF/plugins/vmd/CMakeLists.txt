@@ -6,17 +6,24 @@ find_path(VMDPLUGIN_INCLUDE_PATH
           )
 
 if(${VMDPLUGIN_INCLUDE_PATH} MATCHES "VMDPLUGIN_INCLUDE_PATH-NOTFOUND")
-message(STATUS "Compilation of VMD plugin disabled. Defined VMDPLUGIN_INCLUDE_DIR to point to the include path for the header.")
+message(STATUS "Compilation of VMD plugin disabled. Define VMDPLUGIN_INCLUDE_DIR to point to the include path for the header.")
 set(RMF_VMD "" CACHE INTERNAL "" FORCE)
 else()
 include_directories(${VMDPLUGIN_INCLUDE_PATH})
 
 message(STATUS "Using VMD headers found in ${VMDPLUGIN_INCLUDE_PATH}")
 
-add_library(RMF-vmd MODULE "init.cpp" "Data.cpp" "Data_read.cpp")
+include_directories(BEFORE ".")
+add_library(RMF-vmd MODULE "vmdplugin.cpp")
+if(WIN32)
+  set(DSO_SUFFIX ".dll")
+else()
+  set(DSO_SUFFIX ".so")
+endif()
 set_target_properties("RMF-vmd" PROPERTIES OUTPUT_NAME "rmfplugin"
                                 PREFIX ""
-                                SUFFIX ".so"
+                                SUFFIX "${DSO_SUFFIX}"
+                                COMPILE_DEFINITIONS "VMDPLUGIN_EXPORTS"
                                 RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set_property(TARGET "RMF-vmd" PROPERTY FOLDER "RMF")
 
