@@ -222,30 +222,12 @@ def write_ok(
         swig_includes, swig_wrapper_includes):
     print("yes")
     config = ["ok=True"]
-    if len(modules) > 0:
-        config.append("modules = \"" + ":".join(modules) + "\"")
-    if len(unfound_modules) > 0:
-        config.append(
-            "unfound_modules = \"" +
-            ":".join(
-                unfound_modules) +
-            "\"")
-    if len(dependencies) > 0:
-        config.append("dependencies = \"" + ":".join(dependencies) + "\"")
-    if len(unfound_dependencies) > 0:
-        config.append(
-            "unfound_dependencies = \"" +
-            ":".join(
-                unfound_dependencies) +
-            "\"")
-    if len(swig_includes) > 0:
-        config.append("swig_includes = \"" + ":".join(swig_includes) + "\"")
-    if len(swig_wrapper_includes) > 0:
-        config.append(
-            "swig_wrapper_includes = \"" +
-            ":".join(
-                swig_wrapper_includes) +
-            "\"")
+    for varname in ("modules", "unfound_modules", "dependencies",
+                    "unfound_dependencies", "swig_includes",
+                    "swig_wrapper_includes"):
+        var = eval(varname)
+        if len(var) > 0:
+            config.append("%s = %s" % (varname, repr(":".join(var))))
     tools.rewrite(
         os.path.join("data",
                      "build_info",
