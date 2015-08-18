@@ -79,6 +79,12 @@ class Enum {
 #endif
 };
 
+//! Produce hash values for boost hash tables.
+template <class TagT>
+inline std::size_t hash_value(const Enum<TagT>& t) {
+  return t.__hash__();
+}
+
 #if !defined(SWIG) && !defined(RMF_DOXYGEN)
 template <class Traits>
 inline std::ostream& operator<<(std::ostream& out, Enum<Traits> v) {

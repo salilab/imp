@@ -69,6 +69,11 @@ class BufferConstHandle {
 #endif
 };
 
+//! Produce hash values for boost hash tables.
+inline std::size_t hash_value(const BufferConstHandle &t) {
+  return t.__hash__();
+}
+
 RMFEXPORT BufferConstHandle read_buffer(std::string file_name);
 
 RMFEXPORT void write_buffer(BufferConstHandle buffer, std::string file_name);

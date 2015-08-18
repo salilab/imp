@@ -96,6 +96,12 @@ class ID {
 #endif
 };
 
+//! Produce hash values for boost hash tables.
+template <class TagT>
+inline std::size_t hash_value(const ID<TagT>& t) {
+  return t.__hash__();
+}
+
 /** Identify a node within a file. */
 typedef ID<NodeTag> NodeID;
 /** Identify a frame within a file. */

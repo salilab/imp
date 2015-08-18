@@ -210,6 +210,11 @@ class RMFEXPORT NodeConstHandle
   FileConstHandle get_file() const;
 };
 
+//! Produce hash values for boost hash tables.
+inline std::size_t hash_value(const NodeConstHandle& t) {
+  return t.__hash__();
+}
+
 } /* namespace RMF */
 
 RMF_DISABLE_WARNINGS

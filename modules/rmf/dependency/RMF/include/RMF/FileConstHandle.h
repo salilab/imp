@@ -355,6 +355,11 @@ class RMFEXPORT FileConstHandle {
   void reload();
 };
 
+//! Produce hash values for boost hash tables.
+inline std::size_t hash_value(const FileConstHandle& t) {
+  return t.__hash__();
+}
+
 /**
    Open an RMF from a file system path in read-only mode.
 

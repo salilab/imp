@@ -91,6 +91,12 @@ RMF_ENABLE_WARNINGS namespace RMF {
                       } return ret;);
   };
 
+  //! Produce hash values for boost hash tables.
+  template <int D>
+  inline std::size_t hash_value(const DataSetIndexD<D>& t) {
+    return t.__hash__();
+  }
+
 #ifndef RMF_DOXYGEN
   typedef DataSetIndexD<1> DataSetIndex1D;
   typedef std::vector<DataSetIndex1D> DataSetIndex1Ds;

@@ -182,13 +182,6 @@ class Nullable;
 struct Showable;
 inline std::ostream& operator<<(std::ostream& out, const Showable& t);
 
-/** Produce hash values for boost hash tables.
- */
-template <class T>
-inline std::size_t hash_value(const T& t) {
-  return t.__hash__();
-}
-
 /** An adaptor class to provide operator<< for classes easily. */
 struct Showable {
   std::string t_;
