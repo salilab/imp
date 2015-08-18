@@ -2,6 +2,7 @@
 
 import os.path
 import sys
+import subprocess
 
 
 def replace(msg, to_replace):
@@ -539,10 +540,6 @@ RMF_DISABLE_WARNINGS
 
     del fl
     root = os.path.split(os.path.split(sys.argv[0])[0])[0]
-    os.system(
-        os.path.join(
-            root,
-            "dev_tools",
-            "cleanup_code.py") +
-        " " +
-        path)
+    subprocess.check_call([sys.executable,
+                           os.path.join(root, "dev_tools", "cleanup_code.py"),
+                           path])
