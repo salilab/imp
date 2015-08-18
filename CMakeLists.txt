@@ -37,6 +37,11 @@ if(POLICY CMP0054)
 cmake_policy(SET CMP0054 NEW)
 endif(POLICY CMP0054)
 
+# Honor link flags in try_compile() tests
+if(POLICY CMP0056)
+cmake_policy(SET CMP0056 NEW)
+endif(POLICY CMP0056)
+
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPExecuteProcess.cmake)
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPAddTests.cmake)
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/CheckCompiles.cmake)
