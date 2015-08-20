@@ -199,7 +199,8 @@ def link(source, target, verbose=False):
         os.unlink(tpath)
     if verbose:
         print("linking", spath, tpath)
-    if hasattr(os, 'symlink'):
+    if hasattr(os, 'symlink') and sys.platform != 'win32':
+        # Python 3 on Windows has os.symlink but it doesn't always work
         os.symlink(spath, tpath)
     # Copy instead of link on platforms that don't support symlinks (Windows)
     elif os.path.isdir(spath):
