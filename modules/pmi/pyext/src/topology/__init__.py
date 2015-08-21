@@ -165,7 +165,7 @@ class State(SystemBase):
         """
         # check whether the molecule name is already assigned
         if name in self.molecules:
-            raise WrongMoleculeName('Cannot use a molecule name already used')
+            raise Exception('ERROR: Cannot use a molecule name already used')
 
         mol = Molecule(self,name,sequence,chain_id,copy_num=0)
         self.molecules[name].append(mol)

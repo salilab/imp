@@ -119,6 +119,10 @@ def build_along_backbone(mdl,root,residues,rep_type,ca_centers=True):
     cur_fragment=[]
     fragments=[]
 
+    # should we decide to embrace continuous resolutions:
+    base_res = 0 #1.0
+    bead_res = 1 #0.1
+
     # group into fragments with identical resolutions (and structure source, if any)
     for res in residues:
         if prev_rep is None:
@@ -152,22 +156,21 @@ def build_along_backbone(mdl,root,residues,rep_type,ca_centers=True):
             frag = IMP.atom.Fragment.setup_particle(fp,res_nums)
             frag.set_name(name)
             source = IMP.atom.StructureSource.setup_particle(fp,this_source[0],this_source[1])
-            root.add_child(frag)
-
             primary_rep_num=min(this_rep['balls'])
             frep = IMP.atom.Representation.setup_particle(fp,primary_rep_num)
+            root.add_child(frag)
             if 'balls' in this_rep:
                 # if atomic, add the residues as child (inside another fragment - check RMF)
-                if 0 in this_rep['balls']:
-                    f = IMP.atom.Fragment.setup_particle(mdl,mdl.add_particle("resolution 0"),
+                if base_res in this_rep['balls']:
+                    f = IMP.atom.Fragment.setup_particle(mdl,mdl.add_particle("resolution %.1f"%base_res),
                                                        res_nums)
                     for residue in frag_res:
                         f.add_child(residue.get_hierarchy())
                     frag.add_child(f)
 
                 # add one-residue-per-bead
-                if 1 in this_rep['balls']:
-                    res1 = IMP.atom.Fragment.setup_particle(mdl,mdl.add_particle("resolution 1"),res_nums)
+                if bead_res in this_rep['balls']:
+                    res1 = IMP.atom.Fragment.setup_particle(mdl,mdl.add_particle("resolution %.1f"%bead_res),res_nums)
                     for residue in frag_res:
                         if ca_centers==True:
                             rp1 = IMP.Particle(mdl)
@@ -189,20 +192,19 @@ def build_along_backbone(mdl,root,residues,rep_type,ca_centers=True):
                             shape = IMP.algebra.Sphere3D(IMP.core.XYZ(calpha).get_coordinates(),radius)
                             IMP.core.XYZR.setup_particle(rp1,shape)
                             IMP.atom.Mass.setup_particle(rp1,mass)
-                    if primary_rep_num==1:
+                    if primary_rep_num==bead_res:
                         frag.add_child(res1)
                     else:
-                        frep.add_representation(res1,IMP.atom.BALLS,1)
+                        frep.add_representation(res1,IMP.atom.BALLS,bead_res)
 
                 # add all other resolutions
-                for resolution in set(this_rep['balls']) - set([0,1]):
+                for resolution in set(this_rep['balls']) - set([base_res,bead_res]):
                     resx = IMP.atom.Fragment.setup_particle(mdl,mdl.add_particle("resolution "+str(resolution)),res_nums)
-
                     # we create a dummy chain hierarchy and copy
                     # residues in it, beacuse the chain is required by simplified_along_backbone
                     c = IMP.atom.Chain.setup_particle(mdl,mdl.add_particle("dummy chain"),"X")
                     for residue in frag_res:
-                        c.add_child(residue.hier)
+                        c.add_child(IMP.atom.create_clone(residue.hier))
                     sh = IMP.atom.create_simplified_along_backbone(c,resolution)
                     for ch in sh.get_children():
                         resx.add_child(ch)
@@ -230,7 +232,11 @@ def build_along_backbone(mdl,root,residues,rep_type,ca_centers=True):
             frag = IMP.atom.Fragment.setup_particle(mdl,mdl.add_particle(name),res_nums)
             root.add_child(frag)
             frep = IMP.atom.Representation.setup_particle(frag,this_resolution)
-            hiers = build_necklace(mdl,frag_res,this_resolution)
+            if this_resolution == 0.1:
+                build_resolution = 1
+            else:
+                build_resolution=this_resolution
+            hiers = build_necklace(mdl,frag_res,build_resolution)
             for h in hiers:
                 frag.add_child(h)
 

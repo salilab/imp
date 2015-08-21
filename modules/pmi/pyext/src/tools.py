@@ -1485,11 +1485,15 @@ def get_hierarchies_from_spec(spec):
     @param spec Can be one of the following inputs:
                               IMP Selection, Hierarchy,
                               PMI Molecule, Residue, or a list/set
-    /note if passed PMI objects like Molecules or Residues, will return ALL resolutions!
+    \note if passed PMI objects like Molecules or Residues, will return ALL resolutions!
     """
+
+    ret = []
 
     # check for consistent type, make into list
     if hasattr(spec,'__iter__'):
+        if len(spec)==0:
+            return ret
         type_set = set(type(a) for a in spec)
         if len(type_set)!=1:
             raise Exception('get_hierarchies_from_spec: can only pass one type of object at a time')
@@ -1498,8 +1502,6 @@ def get_hierarchies_from_spec(spec):
     else:
         tp = type(spec)
         spec = [spec]
-
-    ret = []
 
     # if PMI object, get all resolutions. otherwise just return the hiers
     if tp==IMP.pmi.topology.Residue:
@@ -1532,6 +1534,9 @@ def select_at_all_resolutions(hier,
     """Perform selection using the usual keywords but return ALL resolutions (BEADS and GAUSSIANS).
     Returns in flat list!
     """
+
+    if type(hier) is not IMP.atom.Hierarchy:
+        raise Exception('select_at_all_resolutions: you have to pass an IMP Hierarchy')
     if 'resolution' in kwargs or 'representation_type' in kwargs:
         raise Exception("don't pass resolution or representation_type to this function")
 
@@ -1547,21 +1552,44 @@ def select_at_all_resolutions(hier,
     # gather resolutions
     init_sel = IMP.atom.Selection(hier,**kwargs)
     init_ps = init_sel.get_selected_particles()
-    all_bead_res = set()
-    all_density_res = set()
+    all_bead_res = OrderedSet()
+    all_density_res = OrderedSet()
+
     for p in init_ps:
         b,d = get_resolutions(IMP.atom.Hierarchy(p))
-        all_bead_res |= set(b)
-        all_density_res |= set(d)
+        all_bead_res |= OrderedSet(b)
+        all_density_res |= OrderedSet(d)
 
     # final selection
-    ret = set() #{"BEADS":{},"DENSITIES":{}}
+    ret = OrderedSet()
     for res in all_bead_res:
-        sel = IMP.atom.Selection(hier,resolution=res,representation_type=IMP.atom.BALLS,**kwargs)
-        #ret["BEADS"][res] = sel.get_selected_particles()
-        ret|=set(sel.get_selected_particles())
+        sel = IMP.atom.Selection(hier,resolution=res,
+                                 representation_type=IMP.atom.BALLS,**kwargs)
+        ret|=OrderedSet(sel.get_selected_particles())
     for res in all_density_res:
-        sel = IMP.atom.Selection(hier,resolution=res,representation_type=IMP.atom.DENSITIES,**kwargs)
-        #ret["DENSITIES"][res] = sel.get_selected_particles()
-        ret|=set(sel.get_selected_particles())
+        sel = IMP.atom.Selection(hier,resolution=res,
+                                 representation_type=IMP.atom.DENSITIES,**kwargs)
+        ret|=OrderedSet(sel.get_selected_particles())
     return list(ret)
+
+
+def get_rbs_and_beads(hiers):
+    """Returns unique objects in original order"""
+    rbs = set()
+    beads = []
+    rbs_ordered = []
+    for p in get_all_leaves(hiers):
+        if IMP.core.RigidMember.get_is_setup(p):
+            rb = IMP.core.RigidMember(p).get_rigid_body()
+            if rb not in rbs:
+                rbs.add(rb)
+                rbs_ordered.append(rb)
+        elif IMP.core.NonRigidMember.get_is_setup(p):
+            rb = IMP.core.NonRigidMember(p).get_rigid_body()
+            if rb not in rbs:
+                rbs.add(rb)
+                rbs_ordered.append(rb)
+            beads.append(p)
+        else:
+            beads.append(p)
+    return rbs_ordered,beads

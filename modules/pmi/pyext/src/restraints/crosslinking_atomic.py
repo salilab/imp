@@ -291,11 +291,11 @@ class AtomicCrossLinkMSRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs_nuis)
+        IMP.pmi.tools.add_restraint_to_model(self.mdl, self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.mdl, self.rs_nuis)
         if self.create_nz:
-            IMP.pmi.tools.add_restraint_to_model(self.m, self.rset_bonds)
-            IMP.pmi.tools.add_restraint_to_model(self.m, self.rset_angles)
+            IMP.pmi.tools.add_restraint_to_model(self.mdl, self.rset_bonds)
+            IMP.pmi.tools.add_restraint_to_model(self.mdl, self.rset_angles)
 
     def get_hierarchy(self):
         return self.prot

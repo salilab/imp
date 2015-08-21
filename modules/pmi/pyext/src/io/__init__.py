@@ -184,6 +184,7 @@ class Subsequence(object):
         @param residue_tuple PDB-style inclusive residue range
         """
         self.seqs.append({'chain':chain,'molecule':molecule,'residue_tuple':residue_tuple})
+
     def join(self,new_subsequence):
         for s in new_subsequence:
             self.seqs.append(s)
@@ -224,7 +225,7 @@ class Subsequence(object):
         return rep
 
     def __getitem__(self,key):
-        return self.data[key]
+        return self.seqs[key]
 
     def __iter__(self):
         return self.seqs.__iter__()

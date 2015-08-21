@@ -16,7 +16,7 @@ def get_atomic_residue_list(residues):
             r1.append(IMP.atom.get_one_letter_code(r.get_residue_type()))
     return ''.join(r1)
 
-class RepresentationNewTest(IMP.test.TestCase):
+class TopologyTest(IMP.test.TestCase):
 
     def test_read_sequences(self):
         '''Test if the sequence reader returns correct strings'''
@@ -179,16 +179,12 @@ class RepresentationNewTest(IMP.test.TestCase):
     def test_build_system(self):
         s=topology.System()
         st1=s.create_state()
-        seqs=topology.Sequences(self.get_input_file_name('seqs.fasta'),
-                         name_map={'Protein_1':'Prot1',
-                                   'Protein_2':'Prot2',
-                                   'Protein_3':'Prot3'})
-        m1=st1.create_molecule("Prot1",sequence=seqs["Prot1"])
+        seqs=topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        m1=st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res=m1.add_structure(self.get_input_file_name('prot.pdb'),chain_id='A',
                                     res_range=(1,10),offset=-54)
         non_atomic_res=m1.get_residues()-atomic_res
 
-        #m1.add_representation(m1[:]-atomic_res,resolutions=[1])
         m1.add_representation(atomic_res,resolutions=[0,1,10])
         m1.add_representation(non_atomic_res,resolutions=[10])
         hier = m1.build(merge_type="backbone")
@@ -202,6 +198,7 @@ class RepresentationNewTest(IMP.test.TestCase):
         for rnum,rname,anums in zip((1,2,5,6,7,8,9),'QEVVKDL',(9,9,7,7,9,8,8)):
             res = IMP.atom.Selection(hier,residue_index=rnum,
                                      resolution=0).get_selected_particles()
+
             self.assertEquals(len(res),anums)
             self.assertEquals(IMP.atom.Residue(IMP.atom.Atom(res[0]).get_parent()).get_residue_type(),
                               topology.get_residue_type_from_one_letter_code(rname))
@@ -226,6 +223,25 @@ class RepresentationNewTest(IMP.test.TestCase):
         sel1 = IMP.atom.Selection(hier,residue_index=1,resolution=10)
         sel2 = IMP.atom.Selection(hier,residue_index=5,resolution=10)
         self.assertNotEquals(sel1.get_selected_particles(),sel2.get_selected_particles())
+
+    def test_build_nobeads(self):
+        '''test if add_representations propulates the correct Residues'''
+        s=topology.System()
+        st1=s.create_state()
+        seqs=topology.Sequences(self.get_input_file_name('seqs.fasta'),
+                         name_map={'Protein_1':'Prot1',
+                                   'Protein_2':'Prot2',
+                                   'Protein_3':'Prot3'})
+        m1=st1.create_molecule("Prot1",sequence=seqs["Prot1"])
+        atomic_res=m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                    chain_id='A',res_range=(1,10),offset=-54)
+        m1.add_representation(atomic_res,resolutions=[0,10])
+        hier = s.build()
+        sel0 = IMP.atom.Selection(hier,resolution=0)
+        self.assertEquals(len(sel0.get_selected_particles()),57)
+        sel10 = IMP.atom.Selection(hier,resolution=10)
+        self.assertEquals(len(sel10.get_selected_particles()),2)
+
 
     def test_create_copy(self):
         '''Test creation of Copies'''
@@ -279,6 +295,8 @@ class RepresentationNewTest(IMP.test.TestCase):
         self.assertEquals(set(sel11+sel21),set(sel31))
 
     def test_round_trip(self):
+        base_res = 0
+        bead_res = 1
         mdl = IMP.Model()
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
@@ -286,13 +304,13 @@ class RepresentationNewTest(IMP.test.TestCase):
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
                               chain_id='A',res_range=(1,10),offset=-54)
-        m1.add_representation(a1,resolutions=[0])
-        m1.add_representation(resolutions=[1])
+        m1.add_representation(a1,resolutions=[base_res])
+        m1.add_representation(resolutions=[bead_res])
         s.build()
         orig_hier = s.get_hierarchy()
 
-        fname = self.get_tmp_file_name('test_round_trip.rmf3')
-
+        #fname = self.get_tmp_file_name('test_round_trip.rmf3')
+        fname = 'test_round_trip.rmf3'
         rh = RMF.create_rmf_file(fname)
         IMP.rmf.add_hierarchy(rh, orig_hier)
         IMP.rmf.save_frame(rh)
@@ -306,21 +324,24 @@ class RepresentationNewTest(IMP.test.TestCase):
                          len(IMP.atom.get_leaves(h2)))
 
         # check all coordinates
-        selA0 = IMP.atom.Selection(orig_hier,resolution=0).get_selected_particles()
+        selA0 = IMP.atom.Selection(orig_hier,resolution=base_res).get_selected_particles()
         coordsA0 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
                     for p in selA0]
-        selB0 = IMP.atom.Selection(h2,resolution=0).get_selected_particles()
+        selB0 = IMP.atom.Selection(h2,resolution=base_res).get_selected_particles()
         coordsB0 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
                     for p in selB0]
         self.assertEqual(coordsA0,coordsB0)
 
-        selA1 = IMP.atom.Selection(orig_hier,resolution=1).get_selected_particles()
+        selA1 = IMP.atom.Selection(orig_hier,resolution=bead_res).get_selected_particles()
         coordsA1 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
                     for p in selA1]
-        selB1 = IMP.atom.Selection(h2,resolution=1).get_selected_particles()
+        selB1 = IMP.atom.Selection(h2,resolution=bead_res).get_selected_particles()
         coordsB1 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
                     for p in selB1]
         self.assertEqual(coordsA1,coordsB1)
+
+    def test_setup_densities(self):
+        pass
 
 if __name__ == '__main__':
     IMP.test.main()
