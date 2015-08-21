@@ -24,11 +24,9 @@ IMPCORE_BEGIN_NAMESPACE
     the scales are estimated from the range of values found for the attribute
     upon initialization. These estimates can be viewed either by calling
     Model::get_range(my_float_key) or by turning on TERSE logging and
-   looking
-    at logged messages. If this estimate does not accurately reflect the
-    scale, then you can use Model::set_range to set a more accurate
-   range
-    for the parameters.
+    looking at logged messages. If this estimate does not accurately reflect
+    the scale, then you can use Model::set_range to set a more accurate
+    range for the parameters.
 */
 class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
  public:
