@@ -27,6 +27,9 @@ IMPCORE_BEGIN_NAMESPACE
     looking at logged messages. If this estimate does not accurately reflect
     the scale, then you can use Model::set_range to set a more accurate
     range for the parameters.
+
+    \note Currently, rigid bodies are not handled (and will not be moved
+          by this optimizer).
 */
 class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
  public:
