@@ -45,7 +45,7 @@ ChangeLog {#changelog}
 - Several functions have been deprecated in this release (and will be removed
   in the next). These include several Restraint constructors that take Particle
   or Particles objects (use constructors that take an IMP::Model and
-  ParticleIndex or ParticleIndexes) instead; and add_particle*(),
+  ParticleIndex or ParticleIndexes instead); and add_particle*(),
   set_particle*() and clear_particle*() in several Container objects (use add(),
   set() and clear() with particle indexes instead).
 - On platforms that support it, OpenMP is turned on by default. To speed up
