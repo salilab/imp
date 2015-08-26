@@ -10,6 +10,8 @@
 import xml.etree.ElementTree as ET
 import glob
 import os
+import sys
+import re
 
 def get_version():
     version = "develop"
@@ -101,10 +103,14 @@ def write_children(children, out):
     out.write('</ul>\n')
 
 def add_page_navigation(html_dir, pagename, children, prevpage, nextpage,
-                        uppage, already_patched):
+                        uppage, page_to_source, already_patched):
     def make_link(title, img, dest):
         return '<a href="%s.html" title="%s"><img src="%s.png" alt="%s"/></a>' \
                % (dest, title, img, img)
+    def github_edit(dest):
+        root = 'https://github.com/salilab/imp/edit/develop/'
+        return('<a href="%s%s" title="Edit on GitHub"><img src="edit.png" '
+               'alt="Edit on GitHub"/></a>' % (root, dest))
     links = []
     if prevpage:
         links.append(make_link("Go to previous page", "prev", prevpage))
@@ -112,10 +118,11 @@ def add_page_navigation(html_dir, pagename, children, prevpage, nextpage,
         links.append(make_link("Go to parent page", "up", uppage))
     if nextpage:
         links.append(make_link("Go to next page", "next", nextpage))
+    edit_link = github_edit(page_to_source[pagename])
     doxversion = '<a class="doxversion" ' \
                  + 'href="http://integrativemodeling.org/doc.html">' \
                  + 'version %s</a>' % get_version()
-    toplinks = '<div class="doxnavlinks">' + doxversion \
+    toplinks = '<div class="doxnavlinks">' + edit_link + " " + doxversion \
                + " ".join(links) + '</div>\n'
     botlinks = '<div class="doxnavlinks">' + " ".join(links) + '</div>\n'
     fname = os.path.join(html_dir, pagename + '.html')
@@ -143,10 +150,39 @@ def get_page_children(i, contents):
             break
     return children
 
+def get_page_name_from_source(source, id_re, id_to_name):
+    with open(source) as fh:
+        for line in fh:
+            if '\\mainpage' in line:
+                return 'index'
+            m = id_re.search(line)
+            if m:
+                return id_to_name[m.group(1)]
+    raise ValueError("Cannot find page id in %s" % source)
+
+def map_pages_to_source(top_source_dir, source_subdirs, id_to_name):
+    mapping = {}
+    for pattern, id_re in (("*.md", re.compile(r"\{#([^}]+)\}")),
+                           ("*.dox", re.compile(r"\\page\s+(\S+)"))):
+        for source_subdir in source_subdirs:
+            for source in glob.glob(os.path.join(top_source_dir, source_subdir,
+                                                 pattern)):
+                page_name = get_page_name_from_source(source, id_re, id_to_name)
+                if source_subdir == '.':
+                    mapping[page_name] = os.path.basename(source)
+                else:
+                    mapping[page_name] = os.path.join(source_subdir,
+                                                      os.path.basename(source))
+    return mapping
+
 def main():
+    top_source_dir = sys.argv[1]
+    source_subdirs = sys.argv[2:]
     xml_dir = 'doxygen/manual/xml'
     html_dir = 'doc/manual'
     page_map = map_ids_to_pages(xml_dir)
+    page_to_source = map_pages_to_source(top_source_dir, source_subdirs,
+                                         page_map)
     tree = ET.parse(os.path.join(xml_dir, 'indexpage.xml'))
     root = tree.getroot()
 
@@ -158,10 +194,10 @@ def main():
                             contents[i-1][0] if i > 0 else 'index',
                             contents[i+1][0] if i+1 < len(contents) else None,
                             contents[i][2] if contents[i][2] else 'index',
-                            already_patched)
+                            page_to_source, already_patched)
     if len(contents) > 0:
         add_page_navigation(html_dir, 'index', [], None, contents[0][0], None,
-                            already_patched)
+                            page_to_source, already_patched)
     patch_all_other_html_pages(html_dir, already_patched)
     patch_contents(os.path.join(html_dir, 'index.html'))
 
