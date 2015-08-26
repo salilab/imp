@@ -107,6 +107,7 @@ int main(int argc, char* argv[]) {
   std::cerr << std::endl;
 
   float rmsd_threshold = 2.0;
+  bool transformation = true;
   po::options_description
     desc("Usage: <filenames> <pdb_file1> <pdb_file2> ...");
   desc.add_options()
@@ -115,6 +116,8 @@ int main(int argc, char* argv[]) {
      "input profile files")
     ("rmsd-threshold,r", po::value<float>(&rmsd_threshold)->default_value(2.0),
      "rmsd threshold for structure similarity (default = 2.0)")
+    ("transformation,t",
+     "calculate transformation that minimizes RMSD (default = true)")
     ;
 
    po::positional_options_description p;
@@ -132,6 +135,7 @@ int main(int argc, char* argv[]) {
     std::cout << desc << "\n";
     return 0;
   }
+  if (vm.count("transformation")) transformation = false;
 
   // read the scores
   std::vector<std::pair<double, std::string> > file_name_score_pairs;
@@ -143,6 +147,13 @@ int main(int argc, char* argv[]) {
   std::vector<IMP::algebra::Vector3Ds> coords_vec;
   for (unsigned int i=1; i<files.size(); i++) {
     read_pdb(files[i], pdb_file_names, coords_vec, 2);
+  }
+
+  if (pdb_file_names.size() != file_name_score_pairs.size()) {
+    std::cerr << "Different number of files in " << files[0] << " "
+              << file_name_score_pairs.size() << " vs. number of pdbs "
+              << pdb_file_names.size() << std::endl;
+    exit(0);
   }
 
   // map pdb_file_name to index
@@ -165,7 +176,8 @@ int main(int argc, char* argv[]) {
   unsigned int number_of_clusters =
     IMP::kinematics::rmsd_clustering(sorted_coords_vec,
                                      out_cluster_numbers,
-                                     rmsd_threshold);
+                                     rmsd_threshold,
+                                     transformation);
 
   std::cout << "Number of clusters with RMSD " << rmsd_threshold << ": "
             << number_of_clusters << std::endl;

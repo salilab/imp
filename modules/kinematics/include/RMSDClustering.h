@@ -22,7 +22,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 IMPKINEMATICSEXPORT
 unsigned int rmsd_clustering(const std::vector<IMP::algebra::Vector3Ds>& coords_vec,
                              std::vector<int>& out_cluster_numbers,
-                             float rmsd_thr);
+                             float rmsd_thr, bool compute_trans);
 
 IMPKINEMATICS_END_NAMESPACE
 

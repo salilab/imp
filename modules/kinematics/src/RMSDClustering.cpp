@@ -13,7 +13,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 unsigned int rmsd_clustering(const std::vector<IMP::algebra::Vector3Ds>& coords_vec,
                              std::vector<int>& out_cluster_numbers,
-                             float rmsd_thr) {
+                             float rmsd_thr, bool compute_trans) {
 
   out_cluster_numbers.resize(coords_vec.size(), -1); // init cluster numbers
 
@@ -24,12 +24,17 @@ unsigned int rmsd_clustering(const std::vector<IMP::algebra::Vector3Ds>& coords_
       // group others into this cluster
       for (unsigned int j = i+1; j < out_cluster_numbers.size(); j++) {
         // calculate RMSD
-        IMP::algebra::Transformation3D tr =
-          IMP::algebra::get_transformation_aligning_first_to_second(coords_vec[i],
-                                                                    coords_vec[j]);
-        double rmsd = IMP::algebra::get_rmsd_transforming_first(tr,
-                                                                coords_vec[j],
-                                                                coords_vec[i]);
+        double rmsd = 0;
+        if (compute_trans) {
+          IMP::algebra::Transformation3D tr =
+            IMP::algebra::get_transformation_aligning_first_to_second(coords_vec[i],
+                                                                      coords_vec[j]);
+          rmsd = IMP::algebra::get_rmsd_transforming_first(tr,
+                                                           coords_vec[i],
+                                                           coords_vec[j]);
+        } else {
+          rmsd = IMP::algebra::get_rmsd(coords_vec[i], coords_vec[j]);
+        }
         if (rmsd <= rmsd_thr) out_cluster_numbers[j] = cluster_counter;
       }
       cluster_counter++;
