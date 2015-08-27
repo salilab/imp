@@ -13,8 +13,8 @@ They all maintain an invariant which is that they have a list of close pairs tha
 - when initialized has all pairs within `threshold + 2*slack` of one another
 That way, until anything moves more than slack the list is still correct.
 
-They, all use slightly different code paths but have an overall similar structure:
-- A list of pairs that are currently close to one another, given the threshold, and the slack
+They all use slightly different code paths but have an overall similar structure:
+- A list of pairs that are currently close to one another, given the threshold and the slack
 - A data structure that keeps track of which particles have moved more than the slack
 - An update procedure for adding new close pairs when particles have moved more than the slack.
 
