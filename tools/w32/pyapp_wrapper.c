@@ -89,10 +89,14 @@ int main(int argc, char *argv[]) {
    
   if (bResult) {
     if (si.hProcess) {
+      DWORD exit_code;
       WaitForSingleObject(si.hProcess, INFINITE);
+      GetExitCodeProcess(si.hProcess, &exit_code);
       CloseHandle(si.hProcess);
+      return exit_code;
+    } else {
+      return 0;
     }
-    return 0;
   } else {
     fprintf(stderr, "Failed to start process, code %d\n", GetLastError());
     return 1;
