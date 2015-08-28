@@ -108,7 +108,7 @@ def add_page_navigation(html_dir, pagename, children, prevpage, nextpage,
         return '<a href="%s.html" title="%s"><img src="%s.png" alt="%s"/></a>' \
                % (dest, title, img, img)
     def github_edit(dest):
-        root = 'https://github.com/salilab/imp/edit/develop/'
+        root = 'https://github.com/salilab/imp/blob/develop/'
         return('<a href="%s%s" title="Edit on GitHub"><img src="edit.png" '
                'alt="Edit on GitHub"/></a>' % (root, dest))
     links = []
