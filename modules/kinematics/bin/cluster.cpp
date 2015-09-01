@@ -192,4 +192,11 @@ int main(int argc, char* argv[]) {
     }
   }
   out_file.close();
+
+  std::ofstream out_file1("all_clusters.txt");
+  for (unsigned int i=0; i<out_cluster_numbers.size(); i++) {
+    curr_cluster = out_cluster_numbers[i];
+    out_file1 << file_name_score_pairs[i].second << " " << curr_cluster << std::endl;
+  }
+  out_file1.close();
 }
