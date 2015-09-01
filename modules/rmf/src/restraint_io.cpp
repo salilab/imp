@@ -287,9 +287,9 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
                 double score = r->get_last_score();
                 r->set_was_used(true);
                 if (score != 0) {
-                  IMP_LOG_VERBOSE("Saving subscore for for " << r->get_name()
-                                                             << " of " << score
-                                                             << std::endl);
+                  IMP_LOG_VERBOSE("Saving subscore for " << r->get_name()
+                                                         << " of " << score
+                                                         << std::endl);
                   RMF::NodeHandle nnh = get_node(s, d, rf_, nh);
                   RMF::decorator::Score csd = sf_.get(nnh);
                   csd.set_frame_score(score);
