@@ -19,7 +19,8 @@ env:
   - TEST=XXX BUILD="-j 2 IMP.domino" PERCPP=domino
   - TEST=XXX BUILD="-j 2 IMP.em" PERCPP=em
   #- TEST=XXX BUILD="-j 2 IMP.em2d" PERCPP=em2d
-  - TEST=XXX BUILD="-j 2 IMP.example" PERCPP=example
+  # too slow
+  #- TEST=XXX BUILD="-j 2 IMP.example" PERCPP=example
   #- TEST=XXX BUILD="-j 2 IMP.gsl" PERCPP=gsl
   # very slow
   #- TEST=XXX BUILD="-j 2 IMP.isd" PERCPP=isd
