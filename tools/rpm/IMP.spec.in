@@ -55,10 +55,10 @@ BuildRequires: ann-devel
 # (Or, if you don't need cnmultifit, you can comment out this line)
 BuildRequires: libTAU-devel
 
-# The cmake included with RHEL 6 is too old; use cmake28 from EPEL instead.
-# RHEL 5 doesn't have cmake28; you will need to build this package yourself
-# (or use ours, available at http://integrativemodeling.org/build-extras/RHEL5/)
-%if 0%{?rhel} == 5 || 0%{?rhel} == 6
+# The cmake included with RHEL 5 is too old; use a newer cmake28 instead.
+# You will need to build this package yourself (or use ours, available at
+# http://integrativemodeling.org/build-extras/RHEL5/)
+%if 0%{?rhel} == 5
 BuildRequires: cmake28
 %define cmake cmake28
 %define ctest ctest28
