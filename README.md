@@ -1,22 +1,23 @@
 [![nightly build](http://integrativemodeling.org/nightly/results/?p=stat)](http://integrativemodeling.org/nightly/results/)
 
-Documentation and an installation guide can be found at
-http://integrativemodeling.org/nightly/doc/manual/.
+For full installation and usage instructions, see the
+[documentation](http://integrativemodeling.org/nightly/doc/manual/).
 
-Building IMP:
-=============
+Building IMP from source code
+=============================
 
 To build IMP source found in `path/to/imp-source` and install it in
 `path_to_install` do:
 
-      1. `cmake path/to/imp-source -DCMAKE_INSTALL_PREFIX=path_to_install`
-      2. `make -j 8`
-      3. `make install`
+1. `cmake path/to/imp-source -DCMAKE_INSTALL_PREFIX=path_to_install`
+2. `make -j4`
+3. `make install`
+
+See the [installation instructions in the manual](http://integrativemodeling.org/nightly/doc/manual/installation.html)
+for more details.
 
 Run `ccmake` to see more variables that can be used to customize your build and
-install. Note, if you got IMP from `git` you first need to run `setup_git.py`
-or at least `git submodule init; git submodule update` in the source
-directory to get the submodules.
+install.
 
 To run IMP without installing, build IMP and then use `setup_environment.sh` to
 set the required environment variables. For example, to run `ligand_score`, do
@@ -24,33 +25,31 @@ set the required environment variables. For example, to run `ligand_score`, do
 `./setup_environment.sh $SHELL` and then `ligand_score arguments...` in the
 new shell.
 
-See http://integrativemodeling.org/nightly/doc/manual/cmake_config.html
-for more information on building with cmake.
-
 Copyright and License information
 =================================
 
 IMP is Copyright 2007-2015 IMP Inventors. The IMP Inventors are
 Andrej Sali, Ben Webb, Daniel Russel, Keren Lasker, Dina Schneidman,
-Javier Velazquez-Muriel, Friedrich Foerster, Elina Tjioe, Hao Fan,
+Javier Velázquez-Muriel, Friedrich Förster, Elina Tjioe, Hao Fan,
 Seung Joong Kim, Yannick Spill, Riccardo Pellarin.
 
 IMP is largely available under the GNU Lesser GPL; see the file COPYING.LGPL
 for the full text of this license. Some IMP modules are available under the
-GNU GPL (see the file COPYING.GPL). Please refer to the documentation at
-http://salilab.org/imp/doc.html for more detail.
+GNU GPL (see the file COPYING.GPL). Please refer to the
+[documentation](http://integrativemodeling.org/nightly/doc/manual/licenses.html)
+for more detail.
 
-Files and folders structure:
-============================
+Files and folders structure
+===========================
 
-The lib directory contains Python modules (both pure Python, in the IMP
-subdirectory, and C++ extensions, as _IMP_foo.so in the top-level directory)
-and the IMP C++ libraries (as libimp_foo.so in the top-level directory).
-Rationale: Windows searches for C++ dynamic libraries in the same directory
-as C++ Python extensions.
+When you build IMP, the `lib` directory contains Python modules (both pure
+Python, in the `IMP` subdirectory, and C++ extensions, as `_IMP_foo.so`
+in the top-level directory) and the IMP C++ libraries (as `libimp_foo.so`
+in the top-level directory). Rationale: Windows searches for C++ dynamic
+libraries in the same directory as C++ Python extensions.
 
-The include directory contains all public header files under the IMP
+The `include` directory contains all public header files under the `IMP`
 subdirectory. Modules are in named subdirectories under that.
 
-The swig directory contains all SWIG interface (.i) files used to build
+The `swig` directory contains all SWIG interface (`.i`) files used to build
 the Python interface.
