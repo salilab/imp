@@ -44,8 +44,8 @@ will not build, and some will not function optimally.
 - [OpenCV](\ref OpenCV): needed to use the IMP.em2d module or the
   [idock](@ref idock_pcsk9) and [emagefit](@ref emagefit_3sfd) command
   line tools.
-- [FFTW](http://www.fftw.org): need to use the IMP.em2d or IMP.multifit modules
-  or the [multifit](@ref multifit_3sfd) command line tool.
+- [FFTW](http://www.fftw.org): needed to use the IMP.em2d or IMP.multifit
+  modules or the [multifit](@ref multifit_3sfd) command line tool.
 - [libTAU](http://integrativemodeling.org/libTAU.html): needed to use the
   IMP.cnmultifit module or the [cnmultifit](@ref cnmultifit_groel) command
   line tool.
