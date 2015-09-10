@@ -1,3 +1,5 @@
+[![nightly build](http://integrativemodeling.org/nightly/results/?p=stat)](http://integrativemodeling.org/nightly/results/)
+
 Documentation and an installation guide can be found at
 http://integrativemodeling.org/nightly/doc/manual/.
 
