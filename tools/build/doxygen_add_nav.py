@@ -167,6 +167,9 @@ def map_pages_to_source(top_source_dir, source_subdirs, id_to_name):
         for source_subdir in source_subdirs:
             for source in glob.glob(os.path.join(top_source_dir, source_subdir,
                                                  pattern)):
+                # Ignore toplevel README
+                if source_subdir == '.' and source.endswith('README.md'):
+                    continue
                 page_name = get_page_name_from_source(source, id_re, id_to_name)
                 if source_subdir == '.':
                     mapping[page_name] = os.path.basename(source)
