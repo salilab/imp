@@ -33,39 +33,6 @@ def patch_html(content):
                   .replace('%IMP', 'IMP') \
                   .replace('`` blocks', '<code>*/</code> blocks')
 
-def patch_contents(index_html):
-    """Apply extra patches to index.html"""
-    version = '<b>' + get_version() + '</b>'
-    if 'develop' in version:
-        version += ' (a nightly build)'
-    content = open(index_html).readlines()
-    out = open(index_html, 'w')
-    for line in content:
-        line = line.replace('<div class="title">Contents',
-                            '<div class="title">IMP Manual')
-        line = line.replace('IMPVERSION', version)
-        out.write(line)
-
-def patch_all_other_html_pages(html_dir, already_patched):
-    """Patch pages not already patched"""
-    for f in glob.glob(os.path.join(html_dir, "*.html")):
-        if f not in already_patched:
-            content = patch_html(open(f).readlines())
-            out = open(f, 'w')
-            for line in content:
-                out.write(line)
-
-def map_ids_to_pages(xml_dir):
-    mapping = {}
-    for f in glob.glob(os.path.join(xml_dir, "*.xml")):
-        tree = ET.parse(f)
-        root = tree.getroot()
-        compounddef = root.find('compounddef')
-        if compounddef is not None and compounddef.attrib['kind'] == 'page':
-            # Remove .xml suffix
-            mapping[compounddef.attrib['id']] = os.path.basename(f)[:-4]
-    return mapping
-
 def get_all_listitems(top_element, parent=None):
     for child in top_element:
         if child.tag == 'listitem':
@@ -83,126 +50,163 @@ def get_all_links(item):
                and not 'external' in ref.attrib:
                 yield ref
 
-def get_contents(root, page_map):
-    parent_pages = {}
-    for item, parent in get_all_listitems(root):
-        if parent is not None and parent not in parent_pages:
-            links = list(get_all_links(parent))
-            if len(links) > 0:
-                parent_pages[parent] = page_map[links[0].attrib['refid']]
-            else:
-                parent_pages[parent] = None
-        for link in get_all_links(item):
-            yield page_map[link.attrib['refid']], link.text, parent_pages.get(parent, None)
-
-def write_children(children, out):
-    out.write('<ul>\n')
-    for c in children:
-        out.write('<li><a class="el" href="%s.html">%s</a></li>\n'
-                  % (c[0], c[1]))
-    out.write('</ul>\n')
-
-def add_page_navigation(html_dir, pagename, children, prevpage, nextpage,
-                        uppage, page_to_source, already_patched):
-    def make_link(title, img, dest):
-        return '<a href="%s.html" title="%s"><img src="%s.png" alt="%s"/></a>' \
-               % (dest, title, img, img)
-    def github_edit(dest):
-        root = 'https://github.com/salilab/imp/blob/develop/'
-        return('<a href="%s%s" title="Edit on GitHub"><img src="edit.png" '
-               'alt="Edit on GitHub"/></a>' % (root, dest))
-    links = []
-    if prevpage:
-        links.append(make_link("Go to previous page", "prev", prevpage))
-    if uppage:
-        links.append(make_link("Go to parent page", "up", uppage))
-    if nextpage:
-        links.append(make_link("Go to next page", "next", nextpage))
-    edit_link = github_edit(page_to_source[pagename])
-    doxversion = '<a class="doxversion" ' \
-                 + 'href="http://integrativemodeling.org/doc.html">' \
-                 + 'version %s</a>' % get_version()
-    toplinks = '<div class="doxnavlinks">' + edit_link + " " + doxversion \
-               + " ".join(links) + '</div>\n'
-    botlinks = '<div class="doxnavlinks">' + " ".join(links) + '</div>\n'
-    fname = os.path.join(html_dir, pagename + '.html')
-    content = patch_html(open(fname).readlines())
-    already_patched[fname] = None
-    out = open(fname, 'w')
-    for line in content:
-        if line.startswith('</div><!-- top -->'):
-            out.write(line)
-            out.write(toplinks)
-        elif line.startswith('<hr class="footer"'):
-            out.write('<hr class="footer"/>')
-            out.write(botlinks)
-        elif '[SUBPAGES]' in line:
-            write_children(children, out)
-        else:
-            out.write(line)
-
-def get_page_children(i, contents):
-    children = []
-    for ind in range(i + 1, len(contents)):
-        if contents[ind][2] == contents[i][0]:
-            children.append(contents[ind][:2])
-        else:
-            break
-    return children
-
-def get_page_name_from_source(source, id_re, id_to_name):
+def get_page_from_source(source, id_re, id_to_page):
     with open(source) as fh:
         for line in fh:
             if '\\mainpage' in line:
-                return 'index'
+                return id_to_page['indexpage']
             m = id_re.search(line)
             if m:
-                return id_to_name[m.group(1)]
+                return id_to_page[m.group(1)]
     raise ValueError("Cannot find page id in %s" % source)
 
-def map_pages_to_source(top_source_dir, source_subdirs, id_to_name):
-    mapping = {}
-    for pattern, id_re in (("*.md", re.compile(r"\{#([^}]+)\}")),
-                           ("*.dox", re.compile(r"\\page\s+(\S+)"))):
-        for source_subdir in source_subdirs:
-            for source in glob.glob(os.path.join(top_source_dir, source_subdir,
-                                                 pattern)):
-                # Ignore toplevel README
-                if source_subdir == '.' and source.endswith('README.md'):
-                    continue
-                page_name = get_page_name_from_source(source, id_re, id_to_name)
-                if source_subdir == '.':
-                    mapping[page_name] = os.path.basename(source)
-                else:
-                    mapping[page_name] = os.path.join(source_subdir,
-                                                      os.path.basename(source))
-    return mapping
+class Page(object): # id, out_file_name, source_file_name, title
+    def __init__(self, id):
+        self.id = id
+        self.next_page = self.prev_page = self.parent_page = None
+        self.children = []
+
+    def write_children(self, out):
+        out.write('<ul>\n')
+        for c in self.children:
+            out.write('<li><a class="el" href="%s.html">%s</a></li>\n'
+                      % (c.out_file_name, c.title))
+        out.write('</ul>\n')
+
+    def make_link(self, caption, img, dest):
+        return '<a href="%s.html" title="%s: %s"><img src="%s.png" ' \
+               'alt="%s"/></a>' % (dest.out_file_name, caption, dest.title,
+                                   img, img)
+
+    def github_edit(self):
+        root = 'https://github.com/salilab/imp/blob/develop/'
+        return('<a href="%s%s" title="Edit on GitHub"><img src="edit.png" '
+               'alt="Edit on GitHub"/></a>' % (root, self.source_file_name))
+
+
+class Docs(object):
+    def __init__(self, xml_dir, html_dir, top_source_dir, source_subdirs):
+        self.html_dir = html_dir
+        self._contents_page = os.path.join(xml_dir, 'indexpage.xml')
+        self.pages = self._read_xml_pages(xml_dir)
+        self.page_by_id = dict((p.id, p) for p in self.pages)
+        self._find_page_source(top_source_dir, source_subdirs)
+
+    def build_hierarchy(self):
+        index_page = self.page_by_id['indexpage']
+        # Make sure that all pages not listed in the contents have an 'up'
+        # link to the main page
+        for p in self.pages:
+            if p is not index_page:
+                p.parent_page = index_page
+        prev_page = index_page
+        tree = ET.parse(self._contents_page)
+        root = tree.getroot()
+        for item, parent in get_all_listitems(root):
+            parent_page = index_page
+            if parent is not None:
+                links = list(get_all_links(parent))
+                if len(links) > 0:
+                    parent_page = self.page_by_id[links[0].attrib['refid']]
+            for link in get_all_links(item):
+                this_page = self.page_by_id[link.attrib['refid']]
+                if prev_page:
+                    this_page.prev_page = prev_page
+                    prev_page.next_page = this_page
+                this_page.parent_page = parent_page
+                parent_page.children.append(this_page)
+                prev_page = this_page
+
+    def _read_xml_pages(self, xml_dir):
+        pages = []
+        for f in glob.glob(os.path.join(xml_dir, "*.xml")):
+            tree = ET.parse(f)
+            root = tree.getroot()
+            compounddef = root.find('compounddef')
+            if compounddef is not None and compounddef.attrib['kind'] == 'page':
+                p = Page(compounddef.attrib['id'])
+                # Remove .xml suffix
+                p.out_file_name = os.path.basename(f)[:-4]
+                # Handle index special case
+                if p.out_file_name == 'indexpage':
+                    p.out_file_name = 'index'
+                p.title = compounddef.find('title').text
+                pages.append(p)
+        return pages
+
+    def _find_page_source(self, top_source_dir, source_subdirs):
+        for pattern, id_re in (("*.md", re.compile(r"\{#([^}]+)\}")),
+                               ("*.dox", re.compile(r"\\page\s+(\S+)"))):
+            for source_subdir in source_subdirs:
+                for source in glob.glob(os.path.join(top_source_dir,
+                                                     source_subdir, pattern)):
+                    # Ignore toplevel README
+                    if source_subdir == '.' and source.endswith('README.md'):
+                        continue
+                    page = get_page_from_source(source, id_re, self.page_by_id)
+                    if source_subdir == '.':
+                        page.source_file_name = os.path.basename(source)
+                    else:
+                        page.source_file_name = os.path.join(source_subdir,
+                                                   os.path.basename(source))
+
+    def add_page_navigation(self, page):
+        links = []
+        if page.prev_page:
+            links.append(page.make_link("Previous page", "prev",
+                                        page.prev_page))
+        if page.parent_page:
+            links.append(page.make_link("Parent page", "up",
+                                        page.parent_page))
+        if page.next_page:
+            links.append(page.make_link("Next page", "next",
+                                        page.next_page))
+        edit_link = page.github_edit()
+        doxversion = '<a class="doxversion" ' \
+                     + 'href="http://integrativemodeling.org/doc.html">' \
+                     + 'version %s</a>' % get_version()
+        toplinks = '<div class="doxnavlinks">' + edit_link + " " + doxversion \
+                   + " ".join(links) + '</div>\n'
+        botlinks = '<div class="doxnavlinks">' + " ".join(links) + '</div>\n'
+        fname = os.path.join(self.html_dir, page.out_file_name + '.html')
+        content = patch_html(open(fname).readlines())
+        out = open(fname, 'w')
+        for line in content:
+            if line.startswith('</div><!-- top -->'):
+                out.write(line)
+                out.write(toplinks)
+            elif line.startswith('<hr class="footer"'):
+                out.write('<hr class="footer"/>')
+                out.write(botlinks)
+            elif '[SUBPAGES]' in line:
+                page.write_children(out)
+            else:
+                out.write(line)
+
+    def patch_contents(self):
+        """Apply extra patches to index.html"""
+        index_html = os.path.join(self.html_dir, 'index.html')
+        version = '<b>' + get_version() + '</b>'
+        if 'develop' in version:
+            version += ' (a nightly build)'
+        content = open(index_html).readlines()
+        out = open(index_html, 'w')
+        for line in content:
+            line = line.replace('<div class="title">Contents',
+                                '<div class="title">IMP Manual')
+            line = line.replace('IMPVERSION', version)
+            out.write(line)
+
 
 def main():
-    top_source_dir = sys.argv[1]
-    source_subdirs = sys.argv[2:]
-    xml_dir = 'doxygen/manual/xml'
-    html_dir = 'doc/manual'
-    page_map = map_ids_to_pages(xml_dir)
-    page_to_source = map_pages_to_source(top_source_dir, source_subdirs,
-                                         page_map)
-    tree = ET.parse(os.path.join(xml_dir, 'indexpage.xml'))
-    root = tree.getroot()
-
-    contents = list(get_contents(root, page_map))
-    already_patched = {}
-    for i, page in enumerate(contents):
-        children = get_page_children(i, contents)
-        add_page_navigation(html_dir, page[0], children,
-                            contents[i-1][0] if i > 0 else 'index',
-                            contents[i+1][0] if i+1 < len(contents) else None,
-                            contents[i][2] if contents[i][2] else 'index',
-                            page_to_source, already_patched)
-    if len(contents) > 0:
-        add_page_navigation(html_dir, 'index', [], None, contents[0][0], None,
-                            page_to_source, already_patched)
-    patch_all_other_html_pages(html_dir, already_patched)
-    patch_contents(os.path.join(html_dir, 'index.html'))
+    docs = Docs(xml_dir='doxygen/manual/xml',
+                html_dir='doc/manual',
+                top_source_dir=sys.argv[1],
+                source_subdirs=sys.argv[2:])
+    docs.build_hierarchy()
+    for p in docs.pages:
+        docs.add_page_navigation(p)
+    docs.patch_contents()
 
 if __name__ == '__main__':
     main()
