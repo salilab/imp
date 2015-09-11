@@ -34,6 +34,8 @@ def patch_html(content):
                   .replace('`` blocks', '<code>*/</code> blocks')
 
 def get_all_listitems(top_element, parent=None):
+    """Recursively get all listitem objects in an ElementTree.
+       Yield tuples of a listitem object and its immediate parent."""
     for child in top_element:
         if child.tag == 'listitem':
             yield child, parent
@@ -44,6 +46,7 @@ def get_all_listitems(top_element, parent=None):
                 yield x
 
 def get_all_links(item):
+    """Get all hyperlinks that are children of an ElementTree object."""
     for para in item.findall("para"):
         for ref in para.findall("ref"):
             if ref.attrib['kindref'] == 'compound' \
@@ -51,6 +54,7 @@ def get_all_links(item):
                 yield ref
 
 def get_page_from_source(source, id_re, id_to_page):
+    """Given a source .md or .dox file, return the Page object."""
     with open(source) as fh:
         for line in fh:
             if '\\mainpage' in line:
@@ -60,13 +64,15 @@ def get_page_from_source(source, id_re, id_to_page):
                 return id_to_page[m.group(1)]
     raise ValueError("Cannot find page id in %s" % source)
 
-class Page(object): # id, out_file_name, source_file_name, title
+class Page(object):
+    """Representation of a single page in the documentation"""
     def __init__(self, id):
         self.id = id
         self.next_page = self.prev_page = self.parent_page = None
         self.children = []
 
     def write_children(self, out):
+        """Print out an HTML list of all children of this Page"""
         out.write('<ul>\n')
         for c in self.children:
             out.write('<li><a class="el" href="%s.html">%s</a></li>\n'
@@ -74,18 +80,25 @@ class Page(object): # id, out_file_name, source_file_name, title
         out.write('</ul>\n')
 
     def make_link(self, caption, img, dest):
+        """Return an HTML fragment to link to another Page"""
         return '<a href="%s.html" title="%s: %s"><img src="%s.png" ' \
                'alt="%s"/></a>' % (dest.out_file_name, caption, dest.title,
                                    img, img)
 
     def github_edit(self):
+        """Return an HTML fragment to edit this Page on GitHub"""
         root = 'https://github.com/salilab/imp/blob/develop/'
         return('<a href="%s%s" title="Edit on GitHub"><img src="edit.png" '
                'alt="Edit on GitHub"/></a>' % (root, self.source_file_name))
 
 
 class Docs(object):
+    """Representation of all doxygen documentation"""
+
     def __init__(self, xml_dir, html_dir, top_source_dir, source_subdirs):
+        """Read in all documentation (as a list of Page objects) built from
+           sources under top_source_dir and output to XML in xml_dir and
+           HTML in html_dir"""
         self.html_dir = html_dir
         self._contents_page = os.path.join(xml_dir, 'indexpage.xml')
         self.pages = self._read_xml_pages(xml_dir)
@@ -93,6 +106,8 @@ class Docs(object):
         self._find_page_source(top_source_dir, source_subdirs)
 
     def build_hierarchy(self):
+        """By inspecting the contents page, determine the child-parent-sibling
+           relationships between all pages in the documentation"""
         index_page = self.page_by_id['indexpage']
         # Make sure that all pages not listed in the contents have an 'up'
         # link to the main page
@@ -118,6 +133,8 @@ class Docs(object):
                 prev_page = this_page
 
     def _read_xml_pages(self, xml_dir):
+        """Read all generated doxygen XML files to determine page properties,
+           such as title, doxygen ID, and output file name"""
         pages = []
         for f in glob.glob(os.path.join(xml_dir, "*.xml")):
             tree = ET.parse(f)
@@ -135,6 +152,8 @@ class Docs(object):
         return pages
 
     def _find_page_source(self, top_source_dir, source_subdirs):
+        """Determine which source file generated each output
+           documentation file"""
         for pattern, id_re in (("*.md", re.compile(r"\{#([^}]+)\}")),
                                ("*.dox", re.compile(r"\\page\s+(\S+)"))):
             for source_subdir in source_subdirs:
@@ -151,6 +170,8 @@ class Docs(object):
                                                    os.path.basename(source))
 
     def add_page_navigation(self, page):
+        """Patch the HTML output for a given page to add navigation and other
+           useful links, such as GitHub editing"""
         links = []
         if page.prev_page:
             links.append(page.make_link("Previous page", "prev",
