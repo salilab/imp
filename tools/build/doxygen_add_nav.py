@@ -147,7 +147,7 @@ class Docs(object):
                 # Handle index special case
                 if p.out_file_name == 'indexpage':
                     p.out_file_name = 'index'
-                p.title = compounddef.find('title').text
+                p.title = compounddef.find('title').text.replace('%IMP', 'IMP')
                 pages.append(p)
         return pages
 
