@@ -402,6 +402,13 @@ IMP_ATOM_SELECTION_PRED(ResidueType, ResidueTypes, {
   return NO_MATCH;
 });
 
+IMP_ATOM_SELECTION_PRED(Element, Element, {
+  if (Atom::get_is_setup(m, pi)) {
+    return get_match_return(data_ == Atom(m, pi).get_element());
+  }
+  return NO_MATCH;
+});
+
 IMP_ATOM_SELECTION_PRED(ChainID, Strings, {
   if (Chain::get_is_setup(m, pi)) {
     return get_match_return(
@@ -621,6 +628,9 @@ void Selection::set_molecules(Strings mols) {
 }
 void Selection::set_terminus(Terminus t) {
   add_predicate(new TerminusSelectionPredicate(t));
+}
+void Selection::set_element(Element e) {
+  add_predicate(new ElementSelectionPredicate(e));
 }
 void Selection::set_chain_ids(Strings chains) {
   std::sort(chains.begin(), chains.end());

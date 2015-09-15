@@ -9,6 +9,7 @@ ChangeLog {#changelog}
   Model::evaluate() and Model::add_restraint() have been removed (use an
   IMP::ScoringFunction instead). IMP::Optimizer and IMP::Sampler now also
   require an IMP::ScoringFunction to be explicitly set before they are used.
+- IMP::atom::Selection can now select by element.
 
 # 2.5.0 - 2015-06-30 # {#changelog_2_5_0}
 - Documentation has been revised and updated; the main manual now gives a

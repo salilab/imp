@@ -73,6 +73,18 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(self._get_index(cterm.get_selected_particles()), 440)
         self.assertEqual(self._get_index(nterm.get_selected_particles()), 432)
 
+    def test_element(self):
+        """Test selection of atoms by element"""
+        IMP.set_log_level(IMP.SILENT)
+        m = IMP.Model()
+        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        c = IMP.atom.Selection(h, element=IMP.atom.C)
+        fe = IMP.atom.Selection(h, element=IMP.atom.Fe)
+        n = IMP.atom.Selection(h, element=IMP.atom.N)
+        self.assertEqual(len(c.get_selected_particles()), 46)
+        self.assertEqual(len(n.get_selected_particles()), 9)
+        self.assertEqual(len(fe.get_selected_particles()), 0)
+
     def test_atom_type(self):
         """Test selection of CA atoms and indexes"""
         IMP.set_log_level(IMP.SILENT)
