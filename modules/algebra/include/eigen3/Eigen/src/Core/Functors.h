@@ -7,8 +7,6 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <IMP/compiler_macros.h>
-
 #ifndef IMP_EIGEN_FUNCTORS_H
 #define IMP_EIGEN_FUNCTORS_H
 
@@ -259,6 +257,47 @@ template<> struct functor_traits<scalar_boolean_or_op> {
     Cost = NumTraits<bool>::AddCost,
     PacketAccess = false
   };
+};
+
+/** \internal
+  * \brief Template functors for comparison of two scalars
+  * \todo Implement packet-comparisons
+  */
+template<typename Scalar, ComparisonName cmp> struct scalar_cmp_op;
+
+template<typename Scalar, ComparisonName cmp>
+struct functor_traits<scalar_cmp_op<Scalar, cmp> > {
+  enum {
+    Cost = NumTraits<Scalar>::AddCost,
+    PacketAccess = false
+  };
+};
+
+template<ComparisonName Cmp, typename Scalar>
+struct result_of<scalar_cmp_op<Scalar, Cmp>(Scalar,Scalar)> {
+  typedef bool type;
+};
+
+
+template<typename Scalar> struct scalar_cmp_op<Scalar, cmp_EQ> {
+  IMP_EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
+  IMP_EIGEN_STRONG_INLINE bool operator()(const Scalar& a, const Scalar& b) const {return a==b;}
+};
+template<typename Scalar> struct scalar_cmp_op<Scalar, cmp_LT> {
+  IMP_EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
+  IMP_EIGEN_STRONG_INLINE bool operator()(const Scalar& a, const Scalar& b) const {return a<b;}
+};
+template<typename Scalar> struct scalar_cmp_op<Scalar, cmp_LE> {
+  IMP_EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
+  IMP_EIGEN_STRONG_INLINE bool operator()(const Scalar& a, const Scalar& b) const {return a<=b;}
+};
+template<typename Scalar> struct scalar_cmp_op<Scalar, cmp_UNORD> {
+  IMP_EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
+  IMP_EIGEN_STRONG_INLINE bool operator()(const Scalar& a, const Scalar& b) const {return !(a<=b || b<=a);}
+};
+template<typename Scalar> struct scalar_cmp_op<Scalar, cmp_NEQ> {
+  IMP_EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
+  IMP_EIGEN_STRONG_INLINE bool operator()(const Scalar& a, const Scalar& b) const {return a!=b;}
 };
 
 // unary functors:
@@ -591,7 +630,7 @@ struct linspaced_op_impl<Scalar,true>
 
   template<typename Index>
   IMP_EIGEN_STRONG_INLINE const Packet packetOp(Index i) const
-  { return internal::padd(m_lowPacket, pmul(m_stepPacket, padd(pset1<Packet>(i),m_interPacket))); }
+  { return internal::padd(m_lowPacket, pmul(m_stepPacket, padd(pset1<Packet>(Scalar(i)),m_interPacket))); }
 
   const Scalar m_low;
   const Scalar m_step;
@@ -611,7 +650,7 @@ template <typename Scalar, bool RandomAccess> struct functor_traits< linspaced_o
 template <typename Scalar, bool RandomAccess> struct linspaced_op
 {
   typedef typename packet_traits<Scalar>::type Packet;
-  linspaced_op(const Scalar& low, const Scalar& high, DenseIndex num_steps) : impl((num_steps==1 ? high : low), (num_steps==1 ? Scalar() : (high-low)/(num_steps-1))) {}
+  linspaced_op(const Scalar& low, const Scalar& high, DenseIndex num_steps) : impl((num_steps==1 ? high : low), (num_steps==1 ? Scalar() : (high-low)/Scalar(num_steps-1))) {}
 
   template<typename Index>
   IMP_EIGEN_STRONG_INLINE const Scalar operator() (Index i) const { return impl(i); }
@@ -930,11 +969,6 @@ template<typename T>
 struct functor_traits<std::not_equal_to<T> >
 { enum { Cost = 1, PacketAccess = false }; };
 
-IMP_HELPER_MACRO_PUSH_WARNINGS
-#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
-IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
-#endif
-
 template<typename T>
 struct functor_traits<std::binder2nd<T> >
 { enum { Cost = functor_traits<T>::Cost, PacketAccess = false }; };
@@ -942,8 +976,6 @@ struct functor_traits<std::binder2nd<T> >
 template<typename T>
 struct functor_traits<std::binder1st<T> >
 { enum { Cost = functor_traits<T>::Cost, PacketAccess = false }; };
-
-IMP_HELPER_MACRO_POP_WARNINGS
 
 template<typename T>
 struct functor_traits<std::unary_negate<T> >

@@ -48,9 +48,18 @@ typedef uint32x4_t  Packet4ui;
   #define IMP_EIGEN_INIT_NEON_PACKET2(X, Y)       {X, Y}
   #define IMP_EIGEN_INIT_NEON_PACKET4(X, Y, Z, W) {X, Y, Z, W}
 #endif
-    
-#ifndef __pld
-#define __pld(x) asm volatile ( "   pld [%[addr]]\n" :: [addr] "r" (x) : "cc" );
+
+// arm64 does have the pld instruction. If available, let's trust the __builtin_prefetch built-in function
+// which available on LLVM and GCC (at least)
+#if IMP_EIGEN_HAS_BUILTIN(__builtin_prefetch) || defined(__GNUC__)
+  #define IMP_EIGEN_ARM_PREFETCH(ADDR) __builtin_prefetch(ADDR);
+#elif defined __pld
+  #define IMP_EIGEN_ARM_PREFETCH(ADDR) __pld(ADDR)
+#elif !defined(__aarch64__)
+  #define IMP_EIGEN_ARM_PREFETCH(ADDR) __asm__ __volatile__ ( "   pld [%[addr]]\n" :: [addr] "r" (ADDR) : "cc" );
+#else
+  // by default no explicit prefetching
+  #define IMP_EIGEN_ARM_PREFETCH(ADDR)
 #endif
 
 template<> struct packet_traits<float>  : default_packet_traits
@@ -209,8 +218,8 @@ template<> IMP_EIGEN_STRONG_INLINE void pstore<int>(int*       to, const Packet4
 template<> IMP_EIGEN_STRONG_INLINE void pstoreu<float>(float*  to, const Packet4f& from) { IMP_EIGEN_DEBUG_UNALIGNED_STORE vst1q_f32(to, from); }
 template<> IMP_EIGEN_STRONG_INLINE void pstoreu<int>(int*      to, const Packet4i& from) { IMP_EIGEN_DEBUG_UNALIGNED_STORE vst1q_s32(to, from); }
 
-template<> IMP_EIGEN_STRONG_INLINE void prefetch<float>(const float* addr) { __pld(addr); }
-template<> IMP_EIGEN_STRONG_INLINE void prefetch<int>(const int*     addr) { __pld(addr); }
+template<> IMP_EIGEN_STRONG_INLINE void prefetch<float>(const float* addr) { IMP_EIGEN_ARM_PREFETCH(addr); }
+template<> IMP_EIGEN_STRONG_INLINE void prefetch<int>(const int*     addr) { IMP_EIGEN_ARM_PREFETCH(addr); }
 
 // FIXME only store the 2 first elements ?
 template<> IMP_EIGEN_STRONG_INLINE float  pfirst<Packet4f>(const Packet4f& a) { float IMP_EIGEN_ALIGN16 x[4]; vst1q_f32(x, a); return x[0]; }

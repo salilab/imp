@@ -10,8 +10,6 @@
 
 // This file is a base class plugin containing matrix specifics coefficient wise functions.
 
-#include <IMP/compiler_macros.h>
-
 /** \returns an expression of the coefficient-wise absolute value of \c *this
   *
   * Example: \include MatrixBase_cwiseAbs.cpp
@@ -52,25 +50,3 @@ cwiseSqrt() const { return derived(); }
 inline const CwiseUnaryOp<internal::scalar_inverse_op<Scalar>, const Derived>
 cwiseInverse() const { return derived(); }
 
-IMP_HELPER_MACRO_PUSH_WARNINGS
-#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
-IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
-#endif
-
-/** \returns an expression of the coefficient-wise == operator of \c *this and a scalar \a s
-  *
-  * \warning this performs an exact comparison, which is generally a bad idea with floating-point types.
-  * In order to check for equality between two vectors or matrices with floating-point coefficients, it is
-  * generally a far better idea to use a fuzzy comparison as provided by isApprox() and
-  * isMuchSmallerThan().
-  *
-  * \sa cwiseEqual(const MatrixBase<OtherDerived> &) const
-  */
-inline const CwiseUnaryOp<std::binder1st<std::equal_to<Scalar> >, const Derived>
-cwiseEqual(const Scalar& s) const
-{
-  return CwiseUnaryOp<std::binder1st<std::equal_to<Scalar> >,const Derived>
-          (derived(), std::bind1st(std::equal_to<Scalar>(), s));
-}
-
-IMP_HELPER_MACRO_POP_WARNINGS

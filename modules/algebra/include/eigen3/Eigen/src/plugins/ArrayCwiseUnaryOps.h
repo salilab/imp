@@ -1,4 +1,3 @@
-#include <IMP/compiler_macros.h>
 
 
 /** \returns an expression of the coefficient-wise absolute value of \c *this
@@ -186,41 +185,3 @@ cube() const
 {
   return derived();
 }
-
-IMP_HELPER_MACRO_PUSH_WARNINGS
-#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
-IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
-#endif
-
-inline const CwiseUnaryOp<std::binder2nd<std::equal_to<Scalar> >, const Derived>
-operator==(const Scalar& s) const {
-  return CwiseUnaryOp<std::binder2nd<std::equal_to<Scalar> >, const Derived>
-          (derived(), std::bind2nd(std::equal_to<Scalar>(), s));
-}
-inline const CwiseUnaryOp<std::binder2nd<std::not_equal_to<Scalar> >, const Derived>
-operator!=(const Scalar& s) const {
-  return CwiseUnaryOp<std::binder2nd<std::not_equal_to<Scalar> >, const Derived>
-          (derived(), std::bind2nd(std::not_equal_to<Scalar>(), s));
-}
-inline const CwiseUnaryOp<std::binder2nd<std::less<Scalar> >, const Derived>
-operator<(const Scalar& s) const {
-  return CwiseUnaryOp<std::binder2nd<std::less<Scalar> >, const Derived>
-          (derived(), std::bind2nd(std::less<Scalar>(), s));
-}
-inline const CwiseUnaryOp<std::binder2nd<std::less_equal<Scalar> >, const Derived>
-operator<=(const Scalar& s) const {
-  return CwiseUnaryOp<std::binder2nd<std::less_equal<Scalar> >, const Derived>
-          (derived(), std::bind2nd(std::less_equal<Scalar>(), s));
-}
-inline const CwiseUnaryOp<std::binder2nd<std::greater<Scalar> >, const Derived>
-operator>(const Scalar& s) const {
-  return CwiseUnaryOp<std::binder2nd<std::greater<Scalar> >, const Derived>
-          (derived(), std::bind2nd(std::greater<Scalar>(), s));
-}
-inline const CwiseUnaryOp<std::binder2nd<std::greater_equal<Scalar> >, const Derived>
-operator>=(const Scalar& s) const {
-  return CwiseUnaryOp<std::binder2nd<std::greater_equal<Scalar> >, const Derived>
-          (derived(), std::bind2nd(std::greater_equal<Scalar>(), s));
-}
-
-IMP_HELPER_MACRO_POP_WARNINGS
