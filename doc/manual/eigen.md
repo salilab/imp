@@ -28,6 +28,6 @@ We ship a copy of Eigen. To patch an updated version, first commit the unpatched
     sed -i.old "s#eigen_plain_assert#imp_eigen_plain_assert#g" `find  modules/algebra/include/eigen3 -type f`
 
 in addition, the following commits introduced some modifications to the code
-- `48c9515cfdd449b`
+- `26a1f70d5faef3f`
 
 Eigen headers can be found at `IMP/algebra/eigen3`.
