@@ -31,9 +31,10 @@ IMPCORE_BEGIN_NAMESPACE
 
     \include connectivity_restraint.py
 
-    More precisely, the restraint scores by computing the MST on the complete
-    graph connecting all the particles. The edge weights are given by
-    the value of the PairScore for the two endpoints of the edge.
+    More precisely, the restraint scores by computing the minimum spanning
+    tree  on the complete graph connecting all the particles. The edge
+    weights are given by the value of the PairScore for the two endpoints
+    of the edge.
  */
 class IMPCOREEXPORT ConnectivityRestraint : public Restraint {
   IMP::PointerMember<PairScore> ps_;
