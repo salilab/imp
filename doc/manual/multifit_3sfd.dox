@@ -10,8 +10,11 @@ respiratory complex II (PDB id 3sfd), using crystal structures of its
 4 constituent proteins, a cryo-electron microscopy (EM) map of the entire
 complex, and information from proteomics.
 
-(See also the [EMageFit example](@ref emagefit_3sfd) for building models
-using 2D EM class averages instead of 3D maps.)
+\note MultiFit is limited in the types of data it can combine with the EM maps,
+and requires atomic structures for all components. For a more flexible method,
+see the [PMI example](@ref rnapolii_stalk). See also the
+[EMageFit example](@ref emagefit_3sfd) for building models
+using 2D EM class averages instead of 3D maps.
 
 All steps in the procedure use a command line tool called
 <tt>multifit</tt>. For full help on this tool, run from a command line:
