@@ -128,3 +128,9 @@ div.doxnavlinks a {
   font-style: italic;
   vertical-align: top;
 }
+
+/* Make notes more visible. */
+dl.note {
+  background: #eeeeee;
+  padding-bottom: 0.3em;
+}
