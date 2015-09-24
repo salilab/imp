@@ -38,10 +38,13 @@ The structure of the RPA in complex with ssDNA is available in the
 (file <tt>1jmc.pdb</tt>), the unbound RPA structures are availble as code
 \external{http://www.pdb.org/pdb/explore/explore.do?structureId=1FGU,1fgu}
 (file <tt>1fguA.pdb</tt>, <tt>1fguB.pdb</tt>), while the SAXS profile is given in the <tt>weighted.dat</tt> file. The SAXS profile was simulated from the 3 structures with the following weights:
-<br>
-<tt>1jmc.pdb 0.5</tt><br>
-<tt>1fguA.pdb 0.25</tt><br>
-<tt>1fguB.pdb 0.25</tt><br>
+
+\verbatim
+1jmc.pdb 0.5
+1fguA.pdb 0.25
+1fguB.pdb 0.25
+\endverbatim
+
 3% Gaussian noise was added to the simulated profile.
 
 
@@ -65,11 +68,11 @@ In this example, the best fit is obtained using a 3-state model
 maximal deviation of 7% compared to the weights that were used to
 simulate the profile:
 
-<pre>
+\verbatim
 1 |  1.74 | x1 1.74 (1.03, 0.53)
-    0   | 0.533 (0.533, 1.000) | 1jmc.pdb (0.333)
-    1   | 0.197 (0.197, 1.000) | 1fguA.pdb (0.333)
-    2   | 0.270 (0.270, 1.000) | 1fguB.pdb (0.333)
-</pre>
+0   | 0.533 (0.533, 1.000) | 1jmc.pdb (0.333)
+1   | 0.197 (0.197, 1.000) | 1fguA.pdb (0.333)
+2   | 0.270 (0.270, 1.000) | 1fguB.pdb (0.333)
+\endverbatim
 
 */
