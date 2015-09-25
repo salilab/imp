@@ -23,7 +23,9 @@ const FloatKeys &XYZ::get_xyz_keys() {
 
 void transform(XYZ a, const algebra::Transformation3D &tr) {
   IMP_USAGE_CHECK(!RigidBody::get_is_setup(a),
-                  "Python is calling the wrong function");
+      "Particle is also a RigidBody, so this function would do the wrong "
+      "thing; decorate your Particle as a RigidBody instead and call "
+      "transform(RigidBody a, const algebra::Transformation3D &tr)");
   a.set_coordinates(tr.get_transformed(a.get_coordinates()));
 }
 
