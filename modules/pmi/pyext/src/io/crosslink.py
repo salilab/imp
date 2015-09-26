@@ -668,7 +668,7 @@ class CrossLinkDataBaseFromStructure(object):
             residues=[i for i in range(1,len(seq)+1) if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2))]
             for i in range(1,len(seq)+1):
                 if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2)):
-                    print i, protein, seq[i-1]
+                    print(i, protein, seq[i-1])
 
             for r in residues:
                 self.reactivity_dictionary[(protein,r)]=random.uniform(reactivity_range[0],reactivity_range[1])

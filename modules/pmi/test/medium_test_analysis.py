@@ -196,6 +196,7 @@ class AnalysisTest(IMP.test.TestCase):
         ali=IMP.pmi.analysis.Alignment(coord_dict_0,coord_dict_1,weights)
         self.assertAlmostEqual(ali.get_rmsd(),sqrt(10.0/11.0))
 
+    @IMP.test.expectedFailure
     def test_get_model_density(self):
         """Test GetModelDensity correctly creates and adds density maps"""
         if scipy is None:

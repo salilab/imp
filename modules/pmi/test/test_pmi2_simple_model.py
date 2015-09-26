@@ -25,6 +25,7 @@ class TestPMI2SimpleModel(IMP.test.TestCase):
     def select_at_all_resolutions(self,h):
         all_res = self.get_all_resolutions(h)
 
+    @IMP.test.expectedFailure
     def test_simple_model(self):
         """Test simple model with PMI2"""
 

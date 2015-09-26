@@ -378,7 +378,7 @@ def get_cross_link_data(directory, filename, dist, omega, sigma,
     (sigmamin, sigmamax, nsigma) = sigma
     import IMP.isd
 
-    filen = IMP.isd.get_data_path("PMFs.dict")
+    filen = IMP.isd.get_data_path("CrossLinkPMFs.dict")
     xlpot = open(filen)
 
     for line in xlpot:
