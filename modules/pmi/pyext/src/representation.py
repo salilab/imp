@@ -1367,6 +1367,7 @@ class Representation(object):
 
         sel = IMP.atom.Selection(self.prot, molecule=maincopy)
         mainparticles = sel.get_selected_particles()
+        print(mainparticles)
 
         for k in range(len(copies)):
             rotation3D = IMP.algebra.get_rotation_about_axis(
@@ -1379,7 +1380,7 @@ class Representation(object):
             mainpurged = []
             copypurged = []
             for n, p in enumerate(mainparticles):
-
+                print(p.get_name())
                 pc = copyparticles[n]
 
                 mainpurged.append(p)

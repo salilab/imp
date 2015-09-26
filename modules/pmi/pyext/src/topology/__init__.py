@@ -18,6 +18,9 @@ from collections import defaultdict
 from . import system_tools
 from Bio import SeqIO
 
+
+
+
 def get_residue_type_from_one_letter_code(code):
     threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
                   'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
@@ -165,7 +168,7 @@ class State(SystemBase):
         """
         # check whether the molecule name is already assigned
         if name in self.molecules:
-            raise Exception('ERROR: Cannot use a molecule name already used')
+            raise WrongMoleculeName('Cannot use a molecule name already used')
 
         mol = Molecule(self,name,sequence,chain_id,copy_num=0)
         self.molecules[name].append(mol)
@@ -316,6 +319,9 @@ class Molecule(SystemBase):
         @param pdb_code  Use if you want to store the PDB code (otherwise will extract from filename)
         \note After offset, we expect the PDB residue numbering to match the FASTA file
         """
+
+        self.pdb_fn=pdb_fn
+
         # get IMP.atom.Residues from the pdb file
         rhs = system_tools.get_structure(self.mdl,pdb_fn,chain_id,res_range,offset,ca_only=ca_only)
         if len(rhs)>len(self.residues):
@@ -350,6 +356,14 @@ class Molecule(SystemBase):
             res_set=set(self.residues)
         for res in res_set:
             res.add_representation(representation_type,resolutions)
+
+    def get_representations(self):
+        '''Returns list of representation dictionaries for each residue
+        '''
+        reps=[]
+        for res in self.residues:
+            reps.append(res.representations)
+        return reps
 
     def build(self,merge_type="backbone",ca_centers=True,fill_in_missing_residues=True):
         """Create all parts of the IMP hierarchy
@@ -685,7 +699,16 @@ class TopologyReader(object):
         c.fasta_file    = self._make_path(defaults['fasta_dir'],
                                           values[fields.index("fasta_fn")])
         c.fasta_id      = values[fields.index("fasta_id")].strip()
-        c.pdb_file      = self._make_path(defaults['pdb_dir'],
+
+        pdb_input=values[fields.index("pdb_fn")]
+        if pdb_input=="None" or pdb_input=="":
+            c.pdb_file      = None
+        elif pdb_input=="IDEAL_HELIX":
+            c.pdb_file="IDEAL_HELIX"
+        elif pdb_input=="BEADS":
+            c.pdb_file="BEADS"
+        else:
+            c.pdb_file      = self._make_path(defaults['pdb_dir'],
                                           values[fields.index("pdb_fn")])
         # Need to find a way to define color
         c.color         = 0.1

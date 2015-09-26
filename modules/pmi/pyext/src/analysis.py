@@ -505,6 +505,7 @@ class Precision(object):
         self.selection_dictionary=selection_dictionary
         self.threshold=40.0
         self.residue_particle_index_map=None
+        self.prots=None
         if resolution in [1,10]:
             self.resolution=resolution
         else:
@@ -513,15 +514,20 @@ class Precision(object):
     def _get_structure(self,rmf_frame_index,rmf_name):
         """Read an RMF file and return the particles"""
         rh= RMF.open_rmf_file_read_only(rmf_name)
-        prots=IMP.rmf.create_hierarchies(rh, self.model)
-        IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
-        print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
+        if not self.prots:
+            self.prots=IMP.rmf.create_hierarchies(rh, self.model)
+            IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
+            print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
+        else:
+            IMP.rmf.link_hierarchies(rh, self.prots)
+            IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
+            print("linking coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
         del rh
 
         if self.resolution==1:
-            particle_dict = get_particles_at_resolution_one(prots[0])
+            particle_dict = get_particles_at_resolution_one(self.prots[0])
         elif self.resolution==10:
-            particle_dict = get_particles_at_resolution_ten(prots[0])
+            particle_dict = get_particles_at_resolution_ten(self.prots[0])
 
         protein_names=list(particle_dict.keys())
         particles_resolution_one=[]
@@ -540,7 +546,7 @@ class Precision(object):
             if self.len_particles_resolution_one!=len(particles_resolution_one):
                 raise ValueError("the new coordinate set is not compatible with the previous one")
 
-        return particles_resolution_one,prots
+        return particles_resolution_one
 
     def add_structure(self,
                       rmf_name,
@@ -568,7 +574,7 @@ class Precision(object):
 
         # read the particles
         try:
-            (particles_resolution_one, prots)=self._get_structure(rmf_frame_index,rmf_name)
+            particles_resolution_one=self._get_structure(rmf_frame_index,rmf_name)
         except ValueError:
             print("something wrong with the rmf")
             return 0
@@ -577,7 +583,7 @@ class Precision(object):
 
         for selection_name in self.selection_dictionary:
             selection_tuple=self.selection_dictionary[selection_name]
-            coords=self._select_coordinates(selection_tuple,particles_resolution_one,prots[0])
+            coords=self._select_coordinates(selection_tuple,particles_resolution_one,self.prots[0])
             if selection_name not in cdict:
                 cdict[selection_name]=[coords]
             else:
@@ -592,9 +598,7 @@ class Precision(object):
                 self.residue_particle_index_map[prot_name] = \
                        self._get_residue_particle_index_map(
                            prot_name,
-                           particles_resolution_one,prots[0])
-        for prot in prots:
-            IMP.atom.destroy(prot)
+                           particles_resolution_one,self.prots[0])
 
     def add_structures(self,
                        rmf_name_frame_tuples,
@@ -880,16 +884,46 @@ class Precision(object):
         @param rmf_name The RMF file to read the reference
         @param rmf_frame_index The index in that file
         """
-        (particles_resolution_one, prot)=self._get_structure(rmf_frame_index,rmf_name)
+        particles_resolution_one=self._get_structure(rmf_frame_index,rmf_name)
         self.reference_rmf_names_frames=(rmf_name,rmf_frame_index)
 
 
         for selection_name in self.selection_dictionary:
             selection_tuple=self.selection_dictionary[selection_name]
             coords=self._select_coordinates(selection_tuple,
-                                       particles_resolution_one,prot)
+                                       particles_resolution_one,self.prots)
             self.reference_structures_dictionary[selection_name]=coords
 
+    def get_rmsd_wrt_reference_structure_with_alignment(self,structure_set_name,alignment_selection_key):
+        '''
+        @param structure_set_name: the name of the structure set
+        @param alignment_selection: the key containing the selection tuples needed to make the alignment stored in self.selection_dictionary
+        @return: for each structure in the structure set, returns the rmsd
+        '''
+        if self.reference_structures_dictionary=={}:
+            print("Cannot compute until you set a reference structure")
+            return
+
+        align_reference_coordinates=self.reference_structures_dictionary[alignment_selection_key]
+        align_coordinates=self.structures_dictionary[structure_set_name][alignment_selection_key]
+        transformations=[]
+        for c in align_coordinates:
+            Ali = IMP.pmi.analysis.Alignment({"All":align_reference_coordinates}, {"All":c})
+            transformation = Ali.align()[1]
+            transformations.append(transformation)
+        for selection_name in self.selection_dictionary:
+            reference_coordinates=self.reference_structures_dictionary[selection_name]
+            coordinates2=[IMP.algebra.Vector3D(c) for c in reference_coordinates]
+            distances=[]
+            for n,sc in enumerate(self.structures_dictionary[structure_set_name][selection_name]):
+                coordinates1=[ transformations[n].get_transformed(IMP.algebra.Vector3D(c)) for c in sc ]
+                distance=IMP.algebra.get_rmsd(coordinates1,coordinates2)
+                distances.append(distance)
+            print(selection_name,"average rmsd",sum(distances)/len(distances),"median",self._get_median(distances),"minimum distance",min(distances))
+
+    def _get_median(self,list_of_values):
+        import numpy
+        return numpy.median(numpy.array(list_of_values))
 
     def get_average_distance_wrt_reference_structure(self,structure_set_name):
         """Compare the structure set to the reference structure.
@@ -964,6 +998,7 @@ class GetModelDensity(object):
 
         if hierarchy:
             part_dict = get_particles_at_resolution_one(hierarchy)
+
             all_particles_by_resolution = []
             for name in part_dict:
                 all_particles_by_resolution += part_dict[name]
@@ -976,9 +1011,14 @@ class GetModelDensity(object):
 
             for seg in self.custom_ranges[density_name]:
                 if not hierarchy:
+                    # when you have a IMP.pmi.representation.Representation class
                     parts += IMP.tools.select_by_tuple(self.representation,
                                                        seg, resolution=1, name_is_ambiguous=False)
                 else:
+                    # else, when you have a hierarchy, but not a representation
+                    for h in hierarchy.get_children():
+                        IMP.atom.Molecule.setup_particle(h.get_particle())
+
                     if type(seg) == str:
                         s = IMP.atom.Selection(hierarchy,molecule=seg)
                     elif type(seg) == tuple:
@@ -1367,9 +1407,15 @@ def link_hiers_to_rmf(model,hiers,frame_number, rmf_file):
     print("linking hierarchies for frame %i rmf file %s" % (frame_number, rmf_file))
     rh = RMF.open_rmf_file_read_only(rmf_file)
     IMP.rmf.link_hierarchies(rh, hiers)
-    IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
+    try:
+        IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
+    except:
+        print("Unable to open frame %i of file %s" % (frame_number, rmf_file))
+        return False
     model.update()
     del rh
+    return True
+
 
 def get_hiers_and_restraints_from_rmf(model, frame_number, rmf_file):
     # I have to deprecate this function
@@ -1402,9 +1448,15 @@ def link_hiers_and_restraints_to_rmf(model,hiers,rs, frame_number, rmf_file):
     rh = RMF.open_rmf_file_read_only(rmf_file)
     IMP.rmf.link_hierarchies(rh, hiers)
     IMP.rmf.link_restraints(rh, rs)
-    IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
+    try:
+        IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
+    except:
+        print("Unable to open frame %i of file %s" % (frame_number, rmf_file))
+        return False
     model.update()
     del rh
+    return True
+
 
 def get_hiers_from_rmf(model, frame_number, rmf_file):
     print("getting coordinates for frame %i rmf file %s" % (frame_number, rmf_file))

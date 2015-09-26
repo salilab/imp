@@ -1016,7 +1016,6 @@ class BuildModel1(object):
                                  color=color,
                                  missingbeadsize=beadsize)
 
-
         elif pdbname is not None and pdbname is "IDEAL_HELIX" and pdbname is not "BEADS" and pdbname is not "DENSITY" :
 
             outhier=simo.add_component_ideal_helix(comname,
@@ -1335,15 +1334,18 @@ class AnalysisReplicaExchange0(object):
                           rmf_frame_number,
                           rmf_name)
                     else:
-                        IMP.pmi.analysis.link_hiers_and_restraints_to_rmf(
+                        linking_successful=IMP.pmi.analysis.link_hiers_and_restraints_to_rmf(
                             self.model,
                             prots,
                             rs,
                             rmf_frame_number,
                             rmf_name)
+                        if not linking_successful:
+                            continue
 
                     if not prots:
                         continue
+
 
                     prot=prots[state_number]
 
@@ -1351,8 +1353,12 @@ class AnalysisReplicaExchange0(object):
                         coords_f1=alignment_coordinates[cnt]
                     if cnt > 0:
                         coords_f2=alignment_coordinates[cnt]
-                        Ali = IMP.pmi.analysis.Alignment(coords_f1, coords_f2)
-                        transformation = Ali.align()[1]
+                        if coords_f2:
+                            Ali = IMP.pmi.analysis.Alignment(coords_f1, coords_f2)
+                            transformation = Ali.align()[1]
+                        else:
+                            transformation = IMP.algebra.get_identity_transformation_3d()
+
                         rbs = set()
                         for p in IMP.atom.get_leaves(prot):
                             if not IMP.core.XYZR.get_is_setup(p):
@@ -1517,15 +1523,18 @@ class AnalysisReplicaExchange0(object):
                           rmf_frame_number,
                           rmf_name)
                     else:
-                        IMP.pmi.analysis.link_hiers_and_restraints_to_rmf(
+                        linking_successful=IMP.pmi.analysis.link_hiers_and_restraints_to_rmf(
                             self.model,
                             prots,
                             rs,
                             rmf_frame_number,
                             rmf_name)
+                        if not linking_successful:
+                            continue
 
                     if not prots:
                         continue
+
 
                     prot=prots[state_number]
 

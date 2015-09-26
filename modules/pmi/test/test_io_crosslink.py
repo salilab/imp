@@ -110,8 +110,8 @@ class TestIOCrosslink(IMP.test.TestCase):
                             'AAA', 'Residue2': 10, 'sample': 'yeast'},
                             {'XLUniqueID': '1', 'IDScore': 9.0, 'Residue1':
                             15, 'Protein2': 'AAA', 'Protein1': 'AAA',
-                            'Residue2': 30, 'sample': 'yeast'}, {'XLUniqueID':
-                            '1', 'IDScore': 8.0, 'Residue1': 5, 'Protein2':
+                            'Residue2': 30, 'sample': 'yeast'},
+                            {'XLUniqueID':'1', 'IDScore': 8.0, 'Residue1': 5, 'Protein2':
                             'AAA', 'Protein1': 'BBB', 'Residue2': 21,
                             'sample': 'yeast'}], '3': [{'XLUniqueID': '3',
                             'IDScore': 12.0, 'Residue1': 30, 'Protein2':
@@ -137,7 +137,7 @@ class TestIOCrosslink(IMP.test.TestCase):
         # test iterator
         expected=[]
         actual=[]
-        for k in cldb.data_base:
+        for k in sorted(cldb.data_base.keys()):
             for xl in cldb.data_base[k]:
                 expected.append(xl)
         for xl in cldb:
@@ -160,6 +160,36 @@ class TestIOCrosslink(IMP.test.TestCase):
             self.assertEqual(prai[0],xl[cldb.protein2_key])
             self.assertEqual(prai[3],xl[cldb.residue1_key])
             self.assertEqual(prai[2],xl[cldb.residue2_key])
+
+    def test_chamot_rooke_style(self):
+        cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+        cldbkc.set_protein1_key("prot1")
+        cldbkc.set_protein2_key("prot2")
+        cldbkc.set_site_pairs_key("site pairs")
+        cldbkc.set_unique_id_key("id")
+        cldbkc.set_idscore_key("score")
+        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("CHAMOT-ROOKE")
+        cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc,list_parser=rplp)
+        cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_crs.dat"))
+
+        expected_list=[('1',1,"AAA","AAA",1,10),
+                       ('1',2,"AAA","AAA",5,100),
+                       ('2',1,"BBB","AAA",5,21),
+                       ('2',2,"BBB","AAA",100,3),
+                       ('2',3,"BBB","AAA",1,100),
+                       ('3',1,"CCC","AAA",7,11)]
+
+        nxl=0
+        for xl in cldb:
+            e=expected_list[nxl]
+            self.assertEqual(xl[cldb.unique_id_key],e[0])
+            self.assertEqual(xl[cldb.unique_sub_index_key],e[1])
+            self.assertEqual(xl[cldb.protein1_key],e[2])
+            self.assertEqual(xl[cldb.protein2_key],e[3])
+            self.assertEqual(xl[cldb.residue1_key],e[4])
+            self.assertEqual(xl[cldb.residue2_key],e[5])
+            nxl+=1
+
 
     def test_FilterOperator(self):
         import operator
@@ -257,7 +287,7 @@ class TestIOCrosslink(IMP.test.TestCase):
     def test_append_cldbkc(self):
         cldb1=self.setup_cldb("xl_dataset_test.dat")
         cldb2=self.setup_cldb("xl_dataset_test_2.dat")
-        cldb1.append(cldb2)
+        cldb1.append_database(cldb2)
         pass
 
     def test_set_value(self):

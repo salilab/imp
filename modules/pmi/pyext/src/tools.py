@@ -378,7 +378,7 @@ def get_cross_link_data(directory, filename, dist, omega, sigma,
     (sigmamin, sigmamax, nsigma) = sigma
     import IMP.isd
 
-    filen = IMP.isd.get_data_path("CrossLinkPMFs.dict")
+    filen = IMP.isd.get_data_path("PMFs.dict")
     xlpot = open(filen)
 
     for line in xlpot:
@@ -1164,6 +1164,7 @@ def log_normal_density_function(expected_value, sigma, x):
 
 def get_random_residue_pairs(representation, resolution,
                              number,
+                             max_distance=None,
                              avoid_same_particles=False,
                              names=None):
 
@@ -1180,6 +1181,7 @@ def get_random_residue_pairs(representation, resolution,
         p1 = choice(particles)
         p2 = choice(particles)
         if p1==p2 and avoid_same_particles: continue
+        if IMP.core.get_distance(IMP.core.XYZ(p1),IMP.core.XYZ(p2)) > max_distance: continue
         r1 = choice(IMP.pmi.tools.get_residue_indexes(p1))
         r2 = choice(IMP.pmi.tools.get_residue_indexes(p2))
         name1 = representation.get_prot_name_from_particle(p1)
