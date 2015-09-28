@@ -173,7 +173,7 @@ License: GNU LGPL version 2.1 or later<http://gnu.org/licenses/lgpl.html>.\n\
 Written by Dina Schneidman.")
     ("number-of-states,s", po::value<int>(&number_of_states)->default_value(10),
      "maximal ensemble size")
-    ("bestK,k", po::value<int>(&best_k)->default_value(1000), "bestK (default = 1000)")
+    ("bestK,k", po::value<int>(&best_k)->default_value(1000), "bestK")
     ("threshold,t", po::value<double>(&chi_percentage_cluster_thr)->default_value(0.3, "0.3"),
      "chi value percentage threshold for profile similarity")
     ("chi_threshold,c", po::value<double>(&chi_thr)->default_value(0.0, "0.0"),

@@ -50,30 +50,32 @@ int main(int argc, char **argv)
   std::string connect_chains_file;
   po::options_description desc("Options");
   desc.add_options()
-    ("help", "PDB file and Rotatable Angles file")
+    ("help", "PDB file and rotatable angles file")
     ("version", "Written by Dina Schneidman.")
     ("number_of_iterations,i", po::value<int>(&number_of_iterations)->default_value(100),
-     "number of iterations (default = 100)")
+     "number of iterations")
     ("number_of_nodes,n", po::value<int>(&number_of_nodes)->default_value(100),
-     "number of nodes (default = 100)")
+     "number of nodes")
     ("number_of_path_configurations_saved,p", po::value<int>(&save_configuration_number)->default_value(10),
-     "if the path between two nodes is feasible, each Nth configuration on the path will be added to the tree (default = 10?)")
+     "if the path between two nodes is feasible, each Nth configuration on the path will be added to the tree")
     ("number_of_active_dofs,a", po::value<int>(&number_of_active_dofs)->default_value(0),
-     "for many dofs use this option with 10-50 dofs (default = 0)")
-    ("radii_scaling,s", po::value<float>(&radii_scaling)->default_value(0.5),
-     "radii scaling parameter (0.5 < s < 1.0, default = 0.5)")
+     "for many dofs use this option with 10-50 dofs")
+    ("radii_scaling,s", po::value<float>(&radii_scaling)->default_value(0.5, "0.5"),
+     "radii scaling parameter (0.3 < s < 1.0)")
     ("reset_angles", "set initial values in rotatable angles to PI (default = false)")
-    ("connect_chains_file,c",
-     po::value<std::string>(&connect_chains_file),
-     "connect chains into one rigid body by adding bonds between specified atoms")
+    ("connect_chains_file,c", po::value<std::string>(&connect_chains_file),
+     "connect rigid bodies from different chains into one rigid body by adding bonds between specified atoms or residues")
     ("number_of_models_in_pdb,m", po::value<int>(&number_of_models_in_pdb)->default_value(100),
-     "number of models in output PDB files (default = 100)")
+     "number of models in output PDB files")
     ;
 
+  float angle_range = IMP::algebra::PI;
   po::options_description hidden("Hidden options");
   hidden.add_options()
     ("input-files", po::value< std::vector<std::string> >(),
      "input PDB and rotatable angles files")
+    ("angle_range,r", po::value<float>(&angle_range)->default_value(IMP::algebra::PI),
+     "angle range for sampling, (-angle < sampled_angle < +angle, default = PI)")
     ;
 
   po::options_description cmdline_options;
@@ -221,10 +223,13 @@ int main(int argc, char **argv)
   for(unsigned int i=0; i<joints.size(); i++) {
     std::cerr << "Angle = " << joints[i]->get_angle() << " " << 180 * joints[i]->get_angle()/IMP::algebra::PI << std::endl;
     if(reset_angles) joints[i]->set_angle(IMP::algebra::PI);
-    IMP_NEW(DOF, dof, (joints[i]->get_angle(),
+    /*IMP_NEW(DOF, dof, (joints[i]->get_angle(),
                        -IMP::algebra::PI,
                        IMP::algebra::PI,
                        IMP::algebra::PI/360));
+    */
+    double angle = joints[i]->get_angle();
+    IMP_NEW(DOF, dof, (angle, angle-angle_range, angle+angle_range, IMP::algebra::PI/360));
     dofs.push_back(dof);
   }
 

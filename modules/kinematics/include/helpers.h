@@ -27,6 +27,10 @@ IMP::atom::Residue find_residue(const IMP::ParticlesTemp& residues,
                                 int res_index, std::string chain);
 
 IMPKINEMATICSEXPORT
+IMP::atom::Atom get_ca_atom(const IMP::ParticlesTemp& atoms,
+                            int residue_index, std::string chain_id);
+
+IMPKINEMATICSEXPORT
 void read_connect_chains_file(const std::string& file_name,
                               const IMP::ParticlesTemp& atoms,
                               std::vector<IMP::atom::Atoms>& connect_atoms);

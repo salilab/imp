@@ -33,6 +33,25 @@ IMP::atom::Residue find_residue(const IMP::ParticlesTemp& residues,
   exit(0);
 }
 
+IMP::atom::Atom get_ca_atom(const IMP::ParticlesTemp& atoms,
+                            int residue_index, std::string chain_id) {
+  for (unsigned int i = 0; i < atoms.size(); i++) {
+    IMP::atom::Residue r = IMP::atom::get_residue(IMP::atom::Atom(atoms[i]));
+    int curr_residue_index = r.get_index();
+    std::string curr_chain_id =
+        IMP::atom::get_chain_id(IMP::atom::Atom(atoms[i]));
+    IMP::atom::AtomType at = IMP::atom::Atom(atoms[i]).get_atom_type();
+    if (curr_residue_index == residue_index &&
+        curr_chain_id == chain_id &&
+        at == IMP::atom::AT_CA) {
+      return IMP::atom::Atom(atoms[i]);
+    }
+  }
+  std::cerr << "Residue not found " << residue_index << " " << chain_id
+            << std::endl;
+  exit(1);
+}
+
 void read_connect_chains_file(const std::string& file_name,
                               const IMP::ParticlesTemp& atoms,
                               std::vector<IMP::atom::Atoms>& connect_atoms) {
@@ -52,16 +71,25 @@ void read_connect_chains_file(const std::string& file_name,
     std::vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of("\t "),
                  boost::token_compress_on);
-    if(split_results.size() != 2) continue;
+    if(split_results.size() != 2 && split_results.size() != 4) continue;
 
     IMP::atom::Atoms connecting_atoms;
-    for(int i=0; i<2; i++) {
-      int atom_index = atoi(split_results[i].c_str());
-      connecting_atoms.push_back(find_atom(atoms, atom_index));
+    if(split_results.size() == 2) {
+      for(int i=0; i<2; i++) {
+        int atom_index = atoi(split_results[i].c_str());
+        connecting_atoms.push_back(find_atom(atoms, atom_index));
+      }
+    } else { // 4
+      int res_number1 = atoi(split_results[0].c_str());
+      std::string chain_id1 = split_results[1];
+      int res_number2 = atoi(split_results[2].c_str());
+      std::string chain_id2 = split_results[3];
+      connecting_atoms.push_back(get_ca_atom(atoms, res_number1, chain_id1));
+      connecting_atoms.push_back(get_ca_atom(atoms, res_number2, chain_id2));
     }
     connect_atoms.push_back(connecting_atoms);
   }
-  std::cerr << connect_atoms.size() << " chain connecting atoms "
+  std::cerr << connect_atoms.size() << " chain connecting atoms/residues "
             << " were read from file "  << file_name << std::endl;
 }
 
@@ -87,7 +115,7 @@ void read_angle_file(const std::string& file_name,
     boost::split(split_results, line, boost::is_any_of("\t "),
                  boost::token_compress_on);
     if(split_results.size() <= 2) {
-      float res_number = atoi(split_results[0].c_str());
+      int res_number = atoi(split_results[0].c_str());
       std::string chain_id = " ";
       if(split_results.size() == 2) {
         chain_id = split_results[1];
@@ -125,7 +153,7 @@ IMP::atom::Bond create_bond(IMP::atom::Atoms& as) {
 }
 
 void add_missing_bonds(IMP::ParticlesTemp& atoms, IMP::ParticlesTemp& bonds) {
-  float thr2 = 1.6*1.6;
+  float thr2 = 1.65*1.65;
   IMP::Vector<IMP::algebra::Vector3D> coordinates;
   IMP::saxs::get_coordinates(atoms, coordinates);
   int counter = 0;
