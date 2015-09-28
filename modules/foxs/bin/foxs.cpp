@@ -55,13 +55,13 @@ Each PDB will be fitted against each profile.")
 All rights reserved. \nLicense: GNU LGPL version 2.1 or later\n\
 <http://gnu.org/licenses/lgpl.html>.\n\
 Written by Dina Schneidman.")
-    ("profile_size,s", po::value<int>(&profile_size)->default_value(500),
-     "number of points in the profile (default = 500)")
-    ("max_q,q", po::value<float>(&max_q)->default_value(0.5), "max q value (default = 0.5)")
-    ("min_c1", po::value<float>(&min_c1)->default_value(0.99), "min c1 value (default = 0.99)")
-    ("max_c1", po::value<float>(&max_c1)->default_value(1.05), "max c1 value (default = 1.05)")
-    ("min_c2", po::value<float>(&min_c2)->default_value(-2.0), "min c2 value (default = -2.0)")
-    ("max_c2", po::value<float>(&max_c2)->default_value(4.0), "max c2 value (default = 2.0)")
+    ("profile_size,s", po::value<int>(&profile_size)->default_value(500, "500"),
+     "number of points in the profile")
+    ("max_q,q", po::value<float>(&max_q)->default_value(0.5, "0.50"), "max q value")
+    ("min_c1", po::value<float>(&min_c1)->default_value(0.99, "0.99"), "min c1 value")
+    ("max_c1", po::value<float>(&max_c1)->default_value(1.05, "1.05"), "max c1 value")
+    ("min_c2", po::value<float>(&min_c2)->default_value(-2.0, "-2.00"), "min c2 value")
+    ("max_c2", po::value<float>(&max_c2)->default_value(4.0, "4.00"), "max c2 value")
     ("hydrogens,h", "explicitly consider hydrogens in PDB files (default = false)")
     ("residues,r", "fast coarse grained calculation using CA atoms only (default = false)")
     ("background_q,b", po::value<float>(&background_adjustment_q)->default_value(0.0),

@@ -172,20 +172,19 @@ Copyright 2007-2015 IMP Inventors.\nAll rights reserved. \n \
 License: GNU LGPL version 2.1 or later<http://gnu.org/licenses/lgpl.html>.\n\
 Written by Dina Schneidman.")
     ("number-of-states,s", po::value<int>(&number_of_states)->default_value(10),
-     "maximal ensemble size (default = 10)")
+     "maximal ensemble size")
     ("bestK,k", po::value<int>(&best_k)->default_value(1000), "bestK (default = 1000)")
-    ("threshold,t", po::value<double>(&chi_percentage_cluster_thr)->default_value(0.3),
-     "chi value percentage threshold for profile similarity (default = 0.3)")
-    ("chi_threshold,c", po::value<double>(&chi_thr)->default_value(0.0),
+    ("threshold,t", po::value<double>(&chi_percentage_cluster_thr)->default_value(0.3, "0.3"),
+     "chi value percentage threshold for profile similarity")
+    ("chi_threshold,c", po::value<double>(&chi_thr)->default_value(0.0, "0.0"),
      "chi based threshold")
-    ("weight_threshold,w", po::value<double>(&weight_thr)->default_value(0.05),
+    ("weight_threshold,w", po::value<double>(&weight_thr)->default_value(0.05, "0.05"),
      "minimal weight threshold for a profile to contribute to the ensemble")
-    ("max_q,q", po::value<double>(&max_q)->default_value(0.5),
-     "maximal q value (default = 0.5)")
-    ("min_c1", po::value<double>(&min_c1)->default_value(0.99), "min c1 value")
-    ("max_c1", po::value<double>(&max_c1)->default_value(1.05), "max c1 value")
-    ("min_c2", po::value<double>(&min_c2)->default_value(-0.5), "min c2 value")
-    ("max_c2", po::value<double>(&max_c2)->default_value(2.0), "max c2 value")
+    ("max_q,q", po::value<double>(&max_q)->default_value(0.5, "0.5"), "maximal q value")
+    ("min_c1", po::value<double>(&min_c1)->default_value(0.99, "0.99"), "min c1 value")
+    ("max_c1", po::value<double>(&max_c1)->default_value(1.05, "1.05"), "max c1 value")
+    ("min_c2", po::value<double>(&min_c2)->default_value(-0.5, "-0.50"), "min c2 value")
+    ("max_c2", po::value<double>(&max_c2)->default_value(2.0, "2.00"), "max c2 value")
     ("partial_profiles,p", "use precomputed partial profiles (default = true)")
     ("volatility_ratio,v","calculate volatility ratio score (default = false)")
     ("background_q,b",
