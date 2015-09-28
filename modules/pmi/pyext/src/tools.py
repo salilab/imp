@@ -350,7 +350,7 @@ def get_random_cross_link_dataset(representation,
     Every line is a residue pair, together with UniqueIdentifier
     and XL score.'''
 
-    residue_pairs=get_random_residue_pairs(representation, resolution, number_of_cross_links, avoid_same_particles)
+    residue_pairs=get_random_residue_pairs(representation, resolution, number_of_cross_links, avoid_same_particles=avoid_same_particles)
 
     from random import random
     unique_identifier=0
@@ -1180,10 +1180,12 @@ def get_random_residue_pairs(representation, resolution,
     while len(random_residue_pairs)<=number:
         p1 = choice(particles)
         p2 = choice(particles)
-        if p1==p2 and avoid_same_particles: continue
-        if IMP.core.get_distance(IMP.core.XYZ(p1),IMP.core.XYZ(p2)) > max_distance: continue
+        if max_distance is not None and \
+           core.get_distance(core.XYZ(p1), core.XYZ(p2)) > max_distance:
+            continue
         r1 = choice(IMP.pmi.tools.get_residue_indexes(p1))
         r2 = choice(IMP.pmi.tools.get_residue_indexes(p2))
+        if r1==r2 and avoid_same_particles: continue
         name1 = representation.get_prot_name_from_particle(p1)
         name2 = representation.get_prot_name_from_particle(p2)
         random_residue_pairs.append((name1, r1, name2, r2))
@@ -1274,15 +1276,6 @@ def get_random_data_point(
     rmean2 /= float(ntrials)
     stddev = math.sqrt(max(rmean2 - rmean * rmean, 0.))
     return rmean, stddev
-
-is_already_printed = {}
-
-
-def print_deprecation_warning(old_name, new_name):
-    if old_name not in is_already_printed:
-        print("WARNING: " + old_name + " is deprecated, use " + new_name + " instead")
-        is_already_printed[old_name] = True
-
 
 def print_multicolumn(list_of_strings, ncolumns=2, truncate=40):
 

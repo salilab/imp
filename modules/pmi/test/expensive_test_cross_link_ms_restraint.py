@@ -280,6 +280,7 @@ ProtA ProtB 1 21 87.4778223289 1'''
                 psi =  xl.get_psi(p[10])[0]
                 self.assertEqual(-log(ln.get_probability()),xl.rs.unprotected_evaluate(None))
 
+    @IMP.test.expectedFailure
     def test_restraint_probability_beads(self):
         m = IMP.Model()
         rbeads=init_representation_beads(m)
