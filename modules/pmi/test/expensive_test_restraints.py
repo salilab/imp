@@ -42,7 +42,7 @@ class Tests(IMP.test.TestCase):
             simo.add_component_sequence(components[n], fastafile, id=fastids[n + 2])
             hierarchies[components[n]] = simo.autobuild_pdb_and_intervening_beads(
                 components[n], pdbfile, chains[n],
-                resolutions=[1, 10, 100], beadsize=beadsize)
+                resolutions=[1, 10, 100], missingbeadsize=beadsize)
             simo.setup_component_sequence_connectivity(components[n], 1)
 
         ev1 = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(simo)

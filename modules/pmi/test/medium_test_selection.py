@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
             hierarchies[components[n]] \
                = simo.autobuild_model(
                          components[n], pdbfile, chains[n],
-                         resolutions=[1, 10, 100], beadsize=beadsize)
+                         resolutions=[1, 10, 100], missingbeadsize=beadsize)
             simo.setup_component_sequence_connectivity(components[n], 1)
 
         def test(a, b):

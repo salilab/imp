@@ -199,15 +199,9 @@ class Representation(object):
     def autobuild_model(self, name, pdbname, chain,
                         resolutions=None, resrange=None,
                         missingbeadsize=20,
-                        beadsize=None,  # this is deprecated
                         color=None, pdbresrange=None, offset=0,
                         show=False, isnucleicacid=False,
                         attachbeads=False):
-
-        if not beadsize is None:
-            IMP.pmi.tools.print_deprecation_warning(
-                "beadsize",
-                "missingbeadsize")
 
         self.representation_is_modified = True
         outhiers = []
