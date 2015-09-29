@@ -74,10 +74,17 @@ class IMPCOREEXPORT TransformationAndReflectionSymmetry
  */
 class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier {
   algebra::Transformation3D t_;
-
+  ParticleIndex rb_pi_;
+  int const_type_;
+  algebra::Transformation3D get_transformation(Model *m) const;
  public:
   //! Create with both reflection and translation
   TransformationSymmetry(const algebra::Transformation3D &t);
+  //! Create based on a rigid body transformation
+  /** \note If the rigid body reference frame changes, the transformation
+            used by this Modifier will also change.
+   */
+  TransformationSymmetry(ParticleIndex rb_pi);
 
   virtual void apply_index(Model *m, ParticleIndex p) const
       IMP_OVERRIDE;
@@ -88,6 +95,7 @@ class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier {
   IMP_SINGLETON_MODIFIER_METHODS(TransformationSymmetry);
   IMP_OBJECT_METHODS(TransformationSymmetry);
 };
+
 
 IMPCORE_END_NAMESPACE
 #endif /* IMPCORE_SYMMETRY_H */

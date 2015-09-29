@@ -23,11 +23,28 @@ void Reference::show(std::ostream &out) const {
 TransformationSymmetry::TransformationSymmetry(
     const algebra::Transformation3D &t) {
   t_ = t;
+  const_type_ = 0;
+}
+
+TransformationSymmetry::TransformationSymmetry(ParticleIndex rb_pi) {
+  rb_pi_ = rb_pi;
+  const_type_ = 1;
+}
+
+algebra::Transformation3D
+TransformationSymmetry::get_transformation(Model *m) const {
+  if (const_type_ == 0) {
+    return t_;
+  } else {
+    RigidBody rb(m, rb_pi_);
+    return rb.get_reference_frame().get_transformation_to();
+  }
 }
 
 void TransformationSymmetry::apply_index(Model *m,
                                          ParticleIndex pi) const {
   set_was_used(true);
+  algebra::Transformation3D t = get_transformation(m);
   if (RigidBody::get_is_setup(m, pi)) {
     RigidBody rrb(Reference(m, pi).get_reference_particle());
     RigidBody rb(m, pi);
@@ -35,11 +52,11 @@ void TransformationSymmetry::apply_index(Model *m,
     // for the dependency checker to get the dependencies right
     // Is it really? We should check this.
     rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(
-        t_ * rrb.get_reference_frame().get_transformation_to()));
+        t * rrb.get_reference_frame().get_transformation_to()));
   } else {
     XYZ rd(Reference(m, pi).get_reference_particle());
     XYZ d(m, pi);
-    d.set_coordinates(t_.get_transformed(rd.get_coordinates()));
+    d.set_coordinates(t.get_transformed(rd.get_coordinates()));
   }
 }
 
@@ -48,6 +65,9 @@ ModelObjectsTemp TransformationSymmetry::do_get_inputs(
   ModelObjectsTemp ret = IMP::get_particles(m, pis);
   for (unsigned int i = 0; i < pis.size(); ++i) {
     ret.push_back(Reference(m, pis[i]).get_reference_particle());
+  }
+  if (const_type_ == 1) {
+    ret.push_back(m->get_particle(rb_pi_));
   }
   return ret;
 }
