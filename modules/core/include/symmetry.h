@@ -15,7 +15,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! A a decorator for a particle with an associated reference particle.
+//! A particle that has an associated reference particle.
 /** This decorator is primarily designed to be used for implementing
     symmetry.
  */
