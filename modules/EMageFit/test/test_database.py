@@ -17,6 +17,8 @@ class Tests(IMP.test.TestCase):
         self.fn = IMP.create_temporary_file_name('test.db')
         self.db.create(self.fn, True)
         self.db.connect(self.fn)
+        # Speed up tests by not waiting for the disk
+        self.db.cursor.execute('PRAGMA synchronous=OFF')
         self.tables = ["mytable1", "mytable2"]
         self.column_names = ["id", "property", "value"]
         self.column_types = [int, str, float]
@@ -102,6 +104,7 @@ class Tests(IMP.test.TestCase):
         for fn in fns:
             db.create(fn, True)
             db.connect(fn)
+            db.cursor.execute('PRAGMA synchronous=OFF')
             db.create_table(my_table, column_names, column_types)
             data = [(0, "width", 5.6), (1, "length", "34")]
             db.store_data(my_table, data)
