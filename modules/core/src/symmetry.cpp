@@ -32,7 +32,7 @@ TransformationSymmetry::TransformationSymmetry(ParticleIndex rb_pi) {
 }
 
 algebra::Transformation3D
-TransformationSymmetry::get_transformation(Model *m) const {
+TransformationSymmetry::get_internal_transformation(Model *m) const {
   if (const_type_ == 0) {
     return t_;
   } else {
@@ -44,7 +44,7 @@ TransformationSymmetry::get_transformation(Model *m) const {
 void TransformationSymmetry::apply_index(Model *m,
                                          ParticleIndex pi) const {
   set_was_used(true);
-  algebra::Transformation3D t = get_transformation(m);
+  algebra::Transformation3D t = get_internal_transformation(m);
   if (RigidBody::get_is_setup(m, pi)) {
     RigidBody rrb(Reference(m, pi).get_reference_particle());
     RigidBody rb(m, pi);

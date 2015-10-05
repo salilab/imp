@@ -38,6 +38,23 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(tuple(IMP.core.XYZ(ps_reference[i]).get_coordinates()),
                                     tuple(IMP.core.XYZ(ps_copy[i]).get_coordinates()))
 
+    def test_get_set(self):
+        """Test get/set of transformation of TransformationSymmetry"""
+        def assert_transformations_equal(t1, t2):
+            d = t1 / t2
+            tran = d.get_translation()
+            self.assertLess(tran.get_squared_magnitude(), 1e-4)
+        tran = IMP.algebra.Vector3D(1,2,3)
+        rot = IMP.algebra.get_rotation_about_axis(tran, 1.0)
+        t = IMP.algebra.Transformation3D(rot, tran)
+        s = IMP.core.TransformationSymmetry(t)
+        t2 = s.get_transformation()
+        assert_transformations_equal(t, t2)
+        t3 = IMP.algebra.Transformation3D(rot, IMP.algebra.Vector3D(4,5,6))
+        s.set_transformation(t3)
+        t4 = s.get_transformation()
+        assert_transformations_equal(t3, t4)
+
     def test_xyz_particles_random_transf(self):
         m=IMP.Model()
         ps_reference=[]

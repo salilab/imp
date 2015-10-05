@@ -76,7 +76,7 @@ class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier {
   algebra::Transformation3D t_;
   ParticleIndex rb_pi_;
   int const_type_;
-  algebra::Transformation3D get_transformation(Model *m) const;
+  algebra::Transformation3D get_internal_transformation(Model *m) const;
  public:
   //! Create with both rotation and translation
   TransformationSymmetry(const algebra::Transformation3D &t);
@@ -85,6 +85,21 @@ class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier {
             used by this Modifier will also change.
    */
   TransformationSymmetry(ParticleIndex rb_pi);
+
+  algebra::Transformation3D get_transformation() const {
+    IMP_USAGE_CHECK(const_type_ == 0,
+                    "Cannot get transformation of rigid body");
+    return t_;
+  }
+
+  //! Set a new transformation to use
+  /** \note the transformation will not be applied until Model.update()
+            is called or the model score is evaluated */
+  void set_transformation(algebra::Transformation3D t) {
+    IMP_USAGE_CHECK(const_type_ == 0,
+                    "Cannot set transformation of rigid body");
+    t_ = t;
+  }
 
   virtual void apply_index(Model *m, ParticleIndex p) const
       IMP_OVERRIDE;
