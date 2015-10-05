@@ -78,7 +78,7 @@ class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier {
   int const_type_;
   algebra::Transformation3D get_transformation(Model *m) const;
  public:
-  //! Create with both reflection and translation
+  //! Create with both rotation and translation
   TransformationSymmetry(const algebra::Transformation3D &t);
   //! Create based on a rigid body transformation
   /** \note If the rigid body reference frame changes, the transformation
