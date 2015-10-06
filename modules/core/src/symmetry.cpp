@@ -7,6 +7,8 @@
 
 #include <IMP/core/symmetry.h>
 #include "IMP/core/XYZ.h"
+#include <IMP/random.h>
+#include <IMP/algebra/vector_generators.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -106,6 +108,44 @@ ModelObjectsTemp TransformationAndReflectionSymmetry::do_get_inputs(
 ModelObjectsTemp TransformationAndReflectionSymmetry::do_get_outputs(
     Model *m, const ParticleIndexes &pis) const {
   return IMP::get_particles(m, pis);
+}
+
+TransformationSymmetryMover::TransformationSymmetryMover(
+      Model *m, TransformationSymmetry *symm,
+      Float max_translation, Float max_rotation)
+  : MonteCarloMover(m, symm->get_name() + " mover"),
+    symm_(symm), max_translation_(max_translation),
+    max_angle_(max_rotation) {
+}
+
+MonteCarloMoverResult TransformationSymmetryMover::do_propose() {
+  IMP_OBJECT_LOG;
+  last_transformation_ = symm_->get_transformation();
+
+  algebra::Vector3D translation = algebra::get_random_vector_in(
+        algebra::Sphere3D(algebra::get_zero_vector_d<3>(), max_translation_));
+
+  algebra::Vector3D axis =
+      algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());
+  ::boost::uniform_real<> rand(-max_angle_, max_angle_);
+  Float angle = rand(random_number_generator);
+  algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
+
+  algebra::Transformation3D t(r, translation);
+  IMP_LOG_VERBOSE("proposed move " << t << std::endl);
+
+  symm_->set_transformation(last_transformation_ * t);
+
+  // We don't affect any Particles directly, only the Modifier
+  return MonteCarloMoverResult(ParticleIndexes(), 1.0);
+}
+
+void TransformationSymmetryMover::do_reject() {
+  symm_->set_transformation(last_transformation_);
+}
+
+ModelObjectsTemp TransformationSymmetryMover::do_get_inputs() const {
+  return ModelObjectsTemp();
 }
 
 IMPCORE_END_NAMESPACE

@@ -12,6 +12,7 @@
 #include <IMP/algebra/Reflection3D.h>
 #include "XYZ.h"
 #include "rigid_bodies.h"
+#include "MonteCarloMover.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -111,6 +112,42 @@ class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier {
   IMP_OBJECT_METHODS(TransformationSymmetry);
 };
 
+//! Modify the given TransformationSymmetry
+/** The effect of this Mover is similar to applying a RigidBodyMover to
+    every Particle that is affected by the TransformationSymmetry Modifer,
+    that is the transformation of the TransformationSymmetry is modified
+    such that these Particles end up being randomly rotated and translated
+    (relative to their original positions) within a ball of given size. */
+class IMPCOREEXPORT TransformationSymmetryMover : public MonteCarloMover {
+  algebra::Transformation3D last_transformation_;
+  PointerMember<TransformationSymmetry> symm_;
+  Float max_translation_;
+  Float max_angle_;
+
+public:
+  TransformationSymmetryMover(Model *m, TransformationSymmetry *symm,
+                              Float max_translation, Float max_rotation);
+
+  void set_maximum_translation(Float mt) {
+    IMP_USAGE_CHECK(mt > 0, "Max translation must be positive");
+    max_translation_ = mt;
+  }
+
+  void set_maximum_rotation(Float mr) {
+    IMP_USAGE_CHECK(mr > 0, "Max rotation must be positive");
+    max_angle_ = mr;
+  }
+
+  Float get_maximum_translation() const { return max_translation_; }
+
+  Float get_maximum_rotation() const { return max_angle_; }
+
+protected:
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual void do_reject() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(TransformationSymmetryMover);
+};
 
 IMPCORE_END_NAMESPACE
 #endif /* IMPCORE_SYMMETRY_H */

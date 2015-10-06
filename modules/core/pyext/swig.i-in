@@ -81,6 +81,7 @@ IMP_SWIG_OBJECT( IMP::core, TableRefiner, TableRefiners);
 IMP_SWIG_OBJECT( IMP::core, Transform, Transforms);
 IMP_SWIG_OBJECT( IMP::core, TransformationAndReflectionSymmetry, TransformationAndReflectionSymmetries);
 IMP_SWIG_OBJECT( IMP::core, TransformationSymmetry, TransformationSymmetries);
+IMP_SWIG_OBJECT( IMP::core, TransformationSymmetryMover, TransformationSymmetryMovers);
 IMP_SWIG_OBJECT( IMP::core, TransformedDistancePairScore, TransformedDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, TripletConstraint, TripletConstraints);
 IMP_SWIG_OBJECT( IMP::core, TripletRestraint, TripletRestraints);
