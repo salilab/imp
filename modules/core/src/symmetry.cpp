@@ -111,33 +111,52 @@ ModelObjectsTemp TransformationAndReflectionSymmetry::do_get_outputs(
 }
 
 TransformationSymmetryMover::TransformationSymmetryMover(
-      Model *m, TransformationSymmetry *symm,
+      Model *m, TransformationSymmetry *symm, ParticleIndex pivot,
       Float max_translation, Float max_rotation)
   : MonteCarloMover(m, symm->get_name() + " mover"),
-    symm_(symm), max_translation_(max_translation),
+    symm_(symm), pivot_(pivot), max_translation_(max_translation),
     max_angle_(max_rotation) {
 }
 
 MonteCarloMoverResult TransformationSymmetryMover::do_propose() {
   IMP_OBJECT_LOG;
   last_transformation_ = symm_->get_transformation();
+  algebra::Transformation3D new_transformation = last_transformation_;
 
-  algebra::Vector3D translation = algebra::get_random_vector_in(
+  // Get rotation about pivot in referee's space
+  if (max_angle_ > 0) {
+    XYZ pivot(get_model(), pivot_);
+    algebra::Transformation3D rot = get_random_rotation_about_point(
+                               last_transformation_ * pivot.get_coordinates());
+    new_transformation = rot * new_transformation;
+  }
+
+  // Get translation of referee
+  if (max_translation_ > 0) {
+    algebra::Vector3D translation = algebra::get_random_vector_in(
         algebra::Sphere3D(algebra::get_zero_vector_d<3>(), max_translation_));
+    algebra::Transformation3D t(algebra::get_identity_rotation_3d(),
+                                translation);
+    new_transformation = t * new_transformation;
+  }
 
+  symm_->set_transformation(new_transformation);
+
+  // We don't affect any Particles directly, only the Modifier
+  return MonteCarloMoverResult(ParticleIndexes(), 1.0);
+}
+
+algebra::Transformation3D
+TransformationSymmetryMover::get_random_rotation_about_point(
+                                   const algebra::Vector3D &v) {
+  // First, get a random rotation about the origin
   algebra::Vector3D axis =
       algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());
   ::boost::uniform_real<> rand(-max_angle_, max_angle_);
   Float angle = rand(random_number_generator);
   algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
 
-  algebra::Transformation3D t(r, translation);
-  IMP_LOG_VERBOSE("proposed move " << t << std::endl);
-
-  symm_->set_transformation(last_transformation_ * t);
-
-  // We don't affect any Particles directly, only the Modifier
-  return MonteCarloMoverResult(ParticleIndexes(), 1.0);
+  return algebra::get_rotation_about_point(v, r);
 }
 
 void TransformationSymmetryMover::do_reject() {

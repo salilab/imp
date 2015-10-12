@@ -117,16 +117,24 @@ class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier {
     every Particle that is affected by the TransformationSymmetry Modifer,
     that is the transformation of the TransformationSymmetry is modified
     such that these Particles end up being randomly rotated and translated
-    (relative to their original positions) within a ball of given size. */
+    (relative to their original positions) within a ball of given size.
+    Rotations are made around the given pivot in the reference frame of
+    the reference particles (usually the pivot is one of the particles
+    that is a reference for the TransformationSymmetry). */
 class IMPCOREEXPORT TransformationSymmetryMover : public MonteCarloMover {
   algebra::Transformation3D last_transformation_;
   PointerMember<TransformationSymmetry> symm_;
+  ParticleIndex pivot_;
   Float max_translation_;
   Float max_angle_;
 
+  algebra::Transformation3D
+            get_random_rotation_about_point(const algebra::Vector3D &v);
+
 public:
   TransformationSymmetryMover(Model *m, TransformationSymmetry *symm,
-                              Float max_translation, Float max_rotation);
+                              ParticleIndex pivot, Float max_translation,
+                              Float max_rotation);
 
   void set_maximum_translation(Float mt) {
     IMP_USAGE_CHECK(mt > 0, "Max translation must be positive");
