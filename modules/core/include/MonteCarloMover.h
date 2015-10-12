@@ -30,9 +30,10 @@ IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
 
 //! A base class for classes which perturb particles.
 /** Mover objects propose a move, which can then be either accepted or rejected
-    based on some criteria. For example, in a Monte-Carlo evaluation scheme.
+    based on some criteria. Most commonly this is a Monte Carlo
+    evaluation scheme.
 
-    All changed attributes should be optimizable, it is undefined behavior to
+    All changed attributes should be optimizable; it is undefined behavior to
     try to optimize an attribute which is not.
 
     The output particles (ModelObject::do_get_outputs()) are assumed
