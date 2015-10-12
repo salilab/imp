@@ -73,7 +73,7 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
     do_reject();
   }
 
-  //! Roll back any changes made to the Particles
+  //! Accept/commit any changes made to the Particles
   void accept() {
     IMP_OBJECT_LOG;
     has_move_ = false;
@@ -98,7 +98,7 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
   virtual MonteCarloMoverResult do_propose() = 0;
   //! Implement reset_proposed_move()
   virtual void do_reject() = 0;
-  //! Implement accept_proposed_move(), default implementation is empty
+  //! Implement accept_proposed_move(); default implementation is empty
   virtual void do_accept() {}
 
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
