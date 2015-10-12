@@ -207,6 +207,13 @@ class Tests(IMP.test.TestCase):
             0,
             delta=.1)
 
+    def test_about_point(self):
+        """Test get_rotation_about_point()"""
+        r0 = IMP.algebra.get_random_rotation_3d()
+        v = IMP.algebra.Vector3D(1,2,3)
+        t = IMP.algebra.get_rotation_about_point(v, r0)
+        # Rotating a point about itself should not move it
+        self.assertLess(IMP.algebra.get_distance(v, t * v), 1e-6)
 
 if __name__ == '__main__':
     IMP.test.main()
