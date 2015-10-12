@@ -53,7 +53,7 @@ class ClassnamesConstraint :
    */
   ClassnamesConstraint(ClassnameModifier *before, ClassnameModifier *after,
                        ClassnameContainerAdaptor c,
-                       std::string name = "ClassnameConstraint %1%")
+                       std::string name = "ClassnamesConstraint %1%")
       : P(before, after, c, name) {}
 #if defined(IMP_DOXYGEN) || defined(SWIG)
  protected:
