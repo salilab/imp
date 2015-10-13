@@ -87,8 +87,9 @@ class Tests(IMP.test.TestCase):
 
         for i in range(10):
             IMP.core.transform(IMP.core.XYZ(ps_reference[i]), random_transformation)
-            self.assertEqual(tuple(IMP.core.XYZ(ps_reference[i]).get_coordinates()),
-                                    tuple(IMP.core.XYZ(ps_copy[i]).get_coordinates()))
+            refc = IMP.core.XYZ(ps_reference[i]).get_coordinates()
+            copyc = IMP.core.XYZ(ps_copy[i]).get_coordinates()
+            self.assertLess(IMP.algebra.get_distance(refc, copyc), 1e-6)
 
 
     def test_rigid_body_identity_transf(self):

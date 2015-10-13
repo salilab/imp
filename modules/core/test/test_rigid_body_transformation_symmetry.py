@@ -127,8 +127,9 @@ class Tests(IMP.test.TestCase):
                 d=IMP.core.XYZ(ps_reference[i])
                 d.set_coordinates(random_symmetry_rb_transformation.get_transformed(
                                                                     d.get_coordinates()))
-                self.assertEqual(tuple(IMP.core.XYZ(ps_reference[i]).get_coordinates()),
-                                    tuple(IMP.core.XYZ(ps_copy[i]).get_coordinates()))
+                refc = IMP.core.XYZ(ps_reference[i]).get_coordinates()
+                copyc = IMP.core.XYZ(ps_copy[i]).get_coordinates()
+                self.assertLess(IMP.algebra.get_distance(refc, copyc), 1e-6)
 
 if __name__ == '__main__':
     IMP.test.main()
