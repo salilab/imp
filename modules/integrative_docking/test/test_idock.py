@@ -410,9 +410,9 @@ ligandPdb (str) antibody_cut.pdb
 
         class Dummy:
 
+            @classmethod
             def _run_binary(cls, *args):
                 cls.score_args = args
-            _run_binary = classmethod(_run_binary)
         old_run_binary = app._run_binary
         app._run_binary = Dummy._run_binary
         try:
