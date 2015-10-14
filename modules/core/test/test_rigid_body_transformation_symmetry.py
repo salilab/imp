@@ -38,8 +38,9 @@ class Tests(IMP.test.TestCase):
         m.update()
 
         for i in range(10):
-            self.assertEqual(tuple(IMP.core.XYZ(ps_reference[i]).get_coordinates()),
-                                    tuple(IMP.core.XYZ(ps_copy[i]).get_coordinates()))
+            refc = IMP.core.XYZ(ps_reference[i]).get_coordinates()
+            copyc = IMP.core.XYZ(ps_copy[i]).get_coordinates()
+            self.assertLess(IMP.algebra.get_distance(refc, copyc), 1e-6)
 
         for k in range(30):
             random_rb_transformation=IMP.algebra.get_random_local_transformation(
@@ -50,8 +51,9 @@ class Tests(IMP.test.TestCase):
                 d=IMP.core.XYZ(ps_reference[i])
                 d.set_coordinates(random_rb_transformation.get_transformed(
                                                                     d.get_coordinates()))
-                self.assertEqual(tuple(IMP.core.XYZ(ps_reference[i]).get_coordinates()),
-                                    tuple(IMP.core.XYZ(ps_copy[i]).get_coordinates()))
+                refc = IMP.core.XYZ(ps_reference[i]).get_coordinates()
+                copyc = IMP.core.XYZ(ps_copy[i]).get_coordinates()
+                self.assertLess(IMP.algebra.get_distance(refc, copyc), 1e-6)
 
     def test_rigid_body(self):
         m=IMP.Model()
@@ -93,11 +95,9 @@ class Tests(IMP.test.TestCase):
 
         # test identity
         for i in range(10):
-            for k in range(3):
-                self.assertAlmostEqual(tuple(
-                                    IMP.core.XYZ(ps_reference[i]).get_coordinates())[k],
-                                    tuple(IMP.core.XYZ(ps_copy[i]).get_coordinates())[k])
-
+            refc = IMP.core.XYZ(ps_reference[i]).get_coordinates()
+            copyc = IMP.core.XYZ(ps_copy[i]).get_coordinates()
+            self.assertLess(IMP.algebra.get_distance(refc, copyc), 1e-6)
 
         # move the reference rb
         for k in range(30):
@@ -106,10 +106,9 @@ class Tests(IMP.test.TestCase):
             IMP.core.transform(rb_reference,random_rb_transformation)
             m.update()
             for i in range(10):
-                for k in range(3):
-                    self.assertAlmostEqual(
-                                tuple(IMP.core.XYZ(ps_reference[i]).get_coordinates())[k],
-                                tuple(IMP.core.XYZ(ps_copy[i]).get_coordinates())[k])
+                refc = IMP.core.XYZ(ps_reference[i]).get_coordinates()
+                copyc = IMP.core.XYZ(ps_copy[i]).get_coordinates()
+                self.assertLess(IMP.algebra.get_distance(refc, copyc), 1e-6)
 
         # move the reference rb as well as the symmetry rb
         for k in range(30):
