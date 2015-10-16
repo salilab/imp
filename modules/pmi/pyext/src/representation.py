@@ -1335,10 +1335,9 @@ class Representation(object):
             self.connected_intra_pairs.append((pt0, pt1))
             self.connected_intra_pairs.append((pt1, pt0))
 
-        IMP.pmi.tools.add_restraint_to_model(self.m, sortedsegments_cr)
-        IMP.pmi.tools.add_restraint_to_model(self.m, unmodeledregions_cr)
         self.linker_restraints.add_restraint(sortedsegments_cr)
         self.linker_restraints.add_restraint(unmodeledregions_cr)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.linker_restraints)
         self.sortedsegments_cr_dict[name] = sortedsegments_cr
         self.unmodeledregions_cr_dict[name] = unmodeledregions_cr
 
