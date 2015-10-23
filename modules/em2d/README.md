@@ -30,7 +30,7 @@ images, but if you don't care for that information, you can use the
 class to deal with any sort of image, not only EM.
 
 # OpenCV # {#OpenCV}
-The module works with OpenCV 2.1, 2.2 and 2.3. We haven't tried with newer versions yet.
+The module works with OpenCV 2.1 or above.
 
 # Info
 
