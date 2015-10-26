@@ -10,6 +10,9 @@ ChangeLog {#changelog}
   IMP::ScoringFunction instead). IMP::Optimizer and IMP::Sampler now also
   require an IMP::ScoringFunction to be explicitly set before they are used.
 - IMP::atom::Selection can now select by element.
+- The following modules that use FFTW (which is licensed under the GPL)
+  are themselves now also licensed under the GPL: IMP::EMageFit,
+  IMP::cnmultifit, IMP::em2d, IMP::integrative_docking, and IMP::multifit.
 
 # 2.5.0 - 2015-06-30 # {#changelog_2_5_0}
 - Documentation has been revised and updated; the main manual now gives a
