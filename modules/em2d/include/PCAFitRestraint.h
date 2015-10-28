@@ -40,14 +40,16 @@ public:
     \param[in] projection_number Number of projections to generate and fit to
     images. The lower the number, the faster the evaluation, but also less
     accurate.
-    \param[in] reuse_direction speed up evaluation by only periodically
+    \param[in] reuse_direction Speed up evaluation by only periodically
                recalculating projections
+    \param[in] n_components Number of the largest components to be considered for the EM image
   */
   PCAFitRestraint(Particles particles,
                   const std::vector<std::string>& image_files,
                   double pixel_size, double resolution = 10.0,
                   unsigned int projection_number = 100,
-                  bool reuse_direction = false);
+                  bool reuse_direction = false,
+                  unsigned int n_components = 1);
 
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
 
@@ -87,7 +89,11 @@ public:
   // Projector class instance
   internal::Projector projector_;
 
+  // Speed up evaluation by only periodically recalculating projections
   bool reuse_direction_;
+
+  // Number of the largest components to be considered for the EM image
+  unsigned int n_components_;
 
   mutable unsigned long counter_;
 };

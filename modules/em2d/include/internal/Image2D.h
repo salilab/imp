@@ -122,7 +122,7 @@ class Image2D : public boost::multi_array<T, 2> {
   int get_segmentation_threshold() const;
   void get_connected_components(Image2D<int>& out_image) const;
   void get_largest_connected_component(Image2D<int>& out_image) const;
-  void get_largest_connected_component();
+  void get_largest_connected_component(unsigned int n_components = 1);
 
   ImageTransform pca_align(const Image2D<T>& other_image) const;
   double max_distance() const;
@@ -834,7 +834,7 @@ void Image2D<T>::get_largest_connected_component(Image2D<int>& out_image)
 }
 
 template <class T>
-void Image2D<T>::get_largest_connected_component() {
+void Image2D<T>::get_largest_connected_component(unsigned int n_components) {
   Image2D<int> out_image;
   get_connected_components(out_image);
   // count the number of pixels in each cc
@@ -852,16 +852,45 @@ void Image2D<T>::get_largest_connected_component() {
 
   int largest_size = 0;
   int largest_color = 1;
-  for (boost::unordered_map<int, int>::iterator it = counts.begin();
-       it != counts.end(); it++) {
-    if (it->second > largest_size) {
-      largest_size = it->second;
-      largest_color = it->first;
-    }
-  }
 
-  for (unsigned int i = 0; i < out_image.num_elements(); i++) {
-    if (*(out_image.data() + i) != largest_color) *((*this).data() + i) = 0;
+  if (n_components >= 2) {      // Add the second (or more) largest component(s) to the EM image
+    int second_largest_size = 0;
+    int second_largest_color = 1;
+
+    for (boost::unordered_map<int, int>::iterator it = counts.begin();
+         it != counts.end(); it++) {
+      if (it->second > largest_size) {
+        second_largest_size = largest_size;
+        second_largest_color = largest_color;
+
+        largest_size = it->second;
+        largest_color = it->first;
+      }
+      else if ( (it->second <= largest_size) && (it->second > second_largest_size) ) {
+        second_largest_size = it->second;
+        second_largest_color = it->first;
+      }
+    }
+    //printf("largest_size = %d, largest_color = %d\n", largest_size, largest_color);
+    //printf("second_largest_size = %d, second_largest_color = %d\n", second_largest_size, second_largest_color);
+    for (unsigned int i = 0; i < out_image.num_elements(); i++) {
+      if (*(out_image.data() + i) != largest_color) 
+        if (*(out_image.data() + i) != second_largest_color) 
+          *((*this).data() + i) = 0;
+    }
+    // (*this).write_PGM("test_b.pgm");
+  } else {      // Consider the largest component ONLY for the EM image
+    for (boost::unordered_map<int, int>::iterator it = counts.begin();
+         it != counts.end(); it++) {
+      if (it->second > largest_size) {
+        largest_size = it->second;
+        largest_color = it->first;
+      }
+    }
+
+    for (unsigned int i = 0; i < out_image.num_elements(); i++) {
+      if (*(out_image.data() + i) != largest_color) *((*this).data() + i) = 0;
+    }
   }
   // out_image.write_PGM("cc1.pgm");
 }
