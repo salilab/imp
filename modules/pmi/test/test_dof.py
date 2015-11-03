@@ -78,7 +78,7 @@ class TestDOF(IMP.test.TestCase):
         fb_movers = dof.create_flexible_beads(mol.get_non_atomic_residues(),max_trans=1.0)
         self.assertEqual(len(fb_movers),3)
 
-    def test_mc_flexible_beads(self):
+    def test_mc_flexible_beads3(self):
         """Test flex beads don't work if nothing passed"""
         mdl = IMP.Model()
         mols = self.init_topology3(mdl)

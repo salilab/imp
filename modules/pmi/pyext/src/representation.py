@@ -726,7 +726,7 @@ class Representation(object):
     def add_all_atom_densities(self, name, hierarchies=None,
                                selection_tuples=None,
                                particles=None,
-                               resolution=0,
+                               resolution=None,
                                output_map=None,
                                voxel_size=1.0):
         '''Decorates all specified particles as Gaussians directly.

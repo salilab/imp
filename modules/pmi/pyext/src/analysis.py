@@ -1017,7 +1017,8 @@ class GetModelDensity(object):
                 else:
                     # else, when you have a hierarchy, but not a representation
                     for h in hierarchy.get_children():
-                        IMP.atom.Molecule.setup_particle(h.get_particle())
+                        if not IMP.atom.Molecule.get_is_setup(h):
+                            IMP.atom.Molecule.setup_particle(h)
 
                     if type(seg) == str:
                         s = IMP.atom.Selection(hierarchy,molecule=seg)

@@ -131,5 +131,18 @@ class TopologyReaderTests(IMP.test.TestCase):
         '''Check if rigid bodies etc are set up as requested'''
         pass
 
+    def test_beads_only(self):
+        '''Test setting up BEADS-only'''
+        mdl = IMP.Model()
+        topology_file = self.get_input_file_name("topology_beads.txt")
+        t = IMP.pmi.topology.TopologyReader(topology_file)
+        bm = IMP.pmi.macros.BuildModel(mdl,
+                                       component_topologies=t.component_list)
+        rep = bm.get_representation()
+        p1 = IMP.pmi.tools.select(rep,name='detgnt')
+        p2 = IMP.pmi.tools.select(rep,name='pom152')
+        self.assertTrue(IMP.core.Gaussian.get_is_setup(p1[0]))
+        self.assertTrue(IMP.core.Gaussian.get_is_setup(p2[0]))
+
 if __name__=="__main__":
     IMP.test.main()
