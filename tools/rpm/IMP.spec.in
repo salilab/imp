@@ -23,7 +23,9 @@ Group:         Applications/Engineering
 Packager:      Ben Webb <ben@salilab.org>
 URL:           http://www.integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
-BuildRoot:     %{_tmppath}/%{name}-%{version}-root
+%if 0%{?rhel} == 5
+BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root
+%endif
 %if 0%{?with_python3}
 BuildRequires: python3-devel, symlinks
 %endif
@@ -350,8 +352,10 @@ rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/example \
 # Make sure all Python applications use the same Python we built with
 perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 
+%if 0%{?rhel} == 5
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
+%endif
 
 %files
 %defattr(-,root,root)
