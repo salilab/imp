@@ -208,13 +208,20 @@ Requires:      mpich
 Development files for IMP.mpi module with mpich.
 %endif
 
-%define reqprog %{_builddir}/find-requires-%{name}
-%define proprog %{_builddir}/find-provides-%{name}
-
 %prep
 %setup -n imp-%{version}
 
 # Exclude bundled libraries from provides and requires
+%if 0%{?fedora} > 22
+# In newer Fedora, the old script-based dependency generation doesn't play
+# nicely with the new mechanism for adding MPI dependencies
+# (rpm-mpi-hooks package)
+%global __provides_exclude ^libTAU\\.so.*$
+%global __requires_exclude ^libTAU\\.so.*$
+%else
+%define reqprog %{_builddir}/find-requires-%{name}
+%define proprog %{_builddir}/find-provides-%{name}
+
 cat <<EOF > %{reqprog}
 #!/bin/bash
 %{__find_requires} $@ | grep -v %{bundled}
@@ -230,6 +237,7 @@ chmod a+x %{proprog}
 %define _use_internal_dependency_generator 0
 %define __find_requires %{reqprog}
 %define __find_provides %{proprog}
+%endif
 
 %build
 # For now, bundle RMF with IMP (long term, may be better to put in a separate
