@@ -313,6 +313,15 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/_IMP_mpi.so
  && symlinks -rc .)
 %endif
 
+# Put MPI-dependent libraries in mpich directories
+%if 0%{?with_mpich}
+(cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/ && mkdir mpich \
+ &&  mv _IMP_mpi.so mpich/)
+(cd ${RPM_BUILD_ROOT}%{_libdir} && mkdir mpich && mv libimp_mpi.so.* mpich)
+(cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_mpi.so \
+ && ln -sf mpich/libimp_mpi.so.* libimp_mpi.so)
+%endif
+
 # Note that we currently don't include the documentation in the RPM, since
 #      a) it takes a long time to run doxygen
 #      b) doxygen isn't installed on all of our build systems
@@ -383,8 +392,6 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %exclude %{_prefix}/share/IMP/build_info/IMP.mpi
 %exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %exclude %{_libdir}/python2*/site-packages/IMP/mpi
-%exclude %{_libdir}/python2*/site-packages/_IMP_mpi.so
-%exclude %{_libdir}/libimp_mpi.so.*
 %endif
 
 %if 0%{?with_python3}
@@ -405,8 +412,8 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %{_prefix}/share/IMP/build_info/IMP.mpi
 %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %{_libdir}/python2*/site-packages/IMP/mpi
-%{_libdir}/python2*/site-packages/_IMP_mpi.so
-%{_libdir}/libimp_mpi.so.*
+%{_libdir}/python2*/site-packages/mpich/_IMP_mpi.so
+%{_libdir}/mpich/libimp_mpi.so.*
 
 %files mpich-devel
 %defattr(-,root,root)
