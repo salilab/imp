@@ -216,8 +216,13 @@ Development files for IMP.mpi module with mpich.
 # In newer Fedora, the old script-based dependency generation doesn't play
 # nicely with the new mechanism for adding MPI dependencies
 # (rpm-mpi-hooks package)
+%if 0%{?with_mpich}
+%global __provides_exclude ^libTAU\\.so.*|libimp_mpi\\.so.*$
+%global __requires_exclude ^libTAU\\.so.*|libimp_mpi\\.so.*$
+%else
 %global __provides_exclude ^libTAU\\.so.*$
 %global __requires_exclude ^libTAU\\.so.*$
+%endif
 %else
 %define reqprog %{_builddir}/find-requires-%{name}
 %define proprog %{_builddir}/find-provides-%{name}
