@@ -17,8 +17,8 @@ RMF_ENABLE_WARNINGS
 namespace RMF {
 namespace HDF5 {
 
-/** Store a handle to non-writeable HDF5 file. See
-   \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame08TheFile.html,
+/** Store a handle to a non-writeable HDF5 file. See
+   \external{https://www.hdfgroup.org/HDF5/doc/RM/RM_H5F.html,
    the HDF5 manual} for more information.
 
    \note At the moment, a given file can only be opened once within a
