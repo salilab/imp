@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
         print particles_by_type
         ps = IMP.core.DistancePairScore(IMP.core.Linear(0.0, 1.0))
         r = IMP.npc.CompositeRestraint(m, ps)
-        r.set_maximum_score(10000)
+        r.set_maximum_score(10)
         for val in particles_by_type.values():
             r.add_type(val)
         return r.evaluate(False)

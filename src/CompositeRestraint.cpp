@@ -138,12 +138,8 @@ namespace {
       boost::uniform_int<unsigned> randint(0, candidates.size() - 1);
       unsigned cnum = randint(random_number_generator);
 //    std::cout << "picked candidate #" << cnum << " = " << candidates[cnum] << std::endl;
-      std::set<Vertex> new_to_consider;
-      for (unsigned i = 0; i < candidates.size(); ++i) {
-        if (i != cnum) {
-          new_to_consider.insert(candidates[i]);
-        }
-      }
+      std::set<Vertex> new_to_consider = vertices_not_yet_considered;
+      new_to_consider.erase(candidates[cnum]);;
       generate_connected_subgraphs(new_to_consider, subset_so_far, neighbors,
                                    g, min_vertices, min_score, max_score);
 
