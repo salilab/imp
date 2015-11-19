@@ -10,5 +10,7 @@ IMP_SWIG_OBJECT( IMP::npc, PerinuclearVolumeLocationRestraint, PerinuclearVolume
 IMP_SWIG_OBJECT( IMP::npc, AssemblySymmetryByDistanceRestraint, AssemblySymmetryByDistanceRestraints);
 IMP_SWIG_OBJECT( IMP::npc, AssemblySymmetryByDihedralRestraint, AssemblySymmetryByDihedralRestraints);
 IMP_SWIG_OBJECT( IMP::npc, ProteinProximityRestraint, ProteinProximityRestraints);
+IMP_SWIG_OBJECT( IMP::npc, CompositeRestraint, CompositeRestraints);
 
 %include "IMP/npc/ProteinLocalizationRestraint.h"
+%include "IMP/npc/CompositeRestraint.h"
