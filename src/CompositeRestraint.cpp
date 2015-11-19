@@ -8,12 +8,23 @@
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <algorithm>
 
+#include <IMP/random.h>
 #include <IMP/npc/CompositeRestraint.h>
 
 IMPNPC_BEGIN_NAMESPACE
 
 namespace {
+
+  template <class LIST> void debug_print(std::string caption, const LIST &ls) {
+    std::cout << caption << " ";
+    for (typename LIST::const_iterator it = ls.begin(); it != ls.end(); ++it) {
+      std::cout << *it << " " ;
+    }
+    std::cout << std::endl;
+  }
 
   typedef std::pair<int, ParticleIndex> TypedParticle;
   typedef std::vector<TypedParticle> TypedParticles;
@@ -31,6 +42,8 @@ namespace {
                                 boost::undirectedS, boost::no_property,
                                 boost::property<boost::edge_weight_t,
                                                 double> > Graph;
+  typedef boost::property_map<Graph, boost::edge_weight_t>::type
+                                                 WeightMap;
   typedef boost::graph_traits<Graph>::edge_descriptor Edge;
   typedef Graph::edge_property_type Weight;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
@@ -75,16 +88,89 @@ namespace {
     }
   }
 
+  void add_neighbors(std::set<Vertex> &neighbors, Vertex v, Graph &g,
+                     double max_score) {
+    WeightMap weight_map = boost::get(boost::edge_weight, g);
+    boost::graph_traits<Graph>::out_edge_iterator ei, ei_end;
+    for (boost::tie(ei, ei_end) = boost::out_edges(v, g);
+         ei != ei_end; ++ei) {
+      Vertex t = boost::target(*ei, g);
+      double weight = weight_map[*ei];
+//      std::cout << " consider neighbor " << t << " of " << v << " weight " << weight << std::endl;
+      if (weight < max_score) {
+        neighbors.insert(t);
+      }
+    }
+  }
+
   void generate_connected_subgraphs(
-             std::set<Vertex> vertices_not_yet_considered,
-             std::vector<Vertex> subset_so_far, std::set<Vertex> neighbors,
-             Graph &g, std::set<Vertex> &min_vertices, double &min_score) {
+             std::set<Vertex> &vertices_not_yet_considered,
+             std::vector<Vertex> &subset_so_far, std::set<Vertex> &neighbors,
+             Graph &g, std::set<Vertex> &min_vertices, double &min_score,
+             double max_score) {
+    /*debug_print<std::set<Vertex> >("vertices_not_yet_considered",
+                                   vertices_not_yet_considered);
+    debug_print<std::vector<Vertex> >("subset_so_far",
+                                      subset_so_far);
+    debug_print<std::set<Vertex> >("neighbors",
+                                   neighbors);*/
+    std::vector<Vertex> candidates;
+    if (subset_so_far.empty()) {
+      candidates.insert(candidates.end(),
+                        vertices_not_yet_considered.begin(),
+                        vertices_not_yet_considered.end());
+    } else {
+      std::set_intersection(vertices_not_yet_considered.begin(),
+                            vertices_not_yet_considered.end(),
+                            neighbors.begin(), neighbors.end(),
+                            std::back_inserter(candidates));
+    }
+    /*debug_print<std::vector<Vertex> >("candidates",
+                                   candidates);*/
+    if (candidates.empty()) {
+      std::cout << "found subgraph ";
+      for (unsigned i = 0; i < subset_so_far.size(); ++i) {
+        std::cout << subset_so_far[i] << " " ;
+      }
+      std::cout << std::endl;
+    } else {
+      // Pick one of the candidates at random
+      boost::uniform_int<unsigned> randint(0, candidates.size() - 1);
+      unsigned cnum = randint(random_number_generator);
+//    std::cout << "picked candidate #" << cnum << " = " << candidates[cnum] << std::endl;
+      std::set<Vertex> new_to_consider;
+      for (unsigned i = 0; i < candidates.size(); ++i) {
+        if (i != cnum) {
+          new_to_consider.insert(candidates[i]);
+        }
+      }
+      generate_connected_subgraphs(new_to_consider, subset_so_far, neighbors,
+                                   g, min_vertices, min_score, max_score);
+
+      std::vector<Vertex> new_subset_so_far = subset_so_far;
+      new_subset_so_far.push_back(candidates[cnum]);
+
+      std::set<Vertex> new_neighbors = neighbors;
+      add_neighbors(new_neighbors, candidates[cnum], g, max_score);
+      generate_connected_subgraphs(new_to_consider, new_subset_so_far,
+                                   new_neighbors, g, min_vertices, min_score,
+                                   max_score);
+    }
   }
 
   double get_best_scoring_subgraph(Graph &g, double max_score) {
     double min_score = max_score;
     std::set<Vertex> min_vertices;
-    //generate_connected_subgraphs(g, min_vertices, min_score);
+    std::set<Vertex> vertices_not_yet_considered;
+    std::vector<Vertex> subset_so_far;
+    std::set<Vertex> neighbors;
+    boost::graph_traits<Graph>::vertex_iterator vi, vi_end;
+    for (boost::tie(vi, vi_end) = boost::vertices(g); vi != vi_end; ++vi) {
+      vertices_not_yet_considered.insert(*vi);
+    }
+    generate_connected_subgraphs(vertices_not_yet_considered, subset_so_far,
+                                 neighbors, g, min_vertices, min_score,
+                                 max_score);
     // score over all edges that connect min_vertices in g
   }
 
