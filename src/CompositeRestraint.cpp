@@ -115,6 +115,36 @@ namespace {
     return have_types.none();
   }
 
+  void update_minimum_subgraph(std::vector<Vertex> &subgraph,
+                               const TypedParticles &tps, Graph &g,
+                               std::set<Vertex> &min_vertices,
+                               double &min_score) {
+    std::set<Vertex> vertices;
+    vertices.insert(subgraph.begin(), subgraph.end());
+
+    // Find the set of edges that connect the subgraph vertices
+    std::vector<Edge> edges;
+    WeightMap weight_map = boost::get(boost::edge_weight, g);
+    double score = 0.;
+    boost::graph_traits<Graph>::edge_iterator ei, ei_end;
+    for (boost::tie(ei, ei_end) = boost::edges(g); ei != ei_end; ++ei) {
+      Vertex s = boost::source(*ei, g);
+      Vertex t = boost::target(*ei, g);
+      if (vertices.find(s) != vertices.end()
+          && vertices.find(t) != vertices.end()) {
+        edges.push_back(*ei);
+        score += weight_map[*ei];
+        if (score >= min_score) {
+          return;
+        }
+      }
+    }
+    // The new graph is the best scoring, so update
+    std::cout << "update minimum scoring subgraph " << score << std::endl;
+    min_vertices = vertices;
+    min_score = score;
+  }
+
   void generate_connected_subgraphs(
              std::set<Vertex> &vertices_not_yet_considered,
              std::vector<Vertex> &subset_so_far, std::set<Vertex> &neighbors,
@@ -146,6 +176,7 @@ namespace {
         std::cout << tps[subset_so_far[i]].second << " " ;
       }
       std::cout << std::endl;
+      update_minimum_subgraph(subset_so_far, tps, g, min_vertices, min_score);
     } else if (!candidates.empty()) {
       // Pick one of the candidates at random
       boost::uniform_int<unsigned> randint(0, candidates.size() - 1);
@@ -182,7 +213,7 @@ namespace {
     generate_connected_subgraphs(vertices_not_yet_considered, subset_so_far,
                                  neighbors, g, tps, num_particle_types,
                                  min_vertices, min_score, max_score);
-    // score over all edges that connect min_vertices in g
+    return min_score;
   }
 
 } // anonymous namespace
