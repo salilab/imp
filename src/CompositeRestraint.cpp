@@ -114,7 +114,6 @@ namespace {
       }
     }
     // The new graph is the best scoring, so update
-    std::cout << "update minimum scoring subgraph " << score << std::endl;
     min_edges = edges;
     min_score = score;
   }
@@ -137,11 +136,6 @@ namespace {
                             std::back_inserter(candidates));
     }
     if (got_all_particle_types(subset_so_far, tps, num_particle_types)) {
-      std::cout << "found subgraph ";
-      for (unsigned i = 0; i < subset_so_far.size(); ++i) {
-        std::cout << tps[subset_so_far[i]].second << " " ;
-      }
-      std::cout << std::endl;
       update_minimum_subgraph(subset_so_far, g, min_edges, min_score);
     } else if (!candidates.empty()) {
       // Pick one of the candidates at random
@@ -203,6 +197,18 @@ double CompositeRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   std::vector<Edge> edges;
   double score = get_best_scoring_subgraph(g, tps_, num_particle_types_,
                                            get_maximum_score(), edges);
+  IMP_IF_LOG(VERBOSE) {
+    ParticleIndexPairs pis;
+    get_particles_from_edges(edges, g, tps_, pis);
+    IMP_LOG_VERBOSE("Minimum subtree is [");
+    for (ParticleIndexPairs::const_iterator it = pis.begin(); it != pis.end();
+         ++it) {
+      IMP_LOG_VERBOSE("(" << get_model()->get_particle_name((*it)[0])
+                      << ", " << get_model()->get_particle_name((*it)[1])
+                      << ") ");
+    }
+    IMP_LOG_VERBOSE("]" << std::endl);
+  }
   if (accum) {
     // Need to reevaluate the score for each edge to get derivatives
     ParticleIndexPairs pis;
