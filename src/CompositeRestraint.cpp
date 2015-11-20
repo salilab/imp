@@ -117,7 +117,7 @@ namespace {
 
   void update_minimum_subgraph(std::vector<Vertex> &subgraph,
                                const TypedParticles &tps, Graph &g,
-                               std::set<Vertex> &min_vertices,
+                               std::vector<Edge> &min_edges,
                                double &min_score) {
     std::set<Vertex> vertices;
     vertices.insert(subgraph.begin(), subgraph.end());
@@ -141,7 +141,7 @@ namespace {
     }
     // The new graph is the best scoring, so update
     std::cout << "update minimum scoring subgraph " << score << std::endl;
-    min_vertices = vertices;
+    min_edges = edges;
     min_score = score;
   }
 
@@ -149,7 +149,7 @@ namespace {
              std::set<Vertex> &vertices_not_yet_considered,
              std::vector<Vertex> &subset_so_far, std::set<Vertex> &neighbors,
              Graph &g, const TypedParticles &tps, int num_particle_types,
-             std::set<Vertex> &min_vertices, double &min_score,
+             std::vector<Edge> &min_edges, double &min_score,
              double max_score) {
     /*debug_print<std::set<Vertex> >("vertices_not_yet_considered",
                                    vertices_not_yet_considered);
@@ -176,7 +176,7 @@ namespace {
         std::cout << tps[subset_so_far[i]].second << " " ;
       }
       std::cout << std::endl;
-      update_minimum_subgraph(subset_so_far, tps, g, min_vertices, min_score);
+      update_minimum_subgraph(subset_so_far, tps, g, min_edges, min_score);
     } else if (!candidates.empty()) {
       // Pick one of the candidates at random
       boost::uniform_int<unsigned> randint(0, candidates.size() - 1);
@@ -185,7 +185,7 @@ namespace {
       std::set<Vertex> new_to_consider = vertices_not_yet_considered;
       new_to_consider.erase(candidates[cnum]);;
       generate_connected_subgraphs(new_to_consider, subset_so_far, neighbors,
-                                   g, tps, num_particle_types, min_vertices,
+                                   g, tps, num_particle_types, min_edges,
                                    min_score, max_score);
 
       std::vector<Vertex> new_subset_so_far = subset_so_far;
@@ -195,14 +195,14 @@ namespace {
       add_neighbors(new_neighbors, candidates[cnum], g, max_score);
       generate_connected_subgraphs(new_to_consider, new_subset_so_far,
                                    new_neighbors, g, tps, num_particle_types,
-                                   min_vertices, min_score, max_score);
+                                   min_edges, min_score, max_score);
     }
   }
 
   double get_best_scoring_subgraph(Graph &g, const TypedParticles &tps,
-                                   int num_particle_types, double max_score) {
+                                   int num_particle_types, double max_score,
+                                   std::vector<Edge> &edges) {
     double min_score = max_score;
-    std::set<Vertex> min_vertices;
     std::set<Vertex> vertices_not_yet_considered;
     std::vector<Vertex> subset_so_far;
     std::set<Vertex> neighbors;
@@ -212,7 +212,7 @@ namespace {
     }
     generate_connected_subgraphs(vertices_not_yet_considered, subset_so_far,
                                  neighbors, g, tps, num_particle_types,
-                                 min_vertices, min_score, max_score);
+                                 edges, min_score, max_score);
     return min_score;
   }
 
@@ -224,9 +224,22 @@ double CompositeRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   Graph g;
   compute_mst(get_model(), tps_, ps_, g);
   show_graph(g, tps_, get_model());
+  std::vector<Edge> edges;
   double score = get_best_scoring_subgraph(g, tps_, num_particle_types_,
-                                           get_maximum_score());
-  return score;
+                                           get_maximum_score(), edges);
+  if (accum) {
+    // Need to reevaluate the score for each edge to get derivatives
+    ParticleIndexPairs pis(edges.size());
+    for (std::vector<Edge>::const_iterator it = edges.begin();
+         it != edges.end(); ++it) {
+      int i = boost::target(*it, g);
+      int j = boost::source(*it, g);
+      pis.push_back(ParticleIndexPair(tps_[i].second, tps_[j].second));
+    }
+    return ps_->evaluate_indexes(get_model(), pis, accum, 0, pis.size());
+  } else {
+    return score;
+  }
 }
 
 ModelObjectsTemp CompositeRestraint::do_get_inputs() const {
