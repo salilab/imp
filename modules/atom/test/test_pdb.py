@@ -128,6 +128,13 @@ class Tests(IMP.test.TestCase):
                         ^ IMP.atom.ChainPDBSelector('L')):
             mpb = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"), m, s)
             ab = IMP.atom.get_leaves(mpb)
+            self.assertEqual(len(ab), 14)
+        for s in (IMP.atom.AndPDBSelector(IMP.atom.HydrogenPDBSelector(),
+                      IMP.atom.NotPDBSelector(IMP.atom.ChainPDBSelector('L'))),
+                  IMP.atom.HydrogenPDBSelector()
+                        - IMP.atom.ChainPDBSelector('L')):
+            mpb = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"), m, s)
+            ab = IMP.atom.get_leaves(mpb)
             self.assertEqual(len(ab), 13)
 
     def test_pyimpl(self):
@@ -147,7 +154,7 @@ class Tests(IMP.test.TestCase):
                                   m, my_selector())
 
         l = IMP.atom.get_leaves(mp)
-        self.assertEqual(len(l), 24)
+        self.assertEqual(len(l), 25)
         l_py = IMP.atom.get_leaves(mp_py)
         self.assertEqual(len(l), len(l_py))
 

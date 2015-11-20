@@ -131,6 +131,8 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
       return XorPDBSelector(self, s)
   def __invert__(self):
       return NotPDBSelector(self)
+  def __sub__(self, s):
+      return AndPDBSelector(self, NotPDBSelector(s))
 %}
 }
 
