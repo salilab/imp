@@ -10,8 +10,9 @@ ChangeLog {#changelog}
   IMP::ScoringFunction instead). IMP::Optimizer and IMP::Sampler now also
   require an IMP::ScoringFunction to be explicitly set before they are used.
 - IMP::atom::Selection can now select by element.
-- IMP::atom::PDBSelector subclasses are more flexible, and can be combined using
-  standard Python operators, in similar fashion to sets (&, |, ~ operators).
+- IMP::atom::PDBSelector subclasses are more flexible, with a new
+  IMP::atom::XorPDBSelector class, and can be combined using standard
+  Python operators, in similar fashion to sets (&, |, ^, ~ operators).
 - The following modules that use FFTW (which is licensed under the GPL)
   are themselves now also licensed under the GPL: IMP::EMageFit,
   IMP::cnmultifit, IMP::em2d, IMP::integrative_docking, and IMP::multifit.

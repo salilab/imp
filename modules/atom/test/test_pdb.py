@@ -122,6 +122,13 @@ class Tests(IMP.test.TestCase):
             mpb = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"), m, s)
             ab = IMP.atom.get_leaves(mpb)
             self.assertEqual(len(ab), 9)
+        for s in (IMP.atom.XorPDBSelector(IMP.atom.HydrogenPDBSelector(),
+                                          IMP.atom.ChainPDBSelector('L')),
+                  IMP.atom.HydrogenPDBSelector()
+                        ^ IMP.atom.ChainPDBSelector('L')):
+            mpb = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"), m, s)
+            ab = IMP.atom.get_leaves(mpb)
+            self.assertEqual(len(ab), 13)
 
     def test_pyimpl(self):
         """Test PDBSelectors implemented in Python"""

@@ -290,7 +290,7 @@ class AndPDBSelector : public PDBSelector {
       : PDBSelector("AndPDBSelector%1%"), a_(a), b_(b) {}
 };
 
-//! Select atoms which are selected by either selector
+//! Select atoms which are selected by either or both selectors
 /** To use do something like
     \code
     read_pdb(name, m, OrPDBSelector(PPDBSelector(), WaterPDBSelector()));
@@ -312,6 +312,31 @@ class OrPDBSelector : public PDBSelector {
   IMP_OBJECT_METHODS(OrPDBSelector);
   OrPDBSelector(PDBSelector *a, PDBSelector *b)
       : PDBSelector("OrPDBSelector%1%"), a_(a), b_(b) {}
+};
+
+//! Select atoms which are selected by either selector but not both
+/** To use do something like
+    \code
+    read_pdb(name, m, XorPDBSelector(HydrogenPDBSelector(),
+                                     WaterPDBSelector()));
+    \endcode
+
+    In Python, the bitwise xor operator (^) can be used to the same
+    effect:
+    \code
+    read_pdb(name, m, HydrogenPDBSelector() ^ WaterPDBSelector());
+    \endcode
+ */
+class XorPDBSelector : public PDBSelector {
+  const IMP::PointerMember<PDBSelector> a_, b_;
+
+ public:
+  bool get_is_selected(const std::string &pdb_line) const {
+    return a_->get_is_selected(pdb_line) != b_->get_is_selected(pdb_line);
+  }
+  IMP_OBJECT_METHODS(XorPDBSelector);
+  XorPDBSelector(PDBSelector *a, PDBSelector *b)
+      : PDBSelector("XorPDBSelector%1%"), a_(a), b_(b) {}
 };
 
 //! Select atoms which are not selected by a given selector
