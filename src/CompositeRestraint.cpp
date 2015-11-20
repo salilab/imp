@@ -49,7 +49,6 @@ namespace {
         double d = ps->evaluate_index(m,
                          ParticleIndexPair(tps[i].second, tps[j].second),
                          nullptr);
-//      std::cout << "add edge " << i << "," << j << " => " << d << std::endl;
         boost::add_edge(i, j, d, full_g);
       }
     }
@@ -60,7 +59,6 @@ namespace {
     FullGraphWeightMap weight_map = boost::get(boost::edge_weight, full_g);
     for (std::vector<FullGraphEdge>::const_iterator it = mst.begin();
          it != mst.end(); ++it) {
-//    std::cout << boost::source(*it, full_g) << " " << boost::target(*it, full_g) << " " << weight_map[*it] << std::endl;
       boost::add_edge(boost::source(*it, full_g),
                       boost::target(*it, full_g), weight_map[*it], g);
     }
@@ -74,7 +72,6 @@ namespace {
          ei != ei_end; ++ei) {
       Vertex t = boost::target(*ei, g);
       double weight = weight_map[*ei];
-//      std::cout << " consider neighbor " << t << " of " << v << " weight " << weight << std::endl;
       if (weight < max_score) {
         neighbors.insert(t);
       }
@@ -150,7 +147,6 @@ namespace {
       // Pick one of the candidates at random
       boost::uniform_int<unsigned> randint(0, candidates.size() - 1);
       unsigned cnum = randint(random_number_generator);
-//    std::cout << "picked candidate #" << cnum << " = " << candidates[cnum] << std::endl;
       std::set<Vertex> new_to_consider = vertices_not_yet_considered;
       new_to_consider.erase(candidates[cnum]);;
       generate_connected_subgraphs(new_to_consider, subset_so_far, neighbors,
