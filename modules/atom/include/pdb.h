@@ -272,8 +272,7 @@ class PPDBSelector : public NonAlternativePDBSelector {
     read_pdb(name, m, AndPDBSelector(PPDBSelector(), WaterPDBSelector()));
     \endcode
 
-    In Python, the bitwise and operator (&) can be used to the same
-    effect:
+    In Python, the and operator (&) can be used to the same effect:
     \code
     read_pdb(name, m, PPDBSelector() & WaterPDBSelector());
     \endcode
@@ -296,8 +295,7 @@ class AndPDBSelector : public PDBSelector {
     read_pdb(name, m, OrPDBSelector(PPDBSelector(), WaterPDBSelector()));
     \endcode
 
-    In Python, the bitwise or operator (|) can be used to the same
-    effect:
+    In Python, the or operator (|) can be used to the same effect:
     \code
     read_pdb(name, m, PPDBSelector() | WaterPDBSelector());
     \endcode
@@ -321,8 +319,7 @@ class OrPDBSelector : public PDBSelector {
                                      WaterPDBSelector()));
     \endcode
 
-    In Python, the bitwise xor operator (^) can be used to the same
-    effect:
+    In Python, the xor operator (^) can be used to the same effect:
     \code
     read_pdb(name, m, HydrogenPDBSelector() ^ WaterPDBSelector());
     \endcode
@@ -345,8 +342,7 @@ class XorPDBSelector : public PDBSelector {
     read_pdb(name, m, NotPDBSelector(PPDBSelector()));
     \endcode
 
-    In Python, the bitwise inversion operator (~) can be used to the same
-    effect:
+    In Python, the inversion operator (~) can be used to the same effect:
     \code
     read_pdb(name, m, ~PPDBSelector());
     \endcode
