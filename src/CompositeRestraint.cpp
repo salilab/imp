@@ -18,14 +18,6 @@ IMPNPC_BEGIN_NAMESPACE
 
 namespace {
 
-  template <class LIST> void debug_print(std::string caption, const LIST &ls) {
-    std::cout << caption << " ";
-    for (typename LIST::const_iterator it = ls.begin(); it != ls.end(); ++it) {
-      std::cout << *it << " " ;
-    }
-    std::cout << std::endl;
-  }
-
   typedef std::pair<int, ParticleIndex> TypedParticle;
   typedef std::vector<TypedParticle> TypedParticles;
 
@@ -150,12 +142,6 @@ namespace {
              Graph &g, const TypedParticles &tps, int num_particle_types,
              std::vector<Edge> &min_edges, double &min_score,
              double max_score) {
-    /*debug_print<std::set<Vertex> >("vertices_not_yet_considered",
-                                   vertices_not_yet_considered);
-    debug_print<std::vector<Vertex> >("subset_so_far",
-                                      subset_so_far);
-    debug_print<std::set<Vertex> >("neighbors",
-                                   neighbors);*/
     std::vector<Vertex> candidates;
     if (subset_so_far.empty()) {
       candidates.insert(candidates.end(),
@@ -167,8 +153,6 @@ namespace {
                             neighbors.begin(), neighbors.end(),
                             std::back_inserter(candidates));
     }
-    /*debug_print<std::vector<Vertex> >("candidates",
-                                   candidates);*/
     if (got_all_particle_types(subset_so_far, tps, num_particle_types)) {
       std::cout << "found subgraph ";
       for (unsigned i = 0; i < subset_so_far.size(); ++i) {
