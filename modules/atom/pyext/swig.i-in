@@ -120,6 +120,17 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
   IMP_SWIG_SHOWSTUFF(CHARMMConnection);
  }
 
+%extend IMP::atom::PDBSelector {
+%pythoncode %{
+  def __and__(self, s):
+      return AndPDBSelector(self, s)
+  def __or__(self, s):
+      return OrPDBSelector(self, s)
+  def __invert__(self):
+      return NotPDBSelector(self)
+%}
+}
+
 %extend IMP::atom::Selection {
 %pythoncode %{
   def __init__(self, hierarchy=None,

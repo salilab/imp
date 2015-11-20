@@ -271,6 +271,12 @@ class PPDBSelector : public NonAlternativePDBSelector {
     \code
     read_pdb(name, m, AndPDBSelector(PPDBSelector(), WaterPDBSelector()));
     \endcode
+
+    In Python, the bitwise and operator (&) can be used to the same
+    effect:
+    \code
+    read_pdb(name, m, PPDBSelector() & WaterPDBSelector());
+    \endcode
  */
 class AndPDBSelector : public PDBSelector {
   const IMP::PointerMember<PDBSelector> a_, b_;
@@ -289,6 +295,12 @@ class AndPDBSelector : public PDBSelector {
     \code
     read_pdb(name, m, OrPDBSelector(PPDBSelector(), WaterPDBSelector()));
     \endcode
+
+    In Python, the bitwise or operator (|) can be used to the same
+    effect:
+    \code
+    read_pdb(name, m, PPDBSelector() | WaterPDBSelector());
+    \endcode
  */
 class OrPDBSelector : public PDBSelector {
   const IMP::PointerMember<PDBSelector> a_, b_;
@@ -306,6 +318,12 @@ class OrPDBSelector : public PDBSelector {
 /** To use do something like
     \code
     read_pdb(name, m, NotPDBSelector(PPDBSelector()));
+    \endcode
+
+    In Python, the bitwise inversion operator (~) can be used to the same
+    effect:
+    \code
+    read_pdb(name, m, ~PPDBSelector());
     \endcode
  */
 class NotPDBSelector : public PDBSelector {
