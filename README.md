@@ -9,9 +9,10 @@ Building IMP from source code
 To build IMP source found in `path/to/imp-source` and install it in
 `path_to_install` do:
 
-1. `cmake path/to/imp-source -DCMAKE_INSTALL_PREFIX=path_to_install`
-2. `make -j4`
-3. `make install`
+1. `mkdir build && cd build`
+2. `cmake path/to/imp-source -DCMAKE_INSTALL_PREFIX=path_to_install`
+3. `make -j4`
+4. `make install`
 
 See the [installation instructions in the manual](http://integrativemodeling.org/nightly/doc/manual/installation.html)
 for more details.
