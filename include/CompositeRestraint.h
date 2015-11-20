@@ -66,6 +66,13 @@ class IMPNPCEXPORT CompositeRestraint : public Restraint {
     ++num_particle_types_;
   }
 
+  //! Return the set of pairs which are connected by the restraint
+  /** This set of pairs reflects the current configuration at the time of
+      the get_connected_pairs() call, not the set at the time of the last
+      evaluate() call.
+  */
+  ParticleIndexPairs get_connected_pairs() const;
+
   double unprotected_evaluate(DerivativeAccumulator *accum) const IMP_OVERRIDE;
   ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(CompositeRestraint);

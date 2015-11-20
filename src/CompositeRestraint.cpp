@@ -215,6 +215,18 @@ namespace {
     return min_score;
   }
 
+  void get_particles_from_edges(const std::vector<Edge> &edges, const Graph &g,
+                                const TypedParticles &tps,
+                                ParticleIndexPairs &pis) {
+    pis.reserve(edges.size());
+    for (std::vector<Edge>::const_iterator it = edges.begin();
+         it != edges.end(); ++it) {
+      int i = boost::target(*it, g);
+      int j = boost::source(*it, g);
+      pis.push_back(ParticleIndexPair(tps[i].second, tps[j].second));
+    }
+  }
+
 } // anonymous namespace
 
 double CompositeRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
@@ -228,17 +240,25 @@ double CompositeRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
                                            get_maximum_score(), edges);
   if (accum) {
     // Need to reevaluate the score for each edge to get derivatives
-    ParticleIndexPairs pis(edges.size());
-    for (std::vector<Edge>::const_iterator it = edges.begin();
-         it != edges.end(); ++it) {
-      int i = boost::target(*it, g);
-      int j = boost::source(*it, g);
-      pis.push_back(ParticleIndexPair(tps_[i].second, tps_[j].second));
-    }
+    ParticleIndexPairs pis;
+    get_particles_from_edges(edges, g, tps_, pis);
     return ps_->evaluate_indexes(get_model(), pis, accum, 0, pis.size());
   } else {
     return score;
   }
+}
+
+ParticleIndexPairs CompositeRestraint::get_connected_pairs() const
+{
+  IMP_CHECK_OBJECT(ps_.get());
+  Graph g;
+  compute_mst(get_model(), tps_, ps_, g);
+  std::vector<Edge> edges;
+  get_best_scoring_subgraph(g, tps_, num_particle_types_,
+                            get_maximum_score(), edges);
+  ParticleIndexPairs pis;
+  get_particles_from_edges(edges, g, tps_, pis);
+  return pis;
 }
 
 ModelObjectsTemp CompositeRestraint::do_get_inputs() const {
