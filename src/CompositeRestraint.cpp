@@ -115,8 +115,7 @@ namespace {
     return have_types.none();
   }
 
-  void update_minimum_subgraph(std::vector<Vertex> &subgraph,
-                               const TypedParticles &tps, Graph &g,
+  void update_minimum_subgraph(std::vector<Vertex> &subgraph, Graph &g,
                                std::vector<Edge> &min_edges,
                                double &min_score) {
     std::set<Vertex> vertices;
@@ -176,7 +175,7 @@ namespace {
         std::cout << tps[subset_so_far[i]].second << " " ;
       }
       std::cout << std::endl;
-      update_minimum_subgraph(subset_so_far, tps, g, min_edges, min_score);
+      update_minimum_subgraph(subset_so_far, g, min_edges, min_score);
     } else if (!candidates.empty()) {
       // Pick one of the candidates at random
       boost::uniform_int<unsigned> randint(0, candidates.size() - 1);
