@@ -44,6 +44,8 @@ IMP_SWIG_OBJECT(IMP::atom, AllMol2Selector,AllMol2Selectors);
 IMP_SWIG_OBJECT(IMP::atom, AllPDBSelector, AllPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, AndPDBSelector,AndPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, XorPDBSelector,XorPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, ResidueTypePDBSelector, ResidueTypePDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, AtomTypePDBSelector, AtomTypePDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, AngleSingletonScore, AngleSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, BondEndpointsRefiner, BondEndpointsRefiners);
 IMP_SWIG_OBJECT(IMP::atom, BondPairContainer, BondPairContainers);

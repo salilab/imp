@@ -101,6 +101,20 @@ class Tests(IMP.test.TestCase):
         a = IMP.atom.get_leaves(mp)
         self.assertEqual(len(a), 22)
 
+    def test_atom_type(self):
+        """Test AtomTypePDBSelector"""
+        m = IMP.Model()
+        mp = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
+                               m, IMP.atom.AtomTypePDBSelector(["HA", "3HE"]))
+        self.assertEqual(len(IMP.atom.get_leaves(mp)), 3)
+
+    def test_residue_type(self):
+        """Test ResidueTypePDBSelector"""
+        m = IMP.Model()
+        mp = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
+                               m, IMP.atom.ResidueTypePDBSelector(["MET"]))
+        self.assertEqual(len(IMP.atom.get_leaves(mp)), 22)
+
     def test_sel_logic(self):
         """Test boolean logic selectors"""
         m = IMP.Model()

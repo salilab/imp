@@ -22,6 +22,7 @@
 #include <IMP/OptimizerState.h>
 #include <IMP/internal/utility.h>
 #include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -98,6 +99,51 @@ class CBetaPDBSelector : public NonAlternativePDBSelector {
     return (type[1] == 'C' && type[2] == 'B' && type[3] == ' ');
   }
   IMP_OBJECT_METHODS(CBetaPDBSelector)
+};
+
+//! Select all atoms of the given types
+/** Note that unlike CAlphaPDBSelector and similar classes, this selects all
+    atoms, even those in alternative locations (combine with
+    a NonAlternativePDBSelector if necessary).
+ */
+class AtomTypePDBSelector : public PDBSelector {
+  Strings atom_types_;
+ public:
+  AtomTypePDBSelector(Strings atom_types,
+                      std::string name = "AtomTypePDBSelector%1%")
+      : PDBSelector(name), atom_types_(atom_types) {
+    std::sort(atom_types_.begin(), atom_types_.end());
+  }
+
+  bool get_is_selected(const std::string &pdb_line) const {
+    std::string type = internal::atom_type(pdb_line);
+    boost::trim(type);
+    return std::binary_search(atom_types_.begin(), atom_types_.end(), type);
+  }
+  IMP_OBJECT_METHODS(AtomTypePDBSelector)
+};
+
+//! Select all atoms in residues of the given types
+/** Note that unlike CAlphaPDBSelector and similar classes, this selects all
+    atoms, even those in alternative locations (combine with
+    a NonAlternativePDBSelector if necessary).
+ */
+class ResidueTypePDBSelector : public PDBSelector {
+  Strings residue_types_;
+ public:
+  ResidueTypePDBSelector(Strings residue_types,
+                         std::string name = "ResidueTypePDBSelector%1%")
+      : PDBSelector(name), residue_types_(residue_types) {
+    std::sort(residue_types_.begin(), residue_types_.end());
+  }
+
+  bool get_is_selected(const std::string &pdb_line) const {
+    std::string type = internal::atom_residue_name(pdb_line);
+    boost::trim(type);
+    return std::binary_search(residue_types_.begin(), residue_types_.end(),
+                              type);
+  }
+  IMP_OBJECT_METHODS(ResidueTypePDBSelector)
 };
 
 //! Select all C (not CA or CB) ATOM records
