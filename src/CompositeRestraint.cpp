@@ -40,20 +40,6 @@ namespace {
   typedef Graph::edge_property_type Weight;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
-  /* debugging */
-  void show_graph(const Graph &g, const TypedParticles &tps, Model *m) {
-    std::cout << boost::num_vertices(g) << " vertices" << std::endl;
-    std::cout << boost::num_edges(g) << " edges = ";
-    boost::graph_traits<Graph>::edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = boost::edges(g); ei != ei_end; ++ei) {
-        int s = boost::source(*ei, g);
-        int t = boost::target(*ei, g);
-        std::cout << "(" << m->get_particle_name(tps[s].second)
-                  << "," << m->get_particle_name(tps[t].second) << ") ";
-    }
-    std::cout << std::endl;
-  }
-
   void compute_mst(Model *m, const TypedParticles &tps,
                    PairScore *ps, Graph &g) {
     // Create fully connected graph
@@ -218,7 +204,6 @@ double CompositeRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   IMP_CHECK_OBJECT(ps_.get());
   Graph g;
   compute_mst(get_model(), tps_, ps_, g);
-  show_graph(g, tps_, get_model());
   std::vector<Edge> edges;
   double score = get_best_scoring_subgraph(g, tps_, num_particle_types_,
                                            get_maximum_score(), edges);
