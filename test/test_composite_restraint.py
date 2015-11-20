@@ -29,8 +29,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         s = self.evaluate_config(m,
                              [('A1', 0,0),
-                              ('C1', 1,0),
                               ('B1', 0,-1),
+                              ('C1', 1,0),
                               ('A2', -10,-10),
                               ('B2', 10,10),
                               ('C2', 10,-10)])

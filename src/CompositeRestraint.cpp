@@ -103,10 +103,23 @@ namespace {
     }
   }
 
+  bool got_all_particle_types(const std::vector<Vertex> &subset_so_far,
+                              const TypedParticles &tps,
+                              int num_particle_types) {
+    boost::dynamic_bitset<> have_types(num_particle_types);
+    have_types.set();
+    for (std::vector<Vertex>::const_iterator it = subset_so_far.begin();
+         it != subset_so_far.end(); ++it) {
+      have_types.reset(tps[*it].first);
+    }
+    return have_types.none();
+  }
+
   void generate_connected_subgraphs(
              std::set<Vertex> &vertices_not_yet_considered,
              std::vector<Vertex> &subset_so_far, std::set<Vertex> &neighbors,
-             Graph &g, std::set<Vertex> &min_vertices, double &min_score,
+             Graph &g, const TypedParticles &tps, int num_particle_types,
+             std::set<Vertex> &min_vertices, double &min_score,
              double max_score) {
     /*debug_print<std::set<Vertex> >("vertices_not_yet_considered",
                                    vertices_not_yet_considered);
@@ -127,13 +140,13 @@ namespace {
     }
     /*debug_print<std::vector<Vertex> >("candidates",
                                    candidates);*/
-    if (candidates.empty()) {
+    if (got_all_particle_types(subset_so_far, tps, num_particle_types)) {
       std::cout << "found subgraph ";
       for (unsigned i = 0; i < subset_so_far.size(); ++i) {
-        std::cout << subset_so_far[i] << " " ;
+        std::cout << tps[subset_so_far[i]].second << " " ;
       }
       std::cout << std::endl;
-    } else {
+    } else if (!candidates.empty()) {
       // Pick one of the candidates at random
       boost::uniform_int<unsigned> randint(0, candidates.size() - 1);
       unsigned cnum = randint(random_number_generator);
@@ -141,7 +154,8 @@ namespace {
       std::set<Vertex> new_to_consider = vertices_not_yet_considered;
       new_to_consider.erase(candidates[cnum]);;
       generate_connected_subgraphs(new_to_consider, subset_so_far, neighbors,
-                                   g, min_vertices, min_score, max_score);
+                                   g, tps, num_particle_types, min_vertices,
+                                   min_score, max_score);
 
       std::vector<Vertex> new_subset_so_far = subset_so_far;
       new_subset_so_far.push_back(candidates[cnum]);
@@ -149,12 +163,13 @@ namespace {
       std::set<Vertex> new_neighbors = neighbors;
       add_neighbors(new_neighbors, candidates[cnum], g, max_score);
       generate_connected_subgraphs(new_to_consider, new_subset_so_far,
-                                   new_neighbors, g, min_vertices, min_score,
-                                   max_score);
+                                   new_neighbors, g, tps, num_particle_types,
+                                   min_vertices, min_score, max_score);
     }
   }
 
-  double get_best_scoring_subgraph(Graph &g, double max_score) {
+  double get_best_scoring_subgraph(Graph &g, const TypedParticles &tps,
+                                   int num_particle_types, double max_score) {
     double min_score = max_score;
     std::set<Vertex> min_vertices;
     std::set<Vertex> vertices_not_yet_considered;
@@ -165,8 +180,8 @@ namespace {
       vertices_not_yet_considered.insert(*vi);
     }
     generate_connected_subgraphs(vertices_not_yet_considered, subset_so_far,
-                                 neighbors, g, min_vertices, min_score,
-                                 max_score);
+                                 neighbors, g, tps, num_particle_types,
+                                 min_vertices, min_score, max_score);
     // score over all edges that connect min_vertices in g
   }
 
@@ -178,7 +193,8 @@ double CompositeRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   Graph g;
   compute_mst(get_model(), tps_, ps_, g);
   show_graph(g, tps_, get_model());
-  double score = get_best_scoring_subgraph(g, get_maximum_score());
+  double score = get_best_scoring_subgraph(g, tps_, num_particle_types_,
+                                           get_maximum_score());
   return score;
 }
 
