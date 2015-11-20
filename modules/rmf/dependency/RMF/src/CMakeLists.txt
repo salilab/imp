@@ -24,13 +24,13 @@ endif()
 endforeach()
 endif()
 
-add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/generated/embed_json.h" "${PROJECT_BINARY_DIR}/src/generated/embed_json.cpp"
+add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/generated/embed_jsons.h" "${PROJECT_BINARY_DIR}/src/generated/embed_jsons.cpp"
    COMMAND python "${PROJECT_SOURCE_DIR}/tools/build/make-embed.py"
               "${PROJECT_BINARY_DIR}/src/generated/" ${jsonfiles_expanded}
    DEPENDS ${jsonfiles} "${PROJECT_SOURCE_DIR}/tools/build/make-embed.py"
    COMMENT "Embedding json files" VERBATIM  )
 
-add_custom_target(RMF-embed DEPENDS "${PROJECT_BINARY_DIR}/src/generated/embed_json.cpp")
+add_custom_target(RMF-embed DEPENDS "${PROJECT_BINARY_DIR}/src/generated/embed_jsons.cpp")
 
 set_source_files_properties("${PROJECT_BINARY_DIR}/src/generated/embed_jsons.cpp" PROPERTIES GENERATED True)
 
