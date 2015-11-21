@@ -15,7 +15,8 @@ To build IMP source found in `path/to/imp-source` and install it in
 4. `make install`
 
 See the [installation instructions in the manual](http://integrativemodeling.org/nightly/doc/manual/installation.html)
-for more details.
+for more details (in particular this covers the necessary prerequisites you'll
+need before running cmake).
 
 Run `ccmake` to see more variables that can be used to customize your build and
 install.
