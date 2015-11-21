@@ -28,6 +28,7 @@ namespace {
   typedef boost::property_map<FullGraph, boost::edge_weight_t>::type
                                                  FullGraphWeightMap;
   typedef boost::graph_traits<FullGraph>::edge_descriptor FullGraphEdge;
+  typedef FullGraph::edge_property_type FullGraphWeight;
 
   /* Graph type used for MST */
   typedef boost::adjacency_list<boost::vecS, boost::vecS,
@@ -49,7 +50,7 @@ namespace {
         double d = ps->evaluate_index(m,
                          ParticleIndexPair(tps[i].second, tps[j].second),
                          nullptr);
-        boost::add_edge(i, j, d, full_g);
+        boost::add_edge(i, j, static_cast<FullGraphWeight>(d), full_g);
       }
     }
     std::vector<FullGraphEdge> mst;
