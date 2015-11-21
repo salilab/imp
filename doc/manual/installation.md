@@ -60,7 +60,10 @@ will not build, and some will not function optimally.
 
 ### Getting prerequisites on Linux {#installation_prereqs_linux}
 All of the prerequisites should be available as pre-built packages for
-your Linux distribution of choice.
+your Linux distribution of choice. For example, on a Fedora system the
+following should install most of the prerequisites:
+
+        sudo yum install boost-devel gperftools-devel CGAL-devel graphviz gsl-devel cmake doxygen hdf5-devel swig fftw-devel opencv-devel
 
 ### Getting prerequisites on a Mac {#installation_prereqs_mac}
 
