@@ -161,12 +161,14 @@ void add_missing_bonds(IMP::ParticlesTemp& atoms, IMP::ParticlesTemp& bonds) {
     for(unsigned int j=i+1; j<atoms.size(); j++) {
       float dist2 = IMP::algebra::get_squared_distance(coordinates[i], coordinates[j]);
       if(dist2 < thr2) { // add bond
+        // Atom decorators
         IMP::atom::Atoms as;
         IMP::atom::Atom ai = IMP::atom::Atom(atoms[i]);
         IMP::atom::Atom aj = IMP::atom::Atom(atoms[j]);
         as.push_back(ai);
         as.push_back(aj);
 
+        // look if bond already exists
         IMP::atom::Bonded b[2];
         for(unsigned int i = 0; i < 2; ++i) {
           if(IMP::atom::Bonded::get_is_setup(as[i]))
@@ -174,8 +176,19 @@ void add_missing_bonds(IMP::ParticlesTemp& atoms, IMP::ParticlesTemp& bonds) {
           else
             b[i] = IMP::atom::Bonded::setup_particle(as[i]);
         }
+
         IMP::atom::Bond bd = IMP::atom::get_bond(b[0], b[1]);
-        if(bd == IMP::atom::Bond()) {
+        if(bd == IMP::atom::Bond()) { // no bond yet
+          // check if it is between protein atoms
+          IMP::atom::Residue ri = IMP::atom::get_residue(ai);
+          IMP::atom::Residue rj = IMP::atom::get_residue(aj);
+          if(ri.get_is_protein() && rj.get_is_protein()) { // don't add a bond
+            std::cerr << "WARNING: protein atoms too close " << ri.get_index()
+                      << " " << ai.get_atom_type() << " and " << rj.get_index()
+                      << " " << aj.get_atom_type() << " dist " << sqrt(dist2)
+                      << std::endl;
+            continue;
+          }
           bd = IMP::atom::create_bond(b[0], b[1], IMP::atom::Bond::SINGLE);
           bonds.push_back(bd);
           counter++;
