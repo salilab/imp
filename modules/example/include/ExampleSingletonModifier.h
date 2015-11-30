@@ -27,8 +27,8 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include range_restriction.py
 
     The source code is as follows:
-    \include ExampleRestraint.h
-    \include ExampleRestraint.cpp
+    \include ExampleSingletonModifier.h
+    \include ExampleSingletonModifier.cpp
  */
 class IMPEXAMPLEEXPORT ExampleSingletonModifier : public SingletonModifier {
   algebra::BoundingBoxD<3> bb_;
