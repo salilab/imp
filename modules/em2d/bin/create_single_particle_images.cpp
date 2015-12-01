@@ -165,19 +165,17 @@ namespace {
     IMP::em2d::ProjectingOptions opts = IMP::em2d::ProjectingOptions(apix, resolution);
     IMP::em2d::Images projections = IMP::em2d::get_projections(ps, results, rows, cols, opts);
 
-    ///Define variable for fftw
-    double *fftin, *fftre;
-    fftw_complex *fftou;
-    fftw_plan p,q;
-
     ///Allocate input and output arrays memory
-    fftin = (double*)fftw_malloc(sizeof(double)*pwidth*pheight);
-    fftou = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*pwidth*(pheight/2+1));
-    fftre = (double*)fftw_malloc(sizeof(double)*pwidth*pheight);
+    double *fftin = (double*)fftw_malloc(sizeof(double)*pwidth*pheight);
+    fftw_complex *fftou = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)
+                                                     *pwidth*(pheight/2+1));
+    double *fftre = (double*)fftw_malloc(sizeof(double)*pwidth*pheight);
 
     ///Create plan for fftw
-    p = fftw_plan_dft_r2c_2d(pheight, pwidth, fftin, fftou, FFTW_MEASURE);
-    q = fftw_plan_dft_c2r_2d(pheight, pwidth, fftou, fftre, FFTW_MEASURE);
+    fftw_plan p = fftw_plan_dft_r2c_2d(pheight, pwidth, fftin, fftou,
+                                       FFTW_MEASURE);
+    fftw_plan q = fftw_plan_dft_c2r_2d(pheight, pwidth, fftou, fftre,
+                                       FFTW_MEASURE);
 
     //Create an image file for each projection
     for(int projnum=0; projnum < NoP; projnum++){
@@ -257,22 +255,21 @@ namespace {
     int diffw = (int) (pwidth - 256)/2.0;
     int diffh = (int) (pheight - 256)/2.0;
     
-    double *fftin, *fftre;
-    fftw_complex *fftou;
-    fftw_plan p,q;
-    
     ///Allocate input and output arrays memory
-    fftin = (double*)fftw_malloc(sizeof(double)*pwidth*pheight);
-    fftou = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*pwidth*(pheight/2+1));
-    fftre = (double*)fftw_malloc(sizeof(double)*pwidth*pheight);
+    double *fftin = (double*)fftw_malloc(sizeof(double)*pwidth*pheight);
+    fftw_complex *fftou = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)
+                                                     *pwidth*(pheight/2+1));
+    double *fftre = (double*)fftw_malloc(sizeof(double)*pwidth*pheight);
     
     std::normal_distribution<double> distribution1(0.0,stddev);
     std::normal_distribution<double> distribution2(0.0,stddev);
     
     for(int projnum=0; projnum < NoP; projnum++){
       
-      p = fftw_plan_dft_r2c_2d(pheight, pwidth, fftin, fftou, FFTW_MEASURE);
-      q = fftw_plan_dft_c2r_2d(pheight, pwidth, fftou, fftre, FFTW_MEASURE);
+      fftw_plan p = fftw_plan_dft_r2c_2d(pheight, pwidth, fftin, fftou,
+                                         FFTW_MEASURE);
+      fftw_plan q = fftw_plan_dft_c2r_2d(pheight, pwidth, fftou, fftre,
+                                         FFTW_MEASURE);
       
       for(int jj = 0; jj < pheight; jj++){
 	for(int kk = 0; kk < pwidth; kk++){
@@ -322,10 +319,10 @@ namespace {
 	std::fprintf(fp, "\n");
       }
       fclose(fp);
+      fftw_destroy_plan(p);
+      fftw_destroy_plan(q);
     }    
     
-    fftw_destroy_plan(p);
-    fftw_destroy_plan(q);
     fftw_free(fftin);
     fftw_free(fftou);
     fftw_free(fftre);                    
