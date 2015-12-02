@@ -11,6 +11,8 @@ IMP_SWIG_OBJECT( IMP::npc, AssemblySymmetryByDistanceRestraint, AssemblySymmetry
 IMP_SWIG_OBJECT( IMP::npc, AssemblySymmetryByDihedralRestraint, AssemblySymmetryByDihedralRestraints);
 IMP_SWIG_OBJECT( IMP::npc, ProteinProximityRestraint, ProteinProximityRestraints);
 IMP_SWIG_OBJECT( IMP::npc, CompositeRestraint, CompositeRestraints);
+IMP_SWIG_OBJECT( IMP::npc, MinimumSphereDistancePairScore, MinimumSphereDistancePairScores);
 
 %include "IMP/npc/ProteinLocalizationRestraint.h"
 %include "IMP/npc/CompositeRestraint.h"
+%include "IMP/npc/MinimumSphereDistancePairScore.h"
