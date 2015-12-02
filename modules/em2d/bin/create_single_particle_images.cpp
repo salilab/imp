@@ -148,8 +148,8 @@ namespace {
     int pheight = isize;
     int pwidth = isize;
     int pwidth2 = (int) (pwidth/2.0+1.0);
-    int diffw = (int) (pwidth - 256)/2.0;
-    int diffh = (int) (pheight - 256)/2.0;
+    int diffw = (int) (pwidth - cols)/2.0;
+    int diffh = (int) (pheight - rows)/2.0;
 
     //Create N evenly distributed projection
     IMP::algebra::SphericalVector3Ds vs;
@@ -215,7 +215,7 @@ namespace {
 
       double MinValue = 255;
       double MaxValue = 0;
-      double out_image[256][256];
+      double out_image[rows][cols];
 
       for(int jj = 0; jj < rows; jj++){
         for(int kk = 0; kk < cols; kk++){
@@ -255,8 +255,8 @@ namespace {
     int pheight = isize;
     int pwidth = isize;
     int pwidth2 = (int) (pwidth/2.0+1.0);
-    int diffw = (int) (pwidth - 256)/2.0;
-    int diffh = (int) (pheight - 256)/2.0;
+    int diffw = (int) (pwidth - cols)/2.0;
+    int diffh = (int) (pheight - rows)/2.0;
     
     ///Allocate input and output arrays memory
     double *fftin = (double*)fftw_malloc(sizeof(double)*pwidth*pheight);
@@ -301,7 +301,7 @@ namespace {
       
       double MinValue = 255;
       double MaxValue = 0;
-      double out_image[256][256];
+      double out_image[rows][cols];
       
       for(int jj = 0; jj < rows; jj++){
 	for(int kk = 0; kk < cols; kk++){
