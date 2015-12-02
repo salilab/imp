@@ -2,9 +2,6 @@
 
 The em2d module includes a number of tools (only for now):
 
-\section generate_perfect_projection_bin generate_perfect_projection
-Create N-Evenly projection from a model PDB.
-
 \section create_single_particle_images_bin create_single_particle_images
 Create single particle images, either noiseless, noisy, or purenoise. Run without argument for full options list.
 
