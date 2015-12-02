@@ -34,6 +34,8 @@
 #include <boost/algorithm/string.hpp>
 #include <IMP/em2d/RegistrationResult.h>
 #include <IMP/Model.h>
+#include <IMP/random.h>
+#include <boost/random/normal_distribution.hpp>
 
 namespace po = boost::program_options;
 using namespace IMP::em2d::internal;
@@ -133,7 +135,6 @@ namespace {
   void Generate_Noisy_Projections(std::string PDBFile, int NoP, int isize, int resolution, int apix, float stddev, std::string rootname){
     
     srand( time(NULL) );
-    std::default_random_engine generator;
 
     //Read the PDB file
     IMP_NEW(IMP::Model, m, ());
@@ -181,8 +182,11 @@ namespace {
     for(int projnum=0; projnum < NoP; projnum++){
       
       ///Create RNG; stddev here is 
-      std::normal_distribution<double> distribution1(0.0,stddev*rows*sqrt(2));
-      std::normal_distribution<double> distribution2(0.0,stddev*rows*sqrt(2));
+      boost::normal_distribution<double> mrng(0.0,stddev*rows*sqrt(2));
+      boost::variate_generator<IMP::RandomNumberGenerator &,
+                               boost::normal_distribution<double> >
+                          sampler(IMP::random_number_generator, mrng);
+
 
       for(int jj = 0; jj < pheight; jj++){
         for(int kk = 0; kk < pwidth; kk++){
@@ -193,8 +197,8 @@ namespace {
 
       for(int jj = 0; jj < pheight; jj++){
         for(int kk = 0; kk < (pwidth2); kk++){
-          double rndnmb1 = distribution1(generator);
-          double rndnmb2 = distribution2(generator);
+          double rndnmb1 = sampler();
+          double rndnmb2 = sampler();
 	  fftou[jj*(pwidth2)+kk][0] /= pheight*pwidth;
 	  fftou[jj*(pwidth2)+kk][1] /= pheight*pwidth;
 	  fftou[jj*(pwidth2)+kk][0]+=rndnmb1; 
@@ -245,7 +249,6 @@ namespace {
   
   void Generate_Pure_Noise_Images(int isize, int NoP, float stddev, std::string rootname){
     srand( time(NULL) );
-    std::default_random_engine generator;
     
     int rows = isize;
     int cols = isize;
@@ -261,8 +264,10 @@ namespace {
                                                      *pwidth*(pheight/2+1));
     double *fftre = (double*)fftw_malloc(sizeof(double)*pwidth*pheight);
     
-    std::normal_distribution<double> distribution1(0.0,stddev);
-    std::normal_distribution<double> distribution2(0.0,stddev);
+    boost::normal_distribution<double> mrng(0.0,stddev);
+    boost::variate_generator<IMP::RandomNumberGenerator &,
+                             boost::normal_distribution<double> >
+                        sampler(IMP::random_number_generator, mrng);
     
     for(int projnum=0; projnum < NoP; projnum++){
       
@@ -280,8 +285,8 @@ namespace {
       
       for(int jj = 0; jj < pheight; jj++){
 	for(int kk = 0; kk < (pwidth2); kk++){
-	  double rndnmb1 = distribution1(generator);
-	  double rndnmb2 = distribution2(generator);
+	  double rndnmb1 = sampler();
+	  double rndnmb2 = sampler();
 	  fftou[jj*(pwidth2)+kk][0]+=rndnmb1;
 	  fftou[jj*(pwidth2)+kk][1]+=rndnmb2;
 	}
