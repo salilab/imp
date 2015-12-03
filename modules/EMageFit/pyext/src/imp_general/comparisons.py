@@ -4,11 +4,10 @@
 
 
 import IMP
-import IMP.algebra as alg
-import IMP.core as core
-import IMP.em as em
-import IMP.atom as atom
-import IMP.EMageFit.imp_general.alignments as alignments
+import IMP.algebra
+import IMP.core
+import IMP.em
+import IMP.atom
 import IMP.EMageFit.imp_general.representation as representation
 
 import random
@@ -21,7 +20,7 @@ log = logging.getLogger("comparisons")
 
 
 def get_coordinates(hierarchy):
-    xyz = [core.XYZ(l) for l in atom.get_leaves(hierarchy)]
+    xyz = [IMP.core.XYZ(l) for l in IMP.atom.get_leaves(hierarchy)]
     coords = [x.get_coordinates() for x in xyz]
     return coords
 
@@ -29,8 +28,8 @@ def get_coordinates(hierarchy):
 def get_assembly_placement_score(assembly, native_assembly, align=False):
     """
         Computes the placement score of an assembly respect to the native_assembly.
-        @param assembly  An atom.Molecule object
-        @param native_assembly  An atom.Molecule object
+        @param assembly  An IMP.atom.Molecule object
+        @param native_assembly  An IMP.atom.Molecule object
         @param align If True, assembly is aligned to native_assembly before
                     calculating the placement score
     """
@@ -45,8 +44,8 @@ def get_components_placement_scores(assembly, native_assembly, align=False):
     """
         Compute the placement score of each of the children of an assembly.
         The function does not do any time of alignment of the coordinates
-        @param assembly An atom.Molecule object
-        @param native_assembly An atom.Molecule object with the native conformation
+        @param assembly An IMP.atom.Molecule object
+        @param native_assembly An IMP.atom.Molecule object with the native conformation
                                 Obviously the atoms in assembly and native assembly
                                 must be the same
         @param align If True, assembly is aligned to native_assembly before
@@ -64,8 +63,8 @@ def get_components_placement_scores(assembly, native_assembly, align=False):
         nil = [model_coords.extend(x) for x in model_coords_per_child]
         native_coords = []
         nil = [native_coords.extend(x) for x in native_coords_per_child]
-        T = alg.get_transformation_aligning_first_to_second(model_coords,
-                                                            native_coords)
+        T = IMP.algebra.get_transformation_aligning_first_to_second(
+                                               model_coords, native_coords)
         # get aligned coordinates
         new_model_coords_per_child = []
         for c in model_coords_per_child:
@@ -107,8 +106,8 @@ def get_placement_score_from_coordinates(model_coords, native_coords):
         placement angle - Angle in the axis-angle formulation of the rotation
         aligning the two rigid bodies.
     """
-    native_centroid = alg.get_centroid(native_coords)
-    model_centroid = alg.get_centroid(model_coords)
+    native_centroid = IMP.algebra.get_centroid(native_coords)
+    model_centroid = IMP.algebra.get_centroid(model_coords)
     translation_vector = native_centroid - model_centroid
     distance = translation_vector.get_magnitude()
     if(len(model_coords) != len(native_coords)):
@@ -116,17 +115,17 @@ def get_placement_score_from_coordinates(model_coords, native_coords):
             "Mismatch in the number of members %d %d " % (
                 len(model_coords),
                 len(native_coords)))
-    TT = alg.get_transformation_aligning_first_to_second(model_coords,
-                                                         native_coords)
-    P = alg.get_axis_and_angle(TT.get_rotation())
+    TT = IMP.algebra.get_transformation_aligning_first_to_second(model_coords,
+                                                                 native_coords)
+    P = IMP.algebra.get_axis_and_angle(TT.get_rotation())
     angle = P.second
     return distance, angle
 
 
 def get_rmsd(hierarchy1, hierarchy2):
-    xyz1 = [core.XYZ(l) for l in atom.get_leaves(hierarchy1)]
-    xyz2 = [core.XYZ(l) for l in atom.get_leaves(hierarchy2)]
-    return atom.get_rmsd(xyz1, xyz2)
+    xyz1 = [IMP.core.XYZ(l) for l in IMP.atom.get_leaves(hierarchy1)]
+    xyz2 = [IMP.core.XYZ(l) for l in IMP.atom.get_leaves(hierarchy2)]
+    return IMP.atom.get_rmsd(xyz1, xyz2)
 
 
 def get_ccc(native_assembly, assembly, resolution, voxel_size,
@@ -137,39 +136,39 @@ def get_ccc(native_assembly, assembly, resolution, voxel_size,
         calculation of the cross_correlation_coefficient
     """
     import IMP.em as em
-    particles_native = atom.get_leaves(native_assembly)
-    particles_solution = atom.get_leaves(assembly)
-    bb_native = core.get_bounding_box(core.XYZs(particles_native))
-    bb_solution = core.get_bounding_box(core.XYZs(particles_solution))
+    particles_native = IMP.atom.get_leaves(native_assembly)
+    particles_solution = IMP.atom.get_leaves(assembly)
+    bb_native = IMP.core.get_bounding_box(IMP.core.XYZs(particles_native))
+    bb_solution = IMP.core.get_bounding_box(IMP.core.XYZs(particles_solution))
     # bounding box enclosing both the particles of the native assembly
     #  and the particles of the model
-    bb_union = alg.get_union(bb_native, bb_solution)
+    bb_union = IMP.algebra.get_union(bb_native, bb_solution)
     # add border of 4 voxels
     border = 4 * voxel_size
     bottom = bb_union.get_corner(0)
-    bottom += alg.Vector3D(-border, -border, -border)
+    bottom += IMP.algebra.Vector3D(-border, -border, -border)
     top = bb_union.get_corner(1)
-    top += alg.Vector3D(border, border, border)
-    bb_union = alg.BoundingBox3D(bottom, top)
+    top += IMP.algebra.Vector3D(border, border, border)
+    bb_union = IMP.algebra.BoundingBox3D(bottom, top)
 
-    mrw = em.MRCReaderWriter()
-    header = em.create_density_header(bb_union, voxel_size)
+    mrw = IMP.em.MRCReaderWriter()
+    header = IMP.em.create_density_header(bb_union, voxel_size)
     header.set_resolution(resolution)
 
-    map_native = em.SampledDensityMap(header)
+    map_native = IMP.em.SampledDensityMap(header)
     map_native.set_particles(particles_native)
     map_native.resample()
 
-    map_solution = em.SampledDensityMap(header)
+    map_solution = IMP.em.SampledDensityMap(header)
     map_solution.set_particles(particles_solution)
     map_solution.resample()
 
     if(write_maps):
-        em.write_map(map_solution, "map_solution.mrc", mrw)
-        em.write_map(map_native, "map_native.mrc", mrw)
+        IMP.em.write_map(map_solution, "map_solution.mrc", mrw)
+        IMP.em.write_map(map_native, "map_native.mrc", mrw)
     map_native.calcRMS()
     map_solution.calcRMS()
-    coarse_cc = em.CoarseCC()
+    coarse_cc = IMP.em.CoarseCC()
     # base the calculation of the cross_correlation coefficient on the threshold]
     # for the native map, because the threshold for the map of the model changes
     # with each model
@@ -201,16 +200,16 @@ def get_drms_for_backbone(assembly, native_assembly):
     begin_range = 0
     ranges = []
     backbone = []
-    h_chains = atom.get_by_type(assembly, atom.CHAIN_TYPE)
+    h_chains = IMP.atom.get_by_type(assembly, IMP.atom.CHAIN_TYPE)
     for h in h_chains:
         atoms = representation.get_backbone(h)
         """"
         for a in atoms:
             print "atom ===> ",
-            at = atom.Atom(a)
+            at = IMP.atom.Atom(a)
             hr = at.get_parent()
-            res = atom.Residue(hr)
-            ch = atom.Chain(h)
+            res = IMP.atom.Residue(hr)
+            ch = IMP.atom.Chain(h)
             ch.show()
             print " - ",
             res.show()
@@ -223,26 +222,26 @@ def get_drms_for_backbone(assembly, native_assembly):
         ranges.append((begin_range, end_range))
         begin_range = end_range
     log.debug("Ranges %s number of atoms %s", ranges, len(backbone))
-    xyzs = [core.XYZ(l) for l in backbone]
-    native_chains = atom.get_by_type(native_assembly, atom.CHAIN_TYPE)
-    names = [atom.Chain(ch).get_id() for ch in native_chains]
+    xyzs = [IMP.core.XYZ(l) for l in backbone]
+    native_chains = IMP.atom.get_by_type(native_assembly, IMP.atom.CHAIN_TYPE)
+    names = [IMP.atom.Chain(ch).get_id() for ch in native_chains]
     native_backbone = []
     for h in native_chains:
         native_backbone.extend(representation.get_backbone(h))
-    native_xyzs = [core.XYZ(l) for l in native_backbone]
+    native_xyzs = [IMP.core.XYZ(l) for l in native_backbone]
     if len(xyzs) != len(native_xyzs):
         raise ValueError(
             "Cannot compute DRMS for sets of atoms of different size")
     log.debug("Getting rigid bodies rmsd")
-    drms = atom.get_rigid_bodies_drms(xyzs, native_xyzs, ranges)
+    drms = IMP.atom.get_rigid_bodies_drms(xyzs, native_xyzs, ranges)
     if drms < 0 or math.isnan(drms):  # or drms > 100:
         log.debug(
             "len(xyzs) = %s. len(native_xyzs) = %s",
             len(xyzs),
             len(native_xyzs))
         log.debug("drms = %s", drms)
-        atom.write_pdb(assembly, "drms_model_calphas.pdb")
-        atom.write_pdb(native_assembly, "drms_native_calphas.pdb")
+        IMP.atom.write_pdb(assembly, "drms_model_calphas.pdb")
+        IMP.atom.write_pdb(native_assembly, "drms_native_calphas.pdb")
         raise ValueError("There is a problem with the drms. I wrote the pdbs "
                          "for you: drms_model_calphas.pdb drms_native_calphas.pdb")
     return drms

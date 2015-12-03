@@ -3,19 +3,10 @@
 """
 
 import IMP
-import IMP.domino as domino
-import IMP.core as core
-import IMP.display as display
-import IMP.atom as atom
-import IMP.algebra as alg
-import IMP.em2d as em2d
-
-import IMP.EMageFit.imp_general.io as io
-import IMP.EMageFit.imp_general.representation as representation
-
+import IMP.atom
+import IMP.algebra
 import sys
 import logging
-
 
 log = logging.getLogger("alignments")
 
@@ -37,13 +28,14 @@ def get_reference_frames_from_chain_alignment(reference_rbs, reference_index,
         raise ValueError(
             "Mismatch in the number of members. Reference %d Aligned %d " % (
                 len(ref_coords), len(coords)))
-    T = alg.get_transformation_aligning_first_to_second(coords, ref_coords)
+    T = IMP.algebra.get_transformation_aligning_first_to_second(coords,
+                                                                ref_coords)
     new_refs = []
     for rb in rbs_to_align:
 #        log.debug("aligning ... %s",rb)
         t = rb.get_reference_frame().get_transformation_to()
-        new_t = alg.compose(T, t)
-        new_refs.append(alg.ReferenceFrame3D(new_t))
+        new_t = IMP.algebra.compose(T, t)
+        new_refs.append(IMP.algebra.ReferenceFrame3D(new_t))
     return new_refs
 
 
@@ -60,18 +52,18 @@ def align_centroids_using_pca(ref_frames, ref_frames_reference):
     vs2 = [T.get_translation() for T in Ts2]
 
     # align with PCA
-    pc1 = alg.get_principal_components(vs1)
-    pc2 = alg.get_principal_components(vs2)
-    pcTs = alg.get_alignments_from_first_to_second(pc1, pc2)
+    pc1 = IMP.algebra.get_principal_components(vs1)
+    pc2 = IMP.algebra.get_principal_components(vs2)
+    pcTs = IMP.algebra.get_alignments_from_first_to_second(pc1, pc2)
     best_refs = []
     best_rmsd = 1e5
     for j, pcT in enumerate(pcTs):
-        new_Ts1 = [alg.compose(pcT, T) for T in Ts1]
+        new_Ts1 = [IMP.algebra.compose(pcT, T) for T in Ts1]
         new_vs1 = [T.get_translation() for T in new_Ts1]
-        r = atom.get_rmsd(new_vs1, vs2)
+        r = IMP.atom.get_rmsd(new_vs1, vs2)
         if(r < best_rmsd):
             best_rmsd = r
-            best_refs = [alg.ReferenceFrame3D(T) for T in new_Ts1]
+            best_refs = [IMP.algebra.ReferenceFrame3D(T) for T in new_Ts1]
     return best_rmsd, best_refs
 
 
