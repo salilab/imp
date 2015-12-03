@@ -26,8 +26,8 @@ class Tests(IMP.test.IMP.test.ApplicationTestCase):
                                   '-l', '256',
                                   '-o', 'Projection',
                                   '-s', '0.00001',
-                                  '-p', 'Noiseless']) ###PDBFile, Number of Projections, Resolution, Apix, Image size, Output Name, Noise Level (StdDev SSNR). process
-        
+                                  '-p', 'Noisy']) ###PDBFile, Number of Projections, Resolution, Apix, Image size, Output Name, Noise Level (StdDev SSNR). process
+
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertTrue(os.path.isfile("Projection-2.pgm"),"Projection image not generated")
