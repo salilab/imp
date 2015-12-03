@@ -177,13 +177,10 @@ class GaussianKernel {
     core::XYZR d(p);
     algebra::Vector3D cs = d.get_coordinates();
     double rsq = (cs - pt).get_squared_magnitude();
-    const RadiusDependentKernelParameters &kernel_params =
-        get_radius_dependent_parameters(p);
-    double tmp = EXP(-rsq * kernel_params.get_inv_sigsq());
-    // tmp = exp(-rsq * params->get_inv_sigsq());
+    double tmp = EXP(-rsq * kps_->get_inv_rsigsq());
     // if statement to ensure even sampling within the box
     if (tmp > kps_->get_lim()) {
-      return kernel_params.get_normfac() * p->get_value(mass_key_) * tmp;
+      return kps_->get_rnormfac() * p->get_value(mass_key_) * tmp;
     } else {
       return 0;
     }

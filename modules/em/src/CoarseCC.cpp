@@ -228,7 +228,6 @@ float CoarseCC::local_cross_correlation_coefficient(
   }
 
   long nvox = em_header->get_number_of_voxels();
-  ;
   emreal ccc = 0.0;
   emreal model_mean = 0.;
   emreal em_mean = 0.;
