@@ -373,7 +373,7 @@ int main(int argc, char *argv[]){
      "sigma,s", po::value<float>(&stddev)->default_value(15.0),
      "Standard deviation of SSNR")
     (
-     "process,p", po::value<std::string>(&process)->default_value("None")->required(),
+     "process,p", po::value<std::string>(&process)->default_value("None"),
      "What kind of projection do you want? PureNoise, Noiseless, Noisy")
     ;
   
@@ -390,6 +390,6 @@ int main(int argc, char *argv[]){
   if(process == "PureNoise") Generate_Pure_Noise_Images(isize, NoP, stddev, rootname);
   else if(process == "Noiseless") Generate_Noiseless_Projections(pdb, NoP, isize, resolution, apix, rootname);
   else if(process == "Noisy") Generate_Noisy_Projections(pdb, NoP, isize, resolution, apix, stddev, rootname);
-  else if(process == "None") {std::cout << "Error! Choose a Process: PureNoise, Noisy, Noiseless! \n"; return 0;}
+  else {std::cout << "Error! Choose a Process: PureNoise, Noisy, Noiseless! \n"; return 0;}
 }
 
