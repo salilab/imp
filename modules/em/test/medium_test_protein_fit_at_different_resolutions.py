@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
 
     def correlation_test(self, data):
 
-        for fn, res in data:
+        for fn, res, thr in data:
             scene = IMP.em.read_map(self.get_input_file_name(fn), self.mrw)
             scene.get_header_writable().set_resolution(res)
             r = IMP.em.FitRestraint(self.particles, scene)
@@ -20,12 +20,15 @@ class Tests(IMP.test.TestCase):
             print("EM score (1-CC) = " + str(score), " filename:", fn, " res:", res)
             self.assertLess(
                 score,
-                0.05,
+                thr,
                 "the correlation score is not correct")
 
-    def test_compare_fit_score_to_imp_generated_maps(self):
-        data = [["1z5s_5.imp.mrc", 5],
-                ["1z5s_20.imp.mrc", 20]]
+    def test_compare_fit_score_to_eman2_generated_maps(self):
+        # eman2 generated maps
+        data = [["Ubi-4.5.mrc", 4.5, 0.15],
+                ["Ubi-8.5.mrc", 8.5, 0.04],
+                ["Ubi-12.5.mrc", 12.5, 0.04],
+                ["Ubi-16.5.mrc", 16.5, 0.04]]
         self.correlation_test(data)
 
     def setUp(self):
@@ -33,13 +36,12 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         self.mrw = IMP.em.MRCReaderWriter()
         self.imp_model = IMP.Model()
-        name = self.get_input_file_name("1z5s.pdb")
+        name = self.get_input_file_name("1UBI.pdb")
         print(name)
         self.mh = IMP.atom.read_pdb(name,
                                     self.imp_model, IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(self.mh)
         IMP.atom.create_rigid_body(self.mh)
-        #self.particles = IMP.Particles(IMP.core.get_leaves(self.mh))
         self.particles = []
         self.particles += IMP.core.get_leaves(self.mh)
 if __name__ == '__main__':
