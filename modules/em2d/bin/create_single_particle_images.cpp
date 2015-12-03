@@ -215,13 +215,14 @@ namespace {
 
       double MinValue = 255;
       double MaxValue = 0;
-      double out_image[rows][cols];
+      std::vector<double> out_image(rows * cols);
 
-      for(int jj = 0; jj < rows; jj++){
+      for(int jj = 0, imi = 0; jj < rows; jj++){
         for(int kk = 0; kk < cols; kk++){
-          out_image[jj][kk] = (double) fftre[(diffh+jj)*pwidth+(diffw+kk)]/(pheight*pwidth);
-	  if(out_image[jj][kk] < MinValue) MinValue = out_image[jj][kk];
-          else if(out_image[jj][kk] > MaxValue) MaxValue = out_image[jj][kk];
+          out_image[imi] = (double) fftre[(diffh+jj)*pwidth+(diffw+kk)]/(pheight*pwidth);
+	  if(out_image[imi] < MinValue) MinValue = out_image[imi];
+          else if(out_image[imi] > MaxValue) MaxValue = out_image[imi];
+          imi++;
         }
       }
 
@@ -229,9 +230,9 @@ namespace {
       std::fprintf(fp, "P2\n");
       std::fprintf(fp,"%i %i\n", rows, cols);
       std::fprintf(fp,"255\n");
-      for(int jj = 0; jj < rows; jj++){
+      for(int jj = 0, imi = 0; jj < rows; jj++){
         for(int kk = 0; kk < cols; kk++){
-          double pixel = out_image[jj][kk];
+          double pixel = out_image[imi++];
 	  std::fprintf(fp, "%i ", (int) ((pixel-MinValue)*(255.0)/(MaxValue-MinValue)+0));
           if(kk > 0 && kk % 12 == 0)  std::fprintf(fp, "\n");
         }
@@ -301,13 +302,14 @@ namespace {
       
       double MinValue = 255;
       double MaxValue = 0;
-      double out_image[rows][cols];
+      std::vector<double> out_image(rows * cols);
       
-      for(int jj = 0; jj < rows; jj++){
+      for(int jj = 0, imi = 0; jj < rows; jj++){
 	for(int kk = 0; kk < cols; kk++){
-	  out_image[jj][kk] = (double) fftre[(diffh+jj)*pwidth+(diffw+kk)]/(pheight*pwidth); 
-	  if(out_image[jj][kk] < MinValue) MinValue = out_image[jj][kk];
-	  else if(out_image[jj][kk] > MaxValue) MaxValue = out_image[jj][kk]; 
+	  out_image[imi] = (double) fftre[(diffh+jj)*pwidth+(diffw+kk)]/(pheight*pwidth); 
+	  if(out_image[imi] < MinValue) MinValue = out_image[imi];
+	  else if(out_image[imi] > MaxValue) MaxValue = out_image[imi]; 
+          imi++;
 	}
       }
       
@@ -315,9 +317,9 @@ namespace {
       std::fprintf(fp, "P2\n");
       std::fprintf(fp,"%i %i\n", rows, cols);
       std::fprintf(fp,"255\n");
-      for(int jj = 0; jj < rows; jj++){
+      for(int jj = 0, imi = 0; jj < rows; jj++){
 	for(int kk = 0; kk < cols; kk++){
-	  double pixel = out_image[jj][kk];
+	  double pixel = out_image[imi++];
 	  std::fprintf(fp, "%i ", (int) ((pixel-MinValue)*(255.0)/(MaxValue-MinValue)+0));
 	  if(kk > 0 && kk % 12 == 0)  std::fprintf(fp, "\n");
 	}
