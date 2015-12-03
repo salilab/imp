@@ -26,7 +26,7 @@ IMPNPC_BEGIN_NAMESPACE
     minimum score) is then used for scoring. This can be used for periodic
     boundaries or other symmetric systems.
  */
-class MinimumSphereDistancePairScore : public PairScore {
+class IMPNPCEXPORT MinimumSphereDistancePairScore : public PairScore {
   IMP::PointerMember<UnaryFunction> f_;
   algebra::Transformation3Ds transforms_;
 
