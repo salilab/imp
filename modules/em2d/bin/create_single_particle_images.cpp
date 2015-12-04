@@ -52,7 +52,6 @@ const unsigned int ALIGN2D_PREPROCESSING = 1;
 #include <fftw3.h>
 #include <time.h>
 #include <iostream>
-#include <random>
 #include <sstream>
 
 namespace {
