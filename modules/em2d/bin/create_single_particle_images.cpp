@@ -181,7 +181,7 @@ namespace {
     for(int projnum=0; projnum < NoP; projnum++){
       
       ///Create RNG; stddev here is 
-      boost::normal_distribution<double> mrng(0.0,stddev*rows*sqrt(2));
+      boost::normal_distribution<double> mrng(0.0,stddev*rows*sqrt(2.));
       boost::variate_generator<IMP::RandomNumberGenerator &,
                                boost::normal_distribution<double> >
                           sampler(IMP::random_number_generator, mrng);
