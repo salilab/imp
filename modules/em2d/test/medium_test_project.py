@@ -56,7 +56,7 @@ class Tests(IMP.test.TestCase):
         n_projections = 3
         rows = 80
         cols = 80
-        resolution = 1
+        resolution = 2
         apix = 1.5
         srw = em2d.SpiderImageReaderWriter()
         registration_values = em2d.get_evenly_distributed_registration_results(
