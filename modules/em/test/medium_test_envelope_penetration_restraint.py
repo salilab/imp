@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
     def test_evaluate(self):
         """Check the restraint is being evaluated"""
         score = self.sf.evaluate(False)
-        self.assertAlmostEqual(score, 4.0, delta=0.1)
+        self.assertAlmostEqual(score, 0.0, delta=0.1)
 
     def test_penetration(self):
         trans = IMP.algebra.Vector3D(5, 5, 5)
