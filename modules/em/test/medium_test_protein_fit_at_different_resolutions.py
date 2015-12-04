@@ -25,10 +25,10 @@ class Tests(IMP.test.TestCase):
 
     def test_compare_fit_score_to_eman2_generated_maps(self):
         # eman2 generated maps
-        data = [["Ubi-4.5.mrc", 4.5, 0.15],
-                ["Ubi-8.5.mrc", 8.5, 0.04],
-                ["Ubi-12.5.mrc", 12.5, 0.04],
-                ["Ubi-16.5.mrc", 16.5, 0.04]]
+        data = [["Ubi-4.5.mrc", 4.5, 0.005],
+                ["Ubi-8.5.mrc", 8.5, 0.005],
+                ["Ubi-12.5.mrc", 12.5, 0.005],
+                ["Ubi-16.5.mrc", 16.5, 0.005]]
         self.correlation_test(data)
 
     def setUp(self):
@@ -39,10 +39,11 @@ class Tests(IMP.test.TestCase):
         name = self.get_input_file_name("1UBI.pdb")
         print(name)
         self.mh = IMP.atom.read_pdb(name,
-                                    self.imp_model, IMP.atom.CAlphaPDBSelector())
+                                    self.imp_model, IMP.atom.NonWaterNonHydrogenPDBSelector())
         IMP.atom.add_radii(self.mh)
         IMP.atom.create_rigid_body(self.mh)
         self.particles = []
         self.particles += IMP.core.get_leaves(self.mh)
+
 if __name__ == '__main__':
     IMP.test.main()

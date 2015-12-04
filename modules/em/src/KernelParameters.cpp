@@ -63,7 +63,7 @@ void KernelParameters::init(float resolution) {
   timessig_ = 3.;
   // convert resolution to sigma squared. Full width at half maximum criterion
   // (Topf 2008)
-  rsig_ = resolution / (2 * sqrt(2. * log(2.)));  // sigma
+  rsig_ = resolution / (4 * sqrt(2. * log(2.)));  // sigma
   rsigsq_ = rsig_ * rsig_;                        // sigma squared
   inv_rsigsq_ = 1. / (2. * rsigsq_);              // term for the exponential
   // normalization factor for the Gaussian

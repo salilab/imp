@@ -173,17 +173,14 @@ class GaussianKernel {
   algebra::Vector3D get_center(Particle *p) const {
     return core::XYZ(p).get_coordinates();
   }
+
   double get_value(Particle *p, const algebra::Vector3D &pt) const {
-    core::XYZR d(p);
-    algebra::Vector3D cs = d.get_coordinates();
+    algebra::Vector3D cs = core::XYZ(p).get_coordinates();
     double rsq = (cs - pt).get_squared_magnitude();
-    double tmp = EXP(-rsq * kps_->get_inv_rsigsq());
-    // if statement to ensure even sampling within the box
-    if (tmp > kps_->get_lim()) {
-      return kps_->get_rnormfac() * p->get_value(mass_key_) * tmp;
-    } else {
+    if(rsq > kps_->get_timessig() * kps_->get_timessig() * kps_->get_rsigsq())
       return 0;
-    }
+    double tmp = EXP(-rsq * kps_->get_inv_rsigsq());
+    return kps_->get_rnormfac() * p->get_value(mass_key_) * tmp;
   }
 };
 
