@@ -24,12 +24,11 @@ class IMPEM2DEXPORT Projection : public Image2D<> {
 
   //! Constructor
   /**
-     \param[in] particles Particles to project, should have XYZ, radius and mass
+     \param[in] particles Particles to project, should have XYZ and mass
      \param[in] scale Image scale - pixel size
      \param[in] resolution Estimated resolution of the images
   */
   Projection(const IMP::algebra::Vector3Ds& points,
-             const std::vector<double>& radii,
              const std::vector<double>& mass,
              double scale, double resolution, int axis_size = 0);
 
@@ -42,7 +41,6 @@ class IMPEM2DEXPORT Projection : public Image2D<> {
   */
   Projection(const IMP::algebra::Vector3Ds& points,
              const IMP::algebra::Vector3Ds& ligand_points,
-             const std::vector<double>& ligand_radii,
              const std::vector<double>& ligand_mass,
              double scale, double resolution, int axis_size = 0);
 
@@ -68,16 +66,14 @@ class IMPEM2DEXPORT Projection : public Image2D<> {
     double d;  // density
   };
 
-  void init(const IMP::algebra::Vector3Ds& points,
-            double max_radius, int axis_size);
+  void init(const IMP::algebra::Vector3Ds& points, int axis_size);
 
   void project(const IMP::algebra::Vector3Ds& points,
-               const std::vector<double>& radii,
                const std::vector<double>& mass);
 
-  const std::vector<MaskCell>& get_sphere_mask(double radius);
+  const std::vector<MaskCell>& get_sphere_mask();
 
-  void calculate_sphere_mask(std::vector<MaskCell>& mask, double resolution);
+  void calculate_sphere_mask(std::vector<MaskCell>& mask);
 
   bool get_index_for_point(const IMP::algebra::Vector3D& point, int& i,
                            int& j) const {
@@ -89,8 +85,8 @@ class IMPEM2DEXPORT Projection : public Image2D<> {
     return true;
   }
 
-  // gaussian masks map: key=radius, data=mask
-  static std::map<double, std::vector<MaskCell> > radius2mask_;
+  // gaussian mask
+  static std::vector<MaskCell> mask_;
 
  private:
   int id_;

@@ -45,7 +45,6 @@ private:
   double pixel_size_;
   double resolution_;
   ProjectionSphere projection_sphere_;
-  std::vector<double> radii_;
   std::vector<double> mass_;
 
 };

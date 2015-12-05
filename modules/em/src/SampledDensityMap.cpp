@@ -156,29 +156,20 @@ class BinarizedSphereKernel {
 class GaussianKernel {
   KernelParameters *kps_;
   FloatKey mass_key_;
-  const RadiusDependentKernelParameters &get_radius_dependent_parameters(
-      Particle *p) const {
-    double r = core::XYZR(p).get_radius();
-    return kps_->get_params(r);
-  }
 
  public:
   GaussianKernel(KernelParameters &kps, const FloatKey &mass_key)
       : kps_(&kps), mass_key_(mass_key) {}
   double get_radius(Particle *p) const {
-    const RadiusDependentKernelParameters &kernel_params =
-        get_radius_dependent_parameters(p);
-    return kernel_params.get_kdist();
+    return kps_->get_rkdist();
   }
   algebra::Vector3D get_center(Particle *p) const {
     return core::XYZ(p).get_coordinates();
   }
-
   double get_value(Particle *p, const algebra::Vector3D &pt) const {
     algebra::Vector3D cs = core::XYZ(p).get_coordinates();
     double rsq = (cs - pt).get_squared_magnitude();
-    if(rsq > kps_->get_timessig() * kps_->get_timessig() * kps_->get_rsigsq())
-      return 0;
+    if(rsq > kps_->get_rkdistsq()) return 0;
     double tmp = EXP(-rsq * kps_->get_inv_rsigsq());
     return kps_->get_rnormfac() * p->get_value(mass_key_) * tmp;
   }

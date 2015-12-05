@@ -21,34 +21,28 @@
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
-std::map<double, std::vector<Projection::MaskCell> > Projection::radius2mask_;
+std::vector<Projection::MaskCell> Projection::mask_;
 
 Projection::Projection(const IMP::algebra::Vector3Ds& points,
-                       const std::vector<double>& radii,
                        const std::vector<double>& mass,
                        double scale, double resolution, int axis_size)
   : scale_(scale), t_i_(0), t_j_(0), resolution_(resolution) {
 
-  double max_radius = *std::max_element(radii.begin(), radii.end());
-  init(points, max_radius, axis_size);
-  project(points, radii, mass);
+  init(points, axis_size);
+  project(points, mass);
 }
 
 Projection::Projection(const IMP::algebra::Vector3Ds& points,
                        const IMP::algebra::Vector3Ds& ligand_points,
-                       const std::vector<double>& ligand_radii,
                        const std::vector<double>& ligand_mass,
                        double scale, double resolution, int axis_size)
     : scale_(scale), t_i_(0), t_j_(0), resolution_(resolution) {
 
-  double max_radius = *std::max_element(ligand_radii.begin(),
-                                        ligand_radii.end());
-  init(points, max_radius, axis_size);
-  project(ligand_points, ligand_radii, ligand_mass);
+  init(points, axis_size);
+  project(ligand_points, ligand_mass);
 }
 
-void Projection::init(const IMP::algebra::Vector3Ds& points,
-                      double max_radius, int axis_size) {
+void Projection::init(const IMP::algebra::Vector3Ds& points, int axis_size) {
   // determine the image size needed to store the projection
   x_min_ = y_min_ = std::numeric_limits<float>::max();
   x_max_ = y_max_ = std::numeric_limits<float>::min();
@@ -65,10 +59,8 @@ void Projection::init(const IMP::algebra::Vector3Ds& points,
   center /= points.size();
 
   static IMP::em::KernelParameters kp(resolution_);
-  const IMP::em::RadiusDependentKernelParameters& params =
-      kp.get_params(max_radius);
 
-  double wrap_length = 2 * params.get_kdist() + 1.0;
+  double wrap_length = 2 * kp.get_rkdist() + 1.0;
   x_min_ = x_min_ - wrap_length - scale_;
   y_min_ = y_min_ - wrap_length - scale_;
   x_max_ = x_max_ + wrap_length + scale_;
@@ -94,12 +86,11 @@ void Projection::init(const IMP::algebra::Vector3Ds& points,
 }
 
 void Projection::project(const IMP::algebra::Vector3Ds& points,
-                         const std::vector<double>& radii,
                          const std::vector<double>& mass) {
+  // get mask
+  const std::vector<MaskCell>& mask = get_sphere_mask();
   int i, j;
   for (unsigned int p_index = 0; p_index < points.size(); p_index++) {
-    // get mask
-    const std::vector<MaskCell>& mask = get_sphere_mask(radii[p_index]);
     // project
     if (get_index_for_point(points[p_index], i, j)) {
       for (unsigned int mask_index = 0; mask_index < mask.size();
@@ -113,28 +104,20 @@ void Projection::project(const IMP::algebra::Vector3Ds& points,
   }
 }
 
-const std::vector<Projection::MaskCell>& Projection::get_sphere_mask(double radius) {
+const std::vector<Projection::MaskCell>& Projection::get_sphere_mask() {
   // check if already calculated
-  if(radius2mask_.find(radius) == radius2mask_.end()) {
-    // compute
-    std::vector<MaskCell> mask;
-    calculate_sphere_mask(mask, radius);
-    radius2mask_[radius] = mask;
-  }
-  return radius2mask_.find(radius)->second;
+  if (mask_.size() == 0) calculate_sphere_mask(mask_);
+  return mask_;
 }
 
-void Projection::calculate_sphere_mask(std::vector<MaskCell>& mask,
-                                       double radius) {
+void Projection::calculate_sphere_mask(std::vector<MaskCell>& mask) {
   static IMP::em::KernelParameters kp(resolution_);
-  const IMP::em::RadiusDependentKernelParameters& params =
-      kp.get_params(radius);
 
-  int int_radius = symm_round(params.get_kdist() / scale_) + 1;
+  int int_radius = symm_round(kp.get_rkdist() / scale_) + 1;
   int int_radius2 = IMP::square(int_radius);
 
-  double normalization = -scale_ * scale_ * params.get_inv_sigsq();
-  double normalization2 = params.get_normfac();
+  double normalization = -scale_ * scale_ * kp.get_inv_rsigsq();
+  double normalization2 = kp.get_rnormfac();
 
   int i_bound, j_bound, k_bound;
   i_bound = int_radius;
@@ -215,21 +198,16 @@ void compute_projections(const Particles& particles,
 
   // get coordinates, radius and mass
   IMP::algebra::Vector3Ds points(particles.size());
-  std::vector<double> radii(particles.size());
   std::vector<double> mass(particles.size());
   for (unsigned int i = 0; i < particles.size(); i++) {
     points[i] = core::XYZ(particles[i]).get_coordinates();
-    radii[i] = core::XYZR(particles[i]).get_radius();
     mass[i] = atom::Mass(particles[i]).get_mass();
   }
 
   // estimate max image size
   double max_dist = compute_max_distance(points);
-  double max_radius = *std::max_element(radii.begin(), radii.end());
   static IMP::em::KernelParameters kp(resolution);
-  const IMP::em::RadiusDependentKernelParameters& params =
-    kp.get_params(max_radius);
-  double wrap_length = 2 * params.get_kdist() + 1.0;
+  double wrap_length = 2 * kp.get_rkdist() + 1.0;
   int axis_size =
       (int)((max_dist + 2 * wrap_length + 2 * pixel_size) / pixel_size + 2);
   if (axis_size <= image_size) axis_size = image_size;
@@ -257,7 +235,7 @@ void compute_projections(const Particles& particles,
       rotated_points[point_index] = r * points[point_index];
     }
     // project
-    IMP_UNIQUE_PTR<Projection> p(new Projection(rotated_points, radii, mass,
+    IMP_UNIQUE_PTR<Projection> p(new Projection(rotated_points, mass,
                                                 pixel_size, resolution,
                                                 axis_size));
     p->set_rotation(r);
@@ -286,20 +264,16 @@ void compute_projections(const Particles& all_particles,
                          boost::ptr_vector<Projection>& projections,
                          int image_size) {
 
-  // get coordinates, radius and mass
+  // get coordinates and mass
   IMP::algebra::Vector3Ds all_points(all_particles.size());
-  std::vector<double> all_radii(all_particles.size());
   for (unsigned int i = 0; i < all_particles.size(); i++) {
     all_points[i] = core::XYZ(all_particles[i]).get_coordinates();
-    all_radii[i] = core::XYZR(all_particles[i]).get_radius();
   }
 
   IMP::algebra::Vector3Ds lig_points(lig_particles.size());
-  std::vector<double> lig_radii(lig_particles.size());
   std::vector<double> lig_mass(lig_particles.size());
   for (unsigned int i = 0; i < lig_particles.size(); i++) {
     lig_points[i] = core::XYZ(lig_particles[i]).get_coordinates();
-    lig_radii[i] = core::XYZR(lig_particles[i]).get_radius();
     lig_mass[i] = atom::Mass(lig_particles[i]).get_mass();
   }
 
@@ -308,10 +282,7 @@ void compute_projections(const Particles& all_particles,
   if (!(image_size > 0)) {
     double max_dist = compute_max_distance(all_points);
     static IMP::em::KernelParameters kp(resolution);
-    double radius = 3.0;
-    const IMP::em::RadiusDependentKernelParameters& params =
-        kp.get_params(radius);
-    double wrap_length = 2 * params.get_kdist() + 1.0;
+    double wrap_length = 2 * kp.get_rkdist() + 1.0;
     axis_size =
         (int)((max_dist + 2 * wrap_length + 2 * pixel_size) / pixel_size + 2);
     if (axis_size <= image_size) axis_size = image_size;
@@ -343,7 +314,7 @@ void compute_projections(const Particles& all_particles,
 
     // project
     IMP_UNIQUE_PTR<Projection> p(
-        new Projection(rotated_points, rotated_ligand_points, lig_radii,
+        new Projection(rotated_points, rotated_ligand_points,
                        lig_mass, pixel_size, resolution, axis_size));
     p->set_rotation(r);
     p->set_axis(IMP::algebra::Vector3D(v.get_cartesian_coordinates()));

@@ -15,8 +15,7 @@ class Tests(IMP.test.TestCase):
         # init IMP model ( the environment)
         self.mdl = IMP.Model()
         self.mh = IMP.atom.read_pdb(self.get_input_file_name("1z5s_A.pdb"),
-                                    self.mdl, IMP.atom.CAlphaPDBSelector())
-        IMP.atom.add_radii(self.mh)
+                                    self.mdl, IMP.atom.NonWaterNonHydrogenPDBSelector())
         self.particles = IMP.core.get_leaves(self.mh)
 
     def test_sample_map(self):
@@ -27,7 +26,7 @@ class Tests(IMP.test.TestCase):
             self.assertGreater(
                 model_map.get_value(
                     IMP.core.XYZ(p.get_particle()).get_coordinates()),
-                3.,
+                0.99,
                 "map was not sampled correctly")
 
         erw = IMP.em.MRCReaderWriter()

@@ -39,18 +39,15 @@ class IMPEM2DEXPORT ProjectionMask {
 #endif
  public:
 #if !defined(DOXYGEN) && !defined(SWIG)
-  ProjectionMask(const em::KernelParameters &KP,
-                 const em::RadiusDependentKernelParameters &params,
+  ProjectionMask(const em::KernelParameters& kparams,
                  double voxelsize, double mass = 1.0);
 
   //! Generates the mask
   /*!
     \param[in] KP Kernel parameters to employ. See the EM module
-    \param[in] params Kernel parameters associated with radius to employ
     \param[in] mass Mass to give to the mask
   */
-  void create(const em::KernelParameters &KP,
-              const em::RadiusDependentKernelParameters &params,
+  void create(const em::KernelParameters& kparams,
               double mass = 1.0);
 #endif
 
@@ -153,25 +150,24 @@ class IMPEM2DEXPORT MasksManager {
   //! you typically want to use
   void create_masks(const ParticlesTemp &ps);
 
-  //! Creates the adequate mask for a particle of given radius
+  //! Creates the adequate mask for a particle of given mass
   /*!
-    \param[in] radius of the particle
     \param[in] mass of the particle
   */
-  void create_mask(double radius, double mass);
+  void create_mask(double mass);
 
-  //! Returns the adequate mask for a particle of given radius
-  ProjectionMaskPtr find_mask(double radius);
+  //! Returns the adequate mask for a particle of given mass
+  ProjectionMaskPtr find_mask(double mass);
 
   void show(std::ostream &out = std::cout) const;
 
-  unsigned int get_number_of_masks() const { return radii2mask_.size(); }
+  unsigned int get_number_of_masks() const { return mass2mask_.size(); }
 
   ~MasksManager();
 
  protected:
   // A map to store the masks
-  std::map<double, ProjectionMaskPtr> radii2mask_;
+  std::map<double, ProjectionMaskPtr> mass2mask_;
   // Kernel Params for the particles
   em::KernelParameters kernel_params_;
   // Pixel size for the masks
