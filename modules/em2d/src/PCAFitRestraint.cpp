@@ -29,7 +29,6 @@ PCAFitRestraint::PCAFitRestraint(Particles particles,
     n_components_(n_components),
     counter_(0)
 {
-  std::cerr << "PCAFitRestraint::Number of Particles: " << particles.size() << std::endl;   // by SJ & Dina (05/18/2015)
   // read and process the images
   for (unsigned int i = 0; i < image_files.size(); i++) {
     internal::Image2D<> image(image_files[i]);
