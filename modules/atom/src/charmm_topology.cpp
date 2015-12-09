@@ -553,7 +553,8 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const {
           IMP_WARN_ONCE(typ.get_string() +
                             Residue(it->second).get_residue_type().get_string(),
                         "Could not determine CHARMM atom type for atom "
-                            << typ << " in residue " << Residue(it->second),
+                        << typ << " in residue " << Residue(it->second)
+                        << std::endl,
                         warn_context_);
         }
       } else {
