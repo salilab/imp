@@ -324,7 +324,9 @@ class Clustering(object):
             list(zip(self.model_list_names, self.model_indexes)))
 
     def plot_matrix(self, figurename="clustermatrix.pdf"):
-        import pylab as pl
+        import matplotlib as mpl
+        mpl.use('Agg')
+        import matplotlib.pylab as pl
         from scipy.cluster import hierarchy as hrc
 
         fig = pl.figure(figsize=(10,8))
@@ -1052,6 +1054,7 @@ class GetModelDensity(object):
 
         dmap = IMP.em.SampledDensityMap(ps, resolution, self.voxel)
         dmap.calcRMS()
+        dmap.set_was_used(True)
         if name not in self.densities:
             self.densities[name] = dmap
         else:
@@ -1059,6 +1062,7 @@ class GetModelDensity(object):
             bbox2 = IMP.em.get_bounding_box(dmap)
             bbox1 += bbox2
             dmap3 = IMP.em.create_density_map(bbox1,self.voxel)
+            dmap3.set_was_used(True)
             dmap3.add(dmap)
             dmap3.add(self.densities[name])
             self.densities[name] = dmap3
@@ -1902,6 +1906,8 @@ class CrossLinkTable(object):
         # scale_symbol_size rescale the symbol for the crosslink
         # rename_protein_map is a dictionary to rename proteins
 
+        import matplotlib as mpl
+        mpl.use('Agg')
         import matplotlib.pyplot as plt
         import matplotlib.cm as cm
 
@@ -2378,7 +2384,9 @@ class CrossLinkTable(object):
     def plot_matrix_cross_link_distances_unique(self, figurename, prot_list,
                                                 prot_list2=None):
 
-        import pylab as pl
+        import matplotlib as mpl
+        mpl.use('Agg')
+        import matplotlib.pylab as pl
 
         tmp_matrix = []
         for kw in self.cross_link_distances_unique:
@@ -2524,6 +2532,8 @@ class CrossLinkTable(object):
                                  reference_ylines=None,
                                  distance_color=True,
                                  format="png"):
+        import matplotlib as mpl
+        mpl.use('Agg')
         import matplotlib.pyplot as plt
         import matplotlib.cm as cm
 

@@ -100,6 +100,7 @@ class Representation(object):
         # where super_rigid_xyzs are the flexible xyz particles
         # and super_rigid_rbs is the list of rigid bodies.
         self.super_rigid_bodies = []
+        self.rigid_body_symmetries = []
         self.output_level = "low"
         self.label = "None"
 
@@ -108,6 +109,7 @@ class Representation(object):
         self.maxtrans_srb = 2.0
         self.maxrot_srb = 0.2
         self.rigidbodiesarefixed = False
+        self.floppybodiesarefixed = False
         self.maxtrans_fb = 3.0
         self.resolution = 10.0
         self.bblenght = 100.0
@@ -379,6 +381,7 @@ class Representation(object):
 
         else:
             # do what you have to do for nucleic-acids
+            # to work, nucleic acids should not be indicated as HETATM in the pdb
             sel = IMP.atom.Selection(
                 c,
                 residue_indexes=list(range(
@@ -824,7 +827,9 @@ class Representation(object):
                                  rmf_frame_number,
                                  rmf_component_name=None,
                                  check_number_particles=True,
-                                 state_number=0):
+                                 representation_name_to_rmf_name_map=None,
+                                 state_number=0,
+                                 save_file=False):
         '''Read and replace coordinates from an RMF file.
         Replace the coordinates of particles with the same name.
         It assumes that the RMF and the representation have the particles
@@ -832,9 +837,11 @@ class Representation(object):
         @param component_name Component name
         @param rmf_component_name Name of the component in the RMF file
                 (if not specified, use `component_name`)
+        @param representation_name_to_rmf_name_map a dictionary that map
+                the original rmf particle name to the recipient particle component name
+        @param save_file: save a file with the names of particles of the component
 
         '''
-
         import IMP.pmi.analysis
 
         prots = IMP.pmi.analysis.get_hiers_from_rmf(
@@ -864,26 +871,58 @@ class Representation(object):
 
         psrepr = IMP.atom.get_leaves(self.hier_dict[component_name])
 
-        if check_number_particles:
+        import itertools
+        reprnames=[p.get_name() for p in psrepr]
+        rmfnames=[p.get_name() for p in psrmf]
+
+        if save_file:
+            fl=open(component_name+".txt","w")
+            for i in itertools.izip_longest(reprnames,rmfnames): fl.write(str(i[0])+","+str(i[1])+"\n")
+
+
+        if check_number_particles and not representation_name_to_rmf_name_map:
             if len(psrmf) != len(psrepr):
+                fl=open(component_name+".txt","w")
+                for i in itertools.izip_longest(reprnames,rmfnames): fl.write(str(i[0])+","+str(i[1])+"\n")
                 raise ValueError("%s cannot proceed the rmf and the representation don't have the same number of particles; "
                            "particles in rmf: %s particles in the representation: %s" % (str(component_name), str(len(psrmf)), str(len(psrepr))))
 
-        for n, prmf in enumerate(psrmf):
-            prmfname = prmf.get_name()
-            preprname = psrepr[n].get_name()
-            if IMP.core.RigidMember.get_is_setup(psrepr[n]):
-                raise ValueError("component %s cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies" % component_name)
-            if IMP.core.NonRigidMember.get_is_setup(psrepr[n]):
-                raise ValueError("component %s cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies" % component_name)
 
-            if prmfname != preprname:
-                print("set_coordinates_from_rmf: WARNING rmf particle and representation particles have not the same name %s %s " % (prmfname, preprname))
-            if IMP.core.XYZ.get_is_setup(prmf) and IMP.core.XYZ.get_is_setup(psrepr[n]):
+        if not representation_name_to_rmf_name_map:
+            for n, prmf in enumerate(psrmf):
+
+                prmfname = prmf.get_name()
+                preprname = psrepr[n].get_name()
+                if IMP.core.RigidMember.get_is_setup(psrepr[n]):
+                    raise ValueError("component %s cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies" % component_name)
+                if IMP.core.NonRigidMember.get_is_setup(psrepr[n]):
+                    raise ValueError("component %s cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies" % component_name)
+
+                if prmfname != preprname:
+                    print("set_coordinates_from_rmf: WARNING rmf particle and representation particles have not the same name %s %s " % (prmfname, preprname))
+                if IMP.core.XYZ.get_is_setup(prmf) and IMP.core.XYZ.get_is_setup(psrepr[n]):
+                    xyz = IMP.core.XYZ(prmf).get_coordinates()
+                    IMP.core.XYZ(psrepr[n]).set_coordinates(xyz)
+                else:
+                    print("set_coordinates_from_rmf: WARNING particles are not XYZ decorated %s %s " % (str(IMP.core.XYZ.get_is_setup(prmf)), str(IMP.core.XYZ.get_is_setup(psrepr[n]))))
+
+        else:
+            repr_name_particle_map={}
+            rmf_name_particle_map={}
+            for p in psrmf:
+                rmf_name_particle_map[p.get_name()]=p
+            #for p in psrepr:
+            #    repr_name_particle_map[p.get_name()]=p
+
+            for prepr in psrepr:
+                try:
+                    prmf=rmf_name_particle_map[representation_name_to_rmf_name_map[prepr.get_name()]]
+                except KeyError:
+                    print("set_coordinates_from_rmf: WARNING missing particle name in representation_name_to_rmf_name_map, skipping...")
+                    continue
                 xyz = IMP.core.XYZ(prmf).get_coordinates()
-                IMP.core.XYZ(psrepr[n]).set_coordinates(xyz)
-            else:
-                print("set_coordinates_from_rmf: WARNING particles are not XYZ decorated %s %s " % (str(IMP.core.XYZ.get_is_setup(prmf)), str(IMP.core.XYZ.get_is_setup(psrepr[n]))))
+                IMP.core.XYZ(prepr).set_coordinates(xyz)
+
 
     def check_root(self, name, protein_h, resolution):
         '''
@@ -1137,10 +1176,11 @@ class Representation(object):
                     if not bounding_box is None:
                     # overrides the perturbation
                         translation = IMP.algebra.get_random_vector_in(bb)
+                        old_coord=IMP.core.XYZ(rb).get_coordinates()
                         rotation = IMP.algebra.get_random_rotation_3d()
                         transformation = IMP.algebra.Transformation3D(
                             rotation,
-                            translation)
+                            translation-old_coord)
                     else:
                         transformation = IMP.algebra.get_random_local_transformation(
                             rbxyz,
@@ -1187,14 +1227,19 @@ class Representation(object):
                 if not bounding_box is None:
                     # overrides the perturbation
                     translation = IMP.algebra.get_random_vector_in(bb)
-                    transformation = IMP.algebra.Transformation3D(translation)
+                    transformation = IMP.algebra.Transformation3D(translation-fbxyz)
                 else:
                     transformation = IMP.algebra.get_random_local_transformation(
                         fbxyz,
                         max_translation,
                         max_rotation)
 
-                IMP.core.transform(IMP.core.XYZ(fb), transformation)
+                if IMP.core.RigidBodyMember.get_is_setup(fb):
+                    d=IMP.core.RigidBodyMember(fb).get_rigid_body()
+                elif IMP.core.XYZ.get_is_setup(fb):
+                    d=IMP.core.XYZ(fb)
+
+                IMP.core.transform(d, transformation)
 
                 if avoidcollision:
                     self.m.update()
@@ -1360,7 +1405,6 @@ class Representation(object):
 
         sel = IMP.atom.Selection(self.prot, molecule=maincopy)
         mainparticles = sel.get_selected_particles()
-        print(mainparticles)
 
         for k in range(len(copies)):
             rotation3D = IMP.algebra.get_rotation_about_axis(
@@ -1389,12 +1433,66 @@ class Representation(object):
                 print("setting " + p.get_name() + " as reference for " + pc.get_name())
 
                 IMP.core.Reference.setup_particle(pc, p)
-                lc.add_particle(pc)
+                lc.add(pc.get_index())
 
             c = IMP.container.SingletonsConstraint(sm, None, lc)
             self.m.add_score_state(c)
 
         self.m.update()
+
+
+    def create_rigid_body_symmetry(self, particles_reference, particles_copy,label="None",
+                    initial_transformation=IMP.algebra.get_identity_transformation_3d()):
+        from math import pi
+        self.representation_is_modified = True
+
+        mainparticles = particles_reference
+
+        t=initial_transformation
+        p=IMP.Particle(self.m)
+        p.set_name("RigidBody_Symmetry")
+        rb=IMP.core.RigidBody.setup_particle(p,IMP.algebra.ReferenceFrame3D(t))
+
+        sm = IMP.core.TransformationSymmetry(rb)
+
+
+        copyparticles = particles_copy
+
+        mainpurged = []
+        copypurged = []
+        for n, p in enumerate(mainparticles):
+            print(p.get_name())
+            pc = copyparticles[n]
+
+            mainpurged.append(p)
+            if not IMP.pmi.Symmetric.get_is_setup(p):
+                IMP.pmi.Symmetric.setup_particle(p, 0)
+            else:
+                IMP.pmi.Symmetric(p).set_symmetric(0)
+
+            copypurged.append(pc)
+            if not IMP.pmi.Symmetric.get_is_setup(pc):
+                IMP.pmi.Symmetric.setup_particle(pc, 1)
+            else:
+                IMP.pmi.Symmetric(pc).set_symmetric(1)
+
+        lc = IMP.container.ListSingletonContainer(self.m)
+        for n, p in enumerate(mainpurged):
+
+            pc = copypurged[n]
+            print("setting " + p.get_name() + " as reference for " + pc.get_name())
+
+            IMP.core.Reference.setup_particle(pc, p)
+            lc.add(pc.get_index())
+
+        c = IMP.container.SingletonsConstraint(sm, None, lc)
+        self.m.add_score_state(c)
+
+        self.m.update()
+        self.rigid_bodies.append(rb)
+        self.rigid_body_symmetries.append(rb)
+        rb.set_name(label+".rigid_body_symmetry."+str(len(self.rigid_body_symmetries)))
+
 
     def create_amyloid_fibril_symmetry(self, maincopy, axial_copies,
                                        longitudinal_copies, axis=(0, 0, 1), translation_value=4.8):
@@ -1432,7 +1530,7 @@ class Representation(object):
                     if not IMP.pmi.Symmetric.get_is_setup(pc):
                         IMP.pmi.Symmetric.setup_particle(pc, 1)
                     IMP.core.Reference.setup_particle(pc, p)
-                    lc.add_particle(pc)
+                    lc.add(pc.get_index())
                 c = IMP.container.SingletonsConstraint(sm, None, lc)
                 self.m.add_score_state(c)
                 self.m.update()
@@ -1645,6 +1743,21 @@ class Representation(object):
                         super_rigid_xyzs.add(p)
         self.super_rigid_bodies.append((super_rigid_xyzs, super_rigid_rbs))
 
+    def remove_floppy_bodies_from_component(self, component_name):
+        '''
+        Remove leaves of hierarchies from the floppy bodies list based
+        on the component name
+        '''
+        hs=IMP.atom.get_leaves(self.hier_dict[component_name])
+        ps=[h.get_particle() for h in hs]
+        for p in self.floppy_bodies:
+            try:
+                if p in ps: self.floppy_bodies.remove(p)
+                if p in hs: self.floppy_bodies.remove(p)
+            except:
+                continue
+
+
     def remove_floppy_bodies(self, hierarchies):
         '''
         Remove leaves of hierarchies from the floppy bodies list.
@@ -1723,9 +1836,17 @@ class Representation(object):
         '''
         Fix rigid bodies in their actual position.
         The get_particles_to_sample() function will return
-        just the floppy bodies.
+        just the floppy bodies (if they are not fixed).
         '''
         self.rigidbodiesarefixed = rigidbodiesarefixed
+
+    def set_floppy_bodies_as_fixed(self, floppybodiesarefixed=True):
+        '''
+        Fix floppy bodies in their actual position.
+        The get_particles_to_sample() function will return
+        just the rigid bodies (if they are not fixed).
+        '''
+        self.floppybodiesarefixed=floppybodiesarefixed
 
     def draw_hierarchy_graph(self):
         for c in IMP.atom.Hierarchy(self.prot).get_children():
@@ -1763,10 +1884,11 @@ class Representation(object):
                 if not IMP.atom.Bonded.get_is_setup(p2):
                     IMP.atom.Bonded.setup_particle(p2)
 
-                IMP.atom.create_bond(
-                    IMP.atom.Bonded(p1),
-                    IMP.atom.Bonded(p2),
-                    1)
+                if not IMP.atom.get_bond(IMP.atom.Bonded(p1),IMP.atom.Bonded(p2)):
+                    IMP.atom.create_bond(
+                        IMP.atom.Bonded(p1),
+                        IMP.atom.Bonded(p2),
+                        1)
 
     def show_component_table(self, name):
         if name in self.sequence_dict:
@@ -1991,12 +2113,13 @@ class Representation(object):
                     if rb not in self.fixed_rigid_bodies:
                         rbtmp.append(rb)
 
-        for fb in self.floppy_bodies:
-            if IMP.pmi.Symmetric.get_is_setup(fb):
-                if IMP.pmi.Symmetric(fb).get_symmetric() != 1:
+        if not self.floppybodiesarefixed:
+            for fb in self.floppy_bodies:
+                if IMP.pmi.Symmetric.get_is_setup(fb):
+                    if IMP.pmi.Symmetric(fb).get_symmetric() != 1:
+                        fbtmp.append(fb)
+                else:
                     fbtmp.append(fb)
-            else:
-                fbtmp.append(fb)
 
         for srb in self.super_rigid_bodies:
             # going to prune the fixed rigid bodies out
@@ -2058,6 +2181,9 @@ class Representation(object):
                 "_" +
                 self.label] = str(
                 partialscore)
+        for rb in self.rigid_body_symmetries:
+            name=rb.get_name()
+            output[name +"_" +self.label]=str(rb.get_reference_frame().get_transformation_to())
         for name in self.linker_restraints_dict:
             output[
                 name +

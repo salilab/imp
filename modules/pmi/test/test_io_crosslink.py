@@ -70,7 +70,7 @@ class TestIOCrosslink(IMP.test.TestCase):
         except KeyError:
             errorstatus=True
         self.assertFalse(errorstatus)
-        cldbkc.set_idscore_key("ID Score")
+        cldbkc.set_id_score_key("ID Score")
         errorstatus=False
         try:
             cldbkc.check_keys()
@@ -96,7 +96,7 @@ class TestIOCrosslink(IMP.test.TestCase):
         cldbkc.set_residue1_key("res1")
         cldbkc.set_residue2_key("res2")
         cldbkc.set_unique_id_key("id")
-        cldbkc.set_idscore_key("score")
+        cldbkc.set_id_score_key("score")
         cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
         cldb.create_set_from_file(self.get_input_file_name(input_data_set))
         return cldb
@@ -161,14 +161,42 @@ class TestIOCrosslink(IMP.test.TestCase):
             self.assertEqual(prai[3],xl[cldb.residue1_key])
             self.assertEqual(prai[2],xl[cldb.residue2_key])
 
-    def test_chamot_rooke_style(self):
+    def test_msstudio_style(self):
         cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
         cldbkc.set_protein1_key("prot1")
         cldbkc.set_protein2_key("prot2")
         cldbkc.set_site_pairs_key("site pairs")
         cldbkc.set_unique_id_key("id")
-        cldbkc.set_idscore_key("score")
-        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("CHAMOT-ROOKE")
+        cldbkc.set_id_score_key("score")
+        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("MSSTUDIO")
+        cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc,list_parser=rplp)
+        cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_crs.dat"))
+
+        expected_list=[('1',1,"AAA","AAA",1,10),
+                       ('1',2,"AAA","AAA",5,100),
+                       ('2',1,"BBB","AAA",5,21),
+                       ('2',2,"BBB","AAA",100,3),
+                       ('2',3,"BBB","AAA",1,100),
+                       ('3',1,"CCC","AAA",7,11)]
+
+        nxl=0
+        for xl in cldb:
+            e=expected_list[nxl]
+            self.assertEqual(xl[cldb.unique_id_key],e[0])
+            self.assertEqual(xl[cldb.unique_sub_index_key],e[1])
+            self.assertEqual(xl[cldb.protein1_key],e[2])
+            self.assertEqual(xl[cldb.protein2_key],e[3])
+            self.assertEqual(xl[cldb.residue1_key],e[4])
+            self.assertEqual(xl[cldb.residue2_key],e[5])
+            nxl+=1
+
+    def test_msstudio_style_no_id(self):
+        cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+        cldbkc.set_protein1_key("prot1")
+        cldbkc.set_protein2_key("prot2")
+        cldbkc.set_site_pairs_key("site pairs")
+        cldbkc.set_id_score_key("score")
+        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("MSSTUDIO")
         cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc,list_parser=rplp)
         cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_crs.dat"))
 

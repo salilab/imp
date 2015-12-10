@@ -50,7 +50,10 @@ class GaussianEMRestraint(object):
         # setup target GMM
         self.m = self.densities[0].get_model()
         if scale_target_to_mass:
-            target_mass_scale = sum((IMP.atom.Mass(p).get_mass() for h in densities for p in IMP.atom.get_leaves(h)))
+            def hierarchy_mass(h):
+                leaves = IMP.atom.get_leaves(h)
+                return sum(IMP.atom.Mass(p).get_mass() for p in leaves)
+            target_mass_scale = sum(hierarchy_mass(h) for h in densities)
         print('will scale target mass by', target_mass_scale)
         if target_fn != '':
             self.target_ps = []
@@ -69,7 +72,7 @@ class GaussianEMRestraint(object):
         # setup model GMM
         self.model_ps = []
         for h in self.densities:
-            self.model_ps += IMP.atom.get_leaves(h)
+            self.model_ps += [ k.get_particle() for k in IMP.atom.get_leaves(h) ]
         if model_radii_scale != 1.0:
             for p in self.model_ps:
                 rmax = sqrt(max(IMP.core.Gaussian(p).get_variances())) * \
@@ -152,6 +155,26 @@ class GaussianEMRestraint(object):
             IMP.core.transform(IMP.core.RigidBody(p), transformation)
         # IMP.pmi.tools.translate_hierarchies(self.densities,v)
 
+    def center_target_density_on_origin(self):
+        target_com = IMP.algebra.Vector3D(0, 0, 0)
+        target_mass = 0.0
+        for p in self.target_ps:
+            mass = IMP.atom.Mass(p).get_mass()
+            pos = IMP.core.XYZ(p).get_coordinates()
+            target_com += pos * mass
+            target_mass += mass
+        target_com /= target_mass
+        print('target com', target_com)
+        model_com = IMP.algebra.Vector3D(0, 0, 0)
+        print('model com', model_com)
+
+        v = target_com - model_com
+        print('translating with', -v)
+        transformation = IMP.algebra.Transformation3D(IMP.algebra.Vector3D(-v))
+        for p in self.target_ps:
+            IMP.core.transform(IMP.core.RigidBody(p), transformation)
+        # IMP.pmi.tools.translate_hierarchies(self.densities,v)
+
     def center_model_on_target_density(self, representation):
         target_com = IMP.algebra.Vector3D(0, 0, 0)
         target_mass = 0.0
@@ -180,11 +203,8 @@ class GaussianEMRestraint(object):
         XYZRs = set()
 
         for p in IMP.atom.get_leaves(representation.prot):
-            if IMP.core.RigidMember.get_is_setup(p):
-                rb = IMP.core.RigidMember(p).get_rigid_body()
-                rigid_bodies.add(rb)
-            elif IMP.core.NonRigidMember.get_is_setup(p):
-                rb = IMP.core.RigidMember(p).get_rigid_body()
+            if IMP.core.RigidBodyMember.get_is_setup(p):
+                rb = IMP.core.RigidBodyMember(p).get_rigid_body()
                 rigid_bodies.add(rb)
             elif IMP.core.XYZR.get_is_setup(p):
                 XYZRs.add(p)

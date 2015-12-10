@@ -586,7 +586,7 @@ class BuildModel(object):
 
                 dens_hier,beads=self.create_density(self.simo,comp_name,outhier,em_txt_file_name,
                                                     em_mrc_file_name,em_num_components,read_em_files)
-                self.simo.add_all_atom_densities(comp_name, hierarchies=beads)
+                self.simo.add_all_atom_densities(comp_name, particles=beads)
                 dens_hier+=beads
             else:
                 dens_hier=[]
@@ -775,12 +775,13 @@ class BuildModel1(object):
         self.gmm_models_directory="."
         self.rmf_file={}
         self.rmf_frame_number={}
+        self.rmf_names_map={}
 
     def set_gmm_models_directory(self,directory_name):
         self.gmm_models_directory=directory_name
 
     def build_model(self,data_structure,sequence_connectivity_scale=4.0,
-                         sequence_connectivity_resolution=10,rmf_file=None,rmf_frame_number=0):
+                         sequence_connectivity_resolution=10,rmf_file=None,rmf_frame_number=0,rmf_file_map=None):
         """Create model.
         @param data_structure List of lists containing these entries:
              comp_name, hier_name, color, fasta_file, fasta_id, pdb_name, chain_id,
@@ -789,6 +790,9 @@ class BuildModel1(object):
         @param sequence_connectivity_scale
         @param rmf_file
         @param rmf_frame_number
+        @param rmf_file_map : a dictionary that map key=component_name:value=(rmf_file_name,
+                                 rmf_frame_number,
+                                 rmf_component_name)
         """
         self.domain_dict={}
         self.resdensities={}
@@ -830,7 +834,8 @@ class BuildModel1(object):
 
 
                 dens_hier,beads=self.create_density(self.simo,comp_name,outhier,em_txt_file_name,em_mrc_file_name,em_num_components,read_em_files)
-                self.simo.add_all_atom_densities(comp_name, hierarchies=beads)
+                
+                self.simo.add_all_atom_densities(comp_name, particles=beads)
                 dens_hier+=beads
 
             else:
@@ -869,11 +874,19 @@ class BuildModel1(object):
                 rf=rmf_file
                 rfn=rmf_frame_number
                 self.simo.set_coordinates_from_rmf(c, rf,rfn)
+            elif rmf_file_map: 
+                for k in rmf_file_map:
+                    cname=k
+                    rf=rmf_file_map[k][0]
+                    rfn=rmf_file_map[k][1]
+                    rcname=rmf_file_map[k][2]
+                    self.simo.set_coordinates_from_rmf(cname, rf,rfn,rcname)
             else:
                 if c in self.rmf_file:
                     rf=self.rmf_file[c]
                     rfn=self.rmf_frame_number[c]
-                    self.simo.set_coordinates_from_rmf(c, rf,rfn)
+                    rfm=self.rmf_names_map[c]
+                    self.simo.set_coordinates_from_rmf(c, rf,rfn,representation_name_to_rmf_name_map=rfm)
             self.simo.setup_component_sequence_connectivity(c,resolution=sequence_connectivity_resolution,scale=sequence_connectivity_scale)
             self.simo.setup_component_geometry(c)
 
@@ -891,9 +904,10 @@ class BuildModel1(object):
 
 
 
-    def set_rmf_file(self,component_name,rmf_file,rmf_frame_number):
+    def set_rmf_file(self,component_name,rmf_file,rmf_frame_number,rmf_names_map=None):
         self.rmf_file[component_name]=rmf_file
         self.rmf_frame_number[component_name]=rmf_frame_number
+        self.rmf_names_map[component_name]=rmf_names_map
 
     def get_density_hierarchies(self,hier_name_list):
         # return a list of density hierarchies

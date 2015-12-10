@@ -899,7 +899,7 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
                     print("Appending a crosslink restraint into the uniqueID %s" % str(xlid))
                     dr = uniqueid_restraints_map[xlid]
                 else:
-                    print("Generating a NEW crosslink restraint with an uniqueID %s" % str(xlid))
+                    print("Generating a NEW crosslink restraint with a uniqueID %s" % str(xlid))
                     dr = IMP.isd.CrossLinkMSRestraint(
                         self.m,
                         length,

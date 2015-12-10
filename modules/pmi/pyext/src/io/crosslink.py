@@ -85,7 +85,6 @@ class _ProteinsResiduesArray(tuple):
         '''
         self.cldbsk=_CrossLinkDataBaseStandardKeys()
         if type(input_data) is dict:
-
             p1=input_data[self.cldbsk.protein1_key]
             p2=input_data[self.cldbsk.protein2_key]
             r1=input_data[self.cldbsk.residue1_key]
@@ -237,7 +236,7 @@ class CrossLinkDataBaseKeywordsConverter(_CrossLinkDataBaseStandardKeys):
         self.converter[origin_key]=self.site_pairs_key
         self.backward_converter[self.site_pairs_key]=origin_key
 
-    def set_idscore_key(self,origin_key):
+    def set_id_score_key(self,origin_key):
         self.converter[origin_key]=self.id_score_key
         self.backward_converter[self.id_score_key]=origin_key
 
@@ -267,18 +266,18 @@ class ResiduePairListParser():
     '''
     A class to handle different styles of site pairs parsers.
     Implemented styles:
-    CHAMOT-ROOKE: [Y3-S756;Y3-K759;K4-S756;K4-K759] for crosslinks
+    MSSTUDIO: [Y3-S756;Y3-K759;K4-S756;K4-K759] for crosslinks
                   [Y3-;K4-] for dead-ends
     '''
     import re
     def __init__(self,style):
-        if style in ["CHAMOT-ROOKE"]:
+        if style in ["MSSTUDIO"]:
             self.style=style
         else:
             raise Error("ResiduePairListParser: unknown list parser style")
 
     def get_list(self,input_string):
-        if self.style == "CHAMOT-ROOKE":
+        if self.style == "MSSTUDIO":
             input_string=input_string.replace("[","")
             input_string=input_string.replace("]","")
             input_string_pairs=input_string.split(";")
@@ -347,7 +346,12 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         return self.name
 
     def set_name(self,name):
+        new_data_base={}
+        for k in self.data_base:
+            new_data_base[k+"."+name]=self.data_base[k]
+        self.data_base=new_data_base
         self.name=name
+        self.__update__()
 
     def get_number_of_xlid(self):
         return len(self.data_base)
@@ -373,7 +377,10 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                     else:
                         new_xl_dict[new_xl[self.unique_id_key]].append(new_xl)
                 else:
-                    new_xl_dict[str(nxl)]=[new_xl]
+                    if str(nxl) not in new_xl_dict:
+                        new_xl_dict[str(nxl)]=[new_xl]
+                    else:
+                        new_xl_dict[str(nxl)].append(new_xl)
 
 
         else:
@@ -407,8 +414,12 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                         else:
                             new_xl_dict[new_xl[self.unique_id_key]].append(new_xl)
                     else:
-                        new_xl_dict[str(nxl)]=[new_xl]
-
+                        if str(nxl) not in new_xl_dict:
+                            new_xl[self.unique_id_key]=str(nxl+1)
+                            new_xl_dict[str(nxl)]=[new_xl]
+                        else:
+                            new_xl[self.unique_id_key]=str(nxl+1)
+                            new_xl_dict[str(nxl)].append(new_xl)
 
         self.data_base=new_xl_dict
         self.name=csv_file_name
@@ -503,9 +514,9 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         #rename first database:
         new_data_base={}
         for k in self.data_base:
-            new_data_base[k+"."+name1]=self.data_base[k]
+            new_data_base[k]=self.data_base[k]
         for k in CrossLinkDataBase2.data_base:
-            new_data_base[k+"."+name2]=CrossLinkDataBase2.data_base[k]
+            new_data_base[k]=CrossLinkDataBase2.data_base[k]
         self.data_base=new_data_base
         self.__update__()
 
@@ -528,6 +539,16 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             else:
                 xl[key]=new_value
         self.__update__
+
+    def get_values(self,key):
+        '''
+        this function returns the list of values for a given key in the database
+        alphanumerically sorted
+        '''
+        values=set()
+        for xl in self:
+            values.add(xl[key])
+        return sorted(list(values))
 
     def offset_residue_index(self,protein_name,offset):
         '''
@@ -633,6 +654,26 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         with open(json_filename, 'r') as fp:
             self.data_base = json.load(fp)
         self.__update__()
+
+    def save_csv(self,filename):
+
+        import csv
+
+        data=[]
+        sorted_ids=None
+        sorted_group_ids=sorted(self.data_base.keys())
+        for group in sorted_group_ids:
+            group_block=[]
+            for xl in self.data_base[group]:
+                if not sorted_ids:
+                    sorted_ids=sorted(xl.keys())
+                values=[xl[k] for k in sorted_ids]
+                group_block.append(values)
+            data+=group_block
+
+        with open(filename, 'w') as fp:
+            a = csv.writer(fp, delimiter=',')
+            a.writerows(data)
 
 class CrossLinkDataBaseFromStructure(object):
     '''

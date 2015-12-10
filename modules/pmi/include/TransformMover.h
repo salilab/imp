@@ -36,6 +36,7 @@ class IMPPMIEXPORT TransformMover : public IMP::core::MonteCarloMover {
   IMP::algebra::Transformation3Ds rbts_;
   IMP::algebra::Vector3Ds xyzs_;
   IMP::algebra::Vector3D axis_;
+  IMP::algebra::Transformation3D tt_;
   unsigned int constr_;
 
 IMP::algebra::Vector3D get_center(){
@@ -78,8 +79,12 @@ IMP::algebra::Vector3D get_center(){
 
 
 void add_xyz_particle(IMP::ParticleIndexAdaptor pi){
-pixyzs_.push_back(pi);
-pis_.push_back(pi);
+if ( core::RigidBody::get_is_setup(get_model(), pi) ) {
+    pirbs_.push_back(pi);
+    pis_.push_back(pi); }
+else {
+    pixyzs_.push_back(pi);
+    pis_.push_back(pi); }
 }
 
 void add_rigid_body_particle(IMP::ParticleIndexAdaptor pi){
@@ -104,6 +109,8 @@ pis_.push_back(pi);
   Float get_maximum_translation() const { return max_translation_; }
 
   Float get_maximum_rotation() const { return max_angle_; }
+
+  IMP::algebra::Transformation3D get_last_transformation() const { return tt_; }
 
  protected:
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

@@ -59,7 +59,7 @@ core::MonteCarloMoverResult TransformMover::do_propose() {
   algebra::Transformation3D t_(r, translation); 
   
   algebra::Transformation3D tt = c_*t_*c_.get_inverse();
-
+  tt_ = tt;
   
   for (unsigned int i=0;i<pixyzs_.size();i++) {
        core::XYZ d(get_model(), pixyzs_[i]);
