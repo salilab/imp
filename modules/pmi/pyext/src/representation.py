@@ -744,7 +744,7 @@ class Representation(object):
         import numpy as np
         import sys
         from math import sqrt
-        self.representation_is_modified = False
+        self.representation_is_modified = True
 
         if particles is None:
             fragment_particles = []
