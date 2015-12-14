@@ -868,18 +868,19 @@ class BuildModel1(object):
 
         self.rigid_bodies=rigid_bodies
 
+        if rmf_file_map:
+            for k in rmf_file_map:
+                cname=k
+                rf=rmf_file_map[k][0]
+                rfn=rmf_file_map[k][1]
+                rcname=rmf_file_map[k][2]
+                self.simo.set_coordinates_from_rmf(cname, rf,rfn,rcname)
+
         for c in self.simo.get_component_names():
             if rmf_file is not None:
                 rf=rmf_file
                 rfn=rmf_frame_number
                 self.simo.set_coordinates_from_rmf(c, rf,rfn)
-            elif rmf_file_map:
-                for k in rmf_file_map:
-                    cname=k
-                    rf=rmf_file_map[k][0]
-                    rfn=rmf_file_map[k][1]
-                    rcname=rmf_file_map[k][2]
-                    self.simo.set_coordinates_from_rmf(cname, rf,rfn,rcname)
             else:
                 if c in self.rmf_file:
                     rf=self.rmf_file[c]
