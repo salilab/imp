@@ -129,7 +129,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
         cldbkc.set_protein2_key("Protein 2")
         cldbkc.set_residue1_key("Residue 1")
         cldbkc.set_residue2_key("Residue 2")
-        cldbkc.set_idscore_key("ID Score")
+        cldbkc.set_id_score_key("ID Score")
         cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
         cldb.create_set_from_file(self.get_input_file_name("expensive_test_new_cross_link_ms_restraint.csv"))
 
