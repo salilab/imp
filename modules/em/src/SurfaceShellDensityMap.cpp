@@ -59,11 +59,11 @@ void SurfaceShellDensityMap::set_neighbor_mask() {
     }
   }
 }
-// TODO: binaries should be a special case of resample, either make
+// TODO: binarize should be a special case of resample, either make
 // template or pass pointer to voxel update function
 // TODO: pass the background value as well to the general resample function
 // TODO: make this function faster
-void SurfaceShellDensityMap::binaries(float scene_val) {
+void SurfaceShellDensityMap::binarize(float scene_val) {
   reset_data(IMP_BACKGROUND_VAL);
   calc_all_voxel2loc();
   int ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
@@ -139,9 +139,9 @@ void SurfaceShellDensityMap::resample() {
   //(which is positive and larger than 0)
   // TODO - change here, the value of the inner voxels should note be
   // should not be ns*2 but the largest of the inner shell
-  IMP_LOG_VERBOSE("going to binaries\n");
-  binaries(num_shells_ * 2);
-  IMP_LOG_VERBOSE("after binaries\n");
+  IMP_LOG_VERBOSE("going to binarize\n");
+  binarize(num_shells_ * 2);
+  IMP_LOG_VERBOSE("after binarize\n");
   // find the voxels that are part of the surface, so we'll have
   // background, surface and interior voxels
   std::vector<long> curr_shell_voxels;

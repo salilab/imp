@@ -66,7 +66,14 @@ class IMPEMEXPORT SurfaceShellDensityMap : public SampledDensityMap {
     \param[in] scene_val      all voxels corresponding to particles will
                               be set to this value
    */
-  void binaries(float scene_val);
+  void binarize(float scene_val);
+
+  IMPEM_DEPRECATED_METHOD_DECL(2.6)
+  void binaries(float scene_val) {
+    IMPEM_DEPRECATED_METHOD_DEF(2.6, "Use binarize() instead");
+    binarize(scene_val);
+  }
+
   //! Checks if the one of the neighbors of the voxel is a background voxel
   /**
     \param[in] voxel_ind      the index of the voxel
