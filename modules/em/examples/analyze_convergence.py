@@ -31,16 +31,12 @@ if use_rigid_bodies:
     print("initial frame", drb.get_reference_frame())
     fp = prb
     drb.set_coordinates_are_optimized(True)
-    refiner = IMP.core.TableRefiner()
-    refiner.add_particle(prb, [p])
     to_move = drb
-    print([p.get_name() for p in refiner.get_refined(prb)])
     fp = d
 else:
     fp = d
     to_move = d
     d.set_coordinates_are_optimized(True)
-    refiner = None
 
 
 bb = IMP.algebra.BoundingBox3D(
