@@ -49,6 +49,7 @@ complex might want to skip ahead to
  - [The IMP C++/Python library](@ref library_intro)
    - [Overview](@ref library_overview)
    - [Example of using the library](@ref library_example)
+   - [Glossary](@ref glossary)
    - [Logging](@ref logging)
    - [Runtime checks](@ref checks)
    - [Units](@ref units)
