@@ -145,7 +145,7 @@ spelling_exceptions=['xplor', 'yorigin', 'timessig', 'yz',
                      'rnormfac', 'rsigsq', 'kdist', 'vsigsq', 'normfac',
                      'nx', 'rsig', 'nz', 'xy', 'params', 'sigsq', 'xorigin',
                      'rkdist', 'vsig', 'xz', 'zorigin', 'pca', 'binarized',
-                     'cmm']
+                     'cmm', 'rkdistsq']
 value_object_exceptions=['DensityHeader',
                                            'CoarseConvolution',
                                            'DistanceMask', 'ImageHeader',
