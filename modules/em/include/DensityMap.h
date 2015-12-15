@@ -662,7 +662,7 @@ IMPEMEXPORT
 DensityMap *create_density_map(
     const algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> &grid);
 
-//!Return a binaries density map with 1 for voxels that are internal
+//!Return a binarized density map with 1 for voxels that are internal
 // in the input density map
 IMPEMEXPORT
 DensityMap *get_binarized_interior(DensityMap *dmap);
