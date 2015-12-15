@@ -446,9 +446,8 @@ class Sequences(object):
         return ret
     def read_sequences(self,fasta_fn,name_map=None):
         # read all sequences
-        handle = open(fasta_fn, "rU")
-        record_dict = SeqIO.to_dict(SeqIO.parse(handle, "fasta"))
-        handle.close()
+        with open(fasta_fn) as handle:
+            record_dict = SeqIO.to_dict(SeqIO.parse(handle, "fasta"))
         if name_map is None:
             for pn in record_dict:
                 self.sequences[pn]=str(record_dict[pn].seq).replace("*", "")

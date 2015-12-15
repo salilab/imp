@@ -678,9 +678,9 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
         # columnindexes is a list of column indexes for protein1, protein2, residue1, residue2,idscore, XL unique id
         # by default column 0 = protein1; column 1 = protein2; column 2 = residue1; column 3 = residue2;
         # column 4 = idscores
-        # attributes_for_label: anithing in the csv database that must be added to the label
+        # attributes_for_label: anything in the csv database that must be added to the label
         # slope is the slope defined on the linear function
-        # inner_slope is the slope defined on the restraint dierectly
+        # inner_slope is the slope defined on the restraint directly
         # suggestion: do not use both!
 
         if type(representation) != list:
@@ -761,7 +761,7 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
 
         # we need this dictionary to create ambiguity (i.e., multistate)
         # if one id is already present in the dictionary, add the term to the
-        # corresponding already geenrated restraint
+        # corresponding already generated restraint
 
         uniqueid_restraints_map = {}
 

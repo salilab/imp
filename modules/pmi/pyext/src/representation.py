@@ -181,9 +181,8 @@ class Representation(object):
                   (if not provided, use `name` instead)
         '''
         from Bio import SeqIO
-        handle = open(filename, "rU")
-        record_dict = SeqIO.to_dict(SeqIO.parse(handle, "fasta"))
-        handle.close()
+        with open(filename) as handle:
+            record_dict = SeqIO.to_dict(SeqIO.parse(handle, "fasta"))
         if id is None:
             id = name
         try:

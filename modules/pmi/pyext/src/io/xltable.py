@@ -134,9 +134,8 @@ class XLTable():
         id_in_fasta_file:  id of desired sequence
         protein_name:      identifier for this sequence (use same name when handling coordinates)
         can provide the fasta name (for retrieval) and the protein name (for storage) """
-        handle = open(fasta_file, "rU")
-        record_dict = SeqIO.to_dict(SeqIO.parse(handle, "fasta"))
-        handle.close()
+        with open(fasta_file) as handle:
+            record_dict = SeqIO.to_dict(SeqIO.parse(handle, "fasta"))
         if id_in_fasta_file is None:
             id_in_fasta_file = name
         try:
