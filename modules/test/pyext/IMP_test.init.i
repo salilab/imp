@@ -758,7 +758,7 @@ class ApplicationTestCase(TestCase):
                    stdout and stderr.
         """
         # Handle platforms where /usr/bin/python doesn't work
-        if sys.executable != '/usr/bin/python':
+        if sys.executable != '/usr/bin/python' and 'IMP_BIN_DIR' in os.environ:
             return _SubprocessWrapper(sys.executable,
                          [os.path.join(os.environ['IMP_BIN_DIR'], app)] + args)
         else:
