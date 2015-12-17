@@ -8,7 +8,7 @@ def deprecated_module(version, module, help_message):
        @note The `module` argument would normally be `__name__`.
        @see [deprecation support](@ref deprecation)."""
     handle_use_deprecated(
-                "Module %s is deprecated. %s" % (module, help_message))
+                "Module %s is deprecated. %s\n" % (module, help_message))
 
 def deprecated_object(version, help_message):
     """Python decorator to mark a class as deprecated.
@@ -19,7 +19,7 @@ def deprecated_object(version, help_message):
         # (e.g. if we subclassed object but didn't override __init__)
         @functools.wraps(orig_init, ('__name__', '__doc__'))
         def __init__(obj, *args, **keys):
-            handle_use_deprecated("Object %s is deprecated. %s"
+            handle_use_deprecated("Object %s is deprecated. %s\n"
                                   % (type(obj), help_message))
             orig_init(obj, *args, **keys)
         obj.__init__ = __init__
@@ -32,7 +32,7 @@ def deprecated_method(version, help_message):
     def out_wrapper(obj):
         @functools.wraps(obj)
         def wrapper(cls, *args, **keys):
-            handle_use_deprecated("Method %s in %s is deprecated. %s"
+            handle_use_deprecated("Method %s in %s is deprecated. %s\n"
                                % (obj.__name__, type(cls), help_message))
             return obj(cls, *args, **keys)
         return wrapper
@@ -44,7 +44,7 @@ def deprecated_function(version, help_message):
     def out_wrapper(obj):
         @functools.wraps(obj)
         def wrapper(*args, **keys):
-            handle_use_deprecated("Function %s is deprecated. %s"
+            handle_use_deprecated("Function %s is deprecated. %s\n"
                                   % (obj.__name__, help_message))
             return obj(*args, **keys)
         return wrapper
