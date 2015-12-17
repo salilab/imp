@@ -88,6 +88,9 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
     return algebra::Gaussian3D(get_reference_frame(),get_variances());
 }
 
+  //! Get the covariance attributes from a Gaussian3D object
+  void set_gaussian(const algebra::Gaussian3D &g);
+
   //! set the local-frame covariance.
   void set_local_covariance(const IMP_Eigen::Vector3d covar) {
     IMP_NEW(Matrix3D,local,(covar.asDiagonal()));
