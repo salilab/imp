@@ -168,7 +168,7 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/liblzma.5.dylib \
                 /usr/local/lib/libprotobuf.9.dylib \
                 /usr/local/lib/libTAU.1.dylib \
-                /usr/local/lib/libCGAL.11.0.0.dylib \
+                /usr/local/lib/libCGAL.11.0.1.dylib \
                 /usr/local/lib/libCGAL.11.dylib \
                 /usr/local/lib/libgmp.10.dylib \
                 /usr/local/lib/libgmpxx.4.dylib \
@@ -231,7 +231,7 @@ done
 for lib in highgui core imgproc; do
   (cd ${DESTDIR}/${BUNDLED_LIB_DIR} && rm libopencv_${lib}.2.4.dylib && ln -sf libopencv_${lib}.2.4.2.dylib libopencv_${lib}.2.4.dylib)
 done
-(cd ${DESTDIR}/${BUNDLED_LIB_DIR} && rm libCGAL.11.dylib && ln -sf libCGAL.11.0.0.dylib libCGAL.11.dylib)
+(cd ${DESTDIR}/${BUNDLED_LIB_DIR} && rm libCGAL.11.dylib && ln -sf libCGAL.11.0.1.dylib libCGAL.11.dylib)
 
 # Make sure we don't link against any non-standard libraries that aren't bundled
 otool -L *.dylib ${bins} IMP-python/*.so ${DESTDIR}/${BUNDLED_LIB_DIR}/* |grep -Ev '/usr/lib|/usr/local/lib/imp-3rd-party|/usr/local/lib/libimp|/usr/local/lib/libRMF|/System/Library/|:'|sort -u > /tmp/non-standard.$$
