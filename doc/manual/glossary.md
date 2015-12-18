@@ -94,8 +94,9 @@ its score.
 
 **Constraint**
 Unlike a Restraint, a Constraint defines some invariant of the
-system that cannot be violated (IMP::core::RigidBody is a commonly-used
-example). Each Constraint is implemented by changing the Model (using
+system that cannot be violated (IMP::core::RigidBody uses a Constraint
+internally, for example, to keep things rigid).
+Each Constraint is implemented by changing the Model (using
 a Modifier) prior to each ScoringFunction evaluation (and in some cases after
 evaluation too) to ensure that the invariant is not violated.
 **ScoreState** is a synonym.
@@ -117,7 +118,7 @@ system in some way at each MC step. For example, IMP::core::BallMover is often
 used with pointlike Particles to move them in Cartesian space.
 
 **Leaves**
-The leaves of an IMP **Hierarchy** are simply the children that don't in turn
+The leaves of an %IMP **Hierarchy** are simply the children that don't in turn
 have their own children. A commonly-used hierarchy is a molecular hierarchy,
 in which often the atoms are the leaves (although this is not always the case;
 where atomic information is not available the leaves may be residues, fragments
