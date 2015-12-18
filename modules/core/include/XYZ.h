@@ -19,7 +19,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! A decorator for a particle with x,y,z coordinates.
-/** \inlineimage{xyz.png, 50} Using the decorator one can
+/** Using the decorator one can
     get and set coordinates and modify derivatives.
 
     \ingroup helper
