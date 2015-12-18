@@ -68,10 +68,10 @@ class Hierarchy;
 typedef IMP::Vector<Hierarchy> GenericHierarchies;
 #endif
 
-//! A decorator for helping deal with a hierarchy.
+//! A decorator for helping deal with a generalized hierarchy.
 /**
     See HierarchyTraits for an example of how to define a custom hierarchy
-    and Hierarchy for a hierarchy for molecules.
+    and IMP::atom::Hierarchy for a hierarchy for molecules.
     \ingroup hierarchy
     \see HierarchyTraits
  */
