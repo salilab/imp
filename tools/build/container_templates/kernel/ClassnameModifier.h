@@ -20,7 +20,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 /** The primary function of such a class is to change
     the passed particles.
 
-    \see IMP::ClassnameFunctor
+    \see IMP::ClassnamePredicate
 
     Implementors should see IMP_CLASSNAME_MODIFIER(). Also see
     ClassnameDerivativeModifier.

@@ -16,8 +16,6 @@ IMPCORE_BEGIN_NAMESPACE
 //! Apply a transformation to a passed particle
 /**
    \see algebra::Transformation3D
-   See IMP::SingletonFunctor for an example of how to transform a set of
-   particles.
  */
 class IMPCOREEXPORT Transform : public SingletonModifier {
  public:
