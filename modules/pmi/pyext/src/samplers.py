@@ -71,7 +71,7 @@ class MonteCarlo(object):
         self.m = m
 
         if dof is not None and objects is None:
-            self.mvs = dof.get_all_movers()
+            self.mvs = dof.get_movers()
         elif dof is not None and objects is not None:
             raise Exception("Cannot pass DOF and MC objects")
         else:

@@ -37,5 +37,35 @@ class StereochemistryTests(IMP.test.TestCase):
                                                 atom_type=IMP.atom.AtomType("CA"))
         self.assertEqual(er.get_restraint().get_number_of_restraints(),12)
 
+    def test_excluded_volume_sphere_pmi2(self):
+        """ Tests excluded volume restraint in PMI2 """
+        import IMP.pmi.topology
+        import IMP.pmi.restraints.stereochemistry
+
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        st1 = s.create_state()
+        mol = st1.create_molecule("Test", sequence=IMP.pmi.topology.Sequences("data/benchmark_sequence.fasta").sequences["PDE6-CHAIN-A"])
+        mol.add_structure("data/benchmark_starting_structure.pdb", chain_id="A", offset=0)
+        mol.add_representation(mol.get_atomic_residues(), resolutions=[1,10])
+        mol.add_representation(mol.get_non_atomic_residues(), resolutions=[10])
+        s.build()
+
+        # Test that the correct number of particles are included
+        ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(mol, resolution=1)
+        self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 748)
+
+        ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(mol, resolution=10)
+        self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 92)
+
+        # Test that default returns lowest resolution
+        ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(mol)
+        self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 92)
+
+        resis = mol.residue_range(15,20)
+
+        ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(resis, resolution=1)
+        self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 5)
+
 if __name__ == '__main__':
     IMP.test.main()

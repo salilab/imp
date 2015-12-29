@@ -25,18 +25,79 @@ except:
 
 class ExcludedVolumeSphere(object):
 
-    '''
-    all leaves of the input hierarchies will be input in the
-    restraint. If other_hierarchies is defined, then a Bipartite container
-    between "hierarchies" and "other_hierarchies" leaves is initialized
+    '''A class to create an excluded volume restraint for a set of particles at a given resolution.
+    Can be initialized as a bipartite restraint between two sets of particles.
+
+    # Potential addional function: Variable resolution for each PMI object.  Perhaps passing selection_tuples
+    with (PMI_object, resolution)
     '''
 
-    def __init__(self, representation,
+    def __init__(self, included_objects,
+                 other_pmi_objects=None,
                  hierarchies=None,
                  other_hierarchies=None,
-                 resolution=None, kappa=1.0):
+                 resolution=1000, kappa=1.0):
+        """
+        @param included_objects -   Can be a single PMI object or list/set of PMI objects (residues, molecules and/or systems),
+                                        OR a Representation object (DEPRECATED)
+        @param other_pmi_objects -  A PMI object or list of PMI objects.  Initializes a bipartite restraint
+                                        between included_objects and other_pmi_objects
+        @param hierarchies -        (DEPRECATED) the hierarchy included in the restraint. Only used with a Representation
+                                        object as included_objects
+        @param other_hierarchies -  (DEPRECATED) Initilizes a bipartite restraint between hierarchies
+                                        and other_hierarchies
+        @param resolution -         The resolution particles at which to impose the restraint.  By default, the coarsest
+                                        particles will be chosen. If a number is chosen, for each particle, the closest
+                                        resolution will be used (see IMP.atom.Selection).
+        @param kappa -              I have no idea what this does.
 
-        self.m = representation.prot.get_model()
+        """
+        bipartite=False
+
+        # See if included_objects is a PMI2 object or list of them.  I am so sorry for this horrible if statement
+        if (  isinstance(included_objects, IMP.pmi.topology.SystemBase)
+             or isinstance(included_objects, IMP.pmi.topology.Residue)
+             or ( type(included_objects) is list and ( isinstance(included_objects[0], IMP.pmi.topology.SystemBase) or isinstance(included_objects[0], IMP.pmi.topology.Residue)) )
+             or ( type(included_objects) is set) ):
+
+
+            # Ensure that we convert singular input into a list
+            if isinstance(included_objects, IMP.pmi.topology.SystemBase):
+                included_objects = [included_objects]
+
+            particles=[]
+
+            for obj in included_objects:
+                self.m = obj.get_hierarchy().get_model()
+                particles += IMP.atom.Selection(obj.get_hierarchy(), resolution=resolution).get_selected_particles()
+
+            if other_pmi_objects is not None:
+                other_particles=[]
+                if type(other_pmi_objects) is not list:
+                    other_pmi_objects=[other_pmi_objects]
+                for obj in other_pmi_objects:
+                    other_particles += IMP.atom.Selection(obj.get_hierarchy, resolution=resolution).get_selected_particles()
+                bipartite = True
+
+        elif isinstance(included_objects, IMP.pmi.representation.Representation):
+            self.m = included_objects.prot.get_model()
+            particles = IMP.pmi.tools.select(
+                    included_objects,
+                    resolution=resolution,
+                    hierarchies=hierarchies)
+
+            if other_hierarchies is not None:
+                bipartite=True
+                other_particles = IMP.pmi.tools.select(
+                                         included_objects,
+                                         resolution=resolution,
+                                        hierarchies=other_hierarchies)
+        else:
+            raise TypeError("ExcludedVolumeSphere requires a PMI object (State, Molecule or Residue) or a Representation (**deprecated**) object")
+
+
+
+
         self.rs = IMP.RestraintSet(self.m, 'excluded_volume')
         self.weight = 1.0
         self.kappa = kappa
@@ -47,25 +108,16 @@ class ExcludedVolumeSphere(object):
         ssps = IMP.core.SoftSpherePairScore(self.kappa)
         lsa = IMP.container.ListSingletonContainer(self.m)
 
-        particles = IMP.pmi.tools.select(
-            representation,
-            resolution=resolution,
-            hierarchies=hierarchies)
-
         lsa.add(IMP.get_indexes(particles))
 
-        if other_hierarchies is None:
+        if bipartite == False:
             rbcpf = IMP.core.RigidClosePairsFinder()
             self.cpc = IMP.container.ClosePairContainer(lsa, 0.0, rbcpf, 10.0)
             evr = IMP.container.PairsRestraint(ssps, self.cpc)
 
         else:
             other_lsa = IMP.container.ListSingletonContainer(self.m)
-            other_particles = IMP.pmi.tools.select(
-                representation,
-                resolution=resolution,
-                hierarchies=other_hierarchies)
-            other_lsa.add_particles(particles)
+            other_lsa.add_particles(other_particles)
             self.cpc = IMP.container.CloseBipartitePairContainer(
                 lsa,
                 other_lsa,
