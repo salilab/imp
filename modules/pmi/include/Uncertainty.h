@@ -2,7 +2,7 @@
  *  \file IMP/pmi/Uncertainty.h
  *  \brief A decorator for particles with Uncertainty
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPPMI_UNCERTAINTY_H
