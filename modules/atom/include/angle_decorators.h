@@ -1,7 +1,7 @@
 /**
  *  \file IMP/atom/angle_decorators.h     \brief Decorators for angles
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

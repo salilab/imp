@@ -1,7 +1,7 @@
 /**
  *  \file ImageHeader.cpp
  *  \brief Header for EM images
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
 **/
 
 #include "IMP/em/ImageHeader.h"

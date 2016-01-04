@@ -2,7 +2,7 @@
  *  \file IMP/isd/vonMisesKappaConjugateRestraint.h
  *  \brief Conjugate prior for \f$\kappa\f$ in the von Mises distribution.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

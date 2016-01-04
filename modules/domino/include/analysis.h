@@ -2,7 +2,7 @@
  *  \file IMP/domino/analysis.h
  *  \brief Functions to get report statistics about the used attributes.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDOMINO_ANALYSIS_H

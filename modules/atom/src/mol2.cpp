@@ -1,7 +1,7 @@
 /**
  *  \file mol2.cpp   \brief A class for reading mol2 files
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/mol2.h>

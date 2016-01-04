@@ -2,7 +2,7 @@
  *  \file NormalMover.cpp
  *  \brief A modifier which perturbs a point with a Gaussian.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/input_output.h
  *  \brief Single variable function.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INPUT_OUTPUT_H

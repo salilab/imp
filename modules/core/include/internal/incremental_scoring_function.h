@@ -1,7 +1,7 @@
 /**
  *  \file IncrementalScoringFunction.h    \brief Simple Monte Carlo optimizer.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

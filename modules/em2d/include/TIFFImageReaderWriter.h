@@ -2,7 +2,7 @@
  *  \file IMP/em2d/TIFFImageReaderWriter.h
  *  \brief Management of reading/writing TIFF images
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

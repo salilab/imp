@@ -2,7 +2,7 @@
  *  \file IMP/integrative_docking/MapScorer.h
  *  \brief A class for fast cc scoring of docking models
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

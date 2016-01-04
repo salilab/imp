@@ -2,7 +2,7 @@
  *  \file rigid_bodies.cpp
  *  \brief Support for rigid bodies.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

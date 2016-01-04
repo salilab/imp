@@ -2,7 +2,7 @@
  *  \file CollisionCrossSection
  *  \brief Routines for Ion Mobility Mass Spectrometry
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/ClassnameDerivativeModifier.h
  *  \brief A Modifier on PLURALVARIABLETYPE
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_CLASSNAME_DERIVATIVE_MODIFIER_H

@@ -2,7 +2,7 @@
  * \file IMP/atom/charmm_topology.h
  * \brief Classes for handling CHARMM-style topology.
  *
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

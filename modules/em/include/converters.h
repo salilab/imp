@@ -2,7 +2,7 @@
  *  \file IMP/em/converters.h
  *  \brief Converters of density values
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

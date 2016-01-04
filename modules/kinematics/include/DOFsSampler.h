@@ -1,7 +1,7 @@
 /**
  * \file IMP/kinematics/DOFsSampler.h \brief
  *
- * Copyright 2007-2014 Sali Lab. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

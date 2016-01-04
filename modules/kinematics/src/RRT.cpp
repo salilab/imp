@@ -1,7 +1,7 @@
 /**
  * \file RRT \brief
  *
- * Copyright 2007-2014 Sali Lab. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/kinematics/RRT.h>

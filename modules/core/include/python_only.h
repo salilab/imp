@@ -2,7 +2,7 @@
  *  \file IMP/core/python_only.h
  *  \brief Functionality only available in Python.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

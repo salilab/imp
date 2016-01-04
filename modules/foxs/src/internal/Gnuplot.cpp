@@ -2,7 +2,7 @@
  *  \file IMP/foxs/Gnuplot.h   \brief A class for printing gnuplot scripts
  *   for profile viewing
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
