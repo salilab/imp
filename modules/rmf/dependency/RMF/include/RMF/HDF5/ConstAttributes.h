@@ -2,7 +2,7 @@
  *  \file RMF/HDF5/ConstAttributes.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

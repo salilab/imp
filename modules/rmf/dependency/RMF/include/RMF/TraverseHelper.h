@@ -2,7 +2,7 @@
  *  \file RMF/TraverseHelper.h
  *  \brief A helper function for managing data when traversing an RMF.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

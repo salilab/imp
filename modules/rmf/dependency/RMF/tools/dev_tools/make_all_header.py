@@ -24,7 +24,7 @@ output = ["""/**
  *  \\file %s
  *  \\brief Include all non-deprecated headers in %s.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 """ % (includepath, includepath[:-2].replace('/', '.'))]
 guard = includepath.replace(

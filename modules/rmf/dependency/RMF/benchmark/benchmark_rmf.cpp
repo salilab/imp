@@ -2,7 +2,7 @@
  * \brief Benchmark typical creation, traversal and loading with different RMF
  *        backends.
  *
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #include <boost/iterator/iterator_facade.hpp>

@@ -2,7 +2,7 @@
  *  \file RMF/BufferConstHandle.h
  *  \brief Declare RMF::BufferConstHandle.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
