@@ -1674,4 +1674,7 @@ class Colors(object):
             c=ctuple[2]
             color=IMP.display.Color(float(c[0])/255,float(c[1])/255,float(c[2])/255)
             for part in psel:
-                IMP.display.Colored(part).set_color(color)
+                if IMP.display.Colored.get_is_setup(part):
+                    IMP.display.Colored(part).set_color(color)
+                else:
+                    IMP.display.Colored.setup_particle(part,color)

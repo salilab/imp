@@ -268,20 +268,29 @@ class ResiduePairListParser():
     Implemented styles:
     MSSTUDIO: [Y3-S756;Y3-K759;K4-S756;K4-K759] for crosslinks
                   [Y3-;K4-] for dead-ends
+    QUANTITATION: sp|P33298|PRS6B_YEAST:280:x:sp|P33298|PRS6B_YEAST:337
     '''
     import re
     def __init__(self,style):
         if style in ["MSSTUDIO"]:
             self.style=style
+        if style in ["QUANTITATION"]:
+            self.style=style
         else:
             raise Error("ResiduePairListParser: unknown list parser style")
 
     def get_list(self,input_string):
+        '''
+        This function returns a list of cross-linked residues and the corresponding list of 
+        cross-linked chains. The latter list can be empty, if the style doesn't have the 
+        corresponding information.
+        '''
         if self.style == "MSSTUDIO":
             input_string=input_string.replace("[","")
             input_string=input_string.replace("]","")
             input_string_pairs=input_string.split(";")
             residue_pair_indexes=[]
+            chain_pair_indexes=[]
             for s in input_string_pairs:
                 m1=self.re.search(r'^(A|C|D|E|F|G|H|I|K|L|M|N|O|P|Q|R|S|T|Y|X|W)(\d+)-(A|C|D|E|F|G|H|I|K|L|M|N|O|P|Q|R|S|T|Y|X|W)(\d+)$',s)
                 m2=self.re.search(r'^(A|C|D|E|F|G|H|I|K|L|M|N|O|P|Q|R|S|T|Y|X|W)(\d+)-$',s)
@@ -292,7 +301,15 @@ class ResiduePairListParser():
                 elif m2:
                     # dead end
                     residue_type_1,residue_index_1=m2.group(1,2)
-            return  residue_pair_indexes
+            # at this stage chain_pair_indexes is empty
+            return  residue_pair_indexes,chain_pair_indexes
+        if self.style == "QUANTITATION":
+            input_string=input_string.replace("x:","")
+            input_string_tockens=input_string.split(":")
+            residue_pair_indexes=[(input_string_tockens[1],input_string_tockens[3])]
+            chain_pair_indexes=[(input_string_tockens[0],input_string_tockens[2])]
+            return residue_pair_indexes,chain_pair_indexes
+                
 
 class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
     import operator
@@ -398,15 +415,19 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                     else:
                         new_dict[k]=entry[k]
 
-                residue_pair_list=self.list_parser.get_list(new_dict[self.site_pairs_key])
+                residue_pair_list,chain_pair_list=self.list_parser.get_list(new_dict[self.site_pairs_key])
 
                 # then create the crosslinks
-                for p in residue_pair_list:
+                for n,p in enumerate(residue_pair_list):
                     new_xl={}
                     for k in new_dict:
                         new_xl[k]=new_dict[k]
                     new_xl[self.residue1_key]=self.type[self.residue1_key](p[0])
                     new_xl[self.residue2_key]=self.type[self.residue2_key](p[1])
+                    
+                    if len(chain_pair_list)==len(residue_pair_list):
+                        new_xl[self.protein1_key]=self.type[self.protein1_key](chain_pair_list[n][0])
+                        new_xl[self.protein2_key]=self.type[self.protein2_key](chain_pair_list[n][1])
 
                     if self.unique_id_key in self.cldbkc.get_setup_keys():
                         if new_xl[self.unique_id_key] not in new_xl_dict:

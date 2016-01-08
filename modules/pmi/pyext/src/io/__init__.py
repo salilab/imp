@@ -570,7 +570,11 @@ def get_best_models(stat_files,
         root_directory_of_stat_file = os.path.dirname(os.path.dirname(sf))
         print("getting data from file %s" % sf)
         po = IMP.pmi.output.ProcessOutput(sf)
-        keywords = po.get_keys()
+        
+	try:
+	   keywords = po.get_keys()
+	except:
+	   continue
 
         feature_keywords = [score_key,
                             rmf_file_key,

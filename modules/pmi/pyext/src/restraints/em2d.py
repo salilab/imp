@@ -11,22 +11,28 @@ import IMP.em2d
 import IMP.pmi.tools
 
 
-#############################################################################################
-# PCAFitRestraint - compares how well the principal components of the segmented class average
-# fit to the principal components of the particles, developed by Dina Schneidman-Duhovny.
-#############################################################################################
-class ElectronMicroscopy2D():
+class ElectronMicroscopy2D(object):
+    """Fit particles against a set of class averages by principal components.
+       Compares how well the principal components of the segmented class
+       average fit to the principal components of the particles.
+    """
 
-    def __init__(
-        self,
-        representation,
-        images,
-        pixel_size,
-        image_resolution,
-        projection_number,
-        resolution=None,
-        n_components = 1):
-
+    def __init__(self, representation, images, pixel_size, image_resolution,
+                 projection_number, resolution=None, n_components=1):
+        """Constructor.
+           @param representation The PMI model to fit
+           @param images 2D class average filenames in PGM text format
+           @param pixel_size Pixel size in angstroms
+           @param image_resolution Estimated resolution of the images
+                  in angstroms
+           @param projection_number Number of projections of the model
+                  to generate and fit to images. The lower the number, the
+                  faster the evaluation, but the lower the accuracy
+           @param resolution Which level of
+                  [model representation](@ref pmi_resolution) to use in the fit
+           @param n_components Number of the largest components to be
+                  considered for the EM image
+        """
         self.weight=1.0
         self.m = representation.prot.get_model()
         self.rs = IMP.RestraintSet(self.m, 'em2d')

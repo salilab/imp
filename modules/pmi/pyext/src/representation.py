@@ -728,7 +728,7 @@ class Representation(object):
     def add_all_atom_densities(self, name, hierarchies=None,
                                selection_tuples=None,
                                particles=None,
-                               resolution=None,
+                               resolution=0,
                                output_map=None,
                                voxel_size=1.0):
         '''Decorates all specified particles as Gaussians directly.
@@ -743,7 +743,7 @@ class Representation(object):
         import numpy as np
         import sys
         from math import sqrt
-        self.representation_is_modified = False
+        self.representation_is_modified = True
 
         if particles is None:
             fragment_particles = []
@@ -769,6 +769,7 @@ class Representation(object):
         # create a spherical gaussian for each particle based on atom type
         print('setting up all atom gaussians num_particles',len(fragment_particles))
         for n,p in enumerate(fragment_particles):
+            if IMP.core.Gaussian.get_is_setup(p): continue
             center=IMP.core.XYZ(p).get_coordinates()
             rad=IMP.core.XYZR(p).get_radius()
             mass=IMP.atom.Mass(p).get_mass()
@@ -821,6 +822,116 @@ class Representation(object):
                 IMP.pmi.Symmetric.setup_particle(pclone, symmetric)
 
         return outhier
+
+    def dump_particle_descriptors(self):
+        import numpy
+        import pickle
+        import IMP.isd
+        import IMP.isd.gmm_tools
+
+        particles_attributes={}
+        floppy_body_attributes={}
+        gaussians=[]
+        for h in IMP.atom.get_leaves(self.prot):
+             leaf=h
+             name=h.get_name()
+             hroot=self.prot
+             hparent=h.get_parent()
+             while hparent != hroot:
+                hparent=h.get_parent()
+                name+="|"+hparent.get_name()
+                h=hparent
+             particles_attributes[name]={"COORDINATES":numpy.array(IMP.core.XYZR(leaf.get_particle()).get_coordinates()),
+             "RADIUS":IMP.core.XYZR(leaf.get_particle()).get_radius(), 
+             "MASS":IMP.atom.Mass(leaf.get_particle()).get_mass()}
+             if IMP.core.Gaussian.get_is_setup(leaf.get_particle()):
+                gaussians.append(IMP.core.Gaussian(leaf.get_particle()))
+
+        rigid_body_attributes={}
+        for rb in self.rigid_bodies:
+             name=rb.get_name()
+             rf=rb.get_reference_frame()
+             t=rf.get_transformation_to()
+             trans=t.get_translation()
+             rot=t.get_rotation()             
+             rigid_body_attributes[name]={"TRANSLATION":numpy.array(trans),
+                                          "ROTATION":numpy.array(rot.get_quaternion()),
+                                          "COORDINATES_NONRIGID_MEMBER":{},
+                                          "COORDINATES_RIGID_MEMBER":{}}
+             for mi in rb.get_member_indexes():
+                 rm=self.m.get_particle(mi)
+                 if IMP.core.NonRigidMember.get_is_setup(rm):
+                    name_part=rm.get_name()
+                    xyz=[self.m.get_attribute(fk, rm) for fk in [IMP.FloatKey(4), IMP.FloatKey(5), IMP.FloatKey(6)]]
+                    rigid_body_attributes[name]["COORDINATES_NONRIGID_MEMBER"][name_part]=numpy.array(xyz)
+                 else:
+                    name_part=rm.get_name()
+                    xyz=IMP.core.XYZ(rm).get_coordinates()
+                    rigid_body_attributes[name]["COORDINATES_RIGID_MEMBER"][name_part]=numpy.array(xyz)
+
+                 
+        IMP.isd.gmm_tools.write_gmm_to_text(gaussians,"model_gmm.txt")
+        pickle.dump(particles_attributes, open("particles_attributes.pkl","w"))
+        pickle.dump(rigid_body_attributes, open("rigid_body_attributes.pkl","w"))       
+
+            
+
+    def load_particle_descriptors(self):
+        import numpy
+        import pickle
+        import IMP.isd
+        import IMP.isd.gmm_tools
+
+        particles_attributes=pickle.load(open("particles_attributes.pkl","r"))
+        rigid_body_attributes=pickle.load(open("rigid_body_attributes.pkl","r"))
+
+        particles=[]
+        hierarchies=[]
+        gaussians=[]
+        for h in IMP.atom.get_leaves(self.prot):
+             leaf=h
+             name=h.get_name()
+             hroot=self.prot
+             hparent=h.get_parent()
+             while hparent != hroot:
+                hparent=h.get_parent()
+                name+="|"+hparent.get_name()
+                h=hparent
+
+             xyzr=IMP.core.XYZR(leaf.get_particle())
+             xyzr.set_coordinates(particles_attributes[name]["COORDINATES"])
+             #xyzr.set_radius(particles_attributes[name]["RADIUS"])
+             #IMP.atom.Mass(leaf.get_particle()).set_mass(particles_attributes[name]["MASS"])
+             if IMP.core.Gaussian.get_is_setup(leaf.get_particle()):
+                gaussians.append(IMP.core.Gaussian(leaf.get_particle()))
+
+        for rb in self.rigid_bodies:
+             name=rb.get_name()
+             trans=rigid_body_attributes[name]["TRANSLATION"]
+             rot=rigid_body_attributes[name]["ROTATION"]
+             t=IMP.algebra.Transformation3D(IMP.algebra.Rotation3D(rot),trans)
+             rf=IMP.algebra.ReferenceFrame3D(t)
+             rb.set_reference_frame(rf)
+             coor_nrm_ref=rigid_body_attributes[name]["COORDINATES_NONRIGID_MEMBER"]
+             coor_rm_ref_dict=rigid_body_attributes[name]["COORDINATES_RIGID_MEMBER"]
+             coor_rm_model=[]
+             coor_rm_ref=[]
+             for mi in rb.get_member_indexes():
+                 rm=self.m.get_particle(mi)
+                 if IMP.core.NonRigidMember.get_is_setup(rm):
+                    name_part=rm.get_name()
+                    xyz=coor_nrm_ref[name_part]
+                    for n,fk in enumerate([IMP.FloatKey(4), IMP.FloatKey(5), IMP.FloatKey(6)]):    
+                        self.m.set_attribute(fk, rm,xyz[n])
+                 else:
+                    name_part=rm.get_name()
+                    coor_rm_ref.append(IMP.algebra.Vector3D(coor_rm_ref_dict[name_part]))
+                    coor_rm_model.append(IMP.core.XYZ(rm).get_coordinates())
+             if len(coor_rm_model)==0: continue
+             t=IMP.algebra.get_transformation_aligning_first_to_second(coor_rm_model,coor_rm_ref)
+             IMP.core.transform(rb,t)
+                        
+        IMP.isd.gmm_tools.decorate_gmm_from_text("model_gmm.txt",gaussians,self.m)
 
     def set_coordinates_from_rmf(self, component_name, rmf_file_name,
                                  rmf_frame_number,
@@ -904,6 +1015,13 @@ class Representation(object):
                     IMP.core.XYZ(psrepr[n]).set_coordinates(xyz)
                 else:
                     print("set_coordinates_from_rmf: WARNING particles are not XYZ decorated %s %s " % (str(IMP.core.XYZ.get_is_setup(prmf)), str(IMP.core.XYZ.get_is_setup(psrepr[n]))))
+
+                if IMP.core.Gaussian.get_is_setup(prmf) and IMP.core.Gaussian.get_is_setup(psrepr[n]):
+                    gprmf=IMP.core.Gaussian(prmf)
+                    grepr=IMP.core.Gaussian(psrepr[n])
+                    g=gprmf.get_gaussian()
+                    grepr.set_gaussian(g)
+                    
 
         else:
             repr_name_particle_map={}

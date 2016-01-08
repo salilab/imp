@@ -52,5 +52,35 @@ class Tests(IMP.test.TestCase):
         os.unlink("test_set_coordinates_from_rmf.rmf3")
 
 
+    def test_set_from_rmf_roundtrip(self):
+        import IMP.pmi.macros
+        import IMP.pmi.output
+        pdbfile = self.get_input_file_name("1WCM.pdb")
+        fastafile = self.get_input_file_name("1WCM.fasta.txt") 
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m,upperharmonic=True,disorderedlength=False)
+       
+        domains=[("Rpb8",   "Rpb8",        0.0,   fastafile, "1WCM:I",  "BEADS", None, (1,-1),      "BEADSONLY", 20,       0,     None, 0, None, None, None),
+                 ("Rpb9",   "Rpb9",        0.0,   fastafile, "1WCM:I",  "BEADS", None, (1,-1),      None, 20,              1,     None, 0, None, None, None),
+                 ("Rpb10",  "Rpb10",       0.0,   fastafile, "1WCM:J",  "BEADS", None, (1,-1),      None, 20,              None,     None, 0, None, None, None),
+                 ("Rpb11",  "Rpb11",       0.0,   fastafile, "1WCM:K",  pdbfile, "K",  (1,-1),      None, 20,              2,     None, 0, None, None, None),
+                 ("Rpb12",  "Rpb12",       0.0,   fastafile, "1WCM:L",  pdbfile, "L",  (1,-1),      True, 20,              3,     None, 2, "gmm_Rpb12.txt", "gmm_Rpb12.mrc", None)]
+        bm=IMP.pmi.macros.BuildModel1(simo)
+        bm.build_model(domains)
+        simo.shuffle_configuration(100)
+        simo.optimize_floppy_bodies(100, temperature=100.0)
+        o=IMP.pmi.output.Output()
+        o.init_rmf("test_set_from_rmf_roundtrip_1.rmf3", [simo.prot])
+        o.write_rmf("test_set_from_rmf_roundtrip_1.rmf3")
+
+        
+        simo.dump_particle_descriptors()
+        simo.shuffle_configuration(100)
+        simo.optimize_floppy_bodies(100, temperature=100.0)
+        o.write_rmf("test_set_from_rmf_roundtrip_1.rmf3")
+        simo.load_particle_descriptors()
+        o.write_rmf("test_set_from_rmf_roundtrip_1.rmf3")
+        o.close_rmf("test_set_from_rmf_roundtrip_1.rmf3")
+
 if __name__ == '__main__':
     IMP.test.main()

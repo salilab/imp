@@ -190,6 +190,36 @@ class TestIOCrosslink(IMP.test.TestCase):
             self.assertEqual(xl[cldb.residue2_key],e[5])
             nxl+=1
 
+    def test_quantitation_style(self):
+        cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+        cldbkc.set_site_pairs_key("uID")
+        cldbkc.set_unique_id_key("dbindex")
+        cldbkc.set_id_score_key("pvalue")
+        cldbkc.set_quantitation_key("log2ratio")
+        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("QUANTITATION")
+        cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc,list_parser=rplp)
+        cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_quant.dat"))
+
+        expected_list=[('1',1,"AAA","AAA",0.001,1.0),
+                       ('1',2,"AAA","AAA",0.001,1.0),
+                       ('2',1,"BBB","AAA",0.001,1.0),
+                       ('2',2,"BBB","AAA",0.001,1.0),
+                       ('2',3,"BBB","AAA",0.001,1.0),
+                       ('3',1,"CCC","AAA",0.001,1.0)]
+
+        nxl=0
+        for xl in cldb:
+            e=expected_list[nxl]
+            self.assertEqual(xl[cldb.unique_id_key],e[0])
+            self.assertEqual(xl[cldb.unique_sub_index_key],e[1])
+            self.assertEqual(xl[cldb.protein1_key],e[2])
+            self.assertEqual(xl[cldb.protein2_key],e[3])
+            self.assertEqual(xl[cldb.residue1_key],e[4])
+            self.assertEqual(xl[cldb.residue2_key],e[5])
+            nxl+=1
+
+
+
     def test_msstudio_style_no_id(self):
         cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
         cldbkc.set_protein1_key("prot1")
