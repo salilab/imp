@@ -36,3 +36,7 @@ dependencies. See the doc page for each module for details.
 | IMP::gsl | | | IMP::gsl::Simplex, IMP::gsl::QuasiNewton | |
 | IMP::domino | | | IMP::domino::DominoSampler, IMP::domino::BranchAndBoundSampler | |
 | IMP::modeller | | Access to the Modeller scoring functions | | |
+| IMP::isd | |IMP::isd::GaussianEMRestraint, IMP::isd::AtomicCrossLinkingMSRestraint| | |
+| IMP::pmi |IMP::pmi::topology |IMP::pmi::restraints|IMP::pmi::macros::ReplicaExchange0 |IMP::pmi::analysis |
+
+
