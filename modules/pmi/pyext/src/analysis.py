@@ -977,7 +977,7 @@ class GetModelDensity(object):
     particle coordinates to the existing density maps.
     """
 
-    def __init__(self, custom_ranges, representation=None, voxel=5.0):
+    def __init__(self, custom_ranges, representation=None, resolution=20.0, voxel=5.0):
         """Constructor.
            @param custom_ranges  Required. It's a dictionary, keys are the
                   density component names, values are selection tuples
@@ -987,10 +987,12 @@ class GetModelDensity(object):
                                                   (143,700,'tfb3d2')],
            @param representation PMI representation, for doing selections.
                           Not needed if you only pass hierarchies
+           @param resolution The MRC resolution of the output map (in Angstrom unit)
            @param voxel The voxel size for the output map (lower is slower)
         """
 
         self.representation = representation
+        self.MRCresolution = resolution
         self.voxel = voxel
         self.densities = {}
         self.count_models = 0.0
@@ -1046,7 +1048,6 @@ class GetModelDensity(object):
         pass
 
     def _create_density_from_particles(self, ps, name,
-                                      resolution=1,
                                       kernel_type='GAUSSIAN'):
         '''Internal function for adding to densities.
         pass XYZR particles with mass and create a density from them.
@@ -1056,7 +1057,7 @@ class GetModelDensity(object):
             'BINARIZED_SPHERE': IMP.em.BINARIZED_SPHERE,
             'SPHERE': IMP.em.SPHERE}
 
-        dmap = IMP.em.SampledDensityMap(ps, resolution, self.voxel)
+        dmap = IMP.em.SampledDensityMap(ps, self.MRCresolution, self.voxel)
         dmap.calcRMS()
         dmap.set_was_used(True)
         if name not in self.densities:

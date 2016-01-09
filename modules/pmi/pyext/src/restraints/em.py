@@ -10,15 +10,18 @@ import IMP.atom
 import IMP.container
 import IMP.isd
 import IMP.pmi.tools
+import IMP.isd.gmm_tools
+import sys
+from math import sqrt
 
 class GaussianEMRestraint(object):
-
+    """Fit Gaussian-decorated particles to an EM map
+    (also represented with a set of Gaussians)"""
     def __init__(self, densities,
                  target_fn='',
                  target_ps=[],
                  cutoff_dist_model_model=0.0,
                  cutoff_dist_model_data=0.0,
-                 overlap_threshold=0.0,
                  target_mass_scale=1.0,
                  target_radii_scale=3.0,
                  model_radii_scale=1.0,
@@ -30,11 +33,41 @@ class GaussianEMRestraint(object):
                  backbone_slope=False,
                  scale_target_to_mass=False,
                  weight=1.0):
-        global sys, tools
-        import sys
-        import IMP.pmi.tools as tools
-        import IMP.isd.gmm_tools
-        from math import sqrt
+        """Constructor.
+        @param densities The Gaussian-decorated particles to be restrained
+        @param target_fn GMM file of the target density map
+                         (alternatively, pass the ps)
+        @param target_ps List of Gaussians of the target map
+                         (alternatively, pass the filename)
+        @param cutoff_dist_model_model Distance in model-model close
+               pair container
+        @param cutoff_dist_model_data  Distance in model-data close pair
+               container. Usually can set to zero because we multiply the
+               target radii
+        @param target_mass_scale Scale up the target densities so that
+               the mass is accurate.
+               Needed if the GMM you generated was not already scaled.
+               To make it the same as model mass, set scale_to_target_mass=True
+        @param target_radii_scale Scale the target density radii -
+               only used for the close pair container.
+               If you keep this at 3.0 or so you don't have to use cutoff dist.
+        @param model_radii_scale Scale the model density radii - only used
+               for the close pair container
+        @param slope Linear term added to help bring model into the density
+        @param spherical_gaussians     Set to True for a speed bonus when
+               the model densities are spheres. (This means you don't have
+               to do a matrix multiplication if they rotate.)
+        @param pointwise_restraint     EXPERIMENTAL, requires isd_emxl
+        @param local_mm                EXPERIMENTAL, requires isd_emxl
+        @param close_pair_container    Pass a close pair container for
+               the model if you already have one (e.g. for an excluded
+               volume restraint.) May give a speed bonus.
+        @param backbone_slope Only apply slope to backbone particles -
+               only matters for atomic
+        @param scale_to_target_mass    Set True if you would need to scale
+               target to EXACTLY the model mass
+        @param weight                  The restraint weight
+        """
 
 
         # some parameters
@@ -83,7 +116,7 @@ class GaussianEMRestraint(object):
                     IMP.core.XYZR(p).set_radius(rmax)
 
         # sigma particle
-        self.sigmaglobal = tools.SetupNuisance(self.m, self.sigmainit,
+        self.sigmaglobal = IMP.pmi.tools.SetupNuisance(self.m, self.sigmainit,
                                                self.sigmamin, self.sigmamax,
                                                self.sigmaissampled).get_particle()
 
