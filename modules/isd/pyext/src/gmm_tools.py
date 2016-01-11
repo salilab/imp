@@ -19,27 +19,42 @@ except:
     nosklearn=True
 from math import exp,sqrt,copysign
 
-def decorate_gmm_from_text(in_fn,ps,mdl,transform=None,radius_scale=1.0,mass_scale=1.0):
+def decorate_gmm_from_text(in_fn,
+                           ps,
+                           mdl,
+                           transform=None,
+                           radius_scale=1.0,
+                           mass_scale=1.0):
     ''' read the output from write_gmm_to_text, decorate as Gaussian and Mass'''
     inf=open(in_fn,'r')
     ncomp=0
+    #print('got ps',ps,'len',len(ps))
     for l in inf:
         if l[0]!='#':
+            if ncomp>len(ps)-1:
+                ps.append(IMP.Particle(mdl))
+            p = ps[ncomp]
             fields=l.split('|')
             weight=float(fields[2])
             center=list(map(float,fields[3].split()))
             covar=np.array(list(map(float,fields[4].split()))).reshape((3,3))
-            if ncomp>=len(ps):
-                ps.append(IMP.Particle(mdl))
+            #print('on particle',ncomp)
             shape=IMP.algebra.get_gaussian_from_covariance(covar.tolist(),
                                                            IMP.algebra.Vector3D(center))
-            g=IMP.core.Gaussian.setup_particle(ps[ncomp],shape)
-            m=IMP.atom.Mass.setup_particle(ps[ncomp],weight*mass_scale)
+            if not IMP.core.Gaussian.get_is_setup(p):
+                g=IMP.core.Gaussian.setup_particle(ps[ncomp],shape)
+            else:
+                IMP.core.Gaussian(ps[ncomp]).set_gaussian(shape)
+            if not IMP.atom.Mass.get_is_setup(p):
+                IMP.atom.Mass.setup_particle(p,weight*mass_scale)
+            else:
+                IMP.atom.Mass(p).set_mass(weight*mass_scale)
             rmax=sqrt(max(g.get_variances()))*radius_scale
             IMP.core.XYZR.setup_particle(ps[ncomp],rmax)
             if not transform is None:
                 IMP.core.transform(IMP.core.RigidBody(ps[ncomp]),transform)
             ncomp+=1
+
 def write_gmm_to_text(ps,out_fn):
     '''write a list of gaussians to text. must be decorated as Gaussian and Mass'''
     print('will write GMM text to',out_fn)
@@ -59,7 +74,7 @@ def write_gmm_to_text(ps,out_fn):
             outf.write('|{0}|{1}|{2} {3} {4}|{5} {6} {7} {8} {9} {10} {11} {12} {13}|\n'.format(*fm))
     outf.close()
 
-def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None):
+def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None,origin=None):
     '''write density map from GMM. input can be either particles or gaussians'''
     if type(to_draw[0]) in (IMP.Particle,IMP.atom.Hierarchy,IMP.core.Hierarchy):
         ps=to_draw
@@ -87,6 +102,8 @@ def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None):
     print('creating map')
     d1=IMP.em.create_density_map(grid)
     print('writing')
+    if origin is not None:
+        d1.set_origin(origin)
     IMP.em.write_map(d1,out_fn,IMP.em.MRCReaderWriter())
     del d1
 
