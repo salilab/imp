@@ -77,7 +77,10 @@ Hierarchy Representation::get_representation(double resolution,
 
   int closest_index = -1;
 
-  // manually check for the resolution 0 case
+  IMP_LOG_VERBOSE("Initial resolution to beat is "<<closest_resolution
+                  << std::endl);
+
+  // if requesting resolution 0 (and it is present) just return the base res
   if (type==BALLS && resolution==0.0 && closest_resolution==0.0) {
   }
   // if multiple representations, check for matching type and try to improve on base resolution
@@ -87,20 +90,22 @@ Hierarchy Representation::get_representation(double resolution,
     IMP_LOG_VERBOSE("Found " << types.size() << " resolution levels"
                              << std::endl);
     for (unsigned int i = 0; i < types.size(); ++i) {
-
       if (types[i]==type) {
         double cur_resolution = get_model()->get_attribute(get_resolution_key(i),
                                                            get_particle_index());
-
-        if (closest_index==-1 ||
-            get_resolution_distance(resolution, cur_resolution) <
-            get_resolution_distance(resolution, closest_resolution)) {
-          closest_index = i;
-          closest_resolution = cur_resolution;
+        // force a match if requesting non-BALLS and this is the first match
+        if ((closest_index==-1  && type!=BALLS) ||
+            (get_resolution_distance(resolution, cur_resolution) <
+             get_resolution_distance(resolution, closest_resolution))) {
+              closest_index = i;
+              closest_resolution = cur_resolution;
         }
       }
     }
   }
+  IMP_LOG_VERBOSE("After searching, the closest resolution is "<<closest_resolution
+                  <<" and closest index is "<<closest_index
+                  << std::endl);
 
   if (closest_index==-1){
     if (type==BALLS) { //requested balls, couldn't find better than base res

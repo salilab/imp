@@ -15,6 +15,7 @@ def bead2gaussian(center,radius,mdl,p=None):
         return IMP.core.Gaussian.setup_particle(p,shape)
 
 class RepresentationTest(IMP.test.TestCase):
+
     def test_named_representation(self):
         """Test representation when you manually set resolutions"""
         #IMP.set_log_level(IMP.VERBOSE)
@@ -63,6 +64,33 @@ class RepresentationTest(IMP.test.TestCase):
         self.assertEqual(IMP.atom.Fragment(sel10.get_selected_particles()[0]).get_residue_indexes(),
                          list(range(432,442)))
 
+
+    def test_rep_1and10(self):
+        """Test representation when you manually set resolutions to 1 and 10"""
+        IMP.set_log_level(IMP.VERBOSE)
+        mdl = IMP.Model()
+        mh = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'),mdl)
+        mh.set_name("res0")
+
+
+        res1 = IMP.atom.create_simplified_along_backbone(mh,1)
+        res1.set_name('res1')
+        print 'res1',len(res1.get_children())
+        res10 = IMP.atom.create_simplified_along_backbone(mh,10)
+        res10.set_name('res10')
+        print 'res10',len(res10.get_children())
+
+        root = IMP.atom.Hierarchy.setup_particle(IMP.Particle(mdl))
+        rep = IMP.atom.Representation.setup_particle(root,1)
+        root.add_child(res1)
+        rep.add_representation(res10,IMP.atom.BALLS,10)
+
+        # should get res1
+        #self.assertEqual(rep.get_representation(0),root)
+        sel1 = IMP.atom.Selection(root,resolution=1)
+        print 'sel1',len(sel1.get_selected_particles())
+        self.assertEqual(len(sel1.get_selected_particles()),
+                         len(IMP.atom.get_by_type(mh,IMP.atom.RESIDUE_TYPE)))
 
     def test_simple_density(self):
         """Test representing a particle with a Gaussian"""
@@ -141,6 +169,7 @@ class RepresentationTest(IMP.test.TestCase):
         self.assertEqual(sel.get_selected_particles(),
                          [h.get_particle() for h in density_frag.get_children()])
 
+        ## can you also get the beads?
 
 if __name__ == '__main__':
     IMP.test.main()
