@@ -281,8 +281,8 @@ class ResiduePairListParser():
 
     def get_list(self,input_string):
         '''
-        This function returns a list of cross-linked residues and the corresponding list of 
-        cross-linked chains. The latter list can be empty, if the style doesn't have the 
+        This function returns a list of cross-linked residues and the corresponding list of
+        cross-linked chains. The latter list can be empty, if the style doesn't have the
         corresponding information.
         '''
         if self.style == "MSSTUDIO":
@@ -309,7 +309,7 @@ class ResiduePairListParser():
             residue_pair_indexes=[(input_string_tockens[1],input_string_tockens[3])]
             chain_pair_indexes=[(input_string_tockens[0],input_string_tockens[2])]
             return residue_pair_indexes,chain_pair_indexes
-                
+
 
 class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
     import operator
@@ -424,7 +424,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                         new_xl[k]=new_dict[k]
                     new_xl[self.residue1_key]=self.type[self.residue1_key](p[0])
                     new_xl[self.residue2_key]=self.type[self.residue2_key](p[1])
-                    
+
                     if len(chain_pair_list)==len(residue_pair_list):
                         new_xl[self.protein1_key]=self.type[self.protein1_key](chain_pair_list[n][0])
                         new_xl[self.protein2_key]=self.type[self.protein2_key](chain_pair_list[n][1])

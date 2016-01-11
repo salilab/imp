@@ -12,25 +12,13 @@ import IMP
 import IMP.atom
 import IMP.algebra
 import IMP.pmi
+import IMP.pmi.tools
 import csv
 import os
 from collections import defaultdict
 from . import system_tools
 from Bio import SeqIO
 
-
-
-
-def get_residue_type_from_one_letter_code(code):
-    threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
-                  'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
-                  'HIS': 'H', 'ILE': 'I', 'LEU': 'L', 'LYS': 'K',
-                  'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S',
-                  'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'UNK': 'X'}
-    one_to_three={}
-    for k in threetoone:
-        one_to_three[threetoone[k]] = k
-    return IMP.atom.ResidueType(one_to_three[code])
 
 def get_particles_within_zone(hier,
                               target_ps,
@@ -299,6 +287,7 @@ class Molecule(SystemBase):
         """Create a Molecule clone (automatically builds same structure and representation)
         @param chain_id If you want to set the chain ID of the copy to something
         @param transformation Apply transformation after building (at the end)
+        \note You cannot add structure or representations to a clone!
         """
         mol = Molecule(self.state,self.get_name(),self.sequence,chain_id,
                        copy_num=self.state.get_number_of_copies(self.get_name()),
@@ -319,6 +308,9 @@ class Molecule(SystemBase):
         @param pdb_code  Use if you want to store the PDB code (otherwise will extract from filename)
         \note After offset, we expect the PDB residue numbering to match the FASTA file
         """
+
+        if self.mol_to_clone is not None:
+            raise Exception('You cannot call add_structure() for a clone')
 
         self.pdb_fn=pdb_fn
 
@@ -348,6 +340,10 @@ class Molecule(SystemBase):
         @param resolutions         what resolutions to add to the
                residues (see @ref pmi_resolution)
         """
+
+        if self.mol_to_clone is not None:
+            raise Exception('You cannot call add_representation() for a clone')
+
         allowed_types=["balls"]
         if representation_type not in allowed_types:
             print("ERROR: Allowed representation types:",allowed_types)
@@ -387,7 +383,7 @@ class Molecule(SystemBase):
             # if this is a clone, first copy all representations and structure
             if self.mol_to_clone is not None:
                 for nr,r in enumerate(self.mol_to_clone.residues):
-                    self.residues[nr].set_structure(IMP.atom.Residue(IMP.atom.create_clone(r.get_hierarchy())))
+                    self.residues[nr].set_structure(IMP.atom.Residue(IMP.atom.create_clone(r.get_hierarchy())),soft_check=True)
                     if r.get_structure_source() is not None:
                         self.residues[nr].set_structure_source(*r.get_structure_source())
                 if self.transformation is not None:
@@ -473,7 +469,7 @@ class Residue(object):
         """
         self.molecule = molecule
         self.hier = IMP.atom.Residue.setup_particle(IMP.Particle(molecule.mdl),
-                                get_residue_type_from_one_letter_code(code),
+                                IMP.pmi.tools.get_residue_type_from_one_letter_code(code),
                                 index)
         self.representations = defaultdict(set)
         self.structure_source = None

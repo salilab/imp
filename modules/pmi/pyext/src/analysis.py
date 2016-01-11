@@ -798,13 +798,13 @@ class Precision(object):
                     centroid_rmf_name=self.rmf_names_frames[structure_set_name1][centroid_index]
 
                     centroid_distance=0.0
-                    distance_list=[]                    
+                    distance_list=[]
                     for n in range(number_of_structures):
                         dist=self._get_distance(structure_set_name1,structure_set_name1,
                                                              selection_name,centroid_index,n)
                         centroid_distance+=dist
                         distance_list.append(dist)
-                    
+
                     #pairwise_distance=distance/len(distances.keys())
                     centroid_distance/=number_of_structures
                     #average_centroid_distance=sum(distances_to_structure)/len(distances_to_structure)
@@ -816,7 +816,7 @@ class Precision(object):
                         of.write(str(selection_name)+" "+structure_set_name1+
                                         " centroid rmf name "+str(centroid_rmf_name)+"\n")
                         of.write(str(selection_name)+" "+structure_set_name1+
-                                        " median centroid distance  "+str(np.median(distance_list))+"\n")                        
+                                        " median centroid distance  "+str(np.median(distance_list))+"\n")
 
                 average_pairwise_distances=sum(distances.values())/len(list(distances.values()))
                 if outfile is not None:

@@ -834,7 +834,7 @@ class BuildModel1(object):
 
 
                 dens_hier,beads=self.create_density(self.simo,comp_name,outhier,em_txt_file_name,em_mrc_file_name,em_num_components,read_em_files)
-                
+
                 self.simo.add_all_atom_densities(comp_name, particles=beads)
                 dens_hier+=beads
 
@@ -874,7 +874,7 @@ class BuildModel1(object):
                 rf=rmf_file
                 rfn=rmf_frame_number
                 self.simo.set_coordinates_from_rmf(c, rf,rfn)
-            elif rmf_file_map: 
+            elif rmf_file_map:
                 for k in rmf_file_map:
                     cname=k
                     rf=rmf_file_map[k][0]

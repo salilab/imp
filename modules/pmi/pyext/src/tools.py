@@ -1524,6 +1524,18 @@ def get_hierarchies_from_spec(spec):
         raise Exception('get_hierarchies_from_spec: passed an unknown object')
     return ret
 
+def get_residue_type_from_one_letter_code(code):
+    threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
+                  'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
+                  'HIS': 'H', 'ILE': 'I', 'LEU': 'L', 'LYS': 'K',
+                  'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S',
+                  'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'UNK': 'X'}
+    one_to_three={}
+    for k in threetoone:
+        one_to_three[threetoone[k]] = k
+    return IMP.atom.ResidueType(one_to_three[code])
+
+
 def get_all_leaves(list_of_hs):
     """ Just get the leaves from a list of hierarchies """
     lvs = list(itertools.chain.from_iterable(IMP.atom.get_leaves(item) for item in list_of_hs))
