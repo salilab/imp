@@ -21,30 +21,26 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-//! Converts a density grid to a set of paritlces
-/**
-Each such particle will be have xyz attributes and a density_val attribute of
-type Float.
-\param[in] dmap the density map
-\param[in] threshold only voxels with density above the given threshold will
-           be converted to particles
-\param[in] m model to store the new particles
-\param[in] step sample every X steps in each direction
-\return particles corresponding to all voxels above the threshold
+//! Convert a density grid to a set of particles
+/** Each such particle will have xyz attributes and a density_val attribute
+    of type Float.
+    \param[in] dmap the density map
+    \param[in] threshold only voxels with density above the given threshold will
+               be converted to particles
+    \param[in] m model to store the new particles
+    \param[in] step sample every X steps in each direction
+    \return particles corresponding to all voxels above the threshold
  */
 IMPEMEXPORT Particles density2particles(DensityMap *dmap,
-                                                Float threshold,
-                                                Model *m, int step = 1);
+                                        Float threshold,
+                                        Model *m, int step = 1);
 
-//! Converts a density grid to a set of paritlces
-/**
-Each such particle will be have xyz attributes and a density_val attribute of
-type Float.
-\param[in] dmap the density map
-\param[in] threshold only voxels with density above the given threshold will
-           be converted to particles
-\return a set of vector3Ds corresponding to the positions of all voxels
-        above the threshold
+//! Convert a density grid to a set of vectors
+/** \param[in] dmap the density map
+    \param[in] threshold only voxels with density above the given threshold will
+               be converted to vectors
+    \return Vector3Ds corresponding to the positions of all voxels
+            above the threshold
  */
 IMPEMEXPORT algebra::Vector3Ds density2vectors(DensityMap *dmap,
                                                Float threshold);
