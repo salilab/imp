@@ -6,7 +6,6 @@ from __future__ import print_function
 import IMP
 import IMP.core
 from IMP.pmi.tools import get_restraint_set
-import IMP.pmi.dof
 
 class _SerialReplicaExchange(object):
     """Dummy replica exchange class used in non-MPI builds.
@@ -42,18 +41,14 @@ class MonteCarlo(object):
     except ImportError:
         isd_available = False
 
-    def __init__(self, m, objects=None, temp=1.0, filterbyname=None,dof=None):
+    def __init__(self, m, objects=None, temp=1.0, filterbyname=None):
         """Setup Monte Carlo sampling
         @param m             The IMP Model
-        @param objects       Sample Objects. Alternatively pass the degrees of freedom object
-        @param temp          The initial MC temperature
-        @param filterbyname  Not implemented
-        @param dof           DegreesOfFreedom object (replaces "objects")
+        @param objects       What to sample. Use flat list of particles or
+               (deprecated) 'MC Sample Objects' from PMI1
+        @param temp The MC temperature
+        @param filterbyname Not used
         """
-        # check that the objects containts get_particles_to_sample methods
-        # and the particle type is supported
-        # list of particles to sample self.losp
-
         self.losp = [
             "Rigid_Bodies",
             "Floppy_Bodies",
@@ -70,17 +65,16 @@ class MonteCarlo(object):
         self.label = "None"
         self.m = m
 
-        if dof is not None and objects is None:
-            self.mvs = dof.get_movers()
-        elif dof is not None and objects is not None:
-            raise Exception("Cannot pass DOF and MC objects")
-        else:
-            for ob in objects:
-                try:
-                    ob.get_particles_to_sample()
-                except:
-                    print("MonteCarlo: object ", ob, " doesn't have get_particles_to_sample() method")
+        # check if using PMI1 or just passed a list of movers
+        gather_objects = False
+        try:
+            objects[0].get_particles_to_sample()
+            gather_objects = True
+        except:
+            self.mvs = objects
 
+        if gather_objects:
+            for ob in objects:
                 pts = ob.get_particles_to_sample()
                 for k in pts.keys():
 
@@ -354,13 +348,25 @@ class MolecularDynamics(object):
     """Sample using molecular dynamics"""
 
     def __init__(self,m,objects,kt,gamma=0.01,maximum_time_step=1.0):
+        """Setup MD
+        @param m The IMP Model
+        @param objects What to sample. Use flat list of particles or (deprecated) 'MD Sample Objects' from PMI1
+        @param kt Temperature
+        @param gamma Viscosity parameter
+        @param maximum_time_step MD max time step
+        """
         self.m=m
-        to_sample=[]
-        for obj in objects:
-            to_sample+=obj.get_particles_to_sample()['Floppy_Bodies_SimplifiedModel'][0]
+
+        # check if using PMI1 objects dictionary, or just list of particles
+        try:
+            for obj in objects:
+                to_sample=obj.get_particles_to_sample()['Floppy_Bodies_SimplifiedModel'][0]
+        except:
+            to_sample = objects
+
         self.ltstate=IMP.atom.LangevinThermostatOptimizerState(self.m,to_sample,
-                                                          kt/0.0019872041,
-                                                          gamma)
+                                                               kt/0.0019872041,
+                                                               gamma)
         self.md = IMP.atom.MolecularDynamics(self.m)
         self.md.set_maximum_time_step(maximum_time_step)
         self.md.add_optimizer_state(self.ltstate)

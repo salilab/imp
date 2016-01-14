@@ -34,7 +34,7 @@ class AtomicXLTest(IMP.test.TestCase):
         m2a_res = m2a.add_structure(self.get_input_file_name('multi.pdb'),chain_id='G',offset=-54)
         m2.add_representation(atomic_res,resolutions=[0])
         m2.add_representation(m2a_res,resolutions=[0])
-        hier = s.build(merge_type="backbone")
+        hier = s.build()
 
         # pass hierarchy and fake data to the restraint
         xls = IMP.pmi.io.CrossLinkData()

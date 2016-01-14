@@ -11,113 +11,90 @@ import IMP.container
 import itertools
 import sys
 import IMP.pmi.tools
-try:
-    import IMP.isd2
-    noisd2 = False
-except:
-    noisd2 = True
-try:
-    import IMP.isd_emxl
-    no_isd_emxl = False
-except:
-    no_isd_emxl = True
-
+import IMP.pmi.representation
+from math import pi,log
+import IMP.isd
 
 class ExcludedVolumeSphere(object):
-
-    '''A class to create an excluded volume restraint for a set of particles at a given resolution.
+    """A class to create an excluded volume restraint for a set of particles at a given resolution.
     Can be initialized as a bipartite restraint between two sets of particles.
 
     # Potential addional function: Variable resolution for each PMI object.  Perhaps passing selection_tuples
     with (PMI_object, resolution)
-    '''
+    """
 
-    def __init__(self, included_objects,
-                 other_pmi_objects=None,
-                 hierarchies=None,
-                 other_hierarchies=None,
-                 resolution=1000, kappa=1.0):
+    def __init__(self,
+                 representation=None,
+                 included_objects=None,
+                 other_objects=None,
+                 resolution=1000,
+                 kappa=1.0):
+        """Constructor.
+        @param representation DEPRECATED - just pass objects
+        @param included_objects Can be one of the following inputs:
+               IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set of them
+        @param other_objects Initializes a bipartite restraint between included_objects and other_objects
+               Can be IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set of them
+        @param resolution The resolution particles at which to impose the restraint.
+               By default, the coarsest particles will be chosen.
+               If a number is chosen, for each particle, the closest
+               resolution will be used (see IMP.atom.Selection).
+        @param kappa Restraint strength
         """
-        @param included_objects -   Can be a single PMI object or list/set of PMI objects (residues, molecules and/or systems),
-                                        OR a Representation object (DEPRECATED)
-        @param other_pmi_objects -  A PMI object or list of PMI objects.  Initializes a bipartite restraint
-                                        between included_objects and other_pmi_objects
-        @param hierarchies -        (DEPRECATED) the hierarchy included in the restraint. Only used with a Representation
-                                        object as included_objects
-        @param other_hierarchies -  (DEPRECATED) Initilizes a bipartite restraint between hierarchies
-                                        and other_hierarchies
-        @param resolution -         The resolution particles at which to impose the restraint.  By default, the coarsest
-                                        particles will be chosen. If a number is chosen, for each particle, the closest
-                                        resolution will be used (see IMP.atom.Selection).
-        @param kappa -              I have no idea what this does.
 
-        """
-        bipartite=False
-
-        # See if included_objects is a PMI2 object or list of them.  I am so sorry for this horrible if statement
-        if (  isinstance(included_objects, IMP.pmi.topology.SystemBase)
-             or isinstance(included_objects, IMP.pmi.topology.Residue)
-             or ( type(included_objects) is list and ( isinstance(included_objects[0], IMP.pmi.topology.SystemBase) or isinstance(included_objects[0], IMP.pmi.topology.Residue)) )
-             or ( type(included_objects) is set) ):
-
-
-            # Ensure that we convert singular input into a list
-            if isinstance(included_objects, IMP.pmi.topology.SystemBase):
-                included_objects = [included_objects]
-
-            particles=[]
-
-            for obj in included_objects:
-                self.m = obj.get_hierarchy().get_model()
-                particles += IMP.atom.Selection(obj.get_hierarchy(), resolution=resolution).get_selected_particles()
-
-            if other_pmi_objects is not None:
-                other_particles=[]
-                if type(other_pmi_objects) is not list:
-                    other_pmi_objects=[other_pmi_objects]
-                for obj in other_pmi_objects:
-                    other_particles += IMP.atom.Selection(obj.get_hierarchy, resolution=resolution).get_selected_particles()
-                bipartite = True
-
-        elif isinstance(included_objects, IMP.pmi.representation.Representation):
-            self.m = included_objects.prot.get_model()
-            particles = IMP.pmi.tools.select(
-                    included_objects,
-                    resolution=resolution,
-                    hierarchies=hierarchies)
-
-            if other_hierarchies is not None:
-                bipartite=True
-                other_particles = IMP.pmi.tools.select(
-                                         included_objects,
-                                         resolution=resolution,
-                                        hierarchies=other_hierarchies)
-        else:
-            raise TypeError("ExcludedVolumeSphere requires a PMI object (State, Molecule or Residue) or a Representation (**deprecated**) object")
-
-
-
-
-        self.rs = IMP.RestraintSet(self.m, 'excluded_volume')
         self.weight = 1.0
         self.kappa = kappa
-
         self.label = "None"
         self.cpc = None
+        bipartite = False
 
+        # gather IMP hierarchies from input objects
+        hierarchies = IMP.pmi.tools.get_hierarchies(included_objects)
+        included_ps = []
+        if other_objects is not None:
+            bipartite = True
+            other_hierarchies = IMP.pmi.tools.get_hierarchies(other_objects)
+            other_ps = []
+
+        # perform selection
+        if representation is None:
+            if hierarchies is None:
+                raise Exception("Must at least pass included objects")
+            self.mdl = hierarchies[0].get_model()
+            for h in hierarchies:
+                included_ps += IMP.atom.Selection(h,resolution=resolution).get_selected_particles()
+                if bipartite:
+                    for h in other_hierarchies:
+                        other_ps += IMP.atom.Selection(h,resolution=resolution).get_selected_particles()
+        elif type(representation)==IMP.pmi.representation.Representation:
+            self.mdl = representation.m
+            included_ps = IMP.pmi.tools.select(
+                representation,
+                resolution=resolution,
+                hierarchies=hierarchies)
+
+            if bipartite:
+                other_particles = IMP.pmi.tools.select(
+                    representation,
+                    resolution=resolution,
+                    hierarchies=other_hierarchies)
+        else:
+            raise Exception("Must pass Representation or included_objects")
+
+        # setup score
+        self.rs = IMP.RestraintSet(self.mdl, 'excluded_volume')
         ssps = IMP.core.SoftSpherePairScore(self.kappa)
-        lsa = IMP.container.ListSingletonContainer(self.m)
+        lsa = IMP.container.ListSingletonContainer(self.mdl)
+        lsa.add(IMP.get_indexes(included_ps))
 
-        lsa.add(IMP.get_indexes(particles))
-
-        if bipartite == False:
+        # setup close pair container
+        if not bipartite:
             rbcpf = IMP.core.RigidClosePairsFinder()
             self.cpc = IMP.container.ClosePairContainer(lsa, 0.0, rbcpf, 10.0)
             evr = IMP.container.PairsRestraint(ssps, self.cpc)
-
         else:
-            other_lsa = IMP.container.ListSingletonContainer(self.m)
-            other_lsa.add_particles(other_particles)
+            other_lsa = IMP.container.ListSingletonContainer(self.mdl)
+            other_lsa.add_particles(other_ps)
             self.cpc = IMP.container.CloseBipartitePairContainer(
                 lsa,
                 other_lsa,
@@ -129,7 +106,7 @@ class ExcludedVolumeSphere(object):
 
     def add_excluded_particle_pairs(self, excluded_particle_pairs):
         # add pairs to be filtered when calculating  the score
-        lpc = IMP.container.ListPairContainer(self.m)
+        lpc = IMP.container.ListPairContainer(self.mdl)
         lpc.add(IMP.get_indexes(excluded_particle_pairs))
         icpf = IMP.container.InContainerPairFilter(lpc)
         self.cpc.add_pair_filter(icpf)
@@ -138,7 +115,7 @@ class ExcludedVolumeSphere(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.mdl, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -157,25 +134,23 @@ class ExcludedVolumeSphere(object):
 
 
 class ResidueBondRestraint(object):
-
-    '''
-    add bond restraint between pair of consecutive
+    """ Add bond restraint between pair of consecutive
     residues/beads to enforce the stereochemistry.
-    '''
-    import IMP.pmi.tools
-    from math import pi as pi
-
-    def __init__(
-        self,
-        representation,
-        selection_tuple,
-        distance=3.78,
-        strength=10.0,
-            jitter=None):
-        '''
-        jitter: defines the +- added to the optimal distance in the harmonic well restraint
-                used to increase the tolerance
-        '''
+    """
+    def __init__(self,
+                 representation,
+                 selection_tuple,
+                 distance=3.78,
+                 strength=10.0,
+                 jitter=None):
+        """Constructor
+        @param representation
+        @param selection_tuple Requested selection
+        @param distance Resting distance for restraint
+        @param strength Bond constant
+        @param jitter Defines the +- added to the optimal distance in the harmonic well restraint
+                      used to increase the tolerance
+        """
         self.m = representation.prot.get_model()
         self.rs = IMP.RestraintSet(self.m, "Bonds")
         self.weight = 1
@@ -237,21 +212,15 @@ class ResidueBondRestraint(object):
 
 
 class ResidueAngleRestraint(object):
-
-    '''
-    add angular restraint between triplets of consecutive
+    """Add angular restraint between triplets of consecutive
     residues/beads to enforce the stereochemistry.
-    '''
-    import IMP.pmi.tools
-    from math import pi as pi
-
-    def __init__(
-        self,
-        representation,
-        selection_tuple,
-        anglemin=100.0,
-        anglemax=140.0,
-            strength=10.0):
+    """
+    def __init__(self,
+                 representation,
+                 selection_tuple,
+                 anglemin=100.0,
+                 anglemax=140.0,
+                 strength=10.0):
         self.m = representation.prot.get_model()
         self.rs = IMP.RestraintSet(self.m, "Angles")
         self.weight = 1
@@ -315,22 +284,17 @@ class ResidueAngleRestraint(object):
 
 
 class ResidueDihedralRestraint(object):
-
-    '''
-    Add dihedral restraints between quadruplet of consecutive
+    """Add dihedral restraints between quadruplet of consecutive
     residues/beads to enforce the stereochemistry.
     Give as input a string of "C" and "T", meaning cys (0+-40) or trans (180+-40)
     dihedral. The length of the string must be \#residue-3.
     Without the string, the dihedral will be assumed trans.
-    '''
-    import IMP.pmi.tools
-    from math import pi as pi
-
+    """
     def __init__(
-        self,
-        representation,
-        selection_tuple,
-        stringsequence=None,
+            self,
+            representation,
+            selection_tuple,
+            stringsequence=None,
             strength=10.0):
         self.m = representation.prot.get_model()
         self.rs = IMP.RestraintSet(self.m, "Angles")
@@ -412,21 +376,15 @@ class ResidueDihedralRestraint(object):
         output["ResidueDihedralRestraint_" + self.label] = str(score)
         return output
 
-
-#
 class SecondaryStructure(object):
-
-    from math import pi
-    from math import log
-
-    def __init__(
-        self,
-        representation,
-        selection_tuple,
-        ssstring,
-        mixture=False,
-        nativeness=1.0,
-            kt_caff=0.1):
+    """Experimental, requires isd_emxl for now"""
+    def __init__(self,
+                 representation,
+                 selection_tuple,
+                 ssstring,
+                 mixture=False,
+                 nativeness=1.0,
+                 kt_caff=0.1):
 
         if no_isd_emxl:
             raise ValueError("IMP.isd_emxl is needed")
@@ -645,60 +603,78 @@ class SecondaryStructure(object):
 
 
 class ElasticNetworkRestraint(object):
-
-    '''
-    add harmonic restraints between all pairs
-    '''
-    import IMP.pmi.tools
-    from math import pi as pi
-
-    def __init__(self,representation,
-                 selection_tuples,
+    """Add harmonic restraints between all pairs
+    """
+    def __init__(self,representation=None,
+                 selection_tuples=None,
                  resolution=1,
                  strength=0.01,
                  dist_cutoff=10.0,
-                 ca_only=True):
-        '''
-        ca_only: only applies for resolution 0
-        '''
-        self.m = representation.prot.get_model()
+                 ca_only=True,
+                 hierarchy=None):
+        """Constructor
+        @param representation Representation object
+        @param selection_tuples Selecting regions for the restraint
+        @param resolution Resolution for applying restraint
+        @param strength Bond strength
+        @param dist_cutoff Cutoff for making restraints
+        @param ca_only Selects only CAlphas. Only matters if resolution=0.
+        @param hierarchy Root hierarchy to select from, use this instead of representation
+        """
+
+        particles = []
+        if representation is None and hierarchy is not None:
+            self.m = hierarchy.get_model()
+            for st in selection_tuples:
+                print(st)
+                if not ca_only:
+                    sel = IMP.atom.Selection(hierarchy,chain=st[0],residue_indexes=range(st[1],st[2]+1))
+                else:
+                    sel = IMP.atom.Selection(hierarchy,chain=st[0],residue_indexes=range(st[1],st[2]+1),
+                                             atom_type=IMP.atom.AtomType("CA"))
+                particles+=sel.get_selected_particles()
+        elif representation is not None and type(representation)==IMP.pmi.representation.Representation:
+            self.m = representation.mdl
+            for st in selection_tuples:
+                print('selecting with',st)
+                for p in IMP.pmi.tools.select_by_tuple(representation,st,resolution=resolution):
+                    if (resolution==0 and ca_only and IMP.atom.Atom(p).get_atom_type()!=IMP.atom.AtomType("CA")):
+                        continue
+                    else:
+                        particles.append(p.get_particle())
+        else:
+            raise Exception("must pass representation or hierarchy")
+
         self.rs = IMP.RestraintSet(self.m, "ElasticNetwork")
         self.weight = 1
         self.label = "None"
         self.pairslist = []
 
-        particles = []
-        for st in selection_tuples:
-            print('selecting with',st)
-            for p in IMP.pmi.tools.select_by_tuple(representation,st,resolution=resolution):
-                if (resolution==0 and ca_only and IMP.atom.Atom(p).get_atom_type()!=IMP.atom.AtomType("CA")):
-                    continue
-                else:
-                    particles.append(p.get_particle())
-
-
+        # create score
         gcpf = IMP.core.GridClosePairsFinder()
+        print('setting dist',dist_cutoff)
         gcpf.set_distance(dist_cutoff)
-        particleindexes=IMP.get_indexes(particles)
-        pairs=gcpf.get_close_pairs(   self.m,
-                                particleindexes,
-                                particleindexes)
+        particleindexes = IMP.get_indexes(particles)
+        pairs = gcpf.get_close_pairs(self.m,
+                                     particleindexes,
+                                     particleindexes)
 
+        found = set()
         for pair in pairs:
-            p1=self.m.get_particle(pair[0])
-            p2=self.m.get_particle(pair[1])
-            if p1==p2:
-                print("%s and %s are the same particle" % (p1.get_name(),p2.get_name()))
+            p1 = self.m.get_particle(pair[0])
+            p2 = self.m.get_particle(pair[1])
+            if p1==p2 or tuple(sorted(pair)) in found:
                 continue
+
             if(IMP.core.RigidMember.get_is_setup(p1) and
                    IMP.core.RigidMember.get_is_setup(p2) and
                    IMP.core.RigidMember(p1).get_rigid_body() ==
                    IMP.core.RigidMember(p2).get_rigid_body()):
                 print("%s and %s are in the same rigid body" % (p1.get_name(),p2.get_name()))
                 continue
-
+            found.add(tuple(sorted(pair)))
             distance=IMP.algebra.get_distance(IMP.core.XYZ(p1).get_coordinates(),
-                                                IMP.core.XYZ(p2).get_coordinates())
+                                              IMP.core.XYZ(p2).get_coordinates())
 
             ts=IMP.core.HarmonicDistancePairScore(distance,strength)
             print("ElasticNetworkConstraint: adding a restraint between %s and %s with distance %.3f" % (p1.get_name(),p2.get_name(),distance))
@@ -736,15 +712,11 @@ class ElasticNetworkRestraint(object):
 
 
 class CharmmForceFieldRestraint(object):
-
-    '''
-    add charmm force field
-    '''
-    import IMP.pmi.tools
-    from math import pi as pi
-    import IMP.isd
-
-    def __init__(self,representation,ff_temp=300.0):
+    """ Enable CHARMM force field """
+    def __init__(self,
+                 root,
+                 ff_temp=300.0,
+                 representation=None):
 
         kB = (1.381 * 6.02214) / 4184.0
 
@@ -816,13 +788,8 @@ class CharmmForceFieldRestraint(object):
 
 
 class PseudoAtomicRestraint(object):
-
-    '''
-    add bonds and improper dihedral restraints for the CBs
-    '''
-    import IMP.pmi.tools
-    from math import pi as pi
-
+    """Add bonds and improper dihedral restraints for the CBs
+    """
     def __init__(
         self, rnums, representation, selection_tuple, strength=10.0, kappa=1.0,
             jitter_angle=0.0, jitter_improper=0.0):

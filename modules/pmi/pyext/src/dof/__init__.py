@@ -163,6 +163,30 @@ class DegreesOfFreedom(object):
                               pmi_restraint = None):
         """either create nuisance or pass ISD restraint with fixed interface"""
 
+    def setup_md(self,
+                 hspec):
+        """Setup particles for MD simulation. Returns all particles, just
+        pass this to molecular_dynamics_sample_objects in ReplicaExchange0.
+        @param hspec Can be one of the following inputs:
+                     IMP Selection, Hierarchy,
+                     PMI Molecule, Residue, or a list/set
+        """
+        vxkey = IMP.FloatKey('vx')
+        vykey = IMP.FloatKey('vy')
+        vzkey = IMP.FloatKey('vz')
+        hiers = IMP.pmi.tools.get_hierarchies_from_spec(hspec)
+        mdl = hiers[0].get_model()
+        all_ps = []
+        for h in hiers:
+            for lv in IMP.core.get_leaves(h):
+                p = lv.get_particle()
+                IMP.core.XYZ(mdl,p.get_index()).set_coordinates_are_optimized(True)
+                mdl.add_attribute(vxkey,p.get_index(),0.0)
+                mdl.add_attribute(vykey,p.get_index(),0.0)
+                mdl.add_attribute(vzkey,p.get_index(),0.0)
+                all_ps.append(p)
+        return all_ps
+
     def constrain_symmetry(self,
                            references,
                            clones,

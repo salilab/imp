@@ -27,8 +27,6 @@ class GaussianEMRestraint(object):
                  model_radii_scale=1.0,
                  slope=0.0,
                  spherical_gaussians=False,
-                 pointwise_restraint=False,
-                 local_mm=False,
                  close_pair_container=None,
                  backbone_slope=False,
                  scale_target_to_mass=False,
@@ -57,8 +55,6 @@ class GaussianEMRestraint(object):
         @param spherical_gaussians     Set to True for a speed bonus when
                the model densities are spheres. (This means you don't have
                to do a matrix multiplication if they rotate.)
-        @param pointwise_restraint     EXPERIMENTAL, requires isd_emxl
-        @param local_mm                EXPERIMENTAL, requires isd_emxl
         @param close_pair_container    Pass a close pair container for
                the model if you already have one (e.g. for an excluded
                volume restraint.) May give a speed bonus.
@@ -68,7 +64,6 @@ class GaussianEMRestraint(object):
                target to EXACTLY the model mass
         @param weight                  The restraint weight
         """
-
 
         # some parameters
         self.label = "None"
@@ -88,6 +83,7 @@ class GaussianEMRestraint(object):
                 return sum(IMP.atom.Mass(p).get_mass() for p in leaves)
             target_mass_scale = sum(hierarchy_mass(h) for h in densities)
         print('will scale target mass by', target_mass_scale)
+
         if target_fn != '':
             self.target_ps = []
             IMP.isd.gmm_tools.decorate_gmm_from_text(
@@ -130,31 +126,15 @@ class GaussianEMRestraint(object):
 
         update_model=not spherical_gaussians
         log_score=False
-        if not pointwise_restraint:
-            self.gaussianEM_restraint = \
-               IMP.isd.GaussianEMRestraint(self.m,
-                                                IMP.get_indexes(self.model_ps),
-                                                IMP.get_indexes(self.target_ps),
-                                                self.sigmaglobal.get_particle().get_index(),
-                                                cutoff_dist_model_model,
-                                                cutoff_dist_model_data,
-                                                slope,
-                                                update_model, backbone_slope)
-        else:
-            print('USING POINTWISE RESTRAINT - requires isd_emxl')
-            import IMP.isd_emxl
-            print('update model?',update_model)
-            self.gaussianEM_restraint = \
-               IMP.isd_emxl.PointwiseGaussianEMRestraint(self.m,
-                                                IMP.get_indexes(self.model_ps),
-                                                IMP.get_indexes(self.target_ps),
-                                                self.sigmaglobal.get_particle().get_index(),
-                                                cutoff_dist_model_model,
-                                                cutoff_dist_model_data,
-                                                slope,
-                                                update_model,
-                                                log_score,
-                                                close_pair_container)
+        self.gaussianEM_restraint = IMP.isd.GaussianEMRestraint(
+            self.m,
+            IMP.get_indexes(self.model_ps),
+            IMP.get_indexes(self.target_ps),
+            self.sigmaglobal.get_particle().get_index(),
+            cutoff_dist_model_model,
+            cutoff_dist_model_data,
+            slope,
+            update_model, backbone_slope)
 
         print('done EM setup')
         self.rs = IMP.RestraintSet(self.m, 'GaussianEMRestraint')

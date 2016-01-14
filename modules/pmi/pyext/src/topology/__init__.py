@@ -1,11 +1,10 @@
 """@namespace IMP.pmi.topology
-   Set up of system representation from topology files.
-
-   * Class for storing topology elements of PMI components
-   * Functions for reading these elementsfrom a formatted PMI topology file
-   * Functions for converting an existing IMP hierarchy into PMI topology
-   * TopologyWriter for writing PMI topology files
-"""
+Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
+* Start by creating a System and then call System.create_state().
+* For each State, add Molecules with State.create_molecule().
+* For each Molecule, you can add_structure() (from PDB) and add_representation() (beads, densities, etc).
+* Once data has been added and representations chosen, call System.build() to create a canonical IMP hierarchy.
+This namespace also contains the TopologyReader for setting up a System from a formatted text file."""
 
 from __future__ import print_function
 import IMP
@@ -18,45 +17,6 @@ import os
 from collections import defaultdict
 from . import system_tools
 from Bio import SeqIO
-
-
-def get_particles_within_zone(hier,
-                              target_ps,
-                              sel_zone,
-                              entire_residues,
-                              exclude_backbone):
-    """Utility to retrieve particles from a hierarchy within a
-    zone around a set of ps.
-    @param hier The hierarchy in which to look for neighbors
-    @param target_ps The particles for zoning
-    @param sel_zone The maximum distance
-    @param entire_residues If True, will grab entire residues
-    @param exclude_backbone If True, will only return sidechain particles
-    """
-
-    test_sel = IMP.atom.Selection(hier)
-    backbone_types=['C','N','CB','O']
-    if exclude_backbone:
-        test_sel -= IMP.atom.Selection(hier,atom_types=[IMP.atom.AtomType(n)
-                                                        for n in backbone_types])
-    test_ps = test_sel.get_selected_particles()
-    nn = IMP.algebra.NearestNeighbor3D([IMP.core.XYZ(p).get_coordinates()
-                                         for p in test_ps])
-    zone = set()
-    for target in target_ps:
-        zone|=set(nn.get_in_ball(IMP.core.XYZ(target).get_coordinates(),sel_zone))
-    zone_ps = [test_ps[z] for z in zone]
-    if entire_residues:
-        final_ps = set()
-        for z in zone_ps:
-            final_ps|=set(IMP.atom.Hierarchy(z).get_parent().get_children())
-        zone_ps = [h.get_particle() for h in final_ps]
-    return zone_ps
-
-class StructureError(Exception):
-    pass
-
-#------------------------
 
 class SystemBase(object):
     """The base class for System, State and Molecule
@@ -128,13 +88,15 @@ class System(SystemBase):
 #------------------------
 
 class State(SystemBase):
-    """This private class is constructed from within the System class.
-    It wraps an IMP.atom.State
+    """Stores a list of Molecules all with the same State index.
+    Also stores number of copies of each Molecule for easy Selection.
     """
     def __init__(self,system,state_index):
         """Define a new state
         @param system        the PMI System
         @param state_index   the index of the new state
+        \note It's expected that you will not use this constructor directly,
+        but rather create it with pmi::System::create_molecule()
         """
         self.mdl = system.get_hierarchy().get_model()
         self.system = system
@@ -156,7 +118,7 @@ class State(SystemBase):
         """
         # check whether the molecule name is already assigned
         if name in self.molecules:
-            raise WrongMoleculeName('Cannot use a molecule name already used')
+            raise Exception('Cannot use a molecule name already used')
 
         mol = Molecule(self,name,sequence,chain_id,copy_num=0)
         self.molecules[name].append(mol)
@@ -171,7 +133,7 @@ class State(SystemBase):
     def _register_copy(self,molecule):
         molname = molecule.get_hierarchy().get_name()
         if molname not in self.molecules:
-            raise StructureError("Trying to add a copy when the original doesn't exist!")
+            raise Exception("Trying to add a copy when the original doesn't exist!")
         self.molecules[molname].append(molecule)
 
     def build(self,**kwargs):
@@ -192,13 +154,14 @@ class Molecule(SystemBase):
     Resolutions and copies can be registered, but are only created when build() is called
     """
 
-    def __init__(self,state,name,sequence,chain_id,copy_num,mol_to_clone=None,transformation=None):
+    def __init__(self,state,name,sequence,chain_id,copy_num,mol_to_clone=None):
         """The user should not call this direclty, instead call State::create_molecule()
         @param state           The parent PMI State
         @param name            The name of the molecule (string)
         @param sequence        Sequence (string)
         @param mol_to_clone    The original molecule (for cloning ONLY)
-        @param transformation  A transform to apply during building (primarily for cloning)
+        \note It's expected that you will not use this constructor directly,
+        but rather create a Molecule with pmi::State::create_molecule()
         """
         # internal data storage
         self.mdl = state.get_hierarchy().get_model()
@@ -206,7 +169,8 @@ class Molecule(SystemBase):
         self.sequence = sequence
         self.built = False
         self.mol_to_clone = mol_to_clone
-        self.transformation = transformation
+        self.representations = []  # list of stuff to build
+        self.represented = set()   # residues with representation
 
         # create root node and set it as child to passed parent hierarchy
         self.hier = self._create_child(self.state.get_hierarchy())
@@ -214,16 +178,15 @@ class Molecule(SystemBase):
         IMP.atom.Copy.setup_particle(self.hier,copy_num)
         IMP.atom.Chain.setup_particle(self.hier,chain_id)
 
-        # create Residues from the sequence
+        # create TempResidues from the sequence
         self.residues=[]
         for ns,s in enumerate(sequence):
-            r=Residue(self,s,ns+1)
+            r = TempResidue(self,s,ns+1,ns)
             self.residues.append(r)
 
     def __repr__(self):
         return self.state.__repr__()+'.'+self.get_name()+'.'+ \
             str(IMP.atom.Copy(self.hier).get_copy_index())
-
 
     def __getitem__(self,val):
         if isinstance(val,int):
@@ -251,25 +214,25 @@ class Molecule(SystemBase):
             print("ERROR: range ends must be int or str. Stride must be int.")
 
     def get_residues(self):
-        """ Return all Residues as a set"""
+        """ Return all TempResidues as a set"""
         all_res=set()
         for res in self.residues:
             all_res.add(res)
         return all_res
 
     def get_atomic_residues(self):
-        """ Return a set of Residues that have associated structure coordinates """
+        """ Return a set of TempResidues that have associated structure coordinates """
         atomic_res=set()
         for res in self.residues:
-            if res.get_has_structure_source():
+            if res.get_has_structure():
                 atomic_res.add(res)
         return atomic_res
 
     def get_non_atomic_residues(self):
-        """ Return a set of Residues that don't have associated structure coordinates """
+        """ Return a set of TempResidues that don't have associated structure coordinates """
         non_atomic_res=set()
         for res in self.residues:
-            if not res.get_has_structure_source():
+            if not res.get_has_structure():
                 non_atomic_res.add(res)
         return non_atomic_res
 
@@ -283,15 +246,14 @@ class Molecule(SystemBase):
         self.state._register_copy(mol)
         return mol
 
-    def create_clone(self,chain_id,transformation=None):
+    def create_clone(self,chain_id):
         """Create a Molecule clone (automatically builds same structure and representation)
         @param chain_id If you want to set the chain ID of the copy to something
-        @param transformation Apply transformation after building (at the end)
         \note You cannot add structure or representations to a clone!
         """
         mol = Molecule(self.state,self.get_name(),self.sequence,chain_id,
                        copy_num=self.state.get_number_of_copies(self.get_name()),
-                       mol_to_clone=self,transformation=transformation)
+                       mol_to_clone=self)
         self.state._register_copy(mol)
         return mol
 
@@ -320,7 +282,7 @@ class Molecule(SystemBase):
             print('ERROR: You are loading',len(rhs), \
                 'pdb residues for a sequence of length',len(self.residues),'(too many)')
 
-        # load those into the existing pmi Residue objects, and return contiguous regions
+        # load those into the existing pmi TempResidue objects, and return contiguous regions
         atomic_res=set() # collect integer indexes of atomic residues!
         for nrh,rh in enumerate(rhs):
             idx = rh.get_index()
@@ -328,82 +290,152 @@ class Molecule(SystemBase):
             if pdb_code is None:
                 pdb_code = os.path.splitext(os.path.basename(pdb_fn))[0]
             internal_res.set_structure(rh,soft_check)
-            internal_res.set_structure_source(pdb_code,chain_id)
+            #internal_res.set_structure_source(pdb_code,chain_id)
             atomic_res.add(internal_res)
         return atomic_res
 
-    def add_representation(self,res_set=None,representation_type="balls",resolutions=[]):
-        """handles the IMP.atom.Representation decorators, such as multi-scale,
-        density, etc.
-        @param res_set             set of PMI residues for adding the representation
-        @param representation_type currently supports only balls
-        @param resolutions         what resolutions to add to the
-               residues (see @ref pmi_resolution)
+    def add_representation(self,
+                           residues=None,
+                           resolutions=[],
+                           bead_extra_breaks=[],
+                           bead_ca_centers=True,
+                           density_residues_per_component=None,
+                           density_prefix=None,
+                           density_force_compute=False,
+                           density_voxel_size=1.0,
+                           setup_particles_as_densities=False,
+                           ideal_helix=False):
+        """Set the representation for some residues. Some options (beads, ideal helix)
+        operate along the backbone. Others (density options) are volumetric.
+        Some of these you can combine e.g., beads+densities or helix+densities
+        See @ref pmi_resolution
+        @param residues Set of PMI TempResidues for adding the representation.
+               Can use Molecule slicing to get these, e.g. mol[a:b]+mol[c:d]
+               If None, will select all residues for this Molecule.
+        @param resolutions Resolutions for beads representations.
+               If structured, will average along backbone, breaking at sequence breaks.
+               If unstructured, will just create beads
+        @param bead_extra_breaks Additional breakpoints for splitting beads.
+               The number is the first index of the break.
+        @param bead_ca_centers Set to True if you want the resolution=1 beads to be at CA centers
+               (otherwise will average atoms to get center). Defaults to True.
+        @param density_residues_per_component Create density (Gaussian Mixture Model)
+               for these residues. Must also supply density_prefix
+        @param density_prefix Prefix (assuming '.txt') to read components from or write to.
+               If exists, will read unless you set density_force_compute=True.
+               Will also write map (prefix+'.mrc').
+               Must also supply density_residues_per_component.
+        @param density_force_compute Set true to force overwrite density file.
+        @param density_voxel_size Advanced feature. Set larger if densities taking too long to rasterize.
+        @param setup_particles_as_densities Set to True if you want each particle to be its own density.
+               Useful for all-atom models or flexible beads.
+               Mutually exclusive with density_ options
+        @param ideal_helix Create idealized helix structures for these residues.
+               NOT CURRENLTY IMPLEMENTED
+        \note You cannot call add_representation multiple times for the same residues.
         """
 
-        if self.mol_to_clone is not None:
-            raise Exception('You cannot call add_representation() for a clone')
-
-        allowed_types=["balls"]
-        if representation_type not in allowed_types:
-            print("ERROR: Allowed representation types:",allowed_types)
+        if len(residues)==0:
+            print ("WARNING: No residues passed to add_representation")
             return
-        if res_set is None:
-            res_set=set(self.residues)
-        for res in res_set:
-            res.add_representation(representation_type,resolutions)
 
-    def get_representations(self):
-        '''Returns list of representation dictionaries for each residue
-        '''
-        reps=[]
-        for res in self.residues:
-            reps.append(res.representations)
-        return reps
+        # can't customize clones
+        if self.mol_to_clone is not None:
+            raise Exception('You cannot call add_representation() for a clone.'
+                            'Maybe use a copy instead')
+        if residues is None:
+            res = set(self.residues)
+        else:
+            res = residues
 
-    def build(self,merge_type="backbone",ca_centers=True,fill_in_missing_residues=True):
-        """Create all parts of the IMP hierarchy
+        # check that each residue has not been represented yet
+        ov = res&self.represented
+        if ov:
+            raise Exception('You have already added representation for '+ov.__repr__())
+        self.represented|=res
+
+        # check you aren't creating multiple resolutions without structure
+        if len(resolutions)>1:
+            for r in res:
+                if not r.get_has_structure():
+                    raise Exception('You are creating multiple resolutions for '
+                                    'unstructured regions. This will have unexpected results.')
+
+        # check density info is consistent
+        if density_residues_per_component or density_prefix:
+            if not density_residues_per_component and density_prefix:
+                raise Exception('If requesting density, must provide '
+                                'density_residues_per_component AND density_prefix')
+        if density_residues_per_component and setup_particles_as_densities:
+            raise Exception('Cannot create both volumetric density '
+                            '(density_residues_per_component) AND '
+                            'individual densities (setup_particles_as_densities) '
+                            'in the same representation')
+        if len(resolutions)>1 and setup_particles_as_densities:
+            raise Exception('You have multiple bead resolutions but are attempting to '
+                            'set them all up as individual Densities. '
+                            'This could have unexpected results.')
+
+        # store the representation group
+        self.representations.append(_Representation(res,
+                                                    resolutions,
+                                                    bead_extra_breaks,
+                                                    bead_ca_centers,
+                                                    density_residues_per_component,
+                                                    density_prefix,
+                                                    density_force_compute,
+                                                    density_voxel_size,
+                                                    setup_particles_as_densities))
+
+    def build(self):
+        '''Create all parts of the IMP hierarchy
         including Atoms, Residues, and Fragments/Representations and, finally, Copies
+        Will only build requested representations.
         /note Any residues assigned a resolution must have an IMP.atom.Residue hierarchy
               containing at least a CAlpha. For missing residues, these can be constructed
               from the PDB file
-        @param merge_type Principle for grouping into fragments.
-                          "backbone": linear sequences along backbone are grouped
-                          into fragments if they have identical sets of representations.
-                          "volume": at each resolution, groups are made based on
-                          spatial distance (not currently implemented)
-        @param ca_centers For single-bead-per-residue only. Set the center over the CA position.
-        """
-        allowed_types=("backbone")
-        if merge_type not in allowed_types:
-            print("ERROR: Allowed merge types:",allowed_types)
-            return
+        '''
+
         if not self.built:
 
-            # if this is a clone, first copy all representations and structure
+            # if requested, clone structure and representations
             if self.mol_to_clone is not None:
                 for nr,r in enumerate(self.mol_to_clone.residues):
-                    self.residues[nr].set_structure(IMP.atom.Residue(IMP.atom.create_clone(r.get_hierarchy())),soft_check=True)
-                    if r.get_structure_source() is not None:
-                        self.residues[nr].set_structure_source(*r.get_structure_source())
-                if self.transformation is not None:
-                    for r in self.residues:
-                        IMP.atom.transform(r.hier,self.transformation)
-                for orig,new in zip(self.mol_to_clone.residues,self.residues):
-                    new.representations=orig.representations
+                    self.residues[nr].set_structure(
+                        IMP.atom.Residue(IMP.atom.create_clone(r.get_hierarchy())),soft_check=True)
+                for old_rep in self.mol_to_clone.representations:
+                    new_res = set()
+                    for r in old_rep.residues:
+                        new_res.add(self.residues[r.get_internal_index()])
+                        self.represented.add(self.residues[r.get_internal_index()])
+                    new_rep = _Representation(new_res,
+                                              old_rep.bead_resolutions,
+                                              old_rep.bead_extra_breaks,
+                                              old_rep.bead_ca_centers,
+                                              old_rep.density_residues_per_component,
+                                              old_rep.density_prefix,
+                                              old_rep.density_voxel_size,
+                                              False,
+                                              old_rep.setup_particles_as_densities)
+                    self.representations.append(new_rep)
 
+            # give a warning for all residues that don't have representation
+            first = True
+            for r in self.residues:
+                if r not in self.represented:
+                    if first:
+                        print('WARNING: Residues without representation!',end="")
+                        first = False
+                    print(r,'',end='')
+            if not first:
+                print()
 
-            # group into Fragments along backbone
-            if merge_type=="backbone":
-                system_tools.build_along_backbone(self.mdl,self.hier,self.residues,
-                                                     IMP.atom.BALLS,ca_centers)
-
-            # group into Fragments by volume
-            elif merge_type=="volume":
-                pass
-
+            # build all the representations
+            for rep in self.representations:
+                hiers = system_tools.build_representation(self.mdl,rep)
+                for h in hiers:
+                    self.hier.add_child(h)
             self.built=True
-
         return self.hier
 
     def get_particles_at_all_resolutions(self,residue_indexes=None):
@@ -419,6 +451,29 @@ class Molecule(SystemBase):
 
 
 #------------------------
+
+class _Representation(object):
+    """Private class just to store a representation request"""
+    def __init__(self,
+                 residues,
+                 bead_resolutions,
+                 bead_extra_breaks,
+                 bead_ca_centers,
+                 density_residues_per_component,
+                 density_prefix,
+                 density_force_compute,
+                 density_voxel_size,
+                 setup_particles_as_densities):
+        self.residues = residues
+        self.bead_resolutions = bead_resolutions
+        self.bead_extra_breaks = bead_extra_breaks
+        self.bead_ca_centers = bead_ca_centers
+        self.density_residues_per_component = density_residues_per_component
+        self.density_prefix = density_prefix
+        self.density_force_compute = density_force_compute
+        self.density_voxel_size = density_voxel_size
+        self.setup_particles_as_densities = setup_particles_as_densities
+
 
 class Sequences(object):
     """A dictionary-like wrapper for reading and storing sequence data"""
@@ -458,34 +513,35 @@ class Sequences(object):
 #------------------------
 
 
-class Residue(object):
+class TempResidue(object):
     """Temporarily stores residue information, even without structure available."""
     # Consider implementing __hash__ so you can select.
-    def __init__(self,molecule,code,index):
-        """setup a Residue
+    def __init__(self,molecule,code,index,internal_index):
+        """setup a TempResidue
         @param molecule PMI Molecule to which this residue belongs
         @param code     one-letter residue type code
         @param index    PDB index
+        @param internal_index The number in the sequence
         """
         self.molecule = molecule
         self.hier = IMP.atom.Residue.setup_particle(IMP.Particle(molecule.mdl),
                                 IMP.pmi.tools.get_residue_type_from_one_letter_code(code),
                                 index)
-        self.representations = defaultdict(set)
-        self.structure_source = None
+        self.internal_index = internal_index
     def __str__(self):
         return self.get_code()+str(self.get_index())
     def __repr__(self):
         return self.__str__()
     def __key(self):
-        return (self.molecule,self.hier,
-                frozenset((k,tuple(self.representations[k])) for k in self.representations))
+        return (self.molecule,self.hier)
     def __eq__(self,other):
         return type(other)==type(self) and self.__key() == other.__key()
     def __hash__(self):
         return hash(self.__key())
     def get_index(self):
         return self.hier.get_index()
+    def get_internal_index(self):
+        return self.internal_index
     def get_code(self):
         return IMP.atom.get_one_letter_code(self.hier.get_residue_type())
     def get_residue_type(self):
@@ -494,9 +550,8 @@ class Residue(object):
         return self.hier
     def get_molecule(self):
         return self.molecule
-
-    def get_has_structure_source(self):
-        return (self.structure_source is not None)
+    def get_has_structure(self):
+        return (self.hier.get_children()!=[])
     def set_structure(self,res,soft_check=False):
         if res.get_residue_type()!=self.hier.get_residue_type():
             if soft_check:
@@ -505,24 +560,15 @@ class Residue(object):
                       IMP.atom.get_one_letter_code(res.get_residue_type()),
                       'and sequence residue is',self.get_code())
             else:
-                raise StructureError('ERROR: PDB residue index',self.get_index(),'is',
-                                     IMP.atom.get_one_letter_code(res.get_residue_type()),
-                                     'and sequence residue is',self.get_code())
+                raise Exception('ERROR: PDB residue index',self.get_index(),'is',
+                                IMP.atom.get_one_letter_code(res.get_residue_type()),
+                                'and sequence residue is',self.get_code())
 
         for a in res.get_children():
             self.hier.add_child(a)
             atype=IMP.atom.Atom(a).get_atom_type()
             a.get_particle().set_name('Atom %s of residue %i'%(atype.__str__().strip('"'),
                                                                self.hier.get_index()))
-    def set_structure_source(self,pdb_code,chain_id):
-        self.structure_source = (pdb_code,chain_id)
-
-    def get_structure_source(self):
-        return self.structure_source
-
-    def add_representation(self,rep_type,resolutions):
-        self.representations[rep_type] |= set(resolutions)
-
 
 class TopologyReader(object):
     '''

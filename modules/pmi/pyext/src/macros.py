@@ -3,6 +3,7 @@ Protocols for sampling structures and analyzing them.
 """
 
 from __future__ import print_function
+import IMP
 import IMP.pmi.representation
 import IMP.pmi.tools
 import IMP.pmi.samplers
@@ -31,7 +32,6 @@ class ReplicaExchange0(object):
                  sample_objects=None, # DEPRECATED
                  monte_carlo_sample_objects=None,
                  molecular_dynamics_sample_objects=None,
-                 degrees_of_freedom=None,
                  output_objects=[],
                  crosslink_restraints=None,
                  monte_carlo_temperature=1.0,
@@ -61,7 +61,8 @@ class ReplicaExchange0(object):
                  replica_stat_file_suffix="stat_replica",
                  em_object_for_rmf=None,
                  atomistic=False,
-                 replica_exchange_object=None):
+                 replica_exchange_object=None,
+                 test_mode=False):
         """Constructor.
            @param model                    The IMP model
            @param representation PMI.representation.Representation object
@@ -71,9 +72,10 @@ class ReplicaExchange0(object):
            @param monte_carlo_sample_objects Objects for MC sampling; a list of
                   structural components (generally the representation) that will
                   be moved and restraints with parameters that need to
-                  be sampled. OR a DegreesOfFreedom object!
+                  be sampled.
+                  For PMI2: just pass flat list of movers
            @param molecular_dynamics_sample_objects Objects for MD sampling
-           @param degrees_of_freedom A PMI DOF object. Use instead of MC/MD objects
+                  For PMI2: just pass flat list of particles
            @param output_objects A list of structural objects and restraints
                   that will be included in output (statistics files). Any object
                   that provides a get_output() method can be used here.
@@ -104,6 +106,7 @@ class ReplicaExchange0(object):
            @param write_initial_rmf        Write the initial configuration
            @param global_output_directory Folder that will be created to house
                   output.
+        @param test_mode Set to True to avoid writing any files, just test one frame.
         """
         self.model = model
         self.vars = {}
@@ -137,7 +140,6 @@ class ReplicaExchange0(object):
         if sample_objects is not None:
             self.monte_carlo_sample_objects+=sample_objects
         self.molecular_dynamics_sample_objects=molecular_dynamics_sample_objects
-        self.degrees_of_freedom = degrees_of_freedom
         self.output_objects = output_objects
         self.replica_exchange_object = replica_exchange_object
         self.molecular_dynamics_max_time_step = molecular_dynamics_max_time_step
@@ -176,6 +178,7 @@ class ReplicaExchange0(object):
         self.vars["best_pdb_dir"] = best_pdb_dir
         self.vars["atomistic"] = atomistic
         self.vars["replica_stat_file_suffix"] = replica_stat_file_suffix
+        self.test_mode = test_mode
 
     def show_info(self):
         print("ReplicaExchange0: it generates initial.*.rmf3, stat.*.out, rmfs/*.rmf3 for each replica ")
@@ -191,21 +194,15 @@ class ReplicaExchange0(object):
         return self.replica_exchange_object
 
     def execute_macro(self):
-
         temp_index_factor = 100000.0
         samplers=[]
         sampler_mc=None
         sampler_md=None
-        if self.monte_carlo_sample_objects is not None or self.degrees_of_freedom is not None:
+        if self.monte_carlo_sample_objects is not None:
             print("Setting up MonteCarlo")
-            if self.degrees_of_freedom is not None:
-                sampler_mc = IMP.pmi.samplers.MonteCarlo(self.model,
-                                                         temp=self.vars["monte_carlo_temperature"],
-                                                         dof=self.degrees_of_freedom)
-            else:
-                sampler_mc = IMP.pmi.samplers.MonteCarlo(self.model,
-                                                 self.monte_carlo_sample_objects,
-                                                 self.vars["monte_carlo_temperature"])
+            sampler_mc = IMP.pmi.samplers.MonteCarlo(self.model,
+                                                     self.monte_carlo_sample_objects,
+                                                     self.vars["monte_carlo_temperature"])
             if self.vars["simulated_annealing"]:
                 tmin=self.vars["simulated_annealing_minimum_temperature"]
                 tmax=self.vars["simulated_annealing_maximum_temperature"]
@@ -256,31 +253,32 @@ class ReplicaExchange0(object):
         rmf_dir = globaldir + self.vars["rmf_dir"]
         pdb_dir = globaldir + self.vars["best_pdb_dir"]
 
-        if self.vars["do_clean_first"]:
-            pass
-
-        if self.vars["do_create_directories"]:
-
-            try:
-                os.makedirs(globaldir)
-            except:
-                pass
-            try:
-                os.makedirs(rmf_dir)
-            except:
+        if not self.test_mode:
+            if self.vars["do_clean_first"]:
                 pass
 
-            if not self.is_multi_state:
+            if self.vars["do_create_directories"]:
+
                 try:
-                    os.makedirs(pdb_dir)
+                    os.makedirs(globaldir)
                 except:
                     pass
-            else:
-                for n in range(self.vars["number_of_states"]):
+                try:
+                    os.makedirs(rmf_dir)
+                except:
+                    pass
+
+                if not self.is_multi_state:
                     try:
-                        os.makedirs(pdb_dir + "/" + str(n))
+                        os.makedirs(pdb_dir)
                     except:
                         pass
+                else:
+                    for n in range(self.vars["number_of_states"]):
+                        try:
+                            os.makedirs(pdb_dir + "/" + str(n))
+                        except:
+                            pass
 
 # -------------------------------------------------------------------------
 
@@ -291,37 +289,40 @@ class ReplicaExchange0(object):
         output = IMP.pmi.output.Output(atomistic=self.vars["atomistic"])
         low_temp_stat_file = globaldir + \
             self.vars["stat_file_name_suffix"] + "." + str(myindex) + ".out"
-        output.init_stat2(low_temp_stat_file,
-                          self.output_objects,
-                          extralabels=["rmf_file", "rmf_frame_index"])
+        if not self.test_mode:
+            output.init_stat2(low_temp_stat_file,
+                              self.output_objects,
+                              extralabels=["rmf_file", "rmf_frame_index"])
 
         print("Setting up replica stat file")
         replica_stat_file = globaldir + \
             self.vars["replica_stat_file_suffix"] + "." + str(myindex) + ".out"
-        output.init_stat2(replica_stat_file, [rex], extralabels=["score"])
+        if not self.test_mode:
+            output.init_stat2(replica_stat_file, [rex], extralabels=["score"])
 
-        print("Setting up best pdb files")
-        if not self.is_multi_state:
-            if self.vars["number_of_best_scoring_models"] > 0:
-                output.init_pdb_best_scoring(pdb_dir + "/" +
-                                             self.vars["best_pdb_name_suffix"],
-                                             self.root_hier,
-                                             self.vars[
-                                                 "number_of_best_scoring_models"],
-                                             replica_exchange=True)
-                output.write_psf(pdb_dir + "/" +"model.psf",pdb_dir + "/" +
-                                             self.vars["best_pdb_name_suffix"]+".0.pdb")
-        else:
-            if self.vars["number_of_best_scoring_models"] > 0:
-                for n in range(self.vars["number_of_states"]):
-                    output.init_pdb_best_scoring(pdb_dir + "/" + str(n) + "/" +
-                                               self.vars["best_pdb_name_suffix"],
-                                               self.root_hiers[n],
-                                               self.vars[
-                                                   "number_of_best_scoring_models"],
-                                               replica_exchange=True)
-                    output.write_psf(pdb_dir + "/" + str(n) + "/" +"model.psf",pdb_dir + "/" + str(n) + "/" +
-                                             self.vars["best_pdb_name_suffix"]+".0.pdb")
+        if not self.test_mode:
+            print("Setting up best pdb files")
+            if not self.is_multi_state:
+                if self.vars["number_of_best_scoring_models"] > 0:
+                    output.init_pdb_best_scoring(pdb_dir + "/" +
+                                                 self.vars["best_pdb_name_suffix"],
+                                                 self.root_hier,
+                                                 self.vars[
+                                                     "number_of_best_scoring_models"],
+                                                 replica_exchange=True)
+                    output.write_psf(pdb_dir + "/" +"model.psf",pdb_dir + "/" +
+                                                 self.vars["best_pdb_name_suffix"]+".0.pdb")
+            else:
+                if self.vars["number_of_best_scoring_models"] > 0:
+                    for n in range(self.vars["number_of_states"]):
+                        output.init_pdb_best_scoring(pdb_dir + "/" + str(n) + "/" +
+                                                   self.vars["best_pdb_name_suffix"],
+                                                   self.root_hiers[n],
+                                                   self.vars[
+                                                       "number_of_best_scoring_models"],
+                                                   replica_exchange=True)
+                        output.write_psf(pdb_dir + "/" + str(n) + "/" +"model.psf",pdb_dir + "/" + str(n) + "/" +
+                                                 self.vars["best_pdb_name_suffix"]+".0.pdb")
 # ---------------------------------------------
 
         if not self.em_object_for_rmf is None:
@@ -341,26 +342,27 @@ class ReplicaExchange0(object):
                 output_hierarchies = self.root_hiers
 
 #----------------------------------------------
-        print("Setting up and writing initial rmf coordinate file")
-        init_suffix = globaldir + self.vars["initial_rmf_name_suffix"]
-        output.init_rmf(init_suffix + "." + str(myindex) + ".rmf3",
-                        output_hierarchies)
-        if self.crosslink_restraints:
-            output.add_restraints_to_rmf(
-                init_suffix + "." + str(myindex) + ".rmf3",
-                self.crosslink_restraints)
-        output.write_rmf(init_suffix + "." + str(myindex) + ".rmf3")
-        output.close_rmf(init_suffix + "." + str(myindex) + ".rmf3")
+        if not self.test_mode:
+            print("Setting up and writing initial rmf coordinate file")
+            init_suffix = globaldir + self.vars["initial_rmf_name_suffix"]
+            output.init_rmf(init_suffix + "." + str(myindex) + ".rmf3",
+                            output_hierarchies)
+            if self.crosslink_restraints:
+                output.add_restraints_to_rmf(
+                    init_suffix + "." + str(myindex) + ".rmf3",
+                    self.crosslink_restraints)
+            output.write_rmf(init_suffix + "." + str(myindex) + ".rmf3")
+            output.close_rmf(init_suffix + "." + str(myindex) + ".rmf3")
 
 #----------------------------------------------
 
-        print("Setting up production rmf files")
+        if not self.test_mode:
+            print("Setting up production rmf files")
+            rmfname = rmf_dir + "/" + str(myindex) + ".rmf3"
+            output.init_rmf(rmfname, output_hierarchies)
 
-        rmfname = rmf_dir + "/" + str(myindex) + ".rmf3"
-        output.init_rmf(rmfname, output_hierarchies)
-
-        if self.crosslink_restraints:
-            output.add_restraints_to_rmf(rmfname, self.crosslink_restraints)
+            if self.crosslink_restraints:
+                output.add_restraints_to_rmf(rmfname, self.crosslink_restraints)
 
         ntimes_at_low_temp = 0
 
@@ -381,20 +383,22 @@ class ReplicaExchange0(object):
             if min_temp_index == my_temp_index:
                 print("--- frame %s score %s " % (str(i), str(score)))
 
-                if i % self.vars["nframes_write_coordinates"]==0:
-                    print('--- writing coordinates')
-                    if self.vars["number_of_best_scoring_models"] > 0:
-                        output.write_pdb_best_scoring(score)
-                    output.write_rmf(rmfname)
-                    output.set_output_entry("rmf_file", rmfname)
-                    output.set_output_entry("rmf_frame_index", ntimes_at_low_temp)
-                else:
-                    output.set_output_entry("rmf_file", rmfname)
-                    output.set_output_entry("rmf_frame_index", '-1')
-                output.write_stat2(low_temp_stat_file)
+                if not self.test_mode:
+                    if i % self.vars["nframes_write_coordinates"]==0:
+                        print('--- writing coordinates')
+                        if self.vars["number_of_best_scoring_models"] > 0:
+                            output.write_pdb_best_scoring(score)
+                        output.write_rmf(rmfname)
+                        output.set_output_entry("rmf_file", rmfname)
+                        output.set_output_entry("rmf_frame_index", ntimes_at_low_temp)
+                    else:
+                        output.set_output_entry("rmf_file", rmfname)
+                        output.set_output_entry("rmf_frame_index", '-1')
+                    output.write_stat2(low_temp_stat_file)
                 ntimes_at_low_temp += 1
 
-            output.write_stat2(replica_stat_file)
+            if not self.test_mode:
+                output.write_stat2(replica_stat_file)
             rex.swap_temp(i, score)
 
 
@@ -858,7 +862,7 @@ class BuildModel1(object):
                     else:
                         super_rigid_bodies[k]+=[h for h in self.domain_dict[hier_name]]
 
-            if  chain_of_super_rb is not None:
+            if chain_of_super_rb is not None:
                 for k in chain_of_super_rb:
                     if k not in chain_super_rigid_bodies:
                         chain_super_rigid_bodies[k]=[h for h in self.domain_dict[hier_name]]
@@ -1609,48 +1613,3 @@ class AnalysisReplicaExchange0(object):
         objects = pickle.load(inputf)
         inputf.close()
         return objects
-
-class DensitySetup(object):
-    """A macro to make it easy to setup electron density representation
-    Primary use case: As part of the GaussianEMRestraint"""
-    def __init__(self,
-                 density_dir=''):
-        """Initialize DensitySetup.
-        @param density_dir Optionally provide a root directory for the densities
-        """
-        self.density_dir = density_dir
-    def create_density(self,
-                       hspec,
-                       num_components=10,
-                       fname=None,
-                       force_recreate=False,
-                       write_map=False):
-        """Create one or more Gaussians to represent the electron density.
-        Important: if num_components is not 0, will sample gaussians and write to file.
-        Or if the file is already created, will just read and decorate.
-        @param hspec            Can be one of the following inputs:
-                                IMP Selection, Hierarchy,
-                                PMI Molecule, Residue, or a list/set of these
-        @param num_components   If positive, will create this number PER RESIDUE
-                                If negative, will create this exact number
-                                If 0, will setup each leaf as a Gaussian w/same size
-        @param name             Output file name. Defaults to density_dir/hier_name
-        @param force_recreate   Even if Gaussians file exists, will recreate
-        @param write_map        If sampling, optionally write an .mrc file
-        """
-    def create_all_densities_from_dof(self,
-                                      dof,
-                                      num_components=10,
-                                      force_recreate=False,
-                                      write_maps=False):
-        """Automatically create all densities based on the DegreesOfFreedom.
-        Rigid Bodies will each have a set of Gaussians sampled to represent them.
-        Flexible components (including non rigid members) will be set up as individual gaussians
-        File names will be density_dir/rigid_body_name
-        @param dof            The DegreesOfFreedom object
-        @param num_components If positive, will create this number PER RESIDUE (for each rigid body)
-                              If negative, will create this exact number (for each rigid body)
-                              If 0, will setup each leaf as a Gaussian w/same size
-        @param force_recreate Even if Gaussians file exists, will recreate
-        @param write_map      If sampling, optionally write a .mrc files
-        """

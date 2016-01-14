@@ -1,8 +1,10 @@
 import IMP
+import IMP.test
 import IMP.pmi
 import IMP.pmi.dof
 import IMP.pmi.topology
-import IMP.test
+import IMP.pmi.macros
+
 
 
 class TestDOF(IMP.test.TestCase):
@@ -14,8 +16,8 @@ class TestDOF(IMP.test.TestCase):
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
                                       chain_id='A',res_range=(1,10),offset=-54)
-        m1.add_representation(atomic_res,resolutions=[0,10])
-        m1.add_representation(resolutions=[1])
+        m1.add_representation(atomic_res,resolutions=[0,1,10])
+        m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
         hier = m1.build()
         return m1
     def init_topology3(self,mdl):
@@ -32,12 +34,12 @@ class TestDOF(IMP.test.TestCase):
                               chain_id='B',res_range=(1,13),offset=-179)
         a3 = m3.add_structure(self.get_input_file_name('prot.pdb'),
                               chain_id='G',res_range=(1,10),offset=-54)
-        m1.add_representation(a1,resolutions=[0])
-        m1.add_representation(resolutions=[1])
-        m2.add_representation(a2,resolutions=[0])
-        m2.add_representation(resolutions=[1])
-        m3.add_representation(a3,resolutions=[0])
-        m3.add_representation(resolutions=[1])
+        m1.add_representation(a1,resolutions=[0,1])
+        m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
+        m2.add_representation(a2,resolutions=[0,1])
+        m2.add_representation(m2.get_non_atomic_residues(),resolutions=[1])
+        m3.add_representation(a3,resolutions=[0,1])
+        m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1])
         hier = s.build()
         return m1,m2,m3
 
@@ -51,6 +53,12 @@ class TestDOF(IMP.test.TestCase):
                                           name="test RB")
         mvs = dof.get_movers()
         self.assertEqual(len(rb_movers),4)
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=molecule.hier,
+                                              monte_carlo_sample_objects=mvs,
+                                              number_of_frames=2,
+                                              test_mode=True)
+        rex.execute_macro()
 
 
     def test_mc_super_rigid_body(self):
@@ -97,15 +105,15 @@ class TestDOF(IMP.test.TestCase):
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
                               chain_id='A',res_range=(1,10),offset=-54)
-        m1.add_representation(a1,resolutions=[0])
-        m1.add_representation(resolutions=[1])
+        m1.add_representation(a1,resolutions=[0,1])
+        m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
         m3 = m1.create_clone(chain_id='C')
 
         m2 = st1.create_molecule("Prot2",sequence=seqs["Protein_2"])
         a2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
                               chain_id='B',res_range=(1,13),offset=-179)
-        m2.add_representation(a2,resolutions=[0])
-        m2.add_representation(resolutions=[1])
+        m2.add_representation(a2,resolutions=[0,1])
+        m2.add_representation(m2.get_non_atomic_residues(),resolutions=[1])
         m4 = m2.create_clone(chain_id='D')
         root = s.build()
 
@@ -149,7 +157,26 @@ class TestDOF(IMP.test.TestCase):
         pass
 
     def test_md(self):
-        pass
+        """Test you can setup MD"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A',res_range=(1,10),offset=-54)
+        m1.add_representation(atomic_res,resolutions=[0])
+        hier = m1.build()
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        md_ps = dof.setup_md(m1)
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=hier,
+                                              molecular_dynamics_sample_objects=md_ps,
+                                              number_of_frames=2,
+                                              test_mode=True)
+        rex.execute_macro()
+
+
 
 if __name__ == '__main__':
     IMP.test.main()

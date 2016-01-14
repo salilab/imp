@@ -17,16 +17,20 @@ import numpy as np
 import re
 from collections import defaultdict
 import itertools
+
 def parse_dssp(dssp_fn, limit_to_chains=''):
     """read dssp file, get SSEs. values are all PDB residue numbering.
-    Returns a SubsequenceData object containing labels helix, beta, loop.
-    Each one is a list of SelectionDictionaries
+    Returns a dictionary with keys helix, beta, loop
+    Each contains a list of SSEs.
+    Each SSE is a list of elements (e.g. strands in a sheet)
+    Each element is a pair (chain,(residue_indexes))
 
     Example for a structure with helix A:5-7 and Beta strands A:1-3,A:9-11:
-    helix : [ [ {'chain':'A','residue_indexes': [5,6,7]} ] ]
-    beta  : [ [ {'chain':'A','residue_indexes': [1,2,3]},
-                {'chain':'A','residue_indexes': [9,10,11]} ] ]
-    loop  : same format as helix
+    ret = { 'helix' : [ [ ('A',5,7 ) ],... ]
+            'beta'  : [ [ ('A',1,3),
+                          ('A',9,11),...],...]
+            'loop'  : same format as helix
+          }
     """
     # setup
     helix_classes = 'GHI'
@@ -39,14 +43,17 @@ def parse_dssp(dssp_fn, limit_to_chains=''):
         sse_dict[s] = 'beta'
     for l in loop_classes:
         sse_dict[l] = 'loop'
-    sses = SubsequenceData()
+    sses = {'helix':[],
+            'beta':[],
+            'loop':[]}
 
     # read file and parse
     start = False
+
     # temporary beta dictionary indexed by DSSP's ID
     beta_dict = defaultdict(list)
     prev_sstype = None
-    cur_sse = {'chain':'','residue_tuple':[-1,-1]}
+    cur_sse = ['',[]]
     prev_beta_id = None
     for line in open(dssp_fn, 'r'):
         fields = line.split()
@@ -73,16 +80,16 @@ def parse_dssp(dssp_fn, limit_to_chains=''):
 
         # decide whether to extend or store the SSE
         if prev_sstype is None:
-            cur_sse = {'chain':chain,'residue_tuple':[pdb_res_num,pdb_res_num]}
+            cur_sse = [chain,pdb_res_num,pdb_res_num]
         elif sstype != prev_sstype or chain_break:
             # add cur_sse to the right place
             if prev_sstype in ['helix', 'loop']:
-                sses.add_subsequence(prev_sstype,Subsequence(**cur_sse))
+                sses[prev_sstype].append([cur_sse])
             elif prev_sstype == 'beta':
                 beta_dict[prev_beta_id].append(cur_sse)
-            cur_sse = {'chain':chain,'residue_tuple':[pdb_res_num,pdb_res_num]}
+            cur_sse = [chain,pdb_res_num,pdb_res_num]
         else:
-            cur_sse['residue_tuple'][1]=pdb_res_num
+            cur_sse[2] = pdb_res_num
         if chain_break:
             prev_sstype = None
             prev_beta_id = None
@@ -93,15 +100,12 @@ def parse_dssp(dssp_fn, limit_to_chains=''):
     # final SSE processing
     if not prev_sstype is None:
         if prev_sstype in ['helix', 'loop']:
-            sses.add_subsequence(prev_sstype,Subsequence(**cur_sse))
+            sses[prev_sstype].append([cur_sse])
         elif prev_sstype == 'beta':
             beta_dict[prev_beta_id].append(cur_sse)
     # gather betas
     for beta_sheet in beta_dict:
-        seq = Subsequence()
-        for strand in beta_dict[beta_sheet]:
-            seq.add_range(**strand)
-        sses.add_subsequence('beta',seq)
+        sses['beta'].append(beta_sheet)
     return sses
 
 def parse_xlinks_davis(data_fn,
@@ -363,10 +367,10 @@ class CrossLink(object):
         rsel2.update(kwargs)
         sel1 = IMP.atom.Selection(mh,**rsel1).get_selected_particles()
         sel2 = IMP.atom.Selection(mh,**rsel2).get_selected_particles()
-        if len(sel1)==0:
-            raise Exception("this selection is empty",rsel1)
-        if len(sel2)==0:
-            raise Exception("this selection is empty",rsel2)
+        #if len(sel1)==0:
+        #    raise Warning("this selection is empty",rsel1)
+        #if len(sel2)==0:
+        #    raise Warning("this selection is empty",rsel2)
 
         '''
         # Check no repeating copy numbers....not sure if this is general
