@@ -1197,10 +1197,7 @@ DensityMap *binarize(DensityMap *orig_map, float threshold, bool reverse) {
 DensityMap *get_threshold_map(const DensityMap *orig_map, float threshold) {
   const DensityHeader *header = orig_map->get_header();
   // create a new map
-  Pointer<DensityMap> ret(
-      create_density_map(header->get_nx(), header->get_ny(), header->get_nz(),
-                         header->get_spacing()));
-  ret->set_origin(orig_map->get_origin());
+  Pointer<DensityMap> ret(create_density_map(orig_map));
   emreal *orig_data = orig_map->get_data();
   emreal *ret_data = ret->get_data();
   for (long i = 0; i < header->get_number_of_voxels(); i++) {
