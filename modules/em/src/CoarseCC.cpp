@@ -111,8 +111,11 @@ double cross_correlation_coefficient_internal(const DensityMap *grid1,
     IMP_LOG_VERBOSE(" without norm factors: start ccc : "
                     << ccc << " grid1 rms: " << grid1_header->rms
                     << " grid2 rms: " << grid2_header->rms << std::endl);
-    ccc = (ccc - nvox * grid1_header->dmean * grid2_header->dmean) /
-          (nvox * grid1_header->rms * grid2_header->rms);
+    // Skip normalization if either RMS is zero (avoid divide by zero)
+    if (grid1_header->rms != 0. && grid2_header->rms != 0.) {
+      ccc = (ccc - nvox * grid1_header->dmean * grid2_header->dmean) /
+            (nvox * grid1_header->rms * grid2_header->rms);
+    }
   }
 
   IMP_LOG_VERBOSE(" ccc : " << ccc << " voxel# " << nvox
