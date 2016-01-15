@@ -79,6 +79,30 @@ class Tests(IMP.test.TestCase):
         for p in zip(resolutions, back_resolutions):
             self.assertAlmostEqual(p[0], p[1], delta=.1)
 
+    def test_multi_type(self):
+        """Test using same particle for two representations"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        center = IMP.algebra.Vector3D(0,0,0)
+        rad = 1.0
+        IMP.core.XYZR.setup_particle(p,IMP.algebra.Sphere3D(center,rad))
+        IMP.atom.Mass.setup_particle(p,1.0)
+        trans = IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),center)
+        shape = IMP.algebra.Gaussian3D(IMP.algebra.ReferenceFrame3D(trans),[rad]*3)
+        g = IMP.core.Gaussian.setup_particle(p,shape)
+
+        root = IMP.atom.Hierarchy(IMP.Particle(m))
+        rep = IMP.atom.Representation.setup_particle(root, 0)
+
+        # particle is BALLS resolution 0 and DENSITIES resolution 0
+        root.add_child(IMP.atom.Hierarchy(p))
+        rep.add_representation(g,IMP.atom.DENSITIES,0)
+
+        rmfname = self.get_tmp_file_name("multitype.rmfz")
+        fh = RMF.create_rmf_file(rmfname)
+        IMP.rmf.add_hierarchy(fh, root)
+        IMP.rmf.save_frame(fh, "frame")
+        del fh
 
 if __name__ == '__main__':
     IMP.test.main()
