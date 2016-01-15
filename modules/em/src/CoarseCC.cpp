@@ -331,17 +331,15 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(const DensityMap *em_map,
   // validate that the model and em maps are not empty
   IMP_USAGE_CHECK(em_header->rms >= EPS,
                   "EM map is empty ! em_header->rms = " << em_header->rms);
-  // it may be that CG takes a too large step, which causes the particles
-  // to go outside of the density
-  // if (model_header->rms <= EPS){
-  // IMP_WARN("Model map is empty ! model_header->rms = " << model_header->rms
-  //           <<" derivatives are not calculated. the model centroid is : " <<
-  //           core::get_centroid(core::XYZs(model_ps))<<
-  //           " the map centroid is " << em_map->get_centroid()<<
-  //                 "number of particles in model:"<<model_ps.size()
-  //<<std::endl);
-  // return;
-  // }
+  if (model_header->rms <= EPS) {
+    IMP_WARN("Model map is empty ! model_header->rms = " << model_header->rms
+             << " derivatives are not calculated. the model centroid is : " <<
+             core::get_centroid(core::XYZs(model_ps)) <<
+             " the map centroid is " << em_map->get_centroid() <<
+             "number of particles in model:"<<model_ps.size()
+             << std::endl);
+    return dv_out;
+  }
   // Compute the derivatives
   int nx = em_header->get_nx();
   int ny = em_header->get_ny();
