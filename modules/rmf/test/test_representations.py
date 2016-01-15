@@ -104,5 +104,14 @@ class Tests(IMP.test.TestCase):
         IMP.rmf.save_frame(fh, "frame")
         del fh
 
+        # check upon reading you get the same particle as both BALLS and DENSITIES
+        fh = RMF.open_rmf_file_read_only(rmfname)
+        h2 = IMP.rmf.create_hierarchies(fh, m)
+        selA = IMP.atom.Selection(h2)
+        selD = IMP.atom.Selection(h2,representation_type=IMP.atom.DENSITIES)
+        self.assertEqual(selA.get_selected_particles()[0],
+                         selD.get_selected_particles()[0])
+
+
 if __name__ == '__main__':
     IMP.test.main()
