@@ -114,23 +114,28 @@ class RepresentationTest(IMP.test.TestCase):
 
 
     def test_self_density(self):
-        """Test representing a particle with itself as the Gaussian"""
-        # create single bead
+        """Test representing particles with themselves the Gaussians"""
+        # read in system, store at atomic resolution
         mdl = IMP.Model()
-        center = IMP.algebra.Vector3D(1,1,1)
-        rad = 1
-        p1 = IMP.Particle(mdl)
-        xyz1 = IMP.core.XYZ.setup_particle(p1, center)
+        mh = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'),mdl)
+        ch = mh.get_children()[0]
+        rep = IMP.atom.Representation.setup_particle(ch,0)
+        idxs = [IMP.atom.Residue(h).get_index() \
+                for h in IMP.atom.get_by_type(ch,IMP.atom.RESIDUE_TYPE)]
 
-        # create Gaussian representation
-        g1 = bead2gaussian(center,rad,mdl,p1)
-        rep = IMP.atom.Representation.setup_particle(p1,0)
-        rep.add_representation(p1,IMP.atom.DENSITIES,1)
+        # also create densities
+        for p in IMP.core.get_leaves(mh):
+            center = IMP.core.XYZ(p).get_coordinates()
+            rad = 1
+            g1 = bead2gaussian(center,rad,mdl,p)
+        rep.add_representation(ch,IMP.atom.DENSITIES,0)
 
-        # check get_representation
-        self.assertEqual(rep.get_representation(1,IMP.atom.DENSITIES),
-                         g1.get_particle())
-
+        # check selection
+        selA = IMP.atom.Selection(mh,residue_index=idxs[0],resolution=0)
+        selD = IMP.atom.Selection(mh,residue_index=idxs[0],
+                                  representation_type=IMP.atom.DENSITIES)
+        self.assertEqual(selA.get_selected_particles()[0],
+                         selD.get_selected_particles()[0])
 
     def test_multi_density(self):
         """Test representing a group of residues with group of Densities"""
@@ -176,7 +181,6 @@ class RepresentationTest(IMP.test.TestCase):
         sel20 = IMP.atom.Selection(mh,residue_index=idxs[0],resolution=20)
         self.assertEqual(sel20.get_selected_particles()[0],
                          res20.get_children()[0])
-
 
 
 if __name__ == '__main__':
