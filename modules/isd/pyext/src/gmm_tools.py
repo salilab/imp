@@ -224,11 +224,15 @@ def fit_gmm_to_points(points,
                       ps=[],
                       num_iter=100,
                       covariance_type='full',
+                      min_covar=0.001,
                       init_centers=[],
                       force_radii=-1.0,
                       force_weight=-1.0,
                       mass_multiplier=1.0):
-    '''fit a GMM to some points. Will return core::Gaussians.
+    '''fit a GMM to some points. Will return the score and the Akaike score.
+    Akaike information criterion for the current model fit. It is a measure
+    of the relative quality of the GMM that takes into account the
+    parsimony and the goodness of the fit.
     if no particles are provided, they will be created
 
     points:            list of coordinates (python)
@@ -236,7 +240,9 @@ def fit_gmm_to_points(points,
     mdl:               IMP Model
     ps:                list of particles to be decorated. if empty, will add
     num_iter:          number of EM iterations
-    covariance_type:   covar type for the gaussians. options: 'full', 'diagonal', 'sphereical'
+    covariance_type:   covar type for the gaussians. options: 'full', 'diagonal', 'spherical'
+    min_covar:         assign a minimum value to covariance term. That is used to have more spherical
+                       shaped gaussians
     init_centers:      initial coordinates of the GMM
     force_radii:       fix the radii (spheres only)
     force_weight:      fix the weights
@@ -266,6 +272,7 @@ def fit_gmm_to_points(points,
     gmm=sklearn.mixture.GMM(n_components=n_components,
                           n_iter=num_iter,
                           covariance_type=covariance_type,
+                          min_covar=min_covar,
                           params=params,
                           init_params=init_params)
 
@@ -276,8 +283,9 @@ def fit_gmm_to_points(points,
     if init_centers!=[]:
         gmm.means_=init_centers
     print('fitting')
-    gmm.fit(points)
-
+    model=gmm.fit(points)
+    score=gmm.score(points)
+    akaikescore=model.aic(points)
     print('>>> GMM score',gmm.score(points))
 
     ### convert format to core::Gaussian
@@ -295,6 +303,8 @@ def fit_gmm_to_points(points,
         g=IMP.core.Gaussian.setup_particle(ps[ng],shape)
         IMP.atom.Mass.setup_particle(ps[ng],weight)
         IMP.core.XYZR.setup_particle(ps[ng],sqrt(max(g.get_variances())))
+
+    return (score,akaikescore)
 
 def fit_dirichlet_gmm_to_points(points,
                       n_components,
