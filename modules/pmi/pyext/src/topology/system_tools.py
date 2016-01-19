@@ -81,11 +81,10 @@ def build_bead(model,residues,input_coord=None):
 
     IMP.atom.Mass.setup_particle(prt, mass)
     try:
-        if not tuple(input_coord) is None:
+        if tuple(input_coord) is not None:
             ptem.set_coordinates(input_coord)
     except TypeError:
         pass
-
     return h
 
 def build_necklace(model,residues, resolution, input_coord=None):
@@ -251,7 +250,9 @@ def build_representation(mdl,rep):
                     del beads
             else:
                 # if unstructured, create necklace
-                beads = build_necklace(mdl,frag_res,resolution)
+                beads = build_necklace(mdl,
+                                       frag_res,
+                                       resolution)
                 for bead in beads:
                     this_resolution.add_child(bead)
 

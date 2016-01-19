@@ -1,8 +1,8 @@
 import IMP
 import IMP.atom
 import IMP.pmi
-import IMP.pmi.topology as topology
-import IMP.pmi.tools as tools
+import IMP.pmi.topology
+import IMP.pmi.tools
 import IMP.test
 import RMF
 import IMP.rmf
@@ -20,16 +20,16 @@ def get_atomic_residue_list(residues):
 class TopologyTest(IMP.test.TestCase):
 
     def test_read_sequences(self):
-        '''Test if the sequence reader returns correct strings'''
+        """Test if the sequence reader returns correct strings"""
         # test without name map
-        seqs0=topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        seqs0=IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
         self.assertEqual(len(seqs0),3)
         self.assertEqual(seqs0['Protein_1'],'QEALVVKDLL')
         self.assertEqual(seqs0['Protein_2'],'PEEDILKYVSYTL')
         self.assertEqual(seqs0['Protein_3'],'QEALVVKDLL')
 
         # test with name map
-        seqs=topology.Sequences(self.get_input_file_name('seqs.fasta'),
+        seqs=IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
                          name_map={'Protein_1':'Prot1',
                                    'Protein_2':'Prot2',
                                    'Protein_3':'Prot3'})
@@ -39,15 +39,15 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEqual(seqs['Prot3'],'QEALVVKDLL')
 
     def test_system_base(self):
-        '''Test systembase functions like create hierarchy and create child'''
-        sb = topology.SystemBase()
+        """Test systembase functions like create hierarchy and create child"""
+        sb = IMP.pmi.topology.SystemBase()
         root = sb._create_hierarchy()
         child = sb._create_child(root)
         self.assertEqual(child.get_parent(),root)
 
     def test_create_states(self):
-        '''Test State-creation from System'''
-        s=topology.System()
+        """Test State-creation from System"""
+        s=IMP.pmi.topology.System()
         for i in range(10):
             self.assertEqual(s.get_number_of_states(),i)
             st = s.create_state()
@@ -57,9 +57,9 @@ class TopologyTest(IMP.test.TestCase):
 
 
     def test_create_molecules(self):
-        '''Test Molecule creation from State'''
-        s = topology.System()
-        seqs = topology.Sequences(self.get_input_file_name('seqs.fasta'),
+        """Test Molecule creation from State"""
+        s = IMP.pmi.topology.System()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
                          name_map={'Protein_1':'Prot1',
                                    'Protein_2':'Prot2',
                                    'Protein_3':'Prot3'})
@@ -90,11 +90,11 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEqual(''.join(r.get_code() for r in m3.residues),seqs["Prot3"])
 
     def test_add_structure(self):
-        '''Test adding partial structure data to a molecule'''
+        """Test adding partial structure data to a molecule"""
 
-        s = topology.System()
+        s = IMP.pmi.topology.System()
         st1 = s.create_state()
-        seqs = topology.Sequences(self.get_input_file_name('seqs.fasta'),
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
                          name_map={'Protein_1':'Prot1',
                                    'Protein_2':'Prot2',
                                    'Protein_3':'Prot3'})
@@ -117,11 +117,11 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEqual(res2,set([m2.residues[i] for i in range(0,13)]))
 
     def test_get_atomic_non_atomic_residues(self):
-        '''test if, adding a structure, you get the atomic and non atomic residues sets
-        correctly'''
-        s = topology.System()
+        """test if, adding a structure, you get the atomic and non atomic residues sets
+        correctly"""
+        s = IMP.pmi.topology.System()
         st1 = s.create_state()
-        seqs = topology.Sequences(self.get_input_file_name('seqs.fasta'),
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
                          name_map={'Protein_1':'Prot1',
                                    'Protein_2':'Prot2'})
 
@@ -141,10 +141,10 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEqual(m2_atomic_residues,m2_all_residues-m2_non_atomic_residues)
 
     def test_residue_access(self):
-        '''test functions to retrieve residues'''
-        s = topology.System()
+        """test functions to retrieve residues"""
+        s = IMP.pmi.topology.System()
         st1 = s.create_state()
-        seqs = topology.Sequences(self.get_input_file_name('seqs.fasta'),
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
                          name_map={'Protein_1':'Prot1',
                                    'Protein_2':'Prot2',
                                    'Protein_3':'Prot3'})
@@ -160,9 +160,9 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEqual(inv,set([m1.residues[0]]+m1.residues[5:10]))
 
     def test_build_system(self):
-        s = topology.System()
+        s = IMP.pmi.topology.System()
         st1 = s.create_state()
-        seqs = topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),chain_id='A',
                                     res_range=(1,10),offset=-54)
@@ -184,12 +184,12 @@ class TopologyTest(IMP.test.TestCase):
 
             self.assertEquals(len(res),anums)
             self.assertEquals(IMP.atom.Residue(IMP.atom.Atom(res[0]).get_parent()).get_residue_type(),
-                              tools.get_residue_type_from_one_letter_code(rname))
+                              IMP.pmi.tools.get_residue_type_from_one_letter_code(rname))
             res1 = IMP.atom.Selection(hier,residue_index=rnum,
                                       resolution=1).get_selected_particles()
             self.assertEquals(len(res1),1)
             self.assertEquals(IMP.atom.Residue(res1[0]).get_residue_type(),
-                              tools.get_residue_type_from_one_letter_code(rname))
+                              IMP.pmi.tools.get_residue_type_from_one_letter_code(rname))
 
         # check if res10 created correctly
         sel = IMP.atom.Selection(hier,residue_indexes=[1,2],resolution=10)
@@ -213,10 +213,10 @@ class TopologyTest(IMP.test.TestCase):
         self.assertNotEquals(sel1.get_selected_particles(),sel2.get_selected_particles())
 
     def test_build_no0(self):
-        '''test building without resolution 0'''
-        s = topology.System()
+        """test building without resolution 0"""
+        s = IMP.pmi.topology.System()
         st1 = s.create_state()
-        seqs = topology.Sequences(self.get_input_file_name('seqs.fasta'),
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
                          name_map={'Protein_1':'Prot1',
                                    'Protein_2':'Prot2',
                                    'Protein_3':'Prot3'})
@@ -236,10 +236,10 @@ class TopologyTest(IMP.test.TestCase):
 
 
     def test_build_nobeads(self):
-        '''test if add_representations populates the correct Residues'''
-        s = topology.System()
+        """test if add_representations populates the correct Residues"""
+        s = IMP.pmi.topology.System()
         st1 = s.create_state()
-        seqs = topology.Sequences(self.get_input_file_name('seqs.fasta'),
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
                          name_map={'Protein_1':'Prot1',
                                    'Protein_2':'Prot2',
                                    'Protein_3':'Prot3'})
@@ -254,9 +254,9 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEquals(len(sel10.get_selected_particles()),2)
 
     def test_create_copy(self):
-        '''Test creation of Copies'''
-        s = topology.System()
-        seqs = topology.Sequences(self.get_input_file_name('seqs.fasta'),
+        """Test creation of Copies"""
+        s = IMP.pmi.topology.System()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
                          name_map={'Protein_1':'Prot1',
                                    'Protein_2':'Prot2',
                                    'Protein_3':'Prot3'})
@@ -271,9 +271,9 @@ class TopologyTest(IMP.test.TestCase):
                           [r.get_code() for r in m2.residues])
 
     def test_create_clone(self):
-        '''Test creation and building of alone'''
-        s = topology.System()
-        seqs = topology.Sequences(self.get_input_file_name('seqs.fasta'),
+        """Test creation and building of alone"""
+        s = IMP.pmi.topology.System()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
                          name_map={'Protein_1':'Prot1',
                                    'Protein_2':'Prot2',
                                    'Protein_3':'Prot3'})
@@ -305,6 +305,7 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEquals(set(sel11+sel21),set(sel31))
 
     def test_round_trip(self):
+        """Test RMF write/read representations"""
         base_res = 0
         bead_res = 1
         mdl = IMP.Model()
@@ -352,6 +353,7 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEqual(coordsA1,coordsB1)
 
     def test_setup_densities(self):
+        """Test creating collective densities"""
         mdl = IMP.Model()
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
@@ -370,9 +372,12 @@ class TopologyTest(IMP.test.TestCase):
         hier = s.build()
 
         selD = IMP.atom.Selection(hier,representation_type=IMP.atom.DENSITIES)
-        self.assertEqual(len(selD.get_selected_particles()),len(atomic_res)/dres)
+        self.assertEqual(len(selD.get_selected_particles()),len(atomic_res)/dres+1)
 
     def test_setup_beads_as_densities(self):
+        """Test setup of individual density particles.
+        This is mainly for flexible beads or all-atom simulations
+        """
         mdl = IMP.Model()
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
@@ -394,6 +399,23 @@ class TopologyTest(IMP.test.TestCase):
         selD = IMP.atom.Selection(hier,representation_type=IMP.atom.DENSITIES)
         self.assertEqual(selD.get_selected_particles(),
                           IMP.core.get_leaves(hier))
+
+    def test_no_sequence(self):
+        """Test automatic poly-A sequence when you add structure"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1")
+        atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A',res_range=(1,10),offset=-54,
+                                      soft_check=True)
+        m1.add_representation(m1,
+                              resolutions=[1])
+        hier = s.build()
+        expect_sequence = [IMP.pmi.tools.get_residue_type_from_one_letter_code(rname) for rname in 'QEAAVVKDL']
+        ps = IMP.atom.Selection(hier).get_selected_particles()
+        built_sequence = [IMP.atom.Residue(p).get_residue_type() for p in ps]
+        self.assertEqual(expect_sequence,built_sequence)
 
 if __name__ == '__main__':
     IMP.test.main()

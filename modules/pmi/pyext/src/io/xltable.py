@@ -42,7 +42,7 @@ class XLTable():
         self.contact_threshold = contact_threshold
         # internal things
         self._first = True
-        self.index_dict=None
+        self.index_dict={}
         self.stored_dists={}
 
     def _colormap_distance(self, dist, threshold=35, tolerance=0):

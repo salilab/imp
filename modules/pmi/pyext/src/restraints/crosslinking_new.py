@@ -450,6 +450,8 @@ class CrossLinkingMassSpectrometryRestraint(object):
 
         return psi
 
+    def set_label(self, s):
+        self.label=s
 
     def get_output(self):
         self.m.update()

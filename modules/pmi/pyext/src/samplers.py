@@ -369,6 +369,7 @@ class MolecularDynamics(object):
                                                                gamma)
         self.md = IMP.atom.MolecularDynamics(self.m)
         self.md.set_maximum_time_step(maximum_time_step)
+        self.md.set_scoring_function(get_restraint_set(self.m))
         self.md.add_optimizer_state(self.ltstate)
         self.simulated_annealing = False
         self.nframe = -1

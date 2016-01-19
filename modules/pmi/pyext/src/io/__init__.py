@@ -105,7 +105,7 @@ def parse_dssp(dssp_fn, limit_to_chains=''):
             beta_dict[prev_beta_id].append(cur_sse)
     # gather betas
     for beta_sheet in beta_dict:
-        sses['beta'].append(beta_sheet)
+        sses['beta'].append(beta_dict[beta_sheet])
     return sses
 
 def parse_xlinks_davis(data_fn,

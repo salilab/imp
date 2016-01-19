@@ -1531,47 +1531,59 @@ def get_all_leaves(list_of_hs):
     return lvs
 
 
-def select_at_all_resolutions(hier,
+def select_at_all_resolutions(hier=None,
+                              hiers=None,
                               **kwargs):
     """Perform selection using the usual keywords but return ALL resolutions (BEADS and GAUSSIANS).
     Returns in flat list!
     """
 
-    if type(hier) is not IMP.atom.Hierarchy:
-        raise Exception('select_at_all_resolutions: you have to pass an IMP Hierarchy')
-    if 'resolution' in kwargs or 'representation_type' in kwargs:
-        raise Exception("don't pass resolution or representation_type to this function")
-
-    def get_resolutions(h):
-        while h:
-            if IMP.atom.Representation.get_is_setup(h):
-                ret = [IMP.atom.Representation(h).get_resolutions(IMP.atom.BALLS),
-                       IMP.atom.Representation(h).get_resolutions(IMP.atom.DENSITIES)]
-                return ret
-            h = h.get_parent()
-        return [[],[]]
-
-    # gather resolutions
-    init_sel = IMP.atom.Selection(hier,**kwargs)
-    init_ps = init_sel.get_selected_particles()
-    all_bead_res = OrderedSet()
-    all_density_res = OrderedSet()
-
-    for p in init_ps:
-        b,d = get_resolutions(IMP.atom.Hierarchy(p))
-        all_bead_res |= OrderedSet(b)
-        all_density_res |= OrderedSet(d)
-
-    # final selection
+    if hiers is None:
+        hiers = []
+    if hier is not None:
+        hiers.append(hier)
+    if len(hiers)==0:
+        raise Exception("Must pass hier or hiers")
     ret = OrderedSet()
-    for res in all_bead_res:
-        sel = IMP.atom.Selection(hier,resolution=res,
-                                 representation_type=IMP.atom.BALLS,**kwargs)
-        ret|=OrderedSet(sel.get_selected_particles())
-    for res in all_density_res:
-        sel = IMP.atom.Selection(hier,resolution=res,
-                                 representation_type=IMP.atom.DENSITIES,**kwargs)
-        ret|=OrderedSet(sel.get_selected_particles())
+    for hsel in hiers:
+        try:
+            htest = IMP.atom.Hierarchy.get_is_setup(hsel)
+        except:
+            raise Exception('select_at_all_resolutions: you have to pass an IMP Hierarchy')
+        if not htest:
+            raise Exception('select_at_all_resolutions: you have to pass an IMP Hierarchy')
+        if 'resolution' in kwargs or 'representation_type' in kwargs:
+            raise Exception("don't pass resolution or representation_type to this function")
+
+        def get_resolutions(h):
+            while h:
+                if IMP.atom.Representation.get_is_setup(h):
+                    ret = [IMP.atom.Representation(h).get_resolutions(IMP.atom.BALLS),
+                           IMP.atom.Representation(h).get_resolutions(IMP.atom.DENSITIES)]
+                    return ret
+                h = h.get_parent()
+            return [[],[]]
+
+        # gather resolutions
+        init_sel = IMP.atom.Selection(hsel,**kwargs)
+        init_ps = init_sel.get_selected_particles()
+        all_bead_res = OrderedSet()
+        all_density_res = OrderedSet()
+
+        for p in init_ps:
+            b,d = get_resolutions(IMP.atom.Hierarchy(p))
+            all_bead_res |= OrderedSet(b)
+            all_density_res |= OrderedSet(d)
+
+        # final selection
+        for res in all_bead_res:
+            sel = IMP.atom.Selection(hsel,resolution=res,
+                                     representation_type=IMP.atom.BALLS,**kwargs)
+            ret|=OrderedSet(sel.get_selected_particles())
+        for res in all_density_res:
+            sel = IMP.atom.Selection(hsel,resolution=res,
+                                     representation_type=IMP.atom.DENSITIES,**kwargs)
+            ret|=OrderedSet(sel.get_selected_particles())
     return list(ret)
 
 

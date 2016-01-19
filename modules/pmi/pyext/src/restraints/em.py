@@ -30,7 +30,8 @@ class GaussianEMRestraint(object):
                  close_pair_container=None,
                  backbone_slope=False,
                  scale_target_to_mass=False,
-                 weight=1.0):
+                 weight=1.0,
+                 target_is_rigid_body=False):
         """Constructor.
         @param densities The Gaussian-decorated particles to be restrained
         @param target_fn GMM file of the target density map
@@ -63,6 +64,9 @@ class GaussianEMRestraint(object):
         @param scale_to_target_mass    Set True if you would need to scale
                target to EXACTLY the model mass
         @param weight                  The restraint weight
+        @param target_is_rigid_body Set True if you want to put the target density particles
+               into a rigid body that need to be sampled (e.g.,when you need to fit one density
+               against another one). Default is False.
         """
 
         # some parameters
@@ -110,6 +114,13 @@ class GaussianEMRestraint(object):
                     IMP.core.XYZR.setup_particle(p, rmax)
                 else:
                     IMP.core.XYZR(p).set_radius(rmax)
+        #wrap target particles in rigid body if requested
+        if target_is_rigid_body:
+            #p = IMP.Particle(self.m)
+            #self.rb=IMP.core.RigidBody.setup_particle(p,self.target_ps)
+            self.rb=IMP.atom.create_rigid_body(self.target_ps)
+        else:
+            self.rb=None
 
         # sigma particle
         self.sigmaglobal = IMP.pmi.tools.SetupNuisance(self.m, self.sigmainit,
@@ -244,6 +255,11 @@ class GaussianEMRestraint(object):
         if self.sigmaissampled:
             ps["Nuisances_GaussianEMRestraint_sigma_" +
                 self.label] = ([self.sigmaglobal], self.sigmamaxtrans)
+        if self.rb:
+            ps["Rigid_Bodies_GaussianEMRestraint"] = (
+                [self.rb],
+                4,
+                0.03)
         return ps
 
     def get_hierarchy(self):
@@ -255,6 +271,14 @@ class GaussianEMRestraint(object):
         for p in self.target_ps:
             f.add_child(p)
         return f
+
+    def add_target_density_to_hierarchy(self,hier):
+        '''
+        we'll need this function to add the density particles to a
+        molecular hierarchy root, e.g. have them in the rmf file and display them in Chimera
+        '''
+        tdh=self.get_density_as_hierarchy()
+        hier.add_child(tdh)
 
     def get_restraint_set(self):
         return self.rs

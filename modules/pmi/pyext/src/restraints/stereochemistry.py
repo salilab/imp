@@ -8,12 +8,12 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.container
+import IMP.isd
 import itertools
-import sys
 import IMP.pmi.tools
 import IMP.pmi.representation
 from math import pi,log
-import IMP.isd
+import sys
 
 class ExcludedVolumeSphere(object):
     """A class to create an excluded volume restraint for a set of particles at a given resolution.
@@ -125,7 +125,7 @@ class ExcludedVolumeSphere(object):
         self.rs.set_weight(weight)
 
     def get_output(self):
-        self.m.update()
+        self.mdl.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -626,7 +626,6 @@ class ElasticNetworkRestraint(object):
         if representation is None and hierarchy is not None:
             self.m = hierarchy.get_model()
             for st in selection_tuples:
-                print(st)
                 if not ca_only:
                     sel = IMP.atom.Selection(hierarchy,chain=st[0],residue_indexes=range(st[1],st[2]+1))
                 else:
@@ -645,42 +644,16 @@ class ElasticNetworkRestraint(object):
         else:
             raise Exception("must pass representation or hierarchy")
 
-        self.rs = IMP.RestraintSet(self.m, "ElasticNetwork")
         self.weight = 1
         self.label = "None"
         self.pairslist = []
 
         # create score
-        gcpf = IMP.core.GridClosePairsFinder()
-        print('setting dist',dist_cutoff)
-        gcpf.set_distance(dist_cutoff)
-        particleindexes = IMP.get_indexes(particles)
-        pairs = gcpf.get_close_pairs(self.m,
-                                     particleindexes,
-                                     particleindexes)
-
-        found = set()
-        for pair in pairs:
-            p1 = self.m.get_particle(pair[0])
-            p2 = self.m.get_particle(pair[1])
-            if p1==p2 or tuple(sorted(pair)) in found:
-                continue
-
-            if(IMP.core.RigidMember.get_is_setup(p1) and
-                   IMP.core.RigidMember.get_is_setup(p2) and
-                   IMP.core.RigidMember(p1).get_rigid_body() ==
-                   IMP.core.RigidMember(p2).get_rigid_body()):
-                print("%s and %s are in the same rigid body" % (p1.get_name(),p2.get_name()))
-                continue
-            found.add(tuple(sorted(pair)))
-            distance=IMP.algebra.get_distance(IMP.core.XYZ(p1).get_coordinates(),
-                                              IMP.core.XYZ(p2).get_coordinates())
-
-            ts=IMP.core.HarmonicDistancePairScore(distance,strength)
-            print("ElasticNetworkConstraint: adding a restraint between %s and %s with distance %.3f" % (p1.get_name(),p2.get_name(),distance))
-            self.rs.add_restraint(IMP.core.PairRestraint(self.m, ts, (p1, p2)))
-            self.pairslist.append(IMP.ParticlePair(p1, p2))
-            self.pairslist.append(IMP.ParticlePair(p1, p2))
+        self.rs = IMP.pmi.create_elastic_network(particles,dist_cutoff,strength)
+        for r in self.rs.get_restraints():
+            a1,a2 = r.get_inputs()
+            self.pairslist.append(IMP.ParticlePair(a1,a2))
+            self.pairslist.append(IMP.ParticlePair(a2,a1))
         print('created',self.rs.get_number_of_restraints(),'restraints')
 
     def set_label(self, label):
@@ -714,45 +687,90 @@ class ElasticNetworkRestraint(object):
 class CharmmForceFieldRestraint(object):
     """ Enable CHARMM force field """
     def __init__(self,
-                 root,
+                 root=None,
                  ff_temp=300.0,
+                 zone_ps=None,
+                 zone_size=10.0,
+                 enable_nonbonded=True,
+                 enable_bonded=True,
+                 zone_nonbonded=False,
                  representation=None):
+        """Setup the charmm restraint on a selection. Expecting atoms.
+        @param root             The node at which to apply the restraint
+        @param ff_temp          The temperature of the force field
+        @param zone_ps          Create a zone around this set of particles
+               Automatically includes the entire residue (incl. backbone)
+        @param zone_size        The size for looking for neighbor residues
+        @param enable_nonbonded Allow the repulsive restraint
+        @param enable_bonded    Allow the bonded restraint
+        @param zone_nonbonded   EXPERIMENTAL: exclude from nonbonded all sidechains that aren't in zone!
+        @param representation Legacy representation object
+        """
 
         kB = (1.381 * 6.02214) / 4184.0
+        if representation is not None:
+            root = representation.prot
 
-        self.m=representation.prot.get_model()
-        self.bonds_rs = IMP.RestraintSet(self.m, 1.0 / (kB * ff_temp), 'bonds')
-        self.nonbonded_rs = IMP.RestraintSet(self.m, 1.0 / (kB * ff_temp), 'NONBONDED')
-        self.weight=1
-        self.label="None"
+        self.mdl = root.get_model()
+        self.bonds_rs = IMP.RestraintSet(self.mdl, 1.0 / (kB * ff_temp), 'BONDED')
+        self.nonbonded_rs = IMP.RestraintSet(self.mdl, 1.0 / (kB * ff_temp), 'NONBONDED')
+        self.weight = 1.0
+        self.label = ""
 
+        ### setup topology and bonds etc
+        if enable_bonded:
+            ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
+            topology = ff.create_topology(root)
+            topology.apply_default_patches()
+            topology.setup_hierarchy(root)
+            if zone_ps is not None:
+                limit_to_ps=IMP.pmi.topology.get_particles_within_zone(
+                    root,
+                    zone_ps,
+                    zone_size,
+                    entire_residues=True,
+                    exclude_backbone=False)
+                r = IMP.atom.CHARMMStereochemistryRestraint(root,
+                                                            topology,
+                                                            limit_to_ps)
+                self.ps = limit_to_ps
+            else:
+                r = IMP.atom.CHARMMStereochemistryRestraint(root, topology)
+                self.ps = IMP.core.get_leaves(root)
+            self.bonds_rs.add_restraint(r)
+            ff.add_radii(root)
+            ff.add_well_depths(root)
 
-        #root=representation.prot.get_children()[0].get_children()[0].get_children()[0]
-        root=representation.prot
-
-        ### charmm setup
-        ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
-        topology = ff.create_topology(root)
-        topology.apply_default_patches()
-        topology.setup_hierarchy(root)
-        r = IMP.atom.CHARMMStereochemistryRestraint(root, topology)
-        self.bonds_rs.add_restraint(r)
-        ff.add_radii(root)
-        ff.add_well_depths(root)
-        atoms=IMP.atom.get_leaves(root)
-
+        atoms = IMP.atom.get_leaves(root)
         ### non-bonded forces
-        cont = IMP.container.ListSingletonContainer(atoms)
-        self.nbl = IMP.container.ClosePairContainer(cont, 4.0)
-        self.nbl.add_pair_filter(r.get_pair_filter())
-        #sf = IMP.atom.ForceSwitch(6.0, 7.0)
-        #pairscore = IMP.atom.LennardJonesPairScore(sf)
-        pairscore = IMP.isd.RepulsiveDistancePairScore(0,1)
-        pr=IMP.container.PairsRestraint(pairscore, self.nbl)
-        self.nonbonded_rs.add_restraint(pr)
+        if enable_nonbonded:
+            if (zone_ps is not None) and zone_nonbonded:
+                print('stereochemistry: zone_nonbonded is True')
+                # atoms list should only include backbone plus zone_ps!
+                backbone_types=['C','N','CB','O']
+                sel = IMP.atom.Selection(root,atom_types=[IMP.atom.AtomType(n)
+                                                          for n in backbone_types])
+                backbone_atoms = sel.get_selected_particles()
+                #x = list(set(backbone_atoms)|set(limit_to_ps))
+                sel_ps=IMP.pmi.topology.get_particles_within_zone(
+                    root,
+                    zone_ps,
+                    zone_size,
+                    entire_residues=True,
+                    exclude_backbone=True)
 
-        #self.scoring_function = IMP.core.RestraintsScoringFunction([r,pr])
-
+                self.nbl = IMP.container.CloseBipartitePairContainer(
+                    IMP.container.ListSingletonContainer(backbone_atoms),
+                    IMP.container.ListSingletonContainer(sel_ps),
+                    4.0)
+            else:
+                cont = IMP.container.ListSingletonContainer(atoms)
+                self.nbl = IMP.container.ClosePairContainer(cont, 4.0)
+            if enable_bonded:
+                self.nbl.add_pair_filter(r.get_full_pair_filter())
+            pairscore = IMP.isd.RepulsiveDistancePairScore(0,1)
+            pr=IMP.container.PairsRestraint(pairscore, self.nbl)
+            self.nonbonded_rs.add_restraint(pr)
         print('CHARMM is set up')
 
     def set_label(self, label):
@@ -762,8 +780,8 @@ class CharmmForceFieldRestraint(object):
             r.set_name(label)
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.bonds_rs)
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.nonbonded_rs)
+        IMP.pmi.tools.add_restraint_to_model(self.mdl, self.bonds_rs)
+        IMP.pmi.tools.add_restraint_to_model(self.mdl, self.nonbonded_rs)
 
     def get_restraint(self):
         return self.rs
@@ -776,7 +794,7 @@ class CharmmForceFieldRestraint(object):
         self.rs.set_weight(weight)
 
     def get_output(self):
-        self.m.update()
+        self.mdl.update()
         output = {}
         bonds_score = self.weight * self.bonds_rs.unprotected_evaluate(None)
         nonbonded_score = self.weight * self.nonbonded_rs.unprotected_evaluate(None)

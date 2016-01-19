@@ -4,10 +4,13 @@ import IMP.pmi
 import IMP.pmi.dof
 import IMP.pmi.topology
 import IMP.pmi.macros
-
+import IMP.mpi
 
 
 class TestDOF(IMP.test.TestCase):
+    #def setUp(self):
+    #    self.rem = IMP.mpi.ReplicaExchange()
+
     def init_topology1(self,mdl):
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
@@ -18,7 +21,7 @@ class TestDOF(IMP.test.TestCase):
                                       chain_id='A',res_range=(1,10),offset=-54)
         m1.add_representation(atomic_res,resolutions=[0,1,10])
         m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
-        hier = m1.build()
+        s.build()
         return m1
     def init_topology3(self,mdl):
         s = IMP.pmi.topology.System(mdl)
@@ -40,13 +43,14 @@ class TestDOF(IMP.test.TestCase):
         m2.add_representation(m2.get_non_atomic_residues(),resolutions=[1])
         m3.add_representation(a3,resolutions=[0,1])
         m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1])
-        hier = s.build()
+        s.build()
         return m1,m2,m3
 
     def test_mc_rigid_body(self):
         """Test creation of rigid body and nonrigid members"""
         mdl = IMP.Model()
         molecule = self.init_topology1(mdl)
+
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         rb_movers = dof.create_rigid_body(molecule,
                                           nonrigid_parts = molecule.get_non_atomic_residues(),
@@ -58,6 +62,7 @@ class TestDOF(IMP.test.TestCase):
                                               monte_carlo_sample_objects=mvs,
                                               number_of_frames=2,
                                               test_mode=True)
+                                              #replica_exchange_object=self.rem)
         rex.execute_macro()
 
 
@@ -75,7 +80,8 @@ class TestDOF(IMP.test.TestCase):
                                                 chain_max_length=2)
         ### rbX = dof.create_rigid_body([mols[0],mols[1]]) should fail
         # rb1:4, rb2:1, rb3:4, srbs:2
-        self.assertEqual(len(dof.get_movers()),11)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),11)
 
 
     def test_mc_flexible_beads(self):
@@ -132,15 +138,14 @@ class TestDOF(IMP.test.TestCase):
         dof.constrain_symmetry([m1,m2],[m3,m4],sym_trans)
 
         ### test transformation propagates
-        rbs,beads = IMP.pmi.tools.get_rbs_and_beads(
-            IMP.pmi.tools.get_hierarchies_from_spec(m1))
+        m1_leaves = m1.get_particles_at_all_resolutions()
+        m3_leaves = m3.get_particles_at_all_resolutions()
 
+        rbs,beads = IMP.pmi.tools.get_rbs_and_beads(m1_leaves)
         test_trans = IMP.algebra.get_random_local_transformation(IMP.algebra.Vector3D(0,0,0))
         IMP.core.transform(rbs[0],test_trans)
         mdl.update()
 
-        m1_leaves = m1.get_particles_at_all_resolutions()
-        m3_leaves = m3.get_particles_at_all_resolutions()
         for p1,p3 in zip(m1_leaves,m3_leaves):
             c1 = sym_trans*IMP.core.XYZ(p1).get_coordinates()
             c3 = IMP.core.XYZ(p3).get_coordinates()
@@ -169,12 +174,13 @@ class TestDOF(IMP.test.TestCase):
         hier = m1.build()
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         md_ps = dof.setup_md(m1)
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=hier,
-                                              molecular_dynamics_sample_objects=md_ps,
-                                              number_of_frames=2,
-                                              test_mode=True)
-        rex.execute_macro()
+        #rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+        #                                      root_hier=hier,
+        #                                      molecular_dynamics_sample_objects=md_ps,
+        #                                      number_of_frames=2,
+        #                                      test_mode=True,
+        #                                      replica_exchange_object=self.rem)
+        #rex.execute_macro()
 
 
 
