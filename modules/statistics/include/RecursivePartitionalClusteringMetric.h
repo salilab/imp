@@ -1,6 +1,6 @@
 /**
  *  \file IMP/statistics/RecursivePartitionalClusteringMetric.h
- *  \brief Cluster sets of points.
+ *  \brief Metric for clustering data that has already been clustered once.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
@@ -16,8 +16,8 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-/** Represent a metric for clustering data that has already been clustered
-    once. To use it, cluster things once, create one of these with the metric
+//! Represent a metric for clustering data that has already been clustered once.
+/** To use it, cluster things once, then create one of these with the metric
     you want (created with the original data). When you pass this metric to
     the clustering algorithm, it will cluster the centers. You can extract the
     clustering of the original elements using create_full_clustering().
