@@ -37,6 +37,6 @@ dependencies. See the doc page for each module for details.
 | IMP::domino | | | IMP::domino::DominoSampler, IMP::domino::BranchAndBoundSampler | |
 | IMP::modeller | | Access to the Modeller scoring functions | | |
 | IMP::isd | | IMP::isd::GaussianEMRestraint, IMP::isd::AtomicCrossLinkMSRestraint | | |
-| IMP::pmi | IMP::pmi::topology | IMP::pmi::restraints | IMP::pmi::macros::ReplicaExchange0 | IMP::pmi::analysis |
+| IMP::pmi | IMP::pmi::topology, IMP::pmi::dof | IMP::pmi::restraints | IMP::pmi::macros::ReplicaExchange0 | IMP::pmi::analysis |
 
 
