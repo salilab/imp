@@ -39,8 +39,7 @@ class TestDOF(IMP.test.TestCase):
                               chain_id='G',res_range=(1,10),offset=-54)
         m1.add_representation(a1,resolutions=[0,1])
         m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
-        m2.add_representation(a2,resolutions=[0,1])
-        m2.add_representation(m2.get_non_atomic_residues(),resolutions=[1])
+        m2.add_representation(a2,resolutions=[0,1]) # m2 only has atoms
         m3.add_representation(a3,resolutions=[0,1])
         m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1])
         s.build()
@@ -119,7 +118,6 @@ class TestDOF(IMP.test.TestCase):
         a2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
                               chain_id='B',res_range=(1,13),offset=-179)
         m2.add_representation(a2,resolutions=[0,1])
-        m2.add_representation(m2.get_non_atomic_residues(),resolutions=[1])
         m4 = m2.create_clone(chain_id='D')
         root = s.build()
 

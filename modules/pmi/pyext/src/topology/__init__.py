@@ -351,10 +351,13 @@ class Molecule(SystemBase):
             res = set(self.residues)
         elif residues==self:
             res = set(self.residues)
-        elif type(residues) is set and type(next(iter(residues))) is TempResidue:
-            res = residues
-        elif type(residues) is list and type(residues[0]) is TempResidue:
-            res = set(residues)
+        elif hasattr(residues,'__iter__'):
+            if len(residues)==0:
+                raise Exception('You passed an empty set to add_representation')
+            if type(residues) is set and type(next(iter(residues))) is TempResidue:
+                res = residues
+            elif type(residues) is list and type(residues[0]) is TempResidue:
+                res = set(residues)
         else:
             raise Exception("add_representation: you must pass a set of residues or nothing(=all residues)")
 

@@ -161,7 +161,7 @@ class AtomicCrossLinkMSRestraint(object):
             kappa = 1.0
             self.rset_bonds=IMP.RestraintSet(self.mdl,'Lysine_Sidechain_bonds')
             self.rset_angles=IMP.RestraintSet(self.mdl,'Lysine_Sidechain_angles')
-            for nstate in range(self.nstates):
+            for nstate in self.nstates:
                 for unique_id in data:
                     for xl in data[unique_id]:
                         xl_pairs = xl.get_selection(root,state_index=nstate)
@@ -241,16 +241,16 @@ class AtomicCrossLinkMSRestraint(object):
                                                    psip,
                                                    slope,
                                                    True)
-            xlrs.append(r)
             num_contributions=0
 
             # add a contribution for each XL ambiguity option within each state
-            for nstate in range(self.nstates):
+            for nstate in self.nstates:
                 for xl in data[unique_id]:
                     xl_pairs = xl.get_selection(root,state_index=nstate,
                                                 **extra_sel)
 
-
+                    if len(xl_pairs)==0:
+                        continue
                     # figure out sig1 and sig2 based on num XLs
                     '''
                     num1=num_xls_per_res[str(xl.r1)]
@@ -269,6 +269,8 @@ class AtomicCrossLinkMSRestraint(object):
 
                     # add each copy contribution to restraint
                     for p1,p2 in xl_pairs:
+                        if p1==p2:
+                            continue
                         self.particles[nstate]|=set([p1,p2])
                         if max_dist is not None:
                             dist=IMP.core.get_distance(IMP.core.XYZ(p1),IMP.core.XYZ(p2))
@@ -277,9 +279,10 @@ class AtomicCrossLinkMSRestraint(object):
                         r.add_contribution([p1.get_index(),p2.get_index()],
                                            [sig1.get_particle_index(),sig2.get_particle_index()])
                         num_contributions+=1
-                if num_contributions==0:
-                    raise RestraintSetupError("No contributions!")
-
+                #if num_contributions==0:
+                #    raise RestraintSetupError("No contributions!")
+            if num_contributions>0:
+                xlrs.append(r)
         print('created',len(xlrs),'XL restraints')
         self.rs=IMP.isd.LogWrapper(xlrs,self.weight)
 
@@ -310,7 +313,7 @@ class AtomicCrossLinkMSRestraint(object):
         dummy_mdl=IMP.Model()
         hps = IMP.core.HarmonicDistancePairScore(self.length,1.0)
         dummy_rs=[]
-        for nxl in range(self.rs.get_number_of_restraints()):
+        for nxl in range(self.get_number_of_restraints()):
             xl=IMP.isd.AtomicCrossLinkMSRestraint.get_from(self.rs.get_restraint(nxl))
             rs = IMP.RestraintSet(dummy_mdl, 'atomic_xl_'+str(nxl))
             for ncontr in range(xl.get_number_of_contributions()):
@@ -332,6 +335,9 @@ class AtomicCrossLinkMSRestraint(object):
 
     def get_bonded_pairs(self):
         return self.bonded_pairs
+
+    def get_number_of_restraints(self):
+        return self.rs.get_number_of_restraints()
 
     def get_mc_sample_objects(self,max_step_sigma,max_step_psi):
         """ HACK! Make a SampleObjects class that can be used with PMI::samplers"""
@@ -496,6 +502,7 @@ class AtomicCrossLinkMSRestraint(object):
         @param limit_to_chains Returns the particles for certain "easy to visualize" chains
         @param exclude_chains  Even if you limit, don't let one end be in this list.
                                Only works if you also limit chains
+        @param use_CA          Limit to CA particles
         '''
         ret = []
         for nxl in range(self.rs.get_number_of_restraints()):
