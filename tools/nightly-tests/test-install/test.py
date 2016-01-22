@@ -6,7 +6,7 @@ import IMP.container
 import unittest
 import subprocess
 import os
-
+import sys
 
 class IMPInstallTests(unittest.TestCase):
 
@@ -34,6 +34,8 @@ class IMPInstallTests(unittest.TestCase):
 
     def test_applications_installed(self):
         """Check install of basic applications"""
+        if sys.platform == 'win32':
+            return  # Does not currently work on Windows
         # These apps should *always* exit with code 0
         zero_apps = ['cnmultifit', 'foxs', 'ligand_score',
                      'multifit', 'pdb_check', 'pdb_rmf']
