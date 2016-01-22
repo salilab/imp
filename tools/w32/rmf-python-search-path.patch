@@ -1,0 +1,28 @@
+--- orig/RMF.py	2016-01-21 17:32:42.617219323 -0800
++++ patched/RMF.py	2016-01-21 17:36:56.244709762 -0800
+@@ -4,8 +4,24 @@
+ # Do not make changes to this file unless you know what you are doing--modify
+ # the SWIG interface file instead.
+ 
++def _add_pyext_to_path():
++    import os.path
++    import sys
++    # Get directory containing RMF.py
++    rmf_dir = os.path.abspath(os.path.dirname(__file__))
++    # Make sure we're on a Windows system
++    if hasattr(sys, 'dllhandle') and len(rmf_dir) > 4:
++        # Add Python version-specific directory to search path
++        pyextdir = rmf_dir + '\\python%d.%d' % sys.version_info[:2]
++        if pyextdir not in sys.path:
++            sys.path.insert(1, pyextdir)
++        # Strip '\python' suffix to get directory containing DLLs
++        dlldir = rmf_dir[:-7] + '\\bin'
++        # Add DLL directory to PATH so Windows can find them
++        if dlldir not in os.environ['PATH']:
++            os.environ['PATH'] = dlldir + ';' + os.environ['PATH']
+ 
+-
++_add_pyext_to_path()
+ 
+ from sys import version_info
+ if version_info >= (2,6,0):

@@ -55,6 +55,9 @@ rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/IMP || exit 1
 # Patch IMP/__init__.py so it can find Python version-specific extensions
 # and the IMP DLLs
 patch -d ${ROOT}/python/IMP -p1 < ${TOOLDIR}/python-search-path.patch || exit 1
+# Patch RMF.py so it can find Python version-specific extensions
+# and the RMF DLLs
+patch -d ${ROOT}/python -p1 < ${TOOLDIR}/rmf-python-search-path.patch || exit 1
 
 # If there are any Python applications that don't have a file extension,
 # add .py extension and drop in wrapper so users can run them without an
