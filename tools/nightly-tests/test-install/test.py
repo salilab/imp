@@ -8,6 +8,38 @@ import subprocess
 import os
 import sys
 
+def find_path(exe):
+    """Find `exe` in the PATH and return the fully-qualified path to it."""
+    path_comps = os.environ['PATH'].split(os.pathsep)
+    for c in path_comps:
+        p = os.path.join(c, exe)
+        if os.path.exists(p):
+            return p
+    return exe
+
+class App(object):
+    def __init__(self, name, python=False, can_exit_1=False):
+        self.name = name
+        self.python = python
+        # Some apps can exit with 1 (missing Python modules) as well as 0
+        self.can_exit_1 = can_exit_1
+
+    def test(self):
+        """Run the app and return the exit code and any output."""
+        args = [self.name, '--help']
+        if sys.platform == 'win32' and self.python:
+            # Our WINE test environment doesn't seem to currently support
+            # running Python applications via the .exe wrappers, so find them
+            # in the PATH and run via python.exe instead
+            args = [sys.executable, find_path(self.name + '.py'), '--help']
+        try:
+            p = subprocess.Popen(args, stdout=subprocess.PIPE,
+                                 stderr=subprocess.STDOUT)
+        except OSError:
+            raise OSError("Could not run %s" % self.name)
+        return p.wait(), p.stdout.read()
+
+
 class IMPInstallTests(unittest.TestCase):
 
     def test_modules_installed(self):
@@ -34,30 +66,22 @@ class IMPInstallTests(unittest.TestCase):
 
     def test_applications_installed(self):
         """Check install of basic applications"""
-        if sys.platform == 'win32':
-            return  # Does not currently work on Windows
-        # These apps should *always* exit with code 0
-        zero_apps = ['cnmultifit', 'foxs', 'ligand_score',
-                     'multifit', 'pdb_check', 'pdb_rmf']
-        # These apps may also exit with 1 (missing Python modules)
-        one_apps = ['rmf_cat', 'saxs_merge']
-        def test_app(app):
-            try:
-                p = subprocess.Popen([app, '--help'], stdout=subprocess.PIPE,
-                                     stderr=subprocess.STDOUT)
-            except OSError:
-                raise OSError("Could not run %s" % app)
-            return p.wait(), p.stdout.read()
-        for app in zero_apps:
-            ret, out = test_app(app)
-            self.assertEqual(ret, 0,
-                             "Return code for %s app is %d, not 0; "
-                             "output is %s" % (app, ret, out))
-        for app in one_apps:
-            ret, out = test_app(app)
-            self.assertTrue(ret == 1 or ret == 0,
-                            "Return code for %s app is %d, not 0 or 1; "
-                            "output is %s" % (app, ret, out))
+        apps = [App('cnmultifit', python=True), App('foxs'),
+                App('ligand_score'), App('multifit', python=True),
+                App('pdb_check'), App('pdb_rmf'),
+                App('rmf_cat', can_exit_1=True),
+                App('saxs_merge', python=True, can_exit_1=True)]
+
+        for app in apps:
+            ret, out = app.test()
+            if app.can_exit_1:
+                self.assertTrue(ret == 1 or ret == 0,
+                                "Return code for %s app is %d, not 0 or 1; "
+                                "output is %s" % (app.name, ret, out))
+            else:
+                self.assertEqual(ret, 0,
+                                 "Return code for %s app is %d, not 0; "
+                                 "output is %s" % (app.name, ret, out))
 
 if __name__ == '__main__':
     # Note we use unittest rather than IMP.test, since the latter requires
