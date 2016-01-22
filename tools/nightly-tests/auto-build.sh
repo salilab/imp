@@ -76,6 +76,8 @@ else
     rm -f imp/modules/*/VERSION
   fi
 fi
+# Make sure VERSION file matches the package version
+echo $IMPVERSION > imp/VERSION
 IMPSRCTGZ=${IMPINSTALL}/build/sources/imp-${IMPVERSION}.tar.gz
 rm -rf ${IMPINSTALL}
 mkdir -p ${IMPINSTALL}/build/sources ${IMPINSTALL}/build/logs
