@@ -720,10 +720,9 @@ namespace {
           // If residue type is unknown, add empty topology for this residue
           IMP_WARN_ONCE(
               restyp.get_string(),
-              "Residue type "
-                  << restyp
-                  << " was not found in "
-                     "topology library; using empty topology for this residue",
+              "Residue type " << restyp << " was not found in "
+              "topology library; using empty topology for this residue"
+              << std::endl,
               warn_context_);
           IMP_NEW(CHARMMResidueTopology, residue, (restyp));
           segment->add_residue(residue);
