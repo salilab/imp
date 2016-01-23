@@ -815,16 +815,23 @@ void CHARMMParameters::add_angle(Particle *p1, Particle *p2,
   IMP_OBJECT_LOG;
   Angle ad = Angle::setup_particle(new Particle(p1->get_model()),
                                    core::XYZ(p1), core::XYZ(p2), core::XYZ(p3));
-  try {
-    const CHARMMBondParameters &p = get_angle_parameters(
-        CHARMMAtom(p1).get_charmm_type(), CHARMMAtom(p2).get_charmm_type(),
-        CHARMMAtom(p3).get_charmm_type());
-    ad.set_ideal(p.ideal / 180.0 * PI);
-    ad.set_stiffness(std::sqrt(p.force_constant * 2.0));
-  }
-  catch (const IndexException &e) {
-    // If no parameters, warn only
-    IMP_WARN(e.what());
+  if (CHARMMAtom::get_is_setup(p1) && CHARMMAtom::get_is_setup(p2)
+      && CHARMMAtom::get_is_setup(p3)) {
+    try {
+      const CHARMMBondParameters &p = get_angle_parameters(
+          CHARMMAtom(p1).get_charmm_type(), CHARMMAtom(p2).get_charmm_type(),
+          CHARMMAtom(p3).get_charmm_type());
+      ad.set_ideal(p.ideal / 180.0 * PI);
+      ad.set_stiffness(std::sqrt(p.force_constant * 2.0));
+    }
+    catch (const IndexException &e) {
+      // If no parameters, warn only
+      IMP_WARN(e.what());
+    }
+  } else {
+    IMP_WARN("Missing CHARMM atom types for angle between "
+            << p1->get_name() << ", " << p2->get_name() << " and "
+            << p3->get_name() << std::endl);
   }
   ps.push_back(ad);
 }
