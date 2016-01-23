@@ -689,8 +689,8 @@ String CHARMMParameters::get_force_field_atom_type(Atom atom) const {
     return CHARMMAtom(atom).get_charmm_type();
   } else {
     IMP_WARN_ONCE(atom.get_atom_type().get_string(),
-                  "Atom " << atom << " does not have a known CHARMM type",
-                  warn_context_);
+                  "Atom " << atom << " does not have a known CHARMM type"
+                  << std::endl, warn_context_);
     return empty_atom_type;
   }
 }
