@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
         IMP.core.transform(self.rb, rt)
         refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
         print("calculate fast")
-        num_mc = 1
+        num_mc = 3
         num_cg = 10
         fr_fast = IMP.em.local_rigid_fitting(
             self.mh,
