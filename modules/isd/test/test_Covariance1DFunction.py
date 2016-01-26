@@ -64,12 +64,9 @@ class Tests(IMP.test.TestCase):
             self.assertFalse(self.cov.has_changed())
 
     def testFail(self):
-        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
-            q = IMP.Particle(self.m)
-            self.assertRaises(IMP.InternalException, Covariance1DFunction,
-                              self.tau, q)
-            self.assertRaises(IMP.InternalException, Covariance1DFunction,
-                              q, self.tau)
+        q = IMP.Particle(self.m)
+        self.assertRaisesInternalException(Covariance1DFunction, self.tau, q)
+        self.assertRaisesInternalException(Covariance1DFunction, q, self.tau)
 
     def testValue(self):
         """

@@ -197,6 +197,17 @@ class TestCase(unittest.TestCase):
         if IMP.get_check_level() >= IMP.USAGE:
             return self.assertRaises(IMP.UsageException, c, *args, **keys)
 
+    def assertRaisesInternalException(self, c, *args, **keys):
+        """Assert that the given callable object raises InternalException.
+           This differs from unittest's assertRaises in that the test
+           is skipped in fast mode (where internal checks are turned off)."""
+        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+            return self.assertRaises(IMP.InternalException, c, *args, **keys)
+
+    def assertNotImplemented(self, c, *args, **keys):
+        """Assert that the given callable object is not implemented."""
+        return self.assertRaises(IMP.InternalException, c, *args, **keys)
+
     def assertXYZDerivativesInTolerance(self, sf, xyz, tolerance=0,
                                         percentage=0):
         """Assert that x,y,z analytical derivatives match numerical within
