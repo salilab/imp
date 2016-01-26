@@ -31,12 +31,14 @@ class Tests(IMP.test.TestCase):
         s1i=psigma.get_index()
         s2i=psigma.get_index()
         sigma = IMP.isd.Nuisance.setup_particle(psigma)
+        sigma.set_lower(0.)
         sigma.set_nuisance(10)
         sigma.set_nuisance_is_optimized(True)
 
         ppsi=IMP.Particle(m)
         psii=ppsi.get_index()
         psi = IMP.isd.Nuisance.setup_particle(ppsi)
+        psi.set_lower(0.)
         psi.set_nuisance(0.05)
         psi.set_nuisance_is_optimized(True)
 
