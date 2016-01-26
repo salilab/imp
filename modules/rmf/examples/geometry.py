@@ -1,5 +1,5 @@
 ## \example rmf/geometry.py
-# This example shows writting one piece of geometry to an hdf5 and then
+# This example shows writing one piece of geometry to an RMF file and then
 # reading it back.
 
 from __future__ import print_function
