@@ -41,12 +41,10 @@ IncrementalScoringFunction::IncrementalScoringFunction(
   IMP_LOG_TERSE("Creating IncrementalScoringFunction with particles "
                 << ps << " and restraints " << rs << std::endl);
   all_ = IMP::internal::get_index(ps);
-  Pointer<ScoringFunction> suppress_error(this);
   create_flattened_restraints(rs);
   create_scoring_functions();
   dirty_ = all_;
   flattened_restraints_scores_.resize(flattened_restraints_.size());
-  suppress_error.release();
 }
 
 namespace {
