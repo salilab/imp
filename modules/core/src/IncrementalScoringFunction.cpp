@@ -1,5 +1,6 @@
 /**
- *  \file MonteCarlo.cpp  \brief Simple Monte Carlo optimizer.
+ *  \file IncrementalScoringFunction.cpp
+ *  \brief Score model efficiently when a small number of particles are changed.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *

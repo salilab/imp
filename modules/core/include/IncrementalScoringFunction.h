@@ -1,6 +1,6 @@
 /**
  *  \file IMP/core/IncrementalScoringFunction.h
- *  \brief Simple Monte Carlo optimizer.
+ *  \brief Score model efficiently when a small number of particles are changed.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
@@ -24,6 +24,7 @@ class NBLScoring;
 }
 #endif
 
+//! Score the model efficiently when a small number of particles are changed.
 /** This is a scoring function that computes the score efficiently when a small
     number of particles are changed.
     \note At the moment moves of one particle at a time are handled most
