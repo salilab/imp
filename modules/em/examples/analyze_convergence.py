@@ -1,5 +1,5 @@
 ## \example em/analyze_convergence.py
-# Analyze the convergence of the IMP.em.FitRestraint. The script build a
+# Analyze the convergence of the IMP.em.FitRestraint. The script builds a
 # simple model and then displays the derivatives, em score and how well
 # conjugate gradients converges under various displacements of the model.
 
