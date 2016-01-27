@@ -5,8 +5,8 @@ import IMP.isd
 import IMP.test
 
 class Tests(IMP.test.TestCase):
-    def test_incremental(self):
-        """Test ISD restraints with incremental MC scoring"""
+    def test_incremental_sanity(self):
+        """Test ISD restraints functionality and sanity with incremental MC scoring"""
         num_balls = 2
         num_mc_steps = 10
         m = IMP.Model()
@@ -60,6 +60,92 @@ class Tests(IMP.test.TestCase):
         initial=isf.evaluate(False)
         after = mc.optimize(num_mc_steps)
 
+    def test_incremental_score(self):
+        """Test ISD restraints with incremental MC scoring score is indentical"""
+
+        import time
+        num_balls = 2
+        num_mc_steps = 10
+        m = IMP.Model()
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
+                                       IMP.algebra.Vector3D(30, 30, 30))
+
+        psigma=IMP.Particle(m)
+        s1i=psigma.get_index()
+        s2i=psigma.get_index()
+        sigma = IMP.isd.Nuisance.setup_particle(psigma)
+        sigma.set_lower(0.)
+        sigma.set_nuisance(10)
+        sigma.set_nuisance_is_optimized(True)
+
+        ppsi=IMP.Particle(m)
+        psii=ppsi.get_index()
+        psi = IMP.isd.Nuisance.setup_particle(ppsi)
+        psi.set_lower(0.)
+        psi.set_nuisance(0.05)
+        psi.set_nuisance_is_optimized(True)
+
+
+        ps=[]
+        restraints=[]
+        for n in range(100):
+
+            dr = IMP.isd.CrossLinkMSRestraint(
+                                    m,
+                                    21.0,
+                                    0.01)
+
+            p1=IMP.Particle(m)
+            p1i=p1.get_index()
+            d = IMP.core.XYZR.setup_particle(p1)
+            d.set_radius(10)
+            d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
+            d.set_coordinates_are_optimized(True)
+
+            p2=IMP.Particle(m)
+            p2i=p2.get_index()
+            d = IMP.core.XYZR.setup_particle(p2)
+            d.set_radius(10)
+            d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
+            d.set_coordinates_are_optimized(True)
+
+            dr.add_contribution((p1i, p2i), (s1i, s2i), psii)
+            ps+=[p1,p2]
+            restraints.append(dr)
+
+
+        mc = IMP.core.MonteCarlo(m)
+        sf = IMP.core.RestraintsScoringFunction(restraints)
+        isf = IMP.core.IncrementalScoringFunction(ps+[psigma,ppsi], restraints)
+        mc.set_incremental_scoring_function(isf)
+
+        mvs = [IMP.core.BallMover([p], 5) for p in ps]
+        sm = IMP.core.SerialMover(mvs)
+        mc.add_mover(sm)
+
+        self.assertAlmostEqual(isf.evaluate(False),sf.evaluate(False))
+        starttime1 = time.clock()
+        mc.optimize(num_mc_steps*len(ps))
+        endtime1 = time.clock()
+        self.assertAlmostEqual(isf.evaluate(False),sf.evaluate(False))
+
+        # create a new montecarlo simulation with the standard scoring function
+        mc = IMP.core.MonteCarlo(m)
+        sf = IMP.core.RestraintsScoringFunction(restraints)
+        isf = IMP.core.IncrementalScoringFunction(ps+[psigma,ppsi], restraints)
+        mc.set_scoring_function(sf)
+
+        mvs = [IMP.core.BallMover([p], 5) for p in ps]
+        sm = IMP.core.SerialMover(mvs)
+        mc.add_mover(sm)
+
+        starttime2 = time.clock()
+        mc.optimize(num_mc_steps*len(ps))
+        endtime2 = time.clock()
+
+        # check that the time spent using the normal scoring function is larger
+        # than the time spent using the incremental one
+        self.assertTrue(endtime1-starttime1<endtime2-starttime2)
 
 if __name__ == '__main__':
     IMP.test.main()
