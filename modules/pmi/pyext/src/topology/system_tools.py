@@ -144,6 +144,62 @@ def show_representation(node):
     else:
         return False
 
+def build_ideal_helix(model, residues, resolution):
+    """Creates an ideal helix from the specified residue range
+    Residues MUST be contiguous and be implemented at resolution = 1"""
+
+    from math import pi, cos, sin
+
+    protein_h = self.hier_dict[name]
+    out_hiers = []
+
+    start = resrange[0]
+    end = resrange[1]
+    self.elements[name].append((start, end, " ", "helix"))
+    c0 = IMP.atom.Chain.setup_particle(IMP.Particle(self.m), "X")
+    for n, res in enumerate(range(start, end + 1)):
+        if name in self.sequence_dict:
+            try:
+                rtstr = self.onetothree[
+                    self.sequence_dict[name][res-1]]
+            except:
+                rtstr = "UNK"
+            rt = IMP.atom.ResidueType(rtstr)
+        else:
+            rt = IMP.atom.ResidueType("ALA")
+
+        # get the residue volume
+        try:
+            vol = IMP.atom.get_volume_from_residue_type(rt)
+            # mass=IMP.atom.get_mass_from_residue_type(rt)
+        except IMP.ValueException:
+            vol = IMP.atom.get_volume_from_residue_type(
+            IMP.atom.ResidueType("ALA"))
+            # mass=IMP.atom.get_mass_from_residue_type(IMP.atom.ResidueType("ALA"))
+        radius = IMP.algebra.get_ball_radius_from_volume_3d(vol)
+
+        r = IMP.atom.Residue.setup_particle(IMP.Particle(self.m), rt, res)
+        p = IMP.Particle(self.m)
+        d = IMP.core.XYZR.setup_particle(p)
+        x = 2.3 * cos(n * 2 * pi / 3.6)
+        y = 2.3 * sin(n * 2 * pi / 3.6)
+        z = 6.2 / 3.6 / 2 * n * 2 * pi / 3.6
+        d.set_coordinates(IMP.algebra.Vector3D(x, y, z))
+        d.set_radius(radius)
+        # print d
+        a = IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)
+        r.add_child(a)
+        c0.add_child(r)
+
+    out_hiers += self.coarse_hierarchy(name, start, end,
+                                      resolutions, False, c0, protein_h, "helix", color)
+
+    if show:
+        IMP.atom.show_molecular_hierarchy(protein_h)
+
+    del c0
+    return out_hiers
+
 def recursive_show_representations(root):
     pass
 

@@ -217,11 +217,12 @@ class Molecule(SystemBase):
             print("ERROR: range ends must be int or str. Stride must be int.")
 
     def get_residues(self):
-        """ Return all TempResidues as a set"""
+        """ Return all modeled TempResidues as a set"""
         all_res=set()
         for res in self.residues:
             all_res.add(res)
         return all_res
+
 
     def get_atomic_residues(self):
         """ Return a set of TempResidues that have associated structure coordinates """
@@ -231,6 +232,7 @@ class Molecule(SystemBase):
                 atomic_res.add(res)
         return atomic_res
 
+
     def get_non_atomic_residues(self):
         """ Return a set of TempResidues that don't have associated structure coordinates """
         non_atomic_res=set()
@@ -238,6 +240,7 @@ class Molecule(SystemBase):
             if not res.get_has_structure():
                 non_atomic_res.add(res)
         return non_atomic_res
+
 
     def create_copy(self,chain_id):
         """Create a new Molecule with the same name and sequence but a higher copy number.
@@ -556,11 +559,13 @@ class TempResidue(object):
         @param internal_index The number in the sequence
         """
         self.molecule = molecule
+        self.rtype = IMP.pmi.tools.get_residue_type_from_one_letter_code(code)
         self.hier = IMP.atom.Residue.setup_particle(IMP.Particle(molecule.mdl),
-                                IMP.pmi.tools.get_residue_type_from_one_letter_code(code),
-                                index)
+                                                    self.rtype,
+                                                    index)
         self.pdb_index = index
         self.internal_index = internal_index
+        self._structured = False
     def __str__(self):
         return self.get_code()+str(self.get_index())
     def __repr__(self):
@@ -576,21 +581,22 @@ class TempResidue(object):
     def get_internal_index(self):
         return self.internal_index
     def get_code(self):
-        return IMP.atom.get_one_letter_code(self.hier.get_residue_type())
+        return IMP.atom.get_one_letter_code(self.get_residue_type())
     def get_residue_type(self):
-        return self.hier.get_residue_type()
+        return self.rtype
     def get_hierarchy(self):
         return self.hier
     def get_molecule(self):
         return self.molecule
     def get_has_structure(self):
-        return (self.hier.get_children()!=[])
+        return self._structured
     def set_structure(self,res,soft_check=False):
-        if res.get_residue_type()!=self.hier.get_residue_type():
+        if res.get_residue_type()!=self.get_residue_type():
             if soft_check:
                 print('WARNING: Replacing sequence residue',self.get_index(),self.hier.get_residue_type(),
                       'with PDB type',res.get_residue_type())
                 self.hier.set_residue_type((res.get_residue_type()))
+                self.rtype = res.get_residue_type()
             else:
                 raise Exception('ERROR: PDB residue index',self.get_index(),'is',
                                 IMP.atom.get_one_letter_code(res.get_residue_type()),
@@ -601,7 +607,7 @@ class TempResidue(object):
             atype=IMP.atom.Atom(a).get_atom_type()
             a.get_particle().set_name('Atom %s of residue %i'%(atype.__str__().strip('"'),
                                                                self.hier.get_index()))
-
+        self._structured = True
 class TopologyReader(object):
     '''
     Read a pipe-delimited PMI topology file.

@@ -12,8 +12,156 @@ import IMP.isd
 import itertools
 import IMP.pmi.tools
 import IMP.pmi.representation
-from math import pi,log
+from operator import itemgetter
+from math import pi,log,sqrt
 import sys
+
+
+class ConnectivityRestraint(object):
+    """ This class creates a restraint between consecutive TempResidue objects OR an entire
+    PMI MOlecule object. """
+
+    def __init__(self, objects, scale=1.0,
+        disorderedlength=10, upperharmonic=True):
+        """
+        @param objects - a list of PMI TempResidues OR a single Molecule
+        @param scale - Riccardo knows what this is
+        @param disorderedlength - This flag uses either disordered length
+                     calculated for random coil peptides (True) or zero
+                     surface-to-surface distance between beads (False)
+                     as optimal distance for the sequence connectivity
+                     restraint.
+        @param upperharmonic - This flag uses either harmonic (False)
+                     or upperharmonic (True) in the intra-pair
+                     connectivity restraint.
+        """
+
+        # If iterable, make sure that the list is non-zero and has only TempResidue objects
+        if hasattr(objects,'__iter__'):
+            if len(objects)==0:
+                raise Exception("Warning: ConnectivityRestraint - No objects passed")
+            for t in [type(a) for a in objects]:
+                if t is not IMP.pmi.topology.TempResidue:
+                    raise Exception('ConnectivityRestraint: can only handle a list of TempResidues at this time.  You passed a ', t)
+            objects = list(objects)
+
+        # If not iterable, make sure that the list is a molecule
+        else:
+            if type(objects) is not IMP.pmi.topology.Molecule:
+                    raise Exception('ConnectivityRestraint: can only handle Molecule objects at this time.  You passed a ', t)
+            objects = list(objects.get_residues())
+
+
+        hiers = IMP.pmi.tools.get_hierarchies(objects)
+        self.kappa = 10  # No idea what this is
+        self.m = list(hiers)[0].get_model()
+        SortedSegments = []
+        self.rs = IMP.RestraintSet(self.m, "connectivity_restraint")
+        for h in hiers:
+            try:
+                start = IMP.atom.Hierarchy(h).get_children()[0]
+            except:
+                start = IMP.atom.Hierarchy(h)
+
+            try:
+                end = IMP.atom.Hierarchy(h).get_children()[-1]
+            except:
+                end = IMP.atom.Hierarchy(h)
+
+            startres = IMP.pmi.tools.get_residue_indexes(start)[0]
+            endres = IMP.pmi.tools.get_residue_indexes(end)[-1]
+            SortedSegments.append((start, end, startres))
+        SortedSegments = sorted(SortedSegments, key=itemgetter(2))
+
+        # connect the particles
+        for x in range(len(SortedSegments) - 1):
+
+            last = SortedSegments[x][1]
+            first = SortedSegments[x + 1][0]
+
+            apply_restraint = True
+
+            # Apply connectivity runless ALL of the following are true:
+            #   - first and last both have RigidBodyMember decorators
+            #   - first and last are both RigidMembers
+            #   - first and last are part of the same RigidBody object
+
+            # Check for both in a rigid body
+            if  IMP.core.RigidBodyMember.get_is_setup(first) and IMP.core.RigidBodyMember.get_is_setup(last) and \
+                IMP.core.RigidMember.get_is_setup(first) and IMP.core.RigidMember.get_is_setup(last):
+
+                #Check if the rigid body objects for each particle are the same object
+                if IMP.core.RigidBodyMember(first).get_rigid_body() == IMP.core.RigidBodyMember(last).get_rigid_body():
+
+                    # if so, skip connectivity restraint
+                    apply_restraint = False
+
+            if apply_restraint:
+
+                nreslast = len(IMP.pmi.tools.get_residue_indexes(last))
+                lastresn = IMP.pmi.tools.get_residue_indexes(last)[-1]
+                nresfirst = len(IMP.pmi.tools.get_residue_indexes(first))
+                firstresn = IMP.pmi.tools.get_residue_indexes(first)[0]
+                    
+                residuegap = firstresn - lastresn - 1
+                if disorderedlength and (nreslast / 2 + nresfirst / 2 + residuegap) > 20.0:
+                    # calculate the distance between the sphere centers using Kohn
+                    # PNAS 2004
+                    optdist = sqrt(5 / 3) * 1.93 * \
+                        (nreslast / 2 + nresfirst / 2 + residuegap) ** 0.6
+                    # optdist2=sqrt(5/3)*1.93*((nreslast)**0.6+(nresfirst)**0.6)/2
+                    if upperharmonic:
+                        hu = IMP.core.HarmonicUpperBound(optdist, self.kappa)
+                    else:
+                        hu = IMP.core.Harmonic(optdist, self.kappa)
+                    dps = IMP.core.DistancePairScore(hu)
+                else:  # default
+                    optdist = (0.0 + (float(residuegap) + 1.0) * 3.6) * scale
+                    if upperharmonic:  # default
+                        hu = IMP.core.HarmonicUpperBound(optdist, self.kappa)
+                    else:
+                        hu = IMP.core.Harmonic(optdist, self.kappa)
+                    dps = IMP.core.SphereDistancePairScore(hu)
+
+                pt0 = last.get_particle()
+                pt1 = first.get_particle()
+                r = IMP.core.PairRestraint(self.m, dps, (pt0.get_index(), pt1.get_index()))
+
+                print("Adding sequence connectivity restraint between", pt0.get_name(), " and ", pt1.get_name(), 'of distance', optdist)
+                self.rs.add_restraint(r)
+
+
+    def set_label(self, label):
+        self.label = label
+
+
+    def get_weight(self):
+        return self.weight
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+
+    def get_restraint(self):
+        return self.rs
+
+    def set_weight(self, weight):
+        self.weight = weight
+        self.rs.set_weight(weight)
+
+    def get_output(self):
+        self.mdl.update()
+        output = {}
+        score = self.weight * self.rs.unprotected_evaluate(None)
+        output["_TotalScore"] = str(score)
+        output["ConnectivityRestraint_" + self.label] = str(score)
+        return output
+
+    def get_num_restraints(self):
+        """ Returns number of connectivity restraints """
+        return len(self.rs.get_restraints())
+
+
+
 
 class ExcludedVolumeSphere(object):
     """A class to create an excluded volume restraint for a set of particles at a given resolution.

@@ -113,6 +113,25 @@ class XLTable():
             return dist
 
 
+    def _get_distance_and_particle_pair(self,r1,c1,r2,c2):
+        '''more robust and slower version of above'''
+        sel=IMP.atom.Selection(self.prots,molecule=c1,residue_index=r1)
+        selpart=sel.get_selected_particles()
+        selpart_res_one=list(set(self.particles_resolution_one) & set(selpart))
+        if len(selpart_res_one)>1: return None
+        if len(selpart_res_one)==0: return None
+        selpart_res_one_1=selpart_res_one[0]
+        sel=IMP.atom.Selection(self.prots,molecule=c2,residue_index=r2)
+        selpart=sel.get_selected_particles()
+        selpart_res_one=list(set(self.particles_resolution_one) & set(selpart))
+        if len(selpart_res_one)>1: return None
+        if len(selpart_res_one)==0: return None
+        selpart_res_one_2=selpart_res_one[0]
+        d1=IMP.core.XYZ(selpart_res_one_1)
+        d2=IMP.core.XYZ(selpart_res_one_2)
+        dist=IMP.core.get_distance(d1,d2)
+        return (dist,selpart_res_one_1,selpart_res_one_2)
+
     def _internal_load_maps(self,maps_fn):
         npzfile = np.load(maps_fn)
         cname_array=npzfile['cname_array']
@@ -209,9 +228,10 @@ class XLTable():
         prev_stop=0
         sorted_particles=IMP.pmi.tools.sort_by_residues(particles_resolution_one)
 
+        self.prots=prots
+        self.particles_resolution_one=particles_resolution_one
+
         if nomap:
-            self.prots=prots
-            self.particles_resolution_one=particles_resolution_one
             return
 
         for cname in chain_names:
@@ -581,6 +601,45 @@ class XLTable():
         with open(filename, 'w') as fp:
             a = csv.writer(fp, delimiter=',')
             a.writerows(data)
+
+    def save_rmf_snapshot(self,filename):
+        import IMP.rmf
+        import RMF
+
+        sorted_ids=None
+        sorted_group_ids=sorted(self.cross_link_db.data_base.keys())
+        list_of_pairs=[]
+        for group in sorted_group_ids:
+            group_xls=[]
+            group_dists_particles=[]
+            for xl in self.cross_link_db.data_base[group]:
+                xllabel=self.cross_link_db.get_short_cross_link_string(xl)
+                (c1,c2,r1,r2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
+                (mdist,p1,p2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
+                group_dists_particles.append((mdist,p1,p2,xllabel))
+            if group_dists_particles:
+                (minmdist,minp1,minp2,minxllabel)=min(group_dists_particles, key = lambda t: t[0])
+                list_of_pairs.append((minp1,minp2,xllabel))
+            else:
+                continue
+
+        m=self.prots[0].get_model()
+        linear = IMP.core.Linear(0, 0.0)
+        linear.set_slope(1.0)
+        dps2 = IMP.core.DistancePairScore(linear)
+        rslin = IMP.RestraintSet(m, 'linear_dummy_restraints')
+
+        for pair in list_of_pairs:
+            pr = IMP.core.PairRestraint(m, dps2, (pair[0], pair[1]))
+            pr.set_name(pair[2])
+            rslin.add_restraint(pr)
+
+        rh = RMF.create_rmf_file(filename)
+        IMP.rmf.add_hierarchies(rh, self.prots)
+        IMP.rmf.add_restraints(rh,[rslin])
+        IMP.rmf.save_frame(rh)
+        del rh
+
 
     def plot_table(self, prot_listx=None,
                    prot_listy=None,

@@ -1490,7 +1490,7 @@ def get_hierarchies(stuff):
         return None
     if hasattr(stuff,'__iter__'):
         if len(stuff)==0:
-            return ret
+            return stuff
         type_set = set(type(a) for a in stuff)
         if len(type_set)!=1:
             raise Exception('get_hierarchies: can only pass one type of object at a time')
@@ -1501,7 +1501,7 @@ def get_hierarchies(stuff):
         stuff = [stuff]
 
     if tp in (IMP.pmi.topology.System, IMP.pmi.topology.State, IMP.pmi.topology.Molecule,IMP.pmi.topology.TempResidue):
-        return [item.get_hierarchy() for item in stuff]
+        return [item.get_hierarchy() for item in stuff if item.get_hierarchy() is not None]
     else:
         try:
             if IMP.atom.Hierarchy.get_is_setup(stuff[0]):
@@ -1510,7 +1510,6 @@ def get_hierarchies(stuff):
                 raise Exception('get_hierarchies: you passed something of type',tp)
         except:
             raise Exception('get_hierarchies: you passed something of type',tp)
-    return ret
 
 
 def get_residue_type_from_one_letter_code(code):
