@@ -132,7 +132,6 @@ class Tests(IMP.test.TestCase):
         # create a new montecarlo simulation with the standard scoring function
         mc = IMP.core.MonteCarlo(m)
         sf = IMP.core.RestraintsScoringFunction(restraints)
-        isf = IMP.core.IncrementalScoringFunction(ps+[psigma,ppsi], restraints)
         mc.set_scoring_function(sf)
 
         mvs = [IMP.core.BallMover([p], 5) for p in ps]
