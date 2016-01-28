@@ -19,19 +19,18 @@ class TestISDRestraint(IMP.test.TestCase):
     def test_setup(self):
         m=IMP.Model()
         isdr=ISDRestraint(m)
-        self.assertTrue('get_probability' in dir(isdr))
-        self.assertTrue('unprotected_evaluate' in dir(isdr))
-        self.assertTrue('do_get_inputs' in dir(isdr))
+        self.assertTrue(hasattr(isdr, 'get_probability'))
+        self.assertTrue(hasattr(isdr, 'unprotected_evaluate'))
+        self.assertTrue(hasattr(isdr, 'do_get_inputs'))
         self.assertTrue(isdr.unprotected_evaluate(None) == 0.0)
 
     def test_restraintset(self):
         m=IMP.Model()
         rs=IMP.RestraintSet(m)
         rs.add_restraint(ISDRestraint(m))
-        print(dir(IMP.isd.ISDRestraint))
         for r in rs.get_restraints():
             isdr=IMP.isd.ISDRestraint.get_from(r)
-            self.assertTrue('get_probability' in dir(isdr))
+            self.assertTrue(hasattr(isdr, 'get_probability'))
 
 if __name__ == '__main__':
     IMP.test.main()
