@@ -8,9 +8,9 @@ import IMP.isd
 # unit testing framework
 import IMP.test
 
-class ISDRestraint(IMP.isd.Restraint):
+class ISDRestraint(IMP.isd.ISDRestraint):
     def __init__(self,m):
-        IMP.isd.Restraint.__init__(self, m, "ISDRestraint %1%")
+        IMP.isd.ISDRestraint.__init__(self, m, "ISDRestraint %1%")
 
 
 
@@ -28,9 +28,9 @@ class TestISDRestraint(IMP.test.TestCase):
         m=IMP.Model()
         rs=IMP.RestraintSet(m)
         rs.add_restraint(ISDRestraint(m))
-        print(dir(IMP.isd.Restraint))
+        print(dir(IMP.isd.ISDRestraint))
         for r in rs.get_restraints():
-            isdr=IMP.isd.Restraint.get_from(r)
+            isdr=IMP.isd.ISDRestraint.get_from(r)
             self.assertTrue('get_probability' in dir(isdr))
 
 if __name__ == '__main__':

@@ -16,7 +16,7 @@ IMPISD_BEGIN_NAMESPACE
 /** A restraint for in-vivo ensemble FRET data
  */
 
-class IMPISDEXPORT WeightRestraint : public IMP::Restraint {
+class IMPISDEXPORT WeightRestraint : public Restraint {
   Particle *w_;
   Float wmin_;
   Float wmax_;
