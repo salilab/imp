@@ -24,6 +24,7 @@ void add_surface_index(core::Hierarchy mh, Float apix, FloatKey shell_key,
   ParticlesTemp ps = core::get_leaves(mh);
   Pointer<em::SurfaceShellDensityMap> shell_map =
       new em::SurfaceShellDensityMap(ps, apix);
+  shell_map->set_was_used(true);
 
   for (unsigned int i = 0; i < ps.size(); i++) {
     IMP_INTERNAL_CHECK(!ps[i]->has_attribute(shell_key),
