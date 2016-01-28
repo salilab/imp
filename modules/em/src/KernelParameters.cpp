@@ -12,6 +12,13 @@
 
 IMPEM_BEGIN_NAMESPACE
 
+KernelParameters::~KernelParameters() {
+  for (KernelMap::iterator it = radii2params_.begin();
+       it != radii2params_.end(); ++it) {
+    delete it->second;
+  }
+}
+
 void KernelParameters::init(float resolution) {
   // the number of sigmas used - 3 means that 99% of density is considered.
   timessig_ = 3.;
@@ -31,6 +38,26 @@ void KernelParameters::init(float resolution) {
   rkdist_ = timessig_ * rsig_;
   rkdistsq_ = rkdist_ * rkdist_;
   lim_ = exp(-0.5 * (timessig_ - EPS) * (timessig_ - EPS));
+}
+
+const internal::RadiusDependentKernelParameters &KernelParameters::get_params(
+                                              float radius, float eps) {
+  IMP_USAGE_CHECK(initialized_, "The Kernel Parameters are not initialized");
+  // we do not use find but use lower_bound and upper_bound to overcome
+  // numerical instabilities
+  KernelMap::iterator lower_closest = radii2params_.lower_bound(radius);
+  KernelMap::iterator upper_closest = radii2params_.upper_bound(radius);
+  if (algebra::get_are_almost_equal(radius, upper_closest->first, eps)) {
+    return *upper_closest->second;
+  } else if (lower_closest != radii2params_.end()
+             && algebra::get_are_almost_equal(radius,
+                                              lower_closest->first, eps)) {
+    return *lower_closest->second;
+  } else {
+    radii2params_[radius] = new internal::RadiusDependentKernelParameters(
+        radius, rsigsq_, timessig_, sq2pi3_, inv_rsigsq_, rnormfac_, rkdist_);
+    return *radii2params_[radius];
+  }
 }
 
 //! Create a truncated 3D Gaussian

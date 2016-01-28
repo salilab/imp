@@ -43,7 +43,7 @@ SurfaceShellDensityMap::SurfaceShellDensityMap(const ParticlesTemp &ps,
 
 void SurfaceShellDensityMap::set_kernel() {
   header_.set_resolution(3.);
-  kernel_params_ = KernelParameters(header_.get_resolution());
+  kernel_params_ = KernelParameters(header_.get_resolution() * 2.);
 }
 // TODO : think about the values for delta as a function of resolution
 void SurfaceShellDensityMap::set_neighbor_mask() {
@@ -75,9 +75,12 @@ void SurfaceShellDensityMap::binarize(float scene_val) {
   float rsq, tmp;
 
   for (unsigned int ii = 0; ii < ps_.size(); ii++) {
+    // compute kernel parameters if needed
+    const internal::RadiusDependentKernelParameters &params =
+              kernel_params_.get_params(xyzr_[ii].get_radius());
     // compute the box affected by each particle
     calc_local_bounding_box(this, xyzr_[ii].get_x(), xyzr_[ii].get_y(),
-                            xyzr_[ii].get_z(),  kernel_params_.get_rkdist(),
+                            xyzr_[ii].get_z(), params.get_kdist(),
                             iminx, iminy, iminz, imaxx, imaxy, imaxz);
     for (ivoxz = iminz; ivoxz <= imaxz; ivoxz++) {
       znxny = ivoxz * nxny;
@@ -90,7 +93,7 @@ void SurfaceShellDensityMap::binarize(float scene_val) {
           tmpy = y_loc_[ivox] - xyzr_[ii].get_y();
           tmpz = z_loc_[ivox] - xyzr_[ii].get_z();
           rsq = tmpx * tmpx + tmpy * tmpy + tmpz * tmpz;
-          tmp = EXP(-rsq * kernel_params_.get_inv_rsigsq());
+          tmp = EXP(-rsq * params.get_inv_sigsq());
           // if statement to ensure even sampling within the box
           if (tmp > kernel_params_.get_lim()) {
             data_[ivox] = scene_val;
