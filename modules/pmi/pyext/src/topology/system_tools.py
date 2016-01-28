@@ -311,7 +311,7 @@ def build_representation(mdl,rep,coord_finder):
                     del beads
             else:
                 # if unstructured, create necklace
-                input_coord = coord_finder.find_nearest_coord(min(frag_res).get_index())
+                input_coord = coord_finder.find_nearest_coord(min(r.get_index() for r in frag_res))
                 beads = build_necklace(mdl,
                                        frag_res,
                                        resolution,

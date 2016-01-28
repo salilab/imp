@@ -441,6 +441,7 @@ class AtomicCrossLinkMSRestraint(object):
         @param xldb       CrossLinkDataBase object
         @param atom_type  Can either be "NZ" or "CA"
         @param length     The XL linker length
+        @param slope      Linear term to add to the restraint function to help when far away
         @param nstates    The number of states to model. Defaults to the number of states in root.
         @param label      The output label for the restraint
         @param nuisances_are_optimized Whether to optimize nuisances

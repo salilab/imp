@@ -1,4 +1,4 @@
-## \example pmi/atomic.py
+## \example pmi/atomistic.py
 """This script shows how to simulate an atomic system with MD,
 with a secondary structure elastic network to speed things up.
 """

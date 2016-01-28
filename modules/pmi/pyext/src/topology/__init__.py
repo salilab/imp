@@ -8,7 +8,9 @@ Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
  * Molecule.add_representation() to create a representation unit - here you can choose bead resolutions as well as alternate representations like densities or ideal helices.
  * Molecule.create_clone() lets you set up a molecule with identical representations, just a different chain ID. Use Molecule.create_copy() if you want a molecule with the same sequence but that allows custom representations.
 * Once data has been added and representations chosen, call System.build() to create a canonical IMP hierarchy.
-This namespace also contains the TopologyReader for setting up a System from a formatted text file."""
+* Following hierarchy construction, setup rigid bodies, flexible beads, etc in IMP::pmi::dof.
+Alternatively one can construct the entire topology and degrees of freedom via formatted text file with TopologyReader and IMP::pmi::macros::BuildModel()
+"""
 
 from __future__ import print_function
 import IMP
@@ -23,7 +25,7 @@ from . import system_tools
 from Bio import SeqIO
 from bisect import bisect_left
 
-class SystemBase(object):
+class _SystemBase(object):
     """The base class for System, State and Molecule
     classes. It contains shared functions in common to these classes
     """
@@ -53,10 +55,10 @@ class SystemBase(object):
 
 #------------------------
 
-class System(SystemBase):
+class System(_SystemBase):
     """This class initializes the root node of the global IMP.atom.Hierarchy."""
     def __init__(self,mdl=None,name="System"):
-        SystemBase.__init__(self,mdl)
+        _SystemBase.__init__(self,mdl)
         self._number_of_states = 0
         self.states = []
         self.built=False
@@ -92,7 +94,7 @@ class System(SystemBase):
 
 #------------------------
 
-class State(SystemBase):
+class State(_SystemBase):
     """Stores a list of Molecules all with the same State index.
     Also stores number of copies of each Molecule for easy Selection.
     """
@@ -152,7 +154,7 @@ class State(SystemBase):
 
 #------------------------
 
-class Molecule(SystemBase):
+class Molecule(_SystemBase):
     """Stores a named protein chain.
     This class is constructed from within the State class.
     It wraps an IMP.atom.Molecule and IMP.atom.Copy
@@ -165,6 +167,8 @@ class Molecule(SystemBase):
         @param state           The parent PMI State
         @param name            The name of the molecule (string)
         @param sequence        Sequence (string)
+        @param chain_id        The chain of this molecule
+        @param copy_num        Store the copy number
         @param mol_to_clone    The original molecule (for cloning ONLY)
         \note It's expected that you will not use this constructor directly,
         but rather create a Molecule with pmi::State::create_molecule()
@@ -270,7 +274,9 @@ class Molecule(SystemBase):
         self.state._register_copy(mol)
         return mol
 
-    def add_structure(self,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_only=False,soft_check=False):
+    def add_structure(self,pdb_fn,chain_id,res_range=[],
+                      offset=0,model_num=None,ca_only=False,
+                      soft_check=False):
         """Read a structure and store the coordinates.
         Returns the atomic residues (as a set)
         @param pdb_fn    The file to read
@@ -278,7 +284,8 @@ class Molecule(SystemBase):
         @param res_range Add only a specific set of residues
         @param offset    Apply an offset to the residue indexes of the PDB file
         @param model_num Read multi-model PDB and return that model
-        @param soft_check If True, it only warns if there are sequence mismatches between the pdb and the Molecules sequence
+        @param ca_only   Only read the CA positions from the PDB file
+        @param soft_check If True, it only warns if there are sequence mismatches between the pdb and the Molecules sequence. Actually replaces the fasta values.
                           If False (Default), it raises and exit when there are sequence mismatches.
         \note If you are adding structure without a FASTA file, set soft_check to True
         """
@@ -444,6 +451,7 @@ class Molecule(SystemBase):
                                               False,
                                               old_rep.setup_particles_as_densities)
                     self.representations.append(new_rep)
+                self.coord_finder = self.mol_to_clone.coord_finder
 
             # give a warning for all residues that don't have representation
             first = True
@@ -650,9 +658,7 @@ class TempResidue(object):
                                                                self.hier.get_index()))
         self._structured = True
 class TopologyReader(object):
-    '''
-    Read a pipe-delimited PMI topology file.
-
+    """Automatically setup Sytem and Degrees of Freedom with a formatted text file.
     The topology file should be in a simple pipe-delimited format, such as
     @code{.txt}
 |directories|
@@ -661,11 +667,11 @@ class TopologyReader(object):
 |gmm_dir|./|
 
 |topology_dictionary|
-|component_name|domain_name|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rmf_file|rmf_frame_number|
-|Rpb1 |Rpb1_1|1WCM.fasta|1WCM:A|1WCM.pdb|A|1,1140   |0|10|0 |None   | None|
-|Rpb1 |Rpb1_2|1WCM.fasta|1WCM:A|1WCM.pdb|A|1141,1274|0|10|0 |0.rmf3 | 0   |
-|Rpb1 |Rpb1_3|1WCM.fasta|1WCM:A|1WCM.pdb|A|1275,-1  |0|10|0 |None   | None|
-|Rpb2 |Rpb2  |1WCM.fasta|1WCM:B|1WCM.pdb|B|all      |0|10|0 |None   | None|
+|component_name|domain_name|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rmf_file|rmf_frame_number|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|
+|Rpb1 |Rpb1_1|1WCM.fasta|1WCM:A|1WCM.pdb|A|1,1140   |0|10|0 |None   | None|1|1,3|1|
+|Rpb1 |Rpb1_2|1WCM.fasta|1WCM:A|1WCM.pdb|A|1141,1274|0|10|0 |0.rmf3 | 0   |2|1,3|1|
+|Rpb1 |Rpb1_3|1WCM.fasta|1WCM:A|1WCM.pdb|A|1275,-1  |0|10|0 |None   | None|3|1,3|1|
+|Rpb2 |Rpb2  |1WCM.fasta|1WCM:B|1WCM.pdb|B|all      |0|10|0 |None   | None|4|2,3|2|
     @endcode
 
     The `|directories|` section lists paths (relative to the topology file)
@@ -688,15 +694,20 @@ class TopologyReader(object):
       all = [1,-1]
     - `pdb_offset`: Offset to sync PDB residue numbering with FASTA numbering.
     - `bead_size`: The size (in residues) of beads used to model areas not
-      covered by PDB coordinates.
+      covered by PDB coordinates. These will be automatically built.
     - `em_residues`: The number of Gaussians used to model the electron
       density of this domain. Set to zero if no EM fitting will be done.
+      The GMM files will be written to <gmm_dir>/<component_name>_<em_res>.txt (and .mrc)
     - `rmf_file`: File path of rmf file with coordinates (if available).
-    - `rmf_frame_number`: File path of rmf file.
+    - `rmf_frame_number`: Frame number to extract
+    - `rigid_body`: Number corresponding to the rigid body containing this object.
+    The number itself is used for grouping things.
+    - `super_rigid_body`: Like a rigid_body, except things are only occasionally rigid
+    - `chain_of_super_rigid_bodies` For a polymer, create SRBs from groups.
 
     The file is read in and each part of the topology is stored as a
     ComponentTopology object for input into IMP::pmi::macros::BuildModel.
-    '''
+    """
     def __init__(self, topology_file):
         self.topology_file=topology_file
         self.component_list=[]
@@ -712,7 +723,6 @@ class TopologyReader(object):
     def write_topology_file(self,outfile):
         f=open(outfile, "w")
         f.write("|directories|\n")
-        #print self.defaults
         for key, value in self.defaults.items():
             output="|"+str(key)+"|"+str(value)+"|\n"
             f.write(output)
@@ -946,8 +956,6 @@ class TopologyReader(object):
             print("Please reformat to |KEY|VALUE|")
         self.defaults[f[1]]=f[2]
 
-
-
 class ComponentTopology(object):
     '''
     Topology class stores the components required to build a standard IMP hierarchy
@@ -969,7 +977,9 @@ class ComponentTopology(object):
         self.color=None
         self.rmf_file_name=None
         self.rmf_frame_number=None
-
+        self.rigid_bodies=None
+        self.super_rigid_bodies=None
+        self.chain_of_super_rigid_bodies=None
     def recompute_default_dirs(self, topology):
         pdb_filename=self.pdb_file.split("/")[-1]
         self.pdb_filename=IMP.get_relative_path(topology.topology_file, topology.defaults)

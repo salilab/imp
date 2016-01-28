@@ -40,6 +40,7 @@ class DegreesOfFreedom(object):
                               Must be a subset of rigid_parts particles.
         @param max_trans      Maximum rigid body translation
         @param max_rot        Maximum rigid body rotation
+        @param nonrigid_max_trans Maximum step for the nonrigid (bead) particles
         @param get_all_resolutions If True, will search the hierarchies for all resolutions
         @param name           Rigid body name (if None, use IMP default)
         """
@@ -221,7 +222,7 @@ class DegreesOfFreedom(object):
                                  IMP Selection, Hierarchy,
                                  PMI Molecule, Residue, or a list/set
         @param clones        Same format as references
-        @param transform     How to transform clones onto references
+        @param transform     The transform that moves a clone onto a reference
                              IMP.algebra.Transformation3D
         @param get_all_resolutions Grab all the representations
         """
@@ -245,7 +246,7 @@ class DegreesOfFreedom(object):
         # symmetry RBs
         for ref,clone in zip(ref_rbs+ref_beads,clones_rbs+clones_beads):
             IMP.core.Reference.setup_particle(clone,ref)
-        sm = IMP.core.TransformationSymmetry(transform)
+        sm = IMP.core.TransformationSymmetry(transform.get_inverse())
         lsc = IMP.container.ListSingletonContainer(
             self.mdl,[p.get_particle_index() for p in clones_rbs+clones_beads])
         c = IMP.container.SingletonsConstraint(sm, None, lsc)

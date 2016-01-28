@@ -130,18 +130,26 @@ class TestDOF(IMP.test.TestCase):
         sym_trans = IMP.algebra.get_random_local_transformation(IMP.algebra.Vector3D(0,0,0))
         dof.constrain_symmetry([m1,m2],[m3,m4],sym_trans)
 
-        ### test transformation propagates
         m1_leaves = m1.get_particles_at_all_resolutions()
         m3_leaves = m3.get_particles_at_all_resolutions()
 
+        ### test symmetry initially correct
+        mdl.update()
+        for p1,p3 in zip(m1_leaves,m3_leaves):
+            c1 = IMP.core.XYZ(p1).get_coordinates()
+            c3 = sym_trans*IMP.core.XYZ(p3).get_coordinates()
+            for i in range(3):
+                self.assertAlmostEqual(c1[i],c3[i])
+
+        ### test transformation propagates
         rbs,beads = IMP.pmi.tools.get_rbs_and_beads(m1_leaves)
         test_trans = IMP.algebra.get_random_local_transformation(IMP.algebra.Vector3D(0,0,0))
         IMP.core.transform(rbs[0],test_trans)
         mdl.update()
 
         for p1,p3 in zip(m1_leaves,m3_leaves):
-            c1 = sym_trans*IMP.core.XYZ(p1).get_coordinates()
-            c3 = IMP.core.XYZ(p3).get_coordinates()
+            c1 = IMP.core.XYZ(p1).get_coordinates()
+            c3 = sym_trans*IMP.core.XYZ(p3).get_coordinates()
             for i in range(3):
                 self.assertAlmostEqual(c1[i],c3[i])
 

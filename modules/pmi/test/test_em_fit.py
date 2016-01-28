@@ -5,7 +5,6 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.container
-
 import IMP.pmi.restraints.stereochemistry
 import IMP.pmi.restraints.basic
 import IMP.pmi.restraints.proteomics
@@ -15,59 +14,34 @@ import IMP.pmi.representation
 import IMP.pmi.tools
 import IMP.pmi.macros
 
-import numpy as np
+class TestGaussianEMRestraint(IMP.test.TestCase):
 
+    def test_gaussian_em(self):
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),chain_id='A',
+                                      res_range=(1,10),offset=-54)
+        fname = self.get_tmp_file_name('test_gmm')
+        m1.add_representation(atomic_res,resolutions=[1,10],
+                              density_residues_per_component=2,
+                              density_voxel_size=3.0,
+                              density_prefix=fname)
+        m1.add_representation(m1.get_non_atomic_residues(),resolutions=[10],
+                              setup_particles_as_densities=True)
+        hier = m1.build()
+        densities = IMP.atom.Selection(hier,representation_type=IMP.atom.DENSITIES).get_selected_particles() +\
+                    [r.get_hierarchy() for r in m1.get_non_atomic_residues()]
+        self.assertEqual(len(densities),6)
 
-def get_random_gaussian_3d(center):
-    std = np.random.random_sample(3,) * 10
-    var = [s ** 2 for s in std]
-    rot = IMP.algebra.get_random_rotation_3d()
-    trans = IMP.algebra.Transformation3D(rot, center)
-    return IMP.algebra.Gaussian3D(IMP.algebra.ReferenceFrame3D(trans), var)
-
-class TestEMRestraint(IMP.test.TestCase):
-
-    def setUp(self):
-        IMP.test.TestCase.setUp(self)
-
-        self.m = IMP.Model()
-        self.p0 = IMP.Particle(self.m)
-        self.g0 = IMP.core.Gaussian.setup_particle(
-            self.p0, get_random_gaussian_3d([0, 0, 0]))
-        IMP.atom.Mass.setup_particle(self.p0, np.random.rand() * 10)
-        self.p1 = IMP.Particle(self.m)
-        self.g1 = IMP.core.Gaussian.setup_particle(
-            self.p1, get_random_gaussian_3d([0, 0, 0]))
-        IMP.atom.Mass.setup_particle(self.p1, np.random.rand() * 10)
-
-    @IMP.test.skip("EM interface is changing")
-    def test_move_to_center(self):
-        target_h = [IMP.atom.Fragment.setup_particle(IMP.Particle(self.m))]
-        target_h[0].add_child(self.p0)
-        gem = IMP.pmi.restraints.em.GaussianEMRestraint(target_h,
-                                                        target_ps=[self.p1],
-                                                        cutoff_dist_for_container=10000.0,
-                                                        target_radii_scale=10.0,
-                                                        model_radii_scale=10.0)
+        # make sure you can score
+        gem = IMP.pmi.restraints.em.GaussianEMRestraint(densities,
+                                                        target_fn=self.get_input_file_name('prot_gmm.txt'))
         gem.add_to_model()
-        self.m.update()
-        print('eval 0')
-        s0 = self.m.evaluate(False)
-        print('>s0', s0, '\n')
-
-        trans = IMP.algebra.Transformation3D(
-            IMP.algebra.Vector3D(np.random.random_sample(3,) * 10))
-        print('random trans', trans)
-        IMP.core.transform(IMP.core.RigidBody(self.p0), trans)
-        self.m.update()
-        s1 = self.m.evaluate(False)
-        print('>s1', s1, '\n')
-
-        gem.center_model_on_target_density()
-        self.m.update()
-        s2 = self.m.evaluate(False)
-        print('>s2', s2)
-        self.assertAlmostEqual(s0, s2)
+        mdl.update()
+        init_em_score = gem.evaluate()
 
 class TestPMI(IMP.test.TestCase):
     def test_em_pmi(self):

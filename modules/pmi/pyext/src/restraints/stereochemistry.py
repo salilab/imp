@@ -49,7 +49,7 @@ class ConnectivityRestraint(object):
         # If not iterable, make sure that the list is a molecule
         else:
             if type(objects) is not IMP.pmi.topology.Molecule:
-                    raise Exception('ConnectivityRestraint: can only handle Molecule objects at this time.  You passed a ', t)
+                raise Exception('ConnectivityRestraint: can only handle Molecule objects at this time.  You passed a ', t)
             objects = list(objects.get_residues())
 
 
@@ -91,10 +91,9 @@ class ConnectivityRestraint(object):
             if  IMP.core.RigidBodyMember.get_is_setup(first) and IMP.core.RigidBodyMember.get_is_setup(last) and \
                 IMP.core.RigidMember.get_is_setup(first) and IMP.core.RigidMember.get_is_setup(last):
 
-                #Check if the rigid body objects for each particle are the same object
+                #Check if the rigid body objects for each particle are the same object.
+                #  if so, skip connectivity restraint
                 if IMP.core.RigidBodyMember(first).get_rigid_body() == IMP.core.RigidBodyMember(last).get_rigid_body():
-
-                    # if so, skip connectivity restraint
                     apply_restraint = False
 
             if apply_restraint:
@@ -1111,7 +1110,8 @@ class SymmetryRestraint(object):
         """Constructor
         @param references List of particles for symmetry reference
         @param clones_list List of lists of clone particles
-        @param symmetry_transforms Transforms moving each selection to the first selection
+        @param transforms Transforms moving each selection to the first selection
+        @param label Label for output
         @param strength            The elastic bond strength
         \note You will have to perform an IMP::atom::Selection to get the particles you need.
         Will check to make sure the numbers match.

@@ -63,7 +63,7 @@ class GaussianEMRestraint(object):
                volume restraint.) May give a speed bonus.
         @param backbone_slope Only apply slope to backbone particles -
                only matters for atomic
-        @param scale_to_target_mass    Set True if you would need to scale
+        @param scale_target_to_mass    Set True if you would need to scale
                target to EXACTLY the model mass
         @param weight                  The restraint weight
         @param target_is_rigid_body Set True if you want to put the target density particles

@@ -202,13 +202,6 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEqual(seqs['Prot2'],'PEEDILKYVSYTL')
         self.assertEqual(seqs['Prot3'],'QEALVVKDLL')
 
-    def test_system_base(self):
-        """Test systembase functions like create hierarchy and create child"""
-        sb = IMP.pmi.topology.SystemBase()
-        root = sb._create_hierarchy()
-        child = sb._create_child(root)
-        self.assertEqual(child.get_parent(),root)
-
     def test_create_states(self):
         """Test State-creation from System"""
         s=IMP.pmi.topology.System()
