@@ -14,18 +14,18 @@ IMPISD_BEGIN_NAMESPACE
 
 LogWrapper::LogWrapper(Model *m, double weight,
                        const std::string &name)
-  : Restraint(m, name) {
+  : IMP::Restraint(m, name) {
   set_weight(weight);
 }
 
 LogWrapper::LogWrapper(Model *m, const std::string &name)
-  : Restraint(m, name) {
+  : IMP::Restraint(m, name) {
   set_weight(1.0);
 }
 
 LogWrapper::LogWrapper(const RestraintsTemp &rs,double weight,
                        const std::string &name)
-  : Restraint(IMP::internal::get_model(rs),name){
+  : IMP::Restraint(IMP::internal::get_model(rs),name){
   set_weight(weight);
   set_restraints(rs);
 }

@@ -11,12 +11,13 @@
 
 #include "isd_config.h"
 #include <IMP/container_macros.h>
+#include <IMP/isd/Restraint.h>
 #include <IMP/Restraint.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 //! Calculate the -Log of a list of restraints.
-class IMPISDEXPORT LogWrapper : public Restraint {
+class IMPISDEXPORT LogWrapper : public IMP::Restraint {
   void on_add(Restraint *r);
   void on_change();
   static void on_remove(LogWrapper *container, Restraint *r);
