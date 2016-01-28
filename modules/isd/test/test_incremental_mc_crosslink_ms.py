@@ -144,7 +144,7 @@ class Tests(IMP.test.TestCase):
 
         # check that the time spent using the normal scoring function is larger
         # than the time spent using the incremental one
-        self.assertTrue(endtime1-starttime1<endtime2-starttime2)
+        self.assertLess(endtime1-starttime1, endtime2-starttime2)
 
 if __name__ == '__main__':
     IMP.test.main()
