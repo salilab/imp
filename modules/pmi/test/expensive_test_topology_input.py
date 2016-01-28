@@ -123,7 +123,7 @@ class TopologyReaderTests(IMP.test.TestCase):
         r1dict=children_as_dict(cdict["Rpb1"])
         self.assertEqual(len(r1dict["Rpb1_Res:1"].get_children()),6)
         r4dict=children_as_dict(cdict["Rpb4"])
-        self.assertEqual(len(r4dict["Densities"].get_children()[0].get_children()),3)
+        self.assertEqual(len(r4dict["Densities"].get_children()[0].get_children()),4)
         for output in ['../Rpb4.mrc', '../Rpb4.txt']:
             os.unlink(self.get_input_file_name(output))
 

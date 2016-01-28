@@ -1,7 +1,3 @@
-"""@namespace IMP.pmi.topology.system_tools
-   Tools to help build structures
-"""
-
 from __future__ import print_function
 import IMP
 import IMP.atom
@@ -203,13 +199,14 @@ def build_ideal_helix(model, residues, resolution):
 def recursive_show_representations(root):
     pass
 
-def build_representation(mdl,rep):
+def build_representation(mdl,rep,coord_finder):
     """Create requested representation. Always returns a list of hierarchies.
     For beads, identifies continuous segments and sets up as Representation.
     If any volume-based representations (e.g.,densities) are requested,
     will instead create a single Representation node.
     @param mdl The IMP Model
     @param rep What to build. An instance of pmi::topology::_Representation
+    @param coord_finder A _FindCloseStructure object to help localize beads
     """
     ret = []
     atomic_res = 0
@@ -232,7 +229,13 @@ def build_representation(mdl,rep):
         density_frag = IMP.atom.Fragment.setup_particle(IMP.Particle(mdl),res_nums)
         density_frag.get_particle().set_name("Densities %i"%rep.density_residues_per_component)
         density_ps = []
-        if not os.path.exists(rep.density_prefix+'.txt') or rep.density_force_compute:
+
+        if os.path.exists(rep.density_prefix+'.txt') and not rep.density_force_compute:
+            IMP.isd.gmm_tools.decorate_gmm_from_text(rep.density_prefix+'.txt',
+                                                     density_ps,
+                                                     mdl)
+        if len(density_ps)!=num_components or not os.path.exists(rep.density_prefix+'.txt') or rep.density_force_compute:
+            density_ps = []
             fit_coords = []
             for r in rep.residues:
                 fit_coords += [IMP.core.XYZ(p).get_coordinates() for p in IMP.core.get_leaves(r.hier)]
@@ -242,10 +245,7 @@ def build_representation(mdl,rep):
                                                 density_ps)
             IMP.isd.gmm_tools.write_gmm_to_text(density_ps,rep.density_prefix+'.txt')
             IMP.isd.gmm_tools.write_gmm_to_map(density_ps,rep.density_prefix+'.mrc',rep.density_voxel_size)
-        else:
-            IMP.isd.gmm_tools.decorate_gmm_from_text(rep.density_prefix+'.txt',
-                                                     density_ps,
-                                                     mdl)
+
         for d in density_ps:
             density_frag.add_child(d)
         root_representation.add_representation(density_frag,
@@ -272,11 +272,16 @@ def build_representation(mdl,rep):
 
     # for each segment, merge into beads
     name_all = 'frags:'
+    name_count = 0
     for frag_res in segments:
         res_nums = [r.get_index() for r in frag_res]
         rrange = "%i-%i"%(res_nums[0],res_nums[-1])
-        name = "frag_"+rrange
-        name_all +=rrange+','
+        name = "Frag_"+rrange
+        if name_count<3:
+            name_all +=rrange+','
+        elif name_count==3:
+            name_all +='...'
+        name_count+=1
         segp = IMP.Particle(mdl,name)
         this_segment = IMP.atom.Fragment.setup_particle(segp,res_nums)
         if not single_node:
@@ -285,7 +290,7 @@ def build_representation(mdl,rep):
         for resolution in rep.bead_resolutions:
             fp = IMP.Particle(mdl)
             this_resolution = IMP.atom.Fragment.setup_particle(fp,res_nums)
-            this_resolution.set_name("Res %i"%resolution)
+            this_resolution.set_name("%s: Res %i"%(name,resolution))
             if frag_res[0].get_has_structure():
                 # if structured, merge particles as needed
                 if resolution==atomic_res:
@@ -306,9 +311,11 @@ def build_representation(mdl,rep):
                     del beads
             else:
                 # if unstructured, create necklace
+                input_coord = coord_finder.find_nearest_coord(min(frag_res).get_index())
                 beads = build_necklace(mdl,
                                        frag_res,
-                                       resolution)
+                                       resolution,
+                                       input_coord)
                 for bead in beads:
                     this_resolution.add_child(bead)
 
@@ -327,18 +334,21 @@ def build_representation(mdl,rep):
             if rep.setup_particles_as_densities:
                 for p in IMP.core.get_leaves(this_resolution):
                     setup_bead_as_gaussian(p)
-                this_representation.add_representation(this_resolution,
-                                                       IMP.atom.DENSITIES,
-                                                       resolution)
+                #uncomment this when we can write self-densities to RMF
+                #this_representation.add_representation(this_resolution,
+                #                                       IMP.atom.DENSITIES,
+                #                                       resolution)
 
     if single_node:
         ret = [root_representation]
-        root_representation.set_name(name_all.strip(','))
+        root_representation.set_name(name_all.strip(',')+": Base")
+        d = root_representation.get_representations(IMP.atom.DENSITIES)
+        d[0].set_name('%s: '%name_all + d[0].get_name())
         for resolution in rep.bead_resolutions:
             this_resolution = IMP.atom.Fragment.setup_particle(
                 IMP.Particle(mdl),
                 [r.get_index() for r in rep.residues])
-            this_resolution.set_name("Res %i"%resolution)
+            this_resolution.set_name("%s: Res %i"%(name_all,resolution))
             for hier in rep_dict[resolution]:
                 this_resolution.add_child(hier)
             if resolution==primary_resolution:

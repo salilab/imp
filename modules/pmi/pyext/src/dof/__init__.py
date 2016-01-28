@@ -168,7 +168,7 @@ class DegreesOfFreedom(object):
         if get_all_resolutions:
             hiers = [IMP.atom.Hierarchy(h) for h in \
                      IMP.pmi.tools.select_at_all_resolutions(hiers=hiers)]
-        if not hiers:
+        if not hiers or len(hiers)==0:
             print('WARNING: No hierarchies were passed to create_flexible_beads()')
             return fb_movers
         for p in IMP.pmi.tools.get_all_leaves(hiers):

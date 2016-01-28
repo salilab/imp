@@ -12,6 +12,8 @@ import IMP.pmi
 import IMP.pmi.topology
 import IMP.pmi.dof
 import IMP.pmi.macros
+import IMP.pmi.restraints
+import IMP.pmi.restraints.em
 
 # Setup System and add a State
 mdl = IMP.Model()
@@ -47,6 +49,13 @@ IMP.atom.show_molecular_hierarchy(hier)
 dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
 dof.create_rigid_body(gcp2,
                       nonrigid_parts=gcp2.get_non_atomic_residues())
+
+# Setup Gaussian EM restraint
+density_ps = IMP.atom.Selection(gcp2.get_hierarchy(),representation_type = IMP.atom.DENSITIES).get_selected_particles() + \
+             [h.get_hierarchy() for h in gcp2.get_non_atomic_residues()]
+gem = IMP.pmi.restraints.em.GaussianEMRestraint(density_ps,
+                                                'data/gcp2_gmm.txt')
+gem.add_to_model()
 
 rex=IMP.pmi.macros.ReplicaExchange0(mdl,
                                     root_hier=st1.get_hierarchy(),

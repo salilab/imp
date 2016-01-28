@@ -35,7 +35,8 @@ class ConnectivityRestraint(object):
                      or upperharmonic (True) in the intra-pair
                      connectivity restraint.
         """
-
+        self.label = "None"
+        self.weight = 1.0
         # If iterable, make sure that the list is non-zero and has only TempResidue objects
         if hasattr(objects,'__iter__'):
             if len(objects)==0:
@@ -102,7 +103,7 @@ class ConnectivityRestraint(object):
                 lastresn = IMP.pmi.tools.get_residue_indexes(last)[-1]
                 nresfirst = len(IMP.pmi.tools.get_residue_indexes(first))
                 firstresn = IMP.pmi.tools.get_residue_indexes(first)[0]
-                    
+
                 residuegap = firstresn - lastresn - 1
                 if disorderedlength and (nreslast / 2 + nresfirst / 2 + residuegap) > 20.0:
                     # calculate the distance between the sphere centers using Kohn
@@ -149,7 +150,7 @@ class ConnectivityRestraint(object):
         self.rs.set_weight(weight)
 
     def get_output(self):
-        self.mdl.update()
+        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -1095,4 +1096,67 @@ class PseudoAtomicRestraint(object):
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
         output["PseudoAtomicRestraint_" + self.label] = str(score)
+        return output
+
+class SymmetryRestraint(object):
+    """Create harmonic restraints between the reference and (transformed) clones.
+    \note Wraps IMP::core::TransformedDistancePairScore with an IMP::core::Harmonic
+    """
+    def __init__(self,
+                 references,
+                 clones_list,
+                 transforms,
+                 label='',
+                 strength=10.0):
+        """Constructor
+        @param references List of particles for symmetry reference
+        @param clones_list List of lists of clone particles
+        @param symmetry_transforms Transforms moving each selection to the first selection
+        @param strength            The elastic bond strength
+        \note You will have to perform an IMP::atom::Selection to get the particles you need.
+        Will check to make sure the numbers match.
+        """
+        self.mdl = root.get_model()
+        self.rs = IMP.RestraintSet(self.mdl, "Symmetry")
+        self.weight = 1
+        self.label = label
+        if len(clones_list)!=len(transforms):
+            raise Exception('Error: There should be as many clones as transforms')
+
+        harmonic = IMP.core.Harmonic(0.,strength)
+        for clones,trans in zip(clones_list,transforms):
+            if len(clones)!=len(references):
+                raise Exception("Error: len(references)!=len(clones)")
+            pair_score = IMP.core.TransformedDistancePairScore(harmonic,trans)
+            for p0,p1 in zip(references,clones):
+                r = IMP.core.PairRestraint(pair_score,(p0,p1))
+                self.rs.add_restraint(r)
+
+        print('created symmetry network with',self.rs.get_number_of_restraints(),'restraints')
+
+    def set_label(self, label):
+        self.label = label
+        self.rs.set_name(label)
+        for r in self.rs.get_restraints():
+            r.set_name(label)
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+
+    def get_restraint(self):
+        return self.rs
+
+    def set_weight(self, weight):
+        self.weight = weight
+        self.rs.set_weight(weight)
+
+    def get_excluded_pairs(self):
+        return self.pairslist
+
+    def get_output(self):
+        self.mdl.update()
+        output = {}
+        score = self.weight * self.rs.unprotected_evaluate(None)
+        output["SymmetryRestraint_" + self.label] = str(score)
+        output["_TotalScore"] = str(score)
         return output

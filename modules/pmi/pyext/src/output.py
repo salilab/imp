@@ -13,6 +13,7 @@ import sys
 import RMF
 import numpy as np
 import operator
+from compiler.ast import flatten
 try:
     import cPickle as pickle
 except ImportError:
@@ -338,7 +339,8 @@ class Output(object):
         self.dictionary_rmfs[name] = rh
 
     def add_restraints_to_rmf(self, name, objectlist):
-        for o in objectlist:
+        flatobjectlist=flatten(objectlist)
+        for o in flatobjectlist:
             try:
                 rs = o.get_restraint_for_rmf()
             except:

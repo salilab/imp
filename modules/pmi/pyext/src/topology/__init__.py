@@ -1,8 +1,12 @@
 """@namespace IMP.pmi.topology
 Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
-* Start by creating a System and then call System.create_state().
-* For each State, add Molecules with State.create_molecule().
-* For each Molecule, you can add_structure() (from PDB) and add_representation() (beads, densities, etc).
+* Start by creating a System and then call System.create_state(). You can easily create a multistate system by calling this function multiples times.
+* For each State, add a Molecule (a uniquely named polymer) with State.create_molecule(). This function returns the Molecule object which can be passed to various PMI functions.
+* Some useful functions to help you set up your Molecules:
+ * Access the sequence residues with slicing (Molecule[a:b]) or functions like Molecule.get_atomic_residues() and Molecule.get_non_atomic_residues(). These functions all return python sets for easy set arithmetic using & (and), | (or), - (difference)
+ * Molecule.add_structure() to add structural information from a PDB file.
+ * Molecule.add_representation() to create a representation unit - here you can choose bead resolutions as well as alternate representations like densities or ideal helices.
+ * Molecule.create_clone() lets you set up a molecule with identical representations, just a different chain ID. Use Molecule.create_copy() if you want a molecule with the same sequence but that allows custom representations.
 * Once data has been added and representations chosen, call System.build() to create a canonical IMP hierarchy.
 This namespace also contains the TopologyReader for setting up a System from a formatted text file."""
 
@@ -17,6 +21,7 @@ import os
 from collections import defaultdict
 from . import system_tools
 from Bio import SeqIO
+from bisect import bisect_left
 
 class SystemBase(object):
     """The base class for System, State and Molecule
@@ -148,7 +153,8 @@ class State(SystemBase):
 #------------------------
 
 class Molecule(SystemBase):
-    """This class is constructed from within the State class.
+    """Stores a named protein chain.
+    This class is constructed from within the State class.
     It wraps an IMP.atom.Molecule and IMP.atom.Copy
     Structure is read using this class
     Resolutions and copies can be registered, but are only created when build() is called
@@ -171,6 +177,7 @@ class Molecule(SystemBase):
         self.mol_to_clone = mol_to_clone
         self.representations = []  # list of stuff to build
         self.represented = set()   # residues with representation
+        self.coord_finder = _FindCloseStructure() # helps you place beads by storing structure
 
         # create root node and set it as child to passed parent hierarchy
         self.hier = self._create_child(self.state.get_hierarchy())
@@ -283,6 +290,7 @@ class Molecule(SystemBase):
 
         # get IMP.atom.Residues from the pdb file
         rhs = system_tools.get_structure(self.mdl,pdb_fn,chain_id,res_range,offset,ca_only=ca_only)
+        self.coord_finder.add_residues(rhs)
 
         if len(self.residues)==0:
             print("WARNING: Extracting sequence from structure. Potentially dangerous.")
@@ -325,7 +333,7 @@ class Molecule(SystemBase):
                If structured, will average along backbone, breaking at sequence breaks.
                If unstructured, will just create beads
         @param bead_extra_breaks Additional breakpoints for splitting beads.
-               The number is the first index of the break.
+               The number is the first PDB-style index that belongs in the second bead
         @param bead_ca_centers Set to True if you want the resolution=1 beads to be at CA centers
                (otherwise will average atoms to get center). Defaults to True.
         @param density_residues_per_component Create density (Gaussian Mixture Model)
@@ -404,21 +412,23 @@ class Molecule(SystemBase):
                                                     setup_particles_as_densities))
 
     def build(self):
-        '''Create all parts of the IMP hierarchy
+        """Create all parts of the IMP hierarchy
         including Atoms, Residues, and Fragments/Representations and, finally, Copies
         Will only build requested representations.
         /note Any residues assigned a resolution must have an IMP.atom.Residue hierarchy
               containing at least a CAlpha. For missing residues, these can be constructed
               from the PDB file
-        '''
+        """
 
         if not self.built:
 
             # if requested, clone structure and representations BEFORE building original
             if self.mol_to_clone is not None:
                 for nr,r in enumerate(self.mol_to_clone.residues):
-                    self.residues[nr].set_structure(
-                        IMP.atom.Residue(IMP.atom.create_clone(r.get_hierarchy())),soft_check=True)
+                    if r.get_has_structure():
+                        clone = IMP.atom.create_clone(r.get_hierarchy())
+                        self.residues[nr].set_structure(
+                            IMP.atom.Residue(clone),soft_check=True)
                 for old_rep in self.mol_to_clone.representations:
                     new_res = set()
                     for r in old_rep.residues:
@@ -440,15 +450,18 @@ class Molecule(SystemBase):
             for r in self.residues:
                 if r not in self.represented:
                     if first:
-                        print('WARNING: Residues without representation!',end="")
+                        print('WARNING: Residues without representation: ',end="")
                         first = False
                     print(r,'',end='')
             if not first:
                 print()
 
             # build all the representations
+            # get the first available struture position
+            # pass the nearest structure position as you go.
+
             for rep in self.representations:
-                hiers = system_tools.build_representation(self.mdl,rep)
+                hiers = system_tools.build_representation(self.mdl,rep,self.coord_finder)
                 for h in hiers:
                     self.hier.add_child(h)
             self.built=True
@@ -509,6 +522,34 @@ class _Representation(object):
         self.density_voxel_size = density_voxel_size
         self.setup_particles_as_densities = setup_particles_as_densities
 
+class _FindCloseStructure(object):
+    """Utility to get the nearest observed coordinate"""
+    def __init__(self):
+        self.coords=[]
+    def add_residues(self,residues):
+        for r in residues:
+            idx = IMP.atom.Residue(r).get_index()
+            ca = IMP.atom.Selection(r,atom_type=IMP.atom.AtomType("CA")).get_selected_particles()[0]
+            xyz = IMP.core.XYZ(ca).get_coordinates()
+            self.coords.append([idx,xyz])
+        self.coords.sort()
+    def find_nearest_coord(self,query):
+        if self.coords==[]:
+            return None
+        keys = [r[0] for r in self.coords]
+        pos = bisect_left(keys,query)
+        if pos == 0:
+            ret = self.coords[0]
+        elif pos == len(self.coords):
+            ret = self.coords[-1]
+        else:
+            before = self.coords[pos - 1]
+            after = self.coords[pos]
+            if after[0] - query < query - before[0]:
+                ret = after
+            else:
+                ret = before
+        return ret[1]
 
 class Sequences(object):
     """A dictionary-like wrapper for reading and storing sequence data"""

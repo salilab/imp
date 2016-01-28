@@ -16,7 +16,9 @@ from math import sqrt
 
 class GaussianEMRestraint(object):
     """Fit Gaussian-decorated particles to an EM map
-    (also represented with a set of Gaussians)"""
+    (also represented with a set of Gaussians)
+    \note This class wraps an isd::GaussianEMRestraint
+    """
     def __init__(self, densities,
                  target_fn='',
                  target_ps=[],
@@ -297,6 +299,79 @@ class GaussianEMRestraint(object):
     def evaluate(self):
         return self.weight * self.rs.unprotected_evaluate(None)
 
+#-------------------------------------------
+
+class CrossCorrelationRestraint(object):
+    """Fit particles to an EM map. This creates a simulate density map and updates them every eval.
+    \note Wraps an em::FitRestraint
+    """
+    def __init__(self,
+                 ps,
+                 map_fn,
+                 resolution,
+                 origin=None,
+                 voxel_size=None,
+                 weight=1.0,
+                 label=""):
+        """Constructor
+        @param ps The particles to restrain. Currently these must be atomic particles.
+        @param map_fn The EM density map to fit to
+        @param resolution Map resolution
+        @param origin In case you need to tell IMP the correct origin
+        @param voxel_size In case you need to tell IMP the angstroms per pixel
+        @param weight The data weight
+        @param label Extra PMI label
+        """
+        print('FitRestraint: setup')
+        print('\tmap_fn',map_fn)
+        print('\tresolution',resolution)
+        print('\tvoxel_size',voxel_size)
+        print('\torigin',origin)
+        print('\tweight',weight)
+
+        # some parameters
+        self.mdl = root.get_model()
+        self.label = label
+        self.dmap = IMP.em.read_map(map_fn,IMP.em.MRCReaderWriter())
+        dh = self.dmap.get_header()
+        dh.set_resolution(resolution)
+        if voxel_size:
+            self.dmap.update_voxel_size(voxel_size)
+        if type(origin)==IMP.algebra.Vector3D:
+            self.dmap.set_origin(origin)
+        elif type(origin)==list:
+            self.dmap.set_origin(*origin)
+        else:
+            print('FitRestraint did not recognize format of origin')
+            exit()
+        fr = IMP.em.FitRestraint(ps,self.dmap)
+        self.rs = IMP.RestraintSet(self.mdl,weight,"FitRestraint")
+        self.rs.add_restraint(fr)
+        self.set_weight(weight)
+
+    def set_weight(self,weight):
+        self.weight = weight
+        self.rs.set_weight(weight)
+
+    def set_label(self, label):
+        self.label = label
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+
+    def get_restraint_set(self):
+        return self.rs
+
+    def get_output(self):
+        self.mdl.update()
+        output = {}
+        score = self.weight * self.rs.unprotected_evaluate(None)
+        output["_TotalScore"] = str(score)
+        output["EMRestraint_" + self.label] = str(score)
+        return output
+
+    def evaluate(self):
+        return self.weight * self.rs.unprotected_evaluate(None)
 
 #-------------------------------------------
 

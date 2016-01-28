@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
         chains = "CCD"
         colors = [0., 0.5, 1.0]
         beadsize = 20
-        fastids = tools.get_ids_from_fasta_file(fastafile)
+        fastids = ['1WCM:C','1WCM:C','1WCM:D']
 
         m = IMP.Model()
         simo = representation.Representation(m)
@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
         for n in range(len(components)):
             simo.create_component(components[n], color=colors[n])
             simo.add_component_sequence(components[n], fastafile,
-                                        id=fastids[n + 2])
+                                        id=fastids[n])
             hierarchies[components[n]] \
                = simo.autobuild_model(
                          components[n], pdbfile, chains[n],
@@ -35,8 +35,8 @@ class Tests(IMP.test.TestCase):
             assert a==b, "%d != %d" % (a,b)
 
         result_dict = {
-            "All": 691,
-            "resolution=1": 621,
+            "All": 803,
+            "resolution=1": 721,
             "resolution=1,resid=10": 3,
             "resolution=1,resid=10,name=Rpb3": 1,
             "resolution=1,resid=10,name=Rpb3,ambiguous": 2,
@@ -68,27 +68,37 @@ class Tests(IMP.test.TestCase):
             "Rpb4_117_bead resolution=1": 1,
             "Rpb4_117_bead resolution=10": 1,
             "Rpb4_117_bead resolution=100": 1,
-            "Rpb4_118-215_pdb resolution=1": 98,
-            "Rpb4_118-215_pdb resolution=10": 0,
-            "Rpb4_118-215_pdb resolution=100": 0,
-            "Rpb4_118-215_pdb#2 resolution=1": 0,
-            "Rpb4_118-215_pdb#2 resolution=10": 10,
-            "Rpb4_118-215_pdb#2 resolution=100": 0,
-            "Rpb4_118-215_pdb#3 resolution=1": 0,
-            "Rpb4_118-215_pdb#3 resolution=10": 0,
-            "Rpb4_118-215_pdb#3 resolution=100": 1,
+            "Rpb4_118-221_pdb resolution=1": 104,
+            "Rpb4_118-221_pdb resolution=10": 0,
+            "Rpb4_118-221_pdb resolution=100": 0,
+            "Rpb4_118-221_pdb#2 resolution=1": 0,
+            "Rpb4_118-221_pdb#2 resolution=10": 11,
+            "Rpb4_118-221_pdb#2 resolution=100": 0,
+            "Rpb4_118-221_pdb#3 resolution=1": 0,
+            "Rpb4_118-221_pdb#3 resolution=10": 0,
+            "Rpb4_118-221_pdb#3 resolution=100": 2,
+            "Rpb3.copy_1-2_bead resolution=1": 1,
             "Rpb3.copy_1-2_bead resolution=1": 1,
             "Rpb3.copy_1-2_bead resolution=10": 1,
             "Rpb3.copy_1-2_bead resolution=100": 1,
-            "Rpb3.copy_3-177_pdb resolution=1": 175,
-            "Rpb3.copy_3-177_pdb resolution=10": 0,
-            "Rpb3.copy_3-177_pdb resolution=100": 0,
-            "Rpb3.copy_3-177_pdb#2 resolution=1": 0,
-            "Rpb3.copy_3-177_pdb#2 resolution=10": 18,
-            "Rpb3.copy_3-177_pdb#2 resolution=100": 0,
-            "Rpb3.copy_3-177_pdb#3 resolution=1": 0,
-            "Rpb3.copy_3-177_pdb#3 resolution=10": 0,
-            "Rpb3.copy_3-177_pdb#3 resolution=100": 2,
+            "Rpb3.copy_3-268_pdb resolution=1": 266,
+            "Rpb3.copy_3-268_pdb resolution=10": 0,
+            "Rpb3.copy_3-268_pdb resolution=100": 0,
+            "Rpb3.copy_3-268_pdb#2 resolution=1": 0,
+            "Rpb3.copy_3-268_pdb#2 resolution=10": 27,
+            "Rpb3.copy_3-268_pdb#2 resolution=100": 0,
+            "Rpb3.copy_3-268_pdb#3 resolution=1": 0,
+            "Rpb3.copy_3-268_pdb#3 resolution=10": 0,
+            "Rpb3.copy_3-268_pdb#3 resolution=100": 3,
+            "Rpb3.copy_269-288_bead resolution=1": 1,
+            "Rpb3.copy_269-288_bead resolution=10": 1,
+            "Rpb3.copy_269-288_bead resolution=100": 1,
+            "Rpb3.copy_289-308_bead resolution=1": 1,
+            "Rpb3.copy_289-308_bead resolution=10": 1,
+            "Rpb3.copy_289-308_bead resolution=100": 1,
+            "Rpb3.copy_309-318_bead resolution=1": 1,
+            "Rpb3.copy_309-318_bead resolution=10": 1,
+            "Rpb3.copy_309-318_bead resolution=100": 1,
             "Rpb3_1-2_bead resolution=1": 1,
             "Rpb3_1-2_bead resolution=10": 1,
             "Rpb3_1-2_bead resolution=100": 1,
@@ -110,18 +120,18 @@ class Tests(IMP.test.TestCase):
             "Rpb3_309-318_bead resolution=1": 1,
             "Rpb3_309-318_bead resolution=10": 1,
             "Rpb3_309-318_bead resolution=100": 1,
-            "Beads": 9,
-            "Molecule": 691,
-            "resolution=1,Molecule": 621,
-            "resolution=10,Molecule": 72,
-            "resolution=100,Molecule": 16,
-            "resolution=1,Beads": 9,
-            "resolution=10,Beads": 9,
-            "resolution=100,Beads": 9,
-            "resolution=2": 621,
-            "resolution=7": 72,
-            "resolution=10": 72,
-            "resolution=100": 16}
+            "Beads": 12,
+            "Molecule": 803,
+            "resolution=1,Molecule": 721,
+            "resolution=10,Molecule": 85,
+            "resolution=100,Molecule": 21,
+            "resolution=1,Beads": 12,
+            "resolution=10,Beads": 12,
+            "resolution=100,Beads": 12,
+            "resolution=2": 721,
+            "resolution=7": 85,
+            "resolution=10": 85,
+            "resolution=100": 21}
 
         test(result_dict["All"], len(tools.select(simo)))
         test(result_dict["resolution=1"], len(tools.select(simo, resolution=1)))
@@ -167,6 +177,7 @@ class Tests(IMP.test.TestCase):
                 else:
                     name = h.get_name()
                     seen[h.get_name()] = 2
+
                 test(result_dict[name + " resolution=1"],
                      len(tools.select(simo, resolution=1, hierarchies=[h])))
                 test(result_dict[name + " resolution=10"],

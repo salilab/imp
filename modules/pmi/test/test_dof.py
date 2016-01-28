@@ -4,13 +4,9 @@ import IMP.pmi
 import IMP.pmi.dof
 import IMP.pmi.topology
 import IMP.pmi.macros
-import IMP.mpi
 
 
 class TestDOF(IMP.test.TestCase):
-    #def setUp(self):
-    #    self.rem = IMP.mpi.ReplicaExchange()
-
     def init_topology1(self,mdl):
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
@@ -61,7 +57,6 @@ class TestDOF(IMP.test.TestCase):
                                               monte_carlo_sample_objects=mvs,
                                               number_of_frames=2,
                                               test_mode=True)
-                                              #replica_exchange_object=self.rem)
         rex.execute_macro()
 
 

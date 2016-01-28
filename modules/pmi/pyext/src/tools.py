@@ -1542,7 +1542,8 @@ def select_at_all_resolutions(hier=None,
     if hier is not None:
         hiers.append(hier)
     if len(hiers)==0:
-        raise Exception("Must pass hier or hiers")
+        print("WARNING: You passed nothing to select_at_all_resolutions()")
+        return []
     ret = OrderedSet()
     for hsel in hiers:
         try:
