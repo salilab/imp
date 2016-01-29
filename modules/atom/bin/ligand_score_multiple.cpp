@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
     ("help", "static and transformed molecules from docking with \
 transformation file.")
     ("input-files", po::value< std::vector<std::string> >(),
-     "input PDB, transformation and profile files")
+     "input PDB, mol2, and transformation files")
     ("output_file,o",
      po::value<std::string>(&out_file_name)->default_value("mol2_score.res"),
      "output file name, default name mol2_score.res");
@@ -79,7 +79,7 @@ transformation file.")
   mol2name = files[1];
   trans_file = files[2];
 
- 
+
   IMP::TextInput lib;
   /*
   if (argc==4) {
@@ -153,7 +153,7 @@ transformation file.")
       double score=ps->evaluate_indexes(m, ppt, NULL, 0, ppt.size());
       out_file << "Score for " << mols[i]->get_name() << " trans " << t << " is "
 		<< score << std::endl;
-      
+
       // return the ligand back
       for (unsigned int l_index=0; l_index<ilatoms[i].size(); l_index++) {
 	IMP::core::XYZ d(m, ilatoms[i][l_index]);

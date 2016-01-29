@@ -132,7 +132,7 @@ void ProteinKinematics::init(const atom::Residues& flexible_residues,
     }
     int curr_vertex = (end_vertex == rb_index1) ? rb_index2 : rb_index1;
     std::cerr << "curr_vertex " << curr_vertex << " end_vertex " << end_vertex << std::endl;
-    while(curr_vertex != end_vertex) {
+    while(curr_vertex != end_vertex && loop_joints_.size() < joints_.size()) {
       std::cerr << curr_vertex << " parent " << parents_[curr_vertex] << std::endl;
       Pointer<DihedralAngleRevoluteJoint> joint = rigid_bodies_2_joint_map_[curr_vertex][parents_[curr_vertex]];
       loop_joints_.push_back(joint);

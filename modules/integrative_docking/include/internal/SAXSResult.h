@@ -19,16 +19,24 @@ class SAXSResult : public Result {
   SAXSResult(int number, float chi, bool filtered, float rg,
              IMP::algebra::Transformation3D transformation)
       : Result(number, chi, filtered, 0.0, transformation),
-        chi_(chi),
-        rg_(rg) {}
+        chi_(chi), rg_(rg),
+        c1_(1.0), c2_(0.0),
+        w1_(1.0), w2_(0.0), w3_(0.0) {}
 
   SAXSResult(int number, float chi, bool filtered, float rg, float c1, float c2,
              IMP::algebra::Transformation3D transformation)
       : Result(number, chi, filtered, 0.0, transformation),
-        chi_(chi),
-        rg_(rg),
-        c1_(c1),
-        c2_(c2) {}
+        chi_(chi), rg_(rg),
+        c1_(c1), c2_(c2),
+        w1_(1.0), w2_(0.0), w3_(0.0) {}
+
+  SAXSResult(int number, float chi, bool filtered, float rg, float c1, float c2,
+             float w1, float w2, float w3,
+             IMP::algebra::Transformation3D transformation)
+      : Result(number, chi, filtered, 0.0, transformation),
+        chi_(chi), rg_(rg),
+        c1_(c1), c2_(c2),
+        w1_(w1), w2_(w2), w3_(w3) {}
 
   float get_chi() const { return chi_; }
 
@@ -50,6 +58,13 @@ class SAXSResult : public Result {
     s << p.c1_ << " | ";
     s.width(6);
     s << p.c2_ << " | ";
+    // weights
+    s.width(6);
+    s << p.w1_ << " | ";
+    s.width(6);
+    s << p.w2_ << " | ";
+    s.width(6);
+    s << p.w3_ << " | ";
     IMP::algebra::FixedXYZ euler_angles =
         IMP::algebra::get_fixed_xyz_from_rotation(
             p.transformation_.get_rotation());
@@ -62,7 +77,7 @@ class SAXSResult : public Result {
   }
 
   static void print_header(std::ostream& out) {
-    out << "     # | Chi    |filter| Zscore | Rg     | c1     | c2     | "
+    out << "     # | Chi    |filter| Zscore | Rg     | c1     | c2     | w1   | w2   | w3   |"
            "Transformation" << std::endl;
   }
 
@@ -70,6 +85,7 @@ class SAXSResult : public Result {
   float chi_;
   float rg_;
   float c1_, c2_;  // foxs fitting parameters
+  float w1_, w2_, w3_; // weights
 };
 
 IMPINTEGRATIVEDOCKING_END_INTERNAL_NAMESPACE
