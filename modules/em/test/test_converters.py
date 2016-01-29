@@ -7,7 +7,7 @@ import IMP.core
 
 class Tests(IMP.test.TestCase):
 
-    """Class to testing coversion from em to particles"""
+    """Class to testing conversion from em to particles"""
 
     def load_density_map(self):
         # Note: This test used to work with in.em, we moved to mrc
@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
         self.scene_threshold = 0.01
         self.scene_centroid = self.scene.get_centroid()
 
-    def test_covert_to_particles(self):
+    def test_convert_to_particles(self):
         mdl = IMP.Model()
         ps = IMP.em.density2particles(self.scene, self.scene_threshold, mdl)
         self.assertAlmostEqual(
@@ -29,7 +29,7 @@ class Tests(IMP.test.TestCase):
             0,
             delta=0.1)
 
-    def test_covert_to_vectors(self):
+    def test_convert_to_vectors(self):
         mdl = IMP.Model()
         vecs = IMP.em.density2vectors(self.scene, self.scene_threshold)
         vecs_mean = IMP.algebra.Vector3D(0., 0., 0.)
