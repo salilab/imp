@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
         model_map.set_was_used(True)
         for p in self.particles:
             val = model_map.get_value(IMP.core.XYZ(p).get_coordinates())
-            self.assertEqual(val > 9.1 and val < 10.1, True)
+            self.assertAlmostEqual(val, 10.0, delta=0.1)
 
 if __name__ == '__main__':
     IMP.test.main()
