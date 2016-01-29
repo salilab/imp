@@ -25,11 +25,12 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
         # Read sequences and create Molecules
         seqs = IMP.pmi.topology.Sequences(IMP.pmi.get_example_path('data/gcp2.fasta'))
-        mol = st1.create_molecule("GCP2",sequence=seqs["GCP2_YEAST"],chain_id='A')
+        mol = st1.create_molecule("GCP2",sequence=seqs["GCP2_YEAST"][:100],chain_id='A')
 
         # Add structure. This function returns a list of the residues that now have structure
         a1 = mol.add_structure(IMP.pmi.get_example_path('data/gcp2.pdb'),
-                                chain_id='A')
+                               res_range=(1,100),
+                               chain_id='A')
 
         # Add representations. For structured regions, created a few beads as well as densities
         #  For unstructured regions, create a single bead level and set those up as densities
@@ -45,7 +46,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         # When you call build, this actually makes the beads and fits the GMMs
         #  This returns a canonical IMP hierarchy
         hier = s.build()
-        #IMP.atom.show_molecular_hierarchy(hier)
+        IMP.atom.show_molecular_hierarchy(hier)
 
         return a1, hier, mol
 
@@ -54,12 +55,11 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         mdl = IMP.Model()
         (a1, hier, mol)=self.initialize_system(mdl)
 
-        self.assertEqual(823, len(mol.residues))
-        self.assertEqual(581, len(a1))
-        self.assertEqual(62, len(mol.get_atomic_residues()))
-        self.assertEqual( len(mol.get_residues()),
+        self.assertEqual(37, len(a1))                # now these are duplicated
+        self.assertEqual(5, len(mol.get_atomic_residues())) #only 5 after build()!
+        self.assertEqual(len(mol.get_residues()),
                 len(mol.get_atomic_residues()) + len(mol.get_non_atomic_residues()) )
-        self.assertEqual(len(mol.get_residues()), 90)
+        self.assertEqual(len(mol.get_residues()), 12)  # now contains only beads that are built
 
 
     def test_num_unstruct_res(self):
@@ -74,23 +74,8 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
             else:
                 unstruct_res+=1
 
-        self.assertEqual(242, unstruct_res)
-        self.assertEqual(581, struct_res)
-        self.assertEqual(len(mol.residues), unstruct_res + struct_res)
-
-    def test_num_struct_res(self):
-        mdl = IMP.Model()
-        (a1, hier, mol)=self.initialize_system(mdl)
-
-        struct_res = 0
-        unstruct_res = 0
-        for res in mol.residues:
-            if res.get_has_structure():
-                struct_res+=1
-            else:
-                unstruct_res+=1
-
-        self.assertEqual(581, struct_res)
+        self.assertEqual(63, unstruct_res)
+        self.assertEqual(37, struct_res)
         self.assertEqual(len(mol.residues), unstruct_res + struct_res)
 
     def test_residue_print(self):

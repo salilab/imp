@@ -889,7 +889,7 @@ class CharmmForceFieldRestraint(object):
             ff.add_radii(root)
             ff.add_well_depths(root)
 
-        atoms = IMP.atom.get_leaves(root)
+        atoms = IMP.atom.get_by_type(root,IMP.atom.ATOM_TYPE)
         ### non-bonded forces
         if enable_nonbonded:
             if (zone_ps is not None) and zone_nonbonded:
@@ -912,7 +912,7 @@ class CharmmForceFieldRestraint(object):
                     IMP.container.ListSingletonContainer(sel_ps),
                     4.0)
             else:
-                cont = IMP.container.ListSingletonContainer(atoms)
+                cont = IMP.container.ListSingletonContainer(self.mdl,atoms)
                 self.nbl = IMP.container.ClosePairContainer(cont, 4.0)
             if enable_bonded:
                 self.nbl.add_pair_filter(r.get_full_pair_filter())

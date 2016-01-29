@@ -18,7 +18,7 @@ import itertools
 class CrossLinkingMassSpectrometryRestraint(object):
     """Setup cross-link distance restraints from mass spectrometry data.
     The noise in the data and the structural uncertainty of cross-linked amino-acids
-    is inferred using Bayes theory of probabilty
+    is inferred using Bayes theory of probability
     \note Wraps an IMP::isd::CrossLinkMSRestraint
     """
     def __init__(self, representation=None,
@@ -36,15 +36,15 @@ class CrossLinkingMassSpectrometryRestraint(object):
         @param root_hier The canonical hierarchy containing all the states
         @param CrossLinkDataBase The IMP.pmi.io.crosslink.CrossLinkDataBase
                 object that contains the cross-link dataset
-        @param length maximal cross-linker lenght (including the residue sidechains)
-        @param resolution what representation resolution shoult the cross-link
+        @param length maximal cross-linker length (including the residue sidechains)
+        @param resolution what representation resolution should the cross-link
                 restraint be applied to.
         @param slope  The slope of a distance-linear scoring function that
-               funnel the score when the particles are
+               funnels the score when the particles are
                too far away. Suggested value 0.02.
         @param label the extra text to label the restraint so that it is
                 searchable in the output
-        @param filelabel automaticlly generated file containing missing/included/excluded
+        @param filelabel automatically generated file containing missing/included/excluded
                 cross-links will be labeled using this text
         @param attributes_for_label
         """
@@ -1382,9 +1382,9 @@ class SigmoidalCrossLinkMS(object):
             columnmapping["Residue2"] = 3
 
         if csvfile:
-            # in case the file is a cvs file
+            # in case the file is a csv file
             # columnmapping will contain the field names
-            # that compare in the first line of the cvs file
+            # that compare in the first line of the csv file
             db = tools.get_db_from_csv(restraints_file)
         else:
             db = IMP.pmi.tools.open_file_or_inline_text(restraints_file)
@@ -1631,9 +1631,9 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
             columnmapping["XLUniqueID"] = 5
 
         if csvfile:
-            # in case the file is a cvs file
+            # in case the file is a csv file
             # columnmapping will contain the field names
-            # that compare in the first line of the cvs file
+            # that compare in the first line of the csv file
             db = IMP.pmi.tools.get_db_from_csv(restraints_file)
         else:
             db = IMP.pmi.tools.open_file_or_inline_text(restraints_file)

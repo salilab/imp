@@ -245,7 +245,7 @@ class Tests(IMP.test.TestCase):
                                     replica_exchange_maximum_temperature=2.5,
                                     number_of_best_scoring_models=0,
                                     monte_carlo_steps=10,
-                                    number_of_frames=1000,
+                                    number_of_frames=10,
                                     write_initial_rmf=True,
                                     initial_rmf_name_suffix="initial",
                                     stat_file_name_suffix="stat",

@@ -6,11 +6,13 @@ import IMP.core
 import IMP.container
 import IMP.pmi
 import IMP.pmi.topology
+import IMP.pmi.dof
 import IMP.pmi.io
 import IMP.pmi.io.crosslink
 import IMP.pmi.representation
 import IMP.pmi.restraints
 import IMP.pmi.restraints.crosslinking
+import IMP.pmi.macros
 from math import *
 
 def sphere_cap(r1, r2, d):
@@ -174,14 +176,20 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
         st = s.create_state()
         seqs = IMP.pmi.topology.Sequences(fastafile)
         offsets = [0,0,0,0]
+        mols = []
         for n in range(len(components)):
             print('PMI2: setting up',components[n],'1WCM:'+chains[n],offsets[n])
             mol = st.create_molecule(components[n],sequence=seqs['1WCM:'+chains[n]],chain_id=chains[n])
             atomic = mol.add_structure(pdbfile,chain_id=chains[n],offset=offsets[n],soft_check=True)
             mol.add_representation(atomic,resolutions=[1,10,100])
             mol.add_representation(mol[:]-atomic,resolutions=[beadsize])
+            mols.append(mol)
         hier = s.build()
-        return hier
+        dof = IMP.pmi.dof.DegreesOfFreedom(m)
+        for molecule in mols:
+            dof.create_rigid_body(molecule,
+                                  nonrigid_parts = molecule.get_non_atomic_residues())
+        return hier,dof.get_movers()
 
     def init_representation_beads(self,m):
         r = IMP.pmi.representation.Representation(m)
@@ -197,15 +205,14 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
         return r
 
     def test_restraint_probability_complex(self):
-        m = IMP.Model()
-
         for i in range(2):
+            m = IMP.Model()
             print("Testing PMI version",i+1)
             if i==0:
                 rcomplex = self.init_representation_complex(m)
                 xlc,cldb = self.setup_crosslinks_complex(rcomplex,"single_category")
             else:
-                rcomplex=self.init_representation_complex_pmi2(m)
+                rcomplex,pmi2_movers=self.init_representation_complex_pmi2(m)
                 xlc,cldb = self.setup_crosslinks_complex(root_hier=rcomplex,
                                                          mode="single_category")
 
@@ -248,6 +255,21 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
             log_wrapper_score=rs.unprotected_evaluate(None)
             test_log_wrapper_score=log_evaluate(restraints)
             self.assertAlmostEqual(log_wrapper_score, test_log_wrapper_score, delta=0.00001)
+            if i==0:
+                rex0 = IMP.pmi.macros.ReplicaExchange0(m,
+                                                      rcomplex,
+                                                      monte_carlo_sample_objects=[rcomplex],
+                                                      number_of_frames=2,
+                                                      test_mode=True)
+                rex0.execute_macro()
+            else:
+                rex = IMP.pmi.macros.ReplicaExchange0(m,
+                                                      root_hier=rcomplex,
+                                                      monte_carlo_sample_objects=pmi2_movers,
+                                                      number_of_frames=2,
+                                                      test_mode=True,
+                                                      replica_exchange_object = rex0.get_replica_exchange_object())
+                rex.execute_macro()
             for output in ['excluded.None.xl.db',
                            'expensive_test_new_cross_link_ms_restraint.dat',
                            'included.None.xl.db', 'missing.None.xl.db']:

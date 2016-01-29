@@ -615,7 +615,10 @@ class XLTable():
             for xl in self.cross_link_db.data_base[group]:
                 xllabel=self.cross_link_db.get_short_cross_link_string(xl)
                 (c1,c2,r1,r2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
-                (mdist,p1,p2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
+                try:
+                    (mdist,p1,p2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
+                except TypeError:
+                    continue
                 group_dists_particles.append((mdist,p1,p2,xllabel))
             if group_dists_particles:
                 (minmdist,minp1,minp2,minxllabel)=min(group_dists_particles, key = lambda t: t[0])

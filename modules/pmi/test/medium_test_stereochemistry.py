@@ -11,10 +11,10 @@ import IMP.pmi.restraints.stereochemistry
 class StereochemistryTests(IMP.test.TestCase):
 
     def test_stereochemistry_basic(self):
-        """ test PMI2 connectivity restraint on basic system 
-        Currently failing"""   
+        """ test PMI2 connectivity restraint on basic system
+        Currently failing"""
         mdl = IMP.Model()
-        s = IMP.pmi.topology.System(mdl)    
+        s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
         mol = st1.create_molecule("test", sequence="CHARLES", chain_id="A")
         mol.add_representation(mol.get_residues(),resolutions=[1])
@@ -25,9 +25,9 @@ class StereochemistryTests(IMP.test.TestCase):
         self.assertEqual(len(mol.get_residues()) - 1, cr.get_num_restraints() )
 
     def test_stereochemistry_basic_rb(self):
-        """ test PMI2 connectivity restraint on basic system with rigid body"""   
+        """ test PMI2 connectivity restraint on basic system with rigid body"""
         mdl = IMP.Model()
-        s = IMP.pmi.topology.System(mdl)    
+        s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
         mol = st1.create_molecule("test", sequence="CHARLES", chain_id="A")
         mol.add_representation(mol.get_residues(),resolutions=[1])
@@ -44,9 +44,9 @@ class StereochemistryTests(IMP.test.TestCase):
 
 
     def test_stereochemistry_basic_two_rbs(self):
-        """ test PMI2 connectivity restraint on basic system with two rigid bodies"""   
+        """ test PMI2 connectivity restraint on basic system with two rigid bodies"""
         mdl = IMP.Model()
-        s = IMP.pmi.topology.System(mdl)    
+        s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
         mol = st1.create_molecule("test", sequence="CHARLES", chain_id="A")
         mol.add_representation(mol.get_residues(),resolutions=[1])
@@ -68,9 +68,10 @@ class StereochemistryTests(IMP.test.TestCase):
         s = IMP.pmi.topology.System(mdl)
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('chainA.fasta'))
         st1 = s.create_state()
-        mol = st1.create_molecule("GCP2_YEAST",sequence=seqs["GCP2_YEAST"],chain_id='A')
+        mol = st1.create_molecule("GCP2_YEAST",sequence=seqs["GCP2_YEAST"][:100],chain_id='A')
         atomic_res = mol.add_structure(self.get_input_file_name('chainA.pdb'),
-                                    chain_id='A')
+                                       chain_id='A',
+                                       res_range=(1,100))
         mol.add_representation(mol.get_atomic_residues(),resolutions=[1,10])
         mol.add_representation(mol.get_non_atomic_residues(), resolutions=[10])
         hier = s.build()
@@ -80,7 +81,7 @@ class StereochemistryTests(IMP.test.TestCase):
 
         cr = IMP.pmi.restraints.stereochemistry.ConnectivityRestraint(mol)
 
-        self.assertEqual(cr.get_num_restraints(), 34)
+        self.assertEqual(cr.get_num_restraints(), 8)
 
 
     def test_parse_dssp(self):
@@ -99,9 +100,10 @@ class StereochemistryTests(IMP.test.TestCase):
         s = IMP.pmi.topology.System(mdl)
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('chainA.fasta'))
         st1 = s.create_state()
-        m1 = st1.create_molecule("GCP2_YEAST",sequence=seqs["GCP2_YEAST"],chain_id='A')
+        m1 = st1.create_molecule("GCP2_YEAST",sequence=seqs["GCP2_YEAST"][:100],chain_id='A')
         atomic_res = m1.add_structure(self.get_input_file_name('chainA.pdb'),
-                                    chain_id='A')
+                                      chain_id='A',
+                                      res_range=(1,100))
         m1.add_representation(atomic_res,resolutions=[0])
         hier = s.build()
 
@@ -122,28 +124,30 @@ class StereochemistryTests(IMP.test.TestCase):
         m = IMP.Model()
         s = IMP.pmi.topology.System(m)
         st1 = s.create_state()
-        seq = IMP.pmi.topology.Sequences(IMP.pmi.get_data_path("benchmark_sequence.fasta"))
-        mol = st1.create_molecule("Test", seq["PDE6-CHAIN-A"])
-        mol.add_structure(IMP.pmi.get_data_path("benchmark_starting_structure.pdb"), chain_id="A", offset=0)
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('chainA.fasta'))
+        mol = st1.create_molecule("Test", seqs["GCP2_YEAST"][:100])
+        mol.add_structure(self.get_input_file_name('chainA.pdb'), chain_id="A", offset=0,res_range=(1,100))
         mol.add_representation(mol.get_atomic_residues(), resolutions=[1,10])
         mol.add_representation(mol.get_non_atomic_residues(), resolutions=[10])
-        s.build()
+        hier = s.build()
 
+        IMP.atom.show_molecular_hierarchy(hier)
         # Test that the correct number of particles are included
+        #  (note, res1 is going to include the res10 beads because they're the only ones around)
         ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(included_objects=mol, resolution=1)
-        self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 748)
+        self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 44)
 
         ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(included_objects=mol, resolution=10)
-        self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 92)
+        self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 12)
 
         # Test that default returns lowest resolution
         ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(included_objects=mol)
-        self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 92)
+        self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 12)
 
-        resis = mol.residue_range(15,20)
-
+        # test just picking a few residues - this one picks two beads
+        resis = mol.residue_range(15,25)
         ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(included_objects=resis, resolution=1)
-        self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 5)
+        self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 2)
 
 
     def test_charmm(self):
@@ -152,16 +156,15 @@ class StereochemistryTests(IMP.test.TestCase):
         s = IMP.pmi.topology.System(mdl)
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('chainA.fasta'))
         st1 = s.create_state()
-        m1 = st1.create_molecule("GCP2_YEAST",sequence=seqs["GCP2_YEAST"],chain_id='A')
+        m1 = st1.create_molecule("GCP2_YEAST",sequence=seqs["GCP2_YEAST"][:100],chain_id='A')
         atomic_res = m1.add_structure(self.get_input_file_name('chainA.pdb'),
-                                    chain_id='A')
+                                      chain_id='A',
+                                      res_range=(1,100))
         m1.add_representation(atomic_res,resolutions=[0])
         hier = s.build()
 
         # create elastic network from some SSEs
         charmm = IMP.pmi.restraints.stereochemistry.CharmmForceFieldRestraint(hier)
-
-        cr = IMP.pmi.restraints.stereochemistry.ConnectivityRestraint(reshiers)
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -129,7 +129,7 @@ class Tests(IMP.test.TestCase):
             d.set_radius(1)
             ps.append(p)
             hs.append(h)
-
+            IMP.atom.Mass.setup_particle(p,1.0)
         IMP.core.XYZ(ps[11]).set_coordinates((-5.0,0,0))
 
 
@@ -198,7 +198,7 @@ class Tests(IMP.test.TestCase):
             d.set_radius(1)
             ps.append(p)
             hs.append(h)
-
+            IMP.atom.Mass.setup_particle(p,1.0)
         r1a=IMP.pmi.restraints.proteomics.FuzzyRestraint(m,ps[0],ps[10])
         r1b=IMP.pmi.restraints.proteomics.FuzzyRestraint(m,ps[1],ps[11])
         r1c=IMP.pmi.restraints.proteomics.FuzzyRestraint(m,ps[2],ps[12])
@@ -269,7 +269,7 @@ class Tests(IMP.test.TestCase):
             d.set_radius(1)
             ps.append(p)
             hs.append(h)
-
+            IMP.atom.Mass.setup_particle(p,1.0)
         r1a=IMP.pmi.restraints.proteomics.FuzzyRestraint(m,ps[0],ps[2])
         r1b=IMP.pmi.restraints.proteomics.FuzzyRestraint(m,ps[1],ps[2])
 
