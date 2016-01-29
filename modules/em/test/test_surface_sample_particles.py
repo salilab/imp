@@ -49,7 +49,7 @@ class Tests(IMP.test.TestCase):
         for p in self.particles:
             val = model_map.get_value(IMP.core.XYZ(p).get_coordinates())
             print(val)
-            self.assertEqual(val > 1.9 and val < 2.1, True)
+            self.assertEqual(val > 9.1 and val < 10.1, True)
 
 if __name__ == '__main__':
     IMP.test.main()
