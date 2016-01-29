@@ -17,10 +17,12 @@ class Tests(IMP.test.TestCase):
         self.scene = IMP.em.read_map(
             self.get_input_file_name("in.mrc"),
             self.mrw)
+        self.scene.set_was_used(True)
         self.scene_threshold = 0.01
         self.scene_centroid = self.scene.get_centroid()
 
     def test_convert_to_particles(self):
+        self.load_density_map()
         mdl = IMP.Model()
         ps = IMP.em.density2particles(self.scene, self.scene_threshold, mdl)
         self.assertAlmostEqual(
@@ -30,6 +32,7 @@ class Tests(IMP.test.TestCase):
             delta=0.1)
 
     def test_convert_to_vectors(self):
+        self.load_density_map()
         mdl = IMP.Model()
         vecs = IMP.em.density2vectors(self.scene, self.scene_threshold)
         vecs_mean = IMP.algebra.Vector3D(0., 0., 0.)
@@ -40,9 +43,5 @@ class Tests(IMP.test.TestCase):
             vecs_mean,
             self.scene_centroid), 0., delta=0.1)
 
-    def setUp(self):
-        """Build test model and optimizer"""
-        IMP.test.TestCase.setUp(self)
-        self.load_density_map()
 if __name__ == '__main__':
     IMP.test.main()
