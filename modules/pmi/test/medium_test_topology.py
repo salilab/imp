@@ -46,7 +46,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         # When you call build, this actually makes the beads and fits the GMMs
         #  This returns a canonical IMP hierarchy
         hier = s.build()
-        IMP.atom.show_molecular_hierarchy(hier)
+        #IMP.atom.show_molecular_hierarchy(hier)
 
         return a1, hier, mol
 

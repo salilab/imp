@@ -7,8 +7,13 @@
 from __future__ import print_function
 import IMP
 import IMP.algebra
+import IMP.isd
 import collections
 import itertools
+from math import log,pi,sqrt,exp
+import sys,os
+import random
+import time
 
 def _get_restraint_set_key():
     if not hasattr(_get_restraint_set_key, 'pmi_rs_key'):
@@ -43,8 +48,6 @@ def get_restraint_set(model):
 class Stopwatch(object):
 
     def __init__(self, isdelta=True):
-        global time
-        import time
 
         self.starttime = time.clock()
         self.label = "None"
@@ -73,7 +76,6 @@ class Stopwatch(object):
 class SetupNuisance(object):
 
     def __init__(self, m, initialvalue, minvalue, maxvalue, isoptimized=True):
-        import IMP.isd
 
         nuisance = IMP.isd.Scale.setup_particle(IMP.Particle(m), initialvalue)
         if minvalue:
@@ -92,7 +94,6 @@ class SetupNuisance(object):
 class SetupWeight(object):
 
     def __init__(self, m, isoptimized=True):
-        import IMP.isd
         pw = IMP.Particle(m)
         self.weight = IMP.isd.Weight.setup_particle(pw)
         self.weight.set_weights_are_optimized(True)
@@ -171,10 +172,6 @@ class ParticleToSampleList(object):
 class Variance(object):
 
     def __init__(self, model, tau, niter, prot, th_profile, write_data=False):
-        global sqrt, os, random
-        from math import sqrt
-        import os
-        import random
 
         self.model = model
         self.write_data = write_data
@@ -352,7 +349,6 @@ def get_random_cross_link_dataset(representation,
 
     residue_pairs=get_random_residue_pairs(representation, resolution, number_of_cross_links, avoid_same_particles=avoid_same_particles)
 
-    from random import random
     unique_identifier=0
     cmin=float(min(confidence_score_range))
     cmax=float(max(confidence_score_range))
@@ -362,7 +358,7 @@ def get_random_cross_link_dataset(representation,
     for (name1, r1, name2, r2) in residue_pairs:
         if random() > ambiguity_probability:
             unique_identifier+=1
-        score=random()*(cmax-cmin)+cmin
+        score=random.random()*(cmax-cmin)+cmin
         dataset+=str(name1)+" "+str(name2)+" "+str(r1)+" "+str(r2)+" "+str(score)+" "+str(unique_identifier)+"\n"
 
     return dataset
@@ -376,7 +372,6 @@ def get_cross_link_data(directory, filename, dist, omega, sigma,
     (distmin, distmax, ndist) = dist
     (omegamin, omegamax, nomega) = omega
     (sigmamin, sigmamax, nsigma) = sigma
-    import IMP.isd
 
     filen = IMP.isd.get_data_path("CrossLinkPMFs.dict")
     xlpot = open(filen)
@@ -418,7 +413,6 @@ def get_cross_link_data_from_length(length, xxx_todo_changeme3, xxx_todo_changem
     (distmin, distmax, ndist) = xxx_todo_changeme3
     (omegamin, omegamax, nomega) = xxx_todo_changeme4
     (sigmamin, sigmamax, nsigma) = xxx_todo_changeme5
-    import IMP.isd
 
     dist_grid = get_grid(distmin, distmax, ndist, False)
     omega_grid = get_log_grid(omegamin, omegamax, nomega)
@@ -443,7 +437,6 @@ def get_grid(gmin, gmax, ngrid, boundaries):
 
 
 def get_log_grid(gmin, gmax, ngrid):
-    from math import exp, log
     grid = []
     for i in range(0, ngrid + 1):
         grid.append(gmin * exp(float(i) / ngrid * log(gmax / gmin)))
@@ -1174,7 +1167,6 @@ def get_random_residue_pairs(representation, resolution,
                              avoid_same_particles=False,
                              names=None):
 
-    from random import choice
     particles = []
     if names is None:
         names=list(representation.hier_dict.keys())
@@ -1184,13 +1176,13 @@ def get_random_residue_pairs(representation, resolution,
         particles += select(representation,name=name,resolution=resolution)
     random_residue_pairs = []
     while len(random_residue_pairs)<=number:
-        p1 = choice(particles)
-        p2 = choice(particles)
+        p1 = random.choice(particles)
+        p2 = random.choice(particles)
         if max_distance is not None and \
            core.get_distance(core.XYZ(p1), core.XYZ(p2)) > max_distance:
             continue
-        r1 = choice(IMP.pmi.tools.get_residue_indexes(p1))
-        r2 = choice(IMP.pmi.tools.get_residue_indexes(p2))
+        r1 = random.choice(IMP.pmi.tools.get_residue_indexes(p1))
+        r2 = random.choice(IMP.pmi.tools.get_residue_indexes(p2))
         if r1==r2 and avoid_same_particles: continue
         name1 = representation.get_prot_name_from_particle(p1)
         name2 = representation.get_prot_name_from_particle(p2)
@@ -1626,6 +1618,8 @@ def get_rbs_and_beads(hiers):
     rbs = set()
     beads = []
     rbs_ordered = []
+    if not hasattr(hiers,'__iter__'):
+        hiers = [hiers]
     for p in get_all_leaves(hiers):
         if IMP.core.RigidMember.get_is_setup(p):
             rb = IMP.core.RigidMember(p).get_rigid_body()
@@ -1642,6 +1636,171 @@ def get_rbs_and_beads(hiers):
             beads.append(p)
     return rbs_ordered,beads
 
+def shuffle_configuration(root_hier=None,
+                          max_translation=300., max_rotation=2.0 * pi,
+                          avoidcollision_rb=True, avoidcollision_fb=False,
+                          cutoff=10.0, niterations=100,
+                          bounding_box=None,
+                          excluded_rigid_bodies=None,
+                          hierarchies_excluded_from_collision=None,
+                          verbose=False):
+    """Shuffle particles. Used to restart the optimization.
+    The configuration of the system is initialized by placing each
+    rigid body and each bead randomly in a box with a side of
+    max_translation angstroms, and far enough from each other to
+    prevent any steric clashes. The rigid bodies are also randomly rotated.
+    @param root_hier Will find rigid bodies and flexible beads. Or just provide them
+    @param max_translation Max translation (rbs and flexible beads)
+    @param max_rotation Max rotation (rbs only)
+    @param avoidcollision_rigid check if the particle/rigid body was
+           placed close to another particle; uses the optional
+           arguments cutoff and niterations
+    @param avoidcollision_flexible Be careful only set to True if they don't start out overlapping!
+    @param cutoff Distance less than this is a collision
+    @param niterations How many times to try avoiding collision
+    @param bounding_box defined by ((x1,y1,z1),(x2,y2,z2))
+    @param excluded_rigid_bodies Don't shuffle these
+    @param hierarchies_excluded_from_collision Don't shuffle these
+    @param verbose Give more output
+    \note If you already have the hier split into rigid and flexible, that's faster
+    """
+
+    ### checking input
+    if root_hier is not None:
+        rigid_bodies,flexible_beads = get_rbs_and_beads(root_hier)
+
+    if len(rigid_bodies)>0:
+        mdl = rigid_bodies[0].get_model()
+    elif len(flexible_beads)>0:
+        mdl = flexible_beads[0].get_model()
+    else:
+        raise Exception("You passed something weird to shuffle_configuration")
+
+    if excluded_rigid_bodies is None:
+        excluded_rigid_bodies = []
+    if hierarchies_excluded_from_collision is None:
+        hierarchies_excluded_from_collision = []
+    if len(rigid_bodies) == 0:
+        print("shuffle_configuration: rigid bodies were not intialized")
+
+    ### gather all particles
+    gcpf = IMP.core.GridClosePairsFinder()
+    gcpf.set_distance(cutoff)
+    allparticleindexes = []
+    hierarchies_excluded_from_collision_indexes = []
+    for p in IMP.core.get_leaves(root_hier):
+        if IMP.core.XYZ.get_is_setup(p):
+            allparticleindexes.append(p.get_particle_index())
+        # remove the fixed densities particles out of the calculation
+        if IMP.core.RigidMember.get_is_setup(p) and IMP.core.Gaussian.get_is_setup(p):
+            hierarchies_excluded_from_collision_indexes.append(p.get_particle_index())
+    if not bounding_box is None:
+        ((x1, y1, z1), (x2, y2, z2)) = bounding_box
+        ub = IMP.algebra.Vector3D(x1, y1, z1)
+        lb = IMP.algebra.Vector3D(x2, y2, z2)
+        bb = IMP.algebra.BoundingBox3D(ub, lb)
+
+    allparticleindexes = list(
+        set(allparticleindexes) - set(hierarchies_excluded_from_collision_indexes))
+
+    print('shuffling', len(rigid_bodies), 'rigid bodies')
+    for rb in rigid_bodies:
+        if rb not in excluded_rigid_bodies:
+            if avoidcollision_rb:
+
+                rbindexes = rb.get_member_particle_indexes()
+
+                rbindexes = list(
+                    set(rbindexes) - set(hierarchies_excluded_from_collision_indexes))
+                otherparticleindexes = list(
+                    set(allparticleindexes) - set(rbindexes))
+
+                if len(otherparticleindexes) is None:
+                    continue
+
+            niter = 0
+            while niter < niterations:
+                rbxyz = (rb.get_x(), rb.get_y(), rb.get_z())
+
+                # overrides the perturbation
+                if not bounding_box is None:
+                    translation = IMP.algebra.get_random_vector_in(bb)
+                    old_coord=IMP.core.XYZ(rb).get_coordinates()
+                    rotation = IMP.algebra.get_random_rotation_3d()
+                    transformation = IMP.algebra.Transformation3D(
+                        rotation,
+                        translation-old_coord)
+                else:
+                    transformation = IMP.algebra.get_random_local_transformation(
+                        rbxyz,
+                        max_translation,
+                        max_rotation)
+
+                IMP.core.transform(rb, transformation)
+
+                if avoidcollision_rb:
+                    mdl.update()
+                    npairs = len(
+                        gcpf.get_close_pairs(
+                            mdl,
+                            otherparticleindexes,
+                            rbindexes))
+                    if npairs == 0:
+                        niter = niterations
+                    else:
+                        niter += 1
+                        if verbose:
+                            print("shuffle_configuration: rigid body placed close to other %d particles, trying again..." % npairs)
+                            print("shuffle_configuration: rigid body name: " + rb.get_name())
+                        if niter == niterations:
+                            raise ValueError("tried the maximum number of iterations to avoid collisions, increase the distance cutoff")
+                else:
+                    break
+
+    print('shuffling', len(flexible_beads), 'flexible beads')
+    for fb in flexible_beads:
+        if avoidcollision_fb:
+            fbindexes = IMP.get_indexes([fb])
+            otherparticleindexes = list(
+                    set(allparticleindexes) - set(fbindexes))
+            if len(otherparticleindexes) is None:
+                continue
+        niter = 0
+        while niter < niterations:
+            fbxyz = IMP.core.XYZ(fb).get_coordinates()
+            if not bounding_box is None:
+                # overrides the perturbation
+                translation = IMP.algebra.get_random_vector_in(bb)
+                transformation = IMP.algebra.Transformation3D(translation-fbxyz)
+            else:
+                transformation = IMP.algebra.get_random_local_transformation(
+                    fbxyz,
+                    max_translation,
+                    max_rotation)
+
+            if IMP.core.RigidBody.get_is_setup(fb): #for gaussians
+                d=IMP.core.RigidBody(fb)
+            else:
+                d=IMP.core.XYZ(fb)
+
+            IMP.core.transform(d, transformation)
+
+            if avoidcollision_fb:
+                mdl.update()
+                npairs = len(
+                    gcpf.get_close_pairs(
+                        mdl,
+                        otherparticleindexes,
+                        fbindexes))
+                if npairs == 0:
+                    niter = niterations
+                else:
+                    niter += 1
+                    print("shuffle_configuration: floppy body placed close to other %d particles, trying again..." % npairs)
+                    if niter == niterations:
+                        raise ValueError("tried the maximum number of iterations to avoid collisions, increase the distance cutoff")
+            else:
+                break
 
 class Colors(object):
     def __init__(self):

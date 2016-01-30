@@ -1,6 +1,6 @@
 """@namespace IMP.pmi.dof
    Create movers and setup constraints for PMI objects.
-* Start by creating the DegreesOfFreedom class with @code{.python} dof = IMP::pmi::dof::DegreesOfFreedom(model) @endcode
+* Start by creating the DegreesOfFreedom class with `dof = IMP::pmi::dof::DegreesOfFreedom(model)`
 * The various "create X" functions make movers for system components as well as setup necessary constraints.
 For each of these functions, you can generally pass PMI objects like IMP::pmi::Topology::Molecule or slices thereof.
  * DegreesOfFreedom.create_rigid_body() lets you rigidify a molecule (but allows you to also pass "nonrigid" components which move with the body and also independently)
@@ -9,8 +9,8 @@ rigidly but is not always constrained to be rigid (so you can later move the par
  * DegreesOfFreedom.create_flexible_beads() sets up particles to move individually
  * DegreesOfFreedom.setup_md() sets up particles to move with molecular dynamics. Note that this is not (yet) compatible with rigid bodies, and only some restraints.
  * DegreesOfFreedom.constrain_symmetry() makes a symmetry constraint so that clones automatically move with their references. If instead you want a softer restraint, check out IMP.pmi.restraints.stereochemistry.SymmetryRestraint.
-* When you are done you can access all movers with DegreesOfFreedom.get_movers(). If you have set up rigid, super rigid, or flexible beads, pass the movers to the @code{.text} monte_carlo_sample_objects @endcode argument of IMP.pmi.macros.ReplicaExchange0.
-* If you are running MD, you have to seperately pass the particles (also returned from DegreesOfFreedom.setup_md()) to the @code{.text} molecular_dynamics_sample_objects @endcode argument of IMP.pmi.macros.ReplicaExchange0.
+* When you are done you can access all movers with DegreesOfFreedom.get_movers(). If you have set up rigid, super rigid, or flexible beads, pass the movers to the `monte_carlo_sample_objects` argument of IMP.pmi.macros.ReplicaExchange0.
+* If you are running MD, you have to seperately pass the particles (also returned from DegreesOfFreedom.setup_md()) to the `molecular_dynamics_sample_objects` argument of [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0).
 """
 
 from __future__ import print_function
@@ -30,8 +30,11 @@ class DegreesOfFreedom(object):
     """
     def __init__(self,mdl):
         self.mdl = mdl
-        self.movers = []       # should store mover, underlying bodies, enabled?
-        self.particle_map = {} # map from particles/rb objects to relevant movers+constraints
+        self.movers = []
+        self.rigid_bodies = [] #stores rigid body objects
+        self.flexible_beads = [] # stores all beads including nonrigid members of rigid bodies
+
+        #self.particle_map = {} # map from particles/rb objects to relevant movers+constraints
         # internal mover  = [mover obj, list of particles, enabled?] ?
         # mover map = {particles/rbs : movers}
 
@@ -70,6 +73,7 @@ class DegreesOfFreedom(object):
                      IMP.pmi.tools.select_at_all_resolutions(hiers=hiers)]
 
         rb = IMP.atom.create_rigid_body(hiers)
+        self.rigid_bodies.append(rb)
         rb.set_coordinates_are_optimized(True)
         rb_mover = IMP.core.RigidBodyMover(rb,max_trans,max_rot)
         if name is not None:
@@ -86,6 +90,7 @@ class DegreesOfFreedom(object):
                 floatkeys = [IMP.FloatKey(4), IMP.FloatKey(5), IMP.FloatKey(6)]
                 rb_idxs = set(rb.get_member_indexes())
                 for h in nr_hiers:
+                    self.flexible_beads.append(h)
                     p = h.get_particle()
                     if not p.get_index() in rb_idxs:
                         raise Exception("You tried to create nonrigid members from "
@@ -165,7 +170,7 @@ class DegreesOfFreedom(object):
 
     def create_flexible_beads(self,
                               flex_parts,
-                              max_trans,
+                              max_trans=0.1,
                               get_all_resolutions=True):
         """Create a chain of flexible beads
         @param flex_parts        Can be one of the following inputs:
@@ -184,6 +189,7 @@ class DegreesOfFreedom(object):
             print('WARNING: No hierarchies were passed to create_flexible_beads()')
             return fb_movers
         for p in IMP.pmi.tools.get_all_leaves(hiers):
+            self.flexible_beads.append(IMP.atom.Hierarchy(p))
             if IMP.core.RigidMember.get_is_setup(p) or IMP.core.NonRigidMember.get_is_setup(p):
                 raise Exception("Cannot create flexible beads from members of rigid body")
             fb_movers.append(IMP.core.BallMover([p],max_trans))
@@ -277,3 +283,11 @@ class DegreesOfFreedom(object):
     def get_movers(self):
         """Should only return Enabled movers?"""
         return self.movers
+
+    def get_rigid_bodies(self):
+        """Return list of rigid body objects"""
+        return self.rigid_bodies
+
+    def get_flexible_beads(self):
+        """Return all flexible beads, including nonrigid members of rigid bodies"""
+        return self.flexible_beads

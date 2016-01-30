@@ -8,6 +8,27 @@ from collections import defaultdict
 from math import pi
 import os
 
+def resnums2str(res):
+    """Take iterable of TempResidues and return compatified string"""
+    if len(res)==0:
+        return ''
+    idxs = [r.get_index() for r in res]
+    idxs.sort()
+    all_ranges=[]
+    cur_range=[idxs[0],idxs[0]]
+    for idx in idxs[1:]:
+        if idx!=cur_range[1]+1:
+            all_ranges.append(cur_range)
+            cur_range=[idx,idx]
+        cur_range[1]=idx
+    all_ranges.append(cur_range)
+    ret = ''
+    for nr,r in enumerate(all_ranges):
+        ret+='%i-%i'%(r[0],r[1])
+        if nr<len(all_ranges)-1:
+            ret+=', '
+    return ret
+
 def get_structure(mdl,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_only=False):
     """read a structure from a PDB file and return a list of residues
     @param mdl The IMP model
@@ -312,6 +333,8 @@ def build_representation(mdl,rep,coord_finder):
             else:
                 # if unstructured, create necklace
                 input_coord = coord_finder.find_nearest_coord(min(r.get_index() for r in frag_res))
+                if input_coord is None:
+                    input_coord = rep.bead_default_coord
                 beads = build_necklace(mdl,
                                        frag_res,
                                        resolution,

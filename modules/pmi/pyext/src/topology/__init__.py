@@ -1,6 +1,6 @@
 """@namespace IMP.pmi.topology
 Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
-* Start by creating a System and then call System.create_state(). You can easily create a multistate system by calling this function multiples times.
+* Start by creating a System with `s = IMP.pmi.topology.System(mdl)` and then call System.create_state(). You can easily create a multistate system by calling this function multiples times.
 * For each State, add a Molecule (a uniquely named polymer) with State.create_molecule(). This function returns the Molecule object which can be passed to various PMI functions.
 * Some useful functions to help you set up your Molecules:
  * Access the sequence residues with slicing (Molecule[a:b]) or functions like Molecule.get_atomic_residues() and Molecule.get_non_atomic_residues(). These functions all return python sets for easy set arithmetic using & (and), | (or), - (difference)
@@ -9,7 +9,10 @@ Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
  * Molecule.create_clone() lets you set up a molecule with identical representations, just a different chain ID. Use Molecule.create_copy() if you want a molecule with the same sequence but that allows custom representations.
 * Once data has been added and representations chosen, call System.build() to create a canonical IMP hierarchy.
 * Following hierarchy construction, setup rigid bodies, flexible beads, etc in IMP::pmi::dof.
-Alternatively one can construct the entire topology and degrees of freedom via formatted text file with TopologyReader and IMP::pmi::macros::BuildModel()
+
+See a [comprehensive example](@ref examples/multiscale.py) for using these classes.
+
+Alternatively one can construct the entire topology and degrees of freedom via formatted text file with TopologyReader and IMP::pmi::macros::BuildModel(). This is used in the [PMI tutorial](@ref rnapolii_stalk).
 """
 
 from __future__ import print_function
@@ -323,6 +326,7 @@ class Molecule(_SystemBase):
                            resolutions=[],
                            bead_extra_breaks=[],
                            bead_ca_centers=True,
+                           bead_default_coord=[0,0,0],
                            density_residues_per_component=None,
                            density_prefix=None,
                            density_force_compute=False,
@@ -343,6 +347,8 @@ class Molecule(_SystemBase):
                The number is the first PDB-style index that belongs in the second bead
         @param bead_ca_centers Set to True if you want the resolution=1 beads to be at CA centers
                (otherwise will average atoms to get center). Defaults to True.
+        @param bead_default_coord Advanced feature. Normally beads are placed at the nearest structure.
+               If no structure provided (like an all bead molecule), the beads go here.
         @param density_residues_per_component Create density (Gaussian Mixture Model)
                for these residues. Must also supply density_prefix
         @param density_prefix Prefix (assuming '.txt') to read components from or write to.
@@ -412,6 +418,7 @@ class Molecule(_SystemBase):
                                                     resolutions,
                                                     bead_extra_breaks,
                                                     bead_ca_centers,
+                                                    bead_default_coord,
                                                     density_residues_per_component,
                                                     density_prefix,
                                                     density_force_compute,
@@ -445,6 +452,7 @@ class Molecule(_SystemBase):
                                               old_rep.bead_resolutions,
                                               old_rep.bead_extra_breaks,
                                               old_rep.bead_ca_centers,
+                                              old_rep.bead_default_coord,
                                               old_rep.density_residues_per_component,
                                               old_rep.density_prefix,
                                               old_rep.density_voxel_size,
@@ -454,15 +462,9 @@ class Molecule(_SystemBase):
                 self.coord_finder = self.mol_to_clone.coord_finder
 
             # give a warning for all residues that don't have representation
-            first = True
-            for r in self.residues:
-                if r not in self.represented:
-                    if first:
-                        print('WARNING: Residues without representation: ',end="")
-                        first = False
-                    print(r,'',end='')
-            if not first:
-                print()
+            no_rep = [r for r in self.residues if r not in self.represented]
+            if len(no_rep)>0:
+                print('WARNING: Residues without representation: ',system_tools.resnums2str(no_rep))
 
             # build all the representations
             # get the first available struture position
@@ -492,6 +494,7 @@ class Molecule(_SystemBase):
                     res.hier = new_hier
                 else:
                     res.hier = None
+        print('done building system')
         return self.hier
 
     def get_particles_at_all_resolutions(self,residue_indexes=None):
@@ -515,6 +518,7 @@ class _Representation(object):
                  bead_resolutions,
                  bead_extra_breaks,
                  bead_ca_centers,
+                 bead_default_coord,
                  density_residues_per_component,
                  density_prefix,
                  density_force_compute,
@@ -524,6 +528,7 @@ class _Representation(object):
         self.bead_resolutions = bead_resolutions
         self.bead_extra_breaks = bead_extra_breaks
         self.bead_ca_centers = bead_ca_centers
+        self.bead_default_coord = bead_default_coord
         self.density_residues_per_component = density_residues_per_component
         self.density_prefix = density_prefix
         self.density_force_compute = density_force_compute

@@ -18,22 +18,31 @@ Most PMI classes wrap multiple IMP classes and functions that are commonly combi
 While this greatly improves usability, it can reduce flexibility. Let us know if you want to do something not currently supported.
 
 The typical flow of a PMI modeling script is as follows.
-* [Topology](@ref IMP::pmi::topology): create a System, States, Molecules, add structure and representation
-* [DegreesOfFreedom](@ref IMP::pmi::dof): setup rigid bodies, flexible beads, and other constraints.
-* [Restraints](@ref IMP::pmi::restraints): restrain your system with theoretical or experimental data
-* [Sample](@ref IMP::pmi::macros::ReplicaExchange0) your system with replica exchange (including Monte Carlo or Molecular Dynamics or both)
+ - [Topology](@ref IMP::pmi::topology): create a [System](@ref IMP::pmi::topology::System), [States](@ref IMP::pmi::topology::State), [Molecules](@ref IMP::pmi::topology::Molecule), add structure and representation
+ - [DegreesOfFreedom](@ref IMP::pmi::dof): setup rigid bodies, flexible beads, and other constraints.
+ - [Restraints](@ref IMP::pmi::restraints): restrain your system with theoretical or experimental data
+ - [Sample](@ref IMP::pmi::macros::ReplicaExchange0) your system with replica exchange (including Monte Carlo or Molecular Dynamics or both)
+
+See a [comprehensive example](@ref examples/multiscale.py) for using these classes.
 
 # Automating model construction
-We have implemented the TopologyReader(@ref IMP::pmi::topology::TopologyReader) for automatically doing the first two bullet points above:
+We have implemented the [TopologyReader](@ref IMP::pmi::topology::TopologyReader) for automatically doing the first two bullet points above:
 reading in structure data, creating representations, and setting some basic degrees of freedom.
 See the [PMI tutorial](@ref rnapolii_stalk) for a complete explanation of how to use this class.
 
-# Resolution in PMI
+# Multi-scale representation in PMI
+One can create multiple simultaneous representations in PMI (see IMP::pmi::topology::add_representation()). Here is a brief overview:
+ - beads: Groups of residues. The "resolution" here is the number of residues per bead (except resolution 0, which corresponds to atomic resolution). For regions with known structure, these are created by averaging along the backbone. Otherwise they are spheres with the approximately correct radius for unstructured protein.
+ - densities: These are approximated electron density, in the form of [Gaussians](@ref IMP::core::Gaussians). For structured regions we fit a Gaussian Mixture Model (GMM) to the atomic positions. The key number here is residues_per_component: lower number means more approximate. Currently this representation is only used in the [GaussianEMRestraint](@ref IMP::pmi::restraints::GaussianEMRestraint) but we plan to use them for excluded volume, etc.
+ - ideal helices: These are actually resolution=1 bead representations at the approximate locations of a helix.
+
+See a longer discussion of resolutions [here](@ref pmi_resolution).
+
 Check out some examples or [systems](http://integrativemodeling.org/systems/?tag=PMI) that use PMI.
 
 _Author(s)_: Riccardo Pellarin, Charles Greenberg, Daniel Saltzberg, Peter Cimermancic,  Ben Webb, Daniel Russel,  Elina Tjioe, Seung Joong Kim, Max Bonomi, Yannick Spill
 
-_Maintainer_: Riccardo Pellarin
+_Maintainers_: Riccardo Pellarin, Charles Greenberg, Daniel Saltzberg
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

@@ -59,6 +59,13 @@ class TestDOF(IMP.test.TestCase):
                                               test_mode=True)
         rex.execute_macro()
 
+    def test_big_rigid_body(self):
+        """test you can create a rigid body from 3 molecules"""
+        mdl = IMP.Model()
+        mols = self.init_topology3(mdl)
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        mvs = dof.create_rigid_body(mols)
+        self.assertEqual(len(mvs),1)
 
     def test_mc_super_rigid_body(self):
         mdl = IMP.Model()
