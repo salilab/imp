@@ -1,7 +1,5 @@
 ## \example pmi/multiscale.py
-
-"""This script shows how to represent a system
-At multiple scales, including electron densities.
+"""This script shows how to represent a system at multiple scales and do basic sampling.
 """
 
 import IMP
@@ -13,55 +11,77 @@ import IMP.pmi.topology
 import IMP.pmi.dof
 import IMP.pmi.macros
 import IMP.pmi.restraints
-import IMP.pmi.restraints.em
+import IMP.pmi.restraints.stereochemistry
+
+###################### SYSTEM SETUP #####################
+# Read sequences etc
+seqs = IMP.pmi.topology.Sequences('data/1WCM.fasta')
+components = ["Rpb1","Rpb2","Rpb3","Rpb4"]
+chains = "ABCD"
+beadsize = 10
 
 # Setup System and add a State
 mdl = IMP.Model()
 s = IMP.pmi.topology.System(mdl)
-st1 = s.create_state()
+st = s.create_state()
 
-# Read sequences and create Molecules
-seqs = IMP.pmi.topology.Sequences('data/gcp2.fasta')
-gcp2 = st1.create_molecule("GCP2",sequence=seqs["GCP2_YEAST"],chain_id='A')
+# Add Molecules for each component as well as representations
+mols = []
+for n in range(len(components)):
+    print('PMI: setting up',components[n],'1WCM:'+chains[n])
+    mol = st.create_molecule(                      # create molecule
+        components[n],
+        sequence=seqs['1WCM:'+chains[n]],
+        chain_id=chains[n])
+    atomic = mol.add_structure('data/1WCM_fitted.pdb',            # read in structure data
+                               chain_id=chains[n],
+                               offset=0)
+    mol.add_representation(atomic,                 # res 1,10 for structured regions
+                           resolutions=[1,10])
+    mol.add_representation(mol[:]-atomic,          # res 10 for unstructured regions
+                           resolutions=[beadsize])
+    mols.append(mol)
 
-# Add structure. This function returns a list of the residues that now have structure
-a1 = gcp2.add_structure('data/gcp2.pdb',
-                        chain_id='A')
-
-# Add representations. For structured regions, created a few beads as well as densities
-#  For unstructured regions, create a single bead level and set those up as densities
-gcp2.add_representation(a1,
-                        resolutions=[10,100],
-                        density_prefix='data/gcp2_gmm',
-                        density_residues_per_component=20,
-                        density_voxel_size=3.0)
-gcp2.add_representation(gcp2.get_non_atomic_residues(),
-                        resolutions=[10],
-                        setup_particles_as_densities=True)
-
-# When you call build, this actually makes the beads and fits the GMMs
-#  This returns a canonical IMP hierarchy
-hier = s.build()
-IMP.atom.show_molecular_hierarchy(hier)
+# calling System.build() creates all States and Molecules (and their representations)
+#  Once you call build(), anything without representation is destroyed.
+#  You can still use handles like molecule[a:b], molecule.get_atomic_residues() or molecule.get_non_atomic_residues()
+#  However these functions will only return BUILT representations
+root_hier = s.build()
 
 # Setup degrees of freedom
-#  This automatically selects all representations including densities
+#  The DOF functions automatically select all resolutions
+#  Objects passed to nonrigid_parts move with the frame but also have their own independent mover.
 dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-dof.create_rigid_body(gcp2,
-                      nonrigid_parts=gcp2.get_non_atomic_residues())
+for mol in mols:
+    dof.create_rigid_body(mol,
+                          nonrigid_parts=mol.get_non_atomic_residues())
 
-# Setup Gaussian EM restraint
-density_ps = IMP.atom.Selection(gcp2.get_hierarchy(),representation_type = IMP.atom.DENSITIES).get_selected_particles() + \
-             [h.get_hierarchy() for h in gcp2.get_non_atomic_residues()]
-gem = IMP.pmi.restraints.em.GaussianEMRestraint(density_ps,
-                                                'data/gcp2_gmm.txt')
-gem.add_to_model()
 
+###################### RESTRAINTS #####################
+output_objects = [] # keep a list of functions that need to be reported
+
+# Connectivity keeps things connected along the backbone (ignores if inside same rigid body)
+crs = []
+for mol in mols:
+    cr = IMP.pmi.restraints.stereochemistry.ConnectivityRestraint(mol)
+    cr.add_to_model()
+    output_objects.append(cr)
+    crs.append(cr)
+
+# Excluded volume - automatically more efficient due to rigid bodies
+evr = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(included_objects = mols)
+evr.add_to_model()
+output_objects.append(evr)
+
+
+###################### SAMPLING #####################
+# Run replica exchange Monte Carlo sampling
 rex=IMP.pmi.macros.ReplicaExchange0(mdl,
-                                    root_hier=st1.get_hierarchy(),
-                                    monte_carlo_sample_objects=dof.get_movers(),
-                                    global_output_directory='gcp2_multiscale/',
-                                    number_of_frames=10,
+                                    root_hier=root_hier,                          # pass the root hierarchy
+                                    crosslink_restraints=crs,                     # will display like XLs
+                                    monte_carlo_sample_objects=dof.get_movers(),  # pass MC movers
+                                    global_output_directory='multiscale_output/',
+                                    output_objects=output_objects,
                                     monte_carlo_steps=10,
-                                    test_mode=True)
+                                    number_of_frames=100)
 rex.execute_macro()

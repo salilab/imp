@@ -161,8 +161,6 @@ class ConnectivityRestraint(object):
         return len(self.rs.get_restraints())
 
 
-
-
 class ExcludedVolumeSphere(object):
     """A class to create an excluded volume restraint for a set of particles at a given resolution.
     Can be initialized as a bipartite restraint between two sets of particles.
@@ -253,7 +251,7 @@ class ExcludedVolumeSphere(object):
         self.rs.add_restraint(evr)
 
     def add_excluded_particle_pairs(self, excluded_particle_pairs):
-        # add pairs to be filtered when calculating  the score
+        # add pairs to be filtered when calculating the score
         lpc = IMP.container.ListPairContainer(self.mdl)
         lpc.add(IMP.get_indexes(excluded_particle_pairs))
         icpf = IMP.container.InContainerPairFilter(lpc)

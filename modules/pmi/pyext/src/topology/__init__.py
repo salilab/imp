@@ -1,7 +1,8 @@
 """@namespace IMP.pmi.topology
 Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
-* Start by creating a System with `s = IMP.pmi.topology.System(mdl)` and then call System.create_state(). You can easily create a multistate system by calling this function multiples times.
-* For each State, add a Molecule (a uniquely named polymer) with State.create_molecule(). This function returns the Molecule object which can be passed to various PMI functions.
+* Start by creating a System with `mdl = IMP.Model(); s = IMP.pmi.topology.System(model)`. The system will store all the states.
+* Then call System.create_state(). You can easily create a multistate system by calling this function multiples times.
+* For each State, call State.create_molecule() to add a Molecule (a uniquely named polymer). This function returns the Molecule object which can be passed to various PMI functions.
 * Some useful functions to help you set up your Molecules:
  * Access the sequence residues with slicing (Molecule[a:b]) or functions like Molecule.get_atomic_residues() and Molecule.get_non_atomic_residues(). These functions all return python sets for easy set arithmetic using & (and), | (or), - (difference)
  * Molecule.add_structure() to add structural information from a PDB file.
@@ -10,7 +11,7 @@ Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
 * Once data has been added and representations chosen, call System.build() to create a canonical IMP hierarchy.
 * Following hierarchy construction, setup rigid bodies, flexible beads, etc in IMP::pmi::dof.
 
-See a [comprehensive example](@ref examples/multiscale.py) for using these classes.
+See a [comprehensive example](https://integrativemodeling.org/nightly/doc/ref/pmi_2multiscale_8py-example.html) for using these classes.
 
 Alternatively one can construct the entire topology and degrees of freedom via formatted text file with TopologyReader and IMP::pmi::macros::BuildModel(). This is used in the [PMI tutorial](@ref rnapolii_stalk).
 """
@@ -494,7 +495,7 @@ class Molecule(_SystemBase):
                     res.hier = new_hier
                 else:
                     res.hier = None
-        print('done building system')
+        print('done building',self.get_hierarchy())
         return self.hier
 
     def get_particles_at_all_resolutions(self,residue_indexes=None):

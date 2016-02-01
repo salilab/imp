@@ -285,6 +285,9 @@ class ReplicaExchange0(object):
         sw = IMP.pmi.tools.Stopwatch()
         self.output_objects.append(sw)
 
+        if self.root_hier is not None:
+            self.output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
+
         print("Setting up stat file")
         output = IMP.pmi.output.Output(atomistic=self.vars["atomistic"])
         low_temp_stat_file = globaldir + \

@@ -3,7 +3,7 @@
 
 PMI restraints generally wrap IMP restraints. Typical features in PMI restraints are:
  - Easy setup: for example, you can usually create one with a PMI [Molecule](@ref IMP::pmi::topology::Molecule) or a slice from one.
- - Fast setup from data files. For example you can set up the CrossLinkingMassSpectrometryRestraint by reading in a crosslink file into a [database](@ref IMP::pmi::io::crosslink::CrossLinkDataBase) (see [example](@ref examples/cross-link/cross-link_ms.ipynb)).
+ - Fast setup from data files. For example you can set up the [CrossLinkingMassSpectrometryRestraint](@ref IMP::pmi::restraints::crosslinking::CrossLinkingMassSpectrometryRestraint) by reading in a crosslink file into a [database](@ref IMP::pmi::io::crosslink::CrossLinkDataBase).
  - Useful output: reporting functions which are put into log files when running [ReplicaExchange](@ref IMP::pmi::macros::ReplicaExchange0).
 """
 
