@@ -25,7 +25,7 @@ endforeach(lib)
 
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
-# NOTE: Singular variables for this library, plural for libraries this this lib depends on.
+# NOTE: Singular variables for this library, plural for libraries that this lib depends on.
 set(%(PKGNAME)s_PROCESS_INCLUDES %(PKGNAME)s_INCLUDE_DIR)
 set(%(PKGNAME)s_PROCESS_LIBS %(PKGNAME)s_LIBRARY)
 
