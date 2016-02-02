@@ -39,7 +39,7 @@ if ("${%(PKGNAME)s_LIBRARY}" MATCHES ".*NOTFOUND.*"
 else()
   check_compiles("_found" "%(pkgname)s" "%(PKGNAME)s" "%(includes)s" "${%(PKGNAME)s_INCLUDE_DIR}" "${%(PKGNAME)s_LIBRARIES}" %(PKGNAME)s_ok_ok)
   if(${%(PKGNAME)s_ok_ok} MATCHES "1")
-    message(STATUS "Found %(pkgname)s")
+    message(STATUS "Found %(full_name)s")
   else()
     %(on_failure)s
   endif()

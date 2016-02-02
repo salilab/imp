@@ -98,7 +98,7 @@ def make_dependency_check(descr_path, module, module_path):
 endif(DEFINED %(PKGNAME)s_INTERNAL)""" % descr
         else:
             descr["on_failure"] = """message("%s not found")\nfile(WRITE "${CMAKE_BINARY_DIR}/data/build_info/%s" "ok=False")""" % (
-                name, name)
+                descr['full_name'], name)
             descr["on_setup"] = ""
         dep_template.write(filename, descr)
     return filename

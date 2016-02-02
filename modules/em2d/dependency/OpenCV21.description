@@ -1,3 +1,4 @@
+full_name="OpenCV (exactly version 2.1)"
 libraries="cv:cxcore:highgui"
 headers="opencv/cv.h:opencv/cvver.h"
 body="""

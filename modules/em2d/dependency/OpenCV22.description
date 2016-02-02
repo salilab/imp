@@ -1,3 +1,4 @@
+full_name="OpenCV 2.2 or later"
 pkg_config_name="opencv"
 libraries="opencv_core:opencv_imgproc:opencv_highgui:opencv_contrib"
 headers="opencv2/core/core.hpp:opencv2/imgproc/imgproc.hpp:opencv2/highgui/highgui.hpp:opencv2/core/version.hpp"

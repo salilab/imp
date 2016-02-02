@@ -283,6 +283,7 @@ def get_dependency_description(path):
     if d['pkg_config_name'] is None:
         d['pkg_config_name'] = d['name'].lower()
     return {"name": d['name'],
+            "full_name": d.get('full_name', d['name']),
             "pkg_config_name": d['pkg_config_name'],
             "headers": passheaders,
             "libraries": passlibs,
