@@ -41,7 +41,7 @@ class Tests(IMP.test.TestCase):
                                                  IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb) + IMP.algebra.Vector3D(j * 20, j * 20, j * 20), 2))
                     IMP.atom.Mass.setup_particle(p, 1)
                     ps.append(p)
-            dmap = IMP.em.particles2density(ps, 1, 1)
+            dmap = IMP.em.particles2density(ps, 10, 1)
             con_comp = IMP.multifit.get_connected_components(dmap, 0.001, 0.5)
             for c in con_comp:
                 for ind in c:
