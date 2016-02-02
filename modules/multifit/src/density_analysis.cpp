@@ -59,7 +59,7 @@ class DensitySegmentationByCommunities {
   IntsList calculate_connected_components();
 
  protected:
-  Pointer<em::DensityMap> dmap_;
+  PointerMember<em::DensityMap> dmap_;
   DensityGraph g_;
   float dens_t_;
   std::vector<float> weights_;
