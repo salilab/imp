@@ -37,7 +37,7 @@ class Tests(IMP.test.TestCase):
         cols = 128
         pixel_size = 1.5
         # for generating projections, use a very high resolution
-        resolution = 1
+        resolution = 8.5
         options = em2d.ProjectingOptions(pixel_size, resolution)
         projections = em2d.get_projections(particles, proj_params,
                                            rows, cols, options)

@@ -30,12 +30,14 @@ class Tests(IMP.test.TestCase):
         img = em2d.Image()
         img.set_size(80, 80)
         srw = em2d.SpiderImageReaderWriter()
+
+        ##Is the issue resolution for this test basedon old code?
         resolution = 5
         pixel_size = 1.5
         options = em2d.ProjectingOptions(pixel_size, resolution)
         ls = core.get_leaves(prot)
         em2d.get_projection(img, ls, reg, options)
-        # img.write("rbfit_test_image.spi",srw)
+        #img.write("rbfit_test_image.spi",srw)
         # set restraint
         score_function = em2d.EM2DScore()
         rb_fit = em2d.RigidBodiesImageFitRestraint(score_function,
@@ -65,7 +67,7 @@ class Tests(IMP.test.TestCase):
 
         # Check that the value is a perfect registration
         score = rb_fit.evaluate(False)
-        # print "score ...", score
+        print "score ...", score
         # It seems that projecting with the masks is slightly less accurate
         # I have to establish a tolerance of 0.03
         self.assertAlmostEqual(score, 0, delta=0.03,
