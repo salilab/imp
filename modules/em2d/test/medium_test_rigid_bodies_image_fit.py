@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.core as core
 import IMP.test
@@ -67,7 +68,7 @@ class Tests(IMP.test.TestCase):
 
         # Check that the value is a perfect registration
         score = rb_fit.evaluate(False)
-        print "score ...", score
+        print("score ...", score)
         # It seems that projecting with the masks is slightly less accurate
         # I have to establish a tolerance of 0.03
         self.assertAlmostEqual(score, 0, delta=0.03,
