@@ -21,21 +21,25 @@
 IMPISD_BEGIN_NAMESPACE
 
 CrossLinkMSRestraint::CrossLinkMSRestraint(IMP::Model *m, double length,
+                                           bool get_log_prob,
                                            std::string name)
-    : Restraint(m, name), length_(length) {
+    : Restraint(m, name), length_(length), get_log_prob_(get_log_prob) {
     constr_ = 0;
 }
 
-CrossLinkMSRestraint::CrossLinkMSRestraint(
-    IMP::Model *m, IMP::ParticleIndexAdaptor lengthi,
-    std::string name)
-    : Restraint(m, name), lengthi_(lengthi) {
+CrossLinkMSRestraint::CrossLinkMSRestraint(IMP::Model *m, 
+                                           IMP::ParticleIndexAdaptor lengthi,
+                                           bool get_log_prob,
+                                           std::string name)
+    : Restraint(m, name), lengthi_(lengthi), get_log_prob_(get_log_prob) {
     constr_ = 1;
 }
 
-CrossLinkMSRestraint::CrossLinkMSRestraint(IMP::Model *m, double length, double slope,
+CrossLinkMSRestraint::CrossLinkMSRestraint(IMP::Model *m, 
+                                           double length, double slope,
+                                           bool get_log_prob,
                                            std::string name)
-    : Restraint(m, name), length_(length), slope_(slope) {
+    : Restraint(m, name), length_(length), slope_(slope), get_log_prob_(get_log_prob) {
     constr_ = 2;
 }
 
@@ -140,7 +144,12 @@ double CrossLinkMSRestraint::sphere_cap(float r1, float r2, float d) const {
 
 double CrossLinkMSRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     const {
-    double score = get_probability();
+    double score = 0;
+    if (get_log_prob_) {
+       score = -log(get_probability());
+    } else { 
+       score = get_probability();
+    }
     // std::cout << "here" << std::endl;
 
     // double prob=get_probability();
@@ -148,7 +157,7 @@ double CrossLinkMSRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     // else{score=-log(prob);};
     if (accum) {
     };
-
+    
     return score;
 }
 

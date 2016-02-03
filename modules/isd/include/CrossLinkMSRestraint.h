@@ -28,6 +28,7 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
     double length_;
     double slope_;
     int constr_;
+    bool get_log_prob_;
 
     double sphere_cap(float r1, float r2, float d) const;
 
@@ -38,13 +39,16 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
      */
 
     CrossLinkMSRestraint(IMP::Model* m, double length,
+                         bool get_log_prob = false,
                          std::string name = "CrossLinkMSRestraint%1%");
 
     CrossLinkMSRestraint(IMP::Model* m,
                          IMP::ParticleIndexAdaptor lengthi,
+                         bool get_log_prob = false,                         
                          std::string name = "CrossLinkMSRestraint%1%");
 
     CrossLinkMSRestraint(IMP::Model* m, double length, double slope,
+                         bool get_log_prob = false,
                          std::string name = "CrossLinkMSRestraint%1%");
 
     void add_contribution(const IMP::ParticleIndexPair& pps,
