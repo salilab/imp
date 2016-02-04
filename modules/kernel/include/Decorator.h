@@ -100,7 +100,7 @@ statements.
 lazily (at the time of the first use), and not be created as static
 variables. The reason for this is that initialized attribute keys result
 in space being allocated in decorators, even before they are used.\n\n
-Implementors should consult IMP::example::ExampleDecorator,
+Implementers should consult IMP::example::ExampleDecorator,
 IMP_DECORATOR_METHODS(), IMP_DECORATOR_WITH_TRAITS_METHODS(),
 IMP_DECORATOR_GET().
 

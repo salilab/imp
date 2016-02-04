@@ -22,7 +22,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 
     \see IMP::ClassnamePredicate
 
-    Implementors should see IMP_CLASSNAME_MODIFIER(). Also see
+    Implementers should see IMP_CLASSNAME_MODIFIER(). Also see
     ClassnameDerivativeModifier.
  */
 class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
