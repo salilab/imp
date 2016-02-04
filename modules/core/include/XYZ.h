@@ -98,7 +98,6 @@ class IMPCOREEXPORT XYZ : public Decorator {
   //! Get the vector from this particle to another
   algebra::Vector3D get_vector_to(const XYZ &b) const {
     return b.get_coordinates() - get_coordinates();
-    ;
   }
 
   //! Convert it to a vector.
