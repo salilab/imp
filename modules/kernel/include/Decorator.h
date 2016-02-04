@@ -46,7 +46,7 @@ print d0.get_coordinates()
 
 \note The `get_is_setup()` and `setup_particle()` functions mentioned below
 can take any of either an IMP::Model* and IMP::ParticleIndex
-pair, an IMP::Paricle* or another decorator to identify the particle.
+pair, an IMP::Particle* or another decorator to identify the particle.
 We use various of those below.
 
 Dealing with decorators and particles has two main parts
@@ -57,11 +57,11 @@ To set up a particle to be used with the IMP::core::XYZ decorator we do
 \code
 d0= IMP.core.XYZ.setup_particle(m, pi, IMP.algebra.Vector3D(0,2,3))
 \endcode
-The method calls also decorates the particle and returns the decorator
+The method call decorates the particle and also returns the decorator
 which can now be used to manipulate the particle. For example we can
 access the coordinates \c (0,2,3) by doing
 \code
-print d0.get_coordinates()
+print(d0.get_coordinates())
 \endcode
 We now say the particle is an XYZ particle. If that particle is
 encountered later when we do not have the existing decorator available,
@@ -70,7 +70,7 @@ we can decorate it again (since it is already set up) by doing
 d1= IMP.core.XYZ(m, pi)
 \endcode
 
-If you do not know if \c p has been set up for the XYZ decorator, you can
+If you do not know if \c pi has been set up for the XYZ decorator, you can
 ask with
 \code
 if IMP.core.XYZ.get_is_setup(m, pi):
@@ -80,9 +80,9 @@ More abstractly, decorators can be used to
 - maintain invariants: e.g. an IMP::atom::Bond particle always connects
   two other particles, both of which are IMP::atom::Bonded particles.
 - add functionality: e.g. you can get the coordinates as an
-  IMP::algebra::Vector3D
-- provide uniform names for attributes: so you do not use \quote{x} some places
-and \quote{X} other places
+  IMP::algebra::Vector3D.
+- provide uniform names for attributes: so you do not use \quote{x} in
+  some places and \quote{X} in other places.
 
 To see a list of all available decorators and to see what functions
 all decorators have, look at the list of classes which inherit from
