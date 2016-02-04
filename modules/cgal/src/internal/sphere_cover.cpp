@@ -33,17 +33,19 @@ void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D> > &ret,
   typedef ::CGAL::Cartesian_d< ::CGAL::Lazy_exact_nt< ::CGAL::Gmpq> > K;
   typedef typename K::Point_d P;
   typedef ::CGAL::Convex_hull_d<K> CH;
-  std::map<typename CH::Vertex_handle, int> indexes;
+  typedef CH::Vertex_handle VertexHandle;
+
+  std::map<VertexHandle, int> indexes;
   for (unsigned int rep = 0; rep < 10 * D; ++rep) {
     CH ch(D);
     for (unsigned int i = 0; i < ret.size(); ++i) {
       P p(D, ret[i].begin(), ret[i].end());
-      typename CH::Vertex_handle vh = ch.insert(p);
+      VertexHandle vh = ch.insert(p);
       indexes[vh] = i + 1;
       if (!ALL) {
         algebra::VectorD<D> nr = -ret[i];
         P p(D, nr.begin(), nr.end());
-        typename CH::Vertex_handle vh = ch.insert(p);
+        VertexHandle vh = ch.insert(p);
         indexes[vh] = -static_cast<int>(i) - 1;
       }
     }
