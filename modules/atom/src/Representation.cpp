@@ -206,6 +206,22 @@ Floats Representation::get_resolutions(RepresentationType type) const {
   return ret;
 }
 
+Representation get_representation(Hierarchy h, bool nothrow){
+  Hierarchy mhd(h.get_particle());
+  do {
+    mhd = mhd.get_parent();
+    if (mhd == Hierarchy()) {
+      if (nothrow)
+        return Representation();
+      else {
+        IMP_THROW("Hierarchy is not the child of a Representation " << h, ValueException);
+      }
+    }
+  } while (!Representation::get_is_setup(mhd.get_particle()));
+  Representation rd(mhd.get_particle());
+  return rd;
+}
+
 void Representation::show(std::ostream& out) const { out << get_resolutions(); }
 
 IMPATOM_END_NAMESPACE

@@ -88,6 +88,9 @@ inline double get_resolution(Hierarchy h) {
   return get_resolution(h.get_model(), h.get_particle_index());
 }
 
+//! Return the Representation object containing this hierarchy
+IMPATOMEXPORT Representation get_representation(Hierarchy h, bool nothrow = false);
+
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_REPRESENTATION_H */
