@@ -44,41 +44,42 @@ void Hierarchy::show(std::ostream &out, std::string delimiter) const {
     out << "nullptr Molecular Hierarchy node";
     return;
   }
-  out << "\"" << get_particle()->get_name() << "\"" << delimiter;
-  if (get_as_atom()) {
-    out << get_as_atom() << delimiter;
+  Particle *p = get_particle();
+  out << "\"" << p->get_name() << "\"" << delimiter;
+  if (Atom::get_is_setup(p)) {
+    out << Atom(p) << delimiter;
   }
-  if (get_as_residue()) {
-    out << get_as_residue() << delimiter;
+  if (Residue::get_is_setup(p)) {
+    out << Residue(p) << delimiter;
   }
-  if (get_as_chain()) {
-    out << get_as_chain() << delimiter;
-  } else if (get_as_molecule()) {
-    out << get_as_molecule() << delimiter;
+  if (Chain::get_is_setup(p)) {
+    out << Chain(p) << delimiter;
+  } else if (Molecule::get_is_setup(p)) {
+    out << Molecule(p) << delimiter;
   }
-  if (get_as_fragment()) {
-    out << get_as_fragment() << delimiter;
+  if (Fragment::get_is_setup(p)) {
+    out << Fragment(p) << delimiter;
   }
-  if (get_as_domain()) {
-    out << get_as_domain() << delimiter;
+  if (Domain::get_is_setup(p)) {
+    out << Domain(p) << delimiter;
   }
-  if (get_as_state()) {
-    out << get_as_state() << delimiter;
+  if (State::get_is_setup(p)) {
+    out << State(p) << delimiter;
   }
-  if (Copy::get_is_setup(get_particle())) {
-    out << Copy(get_particle());
+  if (Copy::get_is_setup(p)) {
+    out << Copy(p);
   }
-  if (core::RigidBody::get_is_setup(get_particle())) {
-    out << core::RigidBody(get_particle());
+  if (core::RigidBody::get_is_setup(p)) {
+    out << core::RigidBody(p);
   }
-  if (core::RigidMember::get_is_setup(get_particle())) {
+  if (core::RigidMember::get_is_setup(p)) {
     out << " rigid member: "
-        << core::RigidMember(get_particle()).get_rigid_body()->get_name();
+        << core::RigidMember(p).get_rigid_body()->get_name();
   }
-  if (get_as_xyzr()) {
-    out << get_as_xyzr().get_sphere();
-  } else if (get_as_xyz()) {
-    out << get_as_xyz().get_coordinates();
+  if (core::XYZR::get_is_setup(p)) {
+    out << core::XYZR(p).get_sphere();
+  } else if (core::XYZ::get_is_setup(p)) {
+    out << core::XYZ(p).get_coordinates();
   }
 }
 
@@ -117,17 +118,15 @@ struct MatchResidueIndex {
   MatchResidueIndex(int i) : index_(i) {}
   bool operator()(Particle *p) const {
     Hierarchy mhd(p);
-    if (mhd.get_as_residue()) {
-      return (mhd.get_as_residue().get_index() == index_);
+    if (Residue::get_is_setup(p)) {
+      return (Residue(p).get_index() == index_);
     } else {
       if (mhd.get_number_of_children() == 0) {
-        if (mhd.get_as_domain()) {
-          Domain dd = mhd.get_as_domain();
-          IntRange ir = dd.get_index_range();
+        if (Domain::get_is_setup(p)) {
+          IntRange ir = Domain(p).get_index_range();
           return ir.first <= index_ && ir.second > index_;
-        } else if (mhd.get_as_fragment()) {
-          Fragment fd = mhd.get_as_fragment();
-          return fd.get_contains_residue(index_);
+        } else if (Fragment::get_is_setup(p)) {
+          return Fragment(p).get_contains_residue(index_);
         } else {
           return false;
         }
@@ -164,18 +163,18 @@ struct Validator {
   Validator(bool pi) : print_info(pi) {}
   bool operator()(Hierarchy h, bool) {
     if (h.get_number_of_children() == 0) {
-      if (!h.get_as_xyzr()) {
+      if (!core::XYZR::get_is_setup(h)) {
         TEST_FAIL("Leaf " << h << " does not have coordinates and radius");
       }
-      if (!h.get_as_mass()) {
+      if (!Atom::get_is_setup(h)) {
         TEST_FAIL("Leaf " << h << " does not have mass");
       }
     }
-    if (h.get_as_atom() && h.get_number_of_children() != 0) {
+    if (Atom::get_is_setup(h) && h.get_number_of_children() != 0) {
       TEST_FAIL("Atoms cannot have children");
     }
-    if (h.get_as_atom()) {
-      Atom a = h.get_as_atom();
+    if (Atom::get_is_setup(h)) {
+      Atom a(h);
       if (a.get_atom_type().get_string().find("HET:") == std::string::npos) {
         try {
           get_residue(a);
@@ -203,7 +202,7 @@ struct Validator {
         }
         }*/
     }
-    if (h.get_as_residue()) {
+    if (Residue::get_is_setup(h)) {
       if (h.get_parent() && h.get_parent().get_child(0) == h &&
           (Residue(h).get_is_protein() || Residue(h).get_is_dna() ||
            Residue(h).get_is_rna())) {
@@ -215,7 +214,7 @@ struct Validator {
             /*if (!c.get_as_residue()) {
               TEST_FAIL("Sibling of residue is not residue at " << c);
               }*/
-            if (c.get_as_residue()) {
+            if (Residue::get_is_setup(c)) {
               Residue rc(c);
               if (Residue(h).get_is_protein() || Residue(h).get_is_dna() ||
                   Residue(h).get_is_rna()) {
@@ -224,9 +223,9 @@ struct Validator {
                 }
                 last_index = rc.get_index();
               }
-            } else if (c.get_as_fragment()) {
+            } else if (Fragment::get_is_setup(c)) {
               // should check order, but it is a pain at
-            } else if (c.get_as_domain()) {
+            } else if (Domain::get_is_setup(c)) {
               // should check order
             }
           }
@@ -235,8 +234,9 @@ struct Validator {
     }
     if (h.get_parent() != Hierarchy()) {
       Hierarchy p = h.get_parent();
-      if ((h.get_as_atom() && !p.get_as_residue()) ||
-          (p.get_as_residue() && (h.get_as_chain() || h.get_as_domain()))) {
+      if ((Atom::get_is_setup(h) && !Residue::get_is_setup(p)) ||
+          (Residue::get_is_setup(p)
+           && (Chain::get_is_setup(h) || Domain::get_is_setup(h)))) {
         TEST_FAIL("Node " << h << " cannot be a child of its parent "
                           << h.get_parent());
       }
@@ -249,17 +249,19 @@ struct Validator {
         }
         }*/
     }
-    if ((h.get_as_atom() && (h.get_as_residue() || h.get_as_domain() ||
-                             h.get_as_chain() || h.get_as_fragment())) ||
-        (h.get_as_residue() &&
-         (h.get_as_domain() || h.get_as_chain() || h.get_as_fragment())) ||
-        (h.get_as_fragment() && (h.get_as_domain()))) {
+    if ((Atom::get_is_setup(h)
+         && (Residue::get_is_setup(h) || Domain::get_is_setup(h) ||
+             Chain::get_is_setup(h) || Fragment::get_is_setup(h))) ||
+        (Residue::get_is_setup(h)
+         && (Domain::get_is_setup(h) || Chain::get_is_setup(h)
+             || Fragment::get_is_setup(h))) ||
+        (Fragment::get_is_setup(h) && (Domain::get_is_setup(h)))) {
       TEST_FAIL("Node cannot have more than one type at once "
-                << h << " " << static_cast<bool>(h.get_as_atom())
-                << static_cast<bool>(h.get_as_residue())
-                << static_cast<bool>(h.get_as_domain())
-                << static_cast<bool>(h.get_as_chain())
-                << static_cast<bool>(h.get_as_fragment()));
+                << h << " " << Atom::get_is_setup(h)
+                << Residue::get_is_setup(h)
+                << Domain::get_is_setup(h)
+                << Chain::get_is_setup(h)
+                << Fragment::get_is_setup(h));
     }
     return true;
   }
