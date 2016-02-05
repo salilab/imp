@@ -81,6 +81,7 @@ class Chain;
 class Molecule;
 class Mass;
 class State;
+class Representation;
 
 IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
 
@@ -203,6 +204,7 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     \see Fragment
     \see Mass
     \see State
+    \see Representation
  */
 class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   typedef core::Hierarchy H;

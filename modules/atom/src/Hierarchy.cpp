@@ -15,6 +15,7 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/atom/State.h>
 #include <IMP/atom/Copy.h>
+#include <IMP/atom/Representation.h>
 #include <IMP/core/LeavesRefiner.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/atom/estimates.h>
@@ -80,6 +81,9 @@ void Hierarchy::show(std::ostream &out, std::string delimiter) const {
     out << core::XYZR(p).get_sphere();
   } else if (core::XYZ::get_is_setup(p)) {
     out << core::XYZ(p).get_coordinates();
+  }
+  if (Representation::get_is_setup(get_particle())) {
+    out << Representation(get_particle());
   }
 }
 
