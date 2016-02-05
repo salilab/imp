@@ -40,23 +40,25 @@ class DegreesOfFreedom(object):
 
     def create_rigid_body(self,
                           rigid_parts,
-                          nonrigid_parts = None,
+                          nonrigid_parts=None,
                           max_trans=1.0,
                           max_rot=0.1,
                           nonrigid_max_trans = 0.1,
-                          get_all_resolutions=True,
+                          resolution='all',
                           name=None):
         """Create rigid body constraint and mover
-        @param rigid_parts    Can be one of the following inputs:
-                              IMP Selection, Hierarchy,
-                              PMI Molecule, Residue, or a list/set.
+        @param rigid_parts Can be one of the following inputs:
+           IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.
+           Must be uniform input, however. No mixing object types.
         @param nonrigid_parts Same input format as rigid_parts.
-                              Must be a subset of rigid_parts particles.
-        @param max_trans      Maximum rigid body translation
-        @param max_rot        Maximum rigid body rotation
+               Must be a subset of rigid_parts particles.
+        @param max_trans Maximum rigid body translation
+        @param max_rot Maximum rigid body rotation
         @param nonrigid_max_trans Maximum step for the nonrigid (bead) particles
-        @param get_all_resolutions If True, will search the hierarchies for all resolutions
-        @param name           Rigid body name (if None, use IMP default)
+        @param resolution Only used if you pass PMI objects. Probably you want 'all'.
+        @param name Rigid body name (if None, use IMP default)
+        \note If you want all resolutions, pass PMI objects because this function will get them all.
+        Alternatively you can do your selection elsewhere and just pass hierarchies.
         """
 
         rb_movers = []
@@ -64,14 +66,12 @@ class DegreesOfFreedom(object):
         # ADD CHECK: these particles are not already part of some RB or SRB
 
         ### setup RB
-        hiers = IMP.pmi.tools.get_hierarchies(rigid_parts)
+        hiers = IMP.pmi.tools.input_adaptor(rigid_parts,
+                                            resolution,
+                                            flatten=True)
         if not hiers:
             print("WARNING: No hierarchies were passed to create_rigid_body()")
             return []
-        if get_all_resolutions:
-            hiers = [IMP.atom.Hierarchy(h) for h in \
-                     IMP.pmi.tools.select_at_all_resolutions(hiers=hiers)]
-
         rb = IMP.atom.create_rigid_body(hiers)
         self.rigid_bodies.append(rb)
         rb.set_coordinates_are_optimized(True)
@@ -83,10 +83,9 @@ class DegreesOfFreedom(object):
 
         ### setup nonrigid parts
         if nonrigid_parts:
-            nr_hiers = IMP.pmi.tools.get_hierarchies(nonrigid_parts)
-            if get_all_resolutions:
-                nr_hiers = [IMP.atom.Hierarchy(h) for h in \
-                            IMP.pmi.tools.select_at_all_resolutions(hiers=nr_hiers)]
+            nr_hiers = IMP.pmi.tools.input_adaptor(nonrigid_parts,
+                                                   resolution,
+                                                   flatten=True)
             if nr_hiers:
                 floatkeys = [IMP.FloatKey(4), IMP.FloatKey(5), IMP.FloatKey(6)]
                 rb_idxs = set(rb.get_member_indexes())
@@ -112,17 +111,19 @@ class DegreesOfFreedom(object):
                                 max_rot=0.1,
                                 chain_min_length=None,
                                 chain_max_length=None,
-                                get_all_resolutions=True):
+                                resolution='all'):
         """Create SUPER rigid body mover from one or more hierarchies. Can also create chain of SRBs.
-        @param srb_parts         Can be one of the following inputs:
-                                 IMP Selection, Hierarchy,
-                                 PMI Molecule, Residue, or a list/set
-        @param max_trans         Maximum super rigid body translation
-        @param max_rot           Maximum super rigid body rotation
-        @param chain_min_length  Create a CHAIN of super rigid bodies - must provide list
-                                 This parameter is the minimum chain length.
-        @param chain_max_length  max chain length
-        @param get_all_resolutions If True, will search the hierarchies for all resolutions
+        @param srb_parts Can be one of the following inputs:
+               IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.
+               Must be uniform input, however. No mixing object types.
+        @param max_trans Maximum super rigid body translation
+        @param max_rot Maximum super rigid body rotation
+        @param chain_min_length Create a CHAIN of super rigid bodies - must provide list
+               This parameter is the minimum chain length.
+        @param chain_max_length Maximum chain length
+        @param resolution Only used if you pass PMI objects. Probably you want 'all'.
+        \note If you set the chain parameters, will NOT create an SRB from all of them together,
+        but rather in groups made from the outermost list.
         """
 
         srb_movers = []
@@ -130,7 +131,7 @@ class DegreesOfFreedom(object):
         ## organize hierarchies based on chains
         if chain_min_length is None and chain_max_length is None:
             # the "chain" is just everything together
-            h = IMP.pmi.tools.get_hierarchies(srb_parts)
+            h = IMP.pmi.tools.input_adaptor(srb_parts,resolution,flatten=True)
             if len(h)==0:
                 print('WARNING: No hierarchies were passed to create_super_rigid_body()')
                 return srb_movers
@@ -138,15 +139,7 @@ class DegreesOfFreedom(object):
         else:
             if not hasattr(srb_parts,'__iter__'):
                 raise Exception("You tried to make a chain without a list!")
-            srb_groups = [IMP.pmi.tools.get_hierarchies(h) for h in srb_parts]
-
-        ## expand to all resolutions if requested
-        if get_all_resolutions:
-            result = []
-            for srb_group in srb_groups:
-                result.append([IMP.atom.Hierarchy(p) \
-                               for p in IMP.pmi.tools.select_at_all_resolutions(hiers=srb_group)])
-            srb_groups = result
+            srb_groups = [IMP.pmi.tools.input_adaptor(h,resolution,flatten=True) for h in srb_parts]
 
         ## create SRBs either from all hierarchies or chain
         if chain_min_length is None and chain_max_length is None:
@@ -172,28 +165,27 @@ class DegreesOfFreedom(object):
     def create_flexible_beads(self,
                               flex_parts,
                               max_trans=0.1,
-                              get_all_resolutions=True):
+                              resolution='all'):
         """Create a chain of flexible beads
-        @param flex_parts        Can be one of the following inputs:
-                                 IMP Selection, Hierarchy,
-                                 PMI Molecule, Residue, or a list/set
-        @param max_trans         Maximum flexible bead translation
-        @param get_all_resolutions Grab all the representations
+        @param flex_parts Can be one of the following inputs:
+               IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.
+               Must be uniform input, however. No mixing object types.
+        @param max_trans Maximum flexible bead translation
+        @param resolution Only used if you pass PMI objects. Probably you want 'all'.
         """
 
         fb_movers = []
-        hiers = IMP.pmi.tools.get_hierarchies(flex_parts)
-        if get_all_resolutions:
-            hiers = [IMP.atom.Hierarchy(h) for h in \
-                     IMP.pmi.tools.select_at_all_resolutions(hiers=hiers)]
+        hiers = IMP.pmi.tools.input_adaptor(flex_parts,
+                                            resolution,
+                                            flatten=True)
         if not hiers or len(hiers)==0:
             print('WARNING: No hierarchies were passed to create_flexible_beads()')
             return fb_movers
-        for p in IMP.pmi.tools.get_all_leaves(hiers):
-            self.flexible_beads.append(IMP.atom.Hierarchy(p))
-            if IMP.core.RigidMember.get_is_setup(p) or IMP.core.NonRigidMember.get_is_setup(p):
+        for h in hiers:
+            self.flexible_beads.append(h)
+            if IMP.core.RigidMember.get_is_setup(h) or IMP.core.NonRigidMember.get_is_setup(h):
                 raise Exception("Cannot create flexible beads from members of rigid body")
-            fb_movers.append(IMP.core.BallMover([p],max_trans))
+            fb_movers.append(IMP.core.BallMover([h.get_particle()],max_trans))
         self.movers += fb_movers
         return fb_movers
 
@@ -207,52 +199,45 @@ class DegreesOfFreedom(object):
         """Setup particles for MD simulation. Returns all particles, just
         pass this to molecular_dynamics_sample_objects in ReplicaExchange0.
         @param hspec Can be one of the following inputs:
-                     IMP Selection, Hierarchy,
-                     PMI Molecule, Residue, or a list/set
+               IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.
+               Must be uniform input, however. No mixing object types.
         """
         vxkey = IMP.FloatKey('vx')
         vykey = IMP.FloatKey('vy')
         vzkey = IMP.FloatKey('vz')
-        hiers = IMP.pmi.tools.get_hierarchies(hspec)
+        hiers = IMP.pmi.tools.input_adaptor(hspec,flatten=True)
         mdl = hiers[0].get_model()
         all_ps = []
         for h in hiers:
-            for lv in IMP.core.get_leaves(h):
-                p = lv.get_particle()
-                IMP.core.XYZ(mdl,p.get_index()).set_coordinates_are_optimized(True)
-                mdl.add_attribute(vxkey,p.get_index(),0.0)
-                mdl.add_attribute(vykey,p.get_index(),0.0)
-                mdl.add_attribute(vzkey,p.get_index(),0.0)
-                all_ps.append(p)
+            p = h.get_particle()
+            IMP.core.XYZ(mdl,p.get_index()).set_coordinates_are_optimized(True)
+            mdl.add_attribute(vxkey,p.get_index(),0.0)
+            mdl.add_attribute(vykey,p.get_index(),0.0)
+            mdl.add_attribute(vzkey,p.get_index(),0.0)
+            all_ps.append(p)
         return all_ps
 
     def constrain_symmetry(self,
                            references,
                            clones,
                            transform,
-                           get_all_resolutions=True):
+                           resolution='all'):
         """Create a symmetry constraint. Checks:
         same number of particles
         disable ANY movers involving symmetry copies
          (later may support moving them WITH references,
          but requires code to propagate constraint)
-        @param references    Can be one of the following inputs:
-                                 IMP Selection, Hierarchy,
-                                 PMI Molecule, Residue, or a list/set
-        @param clones        Same format as references
-        @param transform     The transform that moves a clone onto a reference
-                             IMP.algebra.Transformation3D
-        @param get_all_resolutions Grab all the representations
+        @param references Can be one of the following inputs:
+               IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them
+        @param clones Same format as references
+        @param transform The transform that moves a clone onto a reference
+               IMP.algebra.Transformation3D
+        @param resolution Only used if you pass PMI objects. Probably you want 'all'.
         """
 
         # get all RBs and particles
-        href    = IMP.pmi.tools.get_hierarchies(references)
-        hclones = IMP.pmi.tools.get_hierarchies(clones)
-        if get_all_resolutions:
-            href = [IMP.atom.Hierarchy(h) for h in \
-                    IMP.pmi.tools.select_at_all_resolutions(hiers=href)]
-            hclones = [IMP.atom.Hierarchy(h) for h in \
-                       IMP.pmi.tools.select_at_all_resolutions(hiers=hclones)]
+        href    = IMP.pmi.tools.input_adaptor(references,resolution,flatten=True)
+        hclones = IMP.pmi.tools.input_adaptor(clones,flatten=True)
 
         ref_rbs,ref_beads = IMP.pmi.tools.get_rbs_and_beads(href)
         clones_rbs,clones_beads = IMP.pmi.tools.get_rbs_and_beads(hclones)

@@ -217,8 +217,8 @@ class Tests(IMP.test.TestCase):
                  ("A",  "A.3",    0.10, fastafile,  "1WCM:A",   "BEADS",         None,    (151,250,0),     None,       20,         None,      [0],     None,   None,  None,   None)]
 
 
-
-        bm=IMP.pmi.macros.BuildModel1(simo)
+        with IMP.allow_deprecated():
+            bm=IMP.pmi.macros.BuildModel1(simo)
         bm.build_model(domains,sequence_connectivity_scale=1.0)
 
         simo.set_rigid_bodies_max_rot(rbmaxrot)

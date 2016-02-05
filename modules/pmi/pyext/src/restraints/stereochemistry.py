@@ -21,10 +21,14 @@ class ConnectivityRestraint(object):
     """ This class creates a restraint between consecutive TempResidue objects OR an entire
     PMI MOlecule object. """
 
-    def __init__(self, objects, scale=1.0,
-        disorderedlength=10, upperharmonic=True):
+    def __init__(self,
+                 objects,
+                 scale=1.0,
+                 disorderedlength=10,
+                 upperharmonic=True,
+                 resolution=1):
         """
-        @param objects - a list of PMI TempResidues OR a single Molecule
+        @param objects - a list of hierarchies, PMI TempResidues OR a single Molecule
         @param scale - Riccardo knows what this is
         @param disorderedlength - This flag uses either disordered length
                      calculated for random coil peptides (True) or zero
@@ -34,26 +38,16 @@ class ConnectivityRestraint(object):
         @param upperharmonic - This flag uses either harmonic (False)
                      or upperharmonic (True) in the intra-pair
                      connectivity restraint.
+        @parm resolution The resolution to connect things at - only used if you pass PMI objects
         """
         self.label = "None"
         self.weight = 1.0
-        # If iterable, make sure that the list is non-zero and has only TempResidue objects
-        if hasattr(objects,'__iter__'):
-            if len(objects)==0:
-                raise Exception("Warning: ConnectivityRestraint - No objects passed")
-            for t in [type(a) for a in objects]:
-                if t is not IMP.pmi.topology.TempResidue:
-                    raise Exception('ConnectivityRestraint: can only handle a list of TempResidues at this time.  You passed a ', t)
-            objects = list(objects)
 
-        # If not iterable, make sure that the list is a molecule
-        else:
-            if type(objects) is not IMP.pmi.topology.Molecule:
-                raise Exception('ConnectivityRestraint: can only handle Molecule objects at this time.  You passed a ', t)
-            objects = list(objects.get_residues())
+        hiers = IMP.pmi.tools.input_adaptor(objects,resolution)
+        if len(hiers)>1:
+            raise Exception("ConnectivityRestraint: only pass stuff from one Molecule, please")
+        hiers = hiers[0]
 
-
-        hiers = IMP.pmi.tools.get_hierarchies(objects)
         self.kappa = 10  # No idea what this is
         self.m = list(hiers)[0].get_model()
         SortedSegments = []
@@ -134,7 +128,6 @@ class ConnectivityRestraint(object):
     def set_label(self, label):
         self.label = label
 
-
     def get_weight(self):
         return self.weight
 
@@ -164,7 +157,6 @@ class ConnectivityRestraint(object):
 class ExcludedVolumeSphere(object):
     """A class to create an excluded volume restraint for a set of particles at a given resolution.
     Can be initialized as a bipartite restraint between two sets of particles.
-
     # Potential addional function: Variable resolution for each PMI object.  Perhaps passing selection_tuples
     with (PMI_object, resolution)
     """
@@ -180,7 +172,7 @@ class ExcludedVolumeSphere(object):
         @param included_objects Can be one of the following inputs:
                IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set of them
         @param other_objects Initializes a bipartite restraint between included_objects and other_objects
-               Can be IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set of them
+               Same format as included_objects
         @param resolution The resolution particles at which to impose the restraint.
                By default, the coarsest particles will be chosen.
                If a number is chosen, for each particle, the closest
@@ -195,11 +187,15 @@ class ExcludedVolumeSphere(object):
         bipartite = False
 
         # gather IMP hierarchies from input objects
-        hierarchies = IMP.pmi.tools.get_hierarchies(included_objects)
+        hierarchies = IMP.pmi.tools.input_adaptor(included_objects,
+                                                  resolution,
+                                                  flatten=True)
         included_ps = []
         if other_objects is not None:
             bipartite = True
-            other_hierarchies = IMP.pmi.tools.get_hierarchies(other_objects)
+            other_hierarchies = IMP.pmi.tools.input_adaptor(other_objects,
+                                                            resolution,
+                                                            flatten=True)
             other_ps = []
 
         # perform selection
@@ -207,18 +203,15 @@ class ExcludedVolumeSphere(object):
             if hierarchies is None:
                 raise Exception("Must at least pass included objects")
             self.mdl = hierarchies[0].get_model()
-            for h in hierarchies:
-                included_ps += IMP.atom.Selection(h,resolution=resolution).get_selected_particles()
-                if bipartite:
-                    for h in other_hierarchies:
-                        other_ps += IMP.atom.Selection(h,resolution=resolution).get_selected_particles()
+            included_ps = [h.get_particle() for h in hierarchies]
+            if bipartite:
+                other_ps = [h.get_particle() for h in other_hierarchies]
         elif type(representation)==IMP.pmi.representation.Representation:
             self.mdl = representation.m
             included_ps = IMP.pmi.tools.select(
                 representation,
                 resolution=resolution,
                 hierarchies=hierarchies)
-
             if bipartite:
                 other_particles = IMP.pmi.tools.select(
                     representation,

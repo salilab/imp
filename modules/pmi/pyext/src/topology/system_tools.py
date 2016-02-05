@@ -52,10 +52,11 @@ def get_structure(mdl,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_on
         mh = mhs[model_num]
 
     # first update using offset:
-    for rr in IMP.atom.get_by_type(mh,IMP.atom.RESIDUE_TYPE):
-        IMP.atom.Residue(rr).set_index(IMP.atom.Residue(rr).get_index()+offset)
+    if offset!=0:
+        for rr in IMP.atom.get_by_type(mh,IMP.atom.RESIDUE_TYPE):
+            IMP.atom.Residue(rr).set_index(IMP.atom.Residue(rr).get_index()+offset)
 
-    if res_range==[]:
+    if res_range==[] or res_range==(1,-1):
         sel = IMP.atom.Selection(mh,chain=chain_id,atom_type=IMP.atom.AtomType('CA'))
     else:
         sel = IMP.atom.Selection(mh,chain=chain_id,residue_indexes=range(res_range[0],res_range[1]+1),
@@ -273,7 +274,6 @@ def build_representation(mdl,rep,coord_finder):
                                                IMP.atom.DENSITIES,
                                                rep.density_residues_per_component)
 
-
     # get continuous segments from residues
     segments = []
     rsort = sorted(list(rep.residues),key=lambda r:r.get_index())
@@ -324,7 +324,7 @@ def build_representation(mdl,rep,coord_finder):
                 else:
                     tempc = IMP.atom.Chain.setup_particle(IMP.Particle(mdl),"X")
                     for residue in frag_res:
-                        tempc.add_child(residue.hier)
+                        tempc.add_child(IMP.atom.create_clone(residue.hier))
                     beads = IMP.atom.create_simplified_along_backbone(tempc,resolution)
                     for bead in beads.get_children():
                         this_resolution.add_child(bead)

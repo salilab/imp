@@ -14,7 +14,7 @@ from math import log,pi,sqrt,exp
 import sys,os
 import random
 import time
-
+from collections import defaultdict
 def _get_restraint_set_key():
     if not hasattr(_get_restraint_set_key, 'pmi_rs_key'):
         _get_restraint_set_key.pmi_rs_key = IMP.ModelKey("PMI restraints")
@@ -1366,36 +1366,93 @@ class OrderedSet(collections.MutableSet):
 
 # -------------- PMI2 Tools --------------- #
 
-def get_hierarchies(stuff):
-    """ Given PMI Molecule/TempResidue or IMP object or a list of (one type) of them, return IMP hierarchies.
+def input_adaptor(stuff,
+                  pmi_resolution=0,
+                  flatten=False):
+    """Adapt things for PMI (degrees of freedom, restraints, ...)
+    Returns list of list of hierarchies, seperated into Molecules if possible.
+    (iterable of ^2) hierarchy -> returns input as list of list of hierarchies, only one entry.
+    (iterable of ^2) PMI::System/State/Molecule/TempResidue ->
+        returns residue hierarchies, grouped in molecules, at requested resolution
     @param stuff Can be one of the following inputs:
-           IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set of them
+           IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.
+           Must be uniform input, however. No mixing object types.
+    @param pmi_resolution For selecting, only does it if you pass PMI objects. Set it to "all"
+          if you want all resolutions!
+    @param flatten Set to True if you just want all hierarchies in one list.
+    \note since this relies on IMP::atom::Selection, this will not return any objects if they weren't built!
+    But there should be no problem if you request unbuilt residues, they should be ignored.
     """
-    if stuff is None:
-        return None
+
+    # if iterable (of iterable), make sure uniform type
+    def get_ok_iter(it):
+        type_set = set(type(a) for a in it)
+        if len(type_set)!=1:
+            raise Exception('input_adaptor: can only pass one type of object at a time')
+        xtp = type_set.pop()
+        return xtp,list(it)
+
     if hasattr(stuff,'__iter__'):
         if len(stuff)==0:
             return stuff
-        type_set = set(type(a) for a in stuff)
-        if len(type_set)!=1:
-            raise Exception('get_hierarchies: can only pass one type of object at a time')
-        tp = type_set.pop()
-        stuff = list(stuff)
+        tp,thelist = get_ok_iter(stuff)
+
+        # iter of iter of should be ok
+        if hasattr(next(iter(thelist)),'__iter__'):
+            flatlist = [i for sublist in thelist for i in sublist]
+            tp,thelist = get_ok_iter(flatlist)
+
+        stuff = thelist
     else:
         tp = type(stuff)
         stuff = [stuff]
 
-    if tp in (IMP.pmi.topology.System, IMP.pmi.topology.State, IMP.pmi.topology.Molecule,IMP.pmi.topology.TempResidue):
-        return [item.get_hierarchy() for item in stuff if item.get_hierarchy() is not None]
+    # now that things are ok, do selection if requested
+    hier_list = []
+    if tp in (IMP.pmi.topology.System,IMP.pmi.topology.State,
+              IMP.pmi.topology.Molecule,IMP.pmi.topology.TempResidue):
+        # if PMI, perform selection using gathered indexes
+        indexes_per_mol = defaultdict(list)
+        if tp==IMP.pmi.topology.System:
+            for system in stuff:
+                for state in system.get_states():
+                    for molecule in state.get_molecules():
+                        indexes_per_mol[molecule] += [r.get_index() for r in molecule.get_residues()]
+        elif tp==IMP.pmi.topology.State:
+            for state in stuff:
+                for molecule in state.get_molecules():
+                    indexes_per_mol[molecule] += [r.get_index() for r in molecule.get_residues()]
+        elif tp==IMP.pmi.topology.Molecule:
+            for molecule in stuff:
+                indexes_per_mol[molecule] += [r.get_index() for r in molecule.get_residues()]
+        elif tp==IMP.pmi.topology.TempResidue:
+            for tempres in stuff:
+                indexes_per_mol[tempres.get_molecule()].append(tempres.get_index())
+        for mol in indexes_per_mol:
+            if pmi_resolution=='all':
+                # because you select from the molecule,
+                #  this will start the search from the base resolution
+                ps = select_at_all_resolutions(mol.get_hierarchy(),
+                                               residue_indexes=indexes_per_mol[mol])
+            else:
+                sel = IMP.atom.Selection(mol.get_hierarchy(),
+                                         resolution=pmi_resolution,
+                                         residue_indexes=indexes_per_mol[mol])
+                ps = sel.get_selected_particles()
+            hier_list.append([IMP.atom.Hierarchy(p) for p in ps])
     else:
         try:
             if IMP.atom.Hierarchy.get_is_setup(stuff[0]):
-                return stuff
+                hier_list = stuff
             else:
-                raise Exception('get_hierarchies: you passed something of type',tp)
+                raise Exception('input_adaptor: you passed something of type',tp)
         except:
-            raise Exception('get_hierarchies: you passed something of type',tp)
+            raise Exception('input_adaptor: you passed something of type',tp)
 
+    if flatten:
+        return [h for sublist in hier_list for h in sublist]
+    else:
+        return hier_list
 
 def get_residue_type_from_one_letter_code(code):
     threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
@@ -1441,21 +1498,20 @@ def select_at_all_resolutions(hier=None,
             raise Exception("don't pass resolution or representation_type to this function")
 
         def get_resolutions(h):
-            while h:
-                if IMP.atom.Representation.get_is_setup(h):
-                    ret = [IMP.atom.Representation(h).get_resolutions(IMP.atom.BALLS),
-                           IMP.atom.Representation(h).get_resolutions(IMP.atom.DENSITIES)]
-                    return ret
-                h = h.get_parent()
-            return [[],[]]
+            rep = IMP.atom.get_representation(h)
+            ret = [IMP.atom.Representation(rep).get_resolutions(IMP.atom.BALLS),
+                   IMP.atom.Representation(rep).get_resolutions(IMP.atom.DENSITIES)]
+            return ret
 
         # gather resolutions
-        init_sel = IMP.atom.Selection(hsel,**kwargs)
+        # this only works if the base resolution is the highest one...
+        init_sel = IMP.atom.Selection(hsel,resolution=0,**kwargs)
         init_ps = init_sel.get_selected_particles()
         all_bead_res = OrderedSet()
         all_density_res = OrderedSet()
 
         for p in init_ps:
+            h = IMP.atom.Hierarchy(p)
             b,d = get_resolutions(IMP.atom.Hierarchy(p))
             all_bead_res |= OrderedSet(b)
             all_density_res |= OrderedSet(d)
@@ -1464,11 +1520,11 @@ def select_at_all_resolutions(hier=None,
         for res in all_bead_res:
             sel = IMP.atom.Selection(hsel,resolution=res,
                                      representation_type=IMP.atom.BALLS,**kwargs)
-            ret|=OrderedSet(sel.get_selected_particles())
+            ret |= OrderedSet(sel.get_selected_particles())
         for res in all_density_res:
             sel = IMP.atom.Selection(hsel,resolution=res,
                                      representation_type=IMP.atom.DENSITIES,**kwargs)
-            ret|=OrderedSet(sel.get_selected_particles())
+            ret |= OrderedSet(sel.get_selected_particles())
     return list(ret)
 
 

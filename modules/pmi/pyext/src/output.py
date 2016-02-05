@@ -13,11 +13,21 @@ import sys
 import RMF
 import numpy as np
 import operator
-from compiler.ast import flatten
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
+
+def _flatten(seq):
+    l = []
+    for elt in seq:
+        t = type(elt)
+        if t is tuple or t is list:
+            for elt2 in _flatten(elt):
+                l.append(elt2)
+        else:
+            l.append(elt)
+    return l
 
 class Output(object):
     """Class for easy writing of PDBs, RMFs, and stat files"""
@@ -339,7 +349,7 @@ class Output(object):
         self.dictionary_rmfs[name] = rh
 
     def add_restraints_to_rmf(self, name, objectlist):
-        flatobjectlist=flatten(objectlist)
+        flatobjectlist=_flatten(objectlist)
         for o in flatobjectlist:
             try:
                 rs = o.get_restraint_for_rmf()

@@ -75,6 +75,10 @@ output_objects.append(evr)
 
 
 ###################### SAMPLING #####################
+# First shuffle the system
+IMP.pmi.tools.shuffle_configuration(root_hier,
+                                    max_translation=30)
+
 # Run replica exchange Monte Carlo sampling
 rex=IMP.pmi.macros.ReplicaExchange0(mdl,
                                     root_hier=root_hier,                          # pass the root hierarchy

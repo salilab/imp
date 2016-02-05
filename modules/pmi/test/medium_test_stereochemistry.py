@@ -131,7 +131,6 @@ class StereochemistryTests(IMP.test.TestCase):
         mol.add_representation(mol.get_non_atomic_residues(), resolutions=[10])
         hier = s.build()
 
-        IMP.atom.show_molecular_hierarchy(hier)
         # Test that the correct number of particles are included
         #  (note, res1 is going to include the res10 beads because they're the only ones around)
         ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(included_objects=mol, resolution=1)

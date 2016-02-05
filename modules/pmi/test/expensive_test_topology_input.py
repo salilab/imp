@@ -6,7 +6,7 @@ import os
 import IMP.test
 import IMP.rmf
 import RMF
-
+import math
 def children_as_dict(h):
     cdict={}
     for c in h.get_children():
@@ -14,9 +14,8 @@ def children_as_dict(h):
     return cdict
 
 class TopologyReaderTests(IMP.test.TestCase):
-
     def test_reading(self):
-        '''Test basic reading'''
+        """Test basic reading"""
         topology_file=self.get_input_file_name("topology.txt")
         t=IMP.pmi.topology.TopologyReader(topology_file)
         self.assertEqual(len(t.component_list),3)
@@ -26,12 +25,13 @@ class TopologyReaderTests(IMP.test.TestCase):
         self.assertEqual(t.component_list[2].name,"Rpb4")
 
     def test_change_dir(self):
-        '''Test changing default pdb directory'''
+        """Test changing default pdb directory"""
         newdir="../../"
-        topology_file=self.get_input_file_name("topology.txt")
-        t=IMP.pmi.topology.TopologyReader(topology_file)
+        topology_file = self.get_input_file_name("topology.txt")
+        t = IMP.pmi.topology.TopologyReader(topology_file)
         t.set_dir("pdb_dir", newdir)
-        self.assertEqual(t.defaults["pdb_dir"], newdir)
+        self.assertEqual(os.path.abspath(t.pdb_dir),
+                         os.path.abspath(os.path.join('input',newdir)))
         self.assertEqual(t.component_list[0].pdb_file,
                          os.path.dirname(topology_file) \
                          + '/../../1WCM_map_fitted.pdb')
@@ -44,7 +44,7 @@ class TopologyReaderTests(IMP.test.TestCase):
         self.assertEqual(components[1].domain_name, "Rpb1_1")
 
     def test_round_trip(self):
-        '''Test reading and writing'''
+        """Test reading and writing"""
         topology_file=self.get_input_file_name("topology.txt")
         outfile = self.get_tmp_file_name("ttest.txt")
         t=IMP.pmi.topology.TopologyReader(topology_file)
@@ -58,16 +58,18 @@ class TopologyReaderTests(IMP.test.TestCase):
         self.assertEqual(t.component_list[2].name,"Rpb4")
 
     def test_build_read_gmms(self):
-        '''Test building with macro BuildModel using a topology file'''
+        """Test building with macro BuildModel using a topology file"""
         mdl = IMP.Model()
 
         topology_file=self.get_input_file_name("topology.txt")
         t=IMP.pmi.topology.TopologyReader(topology_file)
-        self.assertEqual(t.defaults['gmm_dir'],'./')
+        self.assertEqual(os.path.abspath(t.gmm_dir),
+                         os.path.abspath('input/'))
 
-        bm = IMP.pmi.macros.BuildModel(mdl,
-                                       component_topologies=t.component_list,
-                                       force_create_gmm_files=False)
+        with IMP.allow_deprecated():
+            bm = IMP.pmi.macros.BuildModel(mdl,
+                                           component_topologies=t.component_list,
+                                           force_create_gmm_files=False)
         rep = bm.get_representation()
 
         o = IMP.pmi.output.Output()
@@ -87,10 +89,10 @@ class TopologyReaderTests(IMP.test.TestCase):
         r1dict=children_as_dict(cdict["Rpb1"])
         self.assertEqual(len(r1dict["Rpb1_Res:1"].get_children()),6)
         r4dict=children_as_dict(cdict["Rpb4"])
-        self.assertEqual(len(r4dict["Densities"].get_children()[0].get_children()),3)
+        self.assertEqual(len(r4dict["Densities"].get_children()[0].get_children()),5)
 
     def test_build_create_gmms(self):
-        '''Test building with macro using sklearn to create stuff'''
+        """Test building with macro using sklearn to create stuff"""
         try:
             import sklearn
         except ImportError:
@@ -101,9 +103,10 @@ class TopologyReaderTests(IMP.test.TestCase):
         t=IMP.pmi.topology.TopologyReader(topology_file)
         t.set_dir("gmm_dir","../")
 
-        bm = IMP.pmi.macros.BuildModel(mdl,
-                                       component_topologies=t.component_list,
-                                       force_create_gmm_files=True)
+        with IMP.allow_deprecated():
+            bm = IMP.pmi.macros.BuildModel(mdl,
+                                           component_topologies=t.component_list,
+                                           force_create_gmm_files=True)
         rep = bm.get_representation()
 
         o = IMP.pmi.output.Output()
@@ -127,22 +130,77 @@ class TopologyReaderTests(IMP.test.TestCase):
         for output in ['../Rpb4.mrc', '../Rpb4.txt']:
             os.unlink(self.get_input_file_name(output))
 
-    def test_build_with_movers(self):
-        '''Check if rigid bodies etc are set up as requested'''
-        pass
+    def test_set_movers(self):
+        """Check if rigid bodies etc are set up as requested"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+        mdl = IMP.Model()
+        tfile = self.get_input_file_name('topology_new.txt')
+        input_dir = os.path.dirname(tfile)
+        t = IMP.pmi.topology.TopologyReader(tfile,
+                                            pdb_dir=input_dir,
+                                            fasta_dir=input_dir,
+                                            gmm_dir=input_dir)
+        self.assertEqual(t.component_list[0].pdb_file,
+                        os.path.join(input_dir,'1WCM_map_fitted.pdb'))
+        rbs = t.get_rigid_bodies()
+        srbs = t.get_super_rigid_bodies()
+        csrbs = t.get_chains_of_super_rigid_bodies()
+        self.assertEqual(rbs,[['Rpb1_1','Rpb1_2'],['Rpb4']])
+        self.assertEqual(srbs,[['Rpb1_1','Rpb1_2'],
+                               ['Rpb1_1','Rpb1_2','Rpb3','Rpb4'],
+                               ['Rpb3','Rpb4']])
+        self.assertEqual(csrbs,[['Rpb1_1','Rpb1_2'],['Rpb3']])
 
     def test_beads_only(self):
-        '''Test setting up BEADS-only'''
+        """Test setting up BEADS-only"""
         mdl = IMP.Model()
         topology_file = self.get_input_file_name("topology_beads.txt")
         t = IMP.pmi.topology.TopologyReader(topology_file)
-        bm = IMP.pmi.macros.BuildModel(mdl,
-                                       component_topologies=t.component_list)
+        with IMP.allow_deprecated():
+            bm = IMP.pmi.macros.BuildModel(mdl,
+                                           component_topologies=t.component_list)
         rep = bm.get_representation()
         p1 = IMP.pmi.tools.select(rep,name='detgnt')
         p2 = IMP.pmi.tools.select(rep,name='pom152')
         self.assertTrue(IMP.core.Gaussian.get_is_setup(p1[0]))
         self.assertTrue(IMP.core.Gaussian.get_is_setup(p2[0]))
+
+    def test_build_system(self):
+        """Test the new BuildSystem macro"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+        mdl = IMP.Model()
+        tfile = self.get_input_file_name('topology_new.txt')
+        input_dir = os.path.dirname(tfile)
+        t = IMP.pmi.topology.TopologyReader(tfile,
+                                            pdb_dir=input_dir,
+                                            fasta_dir=input_dir,
+                                            gmm_dir=input_dir)
+        bs = IMP.pmi.macros.BuildSystem(mdl)
+        bs.add_state(t)
+        root_hier, dof = bs.execute_macro()
+
+        # check a few selections
+        sel1 = IMP.atom.Selection(root_hier,molecule="Rpb1",resolution=1).get_selected_particles()
+        r1m = [1,8,10,10,10] #missing region lengths
+        self.assertEqual(len(sel1),(1274-sum(r1m)+sum([int(math.ceil(float(r)/5)) for r in r1m])))
+
+        sel3 = IMP.atom.Selection(root_hier,molecule="Rpb3",resolution=10).get_selected_particles()
+        self.assertEqual(len(sel3),int(math.ceil(318.0/10)))
+
+        sel4 = IMP.atom.Selection(root_hier,molecule="Rpb4",
+                                  representation_type=IMP.atom.DENSITIES).get_selected_particles()
+        self.assertEqual(len(sel4),5)
+
+        # check rigid bodies
+        rbs = dof.get_rigid_bodies()
+        fbs = dof.get_flexible_beads()
+        self.assertEqual(len(rbs),2)
 
 if __name__=="__main__":
     IMP.test.main()

@@ -4,7 +4,7 @@ import IMP.pmi
 import IMP.pmi.dof
 import IMP.pmi.topology
 import IMP.pmi.macros
-
+import os
 
 class TestDOF(IMP.test.TestCase):
     def init_topology1(self,mdl):
@@ -35,7 +35,9 @@ class TestDOF(IMP.test.TestCase):
                               chain_id='G',res_range=(1,10),offset=-54)
         m1.add_representation(a1,resolutions=[0,1])
         m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
+
         m2.add_representation(a2,resolutions=[0,1]) # m2 only has atoms
+
         m3.add_representation(a3,resolutions=[0,1])
         m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1])
         s.build()
@@ -45,27 +47,85 @@ class TestDOF(IMP.test.TestCase):
         """Test creation of rigid body and nonrigid members"""
         mdl = IMP.Model()
         molecule = self.init_topology1(mdl)
-
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         rb_movers = dof.create_rigid_body(molecule,
                                           nonrigid_parts = molecule.get_non_atomic_residues(),
                                           name="test RB")
         mvs = dof.get_movers()
         self.assertEqual(len(rb_movers),4)
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=molecule.hier,
-                                              monte_carlo_sample_objects=mvs,
-                                              number_of_frames=2,
-                                              test_mode=True)
-        rex.execute_macro()
+        rb = dof.rigid_bodies[0]
+        all_members = rb.get_member_indexes()
+        rigid_members = rb.get_rigid_members()
+        num_nonrigid = len(all_members)-len(rigid_members)
+
+        self.assertEqual(num_nonrigid,3)
+        #                                   r0  r1  r10
+        self.assertEqual(len(rigid_members),57 + 7 + 2)
 
     def test_big_rigid_body(self):
         """test you can create a rigid body from 3 molecules"""
         mdl = IMP.Model()
         mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        mvs = dof.create_rigid_body(mols)
-        self.assertEqual(len(mvs),1)
+        mvs = dof.create_rigid_body(mols,
+                                    nonrigid_parts=[m.get_non_atomic_residues() for m in mols])
+        self.assertEqual(len(mvs),1+3+3)
+        rb = dof.rigid_bodies[0]
+        all_members = rb.get_member_indexes()
+        rigid_members = rb.get_rigid_members()
+        num_nonrigid = len(all_members)-len(rigid_members)
+        self.assertEqual(num_nonrigid,6)
+        #                                      res0     res1
+        self.assertEqual(len(rigid_members),57+110+57 + 7+13+7)
+
+
+    def test_slice_rigid_body(self):
+        """test you can create a rigid body from slices of molecules"""
+        mdl = IMP.Model()
+        mols = self.init_topology3(mdl)
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        mvs = dof.create_rigid_body([mols[0][:4],mols[1][:]],
+                                    nonrigid_parts=mols[0][2:4])
+        self.assertEqual(len(mvs),3)
+        rb = dof.rigid_bodies[0]
+        all_members = rb.get_member_indexes()
+        rigid_members = rb.get_rigid_members()
+        num_nonrigid = len(all_members)-len(rigid_members)
+        self.assertEqual(num_nonrigid,2)
+        #                                    res0     res1
+        self.assertEqual(len(rigid_members),18+110 + 2+13)
+
+    def test_rigid_body_with_densities(self):
+        """Test still works when you add densities"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A',res_range=(1,10),offset=-54)
+        m1.add_representation(atomic_res,
+                              resolutions=[0,1,10],
+                              density_prefix='tmpgmm',
+                              density_residues_per_component=5)
+        m1.add_representation(m1.get_non_atomic_residues(),
+                              resolutions=[1],
+                              setup_particles_as_densities=True)
+        s.build()
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        mvs = dof.create_rigid_body(m1,
+                                    nonrigid_parts = m1.get_non_atomic_residues())
+        self.assertEqual(len(mvs),4)
+        rb = dof.rigid_bodies[0]
+        all_members = rb.get_member_indexes()
+        rigid_members = rb.get_rigid_members()
+        num_nonrigid = len(all_members)-len(rigid_members)
+        sel = IMP.atom.Selection(m1.get_hierarchy(),representation_type=IMP.atom.DENSITIES)
+        self.assertEqual(num_nonrigid,3)
+        #                                   r0  r1  r10   den
+        self.assertEqual(len(rigid_members),57 + 7 + 2  + 2)
+        os.unlink('tmpgmm.mrc')
+        os.unlink('tmpgmm.txt')
 
     def test_mc_super_rigid_body(self):
         mdl = IMP.Model()
@@ -137,8 +197,8 @@ class TestDOF(IMP.test.TestCase):
         sym_trans = IMP.algebra.get_random_local_transformation(IMP.algebra.Vector3D(0,0,0))
         dof.constrain_symmetry([m1,m2],[m3,m4],sym_trans)
 
-        m1_leaves = m1.get_particles_at_all_resolutions()
-        m3_leaves = m3.get_particles_at_all_resolutions()
+        m1_leaves = IMP.pmi.tools.select_at_all_resolutions(m1.get_hierarchy())
+        m3_leaves = IMP.pmi.tools.select_at_all_resolutions(m3.get_hierarchy())
 
         ### test symmetry initially correct
         mdl.update()
@@ -189,8 +249,6 @@ class TestDOF(IMP.test.TestCase):
         #                                      test_mode=True,
         #                                      replica_exchange_object=self.rem)
         #rex.execute_macro()
-
-
 
 if __name__ == '__main__':
     IMP.test.main()

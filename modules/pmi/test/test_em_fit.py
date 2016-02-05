@@ -65,7 +65,8 @@ class TestPMI(IMP.test.TestCase):
 
         domains=domains_middle
 
-        bm=IMP.pmi.macros.BuildModel1(simo)
+        with IMP.allow_deprecated():
+            bm=IMP.pmi.macros.BuildModel1(simo)
         bm.build_model(domains)
         bm.scale_bead_radii(40,0.8)
 

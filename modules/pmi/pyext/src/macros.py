@@ -405,95 +405,151 @@ class ReplicaExchange0(object):
             rex.swap_temp(i, score)
 
 
-# -----------------------------------------------------------------------
-
-
-def BuildModel0(
-    m,
-    data,
-    resolutions=[1,
-                 10],
-    missing_bead_size=20,
-        residue_per_gaussian=None):
-    '''
-    Construct a component for each subunit (no splitting, nothing fancy).
-
-    You can pass the resolutions and the bead size for the missing residue regions.
-    To use this macro, you must provide the following data structure:
-
-    Component  pdbfile    chainid  rgb color     fastafile     sequence id
-                                                                      in fastafile
-
-data = [("Rpb1",     pdbfile,   "A",     0.00000000,  (fastafile,    0)),
-      ("Rpb2",     pdbfile,   "B",     0.09090909,  (fastafile,    1)),
-      ("Rpb3",     pdbfile,   "C",     0.18181818,  (fastafile,    2)),
-      ("Rpb4",     pdbfile,   "D",     0.27272727,  (fastafile,    3)),
-      ("Rpb5",     pdbfile,   "E",     0.36363636,  (fastafile,    4)),
-      ("Rpb6",     pdbfile,   "F",     0.45454545,  (fastafile,    5)),
-      ("Rpb7",     pdbfile,   "G",     0.54545455,  (fastafile,    6)),
-      ("Rpb8",     pdbfile,   "H",     0.63636364,  (fastafile,    7)),
-      ("Rpb9",     pdbfile,   "I",     0.72727273,  (fastafile,    8)),
-      ("Rpb10",    pdbfile,   "L",     0.81818182,  (fastafile,    9)),
-      ("Rpb11",    pdbfile,   "J",     0.90909091,  (fastafile,   10)),
-      ("Rpb12",    pdbfile,   "K",     1.00000000,  (fastafile,   11))]
-
-    '''
-
-    r = IMP.pmi.representation.Representation(m)
-
-    # the dictionary for the hierarchies,
-    hierarchies = {}
-
-    for d in data:
-        # retrieve the information from the data structure
-        component_name = d[0]
-        pdb_file = d[1]
-        chain_id = d[2]
-        color_id = d[3]
-        fasta_file = d[4][0]
-        # this function
-        fastids = IMP.pmi.tools.get_ids_from_fasta_file(fasta_file)
-        fasta_file_id = d[4][1]
-        # avoid to add a component with the same name
-        r.create_component(component_name,
-                           color=color_id)
-
-        r.add_component_sequence(component_name,
-                                 fasta_file,
-                                 id=fastids[fasta_file_id])
-
-        hierarchies = r.autobuild_model(component_name,
-                                        pdb_file,
-                                        chain_id,
-                                        resolutions=resolutions,
-                                        missingbeadsize=missing_bead_size)
-
-        r.show_component_table(component_name)
-
-        r.set_rigid_bodies([component_name])
-
-        r.set_chain_of_super_rigid_bodies(
-            hierarchies,
-            min_length=2,
-            max_length=2)
-
-        r.setup_component_sequence_connectivity(component_name, resolution=1)
-        r.setup_component_geometry(component_name)
-
-    r.setup_bonds()
-    # put it at the end of rigid bodies
-    r.set_floppy_bodies()
-
-    # set current coordinates as reference for RMSD calculation
-    r.set_current_coordinates_as_reference_for_rmsd("Reference")
-
-    return r
-
-
 # ----------------------------------------------------------------------
+class BuildSystem(object):
+    """A macro to build a IMP::pmi::topology::System based on a TopologyReader object.
+    Easily create multi-state systems by calling this macro
+    repeatedly with different TopologyReader objects!
+    A useful function is get_molecules() which returns the PMI Molecules grouped by state
+    as a dictionary with key = (molecule name), value = IMP.pmi.topology.Molecule
 
+    Quick multi-state system:
+    @code{.python}
+    mdl = IMP.Model()
+    reader1 = IMP.pmi.topology.TopologyReader(tfile1)
+    reader2 = IMP.pmi.topology.TopologyReader(tfile2)
+
+    bs = IMP.pmi.macros.BuildSystem(mdl)
+    bs.add_state(reader1)
+    bs.add_state(reader2)
+    bs.execute_macro() # build everything including degrees of freedom
+
+    IMP.atom.show_molecular_hierarchy(bs.get_hierarchy())
+    ### now you have a two state system, you add restraints etc
+    @endcode
+
+    \note The "domain name" entry of the topology reader is not used.
+    All molecules are set up by the component name, but split into rigid bodies
+    as requested.
+    """
+    def __init__(self,
+                 mdl,
+                 sequence_connectivity_scale=4.0,
+                 force_create_gmm_files=False):
+        """Constructor
+        @param mdl An IMP Model
+        @param sequence_connectivity_scale For scaling the connectivity restraint
+        @param force_create_gmm_files If True, will sample and create GMMs
+                  no matter what. If False, will only only sample if the
+                  files don't exist. If number of Gaussians is zero, won't
+                  do anything.
+        """
+        self.mdl = mdl
+        self.system = IMP.pmi.topology.System(self.mdl)
+        self._readers = [] #internal storage of the TopologyReaders (one per state)
+        self._domains = [] #internal storage of key=domain name, value=(atomic_res,non_atomic_res). (one per state)
+        self.force_create_gmm_files = force_create_gmm_files
+    def add_state(self,reader):
+        """Add a state using the topology info in a IMP::pmi::topology::TopologyReader object.
+        When you are done adding states, call execute_macro()
+        @param reader The TopologyReader object
+        """
+        state = self.system.create_state()
+        self._readers.append(reader)
+        these_domains = {}
+
+        ### setup representation
+        # setup each component once, then each domain gets seperate structure, representation
+        for molname in reader.get_unique_molecules():
+            mlist = reader.get_unique_molecules()[molname]
+            seq = IMP.pmi.topology.Sequences(mlist[0].fasta_file)
+            mol = state.create_molecule(molname,seq[mlist[0].fasta_id],mlist[0].chain)
+            for domain in mlist:
+                if domain.residue_range==(1,-1):
+                    domain_res = mol.get_residues()
+                else:
+                    domain_res = mol.residue_range(domain.residue_range[0]-1,domain.residue_range[1]-1)
+                if domain.pdb_file=="BEADS":
+                    mol.add_representation(domain_res,
+                                           resolutions=[domain.bead_size],
+                                           setup_particles_as_densities=(domain.em_residues_per_gaussian!=0))
+                    these_domains[domain.domain_name] = (set(),domain_res)
+                elif domain.pdb_file=="IDEAL_HELIX":
+                    mol.add_representation(domain_res,
+                                           ideal_helix=True,
+                                           setup_particles_as_densities=(domain.em_residues_per_gaussian!=0))
+                    these_domains[domain.domain_name] = (set(),domain_res)
+                else:
+                    domain_atomic = mol.add_structure(domain.pdb_file,
+                                                      domain.chain,
+                                                      domain.residue_range,
+                                                      domain.pdb_offset,
+                                                      soft_check=True)
+                    domain_non_atomic = domain_res - domain_atomic
+                    if domain.em_residues_per_gaussian==0:
+                        mol.add_representation(domain_atomic,
+                                               resolutions=reader.resolutions)
+                        mol.add_representation(domain_non_atomic,
+                                               resolutions=[domain.bead_size])
+                    else:
+                        mol.add_representation(domain_atomic,
+                                               resolutions=reader.resolutions,
+                                               density_residues_per_component=domain.em_residues_per_gaussian,
+                                               density_prefix=domain.density_prefix,
+                                               density_force_compute=self.force_create_gmm_files)
+                        mol.add_representation(domain_non_atomic,
+                                               resolutions=[domain.bead_size],
+                                               setup_particles_as_densities=True)
+                    these_domains[domain.domain_name] = (domain_atomic,domain_non_atomic)
+            self._domains.append(these_domains)
+        print('State',len(self.system.states),'added')
+
+    def get_molecules(self):
+        """Return list of all molecules grouped by state.
+        For each state, it's a dictionary of Molecules where key is the molecule name
+        """
+        return [s.get_molecules() for s in self.system.get_states()]
+
+    def execute_macro(self):
+        """Builds representations and sets up degrees of freedom"""
+        print("BuildSystem: building representations")
+        self.root_hier = self.system.build()
+
+        print("BuildSystem: setting up degrees of freedom")
+        self.dof = IMP.pmi.dof.DegreesOfFreedom(self.mdl)
+        for nstate,reader in enumerate(self._readers):
+            rbs = reader.get_rigid_bodies()
+            srbs = reader.get_super_rigid_bodies()
+            csrbs = reader.get_chains_of_super_rigid_bodies()
+
+            for rblist in rbs:
+                all_res = set()
+                bead_res = set()
+                for domain in rblist:
+                    all_res|=self._domains[nstate][domain][0]
+                    bead_res|=self._domains[nstate][domain][1]
+                all_res|=bead_res
+                self.dof.create_rigid_body(all_res,
+                                           nonrigid_parts=bead_res)
+            for srblist in srbs:
+                all_res = set()
+                for domain in srblist:
+                    all_res|=self._domains[nstate][domain][0]
+                self.dof.create_super_rigid_body(all_res)
+
+            for csrblist in csrbs:
+                all_res = set()
+                for domain in csrblist:
+                    all_res|=self._domains[nstate][domain][0]
+                all_res = list(all_res)
+                all_res.sort(key=lambda r:r.get_index())
+                self.dof.create_super_rigid_body(all_res,chain_min_length=2,chain_max_length=3)
+        return self.root_hier,self.dof
+
+@IMP.deprecated_object("2.5", "Use BuildSystem instead")
 class BuildModel(object):
     """A macro to build a Representation based on a Topology and lists of movers
+    DEPRECATED - Use BuildSystem instead.
     """
     def __init__(self,
                  model,
@@ -770,9 +826,9 @@ class BuildModel(object):
         return outhier
 
 
-#@IMP.deprecated_object("2.5", "Use BuildModel instead")
+@IMP.deprecated_object("2.5", "Use BuildSystem instead")
 class BuildModel1(object):
-    """Deprecated building macro - use BuildModel()"""
+    """Deprecated building macro - use BuildSystem()"""
 
     def __init__(self, representation):
         """Constructor.
@@ -1076,6 +1132,89 @@ class BuildModel1(object):
         o.init_rmf(rmfname,[self.simo.prot])
         o.write_rmf(rmfname)
         o.close_rmf(rmfname)
+# -----------------------------------------------------------------------
+
+@IMP.deprecated_object("2.5", "Use BuildSystem instead")
+def BuildModel0(
+    m,
+    data,
+    resolutions=[1,
+                 10],
+    missing_bead_size=20,
+        residue_per_gaussian=None):
+    '''
+    Construct a component for each subunit (no splitting, nothing fancy).
+
+    You can pass the resolutions and the bead size for the missing residue regions.
+    To use this macro, you must provide the following data structure:
+
+    Component  pdbfile    chainid  rgb color     fastafile     sequence id
+                                                                      in fastafile
+
+data = [("Rpb1",     pdbfile,   "A",     0.00000000,  (fastafile,    0)),
+      ("Rpb2",     pdbfile,   "B",     0.09090909,  (fastafile,    1)),
+      ("Rpb3",     pdbfile,   "C",     0.18181818,  (fastafile,    2)),
+      ("Rpb4",     pdbfile,   "D",     0.27272727,  (fastafile,    3)),
+      ("Rpb5",     pdbfile,   "E",     0.36363636,  (fastafile,    4)),
+      ("Rpb6",     pdbfile,   "F",     0.45454545,  (fastafile,    5)),
+      ("Rpb7",     pdbfile,   "G",     0.54545455,  (fastafile,    6)),
+      ("Rpb8",     pdbfile,   "H",     0.63636364,  (fastafile,    7)),
+      ("Rpb9",     pdbfile,   "I",     0.72727273,  (fastafile,    8)),
+      ("Rpb10",    pdbfile,   "L",     0.81818182,  (fastafile,    9)),
+      ("Rpb11",    pdbfile,   "J",     0.90909091,  (fastafile,   10)),
+      ("Rpb12",    pdbfile,   "K",     1.00000000,  (fastafile,   11))]
+
+    '''
+
+    r = IMP.pmi.representation.Representation(m)
+
+    # the dictionary for the hierarchies,
+    hierarchies = {}
+
+    for d in data:
+        # retrieve the information from the data structure
+        component_name = d[0]
+        pdb_file = d[1]
+        chain_id = d[2]
+        color_id = d[3]
+        fasta_file = d[4][0]
+        # this function
+        fastids = IMP.pmi.tools.get_ids_from_fasta_file(fasta_file)
+        fasta_file_id = d[4][1]
+        # avoid to add a component with the same name
+        r.create_component(component_name,
+                           color=color_id)
+
+        r.add_component_sequence(component_name,
+                                 fasta_file,
+                                 id=fastids[fasta_file_id])
+
+        hierarchies = r.autobuild_model(component_name,
+                                        pdb_file,
+                                        chain_id,
+                                        resolutions=resolutions,
+                                        missingbeadsize=missing_bead_size)
+
+        r.show_component_table(component_name)
+
+        r.set_rigid_bodies([component_name])
+
+        r.set_chain_of_super_rigid_bodies(
+            hierarchies,
+            min_length=2,
+            max_length=2)
+
+        r.setup_component_sequence_connectivity(component_name, resolution=1)
+        r.setup_component_geometry(component_name)
+
+    r.setup_bonds()
+    # put it at the end of rigid bodies
+    r.set_floppy_bodies()
+
+    # set current coordinates as reference for RMSD calculation
+    r.set_current_coordinates_as_reference_for_rmsd("Reference")
+
+    return r
 
 # ----------------------------------------------------------------------
 

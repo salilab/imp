@@ -681,228 +681,12 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         return self.particle_list
 
 
-class MembraneRestraint(IMP.Restraint):
-    import math
-    import numpy
-    import IMP.isd
-    import sys
-    def __init__(self,m,z_nuisance,thickness=30.0,softness=3.0,plateau=0.0000000001,linear=0.02):
-        '''
-        input a list of particles, the slope and theta of the sigmoid potential
-        theta is the cutoff distance for a protein-protein contact
-        '''
-        IMP.Restraint.__init__(self, m, "MembraneRestraint %1%")
-        self.thickness=thickness
-        self.z_nuisance=z_nuisance
-        self.softness=softness
-        self.plateau=plateau
-        self.particle_list_below=[]
-        self.particle_list_above=[]
-        self.particle_list_inside=[]
-        self.max_float=self.sys.float_info.max
-        self.log_max_float=self.numpy.log(self.max_float)
-        self.linear=linear
-
-    def add_particles_below(self,particles):
-        self.particle_list_below+=particles
-
-    def add_particles_above(self,particles):
-        self.particle_list_above+=particles
-
-    def add_particles_inside(self,particles):
-        self.particle_list_inside+=particles
-
-    def score_above(self,z):
-
-        argvalue=(z-self.z_slope_center_upper)/self.softness
-        prob=(1.0-self.plateau)/(1.0+self.math.exp(-argvalue))
-        return -self.numpy.log(prob*self.max_float)+self.log_max_float
-
-    def score_below(self,z):
-        argvalue=(z-self.z_slope_center_lower)/self.softness
-        prob=(1.0-self.plateau)/(1.0+self.math.exp(argvalue))
-        return -self.numpy.log(prob*self.max_float)+self.log_max_float
-
-    def score_inside(self,z):
-
-        argvalue=(z-self.z_slope_center_upper)/self.softness
-        prob1=1.0-(1.0-self.plateau)/(1.0+self.math.exp(-argvalue))
-
-        argvalue=(z-self.z_slope_center_lower)/self.softness
-        prob2=1.0-(1.0-self.plateau)/(1.0+self.math.exp(argvalue))
-        return -self.numpy.log(prob1*self.max_float)-self.numpy.log(prob2*self.max_float)+2*self.log_max_float
-
-    def unprotected_evaluate(self,da):
-
-        z_center=self.IMP.isd.Nuisance(self.z_nuisance).get_nuisance()
-        self.z_slope_center_lower=z_center-self.thickness/2.0
-        self.z_slope_center_upper=z_center+self.thickness/2.0
-
-        score_above=sum([self.score_above(IMP.core.XYZ(p).get_z()) for p in self.particle_list_above])
-        score_below=sum([self.score_below(IMP.core.XYZ(p).get_z()) for p in self.particle_list_below])
-        score_inside=sum([self.score_inside(IMP.core.XYZ(p).get_z()) for p in self.particle_list_inside])
-
-        return score_above+score_below+score_inside
-
-    def do_get_inputs(self):
-        particle_list=self.particle_list_above+self.particle_list_inside+self.particle_list_below
-
-        return particle_list
-
-
-
-class SetupMembranePoreRestraint(object):
-    import math
-
-    def __init__(
-        self,
-        representation,
-        selection_tuples_outside=None,
-        selection_tuples_membrane=None,
-        selection_tuples_inside=None,
-        center=(0.0,0.0,0.0),
-        z_tickness=100,
-        radius=100,
-        membrane_tickness=40.0,
-        resolution=1,
-        label="None"):
-
-        self.weight = 1.0
-        self.label = label
-        self.m = representation.prot.get_model()
-        self.rs = IMP.RestraintSet(self.m, label)
-        self.representation=representation
-        self.center=center
-        self.radius=radius
-        self.z_tickness=z_tickness
-        self.membrane_tickness=membrane_tickness
-
-
-
-
-
-    def create_representation(self):
-        p=IMP.Particle(self.m)
-        h=IMP.atom.Hierarchy.setup_particle(p)
-        h.set_name("Membrane_Pore"+self.label)
-        self.representation.prot.add_child(h)
-
-        inner=self.z_tickness/2-self.membrane_tickness/2
-        outer=self.z_tickness/2+self.membrane_tickness/2
-
-        surface_1=[]
-        surface_2=[]
-        particles_surface_1=[]
-        particles_surface_2=[]
-
-        for i in range(10):
-            for j in range(10):
-                v=self.math.pi/10.0*float(i)+self.math.pi/2.0
-                u=2.0*self.math.pi/10.0*float(j)
-                x=(self.radius+inner*self.math.cos(v))*self.math.cos(u)
-                y=(self.radius+inner*self.math.cos(v))*self.math.sin(u)
-                z=inner*self.math.sin(v)
-                p2=IMP.Particle(self.m)
-                IMP.atom.Mass.setup_particle(p2,100)
-                d=IMP.core.XYZR.setup_particle(p2)
-                d.set_coordinates((x,y,z))
-                d.set_radius(1)
-                h2=IMP.atom.Hierarchy.setup_particle(p2)
-                h.add_child(h2)
-                surface_1.append((x,y,z))
-                particles_surface_1.append(p2)
-
-                x=(self.radius+outer*self.math.cos(v))*self.math.cos(u)
-                y=(self.radius+outer*self.math.cos(v))*self.math.sin(u)
-                z=outer*self.math.sin(v)
-                p2=IMP.Particle(self.m)
-                IMP.atom.Mass.setup_particle(p2,100)
-                d=IMP.core.XYZR.setup_particle(p2)
-                d.set_coordinates((x,y,z))
-                d.set_radius(1)
-                h2=IMP.atom.Hierarchy.setup_particle(p2)
-                h.add_child(h2)
-                surface_2.append((x,y,z))
-                particles_surface_2.append(p2)
-
-        for i in range(10):
-            for j in range(10):
-                x=3.0*self.radius/10.0*float(i)-self.radius*1.5
-                y=3.0*self.radius/10.0*float(j)-self.radius*1.5
-                if(self.math.sqrt(x**2+y**2)<self.radius):
-                    continue
-                else:
-                    for n,z in enumerate([self.z_tickness/2+self.membrane_tickness/2,
-                              self.z_tickness/2-self.membrane_tickness/2,
-                              -self.z_tickness/2+self.membrane_tickness/2,
-                              -self.z_tickness/2-self.membrane_tickness/2]):
-                        p2=IMP.Particle(self.m)
-                        IMP.atom.Mass.setup_particle(p2,100)
-                        d=IMP.core.XYZR.setup_particle(p2)
-                        d.set_coordinates((x,y,z))
-                        d.set_radius(1)
-                        h2=IMP.atom.Hierarchy.setup_particle(p2)
-                        h.add_child(h2)
-                        if n == 0 or n == 3:
-                            surface_1.append((x,y,z))
-                            particles_surface_1.append(p2)
-                        if n == 1 or n == 2:
-                            surface_2.append((x,y,z))
-                            particles_surface_2.append(p2)
-
-            from scipy.spatial import Delaunay
-            tri = Delaunay(surface_1)
-
-            '''
-            edge_points = []
-            edges = set()
-
-            def add_edge(i, j):
-                """Add a line between the i-th and j-th points, if not in the list already"""
-                if (i, j) in edges or (j, i) in edges:
-                    # already added
-                    return
-                edges.add( (i, j) )
-                edge_points.append(points[ [i, j] ])
-
-            # loop over triangles:
-            # ia, ib, ic = indices of corner points of the triangle
-            for ia, ib, ic in tri.vertices:
-                add_edge(ia, ib)
-                add_edge(ib, ic)
-                add_edge(ic, ia)
-            '''
-
-            '''
-            edges=set()
-
-            for ia, ib, ic, id in tri.simplices:
-                edges.add((ia,ib))
-                edges.add((ib,ic))
-                edges.add((ic,id))
-
-            for e in edges:
-                p1=particles_surface_1[e[0]]
-                p2=particles_surface_1[e[1]]
-                print(p1,p2,e[0],e[1])
-                IMP.atom.Bonded.setup_particle(p1)
-                IMP.atom.Bonded.setup_particle(p2)
-                IMP.atom.create_bond(IMP.atom.Bonded(p1),IMP.atom.Bonded(p2),1)
-            '''
-
-            for i in range(len(particles_surface_1)-1):
-                p1=particles_surface_1[i]
-                p2=particles_surface_1[i+1]
-                IMP.atom.Bonded.setup_particle(p1)
-                IMP.atom.Bonded.setup_particle(p2)
-                IMP.atom.create_bond(IMP.atom.Bonded(p1),IMP.atom.Bonded(p2),1)
-
-
 class SetupMembraneRestraint(object):
 
     '''
 
     '''
+
 
     def __init__(
         self,
@@ -924,12 +708,12 @@ class SetupMembraneRestraint(object):
         self.representation=representation
         self.thickness=thickness
 
-        p=IMP.Particle(self.m)
-
-
         self.z_center=IMP.pmi.tools.SetupNuisance(self.m, z_init, z_min, z_max, isoptimized=True).get_particle()
 
-        mr = IMP.pmi.restraints.proteomics.MembraneRestraint(self.m,self.z_center,thickness=self.thickness)
+        softness=3.0
+        plateau=1e-10
+        linear=0.02
+        mr = IMP.pmi.MembraneRestraint(self.m,self.z_center.get_particle_index(),self.thickness, softness, plateau, linear)
 
         if selection_tuples_above is not None:
             particles_above = []
@@ -937,7 +721,8 @@ class SetupMembraneRestraint(object):
                 particles = IMP.pmi.tools.select_by_tuple(self.representation, s,
                                                           resolution=resolution, name_is_ambiguous=True)
                 particles_above+=particles
-            mr.add_particles_above([h.get_particle() for h in particles_above])
+
+            mr.add_particles_above([h.get_particle().get_index() for h in particles_above])
 
         if selection_tuples_below is not None:
             particles_below = []
@@ -945,7 +730,7 @@ class SetupMembraneRestraint(object):
                 particles = IMP.pmi.tools.select_by_tuple(self.representation, s,
                                                           resolution=resolution, name_is_ambiguous=True)
                 particles_below+=particles
-            mr.add_particles_below([h.get_particle() for h in particles_below])
+            mr.add_particles_below([h.get_particle().get_index() for h in particles_below])
 
         if selection_tuples_inside is not None:
             particles_inside = []
@@ -953,7 +738,7 @@ class SetupMembraneRestraint(object):
                 particles = IMP.pmi.tools.select_by_tuple(self.representation, s,
                                                           resolution=resolution, name_is_ambiguous=True)
                 particles_inside+=particles
-            mr.add_particles_inside([h.get_particle() for h in particles_inside])
+            mr.add_particles_inside([h.get_particle().get_index() for h in particles_inside])
 
         self.rs.add_restraint(mr)
 

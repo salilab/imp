@@ -486,7 +486,7 @@ class Representation(object):
         @param ds a list of tuples corresponding to the residue ranges
                   of the beads
         @param colors a list of colors associated to the beads
-        @param incoord the coordinate tuple correspoding to the position
+        @param incoord the coordinate tuple corresponding to the position
                   of the beads
         """
 

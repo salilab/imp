@@ -1,6 +1,6 @@
 """@namespace IMP.pmi.topology
 Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
-* Start by creating a System with `mdl = IMP.Model(); s = IMP.pmi.topology.System(model)`. The system will store all the states.
+* Start by creating a System with `mdl = IMP.Model(); s = IMP.pmi.topology.System(mdl)`. The System will store all the states.
 * Then call System.create_state(). You can easily create a multistate system by calling this function multiples times.
 * For each State, call State.create_molecule() to add a Molecule (a uniquely named polymer). This function returns the Molecule object which can be passed to various PMI functions.
 * Some useful functions to help you set up your Molecules:
@@ -14,6 +14,7 @@ Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
 See a [comprehensive example](https://integrativemodeling.org/nightly/doc/ref/pmi_2multiscale_8py-example.html) for using these classes.
 
 Alternatively one can construct the entire topology and degrees of freedom via formatted text file with TopologyReader and IMP::pmi::macros::BuildModel(). This is used in the [PMI tutorial](@ref rnapolii_stalk).
+Note that this only allows a limited set of the full options available to PMI users (rigid bodies only, fixed resolutions).
 """
 
 from __future__ import print_function
@@ -71,6 +72,9 @@ class System(_SystemBase):
         self.hier=self._create_hierarchy()
         self.hier.set_name(name)
 
+    def get_states(self):
+        return self.states
+
     def create_state(self):
         """returns a new IMP.pmi.representation_new.State(), increment the state index"""
         self._number_of_states+=1
@@ -119,6 +123,9 @@ class State(_SystemBase):
 
     def __repr__(self):
         return self.system.__repr__()+'.'+self.hier.get_name()
+
+    def get_molecules(self):
+        return self.molecules
 
     def create_molecule(self,name,sequence='',chain_id=''):
         """Create a new Molecule within this State
@@ -238,7 +245,6 @@ class Molecule(_SystemBase):
             all_res.add(res)
         return all_res
 
-
     def get_atomic_residues(self):
         """ Return a set of TempResidues that have associated structure coordinates """
         atomic_res=set()
@@ -247,7 +253,6 @@ class Molecule(_SystemBase):
                 atomic_res.add(res)
         return atomic_res
 
-
     def get_non_atomic_residues(self):
         """ Return a set of TempResidues that don't have associated structure coordinates """
         non_atomic_res=set()
@@ -255,7 +260,6 @@ class Molecule(_SystemBase):
             if not res.get_has_structure():
                 non_atomic_res.add(res)
         return non_atomic_res
-
 
     def create_copy(self,chain_id):
         """Create a new Molecule with the same name and sequence but a higher copy number.
@@ -293,7 +297,6 @@ class Molecule(_SystemBase):
                           If False (Default), it raises and exit when there are sequence mismatches.
         \note If you are adding structure without a FASTA file, set soft_check to True
         """
-
         if self.mol_to_clone is not None:
             raise Exception('You cannot call add_structure() for a clone')
 
@@ -434,9 +437,7 @@ class Molecule(_SystemBase):
               containing at least a CAlpha. For missing residues, these can be constructed
               from the PDB file
         """
-
         if not self.built:
-
             # if requested, clone structure and representations BEFORE building original
             if self.mol_to_clone is not None:
                 for nr,r in enumerate(self.mol_to_clone.residues):
@@ -465,23 +466,20 @@ class Molecule(_SystemBase):
             # give a warning for all residues that don't have representation
             no_rep = [r for r in self.residues if r not in self.represented]
             if len(no_rep)>0:
-                print('WARNING: Residues without representation: ',system_tools.resnums2str(no_rep))
+                print('WARNING: Residues without representation in molecule',
+                      self.get_name(),':',system_tools.resnums2str(no_rep))
 
             # build all the representations
-            # get the first available struture position
-            # pass the nearest structure position as you go.
-
             for rep in self.representations:
                 hiers = system_tools.build_representation(self.mdl,rep,self.coord_finder)
                 for h in hiers:
                     self.hier.add_child(h)
             self.built=True
 
-            # have to store SOMETHING in each residue slot.
-            #  so just select highest resolution.
-            #  alternative is store all resolutions?
             for res in self.residues:
                 idx = res.get_index()
+
+                # first off, store the highest resolution available in residue.hier
                 new_ps = IMP.atom.Selection(
                     self.hier,
                     residue_index=res.get_index(),
@@ -489,12 +487,15 @@ class Molecule(_SystemBase):
                 if len(new_ps)>0:
                     new_p = new_ps[0]
                     if IMP.atom.Atom.get_is_setup(new_p):
+                        # if only found atomic, store the residue
                         new_hier = IMP.atom.get_residue(IMP.atom.Atom(new_p))
                     else:
+                        # otherwise just store what you found
                         new_hier = IMP.atom.Hierarchy(new_p)
                     res.hier = new_hier
                 else:
                     res.hier = None
+
         print('done building',self.get_hierarchy())
         return self.hier
 
@@ -508,7 +509,6 @@ class Molecule(_SystemBase):
         ps = IMP.pmi.tools.select_at_all_resolutions(self.get_hierarchy(),
                                                       residue_indexes=residue_indexes)
         return ps
-
 
 #------------------------
 
@@ -663,27 +663,20 @@ class TempResidue(object):
             a.get_particle().set_name('Atom %s of residue %i'%(atype.__str__().strip('"'),
                                                                self.hier.get_index()))
         self._structured = True
+
 class TopologyReader(object):
     """Automatically setup Sytem and Degrees of Freedom with a formatted text file.
-    The topology file should be in a simple pipe-delimited format, such as
+    The topology file should be in a simple pipe-delimited format:
     @code{.txt}
-|directories|
-|pdb_dir|./|
-|fasta_dir|./|
-|gmm_dir|./|
-
-|topology_dictionary|
-|component_name|domain_name|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rmf_file|rmf_frame_number|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|
-|Rpb1 |Rpb1_1|1WCM.fasta|1WCM:A|1WCM.pdb|A|1,1140   |0|10|0 |None   | None|1|1,3|1|
-|Rpb1 |Rpb1_2|1WCM.fasta|1WCM:A|1WCM.pdb|A|1141,1274|0|10|0 |0.rmf3 | 0   |2|1,3|1|
-|Rpb1 |Rpb1_3|1WCM.fasta|1WCM:A|1WCM.pdb|A|1275,-1  |0|10|0 |None   | None|3|1,3|1|
-|Rpb2 |Rpb2  |1WCM.fasta|1WCM:B|1WCM.pdb|B|all      |0|10|0 |None   | None|4|2,3|2|
+|component_name|domain_name|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|
+|Rpb1 |Rpb1_1|1WCM.fasta|1WCM:A|1WCM.pdb|A|1,1140   |0|10|0|1|1,3|1|
+|Rpb1 |Rpb1_2|1WCM.fasta|1WCM:A|1WCM.pdb|A|1141,1274|0|10|0|2|1,3|1|
+|Rpb1 |Rpb1_3|1WCM.fasta|1WCM:A|1WCM.pdb|A|1275,-1  |0|10|0|3|1,3|1|
+|Rpb2 |Rpb2  |1WCM.fasta|1WCM:B|1WCM.pdb|B|all      |0|10|0|4|2,3|2|
     @endcode
 
-    The `|directories|` section lists paths (relative to the topology file)
-    where various inputs can be found.
-
-    The columns under `|topology_dictionary|`:
+    All filenames are relative to the paths specified in the constructor.
+    These are the fields you can enter:
     - `component_name`: Name of the component (chain). Serves as the parent
       hierarchy for this structure.
     - `domain_name`: Allows subdivision of chains into individual domains.
@@ -695,17 +688,17 @@ class TopologyReader(object):
     - `fasta_fn`: Name of FASTA file containing this component.
     - `fasta_id`: String found in FASTA sequence header line.
     - `pdb_fn`: Name of PDB file with coordinates (if available).
+       If left empty, will set up as BEADS (you can also specify "BEADS")
+       Can also write "IDEAL_HELIX".
     - `chain`: Chain ID of this domain in the PDB file.
     - `residue_range`: Comma delimited pair defining range. -1 = last residue.
-      all = [1,-1]
+      all = [1,-1].
     - `pdb_offset`: Offset to sync PDB residue numbering with FASTA numbering.
     - `bead_size`: The size (in residues) of beads used to model areas not
       covered by PDB coordinates. These will be automatically built.
     - `em_residues`: The number of Gaussians used to model the electron
       density of this domain. Set to zero if no EM fitting will be done.
       The GMM files will be written to <gmm_dir>/<component_name>_<em_res>.txt (and .mrc)
-    - `rmf_file`: File path of rmf file with coordinates (if available).
-    - `rmf_frame_number`: Frame number to extract
     - `rigid_body`: Number corresponding to the rigid body containing this object.
     The number itself is used for grouping things.
     - `super_rigid_body`: Like a rigid_body, except things are only occasionally rigid
@@ -714,34 +707,39 @@ class TopologyReader(object):
     The file is read in and each part of the topology is stored as a
     ComponentTopology object for input into IMP::pmi::macros::BuildModel.
     """
-    def __init__(self, topology_file):
-        self.topology_file=topology_file
-        self.component_list=[]
-        self.defaults={'bead_size'                : 10,
-                       'residue_range'            : 'all',
-                       'pdb_offset'               : 0,
-                       'em_residues_per_gaussian' : 0,
-                       'rmf_file'                 : None,
-                       'rmf_frame_number'          : None};
-        self.component_list=self.import_topology_file(topology_file)
-
+    def __init__(self,
+                 topology_file,
+                 resolutions=[1,10],
+                 pdb_dir='./',
+                 fasta_dir='./',
+                 gmm_dir='./'):
+        """Constructor.
+        @param topology_file Pipe-delimetted file specifying the topology
+        @param resolutions What resolutions to build for ALL structured components
+        @param pdb_dir Relative path to the pdb directory
+        @param fasta_dir Relative path to the fasta directory
+        @param gmm_dir Relative path to the GMM directory
+        """
+        self.topology_file = topology_file
+        self.component_list = []
+        self.unique_molecules = {}
+        self.resolutions = resolutions
+        self.pdb_dir = pdb_dir
+        self.fasta_dir = fasta_dir
+        self.gmm_dir = gmm_dir
+        self.component_list = self.import_topology_file(topology_file)
 
     def write_topology_file(self,outfile):
         f=open(outfile, "w")
-        f.write("|directories|\n")
-        for key, value in self.defaults.items():
-            output="|"+str(key)+"|"+str(value)+"|\n"
-            f.write(output)
-        f.write("\n\n")
-        f.write("|topology_dictionary|\n")
-        f.write("|component_name|domain_name|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rmf_file|rmf_frame_number|\n")
+        f.write("|component_name|domain_name|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|\n")
         for c in self.component_list:
-            output="|"+str(c.name)+"|"+str(c.domain_name)+"|"+str(c.fasta_file)+"|"+str(c.fasta_id)+"|"+str(c.pdb_file)+"|"+str(c.chain)+"|"+str(c.residue_range).strip("(").strip(")")+"|"+str(c.pdb_offset)+"|"+str(c.bead_size)+"|"+str(c.em_residues_per_gaussian)+"|"+str(c.rmf_file)+"|"+str(c.rmf_frame_number)+"|\n"
+            output = c.get_str()+'\n'
             f.write(output)
         return outfile
 
     def get_component_topologies(self, topology_list = "all"):
-        """ Return list of ComponentTopologies for selected components given a list of indices"""
+        """ Return list of ComponentTopologies for selected components
+        @param topology_list List of indices to return"""
         if topology_list == "all":
             topologies = self.component_list
         else:
@@ -750,200 +748,216 @@ class TopologyReader(object):
                 topologies.append(self.component_list[i])
         return topologies
 
-    def set_dir(self, default_dir, new_dir):
-        """ Changes the default directories and renames the files for each ComponentTopology object """
-        if default_dir in self.defaults.keys():
-            self.defaults[default_dir]=new_dir
-        else:
-            print(default_dir, "is not a correct directory key")
-            exit()
-        for c in self.component_list:
-            pdb_file=c.pdb_file.split("/")[-1]
-            c.pdb_file=self._make_path(self.defaults['pdb_dir'],
-                                        pdb_file)
-            fasta_file=c.fasta_file.split("/")[-1]
-            c.fasta_file=self._make_path(self.defaults['fasta_dir'],
-                                        fasta_file)
-            if c.gmm_file is not None:
-                gmm_file=c.gmm_file.split("/")[-1]
-                c.gmm_file=self._make_path(self.defaults['gmm_dir'],
-                                        gmm_file)
-                mrc_file=c.mrc_file.split("/")[-1]
-                c.mrc_file=self._make_path(self.defaults['gmm_dir'],
-                                        mrc_file)
-
+    def get_unique_molecules(self):
+        return self.unique_molecules
 
     def import_topology_file(self, topology_file, append=False):
-        """ Import system components from topology file. append=False will erase current topology and overwrite with new """
-        is_defaults=False
-        is_topology=False
-        defaults_dict={}
-        linenum=1
-
+        """Read system components from topology file. append=False will erase
+        current topology and overwrite with new
+        """
+        is_topology = False
+        is_defaults = False
+        linenum = 1
         if append==False:
             self.component_list=[]
-
         with open(topology_file) as infile:
             for line in infile:
-
                 if line.lstrip()=="" or line[0]=="#":
                     continue
-
-                elif line.split('|')[1]=="topology_dictionary":
+                elif line.split('|')[1] in ("topology_dictionary","component_name"):
                     is_topology=True
-
-                elif is_topology==True and is_defaults==True:
-                # Store the field names for this topology grid
-                    topology_fields=line
                     is_defaults=False
-
-                elif is_topology==True:
-                # create a component_topology from this line
-                    new_component=self.create_component_topology(line, topology_fields, self.defaults, linenum)
-                    self.component_list.append(new_component)
-
-                elif is_defaults==True:
-                # grab value for default and put into class attribute
-                    self.add_default_parameter(line, linenum)
-
                 elif line.split('|')[1]=="directories":
                     is_defaults=True
-
-                #print line, is_defaults, is_topology
-                linenum=linenum+1
-                #print self.defaults
+                    print("WARNING: You no longer need to set directories in the topology file. "
+                          "Please do so through the TopologyReader constructor. "
+                          "Note that new-style paths are relative to the current working directory, "
+                          "not the topology file")
+                elif is_topology:
+                    # create a component_topology from this line
+                    new_component = self._create_component_topology(line, linenum)
+                    self.component_list.append(new_component)
+                elif is_defaults:
+                    # THIS WILL GO AWAY, switch to files relative to the modeling file!
+                    fields = line.split('|')
+                    setattr(self,fields[1],IMP.get_relative_path(self.topology_file,fields[2]))
+                else:
+                    raise Exception("FOUND A WEIRD LINE")
+                linenum += 1
         return self.component_list
 
-    def _make_path(self, dirname, fname):
-        "Get the full path to a file, possibly relative to the topology file"
-        dirname = IMP.get_relative_path(self.topology_file, dirname)
-        return os.path.join(dirname, fname)
+    def _create_component_topology(self, component_line, linenum, color="0.1"):
+        """Parse a line of topology values and matches them to their key.
+        Checks each value for correct syntax
+        Returns a list of ComponentTopology objects
+        fields:
+        """
 
-    def create_component_topology(self, component_line, topology_fields, defaults, linenum, color="0.1"):
+        c = ComponentTopology()
+        values = [s.strip() for s in component_line.split('|')]
+        errors = []
 
-    #Reads a grid of topology values and matches them to their key.
-    #Checks each value for correct syntax
-    #Returns a list of ComponentTopology objects
-
-        fields=topology_fields.split('|')
-        values=component_line.split('|')
-        c=ComponentTopology()
-        errors=[]
-    ##### Required fields
-        c.name          = values[fields.index("component_name")].strip()
-        c.domain_name   = values[fields.index("domain_name")].strip()
-        c.fasta_file    = self._make_path(defaults['fasta_dir'],
-                                          values[fields.index("fasta_fn")])
-        c.fasta_id      = values[fields.index("fasta_id")].strip()
-
-        pdb_input=values[fields.index("pdb_fn")]
+        ### Required fields
+        c.name          = values[1]
+        c.domain_name   = values[2]
+        c._orig_fasta_file = values[3] # in case you need to write the file!
+        c.fasta_file    = os.path.join(self.fasta_dir,values[3])
+        c.fasta_id      = values[4]
+        c._orig_pdb_input = values[5]
+        pdb_input       = values[5]
         if pdb_input=="None" or pdb_input=="":
-            c.pdb_file      = None
+            c.pdb_file      = "BEADS"
         elif pdb_input=="IDEAL_HELIX":
-            c.pdb_file="IDEAL_HELIX"
+            c.pdb_file = "IDEAL_HELIX"
         elif pdb_input=="BEADS":
-            c.pdb_file="BEADS"
+            c.pdb_file = "BEADS"
         else:
-            c.pdb_file      = self._make_path(defaults['pdb_dir'],
-                                          values[fields.index("pdb_fn")])
-        # Need to find a way to define color
-        c.color         = 0.1
+            c.pdb_file = os.path.join(self.pdb_dir,pdb_input)
 
-        t_chain = values[fields.index("chain")].strip()
-        # PDB Chain
-        # Must be one or two characters
+        # PDB chain must be one or two characters
+        t_chain = values[6]
         if len(t_chain)==1 or len(t_chain)==2:
             c.chain = t_chain
         else:
             errors.append("PDB Chain identifier must be one or two characters.")
             errors.append("For component %s line %d is not correct |%s| was given." % (c.name,linenum,t_chain))
 
-    ##### Optional fields
-        # Residue Range
-        if "residue_range" in fields:
-            f=values[fields.index("residue_range")].strip()
-            if f.strip()=='all' or str(f)=="":
-                c.residue_range=(1,-1)
-            # Make sure that is residue range is given, there are only two values and they are integers
-            elif len(f.split(','))==2 and self.is_int(f.split(',')[0]) and self.is_int(f.split(',')[1]):
-                c.residue_range=(int(f.split(',')[0]), int(f.split(',')[1]))
-            else:
-                errors.append("Residue Range format for component %s line %d is not correct" % (c.name, linenum))
-                errors.append("Correct syntax is two comma separated integers:  |start_res, end_res|. |%s| was given." % f)
-                errors.append("To select all residues, indicate |\"all\"|")
+        # Multiple domains must all use the same fasta file!
+        if c.name not in self.unique_molecules:
+            self.unique_molecules[c.name] = [c]
         else:
-            c.residue_range=defaults["residue_range"]
+            if (c.fasta_file!=self.unique_molecules[c.name][0].fasta_file or \
+                c.fasta_id!=self.unique_molecules[c.name][0].fasta_id or \
+                c.chain!=self.unique_molecules[c.name][0].chain):
+                errors.append("All domains with the same component name must have the same sequence")
+            self.unique_molecules[c.name].append(c)
 
+        ### Optional fields
+        # Residue Range
+        f = values[7]
+        if f.strip()=='all' or str(f)=="":
+            c.residue_range = (1,-1)
+        elif len(f.split(','))==2 and self._is_int(f.split(',')[0]) and self._is_int(f.split(',')[1]):
+            # Make sure that is residue range is given, there are only two values and they are integers
+            c.residue_range = (int(f.split(',')[0]), int(f.split(',')[1]))
+        else:
+            errors.append("Residue Range format for component %s line %d is not correct" % (c.name, linenum))
+            errors.append("Correct syntax is two comma separated integers:  |start_res, end_res|. |%s| was given." % f)
+            errors.append("To select all residues, indicate |\"all\"|")
 
         # PDB Offset
-        if "pdb_offset" in fields:
-            f=values[fields.index("pdb_offset")].strip()
-            if self.is_int(f):
-                c.pdb_offset=int(f)
-            else:
-                errors.append("PDB Offset format for component %s line %d is not correct" % (c.name, linenum))
-                errors.append("The value must be a single integer. |%s| was given." % f)
+        f = values[8]
+        if self._is_int(f):
+            c.pdb_offset=int(f)
+        elif len(f)==0:
+            c.pdb_offset = 0
         else:
-            c.pdb_offset=defaults["pdb_offset"]
+            errors.append("PDB Offset format for component %s line %d is not correct" % (c.name, linenum))
+            errors.append("The value must be a single integer. |%s| was given." % f)
 
         # Bead Size
-        if "bead_size" in fields:
-            f=values[fields.index("bead_size")].strip()
-            if self.is_int(f):
-                c.bead_size=int(f)
-            else:
-                errors.append("Bead Size format for component %s line %d is not correct" % (c.name, linenum))
-                errors.append("The value must be a single integer. |%s| was given." % f)
+        f = values[9]
+        if self._is_int(f):
+            c.bead_size=int(f)
+        elif len(f)==0:
+            c.bead_size = 0
         else:
-            c.bead_size=defaults["bead_size"]
+            errors.append("Bead Size format for component %s line %d is not correct" % (c.name, linenum))
+            errors.append("The value must be a single integer. |%s| was given." % f)
 
         # EM Residues Per Gaussian
-        if "em_residues_per_gaussian" in fields:
-            f=values[fields.index("em_residues_per_gaussian")].strip()
-            if self.is_int(f):
-                if int(f) > 0:
-                    c.gmm_file=self._make_path(defaults['gmm_dir'],
-                                           c.domain_name.strip() + ".txt")
-                    c.mrc_file=self._make_path(defaults['gmm_dir'],
-                                           c.domain_name.strip() + ".mrc")
+        f = values[10]
+        if self._is_int(f):
+            if int(f) > 0:
+                c.density_prefix = os.path.join(self.gmm_dir,c.domain_name)
+                c.gmm_file = c.density_prefix+'.txt'
+                c.mrc_file = c.density_prefix+'.gmm'
+
                 c.em_residues_per_gaussian=int(f)
             else:
-                errors.append("em_residues_per_gaussian format for component %s line %d is not correct" % (c.name, linenum))
-                errors.append("The value must be a single integer. |%s| was given." % f)
+                c.em_residues_per_gaussian = 0
+        elif len(f)==0:
+            c.em_residues_per_gaussian = 0
         else:
-            c.em_residues_per_gaussian=defaults["em_residues_per_gaussian"]
+            errors.append("em_residues_per_gaussian format for component "
+                          "%s line %d is not correct" % (c.name, linenum))
+            errors.append("The value must be a single integer. |%s| was given." % f)
 
-        if "rmf_file" in fields:
-            f=values[fields.index("rmf_file")].strip()
-            if f == "None":
-                c.rmf_file=f
-            else:
-                if not os.path.isfile(f):
-                    errors.append("rmf_file %s must be an existing file or None" % c.name)
-                else:
-                    c.rmf_file=f
-        else:
-            c.rmf_file=defaults["rmf_file"]
+        # DOF fields are for new-style topology files
+        if len(values)>12:
+            # rigid bodies
+            f = values[11]
+            if len(f)>0:
+                if not self._is_int(f):
+                    errors.append("rigid bodies format for component "
+                                  "%s line %d is not correct" % (c.name, linenum))
+                    errors.append("Each RB must be a single integer. |%s| was given." % f)
+                c.rigid_bodies = f
 
-        if "rmf_frame_number" in fields:
-            f=values[fields.index("rmf_frame_number")].strip()
-            if f == "None":
-                c.rmf_frame_number=f
-            else:
-                if not self.is_int(f):
-                    errors.append("rmf_frame_number %s must be an integer or None" % c.name)
-                else:
-                    c.rmf_file=f
-        else:
-            c.rmf_frame_number=defaults["rmf_frame_number"]
+            # super rigid bodies
+            f = values[12]
+            if len(f)>0:
+                f = f.split(',')
+                for i in f:
+                    if not self._is_int(i):
+                        errors.append("super rigid bodies format for component "
+                                      "%s line %d is not correct" % (c.name, linenum))
+                        errors.append("Each SRB must be a single integer. |%s| was given." % f)
+                c.super_rigid_bodies = f
 
+            # chain of super rigid bodies
+            f = values[13]
+            if len(f)>0:
+                if not self._is_int(f):
+                    errors.append("em_residues_per_gaussian format for component "
+                                  "%s line %d is not correct" % (c.name, linenum))
+                    errors.append("Each CSRB must be a single integer. |%s| was given." % f)
+                c.chain_of_super_rigid_bodies = f
+
+        # done
         if errors:
             raise ValueError("Fix Topology File syntax errors and rerun: " \
                              + "\n".join(errors))
         else:
             return c
 
-    def is_int(self, s):
+
+    def set_gmm_dir(self,gmm_dir):
+        """Change the GMM dir"""
+        self.gmm_dir = gmm_dir
+        for c in self.component_list:
+            c.gmm_file = os.path.join(self.gmm_dir,c.domain_name+".txt")
+            c.mrc_file = os.path.join(self.gmm_dir,c.domain_name+".mrc")
+            print('new gmm',c.gmm_file)
+
+    def set_pdb_dir(self,pdb_dir):
+        """Change the PDB dir"""
+        self.pdb_dir = pdb_dir
+        for c in self.component_list:
+            if not c._orig_pdb_input in ("","None","IDEAL_HELIX","BEADS"):
+                c.pdb_file = os.path.join(self.pdb_dir,c._orig_pdb_input)
+
+    def set_fasta_dir(self,fasta_dir):
+        """Change the FASTA dir"""
+        self.fasta_dir = fasta_dir
+        for c in self.component_list:
+            c.fasta_file = os.path.join(self.fasta_dir,c._orig_fasta_file)
+
+    def set_dir(self, default_dir, new_dir):
+        """DEPRECATED: This old function sets things relative to topology file"""
+        print("WARNING: set_dir() is deprecated, use set_gmm_dir, set_pdb_dir, or set_fasta_dir. "
+              "Paths in the TopologyReader constructor or in those functions are relative "
+              "to the current working directory, not the topology file.")
+        if default_dir=="gmm_dir":
+            self.set_gmm_dir(IMP.get_relative_path(self.topology_file,new_dir))
+        elif default_dir=="pdb_dir":
+            self.set_pdb_dir(IMP.get_relative_path(self.topology_file,new_dir))
+        elif default_dir=="fasta_dir":
+            self.set_fasta_dir(nIMP.get_relative_path(self.topology_file,new_dir))
+        else:
+            raise Exception(default_dir, "is not a correct directory key")
+
+    def _is_int(self, s):
        # is this string an integer?
         try:
             float(s)
@@ -951,41 +965,60 @@ class TopologyReader(object):
         except ValueError:
             return False
 
+    def get_rigid_bodies(self):
+        """Return list of lists of rigid bodies (as domain name)"""
+        rbl = defaultdict(list)
+        for c in self.component_list:
+            for rbnum in c.rigid_bodies:
+                rbl[rbnum].append(c.domain_name)
+        return rbl.values()
 
-    def add_default_parameter(self,line, linenum):
-    #Separates a line into a key:value pair.
+    def get_super_rigid_bodies(self):
+        """Return list of lists of super rigid bodies (as domain name)"""
+        rbl = defaultdict(list)
+        for c in self.component_list:
+            for rbnum in c.super_rigid_bodies:
+                rbl[rbnum].append(c.domain_name)
+        return rbl.values()
 
-        f=line.split('|')
-        if len(f) != 4:
-            print("Default value syntax not correct for ", line)
-            print("Line number", linenum," contains ", len(f)-2, " fields.")
-            print("Please reformat to |KEY|VALUE|")
-        self.defaults[f[1]]=f[2]
+    def get_chains_of_super_rigid_bodies(self):
+        """Return list of lists of chains of super rigid bodies (as domain name)"""
+        rbl = defaultdict(list)
+        for c in self.component_list:
+            for rbnum in c.chain_of_super_rigid_bodies:
+                rbl[rbnum].append(c.domain_name)
+        return rbl.values()
 
 class ComponentTopology(object):
-    '''
-    Topology class stores the components required to build a standard IMP hierarchy
-    using IMP.pmi.autobuild_model()
-    '''
+    """Stores the components required to build a standard IMP hierarchy
+    using IMP.pmi.BuildModel()
+    """
     def __init__(self):
-        self.name=None
-        self.domain_name=None
-        self.fasta_file=None
-        self.fasta_id=None
-        self.pdb_file=None
-        self.chain=None
-        self.residue_range=None
-        self.pdb_offset=None
-        self.bead_size=None
-        self.em_residues_per_gaussian=None
-        self.gmm_file=None
-        self.mrc_file=None
-        self.color=None
-        self.rmf_file_name=None
-        self.rmf_frame_number=None
-        self.rigid_bodies=None
-        self.super_rigid_bodies=None
-        self.chain_of_super_rigid_bodies=None
-    def recompute_default_dirs(self, topology):
-        pdb_filename=self.pdb_file.split("/")[-1]
-        self.pdb_filename=IMP.get_relative_path(topology.topology_file, topology.defaults)
+        self.name = None
+        self.num_clones = None
+        self.domain_name = None
+        self.fasta_file = None
+        self._orig_fasta_file = None
+        self.fasta_id = None
+        self.pdb_file = None
+        self._orig_pdb_input = None
+        self.chain = None
+        self.residue_range = [1,-1]
+        self.pdb_offset = 0
+        self.bead_size = 10
+        self.em_residues_per_gaussian = 0
+        self.gmm_file = ''
+        self.mrc_file = ''
+        self.density_prefix = ''
+        self.color = 0.1
+        self.rigid_bodies = []
+        self.super_rigid_bodies = []
+        self.chain_of_super_rigid_bodies = []
+    def _l2s(self,l):
+        l = str(l).strip('[').strip(']')
+        return l
+    def get_str(self):
+        return '|'+'|'.join([self.name,self.domain_name,self._orig_fasta_file,self.fasta_id,
+                         self._orig_pdb_input,self.chain,self._l2s(list(self.residue_range)),str(self.pdb_offset),
+                         str(self.bead_size),str(self.em_residues_per_gaussian),self._l2s(self.rigid_bodies),
+                         self._l2s(self.super_rigid_bodies),self._l2s(self.chain_of_super_rigid_bodies)])+'|'

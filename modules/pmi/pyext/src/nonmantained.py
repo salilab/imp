@@ -2550,3 +2550,156 @@ def select_calpha_or_residue(
         else:
             print(ObjectName + " residue %s chain %s does not exist" % (resid, chain))
     return p
+
+
+
+
+class SetupMembranePoreRestraint(object):
+    import math
+
+    def __init__(
+        self,
+        representation,
+        selection_tuples_outside=None,
+        selection_tuples_membrane=None,
+        selection_tuples_inside=None,
+        center=(0.0,0.0,0.0),
+        z_tickness=100,
+        radius=100,
+        membrane_tickness=40.0,
+        resolution=1,
+        label="None"):
+
+        self.weight = 1.0
+        self.label = label
+        self.m = representation.prot.get_model()
+        self.rs = IMP.RestraintSet(self.m, label)
+        self.representation=representation
+        self.center=center
+        self.radius=radius
+        self.z_tickness=z_tickness
+        self.membrane_tickness=membrane_tickness
+
+
+
+
+
+    def create_representation(self):
+        p=IMP.Particle(self.m)
+        h=IMP.atom.Hierarchy.setup_particle(p)
+        h.set_name("Membrane_Pore"+self.label)
+        self.representation.prot.add_child(h)
+
+        inner=self.z_tickness/2-self.membrane_tickness/2
+        outer=self.z_tickness/2+self.membrane_tickness/2
+
+        surface_1=[]
+        surface_2=[]
+        particles_surface_1=[]
+        particles_surface_2=[]
+
+        for i in range(10):
+            for j in range(10):
+                v=self.math.pi/10.0*float(i)+self.math.pi/2.0
+                u=2.0*self.math.pi/10.0*float(j)
+                x=(self.radius+inner*self.math.cos(v))*self.math.cos(u)
+                y=(self.radius+inner*self.math.cos(v))*self.math.sin(u)
+                z=inner*self.math.sin(v)
+                p2=IMP.Particle(self.m)
+                IMP.atom.Mass.setup_particle(p2,100)
+                d=IMP.core.XYZR.setup_particle(p2)
+                d.set_coordinates((x,y,z))
+                d.set_radius(1)
+                h2=IMP.atom.Hierarchy.setup_particle(p2)
+                h.add_child(h2)
+                surface_1.append((x,y,z))
+                particles_surface_1.append(p2)
+
+                x=(self.radius+outer*self.math.cos(v))*self.math.cos(u)
+                y=(self.radius+outer*self.math.cos(v))*self.math.sin(u)
+                z=outer*self.math.sin(v)
+                p2=IMP.Particle(self.m)
+                IMP.atom.Mass.setup_particle(p2,100)
+                d=IMP.core.XYZR.setup_particle(p2)
+                d.set_coordinates((x,y,z))
+                d.set_radius(1)
+                h2=IMP.atom.Hierarchy.setup_particle(p2)
+                h.add_child(h2)
+                surface_2.append((x,y,z))
+                particles_surface_2.append(p2)
+
+        for i in range(10):
+            for j in range(10):
+                x=3.0*self.radius/10.0*float(i)-self.radius*1.5
+                y=3.0*self.radius/10.0*float(j)-self.radius*1.5
+                if(self.math.sqrt(x**2+y**2)<self.radius):
+                    continue
+                else:
+                    for n,z in enumerate([self.z_tickness/2+self.membrane_tickness/2,
+                              self.z_tickness/2-self.membrane_tickness/2,
+                              -self.z_tickness/2+self.membrane_tickness/2,
+                              -self.z_tickness/2-self.membrane_tickness/2]):
+                        p2=IMP.Particle(self.m)
+                        IMP.atom.Mass.setup_particle(p2,100)
+                        d=IMP.core.XYZR.setup_particle(p2)
+                        d.set_coordinates((x,y,z))
+                        d.set_radius(1)
+                        h2=IMP.atom.Hierarchy.setup_particle(p2)
+                        h.add_child(h2)
+                        if n == 0 or n == 3:
+                            surface_1.append((x,y,z))
+                            particles_surface_1.append(p2)
+                        if n == 1 or n == 2:
+                            surface_2.append((x,y,z))
+                            particles_surface_2.append(p2)
+
+            from scipy.spatial import Delaunay
+            tri = Delaunay(surface_1)
+
+            '''
+            edge_points = []
+            edges = set()
+
+            def add_edge(i, j):
+                """Add a line between the i-th and j-th points, if not in the list already"""
+                if (i, j) in edges or (j, i) in edges:
+                    # already added
+                    return
+                edges.add( (i, j) )
+                edge_points.append(points[ [i, j] ])
+
+            # loop over triangles:
+            # ia, ib, ic = indices of corner points of the triangle
+            for ia, ib, ic in tri.vertices:
+                add_edge(ia, ib)
+                add_edge(ib, ic)
+                add_edge(ic, ia)
+            '''
+
+            '''
+            edges=set()
+
+            for ia, ib, ic, id in tri.simplices:
+                edges.add((ia,ib))
+                edges.add((ib,ic))
+                edges.add((ic,id))
+
+            for e in edges:
+                p1=particles_surface_1[e[0]]
+                p2=particles_surface_1[e[1]]
+                print(p1,p2,e[0],e[1])
+                IMP.atom.Bonded.setup_particle(p1)
+                IMP.atom.Bonded.setup_particle(p2)
+                IMP.atom.create_bond(IMP.atom.Bonded(p1),IMP.atom.Bonded(p2),1)
+            '''
+
+            for i in range(len(particles_surface_1)-1):
+                p1=particles_surface_1[i]
+                p2=particles_surface_1[i+1]
+                IMP.atom.Bonded.setup_particle(p1)
+                IMP.atom.Bonded.setup_particle(p2)
+                IMP.atom.create_bond(IMP.atom.Bonded(p1),IMP.atom.Bonded(p2),1)
+			'''
+
+
+
