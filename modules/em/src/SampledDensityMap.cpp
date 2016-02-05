@@ -160,7 +160,7 @@ class GaussianKernel {
  public:
   GaussianKernel(KernelParameters &kps, const FloatKey &mass_key)
       : kps_(&kps), mass_key_(mass_key) {}
-  double get_radius(Particle *p) const {
+  double get_radius(Particle *) const {
     return kps_->get_rkdist();
   }
   algebra::Vector3D get_center(Particle *p) const {
