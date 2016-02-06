@@ -1094,7 +1094,6 @@ class BuildModel1(object):
                                  missingbeadsize=beadsize)
 
         elif pdbname is not None and pdbname is "IDEAL_HELIX" and pdbname is not "BEADS" and pdbname is not "DENSITY" :
-
             outhier=simo.add_component_ideal_helix(comname,
                                                 resolutions=[1,10],
                                                 resrange=resrange,
@@ -1102,7 +1101,10 @@ class BuildModel1(object):
                                                 show=False)
 
         elif pdbname is not None and pdbname is not "IDEAL_HELIX" and pdbname is "BEADS" and pdbname is not "DENSITY" :
-            outhier=simo.add_component_necklace(comname,resrange[0],resrange[1],beadsize,color=color)
+            seq_len=resrange[1]
+            if resrange[1]==-1:
+                seq_len=len(simo.sequence_dict[comname])
+            outhier=simo.add_component_necklace(comname,resrange[0],seq_len,beadsize,color=color)
 
         elif pdbname is not None and pdbname is not "IDEAL_HELIX" and pdbname is not "BEADS" and pdbname is "DENSITY" :
             outhier=[]

@@ -51,7 +51,6 @@ class Tests(IMP.test.TestCase):
 
         os.unlink("test_set_coordinates_from_rmf.rmf3")
 
-
     def test_set_from_rmf_roundtrip(self):
         import IMP.pmi.macros
         import IMP.pmi.output
@@ -64,7 +63,7 @@ class Tests(IMP.test.TestCase):
                  ("Rpb9",   "Rpb9",        0.0,   fastafile, "1WCM:I",  "BEADS", None, (1,-1),      None, 20,              1,     None, 0, None, None, None),
                  ("Rpb10",  "Rpb10",       0.0,   fastafile, "1WCM:J",  "BEADS", None, (1,-1),      None, 20,              None,     None, 0, None, None, None),
                  ("Rpb11",  "Rpb11",       0.0,   fastafile, "1WCM:K",  pdbfile, "K",  (1,-1),      None, 20,              2,     None, 0, None, None, None),
-                 ("Rpb12",  "Rpb12",       0.0,   fastafile, "1WCM:L",  pdbfile, "L",  (1,-1),      True, 20,              3,     None, 2, "gmm_Rpb12.txt", "gmm_Rpb12.mrc", None)]
+                 ("Rpb12",  "Rpb12",       0.0,   fastafile, "1WCM:L",  pdbfile, "L",  (1,-1),      True, 20,              3,     None, 2, self.get_input_file_name("gmm_Rpb12.txt"), "gmm_Rpb12.mrc", None)]
         with IMP.allow_deprecated():
             bm=IMP.pmi.macros.BuildModel1(simo)
         bm.build_model(domains)

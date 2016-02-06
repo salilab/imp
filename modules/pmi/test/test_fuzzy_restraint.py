@@ -175,10 +175,10 @@ class Tests(IMP.test.TestCase):
         mc.set_kt(1.0)
         mc.add_mover(smv)
 
-        rh = RMF.create_rmf_file("test_fuzzy_restraint_1.rmf3")
+        rh = RMF.create_rmf_file(self.get_tmp_file_name("test_fuzzy_restraint_1.rmf3"))
         IMP.rmf.add_hierarchies(rh, hs)
 
-        for n in range(100):
+        for n in range(10):
             mc.optimize(10*len(mvs))
             IMP.rmf.save_frame(rh)
 
@@ -243,10 +243,10 @@ class Tests(IMP.test.TestCase):
         mc.set_kt(1.0)
         mc.add_mover(smv)
 
-        rh = RMF.create_rmf_file("test_fuzzy_restraint_2.rmf3")
+        rh = RMF.create_rmf_file(self.get_tmp_file_name("test_fuzzy_restraint_2.rmf3"))
         IMP.rmf.add_hierarchies(rh, hs)
 
-        for n in range(100):
+        for n in range(10):
             mc.optimize(10*len(mvs))
             IMP.rmf.save_frame(rh)
 
@@ -287,10 +287,10 @@ class Tests(IMP.test.TestCase):
         mc.set_kt(1.0)
         mc.add_mover(smv)
 
-        rh = RMF.create_rmf_file("test_fuzzy_restraint_3.rmf3")
+        rh = RMF.create_rmf_file(self.get_tmp_file_name("test_fuzzy_restraint_3.rmf3"))
         IMP.rmf.add_hierarchies(rh, hs)
 
-        for n in range(100):
+        for n in range(10):
             mc.optimize(10*len(mvs))
             IMP.rmf.save_frame(rh)
 

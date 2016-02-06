@@ -8,6 +8,8 @@ from __future__ import print_function
 import IMP
 import IMP.algebra
 import IMP.isd
+import IMP.pmi
+import IMP.pmi.topology
 import collections
 import itertools
 from math import log,pi,sqrt,exp
@@ -1392,6 +1394,8 @@ def input_adaptor(stuff,
         xtp = type_set.pop()
         return xtp,list(it)
 
+    if stuff is None:
+        return stuff
     if hasattr(stuff,'__iter__'):
         if len(stuff)==0:
             return stuff
