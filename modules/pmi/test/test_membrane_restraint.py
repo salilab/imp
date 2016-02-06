@@ -103,7 +103,8 @@ class MembraneRestraint(IMP.test.TestCase):
             for z in range(-500, 500, 10):
                 IMP.core.XYZ(atom).set_z(z)
                 self.assertAlmostEqual(
-                    r.unprotected_evaluate(None), r2.unprotected_evaluate(None))
+                    r.unprotected_evaluate(None), r2.unprotected_evaluate(None),
+                    delta=1e-4)
 
     def test_above(self):
         m = IMP.Model()
@@ -128,7 +129,8 @@ class MembraneRestraint(IMP.test.TestCase):
             for z in range(-500, 500, 10):
                 IMP.core.XYZ(atom).set_z(z)
                 self.assertAlmostEqual(
-                    r.unprotected_evaluate(None), r2.unprotected_evaluate(None))
+                    r.unprotected_evaluate(None), r2.unprotected_evaluate(None),
+                    delta=1e-4)
 
     def test_below(self):
         m = IMP.Model()
@@ -154,7 +156,8 @@ class MembraneRestraint(IMP.test.TestCase):
             for z in range(-500, 500, 10):
                 IMP.core.XYZ(atom).set_z(z)
                 self.assertAlmostEqual(
-                    r.unprotected_evaluate(None), r2.unprotected_evaluate(None))
+                    r.unprotected_evaluate(None), r2.unprotected_evaluate(None),
+                    delta=1e-4)
 
 
 if __name__ == '__main__':

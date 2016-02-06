@@ -2699,7 +2699,3 @@ class SetupMembranePoreRestraint(object):
                 IMP.atom.Bonded.setup_particle(p1)
                 IMP.atom.Bonded.setup_particle(p2)
                 IMP.atom.create_bond(IMP.atom.Bonded(p1),IMP.atom.Bonded(p2),1)
-			'''
-
-
-
