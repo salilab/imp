@@ -25,10 +25,9 @@ def decorate_gmm_from_text(in_fn,
                            transform=None,
                            radius_scale=1.0,
                            mass_scale=1.0):
-    ''' read the output from write_gmm_to_text, decorate as Gaussian and Mass'''
+    """ read the output from write_gmm_to_text, decorate as Gaussian and Mass"""
     inf=open(in_fn,'r')
     ncomp=0
-    #print('got ps',ps,'len',len(ps))
     for l in inf:
         if l[0]!='#':
             if ncomp>len(ps)-1:
@@ -42,21 +41,25 @@ def decorate_gmm_from_text(in_fn,
             shape=IMP.algebra.get_gaussian_from_covariance(covar.tolist(),
                                                            IMP.algebra.Vector3D(center))
             if not IMP.core.Gaussian.get_is_setup(p):
-                g=IMP.core.Gaussian.setup_particle(ps[ncomp],shape)
+                g = IMP.core.Gaussian.setup_particle(ps[ncomp],shape)
             else:
-                IMP.core.Gaussian(ps[ncomp]).set_gaussian(shape)
+                g = IMP.core.Gaussian(ps[ncomp])
+                g.set_gaussian(shape)
             if not IMP.atom.Mass.get_is_setup(p):
                 IMP.atom.Mass.setup_particle(p,weight*mass_scale)
             else:
                 IMP.atom.Mass(p).set_mass(weight*mass_scale)
-            rmax=sqrt(max(g.get_variances()))*radius_scale
-            IMP.core.XYZR.setup_particle(ps[ncomp],rmax)
+            rmax = sqrt(max(g.get_variances()))*radius_scale
+            if not IMP.core.XYZR.get_is_setup(ps[ncomp]):
+                IMP.core.XYZR.setup_particle(ps[ncomp],rmax)
+            else:
+                IMP.core.XYZR(ps[ncomp]).set_radius(rmax)
             if not transform is None:
                 IMP.core.transform(IMP.core.RigidBody(ps[ncomp]),transform)
             ncomp+=1
 
 def write_gmm_to_text(ps,out_fn):
-    '''write a list of gaussians to text. must be decorated as Gaussian and Mass'''
+    """write a list of gaussians to text. must be decorated as Gaussian and Mass"""
     print('will write GMM text to',out_fn)
     outf=open(out_fn,'w')
     outf.write('#|num|weight|mean|covariance matrix|\n')
@@ -75,7 +78,7 @@ def write_gmm_to_text(ps,out_fn):
     outf.close()
 
 def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None,origin=None):
-    '''write density map from GMM. input can be either particles or gaussians'''
+    """write density map from GMM. input can be either particles or gaussians"""
     if type(to_draw[0]) in (IMP.Particle,IMP.atom.Hierarchy,IMP.core.Hierarchy):
         ps=to_draw
     elif type(to_draw[0])==IMP.core.Gaussian:
@@ -108,7 +111,7 @@ def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None,origin=None):
     del d1
 
 def write_sklearn_gmm_to_map(gmm,out_fn,apix=0,bbox=None,dmap_model=None):
-    '''write density map directly from sklearn GMM (kinda slow) '''
+    """write density map directly from sklearn GMM (kinda slow) """
     ### create density
     if not dmap_model is None:
         d1=IMP.em.create_density_map(dmap_model)
@@ -131,8 +134,8 @@ def write_sklearn_gmm_to_map(gmm,out_fn,apix=0,bbox=None,dmap_model=None):
 
 def draw_points(pts,out_fn,trans=IMP.algebra.get_identity_transformation_3d(),
                                 use_colors=False):
-    ''' given some points (and optional transform), write them to chimera 'bild' format
-    colors flag only applies to ellipses, otherwise it'll be weird'''
+    """ given some points (and optional transform), write them to chimera 'bild' format
+    colors flag only applies to ellipses, otherwise it'll be weird"""
     outf=open(out_fn,'w')
     #print 'will draw',len(pts),'points'
     # write first point in red
@@ -229,7 +232,7 @@ def fit_gmm_to_points(points,
                       force_radii=-1.0,
                       force_weight=-1.0,
                       mass_multiplier=1.0):
-    '''fit a GMM to some points. Will return the score and the Akaike score.
+    """fit a GMM to some points. Will return the score and the Akaike score.
     Akaike information criterion for the current model fit. It is a measure
     of the relative quality of the GMM that takes into account the
     parsimony and the goodness of the fit.
@@ -248,7 +251,7 @@ def fit_gmm_to_points(points,
     force_weight:      fix the weights
     mass_multiplier:   multiply the weights of all the gaussians by this value
     dirichlet:         use the DGMM fitting (can reduce number of components, takes longer)
-    '''
+    """
 
 
     import sklearn.mixture
@@ -313,7 +316,7 @@ def fit_dirichlet_gmm_to_points(points,
                       num_iter=100,
                       covariance_type='full',
                       mass_multiplier=1.0):
-    '''fit a GMM to some points. Will return core::Gaussians.
+    """fit a GMM to some points. Will return core::Gaussians.
     if no particles are provided, they will be created
 
     points:            list of coordinates (python)
@@ -326,7 +329,7 @@ def fit_dirichlet_gmm_to_points(points,
     force_radii:       fix the radii (spheres only)
     force_weight:      fix the weights
     mass_multiplier:   multiply the weights of all the gaussians by this value
-'''
+    """
 
 
     import sklearn.mixture
