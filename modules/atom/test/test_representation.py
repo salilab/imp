@@ -15,7 +15,7 @@ def bead2gaussian(center,radius,mdl,p=None):
         return IMP.core.Gaussian.setup_particle(p,shape)
 
 class RepresentationTest(IMP.test.TestCase):
-    '''
+
     def test_named_representation(self):
         """Test representation when you manually set resolutions"""
         mdl = IMP.Model()
@@ -181,7 +181,7 @@ class RepresentationTest(IMP.test.TestCase):
         sel20 = IMP.atom.Selection(mh,residue_index=idxs[0],resolution=20)
         self.assertEqual(sel20.get_selected_particles()[0],
                          res20.get_children()[0])
-    '''
+
     def test_show(self):
         """Test new show_with_representations function"""
                 # read in system
