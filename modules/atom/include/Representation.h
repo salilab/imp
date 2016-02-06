@@ -91,6 +91,10 @@ inline double get_resolution(Hierarchy h) {
 //! Return the Representation object containing this hierarchy
 IMPATOMEXPORT Representation get_representation(Hierarchy h, bool nothrow = false);
 
+//! Traverse through the tree and show atom info, including representations
+IMPATOMEXPORT void show_with_representations(Hierarchy h,
+                                             std::ostream& out = std::cout);
+
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_REPRESENTATION_H */

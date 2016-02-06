@@ -15,6 +15,7 @@
 #include <sstream>
 #include <vector>
 
+
 IMPATOM_BEGIN_NAMESPACE
 
 double get_resolution(Model* m, ParticleIndex pi) {
@@ -222,6 +223,47 @@ Representation get_representation(Hierarchy h, bool nothrow){
   return rd;
 }
 
-void Representation::show(std::ostream& out) const { out << get_resolutions(); }
+void Representation::show(std::ostream& out) const { out << "Resolutions: " << get_resolutions(); }
+
+void show_with_representations(Hierarchy h,
+                               std::ostream& stream) {
+  // search through tree + representations
+  Vector<boost::tuple<std::string, std::string, Hierarchy> > stack;
+  stack.push_back(boost::make_tuple(std::string(), std::string(), h));
+  do {
+    boost::tuple<std::string, std::string, Hierarchy> &back = stack.back();
+    std::string prefix0 = back.get<0>();
+    std::string prefix1 = back.get<1>();
+    Hierarchy cur = back.get<2>();
+    stack.pop_back();
+    stream << prefix0;
+    unsigned int nc = cur.get_number_of_children();
+
+    if (nc > 0) stream << " + ";
+    else stream << " - ";  // leaf marker
+    cur.show(stream);
+    stream << std::endl;
+
+    // if you have alternate representations, put on queue at the same tier as this
+    if (Representation::get_is_setup(cur)){
+      Hierarchies balls = Representation(cur.get_particle()).get_representations(BALLS);
+      Hierarchies densities = Representation(cur.get_particle()).get_representations(DENSITIES);
+      for (Hierarchies::const_iterator it = balls.begin();it!=balls.end();++it){
+        //one of the representations is itself
+        if ((*it)!=cur) stack.push_back(boost::make_tuple(prefix0 ,prefix1 , *it));
+      }
+      for (Hierarchies::const_iterator dit = densities.begin();dit!=densities.end();++dit){
+        if ((*dit)!=cur) stack.push_back(boost::make_tuple(prefix0 ,prefix1 , *dit));
+      }
+    }
+
+    // Children should go next (depth first)
+    for (int i=nc-1;i>=0;--i) {
+      stack.push_back(boost::make_tuple(prefix1 + " ",prefix1 + " ", cur.get_child(i)));
+    }
+
+  } while (!stack.empty());
+  stream<<std::endl;
+}
 
 IMPATOM_END_NAMESPACE

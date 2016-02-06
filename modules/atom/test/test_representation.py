@@ -15,7 +15,7 @@ def bead2gaussian(center,radius,mdl,p=None):
         return IMP.core.Gaussian.setup_particle(p,shape)
 
 class RepresentationTest(IMP.test.TestCase):
-
+    '''
     def test_named_representation(self):
         """Test representation when you manually set resolutions"""
         mdl = IMP.Model()
@@ -181,7 +181,36 @@ class RepresentationTest(IMP.test.TestCase):
         sel20 = IMP.atom.Selection(mh,residue_index=idxs[0],resolution=20)
         self.assertEqual(sel20.get_selected_particles()[0],
                          res20.get_children()[0])
+    '''
+    def test_show(self):
+        """Test new show_with_representations function"""
+                # read in system
+        mdl = IMP.Model()
+        mh = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'),mdl)
+        ch = mh.get_children()[0]
+        idxs = [IMP.atom.Residue(h).get_index() \
+                for h in IMP.atom.get_by_type(ch,IMP.atom.RESIDUE_TYPE)]
+        rep = IMP.atom.Representation.setup_particle(ch,0)
 
+        # average along backbone to get Gaussians (don't do this in real life)
+        tmp20 = IMP.atom.create_simplified_along_backbone(ch,20)
+        density_frag = IMP.atom.Fragment.setup_particle(IMP.Particle(mdl),idxs)
+        for frag in tmp20.get_children():
+           gp = frag.get_particle()
+           xyzr = IMP.core.XYZR(gp)
+           g = bead2gaussian(xyzr.get_coordinates(),xyzr.get_radius(),mdl)
+           density_frag.add_child(g)
+        density_frag.set_name("Density:20")
+        rep.add_representation(density_frag.get_particle(),IMP.atom.DENSITIES,20)
 
+        # also add some beads
+        res10 = IMP.atom.create_simplified_along_backbone(ch,10)
+        res10.set_name("Res:10")
+        rep.add_representation(res10,IMP.atom.BALLS,10)
+
+        res20 = IMP.atom.create_simplified_along_backbone(ch,20)
+        res20.set_name("Res:20")
+        rep.add_representation(res20,IMP.atom.BALLS,20)
+        IMP.atom.show_with_representations(rep)
 if __name__ == '__main__':
     IMP.test.main()
