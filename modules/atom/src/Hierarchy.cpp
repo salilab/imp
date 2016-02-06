@@ -170,7 +170,7 @@ struct Validator {
       if (!core::XYZR::get_is_setup(h)) {
         TEST_FAIL("Leaf " << h << " does not have coordinates and radius");
       }
-      if (!Atom::get_is_setup(h)) {
+      if (!Mass::get_is_setup(h)) {
         TEST_FAIL("Leaf " << h << " does not have mass");
       }
     }
