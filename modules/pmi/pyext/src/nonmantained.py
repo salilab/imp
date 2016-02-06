@@ -3,6 +3,8 @@
 """
 
 from __future__ import print_function
+import IMP
+import IMP.atom
 
 class Rods(object):
 
@@ -2696,6 +2698,8 @@ class SetupMembranePoreRestraint(object):
             for i in range(len(particles_surface_1)-1):
                 p1=particles_surface_1[i]
                 p2=particles_surface_1[i+1]
-                IMP.atom.Bonded.setup_particle(p1)
-                IMP.atom.Bonded.setup_particle(p2)
+                if not IMP.atom.Bonded.get_is_setup(p1):
+                    IMP.atom.Bonded.setup_particle(p1)
+                if not IMP.atom.Bonded.get_is_setup(p2):
+                    IMP.atom.Bonded.setup_particle(p2)
                 IMP.atom.create_bond(IMP.atom.Bonded(p1),IMP.atom.Bonded(p2),1)

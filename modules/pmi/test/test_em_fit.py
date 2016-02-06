@@ -17,6 +17,11 @@ import IMP.pmi.macros
 class TestGaussianEMRestraint(IMP.test.TestCase):
 
     def test_gaussian_em(self):
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
         mdl = IMP.Model()
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
@@ -45,6 +50,12 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
 
 class TestPMI(IMP.test.TestCase):
     def test_em_pmi(self):
+        """Test Gaussian setup and restraint in PMI1"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
         outputobjects = []
         sampleobjects = []
 

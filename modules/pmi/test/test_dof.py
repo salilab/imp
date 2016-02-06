@@ -97,6 +97,11 @@ class TestDOF(IMP.test.TestCase):
 
     def test_rigid_body_with_densities(self):
         """Test still works when you add densities"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
         mdl = IMP.Model()
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()

@@ -372,8 +372,8 @@ class ResidueAngleRestraint(object):
             resolution=1)
 
         ts = IMP.core.HarmonicWell(
-            (self.pi * anglemin / 180.0,
-             self.pi * anglemax / 180.0),
+            (pi * anglemin / 180.0,
+             pi * anglemax / 180.0),
             strength)
 
         for ps in IMP.pmi.tools.sublist_iterator(particles, 3, 3):
@@ -463,8 +463,8 @@ class ResidueDihedralRestraint(object):
                 anglemin = -20.0
                 anglemax = 20.0
                 ts = IMP.core.HarmonicWell(
-                    (self.pi * anglemin / 180.0,
-                     self.pi * anglemax / 180.0),
+                    (pi * anglemin / 180.0,
+                     pi * anglemax / 180.0),
                     strength)
                 print("ResidueDihedralRestraint: adding a CYS restraint between %s %s %s %s" % (quadruplet[0].get_name(), quadruplet[1].get_name(),
                                                                                                 quadruplet[2].get_name(), quadruplet[3].get_name()))
@@ -472,8 +472,8 @@ class ResidueDihedralRestraint(object):
                 anglemin = 180 - 70.0
                 anglemax = 180 + 70.0
                 ts = IMP.core.HarmonicWell(
-                    (self.pi * anglemin / 180.0,
-                     self.pi * anglemax / 180.0),
+                    (pi * anglemin / 180.0,
+                     pi * anglemax / 180.0),
                     strength)
                 print("ResidueDihedralRestraint: adding a TRANS restraint between %s %s %s %s" % (quadruplet[0].get_name(), quadruplet[1].get_name(),
                                                                                                   quadruplet[2].get_name(), quadruplet[3].get_name()))
@@ -635,8 +635,8 @@ class SecondaryStructure(object):
         phi0 = []
         phi1 = []
         for i in range(0, 36):
-            phi0.append(i * 10.0 / 180.0 * self.pi)
-            phi1.append(i * 10.0 / 180.0 * self.pi)
+            phi0.append(i * 10.0 / 180.0 * pi)
+            phi1.append(i * 10.0 / 180.0 * pi)
             for j in range(0, 36):
                 score_dih.append(0.0)
         # open file
@@ -679,7 +679,7 @@ class SecondaryStructure(object):
         score_ang = []
         psi = []
         for i in range(0, 180):
-            psi.append(i / 180.0 * self.pi)
+            psi.append(i / 180.0 * pi)
             score_ang.append(0.0)
         # read file
         if not mix:

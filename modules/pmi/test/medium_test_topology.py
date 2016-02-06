@@ -52,6 +52,11 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
     def test_num_residues(self):
         """ Test different ways of accessing residues"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
         mdl = IMP.Model()
         (a1, hier, mol)=self.initialize_system(mdl)
 
@@ -63,6 +68,11 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
 
     def test_num_unstruct_res(self):
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
         mdl = IMP.Model()
         (a1, hier, mol)=self.initialize_system(mdl)
 
@@ -83,6 +93,11 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         The self.hier object in TempResidue is an IMP.atom.Hierarchy
         IMP.atom.Hierarchy does not have a function get_residue_type()
         """
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
         mdl = IMP.Model()
         (a1, hier, mol)=self.initialize_system(mdl)
         res = mol.residues[0]
@@ -97,6 +112,11 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
     def test_molecule_rigid_members(self):
         """None of the leaves of the molecule are RigidMembers"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
         mdl = IMP.Model()
         (a1, hier, mol)=self.initialize_system(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
@@ -117,6 +137,10 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
     def test_molecule_rigid_members1(self):
         """None of the leaves of the selection (Resolution=10) are RigidMembers"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
 
         mdl = IMP.Model()
         (a1, hier, mol)=self.initialize_system(mdl)
@@ -144,6 +168,11 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         """When the rigid body is created with no assigned nonrigid members
         all leaves of the molecule are of type RigidMember
         """
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
         mdl = IMP.Model()
         (a1, hier, mol)=self.initialize_system(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
@@ -496,6 +525,11 @@ class TopologyTest(IMP.test.TestCase):
 
     def test_setup_densities(self):
         """Test creating collective densities"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
         mdl = IMP.Model()
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()

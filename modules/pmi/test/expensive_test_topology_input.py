@@ -28,10 +28,11 @@ class TopologyReaderTests(IMP.test.TestCase):
         """Test changing default pdb directory"""
         newdir="../../"
         topology_file = self.get_input_file_name("topology.txt")
+        inputdir=os.path.dirname(topology_file)
         t = IMP.pmi.topology.TopologyReader(topology_file)
         t.set_dir("pdb_dir", newdir)
         self.assertEqual(os.path.abspath(t.pdb_dir),
-                         os.path.abspath(os.path.join('input',newdir)))
+                         os.path.abspath(os.path.join(inputdir,newdir)))
         self.assertEqual(t.component_list[0].pdb_file,
                          os.path.dirname(topology_file) \
                          + '/../../1WCM_map_fitted.pdb')
@@ -62,9 +63,10 @@ class TopologyReaderTests(IMP.test.TestCase):
         mdl = IMP.Model()
 
         topology_file=self.get_input_file_name("topology.txt")
+        inputdir=os.path.dirname(topology_file)
         t=IMP.pmi.topology.TopologyReader(topology_file)
         self.assertEqual(os.path.abspath(t.gmm_dir),
-                         os.path.abspath('input/'))
+                         os.path.abspath(inputdir))
 
         with IMP.allow_deprecated():
             bm = IMP.pmi.macros.BuildModel(mdl,

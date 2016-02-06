@@ -1,8 +1,8 @@
 import IMP
 import IMP.atom
 import IMP.pmi
-import IMP.test
 import IMP.pmi.restraints.proteomics
+import IMP.pmi.nonmantained
 import IMP.pmi.representation
 import IMP.pmi.io
 import IMP.rmf
@@ -13,7 +13,7 @@ m = IMP.Model()
 
 r=IMP.pmi.representation.Representation(m)
 
-smr=IMP.pmi.restraints.proteomics.SetupMembranePoreRestraint(
+smr=IMP.pmi.nonmantained.SetupMembranePoreRestraint(
         r,
         selection_tuples_outside=None,
         selection_tuples_membrane=None,

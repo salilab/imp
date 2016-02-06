@@ -358,7 +358,7 @@ def get_random_cross_link_dataset(representation,
     dataset="#\n"
 
     for (name1, r1, name2, r2) in residue_pairs:
-        if random() > ambiguity_probability:
+        if random.random() > ambiguity_probability:
             unique_identifier+=1
         score=random.random()*(cmax-cmin)+cmin
         dataset+=str(name1)+" "+str(name2)+" "+str(r1)+" "+str(r2)+" "+str(score)+" "+str(unique_identifier)+"\n"

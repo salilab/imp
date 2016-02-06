@@ -371,7 +371,7 @@ class ReplicaExchange0(object):
 
         if myindex == 0:
             self.show_info()
-
+        self.replica_exchange_object.set_was_used(True)
         for i in range(self.vars["number_of_frames"]):
             for nr in range(self.vars["num_sample_rounds"]):
                 if sampler_md is not None:
@@ -403,7 +403,6 @@ class ReplicaExchange0(object):
             if not self.test_mode:
                 output.write_stat2(replica_stat_file)
             rex.swap_temp(i, score)
-
 
 # ----------------------------------------------------------------------
 class BuildSystem(object):
