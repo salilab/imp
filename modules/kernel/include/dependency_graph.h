@@ -69,8 +69,9 @@ IMPKERNELEXPORT ParticlesTemp
                             const DependencyGraphVertexIndex &index);
 
 #ifndef IMP_DOXYGEN
-/** Return all Restraints that depend on this Particle.
-    Model::set_has_all_dependencies() must be called first.*/
+//! Return all Restraints that depend on this Particle.
+/*  Model::set_has_all_dependencies() must be called first.
+    \note The list may contain duplicates. */
 IMPKERNELEXPORT RestraintsTemp
     get_dependent_restraints(Model *m, ParticleIndex pi);
 #endif

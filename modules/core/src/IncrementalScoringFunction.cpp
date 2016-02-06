@@ -114,7 +114,11 @@ void IncrementalScoringFunction::create_scoring_functions() {
 
   Vector<RestraintsTemp> crs;
   IMP_FOREACH(ParticleIndex pi, all_) {
-    crs.push_back(get_dependent_restraints(get_model(), pi));
+    RestraintsTemp cr = get_dependent_restraints(get_model(), pi);
+    /* Remove any duplicates in cr (could happen with rigid bodies) */
+    std::sort(cr.begin(), cr.end());
+    cr.erase(std::unique(cr.begin(), cr.end()), cr.end());
+    crs.push_back(cr);
   }
 
   for (unsigned int i = 0; i < all_.size(); ++i) {
