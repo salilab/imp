@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, division
 import IMP
 import IMP.atom
 import IMP.isd.gmm_tools
@@ -243,7 +243,7 @@ def build_representation(mdl,rep,coord_finder):
     single_node = False
     if rep.density_residues_per_component!=None:
         single_node = True
-        num_components = len(rep.residues)/rep.density_residues_per_component+1
+        num_components = len(rep.residues)//rep.density_residues_per_component+1
         rep_dict = defaultdict(list)
         root_representation = IMP.atom.Representation.setup_particle(IMP.Particle(mdl),
                                                                      primary_resolution)

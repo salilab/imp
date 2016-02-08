@@ -610,7 +610,7 @@ class TotalScoreOutput(object):
         self.rs = IMP.pmi.tools.get_restraint_set(self.mdl)
     def get_output(self):
         self.mdl.update()
-        score = self.rs.evaluate(None)
+        score = self.rs.evaluate(False)
         output = {}
         output["Total_Score"] = str(score)
         return output

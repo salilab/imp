@@ -3,14 +3,14 @@
 * Start by creating the DegreesOfFreedom class with `dof = IMP::pmi::dof::DegreesOfFreedom(model)`
 * The various "create X" functions make movers for system components as well as setup necessary constraints.
 For each of these functions, you can generally pass PMI objects like [Molecule](@ref IMP::pmi::topology::Molecule) or slices thereof.
- * DegreesOfFreedom.create_rigid_body() lets you rigidify a molecule (but allows you to also pass "nonrigid" components which move with the body and also independently)
+ * DegreesOfFreedom.create_rigid_body() lets you rigidify a molecule (but allows you to also pass "nonrigid" components which move with the body and also independently).
  * DegreesOfFreedom.create_super_rigid_body() sets up a special "Super Rigid Body" which moves
-rigidly but is not always constrained to be rigid (so you can later move the parts seperately). Good for speeding up sampling.
- * DegreesOfFreedom.create_flexible_beads() sets up particles to move individually
+rigidly but is not always constrained to be rigid (so you can later move the parts separately). Good for speeding up sampling.
+ * DegreesOfFreedom.create_flexible_beads() sets up particles to move individually.
  * DegreesOfFreedom.setup_md() sets up particles to move with molecular dynamics. Note that this is not (yet) compatible with rigid bodies, and only some restraints.
- * DegreesOfFreedom.constrain_symmetry() makes a symmetry constraint so that clones automatically move with their references. If instead you want a softer restraint, check out the [SymmetryRestraint](IMP.pmi.restraints.stereochemistry).
+ * DegreesOfFreedom.constrain_symmetry() makes a symmetry constraint so that clones automatically move with their references. If instead you want a softer restraint, check out the [SymmetryRestraint](@ref IMP::pmi::restraints::stereochemistry::SymmetryRestraint).
 * When you are done you can access all movers with DegreesOfFreedom.get_movers(). If you have set up rigid, super rigid, or flexible beads, pass the movers to the `monte_carlo_sample_objects` argument of [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0).
-* If you are running MD, you have to seperately pass the particles (also returned from DegreesOfFreedom.setup_md()) to the `molecular_dynamics_sample_objects` argument of [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0). Check out [MD example here](https://integrativemodeling.org/nightly/doc/ref/pmi_2atomistic_8py-example.html).
+* If you are running MD, you have to separately pass the particles (also returned from DegreesOfFreedom.setup_md()) to the `molecular_dynamics_sample_objects` argument of [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0). Check out an [MD example here](pmi_2atomistic_8py-example.html).
 """
 
 from __future__ import print_function

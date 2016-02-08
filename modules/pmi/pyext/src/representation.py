@@ -871,8 +871,10 @@ class Representation(object):
 
 
         IMP.isd.gmm_tools.write_gmm_to_text(gaussians,"model_gmm.txt")
-        pickle.dump(particles_attributes, open("particles_attributes.pkl","w"))
-        pickle.dump(rigid_body_attributes, open("rigid_body_attributes.pkl","w"))
+        pickle.dump(particles_attributes,
+                    open("particles_attributes.pkl", "wb"))
+        pickle.dump(rigid_body_attributes,
+                    open("rigid_body_attributes.pkl", "wb"))
 
 
 
@@ -882,8 +884,10 @@ class Representation(object):
         import IMP.isd
         import IMP.isd.gmm_tools
 
-        particles_attributes=pickle.load(open("particles_attributes.pkl","r"))
-        rigid_body_attributes=pickle.load(open("rigid_body_attributes.pkl","r"))
+        particles_attributes = pickle.load(open("particles_attributes.pkl",
+                                                "rb"))
+        rigid_body_attributes = pickle.load(open("rigid_body_attributes.pkl",
+                                                 "rb"))
 
         particles=[]
         hierarchies=[]

@@ -162,14 +162,14 @@ class TestIOCrosslink(IMP.test.TestCase):
             self.assertEqual(prai[2],xl[cldb.residue2_key])
 
     def test_msstudio_style(self):
-        cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("MSSTUDIO")
+        cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter(rplp)
         cldbkc.set_protein1_key("prot1")
         cldbkc.set_protein2_key("prot2")
         cldbkc.set_site_pairs_key("site pairs")
         cldbkc.set_unique_id_key("id")
         cldbkc.set_id_score_key("score")
-        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("MSSTUDIO")
-        cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc,list_parser=rplp)
+        cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
         cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_crs.dat"))
 
         expected_list=[('1',1,"AAA","AAA",1,10),
@@ -191,21 +191,21 @@ class TestIOCrosslink(IMP.test.TestCase):
             nxl+=1
 
     def test_quantitation_style(self):
-        cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("QUANTITATION")
+        cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter(rplp)
         cldbkc.set_site_pairs_key("uID")
         cldbkc.set_unique_id_key("dbindex")
         cldbkc.set_id_score_key("pvalue")
         cldbkc.set_quantitation_key("log2ratio")
-        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("QUANTITATION")
-        cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc,list_parser=rplp)
+        cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
         cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_quant.dat"))
 
-        expected_list=[('1',1,"AAA","AAA",0.001,1.0),
-                       ('1',2,"AAA","AAA",0.001,1.0),
-                       ('2',1,"BBB","AAA",0.001,1.0),
-                       ('2',2,"BBB","AAA",0.001,1.0),
-                       ('2',3,"BBB","AAA",0.001,1.0),
-                       ('3',1,"CCC","AAA",0.001,1.0)]
+        expected_list=[('1',1,"AAA","AAA",1,10,0.001,1.0),
+                       ('1',2,"AAA","AAA",5,100,0.001,1.0),
+                       ('2',1,"BBB","AAA",5,21,0.001,1.0),
+                       ('2',2,"BBB","AAA",100,3,0.001,1.0),
+                       ('2',3,"BBB","AAA",1,100,0.001,1.0),
+                       ('3',1,"CCC","AAA",7,11,0.001,1.0)]
 
         nxl=0
         for xl in cldb:
@@ -216,18 +216,19 @@ class TestIOCrosslink(IMP.test.TestCase):
             self.assertEqual(xl[cldb.protein2_key],e[3])
             self.assertEqual(xl[cldb.residue1_key],e[4])
             self.assertEqual(xl[cldb.residue2_key],e[5])
+            self.assertEqual(xl[cldb.id_score_key],e[6])
+            self.assertEqual(xl[cldb.quantitation_key],e[7])
             nxl+=1
 
 
-
     def test_msstudio_style_no_id(self):
-        cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("MSSTUDIO")
+        cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter(rplp)
         cldbkc.set_protein1_key("prot1")
         cldbkc.set_protein2_key("prot2")
         cldbkc.set_site_pairs_key("site pairs")
         cldbkc.set_id_score_key("score")
-        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("MSSTUDIO")
-        cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc,list_parser=rplp)
+        cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
         cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_crs.dat"))
 
         expected_list=[('1',1,"AAA","AAA",1,10),
@@ -306,6 +307,22 @@ class TestIOCrosslink(IMP.test.TestCase):
             expected_crosslinks.remove(array)
 
         self.assertEqual(len(expected_crosslinks),0)
+
+
+    def test_filter_out_same_residues(self):
+        cldb=self.setup_cldb("xl_dataset_test_same_residues.dat")
+        test_list=[]
+        for xl in cldb:
+            if xl[cldb.protein1_key] == xl[cldb.protein2_key] and xl[cldb.residue1_key] == xl[cldb.residue2_key]:
+                continue
+            else:
+                test_list.append(IMP.pmi.io.crosslink._ProteinsResiduesArray(xl))
+        cldb.filter_out_same_residues()
+        final_list=[]
+        for xl in cldb:
+            final_list.append(IMP.pmi.io.crosslink._ProteinsResiduesArray(xl))
+        self.assertEqual(test_list,final_list)
+
 
     def test_jackknife(self):
         cldb=self.setup_cldb("xl_dataset_test.dat")

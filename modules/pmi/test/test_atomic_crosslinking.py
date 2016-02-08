@@ -5,7 +5,6 @@ import IMP.test
 import IMP.pmi.topology
 import IMP.pmi.restraints.crosslinking
 import IMP.pmi.io.crosslink
-import tempfile
 import sys,os
 
 class AtomicXLTest(IMP.test.TestCase):
@@ -13,11 +12,9 @@ class AtomicXLTest(IMP.test.TestCase):
         """ test PMI setup of atomic XL restraint """
 
         # fake data
-        rtxt="""prot1,res1,prot2,res2
-        Prot1,7,Prot1,39\n"""
-        t,tname = tempfile.mkstemp(text=True)
-        os.write(t,rtxt)
-        os.close(t)
+        tname = self.get_tmp_file_name("test.txt")
+        with open(tname, "w") as fh:
+            fh.write("prot1,res1,prot2,res2\nProt1,7,Prot1,39\n")
 
         cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
         cldbkc.set_protein1_key("prot1")
@@ -26,7 +23,6 @@ class AtomicXLTest(IMP.test.TestCase):
         cldbkc.set_residue2_key("res2")
         cldb = IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
         cldb.create_set_from_file(tname)
-        os.remove(tname)
 
         self.assertEqual(cldb.get_number_of_xlid(),1)
 

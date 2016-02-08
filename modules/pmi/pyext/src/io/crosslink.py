@@ -182,19 +182,22 @@ class CrossLinkDataBaseKeywordsConverter(_CrossLinkDataBaseStandardKeys):
     to the standard ones
     '''
 
-    def __init__(self):
+    def __init__(self, list_parser=None):
+        '''
+        @param list_parser an instance of ResiduePairListParser, if any is needed
+        '''
         self.converter={}
         self.backward_converter={}
         _CrossLinkDataBaseStandardKeys.__init__(self)
-        # either you have protein1, protein2, residue1, residue2
-        self.compulsory_keys_1=set([self.protein1_key,
+        self.rplp = list_parser
+        if self.rplp is None:
+            # either you have protein1, protein2, residue1, residue2
+            self.compulsory_keys=set([self.protein1_key,
                                   self.protein2_key,
                                   self.residue1_key,
                                   self.residue2_key])
-        # or protein1, protein2, list_of_residue_pairs
-        self.compulsory_keys_2=set([self.protein1_key,
-                                  self.protein2_key,
-                                  self.site_pairs_key])
+        else:
+            self.compulsory_keys=self.rplp.get_compulsory_keys()
         self.setup_keys=set()
 
     def check_keys(self):
@@ -202,8 +205,7 @@ class CrossLinkDataBaseKeywordsConverter(_CrossLinkDataBaseStandardKeys):
         Is a function that check whether necessary keys are setup
         '''
         setup_keys=set(self.get_setup_keys())
-        if  self.compulsory_keys_1 & setup_keys != self.compulsory_keys_1 and \
-            self.compulsory_keys_2 & setup_keys != self.compulsory_keys_2:
+        if  self.compulsory_keys & setup_keys != self.compulsory_keys:
             raise KeyError("CrossLinkDataBaseKeywordsConverter: must setup all necessary keys")
 
     def get_setup_keys(self):
@@ -262,7 +264,7 @@ class CrossLinkDataBaseKeywordsConverter(_CrossLinkDataBaseStandardKeys):
         self.check_keys()
         return self.backward_converter
 
-class ResiduePairListParser():
+class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
     '''
     A class to handle different styles of site pairs parsers.
     Implemented styles:
@@ -270,14 +272,25 @@ class ResiduePairListParser():
                   [Y3-;K4-] for dead-ends
     QUANTITATION: sp|P33298|PRS6B_YEAST:280:x:sp|P33298|PRS6B_YEAST:337
     '''
+
     import re
+
     def __init__(self,style):
-        if style in ["MSSTUDIO"]:
+
+        _CrossLinkDataBaseStandardKeys.__init__(self)
+        if style is "MSSTUDIO":
             self.style=style
-        elif style in ["QUANTITATION"]:
+            self.compulsory_keys= set([self.protein1_key,
+                                  self.protein2_key,
+                                  self.site_pairs_key])
+        elif style is "QUANTITATION":
             self.style=style
+            self.compulsory_keys= set([self.site_pairs_key])
         else:
             raise Error("ResiduePairListParser: unknown list parser style")
+
+    def get_compulsory_keys(self):
+        return self.compulsory_keys
 
     def get_list(self,input_string):
         '''
@@ -318,24 +331,23 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
     operations, adding cross-links, merge datasets...
     '''
 
-    def __init__(self,CrossLinkDataBaseKeywordsConverter,data_base=None,list_parser=None):
+    def __init__(self, converter, data_base=None):
         '''
-        To be constructed it needs a CrossLinkDataBaseKeywordsConverter instance first
-        @param CrossLinkDataBaseKeywordsConverter an instance of converter
+        Constructor.
+        @param converter an instance of CrossLinkDataBaseKeywordsConverter
         @param data_base an instance of CrossLinkDataBase to build the new database on
-        @param list_parser an instance of ResiduePairListParser
         '''
         if data_base is None:
             self.data_base = {}
         else:
             self.data_base=data_base
-        self.cldbkc=CrossLinkDataBaseKeywordsConverter
+        self.cldbkc = converter
         _CrossLinkDataBaseStandardKeys.__init__(self)
-        self.converter=CrossLinkDataBaseKeywordsConverter.get_converter()
-        self.list_parser=list_parser
-        self.__update__()
+        self.list_parser=self.cldbkc.rplp
+        self.converter = converter.get_converter()
+        self.__update()
 
-    def __update__(self):
+    def __update(self):
         '''
         Update the whole dataset after changes
         '''
@@ -368,7 +380,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             new_data_base[k+"."+name]=self.data_base[k]
         self.data_base=new_data_base
         self.name=name
-        self.__update__()
+        self.__update()
 
     def get_number_of_xlid(self):
         return len(self.data_base)
@@ -444,7 +456,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
         self.data_base=new_xl_dict
         self.name=csv_file_name
-        self.__update__()
+        self.__update()
 
     def update_cross_link_unique_sub_index(self):
         for k in self.data_base:
@@ -539,7 +551,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         for k in CrossLinkDataBase2.data_base:
             new_data_base[k]=CrossLinkDataBase2.data_base[k]
         self.data_base=new_data_base
-        self.__update__()
+        self.__update()
 
     def set_value(self,key,new_value,FilterOperator=None):
         '''
@@ -559,7 +571,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                     xl[key]=new_value
             else:
                 xl[key]=new_value
-        self.__update__
+        self.__update()
 
     def get_values(self,key):
         '''
@@ -583,7 +595,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 xl[self.residue1_key]=xl[self.residue1_key]+offset
             if xl[self.protein2_key] == protein_name:
                 xl[self.residue2_key]=xl[self.residue2_key]+offset
-        self.__update__
+        self.__update()
 
     def create_new_keyword(self,keyword,values_from_keyword=None):
         '''
@@ -597,7 +609,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 xl[keyword] = xl[values_from_keyword]
             else:
                 xl[keyword] = None
-        self.__update__
+        self.__update()
 
     def clone_protein(self,protein_name,new_protein_name):
         new_xl_dict={}
@@ -625,7 +637,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                     new_xl[self.protein2_key]=new_protein_name
                     new_data_base.append(new_xl)
             self.data_base[id]=new_data_base
-        self.__update__()
+        self.__update()
 
     def filter_out_same_residues(self):
         '''
@@ -641,7 +653,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 else:
                     new_data_base.append(xl)
             self.data_base[id]=new_data_base
-        self.__update__()
+        self.__update()
 
 
     def jackknife(self,percentage):
@@ -690,7 +702,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         import json
         with open(json_filename, 'r') as fp:
             self.data_base = json.load(fp)
-        self.__update__()
+        self.__update()
 
     def save_csv(self,filename):
 
@@ -821,7 +833,7 @@ class CrossLinkDataBaseFromStructure(object):
                 new_xl["InterRigidBody"] = None
 
             self.cldb.data_base[str(number_of_spectra)].append(new_xl)
-        self.cldb.__update__()
+        self.cldb.__update()
         return self.cldb
 
 
