@@ -9,6 +9,12 @@ Sometimes it is useful to drop support for code for various reasons, for example
 
 For such code that will be removed, our policy is to mark it as deprecated
 for one stable release (e.g. 2.1) and then remove it in the next one (2.2).
+In practice this means adding the markers in the %IMP `develop` branch *before*
+the 2.1 release, then removing the code in the `develop` branch sometime between
+the 2.1 and 2.2 releases. The general idea is that any code that works in the
+latest stable release (e.g. tutorials, examples, biological systems) should
+also work without modification in the latest nightly build (but there is no
+guarantee that code works unchanged from one stable release to the next).
 
 \note If you deprecate code in favor of some new mechanism, it is your
       responsibility to update all callers of the old code in %IMP
