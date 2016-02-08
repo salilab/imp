@@ -16,18 +16,18 @@ class RevoluteJointMoverTest(IMP.test.TestCase):
                 self.m, IMP.atom.NonWaterNonHydrogenPDBSelector())
         #build two groups of atoms, cut at phi of residue 2
         self.residues = IMP.atom.get_by_type(self.prot, IMP.atom.RESIDUE_TYPE)
-        self.residues = [i.get_as_residue() for i in self.residues]
+        self.residues = [IMP.atom.Residue(i) for i in self.residues]
         self.res_idx = [i.get_index() for i in self.residues]
         self.left_atoms = set()
         self.right_atoms = set()
         for i in IMP.atom.get_by_type(self.prot, IMP.atom.ATOM_TYPE):
-            idx = i.get_parent().get_as_residue().get_index()
+            idx = IMP.atom.Residue(i.get_parent()).get_index()
             if idx == 1:
                 self.left_atoms.add(i.get_particle())
             elif idx == 3:
                 self.right_atoms.add(i.get_particle())
             else:
-                at_t = i.get_as_atom().get_atom_type()
+                at_t = IMP.atom.Atom(i).get_atom_type()
                 if at_t == IMP.atom.AT_N:
                     self.left_atoms.add(i.get_particle())
                 else:

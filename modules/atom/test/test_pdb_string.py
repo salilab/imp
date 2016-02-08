@@ -93,7 +93,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(r.get_residue_type().get_string(), 'ALA')
         self.assertEqual(c.get_id(), 'A')
         self.assertEqual(r.get_index(), 5)
-        coord = a.get_as_xyz().get_coordinates()
+        coord = IMP.core.XYZ(a).get_coordinates()
         self.assertAlmostEqual(coord[0], 3000.000, delta=0.001)
         self.assertAlmostEqual(coord[1], 1000.400, delta=0.001)
         self.assertAlmostEqual(coord[2], 2000.600, delta=0.001)

@@ -29,19 +29,13 @@ class DihedralAtom {
   Atom get_atom(Residue rd) const {
     if (residue_ == PREV) {
       Hierarchy h = get_previous_residue(rd);
-      if (h) {
-        Residue r = h.get_as_residue();
-        if (r) {
-          return IMP::atom::get_atom(r, type_);
-        }
+      if (h && Residue::get_is_setup(h)) {
+        return IMP::atom::get_atom(Residue(h), type_);
       }
     } else if (residue_ == NEXT) {
       Hierarchy h = get_next_residue(rd);
-      if (h) {
-        Residue r = h.get_as_residue();
-        if (r) {
-          return IMP::atom::get_atom(r, type_);
-        }
+      if (h && Residue::get_is_setup(h)) {
+        return IMP::atom::get_atom(Residue(h), type_);
       }
     } else {
       return IMP::atom::get_atom(rd, type_);

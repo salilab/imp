@@ -90,7 +90,7 @@ void Hierarchy::show(std::ostream &out, std::string delimiter) const {
 namespace {
 #define IMP_ATOM_IMPL_MATCH_TYPE(UCName, lcname, CAPSNAME) \
   case CAPSNAME:                                           \
-    return h.get_as_##lcname();
+    return UCName::get_is_setup(h);
 
 struct MHDMatchingType {
   MHDMatchingType(GetByType t) : t_(t) {}

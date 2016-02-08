@@ -26,7 +26,7 @@ struct FindUntypedVisitor {
   Atoms *atoms_;
   FindUntypedVisitor(Atoms *atoms) : atoms_(atoms) {}
   bool operator()(Hierarchy h) {
-    if (h.get_as_atom() && !CHARMMAtom::get_is_setup(h)) {
+    if (Atom::get_is_setup(h) && !CHARMMAtom::get_is_setup(h)) {
       atoms_->push_back(Atom(h));
     }
     return true;

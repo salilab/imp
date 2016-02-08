@@ -105,17 +105,16 @@ Hierarchy get_next_residue(Residue rd) {
     IMP_NOT_IMPLEMENTED("get_next_residue() only handles the simple case"
                         << " so far. Complain about it.");
                         }*/
-  Chain c = p.get_as_chain();
-  IMP_USAGE_CHECK(c, "Parent of residue must be a chain. It is not.");
-  Hierarchy r = get_residue(c, rd.get_index() + 1);
+  IMP_USAGE_CHECK(Chain::get_is_setup(p),
+                  "Parent of residue must be a chain. It is not.");
+  Hierarchy r = get_residue(Chain(p), rd.get_index() + 1);
   return r;
 }
 
 Hierarchy get_previous_residue(Residue rd) {
   // only handle simple case so far
   Hierarchy p = rd.get_parent();
-  Chain c = p.get_as_chain();
-  Hierarchy r = get_residue(c, rd.get_index() - 1);
+  Hierarchy r = get_residue(Chain(p), rd.get_index() - 1);
   return r;
 }
 

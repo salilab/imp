@@ -222,7 +222,7 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
   // the coordinates at index 0 are the original coordinates
   IMP::atom::Hierarchies mhs = IMP::atom::get_by_type(rd, IMP::atom::ATOM_TYPE);
   for (size_t i = 0; i != mhs.size(); ++i) {
-    IMP::atom::Atom at = mhs[i].get_as_atom();
+    IMP::atom::Atom at(mhs[i]);
     r.add_coordinates(at.get_atom_type(), IMP::core::XYZ(at).get_coordinates());
   }
   r.size_ = 1;
@@ -318,7 +318,7 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
       IMP::algebra::Transformation3D t =
           IMP::algebra::get_rotation_about_point(c_b, rot);
       for (size_t k = 0; k != mhs.size(); ++k) {
-        IMP::atom::Atom at = mhs[k].get_as_atom();
+        IMP::atom::Atom at(mhs[k]);
         IMP::atom::AtomType at_type = at.get_atom_type();
         unsigned at_idx = at_type.get_index();
         if (at_idx < res_data.rot_atoms.size() &&
@@ -403,7 +403,7 @@ void ResidueRotamer::set_coordinates(unsigned index,
   IMP_USAGE_CHECK(rd.get_residue_type() == residue_type_, "wrong residue type");
   IMP::atom::Hierarchies mhs = IMP::atom::get_by_type(rd, IMP::atom::ATOM_TYPE);
   for (size_t i = 0; i != mhs.size(); ++i) {
-    IMP::atom::Atom at = mhs[i].get_as_atom();
+    IMP::atom::Atom at(mhs[i]);
     IMP::atom::AtomType at_t = at.get_atom_type();
     if (get_atom_exists(at_t)) {
       const IMP::algebra::Vector3D &coords = get_coordinates(index, at_t);
@@ -432,7 +432,7 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
   IMP_LOG_VERBOSE("Computing bounding boxes" << std::endl);
   std::vector<ResidueRotamer::Boxes3D> rot_boxes(num_res);
   for (size_t i = 0; i != num_res; ++i) {
-    IMP::atom::Residue rd = mhs[i].get_as_residue();
+    IMP::atom::Residue rd(mhs[i]);
     ResidueRotamer rr = get_rotamer(rd, thr);
     rotamers.push_back(rr);
     rr.create_bounding_boxes(bb_boxes[i], sc_boxes[i], rot_boxes[i]);
@@ -443,7 +443,7 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
   for (size_t i = 0; i != num_res; ++i) {
     IMP_LOG_VERBOSE("Processing residue " << i << " out of " << num_res
                                           << std::endl);
-    IMP::atom::Residue rd_i = mhs[i].get_as_residue();
+    IMP::atom::Residue rd_i(mhs[i]);
     IMP::atom::Hierarchies at_i =
         IMP::atom::get_by_type(rd_i, IMP::atom::ATOM_TYPE);
     E_bb[i].resize(rotamers[i].get_size());
@@ -454,16 +454,16 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
       for (size_t l = 0; l != num_res; ++l)
         if (l != i) {
           if (!ResidueRotamer::intersect(bb_boxes[l], sc_boxes[i])) continue;
-          IMP::atom::Residue rd_l = mhs[i].get_as_residue();
+          IMP::atom::Residue rd_l(mhs[i]);
           IMP::atom::Hierarchies at_l =
               IMP::atom::get_by_type(rd_l, IMP::atom::ATOM_TYPE);
           // for each k in side chain(i)...
           for (size_t k = 0; k != at_i.size(); ++k) {
-            IMP::atom::Atom at_ik = at_i[k].get_as_atom();
+            IMP::atom::Atom at_ik(at_i[k]);
             if (is_backbone(at_ik.get_atom_type().get_index())) continue;
             // for each n in backbone(l)...
             for (size_t n = 0; n != at_l.size(); ++n) {
-              IMP::atom::Atom at_ln = at_l[n].get_as_atom();
+              IMP::atom::Atom at_ln(at_l[n]);
               if (!is_backbone(at_ln.get_atom_type().get_index())) continue;
               E_bb[i][j] += score->evaluate_index(
                   protein->get_model(), IMP::ParticleIndexPair(
@@ -490,14 +490,14 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
     IMP_LOG_VERBOSE("Equation (41), iteration " << iter << std::endl);
     // equation (41)...
     for (size_t i = 0; i != num_res; ++i) {
-      IMP::atom::Residue rd_i = mhs[i].get_as_residue();
+      IMP::atom::Residue rd_i(mhs[i]);
       IMP::atom::Hierarchies at_i =
           IMP::atom::get_by_type(rd_i, IMP::atom::ATOM_TYPE);
       for (unsigned j = 1; j < rotamers[i].get_size(); ++j) {
         E_P[i][j] = E_bb[i][j];
         for (size_t l = 0; l != num_res; ++l)
           if (l != i) {
-            IMP::atom::Residue rd_l = mhs[l].get_as_residue();
+            IMP::atom::Residue rd_l(mhs[l]);
             IMP::atom::Hierarchies at_l =
                 IMP::atom::get_by_type(rd_l, IMP::atom::ATOM_TYPE);
             for (unsigned m = 1; m < rotamers[l].get_size(); ++m) {
@@ -510,11 +510,11 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
               rotamers[l].set_coordinates(m, rd_l);
               // for k in side-chain(i)...
               for (size_t k = 0; k != at_i.size(); ++k) {
-                IMP::atom::Atom at_ik = at_i[k].get_as_atom();
+                IMP::atom::Atom at_ik(at_i[k]);
                 if (is_backbone(at_ik.get_atom_type().get_index())) continue;
                 // for n in side-chain(l)...
                 for (size_t n = 0; n != at_l.size(); ++n) {
-                  IMP::atom::Atom at_ln = at_l[n].get_as_atom();
+                  IMP::atom::Atom at_ln(at_l[n]);
                   if (is_backbone(at_ln.get_atom_type().get_index())) continue;
                   E_SC += score->evaluate_index(
                       protein->get_model(),
@@ -561,7 +561,7 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
 
   IMP_LOG_VERBOSE("Transforming all residues" << std::endl);
   for (size_t i = 0; i != num_res; ++i) {
-    IMP::atom::Residue rd_i = mhs[i].get_as_residue();
+    IMP::atom::Residue rd_i(mhs[i]);
     // find max probability
     unsigned best = 0;
     double best_prob = 0;

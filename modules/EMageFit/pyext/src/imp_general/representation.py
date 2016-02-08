@@ -79,10 +79,10 @@ def create_rigid_bodies(assembly):
         number of rigid members is going to be the same if the components have
         the same number of atoms.
     """
-    molecule = assembly.get_as_molecule()
-    if(not molecule.get_is_valid(True)):
+    if not IMP.atom.Molecule.get_is_setup(assembly):
         raise TypeError("create_rigid_bodies(): The argument is not a valid "
                         "hierarchy")
+    molecule = IMP.atom.Molecule(assembly)
     rbs = []
     for c in molecule.get_children():
         p = IMP.Particle(c.get_model())
@@ -98,9 +98,9 @@ def rename_chains(assembly):
     """ Rename all the chains of an assembly so there are no conflicts with
         the ids. The names are added sequentially.
     """
-    m = assembly.get_as_molecule()
-    if(not m.get_is_valid(True)):
+    if not IMP.atom.Molecule.get_is_setup(assembly):
         raise TypeError("The argument is not a valid  hierarchy")
+    m = IMP.atom.Molecule(assembly)
     all_chains_as_hierarchies = get_all_chains(m.get_children())
     letters = string.ascii_uppercase
     n_chains = len(all_chains_as_hierarchies)
@@ -119,8 +119,7 @@ def create_simplified_dna(dna_hierarchy, n_res):
         a hierarchy with the spheres.
         n_res - Number of residues to use per sphere.
     """
-    chain = dna_hierarchy.get_as_chain()
-    if(not chain.get_is_valid(True)):
+    if not IMP.atom.Chain.get_is_setup(dna_hierarchy):
         raise TypeError("create_simplified_dna: the hierarchy provided is not a "
                         "chain.")
 
@@ -161,9 +160,9 @@ def create_simplified_dna(dna_hierarchy, n_res):
 
 
 def get_residue_mass(residue):
-    r = residue.get_as_residue()
-    if(r.get_is_valid(True) == False):
+    if not IMP.atom.Residue.get_is_setup(residue):
         raise TypeError("The argument is not a residue")
+    r = IMP.atom.Residue(residue)
     mass = 0.0
     for l in IMP.atom.get_leaves(r):
         ms = IMP.atom.Mass(l)
@@ -178,9 +177,9 @@ def create_simplified_assembly(assembly, components_rbs, n_res):
         There must be correspondence between the children of the assembly
         (components) and the rigid bodies. I check for the ids.
     """
-    molecule = assembly.get_as_molecule()
-    if(not molecule.get_is_valid(True)):
+    if not IMP.atom.Molecule.get_is_setup(assembly):
         raise TypeError("The argument is not a valid  hierarchy")
+    molecule = IMP.atom.Molecule(assembly)
 
     model = assembly.get_model()
     n_children = molecule.get_number_of_children()
@@ -374,7 +373,7 @@ def get_all_chains(hierarchies):
     for h in hierarchies:
         chains_in_h = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
         for ch in chains_in_h:
-            chains.append(ch.get_as_chain())
+            chains.append(IMP.atom.Chain(ch))
     return chains
 
 

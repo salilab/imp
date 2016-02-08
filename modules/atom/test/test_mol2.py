@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
             m, IMP.atom.AllMol2Selector())
         rs = IMP.atom.get_by_type(root_d, IMP.atom.RESIDUE_TYPE)
         self.assertEqual(len(rs), 1)
-        self.assertEqual(rs[0].get_as_residue().get_residue_type(),
+        self.assertEqual(IMP.atom.Residue(rs[0]).get_residue_type(),
                          IMP.atom.UNK)
 
     def test_read(self):

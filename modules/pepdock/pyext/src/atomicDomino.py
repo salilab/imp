@@ -375,7 +375,7 @@ class AtomicDomino:
         for residueH in residues:
             chain = IMP.atom.get_chain(residueH)
             chainId = chain.get_id()
-            residue = residueH.get_as_residue()
+            residue = IMP.atom.Residue(residueH)
             if (chainId == self.getParam("peptide_chain")):
                 peptideIndicesToResidues[residue.get_index()] = residue
 
