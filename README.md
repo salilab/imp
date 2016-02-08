@@ -1,7 +1,7 @@
-[![nightly build](http://integrativemodeling.org/nightly/results/?p=stat)](http://integrativemodeling.org/nightly/results/)
+[![nightly build](https://integrativemodeling.org/nightly/results/?p=stat)](https://integrativemodeling.org/nightly/results/)
 
 For full installation and usage instructions, see the
-[documentation](http://integrativemodeling.org/nightly/doc/manual/).
+[documentation](https://integrativemodeling.org/nightly/doc/manual/).
 
 Building IMP from source code
 =============================
@@ -14,7 +14,7 @@ To build IMP source found in `path/to/imp-source` and install it in
 3. `make -j4`
 4. `make install`
 
-See the [installation instructions in the manual](http://integrativemodeling.org/nightly/doc/manual/installation.html)
+See the [installation instructions in the manual](https://integrativemodeling.org/nightly/doc/manual/installation.html)
 for more details (in particular this covers the necessary prerequisites you'll
 need before running cmake).
 
@@ -38,7 +38,7 @@ Seung Joong Kim, Yannick Spill, Riccardo Pellarin.
 IMP is largely available under the GNU Lesser GPL; see the file COPYING.LGPL
 for the full text of this license. Some IMP modules are available under the
 GNU GPL (see the file COPYING.GPL). Please refer to the
-[documentation](http://integrativemodeling.org/nightly/doc/manual/licenses.html)
+[documentation](https://integrativemodeling.org/nightly/doc/manual/licenses.html)
 for more detail.
 
 Files and folders structure
