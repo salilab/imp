@@ -91,6 +91,12 @@ SampledDensityMap::SampledDensityMap(const IMP::ParticlesTemp &ps,
   resample();
 }
 
+void SampledDensityMap::update_resolution(Float res){
+  header_.set_resolution(res);
+  kernel_params_ = KernelParameters(res);
+  resample();
+}
+
 namespace {
 
 IMP::algebra::BoundingBox3D calculate_particles_bounding_box_internal(

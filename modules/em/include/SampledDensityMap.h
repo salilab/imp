@@ -99,6 +99,9 @@ class IMPEMEXPORT SampledDensityMap : public DensityMap {
   //! Get minimum density value between voxels that correspond to particles
   float get_minimum_resampled_value();
 
+  //! Update the simulation resolution
+  void update_resolution(Float res);
+
   IMP_REF_COUNTED_DESTRUCTOR(SampledDensityMap);
 
  protected:
