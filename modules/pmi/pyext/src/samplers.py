@@ -29,6 +29,8 @@ class _SerialReplicaExchange(object):
         return self.get_my_parameter(key)
     def do_exchange(self, myscore, fscore, findex):
         return False
+    def set_was_used(self,was_used):
+        self.was_used = was_used
 
 
 class MonteCarlo(object):
