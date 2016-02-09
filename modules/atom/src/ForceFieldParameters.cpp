@@ -80,7 +80,7 @@ Float ForceFieldParameters::get_epsilon(const String& force_field_atom_type)
 void ForceFieldParameters::add_bonds(Hierarchy mhd) const {
   Hierarchies rs(get_by_type(mhd, RESIDUE_TYPE));
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    add_bonds(rs[i]);
+    add_bonds(Residue(rs[i]));
     Hierarchy rn = get_next_residue(Residue(rs[i]));
     if (rn) {
       add_bonds(Residue(rs[i]), Residue(rn));
