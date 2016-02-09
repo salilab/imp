@@ -24,11 +24,13 @@
 #include <deque>
 
 #define IMP_ATOM_GET_AS_DECL(UCName, lcname, CAPSNAME) \
+  IMPATOM_DEPRECATED_METHOD_DECL(2.6)                  \
   UCName get_as_##lcname() const;
 
 // figure out how to inline
 #define IMP_ATOM_GET_AS_DEF(UCName, lcname, CAPSNAME) \
   UCName Hierarchy::get_as_##lcname() const {         \
+    IMPATOM_DEPRECATED_METHOD_DEF(2.6, "Use decorators instead"); \
     if (UCName::get_is_setup(get_particle())) {       \
       return UCName(get_particle());                  \
     } else {                                          \
@@ -327,17 +329,9 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     }
   }
 
-  /** \name Methods to get associated decorators
-
-      We provide a number of helper methods to get associated
-      decorators for the current node in the hierarchy. As an
-      example, if the particle decorated by this decorator is
-      a Residue particle, then get_as_residue() returns
-      Residue(get_particle()); if not it returns Residue().
-      @{
-   */
+#ifndef IMP_DOXYGEN
   IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_ATOM_GET_AS_DECL);
-  /** @} */
+#endif
 
   //! Get the molecular hierarchy HierarchyTraits.
   static const IMP::core::HierarchyTraits &get_traits();

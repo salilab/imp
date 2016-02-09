@@ -9,6 +9,10 @@ ChangeLog {#changelog}
   Model::evaluate() and Model::add_restraint() have been removed (use an
   IMP::ScoringFunction instead). IMP::Optimizer and IMP::Sampler now also
   require an IMP::ScoringFunction to be explicitly set before they are used.
+- IMP::atom::Hierarchy::get_as_xxx() methods are deprecated; use regular
+  decorators instead. For example, instead of h.get_as_residue() use
+  Residue(h). If you want to check for validity first,
+  use Residue::get_is_setup(h).
 - IMP::atom::Selection can now select by element.
 - IMP::atom::PDBSelector subclasses are more flexible, with a new
   IMP::atom::XorPDBSelector class, and can be combined using standard
