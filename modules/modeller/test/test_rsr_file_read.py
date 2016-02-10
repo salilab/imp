@@ -143,22 +143,12 @@ class Tests(IMP.test.TestCase):
                                     'R    3   1   1   1   2   2   0     3'
                                     '     2       1.5380    0.0364')
         modmodel.restraints.append('test.rsr')
-        # Deprecated interface
-        m = IMP.Model()
-        loader = IMP.modeller.ModelLoader(modmodel)
-        protein = loader.load_atoms(m)
-        with IMP.allow_deprecated():
-            r = IMP.modeller.load_restraints_file('test.rsr', protein)
-        self.assertIsInstance(r, list)
-        sf = IMP.core.RestraintsScoringFunction(r)
-        assertSimilarModellerIMPScores(self, sf, modmodel, protein)
 
         # Need atoms before loading restraints
         m = IMP.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
         self.assertRaises(ValueError, loader.load_static_restraints_file,
                           'test.rsr')
-        # New interface
         protein = loader.load_atoms(m)
         sf = IMP.core.RestraintsScoringFunction(list(
                                 loader.load_static_restraints_file('test.rsr')))

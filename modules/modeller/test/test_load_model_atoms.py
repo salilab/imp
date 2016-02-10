@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         i_num_res_type = IMP.atom.ResidueType.get_number_unique()
         i_num_atom_type = IMP.atom.AtomType.get_number_unique()
         m = IMP.Model()
-        # Test both ModelLoader class and deprecated read_pdb function
+        # Test ModelLoader class
         modmodel = modeller.scripts.complete_pdb(self.get_environ(),
                                                  self.get_input_file_name('single_protein.pdb'))
         loader = IMP.modeller.ModelLoader(modmodel)
@@ -69,10 +69,6 @@ class Tests(IMP.test.TestCase):
                                    0.16, delta=1e-5)
             self.assertEqual(IMP.atom.CHARMMAtom(at).get_charmm_type(), 'CT1')
         test_mp(loader.load_atoms(m))
-        with IMP.allow_deprecated():
-            mp = IMP.modeller.read_pdb(
-                           self.get_input_file_name('single_protein.pdb'), m)
-        test_mp(mp)
 
     def test_bonds(self):
         """Check that Modeller bonds and angles are loaded"""

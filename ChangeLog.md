@@ -14,6 +14,8 @@ ChangeLog {#changelog}
   Residue(h). If you want to check for validity first,
   use Residue::get_is_setup(h).
 - IMP::atom::Selection can now select by element.
+- IMP::modeller::load_restraints_file() and IMP::modeller::read_pdb() have
+  been removed. Use the IMP::modeller::ModelLoader class instead.
 - IMP::atom::PDBSelector subclasses are more flexible, with a new
   IMP::atom::XorPDBSelector class, and can be combined using standard
   Python operators, in similar fashion to sets (&, |, ^, -, ~ operators).

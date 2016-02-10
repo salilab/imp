@@ -302,20 +302,6 @@ def _load_entire_restraints_file(filename, protein):
             raise
 
 
-@IMP.deprecated_function("2.5", "Use ModelLoader instead.")
-def load_restraints_file(filename, protein):
-    """Convert a Modeller restraints file into IMP::Restraint objects.
-
-       @param filename Name of the Modeller restraints file.
-       @param protein An IMP::atom::Hierarchy containing the protein atoms
-                      (e.g. as returned by read_pdb). The Modeller restraints
-                      file is assumed to act on the same PDB described by
-                      protein.
-       @return A Python list of the newly-created IMP::Restraint objects.
-    """
-    return list(_load_entire_restraints_file(filename, protein))
-
-
 def _copy_residue(r, model):
     """Copy residue information from modeller to imp"""
     #print "residue "+str(r)
@@ -620,29 +606,5 @@ class ModelLoader(object):
                 ps = IMP.atom.CoulombPairScore(sf)
                 ps.set_relative_dielectric(edat.relative_dielectric)
                 yield IMP.container.PairsRestraint(ps, nbl)
-
-
-@IMP.deprecated_function("2.5", "Use IMP::atom::read_pdb() instead to read "
-                         "a PDB file, or ModelLoader to read a Modeller model.")
-def read_pdb(name, model, special_patches=None):
-    """Construct an IMP::atom::Hierarchy from a PDB file.
-
-       @param name The name of the PDB file to read.
-       @param model The IMP::Model object in which the hierarchy will be
-                    created. The highest level hierarchy node is a PROTEIN.
-       @param special_patches If given, a function that applies patches
-                              (e.g. nucleic acid termini) to the Modeller model.
-       @return the newly-created root IMP::atom::Hierarchy.
-    """
-    e = modeller.environ()
-    e.libs.topology.read('${LIB}/top_heav.lib')
-    e.libs.parameters.read('${LIB}/par.lib')
-    e.io.hetatm=True
-    modeller_model = modeller.scripts.complete_pdb(e, name,
-                                           special_patches=special_patches)
-    loader = ModelLoader(modeller_model)
-    hpp = loader.load_atoms(model)
-    hpp.get_particle().set_name(name)
-    return hpp
 
 %}
