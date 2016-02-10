@@ -31,8 +31,6 @@ def _cleanup_name(n):
         return n
     if n.find("::") != -1:
         sp = n.split("::")
-        if len(sp) == 2:
-            sp = [sp[0], "kernel", sp[1]]
         if len(sp) == 5:
             return None
         return "::".join(sp)
