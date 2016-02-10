@@ -56,15 +56,6 @@ void reversed_write(const void *src, size_t size, size_t nitems,
   }
 }
 
-void byte_swap(unsigned char *b, int n) {
-  register int i = 0;
-  register int j = n - 1;
-  while (i < j) {
-    std::swap(b[i], b[j]);
-    i++, j--;
-  }
-}
-
 bool get_is_little_endian() {
   const unsigned long ul = 0x00000001;
   return ((int)(*((unsigned char *)&ul))) != 0;
