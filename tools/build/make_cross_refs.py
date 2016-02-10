@@ -212,13 +212,23 @@ def create_index(
         kc = _cleanup_name(k)
         if not kc:
             continue
-        m = kc.split("::")[1]
+        split_kc = kc.split("::")
+        if len(split_kc) == 2: # kernel
+            m = 'kernel'
+        else:
+            m = split_kc[1]
         if m not in keys_by_module.keys():
             keys_by_module[m] = []
         keys_by_module[m].append(k)
     modules = sorted(keys_by_module.keys())
+    # Put kernel first
+    modules.remove('kernel')
+    modules.insert(0, 'kernel')
     for m in modules:
-        out.write("# IMP.%s # {#%s_%s}\n" % (m, ref, m))
+        if m == 'kernel':
+            out.write("# IMP (%s) # {#%s_%s}\n" % (m, ref, m))
+        else:
+            out.write("# IMP.%s # {#%s_%s}\n" % (m, ref, m))
         out.write("<table><tr>\n")
         out.write("<th>%s</th><th>%s</th></tr>\n" % (key_name, target_name))
         for k in keys_by_module[m]:
