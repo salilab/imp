@@ -18,7 +18,8 @@ branches from an `if` statement are followed).
 Ideally, coverage reflects the lines of code in a module or application
 that were exercised only by running its own tests, rather than the tests of the
 entire %IMP package, and generally speaking you should try to test a module
-using its own tests.
+using its own tests. (Note also that our build machine that runs the coverage
+test suite does not run 'expensive' tests.)
 
 If you have code that for some reason you wish to exclude from coverage,
 you can add specially formatted comments to the code. For Python code,
