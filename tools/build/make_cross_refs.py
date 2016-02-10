@@ -39,13 +39,8 @@ def _cleanup_name(n):
         return "IMP::" + n
     if n.find(".py") != -1 or n.find(".cpp") != -1:
         m = n.split("/")[0]
-        return (
-            "[%s](%s)" % (
-                n,
-                n.replace("/",
-                          "_2").replace(".",
-                                        "_8") + "-example.html")
-        )
+        rep = n.replace("/", "_2").replace(".", "_8")
+        return ("[%s](%s)" % (n, rep + "-example.html"))
     else:
         # fix later
         return None
