@@ -50,8 +50,8 @@ class BoundingBoxD {
       make_empty();
     }
 #else
-    IMP_USAGE_CHECK(D > 0, "The constructor can not be used "
-                           << "with a variable dim bounding box.");
+    IMP_USAGE_CHECK(D > 0, "The constructor cannot be used "
+                           << "with a variable dimension bounding box.");
 
     make_empty();
 #endif
@@ -59,7 +59,7 @@ class BoundingBoxD {
   //! Create an empty bounding box
   explicit BoundingBoxD(unsigned int d) {
     IMP_USAGE_CHECK(D == -1, "The constructor can only be used "
-                                 << "with a variable dim bounding box.");
+                             << "with a variable dimension bounding box.");
     Floats lb(d), ub(d);
     for (unsigned int i = 0; i < d; ++i) {
       lb[i] = std::numeric_limits<double>::max();
@@ -94,7 +94,7 @@ class BoundingBoxD {
 
   unsigned int get_dimension() const { return get_corner(0).get_dimension(); }
 
-  //! extend the current bounding box to include the other
+  //! Extend the current bounding box to include the other
   const BoundingBoxD<D> &operator+=(const BoundingBoxD<D> &o) {
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       b_[0][i] = std::min(o.get_corner(0)[i], get_corner(0)[i]);
@@ -103,7 +103,7 @@ class BoundingBoxD {
     return *this;
   }
 
-  //! extend the current bounding box to include the point
+  //! Extend the current bounding box to include the point
   const BoundingBoxD<D> &operator+=(const VectorD<D> &o) {
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       b_[0][i] = std::min(o[i], b_[0][i]);
@@ -112,7 +112,7 @@ class BoundingBoxD {
     return *this;
   }
 
-  /** Grow the bounding box by o on all sizes. */
+  //! Grow the bounding box by o on all sizes.
   const BoundingBoxD<D> &operator+=(double o) {
     for (unsigned int i = 0; i < get_dimension(); ++i) {
       b_[0][i] = b_[0][i] - o;
@@ -135,7 +135,7 @@ class BoundingBoxD {
     return ret;
   }
 
-  //! For 0 return lower corner and 1 upper corner
+  //! For 0 return lower corner and for 1, the upper corner
   const VectorD<D> &get_corner(unsigned int i) const {
     IMP_USAGE_CHECK(i < 2, "Can only use 0 or 1");
     return b_[i];
@@ -148,7 +148,7 @@ class BoundingBoxD {
     }
     return true;
   }
-  //! True if the input bounding box is contained within this bounding box
+  //! True if the input bounding box is completely contained within this one
   bool get_contains(const BoundingBoxD &bb) const {
     return get_contains(bb.get_corner(0)) && get_contains(bb.get_corner(1));
   }
@@ -158,7 +158,7 @@ class BoundingBoxD {
  private:
   VectorD<D> b_[2];
 };
-/** See BoundingBoxD */
+//! See BoundingBoxD
 template <int D>
 inline double get_volume(const BoundingBoxD<D> &bb) {
   double v = 1;
