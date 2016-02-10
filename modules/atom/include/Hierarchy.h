@@ -466,6 +466,7 @@ IMPATOMEXPORT IMP::core::RigidBody setup_as_rigid_body(Hierarchy h);
     - is or is part of a Residue that is not a normal protein, rna or
       dna residue
     - or is not part of a Chain
+
     For the moment, this can only be called on residues or atoms.
     \relates Hierarchy
 */
