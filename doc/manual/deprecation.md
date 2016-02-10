@@ -19,7 +19,9 @@ guarantee that code works unchanged from one stable release to the next).
 \note If you deprecate code in favor of some new mechanism, it is your
       responsibility to update all callers of the old code in %IMP
       (C++ code, test cases, examples, benchmarks) to use the new way of
-      doing things, and ensure the test cases still pass.
+      doing things, and ensure the test cases still pass. You should also
+      wait until the new mechanism is fully functional before deprecating
+      the old one.
 
 Code that is deprecated must produce warnings when used. (You can also force
 usage of deprecated code to trigger an exception by calling
