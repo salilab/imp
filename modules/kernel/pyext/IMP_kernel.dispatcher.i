@@ -4,8 +4,8 @@ import sys
 import os
 
 class CommandDispatcher(object):
-    """Allow command line tools to easily implement multiple commmands.
-       Typically, an IMP comand line tool will use an instance of this class
+    """Allow command line tools to easily implement multiple commands.
+       Typically, an IMP command line tool will use an instance of this class
        to provide a consistent interface to multiple distinct commands
        from a single binary, rather than providing a potentially large
        number of binaries. This is similar to the way a number of common
