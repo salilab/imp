@@ -189,10 +189,6 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     to store the information associated with that node in the
     hierarchy. Examples include Residue, Atom, XYZ, Chain, XYZR,
     Mass, Domain, Molecule etc.
-    We provide a get_as_x() function for each such decorator which
-    returns either X() (a null type) if the node is not a particle
-    of type x, or an X decorator wrapping the current particle if
-    it is.
 
     \note Deleting a Hierarchy, like deleting any decorator, will not
           delete the underlying Particle or remove any children. To do
