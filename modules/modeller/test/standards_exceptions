@@ -2,3 +2,6 @@ value_object_exceptions=['ModellerRestraints']
 function_name_exceptions=['IMPRestraints.eval',
                           'IMPRestraints.indices_to_atoms']
 spelling_exceptions=['impropers', 'pdb']
+doc_spelling_exceptions=['modeller', 'Modeller', 'dihedral', 'dihedrals',
+         'submodel', 'optimizers', 'molpdf', 'filename', 'PDB', 'CHARMM',
+         'stereochemistry', 'nonbonded', 'edat']

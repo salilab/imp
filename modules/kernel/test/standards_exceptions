@@ -40,7 +40,6 @@ value_object_exceptions=['Exception', 'TypeException',
                                             "TextInput", "TextOutput", "RefCounted", "Timer",
                        'Decorator', 'DerivativeAccumulator',
                                            'RestraintBase', 'ScoreStateBase']
-spelling_exceptions=["undecorator", "undecorate", "altgraph", "networkx",
-
-
-]
+spelling_exceptions=["undecorator", "undecorate", "altgraph", "networkx"]
+doc_spelling_exceptions=["optparse", "OptionParser", "num", "args", "pyext",
+           "src", "py", "docstring", "multifit", "cnmultifit"]
