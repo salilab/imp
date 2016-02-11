@@ -73,6 +73,7 @@ class DegreesOfFreedom(object):
         if not hiers:
             print("WARNING: No hierarchies were passed to create_rigid_body()")
             return []
+
         rb = IMP.atom.create_rigid_body(hiers)
         self.rigid_bodies.append(rb)
         rb.set_coordinates_are_optimized(True)
@@ -161,6 +162,19 @@ class DegreesOfFreedom(object):
         for rb in super_rigid_rbs:
             srbm.add_rigid_body_particle(rb)
         return srbm
+
+    def add_rigid_body(self, rb, max_trans=4.0, max_rot = 0.4, optimize = True):
+        """ Adds a rigid body it to the rigid_body and movers lists 
+        Initially meant as a way to pass GMM rigid bodies from density restraints,
+        but may be useful in other cases. 
+        @param rb - the rigid body
+        @param max_trans - Maximum trnaslation of the rb
+        @param max_rot - Maximum rotation of the rb
+        @param optimize - True if you want to sample the position of the rigid body
+        """
+        self.rigid_bodies.append(rb)
+        if optimize:
+            self.movers.append(IMP.core.RigidBodyMover(rb,max_trans,max_rot))
 
 
     def create_flexible_beads(self,
