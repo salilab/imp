@@ -27,13 +27,17 @@ global_spelling_exceptions = [
    'pdb'
 ]
 
-class ClassNameFilter(Filter):
-    "Exclude class names (CamelCase and/or containing ::, starting with IMP.)"
+class IMPNameFilter(Filter):
+    """Exclude IMP-specific names.
+       These are things like CamelCase class names, qualified class names
+       (anything containing "::" or starting with "IMP."), or Python filenames.
+    """
     _pattern = re.compile(r"^([A-Z]\w+[A-Z]+\w+)")
     def _skip(self,word):
         if isinstance(word, array.array):
             word = word.tostring()
         return "::" in word or word.startswith('IMP.') \
+               or word.endswith('.py') \
                or self._pattern.match(word) is not None
 
 
@@ -41,7 +45,7 @@ class SpellChecker(object):
     def __init__(self, exceptions_file):
         self.chkr = enchant.checker.SpellChecker("en_US",
                          filters=[EmailFilter, URLFilter,
-                                  ClassNameFilter])
+                                  IMPNameFilter])
         self.add_exceptions(exceptions_file)
         self.fname = None
         self.xml_filename = None
