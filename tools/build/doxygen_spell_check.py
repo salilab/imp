@@ -24,12 +24,13 @@ except ImportError:
     sys.exit(1)
 
 class ClassNameFilter(Filter):
-    """Exclude class names (CamelCase and/or containing ::)"""
+    "Exclude class names (CamelCase and/or containing ::, starting with IMP.)"
     _pattern = re.compile(r"^([A-Z]\w+[A-Z]+\w+)")
     def _skip(self,word):
         if isinstance(word, array.array):
             word = word.tostring()
-        return "::" in word or self._pattern.match(word) is not None
+        return "::" in word or word.startswith('IMP.') \
+               or self._pattern.match(word) is not None
 
 
 class SpellChecker(object):
