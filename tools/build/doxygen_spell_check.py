@@ -113,6 +113,8 @@ def get_location(node):
         text = "Unknown entity"
     if location:
         fname = location[0].attrib['file']
+        if os.path.islink(fname):
+            fname = os.readlink(fname)
         if 'line' in location[0].attrib:
             text += " (line %s)" % location[0].attrib['line']
     else:
