@@ -19,7 +19,7 @@ s = IMP.pmi.topology.System(mdl)
 st1 = s.create_state()
 
 # Read sequences and create Molecules
-seqs = IMP.pmi.topology.Sequences('data/gcp2.fasta')
+seqs = IMP.pmi.topology.Sequences(IMP.pmi.get_example_path('data/gcp2.fasta'))
 gcp2 = st1.create_molecule("GCP2",sequence=seqs["GCP2_YEAST"],chain_id='A')
 
 # Add structure. This function returns a list of the residues that now have structure

@@ -6,6 +6,13 @@ import IMP.pmi.topology
 import IMP.pmi.macros
 import os
 
+try:
+    import IMP.mpi
+    rem = IMP.mpi.ReplicaExchange()
+except ImportError:
+    rem = None
+
+
 class TestDOF(IMP.test.TestCase):
     def init_topology1(self,mdl):
         s = IMP.pmi.topology.System(mdl)
@@ -61,7 +68,13 @@ class TestDOF(IMP.test.TestCase):
         self.assertEqual(num_nonrigid,3)
         #                                   r0  r1  r10
         self.assertEqual(len(rigid_members),57 + 7 + 2)
-
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=molecule.get_hierarchy(),
+                                              monte_carlo_sample_objects = dof.get_movers(),
+                                              number_of_frames=2,
+                                              test_mode=True,
+                                              replica_exchange_object=rem)
+        rex.execute_macro()
     def test_big_rigid_body(self):
         """test you can create a rigid body from 3 molecules"""
         mdl = IMP.Model()
@@ -157,6 +170,13 @@ class TestDOF(IMP.test.TestCase):
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         fb_movers = dof.create_flexible_beads(mol.get_non_atomic_residues(),max_trans=1.0)
         self.assertEqual(len(fb_movers),3)
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=mol.get_hierarchy(),
+                                              monte_carlo_sample_objects = dof.get_movers(),
+                                              number_of_frames=2,
+                                              test_mode=True,
+                                              replica_exchange_object=rem)
+        rex.execute_macro()
 
     def test_mc_flexible_beads3(self):
         """Test flex beads don't work if nothing passed"""
@@ -247,13 +267,13 @@ class TestDOF(IMP.test.TestCase):
         hier = m1.build()
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         md_ps = dof.setup_md(m1)
-        #rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-        #                                      root_hier=hier,
-        #                                      molecular_dynamics_sample_objects=md_ps,
-        #                                      number_of_frames=2,
-        #                                      test_mode=True,
-        #                                      replica_exchange_object=self.rem)
-        #rex.execute_macro()
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=hier,
+                                              molecular_dynamics_sample_objects=md_ps,
+                                              number_of_frames=2,
+                                              test_mode=True,
+                                              replica_exchange_object=rem)
+        rex.execute_macro()
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -307,7 +307,7 @@ class CrossCorrelationRestraint(object):
     """
     def __init__(self,
                  ps,
-                 map_fn,
+                 dmap,
                  resolution,
                  origin=None,
                  voxel_size=None,
@@ -323,27 +323,28 @@ class CrossCorrelationRestraint(object):
         @param label Extra PMI label
         """
         print('FitRestraint: setup')
-        print('\tmap_fn',map_fn)
+        #print('\tmap_fn',map_fn)
         print('\tresolution',resolution)
         print('\tvoxel_size',voxel_size)
         print('\torigin',origin)
         print('\tweight',weight)
 
         # some parameters
-        self.mdl = root.get_model()
+        self.mdl = ps[0].get_model()
         self.label = label
-        self.dmap = IMP.em.read_map(map_fn,IMP.em.MRCReaderWriter())
-        dh = self.dmap.get_header()
-        dh.set_resolution(resolution)
+        self.dmap = dmap #IMP.em.read_map(map_fn,IMP.em.MRCReaderWriter())
+        #dh = self.dmap.get_header()
+        #dh.set_resolution(resolution)
         if voxel_size:
             self.dmap.update_voxel_size(voxel_size)
-        if type(origin)==IMP.algebra.Vector3D:
-            self.dmap.set_origin(origin)
-        elif type(origin)==list:
-            self.dmap.set_origin(*origin)
-        else:
-            print('FitRestraint did not recognize format of origin')
-            exit()
+        if origin is not None:
+            if type(origin)==IMP.algebra.Vector3D:
+                self.dmap.set_origin(origin)
+            elif type(origin)==list:
+                self.dmap.set_origin(*origin)
+            else:
+                print('FitRestraint did not recognize format of origin')
+                exit()
         fr = IMP.em.FitRestraint(ps,self.dmap)
         self.rs = IMP.RestraintSet(self.mdl,weight,"FitRestraint")
         self.rs.add_restraint(fr)
@@ -372,6 +373,7 @@ class CrossCorrelationRestraint(object):
 
     def evaluate(self):
         return self.weight * self.rs.unprotected_evaluate(None)
+
 
 #-------------------------------------------
 

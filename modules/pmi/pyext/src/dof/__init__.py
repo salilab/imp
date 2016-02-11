@@ -33,6 +33,7 @@ class DegreesOfFreedom(object):
         self.movers = []
         self.rigid_bodies = [] #stores rigid body objects
         self.flexible_beads = [] # stores all beads including nonrigid members of rigid bodies
+        self.nuisances = []
 
         #self.particle_map = {} # map from particles/rb objects to relevant movers+constraints
         # internal mover  = [mover obj, list of particles, enabled?] ?
@@ -182,17 +183,29 @@ class DegreesOfFreedom(object):
             print('WARNING: No hierarchies were passed to create_flexible_beads()')
             return fb_movers
         for h in hiers:
-            self.flexible_beads.append(h)
+            p = h.get_particle()
+            IMP.core.XYZ(p).set_coordinates_are_optimized(True)
             if IMP.core.RigidMember.get_is_setup(h) or IMP.core.NonRigidMember.get_is_setup(h):
                 raise Exception("Cannot create flexible beads from members of rigid body")
-            fb_movers.append(IMP.core.BallMover([h.get_particle()],max_trans))
+            self.flexible_beads.append(h)
+            fb_movers.append(IMP.core.BallMover([p],max_trans))
         self.movers += fb_movers
         return fb_movers
 
     def create_nuisance_mover(self,
-                              ps = None,
-                              pmi_restraint = None):
-        """either create nuisance or pass ISD restraint with fixed interface"""
+                              nuisance_p,
+                              step_size):
+        """Create MC normal mover for nuisance particles.
+        We will add an easier interface to add all of them from a PMI restraint
+        @param nuisance_p The Nuisance particle (an ISD::Scale)
+        @param step_size The maximum step size for Monte Carlo
+        """
+        mv = IMP.core.NormalMover([nuisance_p],
+                                  IMP.FloatKeys([IMP.FloatKey("nuisance")]),
+                                  step_size)
+        self.nuisances.append(nuisance_p)
+        self.movers.append(mv)
+        return [mv]
 
     def setup_md(self,
                  hspec):
@@ -221,7 +234,7 @@ class DegreesOfFreedom(object):
                            references,
                            clones,
                            transform,
-                           resolution='all'):
+                           resolution=1):
         """Create a symmetry constraint. Checks:
         same number of particles
         disable ANY movers involving symmetry copies
@@ -232,12 +245,14 @@ class DegreesOfFreedom(object):
         @param clones Same format as references
         @param transform The transform that moves a clone onto a reference
                IMP.algebra.Transformation3D
-        @param resolution Only used if you pass PMI objects. Probably you want 'all'.
+        @param resolution Only used if you pass PMI objects.
+               If you have a multires system, assuming each are rigid
+               bodies you probably only need one resolution.
         """
 
         # get all RBs and particles
         href    = IMP.pmi.tools.input_adaptor(references,resolution,flatten=True)
-        hclones = IMP.pmi.tools.input_adaptor(clones,flatten=True)
+        hclones = IMP.pmi.tools.input_adaptor(clones,resolution,flatten=True)
 
         ref_rbs,ref_beads = IMP.pmi.tools.get_rbs_and_beads(href)
         clones_rbs,clones_beads = IMP.pmi.tools.get_rbs_and_beads(hclones)

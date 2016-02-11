@@ -19,6 +19,7 @@ class Tests(IMP.test.TestCase):
             p=IMP.Particle(m)
             h=IMP.atom.Hierarchy.setup_particle(p)
             d=IMP.core.XYZR.setup_particle(p)
+            IMP.atom.Mass.setup_particle(p,1.0)
             d.set_coordinates(IMP.algebra.get_random_vector_in(
                                     IMP.algebra.Sphere3D((0,0,0),10)))
             d.set_radius(1)
@@ -69,6 +70,7 @@ class Tests(IMP.test.TestCase):
             p=IMP.Particle(m)
             h=IMP.atom.Hierarchy.setup_particle(p)
             d=IMP.core.XYZR.setup_particle(p)
+            IMP.atom.Mass.setup_particle(p,1.0)
             d.set_coordinates(IMP.algebra.get_random_vector_in(
                                     IMP.algebra.Sphere3D((0,0,0),10)))
             d.set_radius(1)

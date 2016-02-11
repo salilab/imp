@@ -15,7 +15,7 @@ import IMP.pmi.restraints.stereochemistry
 
 ###################### SYSTEM SETUP #####################
 # Read sequences etc
-seqs = IMP.pmi.topology.Sequences('data/1WCM.fasta')
+seqs = IMP.pmi.topology.Sequences(IMP.pmi.get_example_path('data/1WCM.fasta'))
 components = ["Rpb1","Rpb2","Rpb3","Rpb4"]
 chains = "ABCD"
 beadsize = 10
@@ -48,13 +48,19 @@ for n in range(len(components)):
 #  However these functions will only return BUILT representations
 root_hier = s.build()
 
+# Uncomment this for verbose output of the representation
+#IMP.atom.show_with_representations(root_hier)
+
 # Setup degrees of freedom
 #  The DOF functions automatically select all resolutions
-#  Objects passed to nonrigid_parts move with the frame but also have their own independent mover.
+#  Objects passed to nonrigid_parts move with the frame but also have their own independent movers.
 dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
 for mol in mols:
     dof.create_rigid_body(mol,
-                          nonrigid_parts=mol.get_non_atomic_residues())
+                          nonrigid_parts=mol.get_non_atomic_residues(),
+                          max_trans=0.1,
+                          max_rot=0.78,
+                          nonrigid_max_trans=0.1)
 
 
 ###################### RESTRAINTS #####################

@@ -1,3 +1,4 @@
+from __future__ import print_function, division
 import IMP
 import IMP.atom
 import IMP.pmi
@@ -549,7 +550,8 @@ class TopologyTest(IMP.test.TestCase):
         hier = s.build()
 
         selD = IMP.atom.Selection(hier,representation_type=IMP.atom.DENSITIES)
-        self.assertEqual(len(selD.get_selected_particles()),len(atomic_res)/dres+1)
+        self.assertEqual(len(selD.get_selected_particles()),
+                         len(atomic_res)//dres+1)
 
     @IMP.test.skip("This test wont pass until we fix self-densities in RMF")
     def test_setup_beads_as_densities(self):

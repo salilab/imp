@@ -10,10 +10,10 @@ Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
  * Molecule.create_clone() lets you set up a molecule with identical representations, just a different chain ID. Use Molecule.create_copy() if you want a molecule with the same sequence but that allows custom representations.
 * Once data has been added and representations chosen, call System.build() to create a canonical IMP hierarchy.
 * Following hierarchy construction, setup rigid bodies, flexible beads, etc in IMP::pmi::dof.
-
+* Check your representation with a nice printout: IMP::atom::show_with_representation()
 See a [comprehensive example](https://integrativemodeling.org/nightly/doc/ref/pmi_2multiscale_8py-example.html) for using these classes.
 
-Alternatively one can construct the entire topology and degrees of freedom via formatted text file with TopologyReader and IMP::pmi::macros::BuildModel(). This is used in the [PMI tutorial](@ref rnapolii_stalk).
+Alternatively one can construct the entire topology and degrees of freedom via formatted text file with TopologyReader and IMP::pmi::macros::BuildSystem(). This is used in the [PMI tutorial](@ref rnapolii_stalk).
 Note that this only allows a limited set of the full options available to PMI users (rigid bodies only, fixed resolutions).
 """
 
@@ -25,7 +25,7 @@ import IMP.pmi
 import IMP.pmi.tools
 import csv
 import os
-from collections import defaultdict
+from collections import defaultdict,OrderedDict
 from . import system_tools
 from Bio import SeqIO
 from bisect import bisect_left
@@ -346,7 +346,8 @@ class Molecule(_SystemBase):
                If None, will select all residues for this Molecule.
         @param resolutions Resolutions for beads representations.
                If structured, will average along backbone, breaking at sequence breaks.
-               If unstructured, will just create beads
+               If unstructured, will just create beads.
+               Pass an integer or list of integers
         @param bead_extra_breaks Additional breakpoints for splitting beads.
                The number is the first PDB-style index that belongs in the second bead
         @param bead_ca_centers Set to True if you want the resolution=1 beads to be at CA centers
@@ -396,6 +397,11 @@ class Molecule(_SystemBase):
         self.represented|=res
 
         # check you aren't creating multiple resolutions without structure
+        if not hasattr(resolutions,'__iter__'):
+            if type(resolutions) is int:
+                resolutions = [resolutions]
+            else:
+                raise Exception("you tried to pass resolutions that are not int or list-of-int")
         if len(resolutions)>1:
             for r in res:
                 if not r.get_has_structure():
@@ -573,13 +579,20 @@ class Sequences(object):
         @param name_map dictionary mapping the fasta name to the stored name
         """
         self.sequences={}
+        self.seqs_in_order = []
         self.read_sequences(fasta_fn,name_map)
     def __len__(self):
         return len(self.sequences)
     def __contains__(self,x):
         return x in self.sequences
     def __getitem__(self,key):
-        return self.sequences[key]
+        if type(key) is int:
+            try:
+                return self.seqs_in_order[key]
+            except:
+                raise Exception("You tried to access sequence num",key,"but there's only",len(self.seqs_in_order))
+        else:
+            return self.sequences[key]
     def __repr__(self):
         ret=''
         for s in self.sequences:
@@ -592,10 +605,12 @@ class Sequences(object):
         if name_map is None:
             for pn in record_dict:
                 self.sequences[pn]=str(record_dict[pn].seq).replace("*", "")
+                self.seqs_in_order.append(self.sequences[pn])
         else:
             for pn in name_map:
                 try:
                     self.sequences[name_map[pn]]=str(record_dict[pn].seq).replace("*", "")
+                    self.seqs_in_order.append(self.sequences[name_map[pn]])
                 except:
                     print("tried to add sequence but: id %s not found in fasta file" % pn)
                     exit()
