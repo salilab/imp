@@ -1136,6 +1136,6 @@ std::string get_molecule_name(Hierarchy h) {
       return h->get_name();
     }
   } while ((h = h.get_parent()));
-  IMP_THROW("Hierarchy " << h << " has no residue index.", ValueException);
+  IMP_THROW("Hierarchy " << h << " has no molecule name.", ValueException);
 }
 IMPATOM_END_NAMESPACE
