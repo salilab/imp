@@ -6,3 +6,6 @@ function_name_exceptions=['BildWriter.close',
                                             'PymolWriter.open',
                                             'TextWriter.open']
 spelling_exceptions=['bild', 'pymol', 'rgb', 'gnuplot', 'isosurface', "pivy"]
+doc_spelling_exceptions=['mixin', 'pym', 'CGO', 'XYZ', 'CMM', 'filename',
+                         'adaptor', 'sidechain', 'pdb', 'natively',
+                         'destructor', 'grayscale']
