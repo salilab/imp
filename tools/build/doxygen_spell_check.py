@@ -23,6 +23,10 @@ except ImportError:
           file=sys.stderr)
     sys.exit(1)
 
+global_spelling_exceptions = [
+   'pdb'
+]
+
 class ClassNameFilter(Filter):
     "Exclude class names (CamelCase and/or containing ::, starting with IMP.)"
     _pattern = re.compile(r"^([A-Z]\w+[A-Z]+\w+)")
@@ -49,6 +53,8 @@ class SpellChecker(object):
             exec(open(exceptions_file, "r").read(), d)
         except IOError:
             pass
+        for word in global_spelling_exceptions:
+            self.chkr.dict.add_to_session(word)
         for word in d['spelling_exceptions']:
             self.chkr.dict.add_to_session(word)
         for word in d['doc_spelling_exceptions']:
