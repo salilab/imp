@@ -14,10 +14,7 @@
    be straightforward to add.
 """
 
-from __future__ import print_function
 import sys
-import os
-import re
 try:
     import ast
 except ImportError:
@@ -150,11 +147,10 @@ def get_deprecation_docstring(node):
                 return '\n@deprecated_at{%s} %s' % (d.args[0].s, d.args[1].s)
     return ''
 
-def get_dump_docstring(node, spellcheck, add_lines=[]):
+def get_dump_docstring(node, add_lines=[]):
     lines = []
     doc = ast.get_docstring(node)
     if doc:
-        spellcheck.check(doc, node)
         doc += get_deprecation_docstring(node)
         prefix = "## "
         for line in doc.split('\n') + add_lines:
@@ -163,31 +159,31 @@ def get_dump_docstring(node, spellcheck, add_lines=[]):
     return lines
 
 
-def dump_function(func, spellcheck, indent, printer, method=False):
+def dump_function(func, indent, printer, method=False):
     if method:
         add_lines = []
     else:
         add_lines = ['', '@pythononlyfunction']
-    d = get_dump_docstring(func, spellcheck, add_lines)
+    d = get_dump_docstring(func, add_lines)
     printer.output_lines(indent, d + [get_function_signature(func)],
                          func.lineno)
     printer.output_line(indent + 4, "pass")
 
 
-def dump_class(cls, meths, spellcheck, indent, printer):
+def dump_class(cls, meths, indent, printer):
     if cls.swig:
         add_lines = []
     else:
         add_lines = ['', '@pythononlyclass']
-    d = get_dump_docstring(cls, spellcheck, add_lines)
+    d = get_dump_docstring(cls, add_lines)
     printer.output_lines(indent, d + [get_class_signature(cls)], cls.lineno)
     if len(meths) == 0:
         printer.output_line(indent + 4, "pass")
     for m in meths:
-        dump_function(m, spellcheck, indent + 4, printer, method=True)
+        dump_function(m, indent + 4, printer, method=True)
 
 
-def handle_class(c, spellcheck, indent, printer):
+def handle_class(c, indent, printer):
     if c.name.startswith('_'):
         return
     doc = ast.get_docstring(c)
@@ -203,7 +199,7 @@ def handle_class(c, spellcheck, indent, printer):
                 meths.append(f)
     if c.swig and len(meths) == 0:
         return
-    dump_class(c, meths, spellcheck, indent, printer)
+    dump_class(c, meths, indent, printer)
 
 
 class OutputPrinter(object):
@@ -240,69 +236,6 @@ class OutputPrinter(object):
             self.output_line(indent, line)
         self.last_line_was_comment = lines[-1].startswith('#')
 
-class DummySpellChecker(object):
-    """Mock object to skip spell checking if enchant library isn't available"""
-    def check(self, text, node):
-        pass
-
-class SpellChecker(object):
-    def __init__(self, fname):
-        import enchant.checker
-        from enchant.tokenize import EmailFilter, URLFilter, Filter
-
-        class DoxygenCmdFilter(Filter):
-            def _skip(self,word):
-                return word.startswith('@')
-
-        class ClassNameFilter(Filter):
-            _pattern = re.compile(r"^([A-Z]\w+[A-Z]+\w+)")
-            def _skip(self,word):
-                return "::" in word or self._pattern.match(word) is not None
-
-        self.chkr = enchant.checker.SpellChecker("en_US",
-                         filters=[EmailFilter, URLFilter, DoxygenCmdFilter,
-                                  ClassNameFilter])
-        self.add_exceptions(fname)
-        self.fname = fname
-        self.printed = False
-
-    def get_module_name(self, fname):
-        module = re.search('lib/IMP/(\w+)/', fname)
-        if module:
-            return module.group(1)
-        elif re.search('lib/IMP/[^/]+\.py', fname):
-            return 'kernel'
-
-    def add_exceptions(self, fname):
-        modules_dir = os.path.join(os.path.dirname(sys.argv[0]), '..', '..',
-                                   'modules')
-        if not os.path.exists(modules_dir):
-            raise IOError("Cannot find IMP modules directory")
-        module = self.get_module_name(fname)
-        if not module:
-            print("Cannot determine module name for %s" % fname,
-                  file=sys.stderr)
-            return
-        exceptions = os.path.join(modules_dir, module, "test",
-                                  "standards_exceptions")
-        d = {'spelling_exceptions': [], 'doc_spelling_exceptions': []}
-        try:
-            exec(open(exceptions, "r").read(), d)
-        except IOError:
-            pass
-        for word in d['spelling_exceptions'] + d['doc_spelling_exceptions']:
-            self.chkr.dict.add_to_session(word)
-
-    def check(self, text, node):
-        self.chkr.set_text(text)
-        misspelled = [err.word for err in self.chkr]
-        if misspelled:
-            if not self.printed:
-                print("Misspelled words in %s:" % self.fname, file=sys.stderr)
-            self.printed = True
-            print("    Line %d: %s" % (node.lineno, ", ".join(misspelled)),
-                  file=sys.stderr)
-
 
 def parse_file(fname):
     # Exclude non-IMP code
@@ -320,26 +253,22 @@ def parse_file(fname):
     lines = open(fname).readlines()
     lines = [x.rstrip('\r\n') for x in lines]
     a = ast.parse(("\n".join(lines)).rstrip() + '\n', fname)
-    try:
-        spellcheck = SpellChecker(fname)
-    except ImportError:
-        spellcheck = DummySpellChecker()
 
     indent = 0
     printer = OutputPrinter()
 
     if isinstance(a, ast.Module):
-        doc = get_dump_docstring(a, spellcheck)
+        doc = get_dump_docstring(a)
         if len(doc) > 0:
             printer.output_lines(indent, doc, 1)
 
     for n in ast.iter_child_nodes(a):
         if isinstance(n, ast.ClassDef):
-            handle_class(n, spellcheck, indent, printer)
+            handle_class(n, indent, printer)
         elif isinstance(n, ast.FunctionDef):
             f = handle_func(n)
             if f:
-                dump_function(f, spellcheck, indent, printer)
+                dump_function(f, indent, printer)
 
 if __name__ == '__main__':
     parse_file(sys.argv[1])
