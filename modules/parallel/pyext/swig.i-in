@@ -233,7 +233,7 @@ class SGEQsubSlaveArray(SlaveArray):
 
     def __init__(self, numslave, options):
         """Constructor.
-           @param numslave The number of slaves, which correponds to the
+           @param numslave The number of slaves, which corresponds to the
                            number of tasks in the SGE job.
            @param options  A string of SGE options that are passed on the 'qsub'
                            command line. This is added to standard_options.
