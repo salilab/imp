@@ -41,7 +41,7 @@ def get_reference_frames_from_chain_alignment(reference_rbs, reference_index,
 
 def align_centroids_using_pca(ref_frames, ref_frames_reference):
     """
-        Align the centroids of 2 sets of rigid bodyes using PCA using their
+        Align the centroids of 2 sets of rigid bodies using PCA using their
         reference frames. returns the best rmsd and the ref_frames to get it.
     """
     if(len(ref_frames) != len(ref_frames_reference)):

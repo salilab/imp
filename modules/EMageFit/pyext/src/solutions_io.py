@@ -77,9 +77,9 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
             raising an error. This option is to tolerate some files
             of the databases being broken because the cluster fails,
             fill the disks, etc
-       @param orderby Criterium used to sort the the records
+       @param orderby Criterion used to sort the the records
        NOTE:
-       Makes sure to reorder all column names if neccesary before merging
+       Makes sure to reorder all column names if necessary before merging
        The record for the native solution is only added once (from first file).
     """
     tbl = "results"
@@ -150,7 +150,7 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
 def gather_solution_results(fns, fn_output, raisef=0.1):
     """
        Reads a set of database files and puts them in a single file
-       Makes sure to reorder all column names if neccesary before merging
+       Makes sure to reorder all column names if necessary before merging
        @param fns List of database files
        @param fn_output Name of the output database
        @param raisef See help for gather_best_solution_results()
@@ -362,9 +362,9 @@ class ResultsDB(database.Database2):
     def add_record(self, solution_id, assignment, RFs, total_score,
                    restraints_scores, measures):
         """
-            Add a recorde to the database
+            Add a record to the database
             @param solution_id The key for the solution
-            @param assignment The assigment for the solution provided by
+            @param assignment The assignment for the solution provided by
                               domino
             @param RFs Reference frames of the rigid bodies of the components
             of the assembly in the solution
@@ -478,7 +478,7 @@ class ResultsDB(database.Database2):
 
     def get_left_join_command(self, pairs_table_field, tables_names):
         """
-            Format a left join SQL command that recovers all fileds from the
+            Format a left join SQL command that recovers all fields from the
             tables given
             @param pairs_table_field Pairs of (table,field)
             @param tables_names Names of the tables
@@ -574,7 +574,7 @@ class ResultsDB(database.Database2):
     def get_native_rank(self, orderby):
         """
             Get the position of the native configuration
-            @param orderby Criterium used to sort the solutions
+            @param orderby Criterion used to sort the solutions
         """
         import numpy as np
 
@@ -611,7 +611,7 @@ class ResultsDB(database.Database2):
             @return The output are 4 numpy vectors:
                 placement_distances_mean - The mean placement distance for each
                                             component
-                placement_distances_stddev - The standardd deviation of the
+                placement_distances_stddev - The standard deviation of the
                                             placement distance for each component
                 placement_angles_mean - The mean placement angle for each
                                             component

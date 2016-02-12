@@ -52,7 +52,7 @@ def get_components_placement_scores(assembly, native_assembly, align=False):
                     calculating the placement score
         @return The function returns 2 lists. The first list contains the
                 placement distances of the children. The second list contains the
-                placnement angles
+                placement angles
     """
     model_coords_per_child = [get_coordinates(c)
                               for c in assembly.get_children()]

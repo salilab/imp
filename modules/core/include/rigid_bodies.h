@@ -546,7 +546,7 @@ inline algebra::ReferenceFrame3D get_initial_reference_frame(
 }
 
 /** Create a set of rigid bodies that are bound together for efficiency.
-    These rigid bodies cannot nest or have other dependencies amongst them.
+    These rigid bodies cannot nest or have other dependencies among them.
 
     All rigid bodies have the default reference frame.
 

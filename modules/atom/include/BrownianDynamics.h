@@ -92,7 +92,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
                          that are larger by up to wave_factor from
                          formal maximal time step
      @param random_pool_size number of random numbers in internal pool
-                             used to accelerate randon number generation.
+                             used to accelerate random number generation.
                              Memory requirement scales accordingly.
 
      @note wave_factor is an advanced feature - if you're not sure, just use

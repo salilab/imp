@@ -29,7 +29,7 @@ IMPATOM_BEGIN_NAMESPACE
     \see BrownianDynamicsBarak
 
     TAMDCentroid is almost identical to IMP::core::Centroid, used to
-    decorate particles that represet centers of mass of their children.
+    decorate particles that represent centers of mass of their children.
     It also contains some flags that are useful for TAMD simulations
     (Temperature-Accelerated MD).
 
@@ -56,15 +56,15 @@ class IMPATOMEXPORT TAMDCentroid : public IMP::core::Centroid  {
     IMP_DECORATOR_METHODS(TAMDCentroid, IMP::core::Centroid);
 
     /** Sets up TAMDCentroid over members, and constrains TAMDCentroid to be
-        computed before model evaluation and to propogate derivatives
-        folllowing model evaulation.
+        computed before model evaluation and to propagate derivatives
+        following model evaluation.
         SetupDoc
     */
     IMP_DECORATOR_SETUP_1(TAMDCentroid, ParticleIndexesAdaptor, members);
 
     /** Sets up TAMDCentroid over particles passed by applying the refiner
         over the particle pi, and constrains TAMDCentroid to be computed before
-        model evaluation and to propogate derivatives following model
+        model evaluation and to propagate derivatives following model
         evaluation.
         SetupDoc
     */

@@ -54,7 +54,7 @@ class PythonDirectedGraph {
     your Utilities folder in MacOS) and the window produced is shockingly
     retro.
 
-    An alterntative is to write the graph to a \c dot file
+    An alternative is to write the graph to a \c dot file
     \code
     g.show_graphviz(open("graph.dot", "w"));
     \endcode

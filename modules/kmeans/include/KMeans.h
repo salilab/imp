@@ -91,7 +91,7 @@ class IMPKMEANSEXPORT KMeans : public IMP::Object {
    */
   KMeans(const std::string& fname_data, int dim, unsigned int max_nPts);
 
-  /** Empty constructor for all default initializations -
+  /** Empty constructor for default initialization -
       object data is not considered initialized after this call
   */
   KMeans();

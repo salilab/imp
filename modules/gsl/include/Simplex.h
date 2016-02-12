@@ -35,7 +35,7 @@ class IMPGSLEXPORT Simplex : public GSLOptimizer {
 
       The parameters are:
 
-      - minumum_size: the optimization stops when the size of the
+      - minimum_size: the optimization stops when the size of the
       simplex falls below this. The size is defined as the average
       distance from the centroid to the simplex vertices. (Default 0.1)
 

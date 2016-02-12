@@ -312,7 +312,7 @@ def apply_rotation_around_centroid(rb, rot):
 
 def apply_transformation_around_centroid(rb, T):
     """
-        Aplies a transformation around the centroid of a rigid body.
+        Applies a transformation around the centroid of a rigid body.
         First does the rotation around the centroid and
         then applies the transformation.
         @param rb A IMP.core.RigidBody object

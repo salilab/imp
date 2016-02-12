@@ -238,7 +238,7 @@ class InitialDockingFromXlinks:
 
     def set_xlinks(self, xlinks_list):
         """
-            Sets the xlinks used for the computation fo the intial rough
+            Sets the xlinks used for the computation fo the initial rough
             docking solution
             @param xlinks_list A list of Xlink classes
             residue1 belongs to the receptor and residue2 belongs to the ligand
