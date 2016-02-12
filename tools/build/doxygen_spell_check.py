@@ -24,7 +24,15 @@ except ImportError:
     sys.exit(1)
 
 global_spelling_exceptions = [
-   'pdb'
+   'pdb', 'centroid', 'radians', 'dihedral', 'covariance', 'steric',
+   'unary', 'minima', 'quaternion', 'quaternions', 'ligand', 'initializer',
+   'unordered', 'functor', 'stereochemistry', 'dihedrals', 'ligands',
+   'femtoseconds', 'femtosecond', 'molarity', 'complementarity',
+   'voxel', 'voxels', 'translational', 'centroids', 'invariants',
+   'preprocessor', 'adaptor', 'functors', 'runtime', 'breakpoint', 'namespace',
+   'destructor', 'destructors', 'hashable', 'profiler', 'benchmarking',
+   'minima', 'colinear', 'Andrej', 'Sali', 'Keren', 'Lasker', 'Velázquez',
+   'Schneidman', 'Duhovny'
 ]
 
 class IMPNameFilter(Filter):
