@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 
 """Check spelling in doxygen-generated docs.
 
