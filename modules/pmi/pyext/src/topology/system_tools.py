@@ -29,12 +29,12 @@ def resnums2str(res):
             ret+=', '
     return ret
 
-def get_structure(mdl,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_only=False):
+def get_structure(mdl,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,ca_only=False):
     """read a structure from a PDB file and return a list of residues
     @param mdl The IMP model
     @param pdb_fn    The file to read
     @param chain_id  Chain ID to read
-    @param res_range Add only a specific set of residues
+    @param res_range Add only a specific set of residues. None gets you all
     @param offset    Apply an offset to the residue indexes of the PDB file
     @param model_num Read multi-model PDB and return that model
     @param ca_only Read only CA atoms (by default, all non-waters are read)
@@ -51,19 +51,17 @@ def get_structure(mdl,pdb_fn,chain_id,res_range=[],offset=0,model_num=None,ca_on
                             " but the PDB file only contains "+str(len(mhs))+" models")
         mh = mhs[model_num]
 
-    # first update using offset:
-    if offset!=0:
-        for rr in IMP.atom.get_by_type(mh,IMP.atom.RESIDUE_TYPE):
-            IMP.atom.Residue(rr).set_index(IMP.atom.Residue(rr).get_index()+offset)
-
-    if res_range==[] or res_range==(1,-1):
+    if res_range==[] or res_range is None:
         sel = IMP.atom.Selection(mh,chain=chain_id,atom_type=IMP.atom.AtomType('CA'))
     else:
         sel = IMP.atom.Selection(mh,chain=chain_id,residue_indexes=range(res_range[0],res_range[1]+1),
                                atom_type=IMP.atom.AtomType('CA'))
     ret=[]
+
+    # return final and apply offset
     for p in sel.get_selected_particles():
         res = IMP.atom.Residue(IMP.atom.Atom(p).get_parent())
+        res.set_index(res.get_index() + offset)
         ret.append(res)
     return ret
 
@@ -221,18 +219,20 @@ def build_ideal_helix(model, residues, resolution):
 def recursive_show_representations(root):
     pass
 
-def build_representation(mdl,rep,coord_finder):
-    """Create requested representation. Always returns a list of hierarchies.
+def build_representation(parent,rep,coord_finder):
+    """Create requested representation.
     For beads, identifies continuous segments and sets up as Representation.
     If any volume-based representations (e.g.,densities) are requested,
     will instead create a single Representation node.
-    @param mdl The IMP Model
+    All reps are added as children of the passed parent.
+    @param parent The Molecule to which we'll add add representations
     @param rep What to build. An instance of pmi::topology::_Representation
     @param coord_finder A _FindCloseStructure object to help localize beads
     """
     ret = []
     atomic_res = 0
     ca_res = 1
+    mdl = parent.get_model()
 
     # first get the primary representation (currently, the smallest bead size)
     #  eventually we won't require beads to be present at all
@@ -247,6 +247,7 @@ def build_representation(mdl,rep,coord_finder):
         rep_dict = defaultdict(list)
         root_representation = IMP.atom.Representation.setup_particle(IMP.Particle(mdl),
                                                                      primary_resolution)
+        parent.add_child(root_representation)
         res_nums = [r.get_index() for r in rep.residues]
         density_frag = IMP.atom.Fragment.setup_particle(IMP.Particle(mdl),res_nums)
         density_frag.get_particle().set_name("Densities %i"%rep.density_residues_per_component)
@@ -307,7 +308,7 @@ def build_representation(mdl,rep,coord_finder):
         this_segment = IMP.atom.Fragment.setup_particle(segp,res_nums)
         if not single_node:
             this_representation = IMP.atom.Representation.setup_particle(segp,primary_resolution)
-            ret.append(this_representation)
+            parent.add_child(this_representation)
         for resolution in rep.bead_resolutions:
             fp = IMP.Particle(mdl)
             this_resolution = IMP.atom.Fragment.setup_particle(fp,res_nums)
@@ -363,7 +364,6 @@ def build_representation(mdl,rep,coord_finder):
                 #                                       resolution)
 
     if single_node:
-        ret = [root_representation]
         root_representation.set_name(name_all.strip(',')+": Base")
         d = root_representation.get_representations(IMP.atom.DENSITIES)
         d[0].set_name('%s: '%name_all + d[0].get_name())
@@ -380,4 +380,3 @@ def build_representation(mdl,rep,coord_finder):
                 root_representation.add_representation(this_resolution,
                                                        IMP.atom.BALLS,
                                                        resolution)
-    return ret

@@ -20,8 +20,6 @@ if matplotlib is not None:
 class ISDCrossMSTest(IMP.test.TestCase):
 
     def init_crosslink_db(self):
-
-
         cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
         cldbkc.set_protein1_key("pep1.accession")
         cldbkc.set_protein2_key("pep2.accession")
@@ -29,7 +27,6 @@ class ISDCrossMSTest(IMP.test.TestCase):
         cldbkc.set_residue2_key("pep2.xlinked_aa")
         cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
         cldb.create_set_from_file(IMP.pmi.get_data_path("polii_xlinks.csv"))
-
         return cldb
 
     def init_representation_complex(self):
@@ -73,7 +70,7 @@ class ISDCrossMSTest(IMP.test.TestCase):
         xlt.load_rmf_coordinates("expensive_test_io_xtable.rmf",0,prots)
         xlt.load_crosslinks(cldb)
         xlt.setup_contact_map()
-
+        xlt.load_pdb_coordinates(self.get_input_file_name('1WCM.pdb'),{'A':'Rpb1'})
         xlt.plot_table(prot_listx=prots,
            prot_listy=prots,
            alphablend=0.4,

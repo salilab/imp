@@ -28,7 +28,7 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),chain_id='A',
-                                      res_range=(1,10),offset=-54)
+                                      res_range=(55,63),offset=-54)
         fname = self.get_tmp_file_name('test_gmm')
         m1.add_representation(atomic_res,resolutions=[1,10],
                               density_residues_per_component=2,
@@ -43,10 +43,35 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
 
         # make sure you can score
         gem = IMP.pmi.restraints.em.GaussianEMRestraint(densities,
-                                                        target_fn=self.get_input_file_name('prot_gmm.txt'))
+                                                        target_fn=self.get_input_file_name('prot_gmm.txt'),
+                                                        target_is_rigid_body=True)
+
         gem.add_to_model()
         mdl.update()
         init_em_score = gem.evaluate()
+
+        # get rigid body object
+        rb = gem.get_rigid_body()
+        self.assertEqual(IMP.core.RigidBody, type(rb))
+        self.assertEqual(len(rb.get_rigid_members()), 1)
+
+        #test target transformations
+        p = gem.target_ps[0]
+        pos = IMP.core.XYZ(p).get_coordinates()
+
+        self.assertEqual(pos[0], -6.50710525063)
+        self.assertEqual(pos[1], -44.7706839578)
+        self.assertEqual(pos[2], -70.33819299)
+
+        gem.center_target_density_on_model()
+        pos = IMP.core.XYZ(p).get_coordinates()
+        self.assertNotEqual(pos[0], -6.50710525063)
+
+        gem.center_target_density_on_origin()
+        pos = IMP.core.XYZ(p).get_coordinates()
+        self.assertEqual(pos[0], 0)
+        self.assertEqual(pos[1], 0)
+        self.assertEqual(pos[2], 0)
 
 class TestPMI(IMP.test.TestCase):
     def test_em_pmi(self):

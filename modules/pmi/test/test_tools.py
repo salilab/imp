@@ -11,12 +11,12 @@ import IMP.pmi.io
 import IMP.pmi.io.crosslink
 import IMP.pmi.representation
 import IMP.pmi.restraints
+import IMP.pmi.restraints.em
 import IMP.pmi.restraints.crosslinking
 import IMP.pmi.macros
 from math import *
 
 class TestTools(IMP.test.TestCase):
-
     def test_shuffle(self):
         """Test moving rbs, fbs"""
         mdl = IMP.Model()
@@ -53,6 +53,24 @@ class TestTools(IMP.test.TestCase):
         ps = IMP.pmi.tools.select_at_all_resolutions(mol.get_hierarchy(),residue_index=93)
         self.assertEqual(len(ps),10) #should get res0 and res10
 
+    def test_get_name(self):
+        """Test pmi::get_molecule_name_and_copy()"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        st1 = s.create_state()
+
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='A',res_range=(55,63),offset=-54)
+        m1.add_representation(a1,resolutions=[0,1])
+        m2 = m1.create_clone('B')
+        hier = s.build()
+        sel0 = IMP.atom.Selection(hier,resolution=1,copy_index=0).get_selected_particles()
+        self.assertEqual(IMP.pmi.get_molecule_name_and_copy(sel0[0]),"Prot1.0")
+        sel1 = IMP.atom.Selection(hier,resolution=1,copy_index=1).get_selected_particles()
+        self.assertEqual(IMP.pmi.get_molecule_name_and_copy(sel1[0]),"Prot1.1")
+
     def test_input_adaptor(self):
         """Test that input adaptor correctly performs selection"""
         mdl = IMP.Model()
@@ -64,17 +82,28 @@ class TestTools(IMP.test.TestCase):
         m2 = st1.create_molecule("Prot2",sequence=seqs["Protein_2"])
         m3 = st1.create_molecule("Prot3",sequence=seqs["Protein_3"])
         a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='A',res_range=(1,10),offset=-54)
+                              chain_id='A',res_range=(55,63),offset=-54)
         a2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='B',res_range=(1,13),offset=-179)
+                              chain_id='B',res_range=(180,192),offset=-179)
         a3 = m3.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='G',res_range=(1,10),offset=-54)
+                              chain_id='G',res_range=(55,63),offset=-54)
         m1.add_representation(a1,resolutions=[0,1])
         m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
         m2.add_representation(a2,resolutions=[0,1]) # m2 only has atoms
         m3.add_representation(a3,resolutions=[1,10])
-        m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1])
+        m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1], setup_particles_as_densities=True)
         hier = s.build()
+
+        densities = [r.get_hierarchy() for r in m3.get_non_atomic_residues()]
+
+        #set up GMM particles
+        gemt = IMP.pmi.restraints.em.GaussianEMRestraint(densities,
+                                                 self.get_input_file_name('prot_gmm.txt'),
+                                                 target_is_rigid_body=True)
+
+        gmm_hier = gemt.get_density_as_hierarchy()
+        test0 = IMP.pmi.tools.input_adaptor(gmm_hier)
+        self.assertEqual(test0, [gmm_hier])
 
         # get one resolution
         test1 = IMP.pmi.tools.input_adaptor(m1,pmi_resolution=0)

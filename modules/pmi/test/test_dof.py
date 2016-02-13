@@ -4,6 +4,7 @@ import IMP.pmi
 import IMP.pmi.dof
 import IMP.pmi.topology
 import IMP.pmi.macros
+import IMP.pmi.restraints.em
 import os
 
 try:
@@ -21,7 +22,7 @@ class TestDOF(IMP.test.TestCase):
 
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                                      chain_id='A',res_range=(1,10),offset=-54)
+                                      chain_id='A',res_range=(55,63),offset=-54)
         m1.add_representation(atomic_res,resolutions=[0,1,10])
         m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
         s.build()
@@ -35,11 +36,11 @@ class TestDOF(IMP.test.TestCase):
         m2 = st1.create_molecule("Prot2",sequence=seqs["Protein_2"])
         m3 = st1.create_molecule("Prot3",sequence=seqs["Protein_3"])
         a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='A',res_range=(1,10),offset=-54)
+                              chain_id='A',res_range=(55,63),offset=-54)
         a2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='B',res_range=(1,13),offset=-179)
+                              chain_id='B',res_range=(180,192),offset=-179)
         a3 = m3.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='G',res_range=(1,10),offset=-54)
+                              chain_id='G',res_range=(55,63),offset=-54)
         m1.add_representation(a1,resolutions=[0,1])
         m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
 
@@ -47,6 +48,30 @@ class TestDOF(IMP.test.TestCase):
 
         m3.add_representation(a3,resolutions=[0,1])
         m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1])
+        s.build()
+        return m1,m2,m3
+
+    def init_topology_densities(self,mdl):
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        m2 = st1.create_molecule("Prot2",sequence=seqs["Protein_2"])
+        m3 = st1.create_molecule("Prot3",sequence=seqs["Protein_3"])
+        a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='A',res_range=(55,63),offset=-54)
+        a2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='B',res_range=(180,192),offset=-179)
+        a3 = m3.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='G',res_range=(55,63),offset=-54)
+        m1.add_representation(a1,resolutions=[0,1])
+        m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
+
+        m2.add_representation(a2,resolutions=[0,1]) # m2 only has atoms
+
+        m3.add_representation(a3,resolutions=[0,1])
+        m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1], setup_particles_as_densities=True)
         s.build()
         return m1,m2,m3
 
@@ -121,7 +146,7 @@ class TestDOF(IMP.test.TestCase):
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                                      chain_id='A',res_range=(1,10),offset=-54)
+                                      chain_id='A',res_range=(55,63),offset=-54)
         m1.add_representation(atomic_res,
                               resolutions=[0,1,10],
                               density_prefix='tmpgmm',
@@ -196,14 +221,14 @@ class TestDOF(IMP.test.TestCase):
 
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='A',res_range=(1,10),offset=-54)
+                              chain_id='A',res_range=(55,63),offset=-54)
         m1.add_representation(a1,resolutions=[0,1])
         m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
         m3 = m1.create_clone(chain_id='C')
 
         m2 = st1.create_molecule("Prot2",sequence=seqs["Protein_2"])
         a2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='B',res_range=(1,13),offset=-179)
+                              chain_id='B',res_range=(180,192),offset=-179)
         m2.add_representation(a2,resolutions=[0,1])
         m4 = m2.create_clone(chain_id='D')
         root = s.build()
@@ -262,7 +287,7 @@ class TestDOF(IMP.test.TestCase):
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                                      chain_id='A',res_range=(1,10),offset=-54)
+                                      chain_id='A',res_range=(55,63),offset=-54)
         m1.add_representation(atomic_res,resolutions=[0])
         hier = m1.build()
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
@@ -274,6 +299,28 @@ class TestDOF(IMP.test.TestCase):
                                               test_mode=True,
                                               replica_exchange_object=rem)
         rex.execute_macro()
+
+    def test_gaussian_rb(self):
+
+        mdl = IMP.Model()
+        m1, m2, m3 = self.init_topology_densities(mdl)
+        densities = [r.get_hierarchy() for r in m3.get_non_atomic_residues()]
+        gem_xtal = IMP.pmi.restraints.em.GaussianEMRestraint(densities,
+                                                 self.get_input_file_name('prot_gmm.txt'),
+                                                 target_is_rigid_body=True)
+
+        em_rb = gem_xtal.get_rigid_body()
+        em_rb.set_coordinates_are_optimized(False)
+
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        dof.create_rigid_body(em_rb)
+
+        self.assertTrue(em_rb in dof.get_rigid_bodies())
+        self.assertEqual(len(dof.get_rigid_bodies()), 1)
+        self.assertTrue(em_rb.get_coordinates_are_optimized())
+        self.assertEqual(len(dof.get_movers()), 1)
+
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -25,9 +25,8 @@ import IMP.pmi
 import IMP.pmi.tools
 import csv
 import os
-from collections import defaultdict,OrderedDict
+from collections import defaultdict
 from . import system_tools
-from Bio import SeqIO
 from bisect import bisect_left
 
 class _SystemBase(object):
@@ -174,7 +173,7 @@ class Molecule(_SystemBase):
     """
 
     def __init__(self,state,name,sequence,chain_id,copy_num,mol_to_clone=None):
-        """The user should not call this direclty, instead call State::create_molecule()
+        """The user should not call this directly; instead call State::create_molecule()
         @param state           The parent PMI State
         @param name            The name of the molecule (string)
         @param sequence        Sequence (string)
@@ -191,7 +190,7 @@ class Molecule(_SystemBase):
         self.built = False
         self.mol_to_clone = mol_to_clone
         self.representations = []  # list of stuff to build
-        self.represented = set()   # residues with representation
+        self.represented = IMP.pmi.tools.OrderedSet()   # residues with representation
         self.coord_finder = _FindCloseStructure() # helps you place beads by storing structure
 
         # create root node and set it as child to passed parent hierarchy
@@ -199,7 +198,6 @@ class Molecule(_SystemBase):
         self.hier.set_name(name)
         IMP.atom.Copy.setup_particle(self.hier,copy_num)
         IMP.atom.Chain.setup_particle(self.hier,chain_id)
-
         # create TempResidues from the sequence (if passed)
         self.residues=[]
         for ns,s in enumerate(sequence):
@@ -216,7 +214,7 @@ class Molecule(_SystemBase):
         elif isinstance(val,str):
             return self.residues[int(val)-1]
         elif isinstance(val,slice):
-            return set(self.residues[val])
+            return IMP.pmi.tools.OrderedSet(self.residues[val])
         else:
             print("ERROR: range ends must be int or str. Stride must be int.")
 
@@ -232,22 +230,20 @@ class Molecule(_SystemBase):
     def residue_range(self,a,b,stride=1):
         """get residue range. Use integers to get 0-indexing, or strings to get PDB-indexing"""
         if isinstance(a,int) and isinstance(b,int) and isinstance(stride,int):
-            return set(self.residues[a:b:stride])
+            return IMP.pmi.tools.OrderedSet(self.residues[a:b:stride])
         elif isinstance(a,str) and isinstance(b,str) and isinstance(stride,int):
-            return set(self.residues[int(a)-1:int(b)-1:stride])
+            return IMP.pmi.tools.OrderedSet(self.residues[int(a)-1:int(b)-1:stride])
         else:
             print("ERROR: range ends must be int or str. Stride must be int.")
 
     def get_residues(self):
         """ Return all modeled TempResidues as a set"""
-        all_res=set()
-        for res in self.residues:
-            all_res.add(res)
+        all_res = IMP.pmi.tools.OrderedSet(self.residues)
         return all_res
 
     def get_atomic_residues(self):
         """ Return a set of TempResidues that have associated structure coordinates """
-        atomic_res=set()
+        atomic_res = IMP.pmi.tools.OrderedSet()
         for res in self.residues:
             if res.get_has_structure():
                 atomic_res.add(res)
@@ -255,7 +251,7 @@ class Molecule(_SystemBase):
 
     def get_non_atomic_residues(self):
         """ Return a set of TempResidues that don't have associated structure coordinates """
-        non_atomic_res=set()
+        non_atomic_res = IMP.pmi.tools.OrderedSet()
         for res in self.residues:
             if not res.get_has_structure():
                 non_atomic_res.add(res)
@@ -289,8 +285,9 @@ class Molecule(_SystemBase):
         Returns the atomic residues (as a set)
         @param pdb_fn    The file to read
         @param chain_id  Chain ID to read
-        @param res_range Add only a specific set of residues
-        @param offset    Apply an offset to the residue indexes of the PDB file
+        @param res_range Add only a specific set of residues from the PDB file.
+        @param offset    Apply an offset to the residue indexes of the PDB file.
+                         This number is added to the PDB sequence.
         @param model_num Read multi-model PDB and return that model
         @param ca_only   Only read the CA positions from the PDB file
         @param soft_check If True, it only warns if there are sequence mismatches between the pdb and the Molecules sequence. Actually replaces the fasta values.
@@ -310,7 +307,7 @@ class Molecule(_SystemBase):
             print("WARNING: Extracting sequence from structure. Potentially dangerous.")
 
         # load those into TempResidue object
-        atomic_res = set() # collect integer indexes of atomic residues to return
+        atomic_res = IMP.pmi.tools.OrderedSet() # collect integer indexes of atomic residues to return
         for nrh,rh in enumerate(rhs):
             pdb_idx = rh.get_index()
             raw_idx = pdb_idx - 1
@@ -377,21 +374,25 @@ class Molecule(_SystemBase):
 
         # format input
         if residues is None:
-            res = set(self.residues)
+            res = IMP.pmi.tools.OrderedSet(self.residues)
         elif residues==self:
-            res = set(self.residues)
+            res = IMP.pmi.tools.OrderedSet(self.residues)
         elif hasattr(residues,'__iter__'):
             if len(residues)==0:
                 raise Exception('You passed an empty set to add_representation')
-            if type(residues) is set and type(next(iter(residues))) is TempResidue:
+            if type(residues) is IMP.pmi.tools.OrderedSet and type(next(iter(residues))) is TempResidue:
                 res = residues
+            elif type(residues) is set and type(next(iter(residues))) is TempResidue:
+                res = IMP.pmi.tools.OrderedSet(residues)
             elif type(residues) is list and type(residues[0]) is TempResidue:
-                res = set(residues)
+                res = IMP.pmi.tools.OrderedSet(residues)
+            else:
+                raise Exception("You passed an iteratible of something other than TempResidue",res)
         else:
             raise Exception("add_representation: you must pass a set of residues or nothing(=all residues)")
 
         # check that each residue has not been represented yet
-        ov = res&self.represented
+        ov = res & self.represented
         if ov:
             raise Exception('You have already added representation for '+ov.__repr__())
         self.represented|=res
@@ -477,9 +478,7 @@ class Molecule(_SystemBase):
 
             # build all the representations
             for rep in self.representations:
-                hiers = system_tools.build_representation(self.mdl,rep,self.coord_finder)
-                for h in hiers:
-                    self.hier.add_child(h)
+                system_tools.build_representation(self.hier,rep,self.coord_finder)
             self.built=True
 
             for res in self.residues:
@@ -576,7 +575,7 @@ class Sequences(object):
     def __init__(self,fasta_fn,name_map=None):
         """read a fasta file and extract all the requested sequences
         @param fasta_fn sequence file
-        @param name_map dictionary mapping the fasta name to the stored name
+        @param name_map dictionary mapping the fasta name to final stored name
         """
         self.sequences={}
         self.seqs_in_order = []
@@ -599,21 +598,31 @@ class Sequences(object):
             ret+='%s\t%s\n'%(s,self.sequences[s])
         return ret
     def read_sequences(self,fasta_fn,name_map=None):
-        # read all sequences
-        with open(fasta_fn) as handle:
-            record_dict = SeqIO.to_dict(SeqIO.parse(handle, "fasta"))
-        if name_map is None:
-            for pn in record_dict:
-                self.sequences[pn]=str(record_dict[pn].seq).replace("*", "")
-                self.seqs_in_order.append(self.sequences[pn])
-        else:
-            for pn in name_map:
-                try:
-                    self.sequences[name_map[pn]]=str(record_dict[pn].seq).replace("*", "")
-                    self.seqs_in_order.append(self.sequences[name_map[pn]])
-                except:
-                    print("tried to add sequence but: id %s not found in fasta file" % pn)
-                    exit()
+        code = None
+        seq = None
+        fh = open(fasta_fn,'r')
+        for (num, line) in enumerate(fh):
+            if line.startswith('>'):
+                if seq is not None:
+                    self.sequences[code] = seq
+                    self.seqs_in_order.append(seq)
+                code = line.rstrip()[1:]
+                if name_map is not None:
+                    try:
+                        code = name_map[code]
+                    except:
+                        pass
+                seq = ''
+            else:
+                line = line.rstrip()
+                if line: # Skip blank lines
+                    if seq is None:
+                        raise Exception( \
+"Found FASTA sequence before first header at line %d: %s" % (num + 1, line))
+                    seq += line
+        if seq is not None:
+            self.sequences[code] = seq
+            self.seqs_in_order.append(seq)
 
 #------------------------
 
@@ -706,8 +715,8 @@ class TopologyReader(object):
        If left empty, will set up as BEADS (you can also specify "BEADS")
        Can also write "IDEAL_HELIX".
     - `chain`: Chain ID of this domain in the PDB file.
-    - `residue_range`: Comma delimited pair defining range. -1 = last residue.
-      all = [1,-1].
+    - `residue_range`: Comma delimited pair defining range.
+       Can leave empty or use 'all' for entire sequence from PDB file.
     - `pdb_offset`: Offset to sync PDB residue numbering with FASTA numbering.
     - `bead_size`: The size (in residues) of beads used to model areas not
       covered by PDB coordinates. These will be automatically built.
@@ -729,7 +738,7 @@ class TopologyReader(object):
                  fasta_dir='./',
                  gmm_dir='./'):
         """Constructor.
-        @param topology_file Pipe-delimetted file specifying the topology
+        @param topology_file Pipe-delimited file specifying the topology
         @param resolutions What resolutions to build for ALL structured components
         @param pdb_dir Relative path to the pdb directory
         @param fasta_dir Relative path to the fasta directory
@@ -844,14 +853,14 @@ class TopologyReader(object):
             if (c.fasta_file!=self.unique_molecules[c.name][0].fasta_file or \
                 c.fasta_id!=self.unique_molecules[c.name][0].fasta_id or \
                 c.chain!=self.unique_molecules[c.name][0].chain):
-                errors.append("All domains with the same component name must have the same sequence")
+                errors.append("All domains with the same component name must have the same sequence. %s doesn't match %s"%(c.domain_name,c.name))
             self.unique_molecules[c.name].append(c)
 
         ### Optional fields
         # Residue Range
         f = values[7]
         if f.strip()=='all' or str(f)=="":
-            c.residue_range = (1,-1)
+            c.residue_range = None
         elif len(f.split(','))==2 and self._is_int(f.split(',')[0]) and self._is_int(f.split(',')[1]):
             # Make sure that is residue range is given, there are only two values and they are integers
             c.residue_range = (int(f.split(',')[0]), int(f.split(',')[1]))
@@ -1018,7 +1027,7 @@ class ComponentTopology(object):
         self.pdb_file = None
         self._orig_pdb_input = None
         self.chain = None
-        self.residue_range = [1,-1]
+        self.residue_range = None
         self.pdb_offset = 0
         self.bead_size = 10
         self.em_residues_per_gaussian = 0
@@ -1032,8 +1041,13 @@ class ComponentTopology(object):
     def _l2s(self,l):
         l = str(l).strip('[').strip(']')
         return l
+    def __repr__(self):
+        return self.get_str()
     def get_str(self):
+        res_range = self.residue_range
+        if self.residue_range is None:
+            res_range = []
         return '|'+'|'.join([self.name,self.domain_name,self._orig_fasta_file,self.fasta_id,
-                         self._orig_pdb_input,self.chain,self._l2s(list(self.residue_range)),str(self.pdb_offset),
+                         self._orig_pdb_input,self.chain,self._l2s(list(res_range)),str(self.pdb_offset),
                          str(self.bead_size),str(self.em_residues_per_gaussian),self._l2s(self.rigid_bodies),
                          self._l2s(self.super_rigid_bodies),self._l2s(self.chain_of_super_rigid_bodies)])+'|'

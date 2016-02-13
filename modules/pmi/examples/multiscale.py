@@ -33,7 +33,7 @@ for n in range(len(components)):
         components[n],
         sequence=seqs['1WCM:'+chains[n]],
         chain_id=chains[n])
-    atomic = mol.add_structure('data/1WCM_fitted.pdb',            # read in structure data
+    atomic = mol.add_structure(IMP.pmi.get_example_path('data/1WCM_fitted.pdb'),
                                chain_id=chains[n],
                                offset=0)
     mol.add_representation(atomic,                 # res 1,10 for structured regions

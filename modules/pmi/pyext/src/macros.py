@@ -464,10 +464,12 @@ class BuildSystem(object):
             seq = IMP.pmi.topology.Sequences(mlist[0].fasta_file)
             mol = state.create_molecule(molname,seq[mlist[0].fasta_id],mlist[0].chain)
             for domain in mlist:
-                if domain.residue_range==(1,-1):
-                    domain_res = mol.get_residues()
+                if domain.residue_range is None:
+                   domain_res = mol.get_residues()
                 else:
-                    domain_res = mol.residue_range(domain.residue_range[0]-1,domain.residue_range[1]-1)
+                   domain_res = mol.residue_range(domain.residue_range[0]-1+domain.pdb_offset,
+                                                  domain.residue_range[1]-1+domain.pdb_offset)
+
                 if domain.pdb_file=="BEADS":
                     mol.add_representation(domain_res,
                                            resolutions=[domain.bead_size],
@@ -488,17 +490,19 @@ class BuildSystem(object):
                     if domain.em_residues_per_gaussian==0:
                         mol.add_representation(domain_atomic,
                                                resolutions=reader.resolutions)
-                        mol.add_representation(domain_non_atomic,
-                                               resolutions=[domain.bead_size])
+                        if len(domain_non_atomic)>0:
+                            mol.add_representation(domain_non_atomic,
+                                                   resolutions=[domain.bead_size])
                     else:
                         mol.add_representation(domain_atomic,
                                                resolutions=reader.resolutions,
                                                density_residues_per_component=domain.em_residues_per_gaussian,
                                                density_prefix=domain.density_prefix,
                                                density_force_compute=self.force_create_gmm_files)
-                        mol.add_representation(domain_non_atomic,
-                                               resolutions=[domain.bead_size],
-                                               setup_particles_as_densities=True)
+                        if len(domain_non_atomic)>0:
+                            mol.add_representation(domain_non_atomic,
+                                                   resolutions=[domain.bead_size],
+                                                   setup_particles_as_densities=True)
                     these_domains[domain.domain_name] = (domain_atomic,domain_non_atomic)
             self._domains.append(these_domains)
         print('State',len(self.system.states),'added')
@@ -521,23 +525,36 @@ class BuildSystem(object):
             srbs = reader.get_super_rigid_bodies()
             csrbs = reader.get_chains_of_super_rigid_bodies()
 
+            # add rigid bodies
+            domains_in_rbs = set()
             for rblist in rbs:
-                all_res = set()
-                bead_res = set()
+                all_res = IMP.pmi.tools.OrderedSet()
+                bead_res = IMP.pmi.tools.OrderedSet()
                 for domain in rblist:
                     all_res|=self._domains[nstate][domain][0]
                     bead_res|=self._domains[nstate][domain][1]
+                    domains_in_rbs.add(domain)
                 all_res|=bead_res
                 self.dof.create_rigid_body(all_res,
                                            nonrigid_parts=bead_res)
+
+            # if you have any BEAD domains not in an RB, set them as flexible beads
+            for molname in reader.get_unique_molecules():
+                mlist = reader.get_unique_molecules()[molname]
+                for domain in mlist:
+                    if domain.pdb_file=="BEADS" and domain not in domains_in_rbs:
+                        self.dof.create_flexible_beads(self._domains[nstate][domain.domain_name][1])
+
+            # add super rigid bodies
             for srblist in srbs:
-                all_res = set()
+                all_res = IMP.pmi.tools.OrderedSet()
                 for domain in srblist:
                     all_res|=self._domains[nstate][domain][0]
                 self.dof.create_super_rigid_body(all_res)
 
+            # add chains of super rigid bodies
             for csrblist in csrbs:
-                all_res = set()
+                all_res = IMP.pmi.tools.OrderedSet()
                 for domain in csrblist:
                     all_res|=self._domains[nstate][domain][0]
                 all_res = list(all_res)
@@ -758,7 +775,7 @@ class BuildModel(object):
 
         else:
             if len(pdbbits)!=0:
-                num_components=number_of_residues/abs(num_components)
+                num_components=number_of_residues/abs(num_components)+1
                 outhier+=simo.add_component_density(compname,
                                          pdbbits,
                                          num_components=num_components,
@@ -768,7 +785,7 @@ class BuildModel(object):
                                          multiply_by_total_mass=True)
 
             if len(helixbits)!=0:
-                num_components=number_of_residues/abs(num_components)
+                num_components=number_of_residues/abs(num_components)+1
                 outhier+=simo.add_component_density(compname,
                                          helixbits,
                                          num_components=num_components,
@@ -782,8 +799,6 @@ class BuildModel(object):
     def autobuild(self,simo,comname,pdbname,chain,resrange,include_res0=False,
                   beadsize=5,color=0.0,offset=0):
         if pdbname is not None and pdbname is not "IDEAL_HELIX" and pdbname is not "BEADS" :
-            if resrange[-1]==-1:
-                resrange=(resrange[0],len(simo.sequence_dict[comname]))
             if include_res0:
                 outhier=simo.autobuild_model(comname,
                                  pdbname=pdbname,
@@ -1344,7 +1359,7 @@ class AnalysisReplicaExchange0(object):
         @param score_key                           The score for ranking models
         @param rmf_file_key                        Key pointing to RMF filename
         @param rmf_file_frame_key                  Key pointing to RMF frame number
-        @param state_number                        State number to analyse
+        @param state_number                        State number to analyze
         @param prefiltervalue                      Only include frames where the score key is below this value
         @param feature_keys                        Keywords for which you want to calculate average,
                                                     medians, etc,

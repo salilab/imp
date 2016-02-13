@@ -1,7 +1,6 @@
 /**
  *  \file IMP/pmi/MembraneRestraint.h
- *  \brief A restraint for ambiguous cross-linking MS data and multiple
- *         state approach.
+ *  \brief Favor configurations where target is in the membrane.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
@@ -15,8 +14,7 @@
 
 IMPPMI_BEGIN_NAMESPACE
 //! Membrane Restraint
-/** Implements a scoring function that favours configurations where target is
- *  in the membrane
+/** Favors configurations where target is in the membrane
  */
 class IMPPMIEXPORT MembraneRestraint : public isd::ISDRestraint {
   ParticleIndex z_nuisance;

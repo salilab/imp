@@ -157,7 +157,7 @@ class ConnectivityRestraint(object):
 class ExcludedVolumeSphere(object):
     """A class to create an excluded volume restraint for a set of particles at a given resolution.
     Can be initialized as a bipartite restraint between two sets of particles.
-    # Potential addional function: Variable resolution for each PMI object.  Perhaps passing selection_tuples
+    # Potential additional function: Variable resolution for each PMI object.  Perhaps passing selection_tuples
     with (PMI_object, resolution)
     """
 
@@ -834,7 +834,7 @@ class CharmmForceFieldRestraint(object):
                  enable_bonded=True,
                  zone_nonbonded=False,
                  representation=None):
-        """Setup the charmm restraint on a selection. Expecting atoms.
+        """Setup the CHARMM restraint on a selection. Expecting atoms.
         @param root             The node at which to apply the restraint
         @param ff_temp          The temperature of the force field
         @param zone_ps          Create a zone around this set of particles

@@ -6,6 +6,8 @@ import IMP.pmi.restraints.stereochemistry
 import IMP.pmi.representation
 import IMP.pmi.tools
 import IMP.pmi.output
+import IMP.pmi.macros
+import IMP.pmi.output
 
 class Tests(IMP.test.TestCase):
     def test_set_from_rmf(self):
@@ -52,8 +54,6 @@ class Tests(IMP.test.TestCase):
         os.unlink("test_set_coordinates_from_rmf.rmf3")
 
     def test_set_from_rmf_roundtrip(self):
-        import IMP.pmi.macros
-        import IMP.pmi.output
         pdbfile = self.get_input_file_name("1WCM.pdb")
         fastafile = self.get_input_file_name("1WCM.fasta.txt")
         m = IMP.Model()
@@ -68,19 +68,20 @@ class Tests(IMP.test.TestCase):
             bm=IMP.pmi.macros.BuildModel1(simo)
         bm.build_model(domains)
         simo.shuffle_configuration(100)
-        simo.optimize_floppy_bodies(100, temperature=100.0)
+        simo.optimize_floppy_bodies(10, temperature=100.0)
         o=IMP.pmi.output.Output()
         o.init_rmf("test_set_from_rmf_roundtrip_1.rmf3", [simo.prot])
         o.write_rmf("test_set_from_rmf_roundtrip_1.rmf3")
 
-
         simo.dump_particle_descriptors()
         simo.shuffle_configuration(100)
-        simo.optimize_floppy_bodies(100, temperature=100.0)
+        simo.optimize_floppy_bodies(10, temperature=100.0)
         o.write_rmf("test_set_from_rmf_roundtrip_1.rmf3")
         simo.load_particle_descriptors()
         o.write_rmf("test_set_from_rmf_roundtrip_1.rmf3")
         o.close_rmf("test_set_from_rmf_roundtrip_1.rmf3")
+
+        os.unlink("test_set_from_rmf_roundtrip_1.rmf3")
 
 if __name__ == '__main__':
     IMP.test.main()

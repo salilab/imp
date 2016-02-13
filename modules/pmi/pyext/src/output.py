@@ -44,9 +44,10 @@ class Output(object):
         self.initoutput = {}
         self.residuetypekey = IMP.StringKey("ResidueName")
         self.chainids = "ABCDEFGHIJKLMNOPQRSTUVXYWZabcdefghijklmnopqrstuvxywz0123456789"
-        self.dictchain = {}
+        self.dictchain = {}  # keys are molecule names, values are chain ids
         self.particle_infos_for_pdb = {}
         self.atomistic=atomistic
+        self.use_pmi2 = False
 
     def get_pdb_names(self):
         return list(self.dictionary_pdbs.keys())
@@ -58,13 +59,25 @@ class Output(object):
         return list(self.dictionary_stats.keys())
 
     def init_pdb(self, name, prot):
+        """Init PDB Writing.
+        @param name The PDB filename
+        @param prot The hierarchy to write to this pdb file
+        \note if the PDB name is 'System' then will use Selection to get molecules
+        """
         flpdb = open(name, 'w')
         flpdb.close()
         self.dictionary_pdbs[name] = prot
         self.dictchain[name] = {}
+        self.use_pmi2 = False
 
-        for n, i in enumerate(self.dictionary_pdbs[name].get_children()):
-            self.dictchain[name][i.get_name()] = self.chainids[n]
+        # attempt to find PMI objects. This only works if you write the root .
+        if prot.get_name()=='System':
+            self.use_pmi2 = True
+            for n,mol in enumerate(IMP.atom.get_by_type(prot,IMP.atom.MOLECULE_TYPE)):
+                self.dictchain[name][IMP.pmi.get_molecule_name_and_copy(mol)] = IMP.atom.Chain(mol).get_id()
+        else:
+            for n, i in enumerate(self.dictionary_pdbs[name].get_children()):
+                self.dictchain[name][i.get_name()] = self.chainids[n]
 
     def write_psf(self,filename,name):
         flpsf=open(filename,'w')
@@ -121,7 +134,8 @@ class Output(object):
         del particle_infos_for_pdb
         flpsf.close()
 
-    def write_pdb(self,name,appendmode=True,
+    def write_pdb(self,name,
+                  appendmode=True,
                   translate_to_geometric_center=False):
         if appendmode:
             flpdb = open(name, 'a')
@@ -135,16 +149,13 @@ class Output(object):
             geometric_center = (0, 0, 0)
 
         for n,tupl in enumerate(particle_infos_for_pdb):
-
             (xyz, atom_type, residue_type,
              chain_id, residue_index,radius) = tupl
-
             flpdb.write(IMP.atom.get_pdb_string((xyz[0] - geometric_center[0],
                                                 xyz[1] - geometric_center[1],
                                                 xyz[2] - geometric_center[2]),
-                                               n+1, atom_type, residue_type,
-                                               chain_id, residue_index,' ',1.00,radius))
-
+                                                n+1, atom_type, residue_type,
+                                                chain_id, residue_index,' ',1.00,radius))
         flpdb.write("ENDMDL\n")
         flpdb.close()
 
@@ -166,13 +177,21 @@ class Output(object):
         atom_count = 0
         atom_index = 0
 
-        for n, p in enumerate(IMP.atom.get_leaves(self.dictionary_pdbs[name])):
+        if self.use_pmi2:
+            # select highest resolution
+            ps = IMP.atom.Selection(self.dictionary_pdbs[name],resolution=0).get_selected_particles()
+        else:
+            ps = IMP.atom.get_leaves(self.dictionary_pdbs[name])
 
+        for n, p in enumerate(ps):
             # this loop gets the protein name from the
             # particle leave by descending into the hierarchy
-
-            (protname, is_a_bead) = IMP.pmi.tools.get_prot_name_from_particle(
-                p, self.dictchain[name])
+            if self.use_pmi2:
+                protname = IMP.pmi.get_molecule_name_and_copy(p)
+                is_a_bead = True
+            else:
+                (protname, is_a_bead) = IMP.pmi.tools.get_prot_name_from_particle(
+                    p, self.dictchain[name])
 
             if protname not in resindexes_dict:
                 resindexes_dict[protname] = []
@@ -257,12 +276,11 @@ class Output(object):
         for pdb in self.dictionary_pdbs.keys():
             self.write_pdb(pdb, appendmode)
 
-    def init_pdb_best_scoring(
-        self,
-        suffix,
-        prot,
-        nbestscoring,
-            replica_exchange=False):
+    def init_pdb_best_scoring(self,
+                              suffix,
+                              prot,
+                              nbestscoring,
+                              replica_exchange=False):
         # save only the nbestscoring conformations
         # create as many pdbs as needed
 
@@ -290,8 +308,13 @@ class Output(object):
             flpdb.close()
             self.dictionary_pdbs[name] = prot
             self.dictchain[name] = {}
-            for n, i in enumerate(self.dictionary_pdbs[name].get_children()):
-                self.dictchain[name][i.get_name()] = self.chainids[n]
+            if prot.get_name()=='System':
+                self.use_pmi2=True
+                for n,mol in enumerate(IMP.atom.get_by_type(prot,IMP.atom.MOLECULE_TYPE)):
+                    self.dictchain[name][IMP.pmi.get_molecule_name_and_copy(mol)] = IMP.atom.Chain(mol).get_id()
+            else:
+                for n, i in enumerate(self.dictionary_pdbs[name].get_children()):
+                    self.dictchain[name][i.get_name()] = self.chainids[n]
 
     def write_pdb_best_scoring(self, score):
         if self.nbestscoring is None:

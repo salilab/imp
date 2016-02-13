@@ -464,7 +464,7 @@ class AtomicCrossLinkMSRestraint(object):
     """Setup cross-link distance restraints at atomic level
     The "atomic" aspect is that it models the particle uncertainty with a Gaussian
     The noise in the data and the structural uncertainty of cross-linked amino-acids
-    is inferred using Bayes' theory of probabilty
+    is inferred using Bayes' theory of probability
     \note Wraps an IMP::isd::AtomicCrossLinkMSRestraint
     """
     def __init__(self,
@@ -495,7 +495,7 @@ class AtomicCrossLinkMSRestraint(object):
         @param sigma_init The initial value for all the sigmas
         @param psi_init   The initial value for all the psis
         @param one_psi    Use a single psi for all restraints (if False, creates one per XL)
-        @param filelabel automaticlly generated file containing missing/included/excluded
+        @param filelabel automatically generated file containing missing/included/excluded
                 cross-links will be labeled using this text
         """
 
@@ -796,7 +796,7 @@ class AtomicCrossLinkMSRestraint(object):
                         coarsen=False,
                         limit_to_chains=None,
                         exclude_chains=''):
-        """Create CMM files, one for each state, of all xinks.
+        """Create CMM files, one for each state, of all crosslinks.
         will draw in GREEN if non-violated in all states (or if only one state)
         will draw in PURPLE if non-violated only in a subset of states (draws nothing elsewhere)
         will draw in RED in ALL states if all violated

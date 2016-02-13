@@ -10,17 +10,16 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.display
-import IMP.pmi
 import IMP.isd
-from math import pi, sqrt
-
-from operator import itemgetter
+import IMP.pmi
 import IMP.pmi.tools
 import IMP.pmi.output
 import IMP.rmf
+import IMP.pmi.topology
 import RMF
+from math import pi, sqrt
+from operator import itemgetter
 import os
-
 
 class Representation(object):
     # Authors: Peter Cimermancic, Riccardo Pellarin, Charles Greenberg
@@ -180,17 +179,13 @@ class Representation(object):
         @param id Identifier of the sequence in the FASTA file header
                   (if not provided, use `name` instead)
         '''
-        from Bio import SeqIO
-        with open(filename) as handle:
-            record_dict = SeqIO.to_dict(SeqIO.parse(handle, "fasta"))
+        record_dict = IMP.pmi.topology.Sequences(filename)
         if id is None:
             id = name
-        try:
-            length = len(record_dict[id].seq)
-        except KeyError:
+        if id not in record_dict:
             raise KeyError("id %s not found in fasta file" % id)
-
-        self.sequence_dict[name] = str(record_dict[id].seq).replace("*", "")
+        length = len(record_dict[id])
+        self.sequence_dict[name] = str(record_dict[id])
         if offs is not None:
             offs_str="-"*offs
             self.sequence_dict[name]=offs_str+self.sequence_dict[name]
@@ -266,11 +261,9 @@ class Representation(object):
                                                    offset=offset, isnucleicacid=isnucleicacid)
             elif g[2] == "gap" and n > 0:
                 print("autobuild_model: constructing fragment %s as a bead" % (str((first, last))))
-                parts = self.hier_db.get_particles_at_closest_resolution(
-                    name,
-                    first -
-                    1,
-                    1)
+                parts = self.hier_db.get_particles_at_closest_resolution(name,
+                                                                         first + offset - 1,
+                                                                         1)
                 xyz = IMP.core.XYZ(parts[0]).get_coordinates()
                 outhiers += self.add_component_necklace(name,
                                                         first+offset, last+offset, missingbeadsize, incoord=xyz)
@@ -298,7 +291,7 @@ class Representation(object):
         Add a component that has an associated 3D structure in a PDB file.
 
         Reads the PDB, and constructs the fragments corresponding to contiguous
-        senquence stretches.
+        sequence stretches.
 
         @return a list of hierarchies.
 
@@ -626,7 +619,7 @@ class Representation(object):
         @param num_iter num GMM iterations. more will increase accuracy and fitting time
         @param multiply_by_total_mass multiply the weights of the GMM by this value (only works on creation!)
         @param transform for input file only, apply a transformation (eg for multiple copies same GMM)
-        @param intermediate_map_fn for debugging, this will write the itermediate (simulated) map
+        @param intermediate_map_fn for debugging, this will write the intermediate (simulated) map
         @param density_ps_to_copy in case you already created the appropriate GMM (eg, for beads)
         @param use_precomputed_gaussians Set this flag and pass fragments - will use roughly spherical Gaussian setup
         '''

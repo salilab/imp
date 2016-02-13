@@ -9,6 +9,7 @@ import IMP.container
 import IMP.algebra
 import IMP.rmf
 import RMF
+import os,shutil
 
 class Tests(IMP.test.TestCase):
     def test_xyz_particles(self):
@@ -53,13 +54,12 @@ class Tests(IMP.test.TestCase):
         rh = RMF.create_rmf_file("test_transform_mover_xyz.rmf3")
         IMP.rmf.add_hierarchies(rh, hs)
 
-        for n in range(10000):
+        for n in range(10):
             mc.optimize(1)
-            print(dr.unprotected_evaluate(None))
             IMP.rmf.save_frame(rh)
 
         del rh
-
+        os.unlink("test_transform_mover_xyz.rmf3")
 
 
     def test_rigid_body_particles(self):
@@ -108,13 +108,11 @@ class Tests(IMP.test.TestCase):
         rh = RMF.create_rmf_file("test_transform_mover_rigid_body.rmf3")
         IMP.rmf.add_hierarchies(rh, hs)
 
-        for n in range(10000):
+        for n in range(10):
             mc.optimize(1)
-            print(dr.unprotected_evaluate(None))
             IMP.rmf.save_frame(rh)
-
         del rh
-
+        os.unlink("test_transform_mover_rigid_body.rmf3")
 
     '''
     def test_pmi_representation_sampling_macro1(self):
@@ -246,7 +244,7 @@ class Tests(IMP.test.TestCase):
                                     replica_exchange_minimum_temperature=1.0,
                                     replica_exchange_maximum_temperature=2.5,
                                     number_of_best_scoring_models=0,
-                                    monte_carlo_steps=10,
+                                    monte_carlo_steps=1,
                                     number_of_frames=10,
                                     write_initial_rmf=True,
                                     initial_rmf_name_suffix="initial",
@@ -259,7 +257,6 @@ class Tests(IMP.test.TestCase):
                                     best_pdb_dir="pdbs/",
                                     replica_stat_file_suffix="stat_replica")
         mc2.execute_macro()
-
-
+        shutil.rmtree("test_transform_mover_output_2")
 if __name__ == '__main__':
     IMP.test.main()

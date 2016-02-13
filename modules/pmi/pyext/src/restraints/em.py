@@ -263,9 +263,12 @@ class GaussianEMRestraint(object):
                 4,
                 0.03)
         return ps
+        
+    def get_rigid_body(self):
+        if self.rb is None:
+            raise Exception("No rigid body created for GMM particles. Ensure target_is_rigid_body is set to True")
+        return self.rb
 
-    def get_hierarchy(self):
-        return self.prot
 
     def get_density_as_hierarchy(self):
         f=IMP.atom.Fragment().setup_particle(IMP.Particle(self.m))

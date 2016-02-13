@@ -8,6 +8,7 @@ import IMP.test
 import RMF
 import IMP.rmf
 import IMP.pmi.dof
+import os
 
 def get_atomic_residue_list(residues):
     r1=[]
@@ -35,9 +36,10 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
         # Add representations. For structured regions, created a few beads as well as densities
         #  For unstructured regions, create a single bead level and set those up as densities
+        gmm_prefix = ''.join(self.get_input_file_name('gcp2_gmm.txt').split('.')[:-1])
         mol.add_representation(a1,
                                resolutions=[10,100],
-                               density_prefix='gcp2_gmm',
+                               density_prefix=gmm_prefix,
                                density_residues_per_component=20,
                                density_voxel_size=3.0)
         mol.add_representation(mol.get_non_atomic_residues(),
@@ -47,7 +49,6 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         # When you call build, this actually makes the beads and fits the GMMs
         #  This returns a canonical IMP hierarchy
         hier = s.build()
-        #IMP.atom.show_molecular_hierarchy(hier)
 
         return a1, hier, mol
 
@@ -66,7 +67,6 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         self.assertEqual(len(mol.get_residues()),
                 len(mol.get_atomic_residues()) + len(mol.get_non_atomic_residues()) )
         self.assertEqual(len(mol.get_residues()), 12)  # now contains only beads that are built
-
 
     def test_num_unstruct_res(self):
         try:
@@ -274,9 +274,9 @@ class TopologyTest(IMP.test.TestCase):
         m1 = st1.create_molecule("Prot1",sequence=seqs["Prot1"])
         m2 = st1.create_molecule("Prot2",sequence=seqs["Prot2"])
         res1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='A',res_range=(1,10),offset=-54)
+                              chain_id='A',res_range=(55,63),offset=-54)
         res2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='B',res_range=(1,13),offset=-179)
+                              chain_id='B',res_range=(180,192),offset=-179)
 
         # check that the molecule residues have the right info
         rlist1 = get_atomic_residue_list(m1.residues)
@@ -300,7 +300,7 @@ class TopologyTest(IMP.test.TestCase):
         m1 = st1.create_molecule("Prot1",sequence=seqs["Prot1"])
         m2 = st1.create_molecule("Prot2",sequence=seqs["Prot2"])
         res1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='A',res_range=(1,10),offset=-54)
+                              chain_id='A',res_range=(55,63),offset=-54)
 
         m1_atomic_residues = m1.get_atomic_residues()
         m1_non_atomic_residues = m1.get_non_atomic_residues()
@@ -337,7 +337,7 @@ class TopologyTest(IMP.test.TestCase):
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),chain_id='A',
-                                    res_range=(1,10),offset=-54)
+                                    res_range=(55,63),offset=-54)
         non_atomic_res = m1.get_residues()-atomic_res
 
         m1.add_representation(atomic_res,resolutions=[0,1,10])
@@ -394,7 +394,7 @@ class TopologyTest(IMP.test.TestCase):
                                    'Protein_3':'Prot3'})
         m1 = st1.create_molecule("Prot1",sequence=seqs["Prot1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                                    chain_id='A',res_range=(1,10),offset=-54)
+                                    chain_id='A',res_range=(55,63),offset=-54)
         non_atomic_res = m1.get_residues()-atomic_res
         m1.add_representation(atomic_res,resolutions=[1,10])
         m1.add_representation(non_atomic_res,resolutions=[10])
@@ -417,7 +417,7 @@ class TopologyTest(IMP.test.TestCase):
                                    'Protein_3':'Prot3'})
         m1 = st1.create_molecule("Prot1",sequence=seqs["Prot1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                                    chain_id='A',res_range=(1,10),offset=-54)
+                                    chain_id='A',res_range=(55,63),offset=-54)
         m1.add_representation(atomic_res,resolutions=[0,10])
         hier = s.build()
         sel0 = IMP.atom.Selection(hier,resolution=0)
@@ -458,7 +458,7 @@ class TopologyTest(IMP.test.TestCase):
 
         # add structure+mixed representation to original
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                                      chain_id='A',res_range=(1,10),offset=-54)
+                                      chain_id='A',res_range=(55,63),offset=-54)
         m1.add_representation(atomic_res,resolutions=[1,10])
         m1.add_representation(m1.get_non_atomic_residues(),resolutions=[10])
         hier = s.build()
@@ -486,7 +486,7 @@ class TopologyTest(IMP.test.TestCase):
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                                      chain_id='A',res_range=(1,10),offset=-54)
+                                      chain_id='A',res_range=(55,63),offset=-54)
         non_atomic_res = m1.get_non_atomic_residues()
         m1.add_representation(atomic_res,resolutions=[base_res,bead_res])
         m1.add_representation(non_atomic_res,resolutions=[bead_res])
@@ -537,7 +537,7 @@ class TopologyTest(IMP.test.TestCase):
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                                      chain_id='A',res_range=(1,10),offset=-54)
+                                      chain_id='A',res_range=(55,63),offset=-54)
         non_atomic_res = m1.get_non_atomic_residues()
 
         fname = self.get_tmp_file_name('test_gmm')
@@ -564,7 +564,7 @@ class TopologyTest(IMP.test.TestCase):
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                                      chain_id='A',res_range=(1,10),offset=-54)
+                                      chain_id='A',res_range=(55,63),offset=-54)
         non_atomic_res = m1.get_non_atomic_residues()
 
         fname = self.get_tmp_file_name('test_gmm')
@@ -587,7 +587,7 @@ class TopologyTest(IMP.test.TestCase):
         st1 = s.create_state()
         m1 = st1.create_molecule("Prot1")
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                                      chain_id='A',res_range=(1,10),offset=-54,
+                                      chain_id='A',res_range=(55,63),offset=-54,
                                       soft_check=True)
         m1.add_representation(m1,
                               resolutions=[1])

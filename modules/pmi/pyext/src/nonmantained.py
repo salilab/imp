@@ -1189,8 +1189,8 @@ class MarginalChi3Restraint(object):
 class CrossLinkMS(object):
 
     '''
-    this class initialize a CrossLinkMS restraint and contains
-    all useful informations, such as the cross-link database, contained in self.pairs
+    this class initializes a CrossLinkMS restraint and contains
+    all useful information, such as the cross-link database, contained in self.pairs
     If restraint_file=None, it will proceed creating simulated data
     '''
 

@@ -23,7 +23,7 @@ seqs = IMP.pmi.topology.Sequences(IMP.pmi.get_example_path('data/gcp2.fasta'))
 gcp2 = st1.create_molecule("GCP2",sequence=seqs["GCP2_YEAST"],chain_id='A')
 
 # Add structure. This function returns a list of the residues that now have structure
-a1 = gcp2.add_structure('data/gcp2.pdb',
+a1 = gcp2.add_structure(IMP.pmi.get_example_path('data/gcp2.pdb'),
                         chain_id='A')
 
 # Add structured part representation and then build
@@ -36,7 +36,7 @@ charmm = IMP.pmi.restraints.stereochemistry.CharmmForceFieldRestraint(hier)
 charmm.add_to_model()
 
 # add elastic network on secondary structure units
-sses = IMP.pmi.io.parse_dssp('data/gcp2.dssp','A')
+sses = IMP.pmi.io.parse_dssp(IMP.pmi.get_example_path('data/gcp2.dssp'),'A')
 all_rs = []
 for sse in sses['helix']+sses['beta']:
     er = IMP.pmi.restraints.stereochemistry.ElasticNetworkRestraint(

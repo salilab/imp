@@ -4,8 +4,6 @@
 
 from __future__ import print_function
 from math import sqrt
-from Bio import SeqIO
-from Bio.PDB.PDBParser import PDBParser
 from scipy.spatial.distance import cdist
 import numpy as np
 import matplotlib as mpl
@@ -15,11 +13,16 @@ import matplotlib.pyplot as plt
 
 from collections import defaultdict
 import pickle
+import IMP
+import IMP.atom
+import IMP.rmf
+import RMF
 import IMP.pmi
 import IMP.pmi.io
 import IMP.pmi.io.crosslink
 import IMP.pmi.io.utilities
-
+import IMP.pmi.topology
+import IMP.pmi.analysis
 class XLTable():
     """ class to read, analyze, and plot xlink data on contact maps
     Canonical way to read the data:
@@ -44,6 +47,7 @@ class XLTable():
         self._first = True
         self.index_dict={}
         self.stored_dists={}
+        self.mdl = IMP.Model()
 
     def _colormap_distance(self, dist, threshold=35, tolerance=0):
         if dist < threshold - tolerance:
@@ -153,44 +157,39 @@ class XLTable():
         id_in_fasta_file:  id of desired sequence
         protein_name:      identifier for this sequence (use same name when handling coordinates)
         can provide the fasta name (for retrieval) and the protein name (for storage) """
-        with open(fasta_file) as handle:
-            record_dict = SeqIO.to_dict(SeqIO.parse(handle, "fasta"))
+
+        record_dict = IMP.pmi.topology.Sequences(fasta_file)
         if id_in_fasta_file is None:
             id_in_fasta_file = name
-        try:
-            length = len(record_dict[id_in_fasta_file].seq)
-        except KeyError:
-            print("add_component_sequence: id %s not found in fasta file" % id_in_fasta_file)
-            exit()
-        self.sequence_dict[protein_name] = str(record_dict[id_in_fasta_file].seq).replace("*", "")
+        if id_in_fasta_file not in record_dict:
+            raise KeyError("id %s not found in fasta file" % id_in_fasta_file)
+        length = len(record_dict[id_in_fasta_file])
+
+        self.sequence_dict[protein_name] = str(record_dict[id_in_fasta_file])
 
     def load_pdb_coordinates(self,pdbfile,chain_to_name_map):
         """ read coordinates from a pdb file. also appends to distance maps
         @param pdbfile             file for reading coords
         @param chain_to_name_map   correspond chain ID with protein name (will ONLY read these chains)
+                                   Key: PDB chain ID. Value: Protein name (set in sequence reading)
         \note This function returns an error if the sequence for each chain has NOT been read
         """
-        pdbparser = PDBParser()
-        structure = pdbparser.get_structure(pdbfile,pdbfile)
+        mh = IMP.atom.read_pdb(pdbfile,self.mdl,IMP.atom.CAlphaPDBSelector())
         total_len = sum(len(self.sequence_dict[s]) for s in self.sequence_dict)
         coords = np.ones((total_len,3)) * 1e5 #default to coords "very far away"
-        prev_stop=0
-        for n,model in enumerate(structure):
-            for cid in chain_to_name_map:
-                cname=chain_to_name_map[cid]
-                if cname not in self.sequence_dict:
-                    print("ERROR: chain",cname,'has not been read or has a naming mismatch')
-                    return
-                if self._first:
-                    self.index_dict[cname]=range(prev_stop,prev_stop+len(self.sequence_dict[cname]))
-                for residue in model[cid]:
-                    if "CA" in residue:
-                        ca=residue["CA"]
-                        rnum=residue.id[1]
-                        coords[rnum+prev_stop-1,:]=ca.get_coord()
-                    #else:
-                    #    print residue
-                prev_stop+=len(self.sequence_dict[cname])
+        prev_stop = 0
+        for cid in chain_to_name_map:
+            cname = chain_to_name_map[cid]
+            if cname not in self.sequence_dict:
+                print("ERROR: chain",cname,'has not been read or has a naming mismatch')
+                return
+            if self._first:
+                self.index_dict[cname]=range(prev_stop,prev_stop+len(self.sequence_dict[cname]))
+            sel = IMP.atom.Selection(mh,chain_id=cid)
+            for p in sel.get_selected_particles():
+                rnum = IMP.atom.get_residue(IMP.atom.Atom(p)).get_index()
+                coords[rnum+prev_stop-1,:] = list(IMP.core.XYZ(p).get_coordinates())
+            prev_stop+=len(self.sequence_dict[cname])
         dists = cdist(coords, coords)
         binary_dists = np.where((dists <= self.contact_threshold) & (dists >= 1.0), 1.0, 0.0)
         if self._first:
@@ -202,25 +201,20 @@ class XLTable():
             self.dist_maps.append(dists)
             self.av_dist_map += dists
             self.contact_freqs += binary_dists
+        IMP.atom.destroy(mh)
+        del mh
         self.num_pdbs+=1
 
     def load_rmf_coordinates(self,rmf_name,rmf_frame_index, chain_names, nomap=False):
         """ read coordinates from a rmf file. It needs IMP to run.
         rmf has been created using IMP.pmi conventions. It gets the
-        highest resolution atomatically. Also appends to distance maps
+        highest resolution automatically. Also appends to distance maps
         @param rmf_name             file for reading coords
         @param rmf_frame_index      frame index from the rmf
         @param nomap                Default False, if True it will not calculate the contact map
         """
-        import IMP
-        import IMP.atom
-        import IMP.pmi
-        import IMP.pmi.tools
-
-        self.imp_model=IMP.Model()
         (particles_resolution_one, prots)=self._get_rmf_structure(rmf_name,rmf_frame_index)
 
-        pdbparser = PDBParser()
         total_len = sum(len(self.sequence_dict[s]) for s in self.sequence_dict)
         print(self.sequence_dict,total_len)
 
@@ -267,13 +261,8 @@ class XLTable():
 
 
     def _get_rmf_structure(self,rmf_name,rmf_frame_index):
-        import IMP.pmi
-        import IMP.pmi.analysis
-        import IMP.rmf
-        import RMF
-
         rh= RMF.open_rmf_file_read_only(rmf_name)
-        prots=IMP.rmf.create_hierarchies(rh, self.imp_model)
+        prots=IMP.rmf.create_hierarchies(rh, self.mdl)
         IMP.rmf.load_frame(rh, rmf_frame_index)
         print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
         del rh
@@ -348,7 +337,6 @@ class XLTable():
 
     def setup_contact_map(self):
         """ loop through each distance map and get frequency of contacts
-        upperbound:   maximum distance to be marked
         """
         if self.num_pdbs!=0 and self.num_rmfs==0:
             self.av_dist_map = 1.0/self.num_pdbs * self.av_dist_map
@@ -603,8 +591,6 @@ class XLTable():
             a.writerows(data)
 
     def save_rmf_snapshot(self,filename):
-        import IMP.rmf
-        import RMF
 
         sorted_ids=None
         sorted_group_ids=sorted(self.cross_link_db.data_base.keys())
