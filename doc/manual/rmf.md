@@ -58,4 +58,4 @@ For each piece of data stored in the RMF, a decision has to be made whether to s
 - not something that other programs expect for things like residue index
 In particular, it might make sense for radii to become automatic.
 
-One must be very careful not to store any RMF::NodeHandle, RMF::FileHandle objects in the adpators as these will keep the RMF file open indefinitely (since the handles will keep the file alive and the file keeps the adaptor alive and the adaptor keeps the handle alive).
+One must be very careful not to store any RMF::NodeHandle, RMF::FileHandle objects in the adaptors as these will keep the RMF file open indefinitely (since the handles will keep the file alive and the file keeps the adaptor alive and the adaptor keeps the handle alive).
