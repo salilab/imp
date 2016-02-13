@@ -91,7 +91,7 @@ These will provide documentation, and runtime and compile time warning messages 
 Python
 ------
 
-For Python code, we provide similar functions and decorators to mark methods,
+For Python code, we provide similar functions and decorators to mark modules,
 classes, methods, or functions as deprecated:
 
     IMP.deprecated_module("2.1", __name__, "Use my_new_module instead")
