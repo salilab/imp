@@ -2,7 +2,7 @@
 Protocols for sampling structures and analyzing them.
 """
 
-from __future__ import print_function
+from __future__ import print_function, division
 import IMP
 import IMP.pmi.representation
 import IMP.pmi.tools
@@ -465,10 +465,10 @@ class BuildSystem(object):
             mol = state.create_molecule(molname,seq[mlist[0].fasta_id],mlist[0].chain)
             for domain in mlist:
                 if domain.residue_range is None:
-                   domain_res = mol.get_residues()
+                    domain_res = mol.get_residues()
                 else:
-                   domain_res = mol.residue_range(domain.residue_range[0]-1+domain.pdb_offset,
-                                                  domain.residue_range[1]-1+domain.pdb_offset)
+                    domain_res = mol.residue_range(domain.residue_range[0]-1+domain.pdb_offset,
+                                                   domain.residue_range[1]-1+domain.pdb_offset)
 
                 if domain.pdb_file=="BEADS":
                     mol.add_representation(domain_res,
@@ -775,7 +775,7 @@ class BuildModel(object):
 
         else:
             if len(pdbbits)!=0:
-                num_components=number_of_residues/abs(num_components)+1
+                num_components=number_of_residues//abs(num_components)+1
                 outhier+=simo.add_component_density(compname,
                                          pdbbits,
                                          num_components=num_components,
@@ -785,7 +785,7 @@ class BuildModel(object):
                                          multiply_by_total_mass=True)
 
             if len(helixbits)!=0:
-                num_components=number_of_residues/abs(num_components)+1
+                num_components=number_of_residues//abs(num_components)+1
                 outhier+=simo.add_component_density(compname,
                                          helixbits,
                                          num_components=num_components,

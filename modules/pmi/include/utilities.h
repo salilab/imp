@@ -15,6 +15,7 @@
 #include <IMP/atom/Molecule.h>
 #include <IMP/atom/Copy.h>
 #include <IMP/Vector.h>
+#include <boost/lexical_cast.hpp>
 
 IMPPMI_BEGIN_NAMESPACE
 
@@ -82,7 +83,8 @@ inline IMPPMIEXPORT atom::Hierarchy get_parent_representation(atom::Hierarchy h)
 inline IMPPMIEXPORT std::string get_molecule_name_and_copy(atom::Hierarchy h){
   do {
     if (atom::Molecule::get_is_setup(h) && atom::Copy::get_is_setup(h)) {
-      return h->get_name()+"."+std::to_string(atom::Copy(h).get_copy_index());
+      return h->get_name() + "."
+             + boost::lexical_cast<std::string>(atom::Copy(h).get_copy_index());
     }
   } while ((h = get_parent_representation(h)));
   IMP_THROW("Hierarchy " << h << " has no molecule name or copy num.", ValueException);
