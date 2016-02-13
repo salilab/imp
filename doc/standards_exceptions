@@ -1,0 +1,2 @@
+# Spelling exceptions for the documentation
+doc_spelling_exceptions=['subdirectories', 'cmake']
