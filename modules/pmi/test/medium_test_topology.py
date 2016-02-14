@@ -36,7 +36,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
         # Add representations. For structured regions, created a few beads as well as densities
         #  For unstructured regions, create a single bead level and set those up as densities
-        gmm_prefix = ''.join(self.get_input_file_name('gcp2_gmm.txt').split('.')[:-1])
+        gmm_prefix = self.get_input_file_name('gcp2_gmm.txt').strip('.txt')
         mol.add_representation(a1,
                                resolutions=[10,100],
                                density_prefix=gmm_prefix,
