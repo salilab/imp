@@ -20,7 +20,7 @@
 IMPPMI_BEGIN_NAMESPACE
 
 //! Create an elastic network restraint set
-IMPPMIEXPORT RestraintSet * create_elastic_network(const Particles &ps,
+RestraintSet * create_elastic_network(const Particles &ps,
                                       Float dist_cutoff,
                                       Float strength){
   IMP_NEW(RestraintSet,rs,(ps[0]->get_model(),"ElasticNetwork"));
@@ -41,8 +41,8 @@ IMPPMIEXPORT RestraintSet * create_elastic_network(const Particles &ps,
   return rs.release();
 }
 
-inline IMPPMIEXPORT Float get_bipartite_minimum_sphere_distance(const IMP::core::XYZRs& m1,
-                                                    const IMP::core::XYZRs& m2) {
+inline Float get_bipartite_minimum_sphere_distance(const IMP::core::XYZRs& m1,
+                                                   const IMP::core::XYZRs& m2) {
 
   double mindist = -1.0 ;
 
@@ -58,7 +58,7 @@ inline IMPPMIEXPORT Float get_bipartite_minimum_sphere_distance(const IMP::core:
 }
 
 
-inline IMPPMIEXPORT Floats get_list_of_bipartite_minimum_sphere_distance(const ParticlesTemps & pss) {
+inline Floats get_list_of_bipartite_minimum_sphere_distance(const ParticlesTemps & pss) {
   Floats mindistances;
   for (unsigned int k1 = 0; k1 < pss.size()-1; ++k1) {
     for (unsigned int k2 = k1+1; k2 < pss.size(); ++k2) {
@@ -72,7 +72,7 @@ inline IMPPMIEXPORT Floats get_list_of_bipartite_minimum_sphere_distance(const P
 }
 
 //! Get the parent, or if non-tree Representation get the fake parent
-inline IMPPMIEXPORT atom::Hierarchy get_parent_representation(atom::Hierarchy h){
+inline atom::Hierarchy get_parent_representation(atom::Hierarchy h){
   ParticleIndex pidx = h.get_model()->get_attribute(
        atom::Hierarchy::get_traits().get_parent_key(),h.get_particle_index());
   return atom::Hierarchy(h.get_model(),pidx);
@@ -80,7 +80,7 @@ inline IMPPMIEXPORT atom::Hierarchy get_parent_representation(atom::Hierarchy h)
 
 
 //! Walk up a PMI2 hierarchy/representations and get the "molname.copynum"
-inline IMPPMIEXPORT std::string get_molecule_name_and_copy(atom::Hierarchy h){
+inline std::string get_molecule_name_and_copy(atom::Hierarchy h){
   do {
     if (atom::Molecule::get_is_setup(h) && atom::Copy::get_is_setup(h)) {
       return h->get_name() + "."
