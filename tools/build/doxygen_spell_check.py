@@ -22,7 +22,7 @@ try:
 except ImportError:
     print("Cannot check spelling - enchant library not available",
           file=sys.stderr)
-    sys.exit(1)
+    sys.exit(0)
 
 global_spelling_exceptions = [
    'pdb', 'centroid', 'radians', 'dihedral', 'covariance', 'steric',
