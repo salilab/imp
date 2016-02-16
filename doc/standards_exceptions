@@ -1,2 +1,4 @@
 # Spelling exceptions for the documentation
-doc_spelling_exceptions=['subdirectories', 'cmake']
+doc_spelling_exceptions=['subdirectories', 'cmake', 'subdirectory',
+     'UCSF', 'SAXS', 'FoXS', 'macromolecular', 'eukaryotic', 'optimizers',
+     'subcomplex', 'chaperone', 'subunit', 'pragma', 'spectrometry']
