@@ -317,7 +317,7 @@ may require the protein to be treated flexibly, so that it can deform to more
 closely fit in the density. Such flexible fitting is not performed by MultiFit,
 but the MultiFit-generated models can be passed to a flexible fitting program
 for further refinement. Two such programs are
-\external{http://salilab.org/Flex-EM/,Flex-EM} and
+\external{https://salilab.org/Flex-EM/,Flex-EM} and
 \external{http://www.ks.uiuc.edu/Research/mdff/,MDFF}.
 
 */

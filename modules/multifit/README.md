@@ -11,7 +11,7 @@ inference optimizer DOMINO that efficiently finds the global minimum
 in a discrete sampling space.
 
 For more information please see the
-[MultiFit](http://salilab.org/multifit/) website.
+[MultiFit](https://salilab.org/multifit/) website.
 
 See the IMP::cnmultifit module for a similar protocol for handling symmetric
 complexes.
@@ -26,7 +26,7 @@ Generally, this module is not used directly; instead, the
 Web server
 ==========
 
-A [webserver](http://salilab.org/multifit/) that uses both this module
+A [webserver](https://salilab.org/multifit/) that uses both this module
 and the IMP::cnmultifit module is also available.
 
 complex_to_anchor_graph {#complex_anchor_bin}

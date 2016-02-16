@@ -24,7 +24,7 @@ class BinormalTerm;
     between the two quads of Particles passed to the restraint, by
    implementing
     equation A.77 in the
-    \external{https://http://salilab.org/modeller/9.16/manual/node491.html,
+    \external{https://salilab.org/modeller/9.16/manual/node491.html,
    Modeller manual}.
     The two angles are typically the phi and psi dihedrals of a residue.
  */

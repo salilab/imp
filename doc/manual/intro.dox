@@ -61,8 +61,8 @@ Hybrid structures based on our integrative approach:
  - The eukaryotic chaperonin TRiC/CCT
  - The actin/scruin complex
  - Ryr1 voltage gated channel
- - The baker’s yeast [nuclear pore complex](http://salilab.org/npc) (NPC)
- - The [Nup84 complex](http://salilab.org/nup84/)
+ - The baker’s yeast [nuclear pore complex](https://salilab.org/npc) (NPC)
+ - The [Nup84 complex](https://salilab.org/nup84/)
  - Transport through the NPC
  - Microtubule nucleation
  - [The 26S proteasome](http://www.ncbi.nlm.nih.gov/pubmed/19233204)
@@ -85,7 +85,7 @@ interest.
 A suitable representation for the system is then chosen and
 the available information is translated to a set of spatial restraints
 on the components of the system. For example, in the case of characterizing
-the molecular architecture of the <a href="http://salilab.org/npc/">nuclear
+the molecular architecture of the <a href="https://salilab.org/npc/">nuclear
 pore complex</a> (NPC), atomic
 structures of the protein subunits were not available, but the approximate
 size and shape of each protein was known, so each protein was represented

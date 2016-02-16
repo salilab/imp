@@ -110,7 +110,7 @@ each pair of PDB file names in the input file filenames.txt.")
     oriented_potentials = true;
     if (potentials_file.length() == 0) {
       std::cerr << "Please provide a potential file for oriented_potentials "
-                << "option.See http://salilab.org/SOAP/ for details."
+                << "option.See https://salilab.org/SOAP/ for details."
                 << std::endl;
     }
   }

@@ -198,8 +198,7 @@ TAB_SIZE               = 2
 # You can put \n's in the value part of an alias to insert newlines.
 
 ALIASES                = "command{1}=\code \1 \endcode" \
-                         "salilab{2}=<a href=\"http://salilab.org/\1\">\2</a>" \
-                         "salilabssl{2}=<a href=\"https://salilab.org/\1\">\2</a>" \
+                         "salilab{2}=<a href=\"https://salilab.org/\1\">\2</a>" \
                          "external{2}=<a href=\"\1\">\2</a>" \
                          "internal{2}=<a href=\"\1\">\2</a>" \
                          "imp=\p %IMP" \

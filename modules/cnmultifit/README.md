@@ -16,7 +16,7 @@ Generally, this module is not used directly; instead, the
 Web server
 ==========
 
-A [webserver](http://salilab.org/multifit/) that uses both this module
+A [webserver](https://salilab.org/multifit/) that uses both this module
 and the IMP::multifit module is also available.
 
 # Info

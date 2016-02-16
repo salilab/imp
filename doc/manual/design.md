@@ -16,7 +16,7 @@ The next parts of the manual will cover the use of the various parts of
 
  - [Chimera tools/web services](@ref web_services):
    we provide a number of web services that
-   use %IMP at [http://salilab.org/](http://salilab.org). Additionally,
+   use %IMP at [https://salilab.org/](https://salilab.org). Additionally,
    the [UCSF Chimera](http://www.cgl.ucsf.edu/chimera/) software includes
    several tools that use %IMP. These are the simplest to use because they
    do not require an %IMP installation.

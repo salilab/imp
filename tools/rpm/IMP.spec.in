@@ -53,7 +53,7 @@ BuildRequires: gsl-devel, fftw-devel
 BuildRequires: zlib-devel, perl
 BuildRequires: ann-devel
 # Needed to build the cnmultifit module; obtain
-# from http://salilab.org/imp/libTAU.html
+# from https://salilab.org/imp/libTAU.html
 # (Or, if you don't need cnmultifit, you can comment out this line)
 BuildRequires: libTAU-devel
 
