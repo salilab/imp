@@ -149,7 +149,7 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/libfftw3.3.dylib \
                 /usr/local/lib/libgsl.0.dylib \
                 /usr/local/lib/libgslcblas.0.dylib \
-                /usr/local/lib/libhdf5.9.dylib \
+                /usr/local/lib/libhdf5.10.dylib \
                 /usr/local/lib/libopencv_highgui.2.4.2.dylib \
                 /usr/local/lib/libopencv_highgui.2.4.dylib \
                 /usr/local/lib/libopencv_core.2.4.2.dylib \
