@@ -289,7 +289,7 @@ def fit_gmm_to_points(points,
     model=gmm.fit(points)
     score=gmm.score(points)
     akaikescore=model.aic(points)
-    print('>>> GMM score',gmm.score(points))
+    #print('>>> GMM score',gmm.score(points))
 
     ### convert format to core::Gaussian
     for ng in range(n_components):
@@ -342,7 +342,7 @@ def fit_dirichlet_gmm_to_points(points,
 
     gmm.fit(points)
 
-    print('>>> GMM score',gmm.score(points))
+    #print('>>> GMM score',gmm.score(points))
 
     #print gmm.covars_
     #print gmm.weights_
