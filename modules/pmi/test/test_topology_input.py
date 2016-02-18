@@ -27,16 +27,16 @@ class TopologyReaderTests(IMP.test.TestCase):
 
     def test_change_dir(self):
         """Test changing default pdb directory"""
-        newdir="../../"
+        newdir = os.path.join(os.pardir,os.pardir)
         topology_file = self.get_input_file_name("topology.txt")
-        inputdir=os.path.dirname(topology_file)
+        inputdir = os.path.dirname(topology_file)
         t = IMP.pmi.topology.TopologyReader(topology_file)
         t.set_dir("pdb_dir", newdir)
         self.assertEqual(os.path.abspath(t.pdb_dir),
                          os.path.abspath(os.path.join(inputdir,newdir)))
         self.assertEqual(t.component_list[0].pdb_file,
-                         os.path.dirname(topology_file) \
-                         + '/../../prot.pdb')
+                         os.path.join(os.path.dirname(topology_file),
+                                      newdir,'prot.pdb'))
 
     def test_get_components(self):
         topology_file=self.get_input_file_name("topology.txt")
@@ -110,7 +110,7 @@ class TopologyReaderTests(IMP.test.TestCase):
 
         topology_file=self.get_input_file_name("topology.txt")
         t=IMP.pmi.topology.TopologyReader(topology_file)
-        t.set_dir("gmm_dir","../")
+        t.set_dir("gmm_dir",os.pardir)
 
         with IMP.allow_deprecated():
             bm = IMP.pmi.macros.BuildModel(mdl,
@@ -142,7 +142,7 @@ class TopologyReaderTests(IMP.test.TestCase):
         p2dict=children_as_dict(cdict["Prot2"])
         self.assertEqual(len(IMP.core.get_leaves(p2dict["Prot2_Res:1"])),13)
         self.assertEqual(len(IMP.core.get_leaves(p2dict["Prot2_Res:10"])),2)
-        for output in ['../Prot1.mrc', '../Prot1.txt']:
+        for output in [os.path.join(os.pardir,'Prot1.mrc'),os.path.join(os.pardir,'Prot1.txt')]:
             os.unlink(self.get_input_file_name(output))
 
     def test_beads_only(self):

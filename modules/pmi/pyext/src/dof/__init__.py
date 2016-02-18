@@ -119,7 +119,8 @@ class DegreesOfFreedom(object):
                                 max_rot=0.1,
                                 chain_min_length=None,
                                 chain_max_length=None,
-                                resolution='all'):
+                                resolution='all',
+                                name=None):
         """Create SUPER rigid body mover from one or more hierarchies. Can also create chain of SRBs.
         @param srb_parts Can be one of the following inputs:
                IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.
@@ -130,6 +131,7 @@ class DegreesOfFreedom(object):
                This parameter is the minimum chain length.
         @param chain_max_length Maximum chain length
         @param resolution Only used if you pass PMI objects. Probably you want 'all'.
+        @param name The name of the SRB (hard to assign a good one automatically)
         \note If you set the chain parameters, will NOT create an SRB from all of them together,
         but rather in groups made from the outermost list.
         """
@@ -158,6 +160,12 @@ class DegreesOfFreedom(object):
         else:
             raise Exception("DegreesOfFreedom: SetupSuperRigidBody: if you want chain, specify min AND max")
         self.movers += srb_movers
+        if name is not None:
+            if len(srb_movers)>1:
+                for n,mv in enumerate(srb_movers):
+                    mv.set_name(name+'_'+str(n))
+            else:
+                srb_movers[0].set_name(name)
         return srb_movers
 
     def _setup_srb(self,hiers,max_trans,max_rot):
@@ -198,7 +206,7 @@ class DegreesOfFreedom(object):
             fb_movers.append(IMP.core.BallMover([p],max_trans))
         self.movers += fb_movers
         return fb_movers
-        
+
     def add_rigid_body(self, rb, max_trans=4.0, max_rot=0.4, optimize=True):
         """ Adds a rigid body it to the rigid_body and movers lists
         Initially meant as a way to pass GMM rigid bodies from density restraints,
@@ -214,15 +222,19 @@ class DegreesOfFreedom(object):
 
     def create_nuisance_mover(self,
                               nuisance_p,
-                              step_size):
+                              step_size,
+                              name=None):
         """Create MC normal mover for nuisance particles.
         We will add an easier interface to add all of them from a PMI restraint
         @param nuisance_p The Nuisance particle (an ISD::Scale)
         @param step_size The maximum step size for Monte Carlo
+        @param name The name of the mover, useful for better output reading.
         """
         mv = IMP.core.NormalMover([nuisance_p],
                                   IMP.FloatKeys([IMP.FloatKey("nuisance")]),
                                   step_size)
+        if name is not None:
+            mv.set_name(name)
         self.nuisances.append(nuisance_p)
         self.movers.append(mv)
         return [mv]
