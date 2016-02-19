@@ -112,6 +112,20 @@ class RepresentationTest(IMP.test.TestCase):
         self.assertEqual(rep.get_representation(0,IMP.atom.DENSITIES),
                          g2.get_particle())
 
+    def test_no_density(self):
+        """Test you get empty set if you request a non-existing representation type"""
+        mdl = IMP.Model()
+        center = IMP.algebra.Vector3D(1,1,1)
+        rad = 1
+        p1 = IMP.Particle(mdl)
+        x1 = IMP.core.XYZR.setup_particle(p1)
+        a1 = IMP.atom.Atom.setup_particle(p1,IMP.atom.AtomType("CA"))
+        res = IMP.atom.Residue.setup_particle(IMP.Particle(mdl),IMP.atom.ResidueType("ALA"))
+        res.add_child(a1)
+
+        # should get empty set if no densities
+        sel0 = IMP.atom.Selection(res,representation_type=IMP.atom.DENSITIES).get_selected_particles()
+        self.assertEqual(len(sel0),0)
 
     def test_self_density(self):
         """Test representing particles with themselves the Gaussians"""
@@ -212,5 +226,6 @@ class RepresentationTest(IMP.test.TestCase):
         res20.set_name("Res:20")
         rep.add_representation(res20,IMP.atom.BALLS,20)
         IMP.atom.show_with_representations(rep)
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -522,6 +522,7 @@ ParticleIndexes expand_search(Model *m,
       if (tmp) ret.push_back(tmp);
     }
   }
+  else if (representation_type!=BALLS){}
   else {
     ret.push_back(pi);
   }
