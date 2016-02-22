@@ -80,7 +80,7 @@ class TempDir(object):
     """Simple RAII-style class to make a temporary directory. When the object
        is created, the temporary directory is created. When the object goes
        out of scope, the temporary directory is deleted."""
-    def __init__(self, dir):
+    def __init__(self, dir=None):
         self.tmpdir = tempfile.mkdtemp(dir=dir)
     def __del__(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
