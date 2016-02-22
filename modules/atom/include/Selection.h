@@ -88,7 +88,8 @@ class IMPATOMEXPORT Selection :
                     ParticleIndexes, indexes, );
   SearchResult search(Model *m, ParticleIndex pi,
                       boost::dynamic_bitset<> parent,
-                      bool include_children) const;
+                      bool include_children,
+                      bool found_rep_node=false) const;
   void set_hierarchies(Model *m, const ParticleIndexes &pis);
   void add_predicate(internal::SelectionPredicate *p);
   void init_predicate();

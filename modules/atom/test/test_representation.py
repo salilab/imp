@@ -118,10 +118,19 @@ class RepresentationTest(IMP.test.TestCase):
         center = IMP.algebra.Vector3D(1,1,1)
         rad = 1
         p1 = IMP.Particle(mdl)
+        p1.set_name("ATOM")
         x1 = IMP.core.XYZR.setup_particle(p1)
         a1 = IMP.atom.Atom.setup_particle(p1,IMP.atom.AtomType("CA"))
-        res = IMP.atom.Residue.setup_particle(IMP.Particle(mdl),IMP.atom.ResidueType("ALA"))
+
+        p2 = IMP.Particle(mdl)
+        x2 = IMP.core.XYZR.setup_particle(p2)
+        a2 = IMP.atom.Atom.setup_particle(p2,IMP.atom.AtomType("CA"))
+
+        p2 = IMP.Particle(mdl)
+        p2.set_name("RES")
+        res = IMP.atom.Residue.setup_particle(p2,IMP.atom.ResidueType("ALA"))
         res.add_child(a1)
+        res.add_child(a2)
 
         # should get empty set if no densities
         sel0 = IMP.atom.Selection(res,representation_type=IMP.atom.DENSITIES).get_selected_particles()
