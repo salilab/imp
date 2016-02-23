@@ -63,7 +63,6 @@ class Tests(IMP.test.TestCase):
     def test_incremental_score(self):
         """Test ISD restraints with incremental MC scoring score is indentical"""
 
-        import time
         num_balls = 2
         num_mc_steps = 10
         m = IMP.Model()
@@ -124,33 +123,12 @@ class Tests(IMP.test.TestCase):
         mc.add_mover(sm)
 
         self.assertAlmostEqual(isf.evaluate(False),sf.evaluate(False))
-        starttime1 = time.clock()
         mc.optimize(num_mc_steps*len(ps))
-        endtime1 = time.clock()
         self.assertAlmostEqual(isf.evaluate(False),sf.evaluate(False))
-
-        # create a new montecarlo simulation with the standard scoring function
-        mc = IMP.core.MonteCarlo(m)
-        sf = IMP.core.RestraintsScoringFunction(restraints)
-        mc.set_scoring_function(sf)
-
-        mvs = [IMP.core.BallMover([p], 5) for p in ps]
-        sm = IMP.core.SerialMover(mvs)
-        mc.add_mover(sm)
-
-        starttime2 = time.clock()
-        mc.optimize(num_mc_steps*len(ps))
-        endtime2 = time.clock()
-
-        # check that the time spent using the normal scoring function is larger
-        # than the time spent using the incremental one
-        self.assertLess(endtime1-starttime1, endtime2-starttime2)
-
 
     def test_incremental_score_optimization(self):
         """Test ISD restraints with incremental MC score decreases"""
 
-        import time
         num_mc_steps = 10
         m = IMP.Model()
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0, 0, 0),
@@ -219,7 +197,6 @@ class Tests(IMP.test.TestCase):
     def test_incremental_score_rigid_bodies(self):
         """Test ISD restraints with incremental MC score decreases"""
 
-        import time
         import random
 
         num_mc_steps = 10
