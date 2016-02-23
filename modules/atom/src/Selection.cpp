@@ -540,7 +540,8 @@ ExpandResults expand_children_search(Model *m,
   Hierarchy h(m, pi);
   ExpandResults ret;
   IMP_FOREACH(Hierarchy c, h.get_children()) {
-    ret.push_back(expand_search(m, c, resolution, representation_type));
+    ExpandResult r = expand_search(m, c, resolution, representation_type);
+    if (r.get_indexes().size()>0) ret.push_back(r);
   }
   return ret;
 }

@@ -115,25 +115,35 @@ class RepresentationTest(IMP.test.TestCase):
     def test_no_density(self):
         """Test you get empty set if you request a non-existing representation type"""
         mdl = IMP.Model()
-        center = IMP.algebra.Vector3D(1,1,1)
-        rad = 1
+        root = IMP.atom.Hierarchy.setup_particle(IMP.Particle(mdl))
+
+        # this subtree - no representation
+        res = IMP.atom.Residue.setup_particle(IMP.Particle(mdl),IMP.atom.ResidueType("ALA"),1)
         p1 = IMP.Particle(mdl)
-        p1.set_name("ATOM")
         x1 = IMP.core.XYZR.setup_particle(p1)
         a1 = IMP.atom.Atom.setup_particle(p1,IMP.atom.AtomType("CA"))
+        res.add_child(a1)
+        root.add_child(res)
 
+        # this subtree - representation but no density
+        segp = IMP.Particle(mdl)
+        segf = IMP.atom.Fragment.setup_particle(segp,[2])
+        segr = IMP.atom.Representation.setup_particle(segp,0)
+
+        this_resolution = IMP.atom.Fragment.setup_particle(IMP.Particle(mdl),[2])
         p2 = IMP.Particle(mdl)
         x2 = IMP.core.XYZR.setup_particle(p2)
         a2 = IMP.atom.Atom.setup_particle(p2,IMP.atom.AtomType("CA"))
+        res2 = IMP.atom.Residue.setup_particle(IMP.Particle(mdl),IMP.atom.ResidueType("ALA"),2)
+        res2.add_child(a2)
+        this_resolution.add_child(res2)
 
-        p2 = IMP.Particle(mdl)
-        p2.set_name("RES")
-        res = IMP.atom.Residue.setup_particle(p2,IMP.atom.ResidueType("ALA"))
-        res.add_child(a1)
-        res.add_child(a2)
+        segr.add_child(this_resolution)
+        root.add_child(segr)
 
         # should get empty set if no densities
-        sel0 = IMP.atom.Selection(res,representation_type=IMP.atom.DENSITIES).get_selected_particles()
+        sel0 = IMP.atom.Selection(root,representation_type=IMP.atom.DENSITIES).get_selected_particles()
+
         self.assertEqual(len(sel0),0)
 
     def test_self_density(self):
