@@ -26,56 +26,56 @@ def decorate_gmm_from_text(in_fn,
                            radius_scale=1.0,
                            mass_scale=1.0):
     """ read the output from write_gmm_to_text, decorate as Gaussian and Mass"""
-    inf=open(in_fn,'r')
     ncomp=0
-    for l in inf:
-        if l[0]!='#':
-            if ncomp>len(ps)-1:
-                ps.append(IMP.Particle(mdl))
-            p = ps[ncomp]
-            fields=l.split('|')
-            weight=float(fields[2])
-            center=list(map(float,fields[3].split()))
-            covar=np.array(list(map(float,fields[4].split()))).reshape((3,3))
-            #print('on particle',ncomp)
-            shape=IMP.algebra.get_gaussian_from_covariance(covar.tolist(),
-                                                           IMP.algebra.Vector3D(center))
-            if not IMP.core.Gaussian.get_is_setup(p):
-                g = IMP.core.Gaussian.setup_particle(ps[ncomp],shape)
-            else:
-                g = IMP.core.Gaussian(ps[ncomp])
-                g.set_gaussian(shape)
-            if not IMP.atom.Mass.get_is_setup(p):
-                IMP.atom.Mass.setup_particle(p,weight*mass_scale)
-            else:
-                IMP.atom.Mass(p).set_mass(weight*mass_scale)
-            rmax = sqrt(max(g.get_variances()))*radius_scale
-            if not IMP.core.XYZR.get_is_setup(ps[ncomp]):
-                IMP.core.XYZR.setup_particle(ps[ncomp],rmax)
-            else:
-                IMP.core.XYZR(ps[ncomp]).set_radius(rmax)
-            if not transform is None:
-                IMP.core.transform(IMP.core.RigidBody(ps[ncomp]),transform)
-            ncomp+=1
+    with open(in_fn,'r') as inf:
+        for l in inf:
+            if l[0]!='#':
+                if ncomp>len(ps)-1:
+                    ps.append(IMP.Particle(mdl))
+                p = ps[ncomp]
+                fields=l.split('|')
+                weight=float(fields[2])
+                center=list(map(float,fields[3].split()))
+                covar=np.array(list(map(float,
+                                        fields[4].split()))).reshape((3,3))
+                #print('on particle',ncomp)
+                shape=IMP.algebra.get_gaussian_from_covariance(covar.tolist(),
+                                                 IMP.algebra.Vector3D(center))
+                if not IMP.core.Gaussian.get_is_setup(p):
+                    g = IMP.core.Gaussian.setup_particle(ps[ncomp],shape)
+                else:
+                    g = IMP.core.Gaussian(ps[ncomp])
+                    g.set_gaussian(shape)
+                if not IMP.atom.Mass.get_is_setup(p):
+                    IMP.atom.Mass.setup_particle(p,weight*mass_scale)
+                else:
+                    IMP.atom.Mass(p).set_mass(weight*mass_scale)
+                rmax = sqrt(max(g.get_variances()))*radius_scale
+                if not IMP.core.XYZR.get_is_setup(ps[ncomp]):
+                    IMP.core.XYZR.setup_particle(ps[ncomp],rmax)
+                else:
+                    IMP.core.XYZR(ps[ncomp]).set_radius(rmax)
+                if not transform is None:
+                    IMP.core.transform(IMP.core.RigidBody(ps[ncomp]),transform)
+                ncomp+=1
 
 def write_gmm_to_text(ps,out_fn):
     """write a list of gaussians to text. must be decorated as Gaussian and Mass"""
     print('will write GMM text to',out_fn)
-    outf=open(out_fn,'w')
-    outf.write('#|num|weight|mean|covariance matrix|\n')
-    for ng,g in enumerate(ps):
-        shape=IMP.core.Gaussian(g).get_gaussian()
-        weight=IMP.atom.Mass(g).get_mass()
-        covar=[c for row in IMP.algebra.get_covariance(shape) for c in row]
-        mean=list(shape.get_center())
-        fm=[ng,weight]+mean+covar
-        try:
-            #python 2.7 format
-            outf.write('|{}|{}|{} {} {}|{} {} {} {} {} {} {} {} {}|\n'.format(*fm))
-        except ValueError:
-            #python 2.6 and below
-            outf.write('|{0}|{1}|{2} {3} {4}|{5} {6} {7} {8} {9} {10} {11} {12} {13}|\n'.format(*fm))
-    outf.close()
+    with open(out_fn,'w') as outf:
+        outf.write('#|num|weight|mean|covariance matrix|\n')
+        for ng,g in enumerate(ps):
+            shape=IMP.core.Gaussian(g).get_gaussian()
+            weight=IMP.atom.Mass(g).get_mass()
+            covar=[c for row in IMP.algebra.get_covariance(shape) for c in row]
+            mean=list(shape.get_center())
+            fm=[ng,weight]+mean+covar
+            try:
+                #python 2.7 format
+                outf.write('|{}|{}|{} {} {}|{} {} {} {} {} {} {} {} {}|\n'.format(*fm))
+            except ValueError:
+                #python 2.6 and below
+                outf.write('|{0}|{1}|{2} {3} {4}|{5} {6} {7} {8} {9} {10} {11} {12} {13}|\n'.format(*fm))
 
 def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None,origin=None):
     """write density map from GMM. input can be either particles or gaussians"""
@@ -136,25 +136,25 @@ def draw_points(pts,out_fn,trans=IMP.algebra.get_identity_transformation_3d(),
                                 use_colors=False):
     """ given some points (and optional transform), write them to chimera 'bild' format
     colors flag only applies to ellipses, otherwise it'll be weird"""
-    outf=open(out_fn,'w')
-    #print 'will draw',len(pts),'points'
-    # write first point in red
-    pt=trans.get_transformed(IMP.algebra.Vector3D(pts[0]))
-    start=0
-    if use_colors:
-        outf.write('.color 1 0 0\n.dotat %.2f %.2f %.2f\n' %(pt[0],pt[1],pt[2]))
-        start=1
+    with open(out_fn,'w') as outf:
+        #print 'will draw',len(pts),'points'
+        # write first point in red
+        pt=trans.get_transformed(IMP.algebra.Vector3D(pts[0]))
+        start=0
+        if use_colors:
+            outf.write('.color 1 0 0\n.dotat %.2f %.2f %.2f\n'
+                       %(pt[0],pt[1],pt[2]))
+            start=1
 
-    # write remaining points in green
-    if use_colors:
-        outf.write('.color 0 1 0\n')
-        colors=['0 1 0','0 0 1','0 1 1']
-    for nt,t in enumerate(pts[start:]):
-        if use_colors and nt%2==0:
-            outf.write('.color %s\n' % colors[nt/2])
-        pt=trans.get_transformed(IMP.algebra.Vector3D(t))
-        outf.write('.dotat %.2f %.2f %.2f\n' %(pt[0],pt[1],pt[2]))
-    outf.close()
+        # write remaining points in green
+        if use_colors:
+            outf.write('.color 0 1 0\n')
+            colors=['0 1 0','0 0 1','0 1 1']
+        for nt,t in enumerate(pts[start:]):
+            if use_colors and nt%2==0:
+                outf.write('.color %s\n' % colors[nt/2])
+            pt=trans.get_transformed(IMP.algebra.Vector3D(t))
+            outf.write('.dotat %.2f %.2f %.2f\n' %(pt[0],pt[1],pt[2]))
 
 
 
