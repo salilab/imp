@@ -178,7 +178,14 @@ class ReplicaExchange0(object):
         self.vars["best_pdb_dir"] = best_pdb_dir
         self.vars["atomistic"] = atomistic
         self.vars["replica_stat_file_suffix"] = replica_stat_file_suffix
+        self.vars["geometries"] = None
         self.test_mode = test_mode
+
+    def add_geometries(self, geometries):
+        if self.vars["geometries"] is None:
+            self.vars["geometries"] = list(geometries)
+        else:
+            self.vars["geometries"].extend(geometries)
 
     def show_info(self):
         print("ReplicaExchange0: it generates initial.*.rmf3, stat.*.out, rmfs/*.rmf3 for each replica ")
@@ -362,7 +369,7 @@ class ReplicaExchange0(object):
         if not self.test_mode:
             print("Setting up production rmf files")
             rmfname = rmf_dir + "/" + str(myindex) + ".rmf3"
-            output.init_rmf(rmfname, output_hierarchies)
+            output.init_rmf(rmfname, output_hierarchies, geometries=self.vars["geometries"])
 
             if self.crosslink_restraints:
                 output.add_restraints_to_rmf(rmfname, self.crosslink_restraints)

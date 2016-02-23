@@ -252,15 +252,16 @@ class Output(object):
                 if is_a_bead:
                     rt = IMP.atom.ResidueType('BEA')
                     resindexes = IMP.pmi.tools.get_residue_indexes(p)
-                    resind = resindexes[len(resindexes) // 2]
-                    xyz = IMP.core.XYZ(p).get_coordinates()
-                    radius = IMP.core.XYZR(p).get_radius()
-                    geometric_center[0] += xyz[0]
-                    geometric_center[1] += xyz[1]
-                    geometric_center[2] += xyz[2]
-                    atom_count += 1
-                    particle_infos_for_pdb.append((xyz,
-                                                   IMP.atom.AT_CA, rt, self.dictchain[name][protname], resind,radius))
+                    if len(resindexes) > 0:
+                        resind = resindexes[len(resindexes) // 2]
+                        xyz = IMP.core.XYZ(p).get_coordinates()
+                        radius = IMP.core.XYZR(p).get_radius()
+                        geometric_center[0] += xyz[0]
+                        geometric_center[1] += xyz[1]
+                        geometric_center[2] += xyz[2]
+                        atom_count += 1
+                        particle_infos_for_pdb.append((xyz,
+                                                       IMP.atom.AT_CA, rt, self.dictchain[name][protname], resind,radius))
 
         if atom_count > 0:
             geometric_center = (geometric_center[0] / atom_count,
@@ -364,11 +365,13 @@ class Output(object):
                 "self.best_score_list=" + str(self.best_score_list))
             best_score_file.close()
 
-    def init_rmf(self, name, hierarchies,rs=None):
+    def init_rmf(self, name, hierarchies, rs=None, geometries=None):
         rh = RMF.create_rmf_file(name)
         IMP.rmf.add_hierarchies(rh, hierarchies)
         if rs is not None:
             IMP.rmf.add_restraints(rh,rs)
+        if geometries is not None:
+            IMP.rmf.add_geometries(rh,geometries)
         self.dictionary_rmfs[name] = rh
 
     def add_restraints_to_rmf(self, name, objectlist):

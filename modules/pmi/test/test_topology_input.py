@@ -177,10 +177,10 @@ class TopologyReaderTests(IMP.test.TestCase):
         rbs = t.get_rigid_bodies()
         srbs = t.get_super_rigid_bodies()
         csrbs = t.get_chains_of_super_rigid_bodies()
-        self.assertEqual(rbs,[['Prot1'],['Prot2A','Prot2B']])
+        self.assertEqual(sorted(rbs),sorted([['Prot1'],['Prot2A','Prot2B']]))
         self.assertEqual(sorted(srbs),sorted([['Prot1','Prot3'],
                                               ['Prot1','Prot2A','Prot2B','Prot3']]))
-        self.assertEqual(csrbs,[['Prot3']])
+        self.assertEqual(list(csrbs),[['Prot3']])
 
     def test_build_system(self):
         """Test the new BuildSystem macro"""

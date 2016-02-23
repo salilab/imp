@@ -600,26 +600,26 @@ class Sequences(object):
     def read_sequences(self,fasta_fn,name_map=None):
         code = None
         seq = None
-        fh = open(fasta_fn,'r')
-        for (num, line) in enumerate(fh):
-            if line.startswith('>'):
-                if seq is not None:
-                    self.sequences[code] = seq
-                    self.seqs_in_order.append(seq)
-                code = line.rstrip()[1:]
-                if name_map is not None:
-                    try:
-                        code = name_map[code]
-                    except:
-                        pass
-                seq = ''
-            else:
-                line = line.rstrip()
-                if line: # Skip blank lines
-                    if seq is None:
-                        raise Exception( \
-"Found FASTA sequence before first header at line %d: %s" % (num + 1, line))
-                    seq += line
+        with open(fasta_fn,'r') as fh:
+            for (num, line) in enumerate(fh):
+                if line.startswith('>'):
+                    if seq is not None:
+                        self.sequences[code] = seq
+                        self.seqs_in_order.append(seq)
+                    code = line.rstrip()[1:]
+                    if name_map is not None:
+                        try:
+                            code = name_map[code]
+                        except:
+                            pass
+                    seq = ''
+                else:
+                    line = line.rstrip()
+                    if line: # Skip blank lines
+                        if seq is None:
+                            raise Exception( \
+    "Found FASTA sequence before first header at line %d: %s" % (num + 1, line))
+                        seq += line
         if seq is not None:
             self.sequences[code] = seq
             self.seqs_in_order.append(seq)
@@ -754,11 +754,11 @@ class TopologyReader(object):
         self.component_list = self.import_topology_file(topology_file)
 
     def write_topology_file(self,outfile):
-        f=open(outfile, "w")
-        f.write("|component_name|domain_name|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|\n")
-        for c in self.component_list:
-            output = c.get_str()+'\n'
-            f.write(output)
+        with open(outfile, "w") as f:
+            f.write("|component_name|domain_name|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|\n")
+            for c in self.component_list:
+                output = c.get_str()+'\n'
+                f.write(output)
         return outfile
 
     def get_component_topologies(self, topology_list = "all"):

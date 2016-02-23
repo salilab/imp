@@ -80,6 +80,7 @@ class GaussianEMRestraint(object):
         self.sigmainit = 2.0
         self.label = "None"
         self.densities = densities
+        self.em_root_hier = None
 
         # setup target GMM
         self.m = self.densities[0].get_model()
@@ -263,27 +264,26 @@ class GaussianEMRestraint(object):
                 4,
                 0.03)
         return ps
-        
+
     def get_rigid_body(self):
         if self.rb is None:
             raise Exception("No rigid body created for GMM particles. Ensure target_is_rigid_body is set to True")
         return self.rb
 
-
     def get_density_as_hierarchy(self):
-        f=IMP.atom.Fragment().setup_particle(IMP.Particle(self.m))
-        f.set_name("GaussianEMRestraint_density_"+self.label)
-        for p in self.target_ps:
-            f.add_child(p)
-        return f
+        if self.em_root_hier is None:
+            self.em_root_hier = IMP.atom.Copy.setup_particle(IMP.Particle(self.m),0)
+            self.em_root_hier.set_name("GaussianEMRestraint_density_"+self.label)
+            for p in self.target_ps:
+                self.em_root_hier.add_child(p)
+        return self.em_root_hier
 
-    def add_target_density_to_hierarchy(self,hier):
-        '''
-        we'll need this function to add the density particles to a
-        molecular hierarchy root, e.g. have them in the rmf file and display them in Chimera
-        '''
-        tdh=self.get_density_as_hierarchy()
-        hier.add_child(tdh)
+    def add_target_density_to_state(self,state):
+        # Check to make sure this is a state:
+        if type(state) is IMP.pmi.topology.State:
+            state.get_hierarchy().add_child(self.get_density_as_hierarchy())
+        else:
+            raise Exception("Can only add a density to a PMI State object")
 
     def get_restraint_set(self):
         return self.rs

@@ -968,6 +968,7 @@ def get_residue_indexes(hier):
     Retrieve the residue indexes for the given particle.
 
     The particle must be an instance of Fragment,Residue or Atom
+    or else returns an empty list
     '''
     resind = []
     if IMP.atom.Fragment.get_is_setup(hier):
@@ -978,7 +979,6 @@ def get_residue_indexes(hier):
         a = IMP.atom.Atom(hier)
         resind = [IMP.atom.Residue(a.get_parent()).get_index()]
     else:
-        print("get_residue_indexes> input is not Fragment, Residue or Atom")
         resind = []
     return resind
 
