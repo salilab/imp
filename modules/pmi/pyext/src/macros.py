@@ -180,7 +180,8 @@ class ReplicaExchange0(object):
         self.vars["replica_stat_file_suffix"] = replica_stat_file_suffix
         self.vars["geometries"] = None
         self.test_mode = test_mode
-
+        if root_hier:
+            self.output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
     def add_geometries(self, geometries):
         if self.vars["geometries"] is None:
             self.vars["geometries"] = list(geometries)
@@ -291,9 +292,6 @@ class ReplicaExchange0(object):
 
         sw = IMP.pmi.tools.Stopwatch()
         self.output_objects.append(sw)
-
-        if self.root_hier is not None:
-            self.output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
 
         print("Setting up stat file")
         output = IMP.pmi.output.Output(atomistic=self.vars["atomistic"])

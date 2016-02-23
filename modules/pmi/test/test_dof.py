@@ -320,7 +320,36 @@ class TestDOF(IMP.test.TestCase):
         self.assertTrue(em_rb.get_coordinates_are_optimized())
         self.assertEqual(len(dof.get_movers()), 1)
 
+    def test_rex_multistate(self):
+        """Test you can do multi-state replica exchange"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1")
+        atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A',res_range=(55,63),offset=-54,
+                                      soft_check=True)
+        m1.add_representation(m1,resolutions=[1])
+        st2 = s.create_state()
+        m2 = st2.create_molecule("Prot1")
+        atomic_res2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A',res_range=(55,63),offset=-54,
+                                      soft_check=True)
+        m2.add_representation(m2,resolutions=[1])
+        hier = s.build()
+        self.assertEqual(len(IMP.atom.get_by_type(hier,IMP.atom.STATE_TYPE)),2)
 
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        dof.create_rigid_body(m1,nonrigid_parts = atomic_res)
+        dof.create_rigid_body(m2,nonrigid_parts = atomic_res2)
+
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=hier,
+                                              monte_carlo_sample_objects=dof.get_movers(),
+                                              number_of_frames=2,
+                                              test_mode=True,
+                                              replica_exchange_object=rem)
+        rex.execute_macro()
 
 if __name__ == '__main__':
     IMP.test.main()
