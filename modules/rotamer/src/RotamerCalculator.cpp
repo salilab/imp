@@ -11,9 +11,9 @@
 //#include <iostream>
 #include <boost/algorithm/string.hpp>
 #include <IMP/constants.h>
-#include <IMP/Model.h>
 #include <IMP/Particle.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Hierarchy.h>
@@ -241,18 +241,6 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
   double psi = get_psi_angle(rd) * to_deg, phi = get_phi_angle(rd) * to_deg;
   RotamerLibrary::RotamerRange rr = rl_->get_rotamers_fast(rt, phi, psi, thr);
 
-  // we need to create fake particles representing rotated atoms
-  // (for get_dihedral)
-  IMP_NEW(IMP::Model, model, ());
-  IMP_NEW(IMP::Particle, p_a, (model));
-  IMP_NEW(IMP::Particle, p_b, (model));
-  IMP_NEW(IMP::Particle, p_c, (model));
-  IMP_NEW(IMP::Particle, p_d, (model));
-  IMP::core::XYZ xyz_a = IMP::core::XYZ::setup_particle(p_a);
-  IMP::core::XYZ xyz_b = IMP::core::XYZ::setup_particle(p_b);
-  IMP::core::XYZ xyz_c = IMP::core::XYZ::setup_particle(p_c);
-  IMP::core::XYZ xyz_d = IMP::core::XYZ::setup_particle(p_d);
-
   const ResidueData &res_data = residues_[r_idx];
 
   // iterate through all sets of chi angles
@@ -301,13 +289,10 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
       IMP::algebra::Vector3D &c_b = r.get_coordinates(at_b.get_atom_type());
       IMP::algebra::Vector3D &c_c = r.get_coordinates(at_c.get_atom_type());
       IMP::algebra::Vector3D &c_d = r.get_coordinates(at_d.get_atom_type());
-      xyz_a.set_coordinates(c_a);
-      xyz_b.set_coordinates(c_b);
-      xyz_c.set_coordinates(c_c);
-      xyz_d.set_coordinates(c_d);
 
       // compute the original dihedral angle
-      double actual_angle = IMP::core::get_dihedral(xyz_a, xyz_b, xyz_c, xyz_d);
+      double actual_angle = IMP::core::internal::dihedral(c_a, c_b, c_c, c_d,
+                                                          NULL, NULL, NULL, NULL);
 
       // now perform the rotations (about c_b->c_c axis) and store the
       // coordinates
