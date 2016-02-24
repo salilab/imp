@@ -276,6 +276,8 @@ echo "echo" >> ${UNIN}
 echo "echo \"IMP successfully uninstalled\"" >> ${UNIN}
 chmod a+x ${UNIN}
 
+${MAC_TOOL_DIR}/check-file-permissions.py ${DESTDIR} || exit 1
+
 cd /tmp
 
 # Substitute version number in plist files
