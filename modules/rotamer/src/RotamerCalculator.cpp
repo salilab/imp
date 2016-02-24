@@ -292,7 +292,7 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
 
       // compute the original dihedral angle
       double actual_angle = IMP::core::internal::dihedral(c_a, c_b, c_c, c_d,
-                                                          NULL, NULL, NULL, NULL);
+                                                          nullptr, nullptr, nullptr, nullptr);
 
       // now perform the rotations (about c_b->c_c axis) and store the
       // coordinates
