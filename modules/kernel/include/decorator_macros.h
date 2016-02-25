@@ -372,7 +372,7 @@
 
 //! Define the types for storing sets of decorators
 /** The macro defines the types PluralName and PluralNameTemp.
-    Parent is unused and remains for backward compatability
+    Parent is unused and remains for backward compatibility
  */
 #define IMP_DECORATORS(Name, PluralName, Parent) \
   IMP_DECORATORS_DECL(Name, PluralName);         \

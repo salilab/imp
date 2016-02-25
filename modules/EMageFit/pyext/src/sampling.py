@@ -28,7 +28,7 @@ def create_sampling_grid_3d(diameter, n_axis_points):
         @param n_axis_points Number of points used along an axis for the grid.
         The axis X Y and Z will contain n_axis_points, equispaced.
         The other regions of space will contain only the points allowed by
-        the size of the spere.
+        the size of the sphere.
     """
     radius = diameter / 2.0
     step = diameter / n_axis_points

@@ -235,7 +235,7 @@ class IMPKERNELEXPORT Model : public Object
   /** \pre get_has_attribute(attribute_key, particle) is true*/
   Type get_attribute(TypeKey attribute_key, ParticleIndex particle);
 
-  /** Cache attributes, unklike normal attributes, can be added during
+  /** Cache attributes, unlike normal attributes, can be added during
       evaluation. They are also cleared by the clear_cache_attributes() method.
       Cache attributes should be used when one is adding data to a particle
       to aid scoring (eg cache the rigid body collision acceleration structure).

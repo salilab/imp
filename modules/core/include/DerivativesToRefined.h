@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! Copy the derivatives from a coarse particle to its refined particles
 /** \see DerivatvesFromRefinedSingletonModifier
     \see CoverRefined
-    \see CentroidOfRefinedSingletonModifer
+    \see CentroidOfRefinedSingletonModifier
  An example showing a how to use such a score state to maintain a cover
  of the atoms of a protein by a sphere per residue.
  \include cover_particles.py

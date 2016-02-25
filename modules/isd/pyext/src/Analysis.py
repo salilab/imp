@@ -121,7 +121,7 @@ class Analysis:
         return h
 
     def plot(self, h, *datums, **kwargs):
-        """plots datum (cat,name) from hierarchy h, optionnally specifying a
+        """plots datum (cat,name) from hierarchy h, optionally specifying a
         range. To plot multiple data at the same time, add them sequentially.
         Takes x axis from the 'step' entry of the first datum. TODO.
         """
@@ -137,7 +137,7 @@ class Analysis:
         matplotlib.pyplot.show()
 
     def histogram(self, h, *datums, **kwargs):
-        """plots histogram of datum (cat,name) from hierarchy h, optionnally
+        """plots histogram of datum (cat,name) from hierarchy h, optionally
         specifying a range. To plot multiple data at the same time, add them
         sequentially.
         """

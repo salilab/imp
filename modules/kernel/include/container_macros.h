@@ -335,7 +335,7 @@
 /** These macros avoid various inefficiencies.
 
     The macros take the name of the container and the operation to
-    peform. In operation, _1 is used to refer to the item using its
+    perform. In operation, _1 is used to refer to the item using its
     ContainedIndexType (e.g., IMP::ParticleIndex in SingletonContainer,
     or IMP::ParticleIndexPair in PairContainer).
     The location of this item in the container itself is _2.

@@ -22,8 +22,8 @@ IMPISD_BEGIN_NAMESPACE
     complexes. The experimental frequency fexp is derived as the
     fraction of dimeric versus monomeric complex, upon cysteine
     cross-linking.  The forward model is derived from free energy
-    calculations.  The likelyhood is modeled as a normal distribution
-    function truncated over the interval [0,1]. To contruct the
+    calculations.  The likelihood is modeled as a normal distribution
+    function truncated over the interval [0,1]. To construct the
     restraint, the class CysteineCrossLinkData and CrossLinkData have
     to be initialized (see for instance
     test_CysteineCrossLinkRestraint.py).  Input parameters and

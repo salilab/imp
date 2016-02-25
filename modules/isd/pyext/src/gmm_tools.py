@@ -324,7 +324,7 @@ def fit_dirichlet_gmm_to_points(points,
     mdl:               IMP Model
     ps:                list of particles to be decorated. if empty, will add
     num_iter:          number of EM iterations
-    covariance_type:   covar type for the gaussians. options: 'full', 'diagonal', 'sphereical'
+    covariance_type:   covar type for the gaussians. options: 'full', 'diagonal', 'spherical'
     init_centers:      initial coordinates of the GMM
     force_radii:       fix the radii (spheres only)
     force_weight:      fix the weights

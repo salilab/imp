@@ -16,7 +16,7 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-//! An example singleton modifer
+//! An example singleton modifier
 /** A simple singleton modifier which ensures the x,y,z coordinates
     stay in a box by wrapping them.
 

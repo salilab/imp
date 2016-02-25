@@ -23,7 +23,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     be allocated on the stack and to be passed by value (or
     const &).
 
-    The class should be named SegmentD, but it is an demostration.
+    The class should be named SegmentD, but it is a demonstration.
 
     The source code is as follows:
     \include ExampleTemplateClass.h

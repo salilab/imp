@@ -114,7 +114,7 @@ class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier {
 
 //! Modify the given TransformationSymmetry
 /** The effect of this Mover is similar to applying a RigidBodyMover to
-    every Particle that is affected by the TransformationSymmetry Modifer,
+    every Particle that is affected by the TransformationSymmetry Modifier,
     that is the transformation of the TransformationSymmetry is modified
     such that these Particles end up being randomly rotated and translated
     (relative to their original positions) within a ball of given size.

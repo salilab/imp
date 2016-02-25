@@ -33,7 +33,7 @@ global_spelling_exceptions = [
    'preprocessor', 'adaptor', 'functors', 'runtime', 'breakpoint', 'namespace',
    'destructor', 'destructors', 'hashable', 'profiler', 'benchmarking',
    'minima', 'colinear', 'Andrej', 'Sali', 'Keren', 'Lasker', 'Velázquez',
-   'Schneidman', 'Duhovny'
+   'Schneidman', 'Duhovny', 'Implementers', 'Yannick', 'Raveh', 'Barak'
 ]
 
 class IMPNameFilter(Filter):

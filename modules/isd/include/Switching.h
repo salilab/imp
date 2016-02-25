@@ -18,7 +18,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Add switching parameter to particle
-/** This is just syntactic sugar for a Nuisance bounded to be betweeen 0 and 1.
+/** This is just syntactic sugar for a Nuisance bounded to be between 0 and 1.
  */
 class IMPISDEXPORT Switching : public Nuisance {
   static void do_setup_particle(Model *m, ParticleIndex pi,

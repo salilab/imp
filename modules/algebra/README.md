@@ -22,12 +22,12 @@ instance should be assumed to be invalid.
 Many of the geometric primitives and operations in IMP are written to work in any dimension.
 In C++, this is implemented via templates (such as IMP::algebra::VectorD).
 In the Python side, the different dimensions are named explicitly instead. That
-means, a 2-D point is IMP::algebra::VectorD<2> in C++, and IMP::algbra::Vector2D in Python
+means, a 2-D point is IMP::algebra::VectorD<2> in C++, and IMP::algebra::Vector2D in Python
 and the function IMP::algebra::get_basis_vector_d<3>() in C++ becomes `IMP.algebra.get_basis_vector_3d()` in Python.
 Similarly, a collection of 2D points is
 IMP::Vector<IMP::algebra::VectorD<2> > in C++ and IMP.algebra.Vector2Ds in Python, which
 as with all collections, look like Python lists.
-For convenience, we provide typedefs in C++ to the IMP::algbra::Vector2D and
+For convenience, we provide typedefs in C++ to the IMP::algebra::Vector2D and
 IMP::algebra::Vector2Ds style names.
 
 # Generic geometry # {#genericgeometry}

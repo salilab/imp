@@ -37,7 +37,7 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
   ClassnameContainerSet(const ClassnameContainersTemp &pc,
                         std::string name = "ClassnameContainerSet %1%");
 
-  /** \brief apply modifer sm to all classname containers */
+  /** \brief apply modifier sm to all classname containers */
   IMP_IMPLEMENT(void do_apply(const ClassnameModifier *sm) const);
 
   template <class M>

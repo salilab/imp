@@ -315,7 +315,7 @@ class sfo_common:
 
     def init_model_setup_scale(self, default, lower=None, upper=None):
         """sets up a Scale particle to the initial default value. It can
-        optionnally be constrained between two positive bounds, or else its
+        optionally be constrained between two positive bounds, or else its
         range  is 0 to infinity.
         """
         m = self._m
@@ -858,7 +858,7 @@ class sfo_common:
     def init_simulation_setup_nuisance_mc(self, nuis, temperature=300.0,
                                           mc_restraints=None, nm_stepsize=0.1):
         """sets up monte carlo on nuisance, at a certain target temperature,
-        optionnally using a certain set of restraints only.
+        optionally using a certain set of restraints only.
         - nuis: nuisance particle
         - temperature: target temperature
         - mc_restraints: optional set of restraints from which the energy should

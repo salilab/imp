@@ -34,7 +34,7 @@ class SimulationParameters;
     RigidBodyDiffusion decorator can be used to specify a rotational
     diffusion coefficient for core::RigidBody particles.  The
     optimizer assumes the scoring function to be energy in kcal/mol, and the xyz
-    coordinates to be in angstroms and the diffusion coefficent of
+    coordinates to be in angstroms and the diffusion coefficient of
     each particle be in \f$A^2/fs\f$ (or \f$Radian^2/fs\f$ for rotational
     diffusion coefficient).  Particles without optimized x,y,z
     and nonoptimized D are skipped.
