@@ -112,6 +112,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(selA.get_selected_particles()[0],
                          selD.get_selected_particles()[0])
 
+        fh = RMF.open_rmf_file_read_only(rmfname)
+        IMP.rmf.link_hierarchies(fh, h2)
 
 if __name__ == '__main__':
     IMP.test.main()
