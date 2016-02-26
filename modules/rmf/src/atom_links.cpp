@@ -64,11 +64,13 @@ void HierarchyLoadLink::create_recursive(Model *m,
   set_association(name, m->get_particle(cur));
   ParticleIndexes breps, greps;
   Floats bresols, gresols;
+  std::map<RMF::NodeConstHandle, ParticleIndex> rep_map;
   if (af_.get_is(name)) {
     IMP_FOREACH(RMF::NodeConstHandle alt,
                 af_.get(name).get_alternatives(RMF::PARTICLE)) {
       if (alt == name) continue;
       ParticleIndex cur_rep = m->add_particle(alt.get_name());
+      rep_map[alt] = cur_rep;
       create_recursive(m, root, cur_rep, alt, rigid_bodies, data);
       breps.push_back(cur_rep);
       if (explicit_resolution_factory_.get_is(alt)) {
@@ -83,6 +85,7 @@ void HierarchyLoadLink::create_recursive(Model *m,
                 af_.get(name).get_alternatives(RMF::GAUSSIAN_PARTICLE)) {
       if (alt == name) continue;
       ParticleIndex cur_rep = m->add_particle(alt.get_name());
+      rep_map[alt] = cur_rep;
       create_recursive(m, root, cur_rep, alt, rigid_bodies, data);
       greps.push_back(cur_rep);
       if (explicit_resolution_factory_.get_is(alt)) {
@@ -104,10 +107,17 @@ void HierarchyLoadLink::create_recursive(Model *m,
 
   IMP_FOREACH(RMF::NodeConstHandle ch, name.get_children()) {
     if (ch.get_type() == RMF::REPRESENTATION) {
-      ParticleIndex child = m->add_particle(ch.get_name());
-      atom::Hierarchy(m, cur)
-          .add_child(atom::Hierarchy::setup_particle(m, child));
-      create_recursive(m, root, child, ch, rigid_bodies, data);
+      if (rep_map.find(ch) == rep_map.end()) {
+        ParticleIndex child = m->add_particle(ch.get_name());
+        atom::Hierarchy(m, cur)
+            .add_child(atom::Hierarchy::setup_particle(m, child));
+        create_recursive(m, root, child, ch, rigid_bodies, data);
+      } else {
+        /* Handle case where the child particle is also a representation */
+        ParticleIndex child = rep_map[ch];
+        atom::Hierarchy(m, cur)
+            .add_child(atom::Hierarchy::setup_particle(m, child));
+      }
     }
   }
   do_setup_particle(m, root, cur, name);
@@ -274,6 +284,7 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
   // make sure not to double add
   if (p != root) set_association(cur, m->get_particle(p));
   RMF::NodeHandles prep_nodes, grep_nodes;
+  std::map<ParticleIndex, RMF::NodeHandle> rep_map;
   if (IMP::atom::Representation::get_is_setup(m, p)) {
     IMP::atom::Representation rep(m, p);
     Floats bresols = rep.get_resolutions(atom::BALLS);
@@ -291,6 +302,7 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
         explicit_resolution_factory_.get(cn).set_static_explicit_resolution(
                                                       bresols[i]);
         prep_nodes.push_back(cn);
+        rep_map[cr.get_particle_index()] = cn;
         add_recursive(m, root, cr.get_particle_index(), rigid_bodies, cn, data);
       }
     }
@@ -306,6 +318,7 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
         explicit_resolution_factory_.get(cn).set_static_explicit_resolution(
                                                       gresols[i]);
         grep_nodes.push_back(cn);
+        rep_map[cr.get_particle_index()] = cn;
         add_recursive(m, root, cr.get_particle_index(), rigid_bodies, cn, data);
       }
     }
@@ -324,9 +337,14 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
   for (unsigned int i = 0; i < atom::Hierarchy(m, p).get_number_of_children();
        ++i) {
     ParticleIndex pc = atom::Hierarchy(m, p).get_child_index(i);
-    RMF::NodeHandle curc =
-        cur.add_child(get_good_name(m, pc), RMF::REPRESENTATION);
-    add_recursive(m, root, pc, rigid_bodies, curc, data);
+    if (rep_map.find(pc) == rep_map.end()) {
+      RMF::NodeHandle curc =
+          cur.add_child(get_good_name(m, pc), RMF::REPRESENTATION);
+      add_recursive(m, root, pc, rigid_bodies, curc, data);
+    } else {
+      /* Handle case where the child particle is also a representation */
+      cur.add_child(rep_map[pc]);
+    }
   }
 
   if (!prep_nodes.empty() || !grep_nodes.empty()) {
