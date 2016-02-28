@@ -157,9 +157,13 @@ void Representation::add_representation(ParticleIndexAdaptor rep,
   }
   IMP_USAGE_CHECK( type!=DENSITIES || ct==0,
                    "DENSITY representations must be Gaussian");
-  // fake the parent
+  // If (self) has a parent, give new resolution the same parent (key)
+  // However, don't do this if the new representation is the same particle!
+  //  (e.g. for self-density representation)
+  Hierarchies chs = get_children();
   if (get_model()->get_has_attribute(Hierarchy::get_traits().get_parent_key(),
-                                     get_particle_index())) {
+                                     get_particle_index()) &&
+      std::find(chs.begin(),chs.end(),Hierarchy(get_model(),rep))==chs.end()){
     get_model()->add_attribute(Hierarchy::get_traits().get_parent_key(), rep,
                                get_parent().get_particle_index());
   }
