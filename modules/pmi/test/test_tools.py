@@ -129,7 +129,7 @@ class TestTools(IMP.test.TestCase):
                     IMP.atom.Selection(m3.get_hierarchy(),
                                        residue_index=1,
                                        resolution=1).get_selected_particles()]
-        self.assertEqual(test3,compare3)
+        self.assertEqual([set(l) for l in test3],[set(l) for l in compare3])
 
         # nothing changes to hierarchy
         tH = [IMP.atom.Hierarchy(IMP.Particle(mdl))]
@@ -139,11 +139,11 @@ class TestTools(IMP.test.TestCase):
         # check passing system,state
         testSystem = IMP.pmi.tools.input_adaptor(s,pmi_resolution=0)
         testState = IMP.pmi.tools.input_adaptor(st1,pmi_resolution=0)
-        compareAll = [IMP.atom.Selection(m.get_hierarchy(),
-                                         resolution=0).get_selected_particles() for m in [m1,m2,m3]]
+        compareAll = [set(IMP.atom.Selection(m.get_hierarchy(),
+                                         resolution=0).get_selected_particles()) for m in [m1,m2,m3]]
 
-        self.assertEqual(testSystem,compareAll)
-        self.assertEqual(testState,compareAll)
+        self.assertEqual([set(l) for l in testSystem],compareAll)
+        self.assertEqual([set(l) for l in testState],compareAll)
 
     def test_get_is_canonical(self):
         """Test get PMI2 structures are canonical"""

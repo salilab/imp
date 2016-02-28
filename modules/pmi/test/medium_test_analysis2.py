@@ -86,6 +86,11 @@ class AnalysisTest(IMP.test.TestCase):
 
     def test_analysis_macro(self):
         """Test you can organize files correctly with macro"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
         mdl = IMP.Model()
         #self.init_topology(mdl)
         rmsd_names = {"Prot1":"Prot1",

@@ -205,7 +205,7 @@ class TopologyReaderTests(IMP.test.TestCase):
         self.assertEqual(len(sel1), 7  + 2 )
         sel1D = IMP.atom.Selection(root_hier,molecule="Prot1",
                                   representation_type=IMP.atom.DENSITIES).get_selected_particles()
-        self.assertEqual(len(sel1D),1)
+        self.assertEqual(len(sel1D),3)
 
         sel2 = IMP.atom.Selection(root_hier,molecule="Prot2",resolution=10).get_selected_particles()
         self.assertEqual(len(sel2),2)

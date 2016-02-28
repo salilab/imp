@@ -38,8 +38,7 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
         m1.add_representation(m1.get_non_atomic_residues(),resolutions=[10],
                               setup_particles_as_densities=True)
         hier = m1.build()
-        densities = IMP.atom.Selection(hier,representation_type=IMP.atom.DENSITIES).get_selected_particles() +\
-                    [r.get_hierarchy() for r in m1.get_non_atomic_residues()]
+        densities = IMP.atom.Selection(hier,representation_type=IMP.atom.DENSITIES).get_selected_particles()
         self.assertEqual(len(densities),6)
 
         # make sure you can score
@@ -86,8 +85,7 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
 
         hier = m1.build()
 
-        densities = IMP.atom.Selection(hier,representation_type=IMP.atom.DENSITIES).get_selected_particles() +\
-                    [r.get_hierarchy() for r in m1.get_non_atomic_residues()]
+        densities = IMP.atom.Selection(hier,representation_type=IMP.atom.DENSITIES).get_selected_particles()
 
         gem = IMP.pmi.restraints.em.GaussianEMRestraint(densities,
                                                         target_fn=self.get_input_file_name('prot_gmm.txt'),

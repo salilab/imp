@@ -17,13 +17,16 @@ scoring, and sampling tools within IMP (and to add some cool analysis functional
 Most PMI classes wrap multiple IMP classes and functions that are commonly combined.
 While this greatly improves usability, it can reduce flexibility. Let us know if you want to do something not currently supported.
 
-The typical flow of a PMI modeling script is as follows.
+The typical flow of a PMI modeling script is as follows:
  - [Topology](@ref IMP::pmi::topology): create a [System](@ref IMP::pmi::topology::System), [States](@ref IMP::pmi::topology::State), [Molecules](@ref IMP::pmi::topology::Molecule), add structure and representation
  - [DegreesOfFreedom](@ref IMP::pmi::dof): setup rigid bodies, flexible beads, and other constraints.
  - [Restraints](@ref IMP::pmi::restraints): restrain your system with theoretical or experimental data
  - [Sample](@ref IMP::pmi::macros::ReplicaExchange0) your system with replica exchange (including Monte Carlo or Molecular Dynamics or both)
 
-See a [multiscale modeling example](https://integrativemodeling.org/nightly/doc/ref/pmi_2multiscale_8py-example.html) using these classes. Also [an all-atom MD example](https://integrativemodeling.org/nightly/doc/ref/pmi_2atomistic_8py-example.html).
+Here are some complete examples to help you get started:
+ - [Multiscale modeling](https://integrativemodeling.org/nightly/doc/ref/pmi_2multiscale_8py-example.html): easily model a system at multiple resolutions simultaneously and sample with replica exchange
+ - [Crosslinks with ambiguity](https://integrativemodeling.org/nightly/doc/ref/pmi_2ambiguity_8py-example.html): create crosslinks and automatically apply them to ambiguous copies of a protein (including in multiple states)
+ - [MD modeling](https://integrativemodeling.org/nightly/doc/ref/pmi_2atomistic_8py-example.html): how to set up restraints for atomic-scale models and then run molecular dynamics
 
 ## Automating model construction
 We have implemented the [TopologyReader](@ref IMP::pmi::topology::TopologyReader) for automatically doing the first two bullet points above:
