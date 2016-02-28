@@ -70,11 +70,13 @@ class Output(object):
         self.dictchain[name] = {}
         self.use_pmi2 = False
 
-        # attempt to find PMI objects. This only works if you write the root .
-        if prot.get_name()=='System':
+        # attempt to find PMI objects.
+        if IMP.pmi.get_is_canonical(prot):
             self.use_pmi2 = True
+            self.atomistic = True #detects automatically
             for n,mol in enumerate(IMP.atom.get_by_type(prot,IMP.atom.MOLECULE_TYPE)):
-                self.dictchain[name][IMP.pmi.get_molecule_name_and_copy(mol)] = IMP.atom.Chain(mol).get_id()
+                chid = IMP.atom.Chain(mol).get_id()
+                self.dictchain[name][IMP.pmi.get_molecule_name_and_copy(mol)] = chid
         else:
             for n, i in enumerate(self.dictionary_pdbs[name].get_children()):
                 self.dictchain[name][i.get_name()] = self.chainids[n]
@@ -309,8 +311,9 @@ class Output(object):
             flpdb.close()
             self.dictionary_pdbs[name] = prot
             self.dictchain[name] = {}
-            if prot.get_name()=='System':
-                self.use_pmi2=True
+            if IMP.pmi.get_is_canonical(prot):
+                self.use_pmi2 = True
+                self.atomistic = True
                 for n,mol in enumerate(IMP.atom.get_by_type(prot,IMP.atom.MOLECULE_TYPE)):
                     self.dictchain[name][IMP.pmi.get_molecule_name_and_copy(mol)] = IMP.atom.Chain(mol).get_id()
             else:

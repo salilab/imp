@@ -1403,7 +1403,7 @@ def get_hiers_from_rmf(model, frame_number, rmf_file):
         prots = None
         return prots
     #IMP.rmf.link_hierarchies(rh, prots)
-    prot = prots[state_number]
+
     try:
         IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
     except IOError:
@@ -1412,6 +1412,11 @@ def get_hiers_from_rmf(model, frame_number, rmf_file):
         return prots
     model.update()
     del rh
+
+    # PMI expects prots to be a list of states
+    if IMP.pmi.get_is_canonical(prots[0]):
+        prots = IMP.atom.get_by_type(prots[0],IMP.atom.STATE_TYPE)
+
     return prots
 
 def link_hiers_to_rmf(model,hiers,frame_number, rmf_file):
@@ -1493,53 +1498,64 @@ def get_hiers_from_rmf(model, frame_number, rmf_file):
 
 
 def get_particles_at_resolution_one(prot):
-    """
-    Get particles at res 1, or any beads, based on the name.
+    """Get particles at res 1, or any beads, based on the name.
     No Representation is needed. This is mainly used when the hierarchy
     is read from an RMF file.
     @return a dictionary of component names and their particles
+    \note If the root node is named "System" or is a "State", do proper selection.
     """
     particle_dict = {}
-    allparticles = []
-    for c in prot.get_children():
-        name = c.get_name()
-        particle_dict[name] = IMP.atom.get_leaves(c)
-        for s in c.get_children():
-            if "_Res:1" in s.get_name() and "_Res:10" not in s.get_name():
-                allparticles += IMP.atom.get_leaves(s)
-            if "Beads" in s.get_name():
-                allparticles += IMP.atom.get_leaves(s)
 
-    particle_align = []
-    for name in particle_dict:
-        particle_dict[name] = IMP.pmi.tools.sort_by_residues(
-            list(set(particle_dict[name]) & set(allparticles)))
+    # attempt to give good results for PMI2
+    if IMP.pmi.get_is_canonical(prot):
+        for mol in IMP.atom.get_by_type(prot,IMP.atom.MOLECULE_TYPE):
+            sel = IMP.atom.Selection(mol,resolution=1)
+            particle_dict[mol.get_name()] = sel.get_selected_particles()
+    else:
+        allparticles = []
+        for c in prot.get_children():
+            name = c.get_name()
+            particle_dict[name] = IMP.atom.get_leaves(c)
+            for s in c.get_children():
+                if "_Res:1" in s.get_name() and "_Res:10" not in s.get_name():
+                    allparticles += IMP.atom.get_leaves(s)
+                if "Beads" in s.get_name():
+                    allparticles += IMP.atom.get_leaves(s)
+
+        particle_align = []
+        for name in particle_dict:
+            particle_dict[name] = IMP.pmi.tools.sort_by_residues(
+                list(set(particle_dict[name]) & set(allparticles)))
     return particle_dict
 
 def get_particles_at_resolution_ten(prot):
-    """
-    Get particles at res 10, or any beads, based on the name.
+    """Get particles at res 10, or any beads, based on the name.
     No Representation is needed.
     This is mainly used when the hierarchy is read from an RMF file.
     @return a dictionary of component names and their particles
+    \note If the root node is named "System" or is a "State", do proper selection.
     """
     particle_dict = {}
-    allparticles = []
-    for c in prot.get_children():
-        name = c.get_name()
-        particle_dict[name] = IMP.atom.get_leaves(c)
-        for s in c.get_children():
-            if "_Res:10" in s.get_name():
-                allparticles += IMP.atom.get_leaves(s)
-            if "Beads" in s.get_name():
-                allparticles += IMP.atom.get_leaves(s)
-    particle_align = []
-    for name in particle_dict:
-        particle_dict[name] = IMP.pmi.tools.sort_by_residues(
-            list(set(particle_dict[name]) & set(allparticles)))
+    # attempt to give good results for PMI2
+    if IMP.pmi.get_is_canonical(prot):
+        for mol in IMP.atom.get_by_type(prot,IMP.atom.MOLECULE_TYPE):
+            sel = IMP.atom.Selection(mol,resolution=10)
+            particle_dict[mol.get_name()] = sel.get_selected_particles()
+    else:
+        allparticles = []
+        for c in prot.get_children():
+            name = c.get_name()
+            particle_dict[name] = IMP.atom.get_leaves(c)
+            for s in c.get_children():
+                if "_Res:10" in s.get_name():
+                    allparticles += IMP.atom.get_leaves(s)
+                if "Beads" in s.get_name():
+                    allparticles += IMP.atom.get_leaves(s)
+        particle_align = []
+        for name in particle_dict:
+            particle_dict[name] = IMP.pmi.tools.sort_by_residues(
+                list(set(particle_dict[name]) & set(allparticles)))
     return particle_dict
-
-
 
 def select_by_tuple(first_res_last_res_name_tuple):
     first_res = first_res_last_res_hier_tuple[0]

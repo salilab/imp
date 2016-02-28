@@ -14,6 +14,12 @@ import IMP.pmi.restraints
 import IMP.pmi.restraints.crosslinking
 import IMP.pmi.macros
 from math import *
+try:
+    import IMP.mpi
+    rem = IMP.mpi.ReplicaExchange()
+except ImportError:
+    rem = None
+
 
 def sphere_cap(r1, r2, d):
     sc = 0.0
@@ -275,10 +281,11 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
             self.assertAlmostEqual(log_wrapper_score, test_log_wrapper_score, delta=0.00001)
             if i==0:
                 rex0 = IMP.pmi.macros.ReplicaExchange0(m,
-                                                      rcomplex,
-                                                      monte_carlo_sample_objects=[rcomplex],
-                                                      number_of_frames=2,
-                                                      test_mode=True)
+                                                       rcomplex,
+                                                       monte_carlo_sample_objects=[rcomplex],
+                                                       number_of_frames=2,
+                                                       test_mode=True,
+                                                       replica_exchange_object = rem)
                 rex0.execute_macro()
             else:
                 rex = IMP.pmi.macros.ReplicaExchange0(m,
@@ -286,7 +293,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
                                                       monte_carlo_sample_objects=pmi2_movers,
                                                       number_of_frames=2,
                                                       test_mode=True,
-                                                      replica_exchange_object = rex0.get_replica_exchange_object())
+                                                      replica_exchange_object = rem)
                 rex.execute_macro()
             for output in ['excluded.None.xl.db',
                            'expensive_test_new_cross_link_ms_restraint.dat',
@@ -353,6 +360,22 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
                     prob=cross_link_dict[xlid][5]
 
                     self.assertAlmostEqual(test_prob,prob, delta=0.0001)
+            if i==0:
+                rex0 = IMP.pmi.macros.ReplicaExchange0(m,
+                                                       rbeads,
+                                                       monte_carlo_sample_objects=[rbeads],
+                                                       number_of_frames=2,
+                                                       test_mode=True,
+                                                       replica_exchange_object = rem)
+                rex0.execute_macro()
+            else:
+                rex = IMP.pmi.macros.ReplicaExchange0(m,
+                                                      root_hier=rbeads,
+                                                      monte_carlo_sample_objects=rmovers,
+                                                      number_of_frames=2,
+                                                      test_mode=True,
+                                                      replica_exchange_object = rem)
+                rex.execute_macro()
             for output in ['excluded.None.xl.db',
                            'included.None.xl.db', 'missing.None.xl.db']:
                 os.unlink(output)

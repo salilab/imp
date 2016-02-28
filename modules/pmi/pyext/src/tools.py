@@ -1539,9 +1539,12 @@ def select_at_all_resolutions(hier=None,
             raise Exception("don't pass resolution or representation_type to this function")
 
         def get_resolutions(h):
-            rep = IMP.atom.get_representation(h)
-            ret = [IMP.atom.Representation(rep).get_resolutions(IMP.atom.BALLS),
-                   IMP.atom.Representation(rep).get_resolutions(IMP.atom.DENSITIES)]
+            rep = IMP.atom.get_representation(h,True)
+            if rep:
+                ret = [IMP.atom.Representation(rep).get_resolutions(IMP.atom.BALLS),
+                       IMP.atom.Representation(rep).get_resolutions(IMP.atom.DENSITIES)]
+            else:
+                ret = [[],[]]
             return ret
 
         # gather resolutions
@@ -1679,7 +1682,7 @@ def shuffle_configuration(root_hier=None,
     allparticleindexes = []
     hierarchies_excluded_from_collision_indexes = []
 
-    # Add particles from excluded hierarchies to excluded list 
+    # Add particles from excluded hierarchies to excluded list
     for h in hierarchies_excluded_from_collision:
         for p in IMP.core.get_leaves(h):
             hierarchies_excluded_from_collision_indexes.append(p.get_particle_index())

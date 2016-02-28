@@ -56,37 +56,62 @@ class ExternalBarrier(object):
 
 
 class DistanceRestraint(object):
-
-    def __init__(
-        self,
-        representation,
-        tuple_selection1,
-        tuple_selection2,
-        distancemin,
-        distancemax,
-        resolution=1.0,
-            kappa=1.0):
-        self.m = representation.prot.get_model()
-        self.rs = IMP.RestraintSet(self.m, 'distance')
+    """A simple distance restraint between rigid bodies"""
+    def __init__(self,
+                 representation=None,
+                 tuple_selection1=None,
+                 tuple_selection2=None,
+                 distancemin=0,
+                 distancemax=100,
+                 resolution=1.0,
+                 kappa=1.0,
+                 root_hier = None):
+        """Setup distance restraint.
+        @param representation DEPRECATED
+        @param tuple_selection1 (start,stop,molecule name)
+        @param tuple_selection2 (start,stop,molecule name)
+        @param distancemin The minimum dist
+        @param distancemax The maximum dist
+        @param resolution For selecting particles
+        @param kappa The harmonic parameter
+        @param root_hier The hierarchy to select from (use this instead of representation)
+        \note currently this just selects the first particles
+        """
         self.weight=1.0
         self.label="None"
-        #ts = IMP.core.Harmonic(distance,kappa)
-
+        if tuple_selection1 is None or tuple_selection2 is None:
+            raise Exception("You must pass tuple_selection1/2")
         ts1 = IMP.core.HarmonicUpperBound(distancemax, kappa)
         ts2 = IMP.core.HarmonicLowerBound(distancemin, kappa)
 
-        # IMP.atom.get_by_type
-        particles1 = IMP.pmi.tools.select(
-            representation,
-            resolution=resolution,
-            name=tuple_selection1[2],
-            residue=tuple_selection1[0])
-        particles2 = IMP.pmi.tools.select(
-            representation,
-            resolution=resolution,
-            name=tuple_selection2[2],
-            residue=tuple_selection2[0])
+        if representation and not root_hier:
+            self.m = representation.prot.get_model()
+            particles1 = IMP.pmi.tools.select(representation,
+                                              resolution=resolution,
+                                              name=tuple_selection1[2],
+                                              residue=tuple_selection1[0])
+            particles2 = IMP.pmi.tools.select(representation,
+                                              resolution=resolution,
+                                              name=tuple_selection2[2],
+                                              residue=tuple_selection2[0])
+        elif root_hier and not representation:
+            self.m = root_hier.get_model()
+            sel1 = IMP.atom.Selection(root_hier,
+                                            resolution=resolution,
+                                            molecule=tuple_selection1[0],
+                                            residue_index=tuple_selection1[2])
+            particles1 = sel1.get_selected_particles()
+            sel2 = IMP.atom.Selection(root_hier,
+                                            resolution=resolution,
+                                            molecule=tuple_selection2[0],
+                                            residue_index=tuple_selection2[2])
+            particles2 = sel2.get_selected_particles()
+        else:
+            raise Exception("Pass representation or root_hier, not both")
 
+        self.rs = IMP.RestraintSet(self.m, 'distance')
+
+        # IMP.atom.get_by_type
         for p in particles1:
             print(p.get_name())
 

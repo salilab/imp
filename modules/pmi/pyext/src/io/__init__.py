@@ -362,7 +362,7 @@ def get_best_models(stat_files,
     score_list=[]                 # best scores
     feature_keyword_list_dict=defaultdict(list)  # best values of the feature keys
     for sf in stat_files:
-        root_directory_of_stat_file = os.path.dirname(os.path.dirname(sf))
+        root_directory_of_stat_file = os.path.dirname(os.path.dirname(os.path.abspath(sf)))
         print("getting data from file %s" % sf)
         po = IMP.pmi.output.ProcessOutput(sf)
 
@@ -483,7 +483,6 @@ def read_coordinates_of_rmfs(model,
     for cnt, tpl in enumerate(rmf_tuples):
         rmf_file = tpl[1]
         frame_number = tpl[2]
-
         if cnt==0:
             prots = IMP.pmi.analysis.get_hiers_from_rmf(model,
                                                    frame_number,
@@ -495,47 +494,51 @@ def read_coordinates_of_rmfs(model,
             continue
 
         prot=prots[state_number]
+
         # getting the particles
         part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)
-        all_particles=[pp for key in part_dict for pp in part_dict[key]]
-        all_ps_set=set(all_particles)
-        # getting the coordinates
+        all_particles = [pp for key in part_dict for pp in part_dict[key]]
+        all_ps_set = set(all_particles)
         model_coordinate_dict = {}
         template_coordinate_dict={}
         rmsd_coordinate_dict={}
+
         for pr in part_dict:
             model_coordinate_dict[pr] = np.array(
-               [np.array(IMP.core.XYZ(i).get_coordinates()) for i in part_dict[pr]])
+                [np.array(IMP.core.XYZ(i).get_coordinates()) for i in part_dict[pr]])
+        for tuple_dict,result_dict in zip((alignment_components,rmsd_calculation_components),
+                                          (template_coordinate_dict,rmsd_coordinate_dict)):
 
-        if alignment_components is not None:
-            for pr in alignment_components:
-                if type(alignment_components[pr]) is str:
-                    name=alignment_components[pr]
-                    s=IMP.atom.Selection(prot,molecule=name)
-                elif type(alignment_components[pr]) is tuple:
-                    name=alignment_components[pr][2]
-                    rend=alignment_components[pr][1]
-                    rbegin=alignment_components[pr][0]
-                    s=IMP.atom.Selection(prot,molecule=name,residue_indexes=range(rbegin,rend+1))
-                ps=s.get_selected_particles()
-                filtered_particles=[p for p in ps if p in all_ps_set]
-                template_coordinate_dict[pr] = \
-                    [list(map(float,IMP.core.XYZ(i).get_coordinates())) for i in filtered_particles]
+            if tuple_dict is None:
+                continue
 
-        if rmsd_calculation_components is not None:
-            for pr in rmsd_calculation_components:
-                if type(rmsd_calculation_components[pr]) is str:
-                    name=rmsd_calculation_components[pr]
-                    s=IMP.atom.Selection(prot,molecule=name)
-                elif type(rmsd_calculation_components[pr]) is tuple:
-                    name=rmsd_calculation_components[pr][2]
-                    rend=rmsd_calculation_components[pr][1]
-                    rbegin=rmsd_calculation_components[pr][0]
-                    s=IMP.atom.Selection(prot,molecule=name,residue_indexes=range(rbegin,rend+1))
-                ps=s.get_selected_particles()
-                filtered_particles=[p for p in ps if p in all_ps_set]
-                rmsd_coordinate_dict[pr] = \
-                    [list(map(float,IMP.core.XYZ(i).get_coordinates())) for i in filtered_particles]
+            # PMI2: do selection of resolution and name at the same time
+            if IMP.pmi.get_is_canonical(prot):
+                for pr in tuple_dict:
+                    if type(tuple_dict[pr]) is str:
+                        name = tuple_dict[pr]
+                        s = IMP.atom.Selection(prot,molecule=name,resolution=1)
+                    elif type(tuple_dict[pr]) is tuple:
+                        rend = tuple_dict[pr][1]
+                        rbegin = tuple_dict[pr][0]
+                        s = IMP.atom.Selection(prot,molecule=name,resolution=1,
+                                               residue_indexes=range(rbegin,rend+1))
+                    result_dict[pr] = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
+                                       for p in s.get_selected_particles()]
+            else:
+                for pr in tuple_dict:
+                    if type(tuple_dict[pr]) is str:
+                        name=tuple_dict[pr]
+                        s=IMP.atom.Selection(prot,molecule=name)
+                    elif type(tuple_dict[pr]) is tuple:
+                        name=tuple_dict[pr][2]
+                        rend=tuple_dict[pr][1]
+                        rbegin=tuple_dict[pr][0]
+                        s=IMP.atom.Selection(prot,molecule=name,residue_indexes=range(rbegin,rend+1))
+                    ps=s.get_selected_particles()
+                    filtered_particles=[p for p in ps if p in all_ps_set]
+                    result_dict[pr] = \
+                        [list(map(float,IMP.core.XYZ(p).get_coordinates())) for p in filtered_particles]
 
         all_coordinates.append(model_coordinate_dict)
         alignment_coordinates.append(template_coordinate_dict)
@@ -551,23 +554,37 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
     @param rmf_tuple  score,filename,frame number,original order number, rank
     @param rmsd_calculation_components Tuples to specify what components are used for RMSD calc
     '''
+    if rmsd_calculation_components is None:
+        return {}
+
     rmf_file = rmf_tuple[1]
     frame_number = rmf_tuple[2]
-
     prots = IMP.pmi.analysis.get_hiers_from_rmf(model,
-                                              frame_number,
-                                              rmf_file)
+                                                frame_number,
+                                                rmf_file)
+    prot = prots[state_number]
+    rmsd_bead_size_dict = {}
 
-    prot=prots[state_number]
+    # PMI2: do selection of resolution and name at the same time
+    if IMP.pmi.get_is_canonical(prot):
+        for pr in rmsd_calculation_components:
+            if type(rmsd_calculation_components[pr]) is str:
+                name = rmsd_calculation_components[pr]
+                s = IMP.atom.Selection(prot,molecule=name,resolution=1)
+            elif type(rmsd_calculation_components[pr]) is tuple:
+                rend = rmsd_calculation_components[pr][1]
+                rbegin = rmsd_calculation_components[pr][0]
+                s = IMP.atom.Selection(prot,molecule=name,resolution=1,
+                                       residue_indexes=range(rbegin,rend+1))
+            rmsd_bead_size_dict[pr] = [len(IMP.pmi.tools.get_residue_indexes(p))
+                                       for p in s.get_selected_particles()]
+    else:
+        # getting the particles
+        part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)
+        all_particles=[pp for key in part_dict for pp in part_dict[key]]
+        all_ps_set=set(all_particles)
 
-    # getting the particles
-    part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)
-    all_particles=[pp for key in part_dict for pp in part_dict[key]]
-    all_ps_set=set(all_particles)
-    # getting the coordinates
-    rmsd_bead_size_dict={}
-
-    if rmsd_calculation_components is not None:
+        # getting the coordinates
         for pr in rmsd_calculation_components:
             if type(rmsd_calculation_components[pr]) is str:
                 name=rmsd_calculation_components[pr]
@@ -581,7 +598,6 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
             filtered_particles=[p for p in ps if p in all_ps_set]
             rmsd_bead_size_dict[pr] = \
                 [len(IMP.pmi.tools.get_residue_indexes(p)) for p in filtered_particles]
-
 
     return rmsd_bead_size_dict
 

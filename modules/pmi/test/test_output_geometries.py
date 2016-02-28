@@ -17,7 +17,7 @@ class OutputGeometriesTests(IMP.test.TestCase):
     def test_round_trip(self):
         mdl = IMP.Model()
         p = IMP.Particle(mdl)
-        IMP.core.XYZR.setup_particle(p, 1)
+        IMP.core.XYZR.setup_particle(p)
         IMP.atom.Mass.setup_particle(p, 1)
         h = IMP.atom.Hierarchy.setup_particle(p)
         geo = IMP.display.SphereGeometry(

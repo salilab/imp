@@ -155,6 +155,7 @@ class CrossLinkingMassSpectrometryRestraint(object):
                         copy2 = 0
                         if '.' in c1:
                             name1,copy1 = c1.split('.')
+                        if '.' in c2:
                             name2,copy2 = c2.split('.')
                         ps1 = IMP.atom.Selection(root_hier,
                                                  state_index=nstate,

@@ -24,7 +24,7 @@ class ConnectivityRestraint(object):
     def __init__(self,
                  objects,
                  scale=1.0,
-                 disorderedlength=10,
+                 disorderedlength=False,
                  upperharmonic=True,
                  resolution=1):
         """

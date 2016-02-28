@@ -118,7 +118,7 @@ class State(_SystemBase):
         self.hier.set_name("State_"+str(state_index))
         self.molecules = defaultdict(list) # key is molecule name. value are the molecule copies!
         IMP.atom.State.setup_particle(self.hier,state_index)
-        self.built=False
+        self.built = False
 
     def __repr__(self):
         return self.system.__repr__()+'.'+self.hier.get_name()
@@ -423,6 +423,11 @@ class Molecule(_SystemBase):
             raise Exception('You have multiple bead resolutions but are attempting to '
                             'set them all up as individual Densities. '
                             'This could have unexpected results.')
+
+        # check residues are all part of this molecule:
+        for r in res:
+            if r.get_molecule()!=self:
+                raise Exception('You are adding residues from a different molecule to',self.__repr__())
 
         # store the representation group
         self.representations.append(_Representation(res,

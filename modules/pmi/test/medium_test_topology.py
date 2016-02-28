@@ -43,8 +43,8 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
                                density_residues_per_component=20,
                                density_voxel_size=3.0)
         mol.add_representation(mol.get_non_atomic_residues(),
-                                resolutions=[10],
-                                setup_particles_as_densities=True)
+                               resolutions=[10],
+                               setup_particles_as_densities=True)
 
         # When you call build, this actually makes the beads and fits the GMMs
         #  This returns a canonical IMP hierarchy
@@ -553,7 +553,6 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEqual(len(selD.get_selected_particles()),
                          len(atomic_res)//dres+1)
 
-    @IMP.test.skip("This test wont pass until we fix self-densities in RMF")
     def test_setup_beads_as_densities(self):
         """Test setup of individual density particles.
         This is mainly for flexible beads or all-atom simulations
@@ -565,17 +564,12 @@ class TopologyTest(IMP.test.TestCase):
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
                                       chain_id='A',res_range=(55,63),offset=-54)
-        non_atomic_res = m1.get_non_atomic_residues()
 
         fname = self.get_tmp_file_name('test_gmm')
-        m1.add_representation(atomic_res,
-                              resolutions=[1],
-                              setup_particles_as_densities=True)
-        m1.add_representation(non_atomic_res,
+        m1.add_representation(m1,
                               resolutions=[1],
                               setup_particles_as_densities=True)
         hier = s.build()
-
         selD = IMP.atom.Selection(hier,representation_type=IMP.atom.DENSITIES)
         self.assertEqual(selD.get_selected_particles(),
                           IMP.core.get_leaves(hier))

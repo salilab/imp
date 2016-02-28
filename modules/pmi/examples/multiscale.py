@@ -93,5 +93,5 @@ rex=IMP.pmi.macros.ReplicaExchange0(mdl,
                                     global_output_directory='multiscale_output/',
                                     output_objects=output_objects,
                                     monte_carlo_steps=10,
-                                    number_of_frames=100)
+                                    number_of_frames=10)
 rex.execute_macro()

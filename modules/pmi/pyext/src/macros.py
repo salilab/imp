@@ -1279,9 +1279,9 @@ class AnalysisReplicaExchange0(object):
         self.stat_files = []
         # it contains the position of the root directories
         for rd in merge_directories:
-            stat_files = glob.glob(rd + "/" + stat_dir + "/stat.*.out")
+            stat_files = glob.glob(os.path.join(rd,stat_dir,"stat.*.out"))
             if len(stat_files)==0:
-                print("WARNING: no stat files found in",rd + "/" + stat_dir + "/stat.*.out")
+                print("WARNING: no stat files found in",os.path.join(rd,stat_dir))
             self.stat_files += stat_files
 
 
@@ -1349,7 +1349,7 @@ class AnalysisReplicaExchange0(object):
                    alignment_components=None,
                    number_of_best_scoring_models=10,
                    rmsd_calculation_components=None,
-                   distance_matrix_file=None,
+                   distance_matrix_file='distances.mat',
                    load_distance_matrix_file=False,
                    skip_clustering=False,
                    number_of_clusters=1,
@@ -1529,7 +1529,6 @@ class AnalysisReplicaExchange0(object):
 
 
                     prot=prots[state_number]
-
                     if cnt==0:
                         coords_f1=alignment_coordinates[cnt]
                     if cnt > 0:
@@ -1616,7 +1615,6 @@ class AnalysisReplicaExchange0(object):
                     # set the first model as template coordinates
                     Clusters.set_template(alignment_coordinates[n])
                 Clusters.fill(all_rmf_file_names[n], rmsd_coordinates[n])
-
             print("Global calculating the distance matrix")
 
             # calculate distance matrix, all against all
@@ -1718,7 +1716,6 @@ class AnalysisReplicaExchange0(object):
 
 
                     prot=prots[state_number]
-
                     if k > 0:
                         model_index = Clusters.get_model_index_from_name(
                             structure_name)

@@ -55,6 +55,6 @@ rex = IMP.pmi.macros.ReplicaExchange0(mdl,
                                       root_hier=hier,
                                       crosslink_restraints = all_rs, #for visualizing SSEs in RMF
                                       molecular_dynamics_sample_objects=md_ps,
-                                      number_of_frames=100,
-                                      global_output_directory='gcp2_md/')
+                                      number_of_frames=10,
+                                      global_output_directory='atomistic_output/')
 rex.execute_macro()

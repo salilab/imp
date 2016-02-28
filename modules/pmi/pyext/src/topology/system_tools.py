@@ -358,10 +358,10 @@ def build_representation(parent,rep,coord_finder):
             if rep.setup_particles_as_densities:
                 for p in IMP.core.get_leaves(this_resolution):
                     setup_bead_as_gaussian(p)
-                #uncomment this when we can write self-densities to RMF
-                #this_representation.add_representation(this_resolution,
-                #                                       IMP.atom.DENSITIES,
-                #                                       resolution)
+                this_resolution.set_name(this_resolution.get_name()+' Densities %i'%resolution)
+                this_representation.add_representation(this_resolution,
+                                                       IMP.atom.DENSITIES,
+                                                       resolution)
 
     if single_node:
         root_representation.set_name(name_all.strip(',')+": Base")
