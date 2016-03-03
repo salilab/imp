@@ -1433,6 +1433,11 @@ class AnalysisReplicaExchange0(object):
                                    rmf_file_frame_list,
                                    list(range(len(score_list)))))
 
+            if density_custom_ranges:
+                for k in density_custom_ranges:
+                    if type(density_custom_ranges[k]) is not list:
+                        raise Exception("Density custom ranges: values must be lists of tuples")
+
             # keep subset of frames if requested
             if first_and_last_frames is not None:
                 nframes = len(score_rmf_tuples)
@@ -1527,8 +1532,13 @@ class AnalysisReplicaExchange0(object):
                     if not prots:
                         continue
 
+                    if IMP.pmi.get_is_canonical(prots[0]):
+                        states = IMP.atom.get_by_type(prots[0],IMP.atom.STATE_TYPE)
+                        prot = states[state_number]
+                    else:
+                        prot = prots[state_number]
 
-                    prot=prots[state_number]
+
                     if cnt==0:
                         coords_f1=alignment_coordinates[cnt]
                     if cnt > 0:
@@ -1663,7 +1673,6 @@ class AnalysisReplicaExchange0(object):
                 print(Clusters.get_cluster_label_names(cl))
 
                 # first initialize the Density class if requested
-
                 if density_custom_ranges:
                     DensModule = IMP.pmi.analysis.GetModelDensity(
                         density_custom_ranges,
@@ -1679,7 +1688,6 @@ class AnalysisReplicaExchange0(object):
                              str(Clusters.get_cluster_label_average_rmsd(cl))}
                 clusstat = open(dircluster + "stat.out", "w")
                 for k, structure_name in enumerate(Clusters.get_cluster_label_names(cl)):
-
                     # extract the features
                     tmp_dict = {}
                     tmp_dict.update(rmsd_dict)
@@ -1689,20 +1697,21 @@ class AnalysisReplicaExchange0(object):
                             key] = best_score_feature_keyword_list_dict[
                             key][
                             index]
+
                     # get the rmf name and the frame number from the list of
                     # frame names
                     rmf_name = structure_name.split("|")[0]
                     rmf_frame_number = int(structure_name.split("|")[1])
-
                     clusstat.write(str(tmp_dict) + "\n")
 
+                    # extract frame (open or link to existing)
                     if k==0:
                         prots,rs = IMP.pmi.analysis.get_hiers_and_restraints_from_rmf(
                           self.model,
                           rmf_frame_number,
                           rmf_name)
                     else:
-                        linking_successful=IMP.pmi.analysis.link_hiers_and_restraints_to_rmf(
+                        linking_successful = IMP.pmi.analysis.link_hiers_and_restraints_to_rmf(
                             self.model,
                             prots,
                             rs,
@@ -1710,12 +1719,16 @@ class AnalysisReplicaExchange0(object):
                             rmf_name)
                         if not linking_successful:
                             continue
-
                     if not prots:
                         continue
 
+                    if IMP.pmi.get_is_canonical(prots[0]):
+                        states = IMP.atom.get_by_type(prots[0],IMP.atom.STATE_TYPE)
+                        prot = states[state_number]
+                    else:
+                        prot = prots[state_number]
 
-                    prot=prots[state_number]
+                    # transform clusters onto first
                     if k > 0:
                         model_index = Clusters.get_model_index_from_name(
                             structure_name)

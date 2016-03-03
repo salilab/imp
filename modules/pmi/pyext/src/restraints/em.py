@@ -182,19 +182,29 @@ class GaussianEMRestraint(object):
             IMP.core.transform(IMP.core.RigidBody(p), transformation)
         # IMP.pmi.tools.translate_hierarchies(self.densities,v)
 
-    def center_target_density_on_origin(self):
-        target_com = IMP.algebra.Vector3D(0, 0, 0)
-        target_mass = 0.0
-        for p in self.target_ps:
+    def get_center_of_mass(self, target=True):
+        '''Returns the geometric center of the GMM particles
+        @param target = True - returns target map gmm COM
+        @param target = False - returns model gmm COM'''
+        com = IMP.algebra.Vector3D(0, 0, 0)
+        total_mass = 0.0
+        if target:
+            ps = self.target_ps
+        else:
+            ps = self.model_ps
+        for p in ps:
             mass = IMP.atom.Mass(p).get_mass()
             pos = IMP.core.XYZ(p).get_coordinates()
-            target_com += pos * mass
-            target_mass += mass
-        target_com /= target_mass
+            com += pos * mass
+            total_mass += mass
+        com /= total_mass
+        return com
+
+    def center_target_density_on_origin(self):
+        target_com = self.get_center_of_mass()
         print('target com', target_com)
         model_com = IMP.algebra.Vector3D(0, 0, 0)
         print('model com', model_com)
-
         v = target_com - model_com
         print('translating with', -v)
         transformation = IMP.algebra.Transformation3D(IMP.algebra.Vector3D(-v))
@@ -202,26 +212,17 @@ class GaussianEMRestraint(object):
             IMP.core.transform(IMP.core.RigidBody(p), transformation)
         # IMP.pmi.tools.translate_hierarchies(self.densities,v)
 
-    def center_model_on_target_density(self, representation):
-        target_com = IMP.algebra.Vector3D(0, 0, 0)
-        target_mass = 0.0
-        for p in self.target_ps:
-            mass = IMP.atom.Mass(p).get_mass()
-            pos = IMP.core.XYZ(p).get_coordinates()
-            target_com += pos * mass
-            target_mass += mass
-        target_com /= target_mass
+    def center_model_on_target_density(self, input_object):
+        if type(input_object) is IMP.pmi.representation.Representation:
+            hier = input_object.prot
+        elif type(input_object) is IMP.pmi.topology.State:
+            hier = input_object.get_hierarchy()
+        else:
+            raise Exception("Input must be a Representation or topology.State object")
+        target_com = self.get_center_of_mass()
         print('target com', target_com)
-        model_com = IMP.algebra.Vector3D(0, 0, 0)
-        model_mass = 0.0
-        for p in self.model_ps:
-            mass = IMP.atom.Mass(p).get_mass()
-            pos = IMP.core.XYZ(p).get_coordinates()
-            model_com += pos * mass
-            model_mass += mass
-        model_com /= model_mass
+        model_com = self.get_center_of_mass(target=False)
         print('model com', model_com)
-
         v = target_com - model_com
         print('translating with', v)
         transformation = IMP.algebra.Transformation3D(IMP.algebra.Vector3D(v))
@@ -229,7 +230,7 @@ class GaussianEMRestraint(object):
         rigid_bodies = set()
         XYZRs = set()
 
-        for p in IMP.atom.get_leaves(representation.prot):
+        for p in IMP.atom.get_leaves(hier):
             if IMP.core.RigidBodyMember.get_is_setup(p):
                 rb = IMP.core.RigidBodyMember(p).get_rigid_body()
                 rigid_bodies.add(rb)
@@ -304,6 +305,14 @@ class GaussianEMRestraint(object):
 
     def evaluate(self):
         return self.weight * self.rs.unprotected_evaluate(None)
+
+    def write_target_gmm_to_mrc(self, fileout=None, voxel_size=5.0):
+        '''Writes target GMM file to MRC'''
+        if fileout is None:
+            fileout="Gaussian_map_" + self.label + ".mrc"
+        IMP.isd.gmm_tools.write_gmm_to_map(self.target_ps, fileout, voxel_size)
+        return fileout
+
 
 #-------------------------------------------
 

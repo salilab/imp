@@ -29,12 +29,11 @@ Here are some complete examples to help you get started:
  - [MD modeling](https://integrativemodeling.org/nightly/doc/ref/pmi_2atomistic_8py-example.html): how to set up restraints for atomic-scale models and then run molecular dynamics
 
 ## Automating model construction
-We have implemented the [TopologyReader](@ref IMP::pmi::topology::TopologyReader) for automatically doing the first two bullet points above:
-reading in structure data, creating representations, and setting some basic degrees of freedom.
+We have implemented the [BuildSystem](@ref IMP::pmi::macros::BuildSystem) macro for more easily setting up large systems. This class reads in structure data, creates representations, and sets some basic degrees of freedom.
 See the [PMI tutorial](@ref rnapolii_stalk) for a complete explanation of how to use this class.
 
 ## Multi-scale representation in PMI
-One can create multiple simultaneous representations in PMI (see [Molecule.add_representation()](@ref IMP::pmi::topology::add_representation()). Here is a brief overview:
+One can create multiple simultaneous representations in PMI. Here is a brief overview:
  - beads: Groups of residues. The "resolution" here is the number of residues per bead (except resolution 0, which corresponds to atomic resolution). For regions with known structure, these are created by averaging along the backbone. Otherwise they are spheres with the approximately correct radius for unstructured protein.
  - densities: These are approximated electron density, in the form of [Gaussians](@ref IMP::core::Gaussian). For structured regions we fit a Gaussian Mixture Model (GMM) to the atomic positions. The key number here is residues_per_component: lower number means more approximate. Currently this representation is only used in the [GaussianEMRestraint](@ref IMP::pmi::restraints::em::GaussianEMRestraint) but we plan to use them for excluded volume, etc.
  - ideal helices: These are actually resolution=1 bead representations at the approximate locations of a helix.
@@ -43,7 +42,7 @@ See a longer discussion of resolutions [here](@ref pmi_resolution).
 
 Check out some examples or [systems](http://integrativemodeling.org/systems/?tag=PMI) that use PMI.
 
-_Author(s)_: Riccardo Pellarin, Charles Greenberg, Daniel Saltzberg, Peter Cimermancic,  Ben Webb, Daniel Russel,  Elina Tjioe, Seung Joong Kim, Max Bonomi, Yannick Spill
+_Author(s)_: Riccardo Pellarin, Charles Greenberg, Daniel Saltzberg, Peter Cimermancic, Ben Webb, Daniel Russel,  Elina Tjioe, Seung Joong Kim, Max Bonomi, Yannick Spill
 
 _Maintainers_: Riccardo Pellarin, Charles Greenberg, Daniel Saltzberg
 

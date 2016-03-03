@@ -124,7 +124,24 @@ class State(_SystemBase):
         return self.system.__repr__()+'.'+self.hier.get_name()
 
     def get_molecules(self):
+        """Return a dictionary where key is molecule name and value
+        are the list of all copies of that molecule in setup order"""
         return self.molecules
+
+    def get_molecule(self,name,copy_num=0):
+        """Access a molecule by name and copy number
+        @param name The molecule name used during setup
+        @param copy_num The copy number based on input order.
+        Default: 0. Set to 'all' to get all copies
+        """
+        if name not in self.molecules:
+            raise Exception("get_molecule() could not find molname",name)
+        if copy_num=='all':
+            return self.molecules[name]
+        else:
+            if copy_num>len(self.molecules[name])-1:
+                raise Exception("get_molecule() copy number is too high:",copy_num)
+            return self.molecules[name][copy_num]
 
     def create_molecule(self,name,sequence='',chain_id=''):
         """Create a new Molecule within this State

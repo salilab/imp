@@ -61,6 +61,7 @@ class DegreesOfFreedom(object):
         @param name Rigid body name (if None, use IMP default)
         \note If you want all resolutions, pass PMI objects because this function will get them all.
         Alternatively you can do your selection elsewhere and just pass hierarchies.
+        Returns tuple (rb_movers,rb_object)
         """
 
         rb_movers = []
@@ -73,7 +74,7 @@ class DegreesOfFreedom(object):
             if name is not None:
                 name = rb.get_name()
         else:
-        ### Otherwise, setup RB
+            ### Otherwise, setup RB
             hiers = IMP.pmi.tools.input_adaptor(rigid_parts,
                                                 resolution,
                                                 flatten=True)
@@ -111,7 +112,7 @@ class DegreesOfFreedom(object):
                                                         IMP.FloatKeys(floatkeys),
                                                         nonrigid_max_trans))
         self.movers += rb_movers # probably need to store more info
-        return rb_movers
+        return rb_movers,rb
 
     def create_super_rigid_body(self,
                                 srb_parts,
@@ -207,19 +208,6 @@ class DegreesOfFreedom(object):
         self.movers += fb_movers
         return fb_movers
 
-    def add_rigid_body(self, rb, max_trans=4.0, max_rot=0.4, optimize=True):
-        """ Adds a rigid body it to the rigid_body and movers lists
-        Initially meant as a way to pass GMM rigid bodies from density restraints,
-        but may be useful in other cases.
-        @param rb - the rigid body
-        @param max_trans - Maximum translation of the rb
-        @param max_rot - Maximum rotation of the rb
-        @param optimize - True if you want to sample the position of the rigid body
-        """
-        self.rigid_bodies.append(rb)
-        if optimize:
-            self.movers.append(IMP.core.RigidBodyMover(rb,max_trans,max_rot))
-
     def create_nuisance_mover(self,
                               nuisance_p,
                               step_size,
@@ -312,6 +300,21 @@ class DegreesOfFreedom(object):
         #  - rigid "Mol3" (8 rigid, 3 nonrigid)
         return 'DegreesOfFreedom: ' + \
           "\n".join(repr(m) for m in self.movers)
+
+    def optimize_flexible_beads(self, nsteps, temperature=1.0):
+        '''Set up MC run with just flexible beads.
+        Optimization works much better when restraints
+        are already set up.'''
+        import IMP.pmi.samplers
+        pts = IMP.pmi.tools.ParticleToSampleList()
+        for n, fb in enumerate(self.get_flexible_beads()):
+            pts.add_particle(fb, "Floppy_Bodies", 1.0, "Flexible_Bead_" + str(n))
+        if len(pts.get_particles_to_sample()) > 0:
+            mc = IMP.pmi.samplers.MonteCarlo(self.mdl, [pts], temperature)
+            print("optimize_flexible_beads: optimizing %i flexible beads" % len(self.get_flexible_beads()))
+            mc.optimize(nsteps)
+        else:
+            print("optimize_flexible_beads: no particle to optimize")
 
     def get_movers(self):
         """Should only return Enabled movers?"""

@@ -153,6 +153,8 @@ class ConnectivityRestraint(object):
         """ Returns number of connectivity restraints """
         return len(self.rs.get_restraints())
 
+    def evaluate(self):
+        return self.weight * self.rs.unprotected_evaluate(None)
 
 class ExcludedVolumeSphere(object):
     """A class to create an excluded volume restraint for a set of particles at a given resolution.
@@ -270,6 +272,9 @@ class ExcludedVolumeSphere(object):
         output["_TotalScore"] = str(score)
         output["ExcludedVolumeSphere_" + self.label] = str(score)
         return output
+
+    def evaluate(self):
+        return self.weight * self.rs.unprotected_evaluate(None)
 
 
 class ResidueBondRestraint(object):

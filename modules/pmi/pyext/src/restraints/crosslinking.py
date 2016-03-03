@@ -503,7 +503,7 @@ class AtomicCrossLinkMSRestraint(object):
         # basic params
         self.root = root_hier
         self.mdl = self.root.get_model()
-        self.CrossLinkDataBase = xldb
+        self.xldb = xldb
         self.weight = 1.0
         self.label = label
         self.length = length
@@ -565,12 +565,12 @@ class AtomicCrossLinkMSRestraint(object):
         if one_psi:
             self._create_psi('psi',psi_init)
         else:
-            for xlid in self.CrossLinkDataBase.xlid_iterator():
+            for xlid in self.xldb.xlid_iterator():
                 self._create_psi(xlid,psi_init)
 
         ### create all the XLs
         xlrs=[]
-        for xlid in self.CrossLinkDataBase.xlid_iterator():
+        for xlid in self.xldb.xlid_iterator():
             # create restraint for this data point
             if one_psi:
                 psip = self.psi_dictionary['psi'][0].get_particle_index()
@@ -585,11 +585,11 @@ class AtomicCrossLinkMSRestraint(object):
 
             # add a contribution for each XL ambiguity option within each state
             for nstate in self.nstates:
-                for xl in self.CrossLinkDataBase[xlid]:
-                    r1 = xl[self.CrossLinkDataBase.residue1_key]
-                    c1 = xl[self.CrossLinkDataBase.protein1_key].strip()
-                    r2 = xl[self.CrossLinkDataBase.residue2_key]
-                    c2 = xl[self.CrossLinkDataBase.protein2_key].strip()
+                for xl in self.xldb[xlid]:
+                    r1 = xl[self.xldb.residue1_key]
+                    c1 = xl[self.xldb.protein1_key].strip()
+                    r2 = xl[self.xldb.residue2_key]
+                    c2 = xl[self.xldb.protein2_key].strip()
 
                     # perform selection. these may contain multiples if Copies are used
                     ps1 = IMP.atom.Selection(self.root,

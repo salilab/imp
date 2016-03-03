@@ -108,122 +108,6 @@ def parse_dssp(dssp_fn, limit_to_chains=''):
         sses['beta'].append(beta_dict[beta_sheet])
     return sses
 
-def parse_xlinks_davis(data_fn,
-                       max_num=-1,
-                       name_map={},
-                       named_offsets={},
-                       use_chains={}):
-    """ Format from Trisha Davis. Lines are:
-    ignore ignore seq1 seq2 >Name(res) >Name(res) score
-    @param data_fn       The data file name
-    @param max_num       Maximum number of XL to read (-1 is all)
-    @param name_map      Dictionary mapping text file names to the molecule name
-    @param named_offsets Integer offsets to apply to the indexing in the file
-    Output is a CrossLinkData object containing SelectionDictionaries
-    data[unique_id] =
-              [ { 'r1': {'molecule':'A','residue_index':5},
-                  'r2': {'molecule':'B','residue_index':100},
-                  'score': 123 },
-                { 'r1': {'molecule':'C','residue_index':63},
-                  'r2': {'molecule':'D','residue_index':94},
-                  'score': 600 }
-              ]
-    """
-
-    inf=open(data_fn,'r')
-    data=defaultdict(list)
-    found=set()
-    data = CrossLinkData()
-    for nl,l in enumerate(inf):
-        if max_num==-1 or nl<max_num:
-            ig1,ig2,seq1,seq2,s1,s2,score=l.split()
-            score=float(score)
-            m1=re.search(r'>([\w-]+)\((\w+)\)',s1)
-            m2=re.search(r'>([\w-]+)\((\w+)\)',s2)
-
-            n1=m1.group(1)
-            r1=int(m1.group(2))
-            if n1 in name_map:
-                n1=name_map[n1]
-            if n1 in named_offsets:
-                r1+=named_offsets[n1]
-
-            n2=m2.group(1)
-            r2=int(m2.group(2))
-            if n2 in name_map:
-                n2=name_map[n2]
-            if n2 in named_offsets:
-                r2+=named_offsets[n2]
-            key=tuple(sorted(['%s.%i'%(n1,r1),'%s.%i'%(n2,r2)]))
-            if key in found:
-                print('skipping duplicated xl',key)
-                continue
-            found.add(key)
-            data.add_cross_link(nl,
-                                {'molecule':n1,'residue_index':r1},
-                                {'molecule':n2,'residue_index':r2},
-                                score)
-    inf.close()
-    return data
-
-def parse_proxl(data_fn,
-                max_num=-1,
-                name_map={},
-                named_offsets={},
-                use_chains={}):
-    """ Format from Trisha Davis. Lines are:
-    ignore ignore seq1 seq2 >Name(res) >Name(res) score
-    @param data_fn       The data file name
-    @param max_num       Maximum number of XL to read (-1 is all)
-    @param name_map      Dictionary mapping text file names to the molecule name
-    @param named_offsets Integer offsets to apply to the indexing in the file
-    Output is a CrossLinkData object containing SelectionDictionaries
-    data[unique_id] =
-              [ { 'r1': {'molecule':'A','residue_index':5},
-                  'r2': {'molecule':'B','residue_index':100},
-                  'score': 123 },
-                { 'r1': {'molecule':'C','residue_index':63},
-                  'r2': {'molecule':'D','residue_index':94},
-                  'score': 600 }
-              ]
-    """
-
-    inf=open(data_fn,'r')
-    data=defaultdict(list)
-    found=set()
-    data = CrossLinkData()
-    for nl,l in enumerate(inf):
-        if nl==0:
-            continue
-        if max_num==-1 or nl<max_num:
-            fields = l.split()
-            n1 = fields[2]
-            r1 = int(fields[3])
-            n2 = fields[4]
-            r2 = int(fields[5])
-            score = fields[9] #float(fields[9])
-            if n1 in name_map:
-                n1 = name_map[n1]
-            if n1 in named_offsets:
-                r1 += named_offsets[n1]
-            if n2 in name_map:
-                n2 = name_map[n2]
-            if n2 in named_offsets:
-                r2 += named_offsets[n2]
-
-            key = tuple(sorted(['%s.%i'%(n1,r1),'%s.%i'%(n2,r2)]))
-            #print('addingXL',key)
-            if key in found:
-                print('skipping duplicated xl',key)
-                continue
-            found.add(key)
-            data.add_cross_link(nl,
-                                {'molecule':n1,'residue_index':r1},
-                                {'molecule':n2,'residue_index':r2},
-                                score)
-    inf.close()
-    return data
-
 def save_best_models(mdl,
                      out_dir,
                      stat_files,
@@ -492,8 +376,11 @@ def read_coordinates_of_rmfs(model,
 
         if not prots:
             continue
-
-        prot=prots[state_number]
+        if IMP.pmi.get_is_canonical(prots[0]):
+            states = IMP.atom.get_by_type(prots[0],IMP.atom.STATE_TYPE)
+            prot = states[state_number]
+        else:
+            prot = prots[state_number]
 
         # getting the particles
         part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)
@@ -562,7 +449,13 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
     prots = IMP.pmi.analysis.get_hiers_from_rmf(model,
                                                 frame_number,
                                                 rmf_file)
-    prot = prots[state_number]
+
+    if IMP.pmi.get_is_canonical(prots[0]):
+        states = IMP.atom.get_by_type(prots[0],IMP.atom.STATE_TYPE)
+        prot = states[state_number]
+    else:
+        prot = prots[state_number]
+
     rmsd_bead_size_dict = {}
 
     # PMI2: do selection of resolution and name at the same time

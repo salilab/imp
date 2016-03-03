@@ -1007,11 +1007,9 @@ class GetModelDensity(object):
 
         if hierarchy:
             part_dict = get_particles_at_resolution_one(hierarchy)
-
             all_particles_by_resolution = []
             for name in part_dict:
                 all_particles_by_resolution += part_dict[name]
-
 
         for density_name in self.custom_ranges:
             parts = []
@@ -1025,9 +1023,10 @@ class GetModelDensity(object):
                                                        seg, resolution=1, name_is_ambiguous=False)
                 else:
                     # else, when you have a hierarchy, but not a representation
-                    for h in hierarchy.get_children():
-                        if not IMP.atom.Molecule.get_is_setup(h):
-                            IMP.atom.Molecule.setup_particle(h.get_particle())
+                    if not IMP.pmi.get_is_canonical(hierarchy):
+                        for h in hierarchy.get_children():
+                            if not IMP.atom.Molecule.get_is_setup(h):
+                                IMP.atom.Molecule.setup_particle(h.get_particle())
 
                     if type(seg) == str:
                         s = IMP.atom.Selection(hierarchy,molecule=seg)
@@ -1038,11 +1037,12 @@ class GetModelDensity(object):
                         raise Exception('could not understand selection tuple '+str(seg))
 
                     all_particles_by_segments += s.get_selected_particles()
-
             if hierarchy:
-                parts = list(
-                    set(all_particles_by_segments) & set(all_particles_by_resolution))
-
+                if IMP.pmi.get_is_canonical(hierarchy):
+                    parts = all_particles_by_segments
+                else:
+                    parts = list(
+                        set(all_particles_by_segments) & set(all_particles_by_resolution))
             self._create_density_from_particles(parts, density_name)
 
     def normalize_density(self):
@@ -1400,22 +1400,16 @@ def get_hiers_from_rmf(model, frame_number, rmf_file):
         prots = IMP.rmf.create_hierarchies(rh, model)
     except IOError:
         print("Unable to open rmf file %s" % (rmf_file))
-        prots = None
-        return prots
+        return None
     #IMP.rmf.link_hierarchies(rh, prots)
 
     try:
         IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
     except IOError:
         print("Unable to open frame %i of file %s" % (frame_number, rmf_file))
-        prots = None
-        return prots
+        return None
     model.update()
     del rh
-
-    # PMI expects prots to be a list of states
-    if IMP.pmi.get_is_canonical(prots[0]):
-        prots = IMP.atom.get_by_type(prots[0],IMP.atom.STATE_TYPE)
 
     return prots
 
@@ -1445,18 +1439,15 @@ def get_hiers_and_restraints_from_rmf(model, frame_number, rmf_file):
         rs = IMP.rmf.create_restraints(rh, model)
     except:
         print("Unable to open rmf file %s" % (rmf_file))
-        prot = None
-        rs = None
-        return prots,rs
+        return None,None
     try:
         IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
     except:
         print("Unable to open frame %i of file %s" % (frame_number, rmf_file))
-        prots = None
-        rs = None
-        return prots,rs
+        return None,None
     model.update()
     del rh
+
     return prots,rs
 
 def link_hiers_and_restraints_to_rmf(model,hiers,rs, frame_number, rmf_file):

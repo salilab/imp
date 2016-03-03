@@ -249,6 +249,29 @@ class TestIOCrosslink(IMP.test.TestCase):
             self.assertEqual(xl[cldb.residue2_key],e[5])
             nxl+=1
 
+    def test_xlpro_fixed_format_delimited(self):
+
+        ffp=IMP.pmi.io.crosslink.FixedFormatParser("PROXL")
+        cldb=IMP.pmi.io.crosslink.CrossLinkDataBase()
+        cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_proxl.dat"),FixedFormatParser=ffp)
+
+
+        expected_list=[('1',1,"A","B",24,39),
+                       ('2',1,"A","A",24,125),
+                       ('3',1,"B","A",37,45),
+                       ('4',1,"C","A",37,93)]
+
+        nxl=0
+        for xl in cldb:
+            e=expected_list[nxl]
+            self.assertEqual(xl[cldb.unique_id_key],e[0])
+            self.assertEqual(xl[cldb.unique_sub_index_key],e[1])
+            self.assertEqual(xl[cldb.protein1_key],e[2])
+            self.assertEqual(xl[cldb.protein2_key],e[3])
+            self.assertEqual(xl[cldb.residue1_key],e[4])
+            self.assertEqual(xl[cldb.residue2_key],e[5])
+            nxl+=1
+
 
     def test_FilterOperator(self):
         import operator

@@ -92,7 +92,7 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
                                                         target_is_rigid_body=True)
         gem.set_label("em_1")
         gem.add_to_model()
-        gem.add_target_density_to_state(st1)
+        gem.add_target_density_to_hierarchy(st1)
 
         # Add a second gmm, which should become a second chain
         gem2 = IMP.pmi.restraints.em.GaussianEMRestraint(densities,
@@ -101,7 +101,7 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
 
         gem2.set_label("em_2")
         gem2.add_to_model()
-        gem2.add_target_density_to_state(st1)
+        gem2.add_target_density_to_hierarchy(st1)
 
         # Test that a two child molecules were added to State
         self.assertEqual(len(st1.get_hierarchy().get_children()), 3)

@@ -453,8 +453,11 @@ class TopologyTest(IMP.test.TestCase):
         # create a molecule and add a clone
         st1 = s.create_state()
         m1 = st1.create_molecule("Prot1",sequence=seqs["Prot1"],chain_id='A')
-        m1.create_clone(chain_id='G')
+        m1c = m1.create_clone(chain_id='G')
         self.assertEquals(st1.get_number_of_copies("Prot1"),2)
+        self.assertEqual(st1.get_molecule("Prot1",0),m1)
+        self.assertEqual(st1.get_molecule("Prot1",1),m1c)
+        self.assertEqual(st1.get_molecule("Prot1",'all'),[m1,m1c])
 
         # add structure+mixed representation to original
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
