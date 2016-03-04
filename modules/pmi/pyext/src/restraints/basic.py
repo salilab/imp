@@ -56,7 +56,7 @@ class ExternalBarrier(object):
         ub3 = IMP.core.HarmonicUpperBound(radius, 10.0)
         ss3 = IMP.core.DistanceToSingletonScore(ub3, c3)
         lsc = IMP.container.ListSingletonContainer(self.m)
-        # IMP.atom.get_by_type
+
         lsc.add(particles)
         r3 = IMP.container.SingletonsRestraint(ss3, lsc)
         self.rs.add_restraint(r3)
