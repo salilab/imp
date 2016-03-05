@@ -469,12 +469,16 @@ class BuildSystem(object):
             seq = IMP.pmi.topology.Sequences(mlist[0].fasta_file)
             mol = state.create_molecule(molname,seq[mlist[0].fasta_id],mlist[0].chain)
             for domain in mlist:
-                if domain.residue_range is None:
+                # we build everything in the residue range, even if it extends beyond what's in the actual PDB file
+                if domain.residue_range==[] or domain.residue_range is None:
                     domain_res = mol.get_residues()
                 else:
-                    domain_res = mol.residue_range(domain.residue_range[0]-1+domain.pdb_offset,
-                                                   domain.residue_range[1]-1+domain.pdb_offset)
-
+                    start = domain.residue_range[0]+domain.pdb_offset
+                    if domain.residue_range[1]==-1:
+                        end = -1
+                    else:
+                        end = domain.residue_range[1]+domain.pdb_offset
+                    domain_res = mol.residue_range(start,end)
                 if domain.pdb_file=="BEADS":
                     mol.add_representation(domain_res,
                                            resolutions=[domain.bead_size],

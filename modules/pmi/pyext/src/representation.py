@@ -231,6 +231,8 @@ class Representation(object):
             else:
                 resrange = (start + offset, end + offset)
         else:
+            if resrange[1]==-1:
+                resrange = (resrange[0],end)
             start = resrange[0] - offset
             end = resrange[1] - offset
 

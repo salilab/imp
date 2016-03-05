@@ -43,19 +43,25 @@ def get_structure(mdl,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,ca_
     if ca_only:
         sel = IMP.atom.CAlphaPDBSelector()
     if model_num is None:
-        mh = IMP.atom.read_pdb(pdb_fn,mdl,sel)
+        mh = IMP.atom.read_pdb(pdb_fn,mdl,
+                               IMP.atom.AndPDBSelector(IMP.atom.ChainPDBSelector(chain_id), sel))
+
     else:
         mhs = IMP.atom.read_multimodel_pdb(pdb_fn,mdl,sel)
         if model_num>=len(mhs):
             raise Exception("you requested model num "+str(model_num)+\
                             " but the PDB file only contains "+str(len(mhs))+" models")
-        mh = mhs[model_num]
+        mh = IMP.atom.Selection(mhs[model_num],chain=chain_id,with_representation=True)
 
     if res_range==[] or res_range is None:
         sel = IMP.atom.Selection(mh,chain=chain_id,atom_type=IMP.atom.AtomType('CA'))
     else:
-        sel = IMP.atom.Selection(mh,chain=chain_id,residue_indexes=range(res_range[0],res_range[1]+1),
-                               atom_type=IMP.atom.AtomType('CA'))
+        start = res_range[0]
+        end = res_range[1]
+        if end==-1:
+            end = IMP.atom.Residue(mh.get_children()[0].get_children()[-1]).get_index()
+        sel = IMP.atom.Selection(mh,chain=chain_id,residue_indexes=range(start,end+1),
+                                 atom_type=IMP.atom.AtomType('CA'))
     ret=[]
 
     # return final and apply offset

@@ -118,6 +118,9 @@ class AnalysisTest(IMP.test.TestCase):
         rex.execute_macro()
     def test_get_model_density(self):
         """Test creation of density correctly averages frames for res=5"""
+        if scipy is None:
+            self.skipTest("no sklearn package")
+
         mdl = IMP.Model()
         #self.init_res5(mdl)
         density_ranges = {"Prot1":["Prot1"],
@@ -155,9 +158,7 @@ class AnalysisTest(IMP.test.TestCase):
 
     def test_analysis_macro(self):
         """Test you can organize files correctly with macro"""
-        try:
-            import sklearn
-        except ImportError:
+        if scipy is None:
             self.skipTest("no sklearn package")
 
         mdl = IMP.Model()

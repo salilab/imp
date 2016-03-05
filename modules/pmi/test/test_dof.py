@@ -80,12 +80,11 @@ class TestDOF(IMP.test.TestCase):
         mdl = IMP.Model()
         molecule = self.init_topology1(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        rb_movers = dof.create_rigid_body(molecule,
-                                          nonrigid_parts = molecule.get_non_atomic_residues(),
-                                          name="test RB")
+        rb_movers,rb = dof.create_rigid_body(molecule,
+                                             nonrigid_parts = molecule.get_non_atomic_residues(),
+                                             name="test RB")
         mvs = dof.get_movers()
         self.assertEqual(len(rb_movers),4)
-        rb = dof.rigid_bodies[0]
         all_members = rb.get_member_indexes()
         rigid_members = rb.get_rigid_members()
         num_nonrigid = len(all_members)-len(rigid_members)
@@ -105,10 +104,9 @@ class TestDOF(IMP.test.TestCase):
         mdl = IMP.Model()
         mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        mvs = dof.create_rigid_body(mols,
+        mvs,rb = dof.create_rigid_body(mols,
                                     nonrigid_parts=[m.get_non_atomic_residues() for m in mols])
         self.assertEqual(len(mvs),1+3+3)
-        rb = dof.rigid_bodies[0]
         all_members = rb.get_member_indexes()
         rigid_members = rb.get_rigid_members()
         num_nonrigid = len(all_members)-len(rigid_members)
@@ -122,10 +120,9 @@ class TestDOF(IMP.test.TestCase):
         mdl = IMP.Model()
         mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        mvs = dof.create_rigid_body([mols[0][:4],mols[1][:]],
+        mvs,rb = dof.create_rigid_body([mols[0][:4],mols[1][:]],
                                     nonrigid_parts=mols[0][2:4])
         self.assertEqual(len(mvs),3)
-        rb = dof.rigid_bodies[0]
         all_members = rb.get_member_indexes()
         rigid_members = rb.get_rigid_members()
         num_nonrigid = len(all_members)-len(rigid_members)
@@ -156,10 +153,9 @@ class TestDOF(IMP.test.TestCase):
                               setup_particles_as_densities=True)
         s.build()
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        mvs = dof.create_rigid_body(m1,
+        mvs,rb = dof.create_rigid_body(m1,
                                     nonrigid_parts = m1.get_non_atomic_residues())
         self.assertEqual(len(mvs),4)
-        rb = dof.rigid_bodies[0]
         all_members = rb.get_member_indexes()
         rigid_members = rb.get_rigid_members()
         num_nonrigid = len(all_members)-len(rigid_members)
@@ -174,11 +170,11 @@ class TestDOF(IMP.test.TestCase):
         mdl = IMP.Model()
         mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        rb1_mov = dof.create_rigid_body(mols[0],
+        rb1_mov,rb1 = dof.create_rigid_body(mols[0],
                                         nonrigid_parts = mols[0].get_non_atomic_residues())
-        rb2_mov = dof.create_rigid_body(mols[1],
+        rb2_mov,rb2 = dof.create_rigid_body(mols[1],
                                         nonrigid_parts = mols[1].get_non_atomic_residues())
-        rb3_mov = dof.create_rigid_body(mols[2],
+        rb3_mov,rb3 = dof.create_rigid_body(mols[2],
                                         nonrigid_parts = mols[2].get_non_atomic_residues())
         srb_mover = dof.create_super_rigid_body(mols,chain_min_length=2,
                                                 chain_max_length=2)

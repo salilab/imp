@@ -53,8 +53,9 @@ dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
 md_ps = dof.setup_md(gcp2)
 rex = IMP.pmi.macros.ReplicaExchange0(mdl,
                                       root_hier=hier,
-                                      crosslink_restraints = all_rs, #for visualizing SSEs in RMF
+                                      crosslink_restraints = all_rs,           #for visualizing SSEs in RMF
                                       molecular_dynamics_sample_objects=md_ps,
-                                      number_of_frames=10,
+                                      molecular_dynamics_steps=10,
+                                      number_of_frames=1, # increase number of frames to get better results!
                                       global_output_directory='atomistic_output/')
 rex.execute_macro()

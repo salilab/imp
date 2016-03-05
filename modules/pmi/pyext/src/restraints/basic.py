@@ -14,11 +14,11 @@ class ExternalBarrier(object):
 
     def __init__(self,
                  representation=None,
-                 center=None,
                  radius=10.0,
                  hierarchies=None,
                  resolution=10,
-                 weight=1.0):
+                 weight=1.0,
+                 center=None):
         """Setup external barrier to keep all your structures inside sphere
         @param representation DEPRECATED
         @param center - Center of the external barrier restraint (IMP.algebra.Vector3D object)

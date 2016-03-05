@@ -411,7 +411,7 @@ class Molecule(_SystemBase):
         # check that each residue has not been represented yet
         ov = res & self.represented
         if ov:
-            raise Exception('You have already added representation for '+ov.__repr__())
+            raise Exception('You have already added representation for '+self.get_hierarchy().get_name()+': '+ov.__repr__())
         self.represented|=res
 
         # check you aren't creating multiple resolutions without structure

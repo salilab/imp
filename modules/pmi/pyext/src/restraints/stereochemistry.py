@@ -208,7 +208,8 @@ class ExcludedVolumeSphere(object):
             included_ps = [h.get_particle() for h in hierarchies]
             if bipartite:
                 other_ps = [h.get_particle() for h in other_hierarchies]
-        elif type(representation)==IMP.pmi.representation.Representation:
+        elif type(representation) is IMP.pmi.representation.Representation or \
+            type(representation) is IMP.pmi.representation.SimplifiedModel:
             self.mdl = representation.m
             included_ps = IMP.pmi.tools.select(
                 representation,
