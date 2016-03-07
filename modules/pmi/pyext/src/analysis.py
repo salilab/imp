@@ -488,36 +488,36 @@ class Precision(object):
             self.rank = self.comm.Get_rank()
             self.number_of_processes = self.comm.size
         except ImportError:
-            self.number_of_processes=1
-            self.rank=0
+            self.number_of_processes = 1
+            self.rank = 0
 
-        self.styles=['pairwise_rmsd','pairwise_drmsd_k','pairwise_drmsd_Q',
-                     'pairwise_drms_k','pairwise_rmsd','drmsd_from_center']
-        self.style='pairwise_drmsd_k'
-        self.structures_dictionary={}
-        self.reference_structures_dictionary={}
-        self.prots=[]
-        self.protein_names=None
-        self.len_particles_resolution_one=None
-        self.model=model
-        self.rmf_names_frames={}
-        self.reference_rmf_names_frames=None
-        self.reference_structure=None
-        self.reference_prot=None
-        self.selection_dictionary=selection_dictionary
-        self.threshold=40.0
-        self.residue_particle_index_map=None
-        self.prots=None
+        self.styles = ['pairwise_rmsd','pairwise_drmsd_k','pairwise_drmsd_Q',
+                       'pairwise_drms_k','pairwise_rmsd','drmsd_from_center']
+        self.style = 'pairwise_drmsd_k'
+        self.structures_dictionary = {}
+        self.reference_structures_dictionary = {}
+        self.prots = []
+        self.protein_names = None
+        self.len_particles_resolution_one = None
+        self.model = model
+        self.rmf_names_frames = {}
+        self.reference_rmf_names_frames = None
+        self.reference_structure = None
+        self.reference_prot = None
+        self.selection_dictionary = selection_dictionary
+        self.threshold = 40.0
+        self.residue_particle_index_map = None
+        self.prots = None
         if resolution in [1,10]:
-            self.resolution=resolution
+            self.resolution = resolution
         else:
-            raise KeyError("no such resolution")
+            raise KeyError("Currently only allow resolution 1 or 10")
 
     def _get_structure(self,rmf_frame_index,rmf_name):
         """Read an RMF file and return the particles"""
-        rh= RMF.open_rmf_file_read_only(rmf_name)
+        rh = RMF.open_rmf_file_read_only(rmf_name)
         if not self.prots:
-            self.prots=IMP.rmf.create_hierarchies(rh, self.model)
+            self.prots = IMP.rmf.create_hierarchies(rh, self.model)
             IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
             print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
         else:
@@ -531,19 +531,19 @@ class Precision(object):
         elif self.resolution==10:
             particle_dict = get_particles_at_resolution_ten(self.prots[0])
 
-        protein_names=list(particle_dict.keys())
-        particles_resolution_one=[]
+        protein_names = list(particle_dict.keys())
+        particles_resolution_one = []
         for k in particle_dict:
-            particles_resolution_one+=(particle_dict[k])
+            particles_resolution_one += (particle_dict[k])
 
         if self.protein_names==None:
-            self.protein_names=protein_names
+            self.protein_names = protein_names
         else:
             if self.protein_names!=protein_names:
                 print("Error: the protein names of the new coordinate set is not compatible with the previous one")
 
         if self.len_particles_resolution_one==None:
-            self.len_particles_resolution_one=len(particles_resolution_one)
+            self.len_particles_resolution_one = len(particles_resolution_one)
         else:
             if self.len_particles_resolution_one!=len(particles_resolution_one):
                 raise ValueError("the new coordinate set is not compatible with the previous one")
@@ -566,28 +566,27 @@ class Precision(object):
 
         # decide where to put this structure
         if structure_set_name in self.structures_dictionary:
-            cdict=self.structures_dictionary[structure_set_name]
-            rmflist=self.rmf_names_frames[structure_set_name]
+            cdict = self.structures_dictionary[structure_set_name]
+            rmflist = self.rmf_names_frames[structure_set_name]
         else:
             self.structures_dictionary[structure_set_name]={}
             self.rmf_names_frames[structure_set_name]=[]
-            cdict=self.structures_dictionary[structure_set_name]
-            rmflist=self.rmf_names_frames[structure_set_name]
+            cdict = self.structures_dictionary[structure_set_name]
+            rmflist = self.rmf_names_frames[structure_set_name]
 
         # read the particles
         try:
-            particles_resolution_one=self._get_structure(rmf_frame_index,rmf_name)
+            particles_resolution_one = self._get_structure(rmf_frame_index,rmf_name)
         except ValueError:
             print("something wrong with the rmf")
             return 0
-
         self.selection_dictionary.update({"All":self.protein_names})
 
         for selection_name in self.selection_dictionary:
-            selection_tuple=self.selection_dictionary[selection_name]
-            coords=self._select_coordinates(selection_tuple,particles_resolution_one,self.prots[0])
+            selection_tuple = self.selection_dictionary[selection_name]
+            coords = self._select_coordinates(selection_tuple,particles_resolution_one,self.prots[0])
             if selection_name not in cdict:
-                cdict[selection_name]=[coords]
+                cdict[selection_name] = [coords]
             else:
                 cdict[selection_name].append(coords)
 
@@ -595,7 +594,7 @@ class Precision(object):
 
         # if requested, set up a dictionary to help find residue indexes
         if setup_index_map:
-            self.residue_particle_index_map={}
+            self.residue_particle_index_map = {}
             for prot_name in self.protein_names:
                 self.residue_particle_index_map[prot_name] = \
                        self._get_residue_particle_index_map(
@@ -618,9 +617,9 @@ class Precision(object):
             rmf_frame_index=tup[1]
             # the first frame stores the map between residues and particles
             if self.residue_particle_index_map is None:
-                setup_index_map=True
+                setup_index_map = True
             else:
-                setup_index_map=False
+                setup_index_map = False
             self.add_structure(rmf_name,
                                rmf_frame_index,
                                structure_set_name,
@@ -642,11 +641,16 @@ class Precision(object):
                 self.structures_dictionary = self.comm.recv(source=0, tag=11)
 
     def _get_residue_particle_index_map(self,prot_name,structure,hier):
-        residue_particle_index_map=[]
-        s=IMP.atom.Selection(hier,molecules=[prot_name])
-        all_selected_particles=s.get_selected_particles()
-        intersection=list(set(all_selected_particles) & set(structure))
-        sorted_intersection=IMP.pmi.tools.sort_by_residues(intersection)
+        # Creates map from all particles to residue numbers
+        residue_particle_index_map = []
+        if IMP.pmi.get_is_canonical(hier):
+            s = IMP.atom.Selection(hier,molecules=[prot_name],
+                                   resolution=1)
+        else:
+            s = IMP.atom.Selection(hier,molecules=[prot_name])
+        all_selected_particles = s.get_selected_particles()
+        intersection = list(set(all_selected_particles) & set(structure))
+        sorted_intersection = IMP.pmi.tools.sort_by_residues(intersection)
         for p in sorted_intersection:
             residue_particle_index_map.append(IMP.pmi.tools.get_residue_indexes(p))
         return residue_particle_index_map
@@ -656,26 +660,32 @@ class Precision(object):
         selected_coordinates=[]
         for t in tuple_selections:
             if type(t)==tuple and len(t)==3:
-                s=IMP.atom.Selection(prot,molecules=[t[2]],residue_indexes=range(t[0],t[1]+1))
-                all_selected_particles=s.get_selected_particles()
-                intersection=list(set(all_selected_particles) & set(structure))
-                sorted_intersection=IMP.pmi.tools.sort_by_residues(intersection)
-                cc=[tuple(IMP.core.XYZ(p).get_coordinates()) for p in sorted_intersection]
-                selected_coordinates+=cc
-
+                if IMP.pmi.get_is_canonical(prot):
+                    s = IMP.atom.Selection(prot,molecules=[t[2]],residue_indexes=range(t[0],t[1]+1),
+                                           resolution=1)
+                else:
+                    s = IMP.atom.Selection(prot,molecules=[t[2]],residue_indexes=range(t[0],t[1]+1))
+                all_selected_particles = s.get_selected_particles()
+                intersection = list(set(all_selected_particles) & set(structure))
+                sorted_intersection = IMP.pmi.tools.sort_by_residues(intersection)
+                cc = [tuple(IMP.core.XYZ(p).get_coordinates()) for p in sorted_intersection]
+                selected_coordinates += cc
             elif type(t)==str:
-                s=IMP.atom.Selection(prot,molecules=[t])
-                all_selected_particles=s.get_selected_particles()
-                intersection=list(set(all_selected_particles) & set(structure))
-                sorted_intersection=IMP.pmi.tools.sort_by_residues(intersection)
-                cc=[tuple(IMP.core.XYZ(p).get_coordinates()) for p in sorted_intersection]
-                selected_coordinates+=cc
+                if IMP.pmi.get_is_canonical(prot):
+                    s = IMP.atom.Selection(prot,molecules=[t],resolution=1)
+                else:
+                    s = IMP.atom.Selection(prot,molecules=[t])
+                all_selected_particles = s.get_selected_particles()
+                intersection = list(set(all_selected_particles) & set(structure))
+                sorted_intersection = IMP.pmi.tools.sort_by_residues(intersection)
+                cc = [tuple(IMP.core.XYZ(p).get_coordinates()) for p in sorted_intersection]
+                selected_coordinates += cc
             else:
                 raise ValueError("Selection error")
         return selected_coordinates
 
     def set_threshold(self,threshold):
-        self.threshold=threshold
+        self.threshold = threshold
 
     def _get_distance(self,
                      structure_set_name1,
@@ -684,11 +694,10 @@ class Precision(object):
                      index1,
                      index2):
         """ Compute distance between structures with various metrics """
-        c1=self.structures_dictionary[structure_set_name1][selection_name][index1]
-        c2=self.structures_dictionary[structure_set_name2][selection_name][index2]
-
-        coordinates1=[IMP.algebra.Vector3D(c) for c in c1]
-        coordinates2=[IMP.algebra.Vector3D(c) for c in c2]
+        c1 = self.structures_dictionary[structure_set_name1][selection_name][index1]
+        c2 = self.structures_dictionary[structure_set_name2][selection_name][index2]
+        coordinates1 = [IMP.algebra.Vector3D(c) for c in c1]
+        coordinates2 = [IMP.algebra.Vector3D(c) for c in c2]
 
         if self.style=='pairwise_drmsd_k':
             distance=IMP.atom.get_drmsd(coordinates1,coordinates2)
@@ -703,12 +712,11 @@ class Precision(object):
 
     def _get_particle_distances(self,structure_set_name1,structure_set_name2,
                                selection_name,index1,index2):
-        import numpy as np
-        c1=self.structures_dictionary[structure_set_name1][selection_name][index1]
-        c2=self.structures_dictionary[structure_set_name2][selection_name][index2]
+        c1 = self.structures_dictionary[structure_set_name1][selection_name][index1]
+        c2 = self.structures_dictionary[structure_set_name2][selection_name][index2]
 
-        coordinates1=[IMP.algebra.Vector3D(c) for c in c1]
-        coordinates2=[IMP.algebra.Vector3D(c) for c in c2]
+        coordinates1 = [IMP.algebra.Vector3D(c) for c in c1]
+        coordinates2 = [IMP.algebra.Vector3D(c) for c in c2]
 
         distances=[np.linalg.norm(a-b) for (a,b) in zip(coordinates1,coordinates2)]
 
@@ -732,81 +740,78 @@ class Precision(object):
                plus all the subunits together.
         """
         if selection_keywords is None:
-            sel_keys=list(self.selection_dictionary.keys())
+            sel_keys = list(self.selection_dictionary.keys())
         else:
             for k in selection_keywords:
                 if k not in self.selection_dictionary:
                     raise KeyError("you are trying to find named selection " \
                         + k + " which was not requested in the constructor")
-            sel_keys=selection_keywords
+            sel_keys = selection_keywords
 
         if outfile is not None:
-            of=open(outfile,"w")
-        centroid_index=0
+            of = open(outfile,"w")
+        centroid_index = 0
         for selection_name in sel_keys:
-            number_of_structures_1=len(self.structures_dictionary[structure_set_name1][selection_name])
-            number_of_structures_2=len(self.structures_dictionary[structure_set_name2][selection_name])
-
+            number_of_structures_1 = len(self.structures_dictionary[structure_set_name1][selection_name])
+            number_of_structures_2 = len(self.structures_dictionary[structure_set_name2][selection_name])
             distances={}
-            structure_pointers_1=list(range(0,number_of_structures_1,skip))
-            structure_pointers_2=list(range(0,number_of_structures_2,skip))
-
-            pair_combination_list=list(itertools.product(structure_pointers_1,structure_pointers_2))
-
+            structure_pointers_1 = list(range(0,number_of_structures_1,skip))
+            structure_pointers_2 = list(range(0,number_of_structures_2,skip))
+            pair_combination_list = list(itertools.product(structure_pointers_1,structure_pointers_2))
             if len(pair_combination_list)==0:
                 raise ValueError("no structure selected. Check the skip parameter.")
 
-            my_pair_combination_list=IMP.pmi.tools.chunk_list_into_segments(
+            # compute pairwise distances in parallel
+            my_pair_combination_list = IMP.pmi.tools.chunk_list_into_segments(
                 pair_combination_list,self.number_of_processes)[self.rank]
-            my_length=len(my_pair_combination_list)
+            my_length = len(my_pair_combination_list)
             for n,pair in enumerate(my_pair_combination_list):
-
-                progression=int(float(n)/my_length*100.0)
-                distances[pair]=self._get_distance(structure_set_name1,structure_set_name2,
-                                                  selection_name,pair[0],pair[1])
-
+                progression = int(float(n)/my_length*100.0)
+                distances[pair] = self._get_distance(structure_set_name1,structure_set_name2,
+                                                     selection_name,pair[0],pair[1])
             if self.number_of_processes > 1:
                 distances = IMP.pmi.tools.scatter_and_gather(distances)
+
+            # Finally compute distance to centroid
             if self.rank == 0:
                 if structure_set_name1==structure_set_name2:
-                    structure_pointers=structure_pointers_1
-                    number_of_structures=number_of_structures_1
+                    structure_pointers = structure_pointers_1
+                    number_of_structures = number_of_structures_1
 
                     # calculate the distance from the first centroid
-                    # and determine the centroid
-
-                    distance=0.0
-                    distances_to_structure={}
-                    distances_to_structure_normalization={}
+                    #  and determine the centroid
+                    distance = 0.0
+                    distances_to_structure = {}
+                    distances_to_structure_normalization = {}
 
                     for n in structure_pointers:
-                        distances_to_structure[n]=0.0
+                        distances_to_structure[n] = 0.0
                         distances_to_structure_normalization[n]=0
 
                     for k in distances:
-                        distance+=distances[k]
-                        distances_to_structure[k[0]]+=distances[k]
-                        distances_to_structure[k[1]]+=distances[k]
-                        distances_to_structure_normalization[k[0]]+=1
-                        distances_to_structure_normalization[k[1]]+=1
+                        distance += distances[k]
+                        distances_to_structure[k[0]] += distances[k]
+                        distances_to_structure[k[1]] += distances[k]
+                        distances_to_structure_normalization[k[0]] += 1
+                        distances_to_structure_normalization[k[1]] += 1
 
                     for n in structure_pointers:
-                        distances_to_structure[n]=distances_to_structure[n]/distances_to_structure_normalization[n]
+                        distances_to_structure[n] = distances_to_structure[n]/distances_to_structure_normalization[n]
 
-                    min_distance=min([distances_to_structure[n] for n in distances_to_structure])
-                    centroid_index=[k for k, v in distances_to_structure.items() if v == min_distance][0]
-                    centroid_rmf_name=self.rmf_names_frames[structure_set_name1][centroid_index]
+                    min_distance = min([distances_to_structure[n] for n in distances_to_structure])
+                    centroid_index = [k for k, v in distances_to_structure.items() if v == min_distance][0]
+                    centroid_rmf_name = self.rmf_names_frames[structure_set_name1][centroid_index]
 
-                    centroid_distance=0.0
-                    distance_list=[]
+                    centroid_distance = 0.0
+                    distance_list = []
                     for n in range(number_of_structures):
-                        dist=self._get_distance(structure_set_name1,structure_set_name1,
+                        dist = self._get_distance(structure_set_name1,structure_set_name1,
                                                              selection_name,centroid_index,n)
-                        centroid_distance+=dist
+                        centroid_distance += dist
                         distance_list.append(dist)
 
                     #pairwise_distance=distance/len(distances.keys())
-                    centroid_distance/=number_of_structures
+                    centroid_distance /= number_of_structures
                     #average_centroid_distance=sum(distances_to_structure)/len(distances_to_structure)
                     if outfile is not None:
                         of.write(str(selection_name)+" "+structure_set_name1+
@@ -839,42 +844,41 @@ class Precision(object):
         @param set_plot_yaxis_range In case you need to change the plot
         """
         # get the centroid structure for the whole complex
-        centroid_index=self.get_precision(
-            structure_set_name,
-            structure_set_name,
-            outfile=None,
-            skip=skip)
+        centroid_index = self.get_precision(structure_set_name,
+                                            structure_set_name,
+                                            outfile=None,
+                                            skip=skip)
         if self.rank==0:
             for sel_name in self.protein_names:
                 self.selection_dictionary.update({sel_name:[sel_name]})
                 try:
-                    number_of_structures=len(self.structures_dictionary[structure_set_name][sel_name])
+                    number_of_structures = len(self.structures_dictionary[structure_set_name][sel_name])
                 except KeyError:
                     # that protein was not included in the selection
                     continue
-                rpim=self.residue_particle_index_map[sel_name]
-                outfile=outdir+"/rmsf."+sel_name+".dat"
-                of=open(outfile,"w")
-                residue_distances={}
-                residue_nblock={}
+                rpim = self.residue_particle_index_map[sel_name]
+                outfile = outdir+"/rmsf."+sel_name+".dat"
+                of = open(outfile,"w")
+                residue_distances = {}
+                residue_nblock = {}
                 for index in range(number_of_structures):
-                    distances=self._get_particle_distances(structure_set_name,
-                                                          structure_set_name,
-                                                          sel_name,
-                                                          centroid_index,index)
+                    distances = self._get_particle_distances(structure_set_name,
+                                                             structure_set_name,
+                                                             sel_name,
+                                                             centroid_index,index)
                     for nblock,block in enumerate(rpim):
                         for residue_number in block:
-                            residue_nblock[residue_number]=nblock
+                            residue_nblock[residue_number] = nblock
                             if residue_number not in residue_distances:
-                                residue_distances[residue_number]=[distances[nblock]]
+                                residue_distances[residue_number] = [distances[nblock]]
                             else:
                                 residue_distances[residue_number].append(distances[nblock])
 
-                residues=[]
-                rmsfs=[]
+                residues = []
+                rmsfs = []
                 for rn in residue_distances:
                     residues.append(rn)
-                    rmsf=np.std(residue_distances[rn])
+                    rmsf = np.std(residue_distances[rn])
                     rmsfs.append(rmsf)
                     of.write(str(rn)+" "+str(residue_nblock[rn])+" "+str(rmsf)+"\n")
 
@@ -929,8 +933,7 @@ class Precision(object):
             print(selection_name,"average rmsd",sum(distances)/len(distances),"median",self._get_median(distances),"minimum distance",min(distances))
 
     def _get_median(self,list_of_values):
-        import numpy
-        return numpy.median(numpy.array(list_of_values))
+        return np.median(np.array(list_of_values))
 
     def get_average_distance_wrt_reference_structure(self,structure_set_name):
         """Compare the structure set to the reference structure.

@@ -7,16 +7,50 @@ from math import sqrt
 import itertools
 import os
 import glob
+import shutil
+import tempfile
+nicemodules = True
 try:
+    import numpy as np
     import scipy
-except ImportError:
-    scipy = None
-if scipy is not None:
+    import sklearn
     import IMP.pmi.analysis
     import IMP.pmi.io
     import IMP.pmi.dof
     import IMP.pmi.macros
     import IMP.pmi.restraints.basic
+except ImportError:
+    nicemodules = False
+
+def get_drms(coords0,coords1):
+    total = 0.0
+    ct = 0
+    ncoords = len(coords1)
+    for p0 in range(ncoords):
+        for p1 in range(p0+1,ncoords):
+            d0 = sqrt(sum([(c1-c2)**2 for c1,c2 in zip(coords0[p0],coords0[p1])]))
+            d1 = sqrt(sum([(c1-c2)**2 for c1,c2 in zip(coords1[p0],coords1[p1])]))
+            total += (d0-d1)**2
+            ct += 1
+    return sqrt(total/ct)
+
+def coords_from_rmf(filename,nframes,mdl,molecules):
+    rh0 = RMF.open_rmf_file_read_only(filename)
+    hier0 = IMP.rmf.create_hierarchies(rh0,mdl)[0]
+    coords = []
+    for i in range(nframes):
+        IMP.rmf.load_frame(rh0,RMF.FrameID(i))
+        sel = IMP.atom.Selection(hier0,resolution=1,molecules=molecules)
+        coords.append([IMP.core.XYZ(p).get_coordinates() for p in sel.get_selected_particles()])
+    del rh0
+    return coords
+
+def get_dist(cl0,cl1):
+    dist = 0.0
+    for x0,x1 in itertools.product(cl0,cl1):
+        dist += get_drms(x0,x1)
+    dist /= float(len(cl0)*len(cl1))
+    return dist
 
 class AnalysisTest(IMP.test.TestCase):
     def init_topology(self,mdl):
@@ -118,8 +152,8 @@ class AnalysisTest(IMP.test.TestCase):
         rex.execute_macro()
     def test_get_model_density(self):
         """Test creation of density correctly averages frames for res=5"""
-        if scipy is None:
-            self.skipTest("no sklearn package")
+        if not nicemodules:
+            self.skipTest("missing scipy or sklearn")
 
         mdl = IMP.Model()
         #self.init_res5(mdl)
@@ -150,16 +184,10 @@ class AnalysisTest(IMP.test.TestCase):
         self.assertTrue(IMP.em.get_bounding_box(mdens.get_density('Prot1')).get_contains(bbox1))
         self.assertTrue(IMP.em.get_bounding_box(mdens.get_density('Prot2')).get_contains(bbox2))
 
-    def test_clustering(self):
-        """Test create correct clusters"""
-
-    def test_precision(self):
-        """Test correct calcluation of precision"""
-
     def test_analysis_macro(self):
         """Test you can organize files correctly with macro"""
-        if scipy is None:
-            self.skipTest("no sklearn package")
+        if not nicemodules:
+            self.skipTest("missing scipy or sklearn")
 
         mdl = IMP.Model()
         #self.init_topology(mdl)
@@ -245,5 +273,57 @@ class AnalysisTest(IMP.test.TestCase):
         self.assertTrue(IMP.em.get_bounding_box(dmap1).get_contains(bbox1))
         self.assertTrue(IMP.em.get_bounding_box(dmap2).get_contains(bbox2))
 
+    def test_precision(self):
+        """Test correct calcluation of precision and RMSF"""
+        if not nicemodules:
+            self.skipTest("missing scipy or sklearn")
+
+        selections = {"Prot1":["Prot1"],
+                      "Prot2":["Prot2"],
+                      "Prot1_Prot2":["Prot1","Prot2"]}
+        nframes = 5
+        mdl = IMP.Model()
+        pr = IMP.pmi.analysis.Precision(mdl,resolution=1,selection_dictionary=selections)
+        #pr.set_precision_style('pairwise_rmsd')
+        f0 = self.get_input_file_name("pmi2_sample_0/rmfs/0.rmf3")
+        f1 = self.get_input_file_name("pmi2_sample_1/rmfs/0.rmf3")
+        tuple0 = zip([f0]*nframes,range(nframes))
+        tuple1 = zip([f1]*nframes,range(nframes))
+        pr.add_structures(tuple0,'set0')
+        pr.add_structures(tuple1,'set1')
+
+        fn00 = self.get_tmp_file_name('f00.txt')
+        fn01 = self.get_tmp_file_name('f01.txt')
+        fn11 = self.get_tmp_file_name('f11.txt')
+        cn00 = pr.get_precision('set0','set0',fn00)
+        pr.get_precision('set0','set1',fn01)
+        pr.get_precision('set1','set1',fn11)
+
+        # check precision manually
+        coordslist0 = coords_from_rmf(f0,nframes,mdl,['Prot1','Prot2'])
+        coordslist1 = coords_from_rmf(f1,nframes,mdl,['Prot1','Prot2'])
+
+        dist00 = get_dist(coordslist0,coordslist0)
+        dist01 = get_dist(coordslist0,coordslist1)
+        dist11 = get_dist(coordslist1,coordslist1)
+        with open(fn00,'r') as inf:
+            pdist00 = float(inf.readlines()[-1].strip().split()[-1])
+            self.assertAlmostEqual(dist00,pdist00,places=2)
+        with open(fn01,'r') as inf:
+            pdist01 = float(inf.readlines()[-1].strip().split()[-1])
+            self.assertAlmostEqual(dist01,pdist01,places=2)
+        with open(fn11,'r') as inf:
+            pdist11 = float(inf.readlines()[-1].strip().split()[-1])
+            self.assertAlmostEqual(dist11,pdist11,places=2)
+
+        # check RMSF
+        rmsf_dir = tempfile.mkdtemp()
+        pr.get_rmsf('set0',outdir=rmsf_dir)
+        mean1 = coordslist0[cn00][0]
+        rmsf1 = np.std([IMP.algebra.get_distance(c[0],mean1) for c in coordslist0])
+        with open(os.path.join(rmsf_dir,'rmsf.Prot1.dat'),'r') as inf:
+            prmsf1 = float(inf.readline().split()[2])
+            self.assertAlmostEqual(rmsf1,prmsf1)
+        shutil.rmtree(rmsf_dir)
 if __name__ == '__main__':
     IMP.test.main()
