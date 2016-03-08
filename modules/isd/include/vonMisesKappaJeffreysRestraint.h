@@ -34,8 +34,6 @@ class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public Restraint {
   //! Create the restraint.
   vonMisesKappaJeffreysRestraint(Model *m, Particle *kappa);
 
-  /** This macro declares the basic needed methods: evaluate and show
-   */
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

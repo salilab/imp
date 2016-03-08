@@ -33,8 +33,6 @@ class IMPISDEXPORT vonMisesKappaConjugateRestraint : public Restraint {
   vonMisesKappaConjugateRestraint(Model *m, Particle *kappa,
                                   double c = 10.0, double R0 = 0.0);
 
-  /** This macro declares the basic needed methods: evaluate and show
-   */
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

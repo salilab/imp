@@ -29,8 +29,6 @@ public:
   UniformPrior(IMP::Model* m, Particle *p, Float k,
             Float upperb, Float lowerb, std::string name="UniformPrior%1%");
 
-  /** This macro declares the basic needed methods: evaluate and show
-   */
   virtual double
   unprotected_evaluate(IMP::DerivativeAccumulator *accum)
      const IMP_OVERRIDE;

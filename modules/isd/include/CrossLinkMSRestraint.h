@@ -34,10 +34,6 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
 
    public:
     //! Create the restraint.
-    /** Restraints should store the particles they are to act on,
-        preferably in a Singleton or PairContainer as appropriate.
-     */
-
     CrossLinkMSRestraint(IMP::Model* m, double length,
                          bool get_log_prob = false,
                          std::string name = "CrossLinkMSRestraint%1%");
@@ -63,8 +59,6 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
 
     unsigned int get_number_of_contributions() const { return ppis_.size(); }
 
-    /** This macro declares the basic needed methods: evaluate and show
-     */
     virtual double unprotected_evaluate(
         IMP::DerivativeAccumulator* accum) const IMP_OVERRIDE;
     virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
