@@ -3,6 +3,7 @@ import IMP.atom
 import IMP.pmi
 import IMP.test
 import IMP.pmi.topology
+import IMP.pmi.dof
 import IMP.pmi.restraints.crosslinking
 import IMP.pmi.io.crosslink
 import sys,os
@@ -27,7 +28,8 @@ class AtomicXLTest(IMP.test.TestCase):
         self.assertEqual(cldb.get_number_of_xlid(),1)
 
         # create two states, each with two copies of the protein
-        s = IMP.pmi.topology.System()
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('multi_seq.fasta'),
                          name_map={'Protein_1':'Prot1'})
         # build state 1
@@ -70,6 +72,8 @@ class AtomicXLTest(IMP.test.TestCase):
         self.assertIsInstance(xlrs,IMP.isd.AtomicCrossLinkMSRestraint)
         self.assertEqual(xlrs.get_number_of_contributions(),8)
 
-
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        dof.get_nuisances_from_restraint(xl)
+        self.assertEqual(len(dof.get_movers()),2)
 if __name__ == '__main__':
     IMP.test.main()

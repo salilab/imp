@@ -32,6 +32,7 @@ print('building molecule')
 hier = s.build()
 
 # add charmm restraints
+print('adding restraints')
 charmm = IMP.pmi.restraints.stereochemistry.CharmmForceFieldRestraint(hier)
 charmm.add_to_model()
 
@@ -53,9 +54,10 @@ dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
 md_ps = dof.setup_md(gcp2)
 rex = IMP.pmi.macros.ReplicaExchange0(mdl,
                                       root_hier=hier,
-                                      crosslink_restraints = all_rs,           #for visualizing SSEs in RMF
+                                      crosslink_restraints = all_rs,        #for visualizing SSEs in RMF
                                       molecular_dynamics_sample_objects=md_ps,
-                                      molecular_dynamics_steps=10,
-                                      number_of_frames=1, # increase number of frames to get better results!
+                                      molecular_dynamics_steps=5,
+                                      number_of_best_scoring_models=0,      # set >0 to store best PDB files (but this is slow to do online)
+                                      number_of_frames=1,                   # increase number of frames to get better results!
                                       global_output_directory='atomistic_output/')
 rex.execute_macro()

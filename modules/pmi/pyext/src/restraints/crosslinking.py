@@ -727,7 +727,6 @@ class AtomicCrossLinkMSRestraint(object):
         self.rs_psi.add_restraint(IMP.isd.JeffreysRestraint(self.mdl, psi))
         return psi
 
-
     def create_restraints_for_rmf(self):
         """ create dummy harmonic restraints for each XL but don't add to model
         Makes it easy to see each contribution to each XL in RMF
@@ -753,12 +752,20 @@ class AtomicCrossLinkMSRestraint(object):
         return dummy_rs
 
 
-    def get_particles_to_sample(self,state_num=None):
-        """ Get particles involved in the restraint """
-        if state_num is None:
-            return list(reduce(lambda x,y: self.particles[x]|self.particles[y],self.particles))
-        else:
-            return list(self.particles[state_num])
+    def get_particles_to_sample(self):
+        """ Get the particles to be sampled by the IMP.pmi.sampler object """
+        ps = {}
+        if self.sigma_is_sampled:
+            for sigmaname in self.sigma_dictionary:
+                ps["Nuisances_AtomicCrossLinkingMSRestraint_Sigma_" + str(sigmaname) + "_" + self.label] = \
+                    ([self.sigma_dictionary[sigmaname][0]],
+                     self.sigma_dictionary[sigmaname][1])
+        if self.psi_is_sampled:
+            for psiname in self.psi_dictionary:
+                ps["Nuisances_CrossLinkingMassSpectrometryRestraint_Psi_" +
+                    str(psiname) + "_" + self.label] =\
+                   ([self.psi_dictionary[psiname][0]], self.psi_dictionary[psiname][1])
+        return ps
 
     def get_bonded_pairs(self):
         return self.bonded_pairs
@@ -2101,19 +2108,16 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
 
     def get_particles_to_sample(self):
         ps = {}
-
         for resolution in self.sigma_dictionary:
             if self.sigma_dictionary[resolution][2] and self.sigma_is_sampled:
                 ps["Nuisances_ISDCrossLinkMS_Sigma_" + str(resolution) + "_" + self.label] =\
                     ([self.sigma_dictionary[resolution][0]],
                      self.sigma_dictionary[resolution][1])
-
         if self.psi_is_sampled:
             for psiindex in self.psi_dictionary:
                 if self.psi_dictionary[psiindex][2]:
                     ps["Nuisances_ISDCrossLinkMS_Psi_" +
                         str(psiindex) + "_" + self.label] = ([self.psi_dictionary[psiindex][0]], self.psi_dictionary[psiindex][1])
-
         return ps
 
 #

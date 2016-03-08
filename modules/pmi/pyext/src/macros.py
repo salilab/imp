@@ -486,9 +486,12 @@ class BuildSystem(object):
                     these_domains[domain.domain_name] = (set(),domain_res)
                 elif domain.pdb_file=="IDEAL_HELIX":
                     mol.add_representation(domain_res,
+                                           resolutions=reader.resolutions,
                                            ideal_helix=True,
-                                           setup_particles_as_densities=(domain.em_residues_per_gaussian!=0))
-                    these_domains[domain.domain_name] = (set(),domain_res)
+                                           density_residues_per_component=domain.em_residues_per_gaussian,
+                                           density_prefix=domain.density_prefix,
+                                           density_force_compute=self.force_create_gmm_files)
+                    these_domains[domain.domain_name] = (domain_res,set())
                 else:
                     domain_atomic = mol.add_structure(domain.pdb_file,
                                                       domain.chain,

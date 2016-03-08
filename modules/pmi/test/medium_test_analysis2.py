@@ -325,5 +325,36 @@ class AnalysisTest(IMP.test.TestCase):
             prmsf1 = float(inf.readline().split()[2])
             self.assertAlmostEqual(rmsf1,prmsf1)
         shutil.rmtree(rmsf_dir)
+
+    def test_accuracy(self):
+        """Test you can compare to reference structure"""
+        if not nicemodules:
+            self.skipTest("missing scipy or sklearn")
+
+        selections = {"Prot1":["Prot1"],
+                      "Prot2":["Prot2"],
+                      "Prot1_Prot2":["Prot1","Prot2"]}
+        nframes = 5
+        mdl = IMP.Model()
+        pr = IMP.pmi.analysis.Precision(mdl,resolution=1,selection_dictionary=selections)
+        pr.set_precision_style('pairwise_rmsd')
+        f0 = self.get_input_file_name("pmi2_sample_0/rmfs/0.rmf3")
+        tuple0 = zip([f0]*nframes,range(nframes))
+        pr.add_structures(tuple0,'set0')
+        pr.set_reference_structure(f0,0)
+        dists = pr.get_average_distance_wrt_reference_structure("set0")
+
+        # check accuracy manually
+        coordslist01 = coords_from_rmf(f0,nframes,mdl,['Prot1'])
+        coordslist02 = coords_from_rmf(f0,nframes,mdl,['Prot2'])
+        pdist01 = []
+        pdist02 = []
+        for i in range(nframes):
+            rmsd01 = IMP.algebra.get_rmsd(coordslist01[i],coordslist01[0])
+            pdist01.append(rmsd01)
+            rmsd02 = IMP.algebra.get_rmsd(coordslist02[i],coordslist02[0])
+            pdist02.append(rmsd02)
+        self.assertAlmostEqual(dists['Prot1']['average_distance'],sum(pdist01)/nframes,places=2)
+        self.assertAlmostEqual(dists['Prot2']['average_distance'],sum(pdist02)/nframes,places=2)
 if __name__ == '__main__':
     IMP.test.main()

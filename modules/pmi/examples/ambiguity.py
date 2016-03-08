@@ -94,6 +94,7 @@ xlr = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
 xlr.add_to_model()
 output_objects.append(xlr)
 rmf_restraints.append(xlr)
+dof.get_nuisances_from_restraint(xlr) # needed to sample the nuisance particles (noise params)
 
 ### Connectivity keeps things connected along the backbone
 crs = []

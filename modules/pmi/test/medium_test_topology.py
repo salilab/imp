@@ -491,13 +491,12 @@ class TopologyTest(IMP.test.TestCase):
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
                                       chain_id='A',res_range=(55,63),offset=-54)
         non_atomic_res = m1.get_non_atomic_residues()
-        m1.add_representation(atomic_res,resolutions=[base_res,bead_res])
-        m1.add_representation(non_atomic_res,resolutions=[bead_res])
+        m1.add_representation(atomic_res,resolutions=[base_res,bead_res],color=0.5)
+        m1.add_representation(non_atomic_res,resolutions=[bead_res],color=0.25)
         s.build()
         orig_hier = s.get_hierarchy()
 
         fname = self.get_tmp_file_name('test_round_trip.rmf3')
-        #fname = 'test_round_trip.rmf3'
         rh = RMF.create_rmf_file(fname)
         IMP.rmf.add_hierarchy(rh, orig_hier)
         IMP.rmf.save_frame(rh)
@@ -514,10 +513,13 @@ class TopologyTest(IMP.test.TestCase):
         selA0 = IMP.atom.Selection(orig_hier,resolution=base_res).get_selected_particles()
         coordsA0 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
                     for p in selA0]
+        colorsA0 = [IMP.display.Colored(p).get_color() for p in selA0]
         selB0 = IMP.atom.Selection(h2,resolution=base_res).get_selected_particles()
         coordsB0 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
                     for p in selB0]
+        colorsB0 = [IMP.display.Colored(p).get_color() for p in selB0]
         self.assertEqual(coordsA0,coordsB0)
+        self.assertEqual(colorsA0,colorsB0)
 
         selA1 = IMP.atom.Selection(orig_hier,resolution=bead_res).get_selected_particles()
         coordsA1 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
@@ -593,6 +595,28 @@ class TopologyTest(IMP.test.TestCase):
         ps = IMP.atom.Selection(hier).get_selected_particles()
         built_sequence = [IMP.atom.Residue(p).get_residue_type() for p in ps]
         self.assertEqual(expect_sequence,built_sequence)
+
+    def test_ideal_helix(self):
+        """Test you can build an ideal helix"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1",sequence='A'*25)
+        m1.add_representation(m1[0:20],
+                              resolutions=[1,10],
+                              ideal_helix=True,
+                              density_prefix='hgmm',
+                              density_voxel_size=0.0,
+                              density_residues_per_component=10)
+        m1.add_representation(m1[20:25],resolutions=[1])
+        hier = s.build()
+
+        # no idea how to test this
+        selB = IMP.atom.Selection(hier,resolution=IMP.atom.ALL_RESOLUTIONS)
+        selD = IMP.atom.Selection(hier,resolution=IMP.atom.ALL_RESOLUTIONS,representation_type=IMP.atom.DENSITIES)
+        self.assertEqual(len(selB.get_selected_particles()),20+2+5)
+        self.assertEqual(len(selD.get_selected_particles()),3)
+        os.unlink('hgmm.txt')
 
 if __name__ == '__main__':
     IMP.test.main()

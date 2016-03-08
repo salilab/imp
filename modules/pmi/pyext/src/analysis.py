@@ -895,40 +895,39 @@ class Precision(object):
         @param rmf_name The RMF file to read the reference
         @param rmf_frame_index The index in that file
         """
-        particles_resolution_one=self._get_structure(rmf_frame_index,rmf_name)
-        self.reference_rmf_names_frames=(rmf_name,rmf_frame_index)
-
+        particles_resolution_one = self._get_structure(rmf_frame_index,rmf_name)
+        self.reference_rmf_names_frames = (rmf_name,rmf_frame_index)
 
         for selection_name in self.selection_dictionary:
-            selection_tuple=self.selection_dictionary[selection_name]
-            coords=self._select_coordinates(selection_tuple,
-                                       particles_resolution_one,self.prots)
-            self.reference_structures_dictionary[selection_name]=coords
+            selection_tuple = self.selection_dictionary[selection_name]
+            coords = self._select_coordinates(selection_tuple,
+                                              particles_resolution_one,self.prots[0])
+            self.reference_structures_dictionary[selection_name] = coords
 
     def get_rmsd_wrt_reference_structure_with_alignment(self,structure_set_name,alignment_selection_key):
-        '''
+        """First align then calculate RMSD
         @param structure_set_name: the name of the structure set
         @param alignment_selection: the key containing the selection tuples needed to make the alignment stored in self.selection_dictionary
         @return: for each structure in the structure set, returns the rmsd
-        '''
+        """
         if self.reference_structures_dictionary=={}:
             print("Cannot compute until you set a reference structure")
             return
 
-        align_reference_coordinates=self.reference_structures_dictionary[alignment_selection_key]
-        align_coordinates=self.structures_dictionary[structure_set_name][alignment_selection_key]
-        transformations=[]
+        align_reference_coordinates = self.reference_structures_dictionary[alignment_selection_key]
+        align_coordinates = self.structures_dictionary[structure_set_name][alignment_selection_key]
+        transformations = []
         for c in align_coordinates:
             Ali = IMP.pmi.analysis.Alignment({"All":align_reference_coordinates}, {"All":c})
             transformation = Ali.align()[1]
             transformations.append(transformation)
         for selection_name in self.selection_dictionary:
-            reference_coordinates=self.reference_structures_dictionary[selection_name]
-            coordinates2=[IMP.algebra.Vector3D(c) for c in reference_coordinates]
-            distances=[]
+            reference_coordinates = self.reference_structures_dictionary[selection_name]
+            coordinates2 = [IMP.algebra.Vector3D(c) for c in reference_coordinates]
+            distances = []
             for n,sc in enumerate(self.structures_dictionary[structure_set_name][selection_name]):
-                coordinates1=[ transformations[n].get_transformed(IMP.algebra.Vector3D(c)) for c in sc ]
-                distance=IMP.algebra.get_rmsd(coordinates1,coordinates2)
+                coordinates1 = [transformations[n].get_transformed(IMP.algebra.Vector3D(c)) for c in sc]
+                distance = IMP.algebra.get_rmsd(coordinates1,coordinates2)
                 distances.append(distance)
             print(selection_name,"average rmsd",sum(distances)/len(distances),"median",self._get_median(distances),"minimum distance",min(distances))
 
@@ -940,27 +939,29 @@ class Precision(object):
         @param structure_set_name The structure set to compute this on
         @note First call set_reference_structure()
         """
+        ret = {}
         if self.reference_structures_dictionary=={}:
             print("Cannot compute until you set a reference structure")
             return
         for selection_name in self.selection_dictionary:
-            reference_coordinates=self.reference_structures_dictionary[selection_name]
-            coordinates2=[IMP.algebra.Vector3D(c) for c in reference_coordinates]
-            distances=[]
-
+            reference_coordinates = self.reference_structures_dictionary[selection_name]
+            coordinates2 = [IMP.algebra.Vector3D(c) for c in reference_coordinates]
+            distances = []
             for sc in self.structures_dictionary[structure_set_name][selection_name]:
-                coordinates1=[IMP.algebra.Vector3D(c) for c in sc]
+                coordinates1 = [IMP.algebra.Vector3D(c) for c in sc]
                 if self.style=='pairwise_drmsd_k':
-                    distance=IMP.atom.get_drmsd(coordinates1,coordinates2)
+                    distance = IMP.atom.get_drmsd(coordinates1,coordinates2)
                 if self.style=='pairwise_drms_k':
-                    distance=IMP.atom.get_drms(coordinates1,coordinates2)
+                    distance = IMP.atom.get_drms(coordinates1,coordinates2)
                 if self.style=='pairwise_drmsd_Q':
-                    distance=IMP.atom.get_drmsd_Q(coordinates1,coordinates2,self.threshold)
+                    distance = IMP.atom.get_drmsd_Q(coordinates1,coordinates2,self.threshold)
                 if self.style=='pairwise_rmsd':
-                    distance=IMP.algebra.get_rmsd(coordinates1,coordinates2)
+                    distance = IMP.algebra.get_rmsd(coordinates1,coordinates2)
                 distances.append(distance)
 
-            print(selection_name,"average distance",sum(distances)/len(distances),"minimum distance",min(distances))
+            print(selection_name,"average distance",sum(distances)/len(distances),"minimum distance",min(distances),'nframes',len(distances))
+            ret[selection_name] = {'average_distance':sum(distances)/len(distances),'minimum_distance':min(distances)}
+        return ret
 
     def get_coordinates(self):
         pass

@@ -1,5 +1,6 @@
 |component_name|domain_name|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|
-|Prot1 |Prot1 |seqs.fasta|Protein_1|prot.pdb|A|55,65  |-54 |5|10|1|1,2| |
-|Prot2 |Prot2A|seqs.fasta|Protein_2|prot.pdb|B|180,187|-179|5|0 |2|1  | |
-|Prot2 |Prot2B|seqs.fasta|Protein_2|prot.pdb|B|188,-1 |-179|5|0 |2|1  | |
-|Prot3 |Prot3 |seqs.fasta|Protein_3|BEADS   |C|       |    |5|0 | |1,2|3|
+|Prot1 |Prot1 |seqs.fasta|Protein_1|prot.pdb   |A|55,65  |-54 |5|10|1|1,2| |
+|Prot2 |Prot2A|seqs.fasta|Protein_2|prot.pdb   |B|180,187|-179|5|0 |2|1  | |
+|Prot2 |Prot2B|seqs.fasta|Protein_2|prot.pdb   |B|188,-1 |-179|5|0 |2|1  | |
+|Prot3 |Prot3 |seqs.fasta|Protein_3|BEADS      |C|       |    |5|0 | |1,2|3|
+|Prot4 |Prot4 |seqs.fasta|Protein_3|IDEAL_HELIX|D|       |    | |10 |3|1  | |

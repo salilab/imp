@@ -13,7 +13,7 @@ def children_as_dict(h):
         cdict[c.get_name()]=c
     return cdict
 
-class TopologyReaderTests(IMP.test.TestCase):
+class ReaderTests(IMP.test.TestCase):
 
     def test_reading(self):
         """Test basic reading"""
@@ -177,13 +177,13 @@ class TopologyReaderTests(IMP.test.TestCase):
         rbs = t.get_rigid_bodies()
         srbs = t.get_super_rigid_bodies()
         csrbs = t.get_chains_of_super_rigid_bodies()
-        self.assertEqual(sorted(rbs),sorted([['Prot1'],['Prot2A','Prot2B']]))
+        self.assertEqual(sorted(rbs),sorted([['Prot1'],['Prot2A','Prot2B'],['Prot4']]))
         self.assertEqual(sorted(srbs),sorted([['Prot1','Prot3'],
-                                              ['Prot1','Prot2A','Prot2B','Prot3']]))
+                                              ['Prot1','Prot2A','Prot2B','Prot3','Prot4']]))
         self.assertEqual(list(csrbs),[['Prot3']])
 
     def test_build_system(self):
-        """Test the new BuildSystem macro"""
+        """Test the new BuildSystem macro including beads and ideal helix"""
         try:
             import sklearn
         except ImportError:
@@ -213,12 +213,20 @@ class TopologyReaderTests(IMP.test.TestCase):
         sel3 = IMP.atom.Selection(root_hier,molecule="Prot3",resolution=5).get_selected_particles()
         self.assertEqual(len(sel3),2)
 
+        sel4_1 = IMP.atom.Selection(root_hier,molecule="Prot4",resolution=1).get_selected_particles()
+        sel4_10 = IMP.atom.Selection(root_hier,molecule="Prot4",resolution=10).get_selected_particles()
+        sel4_D = IMP.atom.Selection(root_hier,molecule="Prot4",representation_type=IMP.atom.DENSITIES).get_selected_particles()
+        self.assertEqual(len(sel4_1),10)
+        self.assertEqual(len(sel4_10),1)
+        self.assertEqual(len(sel4_D),2)
+
         # check rigid bodies
         rbs = dof.get_rigid_bodies()
         fbs = dof.get_flexible_beads()
-        self.assertEqual(len(rbs),2)
+        self.assertEqual(len(rbs),3)
         #                         Prot1 Prot3
         self.assertEqual(len(fbs), 2   +  2)
-
+        os.unlink(self.get_input_file_name('Prot4.txt'))
+        os.unlink(self.get_input_file_name('Prot4.mrc'))
 if __name__=="__main__":
     IMP.test.main()

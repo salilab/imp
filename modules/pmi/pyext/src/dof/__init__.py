@@ -327,3 +327,19 @@ class DegreesOfFreedom(object):
     def get_flexible_beads(self):
         """Return all flexible beads, including nonrigid members of rigid bodies"""
         return self.flexible_beads
+
+    def get_nuisances_from_restraint(self,r):
+        """Extract the nuisances from get_particles_to_sample()"""
+        try:
+            pslist = r.get_particles_to_sample()
+        except:
+            raise Exception("dof.get_nuisances_from_restraint(): the passed object does not have a "
+                            "get_particles_to_sample() function")
+        for name in pslist:
+            is_sampled = True
+            if len(pslist[name])==3:
+                ps,maxtrans,is_sampled = pslist[name]
+            else:
+                ps,maxtrans = pslist[name]
+            if is_sampled:
+                self.create_nuisance_mover(ps[0],maxtrans,name)

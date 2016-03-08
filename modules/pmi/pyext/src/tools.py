@@ -16,6 +16,8 @@ from math import log,pi,sqrt,exp
 import sys,os
 import random
 import time
+import RMF
+import IMP.rmf
 from collections import defaultdict
 try:
     from collections import OrderedDict
@@ -1431,6 +1433,17 @@ class OrderedDefaultDict(OrderedDict):
 
 # -------------- PMI2 Tools --------------- #
 
+def set_coordinates_from_rmf(hier,rmf_fn,frame_num=0):
+    """Extract frame from RMF file and fill coordinates. Must be identical topology.
+    @param hier The (System) hierarchy to fill (e.g. after you've built it)
+    @param rmf_fn The file to extract from
+    @param frame_num The frame number to extract
+    """
+    rh = RMF.open_rmf_file_read_only(rmf_fn)
+    IMP.rmf.link_hierarchies(rh,[hier])
+    IMP.rmf.load_frame(rh, RMF.FrameID(frame_num))
+    del rh
+
 def input_adaptor(stuff,
                   pmi_resolution=0,
                   flatten=False):
@@ -1569,38 +1582,12 @@ def select_at_all_resolutions(hier=None,
             raise Exception('select_at_all_resolutions: you have to pass an IMP Hierarchy')
         if 'resolution' in kwargs or 'representation_type' in kwargs:
             raise Exception("don't pass resolution or representation_type to this function")
-
-        def get_resolutions(h):
-            rep = IMP.atom.get_representation(h,True)
-            if rep:
-                ret = [IMP.atom.Representation(rep).get_resolutions(IMP.atom.BALLS),
-                       IMP.atom.Representation(rep).get_resolutions(IMP.atom.DENSITIES)]
-            else:
-                ret = [[],[]]
-            return ret
-
-        # gather resolutions
-        # this only works if the base resolution is the highest one...
-        init_sel = IMP.atom.Selection(hsel,resolution=0,**kwargs)
-        init_ps = init_sel.get_selected_particles()
-        all_bead_res = OrderedSet()
-        all_density_res = OrderedSet()
-
-        for p in init_ps:
-            h = IMP.atom.Hierarchy(p)
-            b,d = get_resolutions(IMP.atom.Hierarchy(p))
-            all_bead_res |= OrderedSet(b)
-            all_density_res |= OrderedSet(d)
-
-        # final selection
-        for res in all_bead_res:
-            sel = IMP.atom.Selection(hsel,resolution=res,
-                                     representation_type=IMP.atom.BALLS,**kwargs)
-            ret |= OrderedSet(sel.get_selected_particles())
-        for res in all_density_res:
-            sel = IMP.atom.Selection(hsel,resolution=res,
-                                     representation_type=IMP.atom.DENSITIES,**kwargs)
-            ret |= OrderedSet(sel.get_selected_particles())
+        selB = IMP.atom.Selection(hsel,resolution=IMP.atom.ALL_RESOLUTIONS,
+                                  representation_type=IMP.atom.BALLS,**kwargs)
+        selD = IMP.atom.Selection(hsel,resolution=IMP.atom.ALL_RESOLUTIONS,
+                                  representation_type=IMP.atom.DENSITIES,**kwargs)
+        ret |= OrderedSet(selB.get_selected_particles())
+        ret |= OrderedSet(selD.get_selected_particles())
     return list(ret)
 
 

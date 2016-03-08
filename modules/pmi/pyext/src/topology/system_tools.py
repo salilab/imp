@@ -71,11 +71,11 @@ def get_structure(mdl,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,ca_
         ret.append(res)
     return ret
 
-def build_bead(model,residues,input_coord=None):
+def build_bead(mdl,residues,input_coord=None):
     """Generates a single bead"""
 
     ds_frag = (residues[0].get_index(), residues[-1].get_index())
-    prt = IMP.Particle(model)
+    prt = IMP.Particle(mdl)
     IMP.core.XYZR.setup_particle(prt)
     ptem = IMP.core.XYZR(prt)
     mass = IMP.atom.get_mass_from_number_of_residues(len(residues))
@@ -109,19 +109,19 @@ def build_bead(model,residues,input_coord=None):
         pass
     return h
 
-def build_necklace(model,residues, resolution, input_coord=None):
+def build_necklace(mdl,residues, resolution, input_coord=None):
     """Generates a string of beads with given length"""
     out_hiers = []
     for chunk in list(IMP.pmi.tools.list_chunks_iterator(residues, resolution)):
-        out_hiers.append(build_bead(model,chunk, input_coord=input_coord))
+        out_hiers.append(build_bead(mdl,chunk, input_coord=input_coord))
     return out_hiers
 
-def build_ca_centers(model,residues):
+def build_ca_centers(mdl,residues):
     """Create a bead on the CA position with coarsened size and mass"""
     out_hiers = []
     for tempres in residues:
         residue = tempres.get_hierarchy()
-        rp1 = IMP.Particle(model)
+        rp1 = IMP.Particle(mdl)
         rp1.set_name("Residue_%i"%residue.get_index())
         rt = residue.get_residue_type()
         this_res = IMP.atom.Residue.setup_particle(rp1,residue)
@@ -166,62 +166,6 @@ def show_representation(node):
     else:
         return False
 
-def build_ideal_helix(model, residues, resolution):
-    """Creates an ideal helix from the specified residue range
-    Residues MUST be contiguous and be implemented at resolution = 1"""
-
-    from math import pi, cos, sin
-
-    protein_h = self.hier_dict[name]
-    out_hiers = []
-
-    start = resrange[0]
-    end = resrange[1]
-    self.elements[name].append((start, end, " ", "helix"))
-    c0 = IMP.atom.Chain.setup_particle(IMP.Particle(self.m), "X")
-    for n, res in enumerate(range(start, end + 1)):
-        if name in self.sequence_dict:
-            try:
-                rtstr = self.onetothree[
-                    self.sequence_dict[name][res-1]]
-            except:
-                rtstr = "UNK"
-            rt = IMP.atom.ResidueType(rtstr)
-        else:
-            rt = IMP.atom.ResidueType("ALA")
-
-        # get the residue volume
-        try:
-            vol = IMP.atom.get_volume_from_residue_type(rt)
-            # mass=IMP.atom.get_mass_from_residue_type(rt)
-        except IMP.ValueException:
-            vol = IMP.atom.get_volume_from_residue_type(
-            IMP.atom.ResidueType("ALA"))
-            # mass=IMP.atom.get_mass_from_residue_type(IMP.atom.ResidueType("ALA"))
-        radius = IMP.algebra.get_ball_radius_from_volume_3d(vol)
-
-        r = IMP.atom.Residue.setup_particle(IMP.Particle(self.m), rt, res)
-        p = IMP.Particle(self.m)
-        d = IMP.core.XYZR.setup_particle(p)
-        x = 2.3 * cos(n * 2 * pi / 3.6)
-        y = 2.3 * sin(n * 2 * pi / 3.6)
-        z = 6.2 / 3.6 / 2 * n * 2 * pi / 3.6
-        d.set_coordinates(IMP.algebra.Vector3D(x, y, z))
-        d.set_radius(radius)
-        # print d
-        a = IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)
-        r.add_child(a)
-        c0.add_child(r)
-
-    out_hiers += self.coarse_hierarchy(name, start, end,
-                                      resolutions, False, c0, protein_h, "helix", color)
-
-    if show:
-        IMP.atom.show_molecular_hierarchy(protein_h)
-
-    del c0
-    return out_hiers
-
 def recursive_show_representations(root):
     pass
 
@@ -239,6 +183,11 @@ def build_representation(parent,rep,coord_finder):
     atomic_res = 0
     ca_res = 1
     mdl = parent.get_model()
+    if rep.color is not None:
+        color = IMP.display.get_rgb_color(rep.color)
+    else:
+        color = None
+
 
     # first get the primary representation (currently, the smallest bead size)
     #  eventually we won't require beads to be present at all
@@ -273,7 +222,8 @@ def build_representation(parent,rep,coord_finder):
                                                 mdl,
                                                 density_ps)
             IMP.isd.gmm_tools.write_gmm_to_text(density_ps,rep.density_prefix+'.txt')
-            IMP.isd.gmm_tools.write_gmm_to_map(density_ps,rep.density_prefix+'.mrc',rep.density_voxel_size)
+            if rep.density_voxel_size>0.0:
+                IMP.isd.gmm_tools.write_gmm_to_map(density_ps,rep.density_prefix+'.mrc',rep.density_voxel_size)
 
         for d in density_ps:
             density_frag.add_child(d)
@@ -348,6 +298,11 @@ def build_representation(parent,rep,coord_finder):
                                        input_coord)
                 for bead in beads:
                     this_resolution.add_child(bead)
+
+            # if requested, color all resolutions the same
+            if color:
+                for lv in IMP.core.get_leaves(this_resolution):
+                    IMP.display.Colored.setup_particle(lv,color)
 
             # finally decide where to put this resolution
             #  if volumetric, collect resolutions from different segments together

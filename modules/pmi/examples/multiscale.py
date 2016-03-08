@@ -85,6 +85,7 @@ output_objects.append(evr)
 IMP.pmi.tools.shuffle_configuration(root_hier,
                                     max_translation=30)
 
+# Quickly move all flexible beads into place
 dof.optimize_flexible_beads(100)
 
 # Run replica exchange Monte Carlo sampling
@@ -95,5 +96,6 @@ rex=IMP.pmi.macros.ReplicaExchange0(mdl,
                                     global_output_directory='multiscale_output/',
                                     output_objects=output_objects,
                                     monte_carlo_steps=10,
-                                    number_of_frames=1) # increase number of frames to get better results!
+                                    number_of_best_scoring_models=0,      # set >0 to store best PDB files (but this is slow to do online)
+                                    number_of_frames=1)                   # increase number of frames to get better results!
 rex.execute_macro()

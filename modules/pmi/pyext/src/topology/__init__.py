@@ -28,6 +28,42 @@ import os
 from collections import defaultdict
 from . import system_tools
 from bisect import bisect_left
+from math import pi,cos,sin
+
+
+def _build_ideal_helix(mdl, residues, coord_finder):
+    """Creates an ideal helix from the specified residue range
+    Residues MUST be contiguous.
+    This function actually adds them to the TempResidue hierarchy
+    """
+    all_res = []
+    for n, res in enumerate(residues):
+        if res.get_has_structure():
+            raise Exception("You tried to build ideal_helix for a residue "
+                            "that already has structure:",res)
+        if n>0 and (not res.get_index()==prev_idx+1):
+            raise Exception("Passed non-contiguous segment to build_ideal_helix")
+
+        rt = res.get_residue_type()
+
+        rp = IMP.Particle(mdl)
+        rp.set_name("Residue_%i" % res.get_index())
+        this_res = IMP.atom.Residue.setup_particle(rp,res.get_hierarchy())
+
+        ap = IMP.Particle(mdl)
+        d = IMP.core.XYZR.setup_particle(ap)
+        x = 2.3 * cos(n * 2 * pi / 3.6)
+        y = 2.3 * sin(n * 2 * pi / 3.6)
+        z = 6.2 / 3.6 / 2 * n * 2 * pi / 3.6
+        d.set_coordinates(IMP.algebra.Vector3D(x, y, z))
+        d.set_radius(1.0)
+
+        a = IMP.atom.Atom.setup_particle(ap, IMP.atom.AT_CA)
+        this_res.add_child(a)
+        res.set_structure(this_res)
+        all_res.append(this_res)
+        prev_idx = res.get_index()
+    coord_finder.add_residues(all_res)
 
 class _SystemBase(object):
     """The base class for System, State and Molecule
@@ -350,7 +386,8 @@ class Molecule(_SystemBase):
                            density_force_compute=False,
                            density_voxel_size=1.0,
                            setup_particles_as_densities=False,
-                           ideal_helix=False):
+                           ideal_helix=False,
+                           color=None):
         """Set the representation for some residues. Some options (beads, ideal helix)
         operate along the backbone. Others (density options) are volumetric.
         Some of these you can combine e.g., beads+densities or helix+densities
@@ -376,11 +413,15 @@ class Molecule(_SystemBase):
                Must also supply density_residues_per_component.
         @param density_force_compute Set true to force overwrite density file.
         @param density_voxel_size Advanced feature. Set larger if densities taking too long to rasterize.
+               Set to 0 if you don't want to create the MRC file
         @param setup_particles_as_densities Set to True if you want each particle to be its own density.
                Useful for all-atom models or flexible beads.
                Mutually exclusive with density_ options
-        @param ideal_helix Create idealized helix structures for these residues.
-               NOT CURRENLTY IMPLEMENTED
+        @param ideal_helix Create idealized helix structures for these residues at resolution 1.
+               Any other resolutions passed will be coarsened from there.
+               Resolution 0 will not work, you may have to use MODELLER to do that (for now).
+        @param color (float from 0 to 1) the color applied to the
+                     hierarchies generated
         \note You cannot call add_representation multiple times for the same residues.
         """
 
@@ -420,7 +461,7 @@ class Molecule(_SystemBase):
                 resolutions = [resolutions]
             else:
                 raise Exception("you tried to pass resolutions that are not int or list-of-int")
-        if len(resolutions)>1:
+        if len(resolutions)>1 and not ideal_helix:
             for r in res:
                 if not r.get_has_structure():
                     raise Exception('You are creating multiple resolutions for '
@@ -441,6 +482,14 @@ class Molecule(_SystemBase):
                             'set them all up as individual Densities. '
                             'This could have unexpected results.')
 
+        # check helix not accompanied by other resolutions (densities OK though!)
+        if ideal_helix:
+            if 0 in resolutions:
+                raise Exception("For ideal helices, cannot build resolution 0: "
+                                "you have to do that in MODELLER")
+            if 1 not in resolutions:
+                resolutions = [1] + list(resolutions)
+
         # check residues are all part of this molecule:
         for r in res:
             if r.get_molecule()!=self:
@@ -456,7 +505,9 @@ class Molecule(_SystemBase):
                                                     density_prefix,
                                                     density_force_compute,
                                                     density_voxel_size,
-                                                    setup_particles_as_densities))
+                                                    setup_particles_as_densities,
+                                                    ideal_helix,
+                                                    color))
 
     def build(self):
         """Create all parts of the IMP hierarchy
@@ -488,7 +539,9 @@ class Molecule(_SystemBase):
                                               old_rep.density_prefix,
                                               old_rep.density_voxel_size,
                                               False,
-                                              old_rep.setup_particles_as_densities)
+                                              old_rep.setup_particles_as_densities,
+                                              old_rep.ideal_helix,
+                                              old_rep.color)
                     self.representations.append(new_rep)
                 self.coord_finder = self.mol_to_clone.coord_finder
 
@@ -498,10 +551,15 @@ class Molecule(_SystemBase):
                 print('WARNING: Residues without representation in molecule',
                       self.get_name(),':',system_tools.resnums2str(no_rep))
 
+            # first build any ideal helices (fills in structure for the TempResidues)
+            for rep in self.representations:
+                if rep.ideal_helix:
+                    _build_ideal_helix(self.mdl,rep.residues,self.coord_finder)
+
             # build all the representations
             for rep in self.representations:
                 system_tools.build_representation(self.hier,rep,self.coord_finder)
-            self.built=True
+            self.built = True
 
             for res in self.residues:
                 idx = res.get_index()
@@ -551,7 +609,9 @@ class _Representation(object):
                  density_prefix,
                  density_force_compute,
                  density_voxel_size,
-                 setup_particles_as_densities):
+                 setup_particles_as_densities,
+                 ideal_helix,
+                 color):
         self.residues = residues
         self.bead_resolutions = bead_resolutions
         self.bead_extra_breaks = bead_extra_breaks
@@ -562,6 +622,8 @@ class _Representation(object):
         self.density_force_compute = density_force_compute
         self.density_voxel_size = density_voxel_size
         self.setup_particles_as_densities = setup_particles_as_densities
+        self.ideal_helix = ideal_helix
+        self.color = color
 
 class _FindCloseStructure(object):
     """Utility to get the nearest observed coordinate"""
@@ -705,7 +767,7 @@ class TempResidue(object):
 
         for a in res.get_children():
             self.hier.add_child(a)
-            atype=IMP.atom.Atom(a).get_atom_type()
+            atype = IMP.atom.Atom(a).get_atom_type()
             a.get_particle().set_name('Atom %s of residue %i'%(atype.__str__().strip('"'),
                                                                self.hier.get_index()))
         self._structured = True

@@ -82,7 +82,7 @@ def log_evaluate(restraints):
     score=score-log(prob)
     return score
 
-class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
+class XLRestraintTest(IMP.test.TestCase):
 
     def setup_crosslinks_complex(self,representation=None,mode=None,root_hier=None):
         cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
@@ -195,7 +195,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
         for molecule in mols:
             dof.create_rigid_body(molecule,
                                   nonrigid_parts = molecule.get_non_atomic_residues())
-        return hier,dof.get_movers()
+        return hier,dof
 
     def init_representation_beads(self,m):
         r = IMP.pmi.representation.Representation(m)
@@ -225,7 +225,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
         dof = IMP.pmi.dof.DegreesOfFreedom(m)
         dof.create_flexible_beads(protA)
         dof.create_flexible_beads(protB)
-        return hier,dof.get_movers()
+        return hier,dof
 
     def test_restraint_probability_complex(self):
         """Test restraint gets correct probabilities"""
@@ -236,10 +236,12 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
                 rcomplex = self.init_representation_complex(m)
                 xlc,cldb = self.setup_crosslinks_complex(rcomplex,"single_category")
             else:
-                rcomplex,pmi2_movers=self.init_representation_complex_pmi2(m)
+                rcomplex,dof=self.init_representation_complex_pmi2(m)
                 xlc,cldb = self.setup_crosslinks_complex(root_hier=rcomplex,
                                                          mode="single_category")
-
+                self.assertEqual(len(dof.get_movers()),42)
+                dof.get_nuisances_from_restraint(xlc)
+                self.assertEqual(len(dof.get_movers()),44)
             # check all internals didn't change since last time
             o=IMP.pmi.output.Output()
             o.write_test("expensive_test_new_cross_link_ms_restraint.dat", [xlc])
@@ -290,7 +292,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
             else:
                 rex = IMP.pmi.macros.ReplicaExchange0(m,
                                                       root_hier=rcomplex,
-                                                      monte_carlo_sample_objects=pmi2_movers,
+                                                      monte_carlo_sample_objects=dof.get_movers(),
                                                       number_of_frames=2,
                                                       test_mode=True,
                                                       replica_exchange_object = rem)
@@ -308,9 +310,11 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
                 rbeads=self.init_representation_beads(m)
                 xlbeads,cldb=self.setup_crosslinks_beads(rbeads,"single_category")
             else:
-                rbeads,rmovers=self.init_representation_beads_pmi2(m)
+                rbeads,dof=self.init_representation_beads_pmi2(m)
                 xlbeads,cldb=self.setup_crosslinks_beads(root_hier=rbeads,mode="single_category")
-
+                self.assertEqual(len(dof.get_movers()),60)
+                dof.get_nuisances_from_restraint(xlbeads)
+                self.assertEqual(len(dof.get_movers()),62)
             for xl in xlbeads.xl_list:
 
                 chain1 = xl[cldb.protein1_key]
@@ -371,7 +375,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.test.TestCase):
             else:
                 rex = IMP.pmi.macros.ReplicaExchange0(m,
                                                       root_hier=rbeads,
-                                                      monte_carlo_sample_objects=rmovers,
+                                                      monte_carlo_sample_objects=dof.get_movers(),
                                                       number_of_frames=2,
                                                       test_mode=True,
                                                       replica_exchange_object = rem)
