@@ -18,8 +18,7 @@ IMPISD_BEGIN_NAMESPACE
 //! Conjugate prior for the concentration parameter of a von Mises distribution.
 /** \f[ p(\kappa|c,R_0) = \frac{\exp(\kappa R_0)}{I_0(\kappa)^c} \f]
     \f$0 < R_0 \le c\f$
-    where \f$kappa\f$ is the concentration parameter.
-    Default values: \f$R_0=1\f$ and \f$c=10\f$
+    where \f$\kappa\f$ is the concentration parameter.
  */
 class IMPISDEXPORT vonMisesKappaConjugateRestraint : public Restraint {
   Pointer<Particle> kappa_;
