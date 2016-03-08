@@ -15,15 +15,14 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Jeffreys prior for the \f$\kappa\f$ concentration parameter of a von Mises
-//! distribution.
-//! \f[p(\kappa) = \sqrt{\frac{I_1(\kappa)}{I_0(\kappa)}
-//  \left[
-//    \kappa
-//    -\frac{I_1(\kappa)}{I_0(\kappa)}
-//    -kappa\left(\frac{I_1(\kappa)}{I_0(\kappa)}\right)^2
-//  \right]}\f]
-//!
+//! Jeffreys prior for the \f$\kappa\f$ concentration parameter of a von Mises distribution.
+/** \f[p(\kappa) = \sqrt{\frac{I_1(\kappa)}{I_0(\kappa)}
+ *  \left[
+ *    \kappa
+ *    -\frac{I_1(\kappa)}{I_0(\kappa)}
+ *    -kappa\left(\frac{I_1(\kappa)}{I_0(\kappa)}\right)^2
+ *  \right]}\f]
+*/
 
 class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public Restraint {
   Pointer<Particle> kappa_;
