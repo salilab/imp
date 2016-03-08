@@ -18,7 +18,7 @@ class TALOSReader:
     def __init__(self, sequence, detailed_input, keep_all=False,
                  sequence_match=(1, 1)):
         """start the TALOSReader
-        sequence : a dictionnary of sequence number keys and 3-letter code
+        sequence : a dictionary of sequence number keys and 3-letter code
                    values.
         detailed_input : True if the input will be either predAll.tab or the
                          pred/res???.tab files. False if it's pred.tab
