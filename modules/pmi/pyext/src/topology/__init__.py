@@ -661,8 +661,7 @@ class Sequences(object):
         @param fasta_fn sequence file
         @param name_map dictionary mapping the fasta name to final stored name
         """
-        self.sequences={}
-        self.seqs_in_order = []
+        self.sequences = IMP.pmi.tools.OrderedDict()
         self.read_sequences(fasta_fn,name_map)
     def __len__(self):
         return len(self.sequences)
@@ -671,15 +670,17 @@ class Sequences(object):
     def __getitem__(self,key):
         if type(key) is int:
             try:
-                return self.seqs_in_order[key]
+                return self.sequences[self.sequences.keys()[key]]
             except:
-                raise Exception("You tried to access sequence num",key,"but there's only",len(self.seqs_in_order))
+                raise Exception("You tried to access sequence num",key,"but there's only",len(self.sequences.keys()))
         else:
             return self.sequences[key]
+    def __iter__(self):
+        return self.sequences.__iter__()
     def __repr__(self):
         ret=''
         for s in self.sequences:
-            ret+='%s\t%s\n'%(s,self.sequences[s])
+            ret += '%s\t%s\n'%(s,self.sequences[s])
         return ret
     def read_sequences(self,fasta_fn,name_map=None):
         code = None
@@ -689,7 +690,6 @@ class Sequences(object):
                 if line.startswith('>'):
                     if seq is not None:
                         self.sequences[code] = seq
-                        self.seqs_in_order.append(seq)
                     code = line.rstrip()[1:]
                     if name_map is not None:
                         try:
@@ -706,7 +706,6 @@ class Sequences(object):
                         seq += line
         if seq is not None:
             self.sequences[code] = seq
-            self.seqs_in_order.append(seq)
 
 #------------------------
 
