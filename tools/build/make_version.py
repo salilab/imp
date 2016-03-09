@@ -33,7 +33,7 @@ def make_version(source, bindir):
     forced = os.path.join(source, "VERSION")
     if os.path.exists(forced):
         version = open(forced, "r").read()
-    else:
+    elif os.path.exists(os.path.join(source, '.git')):
         process = subprocess.Popen(
             ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
             cwd=source, stdout=subprocess.PIPE, universal_newlines=True)
@@ -52,9 +52,10 @@ def make_version(source, bindir):
                 version = branch + "-" + get_short_rev(source)
         else:
             version = get_short_rev(source)
+    else:
+        version = 'unknown'
 
-    if version:
-        tools.rewrite(os.path.join(bindir, "VERSION"), version)
+    tools.rewrite(os.path.join(bindir, "VERSION"), version)
 
 if __name__ == '__main__':
     main()
