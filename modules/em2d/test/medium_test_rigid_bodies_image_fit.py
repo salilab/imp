@@ -32,8 +32,7 @@ class Tests(IMP.test.TestCase):
         img.set_size(80, 80)
         srw = em2d.SpiderImageReaderWriter()
 
-        ##Is the issue resolution for this test basedon old code?
-        resolution = 5
+        resolution = 40
         pixel_size = 1.5
         options = em2d.ProjectingOptions(pixel_size, resolution)
         ls = core.get_leaves(prot)
