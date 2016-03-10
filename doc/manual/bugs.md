@@ -2,8 +2,8 @@ Bug reports {#bugs}
 ===========
 
 To report a bug, [open an issue at GitHub](https://github.com/salilab/imp/issues).
-You can also [email us](http://integrativemodeling.org/contact.html), but GitHub
-issues are preferred because we won't forget about them.
+You can also [email us](https://integrativemodeling.org/contact.html), but
+GitHub issues are preferred because we won't forget about them.
 
 If you write code to fix a bug, [reference the issue number in the commit message](https://help.github.com/articles/closing-issues-via-commit-messages/).
 This makes it a lot easier to look back at old issues and figure out how they

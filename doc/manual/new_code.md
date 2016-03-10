@@ -48,7 +48,7 @@ When designing the interface for your new code, you should
   an IMP::SingletonModifier may be more appropriate than an IMP::Constraint.
 
 You are encouraged to post to the
-[imp-dev list](http://integrativemodeling.org/contact.html) to find help
+[imp-dev list](https://integrativemodeling.org/contact.html) to find help
 answering these questions as it can be hard to grasp all the various
 pieces of functionality already in the repository.
 

@@ -219,7 +219,7 @@ produce a set of configurations of the model using some sampling scheme.
 
 # Storing and analysis {#overview_analsysis}
 
-Configurations of the model can be saved and visualized in a variety of ways. Atomic structures can be written as PDB files using IMP::atom::write_pdb(). More flexibly, coarse grained models, geometry and information about the scoring function can be written to [RMF files](http://integrativemodeling.org/rmf).
+Configurations of the model can be saved and visualized in a variety of ways. Atomic structures can be written as PDB files using IMP::atom::write_pdb(). More flexibly, coarse grained models, geometry and information about the scoring function can be written to [RMF files](https://integrativemodeling.org/rmf).
 
      my_rmf= RMF.create_rmf_file("my.rmf")
      IMP.rmf.add_hierarchy(my_rmf, my_hierarchy)

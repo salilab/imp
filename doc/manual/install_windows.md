@@ -62,7 +62,7 @@ that you're going to use to build %IMP. The basic procedure is as follows:
   - (Optional) Get [numpy and scipy](http://www.scipy.org) to match your
     Python version.
   - (Optional) Get and install
-    [libTAU](http://integrativemodeling.org/libTAU.html)
+    [libTAU](https://integrativemodeling.org/libTAU.html)
      - Copy `libTAU.lib` to `TAU.lib` to help cmake find it.
   - (Optional) Get the [OpenCV source code](http://opencv.org/)
     and build it by [following these instructions](http://docs.opencv.org/doc/tutorials/introduction/windows_install/windows_install.html)

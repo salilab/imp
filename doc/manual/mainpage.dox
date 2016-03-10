@@ -12,7 +12,7 @@ Users that want to get started quickly with modeling a real biological
 complex might want to skip ahead to
 [Modeling of complexes using IMP::pmi](@ref rnapolii_stalk).
 
-\note This documentation is for version IMPVERSION of %IMP. For documentation for other versions, please see the [documentation page at the IMP website](http://integrativemodeling.org/doc.html).
+\note This documentation is for version IMPVERSION of %IMP. For documentation for other versions, please see the [documentation page at the IMP website](https://integrativemodeling.org/doc.html).
 
  - [Installation](@ref installation)
 

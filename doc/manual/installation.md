@@ -10,10 +10,10 @@ much faster than building from source code, requires a smaller download,
 and all the necessary prerequisites are handled for you automatically.
 
 We recommend you use a stable release. These are available for
-Windows, Mac and Linux from our [download page](http://integrativemodeling.org/download.html#stable).
+Windows, Mac and Linux from our [download page](https://integrativemodeling.org/download.html#stable).
 
-Binaries are [also available for our latest nightly builds](http://integrativemodeling.org/download.html#develop). If you do decide to use a nightly build,
-please check out the [nightly builds results page](http://integrativemodeling.org/nightly/results/)
+Binaries are [also available for our latest nightly builds](https://integrativemodeling.org/download.html#develop). If you do decide to use a nightly build,
+please check out the [nightly builds results page](https://integrativemodeling.org/nightly/results/)
 to see if the code is currently stable enough for your purposes.
 
 # Source code installation {#installation_source}
@@ -47,7 +47,7 @@ will not build, and some will not function optimally.
   line tools.
 - [FFTW](http://www.fftw.org): needed to use the IMP.em2d or IMP.multifit
   modules or the [multifit](@ref multifit_3sfd) command line tool.
-- [libTAU](http://integrativemodeling.org/libTAU.html): needed to use the
+- [libTAU](https://integrativemodeling.org/libTAU.html): needed to use the
   IMP.cnmultifit module or the [cnmultifit](@ref cnmultifit_groel) command
   line tool.
 - An [MPI](@ref IMP::mpi) library is needed to use the IMP.mpi module.
@@ -104,7 +104,7 @@ procedure we use.
 
 ## Download {#installation_download}
 
-- Download the source code tarball from [our download page](http://integrativemodeling.org/download.html#source), then extract it with something like:
+- Download the source code tarball from [our download page](https://integrativemodeling.org/download.html#source), then extract it with something like:
 
         tar -xvzf ../imp-<version>.tar.gz
 
@@ -117,7 +117,7 @@ procedure we use.
 
   (the `master` branch tracks the most recent stable
   release; alternatively you can use `develop` to get the most recent code,
-  but please check out the [nightly builds results page](http://integrativemodeling.org/nightly/results/)
+  but please check out the [nightly builds results page](https://integrativemodeling.org/nightly/results/)
   to see if the code is currently stable enough for your purposes).
 
 ## Compilation {#installation_compilation}
@@ -145,7 +145,7 @@ Tests are labeled with the module name and the type and cost of the test, so to 
 Benchmarks are simply tests labeled as `benchmark`; examples are tests labeled as `example`.
 
 Note that some test failures are to be expected; compare the failures with
-those at our own [nightly builds page](http://integrativemodeling.org/nightly/results/)
+those at our own [nightly builds page](https://integrativemodeling.org/nightly/results/)
 if you are concerned.
 
 ## Installation {#installation_install}

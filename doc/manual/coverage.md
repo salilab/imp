@@ -3,7 +3,7 @@ Code coverage {#coverage}
 
 To assist in testing your code, we report the coverage of all %IMP modules
 and applications as part of the
-[nightly builds](http://integrativemodeling.org/nightly/results/).
+[nightly builds](https://integrativemodeling.org/nightly/results/).
 Coverage is basically a report of which lines of code were executed by your
 tests; it is then straightforward to see which parts of the code have not
 been exercised by any test, so that you can write new tests to test those
