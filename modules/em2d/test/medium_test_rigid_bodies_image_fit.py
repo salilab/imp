@@ -1,13 +1,10 @@
 from __future__ import print_function
 import IMP
-import IMP.core as core
+import IMP.core
 import IMP.test
-import IMP.atom as atom
-import IMP.em2d as em2d
-import IMP.algebra as alg
-import os
-from math import *
-
+import IMP.atom
+import IMP.em2d
+import IMP.algebra
 
 class Tests(IMP.test.TestCase):
 
@@ -17,30 +14,30 @@ class Tests(IMP.test.TestCase):
 
         # read full complex
         fn = self.get_input_file_name("1z5s.pdb")
-        prot = atom.read_pdb(fn, m, IMP.atom.ATOMPDBSelector())
+        prot = IMP.atom.read_pdb(fn, m, IMP.atom.ATOMPDBSelector())
         # read components
         names = ["1z5sA", "1z5sB", "1z5sC", "1z5sD"]
         fn_pdbs = [self.get_input_file_name(name + ".pdb") for name in names]
-        components = [atom.read_pdb(fn, m, IMP.atom.ATOMPDBSelector())
+        components = [IMP.atom.read_pdb(fn, m, IMP.atom.ATOMPDBSelector())
                       for fn in fn_pdbs]
-        components_rbs = [atom.create_rigid_body(c) for c in components]
+        components_rbs = [IMP.atom.create_rigid_body(c) for c in components]
 
         # img
-        R = alg.get_identity_rotation_3d()
-        reg = em2d.RegistrationResult(R)
-        img = em2d.Image()
+        R = IMP.algebra.get_identity_rotation_3d()
+        reg = IMP.em2d.RegistrationResult(R)
+        img = IMP.em2d.Image()
         img.set_size(80, 80)
 
         resolution = 40
         pixel_size = 1.5
-        options = em2d.ProjectingOptions(pixel_size, resolution)
-        ls = core.get_leaves(prot)
-        em2d.get_projection(img, ls, reg, options)
+        options = IMP.em2d.ProjectingOptions(pixel_size, resolution)
+        ls = IMP.core.get_leaves(prot)
+        IMP.em2d.get_projection(img, ls, reg, options)
         # set restraint
-        score_function = em2d.EM2DScore()
-        rb_fit = em2d.RigidBodiesImageFitRestraint(score_function,
-                                                   components_rbs, img)
-        pp = em2d.ProjectingParameters(pixel_size, resolution)
+        score_function = IMP.em2d.EM2DScore()
+        rb_fit = IMP.em2d.RigidBodiesImageFitRestraint(score_function,
+                                                       components_rbs, img)
+        pp = IMP.em2d.ProjectingParameters(pixel_size, resolution)
         rb_fit.set_projecting_parameters(pp)
         # set the trivial case:
         n_masks = 1
@@ -55,9 +52,9 @@ class Tests(IMP.test.TestCase):
 
         # Calculate the positions of the rigid bodies respect to the centroid
         # of the entire molecule
-        ls = core.get_leaves(prot)
-        xyzs = core.XYZs(ls)
-        centroid = core.get_centroid(xyzs)
+        ls = IMP.core.get_leaves(prot)
+        xyzs = IMP.core.XYZs(ls)
+        centroid = IMP.core.get_centroid(xyzs)
 
         coords = [rb.get_coordinates() - centroid for rb in components_rbs]
         for rb, coord in zip(components_rbs, coords):
