@@ -50,7 +50,7 @@ class IMPEM2DEXPORT RigidBodiesImageFitRestraint : public Restraint {
   // Storage for all the masks of the rigid bodies
   std::vector<em2d::Images> rigid_bodies_masks_;
   KeyIndexMaps maps_;
-  Pointer<ScoreFunction> score_function_;
+  PointerMember<ScoreFunction> score_function_;
   core::RigidBodies rigid_bodies_;
   Pointer<Image> image_;  // Image to used when scoring
   Pointer<Image> projection_;
