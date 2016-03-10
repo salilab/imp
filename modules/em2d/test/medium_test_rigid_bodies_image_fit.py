@@ -30,14 +30,12 @@ class Tests(IMP.test.TestCase):
         reg = em2d.RegistrationResult(R)
         img = em2d.Image()
         img.set_size(80, 80)
-        srw = em2d.SpiderImageReaderWriter()
 
         resolution = 40
         pixel_size = 1.5
         options = em2d.ProjectingOptions(pixel_size, resolution)
         ls = core.get_leaves(prot)
         em2d.get_projection(img, ls, reg, options)
-        #img.write("rbfit_test_image.spi",srw)
         # set restraint
         score_function = em2d.EM2DScore()
         rb_fit = em2d.RigidBodiesImageFitRestraint(score_function,
