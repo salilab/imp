@@ -113,7 +113,7 @@ class Tests(IMP.test.TestCase):
         sio = io.BytesIO()
         h = IMP.atom.Hierarchy()
         h.show(sio, "-foo-")
-        self.assertEqual(sio.getvalue(), "nullptr Molecular Hierarchy node")
+        self.assertEqual(sio.getvalue(), b"nullptr Molecular Hierarchy node")
 
     def test_state_show(self):
         """Test Hierarchy.show() with State particle"""
@@ -123,7 +123,7 @@ class Tests(IMP.test.TestCase):
         sio = io.BytesIO()
         h = IMP.atom.Hierarchy(p)
         h.show(sio, "-foo-")
-        self.assertIn("-foo-State: 42-foo-", sio.getvalue())
+        self.assertIn(b"-foo-State: 42-foo-", sio.getvalue())
 
     def test_xyz_show(self):
         """Test Hierarchy.show() with XYZ particle"""
@@ -133,7 +133,7 @@ class Tests(IMP.test.TestCase):
         sio = io.BytesIO()
         h = IMP.atom.Hierarchy(p)
         h.show(sio, "-foo-")
-        self.assertIn("-foo-(1, 2, 3)", sio.getvalue())
+        self.assertIn(b"-foo-(1, 2, 3)", sio.getvalue())
 
 if __name__ == '__main__':
     IMP.test.main()
