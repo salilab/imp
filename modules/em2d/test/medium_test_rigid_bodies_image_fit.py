@@ -65,11 +65,9 @@ class Tests(IMP.test.TestCase):
 
         # Check that the value is a perfect registration
         score = rb_fit.evaluate(False)
-        print("score ...", score)
         # It seems that projecting with the masks is slightly less accurate
         # I have to establish a tolerance of 0.03
-        self.assertAlmostEqual(score, 0, delta=0.03,
-                               msg="Wrong value for the score %f " % (score))
+        self.assertAlmostEqual(score, 0, delta=0.03)
 
 
 if __name__ == '__main__':
