@@ -18,6 +18,11 @@ if sys.version_info[0] >= 3:
 else:
     open_utf8 = open
 
+def _add_includes(headers, output):
+    for g in headers:
+        name = os.path.split(g)[1]
+        output.append("#include <%s/" % sys.argv[2] + name + ">")
+
 includepath = sys.argv[1][sys.argv[1].find("include") + len("include") + 1:]
 
 output = ["""/**
@@ -49,15 +54,12 @@ for h in sys.argv[3:]:
     else:
         deprecated_allh = []
         allh = [h]
-    for g in allh:
-        name = os.path.split(g)[1]
-        output.append("#include <%s/" % sys.argv[2] + name + ">")
+    _add_includes(allh, output)
+
     if deprecated_allh:
         # SWIG needs all headers (for now)
         output.append("#ifdef IMP_SWIG_WRAPPER")
-        for g in deprecated_allh:
-            name = os.path.split(g)[1]
-            output.append("#include <%s/" % sys.argv[2] + name + ">")
+        _add_includes(deprecated_allh, output)
         output.append("#endif")
 
 output.append("#endif /* %s */" % guard)
