@@ -29,7 +29,7 @@ from collections import defaultdict
 from . import system_tools
 from bisect import bisect_left
 from math import pi,cos,sin
-
+from operator import itemgetter
 
 def _build_ideal_helix(mdl, residues, coord_finder):
     """Creates an ideal helix from the specified residue range
@@ -42,7 +42,7 @@ def _build_ideal_helix(mdl, residues, coord_finder):
             raise Exception("You tried to build ideal_helix for a residue "
                             "that already has structure:",res)
         if n>0 and (not res.get_index()==prev_idx+1):
-            raise Exception("Passed non-contiguous segment to build_ideal_helix")
+            raise Exception("Passed non-contiguous segment to build_ideal_helix for",res.get_molecule())
 
         rt = res.get_residue_type()
 
@@ -526,7 +526,7 @@ class Molecule(_SystemBase):
                         self.residues[nr].set_structure(
                             IMP.atom.Residue(clone),soft_check=True)
                 for old_rep in self.mol_to_clone.representations:
-                    new_res = set()
+                    new_res = IMP.pmi.tools.OrderedSet()
                     for r in old_rep.residues:
                         new_res.add(self.residues[r.get_internal_index()])
                         self.represented.add(self.residues[r.get_internal_index()])
@@ -635,7 +635,7 @@ class _FindCloseStructure(object):
             ca = IMP.atom.Selection(r,atom_type=IMP.atom.AtomType("CA")).get_selected_particles()[0]
             xyz = IMP.core.XYZ(ca).get_coordinates()
             self.coords.append([idx,xyz])
-        self.coords.sort()
+        self.coords.sort(key=itemgetter(0))
     def find_nearest_coord(self,query):
         if self.coords==[]:
             return None
