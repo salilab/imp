@@ -151,13 +151,25 @@ class TestTools(IMP.test.TestCase):
         self.assertEqual(testH,tH)
 
         # check passing system,state
-        testSystem = IMP.pmi.tools.input_adaptor(s,pmi_resolution=0)
-        testState = IMP.pmi.tools.input_adaptor(st1,pmi_resolution=0)
+        testSystem = [set(l) for l in
+                      IMP.pmi.tools.input_adaptor(s,pmi_resolution=0)]
+        testState = [set(l) for l in
+                     IMP.pmi.tools.input_adaptor(st1,pmi_resolution=0)]
         compareAll = [set(IMP.atom.Selection(m.get_hierarchy(),
                                          resolution=0).get_selected_particles()) for m in [m1,m2,m3]]
 
-        self.assertEqual([set(l) for l in testSystem],compareAll)
-        self.assertEqual([set(l) for l in testState],compareAll)
+        # get_molecules() returns a dict, so the order of testSystem
+        # and testState is not guaranteed
+        self.assertEqualUnordered(testSystem, compareAll)
+        self.assertEqualUnordered(testState, compareAll)
+
+    def assertEqualUnordered(self, a, b):
+        """Compare two unordered lists; i.e. each list must have the
+           same elements, but possibly in a different order"""
+        self.assertEqual(len(a), len(b))
+        for i in a + b:
+            self.assertIn(i, a)
+            self.assertIn(i, b)
 
     def test_get_is_canonical(self):
         """Test get PMI2 structures are canonical"""

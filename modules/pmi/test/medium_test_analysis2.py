@@ -19,6 +19,7 @@ try:
     import IMP.pmi.dof
     import IMP.pmi.macros
     import IMP.pmi.restraints.basic
+    import matplotlib
 except ImportError:
     nicemodules = False
 
