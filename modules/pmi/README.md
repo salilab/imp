@@ -23,8 +23,15 @@ The typical flow of a PMI modeling script is as follows:
  - [Restraints](@ref IMP::pmi::restraints): restrain your system with theoretical or experimental data
  - [Sample](@ref IMP::pmi::macros::ReplicaExchange0) your system with replica exchange (including Monte Carlo or Molecular Dynamics or both)
 
-Here are some complete examples to help you get started:
- - [Multiscale modeling](https://integrativemodeling.org/nightly/doc/ref/pmi_2multiscale_8py-example.html): easily model a system at multiple resolutions simultaneously and sample with replica exchange
+## Key examples
+Start here with examples covering basic elements of PMI:
+- [Selection in PMI](https://integrativemodeling.org/nightly/doc/ref/pmi_2selection_8py-example.html): some different ways you can use PMI classes to create molecules and select from them
+- [EM modeling with densities](https://integrativemodeling.org/nightly/doc/ref/pmi_2em_8py-example.html): using density representations to fit structures into EM maps
+- [Ideal helices](https://integrativemodeling.org/nightly/doc/ref/pmi_2ideal_helix_8py-example.html): for when you can predict a helix for a region
+- [Symmetry](https://integrativemodeling.org/nightly/doc/ref/pmi_2symmetry_8py-example.html): Covers how to clone a molecule and set up a symmetry constraint
+
+Here are some *complete* examples to show you typical modeling scripts:
+ - [Multiscale modeling](https://integrativemodeling.org/nightly/doc/ref/pmi_2multiscale_8py-example.html): model a system at multiple resolutions simultaneously and sample with replica exchange
  - [Crosslinks with ambiguity](https://integrativemodeling.org/nightly/doc/ref/pmi_2ambiguity_8py-example.html): create crosslinks and automatically apply them to ambiguous copies of a protein (including in multiple states)
  - [MD modeling](https://integrativemodeling.org/nightly/doc/ref/pmi_2atomistic_8py-example.html): how to set up restraints for atomic-scale models and then run molecular dynamics
 

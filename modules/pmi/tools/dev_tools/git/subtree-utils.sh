@@ -67,14 +67,15 @@ squash_msg()
         dir="$1"
         oldsub="$2"
         newsub="$3"
+        github="$4"
         newsub_short=$(git rev-parse --short "$newsub")
 
         if [ -n "$oldsub" ]; then
                 oldsub_short=$(git rev-parse --short "$oldsub")
                 echo "Squashed '$dir/' changes from $oldsub_short..$newsub_short"
                 echo
-                git log --pretty=tformat:'%h %s' "$oldsub..$newsub"
-                git log --pretty=tformat:'REVERT: %h %s' "$newsub..$oldsub"
+                git log --pretty=tformat:'%h %s' "$oldsub..$newsub" | perl -pe "s^#(\d+)^${github}#\1^g"
+                git log --pretty=tformat:'REVERT: %h %s' "$newsub..$oldsub" | perl -pe "s^#(\d+)^${github}#\1^g"
         else
                 echo "Squashed '$dir/' content from commit $newsub_short"
         fi
@@ -90,6 +91,7 @@ new_squash_commit()
     old="$2"
     oldsub="$3"
     newsub="$4"
+    github="$5"
     oldhead=$(git rev-parse HEAD)
     # Get all subtree commits, in the order they were made
     # (this is the reverse of the normal log order)
@@ -98,15 +100,16 @@ new_squash_commit()
     git cherry-pick -n --strategy=recursive -Xsubtree="$dir" $revs || exit $?
     # Commit the combination of all the cherry-picked changes
     if [ -n "$old" ]; then
-        squash_msg "$dir" "$oldsub" "$newsub" | git commit -n -F - || exit $?
+        squash_msg "$dir" "$oldsub" "$newsub" $github | git commit -n -F - || exit $?
     else
-        squash_msg "$dir" "" "$newsub" | git commit -n -F - || exit $?
+        squash_msg "$dir" "" "$newsub" $github | git commit -n -F - || exit $?
     fi
 }
 
 merge()
 {
     local dir=$1
+    local github=$2
     local rev=$(git rev-parse FETCH_HEAD)
     first_split="$(find_latest_squash "$dir")"
     if [ -z "$first_split" ]; then
@@ -119,7 +122,7 @@ merge()
         echo "Subtree is already at commit $rev."
         exit 0
     fi
-    new_squash_commit "$dir" "$old" "$sub" "$rev" || exit $?
+    new_squash_commit "$dir" "$old" "$sub" "$rev" $github || exit $?
 }
 
 pull()
@@ -127,7 +130,8 @@ pull()
     local prefix=$1
     local refspec=$2
     local branch=$3
+    local github=$4
     ensure_clean
     git fetch $refspec $branch || exit $?
-    merge $1
+    merge $1 $github
 }

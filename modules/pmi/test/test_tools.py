@@ -40,6 +40,10 @@ class TestTools(IMP.test.TestCase):
 
     def test_select_at_all_resolutions(self):
         """Test this actually gets everything"""
+        try:
+            import sklearn
+        except:
+            self.skipTest("Require sklearn for this test")
         mdl = IMP.Model()
         s = IMP.pmi.topology.System(mdl)
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('chainA.fasta'))

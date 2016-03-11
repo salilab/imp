@@ -959,7 +959,7 @@ class Representation(object):
             rmf_file_name)
 
         if not prots:
-            raise ValueError("cannot read hiearchy from rmf")
+            raise ValueError("cannot read hierarchy from rmf")
 
         prot=prots[0]
 

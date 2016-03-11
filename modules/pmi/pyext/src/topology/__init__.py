@@ -670,7 +670,8 @@ class Sequences(object):
     def __getitem__(self,key):
         if type(key) is int:
             try:
-                return self.sequences[self.sequences.keys()[key]]
+                allseqs = list(self.sequences.keys())
+                return self.sequences[allseqs[key]]
             except:
                 raise Exception("You tried to access sequence num",key,"but there's only",len(self.sequences.keys()))
         else:
@@ -689,7 +690,7 @@ class Sequences(object):
             for (num, line) in enumerate(fh):
                 if line.startswith('>'):
                     if seq is not None:
-                        self.sequences[code] = seq
+                        self.sequences[code] = seq.strip('*')
                     code = line.rstrip()[1:]
                     if name_map is not None:
                         try:
@@ -705,7 +706,7 @@ class Sequences(object):
     "Found FASTA sequence before first header at line %d: %s" % (num + 1, line))
                         seq += line
         if seq is not None:
-            self.sequences[code] = seq
+            self.sequences[code] = seq.strip('*')
 
 #------------------------
 

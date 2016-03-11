@@ -598,6 +598,11 @@ class TopologyTest(IMP.test.TestCase):
 
     def test_ideal_helix(self):
         """Test you can build an ideal helix"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
         mdl = IMP.Model()
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()

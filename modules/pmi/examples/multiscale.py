@@ -17,6 +17,7 @@ import IMP.pmi.restraints.stereochemistry
 # Read sequences etc
 seqs = IMP.pmi.topology.Sequences(IMP.pmi.get_example_path('data/1WCM.fasta'))
 components = ["Rpb1","Rpb2","Rpb3","Rpb4"]
+colors = [0.1,0.9,0.5,0.8]
 chains = "ABCD"
 beadsize = 10
 
@@ -37,9 +38,11 @@ for n in range(len(components)):
                                chain_id=chains[n],
                                offset=0)
     mol.add_representation(atomic,                 # res 1,10 for structured regions
-                           resolutions=[1,10])
+                           resolutions=[1,10],
+                           color=colors[n])
     mol.add_representation(mol[:]-atomic,          # res 10 for unstructured regions
-                           resolutions=[beadsize])
+                           resolutions=[beadsize],
+                           color=colors[n])
     mols.append(mol)
 
 # calling System.build() creates all States and Molecules (and their representations)
