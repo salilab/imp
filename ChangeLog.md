@@ -2,6 +2,9 @@ ChangeLog {#changelog}
 =========
 
 # For next stable IMP release #
+- This release includes most of the functionality of PMI2. This is an improved
+  version of PMI that is faster than PMI1, more modular, and easier to use.
+  See IMP::pmi for more information.
 - The IMP::base and IMP::kernel namespaces have been removed (use the top-level
   IMP namespace instead).
 - The IMP::display::ChimeraWriter class has been removed (use IMP::rmf instead).
