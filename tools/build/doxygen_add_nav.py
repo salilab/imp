@@ -20,9 +20,11 @@ def get_version():
         version = open(versionpath, "r").read().strip()
     return version
 
-def get_source_file_name(module, subdir, f):
+def get_source_file_name(module, subdir, f, example):
     """Get the relative path to the source for `f` in module `module`."""
-    if f.endswith('.py'):
+    if example:
+        return os.path.join('modules', module, 'examples', subdir, f)
+    elif f.endswith('.py'):
         return os.path.join('modules', module, 'pyext', 'src', subdir, f)
     else:
         return os.path.join('modules', module, 'include', subdir, f)
@@ -94,12 +96,21 @@ class Page(object):
 
     def map_location_to_source(self, top_source_dir):
         """Try to map the XML location to a real file in the source dir"""
-        if not hasattr(self, 'location') or 'IMP' not in self.location:
+        if not hasattr(self, 'location'):
             return
-        ps = self.location[self.location.find('IMP')+4:].split(os.path.sep)
+        if 'IMP' in self.location:
+            ps = self.location[self.location.find('IMP')+4:].split(os.path.sep)
+            example = False
+        elif '/examples/' in self.location:
+            ps = self.location[self.location.find('/examples/')
+                                 +10:].split(os.path.sep)
+            example = True
+        else:
+            return
         if len(ps) == 1 or ps[0] == 'internal':
             ps.insert(0, 'kernel')
-        source = get_source_file_name(ps[0], os.path.sep.join(ps[1:-1]), ps[-1])
+        source = get_source_file_name(ps[0], os.path.sep.join(ps[1:-1]), ps[-1],
+                                      example)
         if os.path.exists(os.path.join(top_source_dir, source)):
             self.source_file_name = source
 
@@ -170,11 +181,13 @@ class Docs(object):
                 p.title = compounddef.find('title').text.replace('%IMP', 'IMP')
                 pages.append(p)
             elif compounddef is not None \
-                 and compounddef.attrib['kind'] == 'class':
+                 and compounddef.attrib['kind'] in ('class', 'file'):
                 p = Page(compounddef.attrib['id'])
                 # Remove .xml suffix
                 p.out_file_name = os.path.basename(f)[:-4]
                 p.location = compounddef.find('location').attrib['file']
+                if '/examples/' in p.location:
+                    p.out_file_name += '-example'
                 pages.append(p)
         return pages
 
