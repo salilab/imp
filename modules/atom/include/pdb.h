@@ -523,10 +523,10 @@ IMPATOMEXPORT std::string get_pdb_string(
 
 /**
    This function returns a connectivity string in PDB format
-  /note The CONECT records specify connectivity between atoms for which
+  \note The CONECT records specify connectivity between atoms for which
       coordinates are supplied. The connectivity is described using
       the atom serial number as found in the entry.
-  /note http://www.bmsc.washington.edu/CrystaLinks/man/pdb/guide2.2_frame.html
+  \note http://www.bmsc.washington.edu/CrystaLinks/man/pdb/guide2.2_frame.html
 */
 IMPATOMEXPORT std::string get_pdb_conect_record_string(int, int);
 #endif

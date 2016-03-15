@@ -21,7 +21,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Ensure the radius of gyration of particles fits the predicted one
 /**
-/note a harmonic upper bound is applied between
+\note a harmonic upper bound is applied between
       the predicted radius and the actual radius
  */
 class IMPMULTIFITEXPORT RadiusOfGyrationRestraint : public Restraint {
