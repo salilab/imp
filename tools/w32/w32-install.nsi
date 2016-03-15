@@ -26,11 +26,13 @@ RequestExecutionLevel admin
   OutFile "IMP-${VERSION}-64bit.exe"
   InstallDir "$PROGRAMFILES64\${PRODVER}"
   # Note that we don't use InstallDirRegKey on x64 since it ignores SetRegView
+  !define PYTHON_ARCH_SUFFIX ""
 !else
   !define FULL_PRODVER "${PRODUCT} ${VERSION} (32 bit)"
   OutFile "IMP-${VERSION}-32bit.exe"
   InstallDir "$PROGRAMFILES\${PRODVER}"
   InstallDirRegKey HKLM "Software\${PRODVER}" ""
+  !define PYTHON_ARCH_SUFFIX "-32"
 !endif
 
 Caption "${FULL_PRODVER} Setup"
@@ -83,7 +85,7 @@ Section ""
   WriteRegStr HKLM "Software\Python\PythonCore\2.7\PythonPath\${PRODVER}" "" "$INSTDIR\python"
   WriteRegStr HKLM "Software\Python\PythonCore\3.3\PythonPath\${PRODVER}" "" "$INSTDIR\python"
   WriteRegStr HKLM "Software\Python\PythonCore\3.4\PythonPath\${PRODVER}" "" "$INSTDIR\python"
-  WriteRegStr HKLM "Software\Python\PythonCore\3.5\PythonPath\${PRODVER}" "" "$INSTDIR\python"
+  WriteRegStr HKLM "Software\Python\PythonCore\3.5${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}" "" "$INSTDIR\python"
 
   !insertmacro MUI_STARTMENU_WRITE_BEGIN ${PRODVER}
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
@@ -116,7 +118,7 @@ Section "Uninstall"
   DeleteRegKey HKLM "Software\Python\PythonCore\2.7\PythonPath\${PRODVER}"
   DeleteRegKey HKLM "Software\Python\PythonCore\3.3\PythonPath\${PRODVER}"
   DeleteRegKey HKLM "Software\Python\PythonCore\3.4\PythonPath\${PRODVER}"
-  DeleteRegKey HKLM "Software\Python\PythonCore\3.5\PythonPath\${PRODVER}"
+  DeleteRegKey HKLM "Software\Python\PythonCore\3.5${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}"
  
 SectionEnd
 
