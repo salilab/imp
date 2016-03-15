@@ -82,6 +82,7 @@ Written by Dina Schneidman.")
   bool vacuum = false;
   bool javascript = false;
   int chi_free = 0;
+  float pr_dmax = 0.0;
   po::options_description hidden("Hidden options");
   hidden.add_options()
     ("input-files", po::value<std::vector<std::string> >(),
@@ -96,7 +97,9 @@ constant form factor (default = false)")
     ("javascript,j",
      "output javascript for browser viewing of the results (default = false)")
     ("chi_free,x", po::value<int>(&chi_free)->default_value(0),
-     "compute chi-free instead of chi, specify iteration number (default = 0)");
+     "compute chi-free instead of chi, specify iteration number (default = 0)")
+    ("pr_dmax", po::value<float>(&pr_dmax)->default_value(0.0, "0.0"),
+     "Dmax value for P(r) calculation. P(r) is calculated only is pr_dmax > 0");
 
   po::options_description cmdline_options;
   cmdline_options.add(desc).add(hidden);
@@ -220,6 +223,16 @@ constant form factor (default = false)")
       profile->add_errors();
       profile->write_SAXS_file(profile_file_name);
       if (gnuplot_script) Gnuplot::print_profile_script(pdb_files[i]);
+    }
+
+    // calculate P(r)
+    if(pr_dmax > 0.0) {
+      RadialDistributionFunction pr(0.5);
+      profile->profile_2_distribution(pr, pr_dmax);
+      pr.normalize();
+      std::string pr_file_name = std::string(pdb_files[i]) + ".pr";
+      std::ofstream pr_file(pr_file_name.c_str());
+      pr.show(pr_file);
     }
 
     // 3. fit experimental profiles
