@@ -356,6 +356,7 @@ if(IMP_DOXYGEN_FOUND)
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/ref.html
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/ref-warnings.txt
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_links.py ${CMAKE_BINARY_DIR}/doc/ref
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_add_ref_nav.py ${CMAKE_SOURCE_DIR}
     # Rebuild manual so that it can link to the refguide tags
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual.html
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/manual-warnings.txt
