@@ -226,7 +226,7 @@ class Docs(object):
                                         page.next_page))
         edit_link = page.github_edit()
         doxversion = '<a class="doxversion" ' \
-                     + 'href="http://integrativemodeling.org/doc.html">' \
+                     + 'href="https://integrativemodeling.org/doc.html">' \
                      + 'version %s</a>' % get_version()
         toplinks = '<div class="doxnavlinks">' + edit_link + " " + doxversion \
                    + " ".join(links) + '</div>\n'
