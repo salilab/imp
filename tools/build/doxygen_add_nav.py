@@ -216,6 +216,10 @@ class Docs(object):
                         page.source_file_name = os.path.join(source_subdir,
                                                    os.path.basename(source))
 
+    def get_html_page(self, page):
+        """Return the full path to a page's output HTML file"""
+        return os.path.join(self.html_dir, page.out_file_name + '.html')
+
     def add_page_navigation(self, page):
         """Patch the HTML output for a given page to add navigation and other
            useful links, such as GitHub editing"""
@@ -236,7 +240,7 @@ class Docs(object):
         toplinks = '<div class="doxnavlinks">' + edit_link + " " + doxversion \
                    + " ".join(links) + '</div>\n'
         botlinks = '<div class="doxnavlinks">' + " ".join(links) + '</div>\n'
-        fname = os.path.join(self.html_dir, page.out_file_name + '.html')
+        fname = self.get_html_page(page)
         content = patch_html(open(fname).readlines())
         out = open(fname, 'w')
         for line in content:

@@ -4,6 +4,7 @@
    to what is done for the manual (see doxygen_add_nav.py).
 """
 
+from __future__ import print_function
 from doxygen_add_nav import Docs, Page
 import tools
 import sys
@@ -35,7 +36,10 @@ def main():
         docs.pages.append(get_module_readme(m))
 
     for p in docs.pages:
-        docs.add_page_navigation(p)
+        if os.path.exists(docs.get_html_page(p)):
+            docs.add_page_navigation(p)
+        else:
+            print("Not handling %s: HTML file does not exist" % p.id)
 
 if __name__ == '__main__':
     main()
