@@ -80,8 +80,8 @@ class AnalysisTest(IMP.test.TestCase):
                               max_trans=0.1)
 
         dr = IMP.pmi.restraints.basic.DistanceRestraint(root_hier = hier,
-                                                        tuple_selection1=("Prot1",1,1),
-                                                        tuple_selection2=("Prot2",1,1),
+                                                        tuple_selection1=(1,1,"Prot1",0),
+                                                        tuple_selection2=(1,1,"Prot2",0),
                                                         distancemin=5,
                                                         distancemax=15)
         dr.add_to_model()

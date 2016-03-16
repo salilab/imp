@@ -88,7 +88,7 @@ class ExternalBarrier(object):
 
 
 class DistanceRestraint(object):
-    """A simple distance restraint between rigid bodies"""
+    """A simple distance restraint"""
     def __init__(self,
                  representation=None,
                  tuple_selection1=None,
@@ -100,14 +100,14 @@ class DistanceRestraint(object):
                  root_hier = None):
         """Setup distance restraint.
         @param representation DEPRECATED
-        @param tuple_selection1 (start,stop,molecule name)
-        @param tuple_selection2 (start,stop,molecule name)
+        @param tuple_selection1 (resnum,resnum,molecule name, copy number (=0))
+        @param tuple_selection2 (resnum,resnum,molecule name, copy number (=0))
         @param distancemin The minimum dist
         @param distancemax The maximum dist
         @param resolution For selecting particles
         @param kappa The harmonic parameter
         @param root_hier The hierarchy to select from (use this instead of representation)
-        \note currently this just selects the first particles
+        \note Pass the same resnum twice to each tuple_selection. Optionally add a copy number (PMI2 only)
         """
         self.weight=1.0
         self.label="None"
@@ -128,27 +128,32 @@ class DistanceRestraint(object):
                                               residue=tuple_selection2[0])
         elif root_hier and not representation:
             self.m = root_hier.get_model()
+            copy_num1 = 0
+            if len(tuple_selection1)>3:
+                copy_num1 = tuple_selection1[3]
+            copy_num2 = 0
+            if len(tuple_selection2)>3:
+                copy_num2 = tuple_selection2[3]
+
             sel1 = IMP.atom.Selection(root_hier,
-                                            resolution=resolution,
-                                            molecule=tuple_selection1[0],
-                                            residue_index=tuple_selection1[2])
+                                      resolution=resolution,
+                                      molecule=tuple_selection1[2],
+                                      residue_index=tuple_selection1[0],
+                                      copy_index=copy_num1)
             particles1 = sel1.get_selected_particles()
             sel2 = IMP.atom.Selection(root_hier,
-                                            resolution=resolution,
-                                            molecule=tuple_selection2[0],
-                                            residue_index=tuple_selection2[2])
+                                      resolution=resolution,
+                                      molecule=tuple_selection2[2],
+                                      residue_index=tuple_selection2[0],
+                                      copy_index=copy_num2)
             particles2 = sel2.get_selected_particles()
         else:
             raise Exception("Pass representation or root_hier, not both")
 
         self.rs = IMP.RestraintSet(self.m, 'distance')
 
-        # IMP.atom.get_by_type
-        for p in particles1:
-            print(p.get_name())
-
-        for p in particles2:
-            print(p.get_name())
+        print("Created distance restraint between "
+              "%s and %s" % (particles1[0].get_name(),particles2[0].get_name()))
 
         if len(particles1) > 1 or len(particles2) > 1:
             raise ValueError("more than one particle selected")
