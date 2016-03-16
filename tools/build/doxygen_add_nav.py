@@ -118,9 +118,14 @@ class Page(object):
         """Return an HTML fragment to edit this Page on GitHub"""
         if not hasattr(self, 'source_file_name'):
             return ''
-        root = 'https://github.com/salilab/imp/blob/develop/'
+        sp = self.source_file_name.split(os.path.sep)
+        if sp[:2] == ['modules', 'pmi']:
+            root = 'https://github.com/salilab/pmi/blob/develop/'
+            del sp[:2]
+        else:
+            root = 'https://github.com/salilab/imp/blob/develop/'
         return('<a href="%s%s" title="Edit on GitHub"><img src="edit.png" '
-               'alt="Edit on GitHub"/></a>' % (root, self.source_file_name))
+               'alt="Edit on GitHub"/></a>' % (root, os.path.sep.join(sp)))
 
 
 class Docs(object):
