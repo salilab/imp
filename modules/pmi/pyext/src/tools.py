@@ -1446,7 +1446,8 @@ def set_coordinates_from_rmf(hier,rmf_fn,frame_num=0):
 
 def input_adaptor(stuff,
                   pmi_resolution=0,
-                  flatten=False):
+                  flatten=False,
+                  selection_tuple=None):
     """Adapt things for PMI (degrees of freedom, restraints, ...)
     Returns list of list of hierarchies, separated into Molecules if possible.
     (iterable of ^2) hierarchy -> returns input as list of list of hierarchies, only one entry.
@@ -1648,38 +1649,37 @@ def get_rbs_and_beads(hiers):
             beads.append(p)
     return rbs_ordered,beads
 
-def shuffle_configuration(root_hier=None,
+def shuffle_configuration(root_hier,
                           max_translation=300., max_rotation=2.0 * pi,
                           avoidcollision_rb=True, avoidcollision_fb=False,
                           cutoff=10.0, niterations=100,
                           bounding_box=None,
-                          excluded_rigid_bodies=None,
-                          hierarchies_excluded_from_collision=None,
+                          excluded_rigid_bodies=[],
+                          hierarchies_excluded_from_collision=[],
                           verbose=False):
     """Shuffle particles. Used to restart the optimization.
     The configuration of the system is initialized by placing each
     rigid body and each bead randomly in a box with a side of
     max_translation angstroms, and far enough from each other to
     prevent any steric clashes. The rigid bodies are also randomly rotated.
-    @param root_hier Will find rigid bodies and flexible beads. Or just provide them
+    @param root_hier The hierarchy to shuffle. Will find rigid bodies and flexible beads.
     @param max_translation Max translation (rbs and flexible beads)
     @param max_rotation Max rotation (rbs only)
     @param avoidcollision_rb check if the particle/rigid body was
            placed close to another particle; uses the optional
            arguments cutoff and niterations
-    @param avoidcollision_fb Be careful only set to True if they don't start out overlapping!
+    @param avoidcollision_fb Advanced. Generally you want this False because it's hard to shuffle beads.
     @param cutoff Distance less than this is a collision
     @param niterations How many times to try avoiding collision
-    @param bounding_box defined by ((x1,y1,z1),(x2,y2,z2))
-    @param excluded_rigid_bodies Don't shuffle these
-    @param hierarchies_excluded_from_collision Don't shuffle these
+    @param bounding_box Only shuffle particles within this box. Defined by ((x1,y1,z1),(x2,y2,z2)).
+    @param excluded_rigid_bodies Don't shuffle these rigid body objects
+    @param hierarchies_excluded_from_collision Don't count collision with these bodies
     @param verbose Give more output
-    \note If you already have the hier split into rigid and flexible, that's faster
+    \note Best to only call this function after you've set up degrees of freedom
     """
 
     ### checking input
-    if root_hier is not None:
-        rigid_bodies,flexible_beads = get_rbs_and_beads(root_hier)
+    rigid_bodies,flexible_beads = get_rbs_and_beads(root_hier)
 
     if len(rigid_bodies)>0:
         mdl = rigid_bodies[0].get_model()
@@ -1688,10 +1688,6 @@ def shuffle_configuration(root_hier=None,
     else:
         raise Exception("You passed something weird to shuffle_configuration")
 
-    if excluded_rigid_bodies is None:
-        excluded_rigid_bodies = []
-    if hierarchies_excluded_from_collision is None:
-        hierarchies_excluded_from_collision = []
     if len(rigid_bodies) == 0:
         print("shuffle_configuration: rigid bodies were not intialized")
 

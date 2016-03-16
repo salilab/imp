@@ -480,6 +480,9 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEquals(set(sel11+sel21),set(sel31))
 
     def test_round_trip(self):
+        def get_color(p):
+            c = IMP.display.Colored(p).get_color()
+            return [int(c.get_red()*255),int(c.get_green()*255),int(c.get_blue()*255)]
         """Test RMF write/read representations"""
         base_res = 0
         bead_res = 1
@@ -491,7 +494,7 @@ class TopologyTest(IMP.test.TestCase):
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
                                       chain_id='A',res_range=(55,63),offset=-54)
         non_atomic_res = m1.get_non_atomic_residues()
-        m1.add_representation(atomic_res,resolutions=[base_res,bead_res],color=0.5)
+        m1.add_representation(atomic_res,resolutions=[base_res,bead_res],color=(0.2,0.1,0.6))
         m1.add_representation(non_atomic_res,resolutions=[bead_res],color=0.25)
         s.build()
         orig_hier = s.get_hierarchy()
@@ -509,15 +512,17 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEqual(len(IMP.atom.get_leaves(orig_hier)),
                          len(IMP.atom.get_leaves(h2)))
 
-        # check all coordinates
+        # check all coordinates and colors
         selA0 = IMP.atom.Selection(orig_hier,resolution=base_res).get_selected_particles()
         coordsA0 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
                     for p in selA0]
-        colorsA0 = [IMP.display.Colored(p).get_color() for p in selA0]
+        colorsA0 = [get_color(p) for p in selA0]
+
         selB0 = IMP.atom.Selection(h2,resolution=base_res).get_selected_particles()
         coordsB0 = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
                     for p in selB0]
-        colorsB0 = [IMP.display.Colored(p).get_color() for p in selB0]
+        colorsB0 = [get_color(p) for p in selB0]
+
         self.assertEqual(coordsA0,coordsB0)
         self.assertEqual(colorsA0,colorsB0)
 
@@ -622,6 +627,8 @@ class TopologyTest(IMP.test.TestCase):
         self.assertEqual(len(selB.get_selected_particles()),20+2+5)
         self.assertEqual(len(selD.get_selected_particles()),3)
         os.unlink('hgmm.txt')
+
+        self.assertEqual(m1.get_ideal_helices(),[m1[0:20]])
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -145,13 +145,21 @@ class TestDOF(IMP.test.TestCase):
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
                                       chain_id='A',res_range=(55,63),offset=-54)
         m1.add_representation(atomic_res,
-                              resolutions=[0,1,10],
+                              resolutions=[1,10],
                               density_prefix='tmpgmm',
                               density_residues_per_component=5)
         m1.add_representation(m1.get_non_atomic_residues(),
                               resolutions=[1],
                               setup_particles_as_densities=True)
-        s.build()
+        hier = s.build()
+
+        na = 0 #57
+        na1 = 7
+        na10 = 2
+        naD = 2
+        nn1 = 3
+
+
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         mvs,rb = dof.create_rigid_body(m1,
                                     nonrigid_parts = m1.get_non_atomic_residues())
@@ -159,10 +167,30 @@ class TestDOF(IMP.test.TestCase):
         all_members = rb.get_member_indexes()
         rigid_members = rb.get_rigid_members()
         num_nonrigid = len(all_members)-len(rigid_members)
-        sel = IMP.atom.Selection(m1.get_hierarchy(),representation_type=IMP.atom.DENSITIES)
-        self.assertEqual(num_nonrigid,3)
-        #                                   r0  r1  r10   den
-        self.assertEqual(len(rigid_members),57 + 7 + 2  + 2)
+
+        selD = IMP.atom.Selection(st1.get_hierarchy(),representation_type=IMP.atom.DENSITIES)
+        selA = IMP.atom.Selection(st1.get_hierarchy(),representation_type=IMP.atom.BALLS,
+                                  resolution=IMP.atom.ALL_RESOLUTIONS)
+        psD = selD.get_selected_particles()
+        psA = selA.get_selected_particles()
+        self.assertEqual(len(rigid_members),na+na1+na10+naD)
+        self.assertEqual(num_nonrigid,nn1)
+        IMP.atom.show_with_representations(hier)
+
+        itest = IMP.pmi.tools.input_adaptor(m1,pmi_resolution='all',flatten=True)
+        itest2 = IMP.pmi.tools.input_adaptor(m1.get_non_atomic_residues(),pmi_resolution='all',flatten=True)
+        self.assertEqual(len(itest),na+na1+na10+naD+nn1)
+        self.assertEqual(len(itest2),nn1)
+
+        orig_coords = [IMP.core.XYZ(p).get_coordinates() for p in psD+psA]
+        trans = IMP.algebra.get_random_local_transformation(IMP.algebra.Vector3D(0,0,0))
+        IMP.core.transform(rb,trans)
+        new_coords = [IMP.core.XYZ(p).get_coordinates() for p in psD+psA]
+        for c1,c2 in zip(orig_coords,new_coords):
+            c1T = trans*c1
+            print c1T,c2
+            self.assertAlmostEqual(IMP.algebra.get_distance(c1T,c2),0.0)
+
         os.unlink('tmpgmm.mrc')
         os.unlink('tmpgmm.txt')
 
@@ -268,6 +296,7 @@ class TestDOF(IMP.test.TestCase):
 
         #srb = dof.create_super_rigid_body([m1,m2])   # should be OK
         #srb = dof.create_super_rigid_body([m3,m4])   # should raise exception
+
 
     def test_mc_with_densities(self):
         pass

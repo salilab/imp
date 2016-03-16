@@ -184,10 +184,16 @@ def build_representation(parent,rep,coord_finder):
     ca_res = 1
     mdl = parent.get_model()
     if rep.color is not None:
-        color = IMP.display.get_rgb_color(rep.color)
+        if type(rep.color) is float:
+            color = IMP.display.get_rgb_color(rep.color)
+        elif hasattr(rep.color,'__iter__') and len(rep.color)==3:
+            color = IMP.display.Color(*rep.color)
+        elif type(rep.color) is IMP.display.Color:
+            color = rep.color
+        else:
+            raise Exception("Color must be float or (r,g,b) tuple")
     else:
         color = None
-
 
     # first get the primary representation (currently, the smallest bead size)
     #  eventually we won't require beads to be present at all

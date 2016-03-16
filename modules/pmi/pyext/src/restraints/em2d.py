@@ -7,7 +7,6 @@ import IMP
 import IMP.core
 import IMP.algebra
 import IMP.atom
-#import IMP.em2d
 import IMP.pmi.tools
 
 
@@ -40,6 +39,8 @@ class ElectronMicroscopy2D(object):
                considered for the EM image
         @param hier The root hierarchy for applying the restraint
         """
+
+        import IMP.em2d
 
         # check input
         if images is None:
@@ -121,6 +122,8 @@ class ElectronMicroscopy2D_FFT():
                considered for the EM image
         @param hier The root hierarchy for applying the restraint
         """
+
+        import IMP.em2d
 
         # check input
         if images is None:
