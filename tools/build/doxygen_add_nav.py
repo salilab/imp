@@ -193,7 +193,9 @@ class Docs(object):
                 p.location = compounddef.find('location').attrib['file']
                 if '/examples/' in p.location:
                     p.out_file_name += '-example'
-                pages.append(p)
+                # Exclude source of .md or .dox files
+                if not p.id.endswith('_8md') and not p.id.endswith('_8dox'):
+                    pages.append(p)
         return pages
 
     def _find_page_source(self, top_source_dir, source_subdirs):
