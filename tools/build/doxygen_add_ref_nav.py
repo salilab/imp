@@ -11,7 +11,7 @@ import sys
 import os
 
 def all_module_docs(modules):
-    return [os.path.join(m, 'doc') for m in modules]
+    return [os.path.join('modules', m, 'doc') for m in modules]
 
 def get_module_readme(module):
     """Make a Page object for a module's top-level README file"""
