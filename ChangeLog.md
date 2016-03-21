@@ -5,6 +5,8 @@ ChangeLog {#changelog}
 - This release includes most of the functionality of PMI2. This is an improved
   version of PMI that is faster than PMI1, more modular, and easier to use.
   See IMP::pmi for more information.
+- A new application of IMP is now available:
+  [Modeling of exosome complexes from cross-link MS data](http://salilab.org/exosome).
 - The IMP::base and IMP::kernel namespaces have been removed (use the top-level
   IMP namespace instead).
 - The IMP::display::ChimeraWriter class has been removed (use IMP::rmf instead).
