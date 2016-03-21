@@ -454,6 +454,9 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %endif
 
 %changelog
+* Mon Mar 28 2016 Ben Webb <ben@salilab.org>   2.6.0-1
+- 2.6.0 release.
+
 * Tue Jun 30 2015 Ben Webb <ben@salilab.org>   2.5.0-1
 - 2.5.0 release.
 

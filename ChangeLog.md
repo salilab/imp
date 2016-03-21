@@ -1,7 +1,7 @@
 ChangeLog {#changelog}
 =========
 
-# For next stable IMP release #
+# 2.6.0 - 2016-03-28 # {#changelog_2_6_0}
 - This release includes most of the functionality of PMI2. This is an improved
   version of PMI that is faster than PMI1, more modular, and easier to use.
   See IMP::pmi for more information.
