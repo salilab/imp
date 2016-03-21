@@ -1,3 +1,4 @@
+from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.pmi
@@ -188,7 +189,7 @@ class TestDOF(IMP.test.TestCase):
         new_coords = [IMP.core.XYZ(p).get_coordinates() for p in psD+psA]
         for c1,c2 in zip(orig_coords,new_coords):
             c1T = trans*c1
-            print c1T,c2
+            print(c1T,c2)
             self.assertAlmostEqual(IMP.algebra.get_distance(c1T,c2),0.0)
 
         os.unlink('tmpgmm.mrc')
