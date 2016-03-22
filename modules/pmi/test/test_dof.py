@@ -1,119 +1,381 @@
+from __future__ import print_function
 import IMP
+import IMP.test
 import IMP.pmi
 import IMP.pmi.dof
 import IMP.pmi.topology
-import IMP.test
+import IMP.pmi.macros
+import IMP.pmi.restraints.em
+import os
+
+try:
+    import IMP.mpi
+    rem = IMP.mpi.ReplicaExchange()
+except ImportError:
+    rem = None
 
 
 class TestDOF(IMP.test.TestCase):
     def init_topology1(self,mdl):
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
-        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
-                         name_map={'Protein_1':'Prot1',
-                                   'Protein_2':'Prot2',
-                                   'Protein_3':'Prot3'})
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
 
-        m1 = st1.create_molecule("Prot1",sequence=seqs["Prot1"])
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                                      chain_id='A',res_range=(1,10),offset=-54)
-        m1.add_representation(atomic_res,resolutions=[0])
-        m1.add_representation(resolutions=[1])
-        hier = m1.build()
+                                      chain_id='A',res_range=(55,63),offset=-54)
+        m1.add_representation(atomic_res,resolutions=[0,1,10])
+        m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
+        s.build()
         return m1
     def init_topology3(self,mdl):
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
-        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
-                         name_map={'Protein_1':'Prot1',
-                                   'Protein_2':'Prot2',
-                                   'Protein_3':'Prot3'})
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
 
-        m1 = st1.create_molecule("Prot1",sequence=seqs["Prot1"])
-        m2 = st1.create_molecule("Prot2",sequence=seqs["Prot2"])
-        m3 = st1.create_molecule("Prot3",sequence=seqs["Prot3"])
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        m2 = st1.create_molecule("Prot2",sequence=seqs["Protein_2"])
+        m3 = st1.create_molecule("Prot3",sequence=seqs["Protein_3"])
         a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='A',res_range=(1,10),offset=-54)
+                              chain_id='A',res_range=(55,63),offset=-54)
         a2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='B',res_range=(1,13),offset=-179)
+                              chain_id='B',res_range=(180,192),offset=-179)
         a3 = m3.add_structure(self.get_input_file_name('prot.pdb'),
-                              chain_id='G',res_range=(1,10),offset=-54)
-        m1.add_representation(a1,resolutions=[0])
-        m1.add_representation(resolutions=[1])
-        m2.add_representation(a2,resolutions=[0])
-        m2.add_representation(resolutions=[1])
-        m3.add_representation(a3,resolutions=[0])
-        m3.add_representation(resolutions=[1])
-        hier = s.build()
+                              chain_id='G',res_range=(55,63),offset=-54)
+        m1.add_representation(a1,resolutions=[0,1])
+        m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
+
+        m2.add_representation(a2,resolutions=[0,1]) # m2 only has atoms
+
+        m3.add_representation(a3,resolutions=[0,1])
+        m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1])
+        s.build()
+        return m1,m2,m3
+
+    def init_topology_densities(self,mdl):
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        m2 = st1.create_molecule("Prot2",sequence=seqs["Protein_2"])
+        m3 = st1.create_molecule("Prot3",sequence=seqs["Protein_3"])
+        a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='A',res_range=(55,63),offset=-54)
+        a2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='B',res_range=(180,192),offset=-179)
+        a3 = m3.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='G',res_range=(55,63),offset=-54)
+        m1.add_representation(a1,resolutions=[0,1])
+        m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
+
+        m2.add_representation(a2,resolutions=[0,1]) # m2 only has atoms
+
+        m3.add_representation(a3,resolutions=[0,1])
+        m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1], setup_particles_as_densities=True)
+        s.build()
         return m1,m2,m3
 
     def test_mc_rigid_body(self):
         """Test creation of rigid body and nonrigid members"""
         mdl = IMP.Model()
         molecule = self.init_topology1(mdl)
-        hier = molecule.get_hierarchy()
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        rb_movers,rb = dof.create_rigid_body(molecule,
+                                             nonrigid_parts = molecule.get_non_atomic_residues(),
+                                             name="test RB")
+        mvs = dof.get_movers()
+        self.assertEqual(len(rb_movers),4)
+        all_members = rb.get_member_indexes()
+        rigid_members = rb.get_rigid_members()
+        num_nonrigid = len(all_members)-len(rigid_members)
 
-        sel_nonrigid = IMP.atom.Selection(hier,residue_indexes=[3,4,10])
-        rigid_body = dof.create_rigid_body(hier)
-        rigid_body.create_non_rigid_members(sel_nonrigid)
+        self.assertEqual(num_nonrigid,3)
+        #                                   r0  r1  r10
+        self.assertEqual(len(rigid_members),57 + 7 + 2)
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=molecule.get_hierarchy(),
+                                              monte_carlo_sample_objects = dof.get_movers(),
+                                              number_of_frames=2,
+                                              test_mode=True,
+                                              replica_exchange_object=rem)
+        rex.execute_macro()
+    def test_big_rigid_body(self):
+        """test you can create a rigid body from 3 molecules"""
+        mdl = IMP.Model()
+        mols = self.init_topology3(mdl)
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        mvs,rb = dof.create_rigid_body(mols,
+                                    nonrigid_parts=[m.get_non_atomic_residues() for m in mols])
+        self.assertEqual(len(mvs),1+3+3)
+        all_members = rb.get_member_indexes()
+        rigid_members = rb.get_rigid_members()
+        num_nonrigid = len(all_members)-len(rigid_members)
+        self.assertEqual(num_nonrigid,6)
+        #                                      res0     res1
+        self.assertEqual(len(rigid_members),57+110+57 + 7+13+7)
 
-        rb = rigid_body.get_rigid_body()
-        mvs = rigid_body.get_movers()
+
+    def test_slice_rigid_body(self):
+        """test you can create a rigid body from slices of molecules"""
+        mdl = IMP.Model()
+        mols = self.init_topology3(mdl)
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        mvs,rb = dof.create_rigid_body([mols[0][:4],mols[1][:]],
+                                    nonrigid_parts=mols[0][2:4])
+        self.assertEqual(len(mvs),3)
+        all_members = rb.get_member_indexes()
+        rigid_members = rb.get_rigid_members()
+        num_nonrigid = len(all_members)-len(rigid_members)
+        self.assertEqual(num_nonrigid,2)
+        #                                    res0     res1
+        self.assertEqual(len(rigid_members),18+110 + 2+13)
+
+    def test_rigid_body_with_densities(self):
+        """Test still works when you add densities"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A',res_range=(55,63),offset=-54)
+        m1.add_representation(atomic_res,
+                              resolutions=[1,10],
+                              density_prefix='tmpgmm',
+                              density_residues_per_component=5)
+        m1.add_representation(m1.get_non_atomic_residues(),
+                              resolutions=[1],
+                              setup_particles_as_densities=True)
+        hier = s.build()
+
+        na = 0 #57
+        na1 = 7
+        na10 = 2
+        naD = 2
+        nn1 = 3
+
+
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        mvs,rb = dof.create_rigid_body(m1,
+                                    nonrigid_parts = m1.get_non_atomic_residues())
         self.assertEqual(len(mvs),4)
+        all_members = rb.get_member_indexes()
+        rigid_members = rb.get_rigid_members()
+        num_nonrigid = len(all_members)-len(rigid_members)
+
+        selD = IMP.atom.Selection(st1.get_hierarchy(),representation_type=IMP.atom.DENSITIES)
+        selA = IMP.atom.Selection(st1.get_hierarchy(),representation_type=IMP.atom.BALLS,
+                                  resolution=IMP.atom.ALL_RESOLUTIONS)
+        psD = selD.get_selected_particles()
+        psA = selA.get_selected_particles()
+        self.assertEqual(len(rigid_members),na+na1+na10+naD)
+        self.assertEqual(num_nonrigid,nn1)
+        IMP.atom.show_with_representations(hier)
+
+        itest = IMP.pmi.tools.input_adaptor(m1,pmi_resolution='all',flatten=True)
+        itest2 = IMP.pmi.tools.input_adaptor(m1.get_non_atomic_residues(),pmi_resolution='all',flatten=True)
+        self.assertEqual(len(itest),na+na1+na10+naD+nn1)
+        self.assertEqual(len(itest2),nn1)
+
+        orig_coords = [IMP.core.XYZ(p).get_coordinates() for p in psD+psA]
+        trans = IMP.algebra.get_random_local_transformation(IMP.algebra.Vector3D(0,0,0))
+        IMP.core.transform(rb,trans)
+        new_coords = [IMP.core.XYZ(p).get_coordinates() for p in psD+psA]
+        for c1,c2 in zip(orig_coords,new_coords):
+            c1T = trans*c1
+            print(c1T,c2)
+            self.assertAlmostEqual(IMP.algebra.get_distance(c1T,c2),0.0)
+
+        os.unlink('tmpgmm.mrc')
+        os.unlink('tmpgmm.txt')
 
     def test_mc_super_rigid_body(self):
         mdl = IMP.Model()
-        m1,m2,m3 = self.init_topology3(mdl)
+        mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        rb1_mov,rb1 = dof.create_rigid_body(mols[0],
+                                        nonrigid_parts = mols[0].get_non_atomic_residues())
+        rb2_mov,rb2 = dof.create_rigid_body(mols[1],
+                                        nonrigid_parts = mols[1].get_non_atomic_residues())
+        rb3_mov,rb3 = dof.create_rigid_body(mols[2],
+                                        nonrigid_parts = mols[2].get_non_atomic_residues())
+        srb_mover = dof.create_super_rigid_body(mols,chain_min_length=2,
+                                                chain_max_length=2)
+        ### rbX = dof.create_rigid_body([mols[0],mols[1]]) should fail
+        # rb1:4, rb2:1, rb3:4, srbs:2
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),11)
 
-        h1 = m1.get_hierarchy()
-        h2 = m1.get_hierarchy()
-        h3 = m1.get_hierarchy()
-        srb = dof.create_super_rigid_body([h1,h2,h3],chain_min_length=2,chain_max_length=2)
-        self.assertEqual(len(srb.get_movers()),2)
 
     def test_mc_flexible_beads(self):
+        """Test setup of flexible beads"""
         mdl = IMP.Model()
-        molecule = self.init_topology1(mdl)
-        hier = molecule.get_hierarchy()
+        mol = self.init_topology1(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        sel_nonrigid = IMP.atom.Selection(hier,residue_indexes=[3,4,10])
-        fbs = dof.create_flexible_beads(sel_nonrigid,max_trans=1.0)
-        mvs = fbs.get_movers()
-        self.assertEqual(len(mvs),3)
+        fb_movers = dof.create_flexible_beads(mol.get_non_atomic_residues(),max_trans=1.0)
+        self.assertEqual(len(fb_movers),3)
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=mol.get_hierarchy(),
+                                              monte_carlo_sample_objects = dof.get_movers(),
+                                              number_of_frames=2,
+                                              test_mode=True,
+                                              replica_exchange_object=rem)
+        rex.execute_macro()
 
+    def test_mc_flexible_beads3(self):
+        """Test flex beads don't work if nothing passed"""
+        mdl = IMP.Model()
+        mols = self.init_topology3(mdl)
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        fb_movers = dof.create_flexible_beads(mols[1].get_non_atomic_residues(),max_trans=1.0)
+        self.assertEqual(len(fb_movers),0)
 
-    '''
     def test_constraint_symmetry(self):
-        hierarchy=self.init_topology()
-        dof=IMP.pmi.dof.DegreesOfFreedom()
-        selections=[]
-        s0=IMP.atom.Selection(hierarchy,molecule=?,copy=0)
-        s1=IMP.atom.Selection(hierarchy,molecule=?,copy=1)
-        dof.create_symmetry_contraint([s0,s1],IMP.core.Transformation)
-    '''
-    '''
-    def test_mc_compound_body(self):
-        # compund body is a mix of rigid and flexible parts
-        # Do we use System???? Do we need a new decorator that says
-        # where the structure is coming from????
-        # IMP.atom.Source(p)
-        # IMP.atom.Source.get_pdb_id()
-        # IMP.atom.Source.get_pdb_id()
-        # source can be Modeller, PDB, emdb, Coarse-grained, No-source
-        # Invent StringKeys
-        hierarchy=self.init_topology()
-        dof=IMP.pmi.dof.DegreesOfFreedom()
-        s=IMP.atom.Selection(hierarchy,molecule=?,resid=range(1,10))
-        structured_handle,unstructures_handle=dof.create_compound_body(s)
-    '''
+        """Test setup and activity of symmetry constraint"""
+        ### create representation
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='A',res_range=(55,63),offset=-54)
+        m1.add_representation(a1,resolutions=[0,1])
+        m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
+        m3 = m1.create_clone(chain_id='C')
+
+        m2 = st1.create_molecule("Prot2",sequence=seqs["Protein_2"])
+        a2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='B',res_range=(180,192),offset=-179)
+        m2.add_representation(a2,resolutions=[0,1])
+        m4 = m2.create_clone(chain_id='D')
+        root = s.build()
+
+        ### create movers and constraints
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        rb1_movers = dof.create_rigid_body(m1,
+                                           nonrigid_parts = m1.get_non_atomic_residues())
+        rb2_movers = dof.create_rigid_body(m2,
+                                           nonrigid_parts = m2.get_non_atomic_residues())
+        dof.create_rigid_body(m3,
+                              nonrigid_parts = m3.get_non_atomic_residues())
+        dof.create_rigid_body(m4,
+                              nonrigid_parts = m4.get_non_atomic_residues())
+
+        sym_trans = IMP.algebra.get_random_local_transformation(IMP.algebra.Vector3D(0,0,0))
+        dof.constrain_symmetry([m1,m2],[m3,m4],sym_trans)
+
+        m1_leaves = IMP.pmi.tools.select_at_all_resolutions(m1.get_hierarchy())
+        m3_leaves = IMP.pmi.tools.select_at_all_resolutions(m3.get_hierarchy())
+
+        ### test symmetry initially correct
+        mdl.update()
+        for p1,p3 in zip(m1_leaves,m3_leaves):
+            c1 = IMP.core.XYZ(p1).get_coordinates()
+            c3 = sym_trans*IMP.core.XYZ(p3).get_coordinates()
+            for i in range(3):
+                self.assertAlmostEqual(c1[i],c3[i])
+
+        ### test transformation propagates
+        rbs,beads = IMP.pmi.tools.get_rbs_and_beads(m1_leaves)
+        test_trans = IMP.algebra.get_random_local_transformation(IMP.algebra.Vector3D(0,0,0))
+        IMP.core.transform(rbs[0],test_trans)
+        mdl.update()
+
+        for p1,p3 in zip(m1_leaves,m3_leaves):
+            c1 = IMP.core.XYZ(p1).get_coordinates()
+            c3 = sym_trans*IMP.core.XYZ(p3).get_coordinates()
+            for i in range(3):
+                self.assertAlmostEqual(c1[i],c3[i])
+
+        #srb = dof.create_super_rigid_body([m1,m2])   # should be OK
+        #srb = dof.create_super_rigid_body([m3,m4])   # should raise exception
+
+
+    def test_mc_with_densities(self):
+        pass
 
     def test_mc_kinematic(self):
         pass
 
     def test_md(self):
-        pass
+        """Test you can setup MD"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A',res_range=(55,63),offset=-54)
+        m1.add_representation(atomic_res,resolutions=[0])
+        hier = m1.build()
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        md_ps = dof.setup_md(m1)
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=hier,
+                                              molecular_dynamics_sample_objects=md_ps,
+                                              number_of_frames=2,
+                                              test_mode=True,
+                                              replica_exchange_object=rem)
+        rex.execute_macro()
+
+    def test_gaussian_rb(self):
+
+        mdl = IMP.Model()
+        m1, m2, m3 = self.init_topology_densities(mdl)
+        densities = [r.get_hierarchy() for r in m3.get_non_atomic_residues()]
+        gem_xtal = IMP.pmi.restraints.em.GaussianEMRestraint(densities,
+                                                 self.get_input_file_name('prot_gmm.txt'),
+                                                 target_is_rigid_body=True)
+
+        em_rb = gem_xtal.get_rigid_body()
+        em_rb.set_coordinates_are_optimized(False)
+
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        dof.create_rigid_body(em_rb)
+
+        self.assertTrue(em_rb in dof.get_rigid_bodies())
+        self.assertEqual(len(dof.get_rigid_bodies()), 1)
+        self.assertTrue(em_rb.get_coordinates_are_optimized())
+        self.assertEqual(len(dof.get_movers()), 1)
+
+    def test_rex_multistate(self):
+        """Test you can do multi-state replica exchange"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1")
+        atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A',res_range=(55,63),offset=-54,
+                                      soft_check=True)
+        m1.add_representation(m1,resolutions=[1])
+        st2 = s.create_state()
+        m2 = st2.create_molecule("Prot1")
+        atomic_res2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A',res_range=(55,63),offset=-54,
+                                      soft_check=True)
+        m2.add_representation(m2,resolutions=[1])
+        hier = s.build()
+        self.assertEqual(len(IMP.atom.get_by_type(hier,IMP.atom.STATE_TYPE)),2)
+
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        dof.create_rigid_body(m1,nonrigid_parts = atomic_res)
+        dof.create_rigid_body(m2,nonrigid_parts = atomic_res2)
+
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=hier,
+                                              monte_carlo_sample_objects=dof.get_movers(),
+                                              number_of_frames=2,
+                                              test_mode=True,
+                                              replica_exchange_object=rem)
+        rex.execute_macro()
 
 if __name__ == '__main__':
     IMP.test.main()

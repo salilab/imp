@@ -2,7 +2,7 @@
  *  \file IMP/atom/EzRestraint.h
  *  \brief Ez potential. A statistical scoring function for atom proteins
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_EZ_RESTRAINT_H
@@ -36,11 +36,6 @@ class IMPATOMEXPORT EzRestraint : public Restraint {
 
  public:
   EzRestraint(Model *m, ParticleIndexesAdaptor ps);
-
-#ifndef IMP_DOXYGEN
-  IMPATOM_DEPRECATED_METHOD_DECL(2.5)
-  EzRestraint(Particles ps);
-#endif
 
   IMP_OBJECT_METHODS(EzRestraint);
 };

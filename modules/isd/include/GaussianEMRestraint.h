@@ -2,7 +2,7 @@
  *  \file IMP/isd/GaussianEMRestraint.h
  *  \brief Restraint two sets of gaussians (model and gmm derived from EM map)
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

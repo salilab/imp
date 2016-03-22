@@ -2,7 +2,7 @@
  *  \file PDBParser.h
  *  \brief A class with static functions for parsing PDB files
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -149,10 +149,12 @@ void write_pdb(const ParticlesTemp& ps, TextOutput out) {
       } else {
         chain = ' ';
       }
+      int inum = i+1;
+      if (i>=99999) inum=99999;
       out.get_stream() << get_pdb_string(
                               core::XYZ(ps[i]).get_coordinates(),
                               use_input_index ? ad.get_input_index()
-                                              : static_cast<int>(i + 1),
+                                              : static_cast<int>(inum),
                               ad.get_atom_type(), rd.get_residue_type(), chain,
                               rd.get_index(), rd.get_insertion_code(),
                               ad.get_occupancy(), ad.get_temperature_factor(),

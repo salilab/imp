@@ -3,7 +3,7 @@
  *
  * \brief A class for storing and generation of ensembles
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multi_state/EnsembleGenerator.h>
@@ -90,12 +90,11 @@ void EnsembleGenerator::generate(unsigned int multi_state_model_size) {
                 << rescored_ensemble.size() << std::endl;
       output(rescored_ensemble, rescored_fps);
 
-      if(rescored_ensemble.size() > 0) {
-        for(unsigned int j = 0; j < scorers_.size(); j++) {
-          SAXSMultiStateModelScore<saxs::ChiScore> *s =
-            dynamic_cast<SAXSMultiStateModelScore<saxs::ChiScore>*>(scorers_[j]);
-          if(s != NULL) s->set_average_c1_c2(rescored_fps[j]);
-        }
+      if(rescored_ensemble.size() == 0) break;
+      for(unsigned int j = 0; j < scorers_.size(); j++) {
+        SAXSMultiStateModelScore<saxs::ChiScore> *s =
+          dynamic_cast<SAXSMultiStateModelScore<saxs::ChiScore>*>(scorers_[j]);
+        if(s != NULL) s->set_average_c1_c2(rescored_fps[j]);
       }
     }
   }

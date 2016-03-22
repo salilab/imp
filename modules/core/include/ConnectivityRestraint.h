@@ -4,7 +4,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,16 +24,17 @@ IMPCORE_BEGIN_NAMESPACE
 /** The restraint implements ambiguous connectivity. That is, it takes
     several particles and ensures that they remain
     connected, but allows how they are connected to change. If you wish
-    to restraint the connectivity of sets of
-    particles (i.e. each protein is represented using a set of balls)
+    to restrain the connectivity of sets of
+    particles (e.g. each protein is represented using a set of balls)
     use an appropriate PairScore which calls a Refiner (such
     as ClosePairsPairScore).
 
     \include connectivity_restraint.py
 
-    More precisely, the restraint scores by computing the MST on the complete
-    graph connecting all the particles. The edge weights are given by
-    the value of the PairScore for the two endpoints of the edge.
+    More precisely, the restraint scores by computing the minimum spanning
+    tree  on the complete graph connecting all the particles. The edge
+    weights are given by the value of the PairScore for the two endpoints
+    of the edge.
  */
 class IMPCOREEXPORT ConnectivityRestraint : public Restraint {
   IMP::PointerMember<PairScore> ps_;

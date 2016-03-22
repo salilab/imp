@@ -1,8 +1,9 @@
-one line subject
+One line subject (50 chars or less).
 
-message describing the commit
+More detailed message describing the commit (if needed). Wrap lines
+at about 72 characters.
 
 # - you should reference any related issues like #123
 # - you can do close #123 if you want to close that issue
-# - to reference an issue in a different github repo, use
+# - to reference an issue in a different GitHub repo, use
 #   something like salilab/rmf#123

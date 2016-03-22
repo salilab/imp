@@ -3,13 +3,10 @@
 """
 
 import IMP
-import IMP.atom as atom
-import IMP.core as core
-import IMP.algebra as alg
-import IMP.display as display
-import IMP.container as container
+import IMP.atom
+import IMP.core
+import IMP.algebra
 import string
-from math import pi
 import logging
 
 log = logging.getLogger("representation")
@@ -29,11 +26,11 @@ def create_assembly_from_pdb(model, fn_pdb, names=False):
         Builds the assembly setting the chains in the PDB file as components
     """
     temp = read_component(model, fn_pdb)
-    hchains = atom.get_by_type(temp, atom.CHAIN_TYPE)
-    ids = [atom.Chain(h).get_id() for h in hchains]
+    hchains = IMP.atom.get_by_type(temp, IMP.atom.CHAIN_TYPE)
+    ids = [IMP.atom.Chain(h).get_id() for h in hchains]
     log.debug("Creating assembly from pdb %s,names: %s. Chains %s",
               fn_pdb, names, ids)
-    atom.add_radii(temp)
+    IMP.atom.add_radii(temp)
     if(names):
         for i, h in enumerate(hchains):
             h.set_name(names[i])
@@ -63,11 +60,11 @@ def read_component(model, fn_pdb, name=False):
     else:
         log.debug("reading component from %s", fn_pdb)
 
-    hierarchy = atom.read_pdb(fn_pdb, model,
-                              atom.NonWaterNonHydrogenPDBSelector())
+    hierarchy = IMP.atom.read_pdb(fn_pdb, model,
+                                  IMP.atom.NonWaterNonHydrogenPDBSelector())
     if name:
         hierarchy.set_name(name)
-    atom.add_radii(hierarchy)
+    IMP.atom.add_radii(hierarchy)
     return hierarchy
 
 
@@ -82,16 +79,16 @@ def create_rigid_bodies(assembly):
         number of rigid members is going to be the same if the components have
         the same number of atoms.
     """
-    molecule = assembly.get_as_molecule()
-    if(not molecule.get_is_valid(True)):
+    if not IMP.atom.Molecule.get_is_setup(assembly):
         raise TypeError("create_rigid_bodies(): The argument is not a valid "
                         "hierarchy")
+    molecule = IMP.atom.Molecule(assembly)
     rbs = []
     for c in molecule.get_children():
         p = IMP.Particle(c.get_model())
-        core.RigidBody.setup_particle(p, atom.get_leaves(c))
-        rb = core.RigidBody(p)
-#        rb = atom.create_rigid_body(c)
+        IMP.core.RigidBody.setup_particle(p, IMP.atom.get_leaves(c))
+        rb = IMP.core.RigidBody(p)
+#        rb = IMP.atom.create_rigid_body(c)
         rb.set_name(get_rb_name(c.get_name()))
         rbs.append(rb)
     return rbs
@@ -101,9 +98,9 @@ def rename_chains(assembly):
     """ Rename all the chains of an assembly so there are no conflicts with
         the ids. The names are added sequentially.
     """
-    m = assembly.get_as_molecule()
-    if(not m.get_is_valid(True)):
+    if not IMP.atom.Molecule.get_is_setup(assembly):
         raise TypeError("The argument is not a valid  hierarchy")
+    m = IMP.atom.Molecule(assembly)
     all_chains_as_hierarchies = get_all_chains(m.get_children())
     letters = string.ascii_uppercase
     n_chains = len(all_chains_as_hierarchies)
@@ -111,7 +108,7 @@ def rename_chains(assembly):
         raise ValueError("There are more chains than letter ids")
     ids = letters[0:n_chains]
     for h, c_id in zip(all_chains_as_hierarchies, ids):
-        chain = atom.Chain(h.get_particle())
+        chain = IMP.atom.Chain(h.get_particle())
         chain.set_id(c_id)
         chain.set_name("chain %s" % c_id)
 
@@ -122,17 +119,16 @@ def create_simplified_dna(dna_hierarchy, n_res):
         a hierarchy with the spheres.
         n_res - Number of residues to use per sphere.
     """
-    chain = dna_hierarchy.get_as_chain()
-    if(not chain.get_is_valid(True)):
+    if not IMP.atom.Chain.get_is_setup(dna_hierarchy):
         raise TypeError("create_simplified_dna: the hierarchy provided is not a "
                         "chain.")
 
     model = dna_hierarchy.get_model()
     ph = IMP.Particle(model)
-    simplified_h = atom.Hierarchy.setup_particle(ph)
-    atom.Chain.setup_particle(ph, "0")
+    simplified_h = IMP.atom.Hierarchy.setup_particle(ph)
+    IMP.atom.Chain.setup_particle(ph, "0")
 
-    residues = atom.get_by_type(dna_hierarchy, atom.RESIDUE_TYPE)
+    residues = IMP.atom.get_by_type(dna_hierarchy, IMP.atom.RESIDUE_TYPE)
     l = len(residues)
     # print "the DNA has ",l,"residues"
     for i in range(0, l, n_res):
@@ -140,23 +136,23 @@ def create_simplified_dna(dna_hierarchy, n_res):
         equivalent_mass = 0.0
         residues_numbers = []
         for r in residues[i: i + n_res]:
-            rr = atom.Residue(r)
+            rr = IMP.atom.Residue(r)
             residues_numbers.append(rr.get_index())
             # print "residue",rr.get_name(),rr.get_index()
-            residue_xyzrs = [core.XYZ(a.get_particle())
+            residue_xyzrs = [IMP.core.XYZ(a.get_particle())
                              for a in rr.get_children()]
             xyzrs += residue_xyzrs
 #            print "residue",r,"mass",get_residue_mass(r)
             equivalent_mass += get_residue_mass(r)
 
-        s = core.get_enclosing_sphere(xyzrs)
+        s = IMP.core.get_enclosing_sphere(xyzrs)
         p = IMP.Particle(model)
-        xyzr = core.XYZR.setup_particle(p)
+        xyzr = IMP.core.XYZR.setup_particle(p)
         xyzr.set_radius(s.get_radius())
         xyzr.set_coordinates(s.get_center())
-        fragment = atom.Fragment.setup_particle(p)
+        fragment = IMP.atom.Fragment.setup_particle(p)
         fragment.set_residue_indexes(residues_numbers)
-        atom.Mass.setup_particle(p, equivalent_mass)
+        IMP.atom.Mass.setup_particle(p, equivalent_mass)
         simplified_h.add_child(fragment)
     simplified_h.set_name("DNA")
 #    print "simplified_h is valid:",simplified_h.get_is_valid(True)
@@ -164,12 +160,12 @@ def create_simplified_dna(dna_hierarchy, n_res):
 
 
 def get_residue_mass(residue):
-    r = residue.get_as_residue()
-    if(r.get_is_valid(True) == False):
+    if not IMP.atom.Residue.get_is_setup(residue):
         raise TypeError("The argument is not a residue")
+    r = IMP.atom.Residue(residue)
     mass = 0.0
-    for l in atom.get_leaves(r):
-        ms = atom.Mass(l)
+    for l in IMP.atom.get_leaves(r):
+        ms = IMP.atom.Mass(l)
         mass += ms.get_residue_mass()
     return mass
 
@@ -181,15 +177,15 @@ def create_simplified_assembly(assembly, components_rbs, n_res):
         There must be correspondence between the children of the assembly
         (components) and the rigid bodies. I check for the ids.
     """
-    molecule = assembly.get_as_molecule()
-    if(not molecule.get_is_valid(True)):
+    if not IMP.atom.Molecule.get_is_setup(assembly):
         raise TypeError("The argument is not a valid  hierarchy")
+    molecule = IMP.atom.Molecule(assembly)
 
     model = assembly.get_model()
     n_children = molecule.get_number_of_children()
 
     sh = IMP.Particle(model)
-    simplified_hierarchy = atom.Molecule.setup_particle(sh)
+    simplified_hierarchy = IMP.atom.Molecule.setup_particle(sh)
 
     for i in range(n_children):  # for all members of the assembly
         component = molecule.get_child(i)
@@ -198,28 +194,29 @@ def create_simplified_assembly(assembly, components_rbs, n_res):
         if(rb.get_name() != get_rb_name(name)):
             raise ValueError("Rigid body and component do not match")
 
-        hchains = atom.get_by_type(component, atom.CHAIN_TYPE)
+        hchains = IMP.atom.get_by_type(component, IMP.atom.CHAIN_TYPE)
         ch = IMP.Particle(model)
-        coarse_component_h = atom.Molecule.setup_particle(ch)
+        coarse_component_h = IMP.atom.Molecule.setup_particle(ch)
         # simplify all the chains in the member
         for h in hchains:
-            chain = atom.Chain(h.get_particle())
+            chain = IMP.atom.Chain(h.get_particle())
             coarse_h = None
             if(name == "DNA"):
             # print "simplifying DNA"
                 coarse_h_particle = create_simplified_dna(h, n_res)
-                coarse_h = atom.Hierarchy(coarse_h_particle)
+                coarse_h = IMP.atom.Hierarchy(coarse_h_particle)
             else:
-                coarse_h = atom.create_simplified_along_backbone(chain, n_res)
+                coarse_h = IMP.atom.create_simplified_along_backbone(chain,
+                                                                     n_res)
 
             # does not work for DNA
-            chain_rb = atom.create_rigid_body(coarse_h)
-            # chain_rb = atom.setup_as_rigid_body(coarse_h) # works with DNA
+            chain_rb = IMP.atom.create_rigid_body(coarse_h)
+            # chain_rb = IMP.atom.setup_as_rigid_body(coarse_h) # works with DNA
             chain_rb.set_name("sub_rb" + name)
             rb.add_member(chain_rb)
 
             # are required to have excluded volume
-            coarse_component_h.add_child(atom.Chain(coarse_h))
+            coarse_component_h.add_child(IMP.atom.Chain(coarse_h))
         coarse_component_h.set_name(name)
         simplified_hierarchy.add_child(coarse_component_h)
     return simplified_hierarchy
@@ -251,17 +248,17 @@ def get_rb_name(name):
 def get_selection_rigid_body(model, S):
     """ Build the rigid body for all the particles in the selection S """
     ps = S.get_selected_particles()
-    xyzrs = [core.XYZR(p) for p in ps]
+    xyzrs = [IMP.core.XYZR(p) for p in ps]
     p_rbS = IMP.Particle(model)
-    rbS = core.RigidBody.setup_particle(p_rbS, xyzrs)
+    rbS = IMP.core.RigidBody.setup_particle(p_rbS, xyzrs)
     return rbS
 
 
 def get_selection_as_hierarchy(model, S):
     ph = IMP.Particle(model)
-    h = core.Hierarchy.setup_particle(ph)
+    h = IMP.core.Hierarchy.setup_particle(ph)
     for p in S.get_selected_particles():
-        x = core.Hierarchy.setup_particle(p)
+        x = IMP.core.Hierarchy.setup_particle(p)
         h.add_child(x)
     return h
 
@@ -272,9 +269,9 @@ def get_selection_as_atom_hierarchy(model, S):
         with the multifit.create_coarse_molecule_from_molecule() function
     """
     ph = IMP.Particle(model)
-    h = atom.Residue.setup_particle(ph)
+    h = IMP.atom.Residue.setup_particle(ph)
     for p in S.get_selected_particles():
-        h.add_child(atom.Atom(p))
+        h.add_child(IMP.atom.Atom(p))
     return h
 
 
@@ -286,12 +283,12 @@ def get_coarse_selection(coarse_h, residues_numbers):
         fragments. Each fragment must have the residue numbers that it contains
         residue_numbers - list with the number of the residues that need to
         be recovered.
-        The function returns the set of particles that are atom.Fragments
+        The function returns the set of particles that are IMP.atom.Fragments
     """
     particles = []
-    fragments = atom.get_by_type(coarse_h, atom.FRAGMENT_TYPE)
+    fragments = IMP.atom.get_by_type(coarse_h, IMP.atom.FRAGMENT_TYPE)
     for f in fragments:
-        ff = atom.Fragment(f)
+        ff = IMP.atom.Fragment(f)
         residues_in_f = ff.get_residue_indexes()
         for number in residues_in_f:
             if number in residues_numbers:
@@ -307,15 +304,15 @@ def apply_rotation_around_centroid(rb, rot):
     c = rb.get_coordinates()
     ref = rb.get_reference_frame()
     R = ref.get_transformation_to().get_rotation()
-    R2 = alg.compose(rot, R)
-    T = alg.Transformation3D(R2, c)
-    ref = alg.ReferenceFrame3D(T)
+    R2 = IMP.algebra.compose(rot, R)
+    T = IMP.algebra.Transformation3D(R2, c)
+    ref = IMP.algebra.ReferenceFrame3D(T)
     rb.set_reference_frame(ref)
 
 
 def apply_transformation_around_centroid(rb, T):
     """
-        Aplies a transformation around the centroid of a rigid body.
+        Applies a transformation around the centroid of a rigid body.
         First does the rotation around the centroid and
         then applies the transformation.
         @param rb A IMP.core.RigidBody object
@@ -348,7 +345,7 @@ def get_residue_coordinates(h, chain_id=False, res=1):
         @param res See help for get_residue_particle()
     """
     p = get_residue_particle(h, chain_id, res)
-    return core.XYZ(p).get_coordinates()
+    return IMP.core.XYZ(p).get_coordinates()
 
 
 def get_residues_distance(hierarchy1, chain_id1, residue1,
@@ -364,7 +361,7 @@ def get_residues_distance(hierarchy1, chain_id1, residue1,
     """
     coords1 = get_residue_coordinates(hierarchy1, chain_id1, residue1)
     coords2 = get_residue_coordinates(hierarchy2, chain_id2, residue2)
-    d = alg.get_distance(coords1, coords2)
+    d = IMP.algebra.get_distance(coords1, coords2)
     return d
 
 
@@ -374,9 +371,9 @@ def get_all_chains(hierarchies):
     """
     chains = []
     for h in hierarchies:
-        chains_in_h = atom.get_by_type(h, atom.CHAIN_TYPE)
+        chains_in_h = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
         for ch in chains_in_h:
-            chains.append(ch.get_as_chain())
+            chains.append(IMP.atom.Chain(ch))
     return chains
 
 
@@ -400,26 +397,26 @@ def get_nucleic_acid_backbone(hierarchy, backbone='minimal'):
         backbone_atoms = ["C4'"]
     else:
         raise ValueError("Wrong value for the type of backbone")
-    backbone_atom_types = [atom.AtomType(t) for t in backbone_atoms]
-    h_chains = atom.get_by_type(hierarchy, atom.CHAIN_TYPE)
+    backbone_atom_types = [IMP.atom.AtomType(t) for t in backbone_atoms]
+    h_chains = IMP.atom.get_by_type(hierarchy, IMP.atom.CHAIN_TYPE)
     backbone = []
     if len(h_chains) > 1:
         raise ValueError("The hierarchy mas more than one chain")
-    h_residues = atom.get_by_type(hierarchy, atom.RESIDUE_TYPE)
+    h_residues = IMP.atom.get_by_type(hierarchy, IMP.atom.RESIDUE_TYPE)
     for hr in h_residues:
-        res = atom.Residue(hr)
+        res = IMP.atom.Residue(hr)
         if not (res.get_is_dna() or res.get_is_rna()):
             raise ValueError("Residue is not part of a nucleic acid")
-        h_atoms = atom.get_by_type(hr, atom.ATOM_TYPE)
+        h_atoms = IMP.atom.get_by_type(hr, IMP.atom.ATOM_TYPE)
         for at in h_atoms:
-            if atom.Atom(at).get_atom_type() in backbone_atom_types:
+            if IMP.atom.Atom(at).get_atom_type() in backbone_atom_types:
                 backbone.append(at)
     return backbone
 
 
 def get_calphas(chain_hierarchy):
-    h_residues = atom.get_by_type(chain_hierarchy, atom.RESIDUE_TYPE)
-    cas = [atom.get_atom(atom.Residue(r), atom.AtomType("CA"))
+    h_residues = IMP.atom.get_by_type(chain_hierarchy, IMP.atom.RESIDUE_TYPE)
+    cas = [IMP.atom.get_atom(IMP.atom.Residue(r), IMP.atom.AtomType("CA"))
            for r in h_residues]
     return cas
 
@@ -429,11 +426,11 @@ def get_backbone(hierarchy):
         Get the backbone atoms for a hierarchy. It can be a protein or a
         nucleic acid
     """
-    h_residues = atom.get_by_type(hierarchy, atom.RESIDUE_TYPE)
+    h_residues = IMP.atom.get_by_type(hierarchy, IMP.atom.RESIDUE_TYPE)
     if len(h_residues) == 0:
         raise ValueError("No residues!")
     atoms = []
-    res = atom.Residue(h_residues[0])
+    res = IMP.atom.Residue(h_residues[0])
     if res.get_is_dna() or res.get_is_rna():
         atoms = get_nucleic_acid_backbone(hierarchy, 'trace')
     else:
@@ -456,5 +453,5 @@ def get_all_members(rigid_bodies):
 def get_simple_members(rb):
     # Add members if they are not sub-rigid bodies
     members = [m for m in rb.get_members()
-               if not core.RigidBody.get_is_setup(m.get_particle())]
+               if not IMP.core.RigidBody.get_is_setup(m.get_particle())]
     return members

@@ -1,5 +1,5 @@
 ## \example rmf/geometry.py
-# This example shows writting one piece of geometry to an hdf5 and then
+# This example shows writing one piece of geometry to an RMF file and then
 # reading it back.
 
 from __future__ import print_function
@@ -35,7 +35,7 @@ IMP.rmf.save_frame(f, "one")
 del f
 f = RMF.open_rmf_file_read_only(tfn)
 # recreate the geometries from the file. The geometry will be the same
-# but it will not be a IMP.display.BoundingBoxGeometry, it will be
+# but it will not be a IMP.display.BoundingBoxGeometry; it will be
 # a set of cylinders instead.
 gs = IMP.rmf.create_geometries(f)
 IMP.rmf.load_frame(f, RMF.FrameID(0))

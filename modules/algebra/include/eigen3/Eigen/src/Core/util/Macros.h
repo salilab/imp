@@ -13,7 +13,7 @@
 
 #define IMP_EIGEN_WORLD_VERSION 3
 #define IMP_EIGEN_MAJOR_VERSION 2
-#define IMP_EIGEN_MINOR_VERSION 0
+#define IMP_EIGEN_MINOR_VERSION 5
 
 #define IMP_EIGEN_VERSION_AT_LEAST(x,y,z) (IMP_EIGEN_WORLD_VERSION>x || (IMP_EIGEN_WORLD_VERSION>=x && \
                                       (IMP_EIGEN_MAJOR_VERSION>y || (IMP_EIGEN_MAJOR_VERSION>=y && \
@@ -23,7 +23,7 @@
 #else
   #define IMP_EIGEN_GNUC_AT_LEAST(x,y) 0
 #endif
-
+ 
 #ifdef __GNUC__
   #define IMP_EIGEN_GNUC_AT_MOST(x,y) ((__GNUC__==x && __GNUC_MINOR__<=y) || __GNUC__<x)
 #else
@@ -94,6 +94,13 @@
 
 #ifndef IMP_EIGEN_DEFAULT_DENSE_INDEX_TYPE
 #define IMP_EIGEN_DEFAULT_DENSE_INDEX_TYPE std::ptrdiff_t
+#endif
+
+// Cross compiler wrapper around LLVM's __has_builtin
+#ifdef __has_builtin
+#  define IMP_EIGEN_HAS_BUILTIN(x) __has_builtin(x)
+#else
+#  define IMP_EIGEN_HAS_BUILTIN(x) 0
 #endif
 
 /** Allows to disable some optimizations which might affect the accuracy of the result.
@@ -238,11 +245,16 @@
 #endif
 
 // Suppresses 'unused variable' warnings.
-#define IMP_EIGEN_UNUSED_VARIABLE(var) (void)var;
+namespace IMP_Eigen {
+  namespace internal {
+    template<typename T> void ignore_unused_variable(const T&) {}
+  }
+}
+#define IMP_EIGEN_UNUSED_VARIABLE(var) IMP_Eigen::internal::ignore_unused_variable(var);
 
 #if !defined(IMP_EIGEN_ASM_COMMENT)
   #if (defined __GNUC__) && ( defined(__i386__) || defined(__x86_64__) )
-    #define IMP_EIGEN_ASM_COMMENT(X)  asm("#" X)
+    #define IMP_EIGEN_ASM_COMMENT(X)  __asm__("#" X)
   #else
     #define IMP_EIGEN_ASM_COMMENT(X)
   #endif
@@ -266,6 +278,7 @@
   #error Please tell me what is the equivalent of __attribute__((aligned(n))) for your compiler
 #endif
 
+#define IMP_EIGEN_ALIGN8  IMP_EIGEN_ALIGN_TO_BOUNDARY(8)
 #define IMP_EIGEN_ALIGN16 IMP_EIGEN_ALIGN_TO_BOUNDARY(16)
 
 #if IMP_EIGEN_ALIGN_STATICALLY
@@ -284,7 +297,8 @@
 #endif
 
 #ifndef IMP_EIGEN_STACK_ALLOCATION_LIMIT
-#define IMP_EIGEN_STACK_ALLOCATION_LIMIT 20000
+// 131072 == 128 KB
+#define IMP_EIGEN_STACK_ALLOCATION_LIMIT 131072
 #endif
 
 #ifndef IMP_EIGEN_DEFAULT_IO_FORMAT
@@ -300,7 +314,7 @@
 // just an empty macro !
 #define IMP_EIGEN_EMPTY
 
-#if defined(_MSC_VER) && (!defined(__INTEL_COMPILER))
+#if defined(_MSC_VER) && (_MSC_VER < 1800) && (!defined(__INTEL_COMPILER))
 #define IMP_EIGEN_INHERIT_ASSIGNMENT_EQUAL_OPERATOR(Derived) \
   using Base::operator =;
 #elif defined(__clang__) // workaround clang bug (see http://forum.kde.org/viewtopic.php?f=74&t=102653)
@@ -319,8 +333,11 @@
   }
 #endif
 
-#define IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Derived) \
-  IMP_EIGEN_INHERIT_ASSIGNMENT_EQUAL_OPERATOR(Derived)
+/** \internal
+ * \brief Macro to manually inherit assignment operators.
+ * This is necessary, because the implicitly defined assignment operator gets deleted when a custom operator= is defined.
+ */
+#define IMP_EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Derived) IMP_EIGEN_INHERIT_ASSIGNMENT_EQUAL_OPERATOR(Derived)
 
 /**
 * Just a side note. Commenting within defines works only by documenting

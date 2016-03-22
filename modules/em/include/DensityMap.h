@@ -2,7 +2,7 @@
  *  \file IMP/em/DensityMap.h
  *  \brief Class for handling density maps.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,7 +28,7 @@ IMPEM_BEGIN_NAMESPACE
 
 class DensityMap;
 
-//! create a copy of another map
+//! Create a copy of another map
 IMPEMEXPORT DensityMap *create_density_map(const DensityMap *other);
 
 //! Create an empty density map from a bounding box
@@ -38,9 +38,9 @@ IMPEMEXPORT DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
 IMPEMEXPORT DensityMap *create_density_map(int nx, int ny, int nz,
                                            double spacing);
 
-//! Read a density map from a file and return it.
-/** \see DensityMap
-*/
+//! Read a density map from a file (using the given reader) and return it.
+/** \relates DensityMap
+ */
 IMPEMEXPORT DensityMap *read_map(std::string filename, MapReaderWriter *reader);
 
 //! Read a density map from a file and return it.
@@ -49,12 +49,12 @@ IMPEMEXPORT DensityMap *read_map(std::string filename, MapReaderWriter *reader);
     - .em
     - .vol
     - .xplor
-    \see DensityMap
+    \relates DensityMap
 */
 IMPEMEXPORT DensityMap *read_map(std::string filename);
 
-//! Write a density map to a file.
-/** \see DensityMap
+//! Write a density map to a file using the given writer.
+/** \relates DensityMap
 */
 IMPEMEXPORT void write_map(DensityMap *m, std::string filename,
                            MapReaderWriter *writer);
@@ -66,23 +66,21 @@ IMPEMEXPORT void write_map(DensityMap *m, std::string filename,
     - .em
     - .vol
     - .xplor
-    \see DensityMap
+    \relates DensityMap
 */
 IMPEMEXPORT void write_map(DensityMap *m, std::string filename);
 
-//!
-/**
-\param[in] m a density map
-\param[in] threshold find the bounding box for voxels
-           with value above the threshold
+//! Get the bounding box for a map.
+/** \param[in] m a density map
+    \param[in] threshold find the bounding box for voxels
+                         with value above the threshold
  */
 IMPEMEXPORT algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m,
                                                       Float threshold);
-//!
-/**
-\param[in] m a density map
-\param[in] threshold consider volume of only voxels above this threshold
-\note The method assumes 1.21 cubic A per Dalton (Harpaz 1994).
+//! Estimate the molecular mass from a map.
+/** \param[in] m a density map
+    \param[in] threshold consider volume of only voxels above this threshold
+    \note The method assumes 1.21 cubic Å per Dalton (Harpaz 1994).
  */
 IMPEMEXPORT Float approximate_molecular_mass(DensityMap *m, Float threshold);
 
@@ -104,20 +102,19 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
   //! Construct a density map as instructed in the input header
   DensityMap(const DensityHeader &header, std::string name = "DensityMap%1%");
 
-  //!  Set the density voxels to some value and reset the management flags.
-  /**
-  \param[in] value all of the density voxels will have this value
+  //! Set the density voxels to some value and reset the management flags.
+  /** \param[in] value all of the density voxels will have this value
    */
   void reset_data(float value = 0.0);
 
   //! Calculates RMSD and mean of a map values as stored in the header.
-  /** The header stores whether map is normalized.
+  /** The header stores whether the map is normalized.
    */
   emreal calcRMS();
 
   //! Normalize the density voxels according to standard deviation (stdv).
   /** The mean is subtracted from the map, which is then divided by the stdv.
-      The normalization flag is set to avoid repeated computation */
+      The normalization flag is set to avoid repeated computation. */
   void std_normalize();
 
   inline bool is_normalized() const { return normalized_; }
@@ -130,7 +127,7 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
    */
   float get_location_in_dim_by_voxel(long index, int dim) const;
 
-  //! Calculate the voxel of a given xyz indexes
+  //! Calculate the voxel of a given xyz index
   /** \param[in] x The voxel index on the x axis of the grid
       \param[in] y The voxel index on the y axis of the grid
       \param[in] z The voxel index on the z axis of the grid
@@ -178,15 +175,15 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
 
   bool is_xyz_ind_part_of_volume(int ix, int iy, int iz) const;
 
-  //! Checks whether a given point is in the grid the voxel of a given location
-  /** \param[in] x The position ( in angstroms) of the x coordinate
-      \param[in] y The position ( in angstroms) of the y coordinate
-      \param[in] z The position ( in angstroms) of the z coordinate
+  //! Checks whether a given point is in the grid
+  /** \param[in] x The position (in angstroms) of the x coordinate
+      \param[in] y The position (in angstroms) of the y coordinate
+      \param[in] z The position (in angstroms) of the z coordinate
       \return true if the point is part of the grid, false otherwise.
    */
   bool is_part_of_volume(float x, float y, float z) const;
-  //! Checks whether a given point is in the grid the voxel of a given location
-  /** \param[in] v The position ( in angstroms)
+  //! Checks whether a given point is in the grid
+  /** \param[in] v The position (in angstroms)
       \return true if the point is part of the grid, false otherwise.
    */
   bool is_part_of_volume(const algebra::Vector3D &v) const {
@@ -194,9 +191,9 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
   }
 
   //! Gets the value of the voxel located at (x,y,z)
-  /** \param[in] x The position ( in angstroms) of the x coordinate
-      \param[in] y The position ( in angstroms) of the y coordinate
-      \param[in] z The position ( in angstroms) of the z coordinate
+  /** \param[in] x The position (in angstroms) of the x coordinate
+      \param[in] y The position (in angstroms) of the y coordinate
+      \param[in] z The position (in angstroms) of the z coordinate
       \return the value of the voxel located at (x,y,z)
       \exception IndexException The point is not covered by the grid.
       \note the value is not interpolated between this and neighboring
@@ -208,30 +205,24 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
   }
 
   //! Gets the value of the voxel at a given index
-  /**
-    \param[in] index voxel number in physical sense, NOT logical
-  */
+  /** \param[in] index voxel number in physical sense, NOT logical
+   */
   emreal get_value(long index) const;
 
   //! Set the value of the voxel at a given index
-  /**
-    \param[in] index voxel number in physical sense, NOT logical
-    \param[in] value value
-  */
+  /** \param[in] index voxel number in physical sense, NOT logical
+      \param[in] value value
+   */
   void set_value(long index, emreal value);
 
-  //! Set the value of the voxel at a given index
-  /**
-    index voxel number in physical sense, NOT logical
-  */
+  //! Set the value of the voxel at given coordinates
   void set_value(float x, float y, float z, emreal value);
 
   //! Sets the origin of the header
-  /**
-    \param x the new x (angstroms)
-    \param y the new y (angstroms)
-    \param z the new z (angstroms)
-  */
+  /** \param x the new x (angstroms)
+      \param y the new y (angstroms)
+      \param z the new z (angstroms)
+   */
   void set_origin(float x, float y, float z);
   void set_origin(const IMP::algebra::Vector3D &v) {
     set_origin(v[0], v[1], v[2]);
@@ -247,8 +238,9 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
                              header_.get_top(2));
   }
 
-  // inspection functions
+  //! Returns a read-only pointer to the header of the map
   const DensityHeader *get_header() const { return &header_; }
+
   //! Returns a pointer to the header of the map in a writable version
   DensityHeader *get_header_writable() { return &header_; }
 
@@ -290,19 +282,18 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
    */
   bool same_origin(const DensityMap *other) const;
 
-  //! Checks if  two maps have the same dimensions
+  //! Checks if two maps have the same dimensions
   /** \param[in] other the map to compare with
       \return true if the two maps have the same dimensions
    */
   bool same_dimensions(const DensityMap *other) const;
 
-  //! Checks if  two maps have the same voxel size
+  //! Checks if two maps have the same voxel size
   /** \param[in] other the map to compare with
       \return true if the two maps have the same voxel size
    */
   bool same_voxel_size(const DensityMap *other) const;
-  //! Calculates the centroid of all the voxels with
-  //! density above a given threshold
+  //! Get the centroid of all voxels with density above a given threshold
   /** \param[in] threshold the input threshold
   */
   algebra::Vector3D get_centroid(emreal threshold = 0.0) const;
@@ -310,8 +301,8 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
   emreal get_max_value() const;
   //! Returns the value of the voxel with the lowest density.
   emreal get_min_value() const;
-  //! Sums two grids.
-  //! The result is kept in the map.
+
+  //! Sums two grids; the result is kept in the map.
   /** \param[in] other the other map
       \note The shared extend is summed
       \note The two maps should have the same voxelsize and other
@@ -320,64 +311,67 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
   void add(const DensityMap *other);
 
   //! Pick the max value between two corresponding voxels between two maps
-  //! The result is kept in the map.
-  /** \param[in] other the other map
+  /** The result is kept in the map.
+      \param[in] other the other map
       \note The two maps should have the same voxelsize and the same dimensions
    */
   void pick_max(const DensityMap *other);
 
-  //! number of map voxels
+  //! Get the number of map voxels
   long get_number_of_voxels() const;
 
   //! Set the map dimension and reset all voxels to 0
-  /**
-    \param[in] nx x-dimension (voxels)
-    \param[in] ny y-dimension (voxels)
-    \param[in] nz z-dimension (voxels)
-    \note the origin and spacing remain unchanged
+  /** \param[in] nx x-dimension (voxels)
+      \param[in] ny y-dimension (voxels)
+      \param[in] nz z-dimension (voxels)
+      \note the origin and spacing remain unchanged
    */
   void set_void_map(int nx, int ny, int nz);
 
   //! Increase the dimension of the map
-  //! The function pads zeros to the  right-upper section on the map.
-  //! The original content of the map will be in the lower XYZ part of the map
-  /** \param[in] nx the number of voxels on the X axis
+  /** The function pads zeroes to the right-upper section on the map.
+      The original content of the map will be in the lower XYZ part of the map.
+      \param[in] nx the number of voxels on the X axis
       \param[in] ny the number of voxels on the Y axis
       \param[in] nz the number of voxels on the Z axis
-      \param[in] val   all additional voxels will have this value
-      \exception if the input  x/y/z voxels is smaller than the one
-                 currently in the map
+      \param[in] val all additional voxels will have this value
+      \exception UsageException if the input numbers of x/y/z voxels are
+                 smaller than those currently in the map
    */
   void pad(int nx, int ny, int nz, float val = 0.0);
 
   //! Create a new padded map
-  /** \brief Given this map of size [nx,ny,nz],
-   the new map is of size [2*mrg_x+nx,2*mrg_y+ny,2*mrg_z+nz].
-   The new map will consist of the values of the old map,
-   padded margin on all sides.
-   \param[in] mrg_x
-      number of margin voxels to add on both right and left on the X axis
-   \param[in] mrg_y
-      number of margin voxels to add on both right and left on the Y axis
-   \param[in] mrg_z
-      number of margin voxels to add on both right and left on the Z axis
-   \param[in] val   ignored
-   \exception if the input  x/y/z voxels is smaller than the one
-              currently in the map
+  /** Given this map of size [nx,ny,nz],
+      the new map is of size [2*mrg_x+nx,2*mrg_y+ny,2*mrg_z+nz].
+      The new map will consist of the values of the old map,
+      with a padded margin on all sides.
+
+      \param[in] mrg_x number of margin voxels to add on both right and
+                       left on the X axis
+      \param[in] mrg_y number of margin voxels to add on both right and
+                       left on the Y axis
+      \param[in] mrg_z number of margin voxels to add on both right and
+                       left on the Z axis
+      \param[in] val   ignored
+      \return the new padded map.
+      \exception UsageException if the input numbers of x/y/z voxels are
+                 smaller than those currently in the map
    */
   DensityMap *pad_margin(int mrg_x, int mrg_y, int mrg_z, float val = 0.0);
 
-  //! Create a new cropped map
-  /** \brief The margins are determined to be the bounding box
-             with density values below the input
-   \param[in] threshold used for cropping
+  //! Create and return a new cropped map
+  /** The margins are determined to be the bounding box
+      with density values below the input
+      \param[in] threshold used for cropping
+      \return the new cropped map.
    */
   DensityMap *get_cropped(float threshold);
-  //! Create a new cropped map with the bounding box extent
-  /**
-     \param[in] bb the bounding box
-     \note If the input bounding box is larger than the density box,
-           it is snapped to the right size.
+
+  //! Create and return a new cropped map with the given bounding box extent
+  /** \param[in] bb the bounding box
+      \return the new cropped map.
+      \note If the input bounding box is larger than the density box,
+            it is snapped to the right size.
    */
   DensityMap *get_cropped(const algebra::BoundingBox3D &bb);
 
@@ -388,30 +382,29 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
   //! Get the maximum value in a YZ plane indicated by a X index
   float get_maximum_value_in_yz_plane(int x_ind);
 
-  //! Multiply each voxel in the map by the input factor
-  //! The result is kept in the map.
-  /** \param[in] factor the multiplication factor
+  //! Multiply in place each voxel in the map by the input factor
+  /** The result is kept in the map.
+      \param[in] factor the multiplication factor
    */
   void multiply(float factor);
 
-  //! Prints the locations of all of the voxels with value above a given
-  //! threshold into the input stream.
+  //! Print the locations of all voxels with value above a given threshold
   std::string get_locations_string(float t);
 
-  //! Updated the voxel size of the map
+  //! Update the voxel size of the map
   void update_voxel_size(float new_apix);
 
-  //! Updated the voxel size of the map
+  //! Get the voxel size of the map
   /** \note Use update_voxel_size() to set the spacing value.
   */
   Float get_spacing() const { return header_.get_spacing(); }
   //! Calculates the coordinates that correspond to all voxels.
   void calc_all_voxel2loc();
-  //! copy map into this map
+  //! Copy map into this map
   void copy_map(const DensityMap *other);
   IMP_OBJECT_METHODS(DensityMap);
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  //! Convolution a kernel with a map and write results into current map
+  //! Convolute a kernel with a map and write results into current map
   /**
      \param[in] other the map to convolute
      \param[in] kernel an array of kernel values. The data is in ZYX
@@ -419,7 +412,7 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
      \param[in] dim_len the kernel array
    */
   void convolute_kernel(DensityMap *other, double *kernel, int dim_len);
-  //! Convolution a kernel with this map and write results to this map
+  //! Convolute a kernel with this map and write results to this map
   /**
      \param[in] kernel an array of kernel values. The data is in ZYX
      order, Z is the slowest.
@@ -504,16 +497,16 @@ inline void calc_local_bounding_box(const em::DensityMap *d_map, double x,
 
 IMP_OBJECTS(DensityMap, DensityMaps);
 
-/** Return the value for the density map, m, at point v, interpolating linearly
-    from the sample values. The resulting function is C0 over R3.
-    \see DensityMap
+//! Get density value at point v, interpolating linearly from the sample values.
+/** The resulting function is C0 over R3.
+    \relates DensityMap
 */
 IMPEMEXPORT double get_density(const DensityMap *m, const algebra::Vector3D &v);
 
 //! Return a new density map containing a rotated version of the old one.
 /** Only voxels whose value is above threshold are considered when
     computing the bounding box of the new map (set IMP::em::get_bounding_box()).
-    \see DensityMap
+    \relates DensityMap
 */
 IMPEMEXPORT DensityMap *get_transformed(const DensityMap *input,
                                         const algebra::Transformation3D &tr,
@@ -521,25 +514,24 @@ IMPEMEXPORT DensityMap *get_transformed(const DensityMap *input,
 
 //! Return a new density map containing a rotated version of the old one.
 /** The dimension of the new map is the same as the old one.
-    \see DensityMap
+    \relates DensityMap
 */
 IMPEMEXPORT DensityMap *get_transformed(DensityMap *input,
                                         const algebra::Transformation3D &tr);
 
 //! Get a resampled version of the map.
-/** The spacing is multiplied by scaling.
-    That means, scaling values greater than 1 increase the voxel size.
-    \see DensityMap
+/** The spacing is multiplied by scaling, i.e. scaling values greater
+    than 1 increase the voxel size.
+    \relates DensityMap
 */
 IMPEMEXPORT DensityMap *get_resampled(DensityMap *input, double scaling);
 
 //! Rotate a density map into another map
-/**
-\param[in] source the map to transform
-\param[in] tr transform the from density map by this transformation
-\param[out] into the map to transform into
-\param[in] calc_rms if true RMS is calculated on the transformed map
- \see DensityMap
+/** \param[in] source the map to transform
+    \param[in] tr transform the from density map by this transformation
+    \param[out] into the map to transform into
+    \param[in] calc_rms if true RMS is calculated on the transformed map
+    \relates DensityMap
 */
 IMPEMEXPORT void get_transformed_into(const DensityMap *source,
                                       const algebra::Transformation3D &tr,
@@ -566,9 +558,8 @@ inline bool get_interiors_intersect(const DensityMap *d1,
 #endif
 
 //! Get a segment of the map according to xyz indexes
-/**
-\note the output map will be cover
-the region [[nx_start,nx_end],[]ny_start,ny_end,[nz_start,nz_end]]
+/** \note the output map will cover the region
+    [[nx_start,nx_end],[]ny_start,ny_end,[nz_start,nz_end]]
  */
 IMPEMEXPORT DensityMap *get_segment(DensityMap *map_to_segment, int nx_start,
                                     int nx_end, int ny_start, int ny_end,
@@ -582,54 +573,55 @@ IMPEMEXPORT DensityMap *get_segment_by_masking(DensityMap *map_to_segment,
                                                DensityMap *mask,
                                                float mas_threshold);
 
-//! Return a map with 0 for all voxels below the
-//! threshold and 1 for those above
-/**
-\param[in] orig_map the map to binarize
-\param[in] threshold values below the threshold are set to 0 and 1 otherwise
-\param[in] reverse if true values above the threshold
-                   are set to 0 and 1 otherwise
+//! Return a map with 0 for all voxels below the threshold and 1 for those above
+/** \param[in] orig_map the map to binarize
+    \param[in] threshold values below the threshold are set to 0 and 1 otherwise
+    \param[in] reverse if true values above the threshold
+                       are set to 0 and 1 otherwise
  */
 IMPEMEXPORT DensityMap *binarize(DensityMap *orig_map, float threshold,
                                  bool reverse = false);
 
-//! Return a map with 0 for all voxels below the
-//! threshold
-/**
-\param[in] orig_map the map to binarize
-\param[in] threshold values below the threshold are set to 0 and 1 otherwise
+//! Return a map with 0 for all voxels below the threshold
+/** \param[in] orig_map the map to binarize
+    \param[in] threshold values below the threshold are set to 0 and
+                         1 otherwise
  */
 IMPEMEXPORT DensityMap *get_threshold_map(const DensityMap *orig_map,
                                           float threshold);
 
-//! Return a density map for which voxel i contains the result of
-//! m1[i]*m2[i]. The function assumes m1 and m2 are of the same dimensions.
+//! Return a density map for which voxel i contains the result of m1[i]*m2[i].
+/** The function assumes m1 and m2 are of the same dimensions.
+ */
 IMPEMEXPORT DensityMap *multiply(const DensityMap *m1, const DensityMap *m2);
+
 //! Return a convolution between density maps m1 and m2.
-//! The function assumes m1 and m2 are of the same dimensions.
+/** The function assumes m1 and m2 are of the same dimensions.
+ */
 IMPEMEXPORT double convolute(const DensityMap *m1, const DensityMap *m2);
+
 //! Return the sum of all voxels
 IMPEMEXPORT double get_sum(const DensityMap *m1);
-//!Return a density map for which each voxel is the maximum value from
-//!the input densities.
-/**
-\note all input maps should have the same extent
+
+//! Return a map where each voxel is the maximum value from the input maps.
+/** \note all input maps should have the same extent
  */
 IMPEMEXPORT DensityMap *get_max_map(DensityMaps maps);
 
-//! Return a new map with an updated spacing and interpolate input
-//! data accordingly
+//! Return a new map with an updated spacing
+/** Input data is interpolated accordingly.
+ */
 IMPEMEXPORT
 DensityMap *interpolate_map(DensityMap *in_map, double new_spacing);
 
-/** Return a dense grid containing the voxels of the passed density map
-    as well as the same bounding box.
-*/
+//! Return a dense grid containing the voxels of the passed density map
+/** The returned grid has the same bounding box as the map.
+ */
 IMPEMEXPORT
 algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> get_grid(
     DensityMap *in_map);
 
-/** Create a density map from an arbitrary IMP::algebra::GridD */
+//! Create a density map from an arbitrary IMP::algebra::GridD
 template <class S, class V, class E>
 inline DensityMap *create_density_map(
     const IMP::algebra::GridD<3, S, V, E> &arg) {
@@ -656,21 +648,26 @@ inline DensityMap *create_density_map(
   return ret.release();
 }
 
-/** Return a density map with the values taken from the grid.
-*/
+//! Return a density map with the values taken from the grid.
+/** \relates DensityMap
+ */
 IMPEMEXPORT
 DensityMap *create_density_map(
     const algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> &grid);
 
-//!Return a binaries density map with 1 for voxels that are internal
-// in the input density map
+//! Return a binarized map with 1 for voxels that are internal in the input map
+/** \relates DensityMap
+ */
 IMPEMEXPORT
 DensityMap *get_binarized_interior(DensityMap *dmap);
 
-/** Rasterize the particles into an existing density map. */
+//! Rasterize the particles into an existing density map.
+/** \relates DensityMap
+ */
 IMPEMEXPORT
 void add_to_map(DensityMap *dm, const Particles &pis);  // defined in
-// SampledDensityMap.cpp
+                                                        // SampledDensityMap.cpp
+
 IMPEM_END_NAMESPACE
 
 #endif /* IMPEM_DENSITY_MAP_H */

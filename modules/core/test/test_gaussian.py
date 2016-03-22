@@ -21,7 +21,6 @@ def create_test_points(mu, radii):
         testers.append(t)
     return testers
 
-
 class TestGaussian(IMP.test.TestCase):
 
     def test_gauss_rigid_body(self):
@@ -126,5 +125,17 @@ class TestGaussian(IMP.test.TestCase):
         rbd.add_non_rigid_member(p)
         self.assertEqual(IMP.core.Gaussian.get_is_setup(p),True)
 
+    def test_copy_gaussian(self):
+        """test creation of gaussian with get and set"""
+        m = IMP.Model()
+        self.gauss_setup()
+        g1 = IMP.core.Gaussian.setup_particle(IMP.Particle(m))
+        g1.set_gaussian(self.g0.get_gaussian())
+        self.assertEqual(IMP.algebra.get_distance(g1.get_variances(),
+                                                  self.g0.get_variances()),
+                         0)
+        r0 = self.g0.get_reference_frame().get_transformation_to().get_rotation().get_quaternion()
+        r1 = g1.get_reference_frame().get_transformation_to().get_rotation().get_quaternion()
+        self.assertEqual(IMP.algebra.get_distance(r0,r1),0)
 if __name__ == '__main__':
     IMP.test.main()

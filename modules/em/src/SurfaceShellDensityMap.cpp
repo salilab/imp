@@ -2,7 +2,7 @@
  *  \file SurfaceShellDensityMap.cpp
  *  \brief Represent a molecule as shells of distance from the surface
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -43,7 +43,7 @@ SurfaceShellDensityMap::SurfaceShellDensityMap(const ParticlesTemp &ps,
 
 void SurfaceShellDensityMap::set_kernel() {
   header_.set_resolution(3.);
-  kernel_params_ = KernelParameters(header_.get_resolution());
+  kernel_params_ = KernelParameters(header_.get_resolution() * 2.);
 }
 // TODO : think about the values for delta as a function of resolution
 void SurfaceShellDensityMap::set_neighbor_mask() {
@@ -59,11 +59,11 @@ void SurfaceShellDensityMap::set_neighbor_mask() {
     }
   }
 }
-// TODO: binaries should be a special case of resample, either make
+// TODO: binarize should be a special case of resample, either make
 // template or pass pointer to voxel update function
 // TODO: pass the background value as well to the general resample function
 // TODO: make this function faster
-void SurfaceShellDensityMap::binaries(float scene_val) {
+void SurfaceShellDensityMap::binarize(float scene_val) {
   reset_data(IMP_BACKGROUND_VAL);
   calc_all_voxel2loc();
   int ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
@@ -76,12 +76,12 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
 
   for (unsigned int ii = 0; ii < ps_.size(); ii++) {
     // compute kernel parameters if needed
-    const RadiusDependentKernelParameters &params =
-        kernel_params_.get_params(xyzr_[ii].get_radius());
+    const internal::RadiusDependentKernelParameters &params =
+              kernel_params_.get_params(xyzr_[ii].get_radius());
     // compute the box affected by each particle
     calc_local_bounding_box(this, xyzr_[ii].get_x(), xyzr_[ii].get_y(),
-                            xyzr_[ii].get_z(), params.get_kdist(), iminx, iminy,
-                            iminz, imaxx, imaxy, imaxz);
+                            xyzr_[ii].get_z(), params.get_kdist(),
+                            iminx, iminy, iminz, imaxx, imaxy, imaxz);
     for (ivoxz = iminz; ivoxz <= imaxz; ivoxz++) {
       znxny = ivoxz * nxny;
       for (ivoxy = iminy; ivoxy <= imaxy; ivoxy++) {
@@ -94,7 +94,6 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
           tmpz = z_loc_[ivox] - xyzr_[ii].get_z();
           rsq = tmpx * tmpx + tmpy * tmpy + tmpz * tmpz;
           tmp = EXP(-rsq * params.get_inv_sigsq());
-          // tmp = exp(-rsq * params->get_inv_sigsq());
           // if statement to ensure even sampling within the box
           if (tmp > kernel_params_.get_lim()) {
             data_[ivox] = scene_val;
@@ -143,9 +142,9 @@ void SurfaceShellDensityMap::resample() {
   //(which is positive and larger than 0)
   // TODO - change here, the value of the inner voxels should note be
   // should not be ns*2 but the largest of the inner shell
-  IMP_LOG_VERBOSE("going to binaries\n");
-  binaries(num_shells_ * 2);
-  IMP_LOG_VERBOSE("after binaries\n");
+  IMP_LOG_VERBOSE("going to binarize\n");
+  binarize(num_shells_ * 2);
+  IMP_LOG_VERBOSE("after binarize\n");
   // find the voxels that are part of the surface, so we'll have
   // background, surface and interior voxels
   std::vector<long> curr_shell_voxels;

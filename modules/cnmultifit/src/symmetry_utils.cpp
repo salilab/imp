@@ -2,7 +2,7 @@
  *  \file symmetry_utils.cpp
  *  \brief Symmetry utilities.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -233,6 +233,7 @@ em::FittingSolutions fit_cn_assembly(atom::Hierarchies mhs, int /*dn_symm_deg*/,
                                      const AlignSymmetric &aligner,
                                      bool sample_translation,
                                      bool fine_rotational_sampling) {
+  IMP_UNUSED(threshold);
   Particles ps;
   // here change to CA !!
   for (unsigned int i = 0; i < mhs.size(); i++) {

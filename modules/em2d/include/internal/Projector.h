@@ -3,7 +3,7 @@
  * \brief projection generation class
  *
  * \authors Dina Schneidman
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -45,7 +45,6 @@ private:
   double pixel_size_;
   double resolution_;
   ProjectionSphere projection_sphere_;
-  std::vector<double> radii_;
   std::vector<double> mass_;
 
 };

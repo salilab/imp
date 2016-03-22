@@ -110,7 +110,7 @@ template<> IMP_EIGEN_STRONG_INLINE Packet2cf ploaddup<Packet2cf>(const std::comp
 template<> IMP_EIGEN_STRONG_INLINE void pstore <std::complex<float> >(std::complex<float> *   to, const Packet2cf& from) { IMP_EIGEN_DEBUG_ALIGNED_STORE pstore((float*)to, from.v); }
 template<> IMP_EIGEN_STRONG_INLINE void pstoreu<std::complex<float> >(std::complex<float> *   to, const Packet2cf& from) { IMP_EIGEN_DEBUG_UNALIGNED_STORE pstoreu((float*)to, from.v); }
 
-template<> IMP_EIGEN_STRONG_INLINE void prefetch<std::complex<float> >(const std::complex<float> *   addr) { __pld((float *)addr); }
+template<> IMP_EIGEN_STRONG_INLINE void prefetch<std::complex<float> >(const std::complex<float> *   addr) { IMP_EIGEN_ARM_PREFETCH((float *)addr); }
 
 template<> IMP_EIGEN_STRONG_INLINE std::complex<float>  pfirst<Packet2cf>(const Packet2cf& a)
 {

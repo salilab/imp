@@ -2,7 +2,7 @@
  *  \file RMF/FileConstHandle.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -354,6 +354,11 @@ class RMFEXPORT FileConstHandle {
    */
   void reload();
 };
+
+//! Produce hash values for boost hash tables.
+inline std::size_t hash_value(const FileConstHandle& t) {
+  return t.__hash__();
+}
 
 /**
    Open an RMF from a file system path in read-only mode.

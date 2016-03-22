@@ -14,9 +14,9 @@ using Gaussian processes. This method requires only the buffer-subtracted
 profile files in a specific order. At the heart of its formulation is
 nonlinear interpolation using Gaussian Processes, which provide a statement
 of the problem that accounts for correlation in the data.
-The method is [benchmarked](http://salilab.org/saxsmerge/benchmark).
+The method is [benchmarked](https://salilab.org/saxsmerge/benchmark).
 
-A [webserver](http://salilab.org/saxsmerge) is also available.
+A [webserver](https://salilab.org/saxsmerge) is also available.
 
 _Examples_:
  - [Merging of SAXS profiles](@ref saxs_merge)

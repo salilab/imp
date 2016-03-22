@@ -8,7 +8,7 @@ import IMP.pmi.tools
 import IMP.pmi.output
 
 class Tests(IMP.test.TestCase):
-    def test_pdb_writing(self):
+    def test_psf_writing(self):
         """Test writing of PSF files"""
 
         # input parameter

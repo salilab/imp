@@ -4,8 +4,8 @@ import sys
 import os
 
 class CommandDispatcher(object):
-    """Allow command line tools to easily implement multiple commmands.
-       Typically, an IMP comand line tool will use an instance of this class
+    """Allow command line tools to easily implement multiple commands.
+       Typically, an IMP command line tool will use an instance of this class
        to provide a consistent interface to multiple distinct commands
        from a single binary, rather than providing a potentially large
        number of binaries. This is similar to the way a number of common
@@ -82,7 +82,7 @@ class CommandDispatcher(object):
         print(self.long_help + """
 
 This program is part of IMP, the Integrative Modeling Platform,
-which is Copyright 2007-2015 IMP Inventors.
+which is Copyright 2007-2016 IMP Inventors.
 For additional information about IMP, see <http://integrativemodeling.org>.
 
 Usage: %s <command> [options] [args]

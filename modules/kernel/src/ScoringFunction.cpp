@@ -2,7 +2,7 @@
  *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -91,9 +91,6 @@ ScoringFunction *ScoringFunctionAdaptor::get(const Restraints &sf) {
   } else {
     return get_null_scoring_function();
   }
-}
-ScoringFunction *ScoringFunctionAdaptor::get(Model *sf) {
-  return sf->create_model_scoring_function();
 }
 ScoringFunction *ScoringFunctionAdaptor::get(Restraint *sf) {
   return sf->create_scoring_function();

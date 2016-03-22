@@ -30,7 +30,7 @@ images, but if you don't care for that information, you can use the
 class to deal with any sort of image, not only EM.
 
 # OpenCV # {#OpenCV}
-The module works with OpenCV 2.1, 2.2 and 2.3. We haven't tried with newer versions yet.
+The module works with OpenCV 2.1 or above.
 
 # Info
 
@@ -38,9 +38,9 @@ _Author(s)_: Javier Velázquez-Muriel, Daniel Russel, Dina Schneidman
 
 _Maintainer_: `benmwebb`
 
-_License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
+_License_: [GPL](http://www.gnu.org/licenses/gpl.html)
 This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
+modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 

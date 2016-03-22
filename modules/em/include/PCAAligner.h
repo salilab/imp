@@ -1,7 +1,8 @@
 /**
- * \file IMP/em/PCAAligner.h \brief
+ * \file IMP/em/PCAAligner.h
+ * \brief Fast alignment of points to a density map using principal components
  *
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,21 +16,22 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-/** class that supports fast alignment of a set of points to the density map
-    using principal components of the map and the points.
+//! Fast alignment of points to a density map using principal components
+/** Fast alignment of a set of points to a density map using principal
+    components of the map and the points.
 
-    This time of alignment is good for low-resolution maps.
+    This type of alignment is good for low-resolution maps.
 
     Note, that principal components are not well-defined for globular
-    objects, so the method may fail in case of symmetric structures
+    objects, so the method may fail in the case of symmetric structures
  */
 class IMPEMEXPORT PCAAligner : public IMP::Object {
  public:
-  /** init the distance transform
-      \param map input density map
+  //! Constructor
+  /** \param map input density map
       \param density_threshold a threshold that determines
-                              which voxels belong to the object
-  */
+                               which map voxels to use in the fit
+   */
   PCAAligner(IMP::em::DensityMap* map, float density_threshold)
       : Object("EM_PCA_Aligner") {
     IMP::algebra::Vector3Ds density_points =
@@ -37,12 +39,10 @@ class IMPEMEXPORT PCAAligner : public IMP::Object {
     map_pc_ = IMP::algebra::get_principal_components(density_points);
   }
 
-  /**
-     align the principal components of the points to the principal
-     components of the density map.
-     \param points The points for PCA alignment to the map
-     \return 24 transformations to the density map
-  */
+  //! Align the principal components of the points to those of the density map.
+  /** \param points The points for PCA alignment to the map
+      \return 24 transformations to the density map
+   */
   algebra::Transformation3Ds align(const algebra::Vector3Ds& points) const;
 
   // methods required by Object

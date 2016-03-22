@@ -1,4 +1,4 @@
-\brief Interface to the [Modeller](http://salilab.org/modeller/) comparative modeling package.
+\brief Interface to the [Modeller](https://salilab.org/modeller/) comparative modeling package.
 
 Functionality includes:
 

@@ -9,7 +9,7 @@ Frequently asked questions (FAQ) {#faq}
 * Use specialized scores that don't take a IMP::UnaryFunction argument, e.g.
   replace the combination of IMP::core::SphereDistancePairScore and
   IMP::core::HarmonicLowerBound with IMP::core::SoftSpherePairScore.
-  This reduces the number of virtual function calls during evalution.
+  This reduces the number of virtual function calls during evaluation.
 * Group similar restraints: e.g. replace a large number of
   IMP::core::PairRestraint objects with a single
   IMP::container::PairsRestraint. This also reduces the number of

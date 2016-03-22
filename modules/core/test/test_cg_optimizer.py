@@ -45,6 +45,12 @@ class WoodsFunc(IMP.Restraint):
 
 class Tests(IMP.test.TestCase):
 
+    def test_no_scoring_function(self):
+        """Optimizer should fail without a scoring function set"""
+        model = IMP.Model()
+        opt = IMP.core.ConjugateGradients(model)
+        self.assertRaises(ValueError, opt.get_scoring_function)
+
     def test_cg_woods_func(self):
         """Check that we can optimize the Woods function with CG"""
         self._test_starting_conditions((-3.0, -1.0, -3.0, -1.0))

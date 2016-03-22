@@ -1,7 +1,7 @@
 /**
  *  \file ProjectionMask.cpp
  *  \brief projection masks
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/ProjectionMask.h"
@@ -13,26 +13,22 @@ ProjectionMask::~ProjectionMask() {
   IMP_LOG_VERBOSE(" Projection mask destroyed." << std::endl);
 }
 
-ProjectionMask::ProjectionMask(
-    const em::KernelParameters &KP,
-    const em::RadiusDependentKernelParameters &params, double pixelsize,
-    double mass) {
+ProjectionMask::ProjectionMask(const em::KernelParameters& kparams,
+                               double pixelsize,
+                               double mass) {
   sq_pixelsize_ = pixelsize * pixelsize;
-  //  dim_ = 2*floor(params->get_kdist()/pixelsize)+1;
-  //  data_.create(dim_,dim_,CV_64FC1);
-  dim_ = floor(params.get_kdist() / pixelsize);
+  dim_ = floor(kparams.get_rkdist() / pixelsize);
   int mask_size = 2 * dim_ + 1;  // enough to go from -dim to dim
   data_.create(mask_size, mask_size, CV_64FC1);
   data_.setTo(0.0);
-  create(KP, params, mass);
+  create(kparams, mass);
 }
 
 void ProjectionMask::apply(cv::Mat &m, const algebra::Vector2D &v) {
   do_place(data_, m, v);
 }
 
-void ProjectionMask::create(const em::KernelParameters &KP,
-                            const em::RadiusDependentKernelParameters &params,
+void ProjectionMask::create(const em::KernelParameters &kparams,
                             double mass) {
 
   // Decorate the masks to use centered coordinates
@@ -49,10 +45,10 @@ void ProjectionMask::create(const em::KernelParameters &KP,
       for (int k = -dim_; k <= dim_; ++k) {
         square_radius = (ijsq + static_cast<double>(k * k)) * sq_pixelsize_;
         // Add the value to the mask
-        tmp = em::EXP(-square_radius * params.get_inv_sigsq());
+        tmp = em::EXP(-square_radius * kparams.get_inv_rsigsq());
         // if statement to ensure even sampling within the box
-        if (tmp > KP.get_lim() && centered_mask.get_is_in_range(i, j)) {
-          centered_mask(i, j) += params.get_normfac() * tmp * mass;
+        if (tmp > kparams.get_lim() && centered_mask.get_is_in_range(i, j)) {
+          centered_mask(i, j) += kparams.get_rnormfac() * tmp * mass;
         }
       }
     }
@@ -64,10 +60,10 @@ void ProjectionMask::show(std::ostream &out) const {
   out << "ProjectionMask size " << data_.rows << "x" << data_.cols << std::endl;
 }
 
-ProjectionMaskPtr MasksManager::find_mask(double radius) {
-  IMP_LOG_VERBOSE("Finding mask for radius " << radius << std::endl);
-  std::map<double, ProjectionMaskPtr>::iterator iter = radii2mask_.find(radius);
-  if (iter == radii2mask_.end()) return ProjectionMaskPtr();  // null
+ProjectionMaskPtr MasksManager::find_mask(double mass) {
+  IMP_LOG_VERBOSE("Finding mask for mass " << mass << std::endl);
+  std::map<double, ProjectionMaskPtr>::iterator iter = mass2mask_.find(mass);
+  if (iter == mass2mask_.end()) return ProjectionMaskPtr();  // null
   return iter->second;
 }
 
@@ -76,33 +72,24 @@ void MasksManager::create_masks(const ParticlesTemp &ps) {
   ProjectionMaskPtr mask;
   unsigned long n_particles = ps.size();
   for (unsigned long i = 0; i < n_particles; i++) {
-    core::XYZR xyzr(ps[i]);
-    double radius = xyzr.get_radius();
-    mask = this->find_mask(radius);
+    double w = atom::Mass(ps[i]).get_mass();
+    mask = this->find_mask(w);
     if (!mask) {
-      atom::Mass mass(ps[i]);
-      double w = mass.get_mass();
-      this->create_mask(radius, w);
+      this->create_mask(w);
     }
   }
   IMP_LOG_TERSE("Finished creating Projection Masks " << std::endl);
 }
 
-void MasksManager::create_mask(double radius, double mass) {
-  IMP_LOG_VERBOSE("Creating a projection mask for radius " << radius
-                                                           << std::endl);
+void MasksManager::create_mask(double mass) {
+  IMP_LOG_VERBOSE("Creating a projection mask for mass " << mass
+                  << std::endl);
   if (is_setup_ == false) {
     IMP_THROW("MasksManager: kernel not setup", ValueException);
   }
-  // kernel_params_.set_params(radius); // Due to numerical instability with
-  // doubles, this call can throw an
-  // exception
-  // This call creates the params, but gives a warning
-  const em::RadiusDependentKernelParameters &params =
-      kernel_params_.get_params(radius);
   ProjectionMaskPtr ptr(
-      new ProjectionMask(kernel_params_, params, pixelsize_, mass));
-  radii2mask_[radius] = ptr;
+      new ProjectionMask(kernel_params_, pixelsize_, mass));
+  mass2mask_[mass] = ptr;
 }
 
 MasksManager::~MasksManager() {
@@ -110,7 +97,7 @@ MasksManager::~MasksManager() {
 }
 
 void MasksManager::show(std::ostream &out) const {
-  out << "MasksManager: " << radii2mask_.size() << " masks. "
+  out << "MasksManager: " << mass2mask_.size() << " masks. "
       << "Initialized " << is_setup_ << " pixelsize " << pixelsize_
       << std::endl;
 }

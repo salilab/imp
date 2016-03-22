@@ -4,6 +4,7 @@
 
 #include <IMP/Vector.h>
 #include <IMP/saxs/Profile.h>
+#include <IMP/saxs/utility.h>
 
 #include <fstream>
 #include <vector>
@@ -27,13 +28,6 @@ const char *basename(const char *path) {
 #include <libgen.h>
 #endif
 
-namespace {
-std::string trim_extension(const std::string file_name) {
-  if (file_name[file_name.size() - 4] == '.')
-    return file_name.substr(0, file_name.size() - 4);
-  return file_name;
-}
-}
 
 int main(int argc, char **argv) {
   // output arguments
@@ -84,7 +78,7 @@ Each profile is read and written back, with simulated error added if necessary")
                 << " size = " << profile->size() << std::endl;
       // write back
       std::string profile_name =
-          trim_extension(basename(const_cast<char *>(files[i].c_str())));
+        IMP::saxs::trim_extension(basename(const_cast<char *>(files[i].c_str())));
       std::string file_name = profile_name + "_v.dat";
       profile->write_SAXS_file(file_name, max_q);
       std::cout << "Profile written to file " << file_name << std::endl;

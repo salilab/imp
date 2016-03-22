@@ -2,7 +2,7 @@
  *  \file IMP/ScoringFunction.h
  *  \brief Represents a scoring function on the model.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -122,7 +122,6 @@ class IMPKERNELEXPORT ScoringFunctionAdaptor :
      that always returns 0.
    */
   static ScoringFunction *get(const Restraints &sf);
-  static ScoringFunction *get(Model *sf);
   static ScoringFunction *get(Restraint *sf);
 
  public:
@@ -136,12 +135,6 @@ class IMPKERNELEXPORT ScoringFunctionAdaptor :
   ScoringFunctionAdaptor(const RestraintsTemp &sf) : P(get(sf)) {}
   ScoringFunctionAdaptor(const Restraints &sf) : P(get(sf)) {}
   ScoringFunctionAdaptor(Restraint *sf) : P(get(sf)) {}
-#ifndef IMP_DOXYGEN
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.5)
-  ScoringFunctionAdaptor(Model *sf) : P(get(sf)) {
-    IMPKERNEL_DEPRECATED_METHOD_DEF(2.5, "Use a ScoringFunction instead");
-  }
-#endif
 };
 
 //! Print the hierarchy of restraints

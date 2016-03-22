@@ -2,7 +2,7 @@
  *  \file IMP/ClassnameContainer.h
  *  \brief A container for Classnames.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_CLASSNAME_CONTAINER_H
@@ -14,7 +14,7 @@
 #include "container_base.h"
 #include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
-#include "ParticleTuple.h"
+#include "base_types.h"
 #include <IMP/ref_counted_macros.h>
 #include <IMP/check_macros.h>
 #include <IMP/Pointer.h>

@@ -2,7 +2,7 @@
  *  \file IMP/atom/CenterOfMass.h
  *  \brief A decorator for particles with mass
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_CENTER_OF_MASS_H

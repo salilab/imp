@@ -4,7 +4,7 @@
  * \brief Multiple states generation for multiple SAXS profiles
  *
  * Author: Dina Schneidman
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multi_state/EnsembleGenerator.h>
@@ -14,8 +14,6 @@
 #include <IMP/saxs/utility.h>
 #include <IMP/saxs/ChiScore.h>
 #include <IMP/saxs/RatioVolatilityScore.h>
-
-#include <IMP/atom/pdb.h>
 
 #include <IMP/Vector.h>
 
@@ -33,59 +31,6 @@ using namespace IMP::saxs;
 using namespace IMP::multi_state;
 
 namespace {
-std::string trim_extension(const std::string file_name) {
-  if(file_name[file_name.size()-4] == '.')
-    return file_name.substr(0, file_name.size() - 4);
-  return file_name;
-}
-
-void read_pdb(const std::string file,
-              IMP::Vector<std::string>& pdb_file_names,
-              IMP::Vector<IMP::Particles>& particles_vec,
-              bool residue_level, bool heavy_atoms_only, int multi_model_pdb) {
-
-  IMP::Model *model = new IMP::Model();
-
-  IMP::atom::Hierarchies mhds;
-  IMP::atom::PDBSelector* selector;
-  if(residue_level) // read CA only
-    selector = new IMP::atom::CAlphaPDBSelector();
-  else
-    if(heavy_atoms_only) // read without hydrogens
-      selector =  new IMP::atom::NonWaterNonHydrogenPDBSelector();
-    else // read with hydrogens
-      selector = new IMP::atom::NonWaterPDBSelector();
-
-  if(multi_model_pdb == 2) {
-    mhds = read_multimodel_pdb(file, model, selector, true);
-  } else {
-    if(multi_model_pdb == 3) {
-      IMP::atom::Hierarchy mhd =
-        IMP::atom::read_pdb(file, model, selector, false, true);
-      mhds.push_back(mhd);
-    } else {
-      IMP::atom::Hierarchy mhd =
-        IMP::atom::read_pdb(file, model, selector, true, true);
-      mhds.push_back(mhd);
-    }
-  }
-
-  for(unsigned int h_index=0; h_index<mhds.size(); h_index++) {
-    IMP::ParticlesTemp ps = get_by_type(mhds[h_index], IMP::atom::ATOM_TYPE);
-    if(ps.size() > 0) { // pdb file
-      std::string pdb_id = file;
-      if(mhds.size() > 1) {
-        pdb_id = trim_extension(file) + "_m" +
-          std::string(boost::lexical_cast<std::string>(h_index+1)) + ".pdb";
-      }
-      pdb_file_names.push_back(pdb_id);
-      particles_vec.push_back(IMP::get_as<IMP::Particles>(ps));
-      std::cout << ps.size() << " atoms were read from PDB file " << file;
-      if(mhds.size() > 1) std::cout << " MODEL " << h_index+1;
-      std::cout << std::endl;
-    }
-  }
-}
 
 void read_profiles(const std::string profile_filenames_file,
                    Profiles& profiles,
@@ -223,24 +168,23 @@ int main(int argc, char* argv[]) {
 The weights are computed to minimize the chi between the first profile \
 and a weighted average of the rest.")
     ("version", "MultiFoXS (IMP applications)\n \
-Copyright 2007-2015 IMP Inventors.\nAll rights reserved. \n \
+Copyright 2007-2016 IMP Inventors.\nAll rights reserved. \n \
 License: GNU LGPL version 2.1 or later<http://gnu.org/licenses/lgpl.html>.\n\
 Written by Dina Schneidman.")
     ("number-of-states,s", po::value<int>(&number_of_states)->default_value(10),
-     "maximal ensemble size (default = 10)")
-    ("bestK,k", po::value<int>(&best_k)->default_value(1000), "bestK (default = 1000)")
-    ("threshold,t", po::value<double>(&chi_percentage_cluster_thr)->default_value(0.3),
-     "chi value percentage threshold for profile similarity (default = 0.3)")
-    ("chi_threshold,c", po::value<double>(&chi_thr)->default_value(0.0),
+     "maximal ensemble size")
+    ("bestK,k", po::value<int>(&best_k)->default_value(1000), "bestK")
+    ("threshold,t", po::value<double>(&chi_percentage_cluster_thr)->default_value(0.3, "0.3"),
+     "chi value percentage threshold for profile similarity")
+    ("chi_threshold,c", po::value<double>(&chi_thr)->default_value(0.0, "0.0"),
      "chi based threshold")
-    ("weight_threshold,w", po::value<double>(&weight_thr)->default_value(0.05),
+    ("weight_threshold,w", po::value<double>(&weight_thr)->default_value(0.05, "0.05"),
      "minimal weight threshold for a profile to contribute to the ensemble")
-    ("max_q,q", po::value<double>(&max_q)->default_value(0.5),
-     "maximal q value (default = 0.5)")
-    ("min_c1", po::value<double>(&min_c1)->default_value(0.99), "min c1 value")
-    ("max_c1", po::value<double>(&max_c1)->default_value(1.05), "max c1 value")
-    ("min_c2", po::value<double>(&min_c2)->default_value(-0.5), "min c2 value")
-    ("max_c2", po::value<double>(&max_c2)->default_value(2.0), "max c2 value")
+    ("max_q,q", po::value<double>(&max_q)->default_value(0.5, "0.5"), "maximal q value")
+    ("min_c1", po::value<double>(&min_c1)->default_value(0.99, "0.99"), "min c1 value")
+    ("max_c1", po::value<double>(&max_c1)->default_value(1.05, "1.05"), "max c1 value")
+    ("min_c2", po::value<double>(&min_c2)->default_value(-0.5, "-0.50"), "min c2 value")
+    ("max_c2", po::value<double>(&max_c2)->default_value(2.0, "2.00"), "max c2 value")
     ("partial_profiles,p", "use precomputed partial profiles (default = true)")
     ("volatility_ratio,v","calculate volatility ratio score (default = false)")
     ("background_q,b",

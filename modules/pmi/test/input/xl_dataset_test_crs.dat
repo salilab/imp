@@ -1,0 +1,5 @@
+prot1,prot2,site pairs,id,sample,score
+AAA,AAA,[K1-K10;Y5-W100],1,yeast,10
+BBB,AAA,[A5-L21;K100-K3;F1-F100],2,yeast,8
+CCC,AAA,[A7-L11],3,yeast,8
+CCC,BBB,[A7-;L11;K100],4,yeast,8

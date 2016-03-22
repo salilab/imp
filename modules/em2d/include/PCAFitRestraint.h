@@ -3,7 +3,7 @@
  * \brief fast scoring of fit between Particles in 3D and 2D class averages
  *
  * \authors Dina Schneidman
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,36 +18,39 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-//! A restraint for fast scoring of Particles vs. em2d class averages
+//! Fast scoring of Particles against electron microscopy class averages
 /**
    The restraint fits the particles into the 2D images by alignment of
-   principal components of each of the particles projections with
+   principal components of each of the particles' projections with
    principal components of the 2D class average. Therefore, the
    particle set should comprise all subunits that are in the
    image. The aligned projections are scored against 2D class averages
-   using cross correlation score. This is a fast alignment and scoring
+   using the cross correlation score. This is a fast alignment and score
    that works well for negative stain EM class averages.
  */
 class IMPEM2DEXPORT PCAFitRestraint : public IMP::Restraint {
 public:
   //! Constructor
   /**
-    \param[in] particles The particles participating in the score,
-    need to have XYZ, radius and mass
-    \param[in] image_files 2D class averages filenames in PGM text format
-    \param[in] pixel_size Pixel size in Angstrom
-    \param[in] resolution Estimated resolution of the images
-    \param[in] projection_number Number of projections to generate and fit to
-    images. The lower the number, the faster the evaluation, but also less
-    accurate.
-    \param[in] reuse_direction speed up evaluation by only periodically
+    \param[in] particles The particles participating in the score, which
+               need to have XYZ, radius and mass
+    \param[in] image_files 2D class average filenames in PGM text format
+    \param[in] pixel_size Pixel size in angstroms
+    \param[in] resolution Estimated resolution of the images in angstroms
+    \param[in] projection_number Number of projections of the model
+               to generate and fit to images. The lower the number, the
+               faster the evaluation, but the lower the accuracy.
+    \param[in] reuse_direction Speed up evaluation by only periodically
                recalculating projections
+    \param[in] n_components Number of the largest components to be
+               considered for the EM image
   */
   PCAFitRestraint(Particles particles,
                   const std::vector<std::string>& image_files,
                   double pixel_size, double resolution = 10.0,
                   unsigned int projection_number = 100,
-                  bool reuse_direction = false);
+                  bool reuse_direction = false,
+                  unsigned int n_components = 1);
 
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
 
@@ -87,7 +90,11 @@ public:
   // Projector class instance
   internal::Projector projector_;
 
+  // Speed up evaluation by only periodically recalculating projections
   bool reuse_direction_;
+
+  // Number of the largest components to be considered for the EM image
+  unsigned int n_components_;
 
   mutable unsigned long counter_;
 };

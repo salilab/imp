@@ -1,7 +1,7 @@
 /**
  * \file ForceFieldParameters \brief
  *
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -80,10 +80,10 @@ Float ForceFieldParameters::get_epsilon(const String& force_field_atom_type)
 void ForceFieldParameters::add_bonds(Hierarchy mhd) const {
   Hierarchies rs(get_by_type(mhd, RESIDUE_TYPE));
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    add_bonds(rs[i].get_as_residue());
-    Hierarchy rn = get_next_residue(rs[i].get_as_residue());
+    add_bonds(Residue(rs[i]));
+    Hierarchy rn = get_next_residue(Residue(rs[i]));
     if (rn) {
-      add_bonds(rs[i].get_as_residue(), rn.get_as_residue());
+      add_bonds(Residue(rs[i]), Residue(rn));
     }
   }
   warn_context_.dump_warnings();

@@ -3,7 +3,7 @@
  *  \brief handles low resolution weighted excluded
  *           volume calculation.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multifit/weighted_excluded_volume.h>
@@ -24,6 +24,7 @@ void add_surface_index(core::Hierarchy mh, Float apix, FloatKey shell_key,
   ParticlesTemp ps = core::get_leaves(mh);
   Pointer<em::SurfaceShellDensityMap> shell_map =
       new em::SurfaceShellDensityMap(ps, apix);
+  shell_map->set_was_used(true);
 
   for (unsigned int i = 0; i < ps.size(); i++) {
     IMP_INTERNAL_CHECK(!ps[i]->has_attribute(shell_key),

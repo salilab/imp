@@ -2,3 +2,6 @@ value_object_exceptions=[]
 function_name_exceptions=[]
 show_exceptions=[]
 spelling_exceptions=['qsub']
+doc_spelling_exceptions=['unhandled', 'headnodes', 'localhost', 'SGE', 'qrsh',
+                         'pe', 'XYZ', 'hostname', 'firewalled', 'headnode',
+                         'traceback', 'Subprocess']

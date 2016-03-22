@@ -2,7 +2,7 @@
  *  \file isd/vonMisesKappaJeffreysRestraint.cpp
  *  \brief Restrain a scale particle with log(scale)
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

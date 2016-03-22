@@ -2,7 +2,7 @@
  *  \file IMP/rmf/restraint_io.cpp
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -273,27 +273,28 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
             s.set_frame_score(0);
           }
           }*/
-        if (rd && rd != o &&
-            Subset(get_input_particles(rd->get_inputs())) != os) {
+        if (rd && rd != o) {
           rd->set_was_used(true);
-          RestraintsTemp rs =
-              get_restraints(RestraintsTemp(1, rd));
-          if (rs.size() > max_terms_) {
-            no_terms_.insert(o);
-            // delete old children
-          } else {
-            IMP_FOREACH(Restraint * r, rs) {
-              Subset s(get_input_particles(r->get_inputs()));
-              double score = r->get_last_score();
-              r->set_was_used(true);
-              if (score != 0) {
-                IMP_LOG_VERBOSE("Saving subscore for for " << r->get_name()
-                                                           << " of " << score
-                                                           << std::endl);
-                RMF::NodeHandle nnh = get_node(s, d, rf_, nh);
-                RMF::decorator::Score csd = sf_.get(nnh);
-                csd.set_frame_score(score);
-                // csd.set_representation(get_node_ids(nh.get_file(), s));
+          if (Subset(get_input_particles(rd->get_inputs())) != os) {
+            RestraintsTemp rs =
+                get_restraints(RestraintsTemp(1, rd));
+            if (rs.size() > max_terms_) {
+              no_terms_.insert(o);
+              // delete old children
+            } else {
+              IMP_FOREACH(Restraint * r, rs) {
+                Subset s(get_input_particles(r->get_inputs()));
+                double score = r->get_last_score();
+                r->set_was_used(true);
+                if (score != 0) {
+                  IMP_LOG_VERBOSE("Saving subscore for " << r->get_name()
+                                                         << " of " << score
+                                                         << std::endl);
+                  RMF::NodeHandle nnh = get_node(s, d, rf_, nh);
+                  RMF::decorator::Score csd = sf_.get(nnh);
+                  csd.set_frame_score(score);
+                  // csd.set_representation(get_node_ids(nh.get_file(), s));
+                }
               }
             }
           }

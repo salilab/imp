@@ -13,14 +13,14 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
                                   self.get_input_file_name('image_1.pgm'),
                                   self.get_input_file_name('image_2.pgm'),
                                   self.get_input_file_name('image_3.pgm'),
-                                  '-s', '2.2', '-n', '200'])  # pixel size, projections number
+                                  '-s', '2.2', '-n', '200', '-r', '20'])  # pixel size, projections number, resolution
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
 
         m = re.search('Total\s+score\s+=\s+([\d\.]+)\r?', err)
         self.assertIsNotNone(m, msg="Score output not found in " + str(err))
-        self.assertAlmostEqual(float(m.group(1)), 0.168, delta=0.01)
+        self.assertAlmostEqual(float(m.group(1)), 0.168, delta=0.02)
 
         os.unlink('images.pgm')
         os.unlink('best_projections.pgm')
@@ -32,14 +32,14 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
                                   self.get_input_file_name('image_1.pgm'),
                                   self.get_input_file_name('image_2.pgm'),
                                   self.get_input_file_name('image_3.pgm'),
-                                  '-s', '2.2', '-n', '200', '-c'])  # pixel size, projections number
+                                  '-s', '2.2', '-n', '200', '-c', '-r', '20'])  # pixel size, projections number, resolution
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
 
         m = re.search('Total\s+score\s+=\s+([\d\.]+)\r?', err)
         self.assertIsNotNone(m, msg="Score output not found in " + str(err))
-        self.assertAlmostEqual(float(m.group(1)), 0.218, delta=0.01)
+        self.assertAlmostEqual(float(m.group(1)), 0.218, delta=0.02)
 
         os.unlink('images.pgm')
         os.unlink('best_projections.pgm')
@@ -53,7 +53,7 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
                                   self.get_input_file_name('image_1.pgm'),
                                   self.get_input_file_name('image_2.pgm'),
                                   self.get_input_file_name('image_3.pgm'),
-                                  '-s', '2.2', '-n', '200'])  # pixel size, projections number
+                                  '-s', '2.2', '-n', '200', '-r', '20'])  # pixel size, projections number, resolution
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)

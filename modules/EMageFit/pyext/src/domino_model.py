@@ -93,7 +93,7 @@ class DominoModel:
                    rb_states_table with the new values obtained from the alignments.
                    It does it for all states of a rigid body.
             @note: If this function is applied, the parameters "anchor" and "fixed"
-               are ignored, as they are superseded by the use of the aligments
+               are ignored, as they are superseded by the use of the alignments
                calculated here.
         """
         log.debug("Align the configurations read from the database before "
@@ -198,7 +198,7 @@ class DominoModel:
             @param rname - The name given to the restraint
             @param max_sep_distance - maximum distance between molecules
                                 tolerated by the restraint
-            @param max_penetration - Maximum penetration allowd (angstrom)
+            @param max_penetration - Maximum penetration allowed (angstrom)
             @param weight
             @param max_score
         """
@@ -239,7 +239,7 @@ class DominoModel:
               (state numbers) of the solutions. It is faster but requires
               generating the solutions afterwards
               The mode "assignments_heap_container" selects the best solutions
-              after ecah merging in DOMINO, discarding the rest.
+              after each merging in DOMINO, discarding the rest.
               In practice I used the mode "assignments_heap_container"
             @param params
         """
@@ -485,9 +485,9 @@ class DominoModel:
         """
             Sets an assembly from a single PDB file. The function assumes that
             the components of the assembly are the chains of the PDB file.
-            @param fn_pdb PDB with the file for the asembly
+            @param fn_pdb PDB with the file for the assembly
             @param names Names for each of the components (chains)
-                of the asembly
+                of the assembly
         """
         self.assembly = representation.create_assembly_from_pdb(self.model,
                                                                 fn_pdb,
@@ -662,7 +662,7 @@ class DominoModel:
             @param weight Weight for the restraint
             @param max_score Maximum score for the restraint
             @param n_pairs Number of pairs of particles used in the
-                        KClosePairScore of the connecitivity restraint
+                        KClosePairScore of the connectivity restraint
             @param stddev Standard deviation used to approximate the
                                 HarmonicUpperBound function to a Gaussian
         """
@@ -945,7 +945,7 @@ class DominoModel:
         """
             Write a separate PDB for each of the elements
             @param RFs Reference frames for the elements of the complex
-            @param fn_base base string to buid the names of the PDBs files
+            @param fn_base base string to build the names of the PDBs files
         """
         log.debug("Writting PDBs with basename %s", fn_base)
         representation.set_reference_frames(self.components_rbs, RFs)
@@ -1042,7 +1042,7 @@ def anchor_assembly(components_rbs, anchored):
 def measure_model(assembly, native_assembly, rbs, native_rbs):
     """
         Get the drms, cdrms and crmsd for a model
-        @param assembly Hierachy for an assembly
+        @param assembly Hierarchy for an assembly
         @param native_assembly Hierarchy of the native structure
         @param rbs Rigid bodies for the components of the assembly
         @param native_rbs Rigid bodies for the components of the native

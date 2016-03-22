@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/Statistical.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_STATISTICAL_H

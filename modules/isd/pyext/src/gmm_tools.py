@@ -19,48 +19,66 @@ except:
     nosklearn=True
 from math import exp,sqrt,copysign
 
-def decorate_gmm_from_text(in_fn,ps,mdl,transform=None,radius_scale=1.0,mass_scale=1.0):
-    ''' read the output from write_gmm_to_text, decorate as Gaussian and Mass'''
-    inf=open(in_fn,'r')
+def decorate_gmm_from_text(in_fn,
+                           ps,
+                           mdl,
+                           transform=None,
+                           radius_scale=1.0,
+                           mass_scale=1.0):
+    """ read the output from write_gmm_to_text, decorate as Gaussian and Mass"""
     ncomp=0
-    for l in inf:
-        if l[0]!='#':
-            fields=l.split('|')
-            weight=float(fields[2])
-            center=list(map(float,fields[3].split()))
-            covar=np.array(list(map(float,fields[4].split()))).reshape((3,3))
-            if ncomp>=len(ps):
-                ps.append(IMP.Particle(mdl))
-            shape=IMP.algebra.get_gaussian_from_covariance(covar.tolist(),
-                                                           IMP.algebra.Vector3D(center))
-            g=IMP.core.Gaussian.setup_particle(ps[ncomp],shape)
-            m=IMP.atom.Mass.setup_particle(ps[ncomp],weight*mass_scale)
-            rmax=sqrt(max(g.get_variances()))*radius_scale
-            IMP.core.XYZR.setup_particle(ps[ncomp],rmax)
-            if not transform is None:
-                IMP.core.transform(IMP.core.RigidBody(ps[ncomp]),transform)
-            ncomp+=1
-def write_gmm_to_text(ps,out_fn):
-    '''write a list of gaussians to text. must be decorated as Gaussian and Mass'''
-    print('will write GMM text to',out_fn)
-    outf=open(out_fn,'w')
-    outf.write('#|num|weight|mean|covariance matrix|\n')
-    for ng,g in enumerate(ps):
-        shape=IMP.core.Gaussian(g).get_gaussian()
-        weight=IMP.atom.Mass(g).get_mass()
-        covar=[c for row in IMP.algebra.get_covariance(shape) for c in row]
-        mean=list(shape.get_center())
-        fm=[ng,weight]+mean+covar
-        try:
-            #python 2.7 format
-            outf.write('|{}|{}|{} {} {}|{} {} {} {} {} {} {} {} {}|\n'.format(*fm))
-        except ValueError:
-            #python 2.6 and below
-            outf.write('|{0}|{1}|{2} {3} {4}|{5} {6} {7} {8} {9} {10} {11} {12} {13}|\n'.format(*fm))
-    outf.close()
+    with open(in_fn,'r') as inf:
+        for l in inf:
+            if l[0]!='#':
+                if ncomp>len(ps)-1:
+                    ps.append(IMP.Particle(mdl))
+                p = ps[ncomp]
+                fields=l.split('|')
+                weight=float(fields[2])
+                center=list(map(float,fields[3].split()))
+                covar=np.array(list(map(float,
+                                        fields[4].split()))).reshape((3,3))
+                #print('on particle',ncomp)
+                shape=IMP.algebra.get_gaussian_from_covariance(covar.tolist(),
+                                                 IMP.algebra.Vector3D(center))
+                if not IMP.core.Gaussian.get_is_setup(p):
+                    g = IMP.core.Gaussian.setup_particle(ps[ncomp],shape)
+                else:
+                    g = IMP.core.Gaussian(ps[ncomp])
+                    g.set_gaussian(shape)
+                if not IMP.atom.Mass.get_is_setup(p):
+                    IMP.atom.Mass.setup_particle(p,weight*mass_scale)
+                else:
+                    IMP.atom.Mass(p).set_mass(weight*mass_scale)
+                rmax = sqrt(max(g.get_variances()))*radius_scale
+                if not IMP.core.XYZR.get_is_setup(ps[ncomp]):
+                    IMP.core.XYZR.setup_particle(ps[ncomp],rmax)
+                else:
+                    IMP.core.XYZR(ps[ncomp]).set_radius(rmax)
+                if not transform is None:
+                    IMP.core.transform(IMP.core.RigidBody(ps[ncomp]),transform)
+                ncomp+=1
 
-def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None):
-    '''write density map from GMM. input can be either particles or gaussians'''
+def write_gmm_to_text(ps,out_fn):
+    """write a list of gaussians to text. must be decorated as Gaussian and Mass"""
+    print('will write GMM text to',out_fn)
+    with open(out_fn,'w') as outf:
+        outf.write('#|num|weight|mean|covariance matrix|\n')
+        for ng,g in enumerate(ps):
+            shape=IMP.core.Gaussian(g).get_gaussian()
+            weight=IMP.atom.Mass(g).get_mass()
+            covar=[c for row in IMP.algebra.get_covariance(shape) for c in row]
+            mean=list(shape.get_center())
+            fm=[ng,weight]+mean+covar
+            try:
+                #python 2.7 format
+                outf.write('|{}|{}|{} {} {}|{} {} {} {} {} {} {} {} {}|\n'.format(*fm))
+            except ValueError:
+                #python 2.6 and below
+                outf.write('|{0}|{1}|{2} {3} {4}|{5} {6} {7} {8} {9} {10} {11} {12} {13}|\n'.format(*fm))
+
+def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None,origin=None):
+    """write density map from GMM. input can be either particles or gaussians"""
     if type(to_draw[0]) in (IMP.Particle,IMP.atom.Hierarchy,IMP.core.Hierarchy):
         ps=to_draw
     elif type(to_draw[0])==IMP.core.Gaussian:
@@ -87,11 +105,13 @@ def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None):
     print('creating map')
     d1=IMP.em.create_density_map(grid)
     print('writing')
+    if origin is not None:
+        d1.set_origin(origin)
     IMP.em.write_map(d1,out_fn,IMP.em.MRCReaderWriter())
     del d1
 
 def write_sklearn_gmm_to_map(gmm,out_fn,apix=0,bbox=None,dmap_model=None):
-    '''write density map directly from sklearn GMM (kinda slow) '''
+    """write density map directly from sklearn GMM (kinda slow) """
     ### create density
     if not dmap_model is None:
         d1=IMP.em.create_density_map(dmap_model)
@@ -114,27 +134,27 @@ def write_sklearn_gmm_to_map(gmm,out_fn,apix=0,bbox=None,dmap_model=None):
 
 def draw_points(pts,out_fn,trans=IMP.algebra.get_identity_transformation_3d(),
                                 use_colors=False):
-    ''' given some points (and optional transform), write them to chimera 'bild' format
-    colors flag only applies to ellipses, otherwise it'll be weird'''
-    outf=open(out_fn,'w')
-    #print 'will draw',len(pts),'points'
-    # write first point in red
-    pt=trans.get_transformed(IMP.algebra.Vector3D(pts[0]))
-    start=0
-    if use_colors:
-        outf.write('.color 1 0 0\n.dotat %.2f %.2f %.2f\n' %(pt[0],pt[1],pt[2]))
-        start=1
+    """ given some points (and optional transform), write them to chimera 'bild' format
+    colors flag only applies to ellipses, otherwise it'll be weird"""
+    with open(out_fn,'w') as outf:
+        #print 'will draw',len(pts),'points'
+        # write first point in red
+        pt=trans.get_transformed(IMP.algebra.Vector3D(pts[0]))
+        start=0
+        if use_colors:
+            outf.write('.color 1 0 0\n.dotat %.2f %.2f %.2f\n'
+                       %(pt[0],pt[1],pt[2]))
+            start=1
 
-    # write remaining points in green
-    if use_colors:
-        outf.write('.color 0 1 0\n')
-        colors=['0 1 0','0 0 1','0 1 1']
-    for nt,t in enumerate(pts[start:]):
-        if use_colors and nt%2==0:
-            outf.write('.color %s\n' % colors[nt/2])
-        pt=trans.get_transformed(IMP.algebra.Vector3D(t))
-        outf.write('.dotat %.2f %.2f %.2f\n' %(pt[0],pt[1],pt[2]))
-    outf.close()
+        # write remaining points in green
+        if use_colors:
+            outf.write('.color 0 1 0\n')
+            colors=['0 1 0','0 0 1','0 1 1']
+        for nt,t in enumerate(pts[start:]):
+            if use_colors and nt%2==0:
+                outf.write('.color %s\n' % colors[nt/2])
+            pt=trans.get_transformed(IMP.algebra.Vector3D(t))
+            outf.write('.dotat %.2f %.2f %.2f\n' %(pt[0],pt[1],pt[2]))
 
 
 
@@ -207,11 +227,15 @@ def fit_gmm_to_points(points,
                       ps=[],
                       num_iter=100,
                       covariance_type='full',
+                      min_covar=0.001,
                       init_centers=[],
                       force_radii=-1.0,
                       force_weight=-1.0,
                       mass_multiplier=1.0):
-    '''fit a GMM to some points. Will return core::Gaussians.
+    """fit a GMM to some points. Will return the score and the Akaike score.
+    Akaike information criterion for the current model fit. It is a measure
+    of the relative quality of the GMM that takes into account the
+    parsimony and the goodness of the fit.
     if no particles are provided, they will be created
 
     points:            list of coordinates (python)
@@ -219,13 +243,15 @@ def fit_gmm_to_points(points,
     mdl:               IMP Model
     ps:                list of particles to be decorated. if empty, will add
     num_iter:          number of EM iterations
-    covariance_type:   covar type for the gaussians. options: 'full', 'diagonal', 'sphereical'
+    covariance_type:   covar type for the gaussians. options: 'full', 'diagonal', 'spherical'
+    min_covar:         assign a minimum value to covariance term. That is used to have more spherical
+                       shaped gaussians
     init_centers:      initial coordinates of the GMM
     force_radii:       fix the radii (spheres only)
     force_weight:      fix the weights
     mass_multiplier:   multiply the weights of all the gaussians by this value
     dirichlet:         use the DGMM fitting (can reduce number of components, takes longer)
-    '''
+    """
 
 
     import sklearn.mixture
@@ -249,6 +275,7 @@ def fit_gmm_to_points(points,
     gmm=sklearn.mixture.GMM(n_components=n_components,
                           n_iter=num_iter,
                           covariance_type=covariance_type,
+                          min_covar=min_covar,
                           params=params,
                           init_params=init_params)
 
@@ -259,9 +286,10 @@ def fit_gmm_to_points(points,
     if init_centers!=[]:
         gmm.means_=init_centers
     print('fitting')
-    gmm.fit(points)
-
-    print('>>> GMM score',gmm.score(points))
+    model=gmm.fit(points)
+    score=gmm.score(points)
+    akaikescore=model.aic(points)
+    #print('>>> GMM score',gmm.score(points))
 
     ### convert format to core::Gaussian
     for ng in range(n_components):
@@ -279,6 +307,8 @@ def fit_gmm_to_points(points,
         IMP.atom.Mass.setup_particle(ps[ng],weight)
         IMP.core.XYZR.setup_particle(ps[ng],sqrt(max(g.get_variances())))
 
+    return (score,akaikescore)
+
 def fit_dirichlet_gmm_to_points(points,
                       n_components,
                       mdl,
@@ -286,7 +316,7 @@ def fit_dirichlet_gmm_to_points(points,
                       num_iter=100,
                       covariance_type='full',
                       mass_multiplier=1.0):
-    '''fit a GMM to some points. Will return core::Gaussians.
+    """fit a GMM to some points. Will return core::Gaussians.
     if no particles are provided, they will be created
 
     points:            list of coordinates (python)
@@ -294,12 +324,12 @@ def fit_dirichlet_gmm_to_points(points,
     mdl:               IMP Model
     ps:                list of particles to be decorated. if empty, will add
     num_iter:          number of EM iterations
-    covariance_type:   covar type for the gaussians. options: 'full', 'diagonal', 'sphereical'
+    covariance_type:   covar type for the gaussians. options: 'full', 'diagonal', 'spherical'
     init_centers:      initial coordinates of the GMM
     force_radii:       fix the radii (spheres only)
     force_weight:      fix the weights
     mass_multiplier:   multiply the weights of all the gaussians by this value
-'''
+    """
 
 
     import sklearn.mixture
@@ -312,7 +342,7 @@ def fit_dirichlet_gmm_to_points(points,
 
     gmm.fit(points)
 
-    print('>>> GMM score',gmm.score(points))
+    #print('>>> GMM score',gmm.score(points))
 
     #print gmm.covars_
     #print gmm.weights_

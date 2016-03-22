@@ -2,7 +2,7 @@
  *  \file IMP/core/MonteCarloMover.h
  *  \brief The base class for movers for MC optimization.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -30,9 +30,10 @@ IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
 
 //! A base class for classes which perturb particles.
 /** Mover objects propose a move, which can then be either accepted or rejected
-    based on some criteria. For example, in a Monte-Carlo evaluation scheme.
+    based on some criteria. Most commonly this is a Monte Carlo
+    evaluation scheme.
 
-    All changed attributes should be optimizable, it is undefined behavior to
+    All changed attributes should be optimizable; it is undefined behavior to
     try to optimize an attribute which is not.
 
     The output particles (ModelObject::do_get_outputs()) are assumed
@@ -72,7 +73,7 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
     do_reject();
   }
 
-  //! Roll back any changes made to the Particles
+  //! Accept/commit any changes made to the Particles
   void accept() {
     IMP_OBJECT_LOG;
     has_move_ = false;
@@ -97,7 +98,7 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
   virtual MonteCarloMoverResult do_propose() = 0;
   //! Implement reset_proposed_move()
   virtual void do_reject() = 0;
-  //! Implement accept_proposed_move(), default implementation is empty
+  //! Implement accept_proposed_move(); default implementation is empty
   virtual void do_accept() {}
 
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {

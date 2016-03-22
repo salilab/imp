@@ -2,7 +2,7 @@
  *  \file IMP/decorator_macros.h
  *  \brief Various general useful macros for IMP.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -372,7 +372,7 @@
 
 //! Define the types for storing sets of decorators
 /** The macro defines the types PluralName and PluralNameTemp.
-    Parent is unused and remains for backward compatability
+    Parent is unused and remains for backward compatibility
  */
 #define IMP_DECORATORS(Name, PluralName, Parent) \
   IMP_DECORATORS_DECL(Name, PluralName);         \
@@ -478,14 +478,14 @@
    public:                                                            \
     IMP_DECORATOR_METHODS(Name, Parent);                              \
     /** Sets up Name over members, and constrains Name to be
-        computed before model evaluation and to propogate derivatives
-        folllowing model evaulation.
+        computed before model evaluation and to propagate derivatives
+        following model evaluation.
         SetupDoc
     */                                                                \
     IMP_DECORATOR_SETUP_1(Name, ParticleIndexesAdaptor, members);     \
     /** Sets up Name over particles passed by applying the refiner
         over the particle pi, and constrains Name to be computed before
-        model evaluation and to propogate derivatives following model
+        model evaluation and to propagate derivatives following model
         evaluation.
         SetupDoc
     */                                                                  \

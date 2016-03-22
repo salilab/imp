@@ -44,12 +44,9 @@ else:
     out_tools = os.path.join(hdir, "python_tools")
     if os.path.exists(out_tools):
         shutil.rmtree(out_tools)
-    shutil.copytree(
-        os.path.join(
-            dev_tools_path,
-            "python_tools"),
-        out_tools)
-    config_contents = open(os.path.join(git_dir, "config"), "r").read()
+    shutil.copytree(os.path.join(dev_tools_path, "python_tools"), out_tools)
+    with open(os.path.join(git_dir, "config")) as fh:
+        config_contents = fh.read()
 
     # make sure version is updated
     os.system(os.path.join(".", git_dir, "hooks", "post-commit"))
@@ -74,13 +71,12 @@ if config_contents.find("color \"branch\"") == -1:
     os.system(git_config + " color.status.added yellow")
     os.system(git_config + " color.status.changed green")
     os.system(git_config + " color.status.untracked cyan")
-if config_contents.find("whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol") == -1:
+whitespace = "fix,-indent-with-non-tab,trailing-space,cr-at-eol"
+if "whitespace = %s" % whitespace not in config_contents:
     print("Telling git to clean up whitespace")
-    os.system(
-        git_config +
-        " core.whitespace \"fix,-indent-with-non-tab,trailing-space,cr-at-eol\"")
+    os.system(git_config + " core.whitespace \"%s\"" % whitespace)
 
-if config_contents.find("autosetuprebase = always") == -1:
+if "autosetuprebase = always" not in config_contents:
     print("Telling git to rebase by default on pull")
     os.system(git_config + " branch.autosetuprebase always")
 # hard to check for

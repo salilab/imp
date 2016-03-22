@@ -3,11 +3,12 @@
  * \brief projection generation class
  *
  * \authors Dina Schneidman
- * Copyright 2007-2013 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/em2d/internal/Projector.h>
+#include <IMP/utility_macros.h>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
@@ -22,7 +23,6 @@ Projector::Projector(const Particles& particles,
   projection_sphere_(projection_number) {
 
   for (unsigned int i = 0; i < particles_.size(); i++) {
-    radii_.push_back(core::XYZR(particles[i]).get_radius());
     mass_.push_back(atom::Mass(particles[i]).get_mass());
   }
 }
@@ -38,11 +38,8 @@ int Projector::estimate_image_size(const IMP::algebra::Vector3Ds& points) const 
 
   // estimate max image size
   double max_dist =  2*sqrt(max_rad2); //compute_max_distance(points);
-  double max_radius = *std::max_element(radii_.begin(), radii_.end());
   static IMP::em::KernelParameters kp(resolution_);
-  const IMP::em::RadiusDependentKernelParameters& params =
-    kp.get_params(max_radius);
-  double wrap_length = 2 * params.get_kdist() + 1.0;
+  double wrap_length = 2 * kp.get_rkdist() + 1.0;
   int axis_size =
       (int)((max_dist + 2 * wrap_length + 2 * pixel_size_) / pixel_size_ + 2);
   return axis_size;
@@ -73,9 +70,9 @@ void Projector::compute_projections(boost::ptr_vector<Projection>& projections,
       rotated_points[point_index] = rotations[i] * points[point_index];
     }
     // project
-    std::auto_ptr<Projection> p(new Projection(rotated_points, radii_, mass_,
-                                               pixel_size_, resolution_,
-                                               axis_size));
+    IMP_UNIQUE_PTR<Projection> p(new Projection(rotated_points, mass_,
+                                                pixel_size_, resolution_,
+                                                axis_size));
     p->set_rotation(rotations[i]);
     p->set_axis(axes[i]);
     p->set_id(i);
@@ -110,9 +107,9 @@ void Projector::compute_projections(const algebra::Vector3Ds& axis,
       rotated_points[point_index] = rotations[i] * points[point_index];
     }
     // project
-    std::auto_ptr<Projection> p(new Projection(rotated_points, radii_, mass_,
-                                               pixel_size_, resolution_,
-                                               axis_size));
+    IMP_UNIQUE_PTR<Projection> p(new Projection(rotated_points, mass_,
+                                                pixel_size_, resolution_,
+                                                axis_size));
     p->set_rotation(rotations[i]);
     p->set_axis(axes[i]);
     p->set_id(i);

@@ -2,7 +2,7 @@
  *  \file container_helpers.h
  *  \brief Internal helpers for container classes.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,7 +11,6 @@
 
 #include "../base_types.h"
 #include "../Particle.h"
-#include "../ParticleTuple.h"
 #include "../particle_index.h"
 #include "../Model.h"
 #include "../ModelObject.h"

@@ -2,7 +2,7 @@
  *  \file hierarchy_helpers.h
  *  \brief Helpers for the Hierarchy.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file internal/swig.h
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_SWIG_H
@@ -10,7 +10,6 @@
 
 #include <IMP/kernel_config.h>
 #include "../Particle.h"
-#include "../ParticleTuple.h"
 #include "../Restraint.h"
 #include "../SingletonScore.h"
 #include "../PairScore.h"

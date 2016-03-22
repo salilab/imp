@@ -2,7 +2,7 @@
  *  \file IMP/core/DistanceRestraint.h
  *  \brief Distance restraint between two particles.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,14 +48,6 @@ class IMPCOREEXPORT DistanceRestraint :
                     ParticleIndexAdaptor a,
                     ParticleIndexAdaptor b,
                     std::string name = "DistanceRestraint %1%");
-
-#ifndef IMP_DOXYGEN
-  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
-  DistanceRestraint(UnaryFunction *score_func,
-                    Particle *a,
-                    Particle *b,
-                    std::string name = "DistanceRestraint %1%");
-#endif
 
 #ifdef SWIG
  protected:

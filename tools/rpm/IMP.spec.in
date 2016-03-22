@@ -23,7 +23,9 @@ Group:         Applications/Engineering
 Packager:      Ben Webb <ben@salilab.org>
 URL:           http://www.integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
-BuildRoot:     %{_tmppath}/%{name}-%{version}-root
+%if 0%{?rhel} == 5
+BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root
+%endif
 %if 0%{?with_python3}
 BuildRequires: python3-devel, symlinks
 %endif
@@ -51,14 +53,14 @@ BuildRequires: gsl-devel, fftw-devel
 BuildRequires: zlib-devel, perl
 BuildRequires: ann-devel
 # Needed to build the cnmultifit module; obtain
-# from http://salilab.org/imp/libTAU.html
+# from https://salilab.org/imp/libTAU.html
 # (Or, if you don't need cnmultifit, you can comment out this line)
 BuildRequires: libTAU-devel
 
-# The cmake included with RHEL 6 is too old; use cmake28 from EPEL instead.
-# RHEL 5 doesn't have cmake28; you will need to build this package yourself
-# (or use ours, available at http://integrativemodeling.org/build-extras/RHEL5/)
-%if 0%{?rhel} == 5 || 0%{?rhel} == 6
+# The cmake included with RHEL 5 is too old; use a newer cmake28 instead.
+# You will need to build this package yourself (or use ours, available at
+# http://integrativemodeling.org/build-extras/RHEL5/)
+%if 0%{?rhel} == 5
 BuildRequires: cmake28
 %define cmake cmake28
 %define ctest ctest28
@@ -79,19 +81,26 @@ BuildRequires: boost-devel >= 1.41
 %endif
 
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
-# doesn't have a new enough OpenCV in EPEL, so disable the em2d module.
+# doesn't have a new enough OpenCV in the base distribution or in EPEL until
+# RHEL7, so disable the em2d module.
 # On Fedora, all of these packages are available; add them as dependencies
 %if 0%{?fedora}
 BuildRequires: CGAL-devel, opencv-devel
 %endif
+%if 0%{?rhel} >= 7
+BuildRequires: opencv-devel
+%endif
 
 # If building in the Sali lab, pass '-D "RHEL_SALI_LAB 1"' to your rpmbuild
-# invocation. This will pull in our custom OpenCV and CGAL packages
+# invocation. This will pull in our custom OpenCV (on RHEL5/6) and CGAL packages
 # and bundle the libraries with IMP.
 # If building outside of the lab and you still want these packages, get them
 # from http://integrativemodeling.org/build-extras/
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
-BuildRequires: opencv-nogui-devel, CGAL-nogui-devel
+%if 0%{?rhel} < 7
+BuildRequires: opencv-nogui-devel
+%endif
+BuildRequires: CGAL-nogui-devel
 %if 0%{?rhel} == 5
 %ifarch x86_64
 # Also bundle mpfr on 64-bit RHEL5
@@ -106,7 +115,11 @@ BuildRequires: opencv-nogui-devel, CGAL-nogui-devel
 %else
 %define extralib %{nil}
 %endif
+%if 0%{?rhel} < 7
 %define bundled 'libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so%{extralib}'
+%else
+%define bundled 'libTAU\\.so\\|libCGAL\\.so%{extralib}'
+%endif
 %else
 %define bundled 'libTAU\\.so'
 %endif
@@ -167,6 +180,9 @@ Requires:      boost-devel, python-devel, hdf5-devel
 %if 0%{?fedora}
 Requires:      CGAL-devel, opencv-devel
 %endif
+%if 0%{?rhel} >= 7
+Requires:      opencv-devel
+%endif
 
 %description devel
 This package contains the include files for building applications that link
@@ -206,13 +222,25 @@ Requires:      mpich
 Development files for IMP.mpi module with mpich.
 %endif
 
-%define reqprog %{_builddir}/find-requires-%{name}
-%define proprog %{_builddir}/find-provides-%{name}
-
 %prep
 %setup -n imp-%{version}
 
 # Exclude bundled libraries from provides and requires
+%if 0%{?fedora} > 22
+# In newer Fedora, the old script-based dependency generation doesn't play
+# nicely with the new mechanism for adding MPI dependencies
+# (rpm-mpi-hooks package)
+%if 0%{?with_mpich}
+%global __provides_exclude ^libTAU\\.so.*|libimp_mpi\\.so.*$
+%global __requires_exclude ^libTAU\\.so.*|libimp_mpi\\.so.*$
+%else
+%global __provides_exclude ^libTAU\\.so.*$
+%global __requires_exclude ^libTAU\\.so.*$
+%endif
+%else
+%define reqprog %{_builddir}/find-requires-%{name}
+%define proprog %{_builddir}/find-provides-%{name}
+
 cat <<EOF > %{reqprog}
 #!/bin/bash
 %{__find_requires} $@ | grep -v %{bundled}
@@ -228,6 +256,7 @@ chmod a+x %{proprog}
 %define _use_internal_dependency_generator 0
 %define __find_requires %{reqprog}
 %define __find_provides %{proprog}
+%endif
 
 %build
 # For now, bundle RMF with IMP (long term, may be better to put in a separate
@@ -246,6 +275,7 @@ module load %{mpiprefix}mpich-%{_arch}
 %{cmake} ../imp -DCMAKE_BUILD_TYPE=Release \
                 -DCMAKE_INSTALL_PREFIX=%{_prefix} \
                 -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
+                -DIMP_TIMEOUT_FACTOR=4 \
                 -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
 
 # Normally make will stop at the first error. Since an RPM cannot be built
@@ -302,6 +332,15 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/_IMP_mpi.so
  && symlinks -rc .)
 %endif
 
+# Put MPI-dependent libraries in mpich directories
+%if 0%{?with_mpich}
+(cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/ && mkdir mpich \
+ &&  mv _IMP_mpi.so mpich/)
+(cd ${RPM_BUILD_ROOT}%{_libdir} && mkdir mpich && mv libimp_mpi.so.* mpich)
+(cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_mpi.so \
+ && ln -sf mpich/libimp_mpi.so.* libimp_mpi.so)
+%endif
+
 # Note that we currently don't include the documentation in the RPM, since
 #      a) it takes a long time to run doxygen
 #      b) doxygen isn't installed on all of our build systems
@@ -325,9 +364,11 @@ cp /usr/%{_lib}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 # Bundle OpenCV and CGAL libraries
+%if 0%{?rhel} < 7
 for cvlib in cv cxcore highgui; do
   cp /usr/%{_lib}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 done
+%endif
 cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 # Also bundle mpfr on 64-bit RHEL5
 %if 0%{?rhel} == 5
@@ -349,8 +390,10 @@ rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/example \
 # Make sure all Python applications use the same Python we built with
 perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 
+%if 0%{?rhel} == 5
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
+%endif
 
 %files
 %defattr(-,root,root)
@@ -370,8 +413,6 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %exclude %{_prefix}/share/IMP/build_info/IMP.mpi
 %exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %exclude %{_libdir}/python2*/site-packages/IMP/mpi
-%exclude %{_libdir}/python2*/site-packages/_IMP_mpi.so
-%exclude %{_libdir}/libimp_mpi.so.*
 %endif
 
 %if 0%{?with_python3}
@@ -392,8 +433,8 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %{_prefix}/share/IMP/build_info/IMP.mpi
 %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %{_libdir}/python2*/site-packages/IMP/mpi
-%{_libdir}/python2*/site-packages/_IMP_mpi.so
-%{_libdir}/libimp_mpi.so.*
+%{_libdir}/python2*/site-packages/mpich/_IMP_mpi.so
+%{_libdir}/mpich/libimp_mpi.so.*
 
 %files mpich-devel
 %defattr(-,root,root)
@@ -413,6 +454,9 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %endif
 
 %changelog
+* Mon Mar 28 2016 Ben Webb <ben@salilab.org>   2.6.0-1
+- 2.6.0 release.
+
 * Tue Jun 30 2015 Ben Webb <ben@salilab.org>   2.5.0-1
 - 2.5.0 release.
 

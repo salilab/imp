@@ -2,7 +2,7 @@
  *  \file IMP/container/MinimumClassnameScore.h
  *  \brief Define ClassnameScore.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_MINIMUM_CLASSNAME_SCORE_H

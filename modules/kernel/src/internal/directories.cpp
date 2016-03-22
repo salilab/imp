@@ -3,7 +3,7 @@
  *  \brief Get directories used by IMP.
  *  \note @AUTOGEN@
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -72,7 +72,7 @@ bool get_install_location(std::string &dir) {
   HKEY key;
   ret = false;
 
-  if (RegOpenKeyEx(HKEY_CURRENT_USER, regkey.c_str(), 0, KEY_READ, &key) ==
+  if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, regkey.c_str(), 0, KEY_READ, &key) ==
       ERROR_SUCCESS) {
     DWORD keylen, keytype;
     if (RegQueryValueEx(key, "", nullptr, &keytype, nullptr, &keylen) ==

@@ -2,7 +2,7 @@
  *  \file IMP/kinematics/RevoluteJointMover.h
  *  \brief A modifier which perturbs a point with a normal distribution.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

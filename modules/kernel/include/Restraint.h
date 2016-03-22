@@ -2,7 +2,7 @@
  *  \file IMP/Restraint.h
  *  \brief Abstract base class for all restraints.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -234,7 +234,6 @@ class IMPKERNELEXPORT RestraintsAdaptor :
     public InputAdaptor
 #endif
     {
-  static Restraint *get(Model *sf);
   static Restraint *get(Restraint *r) { return r; }
 
  public:
@@ -244,12 +243,6 @@ class IMPKERNELEXPORT RestraintsAdaptor :
       : Restraints(sf.begin(), sf.end()) {}
   RestraintsAdaptor(Restraint *sf) : Restraints(1, sf) {}
 #ifndef IMP_DOXYGEN
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.5)
-  RestraintsAdaptor(Model *sf);
-
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.5)
-  RestraintsAdaptor(const ModelsTemp &sf);
-
   template <class T>
   RestraintsAdaptor(internal::PointerBase<T> t)
       : Restraints(1, get(t)) {}

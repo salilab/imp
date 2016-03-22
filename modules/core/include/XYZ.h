@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/XYZ.h     \brief Simple XYZ decorator.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -19,7 +19,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! A decorator for a particle with x,y,z coordinates.
-/** \inlineimage{xyz.png, 50} Using the decorator one can
+/** Using the decorator one can
     get and set coordinates and modify derivatives.
 
     \ingroup helper
@@ -98,7 +98,6 @@ class IMPCOREEXPORT XYZ : public Decorator {
   //! Get the vector from this particle to another
   algebra::Vector3D get_vector_to(const XYZ &b) const {
     return b.get_coordinates() - get_coordinates();
-    ;
   }
 
   //! Convert it to a vector.

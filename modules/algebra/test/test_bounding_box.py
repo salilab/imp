@@ -127,8 +127,7 @@ class Tests(IMP.test.TestCase):
             if N == -1:
                 c = IMP.algebra.get_cube_kd(5, 1.0)
                 ub = IMP.algebra.get_unit_bounding_box_kd(5)
-                self.assertRaises(IMP.InternalException,
-                                  IMP.algebra.get_vertices, b)
+                self.assertNotImplemented(IMP.algebra.get_vertices, b)
             else:
                 c = getattr(IMP.algebra, "get_cube_%sd" % clsdim)(1.0)
                 vertices = IMP.algebra.get_vertices(b)

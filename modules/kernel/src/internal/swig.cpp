@@ -2,7 +2,7 @@
  *  \file internal/swig.cpp
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 #include <IMP/internal/swig.h>
 #include <IMP/internal/pdb.h>

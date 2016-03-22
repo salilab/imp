@@ -2,7 +2,7 @@
  *  \file IMP/core/Hierarchy.h     \brief Decorator for helping deal with
  *                                        a hierarchy.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -68,10 +68,10 @@ class Hierarchy;
 typedef IMP::Vector<Hierarchy> GenericHierarchies;
 #endif
 
-//! A decorator for helping deal with a hierarchy.
+//! A decorator for helping deal with a generalized hierarchy.
 /**
     See HierarchyTraits for an example of how to define a custom hierarchy
-    and Hierarchy for a hierarchy for molecules.
+    and IMP::atom::Hierarchy for a hierarchy for molecules.
     \ingroup hierarchy
     \see HierarchyTraits
  */

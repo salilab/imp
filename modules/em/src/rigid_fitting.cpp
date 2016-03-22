@@ -2,7 +2,7 @@
  *  \file rigid_fitting.cpp
  *  \brief Rigid fitting functionality
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -329,16 +329,16 @@ FittingSolutions compute_fitting_scores(
                                            << " particles centroid: "
                                            << core::get_centroid(core::XYZs(ps))
                                            << std::endl);
-    algebra::Vector3Ds original_cooridnates;
+    algebra::Vector3Ds original_coordinates;
     for (core::XYZs::const_iterator it = ps_xyz.begin(); it != ps_xyz.end();
          it++) {
-      original_cooridnates.push_back(it->get_coordinates());
+      original_coordinates.push_back(it->get_coordinates());
     }
     for (algebra::Transformation3Ds::const_iterator it = trans_for_fit.begin();
          it != trans_for_fit.end(); it++) {
       // transform the particles
       for (unsigned int i = 0; i < ps_xyz.size(); i++) {
-        ps_xyz[i].set_coordinates(it->get_transformed(original_cooridnates[i]));
+        ps_xyz[i].set_coordinates(it->get_transformed(original_coordinates[i]));
       }
       model_dens_map2->resample();
       model_dens_map2->calcRMS();
@@ -360,7 +360,7 @@ FittingSolutions compute_fitting_scores(
     }
     // move back to original coordinates
     for (unsigned int i = 0; i < ps_xyz.size(); i++) {
-      ps_xyz[i].set_coordinates(original_cooridnates[i]);
+      ps_xyz[i].set_coordinates(original_coordinates[i]);
     }
     model_dens_map2 = static_cast<SampledDensityMap *>(nullptr);
   } else {  // fast version

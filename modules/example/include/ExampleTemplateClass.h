@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleTemplateClass.h
  *  \brief Show how to manage a template class with Python.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,7 +23,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     be allocated on the stack and to be passed by value (or
     const &).
 
-    The class should be named SegmentD, but it is an demostration.
+    The class should be named SegmentD, but it is a demonstration.
 
     The source code is as follows:
     \include ExampleTemplateClass.h

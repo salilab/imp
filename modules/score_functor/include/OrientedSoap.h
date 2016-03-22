@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/OrientedSoap.h
  *  \brief Score a particle pair using an orientation-dependent SOAP potential.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_ORIENTED_SOAP_H
@@ -23,7 +23,7 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
     (SOAP-Loop), protein-peptide interfaces (SOAP-Peptide) and proteins
     (SOAP-Protein). The library files themselves, such as soap_loop.hdf5 or
     soap_protein_od.hdf5, are rather large (~1.5GB) and so are not included
-    here. They can be downloaded separately from http://salilab.org/SOAP/.
+    here. They can be downloaded separately from https://salilab.org/SOAP/.
  */
 class OrientedSoap : public Score {
   double maxrange_;

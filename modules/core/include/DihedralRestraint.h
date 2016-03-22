@@ -2,7 +2,7 @@
  *  \file IMP/core/DihedralRestraint.h
  *  \brief Dihedral restraint between four particles.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -34,13 +34,6 @@ class IMPCOREEXPORT DihedralRestraint : public Restraint {
                     ParticleIndexAdaptor p2,
                     ParticleIndexAdaptor p3,
                     ParticleIndexAdaptor p4);
-
-#ifndef IMP_DOXYGEN
-  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
-  DihedralRestraint(UnaryFunction* score_func, Particle* p1,
-                    Particle* p2, Particle* p3,
-                    Particle* p4);
-#endif
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum)
       const IMP_OVERRIDE;

@@ -21,13 +21,13 @@ instance should be assumed to be invalid.
 
 Many of the geometric primitives and operations in IMP are written to work in any dimension.
 In C++, this is implemented via templates (such as IMP::algebra::VectorD).
-In the python side, the different dimensions are named explicitly instead. That
-means, a 2-D point is IMP::algebra::VectorD<2> in C++, and IMP::algbra::Vector2D in python
+In the Python side, the different dimensions are named explicitly instead. That
+means, a 2-D point is IMP::algebra::VectorD<2> in C++, and IMP::algebra::Vector2D in Python
 and the function IMP::algebra::get_basis_vector_d<3>() in C++ becomes `IMP.algebra.get_basis_vector_3d()` in Python.
 Similarly, a collection of 2D points is
-IMP::Vector<IMP::algebra::VectorD<2> > in C++ and IMP.algebra.Vector2Ds in python, which
-as with all collections, look like python lists.
-For convenience, we provide typedefs in C++ to the IMP::algbra::Vector2D and
+IMP::Vector<IMP::algebra::VectorD<2> > in C++ and IMP.algebra.Vector2Ds in Python, which
+as with all collections, look like Python lists.
+For convenience, we provide typedefs in C++ to the IMP::algebra::Vector2D and
 IMP::algebra::Vector2Ds style names.
 
 # Generic geometry # {#genericgeometry}
@@ -44,11 +44,11 @@ IMP::algebra::Vector2Ds style names.
  a IMP::core::XYZ. Algorithms take their arguments as C++
  templates and use the generic geometry methods to manipulate the
  geometry. And versions of the function for both types of storage are
- exported to python, so one could also write generic functions in python.
+ exported to Python, so one could also write generic functions in Python.
 
  For example, IMP::atom::get_rmsd() takes any combination of IMP::algebra::Vector3Ds
  or IMP::core::XYZs or IMP::core::XYZsTemp as arguments. Versions for all combinations
- of those are exported to python.
+ of those are exported to Python.
 
 # ANN # {#ANN}
 [ ANN](http://www.cs.umd.edu/~mount/ANN) is a library implementing fast
@@ -59,7 +59,7 @@ In addition, ANN must be built as a shared library rather than a static
 library.
 
 # Eigen # {#Eigen}
-We ship a copy of Eigen as part of IMP as Eigen support varies quite considerably across platforms and it is header-only  and so easy to ship. Our version of Eigen has been patched to move everything to the `IMP_Eigen` namespace and preprocessor symbols to start with `IMP_EIGEN_` so that things do not conflict with system installs of eigen.
+We ship a copy of Eigen as part of IMP as Eigen support varies quite considerably across platforms and it is header-only  and so easy to ship. Our version of Eigen has been patched to move everything to the `IMP_Eigen` namespace and preprocessor symbols to start with `IMP_EIGEN_` so that things do not conflict with system installs of Eigen.
 
 # Info
 

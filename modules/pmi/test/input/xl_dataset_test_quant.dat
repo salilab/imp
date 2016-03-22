@@ -1,0 +1,7 @@
+uID,dbindex,pvalue,log2ratio
+AAA:1:x:AAA:10,1,0.001,1.0
+AAA:5:x:AAA:100,1,0.001,1.0
+BBB:5:x:AAA:21,2,0.001,1.0
+BBB:100:x:AAA:3,2,0.001,1.0
+BBB:1:x:AAA:100,2,0.001,1.0
+CCC:7:x:AAA:11,3,0.001,1.0

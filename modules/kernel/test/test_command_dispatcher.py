@@ -6,9 +6,9 @@ import io
 class TestModule:
     _all_commands = ['foo', 'bar']
 
+    @staticmethod
     def get_module_version():
         return 'testver'
-    get_module_version = staticmethod(get_module_version)
 
     class submodule:
         pass
@@ -18,9 +18,9 @@ class TestModule:
 
     class bar:
 
+        @staticmethod
         def main():
             TestModule.bar_main_called = True
-        main = staticmethod(main)
 
 
 class Tests(IMP.test.TestCase):

@@ -1,7 +1,7 @@
 /**
  *  \file saxs_score.cpp \brief A program for SAXS scoring of docking models.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/integrative_docking/internal/helpers.h>
@@ -283,6 +283,9 @@ recommended q value is 0.2")("offset,f",
     float chi = 0;
     float c1 = 0;
     float c2 = 0;
+    float w1 = 1.0;
+    float w2 = 0.0;
+    float w3 = 0.0;
 
     if (!rg_only && !filtered) {
       // compute contribution of inter-parts distances to profile
@@ -322,6 +325,10 @@ recommended q value is 0.2")("offset,f",
         chi = wfp.get_chi();
         c1 = wfp.get_c1();
         c2 = wfp.get_c2();
+        IMP::Vector<double> weights = wfp.get_weights();
+        w1 = weights[2]; // complex weight
+        w2 = weights[0]; // part1
+        w3 = weights[1]; // part2
       } else {  // just complex is fitted
         FitParameters fp;
         if(vr_score) {
@@ -346,7 +353,7 @@ recommended q value is 0.2")("offset,f",
     }
 
     // save
-    SAXSResult r(i + 1, chi, filtered, rg, c1, c2, transforms[i]);
+    SAXSResult r(i + 1, chi, filtered, rg, c1, c2, w1, w2, w3, transforms[i]);
     results.push_back(r);
     if ((i + 1) % 1000 == 0)
       std::cerr << i + 1 << " transforms processed " << std::endl;

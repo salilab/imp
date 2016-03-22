@@ -25,10 +25,10 @@ def create_sampling_grid_3d(diameter, n_axis_points):
     """
         Creates a grid of positions (Vector3Ds), centered at 0.
         @param diameter The shape of the grid is a sphere with this diameter.
-        @param n_axis_points Number of points used alogn an axis for the grid.
+        @param n_axis_points Number of points used along an axis for the grid.
         The axis X Y and Z will contain n_axis_points, equispaced.
         The other regions of space will contain only the points allowed by
-        the size of the spere.
+        the size of the sphere.
     """
     radius = diameter / 2.0
     step = diameter / n_axis_points
@@ -72,7 +72,7 @@ def create_sampling_grid_2d(diameter, n_axis_points):
 
 def get_orientations_nearby(rotation, n, f):
     """
-        Rotations nearby a given one. They are got intepolating with
+        Rotations nearby a given one. They are got interpolating with
         the rotations of the uniform coverage. The parameter f
         (0 <= f <= 1) must be close to 0 to get orientations
         that are close to the given orientation

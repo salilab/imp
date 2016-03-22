@@ -2,7 +2,7 @@
  *  \file IMP/core/DerivativesToRefined.h
  *  \brief Accumulate the derivatives of the refined particles
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_DERIVATIVES_TO_REFINED_H
@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! Copy the derivatives from a coarse particle to its refined particles
 /** \see DerivatvesFromRefinedSingletonModifier
     \see CoverRefined
-    \see CentroidOfRefinedSingletonModifer
+    \see CentroidOfRefinedSingletonModifier
  An example showing a how to use such a score state to maintain a cover
  of the atoms of a protein by a sphere per residue.
  \include cover_particles.py

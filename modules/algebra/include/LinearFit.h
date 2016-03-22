@@ -2,7 +2,7 @@
  * \file IMP/algebra/LinearFit.h
  * \brief Linear fit of data points
  *
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

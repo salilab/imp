@@ -2,7 +2,7 @@
  *  \file RMF/HDF5/Object.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,7 +24,7 @@ namespace HDF5 {
 class File;
 
 /** Wrap an HDF5 Object. See
-    \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame09Groups.html,
+    \external{https://www.hdfgroup.org/HDF5/doc/RM/RM_H5O.html,
     the HDF5 manual} for more information.
  */
 class RMFEXPORT Object {

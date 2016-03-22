@@ -2,7 +2,7 @@
  *  \file RMF/NodeConstHandle.h
  *  \brief Declaration of NodeConstHandlke.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -209,6 +209,11 @@ class RMFEXPORT NodeConstHandle
 
   FileConstHandle get_file() const;
 };
+
+//! Produce hash values for boost hash tables.
+inline std::size_t hash_value(const NodeConstHandle& t) {
+  return t.__hash__();
+}
 
 } /* namespace RMF */
 

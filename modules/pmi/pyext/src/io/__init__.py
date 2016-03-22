@@ -17,16 +17,20 @@ import numpy as np
 import re
 from collections import defaultdict
 import itertools
+
 def parse_dssp(dssp_fn, limit_to_chains=''):
     """read dssp file, get SSEs. values are all PDB residue numbering.
-    Returns a SubsequenceData object containing labels helix, beta, loop.
-    Each one is a list of SelectionDictionaries
+    Returns a dictionary with keys helix, beta, loop
+    Each contains a list of SSEs.
+    Each SSE is a list of elements (e.g. strands in a sheet)
+    Each element is a pair (chain,(residue_indexes))
 
     Example for a structure with helix A:5-7 and Beta strands A:1-3,A:9-11:
-    helix : [ [ {'chain':'A','residue_indexes': [5,6,7]} ] ]
-    beta  : [ [ {'chain':'A','residue_indexes': [1,2,3]},
-                {'chain':'A','residue_indexes': [9,10,11]} ] ]
-    loop  : same format as helix
+    ret = { 'helix' : [ [ ('A',5,7 ) ],... ]
+            'beta'  : [ [ ('A',1,3),
+                          ('A',9,11),...],...]
+            'loop'  : same format as helix
+          }
     """
     # setup
     helix_classes = 'GHI'
@@ -39,14 +43,17 @@ def parse_dssp(dssp_fn, limit_to_chains=''):
         sse_dict[s] = 'beta'
     for l in loop_classes:
         sse_dict[l] = 'loop'
-    sses = SubsequenceData()
+    sses = {'helix':[],
+            'beta':[],
+            'loop':[]}
 
     # read file and parse
     start = False
+
     # temporary beta dictionary indexed by DSSP's ID
     beta_dict = defaultdict(list)
     prev_sstype = None
-    cur_sse = {'chain':'','residue_tuple':[-1,-1]}
+    cur_sse = ['',[]]
     prev_beta_id = None
     for line in open(dssp_fn, 'r'):
         fields = line.split()
@@ -73,16 +80,16 @@ def parse_dssp(dssp_fn, limit_to_chains=''):
 
         # decide whether to extend or store the SSE
         if prev_sstype is None:
-            cur_sse = {'chain':chain,'residue_tuple':[pdb_res_num,pdb_res_num]}
+            cur_sse = [chain,pdb_res_num,pdb_res_num]
         elif sstype != prev_sstype or chain_break:
             # add cur_sse to the right place
             if prev_sstype in ['helix', 'loop']:
-                sses.add_subsequence(prev_sstype,Subsequence(**cur_sse))
+                sses[prev_sstype].append([cur_sse])
             elif prev_sstype == 'beta':
                 beta_dict[prev_beta_id].append(cur_sse)
-            cur_sse = {'chain':chain,'residue_tuple':[pdb_res_num,pdb_res_num]}
+            cur_sse = [chain,pdb_res_num,pdb_res_num]
         else:
-            cur_sse['residue_tuple'][1]=pdb_res_num
+            cur_sse[2] = pdb_res_num
         if chain_break:
             prev_sstype = None
             prev_beta_id = None
@@ -93,281 +100,13 @@ def parse_dssp(dssp_fn, limit_to_chains=''):
     # final SSE processing
     if not prev_sstype is None:
         if prev_sstype in ['helix', 'loop']:
-            sses.add_subsequence(prev_sstype,Subsequence(**cur_sse))
+            sses[prev_sstype].append([cur_sse])
         elif prev_sstype == 'beta':
             beta_dict[prev_beta_id].append(cur_sse)
     # gather betas
     for beta_sheet in beta_dict:
-        seq = Subsequence()
-        for strand in beta_dict[beta_sheet]:
-            seq.add_range(**strand)
-        sses.add_subsequence('beta',seq)
+        sses['beta'].append(beta_dict[beta_sheet])
     return sses
-
-def parse_xlinks_davis(data_fn,
-                       max_num=-1,
-                       name_map={},
-                       named_offsets={},
-                       use_chains={}):
-    """ Format from Trisha Davis. Lines are:
-    ignore ignore seq1 seq2 >Name(res) >Name(res) score
-    @param data_fn       The data file name
-    @param max_num       Maximum number of XL to read (-1 is all)
-    @param name_map      Dictionary mapping text file names to the molecule name
-    @param named_offsets Integer offsets to apply to the indexing in the file
-    Output is a CrossLinkData object containing SelectionDictionaries
-    data[unique_id] =
-              [ { 'r1': {'molecule':'A','residue_index':5},
-                  'r2': {'molecule':'B','residue_index':100},
-                  'score': 123 },
-                { 'r1': {'molecule':'C','residue_index':63},
-                  'r2': {'molecule':'D','residue_index':94},
-                  'score': 600 }
-              ]
-    """
-
-    inf=open(data_fn,'r')
-    data=defaultdict(list)
-    found=set()
-    data = CrossLinkData()
-    for nl,l in enumerate(inf):
-        if max_num==-1 or nl<max_num:
-            ig1,ig2,seq1,seq2,s1,s2,score=l.split()
-            score=float(score)
-            m1=re.search(r'>([\w-]+)\((\w+)\)',s1)
-            m2=re.search(r'>([\w-]+)\((\w+)\)',s2)
-
-            n1=m1.group(1)
-            r1=int(m1.group(2))
-            if n1 in name_map:
-                n1=name_map[n1]
-            if n1 in named_offsets:
-                r1+=named_offsets[n1]
-
-            n2=m2.group(1)
-            r2=int(m2.group(2))
-            if n2 in name_map:
-                n2=name_map[n2]
-            if n2 in named_offsets:
-                r2+=named_offsets[n2]
-            key=tuple(sorted(['%s.%i'%(n1,r1),'%s.%i'%(n2,r2)]))
-            if key in found:
-                print('skipping duplicated xl',key)
-                continue
-            found.add(key)
-            data.add_cross_link(nl,
-                                {'molecule':n1,'residue_index':r1},
-                                {'molecule':n2,'residue_index':r2},
-                                score)
-    inf.close()
-    return data
-
-
-class Subsequence(object):
-    """ A light class to store multiple not-necessarily-contiguous residue ranges."""
-    def __init__(self,chain=None,molecule=None,residue_tuple=None,subsequences=None):
-        """Create subsequence and optionally pass the first contiguous range.
-        @param chain The chain ID
-        @param molecule The molecule name
-        @param residue_tuple PDB-style inclusive residue range
-        @param subsequences A list of other subsequences to combine (not implemented)
-        """
-        self.seqs=[]
-        if chain or molecule or residue_tuple:
-            self.add_range(chain,molecule,residue_tuple)
-        if subsequences:
-            pass
-    def add_range(self,chain=None,molecule=None,residue_tuple=None):
-        """Add some stuff to this subsequence
-        @param chain The chain ID
-        @param molecule The molecule name
-        @param residue_tuple PDB-style inclusive residue range
-        """
-        self.seqs.append({'chain':chain,'molecule':molecule,'residue_tuple':residue_tuple})
-    def join(self,new_subsequence):
-        for s in new_subsequence:
-            self.seqs.append(s)
-
-    def get_selection(self,hier,**kwargs):
-        """Create an IMP Selection from this subsequence
-        @param hier An IMP hierarchy or list of them
-        \note any additional keyword arguments will be appended to the selection
-        """
-        for nseq,seq in enumerate(self.seqs):
-            args=kwargs
-            if seq['chain']:
-                args['chain']=seq['chain']
-            if seq['molecule']:
-                args['molecule']=seq['molecule']
-            if seq['residue_tuple']:
-                args['residue_indexes']=list(range(seq['residue_tuple'][0],
-                                              seq['residue_tuple'][1]+1))
-            sel = IMP.atom.Selection(hier,**args)
-            if nseq==0:
-                ret=sel
-            else:
-                ret|=sel
-        return ret
-    def __repr__(self):
-        rep=''
-        for nseq,seq in enumerate(self.seqs):
-            this_str=[]
-            if seq['residue_tuple'] is not None:
-                this_str.append('%i-%i'%(seq['residue_tuple'][0],seq['residue_tuple'][1]))
-            if seq['molecule'] is not None:
-                this_str.append('%s'%seq['molecule'])
-            if seq['chain'] is not None:
-                this_str.append('%s'%seq['chain'])
-            rep+='.'.join(this_str)
-            if nseq < len(self.seqs)-1:
-                rep+='_'
-        return rep
-
-    def __getitem__(self,key):
-        return self.data[key]
-
-    def __iter__(self):
-        return self.seqs.__iter__()
-
-    def __add__(self,other):
-        self.join(other)
-        return self
-
-class SubsequenceData(object):
-    """ Group a bunch of subsequences with certain labels
-    Use cases: storing lists of secondary structures from DSSP or PSIPRED
-               storing lists of molecules that should be made symmetric
-    """
-    def __init__(self):
-        """Setup groups of subsequences
-        """
-        self.data=defaultdict(list)
-
-    def add_subsequence(self,label,subsequence):
-        """ Append a new cross-link to a given unique ID
-        @param label         label for this subsequence (e.g., 'helix')
-        @param subsequence   a Subsequence object to store under that label
-                             e.g. Subsequence(chain='A',residue_tuple=(10,15))
-        """
-        if type(subsequence) is not Subsequence:
-            raise InputError('must provide a subsequence object')
-        self.data[label].append(subsequence)
-
-    def __getitem__(self,key):
-        return self.data[key]
-
-    def __repr__(self):
-        return self.data.__repr__()
-
-    def keys(self):
-        return self.data.keys()
-
-class CrossLink(object):
-    """A class to store the selection commands for a single crosslink.
-    """
-    def __init__(self,unique_id,r1,r2,score):
-        """Add a crosslink.
-        @param unique_id The id is used to group crosslinks that are alternatives
-        @param r1 A dictionary of selection keywords for the first residue
-        @param r2 A dictionary of selection keywards for the second residue
-        @param score A score that might be used later for filtering
-        @note The dictionaries can contain any Selection argument like
-              molecule or residue_index
-        """
-        self.unique_id = unique_id
-        self.r1 = r1
-        self.r2 = r2
-        self.score = score
-
-    def __repr__(self):
-        return "CrossLink id: "+str(self.unique_id)+" r1: "+repr(self.r1)+", r2: "+repr(self.r2)
-
-    def intersects(self,other):
-        if self.r1==other.r1 or self.r1==other.r2 or self.r2==other.r1 or self.r2==other.r2:
-            return True
-        else:
-            return False
-
-    def get_selection(self,mh,**kwargs):
-        """Return a list of atom pairs (particles) for this crosslink.
-        Found by selecting everything with r1 and r2 then returning the
-         cartesian product.
-        @note you may want to provide some atom specifiers like
-         atom_type=IMP.atom.AtomType("CA")
-        @param mh The hierarchy to select from
-        @param kwargs Any additional selection arguments
-        """
-        rsel1=self.r1.copy()
-        rsel1.update(kwargs)
-        rsel2=self.r2.copy()
-        rsel2.update(kwargs)
-        sel1 = IMP.atom.Selection(mh,**rsel1).get_selected_particles()
-        sel2 = IMP.atom.Selection(mh,**rsel2).get_selected_particles()
-        if len(sel1)==0:
-            raise Exception("this selection is empty",rsel1)
-        if len(sel2)==0:
-            raise Exception("this selection is empty",rsel2)
-
-        '''
-        # Check no repeating copy numbers....not sure if this is general
-        for s in (sel1,sel2):
-            idxs=[IMP.atom.get_copy_index(p) for p in s]
-            if len(idxs)!=len(set(idxs)):
-                raise Exception("this XL is selecting more than one particle per copy")
-        '''
-        ret = []
-        for p1,p2 in itertools.product(sel1,sel2):
-            ret.append((p1,p2))
-        return ret
-
-class CrossLinkData(object):
-    """A class for storing groups of crosslinks.
-    Acts like a dictionary where keys are unique IDs and values are CrossLinks
-    Equivalent (using objects instead of dicts) to a data structure like so:
-         data[1030] =
-              [ { 'r1': {'molecule':'A','residue_index':5},
-                  'r2': {'molecule':'B','residue_index':100},
-                   'Score': 123 },
-                { 'r1': {'molecule':'C','residue_index':63},
-                  'r2': {'molecule':'D','residue_index':94},
-                  'Score': 600 }
-              ]
-    """
-    def __init__(self):
-        """Setup a CrossLinkData object"""
-        self.data = defaultdict(list)
-    def add_cross_link(self,unique_id,kws1,kws2,score):
-        """Add a crosslink. They are organized by their unique_ids.
-        @param unique_id The id is used to group crosslinks that are alternatives
-        @param kws1 A dictionary of selection keywords for the first residue
-        @param kws2 A dictionary of selection keywards for the second residue
-        @param score A score that might be used later for filtering
-        @note The dictionaries can contain any Selection argument like
-              molecule or residue_index
-        """
-        self.data[unique_id].append(CrossLink(unique_id,kws1,kws2,score))
-    def copy_cross_link(self,xl):
-        if type(xl) is not CrossLink:
-            raise Exception("CrossLinkData::copy_cross_link() requires a Crosslink object")
-        self.data[xl.unique_id].append(xl)
-    def __getitem__(self, key):
-        return self.data[key]
-    def __repr__(self):
-        ret="CrossLinkData with these entries:\n"
-        for d in self.data:
-            for xl in self.data[d]:
-                ret+=repr(xl)+'\n'
-        return ret
-    def keys(self):
-        return self.data.keys()
-    def values(self):
-        return self.data.values()
-    def __contains__(self, item):
-        return item in self.data
-    def __iter__(self):
-        return iter(self.data)
-    def __len__(self):
-        return len(self.data)
 
 def save_best_models(mdl,
                      out_dir,
@@ -507,10 +246,14 @@ def get_best_models(stat_files,
     score_list=[]                 # best scores
     feature_keyword_list_dict=defaultdict(list)  # best values of the feature keys
     for sf in stat_files:
-        root_directory_of_stat_file = os.path.dirname(os.path.dirname(sf))
+        root_directory_of_stat_file = os.path.dirname(os.path.dirname(os.path.abspath(sf)))
         print("getting data from file %s" % sf)
         po = IMP.pmi.output.ProcessOutput(sf)
-        keywords = po.get_keys()
+
+        try:
+            keywords = po.get_keys()
+        except:
+            continue
 
         feature_keywords = [score_key,
                             rmf_file_key,
@@ -624,7 +367,6 @@ def read_coordinates_of_rmfs(model,
     for cnt, tpl in enumerate(rmf_tuples):
         rmf_file = tpl[1]
         frame_number = tpl[2]
-
         if cnt==0:
             prots = IMP.pmi.analysis.get_hiers_from_rmf(model,
                                                    frame_number,
@@ -634,49 +376,56 @@ def read_coordinates_of_rmfs(model,
 
         if not prots:
             continue
+        if IMP.pmi.get_is_canonical(prots[0]):
+            states = IMP.atom.get_by_type(prots[0],IMP.atom.STATE_TYPE)
+            prot = states[state_number]
+        else:
+            prot = prots[state_number]
 
-        prot=prots[state_number]
         # getting the particles
         part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)
-        all_particles=[pp for key in part_dict for pp in part_dict[key]]
-        all_ps_set=set(all_particles)
-        # getting the coordinates
+        all_particles = [pp for key in part_dict for pp in part_dict[key]]
+        all_ps_set = set(all_particles)
         model_coordinate_dict = {}
         template_coordinate_dict={}
         rmsd_coordinate_dict={}
+
         for pr in part_dict:
             model_coordinate_dict[pr] = np.array(
-               [np.array(IMP.core.XYZ(i).get_coordinates()) for i in part_dict[pr]])
+                [np.array(IMP.core.XYZ(i).get_coordinates()) for i in part_dict[pr]])
+        for tuple_dict,result_dict in zip((alignment_components,rmsd_calculation_components),
+                                          (template_coordinate_dict,rmsd_coordinate_dict)):
 
-        if alignment_components is not None:
-            for pr in alignment_components:
-                if type(alignment_components[pr]) is str:
-                    name=alignment_components[pr]
-                    s=IMP.atom.Selection(prot,molecule=name)
-                elif type(alignment_components[pr]) is tuple:
-                    name=alignment_components[pr][2]
-                    rend=alignment_components[pr][1]
-                    rbegin=alignment_components[pr][0]
-                    s=IMP.atom.Selection(prot,molecule=name,residue_indexes=range(rbegin,rend+1))
-                ps=s.get_selected_particles()
-                filtered_particles=[p for p in ps if p in all_ps_set]
-                template_coordinate_dict[pr] = \
-                    [list(map(float,IMP.core.XYZ(i).get_coordinates())) for i in filtered_particles]
+            if tuple_dict is None:
+                continue
 
-        if rmsd_calculation_components is not None:
-            for pr in rmsd_calculation_components:
-                if type(rmsd_calculation_components[pr]) is str:
-                    name=rmsd_calculation_components[pr]
-                    s=IMP.atom.Selection(prot,molecule=name)
-                elif type(rmsd_calculation_components[pr]) is tuple:
-                    name=rmsd_calculation_components[pr][2]
-                    rend=rmsd_calculation_components[pr][1]
-                    rbegin=rmsd_calculation_components[pr][0]
-                    s=IMP.atom.Selection(prot,molecule=name,residue_indexes=range(rbegin,rend+1))
-                ps=s.get_selected_particles()
-                filtered_particles=[p for p in ps if p in all_ps_set]
-                rmsd_coordinate_dict[pr] = \
-                    [list(map(float,IMP.core.XYZ(i).get_coordinates())) for i in filtered_particles]
+            # PMI2: do selection of resolution and name at the same time
+            if IMP.pmi.get_is_canonical(prot):
+                for pr in tuple_dict:
+                    if type(tuple_dict[pr]) is str:
+                        name = tuple_dict[pr]
+                        s = IMP.atom.Selection(prot,molecule=name,resolution=1)
+                    elif type(tuple_dict[pr]) is tuple:
+                        rend = tuple_dict[pr][1]
+                        rbegin = tuple_dict[pr][0]
+                        s = IMP.atom.Selection(prot,molecule=name,resolution=1,
+                                               residue_indexes=range(rbegin,rend+1))
+                    result_dict[pr] = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
+                                       for p in s.get_selected_particles()]
+            else:
+                for pr in tuple_dict:
+                    if type(tuple_dict[pr]) is str:
+                        name=tuple_dict[pr]
+                        s=IMP.atom.Selection(prot,molecule=name)
+                    elif type(tuple_dict[pr]) is tuple:
+                        name=tuple_dict[pr][2]
+                        rend=tuple_dict[pr][1]
+                        rbegin=tuple_dict[pr][0]
+                        s=IMP.atom.Selection(prot,molecule=name,residue_indexes=range(rbegin,rend+1))
+                    ps=s.get_selected_particles()
+                    filtered_particles=[p for p in ps if p in all_ps_set]
+                    result_dict[pr] = \
+                        [list(map(float,IMP.core.XYZ(p).get_coordinates())) for p in filtered_particles]
 
         all_coordinates.append(model_coordinate_dict)
         alignment_coordinates.append(template_coordinate_dict)
@@ -692,23 +441,43 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
     @param rmf_tuple  score,filename,frame number,original order number, rank
     @param rmsd_calculation_components Tuples to specify what components are used for RMSD calc
     '''
+    if rmsd_calculation_components is None:
+        return {}
+
     rmf_file = rmf_tuple[1]
     frame_number = rmf_tuple[2]
-
     prots = IMP.pmi.analysis.get_hiers_from_rmf(model,
-                                              frame_number,
-                                              rmf_file)
+                                                frame_number,
+                                                rmf_file)
 
-    prot=prots[state_number]
+    if IMP.pmi.get_is_canonical(prots[0]):
+        states = IMP.atom.get_by_type(prots[0],IMP.atom.STATE_TYPE)
+        prot = states[state_number]
+    else:
+        prot = prots[state_number]
 
-    # getting the particles
-    part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)
-    all_particles=[pp for key in part_dict for pp in part_dict[key]]
-    all_ps_set=set(all_particles)
-    # getting the coordinates
-    rmsd_bead_size_dict={}
+    rmsd_bead_size_dict = {}
 
-    if rmsd_calculation_components is not None:
+    # PMI2: do selection of resolution and name at the same time
+    if IMP.pmi.get_is_canonical(prot):
+        for pr in rmsd_calculation_components:
+            if type(rmsd_calculation_components[pr]) is str:
+                name = rmsd_calculation_components[pr]
+                s = IMP.atom.Selection(prot,molecule=name,resolution=1)
+            elif type(rmsd_calculation_components[pr]) is tuple:
+                rend = rmsd_calculation_components[pr][1]
+                rbegin = rmsd_calculation_components[pr][0]
+                s = IMP.atom.Selection(prot,molecule=name,resolution=1,
+                                       residue_indexes=range(rbegin,rend+1))
+            rmsd_bead_size_dict[pr] = [len(IMP.pmi.tools.get_residue_indexes(p))
+                                       for p in s.get_selected_particles()]
+    else:
+        # getting the particles
+        part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)
+        all_particles=[pp for key in part_dict for pp in part_dict[key]]
+        all_ps_set=set(all_particles)
+
+        # getting the coordinates
         for pr in rmsd_calculation_components:
             if type(rmsd_calculation_components[pr]) is str:
                 name=rmsd_calculation_components[pr]
@@ -723,5 +492,34 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
             rmsd_bead_size_dict[pr] = \
                 [len(IMP.pmi.tools.get_residue_indexes(p)) for p in filtered_particles]
 
-
     return rmsd_bead_size_dict
+
+class RMSDOutput(object):
+    """A helper output based on dist to initial coordinates"""
+    def __init__(self,ps,label,init_coords=None):
+        self.mdl = ps[0].get_model()
+        self.ps = ps
+        if init_coords is None:
+            self.init_coords = [IMP.core.XYZ(p).get_coordinates() for p in self.ps]
+        else:
+            self.init_coords = init_coords
+        self.label = label
+    def get_output(self):
+        self.mdl.update()
+        output = {}
+        coords = [IMP.core.XYZ(p).get_coordinates() for p in self.ps]
+        rmsd = IMP.algebra.get_rmsd(coords,self.init_coords)
+        output["RMSD_"+self.label] = str(rmsd)
+        return output
+
+class TotalScoreOutput(object):
+    """A helper output for model evaluation"""
+    def __init__(self,mdl):
+        self.mdl = mdl
+        self.rs = IMP.pmi.tools.get_restraint_set(self.mdl)
+    def get_output(self):
+        self.mdl.update()
+        score = self.rs.evaluate(False)
+        output = {}
+        output["Total_Score"] = str(score)
+        return output

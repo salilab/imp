@@ -2,7 +2,7 @@
  *  \file internal/swig_helpers.h
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_SWIG_HELPERS_BASE_H
@@ -23,7 +23,6 @@
 #include <cstdio>
 
 // using namespace IMP;
-using namespace IMP::base;
 using namespace IMP;
 #ifndef SWIG
 template <bool REFED>

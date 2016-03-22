@@ -2,7 +2,7 @@
  *  \file RMF/Enum.h
  *  \brief Declaration of RMF::Enum.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -78,6 +78,12 @@ class Enum {
   operator int() const { return i_; }
 #endif
 };
+
+//! Produce hash values for boost hash tables.
+template <class TagT>
+inline std::size_t hash_value(const Enum<TagT>& t) {
+  return t.__hash__();
+}
 
 #if !defined(SWIG) && !defined(RMF_DOXYGEN)
 template <class Traits>

@@ -2,7 +2,7 @@
  *  \file IMP/foxs/Gnuplot.h   \brief A class for printing gnuplot scripts
  *   for profile viewing
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -57,9 +57,6 @@ class IMPFOXSEXPORT Gnuplot {
   static void print_canvas_script(
       const std::vector<IMP::saxs::FitParameters>& fps, int max_num);
 };
-
-IMPFOXSEXPORT
-std::string trim_extension(const std::string file_name);
 
 IMPFOXS_END_INTERNAL_NAMESPACE
 

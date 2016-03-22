@@ -2,7 +2,7 @@
  *  \file IMP/modeller/MultipleBinormalRestraint.h
  *  \brief Modeller-style multiple binormal (phi/psi) restraint.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,6 @@
 
 #include <IMP/Restraint.h>
 #include <IMP/Particle.h>
-#include <IMP/ParticleTuple.h>
 #include <IMP/generic.h>
 
 IMPMODELLER_BEGIN_NAMESPACE
@@ -24,8 +23,8 @@ class BinormalTerm;
 /** This implements a multiple binormal restraint on the two dihedral angles
     between the two quads of Particles passed to the restraint, by
    implementing
-    equation A.76 in the
-    \external{http://salilab.org/modeller/9v7/manual/node441.html,
+    equation A.77 in the
+    \external{https://salilab.org/modeller/9.16/manual/node491.html,
    Modeller manual}.
     The two angles are typically the phi and psi dihedrals of a residue.
  */
@@ -43,12 +42,6 @@ class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint {
    */
   MultipleBinormalRestraint(Model *m, const ParticleIndexQuad &q1,
                             const ParticleIndexQuad &q2);
-
-#ifndef IMP_DOXYGEN
-  IMPMODELLER_DEPRECATED_METHOD_DECL(2.5)
-  MultipleBinormalRestraint(const ParticleQuad &q1,
-                            const ParticleQuad &q2);
-#endif
 
   //! Add a single BinormalTerm to the restraint.
   void add_term(const BinormalTerm &term) { terms_.push_back(term); }

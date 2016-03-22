@@ -1,7 +1,7 @@
 import IMP
 import IMP.test
 import IMP.atom
-
+import io
 
 def _make_hierarchy_decorators(m, *types):
     decorators = []
@@ -107,6 +107,33 @@ class Tests(IMP.test.TestCase):
         at2 = IMP.atom.AtomType(1)
         self.assertEqual(at0, at1)
         self.assertNotEqual(at0, at2)
+
+    def test_null_show(self):
+        """Test Hierarchy.show() with null Hierarchy"""
+        sio = io.BytesIO()
+        h = IMP.atom.Hierarchy()
+        h.show(sio, "-foo-")
+        self.assertEqual(sio.getvalue(), b"nullptr Molecular Hierarchy node")
+
+    def test_state_show(self):
+        """Test Hierarchy.show() with State particle"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        state = IMP.atom.State.setup_particle(p, 42)
+        sio = io.BytesIO()
+        h = IMP.atom.Hierarchy(p)
+        h.show(sio, "-foo-")
+        self.assertIn(b"-foo-State: 42-foo-", sio.getvalue())
+
+    def test_xyz_show(self):
+        """Test Hierarchy.show() with XYZ particle"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        xyz = IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(1,2,3))
+        sio = io.BytesIO()
+        h = IMP.atom.Hierarchy(p)
+        h.show(sio, "-foo-")
+        self.assertIn(b"-foo-(1, 2, 3)", sio.getvalue())
 
 if __name__ == '__main__':
     IMP.test.main()

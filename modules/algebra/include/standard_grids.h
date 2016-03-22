@@ -2,7 +2,7 @@
  *  \file IMP/algebra/standard_grids.h
  *  \brief All grids that are in the Python API should be defined here.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

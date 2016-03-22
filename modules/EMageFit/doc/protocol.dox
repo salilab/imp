@@ -155,7 +155,7 @@ recommended when running multiple jobs on a compute cluster, since several jobs
 could start at the same time).
 
 Each run generates an SQLite database containing only one solution. It should
-be repeeated many times to generate multiple solutions, as multiple database
+be repeated many times to generate multiple solutions, as multiple database
 files.
 
 \subsection gather Gather the results of all Monte Carlo optimizations

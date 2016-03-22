@@ -2,7 +2,7 @@
  *  \file masking.cpp
  *  \brief masking tools
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,8 +13,6 @@ IMPEM_BEGIN_NAMESPACE
 RadiusDependentDistanceMask::RadiusDependentDistanceMask(
     float sampling_radius, const DensityHeader &header) {
   KernelParameters kernel_params(header.get_resolution());
-  const RadiusDependentKernelParameters &rad_params =
-      kernel_params.set_params(sampling_radius);
   int delta =
       static_cast<int>(std::floor(sampling_radius / header.get_spacing()));
   for (int x = -delta; x <= delta; x++) {
@@ -26,7 +24,7 @@ RadiusDependentDistanceMask::RadiusDependentDistanceMask(
         double rsq = header.get_spacing() * header.get_spacing() *
                      (x * x + y * y + z * z);
         neighbor_dist_.push_back(rsq);
-        neighbor_dist_exp_.push_back(EXP(-rsq * rad_params.get_inv_sigsq()));
+        neighbor_dist_exp_.push_back(EXP(-rsq * kernel_params.get_inv_rsigsq()));
       }
     }
   }

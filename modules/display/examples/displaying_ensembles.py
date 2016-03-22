@@ -80,7 +80,7 @@ def add_axis(h, c, w, chain_colors):
 
 def add_skeleton(h, c, r, w, chain_colors):
     """Show the connectivity skeleton of the conformation to give an idea of
-    how things are layed out"""
+    how things are laid out"""
     for hc0 in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
         for hc1 in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
             if hc1 <= hc0:

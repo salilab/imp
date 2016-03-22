@@ -19,7 +19,7 @@
  * There are similar macros for module code that is designed to be for
  * internal use only.
  *
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

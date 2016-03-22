@@ -2,7 +2,7 @@
  *  \file TransformMover.cpp
  *  \brief A mover that transforms a rigid body
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/pmi/TransformMover.h>
@@ -59,7 +59,7 @@ core::MonteCarloMoverResult TransformMover::do_propose() {
   algebra::Transformation3D t_(r, translation); 
   
   algebra::Transformation3D tt = c_*t_*c_.get_inverse();
-
+  tt_ = tt;
   
   for (unsigned int i=0;i<pixyzs_.size();i++) {
        core::XYZ d(get_model(), pixyzs_[i]);

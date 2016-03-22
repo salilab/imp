@@ -2,7 +2,7 @@
  * \file soap_bond_separation.h
  * \brief SOAP bond separation filter
  *
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -184,7 +184,7 @@ class SoapBondSeparation {
     NearbyCys nearby;
     for (int i = std::max(1, ind - ssseq);
          i <= std::min(num_in_chain, ind + ssseq); ++i) {
-      Residue r = get_residue(chain, i).get_as_residue();
+      Residue r(get_residue(chain, i));
       if (r.get_residue_type() == CYS) {
         nearby.push_back(std::make_pair(r, i));
       }
@@ -198,7 +198,7 @@ class SoapBondSeparation {
     static const float ssdistsqr = 2.5 * 2.5;
     Bridges bridges;
     Hierarchy p = r1.get_parent();
-    Chain chain = p.get_as_chain();
+    Chain chain(p);
     int num_in_chain = p.get_number_of_children();
     int ind_r1 = r1.get_index();
     int ind_r2 = r2.get_index();

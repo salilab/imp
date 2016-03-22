@@ -20,7 +20,7 @@ merge_directories = ["../modeling/"]  # directories to analyze
 prefiltervalue = 2900.0               # prefilter by score
 \endcode
 
-If we perform sampling multiple times separately, they can all be analyzed at the same time by appending to `merge_directories`. The prefiltervalue removes all models scoring below this value (meaning, they aren’t clustered) which can be helpful to reduce the problem size. 
+If we perform sampling multiple times separately, they can all be analyzed at the same time by appending to `merge_directories`. The prefiltervalue removes all models scoring below this value (meaning, they aren't clustered) which can be helpful to reduce the problem size.
 
 Create the analysis macro and pass it basic information (it will search for stat files):
 

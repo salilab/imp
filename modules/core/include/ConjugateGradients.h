@@ -2,7 +2,7 @@
  *  \file IMP/core/ConjugateGradients.h
  *  \brief Simple conjugate gradients optimizer.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,11 +24,12 @@ IMPCORE_BEGIN_NAMESPACE
     the scales are estimated from the range of values found for the attribute
     upon initialization. These estimates can be viewed either by calling
     Model::get_range(my_float_key) or by turning on TERSE logging and
-   looking
-    at logged messages. If this estimate does not accurately reflect the
-    scale, then you can use Model::set_range to set a more accurate
-   range
-    for the parameters.
+    looking at logged messages. If this estimate does not accurately reflect
+    the scale, then you can use Model::set_range to set a more accurate
+    range for the parameters.
+
+    \note Currently, rigid bodies are not handled (and will not be moved
+          by this optimizer).
 */
 class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
  public:

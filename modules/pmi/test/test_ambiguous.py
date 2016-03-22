@@ -46,12 +46,13 @@ class Tests(IMP.test.TestCase):
         particle2 particle3 1 5 1 1
         particle1 particle3 1 2 1 1 '''
 
-        xl = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(representations,
-                                                            restraints,
-                                                            length=21.0,
-                                                            slope=0.0,
-                                                            inner_slope=0.1,
-                                                            resolution=1.0)
+        with IMP.allow_deprecated():
+            xl = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(representations,
+                                                                restraints,
+                                                                length=21.0,
+                                                                slope=0.0,
+                                                                inner_slope=0.1,
+                                                                resolution=1.0)
 
         psi = xl.get_psi(0.05)
 

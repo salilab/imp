@@ -2,7 +2,7 @@
  *  \file density_analysis.cpp
  *  \brief tools for analyzing density maps
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -59,7 +59,7 @@ class DensitySegmentationByCommunities {
   IntsList calculate_connected_components();
 
  protected:
-  Pointer<em::DensityMap> dmap_;
+  PointerMember<em::DensityMap> dmap_;
   DensityGraph g_;
   float dens_t_;
   std::vector<float> weights_;

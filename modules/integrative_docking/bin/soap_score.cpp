@@ -2,7 +2,7 @@
  *  \file soap_score.cpp \brief A program for scoring of docking models
  *  with SOAP statistical potentials
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -110,7 +110,7 @@ each pair of PDB file names in the input file filenames.txt.")
     oriented_potentials = true;
     if (potentials_file.length() == 0) {
       std::cerr << "Please provide a potential file for oriented_potentials "
-                << "option.See http://salilab.org/SOAP/ for details."
+                << "option.See https://salilab.org/SOAP/ for details."
                 << std::endl;
     }
   }

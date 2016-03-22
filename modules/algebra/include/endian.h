@@ -2,7 +2,7 @@
  *  \file IMP/algebra/endian.h
  *  \brief functions to deal with endian of EM images
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_ENDIAN_H
@@ -37,16 +37,6 @@ void IMPALGEBRAEXPORT reversed_read(void* dest, size_t size, size_t nitems,
 void IMPALGEBRAEXPORT reversed_write(const void* src, size_t size,
                                      size_t nitems, std::ofstream& f,
                                      bool reverse = false);
-
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-void IMPALGEBRAEXPORT byte_swap(unsigned char* b, int n);
-#endif
-
-//! Conversion between little and big endian. Goes both ways
-template <class T>
-inline void get_swapped_endian(T& x) {
-  byte_swap((unsigned char*)&x, sizeof(T));
-}
 
 //! Returns 1 if machine is big endian else 0
 bool IMPALGEBRAEXPORT get_is_big_endian();

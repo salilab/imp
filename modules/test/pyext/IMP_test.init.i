@@ -80,7 +80,7 @@ class TempDir(object):
     """Simple RAII-style class to make a temporary directory. When the object
        is created, the temporary directory is created. When the object goes
        out of scope, the temporary directory is deleted."""
-    def __init__(self, dir):
+    def __init__(self, dir=None):
         self.tmpdir = tempfile.mkdtemp(dir=dir)
     def __del__(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
@@ -196,6 +196,17 @@ class TestCase(unittest.TestCase):
            is skipped in fast mode (where usage checks are turned off)."""
         if IMP.get_check_level() >= IMP.USAGE:
             return self.assertRaises(IMP.UsageException, c, *args, **keys)
+
+    def assertRaisesInternalException(self, c, *args, **keys):
+        """Assert that the given callable object raises InternalException.
+           This differs from unittest's assertRaises in that the test
+           is skipped in fast mode (where internal checks are turned off)."""
+        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+            return self.assertRaises(IMP.InternalException, c, *args, **keys)
+
+    def assertNotImplemented(self, c, *args, **keys):
+        """Assert that the given callable object is not implemented."""
+        return self.assertRaises(IMP.InternalException, c, *args, **keys)
 
     def assertXYZDerivativesInTolerance(self, sf, xyz, tolerance=0,
                                         percentage=0):
@@ -758,7 +769,7 @@ class ApplicationTestCase(TestCase):
                    stdout and stderr.
         """
         # Handle platforms where /usr/bin/python doesn't work
-        if sys.executable != '/usr/bin/python':
+        if sys.executable != '/usr/bin/python' and 'IMP_BIN_DIR' in os.environ:
             return _SubprocessWrapper(sys.executable,
                          [os.path.join(os.environ['IMP_BIN_DIR'], app)] + args)
         else:

@@ -89,12 +89,6 @@ using ::IMP::hash_value;
 """ % data
     else:
         data["showable"] = ""
-    # Hack: add module alias for IMP::kernel and IMP::base
-    if data["name"] == "kernel":
-        data["showable"] = "namespace IMP{ namespace kernel = IMP; " \
-                           "namespace base = IMP; }\n" \
-                           + data["showable"]
-
     cppdefines = []
     if options.defines != "":
         for define in tools.split(options.defines):
@@ -228,30 +222,12 @@ def write_ok(
         swig_includes, swig_wrapper_includes):
     print("yes")
     config = ["ok=True"]
-    if len(modules) > 0:
-        config.append("modules = \"" + ":".join(modules) + "\"")
-    if len(unfound_modules) > 0:
-        config.append(
-            "unfound_modules = \"" +
-            ":".join(
-                unfound_modules) +
-            "\"")
-    if len(dependencies) > 0:
-        config.append("dependencies = \"" + ":".join(dependencies) + "\"")
-    if len(unfound_dependencies) > 0:
-        config.append(
-            "unfound_dependencies = \"" +
-            ":".join(
-                unfound_dependencies) +
-            "\"")
-    if len(swig_includes) > 0:
-        config.append("swig_includes = \"" + ":".join(swig_includes) + "\"")
-    if len(swig_wrapper_includes) > 0:
-        config.append(
-            "swig_wrapper_includes = \"" +
-            ":".join(
-                swig_wrapper_includes) +
-            "\"")
+    for varname in ("modules", "unfound_modules", "dependencies",
+                    "unfound_dependencies", "swig_includes",
+                    "swig_wrapper_includes"):
+        var = eval(varname)
+        if len(var) > 0:
+            config.append("%s = %s" % (varname, repr(":".join(var))))
     tools.rewrite(
         os.path.join("data",
                      "build_info",
@@ -352,7 +328,7 @@ def find_cmdline_links(mod, docdir, cmdline_tools):
     for g in [os.path.join(docdir, "README.md")] \
              + glob.glob(os.path.join(docdir, "doc", "*.dox")) \
              + glob.glob(os.path.join(docdir, "doc", "*.md")):
-        for line in open(g):
+        for line in tools.open_utf8(g):
             if todo and len(line.rstrip('\r\n ')) > 0 \
                and line[0] not in " =-\\":
                 (k, v) = todo.popitem()
@@ -419,14 +395,8 @@ def make_overview(options, cmdline_tools):
     pickle.dump(cmdline_links,
                 open(os.path.join("data", "build_info",
                                   "IMP_%s.pck" % options.name), 'wb'), -1)
-    rmd = open(
-        os.path.join(
-            options.source,
-            "modules",
-            options.name,
-            "README.md"),
-        "r").read(
-    )
+    rmd = tools.open_utf8(os.path.join(options.source, "modules", options.name,
+                                       "README.md"), "r").read()
     tools.rewrite(
         os.path.join("doxygen", "generated", "IMP_%s.dox" % options.name),
                   """/** \\namespace %s

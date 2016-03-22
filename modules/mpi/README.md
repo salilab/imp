@@ -1,11 +1,11 @@
 \brief Code that uses the MPI parallel library.
 
-To enable this module, you must build IMP with your MPI library's MPI compiler
-rather than the default C++ compiler (e.g. `mpic++` rather than `g++`). To do
-this, first set up your MPI library so that `mpic++` is in your PATH (on some
-systems by using something like `module load mpi/openmpi-x86_64`) and then
-run [cmake](@ref cmake_config) with the
-`-DCMAKE_CXX_COMPILER=mpic++` option.
+To enable this module, you must first install an MPI library and then make sure
+that the `mpic++` binary is in the PATH (e.g. on a RedHat/Fedora system, you
+may need to run `module load mpich` or similar) before you
+run [cmake](@ref cmake_config). (There is no need to build
+all of IMP with `mpic++` - that would force all of IMP to need the MPI library,
+not just the IMP.mpi module.)
 
 If you want to use [OpenMPI](http://www.open-mpi.org/), note that the default
 build on many Linux systems doesn't play nicely

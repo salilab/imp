@@ -35,11 +35,11 @@ class Tests(IMP.test.TestCase):
         #self.assertRaises(IndexError, m.get_restraint, 0);
         r = DummyRestraint(m)
         r.set_name("dummy")
-        dirchk.assert_number(3)
-        print(r.evaluate(False))
-        dirchk.assert_number(4)
-        del r
         dirchk.assert_number(2)
+        print(r.evaluate(False))
+        dirchk.assert_number(3)
+        del r
+        dirchk.assert_number(1)
         del m
         dirchk.assert_number(0)
 

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/Decorator.h    \brief The base class for decorators.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,6 +24,7 @@
 IMPKERNEL_BEGIN_NAMESPACE
 class ParticleAdaptor;
 
+//! Interface to specialized Particle types (e.g. atoms)
 /**
 Representation of the structure in \imp is via a collection of
 Particle objects. However, since particles are general purpose, they
@@ -45,7 +46,7 @@ print d0.get_coordinates()
 
 \note The `get_is_setup()` and `setup_particle()` functions mentioned below
 can take any of either an IMP::Model* and IMP::ParticleIndex
-pair, an IMP::Paricle* or another decorator to identify the particle.
+pair, an IMP::Particle* or another decorator to identify the particle.
 We use various of those below.
 
 Dealing with decorators and particles has two main parts
@@ -56,11 +57,11 @@ To set up a particle to be used with the IMP::core::XYZ decorator we do
 \code
 d0= IMP.core.XYZ.setup_particle(m, pi, IMP.algebra.Vector3D(0,2,3))
 \endcode
-The method calls also decorates the particle and returns the decorator
+The method call decorates the particle and also returns the decorator
 which can now be used to manipulate the particle. For example we can
 access the coordinates \c (0,2,3) by doing
 \code
-print d0.get_coordinates()
+print(d0.get_coordinates())
 \endcode
 We now say the particle is an XYZ particle. If that particle is
 encountered later when we do not have the existing decorator available,
@@ -69,7 +70,7 @@ we can decorate it again (since it is already set up) by doing
 d1= IMP.core.XYZ(m, pi)
 \endcode
 
-If you do not know if \c p has been set up for the XYZ decorator, you can
+If you do not know if \c pi has been set up for the XYZ decorator, you can
 ask with
 \code
 if IMP.core.XYZ.get_is_setup(m, pi):
@@ -79,9 +80,9 @@ More abstractly, decorators can be used to
 - maintain invariants: e.g. an IMP::atom::Bond particle always connects
   two other particles, both of which are IMP::atom::Bonded particles.
 - add functionality: e.g. you can get the coordinates as an
-  IMP::algebra::Vector3D
-- provide uniform names for attributes: so you do not use \quote{x} some places
-and \quote{X} other places
+  IMP::algebra::Vector3D.
+- provide uniform names for attributes: so you do not use \quote{x} in
+  some places and \quote{X} in other places.
 
 To see a list of all available decorators and to see what functions
 all decorators have, look at the list of classes which inherit from
@@ -99,12 +100,13 @@ statements.
 lazily (at the time of the first use), and not be created as static
 variables. The reason for this is that initialized attribute keys result
 in space being allocated in decorators, even before they are used.\n\n
-Implementors should consult IMP::example::ExampleDecorator,
+Implementers should consult IMP::example::ExampleDecorator,
 IMP_DECORATOR_METHODS(), IMP_DECORATOR_WITH_TRAITS_METHODS(),
 IMP_DECORATOR_GET().
 
-A decorator can be cast to a IMP::Particle* in C++. You have to
-use the Decorator::get_particle() function in Python.
+A decorator can be cast to a IMP::Particle* in C++. In Python Decorator objects
+can be used anywhere where Particle or ParticleIndex objects are expected
+(use the get_particle() method to get the Particle itself).
 
 \note It is undefined behavior to use a decorator constructed on
 a particle that is no longer part of a model. Since constructing
@@ -188,14 +190,13 @@ class IMPKERNELEXPORT Decorator : public Value {
   //! Returns the Model containing the particle.
   Model* get_model() const { return model_; }
 
-  /** Returns true if the decorator was constructued with a non-default
-      constructor.
-
+  //! Returns true if constructed with a non-default constructor.
+  /**
       @note It is guaranteed that this is a very fast method.
             However, this method might return false if the particle itself
             was invalidated after construction - use check_particle()
             in that case.
-  */
+   */
   bool get_is_valid() const { return is_valid_; }
 
   IMP_HASHABLE_INLINE(Decorator, return boost::hash_value(get_particle()););
@@ -206,15 +207,8 @@ class IMPKERNELEXPORT Decorator : public Value {
 };
 
 #ifndef IMP_DOXYGEN
-/** Check that the particle satisfies invariants registered by decorators.
- */
+//! Check that the particle satisfies invariants registered by decorators.
 IMPKERNELEXPORT void check_particle(Model *m, ParticleIndex pi);
-
-IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.5)
-inline void check_particle(Particle* p) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.5, "Use the index version instead");
-  check_particle(p->get_model(), p->get_index());
-}
 #endif
 
 IMPKERNEL_END_NAMESPACE

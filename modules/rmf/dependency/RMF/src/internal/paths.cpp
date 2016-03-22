@@ -2,7 +2,7 @@
  *  \file RMF/paths.cpp
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,6 +10,9 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/version.hpp>
 #include <string>
+#if BOOST_VERSION <= 104100
+#include <cstdio> // for tmpnam()
+#endif
 
 #include "RMF/compiler_macros.h"
 #include "RMF/internal/paths.h"

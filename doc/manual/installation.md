@@ -10,10 +10,10 @@ much faster than building from source code, requires a smaller download,
 and all the necessary prerequisites are handled for you automatically.
 
 We recommend you use a stable release. These are available for
-Windows, Mac and Linux from our [download page](http://integrativemodeling.org/download.html#stable).
+Windows, Mac and Linux from our [download page](https://integrativemodeling.org/download.html#stable).
 
-Binaries are [also available for our latest nightly builds](http://integrativemodeling.org/download.html#develop). If you do decide to use a nightly build,
-please check out the [nightly builds results page](http://integrativemodeling.org/nightly/results/)
+Binaries are [also available for our latest nightly builds](https://integrativemodeling.org/download.html#develop). If you do decide to use a nightly build,
+please check out the [nightly builds results page](https://integrativemodeling.org/nightly/results/)
 to see if the code is currently stable enough for your purposes.
 
 # Source code installation {#installation_source}
@@ -23,7 +23,8 @@ to see if the code is currently stable enough for your purposes.
 In order to build %IMP from source, you will need:
 
 - [CMake](http://www.cmake.org) (2.8 or later)
-- [Boost](http://www.boost.org) (1.40 or later)
+- [Boost](http://www.boost.org) (1.40 or later; note that 1.60 does not
+  [currently work](https://svn.boost.org/trac/boost/ticket/11880))
 - [HDF5](http://www.hdfgroup.org/HDF5/) (1.8 or later)
 - [Python](http://www.python.org) (2.6 or later, or any version of Python 3)
 - [SWIG](http://www.swig.org) (1.3.40 or later; 2.0.4 or later is needed
@@ -33,20 +34,20 @@ The following prerequisites are _optional_; without them some parts of %IMP
 will not build, and some will not function optimally.
 
 - [Doxygen](http://www.doxygen.org/) (only exactly version 1.8.6 is supported)
-  and [Graphviz](http://www.graphviz.org/): Required for building
+  and [Graphviz](http://www.graphviz.org/): required for building
   documentation.
-- [Modeller](\ref modeller): needed to use the IMP.modeller module
+- [Modeller](\ref modeller): needed to use the IMP.modeller module.
 - [CGAL](\ref CGAL): enables faster geometric operations, such as
   nonbonded lists.
 - [Google perf tools](\ref perf): needed only for profiling %IMP code.
 - [ANN](\ref ANN): certain data structures will be faster if it is available.
-- [GSL](\ref GSL): needed to use the IMP.gsl module
-- [OpenCV](\ref OpenCV): needed to use the IMP.em2d module or the
+- [GSL](\ref GSL): needed to use the IMP.gsl module.
+- [OpenCV](\ref OpenCV) (2.1 or later): needed to use the IMP.em2d module or the
   [idock](@ref idock_pcsk9) and [emagefit](@ref emagefit_3sfd) command
   line tools.
-- [FFTW](http://www.fftw.org): need to use the IMP.em2d or IMP.multifit modules
-  or the [multifit](@ref multifit_3sfd) command line tool.
-- [libTAU](http://integrativemodeling.org/libTAU.html): needed to use the
+- [FFTW](http://www.fftw.org): needed to use the IMP.em2d or IMP.multifit
+  modules or the [multifit](@ref multifit_3sfd) command line tool.
+- [libTAU](https://integrativemodeling.org/libTAU.html): needed to use the
   IMP.cnmultifit module or the [cnmultifit](@ref cnmultifit_groel) command
   line tool.
 - An [MPI](@ref IMP::mpi) library is needed to use the IMP.mpi module.
@@ -56,11 +57,14 @@ will not build, and some will not function optimally.
   [biopython](http://biopython.org/wiki/Download) Python libraries are also
   recommended.
 - [Chimera](https://www.cgl.ucsf.edu/chimera/download.html) is recommended
-  for visualization of results
+  for visualization of results.
 
 ### Getting prerequisites on Linux {#installation_prereqs_linux}
 All of the prerequisites should be available as pre-built packages for
-your Linux distribution of choice.
+your Linux distribution of choice. For example, on a Fedora system the
+following should install most of the prerequisites:
+
+        sudo yum install boost-devel gperftools-devel CGAL-devel graphviz gsl-devel cmake doxygen hdf5-devel swig fftw-devel opencv-devel
 
 ### Getting prerequisites on a Mac {#installation_prereqs_mac}
 
@@ -77,7 +81,7 @@ such as
 
         brew tap homebrew/science
         brew tap salilab/salilab
-        brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr libtau
+        brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr opencv libtau
 
   to install everything %IMP finds useful (or that you will want for installing various useful Python libs that %IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
 - [Macports](http://www.macports.org/) If you use MacPorts, you must add `/opt/local/bin` to your path (either by modifying your shell's
@@ -100,7 +104,7 @@ procedure we use.
 
 ## Download {#installation_download}
 
-- Download the source code tarball from [our download page](http://integrativemodeling.org/download.html#source), then extract it with something like:
+- Download the source code tarball from [our download page](https://integrativemodeling.org/download.html#source), then extract it with something like:
 
         tar -xvzf ../imp-<version>.tar.gz
 
@@ -113,7 +117,7 @@ procedure we use.
 
   (the `master` branch tracks the most recent stable
   release; alternatively you can use `develop` to get the most recent code,
-  but please check out the [nightly builds results page](http://integrativemodeling.org/nightly/results/)
+  but please check out the [nightly builds results page](https://integrativemodeling.org/nightly/results/)
   to see if the code is currently stable enough for your purposes).
 
 ## Compilation {#installation_compilation}
@@ -141,7 +145,7 @@ Tests are labeled with the module name and the type and cost of the test, so to 
 Benchmarks are simply tests labeled as `benchmark`; examples are tests labeled as `example`.
 
 Note that some test failures are to be expected; compare the failures with
-those at our own [nightly builds page](http://integrativemodeling.org/nightly/results/)
+those at our own [nightly builds page](https://integrativemodeling.org/nightly/results/)
 if you are concerned.
 
 ## Installation {#installation_install}

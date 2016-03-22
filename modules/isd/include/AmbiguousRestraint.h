@@ -2,7 +2,7 @@
  *  \file IMP/isd/AmbiguousRestraint.h
  *  \brief An implementation of the d-norm to make an ambiguous restraint.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,7 +12,6 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/Particle.h>
-#include <IMP/ParticleTuple.h>
 #include <IMP/generic.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -33,9 +32,7 @@ class IMPISDEXPORT AmbiguousRestraint : public Restraint {
 
  public:
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
-      preferably in a Singleton or PairContainer as appropriate.
-      Two ways to call it: pass it two restraints, or a list of restraints.
+  /** Two ways to call it: pass it two restraints, or a list of restraints.
    */
   AmbiguousRestraint(Model *m, int d, Restraint *r0,
                      Restraint *r1);
@@ -43,8 +40,6 @@ class IMPISDEXPORT AmbiguousRestraint : public Restraint {
 
   double get_probability() const { return exp(-unprotected_evaluate(nullptr)); }
 
-  /** This macro declares the basic needed methods: evaluate and show
-   */
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

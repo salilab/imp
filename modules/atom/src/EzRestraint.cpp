@@ -2,7 +2,7 @@
  *  \file EzRestraint.cpp \brief
  *  \brief Ez potential. A statistical scoring function for atom proteins
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,14 +24,6 @@ IMPATOM_BEGIN_NAMESPACE
 
 EzRestraint::EzRestraint(Model *m, ParticleIndexesAdaptor ps)
     : Restraint(m, "Ez Potential"), ps_(ps) {
-  setup();
-}
-
-EzRestraint::EzRestraint(Particles ps)
-    : Restraint(ps[0]->get_model(), "Ez Potential") {
-  IMPATOM_DEPRECATED_METHOD_DEF(2.5,
-                                "Use the index-based constructor instead.");
-  ps_ = IMP::internal::get_index(ps);
   setup();
 }
 

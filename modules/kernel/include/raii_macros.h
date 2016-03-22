@@ -2,7 +2,7 @@
  *  \file IMP/raii_macros.h
  *  \brief Various general useful macros for IMP.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -33,17 +33,17 @@
 */
 #define IMP_RAII(Name, args, Initialize, Set, Reset, Show)                     \
   IMP_HELPER_MACRO_PUSH_WARNINGS Name() { Initialize; }                        \
-  /** explicit constructor that sets the properties of Name */                 \
+  /** \brief Explicit constructor that sets the properties of Name */          \
   explicit Name args {                                                         \
     Initialize;                                                                \
     Set;                                                                       \
   }                                                                            \
-  /** sets the properties of the class to new ones */                          \
+  /** \brief Assign new properties to the class */                             \
   void set args {                                                              \
     reset();                                                                   \
     Set;                                                                       \
   }                                                                            \
-  /** resets the properties previously set for this class */                   \
+  /** \brief Remove the properties previously set for this class */            \
   void reset() { Reset; }                                                      \
   ~Name() { reset(); }                                                         \
   IMP_HELPER_MACRO_POP_WARNINGS IMP_SHOWABLE_INLINE(Name, out << #Name << '('; \

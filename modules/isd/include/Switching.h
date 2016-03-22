@@ -2,7 +2,7 @@
  *  \file IMP/isd/Switching.h
  *  \brief A decorator for switching parameters particles
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_SWITCHING_H
@@ -18,7 +18,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Add switching parameter to particle
-/** This is just syntactic sugar for a Nuisance bounded to be betweeen 0 and 1.
+/** This is just syntactic sugar for a Nuisance bounded to be between 0 and 1.
  */
 class IMPISDEXPORT Switching : public Nuisance {
   static void do_setup_particle(Model *m, ParticleIndex pi,

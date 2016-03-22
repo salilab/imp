@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
         prot = atom.read_pdb(fn, m, atom.ATOMPDBSelector())
         atom.add_radii(prot)
         projections = 20
-        resolution = 1.0
+        resolution = 7.0
         pixel_size = 1.5
         img_size = 80
         ccs = em2d.CollisionCrossSection(

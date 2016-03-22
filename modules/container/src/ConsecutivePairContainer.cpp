@@ -1,7 +1,7 @@
 /**
  *  \file AllPairContainer.cpp   \brief A list of ParticlePairs.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,15 +20,6 @@ unsigned int key_count = 0;
 ConsecutivePairContainer::ConsecutivePairContainer(
     Model *m, const ParticleIndexes &ps, std::string name)
     : PairContainer(m, name), ps_(ps) {
-  init();
-}
-
-ConsecutivePairContainer::ConsecutivePairContainer(
-    const ParticlesTemp &ps, std::string name)
-    : PairContainer(ps[0]->get_model(), name),
-      ps_(IMP::internal::get_index(ps)) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5,
-                                 "Use the index-based constructor instead.");
   init();
 }
 
@@ -74,15 +65,6 @@ ConsecutivePairFilter::ConsecutivePairFilter(ConsecutivePairContainer *cpc)
 ExclusiveConsecutivePairContainer::ExclusiveConsecutivePairContainer(
     Model *m, const ParticleIndexes &ps, std::string name)
     : PairContainer(m, name), ps_(ps) {
-  init();
-}
-
-ExclusiveConsecutivePairContainer::ExclusiveConsecutivePairContainer(
-    const ParticlesTemp &ps, std::string name)
-    : PairContainer(ps[0]->get_model(), name),
-      ps_(IMP::internal::get_index(ps)) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5,
-                                 "Use the index-based constructor instead.");
   init();
 }
 

@@ -2,7 +2,7 @@
  *  \file IMP/ClassnameModifier.h
  *  \brief A Modifier on PLURALVARIABLETYPE
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_CLASSNAME_MODIFIER_H
@@ -11,7 +11,6 @@
 #include <IMP/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
-#include "ParticleTuple.h"
 #include "internal/container_helpers.h"
 #include "model_object_helpers.h"
 
@@ -21,9 +20,9 @@ IMPKERNEL_BEGIN_NAMESPACE
 /** The primary function of such a class is to change
     the passed particles.
 
-    \see IMP::ClassnameFunctor
+    \see IMP::ClassnamePredicate
 
-    Implementors should see IMP_CLASSNAME_MODIFIER(). Also see
+    Implementers should see IMP_CLASSNAME_MODIFIER(). Also see
     ClassnameDerivativeModifier.
  */
 class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
@@ -34,12 +33,8 @@ class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
   typedef INDEXTYPE IndexArgument;
   ClassnameModifier(std::string name = "ClassnameModifier %1%");
 
-  /** \deprecated_at{2.1} use the index version instead*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual void apply(ARGUMENTTYPE vt) const;
-
   /** Apply the function to a single value*/
-  virtual void apply_index(Model *m, PASSINDEXTYPE v) const;
+  virtual void apply_index(Model *m, PASSINDEXTYPE v) const = 0;
 
   /** Apply the function to a collection of PLURALVARIABLETYPE */
   /** If bounds are passed, only apply to ones between the upper and

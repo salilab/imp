@@ -17,7 +17,7 @@ for it to finish.) The build system passes each example the `--run_quick_test`
 argument, so this can be used to run a faster subset (e.g. fewer iterations
 of an optimization). If you are trying to demonstrate the application of your
 method to a real biological system, you should write a
-[biological system](http://integrativemodeling.org/systems/) instead of an
+[biological system](https://integrativemodeling.org/systems/) instead of an
 example.
 
 The example should have enough comments that the reasoning behind each line of code is clear to someone who roughly understands how %IMP in general works.

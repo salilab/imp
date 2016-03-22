@@ -2,7 +2,7 @@
  *  \file CADihedralRestraint.cpp \brief Dihedral restraint between four
  *                                     particles.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -72,9 +72,11 @@ CADihedralRestraint::unprotected_evaluate(DerivativeAccumulator *) const
   core::XYZ d3(m, p_[3]);
   core::XYZ d4(m, p_[4]);
 
-  double phi0 = core::internal::dihedral(d0, d1, d2, d3, NULL,NULL,NULL,NULL);
+  double phi0 = core::internal::dihedral(d0, d1, d2, d3, nullptr, nullptr,
+                                         nullptr, nullptr);
 
-  double phi1 = core::internal::dihedral(d1, d2, d3, d4, NULL,NULL,NULL,NULL);
+  double phi1 = core::internal::dihedral(d1, d2, d3, d4, nullptr, nullptr,
+                                         nullptr, nullptr);
 
   int i0 = get_closest(phi0_,phi0);
 

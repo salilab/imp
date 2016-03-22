@@ -2,7 +2,7 @@
  *  \file IMP/isd/UniformPrior.h
  *  \brief A restraint on a scale parameter.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -29,8 +29,6 @@ public:
   UniformPrior(IMP::Model* m, Particle *p, Float k,
             Float upperb, Float lowerb, std::string name="UniformPrior%1%");
 
-  /** This macro declares the basic needed methods: evaluate and show
-   */
   virtual double
   unprotected_evaluate(IMP::DerivativeAccumulator *accum)
      const IMP_OVERRIDE;

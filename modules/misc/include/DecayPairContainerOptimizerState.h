@@ -2,7 +2,7 @@
  *  \file IMP/misc/DecayPairContainerOptimizerState.h
  *  \brief A pair container with a decaying list of pairs.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMISC_DECAY_PAIR_CONTAINER_OPTIMIZER_STATE_H
@@ -35,12 +35,6 @@ class IMPMISCEXPORT DecayPairContainerOptimizerState
  public:
   DecayPairContainerOptimizerState(Model *m,
       PairPredicate *pred, const ParticleIndexPairs &initial_list,
-      std::string name = "DecayPairContainerOptimizerState%1%");
-
-  //! \deprecated_at{2.5} Use the index-based constructor instead
-  IMPMISC_DEPRECATED_METHOD_DECL(2.5)
-  DecayPairContainerOptimizerState(
-      PairPredicate *pred, const ParticlePairsTemp &initial_list,
       std::string name = "DecayPairContainerOptimizerState%1%");
 
   PairContainer *get_output_container() const { return output_; }

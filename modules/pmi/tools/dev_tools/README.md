@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/salilab/developer_tools/badges/gpa.svg)](https://codeclimate.com/github/salilab/developer_tools)
+
 # Developer Tools
 
 This project contains tools that are used by a variety of development projects. In particular it provides tools to deal with

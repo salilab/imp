@@ -1,7 +1,7 @@
 /**
  *  \file endian.cpp
  *  \brief Functions to deal with endianess
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
 */
 
 #include <IMP/algebra/endian.h>
@@ -53,15 +53,6 @@ void reversed_write(const void *src, size_t size, size_t nitems,
       }
       ptr += size;
     }
-  }
-}
-
-void byte_swap(unsigned char *b, int n) {
-  register int i = 0;
-  register int j = n - 1;
-  while (i < j) {
-    std::swap(b[i], b[j]);
-    i++, j--;
   }
 }
 

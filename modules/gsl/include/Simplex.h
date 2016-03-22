@@ -2,7 +2,7 @@
  *  \file IMP/gsl/Simplex.h
  *  \brief The simplex algorithm from GSL.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPGSL_SIMPLEX_H
@@ -35,7 +35,7 @@ class IMPGSLEXPORT Simplex : public GSLOptimizer {
 
       The parameters are:
 
-      - minumum_size: the optimization stops when the size of the
+      - minimum_size: the optimization stops when the size of the
       simplex falls below this. The size is defined as the average
       distance from the centroid to the simplex vertices. (Default 0.1)
 
@@ -43,7 +43,7 @@ class IMPGSLEXPORT Simplex : public GSLOptimizer {
       simplex. Make sure that this covers the optimal solution, given
       the starting configuration. (Default 1)
 
-      \note Both quantities are relative to rescaled attribues and so should be
+      \note Both quantities are relative to rescaled attributes and so should be
       numbers between 0 and 1.
     @{
   */

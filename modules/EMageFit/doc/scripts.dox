@@ -21,7 +21,7 @@ any docking program, by making a couple of changes:
     that provides a <tt>dock()</tt> method that saves the results to a file.
   - emagefit also calls the functions <tt>read_hex_transforms()</tt>
     and <tt>filter_docking_results()</tt>. The only function that needs to be
-    adapated for a different docking program is <tt>parse_hex_transform()</tt>,
+    adapted for a different docking program is <tt>parse_hex_transform()</tt>,
     which both of them use.
 
 \subsection emagefit_cluster_bin emagefit_cluster: Performs clustering of the solutions stored in a database file.

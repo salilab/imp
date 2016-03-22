@@ -1,7 +1,7 @@
 /**
  * \file RRT \brief
  *
- * Copyright 2007-2014 Sali Lab. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/kinematics/RRT.h>
@@ -85,15 +85,17 @@ void RRT::add_nodes(RRTNode* q_near, const std::vector<DOFValues>& new_nodes) {
   }
 }
 
-void RRT::run() {
+bool RRT::run(unsigned int number_of_iterations) {
   ScoringFunction *sf = get_scoring_function();
-  check_initial_configuration(sf);
-  Parameters current_counters;
-  while (!is_stop_condition(default_parameters_, current_counters)) {
+  if(tree_.size() == 1) check_initial_configuration(sf);
+  unsigned int iter_counter = 0;
+  //Parameters current_counters;
+  while (!is_stop_condition(default_parameters_, current_counters_)) {
     DOFValues q_rand = dofs_sampler_->get_sample();
 
     // random selection of active dofs
-    if (number_of_sampled_dofs_ > 0 && current_counters.number_of_iterations_ % 10 == 0) {
+    if (number_of_sampled_dofs_ > 0 &&
+        current_counters_.number_of_iterations_ % 10 == 0) {
       active_dofs_ = select_k_out_of_n_dofs(number_of_sampled_dofs_, q_rand.size());
     }
 
@@ -109,17 +111,25 @@ void RRT::run() {
     std::vector<DOFValues> new_nodes =
         local_planner_->plan(q_near_node->get_DOFValues(), q_rand, sf);
     add_nodes(q_near_node, new_nodes);
+
     // update counters
-    current_counters.number_of_iterations_++;
-    if (new_nodes.size() > 0) current_counters.actual_tree_size_++;
-    current_counters.tree_size_ = tree_.size();
-    if (current_counters.number_of_iterations_ % 100 == 0 ||
+    current_counters_.number_of_iterations_++;
+    iter_counter++;
+    if (new_nodes.size() > 0) current_counters_.actual_tree_size_++;
+    current_counters_.tree_size_ = tree_.size();
+    if (current_counters_.number_of_iterations_ % 100 == 0 ||
         new_nodes.size() > 0) {
       std::cerr << "RRT done iteration, added " << new_nodes.size()
-                << " new nodes " << current_counters << " q_near "
+                << " new nodes " << current_counters_ << " q_near "
                 << q_near_node->get_id() << std::endl;
     }
+    // try to output
+    if(number_of_iterations > 0 && tree_.size() > 1
+       && iter_counter == number_of_iterations)
+      return true;
   }
+  return false; //done running
+
 }
 
 std::vector<DOFValues> RRT::get_DOFValues() {

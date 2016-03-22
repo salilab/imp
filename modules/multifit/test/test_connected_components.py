@@ -19,15 +19,11 @@ class Tests(IMP.test.TestCase):
 
     def test_connected_components(self):
         """test connected components"""
-        # create a map of X connected components
-        dmap = IMP.em.create_density_map(IMP.algebra.BoundingBox3D(
-            IMP.algebra.Vector3D(-50, -50, -50),
-            IMP.algebra.Vector3D(50, 50, 50)), 2.)
-
         for i in range(5):
             # sample i populations
             mdl = IMP.Model()
             ps = []
+            # create a map of i components
             for j in range(i + 1):
                 bb = IMP.algebra.BoundingBox3D(
                     IMP.algebra.Vector3D(
@@ -37,11 +33,13 @@ class Tests(IMP.test.TestCase):
                     IMP.algebra.Vector3D(1 * (j + 1), 1 * (j + 1), 1 * (j + 1)))
                 for k in range(10):
                     p = IMP.Particle(mdl)
+                    center = IMP.algebra.get_random_vector_in(bb) \
+                             + IMP.algebra.Vector3D(j * 20, j * 20, j * 20)
                     IMP.core.XYZR.setup_particle(p,
-                                                 IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb) + IMP.algebra.Vector3D(j * 20, j * 20, j * 20), 2))
+                                             IMP.algebra.Sphere3D(center, 2))
                     IMP.atom.Mass.setup_particle(p, 1)
                     ps.append(p)
-            dmap = IMP.em.particles2density(ps, 1, 1)
+            dmap = IMP.em.particles2density(ps, 10, 1)
             con_comp = IMP.multifit.get_connected_components(dmap, 0.001, 0.5)
             for c in con_comp:
                 for ind in c:

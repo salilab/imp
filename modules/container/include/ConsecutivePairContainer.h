@@ -2,7 +2,7 @@
  *  \file IMP/container/ConsecutivePairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CONSECUTIVE_PAIR_CONTAINER_H
@@ -59,12 +59,6 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
 
   ConsecutivePairContainer(Model *m, const ParticleIndexes &ps,
                            std::string name = "ConsecutivePairContainer%1%");
-
-#ifndef IMP_DOXYGEN
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  ConsecutivePairContainer(const ParticlesTemp &ps,
-                           std::string name = "ConsecutivePairContainer%1%");
-#endif
 
   virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
   virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
@@ -161,13 +155,6 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
   ExclusiveConsecutivePairContainer(Model *m, const ParticleIndexes &ps,
                                     std::string name =
                                         "ExclusiveConsecutivePairContainer%1%");
-
-#ifndef IMP_DOXYGEN
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  ExclusiveConsecutivePairContainer(const ParticlesTemp &ps,
-                                    std::string name =
-                                        "ExclusiveConsecutivePairContainer%1%");
-#endif
 
   virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
   virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;

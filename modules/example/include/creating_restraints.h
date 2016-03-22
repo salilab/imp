@@ -2,7 +2,7 @@
  *  \file IMP/example/creating_restraints.h
  *  \brief A simple unary function.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,18 +28,18 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 
     The restraint is not added to the model.
 */
-inline Restraint *create_chain_restraint(
-    const ParticlesTemp &ps, double length_factor, double k,
+inline Restraint *create_chain_restraint(Model *m,
+    const ParticleIndexes &ps, double length_factor, double k,
     std::string name) {
-  IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
-  double scale = core::XYZR(ps[0]).get_radius();
+  IMP_USAGE_CHECK(!ps.empty(), "No ParticleIndexes passed.");
+  double scale = core::XYZR(m, ps[0]).get_radius();
   IMP_NEW(core::HarmonicDistancePairScore, hdps,
           (length_factor * 2.0 * scale, k, "chain linker %1%"));
   // Exclusive means that the particles will be in no other
   // ConsecutivePairContainer
   // this assumption accelerates certain computations
   IMP_NEW(container::ExclusiveConsecutivePairContainer, cpc,
-          (ps, name + " consecutive pairs"));
+          (m, ps, name + " consecutive pairs"));
   Pointer<Restraint> r =
       container::create_restraint(hdps.get(), cpc.get(), "chain restraint %1%");
   // make sure it is not freed

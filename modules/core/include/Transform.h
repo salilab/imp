@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/Transform.h     \brief Transform a particle
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,8 +16,6 @@ IMPCORE_BEGIN_NAMESPACE
 //! Apply a transformation to a passed particle
 /**
    \see algebra::Transformation3D
-   See IMP::SingletonFunctor for an example of how to transform a set of
-   particles.
  */
 class IMPCOREEXPORT Transform : public SingletonModifier {
  public:

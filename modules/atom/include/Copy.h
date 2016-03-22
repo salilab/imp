@@ -2,7 +2,7 @@
  *  \file IMP/atom/Copy.h
  *  \brief A decorator for keeping track of copies of a molecule.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -29,7 +29,9 @@ class IMPATOMEXPORT Copy : public Molecule {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 int number) {
     m->add_attribute(get_copy_index_key(), pi, number);
-    Molecule::setup_particle(m, pi);
+    if (!Molecule::get_is_setup(m, pi)) {
+      Molecule::setup_particle(m, pi);
+    }
   }
 
  public:

@@ -2,6 +2,7 @@
 # \brief Benchmark operations on the RMF from python to see how much overhead
 #        that adds
 
+from __future__ import print_function
 import RMF
 import datetime
 
@@ -94,14 +95,14 @@ def load(file, nodes):
 def benchmark_create(file, type):
     start = datetime.datetime.now()
     dist = create(file)
-    print type, "create,", datetime.datetime.now() - start, ",", dist
+    print(type, "create,", datetime.datetime.now() - start, ",", dist)
 
 
 def benchmark_traverse(file, type):
     start = datetime.datetime.now()
     file.set_current_frame(RMF.FrameID(0))
     t = traverse(file)
-    print type, "traverse,", datetime.datetime.now() - start, ",", t
+    print(type, "traverse,", datetime.datetime.now() - start, ",", t)
 
 
 def benchmark_load(file, type):
@@ -112,7 +113,7 @@ def benchmark_load(file, type):
             nodes.append(n)
     start = datetime.datetime.now()
     dist = load(file, nodes)
-    print type, "load,", datetime.datetime.now() - start, ",", dist
+    print(type, "load,", datetime.datetime.now() - start, ",", dist)
 
 name = "benchmark_python.rmf"
 fh = RMF.create_rmf_file(name)

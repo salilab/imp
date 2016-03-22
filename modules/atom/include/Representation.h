@@ -1,7 +1,7 @@
 /**
  *  \file IMP/atom/Representation.h     \brief A decorator for Representations.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -87,6 +87,13 @@ IMPATOMEXPORT double get_resolution(Model *m, ParticleIndex pi);
 inline double get_resolution(Hierarchy h) {
   return get_resolution(h.get_model(), h.get_particle_index());
 }
+
+//! Return the Representation object containing this hierarchy
+IMPATOMEXPORT Representation get_representation(Hierarchy h, bool nothrow = false);
+
+//! Traverse through the tree and show atom info, including representations
+IMPATOMEXPORT void show_with_representations(Hierarchy h,
+                                             std::ostream& out = std::cout);
 
 IMPATOM_END_NAMESPACE
 

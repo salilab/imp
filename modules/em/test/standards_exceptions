@@ -98,6 +98,7 @@ function_name_exceptions = [
   'SampledDensityMap.upper_voxel_shift',
   'SampledDensityMap.xyz_ind2voxel',
   'SurfaceShellDensityMap.binaries',
+  'SurfaceShellDensityMap.binarize',
   'SurfaceShellDensityMap.calcRMS',
   'SurfaceShellDensityMap.calc_all_voxel2loc',
   'SurfaceShellDensityMap.convolute_kernel',
@@ -145,7 +146,7 @@ spelling_exceptions=['xplor', 'yorigin', 'timessig', 'yz',
                      'rnormfac', 'rsigsq', 'kdist', 'vsigsq', 'normfac',
                      'nx', 'rsig', 'nz', 'xy', 'params', 'sigsq', 'xorigin',
                      'rkdist', 'vsig', 'xz', 'zorigin', 'pca', 'binarized',
-                     'cmm']
+                     'cmm', 'rkdistsq']
 value_object_exceptions=['DensityHeader',
                                            'CoarseConvolution',
                                            'DistanceMask', 'ImageHeader',

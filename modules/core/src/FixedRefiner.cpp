@@ -2,7 +2,7 @@
  *  \file FixedRefiner.cpp
  *  \brief A particle refiner which returns a fixed set of particles.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

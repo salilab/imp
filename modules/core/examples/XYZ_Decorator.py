@@ -1,5 +1,5 @@
 ## \example core/XYZ_Decorator.py
-# This is a simple example using the XYZDecorator to set the coordinates
+# This is a simple example using the XYZ decorator to set the coordinates
 # of some particles and compute the distance between them.
 
 import IMP

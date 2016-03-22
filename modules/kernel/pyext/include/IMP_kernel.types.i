@@ -377,9 +377,9 @@ IMP_SWIG_OBJECT_INSTANCE(Namespace, Name, Name, PluralName);
 IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
 %extend Namespace::Name {
   %pythoncode %{
+    @staticmethod
     def get_from(o):
        return _object_cast_to_##Name(o)
-    get_from = staticmethod(get_from)
   %}
  }
 %enddef
@@ -388,9 +388,9 @@ IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
 IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
 %extend Namespace::Name {
   %pythoncode %{
+    @staticmethod
     def get_from(o):
        return _object_cast_to_##Name(o)
-    get_from = staticmethod(get_from)
   %}
  }
 %enddef
@@ -417,9 +417,9 @@ IMP_SWIG_OBJECT(Namespace, Name, PluralName);
         else:
           return IMP.VersionInfo(self.__module__,
                              __import__(self.__module__).get_module_version())
+    @staticmethod
     def get_from(o):
        return _object_cast_to_##Name(o)
-    get_from = staticmethod(get_from)
   %}
 }
 IMP_SWIG_DIRECTOR(Namespace, Name);

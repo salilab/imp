@@ -1,7 +1,7 @@
 /**
  *  \file key_helpers.h    \brief helpers for declaring keys.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

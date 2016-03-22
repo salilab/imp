@@ -1,7 +1,7 @@
 /**
  *  \file cgal_predicates.h
  *  \brief predicates implemented using CGAL
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_INTERNAL_VECTOR_H

@@ -2,7 +2,7 @@
  *  \file IMP/isd/FretRestraint.h
  *  \brief FRET_R restraint to use in vivo FRET data.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -50,10 +50,6 @@ class IMPISDEXPORT FretRestraint : public Restraint {
 
  public:
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
-      preferably in a Singleton or PairContainer as appropriate.
-   */
-
   FretRestraint(Particles pd, Particles pa,
                 Particle *kda, Particle *Ida,
                 Particle *R0, Particle *sigma0,
@@ -95,8 +91,6 @@ class IMPISDEXPORT FretRestraint : public Restraint {
   // set experimental value
   void set_experimental_value(double fexp);
 
-  /** This macro declares the basic needed methods: evaluate and show
-   */
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

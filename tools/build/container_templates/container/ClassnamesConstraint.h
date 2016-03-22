@@ -3,7 +3,7 @@
  *  \brief Use a ClassnameModifier applied to a PLURALVARIABLETYPE to
  *  maintain an invariant
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLASSNAMES_CONSTRAINT_H
@@ -53,7 +53,7 @@ class ClassnamesConstraint :
    */
   ClassnamesConstraint(ClassnameModifier *before, ClassnameModifier *after,
                        ClassnameContainerAdaptor c,
-                       std::string name = "ClassnameConstraint %1%")
+                       std::string name = "ClassnamesConstraint %1%")
       : P(before, after, c, name) {}
 #if defined(IMP_DOXYGEN) || defined(SWIG)
  protected:

@@ -2,7 +2,7 @@
  *  \file RevoluteJointMover.cpp
  *  \brief A mover which perturbs a joint with a gaussian.
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

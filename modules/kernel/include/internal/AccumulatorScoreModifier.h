@@ -2,7 +2,7 @@
  *  \file generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,11 +48,6 @@ class AccumulatorScoreModifier : public Score::Modifier {
     Score::Modifier::set_was_used(true);
     sa_ = sa;
     score_ = 0;
-  }
-
-  virtual void apply(typename Score::PassArgument a) const IMP_OVERRIDE {
-    apply_index(IMP::internal::get_model(a),
-                IMP::internal::get_index(a));
   }
 
   virtual void apply_index(Model *m, typename Score::PassIndexArgument a) const

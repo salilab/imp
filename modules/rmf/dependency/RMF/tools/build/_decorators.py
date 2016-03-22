@@ -2,6 +2,7 @@
 
 import os.path
 import sys
+import subprocess
 
 
 def replace(msg, to_replace):
@@ -502,7 +503,7 @@ def make_header(name, infos, deps):
  *  \\file RMF/decorator/%(name)s.h
  *  \\brief Helper functions for manipulating RMF files.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -539,10 +540,6 @@ RMF_DISABLE_WARNINGS
 
     del fl
     root = os.path.split(os.path.split(sys.argv[0])[0])[0]
-    os.system(
-        os.path.join(
-            root,
-            "dev_tools",
-            "cleanup_code.py") +
-        " " +
-        path)
+    subprocess.check_call([sys.executable,
+                           os.path.join(root, "dev_tools", "cleanup_code.py"),
+                           path])

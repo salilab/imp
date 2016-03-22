@@ -3,7 +3,7 @@ Code coverage {#coverage}
 
 To assist in testing your code, we report the coverage of all %IMP modules
 and applications as part of the
-[nightly builds](http://integrativemodeling.org/nightly/results/).
+[nightly builds](https://integrativemodeling.org/nightly/results/).
 Coverage is basically a report of which lines of code were executed by your
 tests; it is then straightforward to see which parts of the code have not
 been exercised by any test, so that you can write new tests to test those
@@ -18,7 +18,8 @@ branches from an `if` statement are followed).
 Ideally, coverage reflects the lines of code in a module or application
 that were exercised only by running its own tests, rather than the tests of the
 entire %IMP package, and generally speaking you should try to test a module
-using its own tests.
+using its own tests. (Note also that our build machine that runs the coverage
+test suite does not run 'expensive' tests.)
 
 If you have code that for some reason you wish to exclude from coverage,
 you can add specially formatted comments to the code. For Python code,

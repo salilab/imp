@@ -2,7 +2,7 @@
  *  \file IMP/object_cast.h
  *  \brief A shared base class to help in debugging and things.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,14 +13,13 @@
 #include "Object.h"
 #include "check_macros.h"
 
-IMPKERNEL_BEGIN_NAMESPACE /** Up (or down) cast an \imp Object-derived class. If
-                            the cast
-                            does not succeed a ValueException will be thrown.
-                            Use a
-                            \c dynamic_cast if you prefer to have a nullptr
-                            returned.
-                         */
-    template <class O>
+IMPKERNEL_BEGIN_NAMESPACE
+
+//! Up (or down) cast an \imp Object-derived class.
+/** If the cast does not succeed a ValueException will be thrown.
+    Use a \c dynamic_cast if you prefer to have a nullptr returned.
+ */
+template <class O>
 inline O *object_cast(Object *o) {
   O *ret = dynamic_cast<O *>(o);
   if (!ret) {

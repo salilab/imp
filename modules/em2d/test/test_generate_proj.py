@@ -18,11 +18,15 @@ class Tests(IMP.test.IMP.test.ApplicationTestCase):
 
     def test_even_projections(self):
         """ Evenly distributed em2d image projections from a PDB file"""
-        p = self.run_application('generate_perfect_projection',
-                                 [self.get_input_file_name('complex-2d.pdb'),
-                                  '5',
-                                  self.get_input_file_name('image_1.pgm'),
-                                  '3', '2.5']) ###PDBFile, Number of Projections, Input Image, Resolution, Apix
+        p = self.run_application('create_single_particle_images',
+                                 ['-i', self.get_input_file_name('complex-2d.pdb'),
+                                  '-n', '5',
+                                  '-r', '3.3',
+                                  '-a', '1.2156',
+                                  '-l', '256',
+                                  '-o', 'Projection',
+                                  '-s', '0.00001',
+                                  '-p', 'Noisy']) ###PDBFile, Number of Projections, Resolution, Apix, Image size, Output Name, Noise Level (StdDev SSNR). process
 
         out, err = p.communicate()
         sys.stderr.write(err)

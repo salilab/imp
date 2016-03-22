@@ -2,7 +2,7 @@
  *  \file charmm_helpers.h
  *  \brief Helpers for the CHARMM forcefield support.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -108,10 +108,7 @@ public:
   TopologyVisitor(Inserter &inserter) : inserter_(inserter), in_chain_(false) {}
 
   bool operator()(Hierarchy p) {
-    Chain chain = p.get_as_chain();
-    Fragment fragment = p.get_as_fragment();
-    Residue residue = p.get_as_residue();
-    if (residue) {
+    if (Residue::get_is_setup(p)) {
       if (last_fragment_) {
         add_chain();
         last_fragment_ = Fragment();
@@ -120,10 +117,12 @@ public:
       fragment_residues_.push_back(p);
       // don't look at atoms
       return false;
-    } else if (fragment) {
+    } else if (Fragment::get_is_setup(p)) {
+      Fragment fragment(p);
       // If existing residues are not from a fragment, or they're in a fragment
       // that is not connected to this one, write them out
-      if (!last_fragment_ || !fragments_adjacent(last_fragment_, fragment)) {
+      if (!last_fragment_
+          || !fragments_adjacent(last_fragment_, fragment)) {
         add_chain();
       }
       last_fragment_ = fragment;
@@ -131,7 +130,7 @@ public:
       fragment_residues_.insert(fragment_residues_.end(), r.begin(), r.end());
       // We already looked at child Residues, so don't look at them again
       return false;
-    } else if (chain && !in_chain_) {
+    } else if (Chain::get_is_setup(p) && !in_chain_) {
       // Flush old chain (e.g. Fragments not part of a Chain)
       add_chain();
       // Recurse into this chain

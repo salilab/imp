@@ -3,7 +3,7 @@
  *  \brief A lognormal restraint that uses the ISPA model to model NOE-derived
  *  distance fit.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -30,9 +30,6 @@ class IMPISDEXPORT AmbiguousNOERestraint : public Restraint {
 
  public:
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
-      preferably in a Singleton or PairContainer as appropriate.
-   */
   AmbiguousNOERestraint(Model *m, PairContainer *pc,
                         ParticleIndexAdaptor sigma, ParticleIndexAdaptor gamma,
                         double Iexp);
@@ -42,8 +39,6 @@ class IMPISDEXPORT AmbiguousNOERestraint : public Restraint {
 
   double get_chi() const { return chi_; }
 
-  /** This macro declares the basic needed methods: evaluate and show
-   */
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

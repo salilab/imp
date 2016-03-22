@@ -2,7 +2,7 @@
  *  \file IMP/core/Gaussian.h
  *  \brief Decorator to hold Gaussian3D
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -87,6 +87,9 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   algebra::Gaussian3D get_gaussian() const{
     return algebra::Gaussian3D(get_reference_frame(),get_variances());
 }
+
+  //! Get the covariance attributes from a Gaussian3D object
+  void set_gaussian(const algebra::Gaussian3D &g);
 
   //! set the local-frame covariance.
   void set_local_covariance(const IMP_Eigen::Vector3d covar) {

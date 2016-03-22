@@ -8,7 +8,7 @@ Working with source control {#scm}
 We strongly recommend the use of source control (ideally git). However, if
 you have only a small change to make to %IMP, such as a bug fix, and do
 not want to use source control, we'd rather get the fix than not! In this
-case, make a patch and [email it to us](http://integrativemodeling.org/contact.html) or,
+case, make a patch and [email it to us](https://integrativemodeling.org/contact.html) or,
 better yet, open up an [issue on GitHub](https://github.com/salilab/imp/issues)
 with the patch as a [gist](https://gist.github.com/).
 

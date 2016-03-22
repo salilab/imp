@@ -1,7 +1,7 @@
 /**
  *  \file internal/cgal_knn.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
 */
 
 #include <IMP/cgal/internal/sphere_cover.h>
@@ -33,17 +33,19 @@ void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D> > &ret,
   typedef ::CGAL::Cartesian_d< ::CGAL::Lazy_exact_nt< ::CGAL::Gmpq> > K;
   typedef typename K::Point_d P;
   typedef ::CGAL::Convex_hull_d<K> CH;
-  std::map<typename CH::Vertex_handle, int> indexes;
+  typedef CH::Vertex_handle VertexHandle;
+
+  std::map<VertexHandle, int> indexes;
   for (unsigned int rep = 0; rep < 10 * D; ++rep) {
     CH ch(D);
     for (unsigned int i = 0; i < ret.size(); ++i) {
       P p(D, ret[i].begin(), ret[i].end());
-      typename CH::Vertex_handle vh = ch.insert(p);
+      VertexHandle vh = ch.insert(p);
       indexes[vh] = i + 1;
       if (!ALL) {
         algebra::VectorD<D> nr = -ret[i];
         P p(D, nr.begin(), nr.end());
-        typename CH::Vertex_handle vh = ch.insert(p);
+        VertexHandle vh = ch.insert(p);
         indexes[vh] = -static_cast<int>(i) - 1;
       }
     }
@@ -59,18 +61,6 @@ void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D> > &ret,
         } else {
           continue;
         }
-        /*vector<VectorD<D> > simplex;
-        for (unsigned int j=0; i< D; ++i ) {
-          int vj=indexes[ch.vertex_of_facet(it, j)];
-          VectorD<D> pj;
-          if (vj > 0) {
-            pj= ret[vj-1];
-          } else {
-            pj= ret[-vj+1];
-          }
-          simplex.push_back((pj-pi).get_unit_vector());
-        }
-        double w= simplex_volume(simplex);*/
         for (unsigned int j = 0; i < D; ++i) {
           if (i == j) continue;
           int vj = indexes[ch.vertex_of_facet(it, j)];
@@ -97,8 +87,6 @@ void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D> > &ret,
         sums[i] = sums[i].get_unit_vector();
       } else {
         // coincident points
-        /*IMP_WARN("Coincident points at " << ret[i] << " in iteration " << rep
-          << std::endl);*/
         sums[i] =
             algebra::get_random_vector_on<D>(algebra::get_unit_sphere_d<D>());
       }

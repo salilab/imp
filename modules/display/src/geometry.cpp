@@ -2,7 +2,7 @@
  *  \file Geometry.cpp
  *  \brief Implement geometry for the basic shapes from IMP.algebra.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

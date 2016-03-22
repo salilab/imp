@@ -2,7 +2,7 @@
  *  \file RMF/HDF5/DataSetIndexD.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -90,6 +90,12 @@ RMF_ENABLE_WARNINGS namespace RMF {
                         boost::hash_combine(ret, static_cast<size_t>(d_[i]));
                       } return ret;);
   };
+
+  //! Produce hash values for boost hash tables.
+  template <int D>
+  inline std::size_t hash_value(const DataSetIndexD<D>& t) {
+    return t.__hash__();
+  }
 
 #ifndef RMF_DOXYGEN
   typedef DataSetIndexD<1> DataSetIndex1D;

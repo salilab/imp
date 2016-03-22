@@ -2,7 +2,7 @@
  *  \file CoarseCC.cpp
  *  \brief Perform coarse fitting between two density objects.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -111,8 +111,11 @@ double cross_correlation_coefficient_internal(const DensityMap *grid1,
     IMP_LOG_VERBOSE(" without norm factors: start ccc : "
                     << ccc << " grid1 rms: " << grid1_header->rms
                     << " grid2 rms: " << grid2_header->rms << std::endl);
-    ccc = (ccc - nvox * grid1_header->dmean * grid2_header->dmean) /
-          (nvox * grid1_header->rms * grid2_header->rms);
+    // Skip normalization if either RMS is zero (avoid divide by zero)
+    if (grid1_header->rms != 0. && grid2_header->rms != 0.) {
+      ccc = (ccc - nvox * grid1_header->dmean * grid2_header->dmean) /
+            (nvox * grid1_header->rms * grid2_header->rms);
+    }
   }
 
   IMP_LOG_VERBOSE(" ccc : " << ccc << " voxel# " << nvox
@@ -228,7 +231,6 @@ float CoarseCC::local_cross_correlation_coefficient(
   }
 
   long nvox = em_header->get_number_of_voxels();
-  ;
   emreal ccc = 0.0;
   emreal model_mean = 0.;
   emreal em_mean = 0.;
@@ -329,17 +331,15 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(const DensityMap *em_map,
   // validate that the model and em maps are not empty
   IMP_USAGE_CHECK(em_header->rms >= EPS,
                   "EM map is empty ! em_header->rms = " << em_header->rms);
-  // it may be that CG takes a too large step, which causes the particles
-  // to go outside of the density
-  // if (model_header->rms <= EPS){
-  // IMP_WARN("Model map is empty ! model_header->rms = " << model_header->rms
-  //           <<" derivatives are not calculated. the model centroid is : " <<
-  //           core::get_centroid(core::XYZs(model_ps))<<
-  //           " the map centroid is " << em_map->get_centroid()<<
-  //                 "number of particles in model:"<<model_ps.size()
-  //<<std::endl);
-  // return;
-  // }
+  if (model_header->rms <= EPS) {
+    IMP_WARN("Model map is empty ! model_header->rms = " << model_header->rms
+             << " derivatives are not calculated. the model centroid is : " <<
+             core::get_centroid(core::XYZs(model_ps)) <<
+             " the map centroid is " << em_map->get_centroid() <<
+             "number of particles in model:"<<model_ps.size()
+             << std::endl);
+    return dv_out;
+  }
   // Compute the derivatives
   int nx = em_header->get_nx();
   int ny = em_header->get_ny();
@@ -364,12 +364,11 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(const DensityMap *em_map,
                             << em_map->get_dim_index_by_location(vv, 2)
                             << std::endl);
     }
-    const RadiusDependentKernelParameters &params =
-        kernel_params->get_params(model_xyzr[ii].get_radius());
+
     calc_local_bounding_box(  // em_map,
-        model_map, x, y, z, params.get_kdist(), iminx, iminy, iminz, imaxx,
+        model_map, x, y, z, kernel_params->get_rkdist(), iminx, iminy, iminz, imaxx,
         imaxy, imaxz);
-    IMP_LOG_WRITE(VERBOSE, params.show());
+
     IMP_LOG_VERBOSE("local bb: [" << iminx << "," << iminy << "," << iminz
                                   << "] [" << imaxx << "," << imaxy << ","
                                   << imaxz << "] \n");
@@ -388,7 +387,7 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(const DensityMap *em_map,
           float dy = y_loc[ivox] - y;
           float dz = z_loc[ivox] - z;
           rsq = dx * dx + dy * dy + dz * dz;
-          rsq = EXP(-rsq * params.get_inv_sigsq());
+          rsq = EXP(-rsq * kernel_params->get_inv_rsigsq());
           tmp = (x - x_loc[ivox]) * rsq;
           if (std::abs(tmp) > lim) {
             tdvx += tmp * em_data[ivox];
@@ -405,8 +404,8 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(const DensityMap *em_map,
         }
       }
     }
-    tmp = model_ps[ii]->get_value(w_key) * 2. * params.get_inv_sigsq() *
-          scalefac * params.get_normfac() / lower_comp;
+    tmp = model_ps[ii]->get_value(w_key) * 2. * kernel_params->get_inv_rsigsq() *
+          scalefac * kernel_params->get_rnormfac() / lower_comp;
     IMP_LOG_VERBOSE("for particle:" << ii << " (" << tdvx << "," << tdvy << ","
                                     << tdvz << ")" << std::endl);
     dv_out[ii][0] = tdvx * tmp;

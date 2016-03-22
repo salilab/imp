@@ -2,7 +2,7 @@
  *  \file IMP/atom/Selection.h
  *  \brief Select a subset of a hierarchy.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_SELECTION_H
@@ -13,6 +13,7 @@
 #include "Atom.h"
 #include "Hierarchy.h"
 #include "Residue.h"
+#include "element.h"
 #include "Representation.h"
 #include <IMP/algebra/algebra_config.h>
 #include <IMP/InputAdaptor.h>
@@ -87,7 +88,8 @@ class IMPATOMEXPORT Selection :
                     ParticleIndexes, indexes, );
   SearchResult search(Model *m, ParticleIndex pi,
                       boost::dynamic_bitset<> parent,
-                      bool include_children) const;
+                      bool include_children,
+                      bool found_rep_node=false) const;
   void set_hierarchies(Model *m, const ParticleIndexes &pis);
   void add_predicate(internal::SelectionPredicate *p);
   void init_predicate();
@@ -108,7 +110,8 @@ class IMPATOMEXPORT Selection :
             std::string molecule = None,
             int residue_index = None, std::string chain_id = None,
             AtomType atom_type = None, ResidueType residue_type = None,
-            Ints hierarchy_types = None, Terminus terminus = None,
+            Ints hierarchy_types = None, Element element = None,
+            Terminus terminus = None,
             std::string domain = None, core::ParticleType particle_type = None,
             core::ParticleTypes particle_types = [], int copy_index = -1,
             Ints copy_indexes = [], int state_index = -1,
@@ -153,6 +156,8 @@ class IMPATOMEXPORT Selection :
       where its parent is also a terminus particle. Otherwise, a terminus
       particle is the first (for N) or last (for C) child of its parent. */
   void set_terminus(Terminus t);
+  //! Select atoms of the given Element.
+  void set_element(Element e);
   //! Select particles in chains with the given ids.
   void set_chain_ids(Strings chains);
 #ifndef IMP_DOXYGEN

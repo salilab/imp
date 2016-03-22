@@ -2,7 +2,7 @@
  *  \file IMP/kmeans/KMeans.h
  *  \brief an interface to k-means open source library (stored internally)
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPKMEANS_KMEANS_H
@@ -91,7 +91,7 @@ class IMPKMEANSEXPORT KMeans : public IMP::Object {
    */
   KMeans(const std::string& fname_data, int dim, unsigned int max_nPts);
 
-  /** Empty constructor for all default initializations -
+  /** Empty constructor for default initialization -
       object data is not considered initialized after this call
   */
   KMeans();

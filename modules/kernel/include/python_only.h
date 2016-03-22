@@ -1,7 +1,7 @@
 /**
  *  \file IMP/python_only.h   \brief Build dependency graphs on models.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -54,7 +54,7 @@ class PythonDirectedGraph {
     your Utilities folder in MacOS) and the window produced is shockingly
     retro.
 
-    An alterntative is to write the graph to a \c dot file
+    An alternative is to write the graph to a \c dot file
     \code
     g.show_graphviz(open("graph.dot", "w"));
     \endcode

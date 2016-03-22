@@ -2,7 +2,7 @@
  *  \file IMP/isd/vonMisesKappaConjugateRestraint.h
  *  \brief Conjugate prior for \f$\kappa\f$ in the von Mises distribution.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,8 +18,7 @@ IMPISD_BEGIN_NAMESPACE
 //! Conjugate prior for the concentration parameter of a von Mises distribution.
 /** \f[ p(\kappa|c,R_0) = \frac{\exp(\kappa R_0)}{I_0(\kappa)^c} \f]
     \f$0 < R_0 \le c\f$
-    where \f$kappa\f$ is the concentration parameter.
-    Default values: \f$R_0=1\f$ and \f$c=10\f$
+    where \f$\kappa\f$ is the concentration parameter.
  */
 class IMPISDEXPORT vonMisesKappaConjugateRestraint : public Restraint {
   Pointer<Particle> kappa_;
@@ -33,8 +32,6 @@ class IMPISDEXPORT vonMisesKappaConjugateRestraint : public Restraint {
   vonMisesKappaConjugateRestraint(Model *m, Particle *kappa,
                                   double c = 10.0, double R0 = 0.0);
 
-  /** This macro declares the basic needed methods: evaluate and show
-   */
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

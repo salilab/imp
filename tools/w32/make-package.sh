@@ -11,7 +11,7 @@
 # make DESTDIR=`pwd`/w32-inst install
 #
 # Where $w32py is the path containing Python headers and libraries.
-# Repeat for all desired Python versions (2.7, 3.3, and 3.4 for us)
+# Repeat for all desired Python versions (2.7, 3.3, 3.4, and 3.5 for us)
 #
 # Then run (still in the binary directory)
 # <source_dir>/tools/w32/make-package.sh <version> <bits>
@@ -55,6 +55,9 @@ rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/IMP || exit 1
 # Patch IMP/__init__.py so it can find Python version-specific extensions
 # and the IMP DLLs
 patch -d ${ROOT}/python/IMP -p1 < ${TOOLDIR}/python-search-path.patch || exit 1
+# Patch RMF.py so it can find Python version-specific extensions
+# and the RMF DLLs
+patch -d ${ROOT}/python -p1 < ${TOOLDIR}/rmf-python-search-path.patch || exit 1
 
 # If there are any Python applications that don't have a file extension,
 # add .py extension and drop in wrapper so users can run them without an
@@ -73,7 +76,7 @@ for app in ${ROOT}/bin/*; do
 done
 
 # Make Python version-specific directories for extensions (.pyd)
-PYVERS="2.6 2.7 3.3 3.4"
+PYVERS="2.6 2.7 3.3 3.4 3.5"
 for PYVER in ${PYVERS}; do
   mkdir ${ROOT}/python/python${PYVER} || exit 1
   mv ${ROOT}/pylib/${PYVER}/*.pyd ${ROOT}/python/python${PYVER} || exit 1
@@ -96,7 +99,7 @@ rm -rf ${ROOT}/bin/example \
 rm -rf `find ${ROOT} -name .svn`
 
 if [ "${BITS}" = "32" ]; then
-  PYVERS="26 27 33 34"
+  PYVERS="26 27 33 34 35"
   MAKENSIS="makensis"
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w32comp/windows/system
@@ -124,7 +127,7 @@ if [ "${BITS}" = "32" ]; then
      ${DLLSRC}/opencv_ffmpeg220.dll \
      ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/bin || exit 1
 else
-  PYVERS="26 27 33 34"
+  PYVERS="26 27 33 34 35"
   MAKENSIS="makensis -DIMP_64BIT"
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w64comp/windows/system32

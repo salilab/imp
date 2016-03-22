@@ -40,7 +40,7 @@ def get_experiment_params(fn_params):
     """
         Imports the configuration file
         @param fn_params configuration file
-        @return Experiment Class with all the infomation from the config file
+        @return Experiment Class with all the information from the config file
     """
     try:
         import importlib.machinery

@@ -352,13 +352,13 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(atoms), 43)
         a = atoms[-2]
         # Make sure we kept the original PDB coordinates
-        coord = a.get_as_xyz().get_coordinates()
+        coord = IMP.core.XYZ(a).get_coordinates()
         self.assertAlmostEqual(coord[0], 20.149, delta=1e-3)
         self.assertAlmostEqual(coord[1], 33.749, delta=1e-3)
         self.assertAlmostEqual(coord[2], 3.830, delta=1e-3)
         # Make sure all atoms are HETATM
         for a in atoms:
-            self.assertEqual(a.get_as_atom().get_atom_type().get_string()[:4],
+            self.assertEqual(IMP.atom.Atom(a).get_atom_type().get_string()[:4],
                              "HET:")
 
     def test_add_coordinates_empty_structure(self):
@@ -415,8 +415,8 @@ class Tests(IMP.test.TestCase):
         residues = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)
         # LINK residue should have constructed a backbone bond between the
         # first and last residues
-        r1 = residues[-1].get_as_residue()
-        r2 = residues[0].get_as_residue()
+        r1 = IMP.atom.Residue(residues[-1])
+        r2 = IMP.atom.Residue(residues[0])
         a1 = IMP.atom.get_atom(r1, IMP.atom.AT_C)
         a2 = IMP.atom.get_atom(r2, IMP.atom.AT_N)
         self.assertAtomsBonded(a1, a2, 'C', 'NH1', 1.3450, 27.203)
@@ -523,8 +523,8 @@ class Tests(IMP.test.TestCase):
             # CTER bond
             (residues[-1], residues[-1], IMP.atom.AT_OXT, IMP.atom.AT_C,
                 'OC', 'CC', 1.2600, 32.404)]:
-            r1 = bondr1.get_as_residue()
-            r2 = bondr2.get_as_residue()
+            r1 = IMP.atom.Residue(bondr1)
+            r2 = IMP.atom.Residue(bondr2)
             a1 = IMP.atom.get_atom(r1, bonda1)
             a2 = IMP.atom.get_atom(r2, bonda2)
             self.assertAtomsBonded(a1, a2, atyp1, atyp2, bondlen, fcon)

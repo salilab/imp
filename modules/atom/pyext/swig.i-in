@@ -43,6 +43,9 @@ IMP_SWIG_OBJECT(IMP::atom, ATOMPDBSelector, ATOMPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, AllMol2Selector,AllMol2Selectors);
 IMP_SWIG_OBJECT(IMP::atom, AllPDBSelector, AllPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, AndPDBSelector,AndPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, XorPDBSelector,XorPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, ResidueTypePDBSelector, ResidueTypePDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, AtomTypePDBSelector, AtomTypePDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, AngleSingletonScore, AngleSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, BondEndpointsRefiner, BondEndpointsRefiners);
 IMP_SWIG_OBJECT(IMP::atom, BondPairContainer, BondPairContainers);
@@ -119,6 +122,21 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
  %extend IMP::atom::CHARMMConnection<D> {
   IMP_SWIG_SHOWSTUFF(CHARMMConnection);
  }
+
+%extend IMP::atom::PDBSelector {
+%pythoncode %{
+  def __and__(self, s):
+      return AndPDBSelector(self, s)
+  def __or__(self, s):
+      return OrPDBSelector(self, s)
+  def __xor__(self, s):
+      return XorPDBSelector(self, s)
+  def __invert__(self):
+      return NotPDBSelector(self)
+  def __sub__(self, s):
+      return AndPDBSelector(self, NotPDBSelector(s))
+%}
+}
 
 %extend IMP::atom::Selection {
 %pythoncode %{

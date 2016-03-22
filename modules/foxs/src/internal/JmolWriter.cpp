@@ -1,16 +1,16 @@
 /**
  * \file IMP/foxs/JmolWriter.cpp \brief outputs javascript for jmol display
  *
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
+#include <IMP/foxs/internal/Gnuplot.h>
 #include <IMP/foxs/internal/JmolWriter.h>
 #include <IMP/foxs/internal/ColorCoder.h>
-#include <IMP/foxs/internal/Gnuplot.h>
+#include <IMP/saxs/utility.h>
 
 #include <IMP/atom/pdb.h>
-#include <IMP/saxs/utility.h>
 
 #include <fstream>
 #include <boost/lexical_cast.hpp>
@@ -66,13 +66,14 @@ void JmolWriter::prepare_jmol_script(
             << "<th> " << show_all_checkbox_str << "</th>"
             << "<th><center> &chi; </th><th><center> c<sub>1</sub> </th>"
             << "<th><center> c<sub>2</sub> </th><th><center>R<sub>g</sub></th>"
-            << "<th><center> # atoms </th> <th> fit file </th></tr>\n";
+            << "<th><center> # atoms </th> <th> fit file </th><th> png file </th></tr>\n";
   for (unsigned int i = 0; i < fps.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
-    std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
-    std::string profile_name = trim_extension(
+    std::string pdb_name = saxs::trim_extension(fps[i].get_pdb_file_name());
+    std::string profile_name = saxs::trim_extension(
         basename(const_cast<char*>(fps[i].get_profile_file_name().c_str())));
     std::string fit_file_name = pdb_name + "_" + profile_name + ".dat";
+    std::string png_file_name = pdb_name + "_" + profile_name + ".png";
     float rg =
         IMP::saxs::radius_of_gyration(particles_vec[fps[i].get_mol_index()]);
     outstream << "<tr><td>";
@@ -92,7 +93,9 @@ void JmolWriter::prepare_jmol_script(
               << "</center></td><td><center> "
               << particles_vec[fps[i].get_mol_index()].size() << "</td><td>"
               << "<a href = \"dirname/" << fit_file_name << "\">"
-              << fit_file_name << "</a></td></tr>\n";
+              << fit_file_name << "</a></td><td>"
+              << "<a href = \"dirname/" << png_file_name << "\">"
+              << png_file_name << "</a></td></tr>\n";
   }
   outstream << "</table>\n";
   outstream << group_checkbox(model_num);
@@ -144,7 +147,7 @@ void JmolWriter::prepare_jmol_script(
             << "<th><center> # atoms </th> <th> Profile file</th></tr>\n";
   for (unsigned int i = 0; i < pdbs.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
-    std::string pdb_name = trim_extension(pdbs[i]);
+    std::string pdb_name = saxs::trim_extension(pdbs[i]);
     std::string profile_name = pdbs[i] + ".dat";
     float rg = IMP::saxs::radius_of_gyration(particles_vec[i]);
     outstream << "<tr><td>";

@@ -5,7 +5,7 @@
  *  and ambiguous assignment. To be used with
  *  cross-linking mass-spectrometry data.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -22,8 +22,8 @@ IMPISD_BEGIN_NAMESPACE
     complexes. The experimental frequency fexp is derived as the
     fraction of dimeric versus monomeric complex, upon cysteine
     cross-linking.  The forward model is derived from free energy
-    calculations.  The likelyhood is modeled as a normal distribution
-    function truncated over the interval [0,1]. To contruct the
+    calculations.  The likelihood is modeled as a normal distribution
+    function truncated over the interval [0,1]. To construct the
     restraint, the class CysteineCrossLinkData and CrossLinkData have
     to be initialized (see for instance
     test_CysteineCrossLinkRestraint.py).  Input parameters and
@@ -70,20 +70,6 @@ class IMPISDEXPORT CysteineCrossLinkRestraint : public Restraint {
                              ParticleIndexAdaptor weight, CrossLinkData *data,
                              CysteineCrossLinkData *ccldata);
 
-#ifndef IMP_DOXYGEN
-  IMPISD_DEPRECATED_METHOD_DECL(2.5)
-  CysteineCrossLinkRestraint(Particle *beta, Particle *sigma,
-                             Particle *epsilon,
-                             Particle *weight, CrossLinkData *data,
-                             double fexp);
-
-  IMPISD_DEPRECATED_METHOD_DECL(2.5)
-  CysteineCrossLinkRestraint(Particle *beta, Particle *sigma,
-                             Particle *epsilon,
-                             Particle *weight, CrossLinkData *data,
-                             CysteineCrossLinkData *ccldata);
-#endif
-
   /* call for probability */
   double get_probability() const;
 
@@ -106,8 +92,6 @@ class IMPISDEXPORT CysteineCrossLinkRestraint : public Restraint {
 
   unsigned get_number_of_contributions() const;
 
-  /** This macro declares the basic needed methods: evaluate and show
-   */
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

@@ -2,7 +2,7 @@
  *  \file IMP/atom/pdb.h
  *  \brief Functions to read PDBs
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -22,6 +22,7 @@
 #include <IMP/OptimizerState.h>
 #include <IMP/internal/utility.h>
 #include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -98,6 +99,51 @@ class CBetaPDBSelector : public NonAlternativePDBSelector {
     return (type[1] == 'C' && type[2] == 'B' && type[3] == ' ');
   }
   IMP_OBJECT_METHODS(CBetaPDBSelector)
+};
+
+//! Select all atoms of the given types
+/** Note that unlike CAlphaPDBSelector and similar classes, this selects all
+    atoms, even those in alternative locations (combine with
+    a NonAlternativePDBSelector if necessary).
+ */
+class AtomTypePDBSelector : public PDBSelector {
+  Strings atom_types_;
+ public:
+  AtomTypePDBSelector(Strings atom_types,
+                      std::string name = "AtomTypePDBSelector%1%")
+      : PDBSelector(name), atom_types_(atom_types) {
+    std::sort(atom_types_.begin(), atom_types_.end());
+  }
+
+  bool get_is_selected(const std::string &pdb_line) const {
+    std::string type = internal::atom_type(pdb_line);
+    boost::trim(type);
+    return std::binary_search(atom_types_.begin(), atom_types_.end(), type);
+  }
+  IMP_OBJECT_METHODS(AtomTypePDBSelector)
+};
+
+//! Select all atoms in residues of the given types
+/** Note that unlike CAlphaPDBSelector and similar classes, this selects all
+    atoms, even those in alternative locations (combine with
+    a NonAlternativePDBSelector if necessary).
+ */
+class ResidueTypePDBSelector : public PDBSelector {
+  Strings residue_types_;
+ public:
+  ResidueTypePDBSelector(Strings residue_types,
+                         std::string name = "ResidueTypePDBSelector%1%")
+      : PDBSelector(name), residue_types_(residue_types) {
+    std::sort(residue_types_.begin(), residue_types_.end());
+  }
+
+  bool get_is_selected(const std::string &pdb_line) const {
+    std::string type = internal::atom_residue_name(pdb_line);
+    boost::trim(type);
+    return std::binary_search(residue_types_.begin(), residue_types_.end(),
+                              type);
+  }
+  IMP_OBJECT_METHODS(ResidueTypePDBSelector)
 };
 
 //! Select all C (not CA or CB) ATOM records
@@ -271,6 +317,11 @@ class PPDBSelector : public NonAlternativePDBSelector {
     \code
     read_pdb(name, m, AndPDBSelector(PPDBSelector(), WaterPDBSelector()));
     \endcode
+
+    In Python, the and operator (&) can be used to the same effect:
+    \code
+    read_pdb(name, m, PPDBSelector() & WaterPDBSelector());
+    \endcode
  */
 class AndPDBSelector : public PDBSelector {
   const IMP::PointerMember<PDBSelector> a_, b_;
@@ -284,10 +335,15 @@ class AndPDBSelector : public PDBSelector {
       : PDBSelector("AndPDBSelector%1%"), a_(a), b_(b) {}
 };
 
-//! Select atoms which are selected by either selector
+//! Select atoms which are selected by either or both selectors
 /** To use do something like
     \code
     read_pdb(name, m, OrPDBSelector(PPDBSelector(), WaterPDBSelector()));
+    \endcode
+
+    In Python, the or operator (|) can be used to the same effect:
+    \code
+    read_pdb(name, m, PPDBSelector() | WaterPDBSelector());
     \endcode
  */
 class OrPDBSelector : public PDBSelector {
@@ -302,10 +358,39 @@ class OrPDBSelector : public PDBSelector {
       : PDBSelector("OrPDBSelector%1%"), a_(a), b_(b) {}
 };
 
+//! Select atoms which are selected by either selector but not both
+/** To use do something like
+    \code
+    read_pdb(name, m, XorPDBSelector(HydrogenPDBSelector(),
+                                     WaterPDBSelector()));
+    \endcode
+
+    In Python, the xor operator (^) can be used to the same effect:
+    \code
+    read_pdb(name, m, HydrogenPDBSelector() ^ WaterPDBSelector());
+    \endcode
+ */
+class XorPDBSelector : public PDBSelector {
+  const IMP::PointerMember<PDBSelector> a_, b_;
+
+ public:
+  bool get_is_selected(const std::string &pdb_line) const {
+    return a_->get_is_selected(pdb_line) != b_->get_is_selected(pdb_line);
+  }
+  IMP_OBJECT_METHODS(XorPDBSelector);
+  XorPDBSelector(PDBSelector *a, PDBSelector *b)
+      : PDBSelector("XorPDBSelector%1%"), a_(a), b_(b) {}
+};
+
 //! Select atoms which are not selected by a given selector
 /** To use do something like
     \code
     read_pdb(name, m, NotPDBSelector(PPDBSelector()));
+    \endcode
+
+    In Python, the inversion operator (~) can be used to the same effect:
+    \code
+    read_pdb(name, m, ~PPDBSelector());
     \endcode
  */
 class NotPDBSelector : public PDBSelector {
@@ -438,10 +523,10 @@ IMPATOMEXPORT std::string get_pdb_string(
 
 /**
    This function returns a connectivity string in PDB format
-  /note The CONECT records specify connectivity between atoms for which
+  \note The CONECT records specify connectivity between atoms for which
       coordinates are supplied. The connectivity is described using
       the atom serial number as found in the entry.
-  /note http://www.bmsc.washington.edu/CrystaLinks/man/pdb/guide2.2_frame.html
+  \note http://www.bmsc.washington.edu/CrystaLinks/man/pdb/guide2.2_frame.html
 */
 IMPATOMEXPORT std::string get_pdb_conect_record_string(int, int);
 #endif

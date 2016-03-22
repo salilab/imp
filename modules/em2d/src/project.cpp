@@ -1,7 +1,7 @@
 /**
  *  \file project.cpp
  *  \brief Generation of projections from models or density maps
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/project.h"
@@ -139,7 +139,7 @@ void do_project_particles(const ParticlesTemp &ps, cv::Mat &m2,
                         << " pixel size " << options.pixel_size << std::endl);
 
     // Apply mask
-    ProjectionMaskPtr mask = masks->find_mask(xyzrs[i].get_radius());
+    ProjectionMaskPtr mask = masks->find_mask(atom::Mass(ps[i]).get_mass());
     algebra::Vector2D pix(pix_x, pix_y);
     mask->apply(m2, pix);
   }

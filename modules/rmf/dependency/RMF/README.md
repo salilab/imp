@@ -1,6 +1,7 @@
 # RMF #
 
-[![Build Status](https://travis-ci.org/salilab/rmf.png?branch=develop)](https://travis-ci.org/salilab/rmf)
+[![Build Status](https://travis-ci.org/salilab/rmf.svg?branch=develop)](https://travis-ci.org/salilab/rmf)
+[![Code Climate](https://codeclimate.com/github/salilab/rmf/badges/gpa.svg)](https://codeclimate.com/github/salilab/rmf)
 
 The library provides support for the RMF file format for
 storing hierarchical molecular data (such as atomic or coarse grained
@@ -10,7 +11,7 @@ and score data.
 The main documentation is found on the
 [web site](http://integrativemodeling.org/rmf/nightly/doc/).
 
-Copyright 2007-2015 IMP Inventors.
+Copyright 2007-2016 IMP Inventors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

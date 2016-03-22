@@ -2,7 +2,7 @@ Cross platform compatibility {#cross_platform}
 ============================
 
 %IMP is designed to run on a wide variety of platforms. To detect problems on
-other platforms we provide [nightly test runs](http://integrativemodeling.org/nightly/results/)
+other platforms we provide [nightly test runs](https://integrativemodeling.org/nightly/results/)
 on the supported platforms for code that is part of the %IMP repository.
 
 In order to make it more likely that your code works on all the supported platforms:

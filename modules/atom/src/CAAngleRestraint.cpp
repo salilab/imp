@@ -2,7 +2,7 @@
  *  \file CAAngleRestraint.cpp \brief Dihedral restraint between four
  *                                     particles.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -63,7 +63,7 @@ CAAngleRestraint::unprotected_evaluate(DerivativeAccumulator *) const
   core::XYZ d1(m, p_[1]);
   core::XYZ d2(m, p_[2]);
 
-  double phi0 = core::internal::angle(d0, d1, d2, NULL,NULL,NULL);
+  double phi0 = core::internal::angle(d0, d1, d2, nullptr, nullptr, nullptr);
 
   int index = get_closest(phi0_,phi0);
 

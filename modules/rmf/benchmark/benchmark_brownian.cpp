@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 #include <IMP/PairPredicate.h>
 #include <IMP/atom/BrownianDynamics.h>
@@ -64,12 +64,6 @@ const unsinged int number_of_steps = 50;
 #else
 #define ATTRIBUTES
 #endif
-
-namespace {
-#ifndef __clang__
-void dummy_f_destructor() {}
-#endif
-}
 
 struct It {
   Pointer<Model> m;

@@ -362,7 +362,7 @@ def get_sorting_indices(l):
 def merge_databases(fns, fn_output, tbl):
     """
        Reads a table from a set of database files into a single file
-       Makes sure to reorder all column names if neccesary before merging
+       Makes sure to reorder all column names if necessary before merging
     """
     # Get names and types of the columns from first database file
     db = Database2()

@@ -170,13 +170,6 @@ def get_modules(source):
     return mods
 
 
-def get_applications(source):
-    path = os.path.join(source, "applications", "*")
-    globs = get_glob([path])
-    mods = [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1] != "SConscript")
-            and os.path.exists(os.path.join(g, "dependencies.py"))]
-    return mods
-
 # a version of split that doesn't return empty strings when there are no items
 
 

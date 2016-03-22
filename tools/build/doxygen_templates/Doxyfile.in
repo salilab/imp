@@ -198,8 +198,7 @@ TAB_SIZE               = 2
 # You can put \n's in the value part of an alias to insert newlines.
 
 ALIASES                = "command{1}=\code \1 \endcode" \
-                         "salilab{2}=<a href=\"http://salilab.org/\1\">\2</a>" \
-                         "salilabssl{2}=<a href=\"https://salilab.org/\1\">\2</a>" \
+                         "salilab{2}=<a href=\"https://salilab.org/\1\">\2</a>" \
                          "external{2}=<a href=\"\1\">\2</a>" \
                          "internal{2}=<a href=\"\1\">\2</a>" \
                          "imp=\p %IMP" \
@@ -207,8 +206,8 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "advancedmethod=\note Familiarity with these methods is not required to use %imp." \
                          "advanceddoc=\par Advanced:\n" \
                          "usesconstraint=\note The maintenance of the invariant is done by an associated IMP::Constraint. As a result, the state is only guaranteed to be correct either during model evaluation, or immediately following model evaluation before any particles have been changed." \
-                         "implementation{3}=\par Implementors\nDevelopers who wish to implement a \1 should inherit from this class and use the \2() macro to help define the needed functions. \3 provides an example to start from." \
-                         "implementationwithoutexample{2}=\par Implementors\nDevelopers who wish to implement a \1 should inherit from this class and use the \2() macro to help define the needed functions. Lamentably, we do not provide an example." \
+                         "implementation{3}=\par Implementers\nDevelopers who wish to implement a \1 should inherit from this class and use the \2() macro to help define the needed functions. \3 provides an example to start from." \
+                         "implementationwithoutexample{2}=\par Implementers\nDevelopers who wish to implement a \1 should inherit from this class and use the \2() macro to help define the needed functions. Lamentably, we do not provide an example." \
                          "warning=\par Warning:" \
                          "inlineimage{2}=\htmlonly <IMG SRC=\"\1\" HEIGHT=\"\2\"> \endhtmlonly" \
                          "genericgeometry=See \ref genericgeometry \"generic geometry\" for more information." \
@@ -1254,7 +1253,7 @@ MATHJAX_FORMAT         = HTML-CSS
 # However, it is strongly recommended to install a local
 # copy of MathJax from http://www.mathjax.org before deployment.
 
-MATHJAX_RELPATH        = http://integrativemodeling.org/mathjax
+MATHJAX_RELPATH        = //integrativemodeling.org/mathjax
 
 # The MATHJAX_EXTENSIONS tag can be used to specify one or MathJax extension
 # names that should be enabled during MathJax rendering.

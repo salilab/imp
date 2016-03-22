@@ -2,7 +2,7 @@
  *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -47,8 +47,6 @@ Model::Model(std::string name) : Object(name) {
                                                &this->Masks::write_mask_,
                                                &this->Masks::add_remove_mask_);
 #endif
-  // must be last
-  restraints_ = new RestraintSet(this, 1.0, "Model Restraints");
 }
 
 IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
@@ -216,25 +214,6 @@ void Model::do_destroy() {
     IMP_CHECK_OBJECT(mo);
     mo->set_model(nullptr);
   }
-}
-
-/////////////////////////////////////////// DEPRECATED STUFF
-ScoringFunction *Model::create_model_scoring_function() {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                                  "Use a ScoringFunction instead.");
-  return restraints_->create_scoring_function();
-}
-void Model::add_restraint(Restraint *r) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1,
-                                  "Add to a ScoringFunction instead.");
-  if (!r->get_model()) r->set_model(this);
-  restraints_->add_restraint(r);
-}
-
-RestraintSet *Model::get_root_restraint_set() {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(
-      2.1, "Use a scoring function instead of the Model.");
-  return restraints_;
 }
 
 IMPKERNEL_END_NAMESPACE

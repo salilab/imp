@@ -4,7 +4,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -58,7 +58,7 @@ void compute_mst(Model *m, const ParticleIndexes &pis,
         IMP_LOG_VERBOSE("ConnectivityRestraint edge between "
                         << ParticleIndexPair(pis[i], pis[j])
                         << " with weight " << d << std::endl);
-        /*Edge e =*/boost::add_edge(i, j, Weight(d), g);
+        /*Edge e =*/boost::add_edge(i, j, static_cast<Weight>(d), g);
         // boost::put(boost::edge_weight_t(), g, e, d);
       }
     }

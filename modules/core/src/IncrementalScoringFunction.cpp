@@ -1,7 +1,8 @@
 /**
- *  \file MonteCarlo.cpp  \brief Simple Monte Carlo optimizer.
+ *  \file IncrementalScoringFunction.cpp
+ *  \brief Score model efficiently when a small number of particles are changed.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -40,12 +41,10 @@ IncrementalScoringFunction::IncrementalScoringFunction(
   IMP_LOG_TERSE("Creating IncrementalScoringFunction with particles "
                 << ps << " and restraints " << rs << std::endl);
   all_ = IMP::internal::get_index(ps);
-  Pointer<ScoringFunction> suppress_error(this);
   create_flattened_restraints(rs);
   create_scoring_functions();
   dirty_ = all_;
   flattened_restraints_scores_.resize(flattened_restraints_.size());
-  suppress_error.release();
 }
 
 namespace {
@@ -115,7 +114,11 @@ void IncrementalScoringFunction::create_scoring_functions() {
 
   Vector<RestraintsTemp> crs;
   IMP_FOREACH(ParticleIndex pi, all_) {
-    crs.push_back(get_dependent_restraints(get_model(), pi));
+    RestraintsTemp cr = get_dependent_restraints(get_model(), pi);
+    /* Remove any duplicates in cr (could happen with rigid bodies) */
+    std::sort(cr.begin(), cr.end());
+    cr.erase(std::unique(cr.begin(), cr.end()), cr.end());
+    crs.push_back(cr);
   }
 
   for (unsigned int i = 0; i < all_.size(); ++i) {

@@ -16,6 +16,11 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake_modules)
 
+# Don't deref quoted variables in if()
+if(POLICY CMP0054)
+cmake_policy(SET CMP0054 NEW)
+endif(POLICY CMP0054)
+
 # C++11 can use the boost version
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS system filesystem thread program_options iostreams

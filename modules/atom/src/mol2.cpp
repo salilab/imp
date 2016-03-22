@@ -1,7 +1,7 @@
 /**
  *  \file mol2.cpp   \brief A class for reading mol2 files
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/mol2.h>
@@ -208,7 +208,14 @@ void bond_particle(
 Hierarchy molecule_particle(Model* m, const std::string& molecule_name,
                             const std::string& molecule_type) {
   Particle* p = new Particle(m);
-  ResidueType rt(molecule_type);
+  ResidueType rt;
+  if (molecule_type.length() > 0) {
+    rt = ResidueType(molecule_type);
+  } else {
+    // If no molecule type was provided, use a default; many programs that
+    // generate .mol2 files leave the molecule type blank.
+    rt = UNK;
+  }
   Residue r = Residue::setup_particle(p, rt);
   r->set_name(molecule_name);
   return r;

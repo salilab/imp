@@ -54,8 +54,6 @@ def get_files_data(monomer_fn, intermediate_fn, output_fn, model_fn):
         msg += "intermediate = " + intermediate_fn + "\n"
     return msg
 
-    return msg
-
 
 def get_symmetry_data(cn_units, dn_units):
     msg = "\n[symmetry]\n"

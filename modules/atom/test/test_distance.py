@@ -90,7 +90,7 @@ class Tests(IMP.test.TestCase):
             T = alg.Transformation3D(R, v)
             ls = atom.get_leaves(h)
             for l in ls:
-                core.transform(l.get_as_xyz(), T)
+                core.transform(IMP.core.XYZ(l), T)
         drms = atom.get_drms(xyzs1, xyzs2)
         rb_drms = atom.get_rigid_bodies_drms(xyzs1, xyzs2, ranges)
         self.assertAlmostEqual(drms, rb_drms, delta=0.3, msg="rb_drms != drms")

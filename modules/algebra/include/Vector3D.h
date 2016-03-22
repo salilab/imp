@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Vector3D.h   \brief Simple 3D vector class.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -33,7 +33,7 @@ inline Vector3D get_vector_product(const Vector3D &p1, const Vector3D &p2) {
                   p1[0] * p2[1] - p1[1] * p2[0]);
 }
 //! Return a vector that is perpendicular to the given vector
-/** \note This is occasionally refered to in the code as a "vertical" vector.
+/** \note This is occasionally referred to in the code as a "vertical" vector.
     \see Vector3D
 */
 inline Vector3D get_orthogonal_vector(const Vector3D &v) {

@@ -2,7 +2,7 @@
  *  \file IMP/isd/vonMisesKappaJeffreysRestraint.h
  *  \brief Jeffreys prior for \f$\kappa\f$ in the von Mises distribution.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,15 +15,14 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Jeffreys prior for the \f$\kappa\f$ concentration parameter of a von Mises
-//! distribution.
-//! \f[p(\kappa) = \sqrt{\frac{I_1(\kappa)}{I_0(\kappa)}
-//  \left[
-//    \kappa
-//    -\frac{I_1(\kappa)}{I_0(\kappa)}
-//    -kappa\left(\frac{I_1(\kappa)}{I_0(\kappa)}\right)^2
-//  \right]}\f]
-//!
+//! Jeffreys prior for the \f$\kappa\f$ concentration parameter of a von Mises distribution.
+/** \f[p(\kappa) = \sqrt{\frac{I_1(\kappa)}{I_0(\kappa)}
+ *  \left[
+ *    \kappa
+ *    -\frac{I_1(\kappa)}{I_0(\kappa)}
+ *    -kappa\left(\frac{I_1(\kappa)}{I_0(\kappa)}\right)^2
+ *  \right]}\f]
+*/
 
 class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public Restraint {
   Pointer<Particle> kappa_;
@@ -34,8 +33,6 @@ class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public Restraint {
   //! Create the restraint.
   vonMisesKappaJeffreysRestraint(Model *m, Particle *kappa);
 
-  /** This macro declares the basic needed methods: evaluate and show
-   */
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

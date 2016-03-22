@@ -2,7 +2,7 @@
  *  \file IMP/pmi/utilities.h
  *  \brief Useful utilities
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPPMI_UTILITIES_H
@@ -12,7 +12,10 @@
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/DistanceRestraint.h>
 #include <IMP/core/XYZR.h>
-#include <IMP/base/Vector.h>
+#include <IMP/atom/Molecule.h>
+#include <IMP/atom/Copy.h>
+#include <IMP/Vector.h>
+#include <boost/lexical_cast.hpp>
 
 IMPPMI_BEGIN_NAMESPACE
 
@@ -39,11 +42,11 @@ RestraintSet * create_elastic_network(const Particles &ps,
 }
 
 inline Float get_bipartite_minimum_sphere_distance(const IMP::core::XYZRs& m1,
-                                                    const IMP::core::XYZRs& m2) {
-  
-  double mindist = -1.0 ; 
-  
-  for (unsigned int k1 = 0; k1 < m1.size(); ++k1) { 
+                                                   const IMP::core::XYZRs& m2) {
+
+  double mindist = -1.0 ;
+
+  for (unsigned int k1 = 0; k1 < m1.size(); ++k1) {
     for (unsigned int k2 = 0; k2 < m2.size(); ++k2) {
        double dist = IMP::core::get_distance(m1[k1],m2[k2]);
        if (mindist < 0.0){mindist=dist;}
@@ -57,15 +60,48 @@ inline Float get_bipartite_minimum_sphere_distance(const IMP::core::XYZRs& m1,
 
 inline Floats get_list_of_bipartite_minimum_sphere_distance(const ParticlesTemps & pss) {
   Floats mindistances;
-  for (unsigned int k1 = 0; k1 < pss.size()-1; ++k1) { 
+  for (unsigned int k1 = 0; k1 < pss.size()-1; ++k1) {
     for (unsigned int k2 = k1+1; k2 < pss.size(); ++k2) {
        IMP::core::XYZRs xyzrs1=IMP::core::XYZRs(pss[k1]);
-       IMP::core::XYZRs xyzrs2=IMP::core::XYZRs(pss[k2]);       
+       IMP::core::XYZRs xyzrs2=IMP::core::XYZRs(pss[k2]);
        double dist = IMP::pmi::get_bipartite_minimum_sphere_distance(xyzrs1,xyzrs2);
        mindistances.push_back(dist);
       }
    }
   return mindistances;
+}
+
+//! Get the parent, or if non-tree Representation get the fake parent
+inline atom::Hierarchy get_parent_representation(atom::Hierarchy h){
+  if (h.get_model()->get_has_attribute(
+     atom::Hierarchy::get_traits().get_parent_key(),h.get_particle_index())){
+    ParticleIndex pidx = h.get_model()->get_attribute(
+        atom::Hierarchy::get_traits().get_parent_key(),h.get_particle_index());
+      return atom::Hierarchy(h.get_model(),pidx);
+  }
+  else return atom::Hierarchy();
+}
+
+
+//! Walk up a PMI2 hierarchy/representations and get the "molname.copynum"
+inline std::string get_molecule_name_and_copy(atom::Hierarchy h){
+  do {
+    if (atom::Molecule::get_is_setup(h) && atom::Copy::get_is_setup(h)) {
+      return h->get_name() + "."
+             + boost::lexical_cast<std::string>(atom::Copy(h).get_copy_index());
+    }
+  } while ((h = get_parent_representation(h)));
+  IMP_THROW("Hierarchy " << h << " has no molecule name or copy num.", ValueException);
+}
+
+//! Walk up a PMI2 hierarchy/representations and check if the root is named System
+inline bool get_is_canonical(atom::Hierarchy h){
+  do {
+    if (h->get_name()=="System") {
+      return true;
+    }
+  } while ((h = get_parent_representation(h)));
+  return false;
 }
 
 IMPPMI_END_NAMESPACE

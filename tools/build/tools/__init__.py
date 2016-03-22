@@ -199,7 +199,8 @@ def link(source, target, verbose=False):
         os.unlink(tpath)
     if verbose:
         print("linking", spath, tpath)
-    if hasattr(os, 'symlink'):
+    if hasattr(os, 'symlink') and sys.platform != 'win32':
+        # Python 3 on Windows has os.symlink but it doesn't always work
         os.symlink(spath, tpath)
     # Copy instead of link on platforms that don't support symlinks (Windows)
     elif os.path.isdir(spath):
@@ -282,6 +283,7 @@ def get_dependency_description(path):
     if d['pkg_config_name'] is None:
         d['pkg_config_name'] = d['name'].lower()
     return {"name": d['name'],
+            "full_name": d.get('full_name', d['name']),
             "pkg_config_name": d['pkg_config_name'],
             "headers": passheaders,
             "libraries": passlibs,
@@ -546,6 +548,12 @@ def get_disabled_modules(extra_data_path, root="."):
             x, extra_data_path, root)["ok"]]
     )
 
+# Treat an open file as UTF8-encoded, regardless of the locale
+if sys.version_info[0] >= 3:
+    def open_utf8(fname, *args):
+        return open(fname, *args, encoding='UTF8')
+else:
+    open_utf8 = open
 
 _subprocesses = []
 
@@ -556,9 +564,9 @@ def run_subprocess(command, **kwargs):
     #    kwargs["stdout"] = subprocess.PIPE
     # if not kwargs.has_key("stderr"):
     #    kwargs["stderr"] = subprocess.PIPE
-    pro = subprocess.Popen(
-        command, preexec_fn=os.setsid, stderr=subprocess.PIPE,
-        stdout=subprocess.PIPE, universal_newlines=True, **kwargs)
+    pro = subprocess.Popen(command, stderr=subprocess.PIPE,
+                           stdout=subprocess.PIPE, universal_newlines=True,
+                           **kwargs)
     _subprocesses.append(pro)
     output, error = pro.communicate()
     ret = pro.returncode

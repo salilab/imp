@@ -239,7 +239,6 @@ class Tests(IMP.test.TestCase):
         print("BEFORE calcRMS", dmap.get_rms_calculated())
         dmap.calcRMS()
         print("AFTER calcRMS", dmap.get_rms_calculated())
-        IMP.em.write_map(dmap, "map.mrc", IMP.em.MRCReaderWriter())
         r = IMP.em.FitRestraint([fp], dmap)
         sf = IMP.core.RestraintsScoringFunction([r])
         for i in range(0, 10):

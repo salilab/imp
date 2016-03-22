@@ -2,7 +2,7 @@
  *  \file RMF/BufferConstHandle.h
  *  \brief Declare RMF::BufferConstHandle.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -68,6 +68,11 @@ class BufferConstHandle {
   boost::shared_ptr<std::vector<char> > get() const { return data_; }
 #endif
 };
+
+//! Produce hash values for boost hash tables.
+inline std::size_t hash_value(const BufferConstHandle &t) {
+  return t.__hash__();
+}
 
 RMFEXPORT BufferConstHandle read_buffer(std::string file_name);
 

@@ -2,7 +2,7 @@
  *  \file IMP/ClassnamePredicate.h
  *  \brief Define ClassnamePredicate.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_CLASSNAME_PREDICATE_H
@@ -10,7 +10,6 @@
 
 #include <IMP/kernel_config.h>
 #include "base_types.h"
-#include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
 #include "internal/container_helpers.h"
 #include "model_object_helpers.h"

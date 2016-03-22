@@ -2,7 +2,7 @@
  *  \file IMP/multifit/AlignmentParams.h
  *  \brief Parameters for alignments.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMULTIFIT_ALIGNMENT_PARAMS_H

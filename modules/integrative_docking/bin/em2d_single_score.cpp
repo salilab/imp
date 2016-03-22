@@ -2,7 +2,7 @@
  * \file em2d_single_score.cpp \brief A program to score a single
  * docking model in PDB file
  *
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -35,6 +35,7 @@ int main(int argc, char **argv) {
   float pixel_size = 2.2;
   float area_threshold = 0.4;  // used 0.4 for benchmark and PCSK9
   bool residue_level = false;
+  unsigned int n_components = 1;
   std::vector<std::string> image_files;
   std::string pdb;
   po::options_description desc("Usage: <pdb> <image1> <image2>...");
@@ -52,7 +53,11 @@ int main(int argc, char **argv) {
       "maximal percentage of area difference for \
 aligned images (default = 0.4)")(
       "ca-only,c", "perform fast coarse grained profile calculation using \
-CA atoms only (default = false)")
+CA atoms only (default = false)")(
+      "n_components,l", po::value<unsigned int>(&n_components)->default_value(1),
+      "Number of the largest components \
+to be considered for the EM image \
+(default = 1)")
     ;
   po::positional_options_description p;
   p.add("input-files", -1);
@@ -110,7 +115,8 @@ CA atoms only (default = false)")
 
   IMP::em2d::PCAFitRestraint *r =
     new IMP::em2d::PCAFitRestraint(particles, image_files,
-                                   pixel_size, resolution, projection_number);
+                                   pixel_size, resolution, projection_number,
+                                   residue_level, n_components);
   double score  = r->unprotected_evaluate(NULL);
   std::cerr << "Total score = " << score << std::endl;
   r->write_best_projections("best_projections.pgm");

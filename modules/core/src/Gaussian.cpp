@@ -2,7 +2,7 @@
  *  \file example/Gaussian.cpp
  *  \brief Decorator to hold Gaussian3D
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -26,6 +26,13 @@ void Gaussian::do_setup_particle(Model *m, ParticleIndex pi,
 
 void Gaussian::do_setup_particle(Model *m, ParticleIndex pi) {
   do_setup_particle(m,pi,algebra::Gaussian3D());
+}
+
+void Gaussian::set_gaussian(const algebra::Gaussian3D &g) {
+  set_reference_frame(g.get_reference_frame());
+  set_variances(g.get_variances());
+  get_model()->clear_particle_caches(get_particle_index());
+  update_global_covariance();
 }
 
 

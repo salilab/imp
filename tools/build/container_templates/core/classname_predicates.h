@@ -2,7 +2,7 @@
  *  \file IMP/core/classname_predicates.h
  *  \brief Define some predicates.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CLASSNAME_PREDICATES_H

@@ -1,7 +1,7 @@
 /**
  *  \file PDBParser.h   \brief A class for reading PDB files
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/pdb.h>
@@ -107,8 +107,8 @@ void canonicalize(Hierarchy h) {
   for (unsigned int i = 0; i < h.get_number_of_children(); ++i) {
     canonicalize(h.get_child(i));
   }
-  if (h.get_as_chain()) {
-    sort_residues(h.get_as_chain());
+  if (Chain::get_is_setup(h)) {
+    sort_residues(Chain(h));
   }
 }
 

@@ -2,7 +2,7 @@
  *  \file Color.cpp
  *  \brief Represent an RGB color.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -46,7 +46,9 @@ Color get_display_color(unsigned int i) {
 
 namespace {
 Color get_color_map_color(double f, Color *colors, unsigned int n) {
-  IMP_USAGE_CHECK(f >= 0 && f <= 1.0, "Argument needs to be between 0 and 1.");
+  // Allow for a little bit of rounding error
+  IMP_USAGE_CHECK(f >= 0 && f <= 1.0001,
+                  "Argument needs to be between 0 and 1.");
   int lb = static_cast<int>(std::floor(f * (n - 1)));
   if (lb >= static_cast<int>(n - 1)) return colors[n - 1];
   if (lb < 0) return colors[0];

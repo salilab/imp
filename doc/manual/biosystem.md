@@ -2,21 +2,21 @@ Applying %IMP to a new biological system {#biosystem}
 ========================================
 
 We have already applied %IMP to solve the structures of many novel biological
-systems, listed on the [biological systems page](http://integrativemodeling.org/systems/).
+systems, listed on the [biological systems page](https://integrativemodeling.org/systems/).
 Each system on that page includes all of the files needed to reproduce the
 results in the accompanying publication. For example, the list includes the
 [modeling example from earlier in this manual](@ref rnapolii_stalk), as well
-as [modeling of the Nup84 subcomplex of the Nuclear Pore Complex](http://salilab.org/nup84). Each system is periodically rerun with the latest version of %IMP
+as [modeling of the Nup84 subcomplex of the Nuclear Pore Complex](https://salilab.org/nup84). Each system is periodically rerun with the latest version of %IMP
 to make sure that it still works correctly.
 
 To apply %IMP to a new biological system, you are welcome to use one of the
-existing systems, such as the [Nup84 model](http://salilab.org/nup84),
+existing systems, such as the [Nup84 model](https://salilab.org/nup84),
 as your template - or you can write from scratch using the basic %IMP classes
 and/or the IMP::pmi higher level interface. In either case, we strongly
 recommend that you manage your application as a GitHub repository so that
  - others can reproduce your published work
  - changes to the protocol can be documented or rolled back if necessary
- - your system can be added to [our list](http://integrativemodeling.org/systems/), so that we can test newer versions of %IMP to make sure we don't break something
+ - your system can be added to [our list](https://integrativemodeling.org/systems/), so that we can test newer versions of %IMP to make sure we don't break something
 
 We recommend the following contents for your repository (see the
 [Nup84 repository](https://github.com/integrativemodeling/nup84)
@@ -43,9 +43,9 @@ for an example):
    protocol, run only a representative subset
    (e.g. the Nup84 modeling test passes a `--test` option to the modeling
    script, which has it perform fewer iterations of sampling).
- - to add your system to [our list](http://integrativemodeling.org/systems/)
+ - to add your system to [our list](https://integrativemodeling.org/systems/)
    it will also need a `metadata` subdirectory (also
-   [contact us](http://integrativemodeling.org/contact.html) to let us know
+   [contact us](https://integrativemodeling.org/contact.html) to let us know
    about it).
    This should contain two files:
    - `thumb.png`: a small image used to represent your system on the page.

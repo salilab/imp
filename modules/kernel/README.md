@@ -1,7 +1,5 @@
 \brief Base functionality and abstract base classes for representation, scoring and sampling.
 
-For backwards compatibility, the kernel can also be accessed as IMP::kernel.
-
 # Graphs # {#graphs}
 
 Graphs in IMP are represented in C++ using the

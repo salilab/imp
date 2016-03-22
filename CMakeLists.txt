@@ -32,6 +32,16 @@ if(IS_DIRECTORY "${PROJECT_SOURCE_DIR}/.git")
   endif()
 endif()
 
+# Quiet warning from cmake 3.1 or later about quoted variables in if()
+if(POLICY CMP0054)
+cmake_policy(SET CMP0054 NEW)
+endif(POLICY CMP0054)
+
+# Honor link flags in try_compile() tests
+if(POLICY CMP0056)
+cmake_policy(SET CMP0056 NEW)
+endif(POLICY CMP0056)
+
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPExecuteProcess.cmake)
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPAddTests.cmake)
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/CheckCompiles.cmake)
@@ -57,6 +67,12 @@ endif(POLICY CMP0017)
 if(POLICY CMP0042)
 cmake_policy(SET CMP0042 OLD)
 endif(POLICY CMP0042)
+
+# Stop cmake warning about files in the build directory it didn't create
+# (see issue #909)
+if(POLICY CMP0058)
+cmake_policy(SET CMP0058 OLD)
+endif(POLICY CMP0058)
 
 set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")
@@ -205,11 +221,11 @@ else()
 endif()
 
 set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost 1.38.0 COMPONENTS system filesystem thread program_options REQUIRED)
+find_package(Boost 1.40.0 COMPONENTS system filesystem thread program_options REQUIRED)
 if("${Boost_SYSTEM_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
   message(FATAL_ERROR "Boost is required to build IMP.")
 endif()
-find_package(Boost 1.38.0 QUIET COMPONENTS random regex graph)
+find_package(Boost 1.40.0 QUIET COMPONENTS random regex graph)
 
 if("${Boost_RANDOM_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
 set(Boost_RANDOM_LIBRARY_RELEASE "" CACHE INTERNAL "" FORCE)
@@ -304,9 +320,6 @@ foreach(mod ${enabled_modules})
   ${IMP_${mod}_DOC})
 endforeach(mod)
 
-imp_execute_process("setup_module_alias for kernel" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_module_alias.py)
-
 list(INSERT IMP_PYTHONPATH 0 "${CMAKE_BINARY_DIR}/lib")
 list(INSERT IMP_LDPATH 0 "${CMAKE_BINARY_DIR}/lib")
 list(INSERT IMP_PATH 0 "${CMAKE_BINARY_DIR}/bin")
@@ -343,11 +356,13 @@ if(IMP_DOXYGEN_FOUND)
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/ref.html
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/ref-warnings.txt
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_links.py ${CMAKE_BINARY_DIR}/doc/ref
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_add_ref_nav.py ${CMAKE_SOURCE_DIR}
     # Rebuild manual so that it can link to the refguide tags
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual.html
     COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/manual-warnings.txt
     COMMAND patch -p1 < ${CMAKE_SOURCE_DIR}/doc/doxygen/search.patch
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_add_nav.py
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_add_nav.py ${CMAKE_SOURCE_DIR} . doc/manual tools
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_spell_check.py doxygen/manual/xml ${CMAKE_SOURCE_DIR}/doc/standards_exceptions
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS ${IMP_DOC_DEPENDS} ${docs} ${IMP_DOXYGEN_FETCH} IMP-version
     COMMENT "Building documentation")

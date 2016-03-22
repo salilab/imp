@@ -17,9 +17,8 @@ class Tests(IMP.test.TestCase):
         """Test get_rotated() with a vector"""
         dr = IMP.algebra.Rotation2D()
         r = IMP.algebra.Rotation2D(math.pi / 2.)
-        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
-            self.assertRaises(IMP.InternalException, dr.get_rotated,
-                              IMP.algebra.Vector2D(1,2))
+        self.assertRaisesInternalException(dr.get_rotated,
+                                           IMP.algebra.Vector2D(1,2))
         v = r.get_rotated(IMP.algebra.Vector2D(1,2))
         self.assertLess(IMP.algebra.get_distance(v, IMP.algebra.Vector2D(-2,1)),
                         1e-4)
@@ -28,9 +27,7 @@ class Tests(IMP.test.TestCase):
         """Test get_rotated() with a point"""
         dr = IMP.algebra.Rotation2D()
         r = IMP.algebra.Rotation2D(math.pi / 2.)
-        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
-            self.assertRaises(IMP.InternalException, dr.get_rotated,
-                              1, 2)
+        self.assertRaisesInternalException(dr.get_rotated, 1, 2)
         v = r.get_rotated(1, 2)
         self.assertLess(IMP.algebra.get_distance(v, IMP.algebra.Vector2D(-2,1)),
                         1e-4)
@@ -39,8 +36,7 @@ class Tests(IMP.test.TestCase):
         """Test get_inverse()"""
         dr = IMP.algebra.Rotation2D()
         r = IMP.algebra.Rotation2D(math.pi / 2.)
-        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
-            self.assertRaises(IMP.InternalException, dr.get_inverse)
+        self.assertRaisesInternalException(dr.get_inverse)
         r2 = r.get_inverse()
         self.assertAlmostEqual(r2.get_angle(), -math.pi / 2., delta=1e-4)
 

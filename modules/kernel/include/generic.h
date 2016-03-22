@@ -2,7 +2,7 @@
  *  \file IMP/generic.h    \brief Various important functionality
  *                                for implementing decorators.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

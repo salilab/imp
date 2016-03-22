@@ -38,7 +38,7 @@ def transform(input_pdb, input_lib, output_pdb):
     # get the most probable rotamers
     rotamers = list()
     for h in mh:
-        rd = h.get_as_residue()
+        rd = IMP.atom.Residue(h)
         rr = rc.get_rotamer(rd, 0.01)
         rotamers.append((rd, rr))
 
@@ -46,7 +46,7 @@ def transform(input_pdb, input_lib, output_pdb):
     # coordinates
     for rd, rr in rotamers:
         for h in IMP.atom.get_by_type(rd, IMP.atom.ATOM_TYPE):
-            at = h.get_as_atom()
+            at = IMP.atom.Atom(h)
             at_t = at.get_atom_type()
             if rr.get_atom_exists(at_t):
                 # some atoms might not be rotated

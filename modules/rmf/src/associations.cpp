@@ -2,7 +2,7 @@
  *  \file IMP/rmf/associations.cpp
  *  \brief Track associations between an RMF file and native objects.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

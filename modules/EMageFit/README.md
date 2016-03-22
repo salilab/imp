@@ -44,11 +44,11 @@ _Author(s)_: Javier Velázquez-Muriel
 
 _Maintainer_: `benmwebb`
 
-_License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
+_License_: [GPL](http://www.gnu.org/licenses/gpl.html)
 This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
+modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
- - Javier A. Velázquez-Muriel, Keren Lasker, Daniel Russel, Jeremy Phillips, Benjamin M. Webb, Dina Scheidmann, Andrej Sali, \quote{Assembly of macromolecular complexes by satisfaciton of spatial restraints from electron microscopy images}, <em>Proc Natl Acad Sci USA 109(46), 18821-18826</em>, 2012.
+ - Javier A. Velázquez-Muriel, Keren Lasker, Daniel Russel, Jeremy Phillips, Benjamin M. Webb, Dina Schneidman, Andrej Sali, \quote{Assembly of macromolecular complexes by satisfaction of spatial restraints from electron microscopy images}, <em>Proc Natl Acad Sci USA 109(46), 18821-18826</em>, 2012.

@@ -1,5 +1,5 @@
 ## \example em/analyze_convergence.py
-# Analyze the convergence of the IMP.em.FitRestraint. The script build a
+# Analyze the convergence of the IMP.em.FitRestraint. The script builds a
 # simple model and then displays the derivatives, em score and how well
 # conjugate gradients converges under various displacements of the model.
 
@@ -31,16 +31,12 @@ if use_rigid_bodies:
     print("initial frame", drb.get_reference_frame())
     fp = prb
     drb.set_coordinates_are_optimized(True)
-    refiner = IMP.core.TableRefiner()
-    refiner.add_particle(prb, [p])
     to_move = drb
-    print([p.get_name() for p in refiner.get_refined(prb)])
     fp = d
 else:
     fp = d
     to_move = d
     d.set_coordinates_are_optimized(True)
-    refiner = None
 
 
 bb = IMP.algebra.BoundingBox3D(

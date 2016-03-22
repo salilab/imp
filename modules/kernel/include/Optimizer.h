@@ -1,7 +1,7 @@
 /**
  *  \file IMP/Optimizer.h     \brief Base class for all optimizers.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -47,7 +47,6 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
   mutable Floats widths_;
   Pointer<Model> my_model_;
   bool stop_on_good_score_;
-  mutable Pointer<ScoringFunction> cache_;
   Pointer<ScoringFunction> scoring_function_;
 
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
@@ -83,23 +82,18 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
   void set_stop_on_good_score(bool tf) { stop_on_good_score_ = tf; }
   bool get_stop_on_good_score() const { return stop_on_good_score_; }
   //! Return the score found in the last evaluate
-  double get_last_score() const { return cache_->get_last_score(); }
+  double get_last_score() const { return scoring_function_->get_last_score(); }
 
   //! Return the scoring function that is being used
+  /** \throws ValueException if no scoring function was set
+   */
   ScoringFunction *get_scoring_function() const {
     if (scoring_function_) {
       return scoring_function_;
-    } else if (cache_) {
-      return cache_;
     } else {
-/* Don't warn about deprecated model scoring function every time someone
-   includes Optimizer.h */
-IMP_HELPER_MACRO_PUSH_WARNINGS
-#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
-IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
-#endif
-      return cache_ = get_model()->create_model_scoring_function();
-IMP_HELPER_MACRO_POP_WARNINGS
+      IMP_THROW("No scoring function was set. "
+                "Use Optimizer::set_scoring_function() to set one.",
+                ValueException);
     }
   }
 
@@ -117,9 +111,7 @@ IMP_HELPER_MACRO_POP_WARNINGS
   { Optimizer::set_optimizer_state_optimizer(obj, nullptr); });
   /**@}*/
 
-  /** By default, the Optimizer uses the scoring function provided by
-      the model, but you can use another scoring function instead.
-  */
+  //! Set the scoring function to use.
   virtual void set_scoring_function(ScoringFunctionAdaptor sf);
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);

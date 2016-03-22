@@ -2,7 +2,7 @@
  *  \file VQClustering.cpp
  *  \brief Vector quantization clustering. Based on Wriggers et at, JMB 1998
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -348,7 +348,7 @@ void VQClustering::set_assignments() {
       std::cerr << "Center for " << j << " does not match" << std::endl;
     }
     if (min_dist > 100) {
-      std::cerr << "Outlier for cneter " << closest_cen << std::endl;
+      std::cerr << "Outlier for center " << closest_cen << std::endl;
     }
     //-----
     assignment_[j] = closest_cen;

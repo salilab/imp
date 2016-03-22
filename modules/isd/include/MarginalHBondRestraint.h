@@ -3,7 +3,7 @@
  *  \brief A lognormal restraint that uses the ISPA model to model HBond-derived
  *  distance fit.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -35,9 +35,6 @@ class IMPISDEXPORT MarginalHBondRestraint : public Restraint {
 
  public:
   //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
-      preferably in a Singleton or PairContainer as appropriate.
-   */
   MarginalHBondRestraint(Model *m)
       : Restraint(m, "MarginalHBondRestraint%1%") {};
 
@@ -56,8 +53,6 @@ class IMPISDEXPORT MarginalHBondRestraint : public Restraint {
   /* call for probability */
   double get_probability() const { return exp(-unprotected_evaluate(nullptr)); }
 
-  /** This macro declares the basic needed methods: evaluate and show
-   */
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

@@ -3,7 +3,7 @@
  *  \brief A singleton modifier which wraps an attribute into a
  *  given range.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPEXAMPLE_EXAMPLE_SINGLETON_MODIFIER_H
@@ -16,7 +16,7 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-//! An example singleton modifer
+//! An example singleton modifier
 /** A simple singleton modifier which ensures the x,y,z coordinates
     stay in a box by wrapping them.
 
@@ -27,8 +27,8 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include range_restriction.py
 
     The source code is as follows:
-    \include ExampleRestraint.h
-    \include ExampleRestraint.cpp
+    \include ExampleSingletonModifier.h
+    \include ExampleSingletonModifier.cpp
  */
 class IMPEXAMPLEEXPORT ExampleSingletonModifier : public SingletonModifier {
   algebra::BoundingBoxD<3> bb_;

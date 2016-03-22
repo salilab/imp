@@ -2,7 +2,7 @@
  *  \file RMF/infrastructure_macros.h
  *  \brief Various general useful macros for IMP.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -181,13 +181,6 @@ class Nullable;
 #if !defined(RMF_DOXYGEN) && !defined(SWIG)
 struct Showable;
 inline std::ostream& operator<<(std::ostream& out, const Showable& t);
-
-/** Produce hash values for boost hash tables.
- */
-template <class T>
-inline std::size_t hash_value(const T& t) {
-  return t.__hash__();
-}
 
 /** An adaptor class to provide operator<< for classes easily. */
 struct Showable {

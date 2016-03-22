@@ -1,9 +1,9 @@
 /**
  *  \file IMP/isd/CrossLinkMSRestraint.h
  *  \brief A pmf based likelihood function
- *  with prior knowledge on the flase positive rate.
+ *  with prior knowledge on the false positive rate.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,23 +28,23 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
     double length_;
     double slope_;
     int constr_;
+    bool get_log_prob_;
 
     double sphere_cap(float r1, float r2, float d) const;
 
    public:
     //! Create the restraint.
-    /** Restraints should store the particles they are to act on,
-        preferably in a Singleton or PairContainer as appropriate.
-     */
-
     CrossLinkMSRestraint(IMP::Model* m, double length,
+                         bool get_log_prob = false,
                          std::string name = "CrossLinkMSRestraint%1%");
 
     CrossLinkMSRestraint(IMP::Model* m,
                          IMP::ParticleIndexAdaptor lengthi,
+                         bool get_log_prob = false,                         
                          std::string name = "CrossLinkMSRestraint%1%");
 
     CrossLinkMSRestraint(IMP::Model* m, double length, double slope,
+                         bool get_log_prob = false,
                          std::string name = "CrossLinkMSRestraint%1%");
 
     void add_contribution(const IMP::ParticleIndexPair& pps,
@@ -59,8 +59,6 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
 
     unsigned int get_number_of_contributions() const { return ppis_.size(); }
 
-    /** This macro declares the basic needed methods: evaluate and show
-     */
     virtual double unprotected_evaluate(
         IMP::DerivativeAccumulator* accum) const IMP_OVERRIDE;
     virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

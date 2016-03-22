@@ -2,7 +2,7 @@
  *  \file IMP/domino/DiscreteSampler.h
  *  \brief A base class for discrete samplers.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -67,14 +67,8 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
     if (restraints_set_) {
       return rs_;
     } else {
-/* Don't warn about deprecated get_root_restraint_set() every time someone
-   includes this header */
-IMP_HELPER_MACRO_PUSH_WARNINGS
-#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
-IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
-#endif
-      return RestraintsTemp(1, get_model()->get_root_restraint_set());
-IMP_HELPER_MACRO_POP_WARNINGS
+      IMP_THROW("No restraints have been set. Use set_restraints().",
+                ValueException);
     }
   }
 
@@ -85,8 +79,7 @@ IMP_HELPER_MACRO_POP_WARNINGS
 
   //! Set the Restraints to use in the RestraintScoreSubsetFilterTable.
   /** The default RestraintScoreSubsetFilterTable filters based on a set
-      of Restraints, which can be set here. (If not, the deprecated default
-      behavior is to use all Restraints in the Model.)
+      of Restraints, which can be set here.
    */
   void set_restraints(RestraintsAdaptor rs) {
     rs_ = rs;

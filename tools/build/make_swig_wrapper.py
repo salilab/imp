@@ -65,7 +65,7 @@ def patch_py_wrapper(infile, outfile):
     outfh = open(outfile, "w")
     in_initial_comment = True
     header = """# This wrapper is part of IMP,
-# Copyright 2007-2015 IMP Inventors. All rights reserved.
+# Copyright 2007-2016 IMP Inventors. All rights reserved.
 
 from __future__ import print_function, division, absolute_import
 """

@@ -1,7 +1,7 @@
 /**
  *  \file Restraint.cpp   \brief Abstract base class for all restraints.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -228,20 +228,6 @@ void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   IMP_TASK((nsa), do_add_score_and_derivatives(nsa),
            "add score and derivatives");
   set_was_used(true);
-}
-
-Restraint *RestraintsAdaptor::get(Model *sf) {
-  return sf->get_root_restraint_set();
-}
-
-RestraintsAdaptor::RestraintsAdaptor(Model *sf)
-    : Restraints(1, sf->get_root_restraint_set()) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.5, "Use a ScoringFunction instead");
-}
-
-RestraintsAdaptor::RestraintsAdaptor(const ModelsTemp &sf)
-    : Restraints(1, sf[0]->get_root_restraint_set()) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.5, "Use a ScoringFunction instead");
 }
 
 IMPKERNEL_END_NAMESPACE

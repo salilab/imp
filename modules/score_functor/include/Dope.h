@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/Dope.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_DOPE_H
@@ -25,7 +25,7 @@ IMP_VALUES(DopeType, DopeTypes);
 /**  Score pair of atoms based on DOPE.
 
   See M.-y. Shen and A. Sali. Statistical potential for assessment and
-  prediction of protein structures. Protein Science 15, 2507–2524, 2006.
+  prediction of protein structures. Protein Science 15, 2507-2524, 2006.
 
   DOPE should not be applied to two atoms from the same residue.
   You may need to use the SameResiduePairFilter to filter these out.

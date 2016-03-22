@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
         particles = IMP.core.get_leaves(prot)
         rows = 80
         cols = 80
-        resolution = 1
+        resolution = 3
         apix = 1.5
         img = em2d.Image()
         img.set_size(rows, cols)
@@ -56,7 +56,7 @@ class Tests(IMP.test.TestCase):
         n_projections = 3
         rows = 80
         cols = 80
-        resolution = 1
+        resolution = 10
         apix = 1.5
         srw = em2d.SpiderImageReaderWriter()
         registration_values = em2d.get_evenly_distributed_registration_results(
@@ -64,6 +64,7 @@ class Tests(IMP.test.TestCase):
         options = em2d.ProjectingOptions(apix, resolution)
         projections = em2d.get_projections(particles,
                                            registration_values, rows, cols, options)
+
         # Read the stored projections
         stored_projection_names = em2d.create_filenames(
             n_projections, "1z5s-fast-projection", "spi")
@@ -89,7 +90,7 @@ class Tests(IMP.test.TestCase):
         n_projections = 16
         rows = 100
         cols = 100
-        resolution = 1
+        resolution = 8
         apix = 1.5
         noise_SNR = 0.5
         # read the stored noisy images

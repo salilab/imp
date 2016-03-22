@@ -2,7 +2,7 @@
  *  \file MultipleBinormalRestraint.cpp
  *  \brief Modeller-style multiple binormal (phi/psi) restraint.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -49,16 +49,6 @@ MultipleBinormalRestraint::MultipleBinormalRestraint(
       terms_(),
       q1_(q1),
       q2_(q2) {}
-
-MultipleBinormalRestraint::MultipleBinormalRestraint(
-    const ParticleQuad &q1, const ParticleQuad &q2)
-    : Restraint(q1[0]->get_model(), "MultipleBinormalRestraint%1%"),
-      terms_(),
-      q1_(IMP::internal::get_index(q1)),
-      q2_(IMP::internal::get_index(q2)) {
-  IMPMODELLER_DEPRECATED_METHOD_DEF(2.5,
-                           "Use the index-based constructor instead.");
-}
 
 double MultipleBinormalRestraint::unprotected_evaluate(
     DerivativeAccumulator *accum) const {

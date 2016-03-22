@@ -5,6 +5,7 @@ import IMP.rmf
 import os,sys
 from math import sqrt
 import itertools
+import random
 try:
     import scipy
 except ImportError:
@@ -289,8 +290,6 @@ class PrecisionTest(IMP.test.TestCase):
     def test_precision(self):
         if scipy is None:
             self.skipTest("no scipy module")
-
-        import random
         mdl = IMP.Model()
 
         # create some frames and store in RMF

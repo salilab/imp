@@ -2,7 +2,7 @@
  *  \file RMF/HDF5/Group.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,7 +24,7 @@ typedef std::vector<GroupAttributes> GroupAttributesList;
 #endif
 
 /** Wrap an HDF5 Group. See
-    \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame09Groups.html,
+    \external{https://www.hdfgroup.org/HDF5/doc/RM/RM_H5G.html,
     the HDF5 manual} for more information.
  */
 class RMFEXPORT Group : public MutableAttributes<ConstGroup> {

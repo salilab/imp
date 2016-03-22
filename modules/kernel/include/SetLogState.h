@@ -1,7 +1,7 @@
 /**
- *  \file IMP/SetLogState.h     \brief Logging and error reporting support.
+ *  \file IMP/SetLogState.h     \brief A class to change and restore log state
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,7 +23,7 @@ class Object;
    want. When it goes out of scope, it will restore the old level.
 
 
-   \note This will not keep objects alive, make sure there is also some
+   \note This will not keep objects alive; make sure there is also some
    other ref-counted pointer to them.
 
    \ingroup logging
@@ -42,7 +42,7 @@ class IMPKERNELEXPORT SetLogState : public RAII {
                                                  },
   { do_set(o, l); }, { do_reset(); }, do_show(out););
 
-  //! Construct it with the desired level and target
+  //! Construct with the desired level and target
   SetLogState(LogLevel l);
   void set(LogLevel l);
 };

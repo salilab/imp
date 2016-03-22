@@ -3,7 +3,7 @@
  * \brief fast scoring of fit between Particles in 3D and 2D class averages
  *
  * \authors Dina Schneidman
- * Copyright 2007-2015 IMP Inventors. All rights reserved.
+ * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,7 +17,8 @@ IMPEM2D_BEGIN_NAMESPACE
 PCAFitRestraint::PCAFitRestraint(Particles particles,
                                  const std::vector<std::string>& image_files,
                                  double pixel_size, double resolution,
-                                 unsigned int projection_number, bool reuse_direction)
+                                 unsigned int projection_number, bool reuse_direction,
+                                 unsigned int n_components)
   : Restraint(particles[0]->get_model(), "PCAFitRestraint%1%"),
     ps_(particles),
     pixel_size_(pixel_size),
@@ -25,13 +26,13 @@ PCAFitRestraint::PCAFitRestraint(Particles particles,
     projection_number_(projection_number),
     projector_(ps_, projection_number, pixel_size, resolution),
     reuse_direction_(reuse_direction),
+    n_components_(n_components),
     counter_(0)
 {
-  std::cerr << "PCAFitRestraint::Number of Particles: " << particles.size() << std::endl;   // by SJ & Dina (05/18/2015)
   // read and process the images
   for (unsigned int i = 0; i < image_files.size(); i++) {
     internal::Image2D<> image(image_files[i]);
-    image.get_largest_connected_component();
+    image.get_largest_connected_component(n_components_);
     image.pad((int)(image.get_width() * 1.7), (int)(image.get_height() * 1.7));
     image.center();
     image.average();
@@ -66,7 +67,7 @@ double PCAFitRestraint::unprotected_evaluate(
 
   // process projections
   for (unsigned int i = 0; i < projections.size(); i++) {
-    projections[i].get_largest_connected_component();
+    projections[i].get_largest_connected_component(n_components_);
     projections[i].center();
     projections[i].average();
     projections[i].stddev();

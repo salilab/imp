@@ -7,7 +7,7 @@
  *  \authors Dina Schneidman, Barak Raveh
  *
 
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_REVOLUTE_JOINTS_H
@@ -190,6 +190,11 @@ class IMPKINEMATICSEXPORT DihedralAngleRevoluteJoint : public RevoluteJoint {
                              IMP::core::RigidBody child, IMP::core::XYZ a,
                              IMP::core::XYZ b, IMP::core::XYZ c,
                              IMP::core::XYZ d);
+
+  IMP::core::XYZ get_a() const { return a_; }
+  IMP::core::XYZ get_b() const { return b_; }
+  IMP::core::XYZ get_c() const { return c_; }
+  IMP::core::XYZ get_d() const { return d_; }
 
  protected:
   /**

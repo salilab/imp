@@ -2,7 +2,7 @@
  *  \file IMP/atom/Hierarchy.h
  *  \brief Decorator for helping deal with a hierarchy of molecules.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,11 +24,13 @@
 #include <deque>
 
 #define IMP_ATOM_GET_AS_DECL(UCName, lcname, CAPSNAME) \
+  IMPATOM_DEPRECATED_METHOD_DECL(2.6)                  \
   UCName get_as_##lcname() const;
 
 // figure out how to inline
 #define IMP_ATOM_GET_AS_DEF(UCName, lcname, CAPSNAME) \
   UCName Hierarchy::get_as_##lcname() const {         \
+    IMPATOM_DEPRECATED_METHOD_DEF(2.6, "Use decorators instead"); \
     if (UCName::get_is_setup(get_particle())) {       \
       return UCName(get_particle());                  \
     } else {                                          \
@@ -81,6 +83,7 @@ class Chain;
 class Molecule;
 class Mass;
 class State;
+class Representation;
 
 IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
 
@@ -186,10 +189,10 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     to store the information associated with that node in the
     hierarchy. Examples include Residue, Atom, XYZ, Chain, XYZR,
     Mass, Domain, Molecule etc.
-    We provide a get_as_x() function for each such decorator which
-    returns either X() (a null type) if the node is not a particle
-    of type x, or an X decorator wrapping the current particle if
-    it is.
+
+    \note Deleting a Hierarchy, like deleting any decorator, will not
+          delete the underlying Particle or remove any children. To do
+          that, call destroy().
 
     \see Atom
     \see Residue
@@ -199,6 +202,7 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     \see Fragment
     \see Mass
     \see State
+    \see Representation
  */
 class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   typedef core::Hierarchy H;
@@ -225,18 +229,8 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return setup_particle(p->get_model(), p->get_index());
   }
 
-  IMPATOM_DEPRECATED_METHOD_DECL(2.2)
-  static bool particle_is_instance(Particle *p) {
-    IMPATOM_DEPRECATED_METHOD_DEF(2.2, "Use get_is_setup() instead");
-    return H::get_is_setup(p, get_traits());
-  }
   static bool get_is_setup(Particle *p) {
     return H::get_is_setup(p, get_traits());
-  }
-  IMPATOM_DEPRECATED_METHOD_DECL(2.2)
-  static bool particle_is_instance(Model *m, ParticleIndex p) {
-    IMPATOM_DEPRECATED_METHOD_DEF(2.2, "Use get_is_setup() instead");
-    return H::get_is_setup(m->get_particle(p), get_traits());
   }
 #endif
 
@@ -282,7 +276,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
       true and things are invalid.
       \note Returning true only means that no problems were
       found; it can't check everything.*/
-  bool get_is_valid(bool print_info) const;
+  bool get_is_valid(bool print_info=false) const;
 
   //! Add a child and check that the types are appropriate
   /** A child must have a type that is listed before the parent in the
@@ -331,17 +325,9 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     }
   }
 
-  /** \name Methods to get associated decorators
-
-      We provide a number of helper methods to get associated
-      decorators for the current node in the hierarchy. As an
-      example, if the particle decorated by this decorator is
-      a Residue particle, then get_as_residue() returns
-      Residue(get_particle()); if not it returns Residue().
-      @{
-   */
+#ifndef IMP_DOXYGEN
   IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_ATOM_GET_AS_DECL);
-  /** @} */
+#endif
 
   //! Get the molecular hierarchy HierarchyTraits.
   static const IMP::core::HierarchyTraits &get_traits();
@@ -373,6 +359,7 @@ enum GetByType {
 #endif
 
 //! Gather all the molecular particles of a certain level in the hierarchy.
+/** \relates Hierarchy */
 IMPATOMEXPORT Hierarchies get_by_type(Hierarchy mhd, GetByType t);
 
 //! Get the residue with the specified index
@@ -386,7 +373,7 @@ IMPATOMEXPORT Hierarchies get_by_type(Hierarchy mhd, GetByType t);
     \throw ValueException if mhd's type is not one of CHAIN, PROTEIN, NUCLEOTIDE
     \return Hierarchy() if that residue is not found.
 
-    \see Hierarchy
+    \relates Hierarchy
  */
 IMPATOMEXPORT Hierarchy get_residue(Hierarchy mhd, unsigned int index);
 
@@ -397,18 +384,18 @@ IMPATOMEXPORT Hierarchy get_residue(Hierarchy mhd, unsigned int index);
     removed). The particles become children of the fragment.
 
     \throw ValueException If all the particles do not have the same parent.
-    \see Hierarchy
+    \relates Hierarchy
  */
 IMPATOMEXPORT Hierarchy create_fragment(const Hierarchies &ps);
 
 //! Get the bonds internal to this tree
-/** \see Hierarchy
+/** \relates Hierarchy
     \see Bond
  */
 IMPATOMEXPORT Bonds get_internal_bonds(Hierarchy mhd);
 
 //! Return the root of the hierarchy
-/** \see Hierarchy */
+/** \relates Hierarchy */
 inline Hierarchy get_root(Hierarchy h) {
   while (h.get_parent()) {
     h = h.get_parent();
@@ -416,12 +403,12 @@ inline Hierarchy get_root(Hierarchy h) {
   return h;
 }
 
-/** \see Hierarchy */
+/** \relates Hierarchy */
 inline Hierarchies get_leaves(Hierarchy h) {
   return Hierarchies(IMP::core::get_leaves(h));
 }
 
-/** \see Hierarchy */
+/** \relates Hierarchy */
 inline Hierarchies get_leaves(const Hierarchies &h) {
   ParticlesTemp ret;
   for (unsigned int i = 0; i < h.size(); ++i) {
@@ -432,7 +419,7 @@ inline Hierarchies get_leaves(const Hierarchies &h) {
 }
 
 //! Print out a molecular hierarchy
-/** \see Hierarchy
+/** \relates Hierarchy
  */
 inline void show(Hierarchy h, std::ostream &out = std::cout) {
   IMP::core::show<Hierarchy>(h, out);
@@ -479,7 +466,9 @@ IMPATOMEXPORT IMP::core::RigidBody setup_as_rigid_body(Hierarchy h);
     - is or is part of a Residue that is not a normal protein, rna or
       dna residue
     - or is not part of a Chain
+
     For the moment, this can only be called on residues or atoms.
+    \relates Hierarchy
 */
 IMPATOMEXPORT bool get_is_heterogen(Hierarchy h);
 
@@ -488,15 +477,15 @@ IMPATOMEXPORT bool get_is_heterogen(Hierarchy h);
     Residue, and Domain data and the particle name to the
     new copies in addition to the Hierarchy relationships.
 
-    \see Hierarchy
+    \relates Hierarchy
 */
 IMPATOMEXPORT Hierarchy create_clone(Hierarchy d);
 
 //! Clone the node in the Hierarchy
-/** This method copies the  Atom,
+/** This method copies the Atom,
     Residue, Chain and Domain data and the particle name.
 
-    \see Hierarchy
+    \relates Hierarchy
 */
 IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
 
@@ -505,7 +494,7 @@ IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
     hierarchy links in the Hierarchy and the particles are
     removed from the Model. If this particle has a parent, it is
     removed from the parent.
-    \see Hierarchy
+    \relates Hierarchy
 */
 IMPATOMEXPORT void destroy(Hierarchy d);
 
@@ -516,13 +505,13 @@ IMPATOMEXPORT void destroy(Hierarchy d);
     That is, if the root has x,y,z,r then it is the bounding box
     of that sphere. If only the leaves have radii, it is the bounding
     box of the leaves. If no such cut exists, the behavior is undefined.
-    \see Hierarchy
+    \relates Hierarchy
     \see IMP::algebra::BoundingBoxD
  */
 IMPATOMEXPORT algebra::BoundingBoxD<3> get_bounding_box(const Hierarchy &h);
 
 /** See get_bounding_box() for more details.
-    \see Hierarchy
+    \relates Hierarchy
  */
 IMPATOMEXPORT algebra::Sphere3D get_bounding_sphere(const Hierarchy &h);
 

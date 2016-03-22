@@ -8,6 +8,18 @@ import io
 
 class Tests(IMP.test.TestCase):
 
+    def test_no_moltype(self):
+        """Check reading a mol2 file with missing molecule type"""
+        m = IMP.Model()
+
+        root_d = IMP.atom.read_mol2(
+            self.get_input_file_name("no-mol-type.mol2"),
+            m, IMP.atom.AllMol2Selector())
+        rs = IMP.atom.get_by_type(root_d, IMP.atom.RESIDUE_TYPE)
+        self.assertEqual(len(rs), 1)
+        self.assertEqual(IMP.atom.Residue(rs[0]).get_residue_type(),
+                         IMP.atom.UNK)
+
     def test_read(self):
         """Check reading a mol2 file containing small molecules"""
         m = IMP.Model()

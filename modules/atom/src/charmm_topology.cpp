@@ -1,7 +1,7 @@
 /**
  * \file charmm_topology.cpp \brief Classes for handling CHARMM-style topology.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/exception.h>
@@ -213,7 +213,7 @@ Vector<CHARMMBondEndpoint> handle_two_patch_bond(
 }
 
 Atom get_atom_by_name(Hierarchy h, const std::string atom_name) {
-  Residue r = h.get_as_residue();
+  Residue r(h);
   if (r.get_is_protein() || r.get_is_rna() || r.get_is_dna()) {
     return IMP::atom::get_atom(r, AtomType(atom_name));
   } else {
@@ -553,7 +553,8 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const {
           IMP_WARN_ONCE(typ.get_string() +
                             Residue(it->second).get_residue_type().get_string(),
                         "Could not determine CHARMM atom type for atom "
-                            << typ << " in residue " << Residue(it->second),
+                        << typ << " in residue " << Residue(it->second)
+                        << std::endl,
                         warn_context_);
         }
       } else {
@@ -588,7 +589,7 @@ void CHARMMTopology::add_missing_atoms(Hierarchy hierarchy) const {
       existing_atoms.insert(make_charmm_atom_name(typ.get_string()));
     }
 
-    Residue r = it->second.get_as_residue();
+    Residue r(it->second);
     bool is_ligand = !(r.get_is_protein() || r.get_is_rna() || r.get_is_dna());
 
     // Look at all atoms in the topology; add any that aren't in existing_atoms
@@ -881,7 +882,7 @@ unsigned count_atoms_with_coordinates(
     Hierarchy h = resmap.find(*it)->second;
     for (unsigned int i = 0; i < h.get_number_of_children(); ++i) {
       Hierarchy child = h.get_child(i);
-      if (child.get_as_atom() && core::XYZ::get_is_setup(child)) {
+      if (Atom::get_is_setup(child) && core::XYZ::get_is_setup(child)) {
         ++ct;
       }
     }
@@ -901,7 +902,7 @@ unsigned int assign_remaining_coordinates(
     Hierarchy h = resmap.find(*it)->second;
     for (unsigned int i = 0; i < h.get_number_of_children(); ++i) {
       Hierarchy child = h.get_child(i);
-      if (child.get_as_atom()) {
+      if (Atom::get_is_setup(child)) {
         if (core::XYZ::get_is_setup(child)) {
           seed = core::XYZ(child).get_coordinates();
         } else {

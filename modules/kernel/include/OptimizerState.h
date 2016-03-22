@@ -1,7 +1,7 @@
 /**
  *  \file IMP/OptimizerState.h   \brief Shared optimizer state.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -25,19 +25,19 @@ class Optimizer;
     method, in turn, invokes do_update(), which can be overridden by
     inheriting classes.
 
-    @note An OptimizerState may have periodicity by its set_period() method
+    @note An OptimizerState may have periodicity by its set_period() method.
 
     @note An OptimizerState is added to an Optimizer object by calling
           Optimizer::add_optimizer_state().
 
-    @note Optimizer states may change the values of particle
+    @note An OptimizerState may change the values of particle
           attributes. However, changes to whether an attribute is optimized
           or not may not be picked up by the Optimizer until the next call
-          to optimize.
+          to Optimizer::optimize().
 
-    \note When logging is VERBOSE, state should print enough information
-          in evaluate to reproduce the the entire flow of data in update. When
-          logging is TERSE the restraint should print out only a constant number
+    \note When logging is VERBOSE, the state should print enough information
+          in update() to reproduce the entire flow of data in update. When
+          logging is TERSE the state should print out only a constant number
           of lines per update call.
  */
 class IMPKERNELEXPORT OptimizerState : public ModelObject {
@@ -47,13 +47,14 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   void set_optimizer(Optimizer* optimizer);
 
  public:
-  /** constructs an optimizer state whose update() method  is invoked
+  //! Constructor.
+  /** Constructs an optimizer state whose update() method  is invoked
       every time that a set of model coordinates is committed
       by an optimizer.
 
       @param m the model to which this optimizer state is associated
       @param name the name of the object
-      @note An optimizer state may become periodic via its set_period()
+      @note An OptimizerState may become periodic via its set_period()
             method.
   */
   OptimizerState(Model* m, std::string name);
@@ -64,14 +65,15 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
       However, if set_period(p) was invoked, it calls do_update() only
       every p times it is called (by any optimizer).
 
-      @note Overriding this method is deprecated, override do_update() instead.
+      @note Overriding this method is deprecated; override do_update() instead.
   */
   virtual void update();
 
-  /** Called with true at the beginning of an optimizing run and with
-      false at the end.
+  //! Called by an Optimizer to signal begin/end of an optimize run.
+  /** At the beginning of an optimize run, set_is_optimizing(true) is
+      called. At the end, set_is_optimizing(false) is called.
 
-      \note Do not override, override do_set_is_optimizing() instead.
+      \note Do not override; override do_set_is_optimizing() instead.
   */
   virtual void set_is_optimizing(bool);
 
@@ -81,33 +83,32 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
     return optimizer_.get();
   }
 
-  /**
-     Causes update() invoke do_update() only every p calls to update()
-     instead of the default p=1. Note that this periodicity is shared
-     by all optimizers that own this OptimizerState object.
+  //! Set the periodicity of this state.
+  /** This causes update() to invoke do_update() only every p calls
+      to update() rather than on every call (p=1). Note that this
+      periodicity is shared by all optimizers that own this
+      OptimizerState object.
 
-     @param p periodicity
+      @param p periodicity
    */
   void set_period(unsigned int p);
 
-  /**
-     @return the periodicity of the optimizer (how many calls to update()
-             are required to invoke do_update()
-  */
+  //! Get the periodicity of this state.
+  /** @return the periodicity of this state (how many calls to update()
+              are required to invoke do_update())
+   */
   unsigned int get_period() const { return period_; }
 
-  /** Reset the phase to 0 and set the call number to 0 too.*/
+  //! Reset counters, as if at the start of an optimize run.
   virtual void reset();
 
-  /** Force the optimizer state to perform its action now, ignoring the
-      phase.
-   */
+  //! Force the state to perform its action now, ignoring the periodicity.
   void update_always();
 
-  //! Return the number of times update has been called
+  //! Return the number of times do_update() has been called
   unsigned int get_number_of_updates() const { return update_number_; }
 
-  //! Set the counter
+  //! Set the counter of number of times do_update() has been called
   void set_number_of_updates(unsigned int n) { update_number_ = n; }
 
   IMP_REF_COUNTED_DESTRUCTOR(OptimizerState);

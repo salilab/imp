@@ -1,8 +1,8 @@
 /**
  *  \file IMP/em2d/RigidBodiesImageFitRestraint.h
- *  \brief Fit Restraint
+ *  \brief Fit rigid bodies to an image.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -50,7 +50,7 @@ class IMPEM2DEXPORT RigidBodiesImageFitRestraint : public Restraint {
   // Storage for all the masks of the rigid bodies
   std::vector<em2d::Images> rigid_bodies_masks_;
   KeyIndexMaps maps_;
-  Pointer<ScoreFunction> score_function_;
+  PointerMember<ScoreFunction> score_function_;
   core::RigidBodies rigid_bodies_;
   Pointer<Image> image_;  // Image to used when scoring
   Pointer<Image> projection_;
@@ -79,14 +79,18 @@ class IMPEM2DEXPORT RigidBodiesImageFitRestraint : public Restraint {
                         const algebra::Rotation3Ds &rots);
 
   //! Return the number of precomputed masks associated with the rigid body.
-  /** Throws an exception if the rigid body is not in the set used to construct
-      the restraint
+  /** \throws ValueException if the rigid body is not in the set used
+              to construct the restraint
   */
   unsigned int get_number_of_masks(const core::RigidBody &rb) const;
 };
 IMP_OBJECTS(RigidBodiesImageFitRestraint, RigidBodiesImageFitRestraints);
 
-//! For a unique 4 ints ( 2 first decimal positions) for a rotation
+//! Map a rotation to a list of 4 "unique" integers
+/** Each integer is simply the integer part and the first 2 decimal places
+    of the floating point value from the quaternion. This list of integers
+    can then be used as a key for rotations.
+ */
 IMPEM2DEXPORT Ints get_unique_index(const algebra::Rotation3D &rot);
 
 IMPEM2D_END_NAMESPACE

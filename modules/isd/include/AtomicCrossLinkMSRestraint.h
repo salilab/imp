@@ -1,9 +1,9 @@
 /**
  *  \file IMP/isd/AtomicCrossLinkMSRestraint.h
  *  \brief A pmf based likelihood function
- *  with prior knowledge on the flase positive rate.
+ *  with prior knowledge on the false positive rate.
  *
- *  Copyright 2007-2013 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 

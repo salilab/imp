@@ -2,7 +2,7 @@
  *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
@@ -155,21 +155,4 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
   }
 }
 
-double Model::evaluate(bool tf, bool) {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(
-      2.1, "Use a scoring function or Model::update() instead.");
-  static bool warned = false;
-  if (!warned) {
-    IMP_WARN(
-        "Model::evaluate() is probably not really what you want. "
-        "Consider using IMP::Model::update() if you just want update"
-        " dependencies. "
-        "Or create a ScoringFunction and call"
-        " evaluate on that if you are repeatedly evaluating"
-        " the score.");
-    warned = true;
-  }
-  update();
-  return restraints_->evaluate(tf);
-}
 IMPKERNEL_END_NAMESPACE

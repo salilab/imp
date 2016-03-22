@@ -54,8 +54,25 @@
 #endif
 
 #if defined IMP_EIGEN_USE_MKL
+#   include <mkl.h> 
+/*Check IMKL version for compatibility: < 10.3 is not usable with Eigen*/
+#   ifndef INTEL_MKL_VERSION
+#       undef IMP_EIGEN_USE_MKL /* INTEL_MKL_VERSION is not even defined on older versions */
+#   elif INTEL_MKL_VERSION < 100305    /* the intel-mkl-103-release-notes say this was when the lapacke.h interface was added*/
+#       undef IMP_EIGEN_USE_MKL
+#   endif
+#   ifndef IMP_EIGEN_USE_MKL
+    /*If the MKL version is too old, undef everything*/
+#       undef   IMP_EIGEN_USE_MKL_ALL
+#       undef   IMP_EIGEN_USE_BLAS
+#       undef   IMP_EIGEN_USE_LAPACKE
+#       undef   IMP_EIGEN_USE_MKL_VML
+#       undef   IMP_EIGEN_USE_LAPACKE_STRICT
+#       undef   IMP_EIGEN_USE_LAPACKE
+#   endif
+#endif
 
-#include <mkl.h>
+#if defined IMP_EIGEN_USE_MKL
 #include <mkl_lapacke.h>
 #define IMP_EIGEN_MKL_VML_THRESHOLD 128
 
