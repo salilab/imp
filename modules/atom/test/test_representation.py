@@ -229,10 +229,10 @@ class RepresentationTest(IMP.test.TestCase):
         tmp20 = IMP.atom.create_simplified_along_backbone(ch,20)
         density_frag = IMP.atom.Fragment.setup_particle(IMP.Particle(mdl),idxs)
         for frag in tmp20.get_children():
-           gp = frag.get_particle()
-           xyzr = IMP.core.XYZR(gp)
-           g = bead2gaussian(xyzr.get_coordinates(),xyzr.get_radius(),mdl)
-           density_frag.add_child(g)
+            gp = frag.get_particle()
+            xyzr = IMP.core.XYZR(gp)
+            g = bead2gaussian(xyzr.get_coordinates(),xyzr.get_radius(),mdl)
+            density_frag.add_child(g)
         density_frag.set_name("Density:20")
         rep.add_representation(density_frag.get_particle(),IMP.atom.DENSITIES,20)
 
