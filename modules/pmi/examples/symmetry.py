@@ -11,7 +11,7 @@ import IMP.pmi.topology
 import IMP.pmi.dof
 import IMP.pmi.macros
 import IMP.pmi.restraints.stereochemistry
-from math import pi
+import math
 
 # Create System and State
 mdl = IMP.Model()
@@ -41,7 +41,7 @@ hier = s.build()
 dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
 center = IMP.algebra.Vector3D([50,0,0])
 for nc in range(7):
-    rot = IMP.algebra.get_rotation_about_axis([0,0,1],2*pi*(nc+1)/8)
+    rot = IMP.algebra.get_rotation_about_axis([0,0,1],2*math.pi*(nc+1)/8)
     transform = IMP.algebra.get_rotation_about_point(center,rot)
     dof.constrain_symmetry(mols[0],mols[nc+1],transform)
 mdl.update() # propagates coordinates
