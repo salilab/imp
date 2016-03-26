@@ -21,6 +21,13 @@
 
 #include <climits>
 
+// Work around Boost bug with adjacency_matrix in 1.60:
+// https://svn.boost.org/trac/boost/ticket/11880
+#include <boost/version.hpp>
+#if BOOST_VERSION == 106000
+# include <boost/type_traits/ice.hpp>
+#endif
+
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
 #include <boost/graph/adjacency_list.hpp>
