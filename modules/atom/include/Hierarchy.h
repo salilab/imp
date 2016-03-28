@@ -23,21 +23,6 @@
 #include <vector>
 #include <deque>
 
-#define IMP_ATOM_GET_AS_DECL(UCName, lcname, CAPSNAME) \
-  IMPATOM_DEPRECATED_METHOD_DECL(2.6)                  \
-  UCName get_as_##lcname() const;
-
-// figure out how to inline
-#define IMP_ATOM_GET_AS_DEF(UCName, lcname, CAPSNAME) \
-  UCName Hierarchy::get_as_##lcname() const {         \
-    IMPATOM_DEPRECATED_METHOD_DEF(2.6, "Use decorators instead"); \
-    if (UCName::get_is_setup(get_particle())) {       \
-      return UCName(get_particle());                  \
-    } else {                                          \
-      return UCName();                                \
-    }                                                 \
-  }
-
 // DOMAIN is defined to be 1 by a fedora math header
 #define IMP_ATOM_FOREACH_HIERARCHY_TYPE_LIST(macro)                        \
   macro(Atom, atom, ATOM_TYPE), macro(Residue, residue, RESIDUE_TYPE),     \
@@ -324,10 +309,6 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
       return Hierarchy(hd);
     }
   }
-
-#ifndef IMP_DOXYGEN
-  IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_ATOM_GET_AS_DECL);
-#endif
 
   //! Get the molecular hierarchy HierarchyTraits.
   static const IMP::core::HierarchyTraits &get_traits();

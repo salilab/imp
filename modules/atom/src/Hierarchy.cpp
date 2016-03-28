@@ -587,6 +587,4 @@ algebra::Sphere3D get_bounding_sphere(const Hierarchy &h) {
   return algebra::get_enclosing_sphere(ss);
 }
 
-IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_ATOM_GET_AS_DEF);
-
 IMPATOM_END_NAMESPACE
