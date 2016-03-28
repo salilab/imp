@@ -2,6 +2,9 @@ ChangeLog {#changelog}
 =========
 
 # For next stable IMP release #
+- The IMP::em::SurfaceShellDensityMap::binaries() method has been replaced
+  with the (correctly spelled) IMP::em::SurfaceShellDensityMap::binarize()
+  method.
 
 # 2.6.0 - 2016-03-28 # {#changelog_2_6_0}
 - This release includes most of the functionality of PMI2. This is an improved
