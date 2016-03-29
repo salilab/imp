@@ -63,15 +63,14 @@ class RMFEXPORT FileHandle : public FileConstHandle {
   FileHandle(boost::shared_ptr<internal::SharedData> shared_);
 #endif
 
-  /** Return the root of the hierarchy stored in the file.
-   */
+  //! Return the root of the hierarchy stored in the file.
   NodeHandle get_root_node() const { return NodeHandle(NodeID(0), shared_); }
-  /** Add a frame and make it the current frame. */
+
+  //! Add a frame and make it the current frame.
   FrameID add_frame(std::string name, FrameType t = FRAME) const;
 
-  /** Add a frame and make it the current frame.
-
-     It will be the child of the passed frame. */
+  //! Add a frame and make it the current frame.
+  /** It will be the child of the passed frame. */
   FrameID add_frame(std::string name, FrameID parent,
                     FrameType t = FRAME) const;
 #ifndef SWIG
@@ -91,11 +90,12 @@ class RMFEXPORT FileHandle : public FileConstHandle {
 #endif
   /* @} */
 
-  /** Return a NodeHandle from a NodeID. The NodeID must refer
-      to a valid NodeHandle.*/
+  //! Return a NodeHandle from a NodeID.
+  /** The NodeID must refer to a valid NodeHandle. */
   NodeHandle get_node(NodeID id) const;
 
-  /** Add a node with no parents. This node will not be accessible in the
+  //! Add a node with no parents.
+  /** This node will not be accessible in the
       hierarchy unless you add it as a child of something. */
   NodeHandle add_node(std::string name, NodeType t) const;
 
@@ -112,24 +112,21 @@ class RMFEXPORT FileHandle : public FileConstHandle {
    */
   void set_producer(std::string) const;
 
-  /** Make sure all data gets written to disk. Once flush is called, it
-       should be safe to open the file in another process for reading.
+  //! Make sure all data gets written to disk.
+  /** Once flush is called, it should be safe to open the file in
+      another process for reading.
    */
   void flush() const;
 };
 
-/**
-   Create an RMF from a file system path.
-
-   \param path the system path to the rmf file
-   \exception RMF::IOException couldn't create file, or unsupported file format
+//! Create an RMF from a file system path.
+/** \param path the system path to the rmf file
+    \exception RMF::IOException couldn't create file, or unsupported file format
  */
 RMFEXPORT FileHandle create_rmf_file(std::string path);
 
-/**
-   Create an RMF in a buffer.
-
-   \param buffer The buffer to place the contents in.
+//! Create an RMF in a buffer.
+/** \param buffer The buffer to place the contents in.
  */
 RMFEXPORT FileHandle create_rmf_buffer(BufferHandle buffer);
 
