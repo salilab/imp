@@ -25,30 +25,30 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-//! A voxel grid in d-dimensional space space.
+//! A voxel grid in d-dimensional space.
 /**
    First some terminology:
-   - a voxel is the data stored at a given location is space
+   - a voxel is the data stored at a given location in space
    - an Index is a way of identifying a particular voxel. That is, given
-   an index, it is easy to get the voxel, but not vice-versa
+     an index, it is easy to get the voxel, but not vice-versa.
    - an ExtendedIndex identifies a particular region in space, but
-   it may not have a corresponding voxel (if it is outside of the
-   region the grid is built on or if that voxel has not yet been
-   added to the sparse grid).
+     it may not have a corresponding voxel (if it is outside of the
+     region the grid is built on or if that voxel has not yet been
+     added to the sparse grid).
 
    \imp provides support for a variety of spatial grids. The grid support in
    C++ is implemented by combining several different layers to specify
    what capabilities are desired. These layers are:
-   - Data: any type of data can be stored in a voxel of the grid
+   - Data: any type of data can be stored in a voxel of the grid.
    - Boundedness: By using UnboundedGridStorage3D or BoundedGridStorage3D,
-   one can choose whether you want a grid over a finite region of space
-   or over the whole space.
+     one can choose whether you want a grid over a finite region of space
+     or over the whole space.
    - Storage: by choosing SparseGridStorage3D or DenseGridStorage3D, you can
-   choose whether you want to store all voxels or only a subset of the
-   voxels. The former is faster and more compact when most of the voxels are
-   used, the latter when only a few are used (say <1/4).]
+     choose whether you want to store all voxels or only a subset of the
+     voxels. The former is faster and more compact when most of the voxels are
+     used, the latter when only a few are used (say <1/4).
    - Geometry: The Grid3D class itself provides a geometric layer, mapping
-   Vector3D objects into voxels in the grid.
+     Vector3D objects into voxels in the grid.
 
    These are implemented as mix-ins, so each layer provides a set of accessible
    functionality as methods/types in the final class.
