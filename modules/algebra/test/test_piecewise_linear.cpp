@@ -42,7 +42,7 @@ void check_gaussian() {
   for (unsigned int i = 0; i < 15; ++i) {
     steps.push_back(.1 * std::pow(1.2, static_cast<double>(i)));
   }
-  IMP::Floats locs0(1, 0);
+  IMP::Floats locs0(1, 0.);
   for (unsigned int i = 0; i < steps.size(); ++i) {
     locs0.push_back(locs0.back() + steps[i]);
   }
