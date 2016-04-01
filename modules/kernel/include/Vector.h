@@ -54,6 +54,7 @@ class Vector : public Value
   Vector() {}
   explicit Vector(unsigned int sz, const T &t = T()) : V(sz, t) {}
 #if defined(_MSC_VER) && _MSC_VER == 1500
+  explicit Vector(unsigned long sz, const T &t = T()) : V(sz, t) {}
   explicit Vector(int sz, const T &t = T()) : V(sz, t) {}
   template <class It>
   Vector(It b, It e) {
