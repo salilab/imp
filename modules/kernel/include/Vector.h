@@ -15,6 +15,11 @@
 #include <sstream>
 #include "hash.h"
 
+#if defined(_MSC_VER) && _MSC_VER == 1500
+# include <boost/type_traits.hpp>
+# include <boost/utility.hpp>
+#endif
+
 #if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
 #include <debug/vector>
 #else
@@ -54,10 +59,9 @@ class Vector : public Value
   Vector() {}
   explicit Vector(unsigned int sz, const T &t = T()) : V(sz, t) {}
 #if defined(_MSC_VER) && _MSC_VER == 1500
-  explicit Vector(unsigned long sz, const T &t = T()) : V(sz, t) {}
-  explicit Vector(int sz, const T &t = T()) : V(sz, t) {}
   template <class It>
-  Vector(It b, It e) {
+  Vector(It b, It e,
+         typename boost::disable_if<boost::is_integral<It> >::type *t=0) {
     for (It it = b; it != e; ++it) {
       push_back(T(*it));
     }

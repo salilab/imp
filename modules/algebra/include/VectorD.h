@@ -268,7 +268,7 @@ inline VectorD<D> get_zero_vector_kd(int Di) {
 //! Return a dynamically sized vector of zeros
 inline VectorD<-1> get_zero_vector_kd(int D) {
   IMP_USAGE_CHECK(D > 0, "D must be positive");
-  Floats vs(D, 0.);
+  Floats vs(D, 0);
   return VectorD<-1>(vs.begin(), vs.end());
 }
 
