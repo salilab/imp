@@ -29,7 +29,7 @@ ExampleObject *create_example_object(const Floats &data) {
 }
 
 void usage_example() {
-  Floats data(1000, -1);
+  Floats data(1000, -1.);
 
   // this would not compile
   // ExampleObject rcstack;
