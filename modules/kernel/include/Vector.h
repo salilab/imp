@@ -72,7 +72,7 @@ class Vector : public Value
   }
 #else
   template <class It>
-  Vector(It b, It e) {
+  Vector(It b, It e)
       : V(b, e) {}
   template <class VO>
   explicit Vector(const std::vector<VO> &o)
