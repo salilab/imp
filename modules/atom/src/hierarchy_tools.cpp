@@ -260,7 +260,8 @@ Hierarchy create_approximation_of_residues(const Hierarchies &t) {
     }
     catch (ValueException) {
       IMP_WARN_ONCE(rt.get_string(),
-                    "Computing volume for non-standard residue " << rt, wc);
+                    "Computing volume for non-standard residue " << rt
+                    << std::endl, wc);
       algebra::Sphere3Ds ss;
       Hierarchies gl = get_leaves(t[i]);
       for (unsigned int i = 0; i < gl.size(); ++i) {
