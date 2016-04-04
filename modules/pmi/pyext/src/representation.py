@@ -1625,7 +1625,7 @@ class Representation(object):
         for ilc in range(-longitudinal_copies, longitudinal_copies + 1):
             for iac in range(axial_copies):
                 copyname = maincopy + "_a" + str(ilc) + "_l" + str(iac)
-                self.add_component_name(copyname, 0.0)
+                self.create_component(copyname, 0.0)
                 for hier in protein_h.get_children():
                     self.add_component_hierarchy_clone(copyname, hier)
                 copyhier = self.hier_dict[copyname]
@@ -1682,7 +1682,7 @@ class Representation(object):
         IMP.rmf.load_frame(rh, RMF.FrameID(frameindex))
         del rh
         for p in self.prot.get_children():
-            self.add_component_name(p.get_name())
+            self.create_component(p.get_name())
             self.hier_dict[p.get_name()] = p
         '''
         still missing: save rigid bodies contained in the rmf in self.rigid_bodies
