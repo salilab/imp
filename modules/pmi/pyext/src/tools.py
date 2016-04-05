@@ -603,17 +603,17 @@ def get_terminal_residue_position(representation,hier, terminus="C", resolution=
         if IMP.pmi.Resolution(p).get_resolution() == resolution:
             residues = IMP.pmi.tools.get_residue_indexes(p)
             if terminus == "C":
-                if max(residues) >= termresidue and not termresidue is None:
+                if termresidue is None:
                     termresidue = max(residues)
                     termparticle = p
-                elif termresidue is None:
+                elif max(residues) >= termresidue:
                     termresidue = max(residues)
                     termparticle = p
             elif terminus == "N":
-                if min(residues) <= termresidue and not termresidue is None:
+                if termresidue is None:
                     termresidue = min(residues)
                     termparticle = p
-                elif termresidue is None:
+                elif min(residues) <= termresidue:
                     termresidue = min(residues)
                     termparticle = p
             else:

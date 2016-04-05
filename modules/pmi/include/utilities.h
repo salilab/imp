@@ -14,6 +14,7 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/atom/Molecule.h>
 #include <IMP/atom/Copy.h>
+#include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/Vector.h>
 #include <boost/lexical_cast.hpp>
 
@@ -39,6 +40,13 @@ RestraintSet * create_elastic_network(const Particles &ps,
     }
   }
   return rs.release();
+}
+
+Float get_dihedral_angle(const atom::Atom &p1,
+                         const atom::Atom &p2,
+                         const atom::Atom &p3,
+                         const atom::Atom &p4){
+  return core::internal::dihedral(p1,p2,p3,p4,nullptr,nullptr,nullptr,nullptr);
 }
 
 inline Float get_bipartite_minimum_sphere_distance(const IMP::core::XYZRs& m1,

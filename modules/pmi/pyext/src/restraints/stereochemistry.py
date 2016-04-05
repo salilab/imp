@@ -277,6 +277,79 @@ class ExcludedVolumeSphere(object):
     def evaluate(self):
         return self.weight * self.rs.unprotected_evaluate(None)
 
+class AtomicHelixRestraint(object):
+    """Enforce current dihedrals for a selection"""
+    def __init__(self,
+                 hierarchy,
+                 selection_tuple,
+                 strength=10.0):
+        """Constructor
+        @param hierarchy the root node
+        @param selection_tuple (start,stop, molname, copynum=0)
+        @param strength the restraint strength
+        """
+        self.mdl = hierarchy.get_model()
+        self.rs = IMP.RestraintSet(self.mdl)
+        self.weight = 1.0
+        self.label = ''
+        start = selection_tuple[0]
+        stop = selection_tuple[1]
+        mol = selection_tuple[2]
+        copy_index = 0
+        if len(selection_tuple)>3:
+            copy_index = selection_tuple[3]
+
+        sel0 = IMP.atom.Selection(hierarchy,molecule=mol,copy_index=copy_index)
+        mol_hier = sel0.get_selected_particles(with_representation=False)[0]
+        def get_atom(idx,name):
+            sel = IMP.atom.Selection(mol_hier,residue_index=idx,atom_type=IMP.atom.AtomType(name))
+            return IMP.atom.Atom(sel.get_selected_particles()[0])
+
+        #create two dihedrals: C(-1)-N-CA-C and a N - CA - C - N(+1)
+        for res_idx in range(start,stop+1-2):
+            a1 = get_atom(res_idx,'C')
+            a2 = get_atom(res_idx+1,'N')
+            a3 = get_atom(res_idx+1,'CA')
+            a4 = get_atom(res_idx+1,'C')
+            a5 = get_atom(res_idx+2,'N')
+
+            angle1 = IMP.pmi.get_dihedral_angle(a1,a2,a3,a4)
+            hr = IMP.core.Harmonic(angle1,strength)
+            self.rs.add_restraint(IMP.core.DihedralRestraint(self.mdl,hr,a1,a2,a3,a4))
+            angle2 = IMP.pmi.get_dihedral_angle(a2,a3,a4,a5)
+            hr = IMP.core.Harmonic(angle2,strength)
+            self.rs.add_restraint(IMP.core.DihedralRestraint(self.mdl,hr,a2,a3,a4,a5))
+
+    def set_label(self, label):
+        self.label = label
+
+    def get_weight(self):
+        return self.weight
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.mdl, self.rs)
+
+    def get_restraint(self):
+        return self.rs
+
+    def set_weight(self, weight):
+        self.weight = weight
+        self.rs.set_weight(weight)
+
+    def get_number_of_restraints(self):
+        """ Returns number of connectivity restraints """
+        return len(self.rs.get_restraints())
+
+    def evaluate(self):
+        return self.weight * self.rs.unprotected_evaluate(None)
+
+    def get_output(self):
+        self.mdl.update()
+        output = {}
+        score = self.weight * self.rs.unprotected_evaluate(None)
+        output["_TotalScore"] = str(score)
+        output["AtomicHelixRestraint_" + self.label] = str(score)
+        return output
 
 class ResidueBondRestraint(object):
     """ Add bond restraint between pair of consecutive
@@ -759,7 +832,7 @@ class ElasticNetworkRestraint(object):
                  hierarchy=None):
         """Constructor
         @param representation Representation object
-        @param selection_tuples Selecting regions for the restraint
+        @param selection_tuples Selecting regions for the restraint [[start,stop,molname,copy_index=0],...]
         @param resolution Resolution for applying restraint
         @param strength Bond strength
         @param dist_cutoff Cutoff for making restraints
@@ -771,10 +844,15 @@ class ElasticNetworkRestraint(object):
         if representation is None and hierarchy is not None:
             self.m = hierarchy.get_model()
             for st in selection_tuples:
+                copy_index=0
+                if len(st)>3:
+                    copy_index=st[3]
                 if not ca_only:
-                    sel = IMP.atom.Selection(hierarchy,chain=st[0],residue_indexes=range(st[1],st[2]+1))
+                    sel = IMP.atom.Selection(hierarchy,molecule=st[2],residue_indexes=range(st[0],st[1]+1),
+                                             copy_index=copy_index)
                 else:
-                    sel = IMP.atom.Selection(hierarchy,chain=st[0],residue_indexes=range(st[1],st[2]+1),
+                    sel = IMP.atom.Selection(hierarchy,molecule=st[2],residue_indexes=range(st[0],st[1]+1),
+                                             copy_index=copy_index,
                                              atom_type=IMP.atom.AtomType("CA"))
                 particles+=sel.get_selected_particles()
         elif representation is not None and type(representation)==IMP.pmi.representation.Representation:
@@ -799,7 +877,7 @@ class ElasticNetworkRestraint(object):
             a1,a2 = r.get_inputs()
             self.pairslist.append(IMP.ParticlePair(a1,a2))
             self.pairslist.append(IMP.ParticlePair(a2,a1))
-        print('created',self.rs.get_number_of_restraints(),'restraints')
+        print('ElasticNetwork: created',self.rs.get_number_of_restraints(),'restraints')
 
     def set_label(self, label):
         self.label = label
@@ -882,6 +960,7 @@ class CharmmForceFieldRestraint(object):
             else:
                 r = IMP.atom.CHARMMStereochemistryRestraint(root, topology)
                 self.ps = IMP.core.get_leaves(root)
+            print('init bonds score',r.unprotected_evaluate(None))
             self.bonds_rs.add_restraint(r)
             ff.add_radii(root)
             ff.add_well_depths(root)

@@ -18,8 +18,12 @@ import re
 from collections import defaultdict
 import itertools
 
-def parse_dssp(dssp_fn, limit_to_chains=''):
+def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
     """read dssp file, get SSEs. values are all PDB residue numbering.
+    @param dssp_fn The file to read
+    @param limit_to_chains Only read/return these chain IDs
+    @param name_map If passed, return tuples organized by molecule name
+
     Returns a dictionary with keys helix, beta, loop
     Each contains a list of SSEs.
     Each SSE is a list of elements (e.g. strands in a sheet)
@@ -32,6 +36,13 @@ def parse_dssp(dssp_fn, limit_to_chains=''):
             'loop'  : same format as helix
           }
     """
+
+    def convert_chain(ch):
+        if name_map is None:
+            return ch
+        else:
+            return name_map[ch]
+
     # setup
     helix_classes = 'GHI'
     strand_classes = 'EB'
@@ -53,7 +64,6 @@ def parse_dssp(dssp_fn, limit_to_chains=''):
     # temporary beta dictionary indexed by DSSP's ID
     beta_dict = defaultdict(list)
     prev_sstype = None
-    cur_sse = ['',[]]
     prev_beta_id = None
     for line in open(dssp_fn, 'r'):
         fields = line.split()
@@ -80,16 +90,16 @@ def parse_dssp(dssp_fn, limit_to_chains=''):
 
         # decide whether to extend or store the SSE
         if prev_sstype is None:
-            cur_sse = [chain,pdb_res_num,pdb_res_num]
+            cur_sse = [pdb_res_num,pdb_res_num,convert_chain(chain)]
         elif sstype != prev_sstype or chain_break:
             # add cur_sse to the right place
             if prev_sstype in ['helix', 'loop']:
                 sses[prev_sstype].append([cur_sse])
             elif prev_sstype == 'beta':
                 beta_dict[prev_beta_id].append(cur_sse)
-            cur_sse = [chain,pdb_res_num,pdb_res_num]
+            cur_sse = [pdb_res_num,pdb_res_num,convert_chain(chain)]
         else:
-            cur_sse[2] = pdb_res_num
+            cur_sse[1] = pdb_res_num
         if chain_break:
             prev_sstype = None
             prev_beta_id = None

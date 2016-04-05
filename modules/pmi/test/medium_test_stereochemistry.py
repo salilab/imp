@@ -88,8 +88,8 @@ class StereochemistryTests(IMP.test.TestCase):
         """Test reading DSSP files"""
         sses = IMP.pmi.io.parse_dssp(self.get_input_file_name('chainA.dssp'),'A')
         self.assertEqual(sorted(sses.keys()),sorted(['helix','beta','loop']))
-        self.assertEqual(sses['helix'][1][0],['A',100,126])
-        self.assertEqual(sses['beta'][0],[['A',76,78],['A',91,93]])
+        self.assertEqual(sses['helix'][1][0],[100,126,'A'])
+        self.assertEqual(sses['beta'][0],[[76,78,'A'],[91,93,'A']])
         self.assertEqual(len(sses['helix']),20)
         self.assertEqual(len(sses['beta']),3)
         self.assertEqual(len(sses['loop']),32)
@@ -108,7 +108,7 @@ class StereochemistryTests(IMP.test.TestCase):
         hier = s.build()
 
         # create elastic network from some SSEs
-        sses = IMP.pmi.io.parse_dssp(self.get_input_file_name('chainA.dssp'),'A')
+        sses = IMP.pmi.io.parse_dssp(self.get_input_file_name('chainA.dssp'),'A',name_map={'A':'GCP2_YEAST'})
         er = IMP.pmi.restraints.stereochemistry.ElasticNetworkRestraint(
             selection_tuples=[sses['helix'][0][0]],
             strength=10.0,
@@ -116,6 +116,10 @@ class StereochemistryTests(IMP.test.TestCase):
             ca_only=True,
             hierarchy=hier)
         self.assertEqual(er.get_restraint().get_number_of_restraints(),12)
+
+        lhelix = sses['helix'][0][0][1] - sses['helix'][0][0][0]+1
+        hr = IMP.pmi.restraints.stereochemistry.AtomicHelixRestraint(hier,sses['helix'][0][0])
+        self.assertEqual(hr.get_number_of_restraints(),lhelix*2-4)
 
 
     def test_excluded_volume_sphere_pmi2(self):
