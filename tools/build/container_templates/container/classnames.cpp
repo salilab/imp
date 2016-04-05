@@ -261,10 +261,6 @@ DynamicListClassnameContainer::DynamicListClassnameContainer(Container *m,
                                                              std::string name)
     : P(m, name) {}
 
-void DynamicListClassnameContainer::set_FUNCTIONNAMEs(PLURALVARIABLETYPE c) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
-  set(IMP::internal::get_index(c));
-}
 IMPCONTAINER_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -314,7 +310,7 @@ ListClassnameContainer::ListClassnameContainer(const PLURALVARIABLETYPE &ps,
     : P(IMP::internal::get_model(ps[0]), name) {
   IMPCONTAINER_DEPRECATED_METHOD_DEF(2.7,
                                  "Use the index-based constructor instead");
-  set_FUNCTIONNAMEs(ps);
+  set(IMP::internal::get_index(ps));
 }
 
 ListClassnameContainer::ListClassnameContainer(Model *m,
@@ -331,15 +327,6 @@ ListClassnameContainer::ListClassnameContainer(Model *m,
 ListClassnameContainer::ListClassnameContainer(Model *m,
                                                const char *name)
     : P(m, name) {}
-
-void ListClassnameContainer::set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
-  set(IMP::internal::get_index(c));
-}
-void ListClassnameContainer::set_FUNCTIONNAMEs(const PLURALINDEXTYPE &c) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
-  set(c);
-}
 
 IMPCONTAINER_END_NAMESPACE
 

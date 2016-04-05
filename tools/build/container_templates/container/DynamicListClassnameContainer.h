@@ -59,9 +59,6 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
   //! Clear the contents of the container.
   void clear();
 #endif
-  /** \deprecated_at{2.5} Use set() instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
 
 /**@}*/
 #ifdef SWIG

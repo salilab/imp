@@ -44,13 +44,6 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
   ListClassnameContainer(const PLURALVARIABLETYPE &ps,
                          std::string name = "ListClassnameContainer%1%");
 
-  /** \deprecated_at{2.5} Use set() with indexes instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &ps);
-
-  /** \deprecated_at{2.5} Use set() instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void set_FUNCTIONNAMEs(const PLURALINDEXTYPE &contents);
 #ifndef IMP_DOXYGEN
   ListClassnameContainer(Model *m,
                          std::string name = "ListClassnameContainer %1%");
