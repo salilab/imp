@@ -261,15 +261,6 @@ DynamicListClassnameContainer::DynamicListClassnameContainer(Container *m,
                                                              std::string name)
     : P(m, name) {}
 
-void DynamicListClassnameContainer::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
-  add(IMP::internal::get_index(vt));
-}
-void DynamicListClassnameContainer::add_FUNCTIONNAMEs(
-    const PLURALVARIABLETYPE &c) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
-  add(IMP::internal::get_index(c));
-}
 void DynamicListClassnameContainer::set_FUNCTIONNAMEs(PLURALVARIABLETYPE c) {
   IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
   set(IMP::internal::get_index(c));
@@ -341,14 +332,6 @@ ListClassnameContainer::ListClassnameContainer(Model *m,
                                                const char *name)
     : P(m, name) {}
 
-void ListClassnameContainer::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
-  add(IMP::internal::get_index(vt));
-}
-void ListClassnameContainer::add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
-  add(IMP::internal::get_index(c));
-}
 void ListClassnameContainer::set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
   IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
   set(IMP::internal::get_index(c));

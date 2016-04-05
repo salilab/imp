@@ -56,13 +56,6 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
                          std::string name = "ListClassnameContainer %1%");
   ListClassnameContainer(Model *m, const char *name);
 
-  /** \deprecated_at{2.5} Use add() with indexes instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void add_FUNCTIONNAME(ARGUMENTTYPE vt);
-
-  /** \deprecated_at{2.5} Use add() with indexes instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
 #endif
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   //! Add a single PASSINDEXTYPE to the container.
