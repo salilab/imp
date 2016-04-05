@@ -53,9 +53,8 @@ will not build, and some will not function optimally.
 - An [MPI](@ref IMP::mpi) library is needed to use the IMP.mpi module.
 - The [numpy, scipy](http://www.scipy.org/scipylib/download.html),
   [scikit-learn](http://scikit-learn.org/stable/install.html),
-  [matplotlib](http://matplotlib.org/downloads.html) and
-  [biopython](http://biopython.org/wiki/Download) Python libraries are also
-  recommended.
+  and [matplotlib](http://matplotlib.org/downloads.html)
+  Python libraries are also recommended.
 - [Chimera](https://www.cgl.ucsf.edu/chimera/download.html) is recommended
   for visualization of results.
 
