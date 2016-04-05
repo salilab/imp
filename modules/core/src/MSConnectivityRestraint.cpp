@@ -20,6 +20,7 @@
 #include <IMP/core/PairRestraint.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/internal/StaticListContainer.h>
+#include <IMP/internal/container_helpers.h>
 #include <IMP/SingletonContainer.h>
 
 #include <climits>
@@ -716,7 +717,8 @@ Restraints MSConnectivityRestraint::do_create_current_decomposition() const {
   ParticlePairsTemp pp = get_connected_pairs();
   Restraints ret(pp.size());
   for (unsigned int i = 0; i < pp.size(); ++i) {
-    IMP_NEW(PairRestraint, pr, (ps_, pp[i]));
+    IMP_NEW(PairRestraint, pr,
+                 (get_model(), ps_, IMP::internal::get_index(pp[i])));
     std::ostringstream oss;
     oss << get_name() << " " << i;
     pr->set_name(oss.str());
