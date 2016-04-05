@@ -325,6 +325,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 ListClassnameContainer::ListClassnameContainer(const PLURALVARIABLETYPE &ps,
                                                std::string name)
     : P(IMP::internal::get_model(ps[0]), name) {
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.7,
+                                 "Use the index-based constructor instead");
   set_FUNCTIONNAMEs(ps);
 }
 
