@@ -224,7 +224,7 @@ Restraints ClosePairsPairScore::create_current_decomposition(
   ParticleIndexPairs ppt = get_close_pairs(m, vt);
   Restraints ret(ppt.size());
   for (unsigned int i = 0; i < ret.size(); ++i) {
-    ret[i] = new PairRestraint(f_, IMP::internal::get_particle(m, ppt[i]));
+    ret[i] = new PairRestraint(m, f_, ppt[i]);
   }
   return ret;
 }
@@ -234,7 +234,7 @@ Restraints KClosePairsPairScore::create_current_decomposition(
   ParticleIndexPairs ppt = get_close_pairs(m, vt);
   Restraints ret(ppt.size());
   for (unsigned int i = 0; i < ret.size(); ++i) {
-    ret[i] = new PairRestraint(f_, IMP::internal::get_particle(m, ppt[i]));
+    ret[i] = new PairRestraint(m, f_, ppt[i]);
   }
   return ret;
 }
