@@ -63,10 +63,6 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
   /** \deprecated_at{2.5} Use add() with indexes instead */
   IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
-
-  /** \deprecated_at{2.5} Use clear() instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void clear_FUNCTIONNAMEs();
 #endif
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   //! Add a single PASSINDEXTYPE to the container.

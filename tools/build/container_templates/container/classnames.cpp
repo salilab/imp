@@ -274,10 +274,6 @@ void DynamicListClassnameContainer::set_FUNCTIONNAMEs(PLURALVARIABLETYPE c) {
   IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
   set(IMP::internal::get_index(c));
 }
-void DynamicListClassnameContainer::clear_FUNCTIONNAMEs() {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
-  clear();
-}
 IMPCONTAINER_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -360,10 +356,6 @@ void ListClassnameContainer::set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
 void ListClassnameContainer::set_FUNCTIONNAMEs(const PLURALINDEXTYPE &c) {
   IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
   set(c);
-}
-void ListClassnameContainer::clear_FUNCTIONNAMEs() {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
-  clear();
 }
 
 IMPCONTAINER_END_NAMESPACE

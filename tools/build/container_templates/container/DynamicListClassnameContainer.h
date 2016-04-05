@@ -71,10 +71,6 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
   IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
   void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
 
-  /** \deprecated_at{2.5} Use clear() instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void clear_FUNCTIONNAMEs();
-
 /**@}*/
 #ifdef SWIG
   PLURALINDEXTYPE get_indexes() const;
