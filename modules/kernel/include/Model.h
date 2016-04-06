@@ -159,7 +159,7 @@ class IMPKERNELEXPORT Model : public Object
   void do_remove_model_object(ModelObject *mo);
 
  public:
-  /** Construct an empty model */
+  //! Construct an empty model
   Model(std::string name = "Model %1%");
 
  public:
@@ -174,7 +174,7 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_IMPORT(internal::ParticleAttributeTable);
   IMP_MODEL_IMPORT(internal::ParticlesAttributeTable);
 #endif
-  /** Clear all the cache attributes of a given particle.*/
+  //! Clear all the cache attributes of a given particle.
   void clear_particle_caches(ParticleIndex pi);
 
   //! Add particle to the model
@@ -183,7 +183,7 @@ class IMPKERNELEXPORT Model : public Object
   //! Get the name of a particle
   std::string get_particle_name(ParticleIndex pi);
 
-  /** Add the passed Undecorator to the particle.*/
+  //! Add the passed Undecorator to the particle.
   void add_undecorator(ParticleIndex pi, Undecorator *d);
 
   /** @name States
@@ -283,21 +283,21 @@ class IMPKERNELEXPORT Model : public Object
                          const DerivativeAccumulator &da);
 #endif
 
-  /** Get the particle from an index. */
+  //! Get the particle from an index.
   Particle *get_particle(ParticleIndex p) const;
 
-  /** Get the particle from an index. */
+  //! Check whether a given particle index exists.
   bool get_has_particle(ParticleIndex p) const;
 
-  /** Get all particle indexes */
+  //! Get all particle indexes
   ParticleIndexes get_particle_indexes();
 
-  /** Get all the ModelObjects associated with this Model.
-   */
+  //! Get all the ModelObjects associated with this Model.
   ModelObjectsTemp get_model_objects() const;
 
-  /** Remove a particle from the Model. The particle will then be inactive and
-       cannot be used for anything and all data stored in the particle is lost.
+  //! Remove a particle from the Model.
+  /** The particle will then be inactive and cannot be used for anything
+      and all data stored in the particle is lost.
    */
   void remove_particle(ParticleIndex pi);
 
@@ -306,13 +306,13 @@ class IMPKERNELEXPORT Model : public Object
       One can store data associated with the model. This is used, for example,
       to keep a central ScoreState to normalize rigid body rotational variables.
       @{ */
-  /** Store a piece of data in the model referenced by the key. */
+  //! Store a piece of data in the model referenced by the key.
   void add_data(ModelKey mk, Object *o);
-  /** Get back some data stored in the model. */
+  //! Get back some data stored in the model.
   Object *get_data(ModelKey mk) const;
-  /** Remove data stored in the model. */
+  //! Remove data stored in the model.
   void remove_data(ModelKey mk);
-  /** Check if the model has a certain piece of data attached. */
+  //! Check if the model has a certain piece of data attached.
   bool get_has_data(ModelKey mk) const;
   /** @} */
 
