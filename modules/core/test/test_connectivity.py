@@ -71,7 +71,7 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(ok03 or ok13 or ok23,
                         "Point 3 is not connected")
         self.assertLess(score, 10, "Score too high")
-        pps = r.get_connected_pairs()
+        pps = r.get_connected_index_pairs()
         lscore = 0
         for p in pps:
             lscore = lscore + ss.evaluate_index(m, (p[0], p[1]), None)
