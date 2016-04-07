@@ -6,6 +6,12 @@ ChangeLog {#changelog}
   with the (correctly spelled) IMP::em::SurfaceShellDensityMap::binarize()
   method.
 
+# 2.6.1 - 2016-04-14 # {#changelog_2_6_1}
+- The 'cluster' binary is now called 'rmsd_cluster' to avoid conflicts with
+  other packages (e.g. graphviz also provides a 'cluster' binary).
+- Minor bug fixes to PMI.
+- Minor documentation fixes.
+
 # 2.6.0 - 2016-03-28 # {#changelog_2_6_0}
 - This release includes most of the functionality of PMI2. This is an improved
   version of PMI that is faster than PMI1, more modular, and easier to use.
