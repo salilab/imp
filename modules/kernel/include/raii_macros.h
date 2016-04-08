@@ -22,8 +22,8 @@
     - destructor
 
     @param Name the class name
-    @param args the argument string (in parens) for the explicit constructor
-                and set()
+    @param args the argument string (in parentheses) for the explicit
+                constructor and set()
     @param Initialize code called from any constructor, including the default
     @param Set the code called from the explicit constructor or the set()
                function
