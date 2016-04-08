@@ -42,8 +42,8 @@ class IMPKERNELEXPORT UnaryFunction : public IMP::Object {
 
   //! Calculate score and derivative with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
-      \return a FloatPair containing the score and its partial derivative
-              with respect to the given feaure.
+      \return a DerivativePair containing the score and its partial derivative
+              with respect to the given feature.
    */
   virtual DerivativePair evaluate_with_derivative(double feature) const {
     // to support easy generic classes
