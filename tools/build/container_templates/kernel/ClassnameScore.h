@@ -100,7 +100,7 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                                           PASSINDEXTYPE vt) const;
 
  protected:
-  //! Overide this to return your own decomposition.
+  //! Override this to return your own decomposition.
   virtual Restraints do_create_current_decomposition(Model *m,
                                                      PASSINDEXTYPE vt) const;
 
