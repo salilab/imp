@@ -49,13 +49,13 @@ class Harmonic : public UnaryFunction {
   //! Set the spring constant
   void set_k(Float k) { k_ = k; }
 
-  //! Return the k to use for a given Gaussian standard deviation.
-  /** Given the standard deviation of a Gaussian distribution, get
+  //! Return the k to use for a given %Gaussian standard deviation.
+  /** Given the standard deviation of a %Gaussian distribution, get
       the force constant of the harmonic score function that yields that
       same distribution. For temperature in Kelvin, this assumes the score
       function is energy in kcal/mol, and thus returns a force constant in
       kcal/mol/A/A.
-      \param[in] sd  Gaussian standard deviation, in angstroms
+      \param[in] sd  %Gaussian standard deviation, in angstroms
       \param[in] t   System temperature, in Kelvin
       \return        Force constant
    */
