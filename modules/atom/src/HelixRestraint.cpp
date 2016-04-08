@@ -6,10 +6,7 @@
  *
  */
 #include <IMP/atom/HelixRestraint.h>
-#include <IMP/atom/CHARMMStereochemistryRestraint.h>
-#include <IMP/core/Harmonic.h>
 #include <IMP/core/internal/dihedral_helpers.h>
-#include <set>
 
 IMPATOM_BEGIN_NAMESPACE
 

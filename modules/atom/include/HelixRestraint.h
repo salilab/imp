@@ -10,12 +10,11 @@
 #define IMPATOM_HELIX_RESTRAINT_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/atom/DihedralSingletonScore.h>
-#include <IMP/atom/angle_decorators.h>
+#include <IMP/core/DistancePairScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/Restraint.h>
-#include <IMP/core/DistancePairScore.h>
-
+#include "DihedralSingletonScore.h"
+#include "angle_decorators.h"
 
 IMPATOM_BEGIN_NAMESPACE
 
