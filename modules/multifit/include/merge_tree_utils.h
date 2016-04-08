@@ -8,6 +8,14 @@
 #define IMPMULTIFIT_MERGE_TREE_UTILS_H
 
 #include <boost/functional/hash.hpp>
+
+// Work around Boost bug with adjacency_matrix in 1.60:
+// https://svn.boost.org/trac/boost/ticket/11880
+#include <boost/version.hpp>
+#if BOOST_VERSION == 106000
+# include <boost/type_traits/ice.hpp>
+#endif
+
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/pending/disjoint_sets.hpp>

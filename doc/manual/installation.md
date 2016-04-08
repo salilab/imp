@@ -23,12 +23,12 @@ to see if the code is currently stable enough for your purposes.
 In order to build %IMP from source, you will need:
 
 - [CMake](http://www.cmake.org) (2.8 or later)
-- [Boost](http://www.boost.org) (1.40 or later; note that 1.60 does not
-  [currently work](https://svn.boost.org/trac/boost/ticket/11880))
+- [Boost](http://www.boost.org) (1.40 or later)
 - [HDF5](http://www.hdfgroup.org/HDF5/) (1.8 or later)
 - [Python](http://www.python.org) (2.6 or later, or any version of Python 3)
 - [SWIG](http://www.swig.org) (1.3.40 or later; 2.0.4 or later is needed
-  if you want to use Python 3)
+  if you want to use Python 3; note that 3.0.8 does not
+  [currently work](https://github.com/swig/swig/issues/583))
 
 The following prerequisites are _optional_; without them some parts of %IMP
 will not build, and some will not function optimally.
@@ -53,9 +53,8 @@ will not build, and some will not function optimally.
 - An [MPI](@ref IMP::mpi) library is needed to use the IMP.mpi module.
 - The [numpy, scipy](http://www.scipy.org/scipylib/download.html),
   [scikit-learn](http://scikit-learn.org/stable/install.html),
-  [matplotlib](http://matplotlib.org/downloads.html) and
-  [biopython](http://biopython.org/wiki/Download) Python libraries are also
-  recommended.
+  and [matplotlib](http://matplotlib.org/downloads.html)
+  Python libraries are also recommended.
 - [Chimera](https://www.cgl.ucsf.edu/chimera/download.html) is recommended
   for visualization of results.
 

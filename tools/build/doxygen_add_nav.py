@@ -13,6 +13,9 @@ import os
 import sys
 import re
 
+def get_basename_from_xml(f):
+    return os.path.basename(f)[:-4].replace('__', '_')
+
 def get_version():
     version = "develop"
     versionpath = "VERSION"
@@ -179,7 +182,7 @@ class Docs(object):
             if compounddef is not None and compounddef.attrib['kind'] == 'page':
                 p = Page(compounddef.attrib['id'])
                 # Remove .xml suffix
-                p.out_file_name = os.path.basename(f)[:-4]
+                p.out_file_name = get_basename_from_xml(f)
                 # Handle index special case
                 if p.out_file_name == 'indexpage':
                     p.out_file_name = 'index'
@@ -189,7 +192,7 @@ class Docs(object):
                  and compounddef.attrib['kind'] in ('class', 'file'):
                 p = Page(compounddef.attrib['id'])
                 # Remove .xml suffix
-                p.out_file_name = os.path.basename(f)[:-4]
+                p.out_file_name = get_basename_from_xml(f)
                 p.location = compounddef.find('location').attrib['file']
                 if '/examples/' in p.location:
                     p.out_file_name += '-example'
@@ -220,7 +223,14 @@ class Docs(object):
 
     def get_html_page(self, page):
         """Return the full path to a page's output HTML file"""
-        return os.path.join(self.html_dir, page.out_file_name + '.html')
+        pth = os.path.join(self.html_dir, page.out_file_name + '.html')
+        if not os.path.exists(pth):
+            # Try with a namespace prefix
+            g = glob.glob(os.path.join(self.html_dir,
+                                       "*_2" + page.out_file_name + '.html'))
+            if len(g) == 1:
+                return g[0]
+        return pth
 
     def add_page_navigation(self, page):
         """Patch the HTML output for a given page to add navigation and other

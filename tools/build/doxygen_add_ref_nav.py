@@ -35,6 +35,11 @@ def main():
     for m in modules:
         docs.pages.append(get_module_readme(m))
 
+    # Difficult to figure out the main/index page, so set this manually
+    p = docs.page_by_id['indexpage']
+    p.out_file_name = 'index'
+    p.source_file_name = 'doc/ref/mainpage.md'
+
     for p in docs.pages:
         if os.path.exists(docs.get_html_page(p)):
             docs.add_page_navigation(p)

@@ -29,7 +29,8 @@ for an example):
    representatives).
  - a top-level `%README.md` file describing the system and explaining how to
    run the protocol.
- - a `test` directory containing one or more Python scripts. It should be
+ - a `test` directory containing one or more Python scripts with names starting
+   with `test`. It should be
    possible to run these scripts without any "special" setup (e.g. they should
    not require any input arguments or environment variables, or use
    hard-coded paths). These scripts should run as much of your modeling
