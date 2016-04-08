@@ -1,5 +1,5 @@
 /**
- *  \file IMP/algebra/grid_utility.h   \brief A class to represent a voxel grid.
+ *  \file IMP/algebra/grid_utility.h  Utility functions for working with grids.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
@@ -15,9 +15,9 @@
 #include "internal/grid_3d_impl.h"
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Get the value from the grid with linear interpolation. Values outside the
-    bounding box are snapped to the bounding box (effectively extending the
-    boundary values out to infinity).
+//! Get the value from the grid with linear interpolation.
+/** Values outside the bounding box are snapped to the bounding box
+    (effectively extending the boundary values out to infinity).
 */
 template <int D, class Storage, class Value, class Embedding>
 inline Value get_linearly_interpolated(
@@ -72,9 +72,9 @@ IMPALGEBRA_END_NAMESPACE
 
 #include "internal/grid_3d_impl.h"
 
-/** Iterate over each voxel in grid. The voxel index is
-    GridIndexD<3> voxel_index and the coordinates of the center is
-    Vector3D voxel_center and the index of the voxel is
+//! Iterate over each voxel in grid and do something with each one.
+/** The voxel index is GridIndexD<3> voxel_index and the coordinates of
+    the center is Vector3D voxel_center and the index of the voxel is
     loop_voxel_index.
     \see Grid3D
  */
@@ -112,9 +112,9 @@ IMPALGEBRA_END_NAMESPACE
     }                                                                          \
   }
 
-/** Iterate over each voxel in a subset of the grid that are less than
-    center. The voxel index is unsigned int voxel_index[3]. Use this if,
-    for example you want to find nearby pairs of voxels once each.
+//! Iterate over each voxel in a subset of the grid that are less than center.
+/** The voxel index is unsigned int voxel_index[3]. Use this if,
+    for example, you want to find nearby pairs of voxels once each.
     \see Grid3D
 */
 #define IMP_GRID3D_FOREACH_SMALLER_EXTENDED_INDEX_RANGE(                       \
@@ -143,4 +143,5 @@ IMPALGEBRA_END_NAMESPACE
       }                                                                        \
     }                                                                          \
   }
+
 #endif /* IMPALGEBRA_GRID_UTILITY_H */
