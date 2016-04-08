@@ -59,8 +59,9 @@ class IMPISDEXPORT UnivariateFunction : public Object {
       const = 0;
 
   //! return derivative vector
-  /* m_ij = d(func(xlist[i]))/dparticle_j
-   * the matrix has N rows and M columns
+  /* This function returns a column from the matrix m:
+   * m_ij = d(func(xlist[i]))/dparticle_j
+   * The matrix has N rows and M columns
    * where N = xlist.size() and M is the number of particles
    * associated to this function.
    */
