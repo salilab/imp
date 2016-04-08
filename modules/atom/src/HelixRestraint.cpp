@@ -7,30 +7,47 @@
  */
 #include <IMP/atom/HelixRestraint.h>
 #include <IMP/core/internal/dihedral_helpers.h>
+#include <IMP/core/Harmonic.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
-HelixRestraint::HelixRestraint(Residues rs)
+HelixRestraint::HelixRestraint(Residues rs, bool ideal)
     : Restraint(rs[0]->get_model(), "HelixRestraint%1%") {
+  //dihedral info
+  //Float dih1,std1,dih2,std2,distON,kON;
+  Float dih1  = -1.117010721276371; //mean = -64deg, std = 6deg
+  Float std1  = 0.10471975511965977;
+  Float dih2  = -0.715584993317675; //mean = -41deg, std = 8deg
+  Float std2  = 0.13962634015954636;
+  Float corr = -0.25;
+  Float weight = 0.5;
+  core::BinormalTerm * bt = new core::BinormalTerm();
+  bt->set_means(std::make_pair(dih1,dih2));
+  bt->set_standard_deviations(std::make_pair(std1,std2));
+  bt->set_correlation(corr);
+  bt->set_weight(0.5);
+
+  //bond info
+  Float distON = 2.96;
+  Float kON = core::Harmonic::get_k_from_standard_deviation(0.11);
+
   //will expand to more bonds and residue types
-  bond_ON_score_ = new core::HarmonicDistancePairScore(2.96, 0.11);
-  dihedral_score_ = new DihedralSingletonScore();
-  for(size_t nr=0;nr<rs.size()-2;nr++){
-    core::XYZ a1(get_atom(rs[nr],AT_C));
-    core::XYZ a2(get_atom(rs[nr+1],AT_N));
-    core::XYZ a3(get_atom(rs[nr+1],AT_CA));
-    core::XYZ a4(get_atom(rs[nr+1],AT_C));
-    core::XYZ a5(get_atom(rs[nr+2],AT_N));
-    IMP_NEW(Particle,dp1,(get_model()));
-    IMP_NEW(Particle,dp2,(get_model()));
-    Dihedral d1 = Dihedral::setup_particle(dp1,a1,a2,a3,a4);
-    d1.set_ideal(-1.117010721276371); //-64deg
-    d1.set_stiffness(6.0);
-    Dihedral d2 = Dihedral::setup_particle(dp2,a2,a3,a4,a5);
-    d2.set_ideal(-0.715584993317675); //-41 deg
-    d2.set_stiffness(8.0);
-    dihedrals_.push_back(dp1->get_index());
-    dihedrals_.push_back(dp2->get_index());
+  bond_ON_score_ = new core::HarmonicDistancePairScore(distON,kON);
+
+  if (rs.size()>4){
+    for(size_t nr=0;nr<rs.size()-2;nr++){
+      core::XYZ a1(get_atom(rs[nr],AT_C));
+      core::XYZ a2(get_atom(rs[nr+1],AT_N));
+      core::XYZ a3(get_atom(rs[nr+1],AT_CA));
+      core::XYZ a4(get_atom(rs[nr+1],AT_C));
+      core::XYZ a5(get_atom(rs[nr+2],AT_N));
+      IMP_NEW(core::MultipleBinormalRestraint,
+              mbr,(get_model(),
+                   ParticleIndexQuad(a1,a2,a3,a4),
+                   ParticleIndexQuad(a2,a3,a4,a5)));
+      mbr->add_term(*bt);
+      dihedral_rs_.push_back(mbr);
+    }
   }
 
   for(size_t nr=0;nr<rs.size()-4;nr++){
@@ -43,10 +60,12 @@ HelixRestraint::HelixRestraint(Residues rs)
 Float HelixRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
   Float score = 0.0;
   Model *m = get_model();
-  for (ParticleIndexes::const_iterator td = dihedrals_.begin();
-       td != dihedrals_.end(); ++td) {
-    score += dihedral_score_->evaluate_index(m, *td, accum);
+  for (IMP::Vector<IMP::PointerMember<
+         core::MultipleBinormalRestraint> >::const_iterator td = dihedral_rs_.begin();
+       td != dihedral_rs_.end(); ++td){
+    score += (*td)->unprotected_evaluate(accum);
   }
+
   for (ParticleIndexPairs::const_iterator tb = bonds_ON_.begin();
        tb != bonds_ON_.end(); ++tb) {
     score += bond_ON_score_->evaluate_index(m, *tb, accum);
@@ -57,11 +76,10 @@ Float HelixRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
 ModelObjectsTemp HelixRestraint::do_get_inputs() const {
   ModelObjectsTemp ps;
   Model *m = get_model();
-  for (ParticleIndexes::const_iterator d = dihedrals_.begin();
-       d != dihedrals_.end(); ++d) {
-    ps.push_back(m->get_particle(*d));
-    ModelObjectsTemp bps = dihedral_score_->get_inputs(m,
-                                                       ParticleIndexes(1, *d));
+  for (IMP::Vector<IMP::PointerMember<
+         core::MultipleBinormalRestraint> >::const_iterator td = dihedral_rs_.begin();
+       td != dihedral_rs_.end(); ++td){
+    ModelObjectsTemp bps = (*td)->get_inputs();
     ps.insert(ps.end(), bps.begin(), bps.end());
   }
   for (ParticleIndexPairs::const_iterator tb = bonds_ON_.begin();

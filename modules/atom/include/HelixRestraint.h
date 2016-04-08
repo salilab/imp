@@ -11,27 +11,26 @@
 
 #include <IMP/atom/atom_config.h>
 #include <IMP/core/DistancePairScore.h>
+#include <IMP/core/MultipleBinormalRestraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/Restraint.h>
-#include "DihedralSingletonScore.h"
 #include "angle_decorators.h"
 
 IMPATOM_BEGIN_NAMESPACE
 
 //! Restraint a set of residues to use ideal helix dihedrals and bonds
 class IMPATOMEXPORT HelixRestraint : public Restraint {
-  IMP::PointerMember<DihedralSingletonScore> dihedral_score_;
+  IMP::Vector<IMP::PointerMember<core::MultipleBinormalRestraint> > dihedral_rs_;
   IMP::PointerMember<core::HarmonicDistancePairScore> bond_ON_score_;
-  ParticleIndexes dihedrals_;
   ParticleIndexPairs bonds_ON_;
  public:
-  HelixRestraint(Residues rs);
+  HelixRestraint(Residues rs, bool ideal=true);
 
   //! Count bonds
   int get_number_of_bonds(){return bonds_ON_.size();}
 
   //! Count dihedrals
-  int get_number_of_dihedrals(){return dihedrals_.size();}
+  int get_number_of_dihedrals(){return dihedral_rs_.size();}
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
       const IMP_OVERRIDE;
