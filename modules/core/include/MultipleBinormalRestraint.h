@@ -1,21 +1,20 @@
 /**
- *  \file IMP/modeller/MultipleBinormalRestraint.h
+ *  \file IMP/core/MultipleBinormalRestraint.h
  *  \brief Modeller-style multiple binormal (phi/psi) restraint.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPMODELLER_MULTIPLE_BINORMAL_RESTRAINT_H
-#define IMPMODELLER_MULTIPLE_BINORMAL_RESTRAINT_H
+#ifndef IMPCORE_MULTIPLE_BINORMAL_RESTRAINT_H
+#define IMPCORE_MULTIPLE_BINORMAL_RESTRAINT_H
 
-#include <IMP/modeller/modeller_config.h>
+#include <IMP/core/core_config.h>
 
 #include <IMP/Restraint.h>
 #include <IMP/Particle.h>
-#include <IMP/generic.h>
 
-IMPMODELLER_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
 class BinormalTerm;
 
@@ -27,15 +26,12 @@ class BinormalTerm;
     \external{https://salilab.org/modeller/9.16/manual/node491.html,
    Modeller manual}.
     The two angles are typically the phi and psi dihedrals of a residue.
-    \deprecated_at{2.6} Moved to core::MultipleBinormalRestraint
-
  */
-class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint {
+class IMPCOREEXPORT MultipleBinormalRestraint : public Restraint {
   std::vector<BinormalTerm> terms_;
   ParticleIndexQuad q1_, q2_;
 
  public:
-
   //! Create the multiple binormal restraint.
   /** After creating the restraint, call add_term one or more times to add
       BinormalTerms to the restraint.
@@ -43,7 +39,6 @@ class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint {
       \param[in] q1 First quad of particles.
       \param[in] q2 Second quad of particles.
    */
-  IMPMODELLER_DEPRECATED_OBJECT_DECL(2.6)
   MultipleBinormalRestraint(Model *m, const ParticleIndexQuad &q1,
                             const ParticleIndexQuad &q2);
 
@@ -66,8 +61,7 @@ class BinormalTerm {
 
  public:
   BinormalTerm()
-      : correlation_(-1), weight_(-1), means_(-1, -1), stdevs_(-1, -1) {
-  }
+      : correlation_(-1), weight_(-1), means_(-1, -1), stdevs_(-1, -1) {}
   friend class MultipleBinormalRestraint;
 
   void set_correlation(double correlation) { correlation_ = correlation; }
@@ -82,6 +76,6 @@ class BinormalTerm {
 };
 IMP_VALUES(BinormalTerm, BinormalTermList);
 
-IMPMODELLER_END_NAMESPACE
+IMPCORE_END_NAMESPACE
 
-#endif /* IMPMODELLER_MULTIPLE_BINORMAL_RESTRAINT_H */
+#endif /* IMPCORE_MULTIPLE_BINORMAL_RESTRAINT_H */

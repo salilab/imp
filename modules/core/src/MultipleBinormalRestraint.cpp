@@ -6,14 +6,14 @@
  *
  */
 
-#include <IMP/modeller/MultipleBinormalRestraint.h>
+#include <IMP/core/MultipleBinormalRestraint.h>
 #include <IMP/constants.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/internal/dihedral_helpers.h>
 
 #include <cmath>
 
-IMPMODELLER_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
 namespace {
 // RT in kcal/mol
@@ -48,9 +48,7 @@ MultipleBinormalRestraint::MultipleBinormalRestraint(
     : Restraint(m, "MultipleBinormalRestraint%1%"),
       terms_(),
       q1_(q1),
-      q2_(q2) {
-      IMPMODELLER_DEPRECATED_OBJECT_DEF(2.6, "Use core::MultipleBinormalRestraint instead");
-      }
+      q2_(q2) {}
 
 double MultipleBinormalRestraint::unprotected_evaluate(
     DerivativeAccumulator *accum) const {
@@ -120,4 +118,4 @@ ModelObjectsTemp MultipleBinormalRestraint::do_get_inputs() const {
   return r;
 }
 
-IMPMODELLER_END_NAMESPACE
+IMPCORE_END_NAMESPACE
