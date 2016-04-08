@@ -25,7 +25,7 @@ HelixRestraint::HelixRestraint(Residues rs, bool ideal)
   bt->set_means(std::make_pair(dih1,dih2));
   bt->set_standard_deviations(std::make_pair(std1,std2));
   bt->set_correlation(corr);
-  bt->set_weight(0.5);
+  bt->set_weight(weight);
 
   //bond info
   Float distON = 2.96;

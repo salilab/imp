@@ -15,6 +15,8 @@
 #include <IMP/Pointer.h>
 #include <IMP/Restraint.h>
 #include "angle_decorators.h"
+#include "Atom.h"
+#include "Residue.h"
 
 IMPATOM_BEGIN_NAMESPACE
 
