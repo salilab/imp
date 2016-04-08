@@ -114,7 +114,7 @@ IMP_SWIG_OBJECT(IMP::atom, BondGeometry, BondGeometries);
 IMP_SWIG_OBJECT(IMP::atom, BondsGeometry, BondsGeometries);
 IMP_SWIG_OBJECT(IMP::atom, CAAngleRestraint, CAAngleRestraints);
 IMP_SWIG_OBJECT(IMP::atom, CADihedralRestraint, CADihedralRestraints);
-
+IMP_SWIG_OBJECT(IMP::atom, HelixRestraint, HelixRestraints);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMDihedral, CHARMMConnection, CHARMMDihedrals);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMBond, CHARMMConnection, CHARMMBonds);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
@@ -288,6 +288,7 @@ namespace IMP {
 %include "IMP/atom/CAAngleRestraint.h"
 %include "IMP/atom/CADihedralRestraint.h"
 %include "IMP/atom/StructureSource.h"
+%include "IMP/atom/HelixRestraint.h"
 
 namespace IMP {
   namespace atom {
