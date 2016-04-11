@@ -13,7 +13,7 @@ that you're going to use to build %IMP. The basic procedure is as follows:
   - Install Microsoft Visual Studio Express (it is free, but registration with
     Microsoft is required).
   - Get and install [cmake](http://www.cmake.org).
-  - Get [Python 2](http://www.python.org) (not Python 3)
+  - Get [Python](http://www.python.org)
     (make sure you get the
     32-bit version if you're going to build %IMP for 32-bit Windows).
   - Get and install the
