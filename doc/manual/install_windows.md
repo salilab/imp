@@ -3,12 +3,43 @@ Building from source code on Windows {#install_windows}
 
 We build and test %IMP on
 Windows, built with the Microsoft Visual Studio compilers (we use Visual Studio
-Express 2010 SP1 for 32-bit Windows, and VS Express 2012 for 64-bit).
+Express 2010 SP1 for the 32-bit Windows `.exe` installer, and
+VS Express 2012 for the 64-bit `.exe` installer; for the
+[Anaconda packages](https://integrativemodeling.org/download-anaconda.html),
+both 32-bit and 64-bit,
+we use VS 2008 SP1 for Python 2.7 and VS 2015 for Python 3.5).
 One complication is that different packages are compiled
 with different versions of Visual Studio, and mixing the different runtimes
-(msvc*.dll) can cause odd behavior; therefore, we recommend building most
+(`msvc*.dll`) can cause odd behavior; therefore, we recommend building most
 of the dependencies from source code using the same version of Visual Studio
-that you're going to use to build %IMP. The basic procedure is as follows:
+that you're going to use to build %IMP.
+
+We recommend building within the Anaconda environment, since many of the
+dependencies are already built, and the procedure is scripted so it is more
+easily reproducible:
+
+  - Install the right version of Microsoft Visual Studio Express (it is free,
+    but registration with Microsoft is required). Current Anaconda policy is
+    to build packages using the same version of Visual Studio that was used
+    to build Python. This means VS 2008 for Python 2.7 and VS 2015 for
+    Python 3.5, for example.
+  - Get and install [Miniconda](http://conda.pydata.org/miniconda.html) or the
+    full Anaconda environment.
+  - Install necessary conda packages for development:
+    `conda install conda-build unxutils`
+  - Then for each package `foo` you can start a Visual Studio command prompt,
+    `cd` to the directory above the `foo` directory containing the
+    [conda build recipe](http://conda.pydata.org/docs/building/recipe.html)
+    then build it with
+    `conda build --python=2.7 foo`
+  - Feel free to refer to
+    [our conda recipes](https://github.com/salilab/conda-recipes)
+    for IMP and all needed dependencies. In particular, each recipe contains
+    a `meta.yaml` file that applies any needed patches to make things work
+    on Windows, and a `bld.bat` file that automates the build itself.
+
+If you want to build outside of the Anaconda environment, the basic procedure
+we employed is as follows:
 
   - Install Microsoft Visual Studio Express (it is free, but registration with
     Microsoft is required).
