@@ -1,5 +1,5 @@
 from __future__ import print_function
-import IMP.modeller
+import IMP.core
 import IMP
 import IMP.test
 import io
@@ -9,8 +9,7 @@ class Tests(IMP.test.TestCase):
 
     def test_binormal_term(self):
         """Test BinormalTerm class"""
-        with IMP.allow_deprecated():
-            t = IMP.modeller.BinormalTerm()
+        t = IMP.core.BinormalTerm()
         t.set_correlation(0.5)
         t.set_weight(0.8)
         t.set_means([10., 20.])

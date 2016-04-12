@@ -220,10 +220,10 @@ def _MultiBinormalGenerator(form, modalities, atoms, parameters):
         raise ValueError("Incorrect number of parameters (%d) for multiple "
                          "binormal restraint - expecting %d (%d terms * 6)" \
                          % (len(parameters), nterms * 6, nterms))
-    r = IMP.modeller.MultipleBinormalRestraint(atoms[0].get_model(),
-                                               atoms[:4], atoms[4:8])
+    r = IMP.core.MultipleBinormalRestraint(atoms[0].get_model(),
+                                           atoms[:4], atoms[4:8])
     for i in range(nterms):
-        t = IMP.modeller.BinormalTerm()
+        t = IMP.core.BinormalTerm()
         t.set_weight(parameters[i])
         t.set_means((parameters[nterms + i * 2],
                      parameters[nterms + i * 2 + 1]))
