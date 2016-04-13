@@ -15,6 +15,7 @@ def all_module_docs(modules):
 
 def get_module_readme(module):
     """Make a Page object for a module's top-level README file"""
+    module = module.replace('_', '__')
     p = Page('namespace' + module)
     if module == 'kernel':
         p.out_file_name = 'namespaceIMP'
