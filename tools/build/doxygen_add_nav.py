@@ -232,20 +232,16 @@ class Docs(object):
         return pages
 
     def _get_htmls_from_basename(self, base):
-        pth = os.path.join(self.html_dir, base + '.html')
-        if os.path.exists(pth):
-            paths = [pth]
-            source = os.path.join(self.html_dir, base + '_source.html')
-            if os.path.exists(source):
-                paths.append(source)
-            return paths
-        else:
+        paths = [os.path.join(self.html_dir, b + '.html')
+                 for b in (base, base + '_source')]
+        paths = [b for b in paths if os.path.exists(b)]
+        if not paths:
             # Try with a namespace prefix
             g = glob.glob(os.path.join(self.html_dir,
                                        "*_2" + base + '.html'))
             if len(g) == 1:
                 return g[0]
-        return []
+        return paths
 
     def add_page_navigation(self, page):
         """Patch the HTML output for a given page to add navigation and other
