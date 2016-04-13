@@ -41,7 +41,7 @@ def main():
     p.source_file_name = 'doc/ref/mainpage.md'
 
     for p in docs.pages:
-        if os.path.exists(docs.get_html_page(p)):
+        if docs.get_html_pages(p):
             docs.add_page_navigation(p)
         else:
             print("Not handling %s: HTML file does not exist" % p.id)

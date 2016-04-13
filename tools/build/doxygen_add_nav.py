@@ -14,7 +14,7 @@ import sys
 import re
 
 def get_basename_from_xml(f):
-    return os.path.basename(f)[:-4].replace('__', '_')
+    return os.path.basename(f)[:-4]
 
 def get_version():
     version = "develop"
@@ -221,16 +221,31 @@ class Docs(object):
                         page.source_file_name = os.path.join(source_subdir,
                                                    os.path.basename(source))
 
-    def get_html_page(self, page):
-        """Return the full path to a page's output HTML file"""
-        pth = os.path.join(self.html_dir, page.out_file_name + '.html')
-        if not os.path.exists(pth):
+    def get_html_pages(self, page):
+        """Return the full path(s) to a page's output HTML file(s), if any"""
+        base = page.out_file_name
+        pages = self._get_htmls_from_basename(base)
+        # Sometimes doxygen makes this substitution, sometimes it doesn't,
+        # so try both
+        if '__' in base:
+            pages.extend(self._get_htmls_from_basename(base.replace('__', '_')))
+        return pages
+
+    def _get_htmls_from_basename(self, base):
+        pth = os.path.join(self.html_dir, base + '.html')
+        if os.path.exists(pth):
+            paths = [pth]
+            source = os.path.join(self.html_dir, base + '_source.html')
+            if os.path.exists(source):
+                paths.append(source)
+            return paths
+        else:
             # Try with a namespace prefix
             g = glob.glob(os.path.join(self.html_dir,
-                                       "*_2" + page.out_file_name + '.html'))
+                                       "*_2" + base + '.html'))
             if len(g) == 1:
                 return g[0]
-        return pth
+        return []
 
     def add_page_navigation(self, page):
         """Patch the HTML output for a given page to add navigation and other
@@ -252,20 +267,20 @@ class Docs(object):
         toplinks = '<div class="doxnavlinks">' + edit_link + " " + doxversion \
                    + " ".join(links) + '</div>\n'
         botlinks = '<div class="doxnavlinks">' + " ".join(links) + '</div>\n'
-        fname = self.get_html_page(page)
-        content = patch_html(open(fname).readlines())
-        out = open(fname, 'w')
-        for line in content:
-            if line.startswith('</div><!-- top -->'):
-                out.write(line)
-                out.write(toplinks)
-            elif line.startswith('<hr class="footer"') and links:
-                out.write('<hr class="footer"/>')
-                out.write(botlinks)
-            elif '[SUBPAGES]' in line:
-                page.write_children(out)
-            else:
-                out.write(line)
+        for fname in self.get_html_pages(page):
+            content = patch_html(open(fname).readlines())
+            out = open(fname, 'w')
+            for line in content:
+                if line.startswith('</div><!-- top -->'):
+                    out.write(line)
+                    out.write(toplinks)
+                elif line.startswith('<hr class="footer"') and links:
+                    out.write('<hr class="footer"/>')
+                    out.write(botlinks)
+                elif '[SUBPAGES]' in line:
+                    page.write_children(out)
+                else:
+                    out.write(line)
 
     def patch_contents(self):
         """Apply extra patches to index.html"""
