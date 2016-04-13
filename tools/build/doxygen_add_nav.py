@@ -240,7 +240,7 @@ class Docs(object):
             g = glob.glob(os.path.join(self.html_dir,
                                        "*_2" + base + '.html'))
             if len(g) == 1:
-                return g[0]
+                return g
         return paths
 
     def add_page_navigation(self, page):
