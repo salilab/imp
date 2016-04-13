@@ -153,9 +153,7 @@ class Tests(IMP.test.TestCase):
                 sigmass
             )
 
-    def _check(self, xxx_todo_changeme, xxx_todo_changeme1, n):
-        (mn, std) = xxx_todo_changeme
-        (calc_mn, calc_std) = xxx_todo_changeme1
+    def _check(self, mn, std, calc_mn, calc_std, n):
         if use_sympy:
             print([(x.evalf() / angstrom).evalf() for x in calc_std])
             print("mean", mn, [float((x / angstrom).evalf()) for x in calc_mn])
@@ -193,8 +191,8 @@ class Tests(IMP.test.TestCase):
         bd.set_scoring_function([r])
         (mn, std, nreps) = self._measure(m, xyzr, bd)
         print(mn, std)
-        self._check(
-            (mn, std), ([0 * angstrom, 0 * angstrom, 0 * angstrom], [sigma, sigma, sigma]), nreps)
+        self._check(mn, std, [0 * angstrom, 0 * angstrom, 0 * angstrom],
+                    [sigma, sigma, sigma], nreps)
 
     def test_linear(self):
         """Test brownian linear diffusion"""
@@ -219,8 +217,8 @@ class Tests(IMP.test.TestCase):
         bd.set_scoring_function([r])
         sigma = self._get_sigma_1_free()
         mn, std, nreps = self._measure(m, xyzr, bd)
-        self._check(
-            (mn, std), ([mean, 0 * angstrom, 0 * angstrom], [sigma, sigma, sigma]), nreps)
+        self._check(mn, std, [mean, 0 * angstrom, 0 * angstrom],
+                    [sigma, sigma, sigma], nreps)
 
     def test_harmonic(self):
         """Test a brownian harmonic"""
@@ -246,7 +244,8 @@ class Tests(IMP.test.TestCase):
         print(sigma)
         print(sigmaf)
         print(sigmass)
-        self._check(
-            (mn, std), ([0 * angstrom, 0 * angstrom, 0 * angstrom], [sigma, sigmaf, sigmaf]), nreps)
+        self._check(mn, std, [0 * angstrom, 0 * angstrom, 0 * angstrom],
+                    [sigma, sigmaf, sigmaf], nreps)
+
 if __name__ == '__main__':
     IMP.test.main()
