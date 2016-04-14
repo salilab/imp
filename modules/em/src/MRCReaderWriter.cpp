@@ -61,7 +61,6 @@ void MRCReaderWriter::read_8_data(float *pt) {
   seek_to_data();
   size_t n = header.nx * header.ny * header.nz;
   boost::scoped_array<unsigned char> grid_8bit(new unsigned char[n]);
-  unsigned char *grid_8bit = new unsigned char[n];  // memory
   read_grid(grid_8bit.get(), sizeof(unsigned char), n);
   // Transfer to floats
   for (size_t i = 0; i < n; i++) pt[i] = (float)grid_8bit[i];
