@@ -41,5 +41,5 @@ support, and the build takes a really long time on a Linux box).
 
 Note that Coverity currently reports a rather high defect density for %IMP.
 Many of these are false positives - for example, Coverity complains about
-all of the \ref geometricprimitives not being initialized, but this is
-intentional.
+all of the [geometric primitives](@ref geometricprimitives) not being
+initialized, but this is intentional.
