@@ -388,7 +388,6 @@ double get_harmonic_sigma(double D, double f) {
   IMP_UNUSED(D);
   IMP_UNUSED(f);
   IMP_NOT_IMPLEMENTED;
-  return 0;
 }
 
 IMPATOM_END_NAMESPACE
