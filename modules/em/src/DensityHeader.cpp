@@ -116,7 +116,7 @@ DensityHeader::DensityHeader() {
   Objectpixelsize_ = 1.0;
   machinestamp = 0;
   nlabl = 0;
-  strcpy(map, "MAP\0");
+  strcpy(map, "MAP");
   magic = 6;
 }
 

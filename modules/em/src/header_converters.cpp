@@ -74,7 +74,7 @@ void ImageHeader_to_DensityHeader(const ImageHeader &h, DensityHeader &dh) {
   }
   dh.ispg = 0;    // Sapce group number 0 or 1 (default 0)
   dh.nsymbt = 0;  // Number of bytes used for symmetry data (0 or 80, default 0)
-  std::strcpy(dh.map, "MAP\0");  // string 'MAP ' to identify file type
+  std::strcpy(dh.map, "MAP");  // string 'MAP\0' to identify file type
   // Origin used for transforms
   algebra::Vector3D origin = h.get_origin();
   dh.set_xorigin(origin[0]);
