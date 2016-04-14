@@ -43,12 +43,11 @@ class IMPEMEXPORT DistanceMask
     // class  DistanceMask
     {
  public:
-  DistanceMask() { initialized_ = false; }
+  DistanceMask()
+          : initialized_(false), header_(nullptr) {}
 
-  DistanceMask(const DensityHeader *header) {
-    header_ = header;
-    initialized_ = true;
-  }
+  DistanceMask(const DensityHeader *header)
+          : initialized_(true), header_(header) {}
 
   void show(std::ostream &out) const { out << "DistanceMask"; }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
