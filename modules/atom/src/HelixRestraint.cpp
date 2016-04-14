@@ -21,7 +21,7 @@ HelixRestraint::HelixRestraint(Residues rs, bool ideal)
   Float std2  = 0.13962634015954636;
   Float corr = -0.25;
   Float weight = 0.5;
-  core::BinormalTerm * bt = new core::BinormalTerm();
+  IMP_NEW(core::BinormalTerm, bt, ());
   bt->set_means(std::make_pair(dih1,dih2));
   bt->set_standard_deviations(std::make_pair(std1,std2));
   bt->set_correlation(corr);
