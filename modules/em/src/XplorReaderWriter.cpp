@@ -33,15 +33,15 @@ int XplorReaderWriter::read_header(std::ifstream &XPLORstream,
                                    internal::XplorHeader &header) {
 
   char line[300];
-  int lineWidht = 300;
+  int lineWidth = 300;
 
   // read the configuration values:
   for (int i = 0; i < 4; i++) {
-    XPLORstream.getline(line, lineWidht);
+    XPLORstream.getline(line, lineWidth);
   }
   char *lineBreaker;
 
-  XPLORstream.getline(line, lineWidht);
+  XPLORstream.getline(line, lineWidth);
 
   int div, mod, result;
 
@@ -65,7 +65,7 @@ int XplorReaderWriter::read_header(std::ifstream &XPLORstream,
   ////////////////////
   // read the unit cell dimensions
   ////////////////////
-  XPLORstream.getline(line, lineWidht);
+  XPLORstream.getline(line, lineWidth);
 
   lineBreaker = strtok(line, " ");
 
@@ -91,7 +91,7 @@ int XplorReaderWriter::read_header(std::ifstream &XPLORstream,
   // read the grid order
   //  we do not use this data. We use the user input for the grid order.
   //////////////
-  XPLORstream.getline(line, lineWidht);
+  XPLORstream.getline(line, lineWidth);
 
   return 0;
 }
@@ -101,7 +101,7 @@ int XplorReaderWriter::read_map(std::ifstream &XPLORstream, float *data,
 
   // reading the map according to the grid order.
   char line[300];
-  int lineWidht = 300;
+  int lineWidth = 300;
   int x, y, z = 0;  // the step size in the three directions on the grid.
   x = 0;
   y = 0;
@@ -120,7 +120,7 @@ int XplorReaderWriter::read_map(std::ifstream &XPLORstream, float *data,
   float density;
 
   while (!XPLORstream.eof()) {
-    XPLORstream.getline(line, lineWidht);
+    XPLORstream.getline(line, lineWidth);
     if (!status) {  // status = false means that we moved a section
       status = true;
     } else {
