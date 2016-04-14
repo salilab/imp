@@ -150,8 +150,7 @@ class IMPEM2DEXPORT RegistrationResult {
   //! Euler angles (ZYZ)
   double phi_, theta_, psi_;
   algebra::Rotation3D R_;
-  // false when the RegistrationResult is built from a rotation directly
-  bool angles_defined_, is_optimized_result_;
+  bool is_optimized_result_;
 };
 IMP_VALUES(RegistrationResult, RegistrationResults);
 
