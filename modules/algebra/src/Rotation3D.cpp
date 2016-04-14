@@ -178,7 +178,6 @@ const Vector3D Rotation3D::get_derivative(const Vector3D &o,
     default:
       IMP_THROW("Invalid derivative component", IndexException);
   };
-  return Vector3D(0, 0, 0);
 }
 
 Rotation3D get_random_rotation_3d() {
