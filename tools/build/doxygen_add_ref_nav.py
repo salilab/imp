@@ -15,12 +15,12 @@ def all_module_docs(modules):
 
 def get_module_readme(module):
     """Make a Page object for a module's top-level README file"""
-    module = module.replace('_', '__')
-    p = Page('namespace' + module)
+    modulesub = module.replace('_', '__')
+    p = Page('namespace' + modulesub)
     if module == 'kernel':
         p.out_file_name = 'namespaceIMP'
     else:
-        p.out_file_name = 'namespaceIMP_1_1' + module
+        p.out_file_name = 'namespaceIMP_1_1' + modulesub
     p.source_file_name = 'modules/%s/README.md' % module
     return p
 
