@@ -51,7 +51,7 @@ def run_swig(outputdir, options):
     patch_py_wrapper("src/%s_swig/IMP.%spy"
                      % (options.module, '' if options.module == 'kernel'
                                         else options.module + '.'),
-                        os.path.join("lib", "IMP",
+                     os.path.join("lib", "IMP",
                           "" if options.module == 'kernel' else options.module,
                           "__init__.py"),
                      options.module)
