@@ -18,12 +18,12 @@ override_dh_auto_configure:
 	cd build && wget http://integrativemodeling.org/libTAU/libTAU-1.0.1.zip
 	cd build && echo "d2530291628081ee404b30da5c47ec6dc4302479  libTAU-1.0.1.zip" | sha1sum -c --quiet
 	cd build && unzip libTAU-1.0.1.zip && mv libTAU-1.0.1/include libTAU
-	if "$(lsb_release -c -s)" = "xenial"; then \
+	if [ "`lsb_release -c -s`" = "xenial" ]; then \
 	  cd build/libTAU-1.0.1/lib && ln -sf Fedora23.x86_64 debian; \
 	else \
 	  cd build/libTAU-1.0.1/lib && ln -sf Fedora20.x86_64 debian; \
 	fi
-	cd build/libTAU-1.0.1/lib/ubuntu && ln -sf libTAU.so.1 libTAU.so
+	cd build/libTAU-1.0.1/lib/debian && ln -sf libTAU.so.1 libTAU.so
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release \
 	        -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python2.7/dist-packages \
 	        -DCMAKE_INCLUDE_PATH=`pwd` \
