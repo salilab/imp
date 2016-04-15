@@ -53,7 +53,7 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h) {
   nsymbt = h.nsymbt;  // Number of bytes used for symmetry data (0 or 80)
   // extra space used for anything - 0 by default
   for (int i = 0; i < IMP_MRC_USER; i++) user[i] = h.user[i];
-  strcpy(map, "MAP\0");  // character string 'MAP ' to identify file type
+  strcpy(map, "MAP");  // character string 'MAP\0' to identify file type
   // Origin used for transforms
   xorigin = h.get_xorigin();
   yorigin = h.get_yorigin();
@@ -108,7 +108,7 @@ void MRCHeader::ToDensityHeader(DensityHeader &h) {
   h.nsymbt = nsymbt;  // Number of bytes used for symmetry data (0 or 80)
   // extra space used for anything - 0 by default
   for (int i = 0; i < IMP_MRC_USER; i++) h.user[i] = user[i];
-  strcpy(h.map, "MAP\0");  // character string 'MAP ' to identify file type
+  strcpy(h.map, "MAP");  // character string 'MAP\0' to identify file type
   // Origin used for transforms
   h.set_xorigin(xorigin);
   h.set_yorigin(yorigin);
