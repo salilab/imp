@@ -313,7 +313,7 @@ void StringTraits::write_value_dataset(hid_t d, hid_t iss, hid_t s,
     c = &empty;
   }
   RMF_HDF5_CALL(H5Dwrite(d, get_hdf5_memory_type(), iss, s, H5P_DEFAULT, &c));
-  if (!v.empty()) delete c;
+  if (!v.empty()) delete[] c;
 }
 
 StringTraits::Type StringTraits::read_value_dataset(hid_t d, hid_t iss,

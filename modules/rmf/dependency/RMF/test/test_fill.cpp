@@ -54,7 +54,7 @@ void set_value(hid_t ds, int i, int j, double v) {
   ones[1] = 1;
   HDF5_HANDLE(space, H5Dget_space(ds), &H5Sclose);
   HDF5_CALL(H5Sselect_hyperslab(space, H5S_SELECT_SET, ij, ones, ones, NULL));
-  H5Dwrite(ds, H5T_NATIVE_DOUBLE, ids, space, H5P_DEFAULT, &v);
+  HDF5_CALL(H5Dwrite(ds, H5T_NATIVE_DOUBLE, ids, space, H5P_DEFAULT, &v));
 }
 }
 

@@ -225,11 +225,9 @@ struct SimplePluralTraits {
   };
   static Types read_values_dataset(hid_t, hid_t, hid_t, unsigned int) {
     RMF_NOT_IMPLEMENTED;
-    return Types();
   }
   static Types read_values_attribute(hid_t, unsigned int) {
     RMF_NOT_IMPLEMENTED;
-    return Types();
   }
   static void write_values_attribute(hid_t, const Types&) {
     RMF_NOT_IMPLEMENTED;
@@ -258,11 +256,9 @@ struct RMFEXPORT StringTraits {
   };
   static Types read_values_dataset(hid_t, hid_t, hid_t, unsigned int) {
     RMF_NOT_IMPLEMENTED;
-    return Types();
   }
   static Types read_values_attribute(hid_t, unsigned int) {
     RMF_NOT_IMPLEMENTED;
-    return Types();
   }
   static void write_values_attribute(hid_t, const Types&) {
     RMF_NOT_IMPLEMENTED;
@@ -291,11 +287,9 @@ struct RMFEXPORT StringsTraits {
   };
   static Types read_values_dataset(hid_t, hid_t, hid_t, unsigned int) {
     RMF_NOT_IMPLEMENTED;
-    return Types();
   }
   static Types read_values_attribute(hid_t, unsigned int) {
     RMF_NOT_IMPLEMENTED;
-    return Types();
   }
   static void write_values_attribute(hid_t, const Types&) {
     RMF_NOT_IMPLEMENTED;
