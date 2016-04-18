@@ -1,0 +1,3 @@
+#!/bin/sh
+find /usr/lib/python2.*/dist-packages/IMP -name '*.pyc' -exec rm \{\} \;
+find /usr/lib/python2.*/dist-packages/RMF -name '*.pyc' -exec rm \{\} \;

@@ -1,0 +1,3 @@
+#!/bin/sh
+python3 -m compileall -q /usr/lib/python3.*/dist-packages/IMP
+python3 -m compileall -q /usr/lib/python3.*/dist-packages/RMF

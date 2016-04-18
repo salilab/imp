@@ -1,0 +1,3 @@
+#!/bin/sh
+find /usr/lib/python3.*/dist-packages/IMP -name __pycache__ -exec rm -rf \{\} \; 2>/dev/null
+find /usr/lib/python3.*/dist-packages/RMF -name __pycache__ -exec rm -rf \{\} \; 2>/dev/null
