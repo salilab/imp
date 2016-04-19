@@ -11,12 +11,13 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-SurfaceShellDensityMap::SurfaceShellDensityMap() : SampledDensityMap() {
+SurfaceShellDensityMap::SurfaceShellDensityMap()
+      : SampledDensityMap(), surface_val_(0.), num_shells_(0) {
   set_kernel();
 }
 
 SurfaceShellDensityMap::SurfaceShellDensityMap(const DensityHeader &header)
-    : SampledDensityMap(header) {
+    : SampledDensityMap(header), surface_val_(0.), num_shells_(0) {
   set_kernel();
   set_neighbor_mask();
 }
@@ -25,14 +26,13 @@ SurfaceShellDensityMap::SurfaceShellDensityMap(const ParticlesTemp &ps,
                                                float voxel_size,
                                                IMP::FloatKey mass_key,
                                                int num_shells)
-    : SampledDensityMap() {
+    : SampledDensityMap(), surface_val_(0.), num_shells_(num_shells) {
   set_kernel();
   set_particles(ps, mass_key);
   // update the grid size to contain all of the particles
   determine_grid_size(header_.get_resolution(), voxel_size, 3.);
   // to make
   update_voxel_size(voxel_size);
-  num_shells_ = num_shells;
   set_neighbor_mask();
   IMP_LOG_TERSE("going to resample\n");
   resample();
