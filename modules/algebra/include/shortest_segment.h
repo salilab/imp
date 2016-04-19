@@ -1,6 +1,6 @@
 /**
  *  \file IMP/algebra/shortest_segment.h
- *  \brief predicates implemented using CGAL
+ *  \brief Get the shortest segment connecting two geometric objects.
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
 */
 

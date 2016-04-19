@@ -24,7 +24,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Embed a grid as an evenly spaced axis aligned grid.*/
+//! Embed a grid as an evenly spaced axis aligned grid.
 template <int D>
 class DefaultEmbeddingD {
   VectorD<D> origin_;

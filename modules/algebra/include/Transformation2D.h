@@ -29,10 +29,10 @@ class IMPALGEBRAEXPORT Transformation2D : public GeometricPrimitiveD<2> {
  public:
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Transformation2D);
 
-  //! constructor. An invalid transformation is built
+  //! Default constructor. An invalid transformation is built.
   Transformation2D() {}
 
-  //! basic constructor from a Rotation2D and translation vector
+  //! Constructor from a Rotation2D and translation vector
   Transformation2D(const Rotation2D &r, const Vector2D &t = Vector2D(0.0, 0.0))
       : trans_(t), rot_(r) {}
 
@@ -42,26 +42,26 @@ class IMPALGEBRAEXPORT Transformation2D : public GeometricPrimitiveD<2> {
 
   ~Transformation2D();
 
-  //! Perform the transformation on an 2D vector
+  //! Perform the transformation on a 2D vector
   /**
     \param[in] o vector where the transformation is applied
-    \note: The transformation is done firstly applying the rotation and then
+    \note: The transformation is done first applying the rotation and then
     the translation
   **/
   Vector2D get_transformed(const Vector2D &o) const {
     return rot_.get_rotated(o) + trans_;
   }
 
-  //! Perform the transformation on an 2D vector
+  //! Perform the transformation on a 2D vector
   /**
-    \note: The transformation is done firstly applying the rotation and then
+    \note: The transformation is done first applying the rotation and then
     the translation
   **/
   Vector2D operator*(const Vector2D &v) const { return get_transformed(v); }
 
-  //! compose two transformations
+  //! Compose two transformations
   /**
-    \ note The transformations are composed such that for any vector v
+    \note The transformations are composed such that for any vector v
       (rt1*rt2)*v = rt1*(rt2*v)
   **/
   Transformation2D operator*(const Transformation2D &tr) const {
@@ -75,7 +75,8 @@ class IMPALGEBRAEXPORT Transformation2D : public GeometricPrimitiveD<2> {
   }
 
   //! Compute the transformation d which, when composed with b, gives this one.
-  //! That is a(x)== d(b(x)) for all x.
+  /** That is a(x)== d(b(x)) for all x.
+   */
   Transformation2D operator/(const Transformation2D &b) const {
     Transformation2D ret = compose(*this, b.get_inverse());
     return ret;
@@ -87,15 +88,15 @@ class IMPALGEBRAEXPORT Transformation2D : public GeometricPrimitiveD<2> {
     return *this;
   }
 
-  //! Returns the rotation
+  //! Return the rotation
   const Rotation2D get_rotation() const { return rot_; }
 
   void set_rotation(double angle) { rot_.set_angle(angle); }
 
-  //! Returns the translation
+  //! Return the translation
   const Vector2D get_translation() const { return trans_; }
 
-  //! Sets the translation
+  //! Set the translation
   void set_translation(const Vector2D &v) {
     trans_[0] = v[0];
     trans_[1] = v[1];
@@ -106,7 +107,7 @@ class IMPALGEBRAEXPORT Transformation2D : public GeometricPrimitiveD<2> {
     out << " || " << trans_;
   });
 
-  //! Returns the inverse transformation
+  //! Return the inverse transformation
   Transformation2D get_inverse() const;
 
  private:
@@ -116,16 +117,16 @@ class IMPALGEBRAEXPORT Transformation2D : public GeometricPrimitiveD<2> {
 
 IMP_VALUES(Transformation2D, Transformation2Ds);
 
-//! Returns a transformation that does not do anything
+//! Return a transformation that does not do anything
 /** \see Transformation2D
 **/
 inline Transformation2D get_identity_transformation_2d() {
   return Transformation2D(get_identity_rotation_2d(), Vector2D(0.0, 0.0));
 }
 
-//! Generates a Transformation2D object from a rotation around a point
+//! Generate a Transformation2D object from a rotation around a point
 /**
-  Generates a Transformation2D to rotate about a point rather than the origin.
+  Generate a Transformation2D to rotate about a point rather than the origin.
   \param[in] point Center to rotate about
   \param[in] rotation The rotation to perform (defined taking the origin as
   reference, not the new point).

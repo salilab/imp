@@ -1,6 +1,6 @@
 /**
  * \file IMP/algebra/ParabolicFit.h
- * \brief fit the data with parabola
+ * \brief Fit data with parabola
  *
  * Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
