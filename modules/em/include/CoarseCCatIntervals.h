@@ -12,6 +12,7 @@
 #include <IMP/em/em_config.h>
 #include "CoarseCC.h"
 #include <vector>
+#include <boost/scoped_array.hpp>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -67,7 +68,7 @@ the same value before computing the values again
   //! Stored correlation value
   float stored_cc_;
   //! Stored derivative terms
-  double *stored_dvx_, *stored_dvy_, *stored_dvz_;
+  boost::scoped_array<double> stored_dvx_, stored_dvy_, stored_dvz_;
   // true when memory for the terms storing the derivatives has been assigned
   bool dv_memory_allocated_;
 };

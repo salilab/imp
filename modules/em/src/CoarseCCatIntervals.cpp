@@ -17,16 +17,15 @@ CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd)
 }
 
 CoarseCCatIntervals::CoarseCCatIntervals() {
-     : calls_counter_(0), stored_cc_(0.0), stored_dvx_(nullptr),
-       stored_dvy_(nullptr), stored_dvz_(nullptr), dv_memory_allocated(false) {
+     : calls_counter_(0), stored_cc_(0.0), dv_memory_allocated(false) {
 }
 
 void CoarseCCatIntervals::allocate_derivatives_array(int ncd) {
   if (dv_memory_allocated_) return;
   // Allocate memory for the derivative terms if not done yet
-  stored_dvx_ = new double[ncd];
-  stored_dvy_ = new double[ncd];
-  stored_dvz_ = new double[ncd];
+  stored_dvx_.reset(new double[ncd]);
+  stored_dvy_.reset(new double[ncd]);
+  stored_dvz_.reset(new double[ncd]);
 
   for (int i = 0; i < ncd; i++) {
     stored_dvx_[i] = 0.0;
