@@ -72,20 +72,17 @@ DensityMap *create_density_map(int nx, int ny, int nz, double spacing) {
   return ret.release();
 }
 
-DensityMap::DensityMap(std::string name) : Object(name) {
-  loc_calculated_ = false;
-  normalized_ = false;
-  rms_calculated_ = false;
-}
+DensityMap::DensityMap(std::string name)
+    : Object(name), data_allocated_(false), loc_calculated_(false),
+      normalized_(false), rms_calculated_(false) {}
 
 DensityMap::DensityMap(const DensityHeader &header, std::string name)
-    : Object(name) {
-  header_ = header;
+    : Object(name), header_(header), data_allocated_(false),
+      normalized_(false), rms_calculated_(false) {
   header_.compute_xyz_top(true);
   // allocate the data
   long nvox = get_number_of_voxels();
   data_.reset(new emreal[nvox]);
-  loc_calculated_ = false;
   calc_all_voxel2loc();
 }
 

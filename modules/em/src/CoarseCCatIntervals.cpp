@@ -11,22 +11,14 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd) {
-
-  // Number of times the evaluation has been called. The evaluation is only
-  // performed the first time and when calls_counter_ reaches eval_interval.
-  // Otherwise the stored_cc_ value is returned
-  calls_counter_ = 0;
-
-  stored_cc_ = 0.0;
-  dv_memory_allocated_ = false;
+CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd)
+     : calls_counter_(0), stored_cc_(0.0), dv_memory_allocated(false) {
   allocate_derivatives_array(ncd);
 }
 
 CoarseCCatIntervals::CoarseCCatIntervals() {
-  calls_counter_ = 0;
-  stored_cc_ = 0.0;
-  dv_memory_allocated_ = false;
+     : calls_counter_(0), stored_cc_(0.0), stored_dvx_(nullptr),
+       stored_dvy_(nullptr), stored_dvz_(nullptr), dv_memory_allocated(false) {
 }
 
 void CoarseCCatIntervals::allocate_derivatives_array(int ncd) {
