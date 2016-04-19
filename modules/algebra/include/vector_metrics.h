@@ -20,8 +20,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** The base class for a metric on VectorKDs.
- */
+//! The base class for a metric on VectorKDs.
 class IMPALGEBRAEXPORT VectorKDMetric : public Object {
  public:
   VectorKDMetric(std::string name);
@@ -31,8 +30,7 @@ class IMPALGEBRAEXPORT VectorKDMetric : public Object {
 
 IMP_OBJECTS(VectorKDMetric, VectorKDMetrics);
 
-/** The l2 norm on the distance vector.
- */
+//! The l2 norm on the distance vector.
 class IMPALGEBRAEXPORT EuclideanVectorKDMetric : public VectorKDMetric {
  public:
   EuclideanVectorKDMetric(std::string name = "EuclideanVectorKDMetric%1%");

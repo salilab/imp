@@ -32,15 +32,13 @@ class IMPALGEBRAEXPORT SphericalVector3D : public GeometricPrimitiveD<3> {
  public:
   SphericalVector3D() {};
 
-  //! Constructor that directly converts to spherical coordinates from a vector
-  //! v in Cartesian coordinates
+  //! Construct from a Cartesian coordinate vector
   SphericalVector3D(const Vector3D& v) { set_cartesian_coordinates(v); }
 
-  //! Direct Constructor. A check for the validity of the coords is done
-  //! by default
-  /**
-    Set apply_check to false if you do not want the check
-  **/
+  //! Construct from provided spherical coordinates.
+  /** A check for the validity of the coords is done by default.
+      Set apply_check to false if you do not want the check.
+   */
   SphericalVector3D(double r, double theta, double psi,
                     bool apply_check = true) {
     if (apply_check) {

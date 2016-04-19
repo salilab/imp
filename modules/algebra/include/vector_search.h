@@ -1,5 +1,5 @@
 /**
- *  \file IMP/algebra/vector_search.h   \brief Functions to generate vectors.
+ *  \file IMP/algebra/vector_search.h   \brief Functions to search over vectors.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
@@ -39,13 +39,13 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 /** @name Vector Search
 
-    These functions classes create various search structures
+    These functions and classes create various search structures
     over sets of vectors.
     @{
 */
 
-/** Build a structure for finding nearest neighbors. Different
-    implementations are used depending on what optional dependencies
+//! Build a structure for finding nearest neighbors.
+/** Different implementations are used depending on what optional dependencies
     are available.
     \uses{class NearestNeighborD, CGAL}
     \uses{class NearestNeighborD, ANN}
@@ -105,7 +105,7 @@ class NearestNeighborD : public IMP::Object {
     data_.fill_nearest_neighbors(q, 1U, eps_, ret);
     return ret[0];
   }
-  /** Search using the ith point in the input set. */
+  //! Search using the ith point in the input set.
   unsigned int get_nearest_neighbor(unsigned int i) const {
     IMP_OBJECT_LOG;
     set_was_used(true);
@@ -145,7 +145,7 @@ class NearestNeighborD : public IMP::Object {
     data_.fill_nearest_neighbors(v, k, eps_, ret);
     return Ints(++ret.begin(), ret.end());
   }
-  /** Find all points within the provided distance. */
+  //! Find all points within the provided distance.
   Ints get_in_ball(unsigned int i, double distance) const {
     IMP_OBJECT_LOG;
     set_was_used(true);
@@ -153,7 +153,7 @@ class NearestNeighborD : public IMP::Object {
     data_.fill_nearest_neighbors(data_.get_point(i), distance, eps_, ret);
     return Ints(++ret.begin(), ret.end());
   }
-  /** Find all points within the provided distance. */
+  //! Find all points within the provided distance.
   Ints get_in_ball(const VectorD<D> &pt, double distance) const {
     IMP_OBJECT_LOG;
     set_was_used(true);
@@ -176,12 +176,12 @@ typedef NearestNeighborD<6> NearestNeighbor6D;
 typedef NearestNeighborD<-1> NearestNeighborKD;
 #endif
 
-/** This class provides an incremental nearest neighbor search function.
-    It's interface and behavior is somewhat different than that of
+//! Provide an incremental nearest neighbor search function.
+/** The interface and behavior is somewhat different than that of
     NearestNeighborD, so be aware.
 
     Later this can support balls by copying points multiple times.
-*/
+ */
 class IMPALGEBRAEXPORT DynamicNearestNeighbor3D : public Object {
   typedef GridD<3, SparseGridStorageD<3, Ints, UnboundedGridRangeD<3> >, Ints,
                 DefaultEmbeddingD<3> > Grid;

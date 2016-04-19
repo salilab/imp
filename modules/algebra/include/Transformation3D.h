@@ -30,22 +30,22 @@ Transformation3D compose(const Transformation3D &a, const Transformation3D &b);
 class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
  public:
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Transformation3D);
-  //! construct an invalid transformation
+  //! Default construct (makes an invalid transformation)
   Transformation3D() {}
-  /** basic constructor*/
+  /** Basic constructor */
   Transformation3D(const Rotation3D &r, const Vector3D &t = Vector3D(0, 0, 0))
       : trans_(t), rot_(r) {}
   /** Construct a transformation with an identity rotation.*/
   Transformation3D(const Vector3D &t)
       : trans_(t), rot_(get_identity_rotation_3d()) {}
   ~Transformation3D();
-  //! transform
+  //! Transform
   Vector3D get_transformed(const Vector3D &o) const {
     return rot_.get_rotated(o) + trans_;
   }
-  //! apply transformation (rotate and then translate)
+  //! Apply transformation (rotate and then translate)
   Vector3D operator*(const Vector3D &v) const { return get_transformed(v); }
-  /** compose two rigid transformation such that for any vector v
+  /** Compose two rigid transformation such that for any vector v
       (rt1*rt2)*v = rt1*(rt2*v) */
   Transformation3D operator*(const Transformation3D &tr) const {
     return compose(*this, tr);
@@ -54,12 +54,12 @@ class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
     *this = compose(*this, o);
     return *this;
   }
-  /** Compute the transformation which, when composed with b, gives *this.
-      That is a(x)== d(b(x)) for all x.
+  //! Compute the transformation which, when composed with b, gives *this.
+  /** That is a(x)== d(b(x)) for all x.
 
       For consistency, this should probably have a nice name, but
       I don't know what name to give it.
-  */
+   */
   Transformation3D operator/(const Transformation3D &b) const {
     Transformation3D ret = compose(*this, b.get_inverse());
     return ret;
@@ -69,10 +69,10 @@ class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
     return *this;
   }
 
-  //! returns the rotation associated with this transformation
+  //! Return the rotation associated with this transformation
   const Rotation3D &get_rotation() const { return rot_; }
 
-  //! returns the translation vector associated with this transformation
+  //! Return the translation vector associated with this transformation
   const Vector3D &get_translation() const { return trans_; }
 
   IMP_SHOWABLE_INLINE(Transformation3D, {
@@ -128,7 +128,7 @@ inline Transformation3D compose(const Transformation3D &a,
 
 class Transformation2D;
 
-//! Builds a 3D transformation from a 2D one.
+//! Build a 3D transformation from a 2D one.
 /**
   \note The 3D transformation is built with the 2D rotation becoming a rotation
   around the z axis.
@@ -138,7 +138,7 @@ IMPALGEBRAEXPORT Transformation3D
 
 //! Get a local transformation
 /**
-  \note randomly select an axis that passes to the input point
+  \note randomly select an axis that passes through the input point
   and rotate around it
   \param[in] origin the origin of the rotation
   \param[in] max_translation default value is 5

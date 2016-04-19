@@ -75,7 +75,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Rotation3D);
 
   //! Create a rotation from a vector of 4 quaternion coefficients.
-  //! @note: use assume_normalize with care - inputting an unnormalized
+  //! @note: use assume_normalized with care - inputting an unnormalized
   //!        vector would result in unexpected results if it is true
   explicit Rotation3D(const VectorD<4> &v,
                       bool assume_normalized=false)
@@ -120,7 +120,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
                 o[2]);
   }
 
-  //! Gets only the requested rotation coordinate of the vector
+  //! Get only the requested rotation coordinate of the vector
   double get_rotated_one_coordinate_no_cache(const Vector3D &o,
                                              unsigned int coord) const {
     IMP_USAGE_CHECK(get_is_valid(),
@@ -158,7 +158,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
     return Vector3D(o * matrix_[0], o * matrix_[1], o * matrix_[2]);
   }
 
-  //! Gets only the requested rotation coordinate of the vector
+  //! Get only the requested rotation coordinate of the vector
   double get_rotated_one_coordinate(const Vector3D &o,
                                     unsigned int coord) const {
     IMP_USAGE_CHECK(get_is_valid(),
@@ -195,7 +195,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
     return v_;
   }
 
-  //! multiply two rotations
+  //! Multiply two rotations
   Rotation3D operator*(const Rotation3D &q) const {
     IMP_USAGE_CHECK(get_is_valid(),
                     "Attempting to compose uninitialized rotation");
@@ -220,7 +220,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   */
   const Vector3D get_derivative(const Vector3D &o, unsigned int i) const;
 
-  /** returns true is the rotation is valid, false if
+  /** Return true is the rotation is valid, false if
       invalid or not initialized (e.g., only initialized by
       the empty constructor)
   */

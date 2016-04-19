@@ -1,5 +1,6 @@
 /**
- *  \file IMP/algebra/GeometricPrimitiveD.h    \brief Basic types used by IMP.
+ *  \file IMP/algebra/GeometricPrimitiveD.h
+ *  \brief Base class for geometric types.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *

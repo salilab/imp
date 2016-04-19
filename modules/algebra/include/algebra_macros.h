@@ -1,6 +1,6 @@
 /**
- *  \file IMP/algebra/algebra_macros.h    \brief Various important macros
- *                           for implementing geometry.
+ *  \file IMP/algebra/algebra_macros.h
+ *  \brief Various helper macros.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/algebra/distance.h
- *  \brief distance metrics
+ *  \brief Distance metrics.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
