@@ -37,7 +37,9 @@ class App(object):
                                  stderr=subprocess.STDOUT)
         except OSError:
             raise OSError("Could not run %s" % self.name)
-        return p.wait(), p.stdout.read()
+        out = p.stdout.read()
+        p.stdout.close()
+        return p.wait(), out
 
 
 class IMPInstallTests(unittest.TestCase):
