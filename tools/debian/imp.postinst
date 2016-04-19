@@ -1,3 +1,4 @@
 #!/bin/sh
 python -m compileall -q /usr/lib/python2.*/dist-packages/IMP
-python -m compileall -q /usr/lib/python2.*/dist-packages/RMF
+python -m compileall -q /usr/lib/python2.*/dist-packages/RMF.py
+python -m compileall -q /usr/lib/python2.*/dist-packages/RMF_HDF5.py
