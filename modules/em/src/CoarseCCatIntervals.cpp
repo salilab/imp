@@ -12,12 +12,12 @@
 IMPEM_BEGIN_NAMESPACE
 
 CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd)
-     : calls_counter_(0), stored_cc_(0.0), dv_memory_allocated(false) {
+     : calls_counter_(0), stored_cc_(0.0), dv_memory_allocated_(false) {
   allocate_derivatives_array(ncd);
 }
 
-CoarseCCatIntervals::CoarseCCatIntervals() {
-     : calls_counter_(0), stored_cc_(0.0), dv_memory_allocated(false) {
+CoarseCCatIntervals::CoarseCCatIntervals()
+     : calls_counter_(0), stored_cc_(0.0), dv_memory_allocated_(false) {
 }
 
 void CoarseCCatIntervals::allocate_derivatives_array(int ncd) {
