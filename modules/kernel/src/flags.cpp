@@ -15,7 +15,7 @@
 #include <IMP/random.h>
 #include "internal/base_static.h"
 #include <boost/program_options/parsers.hpp>
-#include <boost/format/exceptions.hpp>
+#include <boost/program_options/errors.hpp>
 
 #if IMP_KERNEL_HAS_GPERFTOOLS
 #include <gperftools/profiler.h>
@@ -253,10 +253,7 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
     std::cerr << "Error parsing arguments: " << e.what() << std::endl;
     write_help(std::cerr);
     throw IMP::UsageException(e.what());
-
-  // This shouldn't happen (boost errors for too few or too many arguments)
-  // but if it does, convert to UsageException
-  } catch (const boost::io::format_error &e) {
+  } catch (const boost::program_options::error &e) {
     std::cerr << "Error parsing arguments: " << e.what() << std::endl;
     write_help(std::cerr);
     throw IMP::UsageException(e.what());
