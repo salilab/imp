@@ -67,7 +67,11 @@ void do_benchmark() {
 }
 
 int main(int argc, char **argv) {
-  IMP::setup_from_argv(argc, argv, "Benchmark scanning density maps");
+  try {
+    IMP::setup_from_argv(argc, argv, "Benchmark scanning density maps");
+  } catch (const IMP::UsageException &) {
+    return 1;
+  }
   do_benchmark();
   return IMP::benchmark::get_return_value();
 }
