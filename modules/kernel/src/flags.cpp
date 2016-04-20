@@ -149,7 +149,7 @@ void write_help(std::ostream &out) {
       << std::endl;
   out << "which is Copyright 2007-2016 IMP Inventors." << std::endl;
   out << "For additional information about IMP, "
-      << "see <http://integrativemodeling.org>." << std::endl;
+      << "see <https://integrativemodeling.org>." << std::endl;
 }
 
 namespace {
