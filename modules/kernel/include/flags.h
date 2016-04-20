@@ -35,6 +35,7 @@ IMPKERNELEXPORT std::string get_executable_name();
     \param[in] argc argc
     \param[in] argv argv
     \param[in] description A message describing what the program does.
+    \throws UsageException if a problem with the command line was found.
     */
 IMPKERNELEXPORT void setup_from_argv(int argc, char **argv,
                                    std::string description);
@@ -46,6 +47,7 @@ IMPKERNELEXPORT void setup_from_argv(int argc, char **argv,
     \param[in] argc argc
     \param[in] argv argv
     \param[in] description A message describing what the program does.
+    \throws UsageException if a problem with the command line was found.
     */
 IMPKERNELEXPORT Strings setup_from_argv_allowing_unknown(int argc, char **argv,
                                                        std::string description);
@@ -61,6 +63,7 @@ IMPKERNELEXPORT Strings setup_from_argv_allowing_unknown(int argc, char **argv,
     \param[in] num_positional A positive integer to require that
     many positional arguments, or a negative integer to require at
     least that many.
+    \throws UsageException if a problem with the command line was found.
     */
 IMPKERNELEXPORT Strings
     setup_from_argv(int argc, char **argv, std::string description,
@@ -72,6 +75,7 @@ IMPKERNELEXPORT Strings
 
     \param[in] argv sys.argv
     \param[in] description A message describing what the program does.
+    \throws UsageException if a problem with the command line was found.
     */
 IMPKERNELEXPORT void setup_from_argv(const Strings &argv,
                                    std::string description);
@@ -86,6 +90,7 @@ IMPKERNELEXPORT void setup_from_argv(const Strings &argv,
     \param[in] num_positional A positive integer to require that
     many positional arguments, or a negative integer to require at
     least that many.
+    \throws UsageException if a problem with the command line was found.
     */
 IMPKERNELEXPORT Strings
     setup_from_argv(const Strings &argv, std::string description,
