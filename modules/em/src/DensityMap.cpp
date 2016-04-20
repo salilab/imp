@@ -78,7 +78,7 @@ DensityMap::DensityMap(std::string name)
 
 DensityMap::DensityMap(const DensityHeader &header, std::string name)
     : Object(name), header_(header), data_allocated_(false),
-      normalized_(false), rms_calculated_(false) {
+      loc_calculated_(false), normalized_(false), rms_calculated_(false) {
   header_.compute_xyz_top(true);
   // allocate the data
   long nvox = get_number_of_voxels();
