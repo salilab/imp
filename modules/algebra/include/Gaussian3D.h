@@ -57,6 +57,12 @@ IMPALGEBRAEXPORT DenseGrid3D<float> get_rasterized(const Gaussian3Ds &gmm,
                                                    double cell_width,
                                                    const BoundingBox3D &bb);
 
+IMPALGEBRAEXPORT DenseGrid3D<float> get_rasterized_fast(const Gaussian3Ds &gmm,
+                                                   const Floats &weights,
+                                                   double cell_width,
+                                                   const BoundingBox3D &bb);
+
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_GAUSSIAN3D_H */
