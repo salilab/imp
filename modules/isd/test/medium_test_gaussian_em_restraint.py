@@ -88,10 +88,10 @@ def create_random_gaussians(m,randstate,num,spherical,rad_scale=1.0):
         ret.append(p)
     return ret
 
-def shuffle_particles(ps):
+def shuffle_particles(ps,t=2.0,r=0.01):
     for np,p in enumerate(ps):
         trans=IMP.algebra.get_random_local_transformation(IMP.algebra.Vector3D(0,0,0),
-                                                          2.0,0.01)
+                                                          t,r)
         d=IMP.core.RigidBody(p)
         IMP.core.transform(d,trans)
 
@@ -99,7 +99,7 @@ def reset_coords(ps,orig_coords):
     for p,c in zip(ps,orig_coords):
         IMP.core.XYZ(p).set_coordinates(c)
 
-class TestGaussianEM(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
 
@@ -171,7 +171,38 @@ class TestGaussianEM(IMP.test.TestCase):
                 self.assertXYZDerivativesInTolerance(self.sf, d, tolerance = 1e-2,percentage=10.0)
         self.gem.set_slope(0.0)
 
+class LocalTests(IMP.test.TestCase):
+    def test_local_score(self):
+        ndensity=10
+        nmodel=10
+        rs=np.random.RandomState()
 
+        self.m = IMP.Model()
+        itrans = IMP.algebra.get_identity_transformation_3d()
+        self.density_ps=create_random_gaussians(self.m,rs,ndensity,spherical=False)
+        self.model_ps=create_random_gaussians(self.m,rs,nmodel,spherical=False)
+
+        psigma=IMP.Particle(self.m)
+        si = IMP.isd.Scale.setup_particle(psigma,1.0)
+        slope=0.0
+        model_cutoff_dist = 1e8
+        density_cutoff_dist = 0.0
+        update_model=True
+        backbone_slope=False
+        local=True
+        self.gem=IMP.isd.GaussianEMRestraint(self.m,self.model_ps,
+                                             self.density_ps,psigma,
+                                             model_cutoff_dist,density_cutoff_dist,
+                                             slope,
+                                             update_model,backbone_slope,local)
+        self.sf = IMP.core.RestraintsScoringFunction([self.gem])
+        self.orig_coords=[IMP.core.XYZ(p).get_coordinates() for p in self.model_ps]
+
+        for nt in range(10):
+            shuffle_particles(self.model_ps,5.0,1.5)
+            score = self.sf.evaluate(False)
+            pyscore = gem_score(self.model_ps, self.density_ps)
+            print score,pyscore
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -89,6 +89,8 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
      \param[in] slope Gentle term to move all particles to the density
      \param[in] update_model (DEPRECATED) update model each cycle
      \param[in] backbone_slope Limit the slope only to backbone particles
+     \param[in] local Only consider density particles that are within the
+                specified cutoff of the model particles (experimental)
      \param[in] name Name of this restraint
      \note the model and density particles must be set up as Gaussian
   */
@@ -97,6 +99,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
                       ParticleIndex global_sigma,
                       Float model_cutoff_dist,Float density_cutoff_dist,Float slope,
                       bool update_model=true, bool backbone_slope=false,
+                      bool local=false,
                       std::string name="GaussianEMRestraint%1%");
 
   //! Returns exp(score)
@@ -127,7 +130,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   ParticleIndexes density_ps_;
   ParticleIndex global_sigma_;
   Float slope_;
-  bool update_model_;
+  bool update_model_,local_;
   int msize_,dsize_;
   Float normalization_;
   Float dd_score_;
