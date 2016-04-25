@@ -51,12 +51,29 @@ IMPALGEBRAEXPORT Gaussian3D
     get_gaussian_from_covariance(const IMP_Eigen::Matrix3d &covariance,
                                  const Vector3D &center);
 
+//! Helper function that computes the prefactor terms of gaussians
+double get_gaussian_eval_prefactor(double determinant);
+//
+//! Helper function that computes the vector from a vector to the center of grid cell i
+IMP_Eigen::Vector3d get_vec_from_center(GridIndex3D i, DenseGrid3D<float> const& g,
+                                        IMP_Eigen::Vector3d const& center);
+
+//! Helper function that updates a density map
+void update_value(DenseGrid3D<float> *g, DenseGrid3D<float>::Index i,
+                  IMP_Eigen::Vector3d r,
+                  IMP_Eigen::Matrix3d inverse, double pre,
+                  Float weight);
+
 //! Rasterize the Gaussians to a grid.
 IMPALGEBRAEXPORT DenseGrid3D<float> get_rasterized(const Gaussian3Ds &gmm,
                                                    const Floats &weights,
                                                    double cell_width,
                                                    const BoundingBox3D &bb);
 
+//! Rasterize the Gaussians to a grid.
+/** The result is an approximation, but is obtained significantly faster.
+ * Good for quickly checking a GMM.
+ */
 IMPALGEBRAEXPORT DenseGrid3D<float> get_rasterized_fast(const Gaussian3Ds &gmm,
                                                    const Floats &weights,
                                                    double cell_width,
