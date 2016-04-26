@@ -56,34 +56,28 @@ Gaussian3D get_gaussian_from_covariance(const IMP_Eigen::Matrix3d &covar,
   rot = Rotation3D(eq.w(), eq.x(), eq.y(), eq.z());
   return Gaussian3D(ReferenceFrame3D(Transformation3D(rot, center)), radii);
 }
-
+namespace {
 double get_gaussian_eval_prefactor(double determinant) {
   return 1.0 / pow(2 * algebra::PI, 2.0 / 3.0) / std::sqrt(determinant);
 }
-IMP_Eigen::Vector3d get_vec_from_center(GridIndex3D i, DenseGrid3D<float> const&g,
-                                        IMP_Eigen::Vector3d const&center) {
+IMP_Eigen::Vector3d get_vec_from_center(GridIndex3D i, DensityGrid const &g,
+                                        IMP_Eigen::Vector3d const &center) {
   Vector3D aloc = g.get_center(i);
   IMP_Eigen::Vector3d loc(aloc[0], aloc[1], aloc[2]);
   IMP_Eigen::Vector3d r(loc - center);
   return r;
 }
-void update_value(DenseGrid3D<float> *g, DenseGrid3D<float>::Index i,
-                  IMP_Eigen::Vector3d r,
-                  IMP_Eigen::Matrix3d inverse, double pre,
-                  Float weight) {
+void update_value(DensityGrid *g, DensityGrid::Index i, IMP_Eigen::Vector3d r,
+                  IMP_Eigen::Matrix3d inverse, double pre, Float weight) {
   double d(r.transpose() * (inverse * r));
   double score(pre * weight * std::exp(-0.5 * (d)));
-  if (score > 1e10) {
-    score = 100;
-  }
-  if (score > 0) {
-    (*g)[i] += score;
-  }
+  (*g)[i] += score;
+}
 }
 
-DenseGrid3D<float> get_rasterized(const Gaussian3Ds &gmm, const Floats &weights,
-                                  double cell_width, const BoundingBox3D &bb) {
-  DenseGrid3D<float> ret(cell_width, bb, 0);
+DensityGrid get_rasterized(const Gaussian3Ds &gmm, const Floats &weights,
+                           double cell_width, const BoundingBox3D &bb) {
+  DensityGrid ret(cell_width, bb, 0);
   for (unsigned int ng = 0; ng < gmm.size(); ng++) {
     IMP_Eigen::Matrix3d covar = get_covariance(gmm[ng]);
     IMP_Eigen::Matrix3d inverse = IMP_Eigen::Matrix3d::Zero(3, 3);
@@ -94,10 +88,9 @@ DenseGrid3D<float> get_rasterized(const Gaussian3Ds &gmm, const Floats &weights,
     IMP_INTERNAL_CHECK((!invertible || determinant < 0),
                        "\n\n\n->>>>not proper matrix!!\n\n\n");
     double pre(get_gaussian_eval_prefactor(determinant));
-    IMP_Eigen::Vector3d evals = covar.eigenvalues().real();
     IMP_Eigen::Vector3d center(gmm[ng].get_center().get_data());
     IMP_INTERNAL_CHECK(invertible, "matrix wasn't invertible! uh oh!");
-    IMP_FOREACH(const DenseGrid3D<float>::Index & i, ret.get_all_indexes()) {
+    IMP_FOREACH(const DensityGrid::Index & i, ret.get_all_indexes()) {
       IMP_Eigen::Vector3d r(get_vec_from_center(i, ret, center));
       update_value(&ret, i, r, inverse, pre, weights[ng]);
     }
@@ -105,10 +98,9 @@ DenseGrid3D<float> get_rasterized(const Gaussian3Ds &gmm, const Floats &weights,
   return ret;
 }
 
-DenseGrid3D<float> get_rasterized_fast(const Gaussian3Ds &gmm,
-                                       const Floats &weights, double cell_width,
-                                       const BoundingBox3D &bb) {
-  DenseGrid3D<float> ret(cell_width, bb, 0);
+DensityGrid get_rasterized_fast(const Gaussian3Ds &gmm, const Floats &weights,
+                                double cell_width, const BoundingBox3D &bb) {
+  DensityGrid ret(cell_width, bb, 0);
   for (unsigned int ng = 0; ng < gmm.size(); ng++) {
     IMP_Eigen::Matrix3d covar = get_covariance(gmm[ng]);
     IMP_Eigen::Matrix3d inverse = IMP_Eigen::Matrix3d::Zero(3, 3);
