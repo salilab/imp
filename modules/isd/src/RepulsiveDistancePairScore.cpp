@@ -1,6 +1,7 @@
 /**
- *  \file SphereDistancePairScore.cpp
- *  \brief A score on the distance between the surfaces of two spheres.
+ *  \file RepulsiveDistancePairScore.cpp
+ *  \brief A simple quadric repulsive term between two atoms. Restraint is zero
+ *  when the distance equals the sum of the radii plus the shift.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
