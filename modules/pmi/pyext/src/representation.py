@@ -1892,11 +1892,6 @@ class Representation(object):
                 if p in self.floppy_bodies:
                     print("remove_floppy_bodies: removing %s from floppy body list" % p.get_name())
                     self.floppy_bodies.remove(p)
-                    try:
-                        rb = IMP.core.RigidMember(p).get_rigid_body()
-                        rb.set_is_rigid_member(p.get_particle_index(),True)
-                    except:
-                        pass
 
     def set_floppy_bodies(self):
         for p in self.floppy_bodies:
