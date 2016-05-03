@@ -1541,6 +1541,56 @@ def input_adaptor(stuff,
     else:
         return hier_list
 
+
+def get_sorted_segments(mol):
+    """Returns sequence-sorted segments array, each containing the first particle
+    the last particle and the first residue index."""
+
+    from operator import itemgetter
+    hiers=IMP.pmi.tools.input_adaptor(mol)
+    if len(hiers)>1:
+        raise Exception("IMP.pmi.tools.get_sorted_segments: only pass stuff from one Molecule, please")
+    hiers = hiers[0]
+    SortedSegments = []
+    for h in hiers:
+        try:
+            start = IMP.atom.Hierarchy(h).get_children()[0]
+        except:
+            start = IMP.atom.Hierarchy(h)
+
+        try:
+            end = IMP.atom.Hierarchy(h).get_children()[-1]
+        except:
+            end = IMP.atom.Hierarchy(h)
+
+        startres = IMP.pmi.tools.get_residue_indexes(start)[0]
+        endres = IMP.pmi.tools.get_residue_indexes(end)[-1]
+        SortedSegments.append((start, end, startres))
+    SortedSegments = sorted(SortedSegments, key=itemgetter(2))
+    return SortedSegments
+
+def display_bonds(mol):
+    """Decorate the sequence-consecutive particles from a PMI2 molecule with a bond,
+    so that they appear connected in the rmf file"""
+    SortedSegments=get_sorted_segments(mol)
+    for x in range(len(SortedSegments) - 1):
+
+        last = SortedSegments[x][1]
+        first = SortedSegments[x + 1][0]
+
+        p1 = last.get_particle()
+        p2 = first.get_particle()
+        if not IMP.atom.Bonded.get_is_setup(p1):
+            IMP.atom.Bonded.setup_particle(p1)
+        if not IMP.atom.Bonded.get_is_setup(p2):
+            IMP.atom.Bonded.setup_particle(p2)
+
+        if not IMP.atom.get_bond(IMP.atom.Bonded(p1),IMP.atom.Bonded(p2)):
+            IMP.atom.create_bond(
+                IMP.atom.Bonded(p1),
+                IMP.atom.Bonded(p2),1)
+
+
 def get_residue_type_from_one_letter_code(code):
     threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
                   'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',

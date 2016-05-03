@@ -28,6 +28,9 @@ class TestDOF(IMP.test.TestCase):
         m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
         s.build()
         return m1
+
+
+
     def init_topology3(self,mdl):
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
@@ -51,6 +54,19 @@ class TestDOF(IMP.test.TestCase):
         m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1])
         s.build()
         return m1,m2,m3
+
+    def init_topology_helix(self,mdl):
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        m1.add_representation(m1.residue_range('2','10'),ideal_helix=True,resolutions=[1,10])
+        m1.add_representation(m1.residue_range('1','2'),resolutions=[1])
+        m1.add_representation(m1.residue_range('10','11'),resolutions=[1])
+        s.build()
+        return m1
+
 
     def init_topology_densities(self,mdl):
         s = IMP.pmi.topology.System(mdl)
@@ -100,6 +116,30 @@ class TestDOF(IMP.test.TestCase):
                                               test_mode=True,
                                               replica_exchange_object=rem)
         rex.execute_macro()
+
+
+    def test_mc_rigid_body_helix(self):
+        """Test creation of rigid body and nonrigid members"""
+        mdl = IMP.Model()
+        molecule = self.init_topology_helix(mdl)
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        rb_movers,rb = dof.create_rigid_body(molecule,
+                                             nonrigid_parts = molecule.get_non_atomic_residues(),
+                                             name="test RB")
+
+        mvs = dof.get_movers()
+        all_members = rb.get_member_indexes()
+        rigid_members = rb.get_rigid_members()
+        num_nonrigid = len(all_members)-len(rigid_members)
+
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=molecule.get_hierarchy(),
+                                              monte_carlo_sample_objects = dof.get_movers(),
+                                              number_of_frames=1,
+                                              test_mode=True,
+                                              replica_exchange_object=rem)
+        rex.execute_macro()
+
     def test_big_rigid_body(self):
         """test you can create a rigid body from 3 molecules"""
         mdl = IMP.Model()

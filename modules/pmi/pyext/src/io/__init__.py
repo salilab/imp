@@ -379,8 +379,8 @@ def read_coordinates_of_rmfs(model,
         frame_number = tpl[2]
         if cnt==0:
             prots = IMP.pmi.analysis.get_hiers_from_rmf(model,
-                                                   frame_number,
-                                                   rmf_file)
+                                                        frame_number,
+                                                        rmf_file)
         else:
             IMP.pmi.analysis.link_hiers_to_rmf(model,prots,frame_number,rmf_file)
 
@@ -403,6 +403,8 @@ def read_coordinates_of_rmfs(model,
         for pr in part_dict:
             model_coordinate_dict[pr] = np.array(
                 [np.array(IMP.core.XYZ(i).get_coordinates()) for i in part_dict[pr]])
+        # for each file, get (as floats) a list of all coordinates
+        #  of all requested tuples, organized as dictionaries.
         for tuple_dict,result_dict in zip((alignment_components,rmsd_calculation_components),
                                           (template_coordinate_dict,rmsd_coordinate_dict)):
 
@@ -416,6 +418,7 @@ def read_coordinates_of_rmfs(model,
                         name = tuple_dict[pr]
                         s = IMP.atom.Selection(prot,molecule=name,resolution=1)
                     elif type(tuple_dict[pr]) is tuple:
+                        name = tuple_dict[pr][2]
                         rend = tuple_dict[pr][1]
                         rbegin = tuple_dict[pr][0]
                         s = IMP.atom.Selection(prot,molecule=name,resolution=1,

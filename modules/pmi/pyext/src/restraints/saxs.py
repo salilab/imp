@@ -10,11 +10,67 @@ import IMP.atom
 import IMP.container
 import IMP.pmi.tools
 
+class SAXSRestraint(object):
+    import IMP.saxs
+    import IMP.pmi.tools
+
+    def __init__(self, input_objects, saxs_datafile, weight=1.0, ff_type=IMP.saxs.HEAVY_ATOMS, label=None):
+        '''Builds a basic SAXS restraint.
+        @param input_objects - A list of hierarchies or PMI objects that the SAXS restraint will be applied to.
+                                This hierarchy MUST be atomic.  You can pass a list of CA atom particles to evaluate
+                                at residue resolution
+        @param saxs_datafile - the SAXS .dat file. 
+        @param weight - Restraint score coefficient
+        @param ff_type - the form factor to use:
+                ff_type = IMP.saxs.HEAVY_ATOMS  :  use form factors with implicit hydrogens
+                ff_type = IMP.saxs.ALL_ATOMS  :  use individual form factors for all atoms. Does not build missing hydrogens.
+                ff_type = IMP.saxs.CA_ATOMS  :  use residue based form factors centered at CA atoms
+        '''
+
+        hiers = IMP.pmi.tools.input_adaptor(input_objects, pmi_resolution=0, flatten=True)
+        self.m = list(hiers)[0].get_model()
+        if label is None:
+            label=""
+        self.rs = IMP.RestraintSet(self.m, 'SAXSRestraint_' + label)
+        self.profile = IMP.saxs.Profile(saxs_datafile)
+
+
+        if ff_type==IMP.saxs.CA_ATOMS:
+            self.particles = IMP.atom.Selection(hiers, atom_type=IMP.atom.AT_CA).get_selected_particles()           
+        elif ff_type==IMP.saxs.HEAVY_ATOMS:
+            self.particles = IMP.atom.Selection(hiers, resolution=0).get_selected_particles()
+        elif ff_type==IMP.saxs.ALL_ATOMS:
+            self.particles = IMP.atom.Selection(hiers, resolution=0).get_selected_particles()
+        else:
+            raise Exception("SAXSRestraint: Must provide an IMP.saxs atom type: CA_ATOMS, HEAVY_ATOMS or ALL_ATOMS")
+        if len(self.particles)==0:
+            raise Exception("SAXSRestraint: There are no selected particles")
+
+        self.restraint = IMP.saxs.Restraint(self.particles, self.profile, ff_type)
+        self.rs.add_restraint(self.restraint)
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+
+    def evaluate(self):
+        return self.rs.unprotected_evaluate(None)
+
+    def get_output(self):
+        self.m.update()
+        output = {}
+        score = self.evaluate()
+        output["_TotalScore"] = str(score)
+
+        return output
+
 class SAXSISDRestraint(object):
 
     import IMP.saxs
     import IMP.isd
-    import IMP.isd2
+    try:
+        import IMP.isd2
+    except:
+        print("Module isd2 not installed. Cannot use SAXSISDRestraint")
     import IMP.pmi.tools
 
     def __init__(self, representation, profile, resolution=0, weight=1,

@@ -64,6 +64,9 @@ for mol in mols:
                           max_trans=0.1,
                           max_rot=0.78,
                           nonrigid_max_trans=0.1)
+    # display the bonds between consecutive fragments,
+    # so that they are shown in the psf
+    IMP.pmi.tools.display_bonds(mol)
 
 
 ###################### RESTRAINTS #####################

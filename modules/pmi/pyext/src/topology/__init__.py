@@ -36,20 +36,24 @@ def _build_ideal_helix(mdl, residues, coord_finder):
     Residues MUST be contiguous.
     This function actually adds them to the TempResidue hierarchy
     """
-    all_res = []
-    for n, res in enumerate(residues):
-        if res.get_has_structure():
+    created_hiers = []
+
+    # this function creates a CAlpha helix structure (which can be used for coarsening)
+    for n, tempres in enumerate(residues):
+        if tempres.get_has_structure():
             raise Exception("You tried to build ideal_helix for a residue "
-                            "that already has structure:",res)
-        if n>0 and (not res.get_index()==prev_idx+1):
-            raise Exception("Passed non-contiguous segment to build_ideal_helix for",res.get_molecule())
+                            "that already has structure:",tempres)
+        if n>0 and (not tempres.get_index()==prev_idx+1):
+            raise Exception("Passed non-contiguous segment to build_ideal_helix for",tempres.get_molecule())
 
-        rt = res.get_residue_type()
-
+        # New residue particle will replace the TempResidue's existing (empty) hierarchy
         rp = IMP.Particle(mdl)
-        rp.set_name("Residue_%i" % res.get_index())
-        this_res = IMP.atom.Residue.setup_particle(rp,res.get_hierarchy())
+        rp.set_name("Residue_%i" % tempres.get_index())
 
+        # Copy the original residue type and index
+        this_res = IMP.atom.Residue.setup_particle(rp,tempres.get_hierarchy())
+
+        # Create the CAlpha
         ap = IMP.Particle(mdl)
         d = IMP.core.XYZR.setup_particle(ap)
         x = 2.3 * cos(n * 2 * pi / 3.6)
@@ -57,13 +61,14 @@ def _build_ideal_helix(mdl, residues, coord_finder):
         z = 6.2 / 3.6 / 2 * n * 2 * pi / 3.6
         d.set_coordinates(IMP.algebra.Vector3D(x, y, z))
         d.set_radius(1.0)
-
-        a = IMP.atom.Atom.setup_particle(ap, IMP.atom.AT_CA)
+        a = IMP.atom.Atom.setup_particle(ap, IMP.atom.AT_CA)  # Decorating as Atom also adds Mass
         this_res.add_child(a)
-        res.set_structure(this_res)
-        all_res.append(this_res)
-        prev_idx = res.get_index()
-    coord_finder.add_residues(all_res)
+
+        # Add this structure to the TempResidue
+        tempres.set_structure(this_res)
+        created_hiers.append(this_res)
+        prev_idx = tempres.get_index()
+    coord_finder.add_residues(created_hiers) #the coord finder is for placing beads (later)
 
 class _SystemBase(object):
     """The base class for System, State and Molecule
@@ -243,7 +248,7 @@ class Molecule(_SystemBase):
         self.built = False
         self.mol_to_clone = mol_to_clone
         self.representations = []  # list of stuff to build
-        self.represented = IMP.pmi.tools.OrderedSet()   # residues with representation
+        self._represented = IMP.pmi.tools.OrderedSet()   # residues with representation
         self.coord_finder = _FindCloseStructure() # helps you place beads by storing structure
         self._ideal_helices = [] # list of OrderedSets of tempresidues set to ideal helix
 
@@ -301,6 +306,10 @@ class Molecule(_SystemBase):
         """ Return all modeled TempResidues as a set"""
         all_res = IMP.pmi.tools.OrderedSet(self.residues)
         return all_res
+
+    def get_represented(self):
+        """ Return set of TempResidues that have representation"""
+        return self._represented
 
     def get_atomic_residues(self):
         """ Return a set of TempResidues that have associated structure coordinates """
@@ -461,10 +470,10 @@ class Molecule(_SystemBase):
             raise Exception("add_representation: you must pass a set of residues or nothing(=all residues)")
 
         # check that each residue has not been represented yet
-        ov = res & self.represented
+        ov = res & self._represented
         if ov:
             raise Exception('You have already added representation for '+self.get_hierarchy().get_name()+': '+ov.__repr__())
-        self.represented|=res
+        self._represented|=res
 
         # check you aren't creating multiple resolutions without structure
         if not hasattr(resolutions,'__iter__'):
@@ -541,7 +550,7 @@ class Molecule(_SystemBase):
                     new_res = IMP.pmi.tools.OrderedSet()
                     for r in old_rep.residues:
                         new_res.add(self.residues[r.get_internal_index()])
-                        self.represented.add(self.residues[r.get_internal_index()])
+                        self._represented.add(self.residues[r.get_internal_index()])
                     new_rep = _Representation(new_res,
                                               old_rep.bead_resolutions,
                                               old_rep.bead_extra_breaks,
@@ -558,7 +567,7 @@ class Molecule(_SystemBase):
                 self.coord_finder = self.mol_to_clone.coord_finder
 
             # give a warning for all residues that don't have representation
-            no_rep = [r for r in self.residues if r not in self.represented]
+            no_rep = [r for r in self.residues if r not in self._represented]
             if len(no_rep)>0:
                 print('WARNING: Residues without representation in molecule',
                       self.get_name(),':',system_tools.resnums2str(no_rep))
@@ -592,7 +601,7 @@ class Molecule(_SystemBase):
                     res.hier = new_hier
                 else:
                     res.hier = None
-
+            self._represented = IMP.pmi.tools.OrderedSet([a for a in self._represented])
         print('done building',self.get_hierarchy())
         return self.hier
 
@@ -733,20 +742,23 @@ class TempResidue(object):
         @param index    PDB index
         @param internal_index The number in the sequence
         """
+        #these attributes should be immutable
         self.molecule = molecule
         self.rtype = IMP.pmi.tools.get_residue_type_from_one_letter_code(code)
+        self.pdb_index = index
+        self.internal_index = internal_index
+        #these are expected to change
+        self._structured = False
         self.hier = IMP.atom.Residue.setup_particle(IMP.Particle(molecule.mdl),
                                                     self.rtype,
                                                     index)
-        self.pdb_index = index
-        self.internal_index = internal_index
-        self._structured = False
     def __str__(self):
         return self.get_code()+str(self.get_index())
     def __repr__(self):
         return self.__str__()
     def __key(self):
-        return (self.molecule,self.hier)
+        #this returns the immutable attributes only
+        return (self.molecule, self.rtype, self.pdb_index, self.internal_index)
     def __eq__(self,other):
         return type(other)==type(self) and self.__key() == other.__key()
     def __hash__(self):

@@ -1,8 +1,6 @@
 //IMP_SWIG_OBJECT(IMP::example, ExampleRestraint, ExampleRestraints);
 //IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
 //IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD)
-
-IMP_SWIG_OBJECT(IMP::pmi, MembraneRestraint, MembraneRestraints);
 IMP_SWIG_OBJECT(IMP::pmi, CompositeRestraint, CompositeRestraints);
 IMP_SWIG_DECORATOR(IMP::pmi, Uncertainty, Uncertainties);
 IMP_SWIG_DECORATOR(IMP::pmi, Resolution, Resolutions);

@@ -33,7 +33,8 @@ class GaussianEMRestraint(object):
                  backbone_slope=False,
                  scale_target_to_mass=False,
                  weight=1.0,
-                 target_is_rigid_body=False):
+                 target_is_rigid_body=False,
+                 local=False):
         """Constructor.
         @param densities The Gaussian-decorated particles to be restrained
         @param target_fn GMM file of the target density map
@@ -69,6 +70,8 @@ class GaussianEMRestraint(object):
         @param target_is_rigid_body Set True if you want to put the target density particles
                into a rigid body that need to be sampled (e.g.,when you need to fit one density
                against another one). Default is False.
+        @param local Only consider density particles that are within the
+                specified model-density cutoff (experimental)
         """
 
         # some parameters
@@ -148,7 +151,7 @@ class GaussianEMRestraint(object):
             cutoff_dist_model_model,
             cutoff_dist_model_data,
             slope,
-            update_model, backbone_slope)
+            update_model, backbone_slope, local)
 
         print('done EM setup')
         self.rs = IMP.RestraintSet(self.m, 'GaussianEMRestraint')

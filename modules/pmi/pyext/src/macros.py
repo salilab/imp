@@ -1368,42 +1368,43 @@ class AnalysisReplicaExchange0(object):
                    write_pdb_with_centered_coordinates=False,
                    voxel_size=5.0):
         """ Get the best scoring models, compute a distance matrix, cluster them, and create density maps
-        @param score_key                           The score for ranking models
-        @param rmf_file_key                        Key pointing to RMF filename
-        @param rmf_file_frame_key                  Key pointing to RMF frame number
-        @param state_number                        State number to analyze
-        @param prefiltervalue                      Only include frames where the score key is below this value
-        @param feature_keys                        Keywords for which you want to calculate average,
-                                                    medians, etc,
-        @param outputdir                           The local output directory used in the run
-        @param alignment_components                List of tuples for aligning the structures
-                                                   e.g. ["Rpb1", (20,100,"Rpb2"), .....]
-        @param number_of_best_scoring_models       Num models to keep per run
-        @param rmsd_calculation_components         List of tuples for calculating RMSD
-                                                   e.g. ["Rpb1", (20,100,"Rpb2"), .....]
-        @param distance_matrix_file                Where to store/read the distance matrix
-        @param load_distance_matrix_file           Try to load the distance matrix file
-        @param skip_clustering                     Just extract the best scoring models and save the pdbs
-        @param number_of_clusters                  Number of k-means clusters
-        @param display_plot                        Display the distance matrix
-        @param exit_after_display                  Exit after displaying distance matrix
-        @param get_every                           Extract every nth frame
-        @param first_and_last_frames               A tuple with the first and last frames to be
-                                                   analyzed. Values are percentages!
-                                                   Default: get all frames
-        @param density_custom_ranges               List of tuples or strings for density calculation
-                                                   e.g. ["Rpb1", (20,100,"Rpb2"), .....]
+        @param score_key                      The score for ranking models
+        @param rmf_file_key                   Key pointing to RMF filename
+        @param rmf_file_frame_key             Key pointing to RMF frame number
+        @param state_number                   State number to analyze
+        @param prefiltervalue                 Only include frames where the
+                                               score key is below this value
+        @param feature_keys                   Keywords for which you want to
+                                               calculate average, medians, etc,
+        @param outputdir                      The local output directory used in the run
+        @param alignment_components           Dictionary with keys=groupname,
+                                               values are list of tuples for aligning
+                                               the structures
+                                               e.g. {"Rpb1": (20,100,"Rpb1"),"Rpb2":"Rpb2"}
+        @param number_of_best_scoring_models  Num models to keep per run
+        @param rmsd_calculation_components    For calculating RMSD
+                                               (same format as alignment_components)
+        @param distance_matrix_file           Where to store/read the distance matrix
+        @param load_distance_matrix_file      Try to load the distance matrix file
+        @param skip_clustering                Just extract the best scoring models
+                                               and save the pdbs
+        @param number_of_clusters             Number of k-means clusters
+        @param display_plot                   Display the distance matrix
+        @param exit_after_display             Exit after displaying distance matrix
+        @param get_every                      Extract every nth frame
+        @param first_and_last_frames          A tuple with the first and last frames to be
+                                               analyzed. Values are percentages!
+                                               Default: get all frames
+        @param density_custom_ranges          For density calculation
+                                               (same format as alignment_components)
         @param write_pdb_with_centered_coordinates
-        @param voxel_size                          Used for the density output
+        @param voxel_size                     Used for the density output
         """
-
-
         if self.rank==0:
             try:
                 os.mkdir(outputdir)
             except:
                 pass
-
 
         if not load_distance_matrix_file:
             if len(self.stat_files)==0: print("ERROR: no stat file found in the given path"); return
@@ -1545,7 +1546,8 @@ class AnalysisReplicaExchange0(object):
                     else:
                         prot = prots[state_number]
 
-
+                    # get transformation aligning coordinates of requested tuples
+                    #  to the first RMF file
                     if cnt==0:
                         coords_f1=alignment_coordinates[cnt]
                     if cnt > 0:
