@@ -236,7 +236,7 @@ class ExcludedVolumeSphere(object):
             evr = IMP.container.PairsRestraint(ssps, self.cpc)
         else:
             other_lsa = IMP.container.ListSingletonContainer(self.mdl)
-            other_lsa.add_particles(other_ps)
+            other_lsa.add(other_ps)
             self.cpc = IMP.container.CloseBipartitePairContainer(
                 lsa,
                 other_lsa,

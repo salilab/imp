@@ -15,7 +15,7 @@ except ImportError:
     rem = None
 
 
-class TestDOF(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def init_topology1(self,mdl):
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
@@ -27,7 +27,7 @@ class TestDOF(IMP.test.TestCase):
         m1.add_representation(atomic_res,resolutions=[0,1,10])
         m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
         s.build()
-        return m1
+        return s,m1
 
 
 
@@ -53,7 +53,7 @@ class TestDOF(IMP.test.TestCase):
         m3.add_representation(a3,resolutions=[0,1])
         m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1])
         s.build()
-        return m1,m2,m3
+        return s,[m1,m2,m3]
 
     def init_topology_helix(self,mdl):
         s = IMP.pmi.topology.System(mdl)
@@ -61,12 +61,12 @@ class TestDOF(IMP.test.TestCase):
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
 
         m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
-        m1.add_representation(m1.residue_range('2','10'),ideal_helix=True,resolutions=[1,10])
-        m1.add_representation(m1.residue_range('1','2'),resolutions=[1])
-        m1.add_representation(m1.residue_range('10','11'),resolutions=[1])
+        print(m1[:])
+        m1.add_representation(m1.residue_range('2','9'),ideal_helix=True,resolutions=[1,10])
+        m1.add_representation(m1['1'],resolutions=[1])
+        m1.add_representation(m1['10'],resolutions=[1])
         s.build()
-        return m1
-
+        return s,m1
 
     def init_topology_densities(self,mdl):
         s = IMP.pmi.topology.System(mdl)
@@ -90,12 +90,12 @@ class TestDOF(IMP.test.TestCase):
         m3.add_representation(a3,resolutions=[0,1])
         m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1], setup_particles_as_densities=True)
         s.build()
-        return m1,m2,m3
+        return s,m1,m2,m3
 
     def test_mc_rigid_body(self):
         """Test creation of rigid body and nonrigid members"""
         mdl = IMP.Model()
-        molecule = self.init_topology1(mdl)
+        s,molecule = self.init_topology1(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         rb_movers,rb = dof.create_rigid_body(molecule,
                                              nonrigid_parts = molecule.get_non_atomic_residues(),
@@ -110,7 +110,7 @@ class TestDOF(IMP.test.TestCase):
         #                                   r0  r1  r10
         self.assertEqual(len(rigid_members),57 + 7 + 2)
         rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=molecule.get_hierarchy(),
+                                              root_hier=s.get_hierarchy(),
                                               monte_carlo_sample_objects = dof.get_movers(),
                                               number_of_frames=2,
                                               test_mode=True,
@@ -121,7 +121,7 @@ class TestDOF(IMP.test.TestCase):
     def test_mc_rigid_body_helix(self):
         """Test creation of rigid body and nonrigid members"""
         mdl = IMP.Model()
-        molecule = self.init_topology_helix(mdl)
+        s,molecule = self.init_topology_helix(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         rb_movers,rb = dof.create_rigid_body(molecule,
                                              nonrigid_parts = molecule.get_non_atomic_residues(),
@@ -133,7 +133,7 @@ class TestDOF(IMP.test.TestCase):
         num_nonrigid = len(all_members)-len(rigid_members)
 
         rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=molecule.get_hierarchy(),
+                                              root_hier=s.get_hierarchy(),
                                               monte_carlo_sample_objects = dof.get_movers(),
                                               number_of_frames=1,
                                               test_mode=True,
@@ -143,10 +143,10 @@ class TestDOF(IMP.test.TestCase):
     def test_big_rigid_body(self):
         """test you can create a rigid body from 3 molecules"""
         mdl = IMP.Model()
-        mols = self.init_topology3(mdl)
+        s,mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         mvs,rb = dof.create_rigid_body(mols,
-                                    nonrigid_parts=[m.get_non_atomic_residues() for m in mols])
+                                       nonrigid_parts=[m.get_non_atomic_residues() for m in mols])
         self.assertEqual(len(mvs),1+3+3)
         all_members = rb.get_member_indexes()
         rigid_members = rb.get_rigid_members()
@@ -159,7 +159,7 @@ class TestDOF(IMP.test.TestCase):
     def test_slice_rigid_body(self):
         """test you can create a rigid body from slices of molecules"""
         mdl = IMP.Model()
-        mols = self.init_topology3(mdl)
+        s,mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         mvs,rb = dof.create_rigid_body([mols[0][:4],mols[1][:]],
                                     nonrigid_parts=mols[0][2:4])
@@ -237,7 +237,7 @@ class TestDOF(IMP.test.TestCase):
 
     def test_mc_super_rigid_body(self):
         mdl = IMP.Model()
-        mols = self.init_topology3(mdl)
+        s,mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         rb1_mov,rb1 = dof.create_rigid_body(mols[0],
                                         nonrigid_parts = mols[0].get_non_atomic_residues())
@@ -256,12 +256,12 @@ class TestDOF(IMP.test.TestCase):
     def test_mc_flexible_beads(self):
         """Test setup of flexible beads"""
         mdl = IMP.Model()
-        mol = self.init_topology1(mdl)
+        s,mol = self.init_topology1(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         fb_movers = dof.create_flexible_beads(mol.get_non_atomic_residues(),max_trans=1.0)
         self.assertEqual(len(fb_movers),3)
         rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                              root_hier=mol.get_hierarchy(),
+                                              root_hier=s.get_hierarchy(),
                                               monte_carlo_sample_objects = dof.get_movers(),
                                               number_of_frames=2,
                                               test_mode=True,
@@ -271,7 +271,7 @@ class TestDOF(IMP.test.TestCase):
     def test_mc_flexible_beads3(self):
         """Test flex beads don't work if nothing passed"""
         mdl = IMP.Model()
-        mols = self.init_topology3(mdl)
+        s,mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         fb_movers = dof.create_flexible_beads(mols[1].get_non_atomic_residues(),max_trans=1.0)
         self.assertEqual(len(fb_movers),0)
@@ -355,7 +355,7 @@ class TestDOF(IMP.test.TestCase):
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
                                       chain_id='A',res_range=(55,63),offset=-54)
         m1.add_representation(atomic_res,resolutions=[0])
-        hier = m1.build()
+        hier = s.build()
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         md_ps = dof.setup_md(m1)
         rex = IMP.pmi.macros.ReplicaExchange0(mdl,
@@ -369,7 +369,7 @@ class TestDOF(IMP.test.TestCase):
     def test_gaussian_rb(self):
 
         mdl = IMP.Model()
-        m1, m2, m3 = self.init_topology_densities(mdl)
+        s, m1, m2, m3 = self.init_topology_densities(mdl)
         densities = [r.get_hierarchy() for r in m3.get_non_atomic_residues()]
         gem_xtal = IMP.pmi.restraints.em.GaussianEMRestraint(densities,
                                                  self.get_input_file_name('prot_gmm.txt'),

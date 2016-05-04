@@ -67,8 +67,7 @@ class ReplicaExchange0(object):
            @param model                    The IMP model
            @param representation PMI.representation.Representation object
                   (or list of them, for multi-state modeling)
-           @param root_hier Instead of passing Representation, just pass
-                  a hierarchy
+           @param root_hier Instead of passing Representation, pass the System hierarchy
            @param monte_carlo_sample_objects Objects for MC sampling; a list of
                   structural components (generally the representation) that will
                   be moved and restraints with parameters that need to
@@ -110,6 +109,7 @@ class ReplicaExchange0(object):
         """
         self.model = model
         self.vars = {}
+        self.pmi2 = False
 
         ### add check hierarchy is multistate
         if representation:
@@ -121,7 +121,9 @@ class ReplicaExchange0(object):
                 self.is_multi_state = False
                 self.root_hier = representation.prot
                 self.vars["number_of_states"] = 1
-        elif root_hier:
+        elif root_hier and type(root_hier) == IMP.atom.Hierarchy and root_hier.get_name()=='System':
+            self.pmi2 = True
+            self.root_hier = root_hier
             states = IMP.atom.get_by_type(root_hier,IMP.atom.STATE_TYPE)
             self.vars["number_of_states"] = len(states)
             if len(states)>1:
@@ -131,8 +133,7 @@ class ReplicaExchange0(object):
                 self.root_hier = root_hier
                 self.is_multi_state = False
         else:
-            print("ERROR: Must provide representation or root_hier")
-            return
+            raise Exception("Must provide representation or System hierarchy (root_hier)")
 
         self.crosslink_restraints = crosslink_restraints
         self.em_object_for_rmf = em_object_for_rmf
@@ -182,6 +183,7 @@ class ReplicaExchange0(object):
         self.test_mode = test_mode
         if root_hier:
             self.output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
+
     def add_geometries(self, geometries):
         if self.vars["geometries"] is None:
             self.vars["geometries"] = list(geometries)
@@ -333,8 +335,8 @@ class ReplicaExchange0(object):
                                                  self.vars["best_pdb_name_suffix"]+".0.pdb")
 # ---------------------------------------------
 
-        if not self.em_object_for_rmf is None:
-            if not self.is_multi_state:
+        if self.em_object_for_rmf is not None:
+            if not self.is_multi_state or self.pmi2:
                 output_hierarchies = [
                     self.root_hier,
                     self.em_object_for_rmf.get_density_as_hierarchy(
@@ -344,7 +346,7 @@ class ReplicaExchange0(object):
                 output_hierarchies.append(
                     self.em_object_for_rmf.get_density_as_hierarchy())
         else:
-            if not self.is_multi_state:
+            if not self.is_multi_state or self.pmi2:
                 output_hierarchies = [self.root_hier]
             else:
                 output_hierarchies = self.root_hiers

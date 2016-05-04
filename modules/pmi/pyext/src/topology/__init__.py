@@ -294,11 +294,12 @@ class Molecule(_SystemBase):
         return self._ideal_helices
 
     def residue_range(self,a,b,stride=1):
-        """get residue range. Use integers to get 0-indexing, or strings to get PDB-indexing"""
+        """get residue range from a to b, inclusive.
+        Use integers to get 0-indexing, or strings to get PDB-indexing"""
         if isinstance(a,int) and isinstance(b,int) and isinstance(stride,int):
-            return IMP.pmi.tools.OrderedSet(self.residues[a:b:stride])
+            return IMP.pmi.tools.OrderedSet(self.residues[a:b+1:stride])
         elif isinstance(a,str) and isinstance(b,str) and isinstance(stride,int):
-            return IMP.pmi.tools.OrderedSet(self.residues[int(a)-1:int(b)-1:stride])
+            return IMP.pmi.tools.OrderedSet(self.residues[int(a)-1:int(b):stride])
         else:
             print("ERROR: range ends must be int or str. Stride must be int.")
 
@@ -417,7 +418,9 @@ class Molecule(_SystemBase):
                If unstructured, will just create beads.
                Pass an integer or list of integers
         @param bead_extra_breaks Additional breakpoints for splitting beads.
-               The number is the first PDB-style index that belongs in the second bead
+               The value can be the 0-ordered position, after which it'll insert the break.
+               Alternatively pass PDB-style (1-ordered) indices as a string.
+               I.e., bead_extra_breaks=[5,25] is the same as ['6','26']
         @param bead_ca_centers Set to True if you want the resolution=1 beads to be at CA centers
                (otherwise will average atoms to get center). Defaults to True.
         @param bead_default_coord Advanced feature. Normally beads are placed at the nearest structure.
@@ -455,6 +458,8 @@ class Molecule(_SystemBase):
             res = IMP.pmi.tools.OrderedSet(self.residues)
         elif residues==self:
             res = IMP.pmi.tools.OrderedSet(self.residues)
+        elif type(residues) is IMP.pmi.topology.TempResidue:
+            res = IMP.pmi.tools.OrderedSet([residues])
         elif hasattr(residues,'__iter__'):
             if len(residues)==0:
                 raise Exception('You passed an empty set to add_representation')
@@ -516,10 +521,17 @@ class Molecule(_SystemBase):
             if r.get_molecule()!=self:
                 raise Exception('You are adding residues from a different molecule to',self.__repr__())
 
+        # unify formatting for extra breaks
+        breaks = []
+        for b in bead_extra_breaks:
+            if type(b)==str:
+                breaks.append(int(b)-1)
+            else:
+                breaks.append(b)
         # store the representation group
         self.representations.append(_Representation(res,
                                                     resolutions,
-                                                    bead_extra_breaks,
+                                                    breaks,
                                                     bead_ca_centers,
                                                     bead_default_coord,
                                                     density_residues_per_component,
@@ -558,8 +570,8 @@ class Molecule(_SystemBase):
                                               old_rep.bead_default_coord,
                                               old_rep.density_residues_per_component,
                                               old_rep.density_prefix,
-                                              old_rep.density_voxel_size,
                                               False,
+                                              old_rep.density_voxel_size,
                                               old_rep.setup_particles_as_densities,
                                               old_rep.ideal_helix,
                                               old_rep.color)
@@ -747,18 +759,20 @@ class TempResidue(object):
         self.rtype = IMP.pmi.tools.get_residue_type_from_one_letter_code(code)
         self.pdb_index = index
         self.internal_index = internal_index
+        self.copy_index = IMP.atom.Copy(self.molecule.hier).get_copy_index()
+        self.state_index = IMP.atom.State(self.molecule.state.hier).get_state_index()
         #these are expected to change
         self._structured = False
         self.hier = IMP.atom.Residue.setup_particle(IMP.Particle(molecule.mdl),
                                                     self.rtype,
                                                     index)
     def __str__(self):
-        return self.get_code()+str(self.get_index())
+        return str(self.state_index)+"_"+self.molecule.get_name()+"_"+str(self.copy_index)+"_"+self.get_code()+str(self.get_index())
     def __repr__(self):
         return self.__str__()
     def __key(self):
         #this returns the immutable attributes only
-        return (self.molecule, self.rtype, self.pdb_index, self.internal_index)
+        return (self.state_index, self.molecule, self.copy_index, self.rtype, self.pdb_index, self.internal_index)
     def __eq__(self,other):
         return type(other)==type(self) and self.__key() == other.__key()
     def __hash__(self):

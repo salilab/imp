@@ -119,7 +119,7 @@ class Tests(IMP.test.TestCase):
 
         lhelix = sses['helix'][0][0][1] - sses['helix'][0][0][0]+1
         hr = IMP.pmi.restraints.stereochemistry.HelixRestraint(hier,sses['helix'][0][0])
-        self.assertEqual(hr.get_number_of_dihedrals(),lhelix*2-4)
+        self.assertEqual(hr.get_number_of_dihedrals(),lhelix-2)
         self.assertEqual(hr.get_number_of_bonds(),lhelix-4)
 
 
@@ -149,7 +149,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 12)
 
         # test just picking a few residues - this one picks two beads
-        resis = mol.residue_range(15,25)
+        resis = mol.residue_range(10,29)
         ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(included_objects=resis, resolution=1)
         self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 2)
 

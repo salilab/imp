@@ -243,14 +243,17 @@ def build_representation(parent,rep,coord_finder):
     prev_idx = rsort[0].get_index()-1
     prev_structure = rsort[0].get_has_structure()
     cur_seg = []
+    force_break = False
     for nr,r in enumerate(rsort):
-        if r.get_index()!=prev_idx+1 or r.get_has_structure()!=prev_structure or \
-           r.get_index() in rep.bead_extra_breaks:
+        if r.get_index()!=prev_idx+1 or r.get_has_structure()!=prev_structure or force_break:
             segments.append(cur_seg)
             cur_seg = []
+            force_break = False
         cur_seg.append(r)
         prev_idx = r.get_index()
         prev_structure = r.get_has_structure()
+        if r.get_index()-1 in rep.bead_extra_breaks:
+            force_break = True
     if cur_seg!=[]:
         segments.append(cur_seg)
 

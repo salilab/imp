@@ -1526,6 +1526,24 @@ def input_adaptor(stuff,
                                          resolution=pmi_resolution,
                                          residue_indexes=indexes_per_mol[mol])
                 ps = sel.get_selected_particles()
+
+            # check that you don't have any incomplete fragments!
+            rset = set(indexes_per_mol[mol])
+            for p in ps:
+                if IMP.atom.Fragment.get_is_setup(p):
+                    fset = set(IMP.atom.Fragment(p).get_residue_indexes())
+                    if not fset.issubset(rset):
+                        minset = min(fset)
+                        maxset = max(fset)
+                        found = fset&rset
+                        minf = min(found)
+                        maxf = max(found)
+                        resbreak = maxf if minf==minset else minset-1
+                        raise Exception('You are trying to select only part of the bead %s:%i-%i.\n'
+                                        'The residues you requested are %i-%i. You can fix this by:\n'
+                                        '1) requesting the whole bead/none of it or\n'
+                                        '2) break the bead up by passing bead_extra_breaks=[\'%i\'] in molecule.add_representation()'
+                                        %(mol.get_name(),minset,maxset,minf,maxf,resbreak))
             hier_list.append([IMP.atom.Hierarchy(p) for p in ps])
     else:
         try:
