@@ -1405,7 +1405,8 @@ class AnalysisReplicaExchange0(object):
         Tuple format: "molname" just the molecule, or (start,stop,molname,copy_num(optional),state_num(optional)
         Can pass None for copy or state to ignore that field.
         If you don't pass a specific copy number
-        @param score_key              The score for ranking models
+        @param score_key              The score for ranking models. Use "Total_Score"
+               instead of default for PMI2.
         @param rmf_file_key           Key pointing to RMF filename
         @param rmf_file_frame_key     Key pointing to RMF frame number
         @param state_number           State number to analyze
