@@ -361,7 +361,8 @@ class Molecule(_SystemBase):
                          This number is added to the PDB sequence.
         @param model_num Read multi-model PDB and return that model
         @param ca_only   Only read the CA positions from the PDB file
-        @param soft_check If True, it only warns if there are sequence mismatches between the pdb and the Molecules sequence. Actually replaces the fasta values.
+        @param soft_check If True, it only warns if there are sequence mismatches between the pdb and
+               the Molecules sequence. Actually replaces the fasta values.
                           If False (Default), it raises and exit when there are sequence mismatches.
         \note If you are adding structure without a FASTA file, set soft_check to True
         """

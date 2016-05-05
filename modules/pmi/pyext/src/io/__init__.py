@@ -261,24 +261,24 @@ def get_best_models(stat_files,
         po = IMP.pmi.output.ProcessOutput(sf)
 
         try:
-            keywords = po.get_keys()
+            file_keywords = po.get_keys()
         except:
             continue
 
-        feature_keywords = [score_key,
-                            rmf_file_key,
-                            rmf_file_frame_key]
+        final_keywords = [score_key,
+                          rmf_file_key,
+                          rmf_file_frame_key]
 
-        for k in keywords:
-            for fk in feature_keys:
-                if fk in k:
-                    feature_keywords.append(k)
+        for file_k in file_keywords:
+            for requested_key in feature_keys:
+                if requested_key in file_k:
+                    final_keywords.append(k)
 
         if prefiltervalue is None:
-            fields = po.get_fields(feature_keywords,
+            fields = po.get_fields(final_keywords,
                                    get_every=get_every)
         else:
-            fields = po.get_fields(feature_keywords,
+            fields = po.get_fields(final_keywords,
                                    filtertuple=(score_key,"<",prefiltervalue),
                                    get_every=get_every)
 
@@ -302,8 +302,8 @@ def get_best_models(stat_files,
 
         rmf_file_frame_list += fields[rmf_file_frame_key]
 
-        if feature_keywords is not None:
-            for k in feature_keywords:
+        if final_keywords is not None:
+            for k in final_keywords:
                 feature_keyword_list_dict[k] += fields[k]
 
     return rmf_file_list,rmf_file_frame_list,score_list,feature_keyword_list_dict
@@ -414,17 +414,9 @@ def read_coordinates_of_rmfs(model,
             # PMI2: do selection of resolution and name at the same time
             if IMP.pmi.get_is_canonical(prot):
                 for pr in tuple_dict:
-                    if type(tuple_dict[pr]) is str:
-                        name = tuple_dict[pr]
-                        s = IMP.atom.Selection(prot,molecule=name,resolution=1)
-                    elif type(tuple_dict[pr]) is tuple:
-                        name = tuple_dict[pr][2]
-                        rend = tuple_dict[pr][1]
-                        rbegin = tuple_dict[pr][0]
-                        s = IMP.atom.Selection(prot,molecule=name,resolution=1,
-                                               residue_indexes=range(rbegin,rend+1))
+                    ps = IMP.pmi.tools.select_by_tuple_2(prot,tuple_dict[pr],resolution=1)
                     result_dict[pr] = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
-                                       for p in s.get_selected_particles()]
+                                       for p in ps]
             else:
                 for pr in tuple_dict:
                     if type(tuple_dict[pr]) is str:
@@ -474,16 +466,9 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
     # PMI2: do selection of resolution and name at the same time
     if IMP.pmi.get_is_canonical(prot):
         for pr in rmsd_calculation_components:
-            if type(rmsd_calculation_components[pr]) is str:
-                name = rmsd_calculation_components[pr]
-                s = IMP.atom.Selection(prot,molecule=name,resolution=1)
-            elif type(rmsd_calculation_components[pr]) is tuple:
-                rend = rmsd_calculation_components[pr][1]
-                rbegin = rmsd_calculation_components[pr][0]
-                s = IMP.atom.Selection(prot,molecule=name,resolution=1,
-                                       residue_indexes=range(rbegin,rend+1))
+            ps = IMP.pmi.tools.select_by_tuple_2(prot,rmsd_calculation_components[pr],resolution=1)
             rmsd_bead_size_dict[pr] = [len(IMP.pmi.tools.get_residue_indexes(p))
-                                       for p in s.get_selected_particles()]
+                                       for p in ps]
     else:
         # getting the particles
         part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)

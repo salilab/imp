@@ -123,6 +123,7 @@ class ReplicaExchange0(object):
                 self.vars["number_of_states"] = 1
         elif root_hier and type(root_hier) == IMP.atom.Hierarchy and root_hier.get_name()=='System':
             self.pmi2 = True
+            self.output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
             self.root_hier = root_hier
             states = IMP.atom.get_by_type(root_hier,IMP.atom.STATE_TYPE)
             self.vars["number_of_states"] = len(states)
@@ -181,8 +182,6 @@ class ReplicaExchange0(object):
         self.vars["replica_stat_file_suffix"] = replica_stat_file_suffix
         self.vars["geometries"] = None
         self.test_mode = test_mode
-        if root_hier:
-            self.output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
 
     def add_geometries(self, geometries):
         if self.vars["geometries"] is None:
@@ -1283,6 +1282,7 @@ class AnalysisReplicaExchange0(object):
             self.rank = 0
             self.number_of_processes = 1
 
+        self.cluster_obj = None
         self.model = model
         stat_dir = global_output_directory
         self.stat_files = []
@@ -1346,6 +1346,38 @@ class AnalysisReplicaExchange0(object):
         print(binned_model_indexes)
 
 
+    def _expand_ambiguity(self,prot,d):
+        """If using PMI2, expand the dictionary to include copies as ambiguous options
+        This also keeps the states separate.
+        """
+        newdict = {}
+        for key in d:
+            val = d[key]
+            if '..' in key or (type(val) is tuple and len(val)>=3):
+                newdict[key] = val
+                continue
+            states = IMP.atom.get_by_type(prot,IMP.atom.STATE_TYPE)
+            if type(val) is tuple:
+                start = val[0]
+                stop = val[1]
+                name = val[2]
+            else:
+                start = 1
+                stop = -1
+                name = val
+            for nst in range(len(states)):
+                sel = IMP.atom.Selection(prot,molecule=name,state_index=nst)
+                copies = sel.get_selected_particles(with_representation=False)
+                if len(copies)>1:
+                    for nc in range(len(copies)):
+                        if len(states)>1:
+                            newdict['%s.%i..%i'%(name,nst,nc)] = (start,stop,name,nc,nst)
+                        else:
+                            newdict['%s..%i'%(name,nc)] = (start,stop,name,nc,nst)
+                else:
+                    newdict[key] = val
+        return newdict
+
 
     def clustering(self,
                    score_key="SimplifiedModel_Total_Score_None",
@@ -1369,20 +1401,22 @@ class AnalysisReplicaExchange0(object):
                    density_custom_ranges=None,
                    write_pdb_with_centered_coordinates=False,
                    voxel_size=5.0):
-        """ Get the best scoring models, compute a distance matrix, cluster them, and create density maps
-        @param score_key                      The score for ranking models
-        @param rmf_file_key                   Key pointing to RMF filename
-        @param rmf_file_frame_key             Key pointing to RMF frame number
-        @param state_number                   State number to analyze
-        @param prefiltervalue                 Only include frames where the
-                                               score key is below this value
-        @param feature_keys                   Keywords for which you want to
-                                               calculate average, medians, etc,
-        @param outputdir                      The local output directory used in the run
-        @param alignment_components           Dictionary with keys=groupname,
-                                               values are list of tuples for aligning
-                                               the structures
-                                               e.g. {"Rpb1": (20,100,"Rpb1"),"Rpb2":"Rpb2"}
+        """ Get the best scoring models, compute a distance matrix, cluster them, and create density maps.
+        Tuple format: "molname" just the molecule, or (start,stop,molname,copy_num(optional),state_num(optional)
+        Can pass None for copy or state to ignore that field.
+        If you don't pass a specific copy number
+        @param score_key              The score for ranking models
+        @param rmf_file_key           Key pointing to RMF filename
+        @param rmf_file_frame_key     Key pointing to RMF frame number
+        @param state_number           State number to analyze
+        @param prefiltervalue         Only include frames where the
+               score key is below this value
+        @param feature_keys           Keywords for which you want to
+               calculate average, medians, etc.
+               If you pass "Keyname" it'll include everything that matches "*Keyname*"
+        @param outputdir               The local output directory used in the run
+        @param alignment_components    Dictionary with keys=groupname, values are tuples
+               for aligning the structures  e.g. {"Rpb1": (20,100,"Rpb1"),"Rpb2":"Rpb2"}
         @param number_of_best_scoring_models  Num models to keep per run
         @param rmsd_calculation_components    For calculating RMSD
                                                (same format as alignment_components)
@@ -1410,8 +1444,22 @@ class AnalysisReplicaExchange0(object):
 
         if not load_distance_matrix_file:
             if len(self.stat_files)==0: print("ERROR: no stat file found in the given path"); return
-            my_stat_files=IMP.pmi.tools.chunk_list_into_segments(
+            my_stat_files = IMP.pmi.tools.chunk_list_into_segments(
                 self.stat_files,self.number_of_processes)[self.rank]
+
+            # read ahead to check if you need the PMI2 score key instead
+            po = IMP.pmi.output.ProcessOutput(my_stat_files[0])
+            orig_score_key = score_key
+            if score_key not in po.get_keys():
+                if 'Total_Score' in po.get_keys():
+                    score_key = 'Total_Score'
+                    print("WARNING: Using 'Total_Score' instead of "
+                          "'SimplifiedModel_Total_Score_None' for the score key")
+            for k in [orig_score_key,score_key,rmf_file_key,rmf_file_frame_key]:
+                if k in feature_keys:
+                    print("WARNING: no need to pass " +k+" to feature_keys.")
+                    feature_keys.remove(k)
+
             best_models = IMP.pmi.io.get_best_models(my_stat_files,
                                                      score_key,
                                                      feature_keys,
@@ -1474,6 +1522,17 @@ class AnalysisReplicaExchange0(object):
                 best_score_rmf_tuples,
                 self.number_of_processes)[self.rank]
 
+            # expand the dictionaries to include ambiguous copies
+            prot_ahead = IMP.pmi.analysis.get_hiers_from_rmf(self.model,
+                                                             0,
+                                                             my_best_score_rmf_tuples[0][1])[0]
+            if IMP.pmi.get_is_canonical(prot_ahead):
+                if rmsd_calculation_components is not None:
+                    rmsd_calculation_components = self._expand_ambiguity(prot_ahead,rmsd_calculation_components)
+                    print('Detected ambiguity, expand rmsd components to',rmsd_calculation_components)
+                if alignment_components is not None:
+                    alignment_components = self._expand_ambiguity(prot_ahead,alignment_components)
+                    print('Detected ambiguity, expand alignment components to',alignment_components)
 
 #-------------------------------------------------------------
 # read the coordinates
@@ -1627,29 +1686,29 @@ class AnalysisReplicaExchange0(object):
 # Calculate distance matrix and cluster
 # ------------------------------------------------------------------------
             print("setup clustering class")
-            Clusters = IMP.pmi.analysis.Clustering(rmsd_weights)
+            self.cluster_obj = IMP.pmi.analysis.Clustering(rmsd_weights)
 
             for n, model_coordinate_dict in enumerate(all_coordinates):
                 template_coordinate_dict = {}
                 # let's try to align
-                if alignment_components is not None and len(Clusters.all_coords) == 0:
+                if alignment_components is not None and len(self.cluster_obj.all_coords) == 0:
                     # set the first model as template coordinates
-                    Clusters.set_template(alignment_coordinates[n])
-                Clusters.fill(all_rmf_file_names[n], rmsd_coordinates[n])
+                    self.cluster_obj.set_template(alignment_coordinates[n])
+                self.cluster_obj.fill(all_rmf_file_names[n], rmsd_coordinates[n])
             print("Global calculating the distance matrix")
 
             # calculate distance matrix, all against all
-            Clusters.dist_matrix()
+            self.cluster_obj.dist_matrix()
 
             # perform clustering and optionally display
             if self.rank == 0:
-                Clusters.do_cluster(number_of_clusters)
+                self.cluster_obj.do_cluster(number_of_clusters)
                 if display_plot:
                     if self.rank == 0:
-                        Clusters.plot_matrix(figurename=os.path.join(outputdir,'dist_matrix.pdf'))
+                        self.cluster_obj.plot_matrix(figurename=os.path.join(outputdir,'dist_matrix.pdf'))
                     if exit_after_display:
                         exit()
-                Clusters.save_distance_matrix_file(file_name=distance_matrix_file)
+                self.cluster_obj.save_distance_matrix_file(file_name=distance_matrix_file)
 
 # ------------------------------------------------------------------------
 # Alteratively, load the distance matrix from file and cluster that
@@ -1657,15 +1716,15 @@ class AnalysisReplicaExchange0(object):
         else:
             if self.rank==0:
                 print("setup clustering class")
-                Clusters = IMP.pmi.analysis.Clustering()
-                Clusters.load_distance_matrix_file(file_name=distance_matrix_file)
+                self.cluster_obj = IMP.pmi.analysis.Clustering()
+                self.cluster_obj.load_distance_matrix_file(file_name=distance_matrix_file)
                 print("clustering with %s clusters" % str(number_of_clusters))
-                Clusters.do_cluster(number_of_clusters)
+                self.cluster_obj.do_cluster(number_of_clusters)
                 [best_score_feature_keyword_list_dict,
                  rmf_file_name_index_dict] = self.load_objects(".macro.pkl")
                 if display_plot:
                     if self.rank == 0:
-                        Clusters.plot_matrix(figurename=os.path.join(outputdir,'dist_matrix.pdf'))
+                        self.cluster_obj.plot_matrix(figurename=os.path.join(outputdir,'dist_matrix.pdf'))
                     if exit_after_display:
                         exit()
         if self.number_of_processes > 1:
@@ -1676,12 +1735,12 @@ class AnalysisReplicaExchange0(object):
 # ------------------------------------------------------------------------
 
         if self.rank == 0:
-            print(Clusters.get_cluster_labels())
-            for n, cl in enumerate(Clusters.get_cluster_labels()):
+            print(self.cluster_obj.get_cluster_labels())
+            for n, cl in enumerate(self.cluster_obj.get_cluster_labels()):
                 print("rank %s " % str(self.rank))
                 print("cluster %s " % str(n))
                 print("cluster label %s " % str(cl))
-                print(Clusters.get_cluster_label_names(cl))
+                print(self.cluster_obj.get_cluster_label_names(cl))
 
                 # first initialize the Density class if requested
                 if density_custom_ranges:
@@ -1696,9 +1755,9 @@ class AnalysisReplicaExchange0(object):
                     pass
 
                 rmsd_dict = {"AVERAGE_RMSD":
-                             str(Clusters.get_cluster_label_average_rmsd(cl))}
+                             str(self.cluster_obj.get_cluster_label_average_rmsd(cl))}
                 clusstat = open(dircluster + "stat.out", "w")
-                for k, structure_name in enumerate(Clusters.get_cluster_label_names(cl)):
+                for k, structure_name in enumerate(self.cluster_obj.get_cluster_label_names(cl)):
                     # extract the features
                     tmp_dict = {}
                     tmp_dict.update(rmsd_dict)
@@ -1741,9 +1800,9 @@ class AnalysisReplicaExchange0(object):
 
                     # transform clusters onto first
                     if k > 0:
-                        model_index = Clusters.get_model_index_from_name(
+                        model_index = self.cluster_obj.get_model_index_from_name(
                             structure_name)
-                        transformation = Clusters.get_transformation_to_first_member(
+                        transformation = self.cluster_obj.get_transformation_to_first_member(
                             cl,
                             model_index)
                         rbs = set()
@@ -1791,6 +1850,11 @@ class AnalysisReplicaExchange0(object):
 
         if self.number_of_processes>1:
             self.comm.Barrier()
+
+    def get_cluster_rmsd(self,cluster_num):
+        if self.cluster_obj is None:
+            raise Exception("Run clustering first")
+        return self.cluster_obj.get_cluster_label_average_rmsd(cluster_num)
 
     def save_objects(self, objects, file_name):
         import pickle

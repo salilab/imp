@@ -818,6 +818,45 @@ def select_by_tuple(
 
     return particles
 
+def select_by_tuple_2(hier,tuple_selection,resolution):
+    """New tuple format: molname OR (start,stop,molname,copynum,statenum)
+    Copy and state are optional. Can also use 'None' for them which will get all.
+    You can also pass -1 for stop which will go to the end.
+    Returns the particles
+    """
+    kwds = {} # going to accumulate keywords
+    kwds['resolution'] = resolution
+    if type(tuple_selection) is str:
+        kwds['molecule'] = tuple_selection
+    elif type(tuple_selection) is tuple:
+        rbegin = tuple_selection[0]
+        rend = tuple_selection[1]
+        kwds['molecule'] = tuple_selection[2]
+        try:
+            copynum = tuple_selection[3]
+            if copynum is not None:
+                kwds['copy_index'] = copynum
+        except:
+            pass
+        try:
+            statenum = tuple_selection[4]
+            if statenum is not None:
+                kwds['state_index'] = statenum
+        except:
+            pass
+        if rend==-1:
+            if rbegin>1:
+                s = IMP.atom.Selection(hier,**kwds)
+                s -= IMP.atom.Selection(hier,
+                                        residue_indexes=range(1,rbegin),
+                                        **kwds)
+                return s.get_selected_particles()
+        else:
+            kwds['residue_indexes'] = range(rbegin,rend+1)
+    s = IMP.atom.Selection(hier,**kwds)
+    return s.get_selected_particles()
+
+
 
 def get_db_from_csv(csvfilename):
     import csv

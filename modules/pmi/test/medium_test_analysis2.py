@@ -53,7 +53,7 @@ def get_dist(cl0,cl1):
     dist /= float(len(cl0)*len(cl1))
     return dist
 
-class AnalysisTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def init_topology(self,mdl):
         s = IMP.pmi.topology.System(mdl)
         st1 = s.create_state()
@@ -151,6 +151,68 @@ class AnalysisTest(IMP.test.TestCase):
                                               global_output_directory = \
                                               self.get_input_file_name("pmi2_sample_res5/"))
         rex.execute_macro()
+
+    def init_with_copies(self,mdl):
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
+                         name_map={'Protein_1':'Prot1',
+                                   'Protein_2':'Prot2',
+                                   'Protein_3':'Prot3'})
+
+        m1 = st1.create_molecule("Prot1",chain_id='A',sequence=seqs["Prot1"])
+        a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='A',res_range=(55,64),offset=-54)
+        m1.add_representation(a1,resolutions=[1])
+        m1.add_representation(m1[:]-a1,resolutions=[1])
+        m2 = m1.create_clone('B')
+        hier = s.build()
+
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        mv1,rb1 = dof.create_rigid_body(m1,nonrigid_parts = m1.get_non_atomic_residues(),
+                                        max_trans=0.000001)
+        mv2,rb2 = dof.create_rigid_body(m2,nonrigid_parts = m2.get_non_atomic_residues(),
+                                        max_trans=0.000001)
+
+        trans = IMP.algebra.Transformation3D(IMP.algebra.Vector3D(100,0,0))
+        IMP.core.transform(rb2,trans)
+
+        ps0 = IMP.atom.Selection(hier,molecule='Prot1',copy_index=0).get_selected_particles()
+        ps1 = IMP.atom.Selection(hier,molecule='Prot1',copy_index=1).get_selected_particles()
+
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=hier,
+                                              monte_carlo_sample_objects=dof.get_movers(),
+                                              number_of_frames=1,
+                                              number_of_best_scoring_models=0,
+                                              global_output_directory = \
+                                              self.get_input_file_name("pmi2_copies_0/"))
+        rex.execute_macro()
+
+        coords0A = [IMP.core.XYZ(p).get_coordinates() for p in ps0]
+        coords1A = [IMP.core.XYZ(p).get_coordinates() for p in ps1]
+
+        # swap the objects
+        IMP.core.transform(rb2,trans.get_inverse())
+        IMP.core.transform(rb1,trans)
+
+        rex2 = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                               root_hier=hier,
+                                               monte_carlo_sample_objects=dof.get_movers(),
+                                               number_of_frames=1,
+                                               number_of_best_scoring_models=0,
+                                               global_output_directory = \
+                                               self.get_input_file_name("pmi2_copies_1/"),
+                                               replica_exchange_object = rex.get_replica_exchange_object())
+        rex2.execute_macro()
+
+        coords0B = [IMP.core.XYZ(p).get_coordinates() for p in ps0]
+        coords1B = [IMP.core.XYZ(p).get_coordinates() for p in ps1]
+
+        rmsd = IMP.algebra.get_rmsd(coords0A+coords1A,coords1B+coords0B)
+        return rmsd
+
+
     def test_get_model_density(self):
         """Test creation of density correctly averages frames for res=5"""
         if not nicemodules:
@@ -362,5 +424,38 @@ class AnalysisTest(IMP.test.TestCase):
             pdist02.append(rmsd02)
         self.assertAlmostEqual(dists['Prot1']['average_distance'],sum(pdist01)/nframes,places=2)
         self.assertAlmostEqual(dists['Prot2']['average_distance'],sum(pdist02)/nframes,places=2)
+
+    def test_ambiguity(self):
+        """Test clustering with copies"""
+        if not nicemodules:
+            self.skipTest("missing scipy or sklearn")
+
+        mdl = IMP.Model()
+        #expected_rmsd = self.init_with_copies(mdl)
+        alignment_comp = {"Prot1":"Prot1"}
+        rmsd_comp = {"Prot1":"Prot1"}
+
+        # the code should expand into:
+        #alignment_comp = {"Prot1..0":(1,-1,"Prot1",0),"Prot1..1":(1,-1,"Prot1",1)}
+        #rmsd_comp = {"Prot1..0":(1,-1,"Prot1",0),"Prot1..1":(1,-1,"Prot1",1)}
+
+        am = IMP.pmi.macros.AnalysisReplicaExchange0(
+            mdl,
+            merge_directories=[self.get_input_file_name("pmi2_copies_0/"),
+                               self.get_input_file_name("pmi2_copies_1/")],
+            global_output_directory="./")
+
+        out_dir = IMP.test.TempDir(None).tmpdir
+        am.clustering(feature_keys=["Total_Score"],
+                      alignment_components=alignment_comp,
+                      rmsd_calculation_components=rmsd_comp,
+                      number_of_clusters=1,
+                      number_of_best_scoring_models=20,
+                      outputdir=out_dir)
+
+        # check average RMSD
+        av_rmsd = am.get_cluster_rmsd(0)
+        self.assertLess(av_rmsd,1.5) # if swapped it'll be 100
+
 if __name__ == '__main__':
     IMP.test.main()
