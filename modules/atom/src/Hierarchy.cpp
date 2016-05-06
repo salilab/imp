@@ -484,13 +484,13 @@ Hierarchy clone_internal(Hierarchy d,
     }
     if (Representation::get_is_setup(d.get_particle())) {
       Representation r(d.get_particle());
-      Floats res_b = r.get_resolutions(BALLS);
-      Hierarchies hs_b = r.get_representations(BALLS);
-      for (unsigned int i=0;i<hs_b.size()-1;i++){ //last one is base
+      Floats res_b = r.get_resolutions(BALLS);         // first one is base
+      Hierarchies hs_b = r.get_representations(BALLS); //last one is base
+      for (unsigned int i=0;i<hs_b.size()-1;i++){
         Hierarchy nc = clone_internal(hs_b[i],map,true);
         Representation(p).add_representation(nc.get_particle(),
                                              BALLS,
-                                             res_b[i]);
+                                             res_b[i+1]);
       }
       Floats res_d = r.get_resolutions(DENSITIES);
       Hierarchies hs_d = r.get_representations(DENSITIES);
