@@ -275,22 +275,22 @@ class Tests(IMP.test.TestCase):
         rep.add_representation(res20,IMP.atom.BALLS,20)
 
         # clone it!
-        clone = IMP.atom.create_clone(rep)
+        clone = IMP.atom.Representation(IMP.atom.create_clone(rep))
 
         # now test clone has the same representations and resolutions
         def compare_leaves(h0,h1):
-            lv0 = IMP.core.get_leaves(h0)
-            lv1 = IMP.core.get_leaves(h0)
+            lv0 = IMP.core.XYZs(IMP.core.get_leaves(h0))
+            lv1 = IMP.core.XYZs(IMP.core.get_leaves(h1))
             self.assertEqual(len(lv0),len(lv1))
-            c0 = set(IMP.core.XYZ(p) for p in lv0)
-            c1 = set(IMP.core.XYZ(p) for p in lv1)
+            c0 = set((p.get_x(),p.get_y(),p.get_z()) for p in lv0)
+            c1 = set((p.get_x(),p.get_y(),p.get_z()) for p in lv1)
             self.assertEqual(c0,c1)
 
         for rtype in (IMP.atom.BALLS,IMP.atom.DENSITIES):
             h0 = rep.get_representations(rtype)
             res0 = rep.get_resolutions(rtype)
-            h1 = rep.get_representations(rtype)
-            res1 = rep.get_resolutions(rtype)
+            h1 = clone.get_representations(rtype)
+            res1 = clone.get_resolutions(rtype)
             res0,h0 = zip(*sorted(zip(res0,h0)))
             res1,h1 = zip(*sorted(zip(res1,h1)))
             self.assertEqual(res0,res1)
