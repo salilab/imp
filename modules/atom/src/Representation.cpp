@@ -129,6 +129,7 @@ Hierarchy Representation::get_representation(double resolution,
 
 Hierarchies Representation::get_representations(RepresentationType type) {
   Hierarchies ret;
+  if (type == BALLS) ret += Hierarchies(1, *this);
   if (get_model()->get_has_attribute(get_types_key(), get_particle_index())) {
     Ints types =
         get_model()->get_attribute(get_types_key(), get_particle_index());
@@ -140,7 +141,6 @@ Hierarchies Representation::get_representations(RepresentationType type) {
       }
     }
   }
-  if (type == BALLS) ret += Hierarchies(1, *this);
   return ret;
 }
 
