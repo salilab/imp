@@ -29,6 +29,7 @@ class Tests(IMP.test.TestCase):
         check_gauss(g2)
         bb = IMP.algebra.BoundingBox3D(t, t)
         grid = IMP.algebra.get_rasterized([g], [1.0], 1.0, bb)
+        grid_fast = IMP.algebra.get_rasterized_fast([g], [1.0], 1.0, bb)
 
 if __name__ == '__main__':
     IMP.test.main()

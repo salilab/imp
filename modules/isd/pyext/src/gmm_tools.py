@@ -77,7 +77,7 @@ def write_gmm_to_text(ps,out_fn):
                 #python 2.6 and below
                 outf.write('|{0}|{1}|{2} {3} {4}|{5} {6} {7} {8} {9} {10} {11} {12} {13}|\n'.format(*fm))
 
-def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None,origin=None):
+def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None,origin=None, fast=False):
     """write density map from GMM. input can be either particles or gaussians"""
     if type(to_draw[0]) in (IMP.Particle,IMP.atom.Hierarchy,IMP.core.Hierarchy):
         ps=to_draw
@@ -101,7 +101,10 @@ def write_gmm_to_map(to_draw,out_fn,voxel_size,bounding_box=None,origin=None):
         shapes.append(IMP.core.Gaussian(p).get_gaussian())
         weights.append(IMP.atom.Mass(p).get_mass())
     print('rasterizing')
-    grid=IMP.algebra.get_rasterized(shapes,weights,voxel_size,bounding_box)
+    if fast:
+        grid=IMP.algebra.get_rasterized_fast(shapes,weights,voxel_size,bounding_box)
+    else:
+        grid=IMP.algebra.get_rasterized(shapes,weights,voxel_size,bounding_box)
     print('creating map')
     d1=IMP.em.create_density_map(grid)
     print('writing')
