@@ -486,7 +486,7 @@ Hierarchy clone_internal(Hierarchy d,
       Representation r(d.get_particle());
       Floats res_b = r.get_resolutions(BALLS);
       Hierarchies hs_b = r.get_representations(BALLS);
-      for (unsigned int i=1;i<hs_b.size();i++){ //first one is base
+      for (unsigned int i=0;i<hs_b.size()-1;i++){ //last one is base
         Hierarchy nc = clone_internal(hs_b[i],map,true);
         Representation(p).add_representation(nc.get_particle(),
                                              BALLS,
