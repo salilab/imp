@@ -26,7 +26,7 @@ int get_state_index(Hierarchy h) {
     if (State::get_is_setup(h)) {
       return State(h).get_state_index();
     }
-    h = h.get_parent();
+    h = get_parent_representation(h);
   }
   return -1;
 }

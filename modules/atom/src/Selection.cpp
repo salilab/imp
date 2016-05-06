@@ -1156,7 +1156,7 @@ std::string get_molecule_name(Hierarchy h) {
     if (Molecule::get_is_setup(h)) {
       return h->get_name();
     }
-  } while ((h = h.get_parent()));
+  } while ((h = get_parent_representation(h)));
   IMP_THROW("Hierarchy " << h << " has no molecule name.", ValueException);
 }
 IMPATOM_END_NAMESPACE

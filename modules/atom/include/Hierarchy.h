@@ -496,6 +496,20 @@ IMPATOMEXPORT algebra::BoundingBoxD<3> get_bounding_box(const Hierarchy &h);
  */
 IMPATOMEXPORT algebra::Sphere3D get_bounding_sphere(const Hierarchy &h);
 
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+// Get the parent, or if non-tree Representation get the fake parent
+inline atom::Hierarchy get_parent_representation(atom::Hierarchy h){
+  if (h.get_model()->get_has_attribute(
+     atom::Hierarchy::get_traits().get_parent_key(),h.get_particle_index())){
+    ParticleIndex pidx = h.get_model()->get_attribute(
+        atom::Hierarchy::get_traits().get_parent_key(),h.get_particle_index());
+      return atom::Hierarchy(h.get_model(),pidx);
+  }
+  else return atom::Hierarchy();
+}
+#endif
+
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_HIERARCHY_H */
