@@ -29,11 +29,15 @@ class IMPATOMEXPORT State : public Hierarchy {
 
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 unsigned int state);
-
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                State o){
+    do_setup_particle(m, pi, o.get_state_index());
+  }
   void validate();
 
  public:
   IMP_DECORATOR_SETUP_1(State, unsigned int, index);
+  IMP_DECORATOR_SETUP_1(State, State, other);
   IMP_DECORATOR_METHODS(State, Hierarchy);
 
   static bool get_is_setup(Model *m, ParticleIndex pi) {

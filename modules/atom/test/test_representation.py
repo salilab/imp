@@ -14,7 +14,7 @@ def bead2gaussian(center,radius,mdl,p=None):
     else:
         return IMP.core.Gaussian.setup_particle(p,shape)
 
-class RepresentationTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_named_representation(self):
         """Test representation when you manually set resolutions"""
@@ -63,13 +63,11 @@ class RepresentationTest(IMP.test.TestCase):
         self.assertEqual(IMP.atom.Fragment(sel10.get_selected_particles()[0]).get_residue_indexes(),
                          list(range(432,442)))
 
-
     def test_rep_1and10(self):
         """Test representation when you manually set resolutions to 1 and 10"""
         mdl = IMP.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'),mdl)
         mh.set_name("res0")
-
 
         res1 = IMP.atom.create_simplified_along_backbone(mh,1)
         res1.set_name('res1')
@@ -217,7 +215,7 @@ class RepresentationTest(IMP.test.TestCase):
 
     def test_show(self):
         """Test new show_with_representations function"""
-                # read in system
+        # read in system
         mdl = IMP.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'),mdl)
         ch = mh.get_children()[0]
@@ -245,6 +243,59 @@ class RepresentationTest(IMP.test.TestCase):
         res20.set_name("Res:20")
         rep.add_representation(res20,IMP.atom.BALLS,20)
         IMP.atom.show_with_representations(rep)
+
+    def test_clone(self):
+        """Test you can clone representations"""
+        # read in system
+        mdl = IMP.Model()
+        mh = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'),mdl)
+        ch = mh.get_children()[0]
+        idxs = [IMP.atom.Residue(h).get_index() \
+                for h in IMP.atom.get_by_type(ch,IMP.atom.RESIDUE_TYPE)]
+        rep = IMP.atom.Representation.setup_particle(ch,0)
+
+        # average along backbone to get Gaussians (don't do this in real life)
+        tmp20 = IMP.atom.create_simplified_along_backbone(ch,20)
+        density_frag = IMP.atom.Fragment.setup_particle(IMP.Particle(mdl),idxs)
+        for frag in tmp20.get_children():
+            gp = frag.get_particle()
+            xyzr = IMP.core.XYZR(gp)
+            g = bead2gaussian(xyzr.get_coordinates(),xyzr.get_radius(),mdl)
+            density_frag.add_child(g)
+        density_frag.set_name("Density:20")
+        rep.add_representation(density_frag.get_particle(),IMP.atom.DENSITIES,20)
+
+        # also add some beads
+        res10 = IMP.atom.create_simplified_along_backbone(ch,10)
+        res10.set_name("Res:10")
+        rep.add_representation(res10,IMP.atom.BALLS,10)
+
+        res20 = IMP.atom.create_simplified_along_backbone(ch,20)
+        res20.set_name("Res:20")
+        rep.add_representation(res20,IMP.atom.BALLS,20)
+
+        # clone it!
+        clone = IMP.atom.create_clone(rep)
+
+        # now test clone has the same representations and resolutions
+        def compare_leaves(h0,h1):
+            lv0 = IMP.core.get_leaves(h0)
+            lv1 = IMP.core.get_leaves(h0)
+            self.assertEqual(len(lv0),len(lv1))
+            c0 = set(IMP.core.XYZ(p) for p in lv0)
+            c1 = set(IMP.core.XYZ(p) for p in lv1)
+            self.assertEqual(c0,c1)
+
+        for rtype in (IMP.atom.BALLS,IMP.atom.DENSITIES):
+            h0 = rep.get_representations(rtype)
+            res0 = rep.get_resolutions(rtype)
+            h1 = rep.get_representations(rtype)
+            res1 = rep.get_resolutions(rtype)
+            res0,h0 = zip(*sorted(zip(res0,h0)))
+            res1,h1 = zip(*sorted(zip(res1,h1)))
+            self.assertEqual(res0,res1)
+            for nr in range(len(res0)):
+                compare_leaves(h0[nr],h1[nr])
 
 if __name__ == '__main__':
     IMP.test.main()

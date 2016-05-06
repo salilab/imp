@@ -16,7 +16,7 @@
 #include "atom_macros.h"
 #include <IMP/core/XYZR.h>
 #include <IMP/core/rigid_bodies.h>
-
+#include <IMP/core/Gaussian.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 
