@@ -79,18 +79,6 @@ inline Floats get_list_of_bipartite_minimum_sphere_distance(const ParticlesTemps
   return mindistances;
 }
 
-//! Get the parent, or if non-tree Representation get the fake parent
-inline atom::Hierarchy get_parent_representation(atom::Hierarchy h){
-  if (h.get_model()->get_has_attribute(
-     atom::Hierarchy::get_traits().get_parent_key(),h.get_particle_index())){
-    ParticleIndex pidx = h.get_model()->get_attribute(
-        atom::Hierarchy::get_traits().get_parent_key(),h.get_particle_index());
-      return atom::Hierarchy(h.get_model(),pidx);
-  }
-  else return atom::Hierarchy();
-}
-
-
 //! Walk up a PMI2 hierarchy/representations and get the "molname.copynum"
 inline std::string get_molecule_name_and_copy(atom::Hierarchy h){
   do {
@@ -98,7 +86,7 @@ inline std::string get_molecule_name_and_copy(atom::Hierarchy h){
       return h->get_name() + "."
              + boost::lexical_cast<std::string>(atom::Copy(h).get_copy_index());
     }
-  } while ((h = get_parent_representation(h)));
+  } while ((h = atom::get_parent_representation(h)));
   IMP_THROW("Hierarchy " << h << " has no molecule name or copy num.", ValueException);
 }
 
@@ -108,7 +96,7 @@ inline bool get_is_canonical(atom::Hierarchy h){
     if (h->get_name()=="System") {
       return true;
     }
-  } while ((h = get_parent_representation(h)));
+  } while ((h = atom::get_parent_representation(h)));
   return false;
 }
 

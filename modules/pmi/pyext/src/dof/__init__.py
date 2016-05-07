@@ -22,6 +22,7 @@ import IMP.pmi.topology
 import IMP.pmi.samplers
 import IMP.pmi.tools
 import itertools
+import IMP.pmi.samplers
 
 class DegreesOfFreedom(object):
     """A class to simplify create of constraints and movers for an IMP Hierarchy.
@@ -305,7 +306,6 @@ class DegreesOfFreedom(object):
         '''Set up MC run with just flexible beads.
         Optimization works much better when restraints
         are already set up.'''
-        import IMP.pmi.samplers
         pts = IMP.pmi.tools.ParticleToSampleList()
         for n, fb in enumerate(self.get_flexible_beads()):
             pts.add_particle(fb, "Floppy_Bodies", 1.0, "Flexible_Bead_" + str(n))

@@ -17,7 +17,7 @@ import IMP.pmi.restraints.stereochemistry
 # Read sequences etc
 seqs = IMP.pmi.topology.Sequences(IMP.pmi.get_example_path('data/1WCM.fasta'))
 components = ["Rpb1","Rpb2","Rpb3","Rpb4"]
-colors = [0.1,0.9,0.5,0.8]
+colors = ['medium purple','goldenrod','orchid','olive drab']
 chains = "ABCD"
 beadsize = 10
 

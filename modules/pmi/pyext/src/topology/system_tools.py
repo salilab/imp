@@ -190,6 +190,8 @@ def build_representation(parent,rep,coord_finder):
             color = IMP.display.Color(*rep.color)
         elif type(rep.color) is IMP.display.Color:
             color = rep.color
+        elif type(rep.color) is str:
+            color = IMP.display.Color(*IMP.pmi.tools.color2rgb(rep.color))
         else:
             raise Exception("Color must be float or (r,g,b) tuple")
     else:

@@ -1517,25 +1517,28 @@ class Representation(object):
             print("optimize_floppy_bodies: no particle to optimize")
 
     def create_rotational_symmetry(self, maincopy, copies):
+        '''
+        The copies must not contain rigid bodies.
+        The symmetry restraints are applied at each leaf
+        '''
+
         from math import pi
         self.representation_is_modified = True
         ncopies = len(copies) + 1
-        main_rbs,main_beads = IMP.pmi.tools.get_rbs_and_beads(self.hier_dict[maincopy])
+        main_hiers = IMP.atom.get_leaves(self.hier_dict[maincopy])
         for k in range(len(copies)):
             rotation3D = IMP.algebra.get_rotation_about_axis(
-                IMP.algebra.Vector3D(0, 0, 1), 2 * pi / ncopies * (k + 1))
+                IMP.algebra.Vector3D(0, 0, 1.0), 2.0 * pi / float(ncopies) * float(k + 1))
             sm = IMP.core.TransformationSymmetry(rotation3D)
-            copy_rbs,copy_beads = IMP.pmi.tools.get_rbs_and_beads(self.hier_dict[copies[k]])
+            clone_hiers = IMP.atom.get_leaves(self.hier_dict[copies[k]])
 
-            idxs = []
-            for ref,copy in zip(main_rbs+main_beads,copy_rbs+copy_beads):
-                print("setting " + ref.get_name() + " as reference for " + copy.get_name())
-                IMP.core.Reference.setup_particle(copy,ref)
-                idxs.append(copy.get_particle_index())
-                IMP.pmi.Symmetric.setup_particle(ref, 0)
-                IMP.pmi.Symmetric.setup_particle(copy, 1)
+            lc = IMP.container.ListSingletonContainer(self.m)
+            for n, p in enumerate(main_hiers):
+                pc = clone_hiers[n]
+                print("setting " + p.get_name() + " as reference for " + pc.get_name())
+                IMP.core.Reference.setup_particle(pc.get_particle(), p.get_particle())
+                lc.add(pc.get_particle().get_index())
 
-            lc = IMP.container.ListSingletonContainer(self.m,idxs)
             c = IMP.container.SingletonsConstraint(sm, None, lc)
             self.m.add_score_state(c)
         self.m.update()

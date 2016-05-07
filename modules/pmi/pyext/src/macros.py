@@ -19,6 +19,7 @@ import glob
 from operator import itemgetter
 from collections import defaultdict
 import numpy as np
+import string
 
 class ReplicaExchange0(object):
     """A macro to help setup and run replica exchange.
@@ -112,6 +113,7 @@ class ReplicaExchange0(object):
         self.pmi2 = False
 
         ### add check hierarchy is multistate
+        self.output_objects = output_objects
         if representation:
             if type(representation) == list:
                 self.is_multi_state = True
@@ -142,7 +144,6 @@ class ReplicaExchange0(object):
         if sample_objects is not None:
             self.monte_carlo_sample_objects+=sample_objects
         self.molecular_dynamics_sample_objects=molecular_dynamics_sample_objects
-        self.output_objects = output_objects
         self.replica_exchange_object = replica_exchange_object
         self.molecular_dynamics_max_time_step = molecular_dynamics_max_time_step
         self.vars["monte_carlo_temperature"] = monte_carlo_temperature
@@ -440,7 +441,8 @@ class BuildSystem(object):
     def __init__(self,
                  mdl,
                  sequence_connectivity_scale=4.0,
-                 force_create_gmm_files=False):
+                 force_create_gmm_files=False,
+                 resolutions=[1,10]):
         """Constructor
         @param mdl An IMP Model
         @param sequence_connectivity_scale For scaling the connectivity restraint
@@ -448,12 +450,15 @@ class BuildSystem(object):
                   no matter what. If False, will only only sample if the
                   files don't exist. If number of Gaussians is zero, won't
                   do anything.
+        @param resolutions The resolutions to build for structured regions
         """
         self.mdl = mdl
         self.system = IMP.pmi.topology.System(self.mdl)
         self._readers = [] #internal storage of the TopologyReaders (one per state)
         self._domains = [] #internal storage of key=domain name, value=(atomic_res,non_atomic_res). (one per state)
         self.force_create_gmm_files = force_create_gmm_files
+        self.resolutions = resolutions
+
     def add_state(self,reader):
         """Add a state using the topology info in a IMP::pmi::topology::TopologyReader object.
         When you are done adding states, call execute_macro()
@@ -462,61 +467,84 @@ class BuildSystem(object):
         state = self.system.create_state()
         self._readers.append(reader)
         these_domains = {}
+        chain_ids = string.ascii_uppercase
+        numchain = 0
 
         ### setup representation
-        # setup each component once, then each domain gets seperate structure, representation
-        for molname in reader.get_unique_molecules():
-            mlist = reader.get_unique_molecules()[molname]
-            seq = IMP.pmi.topology.Sequences(mlist[0].fasta_file)
-            mol = state.create_molecule(molname,seq[mlist[0].fasta_id],mlist[0].chain)
-            for domain in mlist:
-                # we build everything in the residue range, even if it extends beyond what's in the actual PDB file
-                if domain.residue_range==[] or domain.residue_range is None:
-                    domain_res = mol.get_residues()
+        # loop over molecules, copies, then domains
+        for molname in reader.get_molecules():
+            copies = reader.get_molecules()[molname].domains
+            for nc,copyname in enumerate(copies):
+                copy = copies[copyname]
+                if nc==0:
+                    seq = IMP.pmi.topology.Sequences(copy[0].fasta_file)[copy[0].fasta_id]
+                    orig_mol = state.create_molecule(molname,
+                                                     seq,
+                                                     chain_ids[numchain])
+                    mol = orig_mol
+                    numchain+=1
                 else:
-                    start = domain.residue_range[0]+domain.pdb_offset
-                    if domain.residue_range[1]==-1:
-                        end = -1
+                    mol = orig_mol.create_copy(chain_ids[numchain])
+                    numchain+=1
+
+                for domain in copy:
+                    # we build everything in the residue range, even if it
+                    #  extends beyond what's in the actual PDB file
+                    if domain.residue_range==[] or domain.residue_range is None:
+                        domain_res = mol.get_residues()
                     else:
-                        end = domain.residue_range[1]+domain.pdb_offset
-                    domain_res = mol.residue_range(start,end)
-                if domain.pdb_file=="BEADS":
-                    mol.add_representation(domain_res,
-                                           resolutions=[domain.bead_size],
-                                           setup_particles_as_densities=(domain.em_residues_per_gaussian!=0))
-                    these_domains[domain.domain_name] = (set(),domain_res)
-                elif domain.pdb_file=="IDEAL_HELIX":
-                    mol.add_representation(domain_res,
-                                           resolutions=reader.resolutions,
-                                           ideal_helix=True,
-                                           density_residues_per_component=domain.em_residues_per_gaussian,
-                                           density_prefix=domain.density_prefix,
-                                           density_force_compute=self.force_create_gmm_files)
-                    these_domains[domain.domain_name] = (domain_res,set())
-                else:
-                    domain_atomic = mol.add_structure(domain.pdb_file,
-                                                      domain.chain,
-                                                      domain.residue_range,
-                                                      domain.pdb_offset,
-                                                      soft_check=True)
-                    domain_non_atomic = domain_res - domain_atomic
-                    if domain.em_residues_per_gaussian==0:
-                        mol.add_representation(domain_atomic,
-                                               resolutions=reader.resolutions)
-                        if len(domain_non_atomic)>0:
-                            mol.add_representation(domain_non_atomic,
-                                                   resolutions=[domain.bead_size])
+                        start = domain.residue_range[0]+domain.pdb_offset
+                        if domain.residue_range[1]==-1:
+                            end = -1
+                        else:
+                            end = domain.residue_range[1]+domain.pdb_offset
+                        domain_res = mol.residue_range(start-1,end-1)
+                    if domain.pdb_file=="BEADS":
+                        mol.add_representation(
+                            domain_res,
+                            resolutions=[domain.bead_size],
+                            setup_particles_as_densities=(
+                                domain.em_residues_per_gaussian!=0),
+                            color = domain.color)
+                        these_domains[domain.get_unique_name()] = (set(),domain_res)
+                    elif domain.pdb_file=="IDEAL_HELIX":
+                        mol.add_representation(
+                            domain_res,
+                            resolutions=self.resolutions,
+                            ideal_helix=True,
+                            density_residues_per_component=domain.em_residues_per_gaussian,
+                            density_prefix=domain.density_prefix,
+                            density_force_compute=self.force_create_gmm_files,
+                            color = domain.color)
+                        these_domains[domain.get_unique_name()] = (domain_res,set())
                     else:
-                        mol.add_representation(domain_atomic,
-                                               resolutions=reader.resolutions,
-                                               density_residues_per_component=domain.em_residues_per_gaussian,
-                                               density_prefix=domain.density_prefix,
-                                               density_force_compute=self.force_create_gmm_files)
-                        if len(domain_non_atomic)>0:
-                            mol.add_representation(domain_non_atomic,
-                                                   resolutions=[domain.bead_size],
-                                                   setup_particles_as_densities=True)
-                    these_domains[domain.domain_name] = (domain_atomic,domain_non_atomic)
+                        domain_atomic = mol.add_structure(domain.pdb_file,
+                                                          domain.chain,
+                                                          domain.residue_range,
+                                                          domain.pdb_offset,
+                                                          soft_check=True)
+                        domain_non_atomic = domain_res - domain_atomic
+                        if domain.em_residues_per_gaussian==0:
+                            mol.add_representation(domain_atomic,
+                                                   resolutions=self.resolutions)
+                            if len(domain_non_atomic)>0:
+                                mol.add_representation(domain_non_atomic,
+                                                       resolutions=[domain.bead_size])
+                        else:
+                            mol.add_representation(
+                                domain_atomic,
+                                resolutions=self.resolutions,
+                                density_residues_per_component=domain.em_residues_per_gaussian,
+                                density_prefix=domain.density_prefix,
+                                density_force_compute=self.force_create_gmm_files,
+                                color = domain.color)
+                            if len(domain_non_atomic)>0:
+                                mol.add_representation(domain_non_atomic,
+                                                       resolutions=[domain.bead_size],
+                                                       setup_particles_as_densities=True,
+                                                       color = domain.color)
+                        these_domains[domain.get_unique_name()] = (
+                            domain_atomic,domain_non_atomic)
             self._domains.append(these_domains)
         print('State',len(self.system.states),'added')
 
@@ -525,6 +553,9 @@ class BuildSystem(object):
         For each state, it's a dictionary of Molecules where key is the molecule name
         """
         return [s.get_molecules() for s in self.system.get_states()]
+
+    def get_molecule(self,molname,copy_index=0,state_index=0):
+        return self.system.get_states()[state_index].get_molecules()[molname][copy_index]
 
     def execute_macro(self):
         """Builds representations and sets up degrees of freedom"""
@@ -537,7 +568,6 @@ class BuildSystem(object):
             rbs = reader.get_rigid_bodies()
             srbs = reader.get_super_rigid_bodies()
             csrbs = reader.get_chains_of_super_rigid_bodies()
-
             # add rigid bodies
             domains_in_rbs = set()
             for rblist in rbs:
@@ -552,11 +582,15 @@ class BuildSystem(object):
                                            nonrigid_parts=bead_res)
 
             # if you have any BEAD domains not in an RB, set them as flexible beads
-            for molname in reader.get_unique_molecules():
-                mlist = reader.get_unique_molecules()[molname]
-                for domain in mlist:
-                    if domain.pdb_file=="BEADS" and domain not in domains_in_rbs:
-                        self.dof.create_flexible_beads(self._domains[nstate][domain.domain_name][1])
+            for molname in reader.get_molecules():
+                copies = reader.get_molecules()[molname].domains
+                for nc,copyname in enumerate(copies):
+                    copy = copies[copyname]
+                    for domain in copy:
+                        uname = domain.get_unique_name()
+                        if domain.pdb_file=="BEADS" and uname not in domains_in_rbs:
+                            self.dof.create_flexible_beads(
+                                self._domains[nstate][uname][1])
 
             # add super rigid bodies
             for srblist in srbs:
@@ -574,284 +608,6 @@ class BuildSystem(object):
                 all_res.sort(key=lambda r:r.get_index())
                 self.dof.create_super_rigid_body(all_res,chain_min_length=2,chain_max_length=3)
         return self.root_hier,self.dof
-
-@IMP.deprecated_object("2.5", "Use BuildSystem instead")
-class BuildModel(object):
-    """A macro to build a Representation based on a Topology and lists of movers
-    DEPRECATED - Use BuildSystem instead.
-    """
-    def __init__(self,
-                 model,
-                 component_topologies,
-                 list_of_rigid_bodies=[],
-                 list_of_super_rigid_bodies=[],
-                 chain_of_super_rigid_bodies=[],
-                 sequence_connectivity_scale=4.0,
-                 add_each_domain_as_rigid_body=False,
-                 force_create_gmm_files=False):
-        """Constructor.
-           @param model The IMP model
-           @param component_topologies List of
-                  IMP.pmi.topology.ComponentTopology items
-           @param list_of_rigid_bodies List of lists of domain names that will
-                  be moved as rigid bodies.
-           @param list_of_super_rigid_bodies List of lists of domain names
-                  that will move together in an additional Monte Carlo move.
-           @param chain_of_super_rigid_bodies List of lists of domain names
-                  (choices can only be from the same molecule). Each of these
-                  groups will be moved rigidly. This helps to sample more
-                  efficiently complex topologies, made of several rigid bodies,
-                  connected by flexible linkers.
-           @param sequence_connectivity_scale For scaling the connectivity
-                  restraint
-           @param add_each_domain_as_rigid_body That way you don't have to
-                  put all of them in the list
-           @param force_create_gmm_files If True, will sample and create GMMs
-                  no matter what. If False, will only only sample if the
-                  files don't exist. If number of Gaussians is zero, won't
-                  do anything.
-        """
-        self.m = model
-        self.simo = IMP.pmi.representation.Representation(self.m,
-                                                          upperharmonic=True,
-                                                          disorderedlength=False)
-
-        data=component_topologies
-        if list_of_rigid_bodies==[]:
-            print("WARNING: No list of rigid bodies inputted to build_model()")
-        if list_of_super_rigid_bodies==[]:
-            print("WARNING: No list of super rigid bodies inputted to build_model()")
-        if chain_of_super_rigid_bodies==[]:
-            print("WARNING: No chain of super rigid bodies inputted to build_model()")
-        all_dnames = set([d for sublist in list_of_rigid_bodies+list_of_super_rigid_bodies\
-                      +chain_of_super_rigid_bodies for d in sublist])
-        all_available = set([c.domain_name for c in component_topologies])
-        if not all_dnames <= all_available:
-            raise ValueError("All requested movers must reference domain "
-                             "names in the component topologies")
-
-        self.domain_dict={}
-        self.resdensities={}
-        super_rigid_bodies={}
-        chain_super_rigid_bodies={}
-        rigid_bodies={}
-
-        for c in data:
-            comp_name         = c.name
-            hier_name         = c.domain_name
-            color             = c.color
-            fasta_file        = c.fasta_file
-            fasta_id          = c.fasta_id
-            pdb_name          = c.pdb_file
-            chain_id          = c.chain
-            res_range         = c.residue_range
-            offset            = c.pdb_offset
-            bead_size         = c.bead_size
-            em_num_components = c.em_residues_per_gaussian
-            em_txt_file_name  = c.gmm_file
-            em_mrc_file_name  = c.mrc_file
-
-            if comp_name not in self.simo.get_component_names():
-                self.simo.create_component(comp_name,color=0.0)
-                self.simo.add_component_sequence(comp_name,fasta_file,fasta_id)
-
-            # create hierarchy (adds resolutions, beads) with autobuild and optionally add EM data
-            if em_num_components==0:
-                read_em_files=False
-                include_res0=False
-            else:
-                if (not os.path.isfile(em_txt_file_name)) or force_create_gmm_files:
-                    read_em_files=False
-                    include_res0=True
-                else:
-                    read_em_files=True
-                    include_res0=False
-
-            outhier=self.autobuild(self.simo,comp_name,pdb_name,chain_id,
-                                   res_range,include_res0,beadsize=bead_size,
-                                   color=color,offset=offset)
-            if em_num_components!=0:
-                if read_em_files:
-                    print("will read GMM files")
-                else:
-                    print("will calculate GMMs")
-
-                dens_hier,beads=self.create_density(self.simo,comp_name,outhier,em_txt_file_name,
-                                                    em_mrc_file_name,em_num_components,read_em_files)
-                self.simo.add_all_atom_densities(comp_name, particles=beads)
-                dens_hier+=beads
-            else:
-                dens_hier=[]
-
-            self.resdensities[hier_name]=dens_hier
-            self.domain_dict[hier_name]=outhier+dens_hier
-
-        # setup basic restraints
-        for c in self.simo.get_component_names():
-            self.simo.setup_component_sequence_connectivity(c,scale=sequence_connectivity_scale)
-            self.simo.setup_component_geometry(c)
-
-        # create movers
-        for rblist in list_of_rigid_bodies:
-            rb=[]
-            for rbmember in rblist:
-                rb+=[h for h in self.domain_dict[rbmember]]
-            self.simo.set_rigid_body_from_hierarchies(rb)
-        for srblist in list_of_super_rigid_bodies:
-            srb=[]
-            for srbmember in rblist:
-                srb+=[h for h in self.domain_dict[srbmember]]
-            self.simo.set_super_rigid_body_from_hierarchies(srb)
-        for clist in chain_of_super_rigid_bodies:
-            crb=[]
-            for crbmember in rblist:
-                crb+=[h for h in self.domain_dict[crbmember]]
-            self.simo.set_chain_of_super_rigid_bodies(crb,2,3)
-
-        self.simo.set_floppy_bodies()
-        self.simo.setup_bonds()
-
-    def get_representation(self):
-        '''Return the Representation object'''
-        return self.simo
-
-    def get_density_hierarchies(self,hier_name_list):
-        # return a list of density hierarchies
-        # specify the list of hierarchy names
-        dens_hier_list=[]
-        for hn in hier_name_list:
-            print(hn)
-            dens_hier_list+=self.resdensities[hn]
-        return dens_hier_list
-
-    def set_gmm_models_directory(self,directory_name):
-        self.gmm_models_directory=directory_name
-
-    def get_pdb_bead_bits(self,hierarchy):
-        pdbbits=[]
-        beadbits=[]
-        helixbits=[]
-        for h in hierarchy:
-            if "_pdb" in h.get_name():pdbbits.append(h)
-            if "_bead" in h.get_name():beadbits.append(h)
-            if "_helix" in h.get_name():helixbits.append(h)
-        return (pdbbits,beadbits,helixbits)
-
-    def scale_bead_radii(self,nresidues,scale):
-        scaled_beads=set()
-        for h in self.domain_dict:
-            (pdbbits,beadbits,helixbits)=self.get_pdb_bead_bits(self.domain_dict[h])
-            slope=(1.0-scale)/(1.0-float(nresidues))
-
-            for b in beadbits:
-                # I have to do the following
-                # because otherwise we'll scale more than once
-                if b not in scaled_beads:
-                    scaled_beads.add(b)
-                else:
-                    continue
-                radius=IMP.core.XYZR(b).get_radius()
-                num_residues=len(IMP.pmi.tools.get_residue_indexes(b))
-                scale_factor=slope*float(num_residues)+1.0
-                print(scale_factor)
-                new_radius=scale_factor*radius
-                IMP.core.XYZR(b).set_radius(new_radius)
-                print(b.get_name())
-                print("particle with radius "+str(radius)+" and "+str(num_residues)+" residues scaled to a new radius "+str(new_radius))
-
-
-    def create_density(self,simo,compname,comphier,txtfilename,mrcfilename,num_components,read=True):
-        #density generation for the EM restraint
-        (pdbbits,beadbits,helixbits)=self.get_pdb_bead_bits(comphier)
-        #get the number of residues from the pdb bits
-        res_ind=[]
-        for pb in pdbbits+helixbits:
-            for p in IMP.core.get_leaves(pb):
-                res_ind+=IMP.pmi.tools.get_residue_indexes(p)
-
-        number_of_residues=len(set(res_ind))
-        outhier=[]
-        if read:
-            if len(pdbbits)!=0:
-                outhier+=simo.add_component_density(compname,
-                                         pdbbits,
-                                         num_components=num_components,
-                                         resolution=0,
-                                         inputfile=txtfilename)
-            if len(helixbits)!=0:
-                outhier+=simo.add_component_density(compname,
-                                         helixbits,
-                                         num_components=num_components,
-                                         resolution=1,
-                                         inputfile=txtfilename)
-
-
-        else:
-            if len(pdbbits)!=0:
-                num_components=number_of_residues//abs(num_components)+1
-                outhier+=simo.add_component_density(compname,
-                                         pdbbits,
-                                         num_components=num_components,
-                                         resolution=0,
-                                         outputfile=txtfilename,
-                                         outputmap=mrcfilename,
-                                         multiply_by_total_mass=True)
-
-            if len(helixbits)!=0:
-                num_components=number_of_residues//abs(num_components)+1
-                outhier+=simo.add_component_density(compname,
-                                         helixbits,
-                                         num_components=num_components,
-                                         resolution=1,
-                                         outputfile=txtfilename,
-                                         outputmap=mrcfilename,
-                                         multiply_by_total_mass=True)
-
-        return outhier,beadbits
-
-    def autobuild(self,simo,comname,pdbname,chain,resrange,include_res0=False,
-                  beadsize=5,color=0.0,offset=0):
-        if pdbname is not None and pdbname is not "IDEAL_HELIX" and pdbname is not "BEADS" :
-            if include_res0:
-                outhier=simo.autobuild_model(comname,
-                                 pdbname=pdbname,
-                                 chain=chain,
-                                 resrange=resrange,
-                                 resolutions=[0,1,10],
-                                 offset=offset,
-                                 color=color,
-                                 missingbeadsize=beadsize)
-            else:
-                outhier=simo.autobuild_model(comname,
-                                 pdbname=pdbname,
-                                 chain=chain,
-                                 resrange=resrange,
-                                 resolutions=[1,10],
-                                 offset=offset,
-                                 color=color,
-                                 missingbeadsize=beadsize)
-
-
-        elif pdbname is not None and pdbname is "IDEAL_HELIX" and pdbname is not "BEADS" :
-            outhier=simo.add_component_ideal_helix(comname,
-                                                resolutions=[1,10],
-                                                resrange=resrange,
-                                                color=color,
-                                                show=False)
-
-        elif pdbname is not None and pdbname is not "IDEAL_HELIX" and pdbname is "BEADS" :
-            outhier=simo.add_component_necklace(comname,resrange[0],resrange[1],beadsize,color=color)
-
-        else:
-
-            seq_len=len(simo.sequence_dict[comname])
-            outhier=simo.add_component_necklace(comname,
-                                  begin=1,
-                                  end=seq_len,
-                                  length=beadsize)
-
-        return outhier
-
 
 @IMP.deprecated_object("2.5", "Use BuildSystem instead")
 class BuildModel1(object):
@@ -1529,11 +1285,15 @@ class AnalysisReplicaExchange0(object):
                                                              my_best_score_rmf_tuples[0][1])[0]
             if IMP.pmi.get_is_canonical(prot_ahead):
                 if rmsd_calculation_components is not None:
-                    rmsd_calculation_components = self._expand_ambiguity(prot_ahead,rmsd_calculation_components)
-                    print('Detected ambiguity, expand rmsd components to',rmsd_calculation_components)
+                    tmp = self._expand_ambiguity(prot_ahead,rmsd_calculation_components)
+                    if tmp!=rmsd_calculation_components:
+                        print('Detected ambiguity, expand rmsd components to',tmp)
+                        rmsd_calculation_components = tmp
                 if alignment_components is not None:
-                    alignment_components = self._expand_ambiguity(prot_ahead,alignment_components)
-                    print('Detected ambiguity, expand alignment components to',alignment_components)
+                    tmp = self._expand_ambiguity(prot_ahead,alignment_components)
+                    if tmp!=alignment_components:
+                        print('Detected ambiguity, expand alignment components to',tmp)
+                        alignment_components = tmp
 
 #-------------------------------------------------------------
 # read the coordinates

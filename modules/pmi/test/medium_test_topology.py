@@ -710,9 +710,9 @@ class Tests(IMP.test.TestCase):
                                       chain_id='A', res_range=(55, 63), offset=-54)
         non_atomic_res = m1.get_non_atomic_residues()
         m1.add_representation(
-            atomic_res, resolutions=[base_res, bead_res], color=(0.2, 0.1, 0.6))
+            atomic_res, resolutions=[base_res, bead_res], color='salmon')
         m1.add_representation(
-            non_atomic_res, resolutions=[bead_res], color=0.25)
+            non_atomic_res, resolutions=[bead_res], color=(0.4,0.3,0.2))
         s.build()
         orig_hier = s.get_hierarchy()
 
