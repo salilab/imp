@@ -594,8 +594,14 @@ class Molecule(_SystemBase):
                     _build_ideal_helix(self.mdl,rep.residues,self.coord_finder)
 
             # build all the representations
+            built_reps = []
             for rep in self.representations:
-                system_tools.build_representation(self.hier,rep,self.coord_finder)
+                built_reps += system_tools.build_representation(self.hier,rep,self.coord_finder)
+
+            # sort them before adding as children
+            built_reps.sort(key=lambda r: IMP.atom.Fragment(r).get_residue_indexes()[0])
+            for br in built_reps:
+                self.hier.add_child(br)
             self.built = True
 
             for res in self.residues:

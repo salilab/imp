@@ -524,12 +524,14 @@ class BuildSystem(object):
                                                           domain.pdb_offset,
                                                           soft_check=True)
                         domain_non_atomic = domain_res - domain_atomic
-                        if domain.em_residues_per_gaussian==0:
+                        if not domain.em_residues_per_gaussian:
                             mol.add_representation(domain_atomic,
-                                                   resolutions=self.resolutions)
+                                                   resolutions=self.resolutions,
+                                                   color = domain.color)
                             if len(domain_non_atomic)>0:
                                 mol.add_representation(domain_non_atomic,
-                                                       resolutions=[domain.bead_size])
+                                                       resolutions=[domain.bead_size],
+                                                       color = domain.color)
                         else:
                             mol.add_representation(
                                 domain_atomic,

@@ -1,6 +1,40 @@
 PMI changelog {#pmi_changelog}
 =============
 
+*News May 7 2016 - update 2*
+
+Here is a list of recent feature additions and bug fixes in PMI2:
+* Add colors with Molecule.add_representation(color=XXX). You can pass an (R,G,B) tuple or a named [color from chimera](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/colortables.html)
+* Build order has been fixed so now fragments should be sorted by residue index in RMF files.
+* Clustering will detect ambiguity and find the lowest distance of all permutations of molecule copies.
+* Added HelixRestraint for maintaining secondary structure when doing MD
+* Ideal helices now work with Molecule.add_representation(ideal_helix=True). Can grab a list of them with Molecule.get_ideal_helices().
+* New utility functions: IMP.pmi.tools.shuffle_configuration(), DegreesOfFreedom.optimize_flexible_beads()
+* The BuildSystem macro now supports copies (and colors). See the "automatic.py" example.
+* Removed dependency on BioPython
+
+--Charles
+
+*News May 7 2016*
+
+We have updated PMI significantly, completely rewriting the topology building tools (you may see the new code referred to as "PMI2". Instead of using the monolithic "representation" class (in representation.py) we are now using a set of modular classes with a bit more flexibility:
+* Setup is now done with hierarchical classes in the Topology module: System, State, Molecule. A key improvement is that hierarchy construction (including building representations) is only done at the end, which means much faster setup time. Molecule.add_structure() lets you add PDB files and Molecule.add_representation() lets you choose from various representations including beads, densities (gaussians), and ideal helices. For selecting things to pass to these functions, you can get "TempResidues" by slicing Molecule: mol[a:b], mol.residue_range('a','b') where quotes indicate PDB-style indexing. These slices produce sets so they can be combined etc with set operations.
+* Naming is different in PMI2. Before, different segments and copies of molecules had different names. Now we require that the Molecule name be the same for all domains and all copies - the name really should be the name of the sequence. To handle ambiguity, we use the Copy decorator. In PMI2, set up copies with molecule.create_copy() or molecule.create_clone() (copies can have different representation topologies, clones must be identical). You can pass copy_index to IMP.atom.Selection to get the ones you want.
+* We now use the IMP.atom.Representation decorator to organize resolutions. This is an improvement over the old code because it allows fast searching of resolutions using IMP.atom.Selection (pass representation_type=IMP.atom.BALLS or IMP.atom.DENSITIES along with resolution=X).
+* Movers are now handled separately in the DegreesOfFreedom class, with functions like create_rigid_body(), create_super_rigid_body(), create_flexible_beads(), setup_md(), and constraints like constrain_symmetry()
+* The previous "table" format for automatic construction has been revamped. Now we use the TopologyReader to read in a text file (with format checking) and the BuildSystem macro to construct the hierarchy and degrees of freedom.
+* Most restraints support the new interface, usually you'll pass the built System hierarchy instead of the old representation object.
+* The ReplicaExchange0 macro works the same as before, just pass your System hierarchy, again instaed of the old representation object.
+* Most analysis tools are now compatible with PMI2. 
+* Lots of examples have been added, see the full list [here](https://integrativemodeling.org/nightly/doc/ref/examples.html).
+
+Changes in IMP that are helpful in PMI:
+* Utility functions like IMP.atom.get_copy_index(), IMP.atom.get_state_index(), IMP.atom.get_molecule_name() are aware of Representations and will work on, for example, Gaussians.
+* IMP.atom.show_with_representations(hier) will display all the constructed representations
+* RMF supports the new PMI hierarchies
+
+--Charles
+
 *News May 14 2014*
 
 From Ben Webb:

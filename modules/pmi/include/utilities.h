@@ -12,6 +12,7 @@
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/DistanceRestraint.h>
 #include <IMP/core/XYZR.h>
+#include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/Molecule.h>
 #include <IMP/atom/Copy.h>
 #include <IMP/core/internal/dihedral_helpers.h>

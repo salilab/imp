@@ -28,9 +28,7 @@ Here are some examples to get you started
 - [Multiscale modeling](https://integrativemodeling.org/nightly/doc/ref/pmi_2multiscale_8py-example.html): complete example to model a system at multiple resolutions simultaneously and sample with replica exchange
 - [Crosslinks with ambiguity](https://integrativemodeling.org/nightly/doc/ref/pmi_2ambiguity_8py-example.html): complete example to create crosslinks and automatically apply them to ambiguous copies of a protein (including in multiple states)
 - [MD modeling](https://integrativemodeling.org/nightly/doc/ref/pmi_2atomistic_8py-example.html): complete example to set up restraints for atomic-scale models and then run molecular dynamics
-
-## Automating model construction
-We have implemented the [BuildSystem](@ref IMP::pmi::macros::BuildSystem) macro for more easily setting up large systems. This class reads in structure data, creates representations, and sets some basic degrees of freedom.
+- [Automatic model construction](https://integrativemodeling.org/nightly/doc/ref/pmi_2automatic_8py-example.html): Easily build a complete system with minimal code using the [BuildSystem](@ref IMP::pmi::macros::BuildSystem) macro.
 
 ## Multi-scale representation in PMI
 One can create multiple simultaneous representations in PMI. Here is a brief overview:
