@@ -124,6 +124,8 @@ class DegreesOfFreedom(object):
                                 resolution='all',
                                 name=None):
         """Create SUPER rigid body mover from one or more hierarchies. Can also create chain of SRBs.
+        If you don't pass chain min/max, it'll treat everything you pass as ONE rigid body.
+        If you DO pass chain min/max, it'll expect srb_parts is a list and break it into bits.
         @param srb_parts Can be one of the following inputs:
                IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.
                Must be uniform input, however. No mixing object types.
@@ -151,14 +153,19 @@ class DegreesOfFreedom(object):
         else:
             if not hasattr(srb_parts,'__iter__'):
                 raise Exception("You tried to make a chain without a list!")
-            srb_groups = [IMP.pmi.tools.input_adaptor(h,resolution,flatten=True) for h in srb_parts]
+            srb_groups = [IMP.pmi.tools.input_adaptor(h,resolution,flatten=True,
+                                                      warn_about_slices=False) for h in srb_parts]
 
         ## create SRBs either from all hierarchies or chain
         if chain_min_length is None and chain_max_length is None:
-            srb_movers.append(self._setup_srb(srb_groups,max_trans,max_rot))
+            mv = self._setup_srb(srb_groups,max_trans,max_rot)
+            if mv:
+                srb_movers.append(mv)
         elif chain_min_length is not None and chain_max_length is not None:
             for hs in IMP.pmi.tools.sublist_iterator(srb_groups, chain_min_length, chain_max_length):
-                srb_movers.append(self._setup_srb(hs,max_trans,max_rot))
+                mv = self._setup_srb(hs,max_trans,max_rot)
+                if mv:
+                    srb_movers.append(mv)
         else:
             raise Exception("DegreesOfFreedom: SetupSuperRigidBody: if you want chain, specify min AND max")
         self.movers += srb_movers
@@ -173,11 +180,17 @@ class DegreesOfFreedom(object):
     def _setup_srb(self,hiers,max_trans,max_rot):
         srbm = IMP.pmi.TransformMover(hiers[0][0].get_model(), max_trans, max_rot)
         super_rigid_rbs,super_rigid_xyzs = IMP.pmi.tools.get_rbs_and_beads(hiers)
+        ct = 0
         for xyz in super_rigid_xyzs:
             srbm.add_xyz_particle(xyz)
+            ct+=1
         for rb in super_rigid_rbs:
             srbm.add_rigid_body_particle(rb)
-        return srbm
+            ct+=1
+        if ct>1:
+            return srbm
+        else:
+            return 0
 
 
     def create_flexible_beads(self,

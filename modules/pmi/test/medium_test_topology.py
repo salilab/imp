@@ -628,8 +628,6 @@ class Tests(IMP.test.TestCase):
                           [7,8,9])
         self.assertEquals(IMP.atom.Residue(sel10[4]).get_index(),
                           10)
-        with self.assertRaises(Exception) as context:
-            ps = IMP.pmi.tools.input_adaptor(m1.residue_range('1','8'))
 
     def test_create_copy(self):
         """Test creation of Copies"""

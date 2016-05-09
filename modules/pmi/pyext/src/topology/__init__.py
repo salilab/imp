@@ -602,6 +602,7 @@ class Molecule(_SystemBase):
             built_reps.sort(key=lambda r: IMP.atom.Fragment(r).get_residue_indexes()[0])
             for br in built_reps:
                 self.hier.add_child(br)
+                br.update_parents()
             self.built = True
 
             for res in self.residues:

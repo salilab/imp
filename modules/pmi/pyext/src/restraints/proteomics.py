@@ -740,6 +740,7 @@ class SetupMembraneRestraint(object):
         self.label = label
         self.representation = representation
         self.thickness = thickness
+        self.z_init=z_init
 
 
         softness = 3.0
@@ -772,7 +773,7 @@ class SetupMembraneRestraint(object):
                 particles_inside = self.get_from_selection_tuple(selection_tuples_inside)
 
         self.z_center = IMP.pmi.tools.SetupNuisance(
-            self.m, z_init, z_min, z_max, isoptimized=True).get_particle()
+            self.m, self.z_init, z_min, z_max, isoptimized=True).get_particle()
         mr = IMP.pmi.MembraneRestraint(
             self.m, self.z_center.get_particle_index(), self.thickness, softness, plateau, linear)
         mr.add_particles_inside([h.get_particle().get_index()
@@ -878,10 +879,10 @@ class SetupMembraneRestraint(object):
             IMP.atom.create_bond(IMP.atom.Bonded(p4), IMP.atom.Bonded(p2), 1)
             IMP.atom.create_bond(IMP.atom.Bonded(p4), IMP.atom.Bonded(p3), 1)
 
-        sm = self._MembraneSingletonModifier(p_origin, self.z_center)
+        #sm = self._MembraneSingletonModifier(p_origin, self.z_center)
         lc = IMP.container.ListSingletonContainer(self.m)
         for p in particles_box:
-            smp = self._MembraneSingletonModifier(p_origin, self.z_center)
+            smp = self._MembraneSingletonModifier(IMP.core.XYZ(p).get_z(),self.z_init, self.z_center)
             lcp = IMP.container.ListSingletonContainer(self.m)
             IMP.core.XYZ(p).set_coordinates_are_optimized(True)
             lcp.add(p.get_index())
@@ -894,18 +895,19 @@ class SetupMembraneRestraint(object):
         """A class that updates the membrane particles
         """
 
-        def __init__(self, p_origin, z_nuisance):
+        def __init__(self,z, z_init, z_nuisance):
             IMP.SingletonModifier.__init__(
                 self, "MembraneSingletonModifier%1%")
-            self.p_origin_index = p_origin.get_index()
+            self.z=z
+            self.z_init = z_init
             self.z_nuisance = z_nuisance
 
         def apply_index(self, m, pi):
-            z_center = IMP.core.XYZ(m, self.p_origin_index).get_z()
             new_z = self.z_nuisance.get_nuisance()
             d = IMP.core.XYZ(m, pi)
-            current_z = d.get_z()
-            d.set_z(current_z + new_z - z_center)
+            d.set_z(self.z + new_z-self.z_init)
+
+
 
         def do_get_inputs(self, m, pis):
             return IMP.get_particles(m, pis)

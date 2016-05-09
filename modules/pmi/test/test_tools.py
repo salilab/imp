@@ -18,7 +18,7 @@ import RMF
 import IMP.rmf
 from math import *
 
-class TestTools(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_shuffle(self):
         """Test moving rbs, fbs"""
         mdl = IMP.Model()

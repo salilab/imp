@@ -40,6 +40,25 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(c[1].copyname,"1")
         self.assertEqual(c[5].get_unique_name(),"Prot2.1.1")
 
+    def test_beads(self):
+        mdl = IMP.Model()
+        tfile = self.get_input_file_name('topology_beads.txt')
+        input_dir = os.path.dirname(tfile)
+        t = IMP.pmi.topology.TopologyReader(tfile,
+                                            pdb_dir=input_dir,
+                                            fasta_dir=input_dir,
+                                            gmm_dir=input_dir)
+        bs = IMP.pmi.macros.BuildSystem(mdl)
+        bs.add_state(t)
+        root_hier, dof = bs.execute_macro()
+        sel = IMP.atom.Selection(root_hier,residue_indexes=range(1,13),
+                                 resolution=IMP.atom.ALL_RESOLUTIONS)
+        self.assertEqual(len(sel.get_selected_particles()),2)
+        IMP.atom.show_with_representations(root_hier)
+        sel = IMP.atom.Selection(root_hier,residue_indexes=range(13,30),
+                                 resolution=IMP.atom.ALL_RESOLUTIONS)
+        self.assertEqual(len(sel.get_selected_particles()),17+2)
+
     def test_set_movers(self):
         """Check if rigid bodies etc are set up as requested"""
         try:

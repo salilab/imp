@@ -1486,7 +1486,8 @@ def set_coordinates_from_rmf(hier,rmf_fn,frame_num=0):
 def input_adaptor(stuff,
                   pmi_resolution=0,
                   flatten=False,
-                  selection_tuple=None):
+                  selection_tuple=None,
+                  warn_about_slices=True):
     """Adapt things for PMI (degrees of freedom, restraints, ...)
     Returns list of list of hierarchies, separated into Molecules if possible.
     (iterable of ^2) hierarchy -> returns input as list of list of hierarchies, only one entry.
@@ -1498,6 +1499,8 @@ def input_adaptor(stuff,
     @param pmi_resolution For selecting, only does it if you pass PMI objects. Set it to "all"
           if you want all resolutions!
     @param flatten Set to True if you just want all hierarchies in one list.
+    @param warn_about_slices Print a warning if you are requesting only part of a bead.
+           Sometimes you just don't care!
     \note since this relies on IMP::atom::Selection, this will not return any objects if they weren't built!
     But there should be no problem if you request unbuilt residues, they should be ignored.
     """
@@ -1567,22 +1570,25 @@ def input_adaptor(stuff,
                 ps = sel.get_selected_particles()
 
             # check that you don't have any incomplete fragments!
-            rset = set(indexes_per_mol[mol])
-            for p in ps:
-                if IMP.atom.Fragment.get_is_setup(p):
-                    fset = set(IMP.atom.Fragment(p).get_residue_indexes())
-                    if not fset.issubset(rset):
-                        minset = min(fset)
-                        maxset = max(fset)
-                        found = fset&rset
-                        minf = min(found)
-                        maxf = max(found)
-                        resbreak = maxf if minf==minset else minset-1
-                        raise Exception('You are trying to select only part of the bead %s:%i-%i.\n'
-                                        'The residues you requested are %i-%i. You can fix this by:\n'
-                                        '1) requesting the whole bead/none of it or\n'
-                                        '2) break the bead up by passing bead_extra_breaks=[\'%i\'] in molecule.add_representation()'
-                                        %(mol.get_name(),minset,maxset,minf,maxf,resbreak))
+            if warn_about_slices:
+                rset = set(indexes_per_mol[mol])
+                for p in ps:
+                    if IMP.atom.Fragment.get_is_setup(p):
+                        fset = set(IMP.atom.Fragment(p).get_residue_indexes())
+                        if not fset <= rset:
+                            print('BAD')
+                            minset = min(fset)
+                            maxset = max(fset)
+                            found = fset&rset
+                            minf = min(found)
+                            maxf = max(found)
+                            resbreak = maxf if minf==minset else minset-1
+                            print('WARNING: You are trying to select only part of the bead %s:%i-%i.\n'
+                                  'The residues you requested are %i-%i. You can fix this by:\n'
+                                  '1) requesting the whole bead/none of it or\n'
+                                  '2) break the bead up by passing bead_extra_breaks=[\'%i\'] in '
+                                  'molecule.add_representation()'
+                                            %(mol.get_name(),minset,maxset,minf,maxf,resbreak))
             hier_list.append([IMP.atom.Hierarchy(p) for p in ps])
     else:
         try:

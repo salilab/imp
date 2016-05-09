@@ -1519,7 +1519,7 @@ class Representation(object):
     def create_rotational_symmetry(self, maincopy, copies):
         '''
         The copies must not contain rigid bodies.
-        The symmetry restraints are applied at each leaf
+        The symmetry restraints are applied at each leaf.
         '''
 
         from math import pi

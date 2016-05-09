@@ -230,7 +230,8 @@ def build_representation(parent,rep,coord_finder):
                                                 density_ps)
             IMP.isd.gmm_tools.write_gmm_to_text(density_ps,rep.density_prefix+'.txt')
             if rep.density_voxel_size>0.0:
-                IMP.isd.gmm_tools.write_gmm_to_map(density_ps,rep.density_prefix+'.mrc',rep.density_voxel_size,fast=True)
+                IMP.isd.gmm_tools.write_gmm_to_map(density_ps,rep.density_prefix+'.mrc',
+                                                   rep.density_voxel_size,fast=True)
 
         for d in density_ps:
             density_frag.add_child(d)

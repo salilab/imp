@@ -454,8 +454,9 @@ class BuildSystem(object):
         """
         self.mdl = mdl
         self.system = IMP.pmi.topology.System(self.mdl)
-        self._readers = [] #internal storage of the TopologyReaders (one per state)
-        self._domains = [] #internal storage of key=domain name, value=(atomic_res,non_atomic_res). (one per state)
+        self._readers = []    # the TopologyReaders (one per state)
+        self._domain_res = [] # TempResidues for each domain key=unique name, value=(atomic_res,non_atomic_res).
+        self._domains = []    # key = domain unique name, value = Component
         self.force_create_gmm_files = force_create_gmm_files
         self.resolutions = resolutions
 
@@ -466,6 +467,7 @@ class BuildSystem(object):
         """
         state = self.system.create_state()
         self._readers.append(reader)
+        these_dres = {}
         these_domains = {}
         chain_ids = string.ascii_uppercase
         numchain = 0
@@ -490,6 +492,7 @@ class BuildSystem(object):
                 for domain in copy:
                     # we build everything in the residue range, even if it
                     #  extends beyond what's in the actual PDB file
+                    these_domains[domain.get_unique_name()] = domain
                     if domain.residue_range==[] or domain.residue_range is None:
                         domain_res = mol.get_residues()
                     else:
@@ -506,7 +509,7 @@ class BuildSystem(object):
                             setup_particles_as_densities=(
                                 domain.em_residues_per_gaussian!=0),
                             color = domain.color)
-                        these_domains[domain.get_unique_name()] = (set(),domain_res)
+                        these_dres[domain.get_unique_name()] = (set(),domain_res)
                     elif domain.pdb_file=="IDEAL_HELIX":
                         mol.add_representation(
                             domain_res,
@@ -516,7 +519,7 @@ class BuildSystem(object):
                             density_prefix=domain.density_prefix,
                             density_force_compute=self.force_create_gmm_files,
                             color = domain.color)
-                        these_domains[domain.get_unique_name()] = (domain_res,set())
+                        these_dres[domain.get_unique_name()] = (domain_res,set())
                     else:
                         domain_atomic = mol.add_structure(domain.pdb_file,
                                                           domain.chain,
@@ -545,8 +548,9 @@ class BuildSystem(object):
                                                        resolutions=[domain.bead_size],
                                                        setup_particles_as_densities=True,
                                                        color = domain.color)
-                        these_domains[domain.get_unique_name()] = (
+                        these_dres[domain.get_unique_name()] = (
                             domain_atomic,domain_non_atomic)
+            self._domain_res.append(these_dres)
             self._domains.append(these_domains)
         print('State',len(self.system.states),'added')
 
@@ -570,42 +574,44 @@ class BuildSystem(object):
             rbs = reader.get_rigid_bodies()
             srbs = reader.get_super_rigid_bodies()
             csrbs = reader.get_chains_of_super_rigid_bodies()
+
             # add rigid bodies
             domains_in_rbs = set()
             for rblist in rbs:
                 all_res = IMP.pmi.tools.OrderedSet()
                 bead_res = IMP.pmi.tools.OrderedSet()
-                for domain in rblist:
-                    all_res|=self._domains[nstate][domain][0]
-                    bead_res|=self._domains[nstate][domain][1]
-                    domains_in_rbs.add(domain)
+                for dname in rblist:
+                    domain = self._domains[nstate][dname]
+                    if domain.pdb_file=="BEADS":
+                        print("WARNING: You have a rigid body containing BEADS "
+                              "You should probably set the rigid body field for "+domain.molname+
+                              " to blank")
+                    all_res|=self._domain_res[nstate][dname][0]
+                    bead_res|=self._domain_res[nstate][dname][1]
+                    domains_in_rbs.add(dname)
                 all_res|=bead_res
                 self.dof.create_rigid_body(all_res,
                                            nonrigid_parts=bead_res)
 
             # if you have any BEAD domains not in an RB, set them as flexible beads
-            for molname in reader.get_molecules():
-                copies = reader.get_molecules()[molname].domains
-                for nc,copyname in enumerate(copies):
-                    copy = copies[copyname]
-                    for domain in copy:
-                        uname = domain.get_unique_name()
-                        if domain.pdb_file=="BEADS" and uname not in domains_in_rbs:
-                            self.dof.create_flexible_beads(
-                                self._domains[nstate][uname][1])
+            for dname in self._domains[nstate]:
+                domain = self._domains[nstate][dname]
+                if domain.pdb_file=="BEADS" and dname not in domains_in_rbs:
+                    self.dof.create_flexible_beads(
+                        self._domain_res[nstate][dname][1])
 
             # add super rigid bodies
             for srblist in srbs:
                 all_res = IMP.pmi.tools.OrderedSet()
-                for domain in srblist:
-                    all_res|=self._domains[nstate][domain][0]
+                for dname in srblist:
+                    all_res|=self._domain_res[nstate][dname][0]
                 self.dof.create_super_rigid_body(all_res)
 
             # add chains of super rigid bodies
             for csrblist in csrbs:
                 all_res = IMP.pmi.tools.OrderedSet()
-                for domain in csrblist:
-                    all_res|=self._domains[nstate][domain][0]
+                for dname in csrblist:
+                    all_res|=self._domain_res[nstate][dname][0]
                 all_res = list(all_res)
                 all_res.sort(key=lambda r:r.get_index())
                 self.dof.create_super_rigid_body(all_res,chain_min_length=2,chain_max_length=3)
