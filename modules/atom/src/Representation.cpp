@@ -228,6 +228,32 @@ Representation get_representation(Hierarchy h, bool nothrow){
   return rd;
 }
 
+void Representation::update_parents() {
+  if (get_model()->get_has_attribute(Hierarchy::get_traits().get_parent_key(),
+                                     get_particle_index()) &&
+      get_model()->get_has_attribute(get_types_key(), get_particle_index())){
+    Hierarchies chs = get_children();
+    ParticleIndex parent = get_parent().get_particle_index();
+    ParticleIndexes reps =
+      get_model()->get_attribute(get_representations_key(), get_particle_index());
+    for (unsigned int i = 0; i < reps.size(); i++) {
+      if (std::find(chs.begin(),chs.end(),Hierarchy(get_model(),reps[i]))==chs.end()){
+        if (get_model()->get_has_attribute(Hierarchy::get_traits().get_parent_key(),
+                                           reps[i])){
+          get_model()->set_attribute(Hierarchy::get_traits().get_parent_key(),
+                                     reps[i],
+                                     parent);
+        }
+        else {
+          get_model()->add_attribute(Hierarchy::get_traits().get_parent_key(), reps[i],
+                                     parent);
+        }
+      }
+    }
+  }
+}
+
+
 void Representation::show(std::ostream& out) const { out << "Resolutions: " << get_resolutions(); }
 
 void show_with_representations(Hierarchy h,

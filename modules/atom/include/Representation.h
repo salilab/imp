@@ -80,6 +80,9 @@ class IMPATOMEXPORT Representation : public Hierarchy {
 
   //! Get all resolutions that are available for a specific RepresentationType.
   Floats get_resolutions(RepresentationType type = BALLS) const;
+
+  //! If you've changed the parent, update all the resolutions
+  void update_parents();
 };
 
 IMP_DECORATORS(Representation, Representations, Hierarchies);

@@ -317,5 +317,13 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(IMP.atom.get_state_index(IMP.atom.Hierarchy(p)),5)
             self.assertEqual(IMP.atom.get_molecule_name(IMP.atom.Hierarchy(p)),'himom')
 
+        # check update parents
+        mol2 = IMP.atom.Molecule.setup_particle(IMP.Particle(mdl))
+        mol2.set_name('heyjake')
+        mol2.add_child(rep)
+        rep.update_parents()
+        for p in selB.get_selected_particles() + selD.get_selected_particles():
+            self.assertEqual(IMP.atom.get_molecule_name(IMP.atom.Hierarchy(p)),'heyjake')
+
 if __name__ == '__main__':
     IMP.test.main()
