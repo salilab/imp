@@ -171,6 +171,10 @@ class Tests(IMP.test.TestCase):
                 self.assertXYZDerivativesInTolerance(self.sf, d, tolerance = 1e-2,percentage=10.0)
         self.gem.set_slope(0.0)
 
+    def test_rasterize(self):
+        """Test making a map from a GMM"""
+        dmap = IMP.isd.gmm_tools.gmm2map(self.model_ps,1.0,fast=False)
+
 class LocalTests(IMP.test.TestCase):
     def test_local_score(self):
         ndensity=10
