@@ -18,13 +18,13 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-/** Reset all the statistics for IMP. */
+//! Reset all the statistics for IMP.
 IMPKERNELEXPORT void clear_statistics();
 
-/** Show all captured timings. */
+//! Show all captured timings.
 IMPKERNELEXPORT void show_timings(TextOutput out);
 
-/** Time an operation and save the timings.*/
+//! Time an operation and save the timings.
 class IMPKERNELEXPORT Timer : public RAII {
   std::clock_t start_;
   std::string key_;
@@ -59,7 +59,7 @@ class IMPKERNELEXPORT Timer : public RAII {
   }
 };
 
-/** Set the level of statistics to be gathered. */
+//! Set the level of statistics to be gathered.
 IMPKERNELEXPORT void set_statistics_level(StatisticsLevel l);
 
 IMPKERNEL_END_NAMESPACE
