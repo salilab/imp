@@ -85,8 +85,8 @@ DensityGrid get_rasterized(const Gaussian3Ds &gmm, const Floats &weights,
     double determinant;
     bool invertible;
     covar.computeInverseAndDetWithCheck(inverse, determinant, invertible);
-    IMP_INTERNAL_CHECK((!invertible || determinant < 0),
-                       "\n\n\n->>>>not proper matrix!!\n\n\n");
+    IMP_INTERNAL_CHECK((invertible && determinant > 0),
+                       "Tried to invert Gaussian, but it's not proper matrix");
     double pre(get_gaussian_eval_prefactor(determinant));
     IMP_Eigen::Vector3d center(gmm[ng].get_center().get_data());
     IMP_INTERNAL_CHECK(invertible, "matrix wasn't invertible! uh oh!");
