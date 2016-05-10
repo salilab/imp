@@ -109,33 +109,37 @@ IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r);
     femtosecond given a radius in angstrom.*/
 IMPATOMEXPORT double get_einstein_rotational_diffusion_coefficient(double r);
 
-/** Return the standard deviation for the Brownian step given the
+/** Return the standard deviation for the Brownian step in Angstroms given the
     diffusion coefficient D and the time step t.*/
 IMPATOMEXPORT double get_diffusion_length(double D, double t);
 
-/** Return the scale for diffusion under the specified force,
+/** Return the scale for diffusion in Angstroms given the specified force,
     the diffusion coefficient D and the time step t.
 
     @param D     diffusion coefficient in Angstrom^2/femtosecond
-    @param force applied force
+    @param force applied force in kcal/mol/A
     @param t     time step in femtoseconds
     @param temp  temperature in Kelvin
 */
 IMPATOMEXPORT double get_diffusion_length(double D, double force, double t,
                                           double temp = 273);
 
-/** Get the standard deviation of the diffusion angle change given
-    the rigid body diffusion coefficient and the time step dtfs.*/
+/** Get the standard deviation of the diffusion angle change in radians given
+    the rigid body diffusion coefficient and the time step dtfs in femtoseconds.*/
 IMPATOMEXPORT double get_diffusion_angle(double D, double dtfs);
 
-/** Estimate the diffusion coefficient of a particle from a list of
+/** Estimate the diffusion coefficient of a particle in A^2/fs from a list of
     displacements each taken after the given time step dt.
+
+    @param displacements displacement vectors in Angstroms
+    @param dt time step in femtoseconds
 */
 IMPATOMEXPORT double get_diffusion_coefficient(
     const algebra::Vector3Ds &displacements, double dt);
 
-/** Estimate the rotational diffusion coefficient of a particle from a list of
-    displacements each taken after the given time step dt.
+/** Estimate the rotational diffusion coefficient of a particle in Rad^2/fs
+    from a list of rotational displacements each taken after the given time
+    step dt.
 */
 IMPATOMEXPORT double get_rotational_diffusion_coefficient(
     const algebra::Rotation3Ds &displacements, double dt);
