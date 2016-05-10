@@ -34,15 +34,17 @@
                                                                               \
  public:
 
-//! Define the types for storing sets of objects
-/** The macro defines the types PluralName and PluralNameTemp.
+//! Define the types for storing lists of object pointers
+/** The macro defines the types PluralName and PluralNameTemp,
+    which are vectors of either reference-counting or non reference-counting
+    pointers to Name objects, respectively.
     PluralName should be Names unless the English spelling is
     different.
  */
 #define IMP_OBJECTS(Name, PluralName)                              \
-  /** Store a set of objects.*/                                    \
+  /** A vector of reference-counting object pointers.*/                                    \
   typedef IMP::Vector<IMP::Pointer<Name> > PluralName; \
-  /** Pass a set of objects. \see Name */                          \
+  /** A vector of weak (non reference-counting) pointers to specified objects. \see Name */                          \
   typedef IMP::Vector<IMP::WeakPointer<Name> > PluralName##Temp;
 
 #define IMP_GENERIC_OBJECT(Name, lcname, targument, carguments, cparguments) \
