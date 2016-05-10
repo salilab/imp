@@ -195,6 +195,58 @@ class DistanceRestraint(object):
         return self.weight * self.rs.unprotected_evaluate(None)
 
 
+class CylinderRestraint(IMP.Restraint):
+    '''
+    PMI2 python restraint. Restrains particles within a
+    Cylinder aligned along the z-axis and
+    centered in x,y=0,0
+    '''
+    import math
+    def __init__(self, m, objects, resolution, radius,label='None'):
+        '''
+        @param objects PMI2 objects
+        @param resolution the resolution you want the restraint to be applied
+        @param radius the radius of the cylinder
+        '''
+        IMP.Restraint.__init__(self, m, "CylinderRestraint %1%")
+        self.radius=radius
+        self.softness = 3.0
+        self.plateau = 1e-10
+        self.weight = 1.0
+        self.m=m
+        hierarchies = IMP.pmi.tools.input_adaptor(objects,
+                                            resolution,
+                                            flatten=True)
+        self.particles = [h.get_particle() for h in hierarchies]
+        self.label=label
+
+    def get_probability(self,p):
+        xyz=IMP.core.XYZ(p)
+        r=self.math.sqrt(xyz.get_x()**2+xyz.get_y()**2)
+        argvalue=(r-self.radius) / self.softness
+        prob = (1.0 - self.plateau) / (1.0 + self.math.exp(-argvalue))
+        return prob
+
+    def unprotected_evaluate(self, da):
+        s=0.0
+        for p in self.particles:
+            s+=-self.math.log(1.0-self.get_probability(p))
+        return s
+
+    def do_get_inputs(self):
+        return self.particles
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.m, self)
+
+    def get_output(self):
+        self.m.update()
+        output = {}
+        score = self.weight * self.unprotected_evaluate(None)
+        output["_TotalScore"] = str(score)
+        output["CylinderRestraint_" + self.label] = str(score)
+        return output
+
 
 
 class BiStableDistanceRestraint(IMP.Restraint):

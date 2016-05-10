@@ -29,7 +29,7 @@ class ConnectivityRestraint(object):
                  resolution=1):
         """
         @param objects - a list of hierarchies, PMI TempResidues OR a single Molecule
-        @param scale Scale the maximal distance between the beads by this factor when disorderedlength is False. 
+        @param scale Scale the maximal distance between the beads by this factor when disorderedlength is False.
                      The maximal distance is calculated as ((float(residuegap) + 1.0) * 3.6) * scale.
         @param disorderedlength - This flag uses either disordered length
                      calculated for random coil peptides (True) or zero
@@ -200,6 +200,7 @@ class ExcludedVolumeSphere(object):
                                                             flatten=True)
             other_ps = []
 
+
         # perform selection
         if representation is None:
             if hierarchies is None:
@@ -236,7 +237,7 @@ class ExcludedVolumeSphere(object):
             evr = IMP.container.PairsRestraint(ssps, self.cpc)
         else:
             other_lsa = IMP.container.ListSingletonContainer(self.mdl)
-            other_lsa.add(other_ps)
+            other_lsa.add(IMP.get_indexes(other_ps))
             self.cpc = IMP.container.CloseBipartitePairContainer(
                 lsa,
                 other_lsa,

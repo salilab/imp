@@ -600,31 +600,32 @@ Objavro.codecnullavro.schema‚¸{
         }
     ]
 }
- ’¤…GœÀ	§Xöì~4Ğ74Œ  &IMP develop-fd69a23IMP
+ <İ¸Õ¸«Ñª­ZÚõ{d£Œ  &IMP develop-783ffaaIMP
 alias alternativesphysicssequence
 
 shape    R root  System  State_0 
 Prot1 Frag_1-2 
 Frag_1-2: Res 1 1
  2
- Frag_5-9 Frag_5-9: Res 1 5 6 7 8 9 Frag_3-4  Frag_3-4: Res 1 "3  $4  &Frag_10-10 ("Frag_10-10: Res 1& *10( ,
-Prot1 .Frag_1-2, 0Frag_1-2: Res 1. 210 420 6Frag_5-9, 8Frag_5-9: Res 16 :58 <68 >78 @88 B98 DFrag_3-4, FFrag_3-4: Res 1D H3F J4F LFrag_10-10, N"Frag_10-10: Res 1L P10N  6 &explicit resolutionmassradius*diffusion coefficient external frame aliased element residue index copy index 
+ Frag_3-4 Frag_3-4: Res 1 3 4 Frag_5-9 Frag_5-9: Res 1 5 6  7 "8 $9 &Frag_10-10 ("Frag_10-10: Res 1& *10( ,
+Prot1 .Frag_1-2, 0Frag_1-2: Res 1. 210 420 6Frag_3-4, 8Frag_3-4: Res 16 :38 <48 >Frag_5-9, @Frag_5-9: Res 1> B5@ D6@ F7@ H8@ J9@ LFrag_10-10, N"Frag_10-10: Res 1L P10N  6 &explicit resolutionmassradius*diffusion coefficient external frame aliased element residue index copy index 
 &first residue index $last residue index state index molecule bonded 0 bonded 1  rigid body index  residue typechain idtype name 
 types 
 roots residue indexes coordinatesrgb color
 variancestranslation rotation 
-(PJ@<4>$"2H
-*B:
- ,    , 8Ş0Ş(ÂFŞ ÂÂNŞ
-Â   L  €?D  €?6  €?.  €?&  €?  €?  €?  €? (P  ÜBJ  ÜB@‘-æB<DÆB4²C>‹, C$  ÜB"  ÜBìQâB‘-æB‹, C2‰! CDÆBH  ÜBDÆB*  ÜBBìQâB²C:DÆB‰! C (PdNC@JdNC@@šg7@<ùÏ8@4uÉ?@>|üB@$dNC@"W!@dNC@šg7@|üB@2¥}@@ùÏ8@HW!@ùÏ8@*dNC@BdNC@uÉ?@:ùÏ8@¥}@@   (PLEUJLEU@ASP<VAL4GLU>LYS$LEU"ALALEUASPLYS2GLNVALHALAVAL*LEUBLEUGLU:VALGLN ,BA   @@á`@‘÷6?<òq’?ÕÆ¬¿¢*Ä¿>ü9@©Äæ?î)À4iOŸÀ:M€¿€˜J¾v¶@HÍ ¿Â©Y?@á`@‘÷6?ü9@©Äæ?î)À2-ĞÀQ¥@¹<k?òq’?ÕÆ¬¿¢*Ä¿p…™¾K¹>f¿?Bv¶@HÍ ¿Â©Y?iOŸÀ:M€¿€˜J¾:p…™¾K¹>f¿?-ĞÀQ¥@¹<k?    L 8
+(PJD<4$"
+2HB
+*F : ,    , 8Ş0Ş(ÂÂÂNŞ@Ş
+Â   L  €?>  €?6  €?.  €?&  €?  €?  €?  €? (P  ÜBJìQâBDDÆB<  ÜB4²C$ìQâB"‘-æBDÆB2‰! C  ÜBH‘-æB  ÜB²CBDÆB*  ÜBF‹, C ‹, C:  ÜB‰! CDÆB (PdNC@JdNC@DùÏ8@<dNC@4uÉ?@$dNC@"šg7@ùÏ8@2¥}@@dNC@Hšg7@W!@uÉ?@BùÏ8@*dNC@F|üB@ |üB@:W!@¥}@@ùÏ8@   (PLEUJLEUDVAL<LEU4GLU$LEU"ASPVAL2GLNLEUHASPALAGLUBVAL*LEUFLYS LYS:ALAGLNVAL ,BA   Jv¶@HÍ ¿Â©Y?H@á`@‘÷6?Dòq’?ÕÆ¬¿¢*Ä¿4iOŸÀ:M€¿€˜J¾2-ĞÀQ¥@¹<k?$v¶@HÍ ¿Â©Y?"@á`@‘÷6?p…™¾K¹>f¿?Bp…™¾K¹>f¿?iOŸÀ:M€¿€˜J¾Fü9@©Äæ?î)À ü9@©Äæ?î)Àòq’?ÕÆ¬¿¢*Ä¿-ĞÀQ¥@¹<k?    L 8 6 0 . ( & 
 
- 6
+ >
 
- 0 . ( & F    
+   N 
+ @
 
- 
+ 
 
- N 
- D                  PğØ³@ÛÜ‰¿ïQŸ?$²›œÀ/\”¿.Ø´¾JH¦ÀA r¿q›¾H.&¥Àh—b¿PU$¾*—«@jŞÒ¿Ÿíƒ?"kÓÀ:Óf¿'Ğ—¾ 8J¸ËÀD‡3Â¤”ŒÂ0J¸ËÀD‡3Â¤”ŒÂ(|D»BC‡3Â¤”ŒÂFJ¸ËÀD‡3Â¤”ŒÂ |D»BC‡3Â¤”ŒÂ|D»BC‡3Â¤”ŒÂNJ¸ËÀD‡3Â¤”ŒÂ
-|D»BC‡3Â¤”ŒÂ   8Š¦ƒ>Ñ´?OB¿O–P>0Š¦ƒ>Ñ´?OB¿O–P>(™M¿>o?6œ%¿h >FŠ¦ƒ>Ñ´?OB¿O–P> ™M¿>o?6œ%¿h >™M¿>o?6œ%¿h >NŠ¦ƒ>Ñ´?OB¿O–P>
-™M¿>o?6œ%¿h >       ’¤…GœÀ	§Xöì~4Ğ74  ’¤…GœÀ	§Xöì~4Ğ74
+                  Pg•¾@\¥¿ğ¾??<ª”ÀÙ”¿¦Ã¿:h¤ÀÚ
+€¿„Ò¾*@!¶@J¢À¿ÔŸ¡?RU•ÀŸ‰¿ƒŞ»Ğ‘À–z¿µQ= 8K¸ËÀD‡3Â¥”ŒÂ0K¸ËÀD‡3Â¥”ŒÂ(|D»BC‡3Â¤”ŒÂ|D»BC‡3Â¤”ŒÂ|D»BC‡3Â¤”ŒÂNK¸ËÀD‡3Â¥”ŒÂ@K¸ËÀD‡3Â¥”ŒÂ
+|D»BC‡3Â¤”ŒÂ   8êá>-Ç?ÙØ-¿¤>0êá>-Ç?ÙØ-¿¤>(’£¨>?R°*¿¦¸>’£¨>?R°*¿¦¸>’£¨>?R°*¿¦¸>Nêá>-Ç?ÙØ-¿¤>@êá>-Ç?ÙØ-¿¤>
+’£¨>?R°*¿¦¸>       <İ¸Õ¸«Ñª­ZÚõ{d£  <İ¸Õ¸«Ñª­ZÚõ{d£
