@@ -585,20 +585,18 @@ def get_position_terminal_residue(hier, terminus="C", resolution=1):
 
     return IMP.core.XYZ(termparticle).get_coordinates()
 
-def get_terminal_residue_position(representation,hier, terminus="C", resolution=1):
-    '''
-    Get the xyz position of the terminal residue at the given resolution.
+def get_terminal_residue(representation, hier, terminus="C", resolution=1):
+    """Get the xyz position of the terminal residue at the given resolution.
     @param hier hierarchy containing the terminal residue
     @param terminus either 'N' or 'C'
     @param resolution resolution to use.
-    '''
+    """
+
     termresidue = None
     termparticle = None
-
     ps=select(representation,
            resolution=resolution,
            hierarchies=[hier])
-
     for p in ps:
         if IMP.pmi.Resolution(p).get_resolution() == resolution:
             residues = IMP.pmi.tools.get_residue_indexes(p)
@@ -618,9 +616,11 @@ def get_terminal_residue_position(representation,hier, terminus="C", resolution=
                     termparticle = p
             else:
                 raise ValueError("terminus argument should be either N or C")
+    return termparticle
 
+def get_terminal_residue_position(representation, hier, terminus="C", resolution=1):
+    p = get_terminal_residue(representation,hier,terminus,resolution)
     return IMP.core.XYZ(termparticle).get_coordinates()
-
 
 def get_residue_gaps_in_hierarchy(hierarchy, start, end):
     '''
