@@ -339,7 +339,7 @@ class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
   IMP_OBJECT_METHODS(HeapAssignmentContainer);
 };
 
-/!! Store no more than a max number of states.
+//! Store no more than a max number of states.
 /** This is a wrapper for an AssignmentContainer that throws a ValueException
     if more than a certain number of states are added.
  */
