@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/assignment_containers.h
- *  \brief A Bayesian inference-based sampler.
+ *  \brief Container classes to store assignments.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
@@ -36,9 +36,10 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-/** The base class for containers of assignments. Assignments are stored
-    in these rather than as Assignments to help increase efficiency as
-    well as provide flexibility as to how and where they are stored.
+//! The base class for containers of assignments.
+/** Assignments are stored in these rather than as Assignments to help
+    increase efficiency as well as provide flexibility as to how and
+    where they are stored.
 */
 class IMPDOMINOEXPORT AssignmentContainer : public IMP::Object {
  public:
@@ -57,8 +58,8 @@ class IMPDOMINOEXPORT AssignmentContainer : public IMP::Object {
 
 IMP_OBJECTS(AssignmentContainer, AssignmentContainers);
 
-/** Store a set of assignments in a somewhat more compact form in memory
-    than the ListAssignmentContainer.
+//! Store assignments in a compact form in memory.
+/** This should use less memory than the ListAssignmentContainer.
  */
 class IMPDOMINOEXPORT PackedAssignmentContainer : public AssignmentContainer {
   // store all as one vector
@@ -108,8 +109,8 @@ inline void PackedAssignmentContainer::add_assignment(const Assignment &a) {
 }
 #endif
 
-/** Simple storage of a set of Assignments. Prefer PackedAssignmentContainer,
-    I think.
+//! Simple storage of a set of Assignments.
+/** PackedAssignmentContainer is probably a better class to use in most cases.
  */
 class IMPDOMINOEXPORT ListAssignmentContainer : public AssignmentContainer {
   // store all as one vector
@@ -139,10 +140,8 @@ inline void ListAssignmentContainer::add_assignment(const Assignment &a) {
 }
 #endif
 
-/** Store a list of k assignments chosen from all of the ones added to this
-    table. The states are chosen uniformly.
-
-    This doesn't seem very useful
+//! Store a list of k assignments chosen from all those added to this table.
+/** The states are chosen uniformly.
  */
 class IMPDOMINOEXPORT SampleAssignmentContainer : public AssignmentContainer {
   // store all as one vector
@@ -177,12 +176,12 @@ inline Assignment SampleAssignmentContainer::get_assignment(unsigned int i)
 #endif
 
 #if IMP_DOMINO_HAS_RMF || defined(IMP_DOXYGEN)
-/** Store the assignments in an HDF5DataSet. Make sure to delete this
-    container before trying to read from the same data set (unless
-    you pass the data set explicitly, in which case it may be OK).
+//! Store the assignments in an HDF5DataSet.
+/** Make sure to delete this container before trying to read from the
+    same data set (unless you pass the data set explicitly, in which
+    case it may be OK).
 
-    The format on disk should
-    not, yet, be considered stable.
+    The format on disk should not, yet, be considered stable.
  */
 class IMPDOMINOEXPORT WriteHDF5AssignmentContainer
     : public AssignmentContainer {
@@ -210,8 +209,8 @@ class IMPDOMINOEXPORT WriteHDF5AssignmentContainer
   IMP_OBJECT_METHODS(WriteHDF5AssignmentContainer);
 };
 
-/** Store the assignments in an HDF5DataSet. The format on disk should not,
-    yet, be considered stable.
+//! Store the assignments in an HDF5DataSet.
+/** The format on disk should not, yet, be considered stable.
  */
 class IMPDOMINOEXPORT ReadHDF5AssignmentContainer : public AssignmentContainer {
   RMF::HDF5::IndexConstDataSet2D ds_;
@@ -234,9 +233,10 @@ class IMPDOMINOEXPORT ReadHDF5AssignmentContainer : public AssignmentContainer {
 };
 #endif
 
-/** Store the assignments on disk as binary data. Use a ReadAssignmentContainer
-    to read them back. The resulting file is not guaranteed to work on any
-    platform other than the one it was created on and the format may change.
+//! Store the assignments on disk as binary data.
+/** Use a ReadAssignmentContainer to read them back. The resulting file is
+    not guaranteed to work on any platform other than the one it was created
+    on and the format may change.
  */
 class IMPDOMINOEXPORT WriteAssignmentContainer : public AssignmentContainer {
   int f_;
@@ -267,8 +267,8 @@ class IMPDOMINOEXPORT WriteAssignmentContainer : public AssignmentContainer {
   IMP_OBJECT_METHODS(WriteAssignmentContainer);
 };
 
-/** Read the assignments from binary data on disk. Use a
-    WriteAssignmentContainer to write them. Make sure to destroy the
+//! Read the assignments from binary data on disk.
+/** Use a WriteAssignmentContainer to write them. Make sure to destroy the
     WriteAssignmentContainer before trying to read from the file.
  */
 class IMPDOMINOEXPORT ReadAssignmentContainer : public AssignmentContainer {
@@ -298,8 +298,8 @@ class IMPDOMINOEXPORT ReadAssignmentContainer : public AssignmentContainer {
   IMP_OBJECT_METHODS(ReadAssignmentContainer);
 };
 
-/** Expose a range [begin, end) of an inner assignment container to
-    consumers. One cannot add assignments to this container.
+//! Expose a range [begin, end) of an inner assignment container to consumers.
+/** One cannot add assignments to this container.
  */
 class IMPDOMINOEXPORT RangeViewAssignmentContainer
     : public AssignmentContainer {
@@ -316,8 +316,7 @@ class IMPDOMINOEXPORT RangeViewAssignmentContainer
   IMP_OBJECT_METHODS(RangeViewAssignmentContainer);
 };
 
-/** Store a set of k top scoring assignments
- */
+//! Store a set of k top scoring assignments
 class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
   typedef std::pair<Assignment, double> AP;
   struct GreaterSecond {
@@ -340,8 +339,10 @@ class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
   IMP_OBJECT_METHODS(HeapAssignmentContainer);
 };
 
+/!! Store no more than a max number of states.
 /** This is a wrapper for an AssignmentContainer that throws a ValueException
-    if more than a certain number of states are added.*/
+    if more than a certain number of states are added.
+ */
 class IMPDOMINOEXPORT CappedAssignmentContainer : public AssignmentContainer {
   typedef AssignmentContainer P;
   Pointer<AssignmentContainer> contained_;
