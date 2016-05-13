@@ -468,7 +468,7 @@ IMP_ATOM_SELECTION_PRED(HierarchyType, Ints, {
 
 bool get_is_terminus(Model *m, ParticleIndex pi, int t) {
   if (Atom::get_is_setup(m, pi)) {
-    // ignore order with atoms
+    // Atoms can only be termini if the type matches
     Atom a(m, pi);
     if (t == Selection::C && a.get_atom_type() != AT_C) {
       return false;
@@ -480,17 +480,22 @@ bool get_is_terminus(Model *m, ParticleIndex pi, int t) {
   Hierarchy cur(m, pi);
   Hierarchy p = cur.get_parent();
   if (!p) return true;
+  // e.g. the terminal residue in a non-terminal fragment is *not* a terminus
   if (!IMP::atom::Chain::get_is_setup(p) &&
-      !IMP::atom::Molecule::get_is_setup(p)) {
-    return get_is_terminus(m, p.get_particle_index(), t);
-  }
-  unsigned int i = cur.get_child_index();
-  IMP_INTERNAL_CHECK(p.get_child(i) == cur, "Cur isn't the ith child");
-  if (t == Selection::C && i + 1 != p.get_number_of_children()) {
+      !IMP::atom::Molecule::get_is_setup(p) &&
+      !get_is_terminus(m, p.get_particle_index(), t)) {
     return false;
   }
-  if (t == Selection::N && i != 0) {
-    return false;
+  // Ignore order with atoms
+  if (!Atom::get_is_setup(m, pi)) {
+    unsigned int i = cur.get_child_index();
+    IMP_INTERNAL_CHECK(p.get_child(i) == cur, "Cur isn't the ith child");
+    if (t == Selection::C && i + 1 != p.get_number_of_children()) {
+      return false;
+    }
+    if (t == Selection::N && i != 0) {
+      return false;
+    }
   }
   return true;
 }
