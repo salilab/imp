@@ -103,7 +103,7 @@ we employed is as follows:
     can find all of the dependencies. (We wrote a little batch file.)
   - Set up %IMP by running something similar to
 
-     `cmake <imp_source_directory> -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DWIN32 /DGSL_DLL" -G "NMake Makefiles"`
+     `cmake <imp_source_directory> -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DH5_BUILT_AS_DYNAMIC_LIB /DWIN32 /DGSL_DLL" -G "NMake Makefiles"`
 
   - Note: if building for 64-bit Windows, you may need to add `/bigobj` to `CMAKE_CXX_CFLAGS`.
   - Then use simply 'nmake' (instead of 'make', as on Linux or Mac) to
