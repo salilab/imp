@@ -1,14 +1,11 @@
-//IMP_SWIG_OBJECT(IMP::example, ExampleRestraint, ExampleRestraints);
-//IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
-//IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD)
 IMP_SWIG_OBJECT(IMP::pmi, CompositeRestraint, CompositeRestraints);
 IMP_SWIG_DECORATOR(IMP::pmi, Uncertainty, Uncertainties);
 IMP_SWIG_DECORATOR(IMP::pmi, Resolution, Resolutions);
 IMP_SWIG_DECORATOR(IMP::pmi, Symmetric, Symmetrics);
 IMP_SWIG_OBJECT(IMP::pmi, SigmoidRestraintSphere, SigmoidRestraintSpheres);
 IMP_SWIG_OBJECT(IMP::pmi, TransformMover, TransformMovers);
+IMP_SWIG_OBJECT(IMP::pmi, MembraneRestraint, MembraneRestraints);
 
-//%include "IMP/example/ExampleRestraint.h"
 %include "IMP/pmi/MembraneRestraint.h"
 %include "IMP/pmi/CompositeRestraint.h"
 %include "IMP/pmi/Uncertainty.h"

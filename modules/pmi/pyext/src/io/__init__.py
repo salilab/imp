@@ -265,20 +265,23 @@ def get_best_models(stat_files,
         except:
             continue
 
-        final_keywords = [score_key,
-                          rmf_file_key,
-                          rmf_file_frame_key]
+        keywords = [score_key,
+                    rmf_file_key,
+                    rmf_file_frame_key]
 
-        for file_k in file_keywords:
+        # check all requested keys are in the file
+        #  this looks weird because searching for "*requested_key*"
+        if feature_keys:
             for requested_key in feature_keys:
-                if requested_key in file_k:
-                    final_keywords.append(k)
+                for file_k in file_keywords:
+                    if requested_key in file_k:
+                        keywords.append(file_k)
 
         if prefiltervalue is None:
-            fields = po.get_fields(final_keywords,
+            fields = po.get_fields(keywords,
                                    get_every=get_every)
         else:
-            fields = po.get_fields(final_keywords,
+            fields = po.get_fields(keywords,
                                    filtertuple=(score_key,"<",prefiltervalue),
                                    get_every=get_every)
 
@@ -302,9 +305,8 @@ def get_best_models(stat_files,
 
         rmf_file_frame_list += fields[rmf_file_frame_key]
 
-        if final_keywords is not None:
-            for k in final_keywords:
-                feature_keyword_list_dict[k] += fields[k]
+        for k in keywords:
+            feature_keyword_list_dict[k] += fields[k]
 
     return rmf_file_list,rmf_file_frame_list,score_list,feature_keyword_list_dict
 

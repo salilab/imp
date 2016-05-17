@@ -635,7 +635,9 @@ class BuildModel1(object):
         self.gmm_models_directory=directory_name
 
     def build_model(self,data_structure,sequence_connectivity_scale=4.0,
-                         sequence_connectivity_resolution=10,rmf_file=None,rmf_frame_number=0,rmf_file_map=None):
+                    sequence_connectivity_resolution=10,
+                    rmf_file=None,rmf_frame_number=0,rmf_file_map=None,
+                    skip_connectivity_these_domains=None):
         """Create model.
         @param data_structure List of lists containing these entries:
              comp_name, hier_name, color, fasta_file, fasta_id, pdb_name, chain_id,
@@ -741,7 +743,10 @@ class BuildModel1(object):
                     rfn=self.rmf_frame_number[c]
                     rfm=self.rmf_names_map[c]
                     self.simo.set_coordinates_from_rmf(c, rf,rfn,representation_name_to_rmf_name_map=rfm)
-            self.simo.setup_component_sequence_connectivity(c,resolution=sequence_connectivity_resolution,scale=sequence_connectivity_scale)
+            if (not skip_connectivity_these_domains) or (c not in skip_connectivity_these_domains):
+                self.simo.setup_component_sequence_connectivity(c,
+                                                                resolution=sequence_connectivity_resolution,
+                                                                scale=sequence_connectivity_scale)
             self.simo.setup_component_geometry(c)
 
         for rb in rigid_bodies:

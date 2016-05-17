@@ -585,7 +585,7 @@ def get_position_terminal_residue(hier, terminus="C", resolution=1):
 
     return IMP.core.XYZ(termparticle).get_coordinates()
 
-def get_terminal_residue_position(representation,hier, terminus="C", resolution=1):
+def get_terminal_residue(representation, hier, terminus="C", resolution=1):
     '''
     Get the xyz position of the terminal residue at the given resolution.
     @param hier hierarchy containing the terminal residue
@@ -618,9 +618,11 @@ def get_terminal_residue_position(representation,hier, terminus="C", resolution=
                     termparticle = p
             else:
                 raise ValueError("terminus argument should be either N or C")
+    return termparticle
 
+def get_terminal_residue_position(representation, hier, terminus="C", resolution=1):
+    p = get_terminal_residue(representation, hier, terminus, resolution)
     return IMP.core.XYZ(termparticle).get_coordinates()
-
 
 def get_residue_gaps_in_hierarchy(hierarchy, start, end):
     '''
@@ -1789,6 +1791,7 @@ def shuffle_configuration(root_hier,
     @param hierarchies_excluded_from_collision Don't count collision with these bodies
     @param verbose Give more output
     \note Best to only call this function after you've set up degrees of freedom
+    For debugging purposes, returns: <shuffled indexes>, <collision avoided indexes>
     """
 
     ### checking input
@@ -1799,60 +1802,54 @@ def shuffle_configuration(root_hier,
     elif len(flexible_beads)>0:
         mdl = flexible_beads[0].get_model()
     else:
-        raise Exception("You passed something weird to shuffle_configuration")
-
+        raise Exception("Could not find any particles in the hierarchy")
     if len(rigid_bodies) == 0:
         print("shuffle_configuration: rigid bodies were not intialized")
 
     ### gather all particles
     gcpf = IMP.core.GridClosePairsFinder()
     gcpf.set_distance(cutoff)
-    allparticleindexes = []
-    hierarchies_excluded_from_collision_indexes = []
 
     # Add particles from excluded hierarchies to excluded list
-    for h in hierarchies_excluded_from_collision:
-        for p in IMP.core.get_leaves(h):
-            hierarchies_excluded_from_collision_indexes.append(p.get_particle_index())
+    collision_excluded_idxs = set([l.get_index() for h in hierarchies_excluded_from_collision \
+                               for l in IMP.core.get_leaves(h)])
 
+    # Excluded collision with Gaussians
+    all_idxs = [] #expand to representations?
     for p in IMP.core.get_leaves(root_hier):
         if IMP.core.XYZ.get_is_setup(p):
-            allparticleindexes.append(p.get_particle_index())
-        # remove the fixed densities particles out of the calculation
+            all_idxs.append(p.get_particle_index())
         if IMP.core.Gaussian.get_is_setup(p):
-            hierarchies_excluded_from_collision_indexes.append(p.get_particle_index())
-    if not bounding_box is None:
+            collision_excluded_idxs.append(p.get_index())
+
+    if bounding_box is not None:
         ((x1, y1, z1), (x2, y2, z2)) = bounding_box
         ub = IMP.algebra.Vector3D(x1, y1, z1)
         lb = IMP.algebra.Vector3D(x2, y2, z2)
         bb = IMP.algebra.BoundingBox3D(ub, lb)
 
-    allparticleindexes = list(
-        set(allparticleindexes) - set(hierarchies_excluded_from_collision_indexes))
-
+    all_idxs = set(all_idxs) - collision_excluded_idxs
+    debug = []
     print('shuffling', len(rigid_bodies), 'rigid bodies')
     for rb in rigid_bodies:
         if rb not in excluded_rigid_bodies:
+            # gather particles to avoid with this transform
             if avoidcollision_rb:
-
-                rbindexes = rb.get_member_particle_indexes()
-
-                rbindexes = list(
-                    set(rbindexes) - set(hierarchies_excluded_from_collision_indexes))
-                otherparticleindexes = list(
-                    set(allparticleindexes) - set(rbindexes))
-
-                if len(otherparticleindexes) is None:
+                rb_idxs = set(rb.get_member_particle_indexes()) - \
+                          collision_excluded_idxs
+                other_idxs = all_idxs - rb_idxs
+                if not other_idxs:
                     continue
 
+            # iterate, trying to avoid collisions
             niter = 0
             while niter < niterations:
                 rbxyz = (rb.get_x(), rb.get_y(), rb.get_z())
 
-                # overrides the perturbation
-                if not bounding_box is None:
+                # local transform
+                if bounding_box:
                     translation = IMP.algebra.get_random_vector_in(bb)
-                    old_coord=IMP.core.XYZ(rb).get_coordinates()
+                    old_coord = IMP.core.XYZ(rb).get_coordinates()
                     rotation = IMP.algebra.get_random_rotation_3d()
                     transformation = IMP.algebra.Transformation3D(
                         rotation,
@@ -1863,17 +1860,17 @@ def shuffle_configuration(root_hier,
                         max_translation,
                         max_rotation)
 
+                debug.append([rb,other_idxs if avoidcollision_rb else set()])
                 IMP.core.transform(rb, transformation)
 
+                # check collisions
                 if avoidcollision_rb:
                     mdl.update()
-                    npairs = len(
-                        gcpf.get_close_pairs(
-                            mdl,
-                            otherparticleindexes,
-                            rbindexes))
-                    if npairs == 0:
-                        niter = niterations
+                    npairs = len(gcpf.get_close_pairs(mdl,
+                                                      list(other_idxs),
+                                                      list(rb_idxs)))
+                    if npairs==0:
+                        break
                     else:
                         niter += 1
                         if verbose:
@@ -1886,17 +1883,18 @@ def shuffle_configuration(root_hier,
 
     print('shuffling', len(flexible_beads), 'flexible beads')
     for fb in flexible_beads:
+        # gather particles to avoid
         if avoidcollision_fb:
-            fbindexes = IMP.get_indexes([fb])
-            otherparticleindexes = list(
-                    set(allparticleindexes) - set(fbindexes))
-            if len(otherparticleindexes) is None:
+            fb_idxs = set(IMP.get_indexes([fb]))
+            other_idxs = all_idxs - fb_idxs
+            if not other_idxs:
                 continue
+
+        # iterate, trying to avoid collisions
         niter = 0
         while niter < niterations:
             fbxyz = IMP.core.XYZ(fb).get_coordinates()
-            if not bounding_box is None:
-                # overrides the perturbation
+            if bounding_box:
                 translation = IMP.algebra.get_random_vector_in(bb)
                 transformation = IMP.algebra.Transformation3D(translation-fbxyz)
             else:
@@ -1905,22 +1903,22 @@ def shuffle_configuration(root_hier,
                     max_translation,
                     max_rotation)
 
-            if IMP.core.RigidBody.get_is_setup(fb): #for gaussians
-                d=IMP.core.RigidBody(fb)
+            # For gaussians, treat this fb as an rb
+            if IMP.core.RigidBody.get_is_setup(fb):
+                d = IMP.core.RigidBody(fb)
             else:
-                d=IMP.core.XYZ(fb)
+                d = IMP.core.XYZ(fb)
 
+            debug.append([d,other_idxs if avoidcollision_fb else set()])
             IMP.core.transform(d, transformation)
 
             if avoidcollision_fb:
                 mdl.update()
-                npairs = len(
-                    gcpf.get_close_pairs(
-                        mdl,
-                        otherparticleindexes,
-                        fbindexes))
-                if npairs == 0:
-                    niter = niterations
+                npairs = len(gcpf.get_close_pairs(mdl,
+                                                  list(other_idxs),
+                                                  list(fbindexes)))
+                if npairs==0:
+                    break
                 else:
                     niter += 1
                     print("shuffle_configuration: floppy body placed close to other %d particles, trying again..." % npairs)
@@ -1928,6 +1926,7 @@ def shuffle_configuration(root_hier,
                         raise ValueError("tried the maximum number of iterations to avoid collisions, increase the distance cutoff")
             else:
                 break
+    return debug
 
 def color2rgb(colorname):
     """Given a chimera color name, return RGB"""

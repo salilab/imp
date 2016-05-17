@@ -31,12 +31,23 @@ class Tests(IMP.test.TestCase):
                                        res_range=(1,100))
         mol.add_representation(mol.get_atomic_residues(),resolutions=[10])
         mol.add_representation(mol.get_non_atomic_residues(), resolutions=[10])
+
+        mol2 = mol.create_clone('B')
         hier = s.build()
 
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        dof.create_rigid_body(mol, nonrigid_parts=mol.get_non_atomic_residues())
-        rbs = dof.get_rigid_bodies()
-        IMP.pmi.tools.shuffle_configuration(hier)
+        mv,rb1 = dof.create_rigid_body(mol, nonrigid_parts=mol.get_non_atomic_residues())
+        mv,rb2 = dof.create_rigid_body(mol2, nonrigid_parts=mol2.get_non_atomic_residues())
+        results = IMP.pmi.tools.shuffle_configuration(hier)
+
+        ps1 = IMP.get_indexes(IMP.core.get_leaves(mol.get_hierarchy()))
+        ps2 = IMP.get_indexes(IMP.core.get_leaves(mol2.get_hierarchy()))
+
+        self.assertEqual(len(results),16)
+        self.assertEqual(results[0],[rb1,set(ps2)])
+        self.assertEqual(results[1],[rb2,set(ps1)])
+        for r in results[2:]:
+            self.assertFalse(r[1])
 
     def test_select_at_all_resolutions(self):
         """Test this actually gets everything"""
