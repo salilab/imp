@@ -18,10 +18,10 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-//! Reset all the statistics for IMP.
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.7)
 IMPKERNELEXPORT void clear_statistics();
 
-//! Show all captured timings.
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.7)
 IMPKERNELEXPORT void show_timings(TextOutput out);
 
 //! Time an operation and save the timings.
@@ -59,7 +59,7 @@ class IMPKERNELEXPORT Timer : public RAII {
   }
 };
 
-//! Set the level of statistics to be gathered.
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.7)
 IMPKERNELEXPORT void set_statistics_level(StatisticsLevel l);
 
 IMPKERNEL_END_NAMESPACE
