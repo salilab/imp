@@ -546,7 +546,6 @@ void RigidBody::teardown_particle(RigidBody rb) {
 
 void RigidBody::set_reference_frame_from_members(
     const ParticleIndexes &rms) {
-  Timer t("set_up_rigid_body_reference_frame");
   algebra::Vector3Ds local;
   algebra::Vector3Ds global;
   IMP_USAGE_CHECK(rms.size() >= 3,
