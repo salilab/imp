@@ -84,6 +84,8 @@ void MultivariateFNormalSufficient::set_use_cg(bool use, double tol) {
 }
 
 void MultivariateFNormalSufficient::stats() const {
+  IMPISD_DEPRECATED_METHOD_DEF(2.7, "Use profiling tools instead");
+
   static std::string func_displays[IMP_MVN_TIMER_NFUNCS] = {
       "eval/density",                "  trace(WP)",
       "  get_mean_square_residuals", "deriv_FM",
