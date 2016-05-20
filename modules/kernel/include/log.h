@@ -81,9 +81,7 @@ IMPKERNELEXPORT void set_log_timer(bool tb);
 IMPKERNELEXPORT void reset_log_timer();
 
 //! Get the currently active global log level
-/** Get the currently active global log level
-
-    @note This may not always match the value passed to set_log_level()
+/** @note This may not always match the value passed to set_log_level()
           as objects can temporarily override the global level
           while they are evaluating.
 
