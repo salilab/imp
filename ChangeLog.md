@@ -6,6 +6,12 @@ ChangeLog {#changelog}
   with the (correctly spelled) IMP::em::SurfaceShellDensityMap::binarize()
   method.
 
+# 2.6.2 - 2016-05-25 # {#changelog_2_6_2}
+- Add support for SWIG 3.0.8.
+- Add support for Ubuntu 16.04, Xenial Xerus.
+- Minor documentation fixes.
+- Bugfix: fix detection of termini in IMP::atom::Selection.
+
 # 2.6.1 - 2016-04-14 # {#changelog_2_6_1}
 - The 'cluster' binary is now called 'rmsd_cluster' to avoid conflicts with
   other packages (e.g. graphviz also provides a 'cluster' binary).
