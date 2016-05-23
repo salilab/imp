@@ -1,6 +1,6 @@
 /**
  *  \file IMP/algebra/Cylinder3D.h
- *  \brief stores a cylinder
+ *  \brief Represent a cylinder in 3D.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */

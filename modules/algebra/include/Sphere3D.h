@@ -38,22 +38,20 @@ inline double get_ball_radius_from_volume_3d(double volume) {
 }
 
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
-/** Return the surface area and volume of the union of the balls
-    bounded by the spheres. This method requires CGAL to work.
-*/
+//! Get surface area & volume of the union of the balls bounded by the spheres.
+/** This method requires CGAL to work.
+ */
 IMPALGEBRAEXPORT FloatPair
     get_surface_area_and_volume(const algebra::Sphere3Ds &ss);
 #endif
 
-/** Return a set of balls that approximates the surface of the passed set within
- * the error tolerance.
- *
- * The any point in the old surface will be within
- * roughly maximum_allowed_error_angstroms of a point in the new surface and any
- * point outside the old volume will be within roughly
- * maximum_allowed_error_angstroms of a point outside the new volume.
- *
- * \note The name may change if someone thinks up a better one.
+//! Get a set of balls that approximates the surface of the passed set.
+/** Any point in the old surface will be within roughly
+    maximum_allowed_error_angstroms of a point in the new surface and any
+    point outside the old volume will be within roughly
+    maximum_allowed_error_angstroms of a point outside the new volume.
+
+    \note The name may change if someone thinks up a better one.
  */
 IMPALGEBRAEXPORT Sphere3Ds
     get_simplified_from_volume(Sphere3Ds in,

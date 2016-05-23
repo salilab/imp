@@ -249,5 +249,20 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(s.get_selected_particle_indexes(False)), 9)
         self.assertEqual(len(s.get_selected_particles(False)), 9)
 
+    def test_fragment_terminus(self):
+        """Test get terminus from fragment"""
+        m = IMP.Model()
+        r = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        term = IMP.atom.Selection(r,terminus=IMP.atom.Selection.N).get_selected_particles()
+
+        # now put in fragments
+        residues = IMP.atom.get_by_type(r,IMP.atom.RESIDUE_TYPE)
+        numr = len(residues)
+        IMP.atom.create_fragment(residues[:numr//2])
+        IMP.atom.create_fragment(residues[numr//2:])
+
+        # does selection still get the terminus?
+        term2 = IMP.atom.Selection(r,terminus=IMP.atom.Selection.N).get_selected_particles()
+        self.assertEqual(term,term2)
 if __name__ == '__main__':
     IMP.test.main()

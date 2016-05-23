@@ -106,59 +106,59 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object {
   internal::CallTimer<IMP_MVN_TIMER_NFUNCS> timer_;
 
  public:
-  /** Initialize with all observed data
-* \param [in] FX F(X) matrix of observations with M columns and N rows.
-* \param [in] JF J(F) determinant of Jacobian of F with respect to
-*                 observation matrix X.
-* \param [in] FM F(M) mean vector \f$F(\mu)\f$ of size M.
-* \param [in] Sigma : MxM variance-covariance matrix \f$\Sigma\f$.
-* \param [in] factor : multiplicative factor (default 1)
-* */
+  //! Initialize with all observed data
+  /** \param [in] FX F(X) matrix of observations with M columns and N rows.
+      \param [in] JF J(F) determinant of Jacobian of F with respect to
+                      observation matrix X.
+      \param [in] FM F(M) mean vector \f$F(\mu)\f$ of size M.
+      \param [in] Sigma : MxM variance-covariance matrix \f$\Sigma\f$.
+      \param [in] factor : multiplicative factor (default 1)
+   */
   MultivariateFNormalSufficient(const IMP_Eigen::MatrixXd& FX, double JF,
                                 const IMP_Eigen::VectorXd& FM,
                                 const IMP_Eigen::MatrixXd& Sigma,
                                 double factor = 1);
 
-  /** Initialize with sufficient statistics
-* \param [in] Fbar : M-dimensional vector of mean observations.
-* \param [in] JF J(F) determinant of Jacobian of F with respect to observation
-*                  matrix X.
-* \param [in] FM F(M) : M-dimensional true mean vector \f$\mu\f$.
-* \param [in] Nobs : number of observations for each variable.
-* \param [in] W : MxM matrix of sample variance-covariances.
-* \param [in] Sigma : MxM variance-covariance matrix Sigma.
-* \param [in] factor : multiplicative factor (default 1)
-* */
+  //! Initialize with sufficient statistics
+  /** \param [in] Fbar M-dimensional vector of mean observations.
+      \param [in] JF J(F) determinant of Jacobian of F with respect to
+                  observation matrix X.
+      \param [in] FM F(M) : M-dimensional true mean vector \f$\mu\f$.
+      \param [in] Nobs number of observations for each variable.
+      \param [in] W MxM matrix of sample variance-covariances.
+      \param [in] Sigma MxM variance-covariance matrix Sigma.
+      \param [in] factor multiplicative factor (default 1)
+   */
   MultivariateFNormalSufficient(const IMP_Eigen::VectorXd& Fbar, double JF,
                                 const IMP_Eigen::VectorXd& FM, int Nobs,
                                 const IMP_Eigen::MatrixXd& W,
                                 const IMP_Eigen::MatrixXd& Sigma,
                                 double factor = 1);
 
-  /* probability density function */
+  //! Probability density function
   double density() const;
 
-  /* energy (score) functions, aka -log(p) */
+  //! Energy (score) function, aka -log(p)
   double evaluate() const;
 
-  /* gradient of the energy wrt the mean F(M) */
+  //! gradient of the energy wrt the mean F(M)
   IMP_Eigen::VectorXd evaluate_derivative_FM() const;
 
-  /* gradient of the energy wrt the variance-covariance matrix Sigma */
+  //! gradient of the energy wrt the variance-covariance matrix Sigma
   IMP_Eigen::MatrixXd evaluate_derivative_Sigma() const;
 
-  // derivative wrt scalar factor
+  //! derivative wrt scalar factor
   double evaluate_derivative_factor() const;
 
-  /* second derivative wrt FM and FM */
+  //! second derivative wrt FM and FM
   IMP_Eigen::MatrixXd evaluate_second_derivative_FM_FM() const;
 
-  /* second derivative wrt FM(l) and Sigma
-   * row and column indices in the matrix returned are for Sigma
+  //! second derivative wrt FM(l) and Sigma
+  /** row and column indices in the matrix returned are for Sigma
    */
   IMP_Eigen::MatrixXd evaluate_second_derivative_FM_Sigma(unsigned l) const;
 
-  /* second derivative wrt Sigma and Sigma(k,l) */
+  //! second derivative wrt Sigma and Sigma(k,l)
   IMP_Eigen::MatrixXd evaluate_second_derivative_Sigma_Sigma(unsigned k,
                                                              unsigned l) const;
 
@@ -188,49 +188,44 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object {
   void set_factor(double f);
   double get_factor() const;
 
-  // if you want to force a recomputation of all stored variables
+  //! if you want to force a recomputation of all stored variables
   void reset_flags();
 
-  // use conjugate gradients (default false)
+  //! use conjugate gradients (default false)
   void set_use_cg(bool use, double tol);
 
-  // print runtime statistics
+  //! print runtime statistics
   void stats() const;
 
-  // return Sigma's eigenvalues from smallest to biggest
+  //! return Sigma's eigenvalues from smallest to biggest
   IMP_Eigen::VectorXd get_Sigma_eigenvalues() const;
 
-  // return Sigma's condition number
+  //! return Sigma's condition number
   double get_Sigma_condition_number() const;
 
-  // Solve for Sigma*X = B, yielding X
+  //! Solve for Sigma*X = B, yielding X
   IMP_Eigen::MatrixXd solve(IMP_Eigen::MatrixXd B) const;
 
-  /* return transpose(epsilon)*P*epsilon */
+  //! return transpose(epsilon)*P*epsilon
   double get_mean_square_residuals() const;
 
-  /* return minus exponent
-   *  \f[-\frac{1}{2\sigma^2}
-   *   \sum_{i=1}^N {}^t(F(\mu) - F(x_i))\Sigma^{-1}(F(\mu)-F(x_i)) \f]
+  //! return minus exponent
+  /**  \f[-\frac{1}{2\sigma^2}
+       \sum_{i=1}^N {}^t(F(\mu) - F(x_i))\Sigma^{-1}(F(\mu)-F(x_i)) \f]
    */
   double get_minus_exponent() const;
 
-  /* return minus log normalization
-   * \f[\frac{N}{2}\left(\log(2\pi\sigma^2) + \log |\Sigma|\right)
-   * -\log J(F) \f]
+  //! return minus log normalization
+  /** \f[\frac{N}{2}\left(\log(2\pi\sigma^2) + \log |\Sigma|\right)
+      -\log J(F) \f]
    */
   double get_minus_log_normalization() const;
 
-  /* return log |\sigma^2 \Sigma| */
+  //! return log |\sigma^2 \Sigma|
   double get_log_generalized_variance() const;
 
   /* remaining stuff */
   IMP_OBJECT_METHODS(MultivariateFNormalSufficient);
-  /*IMP_OBJECT_INLINE(MultivariateFNormalSufficient,
-          out << "MultivariateFNormalSufficient: "
-          << N_ << " observations of "
-          <<  M_ << " variables " <<std::endl,
-          {});*/
 
  private:
   // conjugate gradient init

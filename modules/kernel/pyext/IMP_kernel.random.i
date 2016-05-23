@@ -17,7 +17,10 @@ namespace boost {
 namespace IMP {
   class RandomNumberGenerator {
   public:
+    //! Set the random number generator seed
     void seed(::boost::int32_t x);
+
+    //! Get the next random value from the generator
     int operator()();
   };
   const RandomNumberGenerator random_number_generator;

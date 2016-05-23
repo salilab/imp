@@ -25,6 +25,12 @@ perl -pi -e "s/\@VERSION\@/$VERSION/; s/\@DATE\@/$DATE/; s/\@CODENAME\@/$CODENAM
 if [ "${CODENAME}" = "precise" ]; then
   perl -pi -e "s/libhdf5\-dev/libhdf5-serial-dev/g" debian/control || exit 1
 fi
+if [ "${CODENAME}" = "xenial" ]; then
+  # CGAL cmake support on Xenial requires Qt5 headers too
+  perl -pi -e "s/libcgal\-dev/libcgal-dev, libcgal-qt5-dev/g" debian/control || exit 1
+  # Help cmake to find CGALConfig.cmake
+  perl -pi -e "s#\-DCMAKE_BUILD_TYPE#-DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/ -DCMAKE_BUILD_TYPE#g" debian/rules || exit 1
+fi
 cd .. || exit 1
 if [ "${imp_dir_name}" != "imp" ]; then
   mv "${imp_dir_name}" imp

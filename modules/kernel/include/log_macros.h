@@ -83,7 +83,7 @@
 #define IMP_LOG_TERSE(expr)
 
 /** \param[in] expr A stream expression to be sent to the output stream if the
-    log level is at least TERSE.
+    log level is at least VERBOSE.
 
     Usage:
     \code

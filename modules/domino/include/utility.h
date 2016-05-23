@@ -1,6 +1,6 @@
 /**
  *  \file IMP/domino/utility.h
- *  \brief Functions to get report statistics about the used attributes.
+ *  \brief Functions for helping optimize and understand DOMINO-based sampling.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
@@ -40,19 +40,19 @@ class SubsetFilterTable;
 
     We provide a number of different functions for helping
     optimize and understand domino-based sampling. These functions
-    are expose part of the implementation and are liable to change
+    expose part of the implementation and are liable to change
     without notice.
     @{
  */
 
 class ParticleStatesTable;
 
-/** Load the appropriate state for each particle in a Subset. */
+//! Load the appropriate state for each particle in a Subset.
 IMPDOMINOEXPORT void load_particle_states(const Subset &s, const Assignment &ss,
                                           const ParticleStatesTable *pst);
 
 /** Return a list of all restraints from rs that
-    do not depend on any particle in pst->get_particles() that is not in s
+    do not depend on any particle in pst->get_particles() that is not in s.
     The dependency graph is passed for efficiency.
 */
 IMPDOMINOEXPORT RestraintsTemp get_restraints(
@@ -62,7 +62,7 @@ IMPDOMINOEXPORT RestraintsTemp get_restraints(
 /** @} */
 
 /** If the passed particles are all contained in the Subset and are
-    not contained any of the Subsets in excluded, then return a a list
+    not contained any of the Subsets in excluded, then return a list
     of indices given the location of each passed particle in the passed subset.
     That is
     \code
@@ -76,9 +76,10 @@ IMPDOMINOEXPORT RestraintsTemp get_restraints(
 IMPDOMINOEXPORT Ints get_index(const ParticlesTemp &particles,
                                const Subset &subset, const Subsets &excluded);
 
-/** All of the passed particles are not contained in an ofthe Subsets
-    in excluded, then return a a list of indices given the location of
-    each passed particle in the passed subset or -1 if it is missing.
+/** For each of the passed particles, if it is contained in the Subset and
+    not contained in any of the Subsets in excluded, return the index of that
+    particle in the passed subset; otherwise, return -1. A list of all such
+    indexes is returned. Compare with get_index().
 
     This function is designed to be used for implementing SubsetFilterTable
     classes.

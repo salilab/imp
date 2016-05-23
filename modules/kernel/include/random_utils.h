@@ -56,9 +56,9 @@ void get_random_numbers_normal
 #endif
 }
 
-//! Fill the float array with random normally distributed values.
-/** Fill a pre-allocated array of n float numbers with random normally
-    distributed values with specified mean and standard deviation.
+//! Fill the float array with random uniformly distributed values.
+/** Fill a pre-allocated array of n float numbers with random uniformly
+    distributed values in the [0..1) range.
 
     @param v  vector array that will be resized to n
     @param n  size of array

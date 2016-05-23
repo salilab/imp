@@ -48,18 +48,17 @@ inline int get_rounded(const T& x) {
   }
 }
 
-//! Constrains a value between two given limits
+//! Constrain a value between two given limits
 /*
- * The limits act as the constrain to saturate the value. Examples:
- * with x and constrain(x,-2,2):
+ * The limits act as the constraint to saturate the value. Examples:
  *
  * \code
- * x = constrain(-8,-2,2); // x=-2;
- * x = constrain(-2,-2,2); // x=-2;
- * x = constrain(-1,-2,2); // x=-1;
- * x = constrain(0,-2,2); // x=0;
- * x = constrain(2,-2,2); // x=2;
- * x = constrain(4,-2,2); // x=2;
+ * x = get_constrained(-8,-2,2); // x=-2;
+ * x = get_constrained(-2,-2,2); // x=-2;
+ * x = get_constrained(-1,-2,2); // x=-1;
+ * x = get_constrained(0,-2,2); // x=0;
+ * x = get_constrained(2,-2,2); // x=2;
+ * x = get_constrained(4,-2,2); // x=2;
  * \endcode
  */
 template <typename T>
@@ -101,7 +100,7 @@ inline double get_closer_power_of_2(double x) {
   return p;
 }
 
-//! Compares two values (intended for doubles)
+//! Compare two values for "almost equal" (intended for doubles)
 /**
  * epsilon is the tolerance allowed to consider the values as equal
  */

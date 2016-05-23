@@ -25,7 +25,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     @{
 */
 
-//! Returns the vector product (cross product) of two vectors.
+//! Return the vector product (cross product) of two vectors.
 /** \see Vector3D
  */
 inline Vector3D get_vector_product(const Vector3D &p1, const Vector3D &p2) {
@@ -50,7 +50,7 @@ inline Vector3D get_orthogonal_vector(const Vector3D &v) {
   }
 }
 
-//! Returns the centroid of a set of vectors
+//! Return the centroid of a set of vectors
 /** \see Vector3D
  */
 inline Vector3D get_centroid(const Vector3Ds &ps) {

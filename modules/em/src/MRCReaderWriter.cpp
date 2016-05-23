@@ -10,6 +10,7 @@
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/log.h>
 #include <IMP/log_macros.h>
+#include <boost/scoped_array.hpp>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -59,11 +60,10 @@ void MRCReaderWriter::read_data(float *pt) {
 void MRCReaderWriter::read_8_data(float *pt) {
   seek_to_data();
   size_t n = header.nx * header.ny * header.nz;
-  unsigned char *grid_8bit = new unsigned char[n];  // memory
-  read_grid(grid_8bit, sizeof(unsigned char), n);
+  boost::scoped_array<unsigned char> grid_8bit(new unsigned char[n]);
+  read_grid(grid_8bit.get(), sizeof(unsigned char), n);
   // Transfer to floats
   for (size_t i = 0; i < n; i++) pt[i] = (float)grid_8bit[i];
-  delete (grid_8bit);
   //  std::cout << "MRC file read in 8-bit mode: grid "
   //<< header.nx << "x" << header.ny << "x" << header.nz << "\n";
 }

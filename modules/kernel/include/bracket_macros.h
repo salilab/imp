@@ -1,6 +1,6 @@
 /**
  *  \file IMP/bracket_macros.h
- *  \brief Various general useful macros for IMP.
+ *  \brief Macros to handle array indexing.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
@@ -11,8 +11,8 @@
 #include <IMP/kernel_config.h>
 
 #ifdef IMP_DOXYGEN
-/** Implement operator[] and at() for C++, and __getitem__ for Python.
-    The index type is Index and the expression that returns the value is expr.
+//! Implement operator[] and at() for C++, and __getitem__ for Python.
+/** The index type is Index and the expression that returns the value is expr.
     Like the equivalent methods in std::vector, at() performs bound checking;
     if the bounds_check_expr is false, then a UsageException is thrown.
     operator[] does no bounds checks, except in debug mode. In Python, bounds
@@ -25,8 +25,8 @@
   const Value operator[](Index) const;                     \
   Value& operator[](Index);
 
-/** Implement operator[] and at() for C++, and __getitem__ for Python.
-    The index type is Index and the expression that returns the value is expr.
+//! Implement operator[] and at() for C++, and __getitem__ for Python.
+/** The index type is Index and the expression that returns the value is expr.
     The value returned is not mutable.
     Like the equivalent methods in std::vector, at() performs bound checking;
     if the bounds_check_expr is false, then a UsageException is thrown.

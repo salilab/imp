@@ -1,5 +1,6 @@
 /**
- *  \file IMP/algebra/ReferenceFrame3D.h   \brief Simple 3D rotation class.
+ *  \file IMP/algebra/ReferenceFrame3D.h
+ *  \brief A reference frame in 3D.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
@@ -13,7 +14,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-//!  A reference frame in 3D.
+//! A reference frame in 3D.
 /**
     \geometry
 */
@@ -32,10 +33,11 @@ class IMPALGEBRAEXPORT ReferenceFrame3D {
  public:
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(ReferenceFrame3D);
   //! Create the default reference frame
-  /** That is, the origin with x,y,z axis as the principal axes.*/
+  /** That is, the origin with x,y,z axis as the principal axes. */
   ReferenceFrame3D()
       : tr_(get_identity_transformation_3d()), has_inverse_(true), tri_(tr_) {}
-  //! a reference frame specified by a transformation matrix
+
+  //! A reference frame specified by a transformation matrix
   /** Constructs a reference frame using transformation tr
 
       @param tr a transformation from local coordinates in this

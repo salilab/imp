@@ -1,6 +1,6 @@
 /**
  *  \file IMP/algebra/endian.h
- *  \brief functions to deal with endian of EM images
+ *  \brief Functions to deal with byte order.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
 */
@@ -29,8 +29,8 @@ void IMPALGEBRAEXPORT reversed_read(void* dest, size_t size, size_t nitems,
 
 //! Writes to a file in normal or reversed order
 /**
- * This function is the same as fread from C, but at the end there is a flag
- * saying if data should be read in reverse order or not.
+ * This function is the same as fwrite from C, but at the end there is a flag
+ * saying if data should be written in reverse order or not.
  *
  * If the reverse parameter is true, the data will be written in reverse order.
  */

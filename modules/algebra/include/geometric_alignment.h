@@ -99,7 +99,7 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
         IMP_LOG_TERSE(source[i] << std::endl);
       }
       IMP_LOG_TERSE("TO:\n");
-      for (unsigned int i = 0; i < source.size(); ++i) {
+      for (unsigned int i = 0; i < target.size(); ++i) {
         IMP_LOG_TERSE(target[i] << std::endl);
       }
       IMP_LOG_TERSE(H);

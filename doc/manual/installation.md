@@ -27,8 +27,7 @@ In order to build %IMP from source, you will need:
 - [HDF5](http://www.hdfgroup.org/HDF5/) (1.8 or later)
 - [Python](http://www.python.org) (2.6 or later, or any version of Python 3)
 - [SWIG](http://www.swig.org) (1.3.40 or later; 2.0.4 or later is needed
-  if you want to use Python 3; note that 3.0.8 does not
-  [currently work](https://github.com/swig/swig/issues/583))
+  if you want to use Python 3)
 
 The following prerequisites are _optional_; without them some parts of %IMP
 will not build, and some will not function optimally.

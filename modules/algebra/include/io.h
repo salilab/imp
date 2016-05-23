@@ -36,13 +36,13 @@ IMPALGEBRAEXPORT void write_pts(const Vector3Ds &vs, TextOutput out);
 */
 IMPALGEBRAEXPORT Vector3Ds read_pts(TextInput input);
 
-//! Write a set of 3d spheres to a file
+//! Write a set of 3D spheres to a file
 /** \see read_pts
     \see SphereD
 */
 IMPALGEBRAEXPORT void write_spheres(const Sphere3Ds &vs, TextOutput out);
 
-//! Read a set of 3d spheres from a file
+//! Read a set of 3D spheres from a file
 /** \see write_pts
     \see SphereD
 */
