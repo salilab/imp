@@ -28,10 +28,12 @@ class XYRadialPositionLowerRestraint(object):
         self.label = "None"
 
         xyr = IMP.npc.XYRadialPositionLowerRestraint(self.m, lower_bound, consider_radius, sigma)
-        terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        #print (terminal_residue, type(terminal_residue))
+        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        cterminal = residues[-1]        #nterminal = residues[0]
+        #print (cterminal, type(cterminal))
 
-        xyr.add_particle(terminal_residue)
+        xyr.add_particle(cterminal)
         self.rs.add_restraint(xyr)
 
     def set_label(self, label):
@@ -86,10 +88,12 @@ class XYRadialPositionUpperRestraint(object):
         self.label = "None"
 
         xyr = IMP.npc.XYRadialPositionUpperRestraint(self.m, upper_bound, consider_radius, sigma)
-        terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        #print (terminal_residue, type(terminal_residue))
+        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        cterminal = residues[-1]        #nterminal = residues[0]
+        #print (cterminal, type(cterminal))
 
-        xyr.add_particle(terminal_residue)
+        xyr.add_particle(cterminal)
         self.rs.add_restraint(xyr)
 
     def set_label(self, label):
@@ -143,10 +147,12 @@ class ZAxialPositionLowerRestraint(object):
         self.label = "None"
 
         zax = IMP.npc.ZAxialPositionLowerRestraint(self.m, lower_bound, consider_radius, sigma)
-        terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        #print (terminal_residue, type(terminal_residue))
+        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        cterminal = residues[-1]        #nterminal = residues[0]
+        #print (cterminal, type(cterminal))
 
-        zax.add_particle(terminal_residue)
+        zax.add_particle(cterminal)
         self.rs.add_restraint(zax)
 
     def set_label(self, label):
@@ -200,10 +206,12 @@ class ZAxialPositionUpperRestraint(object):
         self.label = "None"
 
         zax = IMP.npc.ZAxialPositionUpperRestraint(self.m, upper_bound, consider_radius, sigma)
-        terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        #print (terminal_residue, type(terminal_residue))
+        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        cterminal = residues[-1]        #nterminal = residues[0]
+        #print (cterminal, type(cterminal))
 
-        zax.add_particle(terminal_residue)
+        zax.add_particle(cterminal)
         self.rs.add_restraint(zax)
 
     def set_label(self, label):
