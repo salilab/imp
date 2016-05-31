@@ -26,7 +26,6 @@ ScoreState::ScoreState(Model *m, std::string name)
 
 void ScoreState::before_evaluate() {
   IMP_OBJECT_LOG;
-  Timer t(this, str_before_evaluate);
   validate_inputs();
   validate_outputs();
   do_before_evaluate();
@@ -34,7 +33,6 @@ void ScoreState::before_evaluate() {
 
 void ScoreState::after_evaluate(DerivativeAccumulator *da) {
   IMP_OBJECT_LOG;
-  Timer t(this, str_after_evaluate);
   validate_inputs();
   validate_outputs();
   do_after_evaluate(da);

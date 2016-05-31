@@ -1517,47 +1517,31 @@ class Representation(object):
             print("optimize_floppy_bodies: no particle to optimize")
 
     def create_rotational_symmetry(self, maincopy, copies):
+        '''
+        The copies must not contain rigid bodies.
+        The symmetry restraints are applied at each leaf.
+        '''
+
         from math import pi
         self.representation_is_modified = True
         ncopies = len(copies) + 1
-
-        sel = IMP.atom.Selection(self.prot, molecule=maincopy)
-        mainparticles = sel.get_selected_particles()
-
+        main_hiers = IMP.atom.get_leaves(self.hier_dict[maincopy])
         for k in range(len(copies)):
             rotation3D = IMP.algebra.get_rotation_about_axis(
-                IMP.algebra.Vector3D(0, 0, 1), 2 * pi / ncopies * (k + 1))
+                IMP.algebra.Vector3D(0, 0, 1.0), 2.0 * pi / float(ncopies) * float(k + 1))
             sm = IMP.core.TransformationSymmetry(rotation3D)
-
-            sel = IMP.atom.Selection(self.prot, molecule=copies[k])
-            copyparticles = sel.get_selected_particles()
-
-            mainpurged = []
-            copypurged = []
-            for n, p in enumerate(mainparticles):
-                print(p.get_name())
-                pc = copyparticles[n]
-
-                mainpurged.append(p)
-                IMP.pmi.Symmetric.setup_particle(p, 0)
-
-                copypurged.append(pc)
-                IMP.pmi.Symmetric.setup_particle(pc, 1)
+            clone_hiers = IMP.atom.get_leaves(self.hier_dict[copies[k]])
 
             lc = IMP.container.ListSingletonContainer(self.m)
-            for n, p in enumerate(mainpurged):
-
-                pc = copypurged[n]
+            for n, p in enumerate(main_hiers):
+                pc = clone_hiers[n]
                 print("setting " + p.get_name() + " as reference for " + pc.get_name())
-
-                IMP.core.Reference.setup_particle(pc, p)
-                lc.add(pc.get_index())
+                IMP.core.Reference.setup_particle(pc.get_particle(), p.get_particle())
+                lc.add(pc.get_particle().get_index())
 
             c = IMP.container.SingletonsConstraint(sm, None, lc)
             self.m.add_score_state(c)
-
         self.m.update()
-
 
     def create_rigid_body_symmetry(self, particles_reference, particles_copy,label="None",
                     initial_transformation=IMP.algebra.get_identity_transformation_3d()):

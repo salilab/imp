@@ -17,7 +17,7 @@ import IMP.pmi.restraints.stereochemistry
 # Read sequences etc
 seqs = IMP.pmi.topology.Sequences(IMP.pmi.get_example_path('data/1WCM.fasta'))
 components = ["Rpb1","Rpb2","Rpb3","Rpb4"]
-colors = [0.1,0.9,0.5,0.8]
+colors = ['medium purple','goldenrod','orchid','olive drab']
 chains = "ABCD"
 beadsize = 10
 
@@ -64,6 +64,9 @@ for mol in mols:
                           max_trans=0.1,
                           max_rot=0.78,
                           nonrigid_max_trans=0.1)
+    # display the bonds between consecutive fragments,
+    # so that they are shown in the psf
+    IMP.pmi.tools.display_bonds(mol)
 
 
 ###################### RESTRAINTS #####################

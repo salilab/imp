@@ -167,6 +167,5 @@ class Tests(IMP.test.TestCase):
                        'missing.None.xl.db', 'modeling.stat',
                        'trajectory.rmf3']:
             os.unlink(output)
-
 if __name__ == '__main__':
     IMP.test.main()

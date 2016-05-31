@@ -22,16 +22,14 @@ IMPCORE_BEGIN_NAMESPACE
 // TODO: why this number? how can we tell it's unique
 #define IMP_PARTICLE_TYPE_INDEX 34897493
 
-/** A ParticleType is an IMP::Key object for identifying types
-   of
-    particles by strings. The ParticleType key is used to type particles
-   within
+//! An IMP::Key object for identifying types of particles by strings.
+/** The ParticleType key is used to type particles within
     the Typed decorator */
 typedef Key<IMP_PARTICLE_TYPE_INDEX, true> ParticleType;
 IMP_VALUES(ParticleType, ParticleTypes);
 
 //! A decorator for classifying particles in your system.
-/** This decorator
+/** \see ParticleType
  */
 class IMPCOREEXPORT Typed : public Decorator {
   static void do_setup_particle(Model *m, ParticleIndex pi,

@@ -8,7 +8,7 @@ import IMP.pmi.topology
 import IMP.pmi.restraints.stereochemistry
 
 
-class StereochemistryTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_stereochemistry_basic(self):
         """ test PMI2 connectivity restraint on basic system
@@ -118,8 +118,9 @@ class StereochemistryTests(IMP.test.TestCase):
         self.assertEqual(er.get_restraint().get_number_of_restraints(),12)
 
         lhelix = sses['helix'][0][0][1] - sses['helix'][0][0][0]+1
-        hr = IMP.pmi.restraints.stereochemistry.AtomicHelixRestraint(hier,sses['helix'][0][0])
-        self.assertEqual(hr.get_number_of_restraints(),lhelix*2-4)
+        hr = IMP.pmi.restraints.stereochemistry.HelixRestraint(hier,sses['helix'][0][0])
+        self.assertEqual(hr.get_number_of_dihedrals(),lhelix-2)
+        self.assertEqual(hr.get_number_of_bonds(),lhelix-4)
 
 
     def test_excluded_volume_sphere_pmi2(self):
@@ -148,7 +149,7 @@ class StereochemistryTests(IMP.test.TestCase):
         self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 12)
 
         # test just picking a few residues - this one picks two beads
-        resis = mol.residue_range(15,25)
+        resis = mol.residue_range(10,29)
         ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(included_objects=resis, resolution=1)
         self.assertEqual(len(ev.cpc.get_all_possible_indexes()), 2)
 

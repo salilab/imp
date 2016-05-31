@@ -152,7 +152,11 @@ void check_live_objects() {
   for (boost::unordered_set<Object*>::const_iterator it = live_.begin();
        it != live_.end(); ++it) {
     IMP_USAGE_CHECK((*it)->get_ref_count() > 0,
-                    "Object " << (*it)->get_name() << " is not ref counted.");
+                    "Object " << (*it)->get_name()
+                    << " is alive but not ref counted - memory leakage possible."
+                    << " This usually happens if an owning pointer is released"
+                    << " without being either deleted manually or assigned to"
+                    << " another owning pointer.");
   }
 }
 

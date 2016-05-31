@@ -23,13 +23,15 @@ GaussianEMRestraint::GaussianEMRestraint(
                          Float model_cutoff_dist,Float density_cutoff_dist,
                          Float slope,
                          bool update_model, bool backbone_slope,
+                         bool local,
                          std::string name):
   Restraint(mdl,name),
   model_ps_(model_ps),
   density_ps_(density_ps),
   global_sigma_(global_sigma),
   slope_(slope),
-  update_model_(update_model){
+  update_model_(update_model),
+  local_(local){
 
     msize_=model_ps.size();
     dsize_=density_ps.size();
@@ -107,6 +109,7 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   IMP_Eigen::Vector3d deriv;
   //std::cout<<"\neval"<<std::endl;
   boost::unordered_map<ParticleIndex,KahanVectorAccumulation> derivs_mm,derivs_md,slope_md;
+  std::set<ParticleIndex> local_dens;
   //boost::unordered_map<ParticleIndexPair,Float> md_dists(msize_*dsize_);
 
   Float slope_score=0.0;
@@ -144,13 +147,31 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
                         md_container_,{
     Float score = score_gaussian_overlap(get_model(),_1,&deriv);
     md_score = KahanSum(md_score,score);
+    if (local_) local_dens.insert(_1[1]);
     if (accum) {
       derivs_md[_1[0]] = KahanVectorSum(derivs_md[_1[0]],-deriv);
     }
   });
 
+
+  //local gets new DD score each time
+  Float dd_score = 0.0;
+  if (local_){
+    for(std::set<ParticleIndex>::const_iterator it1=local_dens.begin();
+        it1!=local_dens.end();++it1){
+      for(std::set<ParticleIndex>::const_iterator it2=local_dens.begin();
+          it2!=local_dens.end();++it2){
+        Float score = score_gaussian_overlap(get_model(),
+                                             ParticleIndexPair(*it1,*it2),
+                                             &deriv);
+        dd_score+=score;
+      }
+    }
+  }
+  else dd_score = dd_score_;
+
   /* distance calculation */
-  double cc=2*md_score.sum/(mm_score.sum+dd_score_);
+  double cc=2*md_score.sum/(mm_score.sum+dd_score);
   //double cc=2*md_score/(dd_score_);
   double log_score=-std::log(cc) + slope_score;
   //double dist=-std::log(cc+std::numeric_limits<float>::min()*(1-cc));
@@ -172,7 +193,7 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
       else{
         algebra::Vector3D d_mm(derivs_mm[*it].sum[0],derivs_mm[*it].sum[1],derivs_mm[*it].sum[2]);
         algebra::Vector3D d_md(derivs_md[*it].sum[0],derivs_md[*it].sum[1],derivs_md[*it].sum[2]);
-        Float mmdd=mm_score.sum+dd_score_;
+        Float mmdd=mm_score.sum+dd_score;
         algebra::Vector3D d = -2.0 / cc * (mmdd*d_md - md_score.sum*d_mm) / (mmdd * mmdd);
         //std::cout<<"deriv calc-> d_mm: "<<d_mm<<" d_md: "<<d_md<<" mmdd: "<<mmdd<<" d: "<<d<<std::endl;
         d += algebra::Vector3D(slope_md[*it].sum[0],slope_md[*it].sum[1],slope_md[*it].sum[2]);

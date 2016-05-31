@@ -455,9 +455,17 @@ Hierarchy clone_internal(Hierarchy d,
   if (Fragment::get_is_setup(d.get_particle())) {
     nd = Fragment::setup_particle(p, Fragment(d.get_particle()));
   }
+  if (State::get_is_setup(d.get_particle())) {
+    nd = State::setup_particle(p, State(d.get_particle()));
+  }
+  if (Representation::get_is_setup(d.get_particle())) {
+    nd = Representation::setup_particle(p, Representation(d.get_particle()));
+  }
+
   if (nd == Hierarchy()) nd = Hierarchy::setup_particle(p);
   using core::XYZ;
   using core::XYZR;
+  using core::Gaussian;
   if (XYZR::get_is_setup(d.get_particle())) {
     XYZR::setup_particle(
         p, algebra::Sphere3D(XYZ(d.get_particle()).get_coordinates(),
@@ -465,11 +473,33 @@ Hierarchy clone_internal(Hierarchy d,
   } else if (XYZ::get_is_setup(d.get_particle())) {
     XYZ::setup_particle(p, XYZ(d.get_particle()).get_coordinates());
   }
+  if (Gaussian::get_is_setup(d.get_particle())){
+    Gaussian::setup_particle(p,Gaussian(d.get_particle()).get_gaussian());
+  }
   p->set_name(d.get_particle()->get_name());
   if (recurse) {
     for (unsigned int i = 0; i < d.get_number_of_children(); ++i) {
       Hierarchy nc = clone_internal(d.get_child(i), map, true);
       nd.add_child(nc);
+    }
+    if (Representation::get_is_setup(d.get_particle())) {
+      Representation r(d.get_particle());
+      Floats res_b = r.get_resolutions(BALLS);         // first one is base
+      Hierarchies hs_b = r.get_representations(BALLS); //last one is base
+      for (unsigned int i=0;i<hs_b.size()-1;i++){
+        Hierarchy nc = clone_internal(hs_b[i],map,true);
+        Representation(p).add_representation(nc.get_particle(),
+                                             BALLS,
+                                             res_b[i+1]);
+      }
+      Floats res_d = r.get_resolutions(DENSITIES);
+      Hierarchies hs_d = r.get_representations(DENSITIES);
+      for (unsigned int i=0;i<hs_d.size();i++){
+        Hierarchy nd = clone_internal(hs_d[i],map,true);
+        Representation(p).add_representation(nd.get_particle(),
+                                             DENSITIES,
+                                             res_d[i]);
+      }
     }
   }
   return nd;

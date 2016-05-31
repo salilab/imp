@@ -21,8 +21,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Copy the derivatives from a coarse particle to its refined particles
-/** \see DerivatvesFromRefined
-    \see DerivatvesToRefined
+/** \see DerivativesFromRefined
+    \see DerivativesToRefined
     \see Centroid
     \see atom::CenterOfMass
  */

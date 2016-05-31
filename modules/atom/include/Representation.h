@@ -45,10 +45,16 @@ class IMPATOMEXPORT Representation : public Hierarchy {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 double resolution = -1);
 
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                Representation o){
+    do_setup_particle(m,pi,
+                      o.get_model()->get_attribute(get_base_resolution_key(),
+                                                   o.get_particle_index()));
+  }
  public:
   IMP_DECORATOR_SETUP_0(Representation);
   IMP_DECORATOR_SETUP_1(Representation, double, resolution);
-
+  IMP_DECORATOR_SETUP_1(Representation, Representation, other);
   IMP_DECORATOR_METHODS(Representation, Hierarchy);
 
   static bool get_is_setup(Model *m, ParticleIndex pi) {
@@ -74,6 +80,9 @@ class IMPATOMEXPORT Representation : public Hierarchy {
 
   //! Get all resolutions that are available for a specific RepresentationType.
   Floats get_resolutions(RepresentationType type = BALLS) const;
+
+  //! If you've changed the parent, update all the resolutions
+  void update_parents();
 };
 
 IMP_DECORATORS(Representation, Representations, Hierarchies);

@@ -19,7 +19,7 @@ int get_copy_index(Hierarchy h) {
     if (Copy::get_is_setup(h)) {
       return Copy(h).get_copy_index();
     }
-    h = h.get_parent();
+    h = get_parent_representation(h);
   }
   return -1;
 }

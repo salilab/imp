@@ -44,9 +44,16 @@ class Alignment(object):
                                in template and query does not match!''')
 
     def permute(self):
-
+        # get unique protein names for each protein
+        # this is, unfortunately, expecting that names are all 'Molname..X'
+        #  where X is different for each copy.
         self.proteins = sorted(self.query.keys())
         prots_uniq = [i.split('..')[0] for i in self.proteins]
+
+        # for each unique name, store list of permutations
+        # e.g. for keys A..1,A..2 store P[A] = [[A..1,A..2],[A..2,A..1]]
+        # then store the product: [[[A1,A2],[B1,B2]],[[A1,A2],[B2,B1]],
+        #                          [[A2,A1],[B1,B2]],[[A2,A1],[B2,B1]]]
         P = {}
         for p in prots_uniq:
             np = prots_uniq.count(p)
@@ -71,8 +78,6 @@ class Alignment(object):
 
         self.rmsd = 10000000000.
         for comb in self.Product:
-
-
 
             order = sum([list(i) for i in comb], [])
             query_xyz = []
@@ -99,13 +104,17 @@ class Alignment(object):
 
         self.permute()
 
+        # create flat coordinate list from template in standard order
+        # then loop through the permutations and try to align and get RMSD
+        # should allow you to try all mappings within each protein
         template_xyz = []
         torder = sum([list(i) for i in self.Product[0]], [])
         for t in torder:
             template_xyz += [IMP.algebra.Vector3D(i) for i in self.template[t]]
-        #template_xyz = np.array(template_xyz)
-
+        # template_xyz = np.array(template_xyz)
         self.rmsd, Transformation = 10000000000., ''
+
+        # then for each permutation, get flat list of coords and get RMSD
         for comb in self.Product:
             order = sum([list(i) for i in comb], [])
             query_xyz = []
@@ -129,6 +138,7 @@ class Alignment(object):
                 self.rmsd = dist
                 Transformation = transformation
 
+        # return the transformation
         return (self.rmsd, Transformation)
 
 

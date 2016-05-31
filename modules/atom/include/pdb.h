@@ -518,7 +518,7 @@ IMPATOMEXPORT void write_multimodel_pdb(const Hierarchies &mhd,
 IMPATOMEXPORT std::string get_pdb_string(
     const algebra::Vector3D &v, int index = -1, AtomType at = AT_CA,
     ResidueType rt = atom::ALA, char chain = ' ', int res_index = 1,
-    char res_icode = ' ', double occpancy = 1.00, double tempFactor = 0.00,
+    char res_icode = ' ', double occupancy = 1.00, double tempFactor = 0.00,
     Element e = C);
 
 /**

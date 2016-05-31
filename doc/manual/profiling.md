@@ -33,4 +33,6 @@ it will output the leaks and also produce output file that can be viewed with pp
 
 # Mac
 
-On a Mac, you can use the `Instruments` program that is part of the developer tools. It is pretty straight forwards to use and can do cpu profiling, memory profile, leak checking etc. It is currently located in `/Applications/Xcode.app/Contents/Applications/Instruments.app/`.
+On a Mac, you can use the `Instruments` program that is part of Xcode.
+It is pretty straightforward to use and can do CPU profiling, memory profiling,
+leak checking etc. It is currently located in `/Applications/Xcode.app/Contents/Applications/Instruments.app/`.

@@ -19,6 +19,7 @@ import glob
 from operator import itemgetter
 from collections import defaultdict
 import numpy as np
+import string
 
 class ReplicaExchange0(object):
     """A macro to help setup and run replica exchange.
@@ -67,8 +68,7 @@ class ReplicaExchange0(object):
            @param model                    The IMP model
            @param representation PMI.representation.Representation object
                   (or list of them, for multi-state modeling)
-           @param root_hier Instead of passing Representation, just pass
-                  a hierarchy
+           @param root_hier Instead of passing Representation, pass the System hierarchy
            @param monte_carlo_sample_objects Objects for MC sampling; a list of
                   structural components (generally the representation) that will
                   be moved and restraints with parameters that need to
@@ -110,8 +110,10 @@ class ReplicaExchange0(object):
         """
         self.model = model
         self.vars = {}
+        self.pmi2 = False
 
         ### add check hierarchy is multistate
+        self.output_objects = output_objects
         if representation:
             if type(representation) == list:
                 self.is_multi_state = True
@@ -121,7 +123,10 @@ class ReplicaExchange0(object):
                 self.is_multi_state = False
                 self.root_hier = representation.prot
                 self.vars["number_of_states"] = 1
-        elif root_hier:
+        elif root_hier and type(root_hier) == IMP.atom.Hierarchy and root_hier.get_name()=='System':
+            self.pmi2 = True
+            self.output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
+            self.root_hier = root_hier
             states = IMP.atom.get_by_type(root_hier,IMP.atom.STATE_TYPE)
             self.vars["number_of_states"] = len(states)
             if len(states)>1:
@@ -131,8 +136,7 @@ class ReplicaExchange0(object):
                 self.root_hier = root_hier
                 self.is_multi_state = False
         else:
-            print("ERROR: Must provide representation or root_hier")
-            return
+            raise Exception("Must provide representation or System hierarchy (root_hier)")
 
         self.crosslink_restraints = crosslink_restraints
         self.em_object_for_rmf = em_object_for_rmf
@@ -140,7 +144,6 @@ class ReplicaExchange0(object):
         if sample_objects is not None:
             self.monte_carlo_sample_objects+=sample_objects
         self.molecular_dynamics_sample_objects=molecular_dynamics_sample_objects
-        self.output_objects = output_objects
         self.replica_exchange_object = replica_exchange_object
         self.molecular_dynamics_max_time_step = molecular_dynamics_max_time_step
         self.vars["monte_carlo_temperature"] = monte_carlo_temperature
@@ -180,8 +183,7 @@ class ReplicaExchange0(object):
         self.vars["replica_stat_file_suffix"] = replica_stat_file_suffix
         self.vars["geometries"] = None
         self.test_mode = test_mode
-        if root_hier:
-            self.output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
+
     def add_geometries(self, geometries):
         if self.vars["geometries"] is None:
             self.vars["geometries"] = list(geometries)
@@ -333,8 +335,8 @@ class ReplicaExchange0(object):
                                                  self.vars["best_pdb_name_suffix"]+".0.pdb")
 # ---------------------------------------------
 
-        if not self.em_object_for_rmf is None:
-            if not self.is_multi_state:
+        if self.em_object_for_rmf is not None:
+            if not self.is_multi_state or self.pmi2:
                 output_hierarchies = [
                     self.root_hier,
                     self.em_object_for_rmf.get_density_as_hierarchy(
@@ -344,7 +346,7 @@ class ReplicaExchange0(object):
                 output_hierarchies.append(
                     self.em_object_for_rmf.get_density_as_hierarchy())
         else:
-            if not self.is_multi_state:
+            if not self.is_multi_state or self.pmi2:
                 output_hierarchies = [self.root_hier]
             else:
                 output_hierarchies = self.root_hiers
@@ -439,7 +441,8 @@ class BuildSystem(object):
     def __init__(self,
                  mdl,
                  sequence_connectivity_scale=4.0,
-                 force_create_gmm_files=False):
+                 force_create_gmm_files=False,
+                 resolutions=[1,10]):
         """Constructor
         @param mdl An IMP Model
         @param sequence_connectivity_scale For scaling the connectivity restraint
@@ -447,12 +450,16 @@ class BuildSystem(object):
                   no matter what. If False, will only only sample if the
                   files don't exist. If number of Gaussians is zero, won't
                   do anything.
+        @param resolutions The resolutions to build for structured regions
         """
         self.mdl = mdl
         self.system = IMP.pmi.topology.System(self.mdl)
-        self._readers = [] #internal storage of the TopologyReaders (one per state)
-        self._domains = [] #internal storage of key=domain name, value=(atomic_res,non_atomic_res). (one per state)
+        self._readers = []    # the TopologyReaders (one per state)
+        self._domain_res = [] # TempResidues for each domain key=unique name, value=(atomic_res,non_atomic_res).
+        self._domains = []    # key = domain unique name, value = Component
         self.force_create_gmm_files = force_create_gmm_files
+        self.resolutions = resolutions
+
     def add_state(self,reader):
         """Add a state using the topology info in a IMP::pmi::topology::TopologyReader object.
         When you are done adding states, call execute_macro()
@@ -460,62 +467,90 @@ class BuildSystem(object):
         """
         state = self.system.create_state()
         self._readers.append(reader)
+        these_dres = {}
         these_domains = {}
+        chain_ids = string.ascii_uppercase
+        numchain = 0
 
         ### setup representation
-        # setup each component once, then each domain gets seperate structure, representation
-        for molname in reader.get_unique_molecules():
-            mlist = reader.get_unique_molecules()[molname]
-            seq = IMP.pmi.topology.Sequences(mlist[0].fasta_file)
-            mol = state.create_molecule(molname,seq[mlist[0].fasta_id],mlist[0].chain)
-            for domain in mlist:
-                # we build everything in the residue range, even if it extends beyond what's in the actual PDB file
-                if domain.residue_range==[] or domain.residue_range is None:
-                    domain_res = mol.get_residues()
+        # loop over molecules, copies, then domains
+        for molname in reader.get_molecules():
+            copies = reader.get_molecules()[molname].domains
+            for nc,copyname in enumerate(copies):
+                copy = copies[copyname]
+                if nc==0:
+                    seq = IMP.pmi.topology.Sequences(copy[0].fasta_file)[copy[0].fasta_id]
+                    orig_mol = state.create_molecule(molname,
+                                                     seq,
+                                                     chain_ids[numchain])
+                    mol = orig_mol
+                    numchain+=1
                 else:
-                    start = domain.residue_range[0]+domain.pdb_offset
-                    if domain.residue_range[1]==-1:
-                        end = -1
+                    mol = orig_mol.create_copy(chain_ids[numchain])
+                    numchain+=1
+
+                for domain in copy:
+                    # we build everything in the residue range, even if it
+                    #  extends beyond what's in the actual PDB file
+                    these_domains[domain.get_unique_name()] = domain
+                    if domain.residue_range==[] or domain.residue_range is None:
+                        domain_res = mol.get_residues()
                     else:
-                        end = domain.residue_range[1]+domain.pdb_offset
-                    domain_res = mol.residue_range(start,end)
-                if domain.pdb_file=="BEADS":
-                    mol.add_representation(domain_res,
-                                           resolutions=[domain.bead_size],
-                                           setup_particles_as_densities=(domain.em_residues_per_gaussian!=0))
-                    these_domains[domain.domain_name] = (set(),domain_res)
-                elif domain.pdb_file=="IDEAL_HELIX":
-                    mol.add_representation(domain_res,
-                                           resolutions=reader.resolutions,
-                                           ideal_helix=True,
-                                           density_residues_per_component=domain.em_residues_per_gaussian,
-                                           density_prefix=domain.density_prefix,
-                                           density_force_compute=self.force_create_gmm_files)
-                    these_domains[domain.domain_name] = (domain_res,set())
-                else:
-                    domain_atomic = mol.add_structure(domain.pdb_file,
-                                                      domain.chain,
-                                                      domain.residue_range,
-                                                      domain.pdb_offset,
-                                                      soft_check=True)
-                    domain_non_atomic = domain_res - domain_atomic
-                    if domain.em_residues_per_gaussian==0:
-                        mol.add_representation(domain_atomic,
-                                               resolutions=reader.resolutions)
-                        if len(domain_non_atomic)>0:
-                            mol.add_representation(domain_non_atomic,
-                                                   resolutions=[domain.bead_size])
+                        start = domain.residue_range[0]+domain.pdb_offset
+                        if domain.residue_range[1]==-1:
+                            end = -1
+                        else:
+                            end = domain.residue_range[1]+domain.pdb_offset
+                        domain_res = mol.residue_range(start-1,end-1)
+                    if domain.pdb_file=="BEADS":
+                        mol.add_representation(
+                            domain_res,
+                            resolutions=[domain.bead_size],
+                            setup_particles_as_densities=(
+                                domain.em_residues_per_gaussian!=0),
+                            color = domain.color)
+                        these_dres[domain.get_unique_name()] = (set(),domain_res)
+                    elif domain.pdb_file=="IDEAL_HELIX":
+                        mol.add_representation(
+                            domain_res,
+                            resolutions=self.resolutions,
+                            ideal_helix=True,
+                            density_residues_per_component=domain.em_residues_per_gaussian,
+                            density_prefix=domain.density_prefix,
+                            density_force_compute=self.force_create_gmm_files,
+                            color = domain.color)
+                        these_dres[domain.get_unique_name()] = (domain_res,set())
                     else:
-                        mol.add_representation(domain_atomic,
-                                               resolutions=reader.resolutions,
-                                               density_residues_per_component=domain.em_residues_per_gaussian,
-                                               density_prefix=domain.density_prefix,
-                                               density_force_compute=self.force_create_gmm_files)
-                        if len(domain_non_atomic)>0:
-                            mol.add_representation(domain_non_atomic,
-                                                   resolutions=[domain.bead_size],
-                                                   setup_particles_as_densities=True)
-                    these_domains[domain.domain_name] = (domain_atomic,domain_non_atomic)
+                        domain_atomic = mol.add_structure(domain.pdb_file,
+                                                          domain.chain,
+                                                          domain.residue_range,
+                                                          domain.pdb_offset,
+                                                          soft_check=True)
+                        domain_non_atomic = domain_res - domain_atomic
+                        if not domain.em_residues_per_gaussian:
+                            mol.add_representation(domain_atomic,
+                                                   resolutions=self.resolutions,
+                                                   color = domain.color)
+                            if len(domain_non_atomic)>0:
+                                mol.add_representation(domain_non_atomic,
+                                                       resolutions=[domain.bead_size],
+                                                       color = domain.color)
+                        else:
+                            mol.add_representation(
+                                domain_atomic,
+                                resolutions=self.resolutions,
+                                density_residues_per_component=domain.em_residues_per_gaussian,
+                                density_prefix=domain.density_prefix,
+                                density_force_compute=self.force_create_gmm_files,
+                                color = domain.color)
+                            if len(domain_non_atomic)>0:
+                                mol.add_representation(domain_non_atomic,
+                                                       resolutions=[domain.bead_size],
+                                                       setup_particles_as_densities=True,
+                                                       color = domain.color)
+                        these_dres[domain.get_unique_name()] = (
+                            domain_atomic,domain_non_atomic)
+            self._domain_res.append(these_dres)
             self._domains.append(these_domains)
         print('State',len(self.system.states),'added')
 
@@ -524,6 +559,9 @@ class BuildSystem(object):
         For each state, it's a dictionary of Molecules where key is the molecule name
         """
         return [s.get_molecules() for s in self.system.get_states()]
+
+    def get_molecule(self,molname,copy_index=0,state_index=0):
+        return self.system.get_states()[state_index].get_molecules()[molname][copy_index]
 
     def execute_macro(self):
         """Builds representations and sets up degrees of freedom"""
@@ -542,315 +580,42 @@ class BuildSystem(object):
             for rblist in rbs:
                 all_res = IMP.pmi.tools.OrderedSet()
                 bead_res = IMP.pmi.tools.OrderedSet()
-                for domain in rblist:
-                    all_res|=self._domains[nstate][domain][0]
-                    bead_res|=self._domains[nstate][domain][1]
-                    domains_in_rbs.add(domain)
+                for dname in rblist:
+                    domain = self._domains[nstate][dname]
+                    if domain.pdb_file=="BEADS":
+                        print("WARNING: You have a rigid body containing BEADS "
+                              "You should probably set the rigid body field for "+domain.molname+
+                              " to blank")
+                    all_res|=self._domain_res[nstate][dname][0]
+                    bead_res|=self._domain_res[nstate][dname][1]
+                    domains_in_rbs.add(dname)
                 all_res|=bead_res
                 self.dof.create_rigid_body(all_res,
                                            nonrigid_parts=bead_res)
 
             # if you have any BEAD domains not in an RB, set them as flexible beads
-            for molname in reader.get_unique_molecules():
-                mlist = reader.get_unique_molecules()[molname]
-                for domain in mlist:
-                    if domain.pdb_file=="BEADS" and domain not in domains_in_rbs:
-                        self.dof.create_flexible_beads(self._domains[nstate][domain.domain_name][1])
+            for dname in self._domains[nstate]:
+                domain = self._domains[nstate][dname]
+                if domain.pdb_file=="BEADS" and dname not in domains_in_rbs:
+                    self.dof.create_flexible_beads(
+                        self._domain_res[nstate][dname][1])
 
             # add super rigid bodies
             for srblist in srbs:
                 all_res = IMP.pmi.tools.OrderedSet()
-                for domain in srblist:
-                    all_res|=self._domains[nstate][domain][0]
+                for dname in srblist:
+                    all_res|=self._domain_res[nstate][dname][0]
                 self.dof.create_super_rigid_body(all_res)
 
             # add chains of super rigid bodies
             for csrblist in csrbs:
                 all_res = IMP.pmi.tools.OrderedSet()
-                for domain in csrblist:
-                    all_res|=self._domains[nstate][domain][0]
+                for dname in csrblist:
+                    all_res|=self._domain_res[nstate][dname][0]
                 all_res = list(all_res)
                 all_res.sort(key=lambda r:r.get_index())
                 self.dof.create_super_rigid_body(all_res,chain_min_length=2,chain_max_length=3)
         return self.root_hier,self.dof
-
-@IMP.deprecated_object("2.5", "Use BuildSystem instead")
-class BuildModel(object):
-    """A macro to build a Representation based on a Topology and lists of movers
-    DEPRECATED - Use BuildSystem instead.
-    """
-    def __init__(self,
-                 model,
-                 component_topologies,
-                 list_of_rigid_bodies=[],
-                 list_of_super_rigid_bodies=[],
-                 chain_of_super_rigid_bodies=[],
-                 sequence_connectivity_scale=4.0,
-                 add_each_domain_as_rigid_body=False,
-                 force_create_gmm_files=False):
-        """Constructor.
-           @param model The IMP model
-           @param component_topologies List of
-                  IMP.pmi.topology.ComponentTopology items
-           @param list_of_rigid_bodies List of lists of domain names that will
-                  be moved as rigid bodies.
-           @param list_of_super_rigid_bodies List of lists of domain names
-                  that will move together in an additional Monte Carlo move.
-           @param chain_of_super_rigid_bodies List of lists of domain names
-                  (choices can only be from the same molecule). Each of these
-                  groups will be moved rigidly. This helps to sample more
-                  efficiently complex topologies, made of several rigid bodies,
-                  connected by flexible linkers.
-           @param sequence_connectivity_scale For scaling the connectivity
-                  restraint
-           @param add_each_domain_as_rigid_body That way you don't have to
-                  put all of them in the list
-           @param force_create_gmm_files If True, will sample and create GMMs
-                  no matter what. If False, will only only sample if the
-                  files don't exist. If number of Gaussians is zero, won't
-                  do anything.
-        """
-        self.m = model
-        self.simo = IMP.pmi.representation.Representation(self.m,
-                                                          upperharmonic=True,
-                                                          disorderedlength=False)
-
-        data=component_topologies
-        if list_of_rigid_bodies==[]:
-            print("WARNING: No list of rigid bodies inputted to build_model()")
-        if list_of_super_rigid_bodies==[]:
-            print("WARNING: No list of super rigid bodies inputted to build_model()")
-        if chain_of_super_rigid_bodies==[]:
-            print("WARNING: No chain of super rigid bodies inputted to build_model()")
-        all_dnames = set([d for sublist in list_of_rigid_bodies+list_of_super_rigid_bodies\
-                      +chain_of_super_rigid_bodies for d in sublist])
-        all_available = set([c.domain_name for c in component_topologies])
-        if not all_dnames <= all_available:
-            raise ValueError("All requested movers must reference domain "
-                             "names in the component topologies")
-
-        self.domain_dict={}
-        self.resdensities={}
-        super_rigid_bodies={}
-        chain_super_rigid_bodies={}
-        rigid_bodies={}
-
-        for c in data:
-            comp_name         = c.name
-            hier_name         = c.domain_name
-            color             = c.color
-            fasta_file        = c.fasta_file
-            fasta_id          = c.fasta_id
-            pdb_name          = c.pdb_file
-            chain_id          = c.chain
-            res_range         = c.residue_range
-            offset            = c.pdb_offset
-            bead_size         = c.bead_size
-            em_num_components = c.em_residues_per_gaussian
-            em_txt_file_name  = c.gmm_file
-            em_mrc_file_name  = c.mrc_file
-
-            if comp_name not in self.simo.get_component_names():
-                self.simo.create_component(comp_name,color=0.0)
-                self.simo.add_component_sequence(comp_name,fasta_file,fasta_id)
-
-            # create hierarchy (adds resolutions, beads) with autobuild and optionally add EM data
-            if em_num_components==0:
-                read_em_files=False
-                include_res0=False
-            else:
-                if (not os.path.isfile(em_txt_file_name)) or force_create_gmm_files:
-                    read_em_files=False
-                    include_res0=True
-                else:
-                    read_em_files=True
-                    include_res0=False
-
-            outhier=self.autobuild(self.simo,comp_name,pdb_name,chain_id,
-                                   res_range,include_res0,beadsize=bead_size,
-                                   color=color,offset=offset)
-            if em_num_components!=0:
-                if read_em_files:
-                    print("will read GMM files")
-                else:
-                    print("will calculate GMMs")
-
-                dens_hier,beads=self.create_density(self.simo,comp_name,outhier,em_txt_file_name,
-                                                    em_mrc_file_name,em_num_components,read_em_files)
-                self.simo.add_all_atom_densities(comp_name, particles=beads)
-                dens_hier+=beads
-            else:
-                dens_hier=[]
-
-            self.resdensities[hier_name]=dens_hier
-            self.domain_dict[hier_name]=outhier+dens_hier
-
-        # setup basic restraints
-        for c in self.simo.get_component_names():
-            self.simo.setup_component_sequence_connectivity(c,scale=sequence_connectivity_scale)
-            self.simo.setup_component_geometry(c)
-
-        # create movers
-        for rblist in list_of_rigid_bodies:
-            rb=[]
-            for rbmember in rblist:
-                rb+=[h for h in self.domain_dict[rbmember]]
-            self.simo.set_rigid_body_from_hierarchies(rb)
-        for srblist in list_of_super_rigid_bodies:
-            srb=[]
-            for srbmember in rblist:
-                srb+=[h for h in self.domain_dict[srbmember]]
-            self.simo.set_super_rigid_body_from_hierarchies(srb)
-        for clist in chain_of_super_rigid_bodies:
-            crb=[]
-            for crbmember in rblist:
-                crb+=[h for h in self.domain_dict[crbmember]]
-            self.simo.set_chain_of_super_rigid_bodies(crb,2,3)
-
-        self.simo.set_floppy_bodies()
-        self.simo.setup_bonds()
-
-    def get_representation(self):
-        '''Return the Representation object'''
-        return self.simo
-
-    def get_density_hierarchies(self,hier_name_list):
-        # return a list of density hierarchies
-        # specify the list of hierarchy names
-        dens_hier_list=[]
-        for hn in hier_name_list:
-            print(hn)
-            dens_hier_list+=self.resdensities[hn]
-        return dens_hier_list
-
-    def set_gmm_models_directory(self,directory_name):
-        self.gmm_models_directory=directory_name
-
-    def get_pdb_bead_bits(self,hierarchy):
-        pdbbits=[]
-        beadbits=[]
-        helixbits=[]
-        for h in hierarchy:
-            if "_pdb" in h.get_name():pdbbits.append(h)
-            if "_bead" in h.get_name():beadbits.append(h)
-            if "_helix" in h.get_name():helixbits.append(h)
-        return (pdbbits,beadbits,helixbits)
-
-    def scale_bead_radii(self,nresidues,scale):
-        scaled_beads=set()
-        for h in self.domain_dict:
-            (pdbbits,beadbits,helixbits)=self.get_pdb_bead_bits(self.domain_dict[h])
-            slope=(1.0-scale)/(1.0-float(nresidues))
-
-            for b in beadbits:
-                # I have to do the following
-                # because otherwise we'll scale more than once
-                if b not in scaled_beads:
-                    scaled_beads.add(b)
-                else:
-                    continue
-                radius=IMP.core.XYZR(b).get_radius()
-                num_residues=len(IMP.pmi.tools.get_residue_indexes(b))
-                scale_factor=slope*float(num_residues)+1.0
-                print(scale_factor)
-                new_radius=scale_factor*radius
-                IMP.core.XYZR(b).set_radius(new_radius)
-                print(b.get_name())
-                print("particle with radius "+str(radius)+" and "+str(num_residues)+" residues scaled to a new radius "+str(new_radius))
-
-
-    def create_density(self,simo,compname,comphier,txtfilename,mrcfilename,num_components,read=True):
-        #density generation for the EM restraint
-        (pdbbits,beadbits,helixbits)=self.get_pdb_bead_bits(comphier)
-        #get the number of residues from the pdb bits
-        res_ind=[]
-        for pb in pdbbits+helixbits:
-            for p in IMP.core.get_leaves(pb):
-                res_ind+=IMP.pmi.tools.get_residue_indexes(p)
-
-        number_of_residues=len(set(res_ind))
-        outhier=[]
-        if read:
-            if len(pdbbits)!=0:
-                outhier+=simo.add_component_density(compname,
-                                         pdbbits,
-                                         num_components=num_components,
-                                         resolution=0,
-                                         inputfile=txtfilename)
-            if len(helixbits)!=0:
-                outhier+=simo.add_component_density(compname,
-                                         helixbits,
-                                         num_components=num_components,
-                                         resolution=1,
-                                         inputfile=txtfilename)
-
-
-        else:
-            if len(pdbbits)!=0:
-                num_components=number_of_residues//abs(num_components)+1
-                outhier+=simo.add_component_density(compname,
-                                         pdbbits,
-                                         num_components=num_components,
-                                         resolution=0,
-                                         outputfile=txtfilename,
-                                         outputmap=mrcfilename,
-                                         multiply_by_total_mass=True)
-
-            if len(helixbits)!=0:
-                num_components=number_of_residues//abs(num_components)+1
-                outhier+=simo.add_component_density(compname,
-                                         helixbits,
-                                         num_components=num_components,
-                                         resolution=1,
-                                         outputfile=txtfilename,
-                                         outputmap=mrcfilename,
-                                         multiply_by_total_mass=True)
-
-        return outhier,beadbits
-
-    def autobuild(self,simo,comname,pdbname,chain,resrange,include_res0=False,
-                  beadsize=5,color=0.0,offset=0):
-        if pdbname is not None and pdbname is not "IDEAL_HELIX" and pdbname is not "BEADS" :
-            if include_res0:
-                outhier=simo.autobuild_model(comname,
-                                 pdbname=pdbname,
-                                 chain=chain,
-                                 resrange=resrange,
-                                 resolutions=[0,1,10],
-                                 offset=offset,
-                                 color=color,
-                                 missingbeadsize=beadsize)
-            else:
-                outhier=simo.autobuild_model(comname,
-                                 pdbname=pdbname,
-                                 chain=chain,
-                                 resrange=resrange,
-                                 resolutions=[1,10],
-                                 offset=offset,
-                                 color=color,
-                                 missingbeadsize=beadsize)
-
-
-        elif pdbname is not None and pdbname is "IDEAL_HELIX" and pdbname is not "BEADS" :
-            outhier=simo.add_component_ideal_helix(comname,
-                                                resolutions=[1,10],
-                                                resrange=resrange,
-                                                color=color,
-                                                show=False)
-
-        elif pdbname is not None and pdbname is not "IDEAL_HELIX" and pdbname is "BEADS" :
-            outhier=simo.add_component_necklace(comname,resrange[0],resrange[1],beadsize,color=color)
-
-        else:
-
-            seq_len=len(simo.sequence_dict[comname])
-            outhier=simo.add_component_necklace(comname,
-                                  begin=1,
-                                  end=seq_len,
-                                  length=beadsize)
-
-        return outhier
-
 
 @IMP.deprecated_object("2.5", "Use BuildSystem instead")
 class BuildModel1(object):
@@ -870,7 +635,9 @@ class BuildModel1(object):
         self.gmm_models_directory=directory_name
 
     def build_model(self,data_structure,sequence_connectivity_scale=4.0,
-                         sequence_connectivity_resolution=10,rmf_file=None,rmf_frame_number=0,rmf_file_map=None):
+                    sequence_connectivity_resolution=10,
+                    rmf_file=None,rmf_frame_number=0,rmf_file_map=None,
+                    skip_connectivity_these_domains=None):
         """Create model.
         @param data_structure List of lists containing these entries:
              comp_name, hier_name, color, fasta_file, fasta_id, pdb_name, chain_id,
@@ -976,7 +743,10 @@ class BuildModel1(object):
                     rfn=self.rmf_frame_number[c]
                     rfm=self.rmf_names_map[c]
                     self.simo.set_coordinates_from_rmf(c, rf,rfn,representation_name_to_rmf_name_map=rfm)
-            self.simo.setup_component_sequence_connectivity(c,resolution=sequence_connectivity_resolution,scale=sequence_connectivity_scale)
+            if (not skip_connectivity_these_domains) or (c not in skip_connectivity_these_domains):
+                self.simo.setup_component_sequence_connectivity(c,
+                                                                resolution=sequence_connectivity_resolution,
+                                                                scale=sequence_connectivity_scale)
             self.simo.setup_component_geometry(c)
 
         for rb in rigid_bodies:
@@ -1281,6 +1051,7 @@ class AnalysisReplicaExchange0(object):
             self.rank = 0
             self.number_of_processes = 1
 
+        self.cluster_obj = None
         self.model = model
         stat_dir = global_output_directory
         self.stat_files = []
@@ -1344,6 +1115,38 @@ class AnalysisReplicaExchange0(object):
         print(binned_model_indexes)
 
 
+    def _expand_ambiguity(self,prot,d):
+        """If using PMI2, expand the dictionary to include copies as ambiguous options
+        This also keeps the states separate.
+        """
+        newdict = {}
+        for key in d:
+            val = d[key]
+            if '..' in key or (type(val) is tuple and len(val)>=3):
+                newdict[key] = val
+                continue
+            states = IMP.atom.get_by_type(prot,IMP.atom.STATE_TYPE)
+            if type(val) is tuple:
+                start = val[0]
+                stop = val[1]
+                name = val[2]
+            else:
+                start = 1
+                stop = -1
+                name = val
+            for nst in range(len(states)):
+                sel = IMP.atom.Selection(prot,molecule=name,state_index=nst)
+                copies = sel.get_selected_particles(with_representation=False)
+                if len(copies)>1:
+                    for nc in range(len(copies)):
+                        if len(states)>1:
+                            newdict['%s.%i..%i'%(name,nst,nc)] = (start,stop,name,nc,nst)
+                        else:
+                            newdict['%s..%i'%(name,nc)] = (start,stop,name,nc,nst)
+                else:
+                    newdict[key] = val
+        return newdict
+
 
     def clustering(self,
                    score_key="SimplifiedModel_Total_Score_None",
@@ -1367,48 +1170,66 @@ class AnalysisReplicaExchange0(object):
                    density_custom_ranges=None,
                    write_pdb_with_centered_coordinates=False,
                    voxel_size=5.0):
-        """ Get the best scoring models, compute a distance matrix, cluster them, and create density maps
-        @param score_key                           The score for ranking models
-        @param rmf_file_key                        Key pointing to RMF filename
-        @param rmf_file_frame_key                  Key pointing to RMF frame number
-        @param state_number                        State number to analyze
-        @param prefiltervalue                      Only include frames where the score key is below this value
-        @param feature_keys                        Keywords for which you want to calculate average,
-                                                    medians, etc,
-        @param outputdir                           The local output directory used in the run
-        @param alignment_components                List of tuples for aligning the structures
-                                                   e.g. ["Rpb1", (20,100,"Rpb2"), .....]
-        @param number_of_best_scoring_models       Num models to keep per run
-        @param rmsd_calculation_components         List of tuples for calculating RMSD
-                                                   e.g. ["Rpb1", (20,100,"Rpb2"), .....]
-        @param distance_matrix_file                Where to store/read the distance matrix
-        @param load_distance_matrix_file           Try to load the distance matrix file
-        @param skip_clustering                     Just extract the best scoring models and save the pdbs
-        @param number_of_clusters                  Number of k-means clusters
-        @param display_plot                        Display the distance matrix
-        @param exit_after_display                  Exit after displaying distance matrix
-        @param get_every                           Extract every nth frame
-        @param first_and_last_frames               A tuple with the first and last frames to be
-                                                   analyzed. Values are percentages!
-                                                   Default: get all frames
-        @param density_custom_ranges               List of tuples or strings for density calculation
-                                                   e.g. ["Rpb1", (20,100,"Rpb2"), .....]
+        """ Get the best scoring models, compute a distance matrix, cluster them, and create density maps.
+        Tuple format: "molname" just the molecule, or (start,stop,molname,copy_num(optional),state_num(optional)
+        Can pass None for copy or state to ignore that field.
+        If you don't pass a specific copy number
+        @param score_key              The score for ranking models. Use "Total_Score"
+               instead of default for PMI2.
+        @param rmf_file_key           Key pointing to RMF filename
+        @param rmf_file_frame_key     Key pointing to RMF frame number
+        @param state_number           State number to analyze
+        @param prefiltervalue         Only include frames where the
+               score key is below this value
+        @param feature_keys           Keywords for which you want to
+               calculate average, medians, etc.
+               If you pass "Keyname" it'll include everything that matches "*Keyname*"
+        @param outputdir               The local output directory used in the run
+        @param alignment_components    Dictionary with keys=groupname, values are tuples
+               for aligning the structures  e.g. {"Rpb1": (20,100,"Rpb1"),"Rpb2":"Rpb2"}
+        @param number_of_best_scoring_models  Num models to keep per run
+        @param rmsd_calculation_components    For calculating RMSD
+                                               (same format as alignment_components)
+        @param distance_matrix_file           Where to store/read the distance matrix
+        @param load_distance_matrix_file      Try to load the distance matrix file
+        @param skip_clustering                Just extract the best scoring models
+                                               and save the pdbs
+        @param number_of_clusters             Number of k-means clusters
+        @param display_plot                   Display the distance matrix
+        @param exit_after_display             Exit after displaying distance matrix
+        @param get_every                      Extract every nth frame
+        @param first_and_last_frames          A tuple with the first and last frames to be
+                                               analyzed. Values are percentages!
+                                               Default: get all frames
+        @param density_custom_ranges          For density calculation
+                                               (same format as alignment_components)
         @param write_pdb_with_centered_coordinates
-        @param voxel_size                          Used for the density output
+        @param voxel_size                     Used for the density output
         """
-
-
         if self.rank==0:
             try:
                 os.mkdir(outputdir)
             except:
                 pass
 
-
         if not load_distance_matrix_file:
             if len(self.stat_files)==0: print("ERROR: no stat file found in the given path"); return
-            my_stat_files=IMP.pmi.tools.chunk_list_into_segments(
+            my_stat_files = IMP.pmi.tools.chunk_list_into_segments(
                 self.stat_files,self.number_of_processes)[self.rank]
+
+            # read ahead to check if you need the PMI2 score key instead
+            po = IMP.pmi.output.ProcessOutput(my_stat_files[0])
+            orig_score_key = score_key
+            if score_key not in po.get_keys():
+                if 'Total_Score' in po.get_keys():
+                    score_key = 'Total_Score'
+                    print("WARNING: Using 'Total_Score' instead of "
+                          "'SimplifiedModel_Total_Score_None' for the score key")
+            for k in [orig_score_key,score_key,rmf_file_key,rmf_file_frame_key]:
+                if k in feature_keys:
+                    print("WARNING: no need to pass " +k+" to feature_keys.")
+                    feature_keys.remove(k)
+
             best_models = IMP.pmi.io.get_best_models(my_stat_files,
                                                      score_key,
                                                      feature_keys,
@@ -1471,6 +1292,21 @@ class AnalysisReplicaExchange0(object):
                 best_score_rmf_tuples,
                 self.number_of_processes)[self.rank]
 
+            # expand the dictionaries to include ambiguous copies
+            prot_ahead = IMP.pmi.analysis.get_hiers_from_rmf(self.model,
+                                                             0,
+                                                             my_best_score_rmf_tuples[0][1])[0]
+            if IMP.pmi.get_is_canonical(prot_ahead):
+                if rmsd_calculation_components is not None:
+                    tmp = self._expand_ambiguity(prot_ahead,rmsd_calculation_components)
+                    if tmp!=rmsd_calculation_components:
+                        print('Detected ambiguity, expand rmsd components to',tmp)
+                        rmsd_calculation_components = tmp
+                if alignment_components is not None:
+                    tmp = self._expand_ambiguity(prot_ahead,alignment_components)
+                    if tmp!=alignment_components:
+                        print('Detected ambiguity, expand alignment components to',tmp)
+                        alignment_components = tmp
 
 #-------------------------------------------------------------
 # read the coordinates
@@ -1545,7 +1381,8 @@ class AnalysisReplicaExchange0(object):
                     else:
                         prot = prots[state_number]
 
-
+                    # get transformation aligning coordinates of requested tuples
+                    #  to the first RMF file
                     if cnt==0:
                         coords_f1=alignment_coordinates[cnt]
                     if cnt > 0:
@@ -1623,29 +1460,29 @@ class AnalysisReplicaExchange0(object):
 # Calculate distance matrix and cluster
 # ------------------------------------------------------------------------
             print("setup clustering class")
-            Clusters = IMP.pmi.analysis.Clustering(rmsd_weights)
+            self.cluster_obj = IMP.pmi.analysis.Clustering(rmsd_weights)
 
             for n, model_coordinate_dict in enumerate(all_coordinates):
                 template_coordinate_dict = {}
                 # let's try to align
-                if alignment_components is not None and len(Clusters.all_coords) == 0:
+                if alignment_components is not None and len(self.cluster_obj.all_coords) == 0:
                     # set the first model as template coordinates
-                    Clusters.set_template(alignment_coordinates[n])
-                Clusters.fill(all_rmf_file_names[n], rmsd_coordinates[n])
+                    self.cluster_obj.set_template(alignment_coordinates[n])
+                self.cluster_obj.fill(all_rmf_file_names[n], rmsd_coordinates[n])
             print("Global calculating the distance matrix")
 
             # calculate distance matrix, all against all
-            Clusters.dist_matrix()
+            self.cluster_obj.dist_matrix()
 
             # perform clustering and optionally display
             if self.rank == 0:
-                Clusters.do_cluster(number_of_clusters)
+                self.cluster_obj.do_cluster(number_of_clusters)
                 if display_plot:
                     if self.rank == 0:
-                        Clusters.plot_matrix(figurename=os.path.join(outputdir,'dist_matrix.pdf'))
+                        self.cluster_obj.plot_matrix(figurename=os.path.join(outputdir,'dist_matrix.pdf'))
                     if exit_after_display:
                         exit()
-                Clusters.save_distance_matrix_file(file_name=distance_matrix_file)
+                self.cluster_obj.save_distance_matrix_file(file_name=distance_matrix_file)
 
 # ------------------------------------------------------------------------
 # Alteratively, load the distance matrix from file and cluster that
@@ -1653,15 +1490,15 @@ class AnalysisReplicaExchange0(object):
         else:
             if self.rank==0:
                 print("setup clustering class")
-                Clusters = IMP.pmi.analysis.Clustering()
-                Clusters.load_distance_matrix_file(file_name=distance_matrix_file)
+                self.cluster_obj = IMP.pmi.analysis.Clustering()
+                self.cluster_obj.load_distance_matrix_file(file_name=distance_matrix_file)
                 print("clustering with %s clusters" % str(number_of_clusters))
-                Clusters.do_cluster(number_of_clusters)
+                self.cluster_obj.do_cluster(number_of_clusters)
                 [best_score_feature_keyword_list_dict,
                  rmf_file_name_index_dict] = self.load_objects(".macro.pkl")
                 if display_plot:
                     if self.rank == 0:
-                        Clusters.plot_matrix(figurename=os.path.join(outputdir,'dist_matrix.pdf'))
+                        self.cluster_obj.plot_matrix(figurename=os.path.join(outputdir,'dist_matrix.pdf'))
                     if exit_after_display:
                         exit()
         if self.number_of_processes > 1:
@@ -1672,12 +1509,12 @@ class AnalysisReplicaExchange0(object):
 # ------------------------------------------------------------------------
 
         if self.rank == 0:
-            print(Clusters.get_cluster_labels())
-            for n, cl in enumerate(Clusters.get_cluster_labels()):
+            print(self.cluster_obj.get_cluster_labels())
+            for n, cl in enumerate(self.cluster_obj.get_cluster_labels()):
                 print("rank %s " % str(self.rank))
                 print("cluster %s " % str(n))
                 print("cluster label %s " % str(cl))
-                print(Clusters.get_cluster_label_names(cl))
+                print(self.cluster_obj.get_cluster_label_names(cl))
 
                 # first initialize the Density class if requested
                 if density_custom_ranges:
@@ -1692,9 +1529,9 @@ class AnalysisReplicaExchange0(object):
                     pass
 
                 rmsd_dict = {"AVERAGE_RMSD":
-                             str(Clusters.get_cluster_label_average_rmsd(cl))}
+                             str(self.cluster_obj.get_cluster_label_average_rmsd(cl))}
                 clusstat = open(dircluster + "stat.out", "w")
-                for k, structure_name in enumerate(Clusters.get_cluster_label_names(cl)):
+                for k, structure_name in enumerate(self.cluster_obj.get_cluster_label_names(cl)):
                     # extract the features
                     tmp_dict = {}
                     tmp_dict.update(rmsd_dict)
@@ -1737,9 +1574,9 @@ class AnalysisReplicaExchange0(object):
 
                     # transform clusters onto first
                     if k > 0:
-                        model_index = Clusters.get_model_index_from_name(
+                        model_index = self.cluster_obj.get_model_index_from_name(
                             structure_name)
-                        transformation = Clusters.get_transformation_to_first_member(
+                        transformation = self.cluster_obj.get_transformation_to_first_member(
                             cl,
                             model_index)
                         rbs = set()
@@ -1787,6 +1624,11 @@ class AnalysisReplicaExchange0(object):
 
         if self.number_of_processes>1:
             self.comm.Barrier()
+
+    def get_cluster_rmsd(self,cluster_num):
+        if self.cluster_obj is None:
+            raise Exception("Run clustering first")
+        return self.cluster_obj.get_cluster_label_average_rmsd(cluster_num)
 
     def save_objects(self, objects, file_name):
         import pickle

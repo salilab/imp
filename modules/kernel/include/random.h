@@ -31,6 +31,8 @@ extern IMPKERNELEXPORT RandomNumberGenerator random_number_generator;
 #endif
 
 //! Return the initial random seed.
+/** To set the seed or get random values, see IMP::random_number_generator.
+ */
 IMPKERNELEXPORT boost::uint64_t get_random_seed();
 
 

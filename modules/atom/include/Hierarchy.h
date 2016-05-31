@@ -16,7 +16,7 @@
 #include "atom_macros.h"
 #include <IMP/core/XYZR.h>
 #include <IMP/core/rigid_bodies.h>
-
+#include <IMP/core/Gaussian.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 
@@ -495,6 +495,20 @@ IMPATOMEXPORT algebra::BoundingBoxD<3> get_bounding_box(const Hierarchy &h);
     \relates Hierarchy
  */
 IMPATOMEXPORT algebra::Sphere3D get_bounding_sphere(const Hierarchy &h);
+
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+// Get the parent, or if non-tree Representation get the fake parent
+inline atom::Hierarchy get_parent_representation(Hierarchy h){
+  if (h.get_model()->get_has_attribute(
+     Hierarchy::get_traits().get_parent_key(),h.get_particle_index())){
+    ParticleIndex pidx = h.get_model()->get_attribute(
+          Hierarchy::get_traits().get_parent_key(),h.get_particle_index());
+      return Hierarchy(h.get_model(),pidx);
+  }
+  else return Hierarchy();
+}
+#endif
 
 IMPATOM_END_NAMESPACE
 

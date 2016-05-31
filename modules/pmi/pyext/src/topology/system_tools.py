@@ -166,9 +166,6 @@ def show_representation(node):
     else:
         return False
 
-def recursive_show_representations(root):
-    pass
-
 def build_representation(parent,rep,coord_finder):
     """Create requested representation.
     For beads, identifies continuous segments and sets up as Representation.
@@ -179,7 +176,7 @@ def build_representation(parent,rep,coord_finder):
     @param rep What to build. An instance of pmi::topology::_Representation
     @param coord_finder A _FindCloseStructure object to help localize beads
     """
-    ret = []
+    built_reps = []
     atomic_res = 0
     ca_res = 1
     mdl = parent.get_model()
@@ -190,6 +187,8 @@ def build_representation(parent,rep,coord_finder):
             color = IMP.display.Color(*rep.color)
         elif type(rep.color) is IMP.display.Color:
             color = rep.color
+        elif type(rep.color) is str:
+            color = IMP.display.Color(*IMP.pmi.tools.color2rgb(rep.color))
         else:
             raise Exception("Color must be float or (r,g,b) tuple")
     else:
@@ -201,15 +200,17 @@ def build_representation(parent,rep,coord_finder):
 
     # if collective densities, will return single node with everything
     # below we sample or read the GMMs and add them as representation
-    single_node = False
-    if rep.density_residues_per_component!=None:
+    single_node = False # flag indicating grouping nonlinear segments with one GMM
+    if rep.density_residues_per_component:
         single_node = True
         num_components = len(rep.residues)//rep.density_residues_per_component+1
         rep_dict = defaultdict(list)
-        root_representation = IMP.atom.Representation.setup_particle(IMP.Particle(mdl),
+        segp = IMP.Particle(mdl)
+        root_representation = IMP.atom.Representation.setup_particle(segp,
                                                                      primary_resolution)
-        parent.add_child(root_representation)
+        built_reps.append(root_representation)
         res_nums = [r.get_index() for r in rep.residues]
+        IMP.atom.Fragment.setup_particle(segp,res_nums)
         density_frag = IMP.atom.Fragment.setup_particle(IMP.Particle(mdl),res_nums)
         density_frag.get_particle().set_name("Densities %i"%rep.density_residues_per_component)
         density_ps = []
@@ -229,7 +230,8 @@ def build_representation(parent,rep,coord_finder):
                                                 density_ps)
             IMP.isd.gmm_tools.write_gmm_to_text(density_ps,rep.density_prefix+'.txt')
             if rep.density_voxel_size>0.0:
-                IMP.isd.gmm_tools.write_gmm_to_map(density_ps,rep.density_prefix+'.mrc',rep.density_voxel_size)
+                IMP.isd.gmm_tools.write_gmm_to_map(density_ps,rep.density_prefix+'.mrc',
+                                                   rep.density_voxel_size,fast=True)
 
         for d in density_ps:
             density_frag.add_child(d)
@@ -243,14 +245,17 @@ def build_representation(parent,rep,coord_finder):
     prev_idx = rsort[0].get_index()-1
     prev_structure = rsort[0].get_has_structure()
     cur_seg = []
+    force_break = False
     for nr,r in enumerate(rsort):
-        if r.get_index()!=prev_idx+1 or r.get_has_structure()!=prev_structure or \
-           r.get_index() in rep.bead_extra_breaks:
+        if r.get_index()!=prev_idx+1 or r.get_has_structure()!=prev_structure or force_break:
             segments.append(cur_seg)
             cur_seg = []
+            force_break = False
         cur_seg.append(r)
         prev_idx = r.get_index()
         prev_structure = r.get_has_structure()
+        if r.get_index()-1 in rep.bead_extra_breaks:
+            force_break = True
     if cur_seg!=[]:
         segments.append(cur_seg)
 
@@ -270,7 +275,7 @@ def build_representation(parent,rep,coord_finder):
         this_segment = IMP.atom.Fragment.setup_particle(segp,res_nums)
         if not single_node:
             this_representation = IMP.atom.Representation.setup_particle(segp,primary_resolution)
-            parent.add_child(this_representation)
+            built_reps.append(this_representation)
         for resolution in rep.bead_resolutions:
             fp = IMP.Particle(mdl)
             this_resolution = IMP.atom.Fragment.setup_particle(fp,res_nums)
@@ -347,3 +352,4 @@ def build_representation(parent,rep,coord_finder):
                 root_representation.add_representation(this_resolution,
                                                        IMP.atom.BALLS,
                                                        resolution)
+    return built_reps

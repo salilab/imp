@@ -200,14 +200,16 @@ IMP_OBJECTS(Simulator, Simulators);
 
 /**\name Energy conversions
 
-   The native energy units in \imp are difficult to do any sort of math with.
-   One can convert the quantities into more useful ones.
+   Convert energy from kcal/mol to femtojoules
    @{
 */
 IMPATOMEXPORT double get_energy_in_femto_joules(double energy_in_kcal_per_mol);
+
+//! Convert force from kcal/mol/A to femtonewtons
 IMPATOMEXPORT double get_force_in_femto_newtons(
     double force_in_kcal_per_mol_per_angstrom);
 
+//! Convert spring constant from kcal/mol/A^2 to femtonewton/A
 IMPATOMEXPORT double get_spring_constant_in_femto_newtons_per_angstrom(
     double k_in_kcal_per_mol_per_angstrom_square);
 

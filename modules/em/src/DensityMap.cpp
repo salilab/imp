@@ -1472,6 +1472,12 @@ DensityMap *create_density_map(
                             algebra::DefaultEmbeddingD<3> >(arg);
 }
 
+DensityMap *create_density_map(
+    const algebra::GridD<3, algebra::DenseGridStorageD<3, double>, double> &arg) {
+  return create_density_map<algebra::DenseGridStorageD<3, double>, double,
+                            algebra::DefaultEmbeddingD<3> >(arg);
+}
+
 DensityMap *get_binarized_interior(DensityMap *dmap) {
   em::emreal *data = dmap->get_data();
   unsigned int nx, ny, nz;

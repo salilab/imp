@@ -13,11 +13,14 @@ class Tests(IMP.test.TestCase):
             types = [io.BytesIO]
         for typ in types:
             sio = typ()
-            IMP.show_timings(sio)
+            with IMP.allow_deprecated():
+                IMP.show_timings(sio)
             print(sio.getvalue())
-            IMP.clear_statistics()
+            with IMP.allow_deprecated():
+                IMP.clear_statistics()
             sio = typ()
-            IMP.show_timings(sio)
+            with IMP.allow_deprecated():
+                IMP.show_timings(sio)
             print(sio.getvalue())
 
 if __name__ == '__main__':
