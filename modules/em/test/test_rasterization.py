@@ -7,7 +7,7 @@ from io import BytesIO
 class Tests(IMP.test.TestCase):
 
     def test_rasterization(self):
-        """Test creation of Gaussian3D"""
+        """Test creation DensityMap from grid"""
         t = IMP.algebra.Vector3D(1., 2., 3.)
         r = IMP.algebra.get_identity_rotation_3d()
         tran = IMP.algebra.Transformation3D(r, t)
