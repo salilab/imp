@@ -37,6 +37,112 @@ IMP::internal::StaticListContainer<SingletonContainer> *get_list(
 }
 }
 
+/*#####################################################
+# Restraints setup - Immuno-EM ZAxialPositionRestraint
+# Supplementary Table 7. Upper and lower bounds on Z-axial restraints of C-terminal bead of nups
+# NupType : (min Z value, max Z value) (in Angstrom)
+#####################################################*/
+ZAxialPositionRestraint::ZAxialPositionRestraint(Model *m,
+    SingletonContainerAdaptor sc,
+    double lower_bound, double upper_bound, bool consider_radius, double sigma)
+  : Restraint(m, "ZAxialPositionRestraint %1%")
+  , lower_bound_(lower_bound)
+  , upper_bound_(upper_bound)
+  , sigma_(sigma)
+  , consider_radius_(consider_radius)
+{
+  sc_ = sc;
+}
+
+ZAxialPositionRestraint::ZAxialPositionRestraint(Model *m,
+    double lower_bound, double upper_bound, bool consider_radius, double sigma)
+  : Restraint(m, "ZAxialPositionRestraint %1%")
+  , lower_bound_(lower_bound)
+  , upper_bound_(upper_bound)
+  , sigma_(sigma)
+  , consider_radius_(consider_radius)
+{
+}
+
+void ZAxialPositionRestraint::set_particles(const ParticlesTemp &ps) {
+  if (!sc_ && !ps.empty()) {
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps[0]->get_model(), "Z axial list");
+  }
+  get_list(sc_)->set(IMP::internal::get_index(ps));
+}
+
+void ZAxialPositionRestraint::add_particles(const ParticlesTemp &ps) {
+  if (!sc_&& !ps.empty()) {
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps[0]->get_model(), "Z axial list");
+  }
+  get_list(sc_)->add(IMP::internal::get_index(ps));
+}
+
+void ZAxialPositionRestraint::add_particle(Particle *ps) {
+  if (!sc_) {
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps->get_model(), "Z axial list");
+  }
+  get_list(sc_)->add(IMP::internal::get_index(ps));
+}
+
+double
+ZAxialPositionRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+{
+  IMP_CHECK_OBJECT(sc_.get());
+  double v = 0.0;
+  IMP::ParticlesTemp all_particles = sc_->get();
+  for (unsigned int i=0; i < all_particles.size(); ++i )
+  { 
+    double r = consider_radius_ ? core::XYZR(all_particles[i]).get_radius() : 0.0;
+    double z = core::XYZR(all_particles[i]).get_coordinate(2);
+    double z_down = consider_radius_ ? z - r : z;
+    double z_up   = consider_radius_ ? z + r : z;
+    double z_diff = z_down - lower_bound_;
+    // check lower_bound_ 
+    if ( z_diff < 0 )
+    {
+      v += z_diff*z_diff;
+      if ( accum )
+      {
+        algebra::Vector3D dz;
+        dz[0] = dz[1] = 0.0;
+        dz[2] = 2.0*z_diff/sigma_;
+        all_particles[i]->get_model()->add_to_coordinate_derivatives(IMP::internal::get_index(all_particles[i]), dz, *accum);
+      }
+    }
+    // check upper_bound_ 
+    z_diff = z_up - upper_bound_;
+    if ( z_diff > 0 )
+    {
+      v += z_diff*z_diff;
+      if ( accum )
+      {
+        algebra::Vector3D dz;
+        dz[0] = dz[1] = 0.0;
+        dz[2] = 2.0*z_diff/sigma_;
+        all_particles[i]->get_model()->add_to_coordinate_derivatives(IMP::internal::get_index(all_particles[i]), dz, *accum);
+      }
+    }
+  }
+  return v/sigma_;
+}
+
+ModelObjectsTemp ZAxialPositionRestraint::do_get_inputs() const {
+  if ( !sc_ )
+    return ModelObjectsTemp();
+  ParticleIndexes all = sc_->get_all_possible_indexes();
+  return IMP::get_particles(get_model(), all);
+}
+
+
+/*#####################################################
+# Restraints setup - Immuno-EM ZAxialPositionLowerRestraint
+# Supplementary Table 7. Upper and lower bounds on Z-axial restraints of C-terminal bead of nups
+# NupType : (min Z value, max Z value) (in Angstrom)
+#####################################################*/
 ZAxialPositionLowerRestraint::ZAxialPositionLowerRestraint(Model *m,
     SingletonContainerAdaptor sc,
     double lower_bound, bool consider_radius, double sigma)
@@ -48,7 +154,6 @@ ZAxialPositionLowerRestraint::ZAxialPositionLowerRestraint(Model *m,
   sc_ = sc;
 }
 
-
 ZAxialPositionLowerRestraint::ZAxialPositionLowerRestraint(Model *m,
     double lower_bound, bool consider_radius, double sigma)
   : Restraint(m, "ZAxialPositionLowerRestraint %1%")
@@ -57,7 +162,6 @@ ZAxialPositionLowerRestraint::ZAxialPositionLowerRestraint(Model *m,
   , consider_radius_(consider_radius)
 {
 }
-
 
 void ZAxialPositionLowerRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
@@ -82,7 +186,6 @@ void ZAxialPositionLowerRestraint::add_particle(Particle *ps) {
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
 }
-
 
 double
 ZAxialPositionLowerRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
@@ -111,7 +214,6 @@ ZAxialPositionLowerRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   return v/sigma_;
 }
 
-
 ModelObjectsTemp ZAxialPositionLowerRestraint::do_get_inputs() const {
   if ( !sc_ )
     return ModelObjectsTemp();
@@ -120,7 +222,218 @@ ModelObjectsTemp ZAxialPositionLowerRestraint::do_get_inputs() const {
 }
 
 
+/*#####################################################
+# Restraints setup - Immuno-EM ZAxialPositionUpperRestraint
+# Supplementary Table 7. Upper and lower bounds on Z-axial restraints of C-terminal bead of nups
+# NupType : (min Z value, max Z value) (in Angstrom)
+#####################################################*/
+ZAxialPositionUpperRestraint::ZAxialPositionUpperRestraint(Model *m,
+    SingletonContainerAdaptor sc,
+    double upper_bound, bool consider_radius, double sigma)
+  : Restraint(m, "ZAxialPositionUpperRestraint %1%")
+  , upper_bound_(upper_bound)
+  , sigma_(sigma)
+  , consider_radius_(consider_radius)
+{
+  sc_ = sc;
+}
 
+ZAxialPositionUpperRestraint::ZAxialPositionUpperRestraint(Model *m,
+    double upper_bound, bool consider_radius, double sigma)
+  : Restraint(m, "ZAxialPositionUpperRestraint %1%")
+  , upper_bound_(upper_bound)
+  , sigma_(sigma)
+  , consider_radius_(consider_radius)
+{
+}
+
+void ZAxialPositionUpperRestraint::set_particles(const ParticlesTemp &ps) {
+  if (!sc_ && !ps.empty()) {
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps[0]->get_model(), "Z axial list");
+  }
+  get_list(sc_)->set(IMP::internal::get_index(ps));
+}
+
+void ZAxialPositionUpperRestraint::add_particles(const ParticlesTemp &ps) {
+  if (!sc_&& !ps.empty()) {
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps[0]->get_model(), "Z axial list");
+  }
+  get_list(sc_)->add(IMP::internal::get_index(ps));
+}
+
+void ZAxialPositionUpperRestraint::add_particle(Particle *ps) {
+  if (!sc_) {
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps->get_model(), "Z axial list");
+  }
+  get_list(sc_)->add(IMP::internal::get_index(ps));
+}
+
+double
+ZAxialPositionUpperRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+{
+  IMP_CHECK_OBJECT(sc_.get());
+  double v = 0;
+  IMP::ParticlesTemp all_particles = sc_->get();
+  for (unsigned int i = 0; i < all_particles.size(); ++i )
+  { 
+    double r = consider_radius_ ? core::XYZR(all_particles[i]).get_radius() : 0;
+    double z = core::XYZR(all_particles[i]).get_coordinate(2);
+    double z_up = z + r;
+    double z_diff = z_up - upper_bound_;
+    if ( z_diff > 0 )
+    {
+      v += z_diff*z_diff;
+      if ( accum )
+      {
+        algebra::Vector3D dz;
+        dz[0] = dz[1] = 0;
+        dz[2] = 2*z_diff/sigma_;
+        all_particles[i]->get_model()->add_to_coordinate_derivatives(IMP::internal::get_index(all_particles[i]), dz, *accum);
+      }
+    }
+  }
+  return v/sigma_;
+}
+
+ModelObjectsTemp ZAxialPositionUpperRestraint::do_get_inputs() const {
+  if ( !sc_ )
+    return ModelObjectsTemp();
+  ParticleIndexes all = sc_->get_all_possible_indexes();
+  return IMP::get_particles(get_model(), all);
+}
+
+
+/*#####################################################
+# Restraints setup - Immuno-EM XYRadialPositionRestraint
+# Supplementary Table 7. Upper and lower bounds on R-radial restraints of C-terminal bead of nups
+# NupType : (min R value, max R value) (in Angstrom)
+#####################################################*/
+XYRadialPositionRestraint::XYRadialPositionRestraint(Model *m,
+    SingletonContainerAdaptor sc,
+    double lower_bound, double upper_bound, bool consider_radius, double sigma)
+  : Restraint(m, "XYRadialPositionRestraint %1%")
+  , lower_bound_(lower_bound)
+  , upper_bound_(upper_bound)
+  , sigma_(sigma)
+  , consider_radius_(consider_radius)
+{
+  sc_ = sc;
+}
+
+XYRadialPositionRestraint::XYRadialPositionRestraint(Model *m,
+    double lower_bound, double upper_bound, bool consider_radius, double sigma)
+  : Restraint(m, "XYRadialPositionRestraint %1%")
+  , lower_bound_(lower_bound)
+  , upper_bound_(upper_bound)
+  , sigma_(sigma)
+  , consider_radius_(consider_radius)
+{
+}
+
+void XYRadialPositionRestraint::set_particles(const ParticlesTemp &ps) {
+  if (!sc_ && !ps.empty()) {
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps[0]->get_model(), "XY Radial list");
+  }
+  get_list(sc_)->set(IMP::internal::get_index(ps));
+}
+
+void XYRadialPositionRestraint::add_particles(const ParticlesTemp &ps) {
+  if (!sc_&& !ps.empty()) {
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps[0]->get_model(), "XY Radial list");
+  }
+  get_list(sc_)->add(IMP::internal::get_index(ps));
+}
+
+void XYRadialPositionRestraint::add_particle(Particle *ps) {
+  if (!sc_) {
+    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps->get_model(), "XY Radial list");
+  }
+  get_list(sc_)->add(IMP::internal::get_index(ps));
+}
+
+double
+XYRadialPositionRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+{
+  IMP_CHECK_OBJECT(sc_.get());
+  const double eps = 1e-9;
+  double v = 0;
+  IMP::ParticlesTemp all_particles = sc_->get();
+  for (unsigned int i=0; i < all_particles.size(); ++i )
+  { 
+    core::XYZR xyzr = core::XYZR(all_particles[i]);
+    double r = consider_radius_ ? xyzr.get_radius() : 0;
+    double x = xyzr.get_coordinate(0);
+    double y = xyzr.get_coordinate(1);
+    double radial = std::sqrt(x*x + y*y);
+    double r_down = consider_radius_ ? radial - r : radial;
+    double r_up   = consider_radius_ ? radial + r : radial;
+    double r_diff = r_down - lower_bound_;
+    // check lower_bound_ 
+    if ( r_diff < 0 )
+    {
+      v += r_diff*r_diff;
+      if ( accum )
+      {
+        algebra::Vector3D dz;
+        if ( radial > eps )
+        {
+          double coeff = 2.0*r_diff/(radial*sigma_);
+          dz[0] = coeff * x;
+          dz[1] = coeff * y;
+        }
+        else
+        {
+          dz[0] = dz[1] = 0.0;
+        }
+        dz[2] = 0.0;
+        all_particles[i]->get_model()->add_to_coordinate_derivatives(IMP::internal::get_index(all_particles[i]), dz, *accum);
+      }
+    }
+    // check upper_bound_ 
+    r_diff = r_up - upper_bound_;
+    if ( r_diff > 0 )
+    {
+      v += r_diff*r_diff;
+      if ( accum )
+      {
+        algebra::Vector3D dz;
+        if ( radial > eps )
+        {
+          double coeff = 2.0*r_diff/(radial*sigma_);
+          dz[0] = coeff * x;
+          dz[1] = coeff * y;
+        }
+        else
+        {
+          dz[0] = dz[1] = 0.0;
+        }
+        dz[2] = 0.0;
+        all_particles[i]->get_model()->add_to_coordinate_derivatives(IMP::internal::get_index(all_particles[i]), dz, *accum);
+      }
+    }
+  }
+  return v/sigma_;
+}
+
+ModelObjectsTemp XYRadialPositionRestraint::do_get_inputs() const {
+  if ( !sc_ )
+    return ModelObjectsTemp();
+  ParticleIndexes all = sc_->get_all_possible_indexes();
+  return IMP::get_particles(get_model(), all);
+}
+
+
+/*#####################################################
+# Restraints setup - Immuno-EM XYRadialPositionLowerRestraint
+# Supplementary Table 7. Upper and lower bounds on R-radial restraints of C-terminal bead of nups
+# NupType : (min R value, max R value) (in Angstrom)
+#####################################################*/
 XYRadialPositionLowerRestraint::XYRadialPositionLowerRestraint(Model *m,
     SingletonContainerAdaptor sc,
     double lower_bound, bool consider_radius, double sigma)
@@ -132,7 +445,6 @@ XYRadialPositionLowerRestraint::XYRadialPositionLowerRestraint(Model *m,
   sc_ = sc;
 }
 
-
 XYRadialPositionLowerRestraint::XYRadialPositionLowerRestraint(Model *m,
     double lower_bound, bool consider_radius, double sigma)
   : Restraint(m, "XYRadialPositionLowerRestraint %1%")
@@ -141,7 +453,6 @@ XYRadialPositionLowerRestraint::XYRadialPositionLowerRestraint(Model *m,
   , consider_radius_(consider_radius)
 {
 }
-
 
 void XYRadialPositionLowerRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
@@ -166,7 +477,6 @@ void XYRadialPositionLowerRestraint::add_particle(Particle *ps) {
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
 }
-
 
 double
 XYRadialPositionLowerRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
@@ -206,7 +516,6 @@ XYRadialPositionLowerRestraint::unprotected_evaluate(DerivativeAccumulator *accu
   return v/sigma_;
 }
 
-
 ModelObjectsTemp XYRadialPositionLowerRestraint::do_get_inputs() const {
   if ( !sc_ )
     return ModelObjectsTemp();
@@ -215,7 +524,11 @@ ModelObjectsTemp XYRadialPositionLowerRestraint::do_get_inputs() const {
 }
 
 
-
+/*#####################################################
+# Restraints setup - Immuno-EM XYRadialPositionUpperRestraint
+# Supplementary Table 7. Upper and lower bounds on R-radial restraints of C-terminal bead of nups
+# NupType : (min R value, max R value) (in Angstrom)
+#####################################################*/
 XYRadialPositionUpperRestraint::XYRadialPositionUpperRestraint(Model *m,
     SingletonContainerAdaptor sc,
     double upper_bound, bool consider_radius, double sigma)
@@ -227,7 +540,6 @@ XYRadialPositionUpperRestraint::XYRadialPositionUpperRestraint(Model *m,
   sc_ = sc;
 }
 
-
 XYRadialPositionUpperRestraint::XYRadialPositionUpperRestraint(Model *m,
     double upper_bound, bool consider_radius, double sigma)
   : Restraint(m, "XYRadialPositionUpperRestraint %1%")
@@ -236,7 +548,6 @@ XYRadialPositionUpperRestraint::XYRadialPositionUpperRestraint(Model *m,
   , consider_radius_(consider_radius)
 {
 }
-
 
 void XYRadialPositionUpperRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
@@ -261,7 +572,6 @@ void XYRadialPositionUpperRestraint::add_particle(Particle *ps) {
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
 }
-
 
 double
 XYRadialPositionUpperRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
@@ -301,7 +611,6 @@ XYRadialPositionUpperRestraint::unprotected_evaluate(DerivativeAccumulator *accu
   return v/sigma_;
 }
 
-
 ModelObjectsTemp XYRadialPositionUpperRestraint::do_get_inputs() const {
   if ( !sc_ )
     return ModelObjectsTemp();
@@ -310,91 +619,9 @@ ModelObjectsTemp XYRadialPositionUpperRestraint::do_get_inputs() const {
 }
 
 
-
-ZAxialPositionUpperRestraint::ZAxialPositionUpperRestraint(Model *m,
-    SingletonContainerAdaptor sc,
-    double upper_bound, bool consider_radius, double sigma)
-  : Restraint(m, "ZAxialPositionUpperRestraint %1%")
-  , upper_bound_(upper_bound)
-  , sigma_(sigma)
-  , consider_radius_(consider_radius)
-{
-  sc_ = sc;
-}
-
-
-ZAxialPositionUpperRestraint::ZAxialPositionUpperRestraint(Model *m,
-    double upper_bound, bool consider_radius, double sigma)
-  : Restraint(m, "ZAxialPositionUpperRestraint %1%")
-  , upper_bound_(upper_bound)
-  , sigma_(sigma)
-  , consider_radius_(consider_radius)
-{
-}
-
-
-void ZAxialPositionUpperRestraint::set_particles(const ParticlesTemp &ps) {
-  if (!sc_ && !ps.empty()) {
-    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
-        ps[0]->get_model(), "Z axial list");
-  }
-  get_list(sc_)->set(IMP::internal::get_index(ps));
-}
-
-void ZAxialPositionUpperRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
-    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
-        ps[0]->get_model(), "Z axial list");
-  }
-  get_list(sc_)->add(IMP::internal::get_index(ps));
-}
-
-void ZAxialPositionUpperRestraint::add_particle(Particle *ps) {
-  if (!sc_) {
-    sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
-        ps->get_model(), "Z axial list");
-  }
-  get_list(sc_)->add(IMP::internal::get_index(ps));
-}
-
-
-double
-ZAxialPositionUpperRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
-{
-  IMP_CHECK_OBJECT(sc_.get());
-  double v = 0;
-  IMP::ParticlesTemp all_particles = sc_->get();
-  for (unsigned int i = 0; i < all_particles.size(); ++i )
-  { 
-    double r = consider_radius_ ? core::XYZR(all_particles[i]).get_radius() : 0;
-    double z = core::XYZR(all_particles[i]).get_coordinate(2);
-    double z_up = z + r;
-    double z_diff = z_up - upper_bound_;
-    if ( z_diff > 0 )
-    {
-      v += z_diff*z_diff;
-      if ( accum )
-      {
-        algebra::Vector3D dz;
-        dz[0] = dz[1] = 0;
-        dz[2] = 2*z_diff/sigma_;
-        all_particles[i]->get_model()->add_to_coordinate_derivatives(IMP::internal::get_index(all_particles[i]), dz, *accum);
-      }
-    }
-  }
-  return v/sigma_;
-}
-
-
-ModelObjectsTemp ZAxialPositionUpperRestraint::do_get_inputs() const {
-  if ( !sc_ )
-    return ModelObjectsTemp();
-  ParticleIndexes all = sc_->get_all_possible_indexes();
-  return IMP::get_particles(get_model(), all);
-}
-
-
-
+/*#####################################################
+# Restraints setup - ProteinContactRestraint
+#####################################################*/
 ProteinContactRestraint::ProteinContactRestraint(Model *m,
     SingletonContainerAdaptor sc,
     double tolerance_factor, double sigma)
@@ -405,7 +632,6 @@ ProteinContactRestraint::ProteinContactRestraint(Model *m,
   sc_ = sc;
 }
 
-
 ProteinContactRestraint::ProteinContactRestraint(Model *m,
     double tolerance_factor, double sigma)
   : Restraint(m, "ProteinContactRestraint %1%")
@@ -413,7 +639,6 @@ ProteinContactRestraint::ProteinContactRestraint(Model *m,
   , sigma_(sigma)
 {
 }
-
 
 void ProteinContactRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
@@ -438,7 +663,6 @@ void ProteinContactRestraint::add_particle(Particle *ps) {
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
 }
-
 
 double
 ProteinContactRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
@@ -482,7 +706,6 @@ ProteinContactRestraint::unprotected_evaluate(DerivativeAccumulator *accum) cons
   return v/sigma_;
 }
 
-
 ModelObjectsTemp ProteinContactRestraint::do_get_inputs() const {
   if ( !sc_ )
     return ModelObjectsTemp();
@@ -491,7 +714,9 @@ ModelObjectsTemp ProteinContactRestraint::do_get_inputs() const {
 }
 
 
-
+/*#####################################################
+# Restraints setup - ProteinChainRestraint
+#####################################################*/
 ProteinChainRestraint::ProteinChainRestraint(Model *m,
     SingletonContainerAdaptor sc,
     double sigma)
@@ -501,14 +726,12 @@ ProteinChainRestraint::ProteinChainRestraint(Model *m,
   sc_ = sc;
 }
 
-
 ProteinChainRestraint::ProteinChainRestraint(Model *m,
     double sigma)
   : Restraint(m, "ProteinChainRestraint %1%")
   , sigma_(sigma)
 {
 }
-
 
 void ProteinChainRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
@@ -533,7 +756,6 @@ void ProteinChainRestraint::add_particle(Particle *ps) {
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
 }
-
 
 double
 ProteinChainRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
@@ -571,7 +793,6 @@ ProteinChainRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return v/sigma_;
 }
 
-
 ModelObjectsTemp ProteinChainRestraint::do_get_inputs() const {
   if ( !sc_ )
     return ModelObjectsTemp();
@@ -580,10 +801,11 @@ ModelObjectsTemp ProteinChainRestraint::do_get_inputs() const {
 }
 
 
+/*#####################################################
+# Function setup - half_torus_distance
+#####################################################*/
 namespace
 {
-
-
 std::pair<double, algebra::Vector3D> half_torus_distance(double x, double y, double z, double R, double r)
 {
   const double eps = 1e-9;
@@ -647,11 +869,12 @@ std::pair<double, algebra::Vector3D> half_torus_distance(double x, double y, dou
     return std::make_pair(-denom, der);
   }
 }
-
-
 }
 
 
+/*#####################################################
+# Restraints setup - MembraneSurfaceLocationRestraint
+#####################################################*/
 MembraneSurfaceLocationRestraint::MembraneSurfaceLocationRestraint(Model *m,
     SingletonContainerAdaptor sc,
     double R, double r, double thickness, double sigma)
@@ -664,7 +887,6 @@ MembraneSurfaceLocationRestraint::MembraneSurfaceLocationRestraint(Model *m,
   sc_ = sc;
 }
 
-
 MembraneSurfaceLocationRestraint::MembraneSurfaceLocationRestraint(Model *m,
     double R, double r, double thickness, double sigma)
   : Restraint(m, "MembraneSurfaceLocationRestraint %1%")
@@ -674,7 +896,6 @@ MembraneSurfaceLocationRestraint::MembraneSurfaceLocationRestraint(Model *m,
   , thickness_(thickness/2)
 {
 }
-
 
 void MembraneSurfaceLocationRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
@@ -699,7 +920,6 @@ void MembraneSurfaceLocationRestraint::add_particle(Particle *ps) {
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
 }
-
 
 double
 MembraneSurfaceLocationRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
@@ -730,7 +950,6 @@ MembraneSurfaceLocationRestraint::unprotected_evaluate(DerivativeAccumulator *ac
   return v/sigma_;
 }
 
-
 ModelObjectsTemp MembraneSurfaceLocationRestraint::do_get_inputs() const {
   if ( !sc_ )
     return ModelObjectsTemp();
@@ -739,7 +958,9 @@ ModelObjectsTemp MembraneSurfaceLocationRestraint::do_get_inputs() const {
 }
 
 
-
+/*#####################################################
+# Restraints setup - PoreSideVolumeLocationRestraint
+#####################################################*/
 PoreSideVolumeLocationRestraint::PoreSideVolumeLocationRestraint(Model *m,
     SingletonContainerAdaptor sc,
     double R, double r, double thickness, 
@@ -754,7 +975,6 @@ PoreSideVolumeLocationRestraint::PoreSideVolumeLocationRestraint(Model *m,
   sc_ = sc;
 }
 
-
 PoreSideVolumeLocationRestraint::PoreSideVolumeLocationRestraint(Model *m,
     double R, double r, double thickness, 
     bool consider_radius, double sigma)
@@ -766,7 +986,6 @@ PoreSideVolumeLocationRestraint::PoreSideVolumeLocationRestraint(Model *m,
   , consider_radius_(consider_radius)
 {
 }
-
 
 void PoreSideVolumeLocationRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
@@ -791,7 +1010,6 @@ void PoreSideVolumeLocationRestraint::add_particle(Particle *ps) {
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
 }
-
 
 double
 PerinuclearVolumeLocationRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
@@ -824,7 +1042,6 @@ PerinuclearVolumeLocationRestraint::unprotected_evaluate(DerivativeAccumulator *
   return v/sigma_;
 }
 
-
 ModelObjectsTemp PoreSideVolumeLocationRestraint::do_get_inputs() const {
   if ( !sc_ )
     return ModelObjectsTemp();
@@ -833,7 +1050,9 @@ ModelObjectsTemp PoreSideVolumeLocationRestraint::do_get_inputs() const {
 }
 
 
-
+/*#####################################################
+# Restraints setup - PerinuclearVolumeLocationRestraint
+#####################################################*/
 PerinuclearVolumeLocationRestraint::PerinuclearVolumeLocationRestraint(Model *m,
     SingletonContainerAdaptor sc,
     double R, double r, double thickness, 
@@ -848,7 +1067,6 @@ PerinuclearVolumeLocationRestraint::PerinuclearVolumeLocationRestraint(Model *m,
   sc_ = sc;
 }
 
-
 PerinuclearVolumeLocationRestraint::PerinuclearVolumeLocationRestraint(Model *m,
     double R, double r, double thickness, 
     bool consider_radius, double sigma)
@@ -860,7 +1078,6 @@ PerinuclearVolumeLocationRestraint::PerinuclearVolumeLocationRestraint(Model *m,
   , consider_radius_(consider_radius)
 {
 }
-
 
 void PerinuclearVolumeLocationRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
@@ -885,7 +1102,6 @@ void PerinuclearVolumeLocationRestraint::add_particle(Particle *ps) {
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
 }
-
 
 double
 PoreSideVolumeLocationRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
@@ -918,7 +1134,6 @@ PoreSideVolumeLocationRestraint::unprotected_evaluate(DerivativeAccumulator *acc
   return v/sigma_;
 }
 
-
 ModelObjectsTemp PerinuclearVolumeLocationRestraint::do_get_inputs() const {
   if ( !sc_ )
     return ModelObjectsTemp();
@@ -927,7 +1142,9 @@ ModelObjectsTemp PerinuclearVolumeLocationRestraint::do_get_inputs() const {
 }
 
 
-
+/*#####################################################
+# Restraints setup - AssemblySymmetryByDistanceRestraint
+#####################################################*/
 AssemblySymmetryByDistanceRestraint::AssemblySymmetryByDistanceRestraint(Model *m,
     SingletonContainerAdaptor sc,
     double sigma)
@@ -937,14 +1154,12 @@ AssemblySymmetryByDistanceRestraint::AssemblySymmetryByDistanceRestraint(Model *
   sc_ = sc;
 }
 
-
 AssemblySymmetryByDistanceRestraint::AssemblySymmetryByDistanceRestraint(Model *m,
     double sigma)
   : Restraint(m, "AssemblySymmetryByDistanceRestraint %1%")
   , sigma_(sigma)
 {
 }
-
 
 void AssemblySymmetryByDistanceRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
@@ -969,7 +1184,6 @@ void AssemblySymmetryByDistanceRestraint::add_particle(Particle *ps) {
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
 }
-
 
 double
 AssemblySymmetryByDistanceRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
@@ -1006,8 +1220,17 @@ AssemblySymmetryByDistanceRestraint::unprotected_evaluate(DerivativeAccumulator 
   return diff*diff/sigma_;
 }
 
+ModelObjectsTemp AssemblySymmetryByDistanceRestraint::do_get_inputs() const {
+  if ( !sc_ )
+    return ModelObjectsTemp();
+  ParticleIndexes all = sc_->get_all_possible_indexes();
+  return IMP::get_particles(get_model(), all);
+}
 
 
+/*#####################################################
+# Restraints setup - AssemblySymmetryByDihedralRestraint
+#####################################################*/
 AssemblySymmetryByDihedralRestraint::AssemblySymmetryByDihedralRestraint(Model *m,
     SingletonContainerAdaptor sc,
     double sigma)
@@ -1017,14 +1240,12 @@ AssemblySymmetryByDihedralRestraint::AssemblySymmetryByDihedralRestraint(Model *
   sc_ = sc;
 }
 
-
 AssemblySymmetryByDihedralRestraint::AssemblySymmetryByDihedralRestraint(Model *m,
     double sigma)
   : Restraint(m, "AssemblySymmetryByDihedralRestraint %1%")
   , sigma_(sigma)
 {
 }
-
 
 void AssemblySymmetryByDihedralRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
@@ -1050,7 +1271,6 @@ void AssemblySymmetryByDihedralRestraint::add_particle(Particle *ps) {
   get_list(sc_)->add(IMP::internal::get_index(ps));
 }
 
-
 double
 AssemblySymmetryByDihedralRestraint::unprotected_evaluate(DerivativeAccumulator * /*accum*/) const
 {
@@ -1067,15 +1287,6 @@ AssemblySymmetryByDihedralRestraint::unprotected_evaluate(DerivativeAccumulator 
   return diff*diff/sigma_;
 }
 
-
-ModelObjectsTemp AssemblySymmetryByDistanceRestraint::do_get_inputs() const {
-  if ( !sc_ )
-    return ModelObjectsTemp();
-  ParticleIndexes all = sc_->get_all_possible_indexes();
-  return IMP::get_particles(get_model(), all);
-}
-
-
 ModelObjectsTemp AssemblySymmetryByDihedralRestraint::do_get_inputs() const {
   if ( !sc_ )
     return ModelObjectsTemp();
@@ -1084,7 +1295,9 @@ ModelObjectsTemp AssemblySymmetryByDihedralRestraint::do_get_inputs() const {
 }
 
 
-
+/*#####################################################
+# Restraints setup - ProteinProximityRestraint
+#####################################################*/
 ProteinProximityRestraint::ProteinProximityRestraint(Model *m,
     SingletonContainerAdaptor sc,
     double max_dist, double sigma)
@@ -1095,7 +1308,6 @@ ProteinProximityRestraint::ProteinProximityRestraint(Model *m,
   sc_ = sc;
 }
 
-
 ProteinProximityRestraint::ProteinProximityRestraint(Model *m,
     double max_dist, double sigma)
   : Restraint(m, "ProteinProximityRestraint %1%")
@@ -1103,7 +1315,6 @@ ProteinProximityRestraint::ProteinProximityRestraint(Model *m,
   , max_dist_(max_dist)
 {
 }
-
 
 void ProteinProximityRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
@@ -1128,7 +1339,6 @@ void ProteinProximityRestraint::add_particle(Particle *ps) {
   }
   get_list(sc_)->add(IMP::internal::get_index(ps));
 }
-
 
 double
 ProteinProximityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
@@ -1167,7 +1377,6 @@ ProteinProximityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) co
   }
   return v/sigma_;
 }
-
 
 ModelObjectsTemp ProteinProximityRestraint::do_get_inputs() const {
   if ( !sc_ )

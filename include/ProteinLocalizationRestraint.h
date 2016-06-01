@@ -19,6 +19,31 @@
 
 IMPNPC_BEGIN_NAMESPACE
 
+class IMPNPCEXPORT ZAxialPositionRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
+  double lower_bound_;
+  double upper_bound_;
+  double sigma_;
+  bool consider_radius_;
+public:
+  ZAxialPositionRestraint(Model *m, SingletonContainerAdaptor sc, 
+      double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
+  ZAxialPositionRestraint(Model *m,
+      double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
+
+#ifndef IMP_DOXYGEN
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  ModelObjectsTemp do_get_inputs() const;
+
+  IMP_OBJECT_METHODS(ZAxialPositionRestraint);;
+};
+
 class IMPNPCEXPORT ZAxialPositionLowerRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -43,6 +68,55 @@ public:
   IMP_OBJECT_METHODS(ZAxialPositionLowerRestraint);;
 };
 
+class IMPNPCEXPORT ZAxialPositionUpperRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
+  double upper_bound_;
+  double sigma_;
+  bool consider_radius_;
+public:
+  ZAxialPositionUpperRestraint(Model *m, SingletonContainerAdaptor sc, 
+      double upper_bound, bool consider_radius, double sigma=1);
+  ZAxialPositionUpperRestraint(Model *m,
+      double upper_bound, bool consider_radius, double sigma=1);
+
+#ifndef IMP_DOXYGEN
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  ModelObjectsTemp do_get_inputs() const;
+
+  IMP_OBJECT_METHODS(ZAxialPositionUpperRestraint);;
+};
+
+
+class IMPNPCEXPORT XYRadialPositionRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
+  double lower_bound_;
+  double upper_bound_;
+  double sigma_;
+  bool consider_radius_;
+public:
+  XYRadialPositionRestraint(Model *m, SingletonContainerAdaptor sc, 
+      double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
+  XYRadialPositionRestraint(Model *m,
+      double lower_bound, double upper_bound, bool consider_radius, double sigma=1);
+
+#ifndef IMP_DOXYGEN
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  ModelObjectsTemp do_get_inputs() const;
+
+  IMP_OBJECT_METHODS(XYRadialPositionRestraint);;
+};
 
 class IMPNPCEXPORT XYRadialPositionLowerRestraint : public Restraint
 {
@@ -68,7 +142,6 @@ public:
   IMP_OBJECT_METHODS(XYRadialPositionLowerRestraint);;
 };
 
-
 class IMPNPCEXPORT XYRadialPositionUpperRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -91,31 +164,6 @@ public:
   ModelObjectsTemp do_get_inputs() const;
 
   IMP_OBJECT_METHODS(XYRadialPositionUpperRestraint);;
-};
-
-
-class IMPNPCEXPORT ZAxialPositionUpperRestraint : public Restraint
-{
-  IMP::PointerMember<IMP::SingletonContainer> sc_;
-  double upper_bound_;
-  double sigma_;
-  bool consider_radius_;
-public:
-  ZAxialPositionUpperRestraint(Model *m, SingletonContainerAdaptor sc, 
-      double upper_bound, bool consider_radius, double sigma=1);
-  ZAxialPositionUpperRestraint(Model *m,
-      double upper_bound, bool consider_radius, double sigma=1);
-
-#ifndef IMP_DOXYGEN
-  void add_particle(Particle *p);
-  void add_particles(const ParticlesTemp &ps);
-  void set_particles(const ParticlesTemp &ps);
-#endif
-
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
-
-  IMP_OBJECT_METHODS(ZAxialPositionUpperRestraint);;
 };
 
 
