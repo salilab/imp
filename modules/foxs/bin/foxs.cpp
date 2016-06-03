@@ -258,20 +258,21 @@ constant form factor (default = false)")
           fp = pf->fit_profile(profile, min_c1, max_c1, min_c2, max_c2,
                                use_offset, fit_file_name2);
           if (chi_free > 0) {
-            //float dmax = compute_max_distance(particles_vec[i]);
-            // unsigned int ns = IMP::algebra::get_rounded(
-            //                exp_saxs_profile->get_max_q() * dmax / IMP::PI);
-            // int K = chi_free;
-            // ChiFreeScore cfs(ns, K);
-            IMP_NEW(RatioVolatilityScore, rvs, ());
-            rvs->set_was_used(true);
+            float dmax = compute_max_distance(particles_vec[i]);
+            unsigned int ns = IMP::algebra::get_rounded(
+                           exp_saxs_profile->get_max_q() * dmax / IMP::PI);
+            int K = chi_free;
+            IMP_NEW(ChiFreeScore, cfs, (ns, K));
+            cfs->set_was_used(true);
+            // IMP_NEW(RatioVolatilityScore, rvs, ());
+            // rvs->set_was_used(true);
             // resample the profile
             IMP_NEW(Profile, resampled_profile,
                     (exp_saxs_profile->get_min_q(), exp_saxs_profile->get_max_q(),
                      exp_saxs_profile->get_delta_q()));
             pf->resample(profile, resampled_profile);
             float chi_free =
-              rvs->compute_score(exp_saxs_profile, resampled_profile);
+              cfs->compute_score(exp_saxs_profile, resampled_profile);
             fp.set_chi(chi_free);
           }
         }
