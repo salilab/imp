@@ -1,5 +1,5 @@
 import IMP.npc
-
+import IMP.pmi.representation
 
 class XYRadialPositionRestraint(object):
     """Create XYRadial Position Lower restraints
@@ -358,3 +358,189 @@ class ZAxialPositionUpperRestraint(object):
 
     def evaluate(self):
         return self.weight * self.rs.unprotected_evaluate(None)
+
+
+class Representation(IMP.pmi.representation.Representation):
+    """ NPC specific functions are defined here
+    """
+    def set_coordinates_from_rmf(self, component_name, rmf_file_name,
+                                 rmf_frame_number,
+                                 rmf_component_name=None,
+                                 check_number_particles=True,
+                                 representation_name_to_rmf_name_map=None,
+                                 state_number=0,
+                                 skip_gaussian_in_rmf=False,
+                                 skip_gaussian_in_representation=False,
+                                 save_file=False):
+        '''Read and replace coordinates from an RMF file.
+        Replace the coordinates of particles with the same name.
+        It assumes that the RMF and the representation have the particles
+        in the same order.
+        @param component_name Component name
+        @param rmf_component_name Name of the component in the RMF file
+                (if not specified, use `component_name`)
+        @param representation_name_to_rmf_name_map a dictionary that map
+                the original rmf particle name to the recipient particle component name
+        @param save_file: save a file with the names of particles of the component
+
+        '''
+        import IMP.pmi.analysis
+
+        prots = IMP.pmi.analysis.get_hiers_from_rmf(
+            self.m,
+            rmf_frame_number,
+            rmf_file_name)
+
+        if not prots:
+            raise ValueError("cannot read hierarchy from rmf")
+
+        prot=prots[0]
+
+        # if len(self.rigid_bodies)!=0:
+        #   print "set_coordinates_from_rmf: cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies"
+        #   exit()
+
+        allpsrmf = IMP.atom.get_leaves(prot)
+        psrmf = []
+        for p in allpsrmf:
+            (protname, is_a_bead) = IMP.pmi.tools.get_prot_name_from_particle(
+                p, self.hier_dict.keys())
+            if (protname is None) and (rmf_component_name is not None):
+                (protname, is_a_bead) = IMP.pmi.tools.get_prot_name_from_particle(
+                    p, rmf_component_name)
+            if (skip_gaussian_in_rmf):
+                if (IMP.core.Gaussian.get_is_setup(p)) and not (IMP.atom.Fragment.get_is_setup(p) or IMP.atom.Residue.get_is_setup(p)):
+                    continue
+            ###################################
+            # by SJ Kim (06/04/2016)
+            ###################################
+            """
+            if (protname is None):
+                continue
+            #else:
+                #print (p, p.get_parent().get_parent().get_name(), protname, is_a_bead)
+            self_names=(p.get_name()).replace("-","_").split("_")
+            #print(self_names, is_a_bead)
+            #print (self_names, protname[0:8], len(self_names))
+            if (len(self_names) > 1) :
+                residue_no = int(self_names[1])
+            elif (len(self_names) == 1) :
+                residue_no = int(self_names[0])
+            else:
+                residue_no = int(0)
+
+            if (protname[0:6] == "Nup116") and (is_a_bead) :
+                if (int(self_names[1]) < 751) :
+                    continue
+            elif (protname[0:8] == "Nup159.1") :
+                #if (int(self_names[1]) > 381) and (int(self_names[1]) < 1117) :
+                if (residue_no < 1117) :
+                    #print(self_names, protname[0:8], is_a_bead)
+                    continue
+            elif (protname[0:4] == "Nsp1") and (is_a_bead) :
+                if (int(self_names[1]) < 637) :
+                    continue
+
+            #if (protname[0:6] == "Nup159"):
+            #    print(self_names)
+                #exit(0)
+            """
+            ###################################
+            if (rmf_component_name is not None) and (protname == rmf_component_name):
+                psrmf.append(p)
+            elif (rmf_component_name is None) and (protname == component_name):
+                psrmf.append(p)
+
+        psrepr = IMP.atom.get_leaves(self.hier_dict[component_name])
+        if (skip_gaussian_in_representation):
+            allpsrepr = psrepr
+            psrepr = []
+            for p in allpsrepr:
+                #(protname, is_a_bead) = IMP.pmi.tools.get_prot_name_from_particle(
+                #    p, self.hier_dict.keys())
+                if (IMP.core.Gaussian.get_is_setup(p)) and not (IMP.atom.Fragment.get_is_setup(p) or IMP.atom.Residue.get_is_setup(p)):
+                    continue
+                ###################################
+                # by SJ Kim (06/04/2016)
+                ###################################
+                """
+                (protname, is_a_bead) = IMP.pmi.tools.get_prot_name_from_particle(
+                    p, self.hier_dict.keys())
+                if (protname is None) and (rmf_component_name is not None):
+                    (protname, is_a_bead) = IMP.pmi.tools.get_prot_name_from_particle(
+                        p, rmf_component_name)
+                if (protname is None):
+                    continue
+
+                self_names=(p.get_name()).replace("-","_").split("_")
+                if (len(self_names) > 1) :
+                    if (protname[0:6] == "Nup116") and (is_a_bead) :
+                        if (int(self_names[1]) < 751) :
+                            continue
+                    elif (protname[0:6] == "Nup159") and (is_a_bead) :
+                        if (int(self_names[1]) > 381) and (int(self_names[1]) < 1117) :
+                            continue
+                    elif (protname[0:4] == "Nsp1") and (is_a_bead) :
+                        if (int(self_names[1]) < 637) :
+                            continue
+                """
+                ###################################
+                psrepr.append(p)
+
+        import itertools
+        reprnames=[p.get_name() for p in psrepr]
+        rmfnames=[p.get_name() for p in psrmf]
+
+        if save_file:
+            fl=open(component_name+".txt","w")
+            for i in itertools.izip_longest(reprnames,rmfnames): fl.write(str(i[0])+","+str(i[1])+"\n")
+
+
+        if check_number_particles and not representation_name_to_rmf_name_map:
+            if len(psrmf) != len(psrepr):
+                fl=open(component_name+".txt","w")
+                for i in itertools.izip_longest(reprnames,rmfnames): fl.write(str(i[0])+","+str(i[1])+"\n")
+                raise ValueError("%s cannot proceed the rmf and the representation don't have the same number of particles; "
+                           "particles in rmf: %s particles in the representation: %s" % (str(component_name), str(len(psrmf)), str(len(psrepr))))
+
+
+        if not representation_name_to_rmf_name_map:
+            for n, prmf in enumerate(psrmf):
+
+                prmfname = prmf.get_name()
+                preprname = psrepr[n].get_name()
+                if IMP.core.RigidMember.get_is_setup(psrepr[n]):
+                    raise ValueError("component %s cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies" % component_name)
+                if IMP.core.NonRigidMember.get_is_setup(psrepr[n]):
+                    raise ValueError("component %s cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies" % component_name)
+
+                if prmfname != preprname:
+                    print("set_coordinates_from_rmf: WARNING rmf particle and representation particles have not the same name %s %s " % (prmfname, preprname))
+                if IMP.core.XYZ.get_is_setup(prmf) and IMP.core.XYZ.get_is_setup(psrepr[n]):
+                    xyz = IMP.core.XYZ(prmf).get_coordinates()
+                    IMP.core.XYZ(psrepr[n]).set_coordinates(xyz)
+                else:
+                    print("set_coordinates_from_rmf: WARNING particles are not XYZ decorated %s %s " % (str(IMP.core.XYZ.get_is_setup(prmf)), str(IMP.core.XYZ.get_is_setup(psrepr[n]))))
+
+                if IMP.core.Gaussian.get_is_setup(prmf) and IMP.core.Gaussian.get_is_setup(psrepr[n]):
+                    gprmf=IMP.core.Gaussian(prmf)
+                    grepr=IMP.core.Gaussian(psrepr[n])
+                    g=gprmf.get_gaussian()
+                    grepr.set_gaussian(g)
+
+        else:
+            repr_name_particle_map={}
+            rmf_name_particle_map={}
+            for p in psrmf:
+                rmf_name_particle_map[p.get_name()]=p
+            #for p in psrepr:
+            #    repr_name_particle_map[p.get_name()]=p
+
+            for prepr in psrepr:
+                try:
+                    prmf=rmf_name_particle_map[representation_name_to_rmf_name_map[prepr.get_name()]]
+                except KeyError:
+                    print("set_coordinates_from_rmf: WARNING missing particle name in representation_name_to_rmf_name_map, skipping...")
+                    continue
+                xyz = IMP.core.XYZ(prmf).get_coordinates()
+                IMP.core.XYZ(prepr).set_coordinates(xyz)
