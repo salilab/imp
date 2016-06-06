@@ -48,6 +48,10 @@ class LinearLowerBound : public Score {
                              double squared_distance) const {
     return squared_distance > 0;
   }
+
+  float get_k() const{
+    return k_;
+  }
 };
 
 IMPSCOREFUNCTOR_END_NAMESPACE
