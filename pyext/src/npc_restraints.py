@@ -2,7 +2,7 @@ import IMP.npc
 import IMP.pmi.representation
 
 class XYRadialPositionRestraint(object):
-    """Create XYRadial Position Lower restraints
+    """Create XYRadial Position Restraint
     """
     def __init__(self,
                  representation = None,
@@ -11,6 +11,7 @@ class XYRadialPositionRestraint(object):
                  upper_bound = 0.0,
                  consider_radius = False,
                  sigma = 1.0,
+                 term = 'C',
                  hier = None):
         """Constructor
         @param representation representation
@@ -31,10 +32,12 @@ class XYRadialPositionRestraint(object):
         xyr = IMP.npc.XYRadialPositionRestraint(self.m, lower_bound, upper_bound, consider_radius, sigma)
         #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
         residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
-        cterminal = residues[-1]        #nterminal = residues[0]
-        #print (cterminal, type(cterminal))
-
-        xyr.add_particle(cterminal)
+        if (term == 'C'):
+            terminal = residues[-1]
+        else:
+            terminal = residues[0]
+        #print (terminal, type(terminal))
+        xyr.add_particle(terminal)
         self.rs.add_restraint(xyr)
 
     def set_label(self, label):
@@ -191,6 +194,7 @@ class ZAxialPositionRestraint(object):
                  upper_bound = 0.0,
                  consider_radius = False,
                  sigma = 1.0,
+                 term = 'C',
                  hier = None):
         """Constructor
         @param representation representation
@@ -211,10 +215,12 @@ class ZAxialPositionRestraint(object):
         zax = IMP.npc.ZAxialPositionRestraint(self.m, lower_bound, upper_bound, consider_radius, sigma)
         #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
         residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
-        cterminal = residues[-1]        #nterminal = residues[0]
-        #print (cterminal, type(cterminal))
-
-        zax.add_particle(cterminal)
+        if (term == 'C'):
+            terminal = residues[-1]
+        else:
+            terminal = residues[0]
+        #print (terminal, type(terminal))
+        zax.add_particle(terminal)
         self.rs.add_restraint(zax)
 
     def set_label(self, label):
@@ -354,6 +360,65 @@ class ZAxialPositionUpperRestraint(object):
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
         output["ZAxialPositionUpperRestraint_" + self.label] = str(score)
+        return output
+
+    def evaluate(self):
+        return self.weight * self.rs.unprotected_evaluate(None)
+
+
+class MembraneSurfaceLocationRestraint(object):
+    """Create Membrane Surface Location Restraint
+    """
+    def __init__(self,
+                 representation = None,
+                 protein = None,
+                 tor_R = 540.0,
+                 tor_r = 127.5,
+                 tor_th = 45.0,
+                 sigma = 0.2,
+                 hier = None):
+        """Constructor
+        @param representation representation
+        """
+
+        # PMI1/2 selection
+        if representation is None and hier is not None:
+            self.m = hier.get_model()
+        elif hier is None and representation is not None:
+            self.m = representation.prot.get_model()
+        else:
+            raise Exception("MembraneSurfaceLocationRestraint: must pass hier or representation")
+
+        self.rs = IMP.RestraintSet(self.m, 'MembraneSurfaceLocationRestraint')
+        self.weight=1.0
+        self.label = "None"
+
+        msl = IMP.npc.MembraneSurfaceLocationRestraint(self.m, tor_R, tor_r, tor_th, sigma)
+        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        for residue in residues:
+            #print (residue, type(residue))
+            msl.add_particle(residue)
+        self.rs.add_restraint(msl)
+
+    def set_label(self, label):
+        self.label = label
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+
+    def get_restraint(self):
+        return self.rs
+
+    def set_weight(self, weight):
+        self.weight = weight
+        self.rs.set_weight(self.weight)
+
+    def get_output(self):
+        self.m.update()
+        output = {}
+        score = self.weight * self.rs.unprotected_evaluate(None)
+        output["_TotalScore"] = str(score)
+        output["MembraneSurfaceLocationRestraint_" + self.label] = str(score)
         return output
 
     def evaluate(self):
