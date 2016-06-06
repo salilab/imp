@@ -1,6 +1,6 @@
 /**
  *  \file IMP/core/CoverRefined.h
- *  \brief Cover a bond with a sphere.
+ *  \brief Set the position and radius of a particle to enclose the refined.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
@@ -22,22 +22,22 @@ IMPCORE_BEGIN_NAMESPACE
 // for swig
 class XYZR;
 
-/** \brief This class sets the position and radius of each particle to
- enclose the refined.
+//! Set the position and radius of a particle to enclose the refined.
+/** Set the coordinates and radius of the passed particle to cover the
+    particles listed by the particle refiner.
+    An example showing a how to use such a score state to maintain a cover
+    of the atoms of a protein by a sphere per residue:
+    \include cover_particles.py
 
- \see DerivativesFromRefined
- \see DerivativesToRefined
- \see CentroidOfRefined
- \see atom::CoverBond
+    \note The particle passed must be an XYZR.
 
- Set the coordinates and radius of the passed particle to cover the particles
- listed by the particle refiner.
- An example showing a how to use such a score state to maintain a cover
- of the atoms of a protein by a sphere per residue.
- \include cover_particles.py
+    \see DerivativesFromRefined
+    \see DerivativesToRefined
+    \see CentroidOfRefined
 
- \note The particle passed must be an XYZR.
- \uses{class CoverRefined, CGAL}
+    \see atom::CoverBond
+
+    \uses{class CoverRefined, CGAL}
  */
 class IMPCOREEXPORT CoverRefined : public SingletonModifier {
   IMP::PointerMember<Refiner> refiner_;
@@ -45,7 +45,7 @@ class IMPCOREEXPORT CoverRefined : public SingletonModifier {
 
  public:
   //! Create with the given refiner and radius key
-  /** Slack is the amount added to the radius.*/
+  /** Slack is the amount added to the radius. */
   CoverRefined(Refiner *ref, Float slack = 0);
 
   //! Set how much extra to add to the radius.
