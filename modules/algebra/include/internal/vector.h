@@ -56,7 +56,11 @@ class VectorData {
   }
   T *get_data() { return storage_; }
   const T *get_data() const { return storage_; }
-  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(VectorData);
+
+  VectorData(const VectorData &other) {
+    std::copy(other.storage_, other.storage_ + D, storage_);
+  }
+
   bool get_is_null() const { return storage_[0] >= get_null_value<T>(); }
   ~VectorData() {
 #if IMP_HAS_CHECKS >= IMP_USAGE
