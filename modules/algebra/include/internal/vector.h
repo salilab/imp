@@ -57,9 +57,13 @@ class VectorData {
   T *get_data() { return storage_; }
   const T *get_data() const { return storage_; }
 
+#ifdef _MSC_VER
+  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(VectorData);
+#else
   VectorData(const VectorData &other) {
     std::copy(other.storage_, other.storage_ + D, storage_);
   }
+#endif
 
   bool get_is_null() const { return storage_[0] >= get_null_value<T>(); }
   ~VectorData() {
