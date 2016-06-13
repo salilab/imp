@@ -51,6 +51,12 @@ class IMPCOREEXPORT Typed : public Decorator {
     return ParticleType(
         get_model()->get_attribute(get_type_key(), get_particle_index()));
   }
+
+  void set_type(ParticleType pt) const {
+    get_model()->set_attribute(get_type_key(), get_particle_index(),
+                               pt.get_index());
+  }
+
 };
 
 IMP_DECORATORS(Typed, Typeds, ParticlesTemp);
