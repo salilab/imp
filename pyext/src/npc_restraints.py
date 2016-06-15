@@ -34,10 +34,16 @@ class XYRadialPositionRestraint(object):
         residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
         if (term == 'C'):
             terminal = residues[-1]
-        else:
+            #print (terminal, type(terminal))
+            xyr.add_particle(terminal)
+        elif (term == 'N'):
             terminal = residues[0]
-        #print (terminal, type(terminal))
-        xyr.add_particle(terminal)
+            #print (terminal, type(terminal))
+            xyr.add_particle(terminal)
+        else:
+            for residue in residues:
+                #print (residue, type(residue))
+                xyr.add_particle(residue)
         self.rs.add_restraint(xyr)
 
     def set_label(self, label):
@@ -217,10 +223,16 @@ class ZAxialPositionRestraint(object):
         residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
         if (term == 'C'):
             terminal = residues[-1]
-        else:
+            #print (terminal, type(terminal))
+            zax.add_particle(terminal)
+        elif (term == 'N'):
             terminal = residues[0]
-        #print (terminal, type(terminal))
-        zax.add_particle(terminal)
+            #print (terminal, type(terminal))
+            zax.add_particle(terminal)
+        else:
+            for residue in residues:
+                #print (residue, type(residue))
+                zax.add_particle(residue)
         self.rs.add_restraint(zax)
 
     def set_label(self, label):
