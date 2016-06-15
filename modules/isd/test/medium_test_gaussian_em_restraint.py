@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function, division
 import IMP
 import IMP.core
 import IMP.isd
@@ -206,7 +207,7 @@ class LocalTests(IMP.test.TestCase):
             shuffle_particles(self.model_ps,5.0,1.5)
             score = self.sf.evaluate(False)
             pyscore = gem_score(self.model_ps, self.density_ps)
-            print score,pyscore
+            print(score,pyscore)
 
 if __name__ == '__main__':
     IMP.test.main()
