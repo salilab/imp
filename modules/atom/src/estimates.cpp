@@ -139,7 +139,7 @@ double get_einstein_rotational_diffusion_coefficient(double r) {
   // double kt= get_kt(IMP::internal::DEFAULT_TEMPERATURE);
   unit::PerFemtosecond ret =
       kt(IMP::internal::DEFAULT_TEMPERATURE) /
-      (8 * PI * e * square(unit::Angstrom(r)) * unit::Angstrom(r));
+    (8 * PI * e * square(unit::Angstrom(r)) * unit::Angstrom(r));
   return ret.get_value();
 }
 

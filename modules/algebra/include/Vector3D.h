@@ -13,7 +13,7 @@
 #include <IMP/exception.h>
 
 #include <numeric>
-//#include <cmath>
+#include <cmath>
 
 #include "VectorD.h"
 
@@ -32,6 +32,18 @@ inline Vector3D get_vector_product(const Vector3D &p1, const Vector3D &p2) {
   return Vector3D(p1[1] * p2[2] - p1[2] * p2[1], p1[2] * p2[0] - p1[0] * p2[2],
                   p1[0] * p2[1] - p1[1] * p2[0]);
 }
+
+/* //! Get angle between vectors p1 and p2 (with appropriate sign depending on where */
+/* //! p2 is in relation to p1) */
+/* inline Vector3D get_angle(const Vector3D &p1, const Vector3D &p2) { */
+/*   // see wikipedia on great circles - atan formula is numerically more stable */
+/*   // than using acos or asin. */
+/*   double sin_sigma = get_vector_product(p1,p2).get_magnitude(); */
+/*   double cos_sigma = p1*p2; */
+/*   double sigma = atan2(sin_sigma,cos_sigma); */
+/*   return sigma; */
+/* } */
+
 //! Return a vector that is perpendicular to the given vector
 /** \note This is occasionally referred to in the code as a "vertical" vector.
     \see Vector3D

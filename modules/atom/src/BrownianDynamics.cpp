@@ -90,7 +90,7 @@ inline double get_torque(Model *m, ParticleIndex p,
   RigidBodyDiffusion d(m, p);
   core::RigidBody rb(m, p);
 
-  double cforce(rb.get_torque()[i]);
+  double cforce(rb.get_torque()[i]); // in kT/Rad
   // unit::Angstrom R(sampler_());
   double dr = d.get_rotational_diffusion_coefficient();
   double force_term = dr * cforce * dt * ikT;
@@ -106,13 +106,16 @@ inline double get_torque(Model *m, ParticleIndex p,
   // returns the std-dev for the random displacement in the Ermak-Mccammon equation
 inline double get_sigma_displacement(Model *m, ParticleIndex p,
                         double dtfs) {
-  // 6.0 is 2.0 for each dof (Barak)
+  // 6.0 is 2.0 for the variance of each translation dof (Barak)
   // 6.0 since we are picking radius rather than the coordinates (Daniel)
   double dd = Diffusion(m, p).get_diffusion_coefficient();
   return sqrt(6.0 * dd * dtfs);
 }
+
+ // returns the std-dev for the random rotation angle in the Ermak-Mccammon equation
 inline double get_rotational_sigma(Model *m, ParticleIndex p,
                                    double dtfs) {
+  // 6.0 is 2.0 for the variance of each rotational dof (Barak)
   double dr = RigidBodyDiffusion(m, p).get_rotational_diffusion_coefficient();
   return sqrt(6.0 * dr * dtfs);
 }

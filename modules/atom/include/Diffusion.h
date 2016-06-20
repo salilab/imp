@@ -82,11 +82,15 @@ class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
   /** All diffusion coefficients are determined from the radius */
   IMP_DECORATOR_SETUP_0(RigidBodyDiffusion);
 
+  //! returns the rotational diffusion coefficient in \f$radians^2/fs\f$
   double get_rotational_diffusion_coefficient() const {
     return get_model()->get_attribute
       (get_rotational_diffusion_coefficient_key(),
        get_particle_index());
   }
+
+
+  //! sets the rotational diffusion coefficient in \f$radians^2/fs\f$
   void set_rotational_diffusion_coefficient(double d) const {
     return get_particle()->set_value(get_rotational_diffusion_coefficient_key(),
                                      d);

@@ -69,13 +69,16 @@ class IMPCOREEXPORT XYZ : public Decorator {
   Float get_coordinate(int i) const {
     return get_model()->get_sphere(get_particle_index())[i];
   }
-  //! Get the ith coordinate derivative
+  //! Get the derivative of the ith coordinate, as accumulated by
+  //! add_to_derivative()
   Float get_derivative(int i) const { return get_derivatives()[i]; }
-  //! Add something to the derivative of the ith coordinate
+
+  //! Add v to the derivative of the ith coordinate, used by various
+  //! 
   void add_to_derivative(int i, Float v, DerivativeAccumulator &d) {
     get_particle()->add_to_derivative(get_coordinate_key(i), v, d);
   }
-  //! Add something to the derivative of the coordinates
+  //! Add the vector v to the derivative vector of the x,y,z coordinates
   void add_to_derivatives(const algebra::Vector3D &v,
                           DerivativeAccumulator &d) {
     get_model()->add_to_coordinate_derivatives(get_particle_index(), v, d);
@@ -107,7 +110,7 @@ class IMPCOREEXPORT XYZ : public Decorator {
     return get_model()->get_sphere(get_particle_index()).get_center();
   }
 
-  //! Get the vector of derivatives.
+  //! Get the vector of derivatives accumulated by add_to_derivatives().
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
   algebra::Vector3D get_derivatives() const {
