@@ -229,23 +229,51 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   */
   void set_reference_frame_from_members(const ParticleIndexes &members);
 
-#ifndef IMP_DOXYGEN
-  /** This takes a Cartesian derivative in global coordinates,
-      and a location in internal coordinates.
+  /**  Update the translational and rotational derivatives
+       on the rigid body center of mass, using the Cartesian derivative
+       vector at a speicified location (the point where the force is 
+       being applied).
 
-      It is currently hidden since the function signature is highly ambiguous.
+       Updates both the quaternion derivatives and the torque.
+
+      @param local_derivative The derivative vector in local rigid body coordinates
+      @param local_location   The location where the derivative is taken in local
+                              rigid body coordinates
+      @param da               Accumulates the output derivative over the rigid body
+                              center of mass (translation and rotation torque, quaternion)
    */
-  inline void add_to_derivatives(const algebra::Vector3D &derivative,
+  inline void add_to_derivatives(const algebra::Vector3D &local_derivative,
                           const algebra::Vector3D &local_location,
                           DerivativeAccumulator &da);
 
-  // faster if all is cached
-  inline void add_to_derivatives(const algebra::Vector3D &derivative,
+  /** Faster version of the above, if all is cached.
+
+      @param local_derivative    The derivative vector in local rigid body coordinates
+      @param global_derivative   The derivative vector in global coordinates
+      @param local_location      The location where the derivative is taken in local
+                                 rigid body coordinates
+      @param rot_local_to_global Rotation matrix from local rigid body to
+                                 global coordinates
+      @param da                  Accumulates the output derivative over the rigid body
+                                 center of mass (translation and rotation torque, quaternion)
+  */      
+  inline void add_to_derivatives(const algebra::Vector3D &local_derivative,
                           const algebra::Vector3D &global_derivative,
                           const algebra::Vector3D &local_location,
-                          const algebra::Rotation3D &rot,
+                          const algebra::Rotation3D &rot_local_to_global,
                           DerivativeAccumulator &da);
-#endif
+
+  /** Add torque to derivative table of this rigid body
+      Note that this method does not update the quaternion derivatives, so should
+      be used by optimizers that rely on torque only (e.g. BrownianDynamics)
+
+      @param torque_local Torque vector in local reference frame, 
+                          in units of kCal/Mol/Radian
+      @param da           Object for accumulating derivatives                       
+  */
+  inline void add_to_torque(const algebra::Vector3D &torque_local,
+				DerivativeAccumulator &da);
+
 
   /** The units are kCal/Mol/Radian */
   algebra::Vector3D get_torque() const {
@@ -312,19 +340,28 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
 #ifndef IMP_DOXYGEN
 // inline implementation
+void RigidBody::add_to_torque(const algebra::Vector3D &torque_local,
+                                   DerivativeAccumulator &da) {
+  for (unsigned int i = 0; i < 3; ++i) {
+    get_model()->add_to_derivative(internal::rigid_body_data().torque_[i],
+                                   get_particle_index(), torque_local[i], da);
+  }
+}
+
+
+// inline implementation
 void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &deriv_global,
                                    const algebra::Vector3D &local,
-                                   const algebra::Rotation3D &rot,
+                                   const algebra::Rotation3D &rot_local_to_global,
                                    DerivativeAccumulator &da) {
-  // const algebra::Vector3D deriv_global= rot*deriv_local;
   // IMP_LOG_TERSE( "Accumulating rigid body derivatives" << std::endl);
+  XYZ::add_to_derivatives(deriv_global, da);
   algebra::VectorD<4> q(0, 0, 0, 0);
   for (unsigned int j = 0; j < 4; ++j) {
-    algebra::Vector3D v = rot.get_derivative(local, j);
+    algebra::Vector3D v = rot_local_to_global.get_derivative(local, j);
     q[j] = deriv_global * v;
   }
-  XYZ::add_to_derivatives(deriv_global, da);
   for (unsigned int j = 0; j < 4; ++j) {
     get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[j],
                                    get_particle_index(), q[j], da);
@@ -340,10 +377,11 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
 void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &local,
                                    DerivativeAccumulator &da) {
-  algebra::Rotation3D rot =
+  algebra::Rotation3D rot_local_to_global =
       get_reference_frame().get_transformation_to().get_rotation();
-  const algebra::Vector3D deriv_global = rot * deriv_local;
-  add_to_derivatives(deriv_local, deriv_global, local, rot, da);
+  const algebra::Vector3D deriv_global = rot_local_to_global * deriv_local;
+  add_to_derivatives(deriv_local, deriv_global, local, 
+		     rot_local_to_global, da);
 }
 #endif
 
