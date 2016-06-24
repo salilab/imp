@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/SaveOptimizerState.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Dump the state of all associated objects into the RMF file.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
@@ -19,8 +19,9 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-/** Periodically call the save_frame() method to save the everything
-    associated with the RMF file to file.
+//! Periodically dump the state of all associated objects into the RMF file.
+/** This is done by calling the save_frame() function. Convenience methods
+    are provided to add hierarchies, restraints, particles, and geometries.
 */
 class IMPRMFEXPORT SaveOptimizerState : public OptimizerState {
   RMF::FileHandle fh_;
