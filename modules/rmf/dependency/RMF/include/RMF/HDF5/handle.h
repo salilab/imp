@@ -70,7 +70,7 @@ class RMFEXPORT Handle : public boost::noncopyable {
     }
     h_ = -1;
   }
-  ~Handle() {
+  ~Handle() noexcept(false) {
     if (h_ != -1) {
       RMF_HDF5_CALL(f_(h_));
     }
