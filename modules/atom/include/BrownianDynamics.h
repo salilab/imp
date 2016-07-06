@@ -167,11 +167,11 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   { forces_[i]=f; }
 #endif
 
-  //! get the force felt on each particle
+  //! get the force vectors felt on each particle in kCal/mol/A
   algebra::Vector3Ds const& get_forces() const
     { return forces_; }
 
-  //! get the force felt on particle i
+  //! get the force felt on particle i in kCal/mol/A
   algebra::Vector3D const& get_force(unsigned int i) const
     { return forces_[i]; }
 

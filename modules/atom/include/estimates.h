@@ -110,7 +110,7 @@ IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r);
 IMPATOMEXPORT double get_einstein_rotational_diffusion_coefficient(double r);
 
 /** Return the standard deviation for the Brownian step in Angstroms given the
-    diffusion coefficient D and the time step t.*/
+    diffusion coefficient D in A^2/fs and the time step t in fs.*/
 IMPATOMEXPORT double get_diffusion_length(double D, double t);
 
 /** Return the scale for diffusion in Angstroms given the specified force,
@@ -125,7 +125,7 @@ IMPATOMEXPORT double get_diffusion_length(double D, double force, double t,
                                           double temp = 273);
 
 /** Get the standard deviation of the diffusion angle change in radians given
-    the rigid body diffusion coefficient and the time step dtfs in femtoseconds.*/
+    the rigid body diffusion coefficient in A^2/fs and the time step dtfs in fs.*/
 IMPATOMEXPORT double get_diffusion_angle(double D, double dtfs);
 
 /** Estimate the diffusion coefficient of a particle in A^2/fs from a list of
@@ -139,10 +139,27 @@ IMPATOMEXPORT double get_diffusion_coefficient(
 
 /** Estimate the rotational diffusion coefficient of a particle in Rad^2/fs
     from a list of rotational displacements each taken after the given time
-    step dt.
+    step dt [fs].
 */
 IMPATOMEXPORT double get_rotational_diffusion_coefficient(
     const algebra::Rotation3Ds &displacements, double dt);
+
+/**\name Energy conversions
+
+   Convert energy from kcal/mol to femtojoules
+   @{
+*/
+IMPATOMEXPORT double get_energy_in_femto_joules(double energy_in_kcal_per_mol);
+
+//! Convert force from kcal/mol/A to femtonewtons
+IMPATOMEXPORT double get_force_in_femto_newtons(
+    double force_in_kcal_per_mol_per_angstrom);
+
+//! Convert spring constant from kcal/mol/A^2 to femtonewton/A
+IMPATOMEXPORT double get_spring_constant_in_femto_newtons_per_angstrom(
+    double k_in_kcal_per_mol_per_angstrom_square);
+
+
 
 IMPATOM_END_NAMESPACE
 

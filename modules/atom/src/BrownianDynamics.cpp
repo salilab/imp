@@ -64,14 +64,14 @@ bool BrownianDynamics::get_is_simulation_particle(ParticleIndex pi)
 
 namespace {
 /** get the force displacement term in the Ermak-Mccammon equation
-    for coordinate i of  particle pi in model m, with time step dt and ikT=1/kT
+    for coordinate i of  particle pi in model m, with time step dt [fs] and ikT=1/kT [mol/kcal]
 */
 inline double get_force_displacement(Model *m, ParticleIndex pi,
                         unsigned int i, double dt, double ikT) {
   Diffusion d(m, pi);
-  double nforce(-d.get_derivative(i));
+  double nforce(-d.get_derivative(i)); // [kCal/mol/A]
   // unit::Angstrom R(sampler_());
-  double dd = d.get_diffusion_coefficient();
+  double dd = d.get_diffusion_coefficient(); // [A^2/fs]
   double force_term(nforce * dd * dt * ikT);
   /*if (force_term > unit::Angstrom(.5)) {
     std::cout << "Forces on " << _1->get_name() << " are "
@@ -84,15 +84,16 @@ inline double get_force_displacement(Model *m, ParticleIndex pi,
             << std::endl;*/
   return force_term;
 }
-// radians
+// returns i'th torque displacement in radians given model m, particle index p,
+// torque component number i, time dt in fs, and ikT (1/kT) in mol/kcal
 inline double get_torque(Model *m, ParticleIndex p,
                          unsigned int i, double dt, double ikT) {
   RigidBodyDiffusion d(m, p);
   core::RigidBody rb(m, p);
 
-  double cforce(rb.get_torque()[i]); // in kT/Rad
+  double cforce(rb.get_torque()[i]); // in kcal/mol/rad
   // unit::Angstrom R(sampler_());
-  double dr = d.get_rotational_diffusion_coefficient();
+  double dr = d.get_rotational_diffusion_coefficient(); // rad^2/fs
   double force_term = dr * cforce * dt * ikT;
   /*if (force_term > unit::Angstrom(.5)) {
     std::cout << "Forces on " << _1->get_name() << " are "

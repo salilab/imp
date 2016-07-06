@@ -90,6 +90,8 @@ double get_volume_from_residue_type(ResidueType rt) {
 typedef unit::Shift<unit::Multiply<unit::Pascal, unit::Second>::type, -3>::type
     MillipascalSecond;
 
+//! returns an estimate of the dynamic viscocity (greek letter "eta") in millipascal-seconds
+//! at specified tempertature T [K]
 static MillipascalSecond eta(unit::Kelvin T) {
   const std::pair<unit::Kelvin, MillipascalSecond> points[] = {
       std::make_pair(unit::Kelvin(273 + 10.0), MillipascalSecond(1.308)),
@@ -121,11 +123,13 @@ static MillipascalSecond eta(unit::Kelvin T) {
 }
 
 namespace {
+// returns kt in femtojoules for temeprature t [K]
 unit::Femtojoule kt(unit::Kelvin t) {
   return IMP::unit::Femtojoule(IMP::internal::KB * t);
 }
 }
 
+//! return units are A^2/fs, given radius r in A
 double get_einstein_diffusion_coefficient(double r) {
   MillipascalSecond e = eta(IMP::internal::DEFAULT_TEMPERATURE);
   unit::SquareAngstromPerFemtosecond ret(
@@ -134,6 +138,7 @@ double get_einstein_diffusion_coefficient(double r) {
   return ret.get_value();
 }
 
+//! return units are Rad^2/fs, given radius r in A
 double get_einstein_rotational_diffusion_coefficient(double r) {
   MillipascalSecond e = eta(IMP::internal::DEFAULT_TEMPERATURE);
   // double kt= get_kt(IMP::internal::DEFAULT_TEMPERATURE);
@@ -235,5 +240,30 @@ double get_rotational_diffusion_coefficient(
   double sigma = stdsum / diffs.size();
   return sigma / (6.0 * dt);
 }
+
+double get_energy_in_femto_joules(double energy_in_kcal_per_mol) {
+  unit::KilocaloriePerMol cforce(energy_in_kcal_per_mol);
+  unit::Femtojoule nforce =
+    unit::convert_kcal_to_J(cforce / unit::ATOMS_PER_MOL);
+  return nforce.get_value();
+}
+
+double get_force_in_femto_newtons(double f) {
+  unit::KilocaloriePerAngstromPerMol cforce(f);
+  unit::Femtonewton nforce =
+    unit::convert_kcal_to_J(cforce / unit::ATOMS_PER_MOL);
+  return nforce.get_value();
+}
+
+double get_spring_constant_in_femto_newtons_per_angstrom(double k) {
+  // cheating a bit
+  unit::KilocaloriePerAngstromPerMol cforce(k);
+      unit::Femtonewton nforce =
+      unit::convert_kcal_to_J(cforce / unit::ATOMS_PER_MOL);
+    return nforce.get_value();
+}
+
+
+
 
 IMPATOM_END_NAMESPACE

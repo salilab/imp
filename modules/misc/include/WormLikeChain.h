@@ -86,11 +86,11 @@ inline DerivativePair WormLikeChain::evaluate_with_derivative(double v) const {
                                      << " " << l << " " << lmax_ << " "
                                      << cutoff() << std::endl);
   }
-  unit::YoctoKilocalorie zc = convert_J_to_Cal(ret);
+  unit::YoctoKilocalorie zc = convert_J_to_kcal(ret);
   double value = (zc * unit::ATOMS_PER_MOL).get_value();
   // std::cout << "Force is " << doubled << " for length " << l << std::endl;
   // convert from picoNewton
-  unit::YoctoKilocaloriePerAngstrom du = unit::convert_J_to_Cal(doubled);
+  unit::YoctoKilocaloriePerAngstrom du = unit::convert_J_to_kcal(doubled);
 
   double deriv = (du * unit::ATOMS_PER_MOL).get_value();
   // std::cout << "Which converts to " << d << std::endl;
