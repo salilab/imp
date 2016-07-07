@@ -63,10 +63,10 @@ class IMPATOMEXPORT Chain : public Hierarchy {
 
 IMP_DECORATORS(Chain, Chains, Hierarchies);
 
-/** Get the containing chain or Chain() if there is none*/
+//! Get the containing chain or Chain() if there is none
 IMPATOMEXPORT Chain get_chain(Hierarchy h);
 
-/** Walk up the hierarchy to determine the chain id. */
+//! Walk up the hierarchy to determine the chain id.
 IMPATOMEXPORT std::string get_chain_id(Hierarchy h);
 
 IMPATOM_END_NAMESPACE
