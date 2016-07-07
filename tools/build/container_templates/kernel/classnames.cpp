@@ -165,8 +165,10 @@ Restraints ClassnameScore::do_create_current_decomposition(
   if (score == 0) {
     return Restraints();
   } else {
-    return Restraints(1, IMP::internal::create_tuple_restraint(
-                             this, m, vt, get_name()));
+    Pointer<Restraint> ret = IMP::internal::create_tuple_restraint
+      (this, m, vt, get_name());
+    ret->set_last_score(score);
+    return Restraints(1, ret);
   }
 }
 

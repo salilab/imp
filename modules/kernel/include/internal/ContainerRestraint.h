@@ -17,7 +17,7 @@
 #include "functors.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
-/** When programming in C++, you can use CoreRestraint instead
+/** When programming in C++, you can use ContainerRestraint instead
     of a SingletonsRestraint, PairsRestraint, etc. The result is
     somewhat faster (20% or so).
 */

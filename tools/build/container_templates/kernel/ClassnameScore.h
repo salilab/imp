@@ -92,10 +92,13 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                                           unsigned int lower_bound,
                                           unsigned int upper_bound) const;
 
-  //! Decompose this pair score acting on the pair into a set of restraints.
+  //! Decompose this ClassnameScore into a set of
+  //! currently positive restraints over vt.
   /** The scoring function and derivatives should
       be equal to the current score. The default implementation
-      just returns this object bound to the pair. */
+      returns a single restraint with this score bound to vt,
+      or zero restraints if the score equals zero.
+. */
   Restraints create_current_decomposition(Model *m,
                                           PASSINDEXTYPE vt) const;
 
