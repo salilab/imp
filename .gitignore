@@ -5,6 +5,7 @@
 *.bak
 *.old
 .*.sw?
+*#
 modules/*/CMakeLists.txt
 modules/*/CMakeModules
 modules/*/utility/CMakeLists.txt

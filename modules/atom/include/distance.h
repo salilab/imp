@@ -97,7 +97,7 @@ inline double get_drmsd_Q(const Vector3DsOrXYZs0& m0,
     for (unsigned j = i + 1; j < m0.size(); ++j) {
       algebra::Vector3D v0j = get_vector_geometry(m0[j]);
       algebra::Vector3D v1j = get_vector_geometry(m1[j]);
-      
+
       double dist0 = algebra::get_distance(v0i, v0j);
       double dist1 = algebra::get_distance(v1i, v1j);
       if (dist0<=threshold || dist1<=threshold){
@@ -281,16 +281,29 @@ IMPATOMEXPORT FloatPair get_component_placement_score(const core::XYZs& ref1,
       for the second component
 \note see Lasker et al JMB, 2009 for details
  */
-IMPATOMEXPORT double get_pairwise_rmsd_score(const core::XYZs& ref1,
-                                             const core::XYZs& ref2,
-                                             const core::XYZs& mdl1,
-                                             const core::XYZs& mdl2);
+IMPATOMEXPORT
+double get_pairwise_rmsd_score
+(const core::XYZs& ref1,
+ const core::XYZs& ref2,
+ const core::XYZs& mdl1,
+ const core::XYZs& mdl2);
 
-/** Compute the radius of gyration of a set of particles with (optional)
-    radii and mass and (non-optional) coordinates. Either all particles
-    must have mass or none of them.
+/** Compute the radius of gyration $R_g$ of a set of particles. It is assumed
+    the particles has coordinates (XYZ decorator), and optionally, the $R_g$
+    may be weighted by mass or radius^3.
+
+    @param ps the particles
+    @param weighted If true then $R_g$ is weighted by either mass or radius^3,
+       in this order of preference. If none exists, an unweighted $R_g$ is
+       computed. If weighted is true, then it is is assumed that either
+       all particles have mass/radius or none of them do.
+
+    @return the weighted or unweighted radius of gyration of ps
 */
-IMPATOMEXPORT double get_radius_of_gyration(const ParticlesTemp& ps);
+IMPATOMEXPORT
+double get_radius_of_gyration
+(const ParticlesTemp& ps,
+ bool weighted=true);
 
 IMPATOM_END_NAMESPACE
 

@@ -16,6 +16,7 @@
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/sphere_cover.h>
 #endif
+#include <limits>
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/uniform_01.hpp>
 #include <boost/random/uniform_real.hpp>
@@ -197,14 +198,14 @@ inline Vector3Ds uniform_cover_sphere(unsigned int N, const Vector3D &center,
     ret[0] += r;
     return Vector3Ds(1, ret);
   }
-  
+
   Vector3Ds ret(N);
 
   double f = 1;
   if (!ALL) {
     f = 2.0;
   }
-  double opsi;
+  double opsi(std::numeric_limits<double>::min());
   for (unsigned long k = 1; k <= N; ++k) {
     double h = 2.0 * (k - 1.0) / (f * N - 1) - 1.0;
     double theta = std::acos(h);
@@ -212,6 +213,8 @@ inline Vector3Ds uniform_cover_sphere(unsigned int N, const Vector3D &center,
     if (k == 1 || (ALL && k == N)) {
       psi = 0;
     } else {
+      IMP_USAGE_CHECK(opsi>std::numeric_limits<double>::min(),
+                      "opsi should have been initialized by now");
       psi = opsi + 3.6 / std::sqrt(f * (1.0 - h * h));
       int div = static_cast<int>(psi / (2.0 * PI));
       psi -= div * 2.0 * PI;
