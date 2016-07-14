@@ -191,8 +191,13 @@ inline Vector<VectorD<4> > uniform_cover_sphere(unsigned int n,
   return ret;
 }
 
+//! returns a uniform cover of the sphere (center,r) with N points
+//! ALL indicates whether to cover the whole sphere or only one hemisphere
 inline Vector3Ds uniform_cover_sphere(unsigned int N, const Vector3D &center,
                                       double r, bool ALL) {
+  if (N == 0 ) {
+    return Vector3Ds();
+  }
   if (N == 1) {
     Vector3D ret = center;
     ret[0] += r;
@@ -205,7 +210,7 @@ inline Vector3Ds uniform_cover_sphere(unsigned int N, const Vector3D &center,
   if (!ALL) {
     f = 2.0;
   }
-  double opsi(std::numeric_limits<double>::min());
+  double opsi(1000000.0);
   for (unsigned long k = 1; k <= N; ++k) {
     double h = 2.0 * (k - 1.0) / (f * N - 1) - 1.0;
     double theta = std::acos(h);
@@ -213,7 +218,7 @@ inline Vector3Ds uniform_cover_sphere(unsigned int N, const Vector3D &center,
     if (k == 1 || (ALL && k == N)) {
       psi = 0;
     } else {
-      IMP_USAGE_CHECK(opsi>std::numeric_limits<double>::min(),
+      IMP_USAGE_CHECK(opsi<10000.0,
                       "opsi should have been initialized by now");
       psi = opsi + 3.6 / std::sqrt(f * (1.0 - h * h));
       int div = static_cast<int>(psi / (2.0 * PI));
