@@ -34,7 +34,7 @@ HelixRestraint::HelixRestraint(Residues rs, bool ideal)
   //will expand to more bonds and residue types
   bond_ON_score_ = new core::HarmonicDistancePairScore(distON,kON);
 
-  if (rs.size()>4){
+  if (rs.size()>=3){
     for(size_t nr=0;nr<rs.size()-2;nr++){
       core::XYZ a1(get_atom(rs[nr],AT_C));
       core::XYZ a2(get_atom(rs[nr+1],AT_N));
@@ -50,10 +50,12 @@ HelixRestraint::HelixRestraint(Residues rs, bool ideal)
     }
   }
 
-  for(size_t nr=0;nr<rs.size()-4;nr++){
-    bonds_ON_.push_back(ParticleIndexPair(
-                         get_atom(rs[nr],AT_O).get_particle_index(),
-                         get_atom(rs[nr+4],AT_N).get_particle_index()));
+  if (rs.size()>=5){
+    for(size_t nr=0;nr<rs.size()-4;nr++){
+      bonds_ON_.push_back(ParticleIndexPair(
+                                            get_atom(rs[nr],AT_O).get_particle_index(),
+                                            get_atom(rs[nr+4],AT_N).get_particle_index()));
+    }
   }
 }
 
