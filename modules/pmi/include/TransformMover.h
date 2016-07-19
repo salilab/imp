@@ -28,6 +28,8 @@ class IMPPMIEXPORT TransformMover : public IMP::core::MonteCarloMover {
   algebra::Transformation3D last_transformation_;
   Float max_translation_;
   Float max_angle_;
+  IMP::ParticleIndex p1i_;
+  IMP::ParticleIndex p2i_;
   IMP::ParticleIndexes pixyzs_;
   IMP::ParticleIndexes pirbs_;
   IMP::ParticleIndexes pis_;
@@ -37,6 +39,8 @@ class IMPPMIEXPORT TransformMover : public IMP::core::MonteCarloMover {
   IMP::algebra::Vector3Ds xyzs_;
   IMP::algebra::Vector3D axis_;
   IMP::algebra::Transformation3D tt_;
+  unsigned int called_;
+  unsigned int not_accepted_;
   unsigned int constr_;
 
 IMP::algebra::Vector3D get_center(){
@@ -77,6 +81,8 @@ IMP::algebra::Vector3D get_center(){
   TransformMover(Model *m, algebra::Vector3D axis, 
                                    Float max_translation, Float max_rotation);
 
+  TransformMover(Model *m, IMP::ParticleIndexAdaptor p1i, IMP::ParticleIndexAdaptor p2i, 
+                                   Float max_translation, Float max_rotation);
 
 void add_xyz_particle(IMP::ParticleIndexAdaptor pi){
 if ( core::RigidBody::get_is_setup(get_model(), pi) ) {

@@ -1704,6 +1704,7 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
         self.rslin = IMP.RestraintSet(self.m, 'prior_linear')
         self.rslen = IMP.RestraintSet(self.m, 'prior_length')
 
+        self.weight = 1.0
         self.label = label
         self.pairs = []
         self.sigma_dictionary = {}
@@ -1966,9 +1967,12 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
                      nstate,
                      ids))
 
-        lw = IMP.isd.LogWrapper(restraints,1.0)
+        lw = IMP.isd.LogWrapper(restraints, self.weight)
         self.rs.add_restraint(lw)
 
+    def set_weight(self, weight):
+        self.weight = weight
+        self.rs.set_weight(weight)
 
     def set_slope_linear_term(self, slope):
         self.linear.set_slope(slope)
@@ -2071,7 +2075,7 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
         self.m.update()
 
         output = {}
-        score = self.rs.unprotected_evaluate(None)
+        score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
         output["ISDCrossLinkMS_Data_Score_" + self.label] = str(score)
         output["ISDCrossLinkMS_PriorSig_Score_" +
@@ -2087,7 +2091,7 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
             p0 = self.pairs[i][0]
             p1 = self.pairs[i][1]
             output["ISDCrossLinkMS_Score_" +
-                   label + "_" + self.label] = str(-log(ln.unprotected_evaluate(None)))
+                   label + "_" + self.label] = str(self.weight * -log(ln.unprotected_evaluate(None)))
 
             d0 = IMP.core.XYZ(p0)
             d1 = IMP.core.XYZ(p1)

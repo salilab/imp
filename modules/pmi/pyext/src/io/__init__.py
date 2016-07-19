@@ -41,7 +41,10 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
         if name_map is None:
             return ch
         else:
-            return name_map[ch]
+            try:
+                return name_map[ch]
+            except:
+                return ch
 
     # setup
     helix_classes = 'GHI'
@@ -65,6 +68,7 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
     beta_dict = defaultdict(list)
     prev_sstype = None
     prev_beta_id = None
+
     for line in open(dssp_fn, 'r'):
         fields = line.split()
         chain_break = False

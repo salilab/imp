@@ -4,6 +4,7 @@ import IMP.pmi
 import IMP.pmi.topology
 import IMP.test
 import IMP.pmi.restraints.basic
+import math
 
 
 class CylinderRestraint(IMP.test.TestCase):
@@ -48,6 +49,18 @@ class CylinderRestraint(IMP.test.TestCase):
             d.set_coordinates((r,0,0))
             cr.unprotected_evaluate(None)
 
+
+    def test_angles(self):
+        mdl = IMP.Model()
+        p=IMP.Particle(mdl)
+        d=IMP.core.XYZ.setup_particle(p)
+        d.set_coordinates((0,0,0))
+        h=IMP.atom.Hierarchy.setup_particle(p)
+        cr=IMP.pmi.restraints.basic.CylinderRestraint(mdl,[h],10,20,-72,72)
+        for angle in range(360):
+            anglerad=float(angle)/180.0*math.pi
+            d.set_coordinates((math.cos(anglerad),math.sin(anglerad),0))
+            print 'AAA',angle,cr.unprotected_evaluate(None)
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -49,6 +49,14 @@ class Tests(IMP.test.TestCase):
         for r in results[2:]:
             self.assertFalse(r[1])
 
+        # test it works if you pass particles
+        r2 = IMP.pmi.tools.shuffle_configuration(IMP.core.get_leaves(hier))
+        self.assertEqual(len(r2),16)
+        self.assertEqual(r2[0],[rb1,set(ps2)])
+        self.assertEqual(r2[1],[rb2,set(ps1)])
+        for r in r2[2:]:
+            self.assertFalse(r[1])
+
     def test_select_at_all_resolutions(self):
         """Test this actually gets everything"""
         try:

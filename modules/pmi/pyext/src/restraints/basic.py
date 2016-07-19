@@ -195,25 +195,85 @@ class DistanceRestraint(object):
         return self.weight * self.rs.unprotected_evaluate(None)
 
 
+class TorqueRestraint(IMP.Restraint):
+    import math
+    def __init__(self, m, objects, resolution, angular_tolerance,label='None'):
+        IMP.Restraint.__init__(self, m, "TorqueRestraint %1%")
+        self.softness_angle = 0.5
+        self.plateau = 1e-10
+        self.weight = 1.0
+        self.m=m
+        hierarchies = IMP.pmi.tools.input_adaptor(objects,
+                                            resolution,
+                                            flatten=True)
+        self.particles = [h.get_particle() for h in hierarchies]
+        self.ds=[IMP.core.XYZ(p) for p in self.particles]
+        self.label=label
+        self.at=angular_tolerance
+
+    def get_angle_probability(self,xyz,angle_center):
+        maxtheta=angle_center+self.at
+        mintheta=angle_center-self.at
+        angle=self.math.atan2(xyz.get_y(),xyz.get_x() )*180.0/self.math.pi
+        anglediff = (angle - maxtheta + 180 + 360) % 360 - 180
+        argvalue1=anglediff / self.softness_angle
+        anglediff = (angle - mintheta + 180 + 360) % 360 - 180
+        argvalue2=-anglediff / self.softness_angle
+        prob = (1.0-self.plateau) / (1.0 + self.math.exp(-max(argvalue1,argvalue2)))
+        return prob
+
+    def unprotected_evaluate(self, da):
+        s=0.0
+        center=IMP.core.get_centroid(self.ds)
+        angle_center=self.math.atan2(center[1],center[0])*180.0/self.math.pi
+        for xyz in self.ds:
+            s+=-self.math.log(1.0-self.get_angle_probability(xyz,angle_center))
+        return s
+
+    def do_get_inputs(self):
+        return self.particles
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.m, self)
+
+    def get_output(self):
+        self.m.update()
+        output = {}
+        score = self.weight * self.unprotected_evaluate(None)
+        output["_TotalScore"] = str(score)
+        output["TorqueRestraint_" + self.label] = str(score)
+        return output
+
+
+
+
 class CylinderRestraint(IMP.Restraint):
     '''
     PMI2 python restraint. Restrains particles within a
     Cylinder aligned along the z-axis and
     centered in x,y=0,0
+    Optionally, one can restrain the cylindrical angle
     '''
     import math
-    def __init__(self, m, objects, resolution, radius,label='None'):
+    def __init__(self, m, objects, resolution, radius,mintheta=None,
+                 maxtheta=None,repulsive=False,label='None'):
         '''
         @param objects PMI2 objects
         @param resolution the resolution you want the restraint to be applied
         @param radius the radius of the cylinder
+        @param mintheta minimum cylindrical angle in degrees
+        @param maxtheta maximum cylindrical angle in degrees
         '''
         IMP.Restraint.__init__(self, m, "CylinderRestraint %1%")
         self.radius=radius
         self.softness = 3.0
+        self.softness_angle = 0.5
         self.plateau = 1e-10
         self.weight = 1.0
         self.m=m
+        self.mintheta=mintheta
+        self.maxtheta=maxtheta
+        self.repulsive=repulsive
         hierarchies = IMP.pmi.tools.input_adaptor(objects,
                                             resolution,
                                             flatten=True)
@@ -224,13 +284,26 @@ class CylinderRestraint(IMP.Restraint):
         xyz=IMP.core.XYZ(p)
         r=self.math.sqrt(xyz.get_x()**2+xyz.get_y()**2)
         argvalue=(r-self.radius) / self.softness
+        if self.repulsive: argvalue=-argvalue
         prob = (1.0 - self.plateau) / (1.0 + self.math.exp(-argvalue))
+        return prob
+
+    def get_angle_probability(self,p):
+        xyz=IMP.core.XYZ(p)
+        angle=self.math.atan2(xyz.get_y(),xyz.get_x() )*180.0/self.math.pi
+        anglediff = (angle - self.maxtheta + 180 + 360) % 360 - 180
+        argvalue1=anglediff / self.softness_angle
+        anglediff = (angle - self.mintheta + 180 + 360) % 360 - 180
+        argvalue2=-anglediff / self.softness_angle
+        prob = (1.0-self.plateau) / (1.0 + self.math.exp(-max(argvalue1,argvalue2)))
         return prob
 
     def unprotected_evaluate(self, da):
         s=0.0
         for p in self.particles:
             s+=-self.math.log(1.0-self.get_probability(p))
+            if self.mintheta is not None and self.maxtheta is not None:
+                s+=-self.math.log(1.0-self.get_angle_probability(p))
         return s
 
     def do_get_inputs(self):
@@ -289,3 +362,101 @@ class BiStableDistanceRestraint(IMP.Restraint):
 
     def do_get_inputs(self):
         return self.particle_list
+
+
+class DistanceToPointRestraint(object):
+    """DistanceToPointRestraint for anchoring a particle to a specific coordinate"""
+    def __init__(self,
+                 representation=None,
+                 tuple_selection=None,
+                 anchor_point=IMP.algebra.Vector3D(0, 0, 0),
+                 radius=10.0,
+                 kappa=10.0,
+                 resolution=1.0,
+                 weight=1.0,
+                 root_hier = None):
+        """Setup distance restraint.
+        @param representation DEPRECATED
+        @param tuple_selection (resnum,resnum,molecule name, copy number (=0))
+        @param anchor_point - Center of the DistanceToPointRestraint (IMP.algebra.Vector3D object)
+        @param radius Size of the tolerance length in DistanceToPointRestraint
+        @param resolution For selecting a particle
+        @param root_hier The hierarchy to select from (use this instead of representation)
+        \note Pass the same resnum twice to each tuple_selection. Optionally add a copy number (PMI2 only)
+        """
+        self.radius = radius
+        self.label = "None"
+        self.weight = weight
+
+        if tuple_selection is None:
+            raise Exception("You must pass a tuple_selection")
+
+        if representation and not root_hier:
+            self.m = representation.prot.get_model()
+            ps = IMP.pmi.tools.select(representation,
+                                              resolution=resolution,
+                                              name=tuple_selection[2],
+                                              residue=tuple_selection[0])
+        elif root_hier and not representation:
+            self.m = root_hier.get_model()
+            copy_num1 = 0
+            if len(tuple_selection)>3:
+                copy_num1 = tuple_selection[3]
+
+            sel1 = IMP.atom.Selection(root_hier,
+                                      resolution=resolution,
+                                      molecule=tuple_selection[2],
+                                      residue_index=tuple_selection[0],
+                                      copy_index=copy_num1)
+            ps = sel1.get_selected_particles()
+        else:
+            raise Exception("DistanceToPointRestraint: Pass representation or root_hier, not both")
+        if len(ps) > 1:
+            raise ValueError("DistanceToPointRestraint: more than one particle selected")
+
+        self.rs = IMP.RestraintSet(self.m, 'distance_to_point')
+        ub3 = IMP.core.HarmonicUpperBound(self.radius, kappa)
+        if anchor_point is None:
+            c3 = IMP.algebra.Vector3D(0, 0, 0)
+        elif type(anchor_point) is IMP.algebra.Vector3D:
+            c3 = anchor_point
+        else:
+            raise Exception("DistanceToPointRestraint: @param anchor_point must be an algebra::Vector3D object")
+        ss3 = IMP.core.DistanceToSingletonScore(ub3, c3)
+
+        lsc = IMP.container.ListSingletonContainer(self.m)
+        lsc.add(ps)
+
+        r3 = IMP.container.SingletonsRestraint(ss3, lsc)
+        self.rs.add_restraint(r3)
+        self.set_weight(self.weight)
+
+        print("\nDistanceToPointRestraint: Created distance_to_point_restraint between "
+              "%s and %s" % (ps[0].get_name(), c3))
+
+    def set_weight(self,weight):
+        self.weight = weight
+        self.rs.set_weight(weight)
+
+    def set_label(self, label):
+        self.label = label
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+
+    def get_restraint(self):
+        return self.rs
+
+    def get_restraint_for_rmf(self):
+        return self.rs
+
+    def get_output(self):
+        self.m.update()
+        output = {}
+        score = self.evaluate()
+        output["_TotalScore"] = str(score)
+        output["DistanceToPointRestraint_" + self.label] = str(score)
+        return output
+
+    def evaluate(self):
+        return self.weight * self.rs.unprotected_evaluate(None)

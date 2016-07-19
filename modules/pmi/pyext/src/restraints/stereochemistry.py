@@ -217,7 +217,7 @@ class ExcludedVolumeSphere(object):
                 resolution=resolution,
                 hierarchies=hierarchies)
             if bipartite:
-                other_particles = IMP.pmi.tools.select(
+                other_ps = IMP.pmi.tools.select(
                     representation,
                     resolution=resolution,
                     hierarchies=other_hierarchies)
@@ -349,29 +349,39 @@ class ResidueBondRestraint(object):
     residues/beads to enforce the stereochemistry.
     """
     def __init__(self,
-                 representation,
-                 selection_tuple,
+                 representation=None,
+                 selection_tuple=None,
+                 objects=None,
                  distance=3.78,
                  strength=10.0,
                  jitter=None):
         """Constructor
-        @param representation
-        @param selection_tuple Requested selection
+        @param representation (PMI1)
+        @param selection_tuple Requested selection (PMI1)
+        @param objects (PMI2)
         @param distance Resting distance for restraint
         @param strength Bond constant
         @param jitter Defines the +- added to the optimal distance in the harmonic well restraint
                       used to increase the tolerance
         """
-        self.m = representation.prot.get_model()
+
+        if representation is not None and selection is not None:
+            self.m = representation.prot.get_model()
+            particles = IMP.pmi.tools.select_by_tuple(
+                representation,
+                selection_tuple,
+                resolution=1)
+
+        elif objects is not None:
+            particles = IMP.pmi.tools.input_adaptor(objects,1,flatten=True)
+            self.m = particles[0].get_model()
+
         self.rs = IMP.RestraintSet(self.m, "Bonds")
         self.weight = 1
         self.label = "None"
         self.pairslist = []
 
-        particles = IMP.pmi.tools.select_by_tuple(
-            representation,
-            selection_tuple,
-            resolution=1)
+
 
         if not jitter:
             ts = IMP.core.Harmonic(distance, strength)
@@ -427,21 +437,28 @@ class ResidueAngleRestraint(object):
     residues/beads to enforce the stereochemistry.
     """
     def __init__(self,
-                 representation,
-                 selection_tuple,
+                 representation=None,
+                 selection_tuple=None,
+                 objects=None,
                  anglemin=100.0,
                  anglemax=140.0,
                  strength=10.0):
-        self.m = representation.prot.get_model()
+
+        if representation is not None and selection is not None:
+            self.m = representation.prot.get_model()
+            particles = IMP.pmi.tools.select_by_tuple(
+                representation,
+                selection_tuple,
+                resolution=1)
+
+        elif objects is not None:
+            particles = IMP.pmi.tools.input_adaptor(objects,1,flatten=True)
+            self.m = particles[0].get_model()
+
         self.rs = IMP.RestraintSet(self.m, "Angles")
         self.weight = 1
         self.label = "None"
         self.pairslist = []
-
-        particles = IMP.pmi.tools.select_by_tuple(
-            representation,
-            selection_tuple,
-            resolution=1)
 
         ts = IMP.core.HarmonicWell(
             (pi * anglemin / 180.0,
@@ -503,20 +520,27 @@ class ResidueDihedralRestraint(object):
     """
     def __init__(
             self,
-            representation,
-            selection_tuple,
+            representation=None,
+            selection_tuple=None,
+            objects=None,
             stringsequence=None,
             strength=10.0):
-        self.m = representation.prot.get_model()
+
+        if representation is not None and selection is not None:
+            self.m = representation.prot.get_model()
+            particles = IMP.pmi.tools.select_by_tuple(
+                representation,
+                selection_tuple,
+                resolution=1)
+
+        elif objects is not None:
+            particles = IMP.pmi.tools.input_adaptor(objects,1,flatten=True)
+            self.m = particles[0].get_model()
+
         self.rs = IMP.RestraintSet(self.m, "Angles")
         self.weight = 1
         self.label = "None"
         self.pairslist = []
-
-        particles = IMP.pmi.tools.select_by_tuple(
-            representation,
-            selection_tuple,
-            resolution=1)
 
         if stringsequence is None:
             stringsequence = "T" * (len(particles) - 3)
@@ -550,7 +574,7 @@ class ResidueDihedralRestraint(object):
                 print("ResidueDihedralRestraint: adding a TRANS restraint between %s %s %s %s" % (quadruplet[0].get_name(), quadruplet[1].get_name(),
                                                                                                   quadruplet[2].get_name(), quadruplet[3].get_name()))
             self.rs.add_restraint(
-                IMP.core.DihedralRestraint(ts,
+                IMP.core.DihedralRestraint(self.m,ts,
                                            quadruplet[0],
                                            quadruplet[1],
                                            quadruplet[2],

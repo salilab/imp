@@ -1000,7 +1000,7 @@ class TopologyReader(object):
             c.residue_range = (int(rr.split(',')[0]), int(rr.split(',')[1]))
         else:
             errors.append("Residue Range format for component %s line %d is not correct" % (c.molname, linenum))
-            errors.append("Correct syntax is two comma separated integers:  |start_res, end_res|. |%s| was given." % f)
+            errors.append("Correct syntax is two comma separated integers:  |start_res, end_res|. |%s| was given." % rr)
             errors.append("To select all residues, indicate |\"all\"|")
 
         # PDB Offset
@@ -1167,8 +1167,7 @@ class _Component(object):
         self.chain_of_super_rigid_bodies = []
 
     def _l2s(self,l):
-        l = str(map(int,l)).strip('[').strip(']')
-        return l
+        return ",".join("%d" % int(x) for x in l)
 
     def __repr__(self):
         return self.get_str()

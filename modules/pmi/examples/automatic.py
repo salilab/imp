@@ -22,7 +22,7 @@ import tempfile,os
 topology='''
 |molecule_name|color|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|
 |Rpb1  |blue      |1WCM.fasta|1WCM:A|1WCM_fitted.pdb|A|1,100  |0 |5|0 |1|1,2| |
-|Rpb1  |cyan      |1WCM.fasta|1WCM:A|1WCM_fitted.pdb|A|101,200|0 |5|0 |2|1,2| |
+|Rpb1  |cyan      |1WCM.fasta|1WCM:A|BEADS          |A|101,150|0 |5|0 |2|1,2| |
 |Rpb2  |red       |1WCM.fasta|1WCM:B|1WCM_fitted.pdb|B|1,-1   |0 |5|0 |3|1  | |
 |Rpb3  |green     |1WCM.fasta|1WCM:C|1WCM_fitted.pdb|C|1,-1   |0 |5|0 |4|1  | |
 |Rpb4  |orange    |1WCM.fasta|1WCM:D|1WCM_fitted.pdb|D|1,-1   |0 |5|0 |5|1,3| |
@@ -47,12 +47,46 @@ bs = IMP.pmi.macros.BuildSystem(mdl)
 bs.add_state(reader) # note you can call this multiple times to create a multi-state system
 hier, dof = bs.execute_macro()
 
+###################### RESTRAINTS #####################
+output_objects = [] # keep a list of functions that need to be reported
+
+# Connectivity keeps things connected along the backbone (ignores if inside same rigid body)
+crs = []
+moldict = bs.get_molecules()[0]
+mols = []
+for molname in moldict:
+    for mol in moldict[molname]:
+        cr = IMP.pmi.restraints.stereochemistry.ConnectivityRestraint(mol)
+        cr.add_to_model()
+        output_objects.append(cr)
+        crs.append(cr)
+        mols.append(mol)
+
+# Excluded volume - automatically more efficient due to rigid bodies
+evr = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(included_objects = mols)
+evr.add_to_model()
+output_objects.append(evr)
+
+
+###################### SAMPLING #####################
+
+
 # mix it up so it looks cool
 IMP.pmi.tools.shuffle_configuration(hier)
 
-# write RMF
-out = IMP.pmi.output.Output()
-out.init_rmf("example_auto.rmf3",hierarchies=[hier])
-out.write_rmf("example_auto.rmf3")
+# Quickly move all flexible beads into place
+dof.optimize_flexible_beads(100)
+
+rex=IMP.pmi.macros.ReplicaExchange0(mdl,
+                                    root_hier=hier,
+                                    monte_carlo_sample_objects=dof.get_movers(),
+                                    global_output_directory='auto_output/',
+                                    output_objects=output_objects,
+                                    monte_carlo_steps=10,
+                                    number_of_best_scoring_models=0,
+                                    number_of_frames=100)
+rex.execute_macro()
+
+
 
 os.remove(tf.name)

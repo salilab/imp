@@ -257,13 +257,29 @@ class MonteCarlo(object):
             if len(rb) == 2:
                 # normal Super Rigid Body
                 srbm = IMP.pmi.TransformMover(self.m, maxtrans, maxrot)
-            if len(rb) == 3:
-                # super rigid body with 2D rotation, rb[2] is the axis
-                srbm = IMP.pmi.TransformMover(
-                    self.m,
-                    IMP.algebra.Vector3D(rb[2]),
-                    maxtrans,
-                    maxrot)
+            elif len(rb) == 3:
+                if type(rb[2]) == tuple and type(rb[2][0]) == float \
+                    and type(rb[2][1]) == float and type(rb[2][2]) == float \
+                    and len(rb[2])== 3:
+                    # super rigid body with 2D rotation, rb[2] is the axis
+                    srbm = IMP.pmi.TransformMover(
+                      self.m,
+                      IMP.algebra.Vector3D(rb[2]),
+                      maxtrans,
+                      maxrot)
+                #elif type(rb[2]) == tuple and type(rb[2][0]) == IMP.Particle \
+                #    and type(rb[2][1]) == IMP.Particle and len(rb[2])== 2:
+                #    # super rigid body with bond rotation
+
+                #    srbm = IMP.pmi.TransformMover(
+                #      self.m,
+                #      rb[2][0],rb[2][1],
+                #      0, #no translation
+                #      maxrot)
+                else:
+                    print("Setting up a super rigid body with wrong parameters")
+                    raise
+
             for xyz in rb[0]:
                 srbm.add_xyz_particle(xyz)
             for rb in rb[1]:
@@ -349,7 +365,7 @@ class MonteCarlo(object):
 class MolecularDynamics(object):
     """Sample using molecular dynamics"""
 
-    def __init__(self,m,objects,kt,gamma=0.01,maximum_time_step=1.0):
+    def __init__(self,m,objects,kt,gamma=0.01,maximum_time_step=1.0,sf=None):
         """Setup MD
         @param m The IMP Model
         @param objects What to sample. Use flat list of particles or (deprecated) 'MD Sample Objects' from PMI1
@@ -371,7 +387,10 @@ class MolecularDynamics(object):
                                                                gamma)
         self.md = IMP.atom.MolecularDynamics(self.m)
         self.md.set_maximum_time_step(maximum_time_step)
-        self.md.set_scoring_function(get_restraint_set(self.m))
+        if sf:
+            self.md.set_scoring_function(sf)
+        else:
+            self.md.set_scoring_function(get_restraint_set(self.m))
         self.md.add_optimizer_state(self.ltstate)
         self.simulated_annealing = False
         self.nframe = -1

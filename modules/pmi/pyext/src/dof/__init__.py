@@ -43,9 +43,9 @@ class DegreesOfFreedom(object):
     def create_rigid_body(self,
                           rigid_parts,
                           nonrigid_parts=None,
-                          max_trans=1.0,
-                          max_rot=0.1,
-                          nonrigid_max_trans = 0.1,
+                          max_trans=4.0,
+                          max_rot=0.5,
+                          nonrigid_max_trans = 1.0,
                           resolution='all',
                           name=None):
         """Create rigid body constraint and mover
@@ -115,6 +115,24 @@ class DegreesOfFreedom(object):
         self.movers += rb_movers # probably need to store more info
         return rb_movers,rb
 
+    def create_main_chain_mover(self,molecule,resolution=1,lengths=[5,10]):
+        """Create crankshaft moves from a set of SUPER rigid body mover from one molecule.
+        See http://scfbm.biomedcentral.com/articles/10.1186/1751-0473-3-12
+        """
+        hiers=IMP.pmi.tools.input_adaptor(molecule,resolution,flatten=True)
+        for length in lengths:
+            for n in range(len(hiers)-length):
+                hs=hiers[n+1:n+length]
+                print("MIDDLE",n+1,n+length,hs)
+                self.create_super_rigid_body(hs, max_trans=0.0,max_rot=0.01, axis=(hiers[n].get_particle(),hiers[n+length].get_particle()))
+        #for n in range(1,len(hiers)-1,10):
+        #    hs=hiers[n:]
+        #    print("END",n,hs)
+        #    self.create_super_rigid_body(hs, max_trans=0.01,axis=(hiers[n].get_particle(),hiers[n+1].get_particle()))
+        #    hs=hiers[:n+1]
+        #    print("BEGIN",n-1,hs)
+        #    self.create_super_rigid_body(hs, max_trans=0.01,axis=(hiers[n].get_particle(),hiers[n-1].get_particle()))
+
     def create_super_rigid_body(self,
                                 srb_parts,
                                 max_trans=1.0,
@@ -122,7 +140,8 @@ class DegreesOfFreedom(object):
                                 chain_min_length=None,
                                 chain_max_length=None,
                                 resolution='all',
-                                name=None):
+                                name=None,
+                                axis=None):
         """Create SUPER rigid body mover from one or more hierarchies. Can also create chain of SRBs.
         If you don't pass chain min/max, it'll treat everything you pass as ONE rigid body.
         If you DO pass chain min/max, it'll expect srb_parts is a list and break it into bits.
@@ -136,6 +155,8 @@ class DegreesOfFreedom(object):
         @param chain_max_length Maximum chain length
         @param resolution Only used if you pass PMI objects. Probably you want 'all'.
         @param name The name of the SRB (hard to assign a good one automatically)
+        @param axis A tuple containing two particles which are used to compute
+                    the rotation axis of the SRB. The default is None, meaning that the rotation axis is random.
         \note If you set the chain parameters, will NOT create an SRB from all of them together,
         but rather in groups made from the outermost list.
         """
@@ -158,12 +179,12 @@ class DegreesOfFreedom(object):
 
         ## create SRBs either from all hierarchies or chain
         if chain_min_length is None and chain_max_length is None:
-            mv = self._setup_srb(srb_groups,max_trans,max_rot)
+            mv = self._setup_srb(srb_groups,max_trans,max_rot,axis)
             if mv:
                 srb_movers.append(mv)
         elif chain_min_length is not None and chain_max_length is not None:
             for hs in IMP.pmi.tools.sublist_iterator(srb_groups, chain_min_length, chain_max_length):
-                mv = self._setup_srb(hs,max_trans,max_rot)
+                mv = self._setup_srb(hs,max_trans,max_rot,axis)
                 if mv:
                     srb_movers.append(mv)
         else:
@@ -177,8 +198,11 @@ class DegreesOfFreedom(object):
                 srb_movers[0].set_name(name)
         return srb_movers
 
-    def _setup_srb(self,hiers,max_trans,max_rot):
-        srbm = IMP.pmi.TransformMover(hiers[0][0].get_model(), max_trans, max_rot)
+    def _setup_srb(self,hiers,max_trans,max_rot,axis):
+        if axis is None:
+            srbm = IMP.pmi.TransformMover(hiers[0][0].get_model(), max_trans, max_rot)
+        else:
+            srbm = IMP.pmi.TransformMover(hiers[0][0].get_model(),axis[0],axis[1],max_trans, max_rot)
         super_rigid_rbs,super_rigid_xyzs = IMP.pmi.tools.get_rbs_and_beads(hiers)
         ct = 0
         for xyz in super_rigid_xyzs:
@@ -195,7 +219,7 @@ class DegreesOfFreedom(object):
 
     def create_flexible_beads(self,
                               flex_parts,
-                              max_trans=0.1,
+                              max_trans=3.0,
                               resolution='all'):
         """Create a chain of flexible beads
         @param flex_parts Can be one of the following inputs:
@@ -255,20 +279,21 @@ class DegreesOfFreedom(object):
         hiers = IMP.pmi.tools.input_adaptor(hspec,flatten=True)
         mdl = hiers[0].get_model()
         all_ps = []
-        for h in hiers:
-            p = h.get_particle()
-            IMP.core.XYZ(mdl,p.get_index()).set_coordinates_are_optimized(True)
-            mdl.add_attribute(vxkey,p.get_index(),0.0)
-            mdl.add_attribute(vykey,p.get_index(),0.0)
-            mdl.add_attribute(vzkey,p.get_index(),0.0)
-            all_ps.append(p)
+        for hl in hiers:
+            for h in IMP.core.get_leaves(hl):
+                p = h.get_particle()
+                IMP.core.XYZ(mdl,p.get_index()).set_coordinates_are_optimized(True)
+                mdl.add_attribute(vxkey,p.get_index(),0.0)
+                mdl.add_attribute(vykey,p.get_index(),0.0)
+                mdl.add_attribute(vzkey,p.get_index(),0.0)
+                all_ps.append(p)
         return all_ps
 
     def constrain_symmetry(self,
                            references,
                            clones,
                            transform,
-                           resolution=1):
+                           resolution='all'):
         """Create a symmetry constraint. Checks:
         same number of particles
         disable ANY movers involving symmetry copies

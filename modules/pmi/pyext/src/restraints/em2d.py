@@ -97,7 +97,7 @@ class ElectronMicroscopy2D(object):
         output["ElectronMicroscopy2D_" + self.label] = str(score)
         return output
 
-class ElectronMicroscopy2D_FFT():
+class ElectronMicroscopy2D_FFT(object):
     """FFT based image alignment, developed by Javier Velazquez-Muriel"""
     def __init__(
             self,

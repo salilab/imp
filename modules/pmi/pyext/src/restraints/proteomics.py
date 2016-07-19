@@ -763,14 +763,14 @@ class SetupMembraneRestraint(object):
                     break
         else:
             self.m = representation.prot.get_model()
-            if selection_tuples_above is not None:
-                hierarchies_above = self.get_from_selection_tuple(selection_tuples_above)
+            if objects_above is not None:
+                hierarchies_above = self.get_from_selection_tuple(objects_above)
 
-            if selection_tuples_below is not None:
-                particles_below = self.get_from_selection_tuple(selection_tuples_below)
+            if objects_below is not None:
+                particles_below = self.get_from_selection_tuple(objects_below)
 
-            if selection_tuples_inside is not None:
-                particles_inside = self.get_from_selection_tuple(selection_tuples_inside)
+            if objects_inside is not None:
+                particles_inside = self.get_from_selection_tuple(objects_inside)
 
         self.z_center = IMP.pmi.tools.SetupNuisance(
             self.m, self.z_init, z_min, z_max, isoptimized=True).get_particle()

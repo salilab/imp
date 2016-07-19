@@ -938,6 +938,8 @@ class Representation(object):
                                  check_number_particles=True,
                                  representation_name_to_rmf_name_map=None,
                                  state_number=0,
+                                 skip_gaussian_in_rmf=False,
+                                 skip_gaussian_in_representation=False,
                                  save_file=False):
         '''Read and replace coordinates from an RMF file.
         Replace the coordinates of particles with the same name.
@@ -968,17 +970,31 @@ class Representation(object):
         #   exit()
 
         allpsrmf = IMP.atom.get_leaves(prot)
-
         psrmf = []
         for p in allpsrmf:
             (protname, is_a_bead) = IMP.pmi.tools.get_prot_name_from_particle(
                 p, self.hier_dict.keys())
-            if not rmf_component_name is None and protname == rmf_component_name:
+            if (protname is None) and (rmf_component_name is not None):
+                (protname, is_a_bead) = IMP.pmi.tools.get_prot_name_from_particle(
+                    p, rmf_component_name)
+            if (skip_gaussian_in_rmf):
+                if (IMP.core.Gaussian.get_is_setup(p)) and not (IMP.atom.Fragment.get_is_setup(p) or IMP.atom.Residue.get_is_setup(p)):
+                    continue
+            if (rmf_component_name is not None) and (protname == rmf_component_name):
                 psrmf.append(p)
-            elif rmf_component_name is None and protname == component_name:
+            elif (rmf_component_name is None) and (protname == component_name):
                 psrmf.append(p)
 
         psrepr = IMP.atom.get_leaves(self.hier_dict[component_name])
+        if (skip_gaussian_in_representation):
+            allpsrepr = psrepr
+            psrepr = []
+            for p in allpsrepr:
+                #(protname, is_a_bead) = IMP.pmi.tools.get_prot_name_from_particle(
+                #    p, self.hier_dict.keys())
+                if (IMP.core.Gaussian.get_is_setup(p)) and not (IMP.atom.Fragment.get_is_setup(p) or IMP.atom.Residue.get_is_setup(p)):
+                    continue
+                psrepr.append(p)
 
         import itertools
         reprnames=[p.get_name() for p in psrepr]
@@ -1020,7 +1036,6 @@ class Representation(object):
                     grepr=IMP.core.Gaussian(psrepr[n])
                     g=gprmf.get_gaussian()
                     grepr.set_gaussian(g)
-
 
         else:
             repr_name_particle_map={}
@@ -1220,6 +1235,7 @@ class Representation(object):
         avoidcollision=True, cutoff=10.0, niterations=100,
         bounding_box=None,
         excluded_rigid_bodies=None,
+        ignore_initial_coordinates=False,
         hierarchies_excluded_from_collision=None):
         '''
         Shuffle configuration; used to restart the optimization.
@@ -1255,11 +1271,11 @@ class Representation(object):
                 hierarchies_excluded_from_collision_indexes += IMP.get_indexes([p])
         allparticleindexes = IMP.get_indexes(ps)
 
-        if not bounding_box is None:
+        if bounding_box is not None:
             ((x1, y1, z1), (x2, y2, z2)) = bounding_box
-            ub = IMP.algebra.Vector3D(x1, y1, z1)
-            lb = IMP.algebra.Vector3D(x2, y2, z2)
-            bb = IMP.algebra.BoundingBox3D(ub, lb)
+            lb = IMP.algebra.Vector3D(x1, y1, z1)
+            ub = IMP.algebra.Vector3D(x2, y2, z2)
+            bb = IMP.algebra.BoundingBox3D(lb, ub)
 
         for h in hierarchies_excluded_from_collision:
             hierarchies_excluded_from_collision_indexes += IMP.get_indexes(IMP.atom.get_leaves(h))
@@ -1271,12 +1287,11 @@ class Representation(object):
         print(hierarchies_excluded_from_collision)
         print(len(allparticleindexes),len(hierarchies_excluded_from_collision_indexes))
 
+        print('shuffling', len(self.rigid_bodies) - len(excluded_rigid_bodies), 'rigid bodies')
         for rb in self.rigid_bodies:
             if rb not in excluded_rigid_bodies:
                 if avoidcollision:
-
                     rbindexes = rb.get_member_particle_indexes()
-
                     rbindexes = list(
                         set(rbindexes) - set(hierarchies_excluded_from_collision_indexes))
                     otherparticleindexes = list(
@@ -1287,16 +1302,17 @@ class Representation(object):
 
                 niter = 0
                 while niter < niterations:
-                    rbxyz = (rb.get_x(), rb.get_y(), rb.get_z())
+                    if (ignore_initial_coordinates):
+                        # Move the particle to the origin
+                        transformation = IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(), -IMP.core.XYZ(rb).get_coordinates())
+                        IMP.core.transform(rb, transformation)
+                    rbxyz = IMP.core.XYZ(rb).get_coordinates()
 
-                    if not bounding_box is None:
-                    # overrides the perturbation
+                    if bounding_box is not None:
+                        # overrides the perturbation
                         translation = IMP.algebra.get_random_vector_in(bb)
-                        old_coord=IMP.core.XYZ(rb).get_coordinates()
                         rotation = IMP.algebra.get_random_rotation_3d()
-                        transformation = IMP.algebra.Transformation3D(
-                            rotation,
-                            translation-old_coord)
+                        transformation = IMP.algebra.Transformation3D(rotation, translation-rbxyz)
                     else:
                         transformation = IMP.algebra.get_random_local_transformation(
                             rbxyz,
@@ -1314,6 +1330,8 @@ class Representation(object):
                                 rbindexes))
                         if npairs == 0:
                             niter = niterations
+                            if (ignore_initial_coordinates):
+                                print (rb.get_name(), IMP.core.XYZ(rb).get_coordinates())
                         else:
                             niter += 1
                             print("shuffle_configuration: rigid body placed close to other %d particles, trying again..." % npairs)
@@ -1325,7 +1343,7 @@ class Representation(object):
 
         print('shuffling', len(self.floppy_bodies), 'floppy bodies')
         for fb in self.floppy_bodies:
-            if avoidcollision:
+            if (avoidcollision):
                 rm = not IMP.core.RigidMember.get_is_setup(fb)
                 nrm = not IMP.core.NonRigidMember.get_is_setup(fb)
                 if rm and nrm:
@@ -1336,11 +1354,28 @@ class Representation(object):
                         continue
                 else:
                     continue
+            else:
+                rm = IMP.core.RigidMember.get_is_setup(fb)
+                nrm = IMP.core.NonRigidMember.get_is_setup(fb)
+                if (rm or nrm):
+                    continue
+
+            if IMP.core.RigidBodyMember.get_is_setup(fb):
+                d=IMP.core.RigidBodyMember(fb).get_rigid_body()
+            elif IMP.core.RigidBody.get_is_setup(fb):
+                d=IMP.core.RigidBody(fb)
+            elif IMP.core.XYZ.get_is_setup(fb):
+                d=IMP.core.XYZ(fb)
 
             niter = 0
             while niter < niterations:
+                if (ignore_initial_coordinates):
+                    # Move the particle to the origin
+                    transformation = IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(), -IMP.core.XYZ(fb).get_coordinates())
+                    IMP.core.transform(d, transformation)
                 fbxyz = IMP.core.XYZ(fb).get_coordinates()
-                if not bounding_box is None:
+
+                if bounding_box is not None:
                     # overrides the perturbation
                     translation = IMP.algebra.get_random_vector_in(bb)
                     transformation = IMP.algebra.Transformation3D(translation-fbxyz)
@@ -1350,16 +1385,9 @@ class Representation(object):
                         max_translation,
                         max_rotation)
 
-                if IMP.core.RigidBodyMember.get_is_setup(fb):
-                    d=IMP.core.RigidBodyMember(fb).get_rigid_body()
-                elif IMP.core.RigidBody.get_is_setup(fb):
-                    d=IMP.core.RigidBody(fb)
-                elif IMP.core.XYZ.get_is_setup(fb):
-                    d=IMP.core.XYZ(fb)
-
                 IMP.core.transform(d, transformation)
 
-                if avoidcollision:
+                if (avoidcollision):
                     self.m.update()
                     npairs = len(
                         gcpf.get_close_pairs(
@@ -1368,9 +1396,12 @@ class Representation(object):
                             fbindexes))
                     if npairs == 0:
                         niter = niterations
+                        if (ignore_initial_coordinates):
+                            print (fb.get_name(), IMP.core.XYZ(fb).get_coordinates())
                     else:
                         niter += 1
                         print("shuffle_configuration: floppy body placed close to other %d particles, trying again..." % npairs)
+                        print("shuffle_configuration: floppy body name: " + fb.get_name())
                         if niter == niterations:
                             raise ValueError("tried the maximum number of iterations to avoid collisions, increase the distance cutoff")
                 else:
@@ -1516,7 +1547,8 @@ class Representation(object):
         else:
             print("optimize_floppy_bodies: no particle to optimize")
 
-    def create_rotational_symmetry(self, maincopy, copies):
+    def create_rotational_symmetry(self, maincopy, copies, rotational_axis=IMP.algebra.Vector3D(0, 0, 1.0),
+                                   nSymmetry=None, skip_gaussian_in_clones=False):
         '''
         The copies must not contain rigid bodies.
         The symmetry restraints are applied at each leaf.
@@ -1526,21 +1558,35 @@ class Representation(object):
         self.representation_is_modified = True
         ncopies = len(copies) + 1
         main_hiers = IMP.atom.get_leaves(self.hier_dict[maincopy])
+
         for k in range(len(copies)):
-            rotation3D = IMP.algebra.get_rotation_about_axis(
-                IMP.algebra.Vector3D(0, 0, 1.0), 2.0 * pi / float(ncopies) * float(k + 1))
+            if (nSymmetry is None):
+                rotation_angle = 2.0 * pi / float(ncopies) * float(k + 1)
+            else:
+                if ( k % 2 == 0 ):
+                    rotation_angle = 2.0 * pi / float(nSymmetry) * float((k + 2) / 2)
+                else:
+                    rotation_angle = -2.0 * pi / float(nSymmetry) * float((k + 1) / 2)
+
+            rotation3D = IMP.algebra.get_rotation_about_axis(rotational_axis, rotation_angle)
+
             sm = IMP.core.TransformationSymmetry(rotation3D)
             clone_hiers = IMP.atom.get_leaves(self.hier_dict[copies[k]])
 
             lc = IMP.container.ListSingletonContainer(self.m)
             for n, p in enumerate(main_hiers):
+                if (skip_gaussian_in_clones):
+                    if (IMP.core.Gaussian.get_is_setup(p)) and not (IMP.atom.Fragment.get_is_setup(p) or IMP.atom.Residue.get_is_setup(p)):
+                        continue
                 pc = clone_hiers[n]
-                print("setting " + p.get_name() + " as reference for " + pc.get_name())
+                #print("setting " + p.get_name() + " as reference for " + pc.get_name())
                 IMP.core.Reference.setup_particle(pc.get_particle(), p.get_particle())
                 lc.add(pc.get_particle().get_index())
 
             c = IMP.container.SingletonsConstraint(sm, None, lc)
             self.m.add_score_state(c)
+            print("Completed setting " + str(maincopy) + " as a reference for " + str(copies[k]) \
+                   + " by rotating it in " + str(rotation_angle / 2.0 / pi * 360) + " degree around the " + str(rotational_axis) + " axis.")
         self.m.update()
 
     def create_rigid_body_symmetry(self, particles_reference, particles_copy,label="None",
@@ -1659,7 +1705,7 @@ class Representation(object):
         it will be stored in self.prot, which will be overwritten.
         load the coordinates from the rmf file at frameindex.
         '''
-        rh = RMF.open_rmf_file(rmfname)
+        rh = RMF.open_rmf_file_read_only(rmfname)
         self.prot = IMP.rmf.create_hierarchies(rh, self.m)[0]
         IMP.atom.show_molecular_hierarchy(self.prot)
         IMP.rmf.link_hierarchies(rh, [self.prot])
@@ -1768,7 +1814,7 @@ class Representation(object):
         self,
         hiers,
         axis=None,
-            min_size=0):
+        min_size=1):
         # axis is the rotation axis for 2D rotation
         super_rigid_xyzs = set()
         super_rigid_rbs = set()
@@ -1784,12 +1830,12 @@ class Representation(object):
                 else:
                     super_rigid_xyzs.add(p)
             print("set_rigid_body_from_hierarchies> adding %s to the rigid body" % hier.get_name())
-        if len(super_rigid_rbs) < min_size:
+        if len(super_rigid_rbs|super_rigid_xyzs) < min_size:
             return
         if axis is None:
             self.super_rigid_bodies.append((super_rigid_xyzs, super_rigid_rbs))
         else:
-            # these will be 2D rotation SRB
+            # these will be 2D rotation SRB or a bond rotamer (axis can be a IMP.algebra.Vector3D or particle Pair)
             self.super_rigid_bodies.append(
                 (super_rigid_xyzs, super_rigid_rbs, axis))
 

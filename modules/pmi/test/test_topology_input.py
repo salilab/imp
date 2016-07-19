@@ -51,13 +51,22 @@ class Tests(IMP.test.TestCase):
         bs = IMP.pmi.macros.BuildSystem(mdl)
         bs.add_state(t)
         root_hier, dof = bs.execute_macro()
-        sel = IMP.atom.Selection(root_hier,residue_indexes=range(1,13),
+
+        sel = IMP.atom.Selection(root_hier,molecule="Prot2",
+                                 residue_indexes=range(1,13),
                                  resolution=IMP.atom.ALL_RESOLUTIONS)
         self.assertEqual(len(sel.get_selected_particles()),2)
         IMP.atom.show_with_representations(root_hier)
-        sel = IMP.atom.Selection(root_hier,residue_indexes=range(13,30),
+        sel = IMP.atom.Selection(root_hier,molecule="Prot2",
+                                 residue_indexes=range(13,30),
                                  resolution=IMP.atom.ALL_RESOLUTIONS)
         self.assertEqual(len(sel.get_selected_particles()),17+2)
+
+        # check rigid and flexible parts
+        rbs = dof.get_rigid_bodies()
+        fbs = dof.get_flexible_beads()
+        self.assertEqual(len(rbs),2)
+        self.assertEqual(len(fbs),7)
 
     def test_set_movers(self):
         """Check if rigid bodies etc are set up as requested"""
@@ -154,6 +163,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(rbs),3)
         #                         Prot1x2 Prot3
         self.assertEqual(len(fbs), 4   +  2)
+
+
 
 if __name__=="__main__":
     IMP.test.main()

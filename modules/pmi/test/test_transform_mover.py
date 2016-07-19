@@ -4,12 +4,21 @@ import IMP.test
 import IMP.core
 import IMP.pmi
 import IMP.pmi.representation
+import IMP.pmi.samplers
 import IMP.pmi.macros
 import IMP.container
 import IMP.algebra
 import IMP.rmf
 import RMF
 import os,shutil
+
+
+# initialize Replica Exchange class
+try:
+    import IMP.mpi
+    rem = IMP.mpi.ReplicaExchange()
+except ImportError:
+    rem = IMP.pmi.samplers._SerialReplicaExchange()
 
 class Tests(IMP.test.TestCase):
     def test_xyz_particles(self):
@@ -59,7 +68,7 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.save_frame(rh)
 
         del rh
-        os.unlink("test_transform_mover_xyz.rmf3")
+        #os.unlink("test_transform_mover_xyz.rmf3")
 
 
     def test_rigid_body_particles(self):
@@ -101,7 +110,6 @@ class Tests(IMP.test.TestCase):
         mc = IMP.core.MonteCarlo(m)
         mc.set_scoring_function([dr])
         mc.set_return_best(False)
-        mc.set_scoring_function
         mc.set_kt(1.0)
         mc.add_mover(smv)
 
@@ -112,9 +120,67 @@ class Tests(IMP.test.TestCase):
             mc.optimize(1)
             IMP.rmf.save_frame(rh)
         del rh
-        os.unlink("test_transform_mover_rigid_body.rmf3")
+        #os.unlink("test_transform_mover_rigid_body.rmf3")
 
-    '''
+
+    def test_xyz_particles_rotamer(self):
+        m=IMP.Model()
+        ps=[]
+        hs=[]
+        for i in range(4):
+            p=IMP.Particle(m)
+            h=IMP.atom.Hierarchy.setup_particle(p)
+            d=IMP.core.XYZR.setup_particle(p)
+            IMP.atom.Mass.setup_particle(p,1.0)
+            d.set_coordinates((float(i)*2.0,0,0))
+            d.set_radius(1.0)
+            ps.append(p)
+            hs.append(h)
+
+        for i in range(5,10):
+            p=IMP.Particle(m)
+            h=IMP.atom.Hierarchy.setup_particle(p)
+            d=IMP.core.XYZR.setup_particle(p)
+            IMP.atom.Mass.setup_particle(p,1.0)
+            d.set_coordinates((float(i)*2.0,float(i-5)*2.0,0))
+            d.set_radius(1.0)
+            ps.append(p)
+            hs.append(h)
+
+        srbm = IMP.pmi.TransformMover(m, ps[3],ps[4], 0.0, 0.2)
+
+        #origin point
+        origin=IMP.Particle(m)
+        d=IMP.core.XYZR.setup_particle(origin)
+        d.set_coordinates((0,0,0))
+        d.set_radius(1.0)
+
+        rs = IMP.RestraintSet(m)
+        ts1 = IMP.core.Harmonic(10,10)
+        dr=IMP.core.DistanceRestraint(m, ts1,
+                                       ps[0],origin)
+
+
+        for p in ps[4:]:
+            srbm.add_xyz_particle(IMP.core.XYZ(p))
+        smv = IMP.core.SerialMover([srbm])
+        mc = IMP.core.MonteCarlo(m)
+        mc.set_scoring_function([dr])
+        mc.set_return_best(False)
+        mc.set_kt(1.0)
+        mc.add_mover(smv)
+
+        rh = RMF.create_rmf_file("test_transform_mover_xyz_rotamer.rmf3")
+        IMP.rmf.add_hierarchies(rh, hs)
+
+        for n in range(10):
+            mc.optimize(10)
+            IMP.rmf.save_frame(rh)
+
+        del rh
+        #os.unlink("test_transform_mover_xyz_rotamer.rmf3")
+
+    """
     def test_pmi_representation_sampling_macro1(self):
         import IMP
         import IMP.pmi
@@ -178,10 +244,11 @@ class Tests(IMP.test.TestCase):
                                     global_output_directory="test_transform_mover_output_1",
                                     rmf_dir="rmfs/",
                                     best_pdb_dir="pdbs/",
-                                    replica_stat_file_suffix="stat_replica")
+                                    replica_stat_file_suffix="stat_replica",
+                                    replica_exchange_object=rem)
         mc2.execute_macro()
-    '''
-
+        #shutil.rmtree("test_transform_mover_output_1")
+    """
     def test_pmi_representation_sampling_macro1_helix(self):
         import IMP
         import IMP.pmi
@@ -255,8 +322,95 @@ class Tests(IMP.test.TestCase):
                                     global_output_directory="test_transform_mover_output_2",
                                     rmf_dir="rmfs/",
                                     best_pdb_dir="pdbs/",
-                                    replica_stat_file_suffix="stat_replica")
+                                    replica_stat_file_suffix="stat_replica",
+                                    replica_exchange_object=rem)
         mc2.execute_macro()
-        shutil.rmtree("test_transform_mover_output_2")
+        #shutil.rmtree("test_transform_mover_output_2")
+
+
+
+    def test_pmi_representation_sampling_mainchain_mover(self):
+        import IMP
+        import IMP.pmi
+        import IMP.pmi.representation
+        import IMP.pmi.restraints
+        import IMP.pmi.restraints.stereochemistry
+        import IMP.pmi.macros
+
+        rbmaxtrans = 3.00
+        fbmaxtrans = 3.00
+        rbmaxrot=0.1
+        srbmaxtrans = 0.01
+        srbmaxrot=0.1
+        outputobjects = []
+        sampleobjects = []
+
+        # setting up topology
+        m=IMP.Model()
+        simo = IMP.pmi.representation.Representation(m,upperharmonic=True,disorderedlength=True)
+
+        pdbfile = self.get_input_file_name("1WCM.pdb")
+        fastafile = self.get_input_file_name("1WCM.fasta.txt")
+        components = ["Rpb1","Rpb2","Rpb3","Rpb4","Rpb5"]
+        chains = "ABCD"
+        colors = [0.,0.1,0.5,1.0]
+        beadsize = 20
+        fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
+
+
+
+        domains=[("A",  "A.1",    0.10, fastafile,  "1WCM:A",   "BEADS",         None,    (1,100,0),       None,       1,         None,      None,     None,   None,  None,   None)]
+
+        with IMP.allow_deprecated():
+            bm=IMP.pmi.macros.BuildModel1(simo)
+        bm.build_model(domains,sequence_connectivity_scale=1.0)
+        bm.set_main_chain_mover("A.1")
+
+        simo.set_rigid_bodies_max_rot(rbmaxrot)
+        simo.set_floppy_bodies_max_trans(fbmaxtrans)
+        simo.set_rigid_bodies_max_trans(rbmaxtrans)
+        simo.set_super_rigid_bodies_max_rot(srbmaxrot)
+        simo.set_super_rigid_bodies_max_trans(srbmaxtrans)
+        simo.shuffle_configuration(max_translation=100)
+
+        outputobjects.append(simo)
+        sampleobjects.append(simo)
+
+        ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(simo,resolution=10)
+        ev.add_to_model()
+        outputobjects.append(ev)
+
+
+        mc2=IMP.pmi.macros.ReplicaExchange0(m,
+                                    simo,
+                                    monte_carlo_sample_objects=sampleobjects,
+                                    output_objects=outputobjects,
+                                    monte_carlo_temperature=1.0,
+                                    replica_exchange_minimum_temperature=1.0,
+                                    replica_exchange_maximum_temperature=2.5,
+                                    number_of_best_scoring_models=0,
+                                    monte_carlo_steps=1,
+                                    number_of_frames=10000,
+                                    write_initial_rmf=True,
+                                    initial_rmf_name_suffix="initial",
+                                    stat_file_name_suffix="stat",
+                                    best_pdb_name_suffix="model",
+                                    do_clean_first=True,
+                                    do_create_directories=True,
+                                    global_output_directory="test_transform_mover_output_3",
+                                    rmf_dir="rmfs/",
+                                    best_pdb_dir="pdbs/",
+                                    replica_stat_file_suffix="stat_replica",
+                                    replica_exchange_object=rem)
+        mc2.execute_macro()
+        #shutil.rmtree("test_transform_mover_output_3")
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     IMP.test.main()
