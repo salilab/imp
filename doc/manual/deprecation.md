@@ -123,7 +123,7 @@ call deprecated code. It is highly recommended that all examples do this.
 All unit tests that call IMP.test.main() will also trigger exceptions if they
 try to call deprecated code. If for some reason you need to test a deprecated
 code pathway, use the IMP.allow_deprecated()
-[context manager](http://eigenhombre.com/2013/04/20/introduction-to-context-managers/) as follows:
+[context manager](http://eigenhombre.com/introduction-to-context-managers-in-python.html) as follows:
 
     with IMP.allow_deprecated():
        my_deprecated_function()

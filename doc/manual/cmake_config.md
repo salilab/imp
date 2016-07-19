@@ -27,7 +27,7 @@ To configure and build as simply as possible do
 
 To make a debug build of %IMP with the `cgal` and `membrane` modules disabled
 and `core` compiled in per-cpp mode, and to use
-[Ninja](https://martine.github.io/ninja/) instead of `make` as your build
+[Ninja](https://ninja-build.org/) instead of `make` as your build
 command do:
 
     cmake ../imp -DCMAKE_BUILD_TYPE=Debug -G Ninja -DIMP_DISABLED_MODULES=cgal:membrane -DIMP_PER_CPP_COMPILATION=core
@@ -45,7 +45,7 @@ Running it never hurts.
 
 # Further configuration options {#cmake_further}
 
-You can use [Ninja](https://martine.github.io/ninja/)
+You can use [Ninja](https://ninja-build.org/)
 instead if it is available by passing `-G Ninja` to the `(c)cmake` call.
 That is highly recommended when it is available.
 
