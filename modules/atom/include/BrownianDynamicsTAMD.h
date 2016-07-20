@@ -102,7 +102,9 @@ class IMPATOMEXPORT BrownianDynamicsTAMD : public BrownianDynamics {
                              double dtfs, double ikT);
   void advance_coordinates_0(ParticleIndex pi, unsigned int i,
                              double dtfs, double ikT);
-  void advance_orientation_0(ParticleIndex pi, double dtfs, double ikT);
+  void advance_orientation_0(ParticleIndex pi, double dtfs, double ikT,
+			     double const* rotational_diffusion_coefficient_table,
+			     double const* torque_tables[]) ;
 };
 
 IMPATOM_END_NAMESPACE

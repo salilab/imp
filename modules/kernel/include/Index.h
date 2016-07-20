@@ -51,7 +51,8 @@ inline Index<Tag> get_invalid_index() {
   return Index<Tag>(-1);
 }
 
-/** This class implements a vector tied to a particular index.
+/** This class implements a vector tied to a particular index
+    of type Index<Tag>.
  */
 template <class Tag, class T>
 class IndexVector : public Vector<T> {

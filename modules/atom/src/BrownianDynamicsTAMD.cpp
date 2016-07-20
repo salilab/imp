@@ -84,16 +84,15 @@ namespace {
   }
 
   // radians at each axis
-  inline algebra::Vector3D get_torque_bdb(Model *m, ParticleIndex pi,
-                                          double dt, double ikT) {
-    RigidBodyDiffusion d(m, pi);
-    core::RigidBody rb(m, pi);
-
-    double dr= d.get_rotational_diffusion_coefficient();
-    double factor= dr*dt*ikT;
-    algebra::Vector3D rotational_derivative_vector
-      = -factor*rb.get_torque(); // minus because energy derivative is opposite torque
-    return rotational_derivative_vector;
+  inline algebra::Vector3D get_torque_bdb(ParticleIndex pi,
+                                          double dt, double ikT,
+					  double rotational_diffusion_coefficient,
+					  double const* torque_tables[]) {
+    algebra::Vector3D torque(torque_tables[0][pi.get_index()], 
+			     torque_tables[1][pi.get_index()],
+			     torque_tables[2][pi.get_index()]);
+    double factor= rotational_diffusion_coefficient*dt*ikT; 
+  return -torque*factor; // minus because energy derivative is opposite to torque
     // unit::Angstrom R(sampler_());
     // if(TAMDParticle::get_is_setup(m, pi)){
     //   TAMDParticle tamd(m, pi);
@@ -120,15 +119,13 @@ namespace {
     return sqrt(6.0 * dd * dtfs);
   }
 
-  inline double get_rotational_sigma_bdb(Model *m,
-                                         ParticleIndex pi,
-                                         double dtfs) {
-    double dr = RigidBodyDiffusion(m, pi).get_rotational_diffusion_coefficient();
+  inline double get_rotational_sigma_bdb(double dtfs,
+					 double rotational_diffusion_coefficient) {
     // if(TAMDParticle::get_is_setup(m, pi)){
     //   TAMDParticle tamd(m, pi);
     //   dr /= tamd.get_friction_scale_factor();
   // }
-    return sqrt(6.0 * dr * dtfs);
+    return sqrt(6.0 * rotational_diffusion_coefficient * dtfs);
 }
 }
 
@@ -196,17 +193,24 @@ void BrownianDynamicsTAMD::advance_coordinates_0(ParticleIndex pi,
   xd.set_coordinates(xd.get_coordinates() + dX);
 }
 
-void BrownianDynamicsTAMD::advance_orientation_0(ParticleIndex pi,
-                                             double dtfs, double ikT) {
+void BrownianDynamicsTAMD::advance_orientation_0
+(ParticleIndex pi,
+ double dtfs, double ikT,
+ double const* rotational_diffusion_coefficient_table,
+ double const* torque_tables[]) 
+{
   core::RigidBody rb(get_model(), pi);
-  double sigma = get_rotational_sigma_bdb(get_model(), pi, dtfs);
+  double rdc=rotational_diffusion_coefficient_table[pi.get_index()];
+  double sigma = get_rotational_sigma_bdb(dtfs, rdc);
   double angle = get_sample(sigma);
   algebra::Transformation3D nt =
       rb.get_reference_frame().get_transformation_to();
   algebra::Vector3D axis( algebra::get_random_vector_on_unit_sphere() );
   algebra::Rotation3D rrot( algebra::get_rotation_about_axis(axis, angle) );
   nt = nt * rrot;
-  algebra::Vector3D torque( get_torque_bdb(get_model(), pi, dtfs, ikT) );
+  //  algebra::Vector3D torque( get_torque_bdb(get_model(), pi, dtfs, ikT) );
+  algebra::Vector3D torque( get_torque_bdb(pi, dtfs, ikT,
+					   rdc, torque_tables) );
   double tangle = torque.get_magnitude();
   if (tangle > 0) {
     algebra::Vector3D taxis = torque / tangle;
@@ -224,11 +228,22 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
                                      unsigned int begin, unsigned int end) {
   IMP_LOG_TERSE("Advancing particles " << begin << " to " << end << std::endl);
   Model* m = get_model();
+  double const* rotational_diffusion_coefficient_table=
+    m->access_derivative_data(RigidBodyDiffusion::get_rotational_diffusion_coefficient_key());
+  double const* torque_tables[3];
+  torque_tables[0]=
+    core::RigidBody::access_torque_i_data(m, 0);
+  torque_tables[1]=
+    core::RigidBody::access_torque_i_data(m, 1);
+  torque_tables[2]=
+    core::RigidBody::access_torque_i_data(m, 2);
   for (unsigned int i = begin; i < end; ++i) {
     ParticleIndex pi = ps[i];
     if (RigidBodyDiffusion::get_is_setup(m, pi)) {
       // std::cout << "rb" << std::endl;
-      advance_orientation_0(pi, dtfs, ikT);
+      advance_orientation_0(pi, dtfs, ikT, 
+			    rotational_diffusion_coefficient_table,
+			    torque_tables);
     }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
     else  {

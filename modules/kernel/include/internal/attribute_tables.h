@@ -21,7 +21,9 @@
 #include <IMP/set_map_macros.h>
 #include <IMP/algebra/Sphere3D.h>
 
+#define IMP_ATTRIBUTE_CHECKED_PARAM checked
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
+//! parameter in function call
 #define IMP_CHECK_MASK(mask, particle_index, key, operation, entity)           \
   IMP_USAGE_CHECK(!mask || mask->size() > get_as_unsigned_int(particle_index), \
                   "For some reason the mask is too small.");                   \
@@ -31,9 +33,13 @@
         particle_index.get_index(), InputOutputException::operation,           \
         InputOutputException::entity, key.get_string());                       \
   }
-
+#define IMP_CHECK_MASK_IF_CHECKED(mask, particle_index, key, operation, entity) \
+  if( IMP_ATTRIBUTE_CHECKED_PARAM ){								\
+    IMP_CHECK_MASK(mask, particle_index, key, operation, entity);	\
+  }
 #else
 #define IMP_CHECK_MASK(mask, particle_index, key, operation, entity)
+#define IMP_CHECK_MASK_IF_CHECKED(mask, particle_index, key, operation, entity) 
 #endif
 
 #ifdef _OPENMP
@@ -51,6 +57,13 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 typedef boost::dynamic_bitset<> Mask;
 
+/** a template for storing a table that holds the values of multiple attributes 
+    for multiple particles, following 
+
+    The basic attribute table is templated for
+    one type of attribute value and an associated type of attribute key,
+    which are in turn specified by the Traits class (see AttributeTable.h)
+*/
 template <class Traits>
 class BasicAttributeTable {
  public:
@@ -151,13 +164,30 @@ class BasicAttributeTable {
                         << " as it is reserved for a null value.");
     data_[k.get_index()][particle] = value;
   }
-  typename Traits::PassValue get_attribute(Key k, ParticleIndex particle,
-                                           bool checked = true) const {
-    if (checked) {
-      IMP_CHECK_MASK(read_mask_, particle, k, GET, ATTRIBUTE);
+
+  typename Traits::PassValue get_attribute(Key k, ParticleIndex particle 
+					    , bool IMP_ATTRIBUTE_CHECKED_PARAM=true) const 
+    {
+      IMP_CHECK_MASK_IF_CHECKED(read_mask_, particle, k, GET, ATTRIBUTE );
+      return data_[k.get_index()][particle];
     }
-    return data_[k.get_index()][particle];
-  }
+
+  //! this enables direct access to the attribute data array through
+  //! a pointer pData, such that pData[particle_index] gives access
+  //! to attribute k for particle particle_index. It is not safe
+  //! and should be used sparingly, where efficiency is essential
+  typename Traits::Value const* access_attribute_data(Key k) const
+    {
+      return Traits::access_container_data(data_[k.get_index()]);
+    }
+
+  //! this enables direct access to the attribute data array through
+  //! a pointer
+  typename Traits::Value* access_attribute_data(Key k)
+    {
+      return Traits::access_container_data(data_[k.get_index()]);
+    }
+
   typename Traits::Container::reference access_attribute(
       Key k, ParticleIndex particle) {
     IMP_CHECK_MASK(write_mask_, particle, k, SET, ATTRIBUTE);
@@ -375,23 +405,21 @@ class FloatAttributeTable {
     }
   }
   // check AFTER_EVALUATE, NOT_EVALUATING
-  double get_derivative(FloatKey k, ParticleIndex particle,
-                        bool checked = true) const {
+  double get_derivative
+    (FloatKey k, ParticleIndex particle,
+     bool IMP_ATTRIBUTE_CHECKED_PARAM=true ) const 
+  {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get derivative that isn't there");
     if (k.get_index() < 4) {
-      if (checked) {
-        IMP_CHECK_MASK(read_derivatives_mask_, particle, k, GET, DERIVATIVE);
-      }
+      IMP_CHECK_MASK_IF_CHECKED(read_derivatives_mask_, particle, k, GET, DERIVATIVE );
       return sphere_derivatives_[particle][k.get_index()];
     } else if (k.get_index() < 7) {
-      if (checked) {
-        IMP_CHECK_MASK(read_derivatives_mask_, particle, k, GET, DERIVATIVE);
-      }
+      IMP_CHECK_MASK_IF_CHECKED(read_derivatives_mask_, particle, k, GET, DERIVATIVE );
       return internal_coordinate_derivatives_[particle][k.get_index() - 4];
     } else {
       return derivatives_.get_attribute(FloatKey(k.get_index() - 7), particle,
-                                        checked);
+					IMP_ATTRIBUTE_CHECKED_PARAM );
     }
   }
   // check can change EVALUATE, AFTER_EVALUATE< NOT_EVALUATING
@@ -413,6 +441,7 @@ class FloatAttributeTable {
       IMP_ACCUMULATE(derivatives_.access_attribute(nk, particle), da(v));
     }
   }
+
   void add_attribute(FloatKey k, ParticleIndex particle, double v,
                      bool opt = false) {
     IMP_CHECK_MASK(add_remove_mask_, particle, k, ADD, ATTRIBUTE);
@@ -490,11 +519,12 @@ class FloatAttributeTable {
       data_.set_attribute(FloatKey(k.get_index() - 7), particle, v);
     }
   }
+
+  //! return attribute k of specified particle 
   double get_attribute(FloatKey k, ParticleIndex particle,
-                       bool checked = true) const {
-    if (checked) {
-      IMP_CHECK_MASK(read_mask_, particle, k, GET, ATTRIBUTE);
-    }
+		       bool IMP_ATTRIBUTE_CHECKED_PARAM=true ) const 
+  {
+    IMP_CHECK_MASK_IF_CHECKED(read_mask_, particle, k, GET, ATTRIBUTE );
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get attribute that is not there: "
                         << k.get_string() << " on particle " << particle);
@@ -504,7 +534,7 @@ class FloatAttributeTable {
       return internal_coordinates_[particle][k.get_index() - 4];
     } else {
       return data_.get_attribute(FloatKey(k.get_index() - 7), particle,
-                                 checked);
+				 IMP_ATTRIBUTE_CHECKED_PARAM );
     }
   }
   double &access_attribute(FloatKey k, ParticleIndex particle) {
@@ -531,6 +561,75 @@ class FloatAttributeTable {
     }
     return ret;
   }
+
+  /** \name Accessing internal float attribute data tables 
+      \anchor direct_access_float_attribute,
+
+      The following expert methods enable direct access to the
+      internally-stored data table of a specified key. Use particle
+      indexes to access the data attribute of a specific particle.
+
+      @note These expert-only methods are not part of the official interface, they
+      include limited checks if any, and they should be used 
+      most sparingly (typically, only if fast memory access time is of
+      the utmost essence at a running time bottleneck, and requires
+      scanning or caching of a contiguous block of memory).
+      @{
+  */
+  algebra::Sphere3D const* access_spheres_data(FloatKey k) const{
+    IMP_USAGE_CHECK(k.get_index() < 4, 'sphere key indexes are 0-3');
+    return spheres_.data();
+  }
+  algebra::Sphere3D* access_spheres_data(FloatKey k){
+    IMP_USAGE_CHECK(k.get_index() < 4, 'sphere key indexes are 0-3');
+    return spheres_.data();
+  }
+  algebra::Sphere3D const* access_spheres_derivatives_data(FloatKey k) const{
+    IMP_USAGE_CHECK(k.get_index() < 4, 'sphere key indexes are 0-3');
+    return sphere_derivatives_.data();
+  }
+  algebra::Sphere3D* access_spheres_derivatives_data(FloatKey k){
+    IMP_USAGE_CHECK(k.get_index() < 4, 'sphere key indexes are 0-3');
+    return sphere_derivatives_.data();
+  }
+  algebra::Vector3D const* access_internal_coordinates_data(FloatKey k) const{
+    IMP_USAGE_CHECK(k.get_index() >=4 && j.get_index()<7, 'internal coordinates key indexes are 4-6');
+    return internal_coordinates_.data();
+  }
+  algebra::Vector3D * access_internal_coordinates_data(FloatKey k) {
+    IMP_USAGE_CHECK(k.get_index() >=4 && j.get_index()<7, 'internal coordinates key indexes are 4-6');
+    return internal_coordinates_.data();
+  }
+  algebra::Vector3D const* access_internal_coordinates_derivatives_data(FloatKey k) const{
+    IMP_USAGE_CHECK(k.get_index() >=4 && j.get_index()<7, 'internal coordinates key indexes are 4-6');
+    return internal_coordinate_derivatives_.data();
+  }
+  algebra::Vector3D * access_internal_coordinates_derivatives_data(FloatKey k) {
+    IMP_USAGE_CHECK(k.get_index() >=4 && j.get_index()<7, 'internal coordinates key indexes are 4-6');
+    return internal_coordinate_derivatives_.data();
+  }
+  double const* access_attribute_data(FloatKey k) const{
+    IMP_USAGE_CHECK(k.get_index()>=7,
+		    'first 7 attributes should be accessed by specialized methods');
+    return data_.access_attribute_data(FloatKey(k.get_index() - 7));
+  }
+  double* access_attribute_data(FloatKey k){
+    IMP_USAGE_CHECK(k.get_index()>=7,
+		    'first 7 attributes should be accessed by specialized methods');
+    return data_.access_attribute_data(FloatKey(k.get_index() - 7));
+  }
+  double const* access_derivative_data(FloatKey k) const{
+    IMP_USAGE_CHECK(k.get_index()>=7,
+		    'first 7 attributes should be accessed by specialized methods');
+    return derivatives_.access_attribute_data(FloatKey(k.get_index() - 7));
+  }
+  double* access_derivative_data(FloatKey k){
+    IMP_USAGE_CHECK(k.get_index()>=7,
+		    'first 7 attributes should be accessed by specialized methods');
+    return derivatives_.access_attribute_data(FloatKey(k.get_index() - 7));
+  }
+  /** @} */
+
   void set_range(FloatKey k, FloatRange fr) { ranges_[k.get_index()] = fr; }
   FloatRange get_range(FloatKey k) {
     FloatRange ret = ranges_[k.get_index()];

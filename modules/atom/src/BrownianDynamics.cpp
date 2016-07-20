@@ -283,7 +283,7 @@ BrownianDynamics::do_step
   get_scoring_function()->evaluate(true);
   //  Ek = 0.0; // DEBUG: monitor kinetic energy
   //  M = 0.0; // DEBUG: monitor kinetic energy
-  const unsigned int chunk_size = 20;
+  const unsigned int chunk_size = 200;
   for (unsigned int b = 0; b < ps.size(); b += chunk_size) {
     IMP_TASK_SHARED(
         (dtfs, ikT, b), (ps),

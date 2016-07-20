@@ -285,6 +285,30 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     return ret;
   }
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+   //! expert method for fast const-access to internal torque coordinate #i table
+  static double const* access_torque_i_data
+    (IMP::Model const* m, unsigned int i)
+  {
+    IMP_USAGE_CHECK(i<3,'torque is 3 dimensional');
+    FloatKey torque_i_key=
+          internal::rigid_body_data().torque_[i];
+    double const* ret=m->access_derivative_data(torque_i_key);
+    return ret;
+  }
+
+  //! expert method for fast access to internal torque coordinate #i table
+  static double* access_torque_i_data
+    (IMP::Model* m, unsigned int i)
+  {
+    IMP_USAGE_CHECK(i<3,'torque is 3 dimensional');
+    FloatKey torque_i_key=
+          internal::rigid_body_data().torque_[i];
+    double* ret=m->access_derivative_data(torque_i_key);
+    return ret;
+  }
+#endif
+
   //! Returns true if the rigid body coordinates are flagged as
   //! optimized for Optimizer objects
   bool get_coordinates_are_optimized() const;
