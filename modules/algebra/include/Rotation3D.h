@@ -72,7 +72,19 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   }
 
  public:
-  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Rotation3D);
+  //! Rotation3D copy constructor, faster than default copy constructor
+  //! in some cases
+  Rotation3D(const Rotation3D &rot) :
+  v_(rot.v_), has_cache_(rot.has_cache_)
+  {
+    if(has_cache_){
+      matrix_[0]=rot.matrix_[0];
+      matrix_[1]=rot.matrix_[1];
+      matrix_[2]=rot.matrix_[2];
+    }
+  }
+
+  //!  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Rotation3D);
 
   //! Create a rotation from a vector of 4 quaternion coefficients.
   //! @note: use assume_normalized with care - inputting an unnormalized

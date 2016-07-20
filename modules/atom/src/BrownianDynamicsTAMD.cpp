@@ -62,75 +62,73 @@ BrownianDynamicsTAMD::BrownianDynamicsTAMD(Model *m, std::string name,
  */
 
 namespace {
-/** get the force dispacement term in the Ermak-Mccammon equation
-    for particle pi in model m, with time step dt and ikT=1/kT
-*/
-inline algebra::Vector3D get_force_displacement_bdb(Model *m, ParticleIndex pi,
-                                                    double dt, double ikT) {
-  Diffusion d(m, pi);
-  algebra::Vector3D nforce(-d.get_derivatives());
-  // unit::Angstrom R(sampler_());
-  double dd = d.get_diffusion_coefficient();
-  if(TAMDParticle::get_is_setup(m, pi)){
-    TAMDParticle tamd(m, pi);
-    // rescale D = [kT] / [m*gamma] ; T = temperature, gamma = friction
-    dd /= tamd.get_friction_scale_factor();
-    // // DEBUG: next two lines even out so commented and kept just to
-    // //        verify we got it right
-    // dd *= tamd.get_temperature_scale_factor();
-    // ikT /= tamd.get_temperature_scale_factor();
+  /** get the force dispacement term in the Ermak-Mccammon equation
+      for particle pi in model m, with time step dt and ikT=1/kT
+  */
+  inline algebra::Vector3D get_force_displacement_bdb(Model *m, ParticleIndex pi,
+                                                      double dt, double ikT) {
+    Diffusion d(m, pi);
+    algebra::Vector3D nforce(-d.get_derivatives());
+    // unit::Angstrom R(sampler_());
+    double dd = d.get_diffusion_coefficient();
+    if(TAMDParticle::get_is_setup(m, pi)){
+      TAMDParticle tamd(m, pi);
+      // rescale D = [kT] / [m*gamma] ; T = temperature, gamma = friction
+      dd /= tamd.get_friction_scale_factor();
+      // // DEBUG: next two lines even out so commented and kept just to
+      // //        verify we got it right
+      // dd *= tamd.get_temperature_scale_factor();
+      // ikT /= tamd.get_temperature_scale_factor();
+    }
+    return nforce * dd * dt * ikT;
   }
-  return nforce * dd * dt * ikT;
-}
-// radians
-inline double get_torque_bdb(Model *m, ParticleIndex pi,
-                         unsigned int i, double dt, double ikT) {
-  RigidBodyDiffusion d(m, pi);
-  core::RigidBody rb(m, pi);
 
-  double cforce(rb.get_torque()[i]);
-  // unit::Angstrom R(sampler_());
-  double dr = d.get_rotational_diffusion_coefficient();
-  // if(TAMDParticle::get_is_setup(m, pi)){
-  //   TAMDParticle tamd(m, pi);
-  //   dr /= tamd.get_friction_scale_factor();
-  //   ikT /= tamd.get_temperature_scale_factor();
-  // }
-  double force_term = dr * cforce * dt * ikT;
-  /*if (force_term > unit::Angstrom(.5)) {
-    std::cout << "Forces on " << _1->get_name() << " are "
-    << force << " and " << nforce
-    << " and " << force_term <<
-    " vs " << dX[j] << ", " << sigma << std::endl;
-    }*/
-  return -force_term;
-}
+  // radians at each axis
+  inline algebra::Vector3D get_torque_bdb(Model *m, ParticleIndex pi,
+                                          double dt, double ikT) {
+    RigidBodyDiffusion d(m, pi);
+    core::RigidBody rb(m, pi);
+
+    double dr= d.get_rotational_diffusion_coefficient();
+    double factor= dr*dt*ikT;
+    algebra::Vector3D rotational_derivative_vector
+      = -factor*rb.get_torque(); // minus because energy derivative is opposite torque
+    return rotational_derivative_vector;
+    // unit::Angstrom R(sampler_());
+    // if(TAMDParticle::get_is_setup(m, pi)){
+    //   TAMDParticle tamd(m, pi);
+    //   dr /= tamd.get_friction_scale_factor();
+    //   ikT /= tamd.get_temperature_scale_factor();
+    // }
+  }
+
 
   // returns the std-dev for the random displacement in the Ermak-Mccammon equation
-inline double get_sigma_displacement_bdb(Model *m,
+  inline double get_sigma_displacement_bdb(Model *m,
+                                           ParticleIndex pi,
+                                           double dtfs) {
+    // TAMD: 6.0 since 2.0 for each dof so that l2 magnitude of sigma
+    // is 2.0 * D * dtfs per dof
+    // Daniel: 6.0 since we are picking radius rather than the coordinates
+    double dd = Diffusion(m, pi).get_diffusion_coefficient();
+    if(TAMDParticle::get_is_setup(m, pi)){
+      // rescale D = [kT] / [m*gamma] ; T = temperature, gamma = friction
+      TAMDParticle tamd(m, pi);
+      dd *= tamd.get_temperature_scale_factor();
+      dd /= tamd.get_friction_scale_factor();
+    }
+    return sqrt(6.0 * dd * dtfs);
+  }
+
+  inline double get_rotational_sigma_bdb(Model *m,
                                          ParticleIndex pi,
                                          double dtfs) {
-  // TAMD: 6.0 since 2.0 for each dof so that l2 magnitude of sigma
-  // is 2.0 * D * dtfs per dof
-  // Daniel: 6.0 since we are picking radius rather than the coordinates
-  double dd = Diffusion(m, pi).get_diffusion_coefficient();
-  if(TAMDParticle::get_is_setup(m, pi)){
-    // rescale D = [kT] / [m*gamma] ; T = temperature, gamma = friction
-    TAMDParticle tamd(m, pi);
-    dd *= tamd.get_temperature_scale_factor();
-    dd /= tamd.get_friction_scale_factor();
-  }
-  return sqrt(6.0 * dd * dtfs);
-}
-inline double get_rotational_sigma_bdb(Model *m,
-                                       ParticleIndex pi,
-                                       double dtfs) {
-  double dr = RigidBodyDiffusion(m, pi).get_rotational_diffusion_coefficient();
-  // if(TAMDParticle::get_is_setup(m, pi)){
-  //   TAMDParticle tamd(m, pi);
-  //   dr /= tamd.get_friction_scale_factor();
+    double dr = RigidBodyDiffusion(m, pi).get_rotational_diffusion_coefficient();
+    // if(TAMDParticle::get_is_setup(m, pi)){
+    //   TAMDParticle tamd(m, pi);
+    //   dr /= tamd.get_friction_scale_factor();
   // }
-  return sqrt(6.0 * dr * dtfs);
+    return sqrt(6.0 * dr * dtfs);
 }
 }
 
@@ -205,12 +203,10 @@ void BrownianDynamicsTAMD::advance_orientation_0(ParticleIndex pi,
   double angle = get_sample(sigma);
   algebra::Transformation3D nt =
       rb.get_reference_frame().get_transformation_to();
-  algebra::Vector3D axis = algebra::get_random_vector_on_unit_sphere();
-  algebra::Rotation3D rrot = algebra::get_rotation_about_axis(axis, angle);
+  algebra::Vector3D axis( algebra::get_random_vector_on_unit_sphere() );
+  algebra::Rotation3D rrot( algebra::get_rotation_about_axis(axis, angle) );
   nt = nt * rrot;
-  algebra::Vector3D torque(get_torque_bdb(get_model(), pi, 0, dtfs, ikT),
-                           get_torque_bdb(get_model(), pi, 1, dtfs, ikT),
-                           get_torque_bdb(get_model(), pi, 2, dtfs, ikT));
+  algebra::Vector3D torque( get_torque_bdb(get_model(), pi, dtfs, ikT) );
   double tangle = torque.get_magnitude();
   if (tangle > 0) {
     algebra::Vector3D taxis = torque / tangle;
