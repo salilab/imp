@@ -282,8 +282,21 @@ inline double get_distance(const Rotation3D &r0, const Rotation3D &r1) {
    angleToQuaternion/index.htm
    \see Rotation3D
 */
-IMPALGEBRAEXPORT Rotation3D
-    get_rotation_about_normalized_axis(const Vector3D &axis_norm, double angle);
+inline Rotation3D
+get_rotation_about_normalized_axis
+(const Vector3D &axis_norm, double angle)
+{
+  IMP_USAGE_CHECK(axis_norm.get_magnitude() - 1.0 < 1e-6,
+                  "expected normalized vector as axis of rotation");
+  double s = std::sin(angle / 2);
+  double a, b, c, d;
+  a = std::cos(angle / 2);
+  b = axis_norm[0] * s;
+  c = axis_norm[1] * s;
+  d = axis_norm[2] * s;
+  return Rotation3D(a, b, c, d);
+}
+
 
 //! Generate a Rotation3D object from a rotation around an axis
 /**
@@ -295,8 +308,14 @@ IMPALGEBRAEXPORT Rotation3D
    angleToQuaternion/index.htm
    \see Rotation3D
 */
-IMPALGEBRAEXPORT Rotation3D
-    get_rotation_about_axis(const Vector3D &axis, double angle);
+inline Rotation3D
+get_rotation_about_axis
+(const Vector3D &axis, double angle)
+{
+    // normalize the vector
+    Vector3D axis_norm = axis.get_unit_vector();
+  return get_rotation_about_normalized_axis(axis_norm, angle);
+}
 
 //! Create a rotation from the first vector to the second one.
 /** \see Rotation3D

@@ -12,6 +12,7 @@
 #include <IMP/atom/atom_config.h>
 #include "Diffusion.h"
 #include "atom_macros.h"
+#include <IMP/algebra/Sphere3D.h>
 #include <IMP/atom/BrownianDynamics.h>
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
@@ -99,12 +100,18 @@ class IMPATOMEXPORT BrownianDynamicsTAMD : public BrownianDynamics {
 
  private:
   void advance_coordinates_1(ParticleIndex pi, unsigned int i,
-                             double dtfs, double ikT);
-  void advance_coordinates_0(ParticleIndex pi, unsigned int i,
-                             double dtfs, double ikT);
-  void advance_orientation_0(ParticleIndex pi, double dtfs, double ikT,
-			     double const* rotational_diffusion_coefficient_table,
-			     double const* torque_tables[]) ;
+                             double dtfs, double ikT,
+                             double diffusion_coefficient,
+                             algebra::Sphere3D const& xyzr_derivative_pi);
+  void advance_coordinates_0(unsigned int i,
+                             double dtfs, double ikT,
+                             double diffusion_coefficient,
+                             algebra::Sphere3D const& xyzr_derivative_pi,
+                             algebra::Sphere3D& xyzr_access);
+  inline algebra::Rotation3D
+    compute_rotation_0(ParticleIndex pi, double dtfs, double ikT,
+                       double rotational_diffusion_coefficient_table,
+                       double const* torque_tables[]) ;
 };
 
 IMPATOM_END_NAMESPACE

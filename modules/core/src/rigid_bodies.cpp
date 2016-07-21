@@ -761,17 +761,6 @@ algebra::Vector3D RigidBody::get_coordinates(RigidMember p) const {
   return get_reference_frame().get_global_coordinates(lp);
 }
 
-void RigidBody::set_reference_frame_lazy(
-    const IMP::algebra::ReferenceFrame3D &tr) {
-  algebra::VectorD<4> v =
-      tr.get_transformation_to().get_rotation().get_quaternion();
-  get_particle()->set_value(internal::rigid_body_data().quaternion_[0], v[0]);
-  get_particle()->set_value(internal::rigid_body_data().quaternion_[1], v[1]);
-  get_particle()->set_value(internal::rigid_body_data().quaternion_[2], v[2]);
-  get_particle()->set_value(internal::rigid_body_data().quaternion_[3], v[3]);
-  set_coordinates(tr.get_transformation_to().get_translation());
-}
-
 void RigidBody::set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr) {
   set_reference_frame_lazy(tr);
   update_members();

@@ -11,6 +11,7 @@
 #include <IMP/kernel_config.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
+// fake usage of variable (for IMP_UNUSED)
 template <class T>
 void eat(const T&) {}
 
