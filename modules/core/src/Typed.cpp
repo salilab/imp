@@ -9,10 +9,5 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-IntKey Typed::get_type_key() {
-  static IntKey k("particle type");
-  return k;
-}
-
 void Typed::show(std::ostream &out) const { out << get_type(); }
 IMPCORE_END_NAMESPACE

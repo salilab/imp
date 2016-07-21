@@ -38,7 +38,7 @@ class IMPCOREEXPORT Typed : public Decorator {
   }
 
  public:
-  static IntKey get_type_key();
+  inline static IntKey get_type_key();
 
   IMP_DECORATOR_METHODS(Typed, Decorator);
   IMP_DECORATOR_SETUP_1(Typed, ParticleType, t);
@@ -58,6 +58,13 @@ class IMPCOREEXPORT Typed : public Decorator {
   }
 
 };
+
+// in header for faster access
+IntKey Typed::get_type_key() {
+  static IntKey k("particle type");
+  return k;
+}
+
 
 IMP_DECORATORS(Typed, Typeds, ParticlesTemp);
 
