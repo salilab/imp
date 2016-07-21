@@ -221,7 +221,7 @@ BrownianDynamicsTAMD::compute_rotation_0
  double rotational_diffusion_coefficient,
  double const* torque_tables[])
 {
-  core::RigidBody rb(get_model(), pi);
+  //  core::RigidBody rb(get_model(), pi);
   double sigma = get_rotational_sigma_bdb(dtfs, rotational_diffusion_coefficient);
   double angle = get_sample(sigma);
   //  algebra::Transformation3D nt =
@@ -253,33 +253,27 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
   IMP_LOG_TERSE("Advancing particles " << begin << " to " << end << std::endl);
   Model* m = get_model();
 
+  // Rotate chunk:
   double const* rotational_diffusion_coefficient_table=
     m->access_attribute_data(RigidBodyDiffusion::get_rotational_diffusion_coefficient_key());
   double const* torque_tables[3];
-  torque_tables[0]=
-    core::RigidBody::access_torque_i_data(m, 0);
-  torque_tables[1]=
-    core::RigidBody::access_torque_i_data(m, 1);
-  torque_tables[2]=
-    core::RigidBody::access_torque_i_data(m, 2);
+  for(unsigned int i = 0; i < 3; i++){
+    torque_tables[i]=
+      core::RigidBody::access_torque_i_data(m, i);
+  }
   double* quaternion_tables[4];
-  quaternion_tables[0]=
-    core::RigidBody::access_quaternion_i_data(m, 0);
-  quaternion_tables[1]=
-    core::RigidBody::access_quaternion_i_data(m, 0);
-  quaternion_tables[2]=
-    core::RigidBody::access_quaternion_i_data(m, 0);
-  quaternion_tables[3]=
-    core::RigidBody::access_quaternion_i_data(m, 0);
-
+  for(unsigned int i = 0; i < 4; i++){
+    quaternion_tables[i]=
+      core::RigidBody::access_quaternion_i_data(m, i);
+  }
   for (unsigned int i = begin; i < end; ++i) {
     ParticleIndex pi= ps[i];
     algebra::Rotation3D rot(1,0,0,0);
-    //    if (RigidBodyDiffusion::get_is_setup(m, pi)) {
-    // std::cout << "rb" << std::endl;
     double rdc=
       rotational_diffusion_coefficient_table[pi.get_index()];
+    //    if (RigidBodyDiffusion::get_is_setup(m, pi)) {
     if(IMP::internal::FloatAttributeTableTraits::get_is_valid(rdc)){
+      // std::cout << "rb" << std::endl;
       rot=compute_rotation_0
         (pi, dtfs, ikT, rdc, torque_tables);
       core::RigidBody(m, pi).apply_rotation_lazy_using_internal_tables
@@ -296,13 +290,13 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
   }
 
   // Translate chunk:
+  algebra::Sphere3D* spheres_table=
+    m->access_spheres_data();
+  algebra::Sphere3D const* sphere_derivatives_table=
+    m->access_sphere_derivatives_data();
+  double const* diffusion_coefficients_table=
+    m->access_attribute_data(Diffusion::get_diffusion_coefficient_key());
   for (unsigned int i = begin; i < end; ++i) {
-    algebra::Sphere3D* spheres_table=
-      m->access_spheres_data();
-    algebra::Sphere3D const* sphere_derivatives_table=
-      m->access_sphere_derivatives_data();
-    double const* diffusion_coefficients_table=
-      m->access_attribute_data(Diffusion::get_diffusion_coefficient_key());
     ParticleIndex pi= ps[i];
     advance_coordinates_0(i, dtfs, ikT,
                           diffusion_coefficients_table[pi.get_index()],
