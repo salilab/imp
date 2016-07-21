@@ -7,7 +7,7 @@
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/internal/StaticListContainer.h>
 #include <IMP/test/test_macros.h>
-#include <IMP/core/internal/CoreClosePairContainer.h>
+#include <IMP/container/internal/ClosePairContainer.h>
 
 namespace {
 std::string get_module_name() { return "anon"; }
@@ -158,7 +158,7 @@ int main(int argc, char *argv[]) {
                 IMP::SingletonContainer>,
             lsc, (m, "lsc"));
     lsc->set(get_not_bodies(m, m->get_particle_indexes()));
-    IMP_NEW(IMP::core::internal::CoreClosePairContainer, cpc,
+    IMP_NEW(IMP::container::internal::ClosePairContainer, cpc,
             (lsc, 0, new IMP::core::RigidClosePairsFinder(), 0));
     IMP::core::MonteCarloMovers movers;
     movers.push_back(

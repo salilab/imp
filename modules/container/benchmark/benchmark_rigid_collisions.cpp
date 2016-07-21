@@ -9,7 +9,7 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/core/internal/CoreClosePairContainer.h>
+#include <IMP/container/internal/ClosePairContainer.h>
 #include <IMP/internal/pdb.h>
 
 using namespace IMP;
@@ -79,11 +79,11 @@ Restraint *setup(Model *m, bool rpcpf, RigidBodies &rbs) {
     }
     lsc->set(rbsp);
     IMP_NEW(RigidClosePairsFinder, rcps, ());
-    cpc = new core::internal::CoreClosePairContainer(lsc, 0.0, rcps);
+    cpc = new container::internal::ClosePairContainer(lsc, 0.0, rcps);
   } else {
     IMP_NEW(GridClosePairsFinder, cpf, ());
     lsc->set(IMP::get_indexes(get_as<ParticlesTemp>(atoms)));
-    cpc = new core::internal::CoreClosePairContainer(lsc, 0.0, cpf, 1.0);
+    cpc = new container::internal::ClosePairContainer(lsc, 0.0, cpf, 1.0);
   }
   return IMP::create_restraint(new DistancePairScore(new Linear(1, 0)), cpc);
 }
