@@ -10,7 +10,7 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/core/ClosePairsFinder.h>
-#include <IMP/core/internal/CoreCloseBipartitePairContainer.h>
+#include <IMP/container/internal/CloseBipartitePairContainer.h>
 #include <IMP/core/internal/MovedSingletonContainer.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairPredicate.h>
@@ -34,10 +34,10 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public PairContainer
 #else
-    public IMP::core::internal::CoreCloseBipartitePairContainer
+    public IMP::container::internal::CloseBipartitePairContainer
 #endif
     {
-  typedef IMP::core::internal::CoreCloseBipartitePairContainer P;
+  typedef IMP::container::internal::CloseBipartitePairContainer P;
 
  public:
   //! Get the individual particles from the passed SingletonContainer

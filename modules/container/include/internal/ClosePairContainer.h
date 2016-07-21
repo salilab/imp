@@ -1,17 +1,17 @@
 /**
- *  \file core/internal/CoreClosePairContainer.h
- *  \brief Return all pairs from a SingletonContainer
+ *  \file container/internal/ClosePairContainer.h
+ *  \brief Internal class of close pair container
  *
  *  Copyright 2007-2016 IMP Inventors. Close rights reserved.
  */
 
-#ifndef IMPCORE_INTERNAL_CORE_CLOSE_PAIR_CONTAINER_H
-#define IMPCORE_INTERNAL_CORE_CLOSE_PAIR_CONTAINER_H
+#ifndef IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_PAIR_CONTAINER_H
+#define IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_PAIR_CONTAINER_H
 
-#include <IMP/core/core_config.h>
-#include "../ClosePairsFinder.h"
+#include <IMP/container/container_config.h>
+#include <IMP/core/ClosePairsFinder.h>
 #include "MovedSingletonContainer.h"
-#include "../PairRestraint.h"
+#include <IMP/core/PairRestraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairPredicate.h>
 #include <IMP/generic.h>
@@ -20,9 +20,9 @@
 #include <IMP/internal/ContainerScoreState.h>
 #include <IMP/internal/ListLikeContainer.h>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 
-class IMPCOREEXPORT CoreClosePairContainer
+class IMPCONTAINEREXPORT ClosePairContainer
     : public IMP::internal::ListLikeContainer<PairContainer> {
   IMP::PointerMember<SingletonContainer> c_;
   IMP::PointerMember<ClosePairsFinder> cpf_;
@@ -31,7 +31,7 @@ class IMPCOREEXPORT CoreClosePairContainer
   bool first_call_;
   double distance_, slack_;
   unsigned int updates_, rebuilds_, partial_rebuilds_;
-  typedef IMP::internal::ContainerScoreState<CoreClosePairContainer> SS;
+  typedef IMP::internal::ContainerScoreState<ClosePairContainer> SS;
   PointerMember<SS> score_state_;
 
   void initialize(SingletonContainer *c, double distance, double slack,
@@ -51,9 +51,9 @@ class IMPCOREEXPORT CoreClosePairContainer
   void do_score_state_before_evaluate();
   void do_score_state_after_evaluate() {}
 
-  CoreClosePairContainer(SingletonContainer *c, double distance,
+  ClosePairContainer(SingletonContainer *c, double distance,
                          ClosePairsFinder *cpf, double slack = 1,
-                         std::string name = "CoreClosePairContainer%1%");
+                         std::string name = "ClosePairContainer%1%");
 
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter, pair_filters,
                   PairPredicate *, PairPredicates,
@@ -94,11 +94,11 @@ class IMPCOREEXPORT CoreClosePairContainer
     return partial_rebuilds_;
   }
 
-  IMP_OBJECT_METHODS(CoreClosePairContainer);
+  IMP_OBJECT_METHODS(ClosePairContainer);
 };
 
-IMP_OBJECTS(CoreClosePairContainer, CoreClosePairContainers);
+IMP_OBJECTS(ClosePairContainer, ClosePairContainers);
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMPCONTAINER_END_INTERNAL_NAMESPACE
 
-#endif /* IMPCORE_INTERNAL_CORE_CLOSE_PAIR_CONTAINER_H */
+#endif /* IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_PAIR_CONTAINER_H */

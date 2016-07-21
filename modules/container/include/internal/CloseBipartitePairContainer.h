@@ -1,12 +1,12 @@
 /**
- *  \file CloseBipartitePairContainer.h
- *  \brief Return all pairs from a SingletonContainer
+ *  \file container/include/internal/CloseBipartitePairContainer.h
+ *  \brief Internal class of close bipartite pair container
  *
  *  Copyright 2007-2016 IMP Inventors. Close rights reserved.
  */
 
-#ifndef IMPCORE_INTERNAL_CORE_CLOSE_BIPARTITE_PAIR_CONTAINER_H
-#define IMPCORE_INTERNAL_CORE_CLOSE_BIPARTITE_PAIR_CONTAINER_H
+#ifndef IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
+#define IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
 
 #include <IMP/core/core_config.h>
 #include "../ClosePairsFinder.h"
@@ -18,7 +18,7 @@
 #include <IMP/internal/ListLikeContainer.h>
 #include <boost/unordered_map.hpp>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 
 /** \brief Return all close unordered pairs of particles taken from
     the SingletonContainer
@@ -31,7 +31,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
     \usesconstraint
  */
-class IMPCOREEXPORT CoreCloseBipartitePairContainer
+class IMPCONTAINEREXPORT CoreCloseBipartitePairContainer
     : public IMP::internal::ListLikeContainer<PairContainer> {
   typedef IMP::internal::ListLikeContainer<PairContainer> P;
   IMP::PointerMember<SingletonContainer> sc_[2];
@@ -101,6 +101,6 @@ class IMPCOREEXPORT CoreCloseBipartitePairContainer
 
 IMP_OBJECTS(CoreCloseBipartitePairContainer, CoreCloseBipartitePairContainers);
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMPCONTAINER_END_INTERNAL_NAMESPACE
 
-#endif /* IMPCORE_INTERNAL_CORE_CLOSE_BIPARTITE_PAIR_CONTAINER_H */
+#endif /* IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H */

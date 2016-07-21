@@ -9,7 +9,7 @@
 #define IMPCONTAINER_CLOSE_PAIR_CONTAINER_H
 
 #include <IMP/container/container_config.h>
-#include <IMP/core/internal/CoreClosePairContainer.h>
+#include "internal/ClosePairContainer.h"
 #include <IMP/Optimizer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -64,10 +64,10 @@ class IMPCONTAINEREXPORT ClosePairContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public PairContainer
 #else
-    public core::internal::CoreClosePairContainer
+    public internal::ClosePairContainer
 #endif
     {
-  typedef core::internal::CoreClosePairContainer P;
+  typedef internal::ClosePairContainer P;
 
  public:
   //! Get the individual particles from the passed SingletonContainer
