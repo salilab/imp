@@ -531,34 +531,29 @@ Restraints PredicateClassnamesRestraint::do_create_current_decomposition()
 }
 
 void PredicateClassnamesRestraint::update_lists_if_necessary() const {
+  // check if necessary to update lists
   std::size_t h = input_->get_contents_hash();
   if (h == input_version_) return;
   input_version_ = h;
-  lists_.clear();
 
+  // populate lists with bins of PLURALINDEXTYPE for each predicate,
+  // and put unknown predicates in unknown_bin, is unknown score exists
+  const int unknown_bin = std::numeric_limits<int>::max();
+  bool is_unknown_score=(scores_.find(unknown_bin) != scores_.end());
+  lists_.clear();
   IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
     int bin = predicate_->get_value_index(get_model(), it);
-    lists_[bin].push_back(it);
-  }
-
-  typedef std::pair<int, PLURALINDEXTYPE> LP;
-  Ints unknown;
-  IMP_FOREACH(const LP & lp, lists_) {
-    int bin = lp.first;
-    if (scores_.find(bin) == scores_.end()) {
+    if (scores_.find(bin) != scores_.end()) {
+      lists_[bin].push_back(it);
+    } else {
       IMP_USAGE_CHECK(!error_on_unknown_, "Unknown predicate value of "
-                                              << bin << " found for tuples "
-                                              << lp.second);
-      unknown.push_back(bin);
-    }
-  }
-  const int unknown_bin = std::numeric_limits<int>::max();
-  if (scores_.find(unknown_bin) != scores_.end()) {
-    IMP_FOREACH(int i, unknown) {
-      lists_[unknown_bin] += lists_.find(i)->second;
-    }
-  }
-  IMP_FOREACH(int i, unknown) { lists_.erase(i); }
+                      << bin << " found for tuples "
+                      << lp.second);
+      if(is_unknown_score){
+        lists_[unknown_bin].push_back(it);
+      }
+    } // if score found
+  } // IMP_FOREACH
 }
 
 void PredicateClassnamesRestraint::set_score(int predicate_value,
