@@ -96,7 +96,7 @@ struct ParticlePairSink {
 
 //! a sink that receive particle index pairs
 //! and outputs particle index pairs.
-Struct ParticleIndexPairSink {
+struct ParticleIndexPairSink {
   Model *m_;
   const PairPredicates &filters_;
   ParticleIndexPairs &out_;

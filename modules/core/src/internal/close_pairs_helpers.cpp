@@ -11,6 +11,8 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
+IntKey core::internal::InList::key_ = IntKey("in list temp");
+
 ModelObjectsTemp get_inputs(Model *m, SingletonContainer *sc_,
                             const PairPredicates &filters_) {
   ParticleIndexes all = sc_->get_all_possible_indexes();

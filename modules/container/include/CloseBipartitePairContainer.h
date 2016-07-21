@@ -10,7 +10,7 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/core/ClosePairsFinder.h>
-#include <IMP/container/internal/CloseBipartitePairContainer.h>
+#include "internal/CloseBipartitePairContainer.h"
 #include <IMP/core/internal/MovedSingletonContainer.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairPredicate.h>

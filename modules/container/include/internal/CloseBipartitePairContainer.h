@@ -9,8 +9,8 @@
 #define IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
 
 #include <IMP/core/core_config.h>
-#include "../ClosePairsFinder.h"
-#include "MovedSingletonContainer.h"
+#include <IMP/core/ClosePairsFinder.h>
+#include <IMP/core/internal/MovedSingletonContainer.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairPredicate.h>
 #include <IMP/SingletonContainer.h>
@@ -31,7 +31,7 @@ IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 
     \usesconstraint
  */
-class IMPCONTAINEREXPORT CoreCloseBipartitePairContainer
+class IMPCONTAINEREXPORT CloseBipartitePairContainer
     : public IMP::internal::ListLikeContainer<PairContainer> {
   typedef IMP::internal::ListLikeContainer<PairContainer> P;
   IMP::PointerMember<SingletonContainer> sc_[2];
@@ -47,7 +47,7 @@ class IMPCONTAINEREXPORT CoreCloseBipartitePairContainer
   algebra::Rotation3Ds rbs_backup_rot_[2];
   algebra::Sphere3Ds xyzrs_backup_[2];
   ParticleIndex covers_[2];
-  typedef IMP::internal::ContainerScoreState<CoreCloseBipartitePairContainer>
+  typedef IMP::internal::ContainerScoreState<CloseBipartitePairContainer>
       SS;
   PointerMember<SS> score_state_;
   void initialize(SingletonContainer *a, SingletonContainer *b,
@@ -57,18 +57,18 @@ class IMPCONTAINEREXPORT CoreCloseBipartitePairContainer
  public:
   ModelObjectsTemp get_score_state_inputs() const;
   //! Get the individual particles from the passed SingletonContainer
-  CoreCloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
+  CloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
                                   double distance, double slack = 1,
                                   std::string name =
                                       "CoreBipartiteClosePairContainer%1%");
 
   //! make sure you know what you are doing
-  CoreCloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
+  CloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
                                   ParticleIndex cover_a,
                                   ParticleIndex cover_b, ObjectKey key,
                                   double distance, double slack = 1,
                                   std::string name =
-                                      "CoreCloseBipartitePairContainer%1%");
+                                      "CloseBipartitePairContainer%1%");
 
   /** @name Methods to control the set of filters
 
@@ -96,10 +96,10 @@ class IMPCONTAINEREXPORT CoreCloseBipartitePairContainer
   void do_score_state_before_evaluate();
   void do_score_state_after_evaluate() {}
   virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  IMP_OBJECT_METHODS(CoreCloseBipartitePairContainer);
+  IMP_OBJECT_METHODS(CloseBipartitePairContainer);
 };
 
-IMP_OBJECTS(CoreCloseBipartitePairContainer, CoreCloseBipartitePairContainers);
+IMP_OBJECTS(CloseBipartitePairContainer, CloseBipartitePairContainers);
 
 IMPCONTAINER_END_INTERNAL_NAMESPACE
 

@@ -20,17 +20,16 @@
 #include <IMP/core/RigidClosePairsFinder.h>
 #include <IMP/core/rigid_bodies.h>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 
-IntKey InList::key_ = IntKey("in list temp");
 
 IMP_LIST_IMPL(ClosePairContainer, PairFilter, pair_filter, PairFilter *,
               PairFilters);
 
 ClosePairContainer::ClosePairContainer(SingletonContainer *c,
-                                               double distance,
-                                               ClosePairsFinder *cpf,
-                                               double slack, std::string name)
+                                       double distance,
+                                       core::ClosePairsFinder *cpf,
+                                       double slack, std::string name)
     : IMP::internal::ListLikeContainer<PairContainer>(c->get_model(),
                                                                  name) {
   initialize(c, distance, slack, cpf);
@@ -39,7 +38,7 @@ ClosePairContainer::ClosePairContainer(SingletonContainer *c,
 }
 
 void ClosePairContainer::initialize(SingletonContainer *c, double distance,
-                                        double slack, ClosePairsFinder *cpf) {
+                                    double slack, core::ClosePairsFinder *cpf) {
   moved_count_ = 0;
   slack_ = slack;
   distance_ = distance;
@@ -137,7 +136,7 @@ void ClosePairContainer::check_list(bool check_slack) const {
     cpf_->set_pair_filters(access_pair_filters());
     ParticleIndexPairs found = cpf_->get_close_pairs(get_model(),
                                                              c_->get_indexes());
-    internal::filter_close_pairs(this, found);
+    core::internal::filter_close_pairs(this, found);
     IMP_LOG_TERSE("In check found " << found << std::endl);
     for (unsigned int i = 0; i < found.size(); ++i) {
       ParticleIndexPair pi(found[i][0], found[i][1]);
@@ -147,8 +146,8 @@ void ClosePairContainer::check_list(bool check_slack) const {
               existings.find(pii) != existings.end(),
           "Pair " << pi << " not found in close pairs list"
                   << " at distance "
-                  << core::get_distance(XYZR(get_model(), found[i][0]),
-                                        XYZR(get_model(), found[i][1])));
+          << core::get_distance(core::XYZR(get_model(), found[i][0]),
+                                core::XYZR(get_model(), found[i][1])));
     }
   }
 }
@@ -167,7 +166,7 @@ void ClosePairContainer::do_incremental() {
   using IMP::operator<<;
   IMP_LOG_VERBOSE("Moved " << moved_->get_indexes() << std::endl);
   PairPredicatesTemp pf = access_pair_filters();
-  pf.push_back(new AllSamePairPredicate());
+  pf.push_back(new core::AllSamePairPredicate());
   pf.back()->set_was_used(true);
   cpf_->set_pair_filters(pf);
   cpf_->set_distance(distance_ + 2 * slack_);
@@ -179,7 +178,7 @@ void ClosePairContainer::do_incremental() {
         ret = cpf_->get_close_pairs(get_model(), imp_indexes, moved));
     ParticleIndexPairs ret1 = cpf_->get_close_pairs(get_model(), moved);
     ret.insert(ret.begin(), ret1.begin(), ret1.end());
-    internal::fix_order(ret);
+    core::internal::fix_order(ret);
     moved_count_ += moved.size();
   });
   {
@@ -189,7 +188,7 @@ void ClosePairContainer::do_incremental() {
     ParticleIndexPairs cur;
     swap(cur);
     cur.erase(std::remove_if(cur.begin(), cur.end(),
-                             FarParticle(get_model(), distance_ + 2 * slack_)),
+                             core::internal::FarParticle(get_model(), distance_ + 2 * slack_)),
               cur.end());
     swap(cur);
     moved_count_ = 0;
@@ -217,9 +216,9 @@ void ClosePairContainer::do_rebuild() {
   cpf_->set_distance(distance_ + 2 * slack_);
   ParticleIndexPairs ret =
       cpf_->get_close_pairs(get_model(), c_->get_indexes());
-  internal::fix_order(ret);
+  core::internal::fix_order(ret);
   IMP_LOG_TERSE("Found before filtering " << ret << " pairs." << std::endl);
-  internal::filter_close_pairs(this, ret);
+  core::internal::filter_close_pairs(this, ret);
   IMP_LOG_TERSE("Found " << ret << " pairs." << std::endl);
   std::sort(ret.begin(), ret.end());
   swap(ret);
@@ -268,7 +267,7 @@ ParticleIndexPairs ClosePairContainer::get_range_indexes() const {
       ret.push_back(ParticleIndexPair(pis[i], pis[j]));
     }
   }
-  internal::filter_close_pairs(this, ret);
+  core::internal::filter_close_pairs(this, ret);
   return ret;
 }
 
@@ -277,4 +276,4 @@ ParticleIndexes ClosePairContainer::get_all_possible_indexes() const {
   return ret;
 }
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMPCONTAINER_END_INTERNAL_NAMESPACE

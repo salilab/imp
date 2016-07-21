@@ -1,5 +1,6 @@
 /**
- *  \file BallMover.cpp  \brief A modifier which perturbs a discrete variable.
+ *  \file NeighborsTable.cpp
+ * \brief
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *

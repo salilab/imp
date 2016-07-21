@@ -15,7 +15,7 @@
 #include <IMP/PairModifier.h>
 #include <algorithm>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 
 IMP_LIST_IMPL(CloseBipartitePairContainer, PairFilter, pair_filter,
               PairFilter *, PairFilters);
@@ -61,9 +61,9 @@ void CloseBipartitePairContainer::initialize(SingletonContainer *a,
   covers_[0] = cover_a;
   covers_[1] = cover_b;
   for (unsigned int i = 0; i < 2; ++i) {
-    internal::initialize_particles(sc_[i], key_, xyzrs_[i], rbs_[i],
-                                   constituents_, rbs_backup_sphere_[i],
-                                   rbs_backup_rot_[i], xyzrs_backup_[i]);
+    core::internal::initialize_particles(sc_[i], key_, xyzrs_[i], rbs_[i],
+                                         constituents_, rbs_backup_sphere_[i],
+                                         rbs_backup_rot_[i], xyzrs_backup_[i]);
   }
 }
 
@@ -78,8 +78,8 @@ ModelObjectsTemp CloseBipartitePairContainer::do_get_inputs() const {
 ModelObjectsTemp CloseBipartitePairContainer::get_score_state_inputs()
     const {
   ModelObjectsTemp ret;
-  ret += internal::get_inputs(get_model(), sc_[0], access_pair_filters());
-  ret += internal::get_inputs(get_model(), sc_[1], access_pair_filters());
+  ret += core::internal::get_inputs(get_model(), sc_[0], access_pair_filters());
+  ret += core::internal::get_inputs(get_model(), sc_[1], access_pair_filters());
   if (covers_[0] != IMP::get_invalid_index<ParticleIndexTag>()) {
     ret.push_back(get_model()->get_particle(covers_[0]));
     ret.push_back(get_model()->get_particle(covers_[1]));
@@ -115,10 +115,10 @@ void CloseBipartitePairContainer::do_score_state_before_evaluate() {
                             get_model()->get_sphere(covers_[1])) < distance_ ||
       reset_) {
     if (!reset_ && were_close_ &&
-        !internal::get_if_moved(get_model(), slack_, xyzrs_[0], rbs_[0],
+        !core::internal::get_if_moved(get_model(), slack_, xyzrs_[0], rbs_[0],
                                 constituents_, rbs_backup_sphere_[0],
                                 rbs_backup_rot_[0], xyzrs_backup_[0]) &&
-        !internal::get_if_moved(get_model(), slack_, xyzrs_[1], rbs_[1],
+        !core::internal::get_if_moved(get_model(), slack_, xyzrs_[1], rbs_[1],
                                 constituents_, rbs_backup_sphere_[1],
                                 rbs_backup_rot_[1], xyzrs_backup_[1])) {
       IMP_LOG_TERSE("Nothing to update" << std::endl);
@@ -126,14 +126,14 @@ void CloseBipartitePairContainer::do_score_state_before_evaluate() {
     } else {
       // rebuild
       IMP_LOG_TERSE("Recomputing bipartite close pairs list." << std::endl);
-      internal::reset_moved(get_model(), xyzrs_[0], rbs_[0], constituents_,
+      core::internal::reset_moved(get_model(), xyzrs_[0], rbs_[0], constituents_,
                             rbs_backup_sphere_[0], rbs_backup_rot_[0],
                             xyzrs_backup_[0]);
-      internal::reset_moved(get_model(), xyzrs_[1], rbs_[1], constituents_,
+      core::internal::reset_moved(get_model(), xyzrs_[1], rbs_[1], constituents_,
                             rbs_backup_sphere_[1], rbs_backup_rot_[1],
                             xyzrs_backup_[1]);
       ParticleIndexPairs pips;
-      internal::fill_list(get_model(), access_pair_filters(), key_,
+      core::internal::fill_list(get_model(), access_pair_filters(), key_,
                           2 * slack_ + distance_, xyzrs_, rbs_, constituents_,
                           pips);
       reset_ = false;
@@ -146,9 +146,9 @@ void CloseBipartitePairContainer::do_score_state_before_evaluate() {
         ParticleIndexes sc1p = sc_[1]->get_indexes();
         ParticleIndexPairs unfound;
         for (unsigned int i = 0; i < sc0p.size(); ++i) {
-          XYZR d0(get_model(), sc0p[i]);
+          core::XYZR d0(get_model(), sc0p[i]);
           for (unsigned int j = 0; j < sc1p.size(); ++j) {
-            XYZR d1(get_model(), sc1p[j]);
+            core::XYZR d1(get_model(), sc1p[j]);
             double dist = get_distance(d0, d1);
             if (dist < .9 * (distance_ + 2 * slack_)) {
               ParticleIndexPair pip(sc0p[i], sc1p[j]);
@@ -184,9 +184,9 @@ void CloseBipartitePairContainer::do_score_state_before_evaluate() {
     ParticleIndexes sc1p = sc_[1]->get_indexes();
     ParticleIndexPairs unfound;
     for (unsigned int i = 0; i < sc0p.size(); ++i) {
-      XYZR d0(get_model(), sc0p[i]);
+      core::XYZR d0(get_model(), sc0p[i]);
       for (unsigned int j = 0; j < sc1p.size(); ++j) {
-        XYZR d1(get_model(), sc1p[j]);
+        core::XYZR d1(get_model(), sc1p[j]);
         double dist = get_distance(d0, d1);
         if (dist < .9 * distance_) {
           ParticleIndexPair pip(sc0p[i], sc1p[j]);
@@ -229,4 +229,4 @@ ParticleIndexPairs CloseBipartitePairContainer::get_range_indexes() const {
   return ret;
 }
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMPCONTAINER_END_INTERNAL_NAMESPACE

@@ -10,7 +10,7 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/core/ClosePairsFinder.h>
-#include "MovedSingletonContainer.h"
+#include <IMP/core/internal/MovedSingletonContainer.h>
 #include <IMP/core/PairRestraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairPredicate.h>
@@ -25,8 +25,8 @@ IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 class IMPCONTAINEREXPORT ClosePairContainer
     : public IMP::internal::ListLikeContainer<PairContainer> {
   IMP::PointerMember<SingletonContainer> c_;
-  IMP::PointerMember<ClosePairsFinder> cpf_;
-  IMP::PointerMember<internal::MovedSingletonContainer> moved_;
+  IMP::PointerMember<core::ClosePairsFinder> cpf_;
+  IMP::PointerMember<core::internal::MovedSingletonContainer> moved_;
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;
@@ -35,7 +35,7 @@ class IMPCONTAINEREXPORT ClosePairContainer
   PointerMember<SS> score_state_;
 
   void initialize(SingletonContainer *c, double distance, double slack,
-                  ClosePairsFinder *cpf);
+                  core::ClosePairsFinder *cpf);
 
   void check_duplicates_input() const;
   void check_list(bool include_slack) const;
@@ -52,7 +52,7 @@ class IMPCONTAINEREXPORT ClosePairContainer
   void do_score_state_after_evaluate() {}
 
   ClosePairContainer(SingletonContainer *c, double distance,
-                         ClosePairsFinder *cpf, double slack = 1,
+                     core::ClosePairsFinder *cpf, double slack = 1,
                          std::string name = "ClosePairContainer%1%");
 
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter, pair_filters,
@@ -68,13 +68,13 @@ class IMPCONTAINEREXPORT ClosePairContainer
   double get_distance() const { return distance_; }
   void update() { do_score_state_before_evaluate(); }
   SingletonContainer *get_singleton_container() const { return c_; }
-  ClosePairsFinder *get_close_pairs_finder() const { return cpf_; }
+  core::ClosePairsFinder *get_close_pairs_finder() const { return cpf_; }
   void set_slack(double d);
   Restraints create_decomposition(PairScore *ps) const {
     ParticleIndexPairs all = get_range_indexes();
     Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
-      ret[i] = new PairRestraint(get_model(), ps, all[i]);
+      ret[i] = new core::PairRestraint(get_model(), ps, all[i]);
     }
     return ret;
   }

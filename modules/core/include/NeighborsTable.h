@@ -1,6 +1,6 @@
 /**
  *  \file IMP/core/NeighborsTable.h
- *  \brief Angle restraint between three particles.
+ *  \brief
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
@@ -10,7 +10,6 @@
 #define IMPCORE_NEIGHBORS_TABLE_H
 
 #include <IMP/core/core_config.h>
-#include "internal/CoreClosePairContainer.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/ScoreState.h>
 #include <IMP/Pointer.h>
