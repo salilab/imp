@@ -17,8 +17,9 @@ RigidBodyAnglePairScore::RigidBodyAnglePairScore(UnaryFunction *f): f_(f) {}
 Float RigidBodyAnglePairScore::evaluate_index(Model *m,
                                         const ParticleIndexPair &pi,
                                         DerivativeAccumulator *da) const {
+  IMP_UNUSED(da);
   // check if derivatives are requested
-  IMP_USAGE_CHECK(!da, "Derivatives not available");
+  IMP_USAGE_CHECK(!da, "Derivatives not implemented");
 
   // check if rigid body
   IMP_USAGE_CHECK(RigidBody::get_is_setup(m, pi[0]),
