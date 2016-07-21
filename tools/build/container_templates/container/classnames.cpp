@@ -547,8 +547,8 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
       lists_[bin].push_back(it);
     } else {
       IMP_USAGE_CHECK(!error_on_unknown_, "Unknown predicate value of "
-                      << bin << " found for tuples "
-                      << lp.second);
+                      << bin << " found for tuple "
+                      << it);
       if(is_unknown_score){
         lists_[unknown_bin].push_back(it);
       }
