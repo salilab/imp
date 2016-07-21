@@ -1,6 +1,7 @@
 /**
  *  \file rigid_pair_score.h
- *  \brief utilities for rigid pair scores.
+ *  \brief utilities for output "sink", including classes ParticleSink,
+ *         ParticlePairSink, ParticleIndexPairSink, etc.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
@@ -45,13 +46,23 @@ struct ParticleSink {
   }
 };
 
+//! a sink that receive particle index pairs
+//! and outputs particle pairs
 struct ParticlePairSink {
   Model *m_;
   const PairPredicates &filters_;
   ParticlePairsTemp &out_;
+  /**
+     Constructs a sink for particle pairs
+
+     @param m model for pairs
+     @param filters sink will reject pairs that are contained in any of these filters
+     @param out the sink outputs particle pairs to this list
+   */
   ParticlePairSink(Model *m, const PairPredicates &filters,
                    ParticlePairsTemp &out)
       : m_(m), filters_(filters), out_(out) {}
+  //! add the pair (a,b) to out_ (if it doesn't fit any filter)
   bool add(ParticleIndex a, ParticleIndex b) {
     if (get_filters_contains(m_, filters_, ParticleIndexPair(a, b)))
       return false;
@@ -59,6 +70,8 @@ struct ParticlePairSink {
         ParticlePair(m_->get_particle(a), m_->get_particle(b)));
     return true;
   }
+  //! add the pair (a,b) to out_ (if it doesn't fit any filter)
+  //! TODO: should it really always return true?
   bool operator()(ParticleIndex a, ParticleIndex b) {
     add(a, b);
     return true;
@@ -81,19 +94,32 @@ struct ParticlePairSink {
   }
 };
 
-struct ParticleIndexPairSink {
+//! a sink that receive particle index pairs
+//! and outputs particle index pairs.
+Struct ParticleIndexPairSink {
   Model *m_;
   const PairPredicates &filters_;
   ParticleIndexPairs &out_;
+  /**
+     Constructs a sink for particle index pairs
+
+     @param m model for pairs
+     @param filters sink will reject pairs that are contained in any of these filters
+     @param out the sink outputs particle index pairs to this list
+   */
   ParticleIndexPairSink(Model *m, const PairPredicates &filters,
                         ParticleIndexPairs &out)
       : m_(m), filters_(filters), out_(out) {}
+  //! add the pair (a,b) to out_ (if it doesn't fit any filter)
+  //! and return true on succesful addition
   bool add(ParticleIndex a, ParticleIndex b) {
     if (get_filters_contains(m_, filters_, ParticleIndexPair(a, b)))
       return false;
     out_.push_back(ParticleIndexPair(a, b));
     return true;
   }
+  //! add the pair (a,b) to out_ (if it doesn't fit any filter)
+  //! TODO: should it really always return true?
   bool operator()(ParticleIndex a, ParticleIndex b) {
     add(a, b);
     return true;
