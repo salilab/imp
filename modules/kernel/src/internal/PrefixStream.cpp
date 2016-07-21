@@ -1,5 +1,5 @@
 /**
- *  \file constants.cpp  \brief Various useful constants.
+ *  \file PrefixStreak.cpp  \brief
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *

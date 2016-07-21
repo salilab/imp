@@ -1,10 +1,11 @@
 /**
- *  \file Key.cpp   \brief Internal workings of keys.
+ *  \file key_helpers.cpp   \brief Internal workings of keys.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
  */
 
+#include "IMP/internal/key_helpers.h"
 #include "IMP/Key.h"
 #include "IMP/exception.h"
 #include "IMP/base_types.h"
@@ -16,24 +17,15 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 // keys
 static double heuristic_value = 238471628;
 
-namespace {
-struct KeyTable : public boost::unordered_map<unsigned int, KeyData> {
-  KeyTable() {
-    unsigned int fk = FloatKey::get_ID();
-    operator[](fk).add_key("x");
-    operator[](fk).add_key("y");
-    operator[](fk).add_key("z");
-    operator[](fk).add_key("radius");
-    operator[](fk).add_key("local_x");
-    operator[](fk).add_key("local_y");
-    operator[](fk).add_key("local_z");
-  }
-};
-}
-
-KeyData& get_key_data(unsigned int index) {
-  static KeyTable key_data;
-  return key_data[index];
+KeyTable::KeyTable() {
+  unsigned int fk = FloatKey::get_ID();
+  operator[](fk).add_key("x");
+  operator[](fk).add_key("y");
+  operator[](fk).add_key("z");
+  operator[](fk).add_key("radius");
+  operator[](fk).add_key("local_x");
+  operator[](fk).add_key("local_y");
+  operator[](fk).add_key("local_z");
 }
 
 KeyData::KeyData() : heuristic_(heuristic_value) {}

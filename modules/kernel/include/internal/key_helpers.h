@@ -1,5 +1,6 @@
 /**
- *  \file key_helpers.h    \brief helpers for declaring keys.
+ *  \file key_helpers.h    \brief helpers for declaring keys
+ *  such as classes KeyData, KeyTable and method get_key_data()
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
@@ -42,6 +43,17 @@ struct IMPKERNELEXPORT KeyData {
   Map map_;
   RMap rmap_;
 };
+
+struct KeyTable : public boost::unordered_map<unsigned int, KeyData> {
+  KeyTable();
+};
+
+inline
+KeyData& get_key_data(unsigned int index) {
+  static KeyTable key_data;
+  return key_data[index];
+}
+
 
 IMPKERNELEXPORT KeyData &get_key_data(unsigned int index);
 
