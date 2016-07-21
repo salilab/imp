@@ -344,7 +344,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   static double const* access_torque_i_data
     (IMP::Model const* m, unsigned int i)
   {
-    IMP_USAGE_CHECK(i<3,'torque is 3 dimensional');
+    IMP_USAGE_CHECK(i<3,"torque is 3 dimensional");
     FloatKey k=
           internal::rigid_body_data().torque_[i];
     double const* ret=m->access_derivative_data(k);
@@ -356,7 +356,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   static double* access_torque_i_data
     (IMP::Model* m, unsigned int i)
   {
-    IMP_USAGE_CHECK(i<3,'torque is 3 dimensional');
+    IMP_USAGE_CHECK(i<3,"torque is 3 dimensional");
     FloatKey k=
           internal::rigid_body_data().torque_[i];
     double* ret=m->access_derivative_data(k);
@@ -367,7 +367,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   static double const* access_quaternion_i_data
     (IMP::Model const* m, unsigned int i)
   {
-    IMP_USAGE_CHECK(i<4,'quaternion is 4 dimensional');
+    IMP_USAGE_CHECK(i<4,"quaternion is 4 dimensional");
     FloatKey k=
           internal::rigid_body_data().quaternion_[i];
     double const* ret=m->access_attribute_data(k);
@@ -378,7 +378,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   static double* access_quaternion_i_data
     (IMP::Model* m, unsigned int i)
   {
-    IMP_USAGE_CHECK(i<4,'quaternion is 4 dimensional');
+    IMP_USAGE_CHECK(i<4,"quaternion is 4 dimensional");
     FloatKey k=
           internal::rigid_body_data().quaternion_[i];
     double* ret=m->access_attribute_data(k);

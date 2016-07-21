@@ -285,6 +285,9 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
       IMP_INTERNAL_CHECK(!core::RigidBody::get_is_setup(p),
                          "A rigid body without rigid body diffusion info"
                          << " was found: " << p->get_name());
+      IMP_INTERNAL_CHECK(!core::RigidMember::get_is_setup(p),
+                         "A rigid member with diffusion info"
+                         << " was found: " << p->get_name());
     }
 #endif
   }
@@ -302,15 +305,7 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
                           diffusion_coefficients_table[pi.get_index()],
                           sphere_derivatives_table[pi.get_index()],
                           spheres_table[pi.get_index()]);
-#if IMP_HAS_CHECKS >= IMP_INTERNAL
-    else {
-      IMP_INTERNAL_CHECK(!core::RigidMember::get_is_setup(p),
-                         "A rigid member with diffusion info"
-                         << " was found: " << p->get_name());
-    }
-#endif
   } // for i
-
 } // method def
 
 
