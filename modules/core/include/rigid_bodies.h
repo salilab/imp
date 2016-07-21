@@ -339,7 +339,8 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   }
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-   //! expert method for fast const-access to internal torque coordinate #i table
+   //! expert method for fast const-access to internal torque
+  //! of coordinate #i table
   static double const* access_torque_i_data
     (IMP::Model const* m, unsigned int i)
   {
@@ -350,7 +351,8 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     return ret;
   }
 
-  //! expert method for fast access to internal torque coordinate #i table
+  //! expert method for fast access to internal torque
+  //! of coordinate #i table
   static double* access_torque_i_data
     (IMP::Model* m, unsigned int i)
   {
