@@ -368,7 +368,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     IMP_USAGE_CHECK(i<4,'quaternion is 4 dimensional');
     FloatKey k=
           internal::rigid_body_data().quaternion_[i];
-    double const* ret=m->access_derivative_data(k);
+    double const* ret=m->access_attribute_data(k);
     return ret;
   }
 
@@ -379,7 +379,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     IMP_USAGE_CHECK(i<4,'quaternion is 4 dimensional');
     FloatKey k=
           internal::rigid_body_data().quaternion_[i];
-    double* ret=m->access_derivative_data(k);
+    double* ret=m->access_attribute_data(k);
     return ret;
   }
 
