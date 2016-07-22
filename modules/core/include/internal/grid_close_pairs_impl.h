@@ -152,6 +152,8 @@ struct Helper {
     return ii;
   }
 
+  //! returns the maximal radius of particles in ps0, using tr to compute
+  //! that radius
   template <class It>
   static double get_max_radius(const ParticleSet<It> &ps0, const Traits &tr) {
     double maxr = 0;

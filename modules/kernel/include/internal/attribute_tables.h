@@ -632,6 +632,14 @@ class FloatAttributeTable {
     return internal::FloatAttributeTableTraits::access_container_data
       (derivatives_.access_data()[ki]);
   }
+  BoolAttributeTableTraits::Container const&
+    access_optimizeds_data(FloatKey k) const{
+    return optimizeds_.access_data()[k.get_index()];
+  }
+  BoolAttributeTableTraits::Container&
+    access_optimizeds_data(FloatKey k){
+    return optimizeds_.access_data()[k.get_index()];
+  }
   /** @} */
 
   void set_range(FloatKey k, FloatRange fr) { ranges_[k.get_index()] = fr; }
