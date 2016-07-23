@@ -31,20 +31,28 @@ inline int get_ordered_type_hash(Model *m, ParticleIndex pi) {
   return td.get_type().get_index();
 }
 
+//! n_types - number of unique particle types, if 0
+//! then refetch number of possible particle types
+//! (somewhat expensive operation for some reason)
 template <unsigned int D>
 inline int get_ordered_type_hash
-(Model *m, const Array<D, ParticleIndex> &pi)
+(Model *m, const Array<D, ParticleIndex> &pi,
+ int n_types=0)
 {
-  int max = ParticleType::get_number_unique();
+  if(n_types==0){
+    n_types = ParticleType::get_number_unique();
+  }
   int pow = 1;
   int ret = 0;
   for (unsigned int i = 0; i < pi.size(); ++i) {
     Typed td(m, pi[i]);
     ret += pow * td.get_type().get_index();
-    pow *= max;
+    pow *= n_types;
   }
   return ret;
 }
+
+
 
 inline int get_all_same(Model *, ParticleIndex) { return true; }
 

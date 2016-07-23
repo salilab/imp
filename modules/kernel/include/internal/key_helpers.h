@@ -15,27 +15,47 @@
 #include <IMP/Vector.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
-/** \internal The data concerning keys.
+/** \internal The data concerning keys (strings and corresponding numbers).
   */
 struct IMPKERNELEXPORT KeyData {
+  //! map from key string to key number (many:1)
   typedef boost::unordered_map<std::string, int> Map;
+
+  //! reverse map - from key number to one representative of the key
+  //! strings that map to it (1:1)
   typedef IMP::Vector<std::string> RMap;
 
   void show(std::ostream &out = std::cout) const;
-  KeyData();
+
+  //! ID - the key ID (as in the template of Key)
+  KeyData(unsigned int ID);
+
   void assert_is_initialized() const;
+
+  //! Add key with string "str", return its number
+  //! Note is is assumed that str wasn't a key already
+  //! and this would override the old "str" key in a way that's not completely expected
+  //! (TODO: add checks if str is already in map, to fix rmap or to use the old number?)
   unsigned int add_key(std::string str) {
     unsigned int i = rmap_.size();
     map_[str] = i;
     rmap_.push_back(str);
     return i;
   }
+
+  //! add alias "str" to existing key number i (the alias is kept
+  //! in map but not in the reverse map rmap)
   unsigned int add_alias(std::string str, unsigned int i) {
     IMP_INTERNAL_CHECK(rmap_.size() > i, "The aliased key doesn't exist");
     map_[str] = i;
     return i;
   }
+
+  //! return a map from key string to key number (many:1)
   const Map &get_map() const { return map_; }
+
+  //! return a reverse-map from key number to one representative of
+  //! the key strings that map to it (1:1)
   const RMap &get_rmap() const { return rmap_; }
 
  private:
@@ -44,18 +64,7 @@ struct IMPKERNELEXPORT KeyData {
   RMap rmap_;
 };
 
-struct KeyTable : public boost::unordered_map<unsigned int, KeyData> {
-  KeyTable();
-};
 
-inline
-KeyData& get_key_data(unsigned int index) {
-  static KeyTable key_data;
-  return key_data[index];
-}
-
-
-IMPKERNELEXPORT KeyData &get_key_data(unsigned int index);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 

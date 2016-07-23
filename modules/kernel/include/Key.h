@@ -44,13 +44,20 @@ IMPKERNEL_BEGIN_NAMESPACE
  */
 template <unsigned int ID, bool LazyAdd>
 class Key : public Value {
+
   int str_;
+  //! returns a static structure with mapping between
+  //! key int identifiers and strings
+  static internal::KeyData& get_key_data() {
+    static internal::KeyData static_key_data_(ID);
+    return static_key_data_;
+  }
 
   static const internal::KeyData::Map& get_map() {
-    return IMP::internal::get_key_data(ID).get_map();
+    return get_key_data().get_map();
   }
   static const internal::KeyData::RMap& get_rmap() {
-    return IMP::internal::get_key_data(ID).get_rmap();
+    return get_key_data().get_rmap();
   }
 
   static unsigned int find_index(std::string sc) {
@@ -60,7 +67,7 @@ class Key : public Value {
       if (get_map().find(sc) == get_map().end()) {
         IMP_INTERNAL_CHECK(LazyAdd, "You must explicitly create the type"
                                         << " first: " << sc);
-        val = IMP::internal::get_key_data(ID).add_key(sc);
+        val = get_key_data().add_key(sc);
       } else {
         val = get_map().find(sc)->second;
       }
@@ -95,7 +102,8 @@ class Key : public Value {
 
   //! Generate a key from the given string
   /** This operation can be expensive, so please cache the result.*/
-  explicit Key(std::string c) : str_(find_index(c)) {}
+  explicit Key(std::string c) : str_(find_index(c)) {
+  }
 
 #if !defined(IMP_DOXYGEN)
   explicit Key(unsigned int i) : str_(i) {
@@ -108,7 +116,7 @@ class Key : public Value {
     IMP_USAGE_CHECK(!sc.empty(), "Can't create a key with an empty name");
     unsigned int val;
     IMP_OMP_PRAGMA(critical(imp_key))
-    val = IMP::internal::get_key_data(ID).add_key(sc);
+    val = get_key_data().add_key(sc);
     return val;
   }
 
@@ -145,9 +153,12 @@ class Key : public Value {
     IMP_INTERNAL_CHECK(
         get_map().find(new_name) == get_map().end(),
         "The name is already taken with an existing key or alias");
-    IMP::internal::get_key_data(ID)
-        .add_alias(new_name, old_key.get_index());
+    get_key_data().add_alias(new_name, old_key.get_index());
     return Key<ID, LazyAdd>(new_name.c_str());
+  }
+
+  static unsigned int get_number_of_keys() {
+    return get_rmap().size();
   }
 
 #ifndef DOXYGEN
@@ -195,6 +206,7 @@ class Key : public Value {
 
 #ifndef IMP_DOXYGEN
 
+
 template <unsigned int ID, bool LA>
 inline std::ostream& operator<<(std::ostream& out, Key<ID, LA> k) {
   k.show(out);
@@ -207,9 +219,9 @@ inline bool Key<ID, LA>::is_default() const {
 }
 
 template <unsigned int ID, bool LA>
-inline void Key<ID, LA>::show_all(std::ostream& out) {
+  inline void Key<ID, LA>::show_all(std::ostream& out) {
   IMP_OMP_PRAGMA(critical(imp_key))
-  internal::get_key_data(ID).show(out);
+    get_key_data().show(out);
 }
 
 template <unsigned int ID, bool LA>

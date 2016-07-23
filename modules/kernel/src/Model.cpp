@@ -49,6 +49,7 @@ Model::Model(std::string name) : Object(name) {
 #endif
 }
 
+
 IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
                      score_states, ScoreState *, ScoreStates);
 

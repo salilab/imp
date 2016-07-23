@@ -6,7 +6,9 @@
  */
 
 #include "IMP/base_types.h"
+#include "IMP/check_macros.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
+
 
 IMPKERNEL_END_NAMESPACE

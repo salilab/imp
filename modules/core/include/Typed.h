@@ -19,7 +19,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-// TODO: why this number? how can we tell it's unique
+// TODO: why this number? how can we tell it's unique?
 #define IMP_PARTICLE_TYPE_INDEX 34897493
 
 //! An IMP::Key object for identifying types of particles by strings.

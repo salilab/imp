@@ -531,7 +531,7 @@ Restraints PredicateClassnamesRestraint::do_create_current_decomposition()
 }
 
 void PredicateClassnamesRestraint::update_lists_if_necessary() const {
-  // check if necessary to update lists
+  // return if input ClassnameContainer hasn't changed
   std::size_t h = input_->get_contents_hash();
   if (h == input_version_) return;
   input_version_ = h;
