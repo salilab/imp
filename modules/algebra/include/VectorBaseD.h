@@ -246,6 +246,26 @@ inline VT get_unit_vector(VT vt) {
   }
 }
 
+//! Returns the magnitude of vt and turns it to a unit vector in place.
+/**
+   @note If the magnitude of this vector is smaller than 1e-12
+         (an arbitrarily selected small number), vt is turned into a unit
+         vector pointing at a random direction.
+ */
+template <class VT>
+inline double get_magnitude_and_normalize_in_place(VT& vt) {
+  const double tiny_double = 1e-12;
+  double mag = vt.get_magnitude();
+  if (mag > tiny_double) {
+    vt /= mag;
+  } else {
+    // avoid division by zero - return random unit v
+    // using get_unit_vector()
+    vt= get_unit_vector(vt);
+  }
+  return mag;
+}
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_VECTOR_BASE_D_H */

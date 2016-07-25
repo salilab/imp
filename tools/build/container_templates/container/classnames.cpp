@@ -484,6 +484,7 @@ PredicateClassnamesRestraint::PredicateClassnamesRestraint(
       predicate_(pred),
       input_(input),
       input_version_(input->get_contents_hash()),
+      is_unknown_score_set_(false),
       error_on_unknown_(true) {}
 
 void PredicateClassnamesRestraint::do_add_score_and_derivatives(
@@ -539,17 +540,17 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
   // populate lists with bins of PLURALINDEXTYPE for each predicate,
   // and put unknown predicates in unknown_bin, is unknown score exists
   const int unknown_bin = std::numeric_limits<int>::max();
-  bool is_unknown_score=(scores_.find(unknown_bin) != scores_.end());
+  //  bool is_unknown_score=(scores_.find(unknown_bin) != scores_.end());
   lists_.clear();
   IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
-    int bin = predicate_->get_value_index(get_model(), it);
+    int bin = predicate_->get_value_index(get_model(), it); // TODO: get_value index seems more expensive computationally for OrderedTypeClassnamePredicate than it should - check it out
     if (scores_.find(bin) != scores_.end()) {
       lists_[bin].push_back(it);
     } else {
       IMP_USAGE_CHECK(!error_on_unknown_, "Unknown predicate value of "
                       << bin << " found for tuple "
                       << it);
-      if(is_unknown_score){
+      if(is_unknown_score_set_){
         lists_[unknown_bin].push_back(it);
       }
     } // if score found
@@ -569,6 +570,7 @@ void PredicateClassnamesRestraint::set_unknown_score(ClassnameScore *score) {
   error_on_unknown_ = false;
   scores_[std::numeric_limits<int>::max()] = score;
   score->set_was_used(true);
+  is_unknown_score_set_=true;
 }
 
 IMPCONTAINER_END_NAMESPACE
