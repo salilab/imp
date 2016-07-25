@@ -141,7 +141,7 @@ class Tests(IMP.test.TestCase):
             leaves = leaves + self._get_ordered_leaves(child)
         return leaves
 
-
+    @IMP.test.expectedFailure
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
         m = IMP.Model()
