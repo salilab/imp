@@ -11,6 +11,7 @@
 
 #include <IMP/kernel_config.h>
 #include <IMP/exception.h>
+#include <IMP/check_macros.h>
 #include <boost/unordered_map.hpp>
 #include <IMP/Vector.h>
 

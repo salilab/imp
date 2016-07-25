@@ -17,7 +17,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/RestraintSet.h>
 #include <IMP/Model.h>
-#include <IMP/core/internal/CoreClosePairContainer.h>
+#include <IMP/container/internal/ClosePairContainer.h>
 #include <IMP/display/Writer.h>
 #include <IMP/dependency_graph.h>
 #include <IMP/statistics/metric_clustering.h>

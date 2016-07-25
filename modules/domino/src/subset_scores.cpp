@@ -9,6 +9,7 @@
 #include <IMP/domino/subset_scores.h>
 #include <IMP/dependency_graph.h>
 #include <IMP/domino/Order.h>
+#include <IMP/input_output.h>
 #ifdef IMP_DOMINO_USE_IMP_RMF
 #include <RMF/HDF5/DataSetD.h>
 #endif

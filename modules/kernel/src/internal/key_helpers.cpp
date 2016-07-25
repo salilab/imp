@@ -32,6 +32,13 @@ KeyData::KeyData(unsigned int ID) : heuristic_(heuristic_value)
     unsigned int x_local= add_key("x_local");
     unsigned int y_local= add_key("y_local");
     unsigned int z_local= add_key("z_local");
+    IMP_UNUSED(x);
+    IMP_UNUSED(y);
+    IMP_UNUSED(z);
+    IMP_UNUSED(radius);
+    IMP_UNUSED(x_local);
+    IMP_UNUSED(y_local);
+    IMP_UNUSED(z_local);
     IMP_INTERNAL_CHECK(x==0, "x key should be 0");
     IMP_INTERNAL_CHECK(y==1, "y key should be 1");
     IMP_INTERNAL_CHECK(z==2, "z key should be 2");
