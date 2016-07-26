@@ -1,5 +1,5 @@
 /**
- *  \file graph_base.cpp   \brief classes for implementing a graph.
+ *  \file close_pairs_helpers.cpp   \brief Helper functions for close pairs.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *

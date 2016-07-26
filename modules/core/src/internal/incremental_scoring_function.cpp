@@ -1,5 +1,6 @@
 /**
- *  \file MonteCarlo.cpp  \brief Simple Monte Carlo optimizer.
+ *  \file incremental_scoring_function.cpp
+ *  \brief Helper functions for incremental scoring functions.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
