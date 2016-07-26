@@ -9,6 +9,7 @@
 #include <IMP/core/NeighborsTable.h>
 #include <IMP/PairModifier.h>
 #include <IMP/container_macros.h>
+#include <IMP/PairContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
