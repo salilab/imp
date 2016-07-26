@@ -6,11 +6,13 @@
  */
 
 #include <IMP/core/internal/incremental_scoring_function.h>
+#include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/internal/StaticListContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/SingletonContainer.h>
 //#include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/core/GridClosePairsFinder.h>
+#include <IMP/core/PairRestraint.h>
 #include <IMP/generic.h>
 #include <IMP/internal/ContainerRestraint.h>
 //#include <IMP/core/internal/close_pairs_helpers.h>
