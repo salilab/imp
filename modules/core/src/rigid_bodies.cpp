@@ -309,7 +309,7 @@ ModelObjectsTemp UpdateRigidBodyMembers::do_get_outputs(
 
 inline void NormalizeRotation::apply_index(Model *m,
                                            ParticleIndex p) const {
-  apply_indexes(m, ParticleIndexes(1,p), 1, 1);
+  apply_indexes(m, ParticleIndexes(1,p), 0, 1);
 }
 
 inline void
@@ -330,23 +330,27 @@ NormalizeRotation::apply_indexes
                         quaternion_tables[1][pi],
                         quaternion_tables[2][pi],
                         quaternion_tables[3][pi]);
-    // IMP_LOG_TERSE( "Rotation was " << v << std::endl);
+    IMP_LOG_TERSE( "Rotation quaternion before normalization: " << v << std::endl);
     double sm = v.get_squared_magnitude();
     bool is_update(false);
-    if (sm < .001) {
-      v = algebra::VectorD<4>(1, 0, 0, 0);
-      is_update=true;
+    if (sm < .0001) {
+      IMP_LOG_TERSE('Near-zero rotation quaternion set to identity');
+      quaternion_tables[0][pi] = 1;
+      quaternion_tables[1][pi] = 0;
+      quaternion_tables[2][pi] = 0;
+      quaternion_tables[3][pi] = 0;
     } else if (std::abs(sm - 1.0) > .01) {
-      v = v.get_unit_vector();
-      is_update=true;
+      double m=std::sqrt(sm); // magnitude
+      quaternion_tables[0][pi] = v[0]/m;
+      quaternion_tables[1][pi] = v[1]/m;
+      quaternion_tables[2][pi] = v[2]/m;
+      quaternion_tables[3][pi] = v[3]/m;
+      IMP_LOG_TERSE( "Rotation quaternion normalized to " << v << std::endl);
     }
-    if(is_update){
-      // IMP_LOG_TERSE( "Rotation is set to " << v << std::endl);
-      quaternion_tables[0][pi] = v[0];
-      quaternion_tables[1][pi] = v[1];
-      quaternion_tables[2][pi] = v[2];
-      quaternion_tables[3][pi] = v[3];
-    }
+    IMP_INTERNAL_CHECK
+      (std::abs(core::RigidBody(m,pis[i]).get_rotation()
+                .get_quaternion().get_magnitude() - 1.0) < .01,
+       "Quaternion expected to be normalized");
   }
 
   // evil hack - to reset all torques (BR: is it needed anywhere? for the attribute rather than the derivative? who ever used the torque attribute rather than derivative? it's supposedly angular momentum but it's never used anywhere this way, and why should it be reset anyway?)

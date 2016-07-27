@@ -176,9 +176,18 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   // swig doesn't support using, so the method is wrapped
   //! Get the coordinates of the particle
+  //! (= translation from local to global rigid body coordinates)
   algebra::Vector3D get_coordinates() const { return XYZ::get_coordinates(); }
 
-  //! Get the reference frame for the local coordinates
+  //! returns the rotation of the particle
+  //! (= rotation from local to global rigid body orientation)
+  IMP::algebra::Rotation3D get_rotation() const {
+    return get_reference_frame().get_transformation_to().get_rotation();
+  }
+
+  //! Get the reference frame of this rigid body, which enables
+  //! trnasformation between the local rigid body coordinates
+  //! global coordinates
   IMP::algebra::ReferenceFrame3D get_reference_frame() const {
     algebra::VectorD<4> v(
         get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],
