@@ -66,7 +66,7 @@ inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
 }
 
 //! returns a random vector on a sphere of radius 1
-//! with implementation optimized for the 3D + unit vector case
+//! with implementation optimized for the 3D unit vector case
 inline VectorD<3> get_random_vector_on_unit_sphere() {
   //  ::boost::uniform_real<> rand(-1, 1);
   do {
@@ -75,12 +75,12 @@ inline VectorD<3> get_random_vector_on_unit_sphere() {
     double x1 = IMP::get_random_double_uniform(-1,1);
     double x2 = IMP::get_random_double_uniform(-1,1);
     double ssq = get_squared(x1) + get_squared(x2);
-    if (ssq <= 1) {
+    if (ssq <= 1) { // = (x1,x2) is a random point sampled uniformly inside the unit circle
       VectorD<3> ret;
-      double sq = std::sqrt(1 - ssq);
-      ret[0] = 2 * x1 * sq;
-      ret[1] = 2 * x2 * sq;
-      ret[2] = 1 - 2 * ssq;
+      double sq = std::sqrt(1 - ssq); // x3 s.t. (x1,x2,x3) is on the unit sphere
+      ret[0] = 2 * x1 * sq; // =  4 (1-x1^2-x2^2) x1^2  =  4 x1^2 - 4 x1^4 - 4 x1^2 x2^2
+      ret[1] = 2 * x2 * sq; // =  4 (1-x1^2-x2^2) x2^2  =  4 x2^2 - 4 x2^4 - 4 x1^2 x2^2
+      ret[2] = 1 - 2*ssq;   // =  1 - 4 x1^2 - 4 x2^2 + 4 x1^4 + 8 x1^2 x2^2 + 4 x2^4
       return ret;
     }
   } while (true);
