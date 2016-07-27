@@ -8,7 +8,7 @@
 #ifndef IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
 #define IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
 
-#include <IMP/core/core_config.h>
+#include <IMP/container/container_config.h>
 #include <IMP/core/ClosePairsFinder.h>
 #include <IMP/core/internal/MovedSingletonContainer.h>
 #include <IMP/PairContainer.h>
