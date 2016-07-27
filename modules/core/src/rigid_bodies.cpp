@@ -51,7 +51,7 @@ void RigidBody::normalize_rotation() {
     q3 = v[3];
   }
 
-  if(false){ // TODO: BR - the attribute of torque is never used is it? MAKE SURE!!! this is actually angular momentum (and I don't know that it's ever used in imp this way - I think it is called velocity in MD module.
+  if(true){ // TODO: BR - the attribute of torque is never used is it? MAKE SURE!!! this is actually angular momentum (and I don't know that it's ever used in imp this way - I think it is called velocity in MD module.
     // evil hack
     get_model()->set_attribute(internal::rigid_body_data().torque_[0],
                                get_particle_index(), 0);
@@ -350,19 +350,19 @@ NormalizeRotation::apply_indexes
   }
 
   // evil hack - to reset all torques (BR: is it needed anywhere? for the attribute rather than the derivative? who ever used the torque attribute rather than derivative? it's supposedly angular momentum but it's never used anywhere this way, and why should it be reset anyway?)
-  if(false){
-    // for(unsigned int i = 0; i < 3; i++){
-    //   double* torque_table_i=
-    //     core::RigidBody::access_torque_i_data(m, i);
-    for (unsigned int j = lower_bound; j < upper_bound; j++) {
-    //     torque_table_i[j]=0
-    //       }
-    // }
-      ParticleIndex pi_j=pis[j];
-      m->set_attribute(internal::rigid_body_data().torque_[0], pi_j, 0);
-      m->set_attribute(internal::rigid_body_data().torque_[1], pi_j, 0);
-      m->set_attribute(internal::rigid_body_data().torque_[2], pi_j, 0);
-    }
+  if(true){
+    for(unsigned int i = 0; i < 3; i++){
+      double* torque_table_i=
+        core::RigidBody::access_torque_i_data(m, i);
+      for (unsigned int j = lower_bound; j < upper_bound; j++) {
+        torque_table_i[j]=0;
+      } // for j
+    } // for i
+    //      ParticleIndex pi_j=pis[j];
+    // m->set_attribute(internal::rigid_body_data().torque_[0], pi_j, 0);
+    //m->set_attribute(internal::rigid_body_data().torque_[1], pi_j, 0);
+    // m->set_attribute(internal::rigid_body_data().torque_[2], pi_j, 0);
+    //  } // for j
   }
 }
 
