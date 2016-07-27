@@ -68,6 +68,7 @@ class Tests(IMP.test.TestCase):
     @IMP.test.expectedFailure
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
+        self.skipTest("TAMD is temporarily disabled")
         # Disable internal checks, since they make the test take way too long
         IMP.set_check_level(IMP.USAGE)
         m = IMP.Model()
