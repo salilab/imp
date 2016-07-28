@@ -334,7 +334,7 @@ NormalizeRotation::apply_indexes
     double sm = v.get_squared_magnitude();
     bool is_update(false);
     if (sm < .0001) {
-      IMP_LOG_TERSE('Near-zero rotation quaternion set to identity');
+      IMP_LOG_TERSE("Near-zero rotation quaternion set to identity");
       quaternion_tables[0][pi] = 1;
       quaternion_tables[1][pi] = 0;
       quaternion_tables[2][pi] = 0;
