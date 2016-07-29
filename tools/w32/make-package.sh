@@ -120,7 +120,6 @@ if [ "${BITS}" = "32" ]; then
      ${DLLSRC}/libgmp-10.dll \
      ${DLLSRC}/libmpfr-4.dll \
      ${DLLSRC}/libfftw3-3.dll \
-     ${DLLSRC}/avrocpp.dll \
      ${DLLSRC}/libTAU1.dll \
      ${DLLSRC}/zlib1.dll \
      ${DLLSRC}/opencv_core220.dll ${DLLSRC}/opencv_highgui220.dll \
