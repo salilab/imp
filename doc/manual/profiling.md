@@ -3,7 +3,7 @@ Profiling your code {#profiling}
 
 # Linux
 
-On linux you can use [gperftools](http://code.google.com/p/gperftools/?redir=1) for code profiling. The key bits are:
+On linux you can use [gperftools](https://github.com/gperftools/gperftools)
 - install `gperftools` (available as a pre-built package on most platforms)
 - make sure debugging symbols are being included in your build by, with `g++` or `clang++` adding `-g` to your `CMAKE_CXX_FLAGS`.
 
@@ -13,7 +13,7 @@ then if you are using a program that used the IMP flags support
 if not 
 
 - either use environment variables to control profiling as in the web page above
-- or add `-DCMAKE_EXE_LINKER_FLAGS=-ltcmalloc_and_profiler -DCMAKE_SHARED_LINKER_FLAGS=-ltcmalloc_and_profiler -DCMAKE_REQUIRED_FLAGS=-ltcmalloc_and_profiler` to your `cmake` invocation to add the required library to all compilations. This will activate control via %IMP flags and classes. Note that the name of the library might be different on your system. More explanations here: http://google-perftools.googlecode.com/svn/trunk/doc/heap_checker.html
+- or add `-DCMAKE_EXE_LINKER_FLAGS=-ltcmalloc_and_profiler -DCMAKE_SHARED_LINKER_FLAGS=-ltcmalloc_and_profiler -DCMAKE_REQUIRED_FLAGS=-ltcmalloc_and_profiler` to your `cmake` invocation to add the required library to all compilations. This will activate control via %IMP flags and classes. Note that the name of the library might be different on your system. See the [gperftool docs](https://github.com/gperftools/gperftools/blob/master/README) for more details.
 
 To profile a specific piece of code use:
 
