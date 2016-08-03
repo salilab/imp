@@ -25,7 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! An IMP::Key object for identifying types of particles by strings.
 /** The ParticleType key is used to type particles within
     the Typed decorator */
-typedef Key<IMP_PARTICLE_TYPE_INDEX, true> ParticleType;
+typedef Key<IMP_PARTICLE_TYPE_INDEX> ParticleType;
 IMP_VALUES(ParticleType, ParticleTypes);
 
 //! A decorator for classifying particles in your system.

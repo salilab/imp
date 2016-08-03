@@ -35,7 +35,7 @@ class ProteinLigandRestraint;
 
 #ifndef SWIG
 /** The marker to identify the atom types.*/
-typedef Key<783462, false> ProteinLigandType;
+typedef Key<783462> ProteinLigandType;
 IMP_VALUES(ProteinLigandType, ProteinLigandTypes);
 #else
 class ProteinLigandType;

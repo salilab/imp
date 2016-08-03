@@ -12,10 +12,16 @@
 #include <IMP/kernel_config.h>
 #include <IMP/exception.h>
 #include <IMP/check_macros.h>
+#include <IMP/log_macros.h>
 #include <boost/unordered_map.hpp>
 #include <IMP/Vector.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
+
+//! true for some old compiler that have issues with initialization of static template variables
+//! and do it more than they should
+#define IMPKERNEL_INTERNAL_OLD_COMPILER 1
+
 /** \internal The data concerning keys (strings and corresponding numbers).
   */
 struct IMPKERNELEXPORT KeyData {
@@ -29,7 +35,11 @@ struct IMPKERNELEXPORT KeyData {
   void show(std::ostream &out = std::cout) const;
 
   //! ID - the key ID (as in the template of Key)
-  KeyData(unsigned int ID);
+  KeyData(
+#ifndef IMPKERNEL_INTERNAL_OLD_COMPILER
+	  unsigned int ID
+#endif
+);
 
   void assert_is_initialized() const;
 
@@ -38,6 +48,7 @@ struct IMPKERNELEXPORT KeyData {
   //! and this would override the old "str" key in a way that's not completely expected
   //! (TODO: add checks if str is already in map, to fix rmap or to use the old number?)
   unsigned int add_key(std::string str) {
+    IMP_LOG_PROGRESS("KeyData::add_key " << str << std::endl);
     unsigned int i = rmap_.size();
     map_[str] = i;
     rmap_.push_back(str);
@@ -66,6 +77,9 @@ struct IMPKERNELEXPORT KeyData {
 };
 
 
+#ifdef IMPKERNEL_INTERNAL_OLD_COMPILER
+IMPKERNELEXPORT KeyData &get_key_data(unsigned int index);
+#endif
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 

@@ -253,8 +253,8 @@ namespace IMP {
 namespace IMP {
   namespace atom {
    // swig has random, perplexing issues if these are higher in the file
-   %template(AtomType) ::IMP::Key<IMP_ATOM_TYPE_INDEX, false>;
-   %template(ResidueType) ::IMP::Key<IMP_RESIDUE_TYPE_INDEX, true>;
+   %template(AtomType) ::IMP::Key<IMP_ATOM_TYPE_INDEX>;
+   %template(ResidueType) ::IMP::Key<IMP_RESIDUE_TYPE_INDEX>;
   }
 }
 %include "IMP/atom/element.h"

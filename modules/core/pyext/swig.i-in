@@ -339,7 +339,7 @@ namespace IMP {
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
     // swig screws up on scopes, I can't be bothered to fix it
     //%template(show_named_hierarchy) show<::IMP::core::Name>;
-   %template(ParticleType) ::IMP::Key<IMP_PARTICLE_TYPE_INDEX, true>;
+   %template(ParticleType) ::IMP::Key<IMP_PARTICLE_TYPE_INDEX>;
 
   }
 }

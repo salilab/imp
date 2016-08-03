@@ -19,12 +19,17 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 // keys
 static double heuristic_value = 238471628;
 
-
-KeyData::KeyData(unsigned int ID) : heuristic_(heuristic_value)
+KeyData::KeyData(
+#ifndef IMPKERNEL_INTERNAL_OLD_COMPILER
+		 unsigned int ID
+#endif
+) : heuristic_(heuristic_value)
 {
+#ifndef IMPKERNEL_INTERNAL_OLD_COMPILER
+  //  IMP_LOG_PROGRESS("KeyData::KeyData ID " << ID << std::endl);
   // float keys are special cased for historical reasons
   if(ID==FloatKey::get_ID()){
-    IMP_LOG_PROGRESS("Adding special float keys" << std::endl);
+    // IMP_LOG_PROGRESS("Adding special float keys" << std::endl);
     unsigned int x= add_key("x");
     unsigned int y= add_key("y");
     unsigned int z= add_key("z");
@@ -47,7 +52,30 @@ KeyData::KeyData(unsigned int ID) : heuristic_(heuristic_value)
     IMP_INTERNAL_CHECK(y_local==5, "y_local key should be 5");
     IMP_INTERNAL_CHECK(z_local==6, "z_local key should be 6");
   }
+#endif
 }
+
+#ifdef IMPKERNEL_INTERNAL_OLD_COMPILER
+namespace {
+  struct KeyTable : public boost::unordered_map<unsigned int, KeyData> {
+    KeyTable() {
+      static unsigned int fk = FloatKey::get_ID();
+      operator[](fk).add_key("x");
+      operator[](fk).add_key("y");
+      operator[](fk).add_key("z");
+      operator[](fk).add_key("radius");
+      operator[](fk).add_key("local_x");
+      operator[](fk).add_key("local_y");
+      operator[](fk).add_key("local_z");
+    }
+  };
+}
+
+KeyData& get_key_data(unsigned int index) {
+  static  KeyTable key_data;
+  return key_data[index];
+}
+#endif
 
 void KeyData::assert_is_initialized() const {
 #if IMP_HAS_CHECKS < 2

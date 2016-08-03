@@ -25,7 +25,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-typedef Key<IMP_ATOM_TYPE_INDEX, false> AtomType;
+typedef Key<IMP_ATOM_TYPE_INDEX> AtomType; 
 IMP_VALUES(AtomType, AtomTypes);
 
 /** \class IMP::atom::AtomType

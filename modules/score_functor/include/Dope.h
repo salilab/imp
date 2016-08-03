@@ -18,7 +18,7 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 class DopeType;
 #else
 /** The type of atoms for Dope.*/
-typedef Key<6453462, false> DopeType;
+typedef Key<6453462> DopeType;
 IMP_VALUES(DopeType, DopeTypes);
 #endif
 
