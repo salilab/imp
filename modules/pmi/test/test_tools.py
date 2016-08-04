@@ -136,7 +136,7 @@ class Tests(IMP.test.TestCase):
 
         gmm_hier = gemt.get_density_as_hierarchy()
         test0 = IMP.pmi.tools.input_adaptor(gmm_hier)
-        self.assertEqual(test0, [gmm_hier])
+        self.assertEqual(test0, [[gmm_hier]])
 
         # get one resolution
         test1 = IMP.pmi.tools.input_adaptor(m1,pmi_resolution=0)

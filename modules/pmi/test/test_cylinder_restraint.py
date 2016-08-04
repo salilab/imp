@@ -1,3 +1,4 @@
+from __future__ import print_function, division
 import IMP
 import IMP.atom
 import IMP.pmi
@@ -60,7 +61,7 @@ class CylinderRestraint(IMP.test.TestCase):
         for angle in range(360):
             anglerad=float(angle)/180.0*math.pi
             d.set_coordinates((math.cos(anglerad),math.sin(anglerad),0))
-            print 'AAA',angle,cr.unprotected_evaluate(None)
+            print('AAA',angle,cr.unprotected_evaluate(None))
 
 if __name__ == '__main__':
     IMP.test.main()

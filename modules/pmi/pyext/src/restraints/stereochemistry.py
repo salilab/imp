@@ -365,7 +365,7 @@ class ResidueBondRestraint(object):
                       used to increase the tolerance
         """
 
-        if representation is not None and selection is not None:
+        if representation is not None and selection_tuple is not None:
             self.m = representation.prot.get_model()
             particles = IMP.pmi.tools.select_by_tuple(
                 representation,
@@ -444,7 +444,7 @@ class ResidueAngleRestraint(object):
                  anglemax=140.0,
                  strength=10.0):
 
-        if representation is not None and selection is not None:
+        if representation is not None and selection_tuple is not None:
             self.m = representation.prot.get_model()
             particles = IMP.pmi.tools.select_by_tuple(
                 representation,
@@ -526,7 +526,7 @@ class ResidueDihedralRestraint(object):
             stringsequence=None,
             strength=10.0):
 
-        if representation is not None and selection is not None:
+        if representation is not None and selection_tuple is not None:
             self.m = representation.prot.get_model()
             particles = IMP.pmi.tools.select_by_tuple(
                 representation,

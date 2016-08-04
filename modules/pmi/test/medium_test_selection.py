@@ -48,13 +48,13 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(results[(name,"nter")],IMP.atom.Residue(nter).get_index())
 
         results={("Rpb4","cter"):(IMP.atom.Residue,221),
-        ("Rpb4","nter"):(IMP.atom.Fragment,range(1,4)),
+        ("Rpb4","nter"):(IMP.atom.Fragment,list(range(1,4))),
         ("Rpb5","cter"):(IMP.atom.Residue,215),
         ("Rpb5","nter"):(IMP.atom.Residue,1),
         ("Rpb6","cter"):(IMP.atom.Residue,155),
-        ("Rpb6","nter"):(IMP.atom.Fragment,range(1,21)),
-        ("Rpb3","cter"):(IMP.atom.Fragment,range(309, 319)),
-        ("Rpb3","nter"):(IMP.atom.Fragment,range(1, 3))}
+        ("Rpb6","nter"):(IMP.atom.Fragment,list(range(1,21))),
+        ("Rpb3","cter"):(IMP.atom.Fragment,list(range(309, 319))),
+        ("Rpb3","nter"):(IMP.atom.Fragment,list(range(1, 3)))}
 
         for name in ["Rpb3","Rpb4","Rpb5","Rpb6"]:
             all=IMP.pmi.tools.select_by_tuple(rcomplex,name,resolution=1)
