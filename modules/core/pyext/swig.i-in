@@ -132,6 +132,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::core, ParticleType, ParticleType, ParticleTypes);
 IMP_SWIG_DECORATOR( IMP::core, Typed, Typeds);
 IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, Hierarchy, GenericHierarchies);
 IMP_SWIG_DECORATOR( IMP::core, Gaussian, Gaussians)
+IMP_SWIG_DIRECTOR(IMP::core, HierarchyVisitor);
 
 IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
 IMP_SWIG_VALUE( IMP::core, HierarchyTraits, HierarchyTraitsList);
