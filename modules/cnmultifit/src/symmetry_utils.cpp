@@ -14,6 +14,7 @@
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/atom/pdb.h>
+#include <IMP/atom/hierarchy_tools.h>
 #include <IMP/em/CoarseCC.h>
 #include <IMP/em/converters.h>
 #include <IMP/atom/distance.h>
@@ -169,8 +170,7 @@ em::FittingSolutions symmetry_local_fitting(atom::Hierarchies mhs,
                                trans_fit_sols.get_number_of_solutions());
        i++) {
     for (unsigned int j = 0; j < mhs.size(); j++) {
-      core::transform(core::RigidBody(mhs[j]),
-                      trans_fit_sols.get_transformation(i));
+      atom::transform(mhs[j], trans_fit_sols.get_transformation(i));
     }
     atom::write_pdb(mhs, "symm_after.pdb");
     // make this rotation only
@@ -183,7 +183,7 @@ em::FittingSolutions symmetry_local_fitting(atom::Hierarchies mhs,
                                      trans_fit_sols.get_transformation(i),
                                  rot_fit_sols.get_score(0));
     for (unsigned int j = 0; j < mhs.size(); j++) {
-      core::transform(core::RigidBody(mhs[j]),
+      atom::transform(mhs[j],
                       trans_fit_sols.get_transformation(i).get_inverse());
     }
   }
@@ -196,13 +196,13 @@ void transform_cn_assembly(atom::Hierarchies mhs,
   int half = mhs.size() / 2;
   algebra::Transformation3D curr_t = algebra::get_identity_transformation_3d();
   for (int i = 0; i <= half; i++) {
-    core::transform(core::RigidBody(mhs[i]), curr_t);
+    atom::transform(mhs[i], curr_t);
     curr_t = curr_t * monomer_t;
   }
 
   curr_t = monomer_t.get_inverse();
   for (int i = (int)mhs.size() - 1; i > half; i--) {
-    core::transform(core::RigidBody(mhs[i]), curr_t);
+    atom::transform(mhs[i], curr_t);
     curr_t = curr_t * monomer_t.get_inverse();
   }
 }
@@ -366,7 +366,7 @@ multifit::FittingSolutionRecords prune_by_pca(
   for (int i = 0; i < par.get_cn_symm(); i++) {
     atom::Hierarchy mh = atom::read_pdb(par.get_unit_pdb_fn(), mdl, sel);
     atom::add_radii(mh);
-    atom::setup_as_rigid_body(mh);
+    atom::create_rigid_body(mh);
     mhs.push_back(mh);
   }
   // load the density map
