@@ -53,19 +53,20 @@ def get_transformations(sol):
 def run(subunit_fn, symm_deg, sol_fn, num, output_fn):
     mdl = IMP.Model()
     mhs = []
+    rbs = []
     for i in range(symm_deg):
         mh = IMP.atom.read_pdb(subunit_fn, mdl)
         mhs.append(mh)
-        IMP.atom.setup_as_rigid_body(mh)
+        rbs.append(IMP.atom.create_rigid_body(mh))
     lines = open(sol_fn).readlines()
     for j, sol in enumerate(lines[:num]):
         dock_t, fit_t = get_transformations(sol)
         curr_t = dock_t
         for i in range(symm_deg):
-            IMP.core.transform(IMP.core.RigidBody(mhs[i]), curr_t)
+            IMP.core.transform(rbs[i], curr_t)
             curr_t = dock_t * curr_t
         for i in range(symm_deg):
-            IMP.core.transform(IMP.core.RigidBody(mhs[i]), fit_t)
+            IMP.core.transform(rbs[i], fit_t)
         IMP.atom.write_pdb(mhs, output_fn + ".%03d.pdb" % j)
 
 
