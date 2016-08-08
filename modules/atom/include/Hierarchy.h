@@ -438,6 +438,7 @@ IMPATOMEXPORT IMP::core::RigidBody create_compatible_rigid_body(
     Hierarchy h, Hierarchy reference);
 
 #ifndef IMP_DOXYGEN
+IMPATOM_DEPRECATED_FUNCTION_DECL(2.7)
 IMPATOMEXPORT IMP::core::RigidBody setup_as_rigid_body(Hierarchy h);
 #endif
 
