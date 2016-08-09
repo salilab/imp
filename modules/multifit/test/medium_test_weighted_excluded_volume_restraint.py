@@ -95,7 +95,7 @@ class Tests(IMP.test.TestCase):
             # to make sure the coordinates were transformed
             self.mdl.update()
             end = time.clock()
-            print("Time elapsed for PairRestraint evaluatation = ", end - start, "seconds")
+            print("Time elapsed for PairRestraint evaluation = ", end - start, "seconds")
             conn_r = self.c_r.evaluate(False)
             w_exc_vol_r = self.wev_r.evaluate(False)
             self.assertTrue(

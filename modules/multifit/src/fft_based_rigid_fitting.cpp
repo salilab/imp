@@ -904,7 +904,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
   IMP_LOG_TERSE("Found " << peak_count << " peaks" << std::endl);
   /* Adjust num_fits_reported_ if necessary. */
   if (peak_count < num_fits_reported_) {
-    IMP_WARN("Found less peaks than requested \n");
+    IMP_WARN("Found fewer peaks than requested \n");
     num_fits_reported_ = peak_count;
   }
   int output_count = std::min((int)num_fits_reported_, (int)found_peak.size());
