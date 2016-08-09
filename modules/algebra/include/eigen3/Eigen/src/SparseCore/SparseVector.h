@@ -84,12 +84,12 @@ class SparseVector
     IMP_EIGEN_STRONG_INLINE Index innerSize() const { return m_size; }
     IMP_EIGEN_STRONG_INLINE Index outerSize() const { return 1; }
 
-    IMP_EIGEN_STRONG_INLINE const Scalar* valuePtr() const { return &m_data.value(0); }
-    IMP_EIGEN_STRONG_INLINE Scalar* valuePtr() { return &m_data.value(0); }
+    IMP_EIGEN_STRONG_INLINE const Scalar* valuePtr() const { return m_data.valuePtr(); }
+    IMP_EIGEN_STRONG_INLINE Scalar* valuePtr() { return m_data.valuePtr(); }
 
-    IMP_EIGEN_STRONG_INLINE const Index* innerIndexPtr() const { return &m_data.index(0); }
-    IMP_EIGEN_STRONG_INLINE Index* innerIndexPtr() { return &m_data.index(0); }
-    
+    IMP_EIGEN_STRONG_INLINE const Index* innerIndexPtr() const { return m_data.indexPtr(); }
+    IMP_EIGEN_STRONG_INLINE Index* innerIndexPtr() { return m_data.indexPtr(); }
+
     /** \internal */
     inline Storage& data() { return m_data; }
     /** \internal */
@@ -158,6 +158,7 @@ class SparseVector
       
       Index inner = IsColVector ? row : col;
       Index outer = IsColVector ? col : row;
+      IMP_EIGEN_ONLY_USED_FOR_DEBUG(outer);
       imp_eigen_assert(outer==0);
       return insert(inner);
     }

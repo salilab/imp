@@ -11,6 +11,7 @@
   #elif defined __GNUC__ && __GNUC__>=6
     #pragma GCC diagnostic pop
   #endif
+
 #endif
 
 #endif // IMP_EIGEN_WARNINGS_DISABLED

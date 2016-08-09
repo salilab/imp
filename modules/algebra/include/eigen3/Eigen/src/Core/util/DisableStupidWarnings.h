@@ -37,10 +37,12 @@
   #pragma clang diagnostic ignored "-Wconstant-logical-operand"
 
 #elif defined __GNUC__ && __GNUC__>=6
-  #ifndef EIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
+
+  #ifndef IMP_EIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
     #pragma GCC diagnostic push
   #endif
   #pragma GCC diagnostic ignored "-Wignored-attributes"
+
 #endif
 
 #endif // not IMP_EIGEN_WARNINGS_DISABLED
