@@ -45,7 +45,10 @@ void read_trans_file(const std::string file_name,
 
 int main(int argc, char *argv[]) {
   // print command
-  for(int i=0; i<argc; i++) std::cerr << argv[i] << " "; std::cerr << std::endl;
+  for(int i=0; i<argc; i++) {
+    std::cerr << argv[i] << " ";
+  }
+  std::cerr << std::endl;
 
   IMP::set_log_level(IMP::SILENT);
   std::string mol2name, pdbname, trans_file, out_file_name;
