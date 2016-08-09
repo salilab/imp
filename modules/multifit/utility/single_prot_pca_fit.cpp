@@ -201,7 +201,7 @@ int main(int argc, char **argv) {
     ref_mh = atom::read_pdb(ref_filename, mdl, new atom::CAlphaPDBSelector());
     ref_mh_xyz = core::XYZs(core::get_leaves(ref_mh));
   }
-  IMP_NEW(RigidLeavesRefiner, rb_refiner, ());
+  IMP_NEW(multifit::RigidLeavesRefiner, rb_refiner, ());
   em::FittingSolutions sols = multifit::pca_based_rigid_fitting(
       rb_refiner->get_refined(rb), dmap, threshold);
 
