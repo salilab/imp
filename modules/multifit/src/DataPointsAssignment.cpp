@@ -18,7 +18,6 @@
 #include <IMP/display/particle_geometry.h>
 #include <IMP/em/Voxel.h>
 #include <IMP/atom/Hierarchy.h>
-#include <IMP/core/LeavesRefiner.h>
 #include <IMP/multifit/density_analysis.h>
 #include <IMP/statistics/internal/ClusteringEngine.h>
 #include <IMP/statistics/internal/DataPoints.h>

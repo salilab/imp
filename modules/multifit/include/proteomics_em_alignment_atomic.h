@@ -13,7 +13,6 @@
 #include <IMP/multifit/proteomics_reader.h>
 #include <IMP/multifit/FittingSolutionRecord.h>
 #include "AlignmentParams.h"
-#include <IMP/core/LeavesRefiner.h>
 #include <IMP/multifit/anchors_reader.h>
 #include <IMP/multifit/SettingsData.h>
 #include "protein_anchors_mapping_reader.h"

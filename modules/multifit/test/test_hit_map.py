@@ -18,7 +18,7 @@ class Tests(IMP.test.TestCase):
         mp = IMP.atom.read_pdb(self.open_input_file("3points.pdb"),
                                model, IMP.atom.CAlphaPDBSelector())
         rb = IMP.atom.create_rigid_body(mp)
-        ref = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
+        ref = IMP.multifit.RigidLeavesRefiner()
         return model, rb, ref, scene
 
     def test_good_hit_map(self):
