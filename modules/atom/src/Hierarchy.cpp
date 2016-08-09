@@ -341,11 +341,9 @@ Bonds get_internal_bonds(Hierarchy mhd) {
  */
 
 core::RigidBody setup_as_rigid_body(Hierarchy h) {
+  IMPATOM_DEPRECATED_FUNCTION_DEF(2.7, "Use atom::create_rigid_body instead");
   IMP_USAGE_CHECK(h.get_is_valid(true),
                   "Invalid hierarchy passed to setup_as_rigid_body");
-  IMP_WARN("create_rigid_body should be used instead of setup_as_rigid_body"
-           << " as the former allows one to get volumes correct at coarser"
-           << " levels of detail.");
   core::RigidBody rbd = core::RigidBody::setup_particle(h, get_leaves(h));
   rbd.set_coordinates_are_optimized(true);
   ParticlesTemp internal = core::get_internal(h);

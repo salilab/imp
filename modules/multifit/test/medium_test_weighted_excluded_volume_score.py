@@ -28,8 +28,7 @@ class Tests(IMP.test.TestCase):
         for mh in self.mhs:
             IMP.atom.add_radii(mh)
             IMP.multifit.add_surface_index(mh, self.voxel_size)
-            IMP.atom.setup_as_rigid_body(mh)
-            self.rbs.append(IMP.core.RigidBody(mh.get_particle()))
+            self.rbs.append(IMP.atom.create_rigid_body(mh))
         self.trans = []
         self.trans.append(IMP.algebra.Transformation3D(
             IMP.algebra.Rotation3D(1., 0., 0., 0.), IMP.algebra.Vector3D(0., 0., 0.)))
@@ -59,7 +58,7 @@ class Tests(IMP.test.TestCase):
         ps1 = IMP.core.get_leaves(self.mhs[0])
         scores = []
         scores_by_restraint = []
-        leaves_ref = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
+        leaves_ref = IMP.multifit.RigidLeavesRefiner()
         fit_r = IMP.multifit.WeightedExcludedVolumeRestraint(self.rbs,
                                                              leaves_ref)
         for i, t in enumerate(self.trans):

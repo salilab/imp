@@ -30,6 +30,7 @@ IMP_SWIG_OBJECT(IMP::multifit, FFTFittingOutput, FFTFittingOutputs);
 IMP_SWIG_OBJECT(IMP::multifit, ProbabilisticAnchorGraph, ProbabilisticAnchorGraphs)
 IMP_SWIG_OBJECT(IMP::multifit, Ensemble, Ensembles);
 IMP_SWIG_OBJECT(IMP::multifit, ProteomicsEMAlignmentAtomic, ProteomicsEMAlignmentAtomics);
+IMP_SWIG_OBJECT(IMP::multifit, RigidLeavesRefiner, RigidLeavesRefiners);
 
 /* Wrap our own classes */
 %include "IMP/multifit/weighted_excluded_volume.h"
@@ -55,6 +56,7 @@ IMP_SWIG_OBJECT(IMP::multifit, ProteomicsEMAlignmentAtomic, ProteomicsEMAlignmen
 %include "IMP/multifit/proteomics_em_alignment_atomic.h"
 %include "IMP/multifit/connolly_surface.h"
 %include "IMP/multifit/ensemble_analysis.h"
+%include "IMP/multifit/RigidLeavesRefiner.h"
 
 /* All scripts that can be called from the multifit application */
 %pythoncode %{

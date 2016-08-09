@@ -25,7 +25,7 @@ def main():
     for chain in chains:
         ps = IMP.core.XYZs(IMP.core.get_leaves(chain))
         centers.append(IMP.core.get_centroid(ps))
-        IMP.atom.setup_as_rigid_body(chain)
+        IMP.atom.create_rigid_body(chain)
     # fast calculations of which chains are close
     links = []
     sdps = IMP.core.SphereDistancePairScore(IMP.core.Linear(0, 1))

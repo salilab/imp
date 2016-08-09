@@ -47,7 +47,7 @@ Floats get_rmsd_for_models(const std::string param_filename,
         atom::Residue(atom::get_residue(atom::Atom(core::get_leaves(h)[0]))));
     c.set_id(std::string(1, char(65 + i)));
     atom::add_radii(h);
-    atom::setup_as_rigid_body(h);
+    atom::create_rigid_body(h);
     mhs.push_back(h);
     Particles leaves = core::get_leaves(h);
     for (Particles::iterator it = leaves.begin(); it != leaves.end();

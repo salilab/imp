@@ -12,6 +12,7 @@
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/atom/pdb.h>
+#include <IMP/atom/hierarchy_tools.h>
 #include <libTAU/SymmProgParams.h>
 #include <libTAU/CnResult.h>
 #include <libTAU/SymmAssembly.h>
@@ -261,7 +262,7 @@ void do_all_fitting(const std::string param_filename,
       atom::Chain c = atom::get_chain(
           atom::Residue(atom::get_residue(atom::Atom(core::get_leaves(h)[0]))));
       c.set_id(std::string(1, char(65 + i * cn_symm_deg + j)));
-      atom::setup_as_rigid_body(h);
+      atom::create_rigid_body(h);
       mhs.push_back(h);
     }
   }
@@ -278,12 +279,11 @@ void do_all_fitting(const std::string param_filename,
     ss << params.get_solution_model_filename() << "." << i++ << ".pdb";
     transform_cn_assembly(mhs, it->get_dock_transformation());
     for (unsigned int j = 0; j < mhs.size(); j++) {
-      core::transform(core::RigidBody(mhs[j]), it->get_fit_transformation());
+      atom::transform(mhs[j], it->get_fit_transformation());
     }
     atom::write_pdb(mhs, ss.str());
     for (unsigned int j = 0; j < mhs.size(); j++) {
-      core::transform(core::RigidBody(mhs[j]),
-                      it->get_fit_transformation().get_inverse());
+      atom::transform(mhs[j], it->get_fit_transformation().get_inverse());
     }
     it->set_solution_filename(ss.str());
     transform_cn_assembly(mhs, it->get_dock_transformation().get_inverse());
