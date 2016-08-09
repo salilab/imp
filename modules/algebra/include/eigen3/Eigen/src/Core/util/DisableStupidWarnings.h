@@ -42,6 +42,7 @@
     #pragma GCC diagnostic push
   #endif
   #pragma GCC diagnostic ignored "-Wignored-attributes"
+  #pragma GCC diagnostic ignored "-Wmisleading-indentation"
 
 #endif
 
