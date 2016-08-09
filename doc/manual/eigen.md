@@ -29,5 +29,6 @@ We ship a copy of Eigen. To patch an updated version, first commit the unpatched
 
 in addition, the following commits introduced some modifications to the code
 - `26a1f70d5faef3f`
+- `a81c11affba3889`
 
 Eigen headers can be found at `IMP/algebra/eigen3`.
