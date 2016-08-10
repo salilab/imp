@@ -25,7 +25,7 @@ class DerivativeAccumulator;
 /** The job of this class is to take a single particle and, if
     appropriate, return a list of particles. These lists can
     reflect existing relationships, such as the
-    IMP::core::LeavesRefiner or arbitrary relationships set up
+    IMP::core::LeavesRefiner, or arbitrary relationships set up
     for a particular purpose, such as IMP::core::TableRefiner.
 
     @note it is assumed that refined particles belong to the same model
@@ -70,7 +70,7 @@ class IMPKERNELEXPORT Refiner : public ParticleInputs, public Object {
 
   //! Return the indexes of the particles returned by get_refined()
   /** Return the indexes of the particles returned by get_refined()
-      for particle pi in model m by reference (possible faster).
+      for particle pi in model m by reference (possibly faster).
 
       @param m,pi model and particle index of coarse particle to be refined
 
