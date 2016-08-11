@@ -18,7 +18,7 @@ One approach to solve the structures of proteins and their assemblies
 is by "integrative" or "hybrid" modeling, in which information from different methods
 is considered simultaneously during the modeling procedure. The approach
 is briefly outlined here for clarity; it has been
-<a href="http://www.ncbi.nlm.nih.gov/pubmed/20507923">covered in greater
+<a href="https://www.ncbi.nlm.nih.gov/pubmed/20507923">covered in greater
 detail</a> previously. These methods can include:
 - Experimental techniques, such as:
   - X-ray crystallography
@@ -65,7 +65,7 @@ Hybrid structures based on our integrative approach:
  - The [Nup84 complex](https://salilab.org/nup84/)
  - Transport through the NPC
  - Microtubule nucleation
- - [The 26S proteasome](http://www.ncbi.nlm.nih.gov/pubmed/19233204)
+ - [The 26S proteasome](https://www.ncbi.nlm.nih.gov/pubmed/19233204)
  - [PCS9K-Fab complex](@ref idock_pcsk9)
  - The yeast spindle pole body
  - Chromatin globin domain

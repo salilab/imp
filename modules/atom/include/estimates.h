@@ -72,7 +72,7 @@ IMPATOMEXPORT double get_mass_from_number_of_residues(unsigned int num_aa);
 //! Return an estimate for the volume of a given residue
 /** The volume estimates are taken from
  Pontius J, Richelle J, Wodak SJ.,
- \external{http://www.ncbi.nlm.nih.gov/pubmed/8950272,
+ \external{https://www.ncbi.nlm.nih.gov/pubmed/8950272,
  Deviations from standard atomic volumes as a quality measure for
  protein crystal structures}, J Mol Biol. 1996 Nov 22;264(1):121-36.
 
