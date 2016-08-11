@@ -31,7 +31,13 @@ const ParticlesTemp RigidLeavesRefiner::get_refined(Particle *p) const {
 
 ModelObjectsTemp RigidLeavesRefiner::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
-  return IMP::get_particles(m, pis);
+  ModelObjectsTemp ret = IMP::get_particles(m, pis);
+  for (unsigned int i = 0; i < pis.size(); ++i) {
+    ParticleIndexes members
+                    = core::RigidBody(m, pis[i]).get_member_particle_indexes();
+    ret += IMP::get_particles(m, members);
+  }
+  return ret;
 }
 
 IMPMULTIFIT_END_NAMESPACE

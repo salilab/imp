@@ -22,6 +22,10 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(ps, IMP.atom.get_leaves(mh))
         for p in ps:
             self.assertTrue(IMP.atom.Atom.get_is_setup(p))
+        # Inputs, however, should compromise every particle the refiner looks
+        # at, which is everything in the rigid body
+        ps = r.get_inputs(m, [rb])
+        self.assertEqual(len(ps), 801)
 
 if __name__ == '__main__':
     IMP.test.main()
