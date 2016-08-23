@@ -612,6 +612,12 @@ void DensityMap::add(const DensityMap *other) {
   }
 }
 
+void DensityMap::add(Float d){
+  for (long l = 0; l < get_number_of_voxels(); l++) {
+    set_value(l,get_value(l)+d);
+  }
+}
+
 void DensityMap::pick_max(const DensityMap *other) {
   // check that the two maps have the same dimensions
   IMP_USAGE_CHECK(same_voxel_size(other),

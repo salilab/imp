@@ -34,6 +34,7 @@ IMPEMEXPORT DensityMap *create_density_map(const DensityMap *other);
 //! Create an empty density map from a bounding box
 IMPEMEXPORT DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
                                            double spacing);
+
 //! Create an empty density map
 IMPEMEXPORT DensityMap *create_density_map(int nx, int ny, int nz,
                                            double spacing);
@@ -309,6 +310,12 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
             should be contained within this map
    */
   void add(const DensityMap *other);
+
+  //! Add a number to every voxel in the map
+  /** \param[in] d Value to add
+
+   */
+  void add(Float d);
 
   //! Pick the max value between two corresponding voxels between two maps
   /** The result is kept in the map.
