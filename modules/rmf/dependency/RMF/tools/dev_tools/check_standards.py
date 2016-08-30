@@ -20,10 +20,6 @@ except ImportError:
 
 from optparse import OptionParser
 
-parser = OptionParser()
-(options, args) = parser.parse_args()
-
-
 def _check_do_not_commit(line, filename, num, errors):
     marker = 'DO NOT' + ' COMMIT'
     if line.find(marker) >= 0:
@@ -192,6 +188,9 @@ def get_all_files():
 
 
 def main():
+    parser = OptionParser()
+    options, args = parser.parse_args()
+
     errors = []
     if len(args) == 0:
         modfiles = get_all_files()

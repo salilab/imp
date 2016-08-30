@@ -12,6 +12,10 @@ engines:
     enabled: true
   radon:
     enabled: true
+  shellcheck:
+    enabled: true
+  markdownlint:
+    enabled: true
 ratings:
   paths:
   - "**.inc"
@@ -21,5 +25,7 @@ ratings:
   - "**.php"
   - "**.py"
   - "**.rb"
+  - "**.sh"
+  - "**.md"
 exclude_paths:
 - python_tools/reindent.py

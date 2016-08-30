@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "begin pre-commit"
-branch=`git rev-parse --abbrev-ref HEAD`
+branch=$(git rev-parse --abbrev-ref HEAD)
 
 if test "$branch" == "master"
 then
@@ -14,18 +14,18 @@ then
    if test \! -e README.md
    then
        echo "$(tput setaf 1)ERROR: Feature branches must have a README.md in the root IMP directory describing them. Make sure you remove the README.md commit before merging into develop."
-       echo "ERROR: current branch is" $branch "$(tput sgr0)"
+       echo "ERROR: current branch is $branch $(tput sgr0)"
        exit 1
    fi
 fi
 
 # Redirect output to stderr.
 exec 1>&2
-files=`git diff --cached --name-only --diff-filter=ACM`
+files=$(git diff --cached --name-only --diff-filter=ACM)
 if test -n "$files"
 then
-  echo "checking standards on" $files
-  if python `git rev-parse --git-dir`/hooks/check_standards.py $files
+  echo "checking standards on $files"
+  if python "$(git rev-parse --git-dir)/hooks/check_standards.py" $files
   then
     echo "Standards checks OK."
   else
@@ -34,11 +34,11 @@ then
 fi
 
 echo "checking for untracked files"
-untracked=`git status -u --porcelain | grep '^??'`
+untracked=$(git status -u --porcelain | grep '^??')
 if test -n "$untracked"
 then
   echo "$(tput setaf 1)ERROR: There are untracked files in your repository.$(tput sgr0)"
-  echo "If you want to keep them around you can add them to your .git/info/exclude file: " `echo $untracked | cut -f2 -d\ `
+  echo "If you want to keep them around you can add them to your .git/info/exclude file: $(echo "$untracked" | cut -f2 -d\ )"
   echo "You can use --no-verify to skip checks if you are sure that is what you want."
   exit 1
 fi
