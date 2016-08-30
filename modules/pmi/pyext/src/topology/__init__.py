@@ -752,6 +752,122 @@ class Sequences(object):
         if seq is not None:
             self.sequences[code] = seq.strip('*')
 
+
+class PDBSequences(object):
+    """Data_structure for reading and storing sequence data from pdb"""
+    def __init__(self,model,pdb_fn,name_map=None):
+        """read a pdb file and returns all sequences for each contiguous fragment
+        @param pdb_fn  file
+        @param name_map dictionary mapping the pdb chain id to final stored name
+        """
+        self.m=model
+        # self.sequences data-structure: (two-key dictionary)
+        # it contains all contiguous fragments:
+        # chain_id, tuples indicating first and last residue, sequence
+        # example:
+        # key1, key2, value
+        # A (77, 149) VENPSLDLEQYAASYSGLMR....
+        # A (160, 505) PALDTAWVEATRKKALLKLEKLDTDLKNYKGNSIK.....
+        # B (30, 180) VDLENQYYNSKALKEDDPKAALSSFQKVLELEGEKGEWGF...
+        # B (192, 443) TQLLEIYALEIQMYTAQKNNKKLKALYEQSLHIKSAIPHPL
+        self.sequences = IMP.pmi.tools.OrderedDict()
+        self.read_sequences(pdb_fn,name_map)
+
+    
+    def read_sequences(self,pdb_fn,name_map):
+        t = IMP.atom.read_pdb(pdb_fn, self.m, IMP.atom.ATOMPDBSelector())
+        cs=IMP.atom.get_by_type(t,IMP.atom.CHAIN_TYPE)
+        for c in cs:
+            id=IMP.atom.Chain(c).get_id()
+            print(id)
+            if name_map:
+                try: 
+                    id=name_map[id]
+                except:
+                    print("Chain ID %s not in name_map, skipping" % id)
+                    continue
+            rs=IMP.atom.get_by_type(c,IMP.atom.RESIDUE_TYPE)
+            rids=[]
+            rids_olc_dict={}
+            for r in rs:
+                dr=IMP.atom.Residue(r)
+                rid=dr.get_index()
+                olc=IMP.atom.get_one_letter_code(dr.get_residue_type())
+                isprotein=dr.get_is_protein()
+                if isprotein:
+                    rids.append(rid)
+                    rids_olc_dict[rid]=olc
+            group_rids=self.group_indexes(rids)
+            contiguous_sequences=IMP.pmi.tools.OrderedDict()
+            for group in group_rids:
+                sequence_fragment=""
+                for i in range(group[0],group[1]):
+                    sequence_fragment+=rids_olc_dict[i]
+                contiguous_sequences[group]=sequence_fragment
+            self.sequences[id]=contiguous_sequences
+        
+        #for c in self.sequences:
+        #    for group in self.sequences[c]:
+        #        print(c,group,self.sequences[c][group])
+                
+    def group_indexes(self,indexes):
+        from operator import itemgetter
+        from itertools import groupby
+        ranges = []
+        for k, g in groupby(enumerate(indexes), lambda (i,x):i-x):
+            group = map(itemgetter(1), g)
+            ranges.append((group[0], group[-1]))
+        return ranges
+
+
+def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
+    '''This function computes and prints the alignment between the 
+    fasta file and the pdb sequence, computes the offsets for each contiguous
+    fragment in the PDB. 
+    @param fasta_sequences  IMP.pmi.topology.Sequences object
+    @param pdb_sequences IMP.pmi.topology.PDBSequences object
+    @param show boolean default False, if True prints the alignments.
+    The input objects should be generated using map_name dictionaries such that fasta_id 
+    and pdb_chain_id are mapping to the same protein name. It needs Biopython.
+    Returns a dictionary of offsets (if offsets are consistent for each fragment).'''
+    from Bio import pairwise2
+    from Bio.pairwise2 import format_alignment
+    from Bio.SubsMat import MatrixInfo as matlist
+    matrix = matlist.blosum62
+    if type(fasta_sequences) is not IMP.pmi.topology.Sequences:
+        raise Exception("Fasta sequences not type IMP.pmi.topology.Sequences")
+    if type(pdb_sequences) is not IMP.pmi.topology.PDBSequences:
+        raise Exception("pdb sequences not type IMP.pmi.topology.PDBSequences")
+    offsets=IMP.pmi.tools.OrderedDict()
+    for name in fasta_sequences.sequences:
+        print(name)
+        seq_fasta=fasta_sequences.sequences[name]
+        if name not in pdb_sequences.sequences: 
+            print("Fasta id %s not in pdb names, skipping" % name)
+            continue
+        for group in pdb_sequences.sequences[name]:
+            seq_frag_pdb=pdb_sequences.sequences[name][group]
+            if show:
+                print("########################")
+                print(" ")
+                print("protein name",name)
+                print("fasta id", name)
+                print("pdb fragment",group)
+            for a in pairwise2.align.localms(seq_fasta, seq_frag_pdb, 2, -1, -.5, -.1):
+                offset=a[3]+1-group[0]
+                if show:
+                    print("alignment sequence start-end",(a[3]+1,a[4]+1))
+                    print("offset from pdb to fasta index",offset)
+                    print(format_alignment(*a))
+                if name not in offsets:
+                    offsets[name]=offset
+                else:
+                    if offsets[name]!=offset:
+                        raise Exception("Cannot return consistent offsets for protein %s" % name)
+    return offsets
+                
+            
+
 #------------------------
 
 

@@ -1712,6 +1712,10 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
         self.psi_is_sampled = True
         self.sigma_is_sampled = True
 
+        # todo: allow the user to override this default
+        datasets = [p.get_cross_link_dataset(restraints_file)
+                    for p in representations[0]._protocol_output]
+
         # isd_map is a dictionary/map that is used to determine the psi
         # parameter from identity scores (such as ID-Score, or FDR)
         if ids_map is None:
@@ -1847,6 +1851,12 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
                     if xluniqueid not in entry: print(str(xluniqueid)+" keyword not in database")
                     continue
 
+            # todo: check that offset is handled correctly
+            ex_xls = [p.add_experimental_cross_link(r1, c1, r2, c2,
+                                                    self.label, length, dataset)
+                      for p, dataset in zip(representations[0]._protocol_output,
+                                            datasets)]
+
             for nstate, r in enumerate(representations):
                 # loop over every state
 
@@ -1924,6 +1934,10 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
                 print("ISDCrossLinkMS: between particles %s and %s" % (p1.get_name(), p2.get_name()))
                 print("==========================================\n")
                 indb.write(str(entry) + "\n")
+                for p, ex_xl in zip(representations[0]._protocol_output,
+                                    ex_xls):
+                    p.add_cross_link(ex_xl, p1, p2, mappedr1,
+                                     mappedr2, psi)
 
                 # check if the two residues belong to the same rigid body
                 if(IMP.core.RigidMember.get_is_setup(p1) and

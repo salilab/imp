@@ -319,6 +319,14 @@ class XLTable():
                 except ValueError:
                     self.stored_dists[(r1,c1,r2,c2)]=10e6
                     self.stored_dists[(r2,c2,r1,c1)]=10e6
+        else:
+            for xl in self.cross_link_db:
+                c1=xl[self.cross_link_db.protein1_key]
+                c2=xl[self.cross_link_db.protein2_key]
+                r1=xl[self.cross_link_db.residue1_key]
+                r2=xl[self.cross_link_db.residue2_key]
+                self.stored_dists[(r1,c1,r2,c2)]=self._get_distance(r1,c1,r2,c2)
+                self.stored_dists[(r2,c2,r1,c1)]=self._get_distance(r2,c2,r1,c1)
 
     def set_residue_pairs_to_display(self,residue_type_pair):
         """ select the atom names of residue pairs to plot on the contact map
@@ -577,7 +585,10 @@ class XLTable():
                     sorted_ids=sorted(xl.keys())
                     data.append(sorted_ids+["UniqueID","Distance","MinAmbiguousDistance"])
                 (c1,c2,r1,r2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
-                mdist=self._get_distance(r1,c1,r2,c2)
+                try:
+                   (mdist,p1,p2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
+                except:
+                   mdist=0.0
                 values=[xl[k] for k in sorted_ids]
                 values+=[group,mdist]
                 group_dists.append(mdist)
@@ -590,42 +601,56 @@ class XLTable():
             a = csv.writer(fp, delimiter=',')
             a.writerows(data)
 
-    def save_rmf_snapshot(self,filename):
-
+    def save_rmf_snapshot(self,filename,color_id=None):
+        if color_id is None:
+           color_id=self.cross_link_db.id_score_key
         sorted_ids=None
         sorted_group_ids=sorted(self.cross_link_db.data_base.keys())
         list_of_pairs=[]
+        color_scores=[]
         for group in sorted_group_ids:
             group_xls=[]
             group_dists_particles=[]
             for xl in self.cross_link_db.data_base[group]:
                 xllabel=self.cross_link_db.get_short_cross_link_string(xl)
                 (c1,c2,r1,r2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
+                print (c1,c2,r1,r2)
                 try:
                     (mdist,p1,p2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
                 except TypeError:
+                    print("TypeError or missing chain/residue ",r1,c1,r2,c2)
                     continue
-                group_dists_particles.append((mdist,p1,p2,xllabel))
+                group_dists_particles.append((mdist,p1,p2,xllabel,float(xl[color_id])))
             if group_dists_particles:
-                (minmdist,minp1,minp2,minxllabel)=min(group_dists_particles, key = lambda t: t[0])
-                list_of_pairs.append((minp1,minp2,xllabel))
+                (minmdist,minp1,minp2,minxllabel,mincolor_score)=min(group_dists_particles, key = lambda t: t[0])
+                color_scores.append(mincolor_score)
+                list_of_pairs.append((minp1,minp2,minxllabel,mincolor_score))
             else:
                 continue
 
+         
         m=self.prots[0].get_model()
         linear = IMP.core.Linear(0, 0.0)
         linear.set_slope(1.0)
         dps2 = IMP.core.DistancePairScore(linear)
         rslin = IMP.RestraintSet(m, 'linear_dummy_restraints')
-
+        sgs=[]
+        offset=min(color_scores)
+        maxvalue=max(color_scores)
         for pair in list_of_pairs:
             pr = IMP.core.PairRestraint(m, dps2, (pair[0], pair[1]))
             pr.set_name(pair[2])
+            factor=(pair[3]-offset)/(maxvalue-offset)
+            print(factor)
+            c=IMP.display.get_rgb_color(factor)
+            seg=IMP.algebra.Segment3D(IMP.core.XYZ(pair[0]).get_coordinates(),IMP.core.XYZ(pair[1]).get_coordinates())
             rslin.add_restraint(pr)
+            sgs.append(IMP.display.SegmentGeometry(seg,c,pair[2]))
 
         rh = RMF.create_rmf_file(filename)
         IMP.rmf.add_hierarchies(rh, self.prots)
         IMP.rmf.add_restraints(rh,[rslin])
+        IMP.rmf.add_geometries(rh, sgs)
         IMP.rmf.save_frame(rh)
         del rh
 

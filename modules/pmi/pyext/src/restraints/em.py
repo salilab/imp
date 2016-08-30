@@ -34,7 +34,9 @@ class GaussianEMRestraint(object):
                  scale_target_to_mass=False,
                  weight=1.0,
                  target_is_rigid_body=False,
-                 local=False):
+                 local=False,
+                 representation=None,
+                 emdb=None):
         """Constructor.
         @param densities The Gaussian-decorated particles to be restrained
         @param target_fn GMM file of the target density map
@@ -72,6 +74,7 @@ class GaussianEMRestraint(object):
                against another one). Default is False.
         @param local Only consider density particles that are within the
                 specified model-density cutoff (experimental)
+        @param emdb The EMDB identifier of the map, if known.
         """
 
         # some parameters
@@ -107,6 +110,10 @@ class GaussianEMRestraint(object):
         else:
             print('Gaussian EM restraint: must provide target density file or properly set up target densities')
             return
+
+        if representation:
+            for p in representation._protocol_output:
+                p.add_em3d_restraint(self.target_ps, emdb)
 
         # setup model GMM
         self.model_ps = []

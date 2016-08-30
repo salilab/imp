@@ -271,6 +271,7 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
     MSSTUDIO: [Y3-S756;Y3-K759;K4-S756;K4-K759] for crosslinks
                   [Y3-;K4-] for dead-ends
     QUANTITATION: sp|P33298|PRS6B_YEAST:280:x:sp|P33298|PRS6B_YEAST:337
+    QUANTITATION (with ambiguity separator :|:): Fbw7:107:|:StrepII2x-Fbw7fl:408:x:Nedd8:48
     '''
 
     import re
@@ -317,10 +318,22 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
             # at this stage chain_pair_indexes is empty
             return  residue_pair_indexes,chain_pair_indexes
         if self.style == "QUANTITATION":
-            input_string=input_string.replace("x:","")
-            input_string_tockens=input_string.split(":")
-            residue_pair_indexes=[(input_string_tockens[1],input_string_tockens[3])]
-            chain_pair_indexes=[(input_string_tockens[0],input_string_tockens[2])]
+            input_strings=input_string.split(":x:")
+            first_peptides=input_strings[0].split(":|:")
+            second_peptides=input_strings[1].split(":|:")
+            first_peptides_indentifiers=[(f.split(":")[0],f.split(":")[1]) for f in first_peptides]
+            second_peptides_indentifiers=[(f.split(":")[0],f.split(":")[1]) for f in second_peptides]
+            residue_pair_indexes=[]
+            chain_pair_indexes=[]
+            for fpi in first_peptides_indentifiers:
+                for spi in second_peptides_indentifiers:
+                    chain1=fpi[0]
+                    chain2=spi[0]
+                    residue1=fpi[1]
+                    residue2=spi[1]
+                    residue_pair_indexes.append((residue1,residue2))
+                    chain_pair_indexes.append((chain1,chain2))
+            print(residue_pair_indexes,chain_pair_indexes)
             return residue_pair_indexes,chain_pair_indexes
 
 
@@ -674,6 +687,19 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             else:
                 xl[keyword] = None
         self.__update()
+
+    def rename_proteins(self,old_to_new_names_dictionary):
+        '''
+        This function renames all proteins contained in the input dictionary
+        from the old names (keys) to the new name (values)
+        '''
+        
+        for old_name in old_to_new_names_dictionary:
+            new_name=old_to_new_names_dictionary[old_name]
+            fo2=FilterOperator(self.protein1_key,operator.eq,old_name)    
+            self.set_value(self.protein1_key,new_name,fo2)
+            fo2=FilterOperator(self.protein2_key,operator.eq,old_name)    
+            self.set_value(self.protein2_key,new_name,fo2)
 
     def clone_protein(self,protein_name,new_protein_name):
         new_xl_dict={}

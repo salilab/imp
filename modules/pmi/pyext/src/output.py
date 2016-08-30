@@ -18,6 +18,20 @@ try:
 except ImportError:
     import pickle
 
+class ProtocolOutput(object):
+    """Base class for capturing a modeling protocol.
+       Unlike simple output of model coordinates, a complete
+       protocol includes the input data used, details on the restraints,
+       sampling, and clustering, as well as output models.
+       Use via IMP.pmi.representation.Representation.add_protocol_output()
+       (for PMI 1) or
+       IMP.pmi.topology.System.add_protocol_output() (for PMI 2).
+
+       @see IMP.pmi.mmcif.ProtocolOutput for a concrete subclass that outputs
+            mmCIF files.
+    """
+    pass
+
 def _flatten(seq):
     l = []
     for elt in seq:
@@ -58,15 +72,7 @@ class Output(object):
     def get_stat_names(self):
         return list(self.dictionary_stats.keys())
 
-    def init_pdb(self, name, prot):
-        """Init PDB Writing.
-        @param name The PDB filename
-        @param prot The hierarchy to write to this pdb file
-        \note if the PDB name is 'System' then will use Selection to get molecules
-        """
-        flpdb = open(name, 'w')
-        flpdb.close()
-        self.dictionary_pdbs[name] = prot
+    def _init_dictchain(self, name, prot):
         self.dictchain[name] = {}
         self.use_pmi2 = False
 
@@ -81,6 +87,17 @@ class Output(object):
             for n, i in enumerate(self.dictionary_pdbs[name].get_children()):
                 self.dictchain[name][i.get_name()] = self.chainids[n]
 
+    def init_pdb(self, name, prot):
+        """Init PDB Writing.
+        @param name The PDB filename
+        @param prot The hierarchy to write to this pdb file
+        \note if the PDB name is 'System' then will use Selection to get molecules
+        """
+        flpdb = open(name, 'w')
+        flpdb.close()
+        self.dictionary_pdbs[name] = prot
+        self._init_dictchain(name, prot)
+
     def write_psf(self,filename,name):
         flpsf=open(filename,'w')
         flpsf.write("PSF CMAP CHEQ"+"\n")
@@ -90,7 +107,6 @@ class Output(object):
         flpsf.write(str(nparticles)+" !NATOM"+"\n")
         for n,p in enumerate(particle_infos_for_pdb):
             atom_index=n+1
-            atomtype=p[1]
             residue_type=p[2]
             chain=p[3]
             resid=p[4]
@@ -152,7 +168,9 @@ class Output(object):
 
         for n,tupl in enumerate(particle_infos_for_pdb):
             (xyz, atom_type, residue_type,
-             chain_id, residue_index,radius) = tupl
+             chain_id, residue_index, all_indexes, radius) = tupl
+            if atom_type is None:
+                atom_type = IMP.atom.AT_CA
             flpdb.write(IMP.atom.get_pdb_string((xyz[0] - geometric_center[0],
                                                 xyz[1] - geometric_center[1],
                                                 xyz[2] - geometric_center[2]),
@@ -162,6 +180,15 @@ class Output(object):
         flpdb.close()
 
         del particle_infos_for_pdb
+
+    def get_prot_name_from_particle(self, name, p):
+        """Get the protein name from the particle.
+           This is done by traversing the hierarchy."""
+        if self.use_pmi2:
+            return IMP.pmi.get_molecule_name_and_copy(p), True
+        else:
+            return IMP.pmi.tools.get_prot_name_from_particle(
+                                       p, self.dictchain[name])
 
     def get_particle_infos_for_pdb_writing(self, name):
         # index_residue_pair_list={}
@@ -186,14 +213,7 @@ class Output(object):
             ps = IMP.atom.get_leaves(self.dictionary_pdbs[name])
 
         for n, p in enumerate(ps):
-            # this loop gets the protein name from the
-            # particle leave by descending into the hierarchy
-            if self.use_pmi2:
-                protname = IMP.pmi.get_molecule_name_and_copy(p)
-                is_a_bead = True
-            else:
-                (protname, is_a_bead) = IMP.pmi.tools.get_prot_name_from_particle(
-                    p, self.dictchain[name])
+            protname, is_a_bead = self.get_prot_name_from_particle(name, p)
 
             if protname not in resindexes_dict:
                 resindexes_dict[protname] = []
@@ -210,7 +230,7 @@ class Output(object):
                 geometric_center[2] += xyz[2]
                 atom_count += 1
                 particle_infos_for_pdb.append((xyz,
-                                               atomtype, rt, self.dictchain[name][protname], resind,radius))
+                                               atomtype, rt, self.dictchain[name][protname], resind, None, radius))
                 resindexes_dict[protname].append(resind)
 
             elif IMP.atom.Residue.get_is_setup(p):
@@ -230,8 +250,8 @@ class Output(object):
                 geometric_center[1] += xyz[1]
                 geometric_center[2] += xyz[2]
                 atom_count += 1
-                particle_infos_for_pdb.append((xyz,
-                                               IMP.atom.AT_CA, rt, self.dictchain[name][protname], resind,radius))
+                particle_infos_for_pdb.append((xyz, None,
+                                               rt, self.dictchain[name][protname], resind, None, radius))
 
             elif IMP.atom.Fragment.get_is_setup(p) and not is_a_bead:
                 resindexes = IMP.pmi.tools.get_residue_indexes(p)
@@ -247,8 +267,8 @@ class Output(object):
                 geometric_center[1] += xyz[1]
                 geometric_center[2] += xyz[2]
                 atom_count += 1
-                particle_infos_for_pdb.append((xyz,
-                                               IMP.atom.AT_CA, rt, self.dictchain[name][protname], resind,radius))
+                particle_infos_for_pdb.append((xyz, None,
+                                               rt, self.dictchain[name][protname], resind, resindexes, radius))
 
             else:
                 if is_a_bead:
@@ -262,8 +282,8 @@ class Output(object):
                         geometric_center[1] += xyz[1]
                         geometric_center[2] += xyz[2]
                         atom_count += 1
-                        particle_infos_for_pdb.append((xyz,
-                                                       IMP.atom.AT_CA, rt, self.dictchain[name][protname], resind,radius))
+                        particle_infos_for_pdb.append((xyz, None,
+                                                       rt, self.dictchain[name][protname], resind, resindexes, radius))
 
         if atom_count > 0:
             geometric_center = (geometric_center[0] / atom_count,
@@ -310,15 +330,7 @@ class Output(object):
             flpdb = open(name, 'w')
             flpdb.close()
             self.dictionary_pdbs[name] = prot
-            self.dictchain[name] = {}
-            if IMP.pmi.get_is_canonical(prot):
-                self.use_pmi2 = True
-                self.atomistic = True
-                for n,mol in enumerate(IMP.atom.get_by_type(prot,IMP.atom.MOLECULE_TYPE)):
-                    self.dictchain[name][IMP.pmi.get_molecule_name_and_copy(mol)] = IMP.atom.Chain(mol).get_id()
-            else:
-                for n, i in enumerate(self.dictionary_pdbs[name].get_children()):
-                    self.dictchain[name][i.get_name()] = self.chainids[n]
+            self._init_dictchain(name, prot)
 
     def write_pdb_best_scoring(self, score):
         if self.nbestscoring is None:

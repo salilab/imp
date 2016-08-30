@@ -20,6 +20,16 @@ import RMF
 from math import pi, sqrt
 from operator import itemgetter
 import os
+import weakref
+
+class _Repo(object):
+    def __init__(self, doi, root):
+        self.doi = doi
+        self._root = root
+
+    def get_fname(self, fname):
+        """Return a path relative to the top of the repository"""
+        return os.path.relpath(fname, self._root)
 
 class Representation(object):
     # Authors: Peter Cimermancic, Riccardo Pellarin, Charles Greenberg
@@ -79,6 +89,9 @@ class Representation(object):
                      as optimal distance for the sequence connectivity
                      restraint.
         """
+
+        self._metadata = []
+        self._protocol_output = []
 
         # this flag uses either harmonic (False) or upperharmonic (True)
         # in the intra-pair connectivity restraint. Harmonic is used whe you want to
@@ -147,6 +160,24 @@ class Representation(object):
 
         self.residuenamekey = IMP.StringKey("ResidueName")
 
+    def add_metadata(self, m):
+        """Associate some metadata with this modeling.
+           @param m an instance of IMP.pmi.metadata.Metadata or a subclass.
+        """
+        self._metadata.append(m)
+
+    def add_protocol_output(self, p):
+        """Capture details of the modeling protocol.
+           @param p an instance of IMP.pmi.output.ProtocolOutput or a subclass.
+        """
+        self._protocol_output.append(p)
+        p._metadata = self._metadata
+        p.m = self.m
+        p.prot = self.prot
+        # Ugly, but we need to be able to call set_coordinates_from_rmf().
+        p._representation = weakref.proxy(self)
+    protocol_output = property(lambda self: self._protocol_output[:])
+
     def set_label(self, label):
         self.label = label
 
@@ -159,6 +190,19 @@ class Representation(object):
         self.prot.add_child(protein_h)
         self.color_dict[name] = color
         self.elements[name] = []
+        for p in self._protocol_output:
+            p.create_component(name, True)
+
+    def create_non_modeled_component(self, name):
+        """Create a component that isn't used in the modeling.
+           No coordinates or other structural data for this component will
+           be read or written, but a primary sequence can be assigned. This
+           is useful if the input experimental data is of a system larger
+           than that modeled. Any references to these non-modeled components
+           can then be correctly resolved later."""
+        self.elements[name] = []
+        for p in self._protocol_output:
+            p.create_component(name, False)
 
     # Deprecation warning
 
@@ -191,6 +235,8 @@ class Representation(object):
             self.sequence_dict[name]=offs_str+self.sequence_dict[name]
 
         self.elements[name].append((length, length, " ", "end"))
+        for p in self._protocol_output:
+            p.add_component_sequence(name, self.sequence_dict[name])
 
     def autobuild_model(self, name, pdbname, chain,
                         resolutions=None, resrange=None,
@@ -400,8 +446,12 @@ class Representation(object):
         self.elements[name].append(
             (start, end, pdbname.split("/")[-1] + ":" + chain, "pdb"))
 
-        outhiers += self.coarse_hierarchy(name, start, end,
-                                          resolutions, isnucleicacid, c0, protein_h, "pdb", color)
+        hiers = self.coarse_hierarchy(name, start, end,
+                                      resolutions, isnucleicacid, c0, protein_h, "pdb", color)
+        outhiers += hiers
+        for p in self._protocol_output:
+            p.add_pdb_element(name, start, end, offset, pdbname, chain,
+                              hiers[0])
 
         if show:
             IMP.atom.show_molecular_hierarchy(protein_h)
@@ -566,6 +616,9 @@ class Representation(object):
             self.floppy_bodies.append(prt)
             IMP.core.XYZ(prt).set_coordinates_are_optimized(True)
             outhiers += [h]
+
+        for p in self._protocol_output:
+            p.add_bead_element(name, ds[0][0], ds[-1][1], len(ds), outhiers[0])
 
         return outhiers
 
@@ -940,7 +993,8 @@ class Representation(object):
                                  state_number=0,
                                  skip_gaussian_in_rmf=False,
                                  skip_gaussian_in_representation=False,
-                                 save_file=False):
+                                 save_file=False,
+                                 force_rigid_update=False):
         '''Read and replace coordinates from an RMF file.
         Replace the coordinates of particles with the same name.
         It assumes that the RMF and the representation have the particles
@@ -951,7 +1005,8 @@ class Representation(object):
         @param representation_name_to_rmf_name_map a dictionary that map
                 the original rmf particle name to the recipient particle component name
         @param save_file: save a file with the names of particles of the component
-
+        @param force_rigid_update: update the coordinates of rigid bodies
+               (normally this should be called before rigid bodies are set up)
         '''
         import IMP.pmi.analysis
 
@@ -964,6 +1019,9 @@ class Representation(object):
             raise ValueError("cannot read hierarchy from rmf")
 
         prot=prots[0]
+        # Make sure coordinates of rigid body members in the RMF are correct
+        if force_rigid_update:
+            self.m.update()
 
         # if len(self.rigid_bodies)!=0:
         #   print "set_coordinates_from_rmf: cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies"
@@ -1018,16 +1076,25 @@ class Representation(object):
 
                 prmfname = prmf.get_name()
                 preprname = psrepr[n].get_name()
-                if IMP.core.RigidMember.get_is_setup(psrepr[n]):
-                    raise ValueError("component %s cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies" % component_name)
-                if IMP.core.NonRigidMember.get_is_setup(psrepr[n]):
-                    raise ValueError("component %s cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies" % component_name)
+                if force_rigid_update:
+                    if IMP.core.RigidBody.get_is_setup(psrepr[n]):
+                        continue
+                else:
+                    if IMP.core.RigidBodyMember.get_is_setup(psrepr[n]):
+                        raise ValueError("component %s cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies" % component_name)
 
                 if prmfname != preprname:
                     print("set_coordinates_from_rmf: WARNING rmf particle and representation particles have not the same name %s %s " % (prmfname, preprname))
                 if IMP.core.XYZ.get_is_setup(prmf) and IMP.core.XYZ.get_is_setup(psrepr[n]):
                     xyz = IMP.core.XYZ(prmf).get_coordinates()
                     IMP.core.XYZ(psrepr[n]).set_coordinates(xyz)
+                    if IMP.core.RigidBodyMember.get_is_setup(psrepr[n]):
+                        # Set rigid body so that coordinates are preserved
+                        # on future model updates
+                        rbm = IMP.core.RigidBodyMember(psrepr[n])
+                        rbm.set_internal_coordinates(xyz)
+                        tr = IMP.algebra.ReferenceFrame3D()
+                        rbm.get_rigid_body().set_reference_frame_lazy(tr)
                 else:
                     print("set_coordinates_from_rmf: WARNING particles are not XYZ decorated %s %s " % (str(IMP.core.XYZ.get_is_setup(prmf)), str(IMP.core.XYZ.get_is_setup(psrepr[n]))))
 
