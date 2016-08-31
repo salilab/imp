@@ -360,7 +360,9 @@ _ihm_dataset_related_db_reference.details
         protocol.id = 93
         group = IMP.pmi.mmcif.ModelGroup("all models")
         group.id = 7
-        self.assertEqual(d.add(simo.prot, protocol, assembly, group).id, 1)
+        model = d.add(simo.prot, protocol, assembly, group)
+        self.assertEqual(model.id, 1)
+        self.assertEqual(model.get_rmsf('Nup84', (1,)), '.')
         fh = StringIO()
         w = IMP.pmi.mmcif.CifWriter(fh)
         d.dump(w)
@@ -386,10 +388,74 @@ _ihm_sphere_obj_site.Cartn_x
 _ihm_sphere_obj_site.Cartn_y
 _ihm_sphere_obj_site.Cartn_z
 _ihm_sphere_obj_site.object_radius
+_ihm_sphere_obj_site.rmsf
 _ihm_sphere_obj_site.model_id
-1 1 1 1 A 0.000 0.000 0.000 3.068 1
-2 1 2 2 A 0.000 0.000 0.000 2.997 1
-3 1 3 4 A 0.000 0.000 0.000 3.504 1
+1 1 1 1 A 0.000 0.000 0.000 3.068 . 1
+2 1 2 2 A 0.000 0.000 0.000 2.997 . 1
+3 1 3 4 A 0.000 0.000 0.000 3.504 . 1
+#
+""")
+
+    def test_model_dumper_sphere_rmsf(self):
+        """Test ModelDumper sphere_obj output with RMSF"""
+        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
+            def flush(self):
+                pass
+
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+        nup84 = simo.autobuild_model("Nup84",
+                                     self.get_input_file_name("test.nup84.pdb"),
+                                     "A")
+
+        d = IMP.pmi.mmcif.ModelDumper(po)
+        assembly = IMP.pmi.mmcif.Assembly()
+        assembly.id = 42
+        protocol = IMP.pmi.mmcif.Protocol()
+        protocol.id = 93
+        group = IMP.pmi.mmcif.ModelGroup("all models")
+        group.id = 7
+        model = d.add(simo.prot, protocol, assembly, group)
+        self.assertEqual(model.id, 1)
+        model.parse_rmsf_file(self.get_input_file_name('test.nup84.rmsf'),
+                              'Nup84')
+        self.assertAlmostEqual(model.get_rmsf('Nup84', (1,)), 4.5, delta=1e-4)
+        self.assertRaises(ValueError, model.get_rmsf, 'Nup84', (1,2))
+        fh = StringIO()
+        w = IMP.pmi.mmcif.CifWriter(fh)
+        d.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_model_list.ordinal_id
+_ihm_model_list.model_id
+_ihm_model_list.model_group_id
+_ihm_model_list.model_group_name
+_ihm_model_list.assembly_id
+_ihm_model_list.protocol_id
+1 1 7 'all models' 42 93
+#
+#
+loop_
+_ihm_sphere_obj_site.ordinal_id
+_ihm_sphere_obj_site.entity_id
+_ihm_sphere_obj_site.seq_id_begin
+_ihm_sphere_obj_site.seq_id_end
+_ihm_sphere_obj_site.asym_id
+_ihm_sphere_obj_site.Cartn_x
+_ihm_sphere_obj_site.Cartn_y
+_ihm_sphere_obj_site.Cartn_z
+_ihm_sphere_obj_site.object_radius
+_ihm_sphere_obj_site.rmsf
+_ihm_sphere_obj_site.model_id
+1 1 1 1 A 0.000 0.000 0.000 3.068 4.500 1
+2 1 2 2 A 0.000 0.000 0.000 2.997 3.500 1
+3 1 3 4 A 0.000 0.000 0.000 3.504 5.500 1
 #
 """)
 
@@ -471,6 +537,67 @@ _ihm_modeling_protocol.multi_state_flag
 _ihm_modeling_protocol.time_ordered_flag
 1 1 1 1 1 . . Sampling 'Replica exchange monte carlo' 0 1000 YES NO NO
 2 1 2 1 1 . . Sampling 'Replica exchange monte carlo' 1000 1000 YES NO NO
+#
+""")
+
+    def test_density_dumper(self):
+        """Test DensityDumper"""
+        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
+            def flush(self):
+                pass
+
+        class DummyEnsemble(object):
+            pass
+
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+
+        ensemble = DummyEnsemble()
+        ensemble.id = 42
+        p = IMP.Particle(m)
+        IMP.atom.Mass.setup_particle(p, 3.5)
+        rot = IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1),
+                                                  0.5)
+        tran = IMP.algebra.Vector3D(4,6,8)
+        tr = IMP.algebra.Transformation3D(rot, tran)
+        rf = IMP.algebra.ReferenceFrame3D(tr)
+        g = IMP.algebra.Gaussian3D(rf, IMP.algebra.Vector3D(10,11,12))
+        IMP.core.Gaussian.setup_particle(p, g)
+        ensemble.localization_density = {'Nup84': [p]}
+        po.density_dump.add(ensemble)
+
+        fh = StringIO()
+        w = IMP.pmi.mmcif.CifWriter(fh)
+        po.density_dump.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_gaussian_obj_ensemble.ordinal_id
+_ihm_gaussian_obj_ensemble.entity_id
+_ihm_gaussian_obj_ensemble.seq_id_begin
+_ihm_gaussian_obj_ensemble.seq_id_end
+_ihm_gaussian_obj_ensemble.asym_id
+_ihm_gaussian_obj_ensemble.mean_Cartn_x
+_ihm_gaussian_obj_ensemble.mean_Cartn_y
+_ihm_gaussian_obj_ensemble.mean_Cartn_z
+_ihm_gaussian_obj_ensemble.weight
+_ihm_gaussian_obj_ensemble.covariance_matrix[1][1]
+_ihm_gaussian_obj_ensemble.covariance_matrix[1][2]
+_ihm_gaussian_obj_ensemble.covariance_matrix[1][3]
+_ihm_gaussian_obj_ensemble.covariance_matrix[2][1]
+_ihm_gaussian_obj_ensemble.covariance_matrix[2][2]
+_ihm_gaussian_obj_ensemble.covariance_matrix[2][3]
+_ihm_gaussian_obj_ensemble.covariance_matrix[3][1]
+_ihm_gaussian_obj_ensemble.covariance_matrix[3][2]
+_ihm_gaussian_obj_ensemble.covariance_matrix[3][3]
+_ihm_gaussian_obj_ensemble.ensemble_id
+1 1 1 4 A 4.000 6.000 8.000 3.500 10.230 -0.421 0.000 -0.421 10.770 0.000 0.000
+0.000 12.000 42
 #
 """)
 

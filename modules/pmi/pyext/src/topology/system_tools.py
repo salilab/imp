@@ -62,9 +62,7 @@ def get_structure(mdl,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,ca_
             end = IMP.atom.Residue(mh.get_children()[0].get_children()[-1]).get_index()
         sel = IMP.atom.Selection(mh,chain=chain_id,residue_indexes=range(start,end+1),
                                  atom_type=IMP.atom.AtomType('CA'))
-    ret=[]
-
-    # return final and apply offset
+    ret = []
     for p in sel.get_selected_particles():
         res = IMP.atom.Residue(IMP.atom.Atom(p).get_parent())
         res.set_index(res.get_index() + offset)
@@ -220,14 +218,20 @@ def build_representation(parent,rep,coord_finder):
                                                      density_ps,
                                                      mdl)
         if len(density_ps)!=num_components or not os.path.exists(rep.density_prefix+'.txt') or rep.density_force_compute:
-            density_ps = []
             fit_coords = []
+            total_mass = 0.0
             for r in rep.residues:
-                fit_coords += [IMP.core.XYZ(p).get_coordinates() for p in IMP.core.get_leaves(r.hier)]
+                for p in IMP.core.get_leaves(r.hier):
+                    fit_coords.append(IMP.core.XYZ(p).get_coordinates())
+                    total_mass += IMP.atom.Mass(p).get_mass()
+
+            # fit GMM
             IMP.isd.gmm_tools.fit_gmm_to_points(fit_coords,
                                                 num_components,
                                                 mdl,
-                                                density_ps)
+                                                density_ps,
+                                                mass_multiplier=total_mass)
+
             IMP.isd.gmm_tools.write_gmm_to_text(density_ps,rep.density_prefix+'.txt')
             if rep.density_voxel_size>0.0:
                 IMP.isd.gmm_tools.write_gmm_to_map(density_ps,rep.density_prefix+'.mrc',

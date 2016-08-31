@@ -3,7 +3,11 @@
 """
 
 from __future__ import print_function
+import IMP.core
+import IMP.algebra
 import IMP.atom
+import IMP.em
+import IMP.isd
 import IMP.pmi.representation
 import IMP.pmi.tools
 from IMP.pmi.tools import OrderedDict
@@ -59,6 +63,8 @@ class CifLoopWriter(object):
         self.writer = writer
         self.category = category
         self.keys = keys
+        # Remove characters that we can't use in Python identifiers
+        self.python_keys = [k.replace('[', '').replace(']', '') for k in keys]
         self._empty_loop = True
     def write(self, **kwargs):
         if self._empty_loop:
@@ -68,7 +74,7 @@ class CifLoopWriter(object):
                 f.write("%s.%s\n" % (self.category, k))
             self._empty_loop = False
         l = _LineWriter(self.writer)
-        for k in self.keys:
+        for k in self.python_keys:
             l.write(kwargs.get(k, self.writer.omitted))
         self.writer.fh.write("\n")
     def __enter__(self):
@@ -570,7 +576,7 @@ class EMDBDataset(Dataset):
 class DatasetGroup(object):
     """A group of datasets"""
     def __init__(self, datasets):
-        self.datasets = datasets[:]
+        self.datasets = list(datasets)
 
 class DatasetDumper(Dumper):
     def __init__(self, simo):
@@ -871,10 +877,31 @@ class Model(object):
         (particle_infos_for_pdb,
          self.geometric_center) = o.get_particle_infos_for_pdb_writing(name)
         self.entity_for_chain = {}
+        self.comp_for_chain = {}
         for protname, chain_id in o.dictchain[name].items():
             self.entity_for_chain[chain_id] = simo.entities[protname]
+            self.comp_for_chain[chain_id] = protname
         self.spheres = [t for t in particle_infos_for_pdb if t[1] is None]
         self.atoms = [t for t in particle_infos_for_pdb if t[1] is not None]
+        self.rmsf = {}
+
+    def parse_rmsf_file(self, fname, component):
+        self.rmsf[component] = rmsf = {}
+        with open(fname) as fh:
+            for line in fh:
+                resnum, blocknum, val = line.split()
+                rmsf[int(resnum)] = (int(blocknum), float(val))
+
+    def get_rmsf(self, component, indexes):
+        """Get the RMSF value for the given residue indexes."""
+        if not self.rmsf:
+            return CifWriter.omitted
+        rmsf = self.rmsf[component]
+        blocknums = dict.fromkeys(rmsf[ind][0] for ind in indexes)
+        if len(blocknums) != 1:
+            raise ValueError("Residue indexes %s aren't all in the same block"
+                             % str(indexes))
+        return rmsf[indexes[0]][1]
 
 class ModelDumper(Dumper):
     def __init__(self, simo):
@@ -936,7 +963,7 @@ class ModelDumper(Dumper):
         with writer.loop("_ihm_sphere_obj_site",
                          ["ordinal_id", "entity_id", "seq_id_begin",
                           "seq_id_end", "asym_id", "Cartn_x",
-                          "Cartn_y", "Cartn_z", "object_radius",
+                          "Cartn_y", "Cartn_z", "object_radius", "rmsf",
                           "model_id"]) as l:
             for model in self.models:
                 for sphere in model.spheres:
@@ -952,7 +979,10 @@ class ModelDumper(Dumper):
                             Cartn_x=xyz[0] - model.geometric_center[0],
                             Cartn_y=xyz[1] - model.geometric_center[1],
                             Cartn_z=xyz[2] - model.geometric_center[2],
-                            object_radius=radius, model_id=model.id)
+                            object_radius=radius,
+                            rmsf=model.get_rmsf(model.comp_for_chain[chain_id],
+                                                all_indexes),
+                            model_id=model.id)
                     ordinal += 1
 
 
@@ -1180,6 +1210,12 @@ modeling. These may need to be added manually below.""")
                             atom_name = atom_name[4:]
                         res = IMP.atom.get_residue(atom)
                         res_name = res.get_residue_type().get_string()
+                        # MSE in the original PDB is automatically mutated
+                        # by IMP to MET, so reflect that in the output.
+                        # todo: also add to the notes for starting_model_details
+                        # that the sequence was changed
+                        if res_name == 'MSE':
+                            res_name = 'MET'
                         chain_id = self.simo.get_chain_for_component(
                                             f.component, self.output)
                         entity = self.simo.entities[f.component]
@@ -1310,8 +1346,41 @@ class ReplicaExchangeAnalysisEnsemble(Ensemble):
         self.cluster_num = cluster_num
         self.postproc = pp
         self.num_deposit = num_deposit
+        self.localization_density = {}
         with open(pp.get_stat_file(cluster_num)) as fh:
             self.num_models = len(fh.readlines())
+
+    def get_rmsf_file(self, component):
+        return os.path.join(self.postproc.rex._outputdir,
+                            'cluster.%d' % self.cluster_num,
+                            'rmsf.%s.dat' % component)
+
+    def load_rmsf(self, model, component):
+        fname = self.get_rmsf_file(component)
+        if os.path.exists(fname):
+            model.parse_rmsf_file(fname, component)
+
+    def get_localization_density_file(self, component):
+        # todo: this assumes that the localization density file name matches
+        # the component name and is of the complete residue range (usually
+        # this is the case, but it doesn't have to be)
+        return os.path.join(self.postproc.rex._outputdir,
+                            'cluster.%d' % self.cluster_num,
+                            '%s.mrc' % component)
+
+    def load_localization_density(self, mdl, component):
+        fname = self.get_localization_density_file(component)
+        if os.path.exists(fname):
+            dmap = IMP.em.read_map(fname, IMP.em.MRCReaderWriter())
+            pts = IMP.isd.sample_points_from_density(dmap, 1000000)
+            dmap.set_was_used(True)
+            density_ps = []
+            ncenters = 50 # todo: make configurable or scale with # of residues
+            score, akaikescore = IMP.isd.gmm_tools.fit_gmm_to_points(
+                                             pts, ncenters, mdl, density_ps)
+            # todo: verify score isn't terrible; if it is try repeating with
+            # more centers
+            self.localization_density[component] = density_ps
 
     def load_all_models(self, simo):
         stat_fname = self.postproc.get_stat_file(self.cluster_num)
@@ -1378,6 +1447,58 @@ class EnsembleDumper(Dumper):
                         num_ensemble_models_deposited=e.num_deposit,
                         ensemble_precision_value=e.precision)
 
+class DensityDumper(Dumper):
+    """Output localization densities for ensembles"""
+
+    def __init__(self, simo):
+        super(DensityDumper, self).__init__(simo)
+        self.ensembles = []
+        self.output = IMP.pmi.output.Output()
+
+    def add(self, ensemble):
+        self.ensembles.append(ensemble)
+
+    def get_gmm(self, ensemble, component):
+        return ensemble.localization_density.get(component, [])
+
+    def dump(self, writer):
+        with writer.loop("_ihm_gaussian_obj_ensemble",
+                         ["ordinal_id", "entity_id", "seq_id_begin",
+                          "seq_id_end", "asym_id", "mean_Cartn_x",
+                          "mean_Cartn_y", "mean_Cartn_z", "weight",
+                          "covariance_matrix[1][1]", "covariance_matrix[1][2]",
+                          "covariance_matrix[1][3]", "covariance_matrix[2][1]",
+                          "covariance_matrix[2][2]", "covariance_matrix[2][3]",
+                          "covariance_matrix[3][1]", "covariance_matrix[3][2]",
+                          "covariance_matrix[3][3]", "ensemble_id"]) as l:
+            ordinal = 1
+            for ensemble in self.ensembles:
+                for comp in self.simo.all_modeled_components:
+                    entity = self.simo.entities[comp]
+                    lenseq = len(entity.sequence)
+                    chain_id = self.simo.get_chain_for_component(comp,
+                                                                 self.output)
+                    for g in self.get_gmm(ensemble, comp):
+                        shape = IMP.core.Gaussian(g).get_gaussian()
+                        weight = IMP.atom.Mass(g).get_mass()
+                        mean = shape.get_center()
+                        cv = IMP.algebra.get_covariance(shape)
+
+                        l.write(ordinal_id=ordinal, entity_id=entity.id,
+                            seq_id_begin=1, seq_id_end=lenseq,
+                            asym_id=chain_id, mean_Cartn_x=mean[0],
+                            mean_Cartn_y=mean[1], mean_Cartn_z=mean[2],
+                            weight=weight, ensemble_id=ensemble.id,
+                            covariance_matrix11=cv[0][0],
+                            covariance_matrix12=cv[0][1],
+                            covariance_matrix13=cv[0][2],
+                            covariance_matrix21=cv[1][0],
+                            covariance_matrix22=cv[1][1],
+                            covariance_matrix23=cv[1][2],
+                            covariance_matrix31=cv[2][0],
+                            covariance_matrix32=cv[2][1],
+                            covariance_matrix33=cv[2][2])
+                        ordinal += 1
 
 class Entity(object):
     """Represent a CIF entity (a chain with a unique sequence)"""
@@ -1441,6 +1562,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.software_dump = SoftwareDumper(self)
         self.post_process_dump = PostProcessDumper(self)
         self.ensemble_dump = EnsembleDumper(self)
+        self.density_dump = DensityDumper(self)
         self._dumpers = [EntryDumper(self), # should always be first
                          AuditAuthorDumper(self),
                          self.software_dump, CitationDumper(self),
@@ -1456,7 +1578,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                          # todo: detect atomic models and emit struct_conf
                          #StructConfDumper(self),
                          self.model_prot_dump, self.post_process_dump,
-                         self.ensemble_dump, self.model_dump]
+                         self.ensemble_dump, self.density_dump, self.model_dump]
 
     def get_chain_for_component(self, name, output):
         """Get the chain ID for a component, if any."""
@@ -1536,8 +1658,9 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def add_replica_exchange_analysis(self, rex):
         # todo: add prefilter as an additional postprocess step (complication:
         # we don't know how many models it filtered)
-        # todo: extract rmsf and density localization info if available for
-        # each cluster
+        # todo: postpone rmsf/density localization extraction until after
+        # relevant methods are called (currently it is done from the
+        # constructor)
         num_models = self.model_prot_dump.get_last_protocol().num_models_end
         pp = ReplicaExchangeAnalysisPostProcess(rex, num_models)
         self.post_process_dump.add(pp)
@@ -1546,10 +1669,17 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             # todo: make # of models to deposit configurable somewhere
             e = ReplicaExchangeAnalysisEnsemble(pp, i, group, 1)
             self.ensemble_dump.add(e)
+            self.density_dump.add(e)
+            # Add localization density info if available
+            for c in self.all_modeled_components:
+                e.load_localization_density(self.m, c)
             for x in e.load_all_models(self):
                 m = self.add_model(group)
                 # Don't alter original RMF coordinates
                 m.geometric_center = [0,0,0]
+                # Add RMSF info if available
+                for c in self.all_modeled_components:
+                    e.load_rmsf(m, c)
 
     def add_em2d_restraint(self, images, resolution, pixel_size,
                            image_resolution, projection_number, micrographs):

@@ -773,7 +773,7 @@ class PDBSequences(object):
         self.sequences = IMP.pmi.tools.OrderedDict()
         self.read_sequences(pdb_fn,name_map)
 
-    
+
     def read_sequences(self,pdb_fn,name_map):
         t = IMP.atom.read_pdb(pdb_fn, self.m, IMP.atom.ATOMPDBSelector())
         cs=IMP.atom.get_by_type(t,IMP.atom.CHAIN_TYPE)
@@ -781,7 +781,7 @@ class PDBSequences(object):
             id=IMP.atom.Chain(c).get_id()
             print(id)
             if name_map:
-                try: 
+                try:
                     id=name_map[id]
                 except:
                     print("Chain ID %s not in name_map, skipping" % id)
@@ -805,29 +805,28 @@ class PDBSequences(object):
                     sequence_fragment+=rids_olc_dict[i]
                 contiguous_sequences[group]=sequence_fragment
             self.sequences[id]=contiguous_sequences
-        
+
         #for c in self.sequences:
         #    for group in self.sequences[c]:
         #        print(c,group,self.sequences[c][group])
-                
+
     def group_indexes(self,indexes):
-        from operator import itemgetter
         from itertools import groupby
         ranges = []
-        for k, g in groupby(enumerate(indexes), lambda (i,x):i-x):
-            group = map(itemgetter(1), g)
+        for k, g in groupby(enumerate(indexes), lambda x:x[0]-x[1]):
+            group = [x[1] for x in g]
             ranges.append((group[0], group[-1]))
         return ranges
 
 
 def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
-    '''This function computes and prints the alignment between the 
+    '''This function computes and prints the alignment between the
     fasta file and the pdb sequence, computes the offsets for each contiguous
-    fragment in the PDB. 
+    fragment in the PDB.
     @param fasta_sequences  IMP.pmi.topology.Sequences object
     @param pdb_sequences IMP.pmi.topology.PDBSequences object
     @param show boolean default False, if True prints the alignments.
-    The input objects should be generated using map_name dictionaries such that fasta_id 
+    The input objects should be generated using map_name dictionaries such that fasta_id
     and pdb_chain_id are mapping to the same protein name. It needs Biopython.
     Returns a dictionary of offsets (if offsets are consistent for each fragment).'''
     from Bio import pairwise2
@@ -842,7 +841,7 @@ def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
     for name in fasta_sequences.sequences:
         print(name)
         seq_fasta=fasta_sequences.sequences[name]
-        if name not in pdb_sequences.sequences: 
+        if name not in pdb_sequences.sequences:
             print("Fasta id %s not in pdb names, skipping" % name)
             continue
         for group in pdb_sequences.sequences[name]:
@@ -865,8 +864,8 @@ def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
                     if offsets[name]!=offset:
                         raise Exception("Cannot return consistent offsets for protein %s" % name)
     return offsets
-                
-            
+
+
 
 #------------------------
 
