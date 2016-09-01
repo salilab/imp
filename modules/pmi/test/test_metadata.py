@@ -17,14 +17,16 @@ class Tests(IMP.test.TestCase):
         s = IMP.pmi.metadata.Citation(title='Test paper', journal='J Mol Biol',
                                       volume=45, page_range=(1,20), year=2016,
                                       authors=['Smith, A.', 'Jones, B.'],
-                                      doi='10.2345/S1384107697000225')
+                                      doi='10.2345/S1384107697000225',
+                                      pmid='1234')
         self.assertEqual(s.title, 'Test paper')
 
     def test_repository(self):
         """Test metadata.Repository"""
         s = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46266', root='..')
         self.assertEqual(s._root, '..')
-        self.assertEqual(s.get_path('../foo'), 'foo')
+        f = s.get_path('../foo')
+        self.assertEqual(f.path, 'foo')
 
     def test_repr_add(self):
         """Test Representation.add_metadata()"""

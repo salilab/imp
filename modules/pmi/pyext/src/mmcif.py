@@ -1119,6 +1119,8 @@ class StartingModelDumper(Dumper):
             templates = self.get_templates(pdbname, model)
             if templates:
                 return templates
+            else:
+                return [UnknownSource(model)]
         else:
             # todo: extract Modeller-like template info for Phyre models;
             # revisit assumption that all such unknown source PDBs are
