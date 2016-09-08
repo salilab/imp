@@ -1199,6 +1199,7 @@ MembraneSurfaceLocationRestraint::unprotected_evaluate(DerivativeAccumulator *ac
   for (unsigned int i = 0; i < all_particles.size(); ++i )
   {
     core::XYZ i_current = core::XYZ(all_particles[i]);
+    /*
     double z = i_current.get_coordinate(2);
     if ( z > r_ )
       z = r_;
@@ -1206,6 +1207,9 @@ MembraneSurfaceLocationRestraint::unprotected_evaluate(DerivativeAccumulator *ac
       z = -r_;
     std::pair<double, algebra::Vector3D> dist = half_torus_distance(i_current.get_coordinate(0),
         i_current.get_coordinate(1), z, R_, r_);
+    */
+    std::pair<double, algebra::Vector3D> dist = half_torus_distance(i_current.get_coordinate(0),
+        i_current.get_coordinate(1), i_current.get_coordinate(2), R_, r_);
     if ( std::fabs(dist.first) > thickness_ )
     {
       v += dist.first*dist.first;
