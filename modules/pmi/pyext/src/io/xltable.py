@@ -570,15 +570,12 @@ class XLTable():
         plugins.connect(fig, tooltip)
         mpld3.save_html(fig,"output.html")
 
-    def save_xl_distances(self,filename):
-
-        import csv
-
+    def compute_distances(self):
         data=[]
         sorted_ids=None
         sorted_group_ids=sorted(self.cross_link_db.data_base.keys())
         for group in sorted_group_ids:
-            group_block=[]
+            #group_block=[]
             group_dists=[]
             for xl in self.cross_link_db.data_base[group]:
                 if not sorted_ids:
@@ -588,18 +585,18 @@ class XLTable():
                 try:
                    (mdist,p1,p2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
                 except:
-                   mdist=0.0
+                   mdist="None"
                 values=[xl[k] for k in sorted_ids]
                 values+=[group,mdist]
                 group_dists.append(mdist)
-                group_block.append(values)
-            for l in group_block:
-                l.append(min(group_dists))
-            data+=group_block
+                #group_block.append(values)
+                xl["Distance"]=mdist
+                
+            for xl in self.cross_link_db.data_base[group]:
+                xl["MinAmbiguousDistance"]=min(group_dists)
+            #for l in group_block:
+            #    l.append(min(group_dists))
 
-        with open(filename, 'w') as fp:
-            a = csv.writer(fp, delimiter=',')
-            a.writerows(data)
 
     def save_rmf_snapshot(self,filename,color_id=None):
         if color_id is None:

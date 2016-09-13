@@ -357,6 +357,7 @@ class Molecule(_SystemBase):
         @param pdb_fn    The file to read
         @param chain_id  Chain ID to read
         @param res_range Add only a specific set of residues from the PDB file.
+                         res_range[0] is the starting and res_range[1] is the ending residue index.
         @param offset    Apply an offset to the residue indexes of the PDB file.
                          This number is added to the PDB sequence.
         @param model_num Read multi-model PDB and return that model
@@ -828,7 +829,8 @@ def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
     @param show boolean default False, if True prints the alignments.
     The input objects should be generated using map_name dictionaries such that fasta_id
     and pdb_chain_id are mapping to the same protein name. It needs Biopython.
-    Returns a dictionary of offsets (if offsets are consistent for each fragment).'''
+    Returns a dictionary of offsets, organized by peptide range (group):
+    example: offsets={"ProtA":{(1,10):1,(20,30):10}}'''
     from Bio import pairwise2
     from Bio.pairwise2 import format_alignment
     from Bio.SubsMat import MatrixInfo as matlist
@@ -859,10 +861,12 @@ def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
                     print("offset from pdb to fasta index",offset)
                     print(format_alignment(*a))
                 if name not in offsets:
-                    offsets[name]=offset
+                    offsets[name]={}
+                    if group not in offsets[name]:
+                        offsets[name][group]=offset
                 else:
-                    if offsets[name]!=offset:
-                        raise Exception("Cannot return consistent offsets for protein %s" % name)
+                    if group not in offsets[name]:
+                        offsets[name][group]=offset                    
     return offsets
 
 

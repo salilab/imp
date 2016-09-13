@@ -38,6 +38,8 @@ class _CrossLinkDataBaseStandardKeys(object):
         self.type[self.cross_linker_chemical_key]=str
         self.id_score_key="IDScore"
         self.type[self.id_score_key]=float
+        self.fdr_key="FDR"
+        self.type[self.fdr_key]=float
         self.quantitation_key="Quantitation"
         self.type[self.quantitation_key]=float
         self.redundancy_key="Redundancy"
@@ -52,6 +54,10 @@ class _CrossLinkDataBaseStandardKeys(object):
         self.type[self.sigma2_key]=str
         self.psi_key="Psi"
         self.type[self.psi_key]=str
+        self.distance_key="Distance"
+        self.type[self.distance_key]=float
+        self.min_ambiguous_distance_key="MinAmbiguousDistance"
+        self.type[self.distance_key]=float
 
         self.ordered_key_list =[self.data_set_name_key,
                         self.unique_id_key,
@@ -63,13 +69,16 @@ class _CrossLinkDataBaseStandardKeys(object):
                         self.residue2_key,
                         self.cross_linker_chemical_key,
                         self.id_score_key,
+                        self.fdr_key,
                         self.quantitation_key,
                         self.redundancy_key,
                         self.redundancy_list_key,
                         self.state_key,
                         self.sigma1_key,
                         self.sigma2_key,
-                        self.psi_key]
+                        self.psi_key,
+                        self.distance_key,
+                        self.min_ambiguous_distance_key]
 
 
 class _ProteinsResiduesArray(tuple):
@@ -241,6 +250,10 @@ class CrossLinkDataBaseKeywordsConverter(_CrossLinkDataBaseStandardKeys):
     def set_id_score_key(self,origin_key):
         self.converter[origin_key]=self.id_score_key
         self.backward_converter[self.id_score_key]=origin_key
+
+    def set_fdr_key(self,origin_key):
+        self.converter[origin_key]=self.fdr_key
+        self.backward_converter[self.fdr_key]=origin_key
 
     def set_quantitation_key(self,origin_key):
         self.converter[origin_key]=self.quantitation_key
@@ -782,6 +795,49 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                         outstr+="--- "+str(k)+" "+str(xl[k])+"\n"
                 outstr+="-------------\n"
         return outstr
+
+
+    def plot(self,filename,**kwargs):
+        import matplotlib.pyplot as plt
+        import matplotlib
+        import matplotlib.colors
+        
+
+
+        if kwargs["type"] == "scatter":
+            cmap=plt.get_cmap("rainbow")
+            norm=matplotlib.colors.Normalize(vmin=0.0, vmax=1.0)
+            xkey=kwargs["xkey"]
+            ykey=kwargs["ykey"]    
+            if "colorkey" in kwargs:
+                colorkey=kwargs["colorkey"]
+            if "sizekey" in kwargs:
+                sizekey=kwargs["sizekey"]
+            xs=[]
+            ys=[]
+            colors=[]
+            for xl in self:
+                try:
+                    xs.append(float(xl[xkey]))
+                    ys.append(float(xl[ykey]))
+                    colors.append(float(xl[colorkey]))
+                except ValueError:
+                    print("Value error for cross-link %s" % (xl[self.unique_id_key]))
+                    continue
+            
+            cs=[]
+            for color in colors:
+                cindex=(color-min(colors))/(max(colors)-min(colors))
+                cs.append(cmap(cindex))
+            
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+            ax.scatter(xs, ys, s=50.0, c=cs, alpha=0.8,marker="o")
+            ax.set_xlabel(xkey)
+            ax.set_ylabel(ykey)
+            plt.savefig(filename)
+            plt.show()
+            plt.close()
 
     def dump(self,json_filename):
         import json

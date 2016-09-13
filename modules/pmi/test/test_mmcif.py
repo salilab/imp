@@ -32,6 +32,22 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(out[-3],
                          "3 test 'test code' 1 program http://salilab.org")
 
+    def test_assembly_dumper_get_subassembly(self):
+        """Test AssemblyDumper.get_subassembly()"""
+        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
+            def flush(self):
+                pass
+        po = DummyPO(EmptyObject())
+        d = IMP.pmi.mmcif.AssemblyDumper(po)
+        complete = IMP.pmi.mmcif.Assembly(['a', 'b', 'c'])
+        d.add(complete)
+        self.assertEqual(complete.id, 1)
+        x = d.get_subassembly({'a':None, 'b':None})
+        self.assertEqual(x.id, 2)
+        self.assertEqual(x, ['a', 'b'])
+        x = d.get_subassembly({'a':None, 'b':None, 'c':None})
+        self.assertEqual(x.id, 1)
+
     def test_assembly_all_modeled(self):
         """Test AssemblyDumper, all components modeled"""
         class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
@@ -217,6 +233,24 @@ _citation_author.ordinal
         self.assertEqual(mapper[h2[0]], 'B')
         self.assertEqual(mapper[h2[1]], 'B')
 
+    def test_component_mapper(self):
+        """Test ComponentMapper class"""
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+        simo.create_component("Nup85", True)
+        simo.add_component_sequence("Nup85",
+                                    self.get_input_file_name("test.fasta"))
+        h1 = simo.add_component_beads("Nup84", [(1,2), (3,4)])
+        h2 = simo.add_component_beads("Nup85", [(1,2), (3,4)])
+        mapper = IMP.pmi.mmcif.ComponentMapper(simo.prot)
+        self.assertEqual(mapper[h1[0]], 'Nup84')
+        self.assertEqual(mapper[h1[1]], 'Nup84')
+        self.assertEqual(mapper[h2[0]], 'Nup85')
+        self.assertEqual(mapper[h2[1]], 'Nup85')
+
     def test_cif_entities(self):
         """Test _EntityMapper class"""
         c = IMP.pmi.mmcif._EntityMapper()
@@ -307,7 +341,10 @@ _citation_author.ordinal
     def test_dataset_dumper_dump(self):
         """Test DatasetDumper.dump()"""
         dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
+        pds = dump.add(IMP.pmi.mmcif.CXMSDataset())
+        pds.set_location(IMP.pmi.metadata.RepositoryFile(doi='foo', path='bar'))
         ds = dump.add(IMP.pmi.mmcif.PDBDataset('1abc', '1.0', 'test details'))
+        ds.add_primary(pds)
         self.assertEqual(ds.location.access_code, '1abc')
 
         fh = StringIO()
@@ -321,7 +358,17 @@ _ihm_dataset_list.id
 _ihm_dataset_list.group_id
 _ihm_dataset_list.data_type
 _ihm_dataset_list.database_hosted
-1 1 1 'Experimental model' YES
+1 1 1 'CX-MS data' NO
+2 2 1 'Experimental model' YES
+#
+#
+loop_
+_ihm_dataset_other.id
+_ihm_dataset_other.dataset_list_id
+_ihm_dataset_other.data_type
+_ihm_dataset_other.doi
+_ihm_dataset_other.content_filename
+1 1 'CX-MS data' foo bar
 #
 #
 loop_
@@ -332,7 +379,16 @@ _ihm_dataset_related_db_reference.access_code
 _ihm_dataset_related_db_reference.version
 _ihm_dataset_related_db_reference.data_type
 _ihm_dataset_related_db_reference.details
-1 1 PDB 1abc 1.0 'Experimental model' 'test details'
+1 2 PDB 1abc 1.0 'Experimental model' 'test details'
+#
+#
+loop_
+_ihm_related_datasets.ordinal_id
+_ihm_related_datasets.dataset_list_id_derived
+_ihm_related_datasets.data_type_derived
+_ihm_related_datasets.dataset_list_id_primary
+_ihm_related_datasets.data_type_primary
+1 2 'Experimental model' 1 'CX-MS data'
 #
 """)
 

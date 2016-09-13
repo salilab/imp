@@ -131,6 +131,19 @@ class AsymIDMapper(object):
         protname, is_a_bead = self.o.get_prot_name_from_particle(self.name, p)
         return self.o.dictchain[self.name][protname]
 
+class ComponentMapper(object):
+    """Map a Particle to a component name"""
+    def __init__(self, prot):
+        self.o = IMP.pmi.output.Output()
+        self.prot = prot
+        self.name = 'cif-output'
+        self.o.dictionary_pdbs[self.name] = self.prot
+        self.o._init_dictchain(self.name, self.prot)
+
+    def __getitem__(self, p):
+        protname, is_a_bead = self.o.get_prot_name_from_particle(self.name, p)
+        return protname
+
 class Dumper(object):
     """Base class for helpers to dump output to mmCIF"""
     def __init__(self, simo):
@@ -526,8 +539,17 @@ class Dataset(object):
     location = None
     _eq_keys = ['location']
 
+    def __init__(self):
+        self._primaries = {}
+
     def set_location(self, loc):
         self.location = RepoDatasetLocation(loc)
+
+    def add_primary(self, d):
+        """Add a primary dataset (one from which this is derived).
+           For example, a 3D density map is generally derived from
+           one or more primary 2D image datasets"""
+        self._primaries[d] = None
 
     # Datasets compare equal iff they are the same class and have the
     # same attributes
@@ -547,6 +569,7 @@ class EMMicrographsDataset(Dataset):
 
     data_type = 'EM raw micrographs'
     def __init__(self, number):
+        super(EMMicrographsDataset, self).__init__()
         self.number = number
 
 class EM2DClassDataset(Dataset):
@@ -557,18 +580,21 @@ class CompModelDataset(Dataset):
        Currently it is assumed that models are stored in a repository."""
     data_type = 'Comparative model'
     def __init__(self, location):
+        super(CompModelDataset, self).__init__()
         self.set_location(location)
 
 class PDBDataset(Dataset):
     """An experimental PDB structure dataset."""
     data_type = 'Experimental model'
     def __init__(self, db_code, version, details):
+        super(PDBDataset, self).__init__()
         self.location = DBDatasetLocation('PDB', db_code, version, details)
 
 class EMDBDataset(Dataset):
     """An EM map stored in EMDB."""
     data_type = '3DEM volume'
     def __init__(self, emdb, allow_duplicates):
+        super(EMDBDataset, self).__init__()
         self.location = DBDatasetLocation('EMDB', emdb, CifWriter.omitted,
                                           CifWriter.omitted)
         self.location._allow_duplicates = allow_duplicates
@@ -623,6 +649,23 @@ class DatasetDumper(Dumper):
         self.dump_rel_dbs((d for d in self.datasets.keys()
                            if isinstance(d.location, DBDatasetLocation)),
                           writer)
+        self.dump_related(writer)
+
+    def dump_related(self, writer):
+        ordinal = 1
+        with writer.loop("_ihm_related_datasets",
+                         ["ordinal_id", "dataset_list_id_derived",
+                          "data_type_derived", "dataset_list_id_primary",
+                          "data_type_primary"]) as l:
+            for derived in self.datasets:
+                for primary in sorted(derived._primaries.keys(),
+                                      lambda d: d.id):
+                    l.write(ordinal_id=ordinal,
+                            dataset_list_id_derived=derived.id,
+                            data_type_derived=derived.data_type,
+                            dataset_list_id_primary=primary.id,
+                            data_type_primary=primary.data_type)
+                    ordinal += 1
 
     def dump_rel_dbs(self, datasets, writer):
         ordinal = 1
@@ -789,9 +832,19 @@ class EM2DDumper(Dumper):
 class EM3DRestraint(object):
     fitting_method = 'Gaussian mixture models'
 
-    def __init__(self, dataset, target_ps):
+    def __init__(self, simo, dataset, target_ps, densities):
         self.dataset = dataset
         self.number_of_gaussians = len(target_ps)
+        self.assembly = self.get_assembly(densities, simo)
+
+    def get_assembly(self, densities, simo):
+        """Get the Assembly that this restraint acts on"""
+        cm = ComponentMapper(simo.prot)
+        components = {}
+        for d in densities:
+            components[cm[d]] = None
+        return simo.assembly_dump.get_subassembly(components)
+
 
 class EM3DDumper(Dumper):
     def __init__(self, simo):
@@ -800,21 +853,24 @@ class EM3DDumper(Dumper):
 
     def add(self, rsr):
         self.restraints.append(rsr)
-        rsr.id = len(self.restraints)
 
     def dump(self, writer):
         # todo: support other fields
+        ordinal = 1
         with writer.loop("_ihm_3dem_restraint",
-                         ["id", "dataset_list_id", "fitting_method",
+                         ["ordinal_id", "dataset_list_id", "fitting_method",
+                          "struct_assembly_id",
                           "number_of_gaussians"]) as l:
             for r in self.restraints:
-                l.write(id=r.id, dataset_list_id=r.dataset.id,
+                l.write(ordinal_id=ordinal, dataset_list_id=r.dataset.id,
                         fitting_method=r.fitting_method,
+                        struct_assembly_id=r.assembly.id,
                         number_of_gaussians=r.number_of_gaussians)
+                ordinal += 1
 
 class Assembly(list):
     """A collection of components. Currently simply implemented as a list of
-       the component names."""
+       the component names. These must be in creation order."""
     pass
 
 class AssemblyDumper(Dumper):
@@ -824,8 +880,22 @@ class AssemblyDumper(Dumper):
         self.output = IMP.pmi.output.Output()
 
     def add(self, a):
+        """Add a new assembly. The first such assembly is assumed to contain
+           all components."""
         self.assemblies.append(a)
         a.id = len(self.assemblies)
+        return a
+
+    def get_subassembly(self, compdict):
+        """Get an Assembly consisting of the given components. Should only
+           be called after all components are created."""
+        # Put components in creation order
+        newa = Assembly(c for c in self.assemblies[0] if c in compdict)
+        for a in self.assemblies:
+            if newa == a: # Note that .id is ignored by ==
+                return a
+        else:
+            return self.add(newa)
 
     def dump(self, writer):
         ordinal = 1
@@ -1694,14 +1764,16 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             d = EM2DClassDataset()
             d.set_location(self._get_location(image))
             d = self.dataset_dump.add(d)
+            if mgd:
+                d.add_primary(mgd)
             self.em2d_dump.add(EM2DRestraint(d, resolution, pixel_size,
                                       image_resolution, projection_number, mgd))
 
-    def add_em3d_restraint(self, target_ps, emdb):
+    def add_em3d_restraint(self, target_ps, densities, emdb):
         # A 3DEM restraint's dataset ID uniquely defines the restraint, so
         # we need to allow duplicates
         d = self.dataset_dump.add(EMDBDataset(emdb, allow_duplicates=True))
-        self.em3d_dump.add(EM3DRestraint(d, target_ps))
+        self.em3d_dump.add(EM3DRestraint(self, d, target_ps, densities))
 
     def add_model(self, group=None):
         if group is None:

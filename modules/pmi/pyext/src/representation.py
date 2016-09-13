@@ -985,6 +985,19 @@ class Representation(object):
 
         IMP.isd.gmm_tools.decorate_gmm_from_text("model_gmm.txt",gaussians,self.m)
 
+    def _compare_rmf_repr_names(self, rmfname, reprname, component_name):
+        """Print a warning if particle names in RMF and model don't match"""
+        def match_any_suffix():
+            # Handle common mismatches like 743 != Nup85_743_pdb
+            suffixes = ["pdb", "bead_floppy_body_rigid_body_member_floppy_body"]
+            for s in suffixes:
+                if "%s_%s_%s" % (component_name, rmfname, s) == reprname:
+                    return True
+        if rmfname != reprname and not match_any_suffix():
+            print("set_coordinates_from_rmf: WARNING rmf particle and "
+                  "representation particle names don't match %s %s"
+                  % (rmfname, reprname))
+
     def set_coordinates_from_rmf(self, component_name, rmf_file_name,
                                  rmf_frame_number,
                                  rmf_component_name=None,
@@ -1077,14 +1090,15 @@ class Representation(object):
                 prmfname = prmf.get_name()
                 preprname = psrepr[n].get_name()
                 if force_rigid_update:
-                    if IMP.core.RigidBody.get_is_setup(psrepr[n]):
+                    if IMP.core.RigidBody.get_is_setup(psrepr[n]) \
+                       and not IMP.core.RigidBodyMember.get_is_setup(psrepr[n]):
                         continue
                 else:
                     if IMP.core.RigidBodyMember.get_is_setup(psrepr[n]):
                         raise ValueError("component %s cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies" % component_name)
 
-                if prmfname != preprname:
-                    print("set_coordinates_from_rmf: WARNING rmf particle and representation particles have not the same name %s %s " % (prmfname, preprname))
+                self._compare_rmf_repr_names(prmfname, preprname,
+                                             component_name)
                 if IMP.core.XYZ.get_is_setup(prmf) and IMP.core.XYZ.get_is_setup(psrepr[n]):
                     xyz = IMP.core.XYZ(prmf).get_coordinates()
                     IMP.core.XYZ(psrepr[n]).set_coordinates(xyz)
@@ -1094,7 +1108,11 @@ class Representation(object):
                         rbm = IMP.core.RigidBodyMember(psrepr[n])
                         rbm.set_internal_coordinates(xyz)
                         tr = IMP.algebra.ReferenceFrame3D()
-                        rbm.get_rigid_body().set_reference_frame_lazy(tr)
+                        rb = rbm.get_rigid_body()
+                        if IMP.core.RigidBodyMember.get_is_setup(rb):
+                            raise ValueError("Cannot handle nested "
+                                             "rigid bodies yet")
+                        rb.set_reference_frame_lazy(tr)
                 else:
                     print("set_coordinates_from_rmf: WARNING particles are not XYZ decorated %s %s " % (str(IMP.core.XYZ.get_is_setup(prmf)), str(IMP.core.XYZ.get_is_setup(psrepr[n]))))
 
