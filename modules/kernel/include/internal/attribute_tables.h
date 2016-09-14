@@ -336,6 +336,8 @@ class FloatAttributeTable {
   // make sure you know what you are doing
   algebra::Sphere3D &get_sphere(ParticleIndex particle) {
     IMP_CHECK_MASK(read_mask_, particle, FloatKey(0), GET, ATTRIBUTE);
+    // the sphere is modifiable
+    (*particle_changed_)[get_as_unsigned_int(particle)] = true;
     return spheres_[particle];
   }
 
@@ -350,6 +352,8 @@ class FloatAttributeTable {
     IMP_USAGE_CHECK(internal_coordinates_[particle][2] !=
                         internal::FloatAttributeTableTraits::get_invalid(),
                     "No internal coordinates: " << particle);
+    // the internal coordinates are modifiable
+    (*particle_changed_)[get_as_unsigned_int(particle)] = true;
     return internal_coordinates_[particle];
   }
 
