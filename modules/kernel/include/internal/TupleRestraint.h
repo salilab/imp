@@ -21,6 +21,8 @@ template <class Score>
 class TupleRestraint : public Restraint {
   IMP::PointerMember<Score> ss_;
   typename Score::IndexArgument v_;
+  mutable double cached_score_;
+  mutable bool cache_populated_;
 
  public:
   //! Create the restraint.
@@ -47,14 +49,21 @@ template <class Score>
 TupleRestraint<Score>::TupleRestraint(Score *ss, Model *m,
                                       const typename Score::IndexArgument &vt,
                                       std::string name)
-    : Restraint(m, name), ss_(ss), v_(vt) {}
+    : Restraint(m, name), ss_(ss), v_(vt), cached_score_(0.),
+      cache_populated_(false) {}
 
 template <class Score>
 double TupleRestraint<Score>::unprotected_evaluate(DerivativeAccumulator *accum)
     const {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
-  return ss_->evaluate_index(Restraint::get_model(), v_, accum);
+  Model *m = Restraint::get_model();
+  // Only recalculate score if necessary
+  if (!cache_populated_ || accum || ss_->get_any_particle_changed(m, v_)) {
+    cached_score_ = ss_->evaluate_index(m, v_, accum);
+    cache_populated_ = true;
+  }
+  return cached_score_;
 }
 
 template <class Score>

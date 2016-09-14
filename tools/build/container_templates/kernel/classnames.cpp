@@ -27,6 +27,8 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
+#define IMP_BUILDING_CLASSNAME_SCORE
+
 ClassnameContainer::ClassnameContainer(Model *m, std::string name)
     : Container(m, name), contents_hash_(-1), cache_initialized_(false) {}
 
@@ -175,6 +177,20 @@ Restraints ClassnameScore::do_create_current_decomposition(
 Restraints ClassnameScore::create_current_decomposition(
     Model *m, PASSINDEXTYPE vt) const {
   return do_create_current_decomposition(m, vt);
+}
+
+bool ClassnameScore::get_any_particle_changed(Model *m, PASSINDEXTYPE vt) const
+{
+#ifdef IMP_BUILDING_SINGLETON_SCORE
+  return m->get_has_particle_changed(vt);
+#else
+  for (unsigned i = 0; i < vt.get_dimension(); ++i) {
+    if (m->get_has_particle_changed(vt.get(i))) {
+      return true;
+    }
+  }
+  return false;
+#endif
 }
 
 IMPKERNEL_END_NAMESPACE

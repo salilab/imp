@@ -102,6 +102,9 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
   Restraints create_current_decomposition(Model *m,
                                           PASSINDEXTYPE vt) const;
 
+  //! Return true iff any particle has changed since the last scoring.
+  bool get_any_particle_changed(Model *m, PASSINDEXTYPE vt) const;
+
  protected:
   //! Override this to return your own decomposition.
   virtual Restraints do_create_current_decomposition(Model *m,
