@@ -47,7 +47,7 @@ class Array : public Value {
 #ifndef IMP_DOXYGEN
   typedef SwigData value_type;
 #endif
-  unsigned int get_dimension() {
+  unsigned int get_dimension() const {
     return D;
   };
   Array() {}
