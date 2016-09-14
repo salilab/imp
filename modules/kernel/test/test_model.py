@@ -236,6 +236,44 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(rg[0], k.get_index())
             self.assertEqual(rg[1], k.get_index() + 1)
 
+    def test_changed(self):
+        """Test particle changed flag"""
+        m = IMP.Model()
+        r = DummyRestraint(m)
+        p1 = m.add_particle("p1")
+        def assert_particle_changed():
+            self.assertTrue(m.get_has_particle_changed(p1))
+            r.evaluate(False)
+            # calculating score should reset changed flag
+            self.assertFalse(m.get_has_particle_changed(p1))
+        # newly-added particles count as 'changed'
+        assert_particle_changed()
+        k = IMP.FloatKey("x")
+        # adding an attribute should set the changed flag
+        m.add_attribute(k, p1, 0.0)
+        assert_particle_changed()
+        # setting an attribute should set the changed flag
+        m.set_attribute(k, p1, 0.0)
+        assert_particle_changed()
+        # Setting optimized does not affect the changed flag
+        for opt in (True, False):
+            m.set_is_optimized(k, p1, True);
+            self.assertFalse(m.get_has_particle_changed(p1))
+        # setting derivatives does not affect the changed flag
+        m.add_to_derivative(k, p1, 1.0, IMP.DerivativeAccumulator())
+        self.assertFalse(m.get_has_particle_changed(p1))
+        # removing an attribute should set the changed flag
+        m.remove_attribute(k, p1)
+        assert_particle_changed()
+        ki = IMP.IntKey("ix")
+        # cache attributes currently also affect the changed flag
+        m.add_cache_attribute(ki, p1, 0.0)
+        assert_particle_changed()
+        m.set_attribute(ki, p1, 0.0)
+        assert_particle_changed()
+        m.remove_attribute(ki, p1)
+        assert_particle_changed()
+
     def test_dependencies(self):
         """Check dependencies with restraints and score states"""
         IMP.set_log_level(IMP.VERBOSE)

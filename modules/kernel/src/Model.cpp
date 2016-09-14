@@ -47,6 +47,21 @@ Model::Model(std::string name) : Object(name) {
                                                &this->Masks::write_mask_,
                                                &this->Masks::add_remove_mask_);
 #endif
+  internal::FloatAttributeTable::set_particle_changed(&this->particle_changed_);
+  internal::StringAttributeTable::set_particle_changed(
+                                           &this->particle_changed_);
+  internal::IntAttributeTable::set_particle_changed(&this->particle_changed_);
+  internal::ObjectAttributeTable::set_particle_changed(
+                                           &this->particle_changed_);
+  internal::WeakObjectAttributeTable::set_particle_changed(
+                                           &this->particle_changed_);
+  internal::IntsAttributeTable::set_particle_changed(&this->particle_changed_);
+  internal::ObjectsAttributeTable::set_particle_changed(
+                                           &this->particle_changed_);
+  internal::ParticleAttributeTable::set_particle_changed(
+                                           &this->particle_changed_);
+  internal::ParticlesAttributeTable::set_particle_changed(
+                                           &this->particle_changed_);
 }
 
 
@@ -78,6 +93,7 @@ ParticleIndex Model::add_particle_internal(Particle *p) {
   Masks::read_derivatives_mask_.resize(particle_index_.size(), true);
   Masks::write_derivatives_mask_.resize(particle_index_.size(), true);
 #endif
+  particle_changed_.resize(particle_index_.size(), true);
   return ret;
 }
 

@@ -153,6 +153,7 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
     IMP_OMP_PRAGMA(flush)
     cur_begin = cur_end;
   }
+  particle_changed_.reset();
 }
 
 IMPKERNEL_END_NAMESPACE

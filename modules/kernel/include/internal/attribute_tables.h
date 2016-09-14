@@ -61,10 +61,12 @@ typedef boost::dynamic_bitset<> Mask;
     for multiple particles, following
 
     The basic attribute table is templated for
-    one type of attribute value and an associated type of attribute key,
-    which are in turn specified by the Traits class (see AttributeTable.h)
+    - one type of attribute value and an associated type of attribute key,
+      which are in turn specified by the Traits class (see AttributeTable.h)
+    - a MUTABLE attribute; if False, whenever an attribute is changed the
+      corresponding Particle's changed flag is set.
 */
-template <class Traits>
+template <class Traits, bool MUTABLE>
 class BasicAttributeTable {
  public:
   typedef typename Traits::Key Key;
@@ -74,6 +76,8 @@ class BasicAttributeTable {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_;
 #endif
+  boost::dynamic_bitset<> *particle_changed_;
+
   IMP_KERNEL_SMALL_UNORDERED_SET<Key> caches_;
 
   void do_add_attribute(Key k, ParticleIndex particle,
@@ -81,6 +85,9 @@ class BasicAttributeTable {
     IMP_USAGE_CHECK(Traits::get_is_valid(value),
                     "Can't set to invalid value: " << value << " for attribute "
                                                    << k);
+    if (!MUTABLE) {
+      (*particle_changed_)[get_as_unsigned_int(particle)] = true;
+    }
     if (data_.size() <= k.get_index()) {
       data_.resize(k.get_index() + 1);
     }
@@ -89,7 +96,7 @@ class BasicAttributeTable {
   }
 
  public:
-  void swap_with(BasicAttributeTable<Traits> &o) {
+  void swap_with(BasicAttributeTable<Traits, MUTABLE> &o) {
     IMP_SWAP_MEMBER(data_);
     IMP_SWAP_MEMBER(caches_);
   }
@@ -101,10 +108,15 @@ class BasicAttributeTable {
     add_remove_mask_ = add_remove_mask;
   }
 #endif
+  void set_particle_changed(boost::dynamic_bitset<> *particle_changed) {
+    if (!MUTABLE) {
+      particle_changed_ = particle_changed;
+    }
+  }
 
-  BasicAttributeTable()
+  BasicAttributeTable() : particle_changed_(nullptr)
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-      : read_mask_(nullptr),
+      , read_mask_(nullptr),
         write_mask_(nullptr),
         add_remove_mask_(nullptr)
 #endif
@@ -138,6 +150,9 @@ class BasicAttributeTable {
     IMP_CHECK_MASK(add_remove_mask_, particle, k, REMOVE, ATTRIBUTE);
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't remove attribute if it isn't there");
+    if (!MUTABLE) {
+      (*particle_changed_)[get_as_unsigned_int(particle)] = true;
+    }
     data_[k.get_index()][particle] = Traits::get_invalid();
   }
   bool get_has_attribute(Key k, ParticleIndex particle) const {
@@ -162,6 +177,9 @@ class BasicAttributeTable {
                     "Cannot set attribute to value of "
                         << Traits::get_invalid()
                         << " as it is reserved for a null value.");
+    if (!MUTABLE) {
+      (*particle_changed_)[get_as_unsigned_int(particle)] = true;
+    }
     data_[k.get_index()][particle] = value;
   }
 
@@ -187,6 +205,9 @@ class BasicAttributeTable {
   typename Traits::Container::reference access_attribute(
       Key k, ParticleIndex particle) {
     IMP_CHECK_MASK(write_mask_, particle, k, SET, ATTRIBUTE);
+    if (!MUTABLE) {
+      (*particle_changed_)[get_as_unsigned_int(particle)] = true;
+    }
     return data_[k.get_index()][particle];
   }
   std::pair<typename Traits::Value, typename Traits::Value> get_range_internal(
@@ -214,6 +235,9 @@ class BasicAttributeTable {
   }
   void clear_attributes(ParticleIndex particle) {
     IMP_CHECK_MASK(add_remove_mask_, particle, Key(0), REMOVE, ATTRIBUTE);
+    if (!MUTABLE) {
+      (*particle_changed_)[get_as_unsigned_int(particle)] = true;
+    }
     for (unsigned int i = 0; i < data_.size(); ++i) {
       if (data_[i].size() > get_as_unsigned_int(particle)) {
         data_[i][particle] = Traits::get_invalid();
@@ -239,7 +263,11 @@ class BasicAttributeTable {
   unsigned int size() const { return data_.size(); }
   unsigned int size(unsigned int i) const { return data_[i].size(); }
 };
-IMP_SWAP_1(BasicAttributeTable);
+
+template <class A, bool B>
+inline void swap(BasicAttributeTable<A, B>& a, BasicAttributeTable<A, B>& b) {
+  a.swap_with(b);
+}
 
 class FloatAttributeTable {
   // vector<algebra::Sphere3D> spheres_;
@@ -249,15 +277,16 @@ class FloatAttributeTable {
   IndexVector<ParticleIndexTag, algebra::Vector3D> internal_coordinates_;
   IndexVector<ParticleIndexTag, algebra::Vector3D>
       internal_coordinate_derivatives_;
-  BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
-  BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
+  BasicAttributeTable<internal::FloatAttributeTableTraits, false> data_;
+  BasicAttributeTable<internal::FloatAttributeTableTraits, true> derivatives_;
   // make use bitset
-  BasicAttributeTable<internal::BoolAttributeTableTraits> optimizeds_;
+  BasicAttributeTable<internal::BoolAttributeTableTraits, true> optimizeds_;
   FloatRanges ranges_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_, *read_derivatives_mask_,
       *write_derivatives_mask_;
 #endif
+  boost::dynamic_bitset<> *particle_changed_;
   algebra::Sphere3D get_invalid_sphere() const {
     double iv = internal::FloatAttributeTableTraits::get_invalid();
     algebra::Sphere3D ivs(algebra::Vector3D(iv, iv, iv), iv);
@@ -275,9 +304,9 @@ class FloatAttributeTable {
     IMP_SWAP_MEMBER(internal_coordinates_);
     IMP_SWAP_MEMBER(internal_coordinate_derivatives_);
   }
-  FloatAttributeTable()
+  FloatAttributeTable() : particle_changed_(nullptr)
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-      : read_mask_(nullptr),
+      , read_mask_(nullptr),
         write_mask_(nullptr),
         add_remove_mask_(nullptr),
         read_derivatives_mask_(nullptr),
@@ -299,6 +328,10 @@ class FloatAttributeTable {
     write_derivatives_mask_ = write_derivatives_mask;
   }
 #endif
+  void set_particle_changed(boost::dynamic_bitset<> *particle_changed) {
+    data_.set_particle_changed(particle_changed);
+    particle_changed_ = particle_changed;
+  }
 
   // make sure you know what you are doing
   algebra::Sphere3D &get_sphere(ParticleIndex particle) {
@@ -385,6 +418,7 @@ class FloatAttributeTable {
       data_.remove_attribute(FloatKey(k.get_index() - 7), particle);
       derivatives_.remove_attribute(FloatKey(k.get_index() - 7), particle);
     }
+    (*particle_changed_)[get_as_unsigned_int(particle)] = true;
     if (optimizeds_.get_has_attribute(k, particle)) {
       optimizeds_.remove_attribute(k, particle);
     }
@@ -470,6 +504,7 @@ class FloatAttributeTable {
       data_.add_attribute(nk, particle, v);
       derivatives_.add_attribute(nk, particle, 0);
     }
+    (*particle_changed_)[get_as_unsigned_int(particle)] = true;
     if (opt) optimizeds_.add_attribute(k, particle, true);
     ranges_.resize(
         std::max(ranges_.size(), static_cast<size_t>(k.get_index() + 1)),
@@ -508,6 +543,7 @@ class FloatAttributeTable {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't set attribute that is not there: "
                         << k.get_string() << " on particle " << particle);
+    (*particle_changed_)[get_as_unsigned_int(particle)] = true;
     if (k.get_index() < 4) {
       spheres_[particle][k.get_index()] = v;
     } else if (k.get_index() < 7) {
@@ -540,6 +576,7 @@ class FloatAttributeTable {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get attribute that is not there: "
                         << k.get_string() << " on particle " << particle);
+    (*particle_changed_)[get_as_unsigned_int(particle)] = true;
     if (k.get_index() < 4) {
       return spheres_[particle][k.get_index()];
     } else if (k.get_index() < 7) {
@@ -721,21 +758,21 @@ class FloatAttributeTable {
 
 IMP_SWAP(FloatAttributeTable);
 
-typedef BasicAttributeTable<internal::StringAttributeTableTraits>
+typedef BasicAttributeTable<internal::StringAttributeTableTraits, false>
     StringAttributeTable;
-typedef BasicAttributeTable<internal::IntAttributeTableTraits>
+typedef BasicAttributeTable<internal::IntAttributeTableTraits, false>
     IntAttributeTable;
-typedef BasicAttributeTable<internal::ObjectAttributeTableTraits>
+typedef BasicAttributeTable<internal::ObjectAttributeTableTraits, false>
     ObjectAttributeTable;
-typedef BasicAttributeTable<internal::WeakObjectAttributeTableTraits>
+typedef BasicAttributeTable<internal::WeakObjectAttributeTableTraits, false>
     WeakObjectAttributeTable;
-typedef BasicAttributeTable<internal::IntsAttributeTableTraits>
+typedef BasicAttributeTable<internal::IntsAttributeTableTraits, false>
     IntsAttributeTable;
-typedef BasicAttributeTable<internal::ObjectsAttributeTableTraits>
+typedef BasicAttributeTable<internal::ObjectsAttributeTableTraits, false>
     ObjectsAttributeTable;
-typedef BasicAttributeTable<internal::ParticleAttributeTableTraits>
+typedef BasicAttributeTable<internal::ParticleAttributeTableTraits, false>
     ParticleAttributeTable;
-typedef BasicAttributeTable<internal::ParticlesAttributeTableTraits>
+typedef BasicAttributeTable<internal::ParticlesAttributeTableTraits, false>
     ParticlesAttributeTable;
 
 struct Masks {

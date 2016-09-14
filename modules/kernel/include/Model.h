@@ -100,6 +100,9 @@ class IMPKERNELEXPORT Model : public Object
   // basic representation
   boost::unordered_map<FloatKey, FloatRange> ranges_;
 
+  // keep track of particles that changed since last score evaluation
+  boost::dynamic_bitset<> particle_changed_;
+
   ParticleIndexes free_particles_;
   IndexVector<ParticleIndexTag, Pointer<Particle> > particle_index_;
   IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
@@ -185,6 +188,20 @@ class IMPKERNELEXPORT Model : public Object
 
   //! Add the passed Undecorator to the particle.
   void add_undecorator(ParticleIndex pi, Undecorator *d);
+
+  //! Return true iff the particle has changed since the last scoring.
+  /** Return true only if the given particle has changed (it was
+      newly created, or its attributes were set, added, removed or cleared)
+      since the last scoring function evaluation. (Changes to
+      the optimized flag or derivatives do not cause a 'true'
+      return. Changes to cache attributes currently do, but probably shouldn't.)
+      This can be used to speed up restraint evaluation by
+      caching previous values.
+   */
+  bool get_has_particle_changed(ParticleIndex pi) {
+    IMP_INTERNAL_CHECK(get_has_particle(pi), "Invalid particle requested");
+    return particle_changed_[get_as_unsigned_int(pi)];
+  }
 
   /** @name States
 
