@@ -21,6 +21,11 @@ if(POLICY CMP0054)
 cmake_policy(SET CMP0054 NEW)
 endif(POLICY CMP0054)
 
+# Use new method of handling Ninja custom command byproducts
+if(POLICY CMP0058)
+  cmake_policy(SET CMP0058 NEW)
+endif(POLICY CMP0058)
+
 # C++11 can use the boost version
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS system filesystem thread program_options iostreams

@@ -136,7 +136,7 @@ struct FileData {
   RMF_LARGE_UNORDERED_MAP<FrameID, internal::FrameData> frames;
   KeyData keys;
   DataTypes data;
-  RMF_LARGE_UNORDERED_MAP<FrameID, int32_t> frame_block_offsets;
+  RMF_LARGE_UNORDERED_MAP<FrameID, int64_t> frame_block_offsets;
 };
 
 // awkward workaround for Mac OS < 10.9
