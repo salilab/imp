@@ -989,7 +989,9 @@ class Representation(object):
         """Print a warning if particle names in RMF and model don't match"""
         def match_any_suffix():
             # Handle common mismatches like 743 != Nup85_743_pdb
-            suffixes = ["pdb", "bead_floppy_body_rigid_body_member_floppy_body"]
+            suffixes = ["pdb", "bead_floppy_body_rigid_body_member_floppy_body",
+                        "bead_floppy_body_rigid_body_member",
+                        "bead_floppy_body"]
             for s in suffixes:
                 if "%s_%s_%s" % (component_name, rmfname, s) == reprname:
                     return True

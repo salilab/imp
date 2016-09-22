@@ -8,17 +8,7 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.pmi.tools
-
-class Micrographs(object):
-    """Information about the micrographs used for class averages."""
-    def __init__(self, number, metadata=[]):
-        """Constructor.
-           @param number The number of particles.
-           @param metadata A list of IMP.pmi.metadata.Metadata objects (e.g.
-                  IMP.pmi.metadata.RepositoryFile pointing to the location of
-                  the image stack).
-        """
-        self.number, self.metadata = number, metadata
+import IMP.pmi.metadata
 
 class ElectronMicroscopy2D(object):
     """Fit particles against a set of class averages by principal components.
@@ -33,8 +23,7 @@ class ElectronMicroscopy2D(object):
                  projection_number=None,
                  resolution=None,
                  n_components=1,
-                 hier=None,
-                 micrographs=None):
+                 hier=None):
         """Constructor.
         @param representation DEPRECATED, pass 'hier' instead
         @param images 2D class average filenames in PGM text format
@@ -49,8 +38,6 @@ class ElectronMicroscopy2D(object):
         @param n_components Number of the largest components to be
                considered for the EM image
         @param hier The root hierarchy for applying the restraint
-        @param micrographs A Micrographs object with details on the raw
-               micrographs from which the class averages were calculated
         """
 
         import IMP.em2d
@@ -62,11 +49,18 @@ class ElectronMicroscopy2D(object):
             raise Exception("Must pass pixel size")
         if image_resolution is None:
             raise Exception("must pass image resolution")
+
+        self.datasets = []
+        for image in images:
+            l = IMP.pmi.metadata.get_default_file_location(image)
+            d = IMP.pmi.metadata.EM2DClassDataset(l)
+            self.datasets.append(d)
+
         if representation:
             for p in representation._protocol_output:
-                p.add_em2d_restraint(images, resolution, pixel_size,
-                                     image_resolution, projection_number,
-                                     micrographs)
+                for i in range(len(self.datasets)):
+                    p.add_em2d_restraint(self, i, resolution, pixel_size,
+                                         image_resolution, projection_number)
 
         # PMI1/2 selection
         if representation is None and hier is not None:

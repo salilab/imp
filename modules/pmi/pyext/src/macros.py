@@ -463,7 +463,9 @@ class BuildSystem(object):
         self.force_create_gmm_files = force_create_gmm_files
         self.resolutions = resolutions
 
-    def add_state(self,reader):
+    def add_state(self,
+                  reader,
+                  keep_chain_id=False):
         """Add a state using the topology info in a IMP::pmi::topology::TopologyReader object.
         When you are done adding states, call execute_macro()
         @param reader The TopologyReader object
@@ -481,15 +483,21 @@ class BuildSystem(object):
             copies = reader.get_molecules()[molname].domains
             for nc,copyname in enumerate(copies):
                 copy = copies[copyname]
+                # option to not rename chains
+                if keep_chain_id == True:
+                    chain_id = copy[0].chain
+                else:
+                    chain_id = chain_ids[numchain]
+                    
                 if nc==0:
                     seq = IMP.pmi.topology.Sequences(copy[0].fasta_file)[copy[0].fasta_id]
                     orig_mol = state.create_molecule(molname,
                                                      seq,
-                                                     chain_ids[numchain])
+                                                     chain_id)
                     mol = orig_mol
                     numchain+=1
                 else:
-                    mol = orig_mol.create_copy(chain_ids[numchain])
+                    mol = orig_mol.create_copy(chain_id)
                     numchain+=1
 
                 for domain in copy:
@@ -505,6 +513,7 @@ class BuildSystem(object):
                         else:
                             end = domain.residue_range[1]+domain.pdb_offset
                         domain_res = mol.residue_range(start-1,end-1)
+                    
                     if domain.pdb_file=="BEADS":
                         mol.add_representation(
                             domain_res,

@@ -274,81 +274,113 @@ _citation_author.ordinal
     def test_dataset_dumper_all_group(self):
         """Test DatasetDumper.get_all_group()"""
         dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
-        ds1 = IMP.pmi.mmcif.EM2DClassDataset()
-        ds2 = IMP.pmi.mmcif.CXMSDataset()
-        ds3 = IMP.pmi.mmcif.PDBDataset('1abc', '1.0', 'test details')
+        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='baz')
+        ds1 = IMP.pmi.metadata.EM2DClassDataset(l)
+        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        ds2 = IMP.pmi.metadata.CXMSDataset(l)
+        l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
+        ds3 = IMP.pmi.metadata.PDBDataset(l)
 
-        g = dump.get_all_group()
-        self.assertEqual(g.id, 1)
-        self.assertEqual(g.datasets, [])
+        g1 = dump.get_all_group()
 
         dump.add(ds1)
         dump.add(ds2)
-        g = dump.get_all_group()
-        self.assertEqual(g.id, 2)
-        self.assertEqual(g.datasets, [ds1, ds2])
-        g = dump.get_all_group()
-        self.assertEqual(g.id, 2)
+        g2 = dump.get_all_group()
+        g3 = dump.get_all_group()
 
         dump.add(ds3)
-        g = dump.get_all_group()
-        self.assertEqual(g.id, 3)
-        self.assertEqual(g.datasets, [ds1, ds2, ds3])
+        g4 = dump.get_all_group()
+        dump.finalize() # Assign IDs
 
-    def test_dataset_dumper_duplicates(self):
-        """Check that DatasetDumper ignores duplicate datasets"""
+        self.assertEqual(g1.id, 1)
+        self.assertEqual(g1._datasets, [])
+
+        self.assertEqual(g2.id, 2)
+        self.assertEqual(g2._datasets, [ds1, ds2])
+        self.assertEqual(g3.id, 2)
+
+        self.assertEqual(g4.id, 3)
+        self.assertEqual(g4._datasets, [ds1, ds2, ds3])
+
+    def test_dataset_dumper_duplicates_details(self):
+        """DatasetDumper ignores duplicate datasets with differing details"""
         dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
-        ds1 = dump.add(IMP.pmi.mmcif.PDBDataset('1abc', '1.0', 'test details'))
-        self.assertEqual(ds1.id, 1)
+        l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
+        ds1 = dump.add(IMP.pmi.metadata.PDBDataset(l))
         # A duplicate dataset should be ignored even if details differ
-        ds2 = dump.add(IMP.pmi.mmcif.PDBDataset('1abc', '1.0', 'other details'))
+        l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'other details')
+        ds2 = dump.add(IMP.pmi.metadata.PDBDataset(l))
+        dump.finalize() # Assign IDs
+        self.assertEqual(ds1.id, 1)
         self.assertEqual(ds2.id, 1)
-        self.assertEqual(id(ds1), id(ds2))
+        self.assertEqual(len(dump._dataset_by_id), 1)
 
-        loc1 = IMP.pmi.mmcif.DBDatasetLocation("mydb", "abc", "1.0", "")
-        loc2 = IMP.pmi.mmcif.DBDatasetLocation("mydb", "xyz", "1.0", "")
+    def test_dataset_dumper_duplicates_location(self):
+        """DatasetDumper ignores duplicate dataset locations"""
+        loc1 = IMP.pmi.metadata.DatabaseLocation("mydb", "abc", "1.0", "")
+        loc2 = IMP.pmi.metadata.DatabaseLocation("mydb", "xyz", "1.0", "")
 
         # Identical datasets in the same location aren't duplicated
-        cx1 = IMP.pmi.mmcif.CXMSDataset()
-        cx1.location = loc1
-        cx2 = IMP.pmi.mmcif.CXMSDataset()
-        cx2.location = loc1
-        ds3 = dump.add(cx1)
-        ds4 = dump.add(cx1)
-        self.assertEqual(ds3.id, 2)
-        self.assertEqual(ds4.id, 2)
+        cx1 = IMP.pmi.metadata.CXMSDataset(loc1)
+        cx2 = IMP.pmi.metadata.CXMSDataset(loc1)
+
+        dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
+        dump.add(cx1)
+        dump.add(cx2)
+        dump.finalize() # Assign IDs
+        self.assertEqual(cx1.id, 1)
+        self.assertEqual(cx2.id, 1)
+        self.assertEqual(len(dump._dataset_by_id), 1)
 
         # Datasets in different locations are OK
-        cx3 = IMP.pmi.mmcif.CXMSDataset()
-        cx3.location = loc2
-        ds5 = dump.add(cx3)
-        self.assertEqual(ds5.id, 3)
+        cx1 = IMP.pmi.metadata.CXMSDataset(loc1)
+        cx2 = IMP.pmi.metadata.CXMSDataset(loc2)
+        dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
+        dump.add(cx1)
+        dump.add(cx2)
+        dump.finalize() # Assign IDs
+        self.assertEqual(cx1.id, 1)
+        self.assertEqual(cx2.id, 2)
+        self.assertEqual(len(dump._dataset_by_id), 2)
 
         # Different datasets in same location are OK (but odd)
-        em2d = IMP.pmi.mmcif.EM2DClassDataset()
-        em2d.location = loc2
-        ds6 = dump.add(em2d)
-        self.assertEqual(ds6.id, 4)
+        cx2 = IMP.pmi.metadata.CXMSDataset(loc2)
+        em2d = IMP.pmi.metadata.EM2DClassDataset(loc2)
+        dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
+        dump.add(cx2)
+        dump.add(em2d)
+        dump.finalize() # Assign IDs
+        self.assertEqual(cx2.id, 1)
+        self.assertEqual(em2d.id, 2)
+        self.assertEqual(len(dump._dataset_by_id), 2)
 
-        # EM3D datasets allow duplication (since they identify the restraint)
-        em3d_1 = IMP.pmi.mmcif.EMDBDataset('EMD-123', allow_duplicates=True)
-        em3d_2 = IMP.pmi.mmcif.EMDBDataset('EMD-123', allow_duplicates=True)
-        ds7 = dump.add(em3d_1)
-        self.assertEqual(ds7.id, 5)
-        ds8 = dump.add(em3d_2)
-        self.assertEqual(ds8.id, 6)
+        # Datasets can be duplicated if allow_duplicates=True
+        emloc1 = IMP.pmi.metadata.EMDBLocation("abc")
+        emloc2 = IMP.pmi.metadata.EMDBLocation("abc")
+        emloc1._allow_duplicates = True
+        em3d_1 = IMP.pmi.metadata.EMDensityDataset(emloc1)
+        em3d_2 = IMP.pmi.metadata.EMDensityDataset(emloc2)
+        dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
+        dump.add(em3d_1)
+        dump.add(em3d_2)
+        dump.finalize() # Assign IDs
+        self.assertEqual(em3d_1.id, 1)
+        self.assertEqual(em3d_2.id, 2)
+        self.assertEqual(len(dump._dataset_by_id), 2)
 
     def test_dataset_dumper_dump(self):
         """Test DatasetDumper.dump()"""
         dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
-        pds = dump.add(IMP.pmi.mmcif.CXMSDataset())
-        pds.set_location(IMP.pmi.metadata.RepositoryFile(doi='foo', path='bar'))
-        ds = dump.add(IMP.pmi.mmcif.PDBDataset('1abc', '1.0', 'test details'))
+        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        pds = dump.add(IMP.pmi.metadata.CXMSDataset(l))
+        l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
+        ds = dump.add(IMP.pmi.metadata.PDBDataset(l))
         ds.add_primary(pds)
         self.assertEqual(ds.location.access_code, '1abc')
 
         fh = StringIO()
         w = IMP.pmi.mmcif.CifWriter(fh)
+        dump.finalize()
         dump.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -573,6 +605,7 @@ CYS 'L-peptide linking'
         mc2.execute_macro()
         fh = StringIO()
         w = IMP.pmi.mmcif.CifWriter(fh)
+        po.dataset_dump.finalize() # Assign IDs to datasets
         po.model_prot_dump.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -654,6 +687,139 @@ _ihm_gaussian_obj_ensemble.covariance_matrix[3][3]
 _ihm_gaussian_obj_ensemble.ensemble_id
 1 1 1 4 A 4.000 6.000 8.000 3.500 10.230 -0.421 0.000 -0.421 10.770 0.000 0.000
 0.000 12.000 42
+#
+""")
+
+    def test_restraint_dataset(self):
+        """Test RestraintDataset class"""
+        class DummyRestraint(object):
+            pass
+        r = DummyRestraint()
+        rd = IMP.pmi.mmcif.RestraintDataset(r, num=None, allow_duplicates=False)
+        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        d = IMP.pmi.metadata.CXMSDataset(l)
+        r.dataset = d
+        # Get current dataset from restraint
+        d2 = rd.dataset
+        self.assertEqual(d2._data_type, 'CX-MS data')
+        self.assertEqual(d2.location.doi, 'foo')
+        # Should be a copy, so we can change it without affecting the original
+        self.assertEqual(d, d2)
+        self.assertNotEqual(id(d), id(d2))
+        d2.location.doi = 'bar'
+        self.assertEqual(d2.location.doi, 'bar')
+        self.assertEqual(d.location.doi, 'foo')
+        # Subsequent accesses should be cached, not copying again
+        d3 = rd.dataset
+        self.assertEqual(id(d2), id(d3))
+
+    def test_restraint_dataset_num(self):
+        """Test RestraintDataset with num!=None"""
+        class DummyRestraint(object):
+            pass
+        r = DummyRestraint()
+        rd = IMP.pmi.mmcif.RestraintDataset(r, num=1, allow_duplicates=False)
+        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        d1 = IMP.pmi.metadata.CXMSDataset(l)
+        l = IMP.pmi.metadata.RepositoryFileLocation(doi='bar', path='baz')
+        d2 = IMP.pmi.metadata.CXMSDataset(l)
+        r.datasets = [d1, d2]
+        # Get current dataset from restraint
+        d2 = rd.dataset
+        self.assertEqual(d2._data_type, 'CX-MS data')
+        self.assertEqual(d2.location.doi, 'bar')
+
+    def test_restraint_dataset_duplicate(self):
+        """Test RestraintDataset with allow_duplicates=True"""
+        class DummyRestraint(object):
+            pass
+        r = DummyRestraint()
+        rd = IMP.pmi.mmcif.RestraintDataset(r, num=None, allow_duplicates=True)
+        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        d = IMP.pmi.metadata.CXMSDataset(l)
+        r.dataset = d
+        # Get current dataset from restraint
+        d2 = rd.dataset
+        self.assertEqual(d2._data_type, 'CX-MS data')
+        self.assertEqual(d2.location.doi, 'foo')
+        # Should be a copy, but should not compare equal
+        # since allow_duplicates=True
+        self.assertNotEqual(d, d2)
+
+    def test_em2d_restraint_no_raw(self):
+        """Test EM2DRestraint class, no raw micrographs"""
+        class DummyRestraint(object):
+            pass
+        pr = DummyRestraint()
+        rd = IMP.pmi.mmcif.RestraintDataset(pr, num=None,
+                                            allow_duplicates=False)
+        r = IMP.pmi.mmcif.EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
+                                        image_resolution=1.0,
+                                        projection_number=200)
+        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        d = IMP.pmi.metadata.EM2DClassDataset(l)
+        pr.dataset = d
+        self.assertEqual(r.get_num_raw_micrographs(), None)
+        self.assertEqual(r.rdataset.dataset.location.doi, 'foo')
+
+    def test_em2d_restraint_with_raw(self):
+        """Test EM2DRestraint class, with raw micrographs"""
+        class DummyRestraint(object):
+            pass
+        pr = DummyRestraint()
+        rd = IMP.pmi.mmcif.RestraintDataset(pr, num=None,
+                                            allow_duplicates=False)
+        r = IMP.pmi.mmcif.EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
+                                        image_resolution=1.0,
+                                        projection_number=200)
+        lp = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='baz')
+        dp = IMP.pmi.metadata.EMMicrographsDataset(lp, number=50)
+        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        d = IMP.pmi.metadata.EM2DClassDataset(l)
+        d.add_primary(dp)
+        pr.dataset = d
+        self.assertEqual(r.get_num_raw_micrographs(), 50)
+
+    def test_em2d_dumper(self):
+        """Test EM2DDumper class"""
+        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
+            def flush(self):
+                pass
+        class DummyRestraint(object):
+            pass
+        pr = DummyRestraint()
+        rd = IMP.pmi.mmcif.RestraintDataset(pr, num=None,
+                                            allow_duplicates=False)
+        r = IMP.pmi.mmcif.EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
+                                        image_resolution=1.0,
+                                        projection_number=200)
+        lp = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='baz')
+        dp = IMP.pmi.metadata.EMMicrographsDataset(lp, number=50)
+        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        d = IMP.pmi.metadata.EM2DClassDataset(l)
+        d.id = 4
+        d.add_primary(dp)
+        pr.dataset = d
+        po = DummyPO(EmptyObject())
+        d = IMP.pmi.mmcif.EM2DDumper(po)
+        d.add(r)
+        fh = StringIO()
+        w = IMP.pmi.mmcif.CifWriter(fh)
+        d.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_2dem_class_average_restraint.id
+_ihm_2dem_class_average_restraint.dataset_list_id
+_ihm_2dem_class_average_restraint.number_raw_micrographs
+_ihm_2dem_class_average_restraint.pixel_size_width
+_ihm_2dem_class_average_restraint.pixel_size_height
+_ihm_2dem_class_average_restraint.image_resolution
+_ihm_2dem_class_average_restraint.image_segment_flag
+_ihm_2dem_class_average_restraint.number_of_projections
+_ihm_2dem_class_average_restraint.struct_assembly_id
+_ihm_2dem_class_average_restraint.details
+1 4 50 4.200 4.200 1.000 NO 200 1 .
 #
 """)
 

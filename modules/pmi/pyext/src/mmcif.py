@@ -3,6 +3,7 @@
 """
 
 from __future__ import print_function
+import copy
 import IMP.core
 import IMP.algebra
 import IMP.atom
@@ -495,159 +496,112 @@ class UnknownSource(object):
     def get_seq_id_range(self, model):
         return (model.seq_id_begin, model.seq_id_end)
 
-class DatasetLocation(object):
-    """External location of a dataset"""
-    _eq_keys = []
-    _allow_duplicates = False
-
-    # DatasetLocations compare equal iff they are the same class, have the
-    # same attributes, and allow_duplicates=False
-    def _eq_vals(self):
-        if self._allow_duplicates:
-            return id(self)
-        else:
-            return tuple([self.__class__]
-                         + [getattr(self, x) for x in self._eq_keys])
-    def __eq__(self, other):
-        return self._eq_vals() == other._eq_vals()
-    def __hash__(self):
-        return hash(self._eq_vals())
-
-
-class RepoDatasetLocation(DatasetLocation):
-    """Pointer to a dataset stored in a repository"""
-    _eq_keys = DatasetLocation._eq_keys + ['doi', 'content_filename']
-
-    doi = content_filename = CifWriter.unknown
-
-    def __init__(self, loc):
-        if loc:
-            self.doi = loc.doi
-            self.content_filename = loc.path
-
-class DBDatasetLocation(DatasetLocation):
-    # details can differ without affecting dataset equality
-    _eq_keys = DatasetLocation._eq_keys + ['db_name', 'access_code', 'version']
-
-    """Pointer to a dataset stored in an official database (e.g. PDB)"""
-    def __init__(self, db_name, db_code, version, details):
-        self.db_name = db_name
-        self.access_code = db_code
-        self.version, self.details = version, details
-
-class Dataset(object):
-    location = None
-    _eq_keys = ['location']
-
-    def __init__(self):
-        self._primaries = {}
-
-    def set_location(self, loc):
-        self.location = RepoDatasetLocation(loc)
-
-    def add_primary(self, d):
-        """Add a primary dataset (one from which this is derived).
-           For example, a 3D density map is generally derived from
-           one or more primary 2D image datasets"""
-        self._primaries[d] = None
-
-    # Datasets compare equal iff they are the same class and have the
-    # same attributes
-    def _eq_vals(self):
-        return tuple([self.__class__]
-                     + [getattr(self, x) for x in self._eq_keys])
-    def __eq__(self, other):
-        return self._eq_vals() == other._eq_vals()
-    def __hash__(self):
-        return hash(self._eq_vals())
-
-class CXMSDataset(Dataset):
-    data_type = 'CX-MS data'
-
-class EMMicrographsDataset(Dataset):
-    _eq_keys = Dataset._eq_keys + ['number']
-
-    data_type = 'EM raw micrographs'
-    def __init__(self, number):
-        super(EMMicrographsDataset, self).__init__()
-        self.number = number
-
-class EM2DClassDataset(Dataset):
-    data_type = '2DEM class average'
-
-class CompModelDataset(Dataset):
-    """A comparative model dataset.
-       Currently it is assumed that models are stored in a repository."""
-    data_type = 'Comparative model'
-    def __init__(self, location):
-        super(CompModelDataset, self).__init__()
-        self.set_location(location)
-
-class PDBDataset(Dataset):
-    """An experimental PDB structure dataset."""
-    data_type = 'Experimental model'
-    def __init__(self, db_code, version, details):
-        super(PDBDataset, self).__init__()
-        self.location = DBDatasetLocation('PDB', db_code, version, details)
-
-class EMDBDataset(Dataset):
-    """An EM map stored in EMDB."""
-    data_type = '3DEM volume'
-    def __init__(self, emdb, allow_duplicates):
-        super(EMDBDataset, self).__init__()
-        self.location = DBDatasetLocation('EMDB', emdb, CifWriter.omitted,
-                                          CifWriter.omitted)
-        self.location._allow_duplicates = allow_duplicates
-
 class DatasetGroup(object):
     """A group of datasets"""
-    def __init__(self, datasets):
-        self.datasets = list(datasets)
+    def __init__(self, datasets, include_primaries):
+        self._datasets = list(datasets)
+        self.include_primaries = include_primaries
+
+    def finalize(self):
+        """Get final datasets for each restraint and remove duplicates"""
+        final_datasets = OrderedDict()
+        for ds in self._datasets:
+            if isinstance(ds, RestraintDataset):
+                d = ds.dataset
+            else:
+                d = ds
+            final_datasets[d] = None
+            if self.include_primaries:
+                for p in d._primaries.keys():
+                    final_datasets[p] = None
+        self._datasets = final_datasets.keys()
+
 
 class DatasetDumper(Dumper):
     def __init__(self, simo):
         super(DatasetDumper, self).__init__(simo)
-        self.datasets = OrderedDict()
-        self.dataset_groups = {}
+        self._datasets = []
+        self._dataset_groups = []
 
-    def get_all_group(self):
+    def get_all_group(self, include_primaries=False):
         """Get a DatasetGroup encompassing all datasets so far"""
-        num_datasets = len(self.datasets)
-        if num_datasets not in self.dataset_groups:
-            g = DatasetGroup(self.datasets.keys())
-            self.dataset_groups[num_datasets] = g
-            g.id = len(self.dataset_groups)
-        return self.dataset_groups[num_datasets]
+        g = DatasetGroup(self._datasets, include_primaries)
+        self._dataset_groups.append(g)
+        return g
 
     def add(self, dataset):
         """Add a new dataset.
-           The dataset is returned (this object should be used rather than
-           that passed to the method, since duplicates are removed)."""
-        if dataset not in self.datasets:
-            self.datasets[dataset] = dataset
-            dataset.id = len(self.datasets)
-        return self.datasets[dataset]
+           Note that ids are assigned later."""
+        self._datasets.append(dataset)
+        return dataset
+
+    def finalize(self):
+        seen_datasets = {}
+        # Assign IDs to all datasets
+        self._dataset_by_id = []
+        for d in self._flatten_dataset(self._datasets):
+            if d not in seen_datasets:
+                if not hasattr(d, 'id'):
+                    self._dataset_by_id.append(d)
+                    d.id = len(self._dataset_by_id)
+                    if isinstance(d.location,
+                                  IMP.pmi.metadata.RepositoryFileLocation) \
+                       and not d.location.doi:
+                        newloc = self.simo._get_location(d.location.path)
+                        d.location.doi = newloc.doi
+                        d.location.path = newloc.path
+                seen_datasets[d] = d.id
+            else:
+                d.id = seen_datasets[d]
+
+        # Make sure that all datasets are listed, even if they weren't used
+        all_group = self.get_all_group(True)
+        # Assign IDs to all groups and remove duplicates
+        seen_group_ids = {}
+        self._dataset_group_by_id = []
+        for g in self._dataset_groups:
+            g.finalize()
+            ids = tuple(sorted(d.id for d in g._datasets))
+            if ids not in seen_group_ids:
+                self._dataset_group_by_id.append(g)
+                g.id = len(self._dataset_group_by_id)
+                seen_group_ids[ids] = g
+            else:
+                g.id = seen_group_ids[ids].id
+
+    def _flatten_dataset(self, d):
+        if isinstance(d, list):
+            for p in d:
+                for x in self._flatten_dataset(p):
+                    yield x
+        elif isinstance(d, RestraintDataset):
+            for x in self._flatten_dataset(d.dataset):
+                yield x
+        else:
+            for p in d._primaries.keys():
+                for x in self._flatten_dataset(p):
+                    yield x
+            yield d
 
     def dump(self, writer):
         ordinal = 1
-        # Make sure that all datasets are listed, even if they weren't used
-        all_group = self.get_all_group()
-        groups = sorted(self.dataset_groups.values(), key=lambda x: x.id)
         with writer.loop("_ihm_dataset_list",
                          ["ordinal_id", "id", "group_id", "data_type",
                           "database_hosted"]) as l:
-            for g in groups:
-                for d in g.datasets:
+            for g in self._dataset_group_by_id:
+                for d in g._datasets:
                     l.write(ordinal_id=ordinal, id=d.id, group_id=g.id,
-                            data_type=d.data_type,
-                            database_hosted=not isinstance(d.location,
-                                                           RepoDatasetLocation))
+                            data_type=d._data_type,
+                            database_hosted=isinstance(d.location,
+                                            IMP.pmi.metadata.DatabaseLocation))
                     ordinal += 1
-        self.dump_other((d for d in self.datasets.keys()
-                         if isinstance(d.location, RepoDatasetLocation)),
+        self.dump_other((d for d in self._dataset_by_id
+                         if not isinstance(d.location,
+                                            IMP.pmi.metadata.DatabaseLocation)),
                         writer)
-        self.dump_rel_dbs((d for d in self.datasets.keys()
-                           if isinstance(d.location, DBDatasetLocation)),
+        self.dump_rel_dbs((d for d in self._dataset_by_id
+                           if isinstance(d.location,
+                                            IMP.pmi.metadata.DatabaseLocation)),
                           writer)
         self.dump_related(writer)
 
@@ -657,14 +611,14 @@ class DatasetDumper(Dumper):
                          ["ordinal_id", "dataset_list_id_derived",
                           "data_type_derived", "dataset_list_id_primary",
                           "data_type_primary"]) as l:
-            for derived in self.datasets:
+            for derived in self._dataset_by_id:
                 for primary in sorted(derived._primaries.keys(),
                                       lambda d: d.id):
                     l.write(ordinal_id=ordinal,
                             dataset_list_id_derived=derived.id,
-                            data_type_derived=derived.data_type,
+                            data_type_derived=derived._data_type,
                             dataset_list_id_primary=primary.id,
-                            data_type_primary=primary.data_type)
+                            data_type_primary=primary._data_type)
                     ordinal += 1
 
     def dump_rel_dbs(self, datasets, writer):
@@ -677,8 +631,11 @@ class DatasetDumper(Dumper):
                 l.write(id=ordinal, dataset_list_id=d.id,
                         db_name=d.location.db_name,
                         access_code=d.location.access_code,
-                        version=d.location.version,
-                        data_type=d.data_type, details=d.location.details)
+                        version=d.location.version if d.location.version
+                                else CifWriter.omitted,
+                        data_type=d._data_type,
+                        details=d.location.details if d.location.details
+                                else CifWriter.omitted)
                 ordinal += 1
 
     def dump_other(self, datasets, writer):
@@ -688,15 +645,15 @@ class DatasetDumper(Dumper):
                           "doi", "content_filename"]) as l:
             for d in datasets:
                 l.write(id=ordinal, dataset_list_id=d.id,
-                        data_type=d.data_type, doi=d.location.doi,
-                        content_filename=d.location.content_filename)
+                        data_type=d._data_type, doi=d.location.doi,
+                        content_filename=d.location.path)
                 ordinal += 1
 
 
 class ExperimentalCrossLink(object):
-    def __init__(self, r1, c1, r2, c2, label, length, dataset):
+    def __init__(self, r1, c1, r2, c2, label, length, rdataset):
         self.r1, self.c1, self.r2, self.c2, self.label = r1, c1, r2, c2, label
-        self.length, self.dataset = length, dataset
+        self.length, self.rdataset = length, rdataset
 
 class CrossLink(object):
     def __init__(self, ex_xl, p1, p2, sigma1, sigma2, psi):
@@ -721,6 +678,7 @@ class CrossLinkDumper(Dumper):
     def dump(self, writer):
         self.dump_list(writer)
         self.dump_restraint(writer)
+        self.dump_results(writer)
 
     def dump_list(self, writer):
         with writer.loop("_ihm_cross_link_list",
@@ -747,7 +705,7 @@ class CrossLinkDumper(Dumper):
                         seq_id_2=xl.r2,
                         comp_id_2=rt2.get_string(),
                         type=xl.label,
-                        dataset_list_id=xl.dataset.id)
+                        dataset_list_id=xl.rdataset.dataset.id)
 
     def _granularity(self, xl):
         """Determine the granularity of a cross link"""
@@ -791,13 +749,34 @@ class CrossLinkDumper(Dumper):
                         psi=xl.psi.get_scale(),
                         sigma_1=xl.sigma1, sigma_2=xl.sigma2)
 
+    def dump_results(self, writer):
+        ordinal = 1
+        with writer.loop("_ihm_cross_link_result_parameters",
+                         ["ordinal_id", "restraint_id", "model_id",
+                          "sigma_1", "sigma_2"]) as l:
+            for model in self.models:
+                for xl in self.cross_links:
+                    # todo: handle resolutions!=1, multiple independent sigmas
+                    statname = 'ISDCrossLinkMS_Sigma_1_%s' % xl.ex_xl.label
+                    if model.stats and statname in model.stats:
+                        sigma = float(model.stats[statname])
+                        l.write(ordinal_id=ordinal, restraint_id=xl.id,
+                                model_id=model.id, sigma_1=sigma, sigma_2=sigma)
+                        ordinal += 1
+
 class EM2DRestraint(object):
-    def __init__(self, dataset, resolution, pixel_size,
-                 image_resolution, projection_number, micrographs_dataset):
-        self.dataset, self.resolution = dataset, resolution
+    def __init__(self, rdataset, resolution, pixel_size,
+                 image_resolution, projection_number):
+        self.rdataset, self.resolution = rdataset, resolution
         self.pixel_size, self.image_resolution = pixel_size, image_resolution
         self.projection_number = projection_number
-        self.micrographs_dataset = micrographs_dataset
+
+    def get_num_raw_micrographs(self):
+        """Return the number of raw micrographs used, if known.
+           This is extracted from the EMMicrographsDataset if any."""
+        for d in self.rdataset.dataset._primaries.keys():
+            if isinstance(d, IMP.pmi.metadata.EMMicrographsDataset):
+                return d.number
 
 class EM2DDumper(Dumper):
     def __init__(self, simo):
@@ -811,17 +790,15 @@ class EM2DDumper(Dumper):
     def dump(self, writer):
         with writer.loop("_ihm_2dem_class_average_restraint",
                          ["id", "dataset_list_id", "number_raw_micrographs",
-                          "raw_micrographs_dataset_list_id",
                           "pixel_size_width", "pixel_size_height",
                           "image_resolution", "image_segment_flag",
                           "number_of_projections", "struct_assembly_id",
                           "details"]) as l:
             for r in self.restraints:
-                mgd = r.micrographs_dataset
                 unk = CifWriter.unknown
-                l.write(id=r.id, dataset_list_id=r.dataset.id,
-                        number_raw_micrographs=mgd.number if mgd else unk,
-                        raw_micrographs_dataset_list_id=mgd.id if mgd else unk,
+                num_raw = r.get_num_raw_micrographs()
+                l.write(id=r.id, dataset_list_id=r.rdataset.dataset.id,
+                        number_raw_micrographs=num_raw if num_raw else unk,
                         pixel_size_width=r.pixel_size,
                         pixel_size_height=r.pixel_size,
                         image_resolution=r.image_resolution,
@@ -832,8 +809,8 @@ class EM2DDumper(Dumper):
 class EM3DRestraint(object):
     fitting_method = 'Gaussian mixture models'
 
-    def __init__(self, simo, dataset, target_ps, densities):
-        self.dataset = dataset
+    def __init__(self, simo, rdataset, target_ps, densities):
+        self.rdataset = rdataset
         self.number_of_gaussians = len(target_ps)
         self.assembly = self.get_assembly(densities, simo)
 
@@ -862,7 +839,8 @@ class EM3DDumper(Dumper):
                           "struct_assembly_id",
                           "number_of_gaussians"]) as l:
             for r in self.restraints:
-                l.write(ordinal_id=ordinal, dataset_list_id=r.dataset.id,
+                l.write(ordinal_id=ordinal,
+                        dataset_list_id=r.rdataset.dataset.id,
                         fitting_method=r.fitting_method,
                         struct_assembly_id=r.assembly.id,
                         number_of_gaussians=r.number_of_gaussians)
@@ -940,6 +918,7 @@ class Model(object):
         # The Protocol which produced this model
         self.protocol = protocol
         self.assembly = assembly
+        self.stats = None
         o = IMP.pmi.output.Output()
         name = 'cif-output'
         o.dictionary_pdbs[name] = prot
@@ -1178,13 +1157,15 @@ class StartingModelDumper(Dumper):
             version, details, metadata = self._parse_pdb(fh, first_line)
             source = PDBSource(model, first_line[62:66].strip(), chain,
                                metadata)
-            d = PDBDataset(source.db_code, version, details)
+            l = IMP.pmi.metadata.PDBLocation(source.db_code, version, details)
+            d = IMP.pmi.metadata.PDBDataset(l)
             model.dataset = self.simo.dataset_dump.add(d)
             return [source]
         elif first_line.startswith('EXPDTA    THEORETICAL MODEL, MODELLER'):
             self.simo.software_dump.set_modeller_used(
                                         *first_line[38:].split(' ', 1))
-            d = CompModelDataset(self.simo._get_location(pdbname))
+            d = IMP.pmi.metadata.ComparativeModelDataset(
+                                     self.simo._get_location(pdbname))
             model.dataset = self.simo.dataset_dump.add(d)
             templates = self.get_templates(pdbname, model)
             if templates:
@@ -1195,7 +1176,8 @@ class StartingModelDumper(Dumper):
             # todo: extract Modeller-like template info for Phyre models;
             # revisit assumption that all such unknown source PDBs are
             # comparative models
-            d = CompModelDataset(self.simo._get_location(pdbname))
+            d = IMP.pmi.metadata.ComparativeModelDataset(
+                                      self.simo._get_location(pdbname))
             model.dataset = self.simo.dataset_dump.add(d)
             return [UnknownSource(model)]
 
@@ -1467,7 +1449,7 @@ class ReplicaExchangeAnalysisEnsemble(Ensemble):
                 simo._representation.set_coordinates_from_rmf(c, rmf_file, 0,
                                                        force_rigid_update=True)
             # todo: fill in other data from stat file, e.g. crosslink phi/psi
-            yield
+            yield stats
             model_num += 1
             if model_num >= self.num_deposit:
                 return
@@ -1601,6 +1583,30 @@ class _EntityMapper(dict):
         return self._entities
 
 
+class RestraintDataset(object):
+    """Wrapper around a dataset associated with a restraint.
+       This is needed because we need to delay access to the dataset
+       in case the writer of the PMI script overrides or changes it
+       after creating the restraint."""
+    def __init__(self, restraint, num, allow_duplicates):
+        self.restraint = restraint
+        self.num, self.allow_duplicates = num, allow_duplicates
+        self.__dataset = None
+    def __get_dataset(self):
+        if self.__dataset:
+            return self.__dataset
+        if self.num is not None:
+            d = copy.deepcopy(self.restraint.datasets[self.num])
+        else:
+            d = copy.deepcopy(self.restraint.dataset)
+        if self.allow_duplicates:
+            d.location.allow_duplicates = True
+        # Don't copy again next time we access self.dataset
+        self.__dataset = d
+        return d
+    dataset = property(__get_dataset)
+
+
 class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def __init__(self, fh):
         self._cif_writer = CifWriter(fh)
@@ -1635,6 +1641,11 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.post_process_dump = PostProcessDumper(self)
         self.ensemble_dump = EnsembleDumper(self)
         self.density_dump = DensityDumper(self)
+
+        # Some dumpers add per-model information; give them a pointer to
+        # the model list
+        self.cross_link_dump.models = self.model_dump.models
+
         self._dumpers = [EntryDumper(self), # should always be first
                          AuditAuthorDumper(self),
                          self.software_dump, CitationDumper(self),
@@ -1695,10 +1706,13 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         b = _BeadsFragment(self.m, name, start, end, num, hier)
         self.model_repr_dump.add_fragment(b)
 
-    def get_cross_link_dataset(self, fname):
-        d = CXMSDataset()
-        d.set_location(self._get_location(fname))
-        return self.dataset_dump.add(d)
+    def get_restraint_dataset(self, r, num=None, allow_duplicates=False):
+        """Get a wrapper object for the dataset used by this restraint.
+           This is needed because the restraint's dataset may be changed
+           in the PMI script before we get to use it."""
+        rs = RestraintDataset(r, num, allow_duplicates)
+        self.dataset_dump.add(rs)
+        return rs
 
     def add_experimental_cross_link(self, r1, c1, r2, c2, label, length,
                                     dataset):
@@ -1745,34 +1759,25 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             # Add localization density info if available
             for c in self.all_modeled_components:
                 e.load_localization_density(self.m, c)
-            for x in e.load_all_models(self):
+            for stats in e.load_all_models(self):
                 m = self.add_model(group)
+                m.stats = stats
                 # Don't alter original RMF coordinates
                 m.geometric_center = [0,0,0]
                 # Add RMSF info if available
                 for c in self.all_modeled_components:
                     e.load_rmsf(m, c)
 
-    def add_em2d_restraint(self, images, resolution, pixel_size,
-                           image_resolution, projection_number, micrographs):
-        mgd = None
-        if micrographs:
-            mgd = EMMicrographsDataset(micrographs.number)
-            mgd.set_location(self._get_location(None, micrographs.metadata))
-            mgd = self.dataset_dump.add(mgd)
-        for image in images:
-            d = EM2DClassDataset()
-            d.set_location(self._get_location(image))
-            d = self.dataset_dump.add(d)
-            if mgd:
-                d.add_primary(mgd)
-            self.em2d_dump.add(EM2DRestraint(d, resolution, pixel_size,
-                                      image_resolution, projection_number, mgd))
+    def add_em2d_restraint(self, r, i, resolution, pixel_size,
+                           image_resolution, projection_number):
+        d = self.get_restraint_dataset(r, i)
+        self.em2d_dump.add(EM2DRestraint(d, resolution, pixel_size,
+                                         image_resolution, projection_number))
 
-    def add_em3d_restraint(self, target_ps, densities, emdb):
+    def add_em3d_restraint(self, target_ps, densities, r):
         # A 3DEM restraint's dataset ID uniquely defines the restraint, so
         # we need to allow duplicates
-        d = self.dataset_dump.add(EMDBDataset(emdb, allow_duplicates=True))
+        d = self.get_restraint_dataset(r, allow_duplicates=True)
         self.em3d_dump.add(EM3DRestraint(self, d, target_ps, densities))
 
     def add_model(self, group=None):
@@ -1787,11 +1792,11 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
     def _get_location(self, path, metadata=[]):
         """Get the location where the given file is deposited, or None.
-           If a RepositoryFile object is available, return that.
+           If a RepositoryFileLocation object is available, return that.
            Otherwise, if a Repository object is available, construct a
-           RepositoryFile object from that and return it."""
+           RepositoryFileLocation object from that and return it."""
         for m in metadata + self._metadata:
-            if isinstance(m, IMP.pmi.metadata.RepositoryFile):
+            if isinstance(m, IMP.pmi.metadata.RepositoryFileLocation):
                 return m
             if isinstance(m, IMP.pmi.metadata.Repository):
                 return m.get_path(path)

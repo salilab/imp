@@ -10,6 +10,7 @@ import IMP.atom
 import IMP.isd
 import IMP.container
 import IMP.pmi.tools
+import IMP.pmi.metadata
 import IMP.pmi.output
 import IMP.pmi.io.crosslink
 from math import log
@@ -1712,9 +1713,11 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
         self.psi_is_sampled = True
         self.sigma_is_sampled = True
 
-        # todo: allow the user to override this default
-        datasets = [p.get_cross_link_dataset(restraints_file)
-                    for p in representations[0]._protocol_output]
+        l = IMP.pmi.metadata.get_default_file_location(restraints_file)
+        self.dataset = IMP.pmi.metadata.CXMSDataset(l)
+
+        xl_datasets = [p.get_restraint_dataset(self)
+                       for p in representations[0]._protocol_output]
 
         # isd_map is a dictionary/map that is used to determine the psi
         # parameter from identity scores (such as ID-Score, or FDR)
@@ -1855,7 +1858,7 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
             ex_xls = [p.add_experimental_cross_link(r1, c1, r2, c2,
                                                     self.label, length, dataset)
                       for p, dataset in zip(representations[0]._protocol_output,
-                                            datasets)]
+                                            xl_datasets)]
 
             for nstate, r in enumerate(representations):
                 # loop over every state

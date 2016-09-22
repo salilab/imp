@@ -115,7 +115,7 @@ class DegreesOfFreedom(object):
         self.movers += rb_movers # probably need to store more info
         return rb_movers,rb
 
-    def create_main_chain_mover(self,molecule,resolution=1,lengths=[5,10]):
+    def create_main_chain_mover(self,molecule,resolution=1,lengths=[5,10,20]):
         """Create crankshaft moves from a set of SUPER rigid body mover from one molecule.
         See http://scfbm.biomedcentral.com/articles/10.1186/1751-0473-3-12
         """
@@ -123,15 +123,15 @@ class DegreesOfFreedom(object):
         for length in lengths:
             for n in range(len(hiers)-length):
                 hs=hiers[n+1:n+length]
-                print("MIDDLE",n+1,n+length,hs)
-                self.create_super_rigid_body(hs, max_trans=0.0,max_rot=0.01, axis=(hiers[n].get_particle(),hiers[n+length].get_particle()))
-        #for n in range(1,len(hiers)-1,10):
-        #    hs=hiers[n:]
-        #    print("END",n,hs)
-        #    self.create_super_rigid_body(hs, max_trans=0.01,axis=(hiers[n].get_particle(),hiers[n+1].get_particle()))
-        #    hs=hiers[:n+1]
-        #    print("BEGIN",n-1,hs)
-        #    self.create_super_rigid_body(hs, max_trans=0.01,axis=(hiers[n].get_particle(),hiers[n-1].get_particle()))
+                print("MIDDLE",hiers[n],hiers[n+length],hs)
+                self.create_super_rigid_body(hs, max_trans=0.0,max_rot=0.1, axis=(hiers[n].get_particle(),hiers[n+length].get_particle()))
+        for n in range(1,len(hiers)-1,10):
+            hs=hiers[n:]
+            print("END",n,hs)
+            self.create_super_rigid_body(hs, max_trans=0.1,axis=(hiers[n].get_particle(),hiers[n+1].get_particle()))
+            hs=hiers[:n+1]
+            print("BEGIN",n-1,hs)
+            self.create_super_rigid_body(hs, max_trans=0.1,axis=(hiers[n].get_particle(),hiers[n-1].get_particle()))
 
     def create_super_rigid_body(self,
                                 srb_parts,
