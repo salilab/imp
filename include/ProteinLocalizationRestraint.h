@@ -314,6 +314,32 @@ public:
 };
 
 
+class IMPNPCEXPORT MembraneExclusionRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc_;
+  double R_;
+  double r_;
+  double sigma_;
+  double thickness_;
+public:
+  MembraneExclusionRestraint(Model *m, SingletonContainerAdaptor sc,
+      double R, double r, double thickness, double sigma=2);
+  MembraneExclusionRestraint(Model *m,
+      double R, double r, double thickness, double sigma=2);
+
+#ifndef IMP_DOXYGEN
+  void add_particle(Particle *p);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  ModelObjectsTemp do_get_inputs() const;
+
+  IMP_OBJECT_METHODS(MembraneExclusionRestraint);;
+};
+
+
 class IMPNPCEXPORT PoreSideVolumeLocationRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
