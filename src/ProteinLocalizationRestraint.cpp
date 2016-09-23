@@ -1286,10 +1286,12 @@ MembraneExclusionRestraint::unprotected_evaluate(DerivativeAccumulator *accum) c
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0;
   IMP::ParticlesTemp all_particles = sc_->get();
+  double excluded_radius = r_ + thickness_;
+
   for (unsigned int i = 0; i < all_particles.size(); ++i )
   {
     core::XYZ i_current = core::XYZ(all_particles[i]);
-    if ( std::fabs(i_current.get_coordinate(2)) > (r_ + thickness_) )
+    if ( std::fabs(i_current.get_coordinate(2)) > excluded_radius )
       continue;
 
     std::pair<double, algebra::Vector3D> dist = half_torus_distance(i_current.get_coordinate(0),
