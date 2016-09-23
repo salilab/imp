@@ -505,6 +505,10 @@ class DatasetGroup(object):
     def finalize(self):
         """Get final datasets for each restraint and remove duplicates"""
         final_datasets = OrderedDict()
+        def add_parents(d):
+            for p in d._parents.keys():
+                final_datasets[p] = None
+                add_parents(p)
         for ds in self._datasets:
             if isinstance(ds, RestraintDataset):
                 d = ds.dataset
@@ -512,8 +516,7 @@ class DatasetGroup(object):
                 d = ds
             final_datasets[d] = None
             if self.include_primaries:
-                for p in d._primaries.keys():
-                    final_datasets[p] = None
+                add_parents(d)
         self._datasets = final_datasets.keys()
 
 
@@ -540,16 +543,13 @@ class DatasetDumper(Dumper):
         # Assign IDs to all datasets
         self._dataset_by_id = []
         for d in self._flatten_dataset(self._datasets):
+            # Map any local files to repository locations
+            if isinstance(d.location, IMP.pmi.metadata.LocalFileLocation):
+                d.location = self.simo._get_repository_location(d.location)
             if d not in seen_datasets:
                 if not hasattr(d, 'id'):
                     self._dataset_by_id.append(d)
                     d.id = len(self._dataset_by_id)
-                    if isinstance(d.location,
-                                  IMP.pmi.metadata.RepositoryFileLocation) \
-                       and not d.location.doi:
-                        newloc = self.simo._get_location(d.location.path)
-                        d.location.doi = newloc.doi
-                        d.location.path = newloc.path
                 seen_datasets[d] = d.id
             else:
                 d.id = seen_datasets[d]
@@ -578,7 +578,7 @@ class DatasetDumper(Dumper):
             for x in self._flatten_dataset(d.dataset):
                 yield x
         else:
-            for p in d._primaries.keys():
+            for p in d._parents.keys():
                 for x in self._flatten_dataset(p):
                     yield x
             yield d
@@ -612,25 +612,25 @@ class DatasetDumper(Dumper):
                           "data_type_derived", "dataset_list_id_primary",
                           "data_type_primary"]) as l:
             for derived in self._dataset_by_id:
-                for primary in sorted(derived._primaries.keys(),
+                for parent in sorted(derived._parents.keys(),
                                       lambda d: d.id):
                     l.write(ordinal_id=ordinal,
                             dataset_list_id_derived=derived.id,
                             data_type_derived=derived._data_type,
-                            dataset_list_id_primary=primary.id,
-                            data_type_primary=primary._data_type)
+                            dataset_list_id_primary=parent.id,
+                            data_type_primary=parent._data_type)
                     ordinal += 1
 
     def dump_rel_dbs(self, datasets, writer):
         ordinal = 1
         with writer.loop("_ihm_dataset_related_db_reference",
                          ["id", "dataset_list_id", "db_name",
-                          "access_code", "version", "data_type",
+                          "accession_code", "version", "data_type",
                           "details"]) as l:
             for d in datasets:
                 l.write(id=ordinal, dataset_list_id=d.id,
                         db_name=d.location.db_name,
-                        access_code=d.location.access_code,
+                        accession_code=d.location.access_code,
                         version=d.location.version if d.location.version
                                 else CifWriter.omitted,
                         data_type=d._data_type,
@@ -774,7 +774,7 @@ class EM2DRestraint(object):
     def get_num_raw_micrographs(self):
         """Return the number of raw micrographs used, if known.
            This is extracted from the EMMicrographsDataset if any."""
-        for d in self.rdataset.dataset._primaries.keys():
+        for d in self.rdataset.dataset._parents.keys():
             if isinstance(d, IMP.pmi.metadata.EMMicrographsDataset):
                 return d.number
 
@@ -837,14 +837,18 @@ class EM3DDumper(Dumper):
         with writer.loop("_ihm_3dem_restraint",
                          ["ordinal_id", "dataset_list_id", "fitting_method",
                           "struct_assembly_id",
-                          "number_of_gaussians"]) as l:
-            for r in self.restraints:
-                l.write(ordinal_id=ordinal,
-                        dataset_list_id=r.rdataset.dataset.id,
-                        fitting_method=r.fitting_method,
-                        struct_assembly_id=r.assembly.id,
-                        number_of_gaussians=r.number_of_gaussians)
-                ordinal += 1
+                          "number_of_gaussians", "model_id",
+                          "cross_correlation_coefficient"]) as l:
+            for model in self.models:
+                for r in self.restraints:
+                    # todo: fill in CCC
+                    l.write(ordinal_id=ordinal,
+                            dataset_list_id=r.rdataset.dataset.id,
+                            fitting_method=r.fitting_method,
+                            struct_assembly_id=r.assembly.id,
+                            number_of_gaussians=r.number_of_gaussians,
+                            model_id=model.id)
+                    ordinal += 1
 
 class Assembly(list):
     """A collection of components. Currently simply implemented as a list of
@@ -901,6 +905,7 @@ class Protocol(object):
 
 class ReplicaExchangeProtocol(Protocol):
     def __init__(self, rex):
+        self.step_name = 'Sampling'
         if rex.monte_carlo_sample_objects is not None:
             self.step_method = 'Replica exchange monte carlo'
         else:
@@ -1042,7 +1047,9 @@ class ModelProtocolDumper(Dumper):
 
     def add(self, protocol):
         self.protocols.append(protocol)
-        protocol.id = len(self.protocols)
+        # todo: support multiple protocols with multiple steps
+        protocol.id = 1
+        protocol.step_id = len(self.protocols)
         # Assume that protocol uses all currently-defined datasets
         protocol.dataset_group = self.simo.dataset_dump.get_all_group()
 
@@ -1059,12 +1066,11 @@ class ModelProtocolDumper(Dumper):
                           "step_name", "step_method", "num_models_begin",
                           "num_models_end", "multi_scale_flag",
                           "multi_state_flag", "time_ordered_flag"]) as l:
-            # todo: handle multiple protocols (e.g. sampling then refinement)
             num_models_begin = 0
             for p in self.protocols:
-                l.write(ordinal_id=ordinal, protocol_id=1,
-                        step_id=p.id, step_method=p.step_method,
-                        step_name='Sampling',
+                l.write(ordinal_id=ordinal, protocol_id=p.id,
+                        step_id=p.step_id, step_method=p.step_method,
+                        step_name=p.step_name,
                         struct_assembly_id=self.simo.modeled_assembly.id,
                         dataset_group_id=p.dataset_group.id,
                         num_models_begin=num_models_begin,
@@ -1153,6 +1159,7 @@ class StartingModelDumper(Dumper):
         # Attempt to identity PDB file vs. comparative model
         fh = open(pdbname)
         first_line = fh.readline()
+        local_file = IMP.pmi.metadata.LocalFileLocation(pdbname)
         if first_line.startswith('HEADER'):
             version, details, metadata = self._parse_pdb(fh, first_line)
             source = PDBSource(model, first_line[62:66].strip(), chain,
@@ -1164,8 +1171,7 @@ class StartingModelDumper(Dumper):
         elif first_line.startswith('EXPDTA    THEORETICAL MODEL, MODELLER'):
             self.simo.software_dump.set_modeller_used(
                                         *first_line[38:].split(' ', 1))
-            d = IMP.pmi.metadata.ComparativeModelDataset(
-                                     self.simo._get_location(pdbname))
+            d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
             model.dataset = self.simo.dataset_dump.add(d)
             templates = self.get_templates(pdbname, model)
             if templates:
@@ -1176,8 +1182,7 @@ class StartingModelDumper(Dumper):
             # todo: extract Modeller-like template info for Phyre models;
             # revisit assumption that all such unknown source PDBs are
             # comparative models
-            d = IMP.pmi.metadata.ComparativeModelDataset(
-                                      self.simo._get_location(pdbname))
+            d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
             model.dataset = self.simo.dataset_dump.add(d)
             return [UnknownSource(model)]
 
@@ -1645,6 +1650,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         # Some dumpers add per-model information; give them a pointer to
         # the model list
         self.cross_link_dump.models = self.model_dump.models
+        self.em3d_dump.models = self.model_dump.models
 
         self._dumpers = [EntryDumper(self), # should always be first
                          AuditAuthorDumper(self),
@@ -1790,13 +1796,9 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                                    self.model_prot_dump.get_last_protocol(),
                                    self.modeled_assembly, group)
 
-    def _get_location(self, path, metadata=[]):
-        """Get the location where the given file is deposited, or None.
-           If a RepositoryFileLocation object is available, return that.
-           Otherwise, if a Repository object is available, construct a
-           RepositoryFileLocation object from that and return it."""
-        for m in metadata + self._metadata:
-            if isinstance(m, IMP.pmi.metadata.RepositoryFileLocation):
-                return m
+    def _get_repository_location(self, local_file):
+        """Get the repository location for a given LocalFileLocation."""
+        for m in self._metadata:
             if isinstance(m, IMP.pmi.metadata.Repository):
-                return m.get_path(path)
+                return m.get_path(local_file)
+        raise ValueError("Could not determine a DOI for %s" % local_file.path)

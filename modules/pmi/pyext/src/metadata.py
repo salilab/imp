@@ -54,12 +54,23 @@ class Dataset(Metadata):
     _data_type = 'unspecified'
     def __init__(self, location):
         self.location = location
-        self._primaries = {}
+        self._parents = {}
 
-    def add_primary(self, dataset):
+    def add_parent(self, dataset):
         """Add another Dataset from which this one was derived.
            For example, a 3D EM map may be derived from a set of 2D images."""
-        self._primaries[dataset] = None
+        self._parents[dataset] = None
+
+    def add_primary(self, dataset):
+        """Add another Dataset from which the ultimate parent of this one
+           was derived."""
+        if len(self._parents) == 0:
+            self.add_parent(dataset)
+        elif len(self._parents) == 1:
+            self._parents.keys()[0].add_parent(dataset)
+        else:
+            raise ValueError("This dataset has multiple parents - don't "
+                             "know which one to add to")
 
 class CXMSDataset(Dataset):
     """Processed crosslinks from a CX-MS experiment"""
@@ -143,6 +154,21 @@ class MassIVELocation(DatabaseLocation):
     def __init__(self, db_code, version=None, details=None):
         DatabaseLocation.__init__(self, 'MassIVE', db_code, version, details)
 
+class LocalFileLocation(Location):
+    """An individual file or directory on the local filesystem."""
+
+    _eq_keys = Location._eq_keys + ['path']
+
+    def __init__(self, path):
+        """Constructor.
+           @param path the location of the file or directory.
+        """
+        super(LocalFileLocation, self).__init__()
+        if not os.path.exists(path):
+            raise ValueError("%s does not exist" % path)
+        # Store absolute path in case the working directory changes later
+        self.path = os.path.abspath(path)
+
 class RepositoryFileLocation(Location):
     """An individual file or directory in a repository.
        A repository in this context is simply a collection of files -
@@ -160,11 +186,6 @@ class RepositoryFileLocation(Location):
         super(RepositoryFileLocation, self).__init__()
         self.doi, self.path = doi, path
 
-def get_default_file_location(fname):
-    """Get a Location for a local file.
-       We don't know the DOI yet - that will be filled in later."""
-    return RepositoryFileLocation(doi=None, path=fname)
-
 class Repository(Metadata):
     """A repository containing modeling files.
        This can be used if the PMI script plus inputs files are part of a
@@ -181,9 +202,11 @@ class Repository(Metadata):
            @param root the relative path to the top-level directory
                   of the repository from the working directory of the script.
         """
-        self.doi, self._root = doi, root
+        self.doi = doi
+        # Store absolute path in case the working directory changes later
+        self._root = os.path.abspath(root)
 
-    def get_path(self, fname):
-        """Return a path relative to the top of the repository"""
+    def get_path(self, local):
+        """Map a LocalFileLocation to a file in this repository."""
         return RepositoryFileLocation(self.doi,
-                                      os.path.relpath(fname, self._root))
+                                      os.path.relpath(local.path, self._root))

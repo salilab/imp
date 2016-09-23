@@ -5,6 +5,7 @@ import IMP.pmi.representation
 import IMP.pmi.mmcif
 import IMP.pmi.macros
 import sys
+import os
 import io
 if sys.version_info[0] >= 3:
     from io import StringIO
@@ -407,7 +408,7 @@ loop_
 _ihm_dataset_related_db_reference.id
 _ihm_dataset_related_db_reference.dataset_list_id
 _ihm_dataset_related_db_reference.db_name
-_ihm_dataset_related_db_reference.access_code
+_ihm_dataset_related_db_reference.accession_code
 _ihm_dataset_related_db_reference.version
 _ihm_dataset_related_db_reference.data_type
 _ihm_dataset_related_db_reference.details
@@ -587,6 +588,8 @@ CYS 'L-peptide linking'
         simo = IMP.pmi.representation.Representation(m)
         po = DummyPO(None)
         simo.add_protocol_output(po)
+        # Need Repository in order to handle PDB file datasets
+        simo.add_metadata(IMP.pmi.metadata.Repository(doi='foo', root='.'))
         simo.create_component("Nup84", True)
         simo.add_component_sequence("Nup84",
                                     self.get_input_file_name("test.fasta"))
@@ -822,6 +825,33 @@ _ihm_2dem_class_average_restraint.details
 1 4 50 4.200 4.200 1.000 NO 200 1 .
 #
 """)
+
+    def test_get_repository_location(self):
+        """Test get_repository_location() method"""
+        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
+            def flush(self):
+                pass
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+
+        t = IMP.test.TempDir()
+        bar = os.path.join(t.tmpdir, 'bar')
+        with open(bar, 'w') as f:
+            f.write("")
+        local = IMP.pmi.metadata.LocalFileLocation(bar)
+        # No Repository set, so cannot map local to repository location
+        self.assertRaises(ValueError, po._get_repository_location, local)
+
+        simo.add_metadata(IMP.pmi.metadata.Software(
+                              name='test', classification='test code',
+                              description='Some test program',
+                              version=1, url='http://salilab.org'))
+        simo.add_metadata(IMP.pmi.metadata.Repository(doi='foo', root=t.tmpdir))
+        l = po._get_repository_location(local)
+        self.assertEqual(l.doi, 'foo')
+        self.assertEqual(l.path, 'bar')
 
 if __name__ == '__main__':
     IMP.test.main()

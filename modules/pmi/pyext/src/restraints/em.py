@@ -10,8 +10,11 @@ import IMP.atom
 import IMP.container
 import IMP.isd
 import IMP.pmi.tools
+import IMP.pmi.metadata
 import IMP.isd.gmm_tools
 import sys
+import re
+import os
 from math import sqrt
 
 class GaussianEMRestraint(object):
@@ -96,8 +99,7 @@ class GaussianEMRestraint(object):
         print('will scale target mass by', target_mass_scale)
 
         if target_fn != '':
-            l = IMP.pmi.metadata.get_default_file_location(target_fn)
-            self.dataset = IMP.pmi.metadata.EMDensityDataset(l)
+            self._set_dataset(target_fn)
             self.target_ps = []
             IMP.isd.gmm_tools.decorate_gmm_from_text(
                 target_fn,
@@ -164,6 +166,16 @@ class GaussianEMRestraint(object):
         self.rs = IMP.RestraintSet(self.m, 'GaussianEMRestraint')
         self.rs.add_restraint(self.gaussianEM_restraint)
         self.set_weight(weight)
+
+    def _set_dataset(self, target_fn):
+        """Set the dataset to point to the input file"""
+        l = IMP.pmi.metadata.LocalFileLocation(target_fn)
+        self.dataset = IMP.pmi.metadata.EMDensityDataset(l)
+        # If the GMM was derived from an MRC file that exists, add that too
+        m = re.match('(.*\.mrc)\..*\.txt$', target_fn)
+        if m and os.path.exists(m.group(1)):
+            l = IMP.pmi.metadata.LocalFileLocation(m.group(1))
+            self.dataset.add_parent(IMP.pmi.metadata.EMDensityDataset(l))
 
     def center_target_density_on_model(self):
         target_com = IMP.algebra.Vector3D(0, 0, 0)

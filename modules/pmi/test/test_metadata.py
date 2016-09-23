@@ -2,6 +2,7 @@ from __future__ import print_function
 import IMP.test
 import IMP.pmi.metadata
 import IMP.pmi.representation
+import os
 
 class Tests(IMP.test.TestCase):
 
@@ -23,10 +24,17 @@ class Tests(IMP.test.TestCase):
 
     def test_repository(self):
         """Test metadata.Repository"""
-        s = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46266', root='..')
-        self.assertEqual(s._root, '..')
-        f = s.get_path('../foo')
-        self.assertEqual(f.path, 'foo')
+        t = IMP.test.TempDir()
+        with open(os.path.join(t.tmpdir, 'bar'), 'w') as f:
+            f.write("")
+        s = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46266',
+                                        root=os.path.relpath(t.tmpdir))
+        self.assertEqual(s._root, t.tmpdir)
+        local = IMP.pmi.metadata.LocalFileLocation(
+                            os.path.relpath(os.path.join(t.tmpdir, 'bar')))
+        f = s.get_path(local)
+        self.assertEqual(f.doi, '10.5281/zenodo.46266')
+        self.assertEqual(f.path, 'bar')
 
     def test_repr_add(self):
         """Test Representation.add_metadata()"""
@@ -34,7 +42,7 @@ class Tests(IMP.test.TestCase):
         r = IMP.pmi.representation.Representation(m)
         r.add_metadata(IMP.pmi.metadata.Repository(
                                    doi='10.5281/zenodo.46266', root='..'))
-        self.assertEqual(r._metadata[0]._root, '..')
+        self.assertEqual(r._metadata[0]._root, os.path.abspath('..'))
 
     def test_database_location(self):
         """Test DatabaseLocation class"""
@@ -88,23 +96,67 @@ class Tests(IMP.test.TestCase):
         d4 = IMP.pmi.metadata.RepositoryFileLocation('otherdoi', 'mypath')
         self.assertNotEqual(d, d4)
 
-    def test_default_file_location(self):
-        """Test get_default_file_location function"""
-        d = IMP.pmi.metadata.get_default_file_location('foo')
-        self.assertEqual(d.doi, None)
-        self.assertEqual(d.path, 'foo')
+    def test_local_file_location(self):
+        """Test LocalFileLocation class"""
+        t = IMP.test.TempDir()
+        with open(os.path.join(t.tmpdir, 'bar'), 'w') as f:
+            f.write("")
+        d1 = IMP.pmi.metadata.LocalFileLocation(
+                              os.path.relpath(os.path.join(t.tmpdir, 'bar')))
+        d2 = IMP.pmi.metadata.LocalFileLocation(
+                              os.path.relpath(os.path.join(t.tmpdir, 'bar')))
+        self.assertEqual(d1, d2)
+        self.assertEqual(d1.path, os.path.join(t.tmpdir, 'bar'))
+        self.assertRaises(ValueError, IMP.pmi.metadata.LocalFileLocation,
+                          os.path.join(t.tmpdir, 'not-exists'))
 
-    def test_dataset_add_primary(self):
-        """Test Dataset.add_primary()"""
+    def test_dataset_add_parent(self):
+        """Test Dataset.add_parent()"""
+        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        d1 = IMP.pmi.metadata.CXMSDataset(loc)
+        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'b')
+        d2 = IMP.pmi.metadata.MassSpecDataset(loc)
+        d1.add_parent(d2)
+        self.assertEqual(d1._parents, {d2:None})
+        # Ignore duplicates
+        d1.add_parent(d2)
+        self.assertEqual(d1._parents, {d2:None})
+
+    def test_dataset_add_primary_no_parents(self):
+        """Test Dataset.add_primary() with no parents"""
         loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
         d1 = IMP.pmi.metadata.CXMSDataset(loc)
         loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'b')
         d2 = IMP.pmi.metadata.MassSpecDataset(loc)
         d1.add_primary(d2)
-        self.assertEqual(d1._primaries, {d2:None})
-        # Ignore duplicates
-        d1.add_primary(d2)
-        self.assertEqual(d1._primaries, {d2:None})
+        self.assertEqual(d1._parents, {d2:None})
+
+    def test_dataset_add_primary_one_parent(self):
+        """Test Dataset.add_primary() with one parent"""
+        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        d1 = IMP.pmi.metadata.CXMSDataset(loc)
+        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'b')
+        d2 = IMP.pmi.metadata.MassSpecDataset(loc)
+        d1.add_parent(d2)
+        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'c')
+        d3 = IMP.pmi.metadata.MassSpecDataset(loc)
+        d1.add_primary(d3)
+        self.assertEqual(d1._parents, {d2:None})
+        self.assertEqual(d2._parents, {d3:None})
+
+    def test_dataset_add_primary_two_parents(self):
+        """Test Dataset.add_primary() with two parents"""
+        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        d1 = IMP.pmi.metadata.CXMSDataset(loc)
+        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'b')
+        d2 = IMP.pmi.metadata.MassSpecDataset(loc)
+        d1.add_parent(d2)
+        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'c')
+        d3 = IMP.pmi.metadata.MassSpecDataset(loc)
+        d1.add_parent(d3)
+        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'd')
+        d4 = IMP.pmi.metadata.MassSpecDataset(loc)
+        self.assertRaises(ValueError, d1.add_primary, d4)
 
     def test_cxms_dataset(self):
         """Test CXMSDataset"""
