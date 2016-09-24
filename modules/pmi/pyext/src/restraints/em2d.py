@@ -52,6 +52,11 @@ class ElectronMicroscopy2D(object):
 
         self.datasets = []
         for image in images:
+            if representation:
+                d = representation.get_file_dataset(image)
+                if d:
+                    self.datasets.append(d)
+                    continue
             l = IMP.pmi.metadata.LocalFileLocation(image)
             d = IMP.pmi.metadata.EM2DClassDataset(l)
             self.datasets.append(d)

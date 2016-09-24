@@ -484,14 +484,16 @@ class TemplateSource(object):
 
 class UnknownSource(object):
     """Part of a starting model from an unknown source"""
-    source = CifWriter.unknown
     db_code = CifWriter.unknown
     db_name = CifWriter.unknown
     chain_id = CifWriter.unknown
     sequence_identity = CifWriter.unknown
+    # Map dataset types to starting model sources
+    _source_map = {'Comparative model': 'comparative model',
+                   'Experimental model': 'experimental model'}
 
     def __init__(self, model):
-        pass
+        self.source = self._source_map[model.dataset._data_type]
 
     def get_seq_id_range(self, model):
         return (model.seq_id_begin, model.seq_id_end)
@@ -642,18 +644,27 @@ class DatasetDumper(Dumper):
         ordinal = 1
         with writer.loop("_ihm_dataset_other",
                          ["id", "dataset_list_id", "data_type",
-                          "doi", "content_filename"]) as l:
+                          "doi", "content_filename", "details"]) as l:
             for d in datasets:
                 l.write(id=ordinal, dataset_list_id=d.id,
                         data_type=d._data_type, doi=d.location.doi,
-                        content_filename=d.location.path)
+                        content_filename=d.location.path,
+                        details=d.location.details if d.location.details
+                                else CifWriter.omitted)
                 ordinal += 1
 
 
+class CrossLinkGroup(object):
+    """Group common information for a set of cross links"""
+    def __init__(self, pmi_restraint, rdataset):
+        self.pmi_restraint, self.rdataset = pmi_restraint, rdataset
+        self.label = self.pmi_restraint.label
+
+
 class ExperimentalCrossLink(object):
-    def __init__(self, r1, c1, r2, c2, label, length, rdataset):
-        self.r1, self.c1, self.r2, self.c2, self.label = r1, c1, r2, c2, label
-        self.length, self.rdataset = length, rdataset
+    def __init__(self, r1, c1, r2, c2, length, group):
+        self.r1, self.c1, self.r2, self.c2 = r1, c1, r2, c2
+        self.length, self.group = length, group
 
 class CrossLink(object):
     def __init__(self, ex_xl, p1, p2, sigma1, sigma2, psi):
@@ -704,8 +715,8 @@ class CrossLinkDumper(Dumper):
                         entity_id_2=entity2.id,
                         seq_id_2=xl.r2,
                         comp_id_2=rt2.get_string(),
-                        type=xl.label,
-                        dataset_list_id=xl.rdataset.dataset.id)
+                        type=xl.group.label,
+                        dataset_list_id=xl.group.rdataset.dataset.id)
 
     def _granularity(self, xl):
         """Determine the granularity of a cross link"""
@@ -740,28 +751,46 @@ class CrossLinkDumper(Dumper):
                         asym_id_2=asym[xl.p2],
                         seq_id_2=xl.ex_xl.r2,
                         comp_id_2=rt2.get_string(),
-                        type=xl.ex_xl.label,
+                        type=xl.ex_xl.group.label,
                         # todo: any circumstances where this could be ANY?
                         conditional_crosslink_flag="ALL",
                         model_granularity=self._granularity(xl),
                         distance_threshold=xl.ex_xl.length,
-                        # todo: handle cases where psi is optimized
                         psi=xl.psi.get_scale(),
-                        sigma_1=xl.sigma1, sigma_2=xl.sigma2)
+                        sigma_1=xl.sigma1.get_scale(),
+                        sigma_2=xl.sigma2.get_scale())
+
+    def _set_psi_sigma(self, model, g):
+        for resolution in g.pmi_restraint.sigma_dictionary:
+            statname = 'ISDCrossLinkMS_Sigma_%s_%s' % (resolution, g.label)
+            if model.stats and statname in model.stats:
+                sigma = float(model.stats[statname])
+                p = g.pmi_restraint.sigma_dictionary[resolution][0]
+                p.set_scale(sigma)
+        for psiindex in g.pmi_restraint.psi_dictionary:
+            statname = 'ISDCrossLinkMS_Psi_%s_%s' % (psiindex, g.label)
+            if model.stats and statname in model.stats:
+                psi = float(model.stats[statname])
+                p = g.pmi_restraint.psi_dictionary[psiindex][0]
+                p.set_scale(psi)
 
     def dump_results(self, writer):
+        all_groups = {}
+        for xl in self.cross_links:
+            all_groups[xl.ex_xl.group] = None
         ordinal = 1
         with writer.loop("_ihm_cross_link_result_parameters",
                          ["ordinal_id", "restraint_id", "model_id",
-                          "sigma_1", "sigma_2"]) as l:
+                          "psi", "sigma_1", "sigma_2"]) as l:
             for model in self.models:
+                for g in all_groups.keys():
+                    self._set_psi_sigma(model, g)
                 for xl in self.cross_links:
-                    # todo: handle resolutions!=1, multiple independent sigmas
-                    statname = 'ISDCrossLinkMS_Sigma_1_%s' % xl.ex_xl.label
-                    if model.stats and statname in model.stats:
-                        sigma = float(model.stats[statname])
+                    if model.stats:
                         l.write(ordinal_id=ordinal, restraint_id=xl.id,
-                                model_id=model.id, sigma_1=sigma, sigma_2=sigma)
+                                model_id=model.id, psi=xl.psi.get_scale(),
+                                sigma_1=xl.sigma1.get_scale(),
+                                sigma_2=xl.sigma2.get_scale())
                         ordinal += 1
 
 class EM2DRestraint(object):
@@ -1160,19 +1189,20 @@ class StartingModelDumper(Dumper):
         fh = open(pdbname)
         first_line = fh.readline()
         local_file = IMP.pmi.metadata.LocalFileLocation(pdbname)
+        file_dataset = self.simo.get_file_dataset(pdbname)
         if first_line.startswith('HEADER'):
             version, details, metadata = self._parse_pdb(fh, first_line)
             source = PDBSource(model, first_line[62:66].strip(), chain,
                                metadata)
             l = IMP.pmi.metadata.PDBLocation(source.db_code, version, details)
             d = IMP.pmi.metadata.PDBDataset(l)
-            model.dataset = self.simo.dataset_dump.add(d)
+            model.dataset = self.simo.dataset_dump.add(file_dataset or d)
             return [source]
         elif first_line.startswith('EXPDTA    THEORETICAL MODEL, MODELLER'):
             self.simo.software_dump.set_modeller_used(
                                         *first_line[38:].split(' ', 1))
             d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
-            model.dataset = self.simo.dataset_dump.add(d)
+            model.dataset = self.simo.dataset_dump.add(file_dataset or d)
             templates = self.get_templates(pdbname, model)
             if templates:
                 return templates
@@ -1183,7 +1213,7 @@ class StartingModelDumper(Dumper):
             # revisit assumption that all such unknown source PDBs are
             # comparative models
             d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
-            model.dataset = self.simo.dataset_dump.add(d)
+            model.dataset = self.simo.dataset_dump.add(file_dataset or d)
             return [UnknownSource(model)]
 
     def assign_model_details(self):
@@ -1669,6 +1699,9 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                          self.model_prot_dump, self.post_process_dump,
                          self.ensemble_dump, self.density_dump, self.model_dump]
 
+    def get_file_dataset(self, fname):
+        return self._file_dataset.get(os.path.abspath(fname), None)
+
     def get_chain_for_component(self, name, output):
         """Get the chain ID for a component, if any."""
         # todo: handle multiple copies
@@ -1720,15 +1753,17 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.dataset_dump.add(rs)
         return rs
 
-    def add_experimental_cross_link(self, r1, c1, r2, c2, label, length,
-                                    dataset):
+    def get_cross_link_group(self, r):
+        return CrossLinkGroup(r, self.get_restraint_dataset(r))
+
+    def add_experimental_cross_link(self, r1, c1, r2, c2, length, group):
         if c1 not in self._all_components or c2 not in self._all_components:
             # Crosslink refers to a component we didn't model
             # As a quick hack, just ignore it.
             # todo: need to add an entity for this anyway (so will need the
             # sequence, and add to struct_assembly)
             return None
-        xl = ExperimentalCrossLink(r1, c1, r2, c2, label, length, dataset)
+        xl = ExperimentalCrossLink(r1, c1, r2, c2, length, group)
         self.cross_link_dump.add_experimental(xl)
         return xl
 

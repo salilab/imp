@@ -91,6 +91,7 @@ class Representation(object):
         """
 
         self._metadata = []
+        self._file_dataset = {}
         self._protocol_output = []
 
         # this flag uses either harmonic (False) or upperharmonic (True)
@@ -166,12 +167,32 @@ class Representation(object):
         """
         self._metadata.append(m)
 
+    def set_file_dataset(self, fname, dataset):
+        """Associate a dataset with a filename.
+           This can be used to identify how the file was produced (in many
+           cases IMP can determine this automatically from a file header or
+           other metadata, but not always). For example, a manually-produced
+           PDB file (not from the PDB database or Modeller) can be
+           identified this way.
+           @param fname filename
+           @dataset the IMP.pmi.metadata.Dataset object to associate.
+        """
+        self._file_dataset[os.path.abspath(fname)] = dataset
+
+    def get_file_dataset(self, fname):
+        """Get the dataset associated with a filename, or None.
+           @param fname filename
+           @return an IMP.pmi.metadata.Dataset, or None.
+        """
+        return self._file_dataset.get(os.path.abspath(fname), None)
+
     def add_protocol_output(self, p):
         """Capture details of the modeling protocol.
            @param p an instance of IMP.pmi.output.ProtocolOutput or a subclass.
         """
         self._protocol_output.append(p)
         p._metadata = self._metadata
+        p._file_dataset = self._file_dataset
         p.m = self.m
         p.prot = self.prot
         # Ugly, but we need to be able to call set_coordinates_from_rmf().

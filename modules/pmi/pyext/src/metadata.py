@@ -108,11 +108,13 @@ class EM2DClassDataset(Dataset):
 
 class Location(Metadata):
     """Identifies the location where a resource can be found."""
+
+    # 'details' can differ without affecting dataset equality
     _eq_keys = []
     _allow_duplicates = False
 
-    def __init__(self):
-        pass
+    def __init__(self, details=None):
+        self.details = details
 
     # Locations compare equal iff they are the same class, have the
     # same attributes, and allow_duplicates=False
@@ -130,14 +132,13 @@ class Location(Metadata):
 class DatabaseLocation(Location):
     """A dataset stored in an official database (PDB, EMDB, PRIDE, etc.)"""
 
-    # details can differ without affecting dataset equality
     _eq_keys = Location._eq_keys + ['db_name', 'access_code', 'version']
 
     def __init__(self, db_name, db_code, version=None, details=None):
-        super(DatabaseLocation, self).__init__()
+        super(DatabaseLocation, self).__init__(details)
         self.db_name = db_name
         self.access_code = db_code
-        self.version, self.details = version, details
+        self.version = version
 
 class EMDBLocation(DatabaseLocation):
     """Something stored in the EMDB database."""
@@ -152,18 +153,18 @@ class PDBLocation(DatabaseLocation):
 class MassIVELocation(DatabaseLocation):
     """Something stored in the MassIVE database."""
     def __init__(self, db_code, version=None, details=None):
-        DatabaseLocation.__init__(self, 'MassIVE', db_code, version, details)
+        DatabaseLocation.__init__(self, 'MASSIVE', db_code, version, details)
 
 class LocalFileLocation(Location):
     """An individual file or directory on the local filesystem."""
 
     _eq_keys = Location._eq_keys + ['path']
 
-    def __init__(self, path):
+    def __init__(self, path, details=None):
         """Constructor.
            @param path the location of the file or directory.
         """
-        super(LocalFileLocation, self).__init__()
+        super(LocalFileLocation, self).__init__(details)
         if not os.path.exists(path):
             raise ValueError("%s does not exist" % path)
         # Store absolute path in case the working directory changes later
@@ -178,12 +179,12 @@ class RepositoryFileLocation(Location):
 
     _eq_keys = Location._eq_keys + ['doi', 'path']
 
-    def __init__(self, doi, path):
+    def __init__(self, doi, path, details=None):
         """Constructor.
            @param doi the Digital Object Identifer for the repository.
            @param path the location of the file or directory in the repository.
         """
-        super(RepositoryFileLocation, self).__init__()
+        super(RepositoryFileLocation, self).__init__(details)
         self.doi, self.path = doi, path
 
 class Repository(Metadata):
@@ -209,4 +210,5 @@ class Repository(Metadata):
     def get_path(self, local):
         """Map a LocalFileLocation to a file in this repository."""
         return RepositoryFileLocation(self.doi,
-                                      os.path.relpath(local.path, self._root))
+                                      os.path.relpath(local.path, self._root),
+                                      details=local.details)

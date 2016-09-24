@@ -99,7 +99,7 @@ class GaussianEMRestraint(object):
         print('will scale target mass by', target_mass_scale)
 
         if target_fn != '':
-            self._set_dataset(target_fn)
+            self._set_dataset(target_fn, representation)
             self.target_ps = []
             IMP.isd.gmm_tools.decorate_gmm_from_text(
                 target_fn,
@@ -167,8 +167,12 @@ class GaussianEMRestraint(object):
         self.rs.add_restraint(self.gaussianEM_restraint)
         self.set_weight(weight)
 
-    def _set_dataset(self, target_fn):
+    def _set_dataset(self, target_fn, representation):
         """Set the dataset to point to the input file"""
+        if representation:
+            self.dataset = representation.get_file_dataset(target_fn)
+            if self.dataset:
+                return
         l = IMP.pmi.metadata.LocalFileLocation(target_fn)
         self.dataset = IMP.pmi.metadata.EMDensityDataset(l)
         # If the GMM was derived from an MRC file that exists, add that too

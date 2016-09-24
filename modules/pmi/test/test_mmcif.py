@@ -33,6 +33,17 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(out[-3],
                          "3 test 'test code' 1 program http://salilab.org")
 
+    def test_file_dataset(self):
+        """Test get/set_file_dataset methods"""
+        m = IMP.Model()
+        r = IMP.pmi.representation.Representation(m)
+        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='baz')
+        d = IMP.pmi.metadata.EM2DClassDataset(l)
+        r.set_file_dataset('foo', d)
+        self.assertEqual(r.get_file_dataset('foo'), d)
+        self.assertEqual(r._file_dataset, {os.path.abspath('foo'): d})
+        self.assertEqual(r.get_file_dataset('foobar'), None)
+
     def test_assembly_dumper_get_subassembly(self):
         """Test AssemblyDumper.get_subassembly()"""
         class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
@@ -401,7 +412,8 @@ _ihm_dataset_other.dataset_list_id
 _ihm_dataset_other.data_type
 _ihm_dataset_other.doi
 _ihm_dataset_other.content_filename
-1 1 'CX-MS data' foo bar
+_ihm_dataset_other.details
+1 1 'CX-MS data' foo bar .
 #
 #
 loop_
