@@ -1077,33 +1077,37 @@ namespace
 {
 std::pair<double, algebra::Vector3D> half_torus_distance(double x, double y, double z, double R, double r)
 {
-  const double eps = 1e-9;
-  double d_xy2 = x*x + y*y;
-  double d_xy = std::sqrt(d_xy2);
-  double d_tx, d_ty;
-  double d_txx, d_txy, d_tyy, d_tyx;
-  if ( d_xy > eps )
+  double d_xy = std::sqrt(x*x + y*y);
+  //double d_xy2 = x*x + y*y;
+  //double d_xy = std::sqrt(d_xy2);
+
+  if ( d_xy < R )
   {
-    d_tx = x - x/d_xy*R;
-    d_txx = 1 - R*(x*x/d_xy - d_xy)/d_xy2;
-    d_txy = -R*x*y/(d_xy2*d_xy);
-    d_ty = y - y/d_xy*R;
-    d_tyy = 1 - R*(y*y/d_xy - d_xy)/d_xy2;
-    d_tyx = -R*y*x/(d_xy2*d_xy);
-  }
-  else
-  {
-    d_tx = x - R;
-    d_txx = 1;
-    d_txy = 0;
-    d_ty = y;
-    d_tyy = 1;
-    d_tyx = 0;
-  }
-  if ( d_xy <= R )
-  {
+    const double eps = 1e-9;
+    double d_tx, d_ty;
+    //double d_txx, d_txy, d_tyy, d_tyx;
+    if ( d_xy > eps )
+    {
+      d_tx = x - x/d_xy*R;    // x - R * cos(theta)
+      //d_txx = 1 - R*(x*x/d_xy - d_xy)/d_xy2;
+      //d_txy = -R*x*y/(d_xy2*d_xy);
+      d_ty = y - y/d_xy*R;    // y - R * sin(theta)
+      //d_tyy = 1 - R*(y*y/d_xy - d_xy)/d_xy2;
+      //d_tyx = -R*y*x/(d_xy2*d_xy);
+    }
+    else
+    {
+      d_tx = x - R;
+      //d_txx = 1;
+      //d_txy = 0;
+      d_ty = y;
+      //d_tyy = 1;
+      //d_tyx = 0;
+    }
+
     double denom = std::sqrt(z*z + d_tx*d_tx + d_ty*d_ty);
-    algebra::Vector3D der;
+    algebra::Vector3D der = algebra::Vector3D(0, 0, 0);
+    /*
     if ( denom > eps )
     {
       der[0] = (d_tx*d_txx + d_ty*d_tyx)/denom;
@@ -1116,13 +1120,16 @@ std::pair<double, algebra::Vector3D> half_torus_distance(double x, double y, dou
       der[1] = (d_tx*d_txy + d_ty*d_tyy)/eps;
       der[2] = z/eps;
     }
+    */
     return std::make_pair(denom - r, der);
   }
   else
   {
-    double dz = z > 0 ? z - r : z + r;
-    double denom = std::sqrt(dz*dz + d_tx*d_tx + d_ty*d_ty);
-    algebra::Vector3D der;
+    double dz = std::abs(z) - r;
+    //double dz = z > 0 ? z - r : z + r;
+    //double denom = std::sqrt(dz*dz + d_tx*d_tx + d_ty*d_ty);
+    algebra::Vector3D der = algebra::Vector3D(0, 0, 0);
+    /*
     if ( denom > eps )
     {
       der[0] = -(d_tx*d_txx + d_ty*d_tyx)/denom;
@@ -1135,7 +1142,9 @@ std::pair<double, algebra::Vector3D> half_torus_distance(double x, double y, dou
       der[1] = -(d_tx*d_txy + d_ty*d_tyy)/eps;
       der[2] = dz/eps;
     }
-    return std::make_pair(-denom, der);
+    */
+    return std::make_pair(dz, der);
+    //return std::make_pair(-denom, der);
   }
 }
 }
@@ -1213,11 +1222,13 @@ MembraneSurfaceLocationRestraint::unprotected_evaluate(DerivativeAccumulator *ac
     if ( std::fabs(dist.first) > thickness_ )
     {
       v += dist.first*dist.first;
+      /*
       if ( accum )
       {
         all_particles[i]->get_model()->add_to_coordinate_derivatives(IMP::internal::get_index(all_particles[i]),
             dist.second*2*dist.first/sigma_, *accum);
       }
+      */
     }
   }
   return v/sigma_;
@@ -1299,11 +1310,13 @@ MembraneExclusionRestraint::unprotected_evaluate(DerivativeAccumulator *accum) c
     if ( dist.first < thickness_ )
     {
       v += (thickness_ - dist.first) * (thickness_ - dist.first);
+      /*
       if ( accum )
       {
         all_particles[i]->get_model()->add_to_coordinate_derivatives(IMP::internal::get_index(all_particles[i]),
             dist.second*2*dist.first/sigma_, *accum);
       }
+      */
     }
   }
   return v/sigma_;
