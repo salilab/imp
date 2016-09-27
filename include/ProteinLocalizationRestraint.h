@@ -314,6 +314,36 @@ public:
 };
 
 
+class IMPNPCEXPORT MembraneSurfaceLocationConditionalRestraint : public Restraint
+{
+  IMP::PointerMember<IMP::SingletonContainer> sc1_;
+  IMP::PointerMember<IMP::SingletonContainer> sc2_;
+  double R_;
+  double r_;
+  double sigma_;
+  double thickness_;
+public:
+  MembraneSurfaceLocationConditionalRestraint(Model *m, SingletonContainerAdaptor sc1, SingletonContainerAdaptor sc2,
+      double R, double r, double thickness, double sigma=2);
+  MembraneSurfaceLocationConditionalRestraint(Model *m,
+      double R, double r, double thickness, double sigma=2);
+
+#ifndef IMP_DOXYGEN
+  void add_particle1(Particle *p);
+  void add_particle2(Particle *p);
+  void add_particles1(const ParticlesTemp &ps);
+  void add_particles2(const ParticlesTemp &ps);
+  void set_particles1(const ParticlesTemp &ps);
+  void set_particles2(const ParticlesTemp &ps);
+#endif
+
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  ModelObjectsTemp do_get_inputs() const;
+
+  IMP_OBJECT_METHODS(MembraneSurfaceLocationConditionalRestraint);;
+};
+
+
 class IMPNPCEXPORT MembraneExclusionRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;

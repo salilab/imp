@@ -1243,6 +1243,125 @@ ModelObjectsTemp MembraneSurfaceLocationRestraint::do_get_inputs() const {
 
 
 /*#####################################################
+# Restraints setup - MembraneSurfaceLocationConditionalRestraint
+#####################################################*/
+MembraneSurfaceLocationConditionalRestraint::MembraneSurfaceLocationConditionalRestraint(Model *m,
+    SingletonContainerAdaptor sc1,
+    SingletonContainerAdaptor sc2,
+    double R, double r, double thickness, double sigma)
+  : Restraint(m, "MembraneSurfaceLocationConditionalRestraint %1%")
+  , R_(R)
+  , r_(r)
+  , sigma_(sigma)
+  , thickness_(thickness/2)
+{
+  sc1_ = sc1;
+  sc2_ = sc2;
+}
+
+MembraneSurfaceLocationConditionalRestraint::MembraneSurfaceLocationConditionalRestraint(Model *m,
+    double R, double r, double thickness, double sigma)
+  : Restraint(m, "MembraneSurfaceLocationConditionalRestraint %1%")
+  , R_(R)
+  , r_(r)
+  , sigma_(sigma)
+  , thickness_(thickness/2)
+{
+}
+
+void MembraneSurfaceLocationConditionalRestraint::set_particles1(const ParticlesTemp &ps) {
+  if (!sc1_ && !ps.empty()) {
+    sc1_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps[0]->get_model(), "Surface location list");
+  }
+  get_list(sc1_)->set(IMP::internal::get_index(ps));
+}
+
+void MembraneSurfaceLocationConditionalRestraint::set_particles2(const ParticlesTemp &ps) {
+  if (!sc2_ && !ps.empty()) {
+    sc2_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps[0]->get_model(), "Surface location list");
+  }
+  get_list(sc2_)->set(IMP::internal::get_index(ps));
+}
+
+void MembraneSurfaceLocationConditionalRestraint::add_particles1(const ParticlesTemp &ps) {
+  if (!sc1_&& !ps.empty()) {
+    sc1_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps[0]->get_model(), "Surface location list");
+  }
+  get_list(sc1_)->add(IMP::internal::get_index(ps));
+}
+
+void MembraneSurfaceLocationConditionalRestraint::add_particles2(const ParticlesTemp &ps) {
+  if (!sc2_&& !ps.empty()) {
+    sc2_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps[0]->get_model(), "Surface location list");
+  }
+  get_list(sc2_)->add(IMP::internal::get_index(ps));
+}
+
+void MembraneSurfaceLocationConditionalRestraint::add_particle1(Particle *ps) {
+  if (!sc1_) {
+    sc1_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps->get_model(), "Surface location list");
+  }
+  get_list(sc1_)->add(IMP::internal::get_index(ps));
+}
+
+void MembraneSurfaceLocationConditionalRestraint::add_particle2(Particle *ps) {
+  if (!sc2_) {
+    sc2_ = new IMP::internal::StaticListContainer<SingletonContainer>(
+        ps->get_model(), "Surface location list");
+  }
+  get_list(sc2_)->add(IMP::internal::get_index(ps));
+}
+
+double
+MembraneSurfaceLocationConditionalRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+{
+  IMP_CHECK_OBJECT(sc1_.get());
+  IMP_CHECK_OBJECT(sc2_.get());
+  double v1 = 0.0;
+  IMP::ParticlesTemp all_particles1 = sc1_->get();
+  for (unsigned int i = 0; i < all_particles1.size(); ++i )
+  {
+    core::XYZ i_current = core::XYZ(all_particles1[i]);
+    std::pair<double, algebra::Vector3D> dist = half_torus_distance(i_current.get_coordinate(0),
+        i_current.get_coordinate(1), i_current.get_coordinate(2), R_, r_);
+    if ( std::fabs(dist.first) > thickness_ )
+    {
+      v1 += dist.first*dist.first;
+    }
+  }
+  double v2 = 0.0;
+  IMP::ParticlesTemp all_particles2 = sc2_->get();
+  for (unsigned int i = 0; i < all_particles2.size(); ++i )
+  {
+    core::XYZ i_current = core::XYZ(all_particles2[i]);
+    std::pair<double, algebra::Vector3D> dist = half_torus_distance(i_current.get_coordinate(0),
+        i_current.get_coordinate(1), i_current.get_coordinate(2), R_, r_);
+    if ( std::fabs(dist.first) > thickness_ )
+    {
+      v2 += dist.first*dist.first;
+    }
+  }
+  //printf("v1 = %g\t v2 = %g\t min=%g\n", v1, v2, std::min(v1, v2));
+  return std::min(v1, v2)/sigma_;
+}
+
+ModelObjectsTemp MembraneSurfaceLocationConditionalRestraint::do_get_inputs() const {
+  if ( !sc1_ )
+    return ModelObjectsTemp();
+  if ( !sc2_ )
+    return ModelObjectsTemp();
+  ParticleIndexes all = sc1_->get_all_possible_indexes();
+  all += sc2_->get_all_possible_indexes();
+  return IMP::get_particles(get_model(), all);
+}
+
+
+/*#####################################################
 # Restraints setup - MembraneExclusionRestraint
 #####################################################*/
 MembraneExclusionRestraint::MembraneExclusionRestraint(Model *m,

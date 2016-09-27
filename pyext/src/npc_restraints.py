@@ -625,6 +625,73 @@ class MembraneSurfaceLocationRestraint(object):
         return self.weight * self.rs.unprotected_evaluate(None)
 
 
+class MembraneSurfaceLocationConditionalRestraint(object):
+    """Create Membrane Surface Location CONDITIONAL Restraint
+       for Nup120 ALPS Motifs - Mutually Exclusive from (135,152,'Nup120') and (197,216,'Nup120').
+       It returns a minimum penalty score from two potential ALPS motifs.
+    """
+    def __init__(self,
+                 representation = None,
+                 protein1 = None,
+                 protein2 = None,
+                 tor_R = 540.0,
+                 tor_r = 127.5,
+                 tor_th = 45.0,
+                 sigma = 0.2,
+                 resolution = 1,
+                 hier = None):
+        """Constructor
+        @param representation representation
+        """
+
+        # PMI1/2 selection
+        if representation is None and hier is not None:
+            self.m = hier.get_model()
+        elif hier is None and representation is not None:
+            self.m = representation.prot.get_model()
+        else:
+            raise Exception("MembraneSurfaceLocationConditionalRestraint: must pass hier or representation")
+
+        self.rs = IMP.RestraintSet(self.m, 'MembraneSurfaceLocationConditionalRestraint')
+        self.weight=1.0
+        self.label = "None"
+
+        msl = IMP.npc.MembraneSurfaceLocationConditionalRestraint(self.m, tor_R, tor_r, tor_th, sigma)
+        residues1 = IMP.pmi.tools.select_by_tuple(representation, protein1, resolution=resolution)
+        for residue in residues1:
+            #print (residue, type(residue))
+            msl.add_particle1(residue)
+        residues2 = IMP.pmi.tools.select_by_tuple(representation, protein2, resolution=resolution)
+        for residue in residues2:
+            #print (residue, type(residue))
+            msl.add_particle2(residue)
+        self.rs.add_restraint(msl)
+
+    def set_label(self, label):
+        self.label = label
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+
+    def get_restraint(self):
+        return self.rs
+
+    def set_weight(self, weight):
+        self.weight = weight
+        self.rs.set_weight(self.weight)
+
+    def get_output(self):
+        self.m.update()
+        output = {}
+        score = self.weight * self.rs.unprotected_evaluate(None)
+        output["_TotalScore"] = str(score)
+        output["MembraneSurfaceLocationConditionalRestraint_" + self.label] = str(score)
+        return output
+
+    def evaluate(self):
+        return self.weight * self.rs.unprotected_evaluate(None)
+
+
 class MembraneExclusionRestraint(object):
     """Create Membrane Exclusion Restraint
     """
