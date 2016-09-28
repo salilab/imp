@@ -45,8 +45,6 @@ class IMPMPIEXPORT ReplicaExchange : public Object {
   //! Get the rank for a given replica index
   int get_rank(int index);
 
-  virtual void do_destroy() IMP_OVERRIDE { MPI_Finalize(); }
-
  public:
   ReplicaExchange();
   //! Set exchange parameter
