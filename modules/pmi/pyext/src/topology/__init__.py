@@ -866,7 +866,7 @@ def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
                         offsets[name][group]=offset
                 else:
                     if group not in offsets[name]:
-                        offsets[name][group]=offset                    
+                        offsets[name][group]=offset
     return offsets
 
 
@@ -1163,7 +1163,7 @@ class TopologyReader(object):
                 errors.append("rigid bodies format for component "
                               "%s line %d is not correct" % (c.molname, linenum))
                 errors.append("Each RB must be a single integer. |%s| was given." % rbs)
-            c.rigid_bodies = rbs
+            c.rigid_bodies = int(rbs)
 
         # super rigid bodies
         if len(srbs)>0:
@@ -1224,8 +1224,9 @@ class TopologyReader(object):
         """Return list of lists of rigid bodies (as domain name)"""
         rbl = defaultdict(list)
         for c in self.components:
-            for rbnum in c.rigid_bodies:
-                rbl[rbnum].append(c.get_unique_name())
+            #for rbnum in c.rigid_bodies:
+            #rbl[rbnum].append(c.get_unique_name())
+            rbl[c.rigid_bodies].append(c.get_unique_name())
         return rbl.values()
 
     def get_super_rigid_bodies(self):

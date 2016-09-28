@@ -583,15 +583,15 @@ class XLTable():
                     data.append(sorted_ids+["UniqueID","Distance","MinAmbiguousDistance"])
                 (c1,c2,r1,r2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
                 try:
-                   (mdist,p1,p2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
+                    (mdist,p1,p2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
                 except:
-                   mdist="None"
+                    mdist="None"
                 values=[xl[k] for k in sorted_ids]
                 values+=[group,mdist]
                 group_dists.append(mdist)
                 #group_block.append(values)
                 xl["Distance"]=mdist
-                
+
             for xl in self.cross_link_db.data_base[group]:
                 xl["MinAmbiguousDistance"]=min(group_dists)
             #for l in group_block:
@@ -600,7 +600,7 @@ class XLTable():
 
     def save_rmf_snapshot(self,filename,color_id=None):
         if color_id is None:
-           color_id=self.cross_link_db.id_score_key
+            color_id=self.cross_link_db.id_score_key
         sorted_ids=None
         sorted_group_ids=sorted(self.cross_link_db.data_base.keys())
         list_of_pairs=[]
@@ -625,7 +625,7 @@ class XLTable():
             else:
                 continue
 
-         
+
         m=self.prots[0].get_model()
         linear = IMP.core.Linear(0, 0.0)
         linear.set_slope(1.0)
@@ -650,6 +650,20 @@ class XLTable():
         IMP.rmf.add_geometries(rh, sgs)
         IMP.rmf.save_frame(rh)
         del rh
+
+    def get_residue_contacts(self,prot_listx,prot_listy):
+        for px in prot_listx:
+            for py in prot_listy:
+                indexes_x = self.index_dict[px]
+                minx = min(indexes_x)
+                maxx = max(indexes_x)
+                indexes_y = self.index_dict[py]
+                miny = min(indexes_y)
+                maxy = max(indexes_y)
+                array = self.contact_freqs[minx:maxx,miny:maxy]
+                (xresidues,yresidues)=np.where(array>0)
+                for n,xr in enumerate(xresidues):
+                    print(xr,yresidues[n],px,py,array[xr,yresidues[n]])
 
 
     def plot_table(self, prot_listx=None,
@@ -805,8 +819,8 @@ class XLTable():
         ax.set_xticklabels(xlabels, rotation=90)
         ax.set_yticks(yticks)
         ax.set_yticklabels(ylabels)
-        plt.setp(ax.get_xticklabels(), fontsize=30)
-        plt.setp(ax.get_yticklabels(), fontsize=30)
+        plt.setp(ax.get_xticklabels(), fontsize=6)
+        plt.setp(ax.get_yticklabels(), fontsize=6)
 
         # set the crosslinks
         already_added_xls = []
@@ -818,84 +832,85 @@ class XLTable():
         xl_list=[]
 
         markersize = 5 * scale_symbol_size
-        for xl in self.cross_link_db:
+        if self.cross_link_db:
+            for xl in self.cross_link_db:
 
-            (c1,c2,r1,r2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
-            label=xl[self.cross_link_db.unique_sub_id_key]
-            if color_crosslinks_by_distance:
+                (c1,c2,r1,r2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
+                label=xl[self.cross_link_db.unique_sub_id_key]
+                if color_crosslinks_by_distance:
 
-                try:
-                    mdist=self._get_distance(r1,c1,r2,c2)
-                    if mdist is None: continue
-                    color = self._colormap_distance(mdist,threshold=crosslink_threshold)
-                except KeyError:
-                    color="gray"
+                    try:
+                        mdist=self._get_distance(r1,c1,r2,c2)
+                        if mdist is None: continue
+                        color = self._colormap_distance(mdist,threshold=crosslink_threshold)
+                    except KeyError:
+                        color="gray"
 
-            else:
-
-                try:
-                    ps=self._get_percentage_satisfaction(r1,c1,r2,c2)
-                    if ps is None: continue
-                    color = self._colormap_satisfaction(ps,threshold=0.2,tolerance=0.1)
-                except KeyError:
-                    color="gray"
-
-            try:
-                pos1 = r1 + resoffsetx[c1]
-            except:
-                continue
-            try:
-                pos2 = r2 + resoffsety[c2]
-            except:
-                continue
-
-
-            # everything below is used for plotting the diagonal
-            # when you have a rectangolar plots
-            pos_for_diagonal1 = r1 + resoffsetdiagonal[c1]
-            pos_for_diagonal2 = r2 + resoffsetdiagonal[c2]
-            if confidence_info:
-                if confidence == '0.01':
-                    markersize = 14 * scale_symbol_size
-                elif confidence == '0.05':
-                    markersize = 9 * scale_symbol_size
-                elif confidence == '0.1':
-                    markersize = 6 * scale_symbol_size
                 else:
-                    markersize = 15 * scale_symbol_size
-            else:
-                markersize = 5 * scale_symbol_size
-            '''
-            ax.plot([pos1],
-                    [pos2],
-                    'o',
-                    c=color,
-                    alpha=alphablend,
-                    markersize=markersize)
 
-            ax.plot([pos2],
-                    [pos1],
-                    'o',
-                    c=color,
-                    alpha=alphablend,
-                    markersize=markersize)
-            '''
-            x_list.append(pos1)
-            x_list.append(pos2)
-            y_list.append(pos2)
-            y_list.append(pos1)
-            color_list.append(color)
-            color_list.append(color)
-            xl["Distance"]=mdist
-            xl_list.append(xl)
-            xl_list.append(xl)
+                    try:
+                        ps=self._get_percentage_satisfaction(r1,c1,r2,c2)
+                        if ps is None: continue
+                        color = self._colormap_satisfaction(ps,threshold=0.2,tolerance=0.1)
+                    except KeyError:
+                        color="gray"
 
-            xl_labels.append(label)
-            xl_coordinates_tuple_list.append((float(pos1),float(pos2)))
-            xl_labels.append(label+"*")
-            xl_coordinates_tuple_list.append((float(pos2),float(pos1)))
+                try:
+                    pos1 = r1 + resoffsetx[c1]
+                except:
+                    continue
+                try:
+                    pos2 = r2 + resoffsety[c2]
+                except:
+                    continue
 
-        points=ax.scatter(x_list,y_list,s=markersize,c=color_list,alpha=alphablend)
+
+                # everything below is used for plotting the diagonal
+                # when you have a rectangolar plots
+                pos_for_diagonal1 = r1 + resoffsetdiagonal[c1]
+                pos_for_diagonal2 = r2 + resoffsetdiagonal[c2]
+                if confidence_info:
+                    if confidence == '0.01':
+                        markersize = 14 * scale_symbol_size
+                    elif confidence == '0.05':
+                        markersize = 9 * scale_symbol_size
+                    elif confidence == '0.1':
+                        markersize = 6 * scale_symbol_size
+                    else:
+                        markersize = 15 * scale_symbol_size
+                else:
+                    markersize = 5 * scale_symbol_size
+                '''
+                ax.plot([pos1],
+                        [pos2],
+                        'o',
+                        c=color,
+                        alpha=alphablend,
+                        markersize=markersize)
+
+                ax.plot([pos2],
+                        [pos1],
+                        'o',
+                        c=color,
+                        alpha=alphablend,
+                        markersize=markersize)
+                '''
+                x_list.append(pos1)
+                x_list.append(pos2)
+                y_list.append(pos2)
+                y_list.append(pos1)
+                color_list.append(color)
+                color_list.append(color)
+                xl["Distance"]=mdist
+                xl_list.append(xl)
+                xl_list.append(xl)
+
+                xl_labels.append(label)
+                xl_coordinates_tuple_list.append((float(pos1),float(pos2)))
+                xl_labels.append(label+"*")
+                xl_coordinates_tuple_list.append((float(pos2),float(pos1)))
+
+            points=ax.scatter(x_list,y_list,s=markersize,c=color_list,alpha=alphablend)
 
         # plot requested residue pairs
         if display_residue_pairs:

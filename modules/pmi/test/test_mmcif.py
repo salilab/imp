@@ -305,14 +305,14 @@ _citation_author.ordinal
         dump.finalize() # Assign IDs
 
         self.assertEqual(g1.id, 1)
-        self.assertEqual(g1._datasets, [])
+        self.assertEqual(list(g1._datasets), [])
 
         self.assertEqual(g2.id, 2)
-        self.assertEqual(g2._datasets, [ds1, ds2])
+        self.assertEqual(list(g2._datasets), [ds1, ds2])
         self.assertEqual(g3.id, 2)
 
         self.assertEqual(g4.id, 3)
-        self.assertEqual(g4._datasets, [ds1, ds2, ds3])
+        self.assertEqual(list(g4._datasets), [ds1, ds2, ds3])
 
     def test_dataset_dumper_duplicates_details(self):
         """DatasetDumper ignores duplicate datasets with differing details"""

@@ -1474,7 +1474,16 @@ class AnalysisReplicaExchange0(object):
                     tmp_dict["local_rmf_frame_number"]=0
 
                     clusstat.write(str(tmp_dict)+"\n")
-                    o.init_rmf(out_rmf_fn,[prot],rs)
+
+                    if IMP.pmi.get_is_canonical(prot):
+                        # create a single-state System and write that
+                        h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(self.model))
+                        h.set_name("System")
+                        h.add_child(prot)
+                        o.init_rmf(out_rmf_fn, [h], rs)
+                    else:
+                        o.init_rmf(out_rmf_fn, [prot],rs)
+
                     o.write_rmf(out_rmf_fn)
                     o.close_rmf(out_rmf_fn)
                     # add the density

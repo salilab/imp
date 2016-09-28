@@ -615,7 +615,7 @@ class DatasetDumper(Dumper):
                           "data_type_primary"]) as l:
             for derived in self._dataset_by_id:
                 for parent in sorted(derived._parents.keys(),
-                                      lambda d: d.id):
+                                     key=lambda d: d.id):
                     l.write(ordinal_id=ordinal,
                             dataset_list_id_derived=derived.id,
                             data_type_derived=derived._data_type,
@@ -1635,7 +1635,7 @@ class RestraintDataset(object):
         else:
             d = copy.deepcopy(self.restraint.dataset)
         if self.allow_duplicates:
-            d.location.allow_duplicates = True
+            d.location._allow_duplicates = True
         # Don't copy again next time we access self.dataset
         self.__dataset = d
         return d

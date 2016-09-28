@@ -527,13 +527,13 @@ class Precision(object):
         """Read an RMF file and return the particles"""
         rh = RMF.open_rmf_file_read_only(rmf_name)
         if not self.prots:
+            print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
             self.prots = IMP.rmf.create_hierarchies(rh, self.model)
             IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
-            print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
         else:
+            print("linking coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
             IMP.rmf.link_hierarchies(rh, self.prots)
             IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
-            print("linking coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
         del rh
 
         if self.resolution==1:

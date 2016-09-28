@@ -167,7 +167,7 @@ class Tests(IMP.test.TestCase):
         # nothing changes to hierarchy
         tH = [IMP.atom.Hierarchy(IMP.Particle(mdl))]
         testH = IMP.pmi.tools.input_adaptor(tH)
-        self.assertEqual(testH,tH)
+        self.assertEqual(testH,[tH])
 
         # check passing system,state
         testSystem = [set(l) for l in

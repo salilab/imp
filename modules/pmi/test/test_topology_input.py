@@ -41,6 +41,10 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(c[5].get_unique_name(),"Prot2.1.1")
 
     def test_beads(self):
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
         mdl = IMP.Model()
         tfile = self.get_input_file_name('topology_beads.txt')
         input_dir = os.path.dirname(tfile)

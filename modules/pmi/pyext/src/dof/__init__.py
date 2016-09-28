@@ -35,6 +35,8 @@ class DegreesOfFreedom(object):
         self.rigid_bodies = [] #stores rigid body objects
         self.flexible_beads = [] # stores all beads including nonrigid members of rigid bodies
         self.nuisances = []
+        self._rb2mov = {}   # Keys are the RigidBody objects, values are list of movers
+        self.rigid_parts = {} # Dictionary of rbs
 
         #self.particle_map = {} # map from particles/rb objects to relevant movers+constraints
         # internal mover  = [mover obj, list of particles, enabled?] ?
@@ -66,6 +68,15 @@ class DegreesOfFreedom(object):
         """
 
         rb_movers = []
+
+        # Create dictionary of rbs
+        r_first = list(rigid_parts)[0]
+        r_last  = list(rigid_parts)[-1]
+        prot_name = r_first.get_molecule().get_name()
+        if prot_name not in self.rigid_parts:
+            self.rigid_parts[prot_name] = [(r_first.get_index(),r_last.get_index())]
+        else:
+            self.rigid_parts[prot_name].append((r_first.get_index(),r_last.get_index()))
 
         # ADD CHECK: these particles are not already part of some RB or SRB
 
@@ -112,10 +123,13 @@ class DegreesOfFreedom(object):
                     rb_movers.append(IMP.core.BallMover([p],
                                                         IMP.FloatKeys(floatkeys),
                                                         nonrigid_max_trans))
+
         self.movers += rb_movers # probably need to store more info
+        self._rb2mov[rb] = rb_movers #dictionary relating rb to movers
+
         return rb_movers,rb
 
-    def create_main_chain_mover(self,molecule,resolution=1,lengths=[5,10,20]):
+    def create_main_chain_mover(self,molecule,resolution=1,lengths=[5,10]):
         """Create crankshaft moves from a set of SUPER rigid body mover from one molecule.
         See http://scfbm.biomedcentral.com/articles/10.1186/1751-0473-3-12
         """
@@ -123,15 +137,15 @@ class DegreesOfFreedom(object):
         for length in lengths:
             for n in range(len(hiers)-length):
                 hs=hiers[n+1:n+length]
-                print("MIDDLE",hiers[n],hiers[n+length],hs)
-                self.create_super_rigid_body(hs, max_trans=0.0,max_rot=0.1, axis=(hiers[n].get_particle(),hiers[n+length].get_particle()))
-        for n in range(1,len(hiers)-1,10):
-            hs=hiers[n:]
-            print("END",n,hs)
-            self.create_super_rigid_body(hs, max_trans=0.1,axis=(hiers[n].get_particle(),hiers[n+1].get_particle()))
-            hs=hiers[:n+1]
-            print("BEGIN",n-1,hs)
-            self.create_super_rigid_body(hs, max_trans=0.1,axis=(hiers[n].get_particle(),hiers[n-1].get_particle()))
+                print("MIDDLE",n+1,n+length,hs)
+                self.create_super_rigid_body(hs, max_trans=0.0,max_rot=0.01, axis=(hiers[n].get_particle(),hiers[n+length].get_particle()))
+        #for n in range(1,len(hiers)-1,10):
+        #    hs=hiers[n:]
+        #    print("END",n,hs)
+        #    self.create_super_rigid_body(hs, max_trans=0.01,axis=(hiers[n].get_particle(),hiers[n+1].get_particle()))
+        #    hs=hiers[:n+1]
+        #    print("BEGIN",n-1,hs)
+        #    self.create_super_rigid_body(hs, max_trans=0.01,axis=(hiers[n].get_particle(),hiers[n-1].get_particle()))
 
     def create_super_rigid_body(self,
                                 srb_parts,
@@ -330,6 +344,12 @@ class DegreesOfFreedom(object):
         self.mdl.add_score_state(c)
         print('Created symmetry restraint for',len(ref_rbs),'rigid bodies and',
               len(ref_beads),'flexible beads')
+
+        # removing movers involved in clones
+        sym_movers = []
+
+        sym_movers = [m for cl in clones_rbs for m in self._rb2mov[cl]]
+        self.movers = [m for m in self.movers if m not in sym_movers]
 
     def __repr__(self):
         # would like something fancy like this:

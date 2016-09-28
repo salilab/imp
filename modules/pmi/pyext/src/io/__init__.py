@@ -65,51 +65,52 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
     start = False
 
     # temporary beta dictionary indexed by DSSP's ID
-    beta_dict = defaultdict(list)
+    beta_dict = IMP.pmi.tools.OrderedDefaultDict(list)
     prev_sstype = None
     prev_beta_id = None
 
-    for line in open(dssp_fn, 'r'):
-        fields = line.split()
-        chain_break = False
-        if len(fields) < 2:
-            continue
-        if fields[1] == "RESIDUE":
-            # Start parsing from here
-            start = True
-            continue
-        if not start:
-            continue
-        if line[9] == " ":
-            chain_break = True
-        elif limit_to_chains != '' and line[11] not in limit_to_chains:
-            continue
+    with open(dssp_fn, 'r') as fh:
+        for line in fh:
+            fields = line.split()
+            chain_break = False
+            if len(fields) < 2:
+                continue
+            if fields[1] == "RESIDUE":
+                # Start parsing from here
+                start = True
+                continue
+            if not start:
+                continue
+            if line[9] == " ":
+                chain_break = True
+            elif limit_to_chains != '' and line[11] not in limit_to_chains:
+                continue
 
-        # gather line info
-        if not chain_break:
-            pdb_res_num = int(line[5:10])
-            chain = line[11]
-            sstype = sse_dict[line[16]]
-            beta_id = line[33]
+            # gather line info
+            if not chain_break:
+                pdb_res_num = int(line[5:10])
+                chain = line[11]
+                sstype = sse_dict[line[16]]
+                beta_id = line[33]
 
-        # decide whether to extend or store the SSE
-        if prev_sstype is None:
-            cur_sse = [pdb_res_num,pdb_res_num,convert_chain(chain)]
-        elif sstype != prev_sstype or chain_break:
-            # add cur_sse to the right place
-            if prev_sstype in ['helix', 'loop']:
-                sses[prev_sstype].append([cur_sse])
-            elif prev_sstype == 'beta':
-                beta_dict[prev_beta_id].append(cur_sse)
-            cur_sse = [pdb_res_num,pdb_res_num,convert_chain(chain)]
-        else:
-            cur_sse[1] = pdb_res_num
-        if chain_break:
-            prev_sstype = None
-            prev_beta_id = None
-        else:
-            prev_sstype = sstype
-            prev_beta_id = beta_id
+            # decide whether to extend or store the SSE
+            if prev_sstype is None:
+                cur_sse = [pdb_res_num,pdb_res_num,convert_chain(chain)]
+            elif sstype != prev_sstype or chain_break:
+                # add cur_sse to the right place
+                if prev_sstype in ['helix', 'loop']:
+                    sses[prev_sstype].append([cur_sse])
+                elif prev_sstype == 'beta':
+                    beta_dict[prev_beta_id].append(cur_sse)
+                cur_sse = [pdb_res_num,pdb_res_num,convert_chain(chain)]
+            else:
+                cur_sse[1] = pdb_res_num
+            if chain_break:
+                prev_sstype = None
+                prev_beta_id = None
+            else:
+                prev_sstype = sstype
+                prev_beta_id = beta_id
 
     # final SSE processing
     if not prev_sstype is None:

@@ -67,7 +67,7 @@ class Dataset(Metadata):
         if len(self._parents) == 0:
             self.add_parent(dataset)
         elif len(self._parents) == 1:
-            self._parents.keys()[0].add_parent(dataset)
+            list(self._parents.keys())[0].add_parent(dataset)
         else:
             raise ValueError("This dataset has multiple parents - don't "
                              "know which one to add to")
