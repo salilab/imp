@@ -23,11 +23,11 @@ topology='''
 |molecule_name|color|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|
 |Rpb1  |blue      |1WCM.fasta|1WCM:A|1WCM_fitted.pdb|A|1,100  |0 |5|0 |1|1,2| |
 |Rpb1  |cyan      |1WCM.fasta|1WCM:A|BEADS          |A|101,150|0 |5|0 |2|1,2| |
-|Rpb2  |red       |1WCM.fasta|1WCM:B|1WCM_fitted.pdb|B|1,-1   |0 |5|0 |3|1  | |
-|Rpb3  |green     |1WCM.fasta|1WCM:C|1WCM_fitted.pdb|C|1,-1   |0 |5|0 |4|1  | |
-|Rpb4  |orange    |1WCM.fasta|1WCM:D|1WCM_fitted.pdb|D|1,-1   |0 |5|0 |5|1,3| |
-|Rpb4.1|yellow    |1WCM.fasta|1WCM:D|1WCM_fitted.pdb|D|1,-1   |0 |5|0 |6|1,3| |
-|Rpb4.2|salmon    |1WCM.fasta|1WCM:D|1WCM_fitted.pdb|D|1,-1   |0 |5|0 |7|1,3| |
+|Rpb2  |red       |1WCM.fasta|1WCM:B|1WCM_fitted.pdb|B|1,END  |0 |5|0 |3|1  | |
+|Rpb3  |green     |1WCM.fasta|1WCM:C|1WCM_fitted.pdb|C|1,END  |0 |5|0 |4|1  | |
+|Rpb4  |orange    |1WCM.fasta|1WCM:D|1WCM_fitted.pdb|D|1,END  |0 |5|0 |5|1,3| |
+|Rpb4.1|yellow    |1WCM.fasta|1WCM:D|1WCM_fitted.pdb|D|1,END  |0 |5|0 |6|1,3| |
+|Rpb4.2|salmon    |1WCM.fasta|1WCM:D|1WCM_fitted.pdb|D|1,END  |0 |5|0 |7|1,3| |
 |Rpb5  |gold      |1WCM.fasta|1WCM:E|BEADS          | |1,50   |  |5|0 |8|1  | |
 |Rpb5  |pink      |1WCM.fasta|1WCM:E|IDEAL_HELIX    | |51,100 |  |5|0 |8|1  | |
 '''

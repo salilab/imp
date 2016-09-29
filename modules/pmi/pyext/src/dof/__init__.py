@@ -36,7 +36,6 @@ class DegreesOfFreedom(object):
         self.flexible_beads = [] # stores all beads including nonrigid members of rigid bodies
         self.nuisances = []
         self._rb2mov = {}   # Keys are the RigidBody objects, values are list of movers
-        self.rigid_parts = {} # Dictionary of rbs
 
         #self.particle_map = {} # map from particles/rb objects to relevant movers+constraints
         # internal mover  = [mover obj, list of particles, enabled?] ?
@@ -68,15 +67,6 @@ class DegreesOfFreedom(object):
         """
 
         rb_movers = []
-
-        # Create dictionary of rbs
-        r_first = list(rigid_parts)[0]
-        r_last  = list(rigid_parts)[-1]
-        prot_name = r_first.get_molecule().get_name()
-        if prot_name not in self.rigid_parts:
-            self.rigid_parts[prot_name] = [(r_first.get_index(),r_last.get_index())]
-        else:
-            self.rigid_parts[prot_name].append((r_first.get_index(),r_last.get_index()))
 
         # ADD CHECK: these particles are not already part of some RB or SRB
 

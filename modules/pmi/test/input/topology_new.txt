@@ -2,8 +2,8 @@
 |Prot1   |blue  |seqs.fasta|Protein_1|prot.pdb   |A|55,65  |-54 |5|10|1|1,2| |
 |Prot1.1 |red   |seqs.fasta|Protein_1|prot.pdb   |A|55,65  |-54 |5|10|1|1,2| |
 |Prot2   |green |seqs.fasta|Protein_2|prot.pdb   |B|180,187|-179|5|0 |2|1  | |
-|Prot2   |green |seqs.fasta|Protein_2|prot.pdb   |B|188,-1 |-179|5|0 |2|1  | |
+|Prot2   |green |seqs.fasta|Protein_2|prot.pdb   |B|188,END|-179|5|0 |2|1  | |
 |Prot2.1 |yellow|seqs.fasta|Protein_2|prot.pdb   |B|180,187|-179|5|0 |2|1  | |
-|Prot2.1 |yellow|seqs.fasta|Protein_2|prot.pdb   |B|188,-1 |-179|5|0 |2|1  | |
+|Prot2.1 |yellow|seqs.fasta|Protein_2|prot.pdb   |B|188,END|-179|5|0 |2|1  | |
 |Prot3   |orange|seqs.fasta|Protein_3|BEADS      | |       |    |5|0 | |1,2|3|
 |Prot4   |magenta|seqs.fasta|Protein_3|IDEAL_HELIX| |       |    | |10|3|1  | |

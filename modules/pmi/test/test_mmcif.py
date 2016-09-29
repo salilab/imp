@@ -152,8 +152,8 @@ C 2 baz
         """Test CitationDumper"""
         s = IMP.pmi.metadata.Citation(
               pmid='25161197',
-              title="Structural characterization by cross-linking reveals the "
-                    "detailed architecture of a coatomer-related heptameric "
+              title="Structural characterization by cross-linking reveals the\n"
+                    "detailed architecture of a coatomer-related heptameric\n"
                     "module from the nuclear pore complex.",
               journal="Mol Cell Proteomics", volume=13, page_range=(2927,2943),
               year=2014,
@@ -182,9 +182,9 @@ _citation.year
 _citation.pdbx_database_id_PubMed
 _citation.pdbx_database_id_DOI
 1
-;Structural characterization by cross-linking reveals the detailed arch
-itecture of a coatomer-related heptameric module from the nuclear pore
- complex.
+;Structural characterization by cross-linking reveals the
+detailed architecture of a coatomer-related heptameric
+module from the nuclear pore complex.
 ;
 'Mol Cell Proteomics' 13 2927 2943 2014 25161197 10.1074/mcp.M114.041673
 #

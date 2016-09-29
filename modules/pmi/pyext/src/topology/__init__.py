@@ -949,7 +949,7 @@ class TopologyReader(object):
 |molecule_name|color|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|flags|
 |Rpb1   |blue   |1WCM.fasta|1WCM:A|1WCM.pdb|A|1,1140   |0|10|0|1|1,3|1||
 |Rpb1   |blue   |1WCM.fasta|1WCM:A|1WCM.pdb|A|1141,1274|0|10|0|2|1,3|1||
-|Rpb1   |blue   |1WCM.fasta|1WCM:A|1WCM.pdb|A|1275,-1  |0|10|0|3|1,3|1||
+|Rpb1   |blue   |1WCM.fasta|1WCM:A|1WCM.pdb|A|1275,END |0|10|0|3|1,3|1||
 |Rpb2   |red    |1WCM.fasta|1WCM:B|1WCM.pdb|B|all      |0|10|0|4|2,3|2||
 |Rpb2.1 |green  |1WCM.fasta|1WCM:B|1WCM.pdb|B|all      |0|10|0|4|2,3|2||
 
@@ -967,14 +967,17 @@ class TopologyReader(object):
     - `chain`: Chain ID of this domain in the PDB file.
     - `residue_range`: Comma delimited pair defining range.
        Can leave empty or use 'all' for entire sequence from PDB file.
+       The second item in the pair can be END to select the last residue in the
+       PDB chain.
     - `pdb_offset`: Offset to sync PDB residue numbering with FASTA numbering.
     - `bead_size`: The size (in residues) of beads used to model areas not
       covered by PDB coordinates. These will be automatically built.
     - `em_residues`: The number of Gaussians used to model the electron
       density of this domain. Set to zero if no EM fitting will be done.
       The GMM files will be written to <gmm_dir>/<component_name>_<em_res>.txt (and .mrc)
-    - `rigid_body`: Number corresponding to the rigid body containing this object.
-       The number itself is just used for grouping things.
+    - `rigid_body`: Leave empty if this object is not in a rigid body.
+       Otherwise, this is a number corresponding to the rigid body containing
+       this object. The number itself is just used for grouping things.
     - `super_rigid_body`: Like a rigid_body, except things are only occasionally rigid
     - `chain_of_super_rigid_bodies` For a polymer, create SRBs from groups.
     - `flags` additional flags for advanced options
@@ -1114,12 +1117,14 @@ class TopologyReader(object):
         # Residue Range
         if rr.strip()=='all' or str(rr)=="":
             c.residue_range = None
-        elif len(rr.split(','))==2 and self._is_int(rr.split(',')[0]) and self._is_int(rr.split(',')[1]):
+        elif len(rr.split(','))==2 and self._is_int(rr.split(',')[0]) and (self._is_int(rr.split(',')[1]) or rr.split(',')[1] == 'END'):
             # Make sure that is residue range is given, there are only two values and they are integers
-            c.residue_range = (int(rr.split(',')[0]), int(rr.split(',')[1]))
+            c.residue_range = (int(rr.split(',')[0]), rr.split(',')[1])
+            if c.residue_range[1] != 'END':
+                c.residue_range = (c.residue_range[0], int(c.residue_range[1]))
         else:
             errors.append("Residue Range format for component %s line %d is not correct" % (c.molname, linenum))
-            errors.append("Correct syntax is two comma separated integers:  |start_res, end_res|. |%s| was given." % rr)
+            errors.append("Correct syntax is two comma separated integers:  |start_res, end_res|. end_res can also be END to select the last residue in the chain. |%s| was given." % rr)
             errors.append("To select all residues, indicate |\"all\"|")
 
         # PDB Offset
@@ -1162,8 +1167,9 @@ class TopologyReader(object):
             if not self._is_int(rbs):
                 errors.append("rigid bodies format for component "
                               "%s line %d is not correct" % (c.molname, linenum))
-                errors.append("Each RB must be a single integer. |%s| was given." % rbs)
-            c.rigid_bodies = int(rbs)
+                errors.append("Each RB must be a single integer, or empty. "
+                              "|%s| was given." % rbs)
+            c.rigid_body = int(rbs)
 
         # super rigid bodies
         if len(srbs)>0:
@@ -1224,9 +1230,8 @@ class TopologyReader(object):
         """Return list of lists of rigid bodies (as domain name)"""
         rbl = defaultdict(list)
         for c in self.components:
-            #for rbnum in c.rigid_bodies:
-            #rbl[rbnum].append(c.get_unique_name())
-            rbl[c.rigid_bodies].append(c.get_unique_name())
+            if c.rigid_body:
+                rbl[c.rigid_body].append(c.get_unique_name())
         return rbl.values()
 
     def get_super_rigid_bodies(self):
@@ -1282,12 +1287,12 @@ class _Component(object):
         self.mrc_file = ''
         self.density_prefix = ''
         self.color = 0.1
-        self.rigid_bodies = []
+        self.rigid_body = None
         self.super_rigid_bodies = []
         self.chain_of_super_rigid_bodies = []
 
     def _l2s(self,l):
-        return ",".join("%d" % int(x) for x in l)
+        return ",".join("%s" % x for x in l)
 
     def __repr__(self):
         return self.get_str()
@@ -1309,7 +1314,8 @@ class _Component(object):
         a= '|'+'|'.join([name,self.color,self._orig_fasta_file,self.fasta_id,
                          self._orig_pdb_input,chain,self._l2s(list(res_range)),
                              str(self.pdb_offset),str(self.bead_size),
-                             str(self.em_residues_per_gaussian),self._l2s(self.rigid_bodies),
+                             str(self.em_residues_per_gaussian),
+                             str(self.rigid_body) if self.rigid_body else '',
                              self._l2s(self.super_rigid_bodies),
                              self._l2s(self.chain_of_super_rigid_bodies)])+'|'
         return a

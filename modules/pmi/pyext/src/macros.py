@@ -513,7 +513,7 @@ class BuildSystem(object):
                         domain_res = mol.get_residues()
                     else:
                         start = domain.residue_range[0]+domain.pdb_offset
-                        if domain.residue_range[1]==-1:
+                        if domain.residue_range[1]=='END':
                             end = 0
                         else:
                             end = domain.residue_range[1]+domain.pdb_offset
