@@ -19,22 +19,28 @@ from collections import defaultdict
 import itertools
 
 def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
-    """read dssp file, get SSEs. values are all PDB residue numbering.
+    """Read a DSSP file, and return secondary structure elements (SSEs).
+    Values are all PDB residue numbering.
     @param dssp_fn The file to read
     @param limit_to_chains Only read/return these chain IDs
     @param name_map If passed, return tuples organized by molecule name
+           (name_map should be a dictionary with chain IDs as keys and
+           molecule names as values).
 
-    Returns a dictionary with keys helix, beta, loop
+    @return a dictionary with keys 'helix', 'beta', 'loop'
     Each contains a list of SSEs.
     Each SSE is a list of elements (e.g. strands in a sheet)
-    Each element is a pair (chain,(residue_indexes))
+    Each element is a tuple (residue start, residue end, chain)
 
     Example for a structure with helix A:5-7 and Beta strands A:1-3,A:9-11:
-    ret = { 'helix' : [ [ ('A',5,7 ) ],... ]
-            'beta'  : [ [ ('A',1,3),
-                          ('A',9,11),...],...]
+
+    @code{.py}
+    ret = { 'helix' : [ [ (5,7,'A') ],... ]
+            'beta'  : [ [ (1,3,'A'),
+                          (9,11,'A'),...],...]
             'loop'  : same format as helix
           }
+    @endcode
     """
 
     def convert_chain(ch):

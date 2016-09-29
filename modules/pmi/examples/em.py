@@ -21,6 +21,10 @@ import IMP.pmi.macros
 import IMP.pmi.restraints.em
 import tempfile
 import os
+import sys
+
+IMP.setup_from_argv(sys.argv, "Set up the EM restraint")
+
 ###################### SYSTEM SETUP #####################
 # Preliminaries
 mdl = IMP.Model()

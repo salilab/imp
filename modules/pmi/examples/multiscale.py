@@ -12,6 +12,9 @@ import IMP.pmi.dof
 import IMP.pmi.macros
 import IMP.pmi.restraints
 import IMP.pmi.restraints.stereochemistry
+import sys
+
+IMP.setup_from_argv(sys.argv, "Representation at multiple scales")
 
 ###################### SYSTEM SETUP #####################
 # Read sequences etc

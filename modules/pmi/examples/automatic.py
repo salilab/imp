@@ -13,6 +13,9 @@ import IMP.pmi.macros
 import IMP.pmi.restraints
 import IMP.pmi.restraints.stereochemistry
 import tempfile,os
+import sys
+
+IMP.setup_from_argv(sys.argv, "Automatic setup of a large system")
 
 # This is the topology table format.
 #  It allows you to create many components in a simple way
@@ -84,7 +87,7 @@ rex=IMP.pmi.macros.ReplicaExchange0(mdl,
                                     output_objects=output_objects,
                                     monte_carlo_steps=10,
                                     number_of_best_scoring_models=0,
-                                    number_of_frames=100)
+                                    number_of_frames=5)
 rex.execute_macro()
 
 

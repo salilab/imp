@@ -11,6 +11,9 @@ import IMP.pmi.topology
 import IMP.pmi.dof
 import IMP.pmi.macros
 import IMP.pmi.restraints
+import sys
+
+IMP.setup_from_argv(sys.argv, "Demonstration of ideal helices")
 
 # Create System and State
 mdl = IMP.Model()

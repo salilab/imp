@@ -18,6 +18,10 @@ import IMP.pmi.restraints.stereochemistry
 import IMP.pmi.restraints.crosslinking
 import tempfile
 import os
+import sys
+
+IMP.setup_from_argv(sys.argv, "ambiguity example")
+
 ###################### SYSTEM SETUP #####################
 
 ### Setup multistate system

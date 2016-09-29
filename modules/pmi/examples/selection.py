@@ -14,6 +14,9 @@ import IMP.pmi.dof
 import IMP.pmi.macros
 import IMP.pmi.restraints
 import IMP.pmi.restraints.stereochemistry
+import sys
+
+IMP.setup_from_argv(sys.argv, "Selection in PMI")
 
 ################ BEFORE BUILDING ###################
 # Preliminaries: read sequences, create a system and a state
