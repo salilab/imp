@@ -24,7 +24,10 @@ class Tests(IMP.test.TestCase):
 
     def test_repository(self):
         """Test metadata.Repository"""
-        t = IMP.test.TempDir()
+        # Make tmpdir under current directory, as it's not always possible to
+        # get a relative path from cwd to /tmp (e.g. on Windows where they may
+        # be on different drives)
+        t = IMP.test.TempDir(os.getcwd())
         with open(os.path.join(t.tmpdir, 'bar'), 'w') as f:
             f.write("")
         s = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46266',
@@ -100,7 +103,10 @@ class Tests(IMP.test.TestCase):
 
     def test_local_file_location(self):
         """Test LocalFileLocation class"""
-        t = IMP.test.TempDir()
+        # Make tmpdir under current directory, as it's not always possible to
+        # get a relative path from cwd to /tmp (e.g. on Windows where they may
+        # be on different drives)
+        t = IMP.test.TempDir(os.getcwd())
         with open(os.path.join(t.tmpdir, 'bar'), 'w') as f:
             f.write("")
         d1 = IMP.pmi.metadata.LocalFileLocation(
