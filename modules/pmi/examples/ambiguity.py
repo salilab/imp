@@ -70,10 +70,9 @@ rmf_restraints = [] # display these restraints as springs in the RMF
 lines = '''id,mol1,res1,mol2,res2,score
 1,ProtA,3,ProtC,9,1.0
 '''
-fd, filename = tempfile.mkstemp()
-os.write(fd,lines)
-os.close(fd)
-tf = tempfile.NamedTemporaryFile
+tf = tempfile.NamedTemporaryFile(delete=False, mode='w')
+tf.write(lines)
+tf.close()
 
 # 2) Define the columns
 kw = IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
@@ -84,8 +83,8 @@ kw.set_residue1_key("res1")
 kw.set_residue2_key("res2")
 kw.set_id_score_key("score")
 xldb = IMP.pmi.io.crosslink.CrossLinkDataBase(kw)
-xldb.create_set_from_file(filename)
-os.remove(filename)
+xldb.create_set_from_file(tf.name)
+os.remove(tf.name)
 
 # 3) Add the restraint
 xlr = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(

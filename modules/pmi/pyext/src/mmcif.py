@@ -283,6 +283,8 @@ class EntityPolyDumper(Dumper):
                           "pdbx_seq_one_letter_code_can"]) as l:
             for entity in self.simo.entities.get_all():
                 seq = entity.sequence
+                # Split into lines to get tidier CIF output
+                seq = "\n".join(seq[i:i+70] for i in range(0, len(seq), 70))
                 name = entity.first_component
                 chain_id = self.simo.get_chain_for_component(name, self.output)
                 l.write(entity_id=entity.id, type='polypeptide(L)',

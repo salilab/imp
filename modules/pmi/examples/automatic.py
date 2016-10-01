@@ -36,7 +36,7 @@ topology='''
 '''
 
 # Normally the topology table is kept in a text file but here we just write it to a temporary one
-tf = tempfile.NamedTemporaryFile(delete=False)
+tf = tempfile.NamedTemporaryFile(delete=False, mode='w')
 tf.write(topology)
 tf.close()
 
