@@ -19,6 +19,7 @@ from . import _compat_python
 from ._compat_python import unittest2
 import datetime
 import pickle
+import contextlib
 
 # Fall back to the sets.Set class on older Pythons that don't have
 # the 'set' builtin type.
@@ -61,6 +62,7 @@ skip = unittest.skip
 skipIf = unittest.skipIf
 skipUnless = unittest.skipUnless
 
+@IMP.deprecated_object("2.7", "Use temporary_working_directory() instead.")
 class RunInTempDir(object):
     """Simple RAII-style class to run in a temporary directory.
        When the object is created, the temporary directory is created
@@ -75,7 +77,21 @@ class RunInTempDir(object):
         os.chdir(self.origdir)
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
+@contextlib.contextmanager
+def temporary_working_directory():
+    """Simple context manager to run in a temporary directory.
+       While the context manager is active (within the 'with' block)
+       the current working directory is set to a temporary directory.
+       When the context manager exists, the working directory is reset
+       and the temporary directory deleted."""
+    origdir = os.getcwd()
+    tmpdir = tempfile.mkdtemp()
+    os.chdir(tmpdir)
+    yield tmpdir
+    os.chdir(origdir)
+    shutil.rmtree(tmpdir, ignore_errors=True)
 
+@IMP.deprecated_object("2.7", "Use temporary_directory() instead.")
 class TempDir(object):
     """Simple RAII-style class to make a temporary directory. When the object
        is created, the temporary directory is created. When the object goes
@@ -85,6 +101,20 @@ class TempDir(object):
     def __del__(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
+@contextlib.contextmanager
+def temporary_directory(dir=None):
+    """Simple context manager to make a temporary directory.
+       The temporary directory has the same lifetime as the context manager
+       (i.e. it is created at the start of the 'with' block, and deleted
+       at the end of the block).
+       @param dir If given, the temporary directory is made as a subdirectory
+                  of that directory, rather than in the default temporary
+                  directory location (e.g. /tmp)
+       @return the full path to the temporary directory.
+    """
+    tmpdir = tempfile.mkdtemp(dir=dir)
+    yield tmpdir
+    shutil.rmtree(tmpdir, ignore_errors=True)
 
 def numerical_derivative(func, val, step):
     """Calculate the derivative of the single-value function `func` at

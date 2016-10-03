@@ -27,14 +27,14 @@ for line in sys.stdin.readlines():
         input_file_dir = os.path.dirname(self.get_input_file_name('3sfdA.pdb'))
         cmds = self.read_shell_commands(
             '../../../doc/manual/emagefit_3sfd.dox')
-        d = IMP.test.RunInTempDir()
-        self.make_dummy_hex(input_file_dir)
-        for c in cmds:
-            self.run_shell_command(c)
-        # Should have produced 10 models
-        for i in range(10):
-            os.unlink('solution-%03d.pdb' % i)
-        self.run_shell_command(cmds[-1])
+        with IMP.test.temporary_working_directory():
+            self.make_dummy_hex(input_file_dir)
+            for c in cmds:
+                self.run_shell_command(c)
+            # Should have produced 10 models
+            for i in range(10):
+                os.unlink('solution-%03d.pdb' % i)
+            self.run_shell_command(cmds[-1])
 
 if __name__ == '__main__':
     IMP.test.main()

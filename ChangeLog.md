@@ -9,6 +9,10 @@ ChangeLog {#changelog}
   IMP::core::RigidBody particles it acts on are also IMP::atom::Hierarchy
   objects.  Use an IMP::multifit::RigidLeavesRefiner in place of
   IMP::core::LeavesRefiner to get the old behavior.
+- IMP::test:TempDir and IMP::test::RunInTempDir are deprecated in favor
+  of similar functions that work as Python context managers
+  (IMP::test::temporary_directory() and IMP::Test::temporary_working_directory()
+  respectively).
 
 # 2.6.2 - 2016-05-25 # {#changelog_2_6_2}
 - Add support for SWIG 3.0.8.
