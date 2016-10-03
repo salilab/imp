@@ -27,17 +27,17 @@ class Tests(IMP.test.TestCase):
         # Make tmpdir under current directory, as it's not always possible to
         # get a relative path from cwd to /tmp (e.g. on Windows where they may
         # be on different drives)
-        t = IMP.test.TempDir(os.getcwd())
-        with open(os.path.join(t.tmpdir, 'bar'), 'w') as f:
-            f.write("")
-        s = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46266',
-                                        root=os.path.relpath(t.tmpdir))
-        self.assertEqual(s._root, t.tmpdir)
-        local = IMP.pmi.metadata.LocalFileLocation(
-                            os.path.relpath(os.path.join(t.tmpdir, 'bar')))
-        f = s.get_path(local)
-        self.assertEqual(f.doi, '10.5281/zenodo.46266')
-        self.assertEqual(f.path, 'bar')
+        with IMP.test.temporary_directory(os.getcwd()) as tmpdir:
+            with open(os.path.join(tmpdir, 'bar'), 'w') as f:
+                f.write("")
+            s = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46266',
+                                            root=os.path.relpath(tmpdir))
+            self.assertEqual(s._root, tmpdir)
+            local = IMP.pmi.metadata.LocalFileLocation(
+                                os.path.relpath(os.path.join(tmpdir, 'bar')))
+            f = s.get_path(local)
+            self.assertEqual(f.doi, '10.5281/zenodo.46266')
+            self.assertEqual(f.path, 'bar')
 
     def test_repr_add(self):
         """Test Representation.add_metadata()"""
@@ -106,19 +106,19 @@ class Tests(IMP.test.TestCase):
         # Make tmpdir under current directory, as it's not always possible to
         # get a relative path from cwd to /tmp (e.g. on Windows where they may
         # be on different drives)
-        t = IMP.test.TempDir(os.getcwd())
-        with open(os.path.join(t.tmpdir, 'bar'), 'w') as f:
-            f.write("")
-        d1 = IMP.pmi.metadata.LocalFileLocation(
-                              os.path.relpath(os.path.join(t.tmpdir, 'bar')),
-                              details='foo')
-        d2 = IMP.pmi.metadata.LocalFileLocation(
-                              os.path.relpath(os.path.join(t.tmpdir, 'bar')))
-        self.assertEqual(d1, d2)
-        self.assertEqual(d1.path, os.path.join(t.tmpdir, 'bar'))
-        self.assertEqual(d1.details, 'foo')
-        self.assertRaises(ValueError, IMP.pmi.metadata.LocalFileLocation,
-                          os.path.join(t.tmpdir, 'not-exists'))
+        with IMP.test.temporary_directory(os.getcwd()) as tmpdir:
+            with open(os.path.join(tmpdir, 'bar'), 'w') as f:
+                f.write("")
+            d1 = IMP.pmi.metadata.LocalFileLocation(
+                                  os.path.relpath(os.path.join(tmpdir, 'bar')),
+                                  details='foo')
+            d2 = IMP.pmi.metadata.LocalFileLocation(
+                                  os.path.relpath(os.path.join(tmpdir, 'bar')))
+            self.assertEqual(d1, d2)
+            self.assertEqual(d1.path, os.path.join(tmpdir, 'bar'))
+            self.assertEqual(d1.details, 'foo')
+            self.assertRaises(ValueError, IMP.pmi.metadata.LocalFileLocation,
+                              os.path.join(tmpdir, 'not-exists'))
 
     def test_dataset_add_parent(self):
         """Test Dataset.add_parent()"""

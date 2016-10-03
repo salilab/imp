@@ -264,82 +264,96 @@ class Tests(IMP.test.TestCase):
                                self.get_input_file_name("pmi2_sample_1/")],
             global_output_directory="./")
 
-        out_dir = IMP.test.TempDir(None).tmpdir
-        am.clustering(score_key="Total_Score",
-                      rmsd_calculation_components=rmsd_names,
-                      number_of_clusters=2,
-                      number_of_best_scoring_models=20,
-                      outputdir=out_dir,
-                      density_custom_ranges=density_ranges)
+        with IMP.test.temporary_directory() as out_dir:
+            am.clustering(score_key="Total_Score",
+                          rmsd_calculation_components=rmsd_names,
+                          number_of_clusters=2,
+                          number_of_best_scoring_models=20,
+                          outputdir=out_dir,
+                          density_custom_ranges=density_ranges)
 
-        cl0 = os.path.join(out_dir,'cluster.0')
-        cl1 = os.path.join(out_dir,'cluster.1')
-        self.assertEqual(len(glob.glob(os.path.join(cl0,'*.pdb'))),10)
-        self.assertEqual(len(glob.glob(os.path.join(cl1,'*.pdb'))),10)
+            cl0 = os.path.join(out_dir,'cluster.0')
+            cl1 = os.path.join(out_dir,'cluster.1')
+            self.assertEqual(len(glob.glob(os.path.join(cl0,'*.pdb'))),10)
+            self.assertEqual(len(glob.glob(os.path.join(cl1,'*.pdb'))),10)
 
-        # get initial coords
-        rh0 = RMF.open_rmf_file_read_only(self.get_input_file_name("pmi2_sample_0/rmfs/0.rmf3"))
-        prot0 = IMP.rmf.create_hierarchies(rh0,mdl)[0]
-        rh1 = RMF.open_rmf_file_read_only(self.get_input_file_name("pmi2_sample_1/rmfs/0.rmf3"))
-        prot1 = IMP.rmf.create_hierarchies(rh1,mdl)[0]
+            # get initial coords
+            rh0 = RMF.open_rmf_file_read_only(
+                          self.get_input_file_name("pmi2_sample_0/rmfs/0.rmf3"))
+            prot0 = IMP.rmf.create_hierarchies(rh0,mdl)[0]
+            rh1 = RMF.open_rmf_file_read_only(
+                          self.get_input_file_name("pmi2_sample_1/rmfs/0.rmf3"))
+            prot1 = IMP.rmf.create_hierarchies(rh1,mdl)[0]
 
-        icoords0 = []
-        icoords1 = []
-        p0 = IMP.atom.Selection(prot0,atom_type=IMP.atom.AtomType("CA")).get_selected_particles()[0]
-        p1 = IMP.atom.Selection(prot1,atom_type=IMP.atom.AtomType("CA")).get_selected_particles()[0]
-        for i in range(10):
-            IMP.rmf.load_frame(rh0,i)
-            IMP.rmf.load_frame(rh1,i)
-            icoords0.append(IMP.core.XYZ(p0).get_coordinates())
-            icoords1.append(IMP.core.XYZ(p1).get_coordinates())
+            icoords0 = []
+            icoords1 = []
+            p0 = IMP.atom.Selection(prot0,
+                  atom_type=IMP.atom.AtomType("CA")).get_selected_particles()[0]
+            p1 = IMP.atom.Selection(prot1,
+                  atom_type=IMP.atom.AtomType("CA")).get_selected_particles()[0]
+            for i in range(10):
+                IMP.rmf.load_frame(rh0,i)
+                IMP.rmf.load_frame(rh1,i)
+                icoords0.append(IMP.core.XYZ(p0).get_coordinates())
+                icoords1.append(IMP.core.XYZ(p1).get_coordinates())
 
-        # get clustered coords
-        coords0 = [] # all first coordinates in cluster 0
-        coords1 = [] # all first coordinates in cluster 1
-        c_prot01 = [] # all coords for cluster 0, protein 1
-        c_prot02 = [] # all coords for cluster 0, protein 2
-        for i in range(10):
-            mh0 = IMP.atom.read_pdb(os.path.join(cl0,str(i)+'.pdb'),mdl,IMP.atom.CAlphaPDBSelector())
-            coords0.append(IMP.core.XYZ(IMP.core.get_leaves(mh0)[0]).get_coordinates())
-            mh1 = IMP.atom.read_pdb(os.path.join(cl1,str(i)+'.pdb'),mdl,IMP.atom.CAlphaPDBSelector())
-            coords1.append(IMP.core.XYZ(IMP.core.get_leaves(mh1)[0]).get_coordinates())
+            # get clustered coords
+            coords0 = [] # all first coordinates in cluster 0
+            coords1 = [] # all first coordinates in cluster 1
+            c_prot01 = [] # all coords for cluster 0, protein 1
+            c_prot02 = [] # all coords for cluster 0, protein 2
+            for i in range(10):
+                mh0 = IMP.atom.read_pdb(os.path.join(cl0,str(i)+'.pdb'),
+                                        mdl,IMP.atom.CAlphaPDBSelector())
+                coords0.append(IMP.core.XYZ(IMP.core.get_leaves(mh0)[0]).get_coordinates())
+                mh1 = IMP.atom.read_pdb(os.path.join(cl1,str(i)+'.pdb'),mdl,
+                                        IMP.atom.CAlphaPDBSelector())
+                coords1.append(IMP.core.XYZ(IMP.core.get_leaves(mh1)[0]).get_coordinates())
 
-            sel_prot1 = IMP.atom.Selection(mh0,chain_id='A').get_selected_particles()
-            sel_prot2 = IMP.atom.Selection(mh0,chain_id='B').get_selected_particles()
-            c_prot01 += [IMP.core.XYZ(p).get_coordinates() for p in sel_prot1]
-            c_prot02 += [IMP.core.XYZ(p).get_coordinates() for p in sel_prot2]
+                sel_prot1 = IMP.atom.Selection(mh0,
+                                        chain_id='A').get_selected_particles()
+                sel_prot2 = IMP.atom.Selection(mh0,
+                                        chain_id='B').get_selected_particles()
+                c_prot01 += [IMP.core.XYZ(p).get_coordinates()
+                             for p in sel_prot1]
+                c_prot02 += [IMP.core.XYZ(p).get_coordinates()
+                             for p in sel_prot2]
 
-            IMP.atom.destroy(mh0)
-            del mh0
-            IMP.atom.destroy(mh1)
-            del mh1
+                IMP.atom.destroy(mh0)
+                del mh0
+                IMP.atom.destroy(mh1)
+                del mh1
 
-        # dumb check for at least one close distance
-        n00 = 0
-        n01 = 0
-        n10 = 0
-        n11 = 0
-        for c0 in coords0:
-            n00 += min(IMP.algebra.get_distance(c0,i0) for i0 in icoords0)<0.01
-            n01 += min(IMP.algebra.get_distance(c0,i1) for i1 in icoords1)<0.01
-        for c1 in coords1:
-            n10 += min(IMP.algebra.get_distance(c1,i0) for i0 in icoords0)<0.01
-            n11 += min(IMP.algebra.get_distance(c1,i1) for i1 in icoords1)<0.01
+            # dumb check for at least one close distance
+            n00 = 0
+            n01 = 0
+            n10 = 0
+            n11 = 0
+            for c0 in coords0:
+                n00 += min(IMP.algebra.get_distance(c0,i0)
+                           for i0 in icoords0)<0.01
+                n01 += min(IMP.algebra.get_distance(c0,i1)
+                           for i1 in icoords1)<0.01
+            for c1 in coords1:
+                n10 += min(IMP.algebra.get_distance(c1,i0)
+                           for i0 in icoords0)<0.01
+                n11 += min(IMP.algebra.get_distance(c1,i1)
+                           for i1 in icoords1)<0.01
 
-        self.assertTrue((n00==10 and n11==10) or (n01==10 and n10==10))
+            self.assertTrue((n00==10 and n11==10) or (n01==10 and n10==10))
 
-        # check the output RMF file is canonical
-        rhC = RMF.open_rmf_file_read_only(os.path.join(cl0,'0.rmf3'))
-        protC = IMP.rmf.create_hierarchies(rhC,mdl)[0]
-        self.assertTrue(IMP.pmi.get_is_canonical(protC))
+            # check the output RMF file is canonical
+            rhC = RMF.open_rmf_file_read_only(os.path.join(cl0,'0.rmf3'))
+            protC = IMP.rmf.create_hierarchies(rhC,mdl)[0]
+            self.assertTrue(IMP.pmi.get_is_canonical(protC))
 
-        # check density
-        bbox1 = IMP.algebra.BoundingBox3D(c_prot01)
-        bbox2 = IMP.algebra.BoundingBox3D(c_prot02)
-        dmap1 = IMP.em.read_map(os.path.join(cl0,'Prot1.mrc'))
-        dmap2 = IMP.em.read_map(os.path.join(cl0,'Prot2.mrc'))
-        self.assertTrue(IMP.em.get_bounding_box(dmap1).get_contains(bbox1))
-        self.assertTrue(IMP.em.get_bounding_box(dmap2).get_contains(bbox2))
+            # check density
+            bbox1 = IMP.algebra.BoundingBox3D(c_prot01)
+            bbox2 = IMP.algebra.BoundingBox3D(c_prot02)
+            dmap1 = IMP.em.read_map(os.path.join(cl0,'Prot1.mrc'))
+            dmap2 = IMP.em.read_map(os.path.join(cl0,'Prot2.mrc'))
+            self.assertTrue(IMP.em.get_bounding_box(dmap1).get_contains(bbox1))
+            self.assertTrue(IMP.em.get_bounding_box(dmap2).get_contains(bbox2))
 
     def test_precision(self):
         """Test correct calcluation of precision and RMSF"""
@@ -445,17 +459,17 @@ class Tests(IMP.test.TestCase):
                                self.get_input_file_name("pmi2_copies_1/")],
             global_output_directory="./")
 
-        out_dir = IMP.test.TempDir(None).tmpdir
-        am.clustering(feature_keys=["Total_Score"],
-                      alignment_components=alignment_comp,
-                      rmsd_calculation_components=rmsd_comp,
-                      number_of_clusters=1,
-                      number_of_best_scoring_models=20,
-                      outputdir=out_dir)
+        with IMP.test.temporary_directory() as out_dir:
+            am.clustering(feature_keys=["Total_Score"],
+                          alignment_components=alignment_comp,
+                          rmsd_calculation_components=rmsd_comp,
+                          number_of_clusters=1,
+                          number_of_best_scoring_models=20,
+                          outputdir=out_dir)
 
-        # check average RMSD
-        av_rmsd = am.get_cluster_rmsd(0)
-        self.assertLess(av_rmsd,1.5) # if swapped it'll be 100
+            # check average RMSD
+            av_rmsd = am.get_cluster_rmsd(0)
+            self.assertLess(av_rmsd,1.5) # if swapped it'll be 100
 
 if __name__ == '__main__':
     IMP.test.main()

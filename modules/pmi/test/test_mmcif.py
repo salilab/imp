@@ -848,22 +848,23 @@ _ihm_2dem_class_average_restraint.details
         po = DummyPO(None)
         simo.add_protocol_output(po)
 
-        t = IMP.test.TempDir()
-        bar = os.path.join(t.tmpdir, 'bar')
-        with open(bar, 'w') as f:
-            f.write("")
-        local = IMP.pmi.metadata.LocalFileLocation(bar)
-        # No Repository set, so cannot map local to repository location
-        self.assertRaises(ValueError, po._get_repository_location, local)
+        with IMP.test.temporary_directory() as tmpdir:
+            bar = os.path.join(tmpdir, 'bar')
+            with open(bar, 'w') as f:
+                f.write("")
+            local = IMP.pmi.metadata.LocalFileLocation(bar)
+            # No Repository set, so cannot map local to repository location
+            self.assertRaises(ValueError, po._get_repository_location, local)
 
-        simo.add_metadata(IMP.pmi.metadata.Software(
-                              name='test', classification='test code',
-                              description='Some test program',
-                              version=1, url='http://salilab.org'))
-        simo.add_metadata(IMP.pmi.metadata.Repository(doi='foo', root=t.tmpdir))
-        l = po._get_repository_location(local)
-        self.assertEqual(l.doi, 'foo')
-        self.assertEqual(l.path, 'bar')
+            simo.add_metadata(IMP.pmi.metadata.Software(
+                                  name='test', classification='test code',
+                                  description='Some test program',
+                                  version=1, url='http://salilab.org'))
+            simo.add_metadata(IMP.pmi.metadata.Repository(doi='foo',
+                                                          root=tmpdir))
+            l = po._get_repository_location(local)
+            self.assertEqual(l.doi, 'foo')
+            self.assertEqual(l.path, 'bar')
 
 if __name__ == '__main__':
     IMP.test.main()
