@@ -101,6 +101,12 @@ class TempDir(object):
     def __del__(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
+class _TempDir(object):
+    def __init__(self, dir=None):
+        self.tmpdir = tempfile.mkdtemp(dir=dir)
+    def __del__(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
 @contextlib.contextmanager
 def temporary_directory(dir=None):
     """Simple context manager to make a temporary directory.
@@ -213,7 +219,7 @@ class TestCase(unittest.TestCase):
     def get_tmp_file_name(self, filename):
         """Get the full name of an output file in the tmp directory."""
         if not hasattr(self, '_tmpdir'):
-            self._tmpdir = TempDir(os.environ['IMP_TMP_DIR'])
+            self._tmpdir = _TempDir(os.environ['IMP_TMP_DIR'])
         tmpdir = self._tmpdir.tmpdir
         return os.path.join(tmpdir, filename)
 
