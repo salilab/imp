@@ -197,6 +197,9 @@ class TestCase(unittest.TestCase):
     def tearDown(self):
         # Restore original check level
         IMP.set_check_level(self.__check_level)
+        # Clean up any temporary files
+        if hasattr(self, '_tmpdir'):
+            del self._tmpdir
 
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
