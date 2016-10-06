@@ -13,14 +13,18 @@ IMPMPI_BEGIN_INTERNAL_NAMESPACE
 namespace {
   struct MPICommunicator {
     MPICommunicator() {
-      if (!MPI::Is_initialized()) {
-        MPI::Init();
+      int ret;
+      MPI_Initialized(&ret);
+      if (!ret) {
+        MPI_Init(0, 0);
       }
     }
 
     ~MPICommunicator() {
-      if (!MPI::Is_finalized()) {
-        MPI::Finalize();
+      int ret;
+      MPI_Finalized(&ret);
+      if (!ret) {
+        MPI_Finalize();
       }
     }
   };
