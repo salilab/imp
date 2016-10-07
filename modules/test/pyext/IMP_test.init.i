@@ -180,7 +180,13 @@ def xyz_numerical_derivatives(sf, xyz, step):
 
 
 class TestCase(unittest.TestCase):
-    """Super class for IMP test cases"""
+    """Super class for IMP test cases.
+       This provides a number of useful IMP-specific methods on top of
+       the standard Python `unittest.TestCase` class.
+       Test scripts should generally contain a subclass of this class,
+       conventionally called `Tests` (this makes it easier to run an
+       individual test from the commane line) and use IMP::test::main()
+       as their main function."""
 
     def __init__(self, *args, **keys):
         unittest.TestCase.__init__(self, *args, **keys)
@@ -220,13 +226,16 @@ class TestCase(unittest.TestCase):
         return open(self.get_input_file_name(filename), mode)
 
     def get_tmp_file_name(self, filename):
-        """Get the full name of an output file in the tmp directory."""
+        """Get the full name of an output file in the tmp directory.
+           The directory containing this file will be automatically
+           cleaned up when the test completes."""
         if not hasattr(self, '_tmpdir'):
             self._tmpdir = _TempDir(os.environ['IMP_TMP_DIR'])
         tmpdir = self._tmpdir.tmpdir
         return os.path.join(tmpdir, filename)
 
     def get_magnitude(self, vector):
+        """Get the magnitude of a list of floats"""
         return sum([x*x for x in vector], 0)**.5
 
     def assertRaisesUsageException(self, c, *args, **keys):
@@ -279,7 +288,13 @@ class TestCase(unittest.TestCase):
     def probabilistic_test(self, testcall, chance_of_failure):
         """Help handle a test which is expected to fail some fraction of
         the time. The test is run multiple times and an exception
-        is thrown only if it fails too many times."""
+        is thrown only if it fails too many times.
+        @note Use of this function should be avoided. If there is a corner
+              case that results in a test 'occasionally' failing, write a
+              new test specifically for that corner case and assert that
+              it fails consistently (and remove the corner case from the
+              old test).
+        """
         prob=chance_of_failure
         tries=1
         while prob > .001:
@@ -421,7 +436,8 @@ class TestCase(unittest.TestCase):
         else:
             return True
     def assertClassNames(self, module, exceptions, words):
-        """Check that all the classes in the module follow the imp naming conventions."""
+        """Check that all the classes in the module follow the IMP
+           naming conventions."""
         all= dir(module)
         misspelled = []
         bad=[]
@@ -574,9 +590,9 @@ class TestCase(unittest.TestCase):
 
     def run_example(self, filename):
         """Run the named example script.
-           A dictionary of all the script's global variables is returned.
-           This can be queried in a test case to make sure the example
-           performed correctly."""
+           @return a dictionary of all the script's global variables.
+                   This can be queried in a test case to make sure
+                   the example performed correctly."""
         class _FatalError(Exception): pass
 
         # Add directory containing the example to sys.path, so it can import
