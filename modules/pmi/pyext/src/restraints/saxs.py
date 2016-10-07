@@ -26,14 +26,14 @@ class SAXSRestraint(object):
                 ff_type = IMP.saxs.ALL_ATOMS  :  use individual form factors for all atoms. Does not build missing hydrogens.
                 ff_type = IMP.saxs.CA_ATOMS  :  use residue based form factors centered at CA atoms
         '''
-
+        
         hiers = IMP.pmi.tools.input_adaptor(input_objects, pmi_resolution=0, flatten=True)
         self.m = list(hiers)[0].get_model()
         if label is None:
             label=""
         self.rs = IMP.RestraintSet(self.m, 'SAXSRestraint_' + label)
         self.profile = IMP.saxs.Profile(saxs_datafile)
-
+        self.weight = weight
 
         if ff_type==IMP.saxs.CA_ATOMS:
             self.particles = IMP.atom.Selection(hiers, atom_type=IMP.atom.AT_CA).get_selected_particles()           
@@ -53,7 +53,7 @@ class SAXSRestraint(object):
         IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def evaluate(self):
-        return self.rs.unprotected_evaluate(None)
+        return self.weight * self.rs.unprotected_evaluate(None)
 
     def get_output(self):
         self.m.update()

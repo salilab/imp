@@ -5,7 +5,7 @@ import RMF
 import IMP.rmf
 import os,sys
 
-class PlottingTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     @IMP.test.expectedFailure
     def test_graphxl(self):
         import IMP.pmi.plotting.topology

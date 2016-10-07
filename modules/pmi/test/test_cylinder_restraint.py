@@ -8,7 +8,7 @@ import IMP.pmi.restraints.basic
 import math
 
 
-class CylinderRestraint(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
 
     def test_functionalities(self):

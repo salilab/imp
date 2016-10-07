@@ -12,7 +12,7 @@ import IMP.rmf
 import RMF
 
 
-class OutputGeometriesTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_round_trip(self):
         mdl = IMP.Model()

@@ -8,7 +8,7 @@ import IMP.container
 
 import IMP.pmi.io.crosslink
 
-class TestIOCrosslink(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_setup_cldbkc(self):
 

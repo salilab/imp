@@ -11,6 +11,80 @@ import IMP
 import IMP.pmi
 import IMP.pmi.tools
 
+
+class RestraintBase(object):
+
+    """Base class for PMI restraints, which wrap `IMP.Restraint`(s)."""
+
+    def __init__(self, m, rname=None):
+        """Constructor.
+        @param m The model object
+        @param rname The name of the primary restraint set that is wrapped.
+        """
+        self.m = m
+        self.label = None
+        self.weight = 1.
+        if rname is None:
+            rname = self.__class__.__name__
+        self.rs = IMP.RestraintSet(self.m, rname)
+        self.restraint_sets = [self.rs]
+
+    def set_weight(self, weight):
+        """Set the weight of the restraint.
+        @param weight Restraint weight
+        """
+        self.weight = weight
+        self.rs.set_weight(weight)
+
+    def set_label(self, label):
+        """Set the label used in outputs.
+        @param label Label
+        """
+        self.label = label
+
+    def add_to_model(self):
+        """Add the restraint to the model."""
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+
+    def evaluate(self):
+        """Evaluate the score of the restraint."""
+        return self.weight * self.rs.unprotected_evaluate(None)
+
+    def get_restraint_set(self):
+        """Get the primary restraint set."""
+        return self.rs
+
+    def get_restraint(self):
+        """Get the primary restraint set. Identical to `get_restraint_set`."""
+        return self.get_restraint_set()
+
+    def get_restraint_for_rmf(self):
+        """Get the restraint for visualization in an RMF file."""
+        return self.rs
+
+    def get_particles_to_sample(self):
+        """Get any created particles which should be sampled."""
+        return {}
+
+    def get_output(self):
+        """Get outputs to write to stat files."""
+        self.m.update()
+        output = {}
+        score = self.evaluate()
+        output["_TotalScore"] = str(score)
+
+        suffix = "_Score"
+        if self.label is not None:
+            suffix += "_" + str(self.label)
+
+        for rs in self.restraint_sets:
+            out_name = rs.get_name() + suffix
+            output[out_name] = str(
+                self.weight * rs.unprotected_evaluate(None))
+
+        return output
+
+
 class _NuisancesBase(object):
     ''' This base class is used to provide nuisance setup and interface
     for the ISD cross-link restraints '''

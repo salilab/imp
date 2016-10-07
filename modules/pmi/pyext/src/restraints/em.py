@@ -178,7 +178,8 @@ class GaussianEMRestraint(object):
         # If the GMM was derived from an MRC file that exists, add that too
         m = re.match('(.*\.mrc)\..*\.txt$', target_fn)
         if m and os.path.exists(m.group(1)):
-            l = IMP.pmi.metadata.LocalFileLocation(m.group(1))
+            l = IMP.pmi.metadata.LocalFileLocation(path=m.group(1),
+                     details='Original MRC file from which the GMM was derived')
             self.dataset.add_parent(IMP.pmi.metadata.EMDensityDataset(l))
 
     def center_target_density_on_model(self):

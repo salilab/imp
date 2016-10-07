@@ -6,7 +6,7 @@ import IMP.algebra
 import IMP.atom
 import IMP.container
 
-class TestEM2D(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_something(self):
         try:
             import IMP.em2d

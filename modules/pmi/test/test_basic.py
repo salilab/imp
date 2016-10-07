@@ -3,7 +3,7 @@ import IMP.pmi.topology
 import IMP.pmi.restraints.basic
 import IMP.test
 
-class BasicTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_distance(self):
         """Test setup of distance restraint"""
         mdl = IMP.Model()
