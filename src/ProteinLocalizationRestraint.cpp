@@ -1427,7 +1427,10 @@ MembraneExclusionRestraint::unprotected_evaluate(DerivativeAccumulator *accum) c
     y = i_current.get_coordinate(1);
     z = i_current.get_coordinate(2);
 
-    if ( (std::fabs(z) > excluded_radius) || ((x*x + y*y) < membrane_boundary) )
+    if ( std::fabs(z) > excluded_radius )
+      continue;
+
+    if ( (x*x + y*y) < membrane_boundary )
       continue;
 
     std::pair<double, algebra::Vector3D> dist = half_torus_distance(x, y, z, R_, r_);
