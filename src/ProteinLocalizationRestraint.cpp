@@ -73,7 +73,7 @@ void ZAxialPositionRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void ZAxialPositionRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Z axial list");
   }
@@ -172,7 +172,7 @@ void ZAxialPositionLowerRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void ZAxialPositionLowerRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Z axial list");
   }
@@ -256,7 +256,7 @@ void ZAxialPositionUpperRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void ZAxialPositionUpperRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Z axial list");
   }
@@ -342,7 +342,7 @@ void YAxialPositionRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void YAxialPositionRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Y axial list");
   }
@@ -441,7 +441,7 @@ void YAxialPositionLowerRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void YAxialPositionLowerRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Y axial list");
   }
@@ -525,7 +525,7 @@ void YAxialPositionUpperRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void YAxialPositionUpperRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Y axial list");
   }
@@ -611,7 +611,7 @@ void XYRadialPositionRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void XYRadialPositionRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "XY Radial list");
   }
@@ -732,7 +732,7 @@ void XYRadialPositionLowerRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void XYRadialPositionLowerRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "XY radial list");
   }
@@ -827,7 +827,7 @@ void XYRadialPositionUpperRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void XYRadialPositionUpperRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "XY Radial list");
   }
@@ -918,7 +918,7 @@ void ProteinContactRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void ProteinContactRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein contact list");
   }
@@ -1011,7 +1011,7 @@ void ProteinChainRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void ProteinChainRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein chain list");
   }
@@ -1184,7 +1184,7 @@ void MembraneSurfaceLocationRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void MembraneSurfaceLocationRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Surface location list");
   }
@@ -1286,7 +1286,7 @@ void MembraneSurfaceLocationConditionalRestraint::set_particles2(const Particles
 }
 
 void MembraneSurfaceLocationConditionalRestraint::add_particles1(const ParticlesTemp &ps) {
-  if (!sc1_&& !ps.empty()) {
+  if (!sc1_ && !ps.empty()) {
     sc1_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Surface location list");
   }
@@ -1294,7 +1294,7 @@ void MembraneSurfaceLocationConditionalRestraint::add_particles1(const Particles
 }
 
 void MembraneSurfaceLocationConditionalRestraint::add_particles2(const ParticlesTemp &ps) {
-  if (!sc2_&& !ps.empty()) {
+  if (!sc2_ && !ps.empty()) {
     sc2_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Surface location list");
   }
@@ -1395,7 +1395,7 @@ void MembraneExclusionRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void MembraneExclusionRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Membrane exclusion list");
   }
@@ -1414,18 +1414,23 @@ double
 MembraneExclusionRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_CHECK_OBJECT(sc_.get());
-  double v = 0;
+  double v = 0.0, x, y, z;
+  core::XYZ i_current;
   IMP::ParticlesTemp all_particles = sc_->get();
   double excluded_radius = r_ + thickness_;
+  double membrane_boundary = (R_ - excluded_radius) * (R_ - excluded_radius);
 
   for (unsigned int i = 0; i < all_particles.size(); ++i )
   {
-    core::XYZ i_current = core::XYZ(all_particles[i]);
-    if ( std::fabs(i_current.get_coordinate(2)) > excluded_radius )
+    i_current = core::XYZ(all_particles[i]);
+    x = i_current.get_coordinate(0);
+    y = i_current.get_coordinate(1);
+    z = i_current.get_coordinate(2);
+
+    if ( (std::fabs(z) > excluded_radius) || ((x*x + y*y) < membrane_boundary) )
       continue;
 
-    std::pair<double, algebra::Vector3D> dist = half_torus_distance(i_current.get_coordinate(0),
-        i_current.get_coordinate(1), i_current.get_coordinate(2), R_, r_);
+    std::pair<double, algebra::Vector3D> dist = half_torus_distance(x, y, z, R_, r_);
     if ( dist.first < thickness_ )
     {
       v += (thickness_ - dist.first) * (thickness_ - dist.first);
@@ -1487,7 +1492,7 @@ void PoreSideVolumeLocationRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void PoreSideVolumeLocationRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Surface location list");
   }
@@ -1579,7 +1584,7 @@ void PerinuclearVolumeLocationRestraint::set_particles(const ParticlesTemp &ps) 
 }
 
 void PerinuclearVolumeLocationRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Surface location list");
   }
@@ -1661,7 +1666,7 @@ void AssemblySymmetryByDistanceRestraint::set_particles(const ParticlesTemp &ps)
 }
 
 void AssemblySymmetryByDistanceRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein group configuration list");
   }
@@ -1747,7 +1752,7 @@ void AssemblySymmetryByDihedralRestraint::set_particles(const ParticlesTemp &ps)
 }
 
 void AssemblySymmetryByDihedralRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein group configuration list");
   }
@@ -1816,7 +1821,7 @@ void ProteinProximityRestraint::set_particles(const ParticlesTemp &ps) {
 }
 
 void ProteinProximityRestraint::add_particles(const ParticlesTemp &ps) {
-  if (!sc_&& !ps.empty()) {
+  if (!sc_ && !ps.empty()) {
     sc_ = new IMP::internal::StaticListContainer<SingletonContainer>(
         ps[0]->get_model(), "Protein group configuration list");
   }
