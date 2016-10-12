@@ -2,6 +2,7 @@
 """This script shows how to use the BuildSystem macro to construct large systems with minimal code
 """
 
+from __future__ import print_function
 import IMP
 import RMF
 import IMP.atom
@@ -16,6 +17,10 @@ import tempfile,os
 import sys
 
 IMP.setup_from_argv(sys.argv, "Automatic setup of a large system")
+if IMP.get_is_quick_test():
+    print("This example is too slow to test in debug mode - run without")
+    print("internal tests enabled, or without the --run-quick-test flag")
+    sys.exit(0)
 
 # This is the topology table format.
 #  It allows you to create many components in a simple way

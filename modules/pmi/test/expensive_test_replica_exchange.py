@@ -119,7 +119,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(avscore, t/2, delta=0.1)
 
         rex_out_file="./test_replica_exchange_macro_output/stat."+str(my_index)+".out"
-        dist_key="DistanceRestraint_None"
+        dist_key="DistanceRestraint_Score"
         mc_nframe_key="MonteCarlo_Nframe"
         mc_temp_key="MonteCarlo_Temperature"
         rex_temp_key="ReplicaExchange_CurrentTemp"

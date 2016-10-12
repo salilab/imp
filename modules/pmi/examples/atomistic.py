@@ -3,6 +3,7 @@
 with a secondary structure elastic network to speed things up.
 """
 
+from __future__ import print_function
 import IMP
 import RMF
 import IMP.atom
@@ -15,6 +16,10 @@ import IMP.pmi.restraints.stereochemistry
 import sys
 
 IMP.setup_from_argv(sys.argv, "Simulation of an atomic system")
+if IMP.get_is_quick_test():
+    print("This example is too slow to test in debug mode - run without")
+    print("internal tests enabled, or without the --run-quick-test flag")
+    sys.exit(0)
 
 # Setup System and add a State
 mdl = IMP.Model()

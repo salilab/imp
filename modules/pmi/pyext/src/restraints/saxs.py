@@ -3,82 +3,80 @@ Restraints for handling small angle x-ray (SAXS) data.
 """
 
 from __future__ import print_function
+import math
 import IMP
 import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.container
 import IMP.pmi.tools
+import IMP.pmi.restraints
+import IMP.saxs
 
-class SAXSRestraint(object):
-    import IMP.saxs
-    import IMP.pmi.tools
 
-    def __init__(self, input_objects, saxs_datafile, weight=1.0, ff_type=IMP.saxs.HEAVY_ATOMS, label=None):
-        '''Builds a basic SAXS restraint.
-        @param input_objects - A list of hierarchies or PMI objects that the SAXS restraint will be applied to.
-                                This hierarchy MUST be atomic.  You can pass a list of CA atom particles to evaluate
-                                at residue resolution
-        @param saxs_datafile - the SAXS .dat file. 
-        @param weight - Restraint score coefficient
-        @param ff_type - the form factor to use:
-                ff_type = IMP.saxs.HEAVY_ATOMS  :  use form factors with implicit hydrogens
-                ff_type = IMP.saxs.ALL_ATOMS  :  use individual form factors for all atoms. Does not build missing hydrogens.
-                ff_type = IMP.saxs.CA_ATOMS  :  use residue based form factors centered at CA atoms
-        '''
-        
-        hiers = IMP.pmi.tools.input_adaptor(input_objects, pmi_resolution=0, flatten=True)
-        self.m = list(hiers)[0].get_model()
-        if label is None:
-            label=""
-        self.rs = IMP.RestraintSet(self.m, 'SAXSRestraint_' + label)
+class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
+
+    """Basic SAXS restraint."""
+
+    def __init__(self, input_objects, saxs_datafile, weight=1.0,
+                 ff_type=IMP.saxs.HEAVY_ATOMS, label=None):
+        """Builds the restraint.
+        @param input_objects A list of hierarchies or PMI objects that the
+               SAXS restraint will be applied to. This hierarchy MUST be
+               atomic. You can pass a list of CA atom particles to evaluate
+               at residue resolution
+        @param saxs_datafile the SAXS .dat file.
+        @param weight Restraint score coefficient
+        @param ff_type the form factor to use, of the following types:
+                   - IMP.saxs.HEAVY_ATOMS: use form factors with implicit
+                     hydrogens
+                   - IMP.saxs.ALL_ATOMS: use individual form factors for all
+                     atoms. Does not build missing hydrogens.
+                   - IMP.saxs.CA_ATOMS: use residue based form factors
+                     centered at CA atoms
+        @param label Label for the restraint in outputs
+        """
+        hiers = IMP.pmi.tools.input_adaptor(input_objects, pmi_resolution=0,
+                                            flatten=True)
+        m = list(hiers)[0].get_model()
+        super(SAXSRestraint, self).__init__(m, label=label, weight=weight)
         self.profile = IMP.saxs.Profile(saxs_datafile)
-        self.weight = weight
 
-        if ff_type==IMP.saxs.CA_ATOMS:
-            self.particles = IMP.atom.Selection(hiers, atom_type=IMP.atom.AT_CA).get_selected_particles()           
-        elif ff_type==IMP.saxs.HEAVY_ATOMS:
-            self.particles = IMP.atom.Selection(hiers, resolution=0).get_selected_particles()
-        elif ff_type==IMP.saxs.ALL_ATOMS:
-            self.particles = IMP.atom.Selection(hiers, resolution=0).get_selected_particles()
+        if ff_type == IMP.saxs.CA_ATOMS:
+            self.particles = IMP.atom.Selection(
+                hiers, atom_type=IMP.atom.AT_CA).get_selected_particles()
+        elif ff_type == IMP.saxs.HEAVY_ATOMS:
+            self.particles = IMP.atom.Selection(
+                hiers, resolution=0).get_selected_particles()
+        elif ff_type == IMP.saxs.ALL_ATOMS:
+            self.particles = IMP.atom.Selection(
+                hiers, resolution=0).get_selected_particles()
         else:
-            raise Exception("SAXSRestraint: Must provide an IMP.saxs atom type: CA_ATOMS, HEAVY_ATOMS or ALL_ATOMS")
-        if len(self.particles)==0:
+            raise Exception("SAXSRestraint: Must provide an IMP.saxs atom "
+                            "type: CA_ATOMS, HEAVY_ATOMS or ALL_ATOMS")
+        if len(self.particles) == 0:
             raise Exception("SAXSRestraint: There are no selected particles")
 
-        self.restraint = IMP.saxs.Restraint(self.particles, self.profile, ff_type)
+        self.restraint = IMP.saxs.Restraint(self.particles, self.profile,
+                                            ff_type)
         self.rs.add_restraint(self.restraint)
 
-    def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
-    def evaluate(self):
-        return self.weight * self.rs.unprotected_evaluate(None)
+class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
 
-    def get_output(self):
-        self.m.update()
-        output = {}
-        score = self.evaluate()
-        output["_TotalScore"] = str(score)
+    """Basic SAXS restraint using ISD."""
 
-        return output
-
-class SAXSISDRestraint(object):
-
-    import IMP.saxs
     import IMP.isd
     try:
         import IMP.isd2
     except:
         print("Module isd2 not installed. Cannot use SAXSISDRestraint")
-    import IMP.pmi.tools
 
     def __init__(self, representation, profile, resolution=0, weight=1,
-                 ff_type=IMP.saxs.HEAVY_ATOMS):
+                 ff_type=IMP.saxs.HEAVY_ATOMS, label=None):
 
-        self.m = representation.prot.get_model()
-        self.label = "None"
-        self.rs = IMP.RestraintSet(self.m, 'saxs')
+        m = representation.prot.get_model()
+        super(SAXSISDRestraint, self).__init__(m, label=label, weight=weight)
 
         self.taumaxtrans = 0.05
         self.prof = IMP.saxs.Profile(profile)
@@ -99,13 +97,13 @@ class SAXSISDRestraint(object):
         self.tau = IMP.pmi.tools.SetupNuisance(self.m, 1., 0., None, False,
                                                ).get_particle()
 
-        #c1 and c2, optimized
+        # c1 and c2, optimized
         self.c1 = IMP.pmi.tools.SetupNuisance(self.m, 1.0, 0.95, 1.05,
                                               True).get_particle()
         self.c2 = IMP.pmi.tools.SetupNuisance(self.m, 0.0, -2., 4.,
                                               True).get_particle()
 
-        #weight, optimized
+        # weight, optimized
         self.w = IMP.pmi.tools.SetupWeight(self.m).get_particle()
         IMP.isd.Weight(self.w).set_weights_are_optimized(True)
 
@@ -115,16 +113,16 @@ class SAXSISDRestraint(object):
 
         print("create saxs restraint")
         self.saxs = IMP.isd2.SAXSRestraint(self.prof, self.sigma, self.tau,
-                                           self.gamma, self.w, self.c1, self.c2)
+                                           self.gamma, self.w, self.c1,
+                                           self.c2)
         self.saxs.add_scatterer(self.atoms, self.cov, ff_type)
 
         self.rs.add_restraint(self.saxs)
-        self.rs.set_weight(weight)
 
         # self.saxs_stuff={'nuis':(sigma,gamma),'cov':cov,
         #        'exp':prof,'th':tmp}
 
-        self.rs2 = IMP.RestraintSet(self.m, 'jeffreys')
+        self.rs2 = self._create_restraint_set('Prior')
         # jeffreys restraints for nuisances
         j1 = IMP.isd.JeffreysRestraint(self.m, self.sigma)
         self.rs2.add_restraint(j1)
@@ -134,35 +132,25 @@ class SAXSISDRestraint(object):
         self.rs2.add_restraint(j3)
 
     def optimize_sigma(self):
-        """set sigma to the value that maximizes its conditional likelihood"""
-        from math import sqrt
+        """Set sigma to the value that maximizes its conditional likelihood"""
         self.m.update()
         sigma2hat = self.saxs.get_sigmasq_scale_parameter() \
             / (self.saxs.get_sigmasq_shape_parameter() + 1)
-        IMP.isd.Scale(self.sigma).set_scale(sqrt(sigma2hat))
+        IMP.isd.Scale(self.sigma).set_scale(math.sqrt(sigma2hat))
 
     def optimize_gamma(self):
-        """set gamma to the value that maximizes its conditional likelihood"""
-        from math import exp
+        """Set gamma to the value that maximizes its conditional likelihood"""
         self.m.update()
-        gammahat = exp(self.saxs.get_loggamma_variance_parameter()
-                       * self.saxs.get_loggamma_jOg_parameter())
+        gammahat = math.exp(self.saxs.get_loggamma_variance_parameter() *
+                            self.saxs.get_loggamma_jOg_parameter())
         IMP.isd.Scale(self.gamma).set_scale(gammahat)
 
-    def logspace(self, a, b, num=100):
-        """mimick numpy's logspace function"""
-        for i in range(num):
-            val = a + float(b - a) / float(num - 1) * i
-            yield 10 ** val
-
     def optimize_tau(self, ltaumin=-2, ltaumax=3, npoints=100):
-        from math import log
-        import IMP.atom
         values = []
         self.m.update()
         IMP.atom.write_pdb(self.atoms, 'tauvals.pdb')
         fl = open('tauvals.txt', 'w')
-        for tauval in self.logspace(ltaumin, ltaumax, npoints):
+        for tauval in self._logspace(ltaumin, ltaumax, npoints):
             IMP.isd.Scale(self.tau).set_scale(tauval)
             try:
                 values.append((self.m.evaluate(False), tauval))
@@ -170,10 +158,10 @@ class SAXSISDRestraint(object):
                 pass
             fl.write('%G %G\n' % (values[-1][1], values[-1][0]))
         values.sort()
-        ltcenter = log(values[0][1]) / log(10)
+        ltcenter = math.log(values[0][1]) / math.log(10)
         spacing = (ltaumax - ltaumin) / float(npoints)
         values = []
-        for tauval in self.logspace(
+        for tauval in self._logspace(
             ltcenter - 2 * spacing, ltcenter + 2 * spacing,
                 npoints):
             IMP.isd.Scale(self.tau).set_scale(tauval)
@@ -182,20 +170,27 @@ class SAXSISDRestraint(object):
         values.sort()
         IMP.isd.Scale(self.tau).set_scale(values[0][1])
 
+    def get_gamma_value(self):
+        """Get value of gamma."""
+        return self.gamma.get_scale()
+
+    def set_taumaxtrans(self, taumaxtrans):
+        self.taumaxtrans = taumaxtrans
+
     def draw_sigma(self):
-        """draw 1/sigma2 from gamma distribution"""
+        """Draw 1/sigma2 from gamma distribution."""
         self.m.update()
         self.saxs.draw_sigma()
 
     def draw_gamma(self):
-        """draw gamma from lognormal distribution"""
+        """Draw gamma from lognormal distribution."""
         self.m.update()
         self.saxs.draw_gamma()
 
     def update_covariance_matrix(self):
         c1 = IMP.isd.Nuisance(self.c1).get_nuisance()
         c2 = IMP.isd.Nuisance(self.c2).get_nuisance()
-        #tau = IMP.isd.Nuisance(self.tau).get_nuisance()
+        # tau = IMP.isd.Nuisance(self.tau).get_nuisance()
         tau = 1.0
         self.cov = IMP.isd2.compute_relative_covariance(self.atoms, c1, c2,
                                                         tau, self.prof)
@@ -211,38 +206,19 @@ class SAXSISDRestraint(object):
                 fl.write('%G ' % i)
             fl.write('\n')
 
-    def get_gamma_value(self):
-        return self.gamma.get_scale()
-
-    def set_label(self, label):
-        self.label = label
-
-    def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs2)
-
-    def set_taumaxtrans(self, taumaxtrans):
-        self.taumaxtrans = taumaxtrans
-
-    def get_particles_to_sample(self):
-        ps = {}
-        # ps["Nuisances_SAXSISDRestraint_Tau_" +
-        #    self.label] = ([self.tau], self.taumaxtrans)
-        return ps
-
     def get_output(self):
-        self.m.update()
-        output = {}
-        score = self.rs.unprotected_evaluate(None)
-        score2 = self.rs2.unprotected_evaluate(None)
-        output["_TotalScore"] = str(score + score2)
-
-        output["SAXSISDRestraint_Likelihood_" + self.label] = str(score)
-        output["SAXSISDRestraint_Prior_" + self.label] = str(score2)
-        output["SAXSISDRestraint_Sigma_" +
-               self.label] = str(self.sigma.get_scale())
-        output["SAXSISDRestraint_Tau_" +
-               self.label] = str(self.tau.get_scale())
-        output["SAXSISDRestraint_Gamma_" +
-               self.label] = str(self.gamma.get_scale())
+        output = super(SAXSISDRestraint, self).get_output()
+        suffix = self._get_label_suffix()
+        output["SAXSISDRestraint_Sigma" +
+               suffix] = str(self.sigma.get_scale())
+        output["SAXSISDRestraint_Tau" + suffix] = str(self.tau.get_scale())
+        output["SAXSISDRestraint_Gamma" +
+               suffix] = str(self.gamma.get_scale())
         return output
+
+    @staticmethod
+    def _logspace(a, b, num=100):
+        """Mimick numpy's logspace function"""
+        for i in range(num):
+            val = a + float(b - a) / float(num - 1) * i
+            yield 10 ** val
