@@ -145,7 +145,8 @@ class Tests(IMP.test.TestCase):
 
         self.assertEqual(len(r.restraint_sets), 2)
         self.assertEqual(len(r.get_particles_to_sample()), 1)
-        self.assertIs(r.get_particles_to_sample().values()[0][0][0], r.sigma)
+        self.assertIs(list(r.get_particles_to_sample().values())[0][0][0],
+                      r.sigma)
         self.assertEqual(len(r.get_output()), 5)
 
         output = r.get_output()
