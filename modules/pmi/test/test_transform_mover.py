@@ -359,7 +359,7 @@ class Tests(IMP.test.TestCase):
 
 
 
-        domains=[("A",  "A.1",    0.10, fastafile,  "1WCM:A",   "BEADS",         None,    (1,100,0),       None,       1,         None,      None,     None,   None,  None,   None)]
+        domains=[("A",  "A.1",    0.10, fastafile,  "1WCM:A",   "BEADS",         None,    (1,50,0),       None,       1,         None,      None,     None,   None,  None,   None)]
 
         with IMP.allow_deprecated():
             bm=IMP.pmi.macros.BuildModel1(simo)
