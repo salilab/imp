@@ -44,6 +44,7 @@ IMP_SWIG_OBJECT( IMP::core, HarmonicSphereDistancePairScore, HarmonicSphereDista
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDistancePairScore, HarmonicUpperBoundSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDiameterPairScore, HarmonicUpperBoundSphereDiameterPairScores);
 IMP_SWIG_OBJECT( IMP::core, WeightedSum, WeightedSums);
+IMP_SWIG_OBJECT( IMP::core, WeightedSumOfExponential, WeightedSumOfExponentials);
 IMP_SWIG_OBJECT( IMP::core, IncrementalScoringFunction, IncrementalScoringFunctions);
 IMP_SWIG_OBJECT( IMP::core, KClosePairsPairScore, KClosePairsPairScores);
 IMP_SWIG_OBJECT( IMP::core, LeavesRefiner, LeavesRefiners);
@@ -212,6 +213,7 @@ IMP_SWIG_OBJECT(IMP::core, MultipleBinormalRestraint, MultipleBinormalRestraints
 %include "IMP/core/HarmonicLowerBound.h"
 %include "IMP/core/HarmonicUpperBound.h"
 %include "IMP/core/WeightedSum.h"
+%include "IMP/core/WeightedSumOfExponential.h"
 %include "IMP/core/PeriodicOptimizerState.h"
 %include "IMP/core/MSConnectivityRestraint.h"
 %inline %{
