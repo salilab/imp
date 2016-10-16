@@ -23,6 +23,14 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(score, score_sum, delta=1e-4)
             self.assertAlmostEqual(deriv, deriv_sum, delta=1e-4)
 
+    def test_update_functions(self):
+        f1 = IMP.core.Harmonic(0., 1.)
+        f2 = IMP.core.Harmonic(2., 2.)
+        sf = IMP.core.WeightedSum([f1, f2], [.5, .5])
+        self.assertAlmostEqual(sf.evaluate(0), 2., delta=1e-6)
+        f2.set_k(1.)
+        self.assertAlmostEqual(sf.evaluate(0), 1., delta=1e-6)
+
     def test_accessors(self):
         f1 = IMP.core.Harmonic(0., 1.)
         f2 = IMP.core.Harmonic(2., 3.)
