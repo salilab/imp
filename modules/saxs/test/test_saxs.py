@@ -181,7 +181,7 @@ class Tests(IMP.test.TestCase):
 
             outhiers.append(this_res)
 
-        exp_profile = IMP.saxs.Profile(self.get_input_file_name('2016_06_20mins_0.5.dat'))
+        exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
         saxs_particles = IMP.atom.Selection(outhiers).get_selected_particles()
 
         # Ensure the particles list is equal to the number of residues
@@ -191,7 +191,7 @@ class Tests(IMP.test.TestCase):
         model_profile.calculate_profile(saxs_particles, IMP.saxs.RESIDUES)
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
 
-        self.assertAlmostEqual(saxs_score.compute_score(model_profile), 5.549, delta=0.01)
+        self.assertAlmostEqual(saxs_score.compute_score(model_profile), 1.015, delta=0.01)
 
 
 if __name__ == '__main__':
