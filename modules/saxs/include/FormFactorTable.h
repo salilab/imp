@@ -28,11 +28,13 @@ IMPSAXS_BEGIN_NAMESPACE
  ALL_ATOMS - all atoms including hydrogens
  HEAVY_ATOMS - no hydrogens, all other atoms included
  CA_ATOMS - residue level, residue represented by CA
+ RESIDUES - residue level, represented by residue bead
 */
 enum FormFactorType {
   ALL_ATOMS,
   HEAVY_ATOMS,
-  CA_ATOMS
+  CA_ATOMS,
+  RESIDUES
 };
 
 /**

@@ -121,7 +121,7 @@ class Tests(IMP.test.TestCase):
                                IMP.atom.CAlphaPDBSelector())
 
         #! read experimental profile
-        exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
+        exp_profile = IMP.saxs.Profile(self.get_input_file_name('2016_06_20mins_0.5.dat'))
 
         #! select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
@@ -143,6 +143,55 @@ class Tests(IMP.test.TestCase):
             IMP.saxs.CA_ATOMS)
         score = saxs_restraint.evaluate(False)
         print('initial score = ' + str(score))
+
+    def test_saxs_residue_particle_restraint(self):
+        """Check residue level saxs restraint using
+        IMP.saxs.RESIDUES particles. Needed for PMI 
+        hierarchies at resolution=1, which have no atom particles
+        """
+        m = IMP.Model() 
+        mdl = IMP.Model() # New model for residue particles only 
+             
+        #! read PDB (only CA atoms)
+        mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
+                               IMP.atom.CAlphaPDBSelector())
+
+        # Get all CA particles
+        particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
+
+        outhiers = []
+
+        for ca in particles:
+            residue = IMP.atom.Residue(ca.get_parent())
+            rt = residue.get_residue_type()
+            vol = IMP.atom.get_volume_from_residue_type(rt)
+            mass = IMP.atom.get_mass(rt)
+
+
+            # Create new particle in mdl and set up as a Residue
+            rp1 = IMP.Particle(mdl)
+            this_res = IMP.atom.Residue.setup_particle(rp1, rt, residue.get_index())
+
+            # Add radius and shape information
+            radius = IMP.algebra.get_ball_radius_from_volume_3d(vol)
+            shape = IMP.algebra.Sphere3D(IMP.core.XYZ(ca).get_coordinates(),radius)
+            rp1.set_name("Residue_%i"%residue.get_index())
+            IMP.core.XYZR.setup_particle(rp1,shape)
+            IMP.atom.Mass.setup_particle(rp1,mass)
+
+            outhiers.append(this_res)
+
+        exp_profile = IMP.saxs.Profile(self.get_input_file_name('2016_06_20mins_0.5.dat'))
+        saxs_particles = IMP.atom.Selection(outhiers).get_selected_particles()
+
+        # Ensure the particles list is equal to the number of residues
+        self.assertEqual(len(saxs_particles), 129)
+
+        model_profile = IMP.saxs.Profile()
+        model_profile.calculate_profile(saxs_particles, IMP.saxs.RESIDUES)
+        saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
+
+        self.assertAlmostEqual(saxs_score.compute_score(model_profile), 5.549, delta=0.01)
 
 
 if __name__ == '__main__':

@@ -756,6 +756,16 @@ double FormFactorTable::get_form_factor(Particle* p,
     return get_form_factor(residue_type);
   }
 
+  if (ff_type == RESIDUES) {  // residue level form factors
+    atom::ResidueType residue_type;
+    if (p->has_attribute(atom::Residue::get_residue_type_key()))
+      residue_type = atom::ResidueType(
+          p->get_value(atom::Residue::get_residue_type_key()));
+    else
+      residue_type = atom::Residue(p).get_residue_type();
+    return get_form_factor(residue_type);
+  }
+
   // atomic form factor, initialization by request
   if (p->has_attribute(form_factor_type_key_)) {
     return zero_form_factors_[p->get_value(form_factor_type_key_)];
@@ -784,6 +794,16 @@ double FormFactorTable::get_vacuum_form_factor(Particle* p,
     return get_vacuum_form_factor(residue_type);
   }
 
+  if (ff_type == RESIDUES) {  // residue level form factors
+    atom::ResidueType residue_type;
+    if (p->has_attribute(atom::Residue::get_residue_type_key()))
+      residue_type = atom::ResidueType(
+          p->get_value(atom::Residue::get_residue_type_key()));
+    else
+      residue_type = atom::Residue(p).get_residue_type();
+    return get_form_factor(residue_type);
+  }
+
   if (p->has_attribute(form_factor_type_key_)) {
     return vacuum_zero_form_factors_[p->get_value(form_factor_type_key_)];
   }
@@ -805,6 +825,17 @@ double FormFactorTable::get_dummy_form_factor(Particle* p,
       residue_type = atom::get_residue(atom::Atom(p)).get_residue_type();
     return get_dummy_form_factor(residue_type);
   }
+
+  if (ff_type == RESIDUES) {  // residue level form factors
+    atom::ResidueType residue_type;
+    if (p->has_attribute(atom::Residue::get_residue_type_key()))
+      residue_type = atom::ResidueType(
+          p->get_value(atom::Residue::get_residue_type_key()));
+    else
+      residue_type = atom::Residue(p).get_residue_type();
+    return get_form_factor(residue_type);
+  }
+
 
   if (p->has_attribute(form_factor_type_key_)) {
     return dummy_zero_form_factors_[p->get_value(form_factor_type_key_)];
