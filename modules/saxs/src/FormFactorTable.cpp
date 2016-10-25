@@ -389,85 +389,90 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
     const atom::ResidueType& residue_type) const {
   // protein atoms
   // CH
-  if (atom_type == atom::AT_CH) return CH;
+  if (atom_type == atom::AT_CH) { return CH; }
   // CH2
-  if (atom_type == atom::AT_CH2) return CH2;
+  if (atom_type == atom::AT_CH2) { return CH2; }
   // CH3
-  if (atom_type == atom::AT_CH3) return CH3;
+  if (atom_type == atom::AT_CH3) { return CH3; }
   // C
-  if (atom_type == atom::AT_C) return C;
+  if (atom_type == atom::AT_C) { return C; }
 
   // CA
   if (atom_type == atom::AT_CA) {
-    if (residue_type == atom::GLY) return CH2;  // Glycine has 2 hydrogens
+    if (residue_type == atom::GLY) { return CH2; } // Glycine has 2 hydrogens
     return CH;
   }
   // CB
   if (atom_type == atom::AT_CB) {
     if (residue_type == atom::ILE || residue_type == atom::THR ||
-        residue_type == atom::VAL)
+        residue_type == atom::VAL) {
       return CH;
-    if (residue_type == atom::ALA) return CH3;
+    }
+    if (residue_type == atom::ALA) { return CH3; }
     return CH2;
   }
   // CG1
   if (atom_type == atom::AT_CG) {
     if (residue_type == atom::ASN || residue_type == atom::ASP ||
         residue_type == atom::HIS || residue_type == atom::PHE ||
-        residue_type == atom::TRP || residue_type == atom::TYR)
+        residue_type == atom::TRP || residue_type == atom::TYR) {
       return C;
-    if (residue_type == atom::LEU) return CH;
+    }
+    if (residue_type == atom::LEU) { return CH; }
     return CH2;
   }
   // CG1
   if (atom_type == atom::AT_CG1) {
-    if (residue_type == atom::ILE) return CH2;
-    if (residue_type == atom::VAL) return CH3;
+    if (residue_type == atom::ILE) { return CH2; }
+    if (residue_type == atom::VAL) { return CH3; }
   }
   // CG2 - only VAL, ILE, and THR
-  if (atom_type == atom::AT_CG2) return CH3;
+  if (atom_type == atom::AT_CG2) { return CH3; }
   // CD
   if (atom_type == atom::AT_CD) {
-    if (residue_type == atom::GLU || residue_type == atom::GLN) return C;
+    if (residue_type == atom::GLU || residue_type == atom::GLN) { return C; }
     return CH2;
   }
   // CD1
   if (atom_type == atom::AT_CD1) {
-    if (residue_type == atom::LEU || residue_type == atom::ILE) return CH3;
+    if (residue_type == atom::LEU || residue_type == atom::ILE) { return CH3; }
     if (residue_type == atom::PHE || residue_type == atom::TRP ||
-        residue_type == atom::TYR)
+        residue_type == atom::TYR) {
       return CH;
+    }
     return C;
   }
   // CD2
   if (atom_type == atom::AT_CD2) {
-    if (residue_type == atom::LEU) return CH3;
+    if (residue_type == atom::LEU) { return CH3; }
     if (residue_type == atom::PHE || residue_type == atom::HIS ||
-        residue_type == atom::TYR)
+        residue_type == atom::TYR) {
       return CH;
+    }
     return C;
   }
   // CE
   if (atom_type == atom::AT_CE) {
-    if (residue_type == atom::LYS) return CH2;
-    if (residue_type == atom::MET) return CH3;
+    if (residue_type == atom::LYS) { return CH2; }
+    if (residue_type == atom::MET) { return CH3; }
     return C;
   }
   // CE1
   if (atom_type == atom::AT_CE1) {
     if (residue_type == atom::PHE || residue_type == atom::HIS ||
-        residue_type == atom::TYR)
+        residue_type == atom::TYR) {
       return CH;
+    }
     return C;
   }
   // CE2
   if (atom_type == atom::AT_CE2) {
-    if (residue_type == atom::PHE || residue_type == atom::TYR) return CH;
+    if (residue_type == atom::PHE || residue_type == atom::TYR) { return CH; }
     return C;
   }
   // CZ
   if (atom_type == atom::AT_CZ) {
-    if (residue_type == atom::PHE) return CH;
+    if (residue_type == atom::PHE) { return CH; }
     return C;
   }
   //   // CZ1
@@ -475,43 +480,46 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
   // CZ2, CZ3, CE3
   if (atom_type == atom::AT_CZ2 || atom_type == atom::AT_CZ3 ||
       atom_type == atom::AT_CE3) {
-    if (residue_type == atom::TRP) return CH;
+    if (residue_type == atom::TRP) { return CH; }
     return C;
   }
 
   // DNA/RNA atoms
   // C5'
-  if (atom_type == atom::AT_C5p) return CH2;
+  if (atom_type == atom::AT_C5p) { return CH2; }
   // C1', C2', C3', C4'
   if (atom_type == atom::AT_C4p || atom_type == atom::AT_C3p ||
-      atom_type == atom::AT_C2p || atom_type == atom::AT_C1p)
+      atom_type == atom::AT_C2p || atom_type == atom::AT_C1p) {
     return CH;
+  }
   // C2
   if (atom_type == atom::AT_C2) {
-    if (residue_type == atom::DADE || residue_type == atom::ADE) return CH;
+    if (residue_type == atom::DADE || residue_type == atom::ADE) { return CH; }
     return C;
   }
   // C4
-  if (atom_type == atom::AT_C4) return C;
+  if (atom_type == atom::AT_C4) { return C; }
   // C5
   if (atom_type == atom::AT_C5) {
     if (residue_type == atom::DCYT || residue_type == atom::CYT ||
-        residue_type == atom::DURA || residue_type == atom::URA)
+        residue_type == atom::DURA || residue_type == atom::URA) {
       return CH;
+    }
     return C;
   }
   // C6
   if (atom_type == atom::AT_C6) {
     if (residue_type == atom::DCYT || residue_type == atom::CYT ||
         residue_type == atom::DURA || residue_type == atom::URA ||
-        residue_type == atom::DTHY || residue_type == atom::THY)
+        residue_type == atom::DTHY || residue_type == atom::THY) {
       return CH;
+    }
     return C;
   }
   // C7
-  if (atom_type == atom::AT_C7) return CH3;
+  if (atom_type == atom::AT_C7) { return CH3; }
   // C8
-  if (atom_type == atom::AT_C8) return CH;
+  if (atom_type == atom::AT_C8) { return CH; }
 
   IMP_WARN_ONCE(atom_type.get_string() + residue_type.get_string(),
                 "Carbon atom not found, using default C form factor for "
@@ -526,64 +534,65 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_nitrogen_atom_type(
   // protein atoms
   // N
   if (atom_type == atom::AT_N) {
-    if (residue_type == atom::PRO) return N;
+    if (residue_type == atom::PRO) { return N; }
     return NH;
   }
   //// ND
   // if(atom_type == atom::AT_ND) return N;
   // ND1
   if (atom_type == atom::AT_ND1) {
-    if (residue_type == atom::HIS) return NH;
+    if (residue_type == atom::HIS) { return NH; }
     return N;
   }
   // ND2
   if (atom_type == atom::AT_ND2) {
-    if (residue_type == atom::ASN) return NH2;
+    if (residue_type == atom::ASN) { return NH2; }
     return N;
   }
   // NH1, NH2
   if (atom_type == atom::AT_NH1 || atom_type == atom::AT_NH2) {
-    if (residue_type == atom::ARG) return NH2;
+    if (residue_type == atom::ARG) { return NH2; }
     return N;
   }
   // NE
   if (atom_type == atom::AT_NE) {
-    if (residue_type == atom::ARG) return NH;
+    if (residue_type == atom::ARG) { return NH; }
     return N;
   }
   // NE1
   if (atom_type == atom::AT_NE1) {
-    if (residue_type == atom::TRP) return NH;
+    if (residue_type == atom::TRP) { return NH; }
     return N;
   }
   // NE2
   if (atom_type == atom::AT_NE2) {
-    if (residue_type == atom::GLN) return NH2;
+    if (residue_type == atom::GLN) { return NH2; }
     return N;
   }
   // NZ
   if (atom_type == atom::AT_NZ) {
-    if (residue_type == atom::LYS) return NH3;
+    if (residue_type == atom::LYS) { return NH3; }
     return N;
   }
 
   // DNA/RNA atoms
   // N1
   if (atom_type == atom::AT_N1) {
-    if (residue_type == atom::DGUA || residue_type == atom::GUA) return NH;
+    if (residue_type == atom::DGUA || residue_type == atom::GUA) { return NH; }
     return N;
   }
   // N2, N4, N6
   if (atom_type == atom::AT_N2 || atom_type == atom::AT_N4 ||
-      atom_type == atom::AT_N6)
+      atom_type == atom::AT_N6) {
     return NH2;
+  }
   // N3
   if (atom_type == atom::AT_N3) {
-    if (residue_type == atom::DURA || residue_type == atom::URA) return NH;
+    if (residue_type == atom::DURA || residue_type == atom::URA) { return NH; }
     return N;
   }
   // N7, N9
-  if (atom_type == atom::AT_N7 || atom_type == atom::AT_N9) return N;
+  if (atom_type == atom::AT_N7 || atom_type == atom::AT_N9) { return N; }
 
   IMP_WARN_ONCE(atom_type.get_string() + residue_type.get_string(),
                 "Nitrogen atom not found, using default N form factor for "
@@ -604,21 +613,22 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_oxygen_atom_type(
       // atom_type == atom::AT_O2A ||
       // atom_type == atom::AT_OT1 ||
       // atom_type == atom::AT_OT2 ||
-      atom_type == atom::AT_OXT)
+      atom_type == atom::AT_OXT) {
     return O;
+  }
   // OG
   if (atom_type == atom::AT_OG) {
-    if (residue_type == atom::SER) return OH;
+    if (residue_type == atom::SER) { return OH; }
     return O;
   }
   // OG1
   if (atom_type == atom::AT_OG1) {
-    if (residue_type == atom::THR) return OH;
+    if (residue_type == atom::THR) { return OH; }
     return O;
   }
   // OH
   if (atom_type == atom::AT_OH) {
-    if (residue_type == atom::TYR) return OH;
+    if (residue_type == atom::TYR) { return OH; }
     return O;
   }
 
@@ -628,13 +638,14 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_oxygen_atom_type(
       atom_type == atom::AT_OP2 ||  // atom_type == atom::AT_O2p ||
       atom_type == atom::AT_O4p || atom_type == atom::AT_O5p ||
       atom_type == atom::AT_O2 || atom_type == atom::AT_O4 ||
-      atom_type == atom::AT_O6)
+      atom_type == atom::AT_O6) {
     return O;
+  }
   //  O2'
-  if (atom_type == atom::AT_O2p) return OH;
+  if (atom_type == atom::AT_O2p) { return OH; }
 
   // water molecule
-  if (residue_type == atom::HOH) return OH2;
+  if (residue_type == atom::HOH) { return OH2; }
 
   IMP_WARN_ONCE(atom_type.get_string() + residue_type.get_string(),
                 "Oxygen atom not found, using default O form factor for "
@@ -647,7 +658,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_sulfur_atom_type(
     const atom::AtomType& atom_type,
     const atom::ResidueType& residue_type) const {
   // SD
-  if (atom_type == atom::AT_SD) return S;
+  if (atom_type == atom::AT_SD) { return S; }
   // SG
   if (atom_type == atom::AT_SG) {
     if (residue_type == atom::CYS) return SH;
@@ -702,18 +713,19 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
     atom::Element e) const {
   std::map<atom::Element, FormFactorAtomType>::const_iterator i =
       element_ff_type_map_.find(e);
-  if (i != element_ff_type_map_.end())
+  if (i != element_ff_type_map_.end()) {
     return i->second;
-  else
+  } else {
     return UNK;
+  }
 }
 
 double FormFactorTable::get_form_factor(atom::ResidueType rt) const {
   std::map<atom::ResidueType, FormFactor>::const_iterator i =
       residue_type_form_factor_map_.find(rt);
-  if (i != residue_type_form_factor_map_.end())
+  if (i != residue_type_form_factor_map_.end()) {
     return i->second.ff_;
-  else {
+  } else {
     IMP_WARN("Can't find form factor for residue "
              << rt.get_string() << " using default value of ALA " << std::endl);
     return residue_type_form_factor_map_.find(atom::UNK)->second.ff_;
@@ -723,9 +735,9 @@ double FormFactorTable::get_form_factor(atom::ResidueType rt) const {
 double FormFactorTable::get_vacuum_form_factor(atom::ResidueType rt) const {
   std::map<atom::ResidueType, FormFactor>::const_iterator i =
       residue_type_form_factor_map_.find(rt);
-  if (i != residue_type_form_factor_map_.end())
+  if (i != residue_type_form_factor_map_.end()) {
     return i->second.vacuum_ff_;
-  else {
+  } else {
     IMP_WARN("Can't find form factor for residue "
              << rt.get_string() << " using default value of ALA " << std::endl);
     return residue_type_form_factor_map_.find(atom::UNK)->second.vacuum_ff_;
@@ -735,9 +747,9 @@ double FormFactorTable::get_vacuum_form_factor(atom::ResidueType rt) const {
 double FormFactorTable::get_dummy_form_factor(atom::ResidueType rt) const {
   std::map<atom::ResidueType, FormFactor>::const_iterator i =
       residue_type_form_factor_map_.find(rt);
-  if (i != residue_type_form_factor_map_.end())
+  if (i != residue_type_form_factor_map_.end()) {
     return i->second.dummy_ff_;
-  else {
+  } else {
     IMP_WARN("Can't find form factor for residue "
              << rt.get_string() << " using default value of ALA " << std::endl);
     return residue_type_form_factor_map_.find(atom::UNK)->second.dummy_ff_;
@@ -748,21 +760,23 @@ double FormFactorTable::get_form_factor(Particle* p,
                                         FormFactorType ff_type) const {
   if (ff_type == CA_ATOMS) {  // residue level form factors
     atom::ResidueType residue_type;
-    if (p->has_attribute(atom::Residue::get_residue_type_key()))
+    if (p->has_attribute(atom::Residue::get_residue_type_key())) {
       residue_type = atom::ResidueType(
           p->get_value(atom::Residue::get_residue_type_key()));
-    else
+    } else {
       residue_type = atom::get_residue(atom::Atom(p)).get_residue_type();
+    }
     return get_form_factor(residue_type);
   }
 
   if (ff_type == RESIDUES) {  // residue level form factors
     atom::ResidueType residue_type;
-    if (p->has_attribute(atom::Residue::get_residue_type_key()))
+    if (p->has_attribute(atom::Residue::get_residue_type_key())) {
       residue_type = atom::ResidueType(
           p->get_value(atom::Residue::get_residue_type_key()));
-    else
+    } else {
       residue_type = atom::Residue(p).get_residue_type();
+    }
     return get_form_factor(residue_type);
   }
 
@@ -786,21 +800,23 @@ double FormFactorTable::get_vacuum_form_factor(Particle* p,
                                                FormFactorType ff_type) const {
   if (ff_type == CA_ATOMS) {  // residue level form factors
     atom::ResidueType residue_type;
-    if (p->has_attribute(atom::Residue::get_residue_type_key()))
+    if (p->has_attribute(atom::Residue::get_residue_type_key())) {
       residue_type = atom::ResidueType(
           p->get_value(atom::Residue::get_residue_type_key()));
-    else
+    } else {
       residue_type = atom::get_residue(atom::Atom(p)).get_residue_type();
+    }
     return get_vacuum_form_factor(residue_type);
   }
 
   if (ff_type == RESIDUES) {  // residue level form factors
     atom::ResidueType residue_type;
-    if (p->has_attribute(atom::Residue::get_residue_type_key()))
+    if (p->has_attribute(atom::Residue::get_residue_type_key())) {
       residue_type = atom::ResidueType(
           p->get_value(atom::Residue::get_residue_type_key()));
-    else
+    } else {
       residue_type = atom::Residue(p).get_residue_type();
+    }
     return get_form_factor(residue_type);
   }
 
@@ -818,21 +834,23 @@ double FormFactorTable::get_dummy_form_factor(Particle* p,
                                               FormFactorType ff_type) const {
   if (ff_type == CA_ATOMS) {  // residue level form factors
     atom::ResidueType residue_type;
-    if (p->has_attribute(atom::Residue::get_residue_type_key()))
+    if (p->has_attribute(atom::Residue::get_residue_type_key())) {
       residue_type = atom::ResidueType(
           p->get_value(atom::Residue::get_residue_type_key()));
-    else
+    } else {
       residue_type = atom::get_residue(atom::Atom(p)).get_residue_type();
+    }
     return get_dummy_form_factor(residue_type);
   }
 
   if (ff_type == RESIDUES) {  // residue level form factors
     atom::ResidueType residue_type;
-    if (p->has_attribute(atom::Residue::get_residue_type_key()))
+    if (p->has_attribute(atom::Residue::get_residue_type_key())) {
       residue_type = atom::ResidueType(
           p->get_value(atom::Residue::get_residue_type_key()));
-    else
+    } else {
       residue_type = atom::Residue(p).get_residue_type();
+    }
     return get_form_factor(residue_type);
   }
 
@@ -867,8 +885,9 @@ const Vector<double>& FormFactorTable::get_form_factors(Particle* p,
                                                 FormFactorType ff_type) const {
   // initialization by request
   // store the index of the form factors in the particle
-  if (p->has_attribute(form_factor_type_key_))
+  if (p->has_attribute(form_factor_type_key_)) {
     return form_factors_[p->get_value(form_factor_type_key_)];
+  }
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
   p->add_attribute(form_factor_type_key_, ff_atom_type);
@@ -879,8 +898,9 @@ const Vector<double>& FormFactorTable::get_vacuum_form_factors(Particle* p,
                                                 FormFactorType ff_type) const {
   // initialization by request
   // store the index of the form factors in the particle
-  if (p->has_attribute(form_factor_type_key_))
+  if (p->has_attribute(form_factor_type_key_)) {
     return vacuum_form_factors_[p->get_value(form_factor_type_key_)];
+  }
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
   p->add_attribute(form_factor_type_key_, ff_atom_type);
@@ -892,8 +912,9 @@ const Vector<double>& FormFactorTable::get_dummy_form_factors(Particle* p,
                                                 FormFactorType ff_type) const {
   // initialization by request
   // store the index of the form factors in the particle
-  if (p->has_attribute(form_factor_type_key_))
+  if (p->has_attribute(form_factor_type_key_)) {
     return dummy_form_factors_[p->get_value(form_factor_type_key_)];
+  }
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
   p->add_attribute(form_factor_type_key_, ff_atom_type);
