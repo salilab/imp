@@ -121,7 +121,7 @@ class Tests(IMP.test.TestCase):
                                IMP.atom.CAlphaPDBSelector())
 
         #! read experimental profile
-        exp_profile = IMP.saxs.Profile(self.get_input_file_name('2016_06_20mins_0.5.dat'))
+        exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
 
         #! select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
