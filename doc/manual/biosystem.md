@@ -29,6 +29,13 @@ for an example):
    representatives).
  - a top-level `%README.md` file describing the system and explaining how to
    run the protocol.
+ - a top-level `LICENSE` file with the license for the data files and scripts.
+   This doesn't need to be the same license (LGPL/GPL) that %IMP uses; in fact,
+   for data files one of the [Creative Commons](https://creativecommons.org/)
+   licenses probably makes more sense. We recommend the
+   [CC BY-SA license](https://creativecommons.org/licenses/by-sa/4.0/)
+   which allows anybody to use and modify the data under the same terms, as
+   long as they cite the original work.
  - a `test` directory containing one or more Python scripts with names starting
    with `test`. It should be
    possible to run these scripts without any "special" setup (e.g. they should
