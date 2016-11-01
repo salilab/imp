@@ -40,7 +40,7 @@ class IMPCOREEXPORT Surface : public XYZ {
 
   IMP_DECORATOR_METHODS(Surface, XYZ);
   IMP_DECORATOR_SETUP_0(Surface);
-  /** Set up the surface to align with the reference frame. */
+  //! Set up the surface to align with the reference frame.
   IMP_DECORATOR_SETUP_1(Surface, algebra::ReferenceFrame3D, rf);
   IMP_DECORATOR_SETUP_1(Surface, algebra::Vector3D, center);
   IMP_DECORATOR_SETUP_2(Surface, algebra::Vector3D, center, algebra::Vector3D, normal);
@@ -86,11 +86,11 @@ class IMPCOREEXPORT Surface : public XYZ {
   void reflect() { set_normal(-get_normal()); }
 
   //! Get height of point above surface.
-  /** /note If point is below surface, value is negative. */
+  /** \note If point is below surface, value is negative. */
   double get_height(const algebra::Vector3D &v) const;
 
   //! Get depth of point below surface.
-  /** /note If point is above surface, value is negative. */
+  /** \note If point is above surface, value is negative. */
   double get_depth(const algebra::Vector3D &v) const;
 
   //! Get distance from point to surface.
@@ -119,7 +119,7 @@ class IMPCOREEXPORT Surface : public XYZ {
 IMP_DECORATORS(Surface, Surfaces, XYZs);
 
 //! Get height of sphere above surface.
-/** /note If sphere crosses or is below surface, height is
+/** \note If sphere crosses or is below surface, height is
     negative the distance from the surface to the furthest point
     of the sphere.
 */
@@ -133,7 +133,7 @@ inline double get_height(const Surface &s, const XYZ &d) {
 }
 
 //! Get depth of sphere below surface.
-/** /note If sphere crosses or is above surface, depth is
+/** \note If sphere crosses or is above surface, depth is
     negative the distance from the surface to the furthest point
     of the sphere.
 */
@@ -192,10 +192,8 @@ inline SurfaceGeometry* create_geometry(
 }
 IMP_OBJECTS(SurfaceGeometry, SurfaceGeometries)
 
-/** \class SurfaceGeometryConstraint
-    \brief Constrain a SurfaceGeometry to a Surface.
-
-    \note Use IMP.core.get_constrained_surface_geometry to create.
+//! Constrain a SurfaceGeometry to a Surface.
+/** \note Use IMP.core.get_constrained_surface_geometry to create.
 */
 class IMPCOREEXPORT SurfaceGeometryConstraint : public IMP::Constraint {
   ParticleIndex pi_;
@@ -239,9 +237,8 @@ inline SurfaceGeometry* get_constrained_surface_geometry(
 }
 IMP_OBJECTS(SurfaceGeometryConstraint, SurfaceGeometryConstraints);
 
-/** \class LateralSurfaceConstraint
-    \brief Constrain the center of a Surface for visualization
-    The Surface center can wander laterally. This constraint ensures
+//! Constrain the center of a Surface for visualization.
+/** The Surface center can wander laterally. This constraint ensures
     the center is placed in the Surface such that it is along the
     normal from a point.
 */

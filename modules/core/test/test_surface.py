@@ -10,6 +10,7 @@ class Tests(IMP.test.TestCase):
     """Tests for Surface."""
 
     def test_init(self):
+        """Test basic Surface set-up."""
         m = IMP.Model()
         p = IMP.Particle(m)
         surf = IMP.core.Surface.setup_particle(p)
@@ -19,6 +20,7 @@ class Tests(IMP.test.TestCase):
                                 surf.get_normal()).get_magnitude(), 0.)
 
     def test_init_with_vectors(self):
+        """Test Surface set-up with center and normal."""
         m = IMP.Model()
         p = IMP.Particle(m)
         v = 10 * IMP.algebra.get_random_vector_on_unit_sphere()
@@ -31,6 +33,7 @@ class Tests(IMP.test.TestCase):
                                 surf.get_normal()).get_magnitude(), 0.)
 
     def test_init_with_reference_frame(self):
+        """Test Surface set-up along reference frame."""
         m = IMP.Model()
         p = IMP.Particle(m)
         tr = IMP.algebra.get_random_local_transformation((1, 2, 3), 10., 3.)
@@ -47,6 +50,7 @@ class Tests(IMP.test.TestCase):
                                surf.get_coordinates()).get_magnitude(), 0)
 
     def test_dist_to_center(self):
+        """Test correct calculation of distance to Surface center."""
         m = IMP.Model()
         for i in range(100):
             p = IMP.Particle(m)
@@ -63,6 +67,7 @@ class Tests(IMP.test.TestCase):
                 IMP.core.get_distance(IMP.core.XYZ(surf), xyz), dist)
 
     def test_distance(self):
+        """Test correct calculation of distance to Surface."""
         m = IMP.Model()
         for i in range(100):
             p = IMP.Particle(m)
@@ -90,6 +95,7 @@ class Tests(IMP.test.TestCase):
                                 ).get_magnitude(), 0.)
 
     def test_height(self):
+        """Test correct calculation of height above Surface."""
         m = IMP.Model()
         for i in range(100):
             p = IMP.Particle(m)
@@ -109,6 +115,7 @@ class Tests(IMP.test.TestCase):
                                    sphere_height)
 
     def test_depth(self):
+        """Test correct calculation of depth below Surface."""
         m = IMP.Model()
         for i in range(100):
             p = IMP.Particle(m)
@@ -128,6 +135,7 @@ class Tests(IMP.test.TestCase):
                                    sphere_depth)
 
     def test_add_derivatives(self):
+        """Test normal derivatives are added correctly."""
         m = IMP.Model()
         for i in range(10):
             s = IMP.core.Surface.setup_particle(IMP.Particle(m))
@@ -139,12 +147,14 @@ class Tests(IMP.test.TestCase):
                 self.assertAlmostEqual(s.get_normal_derivative(i), v[i])
 
     def test_surface_geometry_init(self):
+        """Test creation of geometry constrained to Surface."""
         m = IMP.Model()
         surf = IMP.core.Surface.setup_particle(IMP.Particle(m))
         geo = IMP.core.get_constrained_surface_geometry(surf)
         geo.set_was_used(True)
 
     def test_lateral_surface_constraint(self):
+        """Test LateralSurfaceConstraint aligns center correctly."""
         m = IMP.Model()
         s = IMP.core.Surface.setup_particle(IMP.Particle(m))
         d = IMP.core.XYZ.setup_particle(IMP.Particle(m))
