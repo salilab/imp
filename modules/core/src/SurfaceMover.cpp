@@ -15,13 +15,13 @@ SurfaceMover::SurfaceMover(Model *m, ParticleIndex pi,
                            Float max_translation, Float max_angle,
                            Float reflect_probability)
     : MonteCarloMover(m, m->get_particle(pi)->get_name() + " mover") {
-  IMP_USAGE_CHECK(((max_translation == 0) || (Surface(m, pi).get_coordinates_are_optimized())),
+  IMP_USAGE_CHECK(max_translation == 0 || Surface(m, pi).get_coordinates_are_optimized(),
                   "Surface coordinates must be set to optimized in order to translate.");
-  IMP_USAGE_CHECK(((max_angle == 0) || (Surface(m, pi).get_normal_is_optimized())),
+  IMP_USAGE_CHECK(max_angle == 0 || Surface(m, pi).get_normal_is_optimized(),
                   "Surface normal must be set to optimized in order to rotate.");
-  IMP_USAGE_CHECK(((reflect_probability == 0) || (Surface(m, pi).get_normal_is_optimized())),
+  IMP_USAGE_CHECK(reflect_probability == 0 || Surface(m, pi).get_normal_is_optimized(),
                   "Surface normal must be set to optimized in order to reflect.");
-  IMP_USAGE_CHECK(((reflect_probability >= 0) && (reflect_probability <= 1)),
+  IMP_USAGE_CHECK(reflect_probability >= 0 && reflect_probability <= 1,
                   "Max rotation must be between 0 and 1.");
   max_translation_ = max_translation;
   max_angle_ = max_angle;
