@@ -95,6 +95,7 @@ IMP_SWIG_OBJECT( IMP::core, WeightedSphereDistancePairScore, WeightedSphereDista
 IMP_SWIG_OBJECT( IMP::core, MoveStatisticsScoreState, MoveStatisticsScoreStates);
 IMP_SWIG_OBJECT( IMP::core, MinimumRestraint, MinimumRestraints);
 IMP_SWIG_OBJECT( IMP::core, WriteRestraintScoresOptimizerState, WriteRestraintScoresOptimizerStates);
+IMP_SWIG_OBJECT( IMP::core, LateralSurfaceConstraint, LateralSurfaceConstraints);
 
 IMP_SWIG_OBJECT( IMP::core, ConstantSingletonPredicate, ConstantSingletonPredicates);
 IMP_SWIG_OBJECT( IMP::core, ConstantPairPredicate, ConstantPairPredicates);
@@ -135,6 +136,7 @@ IMP_SWIG_DECORATOR( IMP::core, Typed, Typeds);
 IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, Hierarchy, GenericHierarchies);
 IMP_SWIG_DECORATOR( IMP::core, Gaussian, Gaussians)
 IMP_SWIG_DIRECTOR(IMP::core, HierarchyVisitor);
+IMP_SWIG_DECORATOR( IMP::core, Surface, Surfaces);
 
 IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
 IMP_SWIG_VALUE( IMP::core, HierarchyTraits, HierarchyTraitsList);
@@ -159,6 +161,8 @@ IMP_SWIG_OBJECT(IMP::core, RigidBodyFramesGeometry, RigidBodyFramesGeometries);
 IMP_SWIG_OBJECT(IMP::core, RigidBodyTorque, RigidBodyFramesTorques);
 IMP_SWIG_OBJECT(IMP::core, EdgePairGeometry, EdgePairGeometries);
 IMP_SWIG_OBJECT(IMP::core, EdgePairsGeometry, EdgePairsGeometries);
+IMP_SWIG_OBJECT(IMP::core, SurfaceGeometry, SurfaceGeometries);
+IMP_SWIG_OBJECT(IMP::core, SurfaceGeometryConstraint, SurfaceGeometryConstraints);
 
 IMP_SWIG_OBJECT(IMP::core, AttributeSingletonPredicate, AttributeSingletonPredicates);
 IMP_SWIG_OBJECT(IMP::core, InBoundingBox3DSingletonPredicate, InBoundingBox3DSingletonPredicates);
@@ -178,6 +182,8 @@ IMP_SWIG_OBJECT(IMP::core, MultipleBinormalRestraint, MultipleBinormalRestraints
 %include "IMP/core/XYZ.h"
 
 %include "IMP/core/XYZR.h"
+
+%include "IMP/core/Surface.h"
 
 /* Wrap the final classes */
 %include "IMP/core/AngleTripletScore.h"
