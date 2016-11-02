@@ -11,44 +11,63 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-SurfaceMover::SurfaceMover(Model *m, ParticleIndex pi,
-                           Float max_translation, Float max_angle,
-                           Float reflect_probability)
+SurfaceMover::SurfaceMover(Model *m, ParticleIndex pi, Float max_translation,
+                           Float max_rotation, Float reflect_probability)
     : MonteCarloMover(m, m->get_particle(pi)->get_name() + " mover") {
-  IMP_USAGE_CHECK(max_translation == 0 || Surface(m, pi).get_coordinates_are_optimized(),
-                  "Surface coordinates must be set to optimized in order to translate.");
-  IMP_USAGE_CHECK(max_angle == 0 || Surface(m, pi).get_normal_is_optimized(),
-                  "Surface normal must be set to optimized in order to rotate.");
-  IMP_USAGE_CHECK(reflect_probability == 0 || Surface(m, pi).get_normal_is_optimized(),
-                  "Surface normal must be set to optimized in order to reflect.");
-  IMP_USAGE_CHECK(reflect_probability >= 0 && reflect_probability <= 1,
-                  "Max rotation must be between 0 and 1.");
-  max_translation_ = max_translation;
-  max_angle_ = max_angle;
-  reflect_prob_ = reflect_probability;
-  pi_ = pi;
+  initialize(pi, max_translation, max_rotation, reflect_probability);
 }
 
-SurfaceMover::SurfaceMover(Surface s, Float max_translation,
-                           Float max_angle, Float reflect_probability)
-    : SurfaceMover(s->get_model(), s->get_index(), max_translation,
-                   max_angle, reflect_probability) {}
+SurfaceMover::SurfaceMover(Surface s, Float max_translation, Float max_rotation,
+                           Float reflect_probability)
+    : MonteCarloMover(s->get_model(), s->get_name() + " mover") {
+  initialize(s->get_index(), max_translation, max_rotation,
+             reflect_probability);
+}
+
+void SurfaceMover::initialize(ParticleIndex pi, double max_translation,
+                              double max_rotation, double reflect_probability) {
+  pi_ = pi;
+  set_maximum_translation(max_translation);
+  set_maximum_rotation(max_rotation);
+  set_reflect_probability(reflect_probability);
+}
+
+void SurfaceMover::set_maximum_translation(Float mt) {
+  IMP_USAGE_CHECK(mt >= 0, "Max translation must be positive");
+  IMP_USAGE_CHECK(
+    mt == 0 || get_surface().get_coordinates_are_optimized(),
+    "Surface coordinates must be set to optimized in order to translate.");
+  max_translation_ = mt;
+}
+
+void SurfaceMover::set_maximum_rotation(Float mr) {
+  IMP_USAGE_CHECK(mr >= 0, "Max rotation must be positive");
+  IMP_USAGE_CHECK(
+    mr == 0 || get_surface().get_normal_is_optimized(),
+    "Surface normal must be set to optimized in order to rotate.");
+  max_angle_ = mr;
+}
+
+void SurfaceMover::set_reflect_probability(Float rp) {
+  IMP_USAGE_CHECK(rp >= 0 && rp <= 1,
+                  "Reflection probability must be between 0 and 1.");
+  IMP_USAGE_CHECK(
+    rp == 0 || get_surface().get_normal_is_optimized(),
+    "Surface normal must be set to optimized in order to reflect.");
+  reflect_prob_ = rp;
+}
 
 MonteCarloMoverResult SurfaceMover::do_propose() {
   Surface s(get_model(), pi_);
   last_transform_ = s.get_reference_frame().get_transformation_to();
 
   if (max_translation_ > 0) {
-    IMP_USAGE_CHECK(s.get_coordinates_are_optimized(),
-                    "Surface coordinates must be set to optimized in order to translate.");
     algebra::Vector3D translation = algebra::get_random_vector_in(
         algebra::Sphere3D(s.get_coordinates(), max_translation_));
     s.set_coordinates(translation);
   }
 
   if (max_angle_ > 0) {
-    IMP_USAGE_CHECK(s.get_normal_is_optimized(),
-                    "Surface normal must be set to optimized in order to rotate.");
     algebra::Vector3D axis =
         algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());
     ::boost::uniform_real<> rand1(-max_angle_, max_angle_);
@@ -58,8 +77,6 @@ MonteCarloMoverResult SurfaceMover::do_propose() {
   }
 
   if (reflect_prob_ > 0) {
-    IMP_USAGE_CHECK(s.get_normal_is_optimized(),
-                    "Surface normal must be set to optimized in order to reflect.");
     ::boost::uniform_real<> rand2(0, 1);
     Float test = rand2(random_number_generator);
     if (test < reflect_prob_) {
