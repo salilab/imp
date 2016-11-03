@@ -75,7 +75,7 @@ algebra::Vector3D Surface::get_normal() const {
                            m->get_attribute(get_normal_key(2), pi));
 }
 
-algebra::Vector3D Surface::set_normal(const algebra::Vector3D &normal) {
+void Surface::set_normal(const algebra::Vector3D &normal) {
   Model *m = get_model();
   ParticleIndex pi = get_particle_index();
   algebra::Vector3D u = normal.get_unit_vector();

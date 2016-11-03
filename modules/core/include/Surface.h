@@ -10,6 +10,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/display/primitive_geometries.h>
 #include <IMP/algebra/Plane3D.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
@@ -80,7 +81,7 @@ class IMPCOREEXPORT Surface : public XYZ {
   algebra::Vector3D get_normal() const;
 
   //! Set surface normal.
-  algebra::Vector3D set_normal(const algebra::Vector3D &normal);
+  void set_normal(const algebra::Vector3D &normal);
 
   //! Flip surface so normal is reversed.
   void reflect() { set_normal(-get_normal()); }
