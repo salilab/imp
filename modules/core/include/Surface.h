@@ -158,10 +158,10 @@ inline double get_distance(const Surface &s, const XYZ &d) {
 }
 
 /** \class SurfaceGeometry
-    \brief Display an IMP::core::Surface particle as a cylindrical disk.
+    \brief Display a Surface particle as a cylindrical disk.
 
     \class SurfacesGeometry
-    \brief Display an IMP::SingletonContainer of IMP::core::Surface particles
+    \brief Display an IMP::SingletonContainer of Surface particles
     as cylindrical disks.
 */
 class IMPCOREEXPORT SurfaceGeometry : public display::Geometry {

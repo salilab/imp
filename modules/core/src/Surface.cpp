@@ -13,7 +13,7 @@ IMPCORE_BEGIN_NAMESPACE
 void Surface::do_setup_particle(Model *m, ParticleIndex pi,
                                 const algebra::Vector3D &center,
                                 const algebra::Vector3D &normal) {
-  if (!core::XYZ::get_is_setup(m, pi)) {
+  if (!XYZ::get_is_setup(m, pi)) {
     XYZ::setup_particle(m, pi);
   }
   XYZ(m, pi).set_coordinates(center);
