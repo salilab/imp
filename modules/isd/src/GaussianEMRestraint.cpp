@@ -1,6 +1,6 @@
 /**
  *  \file isd/GaussianEMRestraint.cpp
- *  \brief Restraint two sets of gaussians (model and gmm derived from EM map)
+ *  \brief Restrain two sets of Gaussians (model and GMM derived from EM map)
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
