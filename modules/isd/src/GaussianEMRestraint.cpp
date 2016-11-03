@@ -29,7 +29,8 @@ struct KahanVectorAccumulation{
   KahanVectorAccumulation(): sum(IMP_Eigen::Vector3d(0,0,0)),
                              correction(IMP_Eigen::Vector3d(0,0,0)) {}
 };
-inline KahanAccumulation KahanSum(KahanAccumulation accumulation, double value){
+inline KahanAccumulation kahan_sum(KahanAccumulation accumulation,
+                                   double value) {
   KahanAccumulation result;
   double y = value - accumulation.correction;
   double t = accumulation.sum + y;
@@ -38,7 +39,8 @@ inline KahanAccumulation KahanSum(KahanAccumulation accumulation, double value){
   return result;
 }
 inline KahanVectorAccumulation
-KahanVectorSum(KahanVectorAccumulation accumulation, IMP_Eigen::Vector3d value){
+kahan_vector_sum(KahanVectorAccumulation accumulation,
+                 IMP_Eigen::Vector3d value) {
   KahanVectorAccumulation result;
   IMP_Eigen::Vector3d y = value - accumulation.correction;
   IMP_Eigen::Vector3d t = accumulation.sum + y;
@@ -136,7 +138,7 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   const {
   //score is the square difference between two GMMs
   KahanAccumulation md_score,mm_score;
-  mm_score = KahanSum(mm_score,self_mm_score_);
+  mm_score = kahan_sum(mm_score,self_mm_score_);
   IMP_Eigen::Vector3d deriv;
   boost::unordered_map<ParticleIndex,KahanVectorAccumulation> derivs_mm,derivs_md,slope_md;
   std::set<ParticleIndex> local_dens;
@@ -153,7 +155,7 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
                                 IMP_Eigen::Vector3d(core::XYZ(get_model(),*dit).
                                                 get_coordinates().get_data());
         Float sd = v.norm();
-        slope_md[*mit] = KahanVectorSum(slope_md[*mit],v*slope_/sd);
+        slope_md[*mit] = kahan_vector_sum(slope_md[*mit],v*slope_/sd);
         slope_score+=slope_*sd;
       }
     }
@@ -162,21 +164,21 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   IMP_CONTAINER_FOREACH(container::ClosePairContainer,
                           mm_container_,{
       Float score = score_gaussian_overlap(get_model(),_1,&deriv);
-      mm_score = KahanSum(mm_score,2*score);
+      mm_score = kahan_sum(mm_score,2*score);
       if (accum) {
         //multiply by 2 because...
-        derivs_mm[_1[0]] = KahanVectorSum(derivs_mm[_1[0]],-2.0*deriv);
-        derivs_mm[_1[1]] = KahanVectorSum(derivs_mm[_1[1]],2.0*deriv);
+        derivs_mm[_1[0]] = kahan_vector_sum(derivs_mm[_1[0]],-2.0*deriv);
+        derivs_mm[_1[1]] = kahan_vector_sum(derivs_mm[_1[1]],2.0*deriv);
       }
   });
 
   IMP_CONTAINER_FOREACH(container::CloseBipartitePairContainer,
                         md_container_,{
     Float score = score_gaussian_overlap(get_model(),_1,&deriv);
-    md_score = KahanSum(md_score,score);
+    md_score = kahan_sum(md_score,score);
     if (local_) local_dens.insert(_1[1]);
     if (accum) {
-      derivs_md[_1[0]] = KahanVectorSum(derivs_md[_1[0]],-deriv);
+      derivs_md[_1[0]] = kahan_vector_sum(derivs_md[_1[0]],-deriv);
     }
   });
 
