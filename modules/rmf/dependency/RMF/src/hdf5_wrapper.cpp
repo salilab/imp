@@ -94,24 +94,34 @@ std::string ConstGroup::get_child_name(unsigned int i) const {
 bool ConstGroup::get_has_child(std::string name) const {
   return H5Lexists(get_handle(), name.c_str(), H5P_DEFAULT);
 }
-bool ConstGroup::get_child_is_group(unsigned int i) const {
+bool ConstGroup::get_child_is_group(std::string name) const {
   H5O_info_t info;
   RMF_HDF5_HANDLE(c,
-                  H5Oopen(get_handle(), get_child_name(i).c_str(), H5P_DEFAULT),
+                  H5Oopen(get_handle(), name.c_str(), H5P_DEFAULT),
                   &H5Oclose);
   RMF_HDF5_CALL(H5Oget_info(c, &info));
   return info.type == H5O_TYPE_GROUP;  // H5O_TYPE_DATASET
 }
+bool ConstGroup::get_child_is_group(unsigned int i) const {
+  return get_child_is_group(get_child_name(i));
+}
+ConstGroup ConstGroup::get_child_group(std::string name) const {
+  return ConstGroup(boost::make_shared<SharedHandle>
+                    ( H5Gopen2(get_handle(), name.c_str(), H5P_DEFAULT), &H5Gclose,
+                      "open group"));
+}
+Group Group::get_child_group(std::string name) const {
+  return Group(boost::make_shared<SharedHandle>
+               (H5Gopen2(get_handle(), name.c_str(), H5P_DEFAULT), &H5Gclose,
+                "open group"));
+}
 ConstGroup ConstGroup::get_child_group(unsigned int i) const {
-  return ConstGroup(boost::make_shared<SharedHandle>(
-      H5Gopen2(get_handle(), get_child_name(i).c_str(), H5P_DEFAULT), &H5Gclose,
-      "open group"));
+  return get_child_group(get_child_name(i).c_str());
 }
 Group Group::get_child_group(unsigned int i) const {
-  return Group(boost::make_shared<SharedHandle>(
-      H5Gopen2(get_handle(), get_child_name(i).c_str(), H5P_DEFAULT), &H5Gclose,
-      "open group"));
+  return get_child_group(get_child_name(i).c_str());
 }
+
 bool ConstGroup::get_child_is_data_set(unsigned int i) const {
   H5O_info_t info;
   RMF_HDF5_HANDLE(c,
