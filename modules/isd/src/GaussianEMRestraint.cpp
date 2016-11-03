@@ -102,8 +102,8 @@ GaussianEMRestraint::GaussianEMRestraint(
           slope_ps_.push_back(model_ps_[nm]);
         }
       }
-      std::cout<<"limited slope to "<<slope_ps_.size()<<" ps out of "
-               <<model_ps_.size()<<std::endl;
+      IMP_LOG_TERSE("Limited slope to " << slope_ps_.size()
+                    << " particles out of " << model_ps_.size() << std::endl);
     }
     else slope_ps_ = model_ps_;
   }
