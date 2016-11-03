@@ -25,38 +25,6 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-struct KahanAccumulation{
-  double sum;
-  double correction;
-  KahanAccumulation(): sum(0.0),correction(0.0) {}
-};
-struct KahanVectorAccumulation{
-  IMP_Eigen::Vector3d sum;
-  IMP_Eigen::Vector3d correction;
-  KahanVectorAccumulation(): sum(IMP_Eigen::Vector3d(0,0,0)),
-                             correction(IMP_Eigen::Vector3d(0,0,0)) {}
-};
-inline KahanAccumulation KahanSum(KahanAccumulation accumulation, double value){
-  KahanAccumulation result;
-  double y = value - accumulation.correction;
-  double t = accumulation.sum + y;
-  result.correction = (t - accumulation.sum) - y;
-  result.sum = t;
-  return result;
-}
-inline KahanVectorAccumulation
-KahanVectorSum(KahanVectorAccumulation accumulation, IMP_Eigen::Vector3d value){
-  KahanVectorAccumulation result;
-  IMP_Eigen::Vector3d y = value - accumulation.correction;
-  IMP_Eigen::Vector3d t = accumulation.sum + y;
-  result.correction = (t - accumulation.sum) - y;
-  result.sum = t;
-  return result;
-}
-#endif
-
-
 //! Restraint between two Gaussian Mixture Models, "model" and "density"
 /** This restrains two sets of GMMs with a density overlap function.
     The function is correlation of the two GMMs \f$f_M\f$ and \f$f_D\f$:
