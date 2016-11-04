@@ -13,14 +13,7 @@
 
 IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 
-static const FloatKey surface_normal_keys[] = {FloatKey("normal_x"),
-                                               FloatKey("normal_y"),
-                                               FloatKey("normal_z")};
-
-
-static FloatKey get_surface_normal_key(unsigned int i) {
-  return surface_normal_keys[i];
-}
+IMPSCOREFUNCTOREXPORT FloatKey get_surface_normal_key(unsigned int i);
 
 IMPSCOREFUNCTOR_END_INTERNAL_NAMESPACE
 

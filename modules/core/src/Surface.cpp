@@ -37,7 +37,7 @@ bool Surface::get_is_setup(Model *m, ParticleIndex pi) {
 
 FloatKey Surface::get_normal_key(unsigned int i) {
   IMP_USAGE_CHECK(i < 3, "Out of range coordinate");
-  return score_functor::internal::surface_normal_keys[i];
+  return score_functor::internal::get_surface_normal_key(i);
 }
 
 algebra::Vector3D Surface::get_normal_derivatives() const {
