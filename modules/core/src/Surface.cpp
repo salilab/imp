@@ -66,11 +66,8 @@ void Surface::set_normal_is_optimized(bool tf) const {
 }
 
 algebra::Vector3D Surface::get_normal() const {
-  Model *m = get_model();
-  ParticleIndex pi = get_particle_index();
-  return algebra::Vector3D(m->get_attribute(get_normal_key(0), pi),
-                           m->get_attribute(get_normal_key(1), pi),
-                           m->get_attribute(get_normal_key(2), pi));
+  return score_functor::internal::get_surface_normal(get_model(),
+                                                     get_particle_index());
 }
 
 void Surface::set_normal(const algebra::Vector3D &normal) {
@@ -83,15 +80,18 @@ void Surface::set_normal(const algebra::Vector3D &normal) {
 }
 
 double Surface::get_height(const algebra::Vector3D &v) const {
-  return get_normal() * (v - get_coordinates());
+  return score_functor::internal::get_height_above_surface(
+    get_coordinates(), get_normal(), v, nullptr, nullptr);
 }
 
 double Surface::get_depth(const algebra::Vector3D &v) const {
-  return -get_height(v);
+  return score_functor::internal::get_depth_below_surface(
+    get_coordinates(), get_normal(), v, nullptr, nullptr);
 }
 
 double Surface::get_distance_to(const algebra::Vector3D &v) const {
-  return std::abs(get_height(v));
+  return score_functor::internal::get_distance_from_surface(
+    get_coordinates(), get_normal(), v, nullptr, nullptr);
 }
 
 double Surface::get_distance_to_center(const algebra::Vector3D &v) const {
