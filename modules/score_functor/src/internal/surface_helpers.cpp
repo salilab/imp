@@ -27,11 +27,9 @@ algebra::Vector3D get_surface_normal(Model *m, ParticleIndex pi) {
 double get_height_above_surface(const algebra::Vector3D &center,
                                 const algebra::Vector3D &normal,
                                 const algebra::Vector3D &point,
-                                algebra::Vector3D *dervc,
-                                algebra::Vector3D *dervp) {
-  if (dervc) {
-    *dervc = -normal;
-    *dervp = normal;
+                                algebra::Vector3D *derv) {
+  if (derv) {
+    *derv = normal;
   }
 
   return normal * (point - center);
@@ -40,23 +38,18 @@ double get_height_above_surface(const algebra::Vector3D &center,
 double get_depth_below_surface(const algebra::Vector3D &center,
                                const algebra::Vector3D &normal,
                                const algebra::Vector3D &point,
-                               algebra::Vector3D *dervc,
-                               algebra::Vector3D *dervp) {
-  return get_height_above_surface(center, -normal, point, nullptr, nullptr);
+                               algebra::Vector3D *derv) {
+  return get_height_above_surface(center, -normal, point, derv);
 }
 
 double get_distance_from_surface(const algebra::Vector3D &center,
                                  const algebra::Vector3D &normal,
                                  const algebra::Vector3D &point,
-                                 algebra::Vector3D *dervc,
-                                 algebra::Vector3D *dervp) {
-  double height = get_height_above_surface(center, normal, point,
-                                           nullptr, nullptr);
+                                 algebra::Vector3D *derv) {
+  double height = get_height_above_surface(center, normal, point, derv);
 
-  if (dervc) {
-    double sign = (height > 0) - (height < 0);
-    *dervc = -normal * sign;
-    *dervp = normal * sign;
+  if (derv) {
+    *derv = ((height > 0) - (height < 0)) * (*derv);
   }
 
   return std::abs(height);

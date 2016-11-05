@@ -81,17 +81,17 @@ void Surface::set_normal(const algebra::Vector3D &normal) {
 
 double Surface::get_height(const algebra::Vector3D &v) const {
   return score_functor::internal::get_height_above_surface(
-    get_coordinates(), get_normal(), v, nullptr, nullptr);
+    get_coordinates(), get_normal(), v, nullptr);
 }
 
 double Surface::get_depth(const algebra::Vector3D &v) const {
   return score_functor::internal::get_depth_below_surface(
-    get_coordinates(), get_normal(), v, nullptr, nullptr);
+    get_coordinates(), get_normal(), v, nullptr);
 }
 
 double Surface::get_distance_to(const algebra::Vector3D &v) const {
   return score_functor::internal::get_distance_from_surface(
-    get_coordinates(), get_normal(), v, nullptr, nullptr);
+    get_coordinates(), get_normal(), v, nullptr);
 }
 
 double Surface::get_distance_to_center(const algebra::Vector3D &v) const {

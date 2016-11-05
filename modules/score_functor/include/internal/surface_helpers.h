@@ -25,39 +25,36 @@ IMPSCOREFUNCTOREXPORT algebra::Vector3D get_surface_normal(Model *m,
 
 //! Get height of point above surface.
 /** \return the height above the surface
-    If dervc is non-nullptr, the two algebra::Vector3D parameters are filled
-    with the derivatives with respect to the surface center and point.
+    If derv is non-nullptr, it is filled with the direction of
+    increasing height of the point.
 */
 IMPSCOREFUNCTOREXPORT double get_height_above_surface(
     const algebra::Vector3D &center,
     const algebra::Vector3D &normal,
     const algebra::Vector3D &point,
-    algebra::Vector3D *dervc,
-    algebra::Vector3D *dervp);
+    algebra::Vector3D *derv);
 
 //! Get depth of point below surface.
 /** \return the depth below the surface
-    If dervc is non-nullptr, the two algebra::Vector3D parameters are filled
-    with the derivatives with respect to the surface center and point.
+    If derv is non-nullptr, it is filled with the direction of
+    increasing depth of the point.
 */
 IMPSCOREFUNCTOREXPORT double get_depth_below_surface(
     const algebra::Vector3D &center,
     const algebra::Vector3D &normal,
     const algebra::Vector3D &point,
-    algebra::Vector3D *dervc,
-    algebra::Vector3D *dervp);
+    algebra::Vector3D *derv);
 
 //! Get distance of point from surface.
 /** \return the distance from the surface
-    If dervc is non-nullptr, the two algebra::Vector3D parameters are filled
-    with the derivatives with respect to the surface center and point.
+    If derv is non-nullptr, it is filled with the direction of
+    increasing distance of the point.
 */
 IMPSCOREFUNCTOREXPORT double get_distance_from_surface(
     const algebra::Vector3D &center,
     const algebra::Vector3D &normal,
     const algebra::Vector3D &point,
-    algebra::Vector3D *dervc,
-    algebra::Vector3D *dervp);
+    algebra::Vector3D *derv);
 
 IMPSCOREFUNCTOR_END_INTERNAL_NAMESPACE
 
