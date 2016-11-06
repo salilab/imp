@@ -1,5 +1,5 @@
 /**
- *  \file IMP/score_functor/PointToSphere.h
+ *  \file IMP/score_functor/PointToSphereDistance.h
  *  \brief A Score on the distance between a point and a sphere.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
@@ -24,14 +24,14 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
     \see SphereDistance
     */
 template <class BaseDistanceScore>
-class PointToSphere : public BaseDistanceScore {
+class PointToSphereDistance : public BaseDistanceScore {
   typedef BaseDistanceScore P;
   static double get_radius(Model *m, const ParticleIndex pi) {
     return m->get_sphere(pi).get_radius();
   }
 
  public:
-  PointToSphere(BaseDistanceScore base) : P(base) {}
+  PointToSphereDistance(BaseDistanceScore base) : P(base) {}
   double get_score(Model *m, const ParticleIndexPair &pi,
                    double distance) const {
     return P::get_score(m, pi, distance - get_radius(m, pi[1]));
