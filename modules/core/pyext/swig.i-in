@@ -44,6 +44,9 @@ IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBound, HarmonicUpperBounds);
 IMP_SWIG_OBJECT( IMP::core, HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDistancePairScore, HarmonicUpperBoundSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDiameterPairScore, HarmonicUpperBoundSphereDiameterPairScores);
+IMP_SWIG_OBJECT( IMP::core, HarmonicSurfaceDistancePairScore, HarmonicSurfaceDistancePairScores);
+IMP_SWIG_OBJECT( IMP::core, HarmonicSurfaceHeightPairScore, HarmonicSurfaceHeightPairScores);
+IMP_SWIG_OBJECT( IMP::core, HarmonicSurfaceDepthPairScore, HarmonicSurfaceDepthPairScores);
 IMP_SWIG_OBJECT( IMP::core, WeightedSum, WeightedSums);
 IMP_SWIG_OBJECT( IMP::core, WeightedSumOfExponential, WeightedSumOfExponentials);
 IMP_SWIG_OBJECT( IMP::core, IncrementalScoringFunction, IncrementalScoringFunctions);
@@ -79,6 +82,11 @@ IMP_SWIG_OBJECT( IMP::core, SingletonRestraint, SingletonRestraints);
 IMP_SWIG_OBJECT( IMP::core, SoftSpherePairScore, SoftSpherePairScores);
 IMP_SWIG_OBJECT( IMP::core, SphereDistancePairScore, SphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, SphereDistanceToSingletonScore, SphereDistanceToSingletonScores);
+IMP_SWIG_OBJECT( IMP::core, SoftSubSurfacePairScore, SoftSubSurfacePairScores);
+IMP_SWIG_OBJECT( IMP::core, SoftSuperSurfacePairScore, SoftSuperSurfacePairScores);
+IMP_SWIG_OBJECT( IMP::core, SurfaceDistancePairScore, SurfaceDistancePairScores);
+IMP_SWIG_OBJECT( IMP::core, SurfaceHeightPairScore, SurfaceHeightPairScores);
+IMP_SWIG_OBJECT( IMP::core, SurfaceDepthPairScore, SurfaceDepthPairScores);
 IMP_SWIG_OBJECT( IMP::core, SteepestDescent, SteepestDescents);
 IMP_SWIG_OBJECT( IMP::core, TableRefiner, TableRefiners);
 IMP_SWIG_OBJECT( IMP::core, Transform, Transforms);
@@ -285,6 +293,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/RestraintsScoringFunction.h"
 %include "IMP/core/RigidClosePairsFinder.h"
 %include "IMP/core/SphereDistancePairScore.h"
+%include "IMP/core/SurfaceDistancePairScore.h"
 %include "IMP/core/SteepestDescent.h"
 %include "IMP/core/TransformedDistancePairScore.h"
 %include "IMP/core/TypedPairScore.h"
