@@ -6,4 +6,4 @@ SCRIPT_DIR="$(dirname "$0")"
 
 source "${SCRIPT_DIR}/../dev_tools/git/subtree-utils.sh"
 
-pull modules/rmf/dependency/RMF git@github.com:salilab/rmf.git develop salilab/rmf
+pull modules/rmf/dependency/RMF barak@https://github.com:salilab/rmf.git develop salilab/rmf
