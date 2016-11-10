@@ -92,6 +92,15 @@ RMF_ENABLE_WARNINGS namespace RMF {
     bool get_child_is_group(unsigned int i) const;
     bool get_child_is_data_set(unsigned int i) const;
     ConstGroup get_child_group(unsigned int i) const;
+
+    //! get child group with given name without checks
+    //! - verify group exists using get_has_child()
+    //! and that it's a group using get_child_is_group()
+    ConstGroup get_child_group(std::string name) const;
+
+    //! returns true if child is group without checks
+    //! - verify child exists using get_has_child()
+    bool get_child_is_group(std::string name) const;
   };
 
   } /* namespace HDF5 */

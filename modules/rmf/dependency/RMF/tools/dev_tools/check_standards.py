@@ -39,7 +39,8 @@ def check_c_file(filename, errors):
             filepath[filepath.find("include") + len("include"):]
     cppprefix = info["name"].split('.')[0] + '_'
     altcppprefix = info["name"].replace(".", "").upper()
-    fh = file(filename, "r").read().split("\n")
+    with open(filename, "r") as f:
+        fh = f.read().split("\n")
     srch = re.compile('\s+$')
     url = re.compile('https?://')
     configh = False
@@ -68,7 +69,7 @@ def check_c_file(filename, errors):
            and not line.startswith("#define EIGEN_YES_I_KNOW_SPARSE_"
                                    "MODULE_IS_NOT_STABLE_YET"):
             found = False
-            fline = line.replace("#define", "#undef")
+            fline = "#undef " + line.split()[1]
             for (onum, oline) in enumerate(fh):
                 if onum > num and oline.startswith(fline):
                     found = True
@@ -82,8 +83,8 @@ def check_c_file(filename, errors):
             errors.append('%s:1: File has leading blank line(s)' % filename)
     if exported and filename.endswith(".h") and not file_line:
         # lazy hack with the replace
-        errors.append(
-            '%s:2: Exported header must have a line  %s' % (filename, file_line_string))
+        errors.append('%s:2: Exported header must have a line %s'
+                      % (filename, file_line_string))
 
 
 def check_python_file(filename, errors):

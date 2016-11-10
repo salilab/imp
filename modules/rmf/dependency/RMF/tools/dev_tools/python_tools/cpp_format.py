@@ -73,49 +73,54 @@ def get_header_guard(filename, project_name):
 def check_header_start_end(scan, filename, project_name, errors):
     guard_prefix, guard_suffix = get_header_guard(filename, project_name)
     header_guard = guard_prefix + '_' + guard_suffix
-    bad = False
-    if not len(scan) >= 11:
+    if len(scan) < 11:
         bad = True
-    if not scan[4][0] == token.Comment.Preproc:
-        bad = True
-    if not scan[4][1].startswith('ifndef'):
-        errors.append('%s:%d: Header guard missing #ifndef.'
-                      % (filename, 1))
-        bad = True
-    if not scan[7][0] == token.Comment.Preproc:
-        bad = True
-    if not scan[7][1].startswith('define'):
-        errors.append('%s:%d: Header guard missing #definer.'
-                      % (filename, 1))
-        bad = True
-    if not scan[-3][0] == token.Comment.Preproc and not scan[-4][0] == token.Comment.Preproc:
-        bad = True
-    if not scan[-3][1].startswith('endif') and not scan[-4][1].startswith('endif'):
-        errors.append('%s:%d: Header guard missing #endif.'
-                      % (filename, 1))
-        bad = True
-    if not scan[-2][0] in (token.Comment, token.Comment.Multiline) and not scan[-3][0] in (token.Comment, token.Comment.Multiline):
-        errors.append('%s:%d: Header guard missing closing comment.'
-                      % (filename, 1))
-        bad = True
+    else:
+        bad = False
+        if not scan[4][0] == token.Comment.Preproc:
+            bad = True
+        if not scan[4][1].startswith('ifndef'):
+            errors.append('%s:%d: Header guard missing #ifndef.'
+                          % (filename, 1))
+            bad = True
+        if not scan[7][0] == token.Comment.Preproc:
+            bad = True
+        if not scan[7][1].startswith('define'):
+            errors.append('%s:%d: Header guard missing #define.'
+                          % (filename, 1))
+            bad = True
+        if not scan[-3][0] == token.Comment.Preproc \
+           and not scan[-4][0] == token.Comment.Preproc:
+            bad = True
+        if not scan[-3][1].startswith('endif') \
+           and not scan[-4][1].startswith('endif'):
+            errors.append('%s:%d: Header guard missing #endif.'
+                          % (filename, 1))
+            bad = True
+        if not scan[-2][0] in (token.Comment, token.Comment.Multiline) \
+           and not scan[-3][0] in (token.Comment, token.Comment.Multiline):
+            errors.append('%s:%d: Header guard missing closing comment.'
+                          % (filename, 1))
+            bad = True
 
-    guard = scan[4][1][7:]
-    if not guard.startswith(guard_prefix):
-        errors.append('%s:%d: Header guard does not start with "%s".'
-                      % (filename, 1, guard_prefix))
-        bad = True
-    if not guard.replace("_", "").endswith(guard_suffix.replace("_", "")):
-        errors.append('%s:%d: Header guard does not end with "%s".'
-                      % (filename, 1, guard_suffix))
-        bad = True
-    if not scan[7][1] == 'define ' + guard:
-        errors.append('%s:%d: Header guard does define "%s".'
-                      % (filename, 1, guard))
-        bad = True
-    if not scan[-2][1] == '/* %s */' % guard and not scan[-3][1] == '/* %s */' % guard:
-        errors.append('%s:%d: Header guard close does not have a comment of "/* %s */".'
-                      % (filename, 1, guard))
-        bad = True
+        guard = scan[4][1][7:]
+        if not guard.startswith(guard_prefix):
+            errors.append('%s:%d: Header guard does not start with "%s".'
+                          % (filename, 1, guard_prefix))
+            bad = True
+        if not guard.replace("_", "").endswith(guard_suffix.replace("_", "")):
+            errors.append('%s:%d: Header guard does not end with "%s".'
+                          % (filename, 1, guard_suffix))
+            bad = True
+        if not scan[7][1] == 'define ' + guard:
+            errors.append('%s:%d: Header guard does not define "%s".'
+                          % (filename, 1, guard))
+            bad = True
+        if not scan[-2][1] == '/* %s */' % guard \
+           and not scan[-3][1] == '/* %s */' % guard:
+            errors.append('%s:%d: Header guard close does not have a '
+                          'comment of "/* %s */".' % (filename, 1, guard))
+            bad = True
     if bad:
         errors.append('%s:%d: Missing or incomplete header guard.'
                       % (filename, 1) + """

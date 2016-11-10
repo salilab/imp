@@ -16,10 +16,10 @@ RMF_ENABLE_WARNINGS
 
 namespace RMF {
 
-/** Return a string that captures information about the file. This string
-can be saved and compared against the string generated with future versions of
-the lib to make sure that the old files parse reasonably well. The strings
-are diffable. */
+//! Return a string that captures information about the file.
+/** This string can be saved and compared against the string generated
+    with future versions of the library to make sure that the old files
+    parse reasonably well. The strings are diffable. */
 RMFEXPORT std::string get_signature_string(FileConstHandle file);
 
 } /* namespace RMF */

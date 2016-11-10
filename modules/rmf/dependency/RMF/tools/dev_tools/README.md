@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/salilab/developer_tools.svg?branch=master)](https://travis-ci.org/salilab/developer_tools)
-[![Coverage Status](https://coveralls.io/repos/github/salilab/developer_tools/badge.svg?branch=master)](https://coveralls.io/github/salilab/developer_tools?branch=master)
+[![codecov](https://codecov.io/gh/salilab/developer_tools/branch/master/graph/badge.svg)](https://codecov.io/gh/salilab/developer_tools)
 [![Code Climate](https://codeclimate.com/github/salilab/developer_tools/badges/gpa.svg)](https://codeclimate.com/github/salilab/developer_tools)
 
 # Developer Tools

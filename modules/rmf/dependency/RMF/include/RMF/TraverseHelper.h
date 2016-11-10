@@ -1,6 +1,6 @@
 /**
  *  \file RMF/TraverseHelper.h
- *  \brief A helper function for managing data when traversing an RMF.
+ *  \brief A helper class for managing data when traversing an RMF.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *
@@ -25,10 +25,8 @@ namespace RMF {
 class TraverseHelper;
 typedef std::vector<TraverseHelper> TraverseHelpers;
 
-/** \brief This class tracks common data that one needs to keep as one traverses
-    the hierarchy.
-
-    Things like residue index, chain id, the local reference frame are all
+//! Track common data that one needs to keep as one traverses the hierarchy.
+/** Things like residue index, chain id, and the local reference frame are all
     properties of the path taken to reach a given node when traversing. This
     class helps keep track of them.
 
@@ -37,8 +35,7 @@ typedef std::vector<TraverseHelper> TraverseHelpers;
     \note In the case of non-default resolution with alternatives nodes, the
     node this inherits from may not be the one you visited. So you should just
     pass this object when you need to access the node.
-
-*/
+ */
 class RMFEXPORT TraverseHelper : public NodeConstHandle {
   struct Index : public RMF_LARGE_UNORDERED_MAP<NodeID, unsigned int> {};
   boost::shared_ptr<Index> active_;
@@ -67,8 +64,7 @@ class RMFEXPORT TraverseHelper : public NodeConstHandle {
 
   void visit_impl(NodeConstHandle n);
 
-  /** Return an updated TraverseHelper after inspecting the passed
-       node. */
+  //! Return an updated TraverseHelper after inspecting the passed node.
   TraverseHelper visit(NodeConstHandle n) const;
 
  public:
@@ -76,42 +72,50 @@ class RMFEXPORT TraverseHelper : public NodeConstHandle {
   TraverseHelper(NodeConstHandle root, std::string molecule_name,
                  double resolution = 10000, int state_filter = -1);
 
-  /** Get the current chain id or None. */
+  //! Get the current chain id or None.
   Nullable<String> get_chain_id() const {
     return Nullable<String>(data_->chain_id_);
   }
-  /** Get the current residue index or None. */
+
+  //! Get the current residue index or None.
   Nullable<Int> get_residue_index() const {
     return Nullable<Int>(data_->residue_index_);
   }
-  /** Get the current residue type or None. */
+
+  //! Get the current residue type or None.
   Nullable<String> get_residue_type() const {
     return Nullable<String>(data_->residue_type_);
   }
-  /** Get the current molecule name or None. */
+
+  //! Get the current molecule name or None.
   std::string get_molecule_name() const { return data_->molecule_name_; }
-  /** Get the current color or None. */
+
+  //! Get the current color or None.
   Nullable<Vector3> get_rgb_color() const {
     return Nullable<Vector3>(data_->color_);
   }
-  /** Get the current state or 0. */
+
+  //! Get the current state or 0.
   unsigned int get_state_index() const { return data_->state_; }
-  /** Get the current copy inde or None. */
+
+  //! Get the current copy index or None.
   Nullable<Int> get_copy_index() const {
     return Nullable<Int>(data_->copy_index_);
   }
+
   Vector3 get_global_coordinates(const Vector3 &v) {
     return data_->coordinate_transformer_.get_global_coordinates(v);
   }
-  /** Set that the current node is dispayed and return its index. */
+
+  //! Set that the current node is displayed and return its index.
   unsigned int set_is_displayed();
 
   bool get_is_displayed(NodeID n) { return active_->find(n) != active_->end(); }
 
-  /** Return a unique id for the current particle. */
+  //! Return a unique id for the current particle.
   unsigned int get_index(NodeID n) const;
 
-  /** Return other nodes to traverse.*/
+  //! Return other nodes to traverse.
   TraverseHelpers get_children() const;
 };
 

@@ -1,38 +1,41 @@
+sudo: required
+dist: trusty
 language: cpp
 branches:
   only:
     - master
     - develop
-compiler:
-  - gcc
-  - clang
-env:
-  - INSTALL="libhdf5-serial-dev liblog4cxx10-dev" BOOST= FLAGS= TESTS=RMF TEST_SETUP=
-  - INSTALL="" BOOST= FLAGS= TESTS=RMF TEST_SETUP=
 git:
   submodules: false
 
 matrix:
-  exclude:
-    # I don't understand this failure, and it is only in deprecated code
-    - compiler: gcc
-      env: INSTALL="libhdf5-serial-dev liblog4cxx10-dev" BOOST= FLAGS= TESTS=RMF TEST_SETUP=
   include:
-    # can't get it to work with the python module
+    - compiler: gcc
+      env: INSTALL="" BOOST= FLAGS="--coverage" TESTS=RMF TEST_SETUP= BUILD="Debug"
     - compiler: clang
-      env: INSTALL= BOOST= FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer" TESTS=cpp TEST_SETUP=
+      env: INSTALL="libhdf5-dev liblog4cxx10-dev" BOOST= FLAGS="--coverage" TESTS=RMF TEST_SETUP= BUILD="Debug"
+    - compiler: clang
+      env: INSTALL="" BOOST= FLAGS="--coverage" TESTS=RMF TEST_SETUP= BUILD="Debug"
 
 before_install:
  - sudo apt-get update -qq
  - sudo apt-get install -qq libboost$BOOST-all-dev swig libc-dbg $INSTALL
+ - sudo pip install coverage
 
 script:
  - mkdir build
  - cd build
- - cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="$FLAGS" -DCMAKE_EXE_LINKER_FLAGS="$FLAGS" -DCMAKE_MODULE_LINKER_FLAGS="$FLAGS" -DCMAKE_SHARED_LINKER_FLAGS="$FLAGS" -DIMP_TEST_SETUP=$TEST_SETUP
+ - ../tools/coverage/setup.py
+ - PYTHON_INC=$(echo $(dirname $(which python))/../include/*/)
+ - PYTHON_LIB=$(echo /opt/python/2.7.*/lib/libpython2.7*.so)
+ - PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE="$BUILD" -DCMAKE_CXX_FLAGS="$FLAGS" -DCMAKE_EXE_LINKER_FLAGS="$FLAGS" -DCMAKE_MODULE_LINKER_FLAGS="$FLAGS" -DCMAKE_SHARED_LINKER_FLAGS="$FLAGS" -DIMP_TEST_SETUP=$TEST_SETUP -DPYTHON_INCLUDE_DIR=$PYTHON_INC -DPYTHON_LIBRARY=$PYTHON_LIB
  - make -j 2
  - export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
  - ctest -j 2 --output-on-failure -L $TESTS
+
+after_success:
+ - (cd coverage && coverage combine && mv .coverage ..)
+ - bash <(curl -s https://codecov.io/bash)
 
 # sanitize :-) -fsanitize=address -fno-omit-frame-pointer
 # -fsanitize=undefined

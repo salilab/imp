@@ -2,25 +2,30 @@ import tempfile
 import shutil
 import os
 import sys
+import contextlib
 
-class TempDir(object):
-    def __enter__(self):
-        self.__tmpdir = tempfile.mkdtemp()
-        return self.__tmpdir
-    def __exit__(self, exc_type, exc_value, traceback):
-        shutil.rmtree(self.__tmpdir, ignore_errors=True)
+@contextlib.contextmanager
+def TempDir():
+    _tmpdir = tempfile.mkdtemp()
+    yield _tmpdir
+    shutil.rmtree(_tmpdir, ignore_errors=True)
 
+@contextlib.contextmanager
+def RunInTempDir():
+    _tmpdir = tempfile.mkdtemp()
+    _olddir = os.getcwd()
+    os.chdir(_tmpdir)
+    yield _tmpdir
+    os.chdir(_olddir)
+    shutil.rmtree(_tmpdir, ignore_errors=True)
 
-class RunInTempDir(object):
-    def __enter__(self):
-        self.__tmpdir = tempfile.mkdtemp()
-        self.__olddir = os.getcwd()
-        os.chdir(self.__tmpdir)
-        return self.__tmpdir
-    def __exit__(self, exc_type, exc_value, traceback):
-        os.chdir(self.__olddir)
-        shutil.rmtree(self.__tmpdir, ignore_errors=True)
-
+@contextlib.contextmanager
+def mocked_function(module, funcname, replacement):
+    """Temporarily replace module.funcname with replacement."""
+    oldfunc = getattr(module, funcname)
+    setattr(module, funcname, replacement)
+    yield
+    setattr(module, funcname, oldfunc)
 
 def write_file(fname, content):
     with open(fname, "w") as fh:
@@ -39,7 +44,7 @@ if 'coverage' in sys.modules:
 import coverage
 import atexit
 
-_cov = coverage.coverage(branch=False, data_suffix=True, auto_data=True,
+_cov = coverage.coverage(branch=True, data_suffix=True, auto_data=True,
                          data_file='%s/.coverage')
 _cov.start()
 

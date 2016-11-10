@@ -1,6 +1,6 @@
 /**
- *  \file RMF/Category.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \file RMF/TraverseHelper.cpp
+ *  \brief A helper class for managing data when traversing an RMF.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *

@@ -1,6 +1,6 @@
 /**
- *  \file RMF/Category.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \file RMF/names.cpp
+ *  \brief Functions to check if names are valid.
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  *

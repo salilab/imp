@@ -113,6 +113,11 @@ class RMFEXPORT Group : public MutableAttributes<ConstGroup> {
   /** @} */
 
   Group get_child_group(unsigned int i) const;
+
+  //! get child group with given name without checks
+  //! - verify group exists using get_has_child()
+  //! and that it's a group using get_child_is_group()
+  Group get_child_group(std::string name) const;
 };
 
 } /* namespace HDF5 */
