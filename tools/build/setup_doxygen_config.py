@@ -131,7 +131,7 @@ These are listed below under their parent module:""")
                 contents.append("  - [%s](\\ref %s): %s" % (app[0], app[1],
                                                             app[2]))
     contents.append("""
-See also the [command line tools provided by RMF](http://integrativemodeling.org/rmf/nightly/doc/executables.html).""")
+See also the [command line tools provided by RMF](https://integrativemodeling.org/rmf/nightly/doc/executables.html).""")
     contents.append("*/")
     g = tools.DoxFileGenerator()
     g.write(name, "\n".join(contents))

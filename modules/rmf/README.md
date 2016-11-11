@@ -1,4 +1,4 @@
-\brief Support for the [RMF file format](http://integrativemodeling.org/rmf/nightly/doc/) for storing hierarchical molecular data and markup.
+\brief Support for the [RMF file format](https://integrativemodeling.org/rmf/nightly/doc/) for storing hierarchical molecular data and markup.
 
 RMF can store hierarchical molecular data (such as atomic or coarse grained
 representations of proteins), along with markup, including geometry
@@ -18,7 +18,7 @@ and score data.
  to that of an arbitrary frame and IMP::rmf::save_frame() can be used to save
  the current state of the objects into a frame in the RMF file.
 
- See the [RMF library](http://integrativemodeling.org/rmf/nightly/doc/)
+ See the [RMF library](https://integrativemodeling.org/rmf/nightly/doc/)
 for more information.
 
 Several helper programs are also provided:
