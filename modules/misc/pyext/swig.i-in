@@ -1,5 +1,6 @@
 IMP_SWIG_OBJECT(IMP::misc, WormLikeChain, WormLikeChains);
 IMP_SWIG_OBJECT(IMP::misc, FreelyJointedChain, FreelyJointedChains);
+IMP_SWIG_OBJECT(IMP::misc, SurfaceTetheredChain, SurfaceTetheredChains);
 IMP_SWIG_OBJECT(IMP::misc, StateAdaptor, StateAdaptors);
 IMP_SWIG_OBJECT(IMP::misc, CommonEndpointPairFilter, CommonEndpointPairFilters);
 IMP_SWIG_OBJECT(IMP::misc, LogPairScore, LogPairScores);
@@ -11,6 +12,7 @@ IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::misc, CustomXYZR, CustomXYZRs);
 /* Wrap our own classes */
 %include "IMP/misc/WormLikeChain.h"
 %include "IMP/misc/FreelyJointedChain.h"
+%include "IMP/misc/SurfaceTetheredChain.h"
 %include "IMP/misc/LowestRefinedPairScore.h"
 %include "IMP/misc/LogPairScore.h"
 %include "IMP/misc/StateAdaptor.h"
