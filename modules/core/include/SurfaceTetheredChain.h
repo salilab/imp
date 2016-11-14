@@ -1,18 +1,18 @@
 /**
- *  \file IMP/misc/SurfaceTetheredChain.h
+ *  \file IMP/core/SurfaceTetheredChain.h
  *  \brief Score on surface-to-end distance of chain tethered to impenetrable surface
  *
  *  Copyright 2007-2016 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMISC_SURFACE_TETHERED_CHAIN_H
-#define IMPMISC_SURFACE_TETHERED_CHAIN_H
+#ifndef IMPCORE_SURFACE_TETHERED_CHAIN_H
+#define IMPCORE_SURFACE_TETHERED_CHAIN_H
 
-#include <IMP/misc/misc_config.h>
+#include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/constants.h>
 
-IMPMISC_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
 //! Score on surface-to-end distance of chain tethered to impenetrable surface
 /** When a flexible linker is represented by the freely jointed chain model with
@@ -111,6 +111,6 @@ class SurfaceTetheredChain : public UnaryFunction {
   double beta_, z_min_, z_min_deriv_, z_min_int_;
 };
 
-IMPMISC_END_NAMESPACE
+IMPCORE_END_NAMESPACE
 
-#endif /* IMPMISC_SURFACE_TETHERED_CHAIN_H */
+#endif /* IMPCORE_SURFACE_TETHERED_CHAIN_H */

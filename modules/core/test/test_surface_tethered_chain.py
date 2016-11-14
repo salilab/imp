@@ -3,7 +3,7 @@ import random
 import numpy as np
 
 import IMP
-import IMP.misc
+import IMP.core
 import IMP.test
 
 
@@ -37,7 +37,7 @@ class Tests(IMP.test.TestCase):
 
     def test_init(self):
         """Test correct initialization."""
-        func = IMP.misc.SurfaceTetheredChain(10, 8)
+        func = IMP.core.SurfaceTetheredChain(10, 8)
         func.set_was_used(True)
 
     def test_evaluate(self):
@@ -45,7 +45,7 @@ class Tests(IMP.test.TestCase):
         for i in range(100):
             N = random.randint(1, 10)
             b = random.uniform(.1, 5.)
-            func = IMP.misc.SurfaceTetheredChain(N, b)
+            func = IMP.core.SurfaceTetheredChain(N, b)
             func.set_was_used(True)
             max_z = 2 * N * b
             beta = _get_beta(N, b)
@@ -65,7 +65,7 @@ class Tests(IMP.test.TestCase):
         for i in range(100):
             N = random.randint(3, 10)
             b = random.uniform(.1, 5.)
-            func = IMP.misc.SurfaceTetheredChain(N, b)
+            func = IMP.core.SurfaceTetheredChain(N, b)
             func.set_was_used(True)
             beta = _get_beta(N, b)
             min_z = .01 / (2 * beta)**.5
@@ -85,7 +85,7 @@ class Tests(IMP.test.TestCase):
         for i in range(10):
             N = random.randint(3, 10)
             b = random.uniform(.1, 5.)
-            func = IMP.misc.SurfaceTetheredChain(N, b)
+            func = IMP.core.SurfaceTetheredChain(N, b)
             func.set_was_used(True)
             beta = _get_beta(N, b)
             zmin = 1. / (2 * beta)**.5
