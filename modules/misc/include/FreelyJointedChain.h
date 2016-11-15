@@ -18,7 +18,7 @@ IMPMISC_BEGIN_NAMESPACE
 /** A flexible linker can be represented by the freely jointed chain model as a
     polymer under a Gaussian random walk. The end-to-end distance \f$ z \f$ then
     follows the distribution
-        \f[p(z | \beta) = 4 \pi z^2 (\frac{beta}{\pi})^(3/2) \exp{-\beta z^2},\f]
+        \f[p(z | \beta) = 4 \pi z^2 (\frac{\beta}{\pi})^{3/2)} \exp{(-\beta z^2)},\f]
     where \f$ \beta = \frac{3}{2 N b^2} \f$, \f$ N \f$ is the number of links,
     and \f$ b \f$ is the average length of a single link. The score reaches its
     minimum value when \f$ z = \frac{1}{\sqrt{\beta}} \f$.

@@ -18,7 +18,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** When a flexible linker is represented by the freely jointed chain model with
     one end tethered to an impenetrable surface, the distance \f$ z \f$ of the
     free end from the surface follows the distribution
-        \f[ p(z | \beta) = 2 \beta z \exp{-\beta z^2}, \f]
+        \f[ p(z | \beta) = 2 \beta z \exp{(-\beta z^2)}, \f]
     where \f$ \beta = \frac{3}{2 N b^2} \f$, \f$ N \f$ is the number of links,
     and \f$ b \f$ is the average length of a single link. The score reaches its
     minimum value when \f$ z = \frac{1}{\sqrt{2 \beta}} \f$.
