@@ -36,7 +36,7 @@ IMPMISC_BEGIN_NAMESPACE
     then the score increases linearly as \f$ z \f$ decreases.
 
     \see WormLikeChain
-    \see Harmonic
+    \see core::Harmonic
 */
 class FreelyJointedChain : public UnaryFunction {
 

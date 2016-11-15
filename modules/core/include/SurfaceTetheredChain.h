@@ -35,8 +35,8 @@ IMPCORE_BEGIN_NAMESPACE
     \f$ z_{min} \f$ is the value of \f$ z \f$ where the score is minimized,
     then the score increases linearly as \f$ z \f$ decreases.
 
-    \see FreelyJointedChain
-    \see WormLikeChain
+    \see misc::FreelyJointedChain
+    \see misc::WormLikeChain
     \see Harmonic
     \see SurfaceHeightPairScore
 */
