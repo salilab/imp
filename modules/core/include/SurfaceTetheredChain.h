@@ -38,6 +38,7 @@ IMPCORE_BEGIN_NAMESPACE
     \see FreelyJointedChain
     \see WormLikeChain
     \see Harmonic
+    \see SurfaceHeightPairScore
 */
 class SurfaceTetheredChain : public UnaryFunction {
 
