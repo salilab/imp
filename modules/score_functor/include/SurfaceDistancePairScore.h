@@ -84,8 +84,8 @@ inline double SurfaceDistancePairScore<DistanceScore>::evaluate_index(
 
   if (da) {
     std::pair<double, double> sp = ds_.get_score_and_derivative(m, p, dist);
-    m->add_to_coordinate_derivatives(p[0], delta * sp.second, *da);
-    m->add_to_coordinate_derivatives(p[1], -delta * sp.second, *da);
+    m->add_to_coordinate_derivatives(p[0], -delta * sp.second, *da);
+    m->add_to_coordinate_derivatives(p[1], delta * sp.second, *da);
     return sp.first;
   } else {
     return ds_.get_score(m, p, dist);
