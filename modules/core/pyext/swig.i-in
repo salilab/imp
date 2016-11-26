@@ -88,6 +88,7 @@ IMP_SWIG_OBJECT( IMP::core, SurfaceDistancePairScore, SurfaceDistancePairScores)
 IMP_SWIG_OBJECT( IMP::core, SurfaceHeightPairScore, SurfaceHeightPairScores);
 IMP_SWIG_OBJECT( IMP::core, SurfaceDepthPairScore, SurfaceDepthPairScores);
 IMP_SWIG_OBJECT( IMP::core, SurfaceTetheredChain, SurfaceTetheredChains);
+IMP_SWIG_OBJECT( IMP::core, SurfaceSymmetryConstraint, SurfaceSymmetryConstraints);
 IMP_SWIG_OBJECT( IMP::core, SteepestDescent, SteepestDescents);
 IMP_SWIG_OBJECT( IMP::core, TableRefiner, TableRefiners);
 IMP_SWIG_OBJECT( IMP::core, Transform, Transforms);
@@ -296,6 +297,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/SphereDistancePairScore.h"
 %include "IMP/core/SurfaceDistancePairScore.h"
 %include "IMP/core/SurfaceTetheredChain.h"
+%include "IMP/core/SurfaceSymmetryConstraint.h"
 %include "IMP/core/SteepestDescent.h"
 %include "IMP/core/TransformedDistancePairScore.h"
 %include "IMP/core/TypedPairScore.h"
