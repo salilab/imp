@@ -14,7 +14,6 @@
 #include "BoundingBoxD.h"
 #include "algebra_macros.h"
 #include "GeometricPrimitiveD.h"
-#include <iostream>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 //! Simple implementation of lines in 3D
@@ -62,7 +61,7 @@ class IMPALGEBRAEXPORT Line3D : public GeometricPrimitiveD<3> {
     algebra::Segment3D get_segment_starting_at(const Vector3D &v, double d) const;
 
     IMP_SHOWABLE_INLINE(Line3D,
-    { out << "(" << l_ << ": " << spaces_io(m_) << ")"; });
+    { out << "[" << l_ << " ; " << m_ << "]"; });
 };
 
 IMP_LINEAR_GEOMETRY_METHODS(Line3D, line_3d,
