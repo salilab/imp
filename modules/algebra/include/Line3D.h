@@ -43,7 +43,7 @@ class IMPALGEBRAEXPORT Line3D : public GeometricPrimitiveD<3> {
     //! Get the moment of the line about the origin.
     Vector3D get_moment() const { return m_; }
 
-    //! Get the moment of the line about a point (default is the origin).
+    //! Get the moment of the line about a point.
     Vector3D get_moment(const Vector3D &v) const {
       return m_ - get_vector_product(v, l_);
     }
