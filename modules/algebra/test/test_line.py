@@ -62,6 +62,19 @@ class Tests(IMP.test.TestCase):
                                                         V3(.5, 0, 0)), 0,
                                delta=1e-6)
 
+    def test_transformation(self):
+        """Test transformation of Line3D objects."""
+        l = IMP.algebra.Line3D(V3(0, 1, 0), V3(0, 0, 0))
+        rot = IMP.algebra.get_rotation_about_axis((1, 0, 0), math.pi / 2.)
+        tr = IMP.algebra.Transformation3D(rot, (0, 10, 0))
+        l2 = IMP.algebra.get_transformed(l, tr)
+        self.assertAlmostEqual(
+            IMP.algebra.get_distance(l2.get_direction(), V3(0, 0, 1)), 0,
+            delta=1e-6)
+        self.assertAlmostEqual(
+            IMP.algebra.get_distance(l2.get_point_on_line(), V3(0, 10, 0)), 0,
+            delta=1e-6)
+
     def test_distance(self):
         """Test distance from Line3D objects"""
         l = IMP.algebra.Line3D(V3(1, 0, 0), V3(0, 0, 0))
