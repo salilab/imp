@@ -3,7 +3,7 @@
  *  \brief a prismatic joint between rigid bodies as part of a kinematic tree
  *  \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_PRISMATIC_JOINT_H

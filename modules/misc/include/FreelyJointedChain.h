@@ -2,7 +2,7 @@
  *  \file IMP/misc/FreelyJointedChain.h
  *  \brief Score on end-to-end distance of freely jointed chain
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMISC_FREELY_JOINTED_CHAIN_H

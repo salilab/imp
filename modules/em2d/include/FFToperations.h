@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/FFToperations.h
  *  \brief Operations involving FFT
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_FF_TOPERATIONS_H

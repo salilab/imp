@@ -2,7 +2,7 @@
  *  \file SurfaceSymmetryConstraint.cpp
  *  \brief Constrain orientation of surfaces with respect to rigid bodies.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

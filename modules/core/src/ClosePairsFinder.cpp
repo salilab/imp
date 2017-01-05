@@ -2,7 +2,7 @@
  *  \file ClosePairsFinder.cpp
  *  \brief Algorithm base class to find close pairs.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

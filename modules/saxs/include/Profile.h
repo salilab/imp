@@ -2,7 +2,7 @@
  *  \file IMP/saxs/Profile.h
  *  \brief A class for profile storing and computation
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

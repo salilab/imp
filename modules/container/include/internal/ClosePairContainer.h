@@ -2,7 +2,7 @@
  *  \file container/internal/ClosePairContainer.h
  *  \brief Internal class of close pair container
  *
- *  Copyright 2007-2016 IMP Inventors. Close rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. Close rights reserved.
  */
 
 #ifndef IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_PAIR_CONTAINER_H

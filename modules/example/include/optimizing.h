@@ -2,7 +2,7 @@
  *  \file IMP/example/optimizing.h
  *  \brief A simple unary function.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

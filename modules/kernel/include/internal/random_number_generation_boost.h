@@ -2,7 +2,7 @@
  *  \file IMP/kernel/internal/random_number_generation_boost.h
  *  \brief GPU or CPU pooled random number generation
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

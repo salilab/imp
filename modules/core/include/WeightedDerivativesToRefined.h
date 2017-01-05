@@ -4,7 +4,7 @@
  *         to its refined set of particles using weights
  *         indicated by a weight key.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_WEIGHTED_DERIVATIVES_TO_REFINED_H

@@ -1,7 +1,7 @@
 /**
  *  \file AllPairContainer.cpp   \brief A list of ParticlePairs.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

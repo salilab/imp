@@ -2,7 +2,7 @@
  *  \file IMP/container/DynamicListClassnameContainer.h
  *  \brief Store a list of PLURALVARIABLETYPE
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_DYNAMIC_LIST_CLASSNAME_CONTAINER_H

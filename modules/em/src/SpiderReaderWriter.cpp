@@ -2,7 +2,7 @@
  *  \file SpiderReaderWriter.cpp
  *  \brief Reader and Writer for Spider volumes
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em/SpiderReaderWriter.h"

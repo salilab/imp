@@ -2,7 +2,7 @@
  *  \file TransformSingletonParticle.cpp
  *  \brief Transform a particle
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/core/Transform.h>

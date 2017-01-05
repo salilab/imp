@@ -2,7 +2,7 @@
  *  \file IMP/core/MonteCarloMover.h
  *  \brief The base class for movers for MC optimization.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

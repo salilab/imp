@@ -2,7 +2,7 @@
  *  \file IMP/multifit/RigidLeavesRefiner.h
  *  \brief Return all rigid body members that are also hierarchy leaves.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

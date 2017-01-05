@@ -2,7 +2,7 @@
  *  \file IMP/isd/FretRestraint.h
  *  \brief FRET_R restraint to use in vivo FRET data.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

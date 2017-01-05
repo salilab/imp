@@ -2,7 +2,7 @@
  *  \file IMP/container/CloseBipartitePairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
- *  Copyright 2007-2016 IMP Inventors. Close rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. Close rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H

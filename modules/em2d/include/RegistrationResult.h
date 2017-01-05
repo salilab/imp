@@ -1,7 +1,7 @@
 /*!
  *  \file IMP/em2d/RegistrationResult.h
  *  \brief Registration results class
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_REGISTRATION_RESULT_H

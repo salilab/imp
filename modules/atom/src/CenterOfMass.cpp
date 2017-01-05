@@ -2,7 +2,7 @@
  *  \file CenterOfMass.cpp
  *  \brief Center of mass of a set of particles
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

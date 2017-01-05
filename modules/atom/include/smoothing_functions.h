@@ -2,7 +2,7 @@
  *  \file IMP/atom/smoothing_functions.h
  *  \brief Classes to smooth nonbonded interactions
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_SMOOTHING_FUNCTIONS_H

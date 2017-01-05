@@ -31,7 +31,7 @@ new shell.
 Copyright and License information
 =================================
 
-IMP is Copyright 2007-2016 IMP Inventors. The IMP Inventors are
+IMP is Copyright 2007-2017 IMP Inventors. The IMP Inventors are
 Andrej Sali, Ben Webb, Daniel Russel, Keren Lasker, Dina Schneidman,
 Javier Velázquez-Muriel, Friedrich Förster, Elina Tjioe, Hao Fan,
 Seung Joong Kim, Yannick Spill, Riccardo Pellarin.

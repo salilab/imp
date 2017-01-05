@@ -2,7 +2,7 @@
  *  \file IMP/integrative_docking/EM3DFitResult.h
  *  \brief A class that stores one docking model with the related scores
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

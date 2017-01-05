@@ -2,7 +2,7 @@
  * \file IMP/atom/HelixRestraint.h
  * \brief Class to maintain helix shape (dihedrals + elastic network)
  *
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

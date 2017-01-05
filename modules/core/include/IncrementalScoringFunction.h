@@ -2,7 +2,7 @@
  *  \file IMP/core/IncrementalScoringFunction.h
  *  \brief Score model efficiently when a small number of particles are changed.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/utility.h
  *  \brief For backwards compatibility.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
