@@ -2,7 +2,7 @@
  *  \file IMP/npc/MinimumSphereDistancePairScore.h
  *  \brief Apply a UnaryFunction to the minimum transformed distance
  *
- *  Copyright 2007-2015 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPNPC_MINIMUM_SPHERE_DISTANCE_PAIR_SCORE_H
