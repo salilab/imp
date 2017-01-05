@@ -1803,7 +1803,7 @@ def get_densities(input_objects):
     try:
         for i in iter(stuff):
             densities.append(IMP.atom.Selection(i,representation_type=IMP.atom.DENSITIES).get_selected_particles())
-    except TypeError, te:
+    except TypeError as te:
         densities.append(IMP.atom.Selection(stuff,representation_type=IMP.atom.DENSITIES).get_selected_particles())
 
     return [h for sublist in densities for h in sublist]
