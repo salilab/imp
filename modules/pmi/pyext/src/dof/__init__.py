@@ -32,6 +32,7 @@ class DegreesOfFreedom(object):
     def __init__(self,mdl):
         self.mdl = mdl
         self.movers = []
+        self.fb_movers = [] #stores movers corresponding to floppy parts
         self.rigid_bodies = [] #stores rigid body objects
         self.flexible_beads = [] # stores all beads including nonrigid members of rigid bodies
         self.nuisances = []
@@ -46,7 +47,7 @@ class DegreesOfFreedom(object):
                           nonrigid_parts=None,
                           max_trans=4.0,
                           max_rot=0.5,
-                          nonrigid_max_trans = 1.0,
+                          nonrigid_max_trans = 4.0,
                           resolution='all',
                           name=None):
         """Create rigid body constraint and mover
@@ -110,9 +111,10 @@ class DegreesOfFreedom(object):
                     rb.set_is_rigid_member(p.get_index(),False)
                     for fk in floatkeys:
                         p.set_is_optimized(fk,True)
-                    rb_movers.append(IMP.core.BallMover([p],
-                                                        IMP.FloatKeys(floatkeys),
-                                                        nonrigid_max_trans))
+                    fbmv=IMP.core.BallMover([p],IMP.FloatKeys(floatkeys),
+                                                nonrigid_max_trans)
+                    self.fb_movers.append(fbmv)
+                    rb_movers.append(fbmv)
 
         self.movers += rb_movers # probably need to store more info
         self._rb2mov[rb] = rb_movers #dictionary relating rb to movers
@@ -246,7 +248,9 @@ class DegreesOfFreedom(object):
             if IMP.core.RigidMember.get_is_setup(h) or IMP.core.NonRigidMember.get_is_setup(h):
                 raise Exception("Cannot create flexible beads from members of rigid body")
             self.flexible_beads.append(h)
-            fb_movers.append(IMP.core.BallMover([p],max_trans))
+            fbmv=IMP.core.BallMover([p],max_trans)
+            fb_movers.append(fbmv)
+            self.fb_movers.append(fbmv)
         self.movers += fb_movers
         return fb_movers
 
@@ -367,6 +371,10 @@ class DegreesOfFreedom(object):
     def get_movers(self):
         """Should only return Enabled movers?"""
         return self.movers
+
+    def get_floppy_body_movers(self):
+        """Return all movers corresponding to individual beads"""
+        return self.fb_movers
 
     def get_rigid_bodies(self):
         """Return list of rigid body objects"""

@@ -111,6 +111,18 @@ class SetupWeight(object):
         return self.weight
 
 
+class SetupSurface(object):
+
+    def __init__(self, m, center, normal, isoptimized=True):
+        p = IMP.Particle(m)
+        self.surface = IMP.core.Surface.setup_particle(p, center, normal)
+        self.surface.set_coordinates_are_optimized(isoptimized)
+        self.surface.set_normal_is_optimized(isoptimized)
+
+    def get_particle(self):
+        return self.surface
+
+
 class ParticleToSampleFilter(object):
     def __init__(self, sampled_objects):
         self.sampled_objects=sampled_objects
@@ -147,7 +159,7 @@ class ParticleToSampleList(object):
         particle_type,
         particle_transformation,
             name):
-        if not particle_type in ["Rigid_Bodies", "Floppy_Bodies", "Nuisances", "X_coord", "Weights"]:
+        if not particle_type in ["Rigid_Bodies", "Floppy_Bodies", "Nuisances", "X_coord", "Weights", "Surfaces"]:
             raise TypeError("not the right particle type")
         else:
             self.dictionary_particle_type[particle] = particle_type
@@ -157,14 +169,21 @@ class ParticleToSampleList(object):
                         particle] = particle_transformation
                     self.dictionary_particle_name[particle] = name
                 else:
-                    raise TypeError("ParticleToSampleList: not the right transformation format for Rigid_Bodies, should be a tuple a floats")
+                    raise TypeError("ParticleToSampleList: not the right transformation format for Rigid_Bodies, should be a tuple of floats")
+            elif particle_type == "Surfaces":
+                if type(particle_transformation) == tuple and len(particle_transformation) == 3 and all(isinstance(x, float) for x in particle_transformation):
+                    self.dictionary_particle_transformation[
+                        particle] = particle_transformation
+                    self.dictionary_particle_name[particle] = name
+                else:
+                    raise TypeError("ParticleToSampleList: not the right transformation format for Surfaces, should be a tuple of floats")
             else:
                 if type(particle_transformation) == float:
                     self.dictionary_particle_transformation[
                         particle] = particle_transformation
                     self.dictionary_particle_name[particle] = name
                 else:
-                    raise TypeError("ParticleToSampleList: not the right transformation format sould be a float")
+                    raise TypeError("ParticleToSampleList: not the right transformation format, should be a float")
 
     def get_particles_to_sample(self):
         ps = {}
@@ -1773,6 +1792,22 @@ def get_rbs_and_beads(hiers):
             beads.append(p)
     return rbs_ordered,beads
 
+
+def get_densities(input_objects):
+    """Given a list of PMI objects, return all density hierarchies within
+    these objects.  The output of this function can be inputted into
+    things such as EM restraints.
+    """
+    stuff=input_adaptor(input_objects, flatten=True)
+    densities=[]
+    try:
+        for i in iter(stuff):
+            densities.append(IMP.atom.Selection(i,representation_type=IMP.atom.DENSITIES).get_selected_particles())
+    except TypeError, te:
+        densities.append(IMP.atom.Selection(stuff,representation_type=IMP.atom.DENSITIES).get_selected_particles())
+
+    return [h for sublist in densities for h in sublist]
+
 def shuffle_configuration(objects,
                           max_translation=300., max_rotation=2.0 * pi,
                           avoidcollision_rb=True, avoidcollision_fb=False,
@@ -1780,6 +1815,7 @@ def shuffle_configuration(objects,
                           bounding_box=None,
                           excluded_rigid_bodies=[],
                           hierarchies_excluded_from_collision=[],
+                          hierarchies_included_in_collision=[],
                           verbose=False):
     """Shuffle particles. Used to restart the optimization.
     The configuration of the system is initialized by placing each
@@ -1799,6 +1835,7 @@ def shuffle_configuration(objects,
     @param bounding_box Only shuffle particles within this box. Defined by ((x1,y1,z1),(x2,y2,z2)).
     @param excluded_rigid_bodies Don't shuffle these rigid body objects
     @param hierarchies_excluded_from_collision Don't count collision with these bodies
+    @param hierarchies_included_in_collision Hierarchies that are not shuffled, but should be included in collision calculation (for fixed regions)
     @param verbose Give more output
     \note Best to only call this function after you've set up degrees of freedom
     For debugging purposes, returns: <shuffled indexes>, <collision avoided indexes>
@@ -1823,7 +1860,18 @@ def shuffle_configuration(objects,
     gcpf.set_distance(cutoff)
 
     # Add particles from excluded hierarchies to excluded list
-    collision_excluded_idxs = set([l.get_index() for h in hierarchies_excluded_from_collision \
+    collision_excluded_hierarchies = IMP.pmi.tools.input_adaptor(hierarchies_excluded_from_collision,
+                                              pmi_resolution='all',
+                                              flatten=True)
+
+    collision_included_hierarchies = IMP.pmi.tools.input_adaptor(hierarchies_included_in_collision,
+                                              pmi_resolution='all',
+                                              flatten=True)
+
+    collision_excluded_idxs = set([l.get_particle().get_index() for h in collision_excluded_hierarchies \
+                               for l in IMP.core.get_leaves(h)])
+
+    collision_included_idxs = set([l.get_particle().get_index() for h in collision_included_hierarchies \
                                for l in IMP.core.get_leaves(h)])
 
     # Excluded collision with Gaussians
@@ -1834,13 +1882,17 @@ def shuffle_configuration(objects,
         if IMP.core.Gaussian.get_is_setup(p):
             collision_excluded_idxs.add(p.get_particle_index())
 
+    print(len(all_idxs), len(collision_included_idxs), len(collision_excluded_idxs))
+
     if bounding_box is not None:
         ((x1, y1, z1), (x2, y2, z2)) = bounding_box
         ub = IMP.algebra.Vector3D(x1, y1, z1)
         lb = IMP.algebra.Vector3D(x2, y2, z2)
         bb = IMP.algebra.BoundingBox3D(ub, lb)
 
-    all_idxs = set(all_idxs) - collision_excluded_idxs
+    all_idxs = set(all_idxs) | collision_included_idxs
+    all_idxs = all_idxs - collision_excluded_idxs
+    print(len(all_idxs), len(collision_included_idxs), len(collision_excluded_idxs))
     debug = []
     print('shuffling', len(rigid_bodies), 'rigid bodies')
     for rb in rigid_bodies:
@@ -1850,6 +1902,7 @@ def shuffle_configuration(objects,
                 rb_idxs = set(rb.get_member_particle_indexes()) - \
                           collision_excluded_idxs
                 other_idxs = all_idxs - rb_idxs
+                print("----INOI", rb, len(other_idxs), len(rb_idxs))
                 if not other_idxs:
                     continue
 
@@ -1872,8 +1925,9 @@ def shuffle_configuration(objects,
                         max_translation,
                         max_rotation)
 
-                debug.append([rb,other_idxs if avoidcollision_rb else set()])
+                debug.append([rb, other_idxs if avoidcollision_rb else set()])
                 IMP.core.transform(rb, transformation)
+                print("TSFM", rb)
 
                 # check collisions
                 if avoidcollision_rb:
@@ -1881,6 +1935,7 @@ def shuffle_configuration(objects,
                     npairs = len(gcpf.get_close_pairs(mdl,
                                                       list(other_idxs),
                                                       list(rb_idxs)))
+                    #print("NPAIRS:", npairs)
                     if npairs==0:
                         break
                     else:

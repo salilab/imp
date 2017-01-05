@@ -232,6 +232,7 @@ def build_representation(parent,rep,coord_finder):
                     total_mass += IMP.atom.Mass(p).get_mass()
 
             # fit GMM
+            density_ps = []
             IMP.isd.gmm_tools.fit_gmm_to_points(fit_coords,
                                                 num_components,
                                                 mdl,

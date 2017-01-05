@@ -3,9 +3,9 @@
 This module contains a variety of high-level Python
 classes to simplify the construction of a modeling protocol in IMP. One recent
 use of PMI is the modeling of the
-[Nup84 subcomplex of the nuclear pore complex](http://salilab.org/nup84/).
+[Nup84 subcomplex of the nuclear pore complex](https://salilab.org/nup84/).
 Several other applications can be seen at the
-[IMP systems page](http://integrativemodeling.org/systems/?tag=PMI).
+[IMP systems page](https://integrativemodeling.org/systems/?tag=PMI).
 
 _This module is still under heavy development, and should be considered experimental._
 
@@ -38,7 +38,7 @@ One can create multiple simultaneous representations in PMI. Here is a brief ove
 
 See a longer discussion of resolutions [here](@ref pmi_resolution).
 
-Check out some examples or [systems](http://integrativemodeling.org/systems/?tag=PMI) that use PMI.
+Check out some examples or [systems](https://integrativemodeling.org/systems/?tag=PMI) that use PMI.
 
 _Author(s)_: Riccardo Pellarin, Charles Greenberg, Daniel Saltzberg, Peter Cimermancic, Ben Webb, Daniel Russel,  Elina Tjioe, Seung Joong Kim, Max Bonomi, Yannick Spill
 

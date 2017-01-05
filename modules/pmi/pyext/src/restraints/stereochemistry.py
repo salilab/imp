@@ -26,7 +26,8 @@ class ConnectivityRestraint(object):
                  scale=1.0,
                  disorderedlength=False,
                  upperharmonic=True,
-                 resolution=1):
+                 resolution=1,
+                 label="None"):
         """
         @param objects - a list of hierarchies, PMI TempResidues OR a single Molecule
         @param scale Scale the maximal distance between the beads by this factor when disorderedlength is False.
@@ -39,9 +40,10 @@ class ConnectivityRestraint(object):
         @param upperharmonic - This flag uses either harmonic (False)
                      or upperharmonic (True) in the intra-pair
                      connectivity restraint.
-        @parm resolution The resolution to connect things at - only used if you pass PMI objects
+        @param resolution - The resolution to connect things at - only used if you pass PMI objects
+        @param label - A string to identify this restraint in the output/stat file
         """
-        self.label = "None"
+        self.label = label
         self.weight = 1.0
 
         hiers = IMP.pmi.tools.input_adaptor(objects,resolution)
@@ -1252,3 +1254,38 @@ class SymmetryRestraint(object):
         output["SymmetryRestraint_" + self.label] = str(score)
         output["_TotalScore"] = str(score)
         return output
+
+
+class PlaneDihedralRestraint(IMP.pmi.restraints.RestraintBase):
+
+    """Restrain the dihedral between planes defined by three particles.
+
+    This restraint is useful for restraining the twist of a string of
+    more or less identical rigid bodies, so long as the curvature is mild.
+    """
+
+    def __init__(self, particle_triplets, angle=0., k=1., label=None,
+                 weight=1.):
+        """Constructor
+        @param particle_triplets List of lists of 3 particles. Each triplet
+                                 defines a plane. Dihedrals of adjacent planes
+                                 in list are scored.
+        @param angle Angle of plane dihedral in degrees
+        @param k Strength of restraint
+        @param label Label for output
+        @param weight Weight of restraint
+        \note Particles defining planes should be rigid and more or less
+              parallel for proper behavior
+        """
+        m = particle_triplets[0][0].get_model()
+        super(PlaneDihedralRestraint, self).__init__(m, label=label,
+                                                     weight=weight)
+
+        angle = pi * angle / 180.
+        ds = IMP.core.Cosine(.5 * k, 1., -angle)
+        for i, t1 in enumerate(particle_triplets[:-1]):
+            t2 = particle_triplets[i + 1]
+            q1 = [t1[1], t1[0], t2[0], t2[1]]
+            q2 = [t1[2], t1[0], t2[0], t2[2]]
+            self.rs.add_restraint(IMP.core.DihedralRestraint(self.m, ds, *q1))
+            self.rs.add_restraint(IMP.core.DihedralRestraint(self.m, ds, *q2))

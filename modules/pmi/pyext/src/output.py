@@ -57,7 +57,7 @@ class Output(object):
         self.ascii = ascii
         self.initoutput = {}
         self.residuetypekey = IMP.StringKey("ResidueName")
-        self.chainids = "ABCDEFGHIJKLMNOPQRSTUVXYWZabcdefghijklmnopqrstuvxywz0123456789"
+        self.chainids = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         self.dictchain = {}  # keys are molecule names, values are chain ids
         self.particle_infos_for_pdb = {}
         self.atomistic=atomistic

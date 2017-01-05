@@ -487,6 +487,7 @@ class BuildSystem(object):
         for molname in reader.get_molecules():
             copies = reader.get_molecules()[molname].domains
             for nc,copyname in enumerate(copies):
+                print("BuildSystem.add_state: setting up molecule %s copy number %s" % (molname,str(nc)))
                 copy = copies[copyname]
                 # option to not rename chains
                 if keep_chain_id == True:
@@ -496,16 +497,19 @@ class BuildSystem(object):
 
                 if nc==0:
                     seq = IMP.pmi.topology.Sequences(copy[0].fasta_file)[copy[0].fasta_id]
+                    print("BuildSystem.add_state: molecule %s sequence has %s residues" % (molname,len(seq)))
                     orig_mol = state.create_molecule(molname,
                                                      seq,
                                                      chain_id)
                     mol = orig_mol
                     numchain+=1
                 else:
+                    print("BuildSystem.add_state: creating a copy for molecule %s" % molname)
                     mol = orig_mol.create_copy(chain_id)
                     numchain+=1
 
-                for domain in copy:
+                for domainnumber,domain in enumerate(copy):
+                    print("BuildSystem.add_state: ---- setting up domain %s of molecule %s" % (domainnumber,molname))
                     # we build everything in the residue range, even if it
                     #  extends beyond what's in the actual PDB file
                     these_domains[domain.get_unique_name()] = domain
@@ -514,12 +518,13 @@ class BuildSystem(object):
                     else:
                         start = domain.residue_range[0]+domain.pdb_offset
                         if domain.residue_range[1]=='END':
-                            end = 0
+                            end = len(mol.sequence)
                         else:
                             end = domain.residue_range[1]+domain.pdb_offset
                         domain_res = mol.residue_range(start-1,end-1)
-
+                    print("BuildSystem.add_state: -------- domain %s of molecule %s extends from residue %s to residue %s " % (domainnumber,molname,start,end))
                     if domain.pdb_file=="BEADS":
+                        print("BuildSystem.add_state: -------- domain %s of molecule %s represented by BEADS " % (domainnumber,molname))
                         mol.add_representation(
                             domain_res,
                             resolutions=[domain.bead_size],
@@ -528,6 +533,7 @@ class BuildSystem(object):
                             color = domain.color)
                         these_domain_res[domain.get_unique_name()] = (set(),domain_res)
                     elif domain.pdb_file=="IDEAL_HELIX":
+                        print("BuildSystem.add_state: -------- domain %s of molecule %s represented by IDEAL_HELIX " % (domainnumber,molname))
                         mol.add_representation(
                             domain_res,
                             resolutions=self.resolutions,
@@ -538,6 +544,7 @@ class BuildSystem(object):
                             color = domain.color)
                         these_domain_res[domain.get_unique_name()] = (domain_res,set())
                     else:
+                        print("BuildSystem.add_state: -------- domain %s of molecule %s represented by pdb file %s " % (domainnumber,molname,domain.pdb_file))
                         domain_atomic = mol.add_structure(domain.pdb_file,
                                                           domain.chain,
                                                           domain.residue_range,
@@ -553,6 +560,7 @@ class BuildSystem(object):
                                                        resolutions=[domain.bead_size],
                                                        color = domain.color)
                         else:
+                            print("BuildSystem.add_state: -------- domain %s of molecule %s represented by gaussians " % (domainnumber,molname))
                             mol.add_representation(
                                 domain_atomic,
                                 resolutions=self.resolutions,
@@ -567,9 +575,9 @@ class BuildSystem(object):
                                                        color = domain.color)
                         these_domain_res[domain.get_unique_name()] = (
                             domain_atomic,domain_non_atomic)
-            self._domain_res.append(these_domain_res)
-            self._domains.append(these_domains)
-        print('State',len(self.system.states),'added')
+        self._domain_res.append(these_domain_res)
+        self._domains.append(these_domains)
+        print('BuildSystem.add_state: State',len(self.system.states),'added')
 
     def get_molecules(self):
         """Return list of all molecules grouped by state.
@@ -580,12 +588,12 @@ class BuildSystem(object):
     def get_molecule(self,molname,copy_index=0,state_index=0):
         return self.system.get_states()[state_index].get_molecules()[molname][copy_index]
 
-    def execute_macro(self):
+    def execute_macro(self, max_rb_trans=4.0, max_rb_rot=0.04, max_bead_trans=4.0, max_srb_trans=4.0):
         """Builds representations and sets up degrees of freedom"""
-        print("BuildSystem: building representations")
+        print("BuildSystem.execute_macro: building representations")
         self.root_hier = self.system.build()
 
-        print("BuildSystem: setting up degrees of freedom")
+        print("BuildSystem.execute_macro: setting up degrees of freedom")
         self.dof = IMP.pmi.dof.DegreesOfFreedom(self.mdl)
         for nstate,reader in enumerate(self._readers):
             rbs = reader.get_rigid_bodies()
@@ -595,32 +603,39 @@ class BuildSystem(object):
             # add rigid bodies
             domains_in_rbs = set()
             for rblist in rbs:
+                print("BuildSystem.execute_macro: -------- building rigid body %s" % (str(rblist)))
                 all_res = IMP.pmi.tools.OrderedSet()
                 bead_res = IMP.pmi.tools.OrderedSet()
                 for dname in rblist:
                     domain = self._domains[nstate][dname]
+                    print("BuildSystem.execute_macro: -------- adding %s" % (str(dname  )))
                     all_res|=self._domain_res[nstate][dname][0]
                     bead_res|=self._domain_res[nstate][dname][1]
                     domains_in_rbs.add(dname)
                 all_res|=bead_res
+                print("BuildSystem.execute_macro: -------- \
+creating rigid body with max_trans %s \
+max_rot %s non_rigid_max_trans %s" \
+                          % (str(max_rb_trans),str(max_rb_rot),str(max_bead_trans)))
                 self.dof.create_rigid_body(all_res,
                                            nonrigid_parts=bead_res,
-                                           max_trans=4.0,
-                                           nonrigid_max_trans=1.0)
+                                           max_trans=max_rb_trans,
+                                           max_rot=max_rb_rot,
+                                           nonrigid_max_trans=max_bead_trans)
 
             # if you have any BEAD domains not in an RB, set them as flexible beads
             for dname in self._domains[nstate]:
                 domain = self._domains[nstate][dname]
                 if domain.pdb_file=="BEADS" and dname not in domains_in_rbs:
                     self.dof.create_flexible_beads(
-                        self._domain_res[nstate][dname][1],max_trans=4.0)
+                        self._domain_res[nstate][dname][1],max_trans=max_bead_trans)
 
             # add super rigid bodies
             for srblist in srbs:
                 all_res = IMP.pmi.tools.OrderedSet()
                 for dname in srblist:
                     all_res|=self._domain_res[nstate][dname][0]
-                self.dof.create_super_rigid_body(all_res,max_trans=4.0)
+                self.dof.create_super_rigid_body(all_res,max_trans=max_srb_trans)
 
             # add chains of super rigid bodies
             for csrblist in csrbs:

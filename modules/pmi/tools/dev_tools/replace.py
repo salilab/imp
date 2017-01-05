@@ -3,11 +3,12 @@
 """Replace all instances of argv[1] with argv[2], only updating the file if
    changes were made. """
 
+from __future__ import print_function
 import sys
 import os
 
 if len(sys.argv) < 3:
-    print("usage:", sys.argv[0], " find_string replace_string files....")
+    print("usage: %s find_string replace_string files...." % sys.argv[0])
     exit(1)
 
 instring = sys.argv[1]

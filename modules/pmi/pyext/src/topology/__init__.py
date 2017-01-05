@@ -844,29 +844,33 @@ def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
         print(name)
         seq_fasta=fasta_sequences.sequences[name]
         if name not in pdb_sequences.sequences:
-            print("Fasta id %s not in pdb names, skipping" % name)
-            continue
-        for group in pdb_sequences.sequences[name]:
-            seq_frag_pdb=pdb_sequences.sequences[name][group]
-            if show:
-                print("########################")
-                print(" ")
-                print("protein name",name)
-                print("fasta id", name)
-                print("pdb fragment",group)
-            for a in pairwise2.align.localms(seq_fasta, seq_frag_pdb, 2, -1, -.5, -.1):
-                offset=a[3]+1-group[0]
+            print("Fasta id %s not in pdb names, aligning against every pdb chain" % name)
+            pdbnames=pdb_sequences.sequences.keys()
+        else:
+            pdbnames=[name]
+        for pdbname in pdbnames:
+            for group in pdb_sequences.sequences[pdbname]:
+                seq_frag_pdb=pdb_sequences.sequences[pdbname][group]
                 if show:
-                    print("alignment sequence start-end",(a[3]+1,a[4]+1))
-                    print("offset from pdb to fasta index",offset)
-                    print(format_alignment(*a))
-                if name not in offsets:
-                    offsets[name]={}
-                    if group not in offsets[name]:
-                        offsets[name][group]=offset
-                else:
-                    if group not in offsets[name]:
-                        offsets[name][group]=offset
+                    print("########################")
+                    print(" ")
+                    print("protein name",pdbname)
+                    print("fasta id", name)
+                    print("pdb fragment",group)
+                align=pairwise2.align.localms(seq_fasta, seq_frag_pdb, 2, -1, -.5, -.1)[0]
+                for a in [align]:
+                    offset=a[3]+1-group[0]
+                    if show:
+                        print("alignment sequence start-end",(a[3]+1,a[4]+1))
+                        print("offset from pdb to fasta index",offset)
+                        print(format_alignment(*a))
+                    if name not in offsets:
+                        offsets[pdbname]={}
+                        if group not in offsets[pdbname]:
+                            offsets[pdbname][group]=offset
+                    else:
+                        if group not in offsets[pdbname]:
+                            offsets[pdbname][group]=offset
     return offsets
 
 

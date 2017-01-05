@@ -2,7 +2,7 @@
  *  \file IMP/pmi/MembraneRestraint.h
  *  \brief Favor configurations where target is in the membrane.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

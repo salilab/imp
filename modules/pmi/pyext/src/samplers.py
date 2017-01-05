@@ -56,7 +56,8 @@ class MonteCarlo(object):
             "Floppy_Bodies",
             "Nuisances",
             "X_coord",
-            "Weights"]
+            "Weights"
+            "Surfaces"]
         self.simulated_annealing = False
         self.selfadaptive = False
         # that is -1 because mc has not yet run
@@ -123,6 +124,16 @@ class MonteCarlo(object):
                         if not self.isd_available:
                             raise ValueError("isd module needed to use weights")
                         mvs = self.get_weight_movers(pts[k][0], pts[k][1])
+                        for mv in mvs:
+                            mv.set_name(k)
+                        self.mvs += mvs
+
+                    if "Surfaces" in k:
+                        mvs = self.get_surface_movers(
+                            pts[k][0],
+                            pts[k][1],
+                            pts[k][2],
+                            pts[k][3])
                         for mv in mvs:
                             mv.set_name(k)
                         self.mvs += mvs
@@ -322,6 +333,13 @@ class MonteCarlo(object):
         for weight in weights:
             if(weight.get_number_of_states() > 1):
                 mvs.append(IMP.isd.WeightMover(weight, maxstep))
+        return mvs
+
+    def get_surface_movers(self, surfaces, maxtrans, maxrot, refprob):
+        mvs = []
+        for surface in surfaces:
+            mvs.append(IMP.core.SurfaceMover(surface, maxtrans, maxrot,
+                                             refprob))
         return mvs
 
     def temp_simulated_annealing(self):

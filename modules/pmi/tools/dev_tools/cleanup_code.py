@@ -25,7 +25,7 @@ from python_tools.reindent import Reindenter
 
 parser = OptionParser(usage="%prog [options] [FILENAME ...]",
                description="""Reformat the given C++ and Python files
-under (using the clang-format tool if available and
+(using the clang-format tool if available and
 reindent.py, respectively). If the --all option is given, reformat all such
 files under the current directory.
 

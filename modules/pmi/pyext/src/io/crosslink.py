@@ -9,6 +9,16 @@ import IMP
 import IMP.pmi
 import operator
 
+# json default serializations
+def set_json_default(obj):
+    if isinstance(obj, set):
+        return list(obj)
+    if isinstance(obj, IMP.pmi.topology.Molecule):
+        return str(obj)
+    raise TypeError
+
+
+
 class _CrossLinkDataBaseStandardKeys(object):
     '''
     This class setup all the standard keys needed to
@@ -46,6 +56,8 @@ class _CrossLinkDataBaseStandardKeys(object):
         self.type[self.redundancy_key]=int
         self.redundancy_list_key="RedundancyList"
         self.type[self.redundancy_key]=list
+        self.ambiguity_key="Ambiguity"
+        self.type[self.ambiguity_key]=int
         self.state_key="State"
         self.type[self.state_key]=int
         self.sigma1_key="Sigma1"
@@ -102,15 +114,23 @@ class _ProteinsResiduesArray(tuple):
         elif type(input_data) is tuple:
             if len(input_data)>4:
                 raise TypeError("_ProteinsResiduesArray: must have only 4 elements")
-            if type(input_data[0]) is not str:
-                raise TypeError("_ProteinsResiduesArray: input_data[0] must be a string")
-            if type(input_data[1]) is not str:
-                raise TypeError("_ProteinsResiduesArray: input_data[1] must be a string")
-            if type(input_data[2]) is not int:
-                raise TypeError("_ProteinsResiduesArray: input_data[2] must be a integer")
-            if type(input_data[3]) is not int:
-                raise TypeError("_ProteinsResiduesArray: input_data[3] must be a integer")
-            t=input_data
+            p1=input_data[0]
+            p2=input_data[1]
+            r1=input_data[2]
+            r2=input_data[3]
+            if type(p1) is not str and type(p1) is not unicode:
+                raise TypeError("_ProteinsResiduesArray: protein1 must be a string or unicode")
+            if type(p1) is unicode:
+                p1=str(p1)
+            if type(p2) is not str and type(p2) is not unicode:
+                raise TypeError("_ProteinsResiduesArray: protein2 must be a string or unicode")
+            if type(p2) is unicode:
+                p2=str(p2)
+            if type(r1) is not int:
+                raise TypeError("_ProteinsResiduesArray: residue1 must be a integer")
+            if type(r2) is not int:
+                raise TypeError("_ProteinsResiduesArray: residue2 must be a integer")
+            t=(p1,p2,r1,r2)
         else:
             raise TypeError("_ProteinsResiduesArray: input must be a dict or tuple")
         return tuple.__new__(_ProteinsResiduesArray, t)
@@ -222,6 +242,15 @@ class CrossLinkDataBaseKeywordsConverter(_CrossLinkDataBaseStandardKeys):
         Returns the keys that have been setup so far
         '''
         return self.backward_converter.keys()
+
+    def set_standard_keys(self):
+        """
+        This sets up the standard compulsory keys as defined by
+        _CrossLinkDataBaseStandardKeys
+        """
+        for ck in self.compulsory_keys:
+            self.converter[ck]=ck
+            self.backward_converter[ck]=ck
 
     def set_unique_id_key(self,origin_key):
         self.converter[origin_key]=self.unique_id_key
@@ -346,7 +375,6 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
                     residue2=spi[1]
                     residue_pair_indexes.append((residue1,residue2))
                     chain_pair_indexes.append((chain1,chain2))
-            print(residue_pair_indexes,chain_pair_indexes)
             return residue_pair_indexes,chain_pair_indexes
 
 
@@ -406,9 +434,9 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             self.list_parser=None
             self.converter = None
 
-        self.__update()
+        self._update()
 
-    def __update(self):
+    def _update(self):
         '''
         Update the whole dataset after changes
         '''
@@ -441,7 +469,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             new_data_base[k+"."+name]=self.data_base[k]
         self.data_base=new_data_base
         self.name=name
-        self.__update()
+        self._update()
 
     def get_number_of_xlid(self):
         return len(self.data_base)
@@ -546,11 +574,12 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
         self.data_base=new_xl_dict
         self.name=file_name
-        self.__update()
+        self._update()
 
     def update_cross_link_unique_sub_index(self):
         for k in self.data_base:
             for n,xl in enumerate(self.data_base[k]):
+                xl[self.ambiguity_key]=len(self.data_base[k])
                 xl[self.unique_sub_index_key]=n+1
                 xl[self.unique_sub_id_key]=k+"."+str(n+1)
 
@@ -641,7 +670,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         for k in CrossLinkDataBase2.data_base:
             new_data_base[k]=CrossLinkDataBase2.data_base[k]
         self.data_base=new_data_base
-        self.__update()
+        self._update()
 
     def set_value(self,key,new_value,FilterOperator=None):
         '''
@@ -661,7 +690,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                     xl[key]=new_value
             else:
                 xl[key]=new_value
-        self.__update()
+        self._update()
 
     def get_values(self,key):
         '''
@@ -685,7 +714,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 xl[self.residue1_key]=xl[self.residue1_key]+offset
             if xl[self.protein2_key] == protein_name:
                 xl[self.residue2_key]=xl[self.residue2_key]+offset
-        self.__update()
+        self._update()
 
     def create_new_keyword(self,keyword,values_from_keyword=None):
         '''
@@ -699,19 +728,19 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 xl[keyword] = xl[values_from_keyword]
             else:
                 xl[keyword] = None
-        self.__update()
+        self._update()
 
     def rename_proteins(self,old_to_new_names_dictionary):
         '''
         This function renames all proteins contained in the input dictionary
         from the old names (keys) to the new name (values)
         '''
-        
+
         for old_name in old_to_new_names_dictionary:
             new_name=old_to_new_names_dictionary[old_name]
-            fo2=FilterOperator(self.protein1_key,operator.eq,old_name)    
+            fo2=FilterOperator(self.protein1_key,operator.eq,old_name)
             self.set_value(self.protein1_key,new_name,fo2)
-            fo2=FilterOperator(self.protein2_key,operator.eq,old_name)    
+            fo2=FilterOperator(self.protein2_key,operator.eq,old_name)
             self.set_value(self.protein2_key,new_name,fo2)
 
     def clone_protein(self,protein_name,new_protein_name):
@@ -740,7 +769,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                     new_xl[self.protein2_key]=new_protein_name
                     new_data_base.append(new_xl)
             self.data_base[id]=new_data_base
-        self.__update()
+        self._update()
 
     def filter_out_same_residues(self):
         '''
@@ -756,7 +785,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 else:
                     new_data_base.append(xl)
             self.data_base[id]=new_data_base
-        self.__update()
+        self._update()
 
 
     def jackknife(self,percentage):
@@ -801,14 +830,14 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         import matplotlib.pyplot as plt
         import matplotlib
         import matplotlib.colors
-        
+
 
 
         if kwargs["type"] == "scatter":
             cmap=plt.get_cmap("rainbow")
             norm=matplotlib.colors.Normalize(vmin=0.0, vmax=1.0)
             xkey=kwargs["xkey"]
-            ykey=kwargs["ykey"]    
+            ykey=kwargs["ykey"]
             if "colorkey" in kwargs:
                 colorkey=kwargs["colorkey"]
             if "sizekey" in kwargs:
@@ -824,12 +853,12 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 except ValueError:
                     print("Value error for cross-link %s" % (xl[self.unique_id_key]))
                     continue
-            
+
             cs=[]
             for color in colors:
                 cindex=(color-min(colors))/(max(colors)-min(colors))
                 cs.append(cmap(cindex))
-            
+
             fig = plt.figure()
             ax = fig.add_subplot(111)
             ax.scatter(xs, ys, s=50.0, c=cs, alpha=0.8,marker="o")
@@ -839,16 +868,41 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             plt.show()
             plt.close()
 
+        if kwargs["type"] == "histogram":
+            valuekey=kwargs["valuekey"]
+            reference_xline=kwargs["reference_xline"]
+            valuename=valuekey
+            bins=kwargs["bins"]
+            values_list=[]
+            for xl in self:
+                try:
+                    values_list.append(float(xl[valuekey]))
+                except ValueError:
+                    print("Value error for cross-link %s" % (xl[self.unique_id_key]))
+                    continue
+            IMP.pmi.output.plot_field_histogram(
+                  filename, [values_list], valuename=valuename, bins=bins,
+                  colors=None, format="pdf",
+                  reference_xline=None, yplotrange=None,
+                  xplotrange=None,normalized=True,
+                  leg_names=None)
+
     def dump(self,json_filename):
         import json
         with open(json_filename, 'w') as fp:
-            json.dump(self.data_base, fp, sort_keys=True, indent=2)
+            json.dump(self.data_base, fp, sort_keys=True, indent=2, default=set_json_default)
 
     def load(self,json_filename):
         import json
         with open(json_filename, 'r') as fp:
             self.data_base = json.load(fp)
-        self.__update()
+        self._update()
+        #getting rid of unicode
+        for xl in self:
+            for k,v in xl.iteritems():
+                if type(k) is unicode: k=str(k)
+                if type(v) is unicode: v=str(v)
+                xl[k]=v
 
     def save_csv(self,filename):
 
@@ -874,19 +928,34 @@ class CrossLinkDataBaseFromStructure(object):
     '''
     This class generates a CrossLinkDataBase from a given structure
     '''
-    def __init__(self,representation,
+    def __init__(self,representation=None,
+                      system=None,
                       residue_types_1=["K"],
                       residue_types_2=["K"],
-                      reactivity_range=[0,3],
+                      reactivity_range=[0,1],
                       kt=1.0):
 
+        import numpy.random
+        import math
         cldbkc=CrossLinkDataBaseKeywordsConverter()
         cldbkc.set_protein1_key("Protein1")
         cldbkc.set_protein2_key("Protein2")
         cldbkc.set_residue1_key("Residue1")
         cldbkc.set_residue2_key("Residue2")
         self.cldb=CrossLinkDataBase(cldbkc)
-        self.representation=representation
+        if representation is not None:
+            #PMI 1.0 mode
+            self.mode="pmi1"
+            self.representation=representation
+            self.model=self.representation.m
+        elif system is not None:
+            #PMI 2.0 mode
+            self.system=system
+            self.model=self.system.mdl
+            self.mode="pmi2"
+        else:
+            print("Argument error: please provide either a representation object or a IMP.Hierarchy")
+            raise
         self.residue_types_1=residue_types_1
         self.residue_types_2=residue_types_2
         self.kt=kt
@@ -898,72 +967,127 @@ class CrossLinkDataBaseFromStructure(object):
         self.xwalk_interacting_pairs=None
         import random
 
-        for protein in self.representation.sequence_dict.keys():
-            # we are saving a dictionary with protein name, residue number and random reactivity of the residue
-            seq=self.representation.sequence_dict[protein]
-            residues=[i for i in range(1,len(seq)+1) if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2))]
-            for i in range(1,len(seq)+1):
-                if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2)):
-                    print(i, protein, seq[i-1])
+        if self.mode=="pmi1":
+            for protein in self.representation.sequence_dict.keys():
+                # we are saving a dictionary with protein name, residue number and random reactivity of the residue
+                seq=self.representation.sequence_dict[protein]
+                residues=[i for i in range(1,len(seq)+1) if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2))]
 
-            for r in residues:
-                self.reactivity_dictionary[(protein,r)]=random.uniform(reactivity_range[0],reactivity_range[1])
+                for r in residues:
+                    # uniform random reactivities
+                    #self.reactivity_dictionary[(protein,r)]=random.uniform(reactivity_range[0],reactivity_range[1])
+                    # getting reactivities from the CDF of an exponential distribution
+                    rexp=numpy.random.exponential(0.1)
+                    prob=1.0-math.exp(-rexp)
+                    self.reactivity_dictionary[(protein,r)]=prob
 
-            residues1=[i for i in range(1,len(seq)+1) if seq[i-1] in self.residue_types_1]
-            residues2=[i for i in range(1,len(seq)+1) if seq[i-1] in self.residue_types_2]
-            for r in residues1:
-                h=IMP.pmi.tools.select_by_tuple(self.representation,(r,r,protein),resolution=1)[0]
-                p=h.get_particle()
-                index=p.get_index()
-                self.indexes_dict1[index]=(protein,r)
-                self.protein_residue_dict[(protein,r)]=index
-            for r in residues2:
-                h=IMP.pmi.tools.select_by_tuple(self.representation,(r,r,protein),resolution=1)[0]
-                p=h.get_particle()
-                index=p.get_index()
-                self.indexes_dict2[index]=(protein,r)
-                self.protein_residue_dict[(protein,r)]=index
+
+                residues1=[i for i in range(1,len(seq)+1) if seq[i-1] in self.residue_types_1]
+                residues2=[i for i in range(1,len(seq)+1) if seq[i-1] in self.residue_types_2]
+                for r in residues1:
+                    h=IMP.pmi.tools.select_by_tuple(self.representation,(r,r,protein),resolution=1)[0]
+                    p=h.get_particle()
+                    index=p.get_index()
+                    self.indexes_dict1[index]=(protein,r)
+                    self.protein_residue_dict[(protein,r)]=index
+                for r in residues2:
+                    h=IMP.pmi.tools.select_by_tuple(self.representation,(r,r,protein),resolution=1)[0]
+                    p=h.get_particle()
+                    index=p.get_index()
+                    self.indexes_dict2[index]=(protein,r)
+                    self.protein_residue_dict[(protein,r)]=index
+
+        if self.mode=="pmi2":
+            for state in self.system.get_states():
+                for moleculename,molecules in state.get_molecules().iteritems():
+                    for molecule in molecules:
+                        # we are saving a dictionary with protein name, residue number and random reactivity of the residue
+                        seq=molecule.sequence
+                        residues=[i for i in range(1,len(seq)+1) if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2))]
+
+                        for r in residues:
+                            # uniform random reactivities
+                            #self.reactivity_dictionary[(protein,r)]=random.uniform(reactivity_range[0],reactivity_range[1])
+                            # getting reactivities from the CDF of an exponential distribution
+                            rexp=numpy.random.exponential(0.1)
+                            prob=1.0-math.exp(-rexp)
+                            self.reactivity_dictionary[(molecule,r)]=prob
+
+                        residues1=[i for i in range(1,len(seq)+1) if seq[i-1] in self.residue_types_1]
+                        residues2=[i for i in range(1,len(seq)+1) if seq[i-1] in self.residue_types_2]
+                        for r in residues1:
+                            s=IMP.atom.Selection(molecule.hier,residue_index=r,resolution=1)
+                            ps=s.get_selected_particles()
+                            for p in ps:
+                                index=p.get_index()
+                                self.indexes_dict1[index]=(molecule,r)
+                                self.protein_residue_dict[(molecule,r)]=index
+                        for r in residues2:
+                            s=IMP.atom.Selection(molecule.hier,residue_index=r,resolution=1)
+                            ps=s.get_selected_particles()
+                            for p in ps:
+                                index=p.get_index()
+                                self.indexes_dict2[index]=(molecule,r)
+                                self.protein_residue_dict[(molecule,r)]=index
+
 
 
     def get_data_base(self,total_number_of_spectra,
                                   ambiguity_probability=0.1,
                                   noise=0.01,
                                   distance=21,
+                                  max_delta_distance=10.0,
                                   xwalk_bin_path=None):
-
-        from random import random
+        import math
+        from random import random,uniform
         number_of_spectra=1
 
         self.cldb.data_base[str(number_of_spectra)]=[]
+        self.sites_weighted=None
+
         while number_of_spectra<total_number_of_spectra:
             if random() > ambiguity_probability and len(self.cldb.data_base[str(number_of_spectra)]) != 0:
                     # new spectrum
                 number_of_spectra+=1
                 self.cldb.data_base[str(number_of_spectra)]=[]
-            noisy="F"
+            noisy=False
             if random() > noise:
                 # not noisy crosslink
-                pra,dist=self.get_random_residue_pair(distance,xwalk_bin_path)
-
+                pra,dist=self.get_random_residue_pair(distance,xwalk_bin_path,max_delta_distance)
             else:
                 # noisy crosslink
-                pra,dist=self.get_random_residue_pair(None,None)
-                noisy="T"
+                pra,dist=self.get_random_residue_pair(None,None,None)
+                noisy=True
 
             new_xl={}
-            new_xl[self.cldb.protein1_key]=pra[0]
-            new_xl[self.cldb.protein2_key]=pra[1]
+            if self.mode=="pmi1":
+                new_xl[self.cldb.protein1_key]=pra[0]
+                new_xl[self.cldb.protein2_key]=pra[1]
+            elif self.mode=="pmi2":
+                new_xl[self.cldb.protein1_key]=pra[0].get_name()
+                new_xl[self.cldb.protein2_key]=pra[1].get_name()
+                new_xl["molecule_object1"]=pra[0]
+                new_xl["molecule_object2"]=pra[1]
             new_xl[self.cldb.residue1_key]=pra[2]
             new_xl[self.cldb.residue2_key]=pra[3]
             new_xl["Noisy"]=noisy
+            # the reactivity is defined as r=1-exp(-k*Delta t)
             new_xl["Reactivity_Residue1"]=self.reactivity_dictionary[(pra[0],pra[2])]
             new_xl["Reactivity_Residue2"]=self.reactivity_dictionary[(pra[1],pra[3])]
+            r1=new_xl["Reactivity_Residue1"]
+            r2=new_xl["Reactivity_Residue2"]
+            #combined reactivity 1-exp(-k12*Delta t),
+            # k12=k1*k2/(k1+k2)
+            new_xl["Reactivity"]=1.0-math.exp(-math.log(1.0/(1.0-r1))*math.log(1.0/(1.0-r2))/math.log(1.0/(1.0-r1)*1.0/(1.0-r2)))
+            if noisy:
+                new_xl["Score"]=uniform(-1.0,1.0)
+            else:
+                new_xl["Score"]=new_xl["Reactivity"]+uniform(0.0,2.0)
             new_xl["TargetDistance"]=dist
             new_xl["NoiseProbability"]=noise
             new_xl["AmbiguityProbability"]=ambiguity_probability
-            new_xl["TargetDistance"]=dist
             # getting if it is intra or inter rigid body
-            (p1,p2)=IMP.kernel.get_particles(self.representation.m,[self.protein_residue_dict[(pra[0],pra[2])],
+            (p1,p2)=IMP.get_particles(self.model,[self.protein_residue_dict[(pra[0],pra[2])],
                                                                     self.protein_residue_dict[(pra[1],pra[3])]])
             if(IMP.core.RigidMember.get_is_setup(p1) and
                IMP.core.RigidMember.get_is_setup(p2) and
@@ -979,58 +1103,118 @@ class CrossLinkDataBaseFromStructure(object):
                 new_xl["InterRigidBody"] = None
 
             self.cldb.data_base[str(number_of_spectra)].append(new_xl)
-        self.cldb.__update()
+        self.cldb._update()
         return self.cldb
 
 
-    def get_random_residue_pair(self,distance=None,xwalk_bin_path=None):
+    def get_random_residue_pair(self,distance=None,xwalk_bin_path=None,max_delta_distance=None):
         import IMP.pmi.tools
         import math
-        from random import choice
+        from random import choice,uniform
         if distance is None:
         # get a random pair
             while True:
-                protein1=choice(self.representation.sequence_dict.keys())
-                protein2=choice(self.representation.sequence_dict.keys())
-                seq1=self.representation.sequence_dict[protein1]
-                seq2=self.representation.sequence_dict[protein2]
-                residue1=choice([i for i in range(1,len(seq1)+1) if seq1[i-1] in self.residue_types_1])
-                residue2=choice([i for i in range(1,len(seq2)+1) if seq2[i-1] in self.residue_types_2])
-                h1=IMP.pmi.tools.select_by_tuple(self.representation,(residue1,residue1,protein1),resolution=1)[0]
-                h2=IMP.pmi.tools.select_by_tuple(self.representation,(residue2,residue2,protein2),resolution=1)[0]
-                particle_distance=IMP.core.get_distance(IMP.core.XYZ(h1.get_particle()),IMP.core.XYZ(h2.get_particle()))
-                if (protein1,residue1) != (protein2,residue2):
-                    break
+                if self.mode=="pmi1":
+                    protein1=choice(self.representation.sequence_dict.keys())
+                    protein2=choice(self.representation.sequence_dict.keys())
+                    seq1=self.representation.sequence_dict[protein1]
+                    seq2=self.representation.sequence_dict[protein2]
+                    residue1=choice([i for i in range(1,len(seq1)+1) if seq1[i-1] in self.residue_types_1])
+                    residue2=choice([i for i in range(1,len(seq2)+1) if seq2[i-1] in self.residue_types_2])
+                    h1=IMP.pmi.tools.select_by_tuple(self.representation,(residue1,residue1,protein1),resolution=1)[0]
+                    h2=IMP.pmi.tools.select_by_tuple(self.representation,(residue2,residue2,protein2),resolution=1)[0]
+                    particle_distance=IMP.core.get_distance(IMP.core.XYZ(h1.get_particle()),IMP.core.XYZ(h2.get_particle()))
+                    if (protein1,residue1) != (protein2,residue2):
+                        break
+                elif self.mode=="pmi2":
+                    (protein1,residue1)=choice(self.protein_residue_dict.keys())
+                    (protein2,residue2)=choice(self.protein_residue_dict.keys())
+                    index1=self.protein_residue_dict[(protein1,residue1)]
+                    index2=self.protein_residue_dict[(protein2,residue2)]
+                    particle_distance=IMP.core.get_distance(IMP.core.XYZ(IMP.get_particles(self.model,[index1])[0]),IMP.core.XYZ(IMP.get_particles(self.model,[index2])[0]))
+                    if (protein1,residue1) != (protein2,residue2):
+                        break
         else:
             # get a pair of residues whose distance is below the threshold
             if not xwalk_bin_path:
                 gcpf = IMP.core.GridClosePairsFinder()
-                gcpf.set_distance(distance)
-                if not self.euclidean_interacting_pairs:
-                    self.euclidean_interacting_pairs=gcpf.get_close_pairs(self.representation.m,
-                                self.indexes_dict1.keys(),
-                                self.indexes_dict2.keys())
-                interacting_pairs_weighted=[]
-                for pair in self.euclidean_interacting_pairs:
-                    weight1=math.exp(-self.reactivity_dictionary[self.indexes_dict1[pair[0]]]/self.kt)
-                    weight2=math.exp(-self.reactivity_dictionary[self.indexes_dict2[pair[1]]]/self.kt)
-                    interacting_pairs_weighted.append((pair,weight1*weight2))
+                gcpf.set_distance(distance+max_delta_distance)
 
                 while True:
-                    pair=self.weighted_choice(interacting_pairs_weighted)
-                    protein1,residue1=self.indexes_dict1[pair[0]]
-                    protein2,residue2=self.indexes_dict2[pair[1]]
-                    particle_pair=IMP.kernel.get_particles(self.representation.m,pair)
+                    #setup the reaction rates lists
+                    if not self.sites_weighted:
+                        self.sites_weighted=[]
+                        for key in self.reactivity_dictionary:
+                            r=self.reactivity_dictionary[key]
+                            self.sites_weighted.append((key,r))
+                    #get a random reaction site
+                    first_site=self.weighted_choice(self.sites_weighted)
+                    #get all distances
+                    if not self.euclidean_interacting_pairs:
+                        self.euclidean_interacting_pairs=gcpf.get_close_pairs(self.model,
+                                    self.indexes_dict1.keys(),
+                                    self.indexes_dict2.keys())
+                    #get the partner for the first reacted site
+                    first_site_pairs = [pair for pair in self.euclidean_interacting_pairs
+                                     if self.indexes_dict1[pair[0]] == first_site or
+                                        self.indexes_dict2[pair[1]] == first_site]
+                    if len(first_site_pairs)==0: continue
+                    #build the list of second reaction sites
+                    second_sites_weighted=[]
+                    for pair in first_site_pairs:
+                        if self.indexes_dict1[pair[0]] == first_site: second_site = self.indexes_dict2[pair[1]]
+                        if self.indexes_dict2[pair[1]] == first_site: second_site = self.indexes_dict1[pair[0]]
+                        r=self.reactivity_dictionary[second_site]
+                        second_sites_weighted.append((second_site,r))
+                    second_site=self.weighted_choice(second_sites_weighted)
+                    """
+                    interacting_pairs_weighted=[]
+                    for pair in self.euclidean_interacting_pairs:
+                        r1=self.reactivity_dictionary[self.indexes_dict1[pair[0]]]
+                        r2=self.reactivity_dictionary[self.indexes_dict2[pair[1]]]
+                        #combined reactivity 1-exp(-k12*Delta t),
+                        # k12=k1*k2/(k1+k2)
+                        #print(r1,r2,dist)
+                        r12=1.0-math.exp(-math.log(1.0/(1.0-r1))*math.log(1.0/(1.0-r2))/math.log(1.0/(1.0-r1)*1.0/(1.0-r2)))
+                        interacting_pairs_weighted.append((pair,r12))
+                        #weight1=math.exp(-self.reactivity_dictionary[self.indexes_dict1[pair[0]]]/self.kt)
+                        #weight2=math.exp(-self.reactivity_dictionary[self.indexes_dict2[pair[1]]]/self.kt)
+                        #interacting_pairs_weighted.append((pair,weight1*weight2))
+
+                    while True:
+                        pair=self.weighted_choice(interacting_pairs_weighted)
+                        protein1,residue1=self.indexes_dict1[pair[0]]
+                        protein2,residue2=self.indexes_dict2[pair[1]]
+                        particle_pair=IMP.get_particles(self.model,pair)
+                        particle_distance=IMP.core.get_distance(IMP.core.XYZ(particle_pair[0]),IMP.core.XYZ(particle_pair[1]))
+                        if particle_distance<distance and (protein1,residue1) != (protein2,residue2):
+                            break
+                        elif particle_distance>=distance and (protein1,residue1) != (protein2,residue2) and max_delta_distance:
+                            #allow some flexibility
+                            prob=1.0-((particle_distance-distance)/max_delta_distance)**(0.3)
+                            if uniform(0.0,1.0)<prob: break
+                    """
+                    protein1,residue1=first_site
+                    protein2,residue2=second_site
+                    print("CrossLinkDataBaseFromStructure.get_random_residue_pair:",
+                          "First site",first_site,self.reactivity_dictionary[first_site],
+                          "Second site",second_site,self.reactivity_dictionary[second_site])
+                    particle_pair=IMP.get_particles(self.model,[self.protein_residue_dict[first_site],self.protein_residue_dict[second_site]])
                     particle_distance=IMP.core.get_distance(IMP.core.XYZ(particle_pair[0]),IMP.core.XYZ(particle_pair[1]))
+
                     if particle_distance<distance and (protein1,residue1) != (protein2,residue2):
                         break
+                    elif particle_distance>=distance and (protein1,residue1) != (protein2,residue2) and max_delta_distance:
+                        #allow some flexibility
+                        prob=1.0-((particle_distance-distance)/max_delta_distance)**(0.3)
+                        if uniform(0.0,1.0)<prob: break
+
+
 
             else:
                 if not self.xwalk_interacting_pairs:
                     self.xwalk_interacting_pairs=self.get_xwalk_distances(xwalk_bin_path,distance)
                 interacting_pairs_weighted=[]
-
-                print(self.reactivity_dictionary)
 
                 for pair in self.xwalk_interacting_pairs:
                     protein1=pair[0]
@@ -1050,7 +1234,7 @@ class CrossLinkDataBaseFromStructure(object):
 
 
 
-        return _ProteinsResiduesArray((protein1,protein2,residue1,residue2)),particle_distance
+        return ((protein1,protein2,residue1,residue2)),particle_distance
 
     def get_xwalk_distances(self,xwalk_bin_path,distance):
         import IMP.pmi.output
@@ -1078,13 +1262,11 @@ class CrossLinkDataBaseFromStructure(object):
             protein2=chainiddict[chainid2]
             residue1=int(fs[1])
             residue2=int(ss[1])
-            print(protein1,protein2,residue1,residue2,distance)
             output_list_of_distance.append((protein1,protein2,residue1,residue2,distance))
         return output_list_of_distance
 
 
     def weighted_choice(self,choices):
-
         import random
         # from http://stackoverflow.com/questions/3679694/a-weighted-version-of-random-choice
         total = sum(w for c, w in choices)
@@ -1095,3 +1277,59 @@ class CrossLinkDataBaseFromStructure(object):
                 return c
             upto += w
         assert False, "Shouldn't get here"
+
+    def save_rmf_snapshot(self,filename,color_id=None):
+        import IMP.rmf
+        import RMF
+        if color_id is None:
+            color_id="Reactivity"
+        sorted_ids=None
+        sorted_group_ids=sorted(self.cldb.data_base.keys())
+        list_of_pairs=[]
+        color_scores=[]
+        for group in sorted_group_ids:
+            group_xls=[]
+            group_dists_particles=[]
+            for xl in self.cldb.data_base[group]:
+                xllabel=self.cldb.get_short_cross_link_string(xl)
+                (c1,c2,r1,r2)=(xl["molecule_object1"],xl["molecule_object2"],xl[self.cldb.residue1_key],xl[self.cldb.residue2_key])
+                try:
+                    index1=self.protein_residue_dict[(c1,r1)]
+                    index2=self.protein_residue_dict[(c2,r2)]
+                    p1,p2=IMP.get_particles(self.model,[index1])[0],IMP.get_particles(self.model,[index2])[0]
+                    mdist=xl["TargetDistance"]
+                except TypeError:
+                    print("TypeError or missing chain/residue ",r1,c1,r2,c2)
+                    continue
+                group_dists_particles.append((mdist,p1,p2,xllabel,float(xl[color_id])))
+            if group_dists_particles:
+                (minmdist,minp1,minp2,minxllabel,mincolor_score)=min(group_dists_particles, key = lambda t: t[0])
+                color_scores.append(mincolor_score)
+                list_of_pairs.append((minp1,minp2,minxllabel,mincolor_score))
+            else:
+                continue
+
+
+        m=self.model
+        linear = IMP.core.Linear(0, 0.0)
+        linear.set_slope(1.0)
+        dps2 = IMP.core.DistancePairScore(linear)
+        rslin = IMP.RestraintSet(m, 'linear_dummy_restraints')
+        sgs=[]
+        offset=min(color_scores)
+        maxvalue=max(color_scores)
+        for pair in list_of_pairs:
+            pr = IMP.core.PairRestraint(m, dps2, (pair[0], pair[1]))
+            pr.set_name(pair[2])
+            factor=(pair[3]-offset)/(maxvalue-offset)
+            c=IMP.display.get_rgb_color(factor)
+            seg=IMP.algebra.Segment3D(IMP.core.XYZ(pair[0]).get_coordinates(),IMP.core.XYZ(pair[1]).get_coordinates())
+            rslin.add_restraint(pr)
+            sgs.append(IMP.display.SegmentGeometry(seg,c,pair[2]))
+
+        rh = RMF.create_rmf_file(filename)
+        IMP.rmf.add_hierarchies(rh, [self.system.hier])
+        IMP.rmf.add_restraints(rh,[rslin])
+        IMP.rmf.add_geometries(rh, sgs)
+        IMP.rmf.save_frame(rh)
+        del rh

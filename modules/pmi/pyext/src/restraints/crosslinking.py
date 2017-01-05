@@ -426,6 +426,32 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
         return output
 
+    def get_movers(self):
+        """ Get all need data to construct a mover in IMP.pmi.dof class"""
+        movers=[]
+        if self.sigma_is_sampled:
+            for sigmaname in self.sigma_dictionary:
+                mover_name="Nuisances_CrossLinkingMassSpectrometryRestraint_Sigma_" + str(sigmaname) + "_" + self.label
+                particle=self.sigma_dictionary[sigmaname][0]
+                maxstep=(self.sigma_dictionary[sigmaname][1])
+                mv=IMP.core.NormalMover([particle],
+                                  IMP.FloatKeys([IMP.FloatKey("nuisance")]),maxstep)
+                mv.set_name(mover_name)
+                movers.append(mv)
+
+        if self.psi_is_sampled:
+            for psiname in self.psi_dictionary:
+                mover_name="Nuisances_CrossLinkingMassSpectrometryRestraint_Psi_" + str(psiname) + "_" + self.label
+                particle=self.psi_dictionary[psiname][0]
+                maxstep=(self.psi_dictionary[psiname][1])
+                mv=IMP.core.NormalMover([particle],
+                                  IMP.FloatKeys([IMP.FloatKey("nuisance")]),maxstep)
+                mv.set_name(mover_name)
+                movers.append(mv)
+
+        return movers
+
+
     def get_particles_to_sample(self):
         """ Get the particles to be sampled by the IMP.pmi.sampler object """
         ps = {}
