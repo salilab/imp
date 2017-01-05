@@ -2,7 +2,7 @@
  *  \file RMF/FileHandle.h
  *  \brief Declaration for RMF::FileHandle.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

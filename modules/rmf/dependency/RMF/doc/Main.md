@@ -15,10 +15,10 @@ See
 - [RMF Library](\ref library) for more information about using the library.
 - [Mapping data into RMF files](\ref mapping) for more information about how to structure data in RMF files.
 
-Also see the [rmf examples](http://www.github.com/salilab/rmf_examples) repository
+Also see the [rmf examples](https://github.com/salilab/rmf_examples) repository
 for examples of interesting or problematic RMF files.
 
-Copyright 2007-2016 IMP Inventors.
+Copyright 2007-2017 IMP Inventors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

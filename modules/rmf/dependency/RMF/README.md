@@ -12,7 +12,7 @@ and score data.
 The main documentation is found on the
 [web site](http://integrativemodeling.org/rmf/nightly/doc/).
 
-Copyright 2007-2016 IMP Inventors.
+Copyright 2007-2017 IMP Inventors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

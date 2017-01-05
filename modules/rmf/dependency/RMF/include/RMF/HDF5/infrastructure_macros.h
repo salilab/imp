@@ -2,7 +2,7 @@
  *  \file RMF/HDF5/infrastructure_macros.h
  *  \brief Various general useful macros for IMP.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

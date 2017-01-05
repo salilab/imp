@@ -2,7 +2,7 @@
  *  \file RMF/BufferHandle.h
  *  \brief Declare RMF::BufferHandle.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

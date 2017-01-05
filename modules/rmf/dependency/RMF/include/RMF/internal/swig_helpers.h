@@ -2,7 +2,7 @@
  *  \file internal/swig_helpers.h
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef RMF_INTERNAL_SWIG_HELPERS_H
