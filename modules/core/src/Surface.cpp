@@ -113,12 +113,13 @@ void Surface::show(std::ostream &out) const {
 SurfaceGeometry::SurfaceGeometry(std::string n) : display::Geometry(n) {}
 SurfaceGeometry::SurfaceGeometry(Surface s, const std::string n)
     : display::Geometry(n), s_(s)
-    , c_(new display::CylinderGeometry(get_cylinder()))
-    , n_(new display::SegmentGeometry(get_segment())) {}
+    , n_(new display::SegmentGeometry(get_segment()))
+    , c_(new display::CylinderGeometry(get_cylinder())) {}
+
 SurfaceGeometry::SurfaceGeometry(Surface s, const display::Color &c, std::string n)
     : display::Geometry(c, n), s_(s)
-    , c_(new display::CylinderGeometry(get_cylinder()))
-    , n_(new display::SegmentGeometry(get_segment())) {}
+    , n_(new display::SegmentGeometry(get_segment()))
+    , c_(new display::CylinderGeometry(get_cylinder())) {}
 
 void SurfaceGeometry::set_geometry(Surface s) {
   s_ = s;
