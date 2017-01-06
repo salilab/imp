@@ -316,6 +316,8 @@ class Representation(object):
             t,
             resrange[1],
             terminus="C")
+        # Done with the PDB
+        IMP.atom.destroy(t)
 
         # construct pdb fragments and intervening beads
         for n, g in enumerate(gaps):
@@ -459,7 +461,9 @@ class Representation(object):
         for p in ps:
             par = IMP.atom.Atom(p).get_parent()
             ri = IMP.atom.Residue(par).get_index()
+            # Move residue from original PDB hierarchy to new chain c0
             IMP.atom.Residue(par).set_index(ri + offset)
+            par.get_parent().remove_child(par)
             c0.add_child(par)
         start = start + offset
         end = end + offset
@@ -477,9 +481,8 @@ class Representation(object):
         if show:
             IMP.atom.show_molecular_hierarchy(protein_h)
 
-        del c
-        del c0
-        del t
+        IMP.atom.destroy(c0)
+        IMP.atom.destroy(t)
 
         return outhiers
 
@@ -543,7 +546,7 @@ class Representation(object):
         if show:
             IMP.atom.show_molecular_hierarchy(protein_h)
 
-        del c0
+        IMP.atom.destroy(c0)
         return outhiers
 
     def add_component_beads(self, name, ds, colors=None, incoord=None):
@@ -1278,13 +1281,14 @@ class Representation(object):
                 chil = s.get_children()
                 s0 = IMP.atom.Fragment.setup_particle(IMP.Particle(self.m))
                 s0.set_name('%s_%i-%i_%s' % (name, start, end, type))
-                # s0.set_residue_indexes(range(start,end+1))
+                # Move all children from s to s0
                 for ch in chil:
+                    s.remove_child(ch)
                     s0.add_child(ch)
                 self.hier_representation[name][
                     "Res:" + str(int(r))].add_child(s0)
                 outhiers += [s0]
-                del s
+                IMP.atom.destroy(s)
 
                 for prt in IMP.atom.get_leaves(s0):
                     ri = IMP.atom.Fragment(prt).get_residue_indexes()
