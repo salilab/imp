@@ -74,14 +74,16 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
                    const Restraints &dummies) const;
 
  public:
+  //! Constructor.
   /** Pass the particles that will be individually moved, and the list of
       restraints to evaluate on them.
 
-      @param to_move particles to be moved, must contain at least one particle
+      @param m Model object containing all particles to be moved
+      @param to_move particles to be moved; must contain at least one particle
       @param rs restraints (can be empty in principle, in which case the score
                            is 0)
       @param weight the weight used to scale the restraints
-      @param max maximum value for evaluate_if_good or evaluate_if_below,
+      @param max maximum value for evaluate_if_good or evaluate_if_below;
                  can be ignored for most purposes
       @param name The name template to use for the scoring function.
 */
@@ -99,13 +101,16 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
                              std::string name =
                                  "IncrementalScoringFunction%1%");
 
-  /** Undo the last moved particles. This is similar in effect to, but perhaps
+  //! Undo the last moved particles.
+  /** This is similar in effect to, but perhaps
       more efficient than, calling set_moved_particles() a second time with
       the same list.
   */
   void reset_moved_particles();
-  /** Set which particles have moved since the last evaluate. */
+
+  //! Set which particles have moved since the last evaluate.
   void set_moved_particles(const ParticleIndexes &p);
+
   /** Close pairs scores can be handled separately for efficiency, to do that,
       add a pair score here to act on the list of particles.*/
   void add_close_pair_score(PairScore *ps, double distance,
