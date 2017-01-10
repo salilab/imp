@@ -470,7 +470,9 @@ void FFTFitting::fftw_translational_search(
                           fftw_scale_;
   }
 
-  for (long jj = 0; jj < fftw_nvox_r2c_; jj++) reversed_fftw_data_[jj] = 0.;
+  for (unsigned long jj = 0; jj < fftw_nvox_r2c_; jj++) {
+    reversed_fftw_data_[jj] = 0.;
+  }
   fftw_execute(fftw_plan_reverse_hi_.get());
   // update the highest score found so far for each grid translation,
   // and save corresponding rotation
