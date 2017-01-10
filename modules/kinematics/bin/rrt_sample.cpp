@@ -36,7 +36,10 @@ using namespace IMP::kinematics;
 int main(int argc, char **argv)
 {
   // output arguments
-  for(int i=0; i<argc; i++) std::cerr << argv[i] << " "; std::cerr << std::endl;
+  for (int i=0; i<argc; i++) {
+    std::cerr << argv[i] << " ";
+  }
+  std::cerr << std::endl;
 
   int number_of_iterations = 100;
   int number_of_nodes = 100;
