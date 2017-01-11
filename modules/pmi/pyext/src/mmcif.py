@@ -493,8 +493,9 @@ class UnknownSource(object):
     _source_map = {'Comparative model': 'comparative model',
                    'Experimental model': 'experimental model'}
 
-    def __init__(self, model):
+    def __init__(self, model, chain):
         self.source = self._source_map[model.dataset._data_type]
+        self.chain_id = chain
 
     def get_seq_id_range(self, model):
         return (model.seq_id_begin, model.seq_id_end)
@@ -1208,14 +1209,14 @@ class StartingModelDumper(Dumper):
             if templates:
                 return templates
             else:
-                return [UnknownSource(model)]
+                return [UnknownSource(model, chain)]
         else:
             # todo: extract Modeller-like template info for Phyre models;
             # revisit assumption that all such unknown source PDBs are
             # comparative models
             d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
             model.dataset = self.simo.dataset_dump.add(file_dataset or d)
-            return [UnknownSource(model)]
+            return [UnknownSource(model, chain)]
 
     def assign_model_details(self):
         for comp, models in self.models.items():
@@ -1249,7 +1250,7 @@ modeling. These may need to be added manually below.""")
                       "asym_id", "seq_id_begin",
                       "seq_id_end", "starting_model_source",
                       "starting_model_db_name", "starting_model_db_code",
-                      "starting_model_db_pdb_auth_asym_id",
+                      "starting_model_auth_asym_id",
                       "starting_model_sequence_identity",
                       "starting_model_id",
                       "dataset_list_id"]) as l:
@@ -1267,7 +1268,7 @@ modeling. These may need to be added manually below.""")
                       asym_id=chain_id,
                       seq_id_begin=seq_id_begin,
                       seq_id_end=seq_id_end,
-                      starting_model_db_pdb_auth_asym_id=source.chain_id,
+                      starting_model_auth_asym_id=source.chain_id,
                       starting_model_id=model.name,
                       starting_model_source=source.source,
                       starting_model_db_name=source.db_name,

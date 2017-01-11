@@ -463,7 +463,8 @@ class Representation(object):
             ri = IMP.atom.Residue(par).get_index()
             # Move residue from original PDB hierarchy to new chain c0
             IMP.atom.Residue(par).set_index(ri + offset)
-            par.get_parent().remove_child(par)
+            if par.get_parent() != c0:
+                par.get_parent().remove_child(par)
             c0.add_child(par)
         start = start + offset
         end = end + offset
@@ -481,7 +482,18 @@ class Representation(object):
         if show:
             IMP.atom.show_molecular_hierarchy(protein_h)
 
-        IMP.atom.destroy(c0)
+        # We cannot simply destroy(c0) since it might not be a well-behaved
+        # hierarchy; in some cases it could contain a given residue more than
+        # once (this is surely a bug but we need to keep this behavior for
+        # backwards compatibility).
+        residues = {}
+        for p in ps:
+            par = IMP.atom.Atom(p).get_parent()
+            residues[par] = None
+        for r in residues.keys():
+            IMP.atom.destroy(r)
+        self.m.remove_particle(c0)
+
         IMP.atom.destroy(t)
 
         return outhiers
