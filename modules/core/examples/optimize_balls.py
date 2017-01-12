@@ -85,7 +85,7 @@ mc.set_name("MC")
 sm = IMP.core.SerialMover(movers)
 mc.add_mover(sm)
 # we are special casing the nbl term
-isf = IMP.core.IncrementalScoringFunction(aps, restraints)
+isf = IMP.core.IncrementalScoringFunction(m, aps, restraints)
 isf.set_name("I")
 # use special incremental support for the non-bonded part
 # apply the pair score sps to all touching ball pairs from the list of particles

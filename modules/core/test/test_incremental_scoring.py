@@ -15,9 +15,9 @@ class Tests(IMP.test.TestCase):
         ps = []
         bb = IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0, 10):
-            p = IMP.Particle(m)
-            d = IMP.core.XYZR.setup_particle(p)
-            ps.append(d)
+            p = m.add_particle("p%d" % i)
+            d = IMP.core.XYZR.setup_particle(m, p)
+            ps.append(p)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
             d.set_radius(.1)
             d.set_coordinates_are_optimized(True)
@@ -36,8 +36,8 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.RestraintsScoringFunction([r, rnb])
         dsf = IMP.core.RestraintsScoringFunction([r.create_decomposition(),
                                                   rnb.create_decomposition()])
-        isf = IMP.core.IncrementalScoringFunction(ps, [r])
-        isf.add_close_pair_score(nbps, 0, ps, [f])
+        isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
+        isf.add_close_pair_score(nbps, 0, IMP.get_particles(m, ps), [f])
         print("iscore")
         iscore = isf.evaluate(False)
         print("oscore")
@@ -49,7 +49,7 @@ class Tests(IMP.test.TestCase):
         s = IMP.algebra.get_unit_sphere_3d()
         for i in range(10):
             pi = random.choice(ps)
-            d = IMP.core.XYZ(pi)
+            d = IMP.core.XYZ(m, pi)
             oc = d.get_coordinates()
             nc = oc + IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
@@ -82,9 +82,9 @@ class Tests(IMP.test.TestCase):
         ps = []
         bb = IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0, 10):
-            p = IMP.Particle(m)
-            d = IMP.core.XYZR.setup_particle(p)
-            ps.append(d)
+            p = m.add_particle("p%d" % i)
+            d = IMP.core.XYZR.setup_particle(m, p)
+            ps.append(p)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
             d.set_radius(.1)
             d.set_coordinates_are_optimized(True)
@@ -95,8 +95,8 @@ class Tests(IMP.test.TestCase):
         rnb.set_name("NB")
         sf = IMP.core.RestraintsScoringFunction([rnb])
         dsf = IMP.core.RestraintsScoringFunction([rnb.create_decomposition()])
-        isf = IMP.core.IncrementalScoringFunction(ps, [])
-        isf.add_close_pair_score(nbps, 0, ps, [])
+        isf = IMP.core.IncrementalScoringFunction(m, ps, [])
+        isf.add_close_pair_score(nbps, 0, IMP.get_particles(m, ps), [])
         print("iscore")
         iscore = isf.evaluate(False)
         print("oscore")
@@ -108,7 +108,7 @@ class Tests(IMP.test.TestCase):
         s = IMP.algebra.get_unit_sphere_3d()
         for i in range(10):
             pi = random.choice(ps)
-            d = IMP.core.XYZ(pi)
+            d = IMP.core.XYZ(m, pi)
             oc = d.get_coordinates()
             nc = oc + IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
@@ -142,9 +142,9 @@ class Tests(IMP.test.TestCase):
         ps = []
         bb = IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0, 10):
-            p = IMP.Particle(m)
-            d = IMP.core.XYZR.setup_particle(p)
-            ps.append(d)
+            p = m.add_particle("p%d" % i)
+            d = IMP.core.XYZR.setup_particle(m, p)
+            ps.append(p)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
             d.set_radius(.1)
             d.set_coordinates_are_optimized(True)
@@ -154,7 +154,7 @@ class Tests(IMP.test.TestCase):
         r = IMP.container.PairsRestraint(hps, cpc)
         dsf = IMP.core.RestraintsScoringFunction([r.create_decomposition()])
         sf = IMP.core.RestraintsScoringFunction([r])
-        isf = IMP.core.IncrementalScoringFunction(ps, [r])
+        isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
         # isf.set_log_level(IMP.VERBOSE)
         print('initial test')
         iscore = isf.evaluate(False)
@@ -168,7 +168,7 @@ class Tests(IMP.test.TestCase):
         s = IMP.algebra.get_unit_sphere_3d()
         for i in range(10):
             pi = random.choice(ps)
-            d = IMP.core.XYZ(pi)
+            d = IMP.core.XYZ(m, pi)
             oc = d.get_coordinates()
             nc = oc + IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
@@ -196,7 +196,7 @@ class Tests(IMP.test.TestCase):
                                        rscore, delta=.1)
         print("resetting")
         for pi in ps:
-            d = IMP.core.XYZ(pi)
+            d = IMP.core.XYZ(m, pi)
             oc = d.get_coordinates()
             nc = oc + IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
@@ -207,7 +207,7 @@ class Tests(IMP.test.TestCase):
         print('scores', iscore, dscore, rscore)
         for i in range(10):
             pi = random.choice(ps)
-            d = IMP.core.XYZ(pi)
+            d = IMP.core.XYZ(m, pi)
             oc = d.get_coordinates()
             nc = oc + IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
@@ -273,7 +273,7 @@ class Tests(IMP.test.TestCase):
                                                  1.0, IMP.NO_MAX,
                                                  "D")
         isf = IMP.core.IncrementalScoringFunction(
-            rbs, [r], 1.0, IMP.NO_MAX, "I")
+            m, rbs, [r], 1.0, IMP.NO_MAX, "I")
         isf.add_close_pair_score(nbps, 0, ps, [f])
         # isf.set_log_level(IMP.VERBOSE)
         iscore = isf.evaluate(False)
