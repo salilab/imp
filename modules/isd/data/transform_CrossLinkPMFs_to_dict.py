@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import math
 
@@ -31,27 +32,27 @@ for ld in list_dir:
                 for l in labels:
                     listoflists.append([])
                 if not ("fes" in labels or "gofr" in labels or "pmf" in labels or "pfes" in labels):
-                    print "error: 'fes' (free energy surface in kcal/mol) or gofr (the radial distribution function) or pmf (the potential of mean force) or pfes (expfes) labels missing in file " + ld + "/" + f
+                    print("error: 'fes' (free energy surface in kcal/mol) or gofr (the radial distribution function) or pmf (the potential of mean force) or pfes (expfes) labels missing in file " + ld + "/" + f)
                     exit()
                 if not ("distance" in labels):
-                    print "error: 'distance' (in Angstrom) missing in file " + ld + "/" + f
+                    print("error: 'distance' (in Angstrom) missing in file " + ld + "/" + f)
                     exit()
                 if not ("kbt" in labels) and not ("pfes" in labels):
-                    print "error: 'kbt' (temperature in kcal/mol) missing in file " + ld + "/" + f
+                    print("error: 'kbt' (temperature in kcal/mol) missing in file " + ld + "/" + f)
                     exit()
             else:
 
                 tokens = line.split()
 
                 if len(tokens) != len(labels):
-                    print "error: not the same number of labels and entry values, line " + str(i) + " in file " + ld + "/" + f
+                    print("error: not the same number of labels and entry values, line " + str(i) + " in file " + ld + "/" + f)
                     exit()
 
                 for k, t in enumerate(tokens):
                     try:
                         a = float(t)
                     except:
-                        print "error: non-numeric entry, line " + str(i) + " in file " + ld + "/" + f
+                        print("error: non-numeric entry, line " + str(i) + " in file " + ld + "/" + f)
                         exit()
 
                     listoflists[k].append(a)
@@ -93,7 +94,7 @@ for ld in list_dir:
                         label_dict["gofr"].append(math.exp(-pmf / kbt))
 
                 else:
-                    print "error: cannot calculate the radial distribution function, no pmf, pfes or fes specified"
+                    print("error: cannot calculate the radial distribution function, no pmf, pfes or fes specified")
 
         file_dict[f] = label_dict
 
@@ -105,12 +106,12 @@ outfile = open(ofile, "w")
 outfile.write("%s" % global_dict)
 outfile.close()
 
-print "CrossLinkPMFs"
+print("CrossLinkPMFs")
 for i in global_dict:
-    print "--", i
+    print("--", i)
     for j in global_dict[i]:
-        print "----", j
+        print("----", j)
         for l in global_dict[i][j]:
-            print "------", l
-            print "------", global_dict[i][j][l]
-            print "......"
+            print("------", l)
+            print("------", global_dict[i][j][l])
+            print("......")
