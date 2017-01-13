@@ -110,6 +110,10 @@ class Tests(IMP.test.TestCase):
         """Test default KD constructor"""
         self.assertRaisesUsageException(IMP.algebra.BoundingBoxKD)
 
+    def test_default_3d(self):
+        """Test default 3D constructor"""
+        default_box = IMP.algebra.BoundingBox3D()
+
     def test_bounding_box_nd(self):
         """Test BoundingBox<N> operations for unusual N"""
         for N in (-1,1,2,4,5,6):
