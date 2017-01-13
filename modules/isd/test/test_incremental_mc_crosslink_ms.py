@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
         dr.add_contribution((p1i, p2i), (s1i, s2i), psii)
 
         mc = IMP.core.MonteCarlo(m)
-        isf = IMP.core.IncrementalScoringFunction([p1,p2,psigma,ppsi], [dr])
+        isf = IMP.core.IncrementalScoringFunction(m, [p1,p2,psigma,ppsi], [dr])
         mc.set_incremental_scoring_function(isf)
 
         mvs = [IMP.core.BallMover([p], 5) for p in [p1,p2]]
@@ -115,7 +115,8 @@ class Tests(IMP.test.TestCase):
 
         mc = IMP.core.MonteCarlo(m)
         sf = IMP.core.RestraintsScoringFunction(restraints)
-        isf = IMP.core.IncrementalScoringFunction(ps+[psigma,ppsi], restraints)
+        isf = IMP.core.IncrementalScoringFunction(m, ps+[psigma,ppsi],
+                                                  restraints)
         mc.set_incremental_scoring_function(isf)
 
         mvs = [IMP.core.BallMover([p], 5) for p in ps]
@@ -181,7 +182,8 @@ class Tests(IMP.test.TestCase):
 
 
         mc = IMP.core.MonteCarlo(m)
-        isf = IMP.core.IncrementalScoringFunction(ps+[psigma,ppsi], restraints)
+        isf = IMP.core.IncrementalScoringFunction(m, ps+[psigma,ppsi],
+                                                  restraints)
         mc.set_incremental_scoring_function(isf)
         sf = IMP.core.RestraintsScoringFunction(restraints)
 
@@ -258,8 +260,9 @@ class Tests(IMP.test.TestCase):
 
         mc = IMP.core.MonteCarlo(m)
         print(list(set(restraints)))
-        isf = IMP.core.IncrementalScoringFunction([rb1.get_particle(),rb2.get_particle()]
-                                                +ps+[psigma,ppsi], list(set(restraints)))
+        isf = IMP.core.IncrementalScoringFunction(m,
+                  [rb1.get_particle(),rb2.get_particle()] +ps+[psigma,ppsi],
+                  list(set(restraints)))
         mc.set_incremental_scoring_function(isf)
 
         mvs = [IMP.core.RigidBodyMover(rb1, 1.0, 0.03),IMP.core.RigidBodyMover(rb2, 1.0, 0.03)]
