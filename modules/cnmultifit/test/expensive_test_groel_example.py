@@ -23,10 +23,9 @@ class Tests(IMP.test.ApplicationTestCase):
                 expected_files.append('test.%03d.pdb' % i)
             for e in expected_files:
                 os.unlink(e)
-            del d
-            rmsds = [float(r.search(x).group(1)) for x in rmsds]
-            # The best scoring model should be close to native
-            self.assertLess(rmsds[0], 4.0)
+        rmsds = [float(r.search(x).group(1)) for x in rmsds]
+        # The best scoring model should be close to native
+        self.assertLess(rmsds[0], 4.0)
 
 if __name__ == '__main__':
     IMP.test.main()
