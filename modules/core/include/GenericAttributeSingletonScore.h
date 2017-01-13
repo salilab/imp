@@ -27,7 +27,7 @@ class GenericAttributeSingletonScore : public SingletonScore {
 
  public:
   //! Apply function f to attribute k
-  GenericAttributeSingletonScore(UnaryFunction *f, FloatKey k);
+  GenericAttributeSingletonScore(UF *f, FloatKey k);
   virtual double evaluate_index(Model *m, ParticleIndex p,
                                 DerivativeAccumulator *da) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(
@@ -41,7 +41,7 @@ class GenericAttributeSingletonScore : public SingletonScore {
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 template <class UF>
 inline GenericAttributeSingletonScore<UF>::GenericAttributeSingletonScore(
-    UnaryFunction *f, FloatKey k)
+    UF *f, FloatKey k)
     : f_(f), k_(k) {}
 template <class UF>
 inline Float GenericAttributeSingletonScore<UF>::evaluate_index(
@@ -66,7 +66,7 @@ typedef GenericAttributeSingletonScore<UnaryFunction> AttributeSingletonScore;
     which runs faster than the runtime bound version. UF should be a subclass of
     UnaryFunction (and not pointer to a generic UnaryFunction).*/
 template <class UF>
-inline GenericAttributeSingletonScore<UF> *create_attribute_singleton_score(
+inline GenericAttributeSingletonScore<UF> *create_generic_attribute_singleton_score(
     UF *uf, FloatKey k) {
   return new GenericAttributeSingletonScore<UF>(uf, k);
 }

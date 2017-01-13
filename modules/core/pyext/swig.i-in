@@ -198,7 +198,7 @@ IMP_SWIG_OBJECT(IMP::core, MultipleBinormalRestraint, MultipleBinormalRestraints
 
 /* Wrap the final classes */
 %include "IMP/core/AngleTripletScore.h"
-%include "IMP/core/AttributeSingletonScore.h"
+%include "IMP/core/GenericAttributeSingletonScore.h"
 %include "IMP/core/BallMover.h"
 %include "IMP/core/SerialMover.h"
 %include "IMP/core/SurfaceMover.h"
@@ -370,6 +370,6 @@ namespace IMP {
   }
 }
 
-IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, AttributeSingletonScore, attribute_singleton_score, UnaryFunction);
+IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, AttributeSingletonScore, generic_attribute_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingBox3DSingletonScore, bounding_box_3d_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, DistanceToSingletonScore, distance_to_singleton_score, UnaryFunction);
