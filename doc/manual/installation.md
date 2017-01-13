@@ -107,7 +107,7 @@ procedure we use.
 
         tar -xvzf ../imp-<version>.tar.gz
 
-- Alternatively you can use [git](http://git-scm.com/) to get the code
+- Alternatively you can use [git](https://git-scm.com/) to get the code
   directly from our [GitHub repository](https://github.com/salilab/imp)
   with something like:
 

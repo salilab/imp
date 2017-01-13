@@ -90,14 +90,13 @@ The order of the includes in the `swig.i-in` matters. If a class uses code that 
 # git {#faq_git}
 
 ## What are some resources for getting started with GIT?
-One of its strengths is that there are excellent references, and Google will find you good answers to almost any question you have (many on [Stack Overflow](http://www.stackoverflow.com)). Some good overviews that %IMP users have liked can be found at:
-* [An introduction to GitHub](http://kbroman.github.io/github_tutorial)
-* [The official Git tutorial](http://git-scm.com/book/en/Getting-Started)
-* [A light-weight explanation of most commands and workflows](http://www.atlassian.com/git/)
+One of its strengths is that there are excellent references, and Google will find you good answers to almost any question you have (many on [Stack Overflow](https://stackoverflow.com)). Some good overviews that %IMP users have liked can be found at:
+* [An introduction to GitHub](http://kbroman.org/github_tutorial/)
+* [The official Git tutorial](https://git-scm.com/book/en/v1/Getting-Started)
+* [A light-weight explanation of most commands and workflows](https://www.atlassian.com/git/)
 * a [git-flow teaser](http://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow/)
 * the full [git-flow description](http://nvie.com/posts/a-successful-git-branching-model/) with its graphical scheme
-* a [video introducing git](http://www.youtube.com/watch?v=7N6VBtkCHSQ)
-* [10 Things I Hate About Git](http://steveko.wordpress.com/2012/02/24/10-things-i-hate-about-git/).
+* [10 Things I Hate About Git](https://stevebennett.me/2012/02/24/10-things-i-hate-about-git/)
 
 In addition, help for any git command can be found by doing `git help <command>`.
 
