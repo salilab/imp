@@ -103,7 +103,8 @@ void benchmark_it(std::string name, bool incr, bool nbl) {
   }
   rs.push_back(create_diameter_restraint(m, rbs, 50.0));
   if (incr) {
-    IMP_NEW(core::IncrementalScoringFunction, sf, (rbs, rs));
+    IMP_NEW(core::IncrementalScoringFunction, sf,
+            (m, IMP::internal::get_index(rbs), rs));
     if (nbl) {
       sf->add_close_pair_score(create_pair_score(h, rbs, 1.0), 0, rbs);
     }
