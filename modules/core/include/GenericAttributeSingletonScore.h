@@ -1,12 +1,12 @@
 /**
- *  \file IMP/core/AttributeSingletonScore.h
+ *  \file IMP/core/GenericAttributeSingletonScore.h
  *  \brief A score based on the unmodified value of an attribute.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H
-#define IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H
+#ifndef IMPCORE_GENERIC_ATTRIBUTE_SINGLETON_SCORE_H
+#define IMPCORE_GENERIC_ATTRIBUTE_SINGLETON_SCORE_H
 
 #include <IMP/core/core_config.h>
 #include <IMP/generic.h>
@@ -72,4 +72,4 @@ inline GenericAttributeSingletonScore<UF> *create_attribute_singleton_score(
 }
 IMPCORE_END_NAMESPACE
 
-#endif /* IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H */
+#endif /* IMPCORE_GENERIC_ATTRIBUTE_SINGLETON_SCORE_H */

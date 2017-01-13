@@ -1,6 +1,9 @@
 /**
  *  \file IMP/score_functor/HarmonicLowerBound.h
- *  \brief A Score on the distance between a pair of particles.
+ *  \brief A harmonic score on the negative directed distance between
+ *         a pair of particles. The score equals zero for
+ *         non-negative directed distances.
+ * .
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
@@ -13,7 +16,10 @@
 #include <IMP/algebra/utility.h>
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
-/** A DistanceScore that scores with a harmonic on distances below 0.*/
+/** A harmonic score on the negative directed distance between
+    a pair of particles. The score equals zero for
+    non-negative directed distances.
+*/
 class HarmonicLowerBound : public Score {
   double k_;
 

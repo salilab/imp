@@ -1,11 +1,11 @@
 /**
- *  \file AttributeSingletonScore.cpp
+ *  \file GenericAttributeSingletonScore.cpp
  *  \brief A score based on an unmodified attribute value.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/core/AttributeSingletonScore.h>
+#include <IMP/core/GenericAttributeSingletonScore.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
