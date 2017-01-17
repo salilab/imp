@@ -57,19 +57,6 @@ class Key : public Value {
 
  private:
   int str_;
-
- public:
-  //! set whether new keys can be added implicitly by ! the
-  //constructor Key::Key(string) without explicitly ! invoking
-  //add_key() ! (note this can be only invoked once, and the default !
-  //is that implicit key addition is permitted) static void
-  //set_is_implicit_add_key(bool is_implicit_add_key) { static bool
-  //is_implicit_add_key_(true); static bool is_set_(false);
-  //IMP_ALWAYS_CHECK(!is_set, "is_lazy_add can be set at most once",
-  //IMP::ValueError); is_implicit_add_key_= is_implicit_add_key;
-  //is_set_= true; return is_implicit_add_key_; }
-
- private:
   static const internal::KeyData::Map& get_map() {
     return get_key_data().get_map();
   }
