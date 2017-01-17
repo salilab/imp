@@ -103,11 +103,12 @@ void Gnuplot::print_fit_script(const IMP::saxs::FitParameters& fp) {
   plt_file << "set terminal png enhanced; set output \"" << png_file_name
            << "\";" << std::endl;
 
-  plt_file << "set lmargin 2; set rmargin 2;set multiplot\n";
+  plt_file << "set lmargin 7; set rmargin 2;set multiplot\n";
 
   // lower residuals plot
   plt_file << "set origin 0,0;set size 1,0.3; set tmargin 0; set bmargin 3;"
-           << "set ylabel '';set format y '';set xtics nomirror;"
+           << "set ylabel 'Residual';set format y '';set xtics nomirror;"
+           << "set xlabel 'q [Å^{-1}]';"
            << "set ytics nomirror; set border 3\n"
            << "set style line 11 lc rgb '#808080' lt 1;"
            << "set border 3 back ls 11;f(x)=1" << std::endl;
@@ -117,11 +118,13 @@ void Gnuplot::print_fit_script(const IMP::saxs::FitParameters& fp) {
 
   // upper fit plot
   plt_file << "set origin 0,0.3;set size 1,0.69; set bmargin 0; set tmargin 1;"
-           << "set xlabel ''; set format x ''; set ylabel '';\n";
+           << "set xlabel ''; set format x ''; "
+           << "set ylabel 'I(q) log-scale';"
+           << "set format y \"10^{%L}\"; set logscale y\n";
   plt_file << "plot '" << fit_file_name
-           << "' u 1:(log($2)) notitle lc rgb '#333333' pt 6 ps 0.8"
+           << "' u 1:2 t 'Experimental' lc rgb '#333333' pt 6 ps 0.8"
            << ", '" << fit_file_name
-           << "' u 1:(log($3)) t 'FoXS chi = " << fp.get_chi()
+           << "' u 1:3 t 'FoXS χ = " << fp.get_chi()
            << "' w lines lw 2.5 lc rgb '#e26261'\n";
   plt_file << "unset multiplot\n";
   plt_file << "reset\n";
