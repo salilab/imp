@@ -169,10 +169,11 @@ void Gnuplot::print_fit_script(
   plt_file << "set terminal png enhanced;set output \"fit.png\";" << std::endl;
 
   // formatting
-  plt_file << "set lmargin 2; set rmargin 2;set multiplot\n"
+  plt_file << "set lmargin 7; set rmargin 2;set multiplot\n"
            << "set origin 0,0;set size 1,0.3; set tmargin 0; set bmargin 3;"
-           << "set ylabel '';set format y '';"
-           << "set xtics nomirror;set ytics nomirror; set border 3\n"
+           << "set ylabel 'Residual';set format y '';set xtics nomirror;"
+           << "set xlabel 'q [Å^{-1}]';"
+           << "set ytics nomirror; set border 3\n"
            << "set style line 11 lc rgb '#808080' lt 1;"
            << "set border 3 back ls 11" << std::endl;
   // residuals
@@ -191,7 +192,9 @@ void Gnuplot::print_fit_script(
   plt_file << std::endl;
   // actual plots
   plt_file << "set origin 0,0.3;set size 1,0.69; set bmargin 0; set tmargin 1;"
-           << "set xlabel ''; set format x ''; set ylabel '';\n";
+           << "set xlabel ''; set format x '';"
+           << "set ylabel 'I(q) log-scale';"
+           << "set format y \"10^{%L}\"; set logscale y\n";
   for (unsigned int i = 0; i < fps.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = saxs::trim_extension(fps[i].get_pdb_file_name());
@@ -200,10 +203,10 @@ void Gnuplot::print_fit_script(
     std::string fit_file_name = pdb_name + "_" + profile_name + ".dat";
     if (i == 0) {
       plt_file << "plot '" << fit_file_name
-               << "' u 1:(log($2)) notitle lc rgb '#333333' pt 6 ps 0.8 ";
+               << "' u 1:2 t 'Experimental' lc rgb '#333333' pt 6 ps 0.8 ";
     }
-    plt_file << ", '" << fit_file_name << "' u 1:(log($3)) t '" << pdb_name
-             << " chi = " << fps[i].get_chi() << "' w lines lw 2.5 lc rgb '#"
+    plt_file << ", '" << fit_file_name << "' u 1:3 t '" << pdb_name
+             << " χ = " << fps[i].get_chi() << "' w lines lw 2.5 lc rgb '#"
              << hex_color << "'";
   }
   plt_file << std::endl;
