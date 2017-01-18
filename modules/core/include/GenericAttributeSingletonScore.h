@@ -34,6 +34,8 @@ class GenericAttributeSingletonScore : public SingletonScore {
       Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
     return IMP::get_particles(m, pis);
   }
+  //! get access to the unary function object used for scoring the attribute
+  UF* get_unary_function() {return f_;};
   IMP_SINGLETON_SCORE_METHODS(GenericAttributeSingletonScore);
   IMP_OBJECT_METHODS(GenericAttributeSingletonScore);
   ;

@@ -20,8 +20,8 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-/** \brief Return all close ordered pairs of particles taken from the
-    two SingletonContainers.
+/** \brief Return all spatially-proximals pairs of particles (a,b) from the
+    two SingletonContainers A and B, where a is in A and b is in B.
 
     \see ClosePairContainer for a more detailed description. This
     container lists all close pairs of particles where one particle is

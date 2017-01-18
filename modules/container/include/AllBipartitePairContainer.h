@@ -1,6 +1,6 @@
 /**
  *  \file IMP/container/AllBipartitePairContainer.h
- *  \brief Return all pairs from a SingletonContainer
+ *  \brief Return all bipartite pairs between two containers
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
@@ -20,7 +20,8 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Return all bipartite pairs between two containers
+//! Return all bipartite pairs (a,b) for all a in container A
+//! and b in container B
 /** \see AllPairContainer, ClosePairContainer,
     CloseBipartitePairContainer for variants on the functionality provided.
  */
