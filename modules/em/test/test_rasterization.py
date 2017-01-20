@@ -31,8 +31,17 @@ class Tests(IMP.test.TestCase):
         bb = IMP.algebra.BoundingBox3D(t, t)
         grid_slow = IMP.algebra.get_rasterized([g], [1.0], 1.0, bb)
         grid_fast = IMP.algebra.get_rasterized_fast([g], [1.0], 1.0, bb)
+        # Make sure that the returned grids are usable in Python
+        self.assertLess((grid_fast.get_origin() - t).get_magnitude(), 1e-4)
+        self.assertLess((grid_slow.get_origin() - t).get_magnitude(), 1e-4)
         d_slow=IMP.em.create_density_map(grid_slow)
         d_fast=IMP.em.create_density_map(grid_fast)
+        # Check returned density maps
+        d_origin = IMP.algebra.Vector3D(1.5, 2.5, 3.5)
+        self.assertLess((d_fast.get_origin() - d_origin).get_magnitude(), 1e-4)
+        self.assertLess((d_slow.get_origin() - d_origin).get_magnitude(), 1e-4)
+        self.assertAlmostEqual(d_fast.get_spacing(), 1.0, delta=1e-4)
+        self.assertAlmostEqual(d_slow.get_spacing(), 1.0, delta=1e-4)
 
 if __name__ == '__main__':
     IMP.test.main()

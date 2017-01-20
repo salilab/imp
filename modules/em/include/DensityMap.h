@@ -659,15 +659,13 @@ inline DensityMap *create_density_map(
 /** \relates DensityMap
  */
 IMPEMEXPORT
-DensityMap *create_density_map(
-    const algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> &grid);
+DensityMap *create_density_map(algebra::DenseGrid3D<float> &grid);
 
 //! Return a density map with the values taken from the grid.
 /** \relates DensityMap
  */
 IMPEMEXPORT
-DensityMap *create_density_map(
-    const algebra::GridD<3, algebra::DenseGridStorageD<3, double>, double> &grid);
+DensityMap *create_density_map(algebra::DenseGrid3D<double> &grid);
 
 
 //! Return a binarized map with 1 for voxels that are internal in the input map

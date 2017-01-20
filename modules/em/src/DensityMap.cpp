@@ -1472,16 +1472,14 @@ algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> get_grid(
   return ret;
 }
 
-DensityMap *create_density_map(
-    const algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> &arg) {
+DensityMap *create_density_map(algebra::DenseGrid3D<float> &grid) {
   return create_density_map<algebra::DenseGridStorageD<3, float>, float,
-                            algebra::DefaultEmbeddingD<3> >(arg);
+                            algebra::DefaultEmbeddingD<3> >(grid);
 }
 
-DensityMap *create_density_map(
-    const algebra::GridD<3, algebra::DenseGridStorageD<3, double>, double> &arg) {
+DensityMap *create_density_map(algebra::DenseGrid3D<double> &grid) {
   return create_density_map<algebra::DenseGridStorageD<3, double>, double,
-                            algebra::DefaultEmbeddingD<3> >(arg);
+                            algebra::DefaultEmbeddingD<3> >(grid);
 }
 
 DensityMap *get_binarized_interior(DensityMap *dmap) {
