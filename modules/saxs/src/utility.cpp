@@ -105,9 +105,13 @@ void read_pdb(Model *model, const std::string file,
       }
       pdb_file_names.push_back(pdb_id);
       particles_vec.push_back(IMP::get_as<IMP::Particles>(ps));
-      std::cout << ps.size() << " atoms were read from PDB file " << file;
-      if (mhds.size() > 1) std::cout << " MODEL " << h_index + 1;
-      std::cout << std::endl;
+      if (mhds.size() > 1) {
+        IMP_LOG_TERSE(ps.size() << " atoms were read from PDB file " << file
+                      << " MODEL " << h_index + 1 << std::endl);
+      } else {
+        IMP_LOG_TERSE(ps.size() << " atoms were read from PDB file " << file
+                      << std::endl);
+      }
     }
   }
 }
@@ -137,7 +141,7 @@ void read_files(Model *m, const std::vector<std::string>& files,
     // check if file exists
     std::ifstream in_file(files[i].c_str());
     if (!in_file) {
-      std::cerr << "Can't open file " << files[i] << std::endl;
+      IMP_WARN("Can't open file " << files[i] << std::endl);
       return;
     }
     // 1. try as pdb
@@ -149,13 +153,13 @@ void read_files(Model *m, const std::vector<std::string>& files,
       // 2. try as a dat profile file
       IMP_NEW(Profile, profile, (files[i], false, max_q));
       if (profile->size() == 0) {
-        std::cerr << "can't parse input file " << files[i] << std::endl;
+        IMP_WARN("can't parse input file " << files[i] << std::endl);
         return;
       } else {
         dat_files.push_back(files[i]);
         exp_profiles.push_back(profile);
-        std::cout << "Profile read from file " << files[i]
-                  << " size = " << profile->size() << std::endl;
+        IMP_LOG_TERSE("Profile read from file " << files[i]
+                      << " size = " << profile->size() << std::endl);
       }
     }
   }
