@@ -13,6 +13,11 @@
 
 #include <IMP/algebra/grid_utility.h>
 
+namespace {
+  // convenience typedef
+  typedef IMP::algebra::DenseGrid3D<double> DensityGrid;
+}
+
 IMPALGEBRA_BEGIN_NAMESPACE
 
 IMP_Eigen::Matrix3d get_covariance(const Gaussian3D &g) {

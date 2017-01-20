@@ -18,7 +18,6 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-typedef DenseGrid3D<double> DensityGrid;
 //! A Gaussian distribution in 3D.
 /** The variances are along the axis of the reference frame.
 */
@@ -53,7 +52,7 @@ get_gaussian_from_covariance(const IMP_Eigen::Matrix3d &covariance,
                              const Vector3D &center);
 
 //! Rasterize the Gaussians to a grid.
-IMPALGEBRAEXPORT DensityGrid
+IMPALGEBRAEXPORT DenseGrid3D<double>
 get_rasterized(const Gaussian3Ds &gmm, const Floats &weights, double cell_width,
                const BoundingBox3D &bb);
 
@@ -61,7 +60,7 @@ get_rasterized(const Gaussian3Ds &gmm, const Floats &weights, double cell_width,
 /** The result is an approximation, but is obtained significantly faster.
  * Good for quickly checking a GMM.
  */
-IMPALGEBRAEXPORT DensityGrid
+IMPALGEBRAEXPORT DenseGrid3D<double>
 get_rasterized_fast(const Gaussian3Ds &gmm, const Floats &weights,
                     double cell_width, const BoundingBox3D &bb);
 
