@@ -58,9 +58,18 @@ Profile* compute_profile(Particles particles, double min_q,
 void read_pdb(const std::string file, std::vector<std::string>& pdb_file_names,
               std::vector<IMP::Particles>& particles_vec,
               bool residue_level, bool heavy_atoms_only, int multi_model_pdb) {
+  IMPSAXS_DEPRECATED_FUNCTION_DEF(2.7,
+                                  "Use the variant that takes a Model pointer");
+  // Note that this leaks a Model*
+  IMP::Model* m = new IMP::Model();
+  read_pdb(m, file, pdb_file_names, particles_vec, residue_level,
+           heavy_atoms_only, multi_model_pdb);
+}
 
-  IMP::Model* model = new IMP::Model();
-
+void read_pdb(Model *model, const std::string file,
+              std::vector<std::string>& pdb_file_names,
+              std::vector<IMP::Particles>& particles_vec,
+              bool residue_level, bool heavy_atoms_only, int multi_model_pdb) {
   IMP::atom::Hierarchies mhds;
   IMP::atom::PDBSelector* selector;
   if (residue_level)  // read CA only
@@ -109,6 +118,20 @@ void read_files(const std::vector<std::string>& files,
                 std::vector<IMP::Particles>& particles_vec,
                 Profiles& exp_profiles, bool residue_level,
                 bool heavy_atoms_only, int multi_model_pdb, float max_q) {
+  IMPSAXS_DEPRECATED_FUNCTION_DEF(2.7,
+                                  "Use the variant that takes a Model pointer");
+  // Note that this leaks a Model*
+  IMP::Model* m = new IMP::Model();
+  read_files(m, files, pdb_file_names, dat_files, particles_vec, exp_profiles,
+             residue_level, heavy_atoms_only, multi_model_pdb, max_q);
+}
+
+void read_files(Model *m, const std::vector<std::string>& files,
+                std::vector<std::string>& pdb_file_names,
+                std::vector<std::string>& dat_files,
+                std::vector<IMP::Particles>& particles_vec,
+                Profiles& exp_profiles, bool residue_level,
+                bool heavy_atoms_only, int multi_model_pdb, float max_q) {
 
   for (unsigned int i = 0; i < files.size(); i++) {
     // check if file exists
@@ -119,7 +142,7 @@ void read_files(const std::vector<std::string>& files,
     }
     // 1. try as pdb
     try {
-      read_pdb(files[i], pdb_file_names, particles_vec, residue_level,
+      read_pdb(m, files[i], pdb_file_names, particles_vec, residue_level,
                heavy_atoms_only, multi_model_pdb);
     }
     catch (IMP::ValueException e) {  // not a pdb file

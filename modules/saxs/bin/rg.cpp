@@ -58,8 +58,9 @@ use 0.8 for elongated proteins")
   // 1. read pdbs and profiles, prepare particles
   std::vector<IMP::Particles> particles_vec;
   Profiles exp_profiles;
+  IMP_NEW(IMP::Model, m, ());
 
-  read_files(files, pdb_files, dat_files, particles_vec, exp_profiles,
+  read_files(m, files, pdb_files, dat_files, particles_vec, exp_profiles,
              false, true, multi_model_pdb, 0.5);
 
   // 2. compute rg for input profiles

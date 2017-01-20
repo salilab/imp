@@ -169,8 +169,9 @@ constant form factor (default = false)")
   // 1. read pdbs and profiles, prepare particles
   std::vector<IMP::Particles> particles_vec;
   Profiles exp_profiles;
+  IMP_NEW(IMP::Model, m, ());
 
-  read_files(files, pdb_files, dat_files, particles_vec, exp_profiles,
+  read_files(m, files, pdb_files, dat_files, particles_vec, exp_profiles,
              residue_level, heavy_atoms_only, multi_model_pdb, max_q);
 
   if (background_adjustment_q > 0.0) {
