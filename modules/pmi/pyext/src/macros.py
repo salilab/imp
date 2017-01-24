@@ -522,7 +522,7 @@ class BuildSystem(object):
                         else:
                             end = domain.residue_range[1]+domain.pdb_offset
                         domain_res = mol.residue_range(start-1,end-1)
-                    print("BuildSystem.add_state: -------- domain %s of molecule %s extends from residue %s to residue %s " % (domainnumber,molname,start,end))
+                        print("BuildSystem.add_state: -------- domain %s of molecule %s extends from residue %s to residue %s " % (domainnumber,molname,start,end))
                     if domain.pdb_file=="BEADS":
                         print("BuildSystem.add_state: -------- domain %s of molecule %s represented by BEADS " % (domainnumber,molname))
                         mol.add_representation(
@@ -588,7 +588,7 @@ class BuildSystem(object):
     def get_molecule(self,molname,copy_index=0,state_index=0):
         return self.system.get_states()[state_index].get_molecules()[molname][copy_index]
 
-    def execute_macro(self, max_rb_trans=4.0, max_rb_rot=0.04, max_bead_trans=4.0, max_srb_trans=4.0):
+    def execute_macro(self, max_rb_trans=4.0, max_rb_rot=0.04, max_bead_trans=4.0, max_srb_trans=4.0,max_srb_rot=0.04):
         """Builds representations and sets up degrees of freedom"""
         print("BuildSystem.execute_macro: building representations")
         self.root_hier = self.system.build()
@@ -635,16 +635,19 @@ max_rot %s non_rigid_max_trans %s" \
                 all_res = IMP.pmi.tools.OrderedSet()
                 for dname in srblist:
                     all_res|=self._domain_res[nstate][dname][0]
-                self.dof.create_super_rigid_body(all_res,max_trans=max_srb_trans)
+                    all_res|=self._domain_res[nstate][dname][1]
+                self.dof.create_super_rigid_body(all_res,max_trans=max_srb_trans,max_rot=max_srb_rot)
 
             # add chains of super rigid bodies
             for csrblist in csrbs:
                 all_res = IMP.pmi.tools.OrderedSet()
                 for dname in csrblist:
                     all_res|=self._domain_res[nstate][dname][0]
+                    all_res|=self._domain_res[nstate][dname][1]
                 all_res = list(all_res)
                 all_res.sort(key=lambda r:r.get_index())
-                self.dof.create_super_rigid_body(all_res,chain_min_length=2,chain_max_length=3)
+                #self.dof.create_super_rigid_body(all_res,chain_min_length=2,chain_max_length=3)
+                self.dof.create_main_chain_mover(all_res)
         return self.root_hier,self.dof
 
 @IMP.deprecated_object("2.5", "Use BuildSystem instead")
@@ -1346,7 +1349,6 @@ class AnalysisReplicaExchange0(object):
             best_score_rmf_tuples = sorted(score_rmf_tuples,
                                            key=lambda x: float(x[0]))[:number_of_best_scoring_models]
             best_score_rmf_tuples=[t+(n,) for n,t in enumerate(best_score_rmf_tuples)]
-
             # sort the feature scores in the same way
             best_score_feature_keyword_list_dict = defaultdict(list)
             for tpl in best_score_rmf_tuples:
@@ -1354,7 +1356,6 @@ class AnalysisReplicaExchange0(object):
                 for f in feature_keyword_list_dict:
                     best_score_feature_keyword_list_dict[f].append(
                         feature_keyword_list_dict[f][index])
-
             my_best_score_rmf_tuples = IMP.pmi.tools.chunk_list_into_segments(
                 best_score_rmf_tuples,
                 self.number_of_processes)[self.rank]

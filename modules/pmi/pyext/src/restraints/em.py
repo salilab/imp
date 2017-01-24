@@ -28,6 +28,7 @@ class GaussianEMRestraint(object):
                  cutoff_dist_model_model=0.0,
                  cutoff_dist_model_data=0.0,
                  target_mass_scale=1.0,
+                 target_mass=None,
                  target_radii_scale=3.0,
                  model_radii_scale=1.0,
                  slope=0.0,
@@ -54,6 +55,8 @@ class GaussianEMRestraint(object):
                the mass is accurate.
                Needed if the GMM you generated was not already scaled.
                To make it the same as model mass, set scale_to_target_mass=True
+        @param target_mass Sets the mass of the target density to the given value. Default is None. This
+               will override target_mass_scale argument
         @param target_radii_scale Scale the target density radii -
                only used for the close pair container.
                If you keep this at 3.0 or so you don't have to use cutoff dist.
@@ -84,18 +87,20 @@ class GaussianEMRestraint(object):
         self.sigmamaxtrans = 0.3
         self.sigmamin = 1.0
         self.sigmamax = 100.0
-        self.sigmainit = 2.0
+        self.sigmainit = 1.0
         self.label = "None"
         self.densities = densities
         self.em_root_hier = None
 
         # setup target GMM
         self.m = self.densities[0].get_model()
+
         if scale_target_to_mass:
             def hierarchy_mass(h):
                 leaves = IMP.atom.get_leaves(h)
                 return sum(IMP.atom.Mass(p).get_mass() for p in leaves)
-            target_mass_scale = sum(hierarchy_mass(h) for h in densities)
+            target_mass = sum(hierarchy_mass(h) for h in densities)
+            print('will set target mass to', target_mass)
         print('will scale target mass by', target_mass_scale)
 
         if target_fn != '':
@@ -112,6 +117,13 @@ class GaussianEMRestraint(object):
         else:
             print('Gaussian EM restraint: must provide target density file or properly set up target densities')
             return
+
+        if target_mass:
+            tmass=sum([IMP.atom.Mass(p).get_mass() for p in self.target_ps])
+            scale=target_mass/tmass
+            for p in self.target_ps:
+                ms=IMP.atom.Mass(p).get_mass()
+                IMP.atom.Mass(p).set_mass(ms*scale)
 
         if representation:
             for p in representation._protocol_output:
@@ -269,6 +281,33 @@ class GaussianEMRestraint(object):
 
         for p in list(XYZRs):
             IMP.core.transform(IMP.core.XYZ(p), transformation)
+
+    def center_on_target_density(self):
+        target_com = self.get_center_of_mass()
+        print('target com', target_com)
+        model_com = self.get_center_of_mass(target=False)
+        print('model com', model_com)
+        v = target_com - model_com
+        print('translating with', v)
+        transformation = IMP.algebra.Transformation3D(IMP.algebra.Vector3D(v))
+
+        rigid_bodies = set()
+        XYZRs = set()
+
+        for p in self.model_ps:
+            if IMP.core.RigidBodyMember.get_is_setup(p):
+                rb = IMP.core.RigidBodyMember(p).get_rigid_body()
+                rigid_bodies.add(rb)
+            elif IMP.core.XYZR.get_is_setup(p):
+                XYZRs.add(p)
+
+        for rb in list(rigid_bodies):
+            IMP.core.transform(rb, transformation)
+
+        for p in list(XYZRs):
+            IMP.core.transform(IMP.core.XYZ(p), transformation)
+
+
 
 
     def set_weight(self,weight):

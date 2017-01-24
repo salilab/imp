@@ -1971,19 +1971,24 @@ def shuffle_configuration(objects,
                     max_rotation)
 
             # For gaussians, treat this fb as an rb
-            if IMP.core.RigidBody.get_is_setup(fb):
-                d = IMP.core.RigidBody(fb)
+
+            if IMP.core.NonRigidMember.get_is_setup(fb):
+                xyz=[fb.get_value(IMP.FloatKey(4)), fb.get_value(IMP.FloatKey(5)), fb.get_value(IMP.FloatKey(6))]
+                xyz_transformed=transformation.get_transformed(xyz)
+                fb.set_value(IMP.FloatKey(4),xyz_transformed[0])
+                fb.set_value(IMP.FloatKey(5),xyz_transformed[1])
+                fb.set_value(IMP.FloatKey(6),xyz_transformed[2])
             else:
                 d = IMP.core.XYZ(fb)
-
-            debug.append([d,other_idxs if avoidcollision_fb else set()])
-            IMP.core.transform(d, transformation)
+                debug.append([d,other_idxs if avoidcollision_fb else set()])
+                IMP.core.transform(d, transformation)
 
             if avoidcollision_fb:
                 mdl.update()
                 npairs = len(gcpf.get_close_pairs(mdl,
                                                   list(other_idxs),
-                                                  list(fbindexes)))
+                                                  list(fb_idxs)))
+
                 if npairs==0:
                     break
                 else:

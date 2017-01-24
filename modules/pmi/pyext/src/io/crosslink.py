@@ -8,6 +8,7 @@
 import IMP
 import IMP.pmi
 import operator
+import sys
 
 # json default serializations
 def set_json_default(obj):
@@ -17,7 +18,21 @@ def set_json_default(obj):
         return str(obj)
     raise TypeError
 
-
+# Handle and return data that must be a string
+if sys.version_info[0] >= 3:
+    def _handle_string_input(inp):
+        if not isinstance(inp, str):
+            raise TypeError("expecting a string")
+        return inp
+else:
+    def _handle_string_input(inp):
+        if not isinstance(inp, (str, unicode)):
+            raise TypeError("expecting a string or unicode")
+        # Coerce to non-unicode representation (str)
+        if isinstance(inp, unicode):
+            return str(inp):
+        else:
+            return inp
 
 class _CrossLinkDataBaseStandardKeys(object):
     '''
@@ -114,18 +129,10 @@ class _ProteinsResiduesArray(tuple):
         elif type(input_data) is tuple:
             if len(input_data)>4:
                 raise TypeError("_ProteinsResiduesArray: must have only 4 elements")
-            p1=input_data[0]
-            p2=input_data[1]
+            p1 = _handle_string_input(input_data[0])
+            p2 = _handle_string_input(input_data[1])
             r1=input_data[2]
             r2=input_data[3]
-            if type(p1) is not str and type(p1) is not unicode:
-                raise TypeError("_ProteinsResiduesArray: protein1 must be a string or unicode")
-            if type(p1) is unicode:
-                p1=str(p1)
-            if type(p2) is not str and type(p2) is not unicode:
-                raise TypeError("_ProteinsResiduesArray: protein2 must be a string or unicode")
-            if type(p2) is unicode:
-                p2=str(p2)
             if type(r1) is not int:
                 raise TypeError("_ProteinsResiduesArray: residue1 must be a integer")
             if type(r2) is not int:
@@ -898,11 +905,13 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             self.data_base = json.load(fp)
         self._update()
         #getting rid of unicode
-        for xl in self:
-            for k,v in xl.iteritems():
-                if type(k) is unicode: k=str(k)
-                if type(v) is unicode: v=str(v)
-                xl[k]=v
+        # (can't do this in Python 3, since *everything* is Unicode there)
+        if sys.version_info[0] < 3:
+            for xl in self:
+                for k,v in xl.iteritems():
+                    if type(k) is unicode: k=str(k)
+                    if type(v) is unicode: v=str(v)
+                    xl[k]=v
 
     def save_csv(self,filename):
 

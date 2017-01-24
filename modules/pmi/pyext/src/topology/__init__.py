@@ -61,7 +61,8 @@ def _build_ideal_helix(mdl, residues, coord_finder):
         z = 6.2 / 3.6 / 2 * n * 2 * pi / 3.6
         d.set_coordinates(IMP.algebra.Vector3D(x, y, z))
         d.set_radius(1.0)
-        a = IMP.atom.Atom.setup_particle(ap, IMP.atom.AT_CA)  # Decorating as Atom also adds Mass
+        a = IMP.atom.Atom.setup_particle(ap, IMP.atom.AT_CA)  # Decorating as Atom also decorates as Mass
+        IMP.atom.Mass(ap).set_mass(110.0)
         this_res.add_child(a)
 
         # Add this structure to the TempResidue
