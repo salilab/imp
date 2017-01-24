@@ -52,12 +52,9 @@ mkdir ${ROOT}/python || exit 1
 mv ${ROOT}/pylib/2.6/*.py ${ROOT}/pylib/2.6/IMP ${ROOT}/python || exit 1
 rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/IMP || exit 1
 
-# Patch IMP/__init__.py so it can find Python version-specific extensions
-# and the IMP DLLs
-patch -d ${ROOT}/python/IMP -p1 < ${TOOLDIR}/python-search-path.patch || exit 1
-# Patch RMF.py so it can find Python version-specific extensions
-# and the RMF DLLs
-patch -d ${ROOT}/python -p1 < ${TOOLDIR}/rmf-python-search-path.patch || exit 1
+# Patch IMP/__init__.py and RMF.py so they can find Python version-specific
+# extensions and the IMP/RMF DLLs
+${TOOLDIR}/add_search_path.py ${ROOT}/python/IMP/__init__.py ${ROOT}/python/RMF.py || exit 1
 
 # If there are any Python applications that don't have a file extension,
 # add .py extension and drop in wrapper so users can run them without an
