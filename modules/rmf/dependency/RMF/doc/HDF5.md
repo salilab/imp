@@ -4,7 +4,7 @@ HDF5 {#hdf5}
 We provide a simple set of classes for accessing core HDF5 functionality from C++. This was needed since
 - The HDF5 C interface is not trivial to use properly, particularly in regards to data type conversions and resource management.
 - It is very easy to use the C interface incorrectly without knowing it.
-- The [standard HDF5 C++ interface](http://hdf5.org) doesn't really simplify use of the HDF5 library and doesn't make use of the features of C++.
+- The [standard HDF5 C++ interface](https://support.hdfgroup.org/HDF5/) doesn't really simplify use of the HDF5 library and doesn't make use of the features of C++.
 
 The main classes provide access to:
 - HDF5 files through RMF::HDF5::File and RMF::HDF5::ConstFile
