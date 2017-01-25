@@ -96,6 +96,7 @@ void read_files(const std::vector<std::string>& files,
                 int multi_model_pdb,
                 bool partial_profiles, double max_q) {
 
+  IMP_NEW(IMP::Model, m, ());
   for (unsigned int i = 0; i < files.size(); i++) {
     // check if file exists
     std::ifstream in_file(files[i].c_str());
@@ -107,7 +108,8 @@ void read_files(const std::vector<std::string>& files,
     try {
       IMP::Vector<IMP::Particles> particles_vec;
       IMP::Vector<std::string> curr_pdb_file_names;
-      read_pdb(files[i], curr_pdb_file_names, particles_vec, false, true, multi_model_pdb);
+      read_pdb(m, files[i], curr_pdb_file_names, particles_vec, false,
+               true, multi_model_pdb);
       if(particles_vec.size() > 0) { // pdb file
         for(unsigned int j=0; j<particles_vec.size(); j++) {
           // compute profile
