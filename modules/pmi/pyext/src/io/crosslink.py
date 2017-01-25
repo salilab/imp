@@ -30,7 +30,7 @@ else:
             raise TypeError("expecting a string or unicode")
         # Coerce to non-unicode representation (str)
         if isinstance(inp, unicode):
-            return str(inp):
+            return str(inp)
         else:
             return inp
 

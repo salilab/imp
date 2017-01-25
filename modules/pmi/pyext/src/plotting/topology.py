@@ -190,3 +190,165 @@ class TopologyPlot(object):
                                   edge_color='gray',
                                   out_filename=out_fn,
                                   validation_edges=self.proteomic_edges)
+
+
+
+def draw_component_composition(BuildSystem_object, max=1000, draw_pdb_names=False):
+    """A function to plot the representation on the sequence
+    @param BuildSystem_object input a IMP.pmi.macros.BuildSystem instance, after add_state was called"""
+    import matplotlib as mpl
+    mpl.use('Agg')
+    from matplotlib import pyplot
+    from operator import itemgetter
+
+
+
+    elements={}
+    for state in BuildSystem_object.get_molecules():
+        for mol in state:
+            for copy in state[mol]:
+                name=str(copy)
+                elements[name]=[]
+                rs=copy.representations
+                for r in rs:
+                    first_res=(list(r.residues)[0])
+                    last_res=(list(r.residues)[-1])
+
+                    if 1 in r.bead_resolutions:
+                        struc="pdb"
+                    else:
+                        struc="bead"
+                    if r.ideal_helix:
+                        struc="helix"
+                    elements[name].append((first_res.pdb_index,last_res.pdb_index," ",struc))
+                elements[name].append((len(copy.sequence),len(copy.sequence), " ", "end"))
+
+    for name in elements:
+        k = name
+        tmplist = sorted(elements[name], key=itemgetter(0))
+        try:
+            endres = tmplist[-1][1]
+        except:
+            print("draw_component_composition: missing information for component %s" % name)
+            return
+        fig = pyplot.figure(figsize=(26.0 * float(endres) / max + 2, 2))
+        ax = fig.add_axes([0.05, 0.475, 0.9, 0.15])
+
+        # Set the colormap and norm to correspond to the data for which
+        # the colorbar will be used.
+        cmap = mpl.cm.cool
+        norm = mpl.colors.Normalize(vmin=5, vmax=10)
+        bounds = [1]
+        colors = []
+
+        for n, l in enumerate(tmplist):
+            firstres = l[0]
+            lastres = l[1]
+            if l[3] != "end":
+                if bounds[-1] != l[0]:
+                    colors.append("white")
+                    bounds.append(l[0])
+                    if l[3] == "pdb":
+                        colors.append("#99CCFF")
+                    if l[3] == "bead":
+                        colors.append("#FFFF99")
+                    if l[3] == "helix":
+                        colors.append("#33CCCC")
+                    if l[3] != "end":
+                        bounds.append(l[1] + 1)
+                else:
+                    if l[3] == "pdb":
+                        colors.append("#99CCFF")
+                    if l[3] == "bead":
+                        colors.append("#FFFF99")
+                    if l[3] == "helix":
+                        colors.append("#33CCCC")
+                    if l[3] != "end":
+                        bounds.append(l[1] + 1)
+            else:
+                if bounds[-1] - 1 == l[0]:
+                    bounds.pop()
+                    bounds.append(l[0])
+                else:
+                    colors.append("white")
+                    bounds.append(l[0])
+
+        bounds.append(bounds[-1])
+        colors.append("white")
+        cmap = mpl.colors.ListedColormap(colors)
+        cmap.set_over('0.25')
+        cmap.set_under('0.75')
+
+        norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+        cb2 = mpl.colorbar.ColorbarBase(ax, cmap=cmap,
+                                        norm=norm,
+                                        # to use 'extend', you must
+                                        # specify two extra boundaries:
+                                        boundaries=bounds,
+                                        ticks=bounds,  # optional
+                                        spacing='proportional',
+                                        orientation='horizontal')
+
+        extra_artists = []
+        npdb = 0
+
+        if draw_pdb_names:
+            for l in tmplist:
+                if l[3] == "pdb":
+                    npdb += 1
+                    mid = 1.0 / endres * float(l[0])
+                    # t =ax.text(mid, float(npdb-1)/2.0+1.5, l[2], ha="left", va="center", rotation=0,
+                    # size=10)
+                    # t=ax.annotate(l[0],2)
+                    t = ax.annotate(
+                        l[2], xy=(mid, 1),  xycoords='axes fraction',
+                        xytext=(mid + 0.025, float(npdb - 1) / 2.0 + 1.5), textcoords='axes fraction',
+                        arrowprops=dict(arrowstyle="->",
+                                        connectionstyle="angle,angleA=0,angleB=90,rad=10"),
+                    )
+                    extra_artists.append(t)
+
+        # set the title of the bar
+        title = ax.text(-0.005, 0.5, k, ha="right", va="center", rotation=90,
+                        size=20)
+
+        extra_artists.append(title)
+        # changing the xticks labels
+        labels = len(bounds) * [" "]
+        ax.set_xticklabels(labels)
+        mid = 1.0 / endres * float(bounds[0])
+        t = ax.annotate(bounds[0], xy=(mid, 0),  xycoords='axes fraction',
+                        xytext=(mid - 0.01, -0.5), textcoords='axes fraction',)
+        extra_artists.append(t)
+        offsets = [0, -0.5, -1.0]
+        nclashes = 0
+        for n in range(1, len(bounds)):
+            if bounds[n] == bounds[n - 1]:
+                continue
+            mid = 1.0 / endres * float(bounds[n])
+            if (float(bounds[n]) - float(bounds[n - 1])) / max <= 0.01:
+                nclashes += 1
+                offset = offsets[nclashes % 3]
+            else:
+                nclashes = 0
+                offset = offsets[0]
+            if offset > -0.75:
+                t = ax.annotate(
+                    bounds[n], xy=(mid, 0),  xycoords='axes fraction',
+                    xytext=(mid, -0.5 + offset), textcoords='axes fraction')
+            else:
+                t = ax.annotate(
+                    bounds[n], xy=(mid, 0),  xycoords='axes fraction',
+                    xytext=(mid, -0.5 + offset), textcoords='axes fraction', arrowprops=dict(arrowstyle="-"))
+            extra_artists.append(t)
+
+        cb2.add_lines(bounds, ["black"] * len(bounds), [1] * len(bounds))
+        # cb2.set_label(k)
+
+        pyplot.savefig(
+            k + "structure.pdf",
+            dpi=150,
+            transparent="True",
+            bbox_extra_artists=(extra_artists),
+            bbox_inches='tight')
+        #pyplot.show()

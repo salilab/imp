@@ -7,6 +7,9 @@ import IMP.test
 import IMP.rmf
 import RMF
 import math
+import IMP.pmi.plotting
+import IMP.pmi.plotting.topology
+
 def children_as_dict(h):
     cdict={}
     for c in h.get_children():
@@ -71,6 +74,19 @@ class Tests(IMP.test.TestCase):
         fbs = dof.get_flexible_beads()
         self.assertEqual(len(rbs),2)
         self.assertEqual(len(fbs),7)
+
+    def test_draw_molecular_composition(self):
+        mdl = IMP.Model()
+        tfile = self.get_input_file_name('topology_beads.txt')
+        input_dir = os.path.dirname(tfile)
+        t = IMP.pmi.topology.TopologyReader(tfile,
+                                            pdb_dir=input_dir,
+                                            fasta_dir=input_dir,
+                                            gmm_dir=input_dir)
+        bs = IMP.pmi.macros.BuildSystem(mdl)
+        bs.add_state(t)
+        IMP.pmi.plotting.topology.draw_component_composition(bs)
+
 
     def test_set_movers(self):
         """Check if rigid bodies etc are set up as requested"""
