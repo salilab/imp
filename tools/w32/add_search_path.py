@@ -20,7 +20,7 @@ from __future__ import print_function
 import re
 import sys
 
-IMP_PATCH = """
+IMP_PATCH = r"""
 def _add_pyext_to_path():
     import os.path
     import sys
@@ -43,7 +43,7 @@ _add_pyext_to_path()
 
 """
 
-RMF_PATCH = """
+RMF_PATCH = r"""
 def _add_pyext_to_path():
     import os.path
     import sys
