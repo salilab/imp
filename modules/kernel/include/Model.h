@@ -288,10 +288,16 @@ class IMPKERNELEXPORT Model : public Object
 #endif
 
   //! Get the particle from an index.
-  Particle *get_particle(ParticleIndex p) const;
+  Particle *get_particle(ParticleIndex p) const {
+    IMP_USAGE_CHECK(get_has_particle(p), "Invalid particle requested");
+    return particle_index_[p];
+  }
 
   //! Check whether a given particle index exists.
-  bool get_has_particle(ParticleIndex p) const;
+  bool get_has_particle(ParticleIndex p) const {
+    if (particle_index_.size() <= get_as_unsigned_int(p)) return false;
+    return particle_index_[p];
+  }
 
   //! Get all particle indexes
   ParticleIndexes get_particle_indexes();

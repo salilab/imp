@@ -140,16 +140,6 @@ void Model::add_undecorator(ParticleIndex pi, Undecorator *d) {
   undecorators_index_[pi].push_back(d);
 }
 
-Particle *Model::get_particle(ParticleIndex p) const {
-  IMP_USAGE_CHECK(get_has_particle(p), "Invalid particle requested");
-  return particle_index_[p];
-}
-
-bool Model::get_has_particle(ParticleIndex p) const {
-  if (particle_index_.size() <= get_as_unsigned_int(p)) return false;
-  return particle_index_[p];
-}
-
 void Model::do_add_score_state(ScoreState *obj) {
   IMP_INTERNAL_CHECK(cur_stage_ == internal::NOT_EVALUATING,
                      "The set of score states cannot be changed during"
