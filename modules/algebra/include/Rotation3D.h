@@ -164,8 +164,6 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
 #endif
   //! Rotate a vector around the origin
   Vector3D get_rotated(const Vector3D &o) const {
-    IMP_USAGE_CHECK(get_is_valid(),
-                    "Attempting to apply uninitialized rotation");
     if (!has_cache_) fill_cache();
     return Vector3D(o * matrix_[0], o * matrix_[1], o * matrix_[2]);
   }
@@ -173,8 +171,6 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   //! Get only the requested rotation coordinate of the vector
   double get_rotated_one_coordinate(const Vector3D &o,
                                     unsigned int coord) const {
-    IMP_USAGE_CHECK(get_is_valid(),
-                    "Attempting to apply uninitialized rotation");
     if (!has_cache_) fill_cache();
     return o * matrix_[coord];
   }
