@@ -47,6 +47,7 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
       \param[in] vars The variables to use (normally the keys for x,y,z)
       \param[in] radius The radius deviation to use.
    */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.7)
   BallMover(const ParticlesTemp &sc, const FloatKeys &vars,
             Float radius);
 
@@ -54,6 +55,7 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
       \param[in] sc The set of particles to perturb.
       \param[in] radius The radius deviation to use.
    */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.7)
   BallMover(const ParticlesTemp &sc, Float radius);
 #endif
 

@@ -43,12 +43,16 @@ BallMover::BallMover(Model *m, ParticleIndex pi, double radius)
 BallMover::BallMover(const ParticlesTemp &sc, const FloatKeys &vars,
                      double max)
     : MonteCarloMover(sc[0]->get_model(), "BallMover%1%") {
+  IMPCORE_DEPRECATED_METHOD_DEF(2.7,
+                                "Use the index-based constructor instead.");
   initialize(get_indexes(sc), vars, max);
 }
 
 // backwards compat
 BallMover::BallMover(const ParticlesTemp &sc, double max)
     : MonteCarloMover(sc[0]->get_model(), "XYZBallMover%1%") {
+  IMPCORE_DEPRECATED_METHOD_DEF(2.7,
+                                "Use the index-based constructor instead.");
   initialize(get_indexes(sc), XYZ::get_xyz_keys(), max);
 }
 
