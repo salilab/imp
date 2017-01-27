@@ -39,6 +39,17 @@ BallMover::BallMover(Model *m, ParticleIndex pi, double radius)
   initialize(ParticleIndexes(1, pi), XYZ::get_xyz_keys(), radius);
 }
 
+BallMover::BallMover(Model *m, const ParticleIndexes &pis,
+                     const FloatKeys &keys, double radius)
+    : MonteCarloMover(m, "BallMover%1%") {
+  initialize(pis, keys, radius);
+}
+
+BallMover::BallMover(Model *m, const ParticleIndexes &pis, double radius)
+    : MonteCarloMover(m, "BallMover%1%") {
+  initialize(pis, XYZ::get_xyz_keys(), radius);
+}
+
 // backwards compat
 BallMover::BallMover(const ParticlesTemp &sc, const FloatKeys &vars,
                      double max)
