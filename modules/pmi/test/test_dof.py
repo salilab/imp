@@ -117,6 +117,47 @@ class Tests(IMP.test.TestCase):
                                               replica_exchange_object=rem)
         rex.execute_macro()
 
+    def test_mc_rigid_body_disable(self):
+        """Test creation of rigid body and nonrigid members"""
+        mdl = IMP.Model()
+        s,molecule = self.init_topology1(mdl)
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        rb_movers,rb = dof.create_rigid_body(molecule,
+                                             nonrigid_parts = molecule.get_non_atomic_residues(),
+                                             name="test RB")
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),4)
+
+        #fixing all particles
+        particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles)
+        self.assertEqual(len(xyzs),3)
+        self.assertEqual(len(rbs),1)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),0)
+
+        #enabling everything
+        dof.enable_all_movers()
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),4)
+
+        #IMP.atom.show_molecular_hierarchy(s.hier)
+        #fixing the rb
+        particles=IMP.atom.Selection(s.hier,molecule="Prot1",residue_indexes=[1]).get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles)
+        self.assertEqual(len(xyzs),0)
+        self.assertEqual(len(rbs),1)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),3)
+
+        #fixing one bead and the corresponding rb
+        dof.enable_all_movers()
+        particles=IMP.atom.Selection(s.hier,molecule="Prot1",residue_indexes=[10]).get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles)
+        self.assertEqual(len(xyzs),1)
+        self.assertEqual(len(rbs),1)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),2)
 
     def test_mc_rigid_body_helix(self):
         """Test creation of rigid body and nonrigid members"""
@@ -252,6 +293,90 @@ class Tests(IMP.test.TestCase):
         mvs = dof.get_movers()
         self.assertEqual(len(mvs),11)
 
+    def test_mc_super_rigid_body_disable(self):
+        """test disable super rigid bodies, floppy bodies and rigid bodies"""
+        mdl = IMP.Model()
+        s,mols = self.init_topology3(mdl)
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        rb1_mov,rb1 = dof.create_rigid_body(mols[0],
+                                        nonrigid_parts = mols[0].get_non_atomic_residues())
+        rb2_mov,rb2 = dof.create_rigid_body(mols[1],
+                                        nonrigid_parts = mols[1].get_non_atomic_residues())
+        rb3_mov,rb3 = dof.create_rigid_body(mols[2],
+                                        nonrigid_parts = mols[2].get_non_atomic_residues())
+        srb_mover = dof.create_super_rigid_body(mols,chain_min_length=2,
+                                                chain_max_length=2)
+        ### rbX = dof.create_rigid_body([mols[0],mols[1]]) should fail
+        # rb1:4, rb2:1, rb3:4, srbs:2
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),11)
+
+        #fixing all particles
+        particles=IMP.atom.Selection(s.hier).get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles)
+        self.assertEqual(len(xyzs),6)
+        self.assertEqual(len(rbs),3)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),0)
+
+        #enabling everything
+        dof.enable_all_movers()
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),11)
+
+        #fixing prot1
+        particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles)
+        self.assertEqual(len(xyzs),3)
+        self.assertEqual(len(rbs),1)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),6)
+
+        #fixing prot1 rb
+        dof.enable_all_movers()
+        particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.core.RigidBodyMover])
+        self.assertEqual(len(xyzs),0)
+        self.assertEqual(len(rbs),1)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),10)
+
+        #fixing prot1 fbs
+        dof.enable_all_movers()
+        particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.core.BallMover])
+        self.assertEqual(len(xyzs),3)
+        self.assertEqual(len(rbs),0)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),8)
+
+        #removing super rigid body
+        dof.enable_all_movers()
+        particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.pmi.TransformMover])
+        self.assertEqual(len(xyzs),0)
+        self.assertEqual(len(rbs),0)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),10)
+
+        #removing rbmv, ballmovers and super rigid movers involving prot1
+        dof.enable_all_movers()
+        particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.core.RigidBodyMover,IMP.core.BallMover,IMP.pmi.TransformMover])
+        self.assertEqual(len(xyzs),3)
+        self.assertEqual(len(rbs),1)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),6)
+
+        #removing rbmv, ballmovers and super rigid movers involving prot2
+        dof.enable_all_movers()
+        particles=IMP.atom.Selection(s.hier,molecule="Prot2").get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.core.RigidBodyMover,IMP.core.BallMover,IMP.pmi.TransformMover])
+        self.assertEqual(len(xyzs),0)
+        self.assertEqual(len(rbs),1)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),8)
+
 
     def test_mc_flexible_beads(self):
         """Test setup of flexible beads"""
@@ -267,6 +392,40 @@ class Tests(IMP.test.TestCase):
                                               test_mode=True,
                                               replica_exchange_object=rem)
         rex.execute_macro()
+
+    def test_mc_flexible_beads_disable(self):
+        """Test disable of flexible beads"""
+        mdl = IMP.Model()
+        s,mol = self.init_topology1(mdl)
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        fb_movers = dof.create_flexible_beads(mol.get_non_atomic_residues(),max_trans=1.0)
+        self.assertEqual(len(fb_movers),3)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),3)
+
+        particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles)
+        self.assertEqual(len(xyzs),3)
+        self.assertEqual(len(rbs),0)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),0)
+
+        dof.enable_all_movers()
+        particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.core.RigidBodyMover])
+        self.assertEqual(len(xyzs),0)
+        self.assertEqual(len(rbs),0)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),3)
+
+        dof.enable_all_movers()
+        particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
+        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.core.BallMover])
+        self.assertEqual(len(xyzs),3)
+        self.assertEqual(len(rbs),0)
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),0)
+
 
     def test_mc_flexible_beads3(self):
         """Test flex beads don't work if nothing passed"""

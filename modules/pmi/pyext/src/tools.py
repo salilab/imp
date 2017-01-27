@@ -1978,6 +1978,7 @@ def shuffle_configuration(objects,
                 fb.set_value(IMP.FloatKey(4),xyz_transformed[0])
                 fb.set_value(IMP.FloatKey(5),xyz_transformed[1])
                 fb.set_value(IMP.FloatKey(6),xyz_transformed[2])
+                debug.append([xyz,other_idxs if avoidcollision_fb else set()])
             else:
                 d = IMP.core.XYZ(fb)
                 debug.append([d,other_idxs if avoidcollision_fb else set()])

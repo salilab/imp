@@ -57,6 +57,84 @@ class Tests(IMP.test.TestCase):
         for r in r2[2:]:
             self.assertFalse(r[1])
 
+    def test_shuffle_deep(self):
+        """Test moving rbs, fbs"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('chainA.fasta'))
+        st1 = s.create_state()
+        mol = st1.create_molecule("GCP2_YEAST",sequence=seqs["GCP2_YEAST"][:100],chain_id='A')
+        atomic_res = mol.add_structure(self.get_input_file_name('chainA.pdb'),
+                                       chain_id='A',
+                                       res_range=(1,100))
+        mol.add_representation(mol.get_atomic_residues(),resolutions=[10])
+        mol.add_representation(mol.get_non_atomic_residues(), resolutions=[10])
+
+        mol2 = mol.create_clone('B')
+
+        mol3 = st1.create_molecule("GCP2_YEAST_BEADS",sequence=seqs["GCP2_YEAST"][:100],chain_id='C')
+        mol3.add_representation(mol3.get_non_atomic_residues(), resolutions=[10])
+
+        hier = s.build()
+
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        dof.create_rigid_body(mol, nonrigid_parts=mol.get_non_atomic_residues())
+        dof.create_rigid_body(mol2, nonrigid_parts=mol2.get_non_atomic_residues())
+        dof.create_flexible_beads(mol3.get_non_atomic_residues(),max_trans=1.0)
+
+        rbs,fbs = IMP.pmi.tools.get_rbs_and_beads([hier])
+
+        rbs_trans_before={}
+        fbs_position_before={}
+
+        rbs_trans_after={}
+        fbs_position_after={}
+
+
+        for rb in rbs:
+            rbs_trans_before[rb]=rb.get_reference_frame().get_transformation_to()
+
+        for fb in fbs:
+            if IMP.core.NonRigidMember.get_is_setup(fb):
+                fbs_position_before[fb]=IMP.algebra.Vector3D(
+                    [fb.get_value(IMP.FloatKey(4)),
+                    fb.get_value(IMP.FloatKey(5)),
+                    fb.get_value(IMP.FloatKey(6))])
+            else:
+                fbs_position_before[fb]=IMP.core.XYZ(fb).get_coordinates()
+
+        IMP.pmi.tools.shuffle_configuration(hier)
+
+        for rb in rbs:
+            rbs_trans_after[rb]=rb.get_reference_frame().get_transformation_to()
+
+        for fb in fbs:
+            if IMP.core.NonRigidMember.get_is_setup(fb):
+                fbs_position_after[fb]=IMP.algebra.Vector3D(
+                    [fb.get_value(IMP.FloatKey(4)),
+                    fb.get_value(IMP.FloatKey(5)),
+                    fb.get_value(IMP.FloatKey(6))])
+            else:
+                fbs_position_after[fb]=IMP.core.XYZ(fb).get_coordinates()
+
+        for fb in fbs:
+            position_after=fbs_position_after[fb]
+            position_before=fbs_position_before[fb]
+            for i in [0,1,2]:
+                self.assertNotEqual(position_after[i],position_before[i])
+
+        for rb in rbs:
+            position_after=rbs_trans_after[rb].get_translation()
+            position_before=rbs_trans_before[rb].get_translation()
+            rotation_after=rbs_trans_after[rb].get_rotation()*IMP.algebra.Vector3D(1,1,1)
+            rotation_before=rbs_trans_before[rb].get_rotation()*IMP.algebra.Vector3D(1,1,1)
+            for i in [0,1,2]:
+                self.assertNotEqual(position_after[i],position_before[i])
+                self.assertNotEqual(rotation_after[i],rotation_before[i])
+
+
+
+
     def test_select_at_all_resolutions(self):
         """Test this actually gets everything"""
         try:

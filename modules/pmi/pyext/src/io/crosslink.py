@@ -834,8 +834,9 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
 
     def plot(self,filename,**kwargs):
-        import matplotlib.pyplot as plt
         import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
         import matplotlib.colors
 
 
@@ -1046,11 +1047,16 @@ class CrossLinkDataBaseFromStructure(object):
                                   noise=0.01,
                                   distance=21,
                                   max_delta_distance=10.0,
-                                  xwalk_bin_path=None):
+                                  xwalk_bin_path=None,
+                                  confidence_false=0.75,
+                                  confidence_true=0.75):
         import math
         from random import random,uniform
+        import numpy as np
         number_of_spectra=1
 
+        self.beta_true=-1.4427*math.log(0.5*(1.0-confidence_true))
+        self.beta_false=-1.4427*math.log(0.5*(1.0-confidence_false))
         self.cldb.data_base[str(number_of_spectra)]=[]
         self.sites_weighted=None
 
@@ -1089,9 +1095,11 @@ class CrossLinkDataBaseFromStructure(object):
             # k12=k1*k2/(k1+k2)
             new_xl["Reactivity"]=1.0-math.exp(-math.log(1.0/(1.0-r1))*math.log(1.0/(1.0-r2))/math.log(1.0/(1.0-r1)*1.0/(1.0-r2)))
             if noisy:
-                new_xl["Score"]=uniform(-1.0,1.0)
+                #new_xl["Score"]=uniform(-1.0,1.0)
+                new_xl["Score"]=np.random.beta(1.0,self.beta_false)
             else:
-                new_xl["Score"]=new_xl["Reactivity"]+uniform(0.0,2.0)
+                #new_xl["Score"]=new_xl["Reactivity"]+uniform(0.0,2.0)
+                new_xl["Score"]=1.0-np.random.beta(1.0,self.beta_true)
             new_xl["TargetDistance"]=dist
             new_xl["NoiseProbability"]=noise
             new_xl["AmbiguityProbability"]=ambiguity_probability

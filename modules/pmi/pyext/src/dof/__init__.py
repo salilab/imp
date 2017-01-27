@@ -37,6 +37,11 @@ class DegreesOfFreedom(object):
         self.flexible_beads = [] # stores all beads including nonrigid members of rigid bodies
         self.nuisances = []
         self._rb2mov = {}   # Keys are the RigidBody objects, values are list of movers
+        # the following is needed to keep track of disabled movers
+        self.movers_particles_map={}
+        self.movers_rb_map={}
+        self.movers_xyz_map={}
+        self.disabled_movers=[]
 
         #self.particle_map = {} # map from particles/rb objects to relevant movers+constraints
         # internal mover  = [mover obj, list of particles, enabled?] ?
@@ -74,8 +79,10 @@ class DegreesOfFreedom(object):
         # First, is this already a rigid body?
         if type(rigid_parts) is IMP.core.RigidBody:
             rb = rigid_parts
+            model=rb.get_model()
             if name is not None:
                 name = rb.get_name()
+            hiers= [IMP.atom.get_leaves(IMP.atom.Hierarchy(m.get_particle(i)))[0] for i in rb.get_member_particle_indexes()]
         else:
             ### Otherwise, setup RB
             hiers = IMP.pmi.tools.input_adaptor(rigid_parts,
@@ -92,7 +99,10 @@ class DegreesOfFreedom(object):
             rb.set_name(name)
             rb_mover.set_name(name)
         rb_movers.append(rb_mover)
-
+        self.movers_particles_map[rb_mover]=[]
+        self.movers_rb_map[rb_mover]=[rb]
+        for h in hiers:
+            self.movers_particles_map[rb_mover]+=IMP.atom.get_leaves(h)
         ### setup nonrigid parts
         if nonrigid_parts:
             nr_hiers = IMP.pmi.tools.input_adaptor(nonrigid_parts,
@@ -114,6 +124,8 @@ class DegreesOfFreedom(object):
                     fbmv=IMP.core.BallMover([p],IMP.FloatKeys(floatkeys),
                                                 nonrigid_max_trans)
                     self.fb_movers.append(fbmv)
+                    self.movers_particles_map[fbmv]=IMP.atom.get_leaves(h)
+                    self.movers_xyz_map[fbmv]=IMP.atom.get_leaves(h)
                     rb_movers.append(fbmv)
 
         self.movers += rb_movers # probably need to store more info
@@ -212,6 +224,9 @@ class DegreesOfFreedom(object):
             srbm = IMP.pmi.TransformMover(hiers[0][0].get_model(),axis[0],axis[1],max_trans, max_rot)
         super_rigid_rbs,super_rigid_xyzs = IMP.pmi.tools.get_rbs_and_beads(hiers)
         ct = 0
+        self.movers_particles_map[srbm]=[]
+        for h in hiers:
+            self.movers_particles_map[srbm]+=IMP.atom.get_leaves(h)
         for xyz in super_rigid_xyzs:
             srbm.add_xyz_particle(xyz)
             ct+=1
@@ -252,6 +267,8 @@ class DegreesOfFreedom(object):
             fbmv=IMP.core.BallMover([p],max_trans)
             fb_movers.append(fbmv)
             self.fb_movers.append(fbmv)
+            self.movers_particles_map[fbmv]=IMP.atom.get_leaves(h)
+            self.movers_xyz_map[fbmv]=IMP.atom.get_leaves(h)
         self.movers += fb_movers
         return fb_movers
 
@@ -370,8 +387,15 @@ class DegreesOfFreedom(object):
             print("optimize_flexible_beads: no particle to optimize")
 
     def get_movers(self):
-        """Should only return Enabled movers?"""
-        return self.movers
+        """Returns Enabled movers"""
+        if self.disabled_movers:
+            filtered_mover_list=[]
+            for mv in self.movers:
+                if not mv in self.disabled_movers:
+                    filtered_mover_list.append(mv)
+            return filtered_mover_list
+        else:
+            return self.movers
 
     def get_floppy_body_movers(self):
         """Return all movers corresponding to individual beads"""
@@ -384,6 +408,41 @@ class DegreesOfFreedom(object):
     def get_flexible_beads(self):
         """Return all flexible beads, including nonrigid members of rigid bodies"""
         return self.flexible_beads
+
+    def fix_particles_position(self,objects,mover_types=None):
+        """Fix the position of the particles by disabling the corresponding movers
+        @param objects Can be one of the following inputs:
+            IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.
+            Must be uniform input, however. No mixing object types.
+        @param mover_types further filter the mover type that will be disabled, it can be a list of IMP.core.RigidBodyMover,
+            IMP.core.BallMover etc etc if one wants to fix the corresponding rigid body, or the floppy bodies.
+            An empty mover_types list is interpreted as all possible movers.
+        It returns the list of fixed xyz particles (ie, floppy bodies/beads) and rigid bodies
+        whose movers were disabled
+        """
+        hierarchies = IMP.pmi.tools.input_adaptor(objects,
+                                              pmi_resolution='all',
+                                              flatten=True)
+        tmp_set=set()
+        fixed_rb=set()
+        fixed_xyz=set()
+        if mover_types is None: mover_types=[]
+
+        for key in self.movers_particles_map:
+            for h in hierarchies:
+                if h in self.movers_particles_map[key] and (type(key) in mover_types or not mover_types):
+                    tmp_set.add(key)
+                    if key in self.movers_rb_map:
+                        fixed_rb|=set(self.movers_rb_map[key])
+                    if key in self.movers_xyz_map:
+                        fixed_xyz|=set(self.movers_xyz_map[key])
+        print("Fixing %s movers" %(str(len(list(tmp_set)))))
+        self.disabled_movers+=list(tmp_set)
+        return list(fixed_xyz),list(fixed_rb)
+
+    def enable_all_movers(self):
+        """Reenable all movers: previously fixed particles will be released"""
+        self.disabled_movers=[]
 
     def get_nuisances_from_restraint(self,r):
         """Extract the nuisances from get_particles_to_sample()"""
