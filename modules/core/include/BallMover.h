@@ -16,10 +16,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! A mover for modifying a set of continuous particle variables by
-//! perturbing them within a ball.
-/** The variables are perturbed within a ball of the
-    given radius.
+//! Move continuous particle variables by perturbing them within a ball.
+/** The variables are perturbed within a ball of the given radius.
     \see MonteCarlo
  */
 class IMPCOREEXPORT BallMover : public MonteCarloMover {
@@ -35,12 +33,11 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
   /** Construct a mover that in each move, perturbs the specified
       variables (attributes) of particle pi in model m, within a ball
       of specified radius, whose dimensionality is the total number of
-      attributes
+      attributes.
   */
   BallMover(Model *m, ParticleIndex pi, const FloatKeys &vars,
             double radius);
-  //! Mover that in each move, perturbs the x,y,z coordinates of pi
-  //! within a ball of specified radius
+  //! Move the x,y,z coordinates of pi within a ball of specified radius
   BallMover(Model *m, ParticleIndex pi, double radius);
 
 #ifndef IMP_DOXYGEN
@@ -74,7 +71,7 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
   //! Move particle attributes within a ball, as specified in constructor
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
 
-  //! restore original attributes from before do_propose
+  //! Restore original attributes from before do_propose()
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(BallMover);
 };
