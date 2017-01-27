@@ -64,8 +64,7 @@ core::MonteCarlo *set_optimizer(Model *model,
   core::RigidBody rb =
       core::RigidMember(refiner->get_refined(p)[0]).get_rigid_body();
   // create a rigid body mover
-  core::RigidBodyMover *rb_mover =
-      new core::RigidBodyMover(rb, max_translation, max_rotation);
+  IMP_NEW(core::RigidBodyMover, rb_mover, (rb, max_translation, max_rotation));
   // preform mc search
   //  core::SteepestDescent *lopt = new core::SteepestDescent();
   IMP_NEW(core::ConjugateGradients, lopt, (model));
