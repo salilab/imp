@@ -28,10 +28,10 @@ class Tests(IMP.test.TestCase):
         # hps.set_log_level(IMP.VERBOSE)
         r = IMP.container.PairsRestraint(hps, cpc)
         sf = IMP.core.RestraintsScoringFunction([r])
-        isf = IMP.core.IncrementalScoringFunction(ps, [r])
+        isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
         isf.set_log_level(IMP.SILENT)
         mc.set_incremental_scoring_function(isf)
-        ms = [IMP.core.BallMover([x], .1) for x in ps]
+        ms = [IMP.core.BallMover(m, [x], .1) for x in ps]
         mv = IMP.core.SerialMover(ms)
         mc.add_mover(mv)
         #w= IMP.display.PymolWriter(self.get_tmp_file_name("incr.pym"))
@@ -70,9 +70,9 @@ class Tests(IMP.test.TestCase):
         r = IMP.container.PairsRestraint(hps, cpc)
         # r.set_log_level(IMP.VERBOSE)
         sf = IMP.core.RestraintsScoringFunction([r])
-        isf = IMP.core.IncrementalScoringFunction(ps, [r])
+        isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
         mc.set_incremental_scoring_function(isf)
-        ms = [IMP.core.BallMover([x], 2) for x in ps]
+        ms = [IMP.core.BallMover(m, [x], 2) for x in ps]
         mv = IMP.core.SerialMover(ms)
         mc.add_mover(mv)
         icpf = IMP.container.InContainerPairFilter(cpc, True)

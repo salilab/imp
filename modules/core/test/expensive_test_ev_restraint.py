@@ -56,14 +56,14 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         sf = IMP.core.RestraintsScoringFunction([r, bbr])
         return (m, r, sf, xyzrs, rbs)
 
-    def _setup_movers(self, xyzrs, rbs):
+    def _setup_movers(self, m, xyzrs, rbs):
         mvs = []
         for p in xyzrs:
-            mc = IMP.core.BallMover([p], 1)
+            mc = IMP.core.BallMover(m, [p], 1)
             mc.set_log_level(IMP.SILENT)
             mvs.append(mc)
         for p in rbs:
-            mc = IMP.core.RigidBodyMover(IMP.core.RigidBody(p), 1, .1)
+            mc = IMP.core.RigidBodyMover(m, IMP.core.RigidBody(p), 1, .1)
             mvs.append(mc)
         return mvs
 
@@ -73,7 +73,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         print("mc")
         o = IMP.core.MonteCarlo(m)
         o.set_scoring_function(sf)
-        mvs = self._setup_movers(xyzrs, rbs)
+        mvs = self._setup_movers(m, xyzrs, rbs)
         o.set_movers(mvs)
         print("opt")
         # rely on internal checks
@@ -86,7 +86,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         print("mc")
         o = IMP.core.MonteCarlo(m)
         o.set_scoring_function(sf)
-        mvs = self._setup_movers(xyzrs, rbs)
+        mvs = self._setup_movers(m, xyzrs, rbs)
         sm = IMP.core.SerialMover(mvs)
         o.set_movers([sm])
         print("opt")

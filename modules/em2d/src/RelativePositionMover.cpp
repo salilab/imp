@@ -19,7 +19,8 @@ IMPEM2D_BEGIN_NAMESPACE
 RelativePositionMover::RelativePositionMover(core::RigidBody d,
                                              Float max_translation,
                                              Float max_rotation)
-    : RigidBodyMover(d, max_translation, max_rotation) {
+    : RigidBodyMover(d.get_model(), d.get_particle_index(),
+                     max_translation, max_rotation) {
   IMP_LOG_VERBOSE("Building RelativePositionMover");
   rbA_ = d;
   max_angle_ = max_rotation;

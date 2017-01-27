@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
         isf = IMP.core.IncrementalScoringFunction(m, [p1,p2,psigma,ppsi], [dr])
         mc.set_incremental_scoring_function(isf)
 
-        mvs = [IMP.core.BallMover([p], 5) for p in [p1,p2]]
+        mvs = [IMP.core.BallMover(m, [p], 5) for p in [p1,p2]]
         sm = IMP.core.SerialMover(mvs)
         mc.add_mover(sm)
 
@@ -119,7 +119,7 @@ class Tests(IMP.test.TestCase):
                                                   restraints)
         mc.set_incremental_scoring_function(isf)
 
-        mvs = [IMP.core.BallMover([p], 5) for p in ps]
+        mvs = [IMP.core.BallMover(m, [p], 5) for p in ps]
         sm = IMP.core.SerialMover(mvs)
         mc.add_mover(sm)
 
@@ -187,7 +187,7 @@ class Tests(IMP.test.TestCase):
         mc.set_incremental_scoring_function(isf)
         sf = IMP.core.RestraintsScoringFunction(restraints)
 
-        mvs = [IMP.core.BallMover([p], 5) for p in ps]
+        mvs = [IMP.core.BallMover(m, [p], 5) for p in ps]
         sm = IMP.core.SerialMover(mvs)
         mc.add_mover(sm)
 
@@ -265,7 +265,8 @@ class Tests(IMP.test.TestCase):
                   list(set(restraints)))
         mc.set_incremental_scoring_function(isf)
 
-        mvs = [IMP.core.RigidBodyMover(rb1, 1.0, 0.03),IMP.core.RigidBodyMover(rb2, 1.0, 0.03)]
+        mvs = [IMP.core.RigidBodyMover(m, rb1, 1.0, 0.03),
+               IMP.core.RigidBodyMover(m, rb2, 1.0, 0.03)]
         sm = IMP.core.SerialMover(mvs)
         mc.add_mover(sm)
 

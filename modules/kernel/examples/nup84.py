@@ -233,7 +233,7 @@ def get_configurations(
                 .2 * scale)
             movers.append(mover)
         else:
-            mover = IMP.core.BallMover(
+            mover = IMP.core.BallMover(model,
                 [p], IMP.core.XYZR(p).get_radius() * scale)
             movers.append(mover)
     serial_mover = IMP.core.SerialMover(movers)

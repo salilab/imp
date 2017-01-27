@@ -80,7 +80,7 @@ class MCOptimizerTest(IMP.test.TestCase):
             p.add_attribute(self.xkey, value, True)
             ps.append(p)
         fk = IMP.FloatKeys([self.xkey])
-        mod = IMP.core.BallMover(ps, fk, .25)
+        mod = IMP.core.BallMover(model, ps, fk, .25)
         opt.add_mover(mod)
 
         rsr = WoodsFunc(model)

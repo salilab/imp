@@ -28,7 +28,7 @@ r.set_log_level(IMP.VERBOSE)
 
 o = IMP.core.MonteCarlo(m)
 o.set_scoring_function([r])
-mv = IMP.core.BallMover(ps, 10)
+mv = IMP.core.BallMover(m, ps, 10)
 o.add_mover(mv)
 o.add_optimizer_state(log)
 
