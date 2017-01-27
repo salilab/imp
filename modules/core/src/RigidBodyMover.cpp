@@ -69,14 +69,14 @@ MonteCarloMoverResult RigidBodyMover::do_propose() {
       d.get_coordinates_are_optimized(),
       "Rigid body passed to RigidBodyMover"
           << " must be set to be optimized. particle: " << d->get_name());
-  d.set_reference_frame(algebra::ReferenceFrame3D(t));
+  d.set_reference_frame_lazy(algebra::ReferenceFrame3D(t));
 
   return MonteCarloMoverResult(ParticleIndexes(1, pi_), 1.0);
 }
 
 void RigidBodyMover::do_reject() {
   RigidBody d(get_model(), pi_);
-  d.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
+  d.set_reference_frame_lazy(algebra::ReferenceFrame3D(last_transformation_));
   last_transformation_ = algebra::Transformation3D();
 }
 
