@@ -94,7 +94,8 @@ class DegreesOfFreedom(object):
             rb = IMP.atom.create_rigid_body(hiers)
         self.rigid_bodies.append(rb)
         rb.set_coordinates_are_optimized(True)
-        rb_mover = IMP.core.RigidBodyMover(rb,max_trans,max_rot)
+        rb_mover = IMP.core.RigidBodyMover(rb.get_model(), rb, max_trans,
+                                           max_rot)
         if name is not None:
             rb.set_name(name)
             rb_mover.set_name(name)
@@ -121,8 +122,9 @@ class DegreesOfFreedom(object):
                     rb.set_is_rigid_member(p.get_index(),False)
                     for fk in floatkeys:
                         p.set_is_optimized(fk,True)
-                    fbmv=IMP.core.BallMover([p],IMP.FloatKeys(floatkeys),
-                                                nonrigid_max_trans)
+                    fbmv=IMP.core.BallMover(p.get_model(), p,
+                                            IMP.FloatKeys(floatkeys),
+                                            nonrigid_max_trans)
                     self.fb_movers.append(fbmv)
                     self.movers_particles_map[fbmv]=IMP.atom.get_leaves(h)
                     self.movers_xyz_map[fbmv]=IMP.atom.get_leaves(h)
@@ -264,7 +266,7 @@ class DegreesOfFreedom(object):
             if IMP.core.RigidMember.get_is_setup(h) or IMP.core.NonRigidMember.get_is_setup(h):
                 raise Exception("Cannot create flexible beads from members of rigid body")
             self.flexible_beads.append(h)
-            fbmv=IMP.core.BallMover([p],max_trans)
+            fbmv=IMP.core.BallMover(p.get_model(), p, max_trans)
             fb_movers.append(fbmv)
             self.fb_movers.append(fbmv)
             self.movers_particles_map[fbmv]=IMP.atom.get_leaves(h)

@@ -259,7 +259,8 @@ class MonteCarlo(object):
     def get_rigid_body_movers(self, rbs, maxtrans, maxrot):
         mvs = []
         for rb in rbs:
-            mvs.append(IMP.core.RigidBodyMover(rb, maxtrans, maxrot))
+            mvs.append(IMP.core.RigidBodyMover(rb.get_model(), rb,
+                                               maxtrans, maxrot))
         return mvs
 
     def get_super_rigid_body_movers(self, rbs, maxtrans, maxrot):
@@ -308,12 +309,12 @@ class MonteCarlo(object):
                 for fk in floatkeys:
                     fb.set_is_optimized(fk, True)
                 mvs.append(
-                    IMP.core.BallMover([fb],
+                    IMP.core.BallMover(fb.get_model(), fb,
                                        IMP.FloatKeys(floatkeys),
                                        maxtrans))
             else:
                 # otherwise use the normal ball mover
-                mvs.append(IMP.core.BallMover([fb], maxtrans))
+                mvs.append(IMP.core.BallMover(fb.get_model(), fb, maxtrans))
         return mvs
 
     def get_X_movers(self, fbs, maxtrans):
