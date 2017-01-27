@@ -28,6 +28,8 @@ RigidBodyMover::RigidBodyMover(Model *m, ParticleIndex pi,
 RigidBodyMover::RigidBodyMover(RigidBody d, Float max_translation,
                                Float max_angle)
     : MonteCarloMover(d->get_model(), d->get_name() + " mover") {
+  IMPCORE_DEPRECATED_METHOD_DEF(2.7,
+                                "Use the index-based constructor instead.");
   IMP_USAGE_CHECK(
       d.get_coordinates_are_optimized(),
       "Rigid body passed to RigidBodyMover"

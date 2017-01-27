@@ -42,6 +42,7 @@ class IMPCOREEXPORT RigidBodyMover : public MonteCarloMover {
                  Float max_translation, Float max_rotation);
 
 #ifndef IMP_DOXYGEN
+  IMPCORE_DEPRECATED_METHOD_DECL(2.7)
   RigidBodyMover(RigidBody d, Float max_translation, Float max_rotation);
 #endif
 
