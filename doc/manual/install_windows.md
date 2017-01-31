@@ -23,13 +23,13 @@ easily reproducible:
     to build packages using the same version of Visual Studio that was used
     to build Python. This means VS 2008 for Python 2.7 and VS 2015 for
     Python 3.5, for example.
-  - Get and install [Miniconda](http://conda.pydata.org/miniconda.html) or the
+  - Get and install [Miniconda](https://conda.io/miniconda.html) or the
     full Anaconda environment.
   - Install necessary conda packages for development:
     `conda install conda-build unxutils`
   - Then for each package `foo` you can start a Visual Studio command prompt,
     `cd` to the directory above the `foo` directory containing the
-    [conda build recipe](http://conda.pydata.org/docs/building/recipe.html)
+    [conda build recipe](https://conda.io/docs/building/recipe.html)
     then build it with
     `conda build --python=2.7 foo`
   - Feel free to refer to
