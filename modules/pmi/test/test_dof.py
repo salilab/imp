@@ -29,7 +29,20 @@ class Tests(IMP.test.TestCase):
         s.build()
         return s,m1
 
+    def init_topology_clones(self,mdl):
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
 
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A',res_range=(55,63),offset=-54)
+        m1.add_representation(atomic_res,resolutions=[0,1,10])
+        m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
+        m2=m1.create_clone("B")
+        m3=m1.create_clone("C")
+        s.build()
+        return s,m1,m2,m3
 
     def init_topology3(self,mdl):
         s = IMP.pmi.topology.System(mdl)
@@ -92,6 +105,47 @@ class Tests(IMP.test.TestCase):
         s.build()
         return s,m1,m2,m3
 
+    def test_symmetry_disables_movers(self):
+        """Test the creation of symmetries"""
+        import math
+        mdl = IMP.Model()
+        s,m1,m2,m3 = self.init_topology_clones(mdl)
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        rb1_movers,rb1 = dof.create_rigid_body(m1,
+                                             nonrigid_parts = m1.get_non_atomic_residues(),
+                                             name="test RB 1")
+        rb2_movers,rb2 = dof.create_rigid_body(m2,
+                                             nonrigid_parts = m2.get_non_atomic_residues(),
+                                             name="test RB 2")
+        rb3_movers,rb3 = dof.create_rigid_body(m3,
+                                             nonrigid_parts = m3.get_non_atomic_residues(),
+                                             name="test RB 3")
+        mvs = dof.get_movers()
+        self.assertEqual(len(mvs),12)
+
+        rotational_axis=IMP.algebra.Vector3D(0, 0, 1.0)
+
+        rotation_angle_12 = 2.0 * math.pi / float(3) * float(1)
+        rotation3D_12 = IMP.algebra.get_rotation_about_axis(rotational_axis, rotation_angle_12)
+        dof.constrain_symmetry(
+                           [m1],
+                           [m2],
+                           rotation3D_12,
+                           resolution='all')
+
+        rotation_angle_13 = 2.0 * math.pi / float(3) * float(2)
+        rotation3D_13 = IMP.algebra.get_rotation_about_axis(rotational_axis, rotation_angle_13)
+        dof.constrain_symmetry(
+                           [m1],
+                           [m3],
+                           rotation3D_13,
+                           resolution='all')
+        mvs = dof.get_movers()
+        mdl.update()
+        self.assertEqual(len(mvs),4)
+
+
+
     def test_mc_rigid_body(self):
         """Test creation of rigid body and nonrigid members"""
         mdl = IMP.Model()
@@ -130,7 +184,7 @@ class Tests(IMP.test.TestCase):
 
         #fixing all particles
         particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles)
+        xyzs,rbs=dof.disable_movers(particles)
         self.assertEqual(len(xyzs),3)
         self.assertEqual(len(rbs),1)
         mvs = dof.get_movers()
@@ -144,7 +198,7 @@ class Tests(IMP.test.TestCase):
         #IMP.atom.show_molecular_hierarchy(s.hier)
         #fixing the rb
         particles=IMP.atom.Selection(s.hier,molecule="Prot1",residue_indexes=[1]).get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles)
+        xyzs,rbs=dof.disable_movers(particles)
         self.assertEqual(len(xyzs),0)
         self.assertEqual(len(rbs),1)
         mvs = dof.get_movers()
@@ -153,7 +207,7 @@ class Tests(IMP.test.TestCase):
         #fixing one bead and the corresponding rb
         dof.enable_all_movers()
         particles=IMP.atom.Selection(s.hier,molecule="Prot1",residue_indexes=[10]).get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles)
+        xyzs,rbs=dof.disable_movers(particles)
         self.assertEqual(len(xyzs),1)
         self.assertEqual(len(rbs),1)
         mvs = dof.get_movers()
@@ -313,7 +367,7 @@ class Tests(IMP.test.TestCase):
 
         #fixing all particles
         particles=IMP.atom.Selection(s.hier).get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles)
+        xyzs,rbs=dof.disable_movers(particles)
         self.assertEqual(len(xyzs),6)
         self.assertEqual(len(rbs),3)
         mvs = dof.get_movers()
@@ -326,7 +380,7 @@ class Tests(IMP.test.TestCase):
 
         #fixing prot1
         particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles)
+        xyzs,rbs=dof.disable_movers(particles)
         self.assertEqual(len(xyzs),3)
         self.assertEqual(len(rbs),1)
         mvs = dof.get_movers()
@@ -335,7 +389,7 @@ class Tests(IMP.test.TestCase):
         #fixing prot1 rb
         dof.enable_all_movers()
         particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.core.RigidBodyMover])
+        xyzs,rbs=dof.disable_movers(particles,mover_types=[IMP.core.RigidBodyMover])
         self.assertEqual(len(xyzs),0)
         self.assertEqual(len(rbs),1)
         mvs = dof.get_movers()
@@ -344,7 +398,7 @@ class Tests(IMP.test.TestCase):
         #fixing prot1 fbs
         dof.enable_all_movers()
         particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.core.BallMover])
+        xyzs,rbs=dof.disable_movers(particles,mover_types=[IMP.core.BallMover])
         self.assertEqual(len(xyzs),3)
         self.assertEqual(len(rbs),0)
         mvs = dof.get_movers()
@@ -353,7 +407,7 @@ class Tests(IMP.test.TestCase):
         #removing super rigid body
         dof.enable_all_movers()
         particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.pmi.TransformMover])
+        xyzs,rbs=dof.disable_movers(particles,mover_types=[IMP.pmi.TransformMover])
         self.assertEqual(len(xyzs),0)
         self.assertEqual(len(rbs),0)
         mvs = dof.get_movers()
@@ -362,7 +416,7 @@ class Tests(IMP.test.TestCase):
         #removing rbmv, ballmovers and super rigid movers involving prot1
         dof.enable_all_movers()
         particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.core.RigidBodyMover,IMP.core.BallMover,IMP.pmi.TransformMover])
+        xyzs,rbs=dof.disable_movers(particles,mover_types=[IMP.core.RigidBodyMover,IMP.core.BallMover,IMP.pmi.TransformMover])
         self.assertEqual(len(xyzs),3)
         self.assertEqual(len(rbs),1)
         mvs = dof.get_movers()
@@ -371,7 +425,7 @@ class Tests(IMP.test.TestCase):
         #removing rbmv, ballmovers and super rigid movers involving prot2
         dof.enable_all_movers()
         particles=IMP.atom.Selection(s.hier,molecule="Prot2").get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.core.RigidBodyMover,IMP.core.BallMover,IMP.pmi.TransformMover])
+        xyzs,rbs=dof.disable_movers(particles,mover_types=[IMP.core.RigidBodyMover,IMP.core.BallMover,IMP.pmi.TransformMover])
         self.assertEqual(len(xyzs),0)
         self.assertEqual(len(rbs),1)
         mvs = dof.get_movers()
@@ -404,7 +458,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(mvs),3)
 
         particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles)
+        xyzs,rbs=dof.disable_movers(particles)
         self.assertEqual(len(xyzs),3)
         self.assertEqual(len(rbs),0)
         mvs = dof.get_movers()
@@ -412,7 +466,7 @@ class Tests(IMP.test.TestCase):
 
         dof.enable_all_movers()
         particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.core.RigidBodyMover])
+        xyzs,rbs=dof.disable_movers(particles,mover_types=[IMP.core.RigidBodyMover])
         self.assertEqual(len(xyzs),0)
         self.assertEqual(len(rbs),0)
         mvs = dof.get_movers()
@@ -420,7 +474,7 @@ class Tests(IMP.test.TestCase):
 
         dof.enable_all_movers()
         particles=IMP.atom.Selection(s.hier,molecule="Prot1").get_selected_particles()
-        xyzs,rbs=dof.fix_particles_position(particles,mover_types=[IMP.core.BallMover])
+        xyzs,rbs=dof.disable_movers(particles,mover_types=[IMP.core.BallMover])
         self.assertEqual(len(xyzs),3)
         self.assertEqual(len(rbs),0)
         mvs = dof.get_movers()

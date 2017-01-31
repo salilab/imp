@@ -360,10 +360,12 @@ class DegreesOfFreedom(object):
               len(ref_beads),'flexible beads')
 
         # removing movers involved in clones
-        sym_movers = []
+        #sym_movers = []
 
-        sym_movers = [m for cl in clones_rbs for m in self._rb2mov[cl]]
-        self.movers = [m for m in self.movers if m not in sym_movers]
+        #sym_movers = [m for cl in clones_rbs for m in self._rb2mov[cl]]
+        #self.movers = [m for m in self.movers if m not in sym_movers]
+
+        self.disable_movers(hclones)
 
     def __repr__(self):
         # would like something fancy like this:
@@ -411,7 +413,7 @@ class DegreesOfFreedom(object):
         """Return all flexible beads, including nonrigid members of rigid bodies"""
         return self.flexible_beads
 
-    def fix_particles_position(self,objects,mover_types=None):
+    def disable_movers(self,objects,mover_types=None):
         """Fix the position of the particles by disabling the corresponding movers
         @param objects Can be one of the following inputs:
             IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.

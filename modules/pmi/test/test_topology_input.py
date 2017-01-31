@@ -76,6 +76,10 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(fbs),7)
 
     def test_draw_molecular_composition(self):
+        try:
+            import matplotlib
+        except ImportError:
+            self.skipTest("no matplotlib package")
         mdl = IMP.Model()
         tfile = self.get_input_file_name('topology_beads.txt')
         input_dir = os.path.dirname(tfile)
