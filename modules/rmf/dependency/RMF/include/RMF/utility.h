@@ -31,11 +31,11 @@ class NodeHandle;
     @{
  */
 
-/** Copy the hierarchy structure and set structure from one rmf
+/** Copy the hierarchy structure and set structure from one RMF
     file to another.*/
 RMFEXPORT void clone_file_info(FileConstHandle input, FileHandle output);
 
-/** Copy the hierarchy structure and set structure from one rmf
+/** Copy the hierarchy structure and set structure from one RMF
     file to another.*/
 RMFEXPORT void clone_hierarchy(FileConstHandle input, FileHandle output);
 
@@ -62,7 +62,7 @@ RMFEXPORT bool get_equal_static_values(FileConstHandle input,
 /** This function simply throws an exception. It is here for testing.*/
 RMFEXPORT void test_throw_exception();
 
-/** Return a lowerbound/upperbound pair that bounds the data stored in the
+/** Return a lower bound/upper bound pair that bounds the data stored in the
  * tree.
  */
 RMFEXPORT boost::array<RMF::Vector3, 2> get_bounding_box(NodeConstHandle root);

@@ -707,7 +707,7 @@ class HDF5SharedData : public backends::BackwardsIOBase {
   std::string get_file_type() const { return "HDF5 version 1"; }
 
   FrameID add_frame(std::string name, FrameType /*t*/) {
-    // frame types not supported in rmf files right now
+    // frame types not supported in RMF files right now
     unsigned int cindex = get_number_of_frames();
     FrameID index(cindex);
     set_name(index, name);

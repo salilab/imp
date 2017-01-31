@@ -144,7 +144,7 @@ class ConstDataSetD : public ConstDataSetAttributes {
     if (ret[D - 1] > 0) {
       // some versions will spew an error on this
       // we will call this function again before rds_ is needed
-      // std::cout << "inializing row to " << ret[data_->dim_-1] << std::endl;
+      // std::cout << "initializing row to " << ret[data_->dim_-1] << std::endl;
       data_->rds_.open(H5Screate_simple(1, ret + D - 1, NULL), &H5Sclose);
     } else {
       // std::cout << "clearing row data" << std::endl;

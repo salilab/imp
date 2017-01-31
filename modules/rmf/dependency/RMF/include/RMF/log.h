@@ -35,7 +35,7 @@ RMFEXPORT log4cxx::LoggerPtr get_logger();
     - Error
     - Off
 
-   Log4CXX is required for loggin to be supported.
+   Log4CXX is required for logging to be supported.
 */
 RMFEXPORT void set_log_level(std::string level);
 

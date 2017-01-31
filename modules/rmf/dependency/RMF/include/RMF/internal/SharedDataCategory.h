@@ -24,7 +24,7 @@ struct CategoryData {
   From from_name;
   typedef RMF_SMALL_UNORDERED_MAP<Category, std::string> To;
   To to_name;
-  // Mac OS 10.8 and earlied Clang needs these for some reason
+  // Mac OS 10.8 and earlier Clang needs these for some reason
   CategoryData() {}
   CategoryData &operator=(const CategoryData &o) {
     from_name = o.from_name;

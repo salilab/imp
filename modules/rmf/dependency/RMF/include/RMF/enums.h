@@ -50,7 +50,7 @@ extern RMFEXPORT const NodeType ALIAS;
  */
 extern RMFEXPORT const NodeType CUSTOM;
 //! A link between two atoms
-/** These are mostly for display purposes eg to show a wireframe
+/** These are mostly for display purposes e.g. to show a wireframe
     view of the molecule. */
 extern RMFEXPORT const NodeType BOND;
 //! A node that is purely there for organizational purposes

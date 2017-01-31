@@ -53,7 +53,7 @@ class Data {
   RMF::decorator::AlternativesFactory altf_;
   RMF::decorator::StateFactory stf_;
   struct AtomInfo {
-    // can precumpte the actual molfile_atom_t data to simplify things
+    // can precompute the actual molfile_atom_t data to simplify things
     boost::array<char, 2> chain_id;
     int residue_index;
     boost::array<char, 8> residue_name;
@@ -84,7 +84,7 @@ class Data {
   double max_radius_;
   bool done_;
 
-  // find nodes to push to vmd
+  // find nodes to push to VMD
   boost::array<int, 2> fill_bodies(RMF::NodeConstHandle cur, int body,
                                    boost::array<char, 2> chain, int resid,
                                    boost::array<char, 8> resname,

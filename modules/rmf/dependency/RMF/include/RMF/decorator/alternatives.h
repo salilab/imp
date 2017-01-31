@@ -101,7 +101,7 @@ struct AlternativesConstFactory : public AlternativesFactory {
 };
 #endif
 
-/** Return the cannonical resolution of the subtree. */
+/** Return the canonical resolution of the subtree. */
 RMFEXPORT double get_resolution(NodeConstHandle root);
 
 /** Return a list of (clustered) resolution levels available in the subtree.

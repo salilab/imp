@@ -348,8 +348,8 @@ class RMFEXPORT FileConstHandle {
   }
   /** @} */
 
-  /** Reread the file.
-      \note This may invalidate various thing (eg the number of nodes may
+  //! Reread the file.
+  /** \note This may invalidate various things (e.g. the number of nodes may
       vary). Be careful.
    */
   void reload();

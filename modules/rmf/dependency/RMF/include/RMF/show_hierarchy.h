@@ -19,7 +19,7 @@ class FileConstHandle;
 /** \name Showing the hierarchy
 
 These functions print out the hierarchy with various extra information
-for each node. Each prints out an ascii tree designed for human inspection.
+for each node. Each prints out an ASCII tree designed for human inspection.
 @{ */
 
 /** Print out just the node names and types.

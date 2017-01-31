@@ -34,7 +34,7 @@ typedef herr_t (*HDF5CloseFunction)(hid_t);
 
 //! Make sure an HDF5 handle is released
 /** CloseFunction should be an appropriate close function
-    for the handle type, eg H5Aclose. Handle is not available
+    for the handle type, e.g. H5Aclose. Handle is not available
     in python.
  */
 class RMFEXPORT Handle : public boost::noncopyable {

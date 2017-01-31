@@ -17,7 +17,7 @@ RMF_ENABLE_WARNINGS
 namespace RMF {
 namespace HDF5 {
 
-/** Store a handle to a non-writeable HDF5 file. See
+/** Store a handle to a non-writable HDF5 file. See
    \external{https://www.hdfgroup.org/HDF5/doc/RM/RM_H5F.html,
    the HDF5 manual} for more information.
 
@@ -36,7 +36,7 @@ class RMFEXPORT ConstFile : public ConstGroup {
   ~ConstFile();
 };
 
-/** Open an existing hdf5 file read only. The file cannot already
+/** Open an existing HDF5 file read only. The file cannot already
     be open.
  */
 RMFEXPORT ConstFile open_file_read_only(std::string name);
@@ -46,14 +46,14 @@ typedef std::vector<Group> ConstGroups;
 /** */
 typedef std::vector<File> ConstFiles;
 
-/** For debugging, one can get the number of open hdf5 handles for either
+/** For debugging, one can get the number of open HDF5 handles for either
     one file, or the whole system.*/
 RMFEXPORT int get_number_of_open_handles(ConstFile f = ConstFile());
 /** For debugging you can get the names of open handles in either one file
    or the whole process.*/
 RMFEXPORT Strings get_open_handle_names(ConstFile f = ConstFile());
 
-/** Turn on and off printing of hdf5 error messages. They can help in
+/** Turn on and off printing of HDF5 error messages. They can help in
       diagnostics, but, for the moment, can only be output to standard
       error and so are off by default.
  */

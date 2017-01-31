@@ -45,7 +45,7 @@ class MutableAttributes : public Base {
 #endif
  public:
   /** \name Template attribute methods
-      When manipulating attriutes from C++ you can use these
+      When manipulating attributes from C++ you can use these
       templated methods.
       @{
    */
