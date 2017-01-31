@@ -42,7 +42,7 @@ sf = IMP.core.RestraintsScoringFunction([ds])
 # movers
 movers = []
 for p in ps:
-    movers.append(IMP.core.BallMover([p], 0.5))
+    movers.append(IMP.core.BallMover(m, p, 0.5))
 # serial mover
 sm = IMP.core.SerialMover(movers)
 

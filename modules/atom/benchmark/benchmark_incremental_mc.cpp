@@ -119,7 +119,7 @@ void benchmark_it(std::string name, bool incr, bool nbl) {
   mc->set_kt(1.0);
   MonteCarloMovers mvs;
   for (unsigned int i = 0; i < rbs.size(); ++i) {
-    IMP_NEW(RigidBodyMover, mv, (rbs[i], 80, .2));
+    IMP_NEW(RigidBodyMover, mv, (m, rbs[i].get_particle_index(), 80, .2));
     mvs.push_back(mv);
   }
   mc->add_mover(new SerialMover(get_as<MonteCarloMovers>(mvs)));
