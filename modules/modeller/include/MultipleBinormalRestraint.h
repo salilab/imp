@@ -27,7 +27,7 @@ class BinormalTerm;
     \external{https://salilab.org/modeller/9.16/manual/node491.html,
    Modeller manual}.
     The two angles are typically the phi and psi dihedrals of a residue.
-    \deprecated_at{2.6} Moved to core::MultipleBinormalRestraint
+    \deprecated_at{2.7} Moved to core::MultipleBinormalRestraint
 
  */
 class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint {
@@ -43,7 +43,7 @@ class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint {
       \param[in] q1 First quad of particles.
       \param[in] q2 Second quad of particles.
    */
-  IMPMODELLER_DEPRECATED_OBJECT_DECL(2.6)
+  IMPMODELLER_DEPRECATED_OBJECT_DECL(2.7)
   MultipleBinormalRestraint(Model *m, const ParticleIndexQuad &q1,
                             const ParticleIndexQuad &q2);
 

@@ -49,8 +49,9 @@ MultipleBinormalRestraint::MultipleBinormalRestraint(
       terms_(),
       q1_(q1),
       q2_(q2) {
-      IMPMODELLER_DEPRECATED_OBJECT_DEF(2.6, "Use core::MultipleBinormalRestraint instead");
-      }
+  IMPMODELLER_DEPRECATED_OBJECT_DEF(2.7,
+                        "Use core::MultipleBinormalRestraint instead");
+}
 
 double MultipleBinormalRestraint::unprotected_evaluate(
     DerivativeAccumulator *accum) const {
