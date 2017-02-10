@@ -2,6 +2,8 @@ ChangeLog {#changelog}
 =========
 
 # For next stable IMP release #
+- Memory and CPU performance improvements across the code, particularly
+  in IMP::pmi.
 - The IMP::em::SurfaceShellDensityMap::binaries() method has been replaced
   with the (correctly spelled) IMP::em::SurfaceShellDensityMap::binarize()
   method.
@@ -9,6 +11,10 @@ ChangeLog {#changelog}
   IMP::core::RigidBody particles it acts on are also IMP::atom::Hierarchy
   objects.  Use an IMP::multifit::RigidLeavesRefiner in place of
   IMP::core::LeavesRefiner to get the old behavior.
+- IMP::modeller::MultipleBinormalRestraint has moved to the IMP::core
+  module.
+- The IMP::core::setup_as_rigid_body() method has been removed.
+  Use IMP::core::create_rigid_body() instead.
 - IMP::test:TempDir and IMP::test::RunInTempDir are deprecated in favor
   of similar functions that work as Python context managers
   (IMP::test::temporary_directory() and IMP::Test::temporary_working_directory()
