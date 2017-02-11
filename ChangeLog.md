@@ -4,6 +4,9 @@ ChangeLog {#changelog}
 # For next stable IMP release #
 - Memory and CPU performance improvements across the code, particularly
   in IMP::pmi.
+- Preview of mmCIF support for deposition of integrative models in
+  [PDB-dev](https://pdb-dev.rcsb.rutgers.edu/). See the IMP::pmi::mmcif
+  module for more details.
 - The IMP::em::SurfaceShellDensityMap::binaries() method has been replaced
   with the (correctly spelled) IMP::em::SurfaceShellDensityMap::binarize()
   method.
