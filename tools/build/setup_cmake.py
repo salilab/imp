@@ -218,7 +218,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/utility)""" % ((module,) * 6)
     module_template.write(out, values)
 
     # at end so directories exist
-    cmd = subprocess.Popen(
+    subprocess.check_call(
         ["python",
          os.path.join(
              "..",
