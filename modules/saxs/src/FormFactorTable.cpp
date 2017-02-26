@@ -27,15 +27,15 @@ std::map<atom::ResidueType, FormFactorTable::FormFactor>
 
 double FormFactorTable::zero_form_factors_[] = {
     -0.720147, -0.720228,
-    //   H       He
+    //   H       He - periodic table line 1
     1.591,     2.591,     3.591,   0.50824,  6.16294, 4.94998, 7.591,   6.993,
-    // Li     Be      B     C       N        O       F      Ne
+    // Li     Be      B     C       N        O       F      Ne - line 2
     7.9864,    8.9805,    9.984,   10.984,   13.0855, 9.36656, 13.984,  16.591,
-    //  Na      Mg     Al     Si      P        S       Cl     Ar
+    //  Na      Mg        Al       Si        P        S       Cl    Ar - line 3
     15.984,    14.9965,   20.984,  21.984,   20.9946, 23.984,
-    // K     Ca2+     Cr      Mn      Fe2+      Co
-    24.984,    25.984,    24.9936, 30.9825,  31.984,  49.16,
-    // Ni   Cu      Zn2+       Se      Br      I
+    // K       Ca2+       Cr      Mn      Fe2+      Co - line 4
+    24.984,   25.984,     24.9936, 30.9825,  31.984,  43.984, 49.16,
+    // Ni     Cu          Zn2+      Se       Br       Ag      I
     70.35676,  71.35676,  72.324,  73.35676,
     // Ir         Pt      Au      Hg
     -0.211907, -0.932054, -1.6522, 5.44279,  4.72265, 4.0025,  4.22983, 3.50968,
@@ -45,19 +45,21 @@ double FormFactorTable::zero_form_factors_[] = {
 };
 
 double FormFactorTable::vacuum_zero_form_factors_[] = {
-    0.999953, 0.999872, 2.99,    3.99,    4.99,    5.9992,  6.9946,  7.9994,
-    8.99,     9.999,
-    //   H       He      Li     Be     B    C       N       O      F     Ne
-    10.9924,  11.9865,  12.99,   13.99,   14.9993, 15.9998, 16.99,   17.99,
-    //  Na      Mg     Al     Si      P        S       Cl     Ar
-    18.99,    18.0025,  23.99,   24.99,   24.0006, 26.99,
-    // K     Ca2+     Cr     Mn      Fe2+      Co
-    27.99,    28.99,    27.9996, 33.99,   34.99,   52.99,   76.99,   77.99,
-    78.9572,  79.99,
-    // Ni   Cu      Zn2+    Se     Br     I       Ir     Pt      Au     Hg
+    //   H       He - periodic table line 1
+    0.999953, 0.999872,
+    // Li  Be    B     C       N       O       F     Ne - line 2
+    2.99,  3.99, 4.99, 5.9992, 6.9946, 7.9994, 8.99, 9.999,
+    //  Na     Mg     Al     Si      P        S        Cl     Ar - line 3
+    10.9924, 11.9865, 12.99, 13.99,  14.9993, 15.9998, 16.99, 17.99,
+    // K    Ca2+     Cr     Mn     Fe2+     Co - line 4
+    18.99,  18.0025, 23.99, 24.99, 24.0006, 26.99,
+    // Ni   Cu      Zn2+     Se     Br - line 4 cont.
+    27.99,  28.99,  27.9996, 33.99, 34.99,
+    // Ag    I       Ir     Pt      Au     Hg - some elements from lines 5, 6
+    46.99, 52.99,   76.99,   77.99, 78.9572,  79.99,
+    // CH      CH2     CH3     NH       NH2       NH3     OH      OH2      SH
     6.99915,  7.99911,  8.99906, 7.99455, 8.99451, 9.99446, 8.99935, 9.9993,
     16.9998
-    //  CH      CH2     CH3     NH       NH2       NH3     OH      OH2      SH
 };
 
 double FormFactorTable::dummy_zero_form_factors_[] = {
@@ -68,9 +70,10 @@ double FormFactorTable::dummy_zero_form_factors_[] = {
     // Na     Mg    Al?    Si?      P        S      Cl?    Ar?
     3.006,   3.006,   3.006,   3.006,   3.006,   3.006,
     // K?   Ca2+    Cr?    Mn?   Fe2+   Co?
-    3.006,   3.006,   3.006,   3.006,   3.006,   3.83,    6.63324, 6.63324,
-    6.63324, 6.63324,
-    // Ni?   Cu?   Zn2+    Se     Br?     I?   Ir?      Pt?       Au      Hg
+    3.006,   3.006,   3.006,   3.006,   3.006,
+    // Ni?   Cu?   Zn2+    Se     Br?
+    3.006,   3.83,    6.63324, 6.63324, 6.63324, 6.63324,
+    // Ag?   I?       Ir?      Pt?       Au      Hg
     7.21106, 8.93116, 10.6513, 2.55176, 4.27186, 5.99196, 4.76952, 6.48962,
     8.35334
     //  CH       CH2      CH3     NH       NH2       NH3     OH       OH2   SH
