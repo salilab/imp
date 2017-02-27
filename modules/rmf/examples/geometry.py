@@ -12,7 +12,7 @@ IMP.setup_from_argv(sys.argv, "geometry")
 
 tfn = "rmf_geometry.rmf"
 
-# open the hdf5, clearing any existing contents
+# open the RMF, clearing any existing contents
 f = RMF.create_rmf_file(tfn)
 
 # creating a box geometry

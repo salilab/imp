@@ -43,4 +43,4 @@ IMP.rmf.link_hierarchies(rh, [h])
 # load the same coordinates in, ok, that is not very exciting
 IMP.rmf.load_frame(rh, RMF.FrameID(0))
 
-print("Try running hdf5_display or hdf5_show on", tfn)
+print("Try running rmf_display or rmf_show on", tfn)
