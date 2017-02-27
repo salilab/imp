@@ -53,15 +53,15 @@ class Tests(IMP.test.TestCase):
             self.assertGreater(model_map.get_value(v), 0.6,
                                "map was not sampled correctly")
         model_map.calcRMS()
-        mapfile = IMP.create_temporary_file_name("xxx.em")
-        IMP.em.write_map(model_map, mapfile, erw)
-        em_map = IMP.em.DensityMap()
-        em_map = IMP.em.read_map(mapfile, erw)
+        with IMP.test.temporary_directory() as tempdir:
+            mapfile = os.path.join(tempdir, 'xxx.em')
+            IMP.em.write_map(model_map, mapfile, erw)
+            em_map = IMP.em.DensityMap()
+            em_map = IMP.em.read_map(mapfile, erw)
         em_map.calcRMS()
         self.assertAlmostEqual(em_map.get_header().rms,
                                model_map.get_header().rms, delta=.000001,
                                msg="standard deviations of maps differ")
-        os.unlink(mapfile)
 
     def test_sample_pdb(self):
         """Check that sampling particles works"""
