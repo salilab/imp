@@ -10,8 +10,7 @@ import sys
 
 IMP.setup_from_argv(sys.argv, "geometry")
 
-# create a temporary file
-tfn = IMP.create_temporary_file_name("rmf_geometry", ".rmf")
+tfn = "rmf_geometry.rmf"
 
 # open the hdf5, clearing any existing contents
 f = RMF.create_rmf_file(tfn)

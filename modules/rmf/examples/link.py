@@ -18,12 +18,11 @@ m = IMP.Model()
 # Create a new IMP.atom.Hierarchy from the contents of the pdb file
 h = IMP.atom.read_pdb(IMP.rmf.get_example_path("simple.pdb"), m)
 
-# find the name for a temporary file to use to for writing the hdf5 file
-tfn = IMP.create_temporary_file_name("link", ".rmf")
+tfn = "link.rmf"
 
 print("File name is", tfn)
 
-# open the temporary file, clearing any existing contents
+# open the file, clearing any existing contents
 rh = RMF.create_rmf_file(tfn)
 
 # add the hierarchy to the file
