@@ -197,7 +197,7 @@ class SAXSScorer(ExperimentalScorer):
     def _run_score_binary(self):
         args = [self.saxs_receptor, self.saxs_ligand,
                 self.transformations_file, self.saxs_file,
-                '-o', self.output_file]
+                '-o', self.output_file, '--no_filtering_by_rg', '-a']
         if self.weighted:
             args.append('-t')
         _run_binary(None, "saxs_score", args)

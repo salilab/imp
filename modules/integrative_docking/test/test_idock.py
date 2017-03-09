@@ -473,7 +473,9 @@ ligandPdb (str) antibody_cut.pdb
             self.assertEqual(str(s), 'SAXS score')
             self.assertEqual(self.run_scorer_score(s),
                              (None, 'saxs_score', ['testrecep.s', 'testlig.s',
-                              'trans_pd', 'test.saxs', '-o', 'saxs_score.res']))
+                              'trans_pd', 'test.saxs', '-o', 'saxs_score.res',
+                              '--no_filtering_by_rg', '-a']))
+
 
     def test_saxs_scorer_weighted(self):
         """Test SAXSScorer class with weighting"""
@@ -492,7 +494,7 @@ ligandPdb (str) antibody_cut.pdb
             self.assertEqual(self.run_scorer_score(s),
                              (None, 'saxs_score', ['testrecep.s', 'testlig.s',
                               'trans_pd', 'test.saxs', '-o', 'saxs_score.res',
-                              '-t']))
+                              '--no_filtering_by_rg', '-a', '-t']))
 
     def test_em2d_scorer(self):
         """Test EM2DScorer class"""
