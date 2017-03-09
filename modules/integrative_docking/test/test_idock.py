@@ -309,6 +309,7 @@ Program parameters
         d.opts.ligand_rtc = 'testrecep_rtc'
         d.opts.saxs_file = 'testsaxs'
         d.opts.saxs_receptor_pdb = d.opts.saxs_ligand_pdb = None
+        d.opts.weighted_saxs_score = False
         d.opts.class_averages = []
         d.opts.map_file = 'test.mrc'
         d.opts.cross_links_file = None
@@ -455,6 +456,7 @@ ligandPdb (str) antibody_cut.pdb
             self.assertIsNone(app.SAXSScorer.check_options(idock, None))
             idock.opts.saxs_file = 'test.saxs'
             idock.opts.saxs_receptor_pdb = idock.opts.saxs_ligand_pdb = None
+            idock.opts.weighted_saxs_score = False
             s = app.SAXSScorer(idock)
             s2 = app.SAXSScorer.check_options(idock, None)
             self.assertIsInstance(s2, app.SAXSScorer)
@@ -472,6 +474,25 @@ ligandPdb (str) antibody_cut.pdb
             self.assertEqual(self.run_scorer_score(s),
                              (None, 'saxs_score', ['testrecep.s', 'testlig.s',
                               'trans_pd', 'test.saxs', '-o', 'saxs_score.res']))
+
+    def test_saxs_scorer_weighted(self):
+        """Test SAXSScorer class with weighting"""
+        # Don't get confused by other tests that make *_score.res files at
+        # the same time as us when running with -j
+        with IMP.test.temporary_working_directory():
+            app, idock = self.get_dummy_idock_for_scorer()
+            idock.opts.saxs_file = 'test.saxs'
+            idock.opts.saxs_receptor_pdb = 'testrecep.s'
+            idock.opts.saxs_ligand_pdb = 'testlig.s'
+            idock.opts.weighted_saxs_score = True
+            s = app.SAXSScorer(idock)
+            self.assertEqual(s.saxs_receptor, 'testrecep.s')
+            self.assertEqual(s.saxs_ligand, 'testlig.s')
+            self.assertEqual(str(s), 'SAXS score')
+            self.assertEqual(self.run_scorer_score(s),
+                             (None, 'saxs_score', ['testrecep.s', 'testlig.s',
+                              'trans_pd', 'test.saxs', '-o', 'saxs_score.res',
+                              '-t']))
 
     def test_em2d_scorer(self):
         """Test EM2DScorer class"""
