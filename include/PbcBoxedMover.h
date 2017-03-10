@@ -11,7 +11,6 @@
 
 #include "membrane_config.h"
 #include <IMP/core/MonteCarlo.h>
-#include <IMP/symmetry/BallMover.h>
 #include <IMP/core.h>
 #include <IMP/algebra/Vector3D.h>
 //#include <IMP/core/mover_macros.h>
@@ -23,7 +22,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPMEMBRANEEXPORT PbcBoxedMover: public symmetry::BallMover
+class IMPMEMBRANEEXPORT PbcBoxedMover: public core::MonteCarloMover
 {
 public:
   /** The particle is moved withing a (hexagonal or cubic) box
@@ -43,27 +42,17 @@ protected:
   IMP_SHOWABLE(PbcBoxedMover);
 
 private:
-  /* All these are already in the base class
-  //! Master particle
-  IMP::base::PointerMember<kernel::Particle> p_;
-  //! List of slave particles
-  kernel::Particles ps_;
-  //! Maximum translation
-  Float max_tr_;
-  //! List of centers of all (including primitive) cells
-  algebra::Vector3Ds centers_;
-  //! List of transformations from primitive to all (including primitive) cells
-  algebra::Transformation3Ds tranformations_;
-  // master particle old coordinates
-  algebra::Vector3D oldcoord_;
-  // slave particles old coordinates
-  algebra::Vector3Ds oldcoords_;
-  */
 
-  // particles for scaling
-  IMP::base::PointerMember<kernel::Particle> px_;
-  IMP::base::PointerMember<kernel::Particle> py_;
-  IMP::base::PointerMember<kernel::Particle> pz_;
+  Float max_tr_;
+    algebra::Transformation3Ds transformations_;
+    algebra::Vector3Ds centers_;
+    algebra::Vector3Ds oldcoords_;
+    IMP::base::PointerMember<kernel::Particle> p_;
+    kernel::Particles ps_;
+    IMP::base::PointerMember<kernel::Particle> px_;
+    IMP::base::PointerMember<kernel::Particle> py_;
+    IMP::base::PointerMember<kernel::Particle> pz_;
+
 
   algebra::Vector3D get_vector(algebra::Vector3D center);
   algebra::Transformation3D get_transformation(algebra::Transformation3D trans);

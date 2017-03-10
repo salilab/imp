@@ -121,6 +121,15 @@ struct SPBParameters {
  double       tilt;
  double       tilt_Spc42;
  double       resolution;
+
+ double dist_Spc29_termMin;
+ double dist_Spc29_termMax;
+ double sigma0_dist;
+
+ double dist_Spc42C_min ;
+ double dist_Spc42C_max;
+ double sigma0_dist_spc42c;
+
  std::string  cell_type;
  int          num_cells;
  int          num_copies;
@@ -143,6 +152,8 @@ struct SPBParameters {
  bool         isd_restart;
  std::string  isd_restart_file;
  bool         add_IL2_layer;
+ bool restrain_distance_Spc29_termini;
+ bool restrain_distance_Spc42_Cterm;
 };
 
 IMPMEMBRANE_END_NAMESPACE

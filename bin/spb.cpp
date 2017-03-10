@@ -38,6 +38,14 @@ out << myrank;
 std::string names="log"+out.str();
 FILE *logfile;
 logfile = fopen(names.c_str(),"w");
+/*
+//restraints file
+std::stringstream myr;
+myr << myrank;
+std::string restname="rest"+myr.str();
+FILE *restfile;
+restfile=fopen(restname.c_str(),"w");
+*/
 
 std::string inputfile="config.ini";
 int i=1;
@@ -106,10 +114,10 @@ if(mydata.file_list.size()>0){
 //
 if(mydata.isd_restart){
  if(myrank==0){std::cout << "Restart ISD particles from file" << std::endl;}
- RMF::FileHandle rh = RMF::open_rmf_file(mydata.isd_restart_file);
+ RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(mydata.isd_restart_file);
  rmf::link_particles(rh, ISD_ps_list);
  unsigned int iframe=rh.get_number_of_frames();
- rmf::load_frame(rh,iframe-1);
+ rh.set_current_frame(RMF::FrameID(iframe-1));
 }
 //
 // Prepare output file for coordinates
@@ -121,10 +129,10 @@ for(unsigned int i=0;i<all_mol.size();++i){
  for(unsigned int j=0;j<hs.size();++j) {rmf::add_hierarchy(rh, hs[j]);}
 }
 // adding key for score and index
-RMF::Category my_kc= rh.add_category("my data");
-RMF::FloatKey my_key0=rh.add_float_key(my_kc,"my score",true);
-RMF::IntKey   my_key1=rh.add_int_key(my_kc,"my index",true);
-RMF::FloatKey my_key2=rh.add_float_key(my_kc,"my bias",true);
+RMF::Category my_kc= rh.get_category("my data");
+RMF::FloatKey my_key0=rh.get_key<RMF::FloatTag>(my_kc,"my score");
+RMF::IntKey   my_key1=rh.get_key<RMF::IntTag>(my_kc,"my index");
+RMF::FloatKey my_key2=rh.get_key<RMF::FloatTag>(my_kc,"my bias");
 //
 // Prepare output file for ISD particles
 //
@@ -132,14 +140,16 @@ std::string isdname="trajisd"+out.str()+".rmf";
 RMF::FileHandle rh_isd = RMF::create_rmf_file(isdname);
 rmf::add_particles(rh_isd, ISD_ps_list);
 
-//
+
 // CREATING RESTRAINTS
 //
 if(myrank==0) {std::cout << "Creating restraints" << std::endl;}
 std::map< std::string, base::Pointer<RestraintSet> > rst_map=
  spb_assemble_restraints(m,mydata,all_mol,CP_ps,IL2_ps,ISD_ps);
 
-//
+
+// SCORE RESTRAINTS BY CALLING A SCORING FUNCTION FOR A MODEL
+
 if(myrank==0) {std::cout << "Setup sampler" << std::endl;}
 base::Pointer<core::MonteCarlo> mc=
  setup_SPBMonteCarlo(m,mvs,temp[index[myrank]],mydata);
@@ -178,8 +188,14 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  mc->optimize(mydata.MC.nexc);
 
 // get score and index
- double myscore = m->evaluate(false);
- int    myindex = index[myrank];
+  double myscore = m->evaluate(false); // this is deprecated
+
+// there is a much better way to write this
+ //double myscore = myScoreFunction->evaluate(false);
+
+ // std::cout << myscore << " "<< myscore2 << std::endl;
+
+ int myindex = index[myrank];
 // and bias
  double mybias = 0.;
  if(mydata.MC.do_wte){
@@ -188,6 +204,8 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    mybias=ptr->get_bias(myscore);
  }
 
+  if(myrank==0 && imc%mydata.MC.nwrite ==0 )
+   std::cout << "Step number " << imc << std::endl;
 // print log file, save configuration and additional information to file
  if(imc%mydata.MC.nwrite==0){
 
@@ -208,8 +226,10 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   fprintf(logfile,
          "TimeStep %10d Temperature %12.6f Acceptance %12.6f\n",
          imc,mc->get_kt(),
-         float(mc->get_number_of_forward_steps())/float(mydata.MC.nexc));
-  if(mydata.add_fret){
+         //float(mc->get_number_of_forward_steps())/float(mydata.MC.nexc));
+         float(mc->get_number_of_accepted_steps())/float(mydata.MC.nexc));
+
+ if(mydata.add_fret){
    fprintf(logfile,"TimeStep %10d Kda %12.6f Ida %12.6f Sigma0 %12.6f\n",
            imc,
            isd::Scale(ISD_ps["Kda"]).get_scale(),
@@ -246,18 +266,75 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
          imc,name.c_str(),fmod,fmod_err,fexp);
    }
   }
+ if(mydata.restrain_distance_Spc29_termini) {
+  fprintf(logfile,"Reference Spc29 termini distance %.3f\n",
+ isd::Scale(ISD_ps["Spc29TermDist"]).get_scale());
+}
 
-// save score to rmf
-  (rh.get_root_node()).set_value(my_key0,myscore,imc/mydata.MC.nwrite);
-// save index to rmf
-  (rh.get_root_node()).set_value(my_key1,myindex,imc/mydata.MC.nwrite);
-// save bias to rmf
-  (rh.get_root_node()).set_value(my_key2,mybias,imc/mydata.MC.nwrite);
-// save configuration to rmf
-  rmf::save_frame(rh,imc/mydata.MC.nwrite);
+if(mydata.restrain_distance_Spc42_Cterm) {
+  fprintf(logfile,"Reference Spc42 Cterm distance %.3f\n",
+ isd::Scale(ISD_ps["Spc42CtermDist"]).get_scale());
+}
+/*
+  if(mydata.restrain_distance_Spc42_Cterm) {
+  atom::Selection cce=atom::Selection(all_mol[0]);
+  atom::Selection cterms=atom::Selection(all_mol[0]);
 
-// save ISD particles
-  rmf::save_frame(rh_isd,imc/mydata.MC.nwrite);
+ cce.set_molecule("Spc42p"); // all Spc42 in unit cell
+ cterms.set_molecule("Spc42p");
+
+ cce.set_residue_index(135);
+ cterms.set_terminus(atom::Selection::C);
+
+ Particles cc=cce.get_selected_particles();
+ Particles ct=cterms.get_selected_particles();
+
+ std::vector<double> modelDist;
+ for(unsigned int icount=0; icount<cc.size();icount++)
+ {
+   for(unsigned int jcount=0;jcount<ct.size();jcount++)
+   {
+        bool samep=(atom::Hierarchy(cc[icount]).get_parent() ==
+               atom::Hierarchy(ct[jcount]).get_parent());
+        if(!samep){continue;}
+        // we want to restrain termini belonging to the same protein
+ modelDist.push_back(core::get_distance(core::XYZ(cc[icount]),
+ core::XYZ(ct[jcount])));
+   }
+ }
+
+ fprintf(logfile,"Reference Spc42 termini distance %.3f Mo
+del Spc42 distance %.3f %.3f %.3f %.3f\n",
+ isd::Scale(ISD_ps["Spc42CtermDist"]).get_scale(),modelDist[0],
+ modelDist[1],modelDist[2],modelDist[3]);
+
+   // to print out individual restraint scores
+
+   for(unsigned i=0;i<m->get_number_of_restraints();++i) {
+         base::Pointer<kernel::Restraint> rst=
+  dynamic_cast<kernel::Restraint*>(m->get_restraint(i));
+    fprintf(logfile,"TimeStep %10d Restname %s Score %lf\n",
+ imc,rst->get_name().c_str(),rst->get_score());
+   }
+
+} */
+// end check for Spc29 distance restraint on termini
+
+  // save score to rmf
+  (rh.get_root_node()).set_value(my_key0,myscore);
+  // save index to rmf
+  (rh.get_root_node()).set_value(my_key1,myindex);
+  // save bias to rmf
+  (rh.get_root_node()).set_value(my_key2,mybias);
+
+
+  // save configuration to rmf
+  //rh.save_frame(RMF::FrameID(imc/mydata.MC.nwrite));
+  rmf::save_frame(rh);
+
+  // save ISD particles
+  //rh_isd.save_frame(RMF::FrameID(imc/mydata.MC.nwrite));
+  rmf::save_frame(rh_isd);
 
  // dump bias on file if wte
   if(mydata.MC.do_wte){
@@ -333,6 +410,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  for(int i=0;i<nproc;++i){index[i]=rbuf[i];}
 }
 
+
 MPI_Barrier(MPI_COMM_WORLD);
 // close rmf
 rh.flush();
@@ -343,6 +421,12 @@ MPI_Barrier(MPI_COMM_WORLD);
 // flush and close logfile
 fflush(logfile);
 fclose(logfile);
+/*
+// flush and close restraints file
+fflush(restfile);
+fclose(restfile);
+*/
+
 MPI_Barrier(MPI_COMM_WORLD);
 // finalize MPI
 MPI_Finalize();

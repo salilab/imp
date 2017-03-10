@@ -182,6 +182,65 @@ D->set_is_optimized(D.get_nuisance_key(),false);
 // add particle to map
 ISD_ps["GAP_B"]=pD;
 
+// Spc29 termini distances particle
+
+if(mydata.restrain_distance_Spc29_termini)
+{
+IMP_NEW(Particle,pE,(m));
+// initial value
+isd::Scale E=isd::Scale::setup_particle(pE,mydata.dist_Spc29_termMax);
+E.set_lower(mydata.dist_Spc29_termMin);
+E.set_upper(mydata.dist_Spc29_termMax);
+//this is the latest particle so gets the last sc number
+IMP_NEW(core::SingletonConstraint,sc10,(nrm,NULL,m,E->get_index()));
+m->add_score_state(sc10);
+E->set_is_optimized(E.get_nuisance_key(),true);
+// add mover only if we are applying the restraint
+add_NuisanceMover(E,mydata.MC.dA,mvs);
+// add particle to map
+ISD_ps["Spc29TermDist"]=pE;
+
+/*
+// add the sigma0 for this as well
+ IMP_NEW(Particle,psigma0_Spc29TermDist,(m));
+ // initial value
+ Float sigma0_Spc29TermDist_init=(mydata.Fret.Sigma0Min
+ +mydata.Fret.Sigma0Max)/2.0;
+ isd::Scale sigma0_Spc29TermDist=isd::Scale::setup_particle(
+ psigma0_Spc29TermDist,sigma0_Spc29TermDist_init);
+ sigma0_Spc29TermDist.set_lower(mydata.Fret.Sigma0Min);
+ sigma0_Spc29TermDist.set_upper(mydata.Fret.Sigma0Max);
+// IMP_NEW(core::SingletonConstraint,sc11,(nrm,NULL,Sigma0));
+ IMP_NEW(core::SingletonConstraint,sc11,(nrm,NULL,m,
+ sigma0_Spc29TermDist->get_index()));
+ m->add_score_state(sc11);
+ sigma0_Spc29TermDist->set_is_optimized(
+ sigma0_Spc29TermDist.get_nuisance_key(),true);
+ // add mover
+ add_NuisanceMover(sigma0_Spc29TermDist,mydata.MC.dSigma0,mvs);
+ // add particle to map
+ ISD_ps["sigma0_Spc29TermDist"]=psigma0_Spc29TermDist;
+*/
+
+}
+if(mydata.restrain_distance_Spc42_Cterm)
+{
+IMP_NEW(Particle,pF,(m));
+// initial value
+isd::Scale F=isd::Scale::setup_particle(pF,mydata.dist_Spc42C_min);
+F.set_lower(mydata.dist_Spc42C_min);
+F.set_upper(mydata.dist_Spc42C_max);
+//this is the latest particle so gets the last sc number
+IMP_NEW(core::SingletonConstraint,sc11,(nrm,NULL,m,F->get_index()));
+m->add_score_state(sc11);
+F->set_is_optimized(F.get_nuisance_key(),true);
+// add mover only if we are applying the restraint
+add_NuisanceMover(F,mydata.MC.dA,mvs);
+// add particle to map
+ISD_ps["Spc42CtermDist"]=pF;
+
+}
+
 // if using new fret data
 if(mydata.add_new_fret){
  // kda_new particle

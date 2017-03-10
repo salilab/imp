@@ -47,6 +47,10 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  bool cluster_symmetry;
  bool isd_restart;
  bool add_IL2_layer;
+ bool restrain_distance_Spc29_termini;
+ // add distance restraint between SPc29 termini
+ bool restrain_distance_Spc42_Cterm;
+ // add distance restraint between SPc42 C and SPc42 cc
  std::string isd_restart_file;
  std::string cell_type;
  std::string load_Spc42p;
@@ -113,6 +117,10 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("isd_restart_file",
                                 value<std::string >(&isd_restart_file), "ciao");
  desc.add_options()("add_IL2_layer", value<bool>(&add_IL2_layer),       "ciao");
+ desc.add_options()("restrain_distance_Spc29_termini",
+value<bool>(&restrain_distance_Spc29_termini), "namaste");
+ desc.add_options()("restrain_distance_Spc42_Cterm",
+value<bool>(&restrain_distance_Spc42_Cterm), "namaste");
 
  desc.add_options()("map_frames_list",
                                    value<std::string>(&map_frames_list),"ciao");
@@ -176,6 +184,14 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(int,    mc_nsteps);
  OPTION(int,    mc_nhot);
  OPTION(int,    mc_nwrite);
+
+ OPTION(double, dist_Spc29_termMin);
+ OPTION(double, dist_Spc29_termMax);
+ OPTION(double, sigma0_dist);
+
+ OPTION(double, dist_Spc42C_min);
+ OPTION(double, dist_Spc42C_max);
+ OPTION(double, sigma0_dist_spc42c);
 
  variables_map vm;
  store(parse_config_file(in.get_stream(), desc, false), vm);
@@ -259,6 +275,16 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.resolution=resolution;
  ret.use_connectivity=use_connectivity;
  ret.add_IL2_layer=add_IL2_layer;
+
+ ret.restrain_distance_Spc29_termini=restrain_distance_Spc29_termini;
+ ret.dist_Spc29_termMin=dist_Spc29_termMin;
+ ret.dist_Spc29_termMax=dist_Spc29_termMax;
+ ret.sigma0_dist=sigma0_dist;
+
+ ret.restrain_distance_Spc42_Cterm=restrain_distance_Spc42_Cterm;
+ ret.dist_Spc42C_min=dist_Spc42C_min;
+ ret.dist_Spc42C_max=dist_Spc42C_max;
+ ret.sigma0_dist_spc42c=sigma0_dist_spc42c;
 
 // ISD stuff
  ret.isd_restart=isd_restart;

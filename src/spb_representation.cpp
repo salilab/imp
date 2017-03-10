@@ -90,19 +90,21 @@ for(int i=0;i<mydata.num_cells;++i){
      CP_ps->add_particles(ps);
      add_BallMover(ps,mydata.MC.dx,mvs);
     }
-    // Spc42p_c, 3 beads
-    Spc42p_c.push_back(create_protein(m,"Spc42p_c",25,3,
+    // Spc42p_c, last C terminal bead with 10 residues
+    Spc42p_c.push_back(create_protein(m,"Spc42p_c",3.33,1,
                        display::Color(175./255.,218./255.,238./255.),
-                       i,mydata.kappa,x_c,mydata.use_connectivity,138,226));
+                       i,mydata.kappa,x_c,mydata.use_connectivity,354,10));
     if(i==0){
      // add only one bead corresponding to the C-terminus to the IL2 layer
      atom::Selection s=atom::Selection(Spc42p_c[k]);
      s.set_terminus(atom::Selection::C);
      Particles ps = s.get_selected_particles();
      IL2_ps->add_particles(ps);
-     // add BallMover to all particles
+
      ps = atom::get_leaves(Spc42p_c[k]);
-     add_BallMover(ps,mydata.MC.dx,mvs);
+     // add_BallMover(ps,mydata.MC.dx,mvs);
+     add_PbcBoxedMover(ps,mydata.MC.dx,mydata.IL2_centers,
+       mydata.trs,mvs,SideXY,SideZ);
     }
    }
    // initial random position for coiled-coil
@@ -119,16 +121,19 @@ for(int i=0;i<mydata.num_cells;++i){
     Particles ps;
     for(unsigned k=0;k<2;++k){
      Particles ps_n=atom::get_leaves(Spc42p_n[k]);
-     Particles ps_c=atom::get_leaves(Spc42p_c[k]);
+     //Particles ps_c=atom::get_leaves(Spc42p_c[k]);
      ps.insert(ps.end(),ps_n.begin(),ps_n.end());
-     ps.insert(ps.end(),ps_c.begin(),ps_c.end());
+     //ps.insert(ps.end(),ps_c.begin(),ps_c.end());
+
     }
     core::RigidBody rb=
      core::RigidMember(atom::get_leaves(Spc42p_CC[0])[0]).get_rigid_body();
+    rb.set_coordinates_are_optimized(true);
     IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
      (rb,ps,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs,
       SideXY,SideXY,SideZ));
     mvs.push_back(rbmv);
+
    }
 // now create the merge
    for(unsigned k=0;k<2;++k){
@@ -169,20 +174,25 @@ for(int i=0;i<mydata.num_cells;++i){
     algebra::Vector3D(CP_x0[0]+off_x,CP_x0[1]+off_y,CP_x0[2]-off);
    // Spc29p, 3 beads for N, 3 beads for C
    atom::Molecules Spc29p_all;
-   Spc29p_all.push_back(create_protein(m,"Spc29p_n",14.5,3,
+   Spc29p_all.push_back(create_protein(m,"Spc29p_n",1.12,1,
                         display::Color(255./255.,215./255.,0.),
                         i,mydata.kappa,x,mydata.use_connectivity));
-   Spc29p_all.push_back(create_protein(m,"Spc29p_c",14.5,3,
+   Spc29p_all.push_back(create_protein(m,"Spc29p_c",1.12,1,
                         display::Color(255./255.,140./255.,0.),
-                        i,mydata.kappa,x,mydata.use_connectivity,132));
+                        i,mydata.kappa,x,mydata.use_connectivity,252));
    atom::Molecule Spc29p=
     create_merged_protein(m,"Spc29p",Spc29p_all,i,mydata.kappa,0.0);
    all_mol.add_child(Spc29p);
    if(i==0){
     Particles ps=atom::get_leaves(Spc29p);
     CP_ps->add_particles(ps);
-    add_PbcBoxedMover(ps,mydata.MC.dx,mydata.CP_centers,mydata.trs,mvs,
+
+    for(unsigned int psc=0;psc<ps.size();psc++) {
+ Particles ps_terminus;
+ ps_terminus.push_back(ps[psc]);
+  add_PbcBoxedMover(ps_terminus,mydata.MC.dx,mydata.CP_centers,mydata.trs,mvs,
                       SideXY,SideZ);
+    }
    }
    if(mydata.add_GFP){
     atom::Molecule gfp_n=
@@ -249,7 +259,8 @@ for(int i=0;i<mydata.num_cells;++i){
    }
    IMP_NEW(Particle,prb,(m));
    core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
-   recenter_rb(rb,rbps,x,-1.0);
+   recenter_rb(rb,rbps,x,true); // it does contain coiledcoil
+   rb.set_coordinates_are_optimized(true);
 // Mover
    if(i==0){
     Particles ps=atom::get_leaves(Cnm67p[0]);
@@ -340,6 +351,7 @@ for(int i=0;i<mydata.num_cells;++i){
     IMP_NEW(Particle,prb,(m));
     core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
     recenter_rb(rb,rbps,x);
+    rb.set_coordinates_are_optimized(true);
 //  add mover for the rigid body
     if(i==0){
       IMP_NEW(core::RigidBodyMover,rbmv,(rb,mydata.MC.dx,mydata.MC.dang));
@@ -364,6 +376,8 @@ for(int i=0;i<mydata.num_cells;++i){
     }
     core::RigidBody rb=
       core::RigidMember(atom::get_leaves(Spc110p_CC[0])[0]).get_rigid_body();
+    rb.set_coordinates_are_optimized(true);
+
     IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
      (rb,ps,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs,
       SideXY,SideXY,SideZ));
@@ -452,6 +466,7 @@ atom::Molecule create_protein(Model *m,std::string name,
  std::string filename,int nres_per_bead,display::Color colore,
  int copy, algebra::Vector3D x0, int offset, bool makerigid)
 {
+
  IMP_NEW(Particle,p,(m));
  atom::Molecule protein=atom::Molecule::setup_particle(p);
  protein->set_name(name);
@@ -505,33 +520,49 @@ atom::Molecule create_protein(Model *m,std::string name,
   core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
   rb->set_name(name);
   recenter_rb(rb,rbps,x0);
+  rb.set_coordinates_are_optimized(true);
  }
  return protein;
 }
 
 void recenter_rb(core::RigidBody& rb, core::XYZRs& rbps,
- algebra::Vector3D x0, double flip)
+ algebra::Vector3D x0, bool coiledcoil)
 {
   int size=rbps.size();
-  double bb = (core::RigidMember(rbps[0]).get_internal_coordinates())[0];
-  double ee = (core::RigidMember(rbps[size-1]).get_internal_coordinates())[0];
-  if (flip*(ee-bb)<0.0){
-   for(int k=0;k<size;++k){
+
+// flip CC's to match the orientation in SPB: which is
+// N:up C: down for Cnm67 and other way around for all other core CC's.
+
+  if(coiledcoil)  {
+  for(int k=0;k<size;++k){
     algebra::Vector3D coord=
     core::RigidMember(rbps[k]).get_internal_coordinates();
     algebra::Rotation3D rot=
-     algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),
+     algebra::get_rotation_about_axis(algebra::Vector3D(1,0,0),
 IMP::algebra::PI);
     algebra::Transformation3D tr=
      algebra::Transformation3D(rot,algebra::Vector3D(0,0,0));
     core::RigidMember(rbps[k]).set_internal_coordinates
      (tr.get_transformed(coord));
    }
-  }
+
+   // std::cout << rbps[0]->get_name() << " " <<
+   // core::RigidMember(rbps[0]).get_internal_coordinates()
+   // << " " << rbps[size-1]->get_name() << core::RigidMember(
+   // rbps[size-1]).get_internal_coordinates() << std::endl ;
+
+
   rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D
+   (algebra::Rotation3D(), x0)));
+ }
+ else //Spc110-Cmd1 dimer
+ {
+rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D
       (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),
--IMP::algebra::PI/2.0),
+IMP::algebra::PI/2.0),
        x0)));
+ }
+
 }
 
 atom::Molecule create_merged_protein
@@ -541,8 +572,18 @@ atom::Molecule create_merged_protein
  IMP_NEW(Particle,p,(m));
  atom::Molecule h=atom::Molecule::setup_particle(p);
  h->set_name(name);
- if (copy==0 && dist>=0.0){
-  for(unsigned j=0;j<proteins.size()-1;++j){
+ if (copy==0 && dist>=0.0 &&name!="Spc29p"){
+
+   unsigned int endnum;
+  // Make the last C term bead not be connected to the rest
+  // Instead enforce the distance to it through the ISD distance restraint
+  if(name!="Spc42p")
+     endnum=proteins.size()-1;
+  else
+     endnum=proteins.size()-2;
+  // endnum=proteins.size()-1;
+
+  for(unsigned j=0;j<endnum;++j){
    add_internal_restraint(m,name,proteins[j],proteins[j+1],kappa,dist);
   }
  }
@@ -578,7 +619,8 @@ atom::Molecules create_coiled_coil (Model *m,
  core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
  rb->set_name(name);
  // Check orientation of x-axis and topology
- recenter_rb(rb,rbps,x0);
+ recenter_rb(rb,rbps,x0,true);
+ rb.set_coordinates_are_optimized(true);
  return coils;
 }
 
@@ -620,6 +662,7 @@ atom::Molecule create_GFP(Model *m, std::string name, int copy,
   IMP_NEW(Particle,prb,(m));
   core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
   rb->set_name(name);
+  rb.set_coordinates_are_optimized(true);
   if(copy==0){
    Particles ps_gfp=atom::get_leaves(gfp);
    if(mydata.keep_GFP_layer) {lsc->add_particles(ps_gfp);}

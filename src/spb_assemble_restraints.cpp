@@ -32,7 +32,6 @@ std::map< std::string, base::Pointer<RestraintSet> > rst_map;
 add_SPBexcluded_volume(m,all_mol,mydata.GFP_exc_volume,mydata.kappa_vol);
 //
 // Symmetry
-//
 add_symmetry_restraint(m,all_mol,mydata.trs,ISD_ps["SideXY"],ISD_ps["SideZ"]);
 //
 // Layer restraints
@@ -46,6 +45,7 @@ if(mydata.add_IL2_layer){
 //
 // TILT restraint
 //
+
 if(mydata.add_tilt){
  double kappa_tilt = 100.0 * mydata.kappa;
  if(mydata.protein_list["Spc110p"]){
@@ -61,6 +61,7 @@ if(mydata.add_tilt){
       mydata.tilt_Spc42,kappa_tilt);
  }
 }
+
 //
 // Add stay on plane for Spc42
 //
@@ -68,7 +69,14 @@ if(mydata.protein_list["Spc42p"]){
  // last bead before CC
  add_stay_on_plane_restraint(m,all_mol[0],"Spc42p",50,  mydata.kappa);
  // first bead after CC
- add_stay_on_plane_restraint(m,all_mol[0],"Spc42p",150, mydata.kappa);
+ //add_stay_on_plane_restraint(m,all_mol[0],"Spc42p",150, mydata.kappa);
+ // need more after CC
+ //add_stay_on_plane_restraint(m,all_mol[0],"Spc42p",250, mydata.kappa);
+ //add_stay_on_plane_restraint(m,all_mol[0],"Spc42p",350, mydata.kappa);
+
+// if adding to single terminus bead
+ add_stay_on_plane_restraint(m,all_mol[0],"Spc42p",360, mydata.kappa);
+
 }
 //
 // FRET
@@ -157,6 +165,12 @@ if(mydata.add_y2h){
  y2h->add_restraint(y2h_restraint(m,
                      all_mol[0], "Cnm67p", IntRange(442,573),
                      all_mol,    "Spc42p",  IntRange(49,363), mydata.kappa));
+// Adding restraint from Klenchin 2011 JBC paper
+// Not technically a Y2H restraint but similar
+ y2h->add_restraint(y2h_restraint(m,
+                     all_mol[0], "Cnm67p", IntRange(502,507),
+                     all_mol,    "Spc42p",  "ALL", mydata.kappa));
+
  // add the RestraintSet to model
  m->add_restraint(y2h);
  // add the RestraintSet to map
@@ -175,6 +189,18 @@ if(mydata.protein_list["Spc110p"]){
 if(mydata.protein_list["Cmd1p"]){
  add_stay_close_restraint(m,all_mol[0],"Cmd1p",mydata.kappa);
 }
+// Add restraint to fix distance between termini for Spc29
+if(mydata.restrain_distance_Spc29_termini) {
+ add_restrain_protein_length(m,all_mol[0],"Spc29p",
+ISD_ps["Spc29TermDist"],mydata.sigma0_dist);
+}
+
+// Add restraint to fix distance between Cterm of Spc42 and coiled coil
+if(mydata.restrain_distance_Spc42_Cterm) {
+ add_restrain_coiledcoil_to_cterm(m,all_mol[0],"Spc42p",
+ISD_ps["Spc42CtermDist"],mydata.sigma0_dist_spc42c);
+}
+
 //
 // Add restraint to diameter and rgyr of Spc29 from SAXS
 //

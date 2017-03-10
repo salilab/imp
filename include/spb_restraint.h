@@ -35,6 +35,14 @@ atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist);
 IMPMEMBRANEEXPORT void add_my_connectivity
 (Model *m,std::string name,atom::Molecule protein, double kappa);
 
+IMPMEMBRANEEXPORT void add_restrain_protein_length(Model *m
+,const atom::Hierarchy& hs,
+std::string protein_a,Particle *dist,double sigma0_dist);
+
+IMPMEMBRANEEXPORT void add_restrain_coiledcoil_to_cterm(Model *m
+,const atom::Hierarchy& hs,
+std::string protein_a,Particle *dist,double sigma0_dist);
+
 IMPMEMBRANEEXPORT base::Pointer<container::MinimumPairRestraint>
 do_bipartite_mindist
 (Model *m,Particles p1,Particles p2,
@@ -134,11 +142,11 @@ IMPMEMBRANEEXPORT void add_diameter_rgyr_restraint(Model *m,
  const atom::Hierarchy& h, std::string protein,
  double diameter, double rgyr, double kappa);
 
-IMPMEMBRANEEXPORT base::Pointer<em2d::Em2DRestraint> em2d_restraint
+IMPMEMBRANEEXPORT base::Pointer<membrane::EM2DRestraint> em2d_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein, EM2DParameters EM2D, Particle *Sigma);
 
-IMPMEMBRANEEXPORT base::Pointer<em2d::Em2DRestraint> em2d_restraint
+IMPMEMBRANEEXPORT base::Pointer<membrane::EM2DRestraint> em2d_restraint
 (Model *m, atom::Hierarchies& hs, std::string protein,
  EM2DParameters EM2D, Floats sigma_grid, Floats fmod_grid);
 

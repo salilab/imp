@@ -11,7 +11,6 @@
 
 #include "membrane_config.h"
 #include <IMP/core/MonteCarlo.h>
-#include <IMP/symmetry/RigidBodyMover.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonContainer.h>
@@ -25,7 +24,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPMEMBRANEEXPORT PbcBoxedRigidBodyMover:public symmetry::RigidBodyMover
+class IMPMEMBRANEEXPORT PbcBoxedRigidBodyMover:public core::MonteCarloMover
 {
 public:
   /** The rigid body is rotated and translated to move
@@ -44,10 +43,24 @@ protected:
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
 
+
   IMP_OBJECT_METHODS(PbcBoxedRigidBodyMover);
   IMP_SHOWABLE(PbcBoxedRigidBodyMover);
 
 private:
+
+  algebra::Transformation3D last_transformation_;
+    algebra::Vector3Ds oldcoords_;
+    algebra::Transformation3Ds oldtrs_;
+    Float max_translation_;
+    Float max_angle_;
+    algebra::Vector3Ds centers_;
+    algebra::Transformation3Ds transformations_;
+    core::RigidBody d_;
+    kernel::Particles ps_;
+    kernel::Particles ps_norb_;
+    std::vector<core::RigidBody> rbs_;
+
   // particles for scaling
   IMP::base::PointerMember<kernel::Particle> px_;
   IMP::base::PointerMember<kernel::Particle> py_;
@@ -55,6 +68,11 @@ private:
 
   algebra::Vector3D get_vector(algebra::Vector3D center);
   algebra::Transformation3D get_transformation(algebra::Transformation3D trans);
+  kernel::Particles         get_particles(kernel::Particles ps);
+  std::vector<core::RigidBody> get_rigid_bodies(kernel::Particles ps);
+
+
+
 };
 
 IMPMEMBRANE_END_NAMESPACE

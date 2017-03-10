@@ -136,7 +136,7 @@ Floats scores;
 // and cell dimension
 Floats cells;
 // counter
-int counter = 0;
+unsigned counter = 0;
 
 // cycle on all iterations
 for(int iter=0;iter<mydata.Cluster.niter;++iter){
@@ -146,19 +146,21 @@ for(int iter=0;iter<mydata.Cluster.niter;++iter){
  iter_str << iter;
 
 // open rmf for coordinates
- RMF::FileHandle rh =
-  RMF::open_rmf_file(mydata.Cluster.trajfile+"_"+iter_str.str()+".rmf");
+ RMF::FileConstHandle rh =
+  RMF::open_rmf_file_read_only(mydata.Cluster.trajfile+
+"_"+iter_str.str()+".rmf");
 // read various info
  RMF::Category my_kc  = rh.get_category("my data");
- RMF::FloatKey my_key = rh.get_float_key(my_kc,"my score",true);
+ RMF::FloatKey my_key = rh.get_key<RMF::FloatTag>(my_kc,"my score");
 // linking hierarchies
  rmf::link_hierarchies(rh, hhs);
 // number of frames
  unsigned int nframes=rh.get_number_of_frames();
 
 // open rmf for ISD particles
- RMF::FileHandle rh_ISD =
-  RMF::open_rmf_file(mydata.Cluster.isdtrajfile+"_"+iter_str.str()+".rmf");
+ RMF::FileConstHandle rh_ISD =
+  RMF::open_rmf_file_read_only(mydata.Cluster.isdtrajfile
++"_"+iter_str.str()+".rmf");
 // linking particles
  rmf::link_particles(rh_ISD, ISD_ps_list);
 // number of frames
@@ -171,13 +173,15 @@ for(int iter=0;iter<mydata.Cluster.niter;++iter){
  for(unsigned int imc = 0; imc < nframes; ++imc){
 
   // load coordinates
-  rmf::load_frame(rh,imc);
+  //rh.set_current_frame(RMF::FrameID(imc));
+  rmf::load_frame(rh,RMF::FrameID(imc));
 
   // and ISD particles
-  rmf::load_frame(rh_ISD,imc);
+  //rh_ISD.set_current_frame(RMF::FrameID(imc));
+  rmf::load_frame(rh_ISD,RMF::FrameID(imc));
 
   // get score and add to list
-  Float score = (rh.get_root_node()).get_value(my_key,imc);
+  Float score = (rh.get_root_node()).get_value(my_key);
   scores.push_back(score);
 
   // get cell and add to list
@@ -204,7 +208,7 @@ if(mydata.Cluster.weight && weights.size()!=counter){exit(1);}
 
 // NOW do the clustering
 base::Pointer<statistics::PartitionalClustering> pc=
- create_gromos_clustering(drmsd,mydata.Cluster.cutoff);
+ membrane::create_gromos_clustering(drmsd,mydata.Cluster.cutoff);
 
 // calculate total population
 Float pop_norm = 0.;

@@ -19,14 +19,13 @@ PbcBoxedMover::PbcBoxedMover(Particle *p, Particles ps, Float max_tr,
                              algebra::Vector3Ds centers,
                              algebra::Transformation3Ds transformations,
                              Particle *px, Particle *py, Particle *pz):
-  symmetry::BallMover(p,ps,max_tr,centers,transformations)
-{ /* These are in base class
+  MonteCarloMover(p->get_model(), "PbcBoxedMover%1%")
+{
   p_ = p;
   max_tr_ = max_tr;
   centers_ = centers;
   ps_ = ps;
   transformations_ = transformations;
-  */
   // store Scale particles
   px_ = px;
   py_ = py;
@@ -52,36 +51,63 @@ algebra::Transformation3D PbcBoxedMover::get_transformation
 }
 
 core::MonteCarloMoverResult PbcBoxedMover::do_propose() {
-   return symmetry::BallMover::do_propose();
+ algebra::Vector3D tr_x
+ = algebra::get_random_vector_in(algebra::Sphere3D
+   (algebra::Vector3D(0.0,0.0,0.0),max_tr_));
+
+ algebra::Vector3D newcoord=core::XYZ(p_).get_coordinates()+tr_x;
+
+ // find cell
+ double mindist=1.0e+24;
+ unsigned icell=0;
+ for(unsigned int i=0;i<centers_.size();++i){
+  double dist=algebra::get_l2_norm(newcoord-get_vector(centers_[i]));
+  if(dist<mindist){
+   mindist=dist;
+   icell=i;
+  }
+ }
+
+ // scale transformations for size of the cell
+ algebra::Transformation3D trans=
+   get_transformation(transformations_[icell]).get_inverse();
+
+ ParticlesTemp ret;
+ if(icell==0) ret.push_back(p_);
+ else ret=ps_;
+
+ oldcoords_.clear();
+ for(unsigned int i=0;i<ps_.size();++i){
+  core::XYZ xyz = core::XYZ(ps_[i]);
+  algebra::Vector3D oc = xyz.get_coordinates();
+  oldcoords_.push_back(oc);
+  algebra::Vector3D trr_x=algebra::Vector3D(0.0,0.0,0.0);
+  if(ps_[i]==p_) trr_x=tr_x;
+  newcoord=trans.get_transformed(oc+trr_x);
+  xyz.set_coordinates(newcoord);
+ }
+
+ return core::MonteCarloMoverResult(kernel::get_indexes(ret), 1.0);
 }
 
-/*
-ParticlesTemp PbcBoxedMover::get_output_particles() const {
- ParticlesTemp ret;
- ret.insert(ret.end(), ps_.begin(), ps_.end());
- ret.push_back(px_);
- ret.push_back(py_);
- ret.push_back(pz_);
- return ret;
-}
-*/
 
 ModelObjectsTemp PbcBoxedMover::do_get_inputs() const {
 
-  kernel::ModelObjectsTemp ret = symmetry::BallMover::do_get_inputs();
+ kernel::ParticlesTemp ret;
+ ret.push_back(p_);
+ ret.insert(ret.end(), ps_.begin(), ps_.end());
 
-  ret.push_back(px_);
-  ret.push_back(py_);
-  ret.push_back(pz_);
+ ret.push_back(px_);
+ ret.push_back(py_);
+ ret.push_back(pz_);
 
-  return ret;
+ return ret;
 }
 
 void PbcBoxedMover::do_reject() {
- /*for(unsigned int i=0;i<ps_.size();++i){
+ for(unsigned int i=0;i<ps_.size();++i){
     core::XYZ(ps_[i]).set_coordinates(oldcoords_[i]);
- } */
-  symmetry::BallMover::do_reject();
+ }
 }
 
 /*

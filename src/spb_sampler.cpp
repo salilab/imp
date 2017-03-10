@@ -67,6 +67,7 @@ void add_PbcBoxedRigidBodyMover
 {
  Particles fake;
  core::RigidBody rb=core::RigidMember(ps[0]).get_rigid_body();
+ rb.set_coordinates_are_optimized(true);
  IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
          (rb,fake,dx,dang,centers,trs,SideXY,SideXY,SideZ));
  mvs.push_back(rbmv);

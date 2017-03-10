@@ -67,13 +67,17 @@ void add_SPBexcluded_volume
   }
  }
 // non GFPs
+
  IMP_NEW(core::ExcludedVolumeRestraint,evr1,(noGFP,kappa));
  evr1->set_name("Excluded Volume for non-GFPs");
  m->add_restraint(evr1);
+
 // In case you don't want transparent GFPs
+
  if(GFP_exc_volume){
   names.sort();
   names.unique();
+
 // intra GFPs of a specific type
   std::list<std::string>::iterator iit;
   for (iit = names.begin(); iit != names.end(); iit++){
@@ -86,6 +90,7 @@ void add_SPBexcluded_volume
    evr2->set_name("Excluded Volume for "+GFP_name);
    m->add_restraint(evr2);
   }
+
 // all the GFPs in the primitive cell against all the other proteins
   double cut=1.0;
   double slack=10.0;
@@ -94,7 +99,21 @@ void add_SPBexcluded_volume
   IMP_NEW(container::PairsRestraint,evr3,(ssps,cbpc));
   evr3->set_name("Excluded Volume GFPs vs. the rest of the world");
   m->add_restraint(evr3);
+  // print out GFP0 and noGFP particles
+
+  /*for(unsigned int nogfpc=0;nogfpc<noGFP->get_number_of_particles();nogfpc++)
+  { //noGFP->get_particle(nogfpc)->show() ;  std::cout << std::endl;
+    //std::cout<< noGFP->get_particle(nogfpc)->get_index() << " " <<
+    //core::XYZ(noGFP->get_particle(nogfpc)).get_coordinates() << std::endl ;
+  }
+
+  for(unsigned int gfpc=0;gfpc<GFP0->get_number_of_particles();gfpc++)
+  { //GFP0->get_particle(gfpc)->show() ;  std::cout << std::endl;
+  }
+  */
+
  }
+
 }
 
 void add_internal_restraint(Model *m,std::string name,
@@ -124,6 +143,85 @@ get_sphere_pair_score(0.0,kappa);
   r->set_name("My connectivity " + name);
   m->add_restraint(r);
  }
+}
+void add_restrain_coiledcoil_to_cterm(Model *m,const atom::Hierarchy& hs,
+  std::string protein_a,Particle *dist,double sigma0_dist)
+{
+ atom::Selection coiledcoilends=atom::Selection(hs);
+ atom::Selection cterms=atom::Selection(hs);
+
+ coiledcoilends.set_molecule(protein_a); // all Spc42 in unit cell
+ cterms.set_molecule(protein_a);
+
+ coiledcoilends.set_residue_index(135); //choose the last bead in coiled coil
+ cterms.set_terminus(atom::Selection::C);
+
+ Particles cce=coiledcoilends.get_selected_particles();
+ Particles ct=cterms.get_selected_particles();
+
+ for(unsigned int i=0; i<cce.size();i++)
+ {
+   for(unsigned int j=0;j<ct.size();j++)
+   {
+        bool samep=(atom::Hierarchy(cce[i]).get_parent() ==
+               atom::Hierarchy(ct[j]).get_parent());
+        if(!samep){continue;}
+        // we want to restrain termini belonging to the same protein
+
+        std::string name_restraint = "spc42c-" + protein_a + "-" +
+  std::to_string(i) + ":" + std::to_string(j);
+
+        //std::cout << name_restraint <<std::endl ;
+ //std::cout << cce[i]->get_name() << " " << ct[j]->get_name()<< " "
+ //<< isd::Scale(dist).get_scale() << " " <<sigma0_dist ;
+
+        IMP_NEW(isd::DistanceTerminiRestraint,dtr,(cce[i],ct[j],
+    dist,sigma0_dist));
+
+        dtr->set_name(name_restraint);
+
+        m->add_restraint(dtr);
+   }
+ }
+
+}
+
+void add_restrain_protein_length(Model *m,const atom::Hierarchy& hs,
+  std::string protein_a,Particle *dist,double sigma0_dist)
+{
+ atom::Selection nterms=atom::Selection(hs);
+ atom::Selection cterms=atom::Selection(hs);
+
+ nterms.set_molecule(protein_a); // all Spc29 in unit cell
+ cterms.set_molecule(protein_a);
+
+ nterms.set_terminus(atom::Selection::N);
+ cterms.set_terminus(atom::Selection::C);
+
+ Particles nt=nterms.get_selected_particles();
+ Particles ct=cterms.get_selected_particles();
+
+ for(unsigned int i=0; i<nt.size();i++)
+ {
+   for(unsigned int j=0;j<ct.size();j++)
+   {
+ bool samep=(atom::Hierarchy(nt[i]).get_parent() ==
+               atom::Hierarchy(ct[j]).get_parent());
+    if(!samep){continue;}
+ // we want to restrain termini belonging to the same protein
+
+        std::string name_restraint = protein_a + "-" +
+  std::to_string(i) + ":" + std::to_string(j);
+
+ //std::cout << name_restraint <<std::endl ;
+ IMP_NEW(isd::DistanceTerminiRestraint,dtr,(nt[i],ct[j],dist,sigma0_dist));
+
+ dtr->set_name(name_restraint);
+
+ m->add_restraint(dtr);
+   }
+ }
+
 }
 
 base::Pointer<container::MinimumPairRestraint> do_bipartite_mindist
@@ -286,6 +384,12 @@ base::Pointer<isd::FretRestraint> fret_restraint
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
  if(p1.size()==0 || p2.size()==0) {return nullptr;}
+
+ //for(unsigned int i=0;i<p1.size();i++)
+ // p1[i]->show();
+
+ //std::cout << name << " " << p1.size() << " " << p2.size() <<std::endl;
+
  IMP_NEW(isd::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
  fr->set_name(name);
  return fr.release();
@@ -439,6 +543,7 @@ void add_symmetry_restraint
  Particles ps0=atom::get_leaves(hs[0]);
  std::vector<core::RigidBody> rbs0=get_rigid_bodies(ps0);
  for(unsigned int i=1;i<transformations.size();++i){
+  // apply transformation symmetry using sm
   IMP_NEW(membrane::TransformationSymmetry,sm,
           (transformations[i],SideXY,SideXY,SideZ));
   Particles ps1=atom::get_leaves(hs[i]);
@@ -446,6 +551,7 @@ void add_symmetry_restraint
   for(unsigned int j=0;j<ps1.size();++j){
    if(!core::RigidMember::get_is_setup(ps1[j])){
     core::Reference::setup_particle(ps1[j],ps0[j]);
+    //std::cout << core::XYZ(ps1[j]).get_coordinates() <<  std::endl;
     lc->add_particle(ps1[j]);
    }
   }
@@ -458,6 +564,8 @@ void add_symmetry_restraint
    core::Reference::setup_particle(rbs1[j].get_particle(),
                                    rbs0[j].get_particle());
    rblc->add_particle(rbs1[j].get_particle());
+   //std::cout <<  core::XYZ(rbs1[j].get_particle()).get_coordinates()
+   //<<  std::endl;
   }
   IMP_NEW(container::SingletonsConstraint,c1,(sm,NULL,rblc));
   m->add_score_state(c1);
@@ -499,7 +607,7 @@ std::vector<core::RigidBody> get_rigid_bodies(Particles ps)
 void add_tilt_restraint
  (Model *m,Particle *p,FloatRange tilt_range,double kappa)
 {
- algebra::Vector3D laxis=algebra::Vector3D(1.0,0.0,0.0);
+ algebra::Vector3D laxis=algebra::Vector3D(0.0,0.0,1.0);
  algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
  IMP_NEW(core::HarmonicWell,well,(tilt_range, kappa));
  IMP_NEW(TiltSingletonScore,tss,(well,laxis,zaxis));
@@ -521,7 +629,7 @@ void add_tilt (Model *m, const atom::Hierarchy& h,
   std::vector<core::RigidBody> rbs=get_rigid_bodies(ps);
   for(unsigned int i=0;i<rbs.size();++i){
    add_tilt_restraint(m,rbs[i],FloatRange(0.0,tilt),kappa);
-  }
+   }
  }
 }
 
@@ -638,7 +746,7 @@ void add_diameter_rgyr_restraint(Model *m,
  }
 }
 
-base::Pointer<em2d::Em2DRestraint> em2d_restraint
+base::Pointer<membrane::EM2DRestraint> em2d_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein, EM2DParameters EM2D, Particle *Sigma)
 {
@@ -646,18 +754,13 @@ base::Pointer<em2d::Em2DRestraint> em2d_restraint
  s.set_molecule(protein);
  Particles ps=s.get_selected_particles();
  if(ps.size()==0) {return nullptr;}
- //IMP_NEW(em2d::Em2DRestraint,er,(ps, Sigma, EM2D.filename,
- //                                 EM2D.pixel_size, EM2D.resolution));
- //
- //IMP_NEW(em2d::EM2DScore,es,()); // create a score function
- //IMP_NEW(em2d::Em2DRestraint, er, (ps[0]->get_model()));
- //er->setup(es,);
- IMP_NEW(em2d::Em2DRestraint, er,(ps[0]->get_model()));
+ IMP_NEW(membrane::EM2DRestraint,er,(ps, Sigma, EM2D.filename,
+                                  EM2D.pixel_size, EM2D.resolution));
  er->set_name("EM2D restraint");
  return er.release();
 }
 
-base::Pointer<em2d::Em2DRestraint> em2d_restraint
+base::Pointer<membrane::EM2DRestraint> em2d_restraint
 (Model *m, atom::Hierarchies& hs, std::string protein,
  EM2DParameters EM2D, Floats sigma_grid, Floats fmod_grid)
 {
@@ -665,10 +768,9 @@ base::Pointer<em2d::Em2DRestraint> em2d_restraint
  s.set_molecule(protein);
  Particles ps=s.get_selected_particles();
  if(ps.size()==0) {return nullptr;}
- //IMP_NEW(em2d::Em2DRestraint,er,(ps, sigma_grid, fmod_grid, EM2D.filename,
- //                                EM2D.pixel_size, EM2D.resolution));
+ IMP_NEW(membrane::EM2DRestraint,er,(ps, sigma_grid, fmod_grid, EM2D.filename,
+                                EM2D.pixel_size, EM2D.resolution));
 
- IMP_NEW(em2d::Em2DRestraint, er,(ps[0]->get_model()));
  er->set_name("EM2D restraint");
  return er.release();
 }
