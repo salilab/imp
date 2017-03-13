@@ -175,7 +175,7 @@ void add_restrain_coiledcoil_to_cterm(Model *m,const atom::Hierarchy& hs,
  //std::cout << cce[i]->get_name() << " " << ct[j]->get_name()<< " "
  //<< isd::Scale(dist).get_scale() << " " <<sigma0_dist ;
 
-        IMP_NEW(isd::DistanceTerminiRestraint,dtr,(cce[i],ct[j],
+        IMP_NEW(membrane::DistanceTerminiRestraint,dtr,(cce[i],ct[j],
     dist,sigma0_dist));
 
         dtr->set_name(name_restraint);
@@ -214,7 +214,8 @@ void add_restrain_protein_length(Model *m,const atom::Hierarchy& hs,
   std::to_string(i) + ":" + std::to_string(j);
 
  //std::cout << name_restraint <<std::endl ;
- IMP_NEW(isd::DistanceTerminiRestraint,dtr,(nt[i],ct[j],dist,sigma0_dist));
+ IMP_NEW*(membrane::DistanceTerminiRestraint,dtr,
+         (nt[i],ct[j],dist,sigma0_dist));
 
  dtr->set_name(name_restraint);
 
