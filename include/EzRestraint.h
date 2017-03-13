@@ -13,7 +13,7 @@
 //#include "IMP/restraint_macros.h"
 #include <IMP/Particle.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/base_types.h>
+#include <IMP/_types.h>
 #include <string>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
