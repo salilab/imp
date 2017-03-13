@@ -13,7 +13,7 @@
 #include <iostream>
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/membrane/DistanceTerminiRestraint.h>
-IMPISD_BEGIN_NAMESPACE
+IMPMEMBRANE_BEGIN_NAMESPACE
 
 DistanceTerminiRestraint::DistanceTerminiRestraint(IMP::Particle* nterm,
  IMP::Particle* cterm,IMP::Particle *reqd_dist_term, double sigma0_dist)
@@ -70,4 +70,4 @@ ModelObjectsTemp DistanceTerminiRestraint::do_get_inputs() const {
   return ret;
 }
 
-IMPISD_END_NAMESPACE
+IMPMEMBRANE_END_NAMESPACE
