@@ -6,7 +6,7 @@
  *
  */
 #include <boost/program_options.hpp>
-#include <IMP/_types.h>
+#include <IMP/base_types.h>
 #include <IMP/membrane.h>
 #include <string>
 
