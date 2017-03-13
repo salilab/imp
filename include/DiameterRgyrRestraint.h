@@ -12,7 +12,7 @@
 #include "IMP/Restraint.h"
 //#include "IMP/restraint_macros.h"
 #include <IMP/Particle.h>
-#include <IMP/_types.h>
+#include <IMP/base_types.h>
 #include <string>
 #include <map>
 
