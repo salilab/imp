@@ -14,7 +14,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <IMP/base/Pointer.h>
+#include <IMP//Pointer.h>
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -44,11 +44,11 @@ core::MonteCarloMovers mvs;
 //
 // ISD PARTICLES
 //
-std::map<std::string, base::Pointer<Particle> > ISD_ps=
+std::map<std::string, IMP::Pointer<Particle> > ISD_ps=
  add_ISD_particles(m,mydata,mvs);
 // create list of particles from map
 Particles ISD_ps_list;
-std::map<std::string, base::Pointer<Particle> >::iterator itr;
+std::map<std::string, IMP::Pointer<Particle> >::iterator itr;
 for(itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr){
  ISD_ps_list.push_back((*itr).second);
 }
@@ -207,7 +207,7 @@ for(int iter=0;iter<mydata.Cluster.niter;++iter){
 if(mydata.Cluster.weight && weights.size()!=counter){exit(1);}
 
 // NOW do the clustering
-base::Pointer<statistics::PartitionalClustering> pc=
+IMP::Pointer<statistics::PartitionalClustering> pc=
  membrane::create_gromos_clustering(drmsd,mydata.Cluster.cutoff);
 
 // calculate total population

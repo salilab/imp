@@ -53,8 +53,8 @@ Float KinkPairScore::evaluate(const ParticlePair &p,
   return score;
 }
 */
-Float KinkPairScore::evaluate_index(kernel::Model *m,
-const kernel::ParticleIndexPair &pip,
+Float KinkPairScore::evaluate_index(IMP::Model *m,
+const IMP::ParticleIndexPair &pip,
 DerivativeAccumulator *da) const
 {
   // check if derivatives are requested
@@ -97,12 +97,12 @@ DerivativeAccumulator *da) const
 }
 
 
-kernel::ModelObjectsTemp KinkPairScore::do_get_inputs(kernel::Model *m,
-   const kernel::ParticleIndexes &pis)
+IMP::ModelObjectsTemp KinkPairScore::do_get_inputs(IMP::Model *m,
+   const IMP::ParticleIndexes &pis)
     const {
   // return any particles that would be read if p is one of the particles
   // being scored. Don't worry about returning duplicates.
-  return kernel::get_particles(m, pis);
+  return IMP::get_particles(m, pis);
 }
 
 /*

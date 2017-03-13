@@ -9,7 +9,7 @@
 #include <IMP/membrane/LangevinThermostatOptimizerState.h>
 #include <IMP/membrane/MolecularDynamicsWithWte.h>
 #include <IMP/atom/Mass.h>
-#include <IMP/base/random.h>
+#include <IMP//random.h>
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 LangevinThermostatOptimizerState
@@ -41,9 +41,9 @@ void LangevinThermostatOptimizerState::rescale_velocities() const
   IMP_INTERNAL_CHECK(md, "Can only use velocity scaling with "
              "the molecular dynamics optimizer.");
   boost::normal_distribution<Float> mrng(0., 1.);
-  boost::variate_generator<base::RandomNumberGenerator&,
+  boost::variate_generator<IMP::RandomNumberGenerator&,
                            boost::normal_distribution<Float> >
-    sampler(base::random_number_generator, mrng);
+    sampler(IMP::random_number_generator, mrng);
   for (unsigned int i=0; i< pis_.size(); ++i) {
     Particle *p = pis_[i];
     double mass = atom::Mass(p).get_mass();

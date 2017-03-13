@@ -13,7 +13,7 @@
 //#include "IMP/restraint_macros.h"
 #include <IMP/Particle.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/base_types.h>
+#include <IMP/_types.h>
 #include <string>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -33,9 +33,9 @@ Floats get_parameters(std::string restype);
 public:
   EzRestraint(Particles ps);
 
-  virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
   const IMP_OVERRIDE;
-  kernel::ModelObjectsTemp do_get_inputs() const ;
+  IMP::ModelObjectsTemp do_get_inputs() const ;
 
   //void show(std::ostream &) const;
 

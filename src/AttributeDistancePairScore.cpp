@@ -40,15 +40,15 @@ void AttributeDistancePairScore::show(std::ostream &out) const
 }
 
 
-Float AttributeDistancePairScore::evaluate_index(kernel::Model *m,
-const kernel::ParticleIndexPair &pip,
+Float AttributeDistancePairScore::evaluate_index(IMP::Model *m,
+const IMP::ParticleIndexPair &pip,
 DerivativeAccumulator *da) const
 {
 
   // turn on logging for this method
   IMP_OBJECT_LOG;
 
-   /*kernel::ParticlesTemp ps;
+   /*IMP::ParticlesTemp ps;
    ps.push_back(m->get_particle(pip[0]));
    ps.push_back(m->get_particle(pip[1]));
 
@@ -86,8 +86,8 @@ DerivativeAccumulator *da) const
 }
 
 ModelObjectsTemp AttributeDistancePairScore::do_get_inputs(
- kernel::Model *m, const kernel::ParticleIndexes &pis) const {
-  return IMP::kernel::get_particles(m, pis);
+ IMP::Model *m, const IMP::ParticleIndexes &pis) const {
+  return IMP::get_particles(m, pis);
 }
 
 IMPMEMBRANE_END_NAMESPACE

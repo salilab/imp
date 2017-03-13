@@ -19,8 +19,8 @@ TiltSingletonScore::TiltSingletonScore(UnaryFunction *f,
     : f_(f), local_(v1.get_unit_vector()), global_(v2.get_unit_vector()){}
 
 
-Float TiltSingletonScore::evaluate_index(kernel::Model *m,const
-  kernel::ParticleIndex pi, DerivativeAccumulator *da) const
+Float TiltSingletonScore::evaluate_index(IMP::Model *m,const
+  IMP::ParticleIndex pi, DerivativeAccumulator *da) const
 {
 
   // check if derivatives are requested
@@ -65,10 +65,10 @@ void TiltSingletonScore::show(std::ostream &out) const
   out << "function " << *f_;
 }
 
-kernel::ModelObjectsTemp TiltSingletonScore::do_get_inputs(kernel::Model *m,
-  const kernel::ParticleIndexes &pis) const
+IMP::ModelObjectsTemp TiltSingletonScore::do_get_inputs(IMP::Model *m,
+  const IMP::ParticleIndexes &pis) const
 {
-   return IMP::kernel::get_particles(m, pis);
+   return IMP::get_particles(m, pis);
 }
 
 IMPMEMBRANE_END_NAMESPACE

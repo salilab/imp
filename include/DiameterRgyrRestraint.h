@@ -12,7 +12,7 @@
 #include "IMP/Restraint.h"
 //#include "IMP/restraint_macros.h"
 #include <IMP/Particle.h>
-#include <IMP/base_types.h>
+#include <IMP/_types.h>
 #include <string>
 #include <map>
 
@@ -37,9 +37,9 @@ public:
  DiameterRgyrRestraint(Particles ps, Float diameter,
                Float rgyr, Float kappa);
 
- virtual double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+ virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
   const IMP_OVERRIDE;
- kernel::ModelObjectsTemp do_get_inputs() const;
+ IMP::ModelObjectsTemp do_get_inputs() const;
 
 
  IMP_OBJECT_METHODS(DiameterRgyrRestraint);

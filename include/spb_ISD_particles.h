@@ -18,7 +18,7 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-IMPMEMBRANEEXPORT std::map<std::string, base::Pointer<Particle> >
+IMPMEMBRANEEXPORT std::map<std::string, IMP::Pointer<Particle> >
  add_ISD_particles
  (Model *m, membrane::SPBParameters mydata, core::MonteCarloMovers& mvs);
 

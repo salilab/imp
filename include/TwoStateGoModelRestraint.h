@@ -12,7 +12,7 @@
 #include "IMP/Restraint.h"
 //#include "IMP/restraint_macros.h"
 #include <IMP/Particle.h>
-#include <IMP/base_types.h>
+#include <IMP/_types.h>
 #include <string>
 #include <map>
 
@@ -42,9 +42,9 @@ public:
   TwoStateGoModelRestraint(Particles ps, Particles psA, Particles psB,
    Float Beta, Float Delta, Float Cutoff);
 
- virtual double unprotected_evaluate(kernel::DerivativeAccumulator *accum)
+ virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
   const IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   //IMP_RESTRAINT(TwoStateGoModelRestraint);
   IMP_OBJECT_METHODS(TwoStateGoModelRestraint);

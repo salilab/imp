@@ -16,7 +16,7 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT SPBParameters
- get_SPBParameters(base::TextInput in, std::string suffix);
+ get_SPBParameters(IMP::TextInput in, std::string suffix);
 
 IMPMEMBRANE_END_NAMESPACE
 

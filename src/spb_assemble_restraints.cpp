@@ -18,14 +18,14 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-std::map< std::string, base::Pointer<RestraintSet> > spb_assemble_restraints
+std::map< std::string, IMP::Pointer<RestraintSet> > spb_assemble_restraints
 (Model *m, SPBParameters& mydata, atom::Hierarchies& all_mol,
  container::ListSingletonContainer *CP_ps,
  container::ListSingletonContainer *IL2_ps,
- std::map<std::string, base::Pointer<Particle> > ISD_ps)
+ std::map<std::string, IMP::Pointer<Particle> > ISD_ps)
 {
 // prepare the map of RestraintSet
-std::map< std::string, base::Pointer<RestraintSet> > rst_map;
+std::map< std::string, IMP::Pointer<RestraintSet> > rst_map;
 //
 // Excluded volume
 //

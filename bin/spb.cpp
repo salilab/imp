@@ -8,7 +8,7 @@
 #include <IMP/core.h>
 #include <IMP/atom.h>
 #include <IMP/membrane.h>
-#include <IMP/base/Pointer.h>
+#include <IMP//Pointer.h>
 #include <IMP/isd.h>
 #include <IMP/rmf.h>
 #include "mpi.h"
@@ -73,11 +73,11 @@ core::MonteCarloMovers mvs;
 //
 // ISD PARTICLES
 //
-std::map<std::string, base::Pointer<Particle> > ISD_ps=
+std::map<std::string, IMP::Pointer<Particle> > ISD_ps=
  add_ISD_particles(m,mydata,mvs);
 // create list of particles from map
 Particles ISD_ps_list;
-std::map<std::string, base::Pointer<Particle> >::iterator itr;
+std::map<std::string, IMP::Pointer<Particle> >::iterator itr;
 for(itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr){
  ISD_ps_list.push_back((*itr).second);
 }
@@ -144,14 +144,14 @@ rmf::add_particles(rh_isd, ISD_ps_list);
 // CREATING RESTRAINTS
 //
 if(myrank==0) {std::cout << "Creating restraints" << std::endl;}
-std::map< std::string, base::Pointer<RestraintSet> > rst_map=
+std::map< std::string, IMP::Pointer<RestraintSet> > rst_map=
  spb_assemble_restraints(m,mydata,all_mol,CP_ps,IL2_ps,ISD_ps);
 
 
 // SCORE RESTRAINTS BY CALLING A SCORING FUNCTION FOR A MODEL
 
 if(myrank==0) {std::cout << "Setup sampler" << std::endl;}
-base::Pointer<core::MonteCarlo> mc=
+IMP::Pointer<core::MonteCarlo> mc=
  setup_SPBMonteCarlo(m,mvs,temp[index[myrank]],mydata);
 
 // wte restart
@@ -163,7 +163,7 @@ if(mydata.MC.do_wte && mydata.MC.wte_restart){
  biasfile.open(names.c_str());
  if(biasfile.is_open()){
   while (biasfile >> bias){val.push_back(bias);}
-  base::Pointer<membrane::MonteCarloWithWte> ptr=
+  IMP::Pointer<membrane::MonteCarloWithWte> ptr=
      dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
   ptr->set_bias(val);
   biasfile.close();
@@ -199,7 +199,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // and bias
  double mybias = 0.;
  if(mydata.MC.do_wte){
-   base::Pointer<membrane::MonteCarloWithWte> ptr=
+   IMP::Pointer<membrane::MonteCarloWithWte> ptr=
      dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
    mybias=ptr->get_bias(myscore);
  }
@@ -255,7 +255,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   // print fmod, fmod_err, ferr, for every data point
   if(mydata.add_fret){
    for(unsigned i=0;i<rst_map["FRET_R"]->get_number_of_restraints();++i){
-    base::Pointer<isd::FretRestraint> rst=
+    IMP::Pointer<isd::FretRestraint> rst=
      dynamic_cast<isd::FretRestraint*>(rst_map["FRET_R"]->get_restraint(i));
     std::string name = rst->get_name();
     Float fmod       = rst->get_model_fretr();
@@ -311,8 +311,8 @@ del Spc42 distance %.3f %.3f %.3f %.3f\n",
    // to print out individual restraint scores
 
    for(unsigned i=0;i<m->get_number_of_restraints();++i) {
-         base::Pointer<kernel::Restraint> rst=
-  dynamic_cast<kernel::Restraint*>(m->get_restraint(i));
+         IMP::Pointer<IMP::Restraint> rst=
+  dynamic_cast<IMP::Restraint*>(m->get_restraint(i));
     fprintf(logfile,"TimeStep %10d Restname %s Score %lf\n",
  imc,rst->get_name().c_str(),rst->get_score());
    }
@@ -341,7 +341,7 @@ del Spc42 distance %.3f %.3f %.3f %.3f\n",
    std::ofstream biasfile;
    std::string names="BIAS"+out.str();
    biasfile.open(names.c_str());
-   base::Pointer<membrane::MonteCarloWithWte> ptr=
+   IMP::Pointer<membrane::MonteCarloWithWte> ptr=
      dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
    double* mybias=ptr->get_bias_buffer();
    for(int i=0;i<ptr->get_nbin();++i){
@@ -365,7 +365,7 @@ del Spc42 distance %.3f %.3f %.3f %.3f\n",
  double delta_wte=0.0;
 
  if(mydata.MC.do_wte){
-  base::Pointer<membrane::MonteCarloWithWte> ptr=
+  IMP::Pointer<membrane::MonteCarloWithWte> ptr=
    dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
   double U_mybias[2]={ptr->get_bias(myscore),ptr->get_bias(fscore)};
   double U_fbias[2];
@@ -386,7 +386,7 @@ del Spc42 distance %.3f %.3f %.3f %.3f\n",
   mc->set_kt(temp[myindex]);
 // if WTE, rescale W0 and exchange bias
   if(mydata.MC.do_wte){
-   base::Pointer<membrane::MonteCarloWithWte> ptr=
+   IMP::Pointer<membrane::MonteCarloWithWte> ptr=
     dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
    ptr->set_w0(mydata.MC.wte_w0*temp[myindex]/mydata.MC.tmin);
    int     nbins=ptr->get_nbin();

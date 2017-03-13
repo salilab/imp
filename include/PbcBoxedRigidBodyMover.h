@@ -39,7 +39,7 @@ public:
                  Particle *px, Particle *py, Particle *pz);
 
 protected:
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
 
@@ -57,19 +57,19 @@ private:
     algebra::Vector3Ds centers_;
     algebra::Transformation3Ds transformations_;
     core::RigidBody d_;
-    kernel::Particles ps_;
-    kernel::Particles ps_norb_;
+    IMP::Particles ps_;
+    IMP::Particles ps_norb_;
     std::vector<core::RigidBody> rbs_;
 
   // particles for scaling
-  IMP::base::PointerMember<kernel::Particle> px_;
-  IMP::base::PointerMember<kernel::Particle> py_;
-  IMP::base::PointerMember<kernel::Particle> pz_;
+  IMP::PointerMember<IMP::Particle> px_;
+  IMP::PointerMember<IMP::Particle> py_;
+  IMP::PointerMember<IMP::Particle> pz_;
 
   algebra::Vector3D get_vector(algebra::Vector3D center);
   algebra::Transformation3D get_transformation(algebra::Transformation3D trans);
-  kernel::Particles         get_particles(kernel::Particles ps);
-  std::vector<core::RigidBody> get_rigid_bodies(kernel::Particles ps);
+  IMP::Particles         get_particles(IMP::Particles ps);
+  std::vector<core::RigidBody> get_rigid_bodies(IMP::Particles ps);
 
 
 

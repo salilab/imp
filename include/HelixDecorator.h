@@ -46,7 +46,7 @@ static HelixDecorator setup_particle(Particle *p, Float b, Float e) {
     return get_particle()->get_value(get_helix_key(1));
   }
 
-  static bool get_is_setup(kernel::Model *m, kernel::ParticleIndex id) {
+  static bool get_is_setup(IMP::Model *m, IMP::ParticleIndex id) {
     IMP_USAGE_CHECK((m->get_particle(id)->has_attribute(get_helix_key(0))
                && m->get_particle(id)->has_attribute(get_helix_key(1)))
               || (!m->get_particle(id)->has_attribute(get_helix_key(0))

@@ -7,7 +7,7 @@
  */
 #include <IMP/membrane/RigidBodyNewMover.h>
 #include <IMP/core.h>
-#include <IMP/base/random.h>
+#include <IMP//random.h>
 #include <IMP/algebra.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -57,7 +57,7 @@ core::MonteCarloMoverResult RigidBodyNewMover::do_propose() {
                                                                         0.0),
                                                     1.));
   ::boost::uniform_real<> rand(-max_angle_,max_angle_);
-  Float angle =rand(base::random_number_generator);
+  Float angle =rand(IMP::random_number_generator);
   algebra::Rotation3D r
     = algebra::get_rotation_about_axis(axis, angle);
   algebra::Rotation3D rc
@@ -75,7 +75,7 @@ void RigidBodyNewMover::do_reject() {
   last_transformation_= algebra::Transformation3D();
 }
 
-kernel::ModelObjectsTemp RigidBodyNewMover::do_get_inputs() const {
+IMP::ModelObjectsTemp RigidBodyNewMover::do_get_inputs() const {
   return ParticlesTemp(1, d_);
 }
 

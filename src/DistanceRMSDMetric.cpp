@@ -13,7 +13,7 @@
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <algorithm>
 #include <vector>
-#include <IMP/base/vector_property_map.h>
+#include <IMP//vector_property_map.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 

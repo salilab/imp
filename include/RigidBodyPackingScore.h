@@ -12,7 +12,7 @@
 
 #include <IMP/PairScore.h>
 #include <IMP/pair_macros.h>
-#include <IMP/base/Pointer.h>
+#include <IMP//Pointer.h>
 #include <IMP/core/TableRefiner.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -20,7 +20,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 //! Score on the crossing angles between two helices
 class IMPMEMBRANEEXPORT RigidBodyPackingScore : public PairScore
 {
-  IMP::base::PointerMember<core::TableRefiner> tbr_;
+  IMP::PointerMember<core::TableRefiner> tbr_;
   Floats omb_, ome_, ddb_, dde_;
   double kappa_;
 public:
@@ -28,12 +28,12 @@ public:
                         Floats omb, Floats ome, Floats ddb,
                         Floats dde, double kappa);
 
-   virtual double evaluate_index(kernel::Model *m,
-   const kernel::ParticleIndexPair &p,
+   virtual double evaluate_index(IMP::Model *m,
+   const IMP::ParticleIndexPair &p,
     DerivativeAccumulator *da) const IMP_OVERRIDE;
 
-   virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-   const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+   virtual IMP::ModelObjectsTemp do_get_inputs(IMP::Model *m,
+   const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
 
  //  void show(std::ostream &out) const ;
 

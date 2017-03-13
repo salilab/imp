@@ -41,9 +41,9 @@ PbcBoxedRigidBodyMover::PbcBoxedRigidBodyMover(core::RigidBody d,
  pz_ = pz;
 }
 
-kernel::Particles PbcBoxedRigidBodyMover::get_particles(kernel::Particles ps)
+IMP::Particles PbcBoxedRigidBodyMover::get_particles(IMP::Particles ps)
 {
- kernel::Particles ps_norb;
+ IMP::Particles ps_norb;
  for(unsigned i=0;i<ps.size();++i){
   if(!core::RigidMember::get_is_setup(ps[i])){
    ps_norb.push_back(ps[i]);
@@ -53,7 +53,7 @@ kernel::Particles PbcBoxedRigidBodyMover::get_particles(kernel::Particles ps)
 }
 
 std::vector<core::RigidBody>
-PbcBoxedRigidBodyMover::get_rigid_bodies (kernel::Particles ps)
+PbcBoxedRigidBodyMover::get_rigid_bodies (IMP::Particles ps)
 {
  std::vector<core::RigidBody> rbs;
  for(unsigned i=0;i<ps.size();++i){
@@ -118,7 +118,7 @@ core::MonteCarloMoverResult PbcBoxedRigidBodyMover::do_propose() {
      0.0),
      1.));
  ::boost::uniform_real<> rand(-max_angle_,max_angle_);
- Float angle =rand(base::random_number_generator);
+ Float angle =rand(IMP::random_number_generator);
  algebra::Rotation3D r
  = algebra::get_rotation_about_axis(axis, angle);
 
@@ -158,10 +158,10 @@ core::MonteCarloMoverResult PbcBoxedRigidBodyMover::do_propose() {
   rbs_[i].set_reference_frame(algebra::ReferenceFrame3D(t3d));
  }
 
- kernel::ParticlesTemp ret = ParticlesTemp(1, d_);
+ IMP::ParticlesTemp ret = ParticlesTemp(1, d_);
  ret.insert(ret.end(), ps_.begin(), ps_.end());
 
- return core::MonteCarloMoverResult(kernel::get_indexes(ret), 1.0);
+ return core::MonteCarloMoverResult(IMP::get_indexes(ret), 1.0);
 }
 
 void PbcBoxedRigidBodyMover::do_reject() {
@@ -179,9 +179,9 @@ void PbcBoxedRigidBodyMover::do_reject() {
 
 }
 
-kernel::ModelObjectsTemp PbcBoxedRigidBodyMover::do_get_inputs() const {
+IMP::ModelObjectsTemp PbcBoxedRigidBodyMover::do_get_inputs() const {
 
- kernel::ParticlesTemp ret = ParticlesTemp(1, d_);
+ IMP::ParticlesTemp ret = ParticlesTemp(1, d_);
  ret.insert(ret.end(), ps_.begin(), ps_.end());
 
  ret.push_back(px_);

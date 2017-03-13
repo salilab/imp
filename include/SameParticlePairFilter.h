@@ -22,12 +22,12 @@ class IMPMEMBRANEEXPORT SameParticlePairFilter : public PairPredicate
 public:
   SameParticlePairFilter();
 
-  virtual int get_value_index(kernel::Model *m,
-  const kernel::ParticleIndexPair &p) const
+  virtual int get_value_index(IMP::Model *m,
+  const IMP::ParticleIndexPair &p) const
   IMP_OVERRIDE;
 
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-   const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs(IMP::Model *m,
+   const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
 
   IMP_PAIR_PREDICATE_METHODS(SameParticlePairFilter);
   IMP_OBJECT_METHODS(SameParticlePairFilter);

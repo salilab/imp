@@ -87,13 +87,13 @@ core::MonteCarloMoverResult PbcBoxedMover::do_propose() {
   xyz.set_coordinates(newcoord);
  }
 
- return core::MonteCarloMoverResult(kernel::get_indexes(ret), 1.0);
+ return core::MonteCarloMoverResult(IMP::get_indexes(ret), 1.0);
 }
 
 
 ModelObjectsTemp PbcBoxedMover::do_get_inputs() const {
 
- kernel::ParticlesTemp ret;
+ IMP::ParticlesTemp ret;
  ret.push_back(p_);
  ret.insert(ret.end(), ps_.begin(), ps_.end());
 

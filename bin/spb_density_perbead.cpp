@@ -17,7 +17,7 @@
 #include <iostream>
 #include <array>
 #include <string>
-#include <IMP/base/Pointer.h>
+#include <IMP//Pointer.h>
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -279,11 +279,11 @@ core::MonteCarloMovers mvs;
 //
 // ISD PARTICLES
 //
-std::map<std::string, base::Pointer<Particle> > ISD_ps=
+std::map<std::string, IMP::Pointer<Particle> > ISD_ps=
  add_ISD_particles(m,mydata,mvs);
 // create list of particles from map
 Particles ISD_ps_list;
-std::map<std::string, base::Pointer<Particle> >::iterator itr;
+std::map<std::string, IMP::Pointer<Particle> >::iterator itr;
 for(itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr){
  ISD_ps_list.push_back((*itr).second);
 }

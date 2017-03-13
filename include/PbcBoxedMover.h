@@ -35,7 +35,7 @@ public:
                 Particle *px, Particle *py, Particle *pz);
 
 protected:
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(PbcBoxedMover);
@@ -47,11 +47,11 @@ private:
     algebra::Transformation3Ds transformations_;
     algebra::Vector3Ds centers_;
     algebra::Vector3Ds oldcoords_;
-    IMP::base::PointerMember<kernel::Particle> p_;
-    kernel::Particles ps_;
-    IMP::base::PointerMember<kernel::Particle> px_;
-    IMP::base::PointerMember<kernel::Particle> py_;
-    IMP::base::PointerMember<kernel::Particle> pz_;
+    IMP::PointerMember<IMP::Particle> p_;
+    IMP::Particles ps_;
+    IMP::PointerMember<IMP::Particle> px_;
+    IMP::PointerMember<IMP::Particle> py_;
+    IMP::PointerMember<IMP::Particle> pz_;
 
 
   algebra::Vector3D get_vector(algebra::Vector3D center);

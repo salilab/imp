@@ -28,7 +28,7 @@ class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
   boost::scoped_array<double> bias_;
   int     nbin_;
   bool    full_;
-  IMP::base::PointerMember<RestraintSet> rset_;
+  IMP::PointerMember<RestraintSet> rset_;
 
   void do_initialize(double emin,  double emax, double sigma,
                      double gamma, double w0);

@@ -12,7 +12,7 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/singleton_macros.h>
-#include <IMP/base/Pointer.h>
+#include <IMP//Pointer.h>
 #include <IMP/UnaryFunction.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -28,19 +28,19 @@ IMPMEMBRANE_BEGIN_NAMESPACE
  */
 class IMPMEMBRANEEXPORT TiltSingletonScore : public SingletonScore
 {
-  IMP::base::PointerMember<UnaryFunction> f_;
+  IMP::PointerMember<UnaryFunction> f_;
   algebra::VectorD<3> local_;
   algebra::VectorD<3> global_;
 public:
   TiltSingletonScore(UnaryFunction *f, const algebra::VectorD<3>& v1,
                      const algebra::VectorD<3>& v2);
 
-  virtual double evaluate_index(kernel::Model *m,
-  const kernel::ParticleIndex p,
+  virtual double evaluate_index(IMP::Model *m,
+  const IMP::ParticleIndex p,
    DerivativeAccumulator *da) const IMP_OVERRIDE;
 
-  virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-  const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs(IMP::Model *m,
+  const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
 
   IMP_SINGLETON_SCORE_METHODS(TiltSingletonScore);
   IMP_OBJECT_METHODS(TiltSingletonScore);

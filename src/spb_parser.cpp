@@ -6,7 +6,7 @@
  *
  */
 #include <boost/program_options.hpp>
-#include <IMP/base_types.h>
+#include <IMP/_types.h>
 #include <IMP/membrane.h>
 #include <string>
 
@@ -19,7 +19,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
  type name=-1;                                              \
  desc.add_options()(#name, value< type >(&name), #name);
 
-SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
+SPBParameters get_SPBParameters(IMP::TextInput in, std::string suffix)
 {
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;

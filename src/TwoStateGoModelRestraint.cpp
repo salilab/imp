@@ -103,7 +103,7 @@ TwoStateGoModelRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
  return VMB;
 }
 
-kernel::ModelObjectsTemp TwoStateGoModelRestraint::do_get_inputs() const {
+IMP::ModelObjectsTemp TwoStateGoModelRestraint::do_get_inputs() const {
   ParticlesTemp ret;
   ret.insert(ret.end(), ps_.begin(), ps_.end());
   return ret;

@@ -15,8 +15,8 @@ SameParticlePairFilter
 ::SameParticlePairFilter():PairPredicate("PairPredicate %1%"){
 }
 
-int SameParticlePairFilter::get_value_index(kernel::Model *m,const
-    kernel::ParticleIndexPair &pip)
+int SameParticlePairFilter::get_value_index(IMP::Model *m,const
+    IMP::ParticleIndexPair &pip)
  const {
       return m->get_particle(pip[0]) == m->get_particle(pip[1]);
 }
@@ -29,12 +29,12 @@ ParticlesTemp SameParticlePairFilter::get_input_particles( Particle* t) const {
 }
 */
 
-kernel::ModelObjectsTemp SameParticlePairFilter::do_get_inputs(
- kernel::Model *m,const kernel::ParticleIndexes &pis) const
+IMP::ModelObjectsTemp SameParticlePairFilter::do_get_inputs(
+ IMP::Model *m,const IMP::ParticleIndexes &pis) const
 {
    // In the API instead of passing a particle *t, wrap it in a single element
    // array and pass to this!
-    return(kernel::get_particles(m,pis));
+    return(IMP::get_particles(m,pis));
 
 }
 

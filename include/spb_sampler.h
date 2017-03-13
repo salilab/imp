@@ -16,7 +16,7 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-IMPMEMBRANEEXPORT base::Pointer<core::MonteCarlo> setup_SPBMonteCarlo
+IMPMEMBRANEEXPORT IMP::Pointer<core::MonteCarlo> setup_SPBMonteCarlo
 (Model *m, core::MonteCarloMovers& mvs, double temp,
 membrane::SPBParameters myparam);
 

@@ -10,7 +10,7 @@
 
 #include "membrane_config.h"
 #include <IMP/PairScore.h>
-#include <IMP/base/Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/pair_macros.h>
 
@@ -23,18 +23,18 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 class IMPMEMBRANEEXPORT AttributeDistancePairScore : public PairScore
 {
   //IMP::OwnerPointer<UnaryFunction> f_; //replaced deprecated version
-  IMP::base::PointerMember<UnaryFunction> f_;
+  IMP::PointerMember<UnaryFunction> f_;
   FloatKey k_;
 public:
   //! Apply function f to attribute k
   AttributeDistancePairScore(UnaryFunction *f, FloatKey k);
 
-   virtual double evaluate_index(kernel::Model *m,
-   const kernel::ParticleIndexPair &p,
+   virtual double evaluate_index(IMP::Model *m,
+   const IMP::ParticleIndexPair &p,
     DerivativeAccumulator *da) const IMP_OVERRIDE;
 
-   virtual kernel::ModelObjectsTemp do_get_inputs(kernel::Model *m,
-   const kernel::ParticleIndexes &pis) const IMP_OVERRIDE;
+   virtual IMP::ModelObjectsTemp do_get_inputs(IMP::Model *m,
+   const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
 
    //void show(std::ostream &out) const ;
 

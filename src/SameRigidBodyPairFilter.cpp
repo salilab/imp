@@ -26,8 +26,8 @@ int SameRigidBodyPairFilter::get_value(const ParticlePair &pp)
 }
 */
 
-int SameRigidBodyPairFilter::get_value_index(kernel::Model *m,const
-    kernel::ParticleIndexPair &pip)
+int SameRigidBodyPairFilter::get_value_index(IMP::Model *m,const
+    IMP::ParticleIndexPair &pip)
  const {
      if(!core::RigidMember::get_is_setup(m->get_particle(pip[0])) ||
         !core::RigidMember::get_is_setup(m->get_particle(pip[1])))
@@ -49,11 +49,11 @@ ParticlesTemp SameRigidBodyPairFilter::get_input_particles( Particle* t) const {
 }
 */
 
-kernel::ModelObjectsTemp SameRigidBodyPairFilter::do_get_inputs(
-   kernel::Model *m,const kernel::ParticleIndexes &pis) const
+IMP::ModelObjectsTemp SameRigidBodyPairFilter::do_get_inputs(
+   IMP::Model *m,const IMP::ParticleIndexes &pis) const
 {
      ParticlesTemp ret;
-     //ret.push_back(kernel::get_particles(m,pis));
+     //ret.push_back(IMP::get_particles(m,pis));
    // first push all the particles
    for (unsigned int i = 0; i < pis.size(); ++i) {
        ret.push_back(m->get_particle(pis[i]));

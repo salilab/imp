@@ -29,7 +29,7 @@ public:
 protected:
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
-  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(CellMover);
   IMP_SHOWABLE(CellMover);
@@ -38,7 +38,7 @@ private:
   Float old_scale_;
   algebra::Vector3Ds oldcoords_;
   algebra::Transformation3Ds oldtrs_;
-  IMP::base::PointerMember<kernel::Particle> p_;
+  IMP::PointerMember<IMP::Particle> p_;
   Particles ps_;
   Float max_translation_;
   Particles ps_norb_;

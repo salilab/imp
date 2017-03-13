@@ -16,11 +16,11 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-std::map<std::string, base::Pointer<Particle> > add_ISD_particles
+std::map<std::string, IMP::Pointer<Particle> > add_ISD_particles
  (Model *m, SPBParameters mydata, core::MonteCarloMovers& mvs)
 {
 
-std::map<std::string, base::Pointer<Particle> > ISD_ps;
+std::map<std::string, IMP::Pointer<Particle> > ISD_ps;
 IMP_NEW(NuisanceRangeModifier,nrm,());
 
 if(mydata.add_fret){

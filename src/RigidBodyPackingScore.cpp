@@ -27,7 +27,7 @@ RigidBodyPackingScore::RigidBodyPackingScore(core::TableRefiner *tbr,
                                              ddb_(ddb), dde_(dde),
                                              kappa_(kappa) {}
 
-Float RigidBodyPackingScore::evaluate_index(kernel::Model *m,
+Float RigidBodyPackingScore::evaluate_index(IMP::Model *m,
     const ParticleIndexPair &pip,DerivativeAccumulator *da) const
 {
   // turn on logging for this method
@@ -134,9 +134,9 @@ Float RigidBodyPackingScore::evaluate_index(kernel::Model *m,
 }
 
 
-kernel::ModelObjectsTemp RigidBodyPackingScore::do_get_inputs(
- kernel::Model *m, const kernel::ParticleIndexes &pis) const  {
-  return IMP::kernel::get_particles(m, pis);
+IMP::ModelObjectsTemp RigidBodyPackingScore::do_get_inputs(
+ IMP::Model *m, const IMP::ParticleIndexes &pis) const  {
+  return IMP::get_particles(m, pis);
 }
 
 

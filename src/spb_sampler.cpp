@@ -15,10 +15,10 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-base::Pointer<core::MonteCarlo> setup_SPBMonteCarlo
+IMP::Pointer<core::MonteCarlo> setup_SPBMonteCarlo
  (Model *m, core::MonteCarloMovers& mvs, double temp, SPBParameters myparam)
 {
- base::Pointer<core::MonteCarlo> mc;
+ IMP::Pointer<core::MonteCarlo> mc;
  if (myparam.MC.do_wte){
   double w0=myparam.MC.wte_w0*temp/myparam.MC.tmin;
   mc= new membrane::MonteCarloWithWte(m,myparam.MC.wte_emin,

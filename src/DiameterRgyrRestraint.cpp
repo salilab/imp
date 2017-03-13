@@ -50,7 +50,7 @@ DiameterRgyrRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
  return 0.5 * kappa_ * score;
 }
 
-kernel::ModelObjectsTemp DiameterRgyrRestraint::do_get_inputs() const {
+IMP::ModelObjectsTemp DiameterRgyrRestraint::do_get_inputs() const {
   ParticlesTemp ret;
   ret.insert(ret.end(), ps_.begin(), ps_.end());
   return ret;

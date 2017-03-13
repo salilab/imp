@@ -63,7 +63,7 @@ core::MonteCarloMoverResult BoxedMover::do_propose() {
 
    core::XYZ(p_).set_coordinates(newcoord);
 
-   return core::MonteCarloMoverResult(kernel::
+   return core::MonteCarloMoverResult(IMP::
          ParticleIndexes(1, p_->get_index())
 
        , 1.0);
@@ -81,8 +81,8 @@ ParticlesTemp BoxedMover::get_output_particles() const {
 }
 */
 
-kernel::ModelObjectsTemp BoxedMover::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(1, p_);
+IMP::ModelObjectsTemp BoxedMover::do_get_inputs() const {
+  return IMP::ModelObjectsTemp(1, p_);
 }
 
 void BoxedMover::show(std::ostream &out) const {
