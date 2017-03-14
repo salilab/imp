@@ -17,7 +17,8 @@ using namespace IMP::membrane;
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 std::map<std::string, IMP::Pointer<Particle> > add_ISD_particles
- (Model *m, SPBParameters mydata, core::MonteCarloMovers& mvs)
+ (Model *m,RestraintSet *allrs, SPBParameters mydata,
+  core::MonteCarloMovers& mvs)
 {
 
 std::map<std::string, IMP::Pointer<Particle> > ISD_ps;
@@ -54,7 +55,9 @@ if(mydata.add_fret){
  add_NuisanceMover(Ida,mydata.MC.dIda,mvs);
  // add Gaussian restraint on Ida
  IMP_NEW(isd::GaussianRestraint,gr,(Ida,mydata.Fret.Ida,mydata.Fret.IdaErr));
- m->add_restraint(gr);
+ //m->add_restraint(gr);
+ allrs->add_restraint(gr);
+
  // add particle to map
  ISD_ps["Ida"]=pIda;
 

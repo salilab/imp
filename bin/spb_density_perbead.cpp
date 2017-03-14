@@ -269,6 +269,7 @@ SPBParameters mydata=get_SPBParameters(inputfile,"0");
 
 // create a new model
 IMP_NEW(Model,m,());
+IMP_NEW(RestraintSet, allrs, (m, "All restraints"));
 
 // List of particles for layer restraint
 IMP_NEW(container::ListSingletonContainer,CP_ps,(m));
@@ -280,7 +281,7 @@ core::MonteCarloMovers mvs;
 // ISD PARTICLES
 //
 std::map<std::string, IMP::Pointer<Particle> > ISD_ps=
- add_ISD_particles(m,mydata,mvs);
+ add_ISD_particles(m,allrs,mydata,mvs);
 // create list of particles from map
 Particles ISD_ps_list;
 std::map<std::string, IMP::Pointer<Particle> >::iterator itr;
@@ -293,7 +294,7 @@ for(itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr){
 // PROTEIN REPRESENTATION
 //
 atom::Hierarchies all_mol=
- create_representation(m,mydata,CP_ps,IL2_ps,mvs,
+ create_representation(m,allrs,mydata,CP_ps,IL2_ps,mvs,
                        ISD_ps["SideXY"],ISD_ps["SideZ"],0);
 //
 // create list to link to rmf

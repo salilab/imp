@@ -29,18 +29,20 @@ IMPMEMBRANEEXPORT IMP::Pointer<core::SphereDistancePairScore>
 IMPMEMBRANEEXPORT void add_SPBexcluded_volume
  (Model *m,atom::Hierarchies& hs,bool GFP_exc_volume,double kappa);
 
-IMPMEMBRANEEXPORT void add_internal_restraint(Model *m,std::string name,
-atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist);
+IMPMEMBRANEEXPORT void add_internal_restraint(Model *m,RestraintSet *allrs,
+std::string name,atom::Molecule protein_a,atom::Molecule protein_b,
+double kappa,double dist);
 
 IMPMEMBRANEEXPORT void add_my_connectivity
-(Model *m,std::string name,atom::Molecule protein, double kappa);
+(Model *m,RestraintSet *allrs,std::string name,
+ atom::Molecule protein, double kappa);
 
 IMPMEMBRANEEXPORT void add_restrain_protein_length(Model *m
-,const atom::Hierarchy& hs,
+,RestraintSet *allrs,const atom::Hierarchy& hs,
 std::string protein_a,Particle *dist,double sigma0_dist);
 
 IMPMEMBRANEEXPORT void add_restrain_coiledcoil_to_cterm(Model *m
-,const atom::Hierarchy& hs,
+,RestraintSet *allrs,const atom::Hierarchy& hs,
 std::string protein_a,Particle *dist,double sigma0_dist);
 
 IMPMEMBRANEEXPORT IMP::Pointer<container::MinimumPairRestraint>
@@ -57,7 +59,8 @@ IMPMEMBRANEEXPORT void add_layer_restraint(Model *m,
 container::ListSingletonContainer *lsc, FloatRange range, double kappa);
 
 IMPMEMBRANEEXPORT void add_bayesian_layer_restraint
-(Model *m, container::ListSingletonContainer *lsc, Particle *a, Particle *b);
+(Model *m,RestraintSet *allrs,container::ListSingletonContainer *lsc,
+ Particle *a, Particle *b);
 
 IMPMEMBRANEEXPORT IMP::Pointer<isd::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
@@ -108,12 +111,12 @@ IMPMEMBRANEEXPORT void add_symmetry_restraint
  (Model *m,atom::Hierarchies& hs,algebra::Transformation3Ds transformations,
   Particle *SideXY, Particle *SideZ);
 
-IMPMEMBRANEEXPORT void add_link(Model *m,
+IMPMEMBRANEEXPORT void add_link(Model *m,RestraintSet *allrs,
  const atom::Hierarchy& h, std::string protein_a, std::string residues_a,
  atom::Hierarchies& hs, std::string protein_b, IntRange residues_b,
  double kappa);
 
-IMPMEMBRANEEXPORT void add_link(Model *m,
+IMPMEMBRANEEXPORT void add_link(Model *m,RestraintSet *allrs,
  const atom::Hierarchy& h, std::string protein_a, std::string residues_a,
  atom::Hierarchies& hs, std::string protein_b, std::string residues_b,
  double kappa);
@@ -121,25 +124,29 @@ IMPMEMBRANEEXPORT void add_link(Model *m,
 IMPMEMBRANEEXPORT std::vector<core::RigidBody> get_rigid_bodies(Particles ps);
 
 IMPMEMBRANEEXPORT void add_tilt_restraint
-(Model *m,Particle *p,FloatRange trange,double kappa);
+(Model *m,RestraintSet *allrs,Particle *p,FloatRange trange,double kappa);
 
-IMPMEMBRANEEXPORT void add_tilt(Model *m, const atom::Hierarchy& h,
- std::string name, IntRange range, double tilt, double kappa);
+IMPMEMBRANEEXPORT void add_tilt(Model *m,RestraintSet *allrs,
+const atom::Hierarchy& h,std::string name, IntRange range,
+double tilt, double kappa);
 
 IMPMEMBRANEEXPORT void add_GFP_restraint
- (Model *m, const atom::Hierarchy& h, double kappa);
+ (Model *m, RestraintSet *allrs,const atom::Hierarchy& h, double kappa);
 
 IMPMEMBRANEEXPORT void add_stay_close_restraint(Model *m,
- const atom::Hierarchy& h, std::string protein, double kappa);
+ RestraintSet *allrs,const atom::Hierarchy& h, std::string protein,
+ double kappa);
 
 IMPMEMBRANEEXPORT void add_stay_close_restraint(Model *m,
- const atom::Hierarchy& h, std::string protein, int residue, double kappa);
+ RestraintSet *allrs,const atom::Hierarchy& h, std::string protein,
+ int residue, double kappa);
 
 IMPMEMBRANEEXPORT void add_stay_on_plane_restraint(Model *m,
- const atom::Hierarchy& h, std::string protein, int residue, double kappa);
+ RestraintSet *allrs,const atom::Hierarchy& h, std::string protein,
+ int residue, double kappa);
 
 IMPMEMBRANEEXPORT void add_diameter_rgyr_restraint(Model *m,
- const atom::Hierarchy& h, std::string protein,
+ RestraintSet *allrs,const atom::Hierarchy& h, std::string protein,
  double diameter, double rgyr, double kappa);
 
 IMPMEMBRANEEXPORT IMP::Pointer<membrane::EM2DRestraint> em2d_restraint

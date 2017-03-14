@@ -16,15 +16,15 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT atom::Hierarchies create_representation
-(Model *m, membrane::SPBParameters mydata,
+(Model *m,RestraintSet *allrs, membrane::SPBParameters mydata,
 container::ListSingletonContainer *CP_ps,
 container::ListSingletonContainer *IL2_ps,
 core::MonteCarloMovers& mvs,
 Particle *SideXY, Particle *SideZ, int iseed);
 
 IMPMEMBRANEEXPORT atom::Molecule create_protein
-(Model *m,std::string name,double mass,int nbeads,display::Color color,
-int copy,double kappa,algebra::Vector3D x0,
+(Model *m,RestraintSet *allrs,std::string name,double mass,int nbeads,
+display::Color color,int copy,double kappa,algebra::Vector3D x0,
 bool use_connectivity,int start_residue=1,int length=-1);
 
 IMPMEMBRANEEXPORT atom::Molecule create_protein
@@ -33,7 +33,7 @@ IMPMEMBRANEEXPORT atom::Molecule create_protein
  int offset=0, bool makerigid=true);
 
 IMPMEMBRANEEXPORT atom::Molecule create_merged_protein
-(Model *m,std::string name,atom::Molecules proteins,
+(Model *m,RestraintSet *allrs,std::string name,atom::Molecules proteins,
  int copy,double kappa,double dist=-1.0);
 
 IMPMEMBRANEEXPORT void recenter_rb(core::RigidBody& rb,core::XYZRs& rbps,

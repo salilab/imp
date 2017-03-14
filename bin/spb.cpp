@@ -63,6 +63,7 @@ int*    index=create_indexes(nproc);
 
 // create a new model
 IMP_NEW(Model,m,());
+IMP_NEW(RestraintSet, allrs, (m, "All restraints"));
 
 // List of particles for layer restraint
 IMP_NEW(container::ListSingletonContainer,CP_ps,(m));
@@ -74,7 +75,7 @@ core::MonteCarloMovers mvs;
 // ISD PARTICLES
 //
 std::map<std::string, IMP::Pointer<Particle> > ISD_ps=
- add_ISD_particles(m,mydata,mvs);
+ add_ISD_particles(m,allrs,mydata,mvs);
 // create list of particles from map
 Particles ISD_ps_list;
 std::map<std::string, IMP::Pointer<Particle> >::iterator itr;
@@ -86,7 +87,7 @@ for(itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr){
 //
 if(myrank==0) {std::cout << "Creating representation" << std::endl;}
 atom::Hierarchies all_mol=
- create_representation(m,mydata,CP_ps,IL2_ps,mvs,
+ create_representation(m,allrs,mydata,CP_ps,IL2_ps,mvs,
                        ISD_ps["SideXY"],ISD_ps["SideZ"],myrank);
 
 // re-initialize seed
@@ -144,8 +145,9 @@ rmf::add_particles(rh_isd, ISD_ps_list);
 // CREATING RESTRAINTS
 //
 if(myrank==0) {std::cout << "Creating restraints" << std::endl;}
+
 std::map< std::string, IMP::Pointer<RestraintSet> > rst_map=
- spb_assemble_restraints(m,mydata,all_mol,CP_ps,IL2_ps,ISD_ps);
+ spb_assemble_restraints(m,allrs,mydata,all_mol,CP_ps,IL2_ps,ISD_ps);
 
 
 // SCORE RESTRAINTS BY CALLING A SCORING FUNCTION FOR A MODEL
@@ -188,12 +190,9 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  mc->optimize(mydata.MC.nexc);
 
 // get score and index
-  double myscore = m->evaluate(false); // this is deprecated
+  //double myscore = m->evaluate(false); // this is deprecated
+  double myscore = allrs->evaluate(false);
 
-// there is a much better way to write this
- //double myscore = myScoreFunction->evaluate(false);
-
- // std::cout << myscore << " "<< myscore2 << std::endl;
 
  int myindex = index[myrank];
 // and bias

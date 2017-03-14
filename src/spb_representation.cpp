@@ -24,7 +24,7 @@ using namespace IMP::membrane;
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 atom::Hierarchies create_representation
-(Model *m, SPBParameters mydata,
+(Model *m, RestraintSet *allrs,SPBParameters mydata,
  container::ListSingletonContainer *CP_ps,
  container::ListSingletonContainer *IL2_ps,
  core::MonteCarloMovers& mvs,
@@ -82,7 +82,7 @@ for(int i=0;i<mydata.num_cells;++i){
    // cycle on the two copies that form the CC dimer
    for(unsigned k=0;k<2;++k){
     // Spc42p_n, 1 bead
-    Spc42p_n.push_back(create_protein(m,"Spc42p_n",7,1,
+    Spc42p_n.push_back(create_protein(m,allrs,"Spc42p_n",7,1,
                        display::Color(175./255.,238./255.,238./255.),
                        i,mydata.kappa,x_n,mydata.use_connectivity,1,59));
     if(i==0){
@@ -91,7 +91,7 @@ for(int i=0;i<mydata.num_cells;++i){
      add_BallMover(ps,mydata.MC.dx,mvs);
     }
     // Spc42p_c, last C terminal bead with 10 residues
-    Spc42p_c.push_back(create_protein(m,"Spc42p_c",3.33,1,
+    Spc42p_c.push_back(create_protein(m,allrs,"Spc42p_c",3.33,1,
                        display::Color(175./255.,218./255.,238./255.),
                        i,mydata.kappa,x_c,mydata.use_connectivity,354,10));
     if(i==0){
@@ -142,7 +142,8 @@ for(int i=0;i<mydata.num_cells;++i){
     Spc42p_all.push_back(Spc42p_CC[k]);
     Spc42p_all.push_back(Spc42p_c[k]);
     atom::Molecule Spc42p=
-     create_merged_protein(m,"Spc42p",Spc42p_all,i,mydata.kappa,0.0);
+     create_merged_protein(m,allrs,"Spc42p",
+     Spc42p_all,i,mydata.kappa,0.0);
     all_mol.add_child(Spc42p);
    }
    if(mydata.add_GFP){
@@ -174,14 +175,14 @@ for(int i=0;i<mydata.num_cells;++i){
     algebra::Vector3D(CP_x0[0]+off_x,CP_x0[1]+off_y,CP_x0[2]-off);
    // Spc29p, 3 beads for N, 3 beads for C
    atom::Molecules Spc29p_all;
-   Spc29p_all.push_back(create_protein(m,"Spc29p_n",1.12,1,
+   Spc29p_all.push_back(create_protein(m,allrs,"Spc29p_n",1.12,1,
                         display::Color(255./255.,215./255.,0.),
                         i,mydata.kappa,x,mydata.use_connectivity));
-   Spc29p_all.push_back(create_protein(m,"Spc29p_c",1.12,1,
+   Spc29p_all.push_back(create_protein(m,allrs,"Spc29p_c",1.12,1,
                         display::Color(255./255.,140./255.,0.),
                         i,mydata.kappa,x,mydata.use_connectivity,252));
    atom::Molecule Spc29p=
-    create_merged_protein(m,"Spc29p",Spc29p_all,i,mydata.kappa,0.0);
+    create_merged_protein(m,allrs,"Spc29p",Spc29p_all,i,mydata.kappa,0.0);
    all_mol.add_child(Spc29p);
    if(i==0){
     Particles ps=atom::get_leaves(Spc29p);
@@ -293,7 +294,7 @@ for(int i=0;i<mydata.num_cells;++i){
    // Spc110: from residue 799 to 895 no structure
    atom::Molecules Spc110p_799_895;
    for(unsigned kk=0;kk<2;++kk){
-    Spc110p_799_895.push_back(create_protein(m,"Spc110p_799_895",11.0,2,
+    Spc110p_799_895.push_back(create_protein(m,allrs,"Spc110p_799_895",11.0,2,
                         display::Color(255./255.,0.,0.),
                         i,mydata.kappa,x,mydata.use_connectivity,799,97));
     if(i==0){
@@ -390,7 +391,8 @@ for(int i=0;i<mydata.num_cells;++i){
     Spc110p_c_all.push_back(Spc110p_799_895[kk]);
     Spc110p_c_all.push_back(Spc110p_896_944[kk]);
     atom::Molecule Spc110p=
-     create_merged_protein(m,"Spc110p",Spc110p_c_all,i,mydata.kappa,0.0);
+     create_merged_protein(m,allrs,"Spc110p",
+        Spc110p_c_all,i,mydata.kappa,0.0);
     all_mol.add_child(Spc110p);
    }
   }
@@ -408,9 +410,10 @@ for(int i=0;i<mydata.num_cells;++i){
 return hs;
 }
 
-atom::Molecule create_protein(Model *m,std::string name,double mass,
-int nbeads, display::Color colore,int copy,double kappa,
- algebra::Vector3D x0, bool use_connectivity, int start_residue, int nres)
+atom::Molecule create_protein(Model *m,RestraintSet *allrs,
+std::string name,double mass,int nbeads, display::Color colore,
+int copy,double kappa,algebra::Vector3D x0,
+bool use_connectivity, int start_residue, int nres)
 {
  if(nres==-1) {nres=(int) (mass*1000.0/110.0);}
  IMP_NEW(Particle,p,(m));
@@ -453,10 +456,11 @@ int nbeads, display::Color colore,int copy,double kappa,
    }
    Restraint *con=atom::create_connectivity_restraint(ss,kappa);
    con->set_name("Connectivity Restraint for "+name);
-   m->add_restraint(con);
+   //m->add_restraint(con);
+   allrs->add_restraint(con);
   }else{
 // SIMPLER CONNECTIVITY
-   add_my_connectivity(m,name,protein,kappa);
+   add_my_connectivity(m,allrs,name,protein,kappa);
   }
  }
  return protein;
@@ -566,7 +570,7 @@ IMP::algebra::PI/2.0),
 }
 
 atom::Molecule create_merged_protein
-(Model *m,std::string name,atom::Molecules proteins,
+(Model *m,RestraintSet *allrs,std::string name,atom::Molecules proteins,
  int copy,double kappa,double dist)
 {
  IMP_NEW(Particle,p,(m));
@@ -584,7 +588,7 @@ atom::Molecule create_merged_protein
   // endnum=proteins.size()-1;
 
   for(unsigned j=0;j<endnum;++j){
-   add_internal_restraint(m,name,proteins[j],proteins[j+1],kappa,dist);
+   add_internal_restraint(m,allrs,name,proteins[j],proteins[j+1],kappa,dist);
   }
  }
  for(unsigned j=0;j<proteins.size();++j){

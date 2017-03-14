@@ -48,7 +48,8 @@ IMP::Pointer<core::SphereDistancePairScore>
 }
 
 void add_SPBexcluded_volume
- (Model *m,atom::Hierarchies& hhs,bool GFP_exc_volume,double kappa)
+ (Model *m,RestraintSet *allrs,atom::Hierarchies& hhs,
+  bool GFP_exc_volume,double kappa)
 {
  std::list<std::string> names;
  IMP_NEW(container::ListSingletonContainer,noGFP,(m));
@@ -70,7 +71,8 @@ void add_SPBexcluded_volume
 
  IMP_NEW(core::ExcludedVolumeRestraint,evr1,(noGFP,kappa));
  evr1->set_name("Excluded Volume for non-GFPs");
- m->add_restraint(evr1);
+ //m->add_restraint(evr1);
+ allrs->add_restraint(evr1);
 
 // In case you don't want transparent GFPs
 
@@ -88,7 +90,8 @@ void add_SPBexcluded_volume
    lsc0->add_particles(s0.get_selected_particles());
    IMP_NEW(core::ExcludedVolumeRestraint,evr2,(lsc0,kappa));
    evr2->set_name("Excluded Volume for "+GFP_name);
-   m->add_restraint(evr2);
+   //m->add_restraint(evr2);
+   allrs->add_restraint(evr2);
   }
 
 // all the GFPs in the primitive cell against all the other proteins
@@ -98,7 +101,8 @@ void add_SPBexcluded_volume
   IMP_NEW(core::SoftSpherePairScore,ssps,(kappa));
   IMP_NEW(container::PairsRestraint,evr3,(ssps,cbpc));
   evr3->set_name("Excluded Volume GFPs vs. the rest of the world");
-  m->add_restraint(evr3);
+  //m->add_restraint(evr3);
+  allrs->add_restraint(evr3);
   // print out GFP0 and noGFP particles
 
   /*for(unsigned int nogfpc=0;nogfpc<noGFP->get_number_of_particles();nogfpc++)
@@ -116,7 +120,7 @@ void add_SPBexcluded_volume
 
 }
 
-void add_internal_restraint(Model *m,std::string name,
+void add_internal_restraint(Model *m,RestraintSet *allrs,std::string name,
 atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist)
 {
  IMP::Pointer<core::SphereDistancePairScore> ps=get_sphere_pair_score
@@ -129,10 +133,11 @@ atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist)
  Particle*  pb=sb.get_selected_particles()[0];
  IMP_NEW(core::PairRestraint,r,(ps,ParticlePair(pa, pb)));
  r->set_name("IR " + name);
- m->add_restraint(r);
+ //m->add_restraint(r);
+ allrs->add_restraint(r);
 }
 
-void add_my_connectivity(Model *m,std::string name,
+void add_my_connectivity(Model *m,RestraintSet *allrs,std::string name,
 atom::Molecule protein, double kappa)
 {
  IMP::Pointer<core::SphereDistancePairScore> sdps=
@@ -141,11 +146,14 @@ get_sphere_pair_score(0.0,kappa);
  for(unsigned int i=0;i<ps.size()-1;++i){
   IMP_NEW(core::PairRestraint,r,(sdps,ParticlePair(ps[i],ps[i+1])));
   r->set_name("My connectivity " + name);
-  m->add_restraint(r);
+  //m->add_restraint(r);
+  allrs->add_restraint(r);
  }
 }
-void add_restrain_coiledcoil_to_cterm(Model *m,const atom::Hierarchy& hs,
-  std::string protein_a,Particle *dist,double sigma0_dist)
+
+void add_restrain_coiledcoil_to_cterm(Model *m,RestraintSet *allrs,
+  const atom::Hierarchy& hs,std::string protein_a,Particle *dist,
+  double sigma0_dist)
 {
  atom::Selection coiledcoilends=atom::Selection(hs);
  atom::Selection cterms=atom::Selection(hs);
@@ -180,14 +188,16 @@ void add_restrain_coiledcoil_to_cterm(Model *m,const atom::Hierarchy& hs,
 
         dtr->set_name(name_restraint);
 
-        m->add_restraint(dtr);
+       // m->add_restraint(dtr);
+       allrs>add_restraint(dtr);
    }
  }
 
 }
 
-void add_restrain_protein_length(Model *m,const atom::Hierarchy& hs,
-  std::string protein_a,Particle *dist,double sigma0_dist)
+void add_restrain_protein_length(Model *m,RestraintSet *allrs,
+  const atom::Hierarchy& hs,std::string protein_a,Particle *dist,
+  double sigma0_dist)
 {
  atom::Selection nterms=atom::Selection(hs);
  atom::Selection cterms=atom::Selection(hs);
@@ -219,7 +229,8 @@ void add_restrain_protein_length(Model *m,const atom::Hierarchy& hs,
 
  dtr->set_name(name_restraint);
 
- m->add_restraint(dtr);
+ //m->add_restraint(dtr);
+ allrs->add_restraint(dtr);
    }
  }
 
@@ -488,9 +499,9 @@ get_sphere_pair_score(0.0,kappa);
  return do_bipartite_mindist(m,p1,p2,sps);
 }
 
-void add_link (Model *m,
+void add_link (Model *m,RestraintSet *allrs,
  const atom::Hierarchy&   ha, std::string protein_a, std::string residues_a,
-       atom::Hierarchies& hb, std::string protein_b,    IntRange residues_b,
+ atom::Hierarchies& hb, std::string protein_b,    IntRange residues_b,
  double kappa)
 {
  atom::Hierarchies hs=ha.get_children();
@@ -508,11 +519,13 @@ void add_link (Model *m,
   IMP::Pointer<container::MinimumPairRestraint> y2h=
    y2h_restraint(m,hs[index_a[i]],protein_a,residues_a,
                    hhb,protein_b,residues_b,kappa);
-  if(y2h!=nullptr){m->add_restraint(y2h);}
+  if(y2h!=nullptr){
+    //m->add_restraint(y2h);}
+    allrs->add_restraint(y2h);}
  }
 }
 
-void add_link (Model *m,
+void add_link (Model *m,RestraintSet *allrs,
  const atom::Hierarchy&   ha, std::string protein_a, std::string residues_a,
        atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double kappa)
@@ -533,7 +546,10 @@ void add_link (Model *m,
    y2h_restraint(m,hs[index_a[i]],protein_a,residues_a,
                    hhb,protein_b,residues_b,kappa);
   //if(y2h!=NULL){m->add_restraint(y2h);}
-  if(y2h!=nullptr) {m->add_restraint(y2h);}
+  if(y2h!=nullptr) {
+    //m->add_restraint(y2h);
+    allrs->add_restraint(y2h);
+  }
  }
 }
 
@@ -583,12 +599,14 @@ void add_layer_restraint(Model *m, container::ListSingletonContainer *lsc,
 }
 
 void add_bayesian_layer_restraint
-(Model *m, container::ListSingletonContainer *lsc, Particle *a, Particle *b)
+(Model *m, RestraintSet *allrs,container::ListSingletonContainer *lsc,
+ Particle *a, Particle *b)
 {
  Particles ps=lsc->get_particles();
  for(unsigned i=0; i<ps.size(); ++i){
   IMP_NEW(membrane::UniformBoundedRestraint,ubr,(ps[i], FloatKey("z"), a, b));
-  m->add_restraint(ubr);
+  //m->add_restraint(ubr);
+  allrs->add_restraint(ubr);
  }
 }
 
@@ -606,18 +624,19 @@ std::vector<core::RigidBody> get_rigid_bodies(Particles ps)
 }
 
 void add_tilt_restraint
- (Model *m,Particle *p,FloatRange tilt_range,double kappa)
+ (Model *m,RestraintSet *allrs,Particle *p,FloatRange tilt_range,double kappa)
 {
  algebra::Vector3D laxis=algebra::Vector3D(0.0,0.0,1.0);
  algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
  IMP_NEW(core::HarmonicWell,well,(tilt_range, kappa));
  IMP_NEW(TiltSingletonScore,tss,(well,laxis,zaxis));
  IMP_NEW(core::SingletonRestraint,sr,(tss,p));
- m->add_restraint(sr);
+ //m->add_restraint(sr);
+ allrs->add_restraint(sr);
  sr->set_name("Tilt restraint");
 }
 
-void add_tilt (Model *m, const atom::Hierarchy& h,
+void add_tilt (Model *m,RestraintSet *allrs,const atom::Hierarchy& h,
  std::string name, IntRange range, double tilt, double kappa)
 {
  atom::Selection s=atom::Selection(h);
@@ -629,12 +648,13 @@ void add_tilt (Model *m, const atom::Hierarchy& h,
  if(ps.size()>0){
   std::vector<core::RigidBody> rbs=get_rigid_bodies(ps);
   for(unsigned int i=0;i<rbs.size();++i){
-   add_tilt_restraint(m,rbs[i],FloatRange(0.0,tilt),kappa);
+   add_tilt_restraint(m,allrs,rbs[i],FloatRange(0.0,tilt),kappa);
    }
  }
 }
 
-void add_GFP_restraint(Model *m, const atom::Hierarchy& h, double kappa)
+void add_GFP_restraint(Model *m, RestraintSet *allrs,
+ const atom::Hierarchy& h, double kappa)
 {
  IMP_NEW(core::Harmonic,hmonic,(0.0,kappa));
  atom::Hierarchies hs=h.get_children();
@@ -650,12 +670,13 @@ void add_GFP_restraint(Model *m, const atom::Hierarchy& h, double kappa)
     IMP_NEW(core::DistanceToSingletonScore,dtss,(hmonic,xyz));
     IMP_NEW(core::SingletonRestraint,sr,(dtss,ps_xyz));
     sr->set_name("GFP Position Restraint");
-    m->add_restraint(sr);
+    //m->add_restraint(sr);
+    allrs->add_restraint(sr);
   }
  }
 }
 
-void add_stay_close_restraint(Model *m,
+void add_stay_close_restraint(Model *m,RestraintSet *allrs,
  const atom::Hierarchy& h, std::string protein, double kappa)
 {
 // Sphere pair score
@@ -680,10 +701,11 @@ get_sphere_pair_score(0.0,kappa);
   if((lpc->get_indexes()).size()==0) {return;}
   IMP_NEW(container::MinimumPairRestraint,mpr,(sps,lpc,1));
   mpr->set_name("Stay close restraint");
-  m->add_restraint(mpr);
+  //m->add_restraint(mpr);
+  allrs->add_restraint(mpr);
 }
 
-void add_stay_close_restraint(Model *m,
+void add_stay_close_restraint(Model *m,RestraintSet *allrs,
  const atom::Hierarchy& h, std::string protein, int residue, double kappa)
 {
 // Sphere pair score
@@ -710,10 +732,11 @@ get_sphere_pair_score(0.0,kappa);
 
   IMP_NEW(container::MinimumPairRestraint,mpr,(sps,lpc,1));
   mpr->set_name("Stay close restraint");
-  m->add_restraint(mpr);
+  //m->add_restraint(mpr);
+  allrs->add_restraint(mpr);
 }
 
-void add_stay_on_plane_restraint(Model *m,
+void add_stay_on_plane_restraint(Model *m,RestraintSet *allrs,
  const atom::Hierarchy& h, std::string protein, int residue, double kappa)
 {
  atom::Selection s=atom::Selection(h);
@@ -727,12 +750,13 @@ void add_stay_on_plane_restraint(Model *m,
   for(unsigned j=i+1;j<ps.size();++j){
    IMP_NEW(core::PairRestraint,pr,(adps,ParticlePair(ps[i], ps[j])));
    pr->set_name("Stay on z-plane restraint");
-   m->add_restraint(pr);
+   //m->add_restraint(pr);
+   allrs_>add_restraint(pr);
   }
  }
 }
 
-void add_diameter_rgyr_restraint(Model *m,
+void add_diameter_rgyr_restraint(Model *m,RestraintSet *allrs,
  const atom::Hierarchy& h, std::string protein,
  double diameter, double rgyr, double kappa)
 {
@@ -742,7 +766,8 @@ void add_diameter_rgyr_restraint(Model *m,
    Particles ps = atom::get_leaves(hs[j]);
    IMP_NEW(membrane::DiameterRgyrRestraint,dr,(ps,diameter,rgyr,kappa));
    dr->set_name("Diameter and Radius of Gyration Restraint");
-   m->add_restraint(dr);
+   //m->add_restraint(dr);
+   allrs>add_restraint(dr);
   }
  }
 }
