@@ -767,7 +767,7 @@ void add_diameter_rgyr_restraint(Model *m,RestraintSet *allrs,
    IMP_NEW(membrane::DiameterRgyrRestraint,dr,(ps,diameter,rgyr,kappa));
    dr->set_name("Diameter and Radius of Gyration Restraint");
    //m->add_restraint(dr);
-   allrs>add_restraint(dr);
+   allrs->add_restraint(dr);
   }
  }
 }
