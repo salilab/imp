@@ -101,7 +101,8 @@ int main(int argc, char **argv)
     return 0;
   }
   if(radii_scaling < 0.5 || radii_scaling > 1.0) {
-    std::cerr << "radii_scaling parameter outside allowed range" << radii_scaling << std::endl;
+    std::cerr << "radii_scaling parameter outside allowed range "
+	      << radii_scaling << std::endl;
   }
   if(vm.count("reset_angles")) reset_angles=true;
 
