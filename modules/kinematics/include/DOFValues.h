@@ -16,19 +16,17 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-/*
-  A class that hold DOF values for DOFs
- */
+//! A class that holds DOF values for DOFs
 class IMPKINEMATICSEXPORT DOFValues : public std::vector<double> {
  public:
-  // Constructor from DOFs
+  //! Constructor from DOFs
   DOFValues(const DOFs& dofs) {
     reserve(dofs.size());
     for (unsigned int i = 0; i < dofs.size(); i++)
       push_back(dofs[i]->get_value());
   }
 
-  // Empty Constructor
+  //! Empty Constructor
   DOFValues() {}
 
   // TODO: provide an option for more general distance definition

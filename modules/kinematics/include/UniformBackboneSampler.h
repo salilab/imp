@@ -18,10 +18,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 // TODO: is it necessarily backbone? could be any dihedrals too?
 
-/**
-   A DOFs sampler that acts on a set of backbone dihedral joints
-   and samples uniformly over each of them
- */
+//! Sample uniformly over a set of backbone dihedral joints
 class IMPKINEMATICSEXPORT UniformBackboneSampler : public DOFsSampler {
  public:
   /**

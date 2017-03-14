@@ -33,7 +33,7 @@ Model *extract_model(const IMP::core::RigidBodies &rbs,
 /**
    A score state that uses a KinematicForest of the model to update
    external coordinates before energy evaluation, if internal coordinates
-   in the forest where altered previously.
+   in the forest were altered previously.
 
    \see KinematicForest
    \see Joint

@@ -13,23 +13,18 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-/**
-   a base class for sampling certain combinations of degrees of freedom
- */
+//! Base class for sampling certain combinations of degrees of freedom
 class DOFsSampler : public IMP::Object {
   IMP_OBJECT_METHODS(DOFsSampler);
 
  public:
-  /** Constructs the dofs sampler over specified dofs
-  */
+  //! Constructs the dofs sampler over specified dofs
   DOFsSampler(DOFs dofs)
       : IMP::Object("IMP_KINEMATICS_DOFSSAMPLER"),
         dofs_(dofs),
         last_sample_(DOFValues(dofs)) {}
 
-  /**
-     @return a sample on the dofs over which this class samples
-   */
+  //! @return a sample on the dofs over which this class samples
   DOFValues get_sample() const {
     last_sample_ = do_get_sample();
     return last_sample_;

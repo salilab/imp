@@ -1,9 +1,6 @@
 /**
  * \file IMP/kinematics/KinematicForest.h
- * \brief Wrapper class for a kinematic forest (collection of trees)
-          made of KinematicNode objects, interconnected by joints. This data
-          structure allows for kinematic control of the tree and
-          interconversion between internal and external coordinates.
+ * \brief Define and manipulate a kinematic structure over a model.
  * \authors Dina Schneidman, Barak Raveh
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
@@ -30,9 +27,8 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-/**
-   An unified interface for defining and manipulating a kinematic
-   structure over a model. The kinematic structure is defined as a
+//! Define and manipulate a kinematic structure over a model.
+/** The kinematic structure is defined as a
    forest over model particles at a certain hierarchy, such that a
    directed edge indicates the propagation of changes in internal
    coordinates (joint values) to values of external (Cartesian)
@@ -95,7 +91,7 @@ class IMPKINEMATICSEXPORT KinematicForest
     }
   }
 
-  // rebuild tree (same topology but change directionality)
+  //! rebuild tree (same topology but change directionality)
   void reset_root(IMP::Particle* new_root) {
     // TODO: implement
     IMP_NOT_IMPLEMENTED;
@@ -138,7 +134,7 @@ class IMPKINEMATICSEXPORT KinematicForest
     is_external_coords_updated_ = true;
   }
 
-  // return joints sorted by BFS traversal
+  //! return joints sorted by BFS traversal
   Joints get_ordered_joints() const {
     Joints ret;
     // tree BFS traversal from roots

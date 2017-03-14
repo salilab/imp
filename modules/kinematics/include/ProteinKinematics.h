@@ -54,19 +54,15 @@ public:
   int counter_;
 };
 
-/**
-   Defines a kinematic structure over a protein, with backbone
-   and side chain dihedrals
- */
+//! Kinematic structure over a protein, with backbone and side chain dihedrals
 class IMPKINEMATICSEXPORT ProteinKinematics {
  public:
-  /* Constructors */
 
-  // all phi/psi rotatable
+  //! Constructor with all phi/psi rotatable
   ProteinKinematics(atom::Hierarchy mhd, bool flexible_backbone = true,
                     bool flexible_side_chains = false);
 
-  // only torsions from dihedral_angles list are rotatable
+  // Constructor; only torsions from dihedral_angles list are rotatable
   ProteinKinematics(atom::Hierarchy mhd,
                     const atom::Residues& flexible_residues,
                     const std::vector<atom::Atoms>& dihedral_angles,

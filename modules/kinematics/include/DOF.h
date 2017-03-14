@@ -16,6 +16,7 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
+//! Represention of one degree of freedom (DOF).
 /**
   A general class for representing one degree of freedom (DOF) that is
   a double.  the class holds min/max range for the DOF, as well as the
@@ -44,15 +45,15 @@ class IMPKINEMATICSEXPORT DOF : public IMP::Object {
 
   void set_range(std::pair<double, double> range) { range_ = range; }
 
-  // step size for going in the direction of the sampled value
+  //! Set step size for going in the direction of the sampled value
   double get_step_size() const { return step_size_; }
 
   void set_step_size(double step_size) { step_size_ = step_size; }
 
-  // return the number of steps between the input value and current DOF value
+  //! Return the number of steps between the input value and current DOF value
   int get_number_of_steps(double value) const;
 
-  // return the number of steps between between the two values
+  //! Return the number of steps between between the two values
   int get_number_of_steps(double value1, double value2) const;
 
  private:

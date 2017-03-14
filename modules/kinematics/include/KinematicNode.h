@@ -22,10 +22,7 @@ class KinematicForest;
 // TODO: check for cycles
 // TODO: privatize most methods INCLUDING constructor
 
-/**
-   A KinematicNode is a rigid body that is connected by a joint to other
-   rigid bodies
-*/
+//! A rigid body that is connected by a joint to other rigid bodies
 class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody {
   friend class KinematicForest;
 
@@ -42,10 +39,7 @@ class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody {
   IMP_DECORATOR_SETUP_3(KinematicNode, KinematicForest*, owner, Joint*,
                         in_joint, Joints, out_joints);
 
-  /**
-     @brief Return true if the particle is a kinematic node (has the
-     appropriate properties).
-  */
+  //! Return true if the particle is a kinematic node
   inline static bool get_is_setup(Model* m, ParticleIndex pi);
 
  private:

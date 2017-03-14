@@ -15,9 +15,9 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-//! Modify a set of joints using a normal distribution with zero mean and
-//provided standard deviation.
-/** \see MonteCarlo
+//! Modify a set of joints using a normal distribution
+/** The normal distribution has a zero mean and the given standard deviation.
+    \see MonteCarlo
  */
 class IMPKINEMATICSEXPORT RevoluteJointMover : public core::MonteCarloMover {
     kinematics::RevoluteJoints joints_;

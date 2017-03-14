@@ -43,13 +43,11 @@ class KinematicForest;
 
 /********************** RevoluteJoint ***************/
 
-/** Abstract class for all revolute joints **/
+//! Abstract class for all revolute joints
 class IMPKINEMATICSEXPORT RevoluteJoint : public Joint {
  public:
+  //! Construct on the line connecting a and b, with an initial angle 'angle'
   /**
-     constructs a revolute joint on the line connecting a and b,
-     with an initial angle 'angle'
-
      @param parent,child kinematic nodes upstream and downstream (resp.) of this
                     joint
   **/
@@ -169,8 +167,7 @@ class IMPKINEMATICSEXPORT RevoluteJoint : public Joint {
 /********************** DihedralAngleRevoluteJoint ***************/
 //     @TODO handle derivatives
 
-/** A revolute joint that is parameterized as a dihedral angle between
-    two planes */
+//! Joint that is parameterized as a dihedral angle between two planes
 class IMPKINEMATICSEXPORT DihedralAngleRevoluteJoint : public RevoluteJoint {
  public:
   /**
@@ -241,9 +238,7 @@ class IMPKINEMATICSEXPORT DihedralAngleRevoluteJoint : public RevoluteJoint {
 /********************** BondAngleRevoluteJoint ***************/
 // TODO: do we want to handle derivatives?
 
-/** A revolute joint that is parameterized as a bond angle between three
-    particles
- */
+//! Joint that is parameterized as a bond angle between three particles
 class IMPKINEMATICSEXPORT BondAngleRevoluteJoint : public RevoluteJoint {
  public:
   /**
