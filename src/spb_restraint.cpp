@@ -96,7 +96,7 @@ void add_SPBexcluded_volume
    Particles s0Particles=s0.get_selected_particles();
 
    for(unsigned int s0i=0;s0i<s0Particles.size();s0i++)
-   lsc0->add(s0Particles[i]->get_index());
+   lsc0->add(s0Particles[s0i]->get_index());
    IMP_NEW(core::ExcludedVolumeRestraint,evr2,(lsc0,kappa));
    evr2->set_name("Excluded Volume for "+GFP_name);
    //m->add_restraint(evr2);
