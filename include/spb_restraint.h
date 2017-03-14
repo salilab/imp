@@ -27,7 +27,8 @@ IMPMEMBRANEEXPORT IMP::Pointer<core::SphereDistancePairScore>
  get_sphere_pair_score(double dist, double kappa);
 
 IMPMEMBRANEEXPORT void add_SPBexcluded_volume
- (Model *m,atom::Hierarchies& hs,bool GFP_exc_volume,double kappa);
+ (Model *m,RestraintSEt *allrs,atom::Hierarchies& hs,
+  bool GFP_exc_volume,double kappa);
 
 IMPMEMBRANEEXPORT void add_internal_restraint(Model *m,RestraintSet *allrs,
 std::string name,atom::Molecule protein_a,atom::Molecule protein_b,
