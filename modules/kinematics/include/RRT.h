@@ -25,9 +25,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 // TODO: should move out of kinematics, or be in kinematic_algorithms
 
-/** A Simple implementation of the Rapidly-exploring Random Trees
-    algorithm
-*/
+//! Simple implementation of the Rapidly-exploring Random Trees algorithm
 class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
  public:
   IMP_OBJECT_METHODS(RRT);
@@ -112,7 +110,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
   friend std::ostream& operator<<(std::ostream& s, const Parameters& p);
 
  public:
-  // Constructor
+  //! Constructor
   RRT(Model* m, DOFsSampler* sampler, LocalPlanner* planner,
       const DOFs& cspace_dofs, unsigned int iteration_number = 1000,
       unsigned int tree_size = 100,
@@ -126,30 +124,30 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
     return nullptr;
   }
 
-  // run the specified number of iterations
-  // if zero, will run for default iteration number
-  // this option allows to output the already sampled
-  // configurations during the sampling run
+  //! Run the specified number of iterations
+  /** If zero, will run for default iteration number.
+      This option allows to output the already sampled
+      configurations during the sampling run. */
   bool run(unsigned int number_of_iterations = 0);
 
   std::vector<DOFValues> get_DOFValues();
 
   /* Parameters for controlling RRT stop condition */
 
-  // number of RRT iterations
+  //! Set number of RRT iterations
   void set_number_of_iterations(unsigned int num) {
     default_parameters_.number_of_iterations_ = num;
   }
 
-  // tree size
+  //! Set tree size
   void set_tree_size(unsigned int num) { default_parameters_.tree_size_ = num; }
 
-  // actual tree size - not including path nodes
+  //! Set the actual tree size - not including path nodes
   void set_actual_tree_size(unsigned int num) {
     default_parameters_.actual_tree_size_ = num;
   }
 
-  // number of collisions
+  //! Set the number of collisions
   void set_number_of_collisions(unsigned int num) {
     default_parameters_.number_of_collisions_ = num;
   }
