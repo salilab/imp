@@ -87,7 +87,9 @@ for(int i=0;i<mydata.num_cells;++i){
                        i,mydata.kappa,x_n,mydata.use_connectivity,1,59));
     if(i==0){
      Particles ps=atom::get_leaves(Spc42p_n[k]);
-     CP_ps->add_particles(ps);
+     for(unsigned int pcount=0;pcount<ps.size();pcount++)
+          CP_ps->add(ps[pcount]->get_index());
+     //CP_ps->add_particles(ps);
      add_BallMover(ps,mydata.MC.dx,mvs);
     }
     // Spc42p_c, last C terminal bead with 10 residues
@@ -99,7 +101,9 @@ for(int i=0;i<mydata.num_cells;++i){
      atom::Selection s=atom::Selection(Spc42p_c[k]);
      s.set_terminus(atom::Selection::C);
      Particles ps = s.get_selected_particles();
-     IL2_ps->add_particles(ps);
+      for(unsigned int pcount=0;pcount<ps.size();pcount++)
+         IL2_ps->add(ps[pcount]->get_index());
+     //IL2_ps->add_particles(ps);
 
      ps = atom::get_leaves(Spc42p_c[k]);
      // add_BallMover(ps,mydata.MC.dx,mvs);
@@ -186,7 +190,9 @@ for(int i=0;i<mydata.num_cells;++i){
    all_mol.add_child(Spc29p);
    if(i==0){
     Particles ps=atom::get_leaves(Spc29p);
-    CP_ps->add_particles(ps);
+     for(unsigned int pcount=0;pcount<ps.size();pcount++)
+          CP_ps->add(ps[pcount]->get_index());
+     //CP_ps->add_particles(ps);
 
     for(unsigned int psc=0;psc<ps.size();psc++) {
  Particles ps_terminus;
@@ -241,7 +247,9 @@ for(int i=0;i<mydata.num_cells;++i){
      for(int i=429;i<=573;++i){indexes.push_back(i);}
      sel.set_residue_indexes(indexes);
      Particles ps=sel.get_selected_particles();
-     IL2_ps->add_particles(ps);
+      for(unsigned int pcount=0;pcount<ps.size();pcount++)
+          IL2_ps->add(ps[pcount]->get_index());
+      //IL2_ps->add_particles(ps);
     }
    }
  //GFPs?
@@ -299,7 +307,9 @@ for(int i=0;i<mydata.num_cells;++i){
                         i,mydata.kappa,x,mydata.use_connectivity,799,97));
     if(i==0){
      Particles ps=atom::get_leaves(Spc110p_799_895[kk]);
-     CP_ps->add_particles(ps);
+      for(unsigned int pcount=0;pcount<ps.size();pcount++)
+          CP_ps->add(ps[pcount]->get_index());
+      //CP_ps->add_particles(ps);
      add_BallMover(ps,mydata.MC.dx,mvs);
     }
    }
@@ -311,7 +321,9 @@ for(int i=0;i<mydata.num_cells;++i){
                        display::Color(255./255.,0.,0.),i,x,0,false));
     if(i==0){
      Particles ps=atom::get_leaves(Spc110p_896_944[kk]);
-     CP_ps->add_particles(ps);
+      for(unsigned int pcount=0;pcount<ps.size();pcount++)
+          CP_ps->add(ps[pcount]->get_index());
+      //CP_ps->add_particles(ps);
     }
 // GFPs?
     if(mydata.add_GFP){
@@ -330,7 +342,9 @@ for(int i=0;i<mydata.num_cells;++i){
     all_mol.add_child(Cmd1p[kk]);
     if(i==0){
      Particles ps=atom::get_leaves(Cmd1p[kk]);
-     CP_ps->add_particles(ps);
+      for(unsigned int pcount=0;pcount<ps.size();pcount++)
+          CP_ps->add(ps[pcount]->get_index());
+      //CP_ps->add_particles(ps);
     }
  // GFPs?
     if(mydata.add_GFP){
@@ -669,7 +683,11 @@ atom::Molecule create_GFP(Model *m, std::string name, int copy,
   rb.set_coordinates_are_optimized(true);
   if(copy==0){
    Particles ps_gfp=atom::get_leaves(gfp);
-   if(mydata.keep_GFP_layer) {lsc->add_particles(ps_gfp);}
+   if(mydata.keep_GFP_layer) {
+   for(unsigned int pcount=0;pcount<ps_gfp.size();pcount++)
+      lsc->add(ps_gfp[pcount]->get_index());
+      //lsc->add_particles(ps_gfp);
+   }
    if(!mydata.fix_GFP){add_PbcBoxedRigidBodyMover(ps_gfp,mydata.MC.dx,
       mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs,SideXY,SideZ);}
   }
@@ -681,7 +699,11 @@ atom::Molecule create_GFP(Model *m, std::string name, int copy,
                     copy,x0);
   if(copy==0){
    Particles ps_gfp=atom::get_leaves(gfp);
-   if(mydata.keep_GFP_layer) {lsc->add_particles(ps_gfp);}
+   if(mydata.keep_GFP_layer) {
+      for(unsigned int pcount=0;pcount<ps_gfp.size();pcount++)
+        lsc->add(ps_gfp[pcount]->get_index());
+ //lsc->add_particles(ps_gfp);
+      }
    if(!mydata.fix_GFP){add_PbcBoxedRigidBodyMover(ps_gfp,mydata.MC.dx,
       mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs,SideXY,SideZ);}
   }

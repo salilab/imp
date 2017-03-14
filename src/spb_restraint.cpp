@@ -60,9 +60,15 @@ void add_SPBexcluded_volume
    std::vector<std::string> strs;
    boost::split(strs,hs[j]->get_name(),boost::is_any_of("-"));
    if(strs[strs.size()-1]!="GFP"){
-    noGFP->add_particles(atom::get_leaves(hs[j]));
+    atom::Hierarchies noGFPParticles=atom::get_leaves(hs[j]);
+    for(unsigned int l1=0;l1<noGFPParticles.size();l1++)
+     noGFP->add(noGFPParticles[l1]->get_index());
    }else{
-    if(i==0){GFP0->add_particles(atom::get_leaves(hs[j]));}
+    if(i==0){
+    atom::Hierarchies GFP0Particles=atom::get_leaves(hs[j]);
+    for(unsigned int l2=0;l2<GFP0Particles.size();l2++)
+        GFP0->add(GFP0Particles[l2]->get_index());
+   }
     names.push_back(hs[j]->get_name());
    }
   }
@@ -87,7 +93,10 @@ void add_SPBexcluded_volume
    IMP_NEW(container::ListSingletonContainer,lsc0,(m));
    atom::Selection s0=atom::Selection(hhs);
    s0.set_molecule(GFP_name);
-   lsc0->add_particles(s0.get_selected_particles());
+   Particles s0Particles=s0.get_selected_particles();
+
+   for(unsigned int s0i=0;s0i<s0Particles.size();s0i++)
+   lsc0->add(s0Particles[i]->get_index());
    IMP_NEW(core::ExcludedVolumeRestraint,evr2,(lsc0,kappa));
    evr2->set_name("Excluded Volume for "+GFP_name);
    //m->add_restraint(evr2);
@@ -189,7 +198,7 @@ void add_restrain_coiledcoil_to_cterm(Model *m,RestraintSet *allrs,
         dtr->set_name(name_restraint);
 
        // m->add_restraint(dtr);
-       allrs>add_restraint(dtr);
+       allrs->add_restraint(dtr);
    }
  }
 
@@ -569,7 +578,7 @@ void add_symmetry_restraint
    if(!core::RigidMember::get_is_setup(ps1[j])){
     core::Reference::setup_particle(ps1[j],ps0[j]);
     //std::cout << core::XYZ(ps1[j]).get_coordinates() <<  std::endl;
-    lc->add_particle(ps1[j]);
+    lc->add(ps1[j]->get_index());
    }
   }
   IMP_NEW(container::SingletonsConstraint,c,(sm,NULL,lc));
@@ -580,7 +589,7 @@ void add_symmetry_restraint
   for(unsigned int j=0;j<rbs1.size();++j){
    core::Reference::setup_particle(rbs1[j].get_particle(),
                                    rbs0[j].get_particle());
-   rblc->add_particle(rbs1[j].get_particle());
+   rblc->add(rbs1[j].get_particle_index());
    //std::cout <<  core::XYZ(rbs1[j].get_particle()).get_coordinates()
    //<<  std::endl;
   }
