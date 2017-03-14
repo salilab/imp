@@ -181,6 +181,7 @@ void FormFactorTable::init_element_form_factor_map() {
   element_ff_type_map_[atom::Zn] = Zn;
   element_ff_type_map_[atom::Se] = Se;
   element_ff_type_map_[atom::Br] = Br;
+  element_ff_type_map_[atom::Ag] = Ag;
   element_ff_type_map_[atom::I] = I;
   element_ff_type_map_[atom::Ir] = Ir;
   element_ff_type_map_[atom::Pt] = Pt;
