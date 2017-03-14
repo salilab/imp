@@ -18,5 +18,19 @@ class Tests(IMP.test.ApplicationTestCase):
         for out in ('node_begin.pdb', 'nodes1.pdb'):
             os.unlink(out)
 
+    def test_no_dofs(self):
+        """Test rrt_sample application with no DOFs"""
+        p = self.run_application('rrt_sample',
+                                 [self.get_input_file_name('three.pdb'),
+                                  self.get_input_file_name('hinges.txt'),
+                                  '-c', self.get_input_file_name('connect.txt'),
+                                  '-n', '1'])
+        out, err = p.communicate()
+        sys.stderr.write(err)
+        self.assertNotEqual(p.returncode, 0)
+        self.assertIn('2 joints were constructed', err)
+        self.assertIn('No degrees of freedom to sample!', err)
+        os.unlink('node_begin.pdb')
+
 if __name__ == '__main__':
     IMP.test.main()
