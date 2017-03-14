@@ -109,7 +109,6 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
   }
 
   KinematicForest* get_kinematic_forest() { return kf_; }
-  // TODO: not sure if we have to return Pointer or just raw pointer
 
   core::RigidBodies get_rigid_bodies() { return rbs_; }
 
@@ -230,7 +229,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
   // joints
   DihedralAngleRevoluteJoints joints_;
 
-  Pointer<kinematics::KinematicForest> kf_;
+  PointerMember<kinematics::KinematicForest> kf_;
 
   // map between residue phi/psi/chis and joints
   AngleToJointMap joint_map_;

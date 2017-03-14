@@ -86,6 +86,7 @@ void RRT::add_nodes(RRTNode* q_near, const std::vector<DOFValues>& new_nodes) {
 }
 
 bool RRT::run(unsigned int number_of_iterations) {
+  set_was_used(true);
   ScoringFunction *sf = get_scoring_function();
   if(tree_.size() == 1) check_initial_configuration(sf);
   unsigned int iter_counter = 0;

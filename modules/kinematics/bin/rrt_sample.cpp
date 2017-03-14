@@ -225,6 +225,7 @@ int main(int argc, char **argv)
     */
     double angle = joints[i]->get_angle();
     IMP_NEW(DOF, dof, (angle, angle-angle_range, angle+angle_range, IMP::algebra::PI/360));
+    dof->set_was_used(true);
     dofs.push_back(dof);
   }
 

@@ -44,7 +44,7 @@ class IMPKINEMATICSEXPORT LocalPlanner : public IMP::Object {
 
  protected:
   PointerMember<Model> model_;
-  DOFsSampler* dofs_sampler_;
+  PointerMember<DOFsSampler> dofs_sampler_;
 };
 
 /**

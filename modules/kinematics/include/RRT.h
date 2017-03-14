@@ -169,8 +169,8 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
   }
 
  private:
-  DOFsSampler* dofs_sampler_;
-  LocalPlanner* local_planner_;
+  PointerMember<DOFsSampler> dofs_sampler_;
+  PointerMember<LocalPlanner> local_planner_;
   typedef boost::shared_ptr<RRTNode> RRTNodePtr;
   typedef std::vector<RRTNodePtr> RRTTree;
   RRTTree tree_;
