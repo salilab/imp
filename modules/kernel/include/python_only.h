@@ -48,7 +48,7 @@ class PythonDirectedGraph {
 };
 
 /** Use the Python
-    \external{http://packages.python.org/altgraph/core.html,altgraph}
+    \external{https://pypi.python.org/pypi/altgraph/,altgraph}
     package to graphically display a graph.
     Note that is requires X11 to be running (you can find it in
     your Utilities folder in MacOS) and the window produced is shockingly
