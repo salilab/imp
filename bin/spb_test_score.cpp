@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
 
  // open rmf for coordinates
  RMF::FileConstHandle rhc =
-   RMF::open_rmf_file_read_only(sys.argv[1]);
+   RMF::open_rmf_file_read_only(argv[1]);
  // read various info
  RMF::Category my_kc_read   = rhc.get_category("my data");
 
@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
 
  // open rmf for ISD particles
  RMF::FileConstHandle rhc_ISD =
-        RMF::open_rmf_file_read_only(sys.argv[2]);
+        RMF::open_rmf_file_read_only(argv[2]);
  // linking particles
  rmf::link_particles(rhc_ISD, ISD_ps_list);
  // number of frames
@@ -150,7 +150,7 @@ int main(int argc, char* argv[])
     Float fmod_err   = rst->get_standard_error();
     Float fexp       = rst->get_experimental_value();
 
-     printf("TimeStep %10d Name %30s  Model %6.3f".imc,name.c_str(),fmod);
+     printf("TimeStep %10d Name %30s  Model %6.3f",imc,name.c_str(),fmod);
      printf("Model_Error %6.3f  Exp %6.3f\n",fmod_err,fexp);
 
       }
