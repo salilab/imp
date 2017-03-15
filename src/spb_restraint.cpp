@@ -646,7 +646,7 @@ void add_tilt_restraint
  algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
  IMP_NEW(core::HarmonicWell,well,(tilt_range, kappa));
  IMP_NEW(TiltSingletonScore,tss,(well,laxis,zaxis));
- IMP_NEW(core::SingletonRestraint,sr,(tss,p));
+ IMP_NEW(core::SingletonRestraint,sr,(tss,p->get_index()));
  //m->add_restraint(sr);
  allrs->add_restraint(sr);
  sr->set_name("Tilt restraint");
@@ -684,7 +684,7 @@ void add_GFP_restraint(Model *m, RestraintSet *allrs,
     core::XYZ ps_xyz=core::XYZ(ps[0]);
     algebra::Vector3D xyz=ps_xyz.get_coordinates();
     IMP_NEW(core::DistanceToSingletonScore,dtss,(hmonic,xyz));
-    IMP_NEW(core::SingletonRestraint,sr,(dtss,ps_xyz));
+    IMP_NEW(core::SingletonRestraint,sr,(dtss,ps_xyz->get_index()));
     sr->set_name("GFP Position Restraint");
     //m->add_restraint(sr);
     allrs->add_restraint(sr);
@@ -710,7 +710,8 @@ get_sphere_pair_score(0.0,kappa);
    for(unsigned int j=i+1;j<ps.size();++j){
     bool samep=(atom::Hierarchy(ps[i]).get_parent() ==
                 atom::Hierarchy(ps[j]).get_parent());
-    if(!samep){lpc->add_particle_pair(ParticlePair(ps[i],ps[j]));}
+    if(!samep){lpc->add(IMP::internal::get_index(
+ ParticlePair(ps[i],ps[j])));}
    }
   }
   //if(lpc->get_number_of_particle_pairs()==0) {return;}
@@ -740,7 +741,8 @@ get_sphere_pair_score(0.0,kappa);
    for(unsigned int j=i+1;j<ps.size();++j){
     bool samep=(atom::Hierarchy(ps[i]).get_parent() ==
                 atom::Hierarchy(ps[j]).get_parent());
-    if(!samep){lpc->add_particle_pair(ParticlePair(ps[i],ps[j]));}
+    if(!samep){lpc->add(IMP::internal::get_index(
+  ParticlePair(ps[i],ps[j])));}
    }
   }
   //if(lpc->get_number_of_particle_pairs()==0) {return;}
@@ -765,10 +767,10 @@ void add_stay_on_plane_restraint(Model *m,RestraintSet *allrs,
  for(unsigned i=0;i<ps.size()-1;++i){
   for(unsigned j=i+1;j<ps.size();++j){
    IMP_NEW(core::PairRestraint,pr,(adps,
-ParticleIndexPair(ps[i]->get_index(), ps[j]->get_index())));
+IMP::internal::get_index(ParticlePair(ps[i], ps[j]))));
    pr->set_name("Stay on z-plane restraint");
    //m->add_restraint(pr);
-   allrs_>add_restraint(pr);
+   allrs->add_restraint(pr);
   }
  }
 }
