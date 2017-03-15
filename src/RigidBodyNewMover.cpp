@@ -5,7 +5,7 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP  //random.h>
+#include <IMP/random.h>
 #include <IMP/algebra.h>
 #include <IMP/core.h>
 #include <IMP/membrane/RigidBodyNewMover.h>
