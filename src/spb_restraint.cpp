@@ -5,7 +5,7 @@
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP  //nullptr.h>
+#include <IMP/nullptr.h>
 #include <IMP/algebra.h>
 #include <IMP/atom.h>
 #include <IMP/container.h>
