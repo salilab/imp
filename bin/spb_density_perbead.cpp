@@ -214,8 +214,8 @@ void print_map(std::map< std::pair<std::array<int,3>,std::string>, double>& map,
    static_cast<int>(Map.resolution));
  fprintf(mapfile, "%37s %3d %3d %3d\n","object 2 class gridconnections counts"
    ,Map.nbinx+1,Map.nbiny+1,Map.nbinz+1);
- fprintf(mapfile, "%45s %7d %13s\n", "object 3 class array type double rank 0
-   items",totbin,"data follows");
+ fprintf(mapfile, "%45s %7d %13s\n",
+"object 3 class array type double rank 0 items",totbin,"data follows");
 
  int counter = 0;
  for(int i=0; i<=Map.nbinx; ++i){
