@@ -8,8 +8,8 @@
 #ifndef IMPMEMBRANE_EZ_RESTRAINT_H
 #define IMPMEMBRANE_EZ_RESTRAINT_H
 
-#include "membrane_config.h"
 #include "IMP/Restraint.h"
+#include "membrane_config.h"
 //#include "IMP/restraint_macros.h"
 #include <IMP/Particle.h>
 #include <IMP/UnaryFunction.h>
@@ -22,30 +22,25 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 /** Ez Restraint description here
 
  */
-class IMPMEMBRANEEXPORT EzRestraint : public Restraint
-{
+class IMPMEMBRANEEXPORT EzRestraint : public Restraint {
+  Particles ps_;
+  UnaryFunctions ufs_;
+  Floats get_parameters(std::string restype);
 
-Particles ps_;
-UnaryFunctions ufs_;
-Floats get_parameters(std::string restype);
-
-
-public:
+ public:
   EzRestraint(Particles ps);
 
-  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-  const IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const ;
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
+      IMP_OVERRIDE;
+  IMP::ModelObjectsTemp do_get_inputs() const;
 
-  //void show(std::ostream &) const;
+  // void show(std::ostream &) const;
 
   IMP_OBJECT_METHODS(EzRestraint);
   IMP_SHOWABLE(EzRestraint);
-//  IMP_RESTRAINT(EzRestraint);
-
+  //  IMP_RESTRAINT(EzRestraint);
 };
-
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_EZ_RESTRAINT_H */
+#endif /* IMPMEMBRANE_EZ_RESTRAINT_H */

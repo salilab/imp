@@ -7,16 +7,16 @@
 
 #include <IMP/membrane/AttributeDistancePairScore.h>
 
-#include <IMP/UnaryFunction.h>
 #include <IMP/Particle.h>
+#include <IMP/UnaryFunction.h>
 
 #include <boost/tuple/tuple.hpp>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 AttributeDistancePairScore::AttributeDistancePairScore(UnaryFunction *f,
-                                                 FloatKey k): f_(f),
-                                                              k_(k){}
+                                                       FloatKey k)
+    : f_(f), k_(k) {}
 /*
 Float AttributeDistancePairScore::evaluate(const ParticlePair &p,
                                         DerivativeAccumulator *da) const
@@ -34,59 +34,53 @@ Float AttributeDistancePairScore::evaluate(const ParticlePair &p,
 }
 */
 
-void AttributeDistancePairScore::show(std::ostream &out) const
-{
+void AttributeDistancePairScore::show(std::ostream &out) const {
   out << "function is " << *f_ << " on " << k_;
 }
 
-
-Float AttributeDistancePairScore::evaluate_index(IMP::Model *m,
-const IMP::ParticleIndexPair &pip,
-DerivativeAccumulator *da) const
-{
-
+Float AttributeDistancePairScore::evaluate_index(
+    IMP::Model *m, const IMP::ParticleIndexPair &pip,
+    DerivativeAccumulator *da) const {
   // turn on logging for this method
   IMP_OBJECT_LOG;
 
-   /*IMP::ParticlesTemp ps;
-   ps.push_back(m->get_particle(pip[0]));
-   ps.push_back(m->get_particle(pip[1]));
+  /*IMP::ParticlesTemp ps;
+  ps.push_back(m->get_particle(pip[0]));
+  ps.push_back(m->get_particle(pip[1]));
+
+ if (da) {
+   // derivatives are requested
+   Float v,d;
+   boost::tie(v,d) = f_->evaluate_with_derivative(
+       ps[0]->get_value(k_)-ps[1]->get_value(k_));
+
+   ps[0]->add_to_derivative(k_, d, *da);
+   ps[1]->add_to_derivative(k_, -d, *da);
+
+   return v;
+ } else {
+    return f_->evaluate(ps[0]->get_value(k_)-ps[1]->get_value(k_));
+ } */
 
   if (da) {
     // derivatives are requested
-    Float v,d;
-    boost::tie(v,d) = f_->evaluate_with_derivative(
-        ps[0]->get_value(k_)-ps[1]->get_value(k_));
+    Float v, d;
+    boost::tie(v, d) =
+        f_->evaluate_with_derivative(m->get_particle(pip[0])->get_value(k_) -
+                                     m->get_particle(pip[1])->get_value(k_));
 
-    ps[0]->add_to_derivative(k_, d, *da);
-    ps[1]->add_to_derivative(k_, -d, *da);
+    m->get_particle(pip[0])->add_to_derivative(k_, d, *da);
+    m->get_particle(pip[1])->add_to_derivative(k_, d, *da);
 
     return v;
   } else {
-     return f_->evaluate(ps[0]->get_value(k_)-ps[1]->get_value(k_));
-  } */
-
-  if (da) {
-  // derivatives are requested
-  Float v,d;
-  boost::tie(v,d) = f_->evaluate_with_derivative(
-         m->get_particle(pip[0])->get_value(k_) -
-         m->get_particle(pip[1])->get_value(k_));
-
-  m->get_particle(pip[0])->add_to_derivative(k_, d, *da);
-  m->get_particle(pip[1])->add_to_derivative(k_, d, *da);
-
-  return v;
- } else {
-   return f_->evaluate(m->get_particle(pip[0])->get_value(k_) -
-         m->get_particle(pip[1])->get_value(k_));
-
-   }
-
+    return f_->evaluate(m->get_particle(pip[0])->get_value(k_) -
+                        m->get_particle(pip[1])->get_value(k_));
+  }
 }
 
 ModelObjectsTemp AttributeDistancePairScore::do_get_inputs(
- IMP::Model *m, const IMP::ParticleIndexes &pis) const {
+    IMP::Model *m, const IMP::ParticleIndexes &pis) const {
   return IMP::get_particles(m, pis);
 }
 

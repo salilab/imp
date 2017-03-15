@@ -8,21 +8,20 @@
 
 #ifndef IMPMEMBRANE_SPB_IS_D_PARTICLES_H
 #define IMPMEMBRANE_SPB_IS_D_PARTICLES_H
-#include "membrane_config.h"
 #include <IMP.h>
 #include <IMP/atom.h>
 #include <IMP/core.h>
+#include <IMP/membrane/spb_main.h>
 #include <map>
 #include <string>
-#include <IMP/membrane/spb_main.h>
+#include "membrane_config.h"
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT std::map<std::string, IMP::Pointer<Particle> >
- add_ISD_particles
- (Model *m, RestraintSet *allrs,membrane::SPBParameters mydata,
-  core::MonteCarloMovers& mvs);
+add_ISD_particles(Model *m, RestraintSet *allrs, membrane::SPBParameters mydata,
+                  core::MonteCarloMovers &mvs);
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_SPB_IS_D_PARTICLES_H */
+#endif /* IMPMEMBRANE_SPB_IS_D_PARTICLES_H */

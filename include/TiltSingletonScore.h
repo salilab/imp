@@ -8,12 +8,12 @@
 #ifndef IMPMEMBRANE_TILT_SINGLETON_SCORE_H
 #define IMPMEMBRANE_TILT_SINGLETON_SCORE_H
 
-#include "membrane_config.h"
-#include <IMP/algebra/Vector3D.h>
+#include <IMP  //Pointer.h>
 #include <IMP/SingletonScore.h>
-#include <IMP/singleton_macros.h>
-#include <IMP//Pointer.h>
 #include <IMP/UnaryFunction.h>
+#include <IMP/algebra/Vector3D.h>
+#include <IMP/singleton_macros.h>
+#include "membrane_config.h"
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -26,29 +26,27 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     do the following:
     \htmlinclude restrain_in_sphere.py
  */
-class IMPMEMBRANEEXPORT TiltSingletonScore : public SingletonScore
-{
+class IMPMEMBRANEEXPORT TiltSingletonScore : public SingletonScore {
   IMP::PointerMember<UnaryFunction> f_;
   algebra::VectorD<3> local_;
   algebra::VectorD<3> global_;
-public:
-  TiltSingletonScore(UnaryFunction *f, const algebra::VectorD<3>& v1,
-                     const algebra::VectorD<3>& v2);
 
-  virtual double evaluate_index(IMP::Model *m,
-  const IMP::ParticleIndex p,
-   DerivativeAccumulator *da) const IMP_OVERRIDE;
+ public:
+  TiltSingletonScore(UnaryFunction *f, const algebra::VectorD<3> &v1,
+                     const algebra::VectorD<3> &v2);
 
-  virtual IMP::ModelObjectsTemp do_get_inputs(IMP::Model *m,
-  const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
+  virtual double evaluate_index(IMP::Model *m, const IMP::ParticleIndex p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+
+  virtual IMP::ModelObjectsTemp do_get_inputs(
+      IMP::Model *m, const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
 
   IMP_SINGLETON_SCORE_METHODS(TiltSingletonScore);
   IMP_OBJECT_METHODS(TiltSingletonScore);
   IMP_SHOWABLE(TiltSingletonScore);
-  //IMP_SIMPLE_SINGLETON_SCORE(TiltSingletonScore);
+  // IMP_SIMPLE_SINGLETON_SCORE(TiltSingletonScore);
 };
-
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_TILT_SINGLETON_SCORE_H */
+#endif /* IMPMEMBRANE_TILT_SINGLETON_SCORE_H */

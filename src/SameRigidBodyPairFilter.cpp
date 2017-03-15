@@ -11,9 +11,7 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-SameRigidBodyPairFilter
-::SameRigidBodyPairFilter(){
-}
+SameRigidBodyPairFilter::SameRigidBodyPairFilter() {}
 
 /*
 int SameRigidBodyPairFilter::get_value(const ParticlePair &pp)
@@ -26,17 +24,16 @@ int SameRigidBodyPairFilter::get_value(const ParticlePair &pp)
 }
 */
 
-int SameRigidBodyPairFilter::get_value_index(IMP::Model *m,const
-    IMP::ParticleIndexPair &pip)
- const {
-     if(!core::RigidMember::get_is_setup(m->get_particle(pip[0])) ||
-        !core::RigidMember::get_is_setup(m->get_particle(pip[1])))
-        {return false;}
-     else{
-      return core::RigidMember(m->get_particle(pip[0])).get_rigid_body() ==
-             core::RigidMember(m->get_particle(pip[1])).get_rigid_body();}
+int SameRigidBodyPairFilter::get_value_index(
+    IMP::Model *m, const IMP::ParticleIndexPair &pip) const {
+  if (!core::RigidMember::get_is_setup(m->get_particle(pip[0])) ||
+      !core::RigidMember::get_is_setup(m->get_particle(pip[1]))) {
+    return false;
+  } else {
+    return core::RigidMember(m->get_particle(pip[0])).get_rigid_body() ==
+           core::RigidMember(m->get_particle(pip[1])).get_rigid_body();
+  }
 }
-
 
 /*
 ParticlesTemp SameRigidBodyPairFilter::get_input_particles( Particle* t) const {
@@ -50,24 +47,21 @@ ParticlesTemp SameRigidBodyPairFilter::get_input_particles( Particle* t) const {
 */
 
 IMP::ModelObjectsTemp SameRigidBodyPairFilter::do_get_inputs(
-   IMP::Model *m,const IMP::ParticleIndexes &pis) const
-{
-     ParticlesTemp ret;
-     //ret.push_back(IMP::get_particles(m,pis));
-   // first push all the particles
-   for (unsigned int i = 0; i < pis.size(); ++i) {
-       ret.push_back(m->get_particle(pis[i]));
-   }
+    IMP::Model *m, const IMP::ParticleIndexes &pis) const {
+  ParticlesTemp ret;
+  // ret.push_back(IMP::get_particles(m,pis));
+  // first push all the particles
+  for (unsigned int i = 0; i < pis.size(); ++i) {
+    ret.push_back(m->get_particle(pis[i]));
+  }
 
-   for (unsigned int i = 0; i < pis.size(); ++i) {
+  for (unsigned int i = 0; i < pis.size(); ++i) {
     if (core::RigidMember::get_is_setup(m, pis[i])) {
-      ret.push_back(core::RigidMember(m->get_particle(pis[i])).
-                get_rigid_body());
-      }
+      ret.push_back(
+          core::RigidMember(m->get_particle(pis[i])).get_rigid_body());
     }
-    return ret;
-
+  }
+  return ret;
 }
-
 
 IMPMEMBRANE_END_NAMESPACE

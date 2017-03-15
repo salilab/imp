@@ -8,16 +8,15 @@
 #ifndef IMPMEMBRANE_CHI_SQUARE_METRIC_H
 #define IMPMEMBRANE_CHI_SQUARE_METRIC_H
 
-#include "membrane_config.h"
-#include <IMP/statistics.h>
 #include <IMP/algebra.h>
+#include <IMP/statistics.h>
+#include "membrane_config.h"
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 /** Compute the RMSD between two sets of particles in two configurations.
  */
-class IMPMEMBRANEEXPORT ChiSquareMetric: public statistics::Metric {
-
+class IMPMEMBRANEEXPORT ChiSquareMetric : public statistics::Metric {
   Floats weight_;
   Floats nu_exp_;
   Floats norm_;
@@ -32,13 +31,13 @@ class IMPMEMBRANEEXPORT ChiSquareMetric: public statistics::Metric {
 
  public:
   // double constructor
-  ChiSquareMetric(Floats nu_exp, int constr_type=0);
+  ChiSquareMetric(Floats nu_exp, int constr_type = 0);
 
-  void add_configuration(Floats nu, Floats stddev, double weight=1.0);
+  void add_configuration(Floats nu, Floats stddev, double weight = 1.0);
 
   Floats get_nu(unsigned i) const;
   Floats get_stddev(unsigned i) const;
-  Float  get_weight(unsigned i) const;
+  Float get_weight(unsigned i) const;
 
   double get_chisquare_exp(unsigned i) const;
 
@@ -46,9 +45,9 @@ class IMPMEMBRANEEXPORT ChiSquareMetric: public statistics::Metric {
   unsigned int get_number_of_items() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ChiSquareMetric);
 
- // IMP_METRIC(ChiSquareMetric);
+  // IMP_METRIC(ChiSquareMetric);
 };
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_CHI_SQUARE_METRIC_H */
+#endif /* IMPMEMBRANE_CHI_SQUARE_METRIC_H */

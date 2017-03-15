@@ -8,16 +8,15 @@
 #ifndef IMPMEMBRANE_CONTACT_MAP_METRIC_H
 #define IMPMEMBRANE_CONTACT_MAP_METRIC_H
 
-#include "membrane_config.h"
-#include <IMP/statistics.h>
 #include <IMP/algebra.h>
+#include <IMP/statistics.h>
+#include "membrane_config.h"
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 /** Compute the RMSD between two sets of particles in two configurations.
  */
-class IMPMEMBRANEEXPORT ContactMapMetric: public statistics::Metric {
-
+class IMPMEMBRANEEXPORT ContactMapMetric : public statistics::Metric {
   Particles ps_;
   double r0_;
   int nn_;
@@ -31,13 +30,13 @@ class IMPMEMBRANEEXPORT ContactMapMetric: public statistics::Metric {
  public:
   ContactMapMetric(Particles ps, double r0, int nn, int mm);
 
-  void add_configuration(double weight=1.0);
-  void add_map(Floats matrix, double weight=1.0);
+  void add_configuration(double weight = 1.0);
+  void add_map(Floats matrix, double weight = 1.0);
 
-  Float  get_weight(unsigned i) const;
+  Float get_weight(unsigned i) const;
   Floats get_item(unsigned i) const;
 
-  //IMP_METRIC(ContactMapMetric);
+  // IMP_METRIC(ContactMapMetric);
   double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
   unsigned int get_number_of_items() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ContactMapMetric);
@@ -45,4 +44,4 @@ class IMPMEMBRANEEXPORT ContactMapMetric: public statistics::Metric {
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_CONTACT_MAP_METRIC_H */
+#endif /* IMPMEMBRANE_CONTACT_MAP_METRIC_H */

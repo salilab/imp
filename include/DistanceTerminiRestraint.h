@@ -8,9 +8,9 @@
 #ifndef IMPMEMBRANE_DISTANCE_TERMINI_RESTRAINT_H
 #define IMPMEMBRANE_DISTANCE_TERMINI_RESTRAINT_H
 
+#include <IMP/Restraint.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/isd_config.h>
-#include <IMP/Restraint.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 /* A distance restraint between protein termini.
@@ -29,17 +29,15 @@ class IMPMEMBRANEEXPORT DistanceTerminiRestraint : public IMP::Restraint {
    */
 
   DistanceTerminiRestraint(IMP::Particle* nterm, IMP::Particle* cterm,
-                IMP::Particle *reqd_dist_term, double sigma0_dist);
-
+                           IMP::Particle* reqd_dist_term, double sigma0_dist);
 
   // get the distance between termini in current model
   double get_model_termini_distance() const;
 
-
   /** This macro declares the basic needed methods: evaluate and show
    */
-  virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
+  virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum) const
+      IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DistanceTerminiRestraint);
 

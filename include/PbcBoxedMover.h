@@ -9,10 +9,10 @@
 #ifndef IMPMEMBRANE_PBC_BOXED_MOVER_H
 #define IMPMEMBRANE_PBC_BOXED_MOVER_H
 
-#include "membrane_config.h"
-#include <IMP/core/MonteCarlo.h>
-#include <IMP/core.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/core.h>
+#include <IMP/core/MonteCarlo.h>
+#include "membrane_config.h"
 //#include <IMP/core/mover_macros.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -22,37 +22,34 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPMEMBRANEEXPORT PbcBoxedMover: public core::MonteCarloMover
-{
-public:
+class IMPMEMBRANEEXPORT PbcBoxedMover : public core::MonteCarloMover {
+ public:
   /** The particle is moved withing a (hexagonal or cubic) box
       \param[in] p is the particle
       \param[in] max_tr is the maximum translation during a step
    */
   PbcBoxedMover(Particle *p, Particles ps, Float max_tr,
                 algebra::Vector3Ds centers,
-                algebra::Transformation3Ds transformations,
-                Particle *px, Particle *py, Particle *pz);
+                algebra::Transformation3Ds transformations, Particle *px,
+                Particle *py, Particle *pz);
 
-protected:
+ protected:
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(PbcBoxedMover);
   IMP_SHOWABLE(PbcBoxedMover);
 
-private:
-
+ private:
   Float max_tr_;
-    algebra::Transformation3Ds transformations_;
-    algebra::Vector3Ds centers_;
-    algebra::Vector3Ds oldcoords_;
-    IMP::PointerMember<IMP::Particle> p_;
-    IMP::Particles ps_;
-    IMP::PointerMember<IMP::Particle> px_;
-    IMP::PointerMember<IMP::Particle> py_;
-    IMP::PointerMember<IMP::Particle> pz_;
-
+  algebra::Transformation3Ds transformations_;
+  algebra::Vector3Ds centers_;
+  algebra::Vector3Ds oldcoords_;
+  IMP::PointerMember<IMP::Particle> p_;
+  IMP::Particles ps_;
+  IMP::PointerMember<IMP::Particle> px_;
+  IMP::PointerMember<IMP::Particle> py_;
+  IMP::PointerMember<IMP::Particle> pz_;
 
   algebra::Vector3D get_vector(algebra::Vector3D center);
   algebra::Transformation3D get_transformation(algebra::Transformation3D trans);

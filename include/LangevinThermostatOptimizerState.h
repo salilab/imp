@@ -10,10 +10,10 @@
 #ifndef IMPMEMBRANE_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H
 #define IMPMEMBRANE_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H
 
-#include "membrane_config.h"
+#include <IMP/OptimizerState.h>
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
-#include <IMP/OptimizerState.h>
+#include "membrane_config.h"
 //#include <IMP/optimizer_state_macros.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -23,33 +23,22 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     G. Bussi and M. Parrinello "Accurate sampling using Langevin dynamics",
     Phys. Rev. E 75, 056707 (2007)
  */
-class IMPMEMBRANEEXPORT LangevinThermostatOptimizerState : public OptimizerState
-{
+class IMPMEMBRANEEXPORT LangevinThermostatOptimizerState
+    : public OptimizerState {
  public:
-  LangevinThermostatOptimizerState(const ParticlesTemp &pis,
-                                   double temperature,
+  LangevinThermostatOptimizerState(const ParticlesTemp &pis, double temperature,
                                    double gamma);
 
   //! Set the particles to use.
-  void set_particles(const Particles &pis) {
-    pis_=pis;
-  }
+  void set_particles(const Particles &pis) { pis_ = pis; }
 
-  double get_temperature() {
-      return temperature_;
-  }
+  double get_temperature() { return temperature_; }
 
-  double get_gamma() {
-      return gamma_;
-  }
+  double get_gamma() { return gamma_; }
 
-  void set_temperature(double temperature) {
-      temperature_ = temperature;
-  }
+  void set_temperature(double temperature) { temperature_ = temperature; }
 
-  void set_gamma(double gamma) {
-      gamma_ = gamma;
-  }
+  void set_gamma(double gamma) { gamma_ = gamma; }
 
   virtual void update() IMP_OVERRIDE;
 
@@ -60,7 +49,7 @@ class IMPMEMBRANEEXPORT LangevinThermostatOptimizerState : public OptimizerState
 
   IMP_SHOWABLE(LangevinThermostatOptimizerState);
 
-private:
+ private:
   Particles pis_;
   double temperature_;
   double gamma_;
@@ -69,8 +58,9 @@ private:
   FloatKey vs_[3];
 };
 
-IMP_OBJECTS(LangevinThermostatOptimizerState,LangevinThermostatOptimizerStates);
+IMP_OBJECTS(LangevinThermostatOptimizerState,
+            LangevinThermostatOptimizerStates);
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H */
+#endif /* IMPMEMBRANE_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H */

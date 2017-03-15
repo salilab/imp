@@ -11,9 +11,9 @@
 
 #include "membrane_config.h"
 //#include <IMP/core/MonteCarlo.h>
-#include <IMP/core/MonteCarloMover.h>
-#include <IMP/core.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/core.h>
+#include <IMP/core/MonteCarloMover.h>
 
 //#include <IMP/core/mover_macros.h>
 
@@ -24,16 +24,15 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPMEMBRANEEXPORT BoxedMover : public core::MonteCarloMover
-{
-public:
+class IMPMEMBRANEEXPORT BoxedMover : public core::MonteCarloMover {
+ public:
   /** The particle is moved withing a (hexagonal or cubic) box
       \param[in] p is the particle
       \param[in] max_tr is the maximum translation during a step
    */
- BoxedMover(Particle *p, Float max_tr, algebra::Vector3Ds centers);
+  BoxedMover(Particle *p, Float max_tr, algebra::Vector3Ds centers);
 
-protected:
+ protected:
   virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
@@ -43,7 +42,7 @@ protected:
   IMP_OBJECT_METHODS(BoxedMover);
   IMP_SHOWABLE(BoxedMover);
 
-private:
+ private:
   Float max_tr_;
   algebra::Vector3Ds centers_;
   algebra::Vector3D oldcoord_;
@@ -52,4 +51,4 @@ private:
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_BOXED_MOVER_H */
+#endif /* IMPMEMBRANE_BOXED_MOVER_H */

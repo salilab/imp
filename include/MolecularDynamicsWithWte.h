@@ -9,12 +9,12 @@
 #ifndef IMPMEMBRANE_MOLECULAR_DYNAMICS_WITH_WTE_H
 #define IMPMEMBRANE_MOLECULAR_DYNAMICS_WITH_WTE_H
 
-#include "membrane_config.h"
+#include <IMP/Optimizer.h>
+#include <IMP/Particle.h>
+#include <boost/scoped_array.hpp>
 #include "IMP/atom/Simulator.h"
 #include "IMP/atom/atom_macros.h"
-#include <IMP/Particle.h>
-#include <IMP/Optimizer.h>
-#include <boost/scoped_array.hpp>
+#include "membrane_config.h"
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -30,39 +30,36 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     \see BerendsenThermostatOptimizerState
     \see RemoveRigidMotionOptimizerState
  */
-class IMPMEMBRANEEXPORT MolecularDynamicsWithWte : public atom::Simulator
-{
-private:
-  double  min_, max_, sigma_, gamma_, dx_, w0_, currentscore_;
+class IMPMEMBRANEEXPORT MolecularDynamicsWithWte : public atom::Simulator {
+ private:
+  double min_, max_, sigma_, gamma_, dx_, w0_, currentscore_;
   boost::scoped_array<double> bias_;
-  int     nbin_;
-  void    update_bias(double score);
-  double  get_derivative(double score) const;
-  double  deriv_to_acceleration_;
+  int nbin_;
+  void update_bias(double score);
+  double get_derivative(double score) const;
+  double deriv_to_acceleration_;
 
-public:
+ public:
   /** Score based on the provided model */
-  MolecularDynamicsWithWte(Model *m, double emin, double emax,
-                           double sigma, double gamma, double w0);
+  MolecularDynamicsWithWte(Model *m, double emin, double emax, double sigma,
+                           double gamma, double w0);
 
   double get_bias(double score) const;
 
   Floats get_bias_buffer() const {
-    Floats  buffer(bias_.get(), bias_.get()+2*nbin_);
-   return buffer;
+    Floats buffer(bias_.get(), bias_.get() + 2 * nbin_);
+    return buffer;
   }
 
-  int get_nbin() const {
-   return nbin_;
-  }
+  int get_nbin() const { return nbin_; }
 
-  void set_w0(double w0) {w0_=w0;}
+  void set_w0(double w0) { w0_ = w0; }
 
-  void set_bias(const Floats& bias) {
-   IMP_USAGE_CHECK(static_cast<int>(bias.size()) == 2*nbin_, "Don't match");
-   // Getting over a warning about comparing unsigned to signed int.
-   // It wont work if x >= INT_MIN (max integer size)
-   std::copy(bias.begin(), bias.end(), bias_.get());
+  void set_bias(const Floats &bias) {
+    IMP_USAGE_CHECK(static_cast<int>(bias.size()) == 2 * nbin_, "Don't match");
+    // Getting over a warning about comparing unsigned to signed int.
+    // It wont work if x >= INT_MIN (max integer size)
+    std::copy(bias.begin(), bias.end(), bias_.get());
   }
 
   //! \return the current kinetic energy of the system, in kcal/mol
@@ -91,23 +88,23 @@ public:
   //! Rescale velocities
   void rescale_velocities(Float rescale);
 
-  //IMP_SIMULATOR(MolecularDynamicsWithWte);
+  // IMP_SIMULATOR(MolecularDynamicsWithWte);
   virtual void setup(const ParticleIndexes &ps);
   virtual double do_step(const ParticleIndexes &sc, double dt);
   virtual bool get_is_simulation_particle(ParticleIndex p) const;
 
-protected:
+ protected:
   void initialize();
 
   virtual void setup_degrees_of_freedom(const ParticleIndexes &ps);
 
   //! First part of velocity Verlet (update coordinates and half-step velocity)
-  virtual void propagate_coordinates(const ParticleIndexes &ps, double
-          step_size);
+  virtual void propagate_coordinates(const ParticleIndexes &ps,
+                                     double step_size);
 
   //! Second part of velocity Verlet (update velocity)
-  virtual void propagate_velocities(const ParticleIndexes &ps, double
-          step_size);
+  virtual void propagate_velocities(const ParticleIndexes &ps,
+                                    double step_size);
 
   //! Cap a velocity component to the maximum value.
   inline void cap_velocity_component(Float &vel) {
@@ -130,4 +127,4 @@ protected:
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_MOLECULAR_DYNAMICS_WITH_WTE_H */
+#endif /* IMPMEMBRANE_MOLECULAR_DYNAMICS_WITH_WTE_H */
