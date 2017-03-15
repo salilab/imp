@@ -57,7 +57,8 @@ do_bipartite_mindist
  IMP::Pointer<core::DistancePairScore> sps,bool filter=true);
 
 IMPMEMBRANEEXPORT void add_layer_restraint(Model *m,
-container::ListSingletonContainer *lsc, FloatRange range, double kappa);
+RestraintSet *allrs,container::ListSingletonContainer *lsc,
+FloatRange range, double kappa);
 
 IMPMEMBRANEEXPORT void add_bayesian_layer_restraint
 (Model *m,RestraintSet *allrs,container::ListSingletonContainer *lsc,

@@ -279,7 +279,9 @@ IMP::Pointer<container::MinimumPairRestraint> do_bipartite_mindist
    bool samep=(atom::Hierarchy(p1[i]).get_parent() ==
                atom::Hierarchy(p2[j]).get_parent());
    if(filter && samep){continue;}
-   else{lpc->add_particle_pair(ParticlePair(p1[i],p2[j]));}
+   //else{lpc->add_particle_pair(ParticlePair(p1[i],p2[j]));}
+   else{lpc->add(IMP::internal::get_index(
+ ParticlePair(p1[i],p2[j])));}
   }
  }
  //if(lpc->get_number_of_particle_pairs()==0) {return NULL;}
@@ -601,13 +603,15 @@ void add_symmetry_restraint
  }
 }
 
-void add_layer_restraint(Model *m, container::ListSingletonContainer *lsc,
+void add_layer_restraint(Model *m,RestraintSet *allrs,
+ container::ListSingletonContainer *lsc,
  FloatRange range, double kappa)
 {
  IMP_NEW(core::HarmonicWell,hw,(range,kappa));
  IMP_NEW(core::AttributeSingletonScore,asc,(hw,FloatKey("z")));
  IMP_NEW(container::SingletonsRestraint,sr,(asc, lsc));
- m->add_restraint(sr);
+ //m->add_restraint(sr);
+ allrs->add_restraint(sr);
 }
 
 void add_bayesian_layer_restraint
