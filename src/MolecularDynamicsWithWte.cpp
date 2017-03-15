@@ -5,8 +5,8 @@
  *
  */
 
-#include <IMP  //log.h>
-#include <IMP  //random.h>
+#include <IMP/log.h>
+#include <IMP/random.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/atom/RemoveRigidMotionOptimizerState.h>
 #include <IMP/atom/Simulator.h>
