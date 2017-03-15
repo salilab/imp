@@ -43,6 +43,9 @@ Localization density is calculated per protein for a given cluster.
 # spb_density_perbead {#spb_density_perbead_bin}
 To better localize the protein termini, localization density is calculated per bead per protein for a given cluster.
 
+# spb_test_score {#spb_test_score_bin}
+Code to output the restraint values of a model. Takes 2 RMFs as input: one containing structural coordinations and another containing  ISD values. 
+
 # Info
 
 _Author(s)_: Massimiliano Bonomi, Shruthi Viswanath
