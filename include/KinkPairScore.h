@@ -10,7 +10,7 @@
 
 #include "membrane_config.h"
 
-#include <IMP  //Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/pair_macros.h>

@@ -9,8 +9,7 @@
 #define IMPMEMBRANE_RIGID_BODY_PACKING_SCORE_H
 
 #include "membrane_config.h"
-
-#include <IMP  //Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/PairScore.h>
 #include <IMP/core/TableRefiner.h>
 #include <IMP/pair_macros.h>

@@ -8,7 +8,7 @@
 #ifndef IMPMEMBRANE_TILT_SINGLETON_SCORE_H
 #define IMPMEMBRANE_TILT_SINGLETON_SCORE_H
 
-#include <IMP  //Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/algebra/Vector3D.h>
