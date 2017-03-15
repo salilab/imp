@@ -165,8 +165,9 @@ get_sphere_pair_score(0.0,kappa);
 void add_restrain_coiledcoil_to_cterm(Model *m,RestraintSet *allrs,
   const atom::Hierarchy& hs,std::string protein_a,Particle *dist,
   double sigma0_dist)
-
- atom::Selection cterms=atom::Selection(hs);
+{
+ atom::Selection coiledcoilends=atom::Selection(hs);
+ IMP::atom::Selection cterms=IMP::atom::Selection(hs);
 
  coiledcoilends.set_molecule(protein_a); // all Spc42 in unit cell
  cterms.set_molecule(protein_a);
