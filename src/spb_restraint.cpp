@@ -154,8 +154,8 @@ atom::Molecule protein, double kappa)
 get_sphere_pair_score(0.0,kappa);
  Particles ps=atom::get_leaves(protein);
  for(unsigned int i=0;i<ps.size()-1;++i){
-  IMP_NEW(core::PairRestraint,r,(sdps,
-   ParticleIndexPair(ps[i]->get_index(),ps[i+1]->get_index())));
+  IMP_NEW(core::PairRestraint,r,(m,sdps,IMP::internal::get_index(
+   ParticlePair(ps[i],ps[i+1]))));
   r->set_name("My connectivity " + name);
   //m->add_restraint(r);
   allrs->add_restraint(r);
@@ -165,8 +165,7 @@ get_sphere_pair_score(0.0,kappa);
 void add_restrain_coiledcoil_to_cterm(Model *m,RestraintSet *allrs,
   const atom::Hierarchy& hs,std::string protein_a,Particle *dist,
   double sigma0_dist)
-{
- atom::Selection coiledcoilends=atom::Selection(hs);
+
  atom::Selection cterms=atom::Selection(hs);
 
  coiledcoilends.set_molecule(protein_a); // all Spc42 in unit cell
@@ -235,7 +234,7 @@ void add_restrain_protein_length(Model *m,RestraintSet *allrs,
   std::to_string(i) + ":" + std::to_string(j);
 
  //std::cout << name_restraint <<std::endl ;
- IMP_NEW*(membrane::DistanceTerminiRestraint,dtr,
+ IMP_NEW(membrane::DistanceTerminiRestraint,dtr,
          (nt[i],ct[j],dist,sigma0_dist));
 
  dtr->set_name(name_restraint);
@@ -257,7 +256,8 @@ IMP::Pointer<container::MinimumPairRestraint> do_bipartite_mindist
    bool samep=(atom::Hierarchy(p1[i]).get_parent() ==
                atom::Hierarchy(p2[j]).get_parent());
    if(filter && samep){continue;}
-   else{lpc->add_particle_pair(ParticlePair(p1[i],p2[j]));}
+   //else{lpc->add_particle_pair(ParticlePair(p1[i],p2[j]));}
+   else{lpc->add(IMP::internal::get_index(ParticlePair(p1[i],p2[j])));}
   }
  }
 
