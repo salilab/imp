@@ -138,16 +138,11 @@ atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist)
  atom::Selection sb=atom::Selection(protein_b);
  sa.set_terminus(atom::Selection::C);
  sb.set_terminus(atom::Selection::N);
- //IMP_NEW(ParticleIndexPair,pip,(
- //sa.get_selected_particles()[0]->get_index(),
- //sb.get_selected_particles()[0]->get_index()));
- ParticleIndexPair pip(
- sa.get_selected_particles()[0]->get_index(),
- sb.get_selected_particles()[0]->get_index());
-
  Particle*  pa=sa.get_selected_particles()[0];
  Particle*  pb=sb.get_selected_particles()[0];
- IMP_NEW(core::PairRestraint,r,(ps,pip));
+ ParticlePairTemp ppt=
+ IMP_NEW(core::PairRestraint,r,(
+   ps,IMP::internal::get_index(ParticlePair(pa,pb))));
  r->set_name("IR " + name);
  //m->add_restraint(r);
  allrs->add_restraint(r);
