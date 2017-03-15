@@ -171,6 +171,8 @@ int main(int argc, char* argv[]) {
   IMP::Pointer<core::MonteCarlo> mc =
       setup_SPBMonteCarlo(m, mvs, temp[index[myrank]], mydata);
 
+  mc->set_scoring_function(allrs);
+
   // wte restart
   if (mydata.MC.do_wte && mydata.MC.wte_restart) {
     Floats val;
