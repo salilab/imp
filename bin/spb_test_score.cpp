@@ -129,6 +129,8 @@ int main(int argc, char* argv[])
 
   double totalscore = allrs->evaluate(false);
 
+  std::cout << "Stored score" << score <<
+  " Calculated score " <<totalscore <<std::endl;
    if(mydata.add_fret){fretr_score=rst_map["FRET_R"]->evaluate(false);}
    if(mydata.add_y2h) {y2h_score=rst_map["Y2H"]->evaluate(false);}
 
@@ -148,9 +150,8 @@ int main(int argc, char* argv[])
     Float fmod_err   = rst->get_standard_error();
     Float fexp       = rst->get_experimental_value();
 
-     printf("TimeStep %10d Name %30s  Model %6.3f
- Model_Error %6.3f  Exp %6.3f\n",
-         imc,name.c_str(),fmod,fmod_err,fexp);
+     printf("TimeStep %10d Name %30s  Model %6.3f".imc,name.c_str(),fmod);
+     printf("Model_Error %6.3f  Exp %6.3f\n",fmod_err,fexp);
 
       }
 
