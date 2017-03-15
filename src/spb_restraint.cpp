@@ -140,7 +140,6 @@ atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist)
  sb.set_terminus(atom::Selection::N);
  Particle*  pa=sa.get_selected_particles()[0];
  Particle*  pb=sb.get_selected_particles()[0];
- ParticlePairTemp ppt=
  IMP_NEW(core::PairRestraint,r,(
    ps,IMP::internal::get_index(ParticlePair(pa,pb))));
  r->set_name("IR " + name);
