@@ -6,7 +6,7 @@
  *
  */
 
-#include <IMP  //random.h>
+#include <IMP/random.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/membrane/LangevinThermostatOptimizerState.h>
 #include <IMP/membrane/MolecularDynamicsWithWte.h>
