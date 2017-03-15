@@ -5,7 +5,7 @@
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP  //Pointer.h>
+#include <IMP/Pointer.h>
 #include <IMP/atom.h>
 #include <IMP/core.h>
 #include <IMP/isd.h>
