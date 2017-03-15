@@ -646,7 +646,7 @@ void add_tilt_restraint
  algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
  IMP_NEW(core::HarmonicWell,well,(tilt_range, kappa));
  IMP_NEW(TiltSingletonScore,tss,(well,laxis,zaxis));
- IMP_NEW(core::SingletonRestraint,sr,(tss,IMP::internal::get_index(p)));
+ IMP_NEW(core::SingletonRestraint,sr,(m,tss,IMP::internal::get_index(p)));
  //m->add_restraint(sr);
  allrs->add_restraint(sr);
  sr->set_name("Tilt restraint");
@@ -684,7 +684,7 @@ void add_GFP_restraint(Model *m, RestraintSet *allrs,
     core::XYZ ps_xyz=core::XYZ(ps[0]);
     algebra::Vector3D xyz=ps_xyz.get_coordinates();
     IMP_NEW(core::DistanceToSingletonScore,dtss,(hmonic,xyz));
-    IMP_NEW(core::SingletonRestraint,sr,(dtss,
+    IMP_NEW(core::SingletonRestraint,sr,(m,dtss,
     IMP::internal::get_index(ps_xyz)));
     sr->set_name("GFP Position Restraint");
     //m->add_restraint(sr);
