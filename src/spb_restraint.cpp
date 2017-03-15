@@ -140,7 +140,8 @@ atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist)
  sb.set_terminus(atom::Selection::N);
  Particle*  pa=sa.get_selected_particles()[0];
  Particle*  pb=sb.get_selected_particles()[0];
- IMP_NEW(core::PairRestraint,r,(ps,ParticlePair(pa, pb)));
+ IMP_NEW(core::PairRestraint,r,(ps,
+  ParticleIndexPair(pa->get_index(), pb->get_index())));
  r->set_name("IR " + name);
  //m->add_restraint(r);
  allrs->add_restraint(r);
@@ -153,7 +154,8 @@ atom::Molecule protein, double kappa)
 get_sphere_pair_score(0.0,kappa);
  Particles ps=atom::get_leaves(protein);
  for(unsigned int i=0;i<ps.size()-1;++i){
-  IMP_NEW(core::PairRestraint,r,(sdps,ParticlePair(ps[i],ps[i+1])));
+  IMP_NEW(core::PairRestraint,r,(sdps,
+   ParticleIndexPair(ps[i]->get_index(),ps[i+1]->get_index())));
   r->set_name("My connectivity " + name);
   //m->add_restraint(r);
   allrs->add_restraint(r);
@@ -757,7 +759,8 @@ void add_stay_on_plane_restraint(Model *m,RestraintSet *allrs,
   (har,core::XYZ::get_coordinate_key(2)));
  for(unsigned i=0;i<ps.size()-1;++i){
   for(unsigned j=i+1;j<ps.size();++j){
-   IMP_NEW(core::PairRestraint,pr,(adps,ParticlePair(ps[i], ps[j])));
+   IMP_NEW(core::PairRestraint,pr,(adps,
+ParticleIndexPair(ps[i]->get_index(), ps[j]->get_index())));
    pr->set_name("Stay on z-plane restraint");
    //m->add_restraint(pr);
    allrs_>add_restraint(pr);
