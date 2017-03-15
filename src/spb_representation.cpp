@@ -161,6 +161,7 @@ atom::Hierarchies create_representation(
           }
         }
       }
+    }  // cycle on copies
       //
       // SPC29P
       //
@@ -214,7 +215,6 @@ atom::Hierarchies create_representation(
           all_mol.add_child(gfp_c);
         }
       }
-    }  // cycle on copies
        //
        // CNM67p-C
        //
