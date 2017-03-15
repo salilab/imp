@@ -6,6 +6,11 @@
    %include lines as well as any inline C++ code (or at least any such code which uses
    the types in question).
   */
+%import "RMF.i"
+%{
+#include "RMF.h"
+%}
+
 IMP_SWIG_DECORATOR(IMP::membrane, HelixDecorator, HelixDecorators);
 
 IMP_SWIG_OBJECT(IMP::membrane,AttributeDistancePairScore,AttributeDistancePairScores);
