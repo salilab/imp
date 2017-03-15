@@ -5,7 +5,7 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#include <IMP  //vector_property_map.h>
+#include <IMP/vector_property_map.h>
 #include <IMP/algebra.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/membrane/ContactMapMetric.h>
