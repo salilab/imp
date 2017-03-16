@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
   Particles ISD_ps_list;
   std::map<std::string, IMP::Pointer<Particle> >::iterator itr;
   for (itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr) {
-    ISD_ps_list.push_back((*itr).second);
+    ISD_ps_list.push_back(*((*itr).second));
   }
   //std::cout  <<"sIZE:"<<ISD_ps_list.size() <<std::endl;
 
