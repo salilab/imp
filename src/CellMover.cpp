@@ -13,6 +13,10 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
+//! Apply a mover that moves particles inside the unit cell.
+/** The mover takes into account the fact that the unit cell size
+    changes from one step to the next.
+ */
 CellMover::CellMover(Particle *p, Particles ps, Float max_translation)
     :
 

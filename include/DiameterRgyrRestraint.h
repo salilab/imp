@@ -19,7 +19,7 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 //! Diameter and radius of gyration Restraint
-/** description here
+/** Restraint to fix the diameter based on radius of gyration from SAXS
 
  */
 class IMPMEMBRANEEXPORT DiameterRgyrRestraint : public Restraint {

@@ -1,5 +1,6 @@
 /**
- *  \file DiameterRgyrRestraint.cpp \brief Diameter restraint
+ *  \file DiameterRgyrRestraint.cpp
+ *  \brief Diameter restraint based on radius of gyration
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *

@@ -14,6 +14,7 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 /* A distance restraint between protein termini.
+ * The distance between the termini is a sampled ISD particle.
  */
 
 class IMPMEMBRANEEXPORT DistanceTerminiRestraint : public IMP::Restraint {
@@ -23,9 +24,9 @@ class IMPMEMBRANEEXPORT DistanceTerminiRestraint : public IMP::Restraint {
   IMP::Pointer<IMP::Particle> reqd_dist_term_;
 
  public:
-  //! Create the restraint.
-  /** IMP::Restraints should store the particles they are to act on,
-      preferably in a Singleton or PairContainer as appropriate.
+  //! Restrains the distance between the termini of a protein.
+  /** The distance between termini is a sampled parameter that changes
+      from step to step.
    */
 
   DistanceTerminiRestraint(IMP::Particle* nterm, IMP::Particle* cterm,

@@ -19,9 +19,6 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 //! Two-state Go-Model Restraint
-/** Two-state Go-Model description here
-
- */
 class IMPMEMBRANEEXPORT TwoStateGoModelRestraint : public Restraint {
  private:
   Particles ps_;
