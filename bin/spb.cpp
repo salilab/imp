@@ -86,6 +86,8 @@ int main(int argc, char* argv[]) {
   for (itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr) {
     ISD_ps_list.push_back((*itr).second);
   }
+  std::cout  <<"sIZE:"<<ISD_ps_list.size() <<std::endl;
+
   //
   // PROTEIN REPRESENTATION
   //
