@@ -38,7 +38,7 @@ class DegreesOfFreedom(object):
         self.nuisances = []
         self._rb2mov = {}   # Keys are the RigidBody objects, values are list of movers
         # the following is needed to keep track of disabled movers
-        self.movers_particles_map={}
+        self.movers_particles_map=IMP.pmi.tools.OrderedDict()
         self.movers_rb_map={}
         self.movers_xyz_map={}
         self.disabled_movers=[]
@@ -345,15 +345,20 @@ class DegreesOfFreedom(object):
         clones_rbs,clones_beads = IMP.pmi.tools.get_rbs_and_beads(hclones)
 
         # dumb check for matching numbers of particles
-        if len(ref_rbs)!=len(clones_rbs) or len(ref_beads)!=len(clones_beads):
-            raise Exception("ERROR: Your references don't match your clones")
+        #if len(ref_rbs)!=len(clones_rbs) or len(ref_beads)!=len(clones_beads):
+        #    raise Exception("ERROR: Your references don't match your clones")
 
         # symmetry RBs
-        for ref,clone in zip(ref_rbs+ref_beads,clones_rbs+clones_beads):
-            IMP.core.Reference.setup_particle(clone,ref)
+        # this code produces weird results (random flipping of rigid bodies
+        #for ref,clone in zip(ref_rbs+ref_beads,clones_rbs+clones_beads):
+        #    print(clone.get_particle().get_index(),ref.get_particle().get_index())
+        #    IMP.core.Reference.setup_particle(clone.get_particle(),ref.get_particle())
+        for ref,clone in zip(href,hclones):
+            IMP.core.Reference.setup_particle(clone.get_particle(),ref.get_particle())
+
         sm = IMP.core.TransformationSymmetry(transform.get_inverse())
         lsc = IMP.container.ListSingletonContainer(
-            self.mdl,[p.get_particle_index() for p in clones_rbs+clones_beads])
+            self.mdl,[p.get_particle().get_index() for p in hclones])
         c = IMP.container.SingletonsConstraint(sm, None, lsc)
         self.mdl.add_score_state(c)
         print('Created symmetry restraint for',len(ref_rbs),'rigid bodies and',
@@ -364,7 +369,7 @@ class DegreesOfFreedom(object):
 
         #sym_movers = [m for cl in clones_rbs for m in self._rb2mov[cl]]
         #self.movers = [m for m in self.movers if m not in sym_movers]
-
+        self.mdl.update()
         self.disable_movers(hclones)
 
     def __repr__(self):

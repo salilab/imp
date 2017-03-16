@@ -154,7 +154,8 @@ class Output(object):
 
     def write_pdb(self,name,
                   appendmode=True,
-                  translate_to_geometric_center=False):
+                  translate_to_geometric_center=False,
+                  write_all_residues_per_bead=False):
         if appendmode:
             flpdb = open(name, 'a')
         else:
@@ -171,11 +172,19 @@ class Output(object):
              chain_id, residue_index, all_indexes, radius) = tupl
             if atom_type is None:
                 atom_type = IMP.atom.AT_CA
-            flpdb.write(IMP.atom.get_pdb_string((xyz[0] - geometric_center[0],
-                                                xyz[1] - geometric_center[1],
-                                                xyz[2] - geometric_center[2]),
-                                                n+1, atom_type, residue_type,
-                                                chain_id, residue_index,' ',1.00,radius))
+            if ( (write_all_residues_per_bead) and (all_indexes is not None) ):
+                for residue_number in all_indexes:
+                    flpdb.write(IMP.atom.get_pdb_string((xyz[0] - geometric_center[0],
+                                                        xyz[1] - geometric_center[1],
+                                                        xyz[2] - geometric_center[2]),
+                                                        n+1, atom_type, residue_type,
+                                                        chain_id, residue_number,' ',1.00,radius))
+            else:
+                flpdb.write(IMP.atom.get_pdb_string((xyz[0] - geometric_center[0],
+                                                    xyz[1] - geometric_center[1],
+                                                    xyz[2] - geometric_center[2]),
+                                                    n+1, atom_type, residue_type,
+                                                    chain_id, residue_index,' ',1.00,radius))
         flpdb.write("ENDMDL\n")
         flpdb.close()
 

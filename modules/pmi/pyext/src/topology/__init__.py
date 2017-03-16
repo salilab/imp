@@ -185,7 +185,7 @@ class State(_SystemBase):
                 raise Exception("get_molecule() copy number is too high:",copy_num)
             return self.molecules[name][copy_num]
 
-    def create_molecule(self,name,sequence='',chain_id=''):
+    def create_molecule(self,name,sequence='',chain_id='',is_nucleic=None):
         """Create a new Molecule within this State
         @param name                the name of the molecule (string) it must not
                                    be already used
@@ -196,7 +196,7 @@ class State(_SystemBase):
         if name in self.molecules:
             raise Exception('Cannot use a molecule name already used')
 
-        mol = Molecule(self,name,sequence,chain_id,copy_num=0)
+        mol = Molecule(self,name,sequence,chain_id,copy_num=0,is_nucleic=is_nucleic)
         self.molecules[name].append(mol)
         return mol
 
@@ -231,7 +231,7 @@ class Molecule(_SystemBase):
     Resolutions and copies can be registered, but are only created when build() is called
     """
 
-    def __init__(self,state,name,sequence,chain_id,copy_num,mol_to_clone=None):
+    def __init__(self,state,name,sequence,chain_id,copy_num,mol_to_clone=None,is_nucleic=None):
         """The user should not call this directly; instead call State::create_molecule()
         @param state           The parent PMI State
         @param name            The name of the molecule (string)
@@ -248,6 +248,7 @@ class Molecule(_SystemBase):
         self.sequence = sequence
         self.built = False
         self.mol_to_clone = mol_to_clone
+        self.is_nucleic=is_nucleic
         self.representations = []  # list of stuff to build
         self._represented = IMP.pmi.tools.OrderedSet()   # residues with representation
         self.coord_finder = _FindCloseStructure() # helps you place beads by storing structure
@@ -261,7 +262,7 @@ class Molecule(_SystemBase):
         # create TempResidues from the sequence (if passed)
         self.residues=[]
         for ns,s in enumerate(sequence):
-            r = TempResidue(self,s,ns+1,ns)
+            r = TempResidue(self,s,ns+1,ns,is_nucleic)
             self.residues.append(r)
 
     def __repr__(self):
@@ -678,9 +679,17 @@ class _FindCloseStructure(object):
     def add_residues(self,residues):
         for r in residues:
             idx = IMP.atom.Residue(r).get_index()
-            ca = IMP.atom.Selection(r,atom_type=IMP.atom.AtomType("CA")).get_selected_particles()[0]
-            xyz = IMP.core.XYZ(ca).get_coordinates()
-            self.coords.append([idx,xyz])
+            ca = IMP.atom.Selection(r,atom_type=IMP.atom.AtomType("CA")).get_selected_particles()
+            p = IMP.atom.Selection(r,atom_type=IMP.atom.AtomType("P")).get_selected_particles()
+            if len(ca)==1:
+                xyz = IMP.core.XYZ(ca[0]).get_coordinates()
+                self.coords.append([idx,xyz])
+            elif len(p)==1:
+                xyz = IMP.core.XYZ(p[0]).get_coordinates()
+                self.coords.append([idx,xyz])
+            else:
+                raise("_FindCloseStructure: wrong selection")
+
         self.coords.sort(key=itemgetter(0))
     def find_nearest_coord(self,query):
         if self.coords==[]:
@@ -794,16 +803,35 @@ class PDBSequences(object):
             for r in rs:
                 dr=IMP.atom.Residue(r)
                 rid=dr.get_index()
-                olc=IMP.atom.get_one_letter_code(dr.get_residue_type())
+
                 isprotein=dr.get_is_protein()
+                isrna=dr.get_is_rna()
+                isdna=dr.get_is_dna()
                 if isprotein:
+                    olc=IMP.atom.get_one_letter_code(dr.get_residue_type())
+                    rids.append(rid)
+                    rids_olc_dict[rid]=olc
+                elif isdna:
+                    if dr.get_residue_type() == IMP.atom.DADE: olc="A"
+                    if dr.get_residue_type() == IMP.atom.DURA: olc="U"
+                    if dr.get_residue_type() == IMP.atom.DCYT: olc="C"
+                    if dr.get_residue_type() == IMP.atom.DGUA: olc="G"
+                    if dr.get_residue_type() == IMP.atom.DTHY: olc="T"
+                    rids.append(rid)
+                    rids_olc_dict[rid]=olc
+                elif isrna:
+                    if dr.get_residue_type() == IMP.atom.ADE: olc="A"
+                    if dr.get_residue_type() == IMP.atom.URA: olc="U"
+                    if dr.get_residue_type() == IMP.atom.CYT: olc="C"
+                    if dr.get_residue_type() == IMP.atom.GUA: olc="G"
+                    if dr.get_residue_type() == IMP.atom.THY: olc="T"
                     rids.append(rid)
                     rids_olc_dict[rid]=olc
             group_rids=self.group_indexes(rids)
             contiguous_sequences=IMP.pmi.tools.OrderedDict()
             for group in group_rids:
                 sequence_fragment=""
-                for i in range(group[0],group[1]):
+                for i in range(group[0],group[1]+1):
                     sequence_fragment+=rids_olc_dict[i]
                 contiguous_sequences[group]=sequence_fragment
             self.sequences[id]=contiguous_sequences
@@ -882,7 +910,7 @@ def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
 class TempResidue(object):
     """Temporarily stores residue information, even without structure available."""
     # Consider implementing __hash__ so you can select.
-    def __init__(self,molecule,code,index,internal_index):
+    def __init__(self,molecule,code,index,internal_index,is_nucleic=None):
         """setup a TempResidue
         @param molecule PMI Molecule to which this residue belongs
         @param code     one-letter residue type code
@@ -891,7 +919,7 @@ class TempResidue(object):
         """
         #these attributes should be immutable
         self.molecule = molecule
-        self.rtype = IMP.pmi.tools.get_residue_type_from_one_letter_code(code)
+        self.rtype = IMP.pmi.tools.get_residue_type_from_one_letter_code(code,is_nucleic)
         self.pdb_index = index
         self.internal_index = internal_index
         self.copy_index = IMP.atom.Copy(self.molecule.hier).get_copy_index()
@@ -1005,14 +1033,20 @@ class TopologyReader(object):
         self.pdb_dir = pdb_dir
         self.fasta_dir = fasta_dir
         self.gmm_dir = gmm_dir
-        self.components = self.read(topology_file)
+        self._components = self.read(topology_file)
+
+    # Preserve old self.component_list for backwards compatibility
+    @IMP.deprecated_method("2.7",
+                       "Use 'get_components()' instead of 'component_list'.")
+    def __get_component_list(self): return self._components
+    component_list = property(__get_component_list)
 
     def write_topology_file(self,outfile):
         with open(outfile, "w") as f:
             f.write("|molecule_name|color|fasta_fn|fasta_id|pdb_fn|chain|"
                     "residue_range|pdb_offset|bead_size|em_residues_per_gaussian|"
                     "rigid_body|super_rigid_body|chain_of_super_rigid_bodies|\n")
-            for c in self.components:
+            for c in self._components:
                 output = c.get_str()+'\n'
                 f.write(output)
         return outfile
@@ -1021,11 +1055,11 @@ class TopologyReader(object):
         """ Return list of ComponentTopologies for selected components
         @param topology_list List of indices to return"""
         if topology_list == "all":
-            topologies = self.components
+            topologies = self._components
         else:
             topologies=[]
             for i in topology_list:
-                topologies.append(self.components[i])
+                topologies.append(self._components[i])
         return topologies
 
     def get_molecules(self):
@@ -1036,24 +1070,46 @@ class TopologyReader(object):
         current topology and overwrite with new
         """
         is_topology = False
+        is_directories = False
         linenum = 1
         if append==False:
-            self.components=[]
+            self._components=[]
 
         with open(topology_file) as infile:
             for line in infile:
                 if line.lstrip()=="" or line[0]=="#":
                     continue
-                elif line.split('|')[1] in ("molecule_name"):
+                elif line.split('|')[1].strip() in ("molecule_name"):
                     is_topology=True
+                    is_directories = False
+                    old_format = False
                     continue
+                elif line.split('|')[1] == "component_name":
+                    is_topology = True
+                    print("WARNING: old-style topology format (using "
+                          "|component_name|) is deprecated. Please switch to "
+                          "the new-style format (using |molecule_name|)")
+                    old_format = True
+                    is_directories = False
+                    continue
+                elif line.split('|')[1] == "directories":
+                    print("WARNING: Setting directories in the topology file "
+                          "is deprecated. Please do so through the "
+                          "TopologyReader constructor. Note that new-style "
+                          "paths are relative to the current working "
+                          "directory, not the topology file")
+                    is_directories = True
+                elif is_directories:
+                    fields = line.split('|')
+                    setattr(self, fields[1],
+                            IMP.get_relative_path(topology_file, fields[2]))
                 if is_topology:
-                    new_component = self._parse_line(line, linenum)
-                    self.components.append(new_component)
+                    new_component = self._parse_line(line, linenum, old_format)
+                    self._components.append(new_component)
                     linenum += 1
-        return self.components
+        return self._components
 
-    def _parse_line(self, component_line, linenum):
+    def _parse_line(self, component_line, linenum, old_format):
         """Parse a line of topology values and matches them to their key.
         Checks each value for correct syntax
         Returns a list of Component objects
@@ -1064,22 +1120,33 @@ class TopologyReader(object):
         errors = []
 
         ### Required fields
-        names = values[1].split('.')
-        if len(names)==1:
-            c.molname = names[0]
+        if old_format:
+            c.molname = values[1]
             c.copyname = ''
-        elif len(names)==2:
-            c.molname = names[0]
-            c.copyname = names[1]
+            c._domain_name = values[2]
+            c.color = 'blue'
         else:
-            c.molname = names[0]
-            c.copyname = names[1]
-            errors.append("Molecule name should be <molecule.copyID>")
-            errors.append("For component %s line %d " % (c.molname,linenum))
-        c.color = values[2]
+            names = values[1].split('.')
+            if len(names)==1:
+                c.molname = names[0]
+                c.copyname = ''
+            elif len(names)==2:
+                c.molname = names[0]
+                c.copyname = names[1]
+            else:
+                c.molname = names[0]
+                c.copyname = names[1]
+                errors.append("Molecule name should be <molecule.copyID>")
+                errors.append("For component %s line %d " % (c.molname,linenum))
+            c._domain_name = c.molname + '.' + c.copyname
+            c.color = values[2]
         c._orig_fasta_file = values[3]
         c.fasta_file = values[3]
-        c.fasta_id  = values[4]
+        fasta_field = values[4].split(",")
+        c.fasta_id  = fasta_field[0]
+        c.fasta_flag = None
+        if len(fasta_field) > 1:
+            c.fasta_flag = fasta_field[1]
         c._orig_pdb_input = values[5]
         pdb_input = values[5]
         tmp_chain = values[6]
@@ -1087,9 +1154,12 @@ class TopologyReader(object):
         offset = values[8]
         bead_size = values[9]
         emg = values[10]
-        rbs = values[11]
-        srbs = values[12]
-        csrbs = values[13]
+        if old_format:
+            rbs = srbs = csrbs = ''
+        else:
+            rbs = values[11]
+            srbs = values[12]
+            csrbs = values[13]
 
         if c.molname not in self.molecules:
             self.molecules[c.molname] = _TempMolecule(c)
@@ -1127,6 +1197,9 @@ class TopologyReader(object):
             c.residue_range = (int(rr.split(',')[0]), rr.split(',')[1])
             if c.residue_range[1] != 'END':
                 c.residue_range = (c.residue_range[0], int(c.residue_range[1]))
+            # Old format used -1 for the last residue
+            if old_format and c.residue_range[1] == -1:
+                c.residue_range = (c.residue_range[0], 'END')
         else:
             errors.append("Residue Range format for component %s line %d is not correct" % (c.molname, linenum))
             errors.append("Correct syntax is two comma separated integers:  |start_res, end_res|. end_res can also be END to select the last residue in the chain. |%s| was given." % rr)
@@ -1205,7 +1278,7 @@ class TopologyReader(object):
     def set_gmm_dir(self,gmm_dir):
         """Change the GMM dir"""
         self.gmm_dir = gmm_dir
-        for c in self.components:
+        for c in self._components:
             c.gmm_file = os.path.join(self.gmm_dir,c.get_unique_name()+".txt")
             c.mrc_file = os.path.join(self.gmm_dir,c.get_unique_name()+".mrc")
             print('new gmm',c.gmm_file)
@@ -1213,14 +1286,14 @@ class TopologyReader(object):
     def set_pdb_dir(self,pdb_dir):
         """Change the PDB dir"""
         self.pdb_dir = pdb_dir
-        for c in self.components:
+        for c in self._components:
             if not c._orig_pdb_input in ("","None","IDEAL_HELIX","BEADS"):
                 c.pdb_file = os.path.join(self.pdb_dir,c._orig_pdb_input)
 
     def set_fasta_dir(self,fasta_dir):
         """Change the FASTA dir"""
         self.fasta_dir = fasta_dir
-        for c in self.components:
+        for c in self._components:
             c.fasta_file = os.path.join(self.fasta_dir,c._orig_fasta_file)
 
     def _is_int(self, s):
@@ -1234,7 +1307,7 @@ class TopologyReader(object):
     def get_rigid_bodies(self):
         """Return list of lists of rigid bodies (as domain name)"""
         rbl = defaultdict(list)
-        for c in self.components:
+        for c in self._components:
             if c.rigid_body:
                 rbl[c.rigid_body].append(c.get_unique_name())
         return rbl.values()
@@ -1242,7 +1315,7 @@ class TopologyReader(object):
     def get_super_rigid_bodies(self):
         """Return list of lists of super rigid bodies (as domain name)"""
         rbl = defaultdict(list)
-        for c in self.components:
+        for c in self._components:
             for rbnum in c.super_rigid_bodies:
                 rbl[rbnum].append(c.get_unique_name())
         return rbl.values()
@@ -1250,7 +1323,7 @@ class TopologyReader(object):
     def get_chains_of_super_rigid_bodies(self):
         """Return list of lists of chains of super rigid bodies (as domain name)"""
         rbl = defaultdict(list)
-        for c in self.components:
+        for c in self._components:
             for rbnum in c.chain_of_super_rigid_bodies:
                 rbl[rbnum].append(c.get_unique_name())
         return rbl.values()
@@ -1281,6 +1354,7 @@ class _Component(object):
         self.fasta_file = None
         self._orig_fasta_file = None
         self.fasta_id = None
+        self.fasta_flag = None
         self.pdb_file = None
         self._orig_pdb_input = None
         self.chain = None
@@ -1324,3 +1398,14 @@ class _Component(object):
                              self._l2s(self.super_rigid_bodies),
                              self._l2s(self.chain_of_super_rigid_bodies)])+'|'
         return a
+
+    # Preserve old self.name for backwards compatibility
+    @IMP.deprecated_method("2.7", "Use 'molname' instead of 'name'.")
+    def __get_name(self): return self.molname
+    name = property(__get_name)
+
+    # Preserve old self.domain_name for backwards compatibility
+    @IMP.deprecated_method("2.7",
+                           "Use 'get_unique_name()' instead of 'domain_name'.")
+    def __get_domain_name(self): return self._domain_name
+    domain_name = property(__get_domain_name)

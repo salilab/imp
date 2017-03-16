@@ -930,8 +930,10 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 group_block.append(values)
             data+=group_block
 
+
         with open(filename, 'w') as fp:
             a = csv.writer(fp, delimiter=',')
+            a.writerow(sorted_ids)
             a.writerows(data)
 
 class CrossLinkDataBaseFromStructure(object):

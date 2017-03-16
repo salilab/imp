@@ -193,35 +193,93 @@ class TopologyPlot(object):
 
 
 
-def draw_component_composition(BuildSystem_object, max=1000, draw_pdb_names=False):
+def draw_component_composition(DegreesOfFreedom, max=1000, draw_pdb_names=False):
     """A function to plot the representation on the sequence
-    @param BuildSystem_object input a IMP.pmi.macros.BuildSystem instance, after add_state was called"""
+    @param DegreesOfFreedom input a IMP.pmi.dof.DegreesOfFreedom instance"""
     import matplotlib as mpl
     mpl.use('Agg')
     from matplotlib import pyplot
     from operator import itemgetter
+    import IMP.pmi.tools
 
+    #first build the movers dictionary
+    movers_mols_res=IMP.pmi.tools.OrderedDict()
+    for mv in DegreesOfFreedom.movers_particles_map:
+        hs=DegreesOfFreedom.movers_particles_map[mv]
+        res=[]
 
+        for h in hs:
+            if IMP.atom.Residue.get_is_setup(h):
+                res=[IMP.atom.Residue(h).get_index()]
+            elif IMP.atom.Fragment.get_is_setup(h):
+                res=IMP.atom.Fragment(h).get_residue_indexes()
+            if res:
+                is_molecule=False
+                hp=h
+                while not is_molecule:
+                    hp=hp.get_parent()
+                    is_molecule=IMP.atom.Molecule.get_is_setup(hp)
+                name=IMP.atom.Molecule(hp).get_name()+"."+str(IMP.atom.Copy(hp).get_copy_index())
+                if not mv in movers_mols_res:
+                    movers_mols_res[mv]=IMP.pmi.tools.OrderedDict()
+                    movers_mols_res[mv][name]=IMP.pmi.tools.Segments(res)
+                else:
+                    if not name in movers_mols_res[mv]:
+                        movers_mols_res[mv][name]=IMP.pmi.tools.Segments(res)
+                    else:
+                        movers_mols_res[mv][name].add(res)
+    # then get all movers by type
+    fb_movers=[]
+    rb_movers=[]
+    srb_movers=[]
+    for mv in movers_mols_res:
+        mvtype=None
+        if type(mv) is IMP.core.RigidBodyMover:
+            rb_movers.append(mv)
+        if type(mv) is IMP.core.BallMover:
+            fb_movers.append(mv)
+        if type(mv) is IMP.pmi.TransformMover:
+            srb_movers.append(mv)
+
+    # now remove residue assigned to BallMovers from RigidBodies
+    for mv in fb_movers:
+        for mol in movers_mols_res[mv]:
+            for i in movers_mols_res[mv][mol].get_flatten():
+                for mv_rb in rb_movers:
+                    try:
+                        movers_mols_res[mv_rb][mol].remove(i)
+                    except:
+                        continue
 
     elements={}
-    for state in BuildSystem_object.get_molecules():
-        for mol in state:
-            for copy in state[mol]:
-                name=str(copy)
-                elements[name]=[]
-                rs=copy.representations
-                for r in rs:
-                    first_res=(list(r.residues)[0])
-                    last_res=(list(r.residues)[-1])
+    c=IMP.pmi.tools.Colors()
+    colors=c.get_list_distant_colors()
+    colors=["blue", "red", "green", "pink", "cyan", "purple", "magenta", "orange", "grey", "brown", "gold", "khaki", "olive drab", "deep blue sky"]
+    mvrb_color={}
+    for mv in movers_mols_res:
+        mvtype=None
+        if type(mv) is IMP.core.RigidBodyMover:
+            mvtype="RB"
+            if not mv in  mvrb_color:
+                color=colors[len(mvrb_color.keys())]
+                mvrb_color[mv]=color
+            for mol in movers_mols_res[mv]:
+                if not mol in elements: elements[mol]=[]
+                for seg in movers_mols_res[mv][mol].segs:
+                    elements[mol].append((seg[0],seg[-1]," ","pdb",mvrb_color[mv]))
+        if type(mv) is IMP.core.BallMover:
+            mvtype="FB"
+            for mol in movers_mols_res[mv]:
+                if not mol in elements: elements[mol]=[]
+                for seg in movers_mols_res[mv][mol].segs:
+                    elements[mol].append((seg[0],seg[-1]," ","bead"))
+        if type(mv) is IMP.pmi.TransformMover:
+            mvtype="SRB"
 
-                    if 1 in r.bead_resolutions:
-                        struc="pdb"
-                    else:
-                        struc="bead"
-                    if r.ideal_helix:
-                        struc="helix"
-                    elements[name].append((first_res.pdb_index,last_res.pdb_index," ",struc))
-                elements[name].append((len(copy.sequence),len(copy.sequence), " ", "end"))
+    # sort everything
+    for mol in elements:
+        elements[mol].sort(key=lambda tup: tup[0])
+        elements[mol].append((elements[mol][-1][1],elements[mol][-1][1], " ", "end"))
 
     for name in elements:
         k = name
@@ -251,16 +309,16 @@ def draw_component_composition(BuildSystem_object, max=1000, draw_pdb_names=Fals
                     if l[3] == "pdb":
                         colors.append("#99CCFF")
                     if l[3] == "bead":
-                        colors.append("#FFFF99")
+                        colors.append("white")
                     if l[3] == "helix":
                         colors.append("#33CCCC")
                     if l[3] != "end":
                         bounds.append(l[1] + 1)
                 else:
                     if l[3] == "pdb":
-                        colors.append("#99CCFF")
+                        colors.append(l[4])
                     if l[3] == "bead":
-                        colors.append("#FFFF99")
+                        colors.append("white")
                     if l[3] == "helix":
                         colors.append("#33CCCC")
                     if l[3] != "end":
@@ -346,9 +404,9 @@ def draw_component_composition(BuildSystem_object, max=1000, draw_pdb_names=Fals
         # cb2.set_label(k)
 
         pyplot.savefig(
-            k + "structure.pdf",
-            dpi=150,
-            transparent="True",
-            bbox_extra_artists=(extra_artists),
-            bbox_inches='tight')
+            k + "structure.pdf")
+            #transparent="True")
+            #dpi=150,
+            #bbox_extra_artists=(extra_artists),
+            #bbox_inches='tight')
         #pyplot.show()

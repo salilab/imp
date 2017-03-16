@@ -298,7 +298,7 @@ class Representation(object):
             else:
                 resrange = (start + offset, end + offset)
         else:
-            if resrange[1]==-1:
+            if resrange[1] in (-1, 'END'):
                 resrange = (resrange[0],end)
             start = resrange[0] - offset
             end = resrange[1] - offset

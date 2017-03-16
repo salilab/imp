@@ -982,6 +982,60 @@ class Precision(object):
         else:
             raise ValueError("No such style")
 
+class GetRMSD(object):
+    """This object can be added to output_objects in (for example in the ReplicaExchange0 macro).
+    It will load a frame from an rmf file and compute the rmsd of a hierarchy with respect to that reference structure.
+    The output can be parsed from the stat.*.out files.
+    """
+    import math
+
+    def __init__(self, hier, rmf_file_name, rmf_frame_index, rmf_state_index, label):
+        """Constructor.
+           @param hier hierarchy of the structure
+           @param rmf_file_name path to the rmf file containing the reference structure
+           @param rmf_frame_index the index of the frame containing the reference structure in the rmf file
+           @param voxel rmf_state_index the index of the state containing the reference structure in the rmf file
+           @param label label that will be used when parsing the stat file
+        """
+
+        rmf_fh = RMF.open_rmf_file_read_only(rmf_file_name)
+        hh = IMP.rmf.create_hierarchies(rmf_fh, hier.get_model())
+        self.rmf_state = hh[0].get_children()[rmf_state_index]
+        self.current_state = hier.get_children()[rmf_state_index]
+        IMP.rmf.load_frame(rmf_fh, RMF.FrameID(rmf_frame_index))
+        self.current_moldict = {}
+        self.rmf_moldict = {}
+        for mol in self.rmf_state.get_children():
+            name = mol.get_name()
+            if name in self.rmf_moldict:
+                self.rmf_moldict[name].append(mol)
+            else:
+                self.rmf_moldict[name] = [mol]
+        for mol in self.current_state.get_children():
+            name = mol.get_name()
+            if name in self.current_moldict:
+                self.current_moldict[name].append(mol)
+            else:
+                self.current_moldict[name] = [mol]
+        self.label = label
+
+    def get_output(self):
+        total_rmsd = 0
+        total_N = 0
+        for molname, rmf_mols in self.rmf_moldict.iteritems():
+            sel_rmf = IMP.atom.Selection(
+                rmf_mols, representation_type=IMP.atom.BALLS)
+            N = len(sel_rmf.get_selected_particle_indexes())
+            total_N += N
+            rmsd = []
+            for current_mols in itertools.permutations(self.current_moldict[molname]):
+                sel_current = IMP.atom.Selection(
+                    current_mols, representation_type=IMP.atom.BALLS)
+                rmsd.append(IMP.atom.get_rmsd(sel_rmf, sel_current))
+            m = min(rmsd)
+            total_rmsd += m * m * N
+        return {self.label: "%e" % (self.math.sqrt(total_rmsd / total_N))}
+
 
 class GetModelDensity(object):
     """Compute mean density maps from structures.

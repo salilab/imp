@@ -119,22 +119,26 @@ class XLTable():
 
     def _get_distance_and_particle_pair(self,r1,c1,r2,c2):
         '''more robust and slower version of above'''
-        sel=IMP.atom.Selection(self.prots,molecule=c1,residue_index=r1)
-        selpart=sel.get_selected_particles()
-        selpart_res_one=list(set(self.particles_resolution_one) & set(selpart))
-        if len(selpart_res_one)>1: return None
-        if len(selpart_res_one)==0: return None
-        selpart_res_one_1=selpart_res_one[0]
-        sel=IMP.atom.Selection(self.prots,molecule=c2,residue_index=r2)
-        selpart=sel.get_selected_particles()
-        selpart_res_one=list(set(self.particles_resolution_one) & set(selpart))
-        if len(selpart_res_one)>1: return None
-        if len(selpart_res_one)==0: return None
-        selpart_res_one_2=selpart_res_one[0]
-        d1=IMP.core.XYZ(selpart_res_one_1)
-        d2=IMP.core.XYZ(selpart_res_one_2)
-        dist=IMP.core.get_distance(d1,d2)
-        return (dist,selpart_res_one_1,selpart_res_one_2)
+        sel=IMP.atom.Selection(self.prots,molecule=c1,residue_index=r1,resolution=1)
+        selpart_1=sel.get_selected_particles()
+        #selpart_res_one_1=list(set(self.particles_resolution_one) & set(selpart))
+        if len(selpart_1)==0: return None
+        sel=IMP.atom.Selection(self.prots,molecule=c2,residue_index=r2,resolution=1)
+        selpart_2=sel.get_selected_particles()
+        #selpart_res_one_2=list(set(self.particles_resolution_one) & set(selpart))
+        if len(selpart_2)==0: return None
+        mindist=None
+        minparticlepair=None
+        for p1 in selpart_1:
+            for p2 in selpart_2:
+                if p1 == p2: continue
+                d1=IMP.core.XYZ(p1)
+                d2=IMP.core.XYZ(p2)
+                dist=IMP.core.get_distance(d1,d2)
+                if mindist is None or mindist>dist:
+                    mindist=dist
+                    minparticlepair=(p1,p2)
+        return (mindist,minparticlepair[0],minparticlepair[1])
 
     def _internal_load_maps(self,maps_fn):
         npzfile = np.load(maps_fn)

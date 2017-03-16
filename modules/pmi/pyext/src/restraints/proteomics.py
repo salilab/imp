@@ -8,7 +8,16 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.container
+import IMP.pmi
 import IMP.pmi.tools
+import IMP.pmi.output
+import numpy
+import math
+import networkx
+import scipy.spatial
+import networkx
+import math
+import sys
 
 
 class ConnectivityRestraint(object):
@@ -94,7 +103,6 @@ class CompositeRestraint(object):
     handleparticles is a selection tuple
     compositeparticles is a list of selection tuples
     '''
-    import IMP.pmi
 
     def __init__(
         self,
@@ -295,7 +303,6 @@ class AmbiguousCompositeRestraint(object):
         self,
         maxdist=100,
             npoints=100):
-        import IMP.pmi.output as output
 
         p1 = IMP.Particle(self.m)
         p2 = IMP.Particle(self.m)
@@ -316,7 +323,7 @@ class AmbiguousCompositeRestraint(object):
                 IMP.algebra.Vector3D(maxdist / npoints * float(i), 0, 0))
             dists.append(IMP.core.get_distance(d1, d2))
             scores.append(cr.unprotected_evaluate(None))
-        output.plot_xy_data(dists, scores)
+        IMP.pmi.output.plot_xy_data(dists, scores)
 
     def set_label(self, label):
         self.label = label
@@ -634,9 +641,6 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
     Authors: G. Bouvier, R. Pellarin. Pasteur Institute.
     '''
 
-    import numpy
-    import math
-
     def __init__(self, m, slope=1.0, theta=0.0, plateau=0.0000000001, linear_slope=0.015):
         '''
         input a list of particles, the slope and theta of the sigmoid potential
@@ -664,10 +668,7 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         '''
         get the full graph of distances between every particle pair
         '''
-        import networkx
-        import scipy.spatial
-
-        pdist_array = self.numpy.array(
+        pdist_array = numpy.array(
             IMP.pmi.get_list_of_bipartite_minimum_sphere_distance(self.particles_blocks))
         pdist_mat = scipy.spatial.distance.squareform(pdist_array)
         pdist_mat[pdist_mat < 0] = 0
@@ -678,7 +679,6 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         """
         return the minimum spanning tree
         """
-        import networkx
         graph = self.get_full_graph()
         graph = networkx.minimum_spanning_tree(graph)
         return graph
@@ -691,7 +691,7 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         # return 1 - (x)**self.slope/ float(((x)**self.slope +
         # self.theta**self.slope))
         argvalue = (x - self.theta) / self.slope
-        return 1.0 - (1.0 - self.plateau) / (1.0 + self.math.exp(-argvalue))
+        return 1.0 - (1.0 - self.plateau) / (1.0 + math.exp(-argvalue))
 
     def unprotected_evaluate(self, da):
         graph = self.get_minimum_spanning_tree()
@@ -699,7 +699,7 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         for e in graph.edges():
             dist = graph.get_edge_data(*e)['weight']
             prob = self.sigmoid(dist)
-            score += -self.numpy.log(prob)
+            score += -numpy.log(prob)
             score += self.linear_slope * dist
         return score
 
@@ -1008,12 +1008,10 @@ class FuzzyRestraint(IMP.Restraint):
     Fully Ambiguous Restraint that can be built using boolean logic
     R. Pellarin. Pasteur Institute.
     '''
-    import math
     plateau = 0.00000000000001
     theta = 5.0
     slope = 2.0
     innerslope = 0.01
-    import sys
 
     def __init__(self, m, p1, p2, operator=None):
         '''
@@ -1022,7 +1020,7 @@ class FuzzyRestraint(IMP.Restraint):
         '''
         IMP.Restraint.__init__(self, m, "FuzzyRestraint %1%")
         self.m = m
-        self.min = self.sys.float_info.min
+        self.min = sys.float_info.min
         if isinstance(p1, FuzzyRestraint) and isinstance(p2, FuzzyRestraint):
             self.operations = [p1, operator, p2]
             self.particle_pair = None
@@ -1047,12 +1045,12 @@ class FuzzyRestraint(IMP.Restraint):
         return c
 
     def or_(self, a, b):
-        c = self.math.exp(-a) + self.math.exp(-b) - self.math.exp(-a - b)
-        return -self.math.log(c)
+        c = math.exp(-a) + math.exp(-b) - math.exp(-a - b)
+        return -math.log(c)
 
     def invert_(self, a):
-        c = 1.0 - self.math.exp(-a)
-        return -self.math.log(c)
+        c = 1.0 - math.exp(-a)
+        return -math.log(c)
 
     def evaluate(self):
         if len(self.operations) == 0:
@@ -1069,7 +1067,7 @@ class FuzzyRestraint(IMP.Restraint):
         d2 = IMP.core.XYZ(self.particle_pair[1])
         d = IMP.core.get_distance(d1, d2)
         argvalue = (d-self.theta)/self.slope
-        return -self.math.log(1.0 -(1.0-self.plateau)/(1.0+self.math.exp(-argvalue)))+self.innerslope*d
+        return -math.log(1.0 -(1.0-self.plateau)/(1.0+math.exp(-argvalue)))+self.innerslope*d
 
     def add_to_model(self):
         IMP.pmi.tools.add_restraint_to_model(self.m, self)

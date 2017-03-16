@@ -17,6 +17,7 @@ from math import pi,log,sqrt
 import sys
 
 
+
 class ConnectivityRestraint(object):
     """ This class creates a restraint between consecutive TempResidue objects OR an entire
     PMI MOlecule object. """
@@ -1254,6 +1255,86 @@ class SymmetryRestraint(object):
         output["SymmetryRestraint_" + self.label] = str(score)
         output["_TotalScore"] = str(score)
         return output
+
+
+class FusionRestraint(object):
+    """ This class creates a restraint between the termini two polypeptides, to simulate the sequence connectivity. """
+    def __init__(self,
+                 nterminal,
+                 cterminal,
+                 scale=1.0,
+                 disorderedlength=False,
+                 upperharmonic=True,
+                 resolution=1,
+                 label="None"):
+        """
+        @param nterminal -  single PMI2 Hierarchy/molecule at the nterminal
+        @param cterminal -  single PMI2 Hierarchy/molecule at the cterminal
+        @param scale Scale the maximal distance between the beads by this factor when disorderedlength is False.
+                     The maximal distance is calculated as ((float(residuegap) + 1.0) * 3.6) * scale.
+        @param disorderedlength - This flag uses either disordered length
+                     calculated for random coil peptides (True) or zero
+                     surface-to-surface distance between beads (False)
+                     as optimal distance for the sequence connectivity
+                     restraint.
+        @param upperharmonic - This flag uses either harmonic (False)
+                     or upperharmonic (True) in the intra-pair
+                     connectivity restraint.
+        @param resolution - The resolution to connect things at - only used if you pass PMI objects
+        @param label - A string to identify this restraint in the output/stat file
+        """
+        self.label = label
+        self.weight = 1.0
+        ssn=IMP.pmi.tools.get_sorted_segments(nterminal)
+        ssc=IMP.pmi.tools.get_sorted_segments(cterminal)
+        nter_lastres=ssn[-1][1]
+        cter_firstres=ssc[0][0]
+        self.m = nter_lastres.get_model()
+
+        self.kappa = 10  # spring constant used for the harmonic restraints
+
+        optdist = (3.6) * scale
+        if upperharmonic:  # default
+            hu = IMP.core.HarmonicUpperBound(optdist, self.kappa)
+        else:
+            hu = IMP.core.Harmonic(optdist, self.kappa)
+        dps = IMP.core.SphereDistancePairScore(hu)
+
+        pt0 = nter_lastres.get_particle()
+        pt1 = cter_firstres.get_particle()
+        r = IMP.core.PairRestraint(self.m, dps, (pt0.get_index(), pt1.get_index()))
+        self.rs = IMP.RestraintSet(self.m, "fusion_restraint")
+        print("Adding fusion connectivity restraint between", pt0.get_name(), " and ", pt1.get_name(), 'of distance', optdist)
+        self.rs.add_restraint(r)
+
+    def set_label(self, label):
+        self.label = label
+
+    def get_weight(self):
+        return self.weight
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+
+    def get_restraint(self):
+        return self.rs
+
+    def set_weight(self, weight):
+        self.weight = weight
+        self.rs.set_weight(weight)
+
+    def get_output(self):
+        self.m.update()
+        output = {}
+        score = self.weight * self.rs.unprotected_evaluate(None)
+        output["_TotalScore"] = str(score)
+        output["FusionRestraint_" + self.label] = str(score)
+        return output
+
+    def evaluate(self):
+        return self.weight * self.rs.unprotected_evaluate(None)
+
+
 
 
 class PlaneDihedralRestraint(IMP.pmi.restraints.RestraintBase):
