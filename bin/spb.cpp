@@ -378,7 +378,6 @@ int main(int argc, char* argv[]) {
     int frank = get_friend(index, myrank, imc, nproc);
     int findex = index[frank];
     double fscore;
-
     // send and receive score
     MPI_Sendrecv(&myscore, 1, MPI_DOUBLE, frank, myrank, &fscore, 1, MPI_DOUBLE,
                  frank, frank, MPI_COMM_WORLD, &status);
