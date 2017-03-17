@@ -18,12 +18,17 @@
 #include <map>
 #include <math.h>
 #include <time.h>
+#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <IMP/flags.h>
 
 using namespace IMP;
 using namespace IMP::membrane;
 
 int main(int argc, char* argv[])
 {
+ IMP::setup_from_argv(argc,argv,"Test the
+ score of a given model","modelrmf isdrmf",2);
+
  // read input
  std::string inputfile="config.ini";
 
