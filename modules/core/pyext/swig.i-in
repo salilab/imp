@@ -4,12 +4,14 @@ IMP_SWIG_BASE_OBJECT(IMP::core,  MonteCarloMover, MonteCarloMovers);
 IMP_SWIG_VALUE(IMP::core, MonteCarloMoverResult, MonteCarloMoverResults);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, SerialMover, Mover, mover);
+IMP_SWIG_CONTAINER(IMP::core, IMP::core, SubsetMover, Mover, mover);
 
 IMP_SWIG_OBJECT( IMP::core, AngleRestraint, AngleRestraints);
 IMP_SWIG_OBJECT( IMP::core, AngleTripletScore, AngleTripletScores);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, AttributeSingletonScore, AttributeSingletonScore, AttributeSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, BallMover, BallMovers);
 IMP_SWIG_OBJECT( IMP::core, SerialMover, SerialMovers);
+IMP_SWIG_OBJECT( IMP::core, SubsetMover, SubsetMovers);
 IMP_SWIG_OBJECT( IMP::core, SurfaceMover, SurfaceMovers);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, BoundingBox3DSingletonScore, BoundingBox3DSingletonScore, BoundingBox3DSingletonScores);
 #ifdef IMP_CORE_USE_IMP_CGAL
@@ -201,6 +203,7 @@ IMP_SWIG_OBJECT(IMP::core, MultipleBinormalRestraint, MultipleBinormalRestraints
 %include "IMP/core/GenericAttributeSingletonScore.h"
 %include "IMP/core/BallMover.h"
 %include "IMP/core/SerialMover.h"
+%include "IMP/core/SubsetMover.h"
 %include "IMP/core/SurfaceMover.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/CentroidOfRefined.h"
