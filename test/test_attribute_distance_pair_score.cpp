@@ -14,7 +14,7 @@
 #include <map>
 #include <math.h>
 #include <time.h>
-#include <test_macros.h>
+#include <check_macros.h>
 #include <IMP/flags.h>
 
 using namespace IMP;
@@ -40,7 +40,8 @@ int main(int argc, char* argv[])
 IMP_NEW(core::PairRestraint, pr,m,adps,IMP::internal::
  get_index(ParticlePair(p1, p2)));
 std::cout<<pr->evaluate() << std::endl;
-//IMP_TEST_EQUAL(pr->evaluate
+IMP_USAGE_CHECK(std::abs(pr->evaluate()-144.0),
+ "Values for AttributeDistancePairScorenot matching");
 
  return EXIT_SUCCESS;
 
