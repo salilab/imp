@@ -24,7 +24,7 @@ SubsetMover::SubsetMover(const MonteCarloMoversTemp& mvs, unsigned int n)
 MonteCarloMoverResult SubsetMover::do_propose() {
   unsigned int i;
   Vector<double> us;
-  std::vector<std::pair<double, unsigned int>> ordered(movers_.size());
+  std::vector<std::pair<double, unsigned int> > ordered(movers_.size());
 
   get_random_numbers_uniform<double>(us, movers_.size());
 
