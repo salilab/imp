@@ -1,6 +1,11 @@
 /**
  *  \file IMP/test/test_macros.h
- *  Macros for writing C++ tests.
+ *  \brief Macros for writing C++ tests.
+ *
+ *  These should only be used in test code (i.e. C++ binaries in the test/
+ *  subdirectory that link against IMP libraries and are run as part of the
+ *  test suite). For runtime checks of IMP itself, see IMP_INTERNAL_CHECK
+ *  and IMP_USAGE_CHECK.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
