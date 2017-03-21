@@ -30,12 +30,26 @@ int main(int argc, char* argv[])
  IMP_NEW(RestraintSet, allrs, (m, "All restraints"));
 
  IMP_NEW(Particle,p1,(m,"p1"));
- IMP::core::XYZ::setup_particle(m,p1->get_index(),IMP::algebra::Vector3D
+ d1=IMP::core::XYZR::setup_particle(m,p1->get_index(),IMP::algebra::Vector3D
    (1.0,4.0,8.0));
+ d1.set_radius(1);
 
  IMP_NEW(Particle,p2,(m,"p2"));
- IMP::core::XYZ::setup_particle(m,p2->get_index(),IMP::algebra::Vector3D
+ d2=IMP::core::XYZR::setup_particle(m,p2->get_index(),IMP::algebra::Vector3D
    (1.0,4.0,6.0));
+ d2.set_radius(1);
+
+ IMP_NEW(Particle,p3,(m,"p3"));
+ d3=IMP::core::XYZR::setup_particle(m,p3->get_index(),IMP::algebra::Vector3D
+   (1.0,4.0,10.0));
+ d3.set_radius(1);
+
+ IMP::atom::Hierarchy h=IMP.atom.Hierarchy();
+ h.add_child(d1);
+ h.add_child(d2);
+ h.add_child(d3);
+
+ IMP::core::RigidBody rb=IMP::atom::create_rigid_body(h);
 
   algebra::Vector3D laxis = algebra::Vector3D(0.0, 0.0, 1.0);
   algebra::Vector3D zaxis = algebra::Vector3D(0.0, 0.0, 1.0);
@@ -43,12 +57,12 @@ int main(int argc, char* argv[])
   IMP_NEW(core::HarmonicWell, well, (tilt_range, 1.0));
   IMP_NEW(TiltSingletonScore, tss, (well, laxis, zaxis));
   IMP_NEW(core::SingletonRestraint, sr1, (m,tss,
-  IMP::internal::get_index(p1)));
+  IMP::internal::get_index(rb)));
   allrs->add_restraint(sr1);
-
+/*
 std::cout << allrs->evaluate(false) << std::endl;
 //IMP_TEST_EQUAL(std::abs(allrs->evaluate(false)),242.0)
-
+*/
  return EXIT_SUCCESS;
 
 }
