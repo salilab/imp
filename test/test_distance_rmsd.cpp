@@ -70,7 +70,13 @@ int main(int argc, char* argv[])
  IMP_TEST_EQUAL(drmsd->get_weight(0),1.0);
  IMP_TEST_EQUAL(drmsd->get_weight(1),2.0);
 
- std::cout <<  drmsd->get_distance(0,1) <<std::endl;
- // if this is easy, add clustering part too
+ IMP_TEST_EQUAL(drmsd->get_distance(0,1),10.3625);
+
+ // NOW do the clustering
+ IMP::Pointer<statistics::PartitionalClustering> pc =
+ membrane::create_gromos_clustering(drmsd,2.0);
+
+std::cout<< pc->get_number_of_clusters();
+
  return EXIT_SUCCESS;
 }

@@ -45,7 +45,7 @@ IMP_NEW(core::PairRestraint, pr,(m,adps,IMP::internal::get_index
 allrs->add_restraint(pr);
 
 //std::cout << allrs->evaluate(false) << std::endl;
-IMP_TEST_EQUAL(std::abs(allrs->evaluate(false)),142.0)
+IMP_TEST_EQUAL(std::abs(allrs->evaluate(false)),242.0)
 
  return EXIT_SUCCESS;
 
