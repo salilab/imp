@@ -26,6 +26,8 @@ int main(int argc, char* argv[])
 
  // create a new model
  IMP_NEW(Model,m,());
+ IMP_NEW(RestraintSet, allrs, (m, "All restraints"));
+
  IMP_NEW(Particle,p1,(m,"p1"));
  IMP::core::XYZ::setup_particle(m,p1->get_index(),IMP::algebra::Vector3D
    (1.0,4.0,89.0));
@@ -37,12 +39,11 @@ int main(int argc, char* argv[])
  IMP_NEW(core::Harmonic, har, (0.0, 1.0));
  IMP_NEW(membrane::AttributeDistancePairScore, adps,
           (har, core::XYZ::get_coordinate_key(2)));
-IMP_NEW(IMP::core::PairRestraint, pr,(m,adps,IMP::internal::get_index
+IMP_NEW(core::PairRestraint, pr,(m,adps,IMP::internal::get_index
 (ParticlePair(p1, p2))));
-//IMP::Pointer<IMP::core:PairRestraint> rst=dynamic_cast
-// <IMP::core::PairRestraint*>(pr);
+allrs->add_restraint(pr);
 
-std::cout << pr.get_score() << std::endl;
+std::cout << allrs->evaluate() << std::endl;
 /*IMP_USAGE_CHECK(std::abs(pr->get_score()-144.0),
  "Values for AttributeDistancePairScorenot matching");
 */
