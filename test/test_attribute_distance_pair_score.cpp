@@ -42,7 +42,7 @@ IMP_NEW(IMP::core::PairRestraint, pr,(m,adps,IMP::internal::get_index
 //IMP::Pointer<IMP::core:PairRestraint> rst=dynamic_cast
 // <IMP::core::PairRestraint*>(pr);
 
-std::cout << rst.get_score() << std::endl;
+std::cout << pr.get_score() << std::endl;
 /*IMP_USAGE_CHECK(std::abs(pr->get_score()-144.0),
  "Values for AttributeDistancePairScorenot matching");
 */
