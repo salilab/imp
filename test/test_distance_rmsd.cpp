@@ -27,17 +27,17 @@ int main(int argc, char* argv[])
  IMP_NEW(Model,m,());
  IMP_NEW(Particle,p1,(m,"p1"));
  IMP_NEW(Particle,p2,(m,"p2"));
- p1coord=IMP::core::XYZ::setup_particle(m,p1->get_index());
- p2coord=IMP::core::XYZ::setup_particle(m,p2->get_index());
+ IMP::core::XYZ p1coord=IMP::core::XYZ::setup_particle(m,p1->get_index());
+ IMP::core::XYZ p2coord=IMP::core::XYZ::setup_particle(m,p2->get_index());
 
  // Define mandatory nuisance arguments to pass to constructor
  IMP_NEW(Particle,px,(m,"px"));
  IMP_NEW(Particle,py,(m,"py"));
  IMP_NEW(Particle,pz,(m,"pz"));
 
- pxscale=IMP::isd::Scale::setup_particle(m,px->get_index(),1.0);
- pyscale=IMP::isd::Scale::setup_particle(m,py->get_index(),1.0);
- pzscale=IMP::isd::Scale::setup_particle(m,pz->get_index(),1.0);
+ IMP::isd::Scale pxscale=IMP::isd::Scale::setup_particle(m,px->get_index(),1.0);
+ IMP::isd::Scale pyscale=IMP::isd::Scale::setup_particle(m,py->get_index(),1.0);
+ IMP::isd::Scale pzscale=IMP::isd::Scale::setup_particle(m,pz->get_index(),1.0);
 
  // Particles to cluster
  Particles cluster_ps;
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
  trs.push_back(algebra::get_identity_transformation_3d());
 
  // Metric DRMS
-  IMP_NEW(membrane::DistanceRMSDMetric,drmsd,(cluster_ps,assign,trs,
+ IMP_NEW(membrane::DistanceRMSDMetric,drmsd,(cluster_ps,assign,trs,
  pxscale,pyscale,pzscale);
 
  // first model's coordinates
