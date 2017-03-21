@@ -30,8 +30,8 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
  public:
   IMP_OBJECT_METHODS(RRT);
 
-  // simple RRT node implementation
-  // we may replace it with something from boost so we can use boost graph
+  //! Simple RRT node implementation
+  /** we may replace it with something from boost so we can use boost graph */
   class RRTNode {
    public:
     RRTNode(const DOFValues& vec) : vec_(vec) {

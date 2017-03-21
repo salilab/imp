@@ -14,10 +14,10 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-/*
+/**
   this is a linear one.
-  we may want to make it more general. this will require
-  turning it into virtual class
+  \note We may want to make it more general. This will require
+  turning it into a virtual class.
 */
 class IMPKINEMATICSEXPORT DirectionalDOF {
  public:
