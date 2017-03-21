@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
  IMP_TEST_EQUAL(drmsd->get_weight(0),1.0);
  IMP_TEST_EQUAL(drmsd->get_weight(1),2.0);
 
- std::cout <<  drmsd->get_distance(0,1) <<std::endl();
+ std::cout <<  drmsd->get_distance(0,1) <<std::endl;
  // if this is easy, add clustering part too
  return EXIT_SUCCESS;
 }
