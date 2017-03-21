@@ -39,7 +39,9 @@ int main(int argc, char* argv[])
           (har, core::XYZ::get_coordinate_key(2)));
 IMP_NEW(core::PairRestraint, pr,(m,adps,IMP::internal::get_index
 (ParticlePair(p1, p2))));
-std::cout << pr->get_score() << std::endl;
+IMP::Pointer<IMP::Restraint> rst=dynamic_cast<IMP::Restraint*>(pr);
+
+std::cout << r->get_score() << std::endl;
 /*IMP_USAGE_CHECK(std::abs(pr->get_score()-144.0),
  "Values for AttributeDistancePairScorenot matching");
 */
