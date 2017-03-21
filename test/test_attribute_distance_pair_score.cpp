@@ -43,7 +43,7 @@ IMP_NEW(core::PairRestraint, pr,(m,adps,IMP::internal::get_index
 (ParticlePair(p1, p2))));
 allrs->add_restraint(pr);
 
-std::cout << allrs->evaluate(False) << std::endl;
+std::cout << allrs->evaluate(false) << std::endl;
 /*IMP_USAGE_CHECK(std::abs(pr->get_score()-144.0),
  "Values for AttributeDistancePairScorenot matching");
 */
