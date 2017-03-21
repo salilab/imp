@@ -37,12 +37,12 @@ int main(int argc, char* argv[])
  IMP_NEW(core::Harmonic, har, (0.0, 1.0));
  IMP_NEW(membrane::AttributeDistancePairScore, adps,
           (har, core::XYZ::get_coordinate_key(2)));
-IMP_NEW(core::PairRestraint, pr,(m,adps,IMP::internal::get_index
+IMP_NEW(IMP::core::PairRestraint, pr,(m,adps,IMP::internal::get_index
 (ParticlePair(p1, p2))));
-IMP::Pointer<IMP::core:PairRestraint> rst=dynamic_cast
- <IMP::core::PairRestraint*>(pr);
+//IMP::Pointer<IMP::core:PairRestraint> rst=dynamic_cast
+// <IMP::core::PairRestraint*>(pr);
 
-std::cout << rst->get_score() << std::endl;
+std::cout << rst.get_score() << std::endl;
 /*IMP_USAGE_CHECK(std::abs(pr->get_score()-144.0),
  "Values for AttributeDistancePairScorenot matching");
 */
