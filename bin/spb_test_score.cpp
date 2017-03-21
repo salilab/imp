@@ -26,8 +26,8 @@ using namespace IMP::membrane;
 
 int main(int argc, char* argv[])
 {
- IMP::setup_from_argv(argc,argv,"Test score of a given model",
-"modelrmf isdrmf",2);
+ IMP::setup_from_argv(argc,argv,"Test score of a given model","modelrmf isdrmf"
+,2);
 
  // read input
  std::string inputfile="config.ini";
