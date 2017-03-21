@@ -31,14 +31,20 @@ int main(int argc, char* argv[])
 
  IMP_NEW(Particle,p1,(m,"p1"));
  IMP::core::XYZ::setup_particle(m,p1->get_index(),IMP::algebra::Vector3D
-   (1.0,4.0,89.0));
+   (1.0,4.0,9.0));
 
  IMP_NEW(Particle,p2,(m,"p2"));
  IMP::core::XYZ::setup_particle(m,p2->get_index(),IMP::algebra::Vector3D
-   (1.0,4.0,67.0));
+   (1.0,4.0,7.0));
+
+ // isd particle representing distance
+ IMP_NEW(Particle, pdist, (m));
+ isd::Scale dist = isd::Scale::setup_particle(pdist, 0.0);
+ dist.set_lower(0.0);
+ dist.set_upper(10.0);
 
  IMP_NEW(membrane::DistanceTerminiRestraint, dtr,
- (p1,p2,10.0,0.001));
+ (p1,p2,dist,0.001));
   dtr->set_name("Distance terminus restraint");
 
   allrs->add_restraint(dtr);
