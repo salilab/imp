@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
 
  // Metric DRMS
  IMP_NEW(membrane::DistanceRMSDMetric,drmsd,(cluster_ps,assign,trs,
- pxscale,pyscale,pzscale);
+ pxscale,pyscale,pzscale));
 
  // first model's coordinates
  p1coord.set_coordinates(IMP::algebra::Vector3D(1.0,2.0,8.0));
