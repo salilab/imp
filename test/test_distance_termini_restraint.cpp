@@ -49,8 +49,6 @@ int main(int argc, char* argv[])
 
   allrs->add_restraint(dtr);
 
-std::cout << allrs->evaluate(false) << std::endl;
-//IMP_TEST_EQUAL(std::abs(allrs->evaluate(false)),242.0)
 
  return EXIT_SUCCESS;
 
