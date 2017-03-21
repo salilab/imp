@@ -30,19 +30,16 @@ int main(int argc, char* argv[])
  IMP_NEW(RestraintSet, allrs, (m, "All restraints"));
 
  IMP_NEW(Particle,p1,(m,"p1"));
- d1=IMP::core::XYZR::setup_particle(m,p1->get_index(),IMP::algebra::Vector3D
-   (1.0,4.0,8.0));
- d1.set_radius(1);
+ d1=IMP::core::XYZR::setup_particle(m,p1->get_index(),IMP::algebra::Sphere3D(
+IMP::algebra::Vector3D(1.0,4.0,8.0),1.0));
 
  IMP_NEW(Particle,p2,(m,"p2"));
- d2=IMP::core::XYZR::setup_particle(m,p2->get_index(),IMP::algebra::Vector3D
-   (1.0,4.0,6.0));
- d2.set_radius(1);
+ d2=IMP::core::XYZR::setup_particle(m,p2->get_index(),IMP::algebra::Sphere3D(
+IMP::algebra::Vector3D(1.0,4.0,6.0),1.0));
 
  IMP_NEW(Particle,p3,(m,"p3"));
- d3=IMP::core::XYZR::setup_particle(m,p3->get_index(),IMP::algebra::Vector3D
-   (1.0,4.0,10.0));
- d3.set_radius(1);
+ d3=IMP::core::XYZR::setup_particle(m,p3->get_index(),IMP::algebra::Sphere3D(
+IMP::algebra::Vector3D(1.0,4.0,10.0),1.0));
 
  IMP::atom::Hierarchy h=IMP::atom::Hierarchy();
  h.add_child(d1);
