@@ -33,11 +33,11 @@ int main(int argc, char* argv[])
  IMP_NEW(Particle,p2,(m,"p2"));
  IMP::core::XYZ::setup_particle(m,p2->get_index(),IMP::algebra::Vector3D
    (1.0,4.0,67.0));
-/*
+
  IMP_NEW(core::Harmonic, har, (0.0, 1.0));
  IMP_NEW(membrane::AttributeDistancePairScore, adps,
           (har, core::XYZ::get_coordinate_key(2)));
-IMP_NEW(core::PairRestraint, pr,(m,adps,IMP::internal::get_index
+/*IMP_NEW(core::PairRestraint, pr,(m,adps,IMP::internal::get_index
 (ParticlePair(p1, p2))));
 std::cout << pr->get_score() << std::endl;
 IMP_USAGE_CHECK(std::abs(pr->get_score()-144.0),
