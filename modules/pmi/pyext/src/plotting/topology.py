@@ -8,7 +8,6 @@ import IMP.pmi.analysis
 import IMP.pmi.output
 from collections import defaultdict
 import numpy as np
-from scipy.spatial.distance import cdist
 
 class TopologyPlot(object):
     """A class to read RMF files and make a network contact map"""

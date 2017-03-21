@@ -1710,7 +1710,7 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
 
         self.dataset = representations[0].get_file_dataset(restraints_file)
         if not self.dataset and os.path.exists(restraints_file):
-            l = IMP.pmi.metadata.LocalFileLocation(restraints_file)
+            l = IMP.pmi.metadata.FileLocation(restraints_file)
             self.dataset = IMP.pmi.metadata.CXMSDataset(l)
 
         xl_groups = [p.get_cross_link_group(self)

@@ -155,60 +155,63 @@ class MassIVELocation(DatabaseLocation):
     def __init__(self, db_code, version=None, details=None):
         DatabaseLocation.__init__(self, 'MASSIVE', db_code, version, details)
 
-class LocalFileLocation(Location):
-    """An individual file or directory on the local filesystem."""
+class FileLocation(Location):
+    """An individual file or directory.
+       This may be in a repository (if `repo` is not None) or only on the
+       local disk (if `repo` is None)."""
 
-    _eq_keys = Location._eq_keys + ['path']
+    _eq_keys = Location._eq_keys + ['repo', 'path']
 
-    def __init__(self, path, details=None):
+    def __init__(self, path, repo=None, details=None):
         """Constructor.
            @param path the location of the file or directory.
+           @param repo a Repository object that describes the repository
+                  containing the file (if any).
         """
-        super(LocalFileLocation, self).__init__(details)
-        if not os.path.exists(path):
-            raise ValueError("%s does not exist" % path)
-        # Store absolute path in case the working directory changes later
-        self.path = os.path.abspath(path)
-
-class RepositoryFileLocation(Location):
-    """An individual file or directory in a repository.
-       A repository in this context is simply a collection of files -
-       it does not have to be under version control (git, svn, etc.)
-
-       @see Repository"""
-
-    _eq_keys = Location._eq_keys + ['doi', 'path']
-
-    def __init__(self, doi, path, details=None):
-        """Constructor.
-           @param doi the Digital Object Identifer for the repository.
-           @param path the location of the file or directory in the repository.
-        """
-        super(RepositoryFileLocation, self).__init__(details)
-        self.doi, self.path = doi, path
+        super(FileLocation, self).__init__(details)
+        self.repo = repo
+        if repo:
+            self.path = path
+        else:
+            if not os.path.exists(path):
+                raise ValueError("%s does not exist" % path)
+            # Store absolute path in case the working directory changes later
+            self.path = os.path.abspath(path)
 
 class Repository(Metadata):
     """A repository containing modeling files.
-       This can be used if the PMI script plus inputs files are part of a
+       This can be used if the PMI script plus input files are part of a
        repository, which has been archived somewhere with a DOI.
        This will be used to construct permanent references to files
        used in this modeling, even if they haven't been uploaded to
-       a database such as PDB or EMDB (by creating a RepositoryFile object).
+       a database such as PDB or EMDB.
 
-       @see RepositoryFile."""
+       @see FileLocation."""
 
-    def __init__(self, doi, root):
+    # Two repositories compare equal if their DOIs are the same
+    def __eq__(self, other):
+        return self.doi == other.doi
+    def __hash__(self):
+        return hash(self.doi)
+
+    def __init__(self, doi, root=None):
         """Constructor.
-           @param doi the Digital Object Identifer for the repository.
+           @param doi the Digital Object Identifier for the repository.
            @param root the relative path to the top-level directory
-                  of the repository from the working directory of the script.
+                  of the repository from the working directory of the script,
+                  or None if files in this repository aren't checked out.
         """
+        # todo: DOI should be optional (could also use URL, local path)
         self.doi = doi
-        # Store absolute path in case the working directory changes later
-        self._root = os.path.abspath(root)
+        if root:
+            # Store absolute path in case the working directory changes later
+            self._root = os.path.abspath(root)
 
-    def get_path(self, local):
-        """Map a LocalFileLocation to a file in this repository."""
-        return RepositoryFileLocation(self.doi,
-                                      os.path.relpath(local.path, self._root),
-                                      details=local.details)
+    def update_in_repo(self, fileloc):
+        """If the given FileLocation maps to somewhere within this repository,
+           update it to reflect that."""
+        if not fileloc.repo:
+            relpath = os.path.relpath(fileloc.path, self._root)
+            if not relpath.startswith('..'):
+                fileloc.repo = self
+                fileloc.path = relpath

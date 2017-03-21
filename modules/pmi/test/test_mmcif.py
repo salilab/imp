@@ -15,6 +15,15 @@ else:
 class EmptyObject(object):
     pass
 
+def make_dataset_dumper():
+    """Make an empty DatasetDumper object."""
+    class MockExtRef(IMP.pmi.mmcif._ExternalReferenceDumper):
+        def finalize_after_datasets(self):
+            pass
+    simo = EmptyObject()
+    simo.extref_dump = MockExtRef(simo)
+    return IMP.pmi.mmcif._DatasetDumper(simo), simo
+
 class Tests(IMP.test.TestCase):
 
     def test_software(self):
@@ -37,7 +46,7 @@ class Tests(IMP.test.TestCase):
         """Test get/set_file_dataset methods"""
         m = IMP.Model()
         r = IMP.pmi.representation.Representation(m)
-        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='baz')
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='baz')
         d = IMP.pmi.metadata.EM2DClassDataset(l)
         r.set_file_dataset('foo', d)
         self.assertEqual(r.get_file_dataset('foo'), d)
@@ -285,10 +294,10 @@ _citation_author.ordinal
 
     def test_dataset_dumper_all_group(self):
         """Test DatasetDumper.get_all_group()"""
-        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
-        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='baz')
+        dump, simo = make_dataset_dumper()
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='baz')
         ds1 = IMP.pmi.metadata.EM2DClassDataset(l)
-        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
         ds2 = IMP.pmi.metadata.CXMSDataset(l)
         l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
         ds3 = IMP.pmi.metadata.PDBDataset(l)
@@ -316,7 +325,7 @@ _citation_author.ordinal
 
     def test_dataset_dumper_duplicates_details(self):
         """DatasetDumper ignores duplicate datasets with differing details"""
-        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
+        dump, simo = make_dataset_dumper()
         l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
         ds1 = dump.add(IMP.pmi.metadata.PDBDataset(l))
         # A duplicate dataset should be ignored even if details differ
@@ -336,7 +345,7 @@ _citation_author.ordinal
         cx1 = IMP.pmi.metadata.CXMSDataset(loc1)
         cx2 = IMP.pmi.metadata.CXMSDataset(loc1)
 
-        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
+        dump, simo = make_dataset_dumper()
         dump.add(cx1)
         dump.add(cx2)
         dump.finalize() # Assign IDs
@@ -347,7 +356,7 @@ _citation_author.ordinal
         # Datasets in different locations are OK
         cx1 = IMP.pmi.metadata.CXMSDataset(loc1)
         cx2 = IMP.pmi.metadata.CXMSDataset(loc2)
-        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
+        dump, simo = make_dataset_dumper()
         dump.add(cx1)
         dump.add(cx2)
         dump.finalize() # Assign IDs
@@ -358,7 +367,7 @@ _citation_author.ordinal
         # Different datasets in same location are OK (but odd)
         cx2 = IMP.pmi.metadata.CXMSDataset(loc2)
         em2d = IMP.pmi.metadata.EM2DClassDataset(loc2)
-        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
+        dump, simo = make_dataset_dumper()
         dump.add(cx2)
         dump.add(em2d)
         dump.finalize() # Assign IDs
@@ -372,7 +381,7 @@ _citation_author.ordinal
         emloc1._allow_duplicates = True
         em3d_1 = IMP.pmi.metadata.EMDensityDataset(emloc1)
         em3d_2 = IMP.pmi.metadata.EMDensityDataset(emloc2)
-        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
+        dump, simo = make_dataset_dumper()
         dump.add(em3d_1)
         dump.add(em3d_2)
         dump.finalize() # Assign IDs
@@ -382,8 +391,9 @@ _citation_author.ordinal
 
     def test_dataset_dumper_dump(self):
         """Test DatasetDumper.dump()"""
-        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
-        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        dump, simo = make_dataset_dumper()
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
+        l.id = 97
         pds = dump.add(IMP.pmi.metadata.CXMSDataset(l))
         l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
         ds = dump.add(IMP.pmi.metadata.PDBDataset(l))
@@ -407,13 +417,11 @@ _ihm_dataset_list.database_hosted
 #
 #
 loop_
-_ihm_dataset_other.id
-_ihm_dataset_other.dataset_list_id
-_ihm_dataset_other.data_type
-_ihm_dataset_other.doi
-_ihm_dataset_other.content_filename
-_ihm_dataset_other.details
-1 1 'CX-MS data' foo bar .
+_ihm_dataset_external_reference.id
+_ihm_dataset_external_reference.dataset_list_id
+_ihm_dataset_external_reference.data_type
+_ihm_dataset_external_reference.file_id
+1 1 'CX-MS data' 97
 #
 #
 loop_
@@ -436,6 +444,66 @@ _ihm_related_datasets.data_type_primary
 1 2 'Experimental model' 1 'CX-MS data'
 #
 """)
+
+    def test_external_reference_dumper_dump(self):
+        """Test ExternalReferenceDumper.dump()"""
+        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
+            def flush(self):
+                pass
+
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        dump = IMP.pmi.mmcif._ExternalReferenceDumper(po)
+        repo1 = IMP.pmi.metadata.Repository(doi="foo")
+        repo2 = IMP.pmi.metadata.Repository(doi="bar")
+        l = IMP.pmi.metadata.FileLocation(repo=repo1, path='bar')
+        dump.add(l)
+        # Duplicates should be ignored
+        l = IMP.pmi.metadata.FileLocation(repo=repo1, path='bar')
+        dump.add(l)
+        # Different file, same repository
+        l = IMP.pmi.metadata.FileLocation(repo=repo1, path='baz')
+        dump.add(l)
+        # Different repository
+        l = IMP.pmi.metadata.FileLocation(repo=repo2, path='baz')
+        dump.add(l)
+        with IMP.test.temporary_directory() as tmpdir:
+            bar = os.path.join(tmpdir, 'bar')
+            absbar = os.path.abspath(bar)
+            with open(bar, 'w') as f:
+                f.write("")
+            # Local file
+            l = IMP.pmi.metadata.FileLocation(bar)
+            dump.add(l)
+        # DatabaseLocations should be ignored
+        l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
+        dump.add(l)
+        dump.finalize_after_datasets()
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        dump.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_external_reference_info.reference_id
+_ihm_external_reference_info.reference
+1 foo
+2 bar
+3 .
+#
+#
+loop_
+_ihm_external_files.id
+_ihm_external_files.reference_id
+_ihm_external_files.file_path
+1 1 bar
+2 1 baz
+3 2 baz
+4 3 %s
+#
+""" % absbar)
 
     def test_model_dumper_sphere(self):
         """Test ModelDumper sphere_obj output"""
@@ -663,16 +731,9 @@ _ihm_modeling_protocol.time_ordered_flag
 
         ensemble = DummyEnsemble()
         ensemble.id = 42
-        p = IMP.Particle(m)
-        IMP.atom.Mass.setup_particle(p, 3.5)
-        rot = IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1),
-                                                  0.5)
-        tran = IMP.algebra.Vector3D(4,6,8)
-        tr = IMP.algebra.Transformation3D(rot, tran)
-        rf = IMP.algebra.ReferenceFrame3D(tr)
-        g = IMP.algebra.Gaussian3D(rf, IMP.algebra.Vector3D(10,11,12))
-        IMP.core.Gaussian.setup_particle(p, g)
-        ensemble.localization_density = {'Nup84': [p]}
+        loc = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
+        loc.id = 97
+        ensemble.localization_density = {'Nup84': loc}
         po.density_dump.add(ensemble)
 
         fh = StringIO()
@@ -681,27 +742,14 @@ _ihm_modeling_protocol.time_ordered_flag
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
-_ihm_gaussian_obj_ensemble.ordinal_id
-_ihm_gaussian_obj_ensemble.entity_id
-_ihm_gaussian_obj_ensemble.seq_id_begin
-_ihm_gaussian_obj_ensemble.seq_id_end
-_ihm_gaussian_obj_ensemble.asym_id
-_ihm_gaussian_obj_ensemble.mean_Cartn_x
-_ihm_gaussian_obj_ensemble.mean_Cartn_y
-_ihm_gaussian_obj_ensemble.mean_Cartn_z
-_ihm_gaussian_obj_ensemble.weight
-_ihm_gaussian_obj_ensemble.covariance_matrix[1][1]
-_ihm_gaussian_obj_ensemble.covariance_matrix[1][2]
-_ihm_gaussian_obj_ensemble.covariance_matrix[1][3]
-_ihm_gaussian_obj_ensemble.covariance_matrix[2][1]
-_ihm_gaussian_obj_ensemble.covariance_matrix[2][2]
-_ihm_gaussian_obj_ensemble.covariance_matrix[2][3]
-_ihm_gaussian_obj_ensemble.covariance_matrix[3][1]
-_ihm_gaussian_obj_ensemble.covariance_matrix[3][2]
-_ihm_gaussian_obj_ensemble.covariance_matrix[3][3]
-_ihm_gaussian_obj_ensemble.ensemble_id
-1 1 1 4 A 4.000 6.000 8.000 3.500 10.230 -0.421 0.000 -0.421 10.770 0.000 0.000
-0.000 12.000 42
+_ihm_localization_density_files.id
+_ihm_localization_density_files.file_id
+_ihm_localization_density_files.ensemble_id
+_ihm_localization_density_files.entity_id
+_ihm_localization_density_files.asym_id
+_ihm_localization_density_files.seq_id_begin
+_ihm_localization_density_files.seq_id_end
+1 97 . 1 A 1 4
 #
 """)
 
@@ -712,19 +760,19 @@ _ihm_gaussian_obj_ensemble.ensemble_id
         r = DummyRestraint()
         rd = IMP.pmi.mmcif._RestraintDataset(r, num=None,
                                              allow_duplicates=False)
-        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
         d = IMP.pmi.metadata.CXMSDataset(l)
         r.dataset = d
         # Get current dataset from restraint
         d2 = rd.dataset
         self.assertEqual(d2._data_type, 'CX-MS data')
-        self.assertEqual(d2.location.doi, 'foo')
+        self.assertEqual(d2.location.repo, 'foo')
         # Should be a copy, so we can change it without affecting the original
         self.assertEqual(d, d2)
         self.assertNotEqual(id(d), id(d2))
-        d2.location.doi = 'bar'
-        self.assertEqual(d2.location.doi, 'bar')
-        self.assertEqual(d.location.doi, 'foo')
+        d2.location.repo = 'bar'
+        self.assertEqual(d2.location.repo, 'bar')
+        self.assertEqual(d.location.repo, 'foo')
         # Subsequent accesses should be cached, not copying again
         d3 = rd.dataset
         self.assertEqual(id(d2), id(d3))
@@ -735,15 +783,15 @@ _ihm_gaussian_obj_ensemble.ensemble_id
             pass
         r = DummyRestraint()
         rd = IMP.pmi.mmcif._RestraintDataset(r, num=1, allow_duplicates=False)
-        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
         d1 = IMP.pmi.metadata.CXMSDataset(l)
-        l = IMP.pmi.metadata.RepositoryFileLocation(doi='bar', path='baz')
+        l = IMP.pmi.metadata.FileLocation(repo='bar', path='baz')
         d2 = IMP.pmi.metadata.CXMSDataset(l)
         r.datasets = [d1, d2]
         # Get current dataset from restraint
         d2 = rd.dataset
         self.assertEqual(d2._data_type, 'CX-MS data')
-        self.assertEqual(d2.location.doi, 'bar')
+        self.assertEqual(d2.location.repo, 'bar')
 
     def test_restraint_dataset_duplicate(self):
         """Test RestraintDataset with allow_duplicates=True"""
@@ -751,13 +799,13 @@ _ihm_gaussian_obj_ensemble.ensemble_id
             pass
         r = DummyRestraint()
         rd = IMP.pmi.mmcif._RestraintDataset(r, num=None, allow_duplicates=True)
-        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
         d = IMP.pmi.metadata.CXMSDataset(l)
         r.dataset = d
         # Get current dataset from restraint
         d2 = rd.dataset
         self.assertEqual(d2._data_type, 'CX-MS data')
-        self.assertEqual(d2.location.doi, 'foo')
+        self.assertEqual(d2.location.repo, 'foo')
         # Should be a copy, but should not compare equal
         # since allow_duplicates=True
         self.assertNotEqual(d, d2)
@@ -772,11 +820,11 @@ _ihm_gaussian_obj_ensemble.ensemble_id
         r = IMP.pmi.mmcif._EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
                                          image_resolution=1.0,
                                          projection_number=200)
-        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
         d = IMP.pmi.metadata.EM2DClassDataset(l)
         pr.dataset = d
         self.assertEqual(r.get_num_raw_micrographs(), None)
-        self.assertEqual(r.rdataset.dataset.location.doi, 'foo')
+        self.assertEqual(r.rdataset.dataset.location.repo, 'foo')
 
     def test_em2d_restraint_with_raw(self):
         """Test EM2DRestraint class, with raw micrographs"""
@@ -788,9 +836,9 @@ _ihm_gaussian_obj_ensemble.ensemble_id
         r = IMP.pmi.mmcif._EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
                                          image_resolution=1.0,
                                          projection_number=200)
-        lp = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='baz')
+        lp = IMP.pmi.metadata.FileLocation(repo='foo', path='baz')
         dp = IMP.pmi.metadata.EMMicrographsDataset(lp, number=50)
-        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
         d = IMP.pmi.metadata.EM2DClassDataset(l)
         d.add_primary(dp)
         pr.dataset = d
@@ -809,9 +857,9 @@ _ihm_gaussian_obj_ensemble.ensemble_id
         r = IMP.pmi.mmcif._EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
                                          image_resolution=1.0,
                                          projection_number=200)
-        lp = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='baz')
+        lp = IMP.pmi.metadata.FileLocation(repo='foo', path='baz')
         dp = IMP.pmi.metadata.EMMicrographsDataset(lp, number=50)
-        l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
         d = IMP.pmi.metadata.EM2DClassDataset(l)
         d.id = 4
         d.add_primary(dp)
@@ -839,8 +887,8 @@ _ihm_2dem_class_average_restraint.details
 #
 """)
 
-    def test_get_repository_location(self):
-        """Test get_repository_location() method"""
+    def test_update_location(self):
+        """Test update_location() method"""
         class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
             def flush(self):
                 pass
@@ -853,9 +901,10 @@ _ihm_2dem_class_average_restraint.details
             bar = os.path.join(tmpdir, 'bar')
             with open(bar, 'w') as f:
                 f.write("")
-            local = IMP.pmi.metadata.LocalFileLocation(bar)
+            local = IMP.pmi.metadata.FileLocation(bar)
             # No Repository set, so cannot map local to repository location
-            self.assertRaises(ValueError, po._get_repository_location, local)
+            po._update_location(local)
+            self.assertEqual(local.repo, None)
 
             simo.add_metadata(IMP.pmi.metadata.Software(
                                   name='test', classification='test code',
@@ -863,9 +912,14 @@ _ihm_2dem_class_average_restraint.details
                                   version=1, url='http://salilab.org'))
             simo.add_metadata(IMP.pmi.metadata.Repository(doi='foo',
                                                           root=tmpdir))
-            l = po._get_repository_location(local)
-            self.assertEqual(l.doi, 'foo')
-            self.assertEqual(l.path, 'bar')
+            loc = IMP.pmi.metadata.FileLocation(bar)
+            po._update_location(loc)
+            self.assertEqual(loc.repo.doi, 'foo')
+            self.assertEqual(loc.path, 'bar')
+            # Further calls shouldn't change things
+            po._update_location(loc)
+            self.assertEqual(loc.repo.doi, 'foo')
+            self.assertEqual(loc.path, 'bar')
 
 if __name__ == '__main__':
     IMP.test.main()

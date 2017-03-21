@@ -33,11 +33,19 @@ class Tests(IMP.test.TestCase):
             s = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46266',
                                             root=os.path.relpath(tmpdir))
             self.assertEqual(s._root, tmpdir)
-            local = IMP.pmi.metadata.LocalFileLocation(
+            loc = IMP.pmi.metadata.FileLocation(
                                 os.path.relpath(os.path.join(tmpdir, 'bar')))
-            f = s.get_path(local)
-            self.assertEqual(f.doi, '10.5281/zenodo.46266')
-            self.assertEqual(f.path, 'bar')
+            self.assertEqual(loc.repo, None)
+            s.update_in_repo(loc)
+            self.assertEqual(loc.repo.doi, '10.5281/zenodo.46266')
+            self.assertEqual(loc.path, 'bar')
+
+    def test_repository_no_checkout(self):
+        """Test metadata.Repository with no checkout"""
+        r = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46266')
+        f = IMP.pmi.metadata.FileLocation(repo=r, path='foo')
+        self.assertEqual(f.repo.doi, '10.5281/zenodo.46266')
+        self.assertEqual(f.path, 'foo')
 
     def test_repr_add(self):
         """Test Representation.add_metadata()"""
@@ -88,43 +96,44 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(d.details, 'foo')
 
     def test_repo_file_location(self):
-        """Test RepositoryFileLocation class"""
-        d = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'mypath',
-                                                    details='bar')
-        self.assertEqual(d.doi, 'mydoi')
+        """Test FileLocation class pointing to a repository file"""
+        r = IMP.pmi.metadata.Repository(doi='mydoi')
+        d = IMP.pmi.metadata.FileLocation(repo=r, path='mypath', details='bar')
+        self.assertEqual(d.repo.doi, 'mydoi')
         self.assertEqual(d.path, 'mypath')
         self.assertEqual(d.details, 'bar')
-        d2 = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'mypath')
+        d2 = IMP.pmi.metadata.FileLocation(repo=r, path='mypath')
         self.assertEqual(d, d2)
-        d3 = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'otherpath')
+        d3 = IMP.pmi.metadata.FileLocation(repo=r, path='otherpath')
         self.assertNotEqual(d, d3)
-        d4 = IMP.pmi.metadata.RepositoryFileLocation('otherdoi', 'mypath')
+        r2 = IMP.pmi.metadata.Repository(doi='otherdoi')
+        d4 = IMP.pmi.metadata.FileLocation(repo=r2, path='mypath')
         self.assertNotEqual(d, d4)
 
     def test_local_file_location(self):
-        """Test LocalFileLocation class"""
+        """Test FileLocation class pointing to a local file"""
         # Make tmpdir under current directory, as it's not always possible to
         # get a relative path from cwd to /tmp (e.g. on Windows where they may
         # be on different drives)
         with IMP.test.temporary_directory(os.getcwd()) as tmpdir:
             with open(os.path.join(tmpdir, 'bar'), 'w') as f:
                 f.write("")
-            d1 = IMP.pmi.metadata.LocalFileLocation(
+            d1 = IMP.pmi.metadata.FileLocation(
                                   os.path.relpath(os.path.join(tmpdir, 'bar')),
                                   details='foo')
-            d2 = IMP.pmi.metadata.LocalFileLocation(
+            d2 = IMP.pmi.metadata.FileLocation(
                                   os.path.relpath(os.path.join(tmpdir, 'bar')))
             self.assertEqual(d1, d2)
             self.assertEqual(d1.path, os.path.join(tmpdir, 'bar'))
             self.assertEqual(d1.details, 'foo')
-            self.assertRaises(ValueError, IMP.pmi.metadata.LocalFileLocation,
+            self.assertRaises(ValueError, IMP.pmi.metadata.FileLocation,
                               os.path.join(tmpdir, 'not-exists'))
 
     def test_dataset_add_parent(self):
         """Test Dataset.add_parent()"""
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
         d1 = IMP.pmi.metadata.CXMSDataset(loc)
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'b')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='b')
         d2 = IMP.pmi.metadata.MassSpecDataset(loc)
         d1.add_parent(d2)
         self.assertEqual(d1._parents, {d2:None})
@@ -134,21 +143,21 @@ class Tests(IMP.test.TestCase):
 
     def test_dataset_add_primary_no_parents(self):
         """Test Dataset.add_primary() with no parents"""
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
         d1 = IMP.pmi.metadata.CXMSDataset(loc)
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'b')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='b')
         d2 = IMP.pmi.metadata.MassSpecDataset(loc)
         d1.add_primary(d2)
         self.assertEqual(d1._parents, {d2:None})
 
     def test_dataset_add_primary_one_parent(self):
         """Test Dataset.add_primary() with one parent"""
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
         d1 = IMP.pmi.metadata.CXMSDataset(loc)
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'b')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='b')
         d2 = IMP.pmi.metadata.MassSpecDataset(loc)
         d1.add_parent(d2)
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'c')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='c')
         d3 = IMP.pmi.metadata.MassSpecDataset(loc)
         d1.add_primary(d3)
         self.assertEqual(d1._parents, {d2:None})
@@ -156,51 +165,51 @@ class Tests(IMP.test.TestCase):
 
     def test_dataset_add_primary_two_parents(self):
         """Test Dataset.add_primary() with two parents"""
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
         d1 = IMP.pmi.metadata.CXMSDataset(loc)
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'b')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='b')
         d2 = IMP.pmi.metadata.MassSpecDataset(loc)
         d1.add_parent(d2)
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'c')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='c')
         d3 = IMP.pmi.metadata.MassSpecDataset(loc)
         d1.add_parent(d3)
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'd')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='d')
         d4 = IMP.pmi.metadata.MassSpecDataset(loc)
         self.assertRaises(ValueError, d1.add_primary, d4)
 
     def test_cxms_dataset(self):
         """Test CXMSDataset"""
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
         d = IMP.pmi.metadata.CXMSDataset(loc)
         self.assertEqual(d._data_type, 'CX-MS data')
 
     def test_mass_spec_dataset(self):
         """Test MassSpecDataset"""
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
         d = IMP.pmi.metadata.MassSpecDataset(loc)
         self.assertEqual(d._data_type, 'Mass Spectrometry data')
 
     def test_em_density_dataset(self):
         """Test EMDensityDataset"""
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
         d = IMP.pmi.metadata.EMDensityDataset(loc)
         self.assertEqual(d._data_type, '3DEM volume')
 
     def test_pdb_dataset(self):
         """Test PDBDataset"""
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
         d = IMP.pmi.metadata.PDBDataset(loc)
         self.assertEqual(d._data_type, 'Experimental model')
 
     def test_comp_model_dataset(self):
         """Test ComparativeModelDataset"""
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
         d = IMP.pmi.metadata.ComparativeModelDataset(loc)
         self.assertEqual(d._data_type, 'Comparative model')
 
     def test_em_micrographs_dataset(self):
         """Test EMMicrographsDataset"""
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
         d = IMP.pmi.metadata.EMMicrographsDataset(loc, 400)
         self.assertEqual(d._data_type, 'EM raw micrographs')
         self.assertEqual(d.number, 400)
@@ -212,7 +221,7 @@ class Tests(IMP.test.TestCase):
 
     def test_em2d_class_dataset(self):
         """Test EM2DClassDataset"""
-        loc = IMP.pmi.metadata.RepositoryFileLocation('mydoi', 'a')
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
         d = IMP.pmi.metadata.EM2DClassDataset(loc)
         self.assertEqual(d._data_type, '2DEM class average')
 

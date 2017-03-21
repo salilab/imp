@@ -13,7 +13,6 @@ import IMP.pmi.tools
 import IMP.pmi.output
 import numpy
 import math
-import scipy.spatial
 import math
 import sys
 
@@ -667,6 +666,7 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         get the full graph of distances between every particle pair
         '''
         import networkx
+        import scipy.spatial
         pdist_array = numpy.array(
             IMP.pmi.get_list_of_bipartite_minimum_sphere_distance(self.particles_blocks))
         pdist_mat = scipy.spatial.distance.squareform(pdist_array)
