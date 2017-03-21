@@ -40,6 +40,7 @@ int main(int argc, char* argv[])
  std::cout<<IMP::internal::get_index(ParticlePair(p1,p2))[0];
 IMP_NEW(core::PairRestraint, pr,(m,adps,IMP::internal::get_index
 (ParticlePair(p1, p2))));
+/*
 std::cout << pr->get_score() << std::endl;
 IMP_USAGE_CHECK(std::abs(pr->get_score()-144.0),
  "Values for AttributeDistancePairScorenot matching");
