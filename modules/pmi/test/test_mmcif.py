@@ -25,9 +25,9 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         r = IMP.pmi.representation.Representation(m)
         r.add_metadata(s)
-        d = IMP.pmi.mmcif.SoftwareDumper(r)
+        d = IMP.pmi.mmcif._SoftwareDumper(r)
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         d.dump(w)
         out = fh.getvalue().split('\n')
         self.assertEqual(out[-3],
@@ -50,8 +50,8 @@ class Tests(IMP.test.TestCase):
             def flush(self):
                 pass
         po = DummyPO(EmptyObject())
-        d = IMP.pmi.mmcif.AssemblyDumper(po)
-        complete = IMP.pmi.mmcif.Assembly(['a', 'b', 'c'])
+        d = IMP.pmi.mmcif._AssemblyDumper(po)
+        complete = IMP.pmi.mmcif._Assembly(['a', 'b', 'c'])
         d.add(complete)
         self.assertEqual(complete.id, 1)
         x = d.get_subassembly({'a':None, 'b':None})
@@ -66,15 +66,15 @@ class Tests(IMP.test.TestCase):
             def flush(self):
                 pass
         po = DummyPO(EmptyObject())
-        d = IMP.pmi.mmcif.AssemblyDumper(po)
+        d = IMP.pmi.mmcif._AssemblyDumper(po)
         for c, seq in (("foo", "AAA"), ("bar", "AAA"), ("baz", "AA")):
             po.create_component(c, True)
             po.add_component_sequence(c, seq)
-        d.add(IMP.pmi.mmcif.Assembly(["foo", "bar"]))
-        d.add(IMP.pmi.mmcif.Assembly(["bar", "baz"]))
+        d.add(IMP.pmi.mmcif._Assembly(["foo", "bar"]))
+        d.add(IMP.pmi.mmcif._Assembly(["bar", "baz"]))
 
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         d.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -104,7 +104,7 @@ _ihm_struct_assembly.seq_id_end
             po.add_component_sequence(c, seq)
 
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         po.assembly_dump.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -128,13 +128,13 @@ _ihm_struct_assembly.seq_id_end
             def flush(self):
                 pass
         po = DummyPO(EmptyObject())
-        d = IMP.pmi.mmcif.StructAsymDumper(po)
+        d = IMP.pmi.mmcif._StructAsymDumper(po)
         for c, seq in (("foo", "AAA"), ("bar", "AAA"), ("baz", "AA")):
             po.create_component(c, True)
             po.add_component_sequence(c, seq)
 
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         d.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -165,9 +165,9 @@ C 2 baz
         m = IMP.Model()
         r = IMP.pmi.representation.Representation(m)
         r.add_metadata(s)
-        d = IMP.pmi.mmcif.CitationDumper(r)
+        d = IMP.pmi.mmcif._CitationDumper(r)
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         d.dump(w)
         out = fh.getvalue()
         expected = """#
@@ -209,16 +209,16 @@ _citation_author.ordinal
 
         # Handle no last page
         s.page_range = 'e1637'
-        d = IMP.pmi.mmcif.CitationDumper(r)
+        d = IMP.pmi.mmcif._CitationDumper(r)
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         d.dump(w)
         out = fh.getvalue()
         self.assertTrue("'Mol Cell Proteomics' 13 e1637 . 2014 " in out)
 
     def test_pdb_helix(self):
         """Test PDBHelix class"""
-        p = IMP.pmi.mmcif.PDBHelix("HELIX   10  10 ASP A  607  GLU A  624  1                                  18   ")
+        p = IMP.pmi.mmcif._PDBHelix("HELIX   10  10 ASP A  607  GLU A  624  1                                  18   ")
         self.assertEqual(p.helix_id, '10')
         self.assertEqual(p.start_asym, 'A')
         self.assertEqual(p.start_resnum, 607)
@@ -239,7 +239,7 @@ _citation_author.ordinal
                                     self.get_input_file_name("test.fasta"))
         h1 = simo.add_component_beads("Nup84", [(1,2), (3,4)])
         h2 = simo.add_component_beads("Nup85", [(1,2), (3,4)])
-        mapper = IMP.pmi.mmcif.AsymIDMapper(simo.prot)
+        mapper = IMP.pmi.mmcif._AsymIDMapper(simo.prot)
         self.assertEqual(mapper[h1[0]], 'A')
         self.assertEqual(mapper[h1[1]], 'A')
         self.assertEqual(mapper[h2[0]], 'B')
@@ -257,7 +257,7 @@ _citation_author.ordinal
                                     self.get_input_file_name("test.fasta"))
         h1 = simo.add_component_beads("Nup84", [(1,2), (3,4)])
         h2 = simo.add_component_beads("Nup85", [(1,2), (3,4)])
-        mapper = IMP.pmi.mmcif.ComponentMapper(simo.prot)
+        mapper = IMP.pmi.mmcif._ComponentMapper(simo.prot)
         self.assertEqual(mapper[h1[0]], 'Nup84')
         self.assertEqual(mapper[h1[1]], 'Nup84')
         self.assertEqual(mapper[h2[0]], 'Nup85')
@@ -285,7 +285,7 @@ _citation_author.ordinal
 
     def test_dataset_dumper_all_group(self):
         """Test DatasetDumper.get_all_group()"""
-        dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
+        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
         l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='baz')
         ds1 = IMP.pmi.metadata.EM2DClassDataset(l)
         l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
@@ -316,7 +316,7 @@ _citation_author.ordinal
 
     def test_dataset_dumper_duplicates_details(self):
         """DatasetDumper ignores duplicate datasets with differing details"""
-        dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
+        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
         l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
         ds1 = dump.add(IMP.pmi.metadata.PDBDataset(l))
         # A duplicate dataset should be ignored even if details differ
@@ -336,7 +336,7 @@ _citation_author.ordinal
         cx1 = IMP.pmi.metadata.CXMSDataset(loc1)
         cx2 = IMP.pmi.metadata.CXMSDataset(loc1)
 
-        dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
+        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
         dump.add(cx1)
         dump.add(cx2)
         dump.finalize() # Assign IDs
@@ -347,7 +347,7 @@ _citation_author.ordinal
         # Datasets in different locations are OK
         cx1 = IMP.pmi.metadata.CXMSDataset(loc1)
         cx2 = IMP.pmi.metadata.CXMSDataset(loc2)
-        dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
+        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
         dump.add(cx1)
         dump.add(cx2)
         dump.finalize() # Assign IDs
@@ -358,7 +358,7 @@ _citation_author.ordinal
         # Different datasets in same location are OK (but odd)
         cx2 = IMP.pmi.metadata.CXMSDataset(loc2)
         em2d = IMP.pmi.metadata.EM2DClassDataset(loc2)
-        dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
+        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
         dump.add(cx2)
         dump.add(em2d)
         dump.finalize() # Assign IDs
@@ -372,7 +372,7 @@ _citation_author.ordinal
         emloc1._allow_duplicates = True
         em3d_1 = IMP.pmi.metadata.EMDensityDataset(emloc1)
         em3d_2 = IMP.pmi.metadata.EMDensityDataset(emloc2)
-        dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
+        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
         dump.add(em3d_1)
         dump.add(em3d_2)
         dump.finalize() # Assign IDs
@@ -382,7 +382,7 @@ _citation_author.ordinal
 
     def test_dataset_dumper_dump(self):
         """Test DatasetDumper.dump()"""
-        dump = IMP.pmi.mmcif.DatasetDumper(EmptyObject())
+        dump = IMP.pmi.mmcif._DatasetDumper(EmptyObject())
         l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
         pds = dump.add(IMP.pmi.metadata.CXMSDataset(l))
         l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
@@ -391,7 +391,7 @@ _citation_author.ordinal
         self.assertEqual(ds.location.access_code, '1abc')
 
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         dump.finalize()
         dump.dump(w)
         out = fh.getvalue()
@@ -454,18 +454,18 @@ _ihm_related_datasets.data_type_primary
                                      self.get_input_file_name("test.nup84.pdb"),
                                      "A")
 
-        d = IMP.pmi.mmcif.ModelDumper(po)
-        assembly = IMP.pmi.mmcif.Assembly()
+        d = IMP.pmi.mmcif._ModelDumper(po)
+        assembly = IMP.pmi.mmcif._Assembly()
         assembly.id = 42
-        protocol = IMP.pmi.mmcif.Protocol()
+        protocol = IMP.pmi.mmcif._Protocol()
         protocol.id = 93
-        group = IMP.pmi.mmcif.ModelGroup("all models")
+        group = IMP.pmi.mmcif._ModelGroup("all models")
         group.id = 7
         model = d.add(simo.prot, protocol, assembly, group)
         self.assertEqual(model.id, 1)
         self.assertEqual(model.get_rmsf('Nup84', (1,)), '.')
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         d.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -514,12 +514,12 @@ _ihm_sphere_obj_site.model_id
                                      self.get_input_file_name("test.nup84.pdb"),
                                      "A")
 
-        d = IMP.pmi.mmcif.ModelDumper(po)
-        assembly = IMP.pmi.mmcif.Assembly()
+        d = IMP.pmi.mmcif._ModelDumper(po)
+        assembly = IMP.pmi.mmcif._Assembly()
         assembly.id = 42
-        protocol = IMP.pmi.mmcif.Protocol()
+        protocol = IMP.pmi.mmcif._Protocol()
         protocol.id = 93
-        group = IMP.pmi.mmcif.ModelGroup("all models")
+        group = IMP.pmi.mmcif._ModelGroup("all models")
         group.id = 7
         model = d.add(simo.prot, protocol, assembly, group)
         self.assertEqual(model.id, 1)
@@ -528,7 +528,7 @@ _ihm_sphere_obj_site.model_id
         self.assertAlmostEqual(model.get_rmsf('Nup84', (1,)), 4.5, delta=1e-4)
         self.assertRaises(ValueError, model.get_rmsf, 'Nup84', (1,2))
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         d.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -572,10 +572,10 @@ _ihm_sphere_obj_site.model_id
         po.create_component("Nup85", True)
         po.add_component_sequence("Nup85", "MC")
 
-        d = IMP.pmi.mmcif.ChemCompDumper(po)
+        d = IMP.pmi.mmcif._ChemCompDumper(po)
 
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         d.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -619,7 +619,7 @@ CYS 'L-peptide linking'
                                  test_mode=True)
         mc2.execute_macro()
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         po.dataset_dump.finalize() # Assign IDs to datasets
         po.model_prot_dump.dump(w)
         out = fh.getvalue()
@@ -676,7 +676,7 @@ _ihm_modeling_protocol.time_ordered_flag
         po.density_dump.add(ensemble)
 
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         po.density_dump.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -710,7 +710,8 @@ _ihm_gaussian_obj_ensemble.ensemble_id
         class DummyRestraint(object):
             pass
         r = DummyRestraint()
-        rd = IMP.pmi.mmcif.RestraintDataset(r, num=None, allow_duplicates=False)
+        rd = IMP.pmi.mmcif._RestraintDataset(r, num=None,
+                                             allow_duplicates=False)
         l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
         d = IMP.pmi.metadata.CXMSDataset(l)
         r.dataset = d
@@ -733,7 +734,7 @@ _ihm_gaussian_obj_ensemble.ensemble_id
         class DummyRestraint(object):
             pass
         r = DummyRestraint()
-        rd = IMP.pmi.mmcif.RestraintDataset(r, num=1, allow_duplicates=False)
+        rd = IMP.pmi.mmcif._RestraintDataset(r, num=1, allow_duplicates=False)
         l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
         d1 = IMP.pmi.metadata.CXMSDataset(l)
         l = IMP.pmi.metadata.RepositoryFileLocation(doi='bar', path='baz')
@@ -749,7 +750,7 @@ _ihm_gaussian_obj_ensemble.ensemble_id
         class DummyRestraint(object):
             pass
         r = DummyRestraint()
-        rd = IMP.pmi.mmcif.RestraintDataset(r, num=None, allow_duplicates=True)
+        rd = IMP.pmi.mmcif._RestraintDataset(r, num=None, allow_duplicates=True)
         l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
         d = IMP.pmi.metadata.CXMSDataset(l)
         r.dataset = d
@@ -766,11 +767,11 @@ _ihm_gaussian_obj_ensemble.ensemble_id
         class DummyRestraint(object):
             pass
         pr = DummyRestraint()
-        rd = IMP.pmi.mmcif.RestraintDataset(pr, num=None,
-                                            allow_duplicates=False)
-        r = IMP.pmi.mmcif.EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
-                                        image_resolution=1.0,
-                                        projection_number=200)
+        rd = IMP.pmi.mmcif._RestraintDataset(pr, num=None,
+                                             allow_duplicates=False)
+        r = IMP.pmi.mmcif._EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
+                                         image_resolution=1.0,
+                                         projection_number=200)
         l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
         d = IMP.pmi.metadata.EM2DClassDataset(l)
         pr.dataset = d
@@ -782,11 +783,11 @@ _ihm_gaussian_obj_ensemble.ensemble_id
         class DummyRestraint(object):
             pass
         pr = DummyRestraint()
-        rd = IMP.pmi.mmcif.RestraintDataset(pr, num=None,
-                                            allow_duplicates=False)
-        r = IMP.pmi.mmcif.EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
-                                        image_resolution=1.0,
-                                        projection_number=200)
+        rd = IMP.pmi.mmcif._RestraintDataset(pr, num=None,
+                                             allow_duplicates=False)
+        r = IMP.pmi.mmcif._EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
+                                         image_resolution=1.0,
+                                         projection_number=200)
         lp = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='baz')
         dp = IMP.pmi.metadata.EMMicrographsDataset(lp, number=50)
         l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
@@ -803,11 +804,11 @@ _ihm_gaussian_obj_ensemble.ensemble_id
         class DummyRestraint(object):
             pass
         pr = DummyRestraint()
-        rd = IMP.pmi.mmcif.RestraintDataset(pr, num=None,
-                                            allow_duplicates=False)
-        r = IMP.pmi.mmcif.EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
-                                        image_resolution=1.0,
-                                        projection_number=200)
+        rd = IMP.pmi.mmcif._RestraintDataset(pr, num=None,
+                                             allow_duplicates=False)
+        r = IMP.pmi.mmcif._EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
+                                         image_resolution=1.0,
+                                         projection_number=200)
         lp = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='baz')
         dp = IMP.pmi.metadata.EMMicrographsDataset(lp, number=50)
         l = IMP.pmi.metadata.RepositoryFileLocation(doi='foo', path='bar')
@@ -816,10 +817,10 @@ _ihm_gaussian_obj_ensemble.ensemble_id
         d.add_primary(dp)
         pr.dataset = d
         po = DummyPO(EmptyObject())
-        d = IMP.pmi.mmcif.EM2DDumper(po)
+        d = IMP.pmi.mmcif._EM2DDumper(po)
         d.add(r)
         fh = StringIO()
-        w = IMP.pmi.mmcif.CifWriter(fh)
+        w = IMP.pmi.mmcif._CifWriter(fh)
         d.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#

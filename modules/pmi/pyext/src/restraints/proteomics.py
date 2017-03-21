@@ -13,9 +13,7 @@ import IMP.pmi.tools
 import IMP.pmi.output
 import numpy
 import math
-import networkx
 import scipy.spatial
-import networkx
 import math
 import sys
 
@@ -668,6 +666,7 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         '''
         get the full graph of distances between every particle pair
         '''
+        import networkx
         pdist_array = numpy.array(
             IMP.pmi.get_list_of_bipartite_minimum_sphere_distance(self.particles_blocks))
         pdist_mat = scipy.spatial.distance.squareform(pdist_array)
@@ -679,6 +678,7 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         """
         return the minimum spanning tree
         """
+        import networkx
         graph = self.get_full_graph()
         graph = networkx.minimum_spanning_tree(graph)
         return graph
