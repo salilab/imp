@@ -104,7 +104,7 @@ DensityGrid get_rasterized(const Gaussian3Ds &gmm, const Floats &weights,
 }
 
 DensityGrid get_rasterized_fast(const Gaussian3Ds &gmm, const Floats &weights,
-                                double cell_width, const BoundingBox3D &bb) {
+                                double cell_width, const BoundingBox3D &bb, double factor) {
   DensityGrid ret(cell_width, bb, 0);
   for (unsigned int ng = 0; ng < gmm.size(); ng++) {
     IMP_Eigen::Matrix3d covar = get_covariance(gmm[ng]);
@@ -118,7 +118,7 @@ DensityGrid get_rasterized_fast(const Gaussian3Ds &gmm, const Floats &weights,
     double pre(get_gaussian_eval_prefactor(determinant));
     IMP_Eigen::Vector3d evals = covar.eigenvalues().real();
     double maxeval = sqrt(evals.maxCoeff());
-    double cutoff = 2.5 * maxeval;
+    double cutoff = factor * maxeval;
     double cutoff2 = cutoff * cutoff;
     Vector3D c = gmm[ng].get_center();
     Vector3D lower = c - Vector3D(cutoff, cutoff, cutoff);

@@ -62,7 +62,7 @@ get_rasterized(const Gaussian3Ds &gmm, const Floats &weights, double cell_width,
  */
 IMPALGEBRAEXPORT DenseGrid3D<double>
 get_rasterized_fast(const Gaussian3Ds &gmm, const Floats &weights,
-                    double cell_width, const BoundingBox3D &bb);
+                    double cell_width, const BoundingBox3D &bb, double factor=2.5);
 
 IMPALGEBRA_END_NAMESPACE
 
