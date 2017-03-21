@@ -42,13 +42,11 @@ int main(int argc, char* argv[])
   FloatRange tilt_range(0.0,45.0);
   IMP_NEW(core::HarmonicWell, well, (tilt_range, 1.0));
   IMP_NEW(TiltSingletonScore, tss, (well, laxis, zaxis));
-  /*IMP_NEW(core::SingletonRestraint, sr1, (m,tss,
+  IMP_NEW(core::SingletonRestraint, sr1, (m,tss,
   IMP::internal::get_index(p1)));
   allrs->add_restraint(sr1);
 
-  sr1->set_name("Tilt restraint");
-
-std::cout << allrs->evaluate(false) << std::endl;
+/*std::cout << allrs->evaluate(false) << std::endl;
 //IMP_TEST_EQUAL(std::abs(allrs->evaluate(false)),242.0)
 */
  return EXIT_SUCCESS;
