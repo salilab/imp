@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 
   algebra::Vector3D laxis = algebra::Vector3D(0.0, 0.0, 1.0);
   algebra::Vector3D zaxis = algebra::Vector3D(0.0, 0.0, 1.0);
-  FloatRange tilt_range(0.0,45.0);
+  FloatRange tilt_range=FloatRange(0.0,45.0);
   IMP_NEW(core::HarmonicWell, well, (tilt_range, 1.0));
   IMP_NEW(TiltSingletonScore, tss, (well, laxis, zaxis));
   IMP_NEW(core::SingletonRestraint, sr1, (m,tss,
