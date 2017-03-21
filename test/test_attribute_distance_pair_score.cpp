@@ -16,6 +16,7 @@
 #include <time.h>
 #include <IMP/check_macros.h>
 #include <IMP/flags.h>
+#include <IMP/test/test_macros.h>
 
 using namespace IMP;
 using namespace IMP::membrane;
