@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 
  IMP_NEW(Particle,p2,(m,"p2"));
  IMP::core::XYZ::setup_particle(m,p2->get_index(),IMP::algebra::Vector3D
-   (1.0,4.0,7.0));
+   (1.0,4.0,9.0));
 
  // isd particle representing distance
  IMP_NEW(Particle, pdist, (m));
