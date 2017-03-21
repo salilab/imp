@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
    (1.0,4.0,10.0));
  d3.set_radius(1);
 
- IMP::atom::Hierarchy h=IMP.atom.Hierarchy();
+ IMP::atom::Hierarchy h=IMP::atom::Hierarchy();
  h.add_child(d1);
  h.add_child(d2);
  h.add_child(d3);
