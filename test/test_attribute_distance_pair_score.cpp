@@ -14,7 +14,7 @@
 #include <map>
 #include <math.h>
 #include <time.h>
-#include <check_macros.h>
+#include <IMP/check_macros.h>
 #include <IMP/flags.h>
 
 using namespace IMP;
