@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
  IMP_TEST_EQUAL(drmsd->get_weight(0),1.0);
  IMP_TEST_EQUAL(drmsd->get_weight(1),2.0);
 
- IMP_TEST_EQUAL(drmsd->get_distance(0,1),10.3625);
+ IMP_TEST_LESS_THAN(std::abs(drmsd->get_distance(0,1)-10.3625),0.1);
 
  // NOW do the clustering
  IMP::Pointer<statistics::PartitionalClustering> pc =
