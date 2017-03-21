@@ -46,9 +46,9 @@ int main(int argc, char* argv[])
   IMP::internal::get_index(p1)));
   allrs->add_restraint(sr1);
 
-/*std::cout << allrs->evaluate(false) << std::endl;
+std::cout << allrs->evaluate(false) << std::endl;
 //IMP_TEST_EQUAL(std::abs(allrs->evaluate(false)),242.0)
-*/
+
  return EXIT_SUCCESS;
 
 }
