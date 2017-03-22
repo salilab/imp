@@ -45,9 +45,9 @@ IMP::algebra::Vector3D(1.0,4.0,6.0),1.0));
 IMP::algebra::Vector3D(1.0,4.0,10.0),1.0));
 
  IMP::atom::Hierarchy h=IMP::atom::Hierarchy();
- h.add_child(d1);
- h.add_child(d2);
- h.add_child(d3);
+ h.add_child(IMP::atom::Hierarchy(p1));
+ h.add_child(IMP::atom::Hierarchy(p2));
+ h.add_child(IMP::atom::Hierarchy(p3));
 
  IMP::core::RigidBody rb=IMP::atom::create_rigid_body(h);
 
