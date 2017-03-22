@@ -68,7 +68,7 @@ atom::Mass mm3 = atom::Mass::setup_particle(p3, 30.0);
   IMP_NEW(core::HarmonicWell, well, (tilt_range, 1.0));
   IMP_NEW(TiltSingletonScore, tss, (well, laxis, zaxis));
   IMP_NEW(core::SingletonRestraint, sr1, (m,tss,
- IMP::internal::get_index(prb)));
+ rb.get_particle_index()));
   allrs->add_restraint(sr1);
 std::cout << allrs->evaluate(false) << std::endl;
 //IMP_TEST_EQUAL(std::abs(allrs->evaluate(false)),242.0)
