@@ -62,7 +62,7 @@ atom::Mass mm4 = atom::Mass::setup_particle(p4, 30.0);
 //define a rigid body for particles 1 and 2
  IMP_NEW(Particle, prb, (m));
   core::RigidBody rb = core::RigidBody::setup_particle(prb, rbps);
-rb.set_coordinates_are_optimized(True);
+rb.set_coordinates_are_optimized(true);
 
   // define a transformation i..e translation + rotation
 algebra::Vector3D trans1 = algebra::Vector3D(0.0, 0.0, 0.0);
