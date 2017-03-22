@@ -30,28 +30,28 @@ Float TiltSingletonScore::evaluate_index(IMP::Model *m,
   algebra::ReferenceFrame3D rf =
       core::RigidBody(m->get_particle(pi)).get_reference_frame();
 
-  std::cout << pi << " " << rf << std::endl;
+  //std::cout << pi << " " << rf << std::endl;
 
   algebra::VectorD<3> local2global = rf.get_global_coordinates(local_);
 
-  std::cout << "local" << local_ << " " << local2global << std::endl;
+  //std::cout << "local" << local_ << " " << local2global << std::endl;
 
   algebra::VectorD<3> origin =
       rf.get_global_coordinates(algebra::VectorD<3>(0.0, 0.0, 0.0));
 
   // std::cout << "origin" << origin << " " << global_ << std::endl ;
-  std::cout << local2global-origin << global_ <<std::endl;
+  //std::cout << local2global-origin << global_ <<std::endl;
 
   // now calculate the angle
   Float sp = std::max(
       -1.0, std::min(1.0, global_.get_scalar_product(local2global - origin)));
   Float angle = acos(sp);
 
-  std::cout << "ANGLE "<< angle <<std::endl;
+  //std::cout << "ANGLE "<< angle <<std::endl;
 
   Float score = f_->evaluate(angle);
 
-  std::cout << "SCORE "<< score << std::endl;
+  //std::cout << "SCORE "<< score << std::endl;
 
   return score;
 }
