@@ -59,10 +59,8 @@ IMP::algebra::Vector3D(1.0,4.0,10.0),1.0));
   IMP_NEW(core::SingletonRestraint, sr1, (m,tss,
   IMP::internal::get_index(rb)));
   allrs->add_restraint(sr1);
-/*
 std::cout << allrs->evaluate(false) << std::endl;
 //IMP_TEST_EQUAL(std::abs(allrs->evaluate(false)),242.0)
-*/
  return EXIT_SUCCESS;
 
 }
