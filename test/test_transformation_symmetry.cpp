@@ -81,7 +81,7 @@ m->add_score_state(crb);
 // constrain non rigid bodies
 core::Reference::setup_particle(p3, p3);
 IMP_NEW(core::SingletonConstraint, cflex, (sm, NULL,m,p3->get_index()));
-m->add_score_state(cfkex);
+m->add_score_state(cflex);
 
  return EXIT_SUCCESS;
 
