@@ -71,7 +71,7 @@ atom::Mass mm3 = atom::Mass::setup_particle(p3, 30.0);
  rb.get_particle_index()));
   allrs->add_restraint(sr1);
 //std::cout << allrs->evaluate(false) << std::endl;
-IMP_TEST_EQUAL(std::abs(allrs->evaluate(false)),242.0)
+IMP_TEST_EQUAL(allrs->evaluate(false),0.0)
  return EXIT_SUCCESS;
 
 }
