@@ -200,15 +200,25 @@ class Repository(Metadata):
     def __hash__(self):
         return hash(self.doi)
 
-    def __init__(self, doi, root=None):
+    def __init__(self, doi, root=None, url=None,
+                 top_directory=None):
         """Constructor.
            @param doi the Digital Object Identifier for the repository.
            @param root the relative path to the top-level directory
                   of the repository from the working directory of the script,
                   or None if files in this repository aren't checked out.
+           @param url If given, a location that this repository can be
+                  downloaded from.
+           @param top_directory If given, prefix all paths for files in this
+                  repository with this value. This is useful when the archived
+                  version of the repository is found in a subdirectory at the
+                  URL or DOI (for example, GitHub repositories archived at
+                  Zenodo get placed in a subdirectory named for the repository
+                  and git hash).
         """
         # todo: DOI should be optional (could also use URL, local path)
         self.doi = doi
+        self.url, self.top_directory = url, top_directory
         if root:
             # Store absolute path in case the working directory changes later
             self._root = os.path.abspath(root)
@@ -221,3 +231,7 @@ class Repository(Metadata):
             if not relpath.startswith('..'):
                 fileloc.repo = self
                 fileloc.path = relpath
+
+    def _get_full_path(self, path):
+        """Prefix the given path with our top-level directory"""
+        return os.path.join(self.top_directory or "", path)

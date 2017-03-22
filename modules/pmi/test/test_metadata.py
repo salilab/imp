@@ -38,8 +38,11 @@ class Tests(IMP.test.TestCase):
             with open(os.path.join(tmpdir, 'bar'), 'w') as f:
                 f.write("")
             s = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46266',
-                                            root=os.path.relpath(tmpdir))
+                                            root=os.path.relpath(tmpdir),
+                                            url='foo', top_directory='bar')
             self.assertEqual(s._root, tmpdir)
+            self.assertEqual(s.url, 'foo')
+            self.assertEqual(s.top_directory, 'bar')
             loc = IMP.pmi.metadata.FileLocation(
                                 os.path.relpath(os.path.join(tmpdir, 'bar')))
             self.assertEqual(loc.repo, None)

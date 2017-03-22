@@ -46,6 +46,10 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(results[(name,"cter")],IMP.atom.Residue(cter).get_index())
             nter=IMP.pmi.tools.get_terminal_residue(rcomplex, rcomplex.hier_dict[name], terminus="N", resolution=1)
             self.assertEqual(results[(name,"nter")],IMP.atom.Residue(nter).get_index())
+            pos = IMP.pmi.tools.get_terminal_residue_position(
+                          rcomplex, rcomplex.hier_dict[name], terminus="N",
+                          resolution=1)
+            self.assertIsInstance(pos, IMP.algebra.Vector3D)
 
         results={("Rpb4","cter"):(IMP.atom.Residue,221),
         ("Rpb4","nter"):(IMP.atom.Fragment,list(range(1,4))),

@@ -569,7 +569,31 @@ class _ExternalReferenceDumper(_Dumper):
        a DatabaseLocation)."""
 
     class _LocalFiles(object):
-        doi = _CifWriter.omitted
+        reference_provider = _CifWriter.omitted
+        reference_type = 'Supplementary Files'
+        reference = _CifWriter.omitted
+        refers_to = 'Other'
+        associated_url = _CifWriter.omitted
+        def _get_full_path(self, path):
+            return path
+
+    class _Repository(object):
+        reference_provider = _CifWriter.omitted
+        reference_type = 'DOI'
+        refers_to = 'Other'
+        associated_url = _CifWriter.omitted
+
+        def __init__(self, repo):
+            self.id = repo.id
+            self.reference = repo.doi
+            if 'zenodo' in self.reference:
+                self.reference_provider = 'Zenodo'
+            if repo.url:
+                self.associated_url = repo.url
+                if repo.url.endswith(".zip"):
+                    self.refers_to = 'Archive'
+                else:
+                    self.refers_to = 'File'
 
     def __init__(self, simo):
         super(_ExternalReferenceDumper, self).__init__(simo)
@@ -608,18 +632,26 @@ class _ExternalReferenceDumper(_Dumper):
         self.dump_locations(writer)
 
     def dump_repos(self, writer):
-        # todo: fill in non-DOI fields
+        def map_repo(r):
+            return r if isinstance(r, self._LocalFiles) else self._Repository(r)
         with writer.loop("_ihm_external_reference_info",
-                         ["reference_id", "reference"]) as l:
-            for repo in self._repo_by_id:
-                l.write(reference_id=repo.id, reference=repo.doi)
+                         ["reference_id", "reference_provider",
+                          "reference_type", "reference", "refers_to",
+                          "associated_url"]) as l:
+            for repo in [map_repo(r) for r in self._repo_by_id]:
+                l.write(reference_id=repo.id,
+                        reference_provider=repo.reference_provider,
+                        reference_type=repo.reference_type,
+                        reference=repo.reference, refers_to=repo.refers_to,
+                        associated_url=repo.associated_url)
 
     def dump_locations(self, writer):
         with writer.loop("_ihm_external_files",
                          ["id", "reference_id", "file_path"]) as l:
             for loc in self._location_by_id:
                 repo = loc.repo or self._local_files
-                l.write(id=loc.id, reference_id=repo.id, file_path=loc.path)
+                l.write(id=loc.id, reference_id=repo.id,
+                        file_path=repo._get_full_path(loc.path))
 
 
 class _DatasetDumper(_Dumper):
