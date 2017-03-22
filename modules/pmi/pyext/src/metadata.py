@@ -36,6 +36,12 @@ class Citation(RootMetadata):
         self.pmid, self.authors, self.doi = pmid, authors, doi
 
 
+class PythonScript(RootMetadata):
+    """A Python script used as part of the modeling."""
+    def __init__(self, location, description=None):
+        self.location, self.description = location, description
+
+
 class Dataset(Metadata):
     """A set of input data, for example, a crystal structure or EM map."""
 

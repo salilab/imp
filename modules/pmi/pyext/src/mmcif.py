@@ -169,6 +169,9 @@ class _Dumper(object):
     def finalize(self):
         pass
 
+    def finalize_metadata(self):
+        pass
+
 
 class _EntryDumper(_Dumper):
     def dump(self, writer):
@@ -269,6 +272,25 @@ class _CitationDumper(_Dumper):
                 for a in c.authors:
                     l.write(citation_id=n+1, name=a, ordinal=ordinal)
                     ordinal += 1
+
+class _WorkflowDumper(_Dumper):
+    def finalize_metadata(self):
+        """Register locations for any metadata and add the main script"""
+        loc = IMP.pmi.metadata.FileLocation(path=self.simo._main_script)
+        main_script = IMP.pmi.metadata.PythonScript(loc,
+                               "The main integrative modeling script")
+        self._workflow = [main_script] \
+                         + [m for m in self.simo._metadata
+                            if isinstance(m, IMP.pmi.metadata.PythonScript)]
+        for w in self._workflow:
+            self.simo.extref_dump.add(w.location)
+
+    def dump(self, writer):
+        with writer.loop("_ihm_modeling_workflow_files",
+                         ["file_id", "scripting_language", "description"]) as l:
+            for w in self._workflow:
+                l.write(file_id=w.location.id, scripting_language='Python',
+                        description=w.description)
 
 
 class _EntityDumper(_Dumper):
@@ -1197,6 +1219,15 @@ class _PDBHelix(object):
         self.length = int(line[71:76])
 
 
+class _MSESeqDif(object):
+    """Track an MSE -> MET mutation in the starting model sequence"""
+    comp_id = 'MET'
+    db_comp_id = 'MSE'
+    details = 'Conversion of modified residue MSE to MET'
+    def __init__(self, res, component):
+        self.res, self.component = res, component
+
+
 class _StartingModelDumper(_Dumper):
     def __init__(self, simo):
         super(_StartingModelDumper, self).__init__(simo)
@@ -1307,7 +1338,27 @@ class _StartingModelDumper(_Dumper):
 
     def dump(self, writer):
         self.dump_details(writer)
-        self.dump_coords(writer)
+        seq_dif = self.dump_coords(writer)
+        self.dump_seq_dif(writer, seq_dif)
+
+    def dump_seq_dif(self, writer, seq_dif):
+        ordinal = 1
+        with writer.loop("_ihm_starting_model_seq_dif",
+                     ["ordinal_id", "entity_id", "asym_id",
+                      "seq_id", "comp_id", "starting_model_ordinal_id",
+                      "db_entity_id", "db_asym_id", "db_seq_id", "db_comp_id",
+                      "details"]) as l:
+            for sd in seq_dif:
+                chain_id = self.simo.get_chain_for_component(
+                                    sd.component, self.output)
+                entity = self.simo.entities[sd.component]
+                # todo: determine starting_model_ordinal_id
+                l.write(ordinal_id=ordinal, entity_id=entity.id,
+                        asym_id=chain_id, seq_id=sd.res.get_index(),
+                        comp_id=sd.comp_id, db_entity_id=entity.id,
+                        db_asym_id=chain_id, db_seq_id=sd.res.get_index(),
+                        db_comp_id=sd.db_comp_id, details=sd.details)
+                ordinal += 1
 
     def dump_details(self, writer):
         writer.write_comment("""IMP will attempt to identify which input models
@@ -1347,6 +1398,7 @@ modeling. These may need to be added manually below.""")
                     ordinal += 1
 
     def dump_coords(self, writer):
+        seq_dif = []
         ordinal = 1
         with writer.loop("_ihm_starting_model_coord",
                      ["starting_model_id", "group_PDB", "id", "type_symbol",
@@ -1358,6 +1410,7 @@ modeling. These may need to be added manually below.""")
                 for f in model.fragments:
                     sel = IMP.atom.Selection(f.starting_hier,
                                residue_indexes=list(range(f.start, f.end + 1)))
+                    last_res_index = None
                     for a in sel.get_selected_particles():
                         coord = IMP.core.XYZ(a).get_coordinates()
                         atom = IMP.atom.Atom(a)
@@ -1371,11 +1424,15 @@ modeling. These may need to be added manually below.""")
                         res = IMP.atom.get_residue(atom)
                         res_name = res.get_residue_type().get_string()
                         # MSE in the original PDB is automatically mutated
-                        # by IMP to MET, so reflect that in the output.
-                        # todo: also add to the notes for starting_model_details
-                        # that the sequence was changed
+                        # by IMP to MET, so reflect that in the output,
+                        # and pass back to populate the seq_dif category.
                         if res_name == 'MSE':
                             res_name = 'MET'
+                            # Only add one seq_dif record per residue
+                            ind = res.get_index()
+                            if ind != last_res_index:
+                                last_res_index = ind
+                                seq_dif.append(_MSESeqDif(res, f.component))
                         chain_id = self.simo.get_chain_for_component(
                                             f.component, self.output)
                         entity = self.simo.entities[f.component]
@@ -1390,6 +1447,7 @@ modeling. These may need to be added manually below.""")
                                 B_iso_or_equiv=atom.get_temperature_factor(),
                                 ordinal_id=ordinal)
                         ordinal += 1
+        return seq_dif
 
 class _StructConfDumper(_Dumper):
     def all_rigid_fragments(self):
@@ -1698,6 +1756,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     output as mmCIF.
     """
     def __init__(self, fh):
+        self._main_script = os.path.abspath(sys.argv[0])
         self._cif_writer = _CifWriter(fh)
         self.entities = _EntityMapper()
         self.chains = {}
@@ -1744,6 +1803,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                          _EntityDumper(self),
                          _EntityPolyDumper(self), _EntityPolySeqDumper(self),
                          _StructAsymDumper(self),
+                         _WorkflowDumper(self),
                          self.assembly_dump,
                          self.model_repr_dump, self.extref_dump,
                          self.dataset_dump,
@@ -1787,6 +1847,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.entities.add(name, seq)
 
     def flush(self):
+        for dumper in self._dumpers:
+            dumper.finalize_metadata()
         for dumper in self._dumpers:
             dumper.finalize()
         for dumper in self._dumpers:
