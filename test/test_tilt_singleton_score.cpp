@@ -57,7 +57,7 @@ IMP::algebra::Vector3D(1.0,4.0,10.0),1.0));
   IMP_NEW(core::HarmonicWell, well, (tilt_range, 1.0));
   IMP_NEW(TiltSingletonScore, tss, (well, laxis, zaxis));
   IMP_NEW(core::SingletonRestraint, sr1, (m,tss,
-  IMP::internal::get_index(rb)));
+ rb.get_particle_index()));
   allrs->add_restraint(sr1);
 std::cout << allrs->evaluate(false) << std::endl;
 //IMP_TEST_EQUAL(std::abs(allrs->evaluate(false)),242.0)
