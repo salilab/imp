@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
  IMP::Pointer<statistics::PartitionalClustering> pc =
  membrane::create_gromos_clustering(drmsd,2.0);
 
-std::cout<< pc->get_number_of_clusters();
+ IMP_TEST_EQUAL(pc->get_number_of_clusters(),2);
 
  return EXIT_SUCCESS;
 }
