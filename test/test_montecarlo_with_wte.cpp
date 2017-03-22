@@ -37,8 +37,11 @@ IMP::algebra::Vector3D(1.0,4.0,8.0),1.0));
 
  // set the scoring function
  IMP_NEW(core::Harmonic, har, (0.0, 1.0));
- IMP_NEW(core::SingletonScore,ss,(har,core::XYZ::get_coordinate_key(2)));
- IMP_NEW(core::SingletonRestraint,sr,(m,ss,p1->get_index()));
+ IMP_NEW(core::AttributeSingletonScore, ass,
+          (har, core::XYZ::get_coordinate_key(2)));
+IMP_NEW(core::SingletonRestraint, sr,(m,ass,p1->get_index()));
+allrs->add_restraint(sr);
+
 
  //set the movers
  core::MonteCarloMovers mvs;
