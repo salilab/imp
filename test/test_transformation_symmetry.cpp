@@ -75,7 +75,7 @@ IMP_NEW(membrane::TransformationSymmetry, sm,
 
 // constrain rigid bodies
 core::Reference::setup_particle(prb, prb);
-IMP_NEW(core::SingletonConstraint, crb, (sm, NULL,m,rb->get_particle_index()));
+IMP_NEW(core::SingletonConstraint, crb, (sm, NULL,m,rb.get_particle_index()));
 m->add_score_state(crb);
 
 // constrain non rigid bodies
