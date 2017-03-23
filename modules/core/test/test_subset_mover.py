@@ -6,8 +6,7 @@ import IMP.algebra
 
 class Test(IMP.test.TestCase):
 
-    def setUp(self):
-        IMP.test.TestCase.setUp(self)
+    def make_system(self):
         self.m = IMP.Model()
         self.ps = []
         self.mvs = []
@@ -21,7 +20,7 @@ class Test(IMP.test.TestCase):
 
     def test_propose_sample_1(self):
         """Propose a composite move with mover subset size 1"""
-        self.setUp()
+        self.make_system()
         subset_mvr = IMP.core.SubsetMover(self.mvs, 1)
         res = subset_mvr.propose()
         num_moved = 0
@@ -34,7 +33,7 @@ class Test(IMP.test.TestCase):
 
     def test_propose_sample_5(self):
         """Propose a composite move with mover subset size 5"""
-        self.setUp()
+        self.make_system()
         subset_mvr = IMP.core.SubsetMover(self.mvs, 5)
         res = subset_mvr.propose()
         num_moved = 0
@@ -47,7 +46,7 @@ class Test(IMP.test.TestCase):
 
     def test_propose_sample_all(self):
         """Propose a composite move with all movers."""
-        self.setUp()
+        self.make_system()
         subset_mvr = IMP.core.SubsetMover(self.mvs, 10)
         res = subset_mvr.propose()
         num_moved = 0
@@ -62,7 +61,7 @@ class Test(IMP.test.TestCase):
         """Test all movers are used."""
         times_moved = [0 for i in range(10)]
         for i in range(100):
-            self.setUp()
+            self.make_system()
             subset_mvr = IMP.core.SubsetMover(self.mvs, 1)
             subset_mvr.propose()
             for j, p in enumerate(self.ps):
@@ -73,7 +72,7 @@ class Test(IMP.test.TestCase):
 
     def test_reject(self):
         """Test all movers are rejected."""
-        self.setUp()
+        self.make_system()
         subset_mvr = IMP.core.SubsetMover(self.mvs, 5)
         subset_mvr.propose()
         subset_mvr.reject()
