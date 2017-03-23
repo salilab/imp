@@ -33,7 +33,8 @@ namespace po = boost::program_options;
 
 using namespace IMP::kinematics;
 
-int main(int argc, char **argv)
+namespace {
+int rrt_sample(int argc, char **argv)
 {
   // output arguments
   for (int i=0; i<argc; i++) {
@@ -304,4 +305,16 @@ int main(int argc, char **argv)
   out->close();
 
   return 0;
+}
+
+} // anon namespace
+
+int main(int argc, char **argv)
+{
+  try {
+    return rrt_sample(argc, argv);
+  } catch (const std::exception &e) {
+    std::cerr << "ERROR: " << e.what() << std::endl;
+    return 1;
+  }
 }
