@@ -181,8 +181,8 @@ void HierarchyLoadLink::add_link_recursive(Model *m,
                          "Not at the back");
       IMP_INTERNAL_CHECK(alts[0] == node, "Not at front of RMF");
       for (unsigned int i = 0; i < reps.size() - 1; ++i) {
-        std::cout << "Linking reps " << reps[i]->get_name() << " and "
-                  << alts[i + 1].get_name() << std::endl;
+        IMP_LOG_VERBOSE("Linking reps " << reps[i]->get_name() << " and "
+                        << alts[i + 1].get_name() << std::endl);
         add_link_recursive(m, root, reps[i].get_particle_index(), alts[i + 1],
                            rigid_bodies, data);
       }
@@ -196,8 +196,8 @@ void HierarchyLoadLink::add_link_recursive(Model *m,
                   IOException);
       }
       for (unsigned int i = 0; i < reps.size(); ++i) {
-        std::cout << "Linking reps " << reps[i]->get_name() << " and "
-                  << alts[i].get_name() << std::endl;
+        IMP_LOG_VERBOSE("Linking reps " << reps[i]->get_name() << " and "
+                        << alts[i].get_name() << std::endl);
         add_link_recursive(m, root, reps[i].get_particle_index(), alts[i],
                            rigid_bodies, data);
       }
