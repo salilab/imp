@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
                          "3 test 'test code' 1 program http://salilab.org")
 
     def test_workflow(self):
-        """Test WorkflowDumper"""
+        """Test output of workflow files"""
         class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
             def flush(self):
                 pass
@@ -53,25 +53,39 @@ class Tests(IMP.test.TestCase):
         simo.add_protocol_output(po)
 
         r = IMP.pmi.metadata.Repository(doi="bar")
-        l = IMP.pmi.metadata.FileLocation(repo=r, path='bar')
-        s = IMP.pmi.metadata.PythonScript(location=l, description='foo')
+        l = IMP.pmi.metadata.FileLocation(repo=r, path='bar', details='foo')
+        s = IMP.pmi.metadata.PythonScript(location=l)
         simo.add_metadata(s)
 
-        d = IMP.pmi.mmcif._WorkflowDumper(po)
+        d = IMP.pmi.mmcif._ExternalReferenceDumper(po)
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
         d.finalize_metadata()
-        po.extref_dump.finalize_after_datasets()
+        d.finalize_after_datasets()
         d.dump(w)
         self.assertEqual(fh.getvalue(), """#
 loop_
-_ihm_modeling_workflow_files.file_id
-_ihm_modeling_workflow_files.scripting_language
-_ihm_modeling_workflow_files.description
-1 Python 'The main integrative modeling script'
-2 Python foo
+_ihm_external_reference_info.reference_id
+_ihm_external_reference_info.reference_provider
+_ihm_external_reference_info.reference_type
+_ihm_external_reference_info.reference
+_ihm_external_reference_info.refers_to
+_ihm_external_reference_info.associated_url
+1 . 'Supplementary Files' . Other .
+2 . DOI bar Other .
 #
-""")
+#
+loop_
+_ihm_external_files.id
+_ihm_external_files.reference_id
+_ihm_external_files.file_path
+_ihm_external_files.content_type
+_ihm_external_files.details
+1 1 %s 'Modeling workflow or script'
+'The main integrative modeling script'
+2 2 bar 'Modeling workflow or script' foo
+#
+""" % os.path.abspath(sys.argv[0]))
 
     def test_file_dataset(self):
         """Test get/set_file_dataset methods"""
@@ -494,19 +508,20 @@ _ihm_related_datasets.data_type_primary
         repo3 = IMP.pmi.metadata.Repository(doi="10.5281/zenodo.58025",
                                             url='foo.spd')
         l = IMP.pmi.metadata.FileLocation(repo=repo1, path='bar')
-        dump.add(l)
+        dump.add(l, IMP.pmi.mmcif._ExternalReferenceDumper.INPUT_DATA)
         # Duplicates should be ignored
         l = IMP.pmi.metadata.FileLocation(repo=repo1, path='bar')
-        dump.add(l)
+        dump.add(l, IMP.pmi.mmcif._ExternalReferenceDumper.INPUT_DATA)
         # Different file, same repository
         l = IMP.pmi.metadata.FileLocation(repo=repo1, path='baz')
-        dump.add(l)
+        dump.add(l, IMP.pmi.mmcif._ExternalReferenceDumper.INPUT_DATA)
         # Different repository
         l = IMP.pmi.metadata.FileLocation(repo=repo2, path='baz')
-        dump.add(l)
+        dump.add(l, IMP.pmi.mmcif._ExternalReferenceDumper.MODELING_OUTPUT)
         # Repository containing a single file (not an archive)
-        l = IMP.pmi.metadata.FileLocation(repo=repo3, path='foo.spd')
-        dump.add(l)
+        l = IMP.pmi.metadata.FileLocation(repo=repo3, path='foo.spd',
+                                          details='EM micrographs')
+        dump.add(l, IMP.pmi.mmcif._ExternalReferenceDumper.INPUT_DATA)
         with IMP.test.temporary_directory() as tmpdir:
             bar = os.path.join(tmpdir, 'bar')
             absbar = os.path.abspath(bar)
@@ -514,10 +529,10 @@ _ihm_related_datasets.data_type_primary
                 f.write("")
             # Local file
             l = IMP.pmi.metadata.FileLocation(bar)
-            dump.add(l)
+            dump.add(l, IMP.pmi.mmcif._ExternalReferenceDumper.WORKFLOW)
         # DatabaseLocations should be ignored
         l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
-        dump.add(l)
+        dump.add(l, IMP.pmi.mmcif._ExternalReferenceDumper.WORKFLOW)
         dump.finalize_after_datasets()
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
@@ -541,13 +556,15 @@ loop_
 _ihm_external_files.id
 _ihm_external_files.reference_id
 _ihm_external_files.file_path
-1 1 bar
-2 1 baz
-3 2 foo/bar/baz
-4 3 foo.spd
-5 4 %s
+_ihm_external_files.content_type
+_ihm_external_files.details
+1 1 bar 'Input data or restraints' .
+2 1 baz 'Input data or restraints' .
+3 2 foo/bar%sbaz 'Modeling or post-processing output' .
+4 3 foo.spd 'Input data or restraints' 'EM micrographs'
+5 4 %s 'Modeling workflow or script' .
 #
-""" % absbar)
+""" % (os.path.sep, absbar))
 
     def test_model_dumper_sphere(self):
         """Test ModelDumper sphere_obj output"""
@@ -793,7 +810,7 @@ _ihm_localization_density_files.entity_id
 _ihm_localization_density_files.asym_id
 _ihm_localization_density_files.seq_id_begin
 _ihm_localization_density_files.seq_id_end
-1 97 . 1 A 1 4
+1 97 42 1 A 1 4
 #
 """)
 
@@ -970,7 +987,7 @@ _ihm_2dem_class_average_restraint.details
         class DummyEntity(object):
             id = 4
         class DummyPO(object):
-            def get_chain_for_component(self, comp, output):
+            def _get_chain_for_component(self, comp, output):
                 return 'H'
             entities = {'nup84': DummyEntity()}
         class DummyRes(object):

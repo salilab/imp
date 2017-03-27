@@ -643,6 +643,10 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         input a list of particles, the slope and theta of the sigmoid potential
         theta is the cutoff distance for a protein-protein contact
         '''
+        # Import networkx here so that we don't introduce it as a dependency
+        # for *every* proteomics restraint, only this one
+        import networkx
+        self.networkx = networkx
         IMP.Restraint.__init__(self, m, "ConnectivityNetworkRestraint %1%")
         self.slope = slope
         self.theta = theta
@@ -665,22 +669,20 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         '''
         get the full graph of distances between every particle pair
         '''
-        import networkx
         import scipy.spatial
         pdist_array = numpy.array(
             IMP.pmi.get_list_of_bipartite_minimum_sphere_distance(self.particles_blocks))
         pdist_mat = scipy.spatial.distance.squareform(pdist_array)
         pdist_mat[pdist_mat < 0] = 0
-        graph = networkx.Graph(pdist_mat)
+        graph = self.networkx.Graph(pdist_mat)
         return graph
 
     def get_minimum_spanning_tree(self):
         """
         return the minimum spanning tree
         """
-        import networkx
         graph = self.get_full_graph()
-        graph = networkx.minimum_spanning_tree(graph)
+        graph = self.networkx.minimum_spanning_tree(graph)
         return graph
 
     def sigmoid(self, x):

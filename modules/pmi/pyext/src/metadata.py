@@ -38,8 +38,8 @@ class Citation(RootMetadata):
 
 class PythonScript(RootMetadata):
     """A Python script used as part of the modeling."""
-    def __init__(self, location, description=None):
-        self.location, self.description = location, description
+    def __init__(self, location):
+        self.location = location
 
 
 class Dataset(Metadata):

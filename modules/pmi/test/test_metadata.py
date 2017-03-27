@@ -26,8 +26,7 @@ class Tests(IMP.test.TestCase):
         """Test metadata.PythonScript"""
         r = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46266')
         f = IMP.pmi.metadata.FileLocation(repo=r, path='foo')
-        s = IMP.pmi.metadata.PythonScript(location=f, description="foo")
-        self.assertEqual(s.description, 'foo')
+        s = IMP.pmi.metadata.PythonScript(location=f)
 
     def test_repository(self):
         """Test metadata.Repository"""
