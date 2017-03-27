@@ -7,6 +7,9 @@ ChangeLog {#changelog}
 - Preview of mmCIF support for deposition of integrative models in
   [PDB-dev](https://pdb-dev.rcsb.rutgers.edu/). See the IMP::pmi::mmcif
   module for more details.
+- This will be the last release that includes packages for RedHat Enterprise
+  Linux 5 (and variants, such as CentOS 5), since RHEL 5 has reached end
+  of life.
 - The IMP::em::SurfaceShellDensityMap::binaries() method has been replaced
   with the (correctly spelled) IMP::em::SurfaceShellDensityMap::binarize()
   method.
