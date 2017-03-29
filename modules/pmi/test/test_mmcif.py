@@ -49,11 +49,15 @@ class Tests(IMP.test.TestCase):
                 pass
         m = IMP.Model()
         simo = IMP.pmi.representation.Representation(m)
+        root = os.path.dirname(sys.argv[0]) or '.'
+        simo.add_metadata(IMP.pmi.metadata.Repository(doi="foo", root=root))
         po = DummyPO(None)
         simo.add_protocol_output(po)
 
         r = IMP.pmi.metadata.Repository(doi="bar")
-        l = IMP.pmi.metadata.FileLocation(repo=r, path='bar', details='foo')
+        l = IMP.pmi.metadata.FileLocation(repo=r,
+                                          path=os.path.join('bar', 'baz'),
+                                          details='foo')
         s = IMP.pmi.metadata.PythonScript(location=l)
         simo.add_metadata(s)
 
@@ -71,7 +75,7 @@ _ihm_external_reference_info.reference_type
 _ihm_external_reference_info.reference
 _ihm_external_reference_info.refers_to
 _ihm_external_reference_info.associated_url
-1 . 'Supplementary Files' . Other .
+1 . DOI foo Other .
 2 . DOI bar Other .
 #
 #
@@ -83,7 +87,7 @@ _ihm_external_files.content_type
 _ihm_external_files.details
 1 1 test_mmcif.py 'Modeling workflow or script'
 'The main integrative modeling script'
-2 2 bar 'Modeling workflow or script' foo
+2 2 bar/baz 'Modeling workflow or script' foo
 #
 """)
 
@@ -503,8 +507,8 @@ _ihm_related_datasets.data_type_primary
         dump = IMP.pmi.mmcif._ExternalReferenceDumper(po)
         repo1 = IMP.pmi.metadata.Repository(doi="foo")
         repo2 = IMP.pmi.metadata.Repository(doi="10.5281/zenodo.46266",
-                                            url='nup84-v1.0.zip',
-                                            top_directory='foo/bar')
+                                     url='nup84-v1.0.zip',
+                                     top_directory=os.path.join('foo', 'bar'))
         repo3 = IMP.pmi.metadata.Repository(doi="10.5281/zenodo.58025",
                                             url='foo.spd')
         l = IMP.pmi.metadata.FileLocation(repo=repo1, path='bar')
@@ -558,11 +562,11 @@ _ihm_external_files.content_type
 _ihm_external_files.details
 1 1 bar 'Input data or restraints' .
 2 1 baz 'Input data or restraints' .
-3 2 foo/bar%sbaz 'Modeling or post-processing output' .
+3 2 foo/bar/baz 'Modeling or post-processing output' .
 4 3 foo.spd 'Input data or restraints' 'EM micrographs'
 5 4 %s 'Modeling workflow or script' .
 #
-""" % (os.path.sep, bar))
+""" % bar)
         os.unlink(bar)
 
     def test_model_dumper_sphere(self):
@@ -601,10 +605,11 @@ loop_
 _ihm_model_list.ordinal_id
 _ihm_model_list.model_id
 _ihm_model_list.model_group_id
+_ihm_model_list.model_name
 _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
-1 1 7 'all models' 42 93
+1 1 7 . 'all models' 42 93
 #
 #
 loop_
@@ -651,6 +656,7 @@ _ihm_sphere_obj_site.model_id
         group.id = 7
         model = d.add(simo.prot, protocol, assembly, group)
         self.assertEqual(model.id, 1)
+        model.name = 'foo'
         model.parse_rmsf_file(self.get_input_file_name('test.nup84.rmsf'),
                               'Nup84')
         self.assertAlmostEqual(model.get_rmsf('Nup84', (1,)), 4.5, delta=1e-4)
@@ -664,10 +670,11 @@ loop_
 _ihm_model_list.ordinal_id
 _ihm_model_list.model_id
 _ihm_model_list.model_group_id
+_ihm_model_list.model_name
 _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
-1 1 7 'all models' 42 93
+1 1 7 foo 'all models' 42 93
 #
 #
 loop_
@@ -1011,12 +1018,11 @@ _ihm_starting_model_seq_dif.asym_id
 _ihm_starting_model_seq_dif.seq_id
 _ihm_starting_model_seq_dif.comp_id
 _ihm_starting_model_seq_dif.starting_model_ordinal_id
-_ihm_starting_model_seq_dif.db_entity_id
 _ihm_starting_model_seq_dif.db_asym_id
 _ihm_starting_model_seq_dif.db_seq_id
 _ihm_starting_model_seq_dif.db_comp_id
 _ihm_starting_model_seq_dif.details
-1 4 H 42 MET 39 4 X 40 MSE 'Conversion of modified residue MSE to MET'
+1 4 H 42 MET 39 X 40 MSE 'Conversion of modified residue MSE to MET'
 #
 """)
 

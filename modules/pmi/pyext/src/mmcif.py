@@ -677,10 +677,19 @@ class _ExternalReferenceDumper(_Dumper):
             for r in self._ref_by_id:
                 loc = r.location
                 repo = loc.repo or self._local_files
+                file_path=self._posix_path(repo._get_full_path(loc.path))
                 l.write(id=loc.id, reference_id=repo.id,
-                        file_path=repo._get_full_path(loc.path),
+                        file_path=file_path,
                         content_type=r.content_type,
                         details=loc.details or _CifWriter.omitted)
+
+    # On Windows systems, convert native paths to POSIX-like (/-separated) paths
+    if os.sep == '/':
+        def _posix_path(self, path):
+            return path
+    else:
+        def _posix_path(self, path):
+            return path.replace(os.sep, '/')
 
 
 class _DatasetDumper(_Dumper):
@@ -1122,6 +1131,7 @@ class _Model(object):
         self.spheres = [t for t in particle_infos_for_pdb if t[1] is None]
         self.atoms = [t for t in particle_infos_for_pdb if t[1] is not None]
         self.rmsf = {}
+        self.name = _CifWriter.omitted
 
     def parse_rmsf_file(self, fname, component):
         self.rmsf[component] = rmsf = {}
@@ -1163,11 +1173,12 @@ class _ModelDumper(_Dumper):
         ordinal = 1
         with writer.loop("_ihm_model_list",
                          ["ordinal_id", "model_id", "model_group_id",
-                          "model_group_name", "assembly_id",
+                          "model_name", "model_group_name", "assembly_id",
                           "protocol_id"]) as l:
             for model in self.models:
                 l.write(ordinal_id=ordinal, model_id=model.id,
                         model_group_id=model.group.id,
+                        model_name=model.name,
                         model_group_name=model.group.name,
                         assembly_id=model.assembly.id,
                         protocol_id=model.protocol.id)
@@ -1415,7 +1426,7 @@ class _StartingModelDumper(_Dumper):
         with writer.loop("_ihm_starting_model_seq_dif",
                      ["ordinal_id", "entity_id", "asym_id",
                       "seq_id", "comp_id", "starting_model_ordinal_id",
-                      "db_entity_id", "db_asym_id", "db_seq_id", "db_comp_id",
+                      "db_asym_id", "db_seq_id", "db_comp_id",
                       "details"]) as l:
             for sd in seq_dif:
                 chain_id = self.simo._get_chain_for_component(
@@ -1423,7 +1434,7 @@ class _StartingModelDumper(_Dumper):
                 entity = self.simo.entities[sd.component]
                 l.write(ordinal_id=ordinal, entity_id=entity.id,
                         asym_id=chain_id, seq_id=sd.res.get_index(),
-                        comp_id=sd.comp_id, db_entity_id=entity.id,
+                        comp_id=sd.comp_id,
                         db_asym_id=sd.source.chain_id,
                         db_seq_id=sd.res.get_index() - sd.offset,
                         db_comp_id=sd.db_comp_id,
@@ -1672,6 +1683,7 @@ class _ReplicaExchangeAnalysisEnsemble(_Ensemble):
     """Ensemble generated using AnalysisReplicaExchange0 macro"""
 
     def __init__(self, pp, cluster_num, model_group, num_deposit):
+        self.file = None
         self.model_group = model_group
         self.cluster_num = cluster_num
         self.postproc = pp
@@ -1750,7 +1762,8 @@ class _SimpleEnsemble(_Ensemble):
     feature = 'dRMSD'
 
     def __init__(self, pp, model_group, num_models, drmsd,
-                 num_models_deposited):
+                 num_models_deposited, ensemble_file):
+        self.file = ensemble_file
         self.postproc = pp
         self.model_group = model_group
         self.num_deposit = num_models_deposited
@@ -1783,7 +1796,8 @@ class _EnsembleDumper(_Dumper):
                           "ensemble_clustering_feature",
                           "num_ensemble_models",
                           "num_ensemble_models_deposited",
-                          "ensemble_precision_value"]) as l:
+                          "ensemble_precision_value",
+                          "ensemble_file_id"]) as l:
             for e in self.ensembles:
                 l.write(ensemble_id=e.id, ensemble_name=e.name,
                         post_process_id=e.postproc.id,
@@ -1791,7 +1805,9 @@ class _EnsembleDumper(_Dumper):
                         ensemble_clustering_feature=e.feature,
                         num_ensemble_models=e.num_models,
                         num_ensemble_models_deposited=e.num_deposit,
-                        ensemble_precision_value=e.precision)
+                        ensemble_precision_value=e.precision,
+                        ensemble_file_id=e.file.id if e.file
+                                                   else _CifWriter.omitted)
 
 class _DensityDumper(_Dumper):
     """Output localization densities for ensembles"""
@@ -2042,11 +2058,15 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         return pp
 
     def _add_simple_ensemble(self, pp, name, num_models, drmsd,
-                             num_models_deposited, localization_densities):
+                             num_models_deposited, localization_densities,
+                             ensemble_file):
         """Add an ensemble generated by ad hoc methods (not using PMI).
            This is currently only used by the Nup84 system."""
         group = self.add_model_group(_ModelGroup(name))
-        e = _SimpleEnsemble(pp, group, num_models, drmsd, num_models_deposited)
+        self.extref_dump.add(ensemble_file,
+                             _ExternalReferenceDumper.MODELING_OUTPUT)
+        e = _SimpleEnsemble(pp, group, num_models, drmsd, num_models_deposited,
+                            ensemble_file)
         self.ensemble_dump.add(e)
         self.density_dump.add(e)
         for c in self.all_modeled_components:
@@ -2075,6 +2095,9 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                 e.load_localization_density(self.m, c, self.extref_dump)
             for stats in e.load_all_models(self):
                 m = self.add_model(group)
+                # Since we currently only deposit 1 model, it is the
+                # best scoring one
+                m.name = 'Best scoring model'
                 m.stats = stats
                 # Don't alter original RMF coordinates
                 m.geometric_center = [0,0,0]
