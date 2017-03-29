@@ -81,11 +81,11 @@ _ihm_external_files.reference_id
 _ihm_external_files.file_path
 _ihm_external_files.content_type
 _ihm_external_files.details
-1 1 %s 'Modeling workflow or script'
+1 1 test_mmcif.py 'Modeling workflow or script'
 'The main integrative modeling script'
 2 2 bar 'Modeling workflow or script' foo
 #
-""" % os.path.abspath(sys.argv[0]))
+""")
 
     def test_file_dataset(self):
         """Test get/set_file_dataset methods"""
@@ -522,14 +522,12 @@ _ihm_related_datasets.data_type_primary
         l = IMP.pmi.metadata.FileLocation(repo=repo3, path='foo.spd',
                                           details='EM micrographs')
         dump.add(l, IMP.pmi.mmcif._ExternalReferenceDumper.INPUT_DATA)
-        with IMP.test.temporary_directory() as tmpdir:
-            bar = os.path.join(tmpdir, 'bar')
-            absbar = os.path.abspath(bar)
-            with open(bar, 'w') as f:
-                f.write("")
-            # Local file
-            l = IMP.pmi.metadata.FileLocation(bar)
-            dump.add(l, IMP.pmi.mmcif._ExternalReferenceDumper.WORKFLOW)
+        bar = 'test_mmcif_extref.tmp'
+        with open(bar, 'w') as f:
+            f.write("")
+        # Local file
+        l = IMP.pmi.metadata.FileLocation(bar)
+        dump.add(l, IMP.pmi.mmcif._ExternalReferenceDumper.WORKFLOW)
         # DatabaseLocations should be ignored
         l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
         dump.add(l, IMP.pmi.mmcif._ExternalReferenceDumper.WORKFLOW)
@@ -564,7 +562,8 @@ _ihm_external_files.details
 4 3 foo.spd 'Input data or restraints' 'EM micrographs'
 5 4 %s 'Modeling workflow or script' .
 #
-""" % (os.path.sep, absbar))
+""" % (os.path.sep, bar))
+        os.unlink(bar)
 
     def test_model_dumper_sphere(self):
         """Test ModelDumper sphere_obj output"""
@@ -993,12 +992,16 @@ _ihm_2dem_class_average_restraint.details
         class DummyRes(object):
             def get_index(self):
                 return 42
+        class DummySource(object):
+            id = 39
+            chain_id = 'X'
 
         po = DummyPO()
         d = IMP.pmi.mmcif._StartingModelDumper(po)
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
-        d.dump_seq_dif(w, [IMP.pmi.mmcif._MSESeqDif(DummyRes(), 'nup84')])
+        d.dump_seq_dif(w, [IMP.pmi.mmcif._MSESeqDif(DummyRes(), 'nup84',
+                                                    DummySource(), 2)])
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
@@ -1013,7 +1016,7 @@ _ihm_starting_model_seq_dif.db_asym_id
 _ihm_starting_model_seq_dif.db_seq_id
 _ihm_starting_model_seq_dif.db_comp_id
 _ihm_starting_model_seq_dif.details
-1 4 H 42 MET . 4 H 42 MSE 'Conversion of modified residue MSE to MET'
+1 4 H 42 MET 39 4 X 40 MSE 'Conversion of modified residue MSE to MET'
 #
 """)
 

@@ -483,17 +483,25 @@ class _PDBSource(object):
 class _TemplateSource(object):
     """A PDB file used as a template for a comparative starting model"""
     source = 'comparative model'
-    db_name = 'PDB'
+    db_name = db_code = _CifWriter.omitted
+    tm_db_name = 'PDB'
+    # Right now assume all alignments are Modeller alignments, which uses
+    # the length of the shorter sequence as the denominator for sequence
+    # identity
+    sequence_identity_denominator = 1
 
-    def __init__(self, code, seq_id_begin, seq_id_end, seq_id,
-                 model):
+    def __init__(self, tm_code, tm_seq_id_begin, tm_seq_id_end, seq_id_begin,
+                 chain_id, seq_id_end, seq_id, model):
         # Assume a code of 1abcX refers to a real PDB structure
-        if len(code) == 5:
-            self.db_code = code[:4].upper()
-            self.chain_id = code[4]
+        if len(tm_code) == 5:
+            self.tm_db_code = tm_code[:4].upper()
+            self.tm_chain_id = tm_code[4]
         else:
-            self.db_code = self.chain_id = _CifWriter.unknown
+            self.tm_db_code = self.tm_chain_id = _CifWriter.unknown
         self.sequence_identity = seq_id
+        self.tm_seq_id_begin = tm_seq_id_begin
+        self.tm_seq_id_end = tm_seq_id_end
+        self.chain_id = chain_id
         self._seq_id_begin, self._seq_id_end = seq_id_begin, seq_id_end
 
     def get_seq_id_range(self, model):
@@ -574,8 +582,12 @@ class _ExternalReferenceDumper(_Dumper):
         reference = _CifWriter.omitted
         refers_to = 'Other'
         associated_url = _CifWriter.omitted
+
+        def __init__(self, top_directory):
+            self.top_directory = top_directory
+
         def _get_full_path(self, path):
-            return path
+            return os.path.relpath(path, start=self.top_directory)
 
     class _Repository(object):
         reference_provider = _CifWriter.omitted
@@ -630,7 +642,7 @@ class _ExternalReferenceDumper(_Dumper):
         self._ref_by_id = []
         self._repo_by_id = []
         # Special dummy repo for repo=None (local files)
-        self._local_files = self._LocalFiles()
+        self._local_files = self._LocalFiles(self.simo._working_directory)
         for r in self._refs:
             # Update location to point to parent repository, if any
             self.simo._update_location(r.location)
@@ -1274,8 +1286,9 @@ class _MSESeqDif(object):
     comp_id = 'MET'
     db_comp_id = 'MSE'
     details = 'Conversion of modified residue MSE to MET'
-    def __init__(self, res, component):
-        self.res, self.component = res, component
+    def __init__(self, res, component, source, offset):
+        self.res, self.component, self.source = res, component, source
+        self.offset = offset
 
 
 class _StartingModelDumper(_Dumper):
@@ -1308,8 +1321,9 @@ class _StartingModelDumper(_Dumper):
 
     def get_templates(self, pdbname, model):
         templates = []
-        tmpre = re.compile('REMARK   6 TEMPLATE: (\S+) .* '
-                           'MODELS (\S+):\S+ \- (\S+):\S+ AT (\S+)%')
+        tmpre = re.compile('REMARK   6 TEMPLATE: '
+                           '(\S+) (\S+):\S+ \- (\S+):\S+ '
+                           'MODELS (\S+):(\S+) \- (\S+):\S+ AT (\S+)%')
 
         with open(pdbname) as fh:
             for line in fh:
@@ -1320,7 +1334,11 @@ class _StartingModelDumper(_Dumper):
                     templates.append(_TemplateSource(m.group(1),
                                                      int(m.group(2)),
                                                      int(m.group(3)),
-                                                     m.group(4), model))
+                                                     int(m.group(4)),
+                                                     m.group(5),
+                                                     int(m.group(6)),
+                                                     m.group(7), model))
+
         # Sort by starting residue, then ending residue
         return sorted(templates, key=lambda x: (x._seq_id_begin, x._seq_id_end))
 
@@ -1388,6 +1406,7 @@ class _StartingModelDumper(_Dumper):
 
     def dump(self, writer):
         self.dump_details(writer)
+        self.dump_comparative(writer)
         seq_dif = self.dump_coords(writer)
         self.dump_seq_dif(writer, seq_dif)
 
@@ -1402,13 +1421,40 @@ class _StartingModelDumper(_Dumper):
                 chain_id = self.simo._get_chain_for_component(
                                     sd.component, self.output)
                 entity = self.simo.entities[sd.component]
-                # todo: determine starting_model_ordinal_id
                 l.write(ordinal_id=ordinal, entity_id=entity.id,
                         asym_id=chain_id, seq_id=sd.res.get_index(),
                         comp_id=sd.comp_id, db_entity_id=entity.id,
-                        db_asym_id=chain_id, db_seq_id=sd.res.get_index(),
-                        db_comp_id=sd.db_comp_id, details=sd.details)
+                        db_asym_id=sd.source.chain_id,
+                        db_seq_id=sd.res.get_index() - sd.offset,
+                        db_comp_id=sd.db_comp_id,
+                        starting_model_ordinal_id=sd.source.id,
+                        details=sd.details)
                 ordinal += 1
+
+    def dump_comparative(self, writer):
+        """Dump details on comparative models. Must be called after
+           dump_details() since it uses IDs assigned there."""
+        with writer.loop("_ihm_starting_comparative_models",
+                     ["starting_model_ordinal_id", "starting_model_id",
+                      "template_db_name", "template_db_code",
+                      "template_db_auth_asym_id", "template_db_seq_begin",
+                      "template_db_seq_end", "template_sequence_identity",
+                      "template_sequence_identity_denominator",
+                      "alignment_file_id"]) as l:
+            ordinal = 1
+            for model in self.all_models():
+                for template in [s for s in model.sources
+                                 if isinstance(s, _TemplateSource)]:
+                    denom = template.sequence_identity_denominator
+                    l.write(starting_model_ordinal_id=template.id,
+                      starting_model_id=model.name,
+                      template_db_name=template.tm_db_name,
+                      template_db_code=template.tm_db_code,
+                      template_db_auth_asym_id=template.tm_chain_id,
+                      template_db_seq_begin=template.tm_seq_id_begin,
+                      template_db_seq_end=template.tm_seq_id_end,
+                      template_sequence_identity=template.sequence_identity,
+                      template_sequence_identity_denominator=denom)
 
     def dump_details(self, writer):
         writer.write_comment("""IMP will attempt to identify which input models
@@ -1421,7 +1467,7 @@ modeling. These may need to be added manually below.""")
                       "seq_id_end", "starting_model_source",
                       "starting_model_db_name", "starting_model_db_code",
                       "starting_model_auth_asym_id",
-                      "starting_model_sequence_identity",
+                      "starting_model_sequence_offset",
                       "starting_model_id",
                       "dataset_list_id"]) as l:
             ordinal = 1
@@ -1432,6 +1478,7 @@ modeling. These may need to be added manually below.""")
                                                               self.output)
                 for source in model.sources:
                     seq_id_begin, seq_id_end = source.get_seq_id_range(model)
+                    source.id = ordinal
                     l.write(ordinal_id=ordinal,
                       entity_id=entity.id,
                       entity_description=entity.description,
@@ -1443,7 +1490,7 @@ modeling. These may need to be added manually below.""")
                       starting_model_source=source.source,
                       starting_model_db_name=source.db_name,
                       starting_model_db_code=source.db_code,
-                      starting_model_sequence_identity=source.sequence_identity,
+                      starting_model_sequence_offset=f.offset,
                       dataset_list_id=model.dataset.id)
                     ordinal += 1
 
@@ -1482,7 +1529,14 @@ modeling. These may need to be added manually below.""")
                             ind = res.get_index()
                             if ind != last_res_index:
                                 last_res_index = ind
-                                seq_dif.append(_MSESeqDif(res, f.component))
+                                # This should only happen when we're using
+                                # a crystal structure as the source (a
+                                # comparative model would use MET in
+                                # the sequence)
+                                assert(len(model.sources) == 1)
+                                seq_dif.append(_MSESeqDif(res, f.component,
+                                                          model.sources[0],
+                                                          f.offset))
                         chain_id = self.simo._get_chain_for_component(
                                             f.component, self.output)
                         entity = self.simo.entities[f.component]
@@ -1578,6 +1632,14 @@ class _ReplicaExchangeAnalysisPostProcess(_PostProcess):
         for i in range(self.rex._number_of_clusters):
             yield self.get_stat_file(i)
 
+class _SimplePostProcess(_PostProcess):
+    """Simple ad hoc clustering"""
+    type = 'cluster'
+    feature = 'RMSD'
+
+    def __init__(self, num_models_begin, num_models_end):
+        self.num_models_begin = num_models_begin
+        self.num_models_end = num_models_end
 
 class _PostProcessDumper(_Dumper):
     def __init__(self, simo):
@@ -1681,6 +1743,28 @@ class _ReplicaExchangeAnalysisEnsemble(_Ensemble):
     feature = property(lambda self: self.postproc.feature)
     name = property(lambda self: "Cluster %d" % (self.cluster_num + 1))
     precision = property(lambda self: self._get_precision())
+
+class _SimpleEnsemble(_Ensemble):
+    """Simple manually-created ensemble"""
+
+    feature = 'dRMSD'
+
+    def __init__(self, pp, model_group, num_models, drmsd,
+                 num_models_deposited):
+        self.postproc = pp
+        self.model_group = model_group
+        self.num_deposit = num_models_deposited
+        self.localization_density = {}
+        self.num_models = num_models
+        self.precision = drmsd
+
+    def load_localization_density(self, mdl, component, local_file,
+                                  extref_dump):
+        self.localization_density[component] = local_file
+        extref_dump.add(local_file,
+                        _ExternalReferenceDumper.MODELING_OUTPUT)
+
+    name = property(lambda self: self.model_group.name)
 
 
 class _EnsembleDumper(_Dumper):
@@ -1809,6 +1893,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     """
     def __init__(self, fh):
         self._main_script = os.path.abspath(sys.argv[0])
+        self._working_directory = os.getcwd()
         self._cif_writer = _CifWriter(fh)
         self.entities = _EntityMapper()
         self.chains = {}
@@ -1950,6 +2035,25 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.model_groups.append(group)
         group.id = len(self.model_groups)
         return group
+
+    def _add_simple_postprocessing(self, num_models_begin, num_models_end):
+        pp = _SimplePostProcess(num_models_begin, num_models_end)
+        self.post_process_dump.add(pp)
+        return pp
+
+    def _add_simple_ensemble(self, pp, name, num_models, drmsd,
+                             num_models_deposited, localization_densities):
+        """Add an ensemble generated by ad hoc methods (not using PMI).
+           This is currently only used by the Nup84 system."""
+        group = self.add_model_group(_ModelGroup(name))
+        e = _SimpleEnsemble(pp, group, num_models, drmsd, num_models_deposited)
+        self.ensemble_dump.add(e)
+        self.density_dump.add(e)
+        for c in self.all_modeled_components:
+            den = localization_densities.get(c, None)
+            if den:
+                e.load_localization_density(self.m, c, den, self.extref_dump)
+        return e
 
     def add_replica_exchange_analysis(self, rex):
         # todo: add prefilter as an additional postprocess step (complication:
