@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/particle_io.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Manage read/write of particles from/to RMF files.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/RMFWriter.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Write geometry to an RMF file.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *

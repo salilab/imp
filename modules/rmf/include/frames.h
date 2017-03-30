@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/frames.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Read or write RMF frames.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *

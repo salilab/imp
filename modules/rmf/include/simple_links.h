@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/simple_links.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Manage links between IMP objects and RMF nodes.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/rmf/atom_io.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Input/output of IMP::atom::Hierarchy information.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
