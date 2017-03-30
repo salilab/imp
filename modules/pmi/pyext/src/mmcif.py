@@ -1448,8 +1448,8 @@ class _StartingModelDumper(_Dumper):
         with writer.loop("_ihm_starting_comparative_models",
                      ["starting_model_ordinal_id", "starting_model_id",
                       "template_db_name", "template_db_code",
-                      "template_db_auth_asym_id", "template_db_seq_begin",
-                      "template_db_seq_end", "template_sequence_identity",
+                      "template_auth_asym_id", "template_seq_begin",
+                      "template_seq_end", "template_sequence_identity",
                       "template_sequence_identity_denominator",
                       "alignment_file_id"]) as l:
             ordinal = 1
@@ -1461,9 +1461,9 @@ class _StartingModelDumper(_Dumper):
                       starting_model_id=model.name,
                       template_db_name=template.tm_db_name,
                       template_db_code=template.tm_db_code,
-                      template_db_auth_asym_id=template.tm_chain_id,
-                      template_db_seq_begin=template.tm_seq_id_begin,
-                      template_db_seq_end=template.tm_seq_id_end,
+                      template_auth_asym_id=template.tm_chain_id,
+                      template_seq_begin=template.tm_seq_id_begin,
+                      template_seq_end=template.tm_seq_id_end,
                       template_sequence_identity=template.sequence_identity,
                       template_sequence_identity_denominator=denom)
 
