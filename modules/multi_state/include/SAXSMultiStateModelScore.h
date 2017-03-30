@@ -35,7 +35,8 @@ public:
                            const saxs::Profile* exp_profile,
                            bool c1_c2_approximate,
                            double min_c1 = 0.99, double max_c1 = 1.05,
-                           double min_c2 = -0.5, double max_c2 = 2.0);
+                           double min_c2 = -0.5, double max_c2 = 2.0,
+                           bool use_offset = false);
 
   double get_score(const MultiStateModel& m) const;
 
@@ -86,6 +87,8 @@ private:
 
   // do not perform any c1/c2 fitting
   bool c1_c2_no_fitting_;
+
+  bool use_offset_;
 };
 
 template <typename ScoringFunctionT>
@@ -94,10 +97,12 @@ SAXSMultiStateModelScore<ScoringFunctionT>::SAXSMultiStateModelScore(
                                               const saxs::Profile* exp_profile,
                                               bool c1_c2_approximate,
                                               double min_c1, double max_c1,
-                                              double min_c2, double max_c2) :
+                                              double min_c2, double max_c2,
+                                              bool use_offset) :
   profiles_(profiles), exp_profile_(exp_profile),
   min_c1_(min_c1), max_c1_(max_c1), min_c2_(min_c2), max_c2_(max_c2),
-  c1_c2_approximate_(c1_c2_approximate), c1_c2_no_fitting_(false) {
+  c1_c2_approximate_(c1_c2_approximate), c1_c2_no_fitting_(false),
+  use_offset_(use_offset) {
 
   if(profiles_.size() < 1) {
     IMP_THROW("SAXSMultiStateModelScore - please provide at least one profile"
@@ -142,7 +147,7 @@ void SAXSMultiStateModelScore<ScoringFunctionT>::set_average_c1_c2(
   for(unsigned int i=0; i<profiles.size(); i++) {
     profiles_temp[0] = profiles[i];
     saxs::WeightedFitParameters fp =
-      score->fit_profile(profiles_temp, min_c1_, max_c1_, min_c2_, max_c2_);
+      score->fit_profile(profiles_temp, min_c1_, max_c1_, min_c2_, max_c2_, use_offset_);
     average_c1_ += fp.get_c1();
     average_c2_ += fp.get_c2();
   }
@@ -181,13 +186,12 @@ double SAXSMultiStateModelScore<ScoringFunctionT>::get_score(const MultiStateMod
 
   double chi;
   if(c1_c2_approximate_ || c1_c2_no_fitting_) { // just score calculation
-    chi = score_->compute_score(profiles, weights);
+    chi = score_->compute_score(profiles, weights, use_offset_);
   } else { // optimize c1/c2 fit and score
     saxs::WeightedFitParameters fp =
-      score_->fit_profile(profiles, min_c1_, max_c1_, min_c2_, max_c2_);
+      score_->fit_profile(profiles, min_c1_, max_c1_, min_c2_, max_c2_, use_offset_);
     chi = fp.get_chi();
   }
-
   return chi;
 }
 
@@ -215,9 +219,8 @@ saxs::WeightedFitParameters
     profiles[i] = resampled_profiles_[states[i]];
 
   saxs::WeightedFitParameters fp =
-    score_->fit_profile(profiles, min_c1_, max_c1_, min_c2_, max_c2_);
+    score_->fit_profile(profiles, min_c1_, max_c1_, min_c2_, max_c2_, use_offset_);
   m.set_score(fp.get_chi());
-
   return fp;
 }
 
@@ -227,14 +230,14 @@ saxs::WeightedFitParameters
 
   if(c1_c2_no_fitting_) {
     Vector<double> weights;
-    double s = score_->compute_score(resampled_profiles_, weights);
+    double s = score_->compute_score(resampled_profiles_, weights, use_offset_);
     saxs::WeightedFitParameters wfp(s, 1.0, 0.0, weights);
     return wfp;
   }
 
   saxs::WeightedFitParameters fp = score_->fit_profile(resampled_profiles_,
                                                        min_c1_, max_c1_,
-                                                       min_c2_, max_c2_);
+                                                       min_c2_, max_c2_, use_offset_);
   return fp;
 }
 
@@ -247,7 +250,7 @@ void SAXSMultiStateModelScore<ScoringFunctionT>::write_fit_file(MultiStateModel&
   saxs::ProfilesTemp profiles(states.size());
   for(unsigned int i=0; i<states.size(); i++)
     profiles[i] = resampled_profiles_[states[i]];
-  score_->write_fit_file(profiles, fp, fit_file_name);
+  score_->write_fit_file(profiles, fp, fit_file_name, use_offset_);
 }
 
 IMPMULTISTATE_END_NAMESPACE

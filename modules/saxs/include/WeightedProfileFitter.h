@@ -53,8 +53,8 @@ class WeightedProfileFitter : public ProfileFitter<ScoringFunctionT> {
      if(NNLS = true, solve non-negative least squares, otherwise solve just
      least squares, that may return negative weights to be discarded later
   */
-  double compute_score(const ProfilesTemp& profiles,
-                       Vector<double>& weights, bool NNLS = true) const;
+  double compute_score(const ProfilesTemp& profiles, Vector<double>& weights,
+                       bool use_offset = false, bool NNLS = true) const;
 
   //! fit profiles by optimization of c1/c2 and weights
   /**
@@ -63,18 +63,19 @@ class WeightedProfileFitter : public ProfileFitter<ScoringFunctionT> {
   */
   WeightedFitParameters fit_profile(ProfilesTemp partial_profiles,
                                     double min_c1 = 0.95, double max_c1 = 1.05,
-                                    double min_c2 = -2.0,
-                                    double max_c2 = 4.0) const;
+                                    double min_c2 = -2.0, double max_c2 = 4.0,
+                                    bool use_offset = false) const;
 
   //! write a fit file
   void write_fit_file(ProfilesTemp partial_profiles,
                       const WeightedFitParameters& fp,
-                      const std::string fit_file_name) const;
+                      const std::string fit_file_name,
+                      bool use_offset = false) const;
 
  private:
   WeightedFitParameters search_fit_parameters(
       ProfilesTemp& partial_profiles, double min_c1, double max_c1, double min_c2,
-      double max_c2, double old_chi, Vector<double>& weights) const;
+      double max_c2, double old_chi, Vector<double>& weights, bool use_offset) const;
 
  private:
   IMP_Eigen::MatrixXf W_;  // weights matrix
@@ -90,15 +91,15 @@ template <typename ScoringFunctionT>
 double WeightedProfileFitter<ScoringFunctionT>::compute_score(
                                             const ProfilesTemp& profiles,
                                             Vector<double>& weights,
-                                            bool nnls) const {
+                                            bool use_offset, bool nnls) const {
 
   // no need to compute weighted profile for ensemble of size 1
   if (profiles.size() == 1) {
     weights.resize(1);
     weights[0] = 1.0;
-    return ProfileFitter<ScoringFunctionT>::scoring_function_->compute_score(
+    return  ProfileFitter<ScoringFunctionT>::scoring_function_->compute_score(
                                        ProfileFitter<ScoringFunctionT>::exp_profile_,
-                                       profiles[0]);
+                                       profiles[0], use_offset);
   }
 
   // compute_weights(profiles, weights);
@@ -142,18 +143,19 @@ double WeightedProfileFitter<ScoringFunctionT>::compute_score(
 
   return ProfileFitter<ScoringFunctionT>::scoring_function_->compute_score(
                                    ProfileFitter<ScoringFunctionT>::exp_profile_,
-                                   weighted_profile);
+                                   weighted_profile, use_offset);
 }
 
 template <typename ScoringFunctionT>
 WeightedFitParameters WeightedProfileFitter<ScoringFunctionT>::fit_profile(
                                            ProfilesTemp partial_profiles,
                                            double min_c1, double max_c1,
-                                           double min_c2, double max_c2) const {
+                                           double min_c2, double max_c2,
+                                           bool use_offset) const {
   Vector<double> weights;
   WeightedFitParameters fp =
       search_fit_parameters(partial_profiles, min_c1, max_c1, min_c2, max_c2,
-                            std::numeric_limits<double>::max(), weights);
+                            std::numeric_limits<double>::max(), weights, use_offset);
   return fp;
 }
 
@@ -161,7 +163,8 @@ template <typename ScoringFunctionT>
 void WeightedProfileFitter<ScoringFunctionT>::write_fit_file(
                                          ProfilesTemp partial_profiles,
                                          const WeightedFitParameters& fp,
-                                         const std::string fit_file_name) const {
+                                         const std::string fit_file_name,
+                                         bool use_offset) const {
   double best_c1 = fp.get_c1();
   double best_c2 = fp.get_c2();
 
@@ -171,12 +174,19 @@ void WeightedProfileFitter<ScoringFunctionT>::write_fit_file(
 
   if (partial_profiles.size() == 1) {
     // compute scale
+    double offset = 0.0;
+    if (use_offset)
+      offset =
+        ProfileFitter<ScoringFunctionT>::scoring_function_->compute_offset(
+                                   ProfileFitter<ScoringFunctionT>::exp_profile_,
+                                   partial_profiles[0]);
+
     double c =
       ProfileFitter<ScoringFunctionT>::scoring_function_->compute_scale_factor(
                                    ProfileFitter<ScoringFunctionT>::exp_profile_,
-                                   partial_profiles[0]);
+                                   partial_profiles[0], offset);
     ProfileFitter<ScoringFunctionT>::write_SAXS_fit_file(
-        fit_file_name, partial_profiles[0], fp.get_chi(), c);
+                                   fit_file_name, partial_profiles[0], fp.get_chi(), c, offset);
   } else {
 
     // computed weighted profile
@@ -190,13 +200,20 @@ void WeightedProfileFitter<ScoringFunctionT>::write_fit_file(
       weighted_profile->add(partial_profiles[i], weights[i]);
 
     // compute scale
+    double offset = 0.0;
+    if (use_offset)
+      offset =
+        ProfileFitter<ScoringFunctionT>::scoring_function_->compute_offset(
+                                   ProfileFitter<ScoringFunctionT>::exp_profile_,
+                                   weighted_profile);
     double c =
       ProfileFitter<ScoringFunctionT>::scoring_function_->compute_scale_factor(
                                    ProfileFitter<ScoringFunctionT>::exp_profile_,
-                                   weighted_profile);
+                                   weighted_profile, offset);
 
     ProfileFitter<ScoringFunctionT>::write_SAXS_fit_file(
-                       fit_file_name, weighted_profile, fp.get_chi(), c);
+                                   fit_file_name, weighted_profile,
+                                   fp.get_chi(), c, offset);
   }
 }
 
@@ -205,7 +222,8 @@ WeightedFitParameters WeightedProfileFitter<ScoringFunctionT>::search_fit_parame
                                 ProfilesTemp& partial_profiles,
                                 double min_c1, double max_c1,
                                 double min_c2, double max_c2,
-                                double old_chi, Vector<double>& weights) const {
+                                double old_chi, Vector<double>& weights,
+                                bool use_offset) const {
   int c1_cells = 10;
   int c2_cells = 10;
   if (old_chi < (std::numeric_limits<double>::max() - 1)) {  // second iteration
@@ -241,7 +259,7 @@ WeightedFitParameters WeightedProfileFitter<ScoringFunctionT>::search_fit_parame
       for (unsigned int k = 0; k < partial_profiles.size(); k++)
         partial_profiles[k]->sum_partial_profiles(c1, c2);
       Vector<double> curr_weights;
-      double curr_chi = compute_score(partial_profiles, curr_weights);
+      double curr_chi = compute_score(partial_profiles, curr_weights, use_offset);
       if (!best_set || curr_chi < best_chi) {
         best_set = true;
         best_chi = curr_chi;
@@ -259,7 +277,7 @@ WeightedFitParameters WeightedProfileFitter<ScoringFunctionT>::search_fit_parame
     min_c2 = std::max(best_c2 - delta_c2, min_c2);
     max_c2 = std::min(best_c2 + delta_c2, max_c2);
     return search_fit_parameters(partial_profiles, min_c1, max_c1, min_c2,
-                                 max_c2, best_chi, weights);
+                                 max_c2, best_chi, weights, use_offset);
   }
   return WeightedFitParameters(best_chi, best_c1, best_c2, weights);
 }

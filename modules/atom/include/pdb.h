@@ -261,6 +261,26 @@ class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
         hs_(new HydrogenPDBSelector()) {}
 };
 
+//! Select non hydrogen atoms
+class NonHydrogenPDBSelector : public NonAlternativePDBSelector {
+  IMP::PointerMember<PDBSelector> hs_;
+
+ public:
+  bool get_is_selected(const std::string &pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+      return false;
+    }
+    return (!hs_->get_is_selected(pdb_line));
+  }
+  IMP_OBJECT_METHODS(NonHydrogenPDBSelector);
+  NonHydrogenPDBSelector(std::string name)
+    : NonAlternativePDBSelector(name),
+      hs_(new HydrogenPDBSelector()) {}
+  NonHydrogenPDBSelector()
+    : NonAlternativePDBSelector("NonHydrogenPDBSelector%1%"),
+      hs_(new HydrogenPDBSelector()) {}
+};
+
 //! Select all non-water non-alternative ATOM and HETATM records
 class NonWaterPDBSelector : public NonAlternativePDBSelector {
   IMP::PointerMember<PDBSelector> ws_;
