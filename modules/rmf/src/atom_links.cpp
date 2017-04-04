@@ -223,7 +223,7 @@ void HierarchyLoadLink::add_link_recursive(Model *m,
         "at "
             << m->get_particle_name(cur) << ". "
             << "They are " << pchs.size() << " and " << nchs.size()
-            << " respectively. " << pchs << " vs " << nchs,
+            << " respectively. " << get_particles(m, pchs) << " vs " << nchs,
         ValueException);
   }
   for (unsigned int i = 0; i < nchs.size(); ++i) {
