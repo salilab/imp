@@ -468,9 +468,8 @@ _ihm_dataset_list.database_hosted
 loop_
 _ihm_dataset_external_reference.id
 _ihm_dataset_external_reference.dataset_list_id
-_ihm_dataset_external_reference.data_type
 _ihm_dataset_external_reference.file_id
-1 1 'CX-MS data' 97
+1 1 97
 #
 #
 loop_
@@ -479,18 +478,15 @@ _ihm_dataset_related_db_reference.dataset_list_id
 _ihm_dataset_related_db_reference.db_name
 _ihm_dataset_related_db_reference.accession_code
 _ihm_dataset_related_db_reference.version
-_ihm_dataset_related_db_reference.data_type
 _ihm_dataset_related_db_reference.details
-1 2 PDB 1abc 1.0 'Experimental model' 'test details'
+1 2 PDB 1abc 1.0 'test details'
 #
 #
 loop_
 _ihm_related_datasets.ordinal_id
 _ihm_related_datasets.dataset_list_id_derived
-_ihm_related_datasets.data_type_derived
 _ihm_related_datasets.dataset_list_id_primary
-_ihm_related_datasets.data_type_primary
-1 2 'Experimental model' 1 'CX-MS data'
+1 2 1
 #
 """)
 

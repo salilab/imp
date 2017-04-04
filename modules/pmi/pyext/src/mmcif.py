@@ -484,7 +484,7 @@ class _TemplateSource(object):
     """A PDB file used as a template for a comparative starting model"""
     source = 'comparative model'
     db_name = db_code = _CifWriter.omitted
-    tm_db_name = 'PDB'
+    tm_dataset = None
     # Right now assume all alignments are Modeller alignments, which uses
     # the length of the shorter sequence as the denominator for sequence
     # identity
@@ -778,31 +778,26 @@ class _DatasetDumper(_Dumper):
         ordinal = 1
         with writer.loop("_ihm_related_datasets",
                          ["ordinal_id", "dataset_list_id_derived",
-                          "data_type_derived", "dataset_list_id_primary",
-                          "data_type_primary"]) as l:
+                          "dataset_list_id_primary"]) as l:
             for derived in self._dataset_by_id:
                 for parent in sorted(derived._parents.keys(),
                                      key=lambda d: d.id):
                     l.write(ordinal_id=ordinal,
                             dataset_list_id_derived=derived.id,
-                            data_type_derived=derived._data_type,
-                            dataset_list_id_primary=parent.id,
-                            data_type_primary=parent._data_type)
+                            dataset_list_id_primary=parent.id)
                     ordinal += 1
 
     def dump_rel_dbs(self, datasets, writer):
         ordinal = 1
         with writer.loop("_ihm_dataset_related_db_reference",
                          ["id", "dataset_list_id", "db_name",
-                          "accession_code", "version", "data_type",
-                          "details"]) as l:
+                          "accession_code", "version", "details"]) as l:
             for d in datasets:
                 l.write(id=ordinal, dataset_list_id=d.id,
                         db_name=d.location.db_name,
                         accession_code=d.location.access_code,
                         version=d.location.version if d.location.version
                                 else _CifWriter.omitted,
-                        data_type=d._data_type,
                         details=d.location.details if d.location.details
                                 else _CifWriter.omitted)
                 ordinal += 1
@@ -810,11 +805,9 @@ class _DatasetDumper(_Dumper):
     def dump_other(self, datasets, writer):
         ordinal = 1
         with writer.loop("_ihm_dataset_external_reference",
-                         ["id", "dataset_list_id", "data_type",
-                          "file_id"]) as l:
+                         ["id", "dataset_list_id", "file_id"]) as l:
             for d in datasets:
-                l.write(id=ordinal, dataset_list_id=d.id,
-                        data_type=d._data_type, file_id=d.location.id)
+                l.write(id=ordinal, dataset_list_id=d.id, file_id=d.location.id)
                 ordinal += 1
 
 
@@ -1349,6 +1342,15 @@ class _StartingModelDumper(_Dumper):
                                                      m.group(5),
                                                      int(m.group(6)),
                                                      m.group(7), model))
+        # Add datasets for templates
+        for t in templates:
+            # todo: handle templates that aren't in PDB
+            if t.tm_db_code:
+                l = IMP.pmi.metadata.PDBLocation(t.tm_db_code)
+                d = IMP.pmi.metadata.PDBDataset(l)
+                d = self.simo.dataset_dump.add(d)
+                t.tm_dataset = d
+                model.dataset.add_primary(d)
 
         # Sort by starting residue, then ending residue
         return sorted(templates, key=lambda x: (x._seq_id_begin, x._seq_id_end))
@@ -1385,6 +1387,7 @@ class _StartingModelDumper(_Dumper):
             d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
             model.dataset = self.simo.dataset_dump.add(file_dataset or d)
             templates = self.get_templates(pdbname, model)
+
             if templates:
                 return templates
             else:
@@ -1447,10 +1450,10 @@ class _StartingModelDumper(_Dumper):
            dump_details() since it uses IDs assigned there."""
         with writer.loop("_ihm_starting_comparative_models",
                      ["starting_model_ordinal_id", "starting_model_id",
-                      "template_db_name", "template_db_code",
                       "template_auth_asym_id", "template_seq_begin",
                       "template_seq_end", "template_sequence_identity",
                       "template_sequence_identity_denominator",
+                      "template_dataset_list_id",
                       "alignment_file_id"]) as l:
             ordinal = 1
             for model in self.all_models():
@@ -1459,13 +1462,14 @@ class _StartingModelDumper(_Dumper):
                     denom = template.sequence_identity_denominator
                     l.write(starting_model_ordinal_id=template.id,
                       starting_model_id=model.name,
-                      template_db_name=template.tm_db_name,
-                      template_db_code=template.tm_db_code,
                       template_auth_asym_id=template.tm_chain_id,
                       template_seq_begin=template.tm_seq_id_begin,
                       template_seq_end=template.tm_seq_id_end,
                       template_sequence_identity=template.sequence_identity,
-                      template_sequence_identity_denominator=denom)
+                      template_sequence_identity_denominator=denom,
+                      template_dataset_list_id=template.tm_dataset.id
+                                               if template.tm_dataset
+                                               else _CifWriter.unknown)
 
     def dump_details(self, writer):
         writer.write_comment("""IMP will attempt to identify which input models
@@ -1476,7 +1480,6 @@ modeling. These may need to be added manually below.""")
                      ["ordinal_id", "entity_id", "entity_description",
                       "asym_id", "seq_id_begin",
                       "seq_id_end", "starting_model_source",
-                      "starting_model_db_name", "starting_model_db_code",
                       "starting_model_auth_asym_id",
                       "starting_model_sequence_offset",
                       "starting_model_id",
@@ -1499,8 +1502,6 @@ modeling. These may need to be added manually below.""")
                       starting_model_auth_asym_id=source.chain_id,
                       starting_model_id=model.name,
                       starting_model_source=source.source,
-                      starting_model_db_name=source.db_name,
-                      starting_model_db_code=source.db_code,
                       starting_model_sequence_offset=f.offset,
                       dataset_list_id=model.dataset.id)
                     ordinal += 1

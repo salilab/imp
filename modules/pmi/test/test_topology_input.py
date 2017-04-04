@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
             # Test deprecated interface
             c2 = t.component_list
         for c in (c1, c2):
-            self.assertEqual(len(c),8)
+            self.assertEqual(len(c),9)
             self.assertEqual(c[0].molname,"Prot1")
             self.assertEqual(c[1].molname,"Prot1")
             self.assertEqual(c[1].copyname,"1")
@@ -60,7 +60,7 @@ class Tests(IMP.test.TestCase):
 
         tnew = IMP.pmi.topology.TopologyReader(outfile)
         c = tnew.get_components()
-        self.assertEqual(len(c),8)
+        self.assertEqual(len(c),9)
         self.assertEqual(c[0].molname,"Prot1")
         self.assertEqual(c[1].molname,"Prot1")
         self.assertEqual(c[1].copyname,"1")
@@ -137,9 +137,9 @@ class Tests(IMP.test.TestCase):
 
         expected_rbs = [['Prot1.1.0','Prot1..0'],
                         ['Prot2..0','Prot2..1','Prot2.1.0','Prot2.1.1'],
-                        ['Prot4..0']]
+                        ['Prot4..0', 'Prot5..0']]
         expected_srbs = [['Prot1.1.0','Prot1..0','Prot2..0','Prot2..1',
-                          'Prot2.1.0','Prot2.1.1','Prot4..0','Prot3..0'],
+                          'Prot2.1.0','Prot2.1.1','Prot4..0','Prot3..0', 'Prot5..0'],
                          ['Prot1.1.0','Prot1..0','Prot3..0']]
 
         found1 = set(tuple(sorted(i)) for i in rbs)
@@ -201,6 +201,14 @@ class Tests(IMP.test.TestCase):
                                      resolution=10).get_selected_particles()
         sel4_D = IMP.atom.Selection(root_hier,molecule="Prot4",
                                     representation_type=IMP.atom.DENSITIES).get_selected_particles()
+
+        sel5 = IMP.atom.Selection(root_hier, molecule='Prot5',
+                                  resolution=1).get_selected_particles()
+
+        color=IMP.display.Colored(sel5[0]).get_color()
+        self.assertAlmostEqual(color.get_red(), 0.1, delta=1e-6)
+        self.assertAlmostEqual(color.get_green(), 0.2, delta=1e-6)
+        self.assertAlmostEqual(color.get_blue(), 0.3, delta=1e-6)
         self.assertEqual(len(sel4_1),10)
         self.assertEqual(len(sel4_10),1)
         self.assertEqual(len(sel4_D),2)

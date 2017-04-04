@@ -1139,7 +1139,11 @@ class TopologyReader(object):
                 errors.append("Molecule name should be <molecule.copyID>")
                 errors.append("For component %s line %d " % (c.molname,linenum))
             c._domain_name = c.molname + '.' + c.copyname
-            c.color = values[2]
+            colorfields = values[2].split(',')
+            if len(colorfields)==3:
+                c.color = [float(x) for x in colorfields]
+            else:
+                c.color = values[2]
         c._orig_fasta_file = values[3]
         c.fasta_file = values[3]
         fasta_field = values[4].split(",")
@@ -1390,7 +1394,10 @@ class _Component(object):
             chain = ' '
         else:
             chain = self.chain
-        a= '|'+'|'.join([name,self.color,self._orig_fasta_file,self.fasta_id,
+        color=self.color
+        if isinstance(color, list):
+            color=','.join([str(x) for x in color])
+        a= '|'+'|'.join([name,color,self._orig_fasta_file,self.fasta_id,
                          self._orig_pdb_input,chain,self._l2s(list(res_range)),
                              str(self.pdb_offset),str(self.bead_size),
                              str(self.em_residues_per_gaussian),
