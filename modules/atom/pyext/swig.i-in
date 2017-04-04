@@ -79,6 +79,7 @@ IMP_SWIG_OBJECT(IMP::atom, MolecularDynamics, MolecularDynamicsList);
 IMP_SWIG_OBJECT(IMP::atom, NPDBSelector, NPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, NonAlternativePDBSelector, NonAlternativePDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, NonHydrogenMol2Selector, NonHydrogenMol2Selectors);
+IMP_SWIG_OBJECT(IMP::atom, NonHydrogenPDBSelector, NonHydrogenPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, NonWaterNonHydrogenPDBSelector, NonWaterNonHydrogenPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, NonWaterPDBSelector,NonWaterPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, NotPDBSelector,NotPDBSelectors);
