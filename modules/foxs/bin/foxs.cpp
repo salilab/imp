@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
   bool vr_score = false;
   bool score_log = false;
   bool gnuplot_script = false;
-
+  bool explicit_water = false;
   po::options_description desc("Options");
   desc.add_options()
     ("help", "Any number of input PDBs and profiles is supported. \
@@ -89,6 +89,7 @@ Written by Dina Schneidman.")
      "input PDB and profile files")
     ("form_factor_table,f", po::value<std::string>(&form_factor_table_file),
      "ff table name")
+    ("explicit_water", "use waters from input PDB (default = false)")
     ("beam_profile", po::value<std::string>(&beam_profile_file),
      "beam profile file name for desmearing")
     ("ab_initio,a", "compute profile for a bead model with \
@@ -133,6 +134,7 @@ constant form factor (default = false)")
   if (vm.count("write-partial-profile")) write_partial_profile = true;
   if (vm.count("score_log")) score_log = true;
   if (vm.count("gnuplot_script")) gnuplot_script = true;
+  if (vm.count("explicit_water")) explicit_water = true;
 
   // no water layer or fitting in ab initio mode for now
   if (vm.count("ab_initio")) {
@@ -172,7 +174,8 @@ constant form factor (default = false)")
   IMP_NEW(IMP::Model, m, ());
 
   read_files(m, files, pdb_files, dat_files, particles_vec, exp_profiles,
-             residue_level, heavy_atoms_only, multi_model_pdb, max_q);
+             residue_level, heavy_atoms_only, multi_model_pdb, explicit_water,
+             max_q);
 
   if (background_adjustment_q > 0.0) {
     for (unsigned int i = 0; i < exp_profiles.size(); i++)
@@ -211,7 +214,7 @@ constant form factor (default = false)")
               << particles_vec[i].size() << " atoms " << std::endl;
     IMP::Pointer<Profile> profile =
         compute_profile(particles_vec[i], 0.0, max_q, delta_q, ft, ff_type,
-                        fit, fit, reciprocal, ab_initio, vacuum,
+                        !explicit_water, fit, reciprocal, ab_initio, vacuum,
                         beam_profile_file);
 
     // save the profile
