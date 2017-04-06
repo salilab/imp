@@ -20,5 +20,31 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(center[2], 0., delta=1e-5)
         os.unlink('test_output.pdb')
 
+    def test_process_output_v2(self):
+        """test reading stat file (v2)"""
+        self._check_stat_file(self.get_input_file_name("./output1/stat.0.out"),
+                              25)
+
+    def test_process_output_v1(self):
+        """test reading stat file (v1)"""
+        self._check_stat_file(self.get_input_file_name("./output1/statv1.out"),
+                              24)
+
+    def _check_stat_file(self, fname, num_categories):
+        import numpy
+        po = IMP.pmi.output.ProcessOutput(fname)
+
+        categories = po.get_keys()
+        self.assertEqual(len(categories), num_categories)
+
+        criteria = [("rmf_frame_index", 5, "<")]
+        self.assertEqual(len(po.return_models_satisfying_criteria(criteria)), 11)
+
+        criteria = [("rmf_frame_index", 5, "<"), ('AtomicXLRestraint', 10.0, ">")]
+        self.assertEqual(len(po.return_models_satisfying_criteria(criteria)), 4)
+
+        vals = po.get_fields(["AtomicXLRestraint"])["AtomicXLRestraint"]
+        self.assertAlmostEqual(numpy.average(numpy.array(vals).astype(numpy.float)), 10.1270600392)
+
 if __name__ == '__main__':
     IMP.test.main()

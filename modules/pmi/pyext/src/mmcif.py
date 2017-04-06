@@ -1491,20 +1491,28 @@ modeling. These may need to be added manually below.""")
                 chain_id = self.simo._get_chain_for_component(f.component,
                                                               self.output)
                 for source in model.sources:
-                    seq_id_begin, seq_id_end = source.get_seq_id_range(model)
                     source.id = ordinal
-                    l.write(ordinal_id=ordinal,
+                source0 = model.sources[0]
+                # Where there are multiple sources (to date, this can only
+                # mean multiple templates for a comparative model) consolidate
+                # them; template info is given in starting_comparative_models.
+                seq_id_begin, seq_id_end = source0.get_seq_id_range(model)
+                for source in model.sources[1:]:
+                    this_begin, this_end = source.get_seq_id_range(model)
+                    seq_id_begin = min(seq_id_begin, this_begin)
+                    seq_id_end = max(seq_id_end, this_end)
+                l.write(ordinal_id=ordinal,
                       entity_id=entity.id,
                       entity_description=entity.description,
                       asym_id=chain_id,
                       seq_id_begin=seq_id_begin,
                       seq_id_end=seq_id_end,
-                      starting_model_auth_asym_id=source.chain_id,
+                      starting_model_auth_asym_id=source0.chain_id,
                       starting_model_id=model.name,
-                      starting_model_source=source.source,
+                      starting_model_source=source0.source,
                       starting_model_sequence_offset=f.offset,
                       dataset_list_id=model.dataset.id)
-                    ordinal += 1
+                ordinal += 1
 
     def dump_coords(self, writer):
         seq_dif = []
@@ -2130,6 +2138,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
     def _update_location(self, fileloc):
         """Update FileLocation to point to a parent repository, if any"""
-        for m in self._metadata:
-            if isinstance(m, IMP.pmi.metadata.Repository):
-                m.update_in_repo(fileloc)
+        all_repos = [m for m in self._metadata
+                     if isinstance(m, IMP.pmi.metadata.Repository)]
+        IMP.pmi.metadata.Repository.update_in_repos(fileloc, all_repos)

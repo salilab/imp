@@ -34,19 +34,38 @@ class Tests(IMP.test.TestCase):
         # get a relative path from cwd to /tmp (e.g. on Windows where they may
         # be on different drives)
         with IMP.test.temporary_directory(os.getcwd()) as tmpdir:
-            with open(os.path.join(tmpdir, 'bar'), 'w') as f:
+            subdir = os.path.join(tmpdir, 'subdir')
+            os.mkdir(subdir)
+            with open(os.path.join(subdir, 'bar'), 'w') as f:
                 f.write("")
             s = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46266',
                                             root=os.path.relpath(tmpdir),
-                                            url='foo', top_directory='bar')
+                                            url='foo', top_directory='baz')
             self.assertEqual(s._root, tmpdir)
             self.assertEqual(s.url, 'foo')
-            self.assertEqual(s.top_directory, 'bar')
+            self.assertEqual(s.top_directory, 'baz')
+
             loc = IMP.pmi.metadata.FileLocation(
-                                os.path.relpath(os.path.join(tmpdir, 'bar')))
+                                os.path.relpath(os.path.join(subdir, 'bar')))
             self.assertEqual(loc.repo, None)
-            s.update_in_repo(loc)
+            IMP.pmi.metadata.Repository.update_in_repos(loc, [s])
             self.assertEqual(loc.repo.doi, '10.5281/zenodo.46266')
+            self.assertEqual(loc.path, 'subdir/bar')
+
+            # Shouldn't touch locations that are already in repos
+            loc = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
+            self.assertEqual(loc.repo, 'foo')
+            IMP.pmi.metadata.Repository.update_in_repos(loc, [s])
+            self.assertEqual(loc.repo, 'foo')
+
+            # Shortest match should win
+            loc = IMP.pmi.metadata.FileLocation(
+                                os.path.relpath(os.path.join(subdir, 'bar')))
+            s2 = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46280',
+                                             root=os.path.relpath(subdir),
+                                             url='foo', top_directory='baz')
+            IMP.pmi.metadata.Repository.update_in_repos(loc, [s, s2])
+            self.assertEqual(loc.repo.doi, '10.5281/zenodo.46280')
             self.assertEqual(loc.path, 'bar')
 
     def test_repository_no_checkout(self):

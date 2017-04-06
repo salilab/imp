@@ -1186,41 +1186,9 @@ class GetContactMap(object):
             for p in particles_dictionary[name]:
                 print(p.get_name())
                 residue_indexes += IMP.pmi.tools.get_residue_indexes(p)
-                #residue_indexes.add( )
 
             if len(residue_indexes) != 0:
                 self.protnames.append(name)
-                for res in range(min(residue_indexes), max(residue_indexes) + 1):
-                    d = IMP.core.XYZR(p)
-                    new_name = name + ":" + str(res)
-                    if name not in self.resmap:
-                        self.resmap[name] = {}
-                    if res not in self.resmap:
-                        self.resmap[name][res] = {}
-
-                    self.resmap[name][res] = new_name
-                    namelist.append(new_name)
-
-                    crd = np.array([d.get_x(), d.get_y(), d.get_z()])
-                    coords.append(crd)
-                    radii.append(d.get_radius())
-
-        coords = np.array(coords)
-        radii = np.array(radii)
-
-        if len(self.namelist) == 0:
-            self.namelist = namelist
-            self.contactmap = np.zeros((len(coords), len(coords)))
-
-        distances = cdist(coords, coords)
-        distances = (distances - radii).T - radii
-        distances = distances <= self.distance
-
-        print(coords)
-        print(radii)
-        print(distances)
-
-        self.contactmap += distances
 
     def get_subunit_coords(self, frame, align=0):
         from scipy.spatial.distance import cdist
@@ -1296,7 +1264,7 @@ class GetContactMap(object):
                     self.XL[t1].append((int(d[2]) + 1, int(d[3]) + 1))
                     self.XL[t2].append((int(d[3]) + 1, int(d[2]) + 1))
 
-    def dist_matrix(self, skip_cmap=0, skip_xl=1):
+    def dist_matrix(self, skip_cmap=0, skip_xl=1, outname=None):
         K = self.namelist
         M = self.contactmap
         C, R = [], []
@@ -1369,7 +1337,7 @@ class GetContactMap(object):
                                 xl2 = pl2
                             mtr[xl2 - 1, xl1 - 1] = 100
                     else:
-                        raise RuntimeError('WTF!')
+                        print('No cross links between: ', pn1, pn2)
                     Matrices_xl[(pn1, pn2)] = mtr
 
         # expand the matrix to individual residues
@@ -1395,7 +1363,7 @@ class GetContactMap(object):
                 R.append(R[-1] + cl)
 
         # start plotting
-        if filename:
+        if outname:
             # Don't require a display
             import matplotlib as mpl
             mpl.use('Agg')
@@ -1428,10 +1396,10 @@ class GetContactMap(object):
                         mtr = Matrices[(C[x2], C[x1])].T
                     #cax = ax.imshow(log(NewM[s1:r1,s2:r2] / 1.), interpolation='nearest', vmin=0., vmax=log(NewM.max()))
                     cax = ax.imshow(
-                        log(mtr),
+                        np.log(mtr),
                         interpolation='nearest',
                         vmin=0.,
-                        vmax=log(NewM.max()))
+                        vmax=log(mtr.max()))
                     ax.set_xticks([])
                     ax.set_yticks([])
                 if skip_xl == 0:
@@ -1451,7 +1419,10 @@ class GetContactMap(object):
                 cnt += 1
                 if x2 == 0:
                     ax.set_ylabel(C[x1], rotation=90)
-        plt.show()
+        if outname:
+            plt.savefig(outname + ".pdf", dpi=300, transparent="False")
+        else:
+            plt.show()
 
 
 # ------------------------------------------------------------------
