@@ -2,6 +2,12 @@ ChangeLog {#changelog}
 =========
 
 # For next stable IMP release #
+- New applications of IMP are now available:
+  - [Modeling of the yeast Mediator complex](https://salilab.org/mediator/)
+  - [Modeling of the yeast and human TFIIH complex](https://salilab.org/tfiih/)
+  - [Modeling of complexes between the 26S proteasome and proteasome interacting proteins](https://salilab.org/26S-PIPs)
+  - [Human Complement modeling](https://salilab.org/Complement)
+  - [Modeling of a region of the fly genome](https://integrativemodeling.org/systems/?sys=22) using IMP and [TADbit](http://sgt.cnag.cat/3dg/tadbit/)
 - Memory and CPU performance improvements across the code, particularly
   in IMP::pmi.
 - Preview of mmCIF support for deposition of integrative models in
