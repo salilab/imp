@@ -20,7 +20,8 @@ class Tests(IMP.test.TestCase):
     def test_old(self):
         """Test reading of old-style topology file"""
         topology_file = self.get_input_file_name("topology.txt")
-        t = IMP.pmi.topology.TopologyReader(topology_file)
+        with IMP.allow_deprecated():
+            t = IMP.pmi.topology.TopologyReader(topology_file)
         c = t.get_components()
         self.assertEqual(len(c), 3)
         self.assertEqual(c[0].molname, "Prot1")

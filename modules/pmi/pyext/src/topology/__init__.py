@@ -1086,18 +1086,20 @@ class TopologyReader(object):
                     continue
                 elif line.split('|')[1] == "component_name":
                     is_topology = True
-                    print("WARNING: old-style topology format (using "
+                    IMP.handle_use_deprecated(
+                          "Old-style topology format (using "
                           "|component_name|) is deprecated. Please switch to "
-                          "the new-style format (using |molecule_name|)")
+                          "the new-style format (using |molecule_name|)\n")
                     old_format = True
                     is_directories = False
                     continue
                 elif line.split('|')[1] == "directories":
-                    print("WARNING: Setting directories in the topology file "
+                    IMP.handle_use_deprecated(
+                          "Setting directories in the topology file "
                           "is deprecated. Please do so through the "
                           "TopologyReader constructor. Note that new-style "
                           "paths are relative to the current working "
-                          "directory, not the topology file")
+                          "directory, not the topology file.\n")
                     is_directories = True
                 elif is_directories:
                     fields = line.split('|')

@@ -39,7 +39,9 @@ class Tests(IMP.test.TestCase):
 
     def test_process_output_v1(self):
         """Test reading stat file (v1)"""
-        self._check_stat_file(self.get_input_file_name("./output1/statv1.out"))
+        with IMP.allow_deprecated():
+            self._check_stat_file(self.get_input_file_name(
+                                                  "./output1/statv1.out"))
 
     def test_process_output_complex(self):
         """Test reading a more complex stat file"""
