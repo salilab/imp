@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(loc.repo, None)
             IMP.pmi.metadata.Repository.update_in_repos(loc, [s])
             self.assertEqual(loc.repo.doi, '10.5281/zenodo.46266')
-            self.assertEqual(loc.path, 'subdir/bar')
+            self.assertEqual(loc.path, os.path.join('subdir', 'bar'))
 
             # Shouldn't touch locations that are already in repos
             loc = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')

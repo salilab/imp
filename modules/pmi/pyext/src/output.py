@@ -10,6 +10,7 @@ import IMP.pmi
 import IMP.pmi.tools
 import os
 import sys
+import ast
 import RMF
 import numpy as np
 import operator
@@ -529,7 +530,7 @@ class Output(object):
 
         passed=True
         for l in flstat:
-            test_dict = eval(l)
+            test_dict = ast.literal_eval(l)
         for k in test_dict:
             if k in output:
                 old_value = str(test_dict[k])
@@ -691,12 +692,13 @@ class Output(object):
         for stat in self.dictionary_stats2.keys():
             self.write_stat2(stat)
 
+
 class ProcessOutput(object):
     """A class for reading stat files"""
     def __init__(self, filename):
         self.filename = filename
-        self.isstat1=False
-        self.isstat2=False
+        self.isstat1 = False
+        self.isstat2 = False
 
         # open the file
         if not self.filename is None:
@@ -704,113 +706,45 @@ class ProcessOutput(object):
         else:
             raise ValueError("No file name provided. Use -h for help")
 
-        self.exp_dict={} # Store all experimental header details here.
+        # get the keys from the first line
+        for line in f.readlines():
+            d = ast.literal_eval(line)
+            self.klist = list(d.keys())
+            # check if it is a stat2 file
+            if "STAT2HEADER" in self.klist:
+                self.isstat2 = True
+                for k in self.klist:
+                    if "STAT2HEADER" in str(k):
+                        # if print_header: print k, d[k]
+                        del d[k]
+                stat2_dict = d
+                # get the list of keys sorted by value
+                kkeys = [k[0]
+                         for k in sorted(stat2_dict.items(), key=operator.itemgetter(1))]
+                self.klist = [k[1]
+                              for k in sorted(stat2_dict.items(), key=operator.itemgetter(1))]
+                self.invstat2_dict = {}
+                for k in kkeys:
+                    self.invstat2_dict.update({stat2_dict[k]: k})
+            else:
+                print("WARNING: statfile v1 is deprecated. "
+                      "Please convert to statfile v2")
+                self.isstat1 = True
+                self.klist.sort()
 
-        # get the {CategoryID:Category} pairs from the first line
-        line = f.readline()
-
-        #Store these keys in a dictionary. Example pair: {109 :'Total_Score'}
-        self.dict = self.parse_line(line)
-
-        self.klist = list(self.dict.keys())
-
-        if "STAT2HEADER" in self.klist:
-            self.isstat2 = True
-            for k in self.klist:
-                if "STAT2HEADER" in str(k):
-                    # if print_header: print k, d[k]
-                    self.exp_dict[k]=self.dict[k]
-                    del self.dict[k]
-
-            # get the list of keys sorted by value
-            kkeys = [k[0]
-                    for k in sorted(self.dict.items(), key=operator.itemgetter(1))]
-            self.klist = [k[1]
-                    for k in sorted(self.dict.items(), key=operator.itemgetter(1))]
-            self.inv_dict = {}
-
-            for k in kkeys:
-                self.inv_dict.update({self.dict[k]: k})
-        else:
-            print("WARNING: statfile v1 is deprecated.  Please convert to statfile v2")
-            self.isstat1 = True
-            self.klist.sort()
-            # For v1, no need to map from ids to field names, so just make
-            # a dumb one-to-one mapping so as not to confuse v2 code
-            self.dict = {}
-            self.inv_dict = {}
-            for k in self.klist:
-                self.dict[k] = k
-                self.inv_dict[k] = k
-        
-
+            break
         f.close()
 
-
-    def parse_line(self, line):
-        # Parses a line and returns a dictionary of key:value pairs
-        # {key:value, key:value, key:"{v1, v2, v3}", key:value}
-        d={} # output dictionary 
-        # First, remove outer braces and split via double quotes to isolate multi-component values.
-        split=line.strip()[1:-1].split("\"")
-        
-        if len(split)==1:
-            fields = split[0].split(",")   # split via commas to get key:value pair
-            for h in fields[0:-1]: 
-                if h != "":  # For some reason, there is occasionally an empty field. Ignoring these seems to work.
-
-                    # Split fields into key and value elements
-                    kv = h.split(":")
-
-                    # If the key (field 0) is an integer, keep it an integer.
-                    try:
-                        k = int(kv[0].replace(",","").strip())
-                    except:
-                        k = kv[0].replace("\'","").strip()
-
-                    v = kv[1].replace("\'","").strip() # the value is encased in single quote characters, so remove these
-                    d[k] = v
-            return d
-
-
-        for i in range(0,len(split)-1,2):
-            # Each even number of split is a string of "key:value, key:value, key:value"
-            fd = split[i]
-            fields = fd.split(",")   # split via commas to get key:value pair
-            for h in fields[0:-1]: 
-                if h != "":  # For some reason, there is occasionally an empty field. Ignoring these seems to work.
-
-                    # Split fields into key and value elements
-                    kv = h.split(":")
-
-                    # If the key (field 0) is an integer, keep it an integer.
-                    try:
-                        k = int(kv[0].replace(",","").strip())
-                    except:
-                        k = kv[0].replace("\'","").strip()
-
-                    v = kv[1].replace("\'","").strip() # the value is encased in single quote characters, so remove these
-                    d[k] = v
-            # The last field contains the key for the multi-component value in split[i+1]
-            d[fields[-1].split(":")[0].replace("\'","").strip()] = split[i+1]
-
-        return d
-
-
     def get_keys(self):
-        self.klist = [k[1]
-                    for k in sorted(self.dict.items(), key=operator.itemgetter(1))]
         return self.klist
 
     def show_keys(self, ncolumns=2, truncate=65):
         IMP.pmi.tools.print_multicolumn(self.get_keys(), ncolumns, truncate)
 
-    def get_experimental_values(self):
-        return self.exp_dict
-
     def get_fields(self, fields, filtertuple=None, filterout=None, get_every=1):
         '''
         Get the desired field names, and return a dictionary.
+
         @param fields desired field names
         @param filterout specify if you want to "grep" out something from
                          the file, so that it is faster
@@ -839,7 +773,7 @@ class ProcessOutput(object):
             #if line_number % 1000 == 0:
             #    print "ProcessOutput.get_fields: read line %s from file %s" % (str(line_number), self.filename)
             try:
-                d = eval(line)
+                d = ast.literal_eval(line)
             except:
                 print("# Warning: skipped line number " + str(line_number) + " not a valid line")
                 continue
@@ -870,95 +804,19 @@ class ProcessOutput(object):
                     relationship = filtertuple[1]
                     value = filtertuple[2]
                     if relationship == "<":
-                        if float(d[self.inv_dict[keytobefiltered]]) >= value:
+                        if float(d[self.invstat2_dict[keytobefiltered]]) >= value:
                             continue
                     if relationship == ">":
-                        if float(d[self.inv_dict[keytobefiltered]]) <= value:
+                        if float(d[self.invstat2_dict[keytobefiltered]]) <= value:
                             continue
                     if relationship == "==":
-                        if float(d[self.inv_dict[keytobefiltered]]) != value:
+                        if float(d[self.invstat2_dict[keytobefiltered]]) != value:
                             continue
 
-                [outdict[field].append(d[self.inv_dict[field]])
+                [outdict[field].append(d[self.invstat2_dict[field]])
                  for field in fields]
         f.close()
         return outdict
-
-    def return_models_satisfying_criteria(self, criteria):
-        # Given a set of criteria, return lines from the stat file that
-        # satisfy all criteria
-        #
-        # Criteria should as a list of tuples in the format: ("TheKeyToBeFiltered",relationship,value)
-        #            where relationship = "<", "==", or ">"
-        #           and keytobefiltered is the name of the key (rather than the integer)
-        # 
-        # Returns a list of dictionaries
-        output_list = []
-        i = 0
-
-        # print fields values
-        f = open(self.filename, "r")
-        line_number = 1
-
-        # skip the first line for a statfile v2
-        if self.isstat2:
-            f.readline()
-
-        for line in f.readlines():
-            append=True
-            fields = self.parse_line(line)
-
-            # Loop over all criteria.  If one fails, the whole line fails and do not append it.
-            for c in criteria:
-                if not self.does_line_pass_criteria(fields, c):
-                    append=False
-                    break
-            if append:
-                output_list.append(fields)
-
-        return output_list
-
-    def _float_string(self, c):
-        # Returns a float if the string can be cast as such.
-        # otherwise, just return the string
-        try:
-            float(c)
-        except:
-            return str(c)
-
-        return float(c)
-
-
-    def does_line_pass_criteria(self, fields, c):
-        # Given a stat file line (as a dictionary) and a criteria tuple, decide whether 
-        # the criteria is passed (return True) or not (return False)
-        
-        key = c[0]
-        if key not in self.get_keys():
-            raise Exception('ERROR: IMP.pmi.output.ProcessOutput.does_line_pass_criteria() - Key %s is not in this stat file' % (key))  
-
-        # Try to cast value string as int, float or, if not, keep it as a string
-        value = self._float_string(c[1])
-
-
-        comparison = c[2]
-        if comparison not in ["==", "<", ">"]:
-            raise Exception('ERROR: IMP.pmi.output.ProcessOutput.does_line_pass_criteria() - Comparison string must be \'>\', \'<\' or \'==\', instead of %s' % (comparison))  
-
-        intkey = self.inv_dict[key]
-
-        model_value = self._float_string(fields[intkey])
-
-        if type(value) is not type(model_value):
-            raise Exception('ERROR: IMP.pmi.output.ProcessOutput.does_line_pass_criteria() - Comparison field %s is of type %s while you tried to compare it to a %s' % (key, type(model_value), type(value)))  
-
-        if (comparison == "==" and model_value == value) or \
-           (comparison == ">" and model_value <= value) or \
-           (comparison == "<" and model_value >= value):
-            return True
-
-        else:
-            return False
 
 
 

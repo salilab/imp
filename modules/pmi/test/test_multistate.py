@@ -148,7 +148,7 @@ class Tests(IMP.test.TestCase):
 
         po = IMP.pmi.output.ProcessOutput("modeling.stat")
 
-        po.get_keys()
+        self.assertEqual(len(po.get_keys()), 20)
 
         fs = po.get_fields(
             ['ISDCrossLinkMS_Distance_interrb-State:0-5:particle1_5:particle3-1-1-0.05_None',
