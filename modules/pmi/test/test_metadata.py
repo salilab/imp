@@ -28,6 +28,16 @@ class Tests(IMP.test.TestCase):
         f = IMP.pmi.metadata.FileLocation(repo=r, path='foo')
         s = IMP.pmi.metadata.PythonScript(location=f)
 
+    def test_repository_equality(self):
+        """Test metadata.Repository equality"""
+        r1 = IMP.pmi.metadata.Repository(doi='foo')
+        r2 = IMP.pmi.metadata.Repository(doi='foo')
+        r3 = IMP.pmi.metadata.Repository(doi='foo', url='bar')
+        r4 = IMP.pmi.metadata.Repository(doi='bar')
+        self.assertEqual(r1, r2)
+        self.assertNotEqual(r1, r3)
+        self.assertNotEqual(r1, r4)
+
     def test_repository(self):
         """Test metadata.Repository"""
         # Make tmpdir under current directory, as it's not always possible to

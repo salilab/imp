@@ -194,11 +194,11 @@ class Repository(Metadata):
 
        @see FileLocation."""
 
-    # Two repositories compare equal if their DOIs are the same
+    # Two repositories compare equal if their DOIs and URLs are the same
     def __eq__(self, other):
-        return self.doi == other.doi
+        return self.doi == other.doi and self.url == other.url
     def __hash__(self):
-        return hash(self.doi)
+        return hash((self.doi, self.url))
 
     def __init__(self, doi, root=None, url=None,
                  top_directory=None):
