@@ -1,8 +1,6 @@
 ChangeLog {#changelog}
 =========
 
-# For next stable IMP release #
-
 # 2.7.0 - 2017-04-13 # {#changelog_2_7_0}
 - New applications of IMP are now available:
   - [Modeling of the yeast Mediator complex](https://salilab.org/mediator/)
